@@ -506,3 +506,200 @@ Nothing is rerun. The predictions of T3, T4b, T5, T6b and of the card job stand 
 written above, before those runs; this session judges them with the analysis scripts
 committed on 2026-11-19 (no script is changed before its first registered run here; a
 change after a failure would be recorded).
+
+### T3 outcome (group history on the exact pancake) [VERIFIED]
+
+Runs: cases core-20261119-160919-c6a7279 (929 s on one core), analysis
+core-20261120-220350-1aa20ac (`t3_groups.json`, figure `t3_groups.png`, looked at; the
+label of its middle panel runs into the tick labels: layout corrected below).
+- T3a group 1 (all 32768 particles) against the existing history after the
+  parallel-axis shift: d/dt and d2/dt2 of the moment within 6.5e-13 and 5.3e-13 of their
+  size, the moment itself 3.9e-12 (prediction 1e-12: missed by a factor 3.9 for I, the
+  shift subtracts M X X = 0.25 M L^2 from a sum of the same size; not refuted, bound
+  1e-10); mass identical, centroid within 4.4e-13.
+- T3b physical columns against the conversion of the comoving ones in Python: J, dJ/dT,
+  d2J/dT2 within 7.0e-16 (prediction 1e-13: held); d3J/dT3 against the quotient of the
+  d2J/dT2 column within 4.1e-14 of its largest value (prediction 1e-10: held); cosmic
+  time against (2/3)((1 + t/2)^3 - 1) within 5.3e-15.
+- T3c the slab L/4 <= q_x < 3L/4 (group 2, tag range) against Zel'dovich, window
+  1.2 <= a <= 7.56, errors relative to the largest exact value:
+
+  | symbol | I_xx - c0 | dI_xx/dt | d2I_xx/dt2 | d3I_xx/dt3 rms | d3J_xx/dT3 rms |
+  |---|---|---|---|---|---|
+  | spectral | 9.1e-6 | 3.8e-5 | 3.9e-4 | 0.26 per cent | 0.097 per cent |
+  | seven_point | 3.1e-3 | 4.9e-3 | 9.6e-3 | 1.30 per cent | 0.60 per cent |
+  | spectral, all particles | 3.5e-4 | 7.9e-4 | 1.9e-3 | 0.31 per cent | 0.032 per cent |
+  | seven_point, all particles | 2.2e-3 | 2.9e-3 | 7.8e-3 | 2.04 per cent | 0.075 per cent |
+
+  I and dI below 5e-4 and at least four times better than seven-point: held (340 and
+  129 times better). d3I rms between 0.5 and 1.5 per cent: FAILED on the low side, 0.26
+  per cent; the Laplacian carried four fifths of the third-derivative error of the slab
+  (1.30 to 0.26 per cent), more than the half to three quarters I took from the track's
+  estimate. Refutation (I, dI improve by less than two): not refuted. Off-diagonal and
+  transverse components 5e-15 of xx, centroid of the slab fixed to 7e-15.
+- T3d continuation from the dump at cycle 300: the 148 records (cycles 301 to 448) of
+  `newton.newton.hst`, both group files and `newton.nrpic.hst` identical as text to the
+  uninterrupted run. Held.
+
+### Card job outcome (Slurm 4648, run core-20261119-145346-2f89b86) [VERIFIED]
+
+Judgement core-20261120-220427-5d8547f (`card_judge.json`, figure `card_judge.png`,
+looked at), T3 analysis above for chk_sin32, T2 analysis below for east64. Ten cases,
+252 s, 0.07 card-hours.
+- Card twins of T1 against the processor runs (13 snapshots, 602 records each):
+
+  | pair | positions / box | momenta | K | W |
+  |---|---|---|---|---|
+  | chk_mg, mg | 1.4e-15 | 5.6e-15 | 5.2e-13 | 6.4e-13 |
+  | chk_fft7, fft7 | 3.3e-16 | 1.3e-15 | 5.1e-13 | 6.4e-13 |
+  | chk_fftsp, fftsp | 5.6e-16 | 1.7e-15 | 5.2e-13 | 7.3e-13 |
+  | chk_fft7, chk_mg (both on the card) | 2.2e-15 | 8.9e-15 | 5.2e-15 | 5.4e-15 |
+
+  Prediction (positions 1e-9, K and W 1e-8): held with six and four orders to spare;
+  refutation (1e-6) not met. The card path of the Fourier solver is the processor path
+  to rounding, through shell crossing.
+- chk_sin32 (group history on the card against sin32_sp, 449 common records): I, dI,
+  d2I, J, d2J within 6.0e-13, the difference quotients d3I, d3J within 3.9e-10
+  (predictions 1e-9 and 1e-6: held).
+- Throughput (T9; cpu time used over 20 cycles, 2e6 particles, one A100, a measurement):
+
+  | case | s per step | V cycles per step | peak card memory |
+  |---|---|---|---|
+  | periodic 256^3, Fourier (spectral) | 0.143 | - | 7.3 GiB |
+  | periodic 256^3, multigrid, `newton_mg_tol = 1e-6` | 0.135 | 2.9 | 6.7 GiB |
+  | isolated 256^3, multigrid, `newton_mg_tol = 1e-6` | 1.20 | 5.2 | 6.7 GiB |
+  | periodic 384^3, Fourier (spectral) | 0.436 | - | 22.6 GiB |
+  | isolated 384^3, multigrid, `newton_mg_tol = 1e-6` | 6.00 | 5.6 | 18.2 GiB |
+
+  Expectation "Fourier below 0.5 s at 256^3": met (0.14 s for the whole step).
+  Expectation "multigrid 256^3 between 1 and 5 s per step": met on the isolated mesh
+  (1.2 s); the periodic mesh is faster than I expected (0.135 s: the particles of the
+  benchmark are at rest and nearly uniform, so three V cycles from the warm start
+  suffice; the Fourier solve costs as much as those three cycles and does not depend on
+  the state). The isolated runs cost nine and (at 384^3) fourteen times the periodic
+  ones; I have not profiled where (the multipole boundary is the candidate) [TO VERIFY].
+  East64 (262144 particles, 64^3, Fourier): 13.5 ms per step, 1.9e7 particle updates
+  per second.
+
+### T2 at n = 64 (card case east64) [VERIFIED]
+
+Analysis core-20261120-220459-262b7a5 (the three resolutions together; figure
+`t2_pancake.png`, looked at: the legend of its left panel covers the two lowest points,
+corrected below). Largest sheet error against Zel'dovich in units of (a - 1) d/k:
+
+| n = 64 | a = 2 | a = 5 | a = 10 | a = 15 |
+|---|---|---|---|---|
+| spectral (card) | 4.58e-5 | 3.07e-4 | 9.69e-4 | 8.49e-4 |
+| track's `pm.py` | 4.82e-5 | 3.27e-4 | 1.02e-3 | 8.27e-4 |
+| track's multigrid run | 3.51e-4 | 7.42e-4 | 1.20e-3 | 1.41e-3 |
+| spectral minus `pm.py` | 3.2e-6 | 1.9e-5 | 6.2e-5 | 9.8e-5 |
+
+Within 30 per cent of `pm.py` at a = 2 and 5: -5 and -6 per cent, held. Refutation
+(a = 2 above 1.5e-4): not met. Against the seven-point run of the track the error is 7.7
+times smaller at a = 2, 2.4 times at a = 5, 1.2 times at a = 10 (after the first
+crossings the error is no longer that of the Laplacian). The mode minus `pm.py` falls
+by 6.3, 3.4, 3.0, 3.6 from n = 32 to 64 (between second and third order, not the fourth
+order of my gather estimate; the failed sub-prediction of T2 stands).
+
+### T4b and T4c outcome (embedded ellipsoid): prediction FAILED in three of four parts [VERIFIED]
+
+Runs: cases core-20261119-162746-a02d334 (Fourier, 668 s on one core) and
+core-20261119-162455-e05ffa1 (multigrid, 775 s, 13.6 V cycles per step); analysis
+core-20261120-220518-bb511e5 (`t4b_embedded.json`, figure `t4b_embedded.png`, looked
+at). 7208 patch particles (species 0), 261192 background particles, 64^3 cells of
+0.75 t_k, cloud-in-cell, Catmull-Rom, step 0.04. ODE of the track (model A): first
+crossing of the short axis at 24.2525 t_k.
+
+| | Fourier (spectral) | multigrid | prediction |
+|---|---|---|---|
+| first minimum of (5 J_xx/M)^(1/2), t/t_k | 24.873 (+2.56 per cent) | 24.566 (+1.29 per cent) | within 2 per cent |
+| largest \|axis - ODE\|/R_L for t <= t_x - 1 (x, y, z) | 0.111, 0.074, 0.083 | 0.045, 0.041, 0.062 | 0.03 |
+| crossing time, Fourier against multigrid | +1.25 per cent | | below 0.3 per cent |
+| centroid of the patch | fixed to the printed digits (< 4e-15) | the same | below 0.05 dx |
+| quadrupole energy to t_x - 1 against the ODE | -42 per cent | -32 per cent | (none) |
+| Layzer-Irvine drift / max a\|W\| | 8.0e-3 | 9.2e-3 | (none) |
+
+- Crossing time within 2 per cent: held for the multigrid solver, FAILED for the
+  Fourier solver (2.56 per cent). Refutation (5 per cent, or a centroid shift above
+  0.05 dx): not met.
+- Semi-axes within 3 per cent of R_L up to one t_k before the crossing: FAILED for both
+  (the run lags the ODE; the difference is below 1 per cent until t = 15 t_k and grows
+  towards the crossing, where the short axis spans fewer than three cells).
+- The two solvers agree in the crossing time to 0.3 per cent: FAILED (1.25 per cent).
+- What I take from it [JUDGEMENT, no run has separated the terms]: with the linear
+  cloud and no compensation the force at the scale of a few cells is too weak (deposit
+  and gather both smooth), and the collapse of the thin axis is late. The seven-point
+  operator overestimates the potential at short wavelengths (its symbol is below k^2)
+  and so cancels part of that loss; the spectral operator does not. In T2 the cubic
+  cloud with compensation and the spline gather left the Laplacian as the leading
+  error, and the spectral symbol removed it; here it removes a compensating error. The
+  prediction took the +0.90 per cent of the track's isolated run at the same cell size
+  for both solvers. Follow-up T4d below (resolution, and the kernels of T2).
+- The start of the run reproduces the ODE state to (run - ODE)/R_L = -3e-3 (the lattice
+  ball against the continuum ellipsoid: semi-axes 3.3670, 4.7107, 6.0696 against 3.3716,
+  4.7172, 6.0780).
+
+### T5 outcome (point-mass infall of Track D) [VERIFIED]
+
+Runs: cases core-20261119-165257-61d4b78 (974 s, 890 and 900 steps), analysis
+core-20261120-220605-0f26eb4 (`t5_infall.json`, figure `t5_infall.png`, looked at; two
+axis labels run into the neighbouring panels: corrected below).
+
+| seed at | M_ta at the snapshot nearest a/a_i = 2 | nearest 3 | nearest 4 | largest \|run/closed - 1\| over the 43 snapshots with a/a_i >= 1.5 |
+|---|---|---|---|---|
+| mesh vertex | 1.50428 (closed form 1.50428: 0) | 2.04929 (0) | 2.59364 (2.59430: -2.6e-4) | 6.3e-3 |
+| cell centre | 1.50428 (0) | 2.04929 (0) | 2.59364 (-2.6e-4) | 5.1e-3 |
+
+- Within 0.3 per cent of the closed form at a/a_i = 2 and 4: held (0 and -2.6e-4), for
+  both placements; placements within 1e-3 of each other: held (identical sums at both
+  snapshots). Refutation (1 per cent off the closed form, 0.5 per cent between the
+  placements): not met.
+- The test is coarser than these zeros suggest: the dust is a lattice, its particles
+  turn around shell by shell, and one shell is 0.2 to 0.5 per cent of M_ta. Over all
+  snapshots after a/a_i = 1.5 the run is off the closed form by one or two shells at a
+  time, between -0.63 and +0.47 per cent (vertex) and -0.51 and +0.33 per cent
+  (centre); the two snapshots of the prediction happen to fall between shells. The
+  honest statement is "within 0.7 per cent at every snapshot, no trend with time".
+- All 100000 particles stay in the box; K + W drifts by 1.6 and 1.4 per cent of max |W|
+  over the run (radial orbits through the softened seed at `newton_cfl = 0.15`); the
+  dust momentum stays at 4.7e-10 with the seed at the vertex in the middle of the box
+  and reaches 6.8e-4 with the seed at the cell centre (1.0625 M off the middle: the
+  fixed mass takes up momentum, as designed).
+- The seed cannot run off because it is not a particle; this is by construction, not a
+  result of the test.
+
+### T6b outcome: the kick of T6 is not an effect of the refinement [VERIFIED]
+
+Runs: cases core-20261119-165447-0b9cb1e (5904 particles, 1410 s), analysis
+core-20261120-220647-94e6931 (`t6b_smr.json`, figure `t6b_smr.png`, looked at: the
+curves of the uniform 128^3 mesh and of the refined mesh lie on each other).
+
+| largest over t <= 0.8 | uniform 64^3 | uniform 128^3 | 64^3 + one level |
+|---|---|---|---|
+| momentum change \|dP\|/M | 8.62e-5 | 2.1189e-3 | 2.1183e-3 |
+| centre of mass off uniform motion | 6.28e-5 | 1.5305e-3 | 1.5302e-3 |
+| angular momentum change | 1.28e-4 | 4.5181e-3 | 4.5184e-3 |
+| energy change, relative | 3.65e-4 | 3.350e-4 | 3.349e-4 |
+| V cycles per step (mean, max) | 19, 26 | 18, 25 | 18, 24 |
+
+- "The refined run equals the uniform 128^3 run within a factor 2": held, to 3 parts in
+  10^4 in all four numbers: with every particle on the fine level the solve on the
+  refined mesh is the solve on the uniform fine mesh.
+- "Its momentum change stays below 1e-4": FAILED (2.1e-3), and the refutation clause
+  "above 3e-4" is met. But the conclusion I attached to that clause (the refined solve
+  breaks momentum conservation through the coarse level outside) is wrong: the uniform
+  128^3 mesh, which has no level boundary at all, shows the same kick. The premise of
+  T6b, that uniform meshes conserve momentum at the 1e-4 level whatever the cell size,
+  was false.
+- What changes between 64^3 and 128^3 is the number of cells per particle: the ball is
+  a lattice of spacing 0.0625, one particle per cell at 64^3 and one per eight cells at
+  128^3. Candidate cause [JUDGEMENT, to be tested as T6c]: the self-force of T8. Every
+  particle of the lattice sits at the same place within its cell, so all feel the same
+  self-force; with one particle per cell the linear clouds add up to a uniform density
+  and the forces cancel, with one per eight cells they do not, and the ball is pushed
+  as a whole until the motion has scrambled the positions within the cells (the kick is
+  over at t = 0.06, a quarter of a fine cell at the speed 0.27). Size: G m/dx^2 = 0.06
+  for m = 5.8e-5, dx = 0.03125, times the 0.3 of the T8 map over 0.05 time units gives
+  1e-3 of velocity, the order measured.
+- T6 (ball across the level boundary) then needs no interface effect either: 1.1e-3
+  with the part of the ball on the fine level undersampled.
