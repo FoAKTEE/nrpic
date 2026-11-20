@@ -842,3 +842,64 @@ had 14 cores busy, two free. Changes to the tests, made before any of them ran:
 - P16 with two threads in place of four (`--threads 2`); the predictions read with two.
 - P17a (one-thread runs alone) and the one-thread half of P17b need one core; the
   six-thread half of P17b (phase `collapse6`) waits for six free cores.
+
+## 2026-11-20 14:35 Entry 24: outcome of P15 at one and two threads; PAUSED here
+
+P15 (run core-20261120-223248-8a370f3, through nrpic-run with the two cores it granted;
+diagnostic executable sha256 a28e7e64..., patch sha256 466cedce...; threads 1 and 2 only;
+figure `tracks/core/omp/figs/mg_cause.png`, looked at). The run is recorded as failed
+(exit 1) because part c missed its number.
+- a HOLDS: without the variable the diagnostic executable prints the defects of the
+  threaded build digit for digit at one and two threads, both MeshBlock sizes (and those
+  of entry 8: 1.147377e-07 at one thread, 1.147550e-07 at two).
+- b HOLDS at one and two threads: with the sum of the mean taken in a fixed order every
+  printed defect is the same at one and two threads (8^3 blocks: 1.147400e-07,
+  6.762232e-09, 8.656399e-10, 7.714428e-10; 32^3 blocks: 1.147375e-07, ..., 1.247046e-10),
+  and the 20-cycle Jeans case gives five of five files byte-identical between one and two
+  threads (plain sum: two of four differ, 5.1e-12, defects differ). The values still
+  depend on the MeshBlock size, as predicted. So between one and two threads the
+  reduction of the mean in `Multigrid::CalculateAverage` is the whole thread dependence
+  of the gas multigrid; no race. NOT tested: four and six threads (cores of the owner
+  busy).
+- c: the number FAILED, the refutation did not occur. With the compensated sum the
+  defect after the fifth V cycle is 2.303e-11 in all four configurations (bound written:
+  below 2e-11; refuted above 6e-11), against 2.5e-10 to 4.3e-9 with the plain sum. It is
+  not a floor: the defects fall by the same factor 17.1 in every cycle (1.147374e-07,
+  6.718117e-09, 3.933607e-10, 2.303261e-11), so five cycles end at 2.3e-11 and my bound
+  guessed that value wrongly. The two MeshBlock sizes agree to seven digits (2.303261e-11
+  both; second solve 2.303285e-11 and 2.303286e-11), far inside the factor two predicted.
+  Reading [VERIFIED for this deck at one and two threads]: the stagnation of the Jeans
+  solve and its dependence on threads and MeshBlock size come from the rounding of the
+  plain sum of the mean; an accurate mean removes both.
+  The patch is a diagnostic outside the tree. Whether the tree gets an option for an
+  ordered or compensated mean is for core's lead (it changes results at rounding level,
+  so it cannot be the default without a decision).
+
+PAUSED. The flag `locks/PAUSE` was written at 14:33 (five-hour window at 97 per cent).
+I saw it at the head of the command that also submitted the run of P16 and did not make
+the submission wait on the check: run core-20261120-223428-587c09a was started at 14:34,
+after the flag, and should not have been. It ended by itself within a minute with exit
+1: a defect of `restart_threads.py` (history_diff takes column 2 of every *.hst as the
+cycle number; one history of the east case has a real number there). Its run
+directories are complete (uninterrupted and continued runs of the first configuration);
+no comparison was made, P16 has no outcome. Nothing of this package is running or
+queued.
+
+State for whoever resumes, in this order:
+1. Documents still carry statements that are now known to be wrong or provisional:
+   `tracks/core/interfaces/threaded_build.md` sections 4 to 6 and
+   `tracks/core/omp/READY.txt` section 4 (also its published copy
+   scratch/core/exe/core_build-openmp/READY) say "card job pending", "the card is not
+   faster for the Newtonian mode", "cause of the multigrid dependence not found",
+   "16 cores per session". Replace with entries 16, 21 and 24; republish READY with
+   `tracks/core/omp/publish.sh` (executables unchanged, same checksums).
+2. Correction messages (a posted message is not edited): to all and to D-bh-dress, that
+   one A100 is 10.5 times 16 threads and 11.9 times six threads for the periodic
+   Newtonian box (entry 16, 21), so "Newtonian mode: always on processors" is withdrawn;
+   the isolated case (card 0.65 s per step) is not yet measured on threads (P17b).
+3. Runs not done, predictions written: P17a and P17b (`scaling_series.sh t1solo`,
+   `collapse1`, `collapse6`), P15 at four and six threads (`mg_cause.sh` with THREADS),
+   P16 after fixing history_diff (take the cycle from the column named ncycle, skip
+   histories without one). All through nrpic-run with the cores it grants.
+4. `analyse_scaling.sh` with RUN_P17 set regenerates figs/scaling.png and
+   scaling_table.md with the second series (figs.py is ready, not yet run).
