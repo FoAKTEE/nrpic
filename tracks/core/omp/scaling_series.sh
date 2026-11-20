@@ -5,6 +5,8 @@
 #   scaling_series.sh t1        one thread, the four cases side by side (4 cores)
 #   scaling_series.sh t4        four threads, the four cases side by side (16 cores)
 #   scaling_series.sh t6        6 threads, one case after the other, two repeats
+#   scaling_series.sh t1solo    one thread, cosmo and newton, one run at a time
+#   scaling_series.sh collapse  the isolated Newtonian collapse at one and six threads
 #   scaling_series.sh t16       16 threads, one case after the other, two repeats
 #   scaling_series.sh t32|t64   32 or 64 threads, one case after the other, two repeats
 #   scaling_series.sh serial    the serial executable S, the four cases side by side
@@ -47,6 +49,10 @@ case $phase in
   t6)   # the limit per session since decision 0019: one case after the other
     run punc 6 0.125 2 t6; run cluster 6 0.25 2 t6
     run cosmo 6 0.25 2 t6; run newton 6 1.0 2 t6 ;;
+  t1solo)   # one thread, one run at a time (the side-by-side runs of t1 share caches)
+    run cosmo 1 0.125 1 t1solo; run newton 1 0.5 1 t1solo ;;
+  collapse) # Newtonian mode with isolated boundaries at one and at six threads
+    run collapse 1 0.5 1 t1solo; run collapse 6 1.0 2 t6 ;;
   t16|t32|t64)
     n=${phase#t}
     run punc "$n" 0.25 2 "$phase"; run cluster "$n" 0.5 2 "$phase"

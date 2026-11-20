@@ -51,6 +51,14 @@ SCASES = {
                    args=["mesh/nx1=128", "mesh/nx2=128", "mesh/nx3=128",
                          "meshblock/nx1=32", "meshblock/nx2=32", "meshblock/nx3=32",
                          "particles/particle_file=wave80.nrp", "particles/snap_dt=1.0e30"]),
+    # Track D's kind of run: Newtonian mode with isolated boundaries (multipole expansion
+    # on the faces), cold collapse of a ball, 128^3, 137 376 particles: the deck and
+    # arguments of the card run core-20261115-120028-fee90ca (0.65 s per step on one A100)
+    "collapse": dict(inp="problems/newton/isolated.athinput",
+                     files=[L.SCRATCH + "/ic/newton/ball128.nrp"], nlim=16,
+                     args=["mesh/nx1=128", "mesh/nx2=128", "mesh/nx3=128",
+                           "particles/dt=0.001", "particles/snap_dt=1.0e30",
+                           "particles/particle_file=ball128.nrp"]),
     # the Z4c benchmark of problems/tests (uniform 128^3, vacuum): the number that
     # docs/TESTLOG.md quotes for one card
     "bench": dict(inp="problems/tests/z4c_bench.athinput", files=[], nlim=8, args=[]),

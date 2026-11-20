@@ -740,3 +740,32 @@ P16, written before the run:
  c. Four threads, atomic: within 1e-10 (the order of the additions is free).
  Refuted in every part by a failed restart, a missing or misshapen file, another number
  of particles, or a difference above 1e-8.
+
+## 2026-11-20 14:21 Entry 20: first numbers of P14; two follow-up measurements; prediction P17
+
+While run core-20261120-220756-0eaaf74 is still going (its outcome is entry 21): the four
+one-thread runs side by side on cores 1, 3, 6, 7 of NUMA node 0 gave 131.9 (punc), 115.9
+(cluster), 49.1 (cosmo), 4.61 (newton) s per step, 1.5 to 2.3 times faster than on
+2026-11-19, and the first six-thread run (punc) 16.6 s per step, 7.9 times its one-thread
+run: more than six. Four one-thread runs side by side share the last-level cache and the
+memory channels of one socket; a one-thread run alone may be faster [TO VERIFY].
+
+Second point. Track D was told on 2026-11-19 that the Newtonian mode belongs on
+processors, on the strength of the card log of the isolated collapse (0.65 s per step,
+run core-20261115-120028-fee90ca: 128^3, 137 376 particles, multipole boundary, 13 V
+cycles). The periodic box runs at 0.078 s per step on a card (entry 16) with 14 V cycles
+per step [VERIFIED: column mg_cycles of newton.newton.hst of run
+core-20261119-144437-6718c76]. So on a card the isolated case is eight times slower per
+step than the periodic one at the same mesh; the interface text of the Newtonian mode
+(section 2) says the multipole sums run on the host. The processor side of the isolated
+case was never measured with the threaded executable.
+
+P17, written before the runs (`scaling_series.sh t1solo` and `collapse`):
+ a. cosmo and newton at one thread, one run at a time, are faster than side by side (49.1
+    and 4.61 s per step) by 5 to 40 per cent. Refuted if they are not faster: then the
+    speed-up above six has another cause.
+ b. The isolated collapse (deck and arguments of the card run) with the threaded
+    executable: 1.2 to 2.5 s per step at one thread (3.2 s on 2026-11-15 with the serial
+    build on a loaded machine), 0.19 to 0.5 s per step at six threads, with 13 V cycles
+    per step as on the card. Refuted for the advice to Track D if six threads need more
+    than the card's 0.65 s per step.
