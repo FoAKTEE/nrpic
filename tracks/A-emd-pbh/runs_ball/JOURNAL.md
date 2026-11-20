@@ -637,3 +637,27 @@ Prediction F [JUDGEMENT]:
 Refuted by: a core error at fixed box that does not fall from M/2 to M/4 (then the box or the
 lattice, not the mesh, set the M/4 error of entry 6), or a box difference above 0.01 M in the
 turnaround at dx = M/2.
+
+## 2026-11-20 14:35 PST, entry 15: PAUSED (locks/PAUSE appeared); where this session stopped
+
+Done and committed: `after_runs3.sh` takes a part (runs3 | bh_smr); predictions T (entry 13,
+turnaround estimator) and F (entry 14, fixed box) written before any run; `turnaround.py`
+(estimators V3, Pk, S, C, C(W), Cexp, O; synthetic test; SR-1 breakdown criteria) and
+`after_wave3.sh` (registered recipes) committed; card run A-20261119-144419-13d5601 closed
+by `nrpic-run finish` (completed, 2775 files checksummed). Card job of entry 14 submitted:
+run A-20261120-223310-a9ce31a, Slurm 4748 (PENDING at 14:33; it may run on its own).
+Failure on record: the first registration of the runs3 analysis was refused by nrpic-run
+("not clean where the run's code lives": turnaround.py and after_wave3.sh were being written
+in the package at that moment); no run was registered by it. A debug pass of turnaround.py
+on wave-2 series (scratch/A-emd-pbh/tmp/runs_ball/ta_debug, syn_debug; NOT results, not
+cited) showed that the code runs; its numbers enter nothing.
+Not done (resume in this order, after the flag is gone):
+1. `bash tracks/A-emd-pbh/runs_ball/after_runs3.sh runs3` (registers the analysis of SR-1L
+   and BH-1; finish of the card run is already done), then commit figs/;
+2. `bash tracks/A-emd-pbh/runs_ball/after_runs3.sh bh_smr` (closes A-20261119-164634-f1fe887
+   and registers the BH-1R analysis), commit figs/;
+3. entries 11 and 12 (outcomes of S, B, entry 10 and the G2 items of the brief), figures read;
+4. `bash tracks/A-emd-pbh/runs_ball/after_wave3.sh turnaround <run id of step 1>`, outcome of
+   prediction T, R2 re-judged, breakdown criteria named;
+5. when Slurm 4748 has finished: `after_wave3.sh box <run id of step 1>`, outcome of F;
+6. README (results table, how to rerun, Requests), commit, push.
