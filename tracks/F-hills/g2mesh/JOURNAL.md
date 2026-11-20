@@ -90,3 +90,43 @@ Predictions:
    allocates (then a 32^3 slot is below 70 MiB and the 32^3 option must be looked at again).
 Consequence planned: the cost table uses the measured memory and rates; 16^3 at about 3000
 slots is the default if 1 holds.
+
+## 2026-11-20 G2M-1, outcome (run F-20261120-222426-86392c3, `model.json`; figures `fig_model_check.png`, `fig_blocks_time.png` read)
+
+Card job of G2M-2 submitted before this entry was written: run F-20261120-222810-e408386,
+Slurm job 4744 (queued behind P1's chain, job 4738).
+- Part A: tree3 equals tree_check of nr_first level by level at all 16 trees (8 positions, two
+  rules) [VERIFIED].
+- Part B: the start rule equals `athena -m` of core-v0.3 level by level for all 8 variants and
+  core's by_triple at 16^3 (1100) and 32^3 (932) [VERIFIED].
+1. Met: the start rule gives 1716 at P1's input.
+2. Met [VERIFIED]: 22 of the 23 restart trees of P1 (t = 0 ... 110) equal the model level by
+   level; the tree at t = 10 (1842) equals the model at the tracker positions 8 cycles earlier,
+   the regrid before the output. So AthenaK keeps no block that the rules do not ask for: the
+   model is the tree, given the positions at the last regrid. P1's trees range 1016-1870; the
+   chain segments' mean counts (MeshBlock-cycles / cycles) are 1839, 1590, 1515, 1326, 1245,
+   1262 and their rates 2242, 2186, 2171, 2061, 2028, 1963 MeshBlock-cycles/s.
+3. FAILED (slightly): R8 along the Newtonian tracks reaches 2136 (t = 185.75), above the
+   2080 of wave 1; along P1's measured tracks (0-112.4 M) max 1940, mean 1420, while the
+   Newtonian tracks give mean 1578 over the same 0-112 M: P1's punctures sit less often on
+   block edges than the Newtonian ones, which is chance, not a trend [JUDGEMENT].
+4. Met: R16n start 2514 and maximum 2864 (t = 279.0, Newtonian), the wave-1 row exactly; along
+   P1's tracks max 2584. So above 2700, by 6 percent.
+5. FAILED high: R12 reaches 2750 (Newtonian; 2442 along P1), above the predicted 1900-2600:
+   the wave zone and the coarse levels grow more than I allowed (178 + 260 blocks on levels
+   0-1 at the maximum against 36 + 196 at R8).
+6. Met: R16u reaches 3466 (Newtonian), 21 percent above R16n; at its first regrid already
+   3130, so it does not fit 3100 slots even at the start.
+7. Met: 32^3 trees are 0.62-0.84 of the 16^3 trees of the same mesh and hold 4.9-6.7 times the
+   cells (maxima 58.5-70.0 M cells against 8.7-14.2 M). R16n and R16u at 32^3 are the same tree
+   as R8 at 16^3 (same block edges and levels, at every sample).
+The 16^3 series are spiky (a puncture nest crossing a block edge adds or removes 28-140
+blocks at once), so the maximum at 0.25 M sampling may miss spikes between the regrids.
+
+## 2026-11-20 G2M-1b. Maxima at the regrid cadence (prediction)
+
+`scripts/fine_max.py`: every 16^3 variant at every 8th cycle of its own step (0.03125 M at
+m/8, 0.0208 M at m/12, 0.015625 M at m/16), along P1's tracks (interpolated) and the Newtonian
+tracks to 280 M. Prediction: the maxima are 0-3 percent above those at 0.25 M sampling (R8
+2136-2200, R12 2750-2833, R16n 2864-2950, R16u 3466-3570), and R16n never exceeds 3000.
+Refuted by a maximum more than 3 percent higher, or R16n above 3000.
