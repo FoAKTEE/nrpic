@@ -196,3 +196,59 @@ Kn = 1 (L16); collisions per particle before t_c 2.88, 2.48, 15.3, 13.4; summed
 dE_particles to t_c 2.2e-4 and 1.8e-4 of sum M W at Kn = 10 (threshold_scan entry 6, P3.4);
 first-step sum_P 23.69597, 24.41630. Refuted by any difference beyond the rounding of the
 quoted digits: then the script misreads the histories.
+
+## 2026-11-20 22:33 UTC Entry 4: outcome of the analysis test; D3 geometry; prediction D3
+
+Analysis test, run C-20261120-222941-595c263 (`analyze_decisive.py` on the six wave-2 runs;
+figures `fig_d1_lapse.png`, `fig_d1_budget.png`, `fig_controls.png` looked at): PASS. t_c =
+206.75, 184.25, 77.75, 72.5 M; t(dalpha >= 0.01) = 46.0 and 44.25 M (Kn = 10), 21.25 and
+20.25 M (Kn = 1); collisions per particle before t_c 2.882, 2.483, 15.26, 13.44; summed
+dE_particles to t_c 2.16e-4 and 1.77e-4 (Kn = 10), 1.75e-3 and 1.57e-3 (Kn = 1); first-step
+sum_P 23.695968, 24.416303; per collision in the first 25 M 0.22e-10, 0.88e-10, 1.24e-10,
+1.22e-10 (threshold_scan entry 6: 0.22, 0.88, 1.24, 1.22): all as quoted. New numbers of the
+wave-2 cell-mode seed-1 runs, the D1 reference: D50 = 0.0118 and 0.0131, D100 = 0.0426 and
+0.0507 (CC2, CC1 at Kn = 10), early slope of dalpha over 0-100 M 4.43e-4 and 5.12e-4 per M;
+at Kn = 1 D25 = 0.0170 and 0.0185, D50 = 0.0991 and 0.1134. The controls' alpha_c at 100 M
+lies 0.0108 (CC2) and 0.0163 (CC1) above its start (part of every dalpha).
+
+D3 geometry, run C-20261120-222949-2712568 (figure `fig_d3_model.png` looked at: the file's
+energy distribution and mass profile follow the model; D3 sits above the band onset +
+largest drift): fraction of particles inside the M/4 region |x|_inf < 8 M is 0.9737 for D3
+and 0.9891 for CC2; D3 particles reach rbar = 13.8 M (cells of M/2 beyond 8 M, as for CC2's
+outer 1 percent).
+
+Prediction D3 (runs d3_kninf, d3_kn10_part_s1, d3_kn1_part_s1; written before submission).
+The hypothesis under test (REVIEW-wave2 section 7, [JUDGEMENT]): collisions carry heat out of
+the King core and the core contracts (gravothermal); a model on the stable side contracts
+relative to its control at a rate comparable to CC2's and collapses later in proportion to
+its distance from the onset.
+(D3a) Control d3_kninf: every particle kept, no collapse; outward excursion of alpha_c smaller
+    than CC2's: largest |alpha_c - alpha_c(0)| between 0.003 and 0.018 [JUDGEMENT: the drift
+    grew from 0.0185 to 0.0334 between CC2 and CC1, towards the threshold]. If it exceeds
+    0.048 (D3's distance from the onset) the model is not cleanly on the stable side of the
+    numerical equilibrium either.
+(D3b) Kn = 10: dalpha > 0 from the first tens of M; D100 between 0.015 and 0.09 (CC2 cell
+    0.043; "comparable" read as within a factor 3; D3's initial collision rate is 0.9 times
+    CC2's and its t_d 1.15 times longer, so the expected value is 0.03); t(dalpha >= 0.01)
+    between 30 and 110 M (CC2 46 M).
+(D3c) Kn = 1: D25 between 0.006 and 0.05, D50 between 0.03 and 0.25 (CC2 cell 0.017, 0.099);
+    t(dalpha >= 0.01) between 12 and 45 M (CC2 21 M).
+(D3d) Collapse. The proportional form gives t_c = 8.7 x CC2's: 1800 M at Kn = 10 and 680 M
+    at Kn = 1, so no collapse within 300 M in either run. My own expectation differs at Kn = 1
+    [JUDGEMENT, 50 percent]: CC2's relative contraction at Kn = 1 grew by a factor three in
+    10 M (dalpha 0.01 at 21 M, 0.03 at 31 M), a runaway; D3 then needs only a few more
+    e-folds, and alpha_min < 0.3 before 300 M is as likely as not. At Kn = 10 I expect no
+    collapse within 300 M (80 percent).
+(D3e) Budget and statistics as D1 (f), (g), (h): particle-mode collision-step change of sum
+    M H_p below 1e-13 before excision, n_noroot = 0, n_balance below 1e-3 of the collisions;
+    first-step sum_P within 3 pairing sd of the expectation (to be computed from the file
+    at the time of the analysis; not predicted numerically here); collisions per particle
+    in the first 25 M within 10 percent of the initial-rate value (2.06 and 20.6 per 300 M:
+    0.172 and 1.72 in 25 M).
+Refutation of the hypothesis: no relative contraction, i.e. dalpha at 100 M below 0.005 at
+Kn = 10 (an order of magnitude below CC2) and D50 below 0.005 at Kn = 1, or dalpha of either
+sign that stays within the scatter of D1 (b). A relative contraction with a collapse within
+300 M at Kn = 10 would refute the "later in proportion" clause and mean that the collisional
+runs collapse whatever the King model on this mesh, which would point at the method
+(collision cells of M/4 with 2.3 particles, heat transport at the cell size) rather than at
+the onset [JUDGEMENT].
