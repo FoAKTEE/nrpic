@@ -872,3 +872,6 @@ than about 2e-4 up to t = 150 M.
 - Open, not done here: V-1G; ES-1G and V-1G with an M/16 nest; a boundary test for ES-1G
   (boundary at 384 M or a holding boundary condition); the finder re-search of
   `drift_controls` (test C) on ES-1G's dumps. The null-test floor is not stated.
+- Pause: `locks/PAUSE` was seen at 22:34 UTC, right after the commit of this state
+  (ac1e47b5). Every deliverable of the package was complete and committed by then;
+  nothing was started after the flag. A restart has nothing left to do here.
