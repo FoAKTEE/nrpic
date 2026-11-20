@@ -1,0 +1,153 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261120-223022-2f5bbc0",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "card check Kb of idsolve2 (journal entry 13): card build of 4266c2d on one A100, the changed case p5_mov_n64 and w1_far_n128, against the processor runs",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/core/core-20261120-223022-2f5bbc0/batch.list"
+  ],
+  "cwd": "scratch/core/core-20261120-223022-2f5bbc0",
+  "git": {
+    "sha": "2f5bbc0fa87914d6a82cdd066020df2dc90835a8",
+    "branch": "core/id-solver-2",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/idsolve2"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/core-idsolve2"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/exe_4266c2d/athena_gpu",
+    "exe_sha256": "071ed58c26ff8b7627d379586815d3322b87fe970232088b7a4167a2bdbe223b",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-idsolve2/.venv"
+  },
+  "input": {
+    "file": "/data/haiyangw/nrpic/scratch/core/core-20261120-222207-4266c2d/77f7173__p5_mov_n64/in.athinput",
+    "sha256": "7434c036a34d110f227a0a57e107d1ea534367f0c3a59b96dd02d8a0e7274d00",
+    "overrides": {
+      "particles/particle_file": "/data/haiyangw/nrpic/scratch/core/core-20261120-222207-4266c2d/77f7173__p5_mov_n64/shell.nrp"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/exe_4266c2d/athena_gpu",
+      "role": "exe",
+      "sha256": "071ed58c26ff8b7627d379586815d3322b87fe970232088b7a4167a2bdbe223b",
+      "bytes": 104542952,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/close/card_kb/card.list",
+      "role": "list",
+      "sha256": "90094d33ae8bdfb460ea5e464aeaa82d01af0db20c9aad81da7ef95f282c1ce2",
+      "bytes": 495,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261120-222207-4266c2d/77f7173__p5_mov_n64/in.athinput",
+      "role": "athinput:p5_mov_n64",
+      "sha256": "7434c036a34d110f227a0a57e107d1ea534367f0c3a59b96dd02d8a0e7274d00",
+      "bytes": 3499,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "problems/idsolve/gaussian_boost.athinput",
+      "role": "athinput:w1_far_n128",
+      "sha256": "feffd511f23de35456da4c70cf4e5fa0db12d720326f76dbf0b87d109a6cd204",
+      "bytes": 3178,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "p5_mov_n64",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261120-222207-4266c2d/77f7173__p5_mov_n64/in.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261120-222207-4266c2d/77f7173__p5_mov_n64/shell.nrp"
+      ]
+    },
+    {
+      "name": "w1_far_n128",
+      "input": "problems/idsolve/gaussian_boost.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=32",
+        "meshblock/nx2=32",
+        "meshblock/nx3=32",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/card_k/w1/boost.nrp"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:12:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.2,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "core-20261120-223022-2f5bbc0",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/core/core-20261120-223022-2f5bbc0",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-20T22:30:24Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 5.5266,
+    "gpu_hours_reserved": 0.7,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 16,
+    "runs": 1299,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
