@@ -1,0 +1,76 @@
+{
+ "coarse_in_uni64": {
+  "rundir": "/data/haiyangw/nrpic/scratch/core/core-20261120-221737-74eed8b/coarse_in_uni64",
+  "steps": 400,
+  "t_end": 0.8,
+  "mass_change": 0.0,
+  "com_drift_end": 0.008391145577895586,
+  "com_drift_max": 0.008391145577895586,
+  "momentum_drift_max": 0.011536268600034889,
+  "angular_momentum_initial": [
+   0.01325552083333335,
+   -0.01988328125000002,
+   0.039766562499999984
+  ],
+  "angular_momentum_drift_max": 0.016971042813825485,
+  "energy0": -0.07376057941594168,
+  "energy_rel_end": 0.0007896865435316775,
+  "energy_rel_max": 0.0011575978427859253,
+  "mg_cycles_mean": 19.0,
+  "columns": {
+   "xx": {
+    "dI": 1.0112873297686425e-05,
+    "d2I": 0.0007791121213614509,
+    "d3I": 3.793461770865325e-14
+   },
+   "xy": {
+    "dI": 2.458880767097967e-06,
+    "d2I": 0.0003004223350168218,
+    "d3I": 4.1182398089262084e-14
+   },
+   "xz": {
+    "dI": 7.507907072222641e-06,
+    "d2I": 0.00037935884190751267,
+    "d3I": 4.244893996102852e-14
+   },
+   "yy": {
+    "dI": 6.162977904566103e-06,
+    "d2I": 0.0002155545140601839,
+    "d3I": 5.028094888237881e-14
+   },
+   "yz": {
+    "dI": 1.231206089352256e-05,
+    "d2I": 0.0001843383441710232,
+    "d3I": 5.074900445289826e-14
+   },
+   "zz": {
+    "dI": 5.718231094660342e-06,
+    "d2I": 2.5636892017647254e-05,
+    "d3I": 4.6506859880743075e-14
+   }
+  },
+  "completed": true,
+  "mg_cycles_max": 26.0,
+  "mg_defect_max": 2.07457260963267e-12,
+  "meshblocks": [
+   "Root grid = 4 x 4 x 4 MeshBlocks",
+   "Total number of MeshBlocks = 64",
+   "Number of MeshBlocks in the pack: 64"
+  ],
+  "particles": 720,
+  "inside_fine_region": [
+   720,
+   720,
+   720,
+   720,
+   720
+  ],
+  "changed_region_between_snapshots": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "changed_region_first_to_last": 0
+ }
+}

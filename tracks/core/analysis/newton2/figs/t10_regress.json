@@ -1,0 +1,146 @@
+{
+ "cases": {
+  "geo": {
+   "base_identical": 3,
+   "base_differ": [],
+   "rel_identical": 3,
+   "rel_differ": [],
+   "log_results_equal_base": true,
+   "rel_details": {}
+  },
+  "boris": {
+   "base_identical": 3,
+   "base_differ": [],
+   "rel_identical": 3,
+   "rel_differ": [],
+   "log_results_equal_base": true,
+   "rel_details": {}
+  },
+  "dep": {
+   "base_identical": 3,
+   "base_differ": [],
+   "rel_identical": 3,
+   "rel_differ": [],
+   "log_results_equal_base": true,
+   "rel_details": {}
+  },
+  "east": {
+   "base_identical": 15,
+   "base_differ": [],
+   "rel_identical": 15,
+   "rel_differ": [],
+   "log_results_equal_base": true,
+   "rel_details": {}
+  },
+  "os": {
+   "base_identical": 19,
+   "base_differ": [],
+   "rel_identical": 19,
+   "rel_differ": [],
+   "log_results_equal_base": true,
+   "rel_details": {}
+  },
+  "jeans": {
+   "base_identical": 5,
+   "base_differ": [],
+   "rel_identical": 4,
+   "rel_differ": [
+    "bin/JeansWave.hydro_w.00001.bin"
+   ],
+   "log_results_equal_base": true,
+   "rel_details": {
+    "bin/JeansWave.hydro_w.00001.bin": {
+     "bytes": 2,
+     "lines": [
+      [
+       "last_time            = 0        # Updated during run time",
+       "last_time            = 0.1      # Updated during run time"
+      ]
+     ],
+     "only_last_time": true
+    }
+   }
+  },
+  "binary": {
+   "base_identical": 1,
+   "base_differ": [],
+   "rel_identical": 1,
+   "rel_differ": [],
+   "log_results_equal_base": true,
+   "rel_details": {}
+  },
+  "newton_ball": {
+   "base_identical": 17,
+   "base_differ": [],
+   "rel_identical": 16,
+   "rel_differ": [
+    "rst/newton.00003.rst"
+   ],
+   "log_results_equal_base": true,
+   "rel_details": {
+    "rst/newton.00003.rst": {
+     "bytes": 1,
+     "lines": [
+      [
+       "last_time            = 0.1    # Updated during run time",
+       "last_time            = 0.15   # Updated during run time"
+      ]
+     ],
+     "only_last_time": true
+    }
+   }
+  },
+  "newton_point": {
+   "base_identical": 11,
+   "base_differ": [],
+   "rel_identical": 10,
+   "rel_differ": [
+    "rst/newton.00001.rst"
+   ],
+   "log_results_equal_base": true,
+   "rel_details": {
+    "rst/newton.00001.rst": {
+     "bytes": 5,
+     "lines": [
+      [
+       "last_time            = 0      # Updated during run time",
+       "last_time            = 1e+30  # Updated during run time"
+      ]
+     ],
+     "only_last_time": true
+    }
+   }
+  },
+  "newton_wave": {
+   "base_identical": 11,
+   "base_differ": [],
+   "rel_identical": 10,
+   "rel_differ": [
+    "rst/newton.00001.rst"
+   ],
+   "log_results_equal_base": true,
+   "rel_details": {
+    "rst/newton.00001.rst": {
+     "bytes": 5,
+     "lines": [
+      [
+       "last_time            = 0      # Updated during run time",
+       "last_time            = 1e+30  # Updated during run time"
+      ]
+     ],
+     "only_last_time": true
+    }
+   }
+  },
+  "mesh_static": {
+   "base_identical": 3,
+   "base_differ": [],
+   "rel_identical": 3,
+   "rel_differ": [],
+   "log_results_equal_base": true,
+   "rel_details": {}
+  }
+ },
+ "pass_base": true,
+ "pass_release": true
+}
