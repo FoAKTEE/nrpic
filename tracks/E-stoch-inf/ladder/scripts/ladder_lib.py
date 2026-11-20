@@ -3,7 +3,8 @@
 Written by this package, independently of core's readers and references:
 - `read_dump`: the double-precision dump layout NRSFDMP2 of `scalar_field_diag.cpp`
   (layout as documented in tracks/core/interfaces/scalar_field_2.md section 4 on branch
-  core/scalar-2), read variable by variable through a memory map;
+  core/scalar-2), read variable by variable (sequential reads from wave 3 on; the memory
+  map of waves 2 and 2b is `read_dump_memmap`);
 - `Modes`: the hemisphere of wave vectors 0 < |n|^2 <= nmax2 of NOISE_SPEC (n_x > 0, or
   n_x = 0 and n_y > 0, or n_x = n_y = 0 and n_z > 0), coefficients
   c_n[f] = N^-3 sum_x f(x) exp(-i n.x) on the cell centres x = (j + 1/2) h of [0, 2 pi)^3;
@@ -52,7 +53,40 @@ def read_header(path):
 
 def read_dump(path, names):
     """Fields `names` of a dump as arrays [z, y, x] (x fastest in memory) on the whole
-    root mesh; returns (header, dict)."""
+    root mesh; returns (header, dict).  Reads sequentially (seek + np.fromfile per variable
+    and MeshBlock, in file order), only the variables asked for: cold dumps of 128^3-256^3
+    read through a memory map at a few MB/s (risk R12; wave 3).  Same bytes, same arrays as
+    the memory-map reader `read_dump_memmap` of waves 2 and 2b."""
+    h = read_header(path)
+    nx1, nx2, nx3 = h["nx"]
+    cells = nx1 * nx2 * nx3
+    blk_bytes = 32 + 48 + 8 * h["nvar"] * cells
+    want = sorted((h["names"].index(n), n) for n in names)
+    with open(path, "rb") as fp:
+        blocks = []
+        for b in range(h["nmb"]):
+            fp.seek(h["data_offset"] + b * blk_bytes)
+            lev, lx1, lx2, lx3 = struct.unpack("<4q", fp.read(32))
+            if lev != 0:
+                raise ValueError("refined meshes are not handled")
+            blocks.append((lx1, lx2, lx3))
+        n1 = (max(b[0] for b in blocks) + 1) * nx1
+        n2 = (max(b[1] for b in blocks) + 1) * nx2
+        n3 = (max(b[2] for b in blocks) + 1) * nx3
+        out = {name: np.empty((n3, n2, n1)) for _, name in want}
+        for b, (lx1, lx2, lx3) in enumerate(blocks):
+            for v, name in want:
+                fp.seek(h["data_offset"] + b * blk_bytes + 80 + 8 * v * cells)
+                sub = np.fromfile(fp, dtype="<f8", count=cells)
+                if sub.size != cells:
+                    raise ValueError(f"{path}: short read of {name}")
+                out[name][lx3 * nx3:(lx3 + 1) * nx3, lx2 * nx2:(lx2 + 1) * nx2,
+                          lx1 * nx1:(lx1 + 1) * nx1] = sub.reshape(nx3, nx2, nx1)
+    return h, {name: out[name] for name in names}
+
+
+def read_dump_memmap(path, names):
+    """The reader of waves 2 and 2b (memory map); kept for the bit-identity check."""
     h = read_header(path)
     nx1, nx2, nx3 = h["nx"]
     cells = nx1 * nx2 * nx3

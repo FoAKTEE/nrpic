@@ -112,15 +112,33 @@ def extract(a):
 
 # ------------------------------------------------------------------------------- pair
 def pair(a):
+    """Dumps of the two runs are paired by their recorded time (|t_p - t_m| <= tol) and
+    cycle; unmatched dumps are dropped and listed (wave 3, JOURNAL entry 12: a run with
+    tlim = 4.5 ends with a shortened step and dumps at t = 4.500 where its partner with
+    tlim = 8.5 dumps at the same cycle at t = 4.504-4.516; the pairing by index of waves 2
+    and 2b compared those)."""
     dp, dm = LL.dump_list(a.run_p), LL.dump_list(a.run_m)
-    n = min(len(dp), len(dm))
+    hdr_p = [LL.read_header(f) for f in dp]
+    hdr_m = [LL.read_header(f) for f in dm]
+    tm = np.array([h["time"] for h in hdr_m])
+    matched, dropped = [], []
+    for i, h in enumerate(hdr_p):
+        j = int(np.argmin(np.abs(tm - h["time"]))) if tm.size else -1
+        if j >= 0 and abs(tm[j] - h["time"]) <= a.tol and hdr_m[j]["cycle"] == h["cycle"]:
+            matched.append((i, j))
+        else:
+            dropped.append(dict(run="p", dump=i, time=h["time"], cycle=h["cycle"],
+                                nearest_time_m=float(tm[j]) if j >= 0 else None,
+                                nearest_cycle_m=hdr_m[j]["cycle"] if j >= 0 else None))
+    used_m = {j for _, j in matched}
+    for j, h in enumerate(hdr_m):
+        if j not in used_m:
+            dropped.append(dict(run="m", dump=j, time=h["time"], cycle=h["cycle"]))
     cp, cm = LL.read_con(a.run_p), LL.read_con(a.run_m)
     rows = []
-    for i in range(n):
+    for i, j in matched:
         hp, fp = LL.read_dump(dp[i], ["H", "Mx", "My", "Mz"])
-        hm, fm = LL.read_dump(dm[i], ["H", "Mx", "My", "Mz"])
-        if hp["cycle"] != hm["cycle"]:
-            raise SystemExit(f"cycle mismatch at dump {i}: {hp['cycle']} {hm['cycle']}")
+        hm, fm = LL.read_dump(dm[j], ["H", "Mx", "My", "Mz"])
         cyc = hp["cycle"]
         rowp = cp[np.nonzero(cp[:, 1] == cyc)[0][0]]
         rowm = cm[np.nonzero(cm[:, 1] == cyc)[0][0]]
@@ -130,7 +148,8 @@ def pair(a):
         mo = [0.5 * (fp[c] - fm[c]) for c in ("Mx", "My", "Mz")]
         me = [0.5 * (fp[c] + fm[c]) for c in ("Mx", "My", "Mz")]
         rows.append(dict(
-            dump=i, cycle=cyc, time=hp["time"], efolds=float(rowp[2]),
+            dump=i, dump_m=j, cycle=cyc, time=hp["time"], time_m=hm["time"],
+            efolds=float(rowp[2]),
             Hmag=hmag, Mmag=mmag,
             H_odd=float(np.sqrt(np.mean(ho**2)) / hmag),
             H_even=float(np.sqrt(np.mean((he - he.mean())**2)) / hmag),
@@ -140,8 +159,11 @@ def pair(a):
             ratio_H_p=float(rowp[3]), ratio_H_m=float(rowm[3]),
             ratio_M_p=float(rowp[6]), ratio_M_m=float(rowm[6])))
         del fp, fm, ho, he, mo, me
-    res = dict(run_p=a.run_p, run_m=a.run_m, scale=a.scale, rows=rows)
+    res = dict(run_p=a.run_p, run_m=a.run_m, scale=a.scale, tol=a.tol, rows=rows,
+               dropped=dropped)
     jdump(res, a.out)
+    for d in dropped:
+        print("dropped (no partner at the same time):", d)
     for r in rows:
         print(f"{r['time']:6.2f} N={r['efolds']:5.2f}  H odd {r['H_odd']:.3e} even "
               f"{r['H_even']:.3e} mean {r['H_even_mean']:+.2e}   M odd {r['M_odd']:.3e} "
@@ -254,6 +276,8 @@ def main():
     p.add_argument("run_p")
     p.add_argument("run_m")
     p.add_argument("--scale", type=float, default=1.0)
+    p.add_argument("--tol", type=float, default=1e-9,
+                   help="largest difference of the recorded dump times of a pair")
     p.add_argument("--out", required=True)
     j = sub.add_parser("judge")
     j.add_argument("npz")

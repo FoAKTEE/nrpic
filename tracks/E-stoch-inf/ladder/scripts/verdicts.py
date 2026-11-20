@@ -26,6 +26,23 @@ def load_json(dirs, name):
     return None
 
 
+TOL_T = 1e-9
+
+
+def match_times(rows_a, rows_b, tol=TOL_T):
+    """Index pairs (i, j) of rows with the same recorded time (|t_a - t_b| <= tol), in
+    the order of rows_a; rows without a partner are left out (wave 3, JOURNAL entry 12)."""
+    tb = np.array([r["time"] for r in rows_b])
+    out = []
+    for i, r in enumerate(rows_a):
+        if tb.size == 0:
+            break
+        j = int(np.argmin(np.abs(tb - r["time"])))
+        if abs(tb[j] - r["time"]) <= tol:
+            out.append((i, j))
+    return out
+
+
 def interp_log(t_src, y_src, t):
     y = np.asarray(y_src, float)
     ok = y > 0
@@ -89,11 +106,15 @@ def main():
         S["A2"][name] = dict(N_f=j["N_f"], **j["A2"])
         S["A3"][name] = j["A3"]
         S["spectrum"][name] = j["spectrum"]
-    # pairs
+    # pairs: the first directory of --res that holds a pair wins (wave 3; before, the
+    # last path in sorted order won)
     pairs = {}
-    for f in sorted(set(sum([glob.glob(os.path.join(d, "pair_*.json")) for d in R], []))):
-        with open(f) as fp:
-            pairs[os.path.basename(f)[5:-5]] = json.load(fp)["rows"]
+    for d in R:
+        for f in sorted(glob.glob(os.path.join(d, "pair_*.json"))):
+            name = os.path.basename(f)[5:-5]
+            if name not in pairs:
+                with open(f) as fp:
+                    pairs[name] = json.load(fp)["rows"]
     # A5 on the L ladder
     a5 = {}
     for n in (32, 64, 128):
@@ -126,10 +147,11 @@ def main():
                  first_efold_odd_exceeds_even_H=next((r["efolds"] for r in ent
                                                       if r["H_odd"] > r["H_even"]), None))
         if h is not None and pairs.get(h) is not None:
-            rh = pairs[h]
-            m = min(len(rows), len(rh))
-            d["halving_even_H"] = [rows[i]["H_even"] / rh[i]["H_even"] for i in range(1, m)]
-            d["halving_odd_H"] = [rows[i]["H_odd"] / rh[i]["H_odd"] for i in range(1, m)]
+            # rows of the two pairs at the same recorded time only (wave 3, JOURNAL 12)
+            mt = match_times(rows, pairs[h])
+            d["halving_times"] = [rows[i]["time"] for i, _ in mt[1:]]
+            d["halving_even_H"] = [rows[i]["H_even"] / pairs[h][j]["H_even"] for i, j in mt[1:]]
+            d["halving_odd_H"] = [rows[i]["H_odd"] / pairs[h][j]["H_odd"] for i, j in mt[1:]]
         a4[tag] = d
     S["A4"] = a4
     nc = {}
@@ -139,10 +161,10 @@ def main():
         rows_p = pairs.get({32: "L32p_L32m", 64: "Q64p_Q64m", 128: "Q128p_Q128m"}[n])
         if rows_c is None or rows_p is None:
             continue
-        m = min(len(rows_c), len(rows_p))
+        mt = match_times(rows_c, rows_p)
         nc[f"N{n}"] = dict(
-            H_record_ratio_max=max(rows_c[i]["ratio_H_p"] / rows_p[i]["ratio_H_p"]
-                                   for i in range(1, m)),
+            H_record_ratio_max=max(rows_c[i]["ratio_H_p"] / rows_p[j]["ratio_H_p"]
+                                   for i, j in mt[1:]),
             M_record_max=max(r["ratio_M_p"] for r in rows_c),
             H_odd_over_even_min_first2=min(r["H_odd"] / r["H_even"] for r in rows_c
                                            if 0.4 <= r["time"] <= 2.1))

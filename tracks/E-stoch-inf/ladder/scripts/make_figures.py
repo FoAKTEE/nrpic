@@ -27,13 +27,31 @@ LCOL = {32: fs.PAL["yellow"], 64: fs.PAL["green"], 128: fs.PAL["blue"], 256: fs.
 
 
 def load(res, name):
-    p = os.path.join(res, name)
-    if not os.path.isfile(p):
-        return None
-    if p.endswith(".npz"):
-        return np.load(p)
-    with open(p) as fp:
-        return json.load(fp)
+    """`res` is one directory or a list of them; the first that holds `name` wins
+    (wave 3: results/final2 before results/final)."""
+    for d in ([res] if isinstance(res, str) else res):
+        p = os.path.join(d, name)
+        if not os.path.isfile(p):
+            continue
+        if p.endswith(".npz"):
+            return np.load(p)
+        with open(p) as fp:
+            return json.load(fp)
+    return None
+
+
+TOL_T = 1e-9
+
+
+def match_times(rows_a, rows_b, tol=TOL_T):
+    """Index pairs (i, j) of rows with the same recorded time (JOURNAL entry 12)."""
+    tb = np.array([r["time"] for r in rows_b])
+    out = []
+    for i, r in enumerate(rows_a):
+        j = int(np.argmin(np.abs(tb - r["time"])))
+        if abs(tb[j] - r["time"]) <= tol:
+            out.append((i, j))
+    return out
 
 
 def fig_a2(res, out):
@@ -293,12 +311,14 @@ def fig_a4(res, out):
         if ph is not None:
             rh = pair_rows(res, ph, mh)
             if rh is not None:
-                mm = min(len(r), len(rh))
-                axs[1].plot(x[:mm], [r[i]["H_even"] / rh[i]["H_even"] for i in range(mm)],
+                # rows at the same recorded time only (wave 3, JOURNAL entry 12)
+                mt = match_times(r, rh)
+                xm = [x[i] for i, _ in mt]
+                axs[1].plot(xm, [r[i]["H_even"] / rh[j]["H_even"] for i, j in mt],
                             "s--", ms=2.5, color=LCOL[n], label=rf"even, $N={n}$")
-                axs[1].plot(x[:mm], [r[i]["H_odd"] / rh[i]["H_odd"] for i in range(mm)],
+                axs[1].plot(xm, [r[i]["H_odd"] / rh[j]["H_odd"] for i, j in mt],
                             "o-", ms=2.5, color=LCOL[n], label=rf"odd, $N={n}$")
-                axs[1].plot(x[:mm], [r[i]["ratio_H_p"] / rh[i]["ratio_H_p"] for i in range(mm)],
+                axs[1].plot(xm, [r[i]["ratio_H_p"] / rh[j]["ratio_H_p"] for i, j in mt],
                             "-", lw=2.5, alpha=0.4, color=LCOL[n])
     axs[1].axhline(4, **fs.GUIDE)
     axs[1].axhline(2, **fs.REF_LINE)
@@ -333,14 +353,19 @@ def fig_a4(res, out):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--res", required=True)
+    ap.add_argument("--res", required=True, nargs="+",
+                    help="result directories; the first that holds a file wins")
     ap.add_argument("--out", required=True)
+    ap.add_argument("--only", nargs="*", help="names of the figure functions to make")
     a = ap.parse_args()
     fs.use_style()
     os.makedirs(a.out, exist_ok=True)
+    res = a.res[0] if len(a.res) == 1 else a.res
     for f in (fig_a2, fig_a3, fig_spectrum, fig_constraints, fig_a5, fig_a4):
+        if a.only and f.__name__ not in a.only:
+            continue
         try:
-            f(a.res, a.out)
+            f(res, a.out)
             print("made", f.__name__)
         except Exception as e:          # a missing run must not stop the other figures
             print("skipped", f.__name__, type(e).__name__, e)
