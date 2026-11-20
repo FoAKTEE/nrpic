@@ -1,0 +1,12 @@
+# Card batch of the waves package, wave 3 round 1 (JOURNAL.md 2026-11-20). Executable:
+# scratch/core/exe/core_requests-b/athena_gpu (the card executable of the reference runs).
+# (1) test F2, k = 2 pi (1,2,0), at N = 64; (2) test X with the expansion step limit ten
+# times smaller (particles/dt_expansion = 0.001 instead of 0.01; nothing else changes) at
+# N = 16, 32, 48, 64, initial data of the reference runs (read only):
+# N = 16, 32 from B-20261119-142021-8f4c441, N = 48 from B-20261119-142234-85da208,
+# N = 64 from B-20261119-142108-1e5add9.
+f120N64 tracks/B-emd-gw/waves/inputs/flat_120.athinput mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 meshblock/nx1=64 meshblock/nx2=64 meshblock/nx3=64
+xdt3N64 tracks/B-emd-gw/waves/inputs/expanding.athinput mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 meshblock/nx1=64 meshblock/nx2=64 meshblock/nx3=64 particles/dt_expansion=0.001 particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142108-1e5add9/N64/ic/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142108-1e5add9/N64/ic/fields.bin
+xdt3N48 tracks/B-emd-gw/waves/inputs/expanding.athinput mesh/nx1=48 mesh/nx2=48 mesh/nx3=48 meshblock/nx1=48 meshblock/nx2=48 meshblock/nx3=48 particles/dt_expansion=0.001 particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142234-85da208/N48/ic/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142234-85da208/N48/ic/fields.bin
+xdt3N32 tracks/B-emd-gw/waves/inputs/expanding.athinput mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 particles/dt_expansion=0.001 particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142021-8f4c441/N32/ic/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142021-8f4c441/N32/ic/fields.bin
+xdt3N16 tracks/B-emd-gw/waves/inputs/expanding.athinput mesh/nx1=16 mesh/nx2=16 mesh/nx3=16 meshblock/nx1=16 meshblock/nx2=16 meshblock/nx3=16 particles/dt_expansion=0.001 particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142021-8f4c441/N16/ic/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142021-8f4c441/N16/ic/fields.bin
