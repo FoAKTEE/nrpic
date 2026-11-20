@@ -43,6 +43,153 @@ def e(x, n=2):
     return f"${m}\\times10^{{{int(ex)}}}$"
 
 
+def g1_rows():
+    """Rows of the gate-G1 sections (note v1): box tests of waves 2 and 2b, heat conduction,
+    models and onsets, the first collisional cluster runs."""
+    # ---- box tests ----
+    for key, name, tag in (("t0brel", "t0b_cpu.json", "released"),
+                           ("t0bc2", "t0b_c2particle.json", "energy at each particle")):
+        d = cm.load_json(key, name)
+        ok = sum(all(t.get("cells_identical") and t.get("nsub_identical") and t.get("nupd_identical")
+                     for t in r["tries"].values()) for r in d["runs"].values())
+        add("g1box", f"replay of one collision step ({tag}): dumps reproduced", f"{ok} of "
+            f"{len(d['runs'])}", key)
+    rel = cm.load_json("t2rel", "t1t2_cpu.json")["runs"]
+    c2j = cm.load_json("t2c2", "t1t2_c2particle.json")
+    c2 = c2j["runs"]
+    ks = [k for k in rel if "ratio_b" in rel[k]]
+    for tag, R_, key in (("released", rel, "t2rel"), ("energy at each particle", c2, "t2c2")):
+        rb = [R_[k]["ratio_b"] for k in ks]
+        zb = [R_[k]["T2b_z"] for k in ks]
+        ob = [R_[k]["T1_max_relE_over_bound"] for k in ks]
+        add("g1box", f"rate test, {len(ks)} runs ({tag}): summed pair probability over the "
+            "M\\o ller-averaged rate; $z$; largest energy change per step over its bound",
+            f"{min(rb):.6f}--{max(rb):.6f}; {min(zb):+.2f} to {max(zb):+.2f}; {e(max(ob))}", key)
+    same = all(rel[k]["n_tested"] == c2[k]["n_tested"] and rel[k]["collisions"] == c2[k]["collisions"]
+               for k in ks)
+    dr = max(abs(rel[k]["ratio_b"] - c2[k]["ratio_b"]) / rel[k]["ratio_b"] for k in ks)
+    add("g1box", "the two operators in the flat box: tested pairs and collisions identical in "
+        "every step; largest relative difference of the rate ratio",
+        f"{'yes' if same and c2j.get('paired_counts_identical_all') else 'no'}; {e(dr, 1)}",
+        ("t2rel", "t2c2"))
+    for key, name, tag in (("t10rel", "t10_cpu.json", "released"),
+                           ("t10c2", "t10_c2particle.json", "energy at each particle")):
+        d = cm.load_json(key, name)
+        cmp_ = d["compare_to_mb1"]
+        ident = [k for k, v in cmp_.items() if v.get("identical")]
+        add("g1box", f"reproducibility ({tag}): runs byte-identical to one MeshBlock; collisions",
+            f"{len(ident)} of {sum(1 for v in cmp_.values() if not v.get('skipped')) - 1} "
+            f"(other seed differs); {int(d['collisions_total_mb1'])}", key)
+    t12 = cm.load_json("t12", "t12_cpu.json")
+    tw = list(t12["twins"].values())
+    cur = [v for k, v in t12["runs"].items() if "_curved_" in k]
+    add("g1box", "static curved metric (lapse 0.8, conformal factor 1.1): rate per coordinate "
+        "time and volume over the flat twin; $\\alpha_0\\psi_0^6$; analytic rate ratio; largest $|z|$",
+        f"{min(v['rate_ratio'] for v in tw):.7f}--{max(v['rate_ratio'] for v in tw):.7f}; "
+        f"{tw[0]['expected']:.7f}; {min(v['ratio'] for v in cur):.6f}--"
+        f"{max(v['ratio'] for v in cur):.6f}; {max(abs(v['z_rate']) for v in cur):.2f}", "t12")
+    kd = cm.load_json("kingdef", "king_cpu.json")["runs"]
+    cell = kd["king_kn0.01_cell"]
+    part = [kd[k]["dH_per_coll_rel"] for k in kd if k.endswith("_particle")]
+    add("g1box", "King threshold model, first step: energy change per collision over its sum, "
+        "released operator (cell sums, Kn$_c=0.01$); energy at each particle",
+        f"{cell['cell_dW_per_coll_rel']:.2e} $\\pm$ {cell['cell_dW_per_coll_rel_se']:.1e}; "
+        f"{min(part):.1e}--{max(part):.1e}", "kingdef")
+    # ---- heat conduction ----
+    a6 = cm.load_json("t6aan", "T6a.json")
+    r1000 = [v for k, v in a6.items() if v["lam_over_L"] == 1000.0]
+    add("g1heat", "step at $\\lambda/L=1000$, two seeds: rms deviation from the collisionless "
+        "curve in noise units (rest mass, energy, kinetic energy); initial slopes over the exact",
+        "; ".join(", ".join(f"{x:.2f}" for x in v["rms_dev_noise"]) for v in r1000) + "; "
+        + ", ".join(f"{v['slope_ratio'][0]:.3f}" for v in r1000), "t6aan")
+    b6 = cm.load_json("t6ban", "T6b.json")
+    b6w = cm.load_json("t6bw", "T6b_w300-1374.json")
+    add("g1heat", "step at $\\lambda/L=0.01$: conductivity factor $f$ of the two seeds; late "
+        "window; mean and standard error; literal statistic",
+        f"{b6['s1']['f']:.3f}, {b6['s2']['f']:.3f}; {b6w['s1']['f']:.3f}, {b6w['s2']['f']:.3f}; "
+        f"{b6['combined']['f_mean']:.3f} $\\pm$ {b6['combined']['f_se']:.3f}; "
+        f"{b6['s1']['literal_ratio']:.3f}, {b6['s2']['literal_ratio']:.3f}", "t6ban")
+    t7 = cm.load_json("t7an", "T7.json")["groups"]["T7_th0.003_e0.2"]
+    add("g1heat", "isobaric mode, $\\theta=0.003$: $\\kappa/\\kappa_1$ from the entropy mode at "
+        "$k\\lambda=" + ", ".join(f"{r['k_lambda']:g}" for r in t7["rows"]) + "$ (seeds)",
+        "; ".join(f"{r['f_S'][0]:.4f} $\\pm$ {r['f_S'][1]:.4f} ({r['n_seeds']})"
+                  for r in t7["rows"]), "t7an")
+    add("g1heat", "the same from the number-density mode alone (biased by sound waves)",
+        ", ".join(f"{r['f_N'][0]:.3f}" for r in t7["rows"]), "t7an")
+    add("g1heat", "extrapolated to $k\\lambda\\to0$: $\\kappa/\\kappa_1$; pass interval",
+        f"{t7['f0']:.4f} $\\pm$ {t7['f0_se']:.4f}; [0.99, 1.06]", "t7an")
+    cl = cm.load_json("clan", "T7_collisionless.json")
+    add("g1heat", "collisionless mode ($k\\lambda=100$) at $\\theta=0.003, 0.1, 1$: largest $|z|$ "
+        "against the ensemble", ", ".join(f"{v['max_abs_z']:.2f}" for v in cl.values()), "clan")
+    ns = cm.load_json("t8nosub", "t2nosub.json")
+    add("g1heat", "rate at a largest pair probability of "
+        f"{ns['nosub']['max_P']:.2f} without sub-cycling; with sub-cycling",
+        f"{ns['nosub']['sumP_over_expected']:.6f} $\\pm$ {ns['nosub']['se']:.6f}; "
+        f"{ns['sub']['sumP_over_expected']:.6f} $\\pm$ {ns['sub']['se']:.6f}", "t8nosub")
+    # ---- models and onsets ----
+    idx = cm.load_json("models2", "index.json")
+    nt = sum(1 for m in idx["models"] if m["family"] != "king")
+    chk = cm.load_json("chk2", "checks.json")
+    add("g1models", "particle models at $N=10^5$: thermal core; King; offline checks passed "
+        "(failures: the check's own step error)",
+        f"{nt}; {len(idx['models']) - nt}; {chk['passes']} of "
+        f"{chk['passes'] + len(chk['failures'])}",
+        ("models2", "chk2"))
+    kn = cm.load_json("kn2", "rv_kn.json")
+    Kv = [1.0 / (v["rho0c"] * v["H_c"]) for v in kn.values() if isinstance(v, dict) and "H_c" in v]
+    add("g1models", "conversion constant $K$ over these models", f"{min(Kv):.2f}--{max(Kv):.2f}",
+        "kn2")
+    sm = cm.load_json("read2", "smoke.json")
+    a_code = sm["new"]["nrpic_first"]["alpha_probe"]
+    a_mod = [m for m in idx["models"] if m["stem"] == sm["stem"]][0]["alpha_c"]
+    add("g1models", "code reads the thermal core at its binding-energy maximum: particles; "
+        "central lapse on the mesh; of the model", f"{int(sm['checks']['new_np'])}; "
+        f"{a_code:.5f}; {a_mod:.5f}", ("read2", "models2"))
+    fo = cm.load_json("onset", "fluid_onset.json")["results"]["0.1"]
+    add("g1models", "thermal core: $Z(0)$ of the binding-energy maximum; J\\\"uttner onset "
+        "(energy-matched temperature; $\\theta=p/n$); onset with $\\Gamma=1+p/u$",
+        f"{fo['eps_max']['Z0']:.5f}; {fo['onset'][cm.K_JE_N]['Z0']:.5f}; "
+        f"{fo['onset'][cm.K_JP_N]['Z0']:.5f}; {fo['onset'][cm.K_F21_N]['Z0']:.5f}", "onset")
+    ko = cm.load_json("kingonset", "rv_king_onset.json")
+    zj = ko["onset"][cm.K_JE_N]["Z0"]
+    add("g1models", "King: $y_0$ of the binding-energy maximum; J\\\"uttner onset (central "
+        "lapse); $\\theta=p/n$; $\\Gamma=1+p/u$",
+        f"{ko['eps_max_y0']:.6f}; {ko['onset'][cm.K_JE_N]['y0']:.5f} ({1 / (1 + zj):.4f}); "
+        f"{ko['onset'][cm.K_JP_N]['y0']:.5f}; {ko['onset'][cm.K_F21_N]['y0']:.5f}", "kingonset")
+    ac = {round(m["y0"], 5): m["alpha_c"] for m in idx["models"] if m["family"] == "king"}
+    add("g1models", "central lapse of the cluster-run models CC2 ($y_0=0.314$); CC1 ($y_0=0.33403$)",
+        f"{ac[0.314]:.4f}; {ac[0.33403]:.4f}", "models2")
+    # ---- cluster runs ----
+    H = {c: cm.read_hist(cm.run_file(k, f"{c}/cc.nrpic.hst")) for c, k in cm.CC_RUN.items()}
+    tdrop, t03, rise = {}, {}, {}
+    for cc in ("cc1", "cc2"):
+        hc = H[f"{cc}_kninf"]
+        fc = np.isfinite(hc["alpha_probe"])
+        a0 = hc["alpha_probe"][fc]
+        rise[cc] = (float(np.max(a0 - a0[0])), float(hc["time"][fc][np.argmax(a0 - a0[0])]))
+        for kn in ("kn10", "kn1"):
+            h = H[f"{cc}_{kn}"]
+            ok = np.isfinite(h["alpha_probe"]) & (h["n_excised"] == 0)
+            d = h["alpha_probe"][ok] - np.interp(h["time"][ok], hc["time"][fc], a0)
+            tdrop[f"{cc}_{kn}"] = float(h["time"][ok][np.flatnonzero(d < -0.01)[0]])
+            t03[f"{cc}_{kn}"] = float(h["time"][np.flatnonzero(h["alpha_min"] < 0.3)[0]])
+    order = ("cc1_kn10", "cc2_kn10", "cc1_kn1", "cc2_kn1")
+    add("g1cluster", "central lapse 0.01 below the control (CC1, CC2 at Kn$_c=10$; at 1), $t/M$",
+        ", ".join(f"{tdrop[k]:g}" for k in order), ("cc_a", "cc_b", "cc_c"))
+    add("g1cluster", "smallest lapse below 0.3, $t/M$ (same order)",
+        ", ".join(f"{t03[k]:g}" for k in order), ("cc_a", "cc_b", "cc_c"))
+    add("g1cluster", "controls: largest rise of the central lapse (at $t/M$), CC1; CC2",
+        f"{rise['cc1'][0]:.4f} ({rise['cc1'][1]:g}); {rise['cc2'][0]:.4f} ({rise['cc2'][1]:g})",
+        ("cc_a", "cc_b"))
+    rv = cm.load_json("ccrev", "rv_cc.json")
+    add("g1cluster", "collisions per particle before the lapse falls below 0.3 (same order)",
+        ", ".join(f"{rv[k]['coll_per_particle_at_0p3']:.2f}" for k in order), "ccrev")
+    on = cm.load_json("ccon", "rv_cc_onset.json")
+    add("g1cluster", "energy injected by the released operator by the 0.01 drop, over the "
+        f"binding-energy margin of CC1 and CC2 ({e(on['margin_over_M0'], 1)} $M_0$) (same order)",
+        ", ".join(f"{on[k]['injected_over_margin_at_t_dep']:.3f}" for k in order), "ccon")
+
+
 def main():
     out = cm.out_dir("tables")
     # ---------------- spherical baseline ----------------
@@ -243,6 +390,8 @@ def main():
         f"{min(c['s_per_M'] for c in costs[3:]):.1f}--{max(c['s_per_M'] for c in costs[3:]):.1f}",
         "kncost")
 
+    g1_rows()
+
     # ---------------- claims of the lead's documents ----------------
     claim("stage/G1/STATUS.md item 2", "Table 1: 56 rows, all columns within 1.1e-4 relative "
           "except R (printed on a 1e-3 grid) and three printed typos",
@@ -322,18 +471,33 @@ def main():
     # ---------------- write ----------------
     sect = {"baseline": "Spherical baseline", "models": "Particle models and Knudsen number",
             "collisions": "Collision operator: references and kernel test",
-            "box": "Minkowski box in the code", "scales": "Time scales and costs"}
+            "box": "Minkowski box in the code", "scales": "Time scales and costs",
+            "g1box": "Collision operator in the box: released operator and energy at each "
+                     "particle's metric",
+            "g1heat": "Heat conduction",
+            "g1models": "Particle models and onsets",
+            "g1cluster": "First collisional King clusters (scouting, one seed each)"}
     parts = [(("baseline", "models"), "tab:ledger",
-              "Numerical ledger. Every number of this note with the registered run that "
-              "produced it."),
+              "Numerical ledger of the scoping stage. Every number of this note with the "
+              "registered run that produced it."),
              (("collisions", "box", "scales"), "tab:ledger2",
-              "Numerical ledger, continued.")]
+              "Numerical ledger of the scoping stage, continued."),
+             (("g1box", "g1heat"), "tab:ledger3",
+              "Numerical ledger of the baseline stage: the collision operator."),
+             (("g1models", "g1cluster"), "tab:ledger4",
+              "Numerical ledger of the baseline stage: models, onsets and the first "
+              "collisional clusters.")]
+
+    def runs_of(k):
+        ks = k if isinstance(k, tuple) else (k,)
+        return " ".join(f"\\texttt{{\\scriptsize {R[x]}}}" for x in ks)
+
     with open(os.path.join(out, "ledger.tex"), "w") as f:
         f.write("% generated by scripts/ledger.py from registered run outputs; do not edit\n")
         for secs, label, cap in parts:
             f.write(f"\\begin{{table*}}\n\\caption{{{cap}}}\n\\label{{{label}}}\n"
                     "\\begin{ruledtabular}\n\\footnotesize\n"
-                    "\\begin{tabular}{p{0.44\\textwidth}p{0.30\\textwidth}l}\n"
+                    "\\begin{tabular}{p{0.44\\textwidth}p{0.30\\textwidth}p{0.17\\textwidth}}\n"
                     "Quantity & Value & Run \\\\\n\\hline\n")
             last = None
             for s_, q, v, k in ROWS:
@@ -342,7 +506,7 @@ def main():
                 if s_ != last:
                     f.write(f"\\multicolumn{{3}}{{l}}{{\\emph{{{sect[s_]}}}}} \\\\\n")
                     last = s_
-                f.write(f"{q} & {v} & \\texttt{{\\scriptsize {R[k]}}} \\\\\n")
+                f.write(f"{q} & {v} & {runs_of(k)} \\\\\n")
             f.write("\\end{tabular}\n\\end{ruledtabular}\n\\end{table*}\n")
     km_ = [m for m in idx["models"] if m["family"] == "king" and "threshold" in m["role"]][0]
     with open(os.path.join(out, "parameters.tex"), "w") as f:
