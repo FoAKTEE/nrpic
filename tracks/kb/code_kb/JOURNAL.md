@@ -32,3 +32,30 @@ that about even odds.
 Refuted (each separately): a branch named with pic/vlasov/nrpic/deposit; any branch whose
 src/particles mentions tmunu or deposit (that would be particle back-reaction upstream, the
 coupling this program built); more than 10 moved branches; main moved.
+
+## W1 outcome (run kb-20261120-221925-1630d0b, 22:19 UTC)
+
+Snapshot `kb-data/meta/github/watch/IAS-Astrophysics__athenak/20261120T221926Z.json`, report
+`kb/reports/code_watch_upstream.md` (commit 9d3deb38). [VERIFIED by the run]
+- 124 branches; main still c5a0d7f9155a; 1 new (`m1-nucleon-recoil` bde60760ee36), 1 removed
+  (`spill/largesim-m1`), 3 moved (`ahfind`, `project/bbh`, `project/largesim-m1`).
+- No branch name with pic, vlasov, nrpic or deposit; no branch whose src/particles mentions
+  tmunu or deposit (0 of 124); 7 branches read the metric only (as on 11-15); nrpic/vlasov
+  under src/: 0 branches; src/z4c mentions particles: 0 branches.
+- src/z4c changed on `project/bbh` (z4c_wave_extr.cpp) and on `project/largesim-m1`
+  (z4c.hpp, z4c_amr.cpp, z4c_amr.hpp, z4c_tasks.cpp); src/particles changed nowhere.
+- Prediction: held in every part (moved 3, within 0-10; main unchanged; no flagged name; no
+  back-reaction upstream). The criterion fires (src/z4c changed on two branches), so a
+  message to core is due. The new branch has no previous inspection, so the watch does not
+  say whether its src/particles or src/z4c differ from main: W2 measures that.
+
+## W2 prediction (line counts of the changes), written before the run
+
+Script `scripts/watch_diff.py` compares the blobs of the two snapshots (moved branches) and
+the new branch against main. Expectation [JUDGEMENT], from the tip subjects: project/bbh
+changes z4c_wave_extr.cpp by fewer than 30 lines ("Skip zero local contributions");
+project/largesim-m1 changes z4c_tasks.cpp by adding a Weyl communication guard (under 50
+lines) and z4c_amr.* by a refinement criterion (under 300 lines). m1-nucleon-recoil differs
+from main in src/z4c (it branched from a newer upstream state than the main tip of
+2026-09-11) but not in src/particles. Refuted: any src/particles difference on any branch;
+more than 500 changed lines in one file.
