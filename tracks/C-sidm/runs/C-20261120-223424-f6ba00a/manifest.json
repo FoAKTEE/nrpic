@@ -94,15 +94,15 @@
   "outputs": {
     "dir": "scratch/C-sidm/C-20261120-223424-f6ba00a",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0,
+    "files": 0
   },
-  "status": "running",
+  "status": "failed",
   "exit_code": null,
   "registered": "2026-11-20T22:34:24Z",
   "started": null,
-  "ended": null,
+  "ended": "2026-11-20T22:34:58Z",
   "parents": [
     "C-20261120-223203-b38a7d7"
   ],
@@ -116,5 +116,6 @@
     "cores_busy": 0,
     "runs": 147,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
-  }
+  },
+  "finished": "2026-11-20T22:34:58Z"
 }
