@@ -564,3 +564,37 @@ at 128^3 with 5.2e5 particles, particle-bound; 192^3 has 3.4 times the cells; RE
 max|v| = 1.4-1.6 c, set by the dust that passes through the softened centre): 2000 to 4000
 steps to a/a_i = 30. Refuted (and a/a_i = 30 then given up for the largest a >= 16 that fits)
 if the extrapolated wall time exceeds 4 hours.
+
+## 2026-11-20T22:27Z  outcome of the timing run; design run registered; prediction for R8 (N128Lc rerun on the threaded build)
+
+Design table: run D-20261120-222358-e98ffbd (`nm_design.txt`), numbers identical to the debug
+pass quoted above. Timing run D-20261120-222405-ce8922c (production set-up, 6 threads on cores
+3, 4, 9, 16, 22, 28 of node 0 with their hyperthreads, OMP_PLACES shown by OMP_DISPLAY_ENV as
+those six places only): 40 steps in 26.5 s after a set-up of 2.3 s, i.e. 0.66 s per step
+(prediction 0.6-1.5: holds); 3 to 7 V cycles per step; dt 1.2-1.7 M in these first steps
+(set by the Hubble speed of the dust edge, p_max 0.8-1.09). The multigrid prints that the
+3^3 root grid "can not be reduced to a single cell" and solves the coarsest level
+iteratively; the cycles per step (3-4) are no more than at 128^3 in wave 2.
+Matched shells of the production set-up started (kernel D-20261120-222511-34be8a8, Plummer
+s = 0.611 dx D-20261120-222513-9849530, near point s = 0.05 M D-20261120-222515-c2ef5b8, one
+core each); the step count and the predictions follow from them.
+
+R8, prediction (written before it starts): N128Lc's input unchanged (nm_run.py --kind infall
+--nx 128 --L 176 --aend 8 --dtmax 0.5 --shift_cells 0.5 0.5 0.5, edge 1.2, 5e5 dust, 2e4 clump,
+50 snapshots), run on core_build-openmp/athena_cpu with 3 threads (bound) beside the three
+one-core shell runs (6 cores in all).
+1. The particle file is byte-identical to N128Lc's (sha256 in nm_run.json): nm_ic.py is
+   deterministic.
+2. The first history record (t = 0) agrees with N128Lc's to 1e-12 relative in K, W, W_mesh
+   (READY section 3: deposit differences of rounding size; the multigrid iterate depends on
+   the thread count and agrees to the solver tolerance).
+3. After that the two runs differ by the per-step solver tolerance (newton_mg_tol = 1e-6 of
+   the source norm) and rounding; for these cold radial orbits I expect no visible growth:
+   M_ta and dress at a/a_i = 4 and 8 agree with N128Lc's to 1e-3 relative or better (the
+   N128Lc dress at 8 is 1.6e5 particles; 1e-3 is 160 of them), the profile rho/rho_b within 1 %
+   per bin for 4 dx <= r <= r_ta outside the two bins at the outermost caustic and within 5 %
+   in them; the clump's centre of mass within 1e-3 dx of N128Lc's; the step count within 1 %
+   (1763 steps).
+Refuted if any of these fails; then the size of the difference is reported against the
+physical differences between the two runs (only the build, thread count and summation order).
+Cost: 0.8-1.2 s per step at 3 threads, 25-35 min.
