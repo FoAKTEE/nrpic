@@ -197,7 +197,7 @@ dE_particles to t_c 2.2e-4 and 1.8e-4 of sum M W at Kn = 10 (threshold_scan entr
 first-step sum_P 23.69597, 24.41630. Refuted by any difference beyond the rounding of the
 quoted digits: then the script misreads the histories.
 
-## 2026-11-20 22:33 UTC Entry 4: outcome of the analysis test; D3 geometry; prediction D3
+## 2026-11-20 22:30 UTC Entry 4: outcome of the analysis test; D3 geometry; prediction D3
 
 Analysis test, run C-20261120-222941-595c263 (`analyze_decisive.py` on the six wave-2 runs;
 figures `fig_d1_lapse.png`, `fig_d1_budget.png`, `fig_controls.png` looked at): PASS. t_c =
