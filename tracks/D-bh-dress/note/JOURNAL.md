@@ -147,3 +147,41 @@ three new figure scripts read registered outputs, each registered with `nrpic-ru
 - P12 (checker). `check_manuscript.py --compile` with the guide's forbid list: 0 undefined
   references or citations, 0 overfull boxes; hits only in the ledger appendix and the
   registration scripts (exception 1 of the guide).
+
+## 2026-11-20T22:26Z  outcomes of P7-P10 (five registered runs, `nrpic-run submit --package tracks/D-bh-dress/note`)
+
+Runs (each closed by nrpic-run with exit 0; outputs copied to `figures/`; every PNG looked
+at, byte-identical to the preview I corrected by eye before registering):
+D-20261120-222413-4a67fa2 (`fig_kerr.py`), D-20261120-222422-983f3f6 (`fig_newton.py`),
+D-20261120-222424-d7cd958 (`fig_esrun.py`), D-20261120-222429-026731f
+(`schem_architecture.py`), D-20261120-222430-452c907 (`schem_timeline.py`). Every input
+file passed its run's sha256 record (stdout of each run).
+
+- P7 holds. Constant-f equator peaks 0.9271e8 at 7.31 Gm (a = 0.5) and 1.0604e8 at 6.61 Gm
+  (a = 0.8), largest deviation from FdRW fig_rho_a 8.84e-3 and 9.54e-3; Hernquist a = 0.8
+  peak 3.922e18 at 5.06 Gm against 4.083e18 (ratio 0.961); chi^2 median 43.8 for 47 dof;
+  late/early 0.998, 1.003, 0.999, 1.000, 1.000. The unit factor of the Hernquist curves
+  is recomputed from `spike/kerr_lib.py` (KerrHernquist.Af); the peak on the 44-point grid
+  times it is 3.918e18 against the refined 3.922e18 of the reference, so the factor is the
+  one the reference used. Seen in the figure: our a = 0.8 Hernquist peak lies visibly below
+  the published markers (the open 4 per cent, TO VERIFY in `spike/README.md`).
+- P8 holds. M_ta 2.5966 / 2.5966 at a/a_i = 4 (dx = 1.06, 2.125 M) and 4.8159 at 8; dress
+  0.7975 / 0.7966 and 2.1537; largest M_ta deviation from the kernel shells after a/a_i = 1.5
+  1.04e-3, 1.20e-3, 3.07e-3; dress/M_ta 0.307 and 0.447. The analysis run read exactly the
+  three run directories that `common.py` names (checked by the script). Seen in the figure:
+  the dress deviations are a few per cent at a/a_i < 2, where the dress is small, and the
+  measured profile at a/a_i = 8 follows the self-similar curve only outside lambda ~ 0.06.
+- P9 holds to three digits throughout. Level +9.547e-4 / +9.374e-4; max |drift| from 100 M
+  3.400e-4 / 1.368e-4; 100-165 M [-4.96e-5, +9.35e-5] / [-4.21e-5, +2.11e-5]; largest
+  |drift difference| 2.037e-4 = 1.49 times the control's; wall 2.196e-3 / 1.594e-3 for
+  tau <= 200 M; crossings 14.8262-14.8264 and 34.4366-34.4370 M (exact 14.8269, 34.4423);
+  20 M group of the bubble run 244.09-244.51 M (exact 244.74), not reached by the control;
+  probe lapse 1.292, 1.662, 1.636 against 1.377, 2.096, 3.577. Seen in the figure: the
+  axis and diagonal wall tracers part from tau ~ 130 M on (panel c), the bubble run's
+  horizon mass oscillates more than the control's between 100 and 165 M (panel b), and
+  K at the plateau tracer turns positive between t = 50 and 130 M (panel f).
+- P10 holds after one correction by eye: the first architecture render had the word "hole"
+  without "black" in one block (paper-writing 5.6) and a third of the canvas empty below
+  the legend; both changed before registration. Width check: 34 labels, none wider than its
+  block. The timeline's "now" marker was moved from midway between G1 and G2 to just after
+  G1, because G1 still has two open items.
