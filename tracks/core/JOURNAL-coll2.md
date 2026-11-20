@@ -974,3 +974,17 @@ card-hours of allocation, of which the "at most one card-hour" of the rerun budg
 Prediction for this analysis: prediction C of 2026-11-19 14:20 UTC, unchanged (written
 before the job ran). The analysis is `run_cluster.py --analyse` (mode checked by A) on
 the run directory, registered as its own run.
+
+### C: first numbers (analysis run core-20261120-220159-7418482), and a prediction for a comparison with the release (22:15 UTC)
+
+`summary.json` of the analysis: `ok` true. Seen before the next prediction: kn3_cell ends
+with central lapse 0.7914488947036566 and 5001 collisions; the wave-1 run of the release
+card executable (core-20261115-140316-8742cdf, run kn3: same deck, initial data, seed
+4242, option absent) ends with 0.7914488947036593 and 5001 collisions.
+Prediction R150 (before `fig_cluster_card.py` runs; not yet looked at row by row): over
+the 1200 collision steps of 150 M the integer columns of `st.coll.hst` (n_tested, n_coll,
+n_updated, ...) of kn3_cell and the release kn3 are identical in every row, and the
+central lapse of the two differs by less than 1e-12 at all times (the off runs of the
+two executables differ at 1e-15, the card deposit adds atomically). Refuted by a
+differing row: then rounding has flipped an acceptance and the two runs diverge as two
+realisations, which would still be consistent with D but not with "same collisions".
