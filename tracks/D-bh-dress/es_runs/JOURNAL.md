@@ -802,3 +802,21 @@ turnaround, lapse and K (mesh), dust-wall margins (positions), counts and rest m
 The finding of `flux_tools` (E = alpha W - beta^i u_i is not the Killing energy in this
 gauge) does not touch these numbers; it matters only for an energy flux through the
 horizon.
+
+Further measurement (step 3 of the package allows one), prediction written 2026-11-20
+22:31 UTC, before it ran: is the growth of the finder's mass in ES-1G a property of the
+slice or of the finder? `analysis/diag/slicemass.py` (repository tool, unchanged) reads
+the restart dumps of ES-1G at t = 0, 50, 100, 150, 200 M and computes the Misner-Sharp
+mass m(R) of the slice from the metric and K alone, its apparent horizon M_H = R_H/2
+where 2m/R = 1, and prints the finder's row beside it.
+- K1 [JUDGEMENT]: in the vacuum bubble (areal radius between about 4 and 30 M) m(R) is
+  flat and stays within 1e-3 of its t = 100 M value at t = 150 and 200 M (no dust enters
+  the bubble, E1 of entry 6 and `extra_dust_wall.png`). Refuted if m in the bubble
+  changes by more than 3e-3 between t = 100 and 200 M: then the slice's mass itself
+  changes and the finder is not the (only) cause.
+- K2 [JUDGEMENT, about 60 to 40]: the slice's horizon mass M_H changes between t = 100
+  and 200 M by less than half of the finder's +6.96e-3, i.e. the finder loses accuracy as
+  the horizon shrinks to 6 cells (candidate a). Refuted if M_H(200) - M_H(100) is within
+  2e-3 of the finder's change (then the trapped region of the slice really grows, and
+  candidates b-d remain). If the tool cannot locate R_H near R = 2 M at this resolution,
+  K2 is not judgeable and only K1 is reported.
