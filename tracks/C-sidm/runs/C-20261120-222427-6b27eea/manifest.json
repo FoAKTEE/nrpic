@@ -1,0 +1,104 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-20261120-222427-6b27eea",
+  "track": "C-sidm",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "decisive D3 initial data: King b=1 y0=0.26 (stable side of the Juttner fluid onset by 1.44x the controls' largest drift), N=1e5 stratified seed 1, offline checks (check_equilibria.check_model), K and sigma~ for Kn=10,1",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/C-sidm/decisive/scripts/make_d3_ic.py",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "6b27eea23cd9ea32ec0ffe46a40c1447a80f23b5",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "package": [
+      "tracks/C-sidm/decisive"
+    ],
+    "outside_package": {
+      "count": 7,
+      "first": [
+        " M tracks/C-sidm/drift/scripts/controls.py",
+        " M tracks/C-sidm/note/scripts/common.py",
+        " M tracks/C-sidm/note/scripts/schem_architecture.py",
+        "?? tracks/C-sidm/drift/inputs/",
+        "?? tracks/C-sidm/drift/scripts/make_decks.py",
+        "?? tracks/C-sidm/note/scripts/fig_box_summary.py",
+        "?? tracks/C-sidm/note/scripts/schem_dataflow.py"
+      ]
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/C-sidm"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/C-sidm/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/C-sidm/decisive/scripts/make_d3_ic.py",
+      "role": "argv",
+      "sha256": "3f21e3d386d4508426f8fe310476178a6c291efe9cdaafe105ebd5c29a78efcc",
+      "bytes": 10584,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/C-sidm/C-20261120-222427-6b27eea",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:24:27Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 45.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.9678,
+    "gpu_hours_reserved": 1.57,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 6,
+    "runs": 120,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
