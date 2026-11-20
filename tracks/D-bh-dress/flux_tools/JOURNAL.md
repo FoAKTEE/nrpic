@@ -504,3 +504,43 @@ and the lattice set under both forms. Predictions:
     below 1e-14 rho0 h^3.
 Refuted if (a) fails: then the data are not the stated construction with the builder's
 step, and a defect of the construction is not excluded.
+
+### Outcome of entry 6b (D-20261120-222651-3180e07; figure rerun D-20261120-222815-f8d1b42 with identical numbers; `results/check_esf_construction.json`, `figs/check_esf_construction.png`, looked at)
+
+(a) HELD in substance, FAILED as worded for KL: with the tanh form of the step the table
+    equals the closed forms to 2.7e-14 (KT) and 1.9e-11 (KL) of max|KT|, both maxima at
+    R = 3.069 M (predicted <= 1e-12); for R > 3.2 M to 8e-15 (KT) and 1.1e-11 (KL)
+    relative. The dust masses equal rho psi^6 h^3 with this form bit for bit (0.0) and
+    the lattice set is the file's (850584 points). The remaining 1e-11 in KL is the
+    rounding noise of 0.5 (1 - tanh) where S is small, entering D and D' differently.
+(b) HELD: with my precise step the largest differences are at R = 3.050 M (3 rows where
+    the table has K = 0 and mine D <= 7.3e-24), 9.1e-10 absolute in KL; mass differences
+    above 1e-12 relative only at the outer tail (max 0.071 relative at R = 59.78 M),
+    absolute <= 2.3e-16 rho0 h^3; 2.5e-14 relative for 3.2 < R < 59 M.
+(c) HELD: the momentum residual by differences is largest at R = 3.09 M (4.9e-5 of
+    max|KT|, the truncation of the difference stencil on the inner step) and 2.6e-9 for
+    6 < R < 50 M.
+(d) FAILED as worded ("few"): 9576 lattice points carry dust with the precise step and
+    none with the builder's form (all at the outer tail, where 1 - S rounds to 0), each
+    below 1.7e-17 rho0 h^3, i.e. together below 2e-13 rho0 h^3 ~ 1e-18 M.
+
+VERDICT: CONFIRMED. Evidence: (1) every identity of the construction holds symbolically
+(entry 6 part A: KL = d(R KT)/dR from the momentum constraint; Gamma^2 = 1 - 2M/R, so the
+spatial metric is Schwarzschild of M and psi = 1 + M/(2 rbar), u = 0, m_p = M encode it
+exactly; R_3 = 0 and 4 KL KT + 2 KT^2 = 4 D'/R^2 = 16 pi rho identically; the Misner-Sharp
+mass of the data is M + D; E = -M/R0 for every shell; the LTB metric with this E is dust;
+dm/dmu = (1 - 2M/R0)^(1/2)); (2) the data run's table, particles, per-tag energies,
+labels, times, totals and growth law equal these closed forms (runs above); (3) table and
+particles are generated from one and the same density, so the data are self-consistent to
+rounding. The only differences from an independently written density lie in the
+floating-point tails of the step function (S < 1e-8 at 3.0-3.1 M, 1 - S < 1e-16 at
+59.8-60 M), of absolute size <= 9.1e-10 in KL (|KL| ~ 1e-2 at the inner edge) and
+<= 2.3e-16 rho0 h^3 per particle. By the letter of the verdict rule of entry 6 (table
+within 1e-9 of max|KT|) the first run would read WRONG (1.6e-7 of max|KT| at R = 3.05 M);
+I depart from that letter [JUDGEMENT] because the cause test (a) shows the difference is
+the floating-point form of the step in its tail, not the construction, and its size is
+far below anything the run can resolve (the finder tolerance is 1e-5 M). Not checked here:
+the physics of the evolution (the LTB growth law holds only without shell crossing before
+the horizon, which tau_H monotonic shows for the initial labels, and with an exact
+spherical evolution), and the code's own reading of the table (the smoke runs of entry 4).
+Consequence: the card run of ES-F may go ahead (entry 7).
