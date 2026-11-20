@@ -657,7 +657,7 @@ P14, written before the run:
     Newtonian box (the measured card times of entry 16 over six-thread times that follow
     from a and b). Refuted by a ratio outside 100 to 280, or 18 to 36.
 
-## 2026-11-20 14:13 Entry 18: the gas multigrid under threads: a cause that can be tested; prediction P15
+## 2026-11-20 14:12 Entry 18: the gas multigrid under threads: a cause that can be tested; prediction P15
 
 Read again (athenak/src/multigrid/multigrid.{hpp,cpp}, multigrid_driver.cpp,
 gravity/mg_gravity.cpp) [VERIFIED by reading]:
@@ -713,3 +713,30 @@ P15, written before the executable was built:
  If b holds, the cause is the reduction of the mean and there is no race in the solver;
  if b fails the item stays open and the tracks are told not to rely on threaded runs
  with the gas multigrid.
+
+## 2026-11-20 14:16 Entry 19: restarts under threads; prediction P16
+
+Entry 13 listed "restarts under threads" as not tested. Test (`restart_threads.py`): the
+cosmology box with Z4c (east, 16^3, 20 steps, restart file after 10) and the Newtonian
+mode (newton, 32^3, 40 steps, restart file after 20), threaded executable O3: an
+uninterrupted run against a run continued from the restart file written half way, at one
+thread (atomic), at four threads with `deposit_threads = private`, and at four threads
+with atomic additions. Compared: every restart file the continued run writes (mesh data,
+particle restart file, Newtonian state), every particle snapshot it writes, the history
+records of its cycles. What is known: docs/TESTLOG.md "Restart (CPU, 2026-11-13)" found a
+continued run of the serial build equal to the uninterrupted one to 9e-16 in positions
+(not stated byte for byte); CLAUDE.md calls restarts exact.
+
+P16, written before the run:
+ a. One thread: the continued run reproduces the uninterrupted one in every compared
+    file, byte for byte or within 1e-12 of the largest number of the file (which of the
+    two is recorded; the restart file holds the whole state, so byte for byte is
+    expected, but the earlier test did not state it).
+ b. Four threads, private copies: the same as at one thread; if a is byte for byte, so
+    is b (a run with private copies repeats itself at a fixed thread count, P9a, and a
+    restart keeps the order of the particles). Refuted if a is byte for byte and b is
+    not: then the restart changes something the threads see (order of the particles,
+    state that is not in the file).
+ c. Four threads, atomic: within 1e-10 (the order of the additions is free).
+ Refuted in every part by a failed restart, a missing or misshapen file, another number
+ of particles, or a difference above 1e-8.
