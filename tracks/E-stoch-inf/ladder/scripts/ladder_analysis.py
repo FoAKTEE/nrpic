@@ -46,7 +46,7 @@ def extract(a):
     con = LL.read_con(a.run)
     t_end = max(max(t_dumps), con[-1, 0]) + 0.05
     ref = LL.reference_for(modes, a.modefile, t_end, t_eval=t_dumps)
-    alpha = modes.alpha()
+    alpha = modes.alpha(seed=a.seed)
     kshell = np.sqrt(modes.shell_n2.astype(float))
     # the reference with the stencil's k^2 (SCOPE 4, A2) for the modes of A2
     sub = np.nonzero(modes.n2 <= a.nmax2 / 4.0)[0]
@@ -102,7 +102,8 @@ def extract(a):
              con=con, a1_phi=a1["phi"], a1_Pi=a1["Pi"], a1_K=a1["K"],
              **{k: np.array(v) for k, v in out.items() if k not in ("A1_max",)})
     summ = {k: v for k, v in out.items() if k not in ("con_time", "con_efolds_ref")}
-    summ.update(run=a.run, nmesh=a.nmesh, nmax2=a.nmax2, scale=a.scale, modes=modes.M,
+    summ.update(run=a.run, nmesh=a.nmesh, nmax2=a.nmax2, scale=a.scale, seed=a.seed,
+                modes=modes.M,
                 shells=int(modes.shell_n2.size), has_metric=has_metric, has_con=has_con,
                 con_max_H_ratio=float(con[:, 3].max()), con_max_M_ratio=float(con[:, 6].max()))
     jdump(summ, os.path.splitext(a.out)[0] + ".json")
@@ -271,6 +272,8 @@ def main():
     e.add_argument("--nmax2", type=int, required=True)
     e.add_argument("--modefile", required=True)
     e.add_argument("--scale", type=float, default=1.0)
+    e.add_argument("--seed", type=int, default=LL.SEED,
+                   help="<job> rng_seed of the run (amplitudes alpha_n of the reference)")
     e.add_argument("--out", required=True)
     p = sub.add_parser("pair")
     p.add_argument("run_p")
