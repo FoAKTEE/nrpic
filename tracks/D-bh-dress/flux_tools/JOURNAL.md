@@ -544,3 +544,98 @@ the physics of the evolution (the LTB growth law holds only without shell crossi
 the horizon, which tau_H monotonic shows for the initial labels, and with an exact
 spherical evolution), and the code's own reading of the table (the smoke runs of entry 4).
 Consequence: the card run of ES-F may go ahead (entry 7).
+
+## Entry 7 (2026-11-20 14:36 PST, before submission): pre-registration of the ES-F card run (G2 scouting)
+
+Run: `inputs/esf_dx8.athinput` (unchanged since its smoke run D-20261119-145325-934efd1),
+data D-20261119-145022-2208a19 (construction CONFIRMED, entry 6b), executable
+`scratch/core/exe/core_requests-adf/athena_gpu` (fixed here; no switch to a later
+executable during the round), chain launcher, at most 1.97 card-hours, tlim = 200 M.
+Analysis: `esf_analyse.py` (as committed at the time of the analysis run; the additions
+of step 4 of this package are evaluations of the criteria below, written before the data
+are looked at) through `tools/finish_esf.sh`. Units M = initial hole mass.
+
+### Pass criteria of this scouting run (README section ES-F, adopted as written)
+
+Budget: sigma(t) = (floor(t)^2 + (1e-5)^2)^(1/2), floor(t) = max(2.8e-5, envelope of
+|M_ctrl(t') - M_ctrl(0)| over [0, t]) with the control V-1 (D-20261115-172730-c6d151b,
+`v1.horizon_summary_0.txt`), or V-0 if it has run by the time of the analysis; t0 = 0.
+[VERIFIED from that file: the V-1 envelope is 0 at t = 0.5 M and 9.585e-3 from t = 1 M
+on (finder 0.99239 at t = 0, 1.00198 at t = 1 M), so sigma = 9.6e-3 and 3 sigma = 0.029 M
+from t = 1 M: criteria (i) and (ii) are loose at this level; see the diagnostics below.]
+(i)  F_rem(t) - 3 sigma <= dM_AH(t) <= F_sph(t) + 3 sigma at every finder time, dM_AH =
+     M_AH(t) - M_AH(0); F_rem = sum of m E_K over removals of reasons 2 and 3 up to t,
+     E_K = (1 - 2M/R0)^(1/2) per tag (energy_by_tag.npy); F_sph = net inward m E through
+     sphere 1 (coordinate radius 5 M) from acc.hst plus the content at t0 (sum of m E_K of
+     the particles inside r = 5 M in the particle file). (The sphere sums use the code's E;
+     a crossing record with tags would allow E_K there too, README request 1.)
+(ii) For every removed particle of reasons 2, 3: M_AH at the first finder sample at or
+     after its removal >= m_disc(R0) - 3 sigma (m_disc = M + lattice sum of m E_K over
+     all labels <= R0), and tau_H(R0) (1 - 1e-6) <= tau_rem <= tau_0(R0) (1 + 1e-6).
+(iii) M_AH against the proper time of the shells at the horizon within 1 per cent of the
+     exact LTB curve M_LTB(tau) (results/esf_growth.csv) for tau <= 250 M. Operational
+     reading, fixed here: for removed dust particles with tau_rem <= 250 M, grouped in bins
+     of 10 M of tau_rem (bins with at least 20 removals), the median of
+     M_AH(first sample >= t_rem) / M_LTB(tau_rem) - 1 lies within +-0.01 in every bin.
+     The 140 tracers (tags 0-139, groups R0 = 6, 10, 20 M with tau_H = 15.9, 39.6,
+     156.3 M) are read the same way from their removal records, as a second reading.
+G2 refuted (the growth does not follow the flux) if (i) fails by more than 3 sigma over
+windows longer than the removal lag. A failure of (ii) or (iii) with (i) holding is
+recorded as such and points at the shell dynamics or the finder, not at the bracket.
+
+### Diagnostics reported beside the criteria (not gating)
+
+D1 Closure at the end: dM_AH(t_end) - F_rem(t_end), raw and with the control's finder
+   history subtracted (dM_AH - [M_ctrl(t) - M_ctrl(0)]).
+D2 Late bracket: for t >= 20 M, F_rem(t) - 3e-3 <= M_AH(t) - M_ctrl(t) <= F_sph(t) + 3e-3
+   (control-subtracted, with 1e-3 allowed for the difference of finder bias between a
+   hole of 1 and 1.25 M [JUDGEMENT]).
+D3 (ii) with the finder's bias removed: M_AH(t) - [M_ctrl(t) - 1] >= m_disc(R0) - 3e-4.
+D4 tau_rem - tau_H(R0): distribution, minimum, fraction below 0.
+
+### Predictions (written before the submission; numbers from results/esf_growth.csv and
+esf_labels.npz of D-20261119-145022-2208a19, and from ES-1/V-1 as cited)
+
+P1 Gauge: near the hole the dust proper time runs ahead of the coordinate time as in ES-1
+   (tracer group R0 = 20 M at tau = 244 by t = 177 M, plateau 279.7 M by 200 M:
+   es_runs/README.md), tau ~ kappa t with kappa = 1.35 (range 1.15-1.6) once t >~ 30 M
+   [JUDGEMENT]. Proper time of the shell at the horizon at t = 200 M: 270 M (230-320 M).
+   Tracer group R0 = 20 M (tau_H = 156.3 M) reaches the horizon at t = 116 M (98-136 M);
+   group R0 = 28 M (354 M) not by t = 200 M.
+P2 M_AH(t) = M_LTB(kappa t) + 9e-4 (the late finder bias of V-1, 1.00094 for
+   20 <= t <= 165 M):
+     t = 50 M:  1.037 (1.028-1.048)      t = 100 M: 1.102 (1.081-1.128)
+     t = 150 M: 1.175 (1.142-1.216)      t = 200 M: 1.249 (1.205-1.304)
+   Refuted if M_AH at any of these times lies outside its range (then P1's gauge model is
+   wrong, not G2: (iii) is independent of kappa).
+P3 Criteria: (i) HOLDS, max violation 0 sigma (dM - F_rem >= 0 from the removal lag and
+   the finder's +9.4e-3 rise in the first 3 M; F_sph runs ahead of dM). (ii) mass part
+   HOLDS (0 violations). (ii) tau part: likely FAILS as strictly worded [JUDGEMENT, p ~
+   0.6]: the margin tau_rem - tau_H is the proper time from R = 2m to the removal surface
+   (0.8 r_AH), about 0.2-0.3 M, while ES-1's group R0 = 20 M reached R = 2M 0.2-0.65 M
+   early in proper time at tau ~ 244; prediction: all violations have tau_H - tau_rem
+   <= 1 M, and they are at tau_H > 100 M. (iii) HOLDS: every bin within +-0.6 per cent,
+   overall median +0.2 per cent (removal lag of 1-3 M of code time at dM/dt ~ 1.5e-3,
+   minus ~0.25 M of proper time at dM/dtau ~ 1.1e-3, plus the finder bias 0.09 per cent).
+P4 Diagnostics: D1 raw closure +1.2e-2 (+0.8e-2 to +1.8e-2: finder rise 9.4e-3 plus
+   the content between horizon and removal surface); control-subtracted +3e-3 (0 to
+   +8e-3); below -1e-3 would refute the sharp reading of G2. D2 holds at every t >= 20 M.
+   D3: no violation. D4: minimum >= -1 M.
+P5 Removals: first dust removals at t ~ 5-15 M (smallest tau_H of the dust 4.93 M);
+   n_excised(200 M) ~ 6.0e4 (4.8e4-7.3e4 dust particles with tau_H <= 230-320 M),
+   removed sum m E_K ~ 0.25 (0.20-0.30); at least 95 per cent of removals by reason 3
+   (inside 0.8 r_AH), the rest by reason 2; no reason 1 or 4 removals of dust.
+P6 Technical: finite to the end (column 3 of esf.nrpic.hst = np > 0 at every row, np =
+   850724 - n_excised; the finder's mass finite at every sample); no escapes (n_escaped =
+   0: the outer dust shell R0 = 60 M reaches R ~ 120-128 M by tau = 270-320 M, inside the
+   +-192 M mesh); n_excised non-decreasing and growing from t ~ 10 M; alpha_min of the
+   mesh in [0, 0.3], with excursions above alpha_exc = 0.05 in the first ~45 M as in
+   ES-1 (entry 4 of es_runs); rest mass inside sphere 1 (acc.hst m_inside1) bounded below
+   0.05 M after t = 20 M (no pile-up at the puncture).
+P7 Cost: 0.79 card-hours (0.7-1.1) for 200 M (ES-1: 0.769 with 6.97e5 particles; V-1:
+   0.672 with 140 tracers; 1.2 times the particles), one chain segment likely, two if it
+   exceeds the segment's wall limit.
+Failure modes named in advance: (F1) a non-finite run (np drops to 0 while the run
+"succeeds"); (F2) matter piling up at the puncture (risk R5: m_inside1 growing without
+bound, the finder losing the horizon, removal by reason 2 only); (F3) the finder
+failing as the horizon grows (gaps in horizon_summary); (F4) dust leaving the mesh.
