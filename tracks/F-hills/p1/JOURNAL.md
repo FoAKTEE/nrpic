@@ -112,3 +112,49 @@ Result [VERIFIED]: `chain started ...: job 4738`; `--status`: STATUS QUEUED, job
 rewritten with MAX_SEGMENTS=18, the same EXE_SRC, ATHENA_WALL and SLURM_TIME. The planner's
 command had MAX_SEGMENTS=26; I set 18 to keep the 10 card-hour cap (entry 0). Not through
 `nrpic-run submit`: same run id, directory, input and executable content.
+
+## Entry 3 (2026-11-20 22:50Z): intermediate analysis at t = 112 M, prediction before it runs
+
+Data: the run directory as segment 7 left it (trackers to t = 112.38 after joining
+`trk_keep/`; horizons, history and waveforms to about t = 112.2). I have looked at the logs and
+restart headers (entry 0) but not at trajectories, horizon masses, history or waveforms. Which
+items of the P1 prediction (track JOURNAL.md lines 305-320) can be decided now:
+
+Item 1, health (decidable except "to t = 280" and the segment count):
+- 1a three trackers with rows from t = 0 to 112.4 after the join, no gap above two output
+  intervals. Refuted by a missing tracker or a gap.
+- 1b tree 1716-2400 MeshBlocks: decided before this analysis from the logs (entry 1, item 4):
+  REFUTED on the low side. The analysis only tabulates it.
+- 1c 1900-2200 MeshBlock-cycles/s in every full segment (from the segment logs' "MeshBlock-cycles"
+  and "cpu time used"). Refuted if a full segment is outside.
+- 1d no non-finite value in trackers, history, or horizon rows after the first good search.
+- 1e history Volume constant: relative change below 1e-3 over t = 0-112 [JUDGEMENT; the excised
+  cells are a negligible part of the domain]. Refuted above.
+Item 3, member horizons (decidable at t = 100 M): masses only from rows with hrms < 1e-3, members
+from t >= 0.5 M. Growth m(t = 100) / m(first good) - 1 for each member: the prediction said
+10-18 percent by t = 200 if the single-puncture rate 0.6-1.1e-4 per m persists, which is 4.6-8.5
+percent at t = 100 (100 M = 772 member masses at 0.1295) [arithmetic]; refuted below 2 or above
+25 percent. Heavy hole: first good search (hrms < 1e-3) near t = 4 M; its mass grows by less than
+1 percent by t = 100 [JUDGEMENT, its cells per mass are 8 times those of a member].
+Trajectories against the baselines over t = 0-112 (not an item of the P1 prediction; my
+prediction now) [JUDGEMENT]:
+- 3a the binary is still bound and not wider than 2 a_b = 10.2 M at t <= 100 (Newton passes
+  10.2 M at t = 115.65, HRNA at 134.6; `nr_first/results/baselines_p1.json`); refuted if
+  |x_1 - x_2| > 10.2 M before t = 100.
+- 3b the centre of mass of the binary passes its closest approach to M between t = 95 and 115
+  (Newton 104.35) at a coordinate distance of 7-10 M (Newtonian conic 9.81 M; GR turning point
+  9.25 M areal, smaller in the puncture's coordinates); refuted outside either range.
+- 3c before t = 60 the NR distances from M agree with Newton to within 15 percent (far from the
+  hole, with the coordinate speeds of the members reduced by the gauge, E3: f = 0.76 at 4 m);
+  refuted above.
+Item 2 (which member leaves, separation by t = 200, no common horizon by 280) is not decided at
+t = 112; it is judged after the pericentre of the second member, around t = 120-150. Item 4
+(junk energy at the spheres by t = 150) is not decidable; the cumulative E_rad to t = 112 is only
+recorded.
+The eih report's shared expectation (m1 = comp0 enters the region where GR captures; its
+numbers are [TO VERIFY] context, not a criterion) can be judged when m1's distance from M has
+passed its minimum: a capture shows as m1's tracker reaching M's horizon (coordinate distance
+below about 1.5 M) or as a jump of the heavy hole's horizon mass; no capture as a minimum
+followed by a growing distance. If m1 is still approaching at t = 112, it is judged later.
+Energies (newton3_fix convention): E_i against the barycentre of M and the other member is not
+conserved before the binary separates; only plotted.
