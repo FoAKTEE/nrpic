@@ -115,3 +115,83 @@ All seven predictions hold [VERIFIED, results/v1.json, figs/v1_T.png]:
   K_ij(t = 0) to round-off, alpha = 1, and Lambda(-2 At) has the mode coefficients
   2c_+ = 2e-6 (real) and |2c_x| = 1e-6 with phase 1.0: then make_expanding_ic.py's basis is
   mine. Refuted if the phase or sign differs (I would then compare in its basis).
+
+## Entry 4 (14:50): V2 outcome (run B-20261120-222822-e26afae; an unregistered smoke run of the same commit gave identical numbers)
+
+[VERIFIED, results/v2.json, figs/v2_weyl.png]
+- P2.1 holds: header time 0, cycle 0, 22 variables of 8 bytes, one block; gt - (delta + h)
+  1.7e-16, At + hdot/2 6.8e-21; chi = alpha = 1, Khat = Theta = Gam = beta = 0 exactly; the
+  8-block shuffled re-blocking reads back identically (0); a file 8 bytes short is refused.
+- P2.2 holds: the single-precision dump equals float32(closed form) to 1.2e-22 (values of
+  size 1e-22 in gxy; elsewhere exact); its distance to the double closed form is 5.8e-8, the
+  float32 rounding.
+- P2.3 holds: Lambda(TT) = TT 2.1e-15, Lambda(gauge + trace) 2.8e-16, idempotent 2.5e-15,
+  trace 4.3e-14 (absolute, fields of order a few), divergence 2.1e-15; mode coefficient
+  exact.
+- P2.4 holds for the scaling with amplitude in the field maximum of E (1.07e-6 at amp 1e-6,
+  1.07e-5 at x10: the second-order terms); B and the Psi4-inferred mode amplitudes are
+  better than predicted (1e-12 .. 7e-11): the mode projection at K removes the second-order
+  terms (they live at 0 and 2K), so what is left is round-off. FD6: E 5.2e-5 (16^3),
+  1.9e-6 (32^3, there floored by the 1e-6 second-order field-max error).
+- P2.5 better than predicted for the same reason: mode-projected E, B and the TT route
+  agree with my exact linear expressions to 1e-12 .. 5e-10 relative (round-off of a
+  perturbation 1e-6 on an O(1..36) background), and the x10 case is not worse (third order
+  is eps^2 ~ 4e-10 relative at most).
+- P2.6 holds: the initial slices of X at N16 and N64 have gamma = delta and K = K_exact
+  exactly, alpha = 1, Theta = Gam = 0, and Lambda(-2 At) has 2c_+ = 1.99999999995e-6 (real)
+  and 2c_x = 1.0e-6 at phase 1.0000: make_expanding_ic.py's basis is mine, and the initial
+  amplitudes are as the input comment says (eps_+ = 2e-6, eps_x = 1e-6, phi_x = 1).
+Consequence for V3: with spectral derivatives the Weyl route is, at linear order, an
+algebraic re-expression of the TT route (E is k^2 h/2 + calH h'/2 of the same numerical
+h, B is k h'/2); a disagreement can only come from the backward/forward split (Psi_4 of F),
+the background (calH) or nonlinear and round-off terms. I therefore also evaluate the Weyl
+parts with sixth-order differences (what AthenaK's own Psi_4 would use at nghost 4), whose
+own truncation then enters the comparison.
+
+## Entry 5 (15:05): V3 predictions, before any measurement of the evolved dumps
+
+Facts used (read from the code and logs, not from results): AthenaK's Kreiss-Oliger term at
+nghost 4 is diss 2^-8 (-1) times the eighth difference over h (utils/finite_diff.hpp
+Diss<4>, z4c.cpp line 168), damping rate per direction sigma sin^8(k_a h/2)/h; second
+derivatives are sixth order; RK4 with dt = 0.25 h in F (log: 148 cycles to t = 2.3094 at
+N16); in X dt = min(0.01 (1 + t/2), 0.25 h) (log of N48: dt = 0.01 at t = 0, 0.01283 at
+t = 0.566), so N16 runs with the expansion limit throughout and N32 until t = 4.25. All
+runs ended on the time limit with rc = 0 (athena.log), including X N48 whose manifest says
+failed: its wrapper died at line 37 with "ena.log | tr '\n' ' '): command not found" after
+AthenaK had finished (run.log), and all 41 dumps through t = 10 exist [VERIFIED];
+[JUDGEMENT] the script file was edited while bash was still reading it.
+
+Error measures: F: complex amplitude Z = 2i c(K) of h_+ and h_x, exact Z = A exp(-i w t)
+(x: times exp(i phi_x)); X: Z = H + i H'/k with H = 2c(K) of h (x: times exp(-i phi_x)),
+H' the same of h', exact eps (T + i T'/k). Amplitude error |Z|/|Z_ex| - 1, phase error
+arg(Z/Z_ex) (positive = numerical lag), both at the last dump and as the maximum over the
+dumps. Diagnostics: TT = Lambda(gt - delta) and Lambda(-2 alpha At); Weyl = Psi_4 along
+khat (F: h_+ = -Re Psi4/w^2, h_x = Im Psi4/w^2) and, for X, h, h' inverted from E_+, E_x,
+B_+, B_x (h' from B, h from E with calH = -alpha K/3 of the numerical background), each
+with spectral and with sixth-order derivatives.
+
+Predictions (numbers from the KO, dispersion and RK4 symbols, P3.x):
+- P3.1 (F amplitude, TT): amplitude error negative (loss), -1.2e-4 (N16), -1e-6 (N32),
+  ~-6e-8 (N48), ~-3e-8 (N64; there RK4 amplitude loss ~2.4e-8 exceeds KO 7.5e-9); order
+  ~7 from 16 to 32, falling toward 5. Same for + and x to better than 1% of the error
+  (the TT subspace is invariant under the scheme for k parallel to (1,1,1)).
+- P3.2 (F phase, TT): lag 2.6e-4 rad (N16), 1.2e-5 (N32), 2.3e-6 (N48), 7e-7 (N64) at
+  t = 4 periods; order between 4 (RK4) and 6 (space), tending to 4.
+- P3.3 (F, TT vs Psi_4 spectral): differ by ~(w_num - w)/(2w) ~ 2e-6 at N16, order ~6,
+  down to a floor <= 1e-9; with FD6 Weyl the difference is the FD6 truncation of the
+  diagnostic, ~5e-5 at N16, order 6.
+- P3.4 (X background): |a_num/a - 1| <= 1e-6 at t = 10 for all N [TO VERIFY: the source is
+  extrapolated to mid-step, an O(dt^2) error independent of N].
+- P3.5 (X amplitude, TT): loss 8e-5 (N16), 7e-7 (N32), 4e-8 (N48), 5e-9 (N64) at t = 10;
+  order ~7. Phase lag ~9e-5 rad (N16), ~2e-6 (N32), then order 4-6.
+- P3.6 (X, TT vs Weyl): spectral: agree to <= 1e-8 at all N (algebraic equivalence; only
+  calH and round-off); FD6: differ by the FD6 truncation ~1e-5 at N16, order 6.
+- P3.7 (X plus/cross): identical truncation errors; an asymmetry larger than 10% of the
+  error can only come from round-off, which favours x here (ex lives in xz, yz with no
+  background, e+ in xx, yy, zz, xy where gt = 1 + h). If the N64 errors are round-off
+  limited, x10 reduces the relative errors ~10x and removes the asymmetry; if they are
+  truncation limited, x1 and x10 agree to 10% and both polarizations agree to 10%. A
+  difference between x1 and x10 that grows with amplitude would mean nonlinearity
+  (third order is <= 4e-10 relative at x10, so that would refute my linear picture).
+Refutation: errors off by more than a factor 3 from P3.1/P3.2/P3.5, or orders outside
+[3, 8], or a TT-Psi4 (spectral) difference above 1e-6 at N >= 32.
