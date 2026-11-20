@@ -541,3 +541,43 @@ def window_grid(t, y, y_ref, period, his, default_hi, widths=GRID_WIDTHS, k_los=
                    half_range=float(0.5 * (ss.max() - ss.min())),
                    max_rel_dev=float(np.max(np.abs(ss / b - 1.0))))
     return out
+
+
+def slope_over(t, y, y_ref, period, t0, t1, relative=False, noise_order=2):
+    """Slope of ln|d_s| over the fixed interval [t0, t1] (d and the one-period exact
+    boxcar as in growth_fit_v2): used to fit a second observable over the time window of
+    the first. Points where d_s changes sign are a failure (reported)."""
+    t = np.asarray(t, float)
+    y = np.asarray(y, float)
+    ref = float(y[0]) if (isinstance(y_ref, str) and y_ref == "first") else y_ref
+    d = y / ref - 1.0 if relative else y - ref
+    ts, ds, wk, tt, yy = boxcar_exact(t, d, period)
+    sel = np.nonzero((ts >= t0) & (ts <= t1))[0]
+    out = dict(t0=float(t0), t1=float(t1), period=float(period), n=int(len(sel)))
+    if len(sel) < 4:
+        out.update(ok=False, reason="fewer than four smoothed points in the interval")
+        return out
+    i0, i1 = int(sel[0]), int(sel[-1])
+    tw, dsw = ts[i0:i1 + 1], ds[i0:i1 + 1]
+    sgn = float(np.sign(dsw[-1]))
+    if np.any(sgn * dsw <= 0):
+        out.update(ok=False, reason="d_s changes sign inside the interval")
+        return out
+    dw = sgn * dsw
+    lnd = np.log(dw)
+    A = np.vstack([np.ones_like(tw), tw]).T
+    coef, *_ = np.linalg.lstsq(A, lnd, rcond=None)
+    resid = lnd - A @ coef
+    n = len(tw)
+    Sxx = float(np.sum((tw - tw.mean()) ** 2))
+    se_formal = float(np.sqrt(np.sum(resid ** 2) / max(n - 2, 1) / Sxx))
+    n_eff = max((tw[-1] - tw[0]) / period, 2.0)
+    se_fit = se_formal * float(np.sqrt(max(n / n_eff, 1.0)))
+    s_n = noise_level(yy[i0:i1 + len(wk)], noise_order)
+    h = np.convolve(((tw - tw.mean()) / Sxx) / dw, wk)
+    se_noise = float(s_n * np.sqrt(np.sum(h ** 2)))
+    out.update(ok=True, sigma=float(coef[1]), se=float(np.hypot(se_noise, se_fit)), se_noise=se_noise,
+               se_fit=se_fit, sign=sgn, t_start=float(tw[0]), t_end=float(tw[-1]),
+               amp0=float(sgn * np.exp(coef[0])), efolds=float(np.log(dw[-1] / dw[0])),
+               rms_log_resid=float(np.sqrt(np.mean(resid ** 2))), curve_ts=ts, curve_ds=ds)
+    return out
