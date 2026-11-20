@@ -470,3 +470,29 @@ conversions in the S2 outcome above are wrong: with t/t_H = ((1 + tau/2)^2/6)^(3
 tau = 3.24 is 1.2 t_H (not 1.5) and tau = 14.14 is 35.8 t_H (DESIGN.md said 45); DESIGN.md
 corrected, the entry above is left as written.
 
+
+---
+
+# Wave 3, round 1 (2026-11-20): the relaxed 1+log lapse in the box
+
+Package brief: `tracks/A-emd-pbh/PLAN-wave3.md` row 6. Executable of the card runs:
+`/data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu` (source b4430da, READY of
+that directory: option `<z4c> lapse_leak`, tested on cards; no guard, no periodic finder,
+no `dt_lightspeed`). Runs are registered with `harness/bin/nrpic-run` (`--package
+tracks/A-emd-pbh/periodic_threshold`); run ids `A-<UTC>-<commit7>`.
+
+## 2026-11-20 22:40Z, D3: data of P0L (written before the run)
+
+`scripts/build_p0l.sh`: `make_peak_ic.py --mu 0.3 --e 0 --p 0 --eps-i 1 --n 64 --nfilter 2
+--compensate` (the S1 settings with e = 0), then `track_select.py`, which reorders the
+particle file so that 317 particles on the six half axes and the eight half diagonals
+through the peak come first (tags 0..316, tracked by `traj_ntrack`). Checked before on
+the S1 data (unregistered, scratch/A-emd-pbh/tmp/periodic_threshold/tsel_test): the
+lattice of make_field sits on cell corners, (i + 1) h - L/2, so one particle sits on the
+peak; largest displacement 0.18 spacings.
+Prediction [JUDGEMENT]: the solve converges as at e = 0.2 (T1b: residual 7e-12, 33 inner
+iterations per outer step, c = 0.137), because the spherical peak has the same central
+amplitude and a profile no steeper than the elliptical one along its short axis: residual
+below 1e-10, c between 0.05 and 0.2, delta_N max 0.12 (the Laplacian of the same Gaussian
+at the centre does not depend on e), alpha_min about 0.80. Refuted if the inner solves
+stagnate at the 60-iteration limit (then P0L moves to mu = 0.2).
