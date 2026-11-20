@@ -575,3 +575,62 @@ and P13 (entry 12: histories of dep and east from the card differ from one threa
 by less than 1e-10 of the largest number of the file, deposit identity below 1e-13).
 Analysis: `tracks/core/omp/analyse_card.sh` (card_compare.py for P13, analyse_scaling.sh
 with the card directory for P7), registered below.
+
+## 2026-11-20 14:10 Entry 16: outcomes of P13 (card executable of this branch) and P7 (one A100)
+
+Analysis run core-20261120-220500-c759cdc (`analyse_card.sh`; card_compare.json,
+figures `tracks/core/omp/figs/card_diff.png` and `figs/scaling.png`, both looked at).
+
+P13 HOLDS. Card executable of this branch (sha256 5b1e90e7..., run
+core-20261119-164717-b187f36, Slurm 4666) against one thread of the threaded processor
+executable (run core-20261119-155057-57325bc/atomic), every file both runs wrote:
+
+| case | file | largest difference / largest number of the file |
+|---|---|---|
+| dep | dep.nrpic.hst | 2.9e-14 |
+| east | east.cstat.hst (constraint statistics) | 5.8e-13 |
+| east | east.nrpic.hst | 6.8e-15 |
+| east | east.part.00000.bin (initial snapshot) | identical |
+| east | east.part.00001 to 00006.bin | 1.3e-16 rising to 1.8e-15 |
+| east | east.traj.bin, east.trajmet.bin | 1.1e-16, 5.5e-16 |
+| east | east.z4c.user.hst | one number differs by 5e-33 of the largest (a sum that is zero to rounding) |
+
+All below the bound 1e-10 by more than two decades, and of the size of the differences
+between 4 or 16 processor threads and one (open marks in the figure lie on the card's).
+Deposit identity max |int_E - sum_mW|/sum_mW over the history: card 9.9e-16 (dep) and
+2.3e-16 (east), below the bound 1e-13 and below one processor thread (5.5e-14, 1.0e-14).
+Not compared: the restart file of east (the card list wrote none). So the card executable
+published with this branch reproduces the processor executable to rounding on the two
+deposit cases; what it is not tested for stays as in READY (nothing beyond these two).
+
+P7 FAILED for the runs with Z4c and holds at its edge for the Newtonian mode. One A100
+(release card executable core-v0.3; run core-20261119-144437-6718c76, Slurm 4643; same
+decks as the processor series, 32 cycles for the puncture and 16 for the others, best of
+two runs, time of the step loop over cycles as for the processors):
+
+| case | one A100 (s/step) | zone-cycles/s | 16 threads / card | 32 / card | 64 / card |
+|---|---|---|---|---|---|
+| punc (1.41e6 cells, refined) | 0.175 | 8.07e6 | 82 | 47 | 37 |
+| cluster (1e5 particles, 1.64e6 cells) | 0.279 | 5.88e6 | 66 | 36 | 26 |
+| cosmo (64^3, 2.1e6 particles) | 0.119 | 2.20e6 (1.76e7 particle updates/s) | 57 | 31 | 23 |
+| newton (128^3, 5.1e5 particles) | 0.0779 | 2.69e7 | 10.5 | 6.1 | 8.7 |
+| bench (Z4c, uniform 128^3) | 0.113 | 1.85e7 | 186 (against 9.99e4 at 16 threads on the 64^3 bench of the regression) | | |
+
+P7 said one card would be 1.5 to 4 times 64 threads and 4 to 10 times 16 threads. For the
+three cases with Z4c it is 23 to 37 times 64 threads and 57 to 82 times 16 threads; the
+provisional reading of entry 11 (50 to 200) stands and is now measured. For the Newtonian
+mode the card is 10.5 times 16 threads: the provisional statement of entry 11 "the card
+is not faster" was WRONG. It rested on another deck (the N = 128 collapse of
+newtonian_mode.md section 5.8 at 0.65 s per step on a card, with isolated boundaries) and
+on a transferred speed-up; for the periodic box measured here the card needs 0.078 s per
+step. The advice to the tracks (interface text section 6, READY section 4, the note to
+all of 2026-11-19) said "Newtonian mode: always on processors"; that is corrected to a
+break-even of about a quarter of an hour of card time (below).
+
+Peak card memory of the cases (gpumem.csv of the run): 9.2 GiB (punc), 12.3 GiB
+(cluster), 1.8 GiB (cosmo), 1.6 GiB (newton), 4.4 GiB (bench).
+
+Queue waits of this package's card jobs: 4643 waited 2 h 11 min (submitted 06:44, started
+08:55), 4666 3 h 15 min (08:47 to 12:02). Break-even card time T < W/(R - 1) for a wait
+W = 2 to 3 h: 1.5 to 2.2 min (punc, R = 82), 1.8 to 2.8 min (cluster), 2.1 to 3.2 min
+(cosmo), 13 to 19 min (newton).
