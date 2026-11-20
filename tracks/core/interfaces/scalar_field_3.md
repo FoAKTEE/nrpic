@@ -108,20 +108,20 @@ Card runs at 64^3 and 128^3 (one A100, card run core-20261119-150317-a1e8ee7, 16
   48 and 60); its size is a third of the error of the lattice k^2.
 - 128^3 with nmax2 = 1024: 68532 modes, of which 56741 enter after 2.93 e-folds, inside
   the ultra-slow-roll phase. The pair s = +-0.01 follows the linear reference within
-  2.5e-6 for \|n\| <= 8 and 3.8e-3 for the top shell at every dump: slice and sources hold
+  2.5e-6 for |n| <= 8 and 3.8e-3 for the top shell at every dump: slice and sources hold
   for entry during ultra slow roll.
 - At s = 1 this run reaches an rms R^NR of 0.495 over the box (the linear value), carried
   by the short modes. The long modes of the single realisation follow linear theory to
-  2e-3 to 3e-3 (\|n\| <= 4; the part even in s, a hundred times less at s = 0.01); the
+  2e-3 to 3e-3 (|n| <= 4; the part even in s, a hundred times less at s = 0.01); the
   box mean of Pi leaves the homogeneous background by 1.3e-5 (2.8e-8 at s = 0.01): the
   perturbations act back on the mean at second order.
-- Constraints. <\|H\|/[H]> is the uniform residual until 3.5 e-folds and below 5.4e-12 from
-  4 e-folds on (9.9e-13 at s = 0.01). <\|M\|/[M]> during ultra slow roll is first order
+- Constraints. <|H|/[H]> is the uniform residual until 3.5 e-folds and below 5.4e-12 from
+  4 e-folds on (9.9e-13 at s = 0.01). <|M|/[M]> during ultra slow roll is first order
   over first order (the same at s = 1 and 0.01 until 6 e-folds): the stencil defect of
   section 4 against a magnitude that falls with Pi_b; up to 3.2e-2 with k_max at 4 cells
-  per wavelength, and at 4 e-folds 47 times less at 8 cells than at 4. Late it is a floor of \|M\| (1e-14 to 3e-14, the same
+  per wavelength, and at 4 e-folds 47 times less at 8 cells than at 4. Late it is a floor of |M| (1e-14 to 3e-14, the same
   for every amplitude) over [M], which is proportional to the amplitude: 1e-2 at s = 1,
-  0.1 at s = 0.1, of order one at s = 0. A late <\|M\|/[M]> of 1e-2 (P1:541) is therefore
+  0.1 at s = 0.1, of order one at s = 0. A late <|M|/[M]> of 1e-2 (P1:541) is therefore
   no measure of an error of the solution; `con_signed` and the pair of runs with s = +-
   a small value separate the parts.
 - Cost on one A100: 0.151 s per step at 128^3 with 68532 modes (1.39e7 zone-cycles per
@@ -237,20 +237,20 @@ H_mean, Mx_mean, My_mean, Mz_mean, Hp_ratio, Hp_ratio_max, Hp_rms). Example:
 Inflection case, 32^3, to 3 e-folds: with and without the option every other file is
 byte-identical and the first 20 columns of the record are the same on all 65 lines. The
 seven columns equal the two reductions repeated on the dumps as running sums, bit for
-bit, at all 14 dumps of the runs with s = 1 and s = 0. At s = 0, <\|H'\|/[H]> is at most
-1.1e-19 while <\|H\|/[H]> is 1.9e-8 to 1.0e-7; at s = 1 it is 1.3e-12 to 5.2e-11, 1700 to
-12500 times below <\|H\|/[H]>, and rms H' = 7.06e-10 at 2.45 e-folds is the first-order
+bit, at all 14 dumps of the runs with s = 1 and s = 0. At s = 0, <|H'|/[H]> is at most
+1.1e-19 while <|H|/[H]> is 1.9e-8 to 1.0e-7; at s = 1 it is 1.3e-12 to 5.2e-11, 1700 to
+12500 times below <|H|/[H]>, and rms H' = 7.06e-10 at 2.45 e-folds is the first-order
 part the twin of section 4 gives. Three things a user should know:
 - A recomputation from a dump with another order of summation (numpy's mean) differs by
   6.3e-13 in <H> (the code divides by a running sum of the equal cell volumes, which is
-  6.26e-13 low at 32^3) and by up to 6e-10 in <\|H'\|/[H]> where H' is 1e-4 of H: the limit
+  6.26e-13 low at 32^3) and by up to 6e-10 in <|H'|/[H]> where H' is 1e-4 of H: the limit
   is the cancellation in H - <H>.
 - <H> is not the time-integration residual alone: the initial slice satisfies the
   constraints at first order, and its second-order residual has a mean (4.2e-11 at s = 1
   at t = 0, beside rms H' = 4.5e-11; it scales with s^2). At a small step it is what is
-  left of <H> (quadratic case at the step of 256^3: \|<H>\|/[H] = 1.5e-12 to 4e-13 during
+  left of <H> (quadratic case at the step of 256^3: |<H>|/[H] = 1.5e-12 to 4e-13 during
   the first two e-folds; run core-20261119-163800-fe87748).
-- <M_i> is 2e-4 to 5e-2 of rms \|M\| (largest before the last shells enter, when \|M\| is
+- <M_i> is 2e-4 to 5e-2 of rms |M| (largest before the last shells enter, when |M| is
   second order).
 
 ## 7. What is verified, and what is not
