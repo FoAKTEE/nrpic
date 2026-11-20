@@ -137,3 +137,65 @@ Consequence for J1 (no criterion changed): on a pulse with this spectrum the cen
 (omega_0 = 0.2) has an error of order 2-4 percent and the time-domain method of order 10-15
 percent where a slow offset follows the pulse; the spread of the omega_0 variants (-5 to +24
 percent here) is the systematic of the choice, as planned.
+
+## 2026-11-20 J3, outcome: junk of one member at finite radius (run F-20261120-222808-b65001c; `single_junk.json`, figures `fig_single_waves.png`, `fig_single_energy.png` read)
+
+Numbers [VERIFIED, `single_junk.json` of the run; E in units of m, window u in [-15, 30]]:
+
+| R | E FFI 0.1 | E FFI 0.2 | E FFI 0.3 | E time domain | noise (0.2) before / after | P_x (0.2) |
+|---|---|---|---|---|---|---|
+| 30 | 2.73e-4 | 1.25e-4 | 7.68e-5 | 2.88e-4 | 5.3e-5 / 5.9e-5 | 3.94e-5 |
+| 40 | 1.15e-4 | 8.65e-5 | 5.92e-5 | 2.20e-4 | 1.5e-5 / 1.3e-5 | 1.37e-5 |
+| 50 | 1.09e-4 | 8.52e-5 | 5.81e-5 | 2.18e-4 | 6.7e-6 / (none) | 1.24e-5 |
+
+Fits E_inf + a/R over the three radii: FFI 0.2 E_inf = 1.7e-5 (a = 3.1e-3), 0.3 2.6e-5, 0.1
+-1.7e-4, time domain 9.7e-5.
+Against J1:
+1. E_junk/m (FFI 0.2) between 2e-5 and 2e-4 at each radius: met (1.25e-4, 8.65e-5, 8.52e-5).
+2. Three radii within 25 percent: FAILED (max/min 1.46; R = 30 is 46 percent above R = 50; 40
+   and 50 agree within 1.5 percent). |a|/R below 0.25 E_inf at R = 30: FAILED (1.0e-4 against
+   1.7e-5). E_inf in the band: FAILED (1.7e-5, below 2e-5).
+3. Methods within 25 percent: FAILED. Time domain / FFI 0.2 = 2.3-2.6 at every radius; omega_0
+   = 0.1 +33 and +28 percent at 40, 50 (+119 at 30); omega_0 = 0.3 -32 percent at 40 and 50.
+4. Noise below 0.1 E_junk at R = 30 and 40: FAILED (0.42-0.47 at 30, 0.15-0.17 at 40); at
+   R = 50 the part before the window is 0.078.
+5. Arrival at fixed retarded time: met (peak of dE/du at u = 1.48, 1.37, 1.14 m); peak of
+   |r psi4_20| 3.04e-3, 2.78e-3, 2.95e-3 (within 9 percent): met. Dominant modes: met; at R = 50
+   (2,+-2) 0.705 and (2,0) 0.236 of the energy, l = 3 0.05, l >= 4 0.01. The ratio 3.0 of
+   (2,+-2) to (2,0) is that of a pattern axisymmetric about x: |d^2_{20}(pi/2)|^2 = 3/8 per m =
+   +-2 against |d^2_{00}(pi/2)|^2 = 1/4 [BACKGROUND, Wigner d-matrix].
+6. Momentum: met. P_y / P_x and P_z / P_x at most 8.5e-4 (R = 50), 4.7e-4 (40), 8e-4 (30);
+   largest |dP/du| / (dE/du) in the window 0.56-0.70; P_x > 0 (radiated along the boost: the hole
+   recoils toward -x).
+What the figures show: the pulse in r psi4 (u from -10 to +10 m) is the same at the three radii
+(outgoing radiation); after u = 10 m every mode moves to a slowly varying offset that is larger
+the smaller the sphere ((2,0) at u = 20: -1.3e-3, -0.9e-3, -0.8e-3 at 30, 40, 50; (2,2) rises to
+1.5e-3 at R = 30). The "noise" rate outside the window falls as R^-4.4 (30 to 40) and R^-3.6 (40 to
+50), as the square of a news that falls as 1/R^2: the near-zone field of the hole, which has moved
+off the spheres' centre (x = 16 m at t = 90, nr_first E10), not numerical noise [JUDGEMENT]. It
+enters the window energy through the slow content (omega_0 dependence) and through the cross term
+with the pulse; the time-domain method's quadratic cannot follow an offset that switches on after
+the pulse (as in J2, but here the offset is several times larger relative to the pulse).
+Reading [JUDGEMENT]: the finite-radius numbers bound the junk only as 6e-5 to 1.3e-4 m (FFI 0.3 at
+50 m to FFI 0.2 at 30 m, excluding the time domain). A better separation follows (J3b).
+
+## 2026-11-20 J3b. Junk at infinity from the waveform extrapolated in 1/R before integration (prediction; added after J3, method not in J1)
+
+Why: J3 shows a pulse that is independent of R and a slow offset that is not; r psi4 extrapolated
+at fixed u as A(u) + B(u)/R removes a part of r psi4 that falls as 1/R [BACKGROUND: polynomial
+extrapolation in 1/R at fixed retarded time is the usual finite-radius extrapolation of NR
+waveforms; locator TO VERIFY]. What: each mode of S2g at R = 30, 40, 50 interpolated (cubic
+spline) onto one u grid (step 0.25 m, the common u range [-36.5, 32.1] m), least-squares fit
+A + B/R per u (order 2, A + B/R + C/R^2, as the variant), then the J1 pipeline on A (FFI with
+omega_0 = 0.1, 0.2, 0.3, taper 4 m; time domain) in the same window u in [-15, 30].
+Predictions [JUDGEMENT, written after seeing the finite-radius numbers of J3]:
+1. A(u) of (2,0) and (2,2) after the pulse (u in [15, 30]) below 20 percent of the pulse's peak
+   (the offset is mostly B/R).
+2. The four methods within 25 percent of each other on A (the slow content that made them
+   differ is removed); omega_0 = 0.1 and 0.3 within 15 percent of 0.2.
+3. E_inf (FFI 0.2, order 1) between 6e-5 and 1.0e-4 m (the noise-corrected finite-radius values
+   would be 7.2e-5, 7.2e-5, 7.9e-5 at 30, 40, 50, a post-hoc reading of J3); order 2 within 25
+   percent of order 1.
+4. P_x at infinity between 0.10 and 0.20 E_inf (J3 at 40 and 50: 0.15-0.16), P_y and P_z below
+   1e-3 of P_x.
+Refuted outside these; if 2 fails, the junk energy of a member is quoted as the range of J3.
