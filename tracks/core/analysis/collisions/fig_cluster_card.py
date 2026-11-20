@@ -132,7 +132,7 @@ def main():
     ax.axhline(1e-12, **fs.GUIDE)
     ax.set_ylabel("|cumulative change| / initial")
     ax.set_title("(b) change by the collision steps", fontsize=9, loc="left")
-    ax.legend(fontsize=7, loc="center right", ncol=1)
+    ax.legend(fontsize=7, loc="lower left", bbox_to_anchor=(0.0, 0.2), ncol=2)
 
     ax = axs[1, 0]
     ax.plot(hc["time"], np.cumsum(hc["n_coll"]), color=c_cell, lw=1.2, label="cell")
