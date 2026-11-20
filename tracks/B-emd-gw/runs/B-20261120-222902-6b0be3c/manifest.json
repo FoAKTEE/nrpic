@@ -1,0 +1,118 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261120-222902-6b0be3c",
+  "track": "B-emd-gw",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "flrw_conv: initial data of legs F (lattices with and without position noise, 16/32/64 cells, 1/8/27 per cell) and B at 16 and 32 cells (test B, 1/8/27 per cell), with deposited-contrast statistics",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "env",
+    "JOBS=4",
+    "CASES=f:f_n16_p1_a0:16:1:0:1 f:f_n16_p1_a2:16:1:4.2214e-4:1 f:f_n32_p1_a0:32:1:0:1 f:f_n32_p1_a1:32:1:4.2214e-5:1 f:f_n32_p1_a2:32:1:4.2214e-4:1 f:f_n32_p2_a0:32:2:0:1 f:f_n32_p2_a2:32:2:4.2214e-4:1 f:f_n32_p3_a0:32:3:0:1 f:f_n32_p3_a2:32:3:4.2214e-4:1 f:f_n64_p1_a0:64:1:0:1 f:f_n64_p1_a2:64:1:4.2214e-4:1 b:b_n16_p1:16:1 b:b_n32_p1:32:1 b:b_n32_p2:32:2 b:b_n32_p3:32:3",
+    "bash",
+    "tracks/B-emd-gw/flrw_conv/scripts/build_ic.sh"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "6b0be3c7f0cc80be94373c9564eba28be630fc54",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/flrw_conv"
+    ],
+    "outside_package": {
+      "count": 21,
+      "first": [
+        " M tracks/B-emd-gw/note/figures/fig_baseline.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_gauge.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_newton.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_pancake.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_scan.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_source.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_waves.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_waves.png",
+        " M tracks/B-emd-gw/note/figures/schem_architecture.png",
+        " M tracks/B-emd-gw/note/figures/schem_architecture.svg",
+        " M tracks/B-emd-gw/note/figures/schem_dataflow.svg",
+        " M tracks/B-emd-gw/note/figures/schem_timeline.svg",
+        " M tracks/B-emd-gw/note/tables/checked.md",
+        " M tracks/B-emd-gw/note/tables/ledger.tex",
+        " M tracks/B-emd-gw/note/tables/parameters.tex",
+        "?? tracks/B-emd-gw/note/figures/fig_r2.pdf",
+        "?? tracks/B-emd-gw/note/figures/fig_r2.png",
+        "?? tracks/B-emd-gw/shear/scripts/shear_ref.py",
+        "?? tracks/B-emd-gw/shear/tests/",
+        "?? tracks/B-emd-gw/stage/G1/verifier3/figs/v2_weyl.png"
+      ]
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/flrw_conv/scripts/build_ic.sh",
+      "role": "argv",
+      "sha256": "d1801d08a9235c98ac32586f7b68d82a8271547c544ba66c7722e1dce424c821",
+      "bytes": 2170,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261120-222902-6b0be3c",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:29:02Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 5,
+    "runs": 213,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
