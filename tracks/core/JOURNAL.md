@@ -165,3 +165,77 @@ Card time of this session: 0.10 card-hours (jobs 4429, 4430, 4431).
   core-20261115-145448-3629622 ended IDENTICAL (9 files, never-set restart bytes masked);
   that run exits 1 because its P5 part used the first, faulty set-up (entry above). P2
   HOLDS on processors and on the card.
+
+## 2026-11-20T22:10Z  session core-lead (wave 3: merge of the seven wave-2 branches, release candidate core-v0.4)
+
+State found: worktree clean at d377d12d, main merged (ff1591bd). No `RELEASE-v0.4.md`,
+no `scratch/core/exe/core_nrpic_v04/`: nothing of this step existed. No pause flag.
+
+### Review of the seven branches as maintainer (git diff main...<branch> -- athenak/src python problems scripts docs)
+
+Tips taken: core/requests-b f134b775, core/gauge 58d10777, core/scalar-2 207424d2,
+core/clump-curvature 56d7335c, core/id-solver d88ff4f9, core/requests-adf b6041dbc,
+core/collisions-2 8c03bc96 (the last two still write records; `athenak/src` of every
+branch is unchanged since the commit of its published executables [VERIFIED: `git diff
+<COMMIT of READY> <tip> -- athenak/src` empty; clump-curvature two comment lines]).
+
+- requests-b: PASS. New parameters read with DoesParameterExist (parameter dump of old
+  inputs unchanged). Two changes act without an option: (i) the 36 never-set bytes of
+  `Mesh::mesh_indcs` are zero (restart files change in these bytes, G2 OPEN item 15);
+  (ii) the sign of axy, ayz in `z4c_linear_wave.cpp` (upstream tensor was transverse only
+  for k2 = 0 or k along an axis) and the error routine compares at the final time: an
+  existing oblique linear-wave input with k2 != 0 changes. Both are documented
+  corrections (docs/UPSTREAM_DEFECTS.md).
+- gauge: PASS. Everything in `z4c_gauge_ext.hpp`, a loop of its own after the main
+  right-hand-side loop; three hook lines.
+- scalar-2: PASS. Two new files; hooks guarded by options. With all three kicks off the
+  stage no longer synthesizes noise fields (nothing reads them; dumps call
+  NoiseFieldsOfState themselves).
+- clump-curvature: PASS. One new header, additions in nrpic_cf.cpp; a Gaussian with
+  p/s keys was a fatal error before.
+- id-solver: PASS. New boundary kind `mg_robin`, `SolvePoisson`; everything behind
+  `<particles> id_solve`.
+- requests-adf: PASS with three corrections that act without an option, to be listed in
+  the changelog as behaviour changes: (1) m = 0 particles on the mesh metric are tracers
+  on timelike geodesics (releases v0.2, v0.3: null); `zero_mass = null` gives the old
+  rule; light rays (m = -t_e, at least -1e-30 in cosmo/ic/ray_ic.py line 11) are not
+  affected [VERIFIED by reading]; (2) `Driver::Finalize` no longer advances `last_time`
+  for an output written off its schedule, so the parameter dump embedded in such final
+  files changes in `last_time` lines; (3) analytic metrics honour `alpha_exc` (default
+  -1: off) and remove flagged particles. NRPIC_NIDATA grows from 3 to 4 (PPERI); the
+  restart format keeps three integers per particle.
+- collisions-2: PASS. `coll_energy` absent leaves the cell kernel arithmetic as it was;
+  known from the package (JOURNAL-coll2.md, outcome D, run core-20261119-141059-f3ccf56):
+  on a card collisional runs with the options absent differ from release v0.3 at rounding
+  (momenta 2e-14), same pairs; processors byte-identical.
+
+Merge order (small conflicts): requests-b, gauge (both z4c.cpp/hpp), scalar-2,
+clump-curvature, id-solver, requests-adf, collisions-2 (the last three share
+nrpic.cpp, particles.hpp, CMakeLists.txt, docs/FORMATS.md).
+
+### Predictions, written before the merge is built or run
+
+R  Byte regression on processors, merged executable against release core-v0.3
+   (`.work/build_cpu_v03/src/athena` of the main checkout), twelve set-ups of wave 1
+   (geo, boris, dep, east, os, jeans, binary of `tools/regress_relativistic.py`; c1-c5
+   of `analysis/rng/run_regression.py`), same arguments, new options absent. Predicted:
+   every output file identical except two classes, both intended corrections:
+   (a) restart files: the 36 never-set bytes of the mesh header (now zero);
+   (b) files that embed the parameter dump (restart, bin) and are written by
+       `Driver::Finalize` when the run stops off the schedule of an output: lines
+       `last_time = ...` of that dump only.
+   Refuted by any other differing byte: a data value, a history line, a snapshot, a
+   parameter line other than `last_time`, a missing or extra file. Then the branch that
+   causes it is found by bisection over the merge commits and left out.
+Q  Quick test of every merged branch on processors: the example its READY names, run
+   with the merged executable and with the branch's published `athena_cpu`, gives the
+   same bytes (same exceptions (a), (b), which the branch executables do not all have).
+   Refuted by a differing data byte: two branches would then interact in one kernel
+   (the push kernel of nrpic.cpp is shared by requests-adf and collisions-2; gauge's
+   journal entry 3 records that a term inside a kernel moved last digits of unrelated
+   runs). Each example must also show the physical number its READY states (same
+   executable source, so this is a check of my driver, not a new test).
+C  Card executable: the examples run to their end on one A100 (exit 0) and agree with
+   the processor runs to rounding where no deposit sum is involved (lw_oblique error
+   norms to 1e-12 relative, id-solve iteration counts equal); with deposit, agreement
+   to 1e-10 at the start. Refuted by a crash or a difference above these bounds.
