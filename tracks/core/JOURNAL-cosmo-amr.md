@@ -1076,3 +1076,19 @@ without a surface (reason 4, 5 or 6: these data have no trapped surface; T2's
 homogeneous universe gave 4), with no surface point outside the mesh. Refuted if
 `tol100` flows on (then the integral is not what stops the track's searches) or if
 `tolbig` reports a horizon in the initial data.
+
+## 2026-11-20 22:33  outcome of T16
+
+**T16, run core-20261120-222814-0b2b259** (hand-written manifest, 59 s, two processors;
+`t16_summary.json`; no figure: four status lines, read) [VERIFIED]:
+- `tol100`: both searches end at their first flow iteration with reason 3, "mean
+  expansion above hmean_tol"; the integral is 183.5 at t = 0 (area 66.8) and 189.1 one
+  step later (predicted 120 to 200): PASS. The option stops the track's searches already
+  on the initial data.
+- `tolbig`: both searches flow (3 iterations) and end with reason 4, "mean radius
+  negative", no surface point outside the mesh: PASS. On these data without a trapped
+  surface the flow passes through the centre in three steps (the step is rho H, about 6
+  for rho = 2 at t = 0), as in the homogeneous universe of T2.
+[JUDGEMENT] from the same step size: started far outside a small horizon the flow can
+jump over it; the initial radius must be close to the surface looked for. At late times
+rho H is small (2 sqrt(chi) + 2 H rho, about 0.1 at t = 11), so there the flow is gentle.
