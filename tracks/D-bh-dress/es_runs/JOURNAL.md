@@ -609,3 +609,16 @@ throughout]:
 - J5 mesh minimum of the lapse (column 16) against alpha_exc = 0.05: above 0.05 during the
   start-up (t ~ 3-20 M), as in ES-1 and V-1 (the condition is plain 1+log where alpha < 1),
   and below 0.05 at every time after t = 50 M. Refuted by alpha_min > 0.05 after 50 M.
+
+First registered judge run: D-20261120-222042-59c7d82 (`tools/es1g_judge.py` on ES-1G, ES-1,
+V-1 and core-ES; `results/es1g_judge.json`). Its figures were looked at; two had a clipped
+or overlapping axis label, and the K deficit of G2 (below) raised a question it did not
+measure. So the script gains the tracers' Lorentz factor against the normal observers,
+W = alpha dt/dtau, and v = (1 - 1/W^2)^(1/2), and wider margins, and is run once more.
+- J6 prediction (written 2026-11-20 22:37 UTC, before that second run) [JUDGEMENT, weak]:
+  the K deficit at the +x tracer of R0 = 48 M (K-hat = 0.67-0.81 of -3H(tau) from t = 10 M
+  on, `results/es_extra_es1g.json`) means the slices of ES-1G do not follow the dust: the
+  dust moves through the normal observers with v between 0.02 and 0.1 at t = 50-200 M at
+  the tracers of R0 = 48 M. Refuted if v < 0.01 there (then the slices do follow the dust
+  in velocity and the deficit of K has another source, for example the lapse gradient
+  across the shell).

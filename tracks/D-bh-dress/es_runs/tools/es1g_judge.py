@@ -11,7 +11,8 @@ runs share the tracer groups of the ES data (tags 0-139, ten groups of 14). For 
  A. lapse at the tracers of the groups R0 = 36 (wall), 40 (inner dust edge), 48 (plateau),
     56 M (outer part of the dust) against the homogeneous lapse_leak model (es1g_model.py,
     T = 2 M): max |alpha/alpha_model - 1| over 10 <= t <= t_end, the start-up window
-    0 <= t <= 10 M, smallest and largest lapse at any time;
+    0 <= t <= 10 M, smallest and largest lapse at any time; the tracers' Lorentz factor
+    against the normal observers, W = alpha dt/dtau, and v = (1 - 1/W^2)^(1/2);
  B. history (<base>.nrpic.hst): mesh maximum of the lapse (column 30) after t = 10 M; mesh
     minimum (column 16) against alpha_exc = 0.05: intervals with alpha_min > 0.05;
     finiteness, particle count, escapes, rest mass, unconverged pushes;
@@ -109,6 +110,7 @@ def main():
             tg = [t for t in g["tags"] if t in per]
             rec = dict(n=len(tg))
             late, early, amin, amax = [], [], [], []
+            wv = {}
             for t in tg:
                 p = per[t]
                 ratio = p["alpha"] / np.interp(p["t"], tm, alm) - 1.0
@@ -123,6 +125,12 @@ def main():
                 k2 = int(np.argmax(p["alpha"]))
                 amin.append((float(p["alpha"][k1]), float(p["t"][k1])))
                 amax.append((float(p["alpha"][k2]), float(p["t"][k2])))
+                # Lorentz factor of the tracer against the normal observers, W = alpha dt/dtau
+                W = p["alpha"] / np.gradient(p["tau"], p["t"])
+                for T in (10.0, 25.0, 50.0, 100.0, 150.0, 200.0):
+                    if p["t"][0] <= T <= p["t"][-1] + 1e-9:
+                        Wt = float(np.interp(T, p["t"], W))
+                        wv.setdefault(f"t={T:g}", []).append(Wt)
             if late:
                 w = max(late)
                 rec["max_abs_ratio_minus1_t>=10"] = w[0]
@@ -133,6 +141,9 @@ def main():
             if amin:
                 rec["alpha_min"] = list(min(amin))
                 rec["alpha_max"] = list(max(amax))
+            rec["W"] = {k: [min(v), max(v)] for k, v in wv.items()}
+            rec["v_rel"] = {k: [float(np.sqrt(max(0.0, 1.0 - 1.0 / min(v) ** 2))),
+                                float(np.sqrt(max(0.0, 1.0 - 1.0 / max(v) ** 2)))] for k, v in wv.items()}
             lap[f"R0={R0:g}"] = rec
         r["tracer_lapse_vs_leak_model"] = lap
         # B. history
@@ -244,7 +255,7 @@ def figures(a, data, res, models):
 
     # 1. lapse in the dust against the model, and the mesh maximum
     fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.3))
-    fig.subplots_adjust(left=0.07, right=0.98, bottom=0.15, top=0.95, wspace=0.34)
+    fig.subplots_adjust(left=0.07, right=0.98, bottom=0.15, top=0.95, wspace=0.45)
     axs[0].plot(tm, alm, color="0.4", lw=1.6, label="model, lapse_leak $T=2M$")
     axs[0].plot(tm1, alm1, **dict(fs.GUIDE, color="0.6", label="model, 1+log"))
     for n in ("ES-1G", "ES-1"):
@@ -344,7 +355,7 @@ def figures(a, data, res, models):
     # 4. overlap with core's 30 M run
     if "core-ES" in data:
         fig, axs = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 5.0), sharex=True)
-        fig.subplots_adjust(left=0.09, right=0.98, bottom=0.10, top=0.97, wspace=0.28, hspace=0.08)
+        fig.subplots_adjust(left=0.11, right=0.98, bottom=0.10, top=0.97, wspace=0.28, hspace=0.08)
         for n in ("ES-1G", "core-ES", "ES-1", "V-1"):
             if n not in data:
                 continue
