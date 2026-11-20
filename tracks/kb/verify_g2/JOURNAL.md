@@ -77,3 +77,22 @@ stated) or if the held-out rate is above the golden rate by more than 10 points.
 Prediction (R3, side effects): `kb search --db <snapshot>` opens the snapshot read-only
 and writes nothing into kb-data (mtimes of db/ and logs/ unchanged by my runs). Refuted by
 any new or changed file there attributable to my runs.
+
+## Entry 4 (22:35 UTC): parse scan, definition and prediction (step 4)
+
+Own scan `scripts/parse_scan.py` (definition of "parsed successfully" in its docstring:
+S sections, E display equations >= half of my count, B bibliography >= half of my count of
+the source bibliography when the paper cites, A abstract chunk with >= 50 % recall of the
+metadata words). Debugged on the first 40 papers (ad hoc, not reported): the first form of
+B compared with distinct cited keys and counted the `\citeauthoryear` inside inlined .bbl
+text as citations; changed to compare with the source bibliography and to drop cites inside
+`thebibliography`. My map of source lines to flat.tex (locmap.py) agrees with the tool's
+sourcemap.json on all 24 held-out ranges (start offsets identical, ends within 3 chars),
+and all 24 flat.tex files match papers.flat_sha256 of the snapshot.
+
+Prediction (P1): under the recorded parse_status, ok = 684/710 = 96.3 % (from the query of
+entry 0), ok or pdf = 687/710 = 96.8 %. Under my definition: 90-96 % (bibliography
+failures of single papers seen in the trial: 0710.5073 with 28 \bibitem and no entry,
+1005.4054 with 79 \bibitem and 17 entries); I expect B to be the weakest component and the
+rate to fall below the 95 % bar with probability about one half. Refuted if my rate is
+above 98 % or below 85 %.
