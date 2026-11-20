@@ -1093,11 +1093,11 @@ homogeneous universe gave 4), with no surface point outside the mesh. Refuted if
 jump over it; the initial radius must be close to the surface looked for. At late times
 rho H is small (2 sqrt(chi) + 2 H rho, about 0.1 at t = 11), so there the flow is gentle.
 
-(Note, 22:31: the times in the headings of today's entries were first written from memory
+(Note, 22:30: the times in the headings of today's entries were first written from memory
 and were a few minutes off; they now carry the times of `date -u` at which each entry
 was written. The order and the text of the entries are unchanged.)
 
-## 2026-11-20 22:32  message to Track A; prediction of T3d (adaptive cloud level at a level boundary)
+## 2026-11-20 22:30  message to Track A; prediction of T3d (adaptive cloud level at a level boundary)
 
 Posted to A-emd-pbh (`tracks/core/outbox/20261120T223017Z__to-A-emd-pbh__cosmo-amr-
 scouting-run-and-finder.md`): the finder of the track's decks does not search
