@@ -1,0 +1,37 @@
+{
+ "run_id": "core-20261115-163914-74b3e87",
+ "owner": "core",
+ "purpose": "Reference of the pair model for the equilibrium of the potential well at theta_inf = 0.2 and 0.05 with the equilibrium density (cells weighted with their collision rate), 2e6 pairs: expected growth of sum M H per collision for coll_energy = cell in the test G4",
+ "kind": "scouting",
+ "command": [
+  "bash",
+  "-c",
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python /data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/gradient_ref.py /data/haiyangw/nrpic/scratch/core/core-20261115-163914-74b3e87/ref_tolman_0.2.json --npair 2000000 --tolman 0.2 && /data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python /data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/gradient_ref.py /data/haiyangw/nrpic/scratch/core/core-20261115-163914-74b3e87/ref_tolman_0.05.json --npair 2000000 --tolman 0.05"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-163914-74b3e87",
+ "commit": "74b3e873fc4762dc87f343231812c6f9f580846d",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [
+  "M docs/COLLISIONS.md",
+  " M tracks/core/analysis/collisions/gradient_ref.py",
+  " M tracks/core/analysis/collisions/run_tolman.py",
+  " M tracks/core/analysis/collisions/scbox.py"
+ ],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/collisions/scbox.py",
+   "sha256": "9ff154e672483cc0c2b1684ef2746dafb810854b6f295d163316d92779791601"
+  },
+  {
+   "path": "tracks/core/analysis/collisions/gradient_ref.py",
+   "sha256": "c76e87ebafd25808c7a0ece92664f3fa80b86a4231e530694257660a7f475661"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-163914-74b3e87",
+ "host": "anta",
+ "start_utc": "2026-11-15T16:39:14Z",
+ "cores": 1,
+ "wall_time_s": 63.78,
+ "exit_status": 0,
+ "core_hours": 0.0177
+}

@@ -11,8 +11,12 @@
 //! the Kerr metric in Cartesian Kerr-Schild coordinates sampled at the cell centres,
 //! with mass and spin taken from <particles> bh_mass and bh_spin; the pushers then read
 //! it through the cubic Hermite reconstruction.  With an analytic or lattice metric
-//! source the mesh is not used.
+//! source the mesh is not used.  <problem> metric_kind selects two other fixed metrics
+//! on the mesh instead: homogeneous (constant lapse and spatial metric) and
+//! static_conformal (conformally flat, optionally with a periodic modulation of lapse,
+//! conformal factor and shift).
 
+#include <cmath>
 #include <iostream>
 
 #include "athena.hpp"
@@ -94,6 +98,59 @@ void NrpicSetHomogeneous(MeshBlockPack *pmbp) {
     adm.psi4(m,k,j,i) = pow(det, 1.0/3.0);
   });
 }
+
+// Static conformally flat metric on the mesh with a periodic modulation:
+//   alpha = alpha0 (1 + alpha_amp cos(phi)),   psi = psi0 (1 + psi_amp cos(phi)),
+//   gamma_ij = psi^4 delta_ij,   beta^x = shift_amp sin(phi),   beta^y = beta^z = 0,
+//   phi = 2 pi [ n1 (x - x1min)/L1 + n2 (y - x2min)/L2 + n3 (z - x3min)/L3 ]
+// with integer mode numbers n1, n2, n3 (periodic in a periodic box).  Selected with
+// <problem> metric_kind = static_conformal.  It is not a solution of the Einstein
+// equations and needs none: nothing evolves it.  It is a test bed for the particle
+// module in a metric that is exactly known, time independent and not flat: with all
+// amplitudes zero a constant lapse and conformal factor (collision rate in a curved
+// frame); with amplitudes a static potential well in which alpha W - beta^i u_i of
+// every particle is conserved by the geodesic motion and the distribution
+// f = F(alpha W - beta^i u_i) is an exact equilibrium, also with collisions.
+Real sc_alpha0 = 1.0, sc_psi0 = 1.0;
+Real sc_alpha_amp = 0.0, sc_psi_amp = 0.0, sc_shift_amp = 0.0;
+Real sc_k[3] = {0.0, 0.0, 0.0};       // 2 pi n_d / L_d
+Real sc_x0[3] = {0.0, 0.0, 0.0};      // lower edge of the mesh
+
+void NrpicSetStaticConformal(MeshBlockPack *pmbp) {
+  auto &indcs = pmbp->pmesh->mb_indcs;
+  auto &size = pmbp->pmb->mb_size;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int ng = indcs.ng;
+  const int n1 = indcs.nx1 + 2*ng, n2 = indcs.nx2 + 2*ng, n3 = indcs.nx3 + 2*ng;
+  const int nx1 = indcs.nx1, nx2 = indcs.nx2, nx3 = indcs.nx3;
+  const int nmb = pmbp->nmb_thispack;
+  const Real alp0 = sc_alpha0, psi0 = sc_psi0;
+  const Real aamp = sc_alpha_amp, pamp = sc_psi_amp, samp = sc_shift_amp;
+  const Real kx = sc_k[0], ky = sc_k[1], kz = sc_k[2];
+  const Real x0 = sc_x0[0], y0 = sc_x0[1], z0 = sc_x0[2];
+  auto &adm = pmbp->padm->adm;
+  par_for("nrpic_static_conformal", DevExeSpace(), 0, nmb-1, 0, n3-1, 0, n2-1, 0, n1-1,
+  KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+    const Real x = CellCenterX(i-is, nx1, size.d_view(m).x1min, size.d_view(m).x1max);
+    const Real y = CellCenterX(j-js, nx2, size.d_view(m).x2min, size.d_view(m).x2max);
+    const Real z = CellCenterX(k-ks, nx3, size.d_view(m).x3min, size.d_view(m).x3max);
+    const Real phi = kx*(x - x0) + ky*(y - y0) + kz*(z - z0);
+    const Real cs = cos(phi);
+    const Real psi = psi0*(1.0 + pamp*cs);
+    const Real psi4 = (psi*psi)*(psi*psi);
+    adm.alpha(m,k,j,i) = alp0*(1.0 + aamp*cs);
+    adm.beta_u(m,0,k,j,i) = samp*sin(phi);
+    adm.beta_u(m,1,k,j,i) = 0.0;
+    adm.beta_u(m,2,k,j,i) = 0.0;
+    adm.g_dd(m,0,0,k,j,i) = psi4;
+    adm.g_dd(m,0,1,k,j,i) = 0.0;
+    adm.g_dd(m,0,2,k,j,i) = 0.0;
+    adm.g_dd(m,1,1,k,j,i) = psi4;
+    adm.g_dd(m,1,2,k,j,i) = 0.0;
+    adm.g_dd(m,2,2,k,j,i) = psi4;
+    adm.psi4(m,k,j,i) = psi4;
+  });
+}
 } // namespace
 
 //----------------------------------------------------------------------------------------
@@ -137,6 +194,35 @@ void ProblemGenerator::NrpicGeodesic(ParameterInput *pin, const bool restart) {
       }
       pmbp->padm->SetADMVariables = &NrpicSetHomogeneous;
       NrpicSetHomogeneous(pmbp);
+      return;
+    }
+    if (pin->DoesParameterExist("problem", "metric_kind") &&
+        pin->GetString("problem", "metric_kind").compare("static_conformal") == 0) {
+      Mesh *pm = pmy_mesh_;
+      sc_alpha0 = pin->GetOrAddReal("problem", "alpha0", 1.0);
+      sc_psi0 = pin->GetOrAddReal("problem", "psi0", 1.0);
+      sc_alpha_amp = pin->GetOrAddReal("problem", "alpha_amp", 0.0);
+      sc_psi_amp = pin->GetOrAddReal("problem", "psi_amp", 0.0);
+      sc_shift_amp = pin->GetOrAddReal("problem", "shift_amp", 0.0);
+      const int mode[3] = {pin->GetOrAddInteger("problem", "mode_n1", 1),
+                           pin->GetOrAddInteger("problem", "mode_n2", 0),
+                           pin->GetOrAddInteger("problem", "mode_n3", 0)};
+      const Real twopi = 6.283185307179586476925286766559;
+      sc_x0[0] = pm->mesh_size.x1min;
+      sc_x0[1] = pm->mesh_size.x2min;
+      sc_x0[2] = pm->mesh_size.x3min;
+      sc_k[0] = twopi*mode[0]/(pm->mesh_size.x1max - pm->mesh_size.x1min);
+      sc_k[1] = twopi*mode[1]/(pm->mesh_size.x2max - pm->mesh_size.x2min);
+      sc_k[2] = twopi*mode[2]/(pm->mesh_size.x3max - pm->mesh_size.x3min);
+      if (!(sc_alpha0 > 0.0) || !(sc_psi0 > 0.0) || !(fabs(sc_alpha_amp) < 1.0) ||
+          !(fabs(sc_psi_amp) < 1.0)) {
+        std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                  << std::endl << "<problem> metric_kind = static_conformal needs "
+                  << "alpha0 > 0, psi0 > 0 and amplitudes below one" << std::endl;
+        exit(EXIT_FAILURE);
+      }
+      pmbp->padm->SetADMVariables = &NrpicSetStaticConformal;
+      NrpicSetStaticConformal(pmbp);
       return;
     }
     pmbp->padm->SetADMVariables = &NrpicSetKerrSchild;

@@ -179,10 +179,45 @@ between two divisions when `u` and `P` agree to about 1e-13.
 |---|---|---|---|---|
 | 0 | none | not to be used: a forgotten stream shows up as 0 | | |
 | 1 | `kStreamInitialData` / `STREAM_INITIAL_DATA` | sampling of particles and fields at the start of a run (step 0) | core, every track | suggested: entity = tag or cell, sub-stream = species or field. Assigned: sub-stream 16 = jitter of the particle lattice in `problems/cosmo/make_waves.py`, entity = `cell_entity` of the three lattice indices of the site, step 0, draw = axis (0, 1, 2), one uniform deviate each |
-| 2 | `kStreamCollisions` / `STREAM_COLLISIONS` | Monte Carlo collisions, decays | core (collisions), Track C | to be fixed by the collision package; suggested: entity = pair of tags, sub-stream = channel |
+| 2 | `kStreamCollisions` / `STREAM_COLLISIONS` | Monte Carlo collisions, decays | core (collisions), Track C | fixed: section 6.1 (sub-streams 0 pairing, 1 acceptance, 2 direction; 3 and above free for further channels) |
 | 3 | `kStreamStochastic` / `STREAM_STOCHASTIC` | stochastic sources of fields | core (scalar field), Track E | to be fixed by the scalar-field package; suggested: entity = cell with level, or mode; sub-stream = field component, with separate sub-streams for cells and modes |
 | 4 | `kStreamTests` / `STREAM_TESTS` | tests of this interface | core | sub-streams 1 to 6: unit test (`rng_test.cpp`); 16: test kick, entity = tag, draws 0 and 1 (mode normal), 0 and 1 (mode direction) |
 | 5 and above | | unassigned | | a new identifier is added to this table and to both source files in one change |
+
+### 6.1 Stream 2: collisions (`athenak/src/particles/nrpic_collide.cpp`, `collisions.md` section 4)
+
+Requested by Track C (`track/C-sidm:tracks/C-sidm/outbox/20261115T1320Z__to-core__rng-stream2-table.md`,
+`collide/RNG_REQUIREMENTS.md` R2, R3). Keys of one collision step; `step` is the cycle
+number of the step being taken (`pmesh->ncycle`, restored by a restart), `draw` the
+collision sub-step of the cell (0 for a cell without sub-cycling):
+
+| Sub-stream | Use | entity | entity_hi | step | draw | Call |
+|---|---|---|---|---|---|---|
+| 0 | pairing word of a particle (the cell is sorted by word, then tag) | tag | 0 | cycle | sub-step | `Bits` |
+| 1 | acceptance of a pair | smaller tag | larger tag | cycle | sub-step | `Uniform4`: u[0] acceptance (U < P), u[1] update of the heavier member (`coll_weights = nanbu`), u[2] detailed-balance acceptance (`coll_energy = particle`, U < R), u[3] unused |
+| 2 | direction of a pair | smaller tag | larger tag | cycle | sub-step | `Direction` |
+
+The three pairs of an odd cell's triple have different tag pairs, hence different keys;
+a pair formed again in a later sub-step or cycle differs in `draw` or `step`. The Python
+twin (`python/nrpic/rng.py`, `python/nrpic/collide.py`) uses the same keys bit for bit;
+the replay of dumped collision steps checks it (`collisions.md`, sections 8 and 11).
+
+Rules for tags (what the keys rely on) [VERIFIED by reading the source at 819d588]:
+- unique over the run: the tag of a particle is its position in the particle file
+  (`nrpic_io.cpp`, `NrpicLoadParticleFile`) or in the inline list;
+- never reused: the module creates no particle during a run; excised and escaped
+  particles are removed with their tags (`NrpicRemoveFlagged` copies the integer data
+  of the remaining particles);
+- unchanged by a restart (written and read with the particle data, `nrpic_io.cpp`) and
+  by the assignment to another MeshBlock;
+- 32-bit: at most 2^31 particles per run; the keys take them as 64-bit words.
+
+Limit measured in wave 1: with the metric on the mesh the particle states of two
+MeshBlock divisions differ at rounding level even without random numbers (section 9,
+first item), and one differing bit can flip a later acceptance. Collisional runs are
+therefore bit-reproducible between MeshBlock divisions only with an analytic metric
+(the track's test T10 uses one); with the mesh metric a restart is bit-identical and
+two divisions agree statistically (`collisions.md` section 8, row "Reproducibility").
 
 ## 7. What is verified
 

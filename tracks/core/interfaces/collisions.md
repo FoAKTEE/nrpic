@@ -1,6 +1,9 @@
 # Monte Carlo collisions in the particle module: design, options, outputs
 
-Status: PROPOSAL of core (branch `core/collisions`, 2026-11-15) for
+Status: accepted as the state of release core-v0.3 (decision 0011); sections 2, 4, 5, 7
+and 9 amended and section 11 added on branch `core/collisions-2` (wave 2, 2026-11-15) as
+a PROPOSAL for the next release: `<particles> coll_energy` (collisions with the metric at
+each particle). First written on branch `core/collisions` for
 `coord/INTERFACES/collisions.md`. Client: Track C (S3, brief lines 518-521 and 747-764).
 Built on the random numbers of `tracks/core/interfaces/rng.md`. The specification of the
 track (`track/C-sidm:tracks/C-sidm/collide/SPEC.md`, read at commit 4c76ca8) is followed
@@ -48,6 +51,7 @@ M/m particles of cross-section sigma_m m.
 | `coll_hist_dcycle` | 1 | cycles between records of `<basename>.coll.hst` (0: none) |
 | `coll_dump_cycle` | -1 | cycle whose collision step is dumped (before and after) for the replay test |
 | `coll_budget` | false | also evaluate the sum of M W with the metric at each particle before and after the collision step (history columns 30, 31; one metric reconstruction per particle and evaluation) |
+| `coll_energy` | absent (= `cell`) | metric with which a pair conserves its energy (section 11). `cell`: the metric of the cell centre, as in core-v0.3 (exact only where the metric does not vary across a collision cell). `particle`: the pair conserves the sum of the covariant momenta u_i and the sum of the canonical energies alpha W - beta^i u_i, each with the metric at the particle; required for runs in a gravitational field that last many collision times. The option is read only if present; its presence (either value) adds history columns 32 to 36, takes the budget of `coll_budget` particle by particle, and writes dumps of version 2 |
 | `<job> rng_seed` | 0 | seed of the run (`rng.md`) |
 
 ## 3. Algorithm
@@ -226,7 +230,7 @@ order in the step [JUDGEMENT]. The key uses the number of the step being taken
 | Use | Stream | entity, entity_hi | step | draw | Call |
 |---|---|---|---|---|---|
 | pairing word of a particle | Stream(2, 0) | tag, 0 | cycle | sub-step | `Bits` |
-| acceptance of a pair | Stream(2, 1) | smaller tag, larger tag | cycle | sub-step | `Uniform4`: u[0] acceptance, u[1] update of the heavier member (`nanbu`) |
+| acceptance of a pair | Stream(2, 1) | smaller tag, larger tag | cycle | sub-step | `Uniform4`: u[0] acceptance, u[1] update of the heavier member (`nanbu`), u[2] detailed-balance acceptance (`coll_energy = particle`, section 11.3) |
 | direction | Stream(2, 2) | smaller tag, larger tag | cycle | sub-step | `Direction` |
 
 ## 5. Outputs
@@ -258,7 +262,15 @@ same records). A new run starts the file, a restart appends. Columns:
 | 26 | n_bad_cells | occupied cells skipped because of an unusable metric |
 | 27 | sum_W | sum_P without the Moller speed and with the sigma_m of the input: sum over the tested pairs of (N - 1) sigma_m M_max alpha dt/(n_sub V) (half in a triple). sum_P/sum_W is the mean of (sigma/sigma_m) v_Mol over the tested pairs; sum_W = sum over the cells of N (N - 1) sigma_m M alpha dt/(2 V) for equal masses |
 | 28, 29 | sum_MW_species0, sum_M_species0 | sum of M W after the step and rest mass of the colliding particles of species 0 (energy exchange between two species) |
-| 30, 31 | sum_MW_particles, dE_particles | with `coll_budget = true`: sum of M W over the colliding particles with the metric reconstructed at each particle (the energy of the history column `sum_mW` and of the deposit) after the collision step, and its change over the collision step; zero otherwise |
+| 30, 31 | sum_MW_particles, dE_particles | with `coll_budget = true`: sum of M W over the colliding particles with the metric reconstructed at each particle (the energy of the history column `sum_mW` and of the deposit) after the collision step, and its change over the collision step; zero otherwise. With `coll_energy` present the change is summed particle by particle inside the cells (rounding of the changes, not of the sums) and both cover the particles of usable cells |
+| 32, 33 | sum_MH_particles, dH_particles | only with `coll_energy` present, filled with `coll_budget = true`: sum of M (alpha W - beta^i u_i) with the metric at each particle after the collision step, and its change over the collision step (summed particle by particle) |
+| 34 | n_noroot | only with `coll_energy` present: accepted pairs that were left unscattered because the energy equation of the pair had no admissible root (section 11.3) |
+| 35 | max_dlam | largest \|lam - 1\| of the collisions of the step (lam = 1: the collision of the cell frame) |
+| 36 | n_balance | collisions rejected by the detailed-balance acceptance (section 11.3) |
+
+With `coll_energy = particle`, columns 20 and 24 (dE, abs_dE) refer to the canonical
+energies: the change of M_a h_a + M_b h_b of the collided pairs, h = alpha (W - 1) -
+beta^i u_i with the metric at each particle.
 
 `<basename>.coll_dump.<cycle>.bin` (`coll_dump_cycle`): 8 bytes "NRPCOLD1", int64 N,
 int64 cycle, int64 f, doubles dt, sigma_m, w, pmax, int64 model, weights, subcycle,
@@ -266,7 +278,12 @@ nsub_max, uint64 seed, int64 triad gauge; then N records of doubles x^i (3), u_i
 (3), u_i after (3), M, alpha and gamma_xx, xy, xz, yy, yz, zz of the collision cell (7),
 proper volume of the cell (1); then N records of int32 tag, level, cell index I/f, J/f,
 K/f, n_sub of the cell, number of momentum updates of the particle. Particles without a
-collision cell have level -1.
+collision cell have level -1. Version 2 (`coll_energy` present): magic "NRPCOLD2"; after
+the triad gauge the header holds int64 energy mode (0 cell, 1 particle) and int64 flag
+(1: the records hold the metric at the particles); each particle record has ten more
+doubles: lapse, beta^x, beta^y, beta^z and the inverse spatial metric gamma^xx, ^xy,
+^xz, ^yy, ^yz, ^zz at the particle (zero if the flag is 0). Reader of both versions:
+`nrpic.collide.read_dump`.
 
 ## 6. Where it is
 
@@ -294,6 +311,9 @@ section 9.
 | pair energy M (W_a + W_b) in the cell frame | rounding (a few units in the last place of the pair energy) | in expectation |
 | momentum and energy of particles that do not collide | unchanged (bit): only accepted pairs are written | the same |
 | sum of M W with the metric interpolated to each particle (history `sum_mW`, deposited E) | not conserved: the two particles of a pair sit at different depths of the potential inside one cell, and a collision raises this sum on average (measured in the cluster: 1e-8 of the sum per collision for cells of 2 M; sections 8, 9). The design text said "random sign"; the runs showed a steady gain | the same |
+
+This table is the operator of core-v0.3 (`coll_energy` absent or `cell`). What
+`coll_energy = particle` conserves: section 11.4.
 
 ## 8. What is verified
 
@@ -371,7 +391,8 @@ Limits and open points.
   mass), so such runs need small collision cells, hence many particles, or a correction
   that is not implemented (for example a rescaling of the pair's momenta to conserve
   the energy at the particles' own positions). This is the first thing to settle
-  before science runs of track C.
+  before science runs of track C. Settled in wave 2: cause and correction
+  (`coll_energy = particle`) in section 11.
 - Cell size and rate with a density gradient: in the same cluster the expected number
   of collisions rises by 3.6 percent from cells of 2 M to 1 M and by 1.0 percent from 1
   to 0.5 M (the square of the density averaged over a cell is below the average of the
@@ -449,3 +470,253 @@ Requests.
 - Added: `coll_sigma_model`, `coll_sigma_w`.
 - Sub-cycling `measured`: the number of sub-steps comes from the two largest speeds of
   the cell, not from the first pairing (section 3.7): the track's rule biases the rate.
+
+## 11. Collisions with the metric at each particle (`coll_energy = particle`, wave 2)
+
+Work package coll2, branch `core/collisions-2`. Predictions, failed predictions and
+outcomes: `tracks/core/JOURNAL-coll2.md`. Evidence for every number: section 11.6.
+
+### 11.1 The defect of core-v0.3 and its cause
+
+The operator of sections 1 to 10 takes both momenta of a pair to the triad of the cell
+centre, scatters there, and writes the covariant components back. It conserves the sum
+of u_i and the sum of W_c = sqrt(1 + gamma_c^ij u_i u_j) of the pair exactly, with the
+metric gamma_c of the cell centre. The energy with the metric at each particle,
+W_p = sqrt(1 + gamma^ij(x_p) u_i u_j), is what the deposit hands to the spacetime; it is
+not conserved, and in the cluster of section 8 it grew steadily (1e-9 to 1e-8 of the
+particle energy per collision).
+
+Cause [VERIFIED by the test of section 11.6, rows G1, in which each of three
+consequences could have failed]: for a conformally flat metric, with
+eps_p = (psi_c/psi_p)^4 - 1, one collision changes the pair's energy at its own
+positions by (eps_a - eps_b) x (energy moved from b to a in the cell frame), to first
+order. The mean of this product is not zero when the kinetic energy seen in the cell
+frame is correlated with the position inside the cell: for a gas of local temperature
+theta ~ psi^-s the mean gain per collision is (1 - s/4) theta <(eps_a - eps_b)^2>,
+second order in the cell size and in the gradient, positive for a gas of uniform
+temperature or in equilibrium in a potential well (hotter where psi is larger), about
+zero at s = 4, negative beyond. The lapse does not enter: with a homogeneous spatial
+metric the sum of W_p is conserved to rounding whatever the gradient of the lapse. In
+the cluster (s < 4, hotter where deeper) this is a steady gain, as seen.
+
+### 11.2 What a pair must conserve
+
+Neither W at the cell centre nor W_p is the conserved energy. In a stationary metric
+the geodesic motion conserves, per particle, the energy conjugate to the time
+coordinate,
+
+    H = alpha W - beta^i u_i,        W = sqrt(1 + gamma^ij u_i u_j),
+
+with the metric at the particle (the Hamiltonian that the pushers integrate,
+`nrpic_kernels.hpp`), together with u_i where the metric does not depend on x^i: the
+canonical four-momentum (-H, u_i) = p_mu / m in the coordinate basis. A collision at
+one point conserves the sum of p_mu of the two partners; with the partners at two
+points of a cell, the sums of H_p and of u_i, each term with the metric at its own
+particle, are what carries over to the system as a whole: for particles that source
+the spacetime, the change of the total mass caused by a redistribution of momenta at
+fixed positions is, to first order, the sum of M delta H with the fields held fixed
+[JUDGEMENT: the velocity-dependent terms of the first post-Newtonian N-body energy,
+v^2 (1 + 3U)/2 + 3 v^4/8 per unit mass, are the expansion of alpha W with
+alpha = 1 - U, psi^4 = 1 + 2U; own algebra, not checked against a source]. The
+operator of core-v0.3 violates the sum of H_p by about 1.5 times the defect of the sum
+of W_p in a weak field (section 11.6).
+
+### 11.3 Algorithm (`nrpic_collide.hpp`: `CollEnergy`, `CollCentre`, `CollScatterRel`, `CollEnergyRoot`, `CollBalance`)
+
+Where the pair is evaluated: in the frame of the cell centre, as before (section 3):
+one lapse, one volume element and one triad per cell set the probability (rate per
+coordinate time alpha_c/sqrt(det gamma_c)) and the axes of the random direction; cells,
+pairing, sub-steps and random-number keys are unchanged. How the outgoing momenta are
+carried back: as covariant components u_i, unchanged (the canonical momenta, which the
+pushers integrate), and the size of the momentum exchanged is then fixed with the
+metric at each particle.
+
+Before the cells are processed, lapse, shift and inverse spatial metric are
+reconstructed at every colliding particle with the reconstruction of the pusher (mesh
+metric at t^{n+1}: `interp` hermite or bspline; analytic metric: the functor) and
+expressed in the triad of its cell: b_(m) = e^(m)_i beta^i,
+g_(mn) = e^(m)_i e^(n)_j gamma^ij. With triad momenta u_(m) of the cell,
+h_p(u) = alpha_p (W_p - 1) - b_p.u is the kinetic part of H_p and
+v_p(u) = dh_p/du = alpha_p g_p u/W_p - b_p the coordinate velocity of the particle.
+
+For a tested pair (a, b) with P = u_a + u_b:
+
+1. Transfer. dl = -(W0/(2 alpha_c)) [d + q (q.d)], q = P/2, d = v_a(q) - v_b(q),
+   W0 = sqrt(1 + |q|^2): the first Newton step from P/2 towards the split of P at
+   which both particles have the same coordinate velocity (the minimum of the pair's
+   energy at fixed P). The pair of the cell frame is u~_a = u_a - dl, u~_b = u_b + dl.
+   For equal metrics dl = 0.
+2. Probability: equation (1) of section 3.4 with the Moller speed (and the
+   cross-section) of u~_a, u~_b; acceptance with u[0] as before.
+3. Collision of the cell frame: direction nhat (key as before); wv = u~_a' - P/2 of the
+   standard collision of u~_a, u~_b.
+4. Energy: u_a' = P/2 + dl + lam wv, u_b' = P - u_a', with lam > 0 the root of
+   h_a(u_a') + h_b(u_b') = h_a(u_a) + h_b(u_b). The left side is convex in lam and below
+   the right side at lam = 0 when the split lies inside the energy surface, so the root
+   is unique; Newton iteration from lam = 1 until the residual is below 16 units in the
+   last place of the energies. If the split lies outside (a pair whose relative
+   velocity is not resolved against the metric difference) or no root is found, the
+   pair is left unscattered and counted (`n_noroot`).
+5. Detailed balance: the collision takes place with probability min(1, R), decided by
+   u[2] of the acceptance key, R the ratio of the rate of the reverse collision to that
+   of the forward one, both as densities on the surface of constant P and energy. A
+   proposal reaches the point c + r L nhat (c the split of step 4, L the stretch of the
+   centre-of-momentum frame, det L = gamma = E/sqrt(s)), and on the surface
+   delta(F) d^3q = gamma r^2 dOmega/(dF/dr), so its density is
+   (1/4 pi)(dF/dr)/(gamma r^2) and
+   R = [P' (dF/dr)_rev/(gamma' r_rev^2)] / [P (dF/dr)_fwd/(gamma r_fwd^2)],
+   primes for the state after the collision, P the proposal probability (sigma v_Mol),
+   r_fwd = lam p*, r_rev = |L'^-1 (u_a - c)|, (dF/dr)_rev = (v_a - v_b).(u_a - c)/r_rev.
+   For equal metrics R = 1 identically (the density is then the invariant two-body
+   phase space; checked by hand and to 1.2e-15 by the twin). Rejected collisions are
+   counted (`n_balance`).
+
+Why step 1: without the transfer the scheme conserves the same quantities, but in an
+equilibrium state it moves energy on average from the partner that is hotter in the
+cell frame to the other one (out of a potential well). In the non-relativistic limit a
+pair in two conformally flat metrics is a pair of two different inertial masses
+psi^4/alpha in the canonical variables; its elastic collision about the common
+coordinate velocity has the equilibrium "equal temperature at infinity", Tolman's law.
+Why step 5: beyond that limit the rate of the scheme is not symmetric between a state
+and its outcome, at first order in the metric difference times the temperature;
+without step 5 the reference of section 11.6 shows an energy transfer along the
+modulation in equilibrium of 6 percent of that of core-v0.3 at theta = 0.05 and two
+thirds of it, of the opposite sign, at theta = 0.3.
+
+### 11.4 What is conserved, and what holds to which order
+
+| Statement | `coll_energy = particle`, equal rest masses |
+|---|---|
+| rest mass of every macroparticle | unchanged (bit) |
+| mass shell | exact: W is computed from u with the metric at the particle |
+| sum of M u_i of a pair (covariant components) | rounding (u_b' = P - u_a') |
+| sum of M H_p of a pair, H = alpha W - beta^i u_i with the metric at each particle | rounding: at most 16 units in the last place of the kinetic energies (h excludes the rest energy alpha, which does not change) |
+| particles that do not collide | unchanged (bit) |
+| equilibrium f = F(H) of a stationary metric, F = exp(-H/T) | left unchanged by the collision step, given the cell populations: the transition rate between two states of a pair is symmetric (step 5) [JUDGEMENT: derivation in the journal and in `CollBalance`; tested at theta = 0.05 and 0.3 to the statistical errors of section 11.6] |
+| sum of M W_p (deposited energy) | changes at first order in the metric difference per collision, as it must when energy moves between two depths of a potential; no mean drift in equilibrium |
+| angular momentum of a pair about a centre, x^i u_j - x^j u_i | not conserved: changes by (x_a - x_b) x Delta u_a per collision (first order in the separation, zero mean in a non-rotating state), as in core-v0.3 and any scheme whose partners sit at different points |
+| covariant sum of the four-momenta at one point (parallel transport) | not used: the covariant components of two points are added in the coordinate basis; the difference from a transported sum is first order in the separation times the connection, and it is what the canonical sum above accounts for |
+| collision rate | first order in the cell size: lapse, volume element and triad are those of the cell centre, the Moller speed that of the transferred momenta; rejections of step 5 lower it by their share (0.6e-3 to 6e-3 of the proposals in the tests at theta = 0.05, 0.6 to 2.3 percent at 0.2 and 0.3) |
+| direction of scattering | isotropic in the triad of the cell centre; for a spatial metric with shear across the cell anisotropic at a particle's own frame at first order in the metric difference |
+| transport (heat conduction, viscosity) | the cell-size error of any such scheme; not measured here |
+
+With `coll_weights = nanbu` and unequal masses the pair conserves these quantities in
+expectation only, as in section 3.6. A metric that changes in time (Z4c) is taken at
+t^{n+1}; H is then the instantaneous Hamiltonian and its sum over a pair is conserved
+by the collision step in the same way.
+
+### 11.5 Options, outputs, cost
+
+- `<particles> coll_energy = cell | particle`, read only if present (absent: the
+  operator of core-v0.3; on processors every output byte-identical to it; on the card the
+  same pairs are tested and collide in every step, but the momenta after a collision
+  step differ from those of the release card executable by rounding, at most 2.1e-14 of
+  max(1, |u|) in the wave-1 boxes: the card compiler builds the changed collision kernel
+  differently; each executable is deterministic on its own). Its presence, with either
+  value, adds history columns 32 to 36 (section 5), takes the budget of `coll_budget`
+  particle by particle inside the cells, and writes dumps of version 2.
+- With `coll_energy = cell` and the option present the particles evolve exactly as with
+  the option absent (only the history gains columns).
+- Watch `n_noroot` and `n_balance` against `n_coll`: in the tests at most 1.4e-5 and
+  2.3e-2 of the proposals.
+- Cost: one metric reconstruction per colliding particle and step, and per pair a
+  Newton iteration (typically two to four steps). Measured on the processor: the
+  collision step of a 1e5-particle Tolman box takes about the same time in both modes
+  (wall time of the whole run 387 to 394 s for the four runs of
+  core-20261115-164138-cdd7c88, dominated by the implicit push).
+- Lines touched in files shared with other work packages (against main b9fbf3e; line
+  numbers of the new files):
+
+| File | Lines | Change |
+|---|---|---|
+| `athenak/src/CMakeLists.txt` | 139 | `particles/nrpic_perturb.cpp` |
+| `athenak/src/particles/nrpic.cpp` | 275 | `NrpicPerturbInit(pin);` after `NrpicCollideInit(pin);` |
+| | 390-391, 545-546 | `if (pert.on) NrpicPerturbKick(...)` before and after the push in `NrpicPush` |
+| `athenak/src/particles/particles.hpp` | 150-153 | members `energy`, `ext` of `NrpicCollideOptions` (the comment of `ext` says columns 32 to 35; they are 32 to 36) |
+| | 156-166 | struct `NrpicPerturbOptions` |
+| | 326, 330-335 | `coll_pmet`; member `pert` and the two methods of the perturbing force |
+| `athenak/src/pgen/nrpic/nrpic_geodesic.cpp` | 14-17, 19 | file comment, `#include <cmath>` |
+| | 101-153 | `NrpicSetStaticConformal` and its parameters |
+| | 199-227 | the branch `metric_kind = static_conformal` (read only if present) |
+
+  New file: `athenak/src/particles/nrpic_perturb.cpp`. The rest is inside the files of
+  the collision package (`nrpic_collide.{hpp,cpp}`, `python/nrpic/collide.py`).
+
+### 11.6 What is verified
+
+Test bed: `<problem> metric_kind = static_conformal` of `nrpic_geodesic` (deck
+`problems/tests/coll_box_static.athinput`): alpha = alpha0 (1 + alpha_amp cos phi),
+psi = psi0 (1 + psi_amp cos phi), beta^x = shift_amp sin phi on the mesh, periodic box
+of 16 x 4 x 4 cells. Reference: `scbox.pair_reference` (`tracks/core/analysis/collisions/`),
+a Monte Carlo over pairs of one cell with the metric reconstructed as the pusher does
+and the Python twin of the kinematics; it reads no file of the code. Processor runs
+with the serial build of 819d588 or f46f159 (identical `athenak/src`), card runs with
+the clean card build of f46f159.
+
+| Statement | Evidence |
+|---|---|
+| G1, cause. Operator of core-v0.3, one step on frozen particles (8e6), 14 cases: the gain of sum W_p per collision equals the pair model in all (largest \|z\| 1.5); with a homogeneous spatial metric and a lapse gradient dW = 7e-21 and -3e-21 per collision (the lapse does not enter); temperature law psi^-8 gives a loss (-1.43e-4, 23 se), psi^-4 about zero (-7e-6 against +8.3e-5 for uniform temperature); ratios for collision cells of 2 and 4 mesh cells 3.98 and 15.8 (model 4.07, 16.7): second order in the cell size; sum H_p gains 1.5 to 1.8 times as much as sum W_p where the lapse varies too | runs core-20261115-160707-6537687 (code), core-20261115-181655-b4b8e33, -181657-426b4a8, -181700-726905c, -181702-c93920b (reference), core-20261115-182037-e24d0d0 (grading); `fig_gradient.png` |
+| G2, correction, the same 14 cases: change of sum M H_p per collision 3.5e-17 to 3.5e-16 of the rest mass (rounding); sum M u_i to 2e-20 of sum M \|u\|; the energy handed along the modulation in the ten equilibrium states zero within 1.8 se (core-v0.3: -9e-3 to -1.7e-1 per unit cos phi); rejected share and its dependence on cell size and temperature as in the model (6e-4 to 2.3e-2, \|z\| <= 1.2); pairs without a root only where the model has them (5 of 3.7e5 proposals in the hottest case with cells of two mesh cells, model 3.1e-5) | the same runs |
+| A reference that drew the cell uniformly, without the rate factor alpha_c/psi_c^6 of the operator, disagreed with the code by up to 10.8 se in five cases; the corrected reference agrees: the code's rate weighting is the one stated in section 3.4 | runs core-20261115-160136/-160137/-160139-819d588 (old reference), JOURNAL-coll2.md 18:20 UTC |
+| Replay: one collision step of the code reproduced by the Python twin from the dump in 13 cases (the seven of section 8 and `coll_energy` = cell, particle, particle with cells of two mesh cells, with the Cholesky triad and the Boris pusher, with `nanbu` and masses 1:4, in the analytic Kerr-Schild metric of a mass with shift): identical tested pairs, collisions and updates; momenta within 1.3e-14 of max(1, \|u\|); untouched particles bit-identical. On the card (f46f159): the same, momenta within 1.43e-14, pairs without a root equal in code and twin | runs core-20261115-160914-0656925 (819d588), core-20261115-182109-0b69dbe (f46f159, the same counts), core-20261115-205047-6817f49 (card); `fig_replay.png` |
+| G1 and G2 on the card, one step on frozen particles (2e6), cases psi_iso, well_tolman, well_shift, psi_iso_hot, both modes: every number within 1.6 standard errors of the reference with the cell rate; `particle`: change of H_a + H_b per collision 6.7e-17 to 3.6e-16, no pair without a root | run core-20261115-204949-6817f49 (card); `fig_gradient.png` |
+| T12 of track C and G3: constant lapse 0.8 and conformal factor 1.1: `static_conformal` with `coll_energy = cell` byte-identical to the wave-1 generator `homogeneous`; `particle` the same collisions in every step, momenta within 2.8e-14 after 200 steps, no rejection, lam = 1; 248168 collisions against 248192 in the flat box with the cross-section scaled by alpha0 (z = -0.03), i.e. alpha0 psi0^6 times the flat rate per coordinate volume at equal proper density; pair counting to 1.8e-14 | run core-20261115-182101-3a6e046; `fig_static_homog.png` |
+| G4, equilibrium with streaming: Tolman gas in the well (alpha 0.8 to 1.2, psi_amp 0.1), theta_inf = 0.2, 1e5 particles, 57 collisions per particle, two seeds. `particle`: sum M H changes by 6.4e-15 in the collision steps and by -1.4e-7, +6.1e-8 in all (push included); the cos phi mode of ln(theta alpha) stays at -0.24(21) and -0.04(21) percent. `cell`: sum M H grows by 6.5e-3 and 6.2e-3 and the gas ends 3.8 and 3.4 percent colder at the bottom of the well than Tolman's law (a numerical heat flux out of the well) | run core-20261115-164138-cdd7c88 (processor); `fig_tolman.png` |
+| G4 on the card, 1e6 particles, 600 steps, about 85 collisions per particle (seed 0 complete in both modes; seed 1 cut by the time limit of the job). `particle`: sum M H changes by 9.6e-15 in the collision steps and by +4.7e-9 in all; late cos phi mode of ln(theta alpha) -0.21(6) percent (the drawn initial state reads -0.47(17)); rejected share 5.704e-3 against 5.669e-3 of the reference. `cell`: sum M H grows by 9.9e-3 (0.78 of the initial rate; first-collision-time gain 3.20e-4 per collision against 3.62e-4, z = -2.2); late mode -3.67(6) percent | runs core-20261115-205317-6817f49 (card runs), core-20261119-141051-b309a9f (analysis); `fig_tolman.png` |
+| Relativistic cluster (section 8), two steps at Knudsen number 0.03 on the processor: `cell` raises sum M H by 1.48e-5 and sum M W by 9.6e-6 of their values in 773 collisions; `particle` changes sum M H by 4.8e-18 in 772 collisions, none rejected, none without a root | run core-20261115-160913-0656925; card at Knudsen number 3 over 150 M: pending (Slurm job 4485) |
+| Option absent: every output file of the wave-1 collision tests and of the existing set-ups byte-identical to the release executable core-v0.3 or to the wave-1 runs (processor: seven existing set-ups, rng regression c1-c5, nrpic_cf tables, the collision tests P2-P11 and the curved box). Card, against the release card executable: the five existing set-ups as in wave 1 (identical where the release reproduces itself); the collisional boxes rate, relax, repro, conv_dt, curved NOT byte-identical: every count of every collision step identical (no acceptance flipped), momenta within 2.1e-14 of max(1, \|u\|), positions within 2.6e-12 (box at x = 100), starting in the first collision step; with sigma = 0 the snapshots are identical. Each card executable passes the reproducibility test on its own | 819d588: core-20261115-164154 .. -170028-cdd7c88; f46f159: core-20261115-182302-c03e628 .. -183317-9ee0bde, -182250-c03e628, -184440 .. -185333-84995cc and the rate and relaxation runs of JOURNAL-coll2.md (19:00 UTC); card: core-20261115-203944-6817f49, -204006 .. -204921-6817f49, sized by core-20261119-141059-f3ccf56 (`fig_card_diff.png`) | 819d588: core-20261115-164154 .. -170028-cdd7c88; f46f159: core-20261115-182302-c03e628 .. -183317-9ee0bde, -182250-c03e628, -184440 .. -185333-84995cc and the rate and relaxation runs of JOURNAL-coll2.md (19:00 UTC) |
+
+## 12. Fluid reference for the short-mean-free-path end (answer to Track C, assessment only)
+
+Request: `track/C-sidm:tracks/C-sidm/outbox/20261115T1320Z__to-core__grhydro-reference.md`
+(is the general-relativistic hydrodynamics of the code usable for a static spherical
+star with tabulated initial data, and at what effort). Nothing was implemented.
+
+What the tree has [VERIFIED by reading `athenak/src` at f46f159 and by one run]:
+- `dyn_grmhd/` (general-relativistic magnetohydrodynamics on a dynamical spacetime,
+  conservative finite volume, coupled to Z4c through the same matter-source interface
+  as the particles; run without magnetic field by leaving it zero), with the primitive
+  solver of `eos/primitive-solver/`: equations of state `ideal` (one adiabatic index,
+  `<mhd> gamma`), `piecewise_poly`, `compose` (three-dimensional table), `hybrid`.
+- A star generator, `pgen/dyn_grmhd/dyngr_tov.cpp` with `utils/tov/` (`tov_polytrope`,
+  `tov_piecewise_poly`, `tov_tabulated`): integrates the Tolman-Oppenheimer-Volkoff
+  equations for a polytrope, a piecewise polytrope or a tabulated barotropic relation,
+  in Schwarzschild or isotropic coordinates, fills the fluid and the metric, and can add
+  a velocity or pressure perturbation (`v_pert`, `p_pert`). It is not a built-in
+  generator: build with `PROBLEM=dyn_grmhd/dyngr_tov scripts/build_cpu.sh <dir>`.
+- Smoke run in this tree: the stock polytropic star (gamma = 2) on an octant of 32^3
+  cells of 0.8 with the spacetime evolved by Z4c, deck `problems/tests/fluid_tov_z4c.athinput`,
+  63 steps to t = 20 on one processor core in 173 s: rest mass 0.188313082 -> 0.188313078
+  (-1.9e-8); maximum density +13.2 percent and minimum lapse 0.671 -> 0.652, a steady
+  contraction under the inward velocity perturbation of the deck (ten cells per stellar
+  radius, not a converged star); Hamiltonian-constraint norm 8.4e-4 -> 1.5e-4
+  [VERIFIED: run core-20261115-161726-0656925; figure and numbers run
+  core-20261115-182216-576283c, `fig_fluid_smoke.png`].
+
+What it can give for the short-mean-free-path end:
+1. As it is: stars of one adiabatic index. A collision-dominated gas of the track's
+   particles is a relativistic monatomic gas whose index runs from 5/3 to 4/3 with the
+   temperature; with one index the module can anchor the method (onset of the radial
+   instability of a polytrope against the exact pulsation equation), not the track's
+   equilibrium.
+2. For the same equilibrium as the particle runs two additions are needed, neither
+   small: (a) an equation-of-state policy for the relativistic monatomic gas (Synge:
+   h = K3(1/theta)/K2(1/theta); or the Taub-Mathews closed form) next to
+   `eos/primitive-solver/idealgas.hpp`, with a temperature inversion in the primitive
+   recovery and its instantiation in `dyn_grmhd`; (b) initial data from the track's
+   table: the tabulated option of the TOV generator reproduces the star if the track
+   supplies the barotropic relation p(rho_0), e(rho_0) along its equilibrium (an
+   isotropic distribution function gives a perfect-fluid stress tensor, so the same
+   structure equations hold), so no new generator is needed; the generator must become
+   selectable by name next to `nrpic_cf` and be tested with our Z4c settings and static
+   refinement. Effort [JUDGEMENT]: two to three working sessions of core including the
+   tests (a static star stays static to the truncation error of the atmosphere
+   treatment; the fundamental radial frequency against the track's
+   `gravothermal/tmb.py`; convergence in the mesh), about one card-hour.
+3. What it cannot give: anything at finite Knudsen number (no viscosity or heat
+   conduction in the module), and it needs an atmosphere floor outside the star, which
+   the particle runs do not have; comparisons near the surface are limited by it.
+
+Answer to the smallest acceptable form of the request: yes, usable; with the existing
+single-index gas at once (method anchor), with the track's equilibrium after the
+equation of state of item 2(a).
