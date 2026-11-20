@@ -83,6 +83,35 @@ def read(path, names, h=None, assemble=True):
     return out
 
 
+def read_hashed(path, names, chunk=1 << 26):
+    """Read the whole file once, sequentially, hash it (sha256) and return
+    ({name: array} of a single-MeshBlock dump, hexdigest, header)."""
+    import hashlib
+    h = header(path)
+    if h["nmb"] != 1:
+        raise ValueError("read_hashed: single MeshBlock only")
+    size = os.path.getsize(path)
+    buf = bytearray(size)
+    mv = memoryview(buf)
+    hs = hashlib.sha256()
+    pos = 0
+    with open(path, "rb") as f:
+        while pos < size:
+            n = f.readinto(mv[pos:pos + chunk])
+            if not n:
+                raise IOError(f"{path}: short read")
+            hs.update(mv[pos:pos + n])
+            pos += n
+    nx1, nx2, nx3 = h["nx"]
+    base = h["hbytes"] + 80
+    out = {}
+    for n in names:
+        v = h["names"].index(n)
+        a = np.frombuffer(buf, dtype="<f8", count=h["ncell"], offset=base + 8 * v * h["ncell"])
+        out[n] = a.reshape(nx3, nx2, nx1)
+    return out, hs.hexdigest(), h
+
+
 def read_record(path):
     """A .hst record: (column names from the second comment line, data array)."""
     cols = None
