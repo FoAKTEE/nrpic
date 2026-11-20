@@ -1,0 +1,153 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-20261120-222533-ce50a86",
+  "track": "C-sidm",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "drift (i): cc2_kninf on a mesh with a level-7 region (M/8) inside |x| < 3.9 M, 300 M, collisionless control of y0 = 0.314 (mesh leg of SCAN.md block B)",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/C-sidm/C-20261120-222533-ce50a86/batch.list"
+  ],
+  "cwd": "scratch/C-sidm/C-20261120-222533-ce50a86",
+  "git": {
+    "sha": "ce50a8695c2ac57a9cda4b7168d52ebd7510fe66",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "package": [
+      "tracks/C-sidm/drift"
+    ],
+    "outside_package": {
+      "count": 6,
+      "first": [
+        " M tracks/C-sidm/note/scripts/common.py",
+        " M tracks/C-sidm/note/scripts/schem_architecture.py",
+        "?? tracks/C-sidm/note/scripts/fig_box_summary.py",
+        "?? tracks/C-sidm/note/scripts/fig_heat.py",
+        "?? tracks/C-sidm/note/scripts/schem_dataflow.py",
+        "?? tracks/C-sidm/verify_g1/heat_ref.py"
+      ]
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/C-sidm"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena",
+    "exe_sha256": "f9f2dc1273a19e7f78f89bebfd88d9eef6487de5c94aebba77b6fd35dc1be3a1",
+    "cmake_flags": [
+      "-DPROBLEM=built_in_pgens",
+      "-DAthena_ENABLE_MPI=OFF",
+      "-DAthena_ENABLE_OPENMP=OFF",
+      "-DKokkos_ARCH_ICX=ON",
+      "-DKokkos_ENABLE_DEBUG=OFF",
+      "-DKokkos_ENABLE_DEBUG_BOUNDS_CHECK=OFF",
+      "-DCMAKE_CXX_COMPILER=/data/haiyangw/nrpic/.work/build_gpu_v03/nvcc_wrapper_pinned",
+      "-DCUDAToolkit_ROOT=/usr/local/cuda-12.6",
+      "-DKokkos_ENABLE_SERIAL=ON",
+      "-DKokkos_ENABLE_CUDA=ON",
+      "-DKokkos_ARCH_AMPERE80=ON",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG"
+    ],
+    "toolchain": "nvcc 12.6 (host g++ 11.4.0)"
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/C-sidm/.venv"
+  },
+  "input": {
+    "file": "tracks/C-sidm/drift/inputs/cc2_kninf_M8.athinput",
+    "sha256": "be9f9c03838a5ffd4b927635ab939ce457cab1e338b63a46a620063817e4b391",
+    "overrides": {}
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena",
+      "role": "exe",
+      "sha256": "f9f2dc1273a19e7f78f89bebfd88d9eef6487de5c94aebba77b6fd35dc1be3a1",
+      "bytes": 102258912,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/C-sidm/drift/inputs/job_i.list",
+      "role": "list",
+      "sha256": "7884e268c8ca0384fcc0847a0a9667c2c52cbf693f836c552e035718d4e79d52",
+      "bytes": 158,
+      "tracked": true
+    },
+    {
+      "path": "tracks/C-sidm/drift/inputs/cc2_kninf_M8.athinput",
+      "role": "athinput:cc2_kninf_M8",
+      "sha256": "be9f9c03838a5ffd4b927635ab939ce457cab1e338b63a46a620063817e4b391",
+      "bytes": 2854,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "cc2_kninf_M8",
+      "input": "tracks/C-sidm/drift/inputs/cc2_kninf_M8.athinput",
+      "args": [
+        "-t",
+        "00:52:00"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:55:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.75,
+    "gpu_hours": null,
+    "particles": 100000.0
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "C-20261120-222533-ce50a86",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/C-sidm/C-20261120-222533-ce50a86",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-20T22:25:33Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "C-20261115-171059-4b70228"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 45.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.9678,
+    "gpu_hours_reserved": 1.57,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 6,
+    "runs": 122,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
