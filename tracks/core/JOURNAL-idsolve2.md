@@ -900,3 +900,16 @@ new directory and compares every file byte for byte):
     the layer keeps a right side above 1e-8.
  Then: R0 again with the new executable, the card build and a card run of `p5_mov_n64`
  against the processor run, and the second publication.
+
+## 2026-11-20, entry 13: predictions for the card run of the changed build (Kb) and R0 again
+
+Written before either run. Processor and card builds of 4266c2d exist
+(`scratch/core/tmp/idsolve2/exe_4266c2d/`).
+ **Kb** (card build of 4266c2d on one A100, at most 0.2 card-hours reserved): the changed
+ case `p5_mov_n64` and, for the branches that were not touched, `w1_far_n128` of K: the
+ same outer iterations as the processor runs of the same source (34; 16), psi and W equal
+ to 1e-12 of their maxima, P_ADM_x of `p5_mov_n64` = 0.5499999519755 to 1e-11. Refuted if
+ an iteration count differs by more than one or a field by more than 1e-9.
+ **R0b** (`regress_r0.py` with the processor build of 4266c2d against release core-v0.3,
+ the nine set-ups of R0): every output file byte-identical, as for 76add0c (the change is
+ inside the solver, which is not called without `id_solve`).

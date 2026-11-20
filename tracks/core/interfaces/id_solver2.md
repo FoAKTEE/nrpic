@@ -190,14 +190,15 @@ stated. All numbers [VERIFIED] in the runs named.
      converged at dx = 0.25 for m = 0.4 to 1). @P7@
   4. **Defect: vector part (`id_vector = true`) with a puncture that has momentum or
      spin.** The outermost layer of active cells gets a spurious right side: the ghost
-     cells at the faces hold the outflow copy of the trial curvature, from which the
-     closed-form Bowen-York curvature of the ghost position is subtracted
-     (`nrpic_idsolve.cpp` 540-555) [JUDGEMENT for the mechanism; VERIFIED for the place
-     and size from the dumped right side of P5]. In P5 it is up to 3.2e-5 per cell,
+     cells at the faces hold the trial curvature as extrapolated by the outflow
+     condition of Z4c (`bvals/physics/z4c_bcs.cpp` 171-176), from which the closed-form
+     Bowen-York curvature of the ghost position is subtracted (`nrpic_idsolve.cpp`
+     540-555) [JUDGEMENT for the mechanism; VERIFIED for the place and size from the
+     dumped right side of P5]. In P5 it is up to 3.2e-5 per cell,
      2.9e-4 of momentum over the layer (0.6 per cent of the matter's), and P_ADM of the
      far-field line is off by 5.6e-5 (1e-4 of the puncture's momentum). Not fixed in the
-     published executable. Punctures at rest (Track D) and runs without `id_vector`
-     are not affected.
+     published executable (source 76add0c). @FIX@ Punctures at rest (Track D) and runs
+     without `id_vector` are not affected.
 - **Large tori**: on a box of many Hubble lengths (G: L H = 100) the Poisson
   preconditioner of the Newton step is poor (sigma/k_min^2 of order 1e3); the inner
   solve uses all `id_lin_maxit` = 50 steps in about half of the Newton steps, and the
