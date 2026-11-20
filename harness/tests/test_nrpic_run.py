@@ -271,7 +271,39 @@ def main():
     hand_manifests(c, fx, A, used)
     # 11. the orchestrator's runs on main, beside other agents
     orch_runs(c, fx, A)
+    # 12. --wait: a local run waits for the owner's cores instead of being refused (C's lead-core-share)
+    wait_runs(c, fx, A)
     return c.done()
+
+
+def wait_runs(c, fx, A):
+    import re
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "holds 15 of 16 cores",
+                    "--cores", "15", "--background", "--", "bash", "-c", "sleep 8"])
+    m = re.search(r"registered (A-\d{8}-\d{6}-[0-9a-f]{7})", r.stdout)
+    if not c.ok(r.returncode == 0 and m, "--wait: a background run holding 15 of A's 16 cores", r.stdout + r.stderr):
+        return
+    bg = m.group(1)
+    li = os.path.join(fx["repo"], "scratch", "A-emd-pbh", bg, ".nrpic", "launch.json")
+    wait_until(lambda: os.path.isfile(li) and "pid" in json.load(open(li)), timeout=60)
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--cores", "2", "--dry-run",
+                    "--", "bash", "-c", "true"])
+    c.ok(r.returncode == 1 and "allotment 16" in r.stderr and "--wait SECONDS" in r.stderr,
+         "--wait: without it, 2 more cores are refused and the message names --wait", r.stderr)
+    t0 = time.time()
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "the lead's analysis, waits",
+                    "--cores", "2", "--wait", "120", "--", "bash", "-c", "echo after the wait"], timeout=300)
+    dt = time.time() - t0
+    m2 = re.search(r"registered (A-\d{8}-\d{6}-[0-9a-f]{7})", r.stdout)
+    c.ok(r.returncode == 0 and m2 and "waiting for cores" in r.stderr and "after the wait" in r.stdout and dt >= 25,
+         f"--wait 120: the run waited ({dt:.0f} s) until the background run ended, then ran", r.stdout + r.stderr)
+    bm = manifest(A, "A-emd-pbh", bg)
+    if bm["status"] != "completed":
+        run_cmd(A, ["finish", bg])
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--launcher", "chain",
+                    "--gpu-hours", "1", "--wait", "10", "--dry-run", "--", "x.athinput"])
+    c.ok(r.returncode == 1 and "--wait SECONDS is for local runs" in r.stderr, "--wait is refused for card launchers",
+         r.stderr)
 
 
 def orch_runs(c, fx, A):

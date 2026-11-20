@@ -65,7 +65,8 @@ worktree; then only the packages, the inputs and the shared code must be clean, 
 changes in tracks/<ID>/ are recorded in manifest.git.outside_package), --input PATH (repeatable),
 --parent RUN_ID (repeatable), --preregistered
 PATH[#anchor], --notes TEXT, --particles N, --dry-run. local: --cores N (default 1), --wall
-hh:mm:ss (kill after), --background. batch/chain: --exe PATH (default: NRPIC_GPU_EXE of the machine
+hh:mm:ss (kill after), --background, --wait SECONDS (when the owner's live local runs leave fewer
+than --cores of the allotment free, wait for them instead of refusing, at most SECONDS). batch/chain: --exe PATH (default: NRPIC_GPU_EXE of the machine
 file), --gpu-hours H. chain: --check-cmd CMD, --athena-wall hh:mm:ss (default 00:50:00).
 """
 import datetime as dt
@@ -379,7 +380,7 @@ def parse_submit(args):
     o = {"kind": None, "gate": None, "purpose": None, "launcher": "local", "inputs": [], "parents": [], "package": [],
          "preregistered": None, "notes": "", "particles": None, "cores": 1, "wall": None,
          "background": False, "exe": None, "gpu_hours": None, "list": None, "check_cmd": None,
-         "athena_wall": "00:50:00", "dry_run": False, "command": []}
+         "athena_wall": "00:50:00", "dry_run": False, "command": [], "wait": None}
     if "--" in args:
         k = args.index("--")
         args, o["command"] = args[:k], args[k + 1:]
@@ -387,7 +388,7 @@ def parse_submit(args):
     single = {"--kind": "kind", "--gate": "gate", "--purpose": "purpose", "--launcher": "launcher",
               "--preregistered": "preregistered", "--notes": "notes", "--particles": "particles",
               "--cores": "cores", "--wall": "wall", "--exe": "exe", "--gpu-hours": "gpu_hours",
-              "--list": "list", "--check-cmd": "check_cmd", "--athena-wall": "athena_wall"}
+              "--list": "list", "--check-cmd": "check_cmd", "--athena-wall": "athena_wall", "--wait": "wait"}
     i = 0
     while i < len(args):
         a = args[i]
@@ -419,6 +420,10 @@ def parse_submit(args):
     if o["launcher"] not in ("local", "batch", "chain"):
         raise H.HarnessError("--launcher local|batch|chain")
     o["cores"] = int(o["cores"])
+    if o["wait"] is not None:
+        if o["launcher"] != "local":
+            raise H.HarnessError("--wait SECONDS is for local runs (cores); card runs wait in the Slurm queue")
+        o["wait"] = float(o["wait"])
     if o["gpu_hours"] is not None:
         o["gpu_hours"] = float(o["gpu_hours"])
     if o["particles"] is not None:
@@ -563,6 +568,30 @@ def check_production(wt, o):
                                  "for the orchestrator's tag.")
 
 
+WAIT_STEP = 30
+
+
+def wait_for_cores(wt, o, lockf):
+    """--wait SECONDS (local runs; C-sidm's request lead-core-share): while the owner's live local runs
+    leave fewer than --cores of the allotment free, release the owner's lock, wait WAIT_STEP seconds and
+    look again, at most SECONDS in all; then go on (the regular check follows under the lock)."""
+    env = H.build_env(wt)
+    deadline = time.time() + o["wait"]
+    said = 0.0
+    while True:
+        b = budget_state(wt, env, o["gate"])
+        if b["cores_busy"] + o["cores"] <= b["cores_allotted"] or time.time() >= deadline:
+            return
+        if time.time() - said >= 300:
+            print(f"nrpic-run: waiting for cores: {b['cores_busy']} of {b['cores_allotted']} busy in live local runs "
+                  f"of {wt.owner}, {o['cores']} asked; at most {deadline - time.time():.0f} s more", file=sys.stderr,
+                  flush=True)
+            said = time.time()
+        fcntl.flock(lockf, fcntl.LOCK_UN)
+        time.sleep(WAIT_STEP)
+        fcntl.flock(lockf, fcntl.LOCK_EX)
+
+
 def submit(wt, args):
     o = parse_submit(args)
     owner = wt.require_owner()
@@ -577,6 +606,8 @@ def submit(wt, args):
     # one lock per owner: the budget check and the run id hold across the owner's worktrees
     lockf = open(os.path.join(lockdir, f"nrpic-run.{owner}.lock"), "w")
     fcntl.flock(lockf, fcntl.LOCK_EX)
+    if o["wait"]:
+        wait_for_cores(wt, o, lockf)
     clean = check_clean(wt, o)
     check_production(wt, o)
     check_python_env(wt, o)
@@ -670,7 +701,8 @@ def submit(wt, args):
     else:
         if o["cores"] < 1 or b["cores_busy"] + o["cores"] > b["cores_allotted"]:
             raise H.HarnessError(f"refused: {o['cores']} cores asked, {b['cores_busy']} busy in live local "
-                                 f"runs of {owner}, allotment {b['cores_allotted']} at a time (decision 0006)")
+                                 f"runs of {owner}, allotment {b['cores_allotted']} at a time (decision 0006)"
+                                 + ("" if o["wait"] else "; --wait SECONDS waits for them instead"))
 
     sha = wt.head()
     manifest = {
