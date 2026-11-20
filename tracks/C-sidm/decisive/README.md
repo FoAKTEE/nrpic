@@ -7,7 +7,8 @@ stable side of the fluid onset contract relative to its control as the gravother
 hypothesis says (D3)? `JOURNAL.md` holds the go/no-go reading of the card executable (entry
 1: GO), the predictions (entries 2 and 4, written before the runs) and the outcomes.
 
-State: see "Results" and "Pending" below (this file is rewritten as runs finish).
+State (2026-11-20 22:34 UTC): paused by `locks/PAUSE` with D1 job 1 queued; decks, predictions,
+D3 initial data and the tested analysis exist; no card outcome yet.
 
 ## Contents
 
@@ -51,12 +52,55 @@ harness/bin/nrpic-run submit --launcher local --cores 1 --kind scouting --gate G
 
 ## Results
 
-(filled in as the card runs finish)
+None yet: no card run of this package has run (paused, see Pending).
 
 ## Pending
 
-(filled in at the end)
+Paused at 22:34 UTC on 2026-11-20 (`locks/PAUSE`); see `JOURNAL.md` entry 5.
+
+| Job | List | Runs | State |
+|---|---|---|---|
+| D1 job 1 | `inputs/d1_job1.list` | cc2_kn10_part_s1, cc2_kn10_part_s2 | run C-20261120-221846-797bdbe, Slurm 4737, queued |
+| D1 job 2 | `inputs/d1_job2.list` | cc1_kn10_part_s1, cc1_kn10_part_s2 | not submitted |
+| D3 job 3 | `inputs/d3_job3.list` | d3_kninf, d3_kn1_part_s1 | not submitted |
+| D3 job 4 | `inputs/d3_job4.list` | d3_kn10_part_s1, cc2_kn10_cell_s2 | not submitted |
+
+Each job: smoke run (t = 0.5 M) plus two runs of 300 M at about 3.45 s per M, about 0.6
+card-hours; package total about 2.5 of the 3.0 allowed. Submit one at a time, only when
+`squeue -u haiyangw -o '%i %j %T'` shows fewer than two C-* jobs and the pause flag is
+absent, from `/data/haiyangw/nrpic/wt/C-sidm` with a clean `tracks/C-sidm/decisive`:
+
+```bash
+harness/bin/nrpic-run submit --launcher batch --list tracks/C-sidm/decisive/inputs/d1_job2.list \
+  --wall 00:55:00 --gpu-hours 0.65 --exe /data/haiyangw/nrpic/scratch/core/exe/core_collisions-2/athena_gpu \
+  --kind scouting --gate G2 --package tracks/C-sidm/decisive --particles 100000 \
+  --purpose "decisive D1 job 2 of 2: CC1 (King b=1 y0=0.334032) at Kn=10 with coll_energy=particle, seeds 1 and 2, 300 M; predictions decisive/JOURNAL.md entry 2"
+harness/bin/nrpic-run submit --launcher batch --list tracks/C-sidm/decisive/inputs/d3_job3.list \
+  --wall 00:55:00 --gpu-hours 0.65 --exe /data/haiyangw/nrpic/scratch/core/exe/core_collisions-2/athena_gpu \
+  --kind scouting --gate G2 --package tracks/C-sidm/decisive --particles 100000 \
+  --purpose "decisive D3 job 3: King b=1 y0=0.26 control (Kn=inf) and Kn=1 with coll_energy=particle, 300 M; predictions decisive/JOURNAL.md entry 4"
+harness/bin/nrpic-run submit --launcher batch --list tracks/C-sidm/decisive/inputs/d3_job4.list \
+  --wall 00:55:00 --gpu-hours 0.65 --exe /data/haiyangw/nrpic/scratch/core/exe/core_collisions-2/athena_gpu \
+  --kind scouting --gate G2 --package tracks/C-sidm/decisive --particles 100000 \
+  --purpose "decisive D3/D1 job 4: King y0=0.26 at Kn=10 (particle) and CC2 Kn=10 cell mode seed 2; predictions decisive/JOURNAL.md entries 2 and 4"
+# after each job: harness/bin/nrpic-run finish <run id>; then the analysis over all finished jobs:
+harness/bin/nrpic-run submit --launcher local --cores 1 --kind scouting --gate G2 \
+  --package tracks/C-sidm/decisive --purpose "decisive: D1/D3 analysis against predictions" -- \
+  python3 tracks/C-sidm/decisive/scripts/analyze_decisive.py --out '$NRPIC_RUN_DIR' \
+  --batch C-20261120-221846-797bdbe <later run ids>
+```
+
+D2 (cc2_kninf and cc2_kn10 in particle mode, one more refinement level, `coll_cell_factor =
+2`; 2-5 card-hours by the review's estimate) does not fit the cap of this package after D1
+and D3; no decks are written for it.
 
 ## Requests
 
-(filled in at the end)
+To the lead of C-sidm:
+1. Resume this package after the pause (JOURNAL entry 5 says what to do first); D1 job 1 may
+   already have run.
+2. Until D1 has run, read the wave-2 collapse times with the reference numbers of the
+   analysis test (run C-20261120-222941-595c263): the relative lapse drop of the cell-mode
+   seed-1 runs is D50 = 0.012-0.013 and D100 = 0.043-0.051 at Kn = 10, and part of every
+   "relative" number is the controls' own rise (alpha_c +0.011 and +0.016 at 100 M).
+3. D2 needs its own card allotment (2-5 card-hours); it is not in this package's cap.

@@ -252,3 +252,25 @@ sign that stays within the scatter of D1 (b). A relative contraction with a coll
 runs collapse whatever the King model on this mesh, which would point at the method
 (collision cells of M/4 with 2.3 particles, heat transport at the cell size) rather than at
 the onset [JUDGEMENT].
+
+## 2026-11-20 22:34 UTC Entry 5: paused (locks/PAUSE present since about 22:33 UTC)
+
+The pause flag appeared while I waited for D1 job 1 (`locks/PAUSE`: five-hour window at 97
+percent). Per decision 0019 nothing new is submitted; job 4737 (run
+C-20261120-221846-797bdbe) stays queued and may run on its own.
+
+Where this package stands:
+- Done: go/no-go (GO, entry 1); D1 decks and lists; predictions D1 (entry 2) and D3 (entry 4);
+  D3 model built and checked (run C-20261120-222427-6b27eea), its figure and geometry (run
+  C-20261120-222949-2712568); D3 decks and lists; analysis script tested on the wave-2 runs
+  (run C-20261120-222941-595c263, PASS).
+- Queued: D1 job 1, Slurm 4737, pending at 22:34 UTC behind core's two-card job 4733.
+- Not submitted: D1 job 2 (`inputs/d1_job2.list`), D3 job 3 (`inputs/d3_job3.list`), D3 job 4
+  (`inputs/d3_job4.list`, which also holds cc2_kn10_cell_s2 of D1). Commands in README
+  "Pending". No D1 or D3 outcome exists yet; every prediction clause is open.
+- On resuming: if 4737 has finished, close it (`harness/bin/nrpic-run finish
+  C-20261120-221846-797bdbe`), run the analysis with `--batch C-20261120-221846-797bdbe`,
+  record the outcomes of D1 (a), (b), (f), (g), (h) for CC2 particle mode and the cell s1
+  reference, size the next job from the measured s per M, and submit the next list when
+  fewer than two C-* jobs are queued (order: d1_job2, d3_job3, d3_job4). Card time so far:
+  none used by this package (4737 not started); reserved 0.65.
