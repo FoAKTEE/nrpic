@@ -465,3 +465,99 @@ on the x1 curve from t = 1 to 10). Numbers at t = 10, TT diagnostic [VERIFIED]:
 Verdict for criterion 1 [JUDGEMENT]: the one open sub-item is closed; both polarizations of
 X follow the code's integrator prediction at N = 64 once the rounding floor of the diagonal
 metric is lowered, and the floor itself behaves as rounding.
+
+## 2026-11-20 22:30 Predictions of F2 and of the step test XS (run B-20261120-222735-4a8f0e1)
+
+`scripts/predict_r1.py`, `results/predictions_r1.json`, `figs/predictions_r1.png` (looked
+at). New model `wlib/z4c_symbol.py`: the whole linearized Z4c system of the code about flat
+space (h_ab, A_ab, Gamma^a, Khat, Theta, chi, alpha; 25 amplitudes per mode), with the
+code's stencils (first derivative s_a, second derivative q_a, mixed derivatives s_a s_b,
+Kreiss-Oliger on every variable) and its rk4. Checks before use: with kappa1 = 0 or along
+(1,1,1) it reproduces the two-variable predictor of predict.py to 1e-10 relative (TT
+amplitude and phase), with a non-TT part <= 2e-14 (rounding) [VERIFIED, same run].
+
+**Why (1,2,0) differs from (1,1,1) [derivation, JUDGEMENT until the run].** The generator
+sets Gamma^i = 0 and continuum-TT data. The code's Ricci uses the evolved Gamma^i
+(z4c_calcrhs.cpp line 436), so at t = 0 every component of h obeys the same scalar
+equation and the TT part evolves exactly as along (1,1,1). The discrete divergence enters
+only through the constraint damping term -2 kappa1 (Gamma - Gamma_d) of the Gamma equation
+(line 657): Gamma_d = d_b h_ab is not zero for (1,2,0) (relative size of the discrete
+divergence 4.1e-4, 7.1e-6, 6.3e-7, 1.1e-7 at N = 16, 32, 48, 64, order 5.9), so Gamma^i
+grows at rate 2 kappa1 and feeds a non-TT part into A and h. The TT amplitude feels this
+only at second order in the divergence.
+
+### F2: k = 2 pi (1,2,0), amp 1e-6, amp_cross 5e-7, phase 1 rad, four periods (t = 4/sqrt 5)
+
+| N | steps | amplitude error | phase error (rad) | 1 - w_h/k | non-TT at +k (max) | abs Gamma at +k (max) | Weyl-6 symbol e1 / e2 |
+|---|---|---|---|---|---|---|---|
+| 16 | 115 | -6.677e-3 | +4.321e-3 | 1.5e-4 | 2.1e-5 | 2.6e-11 | -1.2e-3 / -3.1e-4 |
+| 32 | 229 | -6.308e-5 | +9.479e-5 | 2.6e-6 | 3.6e-7 | 4.5e-13 | -2.0e-5 / -5.1e-6 |
+| 48 | 344 | -3.997e-6 | +1.173e-5 | 2.3e-7 | 3.2e-8 | 4.0e-14 | -1.8e-6 / -4.6e-7 |
+| 64 | 458 | -5.764e-7 | +2.924e-6 | 4.1e-8 | 5.7e-9 | 7.1e-15 | -3.3e-7 / -8.2e-8 |
+
+Local orders: amplitude 6.7, 6.8, 6.7 (Kreiss-Oliger), phase 5.5, 5.2, 4.8 (the space part,
+order 6, gives way to the RK4 part, order 4), non-TT and Gamma 5.9, 6.0, 6.0. Theta and Khat
+stay below 4e-14 (second order in the divergence). The two models agree on amplitude and
+phase to 1.2e-8 absolute at N = 16 and to 4e-11 at N = 64.
+
+- **F2-1** (basis). At t = 0 the TT amplitudes equal amp/(2i), amp_x e^{i}/(2i) to <= 1e-10
+  relative: the generator's e+, ex are gw_diag's pol_basis for (1,2,0) too (theta = pi/2).
+  Refuted if > 1e-9.
+- **F2-2** (TT evolution). Amplitude and phase errors of both polarizations at the last dump
+  equal the table to 10 per cent at N = 32, 48, 64 and to 30 per cent at N = 16.
+- **F2-3** (polarization). W_x/W_+ = 0.5 e^{i} to <= 1e-8 at every N and time.
+- **F2-4** (the new sector). The mode coefficients of Gamma^i at +k from the dumps follow
+  the model (abs value within 20 per cent where it is above 1e-15, the same nodes in time),
+  and the non-TT part of h at +k follows the model within 30 per cent; both fall as N^-6.
+  Refuted if Gamma or the non-TT part at +k is absent, does not fall with N, or is off by
+  more than a factor 2 at N <= 48.
+- **F2-5** (Weyl vs TT). Order-6 Weyl vs TT between |e2| and 2 |e1| of the table (test F at
+  (1,1,1) measured 1.2 |e1|); spectral Weyl vs TT <= 1e-9 at every N (test F: 1.2e-11).
+  The non-TT part at +k does not enter Psi_4 along khat at first order (its mbar mbar
+  projection vanishes). Refuted outside these bands.
+- **F2-6** (backward part). Maximum of the backward combination over time within a factor 2
+  of |1 - w_h/k| (F4 reworded): 1.5e-4, 2.6e-6, 2.3e-7, 4.1e-8.
+- Whole-field non-TT fraction: the second-order part seen along (1,1,1) (1.44e-4 at four
+  periods, A t^2) plus the first-order part at +k above; at N = 16 both are near 1e-4.
+
+Cost: serial processor N = 16, 32, 48 about 1, 8 and 45 minutes at 1.4e4 zone-cycles per
+second; N = 64 on the card.
+
+### XS: the time and space parts of the X error
+
+2S predictor on the coupled background (`wlib/predict.py`, predict_flrw_coupled) at t = 10:
+
+| N | dt_exp = 0.01 (reference) amp / phase | dt_exp = 0.001 amp / phase | 1e-4 (space part) amp / phase | time part at 0.01 amp / phase |
+|---|---|---|---|---|
+| 16 | -7.048e-5 / 8.304e-5 | -7.841e-5 / 7.198e-5 | -7.841e-5 / 7.198e-5 | 7.9e-6 / 1.1e-5 |
+| 32 | 1.317e-6 / 3.065e-6 | -5.929e-7 / 1.146e-6 | -5.937e-7 / 1.147e-6 | 1.91e-6 / 1.92e-6 |
+| 48 | 4.250e-7 / 5.879e-7 | -3.155e-8 / 1.021e-7 | -3.233e-8 / 1.024e-7 | 4.57e-7 / 4.86e-7 |
+| 64 | 1.399e-7 / 2.762e-7 | -3.11e-9 / 1.917e-8 | -3.89e-9 / 1.951e-8 | 1.44e-7 / 2.57e-7 |
+
+Steps: 3585 at every N with 0.001 (every step limited by the expansion); the time part left
+at 0.001 is 7.8e-10 in amplitude and -3.5e-10 in phase at every N. The space part converges
+at order 7.0-7.2 (amplitude, Kreiss-Oliger) and 6.0 (phase, the sixth-order stencil).
+Background: max |a/a_ex - 1| 1.8e-11 and |alpha/a - 1| 3.3e-11 at 0.001 (4.3e-8, 6.5e-8 at
+0.01).
+
+- **XS-1** (cross polarization). With dt_expansion = 0.001 the cross-polarization errors at
+  t = 10 equal the 0.001 column within 5 per cent at N = 16, 32, 48 and within 20 per cent
+  (or 1e-9 absolute) at N = 64. Then the reference X errors are the time part (column 5)
+  plus the space part (column 4) [the split]. Refuted otherwise.
+- **XS-2** (background). Max |a/a_ex - 1| and |alpha/a - 1| <= 1e-9 (the predictor gives
+  2e-11 and 3e-11; the code may add rounding). Refuted if above 1e-8.
+- **XS-3** (the 2e-8 spectral-Weyl vs TT offset). If it comes from the background error
+  through the calH h' term (judgement of 2026-11-19 15:50), it falls by at least a factor
+  100, to <= 2e-10. Refuted (and the judgement with it) if it stays above 2e-9.
+- **XS-4** (rounding of the plus polarization). The polarization-ratio error is rounding
+  that accumulates per step: with 8.7 (N = 32), 6.8 (48), 5.4 (64) times more steps, |arg R|
+  at t = 10 grows by a factor between sqrt(steps ratio) and steps ratio over the reference
+  run at the same N (reference 2.4e-8, 6.0e-8, 1.08e-7). Refuted if it does not grow or
+  grows by more than 1.5 times the steps ratio.
+
+Runs: N = 16 and 32 on processors with the executable of the reference runs
+(core/requests-b athena_cpu, sha256 c32a1389..., `scripts/run_expanding.sh` with
+EXTRA="particles/dt_expansion=0.001"; it rewrites the same data, compared by checksum with
+the reference data), N = 16, 32, 48, 64 on the card with the reference card executable and
+the reference data (`inputs/card_r1.list`, with F2 at N = 64): card prediction about 8
+minutes, <= 0.2 card-hours.
