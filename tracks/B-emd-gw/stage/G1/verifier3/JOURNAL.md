@@ -65,3 +65,53 @@ Predictions P1.5-P1.7:
   a^2(delta + eps T(t) e cos(K.x)) with K_ij = -(1/2a) d_t gamma_ij gives exactly the
   expressions above. Refuted by any non-zero residual (then my Weyl reference for X is
   wrong and V3-X must use the sympy expression instead).
+
+## Entry 2 (14:30): V1 outcome (run B-20261120-222342-8cda367; failed first attempt B-20261120-222232-3d7d57e, a matrix-sum TypeError in my script)
+
+All seven predictions hold [VERIFIED, results/v1.json, figs/v1_T.png]:
+- P1.1: generator (axx..azz) = e+ and (bxx..bzz) = ex of the spherical basis to 2.2e-16 for
+  k = (1,1,1), and for 200 random k to 8.3e-16; transverse and traceless to 4e-16; e:e = 2,
+  e+:ex = 0. So the corrected generator uses exactly my basis (theta-hat, phi-hat).
+- P1.2: At(generator) = K_ij(linear) and d_t K_ij = R_ij(linear), d_t^2 h = lap h: sympy 0.
+- P1.3: background E, B = 0; first-order E = (w^2/2) h, B = -(1/2) sym(eps d hdot): sympy 0;
+  Psi4(+n) = hdd_+ - i hdd_x exactly and Psi4(-n) = 0.
+- P1.5: closed form T vs DOP853 to 1.9e-12 (T) and 8.7e-13 (T'); FD residual 5.3e-7 of
+  k^2 max|T| = the O(1e-6) error of the h = 1e-3 central difference; sympy: j1(x)/x and
+  y1(x)/x solve h_xx + (4/x) h_x + h = 0. c1 = -9.0975, c2 = 0.43808; T(10) = -5.0e-4
+  (t = 10 is 0.015 after a zero at 9.985: the final dump sits next to a node, so errors at
+  t = 10 must be measured relative to the envelope, not to |T(10)|). Zeros of T:
+  1.46, 2.89, 4.315, 5.735, 7.15, 8.57, 9.985; extrema 0.27 (t ~ 0.6), then decaying
+  roughly as 1/tau^2.
+- P1.6: lapse condition and Friedmann equation with rho_0 = 3/(8 pi): sympy 0.
+- P1.7: first-order E and B of the 3+1 formulas for a^2(delta + eps T e cos) equal my
+  expressions (sympy 0 once a > 0 is declared); the ADM evolution equation with dust at rest
+  is satisfied at order eps^0 (Friedmann acceleration) and at order eps^1 exactly when T
+  obeys T'' + 2(a'/a)T' + k^2 T = 0 (sympy 0). So the mode equation of the input comment is
+  the one the Einstein equations give in this gauge.
+
+## Entry 3 (14:35): V2 predictions (scripts/diag.py, scripts/v2_tests.py), before the run
+
+- P2.1 (reader, double, test F N16 t = 0, run B-20261119-142016-ee73a03): gt equals
+  delta + h_exact to <= 2.3e-16 (rounding of 1 + h), At equals -hdot/2 to <= 1e-21,
+  chi = alpha = 1 and Khat = Theta = Gam = beta = 0 exactly; header time 0, cycle 0, 22
+  variables of 8 bytes, one block. The same data re-blocked into 8 shuffled blocks read back
+  identically (0); a truncated file is refused. Refuted by any larger difference.
+- P2.2 (reader, single precision, the 32^3 z4c_linear_wave along x of run
+  B-emd-gw-20261115-112947-b7b431d, amp 1e-6): reader = float32(closed form) exactly or
+  within one float ulp (1.2e-7 at 1); refuted by a larger difference (byte order, offsets).
+- P2.3 (TT, non-cubic box 32x24x20, random TT waves + gauge + trace parts): Lambda(TT) = TT,
+  Lambda(gauge + trace) = 0, Lambda^2 = Lambda, trace and divergence of Lambda T vanish, all
+  to <= 1e-13 relative; mode coefficient of 0.7 cos(K.x + 0.4) gives 0.7 and 0.4 to 1e-15.
+- P2.4 (Weyl, flat wave of test F on 16^3 and 32^3, spectral derivatives): E, B and the
+  Psi4-inferred complex amplitudes agree with the linear exact values to a relative error
+  of order the amplitude (~1e-6 at amp 1e-6, ~1e-5 at x10: the nonlinear terms);
+  Psi4(-n) / (w^2 A) ~ 1e-6. With sixth-order differences instead: E error ~5e-5 at 16^3
+  and ~1e-6 at 32^3 (order 6). Refuted if the spectral error does not scale with amplitude.
+- P2.5 (Weyl and TT, EdS mode on 32^3 at t = 0, 0.6, 3, 9, eps x1 and x10): E_+, B_x of my
+  code minus my exact linear expressions, relative, ~eps (1e-6 .. 1e-5) and x10 at x10;
+  E_x, B_+ likewise; the TT route (h = Lambda(gt - delta), h' = Lambda(-2 a At)) recovers
+  eps T and eps T' to O(eps^2).
+- P2.6 (initial dumps of test X, N16 and N64): gamma = delta exactly, K equals the exact
+  K_ij(t = 0) to round-off, alpha = 1, and Lambda(-2 At) has the mode coefficients
+  2c_+ = 2e-6 (real) and |2c_x| = 1e-6 with phase 1.0: then make_expanding_ic.py's basis is
+  mine. Refuted if the phase or sign differs (I would then compare in its basis).
