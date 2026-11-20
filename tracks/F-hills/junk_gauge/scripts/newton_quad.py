@@ -23,7 +23,9 @@ WT = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
 
 def read_input(path):
     txt = open(path).read()
-    blk = txt.split("<problem>")[1].split("<output")[0]
+    # the block header on a line of its own (the file's comments also name "<problem>")
+    blk = re.split(r"^<problem>\s*$", txt, flags=re.M)[1]
+    blk = re.split(r"^<\w+>\s*$", blk, flags=re.M)[0]
     val = dict(re.findall(r"^\s*(\w+)\s*=\s*([-+0-9.eE]+)", blk, re.M))
     n = int(val["ncomp"])
     m = np.array([float(val[f"comp{i}_mass"]) for i in range(n)])

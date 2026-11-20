@@ -279,3 +279,6 @@ baselines_p1.json`), which I estimate at 1.25e-7 for a_b = 5.11, m_b = 0.25 [ari
 pericentre of the binary's centre of mass at t = 104.35 (the Newton track of E6,
 `baselines_p1.json` "t_cm_pericentre") within 0.5; L above twice the binary's value from about
 t = 60-85 on (the passage's own quadrupole grows as the c.o.m. orbit closes in) [JUDGEMENT].
+Run F-20261120-223314-b1b64fa FAILED (exit 1): the input reader split the file at the first
+"<problem>", which is in the header comment, and found no `ncomp`. Fixed (block header on a line
+of its own); rerun below, prediction unchanged.
