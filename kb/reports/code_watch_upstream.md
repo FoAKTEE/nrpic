@@ -1,12 +1,17 @@
-# kb watch upstream: IAS-Astrophysics/athenak, 20261115T132754Z
+# kb watch upstream: IAS-Astrophysics/athenak, 20261120T221926Z
 
-Tool kbtool 0.1.0. Compared with: clone record IAS-Astrophysics__athenak.json (2026-11-15T13:02:32Z). Snapshot:
-`kb-data/meta/github/watch/IAS-Astrophysics__athenak/20261115T132754Z.json`; bare clone `kb-data/raw/watch/IAS-Astrophysics__athenak/20261115T132754Z.git`.
+Tool kbtool 0.1.0. Compared with: 20261115T154646Z.json. Snapshot:
+`kb-data/meta/github/watch/IAS-Astrophysics__athenak/20261120T221926Z.json`; bare clone `kb-data/raw/watch/IAS-Astrophysics__athenak/20261120T221926Z.git`.
 
 ## Branch tips
 
 - default branch `main` at c5a0d7f9155a70149931bf0be5a4ffb673f2532a
-- 124 branches; new 0, removed 0, moved 0
+- 124 branches; new 1, removed 1, moved 3
+  - new: `m1-nucleon-recoil` bde60760ee36
+  - removed: `spill/largesim-m1`
+  - moved: `ahfind` b06948a716a5 -> 2716d1bae91a
+  - moved: `project/bbh` d3148a1b87c9 -> 7d1874b8a5b4
+  - moved: `project/largesim-m1` f17686697d9e -> f872e6b20e4d
 - names containing pic, vlasov, nrpic or deposit (brief 12.7): none
 
 ## Branches named in brief line 130
@@ -92,8 +97,9 @@ Branches whose `src/z4c` mentions particles: 0.
 
 ## Changes of src/particles and src/z4c since the previous snapshot
 
-- first inspected snapshot: this one is the baseline
+- `project/bbh`: src/z4c/z4c_wave_extr.cpp
+- `project/largesim-m1`: src/z4c/z4c.hpp, src/z4c/z4c_amr.cpp, src/z4c/z4c_amr.hpp, src/z4c/z4c_tasks.cpp
 
 ## Message for core
 
-Nothing that brief 12.7 asks to report.
+Something to look at: src/particles or src/z4c changed on: project/bbh, project/largesim-m1
