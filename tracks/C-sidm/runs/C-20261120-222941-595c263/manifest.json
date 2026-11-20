@@ -1,0 +1,108 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-20261120-222941-595c263",
+  "track": "C-sidm",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "decisive: test of analyze_decisive.py on the wave-2 cluster runs (cell mode, seed 1, controls); prediction in decisive/JOURNAL.md entry 3",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/C-sidm/decisive/scripts/analyze_decisive.py",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "595c263e1959f2a40ed79f09592bdcb2deba4c99",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "package": [
+      "tracks/C-sidm/decisive"
+    ],
+    "outside_package": {
+      "count": 11,
+      "first": [
+        " M tracks/C-sidm/heat/scripts/an_mode.py",
+        " M tracks/C-sidm/note/scripts/common.py",
+        " M tracks/C-sidm/note/scripts/ledger.py",
+        " M tracks/C-sidm/note/scripts/run_all.py",
+        " M tracks/C-sidm/note/scripts/schem_architecture.py",
+        "?? tracks/C-sidm/note/scripts/fig_box_summary.py",
+        "?? tracks/C-sidm/note/scripts/fig_cluster.py",
+        "?? tracks/C-sidm/note/scripts/fig_heat.py",
+        "?? tracks/C-sidm/note/scripts/fig_onsets.py",
+        "?? tracks/C-sidm/note/scripts/schem_dataflow.py",
+        "?? tracks/C-sidm/verify_g1/v1_step.py"
+      ]
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/C-sidm"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/C-sidm/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/C-sidm/decisive/scripts/analyze_decisive.py",
+      "role": "argv",
+      "sha256": "f02fcb9549ab20a29456001529d11946fb96a98fffa663a644196dd370b96dfc",
+      "bytes": 17829,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/C-sidm/C-20261120-222941-595c263",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:29:41Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 45.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.2417,
+    "gpu_hours_reserved": 1.4,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 2,
+    "runs": 133,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
