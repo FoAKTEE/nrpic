@@ -917,3 +917,48 @@ compactness.
 
 Also in this run, for the prediction of the binary of test TF: the TE run cut at 125 M
 (`binary_evolution_check.py --tmax 125`), no prediction (a reference number).
+
+(Clock: the heading of the FX and EN predictions above says 22:33Z; `date -u` in the same
+command gave 22:25Z. The FX/EN run was registered at 22:29Z as
+`core-20261120-222933-0a01a56`, after seven refusals for busy cores of the owner.)
+
+### Test D: the metric at the particles, from the restart files of TC (predictions written 22:34Z, before the registered run)
+
+The card queue holds eight jobs of the program and two of them are core's, so the card
+test of the gauge (TF, prepared below) cannot be submitted now. The claim "the coordinate
+lines crowd inside the moving cluster" can be tested without a card: the runs of TC
+wrote restart files at t = 0, 25, 50 M. `metric_at_particles.py` restarts a case on one
+processor without a step (the time limit is reached; one output block added through
+`-i`; one minute each) and reads the Z4c variables at the particles of the snapshot of
+the same time (cell that holds the particle). A smoke run on `v0` at 50 M (not
+registered; no number of it is used below) showed that the reader works.
+
+In coordinates carried by the normal observers of a slice on which the cluster moves,
+the lines pass through the cluster at `f V`, `f = alpha_0^2 psi_0^-4 w` (0.47 at the
+centre, 1 far away): slower inside, so they pile up there, `gamma_xx` falls below
+`psi^4` and, with the determinant of the conformal metric fixed, `g~_xx < 1 < g~_yy`.
+A compression of the lines along x by c gives `g~_xx = c^(4/3)`, `g~_yy = g~_zz =
+c^(-2/3)`, a cluster longer in coordinates by 1/c, and every `u_x` smaller by c.
+
+Cases: `v0.3` at t = 0 and 50 M, `v0.1` at 0 and 50 M, `v0` at 50 M.
+- D1 (closure of the reading). `sum m W` with the metric at the particles equals the
+  history value within 0.3 per cent in every case. At t = 0: mass-weighted `g~_xx`,
+  `g~_yy`, `g~_zz` equal 1 to 1e-5 (conformally flat data), and the budget of the
+  coordinate speed, `sum m (alpha gamma^xj u_j/W - beta^x)/sum m`, is 0.570 v to 0.590 v
+  for both speeds (measured over 0 to 2 M: 0.575 v, 0.581 v).
+- D2 (crowding). At 50 M the mass-weighted means are: `v0.3`: `g~_xx` between 0.89 and
+  0.95, `g~_yy` and `g~_zz` between 1.02 and 1.06 (from the stretch of 6.5 per cent:
+  c = 0.94, `g~_xx` = 0.92, `g~_yy` = 1.04); `v0.1`: `g~_xx` between 0.975 and 0.995;
+  `v0`: all three within 0.005 of 1.
+- D3 (the momentum). `sum m u_x/gamma_xx^(1/2)`, the sum of the components along the unit
+  vector of the x lines, does not change under a stretch of the x coordinate. Its change
+  from 0 to 50 M: between -1 and -6 per cent for `v0.3` (where `sum m u_x` fell by 11.8)
+  and between -1 and -4.5 per cent for `v0.1` (3.8): what is left is the change of slice.
+- D4 (the speed). The budget of the coordinate speed at 50 M equals the speed measured
+  over 48 to 50 M within 0.02 v in both moving runs; the mean shift at the particles is
+  below 0.1 v in magnitude (the driver has built little).
+Refuted if `g~_xx` of `v0.3` at 50 M is within 0.02 of 1: then the lines do not crowd,
+the growth of the cluster along x is a real elongation, the drift of `sum m u_x` is not
+explained by coordinates, and a loss of momentum on the mesh is the remaining candidate.
+If D2 holds but D3 leaves more than 8 per cent at v = 0.3, the crowding is there but
+does not account for the drift.
