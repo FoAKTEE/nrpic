@@ -707,3 +707,40 @@ Predictions:
   rms H_o/<[H]> about 8 eps1 rms(I) t/12 = 1e-6 to 1e-5 at s = 100 (rms I about 1e-4 s
   at t = 0). The record <|H|/[H]> of N1p exceeds that of K1p by 1e3 or more. Refuted if
   the control's odd part is within a factor 100 of the proper run's H.
+
+## Entry 15, 2026-11-20 22:36Z: predictions for item (d), a second realisation of P256, before the run
+
+No merged executable of core exists (`scratch/core/exe/core_nrpic_v04` and `_v05` absent at
+22:35Z; main carries no tag core-v0.4), so (d) is the second realisation: P256 of job A with
+`<job> rng_seed = 20261120` instead of 20261115, everything else equal (`inputs/jobD.list`,
+executable core/scalar-2 a58e95b, mode file `modes_n4096.txt`, Courant 0.25, to t = 8.5).
+Analysis: `ladder_analysis.py extract --seed 20261120` and `judge`, then
+`scripts/seed2_compare.py` against the first realisation (E-20261115-172618-f948386,
+analysed in E-20261115-194633-9e04ed8).
+
+What depends on the realisation [JUDGEMENT]: D_n = |R^NR_n/R^lin_n - 1| divides out alpha_n,
+so its linear part (the spatial and temporal truncation of the mode, entries 6 and 11) is
+the same for both seeds mode by mode; only the second-order part of R^NR (about 1e-6 at
+|n| <= 4, core's T12b) and the coupling between modes change with the seed.
+
+Predictions (refuted where stated):
+- PD1 (A1): box means of phi, Pi, K within 2e-11 of the Friedmann reference (seed 1:
+  2.0e-12, 8.6e-12, 2.0e-12), e-folds within 1e-8 (seed 1: 1.3e-9). PASS; refuted above
+  1e-4.
+- PD2 (A2): max D_n over |n| <= 32 at N_f is set by the shell |n| = 32 (linear spatial
+  error, seed 1: 1.208e-4 at |n|^2 = 1024) and equals seed 1 within 10 percent; over all
+  modes 4.5e-3 within 10 percent (top shells); the shell maxima for |n| >= 16 agree within
+  10 percent, those for |n| <= 4 (second order, a few 1e-6) may differ by a factor up to
+  3. The task's form: A2 for |n| <= 32 of the same order as seed 1 (ratio in 0.25-4).
+  Refuted (A2 fails) if any mode with |n| <= 32 reaches 0.02.
+- PD3 (A3): 1051 modes, max |Q_n(N_f)/Q_n(N_k + 4) - 1| below 1e-5 (seed 1: 3.4e-6), drift
+  of ln|R^NR|^2 1.38e-4 per e-fold (the full-MS drift, the same for both seeds to 1e-6).
+  PASS; refuted at 0.01 or 2.5e-3 per e-fold.
+- PD4 (spectrum): shell ratios against the reference with the same alpha_n within 2.5e-4
+  for |n| <= 32 (seed 1: 1.6e-4, set by |n| = 32), Delta_lin/slow-roll formula 1.0104-1.0109
+  (the reference does not depend on the seed, so the same digits), and a fraction of
+  shells beyond 3/sqrt(M_shell) of the ensemble between 0 and 1 percent (another
+  realisation: a different scatter).
+- PD5 (constraint record): the largest <|H|/[H]> and <|M|/[M]> within 20 percent of seed 1
+  (5.1e-11, 4.0e-4), both set by the first-order truncation of the top shells.
+- Cost: 1.2-1.4 card-s per step, 0.45-0.55 card-hours (seed 1: 1811 s, 0.503).

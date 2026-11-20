@@ -1,0 +1,3 @@
+# card job (d) of wave 3 (JOURNAL entry 15): a second realisation of P256 (job A of wave 2) with another
+# <job> rng_seed, same executable core/scalar-2 a58e95b, same input and mode file; nothing else differs.
+P256s2 tracks/E-stoch-inf/ladder/inputs/sr_base.athinput mesh/nx1=256 mesh/nx2=256 mesh/nx3=256 meshblock/nx1=256 meshblock/nx2=256 meshblock/nx3=256 scalar_field/noise_nmax2=4096 scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/inputs/modes_n4096.txt scalar_field/noise_mode_scale=1.0 time/tlim=8.5 job/rng_seed=20261120
