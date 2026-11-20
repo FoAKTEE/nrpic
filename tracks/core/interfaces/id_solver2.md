@@ -137,7 +137,7 @@ New files: `athenak/src/particles/nrpic_idsolve.cpp`, `nrpic_idfar.hpp`,
 ## 5. Tests
 
 Predictions and outcomes, failed predictions included: `tracks/core/JOURNAL-idsolve2.md`
-entries 1 to 9. Scripts, numbers, figures: `tracks/core/analysis/idsolve2/` (`test_*.py`,
+entries 1 to 12. Scripts, numbers, figures: `tracks/core/analysis/idsolve2/` (`test_*.py`,
 `*_numbers.json`, `figs/`). Processor build of 76add0c (the published source) unless
 stated. All numbers [VERIFIED] in the runs named.
 
@@ -145,14 +145,14 @@ stated. All numbers [VERIFIED] in the runs named.
 |---|---|---|
 | R0 | without `id_solve` nothing changes | all 59 output files of nine set-ups (geodesics with both pushers, deposit on a refined mesh, East's cosmology, Oppenheimer-Snyder on a refined mesh, Jeans, a binary on four multigrid levels, the Newtonian mode isolated and periodic) byte-identical to release core-v0.3 (run core-20261119-154842-de22625, `regress_r0.json`) |
 | R1 | `id_far = robin` is the first pass | for matter at rest every output byte-identical to the first-pass executable; moving matter: psi to 6e-15, W to 5e-16 (the new term of sigma) (run core-20261119-145332-1ac049d) |
-| W1 | far field of a moving Gaussian (faces at 8 sigma) against the semi-analytic continuum W | relative error of W_x at the x-face centres: plain fill -8.6e-3, -9.3e-3; far field +9.3e-4, +2.4e-4 at 32, 64 cells (falls by 3.9 per halving); largest error over the outermost layer 2.2e-2 (plain) against 1.2e-3, 3.0e-4 (far); P_ADM of the record equals sum m u_x to 3e-13; the surface integral of (L W)_xj converges at second order to it with either fill (core-20261119-145332-1ac049d; 128 cells: @W128@) |
+| W1 | far field of a moving Gaussian (faces at 8 sigma) against the semi-analytic continuum W | relative error of W_x at the x-face centres: plain fill -8.6e-3, -9.3e-3; far field +9.3e-4, +2.4e-4 at 32, 64 cells (falls by 3.9 per halving); largest error over the outermost layer 2.2e-2 (plain) against 1.2e-3, 3.0e-4 (far); P_ADM of the record equals sum m u_x to 3e-13; the surface integral of (L W)_xj converges at second order to it with either fill (core-20261119-145332-1ac049d; 128 cells: run core-20261119-155750-c923762: far field +5.9e-5 at the x-face centres and 7.5e-5 over the layer, plain fill -9.5e-3 and 2.25e-2) |
 | W2 | off-centre moving Gaussian | largest error over the outer layer 5.6e-4 (lmax 4), 0.116 (lmax 0), 0.108 (plain fill); J_ADM = -2 P_ADM to 6e-10 (the 1.4e-9 of the momentum outside the sphere of the moments) |
 | C1 | coupled solve with fast particles (u_x = 1, W = 1.4) | 30 and 36 outer iterations at 32 and 64 cells; max\|H\| of the monitor 0.57 -> 2.1e-11; max\|M\| 0.20 -> 3.3e-7 |
-| B | end-to-end: expanding ball (M = 1, Rb = 10, edge 2) with a triaxial Zel'dovich displacement and its momenta; solve and evolution to t = 2 | @B@ |
+| B | end-to-end: expanding ball (M = 1, Rb = 10, edge 2) with a triaxial Zel'dovich displacement and its momenta; solve and evolution to t = 2 | region norms (interior r < 7, shell 7 to 13.5, face layer) at 32, 64, 128 cells. Before the solve: max\|H\| 2.8e-3, shell mean 4e-4, interior mean \|M\| 6e-5 (two finer meshes). After: max\|H\| 1e-13 to 2e-12 in interior and shell; interior mean \|M\| 5.2e-6, 8.9e-7, 3.2e-7, the level of the solved sphere (the vector part ends by the stall rule). Evolution: mean \|H\| of the solved Zel'dovich ball over that of the solved sphere at t = 2 is 1.00, 1.02, 1.43 (interior) and 1.00, 1.00, 1.15 (shell), both converging (factors 4 and 9 per halving); the unsolved data stay at 2.6e-4 in the shell (12.5 times the solved at 128 cells); the scalar part alone leaves 2.4 times the shell \|H\| and 4.9 times the interior \|M\| (128 cells); the face layer has the same mean \|H\| (1.3e-4) in all four data sets. Failed bounds: max\|H\| before (predicted 1e-2), reduction of the interior \|M\| (47, 67, 173; predicted 100) (run core-20261119-153416-3d26b50) |
 | C | refined meshes (static), torus | Gaussian on one and two static levels: mode code 20 and 22 outer iterations; the run's own monitor at t = 0 at 2.4e-12 to 2.0e-11 on every level, level boundaries included; central error equal to the uniform run of the finest cell size (-5.01e-3 against -5.03e-3); torus with a refined cube and a nested lattice: max\|H\| 2.6e-10 and 1.15e-9 on the two levels (0.73 and 1.86 without the solve); torus with moving matter at density contrast up to 9: converges (24 to 33 iterations); the refined Zel'dovich ball evolves like the uniform run of the same cell size to 1 per cent in the matter. Failed: the vector part on a refined mesh stalls at the level boundary (max\|M\| 9.8e-2 -> 2.0e-2 on the refined torus) (runs core-20261119-153510-d1eaa30, analysis -161309-b04b4dd) |
 | G | Track A's CMC peak (gradient-expansion data on K = -3H, eps_i = 0.2, e = 0.2, torus of 100 Hubble lengths) solved by the code from psi = 1 | converges for mu = 0.03, 0.3, 0.5, 0.7 in 8 to 11 outer iterations (Track A's Python solve diverged at 0.5); solved psi equals psi_GE to c = 1.0e-7, 3.6e-7, 5.2e-7, 6.3e-7 of the perturbation at 64^3 (1.6e-5 at 32^3 for mu = 0.5); monitor after 3e-10 to 3e-9; with the vector part the same psi and max\|M\| 1.6e-7 -> 1.7e-9 (run core-20261119-160329-ab0aa92) |
-| P | punctures | @P@ |
-| K | card build on one A100 | @K@ |
+| P | punctures | P1 vacuum Bowen-York puncture (m = 1, P = 0.5) against the multipole reference: 5 (stencil) and 20 to 22 (code, radius 3) outer iterations; **the error of u does not fall with the cell size: 2.8e-4, 1 per cent of u at the puncture, at 32, 64, 128 cells with the faces at 16 m** (section 6); mode code with radius 1 is unusable below 128 cells (error 3e-2), with radius 3 it equals mode stencil and leaves the monitor at 1e-12 outside the radius. P2 puncture at rest in a matter shell against the radial reference: second order in both modes (error over 3 < r < 12: 1.1e-4, 2.9e-5, 7.3e-6; at the puncture 1.4e-5, 3.5e-6, 8.8e-7; M_psi within 1.1e-4, 2.7e-5, 6e-6 of the ADM mass 1.448858). P3 the same on two static levels: mode code 25 outer iterations, error at the puncture 6.0e-6, monitor 2e-13 to 6e-13 on every level. P4 three punctures with momenta and a spin: P_ADM and J_ADM of the record exact; **u at the punctures not converged at dx = 0.25** (section 6). P5 puncture with momentum in a moving shell, both parts in mode code: converges, max\|M\| 5.6e-4 -> 2.1e-7; **defect at the faces (section 6)**. @P67ROW@ (runs core-20261119-161842-b92b298, -165458-ecdaa7c, -170050-f228951, -170028-77f7173) |
+| K | card build on one A100 | card build of 76add0c, four cases at 128 cells (vacuum puncture in both modes, moving Gaussian with the far field, solved Zel'dovich ball with its evolution to t = 2): the same outer iterations and linear steps as the processor build; psi to 2e-15, W to 3.5e-13, region means of \|H\| at t = 2 to 2e-10; 7 to 57 s per case, 0.032 card-hours (card run core-20261119-154414-2506b80, analysis core-20261120-220527-e2690ef) |
 
 ## 6. Limits and what a track must know
 
@@ -175,14 +175,36 @@ stated. All numbers [VERIFIED] in the runs named.
   the vector part solves as on a uniform mesh (interior mean of |M| the same), and the
   evolution of the refined Zel'dovich ball matches the uniform run to 1 per cent (C, Z).
   The scalar part is not affected.
-- **Punctures**: @PUNC@
+- **Punctures**:
+  1. Use `id_residual = stencil`, or `code` with `id_puncture_radius` of 3 bare masses or
+     more (with 1 the monitor's error on psi_s^4 enters the data: 3e-2 of u at dx = m/2,
+     P1). After a stencil solve the monitor next to a puncture stays at 1e-2 to 1e-1:
+     that is the monitor's error on the singular part, not an error of the data (P2: u
+     converges at second order there).
+  2. With momentum or spin the error of u has a floor set by the distance R of the
+     faces, not by the cell size: 2.8e-4 for P = 0.5 m with the faces at 16 m, 1 per cent
+     of u at the puncture, nearly uniform in space (P1). @P6@ M_psi is low by the same
+     tail (0.026 of 1.1456 at R = 16 m).
+  3. The source (1/8) psi^-7 Abar^2 of a puncture peaks at r = 3m/8 for its momentum and
+     at r = m/12 for its spin; u at the puncture needs cells well below that (P4: not
+     converged at dx = 0.25 for m = 0.4 to 1). @P7@
+  4. **Defect: vector part (`id_vector = true`) with a puncture that has momentum or
+     spin.** The outermost layer of active cells gets a spurious right side: the ghost
+     cells at the faces hold the outflow copy of the trial curvature, from which the
+     closed-form Bowen-York curvature of the ghost position is subtracted
+     (`nrpic_idsolve.cpp` 540-555) [JUDGEMENT for the mechanism; VERIFIED for the place
+     and size from the dumped right side of P5]. In P5 it is up to 3.2e-5 per cell,
+     2.9e-4 of momentum over the layer (0.6 per cent of the matter's), and P_ADM of the
+     far-field line is off by 5.6e-5 (1e-4 of the puncture's momentum). Not fixed in the
+     published executable. Punctures at rest (Track D) and runs without `id_vector`
+     are not affected.
 - **Large tori**: on a box of many Hubble lengths (G: L H = 100) the Poisson
   preconditioner of the Newton step is poor (sigma/k_min^2 of order 1e3); the inner
   solve uses all `id_lin_maxit` = 50 steps in about half of the Newton steps, and the
   Newton iteration still converges in about 10 steps (G).
 - **Cost** (processor, one core): moving Gaussian at 64 cells with the far field about
   as the first pass; Zel'dovich ball at 64 cells with both parts in mode code 400 s
-  (44 outer iterations), at 128 cells @COST128@; CMC peak at 64^3 115 to 150 s on two
+  (44 outer iterations), at 128 cells 31 minutes for the solve (41 outer iterations) and 58 minutes for the 16 steps to t = 2; on one A100 the whole case takes 57 s; CMC peak at 64^3 115 to 150 s on two
   cores.
 
 **Not done or not tested**:
@@ -197,7 +219,7 @@ stated. All numbers [VERIFIED] in the runs named.
    refers to the trial psi).
 5. Puncture combinations not run: punctures with a table of format 2, with `nrpic_cosmo`;
    spinning punctures with matter.
-6. Card executable: @CARD@
+6. Card executable: tested in K on uniform meshes at 128 cells. Not run on a card: refined meshes, the torus, the CMC peak, P2 to P7.
 
 ## 7. Answers to the requests
 
@@ -229,4 +251,12 @@ with a non-conformally-flat metric, and acceptance (c) (an evolution: Track A's)
 
 **Track F (three punctures) and Track D (dressed punctures)**: punctures of `nrpic_cf`
 enter the solve as psi_s + u (section 1, item 4); P1 to P5 show what is verified.
-@PANSWER@
+Verified: one Bowen-York puncture in vacuum against the multipole reference, to the floor
+set by the distance of the faces (section 6, item 2); a puncture at rest inside matter at
+second order, on uniform and on refined meshes (P2, P3: the case of Track D's dressed
+black holes); three punctures with momenta and a spin with exact P_ADM and J_ADM of the
+record (P4; u at the punctures needs finer cells than a uniform mesh gives); a puncture
+with momentum inside moving matter (P5; converges, with the defect of section 6, item 4,
+at the faces). For Track F: put the faces far (the floor falls as P^2/R^2), refine about
+each puncture, and treat P_ADM of the record as good to 1e-4 of the punctures' momentum
+until the defect is fixed.
