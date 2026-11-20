@@ -398,7 +398,7 @@ as predicted; the 1 M lattice near the hole did not raise the start norms above 
 No figure for this item: two cycles hold no time evolution worth plotting; the t = 0
 numbers above are read from the files listed.
 
-## Entry 6 (2026-11-20 14:35 PST, wave 3, a second helper who did not build ES-F): second-agent check of the ES-F construction, before any card time
+## Entry 6 (2026-11-20 14:23 PST, wave 3, a second helper who did not build ES-F): second-agent check of the ES-F construction, before any card time
 
 Script: `check_esf_construction.py` (written here; it imports none of esf_data.py,
 es_model.py, fluxio.py; density profile re-implemented from the README's statement, the
