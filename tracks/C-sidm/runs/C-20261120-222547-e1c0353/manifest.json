@@ -1,0 +1,114 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-20261120-222547-e1c0353",
+  "track": "C-sidm",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "heat P-pf: particle files of the T8 processor runs (regenerated vs shared) and first snapshot vs particle file of every case (T8 processor runs, card job A)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/C-sidm/heat/scripts/check_pfiles.py",
+    "-",
+    "C-20261119-154032-e450dfc",
+    "C-20261119-162015-d97abac",
+    "C-20261119-162353-7985a9a",
+    "C-20261119-150335-73fd40f",
+    "--pairs",
+    "C-20261119-162353-7985a9a/pfiles/n500000_th0.003_e0.2_s1_sig1_box31.4159x1.9635/heat.nrp:C-20261119-154032-e450dfc/pfiles/n500000_th0.003_e0.2_s1_sig1_box31.4159x1.9635/heat.nrp",
+    "C-20261119-162353-7985a9a/pfiles/n500000_th0.003_e0.2_s2_sig1_box31.4159x1.9635/heat.nrp:C-20261119-162015-d97abac/pfiles/n500000_th0.003_e0.2_s2_sig1_box31.4159x1.9635/heat.nrp"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "e1c035332d6050e6134d785c7707558b238805fc",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "package": [
+      "tracks/C-sidm/heat"
+    ],
+    "outside_package": {
+      "count": 6,
+      "first": [
+        " M tracks/C-sidm/note/scripts/common.py",
+        " M tracks/C-sidm/note/scripts/schem_architecture.py",
+        "?? tracks/C-sidm/note/scripts/fig_box_summary.py",
+        "?? tracks/C-sidm/note/scripts/fig_heat.py",
+        "?? tracks/C-sidm/note/scripts/schem_dataflow.py",
+        "?? tracks/C-sidm/verify_g1/heat_ref.py"
+      ]
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/C-sidm"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/C-sidm/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/C-sidm/heat/scripts/check_pfiles.py",
+      "role": "argv",
+      "sha256": "0f11e453add7ec32bdf10a2bffcd45cac510a4c7c7d90e90c42b693fcb877316",
+      "bytes": 4341,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/C-sidm/C-20261120-222547-e1c0353",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:25:47Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "C-20261119-154032-e450dfc",
+    "C-20261119-162015-d97abac",
+    "C-20261119-162353-7985a9a",
+    "C-20261119-150335-73fd40f"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 45.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0142,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 8,
+    "runs": 124,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
