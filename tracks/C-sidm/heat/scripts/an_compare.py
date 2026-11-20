@@ -167,13 +167,43 @@ def cmd_cardcpu(outdir, paths):
             ax.legend(loc="best", fontsize=7)
             fs.save(fig, os.path.join(outdir, f"cardcpu_{gname}"))
             plt.close(fig)
+    # post hoc (added 2026-11-20 22:33, after the first cardcpu run C-20261120-223108-
+    # 240574f): at theta 0.1 and 1 only two processor seeds per k lambda, so s2_cpu is
+    # poorly known (one degree of freedom). The design Monte Carlo gives nearly the same
+    # relative fit error at the three temperatures (fit_rel_sd of run
+    # C-20261119-144117-37b2328 within 20 percent), so the unit variance of the eight
+    # theta = 0.003 processor seeds at the same k lambda is used as the noise model of
+    # every group: z_ref per card seed, and z_mean of card mean against processor mean.
+    ref = res["groups"].get("T7_th0.003_e0.2")
+    if ref is not None:
+        s2ref = {r["k_lambda"]: r.get("s2_cpu") for r in ref["rows"]}
+        res["posthoc_noise_from"] = "T7_th0.003_e0.2 processor seeds (s2_cpu per k lambda)"
+        for gname, G in res["groups"].items():
+            for r in G["rows"]:
+                s2 = s2ref.get(r["k_lambda"])
+                if not s2 or "cpu_mean" not in r:
+                    continue
+                cpu = [s for s in r["seeds"] if not s["card"]]
+                card = [s for s in r["seeds"] if s["card"]]
+                var_cpu = s2 * np.sum([1.0 / s["N"] for s in cpu]) / len(cpu) ** 2
+                for c in r["card"]:
+                    c["z_ref"] = float((c["f"] - r["cpu_mean"]) / np.sqrt(var_cpu + s2 / c["N"]))
+                if card:
+                    var_card = s2 * np.sum([1.0 / s["N"] for s in card]) / len(card) ** 2
+                    mcard = float(np.mean([s["f"] for s in card]))
+                    r["card_mean"] = mcard
+                    r["z_mean_ref"] = float((mcard - r["cpu_mean"]) /
+                                            np.sqrt(var_cpu + var_card))
+                    r["se_diff_ref"] = float(np.sqrt(var_cpu + var_card))
     with open(os.path.join(outdir, "cardcpu.json"), "w") as fh:
         json.dump(res, fh, indent=1, default=float)
     short = {k: dict(extrap=v.get("extrapolation_weighted"),
                      rows=[dict(kl=r["k_lambda"], f_w=r["f_w"], se=r["f_w_se"],
                                 cpu=(r.get("cpu_mean"), r.get("cpu_se"), r.get("cpu_n")),
-                                card=[(c["seed"], c["N"], round(c["f"], 4), round(c["z"], 2))
-                                      for c in r.get("card", [])])
+                                card=[(c["seed"], c["N"], round(c["f"], 4), round(c["z"], 2),
+                                       round(c.get("z_ref", float("nan")), 2))
+                                      for c in r.get("card", [])],
+                                z_mean_ref=r.get("z_mean_ref"))
                            for r in v["rows"]])
              for k, v in res["groups"].items()}
     print(json.dumps(short, indent=1, default=float))
