@@ -455,3 +455,14 @@ sigma(Kn = 10) in 0.01-0.06 per M for both models; sigma(Kn = 1)/sigma(Kn = 10) 
 1.5 and 10; sigma(CC1) >= sigma(CC2) at each Kn in central values (collapse times 72.5 <
 77.8 M and 184 < 207 M, `threshold_scan/README.md`); window-choice error below 25 percent
 of sigma. Refuted per clause.
+
+### Entry 9, amendment before any run (2026-11-20, while writing the code)
+
+Two details of the definition changed before anything was run: (i) the periodogram's
+trend is 1, x, x^2 plus either x^3 or e^{s t} with s on 40 values in [0.002, 0.5] per M,
+whichever leaves the smaller residual (a cubic misfits an exponential that grows by e^4.6
+over the segment by about the oscillation's amplitude); (ii) the boxcar of v2 has exactly
+the width P (records as cells, fractional end weights, `growth.boxcar_exact`); the old
+`boxcar` rounds the width to an odd number of records, which leaves 1/k of an
+oscillation of period P. The noise propagation uses these weights. The predictions are
+unchanged.

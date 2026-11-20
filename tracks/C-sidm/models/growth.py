@@ -29,6 +29,26 @@ half-swing      the first paper's oscillation growth (analysis/diag/cluster_osc.
 growth          of paper/scripts/make_tables.osc_fit): 4 M boxcar of alpha_c, extrema at
                 least 15 M apart between 8 M and t_end - 4 M, half the difference of
                 successive alternating extrema, straight-line fit against time.
+
+Wave 3 (JOURNAL.md entry 9): growth_fit_v2, the estimator with the fix of diagnosis D1.
+growth_fit (above) is kept unchanged and selectable for comparison.
+
+growth rate v2  d = y - y_ref (or y/y_ref - 1); y_ref a number (the model's equilibrium
+                value as the probe samples it: probe_reference), an array on the record
+                times (a control run), or 'first' (the old y(0)). Boxcar of width one
+                oscillation period P (supplied, or measured by oscillation_period on d up
+                to the first time |d| reaches hi); the boxcar has exactly that width
+                (boxcar_exact: fractional end weights). Initial amplitude A_init = rms of the
+                raw d over the first period; window from lo = k_lo A_init to hi (as
+                growth_fit otherwise), at least one e-fold. sigma = slope of ln|d_s|;
+                se = (se_noise^2 + se_fit^2)^(1/2): se_noise propagates white record noise
+                (level std(diff d)/sqrt 2) exactly through boxcar and slope, se_fit is
+                growth_fit's inflated residual error with n_eff = window / width.
+probe reference the central probe of the particle module (athenak/src/particles/
+                nrpic_io.cpp:73-135) averages the lapse of the eight cells around the
+                origin, a MeshBlock corner, i.e. at isotropic radius r_p = (sqrt 3/2) dx;
+                a run started with `lapse = table` therefore reads alpha_table(r_p) at
+                t = 0, not the model's alpha_c.
 """
 
 import os
@@ -197,3 +217,314 @@ def swing_growth(t, a, box=4.0, sep=15.0, t_lo=8.0, t_hi_margin=4.0):
     return dict(a0=a0, slope=float(p[0]), intercept=float(p[1]), n_pairs=len(te),
                 extrema=[(float(t[i]), float(sm[i] - a0)) for i, _ in ext],
                 t_pairs=[float(x) for x in te], half_swing=[float(x) for x in amp])
+
+
+# ============================================================================ wave 3: fixed estimator
+sys.path.insert(0, os.path.join(REPO, "python"))
+
+
+def read_deck(path):
+    """Sections of an AthenaK input file: {section: {key: value string}} (comments cut)."""
+    out, sec = {}, None
+    for line in open(path):
+        s = line.split("#", 1)[0].strip()
+        if not s:
+            continue
+        if s.startswith("<") and s.endswith(">"):
+            sec = s[1:-1].strip()
+            out.setdefault(sec, {})
+            continue
+        if "=" in s and sec is not None:
+            k, v = s.split("=", 1)
+            out[sec][k.strip()] = v.strip()
+    return out
+
+
+def find_deck(run_dir):
+    import glob
+    for pat in ("*.athinput", os.path.join("chain", "*.athinput")):
+        c = sorted(glob.glob(os.path.join(run_dir, pat)))
+        if c:
+            return c[0]
+    return None
+
+
+def deck_mesh(deck):
+    """Root spacing, refinement kind and the candidate finest spacings at the origin."""
+    m = deck["mesh"]
+    dx0 = (float(m["x1max"]) - float(m["x1min"])) / int(m["nx1"])
+    kind = deck.get("mesh_refinement", {}).get("refinement", "none")
+    levels = []
+    for sec, kv in deck.items():
+        if sec.startswith("refined_region"):
+            inside = all(float(kv[f"x{i}min"]) < 0.0 < float(kv[f"x{i}max"]) for i in (1, 2, 3))
+            if inside:
+                levels.append(int(kv["level"]))
+    lmax = max(levels) if levels else 0
+    cand = [lmax]
+    if kind == "adaptive":
+        nl = int(deck["mesh_refinement"].get("num_levels", lmax + 1))
+        cand = list(range(lmax, nl))
+    return dict(dx_root=dx0, refinement=kind, static_level=lmax,
+                candidates={L: dx0 / 2 ** L for L in cand})
+
+
+def table_lapse(path):
+    """r, alpha and the header alpha_c of a `.tab` file (python/nrpic/io.read_tab)."""
+    from nrpic import io as nio
+    r, _, a, com = nio.read_tab(path)
+    hdr = {}
+    for c in com:
+        if "=" in c and not c.startswith("columns"):
+            k, v = c.split("=", 1)
+            try:
+                hdr[k.strip()] = float(v.split()[0])
+            except ValueError:
+                pass
+    return r, a, hdr
+
+
+def probe_reference(table, dx):
+    """Equilibrium lapse as the central probe reads it on a mesh of spacing dx at the
+    origin: the table lapse at r_p = (sqrt 3/2) dx (module docstring)."""
+    r, a, hdr = table_lapse(table)
+    rp = 0.5 * np.sqrt(3.0) * dx
+    return dict(alpha_ref=float(np.interp(rp, r, a)), r_p=float(rp), dx=float(dx),
+                alpha_c=hdr.get("alpha_c"), table=table)
+
+
+def run_probe_reference(run_dir, alpha0=None):
+    """Probe reference of a run directory from its deck and table. For an adaptive mesh
+    every candidate finest level is evaluated; the one closest to alpha0 (alpha_probe at
+    t = 0) is chosen and the choice is reported."""
+    dk = find_deck(run_dir)
+    if dk is None:
+        return None
+    deck = read_deck(dk)
+    tab = deck["problem"]["comp0_file"]
+    if not os.path.isabs(tab):
+        tab = os.path.join(run_dir, tab)
+    mesh = deck_mesh(deck)
+    rows = {L: probe_reference(tab, dx) for L, dx in mesh["candidates"].items()}
+    if alpha0 is None or len(rows) == 1:
+        L = mesh["static_level"] if mesh["static_level"] in rows else sorted(rows)[0]
+    else:
+        L = min(rows, key=lambda k: abs(rows[k]["alpha_ref"] - alpha0))
+    out = dict(rows[L], level=L, deck=dk, lapse=deck["problem"].get("lapse"),
+               refinement=mesh["refinement"],
+               candidates={int(k): v["alpha_ref"] for k, v in rows.items()})
+    if alpha0 is not None:
+        out["alpha_probe_0"] = float(alpha0)
+        out["probe_minus_ref"] = float(alpha0 - out["alpha_ref"])
+    return out
+
+
+def _periodogram(tt, dd, trend, freqs):
+    """Residual sum of squares of dd against trend columns plus (sin, cos) at each
+    frequency (vectorised least squares)."""
+    Q, _ = np.linalg.qr(trend)
+    r0 = dd - Q @ (Q.T @ dd)
+    W = 2.0 * np.pi * np.asarray(freqs)
+    S = np.sin(np.outer(tt, W))
+    C = np.cos(np.outer(tt, W))
+    S -= Q @ (Q.T @ S)
+    C -= Q @ (Q.T @ C)
+    a11, a12, a22 = np.sum(S * S, 0), np.sum(S * C, 0), np.sum(C * C, 0)
+    b1, b2 = S.T @ r0, C.T @ r0
+    det = a11 * a22 - a12 ** 2
+    red = (a22 * b1 ** 2 - 2 * a12 * b1 * b2 + a11 * b2 ** 2) / np.where(det > 0, det, np.inf)
+    return float(np.sum(r0 ** 2)) - red, r0
+
+
+def oscillation_period(t, d, t_end=None, pmin=5.0, pmax=None, nfreq=600,
+                       s_grid=tuple(np.geomspace(0.002, 0.5, 40))):
+    """Period of the oscillation in d: least-squares periodogram over [t0, t_end] with a
+    trend of columns 1, x, x^2 and either x^3 or e^{s t} (s on s_grid), the combination
+    of smallest residual; periods from pmin to pmax (default 2/3 of the segment). The
+    spacing of zero crossings of d minus the best trend is a cross-check."""
+    t = np.asarray(t, float)
+    d = np.asarray(d, float)
+    keep = np.isfinite(d) & (t <= (t[-1] if t_end is None else t_end))
+    tt, dd = t[keep], d[keep]
+    T = float(tt[-1] - tt[0]) if len(tt) > 1 else 0.0
+    pmax = (2.0 / 3.0) * T if pmax is None else pmax
+    if len(tt) < 20 or pmax <= pmin:
+        return dict(ok=False, reason=f"segment of {T:.1f} M too short for pmin = {pmin}")
+    x = (tt - 0.5 * (tt[0] + tt[-1])) / (0.5 * T)
+    base = [np.ones_like(x), x, x ** 2]
+    trends = [("cubic", np.vstack(base + [x ** 3]).T)]
+    for s in s_grid:
+        e = np.exp(s * (tt - tt[-1]))
+        trends.append((f"exp s={s:.4g}", np.vstack(base + [e]).T))
+    f0 = np.linspace(1.0 / pmax, 1.0 / pmin, nfreq)
+    best = None
+    for name, tr in trends:
+        rss, r0 = _periodogram(tt, dd, tr, f0)
+        k = int(np.argmin(rss))
+        if best is None or rss[k] < best[0]:
+            best = (float(rss[k]), name, tr, k, float(np.sum(r0 ** 2)), r0)
+    rss_min, name, tr, k, rss_trend, r0 = best
+    df = f0[1] - f0[0]
+    f1 = np.linspace(max(f0[k] - 2 * df, 1.0 / pmax), min(f0[k] + 2 * df, 1.0 / pmin), 161)
+    rss1, _ = _periodogram(tt, dd, tr, f1)
+    j = int(np.argmin(rss1))
+    P = 1.0 / f1[j]
+    # zero crossings of the detrended record, lightly smoothed (P/6)
+    dt = float(np.median(np.diff(tt)))
+    kk = max(1, int(round(P / 6.0 / dt)))
+    rs = np.convolve(r0, np.ones(kk) / kk, mode="same")
+    zc = tt[1:][np.sign(rs[1:]) != np.sign(rs[:-1])]
+    p_zc = float(2.0 * np.median(np.diff(zc))) if len(zc) >= 3 else None
+    at_edge = bool(P > 0.99 * pmax or P < 1.01 * pmin)
+    return dict(ok=True, period=float(P), trend=name, rss_reduction=float(1.0 - rss1[j] / rss_trend),
+                period_zero_crossings=p_zc, n_crossings=int(len(zc)), segment=[float(tt[0]), float(tt[-1])],
+                pmin=float(pmin), pmax=float(pmax), at_edge=at_edge)
+
+
+def boxcar_weights(dt, width):
+    """Weights of a centred running mean of exactly `width` on records of step dt: the
+    records as cells of width dt, full cells weight 1, the two end cells the fraction
+    inside; normalised. (growth_fit's boxcar rounds the width to an odd number of
+    records instead, which leaves 1/k of an oscillation of period `width`.)"""
+    m = 0.5 * width / dt
+    J = max(0, int(np.floor(m - 0.5)))
+    f = m - (J + 0.5)
+    w = np.ones(2 * J + 1)
+    if f > 1e-12:
+        w = np.concatenate([[f], w, [f]])
+    return w / w.sum()
+
+
+def boxcar_exact(t, y, width):
+    """Centred running mean of exactly `width` on the median record step; edges dropped.
+    Returns ts, ys and the weights."""
+    t = np.asarray(t, float)
+    dt = float(np.median(np.diff(t)))
+    tt = np.arange(t[0], t[-1] + 0.5 * dt, dt)
+    yy = np.interp(tt, t, y)
+    w = boxcar_weights(dt, width)
+    L = len(w)
+    ys = np.convolve(yy, w, mode="valid")
+    return tt[L // 2: len(tt) - L // 2], ys, w, tt, yy
+
+
+def growth_fit_v2(t, y, y_ref, period=None, k_lo=3.0, hi=0.1, relative=False, t_max=None,
+                  width_factor=1.0, min_efolds=1.0, pmin=5.0, period_t_end=None):
+    """Growth rate with the fix of diagnosis D1 (module docstring, JOURNAL.md entry 9).
+    Returns a dict; 'ok' False with a reason when no window exists."""
+    t = np.asarray(t, float)
+    y = np.asarray(y, float)
+    if isinstance(y_ref, str):
+        if y_ref != "first":
+            raise ValueError(y_ref)
+        ref, ref_kind = float(y[0]), "first"
+    elif np.ndim(y_ref) == 0:
+        ref, ref_kind = float(y_ref), "value"
+    else:
+        ref, ref_kind = np.asarray(y_ref, float), "array"
+        if ref.shape != y.shape:
+            raise ValueError("array reference must have the shape of y")
+    keep = np.isfinite(y) & (np.isfinite(ref) if ref_kind == "array" else True)
+    if t_max is not None:
+        keep &= t <= t_max
+    t, y = t[keep], y[keep]
+    if ref_kind == "array":
+        ref = ref[keep]
+    d = y / ref - 1.0 if relative else y - ref
+    res = dict(k_lo=k_lo, hi=hi, relative=relative, ref_kind=ref_kind,
+               ref=(float(ref) if ref_kind != "array" else None), width_factor=width_factor)
+    if period is None:
+        dm = np.convolve(d, np.ones(3) / 3.0, mode="same")
+        big = np.nonzero(np.abs(dm) >= hi)[0]
+        t_seg = float(t[big[0]]) if len(big) else float(t[-1])
+        if period_t_end is not None:
+            t_seg = period_t_end
+        po = oscillation_period(t, d, t_end=t_seg, pmin=pmin)
+        res["period_fit"] = po
+        if not po["ok"]:
+            res.update(ok=False, reason="period: " + po["reason"])
+            return res
+        P, src = po["period"], "measured"
+    else:
+        P, src = float(period), "supplied"
+    width = width_factor * P
+    res.update(period=P, period_source=src, width=width)
+    ts, ds, wk, tt, yy = boxcar_exact(t, d, width)
+    first = t <= t[0] + P
+    A_init = float(np.sqrt(np.mean(d[first] ** 2)))
+    lo = k_lo * A_init
+    res.update(A_init=A_init, lo=lo)
+    if not lo < hi * np.exp(-min_efolds):
+        res.update(ok=False, reason=f"lo = {lo:.4g} leaves less than {min_efolds} e-fold below hi")
+        return res
+    big = np.nonzero(np.abs(ds) >= hi)[0]
+    if len(big) == 0:
+        res.update(ok=False, reason=f"|d_s| never reaches hi = {hi}")
+        return res
+    i1 = int(big[0])
+    sgn = float(np.sign(ds[i1]))
+    j = i1
+    while j > 0 and sgn * ds[j - 1] > lo:
+        j -= 1
+    if j == 0 and sgn * ds[0] > lo:
+        res.update(ok=False, reason="|d_s| above lo from the first smoothed point")
+        return res
+    i0 = j
+    tw, dw = ts[i0:i1 + 1], sgn * ds[i0:i1 + 1]
+    if len(tw) < 4:
+        res.update(ok=False, reason="window shorter than four points")
+        return res
+    A = np.vstack([np.ones_like(tw), tw]).T
+    lnd = np.log(dw)
+    coef, *_ = np.linalg.lstsq(A, lnd, rcond=None)
+    resid = lnd - A @ coef
+    n = len(tw)
+    s2 = float(np.sum(resid ** 2) / max(n - 2, 1))
+    Sxx = float(np.sum((tw - tw.mean()) ** 2))
+    se_formal = float(np.sqrt(s2 / Sxx))
+    n_eff = max((tw[-1] - tw[0]) / width, 2.0)
+    se_fit = se_formal * float(np.sqrt(max(n / n_eff, 1.0)))
+    # exact propagation of white record noise through the boxcar and the slope
+    sup = yy[i0:i1 + len(wk)]
+    s_n = float(np.std(np.diff(sup)) / np.sqrt(2.0)) if len(sup) > 2 else 0.0
+    c = (tw - tw.mean()) / Sxx
+    g = c / dw
+    h = np.convolve(g, wk)
+    se_noise = float(s_n * np.sqrt(np.sum(h ** 2)))
+    sigma = float(coef[1])
+    res.update(ok=True, sigma=sigma, se=float(np.hypot(se_noise, se_fit)), se_noise=se_noise,
+               se_fit=se_fit, se_formal=se_formal, noise_level=s_n, sign=sgn,
+               t_start=float(tw[0]), t_end=float(tw[-1]), n=n, n_eff=float(n_eff),
+               efolds=float(np.log(dw[-1] / dw[0])), amp0=float(sgn * np.exp(coef[0])),
+               rms_log_resid=float(np.sqrt(np.mean(resid ** 2))))
+    res["curve"] = dict(ts=ts, ds=ds)
+    return res
+
+
+GRID_WIDTHS = (0.8, 1.0, 1.25)
+GRID_KLO = (2.0, 3.0, 5.0)
+
+
+def window_grid(t, y, y_ref, period, his, default_hi, widths=GRID_WIDTHS, k_los=GRID_KLO,
+                relative=False, t_max=None):
+    """growth_fit_v2 over widths x k_lo x hi (period supplied); the spread of the rates
+    that exist is the window-choice error."""
+    rows = []
+    for wf in widths:
+        for kl in k_los:
+            for h in his:
+                f = growth_fit_v2(t, y, y_ref, period=period, k_lo=kl, hi=h, relative=relative,
+                                  t_max=t_max, width_factor=wf)
+                rows.append(dict(width_factor=wf, k_lo=kl, hi=h, ok=f["ok"], sigma=f.get("sigma"),
+                                 se=f.get("se"), t_start=f.get("t_start"), t_end=f.get("t_end"),
+                                 reason=f.get("reason")))
+    base = growth_fit_v2(t, y, y_ref, period=period, k_lo=3.0, hi=default_hi, relative=relative,
+                         t_max=t_max)
+    ss = np.array([r["sigma"] for r in rows if r["ok"]])
+    out = dict(rows=rows, n=len(rows), n_ok=int(len(ss)))
+    if len(ss) and base["ok"]:
+        b = base["sigma"]
+        out.update(default=b, min=float(ss.min()), max=float(ss.max()),
+                   half_range=float(0.5 * (ss.max() - ss.min())),
+                   max_rel_dev=float(np.max(np.abs(ss / b - 1.0))))
+    return out
