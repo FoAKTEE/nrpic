@@ -1096,3 +1096,28 @@ rho H is small (2 sqrt(chi) + 2 H rho, about 0.1 at t = 11), so there the flow i
 (Note, 22:31: the times in the headings of today's entries were first written from memory
 and were a few minutes off; they now carry the times of `date -u` at which each entry
 was written. The order and the text of the entries are unchanged.)
+
+## 2026-11-20 22:32  message to Track A; prediction of T3d (adaptive cloud level at a level boundary)
+
+Posted to A-emd-pbh (`tracks/core/outbox/20261120T223017Z__to-A-emd-pbh__cosmo-amr-
+scouting-run-and-finder.md`): the finder of the track's decks does not search
+(`hmean_tol`), the outcome of the scouting run, `alpha_exc`, memory and restart sizes.
+
+The open point "`deposit_adaptive` with quadratic or cubic clouds is not tested" (entry
+16:45 of yesterday), on two spare processors while T10e runs. **T3d**
+(`t3d_adaptive.py`): T2's D8 deck (homogeneous universe, static level-1 patch, eight
+particles per root cell = one per cell of the patch, no filter, four cycles) with
+`deposit_adaptive = true` for the three shapes: `_p2` with `deposit_ppc = 2` (the
+adaptive level is the root everywhere: a root cell holds eight particles, a cell of the
+patch one), `_p05` with `deposit_ppc = 0.5` (level 1 where the mesh has it: the
+configuration of T3c), `_p2f` as `_p2` with `deposit_fine_shape`.
+Reading of `NrpicDepositSources` [VERIFIED by reading, `nrpic.cpp` 763-825]: the level of
+a cloud is min(finest level among the owners of its lattice cells, cap), the cap being
+fixed or, with `deposit_adaptive`, the finest level whose cells hold `deposit_ppc`
+particles at the density of the previous deposit. Prediction: `_p2` and `_p2f`: E uniform
+to 1e-12 for all three shapes (every cloud on the root lattice: a regular lattice of
+equal clouds tiles, whatever the shape; the fine leaves get the uniform or the
+reconstructed spreading); `_p05`: cic uniform to 1e-12, tsc 0.35 and pcs 0.15 as in T3c
+(same clouds as with the fixed cap). Refuted if a `_p2` case shows structure: then the
+adaptive cap is not uniform on a uniform lattice (the first deposits on the patch have
+no previous density).
