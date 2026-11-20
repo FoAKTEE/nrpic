@@ -126,6 +126,23 @@ def make_cluster_offset(path):
     return n
 
 
+def make_infall(path, n=2000, seed=20261122, mass=1.0e-8, centre=(0.1, -0.2, 0.05)):
+    """Light particles around the puncture of mpi_puncture_exc.athinput: radii 0.3 to 2.5
+    from it (the horizon of the unit-mass puncture has coordinate radius about 0.5), random
+    momenta up to 0.4 per unit mass plus an inward radial part of 0 to 0.6, so that
+    particles are inside the excision radius at the start and others cross it later."""
+    from nrpic.io import write_nrp
+    rng = np.random.default_rng(seed)
+    r = rng.uniform(0.3, 2.5, n)
+    v = rng.normal(size=(n, 3))
+    nhat = v/np.linalg.norm(v, axis=1)[:, None]
+    x = np.asarray(centre)[None, :] + r[:, None]*nhat
+    u = rng.uniform(-0.4, 0.4, (n, 3)) - rng.uniform(0.0, 0.6, n)[:, None]*nhat
+    m = mass*rng.uniform(0.5, 1.5, n)
+    write_nrp(path, x, u, m)
+    return n
+
+
 REGRESS_IC = "/data/haiyangw/nrpic/scratch/core/regress/ic"
 
 
@@ -149,6 +166,8 @@ def copy_random(path):
 # cases
 # ----------------------------------------------------------------------------------------
 KERR = "problems/tests/mpi_kerr_swarm.athinput"
+GEO = "problems/kerr/geodesic.athinput"
+PUNC = "problems/tests/mpi_puncture_exc.athinput"
 BOX = "problems/tests/mpi_box_periodic.athinput"
 CLUSTER = "problems/tests/mpi_cluster.athinput"
 CLUSTER_SMR = "problems/tests/mpi_cluster_smr.athinput"
@@ -230,11 +249,42 @@ CASES = {
     "t5_amr_offset": dict(input=CLUSTER_AMR, particles=("cluster.nrp", make_cluster_offset),
                           args=CLT + ["problem/comp0_x1=4.0", "problem/comp0_x2=4.0",
                                       "problem/comp0_x3=4.0"]),
+    # step 7 (session mpi-2): what the first session left untested.
+    # probes 1 to 7 of the cluster of T3: on the planes between the ranks, at the point
+    # where the eight MeshBlocks meet, inside MeshBlocks of different ranks, in the matter
+    # and outside; 16 cycles
+    "t7_probes": dict(input=CLUSTER, particles=("cluster.nrp", make_cluster),
+                      args=CLT + ["time/nlim=16"],
+                      add={"particles": ["nprobe = 7",
+                                         "probe1_x1 = 0.0", "probe1_x2 = 0.0", "probe1_x3 = 0.0",
+                                         "probe2_x1 = 0.0", "probe2_x2 = 2.3", "probe2_x3 = -1.1",
+                                         "probe3_x1 = 1.7", "probe3_x2 = 0.0", "probe3_x3 = 0.0",
+                                         "probe4_x1 = -3.1", "probe4_x2 = 2.2", "probe4_x3 = 0.0",
+                                         "probe5_x1 = 4.4", "probe5_x2 = 4.1", "probe5_x3 = 3.9",
+                                         "probe6_x1 = -0.3", "probe6_x2 = -0.3", "probe6_x3 = -0.3",
+                                         "probe7_x1 = -9.0", "probe7_x2 = 7.0", "probe7_x3 = -11.6"]}),
+    # analytic metric (no MeshBlock is used by the particle: it stays on rank 0); the
+    # geodesic of the regression case geo with the mesh cut into eight MeshBlocks
+    "t7_analytic": dict(input=GEO, particles=None,
+                        args=["time/tlim=20.0", "particles/hist_dcycle=100",
+                              "meshblock/nx1=4", "meshblock/nx2=4", "meshblock/nx3=4"]),
+    "t7_analytic_boris": dict(input=GEO, particles=None,
+                              args=["time/tlim=20.0", "particles/hist_dcycle=100",
+                                    "particles/pusher=boris", "particles/metric=lattice",
+                                    "meshblock/nx1=4", "meshblock/nx2=4", "meshblock/nx3=4"]),
+    # moving puncture with tracker, adaptive mesh and horizon finder; particles removed
+    # inside 0.8 of the horizon radius (ah_exc_factor).  First as test particles (the
+    # spacetime is that of the vacuum run), then with deposit
+    "t7_ah_exc": dict(input=PUNC, particles=("infall.nrp", make_infall),
+                      args=["particles/deposit=false"]),
+    "t7_ah_exc_dep": dict(input=PUNC, particles=("infall.nrp", make_infall), args=[]),
 }
 
 BYTE_PATTERNS = ["*.traj.bin", "*.trajmet.bin", "*.part.*.bin", "rst/*.prt",
                  "*.line.bin", "*.field.*.bin"]
-HIST_PATTERNS = ["*.hst"]          # all histories but *.mpi.hst (which differs by design)
+# all histories but *.mpi.hst (which differs by design); the records of the puncture
+# tracker and of the horizon finder (text tables)
+HIST_PATTERNS = ["*.hst", "*.co_*.txt", "*.horizon_summary_*.txt"]
 
 
 def sha256(path):
@@ -319,36 +369,84 @@ def input_without(src, dst, blocks):
         f.writelines(out)
 
 
-def run_case(case, ranks, exe, out, extra):
+def input_with(src, dst, add):
+    """Copy of an input file with lines added at the end of the named blocks."""
+    out, cur = [], None
+    with open(src) as f:
+        lines = f.readlines()
+    for line in lines + ["<end_of_file>\n"]:
+        s = line.strip()
+        if s.startswith("<") and s.endswith(">"):
+            if cur in add:
+                while out and not out[-1].strip():
+                    out.pop()
+                out.extend(x + "\n" for x in add[cur])
+                out.append("\n")
+            cur = s.strip("<>")
+            if cur == "end_of_file":
+                break
+        out.append(line)
+    with open(dst, "w") as f:
+        f.writelines(out)
+
+
+def run_case(case, ranks, exe, out, extra, max_cores=6):
+    """Runs the case on each rank count; runs go side by side as long as their ranks
+    together stay within max_cores (CLAUDE.md: six cores per session)."""
     spec = CASES[case]
     os.makedirs(out, exist_ok=True)
-    pname, maker = spec["particles"]
-    ppath = os.path.join(out, pname)
-    npart = maker(ppath)
+    npart, pargs = None, []
+    if spec.get("particles"):
+        pname, maker = spec["particles"]
+        ppath = os.path.join(out, pname)
+        npart = maker(ppath)
+        pargs = ["particles/particle_file=" + ppath]
     inp = os.path.join(REPO, spec["input"])
     if spec.get("drop"):
         stripped = os.path.join(out, os.path.basename(inp))
         input_without(inp, stripped, spec["drop"])
         inp = stripped
-    procs = []
-    for n in ranks:
-        d = os.path.join(out, "np%d" % n)
-        os.makedirs(d, exist_ok=True)
-        args = [x.replace("{out}", out) for x in spec["args"]]
-        cmd = [MPIRUN, "--bind-to", "none", "-np", str(n), exe, "-i", inp, "-d", d,
-               "particles/particle_file=" + ppath] + args + extra
-        log = open(os.path.join(d, "run.log"), "w")
-        env = dict(os.environ, OMP_NUM_THREADS="1")
-        procs.append((n, d, cmd, time.time(),
-                      subprocess.Popen(cmd, cwd=d, stdout=log, stderr=subprocess.STDOUT,
-                                       env=env), log))
-    res = {}
-    for n, d, cmd, t0, p, log in procs:
-        rc = p.wait()
-        log.close()
-        res[n] = dict(dir=d, command=cmd, exit=rc, wall_s=round(time.time() - t0, 1))
-        print("np=%d exit=%d wall=%.1f s" % (n, rc, res[n]["wall_s"]), flush=True)
-    return npart, res
+    if spec.get("add"):
+        added = os.path.join(out, os.path.basename(inp))
+        input_with(inp, added, spec["add"])
+        inp = added
+    todo = sorted(ranks, reverse=True)
+    running, res = [], {}
+
+    def reap(block):
+        for item in list(running):
+            n, d, cmd, t0, p, log = item
+            rc = p.wait() if block else p.poll()
+            if rc is None:
+                continue
+            log.close()
+            running.remove(item)
+            res[n] = dict(dir=d, command=cmd, exit=rc, wall_s=round(time.time() - t0, 1))
+            print("np=%d exit=%d wall=%.1f s" % (n, rc, res[n]["wall_s"]), flush=True)
+            if block:
+                return
+
+    while todo or running:
+        busy = sum(item[0] for item in running)
+        fits = [n for n in todo if busy + n <= max_cores] or ([] if running else todo[:1])
+        if fits:
+            n = fits[0]
+            todo.remove(n)
+            d = os.path.join(out, "np%d" % n)
+            os.makedirs(d, exist_ok=True)
+            args = [x.replace("{out}", out) for x in spec["args"]]
+            cmd = [MPIRUN, "--bind-to", "none", "-np", str(n), exe, "-i", inp, "-d", d] \
+                + pargs + args + extra
+            log = open(os.path.join(d, "run.log"), "w")
+            env = dict(os.environ, OMP_NUM_THREADS="1")
+            running.append((n, d, cmd, time.time(),
+                            subprocess.Popen(cmd, cwd=d, stdout=log, stderr=subprocess.STDOUT,
+                                             env=env), log))
+            continue
+        reap(False)
+        if running and not [n for n in todo if sum(i[0] for i in running) + n <= max_cores]:
+            time.sleep(1.0)
+    return npart, {n: res[n] for n in ranks}
 
 
 def compare_case(case, ranks, out):
@@ -737,6 +835,8 @@ def main():
     ap.add_argument("--out", default=None)
     ap.add_argument("--figdir", default=None)
     ap.add_argument("--compare-only", action="store_true")
+    ap.add_argument("--max-cores", type=int, default=6,
+                    help="ranks of the runs that go side by side (default 6)")
     ap.add_argument("--restart-of", default=None,
                     help="output directory of an earlier case (test T4)")
     ap.add_argument("--pairs", nargs="+", default=["1:1", "2:2", "4:4", "1:4", "4:2"],
@@ -769,7 +869,7 @@ def main():
                                                                  os.getcwd()), a.case))
     npart, runs = None, {}
     if not a.compare_only:
-        npart, runs = run_case(a.case, a.ranks, a.exe, base, a.extra)
+        npart, runs = run_case(a.case, a.ranks, a.exe, base, a.extra, a.max_cores)
     result = compare_case(a.case, a.ranks, base)
     result["particles"] = npart
     result["runs"] = {str(k): v for k, v in runs.items()}

@@ -701,7 +701,7 @@ minutes expected):
    pre-test has run; predictions P6a to P6d of entry 9 stand, with the measured one-card
    numbers: F8b about half of 58.8 GiB per card; F16 about 55 GiB per card.
 
-### 14:12 Entry 23: outcome of the pre-test on one card (P6e, P6f, P6g held)
+### 14:07 Entry 23: outcome of the pre-test on one card (P6e, P6f, P6g held)
 
 Run core-20261120-220512-a86765b (registered with `nrpic-run submit`, which accepts
 runs of this owner again), Slurm job 4730: started at once on the free card, 43 s
@@ -733,3 +733,59 @@ run core-20261120-220612-431e9b8, Slurm job 4733, queued at 14:06 behind a job o
 another user that holds one card (limit one hour).
 
 While it waits (processors): the items of the list "not tested" of entry 21.
+
+### 14:14 Entry 24: test T7, predictions (written before the runs)
+
+The items "not tested on several ranks" of entry 21, which the tracks use (Track D:
+`ah_exc_factor = 0.8` and `nprobe = 7` in `es_runs/inputs/es1_dx8.athinput` on
+`track/D-bh-dress`; A, C, F: `nprobe = 2`). Driver: `mpi_tests.py` gets the cases
+below, a limit of six cores for runs that go side by side (CLAUDE.md, section on load:
+4 and 2 ranks together, then 1), lines added to a copy of an input file (`add`), and
+the records of the puncture tracker and of the horizon finder among the tables it
+compares. A smoke run of four cycles of the puncture case on four ranks (not
+registered, no number taken from it) showed that it starts, finds the horizon at t = 0
+and takes about 7 s per cycle on four ranks.
+
+- t7_analytic, t7_analytic_boris: the geodesic of the regression cases geo and boris
+  (`problems/kerr/geodesic.athinput`, analytic Kerr metric, and the virtual lattice)
+  with the mesh cut into eight MeshBlocks of 4^3, on 1, 2, 4 ranks. The particle uses
+  no MeshBlock and stays on rank 0 (design 3.2). P7a: trajectory file and history
+  identical byte for byte on 2 and 4 ranks; `geo.mpi.hst` shows the one particle on
+  rank 0 at all times and no hand-over. Refuted by a differing byte or a particle that
+  moved or was lost (then the ownership pass treats analytic metrics wrongly).
+- t7_probes: the cluster of T3, 16 cycles, with probes 1 to 7 (`nprobe = 7`): probe 1
+  at the origin, where the eight MeshBlocks and, on 2 and 4 ranks, the ranks meet (the
+  same point as probe 0); probe 2 on the plane x = 0; probe 3 on the line y = z = 0;
+  probe 4 on the plane z = 0; probe 5 inside one MeshBlock in the matter; probe 6 next
+  to the origin, its eight cells in the first octant's opposite MeshBlock; probe 7 in
+  vacuum near the corner of the mesh. P7b: the 21 probe columns (history columns 33 to
+  53: lapse, energy density, proper time) agree with one rank as probe 0 does: the
+  lapse and the proper time to 1e-13 relative, the energy density to 1e-12 (it is a
+  sum of deposits whose order differs); columns 33 to 35 (probe 1) equal columns 13 to
+  15 (probe 0) exactly in every run; the energy density at probe 7 is zero on all rank
+  counts. Refuted by a probe column that differs by more than 1e-9 on several ranks
+  (a cell of another rank missing from the eight, or counted twice), or by probe 1
+  differing from probe 0.
+- t7_ah_exc: `problems/tests/mpi_puncture_exc.athinput` with `deposit = false`: a
+  Bowen-York puncture (bare mass 1, P_x = 0.3, S_z = 0.2) at (0.1, -0.2, 0.05), tracker,
+  three-level adaptive mesh (176 MeshBlocks of 8^3, finest cells 1/8) and horizon
+  finder from `puncture_setup`, searched every 2 cycles; 2000 particles of mass 1e-8
+  at 0.3 to 2.5 from the puncture; removal inside 0.8 of the smallest coordinate radius
+  of the horizon, lapse rule off; 24 cycles (t = 0.75 M). Without deposit the spacetime
+  is the vacuum one. P7c: (i) the excised number (history column 17) is the same on 1,
+  2, 4 ranks at every record, above zero from the first step, and it grows later in the
+  run (if it does not grow, the test still shows the removal at the start, and that is
+  said); (ii) the records of the tracker and of the horizon finder agree with one rank
+  to 1e-10 relative or better (the finder sums over the ranks; I expect 1e-13); (iii)
+  trajectories, snapshots and the particle restart file agree: identical byte for byte
+  if vacuum Z4c with the tracker gives the same bits on any rank count, which I expect
+  but have not seen tested; otherwise positions to 1e-12. Refuted by an excised number
+  that differs between rank counts at any record (the horizon seen differently on the
+  ranks, or a count not reduced), by a particle removed on one rank count and kept on
+  another, or by differences above 1e-9.
+- t7_ah_exc_dep: the same with deposit (tsc, one filter pass), i.e. tracker, adaptive
+  mesh, finder, excision, deposit packets and the sources in Z4c together. P7d: as P7c
+  (i) and (ii); positions to 1e-12; the conservation identity is not exact here
+  (particles inside the horizon sit in cells whose metric determinant is not positive:
+  "sources set to zero there", and the open boundary), but its defect is the same on 1,
+  2, 4 ranks to 1e-10.
