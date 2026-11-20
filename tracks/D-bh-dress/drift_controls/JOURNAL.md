@@ -84,3 +84,59 @@ l_max 8 and A32 = ntheta 32, l_max 12). Dumps at t = 100, 150, 200 M of V-1 and 
 If C2 and C3 hold, the finder is ruled out on the very slices where the drift is
 largest, without a card; card run (a) would then only add the time profile between 150
 and 200 M.
+
+### Outcome of part A (run D-20261120-222107-cc4937b, `tools/step1.py`; figures `figs/step1_decompose.png`, `figs/step1_finder.png`, `figs/step1_constraints.png`, `figs/step1_gauge.png`, `figs/step1_dpre4.png`, each looked at; numbers in `results/step1.json`)
+
+- A1 HELD. The spin term M - M_irr stays below 1.0e-15 (V-1) and 1.7e-14 (ES-1) after
+  5 M, |S| below 9e-8 and 3.7e-7; the drift of the mass equals the drift of
+  (A/A(t0))^(1/2) to 9e-16. The late drift is a drift of the horizon area.
+- Drift windows from t0 = 100 M (finder summaries): V-1 [-4.21e-5, +2.11e-5] over 100-165 M,
+  -1.368e-4 by 199.5 M, slope over 165-200 M -4.1e-6/M; ES-1 [-4.96e-5, +9.35e-5] and
+  -3.400e-4, slope -9.5e-6/M. ES-1 - V-1 falls from +0.5e-4 at 165 M to -2.0e-4 at 199.5 M,
+  so the late drift is 2.5 times larger with the dust than without it.
+- A2 residual part HELD, asphericity part FAILED. hrms over 165-200 M / over 100-165 M
+  (medians): 1.03 (V-1), 1.00 (ES-1); mean expansion hmean/A: 1.01, 1.00; nothing in the
+  residuals changes at 165 M (figure, top two panels). The asphericity (mean - minimum
+  coordinate radius) exceeds my 1e-5 M after t0: maximum 1.48e-5 M (V-1, near 190-195 M)
+  and 3.40e-5 M (ES-1), and in ES-1 it rises from ~2e-6 to 1-3e-5 M from t ~ 155 M on,
+  together with the drift (bottom panel). The surface the finder returns becomes
+  non-round when the drift starts; the finder itself converges as before.
+- A3 HELD as written, with an unpredicted finding. Mean coordinate radius (V-1) 2.147,
+  2.187, 2.202, 2.252 M at 100, 150, 165, 199.5 M: +4.9 per cent over 100-200 M; point
+  spacing r pi/16 = 0.42 M = 3.4 cells of M/8 at t0 (ES-1: 2.45 M, 0.48 M). Not predicted:
+  the growth rate of the coordinate radius (5 M running mean, median) rises at 165 M:
+  V-1 8.0e-4 -> 1.44e-3, ES-1 4.5e-4 -> 2.25e-3 (5 times), whereas D-pre-4 at M/8 falls
+  1.12e-3 -> 0.82e-3. The coordinates near the horizon start to move faster when the
+  drift starts (a gauge response near the hole, or the arrival of a disturbance).
+- A4: H-norm2 and M-norm2 are flat (dominated by the puncture region, as expected).
+  NOT expected: the Theta norm (volume integral of Theta^2) of V-1 grows by four orders of
+  magnitude from t ~ 20 M to 200 M (8.5e-2 at 100 M, 0.59 at 150 M, 1.20 at 200 M; ES-1
+  0.31, 2.09, 4.12), whereas both D-pre-4 runs stay at 1.6e-4 to 2.7e-4 from 100 to 500 M;
+  Z-norm2 and C-norm2 of V-1 and ES-1 are 100 times those of D-pre-4 and peak near
+  150 M. The two set-ups share the puncture and the near-hole resolution; they differ in
+  the slice (Painleve-Gullstrand, K != 0 out to the faces, against K = 0), the boundary
+  distance (192 against 128 M) and the nest. A constraint violation that fills the
+  volume in V-1 and not in D-pre-4 points to the exterior, i.e. to HB [JUDGEMENT].
+- A5 HELD. D-pre-4 over 100-200 M: [-1.75e-5, +1.91e-5] (M/8), [-1.36e-5, +6.3e-6] (M/16);
+  no feature at 165 M. Its excursions (220-255 M, 300-340 M) are oscillations of both
+  signs (+-5e-5 about the level), not a monotonic fall like V-1's: a different shape and
+  timing, so I do not attribute them to the same mechanism.
+- The lapse near the hole (probes at x = 1 and 4 M, mesh minimum; `figs/step1_gauge.png`)
+  changes smoothly through 165 M; at x = 4 M it has a shallow minimum at 160-165 M and
+  rises after (V-1 0.7985 at 165 M, 0.8044 at 200 M; ES-1 0.8550, 0.8742).
+
+Ranking after part A [JUDGEMENT]: HB first (a constraint violation, Theta, fills the
+volume only in the set-up whose slice has K != 0 at the faces; the horizon turns
+non-round, as a front with the cube's symmetry would make it, exactly when the drift
+starts); HG second (the faster coordinate motion of the horizon can be the response of
+the gauge to the same arriving signal, or its own cause); HR third (the same M/8 nest
+resolution in D-pre-4 shows nothing at 165 M; the nest differs); HF last (residuals
+unchanged; still to be tested on the slices, part C).
+
+Added prediction B3, written before `tools/theta_map.py` first ran: the z = 0 slices
+of z4c (every 10 M) and con (every 25 M) of V-1 and ES-1 locate Theta. Under HB, |Theta|
+on the +x axis is largest near the face x = 192 M at early times and the region of
+large |Theta| moves inward at 1-1.6 M per M, reaching r < 10 M between t = 140 and 175 M;
+in the z = 0 plane the pattern is a shrinking square (fronts parallel to the faces).
+Refuted if |Theta| at r > 50 M stays below its value at r < 10 M at every time, or if the
+large-|Theta| region moves outward from the hole; then HR or HG move to the front.
