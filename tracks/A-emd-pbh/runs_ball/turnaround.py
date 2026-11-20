@@ -379,7 +379,7 @@ def figures(a, runs, arrays, syn):
         ax.legend(fontsize=6, loc="best")
     fig.suptitle("turnaround estimators against window (dotted: GCV spline, no window; last square: whole record)",
                  fontsize=8)
-    outs += fs.save(fig, os.path.join(a.out, "fig_turnaround_windows"))
+    outs += fs.save(fig, os.path.join(a.out, "fig_turnaround_windows" + a.tag))
     plt.close(fig)
 
     # F2 per-particle values (V3 against C) and the resolution dependence
@@ -421,7 +421,7 @@ def figures(a, runs, arrays, syn):
     ax3.set_xlabel(r"$\Delta x\,/M$")
     ax3.set_ylabel(r"core: $|$mean $R_{\max}/R_{\max}^{\rm exact}-1|$")
     ax3.set_title("largest areal radius", fontsize=9)
-    outs += fs.save(fig, os.path.join(a.out, "fig_turnaround_particles"))
+    outs += fs.save(fig, os.path.join(a.out, "fig_turnaround_particles" + a.tag))
     plt.close(fig)
 
     if syn:
@@ -444,7 +444,7 @@ def figures(a, runs, arrays, syn):
             ax.set_title("exact cycloid, shift 0.02 M" + ("" if wig == 0 else r", wiggle $10^{-5}$, period 3 M"),
                          fontsize=9)
         fig.suptitle("synthetic test T0 (orange: parabolas; blue: cycloid fits; 8 random record phases)", fontsize=8)
-        outs += fs.save(fig, os.path.join(a.out, "fig_turnaround_synthetic"))
+        outs += fs.save(fig, os.path.join(a.out, "fig_turnaround_synthetic" + a.tag))
         plt.close(fig)
     # F4 shell error and the local turnaround shift 8 B^2 d(eps)/d(tau) near the turnaround
     fig = plt.figure(figsize=(8.0, 3.2))
@@ -466,11 +466,11 @@ def figures(a, runs, arrays, syn):
         ax.set_xlabel(r"$\tau-\tau_{\rm ta}^{\rm exact}$ (M)")
     ax1.set_ylabel(r"core: median $R/R_{\rm exact}-1$")
     ax2.set_ylabel(r"core: median $8B^2\,d\epsilon/d\tau$ (M)")
-    ax2.set_ylim(-0.1, 0.1)
+    ax2.set_ylim(-0.2, 0.2)
     ax1.legend(fontsize=6)
     ax1.set_title("shell error near the turnaround", fontsize=9)
     ax2.set_title("local shift of the maximum, $8B^2\\epsilon'$", fontsize=9)
-    outs += fs.save(fig, os.path.join(a.out, "fig_turnaround_eps"))
+    outs += fs.save(fig, os.path.join(a.out, "fig_turnaround_eps" + a.tag))
     plt.close(fig)
     if a.figdir:
         import shutil
@@ -489,6 +489,7 @@ def main():
     ap.add_argument("--figdir", default=None)
     ap.add_argument("--synthetic", action="store_true")
     ap.add_argument("--breakdown", action="append", default=[])
+    ap.add_argument("--tag", default="", help="suffix of the figure names")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     ex = C.load_json(os.path.join(a.prep, "exact.json")) if a.prep else {}
