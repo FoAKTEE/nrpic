@@ -701,3 +701,157 @@ puncture, not resolved by dx = 0.25. Predictions:
      values of `nrpic_cf` (0.0157, 0.0100, 0.0078), which omit the cross terms of the
      curvatures of different punctures.
  Refuted (the reading) if the differences do not fall from `p7_l3` on.
+
+## 2026-11-20, entry 11: outcomes of B (128 cells included), P1, P3, P4, P5 and the card check K
+
+**B, the end-to-end test** (run core-20261119-153416-3d26b50, processor build of 76add0c,
+12 cases on 4 cores; `test_b_numbers.json`; figures `figs/test_b_static`,
+`test_b_evolution`, `test_b_slices`, looked at: at t = 0 the solved sets sit at 1e-13 to
+1e-12 in |H| at every cell size and the unsolved one at 1e-4 to 1e-3; in the evolution
+panels the four sets of one resolution end on one point in the face layer; the slices at
+128 cells show the same pattern for the solved Zel'dovich ball and the solved sphere, a
+bright ring at the edge of the unsolved ball, and for the scalar-only set a haze of 1e-7
+to 1e-6 that reaches the faces). Regions: interior r < 7, shell 7 <= r < 13.5, face
+layer 4 length units; means of |H| and |M| over the cells of a region; N = 32, 64, 128.
+
+| | N = 32 | 64 | 128 |
+|---|---|---|---|
+| `zoff`, t = 0: max\|H\| in the shell; shell mean; interior mean \|M\| | 2.81e-3; 5.8e-4; 2.44e-4 | 2.79e-3; 4.08e-4; 5.99e-5 | 2.84e-3; 3.76e-4; 5.57e-5 |
+| `zsol`, t = 0: max\|H\| interior; shell; interior mean \|M\| | 7.9e-13; 2.2e-12; 5.2e-6 | 2.7e-13; 1.7e-12; 8.9e-7 | 1.2e-13; 2.2e-12; 3.2e-7 |
+| `sph`, t = 0: interior mean \|M\| | 5.2e-6 | 8.4e-7 | 2.8e-7 |
+| `zsca`, t = 0: max\|H\| shell; interior mean \|M\| | 1.6e-12; 2.45e-4 | 2.2e-12; 6.00e-5 | 1.6e-12; 5.57e-5 |
+| outer iterations `sph` / `zsol` / `zsca` | 51 / 51 / 25 | 44 / 44 / 24 | 43 / 41 / 25 |
+| t = 2, interior mean \|H\|: `sph` / `zsol` / `zsca` / `zoff` | 4.18e-4 / 4.18e-4 / 4.51e-4 / 2.84e-4 | 1.03e-4 / 1.05e-4 / 9.4e-5 / 1.06e-4 | 7.8e-6 / 1.12e-5 / 1.34e-5 / 6.8e-5 |
+| t = 2, shell mean \|H\|: `sph` / `zsol` / `zsca` / `zoff` | 7.61e-4 / 7.63e-4 / 8.41e-4 / 9.95e-4 | 1.83e-4 / 1.84e-4 / 1.83e-4 / 3.55e-4 | 1.79e-5 / 2.06e-5 / 4.93e-5 / 2.57e-4 |
+| t = 2, face layer mean \|H\|, the four sets | 1.130e-4, 1.129e-4, 1.129e-4, 1.130e-4 | 1.322e-4 (all four) | 1.305e-4 (all four) |
+
+ (a) failed on one count: the largest |H| of the unsolved data is 2.8e-3 at every
+     resolution, not "about 1e-2" (I took the number of test T3 of the first pass, a
+     different ball); the shell mean is 4.1e-4 and 3.8e-4 at the two finer meshes
+     (predicted 3e-4 to 5e-4) and the interior mean of |M| 6.0e-5 and 5.6e-5 (predicted
+     about 5e-5, equal within 30 per cent): held.
+ (b) H held: after the solve max|H| in interior and shell is 1e-13 to 2e-12 at every
+     resolution. M failed at 32 and 64 cells: the interior mean of |M| falls by 47, 67
+     and 173 (predicted at least 100). The vector part ends by the stall rule (relative
+     residual 3.0e-4, 5.7e-5, 2.1e-5; max|M| 3.2e-3 -> 1.0e-5, 7.8e-4 -> 2.6e-6,
+     2.3e-4 -> 1.1e-6), and what is left is what the solved sphere has as well (5.2e-6,
+     8.4e-7, 2.8e-7): the floor is not the displacement.
+ (c) held: `zsca` has H as (b) and its interior mean of |M| equals the unsolved one to
+     0.2 per cent.
+ (d) held as written, and worth little: |P_ADM| is 1e-15; M_psi of the far-field line is
+     1.81e-3, 5.1e-4, 2.9e-4 for `zsol` and 1.58e-3, 3.4e-4, 8.4e-5 for `sph`, within 1e-3
+     of each other but neither is a mass: on the table of format 2 (flat slices, the
+     mass in K) M_psi is the monopole of the correction psi - 1 and tends to zero with
+     the cell size for the sphere; the difference `zsol` - `sph`, 2.3e-4, 1.8e-4, 2.0e-4,
+     does not.
+ (e) held: in interior and shell the mean of |H| of `zsol` over that of `sph` is 1.00
+     at 32 cells, 1.02 and 1.00 at 64 cells, and at 128 cells 1.29 (t = 1) and 1.43
+     (t = 2) in the interior, 1.04 and 1.15 in the shell (bound 1.5; refutation at 2).
+     The ratio grows with resolution: at dx = 0.5 the truncation error of the evolution
+     has fallen to where the two data sets differ. Both converge: `zsol` at t = 2 falls
+     by 4.0 and 9.4 (interior), 4.1 and 8.9 (shell) per halving.
+ (f) held: at dx = 0.5 the shell mean of |H| of `zoff` at t = 2 is 12.5 times that of
+     `zsol` (1.3 and 1.9 at dx = 2 and 1); the unsolved data stay at the residual they
+     start with (3.8e-4 at t = 0, 2.6e-4 at t = 2) while the solved data converge.
+ (g) held: the face layer has the same mean |H| at t = 2 in the four sets of one
+     resolution to three digits (1.13e-4, 1.32e-4, 1.31e-4), larger than interior and
+     shell of the solved sets at 128 cells by 6 to 12: whole-mesh norms cannot tell the
+     data apart.
+ (h) held: the interior mean of |M| at t = 1 of `zsol` is 4.9 times below `zsca` at
+     dx = 0.5 (1.02e-5 against 5.01e-5); at t = 2 the shell mean of |H| is 2.4 times
+     below. The vector part matters once the data are resolved.
+ Cost on one processor core at 128 cells: the solve of `zsol` 31 minutes (41 outer
+ iterations; file times of its run directory), the 16 steps to t = 2 another 58 minutes.
+
+**P1, vacuum Bowen-York puncture** (m = 1, P = 0.5; run core-20261119-165458-ecdaa7c;
+`test_p_numbers_p1.json`; figures `figs/test_p_profiles_p1`, `test_p_convergence_p1`,
+looked at: the solved u lies below the reference by a nearly uniform amount that is
+visible towards the faces; |u - u_ref|/dx^2 rises by 4 per halving, that is the error
+does not fall; the tick labels of the convergence figure overlap and its third profile
+column is empty in this subset: redrawn with the combined analysis).
+
+| case, N = 32 / 64 / 128 | outer it. | max\|u - u_ref\|, 1 < r < 12 | rms there | M_psi (m + 2 Q(16) = 1.119594) | monitor outside r_p |
+|---|---|---|---|---|---|
+| stencil | 5 / 5 / 5 | 2.95e-4 / 2.80e-4 / 2.87e-4 | 2.75e-4 / 2.60e-4 / 2.69e-4 | 1.119678 / .119911 / .119779 | 0.08 / 0.25 / 7e-3 |
+| code, r_p = 1 | 30 / 30 / 24 | 2.9e-2 / 3.9e-2 / 2.70e-4 | 5.5e-3 / 6.0e-3 / 2.43e-4 | 1.110334 / 1.130738 / 1.119733 | 4e-12 |
+| code, r_p = 3 | 22 / 20 / 20 | 1.9e-4 / 2.73e-4 / 2.86e-4 | 1.5e-4 / 2.5e-4 / 2.7e-4 | 1.119516 / .119900 / .119776 | 6e-12 / 5e-12 / 8e-13 |
+
+ (a) failed where it matters: mode stencil converges in 5 outer iterations, but the
+     error over 1 < r < 12 does not fall with the cell size (2.95e-4, 2.80e-4, 2.87e-4;
+     predicted a factor 3 per halving). It is nearly uniform (root mean square 2.6e-4 to
+     2.75e-4), 1 per cent of u at the puncture (0.02837), the same in mode code. The
+     design refutation "the split psi_s + u or the stencil near the puncture is wrong"
+     does not follow: P2 (a puncture at rest in a matter shell, where the source is
+     compact) converges at second order with the same split. Reading and test: P6
+     (entry 10).
+ (b) failed at 64 cells: M_psi differs from m + 2 Q(16) by +8e-5, +3.2e-4, +1.9e-4
+     (bound 2e-4), without order. It is not the ADM mass, as predicted (1.1456; 0.026
+     lies beyond r = 16). [JUDGEMENT, not tested] the scatter is the staircase of the
+     sphere of the moments: a shell of thickness d at r = 16 holds 1.6e-3 d of M_psi.
+ (c) held, except the last clause: with radius 1 the error at 32 and 64 cells is 100
+     and 140 times that of mode stencil (the monitor differentiates psi_s^4 at 1 to 2
+     cells from the puncture: unusable), at 128 cells it falls by 144 to 2.7e-4, which is
+     not above the stencil error: both sit on the floor of (a).
+ (d) held: with radius 3 mode code converges at every N with the error of mode stencil
+     (ratio 0.65, 0.98, 1.00) and leaves the monitor at 8e-13 to 6e-12 outside the
+     radius.
+
+**P3, refined mesh** (root dx = 1, levels in |x_i| < 8 and < 4; run
+core-20261119-170050-f228951; `test_p_numbers_p3p4.json`).
+ (a) held: the puncture in the shell converges in mode code (radius 3; 25 outer
+     iterations, BiCGStab) and in mode stencil (4); the error of u at the puncture in
+     mode code is 6.0e-6 against 6.1e-6 for the uniform 64-cell run of P2; the monitor
+     after the solve is 1.6e-13, 5.3e-13, 5.6e-13 on the three levels (outside radius 3,
+     away from the faces). Mode stencil on this mesh has 2.0e-5 at the puncture and
+     3.1e-5 over 3 < r < 12 (uniform 64 cells: 3.5e-6 and 2.9e-5).
+ (b) held, and says little: the vacuum puncture on the refined mesh has the error of
+     the uniform runs, 2.80e-4 (the floor of P1 (a)), 5 outer iterations.
+
+**P4, three punctures** (same run; uniform meshes of 32, 64, 128 cells).
+ (a) held: 5 outer iterations each; P_ADM = (0.1, 0, 0) and J_ADM = (0.5, -0.2, -0.6)
+     to all digits printed (the sums of the momenta, and of the spins and x_c times P_c,
+     worked out by hand).
+ (b) failed for two of three: u at the punctures (mean of the eight nearest cells) is
+     0.0082, 0.0133, 0.0164 (first), 0.0086, 0.0114, 0.0121 (second), 0.0067, 0.0096,
+     0.0109 (third) at dx = 1, 0.5, 0.25: successive differences fall by 0.63, 0.24,
+     0.48 (predicted at most a third). Reading and test: P7 (entry 10).
+ (c) failed for the third: against the closed-form second-order values (0.0157, 0.0100,
+     0.0078) the 128-cell values differ by 5, 20 and 40 per cent (bound 30), and are not
+     converged.
+
+**P5, puncture with momentum inside a moving shell** (64 cells, both parts in mode code,
+radius 3; run core-20261119-170028-77f7173; `test_p_numbers_p5.json`). Converges (34
+outer iterations; max|H| 1.4e-2 -> 8.4e-12); the vector part ends by the stall rule
+with the monitor's max|M| 5.6e-4 -> 2.1e-7 (factor 2700; predicted at least 100): held.
+**Failed: P_ADM_x of the record is 0.5500562851, not 0.55 to 1e-6.** Two parts. (1) My
+number: the particle file has sum m u_x = 0.0499999520 (`shell.json`: the lattice sum of
+the shell is 0.49999952, not 0.5). (2) A defect: the record is 5.633e-5 above
+0.5 + 0.0499999520. Where it is [VERIFIED from the dumped right side s_x of the vector
+equation, `punc.idvector.bin`, summed over spheres with
+`scratch/core/tmp/idsolve2/close/p5_check.py`, by hand, an analysis of an existing
+output]: the sum of s_x dV/(8 pi) over r < 12 is 0.04999995197550574, the particle sum
+to all digits; between r = 12 and 16 the right side is below 7e-18 everywhere except in
+the outermost layer of active cells, where it is up to 3.2e-5 and the 576 cells of that
+layer inside the sphere of the moments add 5.633e-5; over the whole mesh the layer adds
+2.9e-4 (0.6 per cent of the momentum of the matter). Reading [JUDGEMENT until the run
+of entry 12]: the ghost cells at the faces hold the outflow copy of the trial curvature
+(the boundary condition of Z4c has acted before the solver starts), and the solver
+subtracts the closed-form Bowen-York curvature at the position of the ghost cell
+(`nrpic_idsolve.cpp` 540-555): the difference is not zero there and its central
+difference puts a source into the outermost active cells. Only runs with the vector
+part and a puncture with momentum or spin take this branch (of all tests: P5).
+
+**K, card check** (card run core-20261119-154414-2506b80, Slurm job 4656, one A100,
+0.032 card-hours; analysis core-20261120-220527-e2690ef; `analyze_k_numbers.json`,
+figure `figs/card_k`, looked at: bars at 1e-16 to 1e-13; the first version of the
+figure repeated one legend entry four times and compared region means that are round-off
+(1e-13) in three static cases: script corrected, figure redrawn in entry 13). Held with
+room: in the four cases at 128 cells (vacuum puncture in mode stencil and in mode code
+with radius 3, moving Gaussian with the far field, solved Zel'dovich ball with its
+evolution to t = 2) the card build of 76add0c takes the same outer iterations (5, 20,
+16, 41) and linear steps (8, 22, 29, 105) as the processor build; psi agrees to 2e-16,
+7e-16, 2e-15, 1e-15 of its maximum and W to 1.5e-15 and 3.5e-13 (predicted 1e-12); the
+far-field lines agree to 12 digits in M_psi; the region means of |H| of the ball at
+t = 2 agree to 3e-11 (interior), 8e-12 (shell), 1.7e-10 (exterior), 9e-14 (faces)
+(predicted 1e-6). Wall time on the card: 7 s, 11 s, 40 s, and 57 s for the ball with
+its 16 steps (one processor core: 166 s, 422 s, and 90 minutes for the ball).
