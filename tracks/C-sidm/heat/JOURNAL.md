@@ -334,3 +334,103 @@ fit (initial and final values fixed) cannot absorb; with the sound modes the res
 0.0023-0.0030, two to three times the 0.00125 I assumed. Error of f per seed at 1.6e5
 particles: ~2.5 percent (not ~1); mean of the two seeds 1.046 +- 0.017 (TESTS window) or
 1.051 +- 0.015 (late window), consistent with T7's 1.019 +- 0.004 at 1.6 sd.
+
+## 2026-11-20 22:26 Wave 3 round 1 (helper heat): state found, stranded runs closed, predictions for the closing analyses
+
+Session of wave 3, round 1 (plan `../PLAN-wave3.md`, package 1). The predecessor was cut
+off by the usage limit on 2026-11-19 after the entry of 16:30. State verified with
+`nrpic-run status` and the run directories (22:14 UTC):
+- Card job A (run C-20261119-150335-73fd40f, Slurm 4652) and card job B
+  (C-20261119-150347-e100007, Slurm 4653) COMPLETED on 2026-11-19 (10:39-10:54 and
+  10:54-11:10 PST); every case rc = 0 in `batch.list.status`; 17 snapshots in each of the
+  26 case directories, every header NRPSNAP1 with times increasing to t_end and sizes
+  32 + 72 N bytes (the trailing 8 N bytes are the proper times that
+  `athenak/src/particles/nrpic_io.cpp` lines 942-944 writes after the species; the reader
+  `collide/analysis/snap.py` reads what precedes them; `docs/FORMATS.md` line 123 omits
+  them). Manifests said "submitted".
+- C-20261119-155433-a287f9c: `run.log` ends `# exit=0 end=2026-11-19T17:09:12Z`;
+  manifest said "running". Closed at 22:15 with `nrpic-run finish` (completed, 68 files
+  checksummed).
+- T8 coarse: C-20261119-154032-e450dfc (seed 1; base variant has no snapshot, six variants
+  with reduced.npz), C-20261119-162015-d97abac (seed 2; pmax 0.2 lost, six valid),
+  C-20261119-162353-7985a9a (the two lost cases, completed). The byte-for-byte comparison
+  of the regenerated particle files planned at 16:27 is not on record: done below.
+- Card job A reduced in run C-20261120-221630-fd17a2d (4 cores, 5 min 53 s): every case
+  has reduced.npz (17 records, t = 0 to t_end), case.json, summary.json and keeps
+  snapshots 00000 and 00016; the run directory went from 53,967,258,100 to
+  6,447,421,004 bytes (47.5 GB freed = 11 cases x 15 snapshots x 288 MB). Job A then closed
+  with `nrpic-run finish` (completed; 0.2425 card-hours of allocation, 873 s; 115 files
+  checksummed after the reduction). Job B is being reduced the same way.
+
+Predictions, written before any analysis below has run (none of the card or T8 numbers
+has been looked at; the only numbers seen are those in the entries above):
+
+P-pf (particle files). (i) The particle files regenerated in run C-20261119-162353-7985a9a
+(seed 1, seed 2; 5e5) are byte-identical to the shared ones of -154032-e450dfc and
+-162015-d97abac (make_box.py is deterministic for a given seed). (ii) In every case of
+those three runs and of card jobs A and B that started, the first snapshot holds x, u, m
+identical to the bits of its particle file (no case read a half-written file). Refuted by
+any difference: then the case concerned is dropped and listed.
+
+P-T8 (as TESTS.md T8 and the 15:41/14:50 entries; judged on card job A: one seed,
+4e6, k lambda = 0.2, theta = 0.003, eps = 0.2): kappa changes by less than 2 percent between
+the two finest values of each parameter, dt 0.1 -> 0.05 t_coll, pmax 0.1 -> 0.05,
+dx lambda/4 -> lambda/8. Resolution: the per-seed sd of f at 4e5 measured at
+k lambda = 0.2 is 1.33 percent (8 seeds, analysis C-20261119-161930-acd257b), i.e. 0.42
+percent at 4e6 (design Monte Carlo: 0.67 percent, `fit_rel_sd_eps0p2_N4e6` of design
+run C-20261119-144117-37b2328); a change between two independent runs then has sd
+0.6-0.95 percent (an upper bound: the variants share the initial sample). Expected sign
+and size [JUDGEMENT; the DSMC discretisation literature is not in the corpus, `kb search`
+22:20 found no source]: dt: kappa rises with dt (particles stream a distance v dt between
+collision steps, which lengthens the effective free path), quadratically in dt/t_coll, so
+the change 0.1 -> 0.05 is a small fraction of a percent, below the resolution; sign of
+f(0.2) - f(0.1) positive if resolved. pmax: no effect beyond noise (pairs are redrawn
+each sub-step and the rate is exact without sub-cycling, T8 part 2, analysis
+C-20261119-151044-a584069); sign none, |change| < 2.5 sd. dx: kappa rises with dx/lambda
+(partners up to dx apart exchange energy across that distance), quadratically, so the
+lambda/2 -> lambda/4 change is about four times the lambda/4 -> lambda/8 change; both
+below 2 percent. Refuted by a change of 2 percent or more between the two finest values of
+any parameter.
+P-T8c (processors, 2 seeds x 5e5, the 15:41 prediction): no change above 5 percent between
+any two neighbouring values of dt, pmax or dx (per-seed sd of a change ~1.65 percent from
+the 4e5 scatter scaled to 5e5). Refuted otherwise.
+
+P-eps (T7 at eps = 0.05, card job A: theta 0.003, k lambda 0.4 and 0.2, seeds 1, 2, 4e6):
+f(eps 0.05) agrees with f(eps 0.2) at the same k lambda once the nonlinear-reference
+correction is applied (it is -0.06 percent at eps 0.05 and -1.01 percent at eps 0.2,
+design run). Tolerance: the noise of A_S is additive, so the per-seed sd of f scales as
+1/(eps sqrt N): from the measured 4e5 scatter at eps 0.2 (1.33 percent at k lambda 0.2,
+3.22 percent at 0.4) the expected per-seed sd at 4e6 and eps 0.05 is 1.7 and 4.1 percent
+(design: 2.7 and 4.3), the mean of two seeds 1.2 and 2.9 percent; with the pooled eps 0.2
+values (se 0.47 and 1.14 percent from the processor seeds) the difference has an expected
+se of 1.3 and 3.1 percent. Pass: |f(0.05) - f(0.2)| < 3 expected se at each k lambda
+(3.8 and 9.3 percent). This can refute only a gross failure of the amplitude correction:
+an error of the whole -1 percent correction would be below one se.
+
+P-T7hot (theta = 0.1 and 1, eps 0.2, k lambda 0.4, 0.2, 0.1; processor seeds 1, 2 at 4e5
+(C-20261119-152752-0ffa031, C-20261119-155433-a287f9c) and card seeds 1, 2 at 2e6 (job
+B)). Expected (the predecessor's 14:50 prediction, kept): kappa/kappa_1(theta) about
+1.0 +- 0.1 at theta 0.1 and 0.75 +- 0.25 at theta 1, where kappa_1 is the
+non-relativistic first Chapman-Enskog value 2.077 sqrt(theta)/sigma and the rate is
+converted with the relativistic c_p [JUDGEMENT: mean-free-path estimate kappa ~ n c_p <v>
+lambda/3 with the relativistic c_p and the Maxwell-Juttner mean speed, which saturates at
+c]. Reference: none. The relativistic Chapman-Enskog conductivity of hard spheres
+(Cercignani & Kremer) is not in the corpus (README "Requests" to kb), so these values can
+only be REPORTED, not judged: no pass interval is set, and only internal consistency is
+predicted: (i) card and processor seeds agree (as P-cc below), (ii) the extrapolation in
+(k lambda)^2 has chi^2 below 9 for one degree of freedom, (iii) the number-mode fit f_N
+lies above f_S at every k lambda (sound waves, as at theta = 0.003).
+
+P-cc (card against processor): the card case theta = 0.003, seed 5, 4e6 (job B) lies
+within 3 standard errors of the processor seeds at the same k lambda (0.1, 0.2, 0.4):
+z = (f_card - mean_cpu)/sqrt(se_cpu^2 + s2/N_card), s2 the per-unit variance of the
+processor seeds (`an_compare.py cardcpu`); expected |f_card - mean_cpu| below about 1.4,
+1.9 and 4.6 percent. The same check is applied to the card seeds at theta 0.1 and 1
+(2e6 against 4e5; two processor seeds only, so its se is poorly known: indicative).
+A failure at theta 0.003 would make the card executable suspect for this test.
+
+P-T7pool (theta 0.003, eps 0.2, all seeds): the pooled extrapolation stays in
+[0.99, 1.06]; with weights proportional to N it is 1.02 +- 0.004 (within 2 se of 1.019).
+
+Analyses (one core each, registered; `scripts/an_mode.py`, `scripts/an_compare.py`
+written today, `scripts/check_pfiles.py`).
