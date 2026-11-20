@@ -52,6 +52,7 @@ RUNS = {
     "e7an": "F-20261119-144544-d9c8542",              # nr_first E7: passage analysis of the smoke
     "v9": "F-20261119-145449-245e984",                # lead V9: GR reading of the start states
     "newton3_pass": "F-20261115-180351-b8eb386",      # newton3_fix: passages with corrected energies
+    "flat": "F-20261115-175620-df20ffe",              # second check SC0d: binary moving in flat space
 }
 
 # readers of the code's output (package nr_first, read only)

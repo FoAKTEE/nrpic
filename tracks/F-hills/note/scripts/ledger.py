@@ -150,6 +150,10 @@ def main():
               not k.endswith("onset")), 2), R["s1_an"])
     add("Geodesic baseline", r"largest $a_b/R_{\rm curv}$ of a bound binary at $\beta=10$",
         g(max(ch["alpha_bound_max_beta10"].values()), 2), R["s1_an"])
+    fb = C.load_json("flat", "flat_binary.json")["summary"]
+    add("Geodesic baseline", "binary moving through flat space ($q=10$ members, $a_b=%g$, speed %g): "
+        "sideways acceleration in the model; Newtonian law" % (fb["a0"], fb["V"]),
+        f"{abs(fb['hrna']['a_fit']):.4g}; {abs(fb['newton']['a_fit']):g}", R["flat"])
     # ---- pericentre scan
     for key, lab in (("q10", "q=10"), ("q4", "q=4")):
         rr = v7[key]
@@ -242,6 +246,21 @@ def main():
     e3 = C.load_json("e3", "single_analysis.json")
     e10 = C.load_json("e10a", "s2g_compare.json")
     gS = "Single member"
+    bl = open(C.run_file("e3raw", "batch.list")).read().split("\n")
+    sp = FS.read_problem(C.run_file("e3raw", "S3/single_P025.athinput"))
+    blk = {}
+    cur = None
+    for line in open(C.run_file("e3raw", "S3/single_P025.athinput")):
+        t_ = line.split("#")[0].strip()
+        if t_.startswith("<"):
+            cur = t_.strip("<>")
+        elif "=" in t_ and cur:
+            k_, v_ = [x.strip() for x in t_.split("=", 1)]
+            blk.setdefault(cur, {})[k_] = v_
+    eta2 = [x.split("=")[1] for ln in bl if "/S2 " in ln for x in ln.split() if x.startswith("z4c/shift_eta=")]
+    add(gS, "set-up: bare mass $m$, momentum $P$; shift damping $\\eta$ of the two runs; slots of the input",
+        f"{sp['comp0_mass']}, {sp['comp0_p1']}; {blk['z4c']['shift_eta']}, {eta2[0]}; "
+        f"{blk['mesh_refinement']['max_nmb_per_rank']}", R["e3raw"])
     add(gS, "$P/M_{\\rm ADM}$; rest mass of the full solution, $\\sqrt{M_{\\rm ADM}^2-P^2}$ [$m$]",
         f"{e3['reference']['v_boost']:.4g}; {e3['reference']['M_rest_full']:.5g}", R["e3"])
     add(gS, "tracker speed over $P/M_{\\rm ADM}$, mean over $t=10$--$20\\,m$: $\\eta m=2$, $\\eta m=0.25$",
@@ -307,6 +326,13 @@ def main():
     hm = e7an["horizon_median"]
     add(gP, "horizon masses, median of the found searches: $m_1$, $m_2$, $M$",
         f"{hm['0']:.5g}, {hm['1']:.5g}, {hm['2']:.5g}", R["e7an"])
+    hz7 = nr.read_horizons(rdir7)
+    fg = []
+    for n in range(3):
+        h_, _ = hz7[n]
+        good_ = h_["hrms"] < 1e-3
+        fg.append(f"{h_['t'][good_][0]:g}" if good_.any() else f"none of {len(h_['t'])}")
+    add(gP, "first search with residual below $10^{-3}$ [$M$]: $m_1$, $m_2$, $M$", ", ".join(fg), R["e7"])
     add(gP, "searches missed of 25: $m_1$, $m_2$, $M$",
         ", ".join(str(e7an["horizon_missed"][k]) for k in ("0", "1", "2")), R["e7an"])
     cyc = int(round(lg["tlim"] / lg["dt"]))
