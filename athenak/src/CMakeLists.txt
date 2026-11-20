@@ -100,6 +100,7 @@ add_executable(
         multigrid/multigrid.cpp
         multigrid/multigrid_bvals.cpp
         multigrid/multigrid_driver.cpp
+        multigrid/multigrid_robin.cpp
         multigrid/multigrid_tasks.cpp
 
         mhd/mhd.cpp
@@ -137,6 +138,7 @@ add_executable(
         particles/nrpic_kick.cpp
         particles/nrpic_collide.cpp
         particles/nrpic_newton.cpp
+        particles/nrpic_idsolve.cpp
         outputs/pdf.cpp
 
         pgen/pgen.cpp

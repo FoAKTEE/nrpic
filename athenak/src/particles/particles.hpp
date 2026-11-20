@@ -150,6 +150,25 @@ struct NrpicCollideOptions {
 };
 
 //----------------------------------------------------------------------------------------
+//! \struct NrpicIdSolveOptions
+//  \brief options of the initial-data solver (nrpic_idsolve.cpp)
+
+struct NrpicIdSolveOptions {
+  bool on = false;           // <particles> id_solve
+  int residual = 0;          // 0: constraint monitor of the code, 1: seven-point stencil
+  Real tol = 1.0e-10;        // largest residual over the largest term of the equation
+  int maxit = 60;            // outer (Newton) iterations
+  Real lin_tol = 1.0e-3;     // conjugate gradients: residual over right side
+  int lin_maxit = 50;        // conjugate-gradient steps of one linear solve
+  Real mg_tol = 1.0e-3;      // defect over source at which a preconditioner solve ends
+  int psi_init = 0;          // start value: 0 trial conformal factor, 1 psi = 1
+  bool dump = false;         // write <basename>.idsolve.bin
+  bool vector = false;       // also solve the momentum constraint for W (id_vector)
+  int vec_residual = 1;      // vector residual: 1 stencil form, 0 constraint monitor
+  Real vec_tol = 1.0e-10;    // tolerance of the vector part (id_vector_tol)
+};
+
+//----------------------------------------------------------------------------------------
 //! \struct ParticlesTaskIDs
 //  \brief container to hold TaskIDs of all particles tasks
 
@@ -342,6 +361,15 @@ class Particles {
   void NrpicNewtonWriteHistory(Real time, int ncycle, bool header);
   void NrpicNewtonWriteRestart(const std::string &fname);
   void NrpicNewtonReadRestart(const std::string &fname);
+
+  // ---- initial-data solver (particles/nrpic_idsolve.cpp) ----
+  // Solves the Hamiltonian constraint for the conformal factor on the mesh, with the
+  // sources deposited by this module, before the first deposit of a new run.
+  NrpicIdSolveOptions ids;
+  MeshBoundaryValuesCC *pbval_ids = nullptr;   // ghost cells of psi and of corrections
+  DvceArray5D<Real> ids_coarse;                // unused coarse array of that exchange
+  void NrpicIdSolveInit(ParameterInput *pin);
+  void NrpicSolveInitialData();
 
  private:
   MeshBlockPack* pmy_pack;  // ptr to MeshBlockPack containing this Particles

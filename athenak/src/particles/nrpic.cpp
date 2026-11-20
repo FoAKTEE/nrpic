@@ -273,6 +273,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
   NrpicKickInit(pin);       // test kick with reproducible random numbers
   NrpicCollideInit(pin);    // Monte Carlo collisions
   if (nropt.newton) { NrpicNewtonInit(pin); }
+  NrpicIdSolveInit(pin);    // initial-data solver
 }
 
 //----------------------------------------------------------------------------------------

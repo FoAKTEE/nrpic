@@ -1,0 +1,45 @@
+{
+ "run_id": "core-20261115-155135-87e189e",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu/src/athena",
+  "-i",
+  "torus.athinput",
+  "mesh/nx1=32",
+  "mesh/nx2=32",
+  "mesh/nx3=32",
+  "meshblock/nx1=16",
+  "meshblock/nx2=16",
+  "meshblock/nx3=16",
+  "particles/id_residual=stencil",
+  "particles/particle_file=wave_n32_p2.nrp"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-155135-87e189e",
+ "commit": "87e189e",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/idsolve/torus.athinput",
+   "sha256": "1eb2bbf28ae706de5be04afa1377c2b2b0e8f3c6fd4c59eee696383d636d87bb"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/wave_n32_p2.nrp",
+   "sha256": "2ee280964417c628cb2cca539ad3fde0c171550f4a640272eb05dc20822fb03f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu/src/athena",
+   "sha256": "65e3a59ffc0eeb22cee5ae4f81bd8560dc6518fb32562f63abd6771f6e6a814a",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-155135-87e189e",
+ "purpose": "initial-data solver, test T4, case torus_stencil_p2_n32",
+ "kind": "scouting",
+ "tag": "idsolve-torus_stencil_p2_n32",
+ "state": "finished",
+ "wall_time_s": 5.98,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T15:51:35Z"
+}
