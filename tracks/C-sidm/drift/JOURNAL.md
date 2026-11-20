@@ -185,3 +185,20 @@ Continuations (ii), (iv) to 1000 M.
 - A.4 The ripple rms (residual of the 0-1000 M fit, without the fit error) stays within a
   factor two of 8e-4, and the H-norm2 floor stays at 8.3-8.5e-4 within 20 %.
 - A.5 Cost: 700 M at 3.42-3.46 s per M, 40-41 min (inside 52 min).
+
+## 2026-11-20 22:35 UTC Entry 3: processor smoke of the M/8 deck; job (i) submitted
+
+- Job (i) submitted at 22:25 UTC as run C-20261120-222533-ce50a86 (Slurm 4741, pending;
+  the other C-* job in the queue is the decisive package's 4737).
+- Smoke (run C-20261120-222544-e5a7492; release processor executable, cc2_kninf_M8 with
+  time/nlim = 0, 2 threads, 55 s): clause "456 MeshBlocks, 8 physical levels" of M8.4 PASS
+  (64 blocks of level 7; the log prints 456 and eight physical levels); reads 1e5
+  particles; alpha_probe(0) = 0.67640 (M/4: 0.67694; model 0.67622: the probe interpolates
+  the table at the eight cell centres around the origin, closer at M/8).
+- Not predicted, noted: the squared Hamiltonian-constraint norm at t = 0 is 0.149 on the
+  M/8 mesh against 0.0235 on the M/4 mesh (6.3 times). The initial data put the smooth
+  table metric next to the deposited particle source; a ratio near 2^3 = 8 is what
+  particle noise in the deposit gives when the cell volume of the central region shrinks
+  by 8 [JUDGEMENT], so the initial constraint violation of the wave-2 runs is mostly
+  particle noise, not truncation error. Whether this larger initial mismatch kicks the
+  radial mode harder at M/8 is part of what run (i) shows (it works against M8.1).
