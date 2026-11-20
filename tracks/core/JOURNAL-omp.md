@@ -627,10 +627,32 @@ step. The advice to the tracks (interface text section 6, READY section 4, the n
 all of 2026-11-19) said "Newtonian mode: always on processors"; that is corrected to a
 break-even of about a quarter of an hour of card time (below).
 
-Peak card memory of the cases (gpumem.csv of the run): 9.2 GiB (punc), 12.3 GiB
-(cluster), 1.8 GiB (cosmo), 1.6 GiB (newton), 4.4 GiB (bench).
+Peak card memory of the cases (`gpu_mem_peak_MiB` in the logs of the run): 9191 MiB
+(punc), 12295 (cluster), 1787 (cosmo), 1563 (newton), 4373 (bench).
 
 Queue waits of this package's card jobs: 4643 waited 2 h 11 min (submitted 06:44, started
 08:55), 4666 3 h 15 min (08:47 to 12:02). Break-even card time T < W/(R - 1) for a wait
 W = 2 to 3 h: 1.5 to 2.2 min (punc, R = 82), 1.8 to 2.8 min (cluster), 2.1 to 3.2 min
 (cosmo), 13 to 19 min (newton).
+
+## 2026-11-20 14:14 Entry 17: prediction P14 (six threads, the limit per session since decision 0019)
+
+Decision 0019 lowers the limit to six processor cores per session, so the number the
+tracks need is the rate at six threads, not at 16. The machine is quiet today (load
+average 3 to 12 at 14:00 to 14:10 against 97 to 157 on 2026-11-19), so one thread is
+measured again for the ratio. Same decks and executable (O3, sha256 8f223f75...), threads
+on the least busy cores of one NUMA node (omp_places.py), `scaling_series.sh t1` (four
+cases side by side on four cores) then `t6` (one case after the other, two repeats).
+
+P14, written before the run:
+ a. Speed-up of six threads over one thread, both of today: 5.0 to 6.2 in all four cases
+    (efficiency 0.83 to 1.03; yesterday 4 threads gave 4.1 to 5.0 and 16 gave 13.0 to
+    14.2). Refuted by a speed-up below 4.5 in any case.
+ b. One thread today against one thread of 2026-11-19 (load 122 to 139): faster by a
+    factor 1.0 to 1.4 (entry 11 read the four-thread speed-ups above 4 as one-thread runs
+    that shared their core's caches with other jobs). Refuted if today's runs are slower,
+    or faster by more than 1.6 (then the table of entry 11 says little about a quiet
+    machine and the 16-thread column has to be measured again).
+ c. One A100 over six threads: 130 to 230 for the three cases with Z4c, 22 to 30 for the
+    Newtonian box (the measured card times of entry 16 over six-thread times that follow
+    from a and b). Refuted by a ratio outside 100 to 280, or 18 to 36.

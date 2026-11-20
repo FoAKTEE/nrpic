@@ -4,6 +4,7 @@
 # one NUMA node at the start of each run) unless PLACES/BIND say otherwise.
 #   scaling_series.sh t1        one thread, the four cases side by side (4 cores)
 #   scaling_series.sh t4        four threads, the four cases side by side (16 cores)
+#   scaling_series.sh t6        6 threads, one case after the other, two repeats
 #   scaling_series.sh t16       16 threads, one case after the other, two repeats
 #   scaling_series.sh t32|t64   32 or 64 threads, one case after the other, two repeats
 #   scaling_series.sh serial    the serial executable S, the four cases side by side
@@ -43,6 +44,9 @@ case $phase in
     split4 4
     run punc 4 0.125 2 t4 "$G0" & run cluster 4 0.25 2 t4 "$G1" & run cosmo 4 0.25 2 t4 "$G2" &
     run newton 4 1.0 2 t4 "$G3" & wait ;;
+  t6)   # the limit per session since decision 0019: one case after the other
+    run punc 6 0.125 2 t6; run cluster 6 0.25 2 t6
+    run cosmo 6 0.25 2 t6; run newton 6 1.0 2 t6 ;;
   t16|t32|t64)
     n=${phase#t}
     run punc "$n" 0.25 2 "$phase"; run cluster "$n" 0.5 2 "$phase"
