@@ -852,7 +852,7 @@ or cubic clouds at level boundaries; the cause of the round-off departure of res
 refined meshes is a [JUDGEMENT] (ghost zones at fine/coarse boundaries), not isolated;
 the lapse field behind the walk tracker's move at cycle 9 of T13 was not dumped.
 
-## 2026-11-20 22:15  wave 3, continuation: state found; T10 died at start on the card; prediction of T10d
+## 2026-11-20 22:05  wave 3, continuation: state found; T10 died at start on the card; prediction of T10d
 
 Merged `main` (d507d774; decisions 0018, 0019 read; no pause flag). Worktree clean, five
 commits not yet pushed (the journal entry of 16:45 and the T-outcomes before it). Both
