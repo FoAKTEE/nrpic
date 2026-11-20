@@ -211,3 +211,35 @@ Not used (other packages or not reviewed): `eih/`, S2g (F-20261119-143443-f11ebb
    byte-identical to the committed PNGs of N4 if the environment (matplotlib 3.10.8) is the
    one of N4; the ledger rows of v0 unchanged (new rows added in a third table).
 Refuted as a whole if a script needs a number it cannot locate in a registered run.
+
+## 2026-11-20 Figure run of the G1 revision, outcome (run F-20261120-222908-4ffcfba, about 40 s, one core)
+
+`scripts/run_all.py` at commit 4ffcfba through `nrpic-run submit --kind scouting --gate G1
+--package tracks/F-hills/note --cores 1`; completed, 39 files checksummed. Outputs copied into
+`figures/` and `tables/`. Every input checked against the sha256 its run recorded (the
+wave-1 scale run as before, without a record). [VERIFIED, `fig_*_numbers.json`, `log.txt` of
+the run]
+1. fig_constraints: met. Code norm with the correction 1.19e-2, 4.71e-5, 5.51e-7; closed forms
+   4.91e-7 (corrected), 1.64e-5 (uncorrected), 3.02e-6 (plain sum, m/8); ratio of the closed
+   forms 33.3; orders 7.98/7.68 (corrected) and 7.96/7.62 (uncorrected), equal to the JSON.
+2. fig_single: met. From the raw files: f over 10-20 m 0.4825 (eta m = 2) and 0.7574
+   (eta m = 0.25), equal to `single_analysis.json` to 1e-9; drifts +5.11e-4 and +8.49e-4
+   (ratio 1.66), first good search t = 3.5 and 2.5 m, equal to E10a. New in the figure: the
+   searches at t = 0.5 m of both runs (mass 2.2 percent low, residual 0.019) are off its scale
+   and are named on it.
+3. fig_tree: met. Restart trees 400, 1576, 1548 equal to the model level by level (asserted);
+   model along x: 1548, 1576, 1604, 1632, first above 1600 at x = 2.25 m; stops at
+   x = 2.203 and 2.217 m.
+4. fig_smoke: met. 1716 -> 1744 MeshBlocks (70 created, 42 removed), 689088 MeshBlock-cycles
+   in 334.9 s = 2057 per second, peak 70847 MiB, trackers within 4.1e-9 of the input, horizon
+   medians 0.12952 / 0.12949 / 1.0027 with 1 / 2 / 17 missed of 25, cost 16.9 and 20.1
+   card-hours for 71680 cycles. Not predicted, read from the files: none of the heavy black
+   hole's eight found searches in the smoke has a residual below 1e-3; the members' trackers
+   move at 0.59 and 0.62 of |P|/m (bare mass) at t = 1.56 M (12.5 member masses), below the
+   0.76 of P/M_ADM of the single member with the same damping (eta m = 0.25) at that time; the
+   normalisations differ by a few percent; no cause named (one reading, no test).
+5. Met: fig_newton, fig_geodesic, fig_rp_scan, fig_passage, fig_cost PNGs byte-identical to the
+   committed N4 PNGs (their PDFs differ only in the embedded date); the v0 rows of
+   `tables/ledger.tex` unchanged (a third table added); `claims.md` identical (13 of 17 agree).
+   schem_architecture and schem_timeline changed as intended. Every new PNG byte-identical to
+   the draft I opened and read (`scratch/F-hills/tmp/note/figs/`).

@@ -83,3 +83,53 @@ card memory, MeshBlock slots & about 3000 & multi\_puncture.md lines 229--230 of
 \end{tabular}
 \end{ruledtabular}
 \end{table*}
+
+\begin{table*}
+\caption{Ledger of the runs in full relativity: the three-black-hole data at the start, a single member on a card, its mesh tree, and the first passage (set-up, start state, cost). Lengths and times in units of the member mass $m$ for the single member and of $M$ otherwise.}
+\label{tab:ledger3}
+\footnotesize
+\begin{ruledtabular}
+\begin{tabular}{p{0.44\textwidth}p{0.19\textwidth}p{0.29\textwidth}}
+Quantity & Value & Source \\ \hline
+\multicolumn{3}{l}{\emph{Data at the start}} \\
+$\langle H^2\rangle^{1/2}$ at $t=0$, corrected data, code: $m/4$, $m/8$, $m/16$ & 0.0119, 4.71e-05, 5.51e-07 & \texttt{\detokenize{F-20261115-181434-b9c8916}} \\
+$\langle H^2\rangle^{1/2}$ at $t=0$, uncorrected data, code: $m/4$, $m/8$, $m/16$ & 0.0121, 5.02e-05, 1.63e-05 & \texttt{\detokenize{F-20261115-181434-b9c8916}} \\
+closed-form residual of the data: corrected, uncorrected, plain sum ($m/8$) & 4.91e-07, 1.64e-05, 3.02e-06 & \texttt{\detokenize{F-20261115-181434-b9c8916}} \\
+uncorrected over corrected: closed form; code at $m/8$; code at $m/16$ & 33.3; 1.07; 29.6 & \texttt{\detokenize{F-20261115-181434-b9c8916}} \\
+order of the truncation error, $m/4\to m/8\to m/16$: corrected; uncorrected & 7.98, 7.68; 7.96, 7.62 & \texttt{\detokenize{F-20261115-181434-b9c8916}} \\
+corrected data at $m/8$, code: members ($r<1M$), heavy black hole ($r<4M$), elsewhere & 4.57e-05, 1.15e-05, 9.96e-08 & \texttt{\detokenize{F-20261115-181434-b9c8916}} \\
+the same norm at $t=0$ from the card executable (passage input, $m/8$) & 4.713e-05 & \texttt{\detokenize{F-20261119-144544-d9c8542}} \\
+\multicolumn{3}{l}{\emph{Single member}} \\
+$P/M_{\rm ADM}$; rest mass of the full solution, $\sqrt{M_{\rm ADM}^2-P^2}$ [$m$] & 0.2406; 1.0078 & \texttt{\detokenize{F-20261119-145619-8246322}} \\
+tracker speed over $P/M_{\rm ADM}$, mean over $t=10$--$20\,m$: $\eta m=2$, $\eta m=0.25$ & 0.483, 0.757 & \texttt{\detokenize{F-20261119-145619-8246322}} \\
+largest speed ratio and its time, $\eta m=0.25$; settling time $\eta m=0.25$, $\eta m=2$ & 0.774 at 5.41$\,m$; 3.94, 17.7$\,m$ & \texttt{\detokenize{F-20261119-145619-8246322, F-20261119-144351-b448f38}} \\
+horizon mass at $t=0$ [$m$] and its offset from the rest mass & 0.99909, -0.0086 & \texttt{\detokenize{F-20261119-145619-8246322}} \\
+first search with residual below $10^{-3}$: time [$m$] and mass, $\eta m=2$; $\eta m=0.25$ & 3.5, 1.0079; 2.5, 1.0062 & \texttt{\detokenize{F-20261119-144351-b448f38}} \\
+horizon drift, median of $t=4$--$6\,m$ to median of $12$--$14\,m$: $\eta m=2$, $\eta m=0.25$, ratio & 0.000511, 0.000849, 1.66 & \texttt{\detokenize{F-20261119-144351-b448f38}} \\
+searches found and missed: $\eta m=2$; $\eta m=0.25$ & 39/5; 27/2 & \texttt{\detokenize{F-20261119-145619-8246322}} \\
+$\langle H^2\rangle^{1/2}$, $\eta m=2$: peak and its time; at $t=10$, $20\,m$ & 0.00057 at 2$\,m$; 5.7e-05, 4.6e-05 & \texttt{\detokenize{F-20261119-145619-8246322}} \\
+end of the runs [$m$] and tracker position there: $\eta m=2$; $\eta m=0.25$ & 21.97, 2.203; 14.22, 2.217 & \texttt{\detokenize{F-20261119-145619-8246322}} \\
+\multicolumn{3}{l}{\emph{Mesh tree}} \\
+restart trees equal to the rule model, $t=0$, $10$, $20\,m$ (MeshBlocks) & 400, 1576, 1548 (all levels equal) & \texttt{\detokenize{F-20261119-144425-10a94b7}} \\
+levels 1, 2, 3 of the tree at $t=10\,m$ & 448 / 448 / 504 & \texttt{\detokenize{F-20261119-144425-10a94b7}} \\
+rule model along $x=0$--$20\,m$: tree sizes; first $x$ above the 1600 slots & 1548, 1576, 1604, 1632; 2.25$\,m$ & \texttt{\detokenize{F-20261119-144024-988d5c9}} \\
+\multicolumn{3}{l}{\emph{First passage in full relativity}} \\
+MeshBlocks at the start and at cycle 400 (created, removed) & 1716, 1744 (70, 42) & \texttt{\detokenize{F-20261115-174602-c6879fe}} \\
+MeshBlock-cycles per second (MeshBlock-cycles over timed seconds) & 2057 (689088/334.9) & \texttt{\detokenize{F-20261115-174602-c6879fe}} \\
+peak card memory with 2700 MeshBlock slots [MiB] & 70847 & \texttt{\detokenize{F-20261115-174602-c6879fe}} \\
+card memory [MiB] (and per slot) & 81920 (26.2) & \texttt{\detokenize{tracks/F-hills/nr_first/JOURNAL.md lines 626--627}} \\
+largest offset of a tracker from its input position at $t=0$ & 4.1e-09 & \texttt{\detokenize{F-20261115-174602-c6879fe}} \\
+member tracker speed over $|P|/m$ at $t=1.56M$: $m_1$, $m_2$ & 0.59, 0.62 & \texttt{\detokenize{F-20261115-174602-c6879fe}} \\
+horizon masses, median of the found searches: $m_1$, $m_2$, $M$ & 0.12952, 0.12949, 1.0027 & \texttt{\detokenize{F-20261119-144544-d9c8542}} \\
+searches missed of 25: $m_1$, $m_2$, $M$ & 1, 2, 17 & \texttt{\detokenize{F-20261119-144544-d9c8542}} \\
+cycles of the passage ($t_{\rm lim}/\Delta t$); card-hours for a mean tree of 1744 and 2080 MeshBlocks & 71680; 16.9, 20.1 & \texttt{\detokenize{F-20261115-174602-c6879fe, F-hills-20261115-131933-907e5fe}} \\
+start state, Newtonian conic of the centre of mass: $r_p$, eccentricity & 9.809, 1.00023 & \texttt{\detokenize{F-20261119-145449-245e984}} \\
+test-mass reading, heavy black hole's frame: $E$, $L$, turning point $r_S$ & 1.0042, 4.952, 9.25 & \texttt{\detokenize{F-20261119-145449-245e984}} \\
+the same with the heavy black hole at rest: $E$, $L$, turning point & 0.9917, 3.962, 4.66 & \texttt{\detokenize{F-20261119-145449-245e984}} \\
+the same with the total mass: captured & yes & \texttt{\detokenize{F-20261119-145449-245e984}} \\
+$q=10$ input: Newtonian $r_p$; turning point in the heavy black hole's frame; captured in the other two readings & 7.997; 5.77; yes & \texttt{\detokenize{F-20261119-145449-245e984}} \\
+Newton from the start state: captured member's orbit $a$, $e$, pericentre; first pericentre time & 7.75, 0.25, 5.81; 122.1 & \texttt{\detokenize{F-20261115-180351-b8eb386}} \\
+prediction recorded before submission (health, outcome, horizons, radiation) & four items & \texttt{\detokenize{tracks/F-hills/JOURNAL.md lines 305--320}} \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
