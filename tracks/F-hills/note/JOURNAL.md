@@ -136,3 +136,78 @@ note names this run. Note recompiled (11 pages), checker with --compile: 0 undef
 references or citations, 0 overfull boxes; candidates only in the ledger appendix (run ids)
 and in the scripts (data keys), accepted by exception 1 of `../WRITING_GUIDE.md`.
 Pages 1-11 read after N3, pages 2 and 10 again after N4.
+
+## 2026-11-20 Wave 3, round 1: note brought to G1 state (helper "note"; plan and predictions)
+
+Restart check: the note's last commits are cc8e31f7 / b35169ab (v0, wave 2); no stranded file in
+`note/`; deliverables of this package do not exist yet, so the revision starts from v0.
+Main merged by the planner at ea569de3 (not merged again here). Sources read: `CLAUDE.md`,
+`harness/RULES.md` "nrpic-run", the paper-writing skill (on disk, Skill tool unavailable),
+`../WRITING_GUIDE.md`, `../NOTATION.md`, this directory, `stage/G1/STATUS.md`, `nr_first/README.md`
+and `JOURNAL.md` (E1-E11, E10a), `newton3/README.md` (Jacobi split, newton3_fix), and
+`stage/REVIEW-wave2.md`.
+
+### Plan of the revision (skill: an existing draft is edited in place; Sec. 10 does not apply)
+
+Sections:
+- Title, date, abstract, Introduction (results list): G1 state, v1 of 20 November 2026.
+- Sec. III (set-up): architecture figure replaced by the state as of release core-v0.3; the
+  data-flow schematic of a passage in "Numerical methods" (chain of segments, tracker-keeping
+  wrapper, readers); the 1PN reference named as the third reference with a "(round 2)" slot.
+- Sec. IV becomes "Reference solutions: tests and predictions" (Newton, geodesic, the two
+  references at q = 4 and 10, the first passages in the references); corrections of
+  `stage/REVIEW-wave2.md` carried: the geodesic fractions at q = 10 from four tidal radii are
+  model outputs inflated by the start convention and a spurious self-acceleration of a moving
+  binary (second check, F-20261115-175620-df20ffe); the q = 10 start state turns at 5.77 M in the
+  GR test-mass reading (V9, F-20261119-145449-245e984), so it is rebuilt before any q = 10
+  passage; the independent restricted code agrees at seven points and differs slightly at
+  retrograde D = 0.1 and 0.2 (already in v0's text). Kerr slot "(round 2)".
+- New Sec. V "Full relativity: data, members, mesh and the first passage":
+  V.A constraints of the three-black-hole data (E2; junk slot "(round 2)");
+  V.B a single member: gauge settling and horizon drift (E3; S2g slot "(round 2)");
+  V.C mesh and tree, cost (E11 + the v0 cost subsection, label sec:t-cost kept);
+  V.D the first passage: set-up, start-state reading (V9), cost (E7), prediction, and the
+  baselines' disagreement on its outcome; outcome slot "(round 2)"; 1PN prediction slot.
+- Sec. VI plan: gates updated (G1 state); Sec. VII summary; appendix A parameters unchanged;
+  appendix B ledger with a third table (full relativity).
+Figures: schem_architecture (rewritten), schem_dataflow (new), fig_constraints (E2),
+fig_single (E3), fig_tree (E11), fig_smoke (E7); the v0 figures unchanged.
+Numbers and their runs (ledger rows):
+- E2: C0 run F-20261115-173547-a02af7d, analysis F-20261115-181434-b9c8916 (`c0_constraints.json`,
+  byte-identical to the first analysis F-20261115-181053-d52f22d).
+- E3: raw S3/S2 of F-20261115-173601-2fae2dc (trackers, horizons, history), summary of the
+  lead's rerun F-20261119-145619-8246322 (`single_analysis.json`), windows of E10a
+  F-20261119-144351-b448f38 (`s2g_compare.json`).
+- E11: F-20261119-144425-10a94b7 (`tree_check.json`, same numbers as F-20261119-143931-4fbf2d0)
+  and F-20261119-144024-988d5c9 (`tree_path.json`); stop positions from E3.
+- E7: F-20261115-174602-c6879fe (log, card-memory file, trackers, history of `P1smoke/`),
+  analysis F-20261119-144544-d9c8542 (`p1_analysis.json`); cost arithmetic from these with the
+  largest wave-1 tree (F-hills-20261115-131933-907e5fe).
+- Start state: V9 F-20261119-145449-245e984 (`review_gr.json`). P1 itself
+  (F-20261119-150017-b45ec5f): set-up and prediction only (lead's prediction, `JOURNAL.md`
+  "P1: decision (lead) and prediction"), no outcome.
+Not used (other packages or not reviewed): `eih/`, S2g (F-20261119-143443-f11ebb9), the Kerr work.
+
+### Predictions [JUDGEMENT] for the figure run (run_all with the four new figures)
+
+1. fig_constraints reproduces `c0_constraints.json`: code norm with the correction 1.191e-2,
+   4.713e-5, 5.514e-7 at m/4, m/8, m/16; closed forms 4.9e-7 (corrected) and 1.63e-5
+   (uncorrected), ratio about 33; truncation orders 7.96/7.62 and 7.98/7.68. Refuted if a plotted
+   value differs from the JSON.
+2. fig_single, from the raw tracker, horizon and history files read with the package readers
+   (`nrread.py`, read only): window means of f equal `single_analysis.json` of
+   F-20261119-145619-8246322 to 1e-9 relative (S3 0.4825 over 10-20 m, S2 0.7574), the
+   horizon drifts from the median of t = 4-6 to that of 12-14 equal E10a (+5.11e-4 S3,
+   +8.49e-4 S2) to 1e-9, the first good search (hrms < 1e-3) at t = 3.5 (S3) and 2.5 (S2).
+   Refuted if any differs (then the raw files or the readers changed since).
+3. fig_tree: restart trees equal the model level by level (400 at t = 0; 1576 at t = 10; 1548
+   at t = 20 for S3); the model along x = 0-20 m has maximum 1632 and exceeds the 1600 slots
+   from x = 2.25 m; the runs stopped at x = 2.203 (S3) and 2.217 m (S2).
+4. fig_smoke: 1716 -> 1744 MeshBlocks, 689088 MeshBlock-cycles in 334.9 s (2057 per second),
+   peak card memory 70847 MiB, trackers within 4.1e-9 of the input at t = 0, horizon medians of
+   the good searches 0.12952, 0.12949, 1.00271; cost of P1 16.9 (N = 1744) to 20.1 (N = 2080)
+   card-hours for 71680 cycles.
+5. The v0 figures (fig_newton, fig_geodesic, fig_rp_scan, fig_passage, fig_cost) are
+   byte-identical to the committed PNGs of N4 if the environment (matplotlib 3.10.8) is the
+   one of N4; the ledger rows of v0 unchanged (new rows added in a third table).
+Refuted as a whole if a script needs a number it cannot locate in a registered run.
