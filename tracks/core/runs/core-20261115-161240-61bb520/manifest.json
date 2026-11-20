@@ -1,0 +1,51 @@
+{
+ "run_id": "core-20261115-161240-61bb520",
+ "owner": "core",
+ "track": "core",
+ "gate": "G2",
+ "purpose": "T6 existing behaviour: byte comparison of the output files of run core-20261115-160549-a36abe3 (release core-v0.3 against the new processor executable, ten scalar-field cases) with the parameter lists of restart files compared without padding",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/scalar2/t6_regress.py",
+  "--base",
+  "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+  "--new",
+  ".work/exe/athena_cpu_a58e95b",
+  "--data",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160549-a36abe3",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-161240-61bb520"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-scalar2",
+ "commit": "61bb52097906855be87d8c3606032f0bfb9011d4",
+ "branch": "core/scalar-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_a58e95b",
+   "sha256": "c69266ec765c8296b005871c6865991f2a5ac59f7ebd2ac3f03d383b57f9439e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+   "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c"
+  },
+  {
+   "path": "tracks/core/analysis/scalar2/t6_regress.py",
+   "sha256": "3f3ca4d3ecef723257295ef6bf90b5470c749a4446ed8aec822246148741511d"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-161240-61bb520",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-161240-61bb520"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:12:41Z",
+ "cores": 1,
+ "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
+ "status": "completed",
+ "wall_time_s": 0.72,
+ "exit_status": 0,
+ "end_utc": "2026-11-15T16:12:42Z",
+ "core_hours": 0.0002
+}
