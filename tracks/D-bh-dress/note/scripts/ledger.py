@@ -56,7 +56,7 @@ def main():
     if not os.path.isdir(figdir):
         figdir = os.path.join(C.NOTE, "figures")
     fn = {k: json.load(open(os.path.join(figdir, f"fig_{k}_numbers.json")))
-          for k in ("es", "constraints", "floor", "spike", "infall")}
+          for k in ("es", "constraints", "floor", "spike", "infall", "kerr", "newton", "esrun")}
     es = C.load_json("es_data", "es.json")
     s = es["summary"]
     plan = C.load_json("first_run", "first_run_plan.json")
@@ -141,6 +141,70 @@ def main():
           (sec, r"peak to peak of the $5M$ mean in $220$--$255M$: $M/8$; $M/16$", f"{fnum(fl['drift8']['p2p_rm5_220_255'])}; {fnum(fl['drift16']['p2p_rm5_220_255'])}", ["drift8", "drift16"]),
           (sec, r"largest spin $|S|/M^2$ after $5M$: $M/8$; $M/16$", f"{fnum(fl['drift8']['max_S_over_M2_after5'])}; {fnum(fl['drift16']['max_S_over_M2_after5'])}", ["drift8", "drift16"]),
           (sec, "card-hours of the two runs", f"{card['drift8']:.3f}; {card['drift16']:.3f}", ["drift8", "drift16"])]
+
+    # ---- the first full-relativity run and its vacuum control (wave 2; note v1)
+    er = fn["esrun"]
+    eb, ec = er["runs"]["bubble"], er["runs"]["control"]
+    hb, hc = eb["horizon"], ec["horizon"]
+    man_es = {k: json.load(open(os.path.join(C.TRACK, "runs", C.RUNS[k], "manifest.json"))) for k in ("es1", "v1")}
+
+    def grp(run, R0):
+        return [x for x in run["groups"] if abs(x["R0"] - R0) < 1e-9][0]
+    lb, lc_ = er["lapse_probe_46M"]["bubble"], er["lapse_probe_46M"]["control"]
+    pm = er["plateau_model"]
+    def jl(needle):                    # locator of a prediction written before the runs
+        return f"es_runs/JOURNAL.md:{find_line('es_runs/JOURNAL.md', needle)}"
+    sec = "First run of the bubble and its vacuum control"
+    E += [(sec, r"$M_{\rm AH}(100M)-M$: bubble run; control (prediction $+1.5\times10^{-3}\pm3\times10^{-4}$)",
+           f"{fnum(hb['level'])}; {fnum(hc['level'])}", ["es1", "v1", "es_ana", jl("The level: M_AH(100 M) - M = +1.5e-3")]),
+          (sec, r"largest $|M_{\rm AH}(t)/M_{\rm AH}(100M)-1|$ on $[100,200]M$: bubble; control (prediction $3\times10^{-5}$)",
+           f"{fnum(hb['max_abs'])}; {fnum(hc['max_abs'])}", ["es1", "v1", "es_ana", jl("<= 3e-5 at M/8")]),
+          (sec, r"the same drift on $[100,165]M$, range: bubble; control",
+           f"{fnum(hb['window_100_165'][0])} to {fnum(hb['window_100_165'][1])}; {fnum(hc['window_100_165'][0])} to {fnum(hc['window_100_165'][1])}",
+           ["es1", "v1", "es_extra"]),
+          (sec, r"slope of the drift on $[100,200]M$ (per $M$): bubble; control",
+           f"{fnum(hb['slope_per_M'])}; {fnum(hc['slope_per_M'])}", ["es1", "v1", "es_ana"]),
+          (sec, r"largest $|$drift of bubble run $-$ drift of control$|$; over the control's largest drift (refutation above 3)",
+           f"{fnum(er['difference']['max_abs'])}; {er['difference']['over_control_floor']:.2f}", ["es1", "v1", "es_ana", jl("Refuted by: a horizon-mass change")]),
+          (sec, r"$M_{\rm AH}$ bubble $-$ control: largest $|\cdot|$ for $t\le20M$; first above $10^{-9}$ at $t$ ($M$); range on $[25,50]M$",
+           f"{fnum(er['difference']['mass_bubble_minus_control_max_abs_t_le_20'])}; {er['difference']['t_first_split_1e-9']:.1f}; "
+           f"{fnum(er['difference']['mass_bubble_minus_control_25_50'][0])} to {fnum(er['difference']['mass_bubble_minus_control_25_50'][1])}",
+           ["es1", "v1", "es_extra"]),
+          (sec, r"wall tracers, largest $|R/R_w-1|$ for $\tau\le200M$: bubble; control (prediction $3\times10^{-3}$)",
+           f"{fnum(eb['wall']['max_abs_rel_tau_le_200'])}; {fnum(ec['wall']['max_abs_rel_tau_le_200'])}", ["es1", "v1", "es_ana", jl("to 3e-3 at")]),
+          (sec, r"the same, bubble run, axis; diagonal tracers",
+           f"{fnum(eb['wall']['by_class_tau_le_200']['axis'])}; {fnum(eb['wall']['by_class_tau_le_200']['diagonal'])}", ["es1"]),
+          (sec, r"proper time at $R=2M$, group from $6M$: bubble; control; exact ($M$)",
+           f"{grp(eb, 6)['tau_cross_2M_range'][0]:.4f}--{grp(eb, 6)['tau_cross_2M_range'][1]:.4f}; "
+           f"{grp(ec, 6)['tau_cross_2M_range'][0]:.4f}--{grp(ec, 6)['tau_cross_2M_range'][1]:.4f}; {grp(eb, 6)['tau_cross_2M_exact']:.4f}",
+           ["es1", "v1", "es_ana"]),
+          (sec, r"the same, group from $10M$",
+           f"{grp(eb, 10)['tau_cross_2M_range'][0]:.4f}--{grp(eb, 10)['tau_cross_2M_range'][1]:.4f}; "
+           f"{grp(ec, 10)['tau_cross_2M_range'][0]:.4f}--{grp(ec, 10)['tau_cross_2M_range'][1]:.4f}; {grp(eb, 10)['tau_cross_2M_exact']:.4f}",
+           ["es1", "v1", "es_ana"]),
+          (sec, r"group from $20M$: crossing in the bubble run; exact; last proper time in the control ($M$)",
+           f"{grp(eb, 20)['tau_cross_2M_range'][0]:.2f}--{grp(eb, 20)['tau_cross_2M_range'][1]:.2f}; {grp(eb, 20)['tau_cross_2M_exact']:.2f}; "
+           f"{grp(ec, 20)['tau_end_range'][1]:.1f}", ["es1", "v1", "es_ana"]),
+          (sec, r"lapse at the plateau probe at $t=10,25,50M$: bubble run; homogeneous $1+\log$ model (prediction)",
+           f"{lb['t=10']:.3f}, {lb['t=25']:.3f}, {lb['t=50']:.3f}; {pm['t=10']:.3f}, {pm['t=25']:.3f}, {pm['t=50']:.3f}",
+           ["es1", "es_ana", jl("alpha = 2.10, 3.58")]),
+          (sec, r"lapse at the plateau probe at $t=100,200M$: bubble; control; model",
+           f"{lb['t=100']:.3f}, {lb['t=200']:.3f}; {lc_['t=100']:.3f}, {lc_['t=200']:.3f}; {pm['t=100']:.2f}, {pm['t=200']:.2f}",
+           ["es1", "v1", "es_ana"]),
+          (sec, r"$K/(-3H)$ at the plateau tracer at $t=10,30,50,80,200M$",
+           ", ".join(f"{er['K_over_minus3H_R0_48'][f't={T}']:.2f}" for T in (10, 30, 50, 80, 200)), ["es1", "es_extra"]),
+          (sec, r"dust proper time at $t=200M$ (plateau group); homogeneous model",
+           f"{er['dust_proper_time_R0_48_at_end'][0]:.1f}--{er['dust_proper_time_R0_48_at_end'][1]:.1f}; {er['plateau_model_tau_at_200']:.0f}",
+           ["es1", "es_ana"]),
+          (sec, r"smallest lapse on the mesh, range over the run; largest after $10M$: bubble; control",
+           f"{fnum(lb['alpha_min_mesh_range'][0])}--{lb['alpha_min_mesh_range'][1]:.3f}, {lb['alpha_max_after_10']:.2f}; "
+           f"{fnum(lc_['alpha_min_mesh_range'][0])}--{lc_['alpha_min_mesh_range'][1]:.3f}, {lc_['alpha_max_after_10']:.2f}",
+           ["es1", "v1", "es_extra"]),
+          (sec, r"tracers removed at the horizon: bubble; control; dust mass at start and end ($M$)",
+           f"{lb['n_excised_last']}; {lc_['n_excised_last']}; {lb['sum_m_first_last'][0]:.10f}, {lb['sum_m_first_last'][1]:.10f}",
+           ["es1", "v1"]),
+          (sec, "card-hours: bubble run; control",
+           f"{man_es['es1']['resources']['gpu_hours']:.3f}; {man_es['v1']['resources']['gpu_hours']:.3f}", ["es1", "v1"])]
     sec = "Spike in the probe limit"
     E += [(sec, r"constant $f$: peak density ($10^8$ GeV cm$^{-3}$) at $r/Gm$", f"{sp['peak_rel'][1]:.4f} at {sp['peak_rel'][0]:.2f}", ["spike_ref"]),
           (sec, "the same read off the published figure", f"{sp['peak_rel_sfw_fig1'][1]:.4f} at {sp['peak_rel_sfw_fig1'][0]:.2f}", ["spike_ref"]),
@@ -153,6 +217,41 @@ def main():
           (sec, r"count over equilibrium count, second half, $4$--$6\,Gm$", f"{sp['late_half_mean_over_expected']['4-6']:.3f}", ["spike_ana"]),
           (sec, "loss-cone probes: plunging that crossed; bound that crossed", f"{lc['lc025']['species1_predicted_plunge_crossed']} of {lc['lc025']['species1_predicted_plunge']}; {lc['lc025']['species1_predicted_bound_crossed']}", ["lc05", "lc025"]),
           (sec, r"median crossing-time offset at $\Delta t$ and $\Delta t/2$ ($M$)", f"{fnum(lc['lc05']['crossing_time_offset_meas_minus_pred']['median'])}; {fnum(lc['lc025']['crossing_time_offset_meas_minus_pred']['median'])}", ["lc05", "lc025"])]
+    kr = fn["kerr"]
+    kc, kh, ks = kr["constf"], kr["hern"], kr["stationarity"]
+    kpr = kr["peak_ratios"]
+    E += [(sec, r"Kerr, constant $f$, equator: peak density ($10^8$ GeV cm$^{-3}$) at $r/Gm$ for $a=0.5$; $0.8$",
+           f"{kc['a=0.5']['peak_ours'][1]:.4f} at {kc['a=0.5']['peak_ours'][0]:.2f}; {kc['a=0.8']['peak_ours'][1]:.4f} at {kc['a=0.8']['peak_ours'][0]:.2f}",
+           ["kerr_ref"]),
+          (sec, "the same read off the published figure",
+           f"{kc['a=0.5']['peak_published'][1]:.4f} at {kc['a=0.5']['peak_published'][0]:.2f}; {kc['a=0.8']['peak_published'][1]:.4f} at {kc['a=0.8']['peak_published'][0]:.2f}",
+           ["kerr_ref"]),
+          (sec, r"constant $f$: largest relative deviation from the published curves, $a=0,0.5,0.8$",
+           ", ".join(fnum(kc[f"a={s_}"]["maxabs_rel_dev"]) for s_ in ("0", "0.5", "0.8")), ["kerr_ref"]),
+          (sec, r"constant $f$: peak ratio $a=0.8$ over $a=0$; the same from the published figure",
+           f"{kpr['constf_peak_a0.8_over_a0 (FdRW line 213: 20%)'][0]:.3f}; {kpr['constf_peak_a0.8_over_a0 (FdRW line 213: 20%)'][1]:.3f}", ["kerr_ref"]),
+          (sec, r"Hernquist cusp, $a=0.8$: peak ($10^{18}$ GeV cm$^{-3}$) at $r/Gm$; published; ratio",
+           f"{kh['a=0.8']['peak_ours'][1]:.3f} at {kh['a=0.8']['peak_ours'][0]:.2f}; {kh['a=0.8']['peak_published'][1]:.3f} at {kh['a=0.8']['peak_published'][0]:.2f}; "
+           f"{kh['a=0.8']['peak_ours'][1] / kh['a=0.8']['peak_published'][1]:.3f}", ["kerr_ref"]),
+          (sec, r"Hernquist cusp: median relative deviation from the published curves, $a=0,0.5,0.8$",
+           ", ".join(fnum(kh[f"a={s_}"]["median_rel_dev"]) for s_ in ("0", "0.5", "0.8")), ["kerr_ref"]),
+          (sec, r"Hernquist cusp: peak ratio $a=0.8$ over $a=0.5$; the same from the published figure",
+           f"{kpr['hern_peak_a0.8_over_a0.5 (line 929: ~35%)'][0]:.3f}; {kpr['hern_peak_a0.8_over_a0.5 (line 929: ~35%)'][1]:.3f}", ["kerr_ref"]),
+          (sec, r"Kerr code at $a=0$ against the Schwarzschild reference: constant $f$; Hernquist (largest relative)",
+           f"{fnum(kr['a0_vs_wave1']['constf_maxrel'])}; {fnum(kr['a0_vs_wave1']['hern_maxrel'])}", ["kerr_ref"]),
+          (sec, r"AthenaK, $a=0.8$: particles; duration ($M$); $\chi^2$ at $t=0$, median, range; degrees of freedom",
+           f"{ks['N']}; {ks['t_end']:.0f}; {ks['chi2_t0']:.1f}, {ks['chi2_median']:.1f}, {ks['chi2_min']:.1f}--{ks['chi2_max']:.1f}; {ks['dof']}",
+           ["kerr_run", "kerr_expected", "kerr_ana"]),
+          (sec, r"late over early half of the counts in $0$--$4$, $4$--$6$, $6$--$10$, $10$--$16$, $16$--$40\,Gm$",
+           ", ".join(f"{v['late_over_early']:.3f}" for v in ks["ranges"].values()), ["kerr_ana"]),
+          (sec, r"mean $L_z/Gm$ in the same ranges, late half; reference",
+           ", ".join(f"{v['Lz_mean_late_half']:.3f}" for v in ks["ranges"].values()) + "; " +
+           ", ".join(f"{v['Lz_mean_ref']:.3f}" for v in ks["ranges"].values()), ["kerr_expected", "kerr_ana"]),
+          (sec, r"largest $|\Delta E/E|$, median and largest; largest $|\Delta L_z|$; smallest radius reached ($Gm$)",
+           f"{fnum(ks['invariants']['dE/E_median_p99_max'][0])}, {fnum(ks['invariants']['dE/E_median_p99_max'][2])}; "
+           f"{fnum(ks['invariants']['dLz_median_p99_max'][2])}; {ks['inner']['min_r_over_snapshots']:.3f}", ["kerr_ana"]),
+          (sec, r"equator over pole, inside $16\,Gm$: late half; reference",
+           f"{ks['contrast']['late_half_mean']:.3f}; {ks['contrast']['ref']:.3f}", ["kerr_expected", "kerr_ana"])]
     sec = "Secondary infall and capture"
     E += [(sec, r"turned-around mass $M_{\rm ta}/M$ at $a/a_i=2,4,8$ (closed form)", ", ".join(f"{lead['0.01'][a]['M_ta']:.5f}" for a in ("2", "4", "8")), ["infall_lead"]),
           (sec, r"mass that reached the centre at $a/a_i=2,4,8$ ($M$)", ", ".join(f"{lead['0.01'][a]['M_c']:.4f}" for a in ("2", "4", "8")), ["infall_lead"]),
@@ -165,6 +264,41 @@ def main():
           (sec, "fraction of the turned-around mass that passed the centre", f"{inf['shells']['f_passed']:.4f}", ["shells_ana"]),
           (sec, r"captured fraction at $a/a_i=4$ for $\sigma_i=0.02,0.05,0.1,0.2$", ", ".join(f"{v:.3f}" for v in inf["shells"]["captured_fraction"].values()), ["shells_ana"]),
           (sec, r"radiation era: largest $|\Delta\eta|$ against the printed table; $y_{\rm eq}/y_{\rm ta}$", f"{fnum(rd_deta, 2)}; {min(rd_ratio):.4f}--{max(rd_ratio):.4f}", ["rd"])]
+    nw = fn["newton"]["runs"]
+    N1, N2, N3 = nw["N128c"], nw["N64c"], nw["N128Lc"]
+    NR = ["nm128c", "nm64c", "nm128Lc", "nm_ana"]
+
+    def gat(run, a):
+        return [x for x in run["growth"] if abs(x["a"] - a) < 1e-9][0]
+
+    def prof(run, a):
+        return min(run["profiles"], key=lambda p: abs(p["a"] - a))
+    E += [(sec, r"Newtonian mode: cells ($M$) of the three runs; last $a/a_i$",
+           f"{N1['dx']:.4g}, {N2['dx']:.4g}, {N3['dx']:.4g}; {N1['a_end']:.0f}, {N2['a_end']:.0f}, {N3['a_end']:.0f}", NR),
+          (sec, r"$M_{\rm ta}/M$ at $a/a_i=4$, three runs (matched shells); at $8$",
+           ", ".join(f"{gat(n, 4)['mta']:.4f} ({n['kernel_shells_at']['4']['mta']:.4f})" for n in (N1, N2, N3)) +
+           f"; {gat(N3, 8)['mta']:.4f} ({N3['kernel_shells_at']['8']['mta']:.4f})", NR),
+          (sec, r"dress ($M$) at $a/a_i=4$, three runs (matched shells); at $8$",
+           ", ".join(f"{gat(n, 4)['dress']:.4f} ({n['kernel_shells_at']['4']['dress']:.4f})" for n in (N1, N2, N3)) +
+           f"; {gat(N3, 8)['dress']:.4f} ({N3['kernel_shells_at']['8']['dress']:.4f})", NR),
+          (sec, r"largest $|M_{\rm ta}/M_{\rm ta}^{\rm shells}-1|$ after $a/a_i=1.5$: mesh kernel; Plummer law",
+           ", ".join(fnum(n["vs_kernel"]["mta_max_rel"]) for n in (N1, N2, N3)) + "; " +
+           ", ".join(fnum(n["vs_plummer"]["mta_max_rel"]) for n in (N1, N2, N3)), NR),
+          (sec, r"dress over $M_{\rm ta}$ at $a/a_i=4$; $8$; self-similar",
+           f"{N1['dress_over_mta_end']:.3f}; {N3['dress_over_mta_end']:.3f}; {fn['newton']['selfsim_dress_over_mta']:.3f}", NR),
+          (sec, r"$M_{\rm ta}/(Ma/a_i)$ at $a/a_i=4$; $8$; local growth exponent of the dress at $4$; $8$",
+           f"{N1['mta_over_a_end']:.3f}; {N3['mta_over_a_end']:.3f}; {N1['dlnMdress_dlna_end']:.2f}; {N3['dlnMdress_dlna_end']:.2f}", NR),
+          (sec, r"profile from $4\Delta x$ to $r_{\rm ta}$ outside the caustic bins, largest (rms) deviation from the matched shells: $a/a_i=4$ two runs; $8$",
+           f"{fnum(prof(N1, 4)['ratio_kernel']['max_dev_excl_caustic'])} ({fnum(prof(N1, 4)['ratio_kernel']['rms_dev_excl_caustic'])}), "
+           f"{fnum(prof(N2, 4)['ratio_kernel']['max_dev_excl_caustic'])}; "
+           f"{fnum(prof(N3, 8)['ratio_kernel']['max_dev_excl_caustic'])} ({fnum(prof(N3, 8)['ratio_kernel']['rms_dev_excl_caustic'])})", NR),
+          (sec, r"radius enclosing 99 of 100 parts of the dress at $a/a_i=4$, finest run; matched shells ($M$)",
+           f"{prof(N1, 4)['r_sp99']:.1f}; {prof(N1, 4)['ref_kernel_r_sp99']:.1f}", NR),
+          (sec, r"run over self-similar density on $0.1\le\lambda\le0.35$: $a/a_i=4$; $8$ (range)",
+           f"{min(prof(N1, 4)['selfsim_ratio_0p1_0p35']):.2f}--{max(prof(N1, 4)['selfsim_ratio_0p1_0p35']):.2f}; "
+           f"{min(prof(N3, 8)['selfsim_ratio_0p1_0p35']):.2f}--{max(prof(N3, 8)['selfsim_ratio_0p1_0p35']):.2f}", NR + ["selfsim"]),
+          (sec, r"largest offset of the seed clump from its cell centre, in cells",
+           ", ".join(fnum(n["clump_com_max_over_dx"]) for n in (N1, N2, N3)), NR)]
 
     # ---- claims of the lead's documents against the files ----
     G1, G0, ST = "stage/G1/STATUS.md", "stage/G0/REPORT.md", "STATUS.md"
@@ -219,6 +353,103 @@ def main():
     claim(G0, "33.4 M (eps 0.01)", "r_ta(a/a_i = 2) = 33.4 M (eps 0.01), 16.1 M (eps 0.03)", f"{scop['0.01']['r_ta_at_a2']:.1f}, {scop['0.03']['r_ta_at_a2']:.1f}", ok, ["scoping"])
     claim(ST, "2.0-2.5e-5", "floor 2.0-2.5e-5 at M/16 before 210 M", f"{fnum(min(f50[k]['dM_min'] for k in f50))}-{fnum(max(f50[k]['dM_min'] for k in f50))}", ok, ["drift_ana"])
 
+    # ---- note v1: numbers of the wave-2 documents behind the new sections, each against the
+    # value this package recomputed from the registered run output. The verdict is computed:
+    # "agrees" when every stated number equals the file value to its printed digits.
+    def tol(sv):
+        m = re.fullmatch(r"[+-]?(\d+)(?:\.(\d+))?(?:e([+-]?\d+))?", sv.strip())
+        if not m:
+            raise SystemExit(f"cannot read the stated number {sv!r}")
+        return 0.5 * 10.0 ** (int(m.group(3) or 0) - len(m.group(2) or ""))
+
+    def nclaim(doc, needle, stated, values, runs, note="", scale=1.0):
+        """stated: list of number strings as printed; values: file values in the same units
+        (times scale: 100 for per cent)."""
+        vals = [float(v) * scale for v in values]
+        good = all(abs(float(sv) - v) <= tol(sv) * (1 + 1e-9) for sv, v in zip(stated, vals))
+        K.append(dict(doc=doc, line=find_line(doc, needle), stated=needle + "  [" + ", ".join(stated) + "]",
+                      file_value=", ".join(f"{v:.6g}" for v in vals), verdict="agrees" if good else "disagrees",
+                      runs=[R[r] for r in runs], note=note))
+    SP, NI, ER, EJ = "spike/README.md", "secondary_infall/README.md", "es_runs/README.md", "es_runs/JOURNAL.md"
+    nclaim(SP, "7.31 Gm and 1.0604e8 at 6.61 Gm", ["0.9271e8", "7.31", "1.0604e8", "6.61"],
+           [kc["a=0.5"]["peak_ours"][1] * 1e8, kc["a=0.5"]["peak_ours"][0], kc["a=0.8"]["peak_ours"][1] * 1e8, kc["a=0.8"]["peak_ours"][0]], ["kerr_ref"])
+    nclaim(SP, "within 0.88 % and 0.95 % of fig_rho_a", ["0.88", "0.95"],
+           [kc["a=0.5"]["maxabs_rel_dev"], kc["a=0.8"]["maxabs_rel_dev"]], ["kerr_ref"], scale=100)
+    nclaim(SP, "Peak ratio a = 0.8 over a = 0: 1.219", ["1.219"],
+           [kpr["constf_peak_a0.8_over_a0 (FdRW line 213: 20%)"][0]], ["kerr_ref"])
+    nclaim(SP, "4.083e18 at 5.07", ["3.922e18", "5.06", "4.083e18", "5.07"],
+           [kh["a=0.8"]["peak_ours"][1] * 1e18, kh["a=0.8"]["peak_ours"][0], kh["a=0.8"]["peak_published"][1] * 1e18, kh["a=0.8"]["peak_published"][0]],
+           ["kerr_ref"], "the published value is digitized from the arXiv source by the reference run")
+    nclaim(SP, "lies between ours (1.406) and their figure", ["1.406", "1.451"],
+           kpr["hern_peak_a0.8_over_a0.5 (line 929: ~35%)"], ["kerr_ref"])
+    nclaim(SP, "51.4 at t = 0, median 43.8, range 20-75", ["51.4", "43.8", "20", "75"],
+           [ks["chi2_t0"], ks["chi2_median"], ks["chi2_min"], ks["chi2_max"]], ["kerr_ana"])
+    nclaim(SP, "late/early-half ratios 0.998, 1.003, 0.999, 1.000, 1.000", ["0.998", "1.003", "0.999", "1.000", "1.000"],
+           [v["late_over_early"] for v in ks["ranges"].values()], ["kerr_ana"])
+    nclaim(SP, "(reference 2.267, 1.800, 1.069, 0.645, 0.352)", ["2.267", "1.800", "1.069", "0.645", "0.352"],
+           [v["Lz_mean_ref"] for v in ks["ranges"].values()], ["kerr_expected", "kerr_ana"])
+    nclaim(SP, "2.267, 1.810, 1.054, 0.655, 0.370", ["2.267", "1.810", "1.054", "0.655", "0.370"],
+           [v["Lz_mean_late_half"] for v in ks["ranges"].values()], ["kerr_ana"],
+           "last digit only: the 10-16 Gm value is 0.6565, printed 0.655")
+    nclaim(SP, "|dE/E| median 1.2e-8, max 7.9e-6", ["1.2e-8", "7.9e-6"],
+           [ks["invariants"]["dE/E_median_p99_max"][0], ks["invariants"]["dE/E_median_p99_max"][2]], ["kerr_ana"])
+    nclaim(SP, "late-half 1.130, reference 1.127", ["1.130", "1.127"],
+           [ks["contrast"]["late_half_mean"], ks["contrast"]["ref"]], ["kerr_expected", "kerr_ana"])
+    nclaim(NI, "| M_ta at a/a_i = 4 |", ["2.5966", "2.5956", "2.5966", "2.5934", "2.5962", "2.5937"],
+           [x for n in (N1, N2, N3) for x in (gat(n, 4)["mta"], n["kernel_shells_at"]["4"]["mta"])], NR)
+    nclaim(NI, "| M_ta at a/a_i = 8 |", ["4.8159", "4.8019"], [gat(N3, 8)["mta"], N3["kernel_shells_at"]["8"]["mta"]], NR)
+    nclaim(NI, "| dress at a/a_i = 4 |", ["0.7975", "0.7976", "0.7966", "0.7954", "0.7977", "0.7940"],
+           [x for n in (N1, N2, N3) for x in (gat(n, 4)["dress"], n["kernel_shells_at"]["4"]["dress"])], NR)
+    nclaim(NI, "| dress at a/a_i = 8 |", ["2.1537", "2.1515"], [gat(N3, 8)["dress"], N3["kernel_shells_at"]["8"]["dress"]], NR)
+    nclaim(NI, "| largest M_ta deviation after a/a_i = 1.5 |", ["0.10", "0.12", "0.31"],
+           [n["vs_kernel"]["mta_max_rel"] for n in (N1, N2, N3)], NR, scale=100)
+    nclaim(NI, "| profile, 4 dx to r_ta, outside the caustic bins |", ["12", "6.5", "6.3", "26", "14"],
+           [prof(N1, 4)["ratio_kernel"]["max_dev_excl_caustic"], prof(N1, 4)["ratio_kernel"]["rms_dev_excl_caustic"],
+            prof(N2, 4)["ratio_kernel"]["max_dev_excl_caustic"], prof(N3, 8)["ratio_kernel"]["max_dev_excl_caustic"],
+            prof(N3, 8)["ratio_kernel"]["rms_dev_excl_caustic"]], NR, scale=100)
+    nclaim(NI, "dress/M_ta = 0.307 (a/a_i = 4) and 0.447 (8)", ["0.307", "0.447"],
+           [N1["dress_over_mta_end"], N3["dress_over_mta_end"]], NR)
+    nclaim(NI, "M_ta/(M a/a_i) = 0.649 and 0.602", ["0.649", "0.602"], [N1["mta_over_a_end"], N3["mta_over_a_end"]], NR)
+    nclaim(NI, "growth exponent of the dress 1.70 at 4 and 1.25 at 8", ["1.70", "1.25"],
+           [N1["dlnMdress_dlna_end"], N3["dlnMdress_dlna_end"]], NR)
+    nclaim(NI, "r_sp99 18.4 against 15.9 M", ["18.4", "15.9"], [prof(N1, 4)["r_sp99"], prof(N1, 4)["ref_kernel_r_sp99"]], NR,
+           "last digit only: the matched-shell value is 15.85 (kernel law), printed 15.9")
+    nclaim(ER, "max over 100-200 M | 3.40e-4 | 1.37e-4", ["3.40e-4", "1.37e-4"], [hb["max_abs"], hc["max_abs"]], ["es1", "v1", "es_ana"])
+    nclaim(ER, "| same, over 100-165 M", ["-5.0e-5", "9.3e-5", "-4.2e-5", "2.1e-5"],
+           hb["window_100_165"] + hc["window_100_165"], ["es1", "v1", "es_extra"])
+    nclaim(ER, "| M_AH(100 M) - M | +9.55e-4 | +9.37e-4", ["9.55e-4", "9.37e-4"], [hb["level"], hc["level"]], ["es1", "v1", "es_ana"])
+    nclaim(ER, "| wall tracers, max relative error for tau <= 200 M | 2.20e-3 | 1.59e-3", ["2.20e-3", "1.59e-3"],
+           [eb["wall"]["max_abs_rel_tau_le_200"], ec["wall"]["max_abs_rel_tau_le_200"]], ["es1", "v1", "es_ana"])
+    nclaim(ER, "| R0 = 6 M group reaches R = 2M (exact 14.827 M) | 14.826 M | 14.826 M", ["14.827", "14.826", "14.826"],
+           [grp(eb, 6)["tau_cross_2M_exact"], grp(eb, 6)["tau_cross_2M_mean"], grp(ec, 6)["tau_cross_2M_mean"]], ["es1", "v1", "es_ana"])
+    nclaim(ER, "| R0 = 10 M group reaches R = 2M (exact 34.442 M) | 34.437 M | 34.437 M", ["34.442", "34.437", "34.437"],
+           [grp(eb, 10)["tau_cross_2M_exact"], grp(eb, 10)["tau_cross_2M_mean"], grp(ec, 10)["tau_cross_2M_mean"]], ["es1", "v1", "es_ana"])
+    nclaim(ER, "| R0 = 20 M group (exact 244.74 M) | 244.09-244.51 M at t = 177 M", ["244.74", "244.09", "244.51", "177"],
+           [grp(eb, 20)["tau_cross_2M_exact"], grp(eb, 20)["tau_cross_2M_range"][0], grp(eb, 20)["tau_cross_2M_range"][1],
+            grp(eb, 20)["t_cross_2M_mean"]], ["es1", "es_ana"])
+    nclaim(ER, "| dust proper time at t = 200 M (R0 = 48 M) | 279.7 M (model 1251 M)", ["279.7", "1251"],
+           [0.5 * sum(er["dust_proper_time_R0_48_at_end"]), er["plateau_model_tau_at_200"]], ["es1", "es_ana"],
+           "279.7 is the middle of the range 279.49-279.88 over the group's tracers")
+    nclaim(ER, "| card-hours | 0.769 | 0.672", ["0.769", "0.672"],
+           [man_es["es1"]["resources"]["gpu_hours"], man_es["v1"]["resources"]["gpu_hours"]], ["es1", "v1"])
+    nclaim(EJ, "max |drift(ES-1) - drift(V-1)| = 2.04e-4 = 1.49", ["2.04e-4", "1.49"],
+           [er["difference"]["max_abs"], er["difference"]["over_control_floor"]], ["es1", "v1", "es_ana"])
+    nclaim(EJ, "1.292, 1.662, 1.636 at t = 10, 25, 50 M against", ["1.292", "1.662", "1.636"],
+           [lb["t=10"], lb["t=25"], lb["t=50"]], ["es1", "es_ana"])
+    nclaim(EJ, "the homogeneous model 1.377, 2.096, 3.577", ["1.377", "2.096", "3.577"],
+           [pm["t=10"], pm["t=25"], pm["t=50"]], ["es_ana"])
+    nclaim(EJ, "-3H(tau): 1.00 (t = 0), 0.50 (10 M), 0.62 (20 M), 0.19 (30 M), 0.10 (40 M), -0.21 (50 M)",
+           ["1.00", "0.50", "0.62", "0.19", "0.10", "-0.21"],
+           [er["K_over_minus3H_R0_48"][f"t={T}"] for T in (0, 10, 20, 30, 40, 50)], ["es1", "es_extra"],
+           "last digit only: 0.4947 at t = 10 M, printed 0.50")
+    nclaim(EJ, "Then ES-1 - V-1 swings between +3.2e-4 and -2.3e-4", ["3.2e-4", "-2.3e-4"],
+           [er["difference"]["mass_bubble_minus_control_25_50"][1], er["difference"]["mass_bubble_minus_control_25_50"][0]],
+           ["es1", "v1", "es_extra"], "window t = 25-50 M here; the journal names 27-48 M")
+    nclaim(EJ, "The two horizon masses agree to 9e-16 until t = 23 M", ["9e-16"],
+           [er["difference"]["mass_bubble_minus_control_max_abs_t_le_20"]], ["es1", "v1", "es_extra"],
+           f"the masses differ by up to 8.6e-9 for t <= 20 M and by more than 1e-9 from t = "
+           f"{er['difference']['t_first_split_1e-9']:.1f} M on; entry 8 (es_runs/JOURNAL.md:520) already corrects it")
+
     # ---- write ----
     rows = ["% generated from registered run outputs; do not edit"]
     cur = None
@@ -234,7 +465,7 @@ def main():
             parts.append(r"\begin{ruledtabular}\begin{tabular}{p{0.44\textwidth}p{0.19\textwidth}p{0.27\textwidth}}")
             parts.append(r"Quantity & Value & Run \\ \hline")
             cur = secname
-        rr = r" \newline ".join(r"\texttt{\scriptsize " + R[k] + "}" for k in runs)
+        rr = r" \newline ".join(r"\texttt{\scriptsize " + (R[k] if k in R else k.replace("_", r"\_")) + "}" for k in runs)
         parts.append(f"{q} & {tex_num(v)} & {rr} \\\\")
     parts.append(r"\end{tabular}\end{ruledtabular}\end{table*}")
     with open(os.path.join(out, "ledger.tex"), "w") as f:
@@ -242,7 +473,7 @@ def main():
 
     par = [r"% generated from registered run outputs; do not edit",
            r"\begin{table}",
-           r"\caption{Parameters of the black hole in a vacuum bubble and of the vacuum black hole that sets the floor. Lengths in units of the black-hole mass $M$.}",
+           r"\caption{Parameters of the black hole in a vacuum bubble as constructed, of the vacuum black hole that sets the floor, of the first run of the bubble and its control, of the Newtonian-mode infall, and of the Kerr spike on the analytic metric. Lengths and times in units of the black-hole mass $M$.}",
            r"\label{tab:parameters}",
            r"\begin{ruledtabular}\begin{tabular}{lr}",
            r"\multicolumn{2}{l}{\emph{Black hole in a vacuum bubble}} \\",
@@ -259,9 +490,48 @@ def main():
            r"finest cell $\Delta x$ & $M/8$, $M/16$ \\",
            rf"outer boundary & {deck['x1max']:g} \\",
            rf"duration & {deck['tlim']:g} \\",
-           r"slicing; shift & $1+\log$; Gamma driver \\",
-           r"\end{tabular}\end{ruledtabular}",
-           r"\end{table}"]
+           r"slicing; shift & $1+\log$; Gamma driver \\"]
+    # the first run and its control (data run es2_data, deck recorded in the run's manifest)
+    es2 = C.load_json("es2_data", "es/es.json")
+    s2 = es2["summary"]
+    din = [i for i in man_es["es1"]["inputs"] if i["path"].endswith(".athinput")][0]
+    dpath = din["path"] if os.path.isabs(din["path"]) else os.path.join(os.path.dirname(os.path.dirname(C.TRACK)), din["path"])
+    if C._sha256(dpath) != din["sha256"]:
+        raise SystemExit(f"{dpath} differs from the deck the first run recorded")
+    d1, block, lev = {}, None, []
+    for line in open(dpath):
+        line = line.split("#")[0].strip()
+        if line.startswith("<"):
+            block = line
+        elif "=" in line:
+            k_, v_ = (x.strip() for x in line.split("=", 1))
+            d1[(block, k_)] = v_
+            if block.startswith("<refined_region") and k_ == "level":
+                lev.append(int(v_))
+    root = 2 * float(d1[("<mesh>", "x1max")]) / int(d1[("<mesh>", "nx1")])
+    fine = root / 2 ** max(lev)
+    par += [r"\multicolumn{2}{l}{\emph{First run and its vacuum control}} \\",
+            rf"wall; Sch\"ucking radius; outer dust edge & {s2['Rin']:g}; {s2['Rw']:g}; {s2['Rout']:g} \\",
+            rf"plateau Hubble rate $HM$; dust mass ($M$) & {tex_num(fnum(s2['H'], 4))}; {s2['M_dust']:.3f} \\",
+            rf"dust particles; tracers & {es2['particles']['n_dust']}; {es2['particles']['n_tracers']} \\",
+            rf"root cell; finest cell & {root:g}; $M/{round(1 / fine):d}$ \\",
+            rf"outer boundary; duration & {float(d1[('<mesh>', 'x1max')]):g}; {float(d1[('<time>', 'tlim')]):g} \\",
+            r"slicing; shift & $1+\log$; Gamma driver \\"]
+    # the Newtonian-mode runs (setup.json of each run)
+    st = {k: C.load_json(k, "setup.json") for k in ("nm128c", "nm64c", "nm128Lc")}
+    par += [r"\multicolumn{2}{l}{\emph{Newtonian-mode infall}} \\",
+            rf"initial Hubble rate $\epsilon=H_iM$ & {st['nm128c']['eps']:g} \\",
+            rf"seed: particles in a clump of radius & {st['nm128c']['n_clump']}; {st['nm128c']['r_clump']:g} \\",
+            rf"dust particles & {st['nm128c']['n_dust']}, {st['nm128Lc']['n_dust']} \\",
+            rf"cells & {N1['dx']:g}, {N2['dx']:g}, {N3['dx']:g} \\",
+            rf"box half-width & {st['nm128c']['L']:g}, {st['nm64c']['L']:g}, {st['nm128Lc']['L']:g} \\",
+            rf"last $a/a_i$ & {st['nm128c']['a_end']:g}, {st['nm64c']['a_end']:g}, {st['nm128Lc']['a_end']:g} \\"]
+    ic = C.load_json("kerr_ic", "ic_summary.json")["args"]
+    par += [r"\multicolumn{2}{l}{\emph{Kerr spike on the analytic metric}} \\",
+            rf"spin $a$; particles; energy cut & {ic['a']:g}; {ic['n']}; {ic['ecut']:g} \\",
+            rf"duration & {ks['t_end']:g} \\",
+            r"\end{tabular}\end{ruledtabular}",
+            r"\end{table}"]
     with open(os.path.join(out, "parameters.tex"), "w") as f:
         f.write("\n".join(par) + "\n")
 
