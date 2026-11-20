@@ -1,0 +1,123 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261120-223236-e213594",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "first_source r3 step 3a: analyze_scan of the 128^3 1-per-cell eps = 1 run (e1_p1_n128 of B-20261119-153655-2deca0a; bin and dbin; P13)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "env",
+    "NWORK=4",
+    "OMP_NUM_THREADS=1",
+    "OPENBLAS_NUM_THREADS=1",
+    "KINDS=bin,dbin",
+    "python3",
+    "tracks/B-emd-gw/first_source/scripts/analyze_scan.py",
+    "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-153655-2deca0a/e1_p1_n128"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "e21359420f04db3b2810ab1f528a119de0d71ea3",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/first_source"
+    ],
+    "outside_package": {
+      "count": 29,
+      "first": [
+        " M tracks/B-emd-gw/note/figures/fig_baseline.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_gauge.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_newton.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_pancake.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_scan.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_source.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_waves.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_waves.png",
+        " M tracks/B-emd-gw/note/figures/schem_architecture.png",
+        " M tracks/B-emd-gw/note/figures/schem_architecture.svg",
+        " M tracks/B-emd-gw/note/figures/schem_dataflow.svg",
+        " M tracks/B-emd-gw/note/figures/schem_timeline.svg",
+        " M tracks/B-emd-gw/note/main.pdf",
+        " M tracks/B-emd-gw/note/main.tex",
+        " M tracks/B-emd-gw/note/scripts/common.py",
+        " M tracks/B-emd-gw/note/tables/checked.md",
+        " M tracks/B-emd-gw/note/tables/ledger.tex",
+        " M tracks/B-emd-gw/note/tables/parameters.tex",
+        "?? tracks/B-emd-gw/flrw_conv/scripts/flrwlib.py",
+        "?? tracks/B-emd-gw/note/figures/fig_r2.pdf"
+      ]
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/first_source/scripts/analyze_scan.py",
+      "role": "argv",
+      "sha256": "aaef5ff4e0e08efc94cfe3b4c150efbbaad45e741ba99efa4c07407f90bd4774",
+      "bytes": 2481,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261120-223236-e213594",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:32:36Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "B-20261119-153655-2deca0a"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.6343,
+    "gpu_hours_reserved": 0.2,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 9,
+    "runs": 217,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
