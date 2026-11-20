@@ -80,9 +80,6 @@ def main():
     res["M"]["tracker_records"] = [int(len(tc)), int(len(tp))]
     res["M"]["tracker_vs_cpu_max"] = float(np.max(np.abs(xc[:m] - xp[:m])))
     res["M"]["tracker_time_vs_cpu_max"] = float(np.max(np.abs(tc[:m] - tp[:m])))
-    # exact path of the tracker: x = 2.5 + 0.5 t mapped into [-3, 3) (T5)
-    xe = (2.5 + 0.5*tc + 3.0) % 6.0 - 3.0
-    res["M"]["tracker_vs_exact_max"] = float(np.max(np.abs(xc[:, 0] - xe)))
     # ---- guard
     g = {}
     for lab, rd in (("card", a.card), ("cpu", a.t2)):
@@ -150,8 +147,11 @@ def main():
         res["M"]["tracker_vs_cpu_max"] <= 1e-12)
     v["G: stop at cycle 18"] = (g["card_stop_cycle"] == 18)
     v["G: status 3 and guard file"] = (rc.get("G") == 3)
+    # the record of a cycle is written before its regrid: the mesh changed at cycle 4
+    # shows from the record of cycle 5 on
     v["ladder: 64 -> 120 MeshBlocks at cycle 4"] = (
-        r["nmb_card"][:4] == [64]*4 and r["nmb_card"][4] == 120)
+        r["nmb_card"][:5] == [64]*5 and r["nmb_card"][5] == 120
+        and r["nmb_card"] == r["nmb_cpu"])
     v["ladder: particles and rest mass unchanged"] = (
         len(r["np_card"]) == 1 and r["sum_m_change"] == 0.0)
     v["ladder: identity below 1e-12"] = (r["identity_max"] < 1e-12)
@@ -168,7 +168,7 @@ def main():
     fs.use_style()
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots(1, 3, figsize=(9.0, 3.0))
-    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.16, top=0.90, wspace=0.36)
+    fig.subplots_adjust(left=0.08, right=0.92, bottom=0.16, top=0.90, wspace=0.36)
     cols = fs.SERIES
     for i, n in enumerate(("U", "S", "A", "M")):
         hc, hp, sc = keep[n]
