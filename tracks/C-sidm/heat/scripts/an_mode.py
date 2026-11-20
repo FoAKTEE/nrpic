@@ -137,14 +137,25 @@ def cmd_T7(outdir, rundirs):
             fS = mean_se([f["f_S"] for f in fits])
             fN = mean_se([f["f_N"] for f in fits])
             lit = mean_se([f["literal_kappa_over_kappa1"] for f in fits])
-            P = ck[0]["P"]
-            # fit of the seed-mean A_S
-            tm = ck[0]["t"]
-            Am = np.mean([c["AS"] for c in ck], axis=0)
-            Gm = iso.fit_exp(tm, Am, *fits[0]["window"])[0]
+            # fit of the seed-mean A_S over the cases that share one snapshot grid: card
+            # runs have 17 snapshots, processor runs 25, so a pooled group has two grids;
+            # the largest set sharing a grid is averaged (2026-11-20: np.mean over both
+            # grids failed, runs C-20261120-222852-7d55b7a and -222857-8ea9c42)
+            grids = {}
+            for c in ck:
+                grids.setdefault((len(c["t"]), round(float(c["t"][-1]), 6)), []).append(c)
+            cm = max(grids.values(), key=len)
+            P = cm[0]["P"]
+            tm = cm[0]["t"]
+            Am = np.mean([c["AS"] for c in cm], axis=0)
+            win_m = (10 * P["t_coll"], 2.0 / P["Gamma1"])
+            Gm = iso.fit_exp(tm, Am, *win_m)[0]
             ref = reference(th, eps, kl, P["t_end"], tuple(fits[0]["window"]))
             colls = [c["summary"]["coll"] for c in ck if c["summary"] and "coll" in c["summary"]]
             rows.append(dict(k_lambda=kl, n_seeds=len(fits), n_per_seed=ck[0]["n"],
+                             n_each=[int(c["n"]) for c in sorted(ck, key=lambda c:
+                                                                 c["P"]["seed"])],
+                             seedmean_names=[c["P"]["name"] for c in cm],
                              f_S=fS, f_N=fN, literal=lit, f_seedmean_fit=Gm / ref["GS"],
                              fits=fits, nx=P["nx"], dt=P["dt"], t_coll=P["t_coll"],
                              Gamma1=P["Gamma1"],

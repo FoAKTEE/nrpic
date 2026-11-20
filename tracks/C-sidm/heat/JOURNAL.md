@@ -434,3 +434,13 @@ P-T7pool (theta 0.003, eps 0.2, all seeds): the pooled extrapolation stays in
 
 Analyses (one core each, registered; `scripts/an_mode.py`, `scripts/an_compare.py`
 written today, `scripts/check_pfiles.py`).
+
+## 2026-11-20 22:31 Two pooled T7 analyses failed in my script's seed-mean line (runs C-20261120-222852-7d55b7a, C-20261120-222857-8ea9c42)
+
+Both pooled analyses (theta 0.003 with card seed 5; theta 0.1 and 1 with card seeds 1, 2)
+stopped with exit 1 before writing a result: `an_mode.py` averages A_S(t) over all seeds
+of a k lambda for the seed-mean curve, and card runs have 17 snapshots against 25 on the
+processors (`np.mean` of ragged arrays). No number was produced. Fixed in `an_mode.py`
+(the seed-mean curve and its fit use the largest set of cases that share one snapshot
+grid; the per-seed fits, which carry every statistic, are unchanged); both analyses are
+rerun under new run ids. The failed runs stay on record.
