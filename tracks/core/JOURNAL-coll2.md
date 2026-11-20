@@ -988,3 +988,59 @@ central lapse of the two differs by less than 1e-12 at all times (the off runs o
 two executables differ at 1e-15, the card deposit adds atomically). Refuted by a
 differing row: then rounding has flipped an acceptance and the two runs diverge as two
 realisations, which would still be consistent with D but not with "same collisions".
+
+## 2026-11-20 22:20 UTC  outcomes C and R150: `coll_energy = particle` works on the card in an evolving metric
+
+### C: cluster at Kn = 3 over 150 M on the card, card run core-20261119-143232-4d1e995 (job 4639); analysis core-20261120-220159-7418482. Passed.
+
+Three runs of 1200 steps to t = 150 M (4.8 dynamical times of 31.0 M), 0.222 card-hours;
+`summary.json` `ok` true; `fig_cluster.png` of the analysis and `fig_cluster_card.png`
+of core-20261120-220420-63419ab looked at (the latter supersedes the figure of
+-220354-5ffde97, whose legend covered the guide line; the numbers of the two are
+byte-identical). Against prediction C of 2026-11-19 14:20 UTC:
+- `cell`: the collision steps raise sum M W_p by 5.246e-5 of its value (band 3.6e-5 to
+  6.8e-5; wave 1: 5.2e-5) and sum M H_p by 6.49e-5 (band 5e-5 to 1.5e-4). Held. The
+  ratio H/W is 1.24, not "about 1.5" as in the two-step processor run Cp (1.55); that
+  loose part did not hold, the bands did.
+- `particle`: cumulative change of sum M H_p in the collision steps 6.3e-17 of its value
+  over 5104 collisions (its largest |value| at any time is the final one; criterion
+  1e-12). Held. Pairs without a root 0 (at most 5); rejected by the balance step 5 of
+  5109 proposals, 0.098 percent (below 2 percent); largest |lambda - 1| 4.5e-3.
+  sum M W_p changes by -9.2e-6 (W is not the conserved quantity of this mode).
+- `particle` against `cell`: 5104 against 5001 collisions (z = +1.02; within 4 sigma);
+  central lapse at most 2.80e-3 apart (within 0.01); mass radii of 10, 50, 90 percent at
+  most 2.97 percent apart (within 5 percent). Held.
+- Both modes: rest mass identical to the bit, no particle excised or escaped, deposit
+  identity 1.03e-15, collisions against sum_P z = -0.50 (cell), +0.66 (particle),
+  pair defects 1.19 and 1.85 machine epsilons. Held.
+Collisions at Kn = 3 move the cluster: the central lapse falls from 0.809 to 0.791
+(cell) and 0.789 (particle) while without collisions it oscillates between 0.810 and
+0.816; r10 shrinks from 3.13 to 2.59 and 2.52, r90 grows from 8.03 to 8.70 and 8.55 (the
+collisionless run: 3.12, 8.22); the change against no collisions (2.1e-2 in the lapse)
+is seven times the change between the two energy modes (2.8e-3), which is of the size of
+the change between collision cells of 2 M and 1 M (2.9e-3) or 0.5 M (5.6e-3) of the
+release runs core-20261115-142625-67f8c1d [JUDGEMENT: a change of the collision
+sequence moves the lapse by a few 1e-3 at 150 M; there is no second seed per mode to
+separate the mode from the realisation].
+
+### R150: `cell` against the release (option absent) over 150 M on the card. Held.
+
+`cluster_card.json` of core-20261120-220420-63419ab: all 1200 rows of `st.coll.hst`
+agree in every integer column (n_tested, n_coll, n_updated, n_trunc, max_nsub, min_N,
+n_bad_cells, ...) between kn3_cell of the published card executable (f46f159) and kn3
+of the release card executable (core-20261115-140316-8742cdf); 5001 collisions each;
+the central lapse differs by at most 7.8e-15 (the two collisionless runs: 5.8e-15);
+sum M W_p of the collision steps 5.24594834403e-5 against 5.24594834396e-5. So with
+`coll_energy = cell` the new executable collides the same pairs as the release over 1200
+steps of a self-gravitating cluster in Z4c, and the trajectories stay together to
+rounding: test D's statement extended from the static box to the evolving metric.
+
+### What this settles for the brief of the package
+
+`coll_energy = particle` works on a card and in an evolving metric: in 1200 collision
+steps of a cluster evolved with Z4c it keeps sum M H_p (H = alpha W - beta^i u_i at the
+particles' own metric) to 6e-17 per run, where `cell` raises it by 6.5e-5, with the same
+collision statistics and the same structure of the cluster within what a change of the
+collision sequence does. Card time of the package in total: 1.33 card-hours of
+allocation (0.087 + 0.169 + 0.837 + 0.0167 + 0.0061 + 0.222); of the "at most one
+card-hour" for reruns, 0.245 used. No card job of this package is pending.
