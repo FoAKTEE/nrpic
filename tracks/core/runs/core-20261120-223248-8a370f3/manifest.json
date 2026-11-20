@@ -1,0 +1,103 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261120-223248-8a370f3",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "omp P15 (threads 1 and 2): cause of the thread dependence of the gas multigrid: Jeans deck with the diagnostic executable (mean of CalculateAverage summed plainly, in a fixed order, in a fixed order with compensation), two MeshBlock sizes",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "cd \"$NRPIC_RUN_DIR\" && THREADS=\"1 2\" bash /data/haiyangw/nrpic/wt/core-omp/tracks/core/omp/mg_cause.sh /data/haiyangw/nrpic/scratch/core/omp/mgdiag/athena /data/haiyangw/nrpic/wt/core-omp/.work/build_omp/src/athena && python3 /data/haiyangw/nrpic/wt/core-omp/tracks/core/omp/mg_cause.py ."
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "8a370f385b4d444a440247f130ebaabef3784332",
+    "branch": "core/build-openmp",
+    "dirty": false,
+    "package": [
+      "tracks/core/omp"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/core-omp"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-omp/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/omp/tools/mg_average_diag.patch",
+      "role": "input",
+      "sha256": "466cedceccc103d348f931e728ddd2e53f1d13df0ccb4fcf70c13c0cc0e33572",
+      "bytes": 3835,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/omp/mgdiag/athena",
+      "role": "input",
+      "sha256": "a28e7e643f5549ea00abd23494a663ba9e903a7252a36cefdd53e6cf865575d6",
+      "bytes": 294013672,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261120-223248-8a370f3",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:32:56Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 5.5266,
+    "gpu_hours_reserved": 0.7,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 13,
+    "runs": 1308,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
