@@ -19,6 +19,9 @@
             The executable must be the wave-2 one (sha256 f9f2dc12...; the release card
             executable .work/build_gpu_v03/src/athena is byte-identical, JOURNAL entry 1).
 
+(v)         cc2_kninf_N1e4 (optional particle-number leg): the wave-2 deck of cc2_kninf with
+            the N = 1e4 file of wave 1, M/4 mesh, 300 M.
+
 Every list line ends with `-t 00:52:00`: athena stops by itself before the Slurm limit
 (55 min) and writes all outputs, a restart file included.
 """
@@ -66,6 +69,25 @@ def m8_deck(mk):
     return text
 
 
+def n1e4_deck(mk="cc2"):
+    """Particle-number leg (optional, step 6 of the package): the wave-2 control deck with
+    the N = 1e4 files of wave 1 (run C-sidm-20261115-120610-b4592be; same model, same seed,
+    byte-identical table), M/4 mesh."""
+    src = os.path.join(TRACK, "threshold_scan", "inputs", f"{mk}_kninf.athinput")
+    text = open(src).read()
+    tag = {"cc1": "king_y0p33403", "cc2": "king_y0p31400"}[mk]
+    ic = os.path.join(SCRATCH, "C-sidm-20261115-120610-b4592be", f"{tag}_stratified_N10000_s1")
+    head = (f"# drift {mk}_kninf_N1e4: {mk}_kninf of threshold_scan with the N = 1e4 particle file of wave 1\n"
+            f"# (run C-sidm-20261115-120610-b4592be). Written by tracks/C-sidm/drift/scripts/make_decks.py from "
+            f"{os.path.relpath(src, WT)}; do not edit by hand.\n")
+    text = head + "\n".join(text.split("\n")[3:])
+    text = D.set_key(text, "comment", "problem", f"King cluster {mk}_kninf_N1e4")
+    text = D.set_key(text, "particles", "particle_file", ic + ".nrp")
+    text = D.set_key(text, "particles", "traj_ntrack", "10000", "all particles")
+    text = D.set_key(text, "problem", "comp0_file", ic + ".tab")
+    return text
+
+
 def main():
     out = os.path.join(PKG, "inputs")
     os.makedirs(out, exist_ok=True)
@@ -75,6 +97,9 @@ def main():
         with open(os.path.join(out, name + ".athinput"), "w") as f:
             f.write(m8_deck(mk))
         print("wrote", name)
+    with open(os.path.join(out, "cc2_kninf_N1e4.athinput"), "w") as f:
+        f.write(n1e4_deck("cc2"))
+    print("wrote cc2_kninf_N1e4")
     jobs = {
         "job_i": ("cc2_kninf_M8", f"{rel}/cc2_kninf_M8.athinput", []),
         "job_ii": ("cc2_kninf_A1000", os.path.join(SCRATCH, WAVE2["cc2"][0], WAVE2["cc2"][1], "rst", "cc.00001.rst"),
@@ -82,6 +107,7 @@ def main():
         "job_iii": ("cc1_kninf_M8", f"{rel}/cc1_kninf_M8.athinput", []),
         "job_iv": ("cc1_kninf_A1000", os.path.join(SCRATCH, WAVE2["cc1"][0], WAVE2["cc1"][1], "rst", "cc.00001.rst"),
                    ["time/tlim=1000"]),
+        "job_v": ("cc2_kninf_N1e4", f"{rel}/cc2_kninf_N1e4.athinput", []),
     }
     for job, (name, inp, args) in jobs.items():
         with open(os.path.join(out, f"{job}.list"), "w") as f:

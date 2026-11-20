@@ -266,7 +266,7 @@ def analyse(name, dirs, model):
     out["r_rel_min"] = [float(np.min(rr[:, j]) / rr[0, j] - 1) for j in range(3)]
     # trajectories with the metric: areal radii of the mass shells, Killing energy sum
     recs = traj_records(dirs)
-    Mp = float(model["m"][0])
+    Mp = float(h["sum_m"][0] / h["np"][0])     # particle mass of this run (N may differ from the model file)
     tr, rc, ra, ek, wmean = [], [], [], [], []
     for rec in recs:
         m = np.full(len(rec["tag"]), Mp)
