@@ -680,9 +680,10 @@ edge, reported separately):
   V-1 (2.02 to 2.25 M); the mesh minimum of the lapse rises from 0.039 (t = 50 M) to
   0.069 (200 M) and the lapse at x = 1 M from 0.33 to 0.47, where ES-1 and V-1 settle at
   0.016-0.019 and 0.15-0.19; the region of positive K around the hole shrinks inward in
-  coordinates (`figs/es1g/extra_spacetime_ES-1G.png`). Core saw the same shrinking in L3
-  (core_gauge READY: the hole three times smaller in coordinates than with plain 1+log;
-  "give the centre cells of M/16 or finer"). Candidates [TO VERIFY]: (a) the finder loses
+  coordinates (`figs/es1g/extra_spacetime_ES-1G.png`). Core's L3 also found the hole
+  much smaller in coordinates under lapse_leak (core_gauge READY: horizon radius 0.73 M
+  against 2.34 M with plain 1+log; "give the centre cells of M/16 or finer"); a hole
+  that keeps shrinking over 175 M is not reported there. Candidates [TO VERIFY]: (a) the finder loses
   accuracy as the horizon shrinks below about 8 cells; (b) the slicing near the puncture
   is not stationary under this gauge (the puncture lapse rises); (c) the dust; (d) the
   outflow boundary at 192 M (a signal at gauge speed ~1.4 from 192 M reaches the hole
@@ -820,3 +821,54 @@ where 2m/R = 1, and prints the finder's row beside it.
   2e-3 of the finder's change (then the trapped region of the slice really grows, and
   candidates b-d remain). If the tool cannot locate R_H near R = 2 M at this resolution,
   K2 is not judgeable and only K1 is reported.
+
+Outcome of K1-K2 (run D-20261120-222956-6abf860, `analysis/diag/slicemass.py` on the five
+restart dumps of ES-1G; its log `results/slicemass_es1g.txt`, figure
+`figs/es1g/slicemass_ES-1G.png`, looked at):
+- K2 REFUTED: the finder is not the cause. The slice's own apparent horizon (2m/R = 1)
+  has M_H = 1.00119, 1.00129, 1.00136, 1.00807 at t = 50, 100, 150, 200 M (uncertainty
+  from the shells 1e-6 to 1e-4, from the spread of m up to 7e-4 at 200 M); the finder reads
+  1.00104, 1.00114, 1.00119 at the same times and 1.00811 at 199.5 M. M_H(200) - M_H(100)
+  = +6.78e-3 against the finder's +6.97e-3 (to 199.5 M): the same growth, within 2e-4
+  (the finder lies 1.5e-4 below the slice up to 150 M). In the figure every finder
+  horizon sits on the slice's crossing of 2m/R = 1.
+- K1 REFUTED: the mass of the slice in the vacuum bubble changes. At t = 100 M m(R) is
+  flat at 1.0013-1.0016 from R = 2 to 50 M; at t = 150 M flat at 1.0009-1.0013 to
+  R = 39 M and 1.0023-1.0025 at R = 46-55 M (next to the wall); at t = 200 M it falls
+  monotonically outward, 1.0081 at R = 2.4 M, 1.0079 at 4.9 M, 1.0063 at 15.7 M, 1.0022
+  at 33.6 M, 0.9957 at 49.0 M, 0.958 at 70.3 M (just inside the wall). Change between
+  100 and 200 M at R ~ 5 M: +6.5e-3; at R ~ 15 M: +4.6e-3; at R ~ 50 M: -5.5e-3 (all above
+  the 3e-3 threshold). In vacuum m is exactly constant, so this is constraint violation
+  that fills the bubble between t = 150 and 200 M.
+- Seen, not predicted: the exterior mass (M plus the dust, 2.739672 at t = 0; 2.739828 at
+  50 M) is lost from the outer boundary inward. At t = 100 M m stays at 2.741 to R = 118 M
+  and falls beyond (2.735 at R = 134, 2.677 at 153, 1.44 at 181 M; coordinate r > ~105 M);
+  at t = 150 M the plateau is gone (2.63 at R = 98 M, falling outward to -0.5 at 190 M;
+  coordinate r > ~62 M); at t = 200 M the peak behind the dust is 2.16 at R = 105 M and m
+  is wrong everywhere, inside the bubble too. The front of the loss moves inward by
+  roughly one coordinate unit per M and reaches the hole about when the finder's mass
+  turns upward (t ~ 126-150 M). [JUDGEMENT: this pattern points at the outflow boundary
+  at +-192 M, candidate (d) of G6, which core's READY already warns about ("outflow is
+  not transparent for the Painleve-Gullstrand exterior"; it asks for a boundary further
+  away than the light travel time of the run); it is not a test of it. A run with the
+  boundary at 384 M, or with a boundary condition that holds the exterior, is the test.]
+So of the candidates of G6: (a) finder excluded; (d) outer boundary favoured by the m(R)
+pattern; (b) slicing at the puncture and (c) dust not excluded, but the bubble's mass
+stayed between 1.0005 and 1.0020 at R = 2-39 M at t = 50, 100 and 150 M, and the slice's
+horizon mass between 1.00119 and 1.00136, while the horizon was already shrinking in
+coordinates (1.33 to 0.88 M), so the shrinking alone did not change the mass by more
+than about 2e-4 up to t = 150 M.
+
+## State at the end of the wave-3 helper session (2026-11-20)
+
+- Done: ES-1G closed (0.794 card-hours, verify PASS) and judged: G1, G3, G4, G5, G7 held;
+  G2 failed (not refuted); G6 failed with its refutation criterion met; J1-J4, J6 held;
+  J5, K1, K2 refuted. Every figure in `figs/es1g/` looked at and described above. README:
+  ES-1G results, the section "Gauge for the null test with matter" ([JUDGEMENT]:
+  lapse_leak for the G2 runs, with the boundary beyond the light travel distance, an M/16
+  nest at the hole, a matched V-1G and excision not resting on alpha_exc), run table,
+  requests 4 (core) and 9-10 (lead, drift_controls).
+- Card time used in this session: none. No run pending from this package.
+- Open, not done here: V-1G; ES-1G and V-1G with an M/16 nest; a boundary test for ES-1G
+  (boundary at 384 M or a holding boundary condition); the finder re-search of
+  `drift_controls` (test C) on ES-1G's dumps. The null-test floor is not stated.
