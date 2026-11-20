@@ -120,3 +120,54 @@ removing the adiabatic part with the bin profiles (M_ent = M_s - sum_slab (c_v/c
 residual and changes f by less than the seed difference (3.4 percent in the smoke
 evaluation). Expected f near 1.04 (relativistic CE at theta ~ 0.013 interpolated between
 1.037 at 0.01 and 1.056 at 0.03, entry 2).
+
+## Entry 5 (15:20) V1 runs of record and V1c outcome
+
+- V1b of record: run C-20261120-223130-6742500 (same numbers as entry 3; figure with the
+  relevant range: `figs/v1b_kappa_ratio.png`, `figs/v1b_mode_amplitudes.png`).
+- V1c (run C-20261120-223133-2f98a0e): my slab sums equal reduced.npz exactly (after wrapping
+  the positions); initial state theta 0.0201/0.0100 (seed 1), 53333/106667 particles.
+  Linear square-wave form of the definition, chi_1 at the final state (theta_f = 0.013359
+  from exact MJ energy conservation, c_p = 2.549): chi/chi_1 = 1.051 (seed 1), 1.086 (seed 2),
+  mean 1.068 +- 0.018 (half difference). Nonlinear isobaric reference: f = 1.027, 1.062,
+  mean 1.044 +- 0.017; c_p taken at the hot or the cold side instead: 1.054 / 1.039.
+  Sound removed with the bin profiles: the oscillation of period L/c_s = 6.7 leaves the
+  residual (rms 1.3-1.7 -> 0.4 percent of the contrast; prediction holds), f = 1.031, 1.066,
+  mean 1.049 +- 0.017; the seed difference (3.5 percent) is not the sound: with two seeds the
+  error is crude. All per-seed values lie in [0.95, 1.10] (T6(b) passes by its definition
+  in both seeds); the expected value (relativistic CE at theta ~ 0.013) is about 1.04: the
+  nonlinear values agree, the linear form is 2.4 percent higher than the nonlinear fit, the
+  bias of the linear form at a factor-2 contrast [VERIFIED in this run].
+
+## Entry 6 (15:25) V2 predictions, before the analysis run
+
+Runs C-20261115-165500-c67e036 (release CPU executable, coll_energy absent) and
+C-20261119-141806-af19c1c (collisions-2 CPU executable, coll_energy = particle), 16
+collisional cases each (theta 1e-3, 0.1, 1, 10; plain and sub-cycled; seeds 1, 2; N = 1e6,
+32^3 cells, 200 steps) and two collisionless controls.
+Own reference: <v_Mol>(theta) by a two-dimensional quadrature over |u_1|, |u_2| of two MJ
+distributions with the angular average in closed form in rapidities,
+(1/2) int sqrt(g^2 - 1) dmu = [F(eta_1 + eta_2) - F(|eta_1 - eta_2|)]/(2 u_1 u_2),
+F(eta) = (sinh eta cosh eta - eta)/2 (own derivation: g = cosh of the rapidity difference
+for collinear velocities, dg = -u_1 u_2 dmu, int sinh^2 = F). Predictions:
+- the quadrature equals the closed form 4 K3(2 zeta)/(zeta K2^2) (Gondolo-Gelmini
+  reduction [BACKGROUND]) to 1e-9 relative at theta 1e-3 ... 10;
+- T2(a): (sum n_coll - sum sum_P)/sqrt(sum sum_P) within +-4 in all 32 cases;
+- T2(b): mean sum_P per step within 0.5 percent of (1/2) N rho_0 sigma <v_Mol>(theta_s) dt,
+  theta_s from <W> of the initial snapshot (exact MJ inversion), in all cases; the
+  4-standard-error clause may fail at the 1e-4 level through the finite sample (TESTS 2a);
+  the decomposition sum_W against (1/2) N rho_0 sigma dt (positions) and sum_P/sum_W
+  against <v_Mol> (velocities) locates any deviation; the tested-pair mean agrees with the
+  sample's own pair mean (2e7 random pairs) within 4 standard errors;
+- T2(c): <W> at the end equals <W> at the start to rounding (energy conserved); KS of |u|
+  at the end against MJ(theta_s): p > 1e-3;
+- T1: per step |dE|/sum_MW and max|dP_i|/sum_MW below 1e-14 sqrt(n_coll + 1); the
+  snapshot sums (math.fsum) of M W and M u_i change by less than 1e-13 of sum M W over the
+  200 steps; n_trunc = 0 everywhere; coll_energy = particle in flat space: n_noroot =
+  n_balance = 0;
+- the two executables test and collide the same pairs: identical n_tested and n_coll in
+  every step of every case;
+- collisionless controls: n_coll = 0 and the momenta of the end snapshot bit-identical to
+  the start.
+Refuted if any of these fails; a failure of the 4-se clause alone, explained by the
+sample-to-ensemble difference, would be reported as such.
