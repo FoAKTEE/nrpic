@@ -557,7 +557,7 @@ jeans floor (about 1e4 times a plain double rounding of the source) is not expla
 Status: no race found in the multigrid kernels; the thread dependence is [TO VERIFY] as
 rounding; it does not affect the particle module's own kernels.
 
-## 2026-11-20 14:05 Entry 15: continuation (wave 3); the two card jobs have run
+## 2026-11-20 14:04 Entry 15: continuation (wave 3); the two card jobs have run
 
 Session of wave 3 (the session of 2026-11-19 was cut off by the usage limit after entry
 14). `git merge --no-edit main` (d507d774: decisions 0018 and 0019, the pre-commit hook;
@@ -576,7 +576,7 @@ by less than 1e-10 of the largest number of the file, deposit identity below 1e-
 Analysis: `tracks/core/omp/analyse_card.sh` (card_compare.py for P13, analyse_scaling.sh
 with the card directory for P7), registered below.
 
-## 2026-11-20 14:10 Entry 16: outcomes of P13 (card executable of this branch) and P7 (one A100)
+## 2026-11-20 14:06 Entry 16: outcomes of P13 (card executable of this branch) and P7 (one A100)
 
 Analysis run core-20261120-220500-c759cdc (`analyse_card.sh`; card_compare.json,
 figures `tracks/core/omp/figs/card_diff.png` and `figs/scaling.png`, both looked at).
@@ -635,7 +635,7 @@ Queue waits of this package's card jobs: 4643 waited 2 h 11 min (submitted 06:44
 W = 2 to 3 h: 1.5 to 2.2 min (punc, R = 82), 1.8 to 2.8 min (cluster), 2.1 to 3.2 min
 (cosmo), 13 to 19 min (newton).
 
-## 2026-11-20 14:14 Entry 17: prediction P14 (six threads, the limit per session since decision 0019)
+## 2026-11-20 14:07 Entry 17: prediction P14 (six threads, the limit per session since decision 0019)
 
 Decision 0019 lowers the limit to six processor cores per session, so the number the
 tracks need is the rate at six threads, not at 16. The machine is quiet today (load
@@ -656,3 +656,60 @@ P14, written before the run:
  c. One A100 over six threads: 130 to 230 for the three cases with Z4c, 22 to 30 for the
     Newtonian box (the measured card times of entry 16 over six-thread times that follow
     from a and b). Refuted by a ratio outside 100 to 280, or 18 to 36.
+
+## 2026-11-20 14:13 Entry 18: the gas multigrid under threads: a cause that can be tested; prediction P15
+
+Read again (athenak/src/multigrid/multigrid.{hpp,cpp}, multigrid_driver.cpp,
+gravity/mg_gravity.cpp) [VERIFIED by reading]:
+- The smoother (multigrid.hpp, `Multigrid::Smooth`, lines 622 to 645) is a true red-black
+  sweep: one iteration is a line (m,k,j), it writes the cells i with (i + j + k) of one
+  parity and reads the six neighbours, all of the other parity, which no line writes in
+  that sweep. No write is shared and no read sees a value of the same sweep.
+- The only reductions of the solver are the defect norm (three `parallel_reduce` over an
+  MDRangePolicy, multigrid.cpp 699 to 752: printed, and compared with a threshold only when
+  `threshold` >= 0) and the volume-weighted mean (`Multigrid::CalculateAverage`,
+  multigrid.cpp 763 to 815: a plain `parallel_reduce` sum over (m,k,j,i)), which feeds back:
+  `SubtractAverage` takes it from the source at set-up (multigrid_driver.cpp 249 to 252)
+  and from source and solution on the coarsest grid and after the solve (lines 754 to 757
+  and 871 to 898).
+- The printed "defect" of the l2 norm is the sum of the squares (no root), so a constant
+  left in the source adds a term to it that no V cycle removes.
+
+Hypothesis H1: the dependence of the iterates on the thread count (and on the MeshBlock
+size at one thread) is the rounding of that plain sum. In the Jeans deck the source is
+four_pi_G rho = 1 + 1e-6 sin: 65536 nearly equal terms; a plain sum of N nearly equal
+terms carries a systematic error of up to N/2 roundings (3.6e-12 here), and another one
+when the sum is cut into one piece per thread or the cells are visited in another order.
+The mean is subtracted from a source whose signal is 1e-6, so the source keeps a constant
+of relative size up to 1e-5 of the signal that the periodic problem cannot absorb. The
+numbers of entry 8 fit: the defects of two configurations differ little after V cycle 1
+and settle on different floors (6.6e-11 to 4.4e-9).
+
+Test in which H1 can fail: a diagnostic executable (the threaded build with
+`tracks/core/omp/tools/mg_average_diag.patch` applied to a copy of multigrid.cpp; built
+by `mg_diag_build.sh` into scratch/core/omp/mgdiag; nothing of it enters the source tree)
+computes the sum of CalculateAverage, when the environment variable MG_AVERAGE is set,
+in an order that does not depend on the threads (each line (m,k,j) summed by one thread,
+the lines added in index order on the calling thread): `ordered` with plain additions,
+`comp` with Neumaier's compensated additions. Jeans deck, one cycle (two solves of five V
+cycles), 1, 2, 4, 6 threads, MeshBlocks of 8^3 and 32^3; the 20-cycle Jeans case of the
+regression at 1 and 4 threads.
+
+P15, written before the executable was built:
+ a. MG_AVERAGE unset: the diagnostic executable prints the defects of the threaded build
+    (entry 8) digit for digit at 1, 2 and 4 threads. Refuted by any difference (then the
+    diagnostic executable is not the same program and proves nothing).
+ b. `ordered`: every printed defect is the same at 1, 2, 4 and 6 threads, to all seven
+    digits, for both MeshBlock sizes (they may differ between the MeshBlock sizes: the
+    order of the cells changes), and the mesh outputs of the 20-cycle Jeans case are
+    byte-identical at 1 and 4 threads. Refuted by one differing digit or byte: then
+    something else in the solver depends on the thread count, and H1 is not the cause, or
+    not the only one.
+ c. `comp`: as b, and the floor of the defect (the value after the fifth V cycle of each
+    solve) falls below 2e-11 in every configuration, i.e. below the lowest floor seen
+    with the plain sum (6.6e-11) by more than a factor 3, and the floors of the two
+    MeshBlock sizes agree within a factor 2. Refuted by a floor above 6e-11: then the
+    floor is not the constant left by the inexact mean.
+ If b holds, the cause is the reduction of the mean and there is no race in the solver;
+ if b fails the item stays open and the tracks are told not to rely on threaded runs
+ with the gas multigrid.
