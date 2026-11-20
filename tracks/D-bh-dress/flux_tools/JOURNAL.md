@@ -444,3 +444,63 @@ closed forms by more than 1e-9 of max|KT|, a particle mass or energy by more tha
 a label or time by more than 1e-8, or the lattice set differs; then no card run and the
 package is spent on fixing esf_data.py. A failure of the looser thresholds above (by less
 than these) is recorded as a failed prediction without changing the verdict.
+
+### Outcome of entry 6, first run (D-20261120-222314-ed5d325; 43 s on one core)
+
+Part A: every identity reduced to 0, as in development (A1 to A4, the cycloid's start,
+horizon and R_max conditions; dm/dmu = Gamma).
+1. HELD: format 2, exterior zero, 17251 uniform rows, u = betar = 0 at every row, K = 0 on
+   the inner sheet, rbar_max 345 > 332.55. FAILED as worded: max |KT_tab - KT_mine| =
+   1.29e-10 and max |KL_tab - KL_mine| = 1.63e-7 of max|KT| (predicted <= 1e-11; the KL
+   value is above the 1e-9 of my verdict rule). Both maxima sit at R = 3.050 M, the far
+   tail of the inner edge, where the table has KT = KL = 0 and mine has D = 7.3e-24,
+   KL = -9.1e-10. At the 18 sampled radii with D > 0 (3.2 to 330 M) table and closed form
+   agree to <= 8.7e-18 absolute. Development diagnosis (to be registered in the rerun):
+   the builder's step is evaluated as 0.5 (1 - tanh(g/2)), which rounds to 0 below
+   S ~ 1e-17 and loses relative precision below S ~ 1e-8 (1.2e-8 at S = 3.4e-10,
+   R = 3.088 M); my S uses expit. So its density is exactly 0 for R <~ 3.05 M and mine
+   is not.
+2. HELD: Hamiltonian residual with the table's own KL, KT 7.3e-16 of 16 pi rho0 at every
+   row. FAILED: momentum residual by fourth-order differences 4.9e-5 of max|KT|
+   (predicted <= 1e-5); location not recorded by this version.
+3. HELD: 850724 records, u_i = 0, species 0, 140 tracers of m = 1e-30 at their R0
+   (4.4e-16), dust on the half-integer lattice, the same 850584 points as my
+   enumeration. FAILED as worded: max |m / (rho psi^6 h^3) - 1| = 0.25 (predicted 1e-12);
+   dust spans R = 3.294 to 59.781 M, so the candidate is the outer tail, where 1 - S
+   cancels (in the builder's code and in this version of mine alike).
+4. HELD: energy_by_tag equal to (1 - 2M/R0)^(1/2) bit for bit; labels m(R0) to 2.0e-14
+   (sample of 300 by direct quad: 9.8e-15); rest masses identical; tau_H, tau_0 to
+   6.4e-15; closed-form tau_H against direct quadrature <= 4.4e-12 (20 radii); tau_H
+   monotonic.
+5. HELD: D_tot 2.7386556250326666 and continuum rest mass 2.815601343446499 equal to
+   all digits; lattice sum m E_K / D_tot - 1 = -4.06e-7, lattice rest / continuum - 1 =
+   -4.27e-7.
+6. HELD for esf_growth.csv (m to 2e-14, tau_H to 4.4e-12, tau_0 3.2e-12, R_max 5.7e-15).
+   FAILED as worded for the esf.json summary M_AH(tau): differences up to 8.3e-9 for
+   tau <= 200 M and 3.4e-8 at tau = 600 M (predicted 1e-9). Candidate [JUDGEMENT]: the
+   summary is np.interp on the 4000-point label grid, mine a root of tau_H(R0) = tau.
+   Irrelevant at the 1e-3 level of criterion (iii).
+7. HELD: table + puncture of mass 1.0, lapse precollapsed, shift zero, the data run's
+   particle file, interpolant, 0.8.
+Side numbers: U/(H R) = 0.967, 0.996, 0.9995 at R = 10, 20, 40 M (the "v = H R"
+description of the plateau holds to 0.4 per cent from 20 M; the vacuum core lowers it
+inside).
+
+## Entry 6b (before the rerun): the cause of the tail differences
+
+Changes: my density now has an outer complement without cancellation (expit); the script
+also evaluates the builder's form 0.5 (1 - tanh(g/2)) of the same step (`S_tanh`, written
+here from the formula) as the cause test, and reports absolute errors, their locations,
+and the lattice set under both forms. Predictions:
+(a) with the tanh form, the table equals the closed forms to <= 1e-12 of max|KT| at every
+    row, the dust masses equal rho psi^6 h^3 to <= 1e-12 relative, and the lattice set is
+    the file's;
+(b) with my precise step, the largest table difference is at R < 3.1 M, <= 1e-9 absolute
+    in KL; mass differences above 1e-12 relative only at R < 3.2 M or R > 59 M, absolute
+    <= 1e-15 rho0 h^3; for 3.2 < R < 59 M <= 1e-12 relative;
+(c) the momentum residual by differences is largest at the inner edge (3 < R < 5 M) and
+    <= 1e-6 of max|KT| for 6 < R < 50 M;
+(d) lattice points that carry dust only with the precise step: few, at the tails, each
+    below 1e-14 rho0 h^3.
+Refuted if (a) fails: then the data are not the stated construction with the builder's
+step, and a defect of the construction is not excluded.

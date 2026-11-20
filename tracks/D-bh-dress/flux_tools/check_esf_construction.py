@@ -213,26 +213,55 @@ def S(x):
     return out
 
 
+def S_comp(x):
+    """1 - S(x) without cancellation (outer edge)."""
+    x = np.asarray(x, float)
+    out = np.where(x >= 1.0, 0.0, 1.0)
+    mid = (x > 0) & (x < 1)
+    xm = x[mid]
+    out[mid] = special.expit(1.0 / xm - 1.0 / (1.0 - xm))
+    return out
+
+
+def S_tanh(x):
+    """The same step written as 0.5 (1 - tanh(g/2)), g = 1/x - 1/(1-x): the form of the
+    builder's es_model.smooth_step docstring/code, used only to test the cause of the
+    tail differences (it rounds to 0 below S ~ 1e-17 and 1 - S to 0 above 1 - 1e-16)."""
+    x = np.asarray(x, float)
+    out = np.where(x >= 1.0, 1.0, 0.0)
+    mid = (x > 0) & (x < 1)
+    xm = x[mid]
+    out[mid] = 0.5 * (1.0 - np.tanh(0.5 * (1.0 / xm - 1.0 / (1.0 - xm))))
+    return out
+
+
 def rho(R):
+    """Precise at both edges (expit, complement without cancellation)."""
     R = np.asarray(R, float)
-    return RHO0 * S((R - R_IN) / (R_IN2 - R_IN)) * (1.0 - S((R - R_OUT1) / (R_OUT - R_OUT1)))
+    return RHO0 * S((R - R_IN) / (R_IN2 - R_IN)) * S_comp((R - R_OUT1) / (R_OUT - R_OUT1))
 
 
-def rho1(R):
-    return float(rho(np.array([R]))[0])
+def rho_tanh(R):
+    R = np.asarray(R, float)
+    return RHO0 * S_tanh((R - R_IN) / (R_IN2 - R_IN)) * (1.0 - S_tanh((R - R_OUT1) / (R_OUT - R_OUT1)))
 
 
-def D_quad(R):
+def rho1(R, dens=None):
+    return float((dens or rho)(np.array([R]))[0])
+
+
+def D_quad(R, dens=None):
     if R <= R_IN:
         return 0.0
     pts = [p for p in (R_IN2, R_OUT1, R_OUT) if R_IN < p < R]
-    v, _ = integrate.quad(lambda s: 4 * math.pi * s * s * rho1(s), R_IN, min(R, R_OUT), points=pts or None,
-                          epsabs=1e-17, epsrel=1e-13, limit=400)
+    v, _ = integrate.quad(lambda s: 4 * math.pi * s * s * rho1(s, dens), R_IN, min(R, R_OUT), points=pts or None,
+                          epsabs=0.0, epsrel=1e-13, limit=400)
     return v
 
 
-def D_grid(Rg):
-    """Cumulative D on an increasing grid by quad over each interval."""
+def D_grid(Rg, dens=None):
+    """Cumulative D on an increasing grid by quad over each interval (relative accuracy,
+    also where D is exponentially small at the inner edge)."""
     out = np.zeros(Rg.size)
     acc = 0.0
     prev = R_IN
@@ -240,8 +269,8 @@ def D_grid(Rg):
         Rc = min(max(R, R_IN), R_OUT)
         if Rc > prev:
             pts = [p for p in (R_IN2, R_OUT1) if prev < p < Rc]
-            v, _ = integrate.quad(lambda s: 4 * math.pi * s * s * rho1(s), prev, Rc, points=pts or None,
-                                  epsabs=1e-18, epsrel=1e-13, limit=200)
+            v, _ = integrate.quad(lambda s: 4 * math.pi * s * s * rho1(s, dens), prev, Rc, points=pts or None,
+                                  epsabs=0.0, epsrel=1e-13, limit=200)
             acc += v
             prev = Rc
         out[i] = acc
@@ -317,20 +346,32 @@ def part_b(data, fun, inp):
     outer = rb >= 0.5 * M
     R = np.where(outer, areal(np.where(rb > 0, rb, 1.0)), 0.0)
     o = np.where(outer)[0]
-    Dg = D_grid(R[o])
-    Dp = 4 * math.pi * R[o] ** 2 * rho(R[o])
-    KT_ex = np.where(Dg > 0, fun["KT"](R[o], np.maximum(Dg, 1e-300)), 0.0)
-    with np.errstate(divide="ignore", invalid="ignore"):
-        KL_ex = np.where(Dg > 0, fun["KL"](R[o], np.maximum(Dg, 1e-300), Dp), 0.0)
-    scale = np.max(np.abs(KT_ex))
-    eKT = np.abs(KT[o] - KT_ex)
-    eKL = np.abs(KL[o] - KL_ex)
-    out["table_KT_maxabs_err_over_maxKT"] = float(eKT.max() / scale)
-    out["table_KL_maxabs_err_over_maxKT"] = float(eKL.max() / scale)
-    nz = np.abs(KT_ex) > 1e-12 * scale
-    out["table_KT_max_rel_err_where_nonzero"] = float(np.max(eKT[nz] / np.abs(KT_ex[nz])))
-    nzl = np.abs(KL_ex) > 1e-6 * scale
-    out["table_KL_max_rel_err_where_above_1e-6"] = float(np.max(eKL[nzl] / np.abs(KL_ex[nzl])))
+
+    def table_vs(dens, tag):
+        Dg = D_grid(R[o], dens)
+        Dp = 4 * math.pi * R[o] ** 2 * dens(R[o])
+        with np.errstate(divide="ignore", invalid="ignore"):
+            KT_ex = np.where(Dg > 0, fun["KT"](R[o], np.maximum(Dg, 1e-300)), 0.0)
+            KL_ex = np.where(Dg > 0, fun["KL"](R[o], np.maximum(Dg, 1e-300), Dp), 0.0)
+        sc = np.max(np.abs(KT_ex))
+        eT, eL = np.abs(KT[o] - KT_ex), np.abs(KL[o] - KL_ex)
+        r_ = {f"{tag}_KT_maxabs_err_over_maxKT": float(eT.max() / sc),
+              f"{tag}_KT_maxabs_err_at_R": float(R[o][np.argmax(eT)]),
+              f"{tag}_KL_maxabs_err_over_maxKT": float(eL.max() / sc),
+              f"{tag}_KL_maxabs_err_at_R": float(R[o][np.argmax(eL)]),
+              f"{tag}_rows_table_zero_mine_nonzero": int(np.sum((KT[o] == 0) & (KT_ex != 0))),
+              f"{tag}_largest_R_table_zero_mine_nonzero": float(np.max(R[o][(KT[o] == 0) & (KT_ex != 0)], initial=0.0)),
+              f"{tag}_largest_D_table_zero_mine_nonzero": float(np.max(Dg[(KT[o] == 0) & (KT_ex != 0)], initial=0.0))}
+        big = R[o] > 3.2   # S > 1e-4: away from the extreme tail
+        r_[f"{tag}_KT_max_rel_err_R_gt_3.2"] = float(np.max(eT[big & (KT_ex != 0)] / np.abs(KT_ex[big & (KT_ex != 0)])))
+        nzl = big & (np.abs(KL_ex) > 1e-6 * sc)
+        r_[f"{tag}_KL_max_rel_err_R_gt_3.2"] = float(np.max(eL[nzl] / np.abs(KL_ex[nzl])))
+        return r_, Dg, Dp, KT_ex, KL_ex, eT, eL, sc
+
+    rt, _, _, _, _, _, _, _ = table_vs(rho_tanh, "table_vs_tanhstep")
+    out.update(rt)
+    rp, Dg, Dp, KT_ex, KL_ex, eKT, eKL, scale = table_vs(rho, "table")
+    out.update(rp)
     # sampled radii with a direct quad each
     samp = []
     for Rt in (2.5, 3.2, 3.5, 4.0, 4.5, 5.0, 7.0, 10.0, 20.0, 30.0, 40.0, 52.5, 55.0, 58.0, 59.5, 61.0, 100.0, 200.0, 330.0):
@@ -358,6 +399,9 @@ def part_b(data, fun, inp):
     sel = outer & (R > 2.2) & np.isfinite(d4)
     mres = KL[sel] - d4[sel] / dRdrb[sel]
     out["table_mom_residual_fd4_max_over_maxKT"] = float(np.max(np.abs(mres)) / scale)
+    out["table_mom_residual_fd4_max_at_R"] = float(R[sel][np.argmax(np.abs(mres))])
+    far = (R[sel] > 6.0) & (R[sel] < 50.0)
+    out["table_mom_residual_fd4_max_over_maxKT_6<R<50"] = float(np.max(np.abs(mres[far])) / scale)
     res_rows = dict(R=R[o], KT=KT[o], KL=KL[o], KT_ex=KT_ex, KL_ex=KL_ex, ham=ham, eKT=eKT, eKL=eKL,
                     Rm=R[sel], mres=mres, scale=scale)
     # particles
@@ -377,6 +421,12 @@ def part_b(data, fun, inp):
     out["dust_lattice_offset_max"] = float(np.max(np.abs(xd / h - 0.5 - np.round(xd / h - 0.5))))
     m_ex = rho(Rd) * (1 + M / (2 * rbd)) ** 6 * h ** 3
     out["dust_mass_max_rel_err"] = float(np.max(np.abs(md / m_ex - 1)))
+    out["dust_mass_max_rel_err_at_R"] = float(Rd[np.argmax(np.abs(md / m_ex - 1))])
+    out["dust_mass_max_abs_err_over_rho0h3"] = float(np.max(np.abs(md - m_ex)) / (RHO0 * h ** 3))
+    tail = (Rd > 3.2) & (Rd < 59.0)
+    out["dust_mass_max_rel_err_3.2<R<59"] = float(np.max(np.abs(md[tail] / m_ex[tail] - 1)))
+    m_tanh = rho_tanh(Rd) * (1 + M / (2 * rbd)) ** 6 * h ** 3
+    out["dust_mass_vs_tanhstep_max_rel_err"] = float(np.max(np.abs(md / m_tanh - 1)))
     out["dust_R_range"] = [float(Rd.min()), float(Rd.max())]
     # my own enumeration of the lattice points that carry dust
     k = (np.arange(-62, 62) + 0.5) * h
@@ -385,13 +435,19 @@ def part_b(data, fun, inp):
     ok = rr >= 0.5 * M
     RR = np.where(ok, areal(np.maximum(rr, 1e-300)), 0)
     ok &= (RR > R_IN) & (RR < R_OUT)
-    ok[ok] &= rho(RR[ok]) > 0
-    out["dust_count_mine"] = int(ok.sum())
+    ok_p = ok.copy()
+    ok_p[ok_p] &= rho(RR[ok_p]) > 0
+    ok[ok] &= rho_tanh(RR[ok]) > 0
+    out["dust_count_mine_precise_step"] = int(ok_p.sum())
+    out["dust_count_mine_tanh_step"] = int(ok.sum())
     out["dust_count_file"] = int(xd.shape[0])
     mine = np.round(np.stack([X[ok], Y[ok], Z[ok]], 1) * 2).astype(np.int64)
     theirs = np.round(xd * 2).astype(np.int64)
     key = lambda a: np.sort(a[:, 0] * 10 ** 8 + a[:, 1] * 10 ** 4 + a[:, 2])
-    out["dust_positions_identical_set"] = bool(mine.shape == theirs.shape and np.array_equal(key(mine), key(theirs)))
+    out["dust_positions_identical_set_tanh_step"] = bool(mine.shape == theirs.shape and np.array_equal(key(mine), key(theirs)))
+    extra = (ok_p & ~ok)
+    out["points_with_rho_only_in_precise_step"] = int(extra.sum())
+    out["mass_of_those_points_over_rho0h3_max"] = float(np.max(rho(RR[extra]) * (1 + M / (2 * rr[extra])) ** 6, initial=0.0) / RHO0)
     # per-tag energies
     EK = np.load(os.path.join(data, "energy_by_tag.npy"))
     EK_ex = np.sqrt(1 - 2 * M / np.concatenate([trR, Rd]))
