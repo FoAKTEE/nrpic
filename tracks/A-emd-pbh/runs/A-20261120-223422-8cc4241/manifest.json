@@ -1,0 +1,108 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261120-223422-8cc4241",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "Szekeres card series, step 1: field and particle files (eps = 0.2, one particle per cell centre) at N = 32, 64, 128, 256 on [-8,8]^3, with the labels of every cell (Szekeres and LTB) for the analysis (JOURNAL entry 8)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 python3 tracks/A-emd-pbh/szekeres/scripts/prep_code_files.py --N 32 64 128 256 --ppc 1 --eps 0.2 --workers 4"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "8cc42412a7a903d60a47a9133e190b9cbe50db0f",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/szekeres"
+    ],
+    "outside_package": {
+      "count": 25,
+      "first": [
+        " M tracks/A-emd-pbh/conv_ball/scripts/prep_bh.py",
+        " M tracks/A-emd-pbh/note/figures/fig_ball_exact.pdf",
+        " M tracks/A-emd-pbh/note/figures/fig_constraints.pdf",
+        " M tracks/A-emd-pbh/note/figures/fig_criteria.pdf",
+        " M tracks/A-emd-pbh/note/figures/fig_landscape.pdf",
+        " M tracks/A-emd-pbh/note/figures/schem_architecture.svg",
+        " M tracks/A-emd-pbh/note/figures/schem_dataflow.png",
+        " M tracks/A-emd-pbh/note/figures/schem_dataflow.svg",
+        " M tracks/A-emd-pbh/note/figures/schem_timeline.svg",
+        " M tracks/A-emd-pbh/note/main.pdf",
+        " M tracks/A-emd-pbh/note/main.tex",
+        " M tracks/A-emd-pbh/note/tables/claims.json",
+        " M tracks/A-emd-pbh/note/tables/claims.md",
+        " M tracks/A-emd-pbh/note/tables/claims_summary.tex",
+        " M tracks/A-emd-pbh/note/tables/ledger.tex",
+        " M tracks/A-emd-pbh/note/tables/parameters.tex",
+        " M tracks/A-emd-pbh/periodic_threshold/JOURNAL.md",
+        " M tracks/A-emd-pbh/runs_ball/turnaround.py",
+        "?? tracks/A-emd-pbh/conv_ball/decks/",
+        "?? tracks/A-emd-pbh/conv_ball/scripts/design_calc.py"
+      ]
+    },
+    "merge_base_main": "c7e7db3b637b2c04d9907dcc5b3d66c90c5fac7b",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261120-223422-8cc4241",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:34:23Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.9457,
+    "gpu_hours_reserved": 2.05,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 2,
+    "runs": 165,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
