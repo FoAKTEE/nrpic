@@ -1,0 +1,257 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261120-222841-acfe21d",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "waves round 1: F2 (k=2pi(1,2,0)) at N=64 and test X with dt_expansion=0.001 at N=16,32,48,64 on one card (predictions JOURNAL.md 2026-11-20 22:30)",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-222841-acfe21d/batch.list"
+  ],
+  "cwd": "scratch/B-emd-gw/B-20261120-222841-acfe21d",
+  "git": {
+    "sha": "acfe21ddd401420f96840fcf155d5246e2fa335b",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/waves"
+    ],
+    "outside_package": {
+      "count": 22,
+      "first": [
+        " M tracks/B-emd-gw/note/figures/fig_baseline.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_gauge.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_newton.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_pancake.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_scan.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_source.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_waves.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_waves.png",
+        " M tracks/B-emd-gw/note/figures/schem_architecture.png",
+        " M tracks/B-emd-gw/note/figures/schem_architecture.svg",
+        " M tracks/B-emd-gw/note/figures/schem_dataflow.svg",
+        " M tracks/B-emd-gw/note/figures/schem_timeline.svg",
+        " M tracks/B-emd-gw/note/tables/checked.md",
+        " M tracks/B-emd-gw/note/tables/ledger.tex",
+        " M tracks/B-emd-gw/note/tables/parameters.tex",
+        "?? tracks/B-emd-gw/flrw_conv/",
+        "?? tracks/B-emd-gw/note/figures/fig_r2.pdf",
+        "?? tracks/B-emd-gw/note/figures/fig_r2.png",
+        "?? tracks/B-emd-gw/shear/scripts/shear_ref.py",
+        "?? tracks/B-emd-gw/shear/tests/"
+      ]
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": [
+      "nrpic_cosmo",
+      "z4c_linear_wave"
+    ],
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_requests-b/athena_gpu",
+    "exe_sha256": "5a35c8f1317ea88386c2e442716177710f456378779003ff572a6b076211b9aa",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": {
+    "file": "tracks/B-emd-gw/waves/inputs/flat_120.athinput",
+    "sha256": "c91b00a61066ca2e9540748066b74cbc4edd9e8b56253b9cea017ea0433ebcbb",
+    "overrides": {
+      "mesh/nx1": "64",
+      "mesh/nx2": "64",
+      "mesh/nx3": "64",
+      "meshblock/nx1": "64",
+      "meshblock/nx2": "64",
+      "meshblock/nx3": "64"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_requests-b/athena_gpu",
+      "role": "exe",
+      "sha256": "5a35c8f1317ea88386c2e442716177710f456378779003ff572a6b076211b9aa",
+      "bytes": 102267376,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/B-emd-gw/waves/inputs/card_r1.list",
+      "role": "list",
+      "sha256": "912ff737e18e64140bc5be19be3b63a517b745ec8519bc1a582d78788041c658",
+      "bytes": 2210,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/waves/inputs/flat_120.athinput",
+      "role": "athinput:f120N64",
+      "sha256": "c91b00a61066ca2e9540748066b74cbc4edd9e8b56253b9cea017ea0433ebcbb",
+      "bytes": 2335,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/waves/inputs/expanding.athinput",
+      "role": "athinput:xdt3N64",
+      "sha256": "fad16cb63cb4af29859780a26d824e1fb67b0f52f5b28fa1694e19e01807ee27",
+      "bytes": 3424,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/waves/inputs/expanding.athinput",
+      "role": "athinput:xdt3N48",
+      "sha256": "fad16cb63cb4af29859780a26d824e1fb67b0f52f5b28fa1694e19e01807ee27",
+      "bytes": 3424,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/waves/inputs/expanding.athinput",
+      "role": "athinput:xdt3N32",
+      "sha256": "fad16cb63cb4af29859780a26d824e1fb67b0f52f5b28fa1694e19e01807ee27",
+      "bytes": 3424,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/waves/inputs/expanding.athinput",
+      "role": "athinput:xdt3N16",
+      "sha256": "fad16cb63cb4af29859780a26d824e1fb67b0f52f5b28fa1694e19e01807ee27",
+      "bytes": 3424,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "f120N64",
+      "input": "tracks/B-emd-gw/waves/inputs/flat_120.athinput",
+      "args": [
+        "mesh/nx1=64",
+        "mesh/nx2=64",
+        "mesh/nx3=64",
+        "meshblock/nx1=64",
+        "meshblock/nx2=64",
+        "meshblock/nx3=64"
+      ]
+    },
+    {
+      "name": "xdt3N64",
+      "input": "tracks/B-emd-gw/waves/inputs/expanding.athinput",
+      "args": [
+        "mesh/nx1=64",
+        "mesh/nx2=64",
+        "mesh/nx3=64",
+        "meshblock/nx1=64",
+        "meshblock/nx2=64",
+        "meshblock/nx3=64",
+        "particles/dt_expansion=0.001",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142108-1e5add9/N64/ic/particles.nrp",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142108-1e5add9/N64/ic/fields.bin"
+      ]
+    },
+    {
+      "name": "xdt3N48",
+      "input": "tracks/B-emd-gw/waves/inputs/expanding.athinput",
+      "args": [
+        "mesh/nx1=48",
+        "mesh/nx2=48",
+        "mesh/nx3=48",
+        "meshblock/nx1=48",
+        "meshblock/nx2=48",
+        "meshblock/nx3=48",
+        "particles/dt_expansion=0.001",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142234-85da208/N48/ic/particles.nrp",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142234-85da208/N48/ic/fields.bin"
+      ]
+    },
+    {
+      "name": "xdt3N32",
+      "input": "tracks/B-emd-gw/waves/inputs/expanding.athinput",
+      "args": [
+        "mesh/nx1=32",
+        "mesh/nx2=32",
+        "mesh/nx3=32",
+        "meshblock/nx1=32",
+        "meshblock/nx2=32",
+        "meshblock/nx3=32",
+        "particles/dt_expansion=0.001",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142021-8f4c441/N32/ic/particles.nrp",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142021-8f4c441/N32/ic/fields.bin"
+      ]
+    },
+    {
+      "name": "xdt3N16",
+      "input": "tracks/B-emd-gw/waves/inputs/expanding.athinput",
+      "args": [
+        "mesh/nx1=16",
+        "mesh/nx2=16",
+        "mesh/nx3=16",
+        "meshblock/nx1=16",
+        "meshblock/nx2=16",
+        "meshblock/nx3=16",
+        "particles/dt_expansion=0.001",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142021-8f4c441/N16/ic/particles.nrp",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142021-8f4c441/N16/ic/fields.bin"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:20:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.2,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "B-20261120-222841-acfe21d",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261120-222841-acfe21d",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-20T22:28:41Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "B-20261119-142108-1e5add9",
+    "B-20261119-142021-8f4c441",
+    "B-20261119-142234-85da208"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.6343,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 0,
+    "runs": 210,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
