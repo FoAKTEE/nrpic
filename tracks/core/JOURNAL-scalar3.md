@@ -1110,3 +1110,78 @@ from 0.5 to 3 e-folds (I wrote 2000 to 10000). (iii) G5, PG5c: "no trend of cap 
 geoc" rests on the record at the dumps nearest in e-folds (2.95e-12 against 3.19e-12
 near 1.5, 2.78e-11 against 2.82e-11 at 2.0, 4.01e-11 against 4.14e-11 near 2.5, 1.25e-11
 against 1.18e-11 at 3.14): within 8 percent, without a sign.
+
+## 2026-11-20, entry 19: published; merge check; where the package stands (hand-off)
+
+**Corrections to entry 18.** (i) PC3: the pair s = +-0.01 of K128 follows the linear
+reference within 2.5e-6 for |n| <= 8 over all dumps (I wrote 2.4e-6, the value at the
+last dump); PC2: its shell |n| = 8 is 2.1e-6 to 2.2e-6 after 6 e-folds. (ii) PC4:
+<|M|/[M]> at 4 e-folds is 47 times smaller at 8 cells than at 4 (1.58e-2 against
+3.34e-4), not 48.
+
+**Published** (22:20Z): `/data/haiyangw/nrpic/scratch/core/exe/core_scalar-3/` with
+`athena_gpu` (sha256 8dc2ae83...), `athena_cpu` (5201b883...), `COMMIT` (5cc28211, the
+commit of the source of `athenak/`, unchanged since), `SHA256SUMS`, `READY` (the option,
+the two example inputs, what is tested with run ids, what is not). The published
+processor executable starts the gauge example from its place and writes the 27 columns
+(one step, unregistered, `scratch/core/tmp/pubcheck/`). Interface text:
+`tracks/core/interfaces/scalar_field_3.md`, sections 1 to 8 filled. Answer to Track E:
+`tracks/core/outbox/20261120T222139Z__to-E-stoch-inf__scalar3-closed.md` (the draft of
+2026-11-19 was never committed; it is replaced by this message).
+
+**Card time.** 0.31 card-hours of the one allowed (job 4651) and 2 s (job 4661). No
+further card job was submitted today: two jobs of owner core were queued or running at
+22:20Z. Pending runs: none.
+
+**Merge check against `core/nrpic` at c31a88f9** (read-only; `git merge-tree` with the
+tip of `core/scalar-2`, 207424d, as base, which both branches carry beside main). No
+file under `athenak/`, `python/` or `problems/` is changed on both sides. One conflict,
+in `tracks/core/interfaces/rng.md` section 6: `core/nrpic` rewrote rows 1 and 2 of the
+registry and added section 6.1 (stream 2), this branch rewrote row 3 and added the
+block on stream 3 below the table; the rows are adjacent lines. Resolution: rows 1, 2
+and section 6.1 of `core/nrpic`, row 3 and the stream-3 block of this branch (as section
+6.2). A resolved copy: `scratch/core/scalar3/doc/rng_merged_for_core_nrpic.md` (not
+committed; 318 lines, no marker left).
+
+**Lines of files that existed before** (against `core/scalar-2` at 207424d, new
+numbering; checked today with `git diff -U0`): `utils/rng_mesh.hpp` 11-13, 68-98;
+`scalar_field/scalar_field_noise.cpp` 16-19, 451-458; `scalar_field/scalar_field.hpp`
+179-180, 307; `scalar_field/scalar_field_diag.cpp` 30-33, 95-97, 299-304, 307, 313-319,
+323-392; `python/nrpic/rng.py`, `scalar_field.py`, `sf_inflation.py` (additions).
+Nothing under `z4c/`.
+
+**The four items of the package.**
+1. Mode entity: done (entry 3, T0).
+2. Inflection case with the slice at N*: done at 32^3 on processors and at 64^3, 128^3 on
+   a card, up to 68532 modes (entries 14, 18). Not done: 256^3, a second seed, spectra
+   against P1.
+3. First-order truncation at late entry: an analysis, no source change (entries 1, 12,
+   13): the defect of the discrete contracted Bianchi identity of the Z4c stencils;
+   strict A4 needs 12.7 cells per shortest wavelength of the sources.
+4. Lapse: geodesic slicing is the tested default; `lapse_harmonic = 0.05` and
+   `lapse_kdriver` work with the sources; the conformal-time lapse capped by the
+   relaxation term of `core/gauge` is the one for long runs at high resolution and is
+   tested with the sources on a test build only (entries 3, 6, 12, 17).
+
+**Open, for whoever continues.**
+- After the merge of this branch and `core/gauge` into one executable: repeat G5 on it
+  (`g1_gauge.py --only geoc,cap` with `--exe-gauge` the merged executable, then
+  `g2_gauge_analysis.py`), extend it beyond the cap by 5 e-folds and to the inflection
+  case, and run one long card case with the merged card executable (the published
+  `athena_gpu` has run 20 steps).
+- Unexplained, small: the drift of the lowest modes under `lapse_kdriver` (4 times the
+  geodesic deviation at 3.2 e-folds, 1.5e-5) and the first dump under `lapse_harmonic =
+  0.05` (entry 12). A pair s = +-1 under the driver would decide the first.
+- The early floor of the odd constraint parts on the card ladder of the quadratic case
+  (N = 64, 128) above the twin (entry 12).
+- The back-reaction of the modes on <Pi> (1.3e-5 at rms R^NR = 0.5) has no reference.
+
+**Requests.**
+- core's lead: merge `core/scalar-3` (no source conflict; `rng.md` as above); the line of
+  `coord/INTERFACES/scalar_field.md` that marks the inflection potential [TO VERIFY] can
+  go with the release (P1:409 is the coded form, entry 0; Track E found the same).
+- orch: the allotment of 16 processor cores is counted per owner, and today as on
+  2026-11-19 other core sessions held all 16, so that every submission of this package
+  was first refused and went through a retry loop (`scratch/core/scalar3/queue/`).
+- Track E: the [TO VERIFY] of item 7 of the message (which stencil symbol its
+  stencil-k^2 reference at 256^3 used).
