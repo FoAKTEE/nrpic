@@ -1,0 +1,118 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261120-222849-3b921b7",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "waves round 1: test F2 (k=2pi(1,2,0), elliptic, 4 periods) at N=16,32,48 on processors, core/requests-b athena_cpu (predictions JOURNAL.md 2026-11-20 22:30)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "env",
+    "DECK=tracks/B-emd-gw/waves/inputs/flat_120.athinput",
+    "NS=16 32 48",
+    "bash",
+    "tracks/B-emd-gw/waves/scripts/run_deck.sh"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "3b921b790f8e5614649952da4f3f3d0236179e6a",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/waves"
+    ],
+    "outside_package": {
+      "count": 22,
+      "first": [
+        " M tracks/B-emd-gw/note/figures/fig_baseline.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_gauge.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_newton.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_pancake.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_scan.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_source.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_waves.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_waves.png",
+        " M tracks/B-emd-gw/note/figures/schem_architecture.png",
+        " M tracks/B-emd-gw/note/figures/schem_architecture.svg",
+        " M tracks/B-emd-gw/note/figures/schem_dataflow.svg",
+        " M tracks/B-emd-gw/note/figures/schem_timeline.svg",
+        " M tracks/B-emd-gw/note/tables/checked.md",
+        " M tracks/B-emd-gw/note/tables/ledger.tex",
+        " M tracks/B-emd-gw/note/tables/parameters.tex",
+        "?? tracks/B-emd-gw/flrw_conv/",
+        "?? tracks/B-emd-gw/note/figures/fig_r2.pdf",
+        "?? tracks/B-emd-gw/note/figures/fig_r2.png",
+        "?? tracks/B-emd-gw/shear/scripts/shear_ref.py",
+        "?? tracks/B-emd-gw/shear/tests/"
+      ]
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/waves/scripts/run_deck.sh",
+      "role": "argv",
+      "sha256": "dabb5815890455f2daacf95fc42078c358ecf273a984ce5b46183dad7afb571a",
+      "bytes": 1453,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 3,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261120-222849-3b921b7",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:28:49Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.6343,
+    "gpu_hours_reserved": 0.2,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 0,
+    "runs": 211,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
