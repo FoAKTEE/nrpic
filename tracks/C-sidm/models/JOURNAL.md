@@ -570,3 +570,35 @@ The 29 realisations outside one SE have a median |P/25 - 1| more than twice that
 21 inside: the excess error comes from misestimated periods, which neither error term
 contains. Refuted otherwise (then the cause is elsewhere: window selection at 1.8
 e-folds).
+
+## 2026-11-20, entry 12: outcomes D2, D3 (run C-20261120-223404-40668db)
+
+`diag_v2.py --validation scratch/C-sidm/C-20261120-222716-9d86ebc` (commit 40668db, exit 0,
+`diag_v2.json`) [VERIFIED]:
+- D2(a) PASS: ln|d_s| of alpha_c is concave in all three compensated samples (c = -5.5e-4,
+  -6.3e-4, -5.5e-4 per M^2 over 16-68 M); the local rate falls from 0.075-0.082 at the
+  first smoothed time to 0.023-0.026 per M where |d_s| = 0.14 (end/start 0.34, 0.28, 0.31,
+  predicted below 0.7). The window dependence of G6' is this curvature, not noise.
+- D2(b) PASS: over the common interval 17.5-51.8 M the three rates are 0.0557, 0.0584,
+  0.0617 per M (+- 0.0042 each), largest deviation from their mean 5.3 percent (wave 2,
+  old estimator: 5.5 percent).
+- D3 PASS: at sigma = 0.1 the 29 realisations outside one SE have median |P/25 - 1| =
+  0.083 against 0.031 for the 21 inside (ratio 2.7, predicted above 2); correlation of
+  |P/25 - 1| with |sigma_fit/0.1 - 1| is 0.61. The excess error at sigma P = 2.5 comes
+  from the period estimate, which the error budget does not contain.
+
+Reading [JUDGEMENT]: on the y_c = 0.5 runs no single exponential describes alpha_c over
+more than about one e-fold; a rate is defined only together with its interval, and three
+samples agree to 5 percent over a common interval. The estimator is validated on
+synthetic signals for sigma P <= 1.25 (G2' all clauses) and its bias for sigma P = 2.5.
+
+## 2026-11-20 22:34 UTC, entry 13: PAUSED (locks/PAUSE: five-hour window at 97 percent)
+
+Where I stopped. Done and committed: estimator `growth_fit_v2` and its tests (U1-U5 pass,
+run C-20261120-222454-8721534); validation of both estimators (run
+C-20261120-222716-9d86ebc, entry 11); diagnoses D2, D3 (run C-20261120-223404-40668db,
+entry 12). Not done: (1) figures of the validation and diagnoses (a `figures_v2.py`
+reading the two npz files; none made or looked at yet); (2) step 5, the reading of the
+King runs C-20261115-171058-c26cfad, -171059-4b70228, -171059-35441e3 (`cluster_rates.py`
+not written; predictions K of entry 9 stand); (3) README section 'Growth-rate fit, wave 3'
+and the 'for G1 C2' statement. Resume from here; nothing is running.
