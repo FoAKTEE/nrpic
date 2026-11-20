@@ -221,6 +221,8 @@ section 5.
 | T2 | homogeneous universe with refined patches: interior, faces and corner, adaptive (tracker), lohner plus `<particles_amr>`, eight particles per root cell with fine clouds, the same drifting through the patch | `-151654-e01b46e` | chi and E uniform to 1.6e-14 and 4.2e-14; |H_max - H_mean| at most 9.7e-13; alpha_max equal to the uniform run to 3.3e-15; lohner plus `<particles_amr>` creates no MeshBlock |
 | T3 | linear plane wave (test B of arXiv:1904.07841) with a refined patch | `-161527-4480f58` (first run `-154357-64067cd` void: six-digit tables) | section 4.1 |
 | T3c | homogeneous universe, clouds of the three shapes on the finest level of a patch | `-164329-589b34c` | cic uniform to 2e-15; tsc 0.35, pcs 0.15 (released deposit, section 8) |
+| T3d | the same with the density-adaptive cloud level (`deposit_adaptive`), three shapes, uniform and fine-shape spreading | `core-20261120-223058-bec243b` | adaptive level equal on both sides of the boundary (`deposit_ppc = 2`): uniform to 6.4e-15 for cic, tsc and pcs; adaptive level following the mesh level (`deposit_ppc = 0.5`): cic 2e-15, tsc 0.35, pcs 0.15, as T3c |
+| T16 | the finder's `hmean_tol` on Track A's S1 data at t = 0 (uniform mesh, two cycles) | `core-20261120-222814-0b2b259` | with 100 (the track's decks) every search ends at its first iteration with reason 3 (surface integral of the expansion 184); with 1e30 the flow runs (three iterations, reason 4: no trapped surface in these data) |
 | T4 | finder in a periodic box: lattice of unit punctures, hole at the centre, on a face, at a corner, finder centre in other images | `-152106-9332260` | M = 0.9915211031 in every case, equal to 3.3e-16; REL: no horizon for a centre one period away, a wrong one (M = 0.695) on a face; summary file in `-d` |
 | T5 | tracker moving across a face with refinement following it, `dt_lightspeed` | `-151654-e01b46e` | tracker within 1.0e-13 of x = 2.5 + 0.5 t mapped into the box; refined blocks on both sides of the face; homogeneity 1e-13; step 0.25 dx/1.5 to 1e-13 |
 | T6 | guard at a Courant number of 1.5 | `-151654-e01b46e` | NEW stops at cycle 18 with status 3 and `flrw.guard.txt`; `stop_chi_nonpositive` the same cycle; guard off and REL run to `nlim` (status 0) after losing every particle |
@@ -460,7 +462,10 @@ tracks/core/analysis/cosmo_amr/t10c_scout.list --exe
   `deposit_adaptive`), a uniform lattice is NOT uniform across a level boundary (35 and
   15 per cent in E, relative constraint 0.14 and 0.07); linear clouds are uniform to
   1e-15. On refined meshes use `deposit_shape = cic`, or put every cloud on one level.
-  `deposit_adaptive` with quadratic or cubic clouds is not tested.
+  With `deposit_adaptive` the same holds (T3d): uniform for every shape while the
+  adaptive level is equal on both sides of the level boundary, 35 and 15 per cent for
+  quadratic and cubic clouds where it follows the mesh level. Not tested: a density
+  gradient across which the adaptive level changes on a uniform mesh.
 - Constraint solve on the refined levels of the actual mesh and a nested particle lattice
   (A2-11): core's package idsolve-2.
 - Field dumps of the particle module on multilevel meshes: not done; AthenaK's `tab` and

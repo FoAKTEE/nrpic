@@ -1121,3 +1121,22 @@ reconstructed spreading); `_p05`: cic uniform to 1e-12, tsc 0.35 and pcs 0.15 as
 (same clouds as with the fixed cap). Refuted if a `_p2` case shows structure: then the
 adaptive cap is not uniform on a uniform lattice (the first deposits on the patch have
 no previous density).
+
+## 2026-11-20 22:33  outcome of T3d
+
+**T3d, run core-20261120-223058-bec243b** (hand-written manifest, two processors;
+`t3d_summary.json`, figure `fig_t3d_adaptive`, looked at) [VERIFIED]: nine cases, exit 0.
+- `deposit_ppc = 2` (adaptive level = root everywhere), uniform and fine-shape spreading:
+  E_max/E_min - 1 at most 2.4e-15 (cic), 3.8e-15 (tsc), 6.4e-15 (pcs) over four cycles;
+  largest relative H 1e-15 at t = 0: PASS.
+- `deposit_ppc = 0.5` (adaptive level = level 1 on the patch): cic 2.0e-15, tsc 0.350,
+  pcs 0.147 at t = 0 (T3c with the fixed cap: 0.35 and 0.15); Hr_max 0.141 and 0.071:
+  PASS.
+- Deposition identity 1.4e-12 in all nine (110,592 particles; rounding of the plain sum).
+So the adaptive cloud level behaves at a level boundary as the fixed cap does: a uniform
+lattice stays uniform for every shape as long as the adaptive level is the same on both
+sides of the boundary, and quadratic or cubic clouds whose level changes with the mesh
+level show the 35 and 15 per cent of T3c. With linear clouds every combination is
+uniform. Not tested: a density gradient across which the adaptive level itself changes
+on a uniform mesh (clouds of two sizes side by side; docs/TESTLOG.md records the
+"jumps where the cloud level moves" on the dust ball).
