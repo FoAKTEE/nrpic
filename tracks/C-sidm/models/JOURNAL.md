@@ -343,3 +343,115 @@ So AthenaK reads the b = 0.1 table and a 10^5-particle file; one prediction boun
 
 Figures: final figure run C-20261115-175406-e8ffa67 (adds fig_smoke; the other three are
 redrawn by the same code as run C-20261115-173404-378c69e); figs/ holds its output.
+
+## 2026-11-20, entry 9 (wave 3, package models): the fixed estimator, its definition and predictions
+
+Task: G1 open item 3 (`stage/G1/OPEN.md`), plan `PLAN-wave3.md` round 1, package 2. State
+verified from the files: G1 passed 18/18 (run C-20261115-170346-298a1ba), G2 and G4 failed
+(same run), D1 traced G2 to the reference y(0) (run C-20261115-170713-cefe1c2, table in
+entry 5). Nothing of this package was left uncommitted by wave 2b/3a (`git status` clean).
+
+### Disclosure: what I looked at before writing these predictions
+
+The committed figure `figs/fig_growth.png` (wave 2), the decks and table headers of the
+runs (`runs/st/*/st_*.athinput`, `cluster.tab`), and the first three records of
+`runs/st/dir_yc0500_comp/st.nrpic.hst`: alpha_probe(0) = 0.5520453 against the table's
+alpha_c = 0.5504417. I read the probe code (`athenak/src/particles/nrpic_io.cpp:73-135`):
+the probe at the origin, a MeshBlock corner, is the mean of the lapse at the eight
+surrounding cell centres, i.e. at isotropic radius r_p = (sqrt 3/2) dx. I have not
+evaluated the table at r_p, so R1 below is not blind as to the size of the offset
+(0.0016) but is as to its agreement.
+
+### Definition of the fixed estimator (growth.growth_fit_v2), fixed before any run
+
+1. Departure d = y - y_ref (or y/y_ref - 1 with relative=True). y_ref is a number (the
+   model's equilibrium value as the probe samples it: the table lapse at r_p,
+   `growth.probe_reference`), an array on the record times (a control run of the same
+   model and seed), or 'first' (the old reference y(0), kept for comparison).
+2. Period P of the oscillation: supplied, or measured from d: least-squares periodogram
+   with a cubic trend (columns 1, t, t^2, t^3, sin, cos) over the record from t0 to the
+   first time |d| (3-record running mean) reaches hi, trial periods from 5 M to 2/3 of that
+   segment; P minimises the residual. The spacing of zero crossings of d minus the cubic
+   trend is reported as a cross-check.
+3. Centred boxcar of width P (on the median record step, as before).
+4. Initial amplitude A_init = rms of the raw d over [t0, t0 + P].
+5. Window: lo = k_lo A_init (default k_lo = 3), hi stated per use; it ends at the first
+   |d_s| >= hi and starts after the last earlier |d_s| <= lo (as before). No window if
+   ln(hi/lo) < 1.
+6. sigma = least-squares slope of ln|d_s| in the window. Standard error
+   se = (se_noise^2 + se_fit^2)^(1/2): se_noise is the exact linear propagation of white
+   record noise of level s_n = std(diff d)/sqrt 2 (window plus one boxcar width) through
+   the boxcar and the slope; se_fit is the old residual error inflated by
+   sqrt(n/n_eff), n_eff = window length / P (at least 2).
+7. Settings for the first paper's runs: y_ref = probe reference of the run's table and
+   finest spacing at the origin at t = 0; P measured from the alpha_c record; k_lo = 3;
+   hi = 0.1 (unperturbed y_c = 0.5) and 0.2 (collapsing runs), as before. r10: relative
+   departure from r10(0) of the particle file (no continuum value at hand), P supplied
+   from the alpha_c fit of the same run, (a) own window with hi = 0.3, (b) the time window
+   of the alpha_c fit of the same run.
+
+### Predictions
+
+U (unit tests, `test_growth_v2.py`, synthetic): U1 the periodogram finds P = 25 M of a
+noise-free sinusoid (amplitude 2e-3) on an exponential trend (1e-3 e^{sigma t}, sigma =
+0.02, 0.05) within 1 percent, and within 5 percent with white noise 1e-3 per 0.25 M record;
+U2 a pure exponential with exact reference: sigma to 1e-6 relative (a boxcar keeps the
+slope of an exponential); U3 exponential plus oscillation, exact reference and supplied
+exact period, no noise: sigma within 2e-3 relative; U4 reference given as an array (an
+arbitrary drifting, oscillating control plus A e^{sigma t}): sigma within 1e-4 relative;
+U5 propagated se_noise against the scatter of sigma over 200 noise realisations (no
+oscillation): ratio between 0.85 and 1.15. Refuted by any failed bound.
+
+R1 (probe reference): |alpha_probe(0) - alpha_table(r_p)| < 1e-5 for the four static-mesh
+runs dir_yc0500_* (dx = M/4, r_p = 0.2165 M). For the adaptive-mesh runs (yc0500_v5,
+yc0605_v5) the same bound holds for one of dx = M/4, M/8, M/16 (it names the finest level
+at the origin at t = 0). Consequence stated now [JUDGEMENT]: if R1 holds, the lapse record
+of a run started from the tabulated lapse holds no initial mode amplitude in y(0); then
+'first' and the probe reference coincide on these runs to 1e-5 (1e-3 of lo), D1's
+mechanism does not act on them, and on runs the fix changes only the boxcar and the
+window start.
+
+G2' (same synthetic signals as G2: seed 7, 50 realisations, sigma = 0.02, 0.05, 0.1 per
+M, oscillation 2e-3 with P = 25 M, noise 1e-3; v2 with y_ref = 0.6 exact, P measured,
+k_lo = 3, hi = 0.1): mean relative bias within +-1 percent for each sigma; rms below 2
+percent; 3-SE coverage >= 0.90 for each sigma; 1-SE coverage between 0.50 and 0.97 (above
+0.97 would mean the error is inflated); median measured P within 5 percent of 25 M for
+sigma = 0.02, 0.05 and within 15 percent for 0.1. With y_ref = 'first' (otherwise the
+same): mean bias between +1 and +6 percent for every sigma (D1's mechanism). The old
+estimator repeats entry 4 exactly (+3.34, +2.92, +1.84 percent; 3-SE coverage 0.58, 0.90,
+0.86). Refuted by any failed clause.
+
+G1' (collapse and crossing times; code untouched): 18 of 18 again.
+
+G3' (v2 on the three compensated y_c = 0.5 samples): rates within 15 percent of their
+mean; each within 15 percent of its old value (0.0655, 0.0606, 0.0602) and inside
+0.050-0.075 per M; measured P between 15 and 40 M, the three within 20 percent of each
+other. The plain-filter run is recorded, not judged.
+
+G4' [JUDGEMENT, low confidence]: (a) with r10's own window, at least one of the three
+differs from its alpha_c rate by more than 20 percent (the early r10 record is a step and
+a breathing of 2-6 percent, `fig_growth.png`, that the window start cannot clear below
+hi = 0.3); (b) over the alpha_c time window at least two of three agree within 20 percent.
+If (b) fails, the deliverable is the statement that early r10 and alpha_c are not one
+linear mode over that window, with its evidence.
+
+G5' (as written in entry 1, with v2 and hi = 0.2): sigma(y_c = 0.605) < sigma(0.500) in
+the kicked runs; kicked y_c = 0.5 rate within 30 percent of the unperturbed mean; lead
+t_AH - t(alpha_c = 0.2) within 0-6 M (unchanged code: 3.3, 1.8, 1.1 M). My expectation
+[JUDGEMENT]: lead PASS, order holds in central values only, the 30 percent clause FAILS
+again (the kicked runs have no linear phase above the floor; the window catches the
+plunge).
+
+G6' (fit settings, three compensated samples): width 0.8, 1, 1.25 P x k_lo 2, 3, 5 x hi
+0.07, 0.1, 0.14 (27 settings): every rate that exists within 20 percent of the default;
+at least 24 of 27 settings find a window per sample. Refuted otherwise.
+
+K (reading of the wave-2 King runs, scouting, no threshold claim): d = alpha_c(collisional)
+- alpha_c(control of the same model, seed and particle file), P measured from the control,
+k_lo = 3, hi = 0.1, records before alpha_min < 0.3 and before the state turns non-finite;
+window-choice error = half the range over the 27-setting grid of G6'. Expected: d < 0 in
+all four (contraction); a window in all four; sigma(Kn = 1) in 0.04-0.15 per M and
+sigma(Kn = 10) in 0.01-0.06 per M for both models; sigma(Kn = 1)/sigma(Kn = 10) between
+1.5 and 10; sigma(CC1) >= sigma(CC2) at each Kn in central values (collapse times 72.5 <
+77.8 M and 184 < 207 M, `threshold_scan/README.md`); window-choice error below 25 percent
+of sigma. Refuted per clause.
