@@ -3,8 +3,13 @@
 # job of run A-20261119-144419-13d5601 has finished: close the card run, then compare.py on
 # each of the six runs, fields.py on the finest, and summary3.py (SR-1L against SR-1/SR-2
 # of wave 2; BH-1 over three resolutions). Run from anywhere:
-#   bash tracks/A-emd-pbh/runs_ball/after_runs3.sh
+#   bash tracks/A-emd-pbh/runs_ball/after_runs3.sh [all|runs3|bh_smr]
+# The optional part (default all) runs only the analysis of job A-20261119-144419-13d5601
+# (runs3) or only that of BH-1R (bh_smr). The first part copies its figures into figs/, which
+# leaves the package dirty, and nrpic-run submit refuses a dirty package: run "runs3", commit
+# figs/, then run "bh_smr" (wave 3, JOURNAL entry 11).
 set -euo pipefail
+PART=${1:-all}
 cd /data/haiyangw/nrpic/wt/A-emd-pbh
 S=/data/haiyangw/nrpic/scratch/A-emd-pbh
 RUN=A-20261119-144419-13d5601
@@ -16,6 +21,7 @@ A12=$S/A-emd-pbh-20261115-163659-4dbacd0         # wave-2 analysis of SR-1/SR-2 
 A4=$S/A-20261115-182657-53da696                  # wave-2 analysis of SR-1/SR-2 at dx = M/4
 C=tracks/A-emd-pbh/runs_ball
 PY=.venv/bin/python
+if [ "$PART" = all ] || [ "$PART" = runs3 ]; then
 harness/bin/nrpic-run status $RUN | tail -3
 harness/bin/nrpic-run finish $RUN || true
 harness/bin/nrpic-run submit --kind scouting --gate G2 --package $C --launcher local --cores 4 --wall 01:00:00 \
@@ -36,11 +42,12 @@ harness/bin/nrpic-run submit --kind scouting --gate G2 --package $C --launcher l
       --sr \$O:sr1l_n128:1.0:leak --sr \$O:sr1l_n256:0.5:leak --sr \$O:sr1l_n256L32:0.25:leak \
       --bh \$O:bh_n128:0.25 --bh \$O:bh_n192:0.16666666666666666 --bh \$O:bh_n256:0.125 \
       --out \$O --figdir $C/figs > \$O/summary3.log 2>&1"
+fi
 
 # BH-1R (one refined level, card run A-20261119-164634-f1fe887) once its job has finished
 RUN2=A-20261119-164634-f1fe887
 P6=$S/A-20261119-164113-74f0f32                  # data set 3, lattice h = M/16
-if [ -d $S/$RUN2/bh_smr ]; then
+if [ -d $S/$RUN2/bh_smr ] && { [ "$PART" = all ] || [ "$PART" = bh_smr ]; }; then
   harness/bin/nrpic-run finish $RUN2 || true
   harness/bin/nrpic-run submit --kind scouting --gate G2 --package $C --launcher local --cores 4 --wall 00:40:00 \
     --parent $RUN2 --parent A-20261119-164113-74f0f32 \
