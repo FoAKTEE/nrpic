@@ -1,0 +1,107 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261120-222732-13e3e41",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "note v2: figures (fig_waves four panels, new fig_r2), schematics, ledger with criterion 1 and the second first-source round",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/B-emd-gw/note/scripts/run_all.py"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "13e3e41f31e870025349983488f126b9438d1df0",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/note"
+    ],
+    "outside_package": {
+      "count": 12,
+      "first": [
+        "?? tracks/B-emd-gw/flrw_conv/",
+        "?? tracks/B-emd-gw/shear/scripts/shear_ref.py",
+        "?? tracks/B-emd-gw/shear/tests/",
+        "?? tracks/B-emd-gw/stage/G1/verifier3/figs/",
+        "?? tracks/B-emd-gw/stage/G1/verifier3/results/",
+        "?? tracks/B-emd-gw/stage/G1/verifier3/scripts/diag.py",
+        "?? tracks/B-emd-gw/stage/G1/verifier3/scripts/v2_tests.py",
+        "?? tracks/B-emd-gw/waves/inputs/card_r1.list",
+        "?? tracks/B-emd-gw/waves/inputs/flat_120.athinput",
+        "?? tracks/B-emd-gw/waves/scripts/predict_r1.py",
+        "?? tracks/B-emd-gw/waves/scripts/run_deck.sh",
+        "?? tracks/B-emd-gw/waves/wlib/z4c_symbol.py"
+      ]
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/note/scripts/run_all.py",
+      "role": "argv",
+      "sha256": "de27a5abebf11fd72e31241ff56c0beeb4adf47d21bafc6ead9ec8bc2b1dc368",
+      "bytes": 2066,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261120-222732-13e3e41",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:27:32Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.0218,
+    "gpu_hours_reserved": 0.9833,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 0,
+    "runs": 207,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
