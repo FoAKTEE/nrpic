@@ -6,6 +6,10 @@ history files, prints the measured numbers next to the predicted bands and write
 binary_evolution_check.json and fig_binary_evolution*.{pdf,png} into --out.
 
     binary_evolution_check.py --dir SCRATCH_RELATIVE_RUN_DIR [--out DIR] [--tmin 40]
+                              [--tmax T] [--tag TAG]
+
+--tmax cuts the snapshots and histories at T (to compare a longer run with a shorter
+one over the same interval); --tag is appended to the names of the files written.
 """
 import argparse
 import glob
@@ -80,6 +84,8 @@ def main():
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"))
     ap.add_argument("--tmin", type=float, default=40.0,
                     help="start of the fits (after the gauge transient)")
+    ap.add_argument("--tmax", type=float, default=None)
+    ap.add_argument("--tag", default="")
     a = ap.parse_args()
     top = os.path.join(SCRATCH, a.dir)
     os.makedirs(a.out, exist_ok=True)
@@ -87,6 +93,8 @@ def main():
     ts, cs, rads, pus, axr, nps = [], [], [], [], [], []
     for p in snaps:
         t, d, sp = read_snapshot(p)
+        if a.tmax is not None and t > a.tmax + 1e-9:
+            break
         row_c, row_r, row_p, row_a, row_n = [], [], [], [], []
         for k in (0, 1):
             c, rad, pu, ar, n = cluster_state(d, sp == k)
@@ -113,8 +121,10 @@ def main():
     com = 0.5 * (c[:, 0] + c[:, 1])
 
     h = table(glob.glob(os.path.join(top, "*.nrpic.hst"))[0])
-    ht, alpha_min, sum_mu, np_h = h[:, 0], h[:, 15], h[:, 5:8], h[:, 2]
     z = table(glob.glob(os.path.join(top, "*.z4c.user.hst"))[0])
+    if a.tmax is not None:
+        h, z = h[h[:, 0] <= a.tmax + 1e-9], z[z[:, 0] <= a.tmax + 1e-9]
+    ht, alpha_min, sum_mu, np_h = h[:, 0], h[:, 15], h[:, 5:8], h[:, 2]
     zt, Hn, Mn = z[:, 0], np.sqrt(z[:, 3]), np.sqrt(z[:, 4])
 
     w = t >= a.tmin
@@ -132,6 +142,13 @@ def main():
         res["omega_fit_after_tmin"] = float(om)
         res["omega_fit_over_1pn"] = float(om / OMEGA_1PN)
         res["omega_fit_over_newton"] = float(om / OMEGA_N)
+    for tq in (50.0, 125.0):
+        if t[-1] >= tq - 1e-9:
+            res[f"D_{tq:g}"] = float(np.interp(tq, t, D))
+            res[f"phase_{tq:g}"] = float(np.interp(tq, t, phi))
+            res[f"phase_{tq:g}_1pn"] = OMEGA_1PN * tq
+    if t[-1] >= 50.0:
+        res["omega_0_50_over_1pn"] = float(np.interp(50.0, t, phi) / 50.0 / OMEGA_1PN)
     res["phase_end"] = float(phi[-1])
     res["phase_end_1pn"] = float(OMEGA_1PN * t[-1])
     res["phase_end_newton"] = float(OMEGA_N * t[-1])
@@ -195,7 +212,7 @@ def main():
     ax[1, 1].set_xlabel(r"$t/M$")
     ax[1, 1].set_ylabel(r"radii of 10, 50, 90 per cent$/$start")
     ax[1, 1].legend(loc="best", fontsize=8)
-    fs.save(fig, os.path.join(a.out, "fig_binary_evolution"))
+    fs.save(fig, os.path.join(a.out, "fig_binary_evolution" + a.tag))
 
     fig, ax = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.8))
     fig.subplots_adjust(left=0.08, right=0.99, bottom=0.17, top=0.95, wspace=0.38)
@@ -213,9 +230,9 @@ def main():
     ax[2].legend(loc="best", fontsize=8)
     for a_ in ax:
         a_.set_xlabel(r"$t/M$")
-    fs.save(fig, os.path.join(a.out, "fig_binary_evolution_history"))
+    fs.save(fig, os.path.join(a.out, "fig_binary_evolution_history" + a.tag))
 
-    with open(os.path.join(a.out, "binary_evolution_check.json"), "w") as f:
+    with open(os.path.join(a.out, "binary_evolution_check" + a.tag + ".json"), "w") as f:
         json.dump(res, f, indent=1)
     print(json.dumps(res, indent=1))
     return 0

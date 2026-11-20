@@ -755,3 +755,165 @@ at every common record the minimum lapse agrees to 2e-6, `sum m u_x` to 2e-6 M,
 Refuted by a difference above 1e-4 in the lapse or the sums: then the card executable
 does not integrate the same system as the processor one, and the processor tests say
 nothing about the card runs.
+
+### Outcomes of G, G2, TC, TE (analysis run `core-20261120-221445-24a62c5`, 22:15Z; figures `g/fig_card_vs_cpu.png`, `tc/fig_boost_evolution.png`, `tc/fig_boost_evolution_constraints.png`, `te/fig_binary_evolution.png`, `te/fig_binary_evolution_history.png` of that run, all looked at)
+
+**G (card against processor at t = 0): HELD in substance, the wording "every printed
+digit" not.** All five card runs (`v0`, `v0.1`, `v0.3`, `v0.3s`, `orbit`) have the same 32
+columns of `cl.nrpic.hst` and 11 of `cl.z4c.user.hst` as the processor records of
+`core-20261119-160021-b153852`. The constraint norms are equal in every printed digit
+(predicted: 1e-5). The particle sums and integrals differ in the last digits: largest
+relative difference 2e-12 to 1e-11 in the moving runs (in the small transverse sums,
+`sum_muz`, `int_Sy_filtered`; the large ones agree to 1e-15), and 7.5e-10 in `v0` in
+`int_Sx_filtered`, which is -6.7e-9 there (a sum that cancels). The card adds 10^4 terms
+in another order. The card executable builds the same initial data as the processor one.
+
+**G2 (card against processor over 10 M): HELD, by nine orders of magnitude more than
+predicted.** At all 81 common records of `v0` and `v0.3` (41 of `v0.3s`): minimum lapse
+within 1.7e-15, `sum m u_x` within 2.9e-15, `sum m W` within 1.1e-14, H-norm and M-norm
+equal in the printed digits (predicted 2e-6 and 1e-3). The round-off of the card deposit
+is not amplified within 10 M. So the processor tests TB, TD and R speak for the card
+executable, and the card runs of TC for what a processor would give.
+
+**TC (one cluster, 50 M, card; `core-20261119-145433-8c4083d`).** No particle lost in any
+run; the run at rest: |x_c| below 0.014 M (predicted 0.1).
+
+1. Centre: early part HELD, late part FAILED and REFUTED as written. Speed of the
+   rest-mass centre over 0 to 2 M: 0.575 v (`v0.1`), 0.581 v (`v0.3`) (predicted 0.5 to
+   0.7). Mean speed over 30 to 50 M: 0.684 v and 0.703 v (predicted 0.85 to 1.05);
+   x_c(50 M) = 3.24 M and 9.85 M, 0.644 and 0.655 of v x 50 M (predicted 0.70 to 0.95).
+   The refutation line "late speed below 0.8 v: the coordinates do not catch up within
+   50 M" is met. `v0.3s` (comoving initial shift): 0.690 v over 0 to 2 M, 0.639 v over 0
+   to 4 M (predicted 0.9 to 1.1), 0.701 v over 30 to 50 M, x_c(50 M) = 9.89 M (predicted
+   13.95 to 15.75): FAILED; after the first few M it is the run `v0.3` (figure: the two
+   curves coincide).
+2. Profile: bands HELD, the refutation line "monotonic growth of all five radii" is met.
+   Largest departure of a radius from its start value: 2.6 per cent at rest, 2.6 (`v0.1`),
+   4.9 (`v0.3`), 4.9 (`v0.3s`) (band 10); from the run at rest at the same time: 0.9 per
+   cent (`v0.1`), 4.1 (`v0.3`), 4.1 (`v0.3s`) (band 6). But the radii grow steadily in
+   every run, also at rest (figure): at 50 M the radii of 10, 25, 50, 75, 90 per cent are
+   1.015, 1.014, 1.014, 1.019, 1.018 of their start at rest and 1.048, 1.045, 1.044,
+   1.043, 1.040 at v = 0.3. The growth is along the motion: the rms extent (x, y, z) goes
+   from (3.451, 3.474, 3.460) to (3.522, 3.527, 3.510) at rest (+2.1, +1.5, +1.4 per
+   cent), to (3.551, 3.529, 3.511) at v = 0.1 (+2.9, +1.6, +1.5) and to (3.750, 3.551,
+   3.533) at v = 0.3 (+8.7, +2.2, +2.1). Across the motion the moving cluster grows by
+   0.05 per cent (v = 0.1) and 0.7 per cent (v = 0.3) more than the one at rest; along
+   it by 0.8 and 6.5 per cent more.
+3. Central lapse: HELD. `v0`: 0.8090 to 0.8130 (predicted 0.800 to 0.825). `v0.1`:
+   at most 0.0020 below `v0` (predicted within 0.004). `v0.3` and `v0.3s`: 0.0165 below
+   `v0` at 10 M, 0.0172 at 25 M, 0.0188 at 50 M (predicted: 0.010 to 0.035 below within
+   25 M, then changing by less than 0.012: 0.0016); minimum 0.7924 (not below 0.74). The
+   lapse falls within the first 10 M and then follows the run at rest (figure). The
+   boosted slicing of the exact solution would give 0.0216 below.
+4. Summed momentum: FAILED at v = 0.3. Change of `sum m u_x` over P at 2, 10, 25, 50 M:
+   -0.27, -2.5, -3.0, -3.8 per cent (`v0.1`; predicted below 8: held), -0.28, -3.3, -6.3,
+   -11.8 per cent (`v0.3`: missed). The relative histories of `v0.1` and `v0.3` differ by
+   up to 8.0 per cent of P (predicted within 2: missed; they agree to 0.8 per cent up to
+   10 M and part afterwards). In `v0`, |sum m u| stays below 5.9e-5 M (predicted 2e-3).
+   Supplement (comoving shift as the control): `v0.3s` drifts by -3.25 per cent in 10 M
+   against -3.31 per cent of `v0.3`: REFUTED as written ("at most half, and below 1 per
+   cent"). The control did not control: see the next entry.
+5. Constraints: HELD. H-norm and M-norm of the moving runs at most 1.04 (`v0.1`) and
+   1.16 to 1.17 (`v0.3`, `v0.3s`) times those of the run at rest after 5 M (band 1.5).
+
+**Why the comoving shift made no difference** [VERIFIED for the equation, JUDGEMENT for
+the reading of the numbers]. The shift is evolved as `d_t beta^i = shift_Gamma Gamma~^i -
+shift_eta beta^i + advection` (`athenak/src/z4c/z4c_calcrhs.cpp`, lines 721 to 723): the
+integrated form of the Gamma driver, with no auxiliary field that would hold an initial
+shift. The data are conformally flat, `Gamma~^i = 0`, so an initial shift decays as
+`exp(-eta t)`, eta = 2: gone within 1 to 2 M. My statement in the supplement to TC4 ("the
+Gamma driver starts from a shift that already holds d_t Gamma^i = 0") was wrong for this
+form. A reading after the fact, not a prediction: if the mass-weighted speed is 0.581 v
+without the shift and v W_v = 1.048 v with it, a shift that decays as exp(-2t) gives
+0.581 + 0.467 (1 - e^-4)/4 = 0.696 v over 0 to 2 M and 0.642 v over 0 to 4 M; measured
+0.690 and 0.639.
+
+**What the failed parts have in common** [JUDGEMENT; a test follows]. With zero shift the
+coordinates are carried by the normal observers, and the matter passes them at
+`alpha_0^2 psi_0^-4 w` (0.47 V at the centre, V far away): slower inside the cluster
+than outside. In a state that is stationary in the frame of the cluster every part must
+pass the same number of coordinate lines per unit time, so the lines have to crowd
+inside the cluster (or a shift has to build up) before the centre moves at v in
+coordinates. Crowding along x stretches the cluster in coordinates along x (seen: +6.5
+per cent at v = 0.3, +0.8 at v = 0.1, almost nothing across) and lowers the covariant
+component `u_x` of every particle in the same proportion (seen: the late drift of
+`sum m u_x`; at v = 0.1 the early drop of 2.5 per cent plus 1.3 per cent of stretch
+make the 3.8 per cent measured; at v = 0.3, 3.3 plus 6.5 against 11.8 measured). The
+Gamma driver with eta = 2 is strongly overdamped on the scale of this cluster: its
+equation is a damped wave equation, `d_t^2 beta + eta d_t beta = (3/4) lap beta + ...`,
+with frequency `(3/4)^(1/2) k = 0.09 to 0.15` for k = 1/R to pi/(2 rbar_s), so it relaxes
+at the rate `(3/4) k^2/eta`: 100 to 270 M. The mesh of the first paper's cluster run
+uses eta = 2 because that cluster is at rest; in Track F's units (clump mass 0.05 M_BH,
+radius 0.5 M_BH, eta = 2/M_BH) eta R is 1, here it is 18. The early drop of
+`sum m u_x` (2.5 to 3.3 per cent in 10 M, linear in v) has the time scale of the lapse
+transient (figure) and is, by the candidate of TC4, the change of slice. None of this is
+established: the same numbers would follow from a numerical drag on a cluster that
+moves through the mesh. Test TF below separates the two.
+
+**TE (two clusters, 250 M, card; `core-20261119-155219-32602d2`).** 0.37 card-hours. No
+particle lost (10000 + 10000).
+
+1. Phase: HELD by the number, not by the figure. Fitted angular velocity over 40 to
+   250 M: 0.007403 = 0.952 of the 1PN value (band 0.95 to 1.05; 0.860 of the Newtonian
+   one); phase at 250 M: 1.770 rad, 0.175 below the 1PN 1.944 (predicted 0 to 0.25
+   below). But the phase is not a straight line (figure): the slope is about 0.0054 over
+   the first 50 M (0.69 of 1PN, the ratio at which the single cluster of TC moves in
+   these coordinates) and about 0.0084 over 150 to 250 M. The mean lies in the band by
+   compensation; this is not a confirmation of the 1PN frequency.
+2. Separation: REFUTED as written. D falls from 29.99 to 26.62 (band 28.5 to 31.0;
+   refuted outside 27 to 32); slope of the fit over 40 to 250 M: -0.0156 (band -0.01 to
+   +0.005). The curve is smooth and flattens towards 250 M (figure). I cannot say from
+   coordinates alone whether the orbit is eccentric (an eccentricity of 0.09 from the
+   apocentre would give this D(t); the data were meant to have about 0.005) or whether
+   the coordinates of the slow shift (above) distort it; the per-cluster |sum m u|
+   below changes by the amount (5 to 8 per cent) that such an eccentricity needs.
+3. Profiles: HELD for the bands, the symmetry of the innermost radius not. Radii within
+   0.955 to 1.103 of their start (band 15 per cent); at 250 M the radii of 50 and 90 per
+   cent of the two clusters agree to 1.3 and 0.1 per cent, those of 10 per cent (10^3
+   particles) differ by 6.7 per cent (predicted 3). Smallest axis ratio of the second
+   moment 0.87 and 0.88 (0.99 and 0.98 at the start).
+4. Lapse: HELD. 0.7733 to 0.7848 (band 0.75 to 0.82).
+5. Momentum: HELD. |sum m u| of each cluster falls by 2.5 per cent in the first 10 M,
+   to -7.6 and -7.7 per cent near 150 M and is at -5.6 per cent at 250 M (band 10); the
+   total stays below 3.1e-4 per component (band 3e-3).
+6. Constraints: HELD. Both norms fall monotonically after 5 M and are flat from 100 M
+   (0.045 and 0.023 at the end).
+
+So what is shown: two moving equilibrium clusters orbit each other for a third of an
+orbit, keep their profiles and their particles, with falling constraint norms. What is
+not shown: that the orbit is the quasi-circular one of the data.
+
+### Check of the generator fix (FX) and an energy relation (EN): predictions (written 22:33Z, before the registered run)
+
+The prediction of the fix (commit baa6f99e) stands as written at 16:39Z on 2026-11-19;
+its check was never run. One of its numbers I have already seen fail, before any
+registered run: generating the 4x10^4 sample for test TF below (22:20Z, generator at the
+fixed commit) printed `M_ADM = 1.04945034` for v = 0.3, against 1.04865 with the old
+correction (PA, above). The added mass changed by 1.6 per cent of itself, not "by less
+than 1e-3": the layer at the surface was a spurious source of the monopole. This is
+recorded here as a failed prediction; the registered run repeats it.
+
+FX (unchanged from 16:39Z, to be measured now): J/rs^2 of the Python solution below 1e-6
+(was 2.45e-5); at 128 cells the code's layer falls from 4.4e-5-5.0e-5 to 2e-5-2.6e-5,
+the surface norm of `D_H(corr)` by 30 to 60 per cent, and `|D_H(corr)|/|D_H(curv)|` from
+0.097 to between 0.04 and 0.07 (v = 0.1 and 0.3). Refuted if J/rs^2 stays above 1e-6 or
+the ratio at 128 cells stays above 0.08. Run: TB at 32, 64, 128 cells, v = 0.1 and 0.3,
+cases at rest, `curv`, `corr`, quiet lattice 0.25, with the fixed generator;
+`tb_residual_diag.py`, `corr_surface_check.py`.
+
+EN (new; `energy_check.py`). The number above equals `1 + V^2/2` with V = W_v v = 0.31449
+to 3e-5 (`0.5 x 0.31449^2 = 0.049452`), and the old correction gave 0.98379 of `M V^2/2`.
+Reason to expect exactly `M V^2/2` [JUDGEMENT]: the data have momentum P = M V (PA2),
+they agree with the boosted static cluster at first order, and the mass of an
+equilibrium is stationary under changes of the configuration that only rearrange the
+particles (rest masses kept), so a second-order difference between these data and the
+exactly boosted cluster changes the energy at fourth order only: `E = (M^2 + P^2)^(1/2)
+= M + M V^2/2 + O(V^4)`. I saw the value for y_c = 0.819 before writing this, so for
+that model it is not a prediction. Predicted for models not yet computed, y_c = 0.6
+(more compact), 0.9 and 0.95 (less compact): added mass over `M V^2/2` equal to 1 within
+2e-4. Refuted if any of them is off by more than 1e-3: then the agreement at 0.819 is
+an accident, or the second-order equation lacks a term whose weight changes with the
+compactness.
+
+Also in this run, for the prediction of the binary of test TF: the TE run cut at 125 M
+(`binary_evolution_check.py --tmax 125`), no prediction (a reference number).

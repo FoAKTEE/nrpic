@@ -132,19 +132,24 @@ def main():
     col = {"v0": "k", "v0.3": fs.PAL["red"], "v0.3s": fs.PAL["orange"]}
     lab = {"v0": "at rest", "v0.3": r"$v = 0.3$", "v0.3s": r"$v = 0.3$, comoving shift"}
     fig, ax = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
-    fig.subplots_adjust(left=0.085, right=0.99, bottom=0.17, top=0.95, wspace=0.42)
+    fig.subplots_adjust(left=0.085, right=0.99, bottom=0.17, top=0.9, wspace=0.42)
     for name, (t, tz, d) in hist.items():
         ax[0].plot(t, np.abs(d["alpha_min"]) + 1e-17, color=col[name], label=lab[name])
         ax[1].plot(t, np.abs(d["sum_mux"]) + 1e-17, color=col[name], label=lab[name])
         ax[2].plot(tz, np.abs(d["H"]) + 1e-17, color=col[name], label=lab[name])
         ax[2].plot(tz, np.abs(d["M"]) + 1e-17, color=col[name], ls="--")
-    ax[0].set_ylabel(r"$|\alpha_{\min}$(card) $-$ $\alpha_{\min}$(processor)$|$")
+    ax[0].set_ylabel(r"$|\Delta\alpha_{\min}|$")
     ax[1].set_ylabel(r"$|\Delta \sum m u_x| / M$")
-    ax[2].set_ylabel(r"$|$card/processor $- 1|$: $H$ (solid), $M$ (dashed)")
+    ax[2].set_ylabel(r"$|\Delta$ norm$|/$norm")
+    ax[0].set_title("card minus processor", fontsize=9)
+    ax[2].set_title("$H$ (solid), $M$ (dashed)", fontsize=9)
     for a_ in ax:
         a_.set_yscale("log")
         a_.set_xlabel(r"$t/M$")
-    ax[0].legend(loc="lower right", fontsize=8)
+    ax[0].set_ylim(5e-18, 3e-14)
+    ax[1].set_ylim(5e-18, 3e-14)
+    ax[1].legend(loc="upper right", fontsize=8, ncol=2, columnspacing=0.8,
+                 handlelength=1.2)
     fs.save(fig, os.path.join(a.out, "fig_card_vs_cpu"))
 
     with open(os.path.join(a.out, "card_vs_cpu.json"), "w") as f:
