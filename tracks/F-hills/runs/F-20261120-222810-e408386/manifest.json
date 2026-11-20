@@ -1,0 +1,241 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "F-20261120-222810-e408386",
+  "track": "F-hills",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "g2mesh G2M-2 (G2 preparation): card memory and rate of P1's m/16 mesh at 16^3 with 3000 slots; memory per 32^3 slot and rate per cell at 32^3 against 16^3 on core's three-hole mesh with 7 levels; P1's m/8 mesh at 32^3 (predicted out of memory)",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/F-hills/F-20261120-222810-e408386/batch.list"
+  ],
+  "cwd": "scratch/F-hills/F-20261120-222810-e408386",
+  "git": {
+    "sha": "e4083864a4fd7fcd1375f7c6393bfc5aea34a692",
+    "branch": "track/F-hills",
+    "dirty": false,
+    "package": [
+      "tracks/F-hills/g2mesh"
+    ],
+    "outside_package": {
+      "count": 7,
+      "first": [
+        " M tracks/F-hills/note/scripts/common.py",
+        "?? tracks/F-hills/kerr/",
+        "?? tracks/F-hills/note/scripts/fig_constraints.py",
+        "?? tracks/F-hills/note/scripts/fig_single.py",
+        "?? tracks/F-hills/note/scripts/fig_smoke.py",
+        "?? tracks/F-hills/note/scripts/fig_tree.py",
+        "?? tracks/F-hills/verify_g0/scripts/closed_forms.py"
+      ]
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/F-hills"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena",
+    "exe_sha256": "f9f2dc1273a19e7f78f89bebfd88d9eef6487de5c94aebba77b6fd35dc1be3a1",
+    "cmake_flags": [
+      "-DPROBLEM=built_in_pgens",
+      "-DAthena_ENABLE_MPI=OFF",
+      "-DAthena_ENABLE_OPENMP=OFF",
+      "-DKokkos_ARCH_ICX=ON",
+      "-DKokkos_ENABLE_DEBUG=OFF",
+      "-DKokkos_ENABLE_DEBUG_BOUNDS_CHECK=OFF",
+      "-DCMAKE_CXX_COMPILER=/data/haiyangw/nrpic/.work/build_gpu_v03/nvcc_wrapper_pinned",
+      "-DCUDAToolkit_ROOT=/usr/local/cuda-12.6",
+      "-DKokkos_ENABLE_SERIAL=ON",
+      "-DKokkos_ENABLE_CUDA=ON",
+      "-DKokkos_ARCH_AMPERE80=ON",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG"
+    ],
+    "toolchain": "nvcc 12.6 (host g++ 11.4.0)"
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/F-hills/.venv"
+  },
+  "input": {
+    "file": "tracks/F-hills/nr_first/inputs/p1_q4.athinput",
+    "sha256": "45c73f71136e000b828710b6ec4941bf3767e607e3a8ecc32f410b51a7cb1e98",
+    "overrides": {
+      "mesh_refinement/num_levels": "11",
+      "mesh_refinement/max_nmb_per_rank": "3000",
+      "time/nlim": "64",
+      "output2/dt": "-1",
+      "output3/dt": "-1",
+      "output4/dt": "-1",
+      "output5/dt": "-1",
+      "output6/dt": "-1"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena",
+      "role": "exe",
+      "sha256": "f9f2dc1273a19e7f78f89bebfd88d9eef6487de5c94aebba77b6fd35dc1be3a1",
+      "bytes": 102258912,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/F-hills/g2mesh/inputs/batch_g2mesh.list",
+      "role": "list",
+      "sha256": "04adf16f79495d4380618a5aba35e6b593905eb387e35d92657ade9c91ac4888",
+      "bytes": 1781,
+      "tracked": true
+    },
+    {
+      "path": "tracks/F-hills/nr_first/inputs/p1_q4.athinput",
+      "role": "athinput:m16_b16_s3000",
+      "sha256": "45c73f71136e000b828710b6ec4941bf3767e607e3a8ecc32f410b51a7cb1e98",
+      "bytes": 3712,
+      "tracked": true
+    },
+    {
+      "path": "problems/puncture/by_triple.athinput",
+      "role": "athinput:bt7_b32_s460",
+      "sha256": "76506fd8f806c96da1322c2c1ba5b26caa628905c3b4e4b01291e9cc6ef99622",
+      "bytes": 3175,
+      "tracked": true
+    },
+    {
+      "path": "problems/puncture/by_triple.athinput",
+      "role": "athinput:bt7_b16_s1000",
+      "sha256": "76506fd8f806c96da1322c2c1ba5b26caa628905c3b4e4b01291e9cc6ef99622",
+      "bytes": 3175,
+      "tracked": true
+    },
+    {
+      "path": "tracks/F-hills/nr_first/inputs/p1_q4.athinput",
+      "role": "athinput:m8_b32_s1150",
+      "sha256": "45c73f71136e000b828710b6ec4941bf3767e607e3a8ecc32f410b51a7cb1e98",
+      "bytes": 3712,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "m16_b16_s3000",
+      "input": "tracks/F-hills/nr_first/inputs/p1_q4.athinput",
+      "args": [
+        "mesh_refinement/num_levels=11",
+        "mesh_refinement/max_nmb_per_rank=3000",
+        "time/nlim=64",
+        "output2/dt=-1",
+        "output3/dt=-1",
+        "output4/dt=-1",
+        "output5/dt=-1",
+        "output6/dt=-1",
+        "-t",
+        "00:10:00"
+      ]
+    },
+    {
+      "name": "bt7_b32_s460",
+      "input": "problems/puncture/by_triple.athinput",
+      "args": [
+        "mesh_refinement/num_levels=7",
+        "meshblock/nx1=32",
+        "meshblock/nx2=32",
+        "meshblock/nx3=32",
+        "mesh_refinement/max_nmb_per_rank=460",
+        "time/nlim=64",
+        "output2/dt=-1",
+        "output3/dt=-1",
+        "output4/dt=-1",
+        "output5/dt=-1",
+        "-t",
+        "00:10:00"
+      ]
+    },
+    {
+      "name": "bt7_b16_s1000",
+      "input": "problems/puncture/by_triple.athinput",
+      "args": [
+        "mesh_refinement/num_levels=7",
+        "mesh_refinement/max_nmb_per_rank=1000",
+        "time/nlim=64",
+        "output2/dt=-1",
+        "output3/dt=-1",
+        "output4/dt=-1",
+        "output5/dt=-1",
+        "-t",
+        "00:10:00"
+      ]
+    },
+    {
+      "name": "m8_b32_s1150",
+      "input": "tracks/F-hills/nr_first/inputs/p1_q4.athinput",
+      "args": [
+        "meshblock/nx1=32",
+        "meshblock/nx2=32",
+        "meshblock/nx3=32",
+        "mesh_refinement/max_nmb_per_rank=1150",
+        "time/nlim=64",
+        "output2/dt=-1",
+        "output3/dt=-1",
+        "output4/dt=-1",
+        "output5/dt=-1",
+        "output6/dt=-1",
+        "-t",
+        "00:10:00"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:40:00",
+    "segments_max": null,
+    "gpu_hours_requested": 1.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "F-20261120-222810-e408386",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/F-hills/F-20261120-222810-e408386",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-20T22:28:11Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 50.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 2,
+    "runs": 165,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
