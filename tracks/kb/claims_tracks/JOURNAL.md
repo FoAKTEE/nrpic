@@ -5,7 +5,7 @@ when the prediction failed. Labels: [VERIFIED] (checked against a file, line or 
 here), [BACKGROUND], [JUDGEMENT], [TO VERIFY]. No paper text is copied here: reasons are in
 my own words, with locators.
 
-## 2026-11-20 22:40 UTC: start
+## 2026-11-20 22:17 UTC: start
 
 State found: `tracks/kb/claims_tracks/` did not exist (no earlier session of this package);
 kb/main at 346cb17c, main already merged, tree clean. Read: CLAUDE.md, CHARTER (to "Gates of the
@@ -35,6 +35,15 @@ claims; to_verify 117 (A 15, B 4, C 5, D 18, F 52, core 23; located 63, partial 
 machine. (I looked at these counts once with an unregistered read-only query while planning;
 the registered run is the record.) Refuted by any other count, e.g. claims added by the
 claims_brief helper before my run (then I take its counts as the baseline and say so).
+
+## B0 outcome (runs kb-20261120-222203-73ebf61 and, after moving the legends, kb-20261120-222240-f9db7eb; counts.json identical)
+
+Held exactly [VERIFIED, scratch/kb/kb-20261120-222240-f9db7eb/counts.json]: 700 claims (max id
+700); labels fulltext 541, to_verify 117, judgement 41, background 1; statuses located 583,
+partial 34, checked 39, unlocated 43, unresolved 1; fulltext 39 checked + 502 machine-located;
+queue by track A 17, B 15, C 14, D 28, E 7, F 54, core 24 (159). No claims_brief additions yet.
+Figure `figures/fig_queue_baseline.png` read: bars agree with the table; the first drawing
+had the legend over the F bar, redrawn.
 
 ## Q prediction (before processing the queue): shares of outcomes
 
