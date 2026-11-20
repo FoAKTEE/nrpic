@@ -230,3 +230,52 @@ and extrapolated. Prediction (written after seeing the cumulative curves, so it 
 the eye read): FFI 0.2 and time domain within 15 percent of each other up to u_c = 8 at R = 40,
 50 and for A (order 1 and 2), all between 6e-5 and 1.0e-4; FFI 0.1 above them by more than 25
 percent at R = 40, 50 (its excess is inside the pulse).
+
+## 2026-11-20 J3c, outcome (run F-20261120-223121-c921d2d; `pulse_energy.json`)
+
+E from u = -15 to u = 8 m [VERIFIED, `pulse_energy.json`]: R = 40: FFI 0.1 8.99e-5, 0.2 6.64e-5,
+0.3 4.45e-5, time domain 2.00e-4; R = 50: 9.54e-5, 6.81e-5, 4.51e-5, 1.90e-4; extrapolated order
+1: 1.91e-4, 9.43e-5, 5.67e-5, 9.01e-5; order 2: 9.12e-5, 6.28e-5, 4.21e-5, 7.73e-5. To u = 10 m
+the values grow by 2-10 percent.
+- FFI 0.2 and time domain within 15 percent: FAILED at R = 40, 50 (factor 3.0, 2.8), met for A
+  of order 1 (4 percent), FAILED for order 2 (23 percent). So at finite radius the time-domain
+  method is wrong already inside the pulse (its quadratic, fitted to the offset after the
+  window, is far from the signal inside it); on the extrapolated waveform it agrees with FFI 0.2.
+- All between 6e-5 and 1.0e-4: FAILED for the finite-radius time domain (1.9e-4, 2.0e-4); the
+  others in range except FFI 0.3 (4.2e-5 to 5.7e-5) and extrapolated FFI 0.1 of order 1
+  (1.9e-4).
+- FFI 0.1 above FFI 0.2 by more than 25 percent at R = 40, 50: met (+35, +40 percent).
+
+## 2026-11-20 Junk of one member: what is established
+
+[VERIFIED numbers, runs F-20261120-222808-b65001c (J3), F-20261120-223018-a5c0838 (J3b),
+F-20261120-223121-c921d2d (J3c), all on S2g, F-20261119-143443-f11ebb9; E in units of the
+member's mass m, P/m = 0.25, cells m/8]
+- The junk is a single outgoing pulse (u from -10 to +10 m) that arrives at fixed retarded time
+  with the same r psi4 amplitude at 30, 40, 50 m (3.0e-3, 2.8e-3, 3.0e-3 in (2,0)); 94 percent
+  of its energy is in (2,0) and (2,+-2) in the ratio of a pattern axisymmetric about the boost
+  axis. It is followed by a slow near-zone signal of the moving hole that falls off with R.
+- Energy through the end of the pulse: 4.5e-5 (FFI 0.3) to 9.5e-5 (FFI 0.1) at R = 40, 50 m;
+  6.6e-5 and 6.8e-5 with the central FFI 0.2; extrapolated to infinity 4.2e-5 to 9.4e-5 for
+  FFI 0.2-0.3 and the time domain (orders 1 and 2), 9.1e-5 and 1.9e-4 for FFI 0.1.
+  Over the whole window (to u = 30) the same methods give 5.8e-5 to 1.15e-4 at R = 40, 50.
+- Linear momentum along +x (the boost): 1.2e-5 to 2.5e-5 m (FFI 0.2), so a recoil of the hole of
+  order 1e-5 c; P_y, P_z below 1e-3 of P_x.
+Reading [JUDGEMENT]: E_junk/m = 7e-5, with a range 4e-5 to 2e-4 set by the separation from the
+near-zone signal (the choice of omega_0 and of the window end), not by noise. This is 1.4 times
+core's scaling 1.3e-2 (P/m)^4 = 5.1e-5 (three_punctures JOURNAL line 295) and inside E3/E10's
+predicted 1e-5 to 5e-4. E10's own number (`single_analysis.py`: 3.7e-4, 2.8e-4, 2.4e-4 at 30,
+40, 50) contains the integrated near-zone offset and is an upper bound only.
+
+## 2026-11-20 J4a. Newtonian quadrupole reference for P1 (prediction)
+
+`scripts/newton_quad.py`: the three bodies of `nr_first/inputs/p1_q4.athinput` (bare masses
+1, 0.125, 0.125, velocities P/m) as Newtonian point masses (scipy DOP853, rtol 1e-11) to t = 280,
+and the quadrupole luminosity from the exact jerk [BACKGROUND formula]. It is the time profile of
+the physical emission (binary and passage) at the source; it says nothing about junk.
+Predictions: relative energy drift of the integration below 1e-8; L for t < 20 within 30 percent
+of the circular-binary formula (32/5) mu^2 a^4 Omega^6 (e_b = 0.033, `nr_first/results/
+baselines_p1.json`), which I estimate at 1.25e-7 for a_b = 5.11, m_b = 0.25 [arithmetic]; the
+pericentre of the binary's centre of mass at t = 104.35 (the Newton track of E6,
+`baselines_p1.json` "t_cm_pericentre") within 0.5; L above twice the binary's value from about
+t = 60-85 on (the passage's own quadrupole grows as the c.o.m. orbit closes in) [JUDGEMENT].
