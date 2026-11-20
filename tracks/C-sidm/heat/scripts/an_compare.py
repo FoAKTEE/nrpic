@@ -94,13 +94,19 @@ def seeds_of(T7, gname):
 
 
 def cmd_cardcpu(outdir, paths):
-    res = dict(inputs=paths, groups={})
+    res = dict(inputs=paths, groups={}, skipped=[])
     fs.use_style()
     for p in paths:
         T7 = json.load(open(resolve(p, "T7.json")))
         for gname in sorted(T7["groups"]):
             g, rows = seeds_of(T7, gname)
-            G = dict(theta=g["theta"], eps=g["eps"], rows=[])
+            # only groups that pool card and processor seeds (a T7 run over a card job
+            # also holds that job's other temperatures, card seeds alone: skipped)
+            if not any(sum(not s["card"] for s in ss) >= 2 and any(s["card"] for s in ss)
+                       for _, ss in rows):
+                res["skipped"].append(f"{os.path.basename(p.rstrip('/'))}:{gname}")
+                continue
+            G = dict(theta=g["theta"], eps=g["eps"], source=p, rows=[])
             for kl, ss in rows:
                 cpu = [s for s in ss if not s["card"]]
                 card = [s for s in ss if s["card"]]
