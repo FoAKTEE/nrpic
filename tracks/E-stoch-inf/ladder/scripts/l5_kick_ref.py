@@ -73,18 +73,14 @@ def field(nmesh, n, coef):
     return out
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--nmesh", type=int, default=64)
-    ap.add_argument("--n2", type=int, default=5)
-    ap.add_argument("--out")
-    a = ap.parse_args()
-    n = shell_modes(a.n2)
-    h = 2 * np.pi / a.nmesh
+def compute(nmesh, n2):
+    """The reference as a dict (see the module text)."""
+    n = shell_modes(n2)
+    h = 2 * np.pi / nmesh
     th = n * h
     q = q_symbol(th) / h                               # (modes, 3)
     alpha = mode_alpha(SEED, 0, 0, n)
-    res = dict(nmesh=a.nmesh, n2=a.n2, modes=int(n.shape[0]), vectors=n.tolist())
+    res = dict(nmesh=nmesh, n2=n2, modes=int(n.shape[0]), vectors=n.tolist())
     for name, p in (("stencil", q), ("continuum", n.astype(float))):
         pp = (p * p).sum(axis=1)
         qp = (q * p).sum(axis=1)
@@ -93,15 +89,25 @@ def main():
         dk = 1j * (2.0 / 3.0) * q                               # -(2/3) i q_i (-1)
         resid = da + dk                                         # M_i per unit I_n
         per_mode = np.linalg.norm(resid, axis=1) / np.linalg.norm(q, axis=1)
-        m_f = field(a.nmesh, n, resid * alpha[:, None])
-        da_f = field(a.nmesh, n, da * alpha[:, None])
-        dk_f = field(a.nmesh, n, dk * alpha[:, None])
+        m_f = field(nmesh, n, resid * alpha[:, None])
+        da_f = field(nmesh, n, da * alpha[:, None])
+        dk_f = field(nmesh, n, dk * alpha[:, None])
         mag = np.sqrt(((np.abs(da_f) + np.abs(dk_f))**2).sum(axis=-1))
         ratio = float(np.sqrt(np.mean((m_f**2).sum(axis=-1))) / mag.mean())
         res[name] = dict(per_mode_rel_residual_max=float(per_mode.max()),
                          rms_M_over_mean_magnitude=ratio)
     mism = np.abs(q * q * h * h - k2_symbol(th)) / np.maximum(k2_symbol(th), 1e-300)
     res["second_vs_first_squared_rel_mismatch_max"] = float(mism[n != 0].max())
+    return res
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--nmesh", type=int, default=64)
+    ap.add_argument("--n2", type=int, default=5)
+    ap.add_argument("--out")
+    a = ap.parse_args()
+    res = compute(a.nmesh, a.n2)
     print(json.dumps(res, indent=1))
     if a.out:
         with open(a.out, "w") as fp:

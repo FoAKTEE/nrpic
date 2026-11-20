@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """Temporal convergence A6 of the SR ladder (package tracks/E-stoch-inf/ladder, JOURNAL
 entry 8): runs T25, T12, T06 (Courant factor theta = 0.25, 0.125, 0.0625) at N = 32,
-nmax2 = 64, s = +-1, dumping at the same times (inputs/a6proc.list).
+nmax2 = 64, s = +-1, dumping at the same times (inputs/a6proc.list); from wave 3 also
+N = 64, nmax2 = 256 (inputs/card_bc.list, JOURNAL entry 13).
 
-    a6_analysis.py --run DIR --out DIR
+    a6_analysis.py --run DIR --out DIR [--nmesh 32 --nmax2 64 --modefile F]
+
+Top shells: |n|^2 >= (49/64) nmax2; low shells: |n|^2 <= nmax2/4 (49 and 16 at nmax2 = 64,
+as in wave 2b).
 
 DIR holds T25p, T12p, T06p, T25m, T12m, T06m.  Quantities at every common dump:
 - per-mode R^NR (ladder_lib.curvature) of the s = +1 runs; differences between theta
@@ -51,9 +55,12 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--nmesh", type=int, default=NMESH)
+    ap.add_argument("--nmax2", type=int, default=NMAX2)
+    ap.add_argument("--modefile", default=MODEFILE)
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
-    modes = LL.Modes(NMESH, NMAX2)
+    modes = LL.Modes(a.nmesh, a.nmax2)
     P = {name: load(os.path.join(a.run, name + "p"), modes) for name, _ in THETAS}
     Mrun = {name: load(os.path.join(a.run, name + "m"), modes, metric=False)
             for name, _ in THETAS}
@@ -67,7 +74,7 @@ def main():
     con = {name: LL.read_con(os.path.join(a.run, name + "p")) for name, _ in THETAS}
     conm = {name: LL.read_con(os.path.join(a.run, name + "m")) for name, _ in THETAS}
 
-    ref = LL.reference_for(modes, MODEFILE, times[-1] + 0.05, t_eval=list(times))
+    ref = LL.reference_for(modes, a.modefile, times[-1] + 0.05, t_eval=list(times))
     alpha = modes.alpha()
     kshell = np.sqrt(modes.shell_n2.astype(float))
     lin, wmode = [], []
@@ -78,10 +85,12 @@ def main():
         wmode.append(w[modes.shell_of])
     lin, wmode = np.array(lin), np.array(wmode)
     efolds = np.array([float(ref.background(t)["lna"]) for t in times])
-    top = modes.n2 >= 49
-    low = modes.n2 <= 16
+    top = modes.n2 >= (49.0 / 64.0) * a.nmax2
+    low = modes.n2 <= a.nmax2 / 4.0
 
-    res = dict(run=a.run, times=times.tolist(), efolds=efolds.tolist(),
+    res = dict(run=a.run, nmesh=a.nmesh, nmax2=a.nmax2, modefile=a.modefile,
+               top_n2_min=float((49.0 / 64.0) * a.nmax2), low_n2_max=float(a.nmax2 / 4.0),
+               times=times.tolist(), efolds=efolds.tolist(),
                thetas=[th for _, th in THETAS], D={}, diff={}, parts={})
     # D_n against the linear reference, per theta
     for name, th in THETAS:
@@ -241,8 +250,9 @@ def figure(res, modes, outdir):
         a2.loglog(k * (1 + 0.02 * (THETAS.index((name, th)) - 1)), d, ".", color=c, ms=2,
                   label=rf"$\theta={th}$")
     a2.axhline(0.02, **fs.GUIDE)
-    a2.set_xticks([1, 2, 4, 8])
-    a2.set_xticklabels(["1", "2", "4", "8"])
+    ticks = [t for t in (1, 2, 4, 8, 16, 32) if t * t <= modes.n2.max()]
+    a2.set_xticks(ticks)
+    a2.set_xticklabels([str(t) for t in ticks])
     a2.set_xlabel(r"$|n|$")
     a2.set_ylabel(r"$D_n$ at the last dump")
     a2.legend(fontsize=7, loc="lower right")
