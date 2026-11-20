@@ -1,0 +1,218 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261120-220538-eafed07",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "T10d of cosmo-amr: card debugging of the crash at start of T10 (run core-20261119-150507-8224d72): T10's deck with nlim=4 and five variants of the MeshBlock limit, block size and finder; published card executable",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/core/core-20261120-220538-eafed07/batch.list"
+  ],
+  "cwd": "scratch/core/core-20261120-220538-eafed07",
+  "git": {
+    "sha": "eafed07e72d7d7c8cda7b4881f24eee326418c41",
+    "branch": "core/cosmo-amr",
+    "dirty": false,
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/core-cosmo-amr"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cosmo",
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_gpu",
+    "exe_sha256": "500187966c78df67bef40c049809b2bf848b92d3b417e182b56b6be1d8c7c093",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-cosmo-amr/.venv"
+  },
+  "input": {
+    "file": "problems/cosmo_amr/peak_amr.athinput",
+    "sha256": "888f3cff78c547ffbaa4da6ae01bde97ba5d9be2997a429eeb6980b7bf9a6e1c",
+    "overrides": {
+      "time/tlim": "16.0",
+      "time/nlim": "4",
+      "problem/id_file": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/fields.bin",
+      "particles/particle_file": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/particles.nrp",
+      "fastflow/start_time_0": "6.0",
+      "fastflow/find_every": "64",
+      "mesh_refinement/max_nmb_per_rank": "2000"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_gpu",
+      "role": "exe",
+      "sha256": "500187966c78df67bef40c049809b2bf848b92d3b417e182b56b6be1d8c7c093",
+      "bytes": 103180672,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/analysis/cosmo_amr/t10d_card.list",
+      "role": "list",
+      "sha256": "a9cee3938cbb56e0f650b731c35cd2a17b7ce8ce1d2ceb29499a5f2a5355c436",
+      "bytes": 2105,
+      "tracked": true
+    },
+    {
+      "path": "problems/cosmo_amr/peak_amr.athinput",
+      "role": "athinput:v1",
+      "sha256": "888f3cff78c547ffbaa4da6ae01bde97ba5d9be2997a429eeb6980b7bf9a6e1c",
+      "bytes": 5843,
+      "tracked": true
+    },
+    {
+      "path": "problems/cosmo_amr/peak_amr.athinput",
+      "role": "athinput:v2",
+      "sha256": "888f3cff78c547ffbaa4da6ae01bde97ba5d9be2997a429eeb6980b7bf9a6e1c",
+      "bytes": 5843,
+      "tracked": true
+    },
+    {
+      "path": "problems/cosmo_amr/peak_amr.athinput",
+      "role": "athinput:v3",
+      "sha256": "888f3cff78c547ffbaa4da6ae01bde97ba5d9be2997a429eeb6980b7bf9a6e1c",
+      "bytes": 5843,
+      "tracked": true
+    },
+    {
+      "path": "problems/cosmo_amr/peak_amr.athinput",
+      "role": "athinput:v4",
+      "sha256": "888f3cff78c547ffbaa4da6ae01bde97ba5d9be2997a429eeb6980b7bf9a6e1c",
+      "bytes": 5843,
+      "tracked": true
+    },
+    {
+      "path": "problems/cosmo_amr/peak_amr.athinput",
+      "role": "athinput:v5",
+      "sha256": "888f3cff78c547ffbaa4da6ae01bde97ba5d9be2997a429eeb6980b7bf9a6e1c",
+      "bytes": 5843,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "v1",
+      "input": "problems/cosmo_amr/peak_amr.athinput",
+      "args": [
+        "time/tlim=16.0",
+        "time/nlim=4",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/fields.bin",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/particles.nrp",
+        "fastflow/start_time_0=6.0",
+        "fastflow/find_every=64",
+        "mesh_refinement/max_nmb_per_rank=2000"
+      ]
+    },
+    {
+      "name": "v2",
+      "input": "problems/cosmo_amr/peak_amr.athinput",
+      "args": [
+        "time/tlim=16.0",
+        "time/nlim=4",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/fields.bin",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/particles.nrp",
+        "fastflow/start_time_0=6.0",
+        "fastflow/find_every=64",
+        "mesh_refinement/max_nmb_per_rank=1200"
+      ]
+    },
+    {
+      "name": "v3",
+      "input": "problems/cosmo_amr/peak_amr.athinput",
+      "args": [
+        "time/tlim=16.0",
+        "time/nlim=4",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/fields.bin",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/particles.nrp",
+        "fastflow/start_time_0=6.0",
+        "fastflow/find_every=64",
+        "mesh_refinement/max_nmb_per_rank=300"
+      ]
+    },
+    {
+      "name": "v4",
+      "input": "problems/cosmo_amr/peak_amr.athinput",
+      "args": [
+        "time/tlim=16.0",
+        "time/nlim=4",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/fields.bin",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/particles.nrp",
+        "fastflow/start_time_0=6.0",
+        "fastflow/find_every=64",
+        "mesh_refinement/max_nmb_per_rank=2000",
+        "meshblock/nx1=8",
+        "meshblock/nx2=8",
+        "meshblock/nx3=8"
+      ]
+    },
+    {
+      "name": "v5",
+      "input": "problems/cosmo_amr/peak_amr.athinput",
+      "args": [
+        "time/tlim=16.0",
+        "time/nlim=4",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/fields.bin",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/particles.nrp",
+        "fastflow/num_horizons=0",
+        "mesh_refinement/max_nmb_per_rank=300"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:06:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.1,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "core-20261120-220538-eafed07",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/core/core-20261120-220538-eafed07",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-20T22:05:44Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 3.6188,
+    "gpu_hours_reserved": 3.13,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 2,
+    "runs": 1237,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
