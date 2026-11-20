@@ -148,11 +148,11 @@ Prediction D1 [JUDGEMENT throughout; bases given]:
     0.218 s per step in core's cluster), so 1030-1110 s per run and about 0.63 card-hours
     of allocation per job with the smoke run.
 
-## 2026-11-20 22:37 UTC Entry 3: D1 job 1 submitted; D3 initial data (outcome); test of the analysis
+## 2026-11-20 22:29 UTC Entry 3: D1 job 1 submitted; D3 initial data (outcome); test of the analysis
 
 D1 job 1 (cc2_kn10_part_s1, cc2_kn10_part_s2 after a smoke run) is run
 C-20261120-221846-797bdbe, Slurm job 4737, submitted 22:18 UTC with --gpu-hours 0.65; pending
-at 22:30 UTC. The package `drift` submitted the owner's second card job (4741) at 22:25 UTC,
+at 22:29 UTC. The package `drift` submitted the owner's second card job (4741) at 22:25 UTC,
 so this package submits nothing more until 4737 has run (queue rule).
 
 D3 initial data, run C-20261120-222427-6b27eea (`scripts/make_d3_ic.py`, 2 cores, 3.5 min).
