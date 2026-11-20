@@ -399,6 +399,11 @@ HAND = {
                                           "outputs": {"files": 3}, "gate": "G1"},
     "A-emd-pbh-20261115-112414-6bb2b7d": {"run_id": "A-emd-pbh-20261115-112414-6bb2b7d", "status": "finished",
                                           "gate": "G1", "card_hours": 0.0},
+    # D, wave 2: a helper's registration script copied the nrpic-run schema (hand_marker: registered_by)
+    "A-20261115-120001-abcdef3": {"schema": "nrpic-run-manifest/1", "run_id": "A-20261115-120001-abcdef3",
+                                  "track": "A-emd-pbh", "gate": "G1", "status": "submitted", "launcher": "batch",
+                                  "registered_by": "hand: helper script", "resources": {"gpu_hours_requested": 5.0},
+                                  "outputs": {"dir": "scratch/A-emd-pbh/A-20261115-120001-abcdef3"}},
 }
 
 
@@ -435,6 +440,13 @@ def hand_manifests(c, fx, A, used_before):
     c.ok(r.returncode == 1 and "not registered by nrpic-run" in r.stderr, "finish refuses a hand-written run", r.stderr)
     r = run_cmd(A, ["stop", "A-emd-pbh-20261115-042626-f3da881"])
     c.ok(r.returncode == 1 and "not registered by nrpic-run" in r.stderr, "stop refuses a hand-written run", r.stderr)
+    r = run_cmd(A, ["finish", "A-20261115-120001-abcdef3"])
+    r2 = run_cmd(A, ["stop", "A-20261115-120001-abcdef3"])
+    st = run_cmd(A, ["status"]).stdout
+    c.ok(r.returncode == 1 and "registered_by" in r.stderr and r2.returncode == 1 and "not registered by nrpic-run"
+         in r2.stderr and "submitted?h" in st and "submitted*h" not in st,
+         "a hand registration that copied the schema: finish and stop refuse it, status marks it h and never live",
+         r.stderr + r2.stderr + st[-800:])
     od = os.path.join(fx["repo"], "scratch", "A-emd-pbh", "hand1")
     os.makedirs(od, exist_ok=True)
     r = run_cmd(A, ["verify", "A-emd-pbh-20261115-112946-b7b431d"])

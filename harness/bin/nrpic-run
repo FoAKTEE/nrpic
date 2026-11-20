@@ -173,7 +173,7 @@ class Manifests:
         self.views = {rid: x[1] for rid, x in best.items()}
 
     def hand_written(self):
-        return [v for v in self.views.values() if not v["schema"]]
+        return [v for v in self.views.values() if v["hand"]]
 
     def summary(self):
         """One line for stderr when something was read with defaults or skipped, else ''."""
@@ -231,7 +231,7 @@ def chain_job_ids(outdir):
 def is_live(wt, v, env):
     """Is an unfinished run still holding resources? (local: process alive; cards: job queued).
     Only runs registered by nrpic-run can be checked; a hand-written manifest is never live."""
-    if v["final"] or not v["schema"] or not v["outdir"]:
+    if v["final"] or v["hand"] or not v["outdir"]:
         return False
     od = v["outdir"]
     try:
@@ -259,7 +259,7 @@ def gpu_hours_counted(v, live):
     resources.gpu_hours, or the card_hours of a hand-written manifest); the request of an active one."""
     if v["final"]:
         return v["gpu_hours"] or 0.0
-    if v["schema"] and v["launcher"] in CARD_LAUNCHERS:
+    if not v["hand"] and v["launcher"] in CARD_LAUNCHERS:
         return v["gpu_hours_requested"] if (live or v["status"] in ACTIVE) else 0.0
     return v["gpu_hours"] or 0.0
 
@@ -949,9 +949,10 @@ def finish(wt, args):
     except ValueError as e:
         raise H.HarnessError(f"{os.path.relpath(mpath, wt.root)} is not JSON ({e}); repair it by hand")
     v = H.manifest_view(m, wt.home)
-    if not v["schema"] or not v["outdir"] or not isinstance(m.get("resources"), dict):
+    if v["hand"] or not v["outdir"] or not isinstance(m.get("resources"), dict):
         raise H.HarnessError(
-            f"{run_id} was not registered by nrpic-run (hand-written manifest: {'; '.join(v['issues'][:3])}). "
+            f"{run_id} was not registered by nrpic-run (hand-written manifest: "
+            f"{'; '.join(([H.hand_marker(m)] if v['schema'] and H.hand_marker(m) else []) + v['issues'][:3])}). "
             "finish closes only the runs it started; close this one by hand (status, exit_code, ended, "
             "outputs) and commit it")
     if m.get("status") in FINAL and not force:
@@ -1107,7 +1108,7 @@ def status(wt, args):
         st = v["status"]
         if not v["final"]:
             st = st + ("*" if is_live(wt, v, env) else "?")
-        if not v["schema"]:
+        if v["hand"]:
             st = st + "h"
         gh = v["gpu_hours"] if v["gpu_hours"] is not None else v["gpu_hours_requested"]
         print(f"{rid:38s} {v['gate'] or '-':4s} {str(v['kind'] or '-')[:10]:10s} {(v['launcher'] or '-')[:6]:6s} "
@@ -1147,7 +1148,7 @@ def stop(wt, args):
         raise H.HarnessError("usage: nrpic-run stop <run_id>")
     m = find_manifest(wt, args[0])
     v = H.manifest_view(m, wt.home)
-    if not v["schema"] or not v["outdir"]:
+    if v["hand"] or not v["outdir"]:
         raise H.HarnessError(f"{args[0]} was not registered by nrpic-run; stop it by hand (scancel <job id>, "
                              "kill <pid>)")
     outdir = v["outdir"]
@@ -1181,7 +1182,7 @@ def lint(wt, args):
         if o == "orch" and not ms.views and not ms.bad:
             continue                      # the orchestrator has registered no run yet
         views = sorted(ms.views.values(), key=lambda v: v["run_id"])
-        hand = [v for v in views if not v["schema"]]
+        hand = [v for v in views if v["hand"]]
         words = {}
         for v in views:
             if v["status_raw"] != v["status"]:
@@ -1201,7 +1202,7 @@ def lint(wt, args):
         for v in views:
             mism = [i for i in v["issues"] if "differs from its directory" in i]
             hard += bool(mism)
-            show = mism or (verbose and v["issues"]) or (v["schema"] and v["issues"])
+            show = mism or (verbose and v["issues"]) or (not v["hand"] and v["issues"])
             if show:
                 print(f"  {v['run_id']}: " + "; ".join(v["issues"]) + f"   [{v['where']}]")
     return 1 if hard else 0
