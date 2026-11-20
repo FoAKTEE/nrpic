@@ -1015,3 +1015,98 @@ H at 3.7e-13 and M_i at 1e-13, on the line of the bound). HOLDS in every part:
 The card executable `athena_gpu_5cc2821` differs from the processor executable by
 rounding on this case, with the option `con_signed`. The failed statements of C2 in
 entry 16 were statements about my measure.
+
+## 2026-11-20, entry 18: outcomes of test U on the cards (inflection case at 64^3 and 128^3); corrections to entry 17
+
+**Card run core-20261119-150317-a1e8ee7** (Slurm 4651, `athena_gpu_cea3a49`, the source
+before `con_signed`; 16 runs to t = 10.5, 10.06 e-folds; 0.31 card-hours). Analyses, one
+per group: L64 core-20261120-221013-e198ebf, K64 -221056-2c86192, L128 -221200-82f631a,
+K128 -221222-eb99a13. Figures `fig_usr_background.png`, `fig_usr_constraints.png`,
+`fig_usr_rnr.png` of each, looked at (L64, K64, L128: constraints and R^NR; K128: all
+three; L64: background): eps1 of the box means on the reference through ten orders;
+<|H|/[H]> one line for all amplitudes until it reaches a floor of 1e-14 to 2e-14 after 5
+to 7 e-folds; <|M|/[M]> the same for the two amplitudes of a group while it rises, then
+the smaller amplitude ten (hundred) times higher late; the top shell of R^NR flat from 5
+e-folds on. Flaws of the figures: with one pair the third panel of `fig_usr_rnr.png` is
+empty; the groups K64 and K128 have no run with s = 0, so the panel of the box means is
+empty and "(even - H0)" in their constraint figure is the uniform residual itself.
+
+- PC1 background, HOLDS. Relative error of <Pi> of the runs with s = 0 against the
+  reference at 3, 5, 8 e-folds and at the end: 2.56e-6, 1.72e-5, 4.01e-4, 4.13e-4 (32^3,
+  run -161122-a46833e); 1.54e-7, 1.01e-6, 2.46e-5, 2.53e-5 (64^3: 16.6, 17.0, 16.3, 16.3
+  times less); 9.47e-9, 6.13e-8, 1.52e-6, 1.56e-6 (128^3: 270, 281, 264, 265 times less
+  than 32^3). Track E's A1 (1e-4) holds throughout from 64^3 on. phi within 2.1e-8 and
+  1.3e-9, K within 5.4e-9 and 3.2e-10, e-folds within 4.2e-7 and 2.6e-8. The uniform
+  residual <|H|/[H]> has its maximum at 2.3 e-folds: 1.08e-7, 6.24e-9, 3.75e-10 (ratios
+  17.3, 16.6). Mode functions of the sources against SciPy, lowest shells late: 4.1e-4,
+  2.5e-5, 1.55e-6 (ratios 16.4, 16.2); shell |n| = 8: 5.6e-4, 3.6e-5, 2.25e-6; the top
+  shells at k dx = pi/2: 6.6e-4 (|n| = 16 at 64^3), 1.29e-3 (|n| = 32 at 128^3).
+  Not predicted: at s = 1 with 68532 modes the box mean of Pi leaves the homogeneous
+  background: 1.29e-5 against the lockstep background at the end (2.8e-8 at s = 0.01),
+  and 1.13e-5 instead of 1.56e-6 against the reference. With nmax2 = 64 the same
+  difference is 2.5e-7 (128^3) and with nmax2 = 256 2.5e-6 (64^3). It grows with the
+  number of modes and with the amplitude: the perturbations act back on the mean.
+- PC2 lattice error of the grown modes (part of R^NR odd in s against W R alpha of the
+  lockstep record, after 6 e-folds). Shell |n| = 8 at N = 32, 64, 128: 6.1e-3, 1.27e-4,
+  2.1e-6. The ratios, 48 and 60, HOLD (predicted 47 and 60 within a factor 2). The
+  sizes FAILED at 64 and 128 as they had at 32: predicted 3.8e-4 and 6e-6 within a
+  factor 2.5; measured 3.0 and 2.9 times less, as 6.1e-3 is 2.95 times less than the
+  1.8e-2 of the lattice k^2. So the late amplitude depends on k^2 with a third of the
+  sensitivity I assumed (the twin of entry 6 had the right number for 32^3). Top shells
+  at k dx = pi/2: 3.6e-3 (K64, |n| = 16) and 3.8e-3 (K128, |n| = 32): "as N = 32, 0.5 to
+  2.5e-2" FAILED as written (N = 32 has 6.1e-3); not refuted (bounds 3e-3 and 0.1).
+  Their shell |n| = 8: 1.3e-4 (K64) and 2.1e-6 to 2.4e-6 (K128, s = +-0.01), as L64 and
+  L128: HOLDS.
+- PC3 non-linearity with k_max/dk = 32 (K128). The rms of R^NR over the box reaches 0.495
+  at s = 1, the linear value (0.495; HOLDS, factor 3). "The single run deviates from the
+  linear reference by more than 0.1 for |n| <= 4 after 7 e-folds, its even part
+  comparable to the odd part": FAILED by a factor 40: 2.0e-3 to 2.9e-3 (1.6e-3 to 2.1e-3
+  for |n| <= 2), which is the even part; at s = 0.01 the even part is 2.0e-5 to 2.9e-5,
+  a hundred times less. The part of the pair s = +-1 odd in s leaves the reference by
+  1.3e-5 for |n| <= 2 late (third order; 1.6e-7 at s = +-0.01). The pair s = +-0.01
+  follows the linear reference within 2.4e-6 for |n| <= 8 (HOLDS, bound 2e-3; not
+  refuted): the slice and the sources are right when 56741 of the 68532 modes enter
+  during ultra slow roll (11791 in at 2.93 e-folds, all at 3.87). So with an rms
+  curvature perturbation of 0.5, carried by the short modes, the long modes of one
+  realisation follow linear theory to 0.3 percent. Entry 14 (d) found the same at 32^3;
+  my estimate of the non-linearity from Delta_R of the top shell was wrong both times.
+- PC4 constraints of K128 at s = 1. <|H|/[H]> at most 3.75e-10, at 2.30 e-folds (HOLDS:
+  1e-9 before 3 e-folds); it is the uniform residual (the same number at s = 0, L128);
+  from 4 e-folds on at most 5.4e-12 (HOLDS, 1e-10; 9.9e-13 at s = 0.01). <|M|/[M]> from 4
+  e-folds on: 1.5e-3 to 3.2e-2, largest at 6.36 e-folds, 1.6e-3 at the end (HOLDS, 1e-5
+  to 0.3; P1:541 "around 1e-2" late at 256^3); not refuted (H far below 1e-7). The run
+  with s = 0.01 has the same ratio until 6 e-folds (4.67e-3 at 4 and 3.1e-2, 3.2e-2 at
+  6): during ultra slow roll the ratio is first order over first order, the stencil
+  defect of entry 12 against a magnitude that falls with Pi_b. By cells per shortest
+  wavelength, at 4 e-folds: 1.6e-2 (32^3) and 1.3e-2 (K64) at 4 cells, 3.3e-4 at 8 (L64),
+  4.9e-5 at 16 (L128; 48 times between 4 and 8 cells). Late, the ratio is a floor of
+  |M| (1e-14 at 64^3, 1.8e-14 to 3.2e-14 at 128^3, the same for every amplitude) over
+  [M], which is proportional to the amplitude: 1.0e-2, 0.10 (L64, s = 1, 0.1), 1.9e-2,
+  0.14 (L128), 0.69 to 1.2 at s = 0. A late <|M|/[M]> of 1e-2 is therefore no measure of
+  an error of the solution.
+  The last sentence of PC4 FAILED: largest rms odd part of H over the dumps divided by
+  the rms of the reference R^NR at that dump: 4.1e-5 (32^3, t = 2.5), 1.6e-5 (K64, t =
+  3.0), 4.7e-7 (K128, t = 4.0); of |M|: 5.6e-5, 2.7e-5, 2.6e-6: K128 is 87 and 22 times
+  below 32^3, not within a factor 3. In K128 the maximum falls into ultra slow roll,
+  where R has grown tenfold (rms 1.8e-4 against 1.8e-5) while the metric perturbations
+  on which the defect acts have not: the normalisation fixed in entry 15 is not what
+  the first-order part scales with. In absolute units the maxima are 7.1e-10, 2.8e-10,
+  8.5e-11 (H) and 9.6e-10, 6.5e-10, 4.6e-10 (|M|), sampled every 0.5, 0.5 and 1.0 in t.
+- PC5 cost, HOLDS: K128 takes 129.4 s for 856 steps, 0.151 s per step and 1.387e7
+  zone-cycles per second with 68532 modes (predicted 0.14 to 0.17); L128 with 1054 modes
+  0.142 s and 1.478e7: the 67478 further modes cost 6.5 percent.
+
+What the card runs add to entry 14: every error of the background and of the mode
+functions falls with the fourth power of the step and the lattice error of R^NR with the
+sixth power of the cells per wavelength, as the 32^3 runs and the twin said; the slice
+and the sources hold with 65 times more modes and with entry during ultra slow roll; the
+second-order parts stay small at rms R^NR = 0.5. Not done: 256^3 (Track E's production
+set-up), more than one seed, a comparison of the spectra with P1's figures.
+
+**Corrections to entry 17.** (i) S, PSb: <|H'|/[H]> of the record against the pairwise
+mean is 8.8e-13 to 2.0e-11 at the five dumps named (I wrote 2.3e-11, which mixes two
+rows). (ii) S, PSc: <|H'|/[H]> is 1700 to 12500 times below <|H|/[H]> at the six dumps
+from 0.5 to 3 e-folds (I wrote 2000 to 10000). (iii) G5, PG5c: "no trend of cap against
+geoc" rests on the record at the dumps nearest in e-folds (2.95e-12 against 3.19e-12
+near 1.5, 2.78e-11 against 2.82e-11 at 2.0, 4.01e-11 against 4.14e-11 near 2.5, 1.25e-11
+against 1.18e-11 at 3.14): within 8 percent, without a sign.
