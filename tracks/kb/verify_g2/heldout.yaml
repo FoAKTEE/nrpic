@@ -1,0 +1,229 @@
+# held-out set of the KB-G2 verifier; nobody tunes retrieval on it
+#
+# Written by the verifier of KB-G2 (tracks/kb/verify_g2) before any search was run and
+# before kb/golden/questions.yaml was opened. Papers: seeded stratified draw, run
+# kb-20261120-222100-50182fe (scripts/draw_heldout.py --seed 20261120; one slot per group
+# G01-G21 plus three slots drawn by group size; priority quotas 4 x p3, 7 x p2, 13 x p1).
+# Questions are in the verifier's own words; the answer location is file:line of the
+# stored source, relative to kb-data/raw/arxiv/<id_>/<version>/src/. The gist is a few
+# words of the verifier, not paper text. Do not use this file to tune retrieval.
+snapshot: kb-20261119-a782f1e
+seed: 20261120
+draw_run: kb-20261120-222100-50182fe
+questions:
+- id: H01
+  paper_id: '1212.2901'
+  grp: G01
+  priority: 1
+  version: v1
+  question: In a study that compares BSSN with a conformal Z4 variant for binary black hole and neutron star simulations in two codes, which values were chosen for the two constraint-damping coefficients, and where did that choice come from?
+  kind: number
+  gist: kappa1 small positive, kappa2 zero; from a 1D analysis
+  locator: {file: paper20121212.tex, lines: [575, 578]}
+- id: H02
+  paper_id: '2306.06226'
+  grp: G02
+  priority: 1
+  version: v2
+  question: In a Lagrangian particle hydrodynamics code coupled to a mesh spacetime solver, what criterion triggers adding an extra mesh refinement level while a merger remnant collapses to a black hole, and which threshold works?
+  kind: method
+  gist: ratio of mesh to fluid time step above a constant
+  locator: {file: SPHINCS_BSSN_v1.0_revised.tex, lines: [822, 837]}
+- id: H03
+  paper_id: '1602.02611'
+  grp: G03
+  priority: 1
+  version: v1
+  question: Which earlier work established the stability of flat spacetime for zero-mass collisionless matter only under spherical symmetry, and what was its central idea about where the matter ends up?
+  kind: provenance
+  gist: earlier spherically symmetric result; matter leaves the centre
+  locator: {file: masslessvlasov.tex, lines: [104, 104]}
+- id: H04
+  paper_id: '0807.0734'
+  grp: G04
+  priority: 1
+  version: v2
+  question: When a symplectic leapfrog-type integrator is compared with iterated Crank-Nicolson on a perturbed flat-space test in 1+1 dimensions, what happens to the energy carried by each Fourier mode under the two schemes?
+  kind: method
+  gist: kept by the symplectic scheme, decays exponentially with ICN
+  locator: {file: grsymp.tex, lines: [1131, 1134]}
+- id: H05
+  paper_id: '1111.3944'
+  grp: G05
+  priority: 2
+  version: v3
+  question: How can a sign change of the volume of the tetrahedral cells spanned by N-body particles be used to find caustics, and what fraction of a particle mass does each cell carry?
+  kind: definition
+  gist: inverted cell volume marks a caustic; one sixth of a particle
+  locator: {file: method.tex, lines: [399, 417]}
+- id: H06
+  paper_id: 'gr-qc/0606037'
+  grp: G06
+  priority: 2
+  version: v2
+  question: For analytic perturbative initial data of two black holes, how are quasicircular orbits selected, that is, what is extremized and what is held fixed?
+  kind: method
+  gist: binding energy minimised at fixed angular momentum and masses
+  locator: {file: paper.tex, lines: [723, 763]}
+- id: H07
+  paper_id: '2606.05479'
+  grp: G07
+  priority: 3
+  version: v1
+  question: The relativistic structure-formation runs used to ask whether inhomogeneities can fake an evolving dark-energy equation of state contain no cosmological constant. How were their ray-traced distances made usable for a dark-energy fit?
+  kind: method
+  gist: distances rescaled by the ratio of Lambda-CDM to matter-only distance
+  locator: {file: main.tex, lines: [89, 92]}
+- id: H08
+  paper_id: '2402.09659'
+  grp: G07
+  priority: 1
+  version: v1
+  question: In relativistic simulations used to study how the sky coverage of a supernova sample biases the inferred Hubble constant, which dimensionless Hubble parameter was used to build the initial spectrum, and how closely does the slice-averaged expansion today match the background?
+  kind: number
+  gist: low h of a matter-only background; agreement at the 1e-5 level
+  locator: {file: main.tex, lines: [98, 103]}
+- id: H09
+  paper_id: '1505.04756'
+  grp: G08
+  priority: 2
+  version: v2
+  question: According to the work that defines a gauge in which Newtonian particle simulations need no relativistic correction to their Zel'dovich initial displacements, why should such simulations not be started at very high redshift?
+  kind: method
+  gist: residual radiation still matters early on
+  locator: {file: finalpaper.tex, lines: [304, 309]}
+- id: H10
+  paper_id: '1011.4920'
+  grp: G09
+  priority: 3
+  version: v2
+  question: In the averaging framework arguing that small-scale structure cannot mimic dark energy, which sizes are quoted for the density homogeneity scale and the background curvature scale of today's universe, and what bound on metric perturbations?
+  kind: number
+  gist: about 100 Mpc versus a few thousand Mpc; perturbations below 1e-5
+  locator: {file: inhomogeneities-paper.tex, lines: [2728, 2740]}
+- id: H11
+  paper_id: '2302.02028'
+  grp: G09
+  priority: 1
+  version: v1
+  question: How can the bias of galaxy distances estimated from distance moduli with Gaussian errors be removed exactly in a bulk-flow analysis of the latest peculiar-velocity compilation?
+  kind: method
+  gist: multiply by an exponential factor in the modulus error
+  locator: {file: CF4-submit.tex, lines: [206, 226]}
+- id: H12
+  paper_id: '1306.4055'
+  grp: G10
+  priority: 1
+  version: v2
+  question: When evolving a periodic, expanding lattice of black holes, how was the runaway growth of the lapse in regions of negative mean curvature finally avoided?
+  kind: method
+  gist: divide the lapse by its maximum each step
+  locator: {file: r3.tex, lines: [842, 872]}
+- id: H13
+  paper_id: '2201.03752'
+  grp: G11
+  priority: 2
+  version: v1
+  question: Which two-stage process do numerical studies of smoothing during slow contraction reveal, and how is the intermediate state defined?
+  kind: definition
+  gist: first gradients become negligible, then each point goes to FRW
+  locator: {file: Ijjas_CosmologicalGravity_latest.tex, lines: [327, 327]}
+- id: H14
+  paper_id: '2010.05933'
+  grp: G12
+  priority: 1
+  version: v2
+  question: For self-gravitating free massive scalar oscillons, above which central field amplitude in Planck units do the meta-stable solutions become unstable to small perturbations?
+  kind: number
+  gist: an amplitude near one half of the Planck mass
+  locator: {file: axion.tex, lines: [194, 194]}
+- id: H15
+  paper_id: '2608.13206'
+  grp: G13
+  priority: 3
+  version: v3
+  question: In three-dimensional simulations of primordial black hole formation during radiation domination, which range of the effective accretion efficiency follows from late-time fits of the horizon mass, and how does it compare with earlier spherically symmetric work?
+  kind: number
+  gist: efficiency about three to 3.6, consistent with earlier range
+  locator: {file: PRD.tex, lines: [495, 495]}
+- id: H16
+  paper_id: '1201.2379'
+  grp: G13
+  priority: 1
+  version: v3
+  question: In null-slicing simulations of primordial black hole formation for several equation-of-state parameters, how does the fitted critical scaling exponent compare with semi-analytic values, and which limit does it approach for vanishing pressure?
+  kind: number
+  gist: agrees with semi-analytic values; tends to about 0.1
+  locator: {file: pbh4.tex, lines: [1069, 1077]}
+- id: H17
+  paper_id: '2409.00435'
+  grp: G14
+  priority: 1
+  version: v3
+  question: In the peak-theory estimate of spins of primordial black holes formed in an early matter era, why does a monochromatic power spectrum produce no angular momentum at first order?
+  kind: method
+  gist: the relevant distribution collapses to a delta function
+  locator: {file: main.tex, lines: [528, 530]}
+- id: H18
+  paper_id: '2212.00425'
+  grp: G15
+  priority: 2
+  version: v2
+  question: In particle simulations of inflaton halos used to compute a stochastic gravitational-wave background, how many e-folds after the end of quadratic inflation do the first halos form, and up to which e-fold are the runs evolved?
+  kind: number
+  gist: about 17 e-folds; runs end at 23
+  locator: {file: main.tex, lines: [204, 204]}
+- id: H19
+  paper_id: '1808.06678'
+  grp: G16
+  priority: 1
+  version: v3
+  question: For collapsing field-theory string loops in full general relativity, which critical exponent of the black-hole mass near the threshold radius is quoted, and why is it uncertain?
+  kind: number
+  gist: exponent between 0.17 and 0.39 depending on the critical radius
+  locator: {file: GW_CosmicRing.tex, lines: [185, 189]}
+- id: H20
+  paper_id: '1204.2019'
+  grp: G17
+  priority: 1
+  version: v1
+  question: When black holes are evolved with a positive cosmological constant in a BSSN code, which rescaled conformal variable replaces the usual one and why?
+  kind: method
+  gist: conformal factor times exp(2Ht), because of the floor value
+  locator: {file: deSitter_PRD.tex, lines: [255, 261]}
+- id: H21
+  paper_id: '1707.06302'
+  grp: G18
+  priority: 2
+  version: v2
+  question: In the fully relativistic adiabatic-growth calculation of dark-matter density spikes around spinning black holes, which cuspy initial halo profile is assumed, and which total halo mass is taken for the Milky Way?
+  kind: number
+  gist: a Hernquist-type cusp with 1e12 solar masses
+  locator: {file: kerrdm.tex, lines: [843, 859]}
+- id: H22
+  paper_id: '2308.16791'
+  grp: G19
+  priority: 1
+  version: v2
+  question: When solving the constraints with periodic boundaries in a scalar Gauss-Bonnet type theory, how is the integrability condition of the conformal-factor equation restored?
+  kind: method
+  gist: split the mean curvature into a constant and a varying part
+  locator: {file: main.tex, lines: [146, 153]}
+- id: H23
+  paper_id: '2009.08715'
+  grp: G20
+  priority: 3
+  version: v2
+  question: How does the dependence of the primordial black hole mass fraction on the collapse threshold differ between the stochastic treatment with quantum diffusion and the classical Gaussian estimate?
+  kind: method
+  gist: exponential in the threshold, not in its square
+  locator: {file: HDR.tex, lines: [4594, 4604]}
+- id: H24
+  paper_id: '2409.09597'
+  grp: G21
+  priority: 2
+  version: v2
+  question: In three-body scattering experiments of a binary star passing a supermassive black hole, which black-hole-to-star mass ratio and which ratio of the speed at infinity to the binary orbital speed are adopted in the fiducial runs?
+  kind: number
+  gist: a million; one tenth
+  locator: {file: sample631.tex, lines: [188, 196]}

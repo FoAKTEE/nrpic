@@ -25,3 +25,19 @@ that is recorded, not avoided.
 Prediction (D1): the draw is feasible within a few hundred shuffles and gives 24 distinct
 papers covering all 21 groups; one or two of them have parse_status review or pdf (expected
 24 x 26/710 = 0.9). Refuted if a group is missing or the assignment is infeasible.
+
+Outcome (D1, run kb-20261120-222100-50182fe, 22:21 UTC): confirmed. 21 assignment
+attempts; 24 distinct papers, all 21 groups (G07, G09, G13 twice); priorities 4/7/13;
+parse_status ok 23, review 1 (2009.08715), no pdf paper. The ad-hoc preview before the
+registered run gave the identical draw (diff of draw.json picks empty). [VERIFIED]
+
+## Entry 2 (22:40 UTC): held-out questions written (step 1)
+
+For each drawn paper I read the stored source (raw/arxiv/<id_>/<v>/src, read-only, with
+Read/grep only) and wrote one question in my own words whose answer is a specific
+passage away from the abstract (a number, a definition, a method statement or the
+provenance of a result). Locators are file:line ranges of the source file. File:
+`heldout.yaml` (24 questions; kinds: 9 number, 11 method, 2 definition, 1 provenance,
+plus 1 number/method mix). Overlap with the golden set unknown (golden file still
+unopened). Validated: YAML loads, 24 distinct papers, every locator file exists and the
+line ranges lie inside it. Commit of heldout.yaml: see entry 3 (made before any search).
