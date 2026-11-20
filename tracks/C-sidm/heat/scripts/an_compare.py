@@ -4,6 +4,8 @@
     an_compare.py cardcpu OUTDIR T7JSON [T7JSON ...]
     an_compare.py eps     OUTDIR T7JSON_A GROUP_A T7JSON_B GROUP_B
     an_compare.py t8      OUTDIR --noise T7JSON GROUP T8JSON [T8JSON ...]
+    an_compare.py seedpairs OUTDIR CARDCPUJSON   (post hoc: chi^2 of the card z values and
+                                                  of same-executable seed pairs)
 
 Inputs are T7.json / T8.json written by `an_mode.py T7|T8` into registered run directories
 (a run id resolves to scratch/C-sidm/<id>/T7.json). f is the conductivity in units of
@@ -400,6 +402,74 @@ def cmd_t8(outdir, noise_path, noise_group, paths):
     print(json.dumps(dict(sets=short, pooled=out["pooled"]), indent=1, default=float))
 
 
+def cmd_seedpairs(outdir, cardcpu_path):
+    """Post hoc (2026-11-20 22:38): consistency of the seed scatter with the noise model
+    of cardcpu (unit variance s2 of the eight theta = 0.003 processor seeds per k lambda).
+    (a) chi^2 of all z_ref of card seeds; mean z_ref (a common card offset would shift it);
+    (b) pairs of seeds of the same executable, N and group: z_pair = (f_1 - f_2)/sqrt(2 s2/N).
+    A card-specific bias shows in (a) with one sign; a noise model that is too small shows
+    in (a) and (b) alike."""
+    C = json.load(open(resolve(cardcpu_path, "cardcpu.json")))
+    s2ref = {r["k_lambda"]: r["s2_cpu"] for r in C["groups"]["T7_th0.003_e0.2"]["rows"]}
+    zs, pairs = [], []
+    for gname, G in C["groups"].items():
+        for r in G["rows"]:
+            for c in r.get("card", []):
+                if "z_ref" in c:
+                    zs.append(dict(group=gname, k_lambda=r["k_lambda"], seed=c["seed"],
+                                   z_ref=c["z_ref"]))
+            s2 = s2ref.get(r["k_lambda"])
+            for kind in (True, False):
+                ss = [s for s in r["seeds"] if s["card"] == kind]
+                Ns = sorted({s["N"] for s in ss})
+                for N in Ns:
+                    sn = sorted([s for s in ss if s["N"] == N], key=lambda s: s["seed"])
+                    if len(sn) == 2 and s2:
+                        d = sn[0]["f"] - sn[1]["f"]
+                        pairs.append(dict(group=gname, k_lambda=r["k_lambda"],
+                                          card=kind, N=N, seeds=[s["seed"] for s in sn],
+                                          diff=d, sd_expected=float(np.sqrt(2 * s2 / N)),
+                                          z_pair=float(d / np.sqrt(2 * s2 / N))))
+    z = np.array([q["z_ref"] for q in zs])
+    zp = np.array([q["z_pair"] for q in pairs])
+    out = dict(source=cardcpu_path, card_z=zs, chi2_card=float(np.sum(z ** 2)),
+               n_card=len(z), mean_z_card=float(z.mean()), se_mean_z=float(1 / np.sqrt(len(z))),
+               pairs=pairs, chi2_pairs=float(np.sum(zp ** 2)), n_pairs=len(zp),
+               chi2_pairs_by_kl={str(k): float(np.sum([q["z_pair"] ** 2 for q in pairs
+                                                       if q["k_lambda"] == k]))
+                                 for k in sorted({q["k_lambda"] for q in pairs})},
+               n_pairs_by_kl={str(k): int(sum(q["k_lambda"] == k for q in pairs))
+                              for k in sorted({q["k_lambda"] for q in pairs})})
+    fs.use_style()
+    fig = plt.figure(figsize=(fs.COLUMN_WIDTH * 1.25, 3.0))
+    ax = fig.add_axes([0.15, 0.16, 0.80, 0.74])
+    cols = {0.1: fs.PAL["green"], 0.2: fs.PAL["yellow"], 0.4: fs.PAL["red"]}
+    for i, q in enumerate(zs):
+        ax.plot(i, q["z_ref"], "o", color=cols.get(q["k_lambda"], "k"), ms=4)
+    for j, q in enumerate(pairs):
+        ax.plot(len(zs) + 1 + j, q["z_pair"], "s" if q["card"] else "^",
+                color=cols.get(q["k_lambda"], "k"), ms=4, mfc="none")
+    ax.axhspan(-3, 3, color="grey", alpha=0.12, lw=0)
+    ax.axhline(0, **fs.MASK_LINE)
+    ax.axvline(len(zs) + 0.5, **fs.THIN)
+    ax.set_xticks([])
+    ax.set_ylabel(r"$z$ (noise model: $\theta=0.003$ seeds)")
+    ax.set_title("left: card seed vs processor mean; right: seed pairs "
+                 "(squares card, triangles processor)", fontsize=7.5)
+    for k, c in cols.items():
+        ax.plot([], [], "o", color=c, ms=4, label=rf"$k\lambda={k}$")
+    ax.legend(loc="lower left", fontsize=7)
+    fs.save(fig, os.path.join(outdir, "seedpairs"))
+    plt.close(fig)
+    with open(os.path.join(outdir, "seedpairs.json"), "w") as fh:
+        json.dump(out, fh, indent=1, default=float)
+    print(json.dumps({k: v for k, v in out.items() if k not in ("card_z", "pairs")},
+                     indent=1, default=float))
+    for q in pairs:
+        print(q["group"], q["k_lambda"], "card" if q["card"] else "cpu", q["N"],
+              round(q["diff"], 4), round(q["sd_expected"], 4), round(q["z_pair"], 2))
+
+
 def main():
     cmd, outdir = sys.argv[1], sys.argv[2]
     args = sys.argv[3:]
@@ -413,6 +483,8 @@ def main():
     elif cmd == "t8":
         assert args[0] == "--noise"
         cmd_t8(outdir, args[1], args[2], args[3:])
+    elif cmd == "seedpairs":
+        cmd_seedpairs(outdir, args[0])
     else:
         raise SystemExit(__doc__)
 
