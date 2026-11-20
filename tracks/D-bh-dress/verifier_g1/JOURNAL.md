@@ -6,7 +6,7 @@ scripts, inputs, manifests, raw outputs, package README files (layout only), the
 source, the knowledge base, and the note at the pinned commit 78d470ca. Each entry: the
 prediction and what would make the claim WRONG, written before the run; the outcome after.
 
-## Entry 1 (2026-11-20 14:40 PST): V1, ES-1 and V-1, prediction
+## Entry 1 (2026-11-20 14:15 PST): V1, ES-1 and V-1, prediction
 
 Script `v1_es.py` (my own readers of `traj.bin`, `trajmet.bin` with the 17-double record of
 `athenak/src/particles/nrpic_io.cpp:811-814` and 926, `part.*.bin` of :941-978,
@@ -38,3 +38,32 @@ Predictions (what I expect if the track is right):
   radius of the wall tracers in the nearest direction; the particles removed during the run
   are tracers only (tags < 140). WRONG if any dust particle lies inside, or any dust tag
   disappears.
+
+### Outcome of entry 1 (14:25 PST), run D-20261120-222209-871e07f
+
+All four predictions held (`v1_results.json`, figures `v1_wall.png`, `v1_inner.png`,
+`v1_horizon.png`, `v1_dust_wall.png`, all looked at).
+- P1a: wall, max over tau <= 200 M: ES-1 2.196e-3 (axis tracers; diagonal 1.734e-3),
+  V-1 1.594e-3. The second areal-radius definition (det gamma / n.gamma.n)^(1/4) r gives the
+  same digits. Attempt to break: over the whole run (tau up to 283 M in ES-1, 250 M in V-1)
+  the error grows to 1.71e-2 (ES-1, diagonal, at the end) and 7.17e-3 (V-1); tau = 200 M is
+  reached at t = 137.5 M. So the claim holds only on its stated window, and the window
+  ends where the curves turn (figure `v1_wall.png`).
+- P1b: exact crossing times from my closed form 14.82693 M and 34.44232 M (claims 14.8269,
+  34.4423). Run, mean over 14 tracers: 14.82652 (cubic interpolation in R) or 14.82634
+  (linear), 34.43683 or 34.43675; spread over the 14 tracers 1.6e-4 and 4e-4 M. The claimed
+  14.8263 matches my linear value. R0 = 20 M group: 244.33 M against 244.74 (ES-1 only;
+  V-1 ends first).
+- P1c: horizon drift 3.400e-4 (ES-1) and 1.368e-4 (V-1) over 100-200 M; 9.35e-5 and
+  4.21e-5 over 100-165 M; M_AH(100 M) - M = 9.55e-4 and 9.37e-4. Exact agreement with the
+  claims. Attempt to break: with the mean over 95-105 M as reference the numbers become
+  3.82e-4 and 1.32e-4 (100-200 M), 9.2e-5 and 3.7e-5 (100-165 M): the single-sample
+  reference moves them by up to 12 per cent, not more.
+- P1d: no dust tag disappears (696688 dust particles in all nine snapshots); the 42
+  removed particles are tracers 0-41 (groups R0 = 6, 10, 20 M). A naive test (dust against
+  the wall tracer of the nearest of 14 directions) fails at t >= 175 M (-0.061 M at 200 M)
+  because the coordinate radius of the wall differs by 0.57 M between axis and diagonal at
+  t = 200 M. With the wall interpolated between the 14 directions by the angular shape of
+  the innermost dust layer itself (fit a + b(r0 - 36.4) + c q4 + d q6, residual <= 0.020 M,
+  rms 0.007 M) the smallest margin is 0.1356 M at t = 200 M (lowest cubic harmonic alone:
+  0.1359 M); within 6 degrees of the 14 wall tracers, model-free, 0.126 M. No dust inside.
