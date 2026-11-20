@@ -93,6 +93,15 @@ def main():
                                   if res[f]["H_norm2_mean_100_300"] and res[c]["H_norm2_mean_100_300"] else None)
         out["H_norm2_t0"] = res[f]["H_norm2_0_max_end"][0] / res[c]["H_norm2_0_max_end"][0]
         out["ripple_rms"] = res[f]["ripple"].get("rms", np.nan) / res[c]["ripple"].get("rms", np.nan)
+        # do the two series share their ripple? correlation of the residuals of their own
+        # cosine fits on the common times (one realisation of the particles, same seed)
+        sf, sc = ser[f], ser[c]
+        if "P" in rf.get("cos", {}) and "P" in rc.get("cos", {}):
+            t1 = min(sf["t"][-1], sc["t"][-1])
+            tt = np.arange(0.0, t1 + 1e-9, 0.25)
+            ef = np.interp(tt, sf["t"], sf["y"] - K.f_cos(sf["t"], rf["cos"]["A"], rf["cos"]["P"], rf["cos"]["c"]))
+            ec = np.interp(tt, sc["t"], sc["y"] - K.f_cos(sc["t"], rc["cos"]["A"], rc["cos"]["P"], rc["cos"]["c"]))
+            out["residual_correlation"] = float(np.corrcoef(ef, ec)[0, 1])
         ratios[rq] = out
         print("ratio", rq, json.dumps(out), flush=True)
     res["_ratios"] = ratios
