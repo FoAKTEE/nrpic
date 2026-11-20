@@ -257,3 +257,35 @@ Amendment before the run: the full-relativity ledger table was too tall for a pa
 "Float too large for page by 52 pt"), so `ledger.py` now writes it as two tables
 (tab:ledger3: data, single member, tree; tab:ledger4: first passage). Prediction amended:
 `ledger.tex` differs from F-20261120-222908-4ffcfba by the three rows and this split only.
+
+## 2026-11-20 22:34 UTC PAUSED (locks/PAUSE appeared: five-hour window at 97 percent)
+
+Where I stopped (everything below is committed):
+- Done: plan and predictions; schematics `schem_architecture` (state as of core-v0.3) and
+  `schem_dataflow` (new), timeline state updated; data figures `fig_constraints` (E2),
+  `fig_single` (E3), `fig_tree` (E11), `fig_smoke` (E7), each PNG read; registered figure run
+  F-20261120-222908-4ffcfba (outcome above, all predictions met) and its outputs in
+  `figures/`, `tables/`; ledger rows of the four G1 groups; `main.tex` rewritten for G1
+  (commit d746da26): new Sec. V (data at the start, single member, mesh and cost, first
+  passage set-up / start state / cost / prediction), corrections of `stage/REVIEW-wave2.md`
+  (geodesic fractions as model outputs with the flat-space self-acceleration; q = 10 start
+  state turns at 5.77 M; seven-point agreement of the independent restricted code), round-2
+  slots in the text.
+- Not done: the rerun of `run_all.py` after the three added ledger rows and the split of the
+  full-relativity ledger into tab:ledger3 / tab:ledger4 (prediction written above; nrpic-run
+  refused once because a draft main.pdf was uncommitted, then the pause came). So
+  `tables/ledger.tex` in the note is still the one of F-20261120-222908-4ffcfba (three tables),
+  while `main.tex` cites four: the committed `main.pdf` is the v0 PDF, not rebuilt.
+  A draft compile with the new ledger (not committed) gave 16 pages, no undefined reference;
+  LaTeX reported a stuck float at the start of Sec. V.A (to look at on the pages).
+- Next steps on resume: (1) `harness/bin/nrpic-run submit --kind scouting --gate G1 --package
+  tracks/F-hills/note --cores 1 --purpose "..." -- .venv/bin/python
+  tracks/F-hills/note/scripts/run_all.py`; check the prediction (PNGs byte-identical to
+  F-20261120-222908-4ffcfba, ledger differs by three rows and the split); copy figures/ and
+  tables/; put the new run id into appendix B of main.tex; (2) latexmk; check_manuscript.py
+  with the guide's forbid list; read every page; fix the stuck float; (3) README: contents,
+  rerun commands, the round-2 slots (P1 outcome and energies, horizons, burst; post-Newtonian
+  reference and its P1 prediction; junk energy of the three-black-hole data; S2g mass-scaled
+  damping and single-member junk; Kerr comparison) and Requests (guide: allowed numbers
+  eta m = 2 and 0.25, P = m/4, cells m/4; outline: Sec. IV split into reference solutions and
+  full relativity); (4) commit main.pdf and push.
