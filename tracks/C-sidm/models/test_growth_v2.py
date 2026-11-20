@@ -99,20 +99,30 @@ def u4():
 
 
 def u5(nreal=200):
+    """Also reports the noise level from first differences (the entry-9 definition, which
+    failed U5 at sigma = 0.1 in run C-20261120-222339-663f963) beside the second-difference
+    level now used, against the true 1e-3 (JOURNAL entry 10)."""
     rows = []
     rng = np.random.default_rng(5)
     for sig in (0.02, 0.05, 0.1):
         t = _t(sig)
-        s, se = [], []
+        s, se, n1, n2, se1 = [], [], [], [], []
         for _ in range(nreal):
             y = 0.6 + A0 * np.exp(sig * t) + NOISE * rng.standard_normal(len(t))
             f = gr.growth_fit_v2(t, y, 0.6, period=P)
+            f1 = gr.growth_fit_v2(t, y, 0.6, period=P, noise_order=1)
             if f["ok"]:
                 s.append(f["sigma"])
                 se.append(f["se_noise"])
+                n2.append(f["noise_level"])
+                n1.append(f1["noise_level"])
+                se1.append(f1["se_noise"])
         ratio = float(np.median(se) / np.std(s, ddof=1))
         rows.append(dict(sigma=sig, n_ok=len(s), std_sigma=float(np.std(s, ddof=1)),
                          median_se_noise=float(np.median(se)), ratio=ratio,
+                         ratio_first_differences=float(np.median(se1) / np.std(s, ddof=1)),
+                         median_noise_level=float(np.median(n2)),
+                         median_noise_level_first_differences=float(np.median(n1)),
                          mean_rel_bias=float(np.mean(s) / sig - 1),
                          ok=bool(len(s) == nreal and 0.85 <= ratio <= 1.15)))
     return dict(rows=rows, ok=all(r["ok"] for r in rows))

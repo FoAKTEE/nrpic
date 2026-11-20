@@ -42,7 +42,9 @@ growth rate v2  d = y - y_ref (or y/y_ref - 1); y_ref a number (the model's equi
                 raw d over the first period; window from lo = k_lo A_init to hi (as
                 growth_fit otherwise), at least one e-fold. sigma = slope of ln|d_s|;
                 se = (se_noise^2 + se_fit^2)^(1/2): se_noise propagates white record noise
-                (level std(diff d)/sqrt 2) exactly through boxcar and slope, se_fit is
+                (level std of the second difference of d / sqrt 6 over the window and its
+                boxcar support; first differences, the entry-9 definition, let a steep
+                trend in: test U5, JOURNAL entry 10) exactly through boxcar and slope, se_fit is
                 growth_fit's inflated residual error with n_eff = window / width.
 probe reference the central probe of the particle module (athenak/src/particles/
                 nrpic_io.cpp:73-135) averages the lapse of the eight cells around the
@@ -408,8 +410,19 @@ def boxcar_exact(t, y, width):
     return tt[L // 2: len(tt) - L // 2], ys, w, tt, yy
 
 
+def noise_level(x, order=2):
+    """White-noise level of a record from differences of the given order (1: std(diff)/sqrt 2;
+    2: std(second difference)/sqrt 6, which a smooth trend leaks into much less)."""
+    x = np.asarray(x, float)
+    if len(x) <= order + 1:
+        return 0.0
+    if order == 1:
+        return float(np.std(np.diff(x)) / np.sqrt(2.0))
+    return float(np.std(np.diff(x, 2)) / np.sqrt(6.0))
+
+
 def growth_fit_v2(t, y, y_ref, period=None, k_lo=3.0, hi=0.1, relative=False, t_max=None,
-                  width_factor=1.0, min_efolds=1.0, pmin=5.0, period_t_end=None):
+                  width_factor=1.0, min_efolds=1.0, pmin=5.0, period_t_end=None, noise_order=2):
     """Growth rate with the fix of diagnosis D1 (module docstring, JOURNAL.md entry 9).
     Returns a dict; 'ok' False with a reason when no window exists."""
     t = np.asarray(t, float)
@@ -486,7 +499,7 @@ def growth_fit_v2(t, y, y_ref, period=None, k_lo=3.0, hi=0.1, relative=False, t_
     se_fit = se_formal * float(np.sqrt(max(n / n_eff, 1.0)))
     # exact propagation of white record noise through the boxcar and the slope
     sup = yy[i0:i1 + len(wk)]
-    s_n = float(np.std(np.diff(sup)) / np.sqrt(2.0)) if len(sup) > 2 else 0.0
+    s_n = noise_level(sup, noise_order)
     c = (tw - tw.mean()) / Sxx
     g = c / dw
     h = np.convolve(g, wk)

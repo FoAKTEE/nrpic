@@ -466,3 +466,27 @@ the width P (records as cells, fractional end weights, `growth.boxcar_exact`); t
 `boxcar` rounds the width to an odd number of records, which leaves 1/k of an
 oscillation of period P. The noise propagation uses these weights. The predictions are
 unchanged.
+
+## 2026-11-20, entry 10: outcomes U1-U5 (run C-20261120-222339-663f963); diagnosis of U5
+
+Run `python3 tracks/C-sidm/models/test_growth_v2.py` (commit 663f963, registered, exit 1
+because U5 failed; output `scratch/C-sidm/C-20261120-222339-663f963/test_growth_v2.json`).
+[VERIFIED]
+- U1 PASS: noise-free period 24.951-25.071 M against 25 (largest error 0.28 percent; the
+  exponential trend wins with s = 0.0193 and 0.0519 for sigma = 0.02, 0.05); with noise the
+  median of 20 realisations is 24.996 and 24.989 M (range 24.79-25.25).
+- U2 PASS, U3 PASS, U4 PASS: sigma to the printed six digits (relative error below 5e-7)
+  in every case; U4 finds the sign -1 of a contraction against an array reference.
+- U5 FAIL at sigma = 0.1: median se_noise / scatter of sigma = 1.035 (0.02), 1.104 (0.05),
+  1.660 (0.1; bound 0.85-1.15). Bias of the 200-realisation mean below 4.2e-4 relative.
+
+Diagnosis (cause not yet tested): the noise level std(diff d)/sqrt 2 is taken over the
+window plus one boxcar width beyond its end, where at sigma = 0.1 the exponential itself
+reaches about 0.35 and grows by up to sigma d dt = 9e-3 per record, more than the noise's
+1.4e-3 in a first difference; the trend inflates the level. Prediction for the rerun: the
+first-difference level at sigma = 0.1 is above 1.3e-3 (median of 200) while at 0.02 it is
+within 5 percent of 1e-3; the second-difference level (std/sqrt 6) is within 5 percent of
+1e-3 at every sigma; with it the U5 ratio lies in 0.85-1.15 at all three sigma. Refuted if
+the first-difference level at 0.1 is within 10 percent of 1e-3 (then the cause is
+elsewhere) or the ratio stays outside the bound. Change: `growth.noise_level`, order 2 by
+default (order 1 selectable); U5 now reports both levels. U1-U4 do not depend on it.
