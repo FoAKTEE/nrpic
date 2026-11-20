@@ -15,6 +15,7 @@ scratch/<caller>/tmp/nrpic-doctor-*/, removed at the end unless --keep (they are
 mkdtemp and removed only after checking that the path lies there).
 """
 import argparse
+import base64
 import glob
 import importlib.machinery
 import importlib.util
@@ -425,9 +426,12 @@ class Doctor:
         r1 = run(["commit", "-q", "-m", "big"], w, check=False).returncode
         git(["reset", "-q", "HEAD", "--", "tracks/A-x/big.bin"], w)
         sec = os.path.join(w, "tracks", "A-x", "key.txt")
+        # a fake with the shape of a real key, made here so that no source line looks like one; the hook
+        # passes documentation placeholders (a header with a stub, EXAMPLE keys) since the dry run of wave 3a
+        body = base64.b64encode(os.urandom(300)).decode()
         with open(sec, "w") as fh:
-            fh.write("-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQ\n-----END OPENSSH PRIVATE KEY-----\n"
-                     "aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY\n")
+            fh.write("-----BEGIN OPENSSH " + "PRIVATE KEY-----\n" + "\n".join(body[i:i + 70] for i in range(0, 400, 70))
+                     + "\n-----END OPENSSH " + "PRIVATE KEY-----\n")
         git(["add", "tracks/A-x/key.txt"], w)
         r2 = run(["commit", "-q", "-m", "secret"], w, check=False).returncode
         ok = r1 != 0 and r2 != 0

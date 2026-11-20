@@ -1,8 +1,8 @@
 #!/bin/bash
 # Runs the self-tests of nrpic-run, nrpic-env, nrpic-stage, the vendored figure libraries, the
-# proposed hooks, the proposed Claude Code configuration, nrpic-fetch-arxiv (loopback server only)
-# and the pre-commit hook. Each builds its own scratch repository under <main checkout>/scratch/harness/
-# and never touches live branches or worktrees. The full output of each test is kept in
+# proposed hooks, the proposed Claude Code configuration, nrpic-fetch-arxiv (loopback server only),
+# the pre-commit hook and its dry run over a history. Each builds its own scratch repository under
+# <main checkout>/scratch/harness/ and never touches live branches or worktrees. The full output of each test is kept in
 # <main checkout>/scratch/harness/logs/<test>-<UTC>.log (named for a test that failed).
 #   harness/tests/run-runs-config-tests [--full]     (--full: the dummy run of test_nrpic_run lasts 30 s)
 # Exit status: number of test files that failed.
@@ -15,7 +15,7 @@ mkdir -p "$logs"
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
 fail=0
 for t in test_nrpic_env.py test_nrpic_run.py test_style.py test_nrpic_stage.py test_hooks.py test_claude_config.py \
-         test_fetch_arxiv.py test_precommit.py; do
+         test_fetch_arxiv.py test_precommit.py test_precommit_dryrun.py; do
   args=()
   [[ $t == test_nrpic_run.py && ${1:-} == --full ]] && args=(--full)
   log=$logs/${t%.py}-$stamp.log
