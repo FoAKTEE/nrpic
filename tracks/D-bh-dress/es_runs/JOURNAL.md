@@ -555,3 +555,27 @@ lapse; the run itself is still queued.
   figure in `figs/es1g/`; judge G1-G7 of entry 5 as written (G1-G3 on the group
   R0 = 48 M, see entry 6, E3) and record every gauge pathology.
 - Card-hours of this package: ES-1 0.769 + V-1 0.672 (wave 2), ES-1G at most 0.98.
+
+## Entry 9 (2026-11-20, wave 3): closing ES-1G and judging it against entry 5
+
+Opened 2026-11-20 22:14 UTC, before any analysis of the ES-1G output. Entry 5 stands
+unchanged. `scripts/submit_chain.sh --status` on the run directory of
+D-20261119-142633-6f72922: "STATUS: DONE job: 4636", "seg=1 job=4636 finished:
+time=2.000000e+02 cycle=6400", started 2026-11-19 07:36:28, finished 08:24:04 PST. The
+manifest still says "submitted" and reserves 0.98 card-hours.
+What I am about to do, in order: (1) close the run and register `tools/es_extra.py` on
+ES-1, V-1 and ES-1G with `tools/finish_es1g.sh`, then `nrpic-run verify` the run; (2) look
+at every figure in `figs/es1g/`; (3) judge G1-G7 exactly as written in entry 5, with
+G1-G3 on group R0 = 48 M (entry 6, E3: R0 = 40 M lies in the inner dust edge, 36-44 M)
+and R0 = 40 M reported separately; (4) record the gauge pathologies entry 5 lists
+(start-up pulse of the relaxation, a lapse below 1 inside the dust, a front from the dust
+edges reaching the hole, the mesh minimum of the lapse near the hole against
+alpha_exc = 0.05, column 16 of `es.nrpic.hst`); (5) measure, without a prediction, the
+late horizon drift of ES-1G (t0 = 100 M, windows 100-165 M and 100-200 M); (6) compare with
+core's ES test on 0-30 M (core_gauge READY, run core-20261115-202901-b4430da); (7) list
+where `analyse.py` and `es_extra.py` use the code's particle energy E.
+One fact seen before the analysis, while checking that the run is not empty (column 3):
+the last row of `es.nrpic.hst` has np = 696800 (28 removed, 0 escaped), and the last row
+of `es.horizon_summary_0.txt` (t = 199.5 M) reads M_AH = 1.008112, about 7e-3 above the
+ES-1 value at the same time. This is recorded here before any number of the analysis;
+G6 is judged on the registered analysis below.
