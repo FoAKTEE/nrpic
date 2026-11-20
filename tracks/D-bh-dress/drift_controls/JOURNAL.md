@@ -140,3 +140,52 @@ large |Theta| moves inward at 1-1.6 M per M, reaching r < 10 M between t = 140 a
 in the z = 0 plane the pattern is a shrinking square (fronts parallel to the faces).
 Refuted if |Theta| at r > 50 M stays below its value at r < 10 M at every time, or if the
 large-|Theta| region moves outward from the hole; then HR or HG move to the front.
+
+### First look at the Theta slices of V-1 (development pass of `tools/theta_map.py`, not registered; the registered run on V-1 and ES-1 follows and its numbers replace these)
+
+The space-time diagram of log10|Theta| on the +x axis and the z = 0 maps show (i) a
+region of large |Theta| that starts at the faces in the first 10-40 M and moves inward
+along r ~ 192 - 1.3 t, (ii) the outgoing pulse from the hole (r ~ 50 M at t = 10 M,
+~110 M at 50 M), (iii) after they meet, Theta fills the domain from outside in: the clean
+region around the hole shrinks to the +-96 M box by t ~ 100 M, to about +-15 M by 150 M and
+is gone by 200 M; on the axis the median |Theta| at r = 3-10 M is ~1e-6 to 3e-6 until
+160 M and 5.5e-6, 1.8e-5, 3.7e-5, 6.6e-5 at 170, 180, 190, 200 M. The arrival at the hole
+coincides with the start of the drift. Whether the faces (HB) or the coarse outer levels
+inside +-192 M make this Theta is exactly what card run (b) decides: its mesh inside
++-192 M is block for block that of V-1 (checked below), only the faces move to +-384 M.
+
+## Entry 2 (2026-11-20, 22:55 UTC): order of the card runs, and prediction for card run (b)
+
+Order changed: (b) the boundary test goes first, (a) the finder test after it. Reason:
+step 1 makes HB the leading hypothesis (Theta from outside reaches the hole when the
+drift starts; the horizon turns non-round then), and nothing in step 1 implicates the
+finder (residuals unchanged, A2). The finder question on the very slices where the drift
+is largest is answered without a card by part C (processor re-search of the dumps at
+100, 150, 200 M); card run (a) then adds only the time profile from 150 to 200 M and runs
+after (b) if the cap allows.
+
+Input `inputs/v1b_bnd384.athinput` (basename v1b): V-1 with one coarser root level added
+(dx = 8 M on +-384 M); the old levels move up by one. `athena -m 1` (release processor
+executable): V-1 344 MeshBlocks (56 per physical level 0-4, 64 at level 5); V-1B 400
+(56 per level 0-5, 64 at level 6). The block bounds of V-1B inside +-192 M equal those
+of V-1 as sets (344 = 344, compared from the two mesh_structure.dat files). Same finest
+dx = M/8, so the same time step; same release card executable as V-1.
+
+Prediction for V-1B [JUDGEMENT; HB at about 3:1 after step 1]:
+- Pb1 (the decisive one): drift of the horizon mass from t0 = 100 M stays within
+  +-5e-5 over 100-200 M, and D(199.5 M) is above -5e-5 (V-1: -1.37e-4). Refuted if
+  D(199.5 M) < -1.0e-4 (the drift persists at 3/4 of V-1's or more): then the cause lies
+  inside +-192 M (the coarse levels, the refinement interfaces, the near-hole gauge), and
+  run (c) or a gauge test is next. Between -5e-5 and -1e-4: partial (the faces explain
+  part of it).
+- Pb2: V-1B and V-1 horizon masses agree to 1e-6 until the signal from V-1's faces
+  reaches the hole and separate (> 1e-6) between t = 110 and 165 M. Refuted if they
+  separate before 100 M (then the difference is not the faces' signal, e.g. card
+  non-reproducibility or a fast gauge signal), or never by 200 M (then the faces carry
+  no signal to the hole).
+- Pb3: median |Theta| on the +x axis at r = 3-10 M stays below 1e-5 to t = 200 M (V-1:
+  6.6e-5 at 200 M); the clean region still holds r < 100 M at 200 M.
+- Pb4: the coordinate-radius rate of the horizon does not rise at 165 M (median over
+  165-195 M within 30 per cent of that over 100-165 M), and the asphericity stays below
+  5e-6 M.
+- Pb5: cost 0.78 card-hours (400/344 of V-1's 0.672) within 10 per cent.

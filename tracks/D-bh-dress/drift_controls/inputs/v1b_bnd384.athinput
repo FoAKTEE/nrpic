@@ -1,0 +1,218 @@
+# V-1B (Track D, package drift_controls, card run b): V-1 with the outer boundary at +-384 M.
+# One change against tracks/D-bh-dress/es_runs/inputs/v1_dx8.athinput: one coarser root level
+# (dx = 8 M on +-384 M) is added below the old root, so every old level moves up by one and
+# the mesh inside +-192 M (dx = 4 M root region and the nest inside it) is the same as V-1's;
+# basename v1b. The table's Painleve-Gullstrand exterior (exterior = pg) continues the data
+# to the new faces. Purpose: test the outer-boundary hypothesis HB of the late horizon-mass
+# drift (drift_controls/JOURNAL.md). Original header of V-1 follows.
+# V-1 (Track D, package es_runs): vacuum control of ES-1. FILE DIFFERS FROM es1_dx8 ONLY IN
+# THIS LINE, basename, particle_file, comp0_file and the comment block: table v1.tab (the
+# same f(R), no dust: Painleve-Gullstrand of mass M beyond 36 M), 140 tracers only.
+# Original header of ES-1 follows. ES-1: black hole in a vacuum bubble inside an expanding dust
+# ball (Einstein-Straus type, D-pre-1), outer dust edge at 60 M; specification in
+# tracks/D-bh-dress/stage/G1/STATUS.md ("The first full-relativity run").
+# Data: run D-20261115-170213-d2c2131 (es_runs/make_data.py): format-2 table es.tab
+# (M = 1, wall R = 36 M, dust 36 < R < 60 M, H = 5.5812e-3/M, M_tot = 2.7397 M) plus a
+# puncture of bare mass m_p = 1.0239688282062387; 140 tracers of mass 1e-30 (tags 0-139,
+# pushed as timelike geodesics: m > 0) and 696688 dust particles on the 1 M lattice.
+# The vacuum control V-1 is v1_dx8.athinput, which differs from this file only in the
+# header, <job> basename, particle_file and comp0_file.
+# Mesh: MeshBlocks of 24^3 cells, so that the refined regions end exactly where the
+# specification asks (with 16^3 blocks they snap outwards to +-128 and +-64 M: 1280
+# blocks): root dx = 4 M on +-192 M; dx = 2 M on +-96 M (the dust); dx = 1 M on +-48 M
+# (the wall and the whole dust at t = 0); dx = M/8 on +-6 M around the puncture, M/4 on
+# +-12 M, M/2 on +-24 M (D-pre-4 had M/8 on +-4 M); 344 MeshBlocks. Region bounds sit
+# 0.1 M inside the block faces so that no face-touching block is refined.
+# Gauge: 1+log slicing and Gamma-driver shift as in D-pre-4 (the gauge that exists; no
+# lapse for expanding dust yet, outbox lapse-for-expanding-dust). Finder: D-pre-4
+# production settings. Probes: 0 the dust plateau; 1-7 near the horizon, inside the
+# bubble, mid transition, the wall, the outer edge, the exterior, far out.
+
+<comment>
+problem   = V-1: vacuum control of ES-1 (same f-slice, no dust)
+
+<job>
+basename  = v1b
+
+<mesh>
+nghost    = 4
+nx1       = 96
+x1min     = -384.0
+x1max     = 384.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 96
+x2min     = -384.0
+x2max     = 384.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 96
+x3min     = -384.0
+x3max     = 384.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 24
+nx2       = 24
+nx3       = 24
+
+<mesh_refinement>
+refinement       = static
+
+<refined_region1>
+level = 1
+x1min = -191.9
+x1max = 191.9
+x2min = -191.9
+x2max = 191.9
+x3min = -191.9
+x3max = 191.9
+
+<refined_region2>
+level = 2
+x1min = -95.9
+x1max = 95.9
+x2min = -95.9
+x2max = 95.9
+x3min = -95.9
+x3max = 95.9
+
+<refined_region3>
+level = 3
+x1min = -47.9
+x1max = 47.9
+x2min = -47.9
+x2max = 47.9
+x3min = -47.9
+x3max = 47.9
+
+<refined_region4>
+level = 6
+x1min = -1.5
+x1max = 1.5
+x2min = -1.5
+x2max = 1.5
+x3min = -1.5
+x3max = 1.5
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 200.0
+ndiag      = 200
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<fastflow>
+find_every        = 16
+metric_drvts      = interpolant
+num_horizons      = 1
+npunct            = 0
+ntheta            = 16
+lmax              = 8
+use_puncture_0    = -1
+center_x_0        = 0.0
+center_y_0        = 0.0
+center_z_0        = 0.0
+initial_radius_0  = 0.8
+flow_iterations_0 = 400
+flow_alpha_beta_const_0 = 1.0
+hmean_tol_0       = 100.0
+mass_tol_0        = 1.0e-5
+start_time_0      = 0.0
+stop_time_0       = 1000.0
+verbose           = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+interp         = hermite
+tolerance      = 1.0e-10
+max_iterations = 100
+deposit        = true
+deposit_shape  = cic
+nfilter        = 1
+filter_compensate = false
+alpha_exc      = 0.05
+ah_exc_factor  = 0.8
+hist_dcycle    = 10
+traj_dcycle    = 8
+traj_ntrack    = 140
+snap_dt        = 25.0
+probe_x1       = 46.0
+probe_x2       = 0.0
+probe_x3       = 0.0
+nprobe         = 7
+probe1_x1      = 1.0
+probe1_x2      = 0.0
+probe1_x3      = 0.0
+probe2_x1      = 4.0
+probe2_x2      = 0.0
+probe2_x3      = 0.0
+probe3_x1      = 20.0
+probe3_x2      = 0.0
+probe3_x3      = 0.0
+probe4_x1      = 36.0
+probe4_x2      = 0.0
+probe4_x3      = 0.0
+probe5_x1      = 56.0
+probe5_x2      = 0.0
+probe5_x3      = 0.0
+probe6_x1      = 80.0
+probe6_x2      = 0.0
+probe6_x3      = 0.0
+probe7_x1      = 152.0
+probe7_x2      = 0.0
+probe7_x3      = 0.0
+particle_file  = /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-170213-d2c2131/v1/v1.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 2
+comp0_type = table
+comp0_file = /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-170213-d2c2131/v1/v1.tab
+comp1_type = puncture
+comp1_mass = 1.0239688282062387
+lapse      = precollapsed
+shift      = zero
+
+<output1>
+file_type = hst
+dt        = 1.0
+
+<output2>
+file_type = rst
+dt        = 50.0
+
+<output3>
+file_type = bin
+variable  = z4c
+slice_x3  = 0.001
+dt        = 10.0
+
+<output4>
+file_type = bin
+variable  = con
+slice_x3  = 0.001
+dt        = 25.0
+
+<output5>
+file_type = bin
+variable  = tmunu_E
+slice_x3  = 0.001
+dt        = 25.0
