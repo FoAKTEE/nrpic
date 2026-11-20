@@ -408,7 +408,7 @@ def figures(outdir, res, ser, puls, tag=""):
     plt.close(fig)
 
     fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 2.9))
-    fig.subplots_adjust(left=0.09, right=0.985, bottom=0.16, top=0.95, wspace=0.3)
+    fig.subplots_adjust(left=0.11, right=0.985, bottom=0.16, top=0.95, wspace=0.3)
     for name, s in ser.items():
         mk = name[:3]
         fc = res[name]["fits"].get("cos", {})
@@ -430,8 +430,8 @@ def figures(outdir, res, ser, puls, tag=""):
             for key, ls in (("P_dyn_M", ":"), ("P_F21_M", "--")):
                 if r.get(key) and r[key] < 100:
                     axs[1].axvline(r[key], color=col[mk], ls=ls, lw=1.0)
-        axs[1].text(0.97, 0.95, "dotted: dynamical estimate\ndashed: fluid mode, F21 index",
-                    transform=axs[1].transAxes, fontsize=6, ha="right", va="top")
+        axs[1].text(0.03, 0.95, "dotted: dynamical estimate\n(fluid F21 mode: 305-358 M, off scale)",
+                    transform=axs[1].transAxes, fontsize=6, ha="left", va="top")
     fs.save(fig, os.path.join(outdir, "fig_drift_fit" + tag))
     plt.close(fig)
 
@@ -455,11 +455,16 @@ def figures(outdir, res, ser, puls, tag=""):
             vals = [r.get("P_dyn_M"), r.get("P_F21_M"), r.get("P_J_E_M"), r.get("P_scaledF21_M")]
             vv = [v if v else np.nan for v in vals]
             axs[1].bar(xs + (j - 0.5) * 0.38, vv, width=0.36, color=col[mk], label=lab[mk])
+            for x, v, key in zip(xs + (j - 0.5) * 0.38, vals, ("P_dyn_M", "P_F21_M", "P_J_E_M", "P_scaledF21_M")):
+                if not v:
+                    txt = "unstable" if key == "P_J_E_M" else "marginal"
+                    axs[1].text(x, 30.0, txt, rotation=90, ha="center", va="bottom", fontsize=6, color=col[mk])
             fc = res.get(f"{mk}_kninf", {}).get("fits", {}).get("cos", {})
             if "P" in fc:
                 axs[1].axhline(fc["P"], color=col[mk], ls="--", lw=1.0)
             names = ["dynamical", "fluid F21", "fluid Juttner", "scaled F21"]
         axs[1].set_xticks(xs)
+        axs[1].set_xlim(-0.7, 3.75)
         axs[1].set_xticklabels(names, fontsize=7)
         axs[1].set_yscale("log")
         axs[1].set_ylabel(r"period $[M]$ (dashed: fitted excursion)")
