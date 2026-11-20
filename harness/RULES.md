@@ -1,6 +1,6 @@
 # Harness rules and commands
 
-State on 2026-11-19 (wave 2b; decision 0016). The commands live in `harness/bin/` on main and reach every branch with
+State on 2026-11-20 (wave 3; decisions 0016 to 0019). The commands live in `harness/bin/` on main and reach every branch with
 `nrpic-ctx sync`. Call your own worktree's copy, `harness/bin/<command>`, from your worktree
 (the commands act on the worktree you are in; a command started in a data root of the main
 checkout such as `scratch/` refuses). Each prints its usage with `--help`. They build their
@@ -10,6 +10,9 @@ run with `python3 -I`. Owners, branches, worktrees: `CLAUDE.md`. Specification: 
 ## Every session
 
 ```text
+always  test -e /data/haiyangw/nrpic/locks/PAUSE   before every step and at least every ten minutes; if it
+                                               exists: start nothing, commit, journal where you stopped,
+                                               return "paused" (section "Pause flag" below)
 start   harness/bin/nrpic-ctx sync            merge main into your branch (refuses uncommitted tracked
                                                changes; on a conflict it aborts and names the files)
         harness/bin/nrpic-ctx brief           who you are, gate, next, inbox, how far main is ahead
@@ -79,18 +82,19 @@ skip. `--rows a,b` selects rows, `--all` checks every owner's worktree read-only
 checkout). It writes no worktree: a probe file in `scratch/<ID>/tmp/` and throwaway
 repositories in `scratch/<caller>/tmp/nrpic-doctor-*` that it removes. The guard, main, scratch
 and stop rows feed the JSON of a Claude Code hook to `harness/hooks/pre_tool_guard.py` and
-`stop_gate.sh`. State of `--all` after wave 1: every row PASS in all nine worktrees except
-`venv` where the owner has not run `nrpic-env create --no-kokkos` yet, `kb` (MISSING until
-main merges kb/main; it checks that `kb-data/db/current` cannot be opened for writing) and
-`git` (MISSING until the pre-commit hook is installed, decision 0008).
+`stop_gate.sh`. State of `--all` on 2026-11-20 (wave 3, hook installed): every row PASS in all nine worktrees
+(`git`: tree clean, hook installed, a 6 MB file and a fake secret rejected) except `kb`, where `kb
+status` did not finish within 60 s in any worktree: it counts the rows of the kb writer's working
+database while kb ingests (more than 400 s at that time). With `--all` it now runs once per distinct
+`kb/` tree, with 180 s.
 
-## nrpic-run: runs (brief 11.6, 13.1; decisions 0006, 0012, 0014)
+## nrpic-run: runs (brief 11.6, 13.1; decisions 0006, 0012, 0014, 0019)
 
 `harness/bin/nrpic-run --help` has the whole usage. What every owner needs:
 
 ```text
 submit --kind scouting|production --gate G<k> --purpose TEXT [--launcher local|batch|chain]
-       [--package DIR]... [--input PATH]... [--cores N] [--list FILE] [--gpu-hours H] [-- <cmd>]
+       [--package DIR]... [--input PATH]... [--cores N] [--wait S] [--list FILE] [--gpu-hours H] [-- <cmd>]
 status [<run_id>] · finish <run_id> · verify <run_id> · budget · stop <run_id> · lint [--all]
 ```
 
@@ -126,6 +130,10 @@ status [<run_id>] · finish <run_id> · verify <run_id> · budget · stop <run_i
   `manifest.git.outside_package`, not refused. A tracked file changed outside `tracks/` is refused.
 - A local `python ...` command needs the worktree's `.venv` (`nrpic-env create --no-kokkos`;
   `.venv/` is ignored, the tree stays clean); `--allow-no-venv` for a standard-library script.
+- Cores: a local run asks `--cores N` of the owner's allotment (decision 0006; 0019 item 7: at most
+  six per session). When the owner's live local runs leave fewer free (another helper's long runs),
+  `--wait SECONDS` waits for them instead of refusing (looks every 30 s, a line every 5 min, at most
+  SECONDS; then the usual refusal), e.g. a lead's check behind a helper's production-like runs.
 - Budget: the GPU-hour allotment of decision 0006 as amended by 0014 on main, per gate, summed
   over all branches of the owner; card-hours of hand-written manifests (`card_hours`) count
   toward their gate. A request above eight card-hours is noted (0014: announce it in STATUS.md).
@@ -139,7 +147,19 @@ status [<run_id>] · finish <run_id> · verify <run_id> · budget · stop <run_i
   then waives their failures of the manifest check.
 - From wave 2b (2026-11-19) on every run goes through `nrpic-run submit` (helpers sharing a
   worktree: `--package DIR`) and is closed with `finish`. `nrpic-ctx audit` counts a later
-  manifest with a non-standard status word as a finding; its failures are not waived.
+  manifest with a non-standard status word as a finding; its failures are not waived (only a
+  line of `coord/WAIVERS.md` waives them, below).
+- The orchestrator's own runs (owner `orch`, from wave 3): `harness/bin/nrpic-run submit ...` in the
+  main checkout. Manifest `tracks/orch/runs/<run_id>/manifest.json` on main, output
+  `scratch/orch/<run_id>/`, run id `orch-<YYYYMMDD-HHMMSS>-<commit7>`. Other agents write and commit on
+  main at the same time, so the check is always that of `--package`: the code roots (athenak/,
+  python/, scripts/, harness/, problems/, cosmo/, kb/), the packages (under `tracks/orch/`) and the
+  inputs must be clean; changes elsewhere (coord/, CLAUDE.md, another agent's files, staged or not)
+  are recorded in `manifest.git.outside_package`. The manifest is committed path-limited (`git commit
+  -- <manifest>`, waiting while `index.lock` exists), so nothing another agent staged goes with it;
+  push main afterwards (`git push`; `git pull --no-rebase --no-edit` first if it moved). Allotment:
+  decision 0006 has no row for orch, so no card-hours and six cores at a time (decision 0019 item 7)
+  until a decision gives it one. `lint --all` lists orch's runs.
 
 ## nrpic-stage: stage check (brief 13.3; decision 0012)
 
@@ -164,6 +184,13 @@ of the track names (this gate's or an earlier gate's; the full run id, or its
 of the manifest check are listed under `runs-waived` (WARN) and do not fail the package. A range
 "X ... Y" is not expanded; name each run. An unlisted one still fails `runs`, and the message
 says how many to list.
+
+Waivers of the orchestrator (decision 0019 item 6): `verify` reads `coord/WAIVERS.md` as committed on
+main (through git, from any worktree; a working-tree copy does not count) and waives every failure of
+the manifest check of each run named there, whatever its date or kind; they are listed under
+`runs-waived` with the reason. Format: one run id at the start of a line (plain, as a list item or as
+the first cell of a table row, in backticks or not; either form of run id), then the reason; other
+lines are ignored. Only the orchestrator writes the file; a track asks for a waiver in its outbox.
 
 ## nrpic-fetch-arxiv: arXiv and INSPIRE (decision 0015)
 
@@ -199,11 +226,45 @@ requested ids, XML with a DOCTYPE. Gzipped PostScript stays `src/main.tex` (as b
 - `harness/hooks/pre-commit` (brief 13.1) rejects files above 5 MB, added lines that look
   like secrets (documentation placeholders pass: EXAMPLE keys, runs like `abcdefgh`, a key
   header without key material), run manifests that are not JSON objects or whose run_id differs
-  from the directory, and paths outside `tracks/<ID>/` and main's OWNERSHIP on an owner's branch.
-  In a conflicted merge it checks only what the resolution adds, not what main brings. Dry run
-  over the history of every owner branch (wave 3a, `coord/digests/hook-dryrun.md`):
-  `python3 -I harness/tests/precommit_dryrun.py [--ownership tip] [--json F]`, read-only. It is
-  not installed yet (decision 0017 item 4: between waves; the command is in the digest).
+  from the directory, and paths outside `tracks/<ID>/` and main's OWNERSHIP on an owner's branch
+  (main and `proposal/<ID>/<slug>` are exempt from the last check). In a conflicted merge it checks
+  only what the resolution adds, not what main brings. Dry run over the history of every owner
+  branch (wave 3a, `coord/digests/hook-dryrun.md`): `python3 -I harness/tests/precommit_dryrun.py
+  [--ownership tip] [--json F]`, read-only.
+- **Installed on 2026-11-20** for the main checkout and every worktree (decision 0019 item 5):
+  `core.hooksPath = /data/haiyangw/nrpic/harness/hooks` in the common `.git/config`. The copy that
+  runs is the main checkout's working-tree file, so a change to it acts on every agent at once
+  (test it with `harness/tests/test_precommit.py` first). A clean `git merge` (`nrpic-ctx sync`),
+  cherry-pick, revert and rebase do not run it; scratch repositories have their own configuration.
+  `nrpic-doctor --rows git` checks it is installed and refuses a 6 MB file and a fake secret.
+- If the hook refuses (message `pre-commit: commit rejected (harness/hooks/pre-commit, brief
+  13.1)`): fix the commit. The escape rule of `CLAUDE.md` (section "Pause flag, restarts, load"):
+  if the refused commit holds only paths your task names, copy the hook's message into your journal
+  and into a request to orch, then commit that once with `--no-verify`; never bypass a refusal for
+  size or for a secret. The harness helper reads journals and outboxes for such messages every hour
+  and corrects the hook (with a test) when a legitimate class of commit is refused.
+
+## Pause flag and nrpic-usage (decisions 0018, 0019)
+
+`/data/haiyangw/nrpic/locks/PAUSE` exists while the account is close to a usage limit. Every agent
+tests it before each step and at least every ten minutes; when it exists: start nothing new, commit,
+write where you stopped as the last journal entry, return with status partial and "paused" first in
+what is open (queued card jobs may finish by themselves). Every step must be restartable: after a
+pause, a step whose deliverables are committed and pushed says "already complete". The flag is JSON
+(`window`, `pct`, `resets_at`, `ts`, `threshold`); agents only test that it exists.
+
+`harness/bin/nrpic-usage` (the orchestrator runs it; nobody else writes the flag):
+
+| Command | What it does |
+|---|---|
+| `probe` | one minimal call on the small model; its `rate_limit_event` gives each window's utilisation and reset time; stored in `locks/usage.json`, appended to `locks/usage.log`; exit 3 without a reading |
+| `show` | the last stored reading |
+| `watch [--threshold 95] [--interval 240] [--near 90] [--near-interval 75] [--cycle]` | probes every interval (faster above --near); when the weekly OR the five-hour window reaches the threshold it writes `locks/PAUSE` and exits 0 (`PAUSE ...` line); six probes in a row without a reading count as at the threshold (decision 0018): flag with window `unknown`, exit 3. `--cycle`: instead of exiting, wait as `resume` does, remove the flag, watch again |
+| `resume [--near 90] [--launch-max 90]` | waits for the flag, sleeps until the reset time of the window that tripped (+90 s), probes, and removes the flag when that window is below --near and every other window below --launch-max (decision 0018: nothing is launched above 90 per cent); a second window above --launch-max holds the flag, rewritten with that window's reset time (`HOLD ...`); prints `RESUME ...` and exits 0 |
+
+Self-test `harness/tests/test_nrpic_usage.py`: recorded event streams, a simulated clock and a scratch
+root passed to `Usage(...)` (the command line has no option for the root); no call reaches the
+service and the live flag is left alone.
 
 ## Other commands
 
@@ -213,6 +274,7 @@ requested ids, XML with a DOCTYPE. Gzipped PostScript stays `src/main.tex` (as b
 | `nrpic-env` | venv, Kokkos, builds, environment hash, `exec` with a clean environment | `harness/bin/nrpic-env --help` |
 | `nrpic-stage` | the automated steps of the stage check | above; `harness/bin/nrpic-stage --help` |
 | `nrpic-fetch-arxiv` | the only way to download from arXiv and INSPIRE | above |
+| `nrpic-usage` | plan usage of the account; the pause flag `locks/PAUSE` | above (orchestrator) |
 
 Templates (`harness/templates/`): STATUS, JOURNAL and JOURNAL-entry, HANDOFF, ADR,
 STAGE_REPORT, outbox_message, run_manifest.json. Figure libraries: `harness/style/`.
@@ -223,10 +285,11 @@ STAGE_REPORT, outbox_message, run_manifest.json. Figure libraries: `harness/styl
 `scratch/harness/` and checks the context commands (87 checks, about 30 s);
 `harness/tests/acceptance_ctx.py` adds the read-only runs on the live repository and writes
 `coord/digests/bootstrap.md`. `harness/tests/run-runs-config-tests` runs the self-tests of
-nrpic-env (15), nrpic-run (57), the style libraries (10), nrpic-stage (45, the stage-check
-rehearsal), the hooks (99), the proposed configuration (51), nrpic-fetch-arxiv (29, against a
-loopback server: no request leaves the machine), the pre-commit hook (25) and its dry run over a
-history (`test_precommit_dryrun.py`, 9); each test's log is
+nrpic-env (15), nrpic-run (68: orch's runs on main beside other agents included), the style libraries
+(10), nrpic-stage (50, the stage-check rehearsal, with the waivers of `coord/WAIVERS.md`), the hooks
+(99), the proposed configuration (51), nrpic-fetch-arxiv (29, against a loopback server: no request
+leaves the machine), the pre-commit hook (25), its dry run over a history (`test_precommit_dryrun.py`,
+9) and nrpic-usage (`test_nrpic_usage.py`, 25: recorded streams, simulated clock); each test's log is
 kept in `scratch/harness/logs/`. Tests never touch the live branches: anything that needs
 branches or worktrees of its own runs in a scratch repository.
 
