@@ -851,3 +851,41 @@ Not done: the scouting run's result (above); a test of `deposit_adaptive` with q
 or cubic clouds at level boundaries; the cause of the round-off departure of restarts on
 refined meshes is a [JUDGEMENT] (ghost zones at fine/coarse boundaries), not isolated;
 the lapse field behind the walk tracker's move at cycle 9 of T13 was not dumped.
+
+## 2026-11-20 22:15  wave 3, continuation: state found; T10 died at start on the card; prediction of T10d
+
+Merged `main` (d507d774; decisions 0018, 0019 read; no pause flag). Worktree clean, five
+commits not yet pushed (the journal entry of 16:45 and the T-outcomes before it). Both
+card jobs ran unattended [VERIFIED, `sacct`, the run directories]:
+- T14, job 4664, run core-20261119-161748-75c2405: 11 s, six cases, exit 0, 0, 0, 0, 3
+  (G, the guard), 0. Closed with `nrpic-run finish` (completed). Not yet judged.
+- T10, job 4654, run core-20261119-150507-8224d72: **3 s, exit 139 (segmentation
+  fault)** before the first step, with the card build of 901d8b3. The log ends after
+  "NRPIC: refinement criteria of <particles_amr>: ..." and lacks the next line of the
+  problem generator ("NRPIC: cosmological initial data, id = file"); peak card memory
+  38,309 MiB. Closed with `nrpic-run finish --status failed`. No card time of the
+  package is used yet (14 s in all). Prediction (1) to (4) of T10 are untested.
+
+Unregistered debugging runs on processors (`scratch/core/tmp/cosmo-amr-t10dbg/`, the
+published processor executable, T10's command line with `time/nlim`): with
+`max_nmb_per_rank=200`, two cycles, exit 0; with T10's own 2000, one cycle, exit 0
+(57 s). So the crash is of the card build or of the card, not of the deck as such. What
+separates T10 from the card cases of T14 that ran (among them the peak with the lapse
+ladder, 32^3 root, MeshBlocks of 8^3, data from a file): root 64^3 with MeshBlocks of
+16^3, `max_nmb_per_rank = 2000` (every field array is allocated for 2000 MeshBlocks of
+24^3 cells: the 38 GB), the finder, and the older source 901d8b3 (the diff to the
+published 3c44b74 is the restart counters, the status column and comments).
+
+**T10d, card debugging job** (`t10d_card.list`, the published card executable, T10's
+deck and data, `time/nlim=4` each; a few seconds per case):
+  v1  T10 as submitted (`max_nmb_per_rank=2000`)
+  v2  `max_nmb_per_rank=1200` (the value in the example input)
+  v3  `max_nmb_per_rank=300`
+  v4  MeshBlocks of 8^3 (512 root blocks), `max_nmb_per_rank=2000`
+  v5  v3 without the finder (`fastflow/num_horizons=0`)
+Prediction [JUDGEMENT, I do not know the cause]: the crash follows the size of the
+arrays on the card, not the executable: v1 dies again with status 139 at the same
+place; v3 and v5 run four cycles; v2 and v4 (0.6 and 0.3 of v1's memory) I do not
+predict. Refuted if v1 runs (then the cause was the build of 901d8b3 or a transient of
+the machine) or if v3 dies too (then it is the 64^3 deck on a card whatever the limit,
+and the finder case v5 tells whether the finder is involved).
