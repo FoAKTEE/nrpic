@@ -52,3 +52,41 @@ Predictions:
 7. 32^3: 0.5-0.9 of the 16^3 count of the same mesh, so 4-7 times its cells [JUDGEMENT:
    a nest level has about the same number of blocks at any block size, the wave zone 8 times
    fewer].
+
+## 2026-11-20 G2M-2. One card batch job, four short cases (prediction)
+
+List `inputs/batch_g2mesh.list`, release core-v0.3 (`.work/build_gpu_v03/src/athena`), 64
+cycles each, every file output off (`outputN/dt=-1`) except the history. Slots chosen from
+run F-20261120-222636-46d03e0 (`scripts/bench_cases.py`: the start tree and the tree of the
+first regrid, model equal to `athena -m` level by level for all 14 cases):
+(i) `m16_b16_s3000` P1 at m/16 (R16n: 11 levels, 2514 blocks at the start, 2486 after the
+first regrid), 16^3, 3000 slots; (ii) `bt7_b32_s460` core's three-hole mesh by_triple with 7
+levels at 32^3 (456 blocks), 460 slots; (iii) `bt7_b16_s1000` the same mesh at 16^3 (932
+blocks), 1000 slots; (iv) `m8_b32_s1150` P1 at m/8 with 32^3 blocks (1128 at the start, 1114
+after the first regrid), 1150 slots.
+Why not core's bench16 / bench32 lines: bench32 (by_triple, 8 levels, 32^3, 560 slots) needs
+932 slots at the start (run F-20261120-222636-46d03e0, model and `athena -m`), so it would
+stop at once (`mesh/build_tree.cpp` lines 275-281); (ii) and (iii) are the same comparison on
+a by_triple that fits.
+
+Predictions:
+1. (i) allocates and runs 64 cycles. Peak card memory 78.5 GB +- 1.0 GB: 70847 MiB at 2700
+   slots (E7, `nr_first/JOURNAL.md` l. 626) + 300 x 25.65 MiB (core READY of core_requests-adf,
+   MEMORY) = 78542 MiB, below the 81920 MiB of the card. Rate 1900-2300 MeshBlock-cycles/s
+   (P1's chain segments 1963-2242, part C of run F-20261120-222426-86392c3; E7 2057).
+   Refuted by an out-of-memory stop at the start, a peak above 80 GB, or a rate below 1700.
+2. (ii) allocates. Memory per 32^3 slot 110-130 MiB [JUDGEMENT: the arrays of a slot hold
+   ghost zones, (32+8)^3 / (16+8)^3 = 4.63 times a 16^3 slot = 119 MiB; 8 x 25.65 = 205 MiB
+   if none did], so a peak of 52-62 GB (fixed part taken as 1.6 GB = 70847 - 2700 x 25.65 MiB).
+   Refuted by an out-of-memory stop (more than about 175 MiB per slot) or by a peak outside
+   45-70 GB.
+3. Zone-cycles per second at 32^3 (ii) equal to or higher than at 16^3 (iii), up to 2 times
+   [JUDGEMENT: the ghost-zone work per cell falls from 3.4 to 1.95 cells per cell]. Refuted
+   by a lower rate at 32^3. (iii) runs 1800-2300 MeshBlock-cycles/s.
+4. Problem time per wall second on the same mesh: (iii) 2-4 times faster than (ii), because
+   the 32^3 tree has 3.9 times the cells (14.9 M against 3.8 M, run F-20261120-222636-46d03e0).
+   Refuted if (ii) is as fast as (iii) or faster.
+5. (iv) stops out of memory at the start: 1150 x 110-130 MiB = 124-146 GB. Refuted if it
+   allocates (then a 32^3 slot is below 70 MiB and the 32^3 option must be looked at again).
+Consequence planned: the cost table uses the measured memory and rates; 16^3 at about 3000
+slots is the default if 1 holds.

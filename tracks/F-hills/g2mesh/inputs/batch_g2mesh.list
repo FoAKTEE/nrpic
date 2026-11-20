@@ -1,0 +1,13 @@
+# g2mesh G2M-2: one card, release core-v0.3 (.work/build_gpu_v03/src/athena), four short cases.
+# File outputs off (outputN/dt=-1: athenak/src/outputs/outputs.cpp line 83 skips an output with
+# dt <= 0) except the history; trackers, horizon summaries and logs are written as usual.
+# Slots >= the start and first-regrid trees of tracks/F-hills/g2mesh/scripts/bench_cases.py
+# (run F-20261120-222636-46d03e0; model equal to athena -m level by level).
+# (i)   P1 at m/16 (11 levels, 2514 blocks at the start), 16^3, 3000 slots: allocation, memory, rate
+m16_b16_s3000 tracks/F-hills/nr_first/inputs/p1_q4.athinput mesh_refinement/num_levels=11 mesh_refinement/max_nmb_per_rank=3000 time/nlim=64 output2/dt=-1 output3/dt=-1 output4/dt=-1 output5/dt=-1 output6/dt=-1 -t 00:10:00
+# (ii)  core's three-hole mesh with 7 levels at 32^3 (456 blocks), 460 slots: memory per 32^3 slot, rate per cell
+bt7_b32_s460 problems/puncture/by_triple.athinput mesh_refinement/num_levels=7 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 mesh_refinement/max_nmb_per_rank=460 time/nlim=64 output2/dt=-1 output3/dt=-1 output4/dt=-1 output5/dt=-1 -t 00:10:00
+# (iii) the same mesh at 16^3 (932 blocks), 1000 slots: rate per cell at 16^3 on the same problem
+bt7_b16_s1000 problems/puncture/by_triple.athinput mesh_refinement/num_levels=7 mesh_refinement/max_nmb_per_rank=1000 time/nlim=64 output2/dt=-1 output3/dt=-1 output4/dt=-1 output5/dt=-1 -t 00:10:00
+# (iv)  P1 at m/8 with 32^3 blocks (1128 at the start), 1150 slots: predicted out of memory at the start
+m8_b32_s1150 tracks/F-hills/nr_first/inputs/p1_q4.athinput meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 mesh_refinement/max_nmb_per_rank=1150 time/nlim=64 output2/dt=-1 output3/dt=-1 output4/dt=-1 output5/dt=-1 output6/dt=-1 -t 00:10:00
