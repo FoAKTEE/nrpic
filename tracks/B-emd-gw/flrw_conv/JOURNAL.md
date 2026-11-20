@@ -206,3 +206,29 @@ centred difference of ln D itself carries a truncation error of order (Delta ln 
 straight-line fit over a window of 0.1 in ln a, because late in the run the records come
 closer in ln a (3e-4 per step) and the record-to-record jitter of an amplitude (1e-5 in
 phi) would otherwise be amplified; the pointwise difference quotient is kept as `_fd`.
+
+## Entry 3 (2026-11-20 14:35 PST): PAUSED (locks/PAUSE written 14:33)
+
+Stopped here on the pause flag. One step started after the flag appeared (my check printed
+the flag but did not stop the chained command): the initial data of the optional
+Poisson-like start, run B-20261120-223448-7f7c034 (one second, completed, finished; case
+f_n32_p1_a3, A3 = h/2 at 32 cells: delta_rms 0.469 compensated, Phi_rms 2.7e-4,
+<delta Phi> -9.0e-5). Nothing else was started after 14:33.
+
+State for the restart:
+- Card job J1 = run B-20261120-222955-c8e16e3, Slurm 4746, PENDING (leg F at 32^3, leg B at
+  32^3 with 1/8/27 per cell). It may run on its own. When it has ended: `nrpic-run finish
+  B-20261120-222955-c8e16e3`; outputs in scratch/B-emd-gw/B-20261120-222955-c8e16e3/<case>/.
+- Processor runs P1 = run B-20261120-223006-24448ac (16^3: f_n16_p1_a0, f_n16_p1_a2,
+  b_n16_p1; started 14:30, about 17 minutes) still running in the background when the
+  session stopped; close it with `nrpic-run finish B-20261120-223006-24448ac`.
+- Not submitted: J2 (`inputs/batch_j2.list`: b_n64_p1, f_n64_p1_a0, f_n64_p1_a2; add
+  f_n32_p1_a3 from run B-20261120-223448-7f7c034 if wanted; 0.6 card-h) and J3
+  (`inputs/batch_j3.list`: b_n128_p1 to a = 51; 0.65 card-h). Submit each with
+  `nrpic-run submit --kind scouting --gate G2 --package tracks/B-emd-gw/flrw_conv
+  --launcher batch --list <list> --exe /data/haiyangw/nrpic/.work/build_gpu_v03/src/athena
+  --gpu-hours 0.65 --wall 00:55:00` once the owner has fewer than two card jobs.
+- Then: `inputs/runs.json` (case -> '<run id>/<case>'), registered analysis with
+  `scripts/analyze_f.py` and `scripts/analyze_b.py`, figures into `figs/`, numbers into
+  `results/`, outcomes against PF1-PF6 and PB1-PB5 here, verdict in README.
+Card time used by this package so far: none (J1 has not started).
