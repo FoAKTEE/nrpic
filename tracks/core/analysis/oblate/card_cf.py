@@ -53,6 +53,13 @@ def main():
         same_pos = bool(np.array_equal(x[o1], xc[o2]) and np.array_equal(y[o1], yc[o2])
                         and np.array_equal(z[o1], zc[o2]))
         diff = p4[o1] != fcpu["adm_psi4"][o2]
+        _, _, _, _, fcc = cc.load(a.cpu, "con")
+        res["max_abs_H_over_32pi_rhoN_processor"] = float(np.abs(fcc["con_H"]).max() / Hc)
+        res["con_H_cells_differing_from_processor_dump"] = int(
+            np.sum(fc["con_H"][o1] != fcc["con_H"][o2]))
+        res["con_H_largest_difference_over_32pi_rhoN"] = float(
+            np.max(np.abs(fc["con_H"][o1].astype(np.float64)
+                          - fcc["con_H"][o2].astype(np.float64))) / Hc)
         res.update(cpu=a.cpu, same_cell_positions=same_pos,
                    cells_differing_from_processor_dump=int(diff.sum()),
                    largest_difference_from_processor_in_float32_units=float(
