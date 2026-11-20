@@ -46,6 +46,21 @@ RUNS = {
     "selfsim": P + "123813-97afeea",        # self-similar solution with a seed
     "shells_ana": P + "125613-248fdaf",     # shell calculations: growth, capture, plan
     "infall_lead": P + "145610-5259f48",    # lead's closed-form re-check
+    # wave 2 (note v1)
+    "kerr_ref": P + "171615-8adbbdd",       # Kerr spike reference, deviations at own nodes
+    "kerr_ic": P + "172335-9e5ccf9",        # Kerr initial data (48000 particles, KS slice)
+    "kerr_run": P + "172611-1e40191",       # AthenaK on analytic Kerr-Schild a = 0.8, 20000 M
+    "kerr_expected": P + "172646-ed6a510",  # reference grid of the binned counts
+    "kerr_ana": P + "174954-786ddcc",       # stationarity analysis
+    "nm128c": "D-20261115-171503-4262f03",  # Newtonian mode, dx = 1.06 M, to a/a_i = 4
+    "nm64c": "D-20261115-171505-62940f4",   # Newtonian mode, dx = 2.125 M, to a/a_i = 4
+    "nm128Lc": "D-20261115-171507-d1058a9", # Newtonian mode, dx = 2.75 M, to a/a_i = 8
+    "nm_ana": "D-20261115-190541-e27453d",  # analysis of the three against matched shells
+    "es2_data": "D-20261115-170213-d2c2131",  # bubble data with dust to 60 M, vacuum table
+    "es1": "D-20261115-172726-60ba4c2",     # first bubble run, card, 1+log, M/8, 200 M
+    "v1": "D-20261115-172730-c6d151b",      # its vacuum control
+    "es_ana": "D-20261119-141839-8686bd7",  # analyse.py on both (es_runs entry 4)
+    "es_extra": "D-20261119-142929-bb375ff",  # es_extra.py on both (entry 6)
 }
 
 CHECKED = []   # (run_id, relative path, "sha256 ok" | "no sha256sums.txt (wave-1 run)")
