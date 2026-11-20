@@ -100,3 +100,50 @@ fig_floor, fig_spike, fig_infall, schem_architecture, schem_timeline.
   appended: proposed statuses for C5-C7, C9, C10, C13-C15 with evidence, the five remarks of
   the claims check, a draft for the decision paragraph. `nrpic-stage verify` not run (it
   writes into the stage directory, outside this package's paths).
+
+## 2026-11-20T22:18Z  wave 3, round 1: working note v1 (helper `note`), predictions
+
+Worktree at 0f6b3be5 (main merged, up to date; git status clean, no stranded files of this
+package). Package brief: `../PLAN-wave3.md`, row `note`. This round adds to the note the
+wave-2 baselines (Kerr spike and its AthenaK stationarity; the Newtonian-mode infall), the
+first full-relativity runs (the bubble run and its vacuum control) and the redrawn
+architecture schematic (G1 item C9). Results that other helpers produce in parallel this
+round (the lapse_leak run, the matter run, the late-drift controls, the late Newtonian-mode
+run, the G1 verifier) are named only as pending work, with no numbers. No simulation is run:
+three new figure scripts read registered outputs, each registered with `nrpic-run submit
+--package tracks/D-bh-dress/note`. Predictions, written before any new script ran:
+
+- P7 (`scripts/fig_kerr.py`; reference D-bh-dress-20261115-171615-8adbbdd, stationarity
+  analysis -174954-786ddcc). The script reads the numbers it prints from the run files, so
+  it must reproduce `spike/README.md` items 5 and 6 to the printed digits: constant-f
+  equatorial peaks 0.9271e8 GeV/cm^3 at 7.31 Gm (a = 0.5) and 1.0604e8 at 6.61 Gm (a = 0.8),
+  largest deviation from FdRW fig_rho_a 0.88 % and 0.95 %; Hernquist a = 0.8 peak 3.922e18
+  at 5.06 Gm against FdRW 4.083e18 (ours 4 % below); stationarity chi^2 median 43.8 for
+  47 dof, late/early ratios 0.998, 1.003, 0.999, 1.000, 1.000 in the five ranges. Refuted
+  by any difference in the printed digits (then README or my reading is wrong).
+- P8 (`scripts/fig_newton.py`; runs D-20261115-171503-4262f03, -171505-62940f4,
+  -171507-d1058a9, analysis -190541-e27453d). From `nm_growth.txt` and `nm_analysis.json`:
+  M_ta at a/a_i = 4 is 2.5966 (N128c and N64c) and 4.8159 at a/a_i = 8 (N128Lc); dress
+  0.7975, 0.7966 at 4 and 2.1537 at 8; the largest M_ta deviation from the kernel-matched
+  shells after a/a_i = 1.5 is 0.10, 0.12 and 0.31 %; dress/M_ta 0.307 (a/a_i = 4) and 0.447
+  (8) against the self-similar 0.625. Refuted by a difference in the fourth digit of a mass
+  or the second digit of a deviation.
+- P9 (`scripts/fig_esrun.py`; my own reading of the raw outputs of D-20261115-172726-60ba4c2
+  and -172730-c6d151b through the readers of `es_runs/analyse.py`, data run
+  D-20261115-170213-d2c2131). It reproduces es_runs JOURNAL entry 4 and 6 to three digits:
+  horizon drift from t0 = 100 M, max |.| over 100-200 M 3.40e-4 (ES) and 1.37e-4 (V);
+  over 100-165 M within [-5.0e-5, +9.3e-5] and [-4.2e-5, +2.1e-5]; level M_AH(100 M) - M
+  +9.55e-4 and +9.37e-4; largest |drift(ES) - drift(V)| 2.04e-4 = 1.49 V's floor; wall
+  tracers max |R/R_exact - 1| for tau <= 200 M 2.20e-3 and 1.59e-3; crossings of R = 2M at
+  tau = 14.826 and 34.437 M (exact 14.827, 34.442); the 20 M group of ES at tau = 244.09-244.51
+  M; lapse at the probe x = 46 M 1.292, 1.662, 1.636 at t = 10, 25, 50 M against the
+  homogeneous 1+log model 1.377, 2.096, 3.577 (`plateau_lapse_model`). Refuted by a
+  difference in the third digit (then either my reader or the journal is wrong).
+- P10 (schematics). `schem_architecture.py` and `schem_timeline.py` redrawn render with no
+  text running out of its block (checked by eye on the PNGs, and by a bounding-box test
+  in the scripts that reports any label wider than its block).
+- P11 (ledger). Every old row of `tables/ledger.tex` is reproduced unchanged by the rerun
+  (the inputs are the same registered files); the new rows equal the numbers of P7-P9.
+- P12 (checker). `check_manuscript.py --compile` with the guide's forbid list: 0 undefined
+  references or citations, 0 overfull boxes; hits only in the ledger appendix and the
+  registration scripts (exception 1 of the guide).
