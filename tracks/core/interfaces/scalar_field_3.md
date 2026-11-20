@@ -1,11 +1,11 @@
 # Scalar field, third pass: mode keys, the inflection (ultra-slow-roll) case, the first-order constraint part at late entry, lapse conditions, signed constraint means
 
-Status: PROPOSAL of core (branch `core/scalar-3`, 2026-11-19), an amendment to
+Status: PROPOSAL of core (branch `core/scalar-3`, 2026-11-19, closed 2026-11-20), an amendment to
 `scalar_field.md` (release core-v0.3) and `scalar_field_2.md` (branch `core/scalar-2`).
 Client: Track E. Evidence labels as in the brief; every number carries a run id
 (`tracks/core/runs/<run_id>/manifest.json`, outputs `scratch/core/<run_id>/`).
 Predictions and outcomes, including the failed ones: `tracks/core/JOURNAL-scalar3.md`
-(J3, entries 0 to 14 and later). Paper keys: P1 = arXiv:2512.14649 v2 `PRD_v2.tex`; SPEC =
+(J3, entries 0 to 19). Paper keys: P1 = arXiv:2512.14649 v2 `PRD_v2.tex`; SPEC =
 `tracks/E-stoch-inf/spec/SPEC.md` on `track/E-stoch-inf`.
 
 ## 1. What is new
@@ -22,7 +22,7 @@ Predictions and outcomes, including the failed ones: `tracks/core/JOURNAL-scalar
 | `problems/scalar/usr_stochastic.athinput`, `usr_stochastic_modes.txt` | the inflection case of P1 at 32^3 (section 3) |
 | `problems/scalar/sr_stochastic_gauge.athinput` | the quadratic case with a lapse that is not geodesic (section 5); example of `con_signed` |
 | `tracks/core/interfaces/rng.md` | stream 3, rule 2, the mode entity (section 2) |
-| `tracks/core/analysis/scalar3/` | drivers of all tests, card lists, mode files for nmax2 = 256 and 1024, publish script |
+| `tracks/core/analysis/scalar3/` | drivers of all tests (`u1`, `u2`: inflection case; `a1` to `a3`: twin; `g1` to `g3`: lapse; `s1`, `s2`: signed means; `r1`: regression; `c2`: card against processors), card lists, mode files for nmax2 = 256 and 1024, publish script |
 
 One new input option, `<scalar_field> con_signed` (default false). Lines of files that
 existed before (against `core/scalar-2` at 207424d; another core branch may touch the
@@ -87,7 +87,47 @@ integration of the code (section 4) to 7e-7 per mode and 2e-4 in rms (run
 core-20261119-160409-50a58d9): at first order the code does on the inflection case what
 its linearised equations say. The 256^3 production set-up is Track E's (its G2 plan).
 
-CARD_U
+Card runs at 64^3 and 128^3 (one A100, card run core-20261119-150317-a1e8ee7, 16 runs to
+10.06 e-folds in 0.31 card-hours; analyses core-20261120-221013-e198ebf, -221056-2c86192,
+-221200-82f631a, -221222-eb99a13; J3 entry 18) [VERIFIED for these resolutions, one seed]:
+
+| Quantity | 32^3 | 64^3 | 128^3 |
+|---|---|---|---|
+| <Pi> against the reference at the end (s = 0) | 4.1e-4 | 2.5e-5 | 1.6e-6 |
+| <phi>, <K>, e-folds against the reference, largest | 3.5e-7, 9.3e-8, 7.0e-6 | 2.1e-8, 5.4e-9, 4.2e-7 | 1.3e-9, 3.2e-10, 2.6e-8 |
+| uniform residual <\|H\|/[H]>, its maximum (2.3 e-folds) | 1.08e-7 | 6.2e-9 | 3.8e-10 |
+| mode functions of the sources against SciPy, lowest shells late | 4.1e-4 | 2.5e-5 | 1.6e-6 |
+| R^NR (odd part) against W R alpha, shell \|n\| = 8 after 6 e-folds (4, 8, 16 cells per wavelength) | 6.1e-3 | 1.3e-4 | 2.1e-6 |
+| the same, top shell at 4 cells per wavelength (\|n\| = 8, 16, 32; nmax2 = 64, 256, 1024) | 6.1e-3 | 3.6e-3 | 3.8e-3 |
+| <\|M\|/[M]> at 4 e-folds with k_max at 4 cells per wavelength | 1.6e-2 | 1.3e-2 | 4.7e-3 (3.2e-2 at 6.4 e-folds) |
+| the same with nmax2 = 64 (8 and 16 cells) | | 3.3e-4 | 4.9e-5 |
+
+- Fourth order in the step (ratios 16.2 to 17.3 per halving) for the background, the
+  mode functions and the uniform residual; Track E's A1 (1e-4) holds throughout from
+  64^3 on. Sixth order in the cells per wavelength for the lattice error of R^NR (ratios
+  48 and 60); its size is a third of the error of the lattice k^2.
+- 128^3 with nmax2 = 1024: 68532 modes, of which 56741 enter after 2.93 e-folds, inside
+  the ultra-slow-roll phase. The pair s = +-0.01 follows the linear reference within
+  2.5e-6 for \|n\| <= 8 and 3.8e-3 for the top shell at every dump: slice and sources hold
+  for entry during ultra slow roll.
+- At s = 1 this run reaches an rms R^NR of 0.495 over the box (the linear value), carried
+  by the short modes. The long modes of the single realisation follow linear theory to
+  2e-3 to 3e-3 (\|n\| <= 4; the part even in s, a hundred times less at s = 0.01); the
+  box mean of Pi leaves the homogeneous background by 1.3e-5 (2.8e-8 at s = 0.01): the
+  perturbations act back on the mean at second order.
+- Constraints. <\|H\|/[H]> is the uniform residual until 3.5 e-folds and below 5.4e-12 from
+  4 e-folds on (9.9e-13 at s = 0.01). <\|M\|/[M]> during ultra slow roll is first order
+  over first order (the same at s = 1 and 0.01 until 6 e-folds): the stencil defect of
+  section 4 against a magnitude that falls with Pi_b; up to 3.2e-2 with k_max at 4 cells
+  per wavelength, and at 4 e-folds 47 times less at 8 cells than at 4. Late it is a floor of \|M\| (1e-14 to 3e-14, the same
+  for every amplitude) over [M], which is proportional to the amplitude: 1e-2 at s = 1,
+  0.1 at s = 0.1, of order one at s = 0. A late <\|M\|/[M]> of 1e-2 (P1:541) is therefore
+  no measure of an error of the solution; `con_signed` and the pair of runs with s = +-
+  a small value separate the parts.
+- Cost on one A100: 0.151 s per step at 128^3 with 68532 modes (1.39e7 zone-cycles per
+  second; 6.5 percent more than with 1054 modes), 856 steps for 10 e-folds.
+- Not done: 256^3 (Track E's production set-up), more than one seed, the spectra against
+  the figures of P1.
 
 ## 4. The first-order part of the constraints when the last shells enter (item 3)
 
@@ -152,13 +192,30 @@ Measured (J3 entries 3, 6, 8, 12):
 | 1+log relaxed, `lapse_leak = 10` | needs `core/gauge` | the lapse settles at exp(6 H T) = 1.81 and follows H; the solution is unchanged at equal field value (K to 3.3e-11, e-folds to 5.2e-5) (runs -144906-69c60cc, -150816-a8f9558) |
 | conformal time capped, `lapse_harmonic = 1/3`, `lapse_leak = 50`, `lapse_leak_alpha = 8` | needs `core/gauge` | alpha = a to 7.8e-8 until 8, then the root of ln(alpha/8) = T H alpha (9.5); at the step of a 256^3 run 8 e-folds take 252 steps instead of 1341 (5.3 times fewer), the solution unchanged at equal field value (K to 6.8e-12) (run core-20261119-150838-0251a5e) |
 
-G5_RESULT
+The capped conformal-time lapse with the stochastic sources (test G5; test build of
+this branch plus the relaxation term of `core/gauge`, `scratch/core/tmp/gmerge/`;
+quadratic case, 32^3, nmax2 = 64, step of a 256^3 run; runs core-20261119-160239-0b1b4ae,
+-163800-fe87748, analysis -170729-b99adc7; J3 entry 17) [VERIFIED on the test build]:
+
+| Quantity | Capped conformal time | Geodesic, same step |
+|---|---|---|
+| steps for 3.14 e-folds | 163 | 522 (interpolated between dumps; 538 for 3.24) |
+| mean lapse | a to 1.0e-8 until 1.5 e-folds; 9.54, 9.61, 9.62 at 2.69, 2.92, 3.14 e-folds (still settling towards the root: 1.4e-2 off at 2.6) | 1 |
+| rms of the lapse perturbation | at most 8.8e-6 (at the cap) | 4e-16 |
+| R^NR per mode against W R alpha, largest: \|n\| <= 2, \|n\| <= 4, all with W > 1/2 | 1.57e-6, 7.4e-5, 2.8e-3 | 1.56e-6, 7.5e-5, 3.0e-3 |
+| record maxima <\|H\|/[H]>, <\|M\|/[M]> | 4.68e-11, 3.72e-4 | 4.70e-11, 3.71e-4 |
+
+The sources and the extraction give under a lapse that grows from 1 to 9.6 what they
+give in geodesic slicing, in 3.2 times fewer steps over this stretch (5.3 times over 8
+e-folds on the homogeneous background). Not shown: beyond 3.1 e-folds with the sources,
+the inflection case, another resolution.
 
 What a long run needs from `core/gauge` [JUDGEMENT]: only the relaxation term
 (`lapse_leak`, `lapse_leak_alpha`; `z4c/z4c_gauge_ext.hpp`, 232 lines, and ten lines in
 `z4c.cpp` (1), `z4c.hpp` (2), `z4c_calcrhs.cpp` (7), `git diff f51539c 96b215c`). It merges with this branch without conflict (this branch
-touches nothing under `z4c/`; test build `scratch/core/tmp/gmerge/`). Recommended for a
-256^3 inflationary run once both are merged: the capped conformal-time lapse with
+touches nothing under `z4c/`; test build `scratch/core/tmp/gmerge/`), and `core/gauge` is
+among the branches of release candidate core-v0.4. Recommended for a 256^3 inflationary
+run once this branch is merged too (core-v0.5): the capped conformal-time lapse with
 alpha_0 = 0.05 N/(2 pi C) (8 at 256^3, Courant 0.25) and T = 0.02: the run then takes
 (1 - 1/alpha_0) N/(2 pi C) steps for the first ln alpha_0 e-folds and 20 per e-fold after.
 Not tested: refined meshes, a perturbation that collapses, the 1+log part of
@@ -176,24 +233,74 @@ record is byte for byte that of `core/scalar-2`. Reader: `read_con_history` (nam
 H_mean, Mx_mean, My_mean, Mz_mean, Hp_ratio, Hp_ratio_max, Hp_rms). Example:
 `problems/scalar/sr_stochastic_gauge.athinput`.
 
-S_RESULT
+[VERIFIED, runs core-20261119-165619-a6cb9fd, core-20261120-220949-4406ca1; J3 entry 17]
+Inflection case, 32^3, to 3 e-folds: with and without the option every other file is
+byte-identical and the first 20 columns of the record are the same on all 65 lines. The
+seven columns equal the two reductions repeated on the dumps as running sums, bit for
+bit, at all 14 dumps of the runs with s = 1 and s = 0. At s = 0, <\|H'\|/[H]> is at most
+1.1e-19 while <\|H\|/[H]> is 1.9e-8 to 1.0e-7; at s = 1 it is 1.3e-12 to 5.2e-11, 1700 to
+12500 times below <\|H\|/[H]>, and rms H' = 7.06e-10 at 2.45 e-folds is the first-order
+part the twin of section 4 gives. Three things a user should know:
+- A recomputation from a dump with another order of summation (numpy's mean) differs by
+  6.3e-13 in <H> (the code divides by a running sum of the equal cell volumes, which is
+  6.26e-13 low at 32^3) and by up to 6e-10 in <\|H'\|/[H]> where H' is 1e-4 of H: the limit
+  is the cancellation in H - <H>.
+- <H> is not the time-integration residual alone: the initial slice satisfies the
+  constraints at first order, and its second-order residual has a mean (4.2e-11 at s = 1
+  at t = 0, beside rms H' = 4.5e-11; it scales with s^2). At a small step it is what is
+  left of <H> (quadratic case at the step of 256^3: \|<H>\|/[H] = 1.5e-12 to 4e-13 during
+  the first two e-folds; run core-20261119-163800-fe87748).
+- <M_i> is 2e-4 to 5e-2 of rms \|M\| (largest before the last shells enter, when \|M\| is
+  second order).
 
 ## 7. What is verified, and what is not
 
-R_RESULT
+| Test | Result | Runs |
+|---|---|---|
+| T0 mode keys | `mode_entity`, `mode_alpha` equal the old keys and Track E's independent generator bit for bit | core-20261119-144905-cea3a49 |
+| R2 regression of the published processor executable (source 5cc2821) | ten scalar-field cases of wave 1 against release core-v0.3: 120 files, 110 byte-identical, 10 restart files identical but for unset header bytes; the three stochastic examples against `core/scalar-2`: 48 files byte-identical, after a restart 24 byte-identical and 6 restart files identical but for the recorded restart path; seven relativistic and gravity set-ups (geo, boris, dep, east, os, jeans, binary) against release core-v0.3: 39 files or result records byte-identical | core-20261119-165411-a48c7e0, -163901-9b7e6e6 |
+| C2b card executable against processor executable (gauge example with `con_signed`, 32^3, 20 steps) | evolved variables bit-identical at t = 0 and within 3.3e-14 (absolute) at cycles 9 and 17, no growth; H within 3.7e-13, M_i within 1.1e-13; record: <\|H\|/[H]> within 1.8e-17, its maximum within 8.6e-15, <\|M\|/[M]> within 4.5e-11; means of quantities of order one within 6.3e-13 relative (order of summation) | core-20261120-221332-687a1dc (card run core-20261119-155551-9096ee7) |
+| U inflection case | section 3 | section 3 |
+| A, A2, A3, A-usr first-order constraint part and twin | section 4 | section 4 |
+| G1 to G5 lapse conditions | section 5 | section 5 |
+| S, PSd signed means | section 6 | section 6 |
+
+The card executable that ran the card runs of section 3 was built from cea3a49, the
+source before `con_signed` (the option is the only difference); the published card
+executable (5cc2821) was compared with the processor executable in C2b and has run no
+long case. Failed predictions, each with what was measured, are in the journal; none of
+them is an open defect of the code. Three are worth knowing: the
+size of the lattice error of R^NR is a third of the lattice k^2 error; the single
+realisation at s = 1 stays linear to 0.3 percent for the long modes where I expected
+order-one departures; a comparison of the two executables relative to the largest value
+of a small perturbation field is meaningless (entry 16).
 
 Not tested, known limits:
-- No run of this branch beyond 32^3 on processors; the card runs of section 3 are listed
-  there with their state. One seed.
+- Nothing at 256^3; one seed (20261115); no comparison of spectra with the figures of P1.
 - The early floor of the odd constraint parts on the card ladder (N = 64, 128) is not in
   the twin ([JUDGEMENT] rounding).
 - The drift of the lowest modes under `lapse_kdriver` and the first dump under
   `lapse_harmonic = 0.05` are not explained.
 - The relaxed and the capped lapse need `core/gauge`; their test with the sources ran on
-  a test build outside both branches (section 5).
+  a test build outside both branches (section 5), to 3.1 e-folds, quadratic case only.
+- The back-reaction of the perturbations on the box means (1.3e-5 in <Pi> at rms R^NR =
+  0.5) is measured, not compared with a reference.
 - The initial slice satisfies the constraints at first order only; a* = 1 only; no refined
   mesh.
 
 ## 8. Published executables (decision 0013)
 
-PUBLISH
+`/data/haiyangw/nrpic/scratch/core/exe/core_scalar-3/` (published 2026-11-20):
+
+| File | Content |
+|---|---|
+| `athena_gpu` | one A100; sha256 8dc2ae83e9861c797377577403136d39b3237abe5855f8c633e25b646885d494 |
+| `athena_cpu` | processors, serial; sha256 5201b88318fc69fb97ff41f4b775d6f02a3d6f7ebbbefd8830ca0f87baeacd33 |
+| `COMMIT` | 5cc28211, the commit of the source of `athenak/` (unchanged on the branch since) |
+| `SHA256SUMS`, `READY` | checksums; options, examples, what is tested and what is not |
+
+Both were built on 2026-11-19 with `scripts/build_gpu.sh` and `scripts/build_cpu.sh` in
+this worktree. For scouting runs (decision 0013); the release is core's lead's step
+(the branch is to be merged after release candidate core-v0.4). A slow-roll or
+inflection input of `core/scalar-2` runs unchanged and gives the same bytes on the
+processors (R2).
