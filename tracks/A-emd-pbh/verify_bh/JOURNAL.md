@@ -116,3 +116,24 @@ Predictions (what I expect; what would make the claim WRONG):
   (0.65) and below 2e-2 at 9.0 (0.5). WRONG if my largest |eps| exceeds the claimed bound
   by more than 30 per cent (my reading of R from the metric at the particle has its own
   interpolation error, which I estimate from the t = 0 records, where eps must vanish).
+
+## 2026-11-20 14:34 PST, entry 2: PAUSED (flag locks/PAUSE, five-hour window at 97 per cent) - where I stopped
+
+Done: scripts/ (vbio.py readers, ltb.py LTB from the table, partdata.py tracked particles,
+c1_exact.py, c2_initial.py, c3_horizon.py, c4_lines.py, c5_shells.py, figstyle.py copy),
+committed. Each script was run once UNREGISTERED to debug it (outputs in
+scratch/A-emd-pbh/tmp/verify_bh/dev/; figures fig_c1_exact, fig_c2_initial,
+fig_c3_horizon_bh_smr looked at). Those numbers are NOT evidence; no outcome is recorded
+yet. Not started: no registered run (nrpic-run submit) exists, no VERIFIER.md, no
+README.md.
+
+Restart here: (1) commit state is clean for scripts/; (2) register the five runs, each with
+`harness/bin/nrpic-run submit --kind scouting --gate G2 --package tracks/A-emd-pbh/verify_bh
+--launcher local --cores 2 --purpose '...' -- bash -c 'OMP_NUM_THREADS=2 .venv/bin/python
+tracks/A-emd-pbh/verify_bh/scripts/<c?>.py [bh_smr]'` (c3 takes the run name), then
+`nrpic-run finish <id>`; (3) copy the figures into verify_bh/figs/, read them, write the
+outcomes of P1-P5 here; (4) VERIFIER.md sections 1-3, commit, push; then section 4.
+Points to settle in the registered runs (seen in the debug outputs, not yet established):
+the first-detection horizon mass of BH-1R against the slice mass; the stencil dependence
+of the first trapped line point of BH-1 M/8 (t = 11.0 or 11.25); the time the BH-1 M/8
+histories turn non-finite; the C5 bounds at tau = 3.37 (BH-1R and M/8).
