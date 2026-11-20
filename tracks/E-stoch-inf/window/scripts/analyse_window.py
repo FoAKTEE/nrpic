@@ -257,14 +257,17 @@ def analyse_case(rundir, case, out):
         cw = runs[f"{pre}{w}_p"]["con"]
         n = min(cw.shape[0], cb.shape[0])
         same_t = bool(np.allclose(cw[:n, 0], cb[:n, 0], rtol=0, atol=1e-12))
-        late = cb[:n, 2] > 5.0
-        rel = lambda col: float(np.max(np.abs(cw[:n, col] - cb[:n, col]) / np.abs(cb[:n, col])))
+        ok = np.abs(cw[:n, 0] - cb[:n, 0]) < 1e-10      # rows at the same time only
+        cw_, cb_ = cw[:n][ok], cb[:n][ok]
+        late = cb_[:, 2] > 5.0
+        rel = lambda col: float(np.max(np.abs(cw_[:, col] - cb_[:, col]) / np.abs(cb_[:, col])))
         S["windows"][w].update(
             con_same_steps=same_t, con_cycles=int(cw[-1, 1]),
-            H_record_late_ratio=[float(np.min(cw[:n, 3][late] / cb[:n, 3][late])),
-                                 float(np.max(cw[:n, 3][late] / cb[:n, 3][late]))] if late.any() else None,
-            M_record_late_ratio=[float(np.min(cw[:n, 6][late] / cb[:n, 6][late])),
-                                 float(np.max(cw[:n, 6][late] / cb[:n, 6][late]))] if late.any() else None,
+            con_rows_compared=int(ok.sum()),
+            H_record_late_ratio=[float(np.min(cw_[:, 3][late] / cb_[:, 3][late])),
+                                 float(np.max(cw_[:, 3][late] / cb_[:, 3][late]))] if late.any() else None,
+            M_record_late_ratio=[float(np.min(cw_[:, 6][late] / cb_[:, 6][late])),
+                                 float(np.max(cw_[:, 6][late] / cb_[:, 6][late]))] if late.any() else None,
             H_record_max=float(cw[:, 3].max()), M_record_max=float(cw[:, 6].max()),
             means_rel_diff_vs_b=dict(phi=rel(16), Pi=rel(17), K=rel(18)))
         D[f"con_{w}"] = cw
@@ -406,6 +409,8 @@ def figures(S, D, case, out):
             axx.semilogy(cN, np.maximum(pr, 1e-30), color=cols[w], lw=1.0)
             axx.semilogy(cN, np.maximum(pn, 1e-30), "o", ms=3, mfc="none", color=cols[w],
                          label=wl.LABEL[w])
+        top = max(kfac * (np.abs(D["ref"][w][:, sel])**2).mean(axis=1).max() for w in present)
+        axx.set_ylim(1e-8 * top, 3 * top)
         axx.set_title(f"shell |n|^2 = {modes.shell_n2[j]} (k = {ks[j]:.2f} dk, {sel.sum()} modes)",
                       fontsize=9)
     axs[0, 0].legend(loc="lower right", fontsize=7)
