@@ -1,0 +1,117 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-20261120-223130-6742500",
+  "track": "C-sidm",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "verify_g1 V1b (of record): isobaric-mode analysis of runs C-20261119-144545-c606492 and C-20261119-155434-8563453 with the two-panel kappa figure",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/C-sidm/verify_g1/v1_mode.py",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "67425000bf42788d00dae43a94b2c1df6c949b53",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "package": [
+      "tracks/C-sidm/verify_g1"
+    ],
+    "outside_package": {
+      "count": 20,
+      "first": [
+        " M tracks/C-sidm/drift/scripts/controls.py",
+        " M tracks/C-sidm/note/figures/fig_box_step.pdf",
+        " M tracks/C-sidm/note/figures/fig_collisions.pdf",
+        " M tracks/C-sidm/note/figures/fig_knudsen.pdf",
+        " M tracks/C-sidm/note/figures/fig_sequences.pdf",
+        " M tracks/C-sidm/note/figures/schem_architecture.png",
+        " M tracks/C-sidm/note/figures/schem_architecture.svg",
+        " M tracks/C-sidm/note/figures/schem_timeline.svg",
+        " M tracks/C-sidm/note/scripts/schem_timeline.py",
+        " M tracks/C-sidm/note/tables/ledger.tex",
+        "?? tracks/C-sidm/note/figures/fig_box_summary.pdf",
+        "?? tracks/C-sidm/note/figures/fig_box_summary.png",
+        "?? tracks/C-sidm/note/figures/fig_cluster.pdf",
+        "?? tracks/C-sidm/note/figures/fig_cluster.png",
+        "?? tracks/C-sidm/note/figures/fig_heat.pdf",
+        "?? tracks/C-sidm/note/figures/fig_heat.png",
+        "?? tracks/C-sidm/note/figures/fig_onsets.pdf",
+        "?? tracks/C-sidm/note/figures/fig_onsets.png",
+        "?? tracks/C-sidm/note/figures/schem_dataflow.png",
+        "?? tracks/C-sidm/note/figures/schem_dataflow.svg"
+      ]
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/C-sidm"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/C-sidm/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/C-sidm/verify_g1/v1_mode.py",
+      "role": "argv",
+      "sha256": "ac6c5e61a5ca20f4c6c7c416606179ec4b0a96eba1a703e456ba994264b53e4c",
+      "bytes": 12408,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/C-sidm/C-20261120-223130-6742500",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:31:30Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 45.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0142,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 2,
+    "runs": 139,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
