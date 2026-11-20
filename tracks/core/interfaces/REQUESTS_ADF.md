@@ -1,7 +1,7 @@
 # Requests of tracks D, A and F that are not gauge: triage and what was done
 
-Work package dfix of core, branch `core/requests-adf`, 2026-11-15; closed 2026-11-19
-(session dfix-3: the card cases that job 4456 did not reach). Journal with the
+Work package dfix of core, branch `core/requests-adf`, 2026-11-15; closed 2026-11-20
+(sessions dfix-3 and dfix-4: the card cases that job 4456 did not reach). Journal with the
 predictions and outcomes of every test: `tracks/core/JOURNAL-dfix.md`. Tests T1 to T6:
 scripts and case lists under `tracks/core/analysis/dfix/`, figures under
 `tracks/core/analysis/dfix/figs/`, run manifests under `tracks/core/runs/`.
@@ -30,7 +30,7 @@ Labels: [VERIFIED] read or measured in this package (locator given), [JUDGEMENT]
 | F1 | `pairwise-common-horizon` | ACCEPTED, done | Section 2.5 |
 | F2 | `hrna-pair-force-optional` | ACCEPTED FOR A LATER WAVE | Optional by the request; an O(N^2) pair force inside the pusher kernels is a new operator (interface rule 2 of `pusher.md`: between push and deposit) and needs F's four acceptance tests. Nothing in this package blocks it |
 | F3 | `two-card-or-larger-blocks` | ASSESSED, not started | Section 3: estimate for more than one rank. Larger MeshBlocks need no source change; the benchmark of 32^3 MeshBlocks is prepared (`cases/card_checks.list`, cases bench16, bench32) and not run by this package: it is Track F's to run with the release or the published executable (no source involved) |
-| F4 | `release-multi-puncture` | ANSWERED | Release `core-v0.3`, tag at 609a875, is merged into main (decision 0011, rulings of 2026-11-15T15:16Z): run that tag or the executables of the main checkout. Interface corrections taken (section 2.6). Memory at `max_nmb_per_rank = 2700` with three finders, measured on a card: MEM2700_ROW |
+| F4 | `release-multi-puncture` | ANSWERED | Release `core-v0.3`, tag at 609a875, is merged into main (decision 0011, rulings of 2026-11-15T15:16Z): run that tag or the executables of the main checkout. Interface corrections taken (section 2.6). Memory at `max_nmb_per_rank = 2700` with three finders, measured on a card: 70753 MiB, inside the predicted 70.9e3 +- 2.0e3 (run core-20261119-143036-185800a, judged core-20261120-220150-b6041db; `multi_puncture.md` section 5) |
 
 ## 2. What was implemented
 
@@ -148,7 +148,10 @@ crossing it both ways (1021 in, 963 out in 0.75 M): content = in - out - removed
 at every record, the content counted from the snapshots equals the history, the centre
 equals the tracker position of the same time to 5.6e-17. The tracker file
 `<basename>.co_<n>.txt` labels the position of t^(n+1) with cycle n and t^n (upstream,
-`docs/FORMATS.md`). T7_CARD
+`docs/FORMATS.md`). On a card (run core-20261119-143036-185800a, judged
+core-20261120-220150-b6041db): the same counts and contents, the identity exact in number
+and to 4.1e-25 in rest mass, the centre within 1.1e-16 M and every particle within
+8.9e-16 M of the processor run.
 
 ### 2.4 External gravity in the Newtonian mode (D5 item 1, A1)
 
@@ -291,17 +294,17 @@ Predictions and outcomes: `tracks/core/JOURNAL-dfix.md`. Scripts and case lists:
 | T4 | point mass, softening, background term, expanding box | core-20261115-160805-5d1663f, -162608-113493f, judged -180144-83abe17 | passes; two error bounds at dt = 0.002 failed, second-order convergence shown at half the step |
 | T5 | common horizon of a pair among three punctures | core-20261115-161025-3f75eb8; card: core-20261119-140644-074f8e3 | passes on processors and on a card (masses equal to 1e-15) |
 | T6 | existing set-ups byte for byte against release core-v0.3 | core-20261115-161129-f905e98 (and its sub-runs) | passes except the stored last_time of final off-schedule outputs (correction 2, by design); prediction "no exception" failed |
-| T7 | spheres on a moving puncture tracker | core-20261115-163129-a200caf, re-judged -180101-6d165b4; card: T7_RUNS | passes; the first centre check compared rows one step apart (tracker-file labelling); T7_STATE |
+| T7 | spheres on a moving puncture tracker | core-20261115-163129-a200caf, re-judged -180101-6d165b4; card: core-20261119-143036-185800a, judged -20261120-220150-b6041db | passes; the first centre check compared rows one step apart (tracker-file labelling); on a card the counts equal the processor run, positions within 8.9e-16 M |
 | card | T1, T3, T4 (to t = 18) with the card executable | core-20261115-161528-ff00411 (stopped at its 50-minute limit), judged -180353-7d7116d | passes: counts equal, positions within 1.2e-12 of processors |
 | repeat | T1, T2, T3 with the published executables against their first runs | core-20261115-163155/163203/163327-0f014b4, compared -180556-eb25f13, -180814-4652cf3 | identical byte for byte once the run directory in the parameter dump is masked |
 | timing | step time on a card of T5, T7, the three-hole mesh at 2700 slots, before the cases | core-20261119-140644-074f8e3 (Slurm job 4631, 32 s) | T5 complete in 17 s, T7 to cycle 9 in 6 s, three holes to cycle 4 in 5 s |
-| mem2700 | peak card memory, three-hole mesh, `max_nmb_per_rank = 2700`, three finders | MEM_RUNS | MEM_STATE |
+| mem2700 | peak card memory, three-hole mesh, `max_nmb_per_rank = 2700`, three finders | timing run core-20261119-140644-074f8e3; core-20261119-143036-185800a (32 cycles), judged -20261120-220150-b6041db | passes: peak 70753 MiB inside the predicted [68.9e3, 72.9e3], allocated at the start; history equal to the 2400-slot run in every printed digit; 25.65 MiB per slot between 2400 and 2700 slots |
 
 Executables published for scouting runs (decision 0013):
 `scratch/core/exe/core_requests-adf/{athena_cpu,athena_gpu,COMMIT,READY}`, source
-3f75eb8 (athenak/ unchanged to the tip of the branch; not republished in session dfix-3,
-which changed no source). Card time of the package: CARD_TOTAL card-hours (0.068
-reproduction, 0.838 card checks of 2026-11-15, 0.009 timing job and CARD_JOB2 card cases
+3f75eb8 (athenak/ unchanged to the tip of the branch; not republished in sessions dfix-3
+and dfix-4, which changed no source). Card time of the package: 0.923 card-hours (0.068
+reproduction, 0.838 card checks of 2026-11-15, 0.009 timing job and 0.008 card cases
 of 2026-11-19).
 
 Not done in this package (and why):

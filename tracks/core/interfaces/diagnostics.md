@@ -232,7 +232,11 @@ pericentre counter in the snapshots, and their block in the particle restart fil
 options, columns and the test against exact Schwarzschild geodesics (T3, run
 core-20261115-160245-727e96a) are in `REQUESTS_ADF.md` section 2.3 and
 `docs/FORMATS.md`. The history columns 17 to 20 now also count particles removed on
-the analytic metrics.
+the analytic metrics. Spheres on a moving puncture tracker: test T7 (run
+core-20261115-163129-a200caf). On a card T3 (run core-20261115-161528-ff00411) and T7
+(run core-20261119-143036-185800a) give the processor counts exactly and positions
+within 1e-15 relative (judged in core-20261115-180353-7d7116d and
+core-20261120-220150-b6041db).
 
 ## 11. Proposed interface rules (JUDGEMENT)
 

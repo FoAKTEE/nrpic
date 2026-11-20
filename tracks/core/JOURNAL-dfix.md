@@ -734,3 +734,78 @@ card time) [VERIFIED, `athena.log` and `*.gpumem.csv` of each case directory]
   1e-4 on the mass, 1e-3 on the radius); the pair rule acts on a card as on processors.
   The figure follows with the judgement of job 4638 (the analysis run was refused at
   14:5x UTC: the 16 cores of core were held by another core session's live run).
+
+## 2026-11-20 session dfix-4 (wave 3; after `git merge main` at d507d77)
+
+State found [VERIFIED]: branch at 32acd66 (work in progress of dfix-3: placeholders in
+`REQUESTS_ADF.md` and `READY.txt`), one uncommitted edit of `interfaces/multi_puncture.md`
+section 5 (the measured memory at 2700 slots, written by dfix-3 from the raw log of job
+4638 before its judgement). Slurm job 4638 (run core-20261119-143036-185800a) had ended
+on 2026-11-19 at 08:17 local in 28 s, both cases with exit 0 (`sacct`, `batch.list.status`);
+its manifest was closed by dfix-3 (ba1b2268). The merge of main changed nothing under
+`athenak/` (`git diff 3f75eb8 HEAD -- athenak/` empty), so the published executables are
+still the source of this branch. No card job is needed in this session.
+
+### Outcome of the card cases (judgement run core-20261120-220150-b6041db of runs
+core-20261119-140644-074f8e3 and core-20261119-143036-185800a; `card2_judge.py`, json
+and figure copied to `analysis/dfix/figs/card2_judge.json`, `figs/dfix_card2.png`,
+looked at) [VERIFIED]
+
+Judged by the predictions written on 2026-11-19 before the timing job ("Card cases still
+missing"):
+- T5: as recorded above from the timing job; the judge gives the same (masses of surface 0
+  equal to the processor run to 1.1e-15, mean radius to 1.7e-16, surfaces 1 and 2 without
+  a record on both devices). Not refuted.
+- T7 (24 cycles, 120 MeshBlocks, 4000 particles, 6 s of card time): 25 records; content
+  identity exact in number (0) and to 4.1e-25 in rest mass (bound 1e-23); the content
+  counted from each of the four snapshots with the centre of its record equals the
+  history (1990, 1997, 2074, 2048); centre of record k >= 1 minus tracker row k-1 at most
+  5.6e-17 (bound 1e-15), record time minus row time minus dt 0. Against the processor run
+  core-20261115-163129-a200caf: the same counts (1021 in, 963 out, 0 removed, 2048 inside
+  at the end), the count columns of the history identical at every record, the centre
+  within 1.1e-16 M (bound 1e-10) and every particle within 8.9e-16 M at the snapshots
+  (bound 1e-8). Not refuted. The bounds were loose by eight orders: over 24 steps of a
+  vacuum evolution card and processors differ only in the last digit (T1 reached 1.2e-12
+  over 3000 steps).
+- mem2700 (32 cycles, 1100 MeshBlocks, `max_nmb_per_rank = 2700`, three finders, 21 s):
+  no mesh error, cycle limit reached; peak 70753 MiB, inside [68.9e3, 72.9e3] (model
+  70941); 70685 MiB at the second sample (0.5 s after the first, baseline 14 MiB) and
+  70753 MiB from 2.0 s after the first sample to the end, the same series as in the
+  4-cycle timing run (memory allocated for the slot limit at the start, as predicted); the
+  history of the constraint norms equals that of the 2400-slot run in every printed digit
+  at t = 0, 0.25, 0.5. Not refuted. Per slot 26.20 MiB at 2700; between 2400 and 2700
+  slots 25.65 MiB per slot, so about 1.5e3 MiB do not scale with the slots, and a card
+  (81920 MiB) holds about 3100 slots with three finders [JUDGEMENT: two points, linear].
+  Seen, not part of a prediction: the card history has the row t = 0.5 twice (the final
+  output of `Driver::Finalize` after a stop at the cycle limit on a scheduled time, upstream
+  behaviour; the two rows are identical).
+- Figure `figs/dfix_card2.png`: T5 masses (card on processors), T7 counts (card on the
+  dotted processor curves), T7 card minus processors (1e-20 to 1e-15 against the dashed
+  bound 1e-8), memory against time of both 2700-slot runs with the predicted band (the red
+  32-cycle curve lies on the dashed model line, 0.2e3 MiB below it).
+
+Card time of the package: 0.0681 + 0.8383 (2026-11-15) + 0.0089 + 0.0078 (2026-11-19) =
+0.923 card-hours (manifests); session dfix-3 used 0.017 of its 0.75.
+
+### Handoff of work package dfix (closed)
+
+What exists, on branch `core/requests-adf` (to be merged by core's integration; the lines
+of shared files are listed in `interfaces/REQUESTS_ADF.md` section 5):
+- source of the requests D1 to D5, A1, F1 (tracer rule, output schedule across a stop,
+  accretion diagnostics, lapse removal on analytic metrics, external gravity of the
+  Newtonian mode, common horizon of a pair), tests T1 to T7, all passing on processors;
+  on a card T1, T3, T4 (to t = 18), T5, T7 and the memory at 2700 slots;
+- executables `scratch/core/exe/core_requests-adf/{athena_cpu,athena_gpu,COMMIT,READY}`
+  (source 3f75eb8, sha256 17ee5e28..., f423de38...; athenak/ unchanged to the tip; READY
+  updated in this session, no PENDING section);
+- triage and state of every request: `interfaces/REQUESTS_ADF.md`; memory per slot of the
+  three-hole mesh: `interfaces/multi_puncture.md` section 5.
+Not done in this package, and whose it is: Track D's 250 M acceptance run of
+`horizon_calib.athinput` and Track F's 16^3 against 32^3 MeshBlock benchmark (no source
+involved; case lines t1_accept, bench16, bench32 in `cases/card_checks.list`); a merger
+during an evolution for the pair horizon; the deferred requests of section 1 (special-
+relativistic Newtonian push, snapshots at chosen times, per-species moments, Zel'dovich
+ball in `make_ic.py`, pair force, puncture on a torus, proper time on the Boris pusher and
+the analytic metrics). For the integrator: a byte regression must mask the stored
+`last_time` of final off-schedule outputs and the `restart_file` path in the parameter
+dump of continued runs (journal, dfix-2).
