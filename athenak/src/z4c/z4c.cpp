@@ -155,6 +155,7 @@ Z4c::Z4c(MeshBlockPack *ppack, ParameterInput *pin) :
   opt.shift_hh = pin->GetOrAddReal("z4c", "shift_H", 0.0);
 
   opt.shift_eta = pin->GetOrAddReal("z4c", "shift_eta", 2.0);
+  gext.Read(pin);  // lapse_leak, shift_eta_profile (z4c_gauge_ext.hpp)
 
   opt.use_z4c = pin->GetOrAddBoolean("z4c", "use_z4c", true);
 
