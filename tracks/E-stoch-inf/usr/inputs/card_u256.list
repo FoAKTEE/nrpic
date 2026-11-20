@@ -1,0 +1,3 @@
+# USR case, production set-up of P1 (256^3, nmax2 = 4096), alone in one job (--wall 00:58:00), JOURNAL entry 9.
+# Written by scripts/make_card_inputs.py.
+U256 tracks/E-stoch-inf/usr/inputs/usr_256s.athinput scalar_field/noise_mode_scale=1.0

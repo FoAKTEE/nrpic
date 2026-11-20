@@ -360,3 +360,132 @@ Summary of the package [VERIFIED by the runs named]:
   truncation, 3e-4) during USR at eight cells per wavelength, and a rounding floor after
   USR. The A4 reading "halving s halves <abs(M)/[M]>" holds in none of the three phases
   at 32^3 for this case: the card ladder (inputs/card_usr.list) is what can show it.
+
+## Entry 9, 2026-11-20 22:25 UTC: wave 3, the card runs: pre-registration of this package, set-up, predictions (before any card run)
+
+Task (wave 3, round 1, package `usr`): run the USR case on the cards (group 1: ladder 64^3
+and 128^3 at nmax2 = 64 with +-1 pairs and a halving pair; group 2: U256, P1's production
+set-up), at most 1.5 card-hours, scouting for G2. Nothing of waves 3a is redone: the
+reference, the 32^3 processor runs and their analyses stand (entries 4-8).
+
+### 9.1 Acceptance: the pre-registration of this package
+
+This is the package's pre-registration for the card runs; `../spec/scope/SCOPE.md` stays as
+it is and the lead decides on adoption. U-A0 to U-A6 of entry 2 are adopted with the two
+amendments of README 'Requests' item 1 to the lead, and made operational for the cards:
+
+| Id | On the cards | Threshold |
+|---|---|---|
+| U-A0 | -ln<chi>/2 of the record of every stochastic run at the landmark times (no homogeneous run on the cards) | 1e-5 in N |
+| U-A1 | <phi>, <Pi>, <K> of the record against the exact background | 1e-3 relative (SCOPE 4, USR) |
+| U-A1t | amended: on the absolute difference of Pi (code - twin); not re-tested here (no homogeneous card run) | 1e-13 absolute |
+| U-A2 | 64^3, 128^3: odd part (R(+s) - R(-s))/2 of each pair, every mode (8 or more cells per shortest wavelength); U256: single run, modes k <= k_max/2 = 32 dk; at N_f against L^-3/2 W R alpha (continuum mode equation, SCOPE 4 wording); for U256 also the shell-normalised deviation abs(c - cref)/rms_shell(cref), reported, not gating | 0.02 |
+| U-A2n | even/odd rms over modes (pairs) | reported; below 0.3 |
+| U-A3 | power at N_f of the modes k <= 3 dk over the full MS | 10 percent (SCOPE 4) |
+| U-A4 | amended: judged on the card ladder with H - H0, i.e. on the parts odd and even in s of the dumped H and M_i with their box means removed, and on the record of H' = H - <H> (`con_signed`). (a) even parts scale by 4.00 +- 0.05 under halving (128^3, s = 1 against 1/2); (b) odd parts by 2.00 +- 0.05; (c) the odd part converges from 64^3 to 128^3 at an order between 4 and 6 (A5's range); (d) strict A4 at k_max/dk = 8 on 128^3: odd <= even for H and for M at every dump of the entry (cN <= ln 8 = 2.08); (a)-(d) only where the part judged exceeds 1e-12 of <[H]> (resp. <[M]>), ten times an assumed floor of 1e-13 | as stated |
+| U-A5 | shell spectrum at N_f against W^2 Delta of the realisation (same alpha_n) | reported |
+| U-A6 / P-h | one-point statistics of R^NR(x) at N_f (U256): rms against the lattice sum of the realisation and of the ensemble (0.894, entry 4), skewness, kurtosis, extremes against the linear realisation field (inverse transform of L^-3/2 W R alpha), and the dump from which the linear per-mode comparison loses meaning | reported (A8 is G3) |
+
+### 9.2 Set-up (and why it differs from `inputs/card_usr.list`)
+
+- Executable: `scratch/core/exe/core_scalar-3/athena_gpu` (5cc2821, READY published
+  2026-11-20 14:20 PST, checked before submission). Reason: `<scalar_field> con_signed =
+  true` records <H>, <M_i> and <|H'|/[H]> of H' = H - <H> every cycle, which removes the
+  uniform time residual H0 from the record (README request 3 to core, now met); its record
+  without the option is byte for byte that of core_scalar-2 (READY). Risk stated by core:
+  this card build has run only a 20-step comparison (the long card runs of core used
+  cea3a49, 97 lines apart, all of them con_signed); group 1 is therefore also its first
+  long run, and U256 runs only after group 1 is analysed.
+- Inputs from `scripts/make_card_inputs.py`: `inputs/usr_card.athinput` and
+  `inputs/usr_256s.athinput` are usr_base / usr_256 with `dump_constraints = true`,
+  `con_signed = true` and dump_dt = tlim/40 (64^3) or tlim/20 (128^3, 256^3), so that the
+  last dump is at N_f = N* + 10 itself (the driver shortens the last step to tlim, and a
+  dump is written at the first step with t >= n dump_dt (1 - 1e-12); repeated addition of
+  tlim/20 reaches tlim to 3e-16); every pair has the same tlim and dump_dt (the ladder's
+  last-dump trap). U256 dumps 22 variables (2.95 GB each, 62 GB in all) instead of the 17 of
+  the estimate (2.3 GB, 48 GB), so that H' and M can be read from the single run and split
+  if U256m runs. A smoke test of `usr_card.athinput` on the processor build of the same
+  commit (2 cycles, scratch/E-stoch-inf/tmp/usr/smoke3, unregistered; no number used):
+  accepted, record with 27 columns.
+- Lists: `inputs/card_g1.list` (U64p/m, U128p/m at s = +-1, U128hp/hm at s = +-1/2; nmax2 = 64,
+  mode file `modes_usr_n64.txt`), `inputs/card_u256.list`, `inputs/card_u256m.list`.
+
+### 9.3 Predictions (refuted if outside the ranges)
+
+Inputs of the estimates: entries 4-8 (32^3: Pi error 4.12e-4 at Courant 0.25, fourth order;
+per-mode error 3.5-4.1e-4 from the time step for shells with |n|^2 <= 14, 1.5-2.3e-4 for the
+shell k dx = pi/4, which keeps a spatial part of about 2e-4; even/odd 2.2e-5 for nmax2 = 64;
+<|M|/[M]> plateau during USR 3.2-3.4e-4 at k_max dx = pi/4, first order), the twin's Theta
+(1.07e-7, 6.2e-9 at half the step) and the reference lattice variances (rms of W R:
+0.0664 for nmax2 = 64, 0.894 for 4096; for 4096 it passes 0.1 at cN = 5.8 and 0.3 at 6.3).
+At 64^3 the top shell |n| = 8 has k dx = pi/4 (8 cells per wavelength, as M16 at 32^3); at
+128^3 pi/8. The time step at Courant 0.25 is that of 32^3 divided by N/32.
+
+Group 1 (64^3, 128^3, nmax2 = 64):
+- G1a (U-A0, U-A1): <Pi> against the exact background at N_f 2.6e-5 (64) and 1.6e-6 (128),
+  each within 15 percent (4.12e-4/16, /256); <phi>, <K> below 1e-7; |dN| at every landmark
+  below 5e-7 (64) and 5e-8 (128). Pass.
+- G1b: lockstep record `.modes` against the code-time reference at N_f: 2.6e-5 (64),
+  1.6e-6 (128), within 30 percent.
+- G1c (U-A2s, odd part, continuum, all 1054 modes at N_f): U64 max in [1e-4, 5e-4], worst
+  mode in a shell with |n|^2 >= 49; shells |n|^2 <= 16 between 1e-5 and 5e-5 (time step);
+  U128 max in [1e-6, 3e-5]; per shell with |n|^2 >= 49 the error falls from 64 to 128 at an
+  order between 4 and 6.5. U-A2 passes on both rungs.
+- G1d (U-A2n): even/odd rms over the modes at N_f in [1e-5, 5e-5] for the +-1 pairs (64 and
+  128 alike: second-order physics, not resolution); for the +-1/2 pair half the +-1 value
+  within 5 percent.
+- G1e (U-A3): abs(P_NR/P_MS - 1) for k <= 3 dk at N_f at most 2e-4 (64) and 2e-5 (128);
+  the FLRW lattice would give 8.8, 2.1, 1.4.
+- G1f (constraints, parts normalised by <[H]>, <[M]> of the s = 1 run):
+  - the signed mean <H> of the +1 and the -1 run agree within 1e-3 relative while the
+    uniform residual dominates; the record <|H|/[H]> peaks at 6.2e-9 (64) and 3.6e-10 (128)
+    within 30 percent (Theta of the twin over 17.3 per halving of the step);
+  - halving (128^3): even parts of H and of M scale by 4.00 +- 0.05, odd parts by
+    2.00 +- 0.05, at every dump where the part exceeds the 1e-12 bar;
+  - odd part of M during USR (2.5 < cN < 6.55), rms(M_odd)/<[M]>: 64^3 in [5e-5, 1e-3]; 128^3
+    lower by a factor between 16 and 90 (order 4 to 6.5);
+  - strict A4 at 128^3 (cN <= 2.08): odd <= even for H and for M at every dump above the
+    bar (the SR ladder had odd/even 0.27 at L128); at 64^3 the odd/even ratio of H exceeds
+    1 at least at one dump (SR: 15 at L64);
+  - records: <|H'|/[H]> at most in [1e-12, 1e-9] during the entry [weak, no USR number
+    exists at this resolution]; <|M|/[M]> at most 1e-3 on both rungs.
+- G1g (cost): U64 at most 1.5 min, U128 2 to 5 min each (0.15 s per step from core's
+  128^3 measurement, 851 steps, plus dumps of 0.37 GB); job 0.12 to 0.30 card-hours; peak
+  card memory below 5 GB.
+
+U256 (s = +1, 1702 steps):
+- U1 (U-A0, U-A1): |dN| below 1e-6 at every landmark; <Pi> against the exact background at
+  most 1e-4 relative over the run (time part 9.3e-8; second-order backreaction estimated
+  from M64p at 32^3, 2.3e-7, times (0.894/0.067)^2 = 4e-5); <phi>, <K> below 1e-8. Pass.
+- U2: lockstep record within 1e-6 of the reference at N_f.
+- U3 (U-A2, single run, k <= 32 dk, 68.6k modes): the shell-normalised deviation at N_f at
+  most in [1e-4, 1e-2]; U-A2 as written passes, max in [1e-4, 2e-2]; if the max exceeds
+  1e-3 its mode is among the 1 percent of modes with the smallest abs(alpha_n) (an
+  additive second-order part divided by a small amplitude). Reason for "linear to N_f"
+  [JUDGEMENT]: R^NR is carried by delta phi (K gets no perturbation in USR, P1:532; at 32^3
+  the e-folds of M64p and M16l agree to 4e-12, so the part of chi is negligible); after
+  the inflection point the field equation is nearly linear in delta phi: delta phi =
+  Pi_b R/H ~ 2.4e-7 against phi - phi_i = 3.8e-5 at N_f (entry 1), a relative
+  nonlinearity of 6e-3. Refuted if the shell-normalised deviation exceeds 0.02 at a dump.
+- U4 (U-A3): k <= 3 dk within 2 percent of the full MS (threshold 10 percent).
+- U5 (U-A5): shell ratios against the realisation within 1e-3 for k <= 32 dk and 1e-2 for
+  the top shells (4 cells per wavelength; M64 at 32^3: 5.9e-3 per mode).
+- U6 (P-h, U-A6): rms of R^NR(x) at N_f, band |n|^2 <= 4096, equal to the realisation's
+  linear value within 1e-3 and to the ensemble 0.894 within 0.005; on the full lattice
+  within 1 percent of that (the rest is second order); skewness abs <= 0.05, excess
+  kurtosis abs <= 0.1; max abs(R^NR) within 2 percent of that of the linear realisation
+  field and between 3.5 and 6 (4 to 7 sigma for 1.7e7 correlated cells): P1's "outliers
+  ~ 10" (P1:534) is not expected [JUDGEMENT; refuted if max abs(R^NR) > 7]; pointwise
+  rms of R^NR - R_lin at most 1e-2 of the rms.
+- U7 (constraints, single run): <|H'|/[H]> at most in [1e-12, 1e-9]; <|M|/[M]> at most in
+  [5e-3, 5e-2] during USR (first-order truncation of the top shells at 4 cells per
+  wavelength: M64 at 32^3 1.7e-2; core's 128^3 runs at k_max dx = pi/2 3.2e-2, READY of
+  core_scalar-3), at N_f in [1e-3, 2e-2] (P1:541: "around 1e-2").
+- U8 (cost, SCOPE 8): 1.23 to 1.35 s per step, 0.58 to 0.64 card-hours per realisation,
+  peak card memory 18 to 24 GB (SR P256: 19.6 GB), 62 GB of dumps.
+
+U256m (only if groups 1 and U256 pass and the cap allows; G1 + U256 + U256m about 1.45
+card-hours): odd part per mode at N_f for k <= 32 dk at most 3e-4, every mode at most 1e-2;
+even/odd rms in [2e-5, 1e-3]; the odd part of H first exceeds the even part between
+cN = 3.0 and 4.2 (SR: from ln(N/8) = 3.47 e-folds on, when the first shell with fewer than
+eight cells per wavelength crosses).

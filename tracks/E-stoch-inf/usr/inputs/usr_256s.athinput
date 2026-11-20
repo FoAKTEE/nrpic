@@ -1,0 +1,93 @@
+# Ultra-slow-roll (Higgs inflection) case of arXiv:2512.14649 (PRD_v2.tex:405-424, set-up
+# 503-519) in the units of the code (G = c = 1, time unit 1/H*, a* = 1, box 2 pi/sigma):
+# written by tracks/E-stoch-inf/usr/scripts/make_inputs.py from the reference run E-20261119-143905-f2bcde3
+# (tracks/E-stoch-inf/usr/results/usr_reference.json).  Potential P1:409 with lambda = 8 pi Lambda/H*^2,
+# vev = v/sqrt(8 pi); background at N* = N0 + 3 (phi0, pi0); tlim = code time of
+# N* + 10 e-folds.  Geodesic slicing, zero shift, no damping, no dissipation (SPEC 2.5, 4);
+# Courant 0.25 (SCOPE 4 item 1). Production set-up of P1 (256^3, k_max = 64 dk), card run of JOURNAL entry 9.
+
+<comment>
+problem   = stochastic inflection, ultra-slow-roll (inflection) case, package usr of Track E
+
+<job>
+basename  = usr
+rng_seed  = 20261115
+
+<mesh>
+nghost    = 4
+nx1       = 256
+x1min     = 0.0
+x1max     = 6.283185307179586
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 256
+x2min     = 0.0
+x2max     = 6.283185307179586
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 256
+x3min     = 0.0
+x3max     = 6.283185307179586
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 256
+nx2       = 256
+nx3       = 256
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 10.437508874065651
+ndiag      = 20
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonic  = 0.0
+lapse_advect    = 0.0
+shift_Gamma     = 0.0
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.0
+damp_kappa1     = 0.0
+damp_kappa2     = 0.0
+excise_chi      = 0.0
+
+<scalar_field>
+couple           = true
+potential        = inflection
+lambda           = 5.33317648526340374e+05
+vev              = 3.94952857597418439e-02
+diss             = 0.0
+hist_dcycle      = 1
+con_dcycle       = 1
+dump_dt          = 0.5218754437032825
+dump_metric      = true
+dump_magnitudes  = false
+dump_constraints = true
+dump_noise       = false
+noise            = mukhanov_sasaki
+noise_nmax2      = 4096
+noise_sharpness  = 5.0
+noise_sigma      = 1.0
+noise_level      = 0
+noise_projector  = stencil
+noise_kick_pi    = true
+noise_kick_k     = true
+noise_kick_a     = true
+noise_pi_sign    = 1.0
+noise_mode_file  = /data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n4096.txt
+noise_mode_scale = 1.0
+con_signed       = true
+
+<problem>
+pgen_name      = scalar_field
+id             = stochastic
+phi0           = -1.64328188347202975e-01
+pi0            = 3.23658652791244811e-02
+slice_window   = true
+slice_k2       = stencil
+slice_delta_pi = corrected
