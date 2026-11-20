@@ -629,3 +629,74 @@ Not done / open:
 5. For the lead, outside this package: the one-rank restart of Z4c runs is not exact
    (ghost cells on the outer boundary, entries 11, 12): CLAUDE.md says "restarts are
    exact"; and `cons.hst` prints 1e290 for isolated matter (entry 9).
+
+## 2026-11-20 session mpi-2 (continuation after the usage limit of 2026-11-19)
+
+### 14:00 Start
+
+`git merge --no-edit main` (decisions 0018, 0019, pre-commit hook; no change under
+`athenak/`, `python/`, `problems/`). Read CLAUDE.md with the section on the pause flag,
+decisions 0016 to 0019, this journal, `interfaces/mpi.md`, the report of session mpi-1
+(`scratch/orch/wave3a_reports/core.md`). No pause flag. Worktree: one stranded change,
+the manifest of the card run (below). The published executables are the ones of the
+build directories (sha256 of `.work/build_gpu_mpi/src/athena` and
+`.work/build_cpu_mpi/src/athena` equal `scratch/core/exe/core_mpi/SHA256SUMS`), and
+`git diff ca46836 HEAD -- athenak/` is empty.
+
+### 14:05 Entry 22: outcome of the card job 4663 (P6a failed: no two-rank run started)
+
+Run core-20261119-160452-582824b, Slurm job 4663: started 2026-11-19 12:02:27 after
+four hours in the queue, ended 18 s later (`sacct -j 4663`: COMPLETED, 00:00:18, two
+cards), so 0.01 card-hours were used, not the hour reserved in the manifest (corrected
+there; `wall_time_s` 14283 is the wait of `sbatch --wait`).
+
+- C1a, C1b, F8a (one rank each) ran. C2, F8b, F16 (two ranks) did not start: `mpirun`
+  stopped with "There are not enough slots available in the system to satisfy the 2
+  slots that were requested" (`C2/run.log`). The job asked for one task with four cpus
+  (`-c 4`); Open MPI takes its slots from the tasks of the Slurm job, and this machine
+  gives one task per core (`scontrol show config`: `CR_CORE,CR_ONE_TASK_PER_CORE`; the
+  node offers four cpus, two cores, to Slurm). On the login node the same command line
+  had run, because there the slots are the cores of the machine. "cpus=1" in `job.info`
+  is `nproc` obeying `OMP_NUM_THREADS=1`, not the allocation.
+- P6a failed (three of six runs did not start); P6b, P6c, P6d untested. Nothing about
+  the code of this package was tested by the failure: no two-rank process started.
+- What the one-rank runs give [VERIFIED, `card_analysis.py`, `card.json` in the run
+  directory]: the card build with MPI runs the cluster and Track F's m/8 mesh on one
+  card. Scatter of two one-card runs of the cluster (C1b against C1a): history 5.4e-13,
+  positions 1.3e-15 to 3.6e-15 (t = 1.9 to 7.5 M), i.e. the level of the processor
+  runs on several ranks. F8a: 2332 MeshBlocks of 16^3, 10 cycles in 9.18 s: 2541
+  MeshBlock-cycles per second (1.04e7 zone-cycles per second), peak memory 58835 MiB on
+  the card, 25.2 MiB per MeshBlock. Track F's m/16 mesh (4502 MeshBlocks) would need
+  about 111 GiB, more than one card of 80 GiB holds, and 2251 MeshBlocks per card
+  about 55 GiB.
+
+Fix (`card_job.sh`): `#SBATCH -n 2 -c 2` (two tasks, the four cpus of the node),
+`--map-by :OVERSUBSCRIBE` on the `mpirun` line (so that a job with one task can start
+two ranks too), a fourth argument that selects the runs, and `job.info` prints the
+tasks and the cpus without `OMP_NUM_THREADS`.
+
+Second attempt, in two jobs (card time used so far 0.01 of the one card-hour; limits
+10 minutes on one card and 20 minutes on two, at most 0.84 card-hours together, a few
+minutes expected):
+
+1. Pre-test on ONE card, which is free now while another user's job holds the other:
+   `sbatch --gres=gpu:1 -n 1 -c 2 -t 00:10:00 card_job.sh ... "C1a C2 F8b"`, both ranks
+   on the same card. It tests what the first attempt could not: that two ranks of the
+   card build start, that the mesh exchange of AthenaK hands device buffers to this
+   Open MPI, and that the particle module on two ranks gives the one-rank result on a
+   card. Predictions:
+   - P6e. C2 and F8b run to their cycle limits on two ranks (logs: "Number of parallel
+     ranks = 2"). Refuted by a crash in the first exchange (then the MPI library does
+     not take device buffers as built, and the card build needs host buffers), or by a
+     stop in the particle module.
+   - P6f. C2 against C1a of the same job: history sums and positions differ by no more
+     than 100 times the scatter between two one-card runs measured above (history
+     5.4e-13, positions 3.6e-15), 4000 particles throughout. Refuted by a larger
+     difference or a lost particle.
+   - P6g. F8b on two ranks sharing one card: total memory within 10 per cent of F8a
+     (58.8 GiB) plus a few hundred MiB for the second process; slower than F8a per
+     MeshBlock-cycle (two processes share the card by time slicing, two ranks share one
+     core). No rate is taken from this run.
+2. The two-card job as before (C1a, C1b, C2, F8a, F8b, F16), submitted when the
+   pre-test has run; predictions P6a to P6d of entry 9 stand, with the measured one-card
+   numbers: F8b about half of 58.8 GiB per card; F16 about 55 GiB per card.

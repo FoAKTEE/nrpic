@@ -35,8 +35,13 @@
  "purpose": "mpi card test: cluster of T3 on one card twice and on two cards; Track F's vacuum three-puncture mesh at m/8 (2332 MeshBlocks) on one and two cards and at m/16 (4502 MeshBlocks) on two cards, 10 cycles each: rate and memory per card",
  "kind": "scouting",
  "tag": "mpi-card",
- "state": "running",
+ "state": "finished",
+ "wall_time_s": 14283.06,
+ "exit_status": 0,
  "cores": 4,
- "card_hours": 1.0,
- "started_utc": "2026-11-19T16:04:52Z"
+ "card_hours": 0.01,
+ "started_utc": "2026-11-19T16:04:52Z",
+ "slurm_job": 4663,
+ "slurm_elapsed_s": 18,
+ "notes": "wall_time_s is the wait of sbatch --wait in the queue; the job ran 18 s on two cards (sacct -j 4663). C1a, C1b, F8a (one rank) ran; C2, F8b, F16 (two ranks) did not start: mpirun had one slot (one Slurm task). Journal entry 22 of tracks/core/JOURNAL-mpi.md."
 }
