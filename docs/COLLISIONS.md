@@ -49,11 +49,14 @@ What to watch in a production run:
   of the cell centre only, and the collision steps raise the energy of the particles
   steadily: in the cluster test by 1.05e-8, 2.3e-9 and 1.1e-9 of the particle energy
   per collision for collision cells of 2, 1 and 0.5 M, and the energy at infinity
-  (alpha W - beta^i u_i) by 1.5 times as much; they also carry heat out of a potential
+  (alpha W - beta^i u_i) by 1.2 to 1.8 times as much in the tests (6.5e-5 of its value
+  over 150 M at Knudsen number 3); they also carry heat out of a potential
   well in equilibrium. With `coll_energy = particle` every pair conserves the sum of
   u_i and the sum of alpha W - beta^i u_i with the metric at each particle to rounding,
   and an equilibrium of a static metric stays an equilibrium (interface text, section
-  11). The option costs one metric reconstruction per colliding particle and step.
+  11); in the cluster evolved by Z4c over 150 M on a card the sum changed by 6.3e-17.
+  The option costs one metric reconstruction per colliding particle and step (in the
+  cluster on a card: 0.219 s per step against 0.218 s with `cell`).
   Watch `n_noroot` (pairs left unscattered) and `n_balance` (collisions rejected for
   detailed balance): both should stay small against `n_coll`. The option is read only
   if present; its presence adds history columns 32 to 36 (`dH_particles`: the change of
@@ -90,6 +93,8 @@ All drivers are in `tracks/core/analysis/collisions/`; each writes `summary.json
 | `rerun_wave1.py` | reruns the box tests with a new executable and compares all output files with wave 1 or with the release executable | 20 min |
 | `card_diff.py` | sizes the differences between two card runs that `rerun_wave1.py --card --base` found (counts per step, momenta, positions, history columns) | 1 min |
 | `cmp_summary.py` | compares two `summary.json` files value by value | seconds |
+| `fig_cluster_card.py` | the card cluster runs of both values of `coll_energy` against a release run: lapse, change of sum M H and sum M W in the collision steps, collisions, row-by-row comparison of the collision history | seconds |
+| `fig_close.py` | step time per mode from `athena.log`, and the smoke deck of two card builds compared file by file | seconds |
 
 Card runs from wave 2b on go through `harness/bin/nrpic-run submit --launcher batch --list
 <file> --exe <card executable>` (decision 0016): AthenaK runs only, the analysis afterwards
@@ -98,7 +103,11 @@ with a short batch first and size the wall limit by it (`run_tolman.py` at its d
 takes 50 min of card time for its four runs). Card, wave 2 (`coll_energy`, regression,
 smoke test first): `$C/gpu_job3.sh <parts R, N, C> <card executable> <release card
 executable> <python> [<publish dir>]` (hand-registered sub-runs; job 4485 ran into its
-time limit in `run_tolman.py`). Wave 1:
+time limit in `run_tolman.py`; its cluster part was run in wave 2b as a batch of
+`run_cluster.py --prepare`, run core-20261119-143232-4d1e995, 13 min of card time for
+three runs of 150 M). Build card executables from clean after a header change: an
+incremental build that overlapped a change of `particles.hpp` crashed at start
+(`tracks/core/interfaces/collisions.md` section 11.5). Wave 1:
 `sbatch -p preempt --gres=gpu:1 -c 2 -t 00:30:00 $C/gpu_job.sh <A|B|C|D> <card
 executable> <baseline card executable>` from the root of the worktree (two cores: the
 node has four in all).

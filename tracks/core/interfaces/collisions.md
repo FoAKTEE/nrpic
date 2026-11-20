@@ -392,7 +392,8 @@ Limits and open points.
   that is not implemented (for example a rescaling of the pair's momenta to conserve
   the energy at the particles' own positions). This is the first thing to settle
   before science runs of track C. Settled in wave 2: cause and correction
-  (`coll_energy = particle`) in section 11.
+  (`coll_energy = particle`) in section 11; with the correction the same cluster at
+  Knudsen number 3 over 150 M on the card keeps the sum to 6.3e-17 (section 11.6).
 - Cell size and rate with a density gradient: in the same cluster the expected number
   of collisions rises by 3.6 percent from cells of 2 M to 1 M and by 1.0 percent from 1
   to 0.5 M (the square of the density averaged over a cell is below the average of the
@@ -612,7 +613,10 @@ by the collision step in the same way.
   same pairs are tested and collide in every step, but the momenta after a collision
   step differ from those of the release card executable by rounding, at most 2.1e-14 of
   max(1, |u|) in the wave-1 boxes: the card compiler builds the changed collision kernel
-  differently; each executable is deterministic on its own). Its presence, with either
+  differently; each executable is deterministic on its own; with `coll_energy = cell` in
+  the relativistic cluster evolved by Z4c over 150 M the card executable tests and
+  collides the same pairs as the release card executable in all 1200 steps and the
+  central lapse stays within 7.8e-15 of it). Its presence, with either
   value, adds history columns 32 to 36 (section 5), takes the budget of `coll_budget`
   particle by particle inside the cells, and writes dumps of version 2.
 - With `coll_energy = cell` and the option present the particles evolve exactly as with
@@ -623,7 +627,19 @@ by the collision step in the same way.
   Newton iteration (typically two to four steps). Measured on the processor: the
   collision step of a 1e5-particle Tolman box takes about the same time in both modes
   (wall time of the whole run 387 to 394 s for the four runs of
-  core-20261115-164138-cdd7c88, dominated by the implicit push).
+  core-20261115-164138-cdd7c88, dominated by the implicit push). On one A100, the
+  relativistic cluster deck (Z4c, six levels, 1e4 particles, Kn = 3) over 1200 steps of
+  150 M: 0.216 s per step without collisions, 0.218 s with `cell`, 0.219 s with
+  `particle` ("cpu time used" 259.6, 261.8, 262.9 s; core-20261119-143232-4d1e995); a
+  40-step measurement, which carries the first step and three snapshots, gave 0.261,
+  0.259, 0.239 s (core-20261119-141042-70c2f5d). The collisions are a small part of the
+  step of a Z4c run with 1e4 particles.
+- Card builds: an incremental card build that was running while `particles.hpp`
+  changed linked objects compiled from two layouts of the class `Particles` and crashed
+  at start (2026-11-15); recompiling only the objects that finished after the header
+  change repaired it, byte-identical to the clean build (run
+  core-20261119-141940-2e6368f). After a change of a header during a build, rebuild from
+  clean or delete those objects. The published executables are clean builds.
 - Lines touched in files shared with other work packages (against main b9fbf3e; line
   numbers of the new files):
 
@@ -663,8 +679,9 @@ the clean card build of f46f159.
 | T12 of track C and G3: constant lapse 0.8 and conformal factor 1.1: `static_conformal` with `coll_energy = cell` byte-identical to the wave-1 generator `homogeneous`; `particle` the same collisions in every step, momenta within 2.8e-14 after 200 steps, no rejection, lam = 1; 248168 collisions against 248192 in the flat box with the cross-section scaled by alpha0 (z = -0.03), i.e. alpha0 psi0^6 times the flat rate per coordinate volume at equal proper density; pair counting to 1.8e-14 | run core-20261115-182101-3a6e046; `fig_static_homog.png` |
 | G4, equilibrium with streaming: Tolman gas in the well (alpha 0.8 to 1.2, psi_amp 0.1), theta_inf = 0.2, 1e5 particles, 57 collisions per particle, two seeds. `particle`: sum M H changes by 6.4e-15 in the collision steps and by -1.4e-7, +6.1e-8 in all (push included); the cos phi mode of ln(theta alpha) stays at -0.24(21) and -0.04(21) percent. `cell`: sum M H grows by 6.5e-3 and 6.2e-3 and the gas ends 3.8 and 3.4 percent colder at the bottom of the well than Tolman's law (a numerical heat flux out of the well) | run core-20261115-164138-cdd7c88 (processor); `fig_tolman.png` |
 | G4 on the card, 1e6 particles, 600 steps, about 85 collisions per particle (seed 0 complete in both modes; seed 1 cut by the time limit of the job). `particle`: sum M H changes by 9.6e-15 in the collision steps and by +4.7e-9 in all; late cos phi mode of ln(theta alpha) -0.21(6) percent (the drawn initial state reads -0.47(17)); rejected share 5.704e-3 against 5.669e-3 of the reference. `cell`: sum M H grows by 9.9e-3 (0.78 of the initial rate; first-collision-time gain 3.20e-4 per collision against 3.62e-4, z = -2.2); late mode -3.67(6) percent | runs core-20261115-205317-6817f49 (card runs), core-20261119-141051-b309a9f (analysis); `fig_tolman.png` |
-| Relativistic cluster (section 8), two steps at Knudsen number 0.03 on the processor: `cell` raises sum M H by 1.48e-5 and sum M W by 9.6e-6 of their values in 773 collisions; `particle` changes sum M H by 4.8e-18 in 772 collisions, none rejected, none without a root | run core-20261115-160913-0656925; card at Knudsen number 3 over 150 M: pending (Slurm job 4485) |
-| Option absent: every output file of the wave-1 collision tests and of the existing set-ups byte-identical to the release executable core-v0.3 or to the wave-1 runs (processor: seven existing set-ups, rng regression c1-c5, nrpic_cf tables, the collision tests P2-P11 and the curved box). Card, against the release card executable: the five existing set-ups as in wave 1 (identical where the release reproduces itself); the collisional boxes rate, relax, repro, conv_dt, curved NOT byte-identical: every count of every collision step identical (no acceptance flipped), momenta within 2.1e-14 of max(1, \|u\|), positions within 2.6e-12 (box at x = 100), starting in the first collision step; with sigma = 0 the snapshots are identical. Each card executable passes the reproducibility test on its own | 819d588: core-20261115-164154 .. -170028-cdd7c88; f46f159: core-20261115-182302-c03e628 .. -183317-9ee0bde, -182250-c03e628, -184440 .. -185333-84995cc and the rate and relaxation runs of JOURNAL-coll2.md (19:00 UTC); card: core-20261115-203944-6817f49, -204006 .. -204921-6817f49, sized by core-20261119-141059-f3ccf56 (`fig_card_diff.png`) | 819d588: core-20261115-164154 .. -170028-cdd7c88; f46f159: core-20261115-182302-c03e628 .. -183317-9ee0bde, -182250-c03e628, -184440 .. -185333-84995cc and the rate and relaxation runs of JOURNAL-coll2.md (19:00 UTC) |
+| Relativistic cluster (section 8), two steps at Knudsen number 0.03 on the processor: `cell` raises sum M H by 1.48e-5 and sum M W by 9.6e-6 of their values in 773 collisions; `particle` changes sum M H by 4.8e-18 in 772 collisions, none rejected, none without a root | run core-20261115-160913-0656925 |
+| Relativistic cluster y_c = 0.819 evolved by Z4c on the card, Knudsen number 3, collision cells of 2 M, 1e4 particles, 150 M (4.8 dynamical times, 1200 collision steps). `particle`: sum M H changes by 6.3e-17 of its value in 5104 collisions (`cell`: +6.5e-5, and sum M W +5.2e-5, in 5001); no pair without a root; 5 of 5109 proposals rejected by the balance step; collisions against sum P z = +0.66 (`cell` -0.50); against `cell` 5104/5001 collisions (z = +1.0), central lapse within 2.8e-3 (the release runs with collision cells of 2 M and 1 M differ by 2.9e-3), radii of 10, 50, 90 percent of the rest mass within 3.0 percent; collisions lower the central lapse from 0.809 to 0.79 (without: 0.810 to 0.816). Rest mass identical to the bit, nothing excised or escaped, deposit identity 1.0e-15. `cell` against the release card executable (option absent): the same pairs in all 1200 steps (every integer column of every row), lapse within 7.8e-15 | card runs core-20261119-143232-4d1e995 (release: core-20261115-140316-8742cdf, -142625-67f8c1d); analysis core-20261120-220159-7418482, comparison core-20261120-220420-63419ab; `fig_cluster.png`, `fig_cluster_card.png` |
+| Option absent: every output file of the wave-1 collision tests and of the existing set-ups byte-identical to the release executable core-v0.3 or to the wave-1 runs (processor: seven existing set-ups, rng regression c1-c5, nrpic_cf tables, the collision tests P2-P11 and the curved box). Card, against the release card executable: the five existing set-ups as in wave 1 (identical where the release reproduces itself); the collisional boxes rate, relax, repro, conv_dt, curved NOT byte-identical: every count of every collision step identical (no acceptance flipped), momenta within 2.1e-14 of max(1, \|u\|), positions within 2.6e-12 (box at x = 100), starting in the first collision step; with sigma = 0 the snapshots are identical. Each card executable passes the reproducibility test on its own | 819d588: core-20261115-164154 .. -170028-cdd7c88; f46f159: core-20261115-182302-c03e628 .. -183317-9ee0bde, -182250-c03e628, -184440 .. -185333-84995cc and the rate and relaxation runs of JOURNAL-coll2.md (19:00 UTC); card: core-20261115-203944-6817f49, -204006 .. -204921-6817f49, sized by core-20261119-141059-f3ccf56 (`fig_card_diff.png`) |
 
 ## 12. Fluid reference for the short-mean-free-path end (answer to Track C, assessment only)
 
