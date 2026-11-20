@@ -1,0 +1,125 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261120-220512-a86765b",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "mpi card pre-test: two ranks sharing one card (cluster C1a, C2; Track F m/8 mesh F8b); journal entry 22 of JOURNAL-mpi.md; Slurm limit 10 min on one card (0.17 card-hours at most)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "sbatch --wait --gres=gpu:1 -n 1 -c 2 -t 00:10:00 -o \"$NRPIC_RUN_DIR/slurm-%j.out\" tracks/core/analysis/mpi/card_job.sh \"$NRPIC_RUN_DIR\" /data/haiyangw/nrpic/wt/core-mpi/.work/build_gpu_mpi/src/athena /data/haiyangw/nrpic/wt/core-mpi \"C1a C2 F8b\" /data/haiyangw/nrpic/scratch/core/core-20261119-154814-ca46836/t3_cluster"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "a86765b2d16c67d4a98fd0c3621a227e8d71546f",
+    "branch": "core/mpi",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/mpi"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/core-mpi"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-mpi/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "problems/tests/mpi_cluster.athinput",
+      "role": "input",
+      "sha256": "a68ccc15b6e88b73361ba00b1c0ca6dfacaf2589ea5010d28c29511cb16ce38b",
+      "bytes": 2408,
+      "tracked": true
+    },
+    {
+      "path": "problems/tests/mpi_two_card_triple.athinput",
+      "role": "input",
+      "sha256": "c68da7de6cb0e5b5204a738a332193e20139aa2491488cfac8bf67ffee0ebf2e",
+      "bytes": 4936,
+      "tracked": true
+    },
+    {
+      "path": ".work/build_gpu_mpi/src/athena",
+      "role": "input",
+      "sha256": "d53b855082e1375b1ee4c25be4463321e0b073f1cc6b298b7ee2dc5c41df8eec",
+      "bytes": 104566664,
+      "tracked": false
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-154814-ca46836/t3_cluster/cluster.nrp",
+      "role": "input",
+      "sha256": "edbb3cb773b36d1bc4e860c456cec5b0bd149cda000cdc8be23d4e34718f66e4",
+      "bytes": 240016,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-154814-ca46836/t3_cluster/cluster.tab",
+      "role": "input",
+      "sha256": "b76213c913046126f69ee1793a4c8ceedc45416f13608c6f6c1896303e006c3a",
+      "bytes": 432921,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261120-220512-a86765b",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:05:15Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 3.6188,
+    "gpu_hours_reserved": 3.13,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 1,
+    "runs": 1234,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
