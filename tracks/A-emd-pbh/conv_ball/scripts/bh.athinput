@@ -1,0 +1,164 @@
+# Copied from tracks/A-emd-pbh/runs_ball/bh.athinput at commit 9cddbfc6 (package conv_ball, wave 3); reference only.
+# BH-1 of Track A (wave 2b): data set 3 (prep_bh.py: expball compensated top-hat, H R_b = 0.7,
+# delta_c = 1.5 inside R1 = 0.65 R_b, compensated at R2 = 0.95 R_b, matter edge at rbar = 4.25 M),
+# whose first apparent horizon is the core edge, m = 0.687, R_AH = 1.37 M, at proper time
+# 9.55 M. Collapse through horizon formation with the relaxed 1+log lapse of core's gauge
+# package (scratch/core/exe/core_gauge, option lapse_leak, T = 0.125 M) and the Gamma-driver.
+# Give on the command line:
+#   problem/comp0_file=<prep>/<stem>.tab
+#   particles/particle_file=<prep>/lat<n>/<stem>_lat<n>_track.nrp   particles/traj_ntrack=<n_track>
+# dx = M/8 here (256^3 over [-16, 16]^3, lattice n_lat = 68); dx = M/6: mesh/nx?=192 (n_lat 51,
+# traj_dcycle 3, find_every 3); dx = M/4: mesh/nx?=128 (n_lat 34, traj_dcycle 2, find_every 2).
+# Particles are excised where alpha < 0.1 (as problems/os/os_amr.athinput).
+# JOURNAL.md entry 7 (predictions).
+
+<comment>
+problem   = expanding dust ball, data set 3 (large first horizon), relaxed 1+log lapse
+
+<job>
+basename  = ball
+
+<mesh>
+nghost    = 4
+nx1       = 256
+x1min     = -16.0
+x1max     = 16.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 256
+x2min     = -16.0
+x2max     = 16.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 256
+x3min     = -16.0
+x3max     = 16.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 64
+nx2       = 64
+nx3       = 64
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 16.0
+ndiag      = 10
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_volume    = 0.0
+lapse_advect    = 1.0
+lapse_leak      = 8.0      # 1/T of the relaxation of the excess lapse; T = 0.125 M
+lapse_leak_alpha = 1.0     # reference lapse
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+excise_chi      = 0.0
+
+<fastflow>
+find_every        = 4
+metric_drvts      = interpolant
+num_horizons      = 1
+npunct            = 0
+ntheta            = 16
+lmax              = 8
+use_puncture_0    = -1
+center_x_0        = 0.0
+center_y_0        = 0.0
+center_z_0        = 0.0
+initial_radius_0  = 3.0
+flow_iterations_0 = 1000
+flow_alpha_beta_const_0 = 1.0
+hmean_tol_0       = 100.0
+mass_tol_0        = 1.0e-6
+start_time_0      = 8.0
+stop_time_0       = 1000.0
+verbose           = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+interp         = bspline
+tolerance      = 1.0e-10
+max_iterations = 50
+deposit        = true
+deposit_shape  = pcs
+deposit_comp_c = 0.1666666666666667
+deposit_comp_c2 = 0.4666666666666667
+nfilter        = 0
+filter_compensate = false
+source_density = true
+source_extrap  = true
+alpha_exc      = 0.1
+hist_dcycle    = 1
+cstat_dcycle   = 1
+traj_dcycle    = 4
+traj_ntrack    = 0
+snap_dt        = 2.0
+field_constraints = true
+field_time1    = 4.0
+field_time2    = 8.0
+field_time3    = 10.0
+field_time4    = 12.0
+particle_file  = ball.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = table
+comp0_file = ball.tab
+lapse      = table
+lapse_comp = 0
+shift      = zero
+
+<output1>
+file_type = hst
+dt        = 0.25
+
+<output2>
+file_type = rst
+dt        = 1000.0
+
+<output3>
+file_type = tab
+variable  = adm
+dt        = 0.25
+slice_x2  = 0.01
+slice_x3  = 0.01
+data_format = %.12e
+
+<output4>
+file_type = tab
+variable  = z4c
+dt        = 0.25
+slice_x2  = 0.01
+slice_x3  = 0.01
+data_format = %.12e
+
+<output5>
+file_type = tab
+variable  = con
+dt        = 0.25
+slice_x2  = 0.01
+slice_x3  = 0.01
+data_format = %.12e
+
+<output6>
+file_type = tab
+variable  = tmunu
+dt        = 0.25
+slice_x2  = 0.01
+slice_x3  = 0.01
+data_format = %.12e
