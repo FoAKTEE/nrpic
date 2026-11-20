@@ -908,3 +908,110 @@ reductions on the card):
 Refuted, and then the card executable is not published as tested, by an evolved variable
 that differs at t = 0, by a difference above 1e-12 at cycle 17, by growth by more than a
 factor 10 between the cycles, or by a difference of H above 1e-11.
+
+## 2026-11-20, entry 17: outcomes of R2, S (with PSd), G5 and C2b
+
+**R2 (entry 10), runs core-20261119-165411-a48c7e0 (parts a, b) and
+core-20261119-163901-9b7e6e6 (part c, sub-runs -163902 to -165203)**; executable
+`athena_cpu_5cc2821`, the published one (no figure: every difference is zero). HOLDS in all
+three parts:
+- a: the ten scalar-field cases of wave 1 against release core-v0.3: 120 files, 110
+  byte-identical, the 10 restart files of ms, msnk, msr identical but for the masked
+  unset header bytes, none differing.
+- b: the three stochastic examples (sr, usr, srg with con_signed off) against the
+  published executable of `core/scalar-2`: 16 files each byte-identical; after a restart
+  8 files each byte-identical and two restart files each identical but for the line that
+  records the restart path.
+- c: the seven relativistic and gravity set-ups against release core-v0.3: geo 2, boris
+  2, dep 1, east 12, os 16, jeans 5, binary 1 files, all byte-identical.
+
+**S (entry 9), run core-20261119-165619-a6cb9fd** (figure `fig_signed.png`, looked at:
+<|H|/[H]> of the runs with s = 1 and s = 0 is one line, 4e-9 to 1e-7; <|H'|/[H]> of s = 1
+lies three to four orders below it, 1e-12 to 5e-11, with the dump values on it; that of s
+= 0 is at 1e-20).
+- PSa HOLDS: the 15 other files of the runs with and without the option are
+  byte-identical; the record has the same first 20 columns on all 65 lines, and its
+  header extends the old one.
+- PSb: <M_i> against the dump: 3.2e-14 of rms |M| at most (HOLDS, 1e-13). <H>: 6.2e-13 to
+  6.3e-13 relative at every dump of s = 1, up to 1.4e-12 for s = 0 (FAILED, bound
+  1e-13); rms H' 3.1e-13 to 3.2e-13 (HOLDS, 1e-10); <|H'|/[H]> 8.8e-13 to 2.3e-11 at five
+  dumps and 6.3e-10, 4.6e-10 at 0.54 and 1.02 e-folds (FAILED there, bound 1e-10).
+  Explained by PSd below: the record is right, my bound was for another summation.
+- PSc: s = 0: <|H'|/[H]> at most 1.1e-19 (HOLDS, 1e-15) while <|H|/[H]> is 1.9e-8 to
+  1.0e-7. s = 1: <|H'|/[H]> = 1.3e-12 to 5.2e-11 from 0.5 to 3 e-folds: FAILED as written
+  (predicted 1e-10 to 3e-9): I quoted the twin's rms of H' (7e-10 absolute) as a ratio
+  and forgot to divide by [H] = 11 to 12; rms H' is 7.06e-10 at 2.45 e-folds, the twin's
+  7.06e-10 (entry 13). It is 2000 to 10000 times below <|H|/[H]> (not refuted: bound a
+  factor 10). <M_i> below 1e-3 of rms |M|: FAILED before two e-folds (3.7e-2, 5.1e-2,
+  4.9e-2, 3.5e-2 at 0, 0.54, 1.02, 1.50 e-folds; 4.4e-3, 7.5e-4, 2.3e-4 at 1.98, 2.45,
+  2.92). [JUDGEMENT, not tested] before the last shells enter, |M| itself is second order
+  and small (rms 1e-11, entry 14: even part 8e-12 to 1.9e-11), and the box mean of a
+  second-order quantity need not vanish; from two e-folds on the first-order part
+  dominates the rms.
+- **PSd (entry 15), run core-20261120-220949-4406ca1** (figure `fig_sumcheck.png`, looked
+  at: against the pairwise mean <H> lies on the line 6.3e-13, rms H' at half of it,
+  <|H'|/[H]> between 1e-12 and 6e-10; against the running sums every point is at zero).
+  HOLDS: (a) the running sum of the 32768 equal volumes is 6.256e-13 below 32768 dx^3
+  (predicted 6.2e-13 +- 0.2e-13); (b) columns [21] to [24] equal the running sums of the
+  dump bit for bit at all 14 dumps of both runs (predicted within 1e-14); (c) so do [25]
+  and [27] (predicted 1e-12, 1e-13). So the columns of `con_signed` are what the source
+  says, to the last bit on the processors. A user who recomputes them from a dump with
+  another order of summation finds 6e-13 in <H> and up to 6e-10 in <|H'|/[H]> where H' is
+  1e-4 of H: the limit is the cancellation in H - <H>, not the option.
+  Where the uniform part at t = 0 comes from (4.2e-11 at s = 1, as large as rms H' =
+  4.5e-11): the residual of H at t = 0 is even in s and scales with s^2 (even part
+  6.18e-11 at s = 1, 6.09e-13 at s = 0.1, ratio 101.4, run -161122-a46833e): it is the
+  second-order residual of the first-order slice, mean and spread alike.
+
+**G5 (entry 8), analysis run core-20261119-170729-b99adc7** (runs cap -160239-0b1b4ae on
+the test build of this branch plus the relaxation term of `core/gauge`, geoc
+-163800-fe87748, geo -152244-bc4976d; figure `fig_gauge.png` of the analysis run, looked
+at: ln<alpha> of the capped run is a straight line to ln 8 at 2.1 e-folds and flat at 2.26
+after; the rms of its lapse perturbation peaks at 8.8e-6 there and falls; in the middle
+and right panels the capped run lies on the geodesic run of the same step in every
+class and in both constraints; the geodesic run at Courant 0.25 differs only before 1.5
+e-folds).
+- PG5a: <alpha> equals a within 1.0e-8 up to 1.5 e-folds (HOLDS, 1e-4). "From 2.6 e-folds
+  on within 1e-3 of the root of ln(alpha/8) = 0.02 H alpha": FAILED, 1.4e-2 at most: the
+  lapse is still settling (9.54, 9.61, 9.62 at 2.69, 2.92, 3.14 e-folds; G4 had 6e-4 from
+  4 e-folds on). 3.144 e-folds in 163 steps (HOLDS: 3.15, 163) against 538 steps of geoc
+  for 3.24 e-folds: 3.2 times fewer over this stretch.
+- PG5b HOLDS: R^NR per mode against W R alpha, largest deviation over the dumps. geoc
+  over geo: 0.055 (|n| <= 2; 0.42 at the end), 0.98 (|n| <= 4), 0.9997 (all modes with W >
+  1/2): the time error of the lowest modes is gone at the small step, the lattice part
+  stays. cap over geoc: 1.006, 0.985, 0.943 (1.57e-6, 7.4e-5, 2.8e-3 against 1.56e-6,
+  7.5e-5, 3.0e-3; cap ends 0.1 e-folds earlier). Not refuted: the lowest modes of cap
+  are at 0.43 of geo. With a lapse that grows from 1 to 9.6 and is perturbed at 9e-6
+  the sources and the extraction give what geodesic slicing gives.
+- PG5c: record maxima of cap over geoc: <|H|/[H]> 0.997, <|M|/[M]> 1.0007 (HOLDS, factor
+  3; 4.68e-11 and 3.72e-4), no trend of cap against geoc (1.25e-11 at 3.14 e-folds
+  against 1.18e-11). "geoc has no uniform part above 1e-13": FAILED. Its record was
+  written with `con_signed`: |<H>|/[H] is 1.5e-12 at 0.1 e-folds, 6.8e-13 at 0.6, 5.1e-13
+  at 1.0, 4.2e-13 at 2.0 and 8.7e-15 at 2.5, as large as <|H'|/[H]> (1.2e-12 to 5.1e-13)
+  until one e-fold. It does not fall with the step as the 2.7e-12 of geo does (which is
+  3.2e-11/[H], J2 entry 7): [JUDGEMENT] it is the second-order residual of the slice
+  again (PSd above, shown there for the inflection case only). From 1.5 e-folds on the
+  record of geoc is the first-order part: <|H'|/[H]> = <|H|/[H]> to 1 percent.
+What item (4) needed is thereby shown on a test build: the relaxation term of
+`core/gauge` and the sources of this branch work together. Not shown: beyond 3.1
+e-folds with the sources (G4 has 7.6 e-folds homogeneous), another resolution, the
+inflection case.
+
+**C2b (entry 16), run core-20261120-221332-687a1dc** (figure `fig_c2_abs.png`, looked at:
+at cycle 0 every evolved variable is at zero and H at 1.2e-13, M_i at 4e-15; at cycles 9
+and 17 the evolved variables lie between 1e-15 and 3.3e-14, the two cycles on each other,
+H at 3.7e-13 and M_i at 1e-13, on the line of the bound). HOLDS in every part:
+- evolved variables bit-identical at t = 0 (only H, M_i and E differ: 1.2e-13, 4.0e-15,
+  1.4e-17); largest absolute difference 3.3e-14 at cycle 9 and 2.8e-14 at cycle 17, both
+  in K (J2: 3.3e-14; bound 1e-13), growth 0.86 (bound 4);
+- H within 3.7e-13 and M_i within 1.1e-13 at all dumps (bound 1e-12; J2: 3.4e-13), i.e.
+  H within 3e-14 of [H];
+- record: <|H|/[H]> 1.8e-17, <|H'|/[H]> 2.8e-17, their maxima 8.6e-15 (bound 1e-13); <H>
+  and rms H' 1.3e-16 (bound 1e-12); <|M|/[M]> 4.5e-11 and its maximum 1.1e-7 (bound
+  1e-6). The means of the quantities of order one differ by 6.3e-13 relative ([H]
+  7.5e-12, K 1.9e-12, phi 1.7e-12 absolute): the size of the rounding of the processor
+  executable's running sum of the volumes found in PSd ([JUDGEMENT] the card sums in
+  another order; not tested).
+The card executable `athena_gpu_5cc2821` differs from the processor executable by
+rounding on this case, with the option `con_signed`. The failed statements of C2 in
+entry 16 were statements about my measure.
