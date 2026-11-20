@@ -41,3 +41,39 @@ provenance of a result). Locators are file:line ranges of the source file. File:
 plus 1 number/method mix). Overlap with the golden set unknown (golden file still
 unopened). Validated: YAML loads, 24 distinct papers, every locator file exists and the
 line ranges lie inside it. Commit of heldout.yaml: see entry 3 (made before any search).
+
+## Entry 3 (22:47 UTC): commit of the held-out set; predictions for retrieval (step 2)
+
+- heldout.yaml committed as **8fb37106** (pushed to origin/kb/main) before any `kb search`
+  was run by me and before kb/golden/questions.yaml was opened. Correction of entry 2:
+  the kinds are 10 number, 11 method, 2 definition, 1 provenance (24).
+- Scoring definitions (fixed now, before the runs): paper hit = expected paper_id among the
+  10 hits. Location: my own map from source lines to flat.tex characters (each expected
+  line, comment-stripped, located verbatim in flat.tex; ambiguous matches resolved by
+  nearness to the unique ones); the expected range is [first anchor, last anchor + line
+  length). Location hit (strict) = a hit of the right paper whose [char_start, char_end)
+  overlaps the expected range; location hit (slack) = overlap with the range widened by
+  200 characters on each side (about two to three source lines). Rank = first rank that
+  hits.
+
+Prediction (R1, held-out set, 24 questions; my own words, not tuned):
+| mode | paper hit in top 10 | location hit (slack) |
+|---|---|---|
+| text-only (BM25) | 70 % (17/24), range 55-85 % | 35 %, range 20-55 % |
+| hybrid | 80 % (19/24), range 65-92 % | 40 %, range 25-60 % |
+| rerank | 83 % (20/24), range 70-95 % | 55 %, range 35-75 % |
+Reasoning [JUDGEMENT]: most questions carry a few domain terms (oscillon, Hernquist,
+Gauss-Bonnet, tetrahedra, lapse) that BM25 can use; vectors help the paraphrased ones;
+the answer passages sit in the body, so the location rate is well below the paper rate.
+Refuted if: hybrid paper hit < 60 % or > 96 %; rerank location hit < 30 %; or rerank worse
+than hybrid on paper hits by more than 2 questions.
+
+Prediction (R2, golden set, read after the held-out runs): the golden set was written by
+the package (decision 0016 asks >= 80 %); I expect hybrid paper hit >= 85 % on it and the
+held-out rate 5 to 15 points below the golden rate (a sign of tuning on the golden set if
+the gap exceeds 20 points). Refuted if golden hybrid paper hit < 80 % (then C4 fails as
+stated) or if the held-out rate is above the golden rate by more than 10 points.
+
+Prediction (R3, side effects): `kb search --db <snapshot>` opens the snapshot read-only
+and writes nothing into kb-data (mtimes of db/ and logs/ unchanged by my runs). Refuted by
+any new or changed file there attributable to my runs.
