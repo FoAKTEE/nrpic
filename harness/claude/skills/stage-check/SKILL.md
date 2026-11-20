@@ -30,7 +30,7 @@ it, and ask the orchestrator for the tag stage/$track/$gate-fail-<date>.
    reports. Provenance (labels R1, R2, ... to run ids) goes to stage/$gate/PROVENANCE.md.
    If figures or tables changed in steps 4-6, commit and repeat step 3.
 7. Spawn the `verifier` subagent with no context except the paths of the note, the manifests,
-   PROVENANCE.md and the checklist; it writes stage/$gate/VERIFIER_REPORT.md. Optionally the
+   PROVENANCE.md and the checklist; it writes stage/$gate/VERIFIER.md (decision 0016). Optionally the
    `figure-checker` subagent on note/figures/.
 8. `harness/bin/nrpic-stage report $track $gate --decision "<the decision requested from the group>"`
    -> STAGE_REPORT.md with the verdict and the proposed tag.

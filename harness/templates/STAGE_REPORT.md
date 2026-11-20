@@ -7,6 +7,13 @@ Date: {{DATE}} · branch `{{BRANCH}}` at `<commit>` · checklist
 
 PASS | FAIL. Tag: `stage/{{ID}}/{{GATE}}-pass-YYYYMMDD` (or `-fail-`).
 
+## Package documents (decision 0012)
+
+STAGE_REPORT.md (this file), EVIDENCE.md, OPEN.md, CHECKLIST.md; REVIEW.md where the lead
+rechecked helpers; the scoping text (SCOPE.md or SCOPING.md, or the scope directory). No
+REPORT.md is needed. Sections that `nrpic-stage report` does not generate are kept when it
+runs again; so is the text of "Decision requested".
+
 ## Criteria (coord/CHARTER.md, gate {{GATE}} of this track)
 
 | # | Criterion | Evidence (run id, figure, KB locator) | Result |
@@ -25,8 +32,8 @@ committed ones (tolerance stated).
 
 ## Verifier report
 
-`tracks/{{ID}}/stage/{{GATE}}/VERIFIER_REPORT.md`: numbers recomputed, figures opened,
-sentences without support.
+`tracks/{{ID}}/stage/{{GATE}}/VERIFIER.md` (decision 0016; VERIFIER_REPORT.md accepted too):
+numbers recomputed, figures opened, sentences without support.
 
 ## Null results and failed runs
 

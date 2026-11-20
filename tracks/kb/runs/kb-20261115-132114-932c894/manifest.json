@@ -1,0 +1,25 @@
+{
+ "run_id": "kb-20261115-132114-932c894",
+ "owner": "kb",
+ "command": [
+  "/data/haiyangw/nrpic/wt/kb/kb/.venv/bin/python",
+  "-I",
+  "/data/haiyangw/nrpic/wt/kb/kb/scripts/papers_checks.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-132114-932c894"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "932c8941fa4f6f72e53f489db96f03e7af5493bf",
+ "worktree_dirty_kb": true,
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-132114-932c894",
+ "purpose": "K2-K3: independent checks C1-C5 and figures of the priority-3 ingestion (prediction K2-P6)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:21:14Z",
+ "started_unix": 1794748874.0860448,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 10.18,
+ "finished_utc": "2026-11-15T13:21:24Z"
+}

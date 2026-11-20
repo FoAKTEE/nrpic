@@ -1,0 +1,25 @@
+{
+ "run_id": "kb-20261115-133803-bbe86cd",
+ "owner": "kb",
+ "command": [
+  "/data/haiyangw/nrpic/wt/kb/kb/.venv/bin/python",
+  "-I",
+  "/data/haiyangw/nrpic/wt/kb/kb/scripts/papers_checks.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-133803-bbe86cd"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "bbe86cdcc320df4a61eeb0666397125984c2ad81",
+ "worktree_dirty_kb": true,
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-133803-bbe86cd",
+ "purpose": "K2-K3: final figures and checks C1-C6 of the full ingestion (same data as kb-20261115-133637-3f7f25a; frontier panel title shortened)",
+ "kind": "scouting",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:38:03Z",
+ "started_unix": 1794749883.817199,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 14.06,
+ "finished_utc": "2026-11-15T13:38:17Z"
+}

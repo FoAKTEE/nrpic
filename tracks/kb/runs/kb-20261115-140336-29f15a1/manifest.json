@@ -1,0 +1,27 @@
+{
+ "run_id": "kb-20261115-140336-29f15a1",
+ "owner": "kb",
+ "command": [
+  "python3",
+  "-I",
+  "kb/bin/kb",
+  "verify-downloads",
+  "--report",
+  "kb/reports/verify-downloads.md"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "29f15a1ee97605788ee39e29f9e755cc98003d91",
+ "worktree_dirty_kb": false,
+ "inputs": [],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-140336-29f15a1",
+ "purpose": "kb lead check L3: rerun kb verify-downloads on the store after the helpers' downloads (independent recount of ok/problem/missing/extra)",
+ "kind": "production",
+ "cores": 1,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T14:03:36Z",
+ "started_unix": 1794751416.769826,
+ "status": "finished",
+ "exit_code": 1,
+ "wall_time_s": 16.98,
+ "finished_utc": "2026-11-15T14:03:53Z"
+}

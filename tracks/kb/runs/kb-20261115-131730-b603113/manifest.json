@@ -1,0 +1,33 @@
+{
+ "run_id": "kb-20261115-131730-b603113",
+ "owner": "kb",
+ "command": [
+  "/data/haiyangw/nrpic/wt/kb/kb/bin/kb",
+  "ingest",
+  "arxiv",
+  "--priority",
+  "3",
+  "--jobs",
+  "8"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "b603113e5dc05496db6fb15d46d022dfe02f6b07",
+ "worktree_dirty_kb": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/kb/manifests/arxiv.tsv",
+   "sha256": "4012a46dfe997d8f936a15fd62dd0ebe73aac6d64cac2391eb61aee2eb27e4d0"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-131730-b603113",
+ "purpose": "K2-K3: ingest the 47 priority-3 papers (TeX structure, chunks, equations, bibliography, citations) into kb-data/db/kb.sqlite and kb-data/build/tex; prediction K2-P5 in kb/JOURNAL.md",
+ "kind": "production",
+ "cores": 8,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T13:17:30Z",
+ "started_unix": 1794748650.3544798,
+ "status": "finished",
+ "exit_code": 0,
+ "wall_time_s": 8.1,
+ "finished_utc": "2026-11-15T13:17:38Z"
+}

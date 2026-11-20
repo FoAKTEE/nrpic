@@ -1,0 +1,36 @@
+{
+ "run_id": "kb-20261115-164121-5aca10c",
+ "owner": "kb",
+ "command": [
+  "kb/.venv/bin/python",
+  "-I",
+  "tracks/kb/embed/scripts/eval_questions.py",
+  "/data/haiyangw/nrpic/scratch/kb/kb-20261115-164121-5aca10c",
+  "--threads",
+  "8"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/kb",
+ "commit": "5aca10c45d04c35e9ceb5d5fb8e9657db555ca1b",
+ "worktree_dirty_kb": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/kb/tracks/kb/embed/questions10.yaml",
+   "sha256": "9b6b5e06fb2a36210b7ae6afeac687603e43ca58384012cd1aca7da6d6be2097"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/kb-data/db/kb-20261115-621430e.sqlite",
+   "sha256": "621430e5758fd887ec946bd7300e2523fa177d5298d7f383031b19326fbb4fe5"
+  }
+ ],
+ "output_dir": "/data/haiyangw/nrpic/scratch/kb/kb-20261115-164121-5aca10c",
+ "purpose": "embed helper: test E4, ten questions and six equation lookups of tracks/kb/embed/questions10.yaml by text, vector and hybrid search on snapshot kb-20261115-621430e",
+ "kind": "scouting",
+ "cores": 8,
+ "card_hours": 0,
+ "started_utc": "2026-11-15T16:41:21Z",
+ "started_unix": 1794760881.9121773,
+ "status": "finished",
+ "exit_code": 1,
+ "wall_time_s": 13.69,
+ "finished_utc": "2026-11-15T16:41:35Z"
+}

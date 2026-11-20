@@ -15,6 +15,7 @@ scratch/<caller>/tmp/nrpic-doctor-*/, removed at the end unless --keep (they are
 mkdtemp and removed only after checking that the path lies there).
 """
 import argparse
+import base64
 import glob
 import importlib.machinery
 import importlib.util
@@ -187,7 +188,7 @@ class Doctor:
         if why:
             return "MISSING", why
         if not os.path.isdir(os.path.join(self.w.wt, ".venv")):
-            return "MISSING", "no .venv in this worktree yet (harness/bin/nrpic-env create)"
+            return "MISSING", "no .venv in this worktree yet (harness/bin/nrpic-env create --no-kokkos; .venv/ is ignored)"
         p = sh([t, "-C", self.w.wt, "exec", "--", "python", "-c", "import sys; print(sys.prefix)"], self.w.wt)
         if p.returncode != 0:
             return "FAIL", f"nrpic-env exec failed: {(p.stderr or p.stdout).strip()[-200:]}"
@@ -310,23 +311,39 @@ class Doctor:
             return "FAIL", "an Edit of the main checkout's CLAUDE.md was not denied by the guard" + note
         return "PASS", f"Edit of {self.repo.main}/CLAUDE.md denied: {ctx.clip(r[1], 70)}" + note
 
+    def snapshot_readonly(self):
+        """(ok, detail): db/current, the database every reader opens (brief 12.10), cannot be opened
+        for writing: os.open(O_WRONLY | O_APPEND) must fail; nothing is written either way."""
+        cur = os.path.join(self.repo.main, "kb-data", "db", "current")
+        if not os.path.exists(cur):
+            return None, "no kb-data/db/current yet"
+        real = os.path.realpath(cur)
+        name = os.path.relpath(real, self.repo.main)
+        try:
+            fd = os.open(real, os.O_WRONLY | os.O_APPEND)
+        except OSError as e:
+            return True, f"db/current -> {name}: opening it for writing fails ({e.strerror})"
+        os.close(fd)
+        return False, f"db/current -> {name} can be opened for writing by this user (chmod a-w it)"
+
     def row_kb(self):
         cli = os.path.join(self.w.wt, "kb", "bin", "kb")
-        dbs = sorted(glob.glob(os.path.join(self.repo.main, "kb-data", "db", "*.sqlite")) +
-                     glob.glob(os.path.join(self.repo.main, "kb-data", "*.sqlite")))
+        ro_ok, ro_detail = self.snapshot_readonly()
+        tail = ("; kb-data/db/kb.sqlite is the kb writer's working copy, closed to the other owners by the guard "
+                "(kb-data/ is read-only for everyone but kb), not by file permissions (one Unix user)")
         if not os.path.isfile(cli):
-            return "MISSING", "kb/bin/kb is not in this worktree (it arrives when kb/main is merged into main and the owner syncs)"
+            return "MISSING", ("kb/bin/kb is not in this worktree (it arrives when main merges kb/main and the owner "
+                               f"syncs); {ro_detail}")
         p = sh([cli, "status"], self.w.wt, timeout=60)
         if p.returncode != 0:
             return "FAIL", f"kb status failed: {(p.stderr or p.stdout).strip()[-200:]}"
         if self.me == "kb":
             return "PASS", "kb status works; this owner is the writer of kb-data/"
-        if not dbs:
-            return "MISSING", "kb status works; no kb-data/db/*.sqlite yet"
-        writable = [os.path.relpath(d, self.repo.main) for d in dbs if os.access(d, os.W_OK)]
-        if writable:
-            return "FAIL", f"kb status works, but {', '.join(writable)} can be opened for writing by this user"
-        return "PASS", "kb status works; the database is read-only for this user"
+        if ro_ok is None:
+            return "MISSING", f"kb status works; {ro_detail}"
+        if not ro_ok:
+            return "FAIL", f"kb status works, but {ro_detail}"
+        return "PASS", f"kb status works; {ro_detail}" + tail
 
     def row_gpu(self):
         if not self.tool("nrpic-run"):
@@ -409,9 +426,12 @@ class Doctor:
         r1 = run(["commit", "-q", "-m", "big"], w, check=False).returncode
         git(["reset", "-q", "HEAD", "--", "tracks/A-x/big.bin"], w)
         sec = os.path.join(w, "tracks", "A-x", "key.txt")
+        # a fake with the shape of a real key, made here so that no source line looks like one; the hook
+        # passes documentation placeholders (a header with a stub, EXAMPLE keys) since the dry run of wave 3a
+        body = base64.b64encode(os.urandom(300)).decode()
         with open(sec, "w") as fh:
-            fh.write("-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQ\n-----END OPENSSH PRIVATE KEY-----\n"
-                     "aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY\n")
+            fh.write("-----BEGIN OPENSSH " + "PRIVATE KEY-----\n" + "\n".join(body[i:i + 70] for i in range(0, 400, 70))
+                     + "\n-----END OPENSSH " + "PRIVATE KEY-----\n")
         git(["add", "tracks/A-x/key.txt"], w)
         r2 = run(["commit", "-q", "-m", "secret"], w, check=False).returncode
         ok = r1 != 0 and r2 != 0

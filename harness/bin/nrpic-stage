@@ -1,16 +1,27 @@
 #!/usr/bin/python3 -I
 """The automated steps of the stage check (brief section 13.3: steps 2, 3 and 8).
 
-    harness/bin/nrpic-stage [-C <wt>] collect <ID> G<k> [--force]
+    harness/bin/nrpic-stage [-C <wt>] collect <ID> G<k> [--force] [--stdout]
     harness/bin/nrpic-stage [-C <wt>] verify  <ID> G<k> [--no-rerun] [--no-checksums] [--timeout S]
                                                   [--rtol R] [--atol A] [--img-tol T]
     harness/bin/nrpic-stage [-C <wt>] report  <ID> G<k> [--decision TEXT]
+
+The knowledge base has its own gates (brief 12.10): `collect kb KB-G1` (G1 is read as KB-G1);
+its stage directory is tracks/kb/stage/KB-G<k>/.
+
+A stage package (decision 0012) is tracks/<ID>/stage/G<k>/: STAGE_REPORT.md (written by `report`
+from harness/templates/STAGE_REPORT.md), EVIDENCE.md, OPEN.md, CHECKLIST.md (from `collect`),
+REVIEW.md where the lead rechecked helpers, and the scoping text in SCOPE.md or SCOPING.md beside
+them or in the track's scope directory (named in the report). No REPORT.md is required; one
+written in wave 1 is accepted as it is.
 
 collect  writes tracks/<ID>/stage/G<k>/CHECKLIST.md: the common gate criteria and products of
          charter 9.2, the track-specific criteria of the track's sheet (charter 9.3-9.9; kb: brief
          12.10), the minimum figures of brief 13.4, and the package items of 13.3, one item each
          with `status: OPEN` and an empty `evidence:` for the session to fill (PASS, FAIL, NA).
-         Run again, it keeps the status and evidence of items whose text is unchanged.
+         Run again, it keeps the status and evidence of items whose text is unchanged. --stdout
+         prints the checklist instead of writing it (read-only; works on any owner's worktree
+         with -C).
 verify   exports the committed tip (HEAD of the own worktree; for another owner, the tip of its
          branch) with `git archive` into scratch/<me>/tmp/stage-verify/ (a clean checkout, no
          working-tree state), and there: re-runs every note/scripts/fig_*.py and schem_*.py and
@@ -21,14 +32,24 @@ verify   exports the committed tip (HEAD of the own worktree; for another owner,
          copy of czstyle.py/paperfig.py/cyclic_zoom.mplstyle/figstyle.py in note/scripts/ equals
          harness/style/SHA256SUMS, every figure has a script of the same name, every run manifest
          is complete and finished and its output checksums verify, no committed file exceeds 5 MB,
-         the note exists. Writes VERIFY_RESULTS.json and VERIFY_RESULTS.md into the stage
-         directory (own track) or beside the export (another owner's). Exit 1 on any FAIL.
+         the note exists, the package documents of decision 0012 are there. Hand-written run
+         manifests are checked for what they record (decision 0012), not for the fields of the
+         template; those of waves 1 and 2 (run dated before 2026-11-19) that the track's
+         EVIDENCE.md names (this gate's or an earlier one's; the full run id or its
+         `-HHMMSS-<commit7>` suffix; a range `X ... Y` is not expanded) count as registered,
+         and their failures of the manifest check are waived (decision 0016 item 3: reported
+         under runs-waived, not failed). Writes
+         VERIFY_RESULTS.json and VERIFY_RESULTS.md into the stage directory (own track) or beside
+         the export (another owner's). Exit 1 on any FAIL.
 report   writes tracks/<ID>/stage/G<k>/STAGE_REPORT.md from harness/templates/STAGE_REPORT.md:
          criterion-by-criterion results from CHECKLIST.md, the verify results, the figure list,
-         null results and failed runs, open risks (RISKS.md), the verifier report, the decision
-         requested. Verdict PASS only if every item is PASS or NA, verify passed on the current
-         commit and VERIFIER_REPORT.md exists. It prints the tag name; tags are created and
-         pushed by the orchestrator (decision 0003).
+         null results and failed runs, open risks (RISKS.md), the verifier report, the package
+         documents, the decision requested. Verdict PASS only if every item is PASS or NA, verify
+         passed on the current commit, the verifier's report (VERIFIER.md, decision 0016 item 1;
+         VERIFIER_REPORT.md accepted too), EVIDENCE.md and OPEN.md exist. Run
+         again, it keeps the text of "Decision requested" (unless --decision) and every section
+         of the old report that the template does not have. It prints the tag name; tags are
+         created and pushed by the orchestrator (decision 0003).
 collect and report write only into the own track's stage directory; nothing is committed.
 """
 import json
@@ -53,6 +74,96 @@ STYLE_FILES = ("czstyle.py", "paperfig.py", "cyclic_zoom.mplstyle", "figstyle.py
 FIG_EXT = (".pdf", ".png", ".svg", ".eps")
 TEXT_EXT = (".csv", ".dat", ".txt", ".tex", ".json", ".md", ".tsv")
 MIN_FIGS = {"G0": (2, 0), "G1": (2, 1), "G2": (1, 5), "G3": (1, 1), "G4": (1, 1)}   # (schematics, data)
+KB_GATES = ("KB-G0", "KB-G1", "KB-G2", "KB-G3")
+PACKAGE_DOCS = ("STAGE_REPORT.md", "EVIDENCE.md", "OPEN.md", "CHECKLIST.md")       # decision 0012
+VERIFIER_DOCS = ("VERIFIER.md", "VERIFIER_REPORT.md")                              # decision 0016 item 1
+KB_THRESHOLDS_HEAD = r"## Gates of the knowledge base\b"                           # coord/CHARTER.md (0016 item 6)
+PACKAGE_DOCS_TEXT = ("Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, "
+                     "OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked "
+                     "helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, "
+                     "named in the report (no REPORT.md needed)")
+
+
+def norm_gate(owner, gate):
+    """G0..G4 for the tracks and core; KB-G0..KB-G3 for the knowledge base (G<k> accepted)."""
+    if owner == "kb":
+        g = gate if gate.startswith("KB-") else "KB-" + gate
+        if g not in KB_GATES:
+            raise H.HarnessError(f"gate {gate!r}: the knowledge base has the gates {', '.join(KB_GATES)} (brief 12.10)")
+        return g
+    if gate not in H.GATES:
+        raise H.HarnessError(f"gate {gate!r}: G0..G4 (KB-G0..KB-G3 for kb)")
+    return gate
+
+
+def scope_docs(track_root, gate):
+    """Scoping text of a package (decision 0012): SCOPE.md/SCOPING.md beside it, else any
+    scope/SCOPE*.md of the track (scope/, spec/scope/, ...). Paths relative to the track."""
+    out = []
+    for fn in ("SCOPE.md", "SCOPING.md"):
+        if os.path.isfile(os.path.join(track_root, "stage", gate, fn)):
+            out.append(f"stage/{gate}/{fn}")
+    for dp, dns, fns in os.walk(track_root):
+        dns[:] = [d for d in dns if d not in ("runs", "note", "outbox", ".git", "__pycache__")]
+        if os.path.basename(dp) == "scope":
+            out += [os.path.relpath(os.path.join(dp, f), track_root) for f in sorted(fns)
+                    if re.fullmatch(r"SCOP(E|ING)[^/]*\.md", f)]
+    return out
+
+
+def package_state(track_root, gate):
+    """{document: present?} for the documents of decision 0012, plus REVIEW.md, REPORT.md, scope and
+    "verifier": the name of the verifier's report in the stage directory (VERIFIER.md, decision 0016
+    item 1, or VERIFIER_REPORT.md), None if there is none."""
+    sd = os.path.join(track_root, "stage", gate)
+    st = {d: os.path.isfile(os.path.join(sd, d)) for d in PACKAGE_DOCS + ("REVIEW.md", "REPORT.md")}
+    st["scope"] = scope_docs(track_root, gate)
+    st["verifier"] = next((d for d in VERIFIER_DOCS if os.path.isfile(os.path.join(sd, d))), None)
+    return st
+
+
+# Run ids as EVIDENCE.md cites them: the full id (either form), or only its `-HHMMSS-<commit>` suffix
+# ("analyses -174912-b122e01, -174954-786ddcc"), the date then being any. A range "X ... Y" is not
+# expanded: the runs between its ends need not be the ones meant, so each run is named.
+EVID_RX = re.compile(r"(?:(?<![0-9])(\d{8})-)?(?<=-)(\d{6})-([0-9a-f]{7,40})(?![0-9A-Za-z])")
+
+
+def evidence_texts(track_root, gate):
+    """{relative path: text} of stage/<gate>/EVIDENCE.md and of the EVIDENCE.md of every earlier gate
+    of the same family (G0..G<k>, or KB-G0..KB-G<k>): a package may list the runs of an earlier one."""
+    m = re.fullmatch(r"(KB-)?G(\d)", gate)
+    out = {}
+    sdir = os.path.join(track_root, "stage")
+    for d in sorted(os.listdir(sdir)) if os.path.isdir(sdir) else []:
+        dm = re.fullmatch(r"(KB-)?G(\d)", d)
+        if not (m and dm and dm.group(1) == m.group(1) and int(dm.group(2)) <= int(m.group(2))):
+            continue
+        p = os.path.join(sdir, d, "EVIDENCE.md")
+        if os.path.isfile(p):
+            out[f"stage/{d}/EVIDENCE.md"] = open(p, errors="replace").read()
+    return out
+
+
+def evidence_runs(texts, rids):
+    """{run id: where} for the run ids of `rids` (directory names) that the EVIDENCE texts name: the
+    full id or its `HHMMSS-<commit7>` suffix (ranges are not expanded); a directory name of another
+    form only as it is."""
+    keyed = {}
+    for rid in rids:
+        mm = re.search(r"(\d{8})-(\d{6})-([0-9a-f]{7,40})$", rid)
+        if mm:
+            keyed[rid] = (mm.group(1), mm.group(2), mm.group(3))
+    hit = {}
+    for where, text in texts.items():
+        for tk in EVID_RX.finditer(text):
+            date, time_, commit = tk.groups()
+            for r, (d, t, c) in keyed.items():
+                if t == time_ and c[:7] == commit[:7] and (date is None or d == date):
+                    hit.setdefault(r, where)
+        for r in rids:                    # a directory name without date and commit: named as it is
+            if r not in keyed and re.search(r"(?<![A-Za-z0-9_.-])" + re.escape(r) + r"(?![A-Za-z0-9_-])", text):
+                hit.setdefault(r, where)
+    return hit
 
 
 # ------------------------------------------------------------------ helpers
@@ -151,9 +262,9 @@ def parse_args(args, flags=(), opts=()):
         else:
             pos.append(a)
             i += 1
-    if len(pos) != 2 or pos[1] not in H.GATES:
-        raise H.HarnessError("usage: nrpic-stage <collect|verify|report> <ID> G<k>")
-    return pos[0], pos[1], fl, op
+    if len(pos) != 2:
+        raise H.HarnessError("usage: nrpic-stage <collect|verify|report> <ID> G<k>   (kb: KB-G<k>)")
+    return pos[0], norm_gate(pos[0], pos[1]), fl, op
 
 
 def require_own(wt, owner):
@@ -198,58 +309,135 @@ def parse_checklist(path):
     return items
 
 
+def kb_charter_thresholds(charter, gate):
+    """Bullets `- KB-G<k> ...` of the charter's section "Gates of the knowledge base" (decision 0016
+    item 6) for this gate, without the gate prefix; continuation lines are joined."""
+    m = re.search(KB_THRESHOLDS_HEAD, charter)
+    if not m:
+        return None
+    bullets, cur = [], None
+    for line in charter[m.end():].splitlines()[1:]:
+        if line.startswith("#"):
+            break
+        if line.startswith("- "):
+            cur = [line[2:].strip()]
+            bullets.append(cur)
+        elif cur is not None and line.startswith("  ") and line.strip():
+            cur.append(line.strip())
+        else:
+            cur = None
+    out = []
+    for b in bullets:
+        bm = re.match(r"^(KB-G\d)\b[\s:]*(.*)$", " ".join(b))
+        if bm and bm.group(1) == gate:
+            t = bm.group(2).strip()
+            out.append(t[0].upper() + t[1:] if t else t)
+    return out
+
+
+def kb_gate_criteria(brief, gate, charter):
+    """Criteria of one gate of the knowledge base from brief 12.10 ("**Gates of the knowledge
+    base.** KB-G0: ...; KB-G1: ...") and the rules of that section that hold at every stage; the
+    thresholds of the charter's section "Gates of the knowledge base" (decision 0016 item 6).
+    Returns (heading, criteria, rules, thresholds or None when the charter has no such section)."""
+    head, sec = section(brief, r"### 12\.10\b")
+    thresholds = kb_charter_thresholds(charter, gate)
+    if not sec:
+        return None, [], [], thresholds
+    flat = " ".join(sec.split())
+    m = re.search(r"\*\*Gates of the knowledge base\.\*\*\s*(.*?)(?:\*\*|$)", flat)
+    crit = []
+    if m:
+        parts = re.split(r"\b(KB-G\d):\s*", m.group(1))
+        table = {parts[k]: parts[k + 1] for k in range(1, len(parts) - 1, 2)}
+        text = table.get(gate, "")
+        text = re.sub(r"\s*After that the track goes into service mode\.?\s*$", "", text).strip().rstrip(".")
+        crit = split_items(text)
+        if gate == "KB-G2" and thresholds:
+            crit = [c + (" (thresholds: coord/CHARTER.md, \"Gates of the knowledge base\"; items below)"
+                         if "QA report" in c else "") for c in crit]
+        elif gate == "KB-G2":
+            th = [l.strip() for l in charter.splitlines()
+                  if re.search(r"parse success rate|retrieval hit rate", l, re.I) and re.search(r"\d", l)
+                  and "written in CHARTER" not in l]
+            crit = [c + (f" (charter: {th[0]})" if th and "QA report" in c else
+                         " (the thresholds are not yet in coord/CHARTER.md: ask the orchestrator)"
+                         if "QA report" in c else "") for c in crit]
+    always = []
+    for l in sec.splitlines():
+        l = l.strip()
+        if l.startswith("- ") and "snapshot" in l and "every stage" in l:
+            always.append("`kb snapshot` run at the end of the stage; its identifier recorded in the package, "
+                          "and every locator cited from the knowledge base carries it (brief 12.10)")
+        if l.startswith("- ") and "read-only access" in l:
+            always.append("Tracks read the knowledge base read-only: `kb` opens db/current by default (brief 12.10)")
+    return head, crit, always, thresholds
+
+
 def collect(wt, args):
-    owner, gate, fl, _ = parse_args(args, flags=("--force",))
+    owner, gate, fl, _ = parse_args(args, flags=("--force", "--stdout"))
     require_own(wt, owner)
     charter = read_shared(wt, "coord/CHARTER.md")
     brief = read_shared(wt, BRIEF)
     groups = []
-    _, gates = section(charter, r"### 9\.2 Stage gates")
-    row = table_row(gates or "", gate)
-    if row and len(row) >= 4:
-        groups.append((f"Evidence required at every track's {gate} ({row[1]}; charter 9.2)", split_items(row[2])))
-        groups.append((f"Main products of {gate} (charter 9.2)", split_items(row[3])))
-    head, sheet = section(charter, SHEET[owner]) if owner in SHEET else (None, None)
-    crit = track_criteria(sheet or "", gate)
     if owner == "kb":
-        h2, kbsec = section(brief, r"### 12\.10\b")
-        if kbsec:
-            lines = [l.strip() for l in kbsec.splitlines()]
-            cand = [re.sub(r"^(- |\d+\. )", "", l) for l in lines if re.match(r"^(- |\d+\. )", l)]
-            cand += [" | ".join(c.strip() for c in l.strip("|").split("|"))
-                     for l in lines if l.startswith("|") and not re.match(r"^\|[\s:|-]+\|$", l)][1:]
-            sel = [c for c in cand if re.search(rf"\b(KB-)?{gate}\b", c)]
-            crit = sel or cand or [" ".join(kbsec.split())]
-            head = f"{h2} (brief)"
-    groups.append((f"Track-specific criteria of {owner} for {gate} ({head or 'no sheet found'})",
-                   crit or [f"(no track-specific criterion for {gate} in the sheet: write the ones agreed "
-                            "with the orchestrator here, or mark NA)"]))
-    _, figs = section(brief, r"### 13\.4 ")
-    frow = table_row(figs or "", gate)
-    if frow and len(frow) >= 3:
-        groups.append((f"Minimum figures at {gate} (brief 13.4)",
-                       [f"Schematic: {x}" for x in split_items(frow[1])] +
-                       [f"Data figure: {x}" for x in split_items(frow[2])]))
-    groups.append(("Package (brief 13.3; judged by the session)", [
-        "Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, "
-        "every PNG looked at",
-        "Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) "
-        "and the gate timeline",
-        "Working note written with /paper-writing; its manuscript checker passed with --compile",
-        "Verifier subagent (fresh context) wrote VERIFIER_REPORT.md; every number of the Supplemental "
-        "Material recomputed from the manifests",
-        "Null results and failed runs are on record (manifests and JOURNAL)",
-        "STATUS.md, JOURNAL.md and HANDOFF.md are current"]))
+        head, crit, always, thresholds = kb_gate_criteria(brief, gate, charter)
+        groups.append((f"Criteria of the knowledge base for {gate} (brief 12.10; charter 9.10)",
+                       crit or [f"(no criterion for {gate} found in brief 12.10: write the ones agreed with "
+                                "the orchestrator here, or mark NA)"]))
+        if thresholds:
+            groups.append((f"Thresholds of {gate} (coord/CHARTER.md, \"Gates of the knowledge base\"; "
+                           "decision 0016 item 6)", thresholds))
+        groups.append((f"Rules of brief 12.10 that hold at every stage of the knowledge base", always or
+                       ["`kb snapshot` run at the end of the stage; its identifier recorded"]))
+    else:
+        _, gates = section(charter, r"### 9\.2 Stage gates")
+        row = table_row(gates or "", gate)
+        if row and len(row) >= 4:
+            groups.append((f"Evidence required at every track's {gate} ({row[1]}; charter 9.2)", split_items(row[2])))
+            products = [x + (" (decision 0012: STAGE_REPORT.md with EVIDENCE.md and OPEN.md; no REPORT.md)"
+                             if x.lower().startswith("verification report") else "") for x in split_items(row[3])]
+            groups.append((f"Main products of {gate} (charter 9.2)", products))
+        head, sheet = section(charter, SHEET[owner]) if owner in SHEET else (None, None)
+        crit = track_criteria(sheet or "", gate)
+        groups.append((f"Track-specific criteria of {owner} for {gate} ({head or 'no sheet found'})",
+                       crit or [f"(no track-specific criterion for {gate} in the sheet: write the ones agreed "
+                                "with the orchestrator here, or mark NA)"]))
+        rulings = [l.strip()[2:] for l in read_rulings(wt, owner)]
+        if rulings:
+            groups.append(("Rulings of the orchestrator on the criteria (coord/DECISIONS; check that they apply "
+                           f"to {gate})", rulings))
+        _, figs = section(brief, r"### 13\.4 ")
+        frow = table_row(figs or "", gate)
+        if frow and len(frow) >= 3:
+            groups.append((f"Minimum figures at {gate} (brief 13.4)",
+                           [f"Schematic: {x}" for x in split_items(frow[1])] +
+                           [f"Data figure: {x}" for x in split_items(frow[2])]))
+    pkg = [PACKAGE_DOCS_TEXT]
+    if owner != "kb":
+        pkg += ["Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, "
+                "every PNG looked at",
+                "Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) "
+                "and the gate timeline",
+                "Working note written with /paper-writing; its manuscript checker passed with --compile"]
+    pkg += ["Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted "
+            "too); every number of the Supplemental Material recomputed from the manifests" if owner != "kb" else
+            "Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted "
+            "too): the package's numbers recomputed from the run manifests and the snapshot",
+            "Null results and failed runs are on record (manifests and JOURNAL)",
+            "STATUS.md, JOURNAL.md and HANDOFF.md are current"]
+    groups.append(("Package (brief 13.3, decision 0012; judged by the session)", pkg))
 
     path = os.path.join(stage_dir(wt, owner, gate), "CHECKLIST.md")
     old = {it["text"]: it for it in parse_checklist(path)}
-    if old and "--force" not in fl:
+    if old and "--force" not in fl and "--stdout" not in fl:
         print(f"{os.path.relpath(path, wt.root)} exists: regenerating and keeping the status and evidence "
               "of unchanged items")
     sha = H.git(wt.root, "log", "-1", "--format=%h", "--", "coord/CHARTER.md", check=False) or "?"
+    src = ("the brief (sections 12.10, 13.3), `coord/CHARTER.md` (9.10)" if owner == "kb" else
+           "`coord/CHARTER.md` (last changed in " + sha + ") and the brief (sections 13.3 and 13.4)")
     out = [f"# Checklist: {owner} {gate}", "",
-           f"Collected by `harness/bin/nrpic-stage collect {owner} {gate}` on {H.utcnow()} from "
-           f"`coord/CHARTER.md` (last changed in {sha}) and the brief (sections 13.3 and 13.4).",
+           f"Collected by `harness/bin/nrpic-stage collect {owner} {gate}` on {H.utcnow()} from {src}.",
            "For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,",
            "figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are",
            "in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.", ""]
@@ -265,11 +453,43 @@ def collect(wt, args):
             box = "x" if st in ("PASS", "NA") else " "
             out += [f"- [{box}] **C{n}** {t}", f"  - status: {st}", f"  - evidence: {ev}"]
         out.append("")
+    if "--stdout" in fl:
+        print("\n".join(out))
+        print(f"(--stdout: {n} items, {kept} with a status kept from {os.path.relpath(path, wt.root)}; nothing written)",
+              file=sys.stderr)
+        return 0
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w") as f:
         f.write("\n".join(out))
     print(f"wrote {os.path.relpath(path, wt.root)}: {n} items ({kept} kept from the previous version)")
     return 0
+
+
+def read_rulings(wt, owner):
+    """Bullets of coord/DECISIONS/*ruling* (on main, else the worktree) that name this track or all
+    tracks, e.g. decision 0013 '- Track A. ...', as '- <text> (NNNN)'; empty when there are none."""
+    letter = owner.split("-")[0] if owner in H.TRACK_IDS else None
+    if letter is None:
+        return []
+    out = []
+    texts = H._decision_texts(wt)
+    for name in sorted(texts):
+        if "ruling" not in name:
+            continue
+        bullets, cur = [], None
+        for line in texts[name].splitlines():
+            if line.startswith("- "):
+                cur = [line[2:].strip()]
+                bullets.append(cur)
+            elif cur is not None and line.startswith("  ") and line.strip():
+                cur.append(line.strip())
+            else:
+                cur = None
+        for b in bullets:
+            text = " ".join(b)
+            if re.match(rf"Track {letter}\b", text):
+                out.append(f"- {text} ({name[:4]})")
+    return out
 
 
 # ------------------------------------------------------------------ verify
@@ -329,7 +549,16 @@ def verify(wt, args):
     sha = H.git(wt.root, "rev-parse", rev)
     me = wt.owner or "orch"
     stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
-    base = os.path.join(wt.home, "scratch", me, "tmp", "stage-verify", f"{owner}-{gate}-{sha[:7]}-{stamp}")
+    base0 = os.path.join(wt.home, "scratch", me, "tmp", "stage-verify", f"{owner}-{gate}-{sha[:7]}-{stamp}")
+    base, n = base0, 1
+    os.makedirs(os.path.dirname(base0), exist_ok=True)
+    while True:                           # two verifies of one commit within a second: a fresh directory each
+        try:
+            os.mkdir(base)
+            break
+        except FileExistsError:
+            n += 1
+            base = f"{base0}-{n}"
     export = os.path.join(base, "tree")
     committed = os.path.join(base, "committed")
     results = []
@@ -370,8 +599,22 @@ def verify(wt, args):
 
     # the note
     mt = os.path.join(note, "main.tex")
-    res("note", "PASS" if os.path.isfile(mt) else "FAIL",
+    res("note", "PASS" if os.path.isfile(mt) else ("WARN" if owner == "kb" else "FAIL"),
         "tracks/<ID>/note/main.tex present" if os.path.isfile(mt) else "no tracks/<ID>/note/main.tex (working note)")
+
+    # package documents (decision 0012): judged in the worktree for the own track (the package is
+    # being assembled there), in the export for another owner's
+    pkg_root = wt.track_dir() if own else tdir
+    pk = package_state(pkg_root, gate)
+    missing = [d for d in ("EVIDENCE.md", "OPEN.md", "CHECKLIST.md") if not pk[d]]
+    extra = ([f"scoping text: {', '.join(pk['scope'][:3])}"] if pk["scope"] else []) + (
+        ["REPORT.md of wave 1 accepted as it is"] if pk["REPORT.md"] else []) + (
+        ["REVIEW.md present"] if pk["REVIEW.md"] else []) + (
+        [f"verifier's report {pk['verifier']}"] if pk["verifier"] else
+        ["no verifier's report yet (VERIFIER.md, decision 0016)"])
+    res("package", "WARN" if missing else "PASS",
+        (f"stage/{gate}/ lacks {', '.join(missing)} (decision 0012; STAGE_REPORT.md comes from `report`)" if missing
+         else f"EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012)") + ("; " + "; ".join(extra) if extra else ""))
     if os.path.isfile(mt):
         pdf_t = H.git(wt.root, "log", "-1", "--format=%ct", sha, "--", f"tracks/{owner}/note/main.pdf", check=False)
         tex_t = H.git(wt.root, "log", "-1", "--format=%ct", sha, "--", f"tracks/{owner}/note/*.tex",
@@ -411,11 +654,12 @@ def verify(wt, args):
         else f"{len(stems)} figures, each with its script")
     ns = sum(1 for s in stems if s.startswith("schem_"))
     nd = sum(1 for s in stems if not s.startswith("schem_"))
-    want = MIN_FIGS[gate]
+    want = MIN_FIGS.get(gate, (0, 0))
     res("min-figs", "PASS" if ns >= want[0] and nd >= want[1] else "WARN",
         f"{ns} schematics and {nd} data figures (brief 13.4 asks at least {want[0]} and {want[1]} at {gate})")
 
-    # run manifests
+    # run manifests: those of nrpic-run against the template; hand-written ones of wave 1
+    # (decision 0012) for what they record (status final, outputs where checksummed, inputs)
     tmpl_p = os.path.join(export, "harness", "templates", "run_manifest.json")
     required = list(json.load(open(tmpl_p)).keys()) if os.path.isfile(tmpl_p) else [
         "run_id", "track", "gate", "purpose", "kind", "command", "git", "code", "env", "input", "resources",
@@ -423,32 +667,69 @@ def verify(wt, args):
     rdir = os.path.join(tdir, "runs")
     rids = sorted(d for d in (os.listdir(rdir) if os.path.isdir(rdir) else [])
                   if os.path.isfile(os.path.join(rdir, d, "manifest.json")))
-    run_problems = {}
+    run_problems, run_notes, nhand = {}, {}, 0
+    hand_dates = {}                       # run id -> date, for every manifest not written by nrpic-run
     for rid in rids:
         probs = []
         try:
             m = json.load(open(os.path.join(rdir, rid, "manifest.json")))
-        except json.JSONDecodeError as e:
+        except (ValueError, OSError) as e:
             run_problems[rid] = [f"manifest is not JSON: {e}"]
+            hand_dates[rid] = H.run_date(rid)
             continue
-        miss = [k for k in required if k not in m]
-        if miss:
-            probs.append("fields missing: " + ", ".join(miss))
-        if m.get("run_id") != rid:
-            probs.append(f"run_id {m.get('run_id')!r} differs from the directory name")
-        if m.get("kind") == "production" and m.get("gate") == gate and not m.get("preregistered_in"):
+        v = H.manifest_view(m, wt.home)
+        if not v["ok"]:
+            run_problems[rid] = [v["issues"][0]]
+            hand_dates[rid] = H.run_date(rid)
+            continue
+        if not v["hand"]:
+            miss = [k for k in required if k not in m]
+            if miss:
+                probs.append("fields missing: " + ", ".join(miss))
+        else:                             # also a hand registration that copied the schema (H.hand_marker)
+            nhand += 1
+            hand_dates[rid] = H.run_date(rid, m)
+        if v["run_id"] != rid:
+            probs.append(f"run_id {v['run_id']!r} differs from the directory name")
+        if v["kind"] == "production" and v["gate"] == gate and not m.get("preregistered_in"):
             probs.append("production run without preregistered_in")
         p2, notes, _ = H.verify_run(wt.home, wt.root, m, outputs="--no-checksums" not in fl)
         probs += p2
         if probs:
             run_problems[rid] = probs
+        hand_notes = ([f"hand-written ({H.hand_marker(m)})"] if v["schema"] else []) + [
+            i for i in v["issues"] if not i.startswith("hand-written")] if v["hand"] else []
+        if notes or hand_notes:
+            run_notes[rid] = hand_notes + notes
+    # decision 0016 item 3: hand-written manifests of waves 1 and 2 that EVIDENCE.md lists count as
+    # registered; their failures of the manifest check are reported, not failed
+    for rid in [r for r in run_problems if r in hand_dates and hand_dates[r] is None]:
+        ct = H.git(wt.root, "log", "--diff-filter=A", "--format=%ct", sha, "--",
+                   f"tracks/{owner}/runs/{rid}/manifest.json", check=False).split()
+        hand_dates[rid] = time.strftime("%Y%m%d", time.gmtime(int(ct[-1]))) if ct else None
+    old12 = [r for r in run_problems if r in hand_dates and H.is_wave12(hand_dates[r])]
+    listed = evidence_runs(evidence_texts(pkg_root, gate), old12)
+    waived = {r: {"listed_in": listed[r], "problems": run_problems.pop(r)} for r in old12 if r in listed}
+    unlisted = [r for r in old12 if r not in listed]
     if not rids:
         res("runs", "PASS", "no registered runs")
     elif run_problems:
-        res("runs", "FAIL", f"{len(run_problems)} of {len(rids)} runs have problems", run_problems)
+        res("runs", "FAIL", f"{len(run_problems)} of {len(rids)} runs have problems"
+            + (f"; {len(unlisted)} of them hand-written in waves 1 and 2: list them in stage/{gate}/EVIDENCE.md "
+               "and their failures are waived (decision 0016 item 3)" if unlisted else "")
+            + (f"; {len(waived)} waived" if waived else ""), run_problems)
     else:
-        res("runs", "PASS", f"{len(rids)} run manifests complete, finished"
-            + ("" if "--no-checksums" in fl else ", output checksums verified"))
+        res("runs", "PASS", f"{len(rids)} run manifests finished"
+            + (f" ({nhand} hand-written, read as decision 0012 allows)" if nhand else ", complete")
+            + (f"; failures of {len(waived)} hand-written manifests of waves 1 and 2 listed in EVIDENCE.md "
+               "waived (decision 0016)" if waived else "")
+            + ("" if "--no-checksums" in fl else ", output checksums verified where recorded"))
+    if waived:
+        res("runs-waived", "WARN", f"{len(waived)} hand-written manifests of waves 1 and 2 listed in EVIDENCE.md: "
+            "failures of the manifest check waived (decision 0016 item 3)", waived)
+    if run_notes:
+        res("run-notes", "WARN", f"{len(run_notes)} runs read with defaults or not fully re-verifiable "
+            "(nrpic-run lint)", dict(list(run_notes.items())[:40]))
 
     # STATUS
     stp = os.path.join(tdir, "STATUS.md")
@@ -631,9 +912,15 @@ def report(wt, args):
                            + ", ".join(changed.splitlines()[:6]) + " (run verify again)")
         if vr["result"] != "PASS":
             reasons.append("verify reported FAIL: " + ", ".join(c["check"] for c in vr["checks"] if c["status"] == "FAIL"))
-    vrep = os.path.join(sd, "VERIFIER_REPORT.md")
-    if not os.path.isfile(vrep):
-        reasons.append("no VERIFIER_REPORT.md (step 7: verifier subagent)")
+    pk = package_state(wt.track_dir(), gate)
+    vname = pk["verifier"] or VERIFIER_DOCS[0]
+    vrep = os.path.join(sd, vname)
+    if not pk["verifier"]:
+        reasons.append("no VERIFIER.md (step 7: verifier subagent; decision 0016 item 1, VERIFIER_REPORT.md "
+                       "accepted too)")
+    for d in ("EVIDENCE.md", "OPEN.md"):
+        if not pk[d]:
+            reasons.append(f"no stage/{gate}/{d} (decision 0012)")
     verdict = "FAIL" if reasons else "PASS"
     tag = f"stage/{owner}/{gate}-{verdict.lower()}-{time.strftime('%Y%m%d', time.gmtime())}"
 
@@ -647,12 +934,21 @@ def report(wt, args):
         p = os.path.join(rdir, d, "manifest.json")
         if os.path.isfile(p):
             try:
-                runs[d] = H.read_json(p)
-            except json.JSONDecodeError:
+                runs[d] = H.manifest_view(H.read_json(p), wt.home)
+            except (ValueError, OSError):
                 pass
+    docs = [f"| `stage/{gate}/{d}` | {'present' if pk[d] else ('written by this command' if d == 'STAGE_REPORT.md' else 'MISSING')} |"
+            for d in PACKAGE_DOCS]
+    docs += [f"| `stage/{gate}/{vname}` (verifier's report) | "
+             f"{'present' if pk['verifier'] else 'MISSING (VERIFIER.md, decision 0016; VERIFIER_REPORT.md accepted too)'} |"]
+    docs += [f"| `stage/{gate}/REVIEW.md` | {'present' if pk['REVIEW.md'] else 'none (needed where the lead rechecked helpers)'} |"]
+    docs += [f"| scoping text | {', '.join('`' + x + '`' for x in pk['scope']) if pk['scope'] else 'none found (SCOPE.md or SCOPING.md beside the report, or scope/SCOPE.md)'} |"]
+    if pk["REPORT.md"]:
+        docs += [f"| `stage/{gate}/REPORT.md` | written in wave 1, accepted as it is (decision 0012) |"]
     bodies = {
         "Verdict": [f"**{verdict}**. Tag: `{tag}` (created and pushed by the orchestrator after review, "
                     "decision 0003)."] + ([""] + [f"- {r}" for r in reasons] if reasons else []),
+        "Package documents": ["| Document | State |", "|---|---|"] + docs,
         "Criteria": ["| # | Criterion | Evidence (run id, figure, KB locator) | Result |", "|---|---|---|---|"] +
                     [f"| {i['id']} | {i['text'].replace('|', '/')} | {i['evidence'].replace('|', '/') or '—'} | "
                      f"{i['status']} |" for i in items],
@@ -666,17 +962,24 @@ def report(wt, args):
                     f"{'' if os.path.isfile(os.path.join(note, 'scripts', s + '.py')) else ' (MISSING)'} | "
                     f"{'schematic' if s.startswith('schem_') else 'data'} | to be confirmed by the session |"
                     for s in stems],
-        "Verifier report": ([f"`tracks/{owner}/stage/{gate}/VERIFIER_REPORT.md` present; its first lines:", ""] +
+        "Verifier report": ([f"`tracks/{owner}/stage/{gate}/{vname}` present; its first lines:", ""] +
                             ["> " + l for l in open(vrep).read().splitlines()[:12]]
-                            if os.path.isfile(vrep) else ["MISSING: the verifier subagent has not reported."]),
-        "Null results and failed runs": ([f"- `{r}`: {m.get('status')} (exit {m.get('exit_code')}), {m.get('purpose', '')}"
-                                          for r, m in runs.items() if m.get("status") in ("failed", "stopped")]
+                            if pk["verifier"] else ["MISSING: the verifier subagent has not reported "
+                                                    f"(`stage/{gate}/VERIFIER.md`, decision 0016)."]),
+        "Null results and failed runs": ([f"- `{r}`: {v['status']}"
+                                          + (f" (recorded as {v['status_raw']!r})" if v['status_raw'] != v['status'] else "")
+                                          + f" (exit {v['exit_code']}), {v['purpose']}"
+                                          for r, v in runs.items() if v["status"] in ("failed", "stopped", "superseded")]
                                          or ["No registered run failed or was stopped. Null results are in the "
                                              "JOURNAL entries."]),
         "Open risks": (open(os.path.join(wt.track_dir(), "RISKS.md")).read().splitlines()[1:41]
                        if os.path.isfile(os.path.join(wt.track_dir(), "RISKS.md")) else ["No RISKS.md."]),
     }
     head, secs = split_sections(template)
+    path = os.path.join(sd, "STAGE_REPORT.md")
+    prev_head, prev_secs = split_sections(open(path).read()) if os.path.isfile(path) else ([], [])
+    prev = {t: b for t, b in prev_secs}
+    names = [t for t, _ in secs]
     out = list(head)
     for title, body in secs:
         key = next((k for k in bodies if title[3:].startswith(k)), None)
@@ -685,16 +988,24 @@ def report(wt, args):
             out += [""] + bodies[key] + [""]
         elif title[3:].startswith("Decision requested"):
             dec = op.get("--decision")
-            out += ([""] + [dec, ""] if dec else
-                    body + ["", "TO WRITE by the track before the package is submitted "
-                            "(`nrpic-stage report ... --decision \"...\"`)."])
+            old_dec = next((b for t, b in prev_secs if t[3:].startswith("Decision requested")), None)
+            if dec:
+                out += ["", dec, ""]
+            elif old_dec and "TO WRITE by the track" not in "\n".join(old_dec):
+                out += old_dec                                  # the track's own text is kept
+            else:
+                out += body + ["", "TO WRITE by the track before the package is submitted "
+                               "(`nrpic-stage report ... --decision \"...\"`)."]
         else:
             out += body
-    path = os.path.join(sd, "STAGE_REPORT.md")
+    kept = [t for t, _ in prev_secs if t not in names and not any(t[3:].startswith(k) for k in bodies)]
+    for t in kept:                                              # sections the track added by hand
+        out += [t] + prev[t]
     os.makedirs(sd, exist_ok=True)
     with open(path, "w") as f:
         f.write("\n".join(out).rstrip() + "\n")
-    print(f"wrote {os.path.relpath(path, wt.root)}: verdict {verdict}; proposed tag {tag}")
+    print(f"wrote {os.path.relpath(path, wt.root)}: verdict {verdict}; proposed tag {tag}"
+          + (f"; kept {len(kept)} section(s) of the previous report: {', '.join(t[3:] for t in kept)}" if kept else ""))
     for r in reasons:
         print("  - " + r)
     print(f"commit the package path-limited: git add tracks/{owner}/stage/{gate} && "

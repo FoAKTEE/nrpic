@@ -325,29 +325,76 @@ def build_env(wt, threads=1, extra=None):
     return env
 
 
-# ------------------------------------------------------------------ budgets (decision 0006)
+# ------------------------------------------------------------------ budgets (decisions 0006, 0014)
 
 BUDGET_FILE = "coord/DECISIONS/0006-compute-budget.md"
+DECISIONS_DIR = "coord/DECISIONS"
 
 
-def budget_table(wt):
-    """{owner: {"gpu_hours": float, "cores": int}} from the table of decision 0006 on main
-    (the orchestrator's copy is authoritative); the worktree's copy if main lacks it."""
-    r = run(["git", "-C", wt.root, "show", f"main:{BUDGET_FILE}"], check=False)
-    text = r.stdout if r.returncode == 0 else None
-    if text is None:
-        p = os.path.join(wt.root, BUDGET_FILE)
-        if not os.path.isfile(p):
-            raise HarnessError(f"no budget table: {BUDGET_FILE} on main or in {wt.root}")
-        text = open(p).read()
+def _decision_texts(wt):
+    """{file name: text} of coord/DECISIONS/*.md on main (the orchestrator's copy is
+    authoritative), else of the worktree's own copy."""
+    out = {}
+    r = run(["git", "-C", wt.root, "ls-tree", "--name-only", "main", DECISIONS_DIR + "/"], check=False)
+    names = [n for n in r.stdout.split() if n.endswith(".md")] if r.returncode == 0 else []
+    for n in names:
+        s = run(["git", "-C", wt.root, "show", f"main:{n}"], check=False)
+        if s.returncode == 0:
+            out[os.path.basename(n)] = s.stdout
+    if not out:
+        d = os.path.join(wt.root, DECISIONS_DIR)
+        for n in sorted(os.listdir(d)) if os.path.isdir(d) else []:
+            if n.endswith(".md"):
+                out[n] = open(os.path.join(d, n)).read()
+    return out
+
+
+def owner_from_short(s):
+    """A -> A-emd-pbh, A-emd-pbh -> A-emd-pbh, core -> core, orch -> orch (decision 0016 item 2);
+    None if no owner."""
+    if s in OWNER_IDS or s == "orch":
+        return s
+    for t in TRACK_IDS:
+        if s == t.split("-")[0]:
+            return t
+    return None
+
+
+def budget_table(wt, with_source=False):
+    """{owner: {"gpu_hours": float, "cores": int}}: the table of decision 0006, then the GPU-hour
+    allotments of every later decision that amends 0006 (its first lines say "amends 0006"; the
+    sentence "To the next gate: core 40, A 60, ..." is read). Decisions on main are authoritative."""
+    texts = _decision_texts(wt)
+    base = texts.get(os.path.basename(BUDGET_FILE))
+    if base is None:
+        raise HarnessError(f"no budget table: {BUDGET_FILE} on main or in {wt.root}")
     table = {}
-    for line in text.splitlines():
+    for line in base.splitlines():
         cells = [c.strip() for c in line.strip().strip("|").split("|")]
         if len(cells) == 3 and re.fullmatch(r"[0-9.]+", cells[1]) and re.fullmatch(r"[0-9]+", cells[2]):
             table[cells[0]] = {"gpu_hours": float(cells[1]), "cores": int(cells[2])}
     if not table:
         raise HarnessError(f"could not parse the budget table of {BUDGET_FILE}")
-    return table
+    sources = [os.path.basename(BUDGET_FILE)]
+    for name in sorted(texts):
+        if name <= os.path.basename(BUDGET_FILE):
+            continue
+        text = texts[name]
+        if not re.search(r"amends\s+0006", "\n".join(text.splitlines()[:6]), re.I):
+            continue
+        m = re.search(r"To the next gate:\s*(.*?)(?:\.\s|\.$|\n\n)", text, re.S)
+        if not m:
+            continue
+        changed = False
+        for who, val in re.findall(r"([A-Za-z][A-Za-z-]*)\s+([0-9]+(?:\.[0-9]+)?)", m.group(1)):
+            o = owner_from_short(who)
+            if o is None:
+                continue
+            table.setdefault(o, {"gpu_hours": 0.0, "cores": 16})["gpu_hours"] = float(val)
+            changed = True
+        if changed:
+            sources.append(name)
+    return (table, sources) if with_source else table
 
 
 # ------------------------------------------------------------------ git writes
@@ -405,9 +452,234 @@ def fnmatch_any(name, patterns):
     return any(fnmatch.fnmatch(name, p) for p in patterns)
 
 
-# ------------------------------------------------------------------ run verification (nrpic-run, nrpic-stage)
+# ------------------------------------------------------------------ run manifests (nrpic-run, nrpic-stage)
+#
+# Two kinds of manifests exist under tracks/<ID>/runs/<run_id>/manifest.json: those written by
+# nrpic-run ("schema": "nrpic-run-manifest/1", every field of harness/templates/run_manifest.json)
+# and the hand-written ones of wave 1 (decision 0012: the harness reads them as well), whose field
+# names and status words vary. manifest_view() reads either kind into one shape and never raises;
+# what it had to guess is listed in view["issues"].
 
-FINAL_STATUSES = ("completed", "failed", "stopped")
+SCHEMA = "nrpic-run-manifest/1"
+FINAL_STATUSES = ("completed", "failed", "stopped", "superseded")
+ACTIVE_STATUSES = ("registered", "running", "submitted")
+STATUS_WORDS = {
+    "completed": "completed", "complete": "completed", "done": "completed", "finished": "completed",
+    "ok": "completed", "success": "completed", "succeeded": "completed", "passed": "completed",
+    "pass": "completed",
+    "failed": "failed", "fail": "failed", "error": "failed", "crashed": "failed", "aborted": "failed",
+    "stopped": "stopped", "cancelled": "stopped", "canceled": "stopped", "killed": "stopped",
+    "timeout": "stopped", "preempted": "stopped", "interrupted": "stopped",
+    "superseded": "superseded", "obsolete": "superseded", "replaced": "superseded",
+    "registered": "registered", "running": "running", "submitted": "submitted", "queued": "submitted",
+    "pending": "submitted",
+}
+RUN_ID_RX = re.compile(r"^(?P<owner>[A-Za-z][A-Za-z0-9-]*?)-(?P<date>\d{8})-(?P<time>\d{6})-(?P<commit>[0-9a-f]{7,40})$")
+STANDARD_STATUS_WORDS = FINAL_STATUSES + ACTIVE_STATUSES      # what manifest_view reads without a default
+# Decision 0016 item 3: hand-written manifests of waves 1 and 2 count as registered; from wave 2b
+# (resumed on 2026-11-19 UTC) on, runs go through `nrpic-run submit`. A run is "of waves 1 and 2"
+# when its date (run id, else the manifest's own dates) lies before this day.
+WAVE_2B_START = "20261119"
+
+
+def parse_run_id(rid):
+    """(owner id, 'YYYYMMDD-HHMMSS', commit) of a run id in either form (decision 0016 item 2: the
+    short form A-20261115-... that nrpic-run writes, with A..F, core, kb, orch; the long form
+    A-emd-pbh-20261115-... of waves 1 and 2 stays valid), or None."""
+    m = RUN_ID_RX.match(rid or "")
+    if not m:
+        return None
+    owner = owner_from_short(m.group("owner"))
+    return (owner, m.group("date") + "-" + m.group("time"), m.group("commit")) if owner else None
+
+
+def run_date(rid, m=None):
+    """'YYYYMMDD' (UTC) of a run: from its id (either form; also a directory name that only carries
+    `-YYYYMMDD-HHMMSS-<commit>`), else from the manifest's started/registered/ended/date field; None
+    when neither tells."""
+    for s in (rid, m.get("run_id") if isinstance(m, dict) else None):
+        mm = re.search(r"(?:^|-)(\d{8})-\d{6}-[0-9a-f]{7,40}$", s or "")
+        if mm:
+            return mm.group(1)
+    if isinstance(m, dict):
+        for k in ("started", "registered", "ended", "date", "created"):
+            mm = re.match(r"^\s*(\d{4})-?(\d{2})-?(\d{2})", str(m.get(k) or ""))
+            if mm:
+                return "".join(mm.groups())
+    return None
+
+
+def is_wave12(date):
+    """A run date before wave 2b (decision 0016 item 3)."""
+    return bool(date) and date < WAVE_2B_START
+
+
+def _num(x):
+    if isinstance(x, bool) or x is None:
+        return None
+    if isinstance(x, (int, float)):
+        return float(x)
+    if isinstance(x, dict):                         # e.g. {"run1": 3.38, "run2": 1.48}
+        vals = [_num(v) for v in x.values()]
+        vals = [v for v in vals if v is not None]
+        return sum(vals) if vals else None
+    if isinstance(x, str):
+        m = re.match(r"^\s*([0-9]*\.?[0-9]+(?:[eE][-+]?\d+)?)\s*(s|sec|seconds|h|hours|min)?\s*$", x)
+        if m:
+            v = float(m.group(1))
+            return v * 3600 if m.group(2) in ("h", "hours") else v * 60 if m.group(2) == "min" else v
+    return None
+
+
+def _first(*vals):
+    for v in vals:
+        if v is not None and v != "":
+            return v
+    return None
+
+
+# every top-level key any version of nrpic-run has written (submit and finish)
+NRPIC_RUN_KEYS = ("schema", "run_id", "track", "gate", "kind", "purpose", "preregistered_in", "launcher", "command",
+                  "cwd", "git", "code", "env", "input", "inputs", "batch_entries", "resources", "slurm", "outputs",
+                  "status", "exit_code", "registered", "started", "ended", "finished", "parents", "notes",
+                  "budget_at_submit")
+
+
+def hand_marker(m):
+    """Why a manifest that names the nrpic-run schema was nevertheless written by hand (waves 1 and 2:
+    helpers' registration scripts copied the schema), or '': a `registered_by` field, a launcher other
+    than local, batch, chain ("local (hand registration)"), or another top-level key nrpic-run never
+    writes (card_hours, output_dir, commit, ...)."""
+    if not isinstance(m, dict):
+        return ""
+    if m.get("registered_by"):
+        return f"registered_by: {str(m['registered_by'])[:80]}"
+    la = m.get("launcher")
+    if la is not None and la not in ("local", "batch", "chain"):
+        return f"launcher {str(la)[:60]!r}"
+    extra = sorted(k for k in m if k not in NRPIC_RUN_KEYS)
+    if extra:
+        return "fields nrpic-run never writes: " + ", ".join(extra[:5])
+    return ""
+
+
+def manifest_view(m, home, where=""):
+    """One manifest of either kind, read into a fixed shape. Never raises.
+
+    Keys: ok (a JSON object), schema (names the nrpic-run schema), hand (written by hand: no schema, or
+    a hand_marker), run_id, owner, status (one of
+    FINAL_STATUSES, ACTIVE_STATUSES or "unknown"), status_raw, final, gate, kind, purpose, launcher,
+    outdir (absolute, or None), outdir_rel, gpu_hours (used, None if not recorded),
+    gpu_hours_requested, walltime_s, cores, exit_code, sha, inputs (list of {path, sha256, tracked}),
+    issues (what was not in the nrpic-run schema), where."""
+    v = {"ok": isinstance(m, dict), "where": where, "issues": [], "raw": m}
+    if not isinstance(m, dict):
+        v.update(schema=False, hand=True, run_id=None, owner=None, status="unknown", status_raw=None, final=True,
+                 gate=None, kind=None, purpose="", launcher=None, outdir=None, outdir_rel=None,
+                 gpu_hours=None, gpu_hours_requested=0.0, walltime_s=None, cores=1, exit_code=None,
+                 sha=None, inputs=[])
+        v["issues"].append(f"not a JSON object ({type(m).__name__})")
+        return v
+    res = m.get("resources") if isinstance(m.get("resources"), dict) else {}
+    outs = m.get("outputs")
+    git_ = m.get("git") if isinstance(m.get("git"), dict) else {}
+    v["schema"] = m.get("schema") == SCHEMA
+    v["run_id"] = m.get("run_id") if isinstance(m.get("run_id"), str) else None
+    v["owner"] = _first(m.get("track"), m.get("owner"))
+    raw = m.get("status")
+    v["status_raw"] = raw
+    word = re.split(r"[\s(:;,]+", raw.strip().lower())[0] if isinstance(raw, str) and raw.strip() else None
+    st = STATUS_WORDS.get(word)
+    ec = _first(m.get("exit_code"), m.get("exit_status"), m.get("rc"))
+    v["exit_code"] = ec
+    if st is None:
+        if isinstance(ec, int) and not isinstance(ec, bool):
+            st = "completed" if ec == 0 else "failed"
+            v["issues"].append(f"status {raw!r} read as {st} from exit code {ec}")
+        else:
+            st = "unknown"
+            v["issues"].append("no status" if raw is None else f"status {raw!r} not understood")
+    elif raw != st:
+        v["issues"].append(f"status {raw!r} read as {st}")
+    v["status"] = st
+    v["final"] = st not in ACTIVE_STATUSES
+    v["gate"] = m.get("gate") if isinstance(m.get("gate"), str) else None
+    v["kind"] = m.get("kind")
+    v["purpose"] = str(_first(m.get("purpose"), m.get("label"), m.get("tag"), m.get("test")) or "")
+    v["launcher"] = m.get("launcher") if isinstance(m.get("launcher"), str) else None
+    od = None
+    if isinstance(outs, dict):
+        od = _first(outs.get("dir"), outs.get("directory"), outs.get("path"))
+    elif isinstance(outs, str):
+        od = outs
+    od = _first(od, m.get("output_dir"), m.get("output_directory"), m.get("outputs_dir"), m.get("out_dir"))
+    if not isinstance(od, str):
+        od = None
+    if od is None:
+        v["issues"].append("no output directory recorded")
+        v["outdir"] = v["outdir_rel"] = None
+    else:
+        p = od if os.path.isabs(od) else os.path.join(home, od)
+        v["outdir"] = os.path.normpath(p)
+        v["outdir_rel"] = os.path.relpath(v["outdir"], home)
+        if not (isinstance(outs, dict) and outs.get("dir")):
+            v["issues"].append("output directory read from a field other than outputs.dir")
+    gh = _num(_first(res.get("gpu_hours"), res.get("card_hours"), m.get("gpu_hours"), m.get("card_hours")))
+    v["gpu_hours"] = gh
+    v["gpu_hours_requested"] = _num(res.get("gpu_hours_requested")) or 0.0
+    v["walltime_s"] = _num(_first(res.get("walltime_s"), m.get("wall_time_s"), m.get("walltime_s"),
+                                  m.get("wall_time")))
+    v["cores"] = int(_num(_first(res.get("cores"), m.get("cores"))) or 1)
+    v["sha"] = _first(git_.get("sha"), m.get("commit"), m.get("git_rev"), m.get("sha"))
+    if not isinstance(v["sha"], str):
+        v["sha"] = None
+    ins = []
+    for rec in m.get("inputs") or []:
+        if not isinstance(rec, dict):
+            continue
+        p = _first(rec.get("path"), rec.get("file"))
+        if isinstance(p, str):
+            ins.append({"path": p, "sha256": rec.get("sha256"), "tracked": rec.get("tracked")})
+    v["inputs"] = ins
+    v["hand"] = (not v["schema"]) or bool(hand_marker(m))
+    if not v["schema"]:
+        v["issues"].insert(0, "hand-written (not the nrpic-run schema)")
+    if v["run_id"] is None:
+        v["issues"].append("no run_id")
+    elif parse_run_id(v["run_id"]) is None:
+        v["issues"].append(f"run_id {v['run_id']!r} is not <owner>-<YYYYMMDD-HHMMSS>-<commit7>")
+    if v["gate"] is None:
+        v["issues"].append("no gate")
+    return v
+
+
+def read_branch_manifests(root, branches, owner):
+    """{(branch, path): (text or None, error or None)} for every tracks/<owner>/runs/*/manifest.json
+    on the given branches, read in one `git cat-file --batch` (identical blobs are read once)."""
+    entries, blobs = [], {}
+    for br in branches:
+        r = run(["git", "-C", root, "ls-tree", "-r", br, "--", f"tracks/{owner}/runs"], check=False)
+        for line in r.stdout.splitlines():
+            meta, _, path = line.partition("\t")
+            parts = meta.split()
+            if len(parts) == 3 and parts[1] == "blob" and path.endswith("/manifest.json"):
+                entries.append((br, path, parts[2]))
+                blobs[parts[2]] = None
+    if blobs:
+        p = subprocess.run(["git", "-C", root, "cat-file", "--batch"],
+                           input=("\n".join(blobs) + "\n").encode(), capture_output=True, env=boot_env())
+        data, pos = p.stdout, 0
+        for sha in list(blobs):
+            nl = data.find(b"\n", pos)
+            if nl < 0:
+                break
+            head = data[pos:nl].split()
+            pos = nl + 1
+            if len(head) == 3 and head[1] == b"blob":
+                size = int(head[2])
+                blobs[sha] = data[pos:pos + size].decode("utf-8", "replace")
+                pos += size + 1
+    return {(br, path): blobs.get(sha) for br, path, sha in entries}
 
 
 def git_blob_sha256(root, rev, path):
@@ -416,55 +688,79 @@ def git_blob_sha256(root, rev, path):
 
 
 def verify_run(home, root, m, outputs=True):
-    """Problems found when re-checking one run manifest: output checksums against sha256sums.txt
-    (and that file against the manifest), tracked inputs against their blobs at the run's commit,
-    untracked inputs against the files still on disk. Returns (problems, notes, n_outputs)."""
+    """Problems found when re-checking one run manifest (either kind; see manifest_view): output
+    checksums against sha256sums.txt (and that file against the manifest), tracked inputs against
+    their blobs at the run's commit, untracked inputs against the files still on disk. For a
+    hand-written manifest of wave 1, what it does not record is a note, not a problem.
+    Returns (problems, notes, n_outputs)."""
     problems, notes, n = [], [], 0
-    if m.get("status") not in FINAL_STATUSES:
-        problems.append(f"status is {m.get('status')}: not finished (nrpic-run finish)")
-    outdir = os.path.join(home, m.get("outputs", {}).get("dir", ""))
-    sums = os.path.join(outdir, "sha256sums.txt")
+    v = manifest_view(m, home)
+    if not v["ok"]:
+        return [v["issues"][0]], notes, 0
+    hand = v["hand"]
+    if v["status"] in ACTIVE_STATUSES:
+        problems.append(f"status is {v['status_raw']}: not finished (nrpic-run finish)")
+    elif v["status"] == "unknown":
+        (notes if hand else problems).append(f"status {v['status_raw']!r}: cannot tell whether the run finished")
+    elif v["status_raw"] != v["status"]:
+        notes.append(f"status {v['status_raw']!r} read as {v['status']}")
+    outdir = v["outdir"]
     if outputs:
-        if not os.path.isfile(sums):
-            problems.append(f"missing {sums}")
+        sums = os.path.join(outdir, "sha256sums.txt") if outdir else None
+        if outdir is None:
+            (notes if hand else problems).append("no output directory recorded")
+        elif not os.path.isfile(sums):
+            if hand:
+                notes.append(f"no {os.path.relpath(sums, home)} (hand-written manifest; outputs not re-verifiable)")
+            else:
+                problems.append(f"missing {sums}")
         else:
-            rec = m["outputs"].get("sha256sums_sha256")
+            outs = m.get("outputs") if isinstance(m.get("outputs"), dict) else {}
+            rec = outs.get("sha256sums_sha256")
             if rec and sha256_file(sums) != rec:
                 problems.append("sha256sums.txt differs from the one recorded in the manifest")
             listed = set()
-            for line in open(sums):
+            for line in open(sums, errors="replace"):
                 if not line.strip():
                     continue
-                digest, rel = line.rstrip("\n").split("  ", 1)
-                listed.add(rel)
+                digest, sep, rel = line.rstrip("\n").partition("  ")
+                if not sep:
+                    digest, _, rel = line.strip().partition(" ")
+                    rel = rel.lstrip("*").strip()
+                listed.add(os.path.normpath(rel))
                 n += 1
                 p = os.path.join(outdir, rel)
                 if not os.path.isfile(p):
                     problems.append(f"missing output {rel}")
                 elif sha256_file(p) != digest:
                     problems.append(f"changed output {rel}")
-            for dirpath, dirnames, filenames in os.walk(outdir):
-                rel = os.path.relpath(dirpath, outdir)
-                if rel == ".":
-                    dirnames[:] = [d for d in dirnames if d != ".nrpic"]
-                for fn in filenames:
-                    relf = os.path.normpath(os.path.join(rel, fn))
-                    if (relf != "sha256sums.txt" and relf not in listed
-                            and not os.path.islink(os.path.join(dirpath, fn))):
-                        problems.append(f"output not in sha256sums.txt: {relf}")
-    sha = m.get("git", {}).get("sha")
-    for rec in m.get("inputs", []):
-        if rec.get("tracked"):
-            got = git_blob_sha256(root, sha, rec["path"])
-            if got is None:
-                problems.append(f"input {rec['path']} not in commit {str(sha)[:7]}")
-            elif got != rec["sha256"]:
-                problems.append(f"input {rec['path']}: blob at {sha[:7]} differs from the recorded sha256")
+            if not hand:
+                for dirpath, dirnames, filenames in os.walk(outdir):
+                    rel = os.path.relpath(dirpath, outdir)
+                    if rel == ".":
+                        dirnames[:] = [d for d in dirnames if d != ".nrpic"]
+                    for fn in filenames:
+                        relf = os.path.normpath(os.path.join(rel, fn))
+                        if (relf != "sha256sums.txt" and relf not in listed
+                                and not os.path.islink(os.path.join(dirpath, fn))):
+                            problems.append(f"output not in sha256sums.txt: {relf}")
+    sha = v["sha"]
+    for rec in v["inputs"]:
+        path, digest = rec["path"], rec["sha256"]
+        if not isinstance(digest, str):
+            notes.append(f"input {path}: no sha256 recorded")
             continue
-        p = rec["path"] if os.path.isabs(rec["path"]) else os.path.join(root, rec["path"])
+        if rec.get("tracked") and sha:
+            got = git_blob_sha256(root, sha, path)
+            if got is None:
+                problems.append(f"input {path} not in commit {sha[:7]}")
+            elif got != digest:
+                problems.append(f"input {path}: blob at {sha[:7]} differs from the recorded sha256")
+            continue
+        p = path if os.path.isabs(path) else os.path.join(root, path)
         if os.path.isfile(p):
-            if sha256_file(p) != rec["sha256"]:
-                problems.append(f"input {rec['path']} changed since the run (sha256 differs)")
+            if sha256_file(p) != digest:
+                (notes if hand else problems).append(f"input {path} changed since the run (sha256 differs)")
         else:
-            notes.append(f"input {rec['path']} no longer present (not re-verifiable)")
+            notes.append(f"input {path} no longer present (not re-verifiable)")
     return problems, notes, n
