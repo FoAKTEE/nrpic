@@ -703,3 +703,70 @@ curves of the uniform 128^3 mesh and of the refined mesh lie on each other).
   1e-3 of velocity, the order measured.
 - T6 (ball across the level boundary) then needs no interface effect either: 1.1e-3
   with the part of the ball on the fine level undersampled.
+
+### Corrections to the outcomes above (same session, 22:20Z)
+
+- T6 and T6b tables: the row "momentum change |dP|/M" is |dP|/(M v) with
+  v = (G M/R)^(1/2) of the ball (1 in T6, 0.7 in T6b), and the centre-of-mass row is in
+  units of R (`problems/newton/analyze_conservation.py` lines 47-63) [VERIFIED by
+  reading]. The first panel of the figures shows |dP|/M (1.48e-3 at its peak in T6b).
+- T5 table: the count "43 snapshots" and the four signed ranges of the deviation were
+  read off the figure, not from a file. The analysis script is extended to write the
+  per-snapshot values; the numbers follow with its rerun.
+
+### T6c prediction (written before the runs): the kick is the lattice of the ball being coarser than the cells
+
+Three registered runs of `cases.py` (`t6c_in`, `t6c_x`, `t6c_coarse`), processor
+executable of this branch, the deck of T6 otherwise (cloud-in-cell, Catmull-Rom, step
+0.002, to t = 0.8).
+- in: the ball of T6b (radius 0.7, inside the refined MeshBlocks) on a lattice of the
+  fine cell size (0.03125, about 47000 particles). (a) On the uniform 128^3 mesh the
+  momentum change |dP|/(M v) is at most 2e-4, ten times below the 2.1e-3 of T6b. (b) The
+  refined mesh gives the four conservation numbers of the uniform 128^3 mesh within 10
+  per cent (T6b: 3e-4). (c) On the uniform 64^3 mesh (eight particles per cell, still
+  commensurate) at most 2e-4. Refuted (sampling is not the cause) if (a) is above 1e-3.
+- coarse: the ball of T6b on a lattice of two cells (0.125, about 740 particles) on the
+  uniform 64^3 mesh, no refinement anywhere: the kick appears, |dP|/(M v) between 1e-3
+  and 1e-2 (estimate 0.3 G m/dx^2 over a quarter of a cell at the speed 0.27: 3e-3),
+  with the shape of T6b (a jump in the first 0.1 time units, constant afterwards).
+  Refuted if it stays below 3e-4.
+- x: the ball of T6 (radius 1, centre (0.3, -0.2, 0.1), crossing the level boundary) on
+  the lattice 0.03125 (about 138000 particles), on 64^3 + one level and on uniform 64^3.
+  Prediction [weak: the force between particles on the two sides of a level boundary is
+  not antisymmetric, and I have no estimate of its size]: momentum change on the refined
+  mesh at most 3e-4 (T6: 1.1e-3), centre of mass at most 2.5e-4 R, angular momentum at
+  most 5e-4, each within five times the uniform 64^3 run of the same particles. If the
+  momentum change on the refined mesh is above 5e-4 while the uniform run is below
+  1e-4, the level boundary itself breaks momentum conservation at the level of T6 and
+  refined meshes stay not verified for it.
+
+### T4d prediction (written before the runs): the embedded ellipsoid against resolution and kernels
+
+Reference as in T4b: first crossing of the short axis of the track's ODE (model A) at
+24.2525 t_k; measured: first minimum of (5 J_xx/M)^(1/2) of group 1; "axes" is the
+largest |axis - ODE|/R_L up to one t_k before the crossing. Eight patch particles per
+cell and n^3 background particles at every n; no snapshots.
+- Processors, `t4d_p64`: 64^3 as T4b but with the kernels of T2 (cubic cloud with
+  compensation 1/6 and 7/15, cubic-spline gather, four ghost cells), Fourier solver,
+  spectral symbol. If the lateness of T4b is the uncompensated linear cloud, the
+  crossing-time error is between 0 and +1.0 per cent, below the +1.29 per cent of the
+  linear cloud with the multigrid solver, and "axes" is below 0.045. Refuted if the
+  error is above +2 per cent (then the spectral symbol is late whatever the kernels).
+- Processors, `t4d_p96`: linear cloud, Fourier solver, 96^3 (dx = 0.5, step 0.0267).
+  Second order from the +2.56 per cent at 64^3 gives +1.14 per cent; prediction between
+  +0.8 and +1.5 per cent. Refuted (the difference to the ODE is not a discretisation
+  error) if above +2 per cent.
+- Card (`t4d_card`, submitted when owner core has fewer than two card jobs queued): at
+  128^3 (step 0.02) the linear cloud with the Fourier solver +0.4 to +0.9 per cent, with
+  the multigrid solver +0.15 to +0.5 per cent, the two solvers 0.2 to 0.45 per cent
+  apart, the kernels of T2 below the linear cloud; at 256^3 (Fourier, linear cloud)
+  +0.08 to +0.3 per cent; "axes" falls by at least three per doubling (0.111 at 64^3).
+  A floor of about 0.2 per cent from the periodic images ((R/L)^3 = 2e-3) and from the
+  reaction of the background particles, which the ODE keeps uniform, may show at 256^3.
+  Refuted if the Fourier run at 128^3 is above +1.5 per cent.
+
+Debugging pass before the registered runs (outside the registry,
+`scratch/core/tmp/n2dbg3`, 4 s): the three new decks (linear cloud, kernels of T2,
+multigrid; no `<output1>` block) at 32^3 for three steps each; all ended with exit
+code 0. No number that bears on the predictions was produced (throughput on one core:
+1.8e5 particle updates per second with the linear cloud, 4.7e4 with the cubic cloud).

@@ -9,7 +9,9 @@ tracks/core/JOURNAL-newton2.md. Nothing here integrates particles; AthenaK does.
 (group history on the exact pancake, restart), t4a (deformed-ball generator), t4b
 (embedded ellipsoid), t5 (point-mass infall of Track D), t6 (refined mesh), t7 (energy
 against the step), t8 (self-force), t10 (regression against the branch start and the
-release).  Output in --out (default $NRPIC_RUN_DIR, set by harness/bin/nrpic-run): one
+release); follow-ups: t4d_p64, t4d_p96, t4d_card (embedded ellipsoid against resolution
+and kernels), t6c_in, t6c_x, t6c_coarse (lattice of the ball against the cell size).
+Output in --out (default $NRPIC_RUN_DIR, set by harness/bin/nrpic-run): one
 directory per case with input.athinput, athena.log and the files of the run, and
 cases.json (commands, wall times, exit codes).
 
@@ -95,6 +97,17 @@ def deck(path, changes):
     for block, params in changes.items():
         text = set_params(text, block, params)
     return text
+
+
+def strip_block(text, block):
+    """Remove <block> (up to the next block or the end) from an input deck."""
+    lines = text.split("\n")
+    start = next((i for i, ln in enumerate(lines) if ln.strip() == "<%s>" % block), None)
+    if start is None:
+        return text
+    end = next((i for i in range(start + 1, len(lines)) if lines[i].startswith("<")),
+               len(lines))
+    return "\n".join(lines[:start] + lines[end:])
 
 
 def cube(n, mb, lo=None, hi=None):
@@ -389,6 +402,139 @@ def t6b(out, exe, jobs, rec):
     return run_all(out, cases, exe, jobs, rec)
 
 
+# kernels of Track B's pancake (T2): cubic cloud with compensation, cubic-spline gather
+PCS = {"mesh": {"nghost": 4},
+       "particles": {"interp": "bspline", "deposit_shape": "pcs",
+                     "deposit_comp_c": repr(1.0/6.0), "deposit_comp_c2": repr(7.0/15.0)}}
+
+
+def embedded_ic(out, n, L=48.0):
+    """Particle file of the embedded ellipsoid of t4b on n^3 cells: eight patch particles
+    per cell (lattice spacing 8/n in units of the generator), n^3 background particles."""
+    import numpy as np
+    bdir, commit = refs(out, "B-emd-gw")
+    sys.path.insert(0, os.path.join(bdir, "tracks", "B-emd-gw", "baseline", "scripts"))
+    import ellipsoid as el
+    lam = np.array([0.11122237, 0.06683367, 0.02194397])      # benchmark of 2605.04487
+    t0, R0, V0 = el.initial_state(lam)
+    H = 2.0/(3.0*t0)
+    S = R0/el.RL
+    D = (V0/R0 - H)*S
+    rho_b = float(el.rho_b(t0))
+    ic = os.path.join(out, "ic")
+    os.makedirs(ic, exist_ok=True)
+    pf = os.path.join(ic, "embedded_n%d.nrp" % n)
+    sh([PY, os.path.join(NEWTON, "make_ic.py"), "ball", "--out", pf, "--center",
+        repr(L/2), repr(L/2), repr(L/2), "--radius", repr(el.RL), "--mass", repr(el.MASS),
+        "--spacing", repr(8.0/n), "--ntracer", "0", "--axes"] + [repr(float(v)) for v in S]
+       + ["--vgrad"] + [repr(float(v)) for v in D]
+       + ["--background", "0.0", repr(L), str(n), repr(rho_b)])
+    meta = dict(lam=lam.tolist(), t_turn=float(t0), R0=R0.tolist(), V0=V0.tolist(), H=H,
+                S=S.tolist(), D=D.tolist(), L=L, n=n, rho_b=rho_b, mass=el.MASS, RL=el.RL)
+    with open(os.path.join(ic, "embedded_setup.json"), "w") as f:
+        json.dump(meta, f, indent=1)
+    return pf, H, commit
+
+
+def embedded_deck(pf, H, n, mb, dt, extra=None, L=48.0):
+    """Deck of the embedded ellipsoid without snapshots and without the final dump (the
+    judgement of T4d reads the group history only)."""
+    base = merge(cube(n, mb, 0.0, L), {"time": {"tlim": 11.2}, "particles": {
+        "particle_file": pf, "dt": repr(dt), "newton_hubble": repr(float(H)),
+        "hist_dcycle": 1, "snap_dt": -1.0, "newton_ngroup": 1, "newton_group1_species": 0,
+        "newton_group1_x1": L/2, "newton_group1_x2": L/2, "newton_group1_x3": L/2,
+        "probe_x1": L/2, "probe_x2": L/2, "probe_x3": L/2,
+        "probe1_x1": 1.0, "probe1_x2": 1.0, "probe1_x3": 1.0}}, extra or {})
+    return strip_block(deck(os.path.join(NEWTON, "embedded_ellipsoid.athinput"), base),
+                       "output1")
+
+
+def t4d(out, exe, jobs, rec, which="p64"):
+    """T4d, processor cases: the embedded ellipsoid of t4b (Fourier solver, spectral
+    symbol) with the kernels of T2 at 64^3 (p64), and with the linear cloud at 96^3
+    (p96)."""
+    if which == "p64":
+        pf, H, commit = embedded_ic(out, 64)
+        cases = [Case("emb64_pcs_fft", embedded_deck(pf, H, 64, 32, 0.04, PCS))]
+    else:
+        pf, H, commit = embedded_ic(out, 96)
+        cases = [Case("emb96_fft", embedded_deck(pf, H, 96, 48, 0.04*64/96))]
+    rec["refs"] = {"B-emd-gw": commit}
+    return run_all(out, cases, exe, jobs, rec)
+
+
+def t4d_p96(out, exe, jobs, rec):
+    return t4d(out, exe, jobs, rec, which="p96")
+
+
+def t4d_card(out, exe, jobs, rec):
+    """T4d, card cases: decks, particle files and the batch list of the embedded
+    ellipsoid at 128^3 (linear cloud with the Fourier and the multigrid solver, kernels
+    of T2 with the Fourier solver) and at 256^3 (linear cloud, Fourier solver)."""
+    decks = {}
+    pf, H, commit = embedded_ic(out, 128)
+    rec["refs"] = {"B-emd-gw": commit}
+    decks["emb128_fft"] = embedded_deck(pf, H, 128, 64, 0.02)
+    decks["emb128_pcs_fft"] = embedded_deck(pf, H, 128, 64, 0.02, PCS)
+    decks["emb128_mg"] = embedded_deck(pf, H, 128, 64, 0.02,
+                                       {"particles": {"newton_poisson": "multigrid"}})
+    pf, H, commit = embedded_ic(out, 256)
+    decks["emb256_fft"] = embedded_deck(pf, H, 256, 64, 0.02)
+    order = ["emb128_fft", "emb128_pcs_fft", "emb128_mg", "emb256_fft"]
+    lines = ["# card job T4d of work package newton2 (cases.py t4d_card): <name> <athinput>"]
+    for name in order:
+        path = os.path.join(out, name + ".athinput")
+        with open(path, "w") as f:
+            f.write(decks[name])
+        lines.append("%s %s" % (name, path))
+    with open(os.path.join(out, "card.list"), "w") as f:
+        f.write("\n".join(lines) + "\n")
+    rec["card_list"] = os.path.join(out, "card.list")
+    print("\n".join(lines))
+    return True
+
+
+def t6c(out, exe, jobs, rec, which="in"):
+    """T6c: is the momentum kick of T6 and T6b the lattice of the ball being coarser than
+    the cells?  in: the ball of t6b (radius 0.7, inside the refined MeshBlocks) on a
+    lattice of the fine cell size 0.03125, on uniform 64^3, uniform 128^3 and 64^3 + one
+    level.  x: the ball of t6 (radius 1, crossing the level boundary) on the lattice
+    0.03125, on uniform 64^3 and 64^3 + one level.  coarse: the ball of t6b on a lattice
+    of two cells (0.125) on the uniform 64^3 mesh, no refinement anywhere."""
+    ic = os.path.join(out, "ic")
+    os.makedirs(ic, exist_ok=True)
+    pf = os.path.join(ic, "spin.nrp")
+    small = ["--center", "0.05", "-0.05", "0.03", "--radius", "0.7", "--mass", "0.343"]
+    big = ["--center", "0.3", "-0.2", "0.1"]
+    geom, spacing = {"in": (small, "0.03125"), "x": (big, "0.03125"),
+                     "coarse": (small, "0.125")}[which]
+    sh([PY, os.path.join(NEWTON, "make_ic.py"), "ball", "--out", pf] + geom
+       + ["--spacing", spacing, "--ntracer", "0", "--velocity", "-0.2", "0.15", "-0.1",
+          "--omega", "0.2", "-0.3", "0.6"])
+    p = {"time": {"tlim": 0.8}, "particles": {"particle_file": pf, "dt": 0.002,
+                                               "snap_dt": 0.2, "hist_dcycle": 1}}
+    iso = os.path.join(NEWTON, "isolated.athinput")
+    smr = os.path.join(NEWTON, "isolated_smr.athinput")
+    if which == "in":
+        cases = [Case("fine_in_uni128", deck(iso, merge(cube(128, 32), p))),
+                 Case("fine_in_smr", deck(smr, merge(cube(64, 16), p))),
+                 Case("fine_in_uni64", deck(iso, merge(cube(64, 16), p)))]
+    elif which == "x":
+        cases = [Case("fine_x_smr", deck(smr, merge(cube(64, 16), p))),
+                 Case("fine_x_uni64", deck(iso, merge(cube(64, 16), p)))]
+    else:
+        cases = [Case("coarse_in_uni64", deck(iso, merge(cube(64, 16), p)))]
+    return run_all(out, cases, exe, jobs, rec)
+
+
+def t6c_x(out, exe, jobs, rec):
+    return t6c(out, exe, jobs, rec, which="x")
+
+
+def t6c_coarse(out, exe, jobs, rec):
+    return t6c(out, exe, jobs, rec, which="coarse")
+
+
 def t7(out, exe, jobs, rec):
     """Plane wave, N = 32: half the step for the multigrid and the spectral solver
     (their runs at the full step are mg and fftsp of test t1), and the cubic cloud with
@@ -602,7 +748,8 @@ def card(out, exe, jobs, rec):
 
 
 TESTS = dict(card=card, t1=t1, t2=t2, t3=t3, t4a=t4a, t4b=t4b, t4c=t4c, t5=t5, t6=t6, t6b=t6b,
-             t7=t7, t8=t8, t10=t10)
+             t7=t7, t8=t8, t10=t10, t4d_p64=t4d, t4d_p96=t4d_p96, t4d_card=t4d_card,
+             t6c_in=t6c, t6c_x=t6c_x, t6c_coarse=t6c_coarse)
 
 
 def main():
