@@ -31,7 +31,7 @@ attempts; 24 distinct papers, all 21 groups (G07, G09, G13 twice); priorities 4/
 parse_status ok 23, review 1 (2009.08715), no pdf paper. The ad-hoc preview before the
 registered run gave the identical draw (diff of draw.json picks empty). [VERIFIED]
 
-## Entry 2 (22:40 UTC): held-out questions written (step 1)
+## Entry 2 (22:24 UTC): held-out questions written (step 1)
 
 For each drawn paper I read the stored source (raw/arxiv/<id_>/<v>/src, read-only, with
 Read/grep only) and wrote one question in my own words whose answer is a specific
@@ -42,7 +42,7 @@ plus 1 number/method mix). Overlap with the golden set unknown (golden file stil
 unopened). Validated: YAML loads, 24 distinct papers, every locator file exists and the
 line ranges lie inside it. Commit of heldout.yaml: see entry 3 (made before any search).
 
-## Entry 3 (22:47 UTC): commit of the held-out set; predictions for retrieval (step 2)
+## Entry 3 (22:25 UTC; times of entries 2 and 3 corrected from `date -u`): commit of the held-out set; predictions for retrieval (step 2)
 
 - heldout.yaml committed as **8fb37106** (pushed to origin/kb/main) before any `kb search`
   was run by me and before kb/golden/questions.yaml was opened. Correction of entry 2:
