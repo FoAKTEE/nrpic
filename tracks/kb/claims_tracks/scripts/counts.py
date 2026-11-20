@@ -100,7 +100,7 @@ def fig_state(out, path, title):
     ax.set_xlabel("claims in the queue")
     ax.set_xlim(0, max(left) * 1.25 + 1)
     ax.minorticks_off()
-    ax.legend(loc="lower right", fontsize=7, frameon=False)
+    ax.legend(loc="upper right", fontsize=7, frameon=False)
     ax.set_title(title, fontsize=10)
     l2 = np.zeros(len(TRACKS))
     for key, n, col in (("checked", "fulltext, read by a person", fs.PAL["blue"]),
@@ -113,7 +113,7 @@ def fig_state(out, path, title):
     ax2.set_xlabel("fulltext claims")
     ax2.set_xlim(0, max(l2) * 1.15 + 1)
     ax2.minorticks_off()
-    ax2.legend(loc="lower right", fontsize=7, frameon=False)
+    ax2.legend(loc="center right", bbox_to_anchor=(1.0, 0.357), fontsize=7, frameon=False)
     return fs.save(fig, path)
 
 
