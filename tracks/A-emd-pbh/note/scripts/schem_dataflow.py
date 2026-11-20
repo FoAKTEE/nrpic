@@ -4,7 +4,8 @@ Four lanes, one per kind of calculation (expanding ball, periodic box, Newtonian
 analytic criteria and scope), through the stages: initial data and inputs -> AthenaK
 (release core-v0.3) -> raw outputs under scratch/A-emd-pbh/<run id>/ -> the track's
 analysis scripts -> products -> the working note (note/scripts/ledger.py checks every
-input against its run's sha256sums.txt and writes tables/ledger.tex). Below: registration
+input against its run's sha256sums.txt, or for runs that recorded none against the listing of
+the integrity run named in common.py, and writes tables/ledger.tex). Below: registration
 of every run and the independent path of the G1 verifier (stage/G1/verifier/).
 Every file named here exists in the worktree, except the cost logs of runs/jeans/, which
 live in the main checkout (checked by the G1 verifier on 2026-11-19);
@@ -112,7 +113,7 @@ def main():
 
     # note column: a stack fed by every lane
     x, w = COLS[5][0] + 0.2, COLS[5][1] - 0.4
-    pf.block(ax, x, 14.7, w, 2.4, "scripts/common.py:\nrun ids; every input\nchecked against its\nrun's sha256sums.txt", fill=CODE, size=TS, radius=0.2)
+    pf.block(ax, x, 14.7, w, 2.4, "scripts/common.py:\nrun ids; inputs checked\nagainst sha256sums.txt\nor the integrity listing", fill=CODE, size=TS, radius=0.2)
     pf.block(ax, x, 11.75, w, 2.2, "scripts/ledger.py,\nfig_*.py, run_all.py\n(one registered run)", fill=CODE, size=TS, radius=0.2)
     pf.block(ax, x, 9.25, w, 1.75, "tables/ledger.tex,\nparameters.tex, figures/", fill=PROD, size=TS, radius=0.2)
     pf.block(ax, x, 7.15, w, 1.4, "main.tex -> main.pdf", fill=PROD, size=TS, radius=0.2)

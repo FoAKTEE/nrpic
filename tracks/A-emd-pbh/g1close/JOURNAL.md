@@ -166,3 +166,33 @@ What this does and does not establish [JUDGEMENT]: from 2026-11-20 on, any chang
 own record against this listing, `INTEGRITY_RUN`). It cannot show that the files are the
 ones the wave-1 runs wrote on 2026-11-15; for that the verifier's mitigation stands (its own
 reconstruction of data set 2t and its closed forms of the criteria agree with them).
+
+## 2026-11-20T22:55Z, entry 4: corrections applied in the sources; prediction for the note's run
+
+Applied (commit of this entry): `note/scripts/ledger.py` (a: median over mu <= 0.15 plus the
+all-six median with its own label; c1: every "/M" of the scouting data now "/M_0", a row in
+units of the total mass, the unit row and caption in Table V; c2: six names for six values;
+d: wave-1 criteria row kept as "first check run", two wave-2 rows (24 of 24 with 1
+diagnostic; T2 17 of 17 with 3), groups "Newtonian limit" (8 rows, analysis
+A-emd-pbh-20261115-164420-4528861 and range -164757-b8bc9a3) and "First evolutions of the
+scouting data" (10 rows, analyses A-20261115-182657-53da696 and
+A-emd-pbh-20261115-163659-4dbacd0); g1: label of the 42.30; g3: breakdown named as the
+first non-finite line output; g4: SR-2 turnaround labelled as three-point vertex and
+estimator-dependent; g5: "the last with half the box"; three claims added for the wave-2 text
+of `stage/G1/STATUS.md`; the ledger split into three table* floats, since one float no longer
+fits a page). `note/scripts/common.py` (run table, integrity fallback). `note/scripts/
+schem_dataflow.py` (the common.py box names the integrity listing). `note/main.tex` (b, c1
+text, e, g2, d: abstract, intro, Sec. III A, III C, new Sec. IV C "Newtonian limit" and IV D
+"First evolutions of the scouting data", IV E verifier sentence, IV F criteria state, Sec. V
+runs named without numbers, summary, App. B checksum sentence and run list, data-flow
+figure in App. B). `stage/G1/STATUS.md` (header, T2 wave-2 state, T3 band, section 3 units
+and title, section 6 SR-1 breakdown criteria and SR-2 estimator). A dry compile in
+`scratch/A-emd-pbh/tmp/g1close/texdry/` gave 12 pages and no float, reference or box
+warning.
+
+Prediction for the registered run of `run_all.py` (next): 7 of 7 scripts run cleanly; the
+four data figures and the two older schematics equal the committed ones (same scripts, same
+inputs; PNG rms within the stage tolerance); `schem_dataflow` differs only in the common.py
+box; ledger 53 rows, 71 claims, 2 disagreements (the same two as before); every input checked
+"sha256 ok" either against its run's record or against A-20261120-222620-0304d9d. Refuted by
+a script failure, a changed data figure, or any other disagreement or checksum failure.
