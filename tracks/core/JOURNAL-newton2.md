@@ -481,3 +481,28 @@ ended after 0.1 s: AthenaK stopped with "newton_expansion = power requires newto
 of a numpy scalar under numpy 2), which the parameter reader takes as 0. The same line
 would have stopped T4b. Fixed (`repr(float(H))`) before T4b was submitted; T4c is
 resubmitted. The AthenaK check that refused the deck worked as intended.
+
+## 2026-11-20 session newton2-3 (wave 3, continuation; started 22:00Z = 14:00 PST)
+
+Sessions 1 and 2 were cut off on 2026-11-19 by the usage limit of the account at about
+17:20Z. State found [VERIFIED: `git status` clean, `git log`, `sacct -u $USER -S
+2026-11-15`, the run directories under `scratch/core/`]:
+- `git merge main` (clean; decisions 0018, 0019, the pre-commit hook). The source under
+  `athenak/`, `python/nrpic/` is that of commit c6293772 (`git diff c6293772 HEAD --
+  athenak python` is empty); the builds `.work/build_cpu`, `.work/build_gpu` of
+  2026-11-19 are of that source.
+- Recorded with outcome: T1, T2 (n = 16, 32), T4a, T6, T7, T8, T10.
+- Case runs that finished unattended, not yet judged: T3 (core-20261119-160919-c6a7279),
+  T4b (core-20261119-162746-a02d334), T4c (core-20261119-162455-e05ffa1), T5
+  (core-20261119-165257-61d4b78), T6b (core-20261119-165447-0b9cb1e).
+- The card job (Slurm 4648, run core-20261119-145346-2f89b86) ran on 2026-11-19
+  17:54Z to 17:58Z, all ten cases with exit code 0 (252 s of card time = 0.07
+  card-hours); its registry entry was still "submitted" and is closed now
+  (`nrpic-run finish`, 165 files checksummed).
+- The figures of the earlier analyses lie in their run directories only;
+  `tracks/core/analysis/newton2/figs/` is empty. They are copied there in this session.
+
+Nothing is rerun. The predictions of T3, T4b, T5, T6b and of the card job stand as
+written above, before those runs; this session judges them with the analysis scripts
+committed on 2026-11-19 (no script is changed before its first registered run here; a
+change after a failure would be recorded).
