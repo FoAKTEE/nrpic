@@ -1,0 +1,41 @@
+{
+ "run_id": "core-20261115-161311-c1d6d64",
+ "owner": "core",
+ "purpose": "Dry run of the card check driver card_check.py with the processor executables (release build_cpu_v03 against this branch), so that the queued card job 4443 cannot fail on the script",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-clump/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-clump/tracks/core/analysis/clump/card_check.py",
+  "--base",
+  "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core-clump/.work/build_cpu/src/athena",
+  "--t1",
+  "core-20261115-154632-e1a4d0c",
+  "--t3",
+  "core-20261115-154749-e1a4d0c",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-161311-c1d6d64"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-161311-c1d6d64",
+ "commit": "c1d6d64002e48a677ef75e5a2ee5c00317b79564",
+ "branch": "core/clump-curvature",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+   "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "53c0d32b6b1c5af2a18bdbe2a13edc62930a37a9582629d2baf78ecfa40e20e1"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-161311-c1d6d64",
+ "host": "anta",
+ "start_utc": "2026-11-15T16:13:12Z",
+ "cores": 1,
+ "wall_time_s": 172.95,
+ "exit_status": 0,
+ "core_hours": 0.048
+}
