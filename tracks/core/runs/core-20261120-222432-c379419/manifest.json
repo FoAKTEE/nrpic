@@ -1,0 +1,105 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261120-222432-c379419",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "T4 of JOURNAL-oblate.md with the threaded processor executable of core/build-openmp, six threads: Newtonian reference of the oblate collapse at 64^3 (control against the serial run of entry 8) and 128^3 cells (entry 9, P4d to P4f)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "tracks/core/analysis/oblate/run_newton_omp.sh",
+    "/data/haiyangw/nrpic/scratch/core/exe/core_build-openmp/athena_cpu",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-144859-fbf3438/ic/oblate_e0p9_a10_N10000_s1.nrp"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "c379419c37ea8f389d490b3738e0957457a376c8",
+    "branch": "core/oblate",
+    "dirty": false,
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/core-oblate"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-oblate/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/oblate/run_newton_omp.sh",
+      "role": "argv",
+      "sha256": "afb91ae78d347ff0591297ed4edae68593e969d781a43278e5c389131f717dbe",
+      "bytes": 1229,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_build-openmp/athena_cpu",
+      "role": "argv",
+      "sha256": "8f223f75e0f2872661a69f050265e0b3690f41a0da7b3ae32db302885bfa03d1",
+      "bytes": 293818200,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-144859-fbf3438/ic/oblate_e0p9_a10_N10000_s1.nrp",
+      "role": "argv",
+      "sha256": "6dae810c1d20cd36781c842340ba807da32c90b3dbd79e7e406b8898f37dc9bd",
+      "bytes": 600016,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 6,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261120-222432-c379419",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:24:33Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 5.5266,
+    "gpu_hours_reserved": 0.7,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 9,
+    "runs": 1287,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
