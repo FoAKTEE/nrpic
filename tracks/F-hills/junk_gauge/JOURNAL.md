@@ -91,3 +91,28 @@ Predictions [JUDGEMENT]:
    formula equals the quadrature to 1e-6 if AthenaK's harmonics have Ruiz et al.'s convention.
 Refuted (item by item) outside these ranges. A test of the pipeline on synthetic modes with a
 known energy comes first (J2).
+
+## 2026-11-20 E10 analyses run (registered; criteria of nr_first E10 unchanged)
+
+Runs F-20261120-222403-b8dc28c (`s2g_compare.py` with S3, S2, S2g) and F-20261120-222415-137ada9
+(`single_analysis.py` with S3, S2, S2g), both with --parent F-20261119-143443-f11ebb9. The
+judgement is appended to `nr_first/JOURNAL.md` ("E10, outcome") after all figures are read.
+
+## 2026-11-20 J2. Tests of the pipeline on synthetic modes (prediction)
+
+`scripts/junk_lib.py` (FFI, time-domain integration, -2Y_lm port, sphere quadrature, coupling
+formula), tested by `scripts/test_junk_lib.py` (no AthenaK data; what it builds is in its
+docstring: a Gaussian-modulated pulse with omega = 0.4 in (2,0), (2,+-2), (3,0), a slow offset
+of -6e-4 switched on after the pulse in (2,0), white noise 1e-6; window [30, 75]).
+Predictions:
+1. Orthonormality of the -2Y_lm port on the 40 x 80 grid: largest error below 1e-12.
+2. Window energy: FFI with omega_0 = 0.2 within 5 percent of the exact value with the offset and
+   noise, within 1 percent without them; omega_0 = 0.1 above it by more (the offset leaks more),
+   omega_0 = 0.3 within 10 percent (it starts to cut the pulse, whose spectrum has width
+   1/sigma = 0.17 about 0.4); the time-domain method within 10 percent.
+3. Momentum: the quadrature's dE/dt equals the mode sum to 1e-12; |dP/dt| <= dE/dt everywhere;
+   a real (2,0) + (3,0) pair gives dP_x = dP_y = 0 to round-off and dP_z != 0; quadrature and
+   coupling formula: P_z equal to 1e-10 in any case; P_x, P_y equal to 1e-10 if AthenaK's
+   harmonics have the convention of Ruiz et al., opposite in sign if they differ by (-1)^m
+   (I expect equal [JUDGEMENT]: AthenaK cites arXiv:0709.0093, the NR data-format convention).
+Refuted outside these.
