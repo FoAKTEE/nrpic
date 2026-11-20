@@ -331,3 +331,84 @@ along one axis. All figure PNGs of the two runs are byte-identical; numbers unch
 `figures/` and `tables/` are copies of this run. Final compile: 17 pages, 0 undefined, 0
 overfull hboxes, checker clean in the main text; pages 1-17 read (80 dpi), the changed ones
 again after the run.
+
+# Wave 3, round 1 (2026-11-20): note v2, criterion 1 and the second-round results (package note)
+
+Task (tracks/B-emd-gw/PLAN-wave3.md, Round 1, key `note`): G1 criterion 1 (the track's oblique
+and expanding-box linear waves with both diagnostics) into Sec. IV A; the established results of
+the second first-source round (run-to-run floor P12c, jittered-lattice null P11/P16, the delta =
+0.0025 window P14, initial-data parity P15) into Sec. V; guide and notation additions of
+README Requests 1-2. No card time. Only results committed before this round (all sources are
+2026-11-19 commits). Left out with numbers, said to be pending in one sentence each: the
+first-source legs in particle number (P12a,b) and mesh (P13) and the 32^3 companions (runs
+B-20261119-153655-2deca0a, -143238-b7961ef, -144416-5f1ab7a, -153624-224805d, being analysed by
+the first_source helper this round), and the waves rounding check at amplitude x10 (run
+B-20261119-155758-458cf17, waves helper). rho_GW/rho_bar stays out (definition not settled,
+Request 6).
+
+State found at the start (14:13 PST): worktree at c9aba208 (planner's commit), no partial work of
+this package since note2 (last commit touching `note/`: the 14:30Z registered run of note2).
+Pause flag absent. Committed copies of every new source equal their run outputs byte for byte
+(checked by hand with cmp, 8 of 8: waves final_results.json, predict_2s.json; first_source r2_*
+against conv_summary.json / null_spectrum.json / null_prediction.json / parity.json of their
+runs) [VERIFIED].
+
+Sources (run outputs under scratch/B-emd-gw/<run>/, checksums in each sha256sums.txt):
+- waves: final analysis B-20261119-164402-7438a99 (`final_results.json`; simulation runs F
+  B-20261119-142016-ee73a03, -142233-70d5043, X -142021-8f4c441, -142234-85da208, card
+  -142124-feb2daf); symbol predictions B-20261119-141844-2c5d622 (`predictions.json`, written
+  before the runs); 2S prediction B-20261119-153548-c7338f1 (`predict_2s.json`).
+- first source, round 2: per-dump diagnostics B-20261119-160530-7bdcb45 (jit0p3),
+  -161519-6e0bc42 (jit0p1, d0025_e1), -163027-f0d304f (d0025_e0p3), -155418-80d45af (e1_rep);
+  comparisons -163037-6553674 (null), -164017-cd1ba52 (delta), -160607-ef83373 (rerun, double
+  precision); prediction of the null -142733-932e595; spectra -161734-a3a1366; parity
+  -142727-02878d1; the wave-2 scan files already in common.py (cw_eps0, cw_eps0p1, cw_eps0p3,
+  cw_eps1).
+
+## Predictions (written before any script of this round ran)
+
+N12 (waves, my own reading of `final_results.json` in `fig_waves.py`/`ledger.py`). Test F (flat,
+k = 2 pi (1,1,1)), TT diagnostic at the last dump, N = 16, 32, 48, 64: amplitude error -1.409e-4,
+-1.717e-6, -1.574e-7, -3.10e-8; phase 2.531e-4, 1.218e-5, 2.273e-6, 7.067e-7 rad; measured over
+symbol-predicted within 2.5 percent for every N and both errors; the Weyl diagnostic (order-6
+stencil) has the TT phase error to 1e-10 rad and differs from TT by 3.07e-5, 4.9e-7, 4.4e-8,
+8.5e-9 (local orders near 6); with spectral derivatives by <= 1.3e-11 at every N. Test X
+(expanding box): cross polarization TT amplitude and phase equal the RK4()4[2S] prediction to
+<= 0.6 percent at every N; plus polarization to 0.6 percent at N <= 32 and off by up to 40
+percent (phase, N = 64) at N >= 48; classical RK4 with the exact background off by >= 15
+percent at N = 32 (amplitude). Spectral Weyl vs TT for X: 1.9e-8 to 2.4e-8 at every N. Refuted
+if a value differs from waves/README.md beyond 2 in its last printed digit.
+
+N13 (jittered null, my own reduction in `r2data.py` from the per-dump files and the predicted
+response arrays g_cross, g_nn of the prediction run). |measured|/|predicted| of the complex
+box-mode amplitude for 3 <= a <= 20: K1 0.93-1.33 (A = 0.3), 0.94-1.27 (A = 0.1); K2 0.74-1.00,
+0.73-1.01; |phase difference| <= 0.37 rad. Null (A = 0.3) over the eps = 0.1 signal at K1: at
+most 1.5, 2.5, 3.1 percent for a in 2-20, 20-80, 80-140. Ratio of the K1 amplitudes A = 0.3/0.1:
+median 2.56 for 1.5 <= a <= 20. Refuted if my extremes differ from the helper's summary by more
+than 0.02 (ratios) or 0.03 rad, which would mean a different matching of dumps or a different
+prediction curve. Spectra (read, not recomputed): TT power at |k|L/2pi >= 16: 0.98, 0.95 at
+a = 2.3, 12 (A = 0.3), 0.61 at a = 140.
+
+N14 (delta = 0.0025, my own reference s g from g1data at delta = 0.0025, dumps of both
+precisions). dev = c_+/(s g) - 1 at K1. R(a) = dev(0.01)/dev(0.0025) = 17.9, 16.8, 17.2, 19.1 at
+a = 20, 30, 40, 60 (eps = 1); 16.8, 19.4, 18.3 at a = 30, 40, 60 (eps = 0.3). Window
+|dev| <= 0.5 percent: to a = 33.7 (eps = 1), 41.7 (eps = 0.3) at delta = 0.0025 against 10.3,
+12.6 at delta = 0.01 (edges within one dump interval, <= 0.6 in a). Collapse
+dev(0.0025, 4a)/dev(0.01, a), a = 10-35: 1.06-1.47 (eps = 1), 1.07-1.31 (eps = 0.3).
+Double-precision dumps, 2 <= a <= 9: |dev| <= 3.2e-4 (eps = 1), 3.5e-4 (eps = 0.3). Refuted if
+any differs from the helper's numbers beyond 2 in the last printed digit (edges: one dump).
+Expected in the figure: plotted against a delta, the delta = 0.0025 curves lie on the 0.01
+curves within a factor 1.5 for a delta/0.01 >= 5.
+
+N15 (floor and data). Run-to-run floor of the card (double-precision dumps): max |c_+ ratio - 1|
+9.5e-13 (2 <= a <= 40), 4.7e-13 (80-140). Parity: every difference of particle and field files
+0.0. Read from the comparison files; refuted if different.
+
+N16 (pages, checks). After the new text and two four-panel figures (fig_waves extended to four
+panels, wave-1 panels kept; new fig_r2) and about 25 new ledger rows: 0 undefined references and
+citations, 0 overfull hboxes, every caption within five lines, checker clean in the main text;
+19-20 pages (v1: 17). Refuted otherwise.
+
+N17 (pending items stay out). No number of the runs named pending above enters the text, a
+figure or the ledger; `grep` of their run ids in note/ finds them only in the journal and the
+README's pending list. Refuted otherwise.
