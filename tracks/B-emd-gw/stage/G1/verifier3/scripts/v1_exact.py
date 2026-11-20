@@ -88,7 +88,7 @@ Rl = ricci_lin(h)
 res["P1.2"] = {
     "At(generator) - K_ij(linear)": str(sp.simplify(At_gen - Kdd)),
     "d_t K_ij - R_ij (linear ADM, alpha=1)": str(sp.simplify(Kdd.diff(t) - Rl)),
-    "d_t^2 h - lap h": str(sp.simplify(h.diff(t, 2) - sum(h.diff(c, 2) for c in X))),
+    "d_t^2 h - lap h": str(sp.simplify(h.diff(t, 2) - sum((h.diff(c, 2) for c in X), sp.zeros(3, 3)))),
 }
 
 # ------------------------------------------------------------------ 3+1 Weyl parts
@@ -180,7 +180,7 @@ res["P1.3"] = {
 print("F done", time.time() - t0, flush=True)
 
 # ------------------------------------------------------------------ X: background, P1.6
-a_f = sp.Function("a")(t)
+a_f = sp.Function("a", positive=True)(t)
 T_f = sp.Function("T")(t)
 aE = (1 + t / 2) ** 2
 rho0 = 3 / (8 * sp.pi)
@@ -234,7 +234,7 @@ evo1s = sp.simplify(evo1.subs(sp.Derivative(T_f, (t, 2)), T2).subs(a_f, aE).doit
 E_alt = -(hX.diff(t, 2) + calH * hXd) / 2
 res["P1.7"] = {
     "E^(1) - [(k^2/2) h + (a'/2a) h']": str(sp.simplify(E1X - E_predX)),
-    "B^(1) - [-(1/2) sym eps d h']": str(sp.simplify(B1X - B_predX)),
+    "B^(1) - [-(1/2) sym eps d h']": str(sp.simplify((B1X - B_predX).subs(sp.sqrt(a_f ** 6), a_f ** 3))),
     "E_pred - (-(1/2)(h'' + calH h')) using the mode eq": str(sp.simplify((E_predX - E_alt).subs(sp.Derivative(T_f, (t, 2)), T2))),
     "ADM d_t K_ij residual, order eps^0 (Friedmann acceleration)": str(evo0s),
     "ADM d_t K_ij residual, order eps^1 with T'' from h''+2(a'/a)h'+k^2 h=0": str(evo1s),
@@ -269,7 +269,7 @@ res["P1.5"] = {
     "max |FD residual| / (k^2 max|T|)": float(np.max(np.abs(resid)) / (md.kn ** 2 * np.max(np.abs(Tc)))),
     "sympy residual j1(x)/x": str(ode_x(f1)), "sympy residual y1(x)/x": str(ode_x(f2)),
     "T(10)": float(md.T(10.0)), "T'(10)": float(md.dT(10.0)),
-    "zeros of T in (0,10]": [float(v) for v in tt[1:][np.diff(np.sign(Tc)) != 0]],
+    "zeros of T in (0,10]": [float(v) for v in tt[2:][np.diff(np.sign(Tc[1:])) != 0]],
 }
 res["wall_s"] = time.time() - t0
 with open(os.path.join(OUT, "v1.json"), "w") as f:

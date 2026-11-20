@@ -13,7 +13,7 @@ gw_diag/README.md (definitions). Not read (forbidden until my V3 numbers are com
 waves/README.md Results/Open, waves/JOURNAL.md, stage/** outside this directory, note/,
 the owner's STATUS/HANDOFF/JOURNAL/PLAN, scratch/orch reports.
 
-## Entry 1 (14:40): V1 predictions, before any check
+## Entry 1 (14:20): V1 predictions, before any check
 
 Exact solutions I derive (by hand first; the script `scripts/v1_exact.py` checks them):
 
