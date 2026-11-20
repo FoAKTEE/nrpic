@@ -263,3 +263,22 @@ analysis run]. Refuted if P(0.26) >= P(CC2) or A(0.26) >= A(CC2).
   D1 unchanged): at y0 = 0.26 the fluid period is 259.7 M with the F21 index, 325.9 M with
   the Juttner Gamma_1(theta_E), 317.5 M with the scaled proxy (the [TO VERIFY] above is
   now [VERIFIED]). Figures of D1b replace those of D1 in `figs/` (looked at).
+
+## 2026-11-20 22:35 UTC Entry 7: PAUSED (locks/PAUSE written 22:33 UTC, five-hour window 97 %)
+
+Where I stopped:
+- Done: D1 and D1b (processor analysis of the controls, pulsation periods), the M/8 smoke,
+  decks and lists of (i)-(v), predictions M8, A, N and for the y0 = 0.26 control of the
+  decisive package (entries 2, 5, 6).
+- Card job (i) cc2_kninf_M8 is queued (run C-20261120-222533-ce50a86, Slurm 4741,
+  PENDING at 22:34 UTC); per decision 0019 it is left in the queue and may run by itself.
+  When it has finished: `harness/bin/nrpic-run finish C-20261120-222533-ce50a86`, then the
+  compare run of README "How to rerun" with `cc2_M8=cc2:$R/C-20261120-222533-ce50a86/cc2_kninf_M8`,
+  then judge M8.1-M8.4 for CC2.
+- Not submitted (pause): (ii), (iii), (iv) and the optional (v); exact commands in
+  README "Pending runs". Nothing has been judged against M8, A, N yet.
+- A side observation for the next session: the free-phase fit (sine with trend) puts the
+  phase at 4.76 and 4.89 rad (CC1, CC2), i.e. within 0.05 and 0.18 rad of 3 pi/2, where
+  a + b t + A sin(x + 3 pi/2) = a + b t - A cos(x): the free fit finds independently that
+  the excursion starts at a turning point (run C-20261120-222211-aa1be86, `controls.json`).
+- Card-hours used by this package so far: 0 (job (i) has not started).
