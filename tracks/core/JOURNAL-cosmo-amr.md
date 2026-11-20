@@ -1050,3 +1050,14 @@ a5c shows the same jump within a factor two (the source filter at each level's c
 size, not the sampling of the cloud, leads: T3b, T9). a5r equals a5 to 10 per cent
 (one particle per root cell: the adaptive cloud level is the root until the contrast
 passes 16). Refuted if u5 jumps as well: then the cause is not the refinement.
+
+## 2026-11-20 22:32  T10e moves to the processors; T10c waits for the queue
+
+`squeue` shows two jobs of core (4733 pending, 4736 running) and four of the tracks
+behind them: by the rule nothing is submitted. T10c (the restart with 512 to 792
+MeshBlocks) needs a card and stays written but not submitted (`t10c_scout.list`, which
+also holds the four T10e cases for a card). T10e runs on four processors instead, with
+the published processor executable (T14: card and processors agree to round-off), as
+`t10e_jump.py`: the same four cases, to t = 3.5 instead of 5.2 (the jump of T10b lies
+at t = 3.06; a serial cycle of this deck takes 20 to 45 s). Prediction as written in
+the entry of 22:30, with "to t = 5.2" read as "to t = 3.5".
