@@ -804,7 +804,7 @@ gauge) does not touch these numbers; it matters only for an energy flux through 
 horizon.
 
 Further measurement (step 3 of the package allows one), prediction written 2026-11-20
-22:31 UTC, before it ran: is the growth of the finder's mass in ES-1G a property of the
+22:29 UTC, before it ran: is the growth of the finder's mass in ES-1G a property of the
 slice or of the finder? `analysis/diag/slicemass.py` (repository tool, unchanged) reads
 the restart dumps of ES-1G at t = 0, 50, 100, 150, 200 M and computes the Misner-Sharp
 mass m(R) of the slice from the metric and K alone, its apparent horizon M_H = R_H/2
