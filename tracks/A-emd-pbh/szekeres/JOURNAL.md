@@ -343,3 +343,43 @@ density smoothed by about (3/32) h^2 d^2/dx^2 per direction, an O(h^2) error of 
   mass per cell is fixed). So at this mesh the result does not depend on the particle
   number beyond the O(h^2) deposit term. Refuted if the 8-particle errors are below 0.7 or
   above 3 times the 1-particle ones, or if the 8-particle run diverges.
+
+## Entry 9, 2026-11-20 22:36 UTC: PAUSED (flag locks/PAUSE, five-hour window at 97 per cent, written 14:33 PST)
+
+Where I stopped. Done and committed (8cc42412): eps = 0.2 chosen by the rule of entry 7
+(unregistered trial numbers; the registered repeat P16 is not run yet); predictions
+P16-P23 (entry 8); scripts `run_eps_choice.py`, `prep_code_files.py`,
+`run_cpu_members.py`, `analyse_code_runs.py` (smoke-tested at N = 16 on the processor,
+unregistered, outputs in scratch/A-emd-pbh/tmp/szekeres/); deck
+`inputs/szekeres_geodesic_card.athinput` (restart every tau = 10).
+
+Running when the flag appeared (my flag check and the submission were one command; the
+flag was written one minute before): run A-20261120-223422-8cc4241, the files of the
+series (eps = 0.2, one particle per cell, N = 32, 64, 128, 256; about 15 min on 4 cores,
+background). It is left to finish (no account usage). Nothing else was started; no card
+job was submitted.
+
+Next, in this order, after the pause is lifted:
+1. `harness/bin/nrpic-run finish A-20261120-223422-8cc4241` (check run.log and
+   prep_ppc1.json: four members, predicted_E0_rel_err about 1e-16).
+2. Card batch (count first: `squeue -h -u $USER -o %j | grep -c '^A-'`, submit only if
+   below 2): list file with PREP=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261120-223422-8cc4241
+   and DECK=tracks/A-emd-pbh/szekeres/inputs/szekeres_geodesic_card.athinput, three lines
+   `N64 DECK mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 meshblock/nx1=64 meshblock/nx2=64
+   meshblock/nx3=64 problem/id_file=PREP/N64/fields.bin
+   particles/particle_file=PREP/N64/particles.nrp -t 00:04:00`, the same for N128
+   (blocks 128, -t 00:08:00) and N256 (blocks 128, -t 00:40:00); submit with
+   `harness/bin/nrpic-run submit --kind scouting --gate G2 --package
+   tracks/A-emd-pbh/szekeres --launcher batch --exe
+   /data/haiyangw/nrpic/.work/build_gpu_v03/src/athena --list <file> --wall 00:58:00
+   --purpose "..."`. If N256 stops at its -t limit before tau = 40, continue it from its
+   newest restart file (`N256r <rundir>/N256/rst/szk.NNNNN.rst -t ...`), within the
+   remaining card cap (1.5 card-hours in all for this package).
+3. Processors meanwhile: prep of the 8-particle files (`prep_code_files.py --N 32 --ppc 8
+   --eps 0.2 --workers 2`, registered), then the particle-number check with
+   `run_cpu_members.py` (needs one change first: members from two preparation runs, e.g.
+   NAME=DIR), then `analyse_code_runs.py --members N32 N32_ppc8 --label ppc`; the
+   registered repeat of `run_eps_choice.py --n 128` (P16).
+4. Analysis of the card members: `analyse_code_runs.py --run <card run dir> --prep PREP
+   --members N64 N128 N256 [--cont N256:N256r] --label series`; outcomes of P17-P21 here;
+   DESIGN sections 6-7 and README results.
