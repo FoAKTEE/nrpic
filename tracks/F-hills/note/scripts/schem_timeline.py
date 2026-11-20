@@ -1,10 +1,11 @@
-"""Schematic: stage timeline of F-hills (note v0).
+"""Schematic: stage timeline of F-hills (note v1; state of wave 3, round 1).
 
 Gates: coord/CHARTER.md 9.2 (G0-G4) and 9.9 (criteria of Track F), decision 0013 (mass
 ratio four for the convergence study and the first scan line; the first clump-binary passage
 right after the first black-hole passage), decision 0014 (50 card-hours to the next gate).
 Content per gate: stage/G0/SCOPING.md section 5 (exit criteria) and 9 (compute); state:
-stage/G0/OPEN.md, stage/G1/STATUS.md, nr_first/JOURNAL.md (wave 2). Gate positions are
+stage/G0/OPEN.md, stage/G1/STATUS.md, nr_first/JOURNAL.md (wave 2), PLAN-wave3.md round 1
+(G0 lacks only the verifier's report; G1: the first passage running). Gate positions are
 evenly spaced; no dates are claimed. No data are read.
 """
 import os
@@ -18,9 +19,9 @@ W, H = 30.0, 12.0
 GATES = [
     ("G0 scoping", "waves 1-2", pf.GREEN_DARK,
      "novelty, ranges, criteria;\nboth baselines reproduce\nthe literature; note"),
-    ("G1 baseline", "wave 2", pf.SLATE,
+    ("G1 baseline", "waves 2-3", pf.SLATE,
      "start-state constraints,\nmember junk and gauge;\none vacuum passage, q = 4"),
-    ("G2 capability", "wave 3", pf.RED,
+    ("G2 capability", "from wave 3", pf.RED,
      "three resolutions at q = 4;\nwide passages return to\nthe references; clump at rest"),
     ("G3 science", "waves 4-5", pf.RED,
      "scan lines (a) and (b),\nthree-way convergence,\nseparation boundary"),
@@ -46,11 +47,12 @@ def main():
         pf.callout(ax, x - cw / 2 + 0.1, 6.3, cw, 3.6, title, body, bar=col, size=7.0,
                    title_size=8.0, band=0.8)
         pf.line(ax, (x, y0 + 0.35), (x, 6.3), color=pf.GREY_LINE)
-    pf.text(ax, 0.9, 10.9, "now: wave 2; G0 products completed, G1 runs started on the "
-            "released code", size=7.5, ha="left", italic=True)
-    ax.add_patch(pf.Polygon([(6.0, 5.75), (6.4, 5.75), (6.2, 5.45)], closed=True,
+    pf.text(ax, 0.9, 10.9, "now: wave 3; G0 awaits its verifier, G1 data and members measured, "
+            "the first passage running", size=7.5, ha="left", italic=True)
+    xn = 10.6
+    ax.add_patch(pf.Polygon([(xn - 0.2, 5.75), (xn + 0.2, 5.75), (xn, 5.45)], closed=True,
                             fc=pf.RED, ec="none", zorder=8))
-    pf.text(ax, 6.2, 6.05, "now", size=7.0, color=pf.RED)
+    pf.text(ax, xn, 6.05, "now", size=7.0, color=pf.RED)
     pf.brace(ax, 3.6, 8.8, 3.6, "", below=True)
     pf.text(ax, 6.2, 2.25, "several black holes released;\nreaders; card time of one passage",
             size=7.0, color=pf.ROSE)
