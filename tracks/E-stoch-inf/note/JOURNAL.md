@@ -106,3 +106,51 @@ figure repeated with pixel rms 0; only fig_noise changed (open diamonds of the r
 looked at); ledger row R8 added. The committed figures and tables are this run's outputs;
 main.pdf recompiled (9 pages, checker: 0 undefined references or citations, 0 overfull
 boxes), pages 5 and 6 looked at again. Run E-20261115-173402-641b6e2 is superseded.
+
+## 2026-11-20 22:20 UTC: wave 3, G1 products of the note (C8, C9, C13-C15); set-up and predictions
+
+Helper of E-stoch-inf, package `note` of round 1 of wave 3 (no card time). Task: updated
+architecture schematic, a data-flow diagram, the timeline after decisions 0013/0017, the
+cut label of `fig_background`, one script per G1 data figure from registered outputs, the G1
+sections of `main.tex` with every number in the ledger, one registered regeneration run,
+the checker with `--compile`. Read before writing: CLAUDE.md, CHARTER (owners), decisions
+0010, 0016-0019, `../WRITING_GUIDE.md`, `../NOTATION.md`, `stage/G1/{STATUS,EVIDENCE,OPEN,
+CHECKLIST}.md`, `stage/REVIEW-wave2.md`, `ladder/README.md`, `ladder/JOURNAL.md` entries 1,
+9-11, SCOPE 4 and 4b, core's `scalar_field_3.md` section 4 (branch `core/scalar-3`
+18bae3c, unmerged; read through git). Outputs of the other packages of this round
+(g1verify, a4res, ladder3, usr, window) are not used; the text marks where they go.
+
+Inputs (registered analyses; their committed JSON under `ladder/results/` are byte-identical
+to the run outputs, checked by sha256 against each run's `sha256sums.txt` at 22:19):
+E-20261115-194633-9e04ed8 (`results/final/`; per-mode arrays `res/*.npz` read from the run
+directory, the JSON lacks them), E-20261119-142713-32c883a (`results/floor/`),
+E-20261119-145230-ff0dff2 (`results/a6/`; `a6_modes.npz` from the run directory), the
+reference E-stoch-inf-20261115-122806-ef0d039 (deformed equation), the analysis package's
+E-20261115-171445-36152c4, -172935-ddfade0, -174214-74becdd, the validations
+E-20261115-180533-24a7781, -184748-9b010fa, E-20261119-141654-c2a10d1, and the manifest of
+the 256^3 card run E-20261115-172618-f948386 (cost).
+
+Predictions (written before any new script ran):
+- **N4 (the figures reproduce the ladder's verdicts).** Recomputed from the per-mode arrays,
+  the largest deviation D_n over |n| <= k_max/2 at the last dump equals `summary.json` A2
+  `max_D_half` of every rung (L32p 8.76e-5, L64p 2.70e-6, L128p 2.54e-6, L256p 1.74e-6,
+  P256 1.208e-4) to 1e-12 relative (same arithmetic on the same arrays); the A3 ratio and
+  drift recomputed from P256.npz equal `P256_judge_a3.npz` to 1e-12; in the constraint
+  figure the first dump with odd > even part of H lies within one dump interval (0.5
+  e-folds) after ln(N/8) for N = 32, 64, 128, 256 (floor.json: 1.51, 1.99, 2.96, 3.44 against
+  1.39, 2.08, 2.77, 3.47; 1.99 < 2.08 means "within one interval" in both directions); the
+  A6 orders plotted lie in 3.93-4.08 after the first dump. Refuted by any larger difference.
+- **N5 (checksums).** Every file the scripts open passes its sha256 against the manifest or
+  `sha256sums.txt` of its run, and every committed JSON under `ladder/results/` that a script
+  reads equals the run's output. Refuted by any mismatch (the script stops).
+- **N6 (repeat).** Every figure and schematic gives the same PNG on a second run (pixel rms
+  0, `repeat.json`); refuted otherwise.
+- **N7 (cost of the regeneration).** The registered run of `run_all.py` (two cores) finishes
+  within 10 minutes, each data-figure script within 2 minutes (P256.npz is 447 MB); refuted
+  if not.
+- **N8 (the G1 numbers of the lead's documents).** The numbers of `stage/G1/STATUS.md` and
+  `ladder/README.md` that the note uses, recomputed by `ledger.py` from the JSON, agree within
+  half a unit of the last printed digit (claims g01 onward in `tables/claims.md`). I expect
+  all to agree, because the lead's re-check reran the ladder's scripts bit-identically;
+  the likeliest exceptions are ranges printed from rounded per-rung values. Refuted by any
+  disagreement, which is then listed (the files win).
