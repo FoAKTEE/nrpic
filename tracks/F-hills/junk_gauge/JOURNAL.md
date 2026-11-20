@@ -116,3 +116,24 @@ Predictions:
    harmonics have the convention of Ruiz et al., opposite in sign if they differ by (-1)^m
    (I expect equal [JUDGEMENT]: AthenaK cites arXiv:0709.0093, the NR data-format convention).
 Refuted outside these.
+
+## 2026-11-20 J2, outcome (run F-20261120-222655-4d3bbc2; `test_junk_lib.json`, figure `fig_test_junk_lib.png` read)
+
+[VERIFIED, `test_junk_lib.json` of the run]
+1. Orthonormality error 2.8e-14: met.
+2. Window energy against the exact 2.80e-5: FFI omega_0 = 0.2 1.035 (met, within 5 percent);
+   without offset and noise 0.981: FAILED (predicted within 1 percent; the pulse's spectrum,
+   width 0.17 about 0.4, has 2 percent of its energy below omega_0 = 0.2, which FFI damps);
+   omega_0 = 0.1 1.243 (met: the offset leaks more, and the figure shows a slope before the
+   pulse); omega_0 = 0.3 0.948 (met, within 10 percent); time domain 1.130: FAILED (predicted
+   within 10 percent; in the figure the excess is gathered after the pulse, where the offset
+   that a quadratic outside the window cannot follow is integrated).
+3. dE/dt of the quadrature equals the mode sum to 2.2e-15; largest |dP/dt| / (dE/dt) 0.14;
+   the real (2,0) + (3,0) pair gives dP_x = dP_y = -5e-19 and dP_z = 7.519e-3 (coupling
+   formula 7.519e-3); quadrature and coupling formula agree to 4e-14 in all three components
+   (and differ by order one with the opposite sign): AthenaK's -2Y_lm have the convention of
+   Ruiz et al. Met.
+Consequence for J1 (no criterion changed): on a pulse with this spectrum the central method
+(omega_0 = 0.2) has an error of order 2-4 percent and the time-domain method of order 10-15
+percent where a slow offset follows the pulse; the spread of the omega_0 variants (-5 to +24
+percent here) is the systematic of the choice, as planned.
