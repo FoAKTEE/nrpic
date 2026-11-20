@@ -145,3 +145,24 @@ see step 3).
   lattice and the 2.1e6-particle point. Correct sentence for STATUS T3 / C8: "the 9 points at
   128^3 with >= 2.7e5 particles other than the spindle within +2.2e-4 to +6.3e-4; the spindle
   +1.5e-3; the 64^3 controls +8.8e-4, +1.5e-3; the 3.4e4-particle controls -2.4e-4, -4.6e-4".
+
+## 2026-11-20T22:30Z, entry 3: outcome of P6, the integrity listing (run A-20261120-222620-0304d9d)
+
+Run A-20261120-222620-0304d9d (`scripts/wave1_sha256.py`, commit 0304d9d, one core, exit 0),
+over the 15 run directories of the note's run table (`note/scripts/common.py` RUNS, with the
+wave-2 runs added for this package): **P6 holds.** Seven directories recorded no
+`sha256sums.txt` (A-emd-pbh-20261115-120425-80492f8, -122117-aa1c84d, -130256-a7374a4,
+-130402-f5566fb, -130609-947c898, -161813-6c820fb, -163358-9b2d048); their 55 files are
+listed in `<run id>.sha256` in the run's directory, each hashed twice with equal results.
+The eight directories with `sha256sums.txt` verify without a mismatch and list every file
+they hold. Size and modification time of every file in all 15 directories are unchanged
+before and after, and no file appeared or vanished. Figure `fig_integrity.png` looked at
+(files per directory, blue verified, red listed now, no black bar); its legend text
+overlaps the longest bar, which leaves the bar lengths readable, so the run is not
+repeated for it.
+
+What this does and does not establish [JUDGEMENT]: from 2026-11-20 on, any change of these
+55 files is detected (the note's `common.py` now checks every input of a run without its
+own record against this listing, `INTEGRITY_RUN`). It cannot show that the files are the
+ones the wave-1 runs wrote on 2026-11-15; for that the verifier's mitigation stands (its own
+reconstruction of data set 2t and its closed forms of the criteria agree with them).

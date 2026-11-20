@@ -38,7 +38,7 @@ RUNS = {
 }
 
 # the run that listed the sha256 of every file of the runs above without sha256sums.txt
-INTEGRITY_RUN = None
+INTEGRITY_RUN = "A-20261120-222620-0304d9d"
 
 CHECKED = []   # (run_id, relative path, "sha256 ok" | "no sha256sums.txt")
 
