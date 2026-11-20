@@ -855,7 +855,7 @@ in the run directory and `t7_figs.py`.
   listed in the interface text.
 - Figure `figs/t7_ah_exc.png` (inspected after the run with deposit, entry 27).
 
-### 14:32 Entry 27: outcome of t7_ah_exc_dep (P7d FAILED), and the run that tests my reading
+### 14:31 Entry 27: outcome of t7_ah_exc_dep (P7d FAILED), and the run that tests my reading
 
 Run core-20261120-222102-38f0369 (as entry 26 with deposit, tsc, one filter pass; 140 /
 197 / 317 s; 6058 and 11631 deposit packets on 2 and 4 ranks).
@@ -905,3 +905,38 @@ and nothing else.
 
 Whatever the outcome, the comparison of the excision with deposit needs a set-up in
 which the finder converges; that case follows (entry 28).
+
+### 14:35 Entry 28: outcome of the reversed-order run (P7e held, P7f REFUTED), and a test that reaches the finder
+
+Run core-20261120-223100-aee54dc (`finder_sensitivity.py`, one rank, 8 cycles).
+- P7e held: "same" reproduces the one-rank run of t7_ah_exc_dep in all four searches
+  and in the removed numbers (0, 38, 38, 38, 38, 41, 41, 43, 43).
+- P7f REFUTED: "reversed" gives the same four searches bit for bit (the summary file
+  of the finder, the tracker record and the Z4c history are identical files) and the
+  same removed numbers. The particle sums of the two runs differ by rounding (3e-15),
+  the proper volume, the mean of K and the lapse at the probes not at all: with matter
+  of 2e-5 of the hole's mass a rounding difference of the sources does not change one
+  bit of the spacetime. So this run did not perturb the input of the finder, and by the
+  same argument the deposit on several ranks did not either in t7_ah_exc_dep: there,
+  too, tracker, probes and trajectories are identical through cycle 6.
+- What follows: the three different surfaces of the search of t = 0.1875 arise from
+  identical fields, i.e. inside the finder on several ranks, as the 1e-9 of entry 26
+  did. My reading (sources in another order) is wrong in its first half. What remains
+  to be tested is the second half: does the finder's flow, at that search, amplify a
+  rounding-level difference of its own arithmetic to order one? On several ranks its
+  own sums differ by rounding (`MPI_Allreduce` of the spectral coefficients and of the
+  surface integrals, `fastflow.cpp` 887-890, 1403).
+
+Test that reaches the finder on ONE rank (`finder_sensitivity.py --flow-perturb
+1e-13`): two one-rank runs of 8 cycles, "same" with `fastflow/flow_alpha_beta_const_0
+= 1` written into the input (the value `puncture_setup` sets), "perturbed" with 1 +
+1e-13. The constant scales the step of the flow; nothing else in the run depends on it
+until a particle is removed differently.
+- P7g. "same" reproduces the reference again. "perturbed" differs from "same" by less
+  than 1e-9 relative in the smallest radius in the searches of t = 0, 0.0625 and 0.125
+  (a flow that converges forgets the perturbation or keeps it near 1e-13), and by more
+  than 1e-4 in the search of t = 0.1875.
+- Refuted if "perturbed" agrees with "same" at t = 0.1875 to 1e-9 or better: then the
+  finder does not amplify rounding there on one rank, and the difference between the
+  rank counts is a defect of the code path of several ranks, to be found next (in the
+  finder's interpolation and reductions, or in what this package hands it).

@@ -10,7 +10,12 @@ Runs problems/tests/mpi_puncture_exc.athinput on one rank twice, side by side:
   reversed  the same particles written in the opposite order: the tags and the order of
             the additions of the deposit change, nothing else (a change of the sources
             at the level of rounding)
-and prints, per search of the finder, the result of both and of the reference, and the
+With --flow-perturb EPS the second run is instead
+  perturbed the particle file of the test, and the constant of the finder's flow
+            (<fastflow> flow_alpha_beta_const_0, the bare mass squared by default) times
+            1 + EPS: a change at the level of rounding inside the finder, which acts on
+            nothing else until a particle is removed differently
+(both runs then get the constant written into a copy of the input file).  It prints, per search of the finder, the result of both and of the reference, and the
 number of removed particles per cycle.  Writes sensitivity.json.
 """
 import argparse
@@ -34,6 +39,9 @@ def main():
     ap.add_argument("--exe", default=mt.DEFAULT_EXE)
     ap.add_argument("--rmin", type=float, default=0.3)
     ap.add_argument("--rmax", type=float, default=2.5)
+    ap.add_argument("--flow-perturb", type=float, default=0.0)
+    ap.add_argument("--flow-const", type=float, default=1.0,
+                    help="unperturbed flow constant (bare mass squared)")
     ap.add_argument("extra", nargs="*")
     a = ap.parse_args()
     out = os.path.abspath(a.out or os.environ.get("NRPIC_RUN_DIR", os.getcwd()))
@@ -45,11 +53,17 @@ def main():
     rev = os.path.join(out, "infall_reversed.nrp")
     write_nrp(rev, x[::-1].copy(), u[::-1].copy(), m[::-1].copy(),
               None if sp is None else sp[::-1].copy())
-    inp = os.path.join(mt.REPO, mt.PUNC)
+    inp0 = os.path.join(mt.REPO, mt.PUNC)
+    second = "perturbed" if a.flow_perturb else "reversed"
     procs = []
-    for name, pf in (("same", same), ("reversed", rev)):
+    for name, pf in (("same", same), (second, same if a.flow_perturb else rev)):
         d = os.path.join(out, name)
         os.makedirs(d, exist_ok=True)
+        inp = inp0
+        if a.flow_perturb:
+            c = a.flow_const*(1.0 + (a.flow_perturb if name == "perturbed" else 0.0))
+            inp = os.path.join(out, name + ".athinput")
+            mt.input_with(inp0, inp, {"fastflow": ["flow_alpha_beta_const_0 = %.17g" % c]})
         cmd = [mt.MPIRUN, "--bind-to", "none", "-np", "1", a.exe, "-i", inp, "-d", d,
                "particles/particle_file=" + pf, "time/nlim=%d" % a.nlim] + a.extra
         log = open(os.path.join(d, "run.log"), "w")
@@ -62,7 +76,7 @@ def main():
         print("%s exit=%d" % (name, rc), flush=True)
         res[name] = dict(exit=rc)
     tabs = {"reference": a.ref, "same": os.path.join(out, "same"),
-            "reversed": os.path.join(out, "reversed")}
+            second: os.path.join(out, second)}
     hs = {k: mt.read_table(os.path.join(d, "px.horizon_summary_0.txt")) for k, d in tabs.items()}
     hh = {k: mt.read_table(os.path.join(d, "px.nrpic.hst")) for k, d in tabs.items()}
     n = min(len(v) for v in hs.values())
@@ -81,6 +95,11 @@ def main():
     exc = {k: [int(v) for v in hh[k][:nc, 16]] for k in tabs}
     for k in tabs:
         print("removed per cycle, %-9s %s" % (k, exc[k]))
+    for k in tabs:
+        if k != "reference":
+            res[k]["tracker_identical_to_reference_rows"] = bool(np.array_equal(
+                mt.read_table(os.path.join(tabs[k], "px.co_0.txt")),
+                mt.read_table(os.path.join(a.ref, "px.co_0.txt"))[:nc - 1]))
     ident = all(mt.sha256(os.path.join(tabs["same"], f)) == mt.sha256(os.path.join(a.ref, f))
                 for f in ("px.horizon_summary_0.txt",)) if n == len(hs["reference"]) else None
     same_rows = bool(np.array_equal(hs["same"][:n], hs["reference"][:n], equal_nan=True))
@@ -88,10 +107,16 @@ def main():
                summary_file_identical=ident)
     print("same == reference in all %d searches: %s" % (n, same_rows))
     with np.errstate(invalid="ignore"):
-        rel = np.abs(hs["reversed"][:n, 11] - hs["same"][:n, 11])/np.abs(hs["same"][:n, 11])
-    res["reversed_rel_minradius"] = [float(v) for v in rel]
-    print("reversed against same, relative difference of the smallest radius per search:",
+        rel = np.abs(hs[second][:n, 11] - hs["same"][:n, 11])/np.abs(hs["same"][:n, 11])
+        relm = np.abs(hs[second][:n, 2] - hs["same"][:n, 2])/np.abs(hs["same"][:n, 2])
+    res[second + "_rel_minradius"] = [float(v) for v in rel]
+    res[second + "_rel_mass"] = [float(v) for v in relm]
+    res["second"] = second
+    res["flow_perturb"] = a.flow_perturb
+    print(second + " against same, relative difference of the smallest radius per search:",
           " ".join("%.1e" % v for v in rel))
+    print(second + " against same, relative difference of the mass per search:",
+          " ".join("%.1e" % v for v in relm))
     with open(os.path.join(out, "sensitivity.json"), "w") as f:
         json.dump(res, f, indent=1)
 
