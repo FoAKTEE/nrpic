@@ -11,6 +11,11 @@ holds the utilisation (0 to 1) and the reset time of each window (`seven_day`, a
 `five_hour` when present). `probe` makes one minimal call on the small model for that
 event; nothing of the project is sent beyond the fixed one-line prompt.
 
+`watch` exits when ANY window (weekly or five-hour) reaches the threshold, after writing
+the flag file locks/PAUSE, which every agent of the program checks and obeys by itself
+(CLAUDE.md). `resume` waits for that flag, then for the reset of the window that tripped
+it, removes the flag when every window is below --near, and exits with a RESUME line.
+
 `watch` probes every --interval seconds (every --near-interval seconds once the weekly
 utilisation is above --near per cent) and exits with status 0 and a line beginning
 `PAUSE` when the weekly utilisation reaches --threshold per cent. It exits with status 3
@@ -96,7 +101,7 @@ def line(rec):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("cmd", choices=["probe", "watch", "show"])
+    ap.add_argument("cmd", choices=["probe", "watch", "show", "resume"])
     ap.add_argument("--threshold", type=float, default=95.0)
     ap.add_argument("--interval", type=int, default=240)
     ap.add_argument("--near", type=float, default=90.0)
@@ -112,6 +117,28 @@ def main():
         store(rt, rec)
         print(line(rec))
         return 0 if rec.get("ok") else 3
+    if a.cmd == "resume":
+        flagp = os.path.join(rt, "locks", "PAUSE")
+        while not os.path.exists(flagp):                  # nothing to do until a pause is flagged
+            time.sleep(60)
+        while True:
+            try:
+                flag = json.load(open(flagp))
+            except (OSError, ValueError):
+                flag = {}
+            until = (flag.get("resets_at") or 0) + 90
+            now = time.time()
+            if until > now:
+                time.sleep(min(until - now, 900))
+                continue
+            rec = probe(rt)
+            store(rt, rec)
+            print(line(rec), flush=True)
+            if rec.get("ok") and all(w["pct"] < a.near for w in rec["windows"].values()):
+                os.remove(flagp)
+                print("RESUME usage below %.0f%% in every window; flag locks/PAUSE removed" % a.near, flush=True)
+                return 0
+            time.sleep(300)
     misses = 0
     while True:
         rec = probe(rt)
@@ -119,9 +146,13 @@ def main():
         print(line(rec), flush=True)
         if rec.get("ok"):
             misses = 0
-            w = rec["windows"]["seven_day"]
+            name, w = max(rec["windows"].items(), key=lambda kv: kv[1]["pct"])
             if w["pct"] >= a.threshold:
-                print(f"PAUSE weekly usage {w['pct']:.0f}% >= {a.threshold:.0f}%; resets_at {w.get('resets_at')}", flush=True)
+                flag = {"window": name, "pct": w["pct"], "resets_at": w.get("resets_at"), "ts": rec["ts"],
+                        "threshold": a.threshold}
+                json.dump(flag, open(os.path.join(rt, "locks", "PAUSE"), "w"), indent=1)
+                print(f"PAUSE {name} usage {w['pct']:.0f}% >= {a.threshold:.0f}%; resets_at {w.get('resets_at')}; "
+                      f"flag locks/PAUSE written", flush=True)
                 return 0
             wait = a.near_interval if w["pct"] >= a.near else a.interval
         else:
