@@ -259,3 +259,7 @@ A is below CC2's 0.0086 (a stiffer model responds less). The fluid period with t
 index at y0 = 0.26 is 260 M [TO VERIFY: quick evaluation of models/fluid_onset.omega2,
 N = 600; `controls.py --pulsation` now includes y0 = 0.26 and registers it with the next
 analysis run]. Refuted if P(0.26) >= P(CC2) or A(0.26) >= A(CC2).
+- Registered (run C-20261120-223139-2526c6d, D1b: D1 rerun with corrected figures, numbers of
+  D1 unchanged): at y0 = 0.26 the fluid period is 259.7 M with the F21 index, 325.9 M with
+  the Juttner Gamma_1(theta_E), 317.5 M with the scaled proxy (the [TO VERIFY] above is
+  now [VERIFIED]). Figures of D1b replace those of D1 in `figs/` (looked at).
