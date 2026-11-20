@@ -713,3 +713,45 @@ integral); `D_H(corr)` of TB at 128 cells: the code's layer falls from 4.4e-5-5.
 0.3). Refuted if J/rs^2 stays above 1e-6 or the ratio at 128 cells stays above 0.08.
 The executables are not changed (the generator only); card jobs 4649 and 4657 keep the
 tables they were submitted with (old correction).
+
+## 2026-11-20  session clump2-3 (from 22:00Z; sessions 1 and 2 were cut off by the usage limit of the account at about 16:50Z on 2026-11-19)
+
+State found at 22:00Z (from `git log`, `git status`, `sacct`, the run directories; not from
+memory). Worktree clean, five commits not pushed; main merged (decisions 0018, 0019; the
+pause flag `locks/PAUSE` is absent). `git diff cbe1e3ef HEAD -- athenak/` is empty: the
+executables of `.work/build_cpu` and `.work/build_gpu` are the current source.
+
+- Card job TC (`core-20261119-145433-8c4083d`, Slurm 4649) COMPLETED on 2026-11-19, 7 min
+  54 s on a card (0.13 card-hours): four runs to 50 M, each `rc=0`. Card job TE
+  (`core-20261119-155219-32602d2`, Slurm 4657) COMPLETED, 22 min 19 s (0.37 card-hours):
+  250 M, `rc=0`. Card time of the package so far: 0.50 card-hours of the one allowed.
+  Neither had been closed or analysed. Closed now with `nrpic-run finish` (153 and 117
+  files checksummed).
+- `core-20261119-163754-1a47df0` (surface check; outcome already above) was still marked
+  running: closed, completed.
+- `core-20261119-161758-47f52ad` (TC-early: the card inputs v0, v0.3, v0.3s for 10 M on
+  one processor) ran 11 h 18 min: `v0` and `v0.3` reached 10 M (status 0), `v0.3s` was
+  terminated at t = 5 M (status -15, at 03:35Z on 2026-11-20, not by this package); the
+  analysis step behind `&&` never ran. Closed as failed. [VERIFIED: its `run.log` and
+  `.nrpic/result.json`] One processor needs about four hours for 10 M of this mesh (568
+  MeshBlocks): the card run of 50 M took two minutes. Its predictions (TC1 early part,
+  TC4 supplement, TC3 early part) are judged on the card runs, which hold the same
+  inputs for all 50 M; the processor histories of `v0` and `v0.3` serve as a second
+  reading of the card runs (prediction G2 below).
+- The check of the generator fix (commit baa6f99e, prediction written at 16:39Z) was never
+  registered: `scratch/core/tmp/clump2/fix_submit.log` holds 54 refusals of `nrpic-run
+  submit` (16 cores of the owner busy) and then stops. Open.
+- Not done: outcomes of TC, TE, G; outcome of the fix; publication of the executables;
+  the rows PENDING of `interfaces/moving_clusters.md`.
+
+### Prediction G2 (card against processor over 10 M; written 22:14Z, before the comparison is made)
+
+The processor runs of `core-20261119-161758-47f52ad` (`v0`, `v0.3` to 10 M, `v0.3s` to
+5 M) and the card runs of TC start from the same inputs with executables of the same
+source. The card deposit adds in another order, so the two differ by round-off that the
+N-body dynamics amplifies on the dynamical time of the cluster (tens of M). Predicted:
+at every common record the minimum lapse agrees to 2e-6, `sum m u_x` to 2e-6 M,
+`sum m W` to 2e-6 M, and the H-norm and M-norm to 1e-3 relative (five printed digits).
+Refuted by a difference above 1e-4 in the lapse or the sums: then the card executable
+does not integrate the same system as the processor one, and the processor tests say
+nothing about the card runs.
