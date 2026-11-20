@@ -552,6 +552,59 @@ void Particles::NrpicSolveInitialData() {
         }
         for (int v=0; v<6; ++v) { ar(m,v,k,j,i) = ab(m,v,k,j,i) - by6[v]; }
       });
+      // Ghost cells at the faces of the mesh: the boundary condition of Z4c has
+      // replaced the trial state there by its extrapolation, so the difference above
+      // is not the remainder but the error of that extrapolation of the Bowen-York
+      // curvature, and its central difference put a source into the outermost active
+      // cells.  The remainder is continued linearly from the active cells instead
+      // (x1, then x2, then x3, so that edges and corners are filled).
+      if (!periodic) {
+        par_for("ids_abr_x1", DevExeSpace(), 0, nmb1, 0, 5, 0, n3-1, 0, n2-1,
+        KOKKOS_LAMBDA(const int m, const int v, const int k, const int j) {
+          const bool lo = (mb_bcs(m,0) != BoundaryFlag::block) &&
+                          (mb_bcs(m,0) != BoundaryFlag::periodic);
+          const bool hi = (mb_bcs(m,1) != BoundaryFlag::block) &&
+                          (mb_bcs(m,1) != BoundaryFlag::periodic);
+          for (int g=0; g<ng; ++g) {
+            if (lo) {
+              ar(m,v,k,j,is-1-g) = (g + 2.0)*ar(m,v,k,j,is) - (g + 1.0)*ar(m,v,k,j,is+1);
+            }
+            if (hi) {
+              ar(m,v,k,j,ie+1+g) = (g + 2.0)*ar(m,v,k,j,ie) - (g + 1.0)*ar(m,v,k,j,ie-1);
+            }
+          }
+        });
+        par_for("ids_abr_x2", DevExeSpace(), 0, nmb1, 0, 5, 0, n3-1, 0, n1-1,
+        KOKKOS_LAMBDA(const int m, const int v, const int k, const int i) {
+          const bool lo = (mb_bcs(m,2) != BoundaryFlag::block) &&
+                          (mb_bcs(m,2) != BoundaryFlag::periodic);
+          const bool hi = (mb_bcs(m,3) != BoundaryFlag::block) &&
+                          (mb_bcs(m,3) != BoundaryFlag::periodic);
+          for (int g=0; g<ng; ++g) {
+            if (lo) {
+              ar(m,v,k,js-1-g,i) = (g + 2.0)*ar(m,v,k,js,i) - (g + 1.0)*ar(m,v,k,js+1,i);
+            }
+            if (hi) {
+              ar(m,v,k,je+1+g,i) = (g + 2.0)*ar(m,v,k,je,i) - (g + 1.0)*ar(m,v,k,je-1,i);
+            }
+          }
+        });
+        par_for("ids_abr_x3", DevExeSpace(), 0, nmb1, 0, 5, 0, n2-1, 0, n1-1,
+        KOKKOS_LAMBDA(const int m, const int v, const int j, const int i) {
+          const bool lo = (mb_bcs(m,4) != BoundaryFlag::block) &&
+                          (mb_bcs(m,4) != BoundaryFlag::periodic);
+          const bool hi = (mb_bcs(m,5) != BoundaryFlag::block) &&
+                          (mb_bcs(m,5) != BoundaryFlag::periodic);
+          for (int g=0; g<ng; ++g) {
+            if (lo) {
+              ar(m,v,ks-1-g,j,i) = (g + 2.0)*ar(m,v,ks,j,i) - (g + 1.0)*ar(m,v,ks+1,j,i);
+            }
+            if (hi) {
+              ar(m,v,ke+1+g,j,i) = (g + 2.0)*ar(m,v,ke,j,i) - (g + 1.0)*ar(m,v,ke-1,j,i);
+            }
+          }
+        });
+      }
     }
   }
   if (!(vec && bys.curv)) { abr = ab; }

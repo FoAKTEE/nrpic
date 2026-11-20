@@ -855,3 +855,48 @@ far-field lines agree to 12 digits in M_psi; the region means of |H| of the ball
 t = 2 agree to 3e-11 (interior), 8e-12 (shell), 1.7e-10 (exterior), 9e-14 (faces)
 (predicted 1e-6). Wall time on the card: 7 s, 11 s, 40 s, and 57 s for the ball with
 its 16 steps (one processor core: 166 s, 422 s, and 90 minutes for the ball).
+
+## 2026-11-20, entry 12: first publication; the defect of P5 read again; a change of the source and its predictions (R2, P5b)
+
+**Published** (22:16 UTC): `/data/haiyangw/nrpic/scratch/core/exe/core_id-solver-2/`
+with `athena_cpu`, `athena_gpu` (builds of 76add0c, equal byte for byte to the copies
+the tests ran), COMMIT, SHA256SUMS, READY; branch pushed at 5b5a1ab. The interface has
+the outcomes of B, P, K, the limits for punctures and the answers for Tracks D and F.
+
+**Correction of entry 11 (P5).** I wrote that the ghost cells at the faces hold "the
+outflow copy" of the trial curvature. Read in the source [VERIFIED,
+`athenak/src/bvals/physics/z4c_bcs.cpp` 171-176, 201-206]: the outflow condition of Z4c
+fills its ghost cells by `Extrapolate<order>` of the Z4c variables, not by a copy. The
+mechanism stands with that word changed: the trial curvature in a ghost cell at a face
+is an extrapolation, the solver subtracts the closed-form Bowen-York curvature at the
+ghost position, and the difference (the error of the extrapolation, 5e-3 of Abar at
+r = 16 with dx = 0.5 by the size of the source seen in P5) enters the central difference
+of the outermost active cells. [JUDGEMENT until P5b.]
+
+**Change of the source** (`nrpic_idsolve.cpp`, inside the branch `vec && bys.curv`
+only, after the loop `ids_abr`; 49 lines): in the ghost cells at the faces of the mesh
+that are neither periodic nor block boundaries the remainder (trial curvature minus
+Bowen-York) is continued linearly from the two nearest active cells, in x1, then x2,
+then x3. For a trial that is the Bowen-York curvature the remainder is then zero to
+round-off in the ghost cells too. No other branch is touched: runs without punctures,
+with punctures at rest, or without `id_vector` execute the same statements as before.
+Processor build compiled (22:18 UTC).
+
+**Predictions** (written before any run of the changed executable; script
+`regress_r2.py`, which replays the steps of earlier cases with the new executable in a
+new directory and compares every file byte for byte):
+ R2 (must not change): the cases `w1_far_n32` (run -155750-c923762), `zsol_n32` with its
+    evolution (-153416-3d26b50), `g_smr1` and `t_smr_mov` (-153510-d1eaa30), `p1_c3_n32`
+    (-165458-ecdaa7c), `p2_c3_n32` (-161842-b92b298), `p3_by_st` (-170050-f228951): every
+    file byte-identical to the old case directory (processor runs are reproducible, and
+    none of these cases takes the changed branch). Refuted by one differing byte.
+ P5b (must change, `p5_mov_n64` of -170028-77f7173): the right side s_x in the outermost
+    layer of active cells falls from 3.2e-5 to below 1e-12; the sum of s_x dV/(8 pi) over
+    the whole mesh equals the sum over r < 12, 0.0499999519755057, to 1e-12 (it was
+    0.05029); P_ADM_x of the record = 0.5499999519755 to 1e-11; outer iterations 34
+    within 3; the monitor's max|M| after the solve within a factor 2 of 2.05e-7; W
+    changes by less than 1 per cent of its maximum (the spurious source was 0.6 per cent
+    of the momentum of the matter, at the faces). Refuted (the reading of the defect) if
+    the layer keeps a right side above 1e-8.
+ Then: R0 again with the new executable, the card build and a card run of `p5_mov_n64`
+ against the processor run, and the second publication.
