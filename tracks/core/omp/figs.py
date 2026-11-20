@@ -27,8 +27,13 @@ import matplotlib.pyplot as plt  # noqa: E402
 
 CASE_LABEL = {"punc": "vacuum puncture, refined mesh", "cluster": r"cluster, $10^5$ particles",
               "cosmo": r"$64^3$ cosmology box", "newton": r"Newtonian mode, $128^3$",
-              "bench": r"Z4c benchmark, $128^3$"}
+              "bench": r"Z4c benchmark, $128^3$",
+              "collapse": r"Newtonian mode, isolated, $128^3$"}
 ORDER = ["punc", "cluster", "cosmo", "newton"]
+# seconds per step on one A100 from earlier registered card runs of decks that the card
+# timing run of this package does not hold: the isolated Newtonian collapse (128^3,
+# 137 376 particles; log of run core-20261115-120028-fee90ca: 650.03 s for 1000 steps)
+CARD_OTHER = {"collapse": 0.6500335}
 
 
 def load_scaling(dirs):
@@ -120,13 +125,22 @@ def fig_scaling(a):
             axs[0].axhline(card[case], color=cols[n], lw=1.0, ls=":")
         if 1 in best[case]:
             axs[1].plot(th, best[case][1][0]/t, "o-", color=cols[n])
+    best2 = best_by(load_scaling(a.runs2), exe=a.exe) if a.runs2 else {}
+    for n, case in enumerate([c for c in ORDER if c in best2]):
+        th = sorted(best2[case])
+        t = np.array([best2[case][k][0] for k in th])
+        axs[0].plot(th, t, "D--", color=cols[n], mfc="white", ms=5, lw=1.2)
+        if 1 in best2[case]:
+            axs[1].plot(th, best2[case][1][0]/t, "D--", color=cols[n], mfc="white", ms=5,
+                        lw=1.2)
     tt = np.array([1, 64])
     axs[1].plot(tt, tt, **fs.GUIDE)
     for ax in axs:
         ax.set_xscale("log", base=2)
         ax.set_yscale("log")
-        ax.set_xticks([1, 4, 16, 32, 64])
-        ax.set_xticklabels(["1", "4", "16", "32", "64"])
+        ax.set_xticks([1, 4, 6, 16, 32, 64] if best2 else [1, 4, 16, 32, 64])
+        ax.set_xticklabels(["1", "4", "6", "16", "32", "64"] if best2
+                           else ["1", "4", "16", "32", "64"])
         ax.set_xlabel("threads")
         ax.minorticks_off()
     axs[0].set_ylabel("seconds per step")
@@ -136,6 +150,8 @@ def fig_scaling(a):
     axs[0].plot([], [], "s", mfc="none", color="0.3", label="serial build, one thread")
     if card:
         axs[0].plot([], [], ":", color="0.3", label="one A100 card")
+    if best2:
+        axs[0].plot([], [], "D--", color="0.3", mfc="white", ms=5, lw=1.2, label=a.label2)
     h, lab = axs[0].get_legend_handles_labels()
     axs[1].legend(h, lab, loc="upper left", fontsize=8)
     fs.save(fig, a.out)
@@ -332,6 +348,22 @@ def table(a):
             "%.0f" % (s16/cd) if (s16 and cd) else "-",
             "%.1f" % (s1/s16) if (s1 and s16) else "-",
             "%.2f" % (s1/s16/16) if (s1 and s16) else "-"))
+    if a.runs2:
+        best2 = best_by(load_scaling(a.runs2), exe=a.exe)
+        card.update({k: v for k, v in CARD_OTHER.items() if k not in card})
+        th2 = sorted({t for c in best2.values() for t in c})
+        lines += ["", a.label2 + ":", "",
+                  "| case | " + " | ".join("%d thr" % t for t in th2)
+                  + " | speed-up %d | card | %d thr / card |" % (th2[-1], th2[-1]),
+                  "|---" * (len(th2) + 4) + "|"]
+        for case in [c for c in ORDER + ["collapse"] if c in best2]:
+            b = best2[case]
+            s1, sn = b.get(1, (None,))[0], b.get(th2[-1], (None,))[0]
+            cd = card.get(case)
+            lines.append("| %s | %s | %s | %s | %s |" % (
+                case, " | ".join("%.3g" % b[t][0] if t in b else "-" for t in th2),
+                "%.2f" % (s1/sn) if (s1 and sn) else "-",
+                "%.3g" % cd if cd else "-", "%.1f" % (sn/cd) if (sn and cd) else "-"))
     text = "\n".join(lines) + "\n"
     if a.out:
         open(a.out, "w").write(text)
@@ -344,6 +376,9 @@ def main():
     ap.add_argument("--card-values", default="", help="case=seconds per step on one card")
     ap.add_argument("--runs", nargs="+", required=True)
     ap.add_argument("--card", default="")
+    ap.add_argument("--runs2", nargs="*", default=[],
+                    help="scaling runs of another day, drawn and tabulated apart")
+    ap.add_argument("--label2", default="second series")
     ap.add_argument("--exe", default="O3")
     ap.add_argument("--tol", type=float, default=1.0e-8)
     ap.add_argument("--out", required=True)
