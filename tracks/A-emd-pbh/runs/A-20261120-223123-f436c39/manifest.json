@@ -1,0 +1,102 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261120-223123-f436c39",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "D3: initial data of P0L (spherical peak, mu = 0.3, e = p = 0, eps_i = 1, 64^3, make_field) and the tracked-particle ordering (317 particles on axes and diagonals); prediction JOURNAL.md D3",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "OMP_NUM_THREADS=2 tracks/A-emd-pbh/periodic_threshold/scripts/build_p0l.sh \"$NRPIC_RUN_DIR\""
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "f436c393132d2f65d835ffc5dc045d39f1c27365",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/periodic_threshold"
+    ],
+    "outside_package": {
+      "count": 14,
+      "first": [
+        " M tracks/A-emd-pbh/note/main.tex",
+        " M tracks/A-emd-pbh/note/scripts/ledger.py",
+        " M tracks/A-emd-pbh/note/scripts/schem_dataflow.py",
+        " M tracks/A-emd-pbh/stage/G1/STATUS.md",
+        "?? tracks/A-emd-pbh/conv_ball/scripts/design_calc.py",
+        "?? tracks/A-emd-pbh/conv_ball/scripts/nested.py",
+        "?? tracks/A-emd-pbh/runs_ball/turnaround.py",
+        "?? tracks/A-emd-pbh/szekeres/figures/fig_eps_choice.pdf",
+        "?? tracks/A-emd-pbh/szekeres/figures/fig_eps_choice.png",
+        "?? tracks/A-emd-pbh/szekeres/inputs/szekeres_geodesic_card.athinput",
+        "?? tracks/A-emd-pbh/szekeres/scripts/analyse_code_runs.py",
+        "?? tracks/A-emd-pbh/szekeres/scripts/prep_code_files.py",
+        "?? tracks/A-emd-pbh/szekeres/scripts/run_eps_choice.py",
+        "?? tracks/A-emd-pbh/verify_bh/scripts/"
+      ]
+    },
+    "merge_base_main": "c7e7db3b637b2c04d9907dcc5b3d66c90c5fac7b",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261120-223123-f436c39",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:31:23Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.9457,
+    "gpu_hours_reserved": 1.8,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 0,
+    "runs": 162,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
