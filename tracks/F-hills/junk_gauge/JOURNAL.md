@@ -199,3 +199,34 @@ Predictions [JUDGEMENT, written after seeing the finite-radius numbers of J3]:
 4. P_x at infinity between 0.10 and 0.20 E_inf (J3 at 40 and 50: 0.15-0.16), P_y and P_z below
    1e-3 of P_x.
 Refuted outside these; if 2 fails, the junk energy of a member is quoted as the range of J3.
+
+## 2026-11-20 J3b, outcome (run F-20261120-223018-a5c0838; `S2g_extrap.json`, `S2g_o2_extrap.json`, figures `fig_S2g_extrap.png`, `fig_S2g_o2_extrap.png` read)
+
+[VERIFIED, the JSON files of the run; window u in [-15, 30], common u range [-36.5, 32.0]]
+Extrapolated (order 1 / order 2): FFI 0.1 2.21e-4 / 1.20e-4; FFI 0.2 1.14e-4 / 8.77e-5; FFI 0.3
+7.17e-5 / 5.90e-5; time domain 2.85e-4 / 2.72e-4. The finite radii on the same u grid (FFI 0.2):
+9.83e-5 (30; J3 had 1.25e-4 on the full record, the difference is the shorter record's taper
+and leakage), 8.71e-5 (40), 8.52e-5 (50).
+1. A after the pulse below 20 percent of its peak: FAILED (order 1: 0.25, 0.23, 0.23 for (2,0),
+   (2,2), (2,-2); order 2: 0.20, 0.19, 0.19).
+2. Methods within 25 percent: FAILED (max/min 4.0 and 4.6); omega_0 = 0.1 and 0.3 within 15
+   percent of 0.2: FAILED (+94 / -37 percent, order 1).
+3. E_inf (FFI 0.2, order 1) in 6e-5 to 1.0e-4: FAILED (1.14e-4); order 2 within 25 percent of
+   order 1: met (-23 percent).
+4. P_x / E_inf in 0.10-0.20: FAILED for order 1 (0.22), met for order 2 (0.17); P_y, P_z below
+   1e-3 P_x: met (at most 3.5e-4).
+The figure shows why: the pulse itself is not the same at the three radii in its shape (its
+positive lobe grows from 2.45e-3 to 2.95e-3 from R = 30 to 50 in (2,0), its negative lobe
+shrinks), so A amplifies the difference (peak 3.77e-3) instead of only removing an offset; the
+slow part after the pulse does not fall as 1/R alone. In the cumulative energies the time-domain
+curve of A follows FFI 0.2 through the pulse (to u = 8 m, about 9e-5) and then grows without a
+plateau, as an integrated offset does; FFI 0.1 takes most of its excess inside the pulse.
+J3c (below) reads the energy up to the end of the pulse from the curves already computed.
+
+## 2026-11-20 J3c. Energy up to the end of the pulse (a reading of the J3 and J3b curves; prediction)
+
+`scripts/pulse_energy.py`: E from u = -15 to u_c = 8 and 10 m for every method, at each radius
+and extrapolated. Prediction (written after seeing the cumulative curves, so it tests only what
+the eye read): FFI 0.2 and time domain within 15 percent of each other up to u_c = 8 at R = 40,
+50 and for A (order 1 and 2), all between 6e-5 and 1.0e-4; FFI 0.1 above them by more than 25
+percent at R = 40, 50 (its excess is inside the pulse).
