@@ -314,6 +314,31 @@ def cmd_t8(outdir, noise_path, noise_group, paths):
                                     max_dx_mfp=[r["max_dx_mfp"] for r in sel],
                                     min_N=[r["min_N"] for r in sel],
                                     n_trunc=[r["n_trunc"] for r in sel])
+        # cell size (post hoc, 2026-11-20 22:36, after run C-20261120-223214-66e0034):
+        # f = f0 + c (dx/lambda)^2 through the three dx values (equal errors
+        # sd_f = sqrt(s2/n)), the implied bias at the dx of the T7 runs (0.2454 lambda),
+        # the linear alternative, and D = (f(1/2)-f(1/4)) - 4 (f(1/4)-f(1/8)), which is 0
+        # for a purely quadratic dependence (var D = 42 sd_f^2: the two changes share f(1/4))
+        q = S["params"]["dx_frac"]
+        if len(q["values"]) == 3:
+            x = np.asarray(q["values"], float)
+            y = np.asarray(q["f"], float)
+            sd_f = float(np.sqrt(s2 / n)) if s2 else float("nan")
+            fits = {}
+            for name, xx in (("quadratic", x ** 2), ("linear", x)):
+                A = np.vstack([np.ones_like(xx), xx]).T
+                C = np.linalg.inv(A.T @ A) * sd_f ** 2
+                p = np.linalg.lstsq(A, y, rcond=None)[0]
+                res = y - A @ p
+                xt = 0.2454369260617026 ** (2 if name == "quadratic" else 1)
+                fits[name] = dict(f0=float(p[0]), f0_se=float(np.sqrt(C[0, 0])),
+                                  c=float(p[1]), c_se=float(np.sqrt(C[1, 1])),
+                                  chi2=float(np.sum(res ** 2) / sd_f ** 2),
+                                  bias_at_T7_dx=float(p[1] * xt),
+                                  bias_at_T7_dx_se=float(np.sqrt(C[1, 1]) * xt))
+            D = (y[2] - y[1]) - 4 * (y[1] - y[0])
+            q["fit_dx"] = dict(sd_f=sd_f, D=float(D), D_se=float(np.sqrt(42) * sd_f),
+                               D_z=float(D / (np.sqrt(42) * sd_f)), **fits)
         out["sets"].append(S)
     # processor seeds pooled: mean of the per-seed finest changes
     by_n = {}
@@ -334,20 +359,28 @@ def cmd_t8(outdir, noise_path, noise_group, paths):
         out["pooled"][str(n)] = P
     fs.use_style()
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.0))
-    cols = [fs.PAL["red"], fs.PAL["blue"], fs.PAL["green"], fs.PAL["yellow"]]
+    cols = [fs.PAL["red"], fs.PAL["green"], fs.PAL["orange"], fs.PAL["yellow"]]
     for i, (par, lab) in enumerate(PARS):
         ax = fig.add_axes([0.07 + 0.325 * i, 0.17, 0.25, 0.70])
+        ticks = set()
         for j, S in enumerate(sorted(out["sets"], key=lambda S: (-S["n"], S["seed"]))):
             q = S["params"][par]
             if not q["values"] or q["f_base"] is None:
                 continue
             rel = 100 * (np.array(q["f"]) / q["f_base"] - 1)
-            ax.errorbar(q["values"], rel, yerr=100 * S["sd_change_expected"],
-                        fmt="o-", ms=3.5, capsize=2, color=cols[j % len(cols)],
-                        label=f"N={S['n']:.0e}, seed {S['seed']}")
+            off = 1.0 + 0.03 * (j - 1)          # small horizontal offset per set
+            ax.errorbar(np.array(q["values"]) * off, rel,
+                        yerr=100 * S["sd_change_expected"], fmt="o-", ms=3.5, capsize=2,
+                        color=cols[j % len(cols)],
+                        label=(f"card, N={S['n']:.0e}" if S["n"] > 1e6 else
+                               f"processor seed {S['seed']}, N={S['n']:.0e}"))
+            ticks.update(q["values"])
         ax.axhspan(-2, 2, color="grey", alpha=0.12, lw=0)
         ax.axhline(0, **fs.MASK_LINE)
         ax.set_xscale("log")
+        ax.set_xticks(sorted(ticks))
+        ax.set_xticklabels([f"{t:g}" for t in sorted(ticks)])
+        ax.minorticks_off()
         ax.set_xlabel(lab)
         if i == 0:
             ax.set_ylabel(r"$f/f_{\rm base}-1$ [%]")
