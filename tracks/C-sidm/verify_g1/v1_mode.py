@@ -231,11 +231,21 @@ def figures(out, rows, store, summ):
     fig.savefig(os.path.join(out, "v1b_mode_amplitudes.png"))
     plt.close(fig)
     # Figure 2: kappa/kappa_1 against (k lambda)^2
-    fig, ax = plt.subplots(1, 1, figsize=(5, 3.8))
-    fig.subplots_adjust(left=0.14, right=0.97, bottom=0.13, top=0.95)
+    fig, axs = plt.subplots(1, 2, figsize=(8, 3.6), gridspec_kw=dict(width_ratios=[2, 1]))
+    fig.subplots_adjust(left=0.09, right=0.98, bottom=0.14, top=0.95, wspace=0.3)
+    ax = axs[1]
+    sm = summ["ratio_T7_n"]
+    ax.plot([r["k_lambda"]**2 for r in rows], [r["ratio_T7_n"] for r in rows], ".",
+            color=P["yellow"], alpha=0.5)
+    ax.errorbar([p["k_lambda"]**2 for p in sm["per_k"]], [p["mean"] for p in sm["per_k"]],
+                yerr=[p["se"] for p in sm["per_k"]], fmt="o", color=P["yellow"],
+                label="T7 estimator on $A_n$\n(sound not removed)")
+    ax.axhspan(0.99, 1.06, color="grey", alpha=0.15)
+    ax.set_xlabel(r"$(k\lambda)^2$")
+    ax.legend(loc="upper left", fontsize=7)
+    ax = axs[0]
     for est, col, lab, off in [("ratio_T7_s", P["red"], "T7 estimator on $A_s$", -0.002),
-                               ("f_nonlinear", P["blue"], "nonlinear reference fit", 0.002),
-                               ("ratio_T7_n", P["yellow"], "T7 estimator on $A_n$", 0.0)]:
+                               ("f_nonlinear", P["blue"], "nonlinear reference fit", 0.002)]:
         xs = [r["k_lambda"]**2 + off for r in rows]
         ax.plot(xs, [r[est] for r in rows], ".", color=col, alpha=0.5)
         sm = summ[est]
@@ -250,7 +260,8 @@ def figures(out, rows, store, summ):
     ax.axhline(1.0296, color="k", ls="--", lw=1, label="CE (rel., order 4) at 0.003")
     ax.set_xlabel(r"$(k\lambda)^2$")
     ax.set_ylabel(r"$\kappa/\kappa_1$")
-    ax.legend(loc="lower left", fontsize=7)
+    ax.set_ylim(0.95, 1.10)
+    ax.legend(loc="upper left", fontsize=7, ncol=2)
     fig.savefig(os.path.join(out, "v1b_kappa_ratio.png"))
     plt.close(fig)
 
