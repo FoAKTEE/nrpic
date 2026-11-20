@@ -126,14 +126,15 @@ def make_cluster_offset(path):
     return n
 
 
-def make_infall(path, n=2000, seed=20261122, mass=1.0e-8, centre=(0.1, -0.2, 0.05)):
+def make_infall(path, n=2000, seed=20261122, mass=1.0e-8, centre=(0.1, -0.2, 0.05),
+                rmin=0.3, rmax=2.5):
     """Light particles around the puncture of mpi_puncture_exc.athinput: radii 0.3 to 2.5
     from it (the horizon of the unit-mass puncture has coordinate radius about 0.5), random
     momenta up to 0.4 per unit mass plus an inward radial part of 0 to 0.6, so that
     particles are inside the excision radius at the start and others cross it later."""
     from nrpic.io import write_nrp
     rng = np.random.default_rng(seed)
-    r = rng.uniform(0.3, 2.5, n)
+    r = rng.uniform(rmin, rmax, n)
     v = rng.normal(size=(n, 3))
     nhat = v/np.linalg.norm(v, axis=1)[:, None]
     x = np.asarray(centre)[None, :] + r[:, None]*nhat

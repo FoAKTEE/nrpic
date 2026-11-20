@@ -789,3 +789,119 @@ and takes about 7 s per cycle on four ranks.
   (particles inside the horizon sit in cells whose metric determinant is not positive:
   "sources set to zero there", and the open boundary), but its defect is the same on 1,
   2, 4 ranks to 1e-10.
+
+### 14:14 Entry 25: outcomes of t7_analytic and t7_probes (P7a, P7b held)
+
+`nrpic-run submit` refused these runs ("6 cores asked, 15 busy in live local runs of
+core, allotment 16 at a time"), as in session mpi-1: the processor runs of T7 are
+registered by hand with `tracks/core/tools/run_registered.py` (same fields).
+
+- P7a held. Runs core-20261120-221204-38f0369 (t7_analytic, analytic Kerr metric,
+  midpoint) and core-20261120-221207-38f0369 (t7_analytic_boris, virtual lattice,
+  Boris): the trajectory file (2001 records) and the history are identical byte for
+  byte on 2 and 4 ranks; `geo.mpi.hst`: the particle on rank 0 at all times (1/0 and
+  1/0/0/0), no hand-over, no packet.
+- P7b held. Run core-20261120-221222-38f0369 (t7_probes, 16 cycles, t = 3 M; 2296 and
+  3608 particles handed over, 2.2e4 and 5.0e4 deposit packets on 2 and 4 ranks): the
+  lapse, the energy density and the proper time at the eight probes agree with one
+  rank to 8.6e-16, 1.5e-15 (of the largest energy density at a probe, 3.5e-3) and
+  6.2e-16; probe 1 equals probe 0 exactly in all three runs; the energy density at
+  probe 7 (vacuum) is zero in all three. The history as a whole agrees to 1.0e-13 and
+  1.9e-13 (column 29, the mean of K), the identity holds at 7.8e-15 / 1.7e-15 /
+  9.6e-16 on 1 / 2 / 4 ranks.
+- Figure `tracks/core/analysis/mpi/figs/t7_probes.png` (script `t7_figs.py`;
+  inspected): (a) the geodesic on 1, 2, 4 ranks on one line; (b) the lapse at the eight
+  probes from 0.635 (centre) to 0.940 (corner); (c) largest difference over the eight
+  probes at 1e-16 to 2e-15 at all times on 2 and 4 ranks.
+
+### 14:22 Entry 26: outcome of t7_ah_exc (test particles around a moving puncture)
+
+Run core-20261120-221336-38f0369 (24 cycles, t = 0.75 M; 130 / 187 / 312 s on 4 / 2 /
+1 ranks; 1039 and 1444 particles handed over on 2 and 4 ranks). Numbers: `compare.json`
+in the run directory and `t7_figs.py`.
+
+- P7c (iii) held, in its strong form: trajectories of all particles (25515 records),
+  the metric at the particles, the four snapshots (2000, 1959, 1959, 1934 particles)
+  and the particle restart files are identical byte for byte on 2 and 4 ranks (one
+  restart file but for the header sum of the removed mass, 2.4e-16). The record of the
+  puncture tracker and the Z4c history are identical as well. So vacuum Z4c with the
+  tracker and the adaptive mesh gives the same bits on 1, 2 and 4 ranks in this set-up,
+  and the particles see the same spacetime.
+- P7c (i): the excised number is the same on 1, 2 and 4 ranks at every one of the 25
+  records (0 until cycle 4, 41 from cycle 5, 66 from cycle 19), and it grows during the
+  run: held. The part "above zero from the first step" FAILED: the first two searches
+  of the finder (t = 0 and 0.0625) give no result (`nan` in every column of
+  `px.horizon_summary_0.txt`), on 1, 2 and 4 ranks alike, so nothing is removed before
+  the search of t = 0.125 succeeds. In the smoke run with deposit the search of t = 0
+  had succeeded; whether the deposit makes that difference is seen in t7_ah_exc_dep
+  (registered), not concluded here.
+- P7c (ii) FAILED in its level for one search, although the fields are identical: the
+  ten searches with a result agree with one rank to 3e-14 or better in mass, area and
+  smallest radius, except the search of t = 0.625 (and its repeated record at 0.6875):
+  mass 1.018848108362721 (1 rank), 1.018848109552423 (2 ranks), 1.018848108300745 (4
+  ranks), i.e. 1.2e-9 and 6.1e-11 relative; smallest radius 1.2e-9 and 6.3e-11. That
+  is above the 1e-10 I predicted and, on 2 ranks, above the 1e-9 I wrote as refuting.
+  What is measured: the input of the finder is the same on every rank count (identical
+  Z4c history, tracker, particle files), so the difference arises inside the finder
+  (upstream code, `z4c/fastflow.cpp`, which sums its surface integrals and spectral
+  coefficients over the ranks with `MPI_Allreduce`); the search before it (t = 0.5625)
+  has an rms expansion of 0.47 against 0.16 to 0.18 of the others. [JUDGEMENT, not
+  tested: the flow at this resolution, four cells per horizon radius, amplifies the
+  rounding differences of those sums.] Consequence for the particles: the excision
+  radius 0.8 r_min differs between rank counts by up to 1e-9 relative after such a
+  search, so a particle within that distance of the radius could be removed on one
+  rank count and a step later on another. It did not happen here (identical files).
+  This is a property of the finder on several ranks, not of the particle module; it is
+  listed in the interface text.
+- Figure `figs/t7_ah_exc.png` (inspected after the run with deposit, entry 27).
+
+### 14:32 Entry 27: outcome of t7_ah_exc_dep (P7d FAILED), and the run that tests my reading
+
+Run core-20261120-222102-38f0369 (as entry 26 with deposit, tsc, one filter pass; 140 /
+197 / 317 s; 6058 and 11631 deposit packets on 2 and 4 ranks).
+
+- Through cycle 6 the three runs agree as in the other tests: particle sums and mesh
+  integrals to 8e-15, the lapse at the three probes, the tracker position and the
+  trajectories of all particles exactly (the matter is 2e-5 of the hole's mass); the
+  first search (t = 0) succeeds here, on all rank counts, and its mass agrees to
+  4e-14; the search of t = 0.125 gives the same mass to 16 digits; 38 particles are
+  removed at cycle 1 and 3 more at cycle 5 on all rank counts.
+- The search of t = 0.1875 (cycle 6) gives three different surfaces: smallest radius
+  0.4451 (1 rank), 0.4101 (2 ranks), 0.4180 (4 ranks), masses 1.02456, 1.02604,
+  1.02449, with rms expansions 0.49, 1.13, 1.22 (the search before had 0.18). From then
+  on the removed number differs: 43 on one rank from cycle 7, 41 on 2 and 4 ranks; 68
+  against 66 at the end; the later searches differ likewise. Everything downstream
+  differs at the level of two particles in 2000 (sums 5e-4).
+- So P7d FAILED: the excised number is not the same on all rank counts, and the
+  records of the finder differ by 8 per cent, not by 1e-10. Also seen: the columns
+  24 to 27 of the history (filtered integrals) are `nan` from cycle 1 on, on one rank
+  alike (the filter meets the cell with a non-positive metric determinant at the
+  puncture; a property of the set-up on one rank, noted for the lead).
+- The first searches without deposit gave no result (entry 26) and with deposit they
+  do, on one rank alike: the result of the finder at t = 0 depends on whether the
+  particle module deposits (it then recomputes the ADM variables from the Z4c
+  variables at the start). Noted for the lead; not of this package.
+
+My reading [JUDGEMENT until the run below]: the accepted surfaces have rms expansions
+of order one, i.e. the flow of the finder does not converge at four cells per horizon
+radius, and a flow that does not converge amplifies rounding differences of its input
+(here the sources of the deposit, summed in another order on several ranks) to order
+one. Then the differences are a property of the finder in this set-up, on one rank
+too, and not of the hand-over, the deposit packets or the reductions of this package.
+
+Test of the reading, `finder_sensitivity.py` (one rank only, 8 cycles, two runs side by
+side): "same" with the particle file of the test, "reversed" with the same particles
+written in the opposite order, which changes the order of the additions of the deposit
+and nothing else.
+- P7e. "same" reproduces the one-rank run of t7_ah_exc_dep bit for bit (horizon
+  records, removed numbers).
+- P7f. "reversed" agrees with "same" in the searches of t = 0 and t = 0.125 to 1e-12,
+  and differs in the search of t = 0.1875 by more than 1e-4 relative in the smallest
+  radius, as the rank counts do among themselves.
+- Refuted if "reversed" agrees with "same" at t = 0.1875 to 1e-9 or better: then the
+  finder is not sensitive to rounding of the sources on one rank, the differences
+  between the rank counts come from the code path of several ranks (of the finder or
+  of this package), and that is the next thing to find.
+
+Whatever the outcome, the comparison of the excision with deposit needs a set-up in
+which the finder converges; that case follows (entry 28).
