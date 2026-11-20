@@ -49,6 +49,12 @@ def join_hst(dirs, fname):
     if not parts:
         return None
     out = parts[0]
+    names = list(out.keys())
+    for i, p in enumerate(parts[1:], 1):
+        # a run restarted into a new directory writes its NRPIC history without the header
+        # line (nrpic_io.cpp NrpicStartup): the columns are those of the first directory
+        if "time" not in p and "c1" in p:
+            parts[i] = {names[j]: p[f"c{j + 1}"] for j in range(min(len(names), len(p)))}
     for p in parts[1:]:
         t1 = p["time"][0]
         keep = out["time"] < t1 - 1e-9

@@ -1,0 +1,2 @@
+# drift card job_iv: <name> <athinput | restart file> [athena args], one run per job
+cc1_kninf_A1000 /data/haiyangw/nrpic/scratch/C-sidm/C-20261115-171058-c26cfad/cc1_kninf/rst/cc.00001.rst time/tlim=1000 -t 00:52:00
