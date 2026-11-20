@@ -490,3 +490,83 @@ within 5 percent of 1e-3; the second-difference level (std/sqrt 6) is within 5 p
 the first-difference level at 0.1 is within 10 percent of 1e-3 (then the cause is
 elsewhere) or the ratio stays outside the bound. Change: `growth.noise_level`, order 2 by
 default (order 1 selectable); U5 now reports both levels. U1-U4 do not depend on it.
+
+## 2026-11-20, entry 11: outcomes U5 rerun, R1, G1'-G6' (runs C-20261120-222454-8721534, C-20261120-222716-9d86ebc); predictions D2, D3
+
+U5 rerun (run C-20261120-222454-8721534, exit 0) [VERIFIED]: U1-U4 repeat; U5 PASS with
+the second-difference level: ratio 1.026, 1.022, 1.039. Cause test: the first-difference
+level is 1.007e-3 (sigma = 0.02), 1.068e-3 (0.05), 1.588e-3 (0.1; predicted above 1.3e-3)
+against 1.000e-3, 0.987e-3, 0.996e-3 from second differences (predicted within 5 percent):
+the cause named in entry 10 is confirmed.
+
+Validation run C-20261120-222716-9d86ebc (`validate_growth_v2.py`, commit 9d86ebc, 2 cores,
+`growth_validation_v2.json`) [VERIFIED for every number]:
+
+- Old estimator: identical to run C-20261115-170346-298a1ba (largest difference 0 in the
+  G2 biases and coverages and in all six alpha_c rates; the 18 printed G1 values equal).
+- G1' PASS: 18 of 18.
+- R1 PASS: alpha_probe(0) - alpha_table(r_p) = -5.8e-9 (all four dir_yc0500_* and
+  yc0500_v5), -5.3e-9 (yc0605_v5), -2.0e-9 (reconf_yc0756_hc), all at level 6 (r_p = 0.2165
+  M; the adaptive runs start with level 6 as the finest at the origin). The model's
+  alpha_c lies 0.0016 (y_c = 0.5), 0.0008 (0.605), 0.0002 (0.756 compressed) below. So on
+  these runs y(0) is the equilibrium as the probe reads it; 'first' and the probe
+  reference agree to 6e-9 and D1's mechanism does not act on them (the v2 rates with
+  'first' equal those with the probe reference to the printed digits).
+- G2' (v2, exact reference 0.6): mean bias -0.00 +- 0.06, -0.06 +- 0.06, +0.07 +- 0.09
+  percent (PASS); rms 0.40, 0.45, 0.66 percent (PASS); 3-SE coverage 1.00, 1.00, 0.96
+  (PASS); 1-SE coverage 0.76, 0.80, 0.42: FAILS at sigma = 0.1 (bound 0.50-0.97; the median
+  error is 0.56 of the rms there, 1.15 at the other two); median P 25.00, 24.93, 24.91 M
+  (PASS), but at sigma = 0.1 the range is 17.9-31.0 M (0.02: 24.89-25.08; 0.05:
+  24.65-25.48). All 150 fits found a window (1.8-2.7 e-folds, median). G2' therefore FAILS
+  on one clause. With 'first': +5.06, +5.15, +2.18 percent (PASS of the prediction +1 to +6:
+  D1's mechanism, 3-SE coverage 0.10-0.30).
+- G3' FAIL (not evaluable): with A_init = rms of d over the first period (P = 35.2, 31.7,
+  31.3 M measured; zero crossings 22.5, 31.0, 30.5 M), A_init = 0.0174, 0.0139, 0.0101 and
+  lo = 3 A_init leaves less than one e-fold below hi = 0.1 for comp and comp_s2; comp_s3
+  gives 0.0480 +- 0.0026 per M over 33.5-57.8 M (1.18 e-folds), 20 percent below its old
+  0.0602. The period clause holds (31.3-35.2 M, within 12 percent).
+- G4': only comp_s3 is evaluable: r10 0.0559 +- 0.0046 with its own window (32-54 M), +17
+  percent; 0.0530 +- 0.0038 over the alpha_c window, +10 percent. Prediction (a) not
+  evaluable (one of three), (b) FAILS as stated (one of three evaluable, two required).
+- G5': sigma(0.605) = 0.0529 +- 0.0070 (window 124-175 M, P = 36.5 M) < sigma(0.500
+  kicked) = 0.0830 +- 0.0065 (57-92 M, P = 33.7 M): the order holds beyond the errors (wave
+  2: not significant). Kicked against unperturbed: the unperturbed mean does not exist
+  (G3'); against comp_s3 the kicked rate is 1.73 times larger, against the old mean 0.0621
+  1.34 times: the 30 percent clause FAILS again, but the v2 windows now lie before the
+  plunge (wave 2: 79-93 and 162-176 M, rates 0.17 and 0.16). Lead times unchanged (3.3,
+  1.8, 1.1 M): PASS. Compressed y_c = 0.756: 0.0314 +- 0.0025 (25-123 M; wave 2 0.0265).
+- G6' FAIL: comp_s3 (the only sample with a default window) finds a window in 18 of 27
+  settings (none with k_lo = 3, hi = 0.07 or k_lo = 5, hi <= 0.1); the rates span
+  0.038-0.063 (-20 to +32 percent of the default). The pattern is systematic: an earlier
+  start (k_lo = 2) raises the rate (0.052-0.063), a later end (hi = 0.14) lowers it
+  (0.043-0.047).
+- On runs se_noise is 0.0000 (the lapse record is smooth from record to record): the
+  run errors are the residual part only; the honest error of a run rate is the seed and
+  window scatter.
+
+Reading [JUDGEMENT, to be tested by D2]: the unperturbed y_c = 0.5 runs grow with
+sigma P = 0.05 x 32 = 1.6-2 per period and hold about two e-folds between the floor and
+the bend toward migration (|d| ~ 0.1 of a final 0.36); a one-period boxcar plus a start
+at three times the first-period rms leaves less than one e-fold, and ln|d_s| is concave
+over the rest, so the rate depends on the window. On the synthetic signals the estimator
+is unbiased and its errors hold for sigma P <= 1.25 (sigma = 0.02, 0.05); at sigma P =
+2.5 the error is too small by about 1.8 (D3 tests why).
+
+### Prediction D2 (diag_v2.py, the three compensated y_c = 0.5 samples)
+
+(a) Curvature: a quadratic a + b t + c t^2 fitted to ln|d_s| (v2 smoothing, measured P)
+from the first smoothed time to the first |d_s| >= 0.14 has c < 0 in all three, and the
+local rate at the end over that at the start, (b + 2c t1)/(b + 2c t0), is below 0.7 in all
+three. Refuted if c >= 0 or the ratio >= 0.7 in any sample (then the window dependence of
+G6' is noise, not curvature).
+(b) A common fixed interval, from the latest first smoothed time of the three to the
+earliest time any of them reaches |d_s| = 0.1 (`growth.slope_over`): the three rates lie
+within 15 percent of their mean (seed scatter as in wave 2, 5.5 percent). Refuted
+otherwise.
+
+### Prediction D3 (G2' at sigma = 0.1)
+
+The 29 realisations outside one SE have a median |P/25 - 1| more than twice that of the
+21 inside: the excess error comes from misestimated periods, which neither error term
+contains. Refuted otherwise (then the cause is elsewhere: window selection at 1.8
+e-folds).
