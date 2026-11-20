@@ -103,3 +103,45 @@ my README).
   -164634-f1fe887 (status "submitted"; the runs_ball helper finishes them this round) or of
   other helpers' runs are not finished when verify runs. Each failure goes into OPEN.md with
   its cause.
+
+## 2026-11-20T22:27Z, entry 2: outcomes of P1-P5 (run A-20261120-222454-d16dbc6)
+
+Run A-20261120-222454-d16dbc6 (`scripts/check_findings.py`, commit d16dbc6, one core, exit 0):
+`findings.json`, `fig_g1close_findings.png` (looked at: top left the read-off ratios with the
+two medians, top right the age of every shell on the initial slice of data set 2t, bottom left
+the 14 Newtonian scan points against the band of the STATUS sentence, bottom right the tallies
+of the criteria checks). Inputs checksummed (the wave-1 directories have no `sha256sums.txt`;
+see step 3).
+
+- **P1 holds.** median over mu <= 0.15 = 0.84278 (the mu = 0.05 read-off; five values), over
+  all six 0.86460 = `median_ratio` (the key is the all-six median, as the verifier said);
+  range over mu <= 0.15 0.8017-1.0123. Finding 1 CONFIRMED. Fix: ledger row prints 0.84 and
+  the all-six 0.86 with its own label.
+- **P2 holds for the finding, refuted at its stated upper end.** The age on the initial slice
+  equals t_i = 10.6667 to 1.2e-14 for the 273 shells with R_i < 6.5 (better than the
+  verifier's 4.7e-8: I integrate the shells table directly, it rebuilt the slice from the
+  radial table). The first shell more than 1e-6 off is at R_i = 6.65; in the taper every
+  shell has E = 0 and less mass than the envelope, so its age rises to 13.583 at
+  R_i = 9.4287 (the verifier's matter edge 9.43, where m' falls below 1e-6 of its largest
+  value) and 13.737 at R_i = 9.5 (the outermost shell of the table, nearly without mass).
+  My upper end 13.737 differs from the verifier's 13.588 by more than the 0.01 I allowed:
+  the difference is the definition of the matter edge, not a disagreement. Finding 2
+  CONFIRMED: the sentence "a common bang time for every shell" is true for the core and the
+  envelope, false in the surface taper (earlier bangs: a decaying mode there).
+- **P3 holds.** M_0 = H^2 R_b^3/2 = 1.0 exactly, M/M_0 = 1.009588. In units of the total
+  mass: tau_ta = 16.733, m_AH = 0.07974 (first trapped sphere) and 0.09511 (crunch),
+  tau_AH = 43.928, R_b = 7.924, t_i = 10.565. Finding 3 CONFIRMED as a label defect; I relabel
+  (the values stay in units of M_0, which is what the code and every journal use).
+- **P4 holds (not blind).** wave 1 (-130256-a7374a4): 37 checks, failing T1.2b, T2.2d, T2.4a,
+  T2.4c. Wave-2 full run (-161813-6c820fb): 40 checks, failing T2.6a-c (fixed in the T2
+  rerun). State (T1, T3-T5 from the full run, T2 from -163358-9b2d048): 41 checks, 41 pass,
+  diagnostics T1.2b-d, T2.2d-d, T2.4a-d, T2.4c-d. Finding 5 CONFIRMED.
+- **P5 holds (not blind).** 9 of 14 scan points in [+2.2e-4, +6.3e-4]; outside: e0p1_h050
+  -2.4e-4, e0p2_h050 -4.6e-4 (3.4e4 particles), e0p1_n064 +8.8e-4, e0p2_n064 +1.5e-3 (64^3),
+  e0p2_pm +1.5e-3 (spindle). Section 4 item 2 of VERIFIER.md: the sentence is wrong as
+  written (CONFIRMED), but the verifier's "only the four p = 0 points at 128^3" is too narrow
+  (REBUTTED in part): the band holds every 128^3 point with >= 2.7e5 particles except the
+  spindle, i.e. the four shapes at p = 0, the two amplitude copies, p = +0.2, the rotated
+  lattice and the 2.1e6-particle point. Correct sentence for STATUS T3 / C8: "the 9 points at
+  128^3 with >= 2.7e5 particles other than the spindle within +2.2e-4 to +6.3e-4; the spindle
+  +1.5e-3; the 64^3 controls +8.8e-4, +1.5e-3; the 3.4e4-particle controls -2.4e-4, -4.6e-4".
