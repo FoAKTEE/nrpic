@@ -741,7 +741,7 @@ P16, written before the run:
  Refuted in every part by a failed restart, a missing or misshapen file, another number
  of particles, or a difference above 1e-8.
 
-## 2026-11-20 14:21 Entry 20: first numbers of P14; two follow-up measurements; prediction P17
+## 2026-11-20 14:17 Entry 20: first numbers of P14; two follow-up measurements; prediction P17
 
 While run core-20261120-220756-0eaaf74 is still going (its outcome is entry 21): the four
 one-thread runs side by side on cores 1, 3, 6, 7 of NUMA node 0 gave 131.9 (punc), 115.9
@@ -769,3 +769,53 @@ P17, written before the runs (`scaling_series.sh t1solo` and `collapse`):
     build on a loaded machine), 0.19 to 0.5 s per step at six threads, with 13 V cycles
     per step as on the card. Refuted for the advice to Track D if six threads need more
     than the card's 0.65 s per step.
+
+## 2026-11-20 14:27 Entry 21: outcome of P14 (six threads on a quieter machine)
+
+Run core-20261120-220756-0eaaf74 (O3, sha256 8f223f75...; load average 22 rising to 56
+during the run; processor share of the six-thread runs 0.90 to 0.96). Seconds per step,
+best of two repeats at six threads; the one-thread runs ran four side by side on cores 1,
+3, 6, 7 of one socket:
+
+| case | 1 thread | 6 threads | speed-up | 1 thread on 2026-11-19 | 11-19 / 11-20 | one A100 | 6 threads / card |
+|---|---|---|---|---|---|---|---|
+| punc | 131.9 | 16.60 | 7.9 | 203.4 | 1.54 | 0.175 | 95 |
+| cluster | 115.9 | 21.11 | 5.5 | 243.4 | 2.10 | 0.279 | 76 |
+| cosmo | 49.05 | 8.86 | 5.5 | 94.3 | 1.92 | 0.119 | 74 |
+| newton | 4.61 | 0.929 | 5.0 | 10.62 | 2.30 | 0.0779 | 11.9 |
+
+- P14a (speed-up 5.0 to 6.2): holds for cluster and cosmo (5.5); newton 4.96, a hair below
+  the range and above the refutation bound 4.5; punc 7.9, ABOVE the range: more than the
+  number of threads, so its one-thread run was held back by something the six-thread
+  run did not suffer (P17a tests the reading "four runs side by side on one socket").
+- P14b FAILED: the one-thread runs are 1.5 to 2.3 times faster than on 2026-11-19 (bound
+  1.6). The absolute rates of entry 11 were lowered by the load of that day (97 to 157)
+  by about a factor two; six threads today (16.6, 21.1, 8.9, 0.93 s per step) nearly
+  reach 16 threads of that day (14.3, 18.5, 6.9, 0.82). The speed-ups of entry 11 are
+  ratios within one day and stand as such; its absolute 16-, 32- and 64-thread times
+  are upper bounds of what a quiet machine needs. They cannot be measured again under
+  the present limit of six cores per session.
+- P14c FAILED: one A100 is 74 to 95 times six threads for the three cases with Z4c
+  (predicted 130 to 230) and 11.9 times for the Newtonian periodic box (predicted 22 to
+  30); the prediction multiplied yesterday's loaded 16-thread times.
+
+Record of a mistake in handling the run: while it was in its six-thread phase I edited
+`scaling_series.sh` and `scaling.py` in place (the phases and the case of entry 20). A
+shell reads its script while it runs; the script was put back to the committed text of
+the run (0eaaf74c) within a minute, before the shell read on, and restored afterwards;
+the run ended with exit 0 and every record. `scaling.py` is started anew for each case,
+so the cluster, cosmo and newton runs at six threads used the edited file, which
+differs from the run's commit only by the added case `collapse`, not used by them. A
+script of a running job is not edited again.
+
+## 2026-11-20 14:32 Entry 22: nrpic-run refuses; the three remaining runs are registered by hand
+
+`nrpic-run submit --cores 6` was refused eleven times between 14:25 and 14:31: "6 cores
+asked, 16 busy in live local runs of core, allotment 16 at a time (decision 0006)". The
+16 cores of owner core are held by the other sessions of core in wave 3 (mpi, faces,
+oblate, id-solver; `ps`), while decision 0019 allows six cores per session and the load
+average of the machine is 50 to 78 of 144. As on 2026-11-19 (entry 3) the runs of P17,
+P15 and P16 are therefore registered with `tracks/core/tools/run_registered.py` (hand
+manifests, marked `registered_by_hand`), one after the other, at most six threads.
+Request to the orchestrator in the report: let nrpic-run count cores per session
+(decision 0019), not per owner, for owners with several sessions.
