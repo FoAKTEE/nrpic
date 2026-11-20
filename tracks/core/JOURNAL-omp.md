@@ -556,3 +556,22 @@ thread and would not leave the first 16 cycles of binary identical). The size of
 jeans floor (about 1e4 times a plain double rounding of the source) is not explained.
 Status: no race found in the multigrid kernels; the thread dependence is [TO VERIFY] as
 rounding; it does not affect the particle module's own kernels.
+
+## 2026-11-20 14:05 Entry 15: continuation (wave 3); the two card jobs have run
+
+Session of wave 3 (the session of 2026-11-19 was cut off by the usage limit after entry
+14). `git merge --no-edit main` (d507d774: decisions 0018 and 0019, the pre-commit hook;
+no source). Worktree clean, nothing stranded. Limits that changed (decision 0019): six
+processor cores per session; pause flag `locks/PAUSE` (absent at 14:00).
+
+`sacct`: Slurm 4643 (run core-20261119-144437-6718c76, card timing) ran 2026-11-19 08:55
+to 08:56, ten runs, every exit 0; Slurm 4666 (run core-20261119-164717-b187f36, card smoke
+test of this branch's card executable) ran 12:02, both runs exit 0. Both manifests closed
+with `nrpic-run finish` (commits 8309434d, d0ee040a). Card time used by the package: 47 s
++ 2 s = 0.014 card-hours of the one hour allowed.
+
+The predictions for both stand as written: P7 (entry 2; provisional reading in entry 11)
+and P13 (entry 12: histories of dep and east from the card differ from one thread of O3
+by less than 1e-10 of the largest number of the file, deposit identity below 1e-13).
+Analysis: `tracks/core/omp/analyse_card.sh` (card_compare.py for P13, analyse_scaling.sh
+with the card directory for P7), registered below.
