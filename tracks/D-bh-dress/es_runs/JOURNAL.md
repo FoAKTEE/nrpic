@@ -615,7 +615,7 @@ V-1 and core-ES; `results/es1g_judge.json`). Its figures were looked at; two had
 or overlapping axis label, and the K deficit of G2 (below) raised a question it did not
 measure. So the script gains the tracers' Lorentz factor against the normal observers,
 W = alpha dt/dtau, and v = (1 - 1/W^2)^(1/2), and wider margins, and is run once more.
-- J6 prediction (written 2026-11-20 22:37 UTC, before that second run) [JUDGEMENT, weak]:
+- J6 prediction (written 2026-11-20 22:24 UTC, before that second run) [JUDGEMENT, weak]:
   the K deficit at the +x tracer of R0 = 48 M (K-hat = 0.67-0.81 of -3H(tau) from t = 10 M
   on, `results/es_extra_es1g.json`) means the slices of ES-1G do not follow the dust: the
   dust moves through the normal observers with v between 0.02 and 0.1 at t = 50-200 M at
