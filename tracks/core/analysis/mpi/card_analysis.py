@@ -59,6 +59,15 @@ def gpu_memory(path):
     return {str(k): dict(peak_MiB=peak[k], first_MiB=first[k]) for k in sorted(peak)}
 
 
+def job_cards(base):
+    """number of cards Slurm gave the job (job.info of card_job.sh), 2 if not recorded"""
+    try:
+        m = re.search(r"CUDA_VISIBLE_DEVICES=([0-9,]+)", open(os.path.join(base, "job.info")).read())
+        return len(m.group(1).split(",")) if m else 2
+    except OSError:
+        return 2
+
+
 def cluster_compare(base, a, b):
     fa = glob.glob(os.path.join(base, a, "*.nrpic.hst"))
     fb = glob.glob(os.path.join(base, b, "*.nrpic.hst"))
@@ -96,8 +105,10 @@ def figure(res, figdir):
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.0))
     ax = fig.add_axes([0.08, 0.16, 0.40, 0.72])
     floor = 1e-18
-    for key, col, lab in (("C1b-C1a", fs.PAL["blue"], "1 card, again"),
-                          ("C2-C1a", fs.PAL["red"], "2 cards")):
+    ncard = res.get("cards", 2)
+    two = "2 ranks, 2 cards" if ncard > 1 else "2 ranks on 1 card"
+    for key, col, lab in (("C1b-C1a", fs.PAL["blue"], "1 rank, again"),
+                          ("C2-C1a", fs.PAL["red"], two)):
         c = res["cluster"].get(key, {})
         if "history_t" in c:
             ax.semilogy(c["history_t"], np.maximum(c["history_rel_sumE"], floor), color=col,
@@ -114,7 +125,7 @@ def figure(res, figdir):
     ax.set_ylabel("difference from the first one-card run", fontsize=9)
     ax.legend(loc="upper left", fontsize=7)
     ax.set_title("cluster of T3 on the cards", fontsize=10)
-    ax2 = fig.add_axes([0.60, 0.16, 0.36, 0.72])
+    ax2 = fig.add_axes([0.59, 0.20, 0.31, 0.68])
     names = [n for n in ("F8a", "F8b", "F16") if n in res["vacuum"]]
     rates = [res["vacuum"][n].get("mb_cycles_per_s", np.nan) for n in names]
     mems = [max((v["peak_MiB"] - v["first_MiB"]) for v in res["vacuum"][n]["gpu"].values())/1024.0
@@ -126,10 +137,11 @@ def figure(res, figdir):
     ax3.bar(xs + 0.2, mems, 0.4, color=fs.PAL["orange"], label="peak memory per card")
     ax3.set_ylabel("peak memory per card [GiB]", fontsize=9, color=fs.PAL["orange"])
     ax2.set_xticks(xs)
-    ax2.set_xticklabels(["%s\n%d MBs, %d card%s" % (n, res["vacuum"][n].get("meshblocks", 0),
-                                                  res["vacuum"][n]["ranks"],
-                                                  "" if res["vacuum"][n]["ranks"] == 1 else "s")
-                         for n in names], fontsize=8)
+    ax2.set_xticklabels(["%s\n%d MBs\n%d rank%s, %d card%s" % (
+        n, res["vacuum"][n].get("meshblocks", 0), res["vacuum"][n]["ranks"],
+        "" if res["vacuum"][n]["ranks"] == 1 else "s",
+        min(ncard, res["vacuum"][n]["ranks"]),
+        "" if min(ncard, res["vacuum"][n]["ranks"]) == 1 else "s") for n in names], fontsize=7)
     ax2.set_title("Track F's vacuum mesh, 10 cycles", fontsize=10)
     out = []
     for d in figdir:
@@ -147,7 +159,7 @@ def main():
     base = os.path.abspath(a.base)
     res = dict(summary=open(os.path.join(base, "summary.txt")).read().splitlines()
                if os.path.exists(os.path.join(base, "summary.txt")) else [],
-               cluster={}, vacuum={})
+               cluster={}, vacuum={}, cards=job_cards(base))
     res["cluster"]["C1b-C1a"] = cluster_compare(base, "C1a", "C1b")
     res["cluster"]["C2-C1a"] = cluster_compare(base, "C1a", "C2")
     for n in ("C1a", "C1b", "C2", "F8a", "F8b", "F16"):

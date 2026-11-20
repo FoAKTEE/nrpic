@@ -700,3 +700,36 @@ minutes expected):
 2. The two-card job as before (C1a, C1b, C2, F8a, F8b, F16), submitted when the
    pre-test has run; predictions P6a to P6d of entry 9 stand, with the measured one-card
    numbers: F8b about half of 58.8 GiB per card; F16 about 55 GiB per card.
+
+### 14:12 Entry 23: outcome of the pre-test on one card (P6e, P6f, P6g held)
+
+Run core-20261120-220512-a86765b (registered with `nrpic-run submit`, which accepts
+runs of this owner again), Slurm job 4730: started at once on the free card, 43 s
+(0.012 card-hours). `job.info`: one card, one task, two cpus; `mpirun` started two ranks
+with `--map-by :OVERSUBSCRIBE`. Numbers: `card.json` in the run directory, copy
+`tracks/core/analysis/mpi/figs/card_pretest.json`; figure `figs/card_pretest.png`
+(inspected: differences of the two-rank run from the one-rank run at 1e-16 to 4e-15 at
+all times; one bar pair for F8b).
+
+- P6e held. C2 (cluster, two ranks, four MeshBlocks each) and F8b (Track F's m/8 mesh,
+  1166 MeshBlocks per rank) ran to their cycle limits with exit status 0. So the card
+  build with this Open MPI exchanges the mesh data between ranks (device buffers), and
+  the particle module runs on two ranks on a card: 2786 particles handed over and
+  5.4e4 deposit packets in 40 cycles (`C2/cl.mpi.hst`; the processor run of T3 on two
+  ranks had 2786 and 5.4e4, entry 9), particles per rank 2000/2000 to 2010/1990.
+- P6f held. C2 against C1a of the same job: every history column agrees to 2.8e-13
+  (the sums of the particles and of the mesh to 1e-15), positions to 8.9e-16, 1.8e-15,
+  2.2e-15, 3.6e-15 at t = 1.9, 3.8, 5.6, 7.5 M; 4000 particles throughout in both.
+  The scatter of two one-card runs was 5.4e-13 and 3.6e-15 (entry 22): the two-rank
+  run is inside it.
+- P6g held. F8b with both ranks on one card: 60680 MiB at the peak against 58835 MiB
+  of the one-rank run (3 per cent more); 745 MeshBlock-cycles per second against 2541
+  on one rank, as expected for two processes that share one card and one core. No rate
+  is taken from it.
+
+So what the first attempt left open is settled except the rate and the memory on two
+cards (P6c, P6d) and the run that needs two cards (F16), which the two-card job gives:
+run core-20261120-220612-431e9b8, Slurm job 4733, queued at 14:06 behind a job of
+another user that holds one card (limit one hour).
+
+While it waits (processors): the items of the list "not tested" of entry 21.
