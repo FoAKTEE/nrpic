@@ -168,7 +168,7 @@ def main():
         axs[1].semilogy(e["new"]["x"], np.maximum(e["new"]["s_x_axis"], 1e-20), "--",
                         color=fs.PAL["blue"], label="after")
     axs[1].set_xlabel("$x$ (cells nearest $y=z=0$)")
-    axs[1].set_ylabel("$|s_x|$, right side of the vector equation")
+    axs[1].set_ylabel("$|s_x|$ of the vector equation")
     if rep["changed"]:
         axs[1].legend(fontsize=5)
     fig.tight_layout()

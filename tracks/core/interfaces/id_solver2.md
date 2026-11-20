@@ -137,9 +137,9 @@ New files: `athenak/src/particles/nrpic_idsolve.cpp`, `nrpic_idfar.hpp`,
 ## 5. Tests
 
 Predictions and outcomes, failed predictions included: `tracks/core/JOURNAL-idsolve2.md`
-entries 1 to 12. Scripts, numbers, figures: `tracks/core/analysis/idsolve2/` (`test_*.py`,
-`*_numbers.json`, `figs/`). Processor build of 76add0c (the published source) unless
-stated. All numbers [VERIFIED] in the runs named.
+entries 1 to 15. Scripts, numbers, figures: `tracks/core/analysis/idsolve2/` (`test_*.py`,
+`*_numbers.json`, `figs/`). Processor build of 76add0c unless stated; the published
+source is 4266c2d, which differs from it only in the branch tested by R2 and P5b. All numbers [VERIFIED] in the runs named.
 
 | Test | What it shows | Outcome |
 |---|---|---|
@@ -151,7 +151,8 @@ stated. All numbers [VERIFIED] in the runs named.
 | B | end-to-end: expanding ball (M = 1, Rb = 10, edge 2) with a triaxial Zel'dovich displacement and its momenta; solve and evolution to t = 2 | region norms (interior r < 7, shell 7 to 13.5, face layer) at 32, 64, 128 cells. Before the solve: max\|H\| 2.8e-3, shell mean 4e-4, interior mean \|M\| 6e-5 (two finer meshes). After: max\|H\| 1e-13 to 2e-12 in interior and shell; interior mean \|M\| 5.2e-6, 8.9e-7, 3.2e-7, the level of the solved sphere (the vector part ends by the stall rule). Evolution: mean \|H\| of the solved Zel'dovich ball over that of the solved sphere at t = 2 is 1.00, 1.02, 1.43 (interior) and 1.00, 1.00, 1.15 (shell), both converging (factors 4 and 9 per halving); the unsolved data stay at 2.6e-4 in the shell (12.5 times the solved at 128 cells); the scalar part alone leaves 2.4 times the shell \|H\| and 4.9 times the interior \|M\| (128 cells); the face layer has the same mean \|H\| (1.3e-4) in all four data sets. Failed bounds: max\|H\| before (predicted 1e-2), reduction of the interior \|M\| (47, 67, 173; predicted 100) (run core-20261119-153416-3d26b50) |
 | C | refined meshes (static), torus | Gaussian on one and two static levels: mode code 20 and 22 outer iterations; the run's own monitor at t = 0 at 2.4e-12 to 2.0e-11 on every level, level boundaries included; central error equal to the uniform run of the finest cell size (-5.01e-3 against -5.03e-3); torus with a refined cube and a nested lattice: max\|H\| 2.6e-10 and 1.15e-9 on the two levels (0.73 and 1.86 without the solve); torus with moving matter at density contrast up to 9: converges (24 to 33 iterations); the refined Zel'dovich ball evolves like the uniform run of the same cell size to 1 per cent in the matter. Failed: the vector part on a refined mesh stalls at the level boundary (max\|M\| 9.8e-2 -> 2.0e-2 on the refined torus) (runs core-20261119-153510-d1eaa30, analysis -161309-b04b4dd) |
 | G | Track A's CMC peak (gradient-expansion data on K = -3H, eps_i = 0.2, e = 0.2, torus of 100 Hubble lengths) solved by the code from psi = 1 | converges for mu = 0.03, 0.3, 0.5, 0.7 in 8 to 11 outer iterations (Track A's Python solve diverged at 0.5); solved psi equals psi_GE to c = 1.0e-7, 3.6e-7, 5.2e-7, 6.3e-7 of the perturbation at 64^3 (1.6e-5 at 32^3 for mu = 0.5); monitor after 3e-10 to 3e-9; with the vector part the same psi and max\|M\| 1.6e-7 -> 1.7e-9 (run core-20261119-160329-ab0aa92) |
-| P | punctures | P1 vacuum Bowen-York puncture (m = 1, P = 0.5) against the multipole reference: 5 (stencil) and 20 to 22 (code, radius 3) outer iterations; **the error of u does not fall with the cell size: 2.8e-4, 1 per cent of u at the puncture, at 32, 64, 128 cells with the faces at 16 m** (section 6); mode code with radius 1 is unusable below 128 cells (error 3e-2), with radius 3 it equals mode stencil and leaves the monitor at 1e-12 outside the radius. P2 puncture at rest in a matter shell against the radial reference: second order in both modes (error over 3 < r < 12: 1.1e-4, 2.9e-5, 7.3e-6; at the puncture 1.4e-5, 3.5e-6, 8.8e-7; M_psi within 1.1e-4, 2.7e-5, 6e-6 of the ADM mass 1.448858). P3 the same on two static levels: mode code 25 outer iterations, error at the puncture 6.0e-6, monitor 2e-13 to 6e-13 on every level. P4 three punctures with momenta and a spin: P_ADM and J_ADM of the record exact; **u at the punctures not converged at dx = 0.25** (section 6). P5 puncture with momentum in a moving shell, both parts in mode code: converges, max\|M\| 5.6e-4 -> 2.1e-7; **defect at the faces (section 6)**. @P67ROW@ (runs core-20261119-161842-b92b298, -165458-ecdaa7c, -170050-f228951, -170028-77f7173) |
+| P | punctures | P1 vacuum Bowen-York puncture (m = 1, P = 0.5) against the multipole reference: 5 (stencil) and 20 to 22 (code, radius 3) outer iterations; **the error of u does not fall with the cell size: 2.8e-4, 1 per cent of u at the puncture, at 32, 64, 128 cells with the faces at 16 m** (section 6); mode code with radius 1 is unusable below 128 cells (error 3e-2), with radius 3 it equals mode stencil and leaves the monitor at 1e-12 outside the radius. P2 puncture at rest in a matter shell against the radial reference: second order in both modes (error over 3 < r < 12: 1.1e-4, 2.9e-5, 7.3e-6; at the puncture 1.4e-5, 3.5e-6, 8.8e-7; M_psi within 1.1e-4, 2.7e-5, 6e-6 of the ADM mass 1.448858). P3 the same on two static levels: mode code 25 outer iterations, error at the puncture 6.0e-6, monitor 2e-13 to 6e-13 on every level. P4 three punctures with momenta and a spin: P_ADM and J_ADM of the record exact; **u at the punctures not converged at dx = 0.25** (section 6). P5 puncture with momentum in a moving shell, both parts in mode code: converges, max\|M\| 5.6e-4 -> 2.1e-7; **defect at the faces (section 6)**. P6 the vacuum puncture with the faces at 32 and 64: the mean error of u falls as R^-2 (-6.3e-5, -2.3e-5 against 2.7e-4 at 16). P7 the three punctures on refined meshes (cells of 0.25 to 0.03125 at the punctures): u at the punctures settles at 0.01744, 0.01204, 0.01111 (from 0.125 on to 0.7 per cent or better); no independent reference for these data (runs core-20261119-161842-b92b298, -165458-ecdaa7c, -170050-f228951, -170028-77f7173, core-20261120-221417-415acfd) |
+| R2, P5b | the change of 4266c2d (face ghost cells of the remainder of the trial curvature) | seven earlier cases replayed with the new processor build write the bytes of their old case directories (puncture in both modes with and without matter, three levels, moving Gaussian with the far field, refined Gaussian, refined torus with moving matter, the Zel'dovich ball with its evolution: 69 files); the changed case P5: largest right side in the outermost cell layer 3.2e-5 -> 8e-18, P_ADM_x 0.5500562851 -> 0.5499999519755 (puncture 0.5 plus particle sum 0.0499999519755), same 34 outer iterations, W changed by 2e-4 of its maximum (run core-20261120-222207-4266c2d) |
 | K | card build on one A100 | card build of 76add0c, four cases at 128 cells (vacuum puncture in both modes, moving Gaussian with the far field, solved Zel'dovich ball with its evolution to t = 2): the same outer iterations and linear steps as the processor build; psi to 2e-15, W to 3.5e-13, region means of \|H\| at t = 2 to 2e-10; 7 to 57 s per case, 0.032 card-hours (card run core-20261119-154414-2506b80, analysis core-20261120-220527-e2690ef) |
 
 ## 6. Limits and what a track must know
@@ -183,11 +184,11 @@ stated. All numbers [VERIFIED] in the runs named.
      converges at second order there).
   2. With momentum or spin the error of u has a floor set by the distance R of the
      faces, not by the cell size: 2.8e-4 for P = 0.5 m with the faces at 16 m, 1 per cent
-     of u at the puncture, nearly uniform in space (P1). @P6@ M_psi is low by the same
+     of u at the puncture, nearly uniform in space (P1). It falls as R^-2 (P6: 6.3e-5 at R = 32 m, 2.3e-5 at 64 m), about 2.7e-4 (16 m/R)^2 (P/0.5 m)^2 [the P^2 scaling is JUDGEMENT]: put the faces far. M_psi is low by the same
      tail (0.026 of 1.1456 at R = 16 m).
   3. The source (1/8) psi^-7 Abar^2 of a puncture peaks at r = 3m/8 for its momentum and
      at r = m/12 for its spin; u at the puncture needs cells well below that (P4: not
-     converged at dx = 0.25 for m = 0.4 to 1). @P7@
+     converged at dx = 0.25 for m = 0.4 to 1). With cells of m/8 or smaller at each puncture (static levels) u there is converged to 0.7 per cent or better (P7); on the uniform mesh at dx = 0.25 the spinning puncture was 5.7 per cent off.
   4. **Defect: vector part (`id_vector = true`) with a puncture that has momentum or
      spin.** The outermost layer of active cells gets a spurious right side: the ghost
      cells at the faces hold the trial curvature as extrapolated by the outflow
@@ -197,7 +198,7 @@ stated. All numbers [VERIFIED] in the runs named.
      dumped right side of P5]. In P5 it is up to 3.2e-5 per cell,
      2.9e-4 of momentum over the layer (0.6 per cent of the matter's), and P_ADM of the
      far-field line is off by 5.6e-5 (1e-4 of the puncture's momentum). Not fixed in the
-     published executable (source 76add0c). @FIX@ Punctures at rest (Track D) and runs
+     published executable (source 76add0c). **Fixed in the second publication (source 4266c2d)**: there the remainder (trial minus Bowen-York) is continued linearly into the face ghost cells; after the change the right side of the outermost layer is 8e-18 and P_ADM of the record equals the puncture's momentum plus the particle sum to 13 digits (P5b), and seven earlier cases that do not take this branch are byte-identical (R2). Punctures at rest (Track D) and runs
      without `id_vector` are not affected.
 - **Large tori**: on a box of many Hubble lengths (G: L H = 100) the Poisson
   preconditioner of the Newton step is poor (sigma/k_min^2 of order 1e3); the inner
@@ -220,7 +221,10 @@ stated. All numbers [VERIFIED] in the runs named.
    refers to the trial psi).
 5. Puncture combinations not run: punctures with a table of format 2, with `nrpic_cosmo`;
    spinning punctures with matter.
-6. Card executable: tested in K on uniform meshes at 128 cells. Not run on a card: refined meshes, the torus, the CMC peak, P2 to P7.
+6. Card executable: K ran the card build of 76add0c on uniform meshes at 128 cells. The
+   card build of the published source 4266c2d is compiled and has not been run (its job
+   was withdrawn: two jobs of core were queued). Not run on any card: refined meshes,
+   the torus, the CMC peak, P2 to P7.
 
 ## 7. Answers to the requests
 

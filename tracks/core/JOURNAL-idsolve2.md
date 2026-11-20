@@ -913,3 +913,94 @@ Written before either run. Processor and card builds of 4266c2d exist
  **R0b** (`regress_r0.py` with the processor build of 4266c2d against release core-v0.3,
  the nine set-ups of R0): every output file byte-identical, as for 76add0c (the change is
  inside the solver, which is not called without `id_solve`).
+
+## 2026-11-20, entry 14: outcomes of P6, P7, R2, P5b; the card run Kb withdrawn
+
+**P6, face distance for the Bowen-York puncture** (run core-20261120-221417-415acfd,
+processor build of 76add0c, 1 core; `test_p_numbers_p6p7.json`; figure
+`figs/test_p_extra_p6p7`, looked at: the mean error against the half-width follows the
+R^-2 line, the deficit of M_psi the R^-1 line; the tick labels of its third panel
+overlapped and are set by hand in the script now).
+
+| half-width R, dx | outer it. | mean of u - u_ref, 1 < r < 12 | rms | M_psi | m + 2 Q(R) | M_ADM - M_psi |
+|---|---|---|---|---|---|---|
+| 16, 1 / 0.5 / 0.25 (P1) | 5 | rms only: see right | 2.75e-4 / 2.60e-4 / 2.69e-4 | 1.119678 / .119911 / .119779 | 1.119594 | 0.0259 |
+| 32, 1 | 5 | -7.66e-5 | 7.8e-5 | 1.131708 | 1.131791 | 0.0139 |
+| 32, 0.5 | 5 | -6.25e-5 | 6.3e-5 | 1.131980 | 1.131791 | 0.0136 |
+| 64, 1 | 4 | -2.32e-5 | 2.8e-5 | 1.138343 | 1.138467 | 0.0072 |
+
+ (a) held: the mean error is negative and falls as R^-2: -6.25e-5 and -7.66e-5 at R = 32
+     (predicted -6.5e-5 within 20 per cent: 4 and 18 per cent off), -2.32e-5 at R = 64
+     (predicted -1.6e-5 within a factor 1.5: 1.45). Per doubling of R it falls by 4.2
+     (dx = 0.5, from the rms at R = 16), 3.6 and 3.3 (dx = 1): the reading of entry 10
+     stands, the floor of P1 is the r^-4 tail of the Bowen-York source beyond the sphere
+     of the moments. The signed mean at R = 16 comes with the combined analysis.
+ (b) failed for two of three: M_psi differs from m + 2 Q(R) by -8e-5, +1.9e-4, -1.2e-4
+     (bound 1e-4), the scatter of P1 (b). The deficit against the ADM mass halves with R:
+     0.0259, 0.0136 to 0.0139, 0.0072 (predicted about 0.013 and 0.0065).
+ (c) held: 5, 5, 4 outer iterations.
+ For a track: the error of u from the tail is 0.21 P^2/(2 R^2) times 0.64 in size (m = 1),
+ that is 2.7e-4 (16/R)^2 for P = 0.5 [VERIFIED for P = 0.5, R = 16 to 64; the P^2 scaling
+ is JUDGEMENT]; M_psi + 2 c/R with c = 0.21 (P/0.5)^2 estimates the ADM mass.
+
+**P7, three punctures on refined meshes** (same run; cell size at the punctures 0.25,
+0.125, 0.0625, 0.03125; 0.49 to 0.81 million cells).
+
+| u at the puncture | uniform dx = 1 / 0.5 / 0.25 (P4) | refined 0.25 / 0.125 / 0.0625 / 0.03125 | closed form |
+|---|---|---|---|
+| 1: m = 1, P = 0.2, S = 0.2 | 0.00820 / 0.01326 / 0.01644 | 0.016445 / 0.017313 / 0.017436 / 0.017440 | 0.01568 |
+| 2: m = 0.6, P = 0.224 | 0.00858 / 0.01138 / 0.01205 | 0.012054 / 0.012057 / 0.012049 / 0.012042 | 0.01003 |
+| 3: m = 0.4, P = 0.141 | 0.00665 / 0.00956 / 0.01095 | 0.010950 / 0.011126 / 0.011114 / 0.011107 | 0.00781 |
+
+ (a) held: 5, 5, 4, 4 outer iterations (BiCGStab); P_ADM = (0.1, 0, 0) and J_ADM =
+     (0.5, -0.2, -0.6) to all digits in every case.
+ (b) held: `p7_l2` equals the uniform 128-cell run at the punctures to 1e-4 of u.
+ (c) held for the spinning puncture (differences 8.7e-4, 1.2e-4, 4e-6: ratios 0.14,
+     0.03); failed as written for the other two: their differences are 3e-6, -8e-6,
+     -7e-6 (second) and 1.8e-4, -1.2e-5, -7e-6 (third), so the ratios are not below 0.4,
+     but the differences themselves are 6e-4 of u or less from 0.125 on. All three
+     drift by the same -7e-6 between the last two cases, with M_psi (2.051854 ->
+     2.051842): a common shift, not the punctures' own sources [JUDGEMENT].
+ (d) failed on two counts: the second puncture ends 1e-3 below its uniform 128-cell
+     value, not above; the third differs from the closed form by 42 per cent (bound 40;
+     first and second 11 and 20 per cent). The closed form is the self part of each
+     puncture; the regular parts of the other two at its position are not in it
+     [JUDGEMENT, not tested]. There is no independent reference for these data here:
+     P7 is a self-convergence test.
+ The reading of entry 10 stands where it could have failed: with cells of 0.125 and
+ below the values stop moving (to 0.7, 0.1, 0.2 per cent at 0.125), and the uniform
+ mesh at dx = 0.25 was 5.7, 0.1 and 1.4 per cent off, the spinning puncture worst (its
+ source peaks at m/12).
+
+**R2 held** (run core-20261120-222207-4266c2d, processor build of 4266c2d, 1 core;
+`regress_r2.json`, figure `figs/regress_r2`, looked at: seven blue bars, the changed
+case with 3 identical files (its inputs) and 7 differing; the y label of the right
+panel is cut at the top). Replayed with the changed executable, the seven cases that do
+not take the changed branch write the bytes of their old case directories:
+`p1_c3_n32` 7 files, `p2_c3_n32` 9, `p3_by_st` 6, `w1_far_n32` 12, `g_smr1` 10,
+`t_smr_mov` 10, `zsol_n32` with its evolution 15 (particle files, records, dumps, field
+dumps, histories).
+
+**P5b held** (same run, `p5_mov_n64` replayed):
+
+| | before (76add0c) | after (4266c2d) |
+|---|---|---|
+| largest \|s_x\| in the outermost layer of active cells | 3.18e-5 | 8.5e-18 |
+| sum of s_x dV/(8 pi): r < 12 / r < 16 / whole mesh | 0.0499999520 / 0.0500562851 / 0.0502925390 | 0.04999995197551 in all three |
+| P_ADM_x of the record | 0.5500562851 | 0.5499999519755 |
+| outer iterations; max\|M\| of the monitor after | 34; 2.053e-7 | 34; 2.058e-7 |
+
+ W changes by 2.0e-4 of its maximum (predicted below 1 per cent), M_psi by 5e-9. The
+ right side beyond the matter is at round-off everywhere, the outermost layer included
+ (right panel of the figure), and the record's momentum is the puncture's plus the
+ particle sum to 13 digits. With the run in which it could have failed, the reading of
+ entry 12 is [VERIFIED]: the spurious source was the extrapolation error of the Z4c
+ boundary condition on the Bowen-York curvature in the face ghost cells.
+
+**Kb withdrawn.** I registered and submitted the card job (core-20261120-223022-2f5bbc0,
+Slurm job 4747) in the same command that printed the queue, and the queue already held
+two jobs of owner core: three at once, against the rule. Withdrawn with `nrpic-run stop`
+and closed as stopped within a minute; it never ran. The card build of 4266c2d is
+therefore compiled and not run. What stands for cards is K, with the build of 76add0c,
+on branches the change does not touch. Its list is kept:
+`scratch/core/tmp/idsolve2/close/card_kb/card.list`.
