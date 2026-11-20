@@ -247,3 +247,15 @@ after (i)-(iv). Against cc2_kninf at N = 1e5 (run C-20261115-171059-4b70228):
   mesh (or by the continuum initial data); about 3 (above 2) if it is the response to
   particle noise of the initial state. The period stays within 20 % of 355-393 M either
   way, unless the amplitude grows enough to change it.
+
+## 2026-11-20 22:55 UTC Entry 6: a third point of omega^2(y0) from the decisive package
+
+The decisive package runs a collisionless control of a less compact King model, d3_kninf
+(y0 = 0.26, M/4 mesh, N = 1e5, 300 M; `../decisive/inputs/d3_kninf.athinput`, list
+`d3_job3.list`). Its alpha_c record gives a third point of the excursion period against y0
+at no cost to this package. Prediction (before that run exists): the cosine-fit period of
+d3_kninf lies in [260, 380] M and below that of CC2 in the same fit form, and its amplitude
+A is below CC2's 0.0086 (a stiffer model responds less). The fluid period with the F21
+index at y0 = 0.26 is 260 M [TO VERIFY: quick evaluation of models/fluid_onset.omega2,
+N = 600; `controls.py --pulsation` now includes y0 = 0.26 and registers it with the next
+analysis run]. Refuted if P(0.26) >= P(CC2) or A(0.26) >= A(CC2).

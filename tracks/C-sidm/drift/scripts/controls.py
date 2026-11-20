@@ -333,9 +333,9 @@ def pulsation():
     y_max = 0.33403216106467554
     s_star = brentq(lambda s: omega2_scaled(y_max, s)[0], 0.5, 1.2, xtol=1e-9)
     res = dict(s_star=s_star, y_max=y_max, models={})
-    for tag, y0 in (("king_y0p31400", 0.314), ("king_y0p32400", 0.324), ("king_y0p33403", y_max)):
+    for tag, y0 in (("king_y0p26000", 0.26), ("king_y0p31400", 0.314), ("king_y0p32400", 0.324), ("king_y0p33403", y_max)):
         eq = tmb.solve(B, w0_of(y0))
-        md = json.load(open(os.path.join(C.IC_DIR, C.stem(tag) + ".json"))) if tag != "king_y0p32400" else None
+        md = json.load(open(os.path.join(C.IC_DIR, C.stem(tag) + ".json"))) if tag in MODEL_OF.values() else None
         row = dict(y0=y0, C=eq["C"], M_hat=eq["E"])
         if md:
             row["P_dyn_M"] = float(math.pi * math.sqrt(3.0 / (4.0 * math.pi * md["rho_c"])))
