@@ -71,3 +71,42 @@ Predictions, each with what refutes it:
   limiting error).
 - P12 (constraints in time). For beta = 0.005 the cstat Hr_mean and Mr_mean stay below 1e-4
   up to the arrival of the rays and fall by >= 4 per doubling of N_y.
+
+## 2026-11-20 22:34 Outcomes P1-P3 (run B-20261120-223409-29c92ec)
+
+- P1 MET [VERIFIED]: rays shot through the linear solution reproduce draft.tex:262 to
+  at most 5.3e-13 relative at HL = 2^-7 ... 4, in the code's and in the paper's
+  coordinates; my first-order integrals (cos = s_A + s_B - h(tau_* + L, 0)) to 3e-14
+  (`results/ref_table.json`, `figs/ref_table.png`, looked at). The closed form is thus the
+  first-order observable for the observer at rest at O with the events of draft.tex:224,
+  propagation directions +x (A) and +y (B). Linear launch slopes of the cases:
+  `results/ref_table.json` "cases" (e.g. S1: s_A = -2.222e-3, s_B = +1.349e-4).
+- P2 MET [VERIFIED]: 24 tests pass (`pytest.log` of the run): flat Ricci tensor of the
+  slice, gamma' = delta and K' of SPEC section 2, both constraints identically with
+  rho0*, u*^x, W^2 = 1 + u_x^2, rho_ADM of draft.tex:515; the paper's linear solution
+  matches the slice at first order and has alpha = gamma^(1/6) at first order (f = 1/3),
+  its transform is SPEC's gamma'_xy, and it satisfies draft.tex:254 with B_x of 246.
+- P3 MET [VERIFIED]: written fields equal the analytic ones exactly; spectral constraint
+  residuals 1.5e-16 (H) and 1e-15 to 2.5e-14 (M, growing with N_y as rounding of the
+  derivative); own pcs deposit of the particles: momentum residual 6.4e-3 at N_y = 32 raw
+  (second order), 4.1e-5, 2.6e-6, 1.6e-7, 1.0e-8 at N_y = 32, 64, 128, 256 with one
+  compensation pass 1/6 (ratio 15.9-16.0: fourth order); identical relative residual
+  for S1 and L2 because 8 pi S_x = -(3 pi b/(2L^2)) sin(2 pi y/L) is a pure sine for every
+  b (`results/check_ic.json`, `figs/check_ic.png`, looked at).
+
+## 2026-11-20 22:35 Smoke run failed; PAUSED
+
+- Smoke run B-20261120-223445-3686145 (S1, N_y = 32, release processor executable):
+  AthenaK stopped at start, "Parameter name 'probe1_x1' not found in block 'particles'"
+  (`S1_n32/athena.log`): the deck has nprobe = 1 without the probe1_* lines. Fix for the
+  restart: set `nprobe = 0` in `inputs/shear.athinput` (the probe is not needed; the
+  observer tracer records alpha and gamma_ij at O), then resubmit the smoke run.
+  The submit went out in the same shell command as the pause check, which had already
+  found the flag (my error: `;` instead of `&&`); the run died in 2 s.
+- The pause flag /data/haiyangw/nrpic/locks/PAUSE exists (written 22:33 UTC, five-hour
+  window at 97 per cent). Stopped here: nothing new started after this entry.
+- Where to continue: (1) fix nprobe, smoke run, look at `S1_n32/rays.png`;
+  (2) the series lists (S1-S4, M1-M2, L1-L2 at N_y = 32, 64, 128; legs ppc_y = 2, 4 and
+  lapse_harmonic = 1 at S1 N_y = 64); (3) for M2, L1, L2 a wide fan first (linear slopes
+  are far off at beta = 0.5); (4) summary script with Richardson extrapolation and
+  figures; (5) outcomes P4-P12, README. No card job submitted (the owner had two queued).
