@@ -101,3 +101,66 @@ other helpers' uncommitted files, `runs` on 7 unfinished wave-2 runs of other he
 10 wave-1 gravothermal manifests (fields of the nrpic-run schema missing). Then
 `nrpic-stage collect` and `report`: verdict FAIL (C18 and C20 OPEN for the lead, verify FAIL).
 Committed in b74c46b.
+
+## 2026-11-20 Wave 3, round 1, package "note": G1 note (checklist items C9, C10, C14, C16)
+
+Helper of C-sidm, wave 3 round 1 (`../PLAN-wave3.md`, package 3). Worktree at 797bdbe5
+(after 07538808 of the plan); no merge of main. Pause flag absent at 22:19 UTC; load 58.
+
+### N3 prediction (written before the registered run of `scripts/run_all.py`)
+
+Run to register: `scripts/run_all.py` (every `fig_*`, `schem_*` and `ledger.py`) into
+`$NRPIC_RUN_DIR`, processors, 2 cores at most, no card time. New scripts: `schem_dataflow`,
+`fig_box_summary`, `fig_heat`, `fig_onsets`, `fig_cluster`; `schem_architecture` redrawn;
+`ledger.py` extended by G1 sections. Draft runs for layout go to `scratch/C-sidm/tmp/` and
+are not used.
+
+Predictions (each read from a registered output; a different value refutes the script or
+the record it reads):
+
+- P1 (inputs) Every file a script reads is listed in its run's `sha256sums.txt` (or the
+  wave-1 manifest's output list) and matches it; the four G0 scripts still read their 63
+  inputs with matching checksums. A mismatch stops the script.
+- P2 (G0 numbers unchanged) The G0 rows of the ledger and the claims check are identical to
+  run C-20261115-171741-0e0da67 (23 claims, 3 differ); the four G0 data PNGs are
+  byte-identical to that run's (same scripts, same inputs, same style files).
+- P3 `fig_box_summary` from runs C-20261115-165500-c67e036 (release) and
+  C-20261119-141806-af19c1c (core/collisions-2, `coll_energy = particle`), and
+  C-20261119-145925-dbcfb9c (T12): T2(b) ratio of summed pair probabilities to the
+  Moller-averaged rate 0.999906-1.000096 in the 16 runs of each executable, the two equal
+  within 1e-15 relative (identical counts in every step, `paired_counts_identical_all`);
+  T2(b) z from -2.20 to +2.92; largest per-step |dE| of T1 at most 1.1e-7 of its bound in
+  both; T12 rate per coordinate time and volume over the flat twin 1.4172488 = alpha0 psi0^6
+  for all four pairs (z of order 1e-13); analytic ratio of the curved runs 0.99997-1.00009,
+  |z| <= 2.4.
+- P4 `fig_heat` from runs C-20261119-144535-2c7b6a4 (T6(b) runs) with analysis
+  C-20261119-160003-287b389 (and the late window C-20261119-162440-296dad0), and
+  C-20261119-144545-c606492, C-20261119-155434-8563453 with analysis
+  C-20261119-161930-acd257b (T7): f = 1.029 and 1.063 (late window 1.036, 1.066), literal
+  statistic 0.994 and 1.027; T7 rows f_S = 1.0232 +- 0.0039 (k lambda 0.1), 1.0174 +- 0.0047
+  (0.2), 1.041 +- 0.011 (0.4); extrapolated kappa/kappa_1 = 1.019 +- 0.004. The isobaric
+  reference that the figure recomputes with `heat/scripts/isobaric.py` at the fitted f
+  reproduces the analysis's rms residual (0.0030 and 0.0023 per unit area) to 1e-6; a
+  larger difference means the reference module changed after the analysis run.
+- P5 `fig_onsets` from runs C-20261119-151502-cb831a8 (King family, `rv_king_onset.json`),
+  C-20261115-165315-7b473b8 (thermal core b = 0.1, fluid onsets), C-sidm-20261115-120722-38ab057
+  (thermal sequence) and C-20261115-170742-84990ed (particle models): King binding-energy
+  maximum y0 = 0.334032, Juttner fluid onset y0 = 0.32143 (central lapse 0.6707), onset with
+  Gamma = 1 + p/u at y0 = 0.37206; CC2 (y0 = 0.314) and CC1 (0.33403) on either side of the
+  Juttner onset; thermal core: maximum Z(0) = 0.54041, Juttner onset (energy-matched
+  temperature) 0.53306, at theta = p/n 0.53170, with 1 + p/u 0.63482. In the frequency
+  panels the normalised omega_0^2 crosses zero at these onsets.
+- P6 `fig_cluster` from the card runs C-20261115-171058-c26cfad, C-20261115-171059-4b70228,
+  C-20261115-171059-35441e3 (histories `cc.nrpic.hst`): central lapse minus the control's
+  first below -0.01 at 44.25 M (cc1_kn10), 46.0 M (cc2_kn10), 20.25 M (cc1_kn1), 21.25 M
+  (cc2_kn1) (as run C-20261119-151944-08f3220); alpha_min < 0.3 at 184.25, 206.75, 72.5,
+  77.75 M; the controls' central lapse rises by at most 0.0334 (CC1) and 0.0185 (CC2) above
+  its first value. The figure states scouting, one seed, release operator.
+- P7 `ledger.py`: the new rows hold every number the G1 sections quote, each with its run
+  id; no G1 number appears in the main text without a ledger row (checked by reading the
+  text against the table after compiling).
+- P8 Both schematics are drawn by `paperfig.py` (copy unchanged, sha256 0c73c7e3...), no
+  data read.
+
+Refuted if any number above differs beyond its printed digits, if a checksum fails, or if a
+G0 output changes.
