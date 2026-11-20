@@ -397,3 +397,50 @@ M 4.68e-4; at t = 0.0625: H 7.88e-3 (ES-F), 6.31e-3 (V-0). Recorded without a cr
 as predicted; the 1 M lattice near the hole did not raise the start norms above ES-1's.
 No figure for this item: two cycles hold no time evolution worth plotting; the t = 0
 numbers above are read from the files listed.
+
+## Entry 6 (2026-11-20 14:35 PST, wave 3, a second helper who did not build ES-F): second-agent check of the ES-F construction, before any card time
+
+Script: `check_esf_construction.py` (written here; it imports none of esf_data.py,
+es_model.py, fluxio.py; density profile re-implemented from the README's statement, the
+step S(x) = 1/(1 + exp(1/x - 1/(1-x))), rho0 = 3.718183334770104e-6 of ES-1's data
+`es/es.json` of D-20261115-170213-d2c2131; own readers of the format-2 table and the
+particle file; own quadrature with scipy.integrate.quad).
+
+Part A (sympy) was evaluated once during development of the script before this entry was
+written, so it is NOT blind: every identity reduced to 0 (KL = KT + R KT'/R' = d(R KT)/dR,
+theta/phi components 0; Gamma^2 = (R - 2m(1-f^2))/R and = 1 - 2M/R for f^2 = 1 - M/m;
+the isotropic psi = 1 + M/(2 rbar) has the same Gamma and R_3 = 0; R_3 = 0 on the slice;
+4 KL KT + 2 KT^2 = 4 D'/R^2; Misner-Sharp mass of the data = M + D; LTB Einstein tensor
+G^tau_tau = -8 pi rho with rho = m_r/(4 pi R^2 R_r), others 0; E = -M/R0 both from
+Gamma^2 = 1 + 2E and from R_tau^2 = 2m/R + 2E with R_tau = -R KT; cycloid satisfies the
+energy equation). The registered run repeats it; prediction: the same zeros.
+
+Part B (numbers; blind, not evaluated before this entry). Predictions:
+1. Table: format 2, exterior zero, u = 0 and betar = 0 at every row, K = 0 on the inner
+   sheet (rbar < M/2), rbar_max 345 > mesh corner 332.6; KT and KL at every row with
+   R >= 2M equal my closed forms -(2D/R^3)^(1/2) and d(R KT)/dR to <= 1e-11 of max|KT|
+   (17 printed digits; the two quadratures agree to ~1e-13 relative).
+2. Hamiltonian constraint with the table's own KL, KT at the rows: |4 KL KT + 2 KT^2 -
+   16 pi rho| <= 1e-9 of 16 pi rho0; momentum constraint by fourth-order differences of
+   the rows (truncation only) <= 1e-5 of max|KT| [JUDGEMENT: the steps have large high
+   derivatives at the edges].
+3. Particles: 850724 records, u_i = 0 exactly, tracers 140 with m = 1e-30 at their R0 to
+   1e-12; dust on the half-integer lattice of h = 1 M, the same set of points as my own
+   enumeration, m = rho psi^6 h^3 to 1e-12 relative.
+4. energy_by_tag = (1 - 2M/R0)^(1/2) to 1e-14; labels: m(R0) = M + D(R0) to 1e-10 (all
+   labels through a dense grid, a sample of 300 by direct quad), rest masses identical to
+   the file, tau_H and tau_0 equal to my cycloid to 1e-10 relative; the closed-form
+   tau_H equals a direct quadrature of dtau = dR/|R_tau| to 1e-7 relative (singular
+   endpoint at R_max); tau_H(R0) monotonic.
+5. Totals: D_tot = 2.7386556 (esf.json) to 1e-11; continuum rest mass 2.8156013 to
+   1e-10; lattice sum m E_K / D_tot - 1 = -4.1e-7 and lattice rest / continuum - 1 =
+   -4.3e-7 (the builder's numbers, reproduced to 2 digits).
+6. Growth law: esf_growth.csv rows and esf.json M_AH(tau) at tau = 25 ... 600 M equal mine
+   to 1e-9.
+7. Input esf_dx8.athinput: table + puncture comp1_mass = 1.0, lapse precollapsed, shift
+   zero, particle file of the data run, metric_drvts = interpolant, ah_exc_factor = 0.8.
+Verdict rule: WRONG if any symbolic identity is non-zero, the table differs from the
+closed forms by more than 1e-9 of max|KT|, a particle mass or energy by more than 1e-10,
+a label or time by more than 1e-8, or the lattice set differs; then no card run and the
+package is spent on fixing esf_data.py. A failure of the looser thresholds above (by less
+than these) is recorded as a failed prediction without changing the verdict.
