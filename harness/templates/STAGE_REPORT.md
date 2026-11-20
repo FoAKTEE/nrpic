@@ -32,8 +32,8 @@ committed ones (tolerance stated).
 
 ## Verifier report
 
-`tracks/{{ID}}/stage/{{GATE}}/VERIFIER_REPORT.md`: numbers recomputed, figures opened,
-sentences without support.
+`tracks/{{ID}}/stage/{{GATE}}/VERIFIER.md` (decision 0016; VERIFIER_REPORT.md accepted too):
+numbers recomputed, figures opened, sentences without support.
 
 ## Null results and failed runs
 
