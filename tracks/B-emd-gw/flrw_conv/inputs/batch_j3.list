@@ -1,0 +1,3 @@
+# flrw_conv card job J3: leg B at 128^3, 1 per cell, to a = 51 (t = 12.283; a = 1001 would cost
+# 2.4-3.1 card-hours). Release executable. Initial data of run B-20261120-222908-8aede2c.
+b_n128_p1 tracks/B-emd-gw/flrw_conv/inputs/mode_prod.athinput mesh/nx1=128 mesh/nx2=128 mesh/nx3=128 meshblock/nx1=64 meshblock/nx2=64 meshblock/nx3=64 time/tlim=12.283 particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-222908-8aede2c/b_n128_p1/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-222908-8aede2c/b_n128_p1/fields.bin
