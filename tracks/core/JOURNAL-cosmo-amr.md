@@ -1122,7 +1122,7 @@ reconstructed spreading); `_p05`: cic uniform to 1e-12, tsc 0.35 and pcs 0.15 as
 adaptive cap is not uniform on a uniform lattice (the first deposits on the patch have
 no previous density).
 
-## 2026-11-20 22:33  outcome of T3d
+## 2026-11-20 22:32  outcome of T3d
 
 **T3d, run core-20261120-223058-bec243b** (hand-written manifest, two processors;
 `t3d_summary.json`, figure `fig_t3d_adaptive`, looked at) [VERIFIED]: nine cases, exit 0.
