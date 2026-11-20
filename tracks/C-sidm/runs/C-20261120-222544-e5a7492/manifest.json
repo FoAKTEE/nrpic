@@ -1,0 +1,106 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-20261120-222544-e5a7492",
+  "track": "C-sidm",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "drift smoke: processor setup of the M/8 deck cc2_kninf_M8 (nlim = 0): MeshBlock count, levels, particles read, initial constraint norm",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+    "-i",
+    "tracks/C-sidm/drift/inputs/cc2_kninf_M8.athinput",
+    "-d",
+    "$NRPIC_RUN_DIR",
+    "time/nlim=0",
+    "output2/dt=1000000"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "e5a74923cb59ba0f3b5790db994375302d75e955",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "package": [
+      "tracks/C-sidm/drift"
+    ],
+    "outside_package": {
+      "count": 6,
+      "first": [
+        " M tracks/C-sidm/note/scripts/common.py",
+        " M tracks/C-sidm/note/scripts/schem_architecture.py",
+        "?? tracks/C-sidm/note/scripts/fig_box_summary.py",
+        "?? tracks/C-sidm/note/scripts/fig_heat.py",
+        "?? tracks/C-sidm/note/scripts/schem_dataflow.py",
+        "?? tracks/C-sidm/verify_g1/heat_ref.py"
+      ]
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/C-sidm"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/C-sidm/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/C-sidm/drift/inputs/cc2_kninf_M8.athinput",
+      "role": "argv",
+      "sha256": "be9f9c03838a5ffd4b927635ab939ce457cab1e338b63a46a620063817e4b391",
+      "bytes": 2854,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": "00:30:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/C-sidm/C-20261120-222544-e5a7492",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:25:44Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 45.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.9678,
+    "gpu_hours_reserved": 2.32,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 6,
+    "runs": 123,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
