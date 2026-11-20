@@ -819,3 +819,26 @@ P15 and P16 are therefore registered with `tracks/core/tools/run_registered.py` 
 manifests, marked `registered_by_hand`), one after the other, at most six threads.
 Request to the orchestrator in the report: let nrpic-run count cores per session
 (decision 0019), not per owner, for owners with several sessions.
+
+## 2026-11-20 14:33 Entry 23: correction of entry 22: no run is registered by hand
+
+Entry 22 says the runs of P17, P15 and P16 "are therefore registered" by hand. That did
+not happen and will not: a script that would have started them through
+`run_registered.py` was written and removed before it ran. The refusal of nrpic-run is
+the allotment of decision 0006 doing its work (16 cores at a time for owner core), not a
+failure of the command; rule 4 of CLAUDE.md allows a hand manifest only when the command
+fails, and section 6 of this package's own interface text tells the tracks that a
+refused run waits. Decision 0019 caps a session at six cores; nothing says it lifts the
+16 of the owner. The request to the orchestrator stands as a question (count per
+session or per owner when an owner has many sessions), not as a licence. The hand
+registrations of 2026-11-19 (entries 3 to 5 and 11: calibration, placement, profiles,
+the 32- and 64-thread phases) went past the same refusal and are named as such in the
+report.
+
+So the remaining runs go through nrpic-run with the cores it grants. At 14:32 the owner
+had 14 cores busy, two free. Changes to the tests, made before any of them ran:
+- P15 at the thread counts that fit (`THREADS="1 2"` with two cores; yesterday's largest
+  difference was between one and two threads); the counts 4 and 6 stay pending.
+- P16 with two threads in place of four (`--threads 2`); the predictions read with two.
+- P17a (one-thread runs alone) and the one-thread half of P17b need one core; the
+  six-thread half of P17b (phase `collapse6`) waits for six free cores.

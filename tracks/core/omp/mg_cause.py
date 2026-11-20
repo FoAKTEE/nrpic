@@ -53,15 +53,21 @@ def main():
             name = os.path.basename(d)
             runs[name] = defects(os.path.join(d, "run.log"))
         res["probe"][mb] = runs
+        ths = sorted(int(k.split("_t")[1]) for k in runs if k.startswith("plain_t"))
+        res["threads"] = ths
         # a: the diagnostic executable without the variable is the threaded build
-        for n in (1, 2, 4):
+        for n in [t for t in ths if "O3_t%d" % t in runs]:
             x, o = runs.get("plain_t%d" % n), runs.get("O3_t%d" % n)
             if not x or x != o:
                 fail["a"].append("%s t%d" % (mb, n))
+        if not any(k.startswith("O3_t") for k in runs):
+            fail["a"].append("%s: no run of the threaded build" % mb)
         # b, c: the same digits at every thread count
         for mode in ("ordered", "comp"):
             ref = runs.get("%s_t1" % mode)
-            for n in (2, 4, 6):
+            if len(ths) < 2:
+                fail["b" if mode == "ordered" else "c"].append("%s: one thread count" % mb)
+            for n in ths[1:]:
                 x = runs.get("%s_t%d" % (mode, n))
                 if not ref or x != ref:
                     nd = sum(p != q for p, q in zip(x or [], ref or []))
@@ -72,7 +78,7 @@ def main():
         ref = runs.get("plain_t1")
         res["probe"][mb + "_plain_differs"] = {
             "t%d" % n: sum(p != q for p, q in zip(runs.get("plain_t%d" % n, []), ref or []))
-            for n in (2, 4, 6)}
+            for n in ths[1:]}
     # floors: the last V cycle of each solve
     floors = {}
     for mb in ("mb8", "mb32"):
@@ -95,9 +101,11 @@ def main():
             fail["c"].append("floors of the MeshBlock sizes differ by %.2f" % ratio)
     # the 20-cycle case: files at 4 threads against one thread, per mode
     for mode in MODES:
-        d1 = os.path.join(a.dir, "jeans20", "%s_t1" % mode)
-        d4 = os.path.join(a.dir, "jeans20", "%s_t4" % mode)
-        if os.path.isdir(d1) and os.path.isdir(d4):
+        dd = sorted(glob.glob(os.path.join(a.dir, "jeans20", "%s_t*" % mode)),
+                    key=lambda d: int(d.rsplit("_t", 1)[1]))
+        if len(dd) >= 2:
+            d1, d4 = dd[0], dd[-1]
+            res.setdefault("jeans20_threads", [int(d.rsplit("_t", 1)[1]) for d in dd])
             r = L.compare_dirs(d1, d4)
             r["defects_identical"] = defects(os.path.join(d1, "run.log")) == \
                 defects(os.path.join(d4, "run.log"))
@@ -105,7 +113,7 @@ def main():
             data = {k: v for k, v in r["differ"].items() if v.get("kind") != "log"}
             if mode != "plain" and (data or not r["defects_identical"]):
                 fail["b" if mode == "ordered" else "c"].append(
-                    "jeans20 %s: %d files differ between 1 and 4 threads (rel_max %.2e), "
+                    "jeans20 %s: %d files differ between the thread counts (rel_max %.2e), "
                     "defects identical: %s" % (mode, len(data), r["worst_rel_max"],
                                                r["defects_identical"]))
     for k in "abc":
@@ -119,8 +127,9 @@ def main():
                 print("  %-12s %s | %s" % (name, " ".join(txt[3:6]), " ".join(txt[9:12])))
     for mode, r in res["jeans20"].items():
         data = {k: v for k, v in r["differ"].items() if v.get("kind") != "log"}
-        print("jeans20 %-8s 4 threads against 1: %2d files identical, %2d differ, rel_max "
-              "%.2e, defects identical: %s" % (mode, len(r["identical"]), len(data),
+        print("jeans20 %-8s %s threads: %2d files identical, %2d differ, rel_max "
+              "%.2e, defects identical: %s" % (mode, res.get("jeans20_threads"),
+                                             len(r["identical"]), len(data),
                                              r["worst_rel_max"], r["defects_identical"]))
     for k in "abc":
         print("P15%s: %s %s" % (k, "HOLDS" if not fail[k] else "FAILS", "; ".join(fail[k])))
@@ -143,7 +152,7 @@ def figure(res, out):
     cols = {1: "0.15", 2: fs.SERIES[0], 4: fs.SERIES[1], 6: fs.SERIES[3]}
     for ax, mode in zip(axs, MODES):
         for mb, ls in (("mb8", "-"), ("mb32", "--")):
-            for n in (1, 2, 4, 6):
+            for n in res.get("threads", [1, 2, 4, 6]):
                 txt = res["probe"][mb].get("%s_t%d" % (mode, n))
                 if not txt:
                     continue

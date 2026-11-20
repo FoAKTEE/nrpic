@@ -53,6 +53,8 @@ case $phase in
     run cosmo 1 0.125 1 t1solo; run newton 1 0.5 1 t1solo ;;
   collapse) # Newtonian mode with isolated boundaries at one and at six threads
     run collapse 1 0.5 1 t1solo; run collapse 6 1.0 2 t6 ;;
+  collapse1) run collapse 1 0.5 1 t1solo ;;      # the two halves apart (cores of the
+  collapse6) run collapse 6 1.0 2 t6 ;;          # owner may not suffice for six threads)
   t16|t32|t64)
     n=${phase#t}
     run punc "$n" 0.25 2 "$phase"; run cluster "$n" 0.5 2 "$phase"
