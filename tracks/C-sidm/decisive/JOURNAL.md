@@ -147,3 +147,52 @@ Prediction D1 [JUDGEMENT throughout; bases given]:
     1e-14; cost 3.4-3.7 s per M (particle costs as cell on the card, 0.219 against
     0.218 s per step in core's cluster), so 1030-1110 s per run and about 0.63 card-hours
     of allocation per job with the smoke run.
+
+## 2026-11-20 22:37 UTC Entry 3: D1 job 1 submitted; D3 initial data (outcome); test of the analysis
+
+D1 job 1 (cc2_kn10_part_s1, cc2_kn10_part_s2 after a smoke run) is run
+C-20261120-221846-797bdbe, Slurm job 4737, submitted 22:18 UTC with --gpu-hours 0.65; pending
+at 22:30 UTC. The package `drift` submitted the owner's second card job (4741) at 22:25 UTC,
+so this package submits nothing more until 4737 has run (queue rule).
+
+D3 initial data, run C-20261120-222427-6b27eea (`scripts/make_d3_ic.py`, 2 cores, 3.5 min).
+I did not write a prediction for this run before starting it; its pass criteria are the
+offline checks of `equilibria/check_equilibria.py` (unchanged thresholds of the equilibria
+package) and the rule of the task (distance from the onset above the drift). Outcome
+[VERIFIED from `d3_ic.json`, `checks.json` of the run]:
+- Model King b = 1, y0 = 0.26: alpha_c = 0.71884 (Z_c = 0.39113), E_b/M0 = 0.034169,
+  R = 15.286 M, rbar_s = 14.268 M, M0 = 1.035378.
+- Distance from the Juttner-Gamma_1 fluid onset of the King family (alpha_c = 0.67067,
+  y0 = 0.321433, run C-20261119-151502-cb831a8 `rv_king_onset.json`, J_E_N1200): +0.04817 in
+  alpha_c, 1.44 times the largest drift of the collisionless controls (cc1_kninf 0.03342,
+  cc2_kninf 0.01853: `alpha_c_max_dev_from_start` of run C-20261115-191420-8538aa4) and 8.7
+  times CC2's distance (+0.00556). y0 = 0.27 would give about 0.039 (1.2 times the drift)
+  and 0.28 about 0.03 (below it), from the sequence in the same JSON [JUDGEMENT: 0.26 is the
+  most compact model of the range that clears the larger drift with a margin].
+- Particle file: 1e5 equal masses M0/N, net momentum below 7e-18, largest E/E0 = 0.99994,
+  sum m W/psi - 1 = -2.8e-5, particles out to rbar = 13.82 M. All 18 pass/fail checks of
+  `check_model` pass (matching, TOV 2.0e-7, Hamiltonian constraint of the table 3.6e-8,
+  round trip, ECDF deviations exactly 1/N, equal-mass shells, shell moments max z 2.14 and
+  1.18 for the two samplers).
+- K = 1/(rho0_c H_c) = 251.509 (the decks' definition, `threshold_scan/common.kn_constant`);
+  `equilibria/knudsen.model_conversion` gives (Kn sigma~)_l/(l/lambda) = 190.654/0.75804 =
+  the same K to 1.1e-13. sigma~ = 25.1509 (Kn = 10) and 251.509 (Kn = 1).
+- Expected collisions per particle in 300 M at the initial rate (knudsen.py nu_bar): 2.06
+  (Kn = 10) and 20.6 (Kn = 1); for CC2 by the same code 2.28 and 22.8 (wave-2 prediction of
+  `threshold_scan` entry 2: 2.27 and 22.7). t_d (coordinate, centre) 7.92 M against 6.91 M.
+- Figure `fig_d3_model.png` of the run: looked at; the inset hid the peak of the energy
+  histogram and is moved in `make_d3_ic.py` (mode `--from`, which also writes the fraction
+  of particles inside the M/4 region); rerun registered below.
+
+Decks `inputs/d3_kninf.athinput`, `d3_kn10_part_s1`, `d3_kn1_part_s1` (from the CC2 decks:
+only the header, problem name, particle and table files, sigma~, coll_energy differ; diff
+checked) and lists `inputs/d3_job3.list` (d3_kninf, d3_kn1_part_s1) and `d3_job4.list`
+(d3_kn10_part_s1, cc2_kn10_cell_s2).
+
+Prediction for the analysis script on the wave-2 runs (`scripts/analyze_decisive.py`, no
+D1 output yet): it reproduces the reviewed numbers, t_c = 206.75 and 184.25 M (cc2_kn10,
+cc1_kn10), 77.75 and 72.5 M (Kn = 1); t(dalpha >= 0.01) = 44-46 M at Kn = 10 and 20-21 M at
+Kn = 1 (L16); collisions per particle before t_c 2.88, 2.48, 15.3, 13.4; summed
+dE_particles to t_c 2.2e-4 and 1.8e-4 of sum M W at Kn = 10 (threshold_scan entry 6, P3.4);
+first-step sum_P 23.69597, 24.41630. Refuted by any difference beyond the rounding of the
+quoted digits: then the script misreads the histories.

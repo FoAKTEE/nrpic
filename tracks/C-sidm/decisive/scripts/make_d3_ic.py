@@ -20,7 +20,8 @@ reference code (decision 0010: reference solutions only):
      equilibria/CONVERSION.md section 5), sigma~ = K/Kn for Kn = 10, 1, cross-checked with
      equilibria/knudsen.model_conversion (K = (Kn sigma~)_l / (l/lambda)), and the expected
      collisions per particle in 300 M at the initial rate (nu_bar of knudsen.py).
-Writes d3_ic.json, checks.json and fig_d3_*.png into DIR.
+Writes d3_ic.json, checks.json, d3_geometry.json and fig_d3_model.png into DIR; with
+--from SRC only the figure and the geometry (fraction inside the M/4 region), from SRC.
 """
 import argparse
 import json
@@ -53,6 +54,73 @@ def tag_of(y0):
     return f"king_y{y0:.5f}".replace(".", "p")
 
 
+def figure(src, out, res):
+    """fig_d3_model.png from d3_ic.json and the particle file in src; also the fraction of
+    particles inside the M/4 region of the decks' mesh (|x|_inf < 8 M) for D3 and CC2."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    sys.path.insert(0, os.path.join(C.WT, "python"))
+    from nrpic import figstyle as fs
+    fs.use_style()
+    fam = models.FAMILIES["king"]
+    y0 = res["y0"]
+    seq = res["sequence"]
+    a_onJ = res["onset_JE"]["alpha_c"]
+    drift = {k: v for k, v in res["controls_drift"].items() if k != "run"}
+    on = json.load(open(os.path.join(C.SCRATCH, ONSET_RUN, "rv_king_onset.json")))
+    x, u, m, sp = ev.nio.read_nrp(os.path.join(src, res["stem"] + ".nrp"))
+    md = ev.Equilibrium(fam, y0)
+    rb = np.linalg.norm(x, axis=1)
+    W = np.sqrt(1.0 + np.sum(u * u, axis=1) / md.psi(rb) ** 4)
+    Ex = md.alpha(rb) * W / md.E0
+    geo = {"d3": float(np.mean(np.max(np.abs(x), axis=1) < 8.0))}
+    x2, _, _, _ = ev.nio.read_nrp(os.path.join(C.SCRATCH, WAVE2_IC, "king_y0p31400_stratified_N100000_s1.nrp"))
+    geo["cc2"] = float(np.mean(np.max(np.abs(x2), axis=1) < 8.0))
+    geo["d3_r_max"] = float(rb.max())
+    print("fraction of particles in |x|_inf < 8 M:", geo, flush=True)
+    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0))
+    fig.subplots_adjust(left=0.08, right=0.985, bottom=0.16, top=0.95, wspace=0.3)
+    yy = np.array([q["y0"] for q in seq])
+    aa = np.array([q["alpha_c"] for q in seq])
+    ax = axs[0]
+    ax.plot(yy, aa, "-", color="k", lw=1.2, label=r"King $b=1$: $\alpha_c(y_0)$")
+    ax.axhline(a_onJ, **fs.GUIDE, label=r"Juttner $\Gamma_1$ fluid onset")
+    ax.axvline(on["eps_max_y0"], **fs.MASK_LINE)
+    fs.band(ax, yy, a_onJ, a_onJ + max(drift.values()), fs.PAL["yellow"], alpha=0.3)
+    for lab, y, c in (("CC2", 0.314, fs.PAL["blue"]), ("CC1", 0.334032, fs.PAL["red"]),
+                      ("D3", y0, fs.PAL["green"])):
+        q = next(q for q in seq if q["y0"] == y)
+        ax.plot([y], [q["alpha_c"]], "o", color=c, ms=5, label=lab)
+    ax.text(0.03, 0.06, "shaded: onset + largest control drift (0.033)", transform=ax.transAxes, fontsize=7)
+    ax.set_xlabel(r"$y_0$")
+    ax.set_ylabel(r"central lapse $\alpha_c$ of the equilibrium")
+    ax.legend(fontsize=7, loc="upper right")
+    ax = axs[1]
+    xs, pdf, cdf = ce.energy_cdf(md)
+    ax.hist(Ex, bins=np.linspace(0.7, 1.0, 61), density=True, histtype="step", color=fs.PAL["green"],
+            lw=1.2, label=f"file, N = {len(m)}")
+    ax.plot(xs, pdf, **fs.GUIDE, label="model")
+    ax.set_xlim(0.7, 1.005)
+    ax.set_xlabel(r"$E/E_0$ (Killing energy at $t=0$)")
+    ax.set_ylabel("probability density")
+    ax.legend(fontsize=7, loc="upper left", bbox_to_anchor=(0.0, 0.42))
+    ax2 = ax.inset_axes([0.22, 0.56, 0.36, 0.39])
+    rs_ = np.sort(rb)
+    ax2.plot(rs_, np.arange(1, len(rs_) + 1) / len(rs_), color=fs.PAL["green"], lw=1.0)
+    rr = np.linspace(0, rs_[-1], 300)
+    ax2.plot(rr, md.enclosed_fraction_areal(md.areal_of(rr)), color="k", lw=0.8, ls="--")
+    ax2.axvline(8.0, **fs.MASK_LINE)
+    ax2.set_xlabel(r"$\bar r/M$", fontsize=6)
+    ax2.set_ylabel("mass fraction", fontsize=6)
+    ax2.tick_params(labelsize=6)
+    fig.savefig(os.path.join(out, "fig_d3_model.png"), dpi=200)
+    plt.close(fig)
+    with open(os.path.join(out, "d3_geometry.json"), "w") as f:
+        json.dump(dict(source=src, fraction_inside_8M=geo), f, indent=1)
+    return geo
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -60,10 +128,14 @@ def main():
     ap.add_argument("--y0", type=float, default=0.26)
     ap.add_argument("--N", type=int, default=100000)
     ap.add_argument("--seed", type=int, default=1)
+    ap.add_argument("--from", dest="src", help="figure and geometry only, from this earlier run directory")
     a = ap.parse_args()
     if not a.out:
         sys.exit("give --out or run through nrpic-run")
     os.makedirs(a.out, exist_ok=True)
+    if a.src:
+        figure(a.src, a.out, json.load(open(os.path.join(a.src, "d3_ic.json"))))
+        return 0
     fam = models.FAMILIES["king"]
     res = dict(y0=a.y0, N=a.N, seed=a.seed)
 
@@ -146,53 +218,7 @@ def main():
           "CC2:", res["cc2_reference"]["collisions_per_particle_300M_initial_rate"])
     print("checks:", res["checks_n"], "failed:", fails, flush=True)
 
-    # figures
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    sys.path.insert(0, os.path.join(C.WT, "python"))
-    from nrpic import figstyle as fs
-    fs.use_style()
-    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0))
-    fig.subplots_adjust(left=0.08, right=0.985, bottom=0.16, top=0.95, wspace=0.3)
-    yy = np.array([q["y0"] for q in seq])
-    aa = np.array([q["alpha_c"] for q in seq])
-    ax = axs[0]
-    ax.plot(yy, aa, "-", color="k", lw=1.2, label=r"King $b=1$: $\alpha_c(y_0)$")
-    ax.axhline(a_onJ, **fs.GUIDE, label=r"Juttner $\Gamma_1$ fluid onset")
-    ax.axvline(on["eps_max_y0"], **fs.MASK_LINE)
-    fs.band(ax, yy, a_onJ, a_onJ + max(drift.values()), fs.PAL["yellow"], alpha=0.3)
-    for lab, y, c in (("CC2", 0.314, fs.PAL["blue"]), ("CC1", 0.334032, fs.PAL["red"]),
-                      ("D3", a.y0, fs.PAL["green"])):
-        q = next(q for q in seq if q["y0"] == y)
-        ax.plot([y], [q["alpha_c"]], "o", color=c, ms=5, label=lab)
-    ax.text(0.03, 0.06, "shaded: onset + largest control drift (0.033)", transform=ax.transAxes, fontsize=7)
-    ax.set_xlabel(r"$y_0$")
-    ax.set_ylabel(r"central lapse $\alpha_c$ of the equilibrium")
-    ax.legend(fontsize=7, loc="upper right")
-    ax = axs[1]
-    x, u, m, sp = ev.nio.read_nrp(os.path.join(a.out, stem + ".nrp"))
-    rb = np.linalg.norm(x, axis=1)
-    xs, pdf, cdf = ce.energy_cdf(ev.Equilibrium(fam, a.y0))
-    Ex = ce.FIG[f"E_{spec['tag']}_sample"]
-    ax.hist(Ex, bins=np.linspace(0.7, 1.0, 61), density=True, histtype="step", color=fs.PAL["green"],
-            lw=1.2, label=f"file, N = {a.N}")
-    ax.plot(xs, pdf, **fs.GUIDE, label="model")
-    ax.set_xlim(0.7, 1.005)
-    ax.set_xlabel(r"$E/E_0$ (Killing energy)")
-    ax.set_ylabel("probability density")
-    ax.legend(fontsize=7, loc="upper left")
-    ax2 = ax.inset_axes([0.55, 0.55, 0.42, 0.4])
-    rs_ = np.sort(rb)
-    ax2.plot(rs_, np.arange(1, len(rs_) + 1) / len(rs_), color=fs.PAL["green"], lw=1.0)
-    rr = np.linspace(0, rs_[-1], 300)
-    md = ev.Equilibrium(fam, a.y0)
-    ax2.plot(rr, md.enclosed_fraction_areal(md.areal_of(rr)), color="k", lw=0.8, ls="--")
-    ax2.set_xlabel(r"$\bar r/M$", fontsize=6)
-    ax2.set_ylabel("mass fraction", fontsize=6)
-    ax2.tick_params(labelsize=6)
-    fig.savefig(os.path.join(a.out, "fig_d3_model.png"), dpi=200)
-    plt.close(fig)
+    figure(a.out, a.out, res)
     return 1 if (fails or not ok_dist) else 0
 
 

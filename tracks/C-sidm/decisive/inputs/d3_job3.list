@@ -1,0 +1,5 @@
+# decisive card job d3_job3: D3, d3_kninf, d3_kn1_part_s1
+# <name> <athinput> [athena args]; paths from the worktree root; smoke run first
+smoke_d3_kninf tracks/C-sidm/decisive/inputs/d3_kninf.athinput time/tlim=0.5
+d3_kninf tracks/C-sidm/decisive/inputs/d3_kninf.athinput
+d3_kn1_part_s1 tracks/C-sidm/decisive/inputs/d3_kn1_part_s1.athinput

@@ -139,6 +139,10 @@ def main():
         with open(os.path.join(INP, name + ".athinput"), "w") as f:
             f.write(text)
         print("wrote", name, "K =", K, "sigma~ =", None if kn is None else K / kn)
+    # the D3 control with the Kn = 1 run first (the strongest signal of the hypothesis in
+    # 300 M), then Kn = 10 with the cell-mode seed-2 run of D1
+    write_list("d3_job3", ("d3_kninf", "d3_kn1_part_s1"), "D3, d3_kninf, d3_kn1_part_s1")
+    write_list("d3_job4", ("d3_kn10_part_s1", "cc2_kn10_cell_s2"), "D3 and D1, d3_kn10_part_s1, cc2_kn10_cell_s2")
     return 0
 
 
