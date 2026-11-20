@@ -393,3 +393,36 @@ B-20261119-155758-458cf17), about eighteen jobs ahead of it in the queue (16:50)
 analysis command is in README.md, "Open". Card-hours used by this package: 0.019
 (B-20261119-142124-feb2daf) of the half card-hour allowed; 0.2 requested for 4662 (10-minute
 limit, expected about 0.02). No processor run of this package is still going.
+
+## 2026-11-20 22:15 Wave 3, round 1: start (helper session; times UTC)
+
+State: worktree at c9aba208 (PLAN-wave3, round 1, package `waves`); no partial work of
+this package since 2026-11-19 16:52. Card job 4662 = run B-20261119-155758-458cf17 (X at
+N = 64, eps x10) ran on 2026-11-19 20:01-20:02 UTC, rc = 0, 658 cycles, 41 dumps; closed
+now with `nrpic-run finish` (commit dc94328d; 26 s wall, 0.0072 card-hours). Tasks of the
+round: (1) judge the x10 check; (2) flat wave along k = 2 pi (1,2,0) (nonzero discrete
+divergence); (3) time/space split of the X error; (4) two-precision reader and G_tot into
+gw_diag.
+
+### Prediction of the x10 check (restated from 2026-11-19 16:00, before the analysis)
+
+Numbers at x1 (N = 64, final analysis B-20261119-164402-7438a99, `results/final_results.json`)
+and the 2S prediction (`results/predict_2s.json`, run B-20261119-153548-c7338f1,
+"64"/"coupled_2s": amplitude 1.39885e-7, phase 2.76207e-7):
+
+| quantity at t = 10 | x1 measured | 2S | excess at x1 | predicted at x10 |
+|---|---|---|---|---|
+| plus amplitude error | 1.5384e-7 | 1.3989e-7 | 1.40e-8 | 1.399e-7 + 1.4e-9 |
+| plus phase error | 3.8415e-7 | 2.7621e-7 | 1.08e-7 | 2.762e-7 + 1.1e-8 |
+| cross amplitude error | 1.3989e-7 | 1.3989e-7 | 1e-11 | unchanged |
+| cross phase error | 2.7624e-7 | 2.7621e-7 | 3e-11 | unchanged |
+| arg R error (end) | -1.079e-7 | 0 | | about -1.1e-8 |
+| abs R error (end) | -1.39e-8 | 0 | | about -1.4e-9 |
+
+Judgement [JUDGEMENT under test]: the plus excess is rounding of the diagonal 1 + h through
+the second differences, which scales as 1/|h|. Prediction: at x10 the plus amplitude and
+phase errors are within 5 per cent of the 2S values (as written at 16:00), the plus excess
+falls by a factor 10 +- 3 (arg R at the end between -0.8e-8 and -1.5e-8), and the cross
+polarization stays on the 2S prediction within 5e-9 absolute (the second-order shift of the
+amplitude error seen at x10 at N = 16 was 4e-9, 15:50 table). Refuted if the plus phase error
+stays near 3.8e-7, or if the excess falls by less than a factor 5.
