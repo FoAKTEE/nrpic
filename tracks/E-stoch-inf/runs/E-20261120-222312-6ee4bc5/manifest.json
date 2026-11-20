@@ -1,0 +1,115 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261120-222312-6ee4bc5",
+  "track": "E-stoch-inf",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "a4res step 1: symbols of the sixth-order centred differences from finite_diff.hpp (q, kap, mu/k^2 at 4-16 cells) against core's scalar3 numbers; which k^2 the ladder's stencil-k^2 A2 reference used and whether the second-order symbol explains 6.2e-3",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 && cd tracks/E-stoch-inf/a4res/scripts && python3 stencil_symbols.py --out \"$NRPIC_RUN_DIR\""
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "6ee4bc5e3b21d18d05a84883c823f915d25399e6",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/a4res"
+    ],
+    "outside_package": {
+      "count": 5,
+      "first": [
+        " M tracks/E-stoch-inf/note/scripts/common.py",
+        "?? tracks/E-stoch-inf/g1verify/",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_freezing.py",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_modes.py",
+        "?? tracks/E-stoch-inf/window/"
+      ]
+    },
+    "merge_base_main": "c7e7db3b637b2c04d9907dcc5b3d66c90c5fac7b",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "athenak/src/utils/finite_diff.hpp",
+      "role": "input",
+      "sha256": "203074210997f5d2bf6ce1960b4a9574d96c9c4e2df8a34f89b0b5f023f4cd42",
+      "bytes": 85981,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/ladder/inputs/modes_n4096.txt",
+      "role": "input",
+      "sha256": "214998e1f8f2dcaf60aeaff4920a9f9c93e69f187ced1e191a982473967e03f6",
+      "bytes": 350813,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/ladder/results/final/P256_judge.json",
+      "role": "input",
+      "sha256": "0a2d49c7a5e2317169235eaceb7f0b2942602bbed446a074a924106a89000d68",
+      "bytes": 4119,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261120-222312-6ee4bc5",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:23:12Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 10.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.4335,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 95,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
