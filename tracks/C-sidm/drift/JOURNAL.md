@@ -202,3 +202,32 @@ Continuations (ii), (iv) to 1000 M.
   by 8 [JUDGEMENT], so the initial constraint violation of the wave-2 runs is mostly
   particle noise, not truncation error. Whether this larger initial mismatch kicks the
   radial mode harder at M/8 is part of what run (i) shows (it works against M8.1).
+
+## 2026-11-20 22:45 UTC Entry 4: what the D1 periods say about the threshold on the M/4 mesh
+
+Arithmetic on the fitted periods of run C-20261120-222211-aa1be86 (no new run):
+omega^2 = (2 pi/P)^2 is 2.48e-4 (CC1) and 3.12e-4 (CC2) per M^2 from the cosine fits,
+2.29e-4 and 2.56e-4 from the sine-with-trend fits; the ratio CC2/CC1 is 1.26 (1.12), close
+to the 1.38 of the F21-index fluid (periods 305 and 358 M), while a collisionless mode
+with its zero at the E_b maximum would give omega^2(CC1) = 0. A straight line through the
+two points crosses zero at y0 = 0.41 (cosine) or 0.51 (sine with trend); the F21-index
+fluid onset is y0 = 0.372 (lead's L15, run C-20261119-151502-cb831a8).
+
+Reading [JUDGEMENT; two points, large amplitude, not a measurement of the onset]: on the
+M/4 mesh the threshold model CC1 behaves as a stable cluster with a finite radial
+frequency, i.e. the code's collisionless onset lies above y0 = 0.334 on this mesh. Two
+causes are possible: (a) the M/4 mesh stabilises (a softened source raises omega^2; the
+CIC cloud of the deposit has a variance of dx^2/6 per axis that the default compensation
+does not cancel, and the first paper's "compensation that also cancels the cloud width"
+moved alpha_c by 3.6e-3 in the y_c = 0.819 cluster, `paper/sections/tables/tab_outcomes.tex`
+line 108 [BACKGROUND]); (b) the onset of the code's Einstein-Vlasov system is not at the E_b
+maximum. Run (iii) (CC1 at M/8) separates them: (a) predicts a clearly longer period at
+M/8 (prediction M8.2 already asks P(CC1, M/8) >= 0.9 P(CC1, M/4)); (b) an unchanged one.
+Consequence for block A of SCAN.md (y0 = 0.314-0.354): if (b), or if (a) persists at M/8,
+none of the five models need collapse within 1000 M on the mesh it runs on, and the
+fate-based bracket would come out empty; the grid would then have to reach y0 of about
+0.37-0.42, or the threshold be located by the zero of omega^2(y0) measured from the
+excursion itself, which every control provides at no extra cost.
+The first paper's stable y_c = 0.819 cluster also drifted less at half the cell spacing
+(mean of the last two extrema of alpha_c - alpha_c(0): -0.0039 against -0.0071 over
+300 M, `tab_outcomes.tex` line 110 [BACKGROUND]), a factor 0.55 for one halving.
