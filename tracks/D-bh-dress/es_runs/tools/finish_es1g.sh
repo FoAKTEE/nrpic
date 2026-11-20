@@ -34,7 +34,7 @@ out=$(harness/bin/nrpic-run submit --kind scouting --gate G1 --package "$PKG" --
   --parent $ES --parent $V1 --parent $G --parent $DATA \
   --purpose "ES-1G ($G) against ES-1 and V-1: lapse and K at the plateau tracers, wall, crossings, horizon mass against the control; JOURNAL entry 5$([[ $st != DONE ]] && echo ', PARTIAL run')" \
   -- python3 "$PKG/tools/es_extra.py" --run "ES-1:$S/$ES:es:es" --run "V-1:$S/$V1:v1:v1" \
-     --run "ES-1G:$S/$G:es:es" --data "$S/$DATA" --t0 100 2>&1 | tee /dev/stderr)
+     --run "ES-1G:$S/$G:es:es" --data "$S/$DATA" --t0 100 2>&1 | tee >(cat >&2))
 rid=$(echo "$out" | sed -n 's/^registered \([^:]*\):.*/\1/p' | head -1)
 [[ -n $rid ]] || { echo "analysis was not registered"; exit 1; }
 mkdir -p "$PKG/results" "$PKG/figs/es1g"

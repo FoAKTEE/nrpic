@@ -622,3 +622,183 @@ W = alpha dt/dtau, and v = (1 - 1/W^2)^(1/2), and wider margins, and is run once
   the tracers of R0 = 48 M. Refuted if v < 0.01 there (then the slices do follow the dust
   in velocity and the deficit of K has another source, for example the lapse gradient
   across the shell).
+
+### Outcome of entry 9 (2026-11-20, written after the runs below)
+
+Runs. ES-1G closed by `tools/finish_es1g.sh` (`nrpic-run finish`: status completed,
+2856 s, 0.7936 card-hours, Slurm 4636; the 0.98 reserved card-hours are released) and
+`nrpic-run verify D-20261119-142633-6f72922`: PASS (75 output files and 2 inputs match).
+Analyses: `es_extra.py` on ES-1, V-1, ES-1G, D-20261120-221754-ae3dafe
+(`results/es_extra_es1g.json`); `es1g_judge.py` on ES-1G, ES-1, V-1 and core-ES,
+D-20261120-222042-59c7d82 (first) and D-20261120-222424-230f936 (second, adds W; its
+horizon and history numbers are identical to the first; `results/es1g_judge.json`).
+Fix recorded: `finish_es1g.sh` ran without error. Its "not used" check printed into my
+log file was lost because `tee /dev/stderr` reopens and truncates a file that stderr
+points to; the line is now `tee >(cat >&2)`. The check was repeated by hand:
+`grep -c "not used" chain/seg001.job4636.a1.log` = 0.
+
+Predictions of entry 5, judged as written (G1-G3 on R0 = 48 M; R0 = 40 M, the inner dust
+edge, reported separately):
+- G1 HELD. Lapse at the 14 tracers of R0 = 48 M against the lapse_leak model, max
+  |alpha/alpha_model - 1| over 10 <= t <= 200 M: 1.31e-2 (at t = 34 M; the lapse lies
+  below the model throughout): 1.054, 1.043, 1.035, 1.025, 1.019, 1.016 at t = 10, 25, 50,
+  100, 150, 200 M against 1.064, 1.057, 1.048, 1.037, 1.030, 1.025. R0 = 40 M: 0.80e-2
+  (t = 114.5 M); R0 = 56 M: 2.07e-2 (t = 20 M). Largest lapse on the mesh after t = 10 M:
+  1.093 (at t = 10 M; 1.019 at 200 M), below 1.2; over the whole run 1.1086 at t = 5.3 M.
+  Largest lapse at any dust or wall tracer: 1.061; refutation (dust lapse > 1.3) not met.
+  (D-20261120-222424-230f936.)
+- G2 FAILED, not refuted. K-hat at the +x tracer of R0 = 48 M against -3H of the leak
+  model at the same t: 0.721, 0.672, 0.643, 0.627 at t = 50, 100, 150, 200 M (K-hat =
+  -8.37e-3, -5.99e-3, -4.66e-3, -3.83e-3 /M; model -1.161e-2, -8.92e-3, -7.25e-3,
+  -6.11e-3 /M): outside 25 per cent at every time, above the refutation bound 0.5. ES-1
+  had -0.21 to +0.21 (entry 6). R0 = 40 M: 0.855, 0.776, 0.729, 0.701.
+  (`results/es_extra_es1g.json`, D-20261120-221754-ae3dafe; model of entry 5.)
+- G3 HELD. Proper time of R0 = 48 M at t = 200 M: 205.32-205.33 M against 208 +- 5 per
+  cent (model 207.85 M; ES-1 279.7 M). R0 = 40 M: 206.18 M.
+- G4 HELD. Wall (tags 56-69), max |R/R_exact - 1| over the whole run (tau <= 206.4 M):
+  1.66e-4 on the axis tracers (at tau = 206.4 M), 1.68e-4 on the diagonal ones (tau =
+  182.2 M); ES-1 2.2e-3 (tau <= 200 M) and 1.7e-2 (diagonal, tau = 283 M). No axis and
+  diagonal split (`figs/es1g/judge_wall.png`).
+- G5 HELD. R0 = 6 M: tau = 14.8261 M at R = 2M (14 tracers, spread 2e-5 M) against
+  14.8269 M (-8.6e-4 M); R0 = 10 M: 34.4373-34.4432 M against 34.4423 M (-5.0e-3 to
+  +0.9e-3 M); both groups removed (28 removed in all). Coordinate times 18.34 and 38.34 M
+  (ES-1: 14.74, 26.49 M). R0 = 20 M did not cross; its proper time at the end 205.15 M
+  (< 230 M). Its turnaround: R_max 26.6619-26.6620 M against 26.6667 M (-1.8e-4) at
+  tau = 93.11 M against 93.15 M.
+- G6 FAILED; the refutation criterion is met. M_AH(100 M) - M = +1.141e-3 (predicted
+  +9.5e-4 +- 1e-4). M_AH(t)/M_AH(100 M) - 1: [-4.17e-4, +9.46e-4] on 100-165 M and up to
+  +6.96e-3 at t = 199.5 M: 17 times the refutation threshold 4.1e-4. ES-1G minus V-1 on
+  25-50 M: [-1.20e-4, +1.80e-4]; the largest value is 0.56 of ES-1's 3.23e-4, so "reduced
+  at least by half" fails narrowly. The reading entry 5 attached to the refutation ("the
+  dust stays coupled to the measured horizon mass") is NOT established by this run:
+  there is no vacuum control with lapse_leak, and ES-1G minus V-1 mixes gauge and dust
+  (the two horizon masses split at t = 8.0 M, before any signal from the dust; ES-1
+  split from V-1 at 19.5 M). What the run shows (D-20261120-222424-230f936, and
+  `es.horizon_summary_0.txt` columns 2, 3, 11 of D-20261119-142633-6f72922): the horizon's
+  mean coordinate radius falls from 1.40 M (t = 25 M) to 1.06, 0.88, 0.78 M at t = 100,
+  150, 199.5 M (8.5, 7.1, 6.2 cells of M/8), while it grows in ES-1 (2.02 to 2.56 M) and
+  V-1 (2.02 to 2.25 M); the mesh minimum of the lapse rises from 0.039 (t = 50 M) to
+  0.069 (200 M) and the lapse at x = 1 M from 0.33 to 0.47, where ES-1 and V-1 settle at
+  0.016-0.019 and 0.15-0.19; the region of positive K around the hole shrinks inward in
+  coordinates (`figs/es1g/extra_spacetime_ES-1G.png`). Core saw the same shrinking in L3
+  (core_gauge READY: the hole three times smaller in coordinates than with plain 1+log;
+  "give the centre cells of M/16 or finer"). Candidates [TO VERIFY]: (a) the finder loses
+  accuracy as the horizon shrinks below about 8 cells; (b) the slicing near the puncture
+  is not stationary under this gauge (the puncture lapse rises); (c) the dust; (d) the
+  outflow boundary at 192 M (a signal at gauge speed ~1.4 from 192 M reaches the hole
+  near t ~ 135 M; plausibility only). A V-1 with lapse_leak separates (c); ES-1G with an
+  M/16 nest near the hole separates (a).
+- G7 HELD. No "not used" warning in the log; history finite; 0 escapes; dust mass
+  1.739672372737941 at the first and last record; push_unconverged 0; 28 tracers removed
+  (groups 0-1; np 696828 -> 696800); cost 0.7936 card-hours (<= 0.85).
+
+Predictions J1-J6 of this entry:
+- J1 HELD, far closer than predicted. On 0-30 M ES-1G reproduces core's ES test
+  (core-20261115-202901-b4430da): M_AH(10 M) 0.999952 against 0.999971 (1.9e-5);
+  M_AH(29.5)/M_AH(10) - 1 = 1.029e-3 against 1.005e-3 (horizon summaries, lines 22 and
+  61 of both files); lapse at the dust tracers over 5-30 M 1.034-1.061 in both, the same
+  tracer to 1e-5 (R0 = 48 M peak 1.060981 against 1.060990); largest lapse 1.108612
+  (t = 5.31 M) against 1.108609 (5.25 M); start-up bump of the mesh minimum 0.232 against
+  0.233. Core's READY numbers (0.99997 at 10 M, drift 1.0e-3 to 30 M, dust lapse
+  1.04-1.06, largest 1.11, wall to 6e-5) are all reproduced (our run: 0.99995, 1.03e-3,
+  1.034-1.061, 1.109; core-ES wall 6.2e-5 in our analysis). So neither the particle
+  lattice (87268 against 696828 particles), the outer boundary (96 against 192 M) nor the
+  extent of the M/8 nest matters on 0-30 M at this level. Core's horizon has finder
+  spikes at t = 13-15 M that ours lacks (`figs/es1g/judge_core30.png`).
+- J2 HELD. Start-up: at R0 = 48 M the lapse stays within [-0.95e-2, +0.8e-4] of the model
+  over 0-10 M; at R0 = 36, 40, 56 M down to -1.9e-2, -1.2e-2, -1.9e-2. No dip beyond 5 per
+  cent; the mesh maximum is one smooth bump to 1.109 at t = 5.3 M.
+- J3 HELD, with a correction of its parenthesis: the smallest lapse at the tracers of
+  R0 = 36, 40, 48, 56 M is their t = 0 value, 1 to 1e-15, and no later value is lower. At
+  t = 0 the lapse at these tracers is 1 (psi = 1 there), not psi^-2 < 1 as I wrote.
+- J4 HELD. Rms of the detrended d alpha/dt over t = 10-40 M: x = 4 M 1.16e-2 (ES-1 1.31e-1,
+  V-1 7.34e-2), 0.089 of ES-1; x = 20 M 1.55e-3 (ES-1 1.92e-2, V-1 8.48e-3), 0.081 of ES-1;
+  x = 1 M 1.36e-2 (6.48e-2, 5.03e-2). Measured, not judged as announced: the probes leave
+  V-1's values (by 1e-6) at t = 0.31, 6.25, 9.4 M at x = 20, 4, 1 M (ES-1: 8.75, 19.1,
+  22.2 M), because the relaxation acts in the bubble from the start (largest lapse 1.11
+  there). No front from the dust edges is visible in `judge_hole.png` or in the space-time
+  diagram of ES-1G.
+- J5 REFUTED. alpha_min (column 16) is above alpha_exc = 0.05 on [2.81, 13.13] M (largest
+  0.232), as predicted, and again on [108.1, 200] M, rising to 0.0687 at t = 200 M. ES-1:
+  [2.81, 20.0] and [29.1, 34.1] M; V-1: [2.81, 20.0] M; neither after 50 M.
+- J6 HELD. Velocity of the dust against the normal observers at the R0 = 48 M tracers,
+  v = (1 - 1/W^2)^(1/2) with W = alpha dt/dtau: 0.034, 0.052, 0.060, 0.063 at t = 50, 100,
+  150, 200 M (R0 = 40 M: 0.020, 0.040, 0.049, 0.053; R0 = 56 M: 0.057, 0.072, 0.078, 0.080).
+  ES-1: 0.297, 0.224, 0.19, 0.16-0.18; V-1 tracers: 0.24, 0.18, 0.16, 0.14. A first-order
+  estimate [JUDGEMENT; outward v assumed, W ~ 1, v proportional to R^1.74 from the three
+  groups, areal radius of R0 = 48 M at tau = 103.6 M about 72.8 M]: D_i v^i ~ (v/R)(2 +
+  1.74) = 2.7e-3/M at t = 100 M, against the deficit -3H - K-hat = 2.9e-3/M. So the
+  slices of ES-1G follow the dust in lapse and proper time but tilt against it by
+  v ~ 0.03-0.06, which accounts for most of the K deficit of G2.
+
+Gauge pathologies of ES-1G (the list of entry 5):
+- start-up pulse of the relaxation: none beyond a lag of 1-2 per cent behind the
+  homogeneous model in the first 20 M (J2);
+- lapse below 1 inside the dust: none (J3);
+- front from the dust edges reaching the hole: none seen; the near-hole lapse activity
+  over 10-40 M is 0.08-0.09 of ES-1's and 0.16-0.18 of V-1's (J4);
+- mesh minimum of the lapse near the hole against alpha_exc = 0.05 (risk R14): above it
+  for 10.3 M during the start-up and for the whole of t >= 108 M (J5). From then on
+  lapse excision acts on no cell and removal relies on ah_exc_factor = 0.8 of the horizon
+  alone. No particle was near the hole then (the last infalling group, R0 = 20 M, had not
+  crossed R = 2M), so nothing in this run depends on it;
+- new: the horizon shrinks in coordinates and its mass grows from t ~ 126 M on (G6).
+
+Late horizon drift, measured without a prediction (t0 = 100 M): ES-1G 100-165 M
+[-4.17e-4, +9.46e-4] (minimum at t = 126 M, zero crossing at 149 M, +9.46e-4 at 165 M;
+straight-line slope 1.2e-5/M); 100-199.5 M [-4.17e-4, +6.96e-3] (slope 5.8e-5/M; 1.7e-4/M
+over 165-199.5 M). ES-1: [-5.0e-5, +9.3e-5] and [-3.40e-4, +9.3e-5]; V-1: [-4.2e-5,
++2.1e-5] and [-1.37e-4, +2.1e-5]. The common downward drift of ES-1 and V-1 after
+t ~ 165 M does not appear in ES-1G as such: ES-1G moves the other way, by 20 to 50 times
+as much, from t ~ 126 M on, so a common component of size 1e-4 cannot be separated from
+it here. (D-20261120-222424-230f936.)
+
+Figures in `figs/es1g/`, each looked at:
+- `judge_horizon.png`: M_AH - 1 (symlog), drift from t = 100 M, horizon mean coordinate
+  radius, for ES-1G, ES-1, V-1, core-ES. ES-1G dips to -4.2e-4 near 126 M, rises through
+  zero at 149 M to +7e-3; its radius falls monotonically from 1.42 M (t = 30 M) to 0.78 M
+  while ES-1 and V-1 grow; core-ES lies on ES-1G to t = 30 M.
+- `judge_hole.png`: mesh minimum of the lapse (log) against 0.05: ES-1G crosses it near
+  108 M and keeps rising, ES-1 and V-1 settle near 0.02; probe lapses at 1, 4, 20 M over
+  0-60 M: ES-1 swings to 2.0 at 4 and 20 M, ES-1G stays at 0.82-1.1; detrended rates:
+  ES-1 swings of +-0.2/M at x = 4 M near t = 20-35 M, ES-1G one bump of 0.065/M at 7 M.
+- `judge_lapse.png`: dust-tracer lapse of ES-1G on the lapse_leak model (ES-1 to 1.71);
+  ratio to the model between -2.1e-2 and 0 inside the +-3e-2 band; largest lapse on the
+  mesh: ES-1G 1.11 then 1.02, ES-1 2.13, V-1 1.95.
+- `judge_core30.png`: 0-30 M overlay of ES-1G and core-ES (horizon mass, largest and
+  smallest lapse, dust-tracer lapse): the two coincide; ES-1 and V-1 part from them
+  within the first 1-2 M (largest lapse) and at t ~ 11 M (smallest).
+- `judge_wall.png`: wall tracers against the exact curve over their proper time: ES-1G
+  within +-2e-4 to tau = 206 M; ES-1 and V-1 split into axis and diagonal after
+  tau ~ 150 M.
+- `extra_horizon.png` (es_extra, fixed axes): ES-1G leaves the frame after t ~ 150 M;
+  that is why `judge_horizon.png` exists. Between 30 and 100 M ES-1G lies 1.0-1.25e-3
+  above M, with oscillations of about 1e-4.
+- `extra_plateau.png`: lapse and proper time of ES-1G at the R0 = 48 M tracers on the
+  lapse_leak model; K at the +x tracer smooth, at 0.62-0.81 of -3H(tau) (G2).
+- `extra_tracers_vs_t.png`: every group of ES-1G within about +-3.6e-3 of its exact
+  curve to t = 200 M (largest late: R0 = 56 M axis, R0 = 20 M axis; onsets of 2e-3 at
+  t = 156.5 M and 186 M); ES-1 reaches 2e-2, V-1 1.2e-2.
+- `extra_dust_wall.png`: smallest margin of the dust outside the wall, ES-1G 0.232 M at
+  t = 0 falling to 0.106 M at 200 M, no particle inside (ES-1 0.136 M).
+- `extra_spacetime_ES-1G.png`, `extra_spacetime_ES-1.png`, `extra_spacetime_V-1.png`:
+  alpha, K and log10|H| on the x axis (rows every 10 and 25 M). ES-1G: smooth lapse,
+  K < 0 from ~5 M outward (the bubble keeps its expanding slicing), the K > 0 region
+  around the hole shrinking from ~3 M to ~0.6 M; ES-1 and V-1: large lapse features at
+  t = 10-50 M, K ~ 0 in the bubble, the K > 0 region fixed near 3.5-4 M.
+
+Particle energy E (step 5 of the package). `analyse.py` reads E (trajmet index 13) into
+the tracer records (`tracer_tracks`, line 114) and uses it nowhere. The "E" of
+`exact_groups` and `ltb_radius` (analyse.py:239-297, es_extra.py:135-188) is the LTB
+shell energy of the exact model (`es_model.shell_energy`, 2E = v0^2 - 2m/R0), computed
+from the initial data, not the code's E. History columns used: time, np, sum_m (rest
+mass, m only), sum_mW (finiteness flag only), alpha_min, alpha_max, alpha_probe*,
+n_excised, n_escaped, push_unconverged; int_E, E_probe*, E_max, E_min are never read.
+Proper time is the pusher's (trajmet index 12), cross-checked against the integral of
+alpha/W with W from u_i and gamma^ij (analyse.py:132-135); `es1g_judge.py` forms
+W = alpha dt/dtau. So no number of entries 4, 6, 7, 9 depends on the code's E: horizon
+masses (finder), areal radii (metric at the particle), proper times, crossings,
+turnaround, lapse and K (mesh), dust-wall margins (positions), counts and rest mass.
+The finding of `flux_tools` (E = alpha W - beta^i u_i is not the Killing energy in this
+gauge) does not touch these numbers; it matters only for an energy flux through the
+horizon.
