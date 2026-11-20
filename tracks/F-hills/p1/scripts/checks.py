@@ -83,6 +83,21 @@ def main():
                 d["growth_at_100_vs_first2M"] = d["m_at_100"] / d["m_first_2M_median"] - 1
         hz[n] = d
     res["horizons"] = hz
+    # ---- the binary's common horizon: first good search of a member finder above 0.2
+    merge = {}
+    for n in (0, 1):
+        g = good.get(n)
+        if g is not None and len(g["t"]):
+            big = g["mass"] > 0.2
+            if big.any():
+                k = int(np.argmax(big))
+                merge[n] = dict(t_first_common=float(g["t"][k]), mass=float(g["mass"][k]),
+                                mass_median_after=float(np.median(g["mass"][big])),
+                                t_last_single=float(g["t"][~big][-1]) if (~big).any() else None,
+                                m_last_single=float(g["mass"][~big][-1]) if (~big).any() else None,
+                                growth_last_single=float(g["mass"][~big][-1] / g["mass"][0] - 1)
+                                if (~big).any() else None)
+    res["binary_common_horizon"] = merge
     # ---- tree and rate
     segs = p1lib.segment_logs(rd)
     res["segments"] = [dict(seg=s["seg"], job=s["job"], nmb_start=s["nmb_start"],
@@ -117,6 +132,17 @@ def main():
     k100 = t <= 100.0
     wide = r12 > 2 * a_b
     ic = int(np.argmin(rc))
+    if merge:
+        tm = min(v["t_first_common"] for v in merge.values())
+        km = int(np.searchsorted(t, tm))
+        res["binary_common_horizon"]["at_first_common"] = dict(
+            t=float(t[km]), r12=float(r12[km]), x1=X[km, 0].tolist(), x2=X[km, 1].tolist(),
+            xM=X[km, 2].tolist(), dist_origin=float(np.linalg.norm(xc[km])),
+            dist_from_M=float(rc[km]))
+        for thr in (2.0, 1.0, 0.5, 0.1):
+            below = r12 < thr
+            res["binary_common_horizon"][f"t_r12_below_{thr}"] = \
+                float(t[np.argmax(below)]) if below.any() else None
     res["trajectories"] = dict(
         newton_rel_diff_r1M_max_t_le_60=float(rel1.max()),
         newton_rel_diff_r2M_max_t_le_60=float(rel2.max()),

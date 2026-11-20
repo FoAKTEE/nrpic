@@ -4,8 +4,9 @@
 
 P1: coordinate positions of the trackers (moving-puncture gauge), x_i - x_M. Newton: full
 three-body problem, x_i - x_M. HRNA: hole fixed at the origin, Schwarzschild coordinates.
-Left: the whole approach; right: the inner 16 M. Dots every 20 M, with the time written at
-P1's dots. Writes <out>/fig_tracks_plane.{pdf,png}.
+Left: the whole approach; middle: the inner 16 M. Dots every 20 M, with the time written at
+P1's dots. Right: the binary's relative orbit x_1 - x_2 over t = 0-60 M (P1, Newton, HRNA),
+dots every 10 M. Writes <out>/fig_tracks_plane.{pdf,png}.
 Usage: fig_tracks_plane.py [--out=<dir>] [--rundir=<dir>] [--baselines-npz=<file>]
 """
 import os
@@ -39,8 +40,9 @@ def main():
 
     fs.use_style()
     import matplotlib.pyplot as plt
-    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 4.0))
-    fig.subplots_adjust(left=0.08, right=0.98, bottom=0.12, top=0.90, wspace=0.22)
+    fig, axs3 = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.3))
+    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.14, top=0.90, wspace=0.32)
+    axs = axs3[:2]
     marks = np.arange(0.0, t_end + 1e-9, 20.0)
     for ax, half in zip(axs, (36.0, 16.0)):
         for k in (0, 1):
@@ -73,7 +75,32 @@ def main():
         ax.set_ylabel(r"$y - y_M\ [M]$")
     axs[0].set_title(f"P1 to t = {t_end:.1f} M, baselines to the same time", fontsize=9)
     axs[1].set_title("inner region (stars: last P1 point)", fontsize=9)
-    axs[0].legend(frameon=False, fontsize=7, loc="lower right", ncol=2)
+    axs[0].legend(frameon=False, fontsize=6, loc="upper left", ncol=2)
+    # binary's relative orbit
+    ax = axs3[2]
+    t_rel = 60.0
+    for tt, d, ls, lab in ((t, X[:, 0] - X[:, 1], "-", "P1 (NR)"),
+                           (tn, b["newton_X"][:, 0] - b["newton_X"][:, 1], "--", "Newton"),
+                           (th, b["hrna_y"][:, 0:3] - b["hrna_y"][:, 6:9], ":", "HRNA")):
+        k = tt <= t_rel
+        ax.plot(d[k, 0], d[k, 1], color=fs.PAL["yellow"] if ls == "-" else "k", ls=ls,
+                lw=1.5 if ls == "-" else 1.0, label=lab)
+        for tm in np.arange(0.0, t_rel + 1e-9, 10.0):
+            i = np.searchsorted(tt, tm)
+            if i < len(tt) and tt[i] - tm < 2.0:
+                ax.plot(d[i, 0], d[i, 1], "o", ms=2.5, mfc="none" if ls != "-" else None,
+                        color=fs.PAL["yellow"] if ls == "-" else "k")
+                if ls == "-":
+                    ax.annotate(f"{tm:.0f}", (d[i, 0], d[i, 1]), fontsize=6,
+                                xytext=(3, -8), textcoords="offset points")
+    ax.plot(0, 0, "k+", ms=6)
+    ax.set_xlim(-8, 8)
+    ax.set_ylim(-8, 8)
+    ax.set_aspect("equal")
+    ax.set_xlabel(r"$x_1 - x_2\ [M]$")
+    ax.set_ylabel(r"$y_1 - y_2\ [M]$")
+    ax.set_title(f"binary, t = 0-{t_rel:.0f} M", fontsize=9)
+    ax.legend(frameon=False, fontsize=6, loc="upper left")
     for p in fs.save(fig, os.path.join(out, "fig_tracks_plane")):
         print("figure:", p)
 

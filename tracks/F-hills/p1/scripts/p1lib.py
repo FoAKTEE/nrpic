@@ -144,6 +144,9 @@ def segment_logs(rd):
                 d["end"] = s.split("end=")[1].split()[0]
             elif s.startswith("# host="):
                 d["start"] = s.split("start=")[1].split()[0]
+            elif s.startswith("# cmd:"):
+                w = s.split()
+                d["restart_file"] = os.path.basename(w[w.index("-r") + 1]) if "-r" in w else None
             elif s.startswith("elapsed="):
                 kv = dict(t.split("=") for t in s.split())
                 d["rows"].append((float(kv["elapsed"]), int(kv["cycle"]), float(kv["time"])))
