@@ -1,0 +1,115 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-20261120-222954-b1a06ed",
+  "track": "C-sidm",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "heat T7 theta 0.1 and 1, eps 0.2 pooled (rerun of -222857-8ea9c42 with the fixed seed-mean): processor seeds 1, 2 (4e5) and card seeds 1, 2 (2e6)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/C-sidm/heat/scripts/an_mode.py",
+    "T7",
+    "-",
+    "C-20261119-152752-0ffa031",
+    "C-20261119-155433-a287f9c",
+    "C-20261119-150347-e100007"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "b1a06ed00434a2418003dc16af9dba902b887845",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "package": [
+      "tracks/C-sidm/heat"
+    ],
+    "outside_package": {
+      "count": 10,
+      "first": [
+        " M tracks/C-sidm/note/scripts/common.py",
+        " M tracks/C-sidm/note/scripts/ledger.py",
+        " M tracks/C-sidm/note/scripts/run_all.py",
+        " M tracks/C-sidm/note/scripts/schem_architecture.py",
+        "?? tracks/C-sidm/note/scripts/fig_box_summary.py",
+        "?? tracks/C-sidm/note/scripts/fig_cluster.py",
+        "?? tracks/C-sidm/note/scripts/fig_heat.py",
+        "?? tracks/C-sidm/note/scripts/fig_onsets.py",
+        "?? tracks/C-sidm/note/scripts/schem_dataflow.py",
+        "?? tracks/C-sidm/verify_g1/v1_step.py"
+      ]
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/C-sidm"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/C-sidm/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/C-sidm/heat/scripts/an_mode.py",
+      "role": "argv",
+      "sha256": "cc8fe057f6c4d227b6ed962899f302ee27d2ffb1017a42dbcad985afc8568d58",
+      "bytes": 16858,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/C-sidm/C-20261120-222954-b1a06ed",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:29:54Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "C-20261119-152752-0ffa031",
+    "C-20261119-155433-a287f9c",
+    "C-20261119-150347-e100007",
+    "C-20261120-222329-3a77ad6"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 45.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0142,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 3,
+    "runs": 135,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
