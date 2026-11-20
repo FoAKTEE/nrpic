@@ -214,6 +214,129 @@ def main():
     add("Mesh and cost", "card memory, MeshBlock slots", "about 3000",
         "multi\\_puncture.md lines 229--230 of coord/INTERFACES")
 
+    # ---- full relativity (note v1, gate G1)
+    import fig_smoke as FS  # log and input readers of the smoke figure
+    e2 = C.load_json("e2", "c0_constraints.json")
+    gF = "Data at the start"
+    for case, lab in (("approx", "corrected"), ("none", "uncorrected")):
+        add(gF, f"$\\langle H^2\\rangle^{{1/2}}$ at $t=0$, {lab} data, code: $m/4$, $m/8$, $m/16$",
+            ", ".join(f"{e2[f'{case}_L{lv}']['all']['code']:.3g}" for lv in (9, 10, 11)), R["e2"])
+    add(gF, "closed-form residual of the data: corrected, uncorrected, plain sum ($m/8$)",
+        f"{e2['approx_L10']['all']['closed']:.3g}, {e2['none_L10']['all']['closed']:.3g}, "
+        f"{e2['plain_L10']['all']['closed']:.3g}", R["e2"])
+    add(gF, "uncorrected over corrected: closed form; code at $m/8$; code at $m/16$",
+        f"{e2['none_L11']['all']['closed'] / e2['approx_L11']['all']['closed']:.3g}; "
+        f"{e2['none_L10']['all']['code'] / e2['approx_L10']['all']['code']:.3g}; "
+        f"{e2['none_L11']['all']['code'] / e2['approx_L11']['all']['code']:.3g}", R["e2"])
+    add(gF, "order of the truncation error, $m/4\\to m/8\\to m/16$: corrected; uncorrected",
+        f"{e2['order_approx'][0]:.3g}, {e2['order_approx'][1]:.3g}; "
+        f"{e2['order_none'][0]:.3g}, {e2['order_none'][1]:.3g}", R["e2"])
+    rg = e2["approx_L10"]
+    add(gF, "corrected data at $m/8$, code: members ($r<1M$), heavy black hole ($r<4M$), elsewhere",
+        f"{rg['members (r < 1 M)']['code']:.3g}, {rg['heavy (r < 4 M)']['code']:.3g}, "
+        f"{rg['rest']['code']:.3g}", R["e2"])
+    e7an = C.load_json("e7an", "p1_analysis.json")
+    add(gF, "the same norm at $t=0$ from the card executable (passage input, $m/8$)",
+        f"{e7an['H_t0']:.4g}", R["e7an"])
+    # single member
+    e3 = C.load_json("e3", "single_analysis.json")
+    e10 = C.load_json("e10a", "s2g_compare.json")
+    gS = "Single member"
+    add(gS, "$P/M_{\\rm ADM}$; rest mass of the full solution, $\\sqrt{M_{\\rm ADM}^2-P^2}$ [$m$]",
+        f"{e3['reference']['v_boost']:.4g}; {e3['reference']['M_rest_full']:.5g}", R["e3"])
+    add(gS, "tracker speed over $P/M_{\\rm ADM}$, mean over $t=10$--$20\\,m$: $\\eta m=2$, $\\eta m=0.25$",
+        f"{e3['S3']['f_mean']['10-20']:.3g}, {e3['S2']['f_mean']['10-20']:.3g}", R["e3"])
+    add(gS, "largest speed ratio and its time, $\\eta m=0.25$; settling time $\\eta m=0.25$, $\\eta m=2$",
+        f"{e3['S2']['f_max']:.3g} at {e3['S2']['t_f_max']:.3g}$\\,m$; "
+        f"{e10['runs']['S2']['t_settle']:.3g}, {e10['runs']['S3']['t_settle']:.3g}$\\,m$", R["e3"] + ", " + R["e10a"])
+    add(gS, "horizon mass at $t=0$ [$m$] and its offset from the rest mass",
+        f"{e3['S3']['horizon']['m_first']:.5g}, "
+        f"{e3['S3']['horizon']['m_first'] / e3['reference']['M_rest_full'] - 1:.2g}", R["e3"])
+    add(gS, "first search with residual below $10^{-3}$: time [$m$] and mass, $\\eta m=2$; $\\eta m=0.25$",
+        f"{e10['runs']['S3']['first_good'][0]:g}, {e10['runs']['S3']['first_good'][1]:.5g}; "
+        f"{e10['runs']['S2']['first_good'][0]:g}, {e10['runs']['S2']['first_good'][1]:.5g}", R["e10a"])
+    d3 = e10["S2_vs_S3"]["drift_4_6_to_12_14"]
+    add(gS, "horizon drift, median of $t=4$--$6\\,m$ to median of $12$--$14\\,m$: $\\eta m=2$, $\\eta m=0.25$, ratio",
+        f"{d3['S3']:.3g}, {d3['S2']:.3g}, {d3['S2'] / d3['S3']:.3g}", R["e10a"])
+    add(gS, "searches found and missed: $\\eta m=2$; $\\eta m=0.25$",
+        f"{e3['S3']['horizon']['found']}/{e3['S3']['horizon']['missed']}; "
+        f"{e3['S2']['horizon']['found']}/{e3['S2']['horizon']['missed']}", R["e3"])
+    add(gS, "$\\langle H^2\\rangle^{1/2}$, $\\eta m=2$: peak and its time; at $t=10$, $20\\,m$",
+        f"{e3['S3']['constraints']['H_max']:.2g} at {e3['S3']['constraints']['t_H_max']:g}$\\,m$; "
+        f"{e3['S3']['constraints']['H_at']['10']:.2g}, {e3['S3']['constraints']['H_at']['20']:.2g}", R["e3"])
+    add(gS, "end of the runs [$m$] and tracker position there: $\\eta m=2$; $\\eta m=0.25$",
+        f"{e3['S3']['t_end']:.4g}, {e3['S3']['x_end']:.4g}; {e3['S2']['t_end']:.4g}, {e3['S2']['x_end']:.4g}",
+        R["e3"])
+    # mesh tree
+    tc = C.load_json("e11", "tree_check.json")
+    tp = C.load_json("e11path", "tree_path.json")
+    gT = "Mesh tree"
+    rs = tc["runs"]["S3"]
+    add(gT, "restart trees equal to the rule model, $t=0$, $10$, $20\\,m$ (MeshBlocks)",
+        ", ".join(str(r["nmb"]) for r in rs) + " (all levels equal)", R["e11"])
+    add(gT, "levels 1, 2, 3 of the tree at $t=10\\,m$",
+        " / ".join(str(rs[1]["counts"][k]) for k in ("1", "2", "3")), R["e11"])
+    npth = [r["total"] for r in tp["rows"]]
+    xs_over = [r["x"] for r in tp["rows"] if r["total"] > 1600]
+    add(gT, "rule model along $x=0$--$20\\,m$: tree sizes; first $x$ above the 1600 slots",
+        ", ".join(str(v) for v in sorted(set(npth))) + f"; {min(xs_over):g}$\\,m$", R["e11path"])
+    # first passage
+    gP = "First passage in full relativity"
+    rdir7 = os.path.join(C.SCRATCH, C.RUNS["e7"], "P1smoke")
+    lg = FS.read_log(C.run_file("e7", FS.LOG))
+    mem = np.genfromtxt(C.run_file("e7", FS.MEM), delimiter=",", skip_header=1, usecols=(1,))
+    rate = lg["mb_cycles"] / lg["cpu_s"]
+    add(gP, "MeshBlocks at the start and at cycle 400 (created, removed)",
+        f"{int(lg['nmb_start'])}, {int(lg['nmb_end'])} ({int(lg['created'])}, {int(lg['deleted'])})", R["e7"])
+    add(gP, "MeshBlock-cycles per second (MeshBlock-cycles over timed seconds)",
+        f"{rate:.4g} ({int(lg['mb_cycles'])}/{lg['cpu_s']:.4g})", R["e7"])
+    add(gP, "peak card memory with 2700 MeshBlock slots [MiB]", f"{mem.max():.0f}", R["e7"])
+    add(gP, "card memory [MiB] (and per slot)", "81920 (26.2)",
+        "tracks/F-hills/nr_first/JOURNAL.md lines 626--627")
+    prob = FS.read_problem(C.run_file("e7", FS.INP))
+    nr = C.nrread()
+    trk = nr.read_trackers(rdir7)
+    offs = [float(np.linalg.norm(trk[n]["x"][0] - np.array([float(prob[f"comp{n}_x{i}"]) for i in (1, 2, 3)])))
+            for n in range(3)]
+    add(gP, "largest offset of a tracker from its input position at $t=0$", f"{max(offs):.2g}", R["e7"])
+    fr = []
+    for n in range(2):
+        pv = np.array([float(prob[f"comp{n}_p{i}"]) for i in (1, 2, 3)])
+        fr.append(float(np.linalg.norm(trk[n]["v"][-1]) / (np.linalg.norm(pv) / float(prob[f"comp{n}_mass"]))))
+    add(gP, "member tracker speed over $|P|/m$ at $t=1.56M$: $m_1$, $m_2$", f"{fr[0]:.2g}, {fr[1]:.2g}", R["e7"])
+    hm = e7an["horizon_median"]
+    add(gP, "horizon masses, median of the found searches: $m_1$, $m_2$, $M$",
+        f"{hm['0']:.5g}, {hm['1']:.5g}, {hm['2']:.5g}", R["e7an"])
+    add(gP, "searches missed of 25: $m_1$, $m_2$, $M$",
+        ", ".join(str(e7an["horizon_missed"][k]) for k in ("0", "1", "2")), R["e7an"])
+    cyc = int(round(lg["tlim"] / lg["dt"]))
+    nbig = int(m4["tracks"]["D256q4_m8_r1.8"]["n_max"])
+    add(gP, "cycles of the passage ($t_{\\rm lim}/\\Delta t$); card-hours for a mean tree of "
+        f"{int(lg['nmb_end'])} and {nbig} MeshBlocks",
+        f"{cyc}; {cyc * lg['nmb_end'] / rate / 3600:.3g}, {cyc * nbig / rate / 3600:.3g}",
+        R["e7"] + ", " + R["mesh4"])
+    v9 = C.load_json("v9", "review_gr.json")
+    vp = v9["tracks/F-hills/nr_first/inputs/p1_q4.athinput"]
+    add(gP, "start state, Newtonian conic of the centre of mass: $r_p$, eccentricity",
+        f"{vp['newton_conic']['r_p']:.4g}, {vp['newton_conic']['e']:.6g}", R["v9"])
+    add(gP, "test-mass reading, heavy black hole's frame: $E$, $L$, turning point $r_S$",
+        f"{vp['hole_frame_M']['E']:.5g}, {vp['hole_frame_M']['L']:.4g}, {vp['hole_frame_M']['turning_point_rS']:.3g}", R["v9"])
+    add(gP, "the same with the heavy black hole at rest: $E$, $L$, turning point",
+        f"{vp['hole_at_rest_M']['E']:.4g}, {vp['hole_at_rest_M']['L']:.4g}, {vp['hole_at_rest_M']['turning_point_rS']:.3g}", R["v9"])
+    add(gP, "the same with the total mass: captured",
+        "yes" if vp["hole_frame_M_plus_mb"]["captured"] else "no", R["v9"])
+    vq = v9["tracks/F-hills/three_punctures/inputs/hills_q10_m8.athinput"]
+    add(gP, "$q=10$ input: Newtonian $r_p$; turning point in the heavy black hole's frame; captured in the other two readings",
+        f"{vq['newton_conic']['r_p']:.4g}; {vq['hole_frame_M']['turning_point_rS']:.3g}; "
+        + ("yes" if vq["hole_at_rest_M"]["captured"] and vq["hole_frame_M_plus_mb"]["captured"] else "no"),
+        R["v9"])
+    ps = C.load_json("newton3_pass", "passages.json")["passage"]["q4"]
+    add(gP, "Newton from the start state: captured member's orbit $a$, $e$, pericentre; first pericentre time",
+        f"{ps['captured_orbit']['a']:.3g}, {ps['captured_orbit']['e']:.3g}, {ps['captured_orbit']['rp']:.3g}; "
+        f"{ps['captured_pericentre_times'][0]:.4g}", R["newton3_pass"])
+    add(gP, "prediction recorded before submission (health, outcome, horizons, radiation)",
+        "four items", "tracks/F-hills/JOURNAL.md lines 305--320")
+
     # ---- write ledger.tex: two tables
     def table(groups, label, caption):
         lines = [r"\begin{table*}", r"\caption{" + caption + "}", r"\label{" + label + "}",
@@ -228,7 +351,7 @@ def main():
                 lines.append(r"\multicolumn{3}{l}{\emph{" + grp + r"}} \\")
                 cur = grp
             lines.append(f"{q} & {v} & \\texttt{{\\detokenize{{{src}}}}} \\\\"
-                         if src.startswith("F") else f"{q} & {v} & {src} \\\\")
+                         if src.startswith(("F", "tracks/")) else f"{q} & {v} & {src} \\\\")
         lines += [r"\end{tabular}", r"\end{ruledtabular}", r"\end{table*}"]
         return "\n".join(lines)
 
@@ -241,7 +364,12 @@ def main():
         f.write(table({"Pericentre scan", "First passages", "Mesh and cost"}, "tab:ledger2",
                       "Ledger of the pericentre scan, the first passages and the cost. "
                       "Fractions are over the sampled binary phases; card-hours are the "
-                      "median rate with the fast and slow rates in parentheses.") + "\n")
+                      "median rate with the fast and slow rates in parentheses.") + "\n\n")
+        f.write(table({gF, gS, gT, gP}, "tab:ledger3",
+                      "Ledger of the runs in full relativity: the three-black-hole data at the "
+                      "start, a single member on a card, its mesh tree, and the first passage "
+                      "(set-up, start state, cost). Lengths and times in units of the member "
+                      "mass $m$ for the single member and of $M$ otherwise.") + "\n")
 
     # ---- parameters.tex
     par = []

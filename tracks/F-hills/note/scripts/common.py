@@ -40,7 +40,30 @@ RUNS = {
     "e6": "F-20261115-174102-ffa764f",                # nr_first E6: baselines of P1 at q = 4
     "e4": "F-20261115-173821-b2c969a",                # nr_first E4: readers on a synthetic run
     "n1": "F-20261115-174648-25514db",                # this package N1: passage time series
+    # wave 2b / wave 3 additions (note v1, gate G1)
+    "c0": "F-20261115-173547-a02af7d",                # nr_first E2 (C0): t = 0 data, 7 cases
+    "e2": "F-20261115-181434-b9c8916",                # nr_first E2: analysis (same JSON as -181053-d52f22d)
+    "e3raw": "F-20261115-173601-2fae2dc",             # nr_first E3: S3, S2 card runs (stopped at the slot limit)
+    "e3": "F-20261119-145619-8246322",                # lead: E3 analysis with the fixed horizon reader
+    "e10a": "F-20261119-144351-b448f38",              # nr_first E10a: window medians of S3, S2
+    "e11": "F-20261119-144425-10a94b7",               # nr_first E11: restart trees against the rule model
+    "e11path": "F-20261119-144024-988d5c9",           # nr_first E11: model tree along x = 0-20 m
+    "e7": "F-20261115-174602-c6879fe",                # nr_first E7: P1 smoke on a card (400 cycles)
+    "e7an": "F-20261119-144544-d9c8542",              # nr_first E7: passage analysis of the smoke
+    "v9": "F-20261119-145449-245e984",                # lead V9: GR reading of the start states
+    "newton3_pass": "F-20261115-180351-b8eb386",      # newton3_fix: passages with corrected energies
 }
+
+# readers of the code's output (package nr_first, read only)
+NRREAD_DIR = os.path.join(TRACK, "nr_first", "scripts")
+
+
+def nrread():
+    """The readers of the code's output files (nrread.py of the package that wrote them)."""
+    if NRREAD_DIR not in sys.path:
+        sys.path.insert(0, NRREAD_DIR)
+    import nrread as nr  # noqa: E402
+    return nr
 
 CHECKED = []   # (run_id, relative path, state)
 

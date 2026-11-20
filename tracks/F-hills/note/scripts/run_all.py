@@ -17,7 +17,8 @@ import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FIGS = ["fig_newton", "fig_geodesic", "fig_rp_scan", "fig_passage", "fig_cost",
-        "schem_architecture", "schem_timeline"]
+        "fig_constraints", "fig_single", "fig_tree", "fig_smoke",
+        "schem_architecture", "schem_dataflow", "schem_timeline"]
 
 
 def main():
