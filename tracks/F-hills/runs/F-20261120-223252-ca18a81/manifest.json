@@ -1,0 +1,104 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "F-20261120-223252-ca18a81",
+  "track": "F-hills",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "p1: P1 at t = 112 M, second pass: binary relative orbit, common-horizon diagnostics, ledger from restart times (run_all.sh)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "tracks/F-hills/p1/scripts/run_all.sh"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "ca18a81140a7258f225c52a5005de3ab69ed71af",
+    "branch": "track/F-hills",
+    "dirty": false,
+    "package": [
+      "tracks/F-hills/p1"
+    ],
+    "outside_package": {
+      "count": 7,
+      "first": [
+        " M tracks/F-hills/junk_gauge/JOURNAL.md",
+        "?? tracks/F-hills/junk_gauge/scripts/newton_quad.py",
+        "?? tracks/F-hills/kerr/",
+        "?? tracks/F-hills/verify_g0/scripts/closed_forms.py",
+        "?? tracks/F-hills/verify_g0/scripts/restricted.py",
+        "?? tracks/F-hills/verify_g0/scripts/threebody.py",
+        "?? tracks/F-hills/verify_g0/scripts/vint.py"
+      ]
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/F-hills"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/F-hills/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/F-hills/p1/scripts/run_all.sh",
+      "role": "argv",
+      "sha256": "ce3a84573f83e4a38d6daf5cf84e0dd1c1233b7dd318dd8b61ca614cc8dfdf8e",
+      "bytes": 1031,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/F-hills/F-20261120-223252-ca18a81",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:32:52Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "F-20261119-150017-b45ec5f"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 50.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.8239,
+    "gpu_hours_reserved": 25.5667,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 6,
+    "runs": 171,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
