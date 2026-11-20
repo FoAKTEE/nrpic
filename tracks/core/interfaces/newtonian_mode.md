@@ -582,12 +582,18 @@ background particles), and group 1 of `problems/newton/periodic_fft.athinput`.
   | 32 | spectral | 9.55e-5 | 5.56e-4 | 1.97e-3 | 1.79e-3 |
   | 32 | seven_point | 1.39e-3 | 2.99e-3 | 4.42e-3 | 5.76e-3 |
   | 32 | `pm.py` (track) | 1.1e-4 | 6.1e-4 | 2.1e-3 | 1.7e-3 |
+  | 64 | spectral (card, 7.11) | 4.58e-5 | 3.07e-4 | 9.69e-4 | 8.49e-4 |
+  | 64 | multigrid (track) | 3.51e-4 | 7.42e-4 | 1.20e-3 | 1.41e-3 |
+  | 64 | `pm.py` (track) | 4.8e-5 | 3.3e-4 | 1.0e-3 | 8.3e-4 |
 
-  The spectral symbol lowers the error at a = 2 by 17 (n = 16) and 14.6 (n = 32) and
-  brings the mode to within 13 per cent of `cosmo/newton/pm.py`; the remaining difference
-  from `pm.py` (2.0e-5 at a = 2, 6.6e-5 at a = 5, n = 32) is the gather and grows with the
-  nonlinearity faster than I predicted. The seven-point Fourier run reproduces the
-  track's multigrid numbers to 0.11 per cent. n = 64: card job, pending (7.10).
+  The spectral symbol lowers the error at a = 2 by 17 (n = 16), 14.6 (n = 32) and 7.7
+  (n = 64) and brings the mode to within 13 per cent (n = 32) and 6 per cent (n = 64) of
+  `cosmo/newton/pm.py`; after the first crossings (a >= 10) the gain is 1.2 to 5, the
+  error there is no longer that of the Laplacian. The remaining difference from `pm.py`
+  (n = 32: 2.0e-5 at a = 2, 6.6e-5 at a = 5; n = 64: 3.2e-6, 1.9e-5; analysis
+  core-20261120-220459-262b7a5) is the gather; it falls by 3 to 6 per doubling and grows
+  with the nonlinearity faster than I predicted. The seven-point Fourier run reproduces
+  the track's multigrid numbers to 0.11 per cent.
 
 ### 7.4 Which energy the history reports (Track A): test T7
 
@@ -626,7 +632,7 @@ a cell centre stable (a particle oscillates about it with the period 2pi/sqrt(sl
 clump of radius 0.14 to 0.28 dx; runs D-20261115-171245-a89f225, -171247-cde0674). The
 cubic cloud with the spline gather lowers the self-force by 5.9. Momentum is not
 conserved by it. The fixed point mass `newton_pm_mass` is not deposited and has no
-self-force (7.9). The relativistic mode shares the deposit and gather kernels; whether
+self-force (7.10). The relativistic mode shares the deposit and gather kernels; whether
 a compact clump feels the same force there is [TO VERIFY] (not run in this package).
 
 ### 7.7 Existing results unchanged: test T10
@@ -640,3 +646,87 @@ identical byte for byte, every result line of the logs equal (cases
 core-20261119-152944-b2f41d3, judgement core-20261119-160915-40df1d6). Against release
 core-v0.3 only the line `last_time` of the parameter dump differs, in four files: the
 correction of the branch start (`REQUESTS_ADF.md`, correction 2).
+
+### 7.8 Group history: test T3
+
+Track B's exact pancake (`pancake-sin`: equal-mass lattice x = q + a psi(q_x), n = 32,
+a = (1 + t/2)^2, cubic cloud with compensation, spline gather; to a = 7.56), group 1 =
+all particles, group 2 = the slab L/4 <= q_x < 3L/4 as a tag range (cases
+core-20261119-160919-c6a7279, analysis core-20261120-220350-1aa20ac, figure
+`t3_groups.png`) [VERIFIED]:
+- Group 1 against the existing history after the parallel-axis shift: I within 3.9e-12
+  of its size, dI/dt and d2I/dt2 within 6.5e-13; mass identical.
+- Physical columns against the conversion of the comoving ones done in Python: J,
+  dJ/dT, d2J/dT2 within 7e-16; d3J/dT3 equals the quotient of the d2J/dT2 column to
+  4e-14; cosmic time within 5e-15 of (2/3)((1 + t/2)^3 - 1).
+- The slab against the exact solution I_xx = c0 + c1 a + c2 a^2 (window 1.2 <= a <=
+  7.56, errors relative to the largest exact value):
+
+  | symbol | I_xx - c0 | dI_xx/dt | d2I_xx/dt2 | d3I_xx/dt3 (rms) | d3J_xx/dT3 (rms) |
+  |---|---|---|---|---|---|
+  | `spectral` | 9.1e-6 | 3.8e-5 | 3.9e-4 | 0.26 per cent | 0.10 per cent |
+  | `seven_point` | 3.1e-3 | 4.9e-3 | 9.6e-3 | 1.30 per cent | 0.60 per cent |
+
+  The Laplacian carried four fifths of the error of the third derivative that Track B
+  measured with the multigrid solver; the rest is the step-to-step fluctuation of the
+  mesh force (5.4).
+- A run stopped at cycle 300 and continued writes group files, `newton.newton.hst` and
+  `newton.nrpic.hst` identical as text to the uninterrupted run (148 records).
+- On a card (chk_sin32 of job 4648) the columns equal the processor run to 6e-13 and
+  the difference quotients to 4e-10.
+Not tested: more than two groups; a group that wraps (the nearest-image rule is used
+with the reference point in the middle of the box only); groups on an isolated or a
+refined mesh other than the patch of 7.9; the species selection is exercised by the
+embedded ellipsoid (7.9) and has no exact reference of its own.
+
+### 7.10 Fixed point mass in a secondary infall: test T5
+
+Track D's set-up (dust lattice in the Hubble flow of eps = 0.03 for 3 M <= r < 18.35 M,
+1e5 particles, isolated 64^3 box of half-width 68 M, multigrid with the multipole
+boundary) with the clump replaced by `newton_pm_mass = 1`, `newton_pm_soft = 0.5`
+(cases core-20261119-165257-61d4b78, analysis core-20261120-220605-0f26eb4, figure
+`t5_infall.png`) [VERIFIED]. Reference: before a shell is crossed it moves on a radial
+Kepler orbit with the mass inside it, so the mass that has turned around by a given
+time is known in closed form from the particle file.
+
+| seed at | M_ta at a/a_i = 2 (closed form 1.50428) | at 4 (2.59430) | over the 45 snapshots with a/a_i >= 1.5 |
+|---|---|---|---|
+| a mesh vertex | 1.50428 | 2.59364 (-2.6e-4) | -0.63 to +0.46 per cent, rms 0.21 per cent |
+| a cell centre | 1.50428 | 2.59364 (-2.6e-4) | -0.51 to +0.34 per cent, rms 0.18 per cent |
+
+The two placements give the same turnaround mass and the seed stays where it is put: a
+fixed mass is not deposited and feels no self-force (compare 7.5; Track D's vertex
+clumps left between a/a_i = 1.75 and 3.4). The test resolves one lattice shell of the
+dust, 0.2 to 0.5 per cent of M_ta: the zeros of the table are snapshots that fall
+between two shells, the last column is the fair statement. K + W drifts by 1.5 per cent
+of max |W| over the run (radial orbits through the softened seed at `newton_cfl =
+0.15`). Not tested: a seed on a refined mesh; the unsoftened seed with infalling matter
+(orbits through r = 0).
+
+### 7.11 Card: twins of the processor runs, throughput
+
+One card job (Slurm 4648, run core-20261119-145346-2f89b86, ten cases, 0.07 card-hours;
+judged by core-20261120-220427-5d8547f, figure `card_judge.png`) [VERIFIED]:
+- The plane wave of T1 on a card against the same case on processors, through shell
+  crossing: positions within 1.4e-15 of the box (multigrid), 3.3e-16 (Fourier,
+  seven_point), 5.6e-16 (Fourier, spectral) at all 13 snapshots; K and W of the 602
+  records within 7.3e-13. The Fourier solver and the group history (7.8) are verified
+  on a card on the periodic uniform mesh.
+- Throughput with 2e6 particles, one A100, cloud-in-cell (seconds per step, cpu time
+  used over 20 cycles):
+
+  | mesh | solver | s per step | V cycles per step | peak card memory |
+  |---|---|---|---|---|
+  | periodic 256^3 | Fourier | 0.143 | - | 7.3 GiB |
+  | periodic 256^3 | multigrid, `newton_mg_tol = 1e-6` | 0.135 | 2.9 | 6.7 GiB |
+  | isolated 256^3 | multigrid, `newton_mg_tol = 1e-6` | 1.20 | 5.2 | 6.7 GiB |
+  | periodic 384^3 | Fourier | 0.436 | - | 22.6 GiB |
+  | isolated 384^3 | multigrid, `newton_mg_tol = 1e-6` | 6.00 | 5.6 | 18.2 GiB |
+
+  The Fourier solve costs about three V cycles and does not depend on the state; the
+  multigrid figure is for particles at rest (three cycles from the warm start), a
+  collapsing configuration needs 13 to 19 cycles to rounding (section 6). The isolated
+  mesh is nine to fourteen times slower than the periodic one at the same tolerance;
+  where the time goes was not profiled [TO VERIFY] (the sums of the multipole moments
+  run on the host, section 1). Track B's pancake at n = 64 (262144 particles): 13.5 ms
+  per step, 1.9e7 particle updates per second.
