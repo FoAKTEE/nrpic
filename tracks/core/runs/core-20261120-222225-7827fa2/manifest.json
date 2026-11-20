@@ -1,0 +1,139 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261120-222225-7827fa2",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "T3 of JOURNAL-oblate.md, continuation of oblate_m4 (finest cells M/4) from its restart file of t = 33 M to t = 55 M on one card (entry 9)",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/core/core-20261120-222225-7827fa2/batch.list"
+  ],
+  "cwd": "scratch/core/core-20261120-222225-7827fa2",
+  "git": {
+    "sha": "7827fa26c2e329ff9429c06e85d573ce69575cc4",
+    "branch": "core/oblate",
+    "dirty": false,
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/core-oblate"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/wt/core-oblate/.work/build_gpu/src/athena",
+    "exe_sha256": "8b5f7275328d1e5d35cc16716c2352cff2595afe9d69a35395ca3ba731680088",
+    "cmake_flags": [
+      "-DPROBLEM=built_in_pgens",
+      "-DAthena_ENABLE_MPI=OFF",
+      "-DAthena_ENABLE_OPENMP=OFF",
+      "-DKokkos_ARCH_ICX=ON",
+      "-DKokkos_ENABLE_DEBUG=OFF",
+      "-DKokkos_ENABLE_DEBUG_BOUNDS_CHECK=OFF",
+      "-DCMAKE_CXX_COMPILER=/data/haiyangw/nrpic/wt/core-oblate/.work/build_gpu/nvcc_wrapper_pinned",
+      "-DCUDAToolkit_ROOT=/usr/local/cuda-12.6",
+      "-DKokkos_ENABLE_SERIAL=ON",
+      "-DKokkos_ENABLE_CUDA=ON",
+      "-DKokkos_ARCH_AMPERE80=ON",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG"
+    ],
+    "toolchain": "nvcc 12.6 (host g++ 11.4.0)"
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-oblate/.venv"
+  },
+  "input": {
+    "file": "/data/haiyangw/nrpic/scratch/core/core-20261119-144923-1a7c274/oblate_m4/rst/obl.00007.rst",
+    "sha256": "44eac19ec8fdb5440e3ea6a9e319c39a73432fe62f3c889a3d10051c1fbbdbe7",
+    "overrides": {}
+  },
+  "inputs": [
+    {
+      "path": ".work/build_gpu/src/athena",
+      "role": "exe",
+      "sha256": "8b5f7275328d1e5d35cc16716c2352cff2595afe9d69a35395ca3ba731680088",
+      "bytes": 102275296,
+      "tracked": false
+    },
+    {
+      "path": "tracks/core/analysis/oblate/t3_continue.list",
+      "role": "list",
+      "sha256": "37f659c9fb0e7fe73cb29a7ac10a089ef57a64b9eca471f0b3e34183bc15737e",
+      "bytes": 113,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-144923-1a7c274/oblate_m4/rst/obl.00007.rst",
+      "role": "athinput:oblate_m4",
+      "sha256": "44eac19ec8fdb5440e3ea6a9e319c39a73432fe62f3c889a3d10051c1fbbdbe7",
+      "bytes": 2335740288,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "oblate_m4",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261119-144923-1a7c274/oblate_m4/rst/obl.00007.rst",
+      "args": [
+        "-t",
+        "00:13:00"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:16:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.27,
+    "gpu_hours": null,
+    "particles": 10000.0
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "core-20261120-222225-7827fa2",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/core/core-20261120-222225-7827fa2",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-20T22:24:17Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "core-20261119-144923-1a7c274"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 5.5266,
+    "gpu_hours_reserved": 0.7,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 7,
+    "runs": 1280,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
