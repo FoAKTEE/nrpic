@@ -253,3 +253,7 @@ set-up m = 1, P = 0.25, eta = 2 and 0.25, 1600 slots, read from the run's input 
 the first good horizon searches of the smoke, 0.5 M for both members and none of the heavy
 black hole's eight found searches). Prediction: every PNG byte-identical to the previous run;
 `ledger.tex` differs by exactly these three rows; `claims.md` identical. Refuted otherwise.
+Amendment before the run: the full-relativity ledger table was too tall for a page (LaTeX:
+"Float too large for page by 52 pt"), so `ledger.py` now writes it as two tables
+(tab:ledger3: data, single member, tree; tab:ledger4: first passage). Prediction amended:
+`ledger.tex` differs from F-20261120-222908-4ffcfba by the three rows and this split only.
