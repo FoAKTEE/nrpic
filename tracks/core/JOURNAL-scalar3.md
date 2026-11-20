@@ -816,3 +816,54 @@ error of the background Pi" of entry 13 is of the same size (4.1e-4) but not sho
 its cause. What a user should take: at Courant 0.25 on a 32^3 step the per-mode R of the
 lowest shells carries 4e-4 of time error after ultra slow roll (A2 of Track E: 2e-2); at
 256^3 the step is 8 times smaller and the error 4000 times smaller.
+
+## 2026-11-20, entry 15: resumed after the usage limit (22:00Z); state found; what runs now, predicted
+
+The session of entries 7 to 14 was cut off on 2026-11-19 after 17:07Z by the usage limit
+of the account. Found on 2026-11-20 at 22:00Z (main merged at df589aad: decisions 0018 and
+0019; `git diff 5cc2821 HEAD -- athenak/ python/ problems/` is empty, so the executables
+built on 2026-11-19, `.work/exe/athena_{cpu,gpu}_5cc2821`, are those of the source of
+HEAD):
+- Every registered run had ended, all with exit status 0, and seven manifests still said
+  "running" or "submitted": G5 geoc (-163800-fe87748), R2 c (-163901-9b7e6e6), R2 a, b
+  (-165411-a48c7e0), S (-165619-a6cb9fd), the G5 analysis (-170729-b99adc7), the card job
+  of test U (-150317-a1e8ee7, Slurm 4651: 18 min 28 s, 0.31 card-hours, 16 runs, each
+  with rc = 0) and the card job of C2 (-155551-9096ee7, Slurm 4661, 2 s). Closed with
+  `nrpic-run finish`. The 14 hand-written manifests of the sub-runs of R2 c and the draft
+  of the answer to Track E (`tracks/core/outbox/`, placeholders unfilled) were untracked.
+- No card job of this package is queued; 0.31 of the one card-hour is spent.
+- Read today before anything below was written: the summaries and figures of R2, S and
+  the G5 analysis (their outcomes are entry 16; their predictions are entries 8 to 10).
+  Of the card runs of U only the exit codes, the file lists and the wall time per run
+  (11 s at 64^3, 123 s at 128^3 with 1054 modes, 131 s with 68532 modes, dumps included);
+  of C2 the last lines of the card log (20 cycles, exit 0). No field, record or
+  comparison of U on the cards or of C2 has been looked at.
+
+**What runs now.**
+1. Analysis of the card runs of U, one registered run per group (L64, K64, L128, K128;
+   `u2_usr_analysis.py --prefix`). The predictions PC1 to PC5 of entry 4 stand as
+   written. The driver gets two more classes of modes, which PC2 and PC3 name and it did
+   not have: |n| <= 8 and the shell |n| = 8. How two statements of entry 4 are evaluated
+   (fixed here, before the numbers exist): PC1 compares <Pi> against the reference at 3,
+   5, 8 e-folds and at the end with the 32^3 values of run -161122-a46833e (2.56e-6,
+   1.72e-5, 4.01e-4, 4.13e-4). PC4's last sentence: the largest rms over the dumps of the
+   part of H (and of |M|) odd in s = +-1, divided by the rms of the reference R^NR
+   (`rms_ref`) at that dump, for K64, K128 and the 32^3 pair of -161122; the dumps are
+   0.5 (32^3, K64) and 1.0 (K128) apart in time, so the maxima are sampled coarsely.
+2. C2 (`c2_compare.py`, entry 11; the prediction stands).
+3. One check added to test S (`s2_sumcheck.py`, no AthenaK run; it reads the dumps and
+   the record of run -165619-a6cb9fd). Seen: column [21] differs from the mean of H of
+   the dump by 6.2e-13 to 6.3e-13 relative at all seven dumps of the run with s = 1, six
+   times the bound of PSb, the same at every dump, and rms H' by half of it (3.1e-13).
+   [JUDGEMENT] The equal offset is not an order-of-summation effect of H but of the
+   denominator: the code divides by a running sum of 32768 equal cell volumes, and a
+   running sum of equal terms rounds in one direction within a binade. Prediction PSd:
+   (a) the running sum of 32768 copies of dx1 dx2 dx3 (dx = 6.283185307179586/32, as the
+   code forms it) differs from 32768 dx^3 by 6.2e-13 +- 0.2e-13 relative; (b) a serial
+   running sum of vol*H over the cells in the order of the reduction (i fastest), divided
+   by that running sum of the volumes, equals column [21] within 1e-14 relative at every
+   dump of the runs sig and zsig (bit for bit unless the compiler contracted vol*H into
+   the sum); (c) the same emulation of the second reduction gives [27] within 1e-13 and
+   [25] within 1e-12 relative for sig. Refuted by (a) below 3e-13 or above 1.2e-12, or by
+   (b) above 1e-13: then the offset has another cause (the dump would not hold the field
+   of the record).

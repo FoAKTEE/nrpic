@@ -41,6 +41,8 @@ def at(x, y, x0):
 
 def classes(q, ent, qtop):
     return (("n_le_2", ent & (q <= 2.0 + 1e-9)), ("n_le_4", ent & (q <= 4.0 + 1e-9)),
+            ("n_le_8", ent & (q <= 8.0 + 1e-9)),
+            ("shell_8", ent & (np.abs(q - 8.0) < 1e-9)),
             ("top_shell", ent & (q >= qtop - 1e-9)), ("all_in", ent))
 
 
