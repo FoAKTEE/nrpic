@@ -1051,7 +1051,7 @@ size, not the sampling of the cloud, leads: T3b, T9). a5r equals a5 to 10 per ce
 (one particle per root cell: the adaptive cloud level is the root until the contrast
 passes 16). Refuted if u5 jumps as well: then the cause is not the refinement.
 
-## 2026-11-20 22:32  T10e moves to the processors; T10c waits for the queue
+## 2026-11-20 22:27  T10e moves to the processors; T10c waits for the queue
 
 `squeue` shows two jobs of core (4733 pending, 4736 running) and four of the tracks
 behind them: by the rule nothing is submitted. T10c (the restart with 512 to 792
