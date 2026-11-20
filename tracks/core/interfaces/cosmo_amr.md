@@ -442,7 +442,7 @@ What this says:
 its file at t = 10 with four finder surfaces that can flow (`t10c_finder.athinput`), and
 T10e, the deck to t = 5.2 without refinement, as run, with the uniform spreading, and
 with every cloud on the root level, to see where the constraint jump at t = 3 comes from.
-Predictions: journal, entry of 2026-11-20 22:30. Command:
+Predictions: journal, entry of 2026-11-20 22:23. Command:
 `harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher batch --list
 tracks/core/analysis/cosmo_amr/t10c_scout.list --exe
 /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_gpu --gpu-hours 0.3 --wall

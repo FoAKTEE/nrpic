@@ -890,7 +890,7 @@ predict. Refuted if v1 runs (then the cause was the build of 901d8b3 or a transi
 the machine) or if v3 dies too (then it is the 64^3 deck on a card whatever the limit,
 and the finder case v5 tells whether the finder is involved).
 
-## 2026-11-20 22:10  outcomes of T14 (card check) and T10d (the crash did not repeat); T10b
+## 2026-11-20 22:08  outcomes of T14 (card check) and T10d (the crash did not repeat); T10b
 
 **T14, run core-20261119-161748-75c2405 (job 4664, 11 s, published card executable),
 analysed by core-20261120-220634-d26a0b6** (`t14_summary.json`, figure `fig_t14_card`,
@@ -947,7 +947,7 @@ density contrast exceeds 8^(l+1) on level l, the lapse ladder only the centre); 
 limit is reached the adaptive driver stops refining or the run ends, and I report
 which.
 
-## 2026-11-20 22:30  outcome of T10b (the scouting run); predictions of T10c and T10e
+## 2026-11-20 22:23  outcome of T10b (the scouting run); predictions of T10c and T10e
 
 **T10b, run core-20261120-220816-09f6f79 (job 4734, published card executable, 244 s =
 0.068 card-hours), first analysis core-20261120-222114-aa6e2d0** (hand-written manifest:
@@ -1060,9 +1060,9 @@ also holds the four T10e cases for a card). T10e runs on four processors instead
 the published processor executable (T14: card and processors agree to round-off), as
 `t10e_jump.py`: the same four cases, to t = 3.5 instead of 5.2 (the jump of T10b lies
 at t = 3.06; a serial cycle of this deck takes 20 to 45 s). Prediction as written in
-the entry of 22:30, with "to t = 5.2" read as "to t = 3.5".
+the entry of 22:23, with "to t = 5.2" read as "to t = 3.5".
 
-## 2026-11-20 22:30  prediction of T16 (the finder's `hmean_tol` in the cosmological box, processors)
+## 2026-11-20 22:28  prediction of T16 (the finder's `hmean_tol` in the cosmological box, processors)
 
 A direct test of the reading of T10b's status file, cheap on processors
 (`t16_hmean.py`, published processor executable): the S1 data at t = 0 on the uniform
@@ -1077,7 +1077,7 @@ homogeneous universe gave 4), with no surface point outside the mesh. Refuted if
 `tol100` flows on (then the integral is not what stops the track's searches) or if
 `tolbig` reports a horizon in the initial data.
 
-## 2026-11-20 22:33  outcome of T16
+## 2026-11-20 22:29  outcome of T16
 
 **T16, run core-20261120-222814-0b2b259** (hand-written manifest, 59 s, two processors;
 `t16_summary.json`; no figure: four status lines, read) [VERIFIED]:
@@ -1092,3 +1092,7 @@ homogeneous universe gave 4), with no surface point outside the mesh. Refuted if
 [JUDGEMENT] from the same step size: started far outside a small horizon the flow can
 jump over it; the initial radius must be close to the surface looked for. At late times
 rho H is small (2 sqrt(chi) + 2 H rho, about 0.1 at t = 11), so there the flow is gentle.
+
+(Note, 22:31: the times in the headings of today's entries were first written from memory
+and were a few minutes off; they now carry the times of `date -u` at which each entry
+was written. The order and the text of the entries are unchanged.)

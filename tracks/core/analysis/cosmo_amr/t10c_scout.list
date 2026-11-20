@@ -1,7 +1,7 @@
 # T10c: T10b (run core-20261120-220816-09f6f79) restarted at t = 10 with a finder that can flow
 # (four surfaces, hmean_tol out of the way); T10e: T10's deck to t = 5.2 without refinement, as
 # T10b, with the uniform spreading, with every cloud on the root level
-# (tracks/core/JOURNAL-cosmo-amr.md, entry of 2026-11-20 22:30)
+# (tracks/core/JOURNAL-cosmo-amr.md, entry of 2026-11-20 22:23)
 u5 problems/cosmo_amr/peak_amr.athinput time/tlim=5.2 problem/id_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/fields.bin particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/particles.nrp fastflow/start_time_0=100.0 mesh_refinement/max_nmb_per_rank=300 particles/cstat_dcycle=1 output3/dt=0.25 output7/dt=100.0 particles_amr/lapse_ratio_1=0.01
 a5 problems/cosmo_amr/peak_amr.athinput time/tlim=5.2 problem/id_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/fields.bin particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/particles.nrp fastflow/start_time_0=100.0 mesh_refinement/max_nmb_per_rank=300 particles/cstat_dcycle=1 output3/dt=0.25 output7/dt=100.0
 a5c problems/cosmo_amr/peak_amr.athinput time/tlim=5.2 problem/id_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/fields.bin particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/particles.nrp fastflow/start_time_0=100.0 mesh_refinement/max_nmb_per_rank=300 particles/cstat_dcycle=1 output3/dt=0.25 output7/dt=100.0 particles/deposit_fine_shape=false
