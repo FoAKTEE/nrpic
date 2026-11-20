@@ -6,6 +6,12 @@ resolutions, read from the run directories of the card job.
                          [--prolate m8=DIR --prolate m16=DIR]
                          [--basename obl] [--figdir DIR]
 
+A run that was continued from a restart file in another directory is given as
+name=DIR1+DIR2 (in the order of the segments): the files of the segments are joined in
+<out>/joined_<name>/ (links to the snapshots, slices and logs, the text histories one
+after the other; where two segments hold a record of the same time the later one
+counts).
+
 Per run, from the files of the code:
   <base>.part.NNNNN.bin   rms height z_rms and rms cylindrical radius R_rms of the
                           particles, the fraction that is on the other side of the
@@ -117,6 +123,33 @@ def log_facts(d):
     return out
 
 
+def join_segments(name, spec, out):
+    """Directory holding the files of a run made of several restart segments."""
+    parts = spec.split("+")
+    if len(parts) == 1:
+        return spec
+    j = os.path.join(out, "joined_" + name)
+    os.makedirs(j)
+    links = {}
+    for d in parts:
+        for pat in (BASE + ".part.[0-9]*.bin", BASE + ".curv.[0-9]*.bin", "athena.2*.log"):
+            for p in sorted(glob.glob(os.path.join(d, pat))):
+                links[os.path.basename(p)] = os.path.abspath(p)
+    for fn, p in links.items():
+        os.symlink(p, os.path.join(j, fn))
+    for fn in (BASE + ".nrpic.hst", BASE + ".curv.hst", BASE + ".z4c.user.hst",
+               BASE + ".horizon_summary_0.txt"):
+        with open(os.path.join(j, fn), "w") as f:
+            for d in parts:
+                p = os.path.join(d, fn)
+                if os.path.exists(p):
+                    txt = open(p).read()
+                    f.write(txt if txt.endswith("\n") or not txt else txt + "\n")
+    with open(os.path.join(j, "SEGMENTS"), "w") as f:
+        f.write("\n".join(os.path.abspath(d) for d in parts) + "\n")
+    return j
+
+
 def particle_history(d):
     files = sorted(glob.glob(os.path.join(d, BASE + ".part.[0-9][0-9][0-9][0-9][0-9].bin")))
     t0, d0, tag0, _ = read_snapshot(files[0])
@@ -196,6 +229,31 @@ def numbers(d):
                finite=bool(np.all(np.isfinite(h.a[:, :23]))))
     rem = np.nonzero(h["n_excised"] > 0)[0]
     res["t_first_removal"] = float(h["time"][rem[0]]) if len(rem) else None
+    # the fraction across the plane 1 M and 2 M after the pancake (journal entry 8), the
+    # times at which the rms height passes fractions of its initial value (entry 3), the
+    # rms radius when the first horizon is found, the part of the rest mass removed
+    for dtp in (1.0, 2.0):
+        res[f"crossed_at_tp_plus_{dtp:g}"] = float(np.interp(tp + dtp, ph[:, 0], ph[:, 4])) \
+            if ph[-1, 0] >= tp + dtp else None
+    for frac in (0.75, 0.5, 0.25, 0.1):
+        k = np.nonzero(zr[:kp + 1] <= frac)[0]
+        if len(k) and k[0] > 0:
+            k = k[0]
+            res[f"t_z_rms_{frac:g}"] = float(np.interp(frac, [zr[k], zr[k - 1]],
+                                                      [ph[k, 0], ph[k - 1, 0]]))
+        else:
+            res[f"t_z_rms_{frac:g}"] = None
+    res["R_rms_min_before_removal_over_initial"] = float(np.nanmin(np.where(full, Rr, np.nan)))
+    if len(found):
+        res["R_rms_over_initial_at_first_AH"] = float(np.interp(found[0, 0], ph[:, 0], Rr))
+        res["z_rms_over_initial_at_first_AH"] = float(np.interp(found[0, 0], ph[:, 0], zr))
+        res["np_at_first_AH"] = int(np.interp(found[0, 0], ph[:, 0], ph[:, 1]))
+        late = found[found[:, 0] >= found[-1, 0] - 5.0]
+        res["M_AH_last5M_mean"] = float(late[:, 1].mean())
+        res["M_AH_last5M_min"] = float(late[:, 1].min())
+        res["M_AH_last5M_max"] = float(late[:, 1].max())
+    res["m_excised_over_sum_m0"] = float(h["m_excised"][-1] / h["sum_m"][0])
+    res["n_removed_fraction"] = float(1.0 - h["np"][-1] / h["np"][0])
     if len(cv):
         i = int(np.argmax(cv[:, 1]))
         j = int(np.argmax(cv[:, 5]))
@@ -405,6 +463,7 @@ def main():
     os.makedirs(FIGDIR, exist_ok=True)
     fs.use_style()
     dirs = dict(r.split("=", 1) for r in a.run)
+    dirs = {name: join_segments(name, spec, a.out) for name, spec in dirs.items()}
     res, ser = {}, {}
     for name, d in dirs.items():
         res[name], ser[name] = numbers(d)
