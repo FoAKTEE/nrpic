@@ -182,9 +182,10 @@ core-20261120-220816-09f6f79 against the track's A-emd-pbh-20261115-160349-9d232
   removes particles only at 0.007 of the mean lapse (248 removed from t = 11.15 on).
 - The first attempt (job 4654) died at start with a segmentation fault that did not
   repeat (five variants on a card, two on processors); unexplained.
-- Not run yet (two jobs of core were in the queue): the last stretch again with four
-  finder surfaces that can flow, and four runs to t = 5 that separate the constraint jump
-  after the first regrid (`t10c_scout.list`; predictions in the journal).
+- Open (session paused by the usage limit): the last stretch again with four finder
+  surfaces that can flow (T10c, not submitted, `t10c_finder.list`), and the four runs
+  that separate the constraint jump after the first regrid (T10e, running on processors
+  as core-20261120-222729-6cfac05, not judged); `cosmo_amr.md` section 7.
 
 ## 6. Regression
 

@@ -1140,3 +1140,39 @@ level show the 35 and 15 per cent of T3c. With linear clouds every combination i
 uniform. Not tested: a density gradient across which the adaptive level itself changes
 on a uniform mesh (clouds of two sizes side by side; docs/TESTLOG.md records the
 "jumps where the cloud level moves" on the dust ball).
+
+## 2026-11-20 22:34  PAUSED (flag `locks/PAUSE`, five-hour window at 97 per cent): where I stopped
+
+Nothing new is started. State, for a reader with no memory:
+- Done and recorded today: T14 judged (the card executable reproduces the processors);
+  T10 (first attempt died at start, unexplained; T10d: no crash in five variants); T10b,
+  the scouting run (S1 with adaptive refinement ends as the static run at t = 11.78,
+  guard stop; the track's finder never searched); T16 (`hmean_tol` on processors); T3d
+  (adaptive cloud level at a level boundary); interface text sections 2.1, 2.3, 4, 4.5,
+  5, 7, 8; `REQUESTS_A2.md` section 5; READY of `scratch/core/exe/core_cosmo-amr/`
+  (executables unchanged, checksums verified); example input `peak_amr.athinput`
+  (`hmean_tol_0 = 1e30`, comments); message to A-emd-pbh in `tracks/core/outbox/`. No
+  source file under `athenak/src` changed today: nothing to rebuild or republish.
+- RUNNING on four processors, started 22:27, not judged: T10e, run
+  core-20261120-222729-6cfac05 (`run_registered.py`, processes 1998180, 1998264 and the
+  four executables 1998382, 1998383, 1998385, 1998387; at cycle 13 of about 68 when the
+  flag appeared; about 45 minutes to go). When it ends, `run_registered.py` rewrites
+  `tracks/core/runs/core-20261120-222729-6cfac05/manifest.json` (then uncommitted) and
+  the script leaves `t10e_summary.json` and `fig_t10e_jump.png` in
+  `scratch/core/core-20261120-222729-6cfac05/`. Next: read both, judge against the
+  prediction (entries 22:23 and 22:27), look at the figure, copy it to `figs/`, write
+  the outcome here and into `cosmo_amr.md` section 7 and the READY file, commit the
+  manifest, and post the outcome to A-emd-pbh (the message of 22:30 promises it). If the
+  cases were cut short: `t10e_jump.py --analyse-only --out <run directory>` analyses
+  what exists.
+- NOT SUBMITTED: T10c (card, about ten minutes): command in `cosmo_amr.md` section 7;
+  prediction in the entry of 22:23; analysis script `t10c_finder.py` (tested on the
+  files of T10b). Submit only when fewer than two card jobs of core are queued.
+- Not done: the cause of the crash of the first T10 attempt (a rerun of case v1 of
+  `t10d_card.list` with the card build of 901d8b3, `.work/build_gpu/src/athena`, sha256
+  6dca616d..., would separate the build from a transient); the size of the particle
+  restart files (request to the core lead); an excision threshold relative to the mean
+  lapse; a limiter for `deposit_fine_shape`.
+Card time of the package: T14 11 s, T10 3 s, T10d 20 s, T10b 244 s: 0.08 card-hours of
+the one allowed. Scratch: the restart files of T10b take 12 GB
+(`scratch/core/core-20261120-220816-09f6f79/s1amr/rst/`); T10c needs `peak.00002.rst*`.

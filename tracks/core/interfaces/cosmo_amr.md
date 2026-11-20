@@ -439,16 +439,22 @@ What this says:
 - The particle criterion never acted (at most 7.4 particles per leaf cell, threshold 8):
   the lapse ladder alone drove the mesh.
 
-**Pending, written and predicted but not run** (the queue held two jobs of this owner):
-`t10c_scout.list`, one card job of about ten minutes: T10c, the restart of the run from
-its file at t = 10 with four finder surfaces that can flow (`t10c_finder.athinput`), and
-T10e, the deck to t = 5.2 without refinement, as run, with the uniform spreading, and
-with every cloud on the root level, to see where the constraint jump at t = 3 comes from.
-Predictions: journal, entry of 2026-11-20 22:23. Command:
-`harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher batch --list
-tracks/core/analysis/cosmo_amr/t10c_scout.list --exe
-/data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_gpu --gpu-hours 0.3 --wall
-00:20:00 --purpose "T10c and T10e of cosmo-amr"`; analysis with `t10_scout.py --more`.
+**Open when the session was paused (2026-11-20 22:34 UTC, usage limit)**:
+- T10e, the constraint jump after the first regrid: running on four processors as run
+  core-20261120-222729-6cfac05 (`t10e_jump.py`: the deck to t = 3.5 without refinement, as
+  run, with the uniform spreading, with every cloud on the root level; about 50 minutes).
+  NOT JUDGED. Its script writes `t10e_summary.json` and `fig_t10e_jump.png` into the run
+  directory when the four cases end; prediction in the journal (entries of 2026-11-20
+  22:23 and 22:27).
+- T10c, the last stretch again with four finder surfaces that can flow: written and
+  predicted (journal, 22:23), NOT SUBMITTED (two card jobs of core were queued, then the
+  pause). Command: `harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher
+  batch --list tracks/core/analysis/cosmo_amr/t10c_finder.list --exe
+  /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_gpu --gpu-hours 0.25 --wall
+  00:15:00 --purpose "T10c of cosmo-amr"`; analysis: `t10c_finder.py --run <case
+  directory> --base <case directory of core-20261120-220816-09f6f79>`. It would also be
+  the first restart of an adaptive run on a card. Card time of the package so far: 0.08
+  of the one card-hour.
 
 ## 8. Not done, limits, open points
 
