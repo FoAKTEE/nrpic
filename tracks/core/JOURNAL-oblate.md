@@ -553,3 +553,73 @@ Consequence for T3: the GR pancake time is to be compared with t_p = 20.0 M of t
 same particles (snapshot grid; 19.9 M from the history), not with 19.74 M; and the
 crossing fraction rises over about 2 M even without relativity, so P3b's "above 0.9"
 is to be read at t_p + 1 M or later.
+
+## 2026-11-20 22:22Z, entry 9: resumed after the cut-off; what the card job left; two runs predicted
+
+The session of entry 8 ended at the usage limit of 2026-11-19. State found today
+(`git status` clean, the last commit of the package d8ebbfb8; `sacct`; the run
+directories):
+
+- Slurm job 4647 (run core-20261119-144923-1a7c274) ran unattended on 2026-11-19
+  17:47Z to 18:20Z, 33 min 26 s of one card (0.557 card-hours of the one hour of the
+  package). `batch.list.status`: rc = 0 for `cf_card`, `oblate_m4`, `oblate_m8`.
+  `oblate_m8` reached t = 55 M (1444 cycles, 1388 s, 1016 MeshBlocks at the end, peak
+  card memory 62135 MiB). `oblate_m4` did NOT reach the end: "Terminating on wall
+  clock limit" at t = 33 M (cycle 528, 597 s). My wall limit of 10 minutes for it was
+  wrong: I had taken the cost of a step from the prolate M/8 run and scaled by the
+  number of cells, but the M/4 mesh has 960 blocks, nearly as many as the M/8 mesh
+  (the refined box of level 4 is the bulk of both), and costs 1.13 s per step. The run
+  wrote its restart file at the stop (`rst/obl.00007.rst`). Record closed with
+  `nrpic-run finish` today (commit d732bf75).
+- T4, run core-20261119-153609-754c44d: the 64^3 run is complete (entry 8); the 128^3
+  run was killed with the session at t = 8.9 M (signal 15, 4712 s; 11.2 s per step on
+  one core); it has no restart file. Its manifest says failed, which is right.
+- What I have looked at before writing this entry, so that the reader can judge what
+  follows as prediction or not: the tail of the two logs (times and block counts, no
+  physics) and the horizon file of `oblate_m8` (first horizon 41.875 M, mass 0.9936 at
+  first sight, 0.990 to 0.991 at the end with the finder alternating between two
+  states). Nothing of `oblate_m4` beyond its log.
+
+### Continuation of `oblate_m4` on a card: prediction (22:22Z, before the run)
+
+One list line, the restart file of t = 33 M with a wall limit of 13 minutes for the
+22 M that are left (expected 7 minutes at the measured 1.13 s per step; Slurm limit
+16 minutes; the package then stands at 0.82 card-hours at most). P3a to P3d of entry
+1 and P3a', P3c' of entry 3 are judged on the joined run as written. Having seen the
+horizon file of the M/8 run I now expect, for M/4 [JUDGEMENT]: the first horizon
+within 1.5 M of 41.875 M (the finder looks every 1 M at M/4: 41, 42 or 43 M); a
+largest horizon mass of 0.985 +- 0.010, below the M/8 value by less than 0.01 (the
+prolate pair M/8, M/16 differs by 0.010). P3d's band for M/4 (0.90 to 0.96) would
+then fail as its band for M/8 already has at the upper edge (0.9936 against
+0.955 +- 0.025; not refuted: the refuting values were above 1.00 or below 0.90).
+A card run does not reproduce itself bit for bit, and a restart on a card is exact
+only up to that; the joined history is one run in the sense of the code.
+
+### T4 at 128^3 again, with the threaded executable: prediction (22:22Z)
+
+The serial release executable needs 3.7 hours for the 128^3 run. The threaded
+processor build of core (`scratch/core/exe/core_build-openmp/athena_cpu`, sha256
+8f223f75..., READY: Newtonian mode tested, results equal to the serial ones "to the
+solver tolerance", 10.6 s against 0.82 s per step at 16 threads for a 128^3 box) does
+it in about 40 minutes on six threads. New script `run_newton_omp.sh`: first 64^3,
+then 128^3, six threads each. The 64^3 run repeats the serial run of entry 8 with the
+other executable, as a control of that executable on this problem.
+
+- P4f (control). Threaded 64^3 against serial 64^3 (run core-20261119-153609-754c44d):
+  z_rms/z_rms(0) and R_rms/R_rms(0) of the snapshots differ by less than 0.005 up to
+  t_p, the pancake time from the second moment of the history is the same within
+  0.1 M, the 10, 50 and 90 per cent crossing times within one snapshot (0.25 M).
+  Refuted by a larger difference: then the threaded executable is not used for T4 and
+  the 128^3 number is not quoted.
+- P4d of entry 7 stands for 128^3: t_p within 0.25 M of the 64^3 value (20.0 M on the
+  snapshot grid), energy change below 5e-3 of |W(0)| before t_p - 1 M.
+- P4e, the test that entry 8 announced. If the 2 M spread of the plane crossing is the
+  force noise of 10^4 particles (entry 8), a finer mesh does not reduce it: the smoothing
+  of the deposit (cloud and four filter passes, about two cells) halves with the cells,
+  so the particles see more of each other, not less. Prediction: at 128^3 the 10 to 90
+  per cent width of the crossing times is between 1.8 and 3.5 M (64^3: 2.0 M), the width
+  in the bin of the smallest starting heights at least 2 M (64^3: 2.5 M), the smallest
+  z_rms between 0.06 and 0.15 of the initial value (64^3: 0.059), and the medians of the
+  radial bins keep their order (rim and centre late). Refuted by a width below 1.4 M at
+  128^3: then the spread at 64^3 was the cloud of the coarse mesh and not the particle
+  noise.
