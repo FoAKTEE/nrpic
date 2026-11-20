@@ -9,8 +9,8 @@ R_edge (mu_max = eps^2 R_edge^3/2), seed of mass 1, and one of three force laws:
            a = -G M_enc sign(r) f(|r|/dx)/r^2 (f = 1 beyond the table, f ~ q^3 below it);
   plummer  a = -G M_enc r/(r^2 + s^2)^(3/2) with the fitted s_eff (or --soft);
   point    the same with a small s (the continuum limit for the comparison).
-Snapshots at the nominal snapshot times of the run, t_k = k tlim/nsnap (code time; cosmic
-time t_i + t_k). Writes nm_shells_<label>.npz and .json into --out ($NRPIC_RUN_DIR).
+Snapshots at the nominal snapshot times of the run, t_k = k tlim/nsnap, or k snap_dt with
+--snap_dt (code time; cosmic time t_i + t_k). Writes nm_shells_<label>.npz and .json into --out ($NRPIC_RUN_DIR).
 
 Usage: python3 nm_shells.py --setup SETUP.json --law kernel --kernel kernel_nx128.txt
                             --dx 1.0625 --label N128_kernel [--nsnap 50] [--n 4000]
@@ -67,6 +67,8 @@ def main():
     ap.add_argument("--soft", type=float, default=0.0)
     ap.add_argument("--label", required=True)
     ap.add_argument("--nsnap", type=int, default=50)
+    ap.add_argument("--snap_dt", type=float, default=0.0,
+                    help="snapshot interval of the run (default tlim/nsnap); the last one at tlim")
     ap.add_argument("--n", type=int, default=4000)
     ap.add_argument("--eta", type=float, default=0.02)
     a = ap.parse_args()
@@ -92,7 +94,12 @@ def main():
         c["soft"] = a.soft if a.soft > 0 else 0.05
     info["soft"] = c["soft"]
     t_i = p["t_i"]
-    tk = np.arange(1, a.nsnap + 1) * p["tlim"] / a.nsnap
+    if a.snap_dt > 0:
+        tk = np.arange(1, int(np.floor(p["tlim"] / a.snap_dt + 1e-9)) + 1) * a.snap_dt
+        if p["tlim"] - tk[-1] > 1e-6 * a.snap_dt:
+            tk = np.append(tk, p["tlim"])
+    else:
+        tk = np.arange(1, a.nsnap + 1) * p["tlim"] / a.nsnap
     snaps_a = ((t_i + tk) / t_i) ** (2.0 / 3.0)
     snaps_a[-1] = p["a_end"]
     res = shells.run(c, snaps_a, eta=a.eta)
