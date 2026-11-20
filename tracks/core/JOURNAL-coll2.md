@@ -957,3 +957,20 @@ from the class layout before the header change of 07:40:08 and never recompiled
 card executable is a clean build and is not affected. Rule for card builds of this
 tree: after a change of `particles.hpp` during a running build, rebuild from clean or
 delete the objects that finished after the change.
+
+## 2026-11-20 22:05 UTC  third closing session of coll2 (wave 3): the 150 M cluster job, records
+
+Merged `main` (d507d77: decisions 0017 to 0019, pre-commit hook, usage watcher; nothing
+under `athenak/src`). Read `CLAUDE.md` (pause flag, load), the charter to "Owners", brief
+lines 493-553, 688-706, 834-860, decisions 0010 and 0016 to 0019, this journal. The pause
+flag is absent. State found: the 150 M cluster job 4639 (run core-20261119-143232-4d1e995)
+COMPLETED unattended on 2026-11-19 08:17-08:30 PST (13 min 19 s of allocation, 0.222
+card-hours; `batch.list.status`: off, kn3_cell, kn3_particle all rc = 0, each to t = 150 M);
+its manifest is finished and committed (077b0e2); it has not been analysed. Card time of
+this package: 1.09 (to 2026-11-19 14:00) + 0.0167 (Ct) + 0.0061 (X) + 0.222 (C) = 1.33
+card-hours of allocation, of which the "at most one card-hour" of the rerun budget used
+0.245. No further card job is needed for the question of the brief if C passes.
+
+Prediction for this analysis: prediction C of 2026-11-19 14:20 UTC, unchanged (written
+before the job ran). The analysis is `run_cluster.py --analyse` (mode checked by A) on
+the run directory, registered as its own run.
