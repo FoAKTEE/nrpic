@@ -545,7 +545,7 @@ the horizon, which tau_H monotonic shows for the initial labels, and with an exa
 spherical evolution), and the code's own reading of the table (the smoke runs of entry 4).
 Consequence: the card run of ES-F may go ahead (entry 7).
 
-## Entry 7 (2026-11-20 14:36 PST, before submission): pre-registration of the ES-F card run (G2 scouting)
+## Entry 7 (2026-11-20 14:33 PST, before submission): pre-registration of the ES-F card run (G2 scouting)
 
 Run: `inputs/esf_dx8.athinput` (unchanged since its smoke run D-20261119-145325-934efd1),
 data D-20261119-145022-2208a19 (construction CONFIRMED, entry 6b), executable
@@ -639,3 +639,16 @@ Failure modes named in advance: (F1) a non-finite run (np drops to 0 while the r
 "succeeds"); (F2) matter piling up at the puncture (risk R5: m_inside1 growing without
 bound, the finder losing the horizon, removal by reason 2 only); (F3) the finder
 failing as the horizon grows (gaps in horizon_summary); (F4) dust leaving the mesh.
+
+## Stop note (2026-11-20 14:34 PST): paused
+
+The pause flag `locks/PAUSE` appeared at 14:33 PST (five-hour window at 97 per cent)
+while entry 7 was being committed. Following CLAUDE.md, nothing new was started: ES-F was
+NOT submitted. State: construction CONFIRMED (entry 6b; runs D-20261120-222314-ed5d325,
+-222651-3180e07, -222815-f8d1b42); pre-registration committed (entry 7, commit 54a52ae).
+Queue at 14:33 PST: one D job (D-20261120-222625-63abd72, another package) pending, so a
+slot for this package was free. Resume at step 3 of the package: check the flag and
+`squeue -h -o '%j' | grep -c '^D-'`, then submit exactly the command of entry 7 / the
+package brief (executable core_requests-adf/athena_gpu, --gpu-hours 1.97, chain); then
+step 4 (tools/finish_esf.sh, the figures for criteria (i)-(iii) and D1-D4 in
+esf_analyse.py, tested on synthetic data and with --partial).
