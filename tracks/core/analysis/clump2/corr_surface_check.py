@@ -23,7 +23,7 @@ import sys
 
 import numpy as np
 from scipy.interpolate import CubicSpline
-from scipy.integrate import quad
+from scipy.integrate import quad, simpson
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 WT = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
@@ -90,6 +90,24 @@ def main():
         res["python"][f"e={e}"] = dict(flux=float(flux), source=float(src),
                                        J_over_rs2=float((flux - src) / rs ** 2),
                                        flux_scale=float(abs(flux) / rs ** 2))
+    # the same balance without any interpolation across the edge: splines of the
+    # solution on each side separately, the source integrated on the nodes of each side
+    # (rbar_s is the last inner and the first outer node)
+    nin = co["n_inside"]
+    ri, ro = r[:nin], r[nin - 1:]
+    gsrc = (sig * y0 - S0) * r * r
+    spi = CubicSpline(ri, y0[:nin])
+    spo = CubicSpline(np.log(ro), y0[nin - 1:])
+    res["python_split"] = {}
+    for e in (0.05, 0.1, 0.2, 0.5, 1.0):
+        ia = int(np.argmin(np.abs(ri - (rs - e))))
+        ib = int(np.argmin(np.abs(ro - (rs + e))))
+        lo, hi = float(ri[ia]), float(ro[ib])
+        flux = hi * hi * float(spo(math.log(hi), 1)) / hi - lo * lo * float(spi(lo, 1))
+        src = (simpson(gsrc[ia:nin], x=ri[ia:])
+               + simpson(gsrc[nin - 1:nin + ib], x=ro[:ib + 1]))
+        res["python_split"][f"e={e}"] = dict(lo=lo, hi=hi, flux=float(flux), source=float(src),
+                                             J_over_rs2=float((flux - src) / rs ** 2))
     # one-sided derivatives of the solution at rs
     h = 1e-4
     res["python"]["dy0_left"] = float((y(rs) - y(rs - h)) / h)

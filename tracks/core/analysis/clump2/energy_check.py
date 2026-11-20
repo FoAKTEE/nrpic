@@ -46,7 +46,7 @@ def main():
         # exterior of the monopole: y0 -> C/r + particular part falling as r^-2
         tail = float(r[-1] * y0[-1])
         res[s] = dict(yc=yc, M=md.M, R=md.R, rbar_s=md.rbar_s, alpha_c=md.alpha_c,
-                      compactness=md.M / md.R, pmass_over_M=B.pmass() / md.M,
+                      compactness=md.M / md.R, pmass_over_M=float(B.pmass) / md.M,
                       monopole=float(co["monopole"]),
                       added_mass_over_half_M_V2=float(ratio),
                       deviation=float(ratio - 1.0),
@@ -54,7 +54,7 @@ def main():
                       r_y0_last_over_monopole=tail / float(co["monopole"]))
         prof[s] = (r / md.rbar_s, y0, np.asarray(co["y2"]))
         print(f"yc {yc:5.3f}  M/R {md.M / md.R:.4f}  alpha_c {md.alpha_c:.4f}  "
-              f"pmass/M - 1 {B.pmass() / md.M - 1.0:+.2e}  "
+              f"pmass/M - 1 {float(B.pmass) / md.M - 1.0:+.2e}  "
               f"added mass/(M V^2/2) {ratio:.6f}", flush=True)
 
     fs.use_style()

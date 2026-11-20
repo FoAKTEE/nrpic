@@ -962,3 +962,97 @@ the growth of the cluster along x is a real elongation, the drift of `sum m u_x`
 explained by coordinates, and a loss of momentum on the mesh is the remaining candidate.
 If D2 holds but D3 leaves more than 8 per cent at v = 0.3, the crowding is there but
 does not account for the drift.
+
+### Outcome of FX (run `core-20261120-222933-0a01a56`, 22:29Z to 22:33Z; exit 1 because `energy_check.py` called a property as a function, so EN did not run; the other five steps ran)
+
+Figures `diag/fig_tb_residual_profiles.png` and `surf/fig_corr_surface.png` of the run,
+looked at (next entry).
+
+- The leftover of the correction on the mesh: the fix did more than predicted.
+  `|D_H(corr)|/|D_H(curv)|` at 32, 64, 128 cells: 0.0455, 0.0223, 0.0102 (v = 0.1) and
+  0.0541, 0.0339, 0.0263 (v = 0.3); before the fix 0.078, 0.078, 0.094 and 0.082, 0.081,
+  0.097. Predicted for 128 cells: between 0.04 and 0.07: missed on the low side; the
+  refutation line (above 0.08) is not met. The ratio now falls with the cell size, by a
+  factor 2.0 and 2.2 per halving at v = 0.1 (first order, as the deposit at the edge); at
+  v = 0.3 it levels at 0.026 because the part away from the surface, 7.1e-4 = 0.023 of
+  the uncorrected residual, does not depend on the cell size (7.3e-4, 7.1e-4 at 64, 128
+  cells): the terms of order V^4 (estimated 0.016 in PA6). With this the bands of TB3 as
+  first written (below 0.15, 0.08, 0.05 at dx = 1, 0.5, 0.25 for v = 0.3, not larger at
+  v = 0.1) hold: 0.054, 0.034, 0.026.
+- Surface norm of `D_H(corr)` at 128 cells: 3.1e-5 (v = 0.1) and 3.7e-4 (v = 0.3),
+  against 2.9e-4 and 2.9e-3 before (predicted to fall by 30 to 60 per cent: it fell by
+  87 to 89 per cent), and it now halves with the cell size (v = 0.1: 1.18e-4, 6.8e-5,
+  3.1e-5).
+- The layer measured in the code (shell integral of `D_H(corr)` across the surface, per
+  unit V^2): 2.6e-5 to 2.7e-5 at 32 cells, 8.3e-6 and -3.1e-6 at 64, -2.7e-6 and -9.0e-6
+  at 128 (shell half-widths 0.5 and 1.0); before the fix 8.1e-5, 5.0e-5 to 6.4e-5, 4.4e-5
+  to 5.0e-5. Predicted for 128 cells: 2e-5 to 2.6e-5 ("the mesh part stays"): wrong, there
+  was almost no mesh part. My statement of 2026-11-19 that "about half of the leftover at
+  128 cells comes from the generator's correction; the rest is made on the mesh" is
+  withdrawn: nearly all of it was the generator's defect.
+- FAILED as written: "J/rs^2 of the Python solution falls below 1e-6". The flux balance of
+  `corr_surface_check.py` on the Python solution now gives -2.92e-5 (e = 0.1 to 0.5;
+  the written table the same), where it gave +2.45e-5 before the fix. The change, 5.37e-5,
+  agrees with the change of the layer seen in the code (4.7e-5 to 5.9e-5) and with the
+  change of the added mass (a jump J of the flux `r^2 y0'` changes the mass by `4 J` in
+  units of `M V^2/2`: 4 x 5.37e-5 x rbar_s^2 = 0.017; the mass went from 0.98379 to
+  0.99997 of `M V^2/2`). Two readings: (i) the solution still has a layer of -2.9e-5, of
+  the size of the old one with the other sign; (ii) the check itself is off by -2.9e-5,
+  and the old layer was +5.4e-5. Against (i): a layer of that size made a surface norm of
+  2.9e-4 at 128 cells that did not fall with the cell size; the surface norm is now
+  3.1e-5 and halves with the cell size. For (ii) there is a mechanism [JUDGEMENT]: the
+  check integrates the source through cubic splines of S0 and sigma over all nodes, the
+  crowded inner ones and the first outer interval of 0.017 together, the same mixing of
+  the two grids that made the defect of the solver. Not established until the check is
+  made without that spline.
+
+### Prediction FX2 and TF (written 22:44Z, before either runs)
+
+FX2. `corr_surface_check.py` now also computes the balance with nothing interpolated
+across the edge (`python_split`: splines of the solution on each side separately, the
+source by Simpson's rule on the nodes of each side, the interval ending on nodes).
+Predicted if reading (ii) is right: |J|/rs^2 below 2e-6 for half-widths 0.1 to 1.0.
+Reading (i) predicts -2.9e-5. EN as written above (22:25Z), unchanged.
+
+TF (card; list `card_tf.list`; NOT SUBMITTED yet: two card jobs of owner core are in the
+queue, with six of the tracks). The data of TC (same tables, so the old correction
+table), v = 0.3, 50 M, with other damping of the shift: `v0.3_e03`, `v0.3_e01`,
+`v0.3_e003` (zero initial shift, `z4c/shift_eta` = 0.3, 0.1, 0.03), `v0.3s_e01` (comoving
+initial shift, eta = 0.1), `v0_e01` (at rest, eta = 0.1), `v0.3_n4` (4x10^4 particles of
+`scratch/core/clump2-ic-n4/`, eta = 2), and the binary of TE with eta = 0.1 for 125 M
+(`orbit_e01`). Expected cost 6 x 2 min + 11 min = 23 min = 0.39 card-hours (wall limit
+27 min: with the 0.50 used the package stays below one card-hour). Analysis:
+`gauge_evolution_check.py`, `binary_evolution_check.py`.
+1. Noise or not (`v0.3_n4` against `v0.3`). If the drift of `sum m u_x` and the stretch
+   along x are coordinate effects, four times the particles change neither: relative
+   history of `sum m u_x` within 0.6 per cent of P of `v0.3` at every record (-11.2 to
+   -12.4 per cent at 50 M); rms extent along x at 50 M between +6.6 and +9.0 per cent
+   (+8.7 at 10^4); speed over 30 to 50 M within 0.01 v of 0.703 v. Refuted (a drag by
+   particle noise) if the drift at 50 M is smaller than 9 per cent or the stretch along
+   x in excess of the transverse one falls below 4 per cent.
+2. Damping (zero initial shift). The driver is a damped wave equation with frequency
+   0.09 to 0.15 on the scale of the cluster: eta = 0.3 is near critical damping, 0.1 and
+   0.03 are underdamped (period 40 to 70 M, decay time 2/eta). Predicted: speed over 0
+   to 2 M unchanged, 0.57 to 0.60 v, for all three; mean speed over 30 to 50 M between
+   0.85 and 1.08 v (eta = 0.3), 0.85 and 1.15 v (0.1), 0.8 and 1.25 v (0.03); x_c(50 M)
+   between 0.78 and 0.98 of v x 50 M for eta = 0.3 (0.655 at eta = 2); change of
+   `sum m u_x/P` between 25 and 50 M below 2 per cent in magnitude for eta = 0.3 and 0.1
+   (-5.5 at eta = 2); rms extent along x at 50 M below +5 per cent for eta = 0.3 and 0.1;
+   lapse between 0.74 and 0.85; constraint norms within a factor 1.5 of `v0` after 5 M.
+   Refuted if the speed over 30 to 50 M at eta = 0.3 is below 0.8 v (my estimate of the
+   driver is wrong and I have no advice on the gauge), or if `sum m u_x` keeps falling
+   by more than 3.5 per cent between 25 and 50 M although the speed has reached v (then
+   the drift is not the crowding of the coordinates).
+3. Comoving initial shift with eta = 0.1: the shift decays as exp(-0.1 t) unless the
+   driver holds it: speed over 0 to 2 M between 0.93 and 1.06 v (0.581 + 0.467 x 0.906
+   = 1.004), over 0 to 4 M between 0.88 and 1.05 v, over 0 to 50 M between 0.88 and
+   1.08 v; change of `sum m u_x/P` between 25 and 50 M below 1.5 per cent.
+4. `v0_e01`: |x_c| below 0.05 M, lapse within 0.002 and radii within 1 per cent of `v0`
+   (eta = 2) at every snapshot. Refuted otherwise (then eta acts on the cluster at rest
+   and the comparisons above are not clean).
+5. Binary (`orbit_e01` against TE cut at 125 M: D(125 M) = 28.37, phase 0.799 against
+   0.972 at 1PN, angular velocity over the first 50 M 0.735 of 1PN; run
+   `core-20261120-222933-0a01a56`, `te125/`). If the falling separation of TE is the
+   slow shift: D stays between 29.0 and 30.8 for 125 M and the phase at 125 M is between
+   0.87 and 1.02. If D(125 M) is below 28.8 again, the orbit of the data is eccentric or
+   loses angular momentum whatever the gauge: an open defect of the binary data.
