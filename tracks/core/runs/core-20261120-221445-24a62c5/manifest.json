@@ -1,0 +1,83 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261120-221445-24a62c5",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "clump2 outcomes of the card jobs: TC (core-20261119-145433-8c4083d), TE (core-20261119-155219-32602d2), G and G2 (card against processor records, core-20261119-160021-b153852 and core-20261119-161758-47f52ad)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "st=0; python3 tracks/core/analysis/clump2/boost_evolution_check.py --run core-20261119-145433-8c4083d --out \"$NRPIC_RUN_DIR/tc\" || st=1; python3 tracks/core/analysis/clump2/binary_evolution_check.py --dir core-20261119-155219-32602d2/orbit --out \"$NRPIC_RUN_DIR/te\" || st=1; python3 tracks/core/analysis/clump2/card_vs_cpu.py --tc core-20261119-145433-8c4083d --te core-20261119-155219-32602d2 --t0 core-20261119-160021-b153852 --early core-20261119-161758-47f52ad --out \"$NRPIC_RUN_DIR/g\" || st=1; exit $st"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "24a62c5bb45b6fa402e8ec29ab0d7c3b34c23578",
+    "branch": "core/clump-table",
+    "dirty": false,
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/core-clump2"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-clump2/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261120-221445-24a62c5",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:14:46Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "core-20261119-145433-8c4083d",
+    "core-20261119-155219-32602d2"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 4.9002,
+    "gpu_hours_reserved": 1.7,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 15,
+    "runs": 1271,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
