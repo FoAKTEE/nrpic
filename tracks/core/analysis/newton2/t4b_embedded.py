@@ -133,9 +133,9 @@ def main():
     sgc = el.sample(ode["C"], tg)
     for k in range(3):
         axs[0].plot(tg, np.abs(sg["R"][:, k]), color=fs.PAL["blue"], ls=("-", "--", ":")[k],
-                    lw=1.0, label="ODE, embedded (model A)" if k == 0 else None)
+                    lw=1.0, label="ODE A" if k == 0 else None)
     axs[0].plot(tg, np.abs(sgc["R"][:, 0]), color="0.5", lw=1.0, alpha=0.6,
-                label="ODE, static (model C), short axis")
+                label="ODE C, $x$")
     axs[2].semilogy(tg, np.maximum(sg["P"], 1e-12), color=fs.PAL["blue"], ls="--", lw=1.0)
     if "emb_mg" in res:
         res["solvers"] = dict(
@@ -143,7 +143,8 @@ def main():
             - 1.0)
     axs[0].set_xlabel(r"$t/t_k$", labelpad=-1)
     axs[0].set_ylabel(r"semi-axes $(5J_{ii}/M)^{1/2}$")
-    axs[0].legend(loc="lower left", fontsize=7)
+    axs[0].set_ylim(-3.6, 9.0)
+    axs[0].legend(loc="lower left", fontsize=7, ncol=2, columnspacing=1.0, handlelength=1.5)
     axs[1].axhline(0.0, color="k", lw=1.0, ls="--")
     axs[1].set_xlabel(r"$t/t_k$", labelpad=-1)
     axs[1].set_ylabel(r"(run $-$ ODE)$/R_L$")

@@ -39,17 +39,23 @@ def main():
     ap.add_argument("--cases", nargs="+", default=["spin_uni64", "spin_smr"])
     ap.add_argument("--fine", type=float, default=1.0,
                     help="half-width of the refined MeshBlocks (particles inside counted)")
+    ap.add_argument("--ic", default="", help="JSON of the particle file (default RUN/ic/spin.json)")
+    ap.add_argument("--stem", default="", help="name of the summary files")
+    ap.add_argument("--labels", nargs="+", default=None, help="legend labels of the cases")
     a = ap.parse_args()
+    icjson = a.ic or os.path.join(a.run, "ic", "spin.json")
     os.makedirs(a.out, exist_ok=True)
     fs.use_style()
     res = {}
     fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
-    fig.subplots_adjust(left=0.085, right=0.985, bottom=0.17, top=0.95, wspace=0.42)
+    fig.subplots_adjust(left=0.075, right=0.99, bottom=0.17, top=0.93, wspace=0.34)
     palette = [fs.PAL["blue"], fs.PAL["red"], fs.PAL["green"], fs.PAL["yellow"]]
     cols = {n: palette[i % len(palette)] for i, n in enumerate(a.cases)}
     labs = {n: (r"$64^3$ + one level" if "smr" in n else
                 r"uniform $%s^3$" % "".join(ch for ch in n.split("uni")[-1] if ch.isdigit()))
             for n in a.cases}
+    if a.labels:
+        labs = dict(zip(a.cases, a.labels))
     for name in a.cases:
         d = os.path.join(a.run, name)
         log = open(os.path.join(d, "athena.log")).read()
@@ -59,7 +65,7 @@ def main():
             continue
         rc = subprocess.run([sys.executable,
                              os.path.join(ROOT, "problems", "newton", "analyze_conservation.py"),
-                             "--ic", os.path.join(a.run, "ic", "spin.json"), "--run", d,
+                             "--ic", icjson, "--run", d,
                              "--out", a.out, "--name", name], capture_output=True, text=True)
         out = json.load(open(os.path.join(a.out, name + ".json"))) if rc.returncode == 0 \
             else dict(error=rc.stderr[-800:])
@@ -88,19 +94,19 @@ def main():
         P = np.stack([h["P_x"], h["P_y"], h["P_z"]], axis=1)
         X = np.stack([h["X_x"], h["X_y"], h["X_z"]], axis=1)
         V0 = P[0]/M
-        axs[0].plot(h["time"], np.sqrt(((P - P[0])**2).sum(axis=1))/M, color=cols[name],
+        axs[0].plot(h["time"], 1e3*np.sqrt(((P - P[0])**2).sum(axis=1))/M, color=cols[name],
                     label=labs[name])
-        axs[1].plot(h["time"], np.sqrt(((X - X[0] - V0[None, :]*h["time"][:, None])**2
-                                        ).sum(axis=1)), color=cols[name])
-        axs[2].plot(h["time"], (E - E[0])/abs(E[0]), color=cols[name])
+        axs[1].plot(h["time"], 1e3*np.sqrt(((X - X[0] - V0[None, :]*h["time"][:, None])**2
+                                            ).sum(axis=1)), color=cols[name])
+        axs[2].plot(h["time"], 1e3*(E - E[0])/abs(E[0]), color=cols[name])
     axs[0].set_xlabel(r"$t$", labelpad=-1)
-    axs[0].set_ylabel(r"$|\Delta P|/M$")
-    axs[0].legend(loc="upper left", fontsize=8)
+    axs[0].set_ylabel(r"$10^3\,|\Delta P|/M$")
+    axs[0].legend(loc="best", fontsize=7)
     axs[1].set_xlabel(r"$t$", labelpad=-1)
-    axs[1].set_ylabel(r"centre of mass off uniform motion")
+    axs[1].set_ylabel(r"$10^3\,|X - X_0 - V_0 t|$")
     axs[2].set_xlabel(r"$t$", labelpad=-1)
-    axs[2].set_ylabel(r"$(E - E_0)/|E_0|$")
-    stem = "t6_smr" if a.cases == ["spin_uni64", "spin_smr"] else "t6b_smr"
+    axs[2].set_ylabel(r"$10^3\,(E - E_0)/|E_0|$")
+    stem = a.stem or ("t6_smr" if a.cases == ["spin_uni64", "spin_smr"] else "t6b_smr")
     fs.save(fig, os.path.join(a.out, stem))
     with open(os.path.join(a.out, stem + ".json"), "w") as f:
         json.dump(res, f, indent=1)

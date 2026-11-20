@@ -242,7 +242,7 @@ def main():
 
     # ---- figure
     fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.0))
-    fig.subplots_adjust(left=0.08, right=0.985, bottom=0.16, top=0.95, wspace=0.36)
+    fig.subplots_adjust(left=0.08, right=0.985, bottom=0.16, top=0.95, wspace=0.34)
     cols = {"I": fs.PAL["blue"], "dI": fs.PAL["green"], "d2I": fs.PAL["yellow"],
             "d3I": fs.PAL["red"]}
     labs = {"I": r"$I_{xx}$", "dI": r"$\dot I_{xx}$", "d2I": r"$\ddot I_{xx}$",
@@ -266,12 +266,12 @@ def main():
     c0, c2 = ex["c0"], ex["c2"]
     aT = (1.0 + 1.5*g["T_d3J"])**(2.0/3.0)
     ok = g["ncycle"] > 0
-    ax.plot(aT[ok], g["d3J"][ok, 0], color=fs.PAL["red"], label="code, slab")
+    ax.plot(aT[ok], 1e3*g["d3J"][ok, 0], color=fs.PAL["red"], label="code, slab")
     ag = np.linspace(1.02, aa.max(), 300)
-    ax.plot(ag, -c0*ag**-2.5 + 10.0*c2*ag**-0.5, color=fs.PAL["blue"], ls="--",
+    ax.plot(ag, 1e3*(-c0*ag**-2.5 + 10.0*c2*ag**-0.5), color=fs.PAL["blue"], ls="--",
             label="Zel'dovich")
     ax.set_xlabel(r"$a$", labelpad=-1)
-    ax.set_ylabel(r"$d^3J_{xx}/dT^3$")
+    ax.set_ylabel(r"$10^3\,d^3J_{xx}/dT^3$")
     ax.legend(loc="lower right", fontsize=8)
     ax = axs[2]
     J, dJ, d2J = conv(g1)

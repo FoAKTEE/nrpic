@@ -113,7 +113,7 @@ def main():
                 label="Fourier, seven_point, n = 32")
     ax.set_xlabel(r"scale factor $a$", labelpad=-1)
     ax.set_ylabel(r"max$|x - x_{\rm Zel}|\,/\,[(a-1)\,d/k]$")
-    ax.set_ylim(1e-5, 1e-1)
+    ax.set_ylim(1e-8, 1e-1)
     ax.legend(fontsize=6.5, ncol=2, loc="lower right")
     ax = axs[1]
     for n in (32, 64):

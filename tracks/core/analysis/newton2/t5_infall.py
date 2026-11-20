@@ -89,7 +89,7 @@ def main():
     os.makedirs(a.out, exist_ok=True)
     res = {}
     fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
-    fig.subplots_adjust(left=0.08, right=0.985, bottom=0.17, top=0.95, wspace=0.40)
+    fig.subplots_adjust(left=0.065, right=0.99, bottom=0.17, top=0.93, wspace=0.36)
     cols = {"pm_vertex": fs.PAL["red"], "pm_centre": fs.PAL["yellow"]}
     for name in ("pm_vertex", "pm_centre"):
         case = os.path.join(a.run, name)
@@ -114,6 +114,13 @@ def main():
                    steps=int(hst["ncycle"][-1]) if "ncycle" in hst else int(len(hst["time"])),
                    particles_left=int(rows[-1, 4]),
                    max_dev_after_1p5=float(np.max(np.abs(dev[late]))),
+                   snapshots=int(len(rows)), snapshots_after_1p5=int(late.sum()),
+                   dev_min_after_1p5=float(dev[late].min()),
+                   dev_max_after_1p5=float(dev[late].max()),
+                   dev_rms_after_1p5=float(np.sqrt(np.mean(dev[late]**2))),
+                   snapshots_exact_after_1p5=int((dev[late] == 0.0).sum()),
+                   a_over_ai=rows[:, 1].tolist(), mta_run=rows[:, 2].tolist(),
+                   mta_closed=rows[:, 3].tolist(),
                    energy_drift=float(np.max(np.abs(hst["C"] - hst["C"][0]))
                                       / np.max(np.abs(hst["W"]))),
                    momentum_max=float(max(np.max(np.abs(hst["P_%s" % k])) for k in "xyz")),
@@ -138,10 +145,10 @@ def main():
             ax.plot(ag, mta_closed(setup, m, tta, ag), color=fs.PAL["blue"], ls="--",
                     label="closed form")
         ax = axs[1]
-        ax.plot(rows[1:, 1], dev[1:], color=cols[name])
+        ax.plot(rows[1:, 1], 1e2*dev[1:], color=cols[name])
         ax = axs[2]
         ax.plot(((t_i + hst["time"])/t_i)**(2.0/3.0),
-                (hst["C"] - hst["C"][0])/np.max(np.abs(hst["W"])), color=cols[name])
+                1e2*(hst["C"] - hst["C"][0])/np.max(np.abs(hst["W"])), color=cols[name])
     res["placements_rel_diff_a2"] = res["pm_vertex"]["mta_run_a2"]/res["pm_centre"]["mta_run_a2"] - 1
     res["placements_rel_diff_a4"] = res["pm_vertex"]["mta_run_a4"]/res["pm_centre"]["mta_run_a4"] - 1
     for aa in (2, 4):
@@ -153,13 +160,16 @@ def main():
     axs[0].legend(loc="upper left", fontsize=8)
     axs[1].axhline(0.0, color="k", lw=1.0, ls="--")
     axs[1].set_xlabel(r"$a/a_i$", labelpad=-1)
-    axs[1].set_ylabel(r"$M_{\rm ta}$: run / closed form $-$ 1")
+    axs[1].set_ylabel(r"$M_{\rm ta}$: run/closed $-$ 1 (per cent)")
     axs[2].set_xlabel(r"$a/a_i$", labelpad=-1)
-    axs[2].set_ylabel(r"$(K + W - E_0)/\max|W|$")
+    axs[2].set_ylabel(r"$(K + W - E_0)/\max|W|$ (per cent)")
     fs.save(fig, os.path.join(a.out, "t5_infall"))
     with open(os.path.join(a.out, "t5_infall.json"), "w") as f:
         json.dump(res, f, indent=1)
-    print(json.dumps(res, indent=1))
+    short = {k: ({kk: vv for kk, vv in v.items()
+                  if kk not in ("a_over_ai", "mta_run", "mta_closed")}
+                 if isinstance(v, dict) else v) for k, v in res.items()}
+    print(json.dumps(short, indent=1))
 
 
 if __name__ == "__main__":

@@ -770,3 +770,32 @@ Debugging pass before the registered runs (outside the registry,
 multigrid; no `<output1>` block) at 32^3 for three steps each; all ended with exit
 code 0. No number that bears on the predictions was produced (throughput on one core:
 1.8e5 particle updates per second with the linear cloud, 4.7e4 with the cubic cloud).
+
+### Amendment to T6c and T4d, written before any of their runs (22:40Z)
+
+`nrpic-run submit --cores 3` for `t6c_in` was refused ("3 cores asked, 15 busy in live
+local runs of core, allotment 16 at a time"): the owner's other packages hold the
+processors, as on 2026-11-19. The cases therefore go into one card job (the owner has
+one card job queued, so one more is allowed), list written by `cases.py card2`:
+- T6c in (uniform 64^3, 64^3 + one level, uniform 128^3) and x (uniform 64^3, 64^3 + one
+  level). The multigrid solver on a refined mesh has not run on a card in this package
+  before; a failure there is reported and the case goes back to the processors.
+- T4d: 64^3 with the kernels of T2; 96^3; 128^3 with the linear cloud and the spectral
+  symbol, with the linear cloud and `newton_fft_symbol = seven_point` (in place of the
+  multigrid twin: T1a showed the two to be the same run to 2e-15, and the Fourier solve
+  costs a quarter of the card time), and with the kernels of T2; 256^3 last.
+- T6c coarse stays on a processor (one core, four minutes).
+The predictions stand; where they say "multigrid solver" for 128^3, read "seven-point
+symbol". On a card the deposit sums in an order that changes from run to run; the card
+twins of T1 agreed with the processors to 2e-15, so the conservation numbers (1e-5 and
+larger) are not affected. Expected card time 40 minutes (0.67 card-hours; 0.07 used so
+far, limit of the package 1.0); the job asks for 50 minutes.
+
+Figure scripts changed after their first registered runs (layout only: axes in units
+of 1e-3 or per cent, legends moved off the data; `t5_infall.py` also writes the
+per-snapshot values, `t6_smr.py` takes `--ic`, `--stem`, `--labels`). A debugging pass
+into `scratch/core/tmp/n2dbg3/fig` gave JSON files identical byte for byte to the
+registered ones for T3, T4b and T6b (`cmp`), and for T5 the missing numbers: 45
+snapshots with a/a_i >= 1.5, deviation between -0.631 and +0.463 per cent (vertex; rms
+0.21 per cent, 27 snapshots exact) and between -0.513 and +0.335 per cent (centre; rms
+0.18 per cent, 28 exact). The registered reruns follow.

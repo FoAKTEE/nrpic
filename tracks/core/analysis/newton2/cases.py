@@ -9,8 +9,9 @@ tracks/core/JOURNAL-newton2.md. Nothing here integrates particles; AthenaK does.
 (group history on the exact pancake, restart), t4a (deformed-ball generator), t4b
 (embedded ellipsoid), t5 (point-mass infall of Track D), t6 (refined mesh), t7 (energy
 against the step), t8 (self-force), t10 (regression against the branch start and the
-release); follow-ups: t4d_p64, t4d_p96, t4d_card (embedded ellipsoid against resolution
-and kernels), t6c_in, t6c_x, t6c_coarse (lattice of the ball against the cell size).
+release); follow-ups: t4d_p64, t4d_p96 (embedded ellipsoid against resolution
+and kernels), t6c_in, t6c_x, t6c_coarse (lattice of the ball against the cell size),
+card2 (decks and list of the card job that holds T6c and T4d).
 Output in --out (default $NRPIC_RUN_DIR, set by harness/bin/nrpic-run): one
 directory per case with input.athinput, athena.log and the files of the run, and
 cases.json (commands, wall times, exit codes).
@@ -467,41 +468,9 @@ def t4d_p96(out, exe, jobs, rec):
     return t4d(out, exe, jobs, rec, which="p96")
 
 
-def t4d_card(out, exe, jobs, rec):
-    """T4d, card cases: decks, particle files and the batch list of the embedded
-    ellipsoid at 128^3 (linear cloud with the Fourier and the multigrid solver, kernels
-    of T2 with the Fourier solver) and at 256^3 (linear cloud, Fourier solver)."""
-    decks = {}
-    pf, H, commit = embedded_ic(out, 128)
-    rec["refs"] = {"B-emd-gw": commit}
-    decks["emb128_fft"] = embedded_deck(pf, H, 128, 64, 0.02)
-    decks["emb128_pcs_fft"] = embedded_deck(pf, H, 128, 64, 0.02, PCS)
-    decks["emb128_mg"] = embedded_deck(pf, H, 128, 64, 0.02,
-                                       {"particles": {"newton_poisson": "multigrid"}})
-    pf, H, commit = embedded_ic(out, 256)
-    decks["emb256_fft"] = embedded_deck(pf, H, 256, 64, 0.02)
-    order = ["emb128_fft", "emb128_pcs_fft", "emb128_mg", "emb256_fft"]
-    lines = ["# card job T4d of work package newton2 (cases.py t4d_card): <name> <athinput>"]
-    for name in order:
-        path = os.path.join(out, name + ".athinput")
-        with open(path, "w") as f:
-            f.write(decks[name])
-        lines.append("%s %s" % (name, path))
-    with open(os.path.join(out, "card.list"), "w") as f:
-        f.write("\n".join(lines) + "\n")
-    rec["card_list"] = os.path.join(out, "card.list")
-    print("\n".join(lines))
-    return True
-
-
-def t6c(out, exe, jobs, rec, which="in"):
-    """T6c: is the momentum kick of T6 and T6b the lattice of the ball being coarser than
-    the cells?  in: the ball of t6b (radius 0.7, inside the refined MeshBlocks) on a
-    lattice of the fine cell size 0.03125, on uniform 64^3, uniform 128^3 and 64^3 + one
-    level.  x: the ball of t6 (radius 1, crossing the level boundary) on the lattice
-    0.03125, on uniform 64^3 and 64^3 + one level.  coarse: the ball of t6b on a lattice
-    of two cells (0.125) on the uniform 64^3 mesh, no refinement anywhere."""
-    ic = os.path.join(out, "ic")
+def t6c_setup(out, which):
+    """Particle file and decks of the T6c cases of one ball: (ic directory, {name: deck})."""
+    ic = os.path.join(out, "ic_" + which)
     os.makedirs(ic, exist_ok=True)
     pf = os.path.join(ic, "spin.nrp")
     small = ["--center", "0.05", "-0.05", "0.03", "--radius", "0.7", "--mass", "0.343"]
@@ -516,14 +485,61 @@ def t6c(out, exe, jobs, rec, which="in"):
     iso = os.path.join(NEWTON, "isolated.athinput")
     smr = os.path.join(NEWTON, "isolated_smr.athinput")
     if which == "in":
-        cases = [Case("fine_in_uni128", deck(iso, merge(cube(128, 32), p))),
-                 Case("fine_in_smr", deck(smr, merge(cube(64, 16), p))),
-                 Case("fine_in_uni64", deck(iso, merge(cube(64, 16), p)))]
+        decks = {"fine_in_uni64": deck(iso, merge(cube(64, 16), p)),
+                 "fine_in_smr": deck(smr, merge(cube(64, 16), p)),
+                 "fine_in_uni128": deck(iso, merge(cube(128, 32), p))}
     elif which == "x":
-        cases = [Case("fine_x_smr", deck(smr, merge(cube(64, 16), p))),
-                 Case("fine_x_uni64", deck(iso, merge(cube(64, 16), p)))]
+        decks = {"fine_x_uni64": deck(iso, merge(cube(64, 16), p)),
+                 "fine_x_smr": deck(smr, merge(cube(64, 16), p))}
     else:
-        cases = [Case("coarse_in_uni64", deck(iso, merge(cube(64, 16), p)))]
+        decks = {"coarse_in_uni64": deck(iso, merge(cube(64, 16), p))}
+    return ic, decks
+
+
+def card2(out, exe, jobs, rec):
+    """Decks, particle files and the batch list of the second card job: T6c (the balls
+    of T6b and T6 on a lattice of the fine cell size, on uniform and refined meshes) and
+    T4d (the embedded ellipsoid at 64^3 with the kernels of T2, at 96^3, at 128^3 with
+    the linear cloud and both symbols and with the kernels of T2, at 256^3)."""
+    decks, order = {}, []
+    for which in ("in", "x"):
+        ic, d = t6c_setup(out, which)
+        decks.update(d)
+        order += list(d)
+    seven = {"particles": {"newton_fft_symbol": "seven_point"}}
+    for n, mb, dt, variants in ((64, 32, 0.04, (("emb64_pcs_fft", PCS),)),
+                                (96, 48, 0.04*64/96, (("emb96_fft", None),)),
+                                (128, 64, 0.02, (("emb128_fft", None), ("emb128_fft7", seven),
+                                                 ("emb128_pcs_fft", PCS))),
+                                (256, 64, 0.02, (("emb256_fft", None),))):
+        pf, H, commit = embedded_ic(out, n)
+        rec["refs"] = {"B-emd-gw": commit}
+        for name, extra in variants:
+            decks[name] = embedded_deck(pf, H, n, mb, dt, extra)
+            order.append(name)
+    lines = ["# second card job of work package newton2 (cases.py card2): <name> <athinput>"]
+    for name in order:
+        path = os.path.join(out, name + ".athinput")
+        with open(path, "w") as f:
+            f.write(decks[name])
+        lines.append("%s %s" % (name, path))
+    with open(os.path.join(out, "card.list"), "w") as f:
+        f.write("\n".join(lines) + "\n")
+    rec["card_list"] = os.path.join(out, "card.list")
+    print("\n".join(lines))
+    return True
+
+
+def t6c(out, exe, jobs, rec, which="in"):
+    """T6c on processors: is the momentum kick of T6 and T6b the lattice of the ball
+    being coarser than the cells?  in: the ball of t6b (radius 0.7, inside the refined
+    MeshBlocks) on a lattice of the fine cell size 0.03125, on uniform 64^3, uniform
+    128^3 and 64^3 + one level.  x: the ball of t6 (radius 1, crossing the level
+    boundary) on the lattice 0.03125, on uniform 64^3 and 64^3 + one level.  coarse: the
+    ball of t6b on a lattice of two cells (0.125) on the uniform 64^3 mesh, no
+    refinement anywhere."""
+    ic, decks = t6c_setup(out, which)
+    cases = [Case(name, text) for name, text in decks.items()]
     return run_all(out, cases, exe, jobs, rec)
 
 
@@ -748,7 +764,7 @@ def card(out, exe, jobs, rec):
 
 
 TESTS = dict(card=card, t1=t1, t2=t2, t3=t3, t4a=t4a, t4b=t4b, t4c=t4c, t5=t5, t6=t6, t6b=t6b,
-             t7=t7, t8=t8, t10=t10, t4d_p64=t4d, t4d_p96=t4d_p96, t4d_card=t4d_card,
+             t7=t7, t8=t8, t10=t10, t4d_p64=t4d, t4d_p96=t4d_p96, card2=card2,
              t6c_in=t6c, t6c_x=t6c_x, t6c_coarse=t6c_coarse)
 
 
