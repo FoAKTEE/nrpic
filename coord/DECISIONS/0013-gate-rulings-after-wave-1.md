@@ -1,6 +1,6 @@
 # 0013 Rulings on the gate criteria after wave 1
 
-Status: PROVISIONAL (changes of gate criteria are the group's; these are the
+Status: ACCEPTED by the user on 2026-11-19 (decision 0017); before that provisional (changes of gate criteria are the group's; these are the
 orchestrator's rulings on the leads' requests, in force until the group says otherwise)
 · 2026-11-15
 

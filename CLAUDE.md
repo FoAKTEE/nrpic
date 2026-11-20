@@ -115,6 +115,11 @@ that the orchestrator reviews.
 - Python packages that are missing (for example REBOUND) go into a virtual environment
   of your worktree made with `uv venv` and `uv pip install`; nothing is installed
   system-wide.
+- The cards are shared with other users of the machine (`squeue` shows their jobs), so a
+  job may wait an hour or more. Keep at most two card jobs per owner queued or running,
+  never submit many jobs at once, and never wait idle for one: work on what needs no
+  card and say in your report which runs are pending. Chains resubmit one segment at a
+  time, which shares the queue fairly.
 - 144 cores are shared by all sessions: at most 16 at a time per session; set
   `OMP_NUM_THREADS` and thread counts of numerical libraries explicitly.
 - Never `pkill -f`, `killall` or `kill $(pgrep -f ...)`: the pattern matches your own
@@ -123,6 +128,23 @@ that the orchestrator reviews.
   `until <condition>; do sleep 30; done`, or run in the background.
 - Temporary files go under `scratch/<ID>/tmp/` (create it), never `/tmp`; never remove
   files through a path built from a shell variable.
+
+## Pause flag, restarts, load (decision 0019)
+
+- Before every new step of work and at least every ten minutes: `test -e
+  /data/haiyangw/nrpic/locks/PAUSE`. If the flag exists, the account is close to a usage
+  limit: start nothing new, commit your work, write where you stopped as the last entry
+  of your journal, and return at once with status partial and the word "paused" first in
+  what is open. Card jobs already queued may finish on their own.
+- Every step may be started again after a pause: if your deliverables already exist,
+  committed and pushed, verify that in a minute and return "already complete"; otherwise
+  continue from what the worktree holds. Never redo finished work.
+- Processors: at most 6 cores per session; before a run on several cores look at
+  `uptime`, and above a one-minute load of 110 use 2 cores or do something else first.
+- A git pre-commit hook (`harness/hooks/pre-commit`) refuses files above 5 MB, secrets,
+  malformed run manifests and paths that are not yours. If it refuses a commit that
+  holds only paths your task names, copy its message into your journal and your
+  requests, and commit that once with `--no-verify`; never bypass a size or secret refusal.
 
 ## Models and roles (decision 0009)
 
