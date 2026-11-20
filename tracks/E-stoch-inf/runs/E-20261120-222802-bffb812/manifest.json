@@ -1,0 +1,118 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261120-222802-bffb812",
+  "track": "E-stoch-inf",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "window scan L9, step 1: linear reference per window (USR 128^3 nmax2=1024, SR 64^3 nmax2=256): W at N*, crossings vs USR, linear prediction at N_f, one-point variance of W R",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "cd tracks/E-stoch-inf/window/scripts && export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 && python3 window_reference.py --out \"$NRPIC_RUN_DIR\""
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "bffb81248a7440471678d2c9d586d8a239c746aa",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/window"
+    ],
+    "outside_package": {
+      "count": 15,
+      "first": [
+        " M tracks/E-stoch-inf/ladder/JOURNAL.md",
+        " M tracks/E-stoch-inf/note/scripts/common.py",
+        " M tracks/E-stoch-inf/note/scripts/fig_background.py",
+        " M tracks/E-stoch-inf/note/scripts/schem_architecture.py",
+        "?? tracks/E-stoch-inf/a4res/scripts/a4lib.py",
+        "?? tracks/E-stoch-inf/a4res/scripts/twin_predict.py",
+        "?? tracks/E-stoch-inf/g1verify/",
+        "?? tracks/E-stoch-inf/ladder/inputs/card_bc.list",
+        "?? tracks/E-stoch-inf/ladder/inputs/modes_l5_n5.txt",
+        "?? tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput",
+        "?? tracks/E-stoch-inf/ladder/scripts/l5_kick_ref.py",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_constraints.py",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_freezing.py",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_modes.py",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_order.py"
+      ]
+    },
+    "merge_base_main": "c7e7db3b637b2c04d9907dcc5b3d66c90c5fac7b",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/E-stoch-inf/usr/inputs/modes_usr_n1024.txt",
+      "role": "input",
+      "sha256": "e657574a8dc305b0011c8a8fd9997476575ffd5a8080a365c840f32a59ed5be6",
+      "bytes": 87556,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/ladder/inputs/modes_n256.txt",
+      "role": "input",
+      "sha256": "6f1f13aa56fcf26464a9b73c66140f2a96c4519c1a23afdc6fd928ae1fe656e4",
+      "bytes": 21830,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261120-222802-bffb812",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-20T22:28:02Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 10.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.9,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 98,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
