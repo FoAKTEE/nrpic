@@ -579,3 +579,33 @@ the last row of `es.nrpic.hst` has np = 696800 (28 removed, 0 escaped), and the 
 of `es.horizon_summary_0.txt` (t = 199.5 M) reads M_AH = 1.008112, about 7e-3 above the
 ES-1 value at the same time. This is recorded here before any number of the analysis;
 G6 is judged on the registered analysis below.
+
+Predictions for the measurements of `tools/es1g_judge.py` that entry 5 did not quantify,
+written 2026-11-20 22:20 UTC, before `es1g_judge.py` ran and before I read any output of
+`es_extra.py` on ES-1G (that analysis, D-20261120-221754-ae3dafe, was running in the
+background of `finish_es1g.sh` at the time and finished as I wrote this) [JUDGEMENT
+throughout]:
+- J1 overlap with core's ES test (core-20261115-202901-b4430da: the same table, sha256
+  9a69386c..., the same source b4430da and T = 2 M; differences: 87268 against 696828
+  particles (hp 2 against 1), outer boundary at 96 against 192 M, the M/8 nest on +-2 M
+  against +-6 M, cells of 2 M against 1 M in the inner dust). On 0-30 M: (i) M_AH(10 M)
+  within 1e-4 of core's, and M_AH(30)/M_AH(10) - 1 within 3e-4 of core's; (ii) the lapse at
+  the dust tracers (R0 = 40, 48, 56 M) over 5-30 M inside 1.03-1.07 in both runs, the two
+  runs within 0.01 of each other; (iii) the largest lapse on the mesh over 0-30 M within
+  0.02 of core's; (iv) the mesh minimum of the lapse above 0.2 near t = 5-6 M in both.
+  Refuted by horizon masses that differ by more than 3e-4 at t = 10 M, dust lapses that
+  differ by more than 0.03, or largest lapses that differ by more than 0.05.
+- J2 start-up pulse: at the tracers of R0 = 48 M the lapse stays within 2 per cent of the
+  lapse_leak model over 0-10 M (no dip). Refuted by a dip of more than 5 per cent below it.
+- J3 lapse below 1 in the dust: after t = 5 M the lapse at the tracers of R0 = 40, 48 and
+  56 M stays above 1 (at t = 0 it is psi^-2 < 1 near the inner edge, from the data).
+  Refuted by any of them below 0.99 after t = 5 M.
+- J4 front from the dust edges at the hole: in ES-1 a lapse pulse from the dust reached
+  x = 4 M at t ~ 20-23 M (entry 4). With lapse_leak the dust lapse stays near 1.06, so the
+  rms of the detrended d alpha/dt (probe_fronts.py, 20 M running mean) over t = 10-40 M at
+  x = 4 and 20 M is at most one third of ES-1's. Refuted if it exceeds one half of ES-1's.
+  (A departure from V-1 at the probes is measured but not judged: the relaxation acts in
+  the bubble too wherever alpha > 1, so ES-1G differs from V-1 there without any dust.)
+- J5 mesh minimum of the lapse (column 16) against alpha_exc = 0.05: above 0.05 during the
+  start-up (t ~ 3-20 M), as in ES-1 and V-1 (the condition is plain 1+log where alpha < 1),
+  and below 0.05 at every time after t = 50 M. Refuted by alpha_min > 0.05 after 50 M.
