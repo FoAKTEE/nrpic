@@ -535,3 +535,76 @@ its bound ball with initial coordinate radius 1.0 M, 400 iterations, tolerance 1
 settings of problems/os/os_amr.athinput). BH-1R therefore uses those finder settings,
 from t = 9 (`bh_smr.athinput`). The prediction of entry 10 is unchanged except that the
 first detection is now expected between t = 10.5 and 13.
+
+## 2026-11-20, entry 11 (wave 3, helper runs_ball): outcomes of S (SR-1L) and B (BH-1)
+
+State found at 14:17 PST: both card jobs finished on 2026-11-19 (Slurm 4642: 08:36-09:03,
+4665: 12:02-12:32, sacct COMPLETED; every line rc = 0 in batch.list.status), both manifests
+still "submitted", no analysis registered, no manifest whose parent is one of the two card
+runs, no scratch directory of a cut-off session of this package. `after_runs3.sh` was
+changed to take an optional part (runs3 | bh_smr; default all unchanged, commit d58b4a1),
+because its first part copies figures into figs/ and nrpic-run refuses a dirty package for
+the second registration. Registered analysis: see the outcome below (written after the run).
+
+## 2026-11-20, entry 12: outcome of entry 10 (BH-1R, one refined level)
+
+Written after the registered analysis of BH-1R (see below).
+
+## 2026-11-20, entry 13: a turnaround estimator that does not depend on a fit window (prediction T, written before the estimator met any run)
+
+Why: the verifier (stage/G1/VERIFIER.md section 2.4, finding 6, section 4 point 1) found
+that the SR-2 turnaround error at dx = M/4 is +0.031 M with the three-point vertex of
+compare.py but +0.0245, +0.0156, +0.0088 M with least-squares parabolas over +-2, 3, 5
+records, while SR-1 does not depend on the window. [BACKGROUND, derivation] The exact
+R(tau) of a dust shell is a cycloid, R = A (1 - cos eta), tau + t0 = B (eta - sin eta), which
+is EVEN about its turnaround (R depends on eta - pi through cos, tau - tau_ta is odd in
+eta - pi), so a symmetric parabola window has no bias from the shape; near the maximum
+R/R_max = 1 - s^2/(16 B^2) + O(s^4) with s = tau - tau_ta. A perturbation of relative
+amplitude e and angular frequency w moves the local maximum by s ~ 8 B^2 e w: for the
+core of 2t (B = T0, about 8.9 M) a wiggle of e = 1e-5 with a period of 3 M moves it by
+about 0.013 M. The local maximum is therefore set by the small wiggles of the lapse pulse
+(SR-2), not by the secular motion of the shell, and its value depends on how much of the
+record a local fit smooths. [JUDGEMENT] A useful turnaround time for G2 is that of the
+shell's secular motion: the turnaround of the cycloid that best fits the whole record.
+
+Estimators (script `turnaround.py`; defined here before use):
+- V3: vertex of the parabola through the three records around the largest R (compare.py).
+- Pk: least-squares parabola over the 2k+1 records around the largest R, k = 2..8.
+- S: smoothing spline with the smoothing chosen by generalized cross-validation
+  (scipy.interpolate.make_smoothing_spline, lam = None) over the records with
+  tau <= 2 tau_ta(exact); its maximum.
+- C (primary): least-squares fit of the three-parameter cycloid (A, B, t0) to all records
+  with 0 <= tau <= 2 tau_ta(exact) (the expansion and its mirror; the crunch region is left
+  out); tau_ta = pi B - t0, R_max = 2 A. The exact shell is the starting guess. Window study
+  C(W): records with |tau - tau_ta(exact)| <= W, W = 2, 3, 4, 6, 8, 12 M and the whole
+  range; C_exp: the expansion only, 0 <= tau <= tau_ta(exact).
+- O: the exact cycloid of the particle's own shell with a free time offset d and a free
+  scale s, R = s R_exact(tau - d), on the same records as C; tau_ta = tau_ta(exact) + d.
+Reported per run: mean over the core particles (R_i <= 2.4) of tau_ta - tau_ta(exact) and
+of R_max/R_max(exact) - 1, and the spread of the per-particle values.
+
+Prediction T [JUDGEMENT]:
+- T0 (synthetic, the estimator itself): an exact core cycloid sampled every 0.25 M with a
+  random phase and shifted by d = 0.02 M: C and O recover d within 1e-4 M for every
+  window, V3 within 2e-3 M; with a superposed wiggle 1e-5 R_max sin(2 pi tau / 3 M) the
+  parabola family Pk varies with k by more than 5e-3 M while C on the whole range stays
+  within 2e-3 M of d.
+- T1 SR-1 (M/2, M/4): C within 0.005 M of V3 (-0.022, -0.0125 M); C(W) varies by less than
+  0.005 M over W >= 3 M.
+- T2 SR-2: at M/4 C lies in [-0.005, +0.02] M, at M/2 in [0, +0.04] M (V3 +0.043); C(W)
+  varies by less than 0.01 M over W >= 6 M while Pk varies by more than 0.015 M over
+  k = 1..5. With C, the turnaround part of R2 (mean |dtau_ta| <= 0.02 M at M/4) HOLDS for
+  SR-2 (probability about 0.6).
+- T3 S lies within 0.005 M of V3 in every run (both measure the local maximum of a smooth,
+  nearly noise-free record).
+- T4 SR-1L: C gives mean |dtau_ta| <= 0.03 M at M/2 and <= 0.02 M at M/4 (the bounds of S4);
+  at dx = M more than 0.3 M.
+- T5 O agrees with C within 0.005 M for SR-1 and SR-1L at M/2 and M/4.
+Refuted, for the claim "window independent", by C(W) varying by more than 0.01 M over
+W >= 6 M in any run at M/2 or M/4.
+SR-1 breakdown times (verifier finding 5): the same script reads the raw files of the four
+SR-1 runs and lists, per criterion, the first time: non-positive metric determinant in
+athena.log, largest |H| > 1e10 and first non-finite record in cstat.hst, first non-finite
+record of z4c.user.hst and nrpic.hst, first non-finite line output; expected [VERIFIED by
+the verifier, to be reproduced]: 32.875 / 30.25, 33.0 / 30.5, 33.125 / 30.75, 33.25 / 31.0
+(dx = M/2 / M).
