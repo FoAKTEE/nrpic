@@ -867,3 +867,44 @@ HEAD):
    [25] within 1e-12 relative for sig. Refuted by (a) below 3e-13 or above 1.2e-12, or by
    (b) above 1e-13: then the offset has another cause (the dump would not hold the field
    of the record).
+
+## 2026-11-20, entry 16: C2 as predicted in entry 11 fails in its measure; the comparison in absolute units, predicted
+
+**C2, run core-20261120-220950-9e19164** (card run -155551-9096ee7 of
+`athena_gpu_5cc2821` against `athena_cpu_5cc2821`, gauge example, 20 steps; figure
+`fig_c2.png`, looked at after this entry was written). As measured against entry 11:
+- "The dump at t = 0 bit-identical": HOLDS for every evolved variable and the magnitudes;
+  FAILED for the constraint fields, which the dump also holds: H differs by 6.6e-4 of its
+  largest value, M_i by 3.4e-4 to 4.0e-4, E by 1.2e-16.
+- "Dumps at 0.4 and 0.8 within 1e-12 of the largest value of each variable (H, M_i
+  within 1e-11)": FAILED. At cycles 9 and 17 the largest differences are 4.4e-8 and
+  4.1e-8 of the largest value for At_ij and 7.5e-3 and 5.2e-3 for H and M_i.
+- "Record columns within 1e-10 relative, the H' columns within 1e-8": FAILED but for the
+  five means of quantities of order one (phi, Pi, K, alpha, [H]: 6.3e-13 to 6.4e-13).
+  H_ratio 1.1e-5, H_rms 5.7e-6, M_ratio 7.1e-6, H_mean 4.7e-5, Hp_ratio 3.9e-5, Hp_rms
+  9.4e-6, the maxima 1.2e-3 to 4.4e-3, rms|M_bssn - M_adm| 0.10, the e-folds 1.0 (their
+  value at t = 0 is rounding). All 27 columns are present.
+The prediction took the bounds of the card check of J2 ("fields within 3.3e-14, constraint
+fields within 3.4e-13"), which are absolute differences, as fractions of the largest
+value of each variable. In this case the perturbations are small (At_ij of order 1e-7, H
+of order 1e-11 with terms of order 10 that cancel), so a rounding difference of 1e-14 is
+1e-7 of At_ij and 1e-3 of H. Whether the differences are of that absolute size has not
+been computed; the measure above cannot tell rounding from a defect of the card
+executable.
+
+**C2b, predicted** (`c2_compare.py --cpu`, the same two runs, differences in absolute
+units; no number of this kind has been seen). If the two executables differ by rounding
+only (another order of the operations in the stencils and of the summation in the
+reductions on the card):
+- every evolved variable of the dumps (phi, Pi, chi, K, Theta, alpha, gt_ij, At_ij, the
+  conformal connection) is bit-identical at t = 0 and within 1e-13 in absolute value at
+  cycles 9 and 17 (J2: 3.3e-14 after 20 steps at this resolution), and the difference at
+  cycle 17 is less than four times that at cycle 9 (a random walk gives 1.4);
+- H within 1e-12 and M_i within 1e-12 in absolute value at all three dumps (J2: 3.4e-13),
+  i.e. H within 1e-13 of its magnitude [H] = 12;
+- of the record: the absolute difference of <|H|/[H]>, <|H'|/[H]> and of their maxima
+  below 1e-13, of <H> and rms H' below 1e-12; <|M|/[M]> is a ratio to a magnitude of
+  order 1e-6 and may differ by up to 1e-6 in absolute value.
+Refuted, and then the card executable is not published as tested, by an evolved variable
+that differs at t = 0, by a difference above 1e-12 at cycle 17, by growth by more than a
+factor 10 between the cycles, or by a difference of H above 1e-11.
