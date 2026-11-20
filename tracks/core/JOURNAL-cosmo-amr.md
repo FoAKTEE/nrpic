@@ -889,3 +889,60 @@ place; v3 and v5 run four cycles; v2 and v4 (0.6 and 0.3 of v1's memory) I do no
 predict. Refuted if v1 runs (then the cause was the build of 901d8b3 or a transient of
 the machine) or if v3 dies too (then it is the 64^3 deck on a card whatever the limit,
 and the finder case v5 tells whether the finder is involved).
+
+## 2026-11-20 22:10  outcomes of T14 (card check) and T10d (the crash did not repeat); T10b
+
+**T14, run core-20261119-161748-75c2405 (job 4664, 11 s, published card executable),
+analysed by core-20261120-220634-d26a0b6** (`t14_summary.json`, figure `fig_t14_card`,
+looked at; the first analysis core-20261120-220549-e50fff9 judged the regrid one record
+early and cut the right axis label; kept on record) [VERIFIED]:
+- U, S, A homogeneous on the card: chi_max/chi_min - 1 at most 1.3e-14, E_max/E_min - 1
+  at most 2.2e-14 (prediction 1e-12): PASS. alpha_max equals the processor run to
+  1.1e-15 at every record (U: every printed digit): PASS.
+- M (tracker across the face, refinement that follows it, light-speed step): the same
+  MeshBlock count as the processor run at all 118 records (27, 34, 41, 34); tracker
+  within 4.4e-16 of the processor path, record times within 6.7e-16: PASS.
+- G (unstable step): status 3 and `flrw.guard.txt`: PASS. Stop at cycle 16 (t = 6.0),
+  not 18 (t = 6.75) as on the processors: the clause "stop at cycle 18" FAILED. The two
+  runs agree to 7e-15 in alpha_max up to record 8, then depart by 3e-13, 1e-11, 9e-10,
+  4e-8, 6e-6 per record: the instability amplifies the rounding of the card arithmetic
+  a hundredfold per cycle, so the cycle at which the first value overflows is not a
+  property a card must reproduce. The prediction was mis-specified; the guard itself
+  (four reducers in one `parallel_reduce`) works on the card.
+- ladder (peak, lapse ladder, fine-shape deposit): MeshBlock counts identical to the
+  processor run at every record (64 until the record of cycle 4, 120 from cycle 5: the
+  regrid of cycle 4); 32,768 particles and the rest mass unchanged; identity 2.2e-16;
+  Hr_max within 3.9e-12 relative of the processor value at all 11 records, H_max
+  within 9.8e-12, alpha extremes within 1.4e-14: PASS.
+- Region norms on the card: every non-residual column (volumes, means of K and of the
+  lapse, norms of 16 pi E) within 6.7e-13 of the processor run.
+So the card build of the published source reproduces the processor runs of the
+refinement function, the tracker, the light-speed step, the fine-shape deposit, the
+region norms and the guard to round-off. Card time: 11 s.
+
+**T10d, run core-20261120-220538-eafed07 (job 4731, 20 s, published card executable)**
+[VERIFIED, `batch.list.status`, the logs]: all five cases ran four cycles with exit 0,
+**v1 (T10 as submitted) included**. My prediction "v1 dies again" FAILED; by its own
+clause the crash of T10 was then the card build of 901d8b3 or a transient of the
+machine. The source diff 901d8b3..3c44b74 touches nothing that runs before the first
+step of a fresh start (restart counters, one status column, comments; `git diff` read),
+so I hold a transient for the likelier of the two [JUDGEMENT]; T10 had started in the
+second in which another card job of this account ended (job 4650, `sacct`). Not
+separated: a rerun of v1 with the old build would tell (a few seconds of card; queued
+behind T10b if the queue allows).
+Measured in passing, peak card memory against the MeshBlock limit (every field array is
+allocated for `max_nmb_per_rank` MeshBlocks): 66,043 MiB at 2000, 40,071 MiB at 1200,
+10,737 MiB at 300 (MeshBlocks of 16^3, four ghost cells: 33 MiB per MeshBlock of the
+limit, about 290 doubles per cell with ghosts); 24,111 MiB at 2000 MeshBlocks of 8^3.
+An 80 GB card therefore holds at most about 2400 MeshBlocks of 16^3 in an adaptive
+run of this deck. Without the finder 574 MiB less (v5 against v3).
+
+**T10b, the scouting run again** (`t10_scout.list` unchanged, published card executable
+instead of the build of 901d8b3, 0.75 card-hours asked). Predictions (1) to (4) of the
+entry 14:45 stand as written. Not blind any more for (1): T10d's v1 shows a uniform
+mesh of 64 MeshBlocks over the first four cycles and Hr_max = 3.3e-6 at t = 0 (below
+the 1e-3 predicted; S1 with four static levels: 0.047). Added [JUDGEMENT]: the number
+of MeshBlocks stays below 2000 (the eight-particle criterion refines only where the
+density contrast exceeds 8^(l+1) on level l, the lapse ladder only the centre); if the
+limit is reached the adaptive driver stops refining or the run ends, and I report
+which.
