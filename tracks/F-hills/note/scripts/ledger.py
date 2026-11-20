@@ -391,11 +391,16 @@ def main():
                       "Ledger of the pericentre scan, the first passages and the cost. "
                       "Fractions are over the sampled binary phases; card-hours are the "
                       "median rate with the fast and slow rates in parentheses.") + "\n\n")
-        f.write(table({gF, gS, gT, gP}, "tab:ledger3",
-                      "Ledger of the runs in full relativity: the three-black-hole data at the "
-                      "start, a single member on a card, its mesh tree, and the first passage "
-                      "(set-up, start state, cost). Lengths and times in units of the member "
-                      "mass $m$ for the single member and of $M$ otherwise.") + "\n")
+        f.write(table({gF, gS, gT}, "tab:ledger3",
+                      "Ledger of the runs in full relativity, part one: the three-black-hole "
+                      "data at the start, a single member on a card, and its mesh tree. Lengths "
+                      "and times in units of the member mass $m$ for the single member and of "
+                      "$M$ otherwise.") + "\n\n")
+        f.write(table({gP}, "tab:ledger4",
+                      "Ledger of the runs in full relativity, part two: the first passage at "
+                      "mass ratio four (set-up, start state, a short run on one card, cost, and "
+                      "the prediction recorded before it started), with the start state of the "
+                      "input at mass ratio ten.") + "\n")
 
     # ---- parameters.tex
     par = []
