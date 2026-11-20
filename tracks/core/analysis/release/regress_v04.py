@@ -17,8 +17,9 @@ except the log is compared and put into one class:
   a+b         both
   other       anything else: a data byte, a text line, a file present in one run only
 
-For jeans and binary the result lines of the log are compared as well.  Verdict PASS:
-no file of class "other" and at least one file compared in every case.  summary.json
+For jeans and binary the result lines of the log are compared as well (binary writes
+no other output).  Verdict PASS: nothing of class "other", at least one item compared in
+every case, and exit status 0 of every run.  summary.json
 holds, per case, the files of every class, and for the classes a and b what differs.
 """
 import argparse
@@ -208,6 +209,8 @@ def compare(case, a, b):
         key = "athena.log (%d result lines)" % len(la)
         res["identical" if (la == lb and la) else "other"].append(key)
     res["files"] = len(set(fa) | set(fb))
+    # what was compared: the files and, for the gravity cases, the result lines of the log
+    res["compared"] = sum(len(res[k]) for k in ("identical", "a", "b", "a+b", "other"))
     return res
 
 
@@ -246,7 +249,7 @@ def main():
         res["wall_time_s"] = [walls[(n, "base")], walls[(n, "new")]]
         res["input"] = os.path.relpath(spec[n][0], REPO)
         res["args"] = spec[n][2]
-        good = (not res["other"]) and res["files"] > 0 and res["exit"] == [0, 0]
+        good = (not res["other"]) and res["compared"] > 0 and res["exit"] == [0, 0]
         res["verdict"] = "pass" if good else "FAIL"
         ok = ok and good
         summary["cases"][n] = res
