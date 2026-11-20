@@ -4,3 +4,4 @@ python/nrpic/**
 problems/**
 scripts/**
 docs/**
+python/tests/**
