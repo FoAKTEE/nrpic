@@ -154,6 +154,17 @@ def main():
             m = win(a3, 1.5, 20.0)
             out["ratio_K1_A03_A01_a1.5_20"] = [float(np.nanmin(np.abs(rr[m]))), float(np.nanmedian(np.abs(rr[m]))), float(np.nanmax(np.abs(rr[m])))]
             out["phase_K1_A03_A01_a1.5_20_maxabs"] = float(np.nanmax(np.abs(np.angle(rr[m]))))
+            # wave 3: both box modes in the window of P11b' (3 <= a <= 20)
+            for K in ("K1", "K2"):
+                cK3 = series(C["jit0p3"], f"h_{K}_plus", "complex")
+                cK1 = interp(t1, series(C["jit0p1"], f"h_{K}_plus", "complex"), t3)
+                rK = cK3 / cK1
+                m = win(a3, 3.0, 20.0)
+                out[f"ratio_{K}_A03_A01_a3_20"] = [float(np.nanmin(np.abs(rK[m]))), float(np.nanmedian(np.abs(rK[m]))), float(np.nanmax(np.abs(rK[m])))]
+                out[f"phase_{K}_A03_A01_a3_20"] = [float(np.nanmin(np.angle(rK[m]))), float(np.nanmedian(np.angle(rK[m]))), float(np.nanmax(np.angle(rK[m])))]
+            for lo, hi in ((3.0, 20.0), (20.0, 40.0), (40.0, 140.0)):
+                m = win(a3, lo, hi)
+                out[f"ratio_rmsTT_A03_A01_a{lo}_{hi}_minmedmax"] = [float(np.nanmin(rt[m])), float(np.nanmedian(rt[m])), float(np.nanmax(rt[m]))]
             rt = series(C["jit0p3"], "rms_TT") / interp(t1, series(C["jit0p1"], "rms_TT"), t3)
             for lo, hi in ((1.5, 10.0), (10.0, 40.0), (80.0, 140.0)):
                 m = win(a3, lo, hi)
@@ -167,6 +178,24 @@ def main():
             for lo, hi in ((2.0, 20.0), (20.0, 80.0), (80.0, 140.0)):
                 m = win(a3, lo, hi)
                 out[f"null03_over_signal01_K1_a{lo}_{hi}_max"] = maxabs(nz, m)
+            m = win(a3, 3.0, 20.0)
+            out["null03_over_signal01_K1_a3_20_minmax"] = [float(np.nanmin(nz[m])), float(np.nanmax(nz[m]))]
+            if "jit0p1" in C:
+                t1 = tau(C["jit0p1"])
+                sig1 = interp(ts, series(C["s01"], "h_K1_plus", "re"), t1)
+                nz1 = np.abs(series(C["jit0p1"], "h_K1_plus", "complex")) / np.abs(sig1)
+                for lo, hi in ((3.0, 20.0), (20.0, 80.0), (80.0, 140.0)):
+                    m1 = win(ref.a_of_tau(t1), lo, hi)
+                    out[f"null01_over_signal01_K1_a{lo}_{hi}_max"] = maxabs(nz1, m1)
+            # rms TT over the second-order estimate (rms_late of the prediction)
+            if pred is not None:
+                for name in ("jit0p3", "jit0p1"):
+                    if name in C and name in pred["cases"]:
+                        rl = pred["cases"][name].get("rms_late")
+                        at = ref.a_of_tau(tau(C[name]))
+                        q = series(C[name], "rms_TT") / rl
+                        m = win(at, 3.0, 20.0)
+                        out.setdefault(name, {})["rmsTT_over_rms_late_a3_20"] = [float(np.min(q[m])), float(np.median(q[m])), float(np.max(q[m]))]
             for key in ("rho_kin", "rho_grad"):
                 pass
         # energy of the TT part of the null at the last double-precision dumps
