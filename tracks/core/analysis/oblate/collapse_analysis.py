@@ -171,12 +171,23 @@ def particle_history(d):
 
 
 def pancake(ph):
-    """Snapshot index of the smallest z_rms before the first removal of particles, and
-    the time t_p of the minimum refined with a parabola through the three snapshots
-    around it."""
+    """Snapshot index of the pancake, the time t_p of it refined with a parabola through
+    the three snapshots around it, and the mask of the snapshots before the first
+    removal of particles.  The pancake is the FIRST minimum of z_rms: the smallest value
+    before z_rms has grown again by a quarter of it.  (The first version of this
+    function took the smallest value before the first removal; in the M/8 run that is
+    the collapse to the centre at 45 M, where z_rms and R_rms both vanish, not the
+    pancake: journal entry 10.)"""
     full = ph[:, 1] == ph[0, 1]                  # before the first removal
     zr = ph[:, 2] / ph[0, 2]
-    kp = int(np.nanargmin(np.where(full, zr, np.nan)))
+    kp = 0
+    for k in range(1, len(zr)):
+        if not full[k]:
+            break
+        if zr[k] < zr[kp]:
+            kp = k
+        elif zr[k] > 1.25 * zr[kp] and zr[kp] < 0.9:
+            break
     tp = float(ph[kp, 0])
     if 0 < kp < len(ph) - 1 and full[kp + 1]:
         c = np.polyfit(ph[kp - 1:kp + 2, 0], zr[kp - 1:kp + 2], 2)
@@ -253,6 +264,12 @@ def numbers(d):
         res["M_AH_last5M_min"] = float(late[:, 1].min())
         res["M_AH_last5M_max"] = float(late[:, 1].max())
     res["m_excised_over_sum_m0"] = float(h["m_excised"][-1] / h["sum_m"][0])
+    cr = np.where(full, ph[:, 4], np.nan)
+    res["crossed_max_before_removal"] = float(np.nanmax(cr))
+    res["t_crossed_max_before_removal"] = float(ph[int(np.nanargmax(cr)), 0])
+    res["crossed_at_first_removal"] = float(cr[np.nonzero(full)[0][-1]])
+    ch = np.nonzero(h["nmb"] != h["nmb"][0])[0]
+    res["t_first_mesh_change"] = float(h["time"][ch[0]]) if len(ch) else None
     res["n_removed_fraction"] = float(1.0 - h["np"][-1] / h["np"][0])
     if len(cv):
         i = int(np.argmax(cv[:, 1]))
@@ -266,6 +283,15 @@ def numbers(d):
         jj = int(np.argmax(np.where(pre, cv[:, 5], -1)))
         res.update(E_max_pancake=float(cv[jj, 5]), t_E_max_pancake=float(cv[jj, 0]),
                    x_E_max_pancake=[float(v) for v in cv[jj, 6:9]])
+        # the same within 3 M of the pancake, and the values 6 M before it and at t = 0
+        win = np.abs(cv[:, 0] - tp) <= 3.0
+        if win.any():
+            jw = int(np.argmax(np.where(win, cv[:, 5], -1)))
+            res.update(E_max_window=float(cv[jw, 5]), t_E_max_window=float(cv[jw, 0]),
+                       E_at_tp_minus_6=float(np.interp(tp - 6.0, cv[:, 0], cv[:, 5])),
+                       E_at_tp_plus_6=float(np.interp(tp + 6.0, cv[:, 0], cv[:, 5]))
+                       if cv[-1, 0] >= tp + 6.0 else None,
+                       E_max_0=float(cv[0, 5]))
     key = next((k for k in z if "H-norm2" in k), None)
     if key:
         hn = np.sqrt(np.abs(z[key]))
@@ -274,6 +300,14 @@ def numbers(d):
         pre = z["time"] < tp + 3.0
         res.update(Hnorm_max_pancake=float(hn[pre].max()),
                    t_Hnorm_max_pancake=float(z["time"][pre][np.argmax(hn[pre])]))
+        win = np.abs(z["time"] - tp) <= 3.0
+        if win.any():
+            res.update(Hnorm_max_window=float(hn[win].max()),
+                       t_Hnorm_max_window=float(z["time"][win][np.argmax(hn[win])]),
+                       Hnorm_at_tp=float(np.interp(tp, z["time"], hn)),
+                       Hnorm_at_tp_minus_6=float(np.interp(tp - 6.0, z["time"], hn)),
+                       Hnorm_at_tp_plus_6=float(np.interp(tp + 6.0, z["time"], hn))
+                       if z["time"][-1] >= tp + 6.0 else None)
     res.update(log_facts(d))
     series = dict(ph=ph, ah=found, cv=cv, h=h,
                   hn=(z["time"], np.sqrt(np.abs(z[key]))) if key else None)
