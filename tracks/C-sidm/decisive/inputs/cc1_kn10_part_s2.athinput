@@ -1,0 +1,121 @@
+# decisive cc1_kn10_part_s2: D1 (energy defect), from tracks/C-sidm/threshold_scan/inputs/cc1_kn10.athinput,
+# decisive cc1_kn10_part_s2: threshold_scan cc1_kn10: CC1, threshold y0 = 0.334032, King b = 1 of 2009.08163,
+# decisive cc1_kn10_part_s2: N = 100000 (IC run C-20261115-165832-fccee3a), Kn = lambda_c/H_c = 10.
+# decisive cc1_kn10_part_s2: changed: <job> rng_seed = 2, <particles> coll_energy = particle.
+# Written by tracks/C-sidm/decisive/scripts/decks.py; do not edit by hand.
+
+<comment>
+problem          = King cluster cc1_kn10_part_s2
+
+<job>
+basename         = cc
+rng_seed         = 2
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -512.0
+x1max     = 512.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -512.0
+x2max     = 512.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -512.0
+x3max     = 512.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement       = static
+max_nmb_per_rank = 1024
+
+<refined_region1>
+level = 6
+x1min = -7.9
+x1max = 7.9
+x2min = -7.9
+x2max = 7.9
+x3min = -7.9
+x3max = 7.9
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim             = 300
+ndiag            = 800
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+damp_ch         = 0.0      # parabolic relaxation of the Hamiltonian constraint (length); 0: off
+damp_ch_dx      = 0.0      # part of it proportional to the local cell size
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-7
+max_iterations = 50
+deposit        = true
+nfilter        = 4
+filter_compensate = true   # cancels the widening of the binomial passes (plain passes soften the self-gravity)
+filter_comp_c  = -1.0          # its coefficient; negative: nfilter/4
+deposit_max_level = 31
+deposit_adaptive  = false
+deposit_min_level = 6
+deposit_ppc       = 2.0
+deposit_max_coarsen = 31   # a cloud is at most this many levels coarser than its particle's block
+alpha_exc      = 0.1
+hist_dcycle      = 4
+snap_dt          = 10.0
+particle_file    = /data/haiyangw/nrpic/scratch/C-sidm/C-20261115-165832-fccee3a/king_y0p33403_stratified_N100000_s1.nrp
+cstat_dcycle     = 16
+traj_dcycle      = 400   # every 25 M at dt = M/16
+traj_ntrack      = 100000   # all particles
+collisions       = true
+coll_sigma       = 16.889536939113693   # sigma~ = K/Kn, K = 1/(rho0_c H_c) = 168.895
+coll_sigma_model = constant
+coll_pmax        = 0.1
+coll_subcycle    = measured
+coll_nsub_max    = 1000
+coll_cell_factor = 1
+coll_weights     = equal
+coll_hist_dcycle = 1   # records hold one cycle only
+coll_dump_cycle  = -1
+coll_budget      = true
+coll_energy      = particle   # pair conserves sum u_i and sum (alpha W - beta.u) at each particle's metric
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = table
+comp0_file       = /data/haiyangw/nrpic/scratch/C-sidm/C-20261115-165832-fccee3a/king_y0p33403_stratified_N100000_s1.tab
+lapse      = table
+
+<output1>
+file_type = hst
+dt        = 1.0
+
+<output2>
+file_type = rst
+dt               = 300
