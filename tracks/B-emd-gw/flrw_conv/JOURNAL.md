@@ -164,3 +164,45 @@ B, growth rate:
   would show 12 percent; f_* and f_Phi must show no such offset.
 - Refuted if any |f - reference| reaches 1e-2, or if the errors do not fall from 32 to 64
   to 128 cells without a floor whose cause a run has tested.
+
+## Entry 2 (2026-11-20 14:35 PST): initial data, submissions, estimator of f
+
+Initial data: runs B-20261120-222902-6b0be3c (leg F, all meshes; leg B at 16 and 32 cells;
+18 s) and B-20261120-222908-8aede2c (leg B at 64 and 128 cells; 40 s), both completed.
+Deposited contrast of the leg-F data with the production cloud (`scripts/ic_stats.py`,
+`<case>/ic_stats.json` in the first run) [VERIFIED, run B-20261120-222902-6b0be3c]:
+
+| case | delta_rms (compensated) | delta max | Phi_rms | <delta Phi> |
+|---|---|---|---|---|
+| lattices, any mesh and ppc | below 6e-15 | below 3e-14 | below 2e-17 | 1e-32 |
+| n32, 1/cell, A1 | 1.061e-3 | 4.11e-3 | 5.79e-7 | -4.46e-10 |
+| n32, 1/cell, A2 | 1.061e-2 | 4.14e-2 | 5.79e-6 | -4.46e-8 |
+| n32, 8/cell, A2 | 3.595e-3 | 1.55e-2 | 1.99e-6 | -5.05e-9 |
+| n32, 27/cell, A2 | 1.963e-3 | 8.88e-3 | 1.07e-6 | -1.50e-9 |
+| n16, 1/cell, A2 | 5.331e-3 | 1.99e-2 | 1.16e-5 | -4.50e-8 |
+| n64, 1/cell, A2 | 2.122e-2 | 9.75e-2 | 2.93e-6 | -4.42e-8 |
+
+The laws of PF5 hold for the initial data: Phi_rms 1 : 0.344 : 0.185 for 1, 8, 27 per cell
+(predicted 1 : 0.354 : 0.192), 2 : 1 : 0.51 for 16, 32, 64 cells (predicted proportional
+to h), x10 from A1 to A2; <delta Phi> 1 : 0.113 : 0.034 (predicted 1 : 0.125 : 0.037),
+mesh-independent to 2 percent, x100 from A1 to A2. The compensation raises the raw
+contrast by 2.5 (white noise sits near the Nyquist scale). This checks the initial data
+only, not the evolution. At 64 cells and A2 the contrast starts at 2e-2 (rms), so with
+growth proportional to a that run turns nonlinear near a = 30 to 50 [JUDGEMENT].
+Leg B data: largest Hamiltonian residual of the solve 2.3e-13 to 3.6e-12, largest
+|psi_N| 6.9e-9 (`b_*.log` of the two runs).
+
+Submissions: card job J1 = run B-20261120-222955-c8e16e3 (Slurm 4746, pending behind
+nine jobs at 14:30); processor runs P1 = run B-20261120-223006-24448ac (16^3, four
+threads, 0.097 s per step). J2 and J3 wait: the owner has two card jobs queued (4745 of
+another helper and 4746).
+
+Estimator of f, fixed before any run of this package was analysed (decided on a
+development check of the reader on the old run `runs/cosmo/dav_b_n32_pcs4b_f2`, whose
+numbers are not results of this package): (1) the error f - f_ref is computed as
+d ln(D/D_ref)/d ln a, not as the difference of two difference quotients, because the
+centred difference of ln D itself carries a truncation error of order (Delta ln a)^2 f''/6
+(1.6e-4 at a = 1.1 with records 0.116 apart in ln a); (2) the derivative is the slope of a
+straight-line fit over a window of 0.1 in ln a, because late in the run the records come
+closer in ln a (3e-4 per step) and the record-to-record jitter of an amplitude (1e-5 in
+phi) would otherwise be amplified; the pointwise difference quotient is kept as `_fd`.
