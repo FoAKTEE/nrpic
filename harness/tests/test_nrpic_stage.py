@@ -8,9 +8,12 @@ two data figures made by their scripts with the vendored libraries, an analysis 
 by a command listed in stage/G1/VERIFY, and a registered run. Then: collect (criteria of A's sheet
 for G1), verify (PASS on a clean export), deliberate faults one at a time (a modified czstyle copy,
 a figure without a script, a script changed without regenerating its figure, a table off by more
-than the tolerance, an unfinished run) each caught, report (FAIL while items are OPEN, PASS when
-judged and the verifier report exists), the tag made as the orchestrator would, verification of A
-from the main checkout writing nothing into A's worktree, and report refused from B's worktree.
+than the tolerance, an unfinished run) each caught; a hand-written manifest of wave 2 with a problem
+fails until EVIDENCE.md names it and is then waived, one of wave 2b is not (decision 0016 item 3);
+report (FAIL while items are OPEN, PASS when judged and the verifier's VERIFIER.md exists,
+VERIFIER_REPORT.md accepted too: decision 0016 item 1), the tag made as the orchestrator would,
+verification of A from the main checkout writing nothing into A's worktree, report refused from
+B's worktree; the knowledge base's gates, KB-G2 with the charter's thresholds (0016 item 6).
 """
 import json
 import os
@@ -143,19 +146,76 @@ def main():
     r = stage(A, ["verify", OWNER, "G1"])
     c.ok(r.returncode == 0 and status_of(results(A), "compare") == "PASS",
          "a table differing by 3e-11 relative passes (rtol 1e-6)", r.stdout)
-    rid = next(d for d in os.listdir(os.path.join(A, "tracks", OWNER, "runs")) if d.startswith("A-"))
+    # the run nrpic-run registered (short id A-2026...), not the hand-written A-emd-pbh-... one: os.listdir
+    # order is arbitrary, and picking the hand-written one made this fault a no-op (36/37 once in wave 2)
+    rid = next(d for d in sorted(os.listdir(os.path.join(A, "tracks", OWNER, "runs"))) if re.match(r"A-\d{8}-", d))
     mp = os.path.join(A, "tracks", OWNER, "runs", rid, "manifest.json")
     orig_m = open(mp).read()
     git(A, "add", "-f", "--", os.path.relpath(mp, A))
     fault("run left unfinished", lambda: open(mp, "w").write(orig_m.replace('"status": "completed"', '"status": "running"')),
           "runs", lambda: open(mp, "w").write(orig_m))
 
+    # decision 0016 item 3: a hand-written manifest of waves 1 and 2 that EVIDENCE.md names counts as
+    # registered and its failures of the manifest check are waived; one of wave 2b is not
+    rdir = os.path.join(A, "tracks", OWNER, "runs")
+    sdir = os.path.join(A, "tracks", OWNER, "stage", "G1")
+    old = "A-20261115-120000-abcdef1"
+    os.makedirs(os.path.join(rdir, old))
+    json.dump({"run_id": old, "status": "running", "gate": "G1", "output_dir": f"scratch/{OWNER}/{old}",
+               "notes": "registered by hand in wave 2; never closed"}, open(os.path.join(rdir, old, "manifest.json"), "w"))
+    hs = "A-20261115-120001-abcdef3"           # a helper's registration script copied the schema (D, wave 2)
+    os.makedirs(os.path.join(rdir, hs))
+    json.dump({"schema": "nrpic-run-manifest/1", "run_id": hs, "track": OWNER, "gate": "G1", "status": "submitted",
+               "registered_by": "hand: helper script, because nrpic-run submit refused", "launcher": "local (hand registration)",
+               "outputs": {"dir": f"scratch/{OWNER}/{hs}"}}, open(os.path.join(rdir, hs, "manifest.json"), "w"))
+    commit_all(A, "A(run): hand-written manifests of wave 2 (one left as running, one copying the schema)")
+    r = stage(A, ["verify", OWNER, "G1", "--no-rerun"])
+    d = results(A)
+    msg = next((x["message"] for x in d["checks"] if x["check"] == "runs"), "")
+    c.ok(r.returncode == 1 and status_of(d, "runs") == "FAIL" and "2 of them hand-written in waves 1 and 2" in msg
+         and "list them in stage/G1/EVIDENCE.md" in msg and "0016" in msg,
+         "hand-written wave-2 manifests with problems (one copying the schema), not in EVIDENCE.md: FAIL, with the hint", msg)
+    open(os.path.join(sdir, "EVIDENCE.md"), "w").write(
+        "# Evidence\n\n| Artefact | Run |\n|---|---|\n| first look (by hand) | analysis -120000-abcdef1 |\n"
+        f"| helper's run | {hs} |\n")
+    r = stage(A, ["verify", OWNER, "G1", "--no-rerun"])
+    d = results(A)
+    wv = next((x for x in d["checks"] if x["check"] == "runs-waived"), None)
+    c.ok(r.returncode == 0 and status_of(d, "runs") == "PASS" and wv is not None and wv["status"] == "WARN"
+         and old in (wv["detail"] or {}) and "not finished" in json.dumps(wv["detail"])
+         and hs in (wv["detail"] or {}) and "not finished" in json.dumps(wv["detail"][hs])
+         and "fields missing" not in json.dumps(d),
+         "named in EVIDENCE.md (by the -HHMMSS-<commit> suffix, or in full): failures waived and reported (decision 0016),"
+         " also for a hand registration that copied the schema", r.stdout)
+    new = "A-20261119-090000-abcdef2"
+    os.makedirs(os.path.join(rdir, new))
+    json.dump({"run_id": new, "status": "running", "gate": "G1", "output_dir": f"scratch/{OWNER}/{new}"},
+              open(os.path.join(rdir, new, "manifest.json"), "w"))
+    with open(os.path.join(sdir, "EVIDENCE.md"), "a") as f:
+        f.write(f"| wave 2b by hand | {new} |\n")
+    commit_all(A, "A(run): a hand-written manifest of wave 2b")
+    r = stage(A, ["verify", OWNER, "G1", "--no-rerun"])
+    d = results(A)
+    c.ok(r.returncode == 1 and status_of(d, "runs") == "FAIL" and new in json.dumps(
+         next(x for x in d["checks"] if x["check"] == "runs")["detail"]) and old not in json.dumps(
+         next(x for x in d["checks"] if x["check"] == "runs")["detail"]),
+         "a hand-written manifest of wave 2b is not waived, even when EVIDENCE.md names it", r.stdout)
+    drop = [f"tracks/{OWNER}/runs/{x}" for x in (new, old, hs)]
+    git(A, "rm", "-q", "-r", "--", *drop)
+    git(A, "commit", "-q", "-m", "A(run): drop the three test manifests", "--", *drop)
+    os.remove(os.path.join(sdir, "EVIDENCE.md"))
+    H = F.H
+    c.ok(H.parse_run_id("orch-20261119-101500-abcdef0") == ("orch", "20261119-101500", "abcdef0")
+         and H.run_date("A-emd-pbh-20261115-112946-b7b431d") == "20261115" and H.is_wave12("20261118")
+         and not H.is_wave12("20261119") and H.run_date("x", {"started": "2026-11-20T01:00:00Z"}) == "20261120",
+         "run ids of decision 0016 item 2 (orch included, both forms); wave dates before 2026-11-19")
+
     # report: FAIL while items are open, PASS when judged
     r = stage(A, ["verify", OWNER, "G1"])
     r = stage(A, ["report", OWNER, "G1"])
     rep = open(os.path.join(A, "tracks", OWNER, "stage", "G1", "STAGE_REPORT.md")).read()
-    c.ok("verdict FAIL" in r.stdout and "checklist items not PASS or NA" in rep and "VERIFIER_REPORT" in rep,
-         "report: FAIL while items are OPEN and the verifier has not reported", r.stdout)
+    c.ok("verdict FAIL" in r.stdout and "checklist items not PASS or NA" in rep and "no VERIFIER.md" in rep,
+         "report: FAIL while items are OPEN and the verifier has not reported (VERIFIER.md, decision 0016)", r.stdout)
     c.ok("no stage/G1/EVIDENCE.md (decision 0012)" in rep and "## Package documents" in rep
          and "REPORT.md" not in os.listdir(os.path.join(A, "tracks", OWNER, "stage", "G1")),
          "report: the package documents of decision 0012 listed, EVIDENCE.md and OPEN.md required, no REPORT.md", rep[:1500])
@@ -168,12 +228,21 @@ def main():
     ckp = os.path.join(A, "tracks", OWNER, "stage", "G1", "CHECKLIST.md")
     text = open(ckp).read().replace("status: OPEN", "status: PASS").replace("evidence: \n", f"evidence: run {rid}\n")
     open(ckp, "w").write(text)
-    open(os.path.join(A, "tracks", OWNER, "stage", "G1", "VERIFIER_REPORT.md"), "w").write(
-        "# Verifier report (rehearsal)\n\nAll numbers recomputed; figures opened.\n")
+    vpath = os.path.join(A, "tracks", OWNER, "stage", "G1", "VERIFIER.md")
+    open(vpath, "w").write("Verdict: PASS\n\n# Verifier report (rehearsal)\n\nAll numbers recomputed; figures opened.\n")
     r = stage(A, ["report", OWNER, "G1", "--decision", "Accept G1 of A-emd-pbh (rehearsal)."])
     rep = open(os.path.join(A, "tracks", OWNER, "stage", "G1", "STAGE_REPORT.md")).read()
     c.ok("verdict PASS" in r.stdout and "**PASS**" in rep and "Accept G1 of A-emd-pbh" in rep
          and "schem_timeline" in rep and "{{" not in rep, "report: PASS from the template, placeholders filled", r.stdout)
+    c.ok("`stage/G1/VERIFIER.md` (verifier's report) | present" in rep and "VERIFIER.md` present; its first lines" in rep
+         and "> Verdict: PASS" in rep, "report: VERIFIER.md is the verifier's report (decision 0016 item 1)", rep[:3000])
+    os.rename(vpath, os.path.join(os.path.dirname(vpath), "VERIFIER_REPORT.md"))
+    r = stage(A, ["report", OWNER, "G1"])
+    rep = open(os.path.join(A, "tracks", OWNER, "stage", "G1", "STAGE_REPORT.md")).read()
+    c.ok("verdict PASS" in r.stdout and "`stage/G1/VERIFIER_REPORT.md` (verifier's report) | present" in rep,
+         "report: VERIFIER_REPORT.md is accepted too", r.stdout)
+    os.rename(os.path.join(os.path.dirname(vpath), "VERIFIER_REPORT.md"), vpath)
+    r = stage(A, ["report", OWNER, "G1"])
     c.ok("## Notes of the lead" in rep and "must survive a rerun" in rep and "`stage/G1/SCOPE.md`" in rep,
          "report keeps a section written by hand and names the scoping text", rep[-1500:])
     r = stage(A, ["report", OWNER, "G1"])
@@ -211,6 +280,11 @@ def main():
     ck = open(os.path.join(KB, "tracks", "kb", "stage", "KB-G2", "CHECKLIST.md")).read()
     c.ok(r.returncode == 0 and "All papers and repositories ingested" in ck and "QA report" in ck,
          "collect kb KB-G2 writes tracks/kb/stage/KB-G2/CHECKLIST.md", r.stdout + r.stderr)
+    c.ok("## Thresholds of KB-G2 (coord/CHARTER.md" in ck and "Parse success rate: at least 95 per cent" in ck
+         and "Retrieval hit rate: at least 80 per cent" in ck and "top ten" in ck and "not yet in coord/CHARTER.md" not in ck,
+         "collect kb KB-G2: the thresholds of the charter's section \"Gates of the knowledge base\" (decision 0016)", ck)
+    r = stage(KB, ["collect", "kb", "KB-G1", "--stdout"])
+    c.ok(r.returncode == 0 and "Thresholds of" not in r.stdout, "KB-G1 has no thresholds in the charter", r.stdout)
     r = stage(KB, ["collect", "kb", "G4"])
     c.ok(r.returncode == 1 and "KB-G0, KB-G1, KB-G2, KB-G3" in r.stderr, "a gate the knowledge base lacks is refused", r.stderr)
     print("package to look at: " + os.path.join(A, "tracks", OWNER, "stage", "G1", "STAGE_REPORT.md"))
