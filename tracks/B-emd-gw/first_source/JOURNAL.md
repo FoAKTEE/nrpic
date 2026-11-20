@@ -722,3 +722,107 @@ coefficient growing with eps), not a numerical or gauge error: it scales with th
 that order must. The second-order window is a delta <= ~0.1 (|dev| <= 0.5 percent); at
 delta = 0.0025 the code matches the second-order formula with its junk oscillation to 0.035
 percent for 2 <= a <= 9 (double dumps).
+
+# Wave 3, round 1 (2026-11-20): second round closed (package first_source)
+
+Task: `../PLAN-wave3.md`, Round 1, key first_source. State found at 14:13 PST: package clean
+and committed; card job 4655 = run B-20261119-153655-2deca0a COMPLETED (sacct 10:56:47 to
+11:33:32 local, 36:45; `batch.list.status` rc=0 for e1_p1_n64, e1_p3_n64, e1_p1_n128) with its
+manifest at "submitted"; the 32^3 processor companions B-20261119-143238-b7961ef (jit0p3,
+jit0p1), B-20261119-144416-5f1ab7a (d0025_e1), B-20261119-153624-224805d (d0025_e0p3) ended
+with exit 0 (`.nrpic/result.json`) and their manifests at "running". No merged core executable
+exists (`scratch/core/exe/core_nrpic_v04`, `_v05` absent): the requests-b executables stay.
+
+Step 1 (14:20-14:33 PST): `nrpic-run status`, then `nrpic-run finish` for the four runs; none
+refused. B-20261119-153655-2deca0a: completed, 729 files checksummed (52.5 GB), 0.6125
+card-hours (2205 s); B-20261119-143238-b7961ef, -144416-5f1ab7a, -153624-224805d: completed,
+561, 281, 281 files checksummed. Manifests committed by nrpic-run (acfe21d and after).
+
+## Predictions written before any analysis of these outputs (2026-11-20, 14:35 PST)
+
+Nothing of runs B-20261119-153655-2deca0a, -143238-b7961ef, -144416-5f1ab7a, -153624-224805d
+has been analysed before this entry (I listed the files and read the last lines of the AthenaK
+logs only: every case reached tlim = 21.664 in tau, a = 140).
+
+(a) Advance test of `note/README.md` Request 4 (the post-hoc (1 + eps^2) reading of
+`note/JOURNAL.md`, "Found while writing"), for the 32^3 delta = 0.0025 companions.
+dev = c_+(K1)/(s g) - 1 with s = `fslib.reference.static_amplitude(delta, eps)` (continuum
+value: -3.0797e-5 eps at delta = 0.01, -1.9248e-6 eps at delta = 0.0025) and g of
+`fslib.reference.g_of_tau`.
+- (a1) At fixed a in 20-60 (evaluated at a = 20, 30, 40, 50, 60), the departure at
+  delta = 0.0025 is 1/16 of that at delta = 0.01 on the same 32^3 mesh: R(a) =
+  dev(0.01, a)/dev(0.0025, a) between 12 and 20, for eps = 1 and eps = 0.3. Refuted if R lies
+  outside 12-20 (outside 1/12 to 1/20) at any of these a. delta = 0.01 at 32^3: the wave-2
+  processor runs cw_eps1, cw_eps0p3 of B-20261115-165525-f7c2004 (analysis
+  B-20261115-184650-2d155b6).
+- (a2) dev/(1 + eps^2) is the same for eps = 0.3 and eps = 1 within 5 percent: Q(a) =
+  [dev(eps = 1, a)/2] / [dev(eps = 0.3, a)/1.09] lies in 0.95-1.05 at a = 20, 30, 40, 50, 60
+  at delta = 0.0025. Refuted outside.
+- Plainly: the 64^3 delta = 0.0025 runs (cases d0025_e1, d0025_e0p3 of
+  B-20261119-142833-19edd82) were analysed before (P14 above, lines 699-724: R = 17.9, 16.8,
+  17.2, 19.1 for eps = 1 at a = 20-60), so the 1/16 half of this test has already been seen at
+  64^3; the (1 + eps^2) ratio Q was never computed from them (the journal holds dev at
+  delta = 0.0025 only at a = 140: 9.4 and 5.0 percent). The 32^3 companion is therefore the
+  clean test of both halves; Q from the 64^3 runs is a second reading, computed in the same
+  step but not blind in its delta half.
+- How dev is read (added now, before the analysis): from the double-precision dumps (dbin at
+  delta = 0.0025; rst at delta = 0.01 for the wave-2 32^3 runs), every 1.0 in tau, by cubic
+  interpolation of dev(tau) to the tau of the target a. Reason: at delta = 0.0025 the
+  single-precision dumps jump from dump to dump by 3.5e-4 (eps = 1) and 9.3e-4 (eps = 0.3) rms
+  in dev (P14(a)), the size of dev(0.0025) itself at a = 20. The window means of the
+  single-precision dumps (as conv_compare.py's R) are reported beside, as a check.
+- Caveat [JUDGEMENT, added now]: at 32^3 the box mode carries a mesh offset that does not
+  scale with delta (P8: 32^3 and 64^3 differ by up to 6e-4 for a = 5-40). An offset of that
+  size is comparable to dev(0.0025) at a = 20 (dev(0.01, 20) ~ 1-2 percent at 64^3, so
+  ~ 1e-3 at delta = 0.0025) and would push R below 16 and Q away from 1 first at a = 20-30; at
+  a = 40-60 (dev(0.0025) ~ 4e-3-7e-3) it is below 15 percent of dev. The test stands as
+  written; if it fails only at small a and dev at a <= 9 (dbin) shows an offset of that size,
+  I say so beside the failure, which stays on record.
+
+(b) The 32^3 jittered nulls (jit0p3, jit0p1 of B-20261119-143238-b7961ef; initial data
+B-20261119-142918-6638224: N = 32, two per cell and direction, 262,144 particles, A = 0.3 and
+0.1 cells along y and z, seed 7) against `null_prediction.json` of B-20261119-143224-f0e6727
+(computed from the initial data before the runs). Tolerances of P11b' restated: the complex
+h_+ at K1 and at K2, |measured|/|predicted| within 40 percent of 1 (0.6-1.4) and phase
+difference within 0.5 rad, for 3 <= a <= 20, both amplitudes. Predicted (pred = cross g_cross
++ nn g_nn of the json, read now; c - i s in the basis of fslib.modes):
+
+| case | K | static cross | static nn | at a = 5.1 | at a = 9.9 | late 0.6 cross + 0.36 nn, modulus |
+|---|---|---|---|---|---|---|
+| A = 0.3 | K1 | -3.80e-7 + 2.76e-7 i | -1.21e-7 - 7.77e-8 i | -2.53e-7 + 1.32e-7 i | -2.99e-7 + 1.50e-7 i | 3.04e-7 |
+| A = 0.3 | K2 | 3.91e-7 + 2.79e-7 i | 9.87e-8 + 1.71e-7 i | 2.53e-7 + 2.12e-7 i | 2.97e-7 + 2.53e-7 i | 3.54e-7 |
+| A = 0.1 | K1 | -1.25e-7 + 9.00e-8 i | -1.77e-8 - 1.28e-8 i | -7.64e-8 + 4.69e-8 i | -8.95e-8 + 5.41e-8 i | 9.53e-8 |
+| A = 0.1 | K2 | 1.29e-7 + 9.14e-8 i | 1.31e-8 + 2.15e-8 i | 7.72e-8 + 5.85e-8 i | 9.03e-8 + 6.89e-8 i | 1.03e-7 |
+
+  The noise potential at (0, k, 0) is |Psi| = 8.5e-5 at A = 0.3 (json), 5.7 times its 64^3
+  value 1.48e-5: the jitter is in cells (twice as long) and there are 8 times fewer particles
+  (2 sqrt 8 = 5.7). A-scaling (P11(c) as superseded by (c') above): |c(A = 0.3)/c(A = 0.1)|
+  within 10 percent of the ratio of the predictions, 3.19 at K1 and 3.43 at K2 for
+  3 <= a <= 20 (the noise-noise term is 0.31 and 0.41 of the cross term at A = 0.3 here, 0.14
+  and 0.16 at A = 0.1), phase difference below 0.3 rad. Refuted outside.
+  Added now: (e) at 32^3 the null at A = 0.3 is predicted at |c(K1)| ~ 3e-7, i.e. ~ 10 percent
+  of the eps = 0.1 signal (|s| g = 3.08e-6 g); so P11(e) ("below 10 percent through shell
+  crossing") is expected to be marginal at 32^3: ratio 0.07-0.14 for 3 <= a <= 20 (refuted
+  outside); after shell crossing no prediction. (d) [JUDGEMENT, added now] the rms TT of all
+  modes exceeds the second-order estimate (rms_late 1.9e-6 and 5.7e-7) as at 64^3, and its
+  A = 0.3 / 0.1 ratio lies in 2.5-3.5 for a <= 40 (linear in the noise, as at 64^3: 2.87).
+
+(c) P12 and P13 (lines 511-522) checked against `scripts/conv_compare.py` before the run: they
+stand as written. Added now, how the script reads them (no change of a threshold):
+- relative differences are taken at the times of the second run of each pair by cubic
+  interpolation of the first; "a <= 40" is evaluated as 2 <= a <= 40 (before a = 2 c_+ rises
+  from zero, so a relative difference is undefined there);
+- P12(a): max over 2 <= a <= 40 of |c(1)/c(27) - 1| and |c(8)/c(27) - 1| (keys
+  e1_p1_vs_e1_p27, e1_p8_vs_e1_p27, maxrel_a2.0_40.0) <= 1e-3. P12(b): maxrel_a80.0_140.0 of
+  8 vs 27 below that of 1 vs 27, and maxrel_a80.0_100.0 of 8 vs 27 <= 3 percent. P12(c):
+  confirmed in round 2 (above), not rejudged.
+- P13(a): maxrel_a2.0_40.0 of e1_n128_vs_e1_p1 and e1_n128_vs_e1_p8 <= 1e-3. P13(b):
+  rmsrel_a80.0_140.0 of e1_n128_vs_e1_p8 (c(128, 1)/c(64, 8) - 1) below that of
+  e1_p8_vs_e1_n32 (c(64, 8)/c(32, 8) - 1).
+- Should c_+ come within 0.2 |s| of zero in a window, the difference over |s| (keys
+  maxabs_over_s) is reported beside the relative one; the judgement stays on the relative one.
+  Wave 2 had c_+/s in 1.6-2.5 after shell crossing, so I do not expect it.
+- Trigger of step 4(ii), written now from the plan: the 128^3 run at 8 per cell is submitted
+  only if P13(b) is refuted, or if the 1-per-cell 128^3 run is dominated by particle noise
+  after shell crossing: rmsrel_a80.0_140.0 of e1_n128_vs_e1_p1 (|c(128, 1)/c(64, 1) - 1|)
+  larger than that of e1_p1_vs_e1_p8 (|c(64, 1)/c(64, 8) - 1|, normalised by c(64, 8)).
