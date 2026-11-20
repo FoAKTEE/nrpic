@@ -44,7 +44,15 @@ def main():
     ap.add_argument("--R1", type=float, default=0.65, help="core radius / R_b")
     ap.add_argument("--R2", type=float, default=0.95, help="outer radius of the compensation / R_b")
     ap.add_argument("--rm", type=float, default=4.25, help="isotropic radius of the matter edge (M)")
-    ap.add_argument("--nlat", type=int, nargs="+", default=[34, 51, 68])
+    # conv_ball: total mass of the ball in code units (the larger balls of the ball-radius leg keep
+    # H and the core of data set 3 in its units, so their mass is lam^3), and the taper half width
+    # in M instead of --rm (then rm = R_b + w)
+    ap.add_argument("--M", type=float, default=1.0, help="conv_ball: sharp-edge mass H^2 R_b^3/2 in code units")
+    ap.add_argument("--edge-w", type=float, default=None, help="conv_ball: taper half width (M); sets rm = R_b + w")
+    ap.add_argument("--nlat", type=int, nargs="*", default=[34, 51, 68])
+    # conv_ball: nested lattices NAME:HF:OUTER:SUB (finest cell 1/HF, outer boundary OUTER,
+    # SUB^3 sites per cell of the local level; nested.py)
+    ap.add_argument("--nested", nargs="*", default=[], help="conv_ball: NAME:HF:OUTER:SUB, e.g. nestA:16:16:1")
     ap.add_argument("--per-shell", type=int, default=60)
     ap.add_argument("--sample", type=int, default=600)
     ap.add_argument("--seed", type=int, default=7)
@@ -53,14 +61,18 @@ def main():
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
 
-    Rb = 2.0 / a.HRb ** 2
+    Rb = 2.0 * a.M / a.HRb ** 2                      # conv_ball: M (was 2 / HRb^2)
+    if a.edge_w is not None:                         # conv_ball
+        a.rm = Rb + a.edge_w
     w = a.rm - Rb
-    spec = dict(profile="tophat", HRb=a.HRb, M=1.0, delta_c=a.dc, R1=a.R1 * Rb, R2=a.R2 * Rb,
+    spec = dict(profile="tophat", HRb=a.HRb, M=a.M, delta_c=a.dc, R1=a.R1 * Rb, R2=a.R2 * Rb,
                 edge_width=w, R1_over_Rb=a.R1, R2_over_Rb=a.R2, rm=a.rm)
     ball = C.ball_from_spec(spec)
     rm = ball.matter_rbar()
     assert abs(rm - a.rm) < 1e-9, (rm, a.rm)
     stem = (f"expball_tophat_HRb{a.HRb:g}_dc{a.dc:g}_R1{a.R1:g}_R2{a.R2:g}_rm{a.rm:g}").replace(".", "p")
+    if a.M != 1.0:                                   # conv_ball
+        stem = (f"expball_tophat_HRb{a.HRb:.6g}_M{a.M:.6g}_dc{a.dc:g}_rm{a.rm:.6g}").replace(".", "p")
     summ = ball.summary()
     print("model:", {k: summ[k] for k in ("H", "Rb", "M_misner_sharp", "t_i", "rest_mass", "psi_centre",
                                          "max_2m_over_R", "R_at_max_2m_over_R", "delta_u", "rbar_matter")})
@@ -155,11 +167,21 @@ def main():
                R1 + 0.8, 0.5 * (R1 + R2) + 0.4, R2 - 0.1, R2 + 0.1]
     targets = sorted(set(round(x, 3) for x in targets))
     lat_info = {}
-    for n in a.nlat:
-        d = os.path.join(a.out, f"lat{n}")
+    jobs = [(f"lat{n}", n, None) for n in a.nlat]
+    for spec_ in a.nested:                           # conv_ball: nested lattices
+        nm_, hf_, out_, sub_ = spec_.split(":")
+        jobs.append((nm_, None, (1.0 / float(hf_), float(out_), int(sub_))))
+    for name, n, nest in jobs:
+        d = os.path.join(a.out, name)
         os.makedirs(d, exist_ok=True)
-        x, u, m, sp = XP.lattice(ball, n)
-        h = 2.0 * rm / n
+        if nest is None:
+            x, u, m, sp = XP.lattice(ball, n)
+            h = 2.0 * rm / n
+        else:
+            import nested as NS                      # conv_ball
+            levels = NS.nest_levels(nest[0], nest[1])
+            x, u, m, sp, sloc = NS.nested_lattice(ball, levels, nest[2])
+            h = float(sloc.min())
         rbar = np.sqrt(np.sum(x * x, axis=1))
         # areal radius of each site from the Chebyshev interpolant of the slice (error ~1e-14;
         # ball.R_of_rbar, a Newton solve per point, is too slow for 1e6 sites)
@@ -174,7 +196,7 @@ def main():
             group.setdefault(int(i), "sample")
         track = np.array(sorted(group), dtype=int)
         order = np.concatenate([track, np.setdiff1d(np.arange(len(m)), track)])
-        pfile = os.path.join(d, f"{stem}_lat{n}_track.nrp")
+        pfile = os.path.join(d, f"{stem}_{name}_track.nrp")   # conv_ball: name (lat<n> as before)
         nio.write_nrp(pfile, x[order], u[order], m[order], sp[order])
         x2, u2, m2, s2 = nio.read_nrp(pfile)
         rec1 = np.concatenate([x, u, m[:, None]], axis=1)
@@ -184,15 +206,18 @@ def main():
         sh = C.XE.Shells(ball, Ri[track])
         tracked = dict(n_track=int(len(track)), particle_file=pfile, same_records=same, n_particles=int(len(m)),
                        h=h, n_lat=n, sum_m=float(m.sum()), tag=list(range(len(track))),
+                       nested=(None if nest is None else dict(h_f=nest[0], outer=nest[1], sub=nest[2],
+                               levels=[[b_, h_] for b_, h_ in levels],
+                               per_spacing={f"{v:g}": int(np.sum(sloc == v)) for v in np.unique(sloc)})),
                        source_index=[int(i) for i in track], group=[group[int(i)] for i in track],
                        x0=x[track].tolist(), rbar0=rbar[track].tolist(), R_i=Ri[track].tolist(),
                        m=sh.m.tolist(), E=sh.E.tolist(), tau_ta=sh.tau_ta.tolist(), tau_c=sh.tau_c.tolist(),
                        tau_ah=sh.tau_ah.tolist(), R_max=sh.R_max.tolist())
         C.write_json(os.path.join(d, "tracked.json"), tracked)
         C.write_json(os.path.join(d, "exact.json"), ex)
-        lat_info[n] = dict(h=h, N=int(len(m)), n_track=int(len(track)), same_records=same, file=pfile,
-                           sum_m=float(m.sum()))
-        print(f"lattice n_lat = {n}: h = {h:.6f}, N = {len(m)}, tracked {len(track)}, same records {same}, "
+        lat_info[name] = dict(h=h, N=int(len(m)), n_track=int(len(track)), same_records=same, file=pfile,
+                              sum_m=float(m.sum()), nested=nest)
+        print(f"lattice {name}: h = {h:.6f}, N = {len(m)}, tracked {len(track)}, same records {same}, "
               f"sum m = {m.sum():.8f} (continuum {ball.rest_mass():.8f})")
     C.write_json(os.path.join(a.out, "lattices.json"), lat_info)
     print(f"core: turnaround tau = {ex['core']['tau_ta']:.6f}, R_max/R_i = {ex['core']['R_max_over_R_i']:.6f}, "
