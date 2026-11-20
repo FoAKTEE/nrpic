@@ -734,7 +734,7 @@ another user that holds one card (limit one hour).
 
 While it waits (processors): the items of the list "not tested" of entry 21.
 
-### 14:14 Entry 24: test T7, predictions (written before the runs)
+### 14:11 Entry 24: test T7, predictions (written before the runs)
 
 The items "not tested on several ranks" of entry 21, which the tracks use (Track D:
 `ah_exc_factor = 0.8` and `nprobe = 7` in `es_runs/inputs/es1_dx8.athinput` on
