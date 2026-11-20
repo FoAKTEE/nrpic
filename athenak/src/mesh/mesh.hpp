@@ -157,6 +157,7 @@ class Mesh {
   void PrintMeshDiagnostics();
   void WriteMeshStructure();
   void NewTimeStep(const Real tlim);
+  void ZeroUnusedMeshIndcs();  // NRPIC: definite values for never-set restart-file bytes
   void RefreshSTSParabolicTimeStep();
   void AddCoordinatesAndPhysics(ParameterInput *pinput);
   void AddCyclicZoom(ParameterInput *pin);

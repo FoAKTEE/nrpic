@@ -404,6 +404,21 @@ TaskStatus Z4c::Z4cFloorChi(Driver *pdrive, int stage) {
 
 
 //----------------------------------------------------------------------------------------
+//! \fn  Real Z4c::WeylStepTime
+//! \brief NRPIC: time by which the steps of the Weyl scalar and of the waveforms are
+//! chosen and labelled: the time at the start of the current step (upstream), or, with
+//! <z4c> waveform_at_new_time = true, the time at its end, which is the time of the
+//! state the scalar is computed from (the tasks run after the update, before the driver
+//! adds dt).
+
+Real Z4c::WeylStepTime() const {
+  if (waveform_at_new_time) {
+    return pmy_pack->pmesh->time + pmy_pack->pmesh->dt;
+  }
+  return pmy_pack->pmesh->time;
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn  void Z4c::CalcWeylScalar_
 //! \brief
 
@@ -411,7 +426,7 @@ TaskStatus Z4c::CalcWeylScalar(Driver *pdrive, int stage) {
   if (pmy_pack->pz4c->nrad == 0) {
     return TaskStatus::complete;
   } else {
-    float time_32 = static_cast<float>(pmy_pack->pmesh->time);
+    float time_32 = static_cast<float>(WeylStepTime());
     if (last_output_time==time_32 && stage == pdrive->nexp_stages) {
       auto &indcs = pmy_pack->pmesh->mb_indcs;
       switch (indcs.ng) {
@@ -431,7 +446,7 @@ TaskStatus Z4c::CalcWaveForm(Driver *pdrive, int stage) {
   if (pmy_pack->pz4c->nrad == 0) {
     return TaskStatus::complete;
   } else {
-    float time_32 = static_cast<float>(pmy_pack->pmesh->time);
+    float time_32 = static_cast<float>(WeylStepTime());
     if ((last_output_time==time_32) && (stage == pdrive->nexp_stages)) {
       WaveExtr(pmy_pack);
     }
@@ -447,7 +462,7 @@ TaskStatus Z4c::SendWeyl(Driver *pdrive, int stage) {
   if (pmy_pack->pz4c->nrad == 0) {
     return TaskStatus::complete;
   } else {
-    float time_32 = static_cast<float>(pmy_pack->pmesh->time);
+    float time_32 = static_cast<float>(WeylStepTime());
     if ((last_output_time==time_32) && (stage == pdrive->nexp_stages)) {
       TaskStatus tstat = pbval_weyl->PackAndSendCC(u_weyl, coarse_u_weyl);
       return tstat;
@@ -465,7 +480,7 @@ TaskStatus Z4c::RecvWeyl(Driver *pdrive, int stage) {
   if (pmy_pack->pz4c->nrad == 0) {
     return TaskStatus::complete;
   } else {
-    float time_32 = static_cast<float>(pmy_pack->pmesh->time);
+    float time_32 = static_cast<float>(WeylStepTime());
     if ((last_output_time==time_32) && (stage == pdrive->nexp_stages)) {
       TaskStatus tstat = pbval_weyl->RecvAndUnpackCC(u_weyl, coarse_u_weyl);
       return tstat;
@@ -483,7 +498,7 @@ TaskStatus Z4c::RestrictWeyl(Driver *pdrive, int stage) {
   if (pmy_pack->pz4c->nrad == 0) {
     return TaskStatus::complete;
   } else {
-    float time_32 = static_cast<float>(pmy_pack->pmesh->time);
+    float time_32 = static_cast<float>(WeylStepTime());
     if ((last_output_time==time_32) && (stage == pdrive->nexp_stages)) {
       if (pmy_pack->pmesh->multilevel) {
         pmy_pack->pmesh->pmr->RestrictCC(u_weyl, coarse_u_weyl, true);
@@ -502,7 +517,7 @@ TaskStatus Z4c::ProlongateWeyl(Driver *pdrive, int stage) {
   if (pmy_pack->pz4c->nrad == 0) {
     return TaskStatus::complete;
   } else {
-    float time_32 = static_cast<float>(pmy_pack->pmesh->time);
+    float time_32 = static_cast<float>(WeylStepTime());
     if ((last_output_time==time_32) && (stage == pdrive->nexp_stages)) {
       if (pmy_pack->pmesh->multilevel) {
         pbval_weyl->ProlongateCC(u_weyl, coarse_u_weyl);
@@ -521,7 +536,7 @@ TaskStatus Z4c::InitRecvWeyl(Driver *pdrive, int stage) {
   if (pmy_pack->pz4c->nrad == 0) {
     return TaskStatus::complete;
   } else {
-    float time_32 = static_cast<float>(pmy_pack->pmesh->time);
+    float time_32 = static_cast<float>(WeylStepTime());
     float next_32 = static_cast<float>(last_output_time+waveform_dt);
     if (((time_32 >= next_32) || (time_32 == 0)) && stage == pdrive->nexp_stages) {
       last_output_time = time_32;
@@ -541,7 +556,7 @@ TaskStatus Z4c::ClearRecvWeyl(Driver *pdrive, int stage) {
   if (pmy_pack->pz4c->nrad == 0) {
     return TaskStatus::complete;
   } else {
-    float time_32 = static_cast<float>(pmy_pack->pmesh->time);
+    float time_32 = static_cast<float>(WeylStepTime());
     if ((last_output_time==time_32) && (stage == pdrive->nexp_stages)) {
       TaskStatus tstat = pbval_weyl->ClearRecv();
       return tstat;
@@ -559,7 +574,7 @@ TaskStatus Z4c::ClearSendWeyl(Driver *pdrive, int stage) {
   if (pmy_pack->pz4c->nrad == 0) {
     return TaskStatus::complete;
   } else {
-    float time_32 = static_cast<float>(pmy_pack->pmesh->time);
+    float time_32 = static_cast<float>(WeylStepTime());
     if ((last_output_time==time_32) && (stage == pdrive->nexp_stages)) {
       TaskStatus tstat = pbval_weyl->ClearSend();
       return tstat;

@@ -198,8 +198,9 @@ void Z4c::WaveExtr(MeshBlockPack *pmbp) {
       outFile2.open(filename2, std::ios::out | std::ios::app);
 
       // first append time
-      outFile << pmbp->pmesh->time << "\t";
-      outFile2 << pmbp->pmesh->time << "\t";
+      // NRPIC: label as chosen by <z4c> waveform_at_new_time (mesh time by default)
+      outFile << pmbp->pz4c->WeylStepTime() << "\t";
+      outFile2 << pmbp->pz4c->WeylStepTime() << "\t";
 
       // append waveform
       for (int l = 2; l < lmax+1; ++l) {
