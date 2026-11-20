@@ -496,3 +496,122 @@ eight steps, stock against the full set with damping. Prediction [JUDGEMENT]: bo
 without a non-finite value; with the full set the face-layer maximum of |H| on the fine
 part of the +x face is below 0.2 of the stock one, and the cells of the face next to the
 fine/coarse junction show no value above 3 times the stock face-layer maximum.
+
+## 2026-11-20, entry 10: wave 3, session resumed after the usage limit; outcomes of c1, c2 (first part), c3, the card runs D, t1
+
+State found at 22:00 UTC (git status clean; the journal ended with entry 9): the runs
+started on 2026-11-19 had all ended by themselves with exit 0 and stood as "running" or
+"submitted" in their manifests. Closed with `nrpic-run finish`: c2 (core-20261119-161135-6bcc75b
+punc_g2, core-20261119-161443-f206ffa punc_g4nw_met, core-20261119-161446-1c038a9
+boost_g4nw_met), b2 (core-20261119-161449-d22d256 punc_sf_e2_h), c3
+(core-20261119-162245-b68f4a9 punc_full_h), c1 (core-20261119-164115-3f3c592 four cases,
+core-20261119-164338-2dc0ab0 three cases), and the two card runs D
+(core-20261119-155540-6c84b8a full, 27 min 59 s; core-20261119-155547-b22024e ghost,
+27 min 48 s; Slurm 4659, 4660: 0.93 card-hours, so no further card run fits the one
+card-hour of this package). Never started before the cut: c4, t1, r1 (predictions in
+entries 9 and 6), b1b, a1r2, the cases punc_nw_e2, boost_nw_e2, boost_nw_e4, punc_nw_e4_h of
+b2, punc_g4nw, punc_g4nw_cp, boost_g2, boost_g4nw of c2, punc_g4_h of c3. Started now
+with the predictions as written: r1 (core-20261120-220733-ea71a73), t1
+(core-20261120-220734-23cb66f), c4 (core-20261120-220735-a7966ff), punc_g4nw of c2
+(core-20261120-222537-1011ec4), a1r2 (core-20261120-222543-9a83982). Not run and not
+planned: b1b and the remaining cases of b2 (the non-wave condition on linear stock
+ghosts, which c0b showed to be the wrong combination), punc_g4nw_cp, boost_g2,
+boost_g4nw, punc_g4_h; their predictions (b2-a, b2-c) stay untested.
+
+Analysis run core-20261120-222418-ecb29ff (`an_batch.sh t1.txt c3_d.txt c1a.txt c1b.txt
+c2.txt`; `results/t1.json`, `c3_proxy.json`, `drift.json`, `c1a_ball.json`,
+`c1b_ball.json`, `c2_punc.json`, `c2_boost.json`; figures `figs/t1_smrface.png`,
+`c3_proxy.png`, `drift.png`, `c1a_ball_regions.png`, `c1b_ball_regions.png`,
+`c2_punc_regions.png`, `c2_boost_regions.png`, each looked at). "Full set" = fall-off
+ghosts, order 4, nonwave, metric speed.
+
+**t1** (run core-20261120-220734-23cb66f; refined region of cells 1/2 touching the +x
+face, eight steps, t = 0.5): HELD. No non-finite value in any dump of either run. Largest
+|H| within 4 of the +x face: fine part 2.0e-6 (full set with damping) against 1.79e-3
+(stock), ratio 1.1e-3 (predicted below 0.2); coarse part 6.8e-7 against 8.0e-4; junction
+zone (2 <= max(|y|, |z|) < 6) 1.1e-6, i.e. 6e-4 of the stock face-layer maximum
+(predicted below 3 times). The stock value does not fall with the cell size (1.79e-3 on
+cells of 1/2, 1.9e-3 on cells of 1 in a0b): H1. The coarse-array path of the fall-off
+fill works on a face with a refinement junction.
+
+**c1, ball** (against ball_e2 of a1 and the reference with the faces at 32):
+- (c1-a) HELD: fall-off ghosts alone, order 2: face-layer mean |H| at t = 4 1.49e-3
+  against 1.46e-3. The ball's layer is not made by the ghosts.
+- (c1-b) HELD: fall-off ghosts, order 4, nonwave (ball_g4nw): mean |H - H_ref| at t = 4 in
+  the face layer 2.55e-4 against 1.45e-3 (0.18; predicted below 0.2), in the shell
+  2.28e-6 against 2.16e-4 (0.011; predicted below 0.33). At t = 8: face layer 1.32e-3
+  against 4.38e-3, shell 2.25e-4 against 2.94e-3 (13 times), inner r < 8 2.0e-5 against
+  1.13e-3 (56 times).
+- (c1-c) HELD: ghost_power_curv = 1.5 changes the measures by 1 per cent.
+- (c1-d) HELD at t = 4 (3 per cent), and beyond it later, in the good direction: with
+  sbc_speed = metric the face-layer difference at t = 8 is 26 per cent lower (9.8e-4
+  against 1.32e-3) and at t = 16 the mean |H| is 2.12e-3 against 3.10e-3 (inner) and
+  1.97e-3 against 3.24e-3 (shell).
+- (c1-e) HELD: sbc_theta = cpbc changes the face-layer mean |Theta| by +3 per cent
+  (t = 4), +8 per cent (t = 8), +21 per cent (t = 16): no gain.
+- (c1-f) HELD: every case reaches t = 16; face-layer maximum of |H| at the end 4.9e-3
+  (full set) to 1.66e-2 (ball_g2) against 1.57e-2 (stock).
+- Not predicted, seen in `figs/c1b_ball_regions.png`: in the reference the residuals of
+  the interior FALL after t of about 10 (inner mean |H| 3.5e-3 at t = 8, 3.9e-5 at
+  t = 16: the constraint violation that the ball's matter makes leaves through the shell,
+  where it peaks at 2.5e-3 at t = 10). With the faces at 16 a part of it comes back: at
+  t = 16 the inner mean |H| is 1.69e-2 (stock), 3.10e-3 (ball_g4nw), 2.12e-3 (full set),
+  against 3.9e-5. So the new conditions lower the residual of the interior 8 times at
+  t = 16, but the faces still reflect: what returns is 50 times the reference level.
+  The whole-box mean at t = 16: 7.07e-3 (stock), 1.70e-3 (full set), 4.1e-4 (reference).
+
+**c2, vacuum puncture** (reference with the faces at 32 to t = 8):
+- (c2-a) HELD: fall-off ghosts alone at order 2 (punc_g2): face-layer mean |H| 1.31e-5
+  at t = 1 and 1.71e-5 at t = 6 against 1.78e-4 and 1.71e-4 (13.6 and 10 times); shell
+  at t = 6 3.08e-6 against 1.70e-5 (5.5 times; predicted more than 3).
+- (c2-b) HELD, measured on punc_g4nw_met (punc_g4nw is running): shell mean |H| at t = 6
+  7.00e-7 against 7.02e-7 in the reference; at t = 8 2.14e-6 against 2.05e-6. With the
+  full set the shell stays at the truncation level until the reference ends; stock is
+  24 times above it at t = 6 and 10 times at t = 8.
+- Face layer and whole box (r >= 5), mean |H|: face layer 2.97e-7 (t = 1), 8.4e-7
+  (t = 4), 2.99e-6 (t = 8) against 1.78e-4, 1.74e-4, 1.72e-4 (stock) and 1.6e-9, 1.1e-8,
+  1.1e-7 (reference); whole box at t = 8 3.11e-6 against 1.07e-4 (stock) and 1.23e-6
+  (reference). The Gamma-constraint face layer falls 5 to 12 times (2.17e-6 against
+  1.90e-5 at t = 4), where the ghost order alone changed nothing (entry 8).
+- After the gauge pulse has reached the faces (t = 12): shell 1.44e-5 (full set),
+  1.71e-5 (order 4, stock ghosts), 1.84e-5 (stock); the non-wave part does not spoil the
+  absorption of the pulse (the spirit of b2-b, whose own case punc_nw_e4_h was not run).
+- (c2-c) open until punc_g4nw has run.
+
+**c2, boosted puncture** (no reference yet; a1r2 is running):
+- (c2-d) HELD, measured on boost_g4nw_met: face-layer mean |M_i| at t = 4 3.39e-6
+  against 4.29e-5 (0.079; predicted below 0.2).
+- Mean |H|: face layer 5.67e-6 against 2.03e-4 at t = 4 (36 times), shell 4.37e-6
+  against 5.02e-5 at t = 8 (11 times) and 1.88e-5 against 1.05e-4 at t = 12; whole box
+  1.26e-5 against 1.48e-4 at t = 8, 3.31e-5 against 1.77e-4 at t = 12. Gamma constraint:
+  face layer 1.13e-5 against 1.91e-4 at t = 4, shell 2.43e-5 against 4.30e-4 at t = 12.
+  Order 4 with stock ghosts and the Sommerfeld rate (boost_e4) lowers H in the face
+  layer 5 times at t = 4 but leaves M_i (3.83e-5) and the Gamma constraint: the layer of
+  the boosted puncture is the wrong fall-off of the boundary operator (H2), as c0 and
+  c0b said.
+
+**c3, horizon proxy** (faces at 16 M, cells of 1/4 at the puncture; punc_full_h against
+punc_sf_e2_h of b2; this also answers b2-d with the full set in place of punc_nw_e4_h):
+HELD in the letter. The horizon masses agree to 8.1e-9 until t = 11 (predicted 1e-4);
+largest excursion from the value at t = 12 over 12 <= t <= 39: 2.519e-2 (full set)
+against 2.391e-2 (stock), ratio 1.054 (predicted below 1.2). But the proxy decides
+little: both masses fall by 2.4 per cent because the hole is under-resolved, and the two
+runs differ by up to 1.3e-3 (at t = 39, full set lower). Which of the two is nearer to a
+run with distant faces is not known: that reference (faces at 32 M, 6.6 times the cells)
+costs about ten core-hours and was not run. [TO VERIFY]
+
+**D, Track D's drift input on a card** (345 M, dx = M/8, faces at 128 M; against Track
+D's run D-bh-dress-20261115-121313-284ec4f, numbers recomputed here from its
+horizon_summary file):
+- (D-a) HELD: largest |M - M_TrackD| for t <= 180 M: 9.0e-6 (full set), 9.1e-6 (ghost
+  fill only); predicted within 2e-5. M(50) agrees to 1e-15.
+- (D-b) HELD, with the expected sign: peak-to-peak of the horizon mass in 210-260 M:
+  1.08e-4 (Track D), 6.1e-5 (full set, 0.57), 7.7e-5 (ghost fill only, 0.71); in
+  295-345 M: 1.52e-4, 3.3e-5 (0.22), 5.4e-5 (0.35). Drift M(345) - M(50): 2.10e-4,
+  1.90e-4, 2.07e-4; slope over 150-345 M 2.0e-7, 1.2e-7, 1.7e-7 per M.
+  So the horizon-mass drift of the long vacuum run does not get worse: the two
+  excursions that Track D's README attributes to the outer region shrink 1.8 and 4.6
+  times with the full set, which also confirms the attribution (a change at the faces
+  alone changes them; `figs/drift.png`).
+  Caveat: Track D's run used the card executable of core-v0.2; the vacuum Z4c path is
+  the same source (entry 6), and the three runs agree to 1e-15 at 50 M.
