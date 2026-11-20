@@ -64,7 +64,7 @@ Predictions (written before the analysis runs; I have seen only `fig_cc_controls
   10-20 dynamical times is possible only for a near-marginal collisionless mode
   [JUDGEMENT]. Refuted if a fluid period lies within 30 percent of the fitted P.
 
-## 2026-11-20 22:30 UTC Entry 2: outcome of D1; predictions for the card runs (i)-(iv)
+## 2026-11-20 22:25 UTC Entry 2: outcome of D1; predictions for the card runs (i)-(iv)
 
 ### Outcome of D1 (run C-20261120-222211-aa1be86; `fig_drift_controls`, `fig_drift_fit`, `fig_drift_pulsation` looked at, copies in `figs/`)
 
@@ -186,7 +186,7 @@ Continuations (ii), (iv) to 1000 M.
   factor two of 8e-4, and the H-norm2 floor stays at 8.3-8.5e-4 within 20 %.
 - A.5 Cost: 700 M at 3.42-3.46 s per M, 40-41 min (inside 52 min).
 
-## 2026-11-20 22:35 UTC Entry 3: processor smoke of the M/8 deck; job (i) submitted
+## 2026-11-20 22:27 UTC Entry 3: processor smoke of the M/8 deck; job (i) submitted
 
 - Job (i) submitted at 22:25 UTC as run C-20261120-222533-ce50a86 (Slurm 4741, pending;
   the other C-* job in the queue is the decisive package's 4737).
@@ -203,7 +203,7 @@ Continuations (ii), (iv) to 1000 M.
   particle noise, not truncation error. Whether this larger initial mismatch kicks the
   radial mode harder at M/8 is part of what run (i) shows (it works against M8.1).
 
-## 2026-11-20 22:45 UTC Entry 4: what the D1 periods say about the threshold on the M/4 mesh
+## 2026-11-20 22:29 UTC Entry 4: what the D1 periods say about the threshold on the M/4 mesh
 
 Arithmetic on the fitted periods of run C-20261120-222211-aa1be86 (no new run):
 omega^2 = (2 pi/P)^2 is 2.48e-4 (CC1) and 3.12e-4 (CC2) per M^2 from the cosine fits,
@@ -232,7 +232,7 @@ The first paper's stable y_c = 0.819 cluster also drifted less at half the cell 
 (mean of the last two extrema of alpha_c - alpha_c(0): -0.0039 against -0.0071 over
 300 M, `tab_outcomes.tex` line 110 [BACKGROUND]), a factor 0.55 for one halving.
 
-## 2026-11-20 22:50 UTC Entry 5: predictions for the optional particle-number leg (v)
+## 2026-11-20 22:29 UTC Entry 5: predictions for the optional particle-number leg (v)
 
 Run (v): cc2_kninf_N1e4 (`inputs/cc2_kninf_N1e4.athinput`, the wave-2 cc2 deck with the
 N = 1e4 file of wave 1, run C-sidm-20261115-120610-b4592be; same model, same seed and
@@ -248,7 +248,7 @@ after (i)-(iv). Against cc2_kninf at N = 1e5 (run C-20261115-171059-4b70228):
   particle noise of the initial state. The period stays within 20 % of 355-393 M either
   way, unless the amplitude grows enough to change it.
 
-## 2026-11-20 22:55 UTC Entry 6: a third point of omega^2(y0) from the decisive package
+## 2026-11-20 22:30 UTC Entry 6: a third point of omega^2(y0) from the decisive package
 
 The decisive package runs a collisionless control of a less compact King model, d3_kninf
 (y0 = 0.26, M/4 mesh, N = 1e5, 300 M; `../decisive/inputs/d3_kninf.athinput`, list
