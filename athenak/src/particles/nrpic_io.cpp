@@ -976,6 +976,8 @@ void Particles::NrpicWriteSnapshot(Real time) {
     for (int p=0; p<np; ++p) { tau[p] = rh(IPTAU,p); }
     std::fwrite(tau.data(), sizeof(double), tau.size(), fp);
   }
+  // with <particles> peri_count: N int32, the pericentre passages of each particle
+  NrpicAccWriteSnapshot(fp);
   std::fclose(fp);
   snap_number++;
 }
@@ -1017,6 +1019,7 @@ void Particles::NrpicLoadParticleFile(const std::string &fname) {
     ih(PGID,p) = gids;
     ih(PTAG,p) = p;
     ih(PSP,p) = sp[p];
+    ih(PPERI,p) = 0;
   }
   Kokkos::deep_copy(prtcl_rdata, rh);
   Kokkos::deep_copy(prtcl_idata, ih);
@@ -1051,6 +1054,7 @@ void Particles::NrpicCreateParticles() {
     ih(PGID,p) = gids;
     ih(PTAG,p) = p;
     ih(PSP,p) = 0;
+    ih(PPERI,p) = 0;
   }
   Kokkos::deep_copy(prtcl_rdata, rh);
   Kokkos::deep_copy(prtcl_idata, ih);
@@ -1125,6 +1129,8 @@ void Particles::NrpicWriteRestart(const std::string &fname) {
     std::fwrite(dims, sizeof(std::int64_t), 5, fp);
     std::fwrite(tsh.data(), sizeof(double), tsh.size(), fp);
   }
+  // accretion diagnostics: a block of their own, only when one of them is on
+  NrpicAccWriteRestart(fp);
   std::fclose(fp);
   if (nropt.newton) { NrpicNewtonWriteRestart(fname + ".nwt"); }
 }
@@ -1195,7 +1201,6 @@ void Particles::NrpicReadRestart(const std::string &fname) {
       }
     }
   }
-  std::fclose(fp);
 
   tau_probe = dstate[0]; alpha_probe = dstate[1]; e_probe = dstate[2];
   mass_excised = dstate[3]; mass_escaped = dstate[4]; snap_next_time = dstate[5];
@@ -1216,13 +1221,46 @@ void Particles::NrpicReadRestart(const std::string &fname) {
     ih(PGID,p) = ibuf[3*p+0];
     ih(PTAG,p) = ibuf[3*p+1];
     ih(PSP,p) = ibuf[3*p+2];
+    ih(PPERI,p) = 0;
   }
+  // accretion diagnostics: their block follows if the dump was written with them
+  NrpicAccReadRestart(fp, np, ih);
+  std::fclose(fp);
   Kokkos::deep_copy(prtcl_rdata, rh);
   Kokkos::deep_copy(prtcl_idata, ih);
   if (global_variable::my_rank == 0) {
     std::cout << "NRPIC: restarted " << np << " particles from " << fname << std::endl;
   }
   if (nropt.newton) { NrpicNewtonReadRestart(fname + ".nwt"); }
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicReportMassless
+//! \brief prints how many particles carry no rest mass and how they are pushed, so that
+//! a tracer is never silently moved as a photon (or the reverse)
+
+void Particles::NrpicReportMassless() {
+  const int np = nprtcl_thispack;
+  if (np == 0 || global_variable::my_rank != 0) return;
+  auto pr = prtcl_rdata;
+  int nzero = 0, nneg = 0;
+  Kokkos::parallel_reduce("nrpic_massless", Kokkos::RangePolicy<DevExeSpace>(0, np),
+  KOKKOS_LAMBDA(const int p, int &lz, int &ln) {
+    if (pr(IPM,p) == 0.0) { lz += 1; }
+    if (pr(IPM,p) < 0.0) { ln += 1; }
+  }, Kokkos::Sum<int>(nzero), Kokkos::Sum<int>(nneg));
+  if (nzero > 0) {
+    const bool null_mesh = nropt.zero_mass_null && nropt.metric == NrpicMetric::mesh &&
+                           pusher == ParticlesPusher::nrpic_midpoint;
+    std::cout << "NRPIC: " << nzero << " particle(s) with m = 0 are pushed as "
+              << (null_mesh ? "null particles" : "tracers on timelike geodesics")
+              << " (<particles> zero_mass = " << (nropt.zero_mass_null ? "null" : "tracer")
+              << ")" << std::endl;
+  }
+  if (nneg > 0) {
+    std::cout << "NRPIC: " << nneg << " particle(s) with m < 0 are light rays, emitted "
+              << "at t = -m" << std::endl;
+  }
 }
 
 //----------------------------------------------------------------------------------------
@@ -1235,8 +1273,10 @@ void Particles::NrpicStartup(bool res_flag) {
   if (!res_flag) {
     NrpicCreateParticles();
     NrpicSolveInitialData();    // <particles> id_solve (nrpic_idsolve.cpp)
+    NrpicAccStartRecord();
   }
   NrpicInitializeSources();
+  NrpicReportMassless();
   if (res_flag) {
     // field dumps of earlier times were written before the restart
     while (field_next < nfield_times && field_times[field_next] < pm->time + 0.5*pm->dt) {
@@ -1249,6 +1289,7 @@ void Particles::NrpicStartup(bool res_flag) {
     NrpicWriteHistory(pm->time, pm->ncycle, true);
     if (nropt.newton) { NrpicNewtonWriteHistory(pm->time, pm->ncycle, true); }
   }
+  NrpicAccWriteHistory(pm->time, pm->ncycle, true);
   if (nropt.traj_dcycle > 0 && nropt.traj_ntrack > 0) {
     NrpicWriteTrajectories(pm->time, true);
   }
@@ -1286,6 +1327,10 @@ TaskStatus Particles::NrpicDiagnostics(Driver *pdriver, int stage) {
   if (nropt.hist_dcycle > 0 && (ncyc % nropt.hist_dcycle == 0)) {
     NrpicWriteHistory(tnew, ncyc, false);
     if (nropt.newton) { NrpicNewtonWriteHistory(tnew, ncyc, false); }
+  }
+  {
+    const int dc = (acc.dcycle > 0) ? acc.dcycle : nropt.hist_dcycle;
+    if (dc > 0 && (ncyc % dc == 0)) { NrpicAccWriteHistory(tnew, ncyc, false); }
   }
   if (nropt.traj_dcycle > 0 && nropt.traj_ntrack > 0 &&
       (ncyc % nropt.traj_dcycle == 0)) {

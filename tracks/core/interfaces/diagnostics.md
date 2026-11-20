@@ -223,6 +223,17 @@ trajectories bitwise equal after a restart at t = 0.25).
 - Psi_4 extraction (`<z4c> nrad_wave_extraction`, `extraction_radius_N`,
   `waveform_dt`): AthenaK's own format, not changed by this repository.
 
+## 10a. Accretion diagnostics (work package dfix; all off by default)
+
+`<base>.removed.bin` (record of every removed particle), `<base>.acc.hst` (particles,
+rest mass and energy through coordinate spheres about a fixed centre or a puncture
+tracker; content of the spheres; particles that have passed a pericentre), the
+pericentre counter in the snapshots, and their block in the particle restart file:
+options, columns and the test against exact Schwarzschild geodesics (T3, run
+core-20261115-160245-727e96a) are in `REQUESTS_ADF.md` section 2.3 and
+`docs/FORMATS.md`. The history columns 17 to 20 now also count particles removed on
+the analytic metrics.
+
 ## 11. Proposed interface rules (JUDGEMENT)
 
 1. Analyses read files only through readers that follow this document

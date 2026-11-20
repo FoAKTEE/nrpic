@@ -193,7 +193,15 @@ table is used as it is.
   needs 3x3x3 (about 190 leaves per level and hole). Do not choose the radius equal
   to a multiple of the finest block size when the puncture starts on a block corner:
   round-off in the tracker then decides which neighbours are refined (journal, first
-  attempt of 1b). Set `max_nmb_per_rank` for the generic count.
+  attempt of 1b). Set `max_nmb_per_rank` for the generic count. Measured trees of
+  three-scale Hills meshes hold 1.5 to 2.4 times these counts (Track F, runs
+  F-hills-20261115-131109-634fb86 and -131348-634fb86: 1800 MeshBlocks at t = 0 for
+  mass ratio ten at m/8, up to 2332 along the passage): plan with the measured tree of
+  a short run, not with 190 per level and hole.
+- Common horizon of one pair: `<fastflow> punc_pair_a_<n>`, `punc_pair_b_<n>` (work
+  package dfix, test T5, run core-20261115-161025-3f75eb8; `REQUESTS_ADF.md` section
+  2.5). Without them a waiting surface looks at all punctures and is not searched
+  while a third hole is far away.
 - Refined regions are rounded outward to whole parent blocks; a wave zone slightly
   larger than a block boundary can double the mesh (journal, second launch of 1b).
 
@@ -226,8 +234,10 @@ All measured on one A100, RK4, `nghost = 4`, 16^3 MeshBlocks, finder every 16 cy
   M at m/16 of the light holes is of order 10 to 20 card-hours.
 - Memory is allocated for `max_nmb_per_rank`, not for the current count: 46.6 GB for a
   limit of 2048 with one finder, 58.5 GB for 2400 with two, 63.1 GB for 2400 with
-  three (about 22 MB per block slot plus 2 MB per finder). A card holds a limit of
-  about 3000.
+  three (22.75, 24.4 and 26.3 MB per block slot with one, two and three finders: each
+  finder adds about 2 MB per slot). A limit of 2700 with three finders is then 71 GB
+  [JUDGEMENT, linear in the slots; measurement pending in work package dfix]; a card
+  (80 GB) holds about 3000 slots with three finders.
 - This package used 1.28 of its 3 card-hours (sum over the manifests).
 
 ## 6. With particles

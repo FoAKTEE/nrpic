@@ -149,6 +149,23 @@ void Particles::NrpicInit(ParameterInput *pin) {
     nropt.probes[n][1] = pin->GetReal("particles", pre + "x2");
     nropt.probes[n][2] = pin->GetReal("particles", pre + "x3");
   }
+  {
+    // meaning of a particle without rest mass.  tracer: a test particle on a timelike
+    // geodesic (what the tracer inputs of problems/ have always meant); null: a null
+    // geodesic on the mesh metric, which releases core-v0.2 and core-v0.3 applied to
+    // every m = 0 particle.  Light rays carry m = -t_e < 0 and are null in either case.
+    // (not added to the input when absent: the parameter dump inside the restart files
+    // of existing set-ups stays as it was)
+    const std::string zm = pin->DoesParameterExist("particles", "zero_mass") ?
+                           pin->GetString("particles", "zero_mass") : "tracer";
+    if (zm != "tracer" && zm != "null") {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "<particles> zero_mass must be tracer or null"
+                << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+    nropt.zero_mass_null = (zm == "null");
+  }
   nropt.lambda     = pin->GetOrAddReal("particles", "lambda", 0.0);
   nropt.source_density = pin->GetOrAddBoolean("particles", "source_density", false);
   nropt.source_extrap  = pin->GetOrAddBoolean("particles", "source_extrap", false);
@@ -272,6 +289,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
   }
   NrpicKickInit(pin);       // test kick with reproducible random numbers
   NrpicCollideInit(pin);    // Monte Carlo collisions
+  NrpicAccInit(pin);        // accretion diagnostics
   if (nropt.newton) { NrpicNewtonInit(pin); }
   NrpicIdSolveInit(pin);    // initial-data solver
 }
@@ -364,6 +382,7 @@ void Particles::NrpicSharpenMetric(DvceArray5D<Real> &met, DvceArray5D<Real> &me
 //! old time level
 
 TaskStatus Particles::NrpicSaveMetric(Driver *pdriver, int stage) {
+  NrpicAccSaveCentre();     // accretion diagnostics: centre of the spheres at t^n
   if (nropt.metric == NrpicMetric::mesh && !metric_is_static) {
     std::swap(met0, met1);
     if (nropt.interp_bspline) { std::swap(met0s, met1s); }
@@ -376,7 +395,12 @@ TaskStatus Particles::NrpicSaveMetric(Driver *pdriver, int stage) {
 //! \brief advances all particles from t^n to t^{n+1}
 
 TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
-  if (nropt.newton) { return NrpicNewtonPush(pdriver, stage); }
+  NrpicAccBeforePush();     // accretion diagnostics: distances to the centre at t^n
+  if (nropt.newton) {
+    const TaskStatus ts = NrpicNewtonPush(pdriver, stage);
+    NrpicAccAfterPush();
+    return ts;
+  }
   Mesh *pm = pmy_pack->pmesh;
   const bool mesh_metric = (nropt.metric == NrpicMetric::mesh);
   if (mesh_metric && !metric_is_static) {
@@ -402,6 +426,7 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   const NrpicMetric msrc = nropt.metric;
   const Real bh_mass = nropt.mass, bh_spin = nropt.spin, lat_dx = nropt.lattice_dx;
   const Real alpha_exc = nropt.alpha_exc;
+  const bool zm_null = nropt.zero_mass_null;
 
   // apparent-horizon excision: particles inside ah_exc_factor times the minimum
   // coordinate radius of a found horizon are removed
@@ -452,20 +477,24 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   KOKKOS_LAMBDA(const int p, int &lnun, int &lmxit) {
     Real x[3] = {pr(IPX,p), pr(IPY,p), pr(IPZ,p)};
     Real u[3] = {pr(IPVX,p), pr(IPVY,p), pr(IPVZ,p)};
-    // a particle without rest mass follows a null geodesic (midpoint pusher only);
     // a negative mass -t_e marks a null particle that waits at its position until the
-    // time t_e (a light ray emitted during the run)
+    // time t_e (a light ray emitted during the run; midpoint pusher on the mesh metric
+    // only).  A particle with m = 0 is a tracer on a timelike geodesic, as on the
+    // analytic metrics, unless <particles> zero_mass = null asks for a null geodesic.
     // The ray leaves at the step time nearest to t_e. Until then its momentum slots
     // hold the coordinate direction c^i of emission; at the launch they are replaced
     // by k_i = gamma_ij c^j / sqrt(gamma_kl c^k c^l), the null momentum of unit
     // frequency for the normal observer at the point of emission. The proper-time slot
     // of a null particle accumulates its affine parameter and is zero until the launch.
-    const Real eps = (pr(IPM,p) > 0.0) ? 1.0 : 0.0;
+    const Real eps = (pr(IPM,p) > 0.0 || (pr(IPM,p) == 0.0 && !zm_null)) ? 1.0 : 0.0;
     if (pr(IPM,p) < 0.0 && tnow + 0.5*dt < -pr(IPM,p)) return;
     const bool launch = (pr(IPM,p) < 0.0 && pr(IPTAU,p) == 0.0);
     Real dtau = 0.0;
     int it = 0;
     bool excise = false;
+    // why a particle is removed (accretion diagnostics): -2 lapse below alpha_exc,
+    // -3 inside a horizon, -4 state not finite
+    int code = -2;
     if (msrc == NrpicMetric::mesh) {
       const int m = pi(PGID,p) - gids;
       nrpic::MeshMetric met = proto;
@@ -494,7 +523,10 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
       for (int n=0; n<nah; ++n) {
         const Real d2 = SQR(x[0] - ahc[n][0]) + SQR(x[1] - ahc[n][1])
                         + SQR(x[2] - ahc[n][2]);
-        if (d2 < ahr2[n]) { excise = true; }
+        if (d2 < ahr2[n]) {
+          if (!excise) { code = -3; }
+          excise = true;
+        }
       }
       if (!excise) {
         if (boris) {
@@ -505,22 +537,50 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
       }
     } else if (msrc == NrpicMetric::kerr_schild) {
       nrpic::KerrSchildCart met{bh_mass, bh_spin};
-      it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)
-                 : nrpic::PushMidpoint(met, dt, tol, maxit, x, u);
+      if (alpha_exc > 0.0) {
+        nrpic::AdmPoint ap;
+        met(0, x, ap);
+        excise = (ap.alp < alpha_exc);
+      }
+      if (!excise) {
+        it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)
+                   : nrpic::PushMidpoint(met, dt, tol, maxit, x, u);
+      }
     } else if (msrc == NrpicMetric::kerr_schild_sph) {
       nrpic::KerrSchildSph met{bh_mass, bh_spin};
-      it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)
-                 : nrpic::PushMidpoint(met, dt, tol, maxit, x, u);
+      if (alpha_exc > 0.0) {
+        nrpic::AdmPoint ap;
+        met(0, x, ap);
+        excise = (ap.alp < alpha_exc);
+      }
+      if (!excise) {
+        it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)
+                   : nrpic::PushMidpoint(met, dt, tol, maxit, x, u);
+      }
     } else if (msrc == NrpicMetric::boyer_lindquist) {
       nrpic::BoyerLindquist met{bh_mass, bh_spin};
-      it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)
-                 : nrpic::PushMidpoint(met, dt, tol, maxit, x, u);
+      if (alpha_exc > 0.0) {
+        nrpic::AdmPoint ap;
+        met(0, x, ap);
+        excise = (ap.alp < alpha_exc);
+      }
+      if (!excise) {
+        it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)
+                   : nrpic::PushMidpoint(met, dt, tol, maxit, x, u);
+      }
     } else {
       nrpic::LatticeMetric<nrpic::KerrSchildCart> met{{bh_mass, bh_spin},
                                                       {0.0, 0.0, 0.0},
                                                       {lat_dx, lat_dx, lat_dx}};
-      it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)
-                 : nrpic::PushMidpoint(met, dt, tol, maxit, x, u);
+      if (alpha_exc > 0.0) {
+        nrpic::AdmPoint ap;
+        met(0, x, ap);
+        excise = (ap.alp < alpha_exc);
+      }
+      if (!excise) {
+        it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)
+                   : nrpic::PushMidpoint(met, dt, tol, maxit, x, u);
+      }
     }
     if (it < 0) {
       lnun += 1;
@@ -529,9 +589,12 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
     lmxit = (it > lmxit) ? it : lmxit;
     // a particle whose state is no longer finite is removed with the excised ones
     Real chk = x[0] + x[1] + x[2] + u[0] + u[1] + u[2];
-    if (!(Kokkos::isfinite(chk))) { excise = true; }
+    if (!(Kokkos::isfinite(chk))) {
+      if (!excise) { code = -4; }
+      excise = true;
+    }
     if (excise) {
-      pi(PGID,p) = -2;
+      pi(PGID,p) = code;
     } else {
       pr(IPX,p) = x[0]; pr(IPY,p) = x[1]; pr(IPZ,p) = x[2];
       pr(IPVX,p) = u[0]; pr(IPVY,p) = u[1]; pr(IPVZ,p) = u[2];
@@ -541,6 +604,7 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   push_unconverged = nun;
   push_maxit = mxit;
   if (kick.on) { NrpicTestKick(); }
+  NrpicAccAfterPush();      // accretion diagnostics: crossings, pericentre counter
 
   return TaskStatus::complete;
 }
@@ -575,8 +639,9 @@ void Particles::NrpicAssignBlocks() {
 
 //----------------------------------------------------------------------------------------
 //! \fn  void Particles::NrpicRemoveFlagged
-//! \brief removes particles with negative grid ID (-1 left the mesh, -2 excised) and
-//! compacts the particle arrays, keeping the order of the remaining particles
+//! \brief removes particles with negative grid ID (-1 left the mesh; excised: -2 lapse
+//! threshold, -3 inside a horizon, -4 state not finite) and compacts the particle
+//! arrays, keeping the order of the remaining particles
 
 void Particles::NrpicRemoveFlagged() {
   Mesh *pm = pmy_pack->pmesh;
@@ -598,6 +663,7 @@ void Particles::NrpicRemoveFlagged() {
   }, Kokkos::Sum<int>(nesc), Kokkos::Sum<int>(nexc), Kokkos::Sum<Real>(mesc),
      Kokkos::Sum<Real>(mexc));
   if (nesc + nexc == 0) return;
+  NrpicAccRecordRemoved(acc_after_push);    // accretion diagnostics: record of each one
 
   n_escaped += nesc;
   n_excised += nexc;
@@ -632,10 +698,16 @@ void Particles::NrpicRemoveFlagged() {
 //! \brief removes excised and escaped particles and updates the MeshBlock of the others
 
 TaskStatus Particles::NrpicExcise(Driver *pdriver, int stage) {
+  acc_after_push = true;
   if (nropt.metric == NrpicMetric::mesh) {
     NrpicAssignBlocks();
     NrpicRemoveFlagged();
+  } else {
+    // analytic metrics: particles below the lapse threshold or with a state that is
+    // no longer finite are removed and counted as on the mesh
+    NrpicRemoveFlagged();
   }
+  acc_after_push = false;
   return TaskStatus::complete;
 }
 

@@ -139,6 +139,7 @@ add_executable(
         particles/nrpic_collide.cpp
         particles/nrpic_newton.cpp
         particles/nrpic_idsolve.cpp
+        particles/nrpic_accretion.cpp
         outputs/pdf.cpp
 
         pgen/pgen.cpp

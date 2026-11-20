@@ -1,0 +1,9 @@
+# Card checks of work package dfix with the card executable of this branch (journal, "Card runs")
+t1_circ   {repo}/.work/build_gpu/src/athena {repo}/problems/tests/tracer_mesh_circular.athinput
+t3_acc    {repo}/.work/build_gpu/src/athena {repo}/problems/tests/accretion_static.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261115-160245-727e96a/mesh/acc_static.nrp
+t4_kepler {repo}/.work/build_gpu/src/athena {repo}/problems/tests/newton_point_mass.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261115-160805-5d1663f/kepler/npm.nrp
+t5_pair   {repo}/.work/build_gpu/src/athena {repo}/problems/tests/pair_horizon.athinput
+mem2700   {repo}/.work/build_gpu/src/athena {repo}/problems/puncture/by_triple.athinput mesh_refinement/max_nmb_per_rank=2700 time/nlim=32 output2/dt=1.0e6 output3/dt=1.0e6
+bench16   {repo}/.work/build_gpu/src/athena {repo}/problems/puncture/by_triple.athinput time/nlim=96 output2/dt=1.0e6 output3/dt=1.0e6
+bench32   {repo}/.work/build_gpu/src/athena {repo}/problems/puncture/by_triple.athinput meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 mesh_refinement/max_nmb_per_rank=560 time/nlim=96 output2/dt=1.0e6 output3/dt=1.0e6
+t1_accept {repo}/.work/build_gpu/src/athena {repo}/problems/puncture/horizon_calib.athinput time/tlim=250.0
