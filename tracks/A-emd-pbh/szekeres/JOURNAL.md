@@ -228,3 +228,118 @@ Analysis of the run itself (`code_geodesic.json`, `figures/fig_code_geodesic.png
   mesh is refined; at 64^3 the departure is 1.3 per cent in K by tau = 2. The test at the
   accuracy the brief asks for needs 128^3 and 256^3 to tau = 40 (DESIGN section 5) on a
   card; the processor build is too slow for that (64^3 to tau = 2 took 21 minutes).
+
+## Entry 7, 2026-11-20 22:35 UTC (wave 3, round 1): choice of the dipole amplitude eps
+
+Helper of A-emd-pbh, wave 3, package szekeres (card series). Rule fixed before the
+registered run: take eps = 0.2 instead of 0.1 if (i) both regularity margins
+(R'/R)/|b| and (M'/(3M))/|b| stay above 1.5 for all shells up to tau = 40, and (ii) the
+finite-difference residuals of the initial slice (order-4 stencil, shell region, L2 and
+maximum, N = 64 and 128 on [-8, 8]^3) grow by less than 25 per cent from eps = 0.1 to 0.2
+while the non-spherical signal (direction dependence on a shell; Szekeres minus LTB at the
+same cells) doubles. Otherwise keep 0.1. Reason: the test is of the code path without
+symmetry, so what matters is the size of the non-spherical part of the solution against
+the truncation error of the runs; the latter is set by the radial profile (P7: the LTB
+limit has the same residuals to 2 per cent), so it should barely change with eps.
+
+An unregistered trial of `scripts/run_eps_choice.py --n 32 --workers 4` (output in
+scratch/A-emd-pbh/tmp/szekeres/eps_test, 2026-11-20 22:24 UTC) gave: margins 10.0 and
+3.94 (eps = 0.1), 5.0 and 1.97 (eps = 0.2), minimum at tau = 0, as the exact 1/eps
+scaling says (b is linear in eps; R, M do not depend on it); order-4 Hamiltonian residual
+(shell, /16 pi rho_b) L2 1.74e-3 -> 1.82e-3 (N = 64), 1.53e-4 -> 1.59e-4 (N = 128), maximum
+9.7e-3 -> 1.18e-2 and 9.8e-4 -> 1.13e-3; momentum L2 2.29e-2 -> 2.38e-2 and 2.79e-3 ->
+2.86e-3, maximum 0.107 -> 0.127 and 1.57e-2 -> 1.75e-2 (growth 3 to 22 per cent);
+direction dependence on a shell, |rho(+b) - rho(-b)|/mean 0.33 -> 0.71 and |K(+b) - K(-b)|/H
+0.142 -> 0.292 at tau = 0, factor 2.0 to 2.2 at every tau up to 40. By the rule: eps = 0.2.
+The residuals and margins do not depend on the --n of that trial (they are computed on
+their own meshes); the gradient scales and the Szekeres-minus-LTB maxima do (h = 0.5 there).
+
+P16 (registered repeat with --n 128, 6 workers): margins and residuals identical to the
+trial to all printed digits; min rho/|grad rho| at tau = 40 below 0.17 (the value on the
+axes, run A-20261119-152232-3d29cc1) for both eps, ratio eps 0.2 / eps 0.1 between 0.7 and
+0.95 at every tau; Szekeres minus LTB at tau = 0: max |drho|/rho near 0.2 (eps = 0.1) and
+0.6 (eps = 0.2), max |dK|/H 0.15 and 0.30. Refuted if a margin or residual differs, or if
+the scale ratio falls below 0.6 (then the truncation error at eps = 0.2 would grow by more
+than (1/0.6)^2 = 2.8 for a second-order error and the choice is reopened).
+
+Decision: **eps = 0.2** for the card series and for the particle-number check (new
+scripts default to it: `prep_code_files.py`, `analyse_code_runs.py`); `common.EPS` stays
+0.1 so that the scripts of wave 3a reproduce their recorded runs.
+
+## Entry 8, 2026-11-20 22:40 UTC: predictions for the card series and the particle-number check
+
+Set-up (DESIGN sections 3-4, unchanged): eps = 0.2, periodic [-8, 8]^3, field file and one
+particle per cell centre from `scripts/prep_code_files.py`, CIC, geodesic slicing,
+nghost = 4, RK4, CFL 0.25, diss 0.5; deck `inputs/szekeres_geodesic_card.athinput`
+(= szekeres_geodesic.athinput plus a restart output every tau = 10). Card executable of
+release core-v0.3. Dumps at tau = 0, 10, 20, 30, 40. Members N = 64 (one 64^3 MeshBlock),
+128 (one 128^3 block), 256 (eight 128^3 blocks: large blocks, because the cost of the
+particle module grows with MeshBlocks times particles on the processors).
+
+Cost and memory [JUDGEMENT from measured numbers]: Z4c on one A100 1.85e7 zone-cycles/s
+at 128^3 (core run core-20261119-144437-6718c76, Slurm 4643, JOURNAL-omp entry on
+core/build-openmp), 1.58e7 at 256^3 (A-20261119-144419-13d5601, bh_n256/athena.log);
+particles: 2.1e6 particles with TSC at 64^3 cost about 0.1 s a step (same core run), so
+with CIC about 2-3e-8 s per particle and step. Steps to tau = 40: 640, 1280, 2560. So
+N = 64 about 0.5 min, N = 128 about 3.5 min, N = 256 1.3 to 1.6 s a step, 55 to 70 min:
+it does not fit one job with the others; it runs under the wall-clock limit `-t` and, if
+cut, continues from its restart file in a second job (restart checked on the processor:
+a run restarted from its tau = 0 restart file gives the same final dump byte for byte,
+smoke test at N = 16 in scratch/A-emd-pbh/tmp/szekeres/smoke, unregistered). Card
+memory: Z4c 128^3 bench 4.4 GB peak and the 64^3 box with 2.1e6 particles 1.8 GB (same
+core run) scale to about 35 GB (cells) + 10 GB (particles) for N = 256, below 80 GB.
+Total for the package about 1.0-1.2 card-hours (cap 1.5).
+
+Measured basis for the errors (eps = 0.1, processors, run A-20261119-153832-7097718):
+N = 32 -> 64 at tau = 2 in the shell, rms |K - K_ex|/H 0.0416 -> 0.0088 (order 2.2), rms
+|E - rho|/rho 4.0e-3 -> 8.2e-4 (2.3), max |chi - chi_ex|/chi 7.6e-3 -> 2.4e-3 (1.7), rms
+H/(16 pi rho_b) 0.30 -> 0.095 (1.7); core rms K 0.016 -> 0.0015 (3.4). Growth at N = 32
+(run A-20261119-152010-94a9461): shell rms K/H 0.042 (tau = 2), 0.084 (10), 0.18 (20),
+non-finite by 30. The residuals of the data are the same at eps = 0.2 to 4 per cent
+(entry 7), so these numbers carry over [JUDGEMENT].
+
+- P17 (completion) N = 128 and N = 256 reach tau = 40 with finite fields; N = 64 reaches
+  at least tau = 30 (N = 32 failed between 24 and 28 with errors three times larger).
+  alpha = 1 to 1e-12 throughout; at tau = 0, K equals the exact value to 1e-15 and E
+  equals rho to the float32 precision of the dump (1e-7). Refuted: N = 128 or 256
+  non-finite before tau = 40, N = 64 before tau = 30, alpha off by more than 1e-12.
+- P18 (sizes, shell, rms |K - K_ex|/H(tau)) N = 64: 0.02 at tau = 10, 0.3 at tau = 40;
+  N = 128: 0.004 and 0.05; N = 256: 0.001 and 0.01 (the DESIGN estimate: per cent at
+  tau = 40 needs h <= 0.06). rms |E - rho|/rho about a third of these, chi two thirds of
+  E. The core errors grow faster than the shell's after tau = 20 (amplification about 75
+  from tau = 10 to 40 in the core, run A-20261119-152232-3d29cc1) and are the largest at
+  tau = 40. Refuted for a member if its shell value at tau = 10 or 40 lies outside a factor
+  3 of the number given.
+- P19 (orders) For the rms errors of K, E and chi in the shell and the core at tau = 10,
+  20 and 30: the order of 64 -> 128 and of 128 -> 256 is at least 1.5, and the order of
+  128 -> 256 is not lower than that of 64 -> 128 by more than 0.3 (approach to the
+  asymptotic range, which is 4 for RK4 at fixed CFL with sixth-order stencils). At
+  tau = 40 the core (density scale about 2 cells at N = 256) may be pre-asymptotic: order
+  at least 1. Refuted by an order below these anywhere, or an error that grows with N.
+- P20 (the test sees the non-spherical part) At N = 256 the maximum K error in the shell
+  is at least 10 times smaller than the maximum of |K_Szekeres - K_LTB|/H at the same
+  cells (0.30 at tau = 0, larger later), and the maximum E error at least 10 times smaller
+  than the maximum |rho_Sz - rho_LTB|/rho, at every dump to tau = 30; at N = 128 at least
+  5 times. Refuted otherwise.
+- P21 (constraints) rms H/(16 pi rho_b(tau)) in the shell converges with the same order as
+  the K error (within 0.5) between 128 and 256 at tau = 10 and 20.
+
+Particle-number check (processors, release core-v0.3, one thread, N = 32, eps = 0.2, to
+tau = 2, dumps 0.5, 1, 2): 1 particle per cell centre against 8 per cell on the lattice of
+spacing h/2 with m = rho psi^6 (h/2)^3. In geodesic slicing the particles do not move, so
+the particle number enters only through the deposit: with CIC each sub-particle gives 3/4
+to its cell and 1/4 to the neighbour in each direction, so the 8-particle source is the
+density smoothed by about (3/32) h^2 d^2/dx^2 per direction, an O(h^2) error of the source
+(the 1-particle source is exact at the cell centres).
+
+- P22 At tau = 0 the 8-particle run's E equals the deposit predicted by the preparation
+  run (`E_dep` of slice_t0.npz, computed in numpy from the same weights) to 1e-6
+  relative; its constraint monitor (rms H, shell) is larger than the 1-particle run's by
+  roughly the rms of (E_dep - rho)/rho_b (the source error enters H as 16 pi dE).
+- P23 At tau = 2 the 8-particle run is not closer to the exact solution: its shell errors
+  of K, E, chi (rms) are between 0.7 and 3 times those of the 1-particle run (smoothing
+  error of the source of the size of the mesh truncation at h = 0.5), and the difference
+  between the two runs in E stays the initial deposit difference within 30 per cent (the
+  mass per cell is fixed). So at this mesh the result does not depend on the particle
+  number beyond the O(h^2) deposit term. Refuted if the 8-particle errors are below 0.7 or
+  above 3 times the 1-particle ones, or if the 8-particle run diverges.
