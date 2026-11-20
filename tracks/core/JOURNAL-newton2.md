@@ -799,3 +799,46 @@ registered ones for T3, T4b and T6b (`cmp`), and for T5 the missing numbers: 45
 snapshots with a/a_i >= 1.5, deviation between -0.631 and +0.463 per cent (vertex; rms
 0.21 per cent, 27 snapshots exact) and between -0.513 and +0.335 per cent (centre; rms
 0.18 per cent, 28 exact). The registered reruns follow.
+
+### Times of this session, corrected (22:22Z by `date -u`)
+
+The times "22:20Z" and "22:40Z" in the two headings above were guesses of mine; by the
+run ids and commits the corrections were written at about 22:10Z and the amendment at
+22:16Z. From here on times are those of the `date` command.
+
+### Card job 2 split in two before it started (22:18Z)
+
+The job of 50 minutes (run core-20261120-221728-59d6e64, Slurm 4735) stood behind a
+two-card job of another package of core that cannot start before 23:05Z, while one card
+was idle; a job of at most 40 minutes fits before it. It was stopped before it started
+(`nrpic-run stop`, status stopped, no card time) and its list split
+(`scratch/core/tmp/n2card2/card2a.list`, `card2b.list`, lines of the list of run
+core-20261120-221659-da814e5): 2a = T6c in and x, T4d at 64^3 and 96^3 (30 minutes,
+run core-20261120-221835-4870ae5, Slurm 4736, started at once); 2b = T4d at 128^3 and
+256^3 (25 minutes), submitted when 2a has ended. Nothing else changes.
+
+### T6c coarse outcome: the kick appears on a uniform mesh when the lattice is coarser than the cells [VERIFIED]
+
+Runs: case core-20261120-221737-74eed8b (720 particles on a lattice of 0.125 = two cells
+of the uniform 64^3 mesh, 236 s on one core), analysis core-20261120-222151-512227c
+(`t6c_coarse.json`, figure `t6c_coarse.png`, looked at).
+
+| largest over t <= 0.8 | lattice 0.0625 (T6b, one particle per cell) | lattice 0.125 (one per eight cells) |
+|---|---|---|
+| momentum change \|dP\|/(M v) | 8.62e-5 | 1.154e-2 |
+| centre of mass off uniform motion / R | 6.28e-5 | 8.39e-3 |
+| angular momentum change | 1.28e-4 | 1.70e-2 |
+| energy change, relative | 3.65e-4 | 1.16e-3 |
+
+- The kick appears without any refinement, 134 times the value of the lattice with one
+  particle per cell, and has the shape of T6b: the momentum rises during the first 0.15
+  time units and is constant afterwards (figure). Refutation (below 3e-4): not met.
+- The predicted range "between 1e-3 and 1e-2" is missed at its upper end by 15 per cent
+  (1.15e-2; my estimate was 3e-3: the push lasts 0.15, about half a cell at the speed
+  0.27, not the quarter cell I assumed, and the mean self-force over the path is larger
+  than the 0.3 G m/dx^2 I took).
+- Two meshes now show the same thing (128^3 with the lattice 0.0625 in T6b; 64^3 with
+  the lattice 0.125 here): a cold lattice with fewer than one particle per cell in each
+  direction, commensurate with the mesh, is pushed as a whole by the self-force of its
+  particles. The card cases of T6c test the converse (enough particles per cell: no
+  kick), on uniform and refined meshes.
