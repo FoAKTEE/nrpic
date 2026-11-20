@@ -608,3 +608,32 @@ athena.log, largest |H| > 1e10 and first non-finite record in cstat.hst, first n
 record of z4c.user.hst and nrpic.hst, first non-finite line output; expected [VERIFIED by
 the verifier, to be reproduced]: 32.875 / 30.25, 33.0 / 30.5, 33.125 / 30.75, 33.25 / 31.0
 (dx = M/2 / M).
+
+## 2026-11-20, entry 14: SR-1L at a fixed box (prediction F, written before the card job)
+
+Why: the verifier (VERIFIER.md section 2.4) notes that the M/2 -> M/4 orders of wave 2 mix
+the mesh with the box (half-width 64 against 32) and, as entry 6 says, with the lattice
+(h = M/2 against M/4). One card job (core_gauge/athena_gpu, deck sr1l.athinput, list
+`box_list.txt`): SR-1L on [-32, 32]^3 to t = 24 at dx = M (sr1lb_n64) and M/2 (sr1lb_n128)
+with the h = M/4 lattice of sr1l_n256L32 (run A-emd-pbh-20261115-164353-96e301d, 230144
+particles, 1898 tracked), so that with sr1l_n256L32 (job 4642) the three meshes share box,
+lattice and gauge; and dx = M/2 with the h = M/2 lattice (sr1lb_n128h2), which separates
+at M/2 the box (against sr1l_n256: same lattice, L = 64) from the particle number (against
+sr1lb_n128: same box). Trajectory records every cycle (0.25 M at dx = M, 0.125 M at M/2).
+Expected cost about 0.05 card-hours (sr1l_n256L32 took 7 min at 256^3; 128^3 has 1/16 of
+its cell-steps); wall limit 15 min.
+
+Prediction F [JUDGEMENT]:
+- F1 the three runs reach t = 24 with finite fields.
+- F2 at fixed box and lattice the largest core |R/R_exact - 1| at tau = 16.894 falls
+  monotonically dx = M -> M/2 -> M/4, apparent order between M/2 and M/4 between 2 and 4.5.
+- F3 box: sr1lb_n128h2 (L = 32) and sr1l_n256 (L = 64, same lattice h = M/2) agree in the core
+  error at tau = 16.894 within 30 per cent and in the mean core turnaround time (estimator C
+  of entry 13 and V3) within 0.01 M.
+- F4 particle number at dx = M/2: sr1lb_n128 (h = M/4) and sr1lb_n128h2 (h = M/2) agree in the
+  core error at tau = 16.894 within 30 per cent and in the turnaround (C) within 0.01 M.
+- F5 the mean core turnaround error (C) falls in magnitude from M/2 to M/4 at fixed box, and
+  at dx = M exceeds 0.3 M; the mean R_max error falls at order >= 1.5 from M/2 to M/4.
+Refuted by: a core error at fixed box that does not fall from M/2 to M/4 (then the box or the
+lattice, not the mesh, set the M/4 error of entry 6), or a box difference above 0.01 M in the
+turnaround at dx = M/2.
