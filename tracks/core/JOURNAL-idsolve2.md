@@ -629,3 +629,75 @@ its maximum at the shell, r = 6 to 7):
      faces. Mode stencil leaves it at 0.08 to 0.24 next to the puncture (r of 1 to 2: the
      sixth-order monitor differentiating psi_s^4), which is the monitor's error on the
      singular part, not an error of the data (u converges at second order there).
+
+## 2026-11-20, entry 10: wave 3, a new session closes the package; what was found; predictions P6, P7
+
+The session of 2026-11-19 was cut off by the usage limit of the account after entry 9. A
+new session took over on 2026-11-20 at 22:00 UTC (merge of main: decisions 0018, 0019,
+the pre-commit hook, the pause flag). Read again: `CLAUDE.md`, `coord/CHARTER.md` to
+"Owners", brief lines 493-553, 688-706, 834-860, decisions 0016 to 0019, `harness/RULES.md`,
+this journal, `interfaces/id_solver2.md`, `test_p.py`, `analyze_k.py`, of
+`nrpic_idsolve.cpp` lines 462-560, 812-960, 1040-1240.
+
+State found [VERIFIED: `git status`, `nrpic-run status`, `sacct`]: source unchanged since
+76add0c; every processor run of entry 5 had finished unattended (B at 32, 64, 128 cells
+core-20261119-153416-3d26b50; P1 -165458-ecdaa7c; P3 and P4 -170050-f228951; P5
+-170028-77f7173), their numbers and figures lay uncommitted in the analysis directory
+(committed as a3c5a8f, each file equal to the copy in its run directory); the card job K
+(core-20261119-154414-2506b80, Slurm job 4656) had run its four cases in 1 min 56 s
+(0.032 card-hours) and was not closed (closed now with `nrpic-run finish`). Not done at
+the cut-off: outcomes of B at 128 cells, P1, P3, P4, P5, K; the placeholders of the
+interface; READY; publication. Outcomes: entry 11.
+
+Two things the finished P runs show, which the tests below follow up (the numbers are
+in entry 11): (i) the error of u of the vacuum Bowen-York puncture does not fall with
+the cell size: it is 2.6e-4 to 2.9e-4 over 1 < r < 12 at 32, 64 and 128 cells, nearly
+uniform in space (root mean square 2.6e-4 to 2.8e-4), in both residual modes; (ii) u at
+the three punctures of P4 has not converged at dx = 0.25 (successive differences fall
+by 0.63, 0.24, 0.48 instead of at most a third).
+
+**P6, the face distance for a Bowen-York puncture** (`test_p.py --tests p6`; the vacuum
+puncture of P1, m = 1, P = 0.5, mode stencil; mesh half-width 32 at dx = 1 and 0.5 (64
+and 128 cells) and half-width 64 at dx = 1 (128 cells); the half-width 16 cases are those
+of P1). Reading to be tested [JUDGEMENT]: the Bowen-York source of the scalar equation
+falls as r^-4, lap u = -c/r^4 beyond the matter with c = (15/16) P^2 at leading order
+(angle average of (1/8) Abar^2 with psi = 1), so u = Q_inf/r - c/(2 r^2), and the moments
+within the sphere of radius R (the half-width) hold Q(R) = Q_inf - c/R. The remainder
+u - u_far is then c/(R r) - c/(2 r^2) beyond R, which the 1/r fill does not represent:
+d(r v)/dr = c/(2 r^2) where the fill assumes 0. The error is a solution of the
+homogeneous equation, nearly a constant e0 with e0 = -(c/2) <1/r^2> over the faces,
+about -0.64 c/(2 R^2) for a cube. With c from the reference (c/R = Q_inf - Q(16) =
+0.01298, c = 0.208; leading order 0.234 less the factor psi^-7) that is -2.6e-4 for
+R = 16, as seen. Predictions:
+ (a) the mean of u - u_ref over 1 < r < 12 is negative and falls as R^-2: -6.5e-5 within
+     20 per cent at half-width 32 for both cell sizes, and -1.6e-5 within a factor 1.5
+     at half-width 64 (there the truncation error at dx = 1, about 1e-5, is of the same
+     size);
+ (b) M_psi of the record equals m + 2 Q(R) of the reference (`by_reference`, `m_inside`)
+     to 1e-4 at half-width 32 and 64; its deficit against the ADM mass 1.145565 is
+     0.0260 at R = 16 (measured in P1) and about 0.013 and 0.0065 at R = 32 and 64;
+ (c) at most 6 outer iterations in every case.
+ Refuted (the reading) if the mean error does not fall by 3 to 5 when the half-width
+ doubles at fixed cell size.
+
+**P7, the three punctures of P4 on refined meshes** (`test_p.py --tests p7`; root 32^3
+with dx = 1, MeshBlocks of 8^3, static levels: |x_i| < 8 (dx = 0.5), |x_i| < 6 (0.25),
+then cubes about each puncture of half-width 2 (0.125), 1 (0.0625) and 0.5 (0.03125);
+cases `p7_l2` to `p7_l5` by the finest level; mode stencil, BiCGStab). Reading to be
+tested [JUDGEMENT]: the source (1/8) psi^-7 Abar^2 of a puncture of bare mass m peaks at
+r = 3 m/8 for its momentum (r^3/(r + m/2)^7) and at r = m/12 for its spin
+(r/(r + m/2)^7): 0.15 to 0.375 for the three momenta and 0.083 for the spin of the first
+puncture, not resolved by dx = 0.25. Predictions:
+ (a) every case converges in at most 8 outer iterations; P_ADM and J_ADM of the record
+     as in P4, (0.1, 0, 0) and (0.5, -0.2, -0.6), to round-off;
+ (b) `p7_l2` agrees with the uniform 128-cell run of P4 at each puncture to 5 per cent
+     of u (the same cell size at the punctures; the far field differs little);
+ (c) the differences of u at each puncture between successive cases fall: |u_l4 - u_l3|
+     at most 0.4 |u_l3 - u_l2| and |u_l5 - u_l4| at most 0.4 |u_l4 - u_l3| for the two
+     punctures without spin; for the spinning one the second ratio holds (its source is
+     resolved from dx = 0.0625 on);
+ (d) u at the punctures on the finest mesh lies above the uniform 128-cell values
+     (0.0164, 0.0121, 0.0109) and within 40 per cent of the closed-form second-order
+     values of `nrpic_cf` (0.0157, 0.0100, 0.0078), which omit the cross terms of the
+     curvatures of different punctures.
+ Refuted (the reading) if the differences do not fall from `p7_l3` on.

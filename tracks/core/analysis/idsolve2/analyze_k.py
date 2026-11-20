@@ -80,7 +80,6 @@ def main():
                      if k in ("outer_card", "outer_proc", "dpsi_rel", "dW_rel")}, flush=True)
     root = lib2.run_root()
     out = os.path.join(root, "analyze_k_numbers.json")
-    lib2.save_json(out, res)
     fs.use_style()
     fig, ax = plt.subplots(figsize=(fs.COLUMN_WIDTH, 2.4))
     names = list(res["cases"])
@@ -89,12 +88,20 @@ def main():
         v = [res["cases"][n].get(key, np.nan) for n in names]
         ax.bar(np.arange(len(names)) + 0.35*k, np.maximum(v, 1e-18), 0.35, color=c,
                label=lab + " card against processor")
+    # region means of |H| of the last field dump: only regions whose mean is above
+    # round-off (1e-9) are compared; one symbol per case, the largest over its regions
+    first = True
     for n_i, n in enumerate(names):
         e = res["cases"][n]
-        if "regions" in e:
-            ax.plot(n_i + 0.7, max(e["regions"]["shell"]["rel"], 1e-18), "k^",
-                    label=r"shell mean $|H|$ at $t=2$")
+        rel = [v["rel"] for v in e.get("regions", {}).values() if v["proc"] > 1.0e-9]
+        e["regions_rel_max"] = max(rel) if rel else None
+        if rel:
+            ax.plot(n_i + 0.7, max(max(rel), 1e-18), "k^", ms=4,
+                    label=r"region means of $|H|$, last dump" if first else None)
+            first = False
+    lib2.save_json(out, res)
     ax.set_yscale("log")
+    ax.set_ylim(1e-17, 1e-8)
     ax.set_xticks(np.arange(len(names)) + 0.17)
     ax.set_xticklabels(names, fontsize=6, rotation=20)
     ax.set_ylabel("largest relative difference")

@@ -16,10 +16,16 @@ solve, psi = psi_s + u with psi_s = 1 + sum m_c/(2 |x - x_c|) in closed form.
   P5  the puncture of P1 inside the shell of P2 moving with u_x = 0.1, scalar and vector
       part in mode code (vector part: matter momentum; the Bowen-York curvature is left
       out of the numerical divergence), N = 64: P_ADM of the record
+  P6  the puncture of P1 with the faces further out (journal entry 10): half-width 32 at
+      dx = 1 and 0.5, half-width 64 at dx = 1, stencil residual: the error left by the
+      r^-4 tail of the Bowen-York source beyond the sphere of the moments
+  P7  the three punctures of P4 on refined meshes (journal entry 10): root 32^3, static
+      levels |x_i| < 8 and < 6, then cubes of half-width 2, 1, 0.5 about each puncture
+      (finest cell 0.25 to 0.03125), stencil residual: u at the punctures
 
     nrpic-run submit ... -- python3 tracks/core/analysis/idsolve2/test_p.py --exe <athena>
-                            [--tests p1,p2,p3,p4,p5] [--jobs N]
-    test_p.py --analyze <run directory>
+                            [--tests p1,p2,p3,p4,p5,p6,p7] [--jobs N]
+    test_p.py --analyze <run directory>[,<run directory>...]
 """
 import argparse
 import glob
@@ -73,13 +79,29 @@ def smr_sets():
     return s
 
 
+def smr_punc_sets(lmax):
+    """Static levels for the three punctures: |x_i| < 8 (level 1), |x_i| < 6 (level 2),
+    then cubes about each puncture of half-width 2, 1, 0.5 (levels 3, 4, 5), up to lmax."""
+    s = {"mesh_refinement/refinement": "static", "mesh_refinement/max_nmb_per_rank": 8192}
+    boxes = [(1, (0.0, 0.0, 0.0), 8.0), (2, (0.0, 0.0, 0.0), 6.0)]
+    for lev, half in ((3, 2.0), (4, 1.0), (5, 0.5)):
+        if lev <= lmax:
+            boxes += [(lev, p["pos"], half) for p in TRIPLE]
+    for k, (lev, c, half) in enumerate(boxes):
+        s["refined_region%d/level" % (k + 1)] = lev
+        for a, d in enumerate("123"):
+            s["refined_region%d/x%smin" % (k + 1, d)] = c[a] - half
+            s["refined_region%d/x%smax" % (k + 1, d)] = c[a] + half
+    return s
+
+
 def build_cases(root, exe, tests):
     cases = []
 
-    def add(name, sets, ic=None, n=None, may_fail=False):
+    def add(name, sets, ic=None, n=None, may_fail=False, half=None):
         d = os.path.join(root, name)
         os.makedirs(d, exist_ok=True)
-        s = dict(lib2.mesh(n, mb_of(n))) if n else {}
+        s = dict(lib2.mesh(n, mb_of(n), half)) if n else {}
         s.update(sets)
         lib2.make_input(PUNC, os.path.join(d, "in.athinput"), s)
         steps = list(ic or []) + [[exe, "-i", "in.athinput"]]
@@ -122,6 +144,14 @@ def build_cases(root, exe, tests):
                                 "particles/id_vector": "true",
                                 "particles/id_vector_residual": "code"}, **with_shell),
             shell_ic(0.25, u=0.1), n=64, may_fail=True)
+    if "p6" in tests:
+        for half, n in ((32.0, 64), (32.0, 128), (64.0, 128)):
+            add("p6_h%d_n%d" % (half, n), st, n=n, half=half)
+    if "p7" in tests:
+        for lmax in (2, 3, 4, 5):
+            s = dict(lib2.mesh(32, 8))
+            s.update(smr_punc_sets(lmax))
+            add("p7_l%d" % lmax, dict(s, **st, **punc_sets(TRIPLE)), may_fail=True)
     return cases
 
 
@@ -186,20 +216,21 @@ def load_case(d):
     """Cell centres, u = psi - psi_s, monitor H and cell size from the dump of a case."""
     f = os.path.join(d, "punc.idsolve.bin")
     fb = os.path.join(d, "punc.idsolve.blk.bin")
-    plist = TRIPLE if os.path.basename(d).startswith("p4") else \
+    plist = TRIPLE if os.path.basename(d).startswith(("p4", "p7")) else \
         [dict(m=M1, pos=(0.0, 0.0, 0.0))]
     if os.path.exists(f):
         a = idlib.read_idsolve_bin(f)
         _, dx, (X, Y, Z) = idlib.mesh_r(a)
         out = dict(X=X, Y=Y, Z=Z, dx=np.full(X.shape, dx), psi=a["psi"], H=a["H"],
-                   H0=a["H0"], level=np.zeros(X.shape, dtype=int))
+                   H0=a["H0"], level=np.zeros(X.shape, dtype=int),
+                   half=float(np.abs(X).max() + 0.5*dx))
     elif os.path.exists(fb):
         a = lib2.read_blk(fb)
         X, Y, Z, dxm = lib2.blk_coords(a)
         out = dict(X=X, Y=Y, Z=Z, dx=dxm[:, None, None, None]*np.ones_like(X), psi=a["psi"],
                    H=a["H"], H0=a["H0"],
                    level=(a["level"] - a["level"].min())[:, None, None, None]
-                   * np.ones(X.shape, dtype=int))
+                   * np.ones(X.shape, dtype=int), half=float(np.abs(a["box"]).max()))
     else:
         return None
     out["u"] = out["psi"] - psi_s(out["X"], out["Y"], out["Z"], plist)
@@ -216,9 +247,11 @@ def errors(c, uref, rp):
     inner = r < 0.9*dx
     near = (r < rp) & ~inner
     mid = (r >= rp) & (r < 12.0)
-    face = ((np.abs(c["X"]) > HALF - 4) | (np.abs(c["Y"]) > HALF - 4)
-            | (np.abs(c["Z"]) > HALF - 4))
+    half = c.get("half", HALF)
+    face = ((np.abs(c["X"]) > half - 4) | (np.abs(c["Y"]) > half - 4)
+            | (np.abs(c["Z"]) > half - 4))
     out = dict(e_inner=float(np.mean(e[inner])), u_inner=float(np.mean(c["u"][inner])),
+               e_mid_mean=float(np.mean(e[mid])),
                e_near_max=float(np.max(np.abs(e[near]))) if near.any() else 0.0,
                e_mid_max=float(np.max(np.abs(e[mid]))),
                e_mid_rms=float(np.sqrt(np.mean(e[mid]**2))),
@@ -274,16 +307,19 @@ def analyze(roots, status, tag="", out_dir=None):
             res["cases"][name] = e
             continue
         rp = 3.0 if "_c3" in name else 1.0
-        if name.startswith("p1") or name == "p3_by_st":
+        if name.startswith(("p1", "p6")) or name == "p3_by_st":
             uref = byr["u"](c["X"], c["Y"], c["Z"])
             st, err = errors(c, uref, rp)
             e.update(st)
             e["u_ref_inner"] = float(byr["u0"])
+            e["half"] = c["half"]
+            e["dx_min"] = float(c["dx"].min())
+            e["m_inside_ref"] = float(byr["m_inside"](c["half"]))
         elif name.startswith(("p2", "p3_shell")):
             uref = np.interp(c["r"], shr["r"], shr["u"])
             st, err = errors(c, uref, rp)
             e.update(st)
-        elif name.startswith("p4"):
+        elif name.startswith(("p4", "p7")):
             pts = {}
             for k, p in enumerate(TRIPLE):
                 rr = np.sqrt((c["X"] - p["pos"][0])**2 + (c["Y"] - p["pos"][1])**2
@@ -294,8 +330,10 @@ def analyze(roots, status, tag="", out_dir=None):
                 ua = by.approx_u(np.array([p["pos"]]) + 1e-9, p["pos"], p["m"], p["P"],
                                  p["S"], lam=lam)
                 pts[str(k)] = dict(u=float(np.mean(c["u"][mk])), u_approx=float(ua[0]),
-                                   lam=float(lam))
+                                   lam=float(lam), ncell=int(mk.sum()),
+                                   dx=float(c["dx"][mk].min()))
             e["punctures"] = pts
+            e["ncells"] = int(c["X"].size)
             face = ((np.abs(c["X"]) > HALF - 4) | (np.abs(c["Y"]) > HALF - 4)
                     | (np.abs(c["Z"]) > HALF - 4))
             far = np.ones(c["X"].shape, dtype=bool)
@@ -316,8 +354,72 @@ def analyze(roots, status, tag="", out_dir=None):
     out = os.path.join(root, "test_p_numbers%s.json" % tag)
     lib2.save_json(out, res)
     figs = figure(res, prof, byr, shr, root, tag)
+    if any(k.startswith(("p4", "p6", "p7")) for k in res["cases"]):
+        figs += figure_extra(res, root, tag)
     lib2.publish([out] + figs)
     return res
+
+
+def figure_extra(res, root, tag=""):
+    """(a) the mean error of u of the vacuum puncture against the half-width of the mesh
+    (P1, P6); (b) the deficit of M_psi against the ADM mass; (c) u at the three punctures
+    against the cell size there (P4 uniform, P7 refined)."""
+    fs.use_style()
+    fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.5))
+    cs = res["cases"]
+    for dx, mk, c in ((1.0, "o-", fs.PAL["blue"]), (0.5, "s-", fs.PAL["red"])):
+        hs, off, dm = [], [], []
+        for k in sorted(cs):
+            e = cs[k]
+            if not (k.startswith(("p1_st", "p6")) and "e_mid_mean" in e and "half" in e):
+                continue
+            if abs(e["dx_min"] - dx) > 1e-9:
+                continue
+            hs.append(e["half"])
+            off.append(abs(e["e_mid_mean"]))
+            dm.append(res["reference"]["by_m_adm"] - e["far"]["M"])
+        if hs:
+            o = np.argsort(hs)
+            axs[0].loglog(np.array(hs)[o], np.array(off)[o], mk, color=c,
+                          label=r"$\Delta x=%g$" % dx)
+            axs[1].loglog(np.array(hs)[o], np.array(dm)[o], mk, color=c,
+                          label=r"$\Delta x=%g$" % dx)
+    hh = np.array([16.0, 64.0])
+    axs[0].loglog(hh, 2.7e-4*(16.0/hh)**2, "k:", lw=0.8, label=r"$\propto R^{-2}$")
+    axs[1].loglog(hh, 0.026*(16.0/hh), "k:", lw=0.8, label=r"$\propto R^{-1}$")
+    axs[0].set_ylabel(r"$|\langle u-u_{\rm ref}\rangle|$, $1<r<12$")
+    axs[1].set_ylabel(r"$M_{\rm ADM}-M_\psi$")
+    for ax in axs[:2]:
+        ax.set_xlabel("half-width $R$ of the mesh")
+        ax.set_xticks([16, 32, 64])
+        ax.set_xticklabels(["16", "32", "64"])
+        ax.minorticks_off()
+        ax.legend(fontsize=5)
+    cols = (fs.PAL["blue"], fs.PAL["red"], fs.PAL["green"])
+    for k in range(3):
+        for pre, mk in (("p4", "o--"), ("p7", "s-")):
+            xs, us = [], []
+            for name in sorted(cs):
+                e = cs[name]
+                if name.startswith(pre) and "punctures" in e:
+                    xs.append(e["punctures"][str(k)].get("dx", 2*HALF/int(name.split("n")[-1])
+                                                         if "_n" in name else np.nan))
+                    us.append(e["punctures"][str(k)]["u"])
+                    ua = e["punctures"][str(k)]["u_approx"]
+            if xs:
+                o = np.argsort(xs)
+                axs[2].semilogx(np.array(xs)[o], np.array(us)[o], mk, color=cols[k], ms=3,
+                                label="puncture %d, %s" % (k + 1, "uniform" if pre == "p4"
+                                                           else "refined"))
+                axs[2].axhline(ua, color=cols[k], lw=0.6, ls=":")
+    axs[2].set_xlabel(r"cell size at the puncture")
+    axs[2].set_ylabel(r"$u$ at the puncture")
+    axs[2].legend(fontsize=4.5)
+    fig.tight_layout()
+    p = os.path.join(root, "test_p_extra" + tag)
+    fs.save(fig, p)
+    plt.close(fig)
+    return [p + ".png", p + ".pdf"]
 
 
 def figure(res, prof, byr, shr, root, tag=""):
@@ -375,6 +477,9 @@ def figure(res, prof, byr, shr, root, tag=""):
                            "monitor $|H|$ after, outside $r_p$")):
         ax.set_xlabel(r"$\Delta x$")
         ax.set_title(t, fontsize=8)
+        ax.set_xticks([0.25, 0.5, 1.0])
+        ax.set_xticklabels(["0.25", "0.5", "1"])
+        ax.minorticks_off()
     xs = np.array([0.25, 1.0])
     axs[1].loglog(xs, 1e-3*xs**2, "k:", lw=0.8, label=r"$\propto\Delta x^2$")
     axs[0].legend(fontsize=5)
@@ -390,17 +495,19 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--exe", default=lib2.EXE)
     ap.add_argument("--tests", default="p1,p2,p3,p4,p5")
+    ap.add_argument("--tag", default="", help="suffix of the files of --analyze")
     ap.add_argument("--jobs", type=int, default=4)
     ap.add_argument("--analyze", default="", help="comma-separated run directories")
     a = ap.parse_args()
     tag = "" if a.tests == "p1,p2,p3,p4,p5" else "_" + a.tests.replace(",", "")
     if a.analyze:
-        analyze(a.analyze.split(","), None, tag="", out_dir=lib2.run_root())
+        analyze(a.analyze.split(","), None, tag=a.tag, out_dir=lib2.run_root())
         return 0
     root = lib2.run_root()
     cases = build_cases(root, os.path.abspath(a.exe), a.tests.split(","))
     # the largest cases first, so that they do not end the run alone
-    cases.sort(key=lambda c: ("n128" not in c["name"] and "p3" not in c["name"]))
+    cases.sort(key=lambda c: ("n128" not in c["name"] and "p3" not in c["name"]
+                              and "p7_l5" not in c["name"]))
     status = lib2.run_cases(cases, a.jobs)
     analyze([root], status, tag=tag)
     bad = [k for k, v in status.items() if v["status"] != "completed"]
