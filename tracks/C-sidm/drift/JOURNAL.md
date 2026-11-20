@@ -231,3 +231,19 @@ excursion itself, which every control provides at no extra cost.
 The first paper's stable y_c = 0.819 cluster also drifted less at half the cell spacing
 (mean of the last two extrema of alpha_c - alpha_c(0): -0.0039 against -0.0071 over
 300 M, `tab_outcomes.tex` line 110 [BACKGROUND]), a factor 0.55 for one halving.
+
+## 2026-11-20 22:50 UTC Entry 5: predictions for the optional particle-number leg (v)
+
+Run (v): cc2_kninf_N1e4 (`inputs/cc2_kninf_N1e4.athinput`, the wave-2 cc2 deck with the
+N = 1e4 file of wave 1, run C-sidm-20261115-120610-b4592be; same model, same seed and
+sampler, byte-identical table; M/4 mesh; 300 M), submitted only if the card cap allows
+after (i)-(iv). Against cc2_kninf at N = 1e5 (run C-20261115-171059-4b70228):
+- N.1 Initial constraint violation: H-norm2(0) about 10 times 0.0235 (between 5 and 20
+  times) if, as the smoke suggests (entry 3), it is particle noise of the deposit
+  (variance per cell proportional to 1/N).
+- N.2 Ripple (residual rms of the cosine fit): about sqrt(10) = 3.2 times 8.0e-4 (between
+  2 and 5 times) if the ripple is particle noise.
+- N.3 Amplitude ratio R_N = A(1e4)/A(1e5): in [0.75, 1.33] if the excursion is set by the
+  mesh (or by the continuum initial data); about 3 (above 2) if it is the response to
+  particle noise of the initial state. The period stays within 20 % of 355-393 M either
+  way, unless the amplitude grows enough to change it.
