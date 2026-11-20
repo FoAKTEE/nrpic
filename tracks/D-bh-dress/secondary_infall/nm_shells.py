@@ -8,7 +8,14 @@ R_edge (mu_max = eps^2 R_edge^3/2), seed of mass 1, and one of three force laws:
            q = r/dx, binned median), applied to the whole enclosed mass:
            a = -G M_enc sign(r) f(|r|/dx)/r^2 (f = 1 beyond the table, f ~ q^3 below it);
   plummer  a = -G M_enc r/(r^2 + s^2)^(3/2) with the fitted s_eff (or --soft);
-  point    the same with a small s (the continuum limit for the comparison).
+  point    the same with a small s (the continuum limit for the comparison);
+  hybrid   (wave 3) the kernel for the seed only, the dust's own gravity unsoftened outside
+           r_d = --dsoft (default 0.5 dx) and that of a uniform sphere inside it:
+           a = -G sign(r) [M_seed f(|r|/dx)/r^2 + M_dust,enc min(|r|, r_d)^3/(r^2 r_d^3)].
+           The kernel law softens the dust like a point mass at the centre; the mesh force of
+           a dust distribution that is smooth on the scale of a cell is accurate to second
+           order (interface section 5.3), so the two laws bracket the run where the dust
+           ball spans only a few cells (wave 3: R_edge = 4.1 dx at t = 0).
 Snapshots at the nominal snapshot times of the run, t_k = k tlim/nsnap, or k snap_dt with
 --snap_dt (code time; cosmic time t_i + t_k). Writes nm_shells_<label>.npz and .json into --out ($NRPIC_RUN_DIR).
 
@@ -28,7 +35,7 @@ sys.path.insert(0, HERE)
 import shells  # noqa: E402
 
 
-def make_kernel_accel(qtab, ftab, dx):
+def make_kernel_accel(qtab, ftab, dx, hybrid_rd=0.0):
     lq, lf = np.log(qtab), np.log(np.maximum(ftab, 1e-300))
     q0, f0 = qtab[0], ftab[0]
     qmax = qtab[-1]
@@ -52,7 +59,11 @@ def make_kernel_accel(qtab, ftab, dx):
         d2 = r * r + s2                 # for the step control of shells.run only
         d = np.sqrt(d2)
         with np.errstate(divide="ignore", invalid="ignore"):
-            a = np.where(ar > 0, -mt * np.sign(r) * f_of(ar / dx) / (r * r), 0.0)
+            if hybrid_rd > 0:
+                fd = np.minimum(ar / hybrid_rd, 1.0) ** 3
+                a = np.where(ar > 0, -np.sign(r) * (mbh * f_of(ar / dx) + menc * fd) / (r * r), 0.0)
+            else:
+                a = np.where(ar > 0, -mt * np.sign(r) * f_of(ar / dx) / (r * r), 0.0)
         return a, mt, d2, d
     return accel, f_of
 
@@ -61,7 +72,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", ""))
     ap.add_argument("--setup", required=True)
-    ap.add_argument("--law", choices=("kernel", "plummer", "point"), required=True)
+    ap.add_argument("--law", choices=("kernel", "plummer", "point", "hybrid"), required=True)
+    ap.add_argument("--dsoft", type=float, default=0.0,
+                    help="hybrid: radius of the dust's uniform-sphere softening (default 0.5 dx)")
     ap.add_argument("--kernel", default="")
     ap.add_argument("--dx", type=float, default=0.0)
     ap.add_argument("--soft", type=float, default=0.0)
@@ -82,12 +95,13 @@ def main():
              mu_max=eps**2 * p["r_edge"]**3 / 2.0, n=a.n, a_end=p["a_end"], sigma=0.0, nj=1,
              vac_core=True)
     info = dict(label=a.label, law=a.law, setup=a.setup, cfg=c)
-    if a.law == "kernel":
+    if a.law in ("kernel", "hybrid"):
         tab = np.loadtxt(a.kernel)
-        accel, f_of = make_kernel_accel(tab[:, 0], tab[:, 1], a.dx)
+        rd = (a.dsoft if a.dsoft > 0 else 0.5 * a.dx) if a.law == "hybrid" else 0.0
+        accel, f_of = make_kernel_accel(tab[:, 0], tab[:, 1], a.dx, hybrid_rd=rd)
         shells.accel = accel
         c["soft"] = 0.61 * a.dx          # step control only (the fitted Plummer length)
-        info.update(kernel=a.kernel, dx=a.dx)
+        info.update(kernel=a.kernel, dx=a.dx, dust_soft_radius=rd)
     elif a.law == "plummer":
         c["soft"] = a.soft
     else:
