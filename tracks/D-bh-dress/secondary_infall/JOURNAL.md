@@ -507,3 +507,60 @@ N128Lc +0.46, +0.55 (borderline), +0.03 dx at 1.95, 3.97, 8. Vertex runs: +17 to
 a/a_i = 4 and 8 (holds: heated). Cause of the N128c tail not established; candidate
 [JUDGEMENT, untested]: dust heated by the time-varying sub-cell potential of the cold clump
 (N128c has the largest energy error, 3.3 %); a run with core's fixed point mass would test it.
+
+# Wave 3: toward the self-similar regime (helper secondary_infall, 2026-11-20)
+
+Goal (PLAN-wave3.md round 1): one Newtonian-mode run to a/a_i = 30 (fallback 16) on core's
+threaded processor build `scratch/core/exe/core_build-openmp/athena_cpu` (READY of
+2026-11-19: Kokkos OpenMP; Newtonian mode agrees with one thread to the solver tolerance),
+6 cores at most, 0 card-hours; the profile against the matched shells and the seeded
+self-similar solution (test 2, D-bh-dress-20261115-123813-97afeea); and a check of the
+threaded build against N128Lc (D-20261115-171507-d1058a9) at a/a_i = 4 and 8.
+State at the start: worktree clean in this directory, last commit of the package 130e8b78;
+no wave-3 output of this package in scratch (nothing stranded).
+
+## 2026-11-20T22:25Z  design (part 1: geometry), before any run of wave 3
+
+Scaling [VERIFIED by the equations, RUNS.md lines 41-43]: in Newtonian gravity with the seed
+mass M fixed, eps = H_i M only rescales lengths by eps^(-2/3) and times by eps^(-1); masses
+at a fixed a/a_i do not change. The mesh spacing that resolves a fixed fraction of r_ta
+therefore scales like r_ta, and the step limit dt <= 0.15 dx/max|v| (max|v| ~ (G M_enc/dx)^(1/2))
+scales like eps^(-1), as the duration does: neither lambda_min = 4 dx/r_ta nor the number of
+steps depends on eps. Only the sub-cell scales of the set-up break the scaling (vacuum core
+R_w = 3 M, clump radius 0.3 M), and both stay below one cell. Choice: eps = 0.03, as in wave
+2, so that the threaded check reruns N128Lc unchanged and the wave-2 shells stay comparable.
+
+Box: by Birkhoff's theorem only dust inside the last shell that turns around before the
+end acts on r_ta; the dust edge R_edge = edge_fac r_last must stay inside the isolated box
+(particles that leave are removed, non-spherically, through the faces), with the margin
+box_fac = L/r_edge(a_end) of wave 2 (N128Lc: 1.134; the multipole boundary was tested only
+with matter well inside the box, interface section 6). Candidates from the design table
+(registered next as nm_design; numbers below from its debug pass in scratch/tmp, to be
+replaced by the run id): at a/a_i = 30, M_ta = 17.07 M, r_ta = 569 M (closed form);
+edge_fac 1.2 / 1.1 / 1.05 with box_fac 1.12 give L = 1033 / 853 / 752 M, i.e. L/r_ta = 1.81 /
+1.50 / 1.32, and lambda_min = 4 dx/r_ta = 0.076 / 0.062 / 0.055 at nx = 192 (0.113 / 0.094 /
+0.083 at nx = 128). Chosen: nx = 192 (MeshBlocks 64^3, root grid 3^3: nx/2 = 96 is refused by
+the multigrid, power of two required; debug pass in scratch/tmp), edge_fac = 1.1 (12 per cent
+of lambda_min more than 1.05, for a margin of 0.35 r_ta between r_ta and the edge at the end),
+box_fac = 1.12: L = 854 M, dx = 8.90 M, lambda_min = 0.062 at a/a_i = 30, 0.144 at 16, 0.36
+at 8 (so the production run resolves the profile only at 16 and 30; a/a_i = 4 and 8 come from
+the N128Lc rerun). The initial dust ball, R_edge = 36.3 M, is only 4.1 cells in radius: the
+first collapse (r_ta = 40 M at a/a_i = 4) happens inside the softened region; the matched
+shells with the measured mesh kernel carry that into the reference.
+Particles: 5e5 dust on the lattice (h = 0.74 M = 0.083 dx), the clump of 2e4 particles inside
+0.3 M at a cell centre with the lattice symmetric about it (the wave-2 set-up); dust mass
+21.4 M, particle mass 4.3e-5 M; about 9e4 particles inside lambda_min at a/a_i = 30 from the
+self-similar m(lambda), so particle noise in the 0.1-dex bins stays at the per-cent level.
+Snapshots every 9.612 M (= N128Lc's interval, tlim(8)/50; 378 snapshots, about 14 GB): the
+nearest snapshots to a/a_i = 4, 8, 16, 30 lie at 3.97, 8.00, 16.03, 30.0. Restart files every
+600 M.
+
+Prediction for the timing run (registered next; 6 threads, bound to the six least busy
+cores of one NUMA node, OMP_PROC_BIND=true, OMP_PLACES=cores within that affinity mask;
+production set-up, 40 steps): 0.6 to 1.5 s per step (wave 2: about 3 s per step on one core
+at 128^3 with 5.2e5 particles, particle-bound; 192^3 has 3.4 times the cells; READY section
+4: 13 times one thread at 16 threads). Step count, to be fixed from the matched shells
+(their largest speed) and calibrated on N128Lc (dt 0.26-0.29 M at dx = 2.75 M, i.e.
+max|v| = 1.4-1.6 c, set by the dust that passes through the softened centre): 2000 to 4000
+steps to a/a_i = 30. Refuted (and a/a_i = 30 then given up for the largest a >= 16 that fits)
+if the extrapolated wall time exceeds 4 hours.
