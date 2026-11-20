@@ -57,7 +57,7 @@ def main():
     a1.set_ylim(1e-18, 1e-4)
     a1.set_xlabel(r"scale factor $a$", labelpad=1)
     a1.set_ylabel("box-mode amplitude")
-    a1.legend(frameon=False, loc="center right", fontsize=7, handlelength=1.6)
+    a1.legend(frameon=False, loc="center left", bbox_to_anchor=(0.0, 0.42), fontsize=7, handlelength=1.6)
 
     # (b, c) departure from second order at two amplitudes
     for e in ("e1", "e0p3"):
@@ -73,7 +73,7 @@ def main():
                     ax.loglog(x, np.abs(vd), "o", color=COL[e], ms=3.5, mfc="none", mew=1.0)
     a2.plot([], [], "o", color="k", ms=3.5, mfc="none", label="double-precision dumps")
     for ax in (a2, a3):
-        ax.set_ylim(1e-5, 1e2)
+        ax.set_ylim(1e-5, 1e3)
     a2.set_ylabel("departure from second order")
     a2.set_xlim(1, 145)
     a3.set_xlim(0.25, 145)

@@ -80,6 +80,14 @@ RUNS = {
     "r2_parity": "B-20261119-142727-02878d1",     # parity of the two initial-data tools
 }
 
+# the registered runs of this note package that produced the committed figures/ and tables/
+# (a record; no script reads it)
+NOTE_RUNS = {
+    "v0": "B-20261115-165556-a399d4e",
+    "v1": "B-20261119-142957-ae8b4e2",
+    "v2": "B-20261120-222732-13e3e41",   # wave 3, round 1: criterion 1 and the second round
+}
+
 # the claims check reads the lead's stage documents as they stood when the note v0 checked
 # them (git sha of run B-20261115-165556-a399d4e); the lead has rewritten them since
 CLAIMS_REV = "a399d4e"

@@ -551,7 +551,7 @@ def ledger_tex(v):
                                for x in vals)
                 if isinstance(rk, tuple):
                     ids = "\\\\".join(f"\\texttt{{\\scriptsize {R[k]}}}" for k in rk)
-                    lines.append(f"{desc} & {sv} & \\shortstack[l]{{{ids}}} \\\\")
+                    lines.append(f"{desc} & {sv} & \\begin{{tabular}}[t]{{@{{}}l@{{}}}}{ids}\\end{{tabular}} \\\\")
                 else:
                     lines.append(f"{desc} & {sv} & \\texttt{{\\scriptsize {R[rk]}}} \\\\")
         lines += ["\\end{tabular}", "\\end{ruledtabular}", "\\end{table*}"]

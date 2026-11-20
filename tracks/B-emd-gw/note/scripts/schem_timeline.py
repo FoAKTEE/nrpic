@@ -1,11 +1,14 @@
-"""Schematic: stage timeline of Track B (note v1, state of 2026-11-19).
+"""Schematic: stage timeline of Track B (note v2, state of 2026-11-20).
 
 Gates and targets: coord/CHARTER.md section 9.2 and the Track B sheet (9.5), as made concrete
 in stage/G0/REPORT.md section 8 (targets weeks 3-4, months 3-4, 6-9, 10-12); state:
 stage/G0/OPEN.md, stage/G1/STATUS.md; rulings: decision 0013 (stand-in matter struck,
 multi-code row = shearing dust plus the code's Newtonian mode), decision 0014 (40 card-hours
 to the next gate). G0 passed: coord/GATES.md on main (tag stage/B-emd-gw/G0-pass-20261119).
-What G1 still needs: stage/G1/OPEN.md items 1-6. Gate positions are evenly spaced; the labels
+What G1 still needs: stage/G1/OPEN.md items 1-6; v2 state: criterion 1 run and analysed
+(waves/README.md, final analysis B-20261119-164402-7438a99), its independent check under way
+(PLAN-wave3.md round 1, stage/G1/verifier3), second first-source round run, particle and mesh
+legs being analysed (first_source/README.md). Gate positions are evenly spaced; the labels
 give the targets. No data are read.
 """
 import os
@@ -47,20 +50,20 @@ def main():
         pf.callout(ax, x - cw / 2 + 0.1, 6.3, cw, 3.6, title, body, bar=col, size=7.0,
                    title_size=8.0, band=0.8)
         pf.line(ax, (x, y0 + 0.35), (x, 6.3), color=pf.GREY_LINE)
-    pf.text(ax, 0.9, 10.9, "now: first source and Newtonian mode run; G1 products in preparation",
+    pf.text(ax, 0.9, 10.9, "now: both G1 waves and the second first-source round run; the G1 package being closed",
             size=7.5, ha="left", italic=True)
-    ax.add_patch(pf.Polygon([(7.4, 5.75), (7.8, 5.75), (7.6, 5.45)], closed=True,
+    ax.add_patch(pf.Polygon([(8.2, 5.75), (8.6, 5.75), (8.4, 5.45)], closed=True,
                             fc=pf.RED, ec="none", zorder=8))
-    pf.text(ax, 7.6, 6.05, "now", size=7.0, color=pf.RED)
+    pf.text(ax, 8.4, 6.05, "now", size=7.0, color=pf.RED)
     pf.brace(ax, 3.6, 8.8, 3.6, "", below=True)
-    pf.text(ax, 6.2, 2.25, "oblique and expanding-box\nwaves; independent check",
+    pf.text(ax, 6.2, 2.25, "independent check of the waves;\nparticle and mesh legs analysed",
             size=7.0, color=pf.ROSE)
     pf.brace(ax, 9.6, 14.8, 3.6, "", below=True)
-    pf.text(ax, 12.2, 2.0, "jittered lattice, TT spectra\nin the run, data with a TT\npart; "
+    pf.text(ax, 12.2, 2.0, "jitter without a wave, TT spectra\nin the run, data with a TT\npart; "
             "shearing-dust test", size=7.0, color=pf.ROSE)
     pf.brace(ax, 15.6, 20.8, 3.6, "", below=True)
     pf.text(ax, 18.2, 2.0, "second-order reference in the\ncode's gauge; thin boxes;\n"
-            "card time of the scan", size=7.0, color=pf.ROSE)
+            "compute budget of the scan", size=7.0, color=pf.ROSE)
     pf.brace(ax, 21.6, 26.6, 3.6, "", below=True)
     pf.text(ax, 24.1, 2.25, "Newtonian box spectra\nof the literature read", size=7.0,
             color=pf.ROSE)
