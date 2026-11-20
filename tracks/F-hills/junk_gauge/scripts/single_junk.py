@@ -7,7 +7,9 @@ momentum radiated in the junk window u in [U0, U1]; the noise energy (mean rate 
 the window, times the window's length); the u of the peak of dE/du; the peak of |r psi4_20|;
 the share of the energy per mode group. Then E(R) = E_inf + a/R (least squares).
 Writes single_junk.json and single_junk_curves.npz (read by the figure scripts).
-Usage: single_junk.py <out | - for $NRPIC_RUN_DIR> <S2g run dir> [--M=1.0383] [--radii=30,40,50]
+Usage: single_junk.py <out | - for $NRPIC_RUN_DIR> <run dir> [--M=1.0383] [--radii=30,40,50]
+                      [--window=-15,30] [--tag=single]   (P1: --M=1.25 --radii=40,48,70,90
+                      --window=-35,50 --tag=P1; outputs <tag>_junk.json, <tag>_junk_curves.npz)
 """
 import json
 import os
@@ -25,15 +27,21 @@ TAPER = 4.0
 
 
 def args():
+    global U0, U1
     out = sys.argv[1] if sys.argv[1] != "-" else os.environ["NRPIC_RUN_DIR"]
     rd = sys.argv[2]
     M, radii = 1.0383218096698035, (30, 40, 50)    # M_ADM full solution (nr_first E3 reference)
+    tag = "single"
     for a in sys.argv[3:]:
         if a.startswith("--M="):
             M = float(a[4:])
         elif a.startswith("--radii="):
             radii = tuple(int(x) for x in a[8:].split(","))
-    return out, rd, M, radii
+        elif a.startswith("--window="):
+            U0, U1 = (float(x) for x in a[9:].split(","))
+        elif a.startswith("--tag="):
+            tag = a[6:]
+    return out, rd, M, radii, tag
 
 
 def groups(Nmodes):
@@ -96,26 +104,30 @@ def fit_inv_r(Rs, Es):
 
 
 def main():
-    out, rd, M, radii = args()
+    out, rd, M, radii, tag = args()
     os.makedirs(out, exist_ok=True)
     sph = jl.Sphere()
-    res = {"run_dir": rd, "M": M, "window_u": [U0, U1], "taper": TAPER, "radii": {}}
+    res = {"run_dir": rd, "M": M, "tag": tag, "window_u": [U0, U1], "taper": TAPER, "radii": {}}
     allc = {}
     for R in radii:
-        r, c = measure(rd, R, M, sph)
+        r, c = measure(rd, R, M, sph, U0, U1)
         res["radii"][str(R)] = r
         for k, v in c.items():
             allc[f"R{R}_{k}"] = v
         print(R, json.dumps(r, indent=1, default=float), flush=True)
+    full = [R for R in radii if res["radii"][str(R)]["complete"]]
+    res["radii_complete"] = full
     for key in [f"ffi{w}" for w in W0S] + ["td"]:
-        Es = [res["radii"][str(R)][key]["E"] for R in radii]
-        f = fit_inv_r(radii, Es)
+        if len(full) < 2:
+            break
+        Es = [res["radii"][str(R)][key]["E"] for R in full]
+        f = fit_inv_r(full, Es)
         f["spread_max_over_min"] = float(max(Es) / min(Es))
-        f["Px_inf"] = fit_inv_r(radii, [res["radii"][str(R)][key]["P"][0] for R in radii])["E_inf"]
+        f["Px_inf"] = fit_inv_r(full, [res["radii"][str(R)][key]["P"][0] for R in full])["E_inf"]
         res[f"extrap_{key}"] = f
         print(key, f)
-    json.dump(res, open(os.path.join(out, "single_junk.json"), "w"), indent=1, default=float)
-    np.savez(os.path.join(out, "single_junk_curves.npz"), **allc)
+    json.dump(res, open(os.path.join(out, f"{tag}_junk.json"), "w"), indent=1, default=float)
+    np.savez(os.path.join(out, f"{tag}_junk_curves.npz"), **allc)
 
 
 if __name__ == "__main__":

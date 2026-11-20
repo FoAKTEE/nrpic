@@ -282,3 +282,61 @@ t = 60-85 on (the passage's own quadrupole grows as the c.o.m. orbit closes in) 
 Run F-20261120-223314-b1b64fa FAILED (exit 1): the input reader split the file at the first
 "<problem>", which is in the header comment, and found no `ncomp`. Fixed (block header on a line
 of its own); rerun below, prediction unchanged.
+
+## 2026-11-20 J4a, outcome (run F-20261120-223333-9fbe615; `newton_quad.json`, figure `fig_newton_quad.png` read)
+
+[VERIFIED, `newton_quad.json`] Energy drift 5.6e-10: met. c.o.m. pericentre at t = 104.25
+(r = 9.76): met (E6: 104.35). L for t < 20: median 2.31e-7 against the circular formula 1.31e-7
+(computed in the run; my estimate 1.25e-7): FAILED (predicted within 30 percent; the figure shows
+L varying by a factor 2.5 over t = 0-60 with the binary's radial period: r12 = 4.95 at t = 0
+against a_b = 5.11, and the heavy hole's tide). L above twice its early value from t = 72, ten
+times from t = 82: met (60-85). Cumulative quadrupole energy 8.5e-6 by t = 40, 1.07e-5 by 60,
+2.1e-5 by 80, 1.8e-4 by 100, 5.5e-4 by 120, 9.7e-4 by 200 (the passage).
+
+## 2026-11-20 J4. Junk of the three-hole data at P1's spheres (prediction, before any P1 waveform is integrated)
+
+Data: P1, run F-20261119-150017-b45ec5f, `waveforms/rpsi4_{real,imag}_00{40,48,70,90}.txt`, read
+only, to t = 112.25 M at the time of writing (J0); restarted segments repeat rows, the reader
+keeps the last row of each time (`nr_first/scripts/nrread.py`). Geometry (input
+`nr_first/inputs/p1_q4.athinput`): heavy hole at 6.35 M from the origin, members at 23.2 and
+27.7 M (J4a: largest 27.67); cells 2 M within 48 M of the origin, 4 M to 100 M, root 8 M; outer
+boundary 256 M. Retarded time with M = 1.25 (sum of the bare masses) [JUDGEMENT].
+
+1. P1 prediction item 4 (lead, `tracks/F-hills/JOURNAL.md` lines 318-320): junk between 1e-6 and
+   1e-4 M, passing the 40-90 M spheres by t = 150 M.
+2. My scaling from J3 [JUDGEMENT]: E_junk = m E/m(P/m) with E/m = 7e-5 at P/m = 0.25 (range 4e-5
+   to 2e-4) and core's power law (P/m)^4 (three_punctures JOURNAL line 295), the members
+   (m = 0.125, P/m = 0.234 and 0.268 from the input's momenta) and the heavy hole (P/M = 0.056) at
+   the same cells per mass (m/8, M/8): 0.125 x 7e-5 x (0.767 + 1.32) = 1.8e-5 M for the two
+   members (range 1.0e-5 to 5.2e-5) and 1.8e-7 M for the heavy hole; the junk of the
+   superposition itself (tides, the binary's missing radiation field) is not in this estimate.
+   But the members' junk has omega of about 0.4/m_h = 3/M (wavelength 2 M), which the wave zone of
+   P1 (cells 2 M and 4 M) cannot carry (nr_first E3, "Consequence for P1"): I predict that less
+   than 10 percent of it, below 2e-6 M, reaches the 40 M sphere.
+3. What the spheres will show instead [JUDGEMENT]: (a) the binary's own radiation at
+   omega = 2 Omega_b = 0.089/M with luminosity 1-2.5e-7 (J4a), physical, not junk, 1-2e-5 M over
+   the window below in the raw news, of which FFI with omega_0 = 0.2 keeps about
+   (0.089/0.2)^2 = 0.2; (b) the near-zone field of the members, which pass 12-20 M from the 40 M
+   sphere: large at 40 and 48, steeply smaller at 70 and 90; (c) a heavy-hole response at its
+   quasinormal frequency 0.37/M, small.
+4. Window: u in [-35, 50] M. Start: the members are up to 27.7 M from the origin, so their pulse
+   (leaving at t < 5 M) reaches the near side of a sphere at u >= -28 - 5 (tortoise offsets of a
+   few M). End: the Newtonian passage luminosity exceeds twice the binary's at t = 72 and ten
+   times at t = 82 (J4a); its sources are within about 15 M of the origin then, so its first
+   arrival is at u >= 72 - 15 = 57; I cut at u = 50, 7 M before, and check that dE/du does not
+   rise by more than a factor 2 from u = 30 to 50 (refuted otherwise: then the burst is inside).
+   The record at t <= 112.25 ends at u = 64 (40 M), 56 (48), 33 (70), 12 (90): the window is
+   complete at 40 and 48 only. A second measurement on the window [-35, 12], complete at all
+   four radii, gives E against 1/R.
+5. Integration: FFI with omega_0 = 0.2/M central (half the heavy hole's l = 2 quasinormal
+   frequency; the same rule as S2g in units of the heavy hole), 0.1 and 0.3 as variants, taper
+   4 M; the time-domain method beside it.
+6. Predictions to refute: (i) E (FFI 0.2, window [-35, 50]) at 40 M between 1e-7 and 2e-5 M and
+   at 48 M below it (near-zone part falling); (ii) on [-35, 12] E falls from 40 to 90 by more than
+   a factor 3 (refuted if E(90) > E(40)/3: then the signal is radiation, not near zone); (iii) no
+   pulse at fixed retarded time common to 40, 48 and 70 M with more than 2e-6 M (refuted by one);
+   (iv) dominant modes (2,+-2) (the orbits lie in the xy plane); (v) P_z below 1e-3 |P| (the data
+   are symmetric under z -> -z); (vi) the extrapolated E_inf on [-35, 12] below 2e-6 M. If (i)-(iii)
+   hold, the junk of the three-hole data is bounded above by E_inf and the scaled estimate
+   (1.8e-5 M at most for what the members radiate on their own cells), and P1's prediction item 4
+   is met only as an upper bound.
