@@ -426,3 +426,42 @@ falls by a factor 10 +- 3 (arg R at the end between -0.8e-8 and -1.5e-8), and th
 polarization stays on the 2S prediction within 5e-9 absolute (the second-order shift of the
 amplitude error seen at x10 at N = 16 was 4e-9, 15:50 table). Refuted if the plus phase error
 stays near 3.8e-7, or if the excess falls by less than a factor 5.
+
+## 2026-11-20 22:25 Outcome of the x10 check: rounding confirmed (analysis B-20261120-221708-d8eae03, figure B-20261120-222234-4e2435d)
+
+`results/x10_64_results.json`, `results/x10_check.json`, `figs/x10_check.png` (looked at:
+left, the plus phase error of the x10 run lies on the 2S curve like both cross curves, the
+x1 plus curve departs from t = 4 on; right, the x10 polarization-ratio errors times 10 lie
+on the x1 curve from t = 1 to 10). Numbers at t = 10, TT diagnostic [VERIFIED]:
+
+| quantity | x1 | x10 | ratio x1/x10 |
+|---|---|---|---|
+| plus amplitude error (2S 1.3989e-7) | 1.5384e-7 | 1.4154e-7 (+1.2 per cent) | |
+| plus phase error (2S 2.7621e-7) | 3.8415e-7 | 2.8952e-7 (+4.8 per cent) | |
+| cross amplitude error | 1.39889e-7 | 1.40092e-7 | |
+| cross phase error | 2.7624e-7 | 2.7858e-7 | |
+| arg R error (end) | -1.0792e-7 | -1.0940e-8 | 9.86 |
+| abs R error (end) | -1.3947e-8 | -1.4491e-9 | 9.62 |
+| plus excess over 2S, amplitude | 1.395e-8 | 1.66e-9 | 8.4 |
+| plus excess over 2S, phase | 1.079e-7 | 1.33e-8 | 8.1 |
+| spectral Weyl vs TT (end) | 2.30e-8 | 2.32e-8 | 1.0 |
+
+- Prediction confirmed: plus amplitude and phase within 5 per cent of 2S (1.2 and 4.8 per
+  cent), plus excess down by 8.1 to 8.4 (band 7 to 13), arg R at the end -1.09e-8 (band
+  -0.8e-8 to -1.5e-8), cross within 5e-9 of 2S (+2.0e-10 and +2.4e-9).
+- The clean measure is the plus-minus-cross difference (the polarization ratio), which falls
+  by 9.86 (argument) and 9.62 (modulus) for a tenfold amplitude: the plus-polarization excess
+  of X at N >= 48 is rounding of the diagonal 1 + h (scales as 1/A) [VERIFIED by this run;
+  the mechanism "through the second differences" stays JUDGEMENT].
+- New, not predicted: the cross phase error at x10 sits 2.4e-9 above 2S (x1: 3e-11). The
+  factor 75 for a tenfold amplitude is about A^2: a second-order frequency shift (relative
+  size A^2), the same size core reported for the flat wave at A = 1e-5 (REQUESTS_B.md
+  section 1, T8) [JUDGEMENT]. It is also inside the plus excess at x10, which is why that
+  excess fell by 8.1 rather than 10.
+- The spectral-Weyl vs TT offset (2.3e-8) does not depend on the amplitude at N = 64 either
+  (as at N = 16): not rounding; tested next by the step test (task 3).
+- Order-6 Weyl vs TT 1.68e-8 at x10 (x1: 1.66e-8). Card time of 4662: 0.0072 card-hours.
+
+Verdict for criterion 1 [JUDGEMENT]: the one open sub-item is closed; both polarizations of
+X follow the code's integrator prediction at N = 64 once the rounding floor of the diagonal
+metric is lowered, and the floor itself behaves as rounding.

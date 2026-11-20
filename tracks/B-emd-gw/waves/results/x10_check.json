@@ -1,0 +1,44 @@
+{
+ "sources": {
+  "x1": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-164402-7438a99/final_dumps_exp_N64.json",
+  "x10": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-221708-d8eae03/x10_64_dumps_exp_N64.json"
+ },
+ "pred_2s_end": {
+  "amp": 1.3988538016818097e-07,
+  "phase": 2.7620730784699984e-07
+ },
+ "x1": {
+  "amp_p": 1.5383586804418314e-07,
+  "phase_p": 3.841545195058739e-07,
+  "amp_x": 1.398887135017901e-07,
+  "phase_x": 2.7623897491803355e-07,
+  "pol_amp": -1.3947152543991592e-08,
+  "pol_phase": -1.0791554468699062e-07,
+  "plus_excess_amp": 1.3950487876002171e-08,
+  "plus_excess_phase": 1.0794721165887406e-07,
+  "cross_excess_amp": 3.33333360913457e-12,
+  "cross_excess_phase": 3.1667071033711204e-11,
+  "max_abs_pol_phase": 1.0791554468699062e-07,
+  "spectral_weyl_vs_tt_end": 2.2960106372383278e-08
+ },
+ "x10": {
+  "amp_p": 1.4154153582524032e-07,
+  "phase_p": 2.8951537904324927e-07,
+  "amp_x": 1.4009239257539718e-07,
+  "phase_x": 2.7857526887344543e-07,
+  "pol_amp": -1.4491430277985273e-09,
+  "pol_phase": -1.0940110166849221e-08,
+  "plus_excess_amp": 1.6561556570593439e-09,
+  "plus_excess_phase": 1.330807119624943e-08,
+  "cross_excess_amp": 2.0701240721621161e-10,
+  "cross_excess_phase": 2.3679610264455888e-09,
+  "max_abs_pol_phase": 1.0940110166849221e-08,
+  "spectral_weyl_vs_tt_end": 2.315507523780609e-08
+ },
+ "ratio_x1_over_x10": {
+  "pol_amp": 9.624414068485342,
+  "pol_phase": 9.864210052838121,
+  "plus_excess_amp": 8.423415888801504,
+  "plus_excess_phase": 8.111409239326617
+ }
+}
