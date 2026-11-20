@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261120-222729-6cfac05",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/tracks/core/analysis/cosmo_amr/t10e_jump.py",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_cpu",
+  "--data",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3",
+  "--out",
+  ".",
+  "--tlim",
+  "3.5",
+  "--cores",
+  "4"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261120-222729-6cfac05",
+ "commit": "6cfac05",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-cosmo-amr/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261120-222729-6cfac05",
+ "purpose": "T10e of cosmo-amr on processors: S1 data to t = 3.5 without refinement, as the scouting run, with uniform spreading, with clouds on the root level: where the constraint jump after the first regrid comes from; manifest written by hand: nrpic-run submit --launcher local refused (15 cores busy in live local runs of core)",
+ "kind": "scouting",
+ "tag": "",
+ "state": "running",
+ "cores": 4,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-20T22:27:29Z"
+}

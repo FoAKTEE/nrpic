@@ -1061,3 +1061,18 @@ the published processor executable (T14: card and processors agree to round-off)
 `t10e_jump.py`: the same four cases, to t = 3.5 instead of 5.2 (the jump of T10b lies
 at t = 3.06; a serial cycle of this deck takes 20 to 45 s). Prediction as written in
 the entry of 22:30, with "to t = 5.2" read as "to t = 3.5".
+
+## 2026-11-20 22:30  prediction of T16 (the finder's `hmean_tol` in the cosmological box, processors)
+
+A direct test of the reading of T10b's status file, cheap on processors
+(`t16_hmean.py`, published processor executable): the S1 data at t = 0 on the uniform
+64^3 mesh, two cycles, a search every cycle from the sphere of coordinate radius 2;
+`tol100` with `hmean_tol_0 = 100` (the track's decks), `tolbig` with 1e30 (the example
+input now). At t = 0 (a = 1, K = -3, psi about 1) the expansion of that sphere is about
+2/r + 2 = 3 and its area about 16 pi = 50, so the integral is about 150.
+Prediction: `tol100`: every search ends at its first iteration with reason 3 and an
+integral between 120 and 200; `tolbig`: the flow runs more than one iteration and ends
+without a surface (reason 4, 5 or 6: these data have no trapped surface; T2's
+homogeneous universe gave 4), with no surface point outside the mesh. Refuted if
+`tol100` flows on (then the integral is not what stops the track's searches) or if
+`tolbig` reports a horizon in the initial data.
