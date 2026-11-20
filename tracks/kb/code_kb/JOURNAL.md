@@ -59,3 +59,29 @@ lines) and z4c_amr.* by a refinement criterion (under 300 lines). m1-nucleon-rec
 from main in src/z4c (it branched from a newer upstream state than the main tip of
 2026-09-11) but not in src/particles. Refuted: any src/particles difference on any branch;
 more than 500 changed lines in one file.
+
+## W2 outcome (run kb-20261120-222055-dd59ec1, 22:21 UTC)
+
+`scratch/kb/kb-20261120-222055-dd59ec1/watch_diff.{md,json}`. [VERIFIED by the run]
+- project/bbh z4c_wave_extr.cpp +2/-0 (prediction under 30: held).
+- project/largesim-m1: z4c_tasks.cpp +12/-17 (held, under 50: the Weyl tasks are now gated
+  on a flag `weyl_exchange_active` set where the receives are posted, instead of comparing
+  the float time with the last output time), z4c_amr.cpp +103/-0, z4c_amr.hpp +14/-0 (held,
+  under 300), z4c.hpp +1/-0.
+- m1-nucleon-recoil against main: 61 files of src/z4c differ, none of src/particles (held).
+  Among them a new horizon finder (src/z4c/BHaHAHA_horizon_finder.*, src/z4c/bhahaha/, 52
+  files added) replacing FastFlow in the task list (task Z4c_FastFlow renamed Z4c_Horizon);
+  z4c_tasks.cpp +8/-22: Z4c_CalcRHS gains `M1_SetTmunu` as a second optional dependency
+  beside `MHD_SetTmunu` (M1 radiation fills Tmunu too; module radiation_m1 now mentions
+  tmunu); z4c_calcrhs.cpp +46/-2: option `rz4`, a radial factor exp(-r^2/rz4^2) on the
+  Theta right-hand side including its matter term 8 pi alpha E.
+- FAILED in one part: "no file with more than 500 changed lines" is refuted on
+  m1-nucleon-recoil (fastflow.cpp +573/-256, bhahaha/bah_bcstruct_set_up.c +613,
+  BHaH_defines.h +516). The cause is that the new branch is compared with main of
+  2026-09-11, two months older than its tip (2026-11-13); the moved branches all stayed
+  under 120 lines per file.
+- For this program: no upstream branch hands particle sources to Z4c; the upstream Tmunu
+  interface gains a second writer (M1) on two branches, still refreshed at every
+  Runge-Kutta stage through the optional dependency of Z4c_CalcRHS. [JUDGEMENT] Nothing to
+  merge; worth core's attention if core ever rebases on upstream z4c_tasks.cpp (the
+  dependency list of Z4c_CalcRHS and the new Theta factor touch the lines that read Tmunu).
