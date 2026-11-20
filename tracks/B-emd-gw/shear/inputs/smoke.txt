@@ -1,0 +1,2 @@
+# smoke run: case S1 (beta = 0.005, HL = 1) at N_y = 32
+S1_n32 0.005 1.0 32
