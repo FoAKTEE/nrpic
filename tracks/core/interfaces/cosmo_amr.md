@@ -1,6 +1,7 @@
 # Interface: refined meshes and horizons in periodic cosmology runs (work package cosmo-amr)
 
-Owner core, branch `core/cosmo-amr`, wave 3a (2026-11-19). For Track A's threshold line in
+Owner core, branch `core/cosmo-amr`, wave 3a (2026-11-19); card check and scouting run
+closed in wave 3 (2026-11-20, sections 4.5 and 7). For Track A's threshold line in
 the periodic box (decisions 0013, 0016 item 5). Triage of the track's requests:
 `REQUESTS_A2.md` (same directory). Predictions and outcomes of every test:
 `tracks/core/JOURNAL-cosmo-amr.md`. Test scripts: `tracks/core/analysis/cosmo_amr/`
@@ -65,6 +66,15 @@ derefinement; its radii still set a minimum level around the origin. None of the
 refines the homogeneous universe (test T2, case L). Refinement levels do not sub-cycle in
 time: one global step, set by the finest level (and by `dt_lightspeed`).
 
+Memory: AthenaK allocates every field array for `<mesh_refinement> max_nmb_per_rank`
+MeshBlocks. For the deck `peak_amr.athinput` (MeshBlocks of 16^3, four ghost cells) the
+card holds 33 MiB per MeshBlock of the limit [VERIFIED, run core-20261120-220538-eafed07:
+10,737 MiB at 300, 40,071 MiB at 1200, 66,043 MiB at 2000; 24,111 MiB at 2000 MeshBlocks
+of 8^3], so an 80 GB card takes at most about 2400. The released particle restart file
+`<name>.rst.prt` stores the previous sources for the whole limit as well: 1.1 MB per
+MeshBlock of the limit in every restart file (2.23 GB at 2000), whatever the mesh
+(section 8).
+
 After a regrid the particle module rebuilds ownership, metric arrays and the sources on
 the new hierarchy (`Particles::NrpicInitializeSources`, called by the adaptive driver);
 new fine blocks are filled by the high-order prolongation of the evolved fields.
@@ -109,6 +119,13 @@ than the cloud's cells; beyond that the released uniform spreading is used.
   5 area mass below 1e-10 (surface shrank to a point), 6 iteration limit. The summary
   file is unchanged (after a failed search it repeats the values of the last success, or
   NaN): read the status file to know whether a line is new.
+- `hmean_tol_<n>` (released option, unchanged) is compared with the surface INTEGRAL of
+  the expansion, `sum dA H` (`fastflow.cpp`, `hmean = integrals[ihmean]`), not with its
+  mean. In a cosmological box the proper area of a coordinate sphere grows as a^2: with
+  the value 100 of Track A's decks every search of the scouting run ended at its first
+  flow iteration with reason 3 (sphere of coordinate radius 2: area 2.5e4 to 6.6e4,
+  integral 1.3e3 to 1.8e3; section 7). Set it out of the way (the example input now has
+  1e30); the other reasons still end a flow that fails.
 - The summary, verbose, grid and Ylm files of the finder and the tracker file
   `<basename>.co_<n>.txt` are opened at their first record, i.e. in the `-d` directory
   (the release opens them in the start directory).
@@ -215,8 +232,8 @@ section 5.
 | T13 | tracker in mode walk, `tracker_walk_tol`; the example input `flrw_tracker.athinput` | `-161316-f797997` | section 4.4 |
 | T0b | T0 with the published processor executable | `-161756-44db4b5` | every output file byte-identical to REL |
 | T15 | guard options `stop_dt_below`, `stop_no_particles`, `check_dcycle`; `region_horizon` on a found horizon | `-164133-228c956` | stops at cycles 1, 20, 20 with status 3 and the right reason; the horizon sphere has the finder's mean radius 0.4778 from the first search on, V_in + V_out = V |
-| T14 | card check of the published card executable | `-161748-75c2405` (Slurm job 4664) | pending |
-| T10 | scouting run of Track A's S1 with adaptive refinement, on a card | `-150507-8224d72` (Slurm job 4654) | pending, section 7 |
+| T14 | card check of the published card executable: decks of T2 (U, S, A, M, G) and T9 (ladder) on a card | `-161748-75c2405` (Slurm job 4664; analysis `core-20261120-220634-d26a0b6`) | section 4.5: the card reproduces the processor runs to round-off |
+| T10 | scouting run of Track A's S1 with adaptive refinement, on a card | first attempt `-150507-8224d72` died at start (exit 139); debugging `core-20261120-220538-eafed07`; the run `core-20261120-220816-09f6f79` (analysis `core-20261120-222419-a1850d2`) | section 7 |
 
 ### 4.1 T3, plane wave with a refined patch
 
@@ -287,6 +304,25 @@ cell outward diagonally ([TO VERIFY]: the lapse of these data nearly relaxes by 
 its minimum leaves the centre; no field dump was written). The example input
 `flrw_tracker.athinput` runs as published (12 cycles, tracker at 2.5 + 0.5 t).
 
+### 4.5 T14, the card executable against the processors
+
+The published card executable ran the decks of T2's U, S, A, M, G and T9's ladder (run
+core-20261119-161748-75c2405, 11 s of card time), compared record by record with the
+processor runs (analysis core-20261120-220634-d26a0b6, figure `fig_t14_card`) [VERIFIED]:
+
+| Case | On the card | Against the processor run |
+|---|---|---|
+| U, S, A (homogeneous universe: uniform, static patch, adaptive patch) | chi uniform to 1.3e-14, E to 2.2e-14 | alpha_max equal to 1.1e-15 at every record; same MeshBlock counts |
+| M (tracker across the face, refinement following it, `dt_lightspeed`, fine shape) | 118 records | MeshBlock count equal at every record (27, 34, 41, 34); tracker position within 4.4e-16, record times within 6.7e-16 |
+| G (guard at a Courant number of 1.5) | status 3, `flrw.guard.txt` | stop at cycle 16 instead of 18: the two unstable runs agree to 7e-15 up to record 8 and then part by a factor of about a hundred per record (rounding amplified by the instability) |
+| ladder (peak, lapse ladder, fine shape) | 32,768 particles and rest mass unchanged, identity 2.2e-16 | MeshBlock counts identical (64, then 120 after the regrid of cycle 4); Hr_max within 3.9e-12, H_max within 9.8e-12, lapse extremes within 1.4e-14 at all 11 records |
+| region norms of U, S, A, M | | every non-residual column within 6.7e-13 |
+
+So the refinement function, the tracker, the light-speed step, the fine-shape deposit, the
+region norms and the guard give on a card what they give on the processors, to round-off.
+Not compared on a card: the finder on a found horizon (T4, T15), restarts (T11; the
+restart of T10c is pending, section 7), the walk tracker (T13).
+
 ## 5. Predictions that failed (details in the journal)
 
 - T2: "H_max = H_mean to 1e-10 relative": H itself is 1e-15 at t = 0; the absolute
@@ -314,6 +350,14 @@ its minimum leaves the centre; no field dump was written). The example input
   the peak: it hops among the eight equal central cells.
 - T15 and T11 figures: one panel each lacks a curve or clips a label (script errors noted
   in the journal); the numbers come from the summary files.
+- T14: "G stops at cycle 18 on the card": it stops at cycle 16; the stop cycle of an
+  unstable run is not reproducible between a card and a processor (section 4.5).
+- T10d: "the crash of T10 at start repeats with the published card executable": it did
+  not, in five variants (section 7).
+- T10: "fine levels appear only as the lapse falls (tau > 5)": level 1 comes at t = 2.20
+  (the lapse ratio of these data passes 0.9 there); "the first bad cell lies within 0.6/k
+  of the centre": it lies at 0.637; "without a horizon" was not tested, the finder of the
+  deck could not search (section 7).
 
 ## 6. Regression
 
@@ -327,9 +371,82 @@ published executable reproduces the tested one on the cases of T1, T2 and T9.
 
 ## 7. Scouting run of S1 with adaptive refinement (T10)
 
-Slurm job 4654 (run core-20261119-150507-8224d72, card executable of 901d8b3, 0.75
-card-hours asked): pending at the time of writing (expected start 20:39 PST). Prediction
-in the journal (entry 14:45, T10).
+Track A's above-threshold case S1 (mu = 0.3, e = 0.2, data of run
+A-emd-pbh-20261115-155802-9a6596f: 64^3 root, 262,144 particles, gauge E1) with the example
+input `peak_amr.athinput` as it stood on 2026-11-19 (lapse ladder 0.9, 0.7, 0.55, 0.4;
+eight particles per cell; fine-shape deposit; `dt_lightspeed`; guard; finder with status
+file; region norms), `tlim = 16`, limit 2000 MeshBlocks. Compared with the track's run of
+the same data on four static levels (A-emd-pbh-20261115-160349-9d232d2). Figures
+`fig_t10_scout`, `fig_t10_lines` (looked at). Everything below [VERIFIED] in the runs
+named unless labelled.
+
+**The first attempt died at start** (run core-20261119-150507-8224d72, Slurm job 4654, card
+build of 901d8b3): segmentation fault 3 s after start, inside the problem generator, before
+the first step. The same command ran on the processors, and on a card with the published
+executable in five variants of the MeshBlock limit, block size and finder (run
+core-20261120-220538-eafed07): no crash. The source diff between the two builds touches
+nothing that runs before the first step. [JUDGEMENT] a transient of the machine (the job
+started in the second another card job of the account ended); not reproduced, not
+explained.
+
+**The run** (core-20261120-220816-09f6f79, published card executable, 244 s = 0.068
+card-hours; analysis core-20261120-222419-a1850d2):
+
+| | adaptive (this run) | four static levels (S1) |
+|---|---|---|
+| end | guard stop at t = 11.778 (cycle 871), exit status 3, `peak.guard.txt` | fields non-finite at t = 11.709, carried to t = 16 with exit status 0 |
+| last sane record | t = 11.775: alpha_min = 2.3e-4 alpha_max | t = 11.704: alpha_min = 0.031 alpha_max |
+| first bad cell | level 4, (-0.010, -0.635, -0.049): the lapse minimum on the y axis | not recorded |
+| MeshBlocks | 64 to t = 2.20, 120 (level 1), 176 at 7.58 (level 2), 232 at 8.73 (3), 512 at 9.65 (4), 736 at 11.40, 792 at 11.66 | 288 throughout |
+| card time to t = 10 / to the end | 75 s / 244 s | 356 s / 645 s (to t = 16) |
+| card memory | 66 GB (limit 2000; 792 used) | 10.4 GB |
+| Hr_max at t = 0, 2.2, 3.06, 5, 9, 10 | 3.3e-6, 5.7e-3, 0.10, 0.26, 1.45, 1.73 | 0.047 at t = 0, 0.16 at 5, 1.39 at 9, 1.55 at 10 |
+| alpha_min/alpha_max at t = 5, 9, 10, 11, 11.5 | 0.807, 0.465, 0.310, 0.017, 1.3e-3 | 0.805, 0.512, 0.387, 0.167, 0.053 |
+| E_max/<E> at t = 5, 9, 10, 11 | 4.9, 1.7e3, 3.9e3, 9.8e4 | 4.8, 4.1e2, 7.4e2, 6.5e3 |
+
+What this says:
+- The machinery works on the track's case on a card: the mesh follows the falling lapse to
+  level 4 (the cell size of S1's finest static level), the rest mass and the particle
+  number are constant and the deposition identity holds to 2.2e-16 until the first
+  removal, the step follows the finest level, and the run stops by itself with a
+  diagnostic and exit status 3 when the fields fail, instead of integrating nonsense to
+  `tlim`.
+- It gets as far as S1 and no further: the same end at the lapse minima on the y axis,
+  0.07 later, for a fifth (to t = 10) to a half of the card time. The mesh was not what
+  limited S1.
+- Both runs violate the Hamiltonian constraint at order one in the centre from t = 9 on
+  (Hr_max 1.4 to 1.7; region norm |H|_2/|16 pi E|_2 inside r = 2.45: 0.29 at t = 9, 0.31
+  at 10, against 0.017 and 0.023 outside). What either run shows after t = 9 near the
+  centre is not a solution of the constraints, and an apparent horizon found there would
+  not be evidence of a black hole.
+- On the uniform mesh the largest relative constraint stays below 5.7e-3 (to t = 2.2);
+  0.9 after level 1 appears it is 0.10 and then follows S1 (0.26 against 0.16 at t = 5).
+  Whether the refined level causes this jump is the subject of T10e (pending, below).
+- With the fine-shape deposit E is negative in leaf cells from t = 7.6 on (down to
+  -4.6e-3, 5 per cent of E_max; S1: -1.8e-4), and E rings around the peak where the
+  particles are sparse (figure `fig_t10_lines`, |x| between 2 and 4.5): the edge weights
+  of section 2.2 on real data. From t = 7.5 the adaptive run is denser at the centre than
+  S1 (E_max/<E> four to fifteen times) and its lapse falls faster; which of the
+  differences (mesh history, fine shape) does it is not separated.
+- The finder of the deck never searched: 11 calls from t = 7.85, each ended at its first
+  flow iteration with reason 3 (section 2.3, `hmean_tol`). [JUDGEMENT] S1's "no horizon
+  in 44 calls" has the same cause (same options and data; S1 has no status file).
+- The deck's `alpha_exc = 0.3` is an absolute lapse (0.007 of the mean at a = 45): 248
+  particles were removed from t = 11.154 on, at the lapse minima. Whether that hastens
+  the end is not tested.
+- The particle criterion never acted (at most 7.4 particles per leaf cell, threshold 8):
+  the lapse ladder alone drove the mesh.
+
+**Pending, written and predicted but not run** (the queue held two jobs of this owner):
+`t10c_scout.list`, one card job of about ten minutes: T10c, the restart of the run from
+its file at t = 10 with four finder surfaces that can flow (`t10c_finder.athinput`), and
+T10e, the deck to t = 5.2 without refinement, as run, with the uniform spreading, and
+with every cloud on the root level, to see where the constraint jump at t = 3 comes from.
+Predictions: journal, entry of 2026-11-20 22:30. Command:
+`harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher batch --list
+tracks/core/analysis/cosmo_amr/t10c_scout.list --exe
+/data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_gpu --gpu-hours 0.3 --wall
+00:20:00 --purpose "T10c and T10e of cosmo-amr"`; analysis with `t10_scout.py --more`.
 
 ## 8. Not done, limits, open points
 
@@ -353,3 +470,13 @@ in the journal (entry 14:45, T10).
 - Restarts on refined meshes agree with the uninterrupted run to round-off, not bit for
   bit (section 4.2); on a uniform mesh and right after a regrid they are bitwise.
 - MPI: built and tested without MPI only.
+- The finder on the track's case is untested: with the deck's `hmean_tol` it never flowed
+  (section 7); the restart with a working finder (T10c) is pending.
+- The released particle restart file stores the previous sources for all
+  `max_nmb_per_rank` MeshBlocks (`nrpic_io.cpp`, the block "has_ts": the five extents of
+  the array and the whole array): 2.23 GB per restart file at a limit of 2000 MeshBlocks
+  of 16^3, with 64 MeshBlocks on the mesh. Not changed here (shared file, restart
+  format); request to the core lead: write the MeshBlocks that exist.
+- The crash of the first T10 attempt at start (exit 139) is not explained (section 7).
+- `alpha_exc` is an absolute lapse; in the conformal-time gauge the lapse is of order a
+  (section 7). An excision threshold relative to the mean lapse does not exist.

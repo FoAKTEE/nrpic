@@ -44,7 +44,9 @@ nx3       = 16
 <mesh_refinement>
 refinement          = adaptive
 num_levels          = 5
-max_nmb_per_rank    = 1200
+max_nmb_per_rank    = 1200   # every field array is allocated for this many MeshBlocks:
+                             # 33 MiB of card memory each (16^3 cells, 4 ghost cells), and
+                             # each particle restart file holds 1.1 MB per MeshBlock of it
 ncycle_check        = 8
 refinement_interval = 16
 
@@ -113,7 +115,11 @@ center_z_0        = 0.0
 initial_radius_0  = 2.0
 flow_iterations_0 = 400
 flow_alpha_beta_const_0 = 1.0
-hmean_tol_0       = 100.0
+hmean_tol_0       = 1.0e30   # compared with the surface INTEGRAL of the expansion, which
+                             # grows with the proper area (a^2): the value 100 of the track's
+                             # deck ended every search of a sphere of radius 2 at its first
+                             # iteration (reason 3 in the status file; run
+                             # core-20261120-220816-09f6f79)
 mass_tol_0        = 1.0e-5
 start_time_0      = 0.0
 stop_time_0       = 1000.0
@@ -141,7 +147,8 @@ deposit_adaptive  = true
 deposit_min_level = 0
 deposit_ppc       = 2.0
 deposit_max_coarsen = 31
-alpha_exc      = 0.3
+alpha_exc      = 0.3       # an absolute lapse: with alpha ~ a it removes particles only where
+                           # the lapse has fallen to 0.3/a of its mean (0.007 at a = 45)
 ah_exc_factor  = -1.0
 hist_dcycle    = 1
 cstat_dcycle   = 8

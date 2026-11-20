@@ -1,6 +1,7 @@
 # Requests of Track A for the periodic threshold line: triage and what was done
 
-Work package cosmo-amr of core, branch `core/cosmo-amr`, wave 3a, 2026-11-19. Journal with
+Work package cosmo-amr of core, branch `core/cosmo-amr`, wave 3a, 2026-11-19; scouting run
+and card check added in wave 3, 2026-11-20 (section 5). Journal with
 the predictions and outcomes of every test: `tracks/core/JOURNAL-cosmo-amr.md`. Options,
 formats, lines touched, what is tested: `tracks/core/interfaces/cosmo_amr.md`. Tests:
 `tracks/core/analysis/cosmo_amr/` (scripts, figures under `figs/`), run manifests under
@@ -161,12 +162,29 @@ restart equals the uninterrupted run in all ten cases tested [VERIFIED, run
 core-20261119-161309-f797997]. Restarts on refined meshes agree with the uninterrupted run
 to round-off, not bit for bit (largest field departure 6e-10 on the peak).
 
-## 5. Scouting run of S1 with adaptive refinement
+## 5. Scouting run of S1 with adaptive refinement (wave 3, 2026-11-20)
 
-Slurm job 4654 (run core-20261119-150507-8224d72; S1 data, mu = 0.3, 64^3, ladder plus
-particles per cell, fine shape, `dt_lightspeed`, guard, finder status, region norms; 0.75
-card-hours asked) was still pending when this package closed (the queue gave
-2026-11-19 18:35 PST). Its prediction is in the journal (T10). It is not a result yet.
+Done; the full account is `cosmo_amr.md`, section 7. In short [VERIFIED, run
+core-20261120-220816-09f6f79 against the track's A-emd-pbh-20261115-160349-9d232d2]:
+- S1 (mu = 0.3) with the lapse ladder ends as the run on four static levels ends, at
+  t = 11.778 against 11.709, at the lapse minima on the y axis, for 75 s instead of 356 s
+  of card time to t = 10. This time the run stops by itself (guard, exit status 3,
+  `peak.guard.txt` with the first bad cell). The mesh was not what limited S1.
+- Both runs violate the Hamiltonian constraint at order one in the centre from t = 9 on
+  (largest relative value 1.4 to 1.7; |H|_2/|16 pi E|_2 = 0.3 inside r = 2.45).
+- **The finder of the track's decks did not search.** `hmean_tol_0 = 100` is compared with
+  the surface integral of the expansion, which is 1.3e3 to 1.8e3 for the initial sphere
+  of radius 2 in this box: all 11 searches ended at their first flow iteration (reason 3
+  in the new status file). The same holds for S1 and S2 [JUDGEMENT: same option and
+  data]. Remedy: `hmean_tol_<n> = 1e30` (the example input has it now), and read
+  `<basename>.horizon_status_<n>.txt`.
+- `alpha_exc = 0.3` in the decks is an absolute lapse: in this gauge (alpha ~ a ~ 45) it
+  removes particles only at 0.007 of the mean lapse (248 removed from t = 11.15 on).
+- The first attempt (job 4654) died at start with a segmentation fault that did not
+  repeat (five variants on a card, two on processors); unexplained.
+- Not run yet (two jobs of core were in the queue): the last stretch again with four
+  finder surfaces that can flow, and four runs to t = 5 that separate the constraint jump
+  after the first regrid (`t10c_scout.list`; predictions in the journal).
 
 ## 6. Regression
 
