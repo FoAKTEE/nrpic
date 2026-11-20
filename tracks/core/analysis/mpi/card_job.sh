@@ -15,8 +15,9 @@
 #             cards
 # GPU memory and utilisation are sampled every 0.5 s into <run>/gpumem.csv.
 #   sbatch --wait card_job.sh <outdir with cluster.nrp, cluster.tab> <exe> <worktree> \
-#          ["<runs>"]
-# <runs>: the names to run, default all six.  Slots: mpirun takes its slots from the
+#          ["<runs>" [<directory of cluster.nrp, cluster.tab>]]
+# <runs>: the names to run, default all six; the particle file and the table of the
+# cluster are looked for in <outdir> unless a directory is given.  Slots: mpirun takes its slots from the
 # tasks of the Slurm job (-n 2 above: one task per core on this machine, so two ranks need
 # two tasks; job 4663 asked for one task with four cpus and mpirun refused the two-rank
 # runs, "not enough slots").  ":OVERSUBSCRIBE" lets a job with one task start two ranks
@@ -26,6 +27,7 @@
 set -u
 OUT=$1; EXE=$2; WT=$3
 RUNS=${4:-C1a C1b C2 F8a F8b F16}
+CLDIR=${5:-$OUT}
 MPIRUN=/home/emost/codes/openmpi/bin/mpirun
 BIND=$WT/tracks/core/analysis/mpi/gpu_bind.sh
 CL=$WT/problems/tests/mpi_cluster.athinput
@@ -61,7 +63,7 @@ run() {   # run <name> <ranks> <athena arguments...>
     | tee -a "$OUT/summary.txt"
 }
 
-CLA="particles/particle_file=$OUT/cluster.nrp problem/comp0_file=$OUT/cluster.tab"
+CLA="particles/particle_file=$CLDIR/cluster.nrp problem/comp0_file=$CLDIR/cluster.tab"
 # shellcheck disable=SC2086
 run C1a 1 -i "$CL" $CLA
 # shellcheck disable=SC2086
