@@ -842,3 +842,66 @@ of the uniform 64^3 mesh, 236 s on one core), analysis core-20261120-222151-5122
   direction, commensurate with the mesh, is pushed as a whole by the self-force of its
   particles. The card cases of T6c test the converse (enough particles per cell: no
   kick), on uniform and refined meshes.
+
+### Paused at 22:33Z (flag `locks/PAUSE` found); where this session stopped
+
+Nothing new was started after the flag. State for the session that continues:
+
+**Running unattended.** Card job 2a, Slurm 4736, run core-20261120-221835-4870ae5
+(output `scratch/core/core-20261120-221835-4870ae5/`), started 22:18:35Z with a limit
+of 30 minutes. At 22:33Z four of its seven cases had ended with exit code 0
+(fine_in_uni64 135 s, fine_in_smr 214 s, fine_in_uni128 355 s, fine_x_uni64 127 s);
+fine_x_smr, emb64_pcs_fft and emb96_fft were still to run. Its registry entry is
+"submitted": close it with `harness/bin/nrpic-run finish core-20261120-221835-4870ae5`
+and read `batch.list.status` for the cases that ran.
+
+**Not submitted.** Card job 2b (T4d at 128^3 and 256^3): list
+`scratch/core/tmp/n2card2/card2b.list` (decks and particle files of run
+core-20261120-221659-da814e5). When owner core has fewer than two card jobs queued:
+`harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher batch --list
+/data/haiyangw/nrpic/scratch/core/tmp/n2card2/card2b.list --exe .work/build_gpu/src/athena
+--gpu-hours 0.42 --wall 00:25:00 --parent core-20261120-221659-da814e5 --purpose "..."`.
+Card time of the package so far: 0.07 card-hours (job 4648) plus job 2a (at most 0.5).
+Twelve jobs of the tracks were queued at 22:33Z, so 2b may wait for hours; the
+conclusions of T4d that do not need it rest on the 64^3 and 96^3 cases of job 2a.
+
+**Predictions still to be judged** (written above, before the runs): T6c in (b: refined
+against uniform 128^3 within 10 per cent; a, c: at most 2e-4), T6c x (refined mesh with
+the ball across the level boundary: at most 3e-4, refuted above 5e-4), T4d (64^3 with
+the kernels of T2: 0 to +1.0 per cent; 96^3: +0.8 to +1.5 per cent; 128^3, 256^3).
+Registered analyses to run (S = /data/haiyangw/nrpic/scratch/core, C = the run
+directory of job 2a, P = S/core-20261120-221659-da814e5):
+- `t6_smr.py --run C --ic P/ic_in/spin.json --cases fine_in_uni64 fine_in_uni128
+  fine_in_smr --stem t6c_in`
+- `t6_smr.py --run C --ic P/ic_x/spin.json --cases fine_x_uni64 fine_x_smr --stem t6c_x`
+- `t4d_convergence.py --prep P --case cic64_sp:64:cic_sp:S/core-20261119-162746-a02d334/emb_fft
+  --case cic64_mg:64:cic_7p:S/core-20261119-162455-e05ffa1/emb_mg
+  --case pcs64:64:pcs_sp:C/emb64_pcs_fft --case cic96_sp:96:cic_sp:C/emb96_fft`
+  (and the cases of job 2b when they exist: `cic128_sp:128:cic_sp`, `cic128_7p:128:cic_7p`,
+  `pcs128:128:pcs_sp`, `cic256_sp:256:cic_sp`).
+
+**Seen in a debugging pass, not registered** (`scratch/core/tmp/n2dbg3/fig/t6c_peek`,
+the script and options of the first line above, on the three cases that had ended):
+momentum change |dP|/(M v) 1.08e-5 (uniform 64^3), 9.56e-6 (uniform 128^3), 1.03e-5
+(64^3 + one level), against 2.1e-3 in T6b; centre of mass 5.9e-6, 7.13e-6, 7.19e-6 R;
+angular momentum 1.11e-5, 1.557e-5, 1.563e-5; energy 9.7e-5, 4.589e-5, 4.589e-5. If
+the registered analysis repeats them, T6c in holds in all three parts (the refined
+mesh within 8 per cent of the uniform fine mesh in the momentum, within 1 per cent in
+the other three), and with enough particles per cell there is no kick. The x cases and
+T4d have not been looked at.
+
+**Documents still to write** (their numbers are in the outcomes above):
+`newtonian_mode.md` 7.6 (refined meshes: T6, T6b, T6c), 7.9 (embedded ellipsoid: T4a,
+T4b, T4c, T4d) and the paragraphs "Refined meshes" and "Cards" of its section 6;
+`REQUESTS_NEWTON2.md` sections 5 to 7 and its rows C1, C2; a list of the files in
+`tracks/core/analysis/newton2/figs/` (figure, script, run id).
+
+**Executables not yet published.** The tested ones are `.work/build_cpu/src/athena`
+(sha256 aa3b5857...8bac, every processor test of this package) and
+`.work/build_gpu/src/athena` (sha256 832cb882...a5b1, card jobs 4648 and 4736), both
+built from the tree `athenak/` of commit c6293772, unchanged since (`git diff c6293772
+HEAD -- athenak python` is empty; `make -n` compiles nothing in either build directory,
+checked at 22:20Z). To publish: copy them to
+`/data/haiyangw/nrpic/scratch/core/exe/core_newton-2/athena_cpu` and `athena_gpu` and
+write COMMIT, SHA256SUMS and READY there (model: `exe/core_requests-adf/READY`). The
+regression T10 against the branch start and release core-v0.3 is done on this source.
