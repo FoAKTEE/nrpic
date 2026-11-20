@@ -24,7 +24,7 @@ brief 12.1):
      verifier counts in that source, and >= 1 citation row;
   A  abstract: an abstract chunk exists and, when the metadata has an abstract, at least
      half of the metadata's words (>= 3 letters) occur in it.
-  success = S and E and B and A.
+  success = S and E and B and A. Lenient variant: A' = A or an abstract in papers.abstract.
 Writes scan.json and scan.tsv into $NRPIC_RUN_DIR and prints the rates.
 """
 import argparse
@@ -47,8 +47,8 @@ RE_DD = re.compile(r"(?<!\\)\$\$")
 RE_CITE = re.compile(r"\\(?:[A-Za-z]*cite[a-zA-Z]*|citen|cite)\*?\s*(?:\[[^\]]*\]\s*){0,2}\{([^}]*)\}")
 RE_BIBITEM = re.compile(r"\\bibitem\b")
 RE_ENTRY = re.compile(r"\\entry\s*\{")
-RE_BIBREF = re.compile(r"\\bibliography\s*\{([^}]*)\}")
-RE_BIBENT = re.compile(r"@(?!string\b|comment\b|preamble\b)[A-Za-z]+\s*[{(]", re.I)
+RE_BIBREF = re.compile(r"\\(?:bibliography|addbibresource|addglobalbib)\s*(?:\[[^\]]*\])?\s*\{([^}]*)\}")
+RE_BIBENT = re.compile(r"@(?!string\b|comment\b|preamble\b)[A-Za-z]+\s*[{(]\s*([^,\s]+)\s*,", re.I)
 RE_THEBIB = re.compile(r"\\begin\s*\{thebibliography\}.*?(?:\\end\s*\{thebibliography\}|$)", re.S)
 RE_ABS = re.compile(r"\\begin\s*\{abstract\}(.*?)\\end\s*\{abstract\}", re.S)
 RE_ABS2 = re.compile(r"\\abstract\s*\{")
@@ -87,6 +87,7 @@ def count_flat(flat):
         keys.extend(k.strip() for k in m.group(1).split(",") if k.strip())
     d["cite_cmds"] = ncmd
     d["cite_keys"] = len(set(keys))
+    d["cite_keyset"] = set(keys)
     d["bibitem_flat"] = len(RE_BIBITEM.findall(flat))
     m = RE_ABS.search(flat)
     d["abstract_env"] = bool(m) or bool(RE_ABS2.search(flat))
@@ -95,26 +96,41 @@ def count_flat(flat):
     return d
 
 
-def count_src(pid, version, bib_refs):
+def count_src(pid, version, bib_refs, cited, main_tex):
+    """bbl: rows of the .bbl named like the main file (else the largest one); bib: entries of the
+    named .bib files (found by basename anywhere in the source tree) that the paper cites (all of
+    them under \\nocite{*})."""
     src = os.path.join(C.RAW_ARXIV, C.id_dir(pid), version or "", "src")
-    out = dict(bbl_files=0, bbl_items=0, bib_files=0, bib_entries=0, src_exists=os.path.isdir(src))
+    out = dict(bbl_files=0, bbl_items=0, bib_files=0, bib_entries=0, bib_cited=0, src_exists=os.path.isdir(src))
     if not out["src_exists"]:
         return out
+    stem = os.path.splitext(os.path.basename(main_tex or ""))[0]
+    best = None
     for p in glob.glob(os.path.join(src, "**", "*.bbl"), recursive=True):
         if os.path.islink(p) or not os.path.isfile(p):
             continue
         t = C.read_text(p, limit=32 << 20)
         out["bbl_files"] += 1
-        out["bbl_items"] += len(RE_BIBITEM.findall(t)) + len(RE_ENTRY.findall(t))
-    seen = set()
+        n = len(RE_BIBITEM.findall(t)) + len(RE_ENTRY.findall(t))
+        key = (os.path.splitext(os.path.basename(p))[0] == stem, n)
+        if best is None or key > best:
+            best = key
+    out["bbl_items"] = best[1] if best else 0
+    allbib = {}
+    for p in glob.glob(os.path.join(src, "**", "*.bib"), recursive=True):
+        if os.path.isfile(p) and not os.path.islink(p):
+            allbib.setdefault(os.path.basename(p), p)
+    keys = set()
     for r in bib_refs:
-        cand = [os.path.join(src, r), os.path.join(src, r + ".bib")]
-        for p in cand:
-            if os.path.isfile(p) and not os.path.islink(p) and p not in seen and p.endswith(".bib"):
-                seen.add(p)
-                t = C.read_text(p, limit=64 << 20)
-                out["bib_files"] += 1
-                out["bib_entries"] += len(RE_BIBENT.findall(t))
+        b = os.path.basename(r)
+        p = allbib.get(b) or allbib.get(b + ".bib")
+        if p:
+            t = C.read_text(p, limit=64 << 20)
+            out["bib_files"] += 1
+            ks = [k.strip() for k in RE_BIBENT.findall(t)]
+            out["bib_entries"] += len(ks)
+            keys.update(ks)
+    out["bib_cited"] = len(keys) if "*" in cited else len(keys & cited)
     return out
 
 
@@ -128,7 +144,7 @@ def main():
     ap.add_argument("--limit", type=int)
     a = ap.parse_args()
     con = C.open_ro(a.db)
-    papers = con.execute("select paper_id, version, parse_status, source_kind, flat_sha256, abstract, grp, priority "
+    papers = con.execute("select paper_id, version, parse_status, source_kind, flat_sha256, abstract, grp, priority, main_tex "
                          "from papers order by paper_id").fetchall()
     if a.limit:
         papers = papers[:a.limit]
@@ -151,10 +167,12 @@ def main():
         r["flat_exists"] = os.path.exists(fp)
         r["flat_sha_ok"] = r["flat_exists"] and L.sha256_file(fp) == p["flat_sha256"]
         f = count_flat(L.flat_text(pid)) if r["flat_exists"] else count_flat("")
-        r.update({f"my_{k}": v for k, v in f.items() if k != "bib_refs"})
-        s = count_src(pid, p["version"], f["bib_refs"])
+        r.update({f"my_{k}": v for k, v in f.items() if k not in ("bib_refs", "cite_keyset")})
+        s = count_src(pid, p["version"], f["bib_refs"], f["cite_keyset"], p["main_tex"])
         r.update({f"src_{k}": v for k, v in s.items()})
-        r["my_bib"] = s["bbl_items"] or s["bib_entries"] or f["bibitem_flat"]
+        r["my_bib"] = s["bbl_items"] or s["bib_cited"] or f["bibitem_flat"]
+        r["my_bib_source"] = "bbl" if s["bbl_items"] else ("bib" if s["bib_cited"] else
+                                                          ("bibitem" if f["bibitem_flat"] else None))
         r["db_sec"], r["db_eq"], r["db_bib"], r["db_cit"], r["db_body"] = (db_sec[pid], db_eq[pid], db_bib[pid],
                                                                           db_cit[pid], db_body[pid])
         ach = abs_chunk.get(pid, "")
@@ -178,12 +196,15 @@ def main():
             r["B_cause"] = None if r["B"] else "bibliography in the source not (fully) in the database"
         r["A"] = r["db_abs_chunk"] and (not r["meta_abs"] or (r["abs_recall"] or 0) >= 0.5)
         r["success"] = r["S"] and r["E"] and r["B"] and r["A"]
+        # lenient variant: an abstract from the metadata record counts (kb show --abstract)
+        r["A_lenient"] = r["A"] or r["meta_abs"]
+        r["success_lenient"] = r["S"] and r["E"] and r["B"] and r["A_lenient"]
         rows.append(r)
     rd = C.run_dir()
     n = len(rows)
     by = collections.defaultdict(lambda: collections.Counter())
     for r in rows:
-        for k in ("S", "E", "B", "A", "success"):
+        for k in ("S", "E", "B", "A", "success", "A_lenient", "success_lenient"):
             by[r["status"]][k] += bool(r[k])
             by["all"][k] += bool(r[k])
         by[r["status"]]["n"] += 1
@@ -191,12 +212,14 @@ def main():
     summ = dict(n=n, status_ok=sum(r["status"] == "ok" for r in rows),
                 status_ok_or_pdf=sum(r["status"] in ("ok", "pdf") for r in rows),
                 mine=sum(r["success"] for r in rows),
+                mine_lenient=sum(r["success_lenient"] for r in rows),
                 flat_sha_mismatch=[r["paper_id"] for r in rows if r["flat_exists"] and not r["flat_sha_ok"]],
                 no_flat=[r["paper_id"] for r in rows if not r["flat_exists"]],
                 by_status={k: dict(v) for k, v in by.items()})
     summ["rate_status_ok"] = round(summ["status_ok"] / n, 4)
     summ["rate_status_ok_or_pdf"] = round(summ["status_ok_or_pdf"] / n, 4)
     summ["rate_mine"] = round(summ["mine"] / n, 4)
+    summ["rate_mine_lenient"] = round(summ["mine_lenient"] / n, 4)
     summ["failures_mine"] = [dict(paper_id=r["paper_id"], status=r["status"],
                                   failed=[k for k in "SEBA" if not r[k]], B_cause=r.get("B_cause")) for r in rows if not r["success"]]
     with open(os.path.join(rd, "scan.json"), "w") as fh:

@@ -78,7 +78,7 @@ Prediction (R3, side effects): `kb search --db <snapshot>` opens the snapshot re
 and writes nothing into kb-data (mtimes of db/ and logs/ unchanged by my runs). Refuted by
 any new or changed file there attributable to my runs.
 
-## Entry 4 (22:35 UTC): parse scan, definition and prediction (step 4)
+## Entry 4 (22:29 UTC): parse scan, definition and prediction (step 4)
 
 Own scan `scripts/parse_scan.py` (definition of "parsed successfully" in its docstring:
 S sections, E display equations >= half of my count, B bibliography >= half of my count of
@@ -96,3 +96,14 @@ failures of single papers seen in the trial: 0710.5073 with 28 \bibitem and no e
 1005.4054 with 79 \bibitem and 17 entries); I expect B to be the weakest component and the
 rate to fall below the 95 % bar with probability about one half. Refuted if my rate is
 above 98 % or below 85 %.
+
+Outcome of the first scan run kb-20261120-222948-fcdd5e7 (22:29 UTC): **superseded**, kept on
+record. It gave 644/710 = 90.7 % under my definition, but reading its failure list showed two
+defects of MY scan, not of the database: (1) for papers with a .bib file it compared with
+all entries of the .bib (uncited ones too), e.g. 2606.02712 1732 .bib entries vs 138 cited;
+(2) it did not know biblatex `\addbibresource` (2607.21308, 2610.23218 counted as "cites
+but no bibliography"). Fixed: the expected count is the .bbl named like the main file (else
+the largest .bbl), else the cited keys found in the .bib files (all under `\nocite{*}`),
+else `\bibitem` in flat.tex; `.bib` files are found by basename. Added a lenient variant
+A' (an abstract in papers.abstract counts). Ad-hoc rerun after the fix: 662/710 (93.2 %),
+lenient 688/710 (96.9 %); the registered rerun follows (entry 5).
