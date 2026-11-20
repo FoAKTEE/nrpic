@@ -946,3 +946,107 @@ of MeshBlocks stays below 2000 (the eight-particle criterion refines only where 
 density contrast exceeds 8^(l+1) on level l, the lapse ladder only the centre); if the
 limit is reached the adaptive driver stops refining or the run ends, and I report
 which.
+
+## 2026-11-20 22:30  outcome of T10b (the scouting run); predictions of T10c and T10e
+
+**T10b, run core-20261120-220816-09f6f79 (job 4734, published card executable, 244 s =
+0.068 card-hours), first analysis core-20261120-222114-aa6e2d0** (hand-written manifest:
+`nrpic-run submit --launcher local` refused, "16 busy in live local runs of core";
+`t10_summary.json`, figures `fig_t10_scout`, `fig_t10_lines`, looked at; the script then
+got three corrections, below) against Track A's S1 with four static levels (run
+A-emd-pbh-20261115-160349-9d232d2) [VERIFIED]:
+- How far: the guard stopped the run at t = 11.7781 (cycle 871, step 5.8e-27), exit
+  status 3, `peak.guard.txt` written. Last sane record t = 11.7750: alpha_min = 0.0112
+  = 2.3e-4 alpha_max, E_max/<E> = 6e4, chi positive; one step later alpha_min = -26.5,
+  then chi <= 0 in 2,970,584 of 3,244,032 cells. First non-finite cell: MeshBlock 82,
+  level 4 (cell 0.0195), at (-0.010, -0.635, -0.049), on the y axis where the lapse has
+  its minima (y = -0.60 at t = 10.5 and 11, -0.56 at 11.5). S1 with static levels: last
+  sane record t = 11.704, alpha_min = 0.031 alpha_max, then the same end, carried to
+  t = 16 without a stop. So the adaptive run ends where and as S1 ends, 0.07 later.
+- Mesh: 64 MeshBlocks until t = 2.20, then level 1 (120), level 2 at t = 7.58 (176),
+  level 3 at 8.73 (232), level 4 at 9.65 (512), 736 at 11.40, 792 at 11.66; 728
+  created, none deleted. The particle criterion never acted (at most 7.4 particles per
+  leaf cell, threshold 8): the lapse ladder alone drove the mesh. Card memory 66 GB
+  (limit 2000; 1000 would have held the 792 blocks in 33 GB); S1: 288 blocks, 10.4 GB.
+- Cost: 75 s to t = 10 (S1: 356 s), 244 s to the end (S1: 409 s to t = 11.5, 645 s for
+  its whole run): 4.7 and about 2 times cheaper. Rest mass and particle number constant
+  and identity 2.2e-16 until the first removal.
+- Against S1 in time: alpha_min/alpha_max 0.807 (S1 0.805) at t = 5, 0.465 (0.512) at
+  9, 0.310 (0.387) at 10, 0.017 (0.167) at 11, 1.3e-3 (0.053) at 11.5; E_max/<E> 4.9
+  (4.8) at t = 5, 1.7e3 (4.1e2) at 9, 3.9e3 (7.4e2) at 10, 9.8e4 (6.5e3) at 11: the same
+  history to t = 7.5, then the adaptive run is denser at the centre and its lapse falls
+  faster, although it reaches level 4 only at t = 9.65.
+- Constraints: Hr_max = 3.3e-6 at t = 0 (S1 0.047), below 5.7e-3 on the uniform mesh
+  to t = 2.2, 8.1e-3 at t = 2.76, then **0.10 at t = 3.06, 0.26 at t = 5** (S1 0.16),
+  1.45 at t = 9 (S1 1.39), 1.73 from t = 10 on in both. Region norms: |H|_2/|16 pi E|_2
+  inside r = 2.45: 1.8e-6 at t = 0, 0.061 at 5, 0.29 at 9, 0.31 at 10; outside 0.008,
+  0.017, 0.023. So after t = 9 the centre of both runs violates the Hamiltonian
+  constraint at order one: what happens there afterwards is not a solution.
+- E turns negative in leaf cells from t = 7.6 on, down to -4.6e-3 (5 per cent of E_max
+  at the end; S1, without the fine shape: -1.8e-4): the edge weights of the fine-shape
+  deposit without limiter (interface text 2.2), now seen on the track's data.
+- Particles are removed from t = 11.154 on (248 by the end): the deck's `alpha_exc =
+  0.3` is an absolute lapse, here 0.007 of the mean (alpha ~ a ~ 45). In S1 the lapse
+  never fell that far. [JUDGEMENT] for cosmological runs the excision threshold belongs
+  far below the mean lapse or off; whether these removals hasten the end is not tested.
+- Finder: 11 searches from t = 7.85, **every one ended at its first flow iteration with
+  reason 3, "mean expansion above hmean_tol"**: the finder compares the surface INTEGRAL
+  of the expansion (`fastflow.cpp`: `hmean = integrals[ihmean]`, the sum of dA H, not
+  divided by the area; read at lines 1481 and 802) with `hmean_tol` = 100, and for the
+  initial sphere of coordinate radius 2 the proper area is 2.5e4 to 6.6e4 and the
+  integral 1.26e3 to 1.78e3. With the track's deck the finder cannot search in this
+  box at all; S1's "no horizon in 44 calls" has the same cause [JUDGEMENT: same
+  option, same data; S1 has no status file]. The status file of this package showed it.
+Predictions: (1) uniform mesh and Hr_max below 1e-3 at t = 0: PASS (3.3e-6). (2) "fine
+levels only as the lapse falls (tau > 5)": FAILED for level 1, which comes at t = 2.20
+(the lapse ratio of these data passes 0.9 there: 0.876 at the check of cycle 32; my
+own note of 15:05, item 4, had said so); levels 2 to 4 at 7.58, 8.73, 9.65: PASS;
+cheaper than S1's 0.18 card-hours to tau = 10: PASS (0.021). (3) end as S1 between
+tau = 10 and 12.5 on the finest level, stop with status 3 and a diagnostic: PASS; "within
+0.6/k of the centre": the first cell is at distance 0.637: FAILED by 6 per cent as
+written; "without a horizon": NOT TESTED, the finder was blind. (4) every failed search
+has its reason: PASS, and the reason is the finding above. Added: fewer than 2000
+MeshBlocks: PASS (792).
+
+Found in passing [VERIFIED, `ls -l`, `nrpic_io.cpp` lines 1119-1126]: every particle
+restart file `<name>.rst.prt` of this run is 2.23 GB whatever the mesh, because the
+released writer stores the array of the previous sources with all its extents, i.e. for
+`max_nmb_per_rank` (2000) MeshBlocks and not for those that exist (64 at t = 0). Four
+restart points cost 12 GB. Not changed here (`nrpic_io.cpp` is shared; request to the
+core lead); until then: a modest `max_nmb_per_rank` and few restart outputs.
+
+Script corrections after the first analysis: the "last finite" record is the last with
+positive lapse and particles (the record after the blow-up holds finite nonsense, 1e193);
+the density contrast is E_max/<E> (E_min is negative from t = 7.6); the line figure
+takes tables of sane states only and plots the lapse over its far value.
+
+**T10c, the last stretch with a finder that can flow** (`t10c_scout.list`: restart of
+T10b from its file at t = 10 with `-i t10c_finder.athinput`: four surfaces, `hmean_tol`
+1e30, 200 flow iterations, every 16 cycles: h0 centre, radius 2; h1 centre, radius
+0.8; h2 and h3 at (0, -0.59, 0) and (0, +0.59, 0), radius 0.25). Estimate from the x line
+at t = 11 [my arithmetic on the table of T10b]: E = 0.018 inside r = 0.1 at chi =
+1.26e-3 (proper radius 2.8) gives 2M/R about 1.1; at the y minima E = 0.15 inside 0.05
+gives about 2: trapped surfaces are possible, a few level-4 cells in radius.
+Prediction [JUDGEMENT]: (a) no search ends with reason 3 at its first iteration any
+more; (b) h2 or h3 finds a surface after t = 10.5 with mean coordinate radius between
+0.03 and 0.2 (fewer than ten level-4 cells), with an area mass far below the 22 to 36
+of the r = 2 sphere; (c) h0 and h1 find nothing before t = 11 (reasons 4, 5 or 6);
+(d) the run ends as T10b at t = 11.78 (same data, restart on a refined mesh: round-off
+agreement only, so the end may shift by a few cycles). Refuted for (b) if no surface is
+found by any finder while the lapse is below 1e-2 of its mean. A surface found here
+lies in a region that violates the constraint at order one: it would show that the
+finder works in the periodic adaptive run, not that a black hole formed.
+
+**T10e, where the constraint jump at t = 3 comes from** (same list; T10's deck to
+t = 5.2 with `cstat_dcycle = 1`, `con` tables every 0.25, limit 300 MeshBlocks):
+  u5   no refinement (`lapse_ratio_1 = 0.01`: never asked for)
+  a5   as T10b (lapse ladder, fine shape)
+  a5c  as a5 with the uniform spreading (`deposit_fine_shape = false`)
+  a5r  as a5 with every cloud on the root level (`deposit_adaptive = false`,
+       `deposit_max_level = 0`)
+Prediction [JUDGEMENT]: u5 keeps Hr_max below 0.02 to t = 5.2, without a jump near
+t = 3: the jump of T10b belongs to the refined level. a5 repeats T10b (0.10 at 3.06).
+a5c shows the same jump within a factor two (the source filter at each level's cell
+size, not the sampling of the cloud, leads: T3b, T9). a5r equals a5 to 10 per cent
+(one particle per root cell: the adaptive cloud level is the root until the contrast
+passes 16). Refuted if u5 jumps as well: then the cause is not the refinement.

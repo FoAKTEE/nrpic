@@ -89,9 +89,17 @@ def summarise(rd):
     if len(lg["elapsed"]):
         r["wall_s_last_report"] = float(lg["elapsed"][-1, 0])
         r["cycle_last_report"] = int(lg["elapsed"][-1, 1])
-    fin = np.isfinite(h["alpha_min"]) & np.isfinite(h["E_max"])
+    # records of a sane state: the record after a blow-up holds finite nonsense
+    fin = (np.isfinite(h["alpha_min"]) & np.isfinite(h["E_max"]) & (h["alpha_min"] > 0)
+           & (h["np"] > 0) & (h["alpha_max"] < 1e6))
     r["last_finite_time"] = float(h["time"][fin][-1])
     r["np_first_last"] = [int(h["np"][0]), int(h["np"][-1])]
+    lost = np.where(fin & (h["np"] < h["np"][0]))[0]
+    r["first_particle_removed"] = ({"time": float(h["time"][lost[0]]),
+                                    "alpha_min": float(h["alpha_min"][lost[0]])}
+                                   if len(lost) else None)
+    r["np_last_sane"] = int(h["np"][fin][-1])
+    r["n_excised_last_sane"] = int(h["n_excised"][fin][-1])
     r["sum_m_change_while_all_particles"] = float(np.max(np.abs(
         h["sum_m"][h["np"] == h["np"][0]]/h["sum_m"][0] - 1.0)))
     ok = fin & (h["np"] == h["np"][0])
@@ -112,6 +120,8 @@ def summarise(rd):
             r[f"t{tq:g}"] = {"alpha_min_over_max": float(h["alpha_min"][i]/h["alpha_max"][i]),
                              "E_max_over_min": float(h["E_max"][i]/h["E_min"][i])
                              if h["E_min"][i] > 0 else None,
+                             "E_max_over_mean": float(h["E_max"][i]*h["proper_volume"][i]
+                                                      / h["int_E"][i]),
                              "E_min": float(h["E_min"][i]),
                              "Hr_max": float(s["Hr_max"][j]),
                              "chi_min_over_max": float(s["chi_min"][j]/s["chi_max"][j]),
@@ -119,7 +129,7 @@ def summarise(rd):
             if len(lg["elapsed"]):
                 k = int(np.argmin(np.abs(lg["elapsed"][:, 2] - tq)))
                 r[f"t{tq:g}"]["wall_s"] = float(lg["elapsed"][k, 0])
-    sf = np.isfinite(s["chi_min"])
+    sf = np.isfinite(s["chi_min"]) & (s["time"] <= h["time"][fin][-1])
     r["last_cstat"] = {"time": float(s["time"][sf][-1]), "chi_min": float(s["chi_min"][sf][-1]),
                        "chi_max": float(s["chi_max"][sf][-1]),
                        "K_max": float(s["K_max"][sf][-1]), "E_max": float(s["E_max"][sf][-1]),
@@ -193,6 +203,8 @@ def main():
         res[f"more{i}"] = dict(rm, dir=rd)
         more.append((rd, hm, sm, lgm))
     g = A.read_hst(os.path.join(a.run, "peak.region.hst"))
+    gok = g["time"] <= res["run"]["last_finite"]["time"]
+    g = {k: v[gok] for k, v in g.items()}
     # relative constraint norms inside and outside the two spheres
     reg = {}
     for k in ("s1", "s2"):
@@ -228,19 +240,20 @@ def main():
     for i, (rd, hm, sm, lgm) in enumerate(more):
         runs.append((f"continuation {i+1}", hm, sm, cg, ":"))
     for lab, hh, ss, c, st in runs:
-        fin = np.isfinite(hh["alpha_min"]) & (hh["alpha_max"] > 0)
+        fin = (np.isfinite(hh["alpha_min"]) & (hh["alpha_min"] > 0) & (hh["np"] > 0)
+               & (hh["alpha_max"] < 1e6))
         ax[0, 0].semilogy(hh["time"][fin], hh["alpha_min"][fin]/hh["alpha_max"][fin], st,
                           color=c, label=lab)
-        ok = fin & (hh["E_min"] > 0)
-        ax[0, 1].semilogy(hh["time"][ok], hh["E_max"][ok]/hh["E_min"][ok], st, color=c,
-                          label=lab)
-        sf = np.isfinite(ss["Hr_max"]) & (ss["Hr_max"] > 0)
+        ok = fin & (hh["int_E"] > 0) & (hh["np"] > 0) & (hh["alpha_min"] > 0)
+        ax[0, 1].semilogy(hh["time"][ok], hh["E_max"][ok]*hh["proper_volume"][ok]
+                          / hh["int_E"][ok], st, color=c, label=lab)
+        sf = np.isfinite(ss["Hr_max"]) & (ss["Hr_max"] > 0) & (ss["time"] <= hh["time"][fin][-1])
         ax[0, 2].semilogy(ss["time"][sf], ss["Hr_max"][sf], st, color=c, label=lab)
     for thr in (0.9, 0.7, 0.55, 0.4):
         ax[0, 0].axhline(thr, color="grey", lw=0.5, ls=":")
     ax[0, 0].set_ylabel(r"$\alpha_{\min}/\alpha_{\max}$")
     ax[0, 0].legend(frameon=False, fontsize=8, loc="lower left")
-    ax[0, 1].set_ylabel(r"$E_{\max}/E_{\min}$")
+    ax[0, 1].set_ylabel(r"$E_{\max}/\langle E\rangle$")
     ax[0, 2].set_ylabel(r"largest relative $|H|$")
     for k, c in (("s1", cb), ("s2", cg)):
         t, rin, rout = reg[k]
@@ -275,7 +288,9 @@ def main():
 
     # ---- lines through the peak at the last tables before the end
     n = ntab(a.run)
-    sel = [q for q in (n-7, n-5, n-3, n-2, n-1) if q >= 0]
+    tl = res["run"]["last_finite"]["time"]
+    good = [q for q in range(n) if (line(a.run, "z4c", q)[1] or 1e9) < tl]
+    sel = [good[q] for q in (-8, -6, -4, -2, -1) if len(good) >= -q]
     fig, ax = plt.subplots(2, 3, figsize=(10.0, 6.0))
     fig.subplots_adjust(left=0.07, right=0.98, bottom=0.09, top=0.95, wspace=0.32,
                         hspace=0.30)
@@ -290,8 +305,8 @@ def main():
         lab = f"t = {t:.2f}"
         for col in (0, 1):
             w = (np.abs(z["x1v"]) < (10.0 if col == 0 else 1.25)) & fin
-            ax[0, col].semilogy(z["x1v"][w], np.abs(z["z4c_alpha"][w]), "-", color=c,
-                                label=lab, marker="." if col else None, ms=2)
+            ax[0, col].semilogy(z["x1v"][w], z["z4c_alpha"][w]/z["z4c_alpha"][fin][0], "-",
+                                color=c, label=lab, marker="." if col else None, ms=2)
             if e is not None:
                 we = (np.abs(e["x1v"]) < (10.0 if col == 0 else 1.25)) & (e["tmunu_E"] > 0)
                 ax[1, col].semilogy(e["x1v"][we], e["tmunu_E"][we], "-", color=c, label=lab,
@@ -303,8 +318,8 @@ def main():
             wc = (np.abs(cn["x1v"]) < 1.25) & np.isfinite(cn["con_H"]) & (cn["con_H"] != 0)
             ax[1, 2].semilogy(cn["x1v"][wc], np.abs(cn["con_H"][wc]), "-", color=c, label=lab,
                               marker=".", ms=2)
-    ax[0, 0].set_ylabel(r"$\alpha$ on the $x$ line")
-    ax[0, 1].set_ylabel(r"$\alpha$, centre")
+    ax[0, 0].set_ylabel(r"$\alpha/\alpha_{\rm far}$ on the $x$ line")
+    ax[0, 1].set_ylabel(r"$\alpha/\alpha_{\rm far}$, centre")
     ax[0, 2].set_ylabel(r"$\chi/\chi_{\max}$, centre")
     ax[0, 2].axhline(0.0, color="grey", lw=0.5)
     ax[1, 0].set_ylabel(r"$E$ on the $x$ line")
