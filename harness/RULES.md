@@ -197,10 +197,13 @@ requested ids, XML with a DOCTYPE. Gzipped PostScript stays `src/main.tex` (as b
 - The machine file's default executables are the core-v0.3 builds (`.work/build_gpu_v03`,
   `.work/build_cpu_v03`); `--exe` chooses another, e.g. `scratch/core/exe/<branch>/` (0013).
 - `harness/hooks/pre-commit` (brief 13.1) rejects files above 5 MB, added lines that look
-  like secrets, run manifests that are not JSON objects or whose run_id differs from the
-  directory, and paths outside `tracks/<ID>/` and OWNERSHIP on an owner's branch. It is not
-  installed (`git config core.hooksPath <main>/harness/hooks` would change every worktree's
-  commits; decision 0008).
+  like secrets (documentation placeholders pass: EXAMPLE keys, runs like `abcdefgh`, a key
+  header without key material), run manifests that are not JSON objects or whose run_id differs
+  from the directory, and paths outside `tracks/<ID>/` and main's OWNERSHIP on an owner's branch.
+  In a conflicted merge it checks only what the resolution adds, not what main brings. Dry run
+  over the history of every owner branch (wave 3a, `coord/digests/hook-dryrun.md`):
+  `python3 -I harness/tests/precommit_dryrun.py [--ownership tip] [--json F]`, read-only. It is
+  not installed yet (decision 0017 item 4: between waves; the command is in the digest).
 
 ## Other commands
 
@@ -222,7 +225,8 @@ STAGE_REPORT, outbox_message, run_manifest.json. Figure libraries: `harness/styl
 `coord/digests/bootstrap.md`. `harness/tests/run-runs-config-tests` runs the self-tests of
 nrpic-env (15), nrpic-run (57), the style libraries (10), nrpic-stage (45, the stage-check
 rehearsal), the hooks (99), the proposed configuration (51), nrpic-fetch-arxiv (29, against a
-loopback server: no request leaves the machine) and the pre-commit hook (13); each test's log is
+loopback server: no request leaves the machine), the pre-commit hook (25) and its dry run over a
+history (`test_precommit_dryrun.py`, 9); each test's log is
 kept in `scratch/harness/logs/`. Tests never touch the live branches: anything that needs
 branches or worktrees of its own runs in a scratch repository.
 
