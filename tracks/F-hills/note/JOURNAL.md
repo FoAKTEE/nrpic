@@ -243,3 +243,13 @@ the run]
    `tables/ledger.tex` unchanged (a third table added); `claims.md` identical (13 of 17 agree).
    schem_architecture and schem_timeline changed as intended. Every new PNG byte-identical to
    the draft I opened and read (`scratch/F-hills/tmp/note/figs/`).
+
+## 2026-11-20 Rerun after three ledger rows (prediction)
+
+Changes since F-20261120-222908-4ffcfba: `common.py` (run key of the second check's flat-space
+run F-20261115-175620-df20ffe), `ledger.py` (rows: the geodesic model's sideways acceleration of
+a binary moving through flat space, 1.065e-4 against 0 for the Newtonian law; the single-member
+set-up m = 1, P = 0.25, eta = 2 and 0.25, 1600 slots, read from the run's input and batch list;
+the first good horizon searches of the smoke, 0.5 M for both members and none of the heavy
+black hole's eight found searches). Prediction: every PNG byte-identical to the previous run;
+`ledger.tex` differs by exactly these three rows; `claims.md` identical. Refuted otherwise.
