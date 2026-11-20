@@ -42,6 +42,63 @@ def tracefree(d):
     return out - tr[:, None, None]*np.eye(3)
 
 
+def ode_models(el, lam, t0):
+    """ODE runs of the track's models A (embedded) and C (static) from the turnaround."""
+    return {model: el.integrate(lam, model, t0 + 17.0) for model in ("A", "C")}
+
+
+def case_numbers(el, ode, setup, cdir, dx=None):
+    """Judgement of one run of the embedded ellipsoid from its group history: numbers
+    for the result file and the arrays the figures use."""
+    t0 = setup["t_turn"]
+    tx_ode = ode["A"]["crossings"][0][0]
+    g = read_group(os.path.join(cdir, "newton.newton.g1.hst"))
+    h = nw.read_newton_hst(os.path.join(cdir, "newton.newton.hst"))
+    t = t0 + g["T"]
+    M = g["mass"][0]
+    R = np.sqrt(5.0*g["J"][:, [0, 3, 5]]/M)
+    # first minimum of the short axis: parabola through the three lowest records
+    i = int(np.argmin(R[:, 0]))
+    if 0 < i < len(t) - 1:
+        p = np.polyfit(t[i-1:i+2], R[i-1:i+2, 0], 2)
+        t_min = float(-p[1]/(2.0*p[0]))
+    else:
+        t_min = float(t[i])
+    w = t <= tx_ode - 1.0
+    s = el.sample(ode["A"], t[w])
+    sc = el.sample(ode["C"], t[w])
+    dev = np.abs(R[w] - np.abs(s["R"]))/el.RL
+    # quadrupole-formula energy from the difference-quotient column up to t_x - 1
+    q3 = tracefree(g["d3J"])
+    P = np.einsum("nij,nij->n", q3, q3)/5.0
+    tq = t0 + g["T_d3J"]
+    ok = (g["ncycle"] > 0) & (tq <= tx_ode - 1.0)
+    E = float((getattr(np, "trapezoid", None) or np.trapz)(P[ok], tq[ok]))
+    E_ode = float(np.interp(tx_ode - 1.0, s["t"], s["E"]))
+    if dx is None:
+        dx = setup["L"]/setup["n"]
+    out = dict(records=int(len(t)), mass=float(M), number=int(g["number"][0]),
+               R_start=R[0].tolist(), R_start_ode=np.abs(s["R"][0]).tolist(),
+               t_min_short_axis=t_min, t_cross_ode=float(tx_ode),
+               t_min_rel=float(t_min/tx_ode - 1.0),
+               t_min_rel_since_turn=float((t_min - t0)/(tx_ode - t0) - 1.0),
+               R_min_short_axis=float(R[i, 0]),
+               axes_maxdev_over_RL=dev.max(axis=0).tolist(),
+               axes_maxdev_model_C_over_RL=(np.abs(R[w] - np.abs(sc["R"]))/el.RL
+                                            ).max(axis=0).tolist(),
+               centroid_shift_max=float(np.abs(g["X"] - g["X"][0]).max()),
+               centroid_shift_over_dx=float(np.abs(g["X"] - g["X"][0]).max()/dx),
+               E_to_tx_minus_1=E, E_ode_to_tx_minus_1=E_ode,
+               E_rel=float(E/E_ode - 1.0),
+               layzer_irvine=float(np.max(np.abs(h["C"] - h["C"][0]))
+                                   / np.max(np.abs(h["a"]*h["W"]))),
+               last_step=float(h["dt"][-1]), d3J_last=g["d3J"][-1].tolist(),
+               d3J_before_last=g["d3J"][-2].tolist(),
+               mg_cycles_mean=float(np.mean(h["mg_cycles"][1:])))
+    arr = dict(t=t, R=R, w=w, ode_R=np.abs(s["R"]), tq=tq, P=P, rec=g["ncycle"] > 0)
+    return out, arr
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", required=True)
@@ -64,69 +121,27 @@ def main():
     fig.subplots_adjust(left=0.075, right=0.985, bottom=0.16, top=0.95, wspace=0.36)
     cols = {"emb_fft": fs.PAL["red"], "emb_mg": fs.PAL["yellow"]}
     labs = {"emb_fft": "Fourier", "emb_mg": "multigrid"}
-    ode = {}
+    ode = ode_models(el, lam, t0)
     for model in ("A", "C"):
-        run = el.integrate(lam, model, t0 + 17.0)
-        ode[model] = run
-        res["ode_%s_crossings" % model] = run["crossings"][:3]
+        res["ode_%s_crossings" % model] = ode[model]["crossings"][:3]
     tx_ode = ode["A"]["crossings"][0][0]
     dirs = {"emb_fft": os.path.join(a.run, "emb_fft")}
     if a.mg:
         dirs["emb_mg"] = os.path.join(a.mg, "emb_mg")
     for name, cdir in dirs.items():
-        g = read_group(os.path.join(cdir, "newton.newton.g1.hst"))
-        h = nw.read_newton_hst(os.path.join(cdir, "newton.newton.hst"))
-        t = t0 + g["T"]
-        M = g["mass"][0]
-        R = np.sqrt(5.0*g["J"][:, [0, 3, 5]]/M)
-        # first minimum of the short axis: parabola through the three lowest records
-        i = int(np.argmin(R[:, 0]))
-        if 0 < i < len(t) - 1:
-            p = np.polyfit(t[i-1:i+2], R[i-1:i+2, 0], 2)
-            t_min = float(-p[1]/(2.0*p[0]))
-        else:
-            t_min = float(t[i])
-        w = t <= tx_ode - 1.0
-        s = el.sample(ode["A"], t[w])
-        sc = el.sample(ode["C"], t[w])
-        dev = np.abs(R[w] - np.abs(s["R"]))/el.RL
-        # quadrupole-formula energy from the difference-quotient column up to t_x - 1
-        q3 = tracefree(g["d3J"])
-        P = np.einsum("nij,nij->n", q3, q3)/5.0
-        tq = t0 + g["T_d3J"]
-        ok = (g["ncycle"] > 0) & (tq <= tx_ode - 1.0)
-        E = float((getattr(np, "trapezoid", None) or np.trapz)(P[ok], tq[ok]))
-        E_ode = float(np.interp(tx_ode - 1.0, s["t"], s["E"]))
-        out = dict(records=int(len(t)), mass=float(M), number=int(g["number"][0]),
-                   R_start=R[0].tolist(), R_start_ode=np.abs(s["R"][0]).tolist(),
-                   t_min_short_axis=t_min, t_cross_ode=float(tx_ode),
-                   t_min_rel=float(t_min/tx_ode - 1.0),
-                   t_min_rel_since_turn=float((t_min - t0)/(tx_ode - t0) - 1.0),
-                   R_min_short_axis=float(R[i, 0]),
-                   axes_maxdev_over_RL=dev.max(axis=0).tolist(),
-                   axes_maxdev_model_C_over_RL=(np.abs(R[w] - np.abs(sc["R"]))/el.RL
-                                                ).max(axis=0).tolist(),
-                   centroid_shift_max=float(np.abs(g["X"] - g["X"][0]).max()),
-                   centroid_shift_over_dx=float(np.abs(g["X"] - g["X"][0]).max()
-                                                / (setup["L"]/setup["n"])),
-                   E_to_tx_minus_1=E, E_ode_to_tx_minus_1=E_ode,
-                   E_rel=float(E/E_ode - 1.0),
-                   layzer_irvine=float(np.max(np.abs(h["C"] - h["C"][0]))
-                                       / np.max(np.abs(h["a"]*h["W"]))),
-                   last_step=float(h["dt"][-1]), d3J_last=g["d3J"][-1].tolist(),
-                   d3J_before_last=g["d3J"][-2].tolist(),
-                   mg_cycles_mean=float(np.mean(h["mg_cycles"][1:])))
+        out, arr = case_numbers(el, ode, setup, cdir)
         res[name] = out
+        t, R, w = arr["t"], arr["R"], arr["w"]
         ax = axs[0]
         for k in range(3):
             ax.plot(t, R[:, k], color=cols[name], ls=("-", "--", ":")[k],
                     label=labs[name] if k == 0 else None)
         ax = axs[1]
         for k in range(3):
-            ax.plot(t[w], (R[w, k] - np.abs(s["R"][:, k]))/el.RL, color=cols[name],
+            ax.plot(t[w], (R[w, k] - arr["ode_R"][:, k])/el.RL, color=cols[name],
                     ls=("-", "--", ":")[k])
         ax = axs[2]
-        ax.semilogy(tq[g["ncycle"] > 0], np.maximum(P[g["ncycle"] > 0], 1e-12),
+        ax.semilogy(arr["tq"][arr["rec"]], np.maximum(arr["P"][arr["rec"]], 1e-12),
                     color=cols[name], lw=1.0)
     tg = np.linspace(t0, t0 + 16.5, 600)
     sg = el.sample(ode["A"], tg)
