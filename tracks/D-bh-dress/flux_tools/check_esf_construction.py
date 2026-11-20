@@ -554,22 +554,25 @@ def figure(outdir, pr):
     a.legend(fontsize=7)
     a = ax[0, 2]
     a.semilogy(r["R"][s], np.abs(r["ham"][s]) / (16 * math.pi * RHO0) + 1e-22, color=figstyle.PAL["red"],
-               label=r"$|4K_LK_T+2K_T^2-16\pi\rho|/16\pi\rho_0$")
+               label=r"Hamiltonian $/16\pi\rho_0$")
     sm = r["Rm"] < 400
     a.semilogy(r["Rm"][sm], np.abs(r["mres"][sm]) / r["scale"] + 1e-22, color=figstyle.PAL["blue"],
-               label=r"$|K_L-d(RK_T)/dR|$ (4th-order diff.)/max$|K_T|$")
+               label=r"momentum (4th-order diff.) / max$|K_T|$")
     a.set_xscale("log")
-    a.set_ylim(1e-20, 1e-4)
+    a.set_ylim(1e-20, 1e-2)
     a.set_xlabel(r"$R\ [M]$")
-    a.legend(fontsize=6)
+    a.legend(fontsize=6, loc="upper right")
     a = ax[1, 0]
-    a.plot(pr["Rd"][::7], pr["merr"][::7], ",", color=figstyle.PAL["red"])
+    a.semilogy(pr["Rd"][::3], np.abs(pr["merr"][::3]) + 1e-18, ",", color=figstyle.PAL["red"])
+    a.set_ylim(1e-18, 1)
     a.set_xlabel(r"particle $R_0\ [M]$")
-    a.set_ylabel(r"$m/(\rho\psi^6h^3)-1$")
+    a.set_ylabel(r"$|m/(\rho\psi^6h^3)-1|$ (+1e-18)")
     a = ax[1, 1]
-    a.plot(pr["Rd"][::7], pr["eerr"][140::7], ",", color=figstyle.PAL["red"])
+    a.semilogy(pr["Rd"][::3], np.abs(pr["eerr"][140::3]) + 1e-18, ",", color=figstyle.PAL["red"])
+    a.set_ylim(1e-19, 1e-10)
+    a.text(0.05, 0.9, "all differences 0 (+1e-18 shown)", transform=a.transAxes, fontsize=7)
     a.set_xlabel(r"particle $R_0\ [M]$")
-    a.set_ylabel(r"$E_K-(1-2M/R_0)^{1/2}$")
+    a.set_ylabel(r"$|E_K-(1-2M/R_0)^{1/2}|$")
     a = ax[1, 2]
     g = pr["gcsv"]
     a.plot(pr["tHg"], pr["mg"], color=figstyle.PAL["blue"], label=r"mine: $m(R_0)$ at $\tau_H(R_0)$")
@@ -581,7 +584,7 @@ def figure(outdir, pr):
     a.set_xlabel(r"$\tau_H\ [M]$")
     a.set_ylabel(r"$M_{\rm AH}\ [M]$")
     a.legend(fontsize=6)
-    fig.subplots_adjust(left=0.08, right=0.98, bottom=0.09, top=0.97, wspace=0.42, hspace=0.32)
+    fig.subplots_adjust(left=0.09, right=0.98, bottom=0.09, top=0.97, wspace=0.42, hspace=0.32)
     figstyle.save(fig, os.path.join(outdir, "check_esf_construction"))
     plt.close(fig)
 
