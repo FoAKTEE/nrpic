@@ -1,4 +1,4 @@
-"""Figure: a linear gravitational wave in the periodic vacuum box, and the two diagnostics on it.
+"""Figure: linear gravitational waves in the periodic box, and the two diagnostics on them.
 
 (a) Amplitude and phase errors of a transverse-traceless wave along x after ten crossings
 against the number of cells per wavelength, for the numerics of the cosmology runs and for
@@ -9,6 +9,21 @@ export/tracks/B-emd-gw/periodic_z4c/tables/lw_x.json; the AthenaK runs are named
 (b) The Fourier transverse-traceless projection and the fixed-direction Weyl scalar on the
 dumps of one AthenaK wave (32 cells, two periods): departures from the exact wave. Source:
 run B-emd-gw-20261115-120128-7dfaa38, results_athenak.json.
+(c) Oblique flat wave (k = 2 pi (1,1,1), elliptic polarization, four periods; test F of the
+waves package): |amplitude| and |phase| errors of the plus polarization at the last dump for
+N = 16, 32, 48, 64 cells per side, TT diagnostic (filled) and Weyl diagnostic with sixth-order
+stencils (open), against the Fourier-symbol prediction written before the runs (lines); the
+difference of the two diagnostics (triangles) against the symbol error of the first derivative
+of the sixth-order stencil (dotted) and with spectral derivatives (diamonds).
+(d) Standing tensor mode of the expanding box (k = (pi/2)(1,1,0), box of side 4, t = 10,
+a = 36; test X): the same errors for the cross (filled) and plus (crosses) polarizations
+(TT), the Weyl diagnostic for the cross polarization (open), against the prediction with the
+code's low-storage RK4()4[2S] on the background coupled to the mode (black lines; H1, written
+after N = 16, 32 and before N = 48, 64) and the first prediction, classical RK4 on the exact
+background (grey).
+Sources of (c, d): final analysis B-20261119-164402-7438a99 (final_results.json), symbol
+predictions B-20261119-141844-2c5d622 (predictions.json), 2S prediction
+B-20261119-153548-c7338f1 (predict_2s.json); simulation runs in waves/README.md "Results".
 """
 import os
 import sys
@@ -21,39 +36,70 @@ import common  # noqa: E402
 import czstyle as cz  # noqa: E402
 
 STEM = "fig_waves"
+NS = (16, 32, 48, 64)
 
 
-def main():
-    out = common.out_dir("figures")
-    cz.use_style()
+def waves_data():
+    """The numbers of panels (c, d), each checked against the prediction files it should equal."""
+    fr = common.load_json("waves_final", "final_results.json")
+    pr = common.load_json("waves_pred", "predictions.json")
+    p2 = common.load_json("waves_2s", "predict_2s.json")
+    out = {"F": {}, "X": {}}
+    for n in NS:
+        f = fr["flat"][str(n)]
+        x = fr["exp"][str(n)]
+        # the symbol prediction of F in the final analysis is the one written before the runs
+        if str(n) in pr["flat"]:
+            assert abs(f["pred_amp_end"] / pr["flat"][str(n)]["amp_end"] - 1) < 1e-12
+            assert abs(f["pred_phase_end"] / pr["flat"][str(n)]["phase_end"] - 1) < 1e-12
+        # the X prediction of the final analysis is the 2S one of run waves_2s
+        assert abs(x["pred_amp_end"] / p2[str(n)]["coupled_2s"]["amp"] - 1) < 1e-12
+        assert abs(x["pred_phase_end"] / p2[str(n)]["coupled_2s"]["phase"] - 1) < 1e-12
+        out["F"][n] = dict(
+            tt_amp=f["tt"]["amp_p_end"], tt_ph=f["tt"]["phase_p_end"],
+            tt_amp_x=f["tt"]["amp_x_end"], tt_ph_x=f["tt"]["phase_x_end"],
+            w6_amp=f["weyl6"]["amp_p_end"], w6_ph=f["weyl6"]["phase_p_end"],
+            w6_vs=f["weyl6"]["vs_tt_max"], wS_vs=f["weylS"]["vs_tt_max"],
+            pred_amp=f["pred_amp_end"], pred_ph=f["pred_phase_end"],
+            pol_mod=f["tt"]["pol_amp_max"], pol_arg=f["tt"]["pol_phase_max"],
+            nonTT=f["nonTT_env_max"], offmode=f["tt_offmode_env_max"],
+            t0=max(abs(v) for v in f["t0"]["tt"].values()),
+            back=f["tt"]["back_p_max"],
+            d1=pr["flat"].get(str(n), {}).get("weyl_fd6_rel_d1"))
+        out["X"][n] = dict(
+            tt_amp=x["tt"]["amp_x_end"], tt_ph=x["tt"]["phase_x_end"],
+            tt_amp_p=x["tt"]["amp_p_end"], tt_ph_p=x["tt"]["phase_p_end"],
+            w6_amp=x["weyl6"]["amp_x_end"], w6_ph=x["weyl6"]["phase_x_end"],
+            w6_vs=x["weyl6"]["vs_tt_max"], wS_vs=x["weylS"]["vs_tt_max"],
+            pred_amp=x["pred_amp_end"], pred_ph=x["pred_phase_end"],
+            cl_amp=x["pred_classical_exact_bg_amp_end"], cl_ph=x["pred_classical_exact_bg_phase_end"],
+            pol_arg=x["tt"]["pol_phase_max"], a_err=x["a_rel_err_max"],
+            nonTT=x["nonTT_env_max"], H2=x["H_norm2_max"])
+    out["orders"] = {"F": fr["flat"]["orders"], "X": fr["exp"]["orders"]}
+    return out
+
+
+def panel_ab(ax1, ax2):
     lw = common.load_json("lead_recheck", "export/tracks/B-emd-gw/periodic_z4c/tables/lw_x.json")
     ak = common.load_json("athenak_gw", "results_athenak.json")
-
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(3.4, 5.0))
-    fig.subplots_adjust(left=0.19, right=0.96, top=0.98, bottom=0.09, hspace=0.32)
-
     sets = (("lw_x_prod", cz.PAL["blue"], "cosmology numerics"),
             ("lw_x_ref", cz.PAL["red"], "upstream test numerics"))
     for name, col, lab in sets:
         rows = lw[name]
         N = np.array([r["N"] for r in rows], float)
-        amp = np.abs([r["amp"] for r in rows])
-        pamp = np.abs([r["pred_amp"] for r in rows])
-        ph = np.abs([r["phase"] for r in rows])
-        pph = np.abs([r["pred_phase"] for r in rows])
-        ax1.loglog(N, amp, "o", color=col, ms=4.5, label=lab + ", amplitude")
-        ax1.loglog(N, ph, "s", color=col, ms=4.5, mfc="none", label=lab + ", phase")
-        ax1.loglog(N, pamp, "-", color=col, lw=1.0)
-        ax1.loglog(N, pph, "--", color=col, lw=1.0)
+        ax1.loglog(N, np.abs([r["amp"] for r in rows]), "o", color=col, ms=4.5, label=lab + ", amplitude")
+        ax1.loglog(N, np.abs([r["phase"] for r in rows]), "s", color=col, ms=4.5, mfc="none",
+                   label=lab + ", phase")
+        ax1.loglog(N, np.abs([r["pred_amp"] for r in rows]), "-", color=col, lw=1.0)
+        ax1.loglog(N, np.abs([r["pred_phase"] for r in rows]), "--", color=col, lw=1.0)
     ax1.plot([], [], "k-", lw=1.0, label="predicted (lines)")
-    ax1.set_xlabel(r"cells per wavelength $N$")
+    ax1.set_xlabel(r"cells per wavelength $N$", labelpad=1)
     ax1.set_ylabel("error after ten crossings")
     ax1.set_xticks([16, 32, 64, 128])
     ax1.set_xticklabels(["16", "32", "64", "128"])
     ax1.xaxis.set_minor_formatter(plt.NullFormatter())
     ax1.set_ylim(1e-10, 3e-2)
     ax1.legend(frameon=False, loc="lower left", fontsize=7, handlelength=1.2)
-    ax1.text(0.97, 0.93, "(a)", transform=ax1.transAxes, ha="right", va="top")
 
     pd = ak["per_dump"][1:]
     t = np.array([r["t"] for r in pd])
@@ -66,12 +112,86 @@ def main():
     wy = [w for w in ak["weyl"] if w["t"] > 0]
     ax2.semilogy([w["t"] for w in wy], [w["psi4x_err_vs_analytic"] for w in wy], "k--",
                  lw=1.0, label=r"$\Psi_4$ (fixed direction)")
-    ax2.set_xlabel(r"time $t$ (wave periods)")
+    ax2.set_xlabel(r"time $t$ (wave periods)", labelpad=1)
     ax2.set_ylabel("departure from the exact wave")
     ax2.set_xlim(0, 2)
     ax2.set_ylim(1e-9, 1e-4)
     ax2.legend(frameon=False, loc="upper left", fontsize=7, ncol=2, handlelength=1.2, columnspacing=0.8)
-    ax2.text(0.97, 0.07, "(b)", transform=ax2.transAxes, ha="right", va="bottom")
+
+
+def n_axis(ax):
+    ax.set_xscale("log")
+    ax.set_yscale("log")
+    ax.set_xticks(NS)
+    ax.set_xticklabels([str(n) for n in NS])
+    ax.xaxis.set_minor_formatter(plt.NullFormatter())
+    ax.set_xlim(14, 72)
+    ax.set_xlabel(r"cells per side $N$", labelpad=1)
+
+
+def panel_c(ax, D):
+    F = D["F"]
+    N = np.array(NS, float)
+    g = lambda k: np.array([abs(F[n][k]) for n in NS])  # noqa: E731
+    red, yel, grn = cz.PAL["red"], cz.PAL["yellow"], cz.PAL["green"]
+    ax.plot(N, g("pred_amp"), "k-", lw=1.0)
+    ax.plot(N, g("pred_ph"), "k--", lw=1.0)
+    ax.plot(N, g("tt_amp"), "o", color=red, ms=5, label="TT, amplitude")
+    ax.plot(N, g("tt_ph"), "s", color=red, ms=5, label="TT, phase")
+    ax.plot(N, g("w6_amp"), "o", color=yel, ms=7.5, mfc="none", mew=1.2, label="Weyl, amplitude")
+    ax.plot(N, g("w6_ph"), "s", color=yel, ms=7.5, mfc="none", mew=1.2, label="Weyl, phase")
+    ax.plot(N, g("w6_vs"), "v", color=grn, ms=5, label="Weyl minus TT")
+    nd = [n for n in NS if F[n]["d1"] is not None]
+    ax.plot(nd, [abs(F[n]["d1"]) for n in nd], ":", color=grn, lw=1.2)
+    ax.plot(N, g("wS_vs"), "D", color=grn, ms=4, mfc="none", label="the same, spectral")
+    ax.plot([], [], "k-", lw=1.0, label="predicted")
+    ax.set_ylim(1e-12, 1e0)
+    ax.set_ylabel("error at the last dump")
+    ax.legend(frameon=False, loc="upper right", fontsize=7, ncol=2, handlelength=1.2,
+              columnspacing=0.8)
+    n_axis(ax)
+
+
+def panel_d(ax, D):
+    X = D["X"]
+    N = np.array(NS, float)
+    g = lambda k: np.array([abs(X[n][k]) for n in NS])  # noqa: E731
+    red, org, yel, grn = cz.PAL["red"], cz.PAL["orange"], cz.PAL["yellow"], cz.PAL["green"]
+    ax.plot(N, g("cl_amp"), "-", color="grey", lw=1.0, alpha=0.6)
+    ax.plot(N, g("cl_ph"), "--", color="grey", lw=1.0, alpha=0.6)
+    ax.plot(N, g("pred_amp"), "k-", lw=1.0)
+    ax.plot(N, g("pred_ph"), "k--", lw=1.0)
+    ax.plot(N, g("tt_amp"), "o", color=red, ms=5, label=r"TT $\times$, amplitude")
+    ax.plot(N, g("tt_ph"), "s", color=red, ms=5, label=r"TT $\times$, phase")
+    ax.plot(N, g("tt_amp_p"), "x", color=org, ms=6, mew=1.3, label="TT +, amplitude")
+    ax.plot(N, g("tt_ph_p"), "+", color=org, ms=8, mew=1.3, label="TT +, phase")
+    ax.plot(N, g("w6_amp"), "o", color=yel, ms=7.5, mfc="none", mew=1.2, label=r"Weyl $\times$, ampl.")
+    ax.plot(N, g("w6_vs"), "v", color=grn, ms=5, label="Weyl minus TT")
+    ax.plot(N, g("wS_vs"), "D", color=grn, ms=4, mfc="none", label="the same, spectral")
+    ax.plot([], [], "k-", lw=1.0, label="predicted, code's scheme")
+    ax.plot([], [], "-", color="grey", lw=1.0, alpha=0.6, label="first prediction")
+    ax.set_ylim(1e-9, 1e-1)
+    ax.set_ylabel("error at the last dump")
+    ax.legend(frameon=False, loc="upper right", fontsize=7, ncol=2, handlelength=1.2,
+              columnspacing=0.8)
+    n_axis(ax)
+
+
+def main():
+    out = common.out_dir("figures")
+    cz.use_style()
+    D = waves_data()
+    fig, ax = plt.subplots(2, 2, figsize=(7.0, 5.6))
+    fig.subplots_adjust(left=0.095, right=0.985, top=0.985, bottom=0.075, wspace=0.26, hspace=0.25)
+    (a1, a2), (a3, a4) = ax
+    panel_ab(a1, a2)
+    panel_c(a3, D)
+    panel_d(a4, D)
+    for x, lab, px, py, ha, va in ((a1, "(a)", 0.96, 0.95, "right", "top"),
+                                   (a2, "(b)", 0.96, 0.05, "right", "bottom"),
+                                   (a3, "(c)", 0.04, 0.95, "left", "top"),
+                                   (a4, "(d)", 0.96, 0.05, "right", "bottom")):
+        x.text(px, py, lab, transform=x.transAxes, ha=ha, va=va)
     cz.save(fig, os.path.join(out, STEM))
 
 

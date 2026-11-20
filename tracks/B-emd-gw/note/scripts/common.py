@@ -1,4 +1,4 @@
-"""Shared helpers of the figure and ledger scripts of Track B's working note v0.
+"""Shared helpers of the figure and ledger scripts of Track B's working note (v0-v2).
 
 Every number the scripts use is read from the output directory of a registered run,
 /data/haiyangw/nrpic/scratch/B-emd-gw/<run_id>/ (manifest under tracks/B-emd-gw/runs/).
@@ -54,6 +54,30 @@ RUNS = {
     # the lead's rechecks of wave 2 (second readings, stage/REVIEW-wave2.md)
     "review_fs": "B-20261115-190007-e09a0d2",
     "review_nw": "B-20261115-190015-4dd3416",
+    # wave 2b (G1 criterion 1): oblique flat wave F and standing mode of the expanding box X
+    # (waves helper; tracks/B-emd-gw/waves/README.md "Results")
+    "waves_final": "B-20261119-164402-7438a99",   # final analysis, both tests, N = 16, 32, 48, 64
+    "waves_pred": "B-20261119-141844-2c5d622",    # Fourier-symbol predictions, written before the runs
+    "waves_2s": "B-20261119-153548-c7338f1",      # H1: the code's low-storage RK4 on background + mode
+    "waves_F": "B-20261119-142016-ee73a03",       # F at N = 16, 32 (processors)
+    "waves_F48": "B-20261119-142233-70d5043",     # F at N = 48
+    "waves_X": "B-20261119-142021-8f4c441",       # X at N = 16, 32
+    "waves_X48": "B-20261119-142234-85da208",     # X at N = 48 (wrapper exit 127 after a complete run)
+    "waves_card": "B-20261119-142124-feb2daf",    # F and X at N = 64 (one card job)
+    # wave 2b, second round of the first source (first_source helper; its README items 1-4)
+    "r2_ic_delta": "B-20261119-141249-2af0df8",   # initial data delta = 0.0025, eps = 1, 0.3
+    "r2_ic_jit": "B-20261119-141216-9c98929",     # initial data of the jittered nulls (and jit0)
+    "r2_cards": "B-20261119-142833-19edd82",      # card batch A: e1_rep, jit0p3, jit0p1, d0025_e1, d0025_e0p3
+    "r2_null_pred": "B-20261119-142733-932e595",  # prediction of the null from its initial data (before the card run)
+    "r2_jit3": "B-20261119-160530-7bdcb45",       # per-dump diagnostics, jitter 0.3 cells
+    "r2_jit1_d1": "B-20261119-161519-6e0bc42",    # per-dump diagnostics, jitter 0.1 cells; delta = 0.0025, eps = 1
+    "r2_d3": "B-20261119-163027-f0d304f",         # per-dump diagnostics, delta = 0.0025, eps = 0.3
+    "r2_rep": "B-20261119-155418-80d45af",        # per-dump diagnostics of the rerun of eps = 1
+    "r2_rerun_cmp": "B-20261119-160607-ef83373",  # rerun against the wave-2 run (double precision)
+    "r2_null_cmp": "B-20261119-163037-6553674",   # the helper's comparison of the nulls (second reading)
+    "r2_delta_cmp": "B-20261119-164017-cd1ba52",  # the helper's comparison of the amplitudes (second reading)
+    "r2_spec": "B-20261119-161734-a3a1366",       # shell spectra of the TT and non-TT parts
+    "r2_parity": "B-20261119-142727-02878d1",     # parity of the two initial-data tools
 }
 
 # the claims check reads the lead's stage documents as they stood when the note v0 checked

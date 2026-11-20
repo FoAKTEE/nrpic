@@ -1,4 +1,4 @@
-"""Schematic: architecture of Track B's calculation at gate G1 (note v1).
+"""Schematic: architecture of Track B's calculation at gate G1 (note v1; v2 state of 2026-11-20).
 
 Each box is classified by evidence, not by authorship:
   verified (green)   used by the track in a registered run that passed its test;
@@ -22,8 +22,14 @@ Evidence of the green boxes (run ids under tracks/B-emd-gw/runs/; journals named
   second-order strain s g(tau): the scan (P2);
   exact Zel'dovich plane wave, Zel'dovich and homogeneous ellipsoid: B-emd-gw-20261115-123852-ea4475c,
     B-emd-gw-20261115-115752-840e994, B-20261115-174405-af11300.
-Slate boxes: oblique-wave polarization, double-precision mesh output and the time label of
-Psi_4 (READY items 1-3), thin periodic boxes and the lattice jitter (READY item 4).
+  (v2) oblique wave with the corrected polarization and double-precision mesh output: waves
+    runs B-20261119-142016-ee73a03, -142233-70d5043, -142124-feb2daf, final analysis
+    -164402-7438a99 (waves/README.md "Results"); double-precision dumps also in the first-source
+    card batch B-20261119-142833-19edd82;
+  (v2) jittered lattice for the noise floor: initial data B-20261119-141216-9c98929, card batch
+    B-20261119-142833-19edd82, analyses -160530-7bdcb45, -161519-6e0bc42, prediction
+    -142733-932e595 (first_source/JOURNAL.md P11, P15, P16).
+Slate boxes: thin periodic boxes (READY item 4 of core/requests-b), not yet run by the track.
 Red boxes: stage/G1/OPEN.md items 7-12, newton_tests requests 1-2, scope/SCOPE.md. No data
 are read.
 """
@@ -61,7 +67,7 @@ def main():
         ("crossed waves (1, eps, 0), plane-wave null", DONE),
         ("lattice, two particles per cell and direction", DONE),
         ("isolated ellipsoid, Newtonian", DONE),
-        ("jittered lattice for the noise floor", BRANCH),
+        ("jittered lattice for the noise floor", DONE),
         ("thin periodic boxes", BRANCH),
         ("data with a TT part in the expanding box", NEW),
         ("halo population in a small box", NEW),
@@ -72,7 +78,7 @@ def main():
         ("driven shift in the expanding box", DONE),
         ("harmonic and 1+log slicing, vacuum box", DONE),
         ("Newtonian gravity, quadrupole history", DONE),
-        ("oblique wave, double-precision dumps", BRANCH),
+        ("oblique wave, double-precision dumps", DONE),
         ("quadrupole history of one species", NEW),
         ("fourth-order Newtonian force", NEW),
     ])

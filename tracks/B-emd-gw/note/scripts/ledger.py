@@ -17,6 +17,8 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import common  # noqa: E402
 import g1data  # noqa: E402
+import r2data  # noqa: E402
+from fig_waves import waves_data  # noqa: E402
 
 R = common.RUNS
 
@@ -66,6 +68,13 @@ def load():
     d["rvn"] = common.load_json("review_nw", "rv_newton.json")
     d["rvf"] = common.load_json("review_fs", "rv_first_source.json")
     d["slc"] = common.load_json("slicing", "slicing_check.json")
+    # note v2: criterion 1 (oblique and expanding-box waves) and the second first-source round
+    d["wv"] = waves_data()
+    d["r2n"] = r2data.null_numbers()
+    d["r2d"] = r2data.delta_numbers()
+    d["r2f"] = r2data.floor_numbers()
+    d["r2h"] = r2data.helper_numbers()
+    d["jit_ic"] = {c: common.load_json("r2_ic_jit", c + "/id.json") for c in ("jit0p3", "jit0p1", "jit0")}
     return d
 
 
@@ -168,7 +177,89 @@ def values(d):
     law = "$\\dot D=-\\tfrac32 D\\,\\dot a/a$" if req == "-3*D(t)*Derivative(a(t),t)/(2*a(t))" else req
     v["item3"] = (["yes" if d["i3"]["1A_tt_projector_along_x"]["vanishes_for_E2_symmetric"] else "no", law], "item3")
     values_g1(d, v)
+    values_v2(d, v)
     return v
+
+
+def values_v2(d, v):
+    """The numbers of note v2: G1 criterion 1 and the second round of the first source."""
+    W = d["wv"]
+    F, X, O = W["F"], W["X"], W["orders"]
+    NS = (16, 32, 48, 64)
+    v["wF_amp"] = ([F[n]["tt_amp"] for n in NS], "waves_final")
+    v["wF_phase"] = ([F[n]["tt_ph"] for n in NS], "waves_final")
+    v["wF_pred"] = ([F[n]["pred_amp"] for n in (16, 32, 64)] + [F[n]["pred_ph"] for n in (16, 32, 64)], "waves_pred")
+    v["wF_ratio"] = ([max(abs(F[n]["tt_amp"] / F[n]["pred_amp"] - 1) for n in NS),
+                      max(abs(F[n]["tt_ph"] / F[n]["pred_ph"] - 1) for n in NS)], "waves_final")
+    v["wF_orders"] = (O["F"]["tt"]["amp_p_end"] + O["F"]["tt"]["phase_p_end"], "waves_final")
+    v["wF_weyl"] = ([F[n]["w6_vs"] for n in NS], "waves_final")
+    v["wF_weyl_orders"] = (O["F"]["weyl6"]["vs_tt_max"], "waves_final")
+    v["wF_weyl_phase"] = ([max(abs(F[n]["w6_ph"] - F[n]["tt_ph"]) for n in NS)], "waves_final")
+    v["wF_d1"] = ([abs(F[n]["d1"]) for n in (16, 32, 64)], "waves_pred")
+    v["wF_spec"] = ([max(F[n]["wS_vs"] for n in NS)], "waves_final")
+    v["wF_pol"] = ([max(F[n]["pol_mod"] for n in NS), max(F[n]["pol_arg"] for n in NS)], "waves_final")
+    v["wF_t0"] = ([max(F[n]["t0"] for n in NS)], "waves_final")
+    v["wF_nonTT"] = ([max(F[n]["nonTT"] for n in NS), max(F[n]["offmode"] for n in NS)], "waves_final")
+    v["wX_amp"] = ([X[n]["tt_amp"] for n in NS], "waves_final")
+    v["wX_phase"] = ([X[n]["tt_ph"] for n in NS], "waves_final")
+    v["wX_pred"] = ([X[n]["pred_amp"] for n in NS] + [X[n]["pred_ph"] for n in NS], "waves_2s")
+    v["wX_ratio"] = ([max(abs(X[n]["tt_amp"] / X[n]["pred_amp"] - 1) for n in NS),
+                      max(abs(X[n]["tt_ph"] / X[n]["pred_ph"] - 1) for n in NS),
+                      max(abs(X[n]["tt_amp_p"] / X[n]["pred_amp"] - 1) for n in (16, 32)),
+                      max(abs(X[n]["tt_ph_p"] / X[n]["pred_ph"] - 1) for n in (16, 32))], "waves_final")
+    v["wX_plus"] = ([X[n]["tt_amp_p"] / X[n]["pred_amp"] - 1 for n in (48, 64)] +
+                    [X[n]["tt_ph_p"] / X[n]["pred_ph"] - 1 for n in (48, 64)], "waves_final")
+    v["wX_first"] = ([X[32]["tt_amp"] / X[32]["cl_amp"] - 1, X[32]["tt_ph"] / X[32]["cl_ph"] - 1], "waves_final")
+    v["wX_bg"] = ([X[n]["a_err"] for n in NS], "waves_final")
+    v["wX_weyl"] = ([X[n]["w6_vs"] for n in NS], "waves_final")
+    v["wX_spec"] = ([min(X[n]["wS_vs"] for n in NS), max(X[n]["wS_vs"] for n in NS)], "waves_final")
+    v["wX_pol"] = ([X[n]["pol_arg"] for n in NS], "waves_final")
+    v["wX_nonTT"] = ([max(X[n]["nonTT"] for n in NS), max(X[n]["H2"] for n in NS)], "waves_final")
+    v["w_card"] = ([common.manifest("waves_card")["resources"]["gpu_hours"]], "waves_card")
+    # second round of the first source
+    N, D, Fl = d["r2n"], d["r2d"], d["r2f"]
+    ic = d["jit_ic"]
+    v["r2_floor"] = ([Fl["rep_2_40"], Fl["rep_80_140"]], "r2_rerun_cmp")
+    v["r2_parity"] = ([Fl["parity"], Sig(Fl["parity_n"], 7)], "r2_parity")
+    v["r2_ic"] = ([ic["jit0p3"]["max_momentum_residual"], ic["jit0p1"]["max_momentum_residual"],
+                   ic["jit0"]["max_momentum_residual"],
+                   max(ic[c]["max_hamiltonian_residual"] for c in ic)], "r2_ic_jit")
+    v["r2_maxTT"] = ([N["maxTT_min_jit0p3"], N["maxTT_max_jit0p3"], N["maxTT_min_jit0p1"],
+                      N["maxTT_max_jit0p1"], N["maxTT_max_null0"]], ("r2_jit3", "r2_jit1_d1", "scan64_a"))
+    v["r2_K1"] = (N["jit0p3_K1_ratio"] + N["jit0p1_K1_ratio"], ("r2_jit3", "r2_jit1_d1", "r2_null_pred"))
+    v["r2_K2"] = (N["jit0p3_K2_ratio"] + N["jit0p1_K2_ratio"], ("r2_jit3", "r2_jit1_d1", "r2_null_pred"))
+    v["r2_phase"] = ([N["jit0p3_K1_maxabsphase"], N["jit0p1_K1_maxabsphase"],
+                      N["jit0p3_K2_maxabsphase"], N["jit0p1_K2_maxabsphase"]], "r2_jit3")
+    v["r2_ampratio"] = (N["amp_ratio_K1"], ("r2_jit3", "r2_jit1_d1"))
+    v["r2_sig"] = ([N["null_over_signal_2_20"], N["null_over_signal_20_80"], N["null_over_signal_80_140"]], ("r2_jit3", "scan64_a"))
+    v["r2_rms"] = (N["rms_over_estimate_jit0p3"], ("r2_jit3", "r2_null_pred"))
+    v["r2_spec"] = (N["frac_ge16"] + N["frac_ge16_signal"], "r2_spec")
+    v["r2_kin"] = ([N["last_jit0p3"]["kin_over_grad"], N["last_jit0p1"]["kin_over_grad"]], ("r2_jit3", "r2_jit1_d1"))
+    v["r2_win"] = ([D["window_d01_e1"], D["window_d01_e0p3"], D["window_d0025_e1"], D["window_d0025_e0p3"]], ("scan64_b", "scan64_a", "r2_jit1_d1", "r2_d3"))
+    v["r2_win1"] = ([D["window1_d01_e1"], D["window1_d01_e0p3"], D["window1_d0025_e1"], D["window1_d0025_e0p3"]], ("scan64_b", "scan64_a", "r2_jit1_d1", "r2_d3"))
+    v["r2_R1"] = (D["R_e1"], ("scan64_b", "r2_jit1_d1"))
+    v["r2_R3"] = (D["R_e0p3"], ("scan64_a", "r2_d3"))
+    v["r2_col"] = (D["collapse_e1"] + D["collapse_e0p3"], ("scan64_b", "scan64_a", "r2_jit1_d1", "r2_d3"))
+    v["r2_dev140"] = ([D["dev_d0025_e1_a140"], D["dev_d0025_e0p3_a140"], D["dev_d01_e1_a140"], D["dev_d01_e0p3_a140"]], ("r2_jit1_d1", "r2_d3", "scan64_b", "scan64_a"))
+    v["r2_early"] = ([D["dbin_d0025_e1"], D["dbin_d0025_e0p3"], D["bin_d0025_e1"], D["bin_d0025_e0p3"],
+                      D["bin_d01_e1"], D["bin_d01_e0p3"]], ("r2_jit1_d1", "r2_d3", "scan64_b", "scan64_a"))
+    v["r2_card"] = ([common.manifest("r2_cards")["resources"]["gpu_hours"]], "r2_cards")
+    # second reading: this reduction against the helper's comparison files
+    nc, dc = d["r2h"]
+    pairs = [(N["jit0p3_K1_ratio"], nc["jit0p3"]["K1_mod_ratio_3_20"]),
+             (N["jit0p1_K1_ratio"], nc["jit0p1"]["K1_mod_ratio_3_20"]),
+             (N["jit0p3_K2_ratio"], nc["jit0p3"]["K2_mod_ratio_3_20"]),
+             (N["jit0p1_K2_ratio"], nc["jit0p1"]["K2_mod_ratio_3_20"]),
+             (N["amp_ratio_K1"], nc["ratio_K1_A03_A01_a1.5_20"]),
+             ([N["null_over_signal_2_20"], N["null_over_signal_20_80"], N["null_over_signal_80_140"]],
+              [nc["null03_over_signal01_K1_a2.0_20.0_max"], nc["null03_over_signal01_K1_a20.0_80.0_max"],
+               nc["null03_over_signal01_K1_a80.0_140.0_max"]]),
+             (D["R_e1"], [dc["R_e1"][f"R_a{a}"] for a in (20, 30, 40, 60)]),
+             (D["R_e0p3"], [dc["R_e0p3"][f"R_a{a}"] for a in (20, 30, 40, 60)]),
+             ([D[f"window_{n}"] for n in ("d01_e1", "d01_e0p3", "d0025_e1", "d0025_e0p3")],
+              [dc[n]["window_a_dev_le_0p5pct"] for n in ("d01_e1", "d01_e0p3", "d0025_e1", "d0025_e0p3")])]
+    diffs = [abs(a / b - 1) for x, y in pairs for a, b in zip(x, y)]
+    v["r2_second"] = ([Sig(len(diffs), 3), max(diffs)], ("r2_null_cmp", "r2_delta_cmp"))
 
 
 def values_g1(d, v):
@@ -381,12 +472,70 @@ LEDGER_G1 = [
 ]
 
 
+LEDGER_V2 = [
+    ("Linear waves with both diagnostics (oblique flat wave $F$, $N=16,32,48,64$ cells per side, last dump)", [
+        ("wF_amp", "TT diagnostic, + polarization: amplitude error, $N=16,32,48,64$"),
+        ("wF_phase", "the same, phase error (rad)"),
+        ("wF_pred", "Fourier-symbol prediction written before the runs: amplitude, $N=16,32,64$; phase, $N=16,32,64$"),
+        ("wF_ratio", "largest $|$measured over predicted$-1|$ over $N$: amplitude; phase"),
+        ("wF_orders", "local orders, amplitude (16--32, 32--48, 48--64); phase (the same)"),
+        ("wF_weyl", "Weyl diagnostic (sixth-order stencils) minus TT, $N=16,32,48,64$"),
+        ("wF_weyl_orders", "its local orders (16--32, 32--48, 48--64)"),
+        ("wF_d1", "symbol error of the sixth-order first derivative at the wave, $N=16,32,64$"),
+        ("wF_weyl_phase", "largest difference of the Weyl and TT phase errors over $N$ (rad)"),
+        ("wF_spec", "Weyl diagnostic with spectral derivatives minus TT, largest over $N$"),
+        ("wF_pol", "polarization ratio against the exact one, largest over $N$ and time: modulus; argument"),
+        ("wF_t0", "TT amplitudes at $t=0$ against the data, largest over $N$ (rounding)"),
+        ("wF_nonTT", "non-TT part over the wave at the end (second-order backreaction); TT content off the wave vector"),
+    ]),
+    ("Standing tensor mode of the expanding box ($X$, box of four initial Hubble radii, $t=10$, $a=36$)", [
+        ("wX_amp", "TT diagnostic, $\\times$ polarization: amplitude error, $N=16,32,48,64$"),
+        ("wX_phase", "the same, phase error (rad)"),
+        ("wX_pred", "prediction with the code's low-storage scheme on background and mode: amplitude, $N=16$--$64$; phase, the same"),
+        ("wX_ratio", "largest $|$measured over predicted$-1|$: $\\times$ amplitude, phase (all $N$); $+$ amplitude, phase ($N=16,32$)"),
+        ("wX_plus", "$+$ polarization, measured over predicted$-1$: amplitude at $N=48,64$; phase at $N=48,64$"),
+        ("wX_first", "measured over the first prediction (classical scheme, exact background)$-1$ at $N=32$: amplitude; phase"),
+        ("wX_bg", "largest relative error of the scale factor, $N=16,32,48,64$"),
+        ("wX_weyl", "Weyl diagnostic (sixth order) minus TT, $N=16,32,48,64$"),
+        ("wX_spec", "Weyl diagnostic with spectral derivatives minus TT: smallest, largest over $N$"),
+        ("wX_pol", "argument error of the polarization ratio, largest over time, $N=16,32,48,64$"),
+        ("wX_nonTT", "non-TT part over the mode envelope, largest; $\\int\\mathcal H^2$, largest"),
+        ("w_card", "card-hours of the two runs at $N=64$"),
+    ]),
+    ("Second round of the first source ($64^3$, eight particles per cell)", [
+        ("r2_floor", "rerun of $\\epsilon=1$ against the first run, largest relative difference of $c_+$ (double precision): $2\\le a\\le40$; $80\\le a\\le140$"),
+        ("r2_parity", "two initial-data tools without jitter: largest difference of positions, velocities, masses and fields; particles"),
+        ("r2_ic", "jittered data: largest momentum residual, jitter 0.3, 0.1, none; largest Hamiltonian residual"),
+        ("r2_maxTT", "largest TT amplitude after the first dump: smallest and largest, jitter 0.3; the same, 0.1; quiet lattice, largest"),
+        ("r2_K1", "$|$measured$|/|$predicted$|$ at $(k,k,0)$, $3\\le a\\le20$: smallest, median, largest, jitter 0.3; the same, 0.1"),
+        ("r2_K2", "the same at $(k,-k,0)$"),
+        ("r2_phase", "largest $|$phase difference$|$ (rad): $(k,k,0)$ jitter 0.3, 0.1; $(k,-k,0)$ jitter 0.3, 0.1"),
+        ("r2_ampratio", "box-mode amplitude, jitter 0.3 over 0.1, $1.5\\le a\\le20$: smallest, median, largest"),
+        ("r2_sig", "jittered null (0.3) over the $\\epsilon=0.1$ signal at $(k,k,0)$, largest for $a$ in 2--20, 20--80, 80--140"),
+        ("r2_rms", "rms TT of all modes over the second-order estimate, jitter 0.3, $3\\le a\\le20$: smallest, largest"),
+        ("r2_spec", "share of the TT power at $|\\mathbf k|L/2\\pi\\ge16$: jitter 0.3 at $a=2.3,12,140$; 0.1 at $a=2.3,12$; signal $\\epsilon=0.1$ at $a=12,121$"),
+        ("r2_kin", "kinetic over gradient energy of the TT part at $a=140$: jitter 0.3, 0.1"),
+        ("r2_win", "largest $a$ with departure $\\le$ half a percent from $a=2$ on: $\\delta=0.01$ ($\\epsilon=1,0.3$); $\\delta=0.0025$ ($\\epsilon=1,0.3$)"),
+        ("r2_win1", "the same for one percent"),
+        ("r2_R1", "departure at $\\delta=0.01$ over that at $0.0025$, $\\epsilon=1$, $a=20,30,40,60$"),
+        ("r2_R3", "the same, $\\epsilon=0.3$ (at $a=20$ the smaller departure is at the rounding of the single-precision dumps)"),
+        ("r2_col", "departure at $\\delta=0.0025$ and $4a$ over that at $0.01$ and $a$, $a=10$--$35$: smallest, largest, $\\epsilon=1$; the same, $0.3$"),
+        ("r2_dev140", "departure at $a=140$: $\\delta=0.0025$ ($\\epsilon=1,0.3$); $\\delta=0.01$ ($\\epsilon=1,0.3$)"),
+        ("r2_early", "largest $|$departure$|$, $2\\le a\\le10$: $\\delta=0.0025$ double precision ($\\epsilon=1,0.3$); single ($1,0.3$); $\\delta=0.01$ single ($1,0.3$)"),
+        ("r2_card", "card-hours of the five runs of the round"),
+        ("r2_second", "second reading: numbers compared with the first-source package's own comparison files; largest relative difference"),
+    ]),
+]
+
+
 def ledger_tex(v):
     lines = ["% generated by scripts/ledger.py from registered run outputs; do not edit"]
     parts = [(LEDGER[:3], "Numerical ledger. Every number behind this note with the registered run that produced it.", "tab:ledger"),
              (LEDGER[3:], "Numerical ledger (continued).", "tab:ledger2"),
              (LEDGER_G1[:1], "Numerical ledger: the crossed waves in full relativity.", "tab:ledger3"),
-             (LEDGER_G1[1:], "Numerical ledger: the spatial gauge and the Newtonian mode.", "tab:ledger4")]
+             (LEDGER_G1[1:], "Numerical ledger: the spatial gauge and the Newtonian mode.", "tab:ledger4"),
+             (LEDGER_V2[:2], "Numerical ledger: linear waves with both diagnostics.", "tab:ledger5"),
+             (LEDGER_V2[2:], "Numerical ledger: the second round of the first source.", "tab:ledger6")]
     for groups, caption, label in parts:
         lines += ["\\begin{table*}", "\\footnotesize", f"\\caption{{{caption}}}", f"\\label{{{label}}}",
                   "\\begin{ruledtabular}",
@@ -400,7 +549,11 @@ def ledger_tex(v):
                     vals = [vals]
                 sv = ", ".join(fmt(x) if not isinstance(x, str) else f"\\texttt{{\\scriptsize {x}}}"
                                for x in vals)
-                lines.append(f"{desc} & {sv} & \\texttt{{\\scriptsize {R[rk]}}} \\\\")
+                if isinstance(rk, tuple):
+                    ids = "\\\\".join(f"\\texttt{{\\scriptsize {R[k]}}}" for k in rk)
+                    lines.append(f"{desc} & {sv} & \\shortstack[l]{{{ids}}} \\\\")
+                else:
+                    lines.append(f"{desc} & {sv} & \\texttt{{\\scriptsize {R[rk]}}} \\\\")
         lines += ["\\end{tabular}", "\\end{ruledtabular}", "\\end{table*}"]
     return "\n".join(lines) + "\n"
 
@@ -408,18 +561,30 @@ def ledger_tex(v):
 # scenario parameters: values from the run analysis files where they are recorded there,
 # the rest from the inputs named in the comment (verify_cosmo/scripts/build_ic.sh line 10,
 # verify_cosmo/inputs/pancake.athinput lines 41-51, periodic_z4c/README.md lines 49-51,
-# first_source/JOURNAL.md set-up, scope/SCOPE.md section 3)
+# first_source/JOURNAL.md set-up, scope/SCOPE.md section 3; note v2: waves/README.md lines
+# 66-76 and first_source/JOURNAL.md lines 461-473 for the oblique, expanding-box and
+# second-round scenarios, the end times from the final analysis of the waves)
 def parameters_tex(d):
     pc = d["pc"]
     e = d["nwe"]
     a_end = max(pc[k]["a_end"] for k in ("L1_n32", "L1_n64", "L1_n96", "L4_n64"))
     amp = d["ak"]["deck"]["amp"]
+    fr = common.load_json("waves_final", "final_results.json")
+    wv_tF, wv_tX = fr["flat"]["64"]["t_end"], fr["exp"]["64"]["t_end"]
     rows = [
         ("Linear wave, vacuum box", "box side $L$", "one wavelength"),
         ("", "amplitude $A$", fmt(amp)),
         ("", "cells per wavelength $N$", "16, 32, 64, 128"),
         ("", "duration", "ten crossings (two for the dumps)"),
         ("", "slicing; shift", "conformal time; zero"),
+        ("Oblique flat wave", "box; wave vector", "unit box; $2\\pi(1,1,1)$"),
+        ("", "amplitudes $+$, $\\times$; their relative phase", "$10^{-6}$, $5\\times10^{-7}$; 1 rad"),
+        ("", "cells per side; duration", f"16, 32, 48, 64; four periods ($t={wv_tF:.4f}$)"),
+        ("", "slicing; shift", "conformal time; zero"),
+        ("Expanding-box standing mode", "box side (initial Hubble radii); wave vector", "4; $(\\pi/2)(1,1,0)$"),
+        ("", "initial $h'$ amplitudes $+$, $\\times$; relative phase", "$2\\times10^{-6}$, $10^{-6}$; 1 rad"),
+        ("", "matter; cells per side", "one particle per cell, at rest; 16, 32, 48, 64"),
+        ("", "end", f"$t={wv_tX:g}$, $a={(1 + wv_tX / 2) ** 2:g}$"),
         ("Plane-wave pancake", "amplitude $\\delta$ at $a=1$", "0.05"),
         ("", "box side (initial Hubble radii)", "1 and 4"),
         ("", "cells per side", "32, 64, 96 (box 1); 64 (box 4)"),
@@ -428,6 +593,8 @@ def parameters_tex(d):
         ("", "slicing; shift", "conformal time; zero"),
         ("First source (crossed waves)", "amplitude $\\delta$; ratios", "0.01; $(1,\\epsilon,0)$"),
         ("", "$\\epsilon$", "0, 0.1, 0.3, 1"),
+        ("", "second amplitude $\\delta$ ($64^3$, $\\epsilon=1,0.3$)", "0.0025"),
+        ("", "jittered nulls ($\\epsilon=0$, $64^3$): jitter along $y$, $z$", "0.3 and 0.1 cells"),
         ("", "box side (initial Hubble radii)", "4"),
         ("", "cells per side; particles per cell", "64 and 32; 8"),
         ("", "end; dump interval in conformal time", "$a=140$; 0.1"),
@@ -521,6 +688,16 @@ COMMITTED_BY_RUN = {
     common.RUNS["t0_gauge"]: {"t0_gauge.json": "first_source/results/t0_gauge.json"},
     common.RUNS["slicing"]: {"slicing_check.json": "first_source/results/slicing_check.json"},
     common.RUNS["review_nw"]: {"rv_newton.json": "stage/review_wave2/results/rv_newton.json"},
+    # note v2
+    common.RUNS["waves_final"]: {"final_results.json": "waves/results/final_results.json"},
+    common.RUNS["waves_2s"]: {"predict_2s.json": "waves/results/predict_2s.json"},
+    common.RUNS["waves_pred"]: {"predictions.json": "waves/results/predictions.json"},
+    common.RUNS["r2_null_cmp"]: {"conv_summary.json": "first_source/results/r2_null_summary_64.json"},
+    common.RUNS["r2_delta_cmp"]: {"conv_summary.json": "first_source/results/r2_delta_summary_64.json"},
+    common.RUNS["r2_rerun_cmp"]: {"conv_summary.json": "first_source/results/r2_rerun_summary.json"},
+    common.RUNS["r2_spec"]: {"null_spectrum.json": "first_source/results/r2_null_spectrum_64.json"},
+    common.RUNS["r2_null_pred"]: {"null_prediction.json": "first_source/results/r2_null_prediction_64.json"},
+    common.RUNS["r2_parity"]: {"parity.json": "first_source/results/r2_parity.json"},
 }
 
 
