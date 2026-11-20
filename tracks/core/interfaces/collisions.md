@@ -621,13 +621,29 @@ by the collision step in the same way.
   particle by particle inside the cells, and writes dumps of version 2.
 - With `coll_energy = cell` and the option present the particles evolve exactly as with
   the option absent (only the history gains columns).
+- A command line can set `particles/coll_energy` only if the input file already has the
+  parameter (AthenaK overrides only parameters that the file names): put
+  `coll_energy = cell` (or `particle`) into the deck and switch it on the command line.
 - Watch `n_noroot` and `n_balance` against `n_coll`: in the tests at most 1.4e-5 and
   2.3e-2 of the proposals.
+- Residual of the root tolerance: with `particle` the sum M H of the collision steps
+  drifts by a small amount of one sign, +1.7e-21 M per collision in Track C's King
+  model at Kn = 1 (`dH_per_coll_abs` of `king_cpu.json`, run C-20261119-141431-a351ac7)
+  and +1.2e-20 of the sum per collision on average in the cluster of section 11.6
+  (6.3e-17 over 5104 collisions; the cumulative change does not return through zero and
+  is largest at the end). Track C reads it as about half the root tolerance of 16 units
+  in the last place, left by a one-sided stopping rule; harmless at these sizes; a
+  symmetric stopping rule or one more Newton step would remove it [JUDGEMENT of Track C,
+  not tried here].
 - Cost: one metric reconstruction per colliding particle and step, and per pair a
   Newton iteration (typically two to four steps). Measured on the processor: the
   collision step of a 1e5-particle Tolman box takes about the same time in both modes
   (wall time of the whole run 387 to 394 s for the four runs of
-  core-20261115-164138-cdd7c88, dominated by the implicit push). On one A100, the
+  core-20261115-164138-cdd7c88, dominated by the implicit push). Track C measured the
+  collision part alone in a flat box (1e6 particles, theta = 1, 200 steps, two repeats
+  under equal load): `particle` 1.68 times `cell` per tested pair, whole run 1.40 times
+  (280.5 s against 200.4 s; no collisions 81.9 s; `timing_C-20261119-143146-226b0e0.json`
+  on track/C-sidm, run C-20261119-143146-226b0e0). On one A100, the
   relativistic cluster deck (Z4c, six levels, 1e4 particles, Kn = 3) over 1200 steps of
   150 M: 0.216 s per step without collisions, 0.218 s with `cell`, 0.219 s with
   `particle` ("cpu time used" 259.6, 261.8, 262.9 s; core-20261119-143232-4d1e995); a

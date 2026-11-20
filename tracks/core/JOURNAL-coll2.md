@@ -958,7 +958,7 @@ card executable is a clean build and is not affected. Rule for card builds of th
 tree: after a change of `particles.hpp` during a running build, rebuild from clean or
 delete the objects that finished after the change.
 
-## 2026-11-20 22:05 UTC  third closing session of coll2 (wave 3): the 150 M cluster job, records
+## 2026-11-20 22:01 UTC  third closing session of coll2 (wave 3): the 150 M cluster job, records
 
 Merged `main` (d507d77: decisions 0017 to 0019, pre-commit hook, usage watcher; nothing
 under `athenak/src`). Read `CLAUDE.md` (pause flag, load), the charter to "Owners", brief
@@ -975,7 +975,7 @@ Prediction for this analysis: prediction C of 2026-11-19 14:20 UTC, unchanged (w
 before the job ran). The analysis is `run_cluster.py --analyse` (mode checked by A) on
 the run directory, registered as its own run.
 
-### C: first numbers (analysis run core-20261120-220159-7418482), and a prediction for a comparison with the release (22:15 UTC)
+### C: first numbers (analysis run core-20261120-220159-7418482), and a prediction for a comparison with the release (22:03 UTC)
 
 `summary.json` of the analysis: `ok` true. Seen before the next prediction: kn3_cell ends
 with central lapse 0.7914488947036566 and 5001 collisions; the wave-1 run of the release
@@ -989,7 +989,7 @@ two executables differ at 1e-15, the card deposit adds atomically). Refuted by a
 differing row: then rounding has flipped an acceptance and the two runs diverge as two
 realisations, which would still be consistent with D but not with "same collisions".
 
-## 2026-11-20 22:20 UTC  outcomes C and R150: `coll_energy = particle` works on the card in an evolving metric
+## 2026-11-20 22:05 UTC  outcomes C and R150: `coll_energy = particle` works on the card in an evolving metric
 
 ### C: cluster at Kn = 3 over 150 M on the card, card run core-20261119-143232-4d1e995 (job 4639); analysis core-20261120-220159-7418482. Passed.
 
@@ -1044,3 +1044,64 @@ collision statistics and the same structure of the cluster within what a change 
 collision sequence does. Card time of the package in total: 1.33 card-hours of
 allocation (0.087 + 0.169 + 0.837 + 0.0167 + 0.0061 + 0.222); of the "at most one
 card-hour" for reruns, 0.245 used. No card job of this package is pending.
+
+## 2026-11-20 22:10 UTC  handoff of the package coll2 (closed)
+
+For a reader with no memory. Branch `core/collisions-2`, worktree `wt/core-coll2`.
+
+What the package delivered (all tested; evidence in `interfaces/collisions.md` section
+11.6 and the entries above):
+1. Cause of the energy growth of the collision operator of core-v0.3 in a gravitational
+   field (the partners of a pair sit at different metric values inside a cell), tested in
+   14 configurations.
+2. The option `<particles> coll_energy = cell | particle`: `particle` conserves per pair
+   the sum of u_i and of alpha W - beta^i u_i at each particle's own metric to rounding;
+   equilibria of a static metric stay equilibria. Passed on the processor and on the card:
+   frozen-particle gradient cases, replay by the Python twin, Tolman gas with streaming
+   (1e5 and 1e6 particles), T12 (processor), and the relativistic cluster in Z4c at Kn = 3
+   over 150 M (6.3e-17 in sum M H over 5104 collisions; `cell` 6.5e-5).
+3. Option absent: byte-identical to release core-v0.3 on the processor; on the card the
+   same collisions with momenta at rounding (2.1e-14), the cluster over 150 M with the
+   same pairs in all 1200 steps and the lapse within 7.8e-15.
+4. Static conformal test metric (`metric_kind = static_conformal`) and the perturbing
+   radial force (`perturb_gamma`), for Track C.
+5. The first card crash (2026-11-15) settled: stale objects of an incremental build;
+   rule for card builds recorded in `collisions.md` 11.5 and `docs/COLLISIONS.md`.
+
+Published: `scratch/core/exe/core_collisions-2/` (athena_cpu, athena_gpu of f46f159;
+COMMIT, SHA256SUMS verified today; READY rewritten without a pending section;
+CARD_TESTS.log with a note on the FAIL lines). Not republished: `athenak/src` has not
+changed since f46f159 (`git diff f46f159 HEAD -- athenak/src python/nrpic problems`:
+empty). Outbox: `tracks/core/outbox/20261120T220741Z__to-C-sidm__collisions-2-card-closed.md`
+(the card build is usable; FAIL lines explained; C's wave-2b requests recorded).
+
+Card time of the package: 1.33 card-hours of allocation in all. No card job pending.
+Runs of this session: core-20261120-220159-7418482 (analysis C),
+core-20261120-220354-5ffde97 (figure and R150; figure superseded by)
+core-20261120-220420-63419ab. Earlier run manifests are all committed (`git status`
+clean before this entry).
+
+Files this session changed: `tracks/core/JOURNAL-coll2.md`,
+`tracks/core/interfaces/collisions.md` (lines 395-396 of section 9; 616-619, 624-626,
+629-637, 642-658 of section 11.5; 698-700 of the table of 11.6, where a duplicated
+evidence cell was removed), `docs/COLLISIONS.md` (lines 52-53, 57-59, 96-97, 106-110),
+new `tracks/core/analysis/collisions/fig_cluster_card.py`, the outbox file above. No
+source file, no shared file outside `tracks/core/` and `docs/COLLISIONS.md`.
+
+Open, not done by this package (no new line of work was opened):
+- `coll_energy` with adaptive refinement, more than one rank, removal or excision of
+  colliding particles; heat conduction T6-T8 is Track C's (its heat helper ran T6-T8
+  with this executable in wave 2b).
+- T12 was not repeated on the card; G4 seed 1 on the card was cut (seed 0 complete).
+- The one-signed residual of the root tolerance (+1.2e-20 of sum M H per collision in
+  the cluster; Track C: +1.7e-21 M in the King model) is documented, not removed.
+- Track C's other requests of wave 2b (four format fixes, an ADM-mass diagnostic,
+  collisions on refined meshes with a stop on non-finite state) belong to a later core
+  package.
+- The comment of `NrpicCollideOptions::ext` in `particles.hpp` says columns 32 to 35;
+  they are 32 to 36 (comment only, left so that the published build matches the
+  source; fix it at the merge into `core/nrpic`).
+- Merge: `tracks/core/interfaces/rng.md` conflicts with `core/requests-b` (keep both
+  rows of the stream table, wave-2b report of core). Restart directories of the cluster
+  run (`scratch/core/core-20261119-143232-4d1e995/*/rst`, 8.2 GB each, 26 GB in all) can
+  be removed by the owner of scratch once the release is cut; nothing here reads them.
