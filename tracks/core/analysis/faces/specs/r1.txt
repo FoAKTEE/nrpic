@@ -1,0 +1,2 @@
+# r1: byte comparison of every output file, new processor executable without the options against the release core-v0.3
+compare_runs.py /data/haiyangw/nrpic/scratch/core/core-20261120-220733-ea71a73 --out $OUT/results/r1.json --fig $OUT/figs/r1_regress
