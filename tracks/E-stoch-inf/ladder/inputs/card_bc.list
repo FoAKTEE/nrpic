@@ -1,0 +1,24 @@
+# card job (b)+(c) of wave 3 (JOURNAL entries 13, 14), executable core/scalar-2 a58e95b.
+# (b) A6 at 64^3 in the paper's set-up (nmax2 = 256, k_max = N/4): Courant 0.25, 0.125, 0.0625,
+#     s = +-1, to cycle 180 x (0.25/theta) (t = 180 pi/128 = 4.418, N = 4.31), dumps every 20 x (0.25/theta)
+#     cycles, so the three runs dump at the same times t = 20 k pi/128.
+T25p tracks/E-stoch-inf/ladder/inputs/sr_a6.athinput mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 meshblock/nx1=64 meshblock/nx2=64 meshblock/nx3=64 scalar_field/noise_nmax2=256 scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/inputs/modes_n256.txt time/tlim=8.5 time/cfl_number=0.25 time/nlim=180 scalar_field/dump_dcycle=20 scalar_field/noise_mode_scale=1.0
+T12p tracks/E-stoch-inf/ladder/inputs/sr_a6.athinput mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 meshblock/nx1=64 meshblock/nx2=64 meshblock/nx3=64 scalar_field/noise_nmax2=256 scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/inputs/modes_n256.txt time/tlim=8.5 time/cfl_number=0.125 time/nlim=360 scalar_field/dump_dcycle=40 scalar_field/noise_mode_scale=1.0
+T06p tracks/E-stoch-inf/ladder/inputs/sr_a6.athinput mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 meshblock/nx1=64 meshblock/nx2=64 meshblock/nx3=64 scalar_field/noise_nmax2=256 scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/inputs/modes_n256.txt time/tlim=8.5 time/cfl_number=0.0625 time/nlim=720 scalar_field/dump_dcycle=80 scalar_field/noise_mode_scale=1.0
+T25m tracks/E-stoch-inf/ladder/inputs/sr_a6.athinput mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 meshblock/nx1=64 meshblock/nx2=64 meshblock/nx3=64 scalar_field/noise_nmax2=256 scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/inputs/modes_n256.txt time/tlim=8.5 time/cfl_number=0.25 time/nlim=180 scalar_field/dump_dcycle=20 scalar_field/noise_mode_scale=-1.0
+T12m tracks/E-stoch-inf/ladder/inputs/sr_a6.athinput mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 meshblock/nx1=64 meshblock/nx2=64 meshblock/nx3=64 scalar_field/noise_nmax2=256 scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/inputs/modes_n256.txt time/tlim=8.5 time/cfl_number=0.125 time/nlim=360 scalar_field/dump_dcycle=40 scalar_field/noise_mode_scale=-1.0
+T06m tracks/E-stoch-inf/ladder/inputs/sr_a6.athinput mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 meshblock/nx1=64 meshblock/nx2=64 meshblock/nx3=64 scalar_field/noise_nmax2=256 scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/inputs/modes_n256.txt time/tlim=8.5 time/cfl_number=0.0625 time/nlim=720 scalar_field/dump_dcycle=80 scalar_field/noise_mode_scale=-1.0
+# (c) L5 single kick, one shell |n|^2 = 5 on a homogeneous background, 64^3 (sr_l5.athinput): stencil
+#     projector at s = +-100, +-50, 0; continuum projector at s = +-100, +-50; sign of the Pi kick
+#     flipped (negative control) at s = +-100.
+K1p tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=100.0
+K1m tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=-100.0
+K2p tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=50.0
+K2m tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=-50.0
+K0 tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=0.0
+C1p tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=100.0 scalar_field/noise_projector=continuum
+C1m tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=-100.0 scalar_field/noise_projector=continuum
+C2p tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=50.0 scalar_field/noise_projector=continuum
+C2m tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=-50.0 scalar_field/noise_projector=continuum
+N1p tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=100.0 scalar_field/noise_pi_sign=-1.0
+N1m tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=-100.0 scalar_field/noise_pi_sign=-1.0

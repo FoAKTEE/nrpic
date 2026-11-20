@@ -1,0 +1,95 @@
+# Single-kick test L5 (codebase/DESIGN_REVIEW.md 8.1; risk R2) of package
+# tracks/E-stoch-inf/ladder, JOURNAL entry 14: the Mukhanov-Sasaki kicks of ONE shell,
+# |n|^2 = 5 (12 wave vectors in the hemisphere, none along an axis or a diagonal, so the
+# stencil and continuum projectors differ), on a homogeneous background (id = flrw: phi0,
+# pi0 of the SR case at N*, K from the Friedmann equation, alpha = 1), 64^3, Courant 0.25.
+# noise_sigma = sqrt(5) centres the window of that shell at t = 0, so the kick acts from
+# the first step on (W = 1/2 at t = 0, W = 0.99 at ln(aH) = 0.46).  The mode file
+# modes_l5_n5.txt carries the |n|^2 = 5 row of modes_n64.txt and zero rows for |n|^2 = 1-4.
+# Dumps every cycle (phi, Pi, chi, K, alpha, H, M_i, E) to cycle 32 (t = 0.785).
+# Every run overrides on the command line: scalar_field/noise_mode_scale and, for the
+# controls, scalar_field/noise_projector and scalar_field/noise_pi_sign (list card_bc.list).
+# Otherwise as sr_base.athinput (options: tracks/core/interfaces/scalar_field_2.md on
+# core/scalar-2 and coord/INTERFACES/scalar_field.md section 7).
+
+<comment>
+problem   = stochastic inflation, single-kick test L5 of Track E
+
+<job>
+basename  = sr
+rng_seed  = 20261115
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = 0.0
+x1max     = 6.283185307179586
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 64
+x2min     = 0.0
+x2max     = 6.283185307179586
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 64
+x3min     = 0.0
+x3max     = 6.283185307179586
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 64
+nx2       = 64
+nx3       = 64
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 32
+tlim       = 8.5
+ndiag      = 1
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonic  = 0.0
+lapse_advect    = 0.0
+shift_Gamma     = 0.0
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.0
+damp_kappa1     = 0.0
+damp_kappa2     = 0.0
+excise_chi      = 0.0
+
+<scalar_field>
+couple           = true
+potential        = quadratic
+mass             = 1.82877655899024605e-01
+diss             = 0.0
+hist_dcycle      = 1
+con_dcycle       = 1
+dump_dt          = -1.0
+dump_dcycle      = 1
+dump_metric      = false
+dump_magnitudes  = false
+dump_constraints = true
+dump_noise       = false
+noise            = mukhanov_sasaki
+noise_nmax2      = 5
+noise_sharpness  = 5.0
+noise_sigma      = 2.2360679774997898
+noise_level      = 0
+noise_projector  = stencil
+noise_kick_pi    = true
+noise_kick_k     = true
+noise_kick_a     = true
+noise_pi_sign    = 1.0
+noise_mode_file  = /data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/inputs/modes_l5_n5.txt
+noise_mode_scale = 100.0
+
+<problem>
+pgen_name      = scalar_field
+id             = flrw
+phi0           = -2.66679478988261254e+00
+pi0            = 2.97300406808996935e-02

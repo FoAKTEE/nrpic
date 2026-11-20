@@ -556,3 +556,154 @@ sources, the time error (fourth order, dominant before the late entry at N = 32)
 spatial truncation of the shells with fewer than about eight cells per wavelength (sixth
 order, dominant during the late entry at every N of the paper's set-up); above both sits
 the rounding floor. The A5 band "4 to 6" brackets exactly these two orders.
+
+## Entry 12, 2026-11-20 22:30Z (wave 3): resumption; prediction for item (a), the last-dump time mismatch
+
+Wave-3 package `ladder` (PLAN-wave3.md): close G1's smaller items, (a) the pairing defect,
+(b) A6 at 64^3 on a card, (c) the single-kick test L5, (d) a second realisation of P256 or
+a rerun on a merged executable. State found: worktree clean for this package, entries 1-11
+complete, `results/` and `fig/` as committed (kept unchanged; new outputs go to new
+subdirectories). No merged executable of core exists yet (`scratch/core/exe/` has no
+`core_nrpic_v04` or `_v05`; no tag core-v0.4 on main).
+
+The defect (`stage/REVIEW-wave2.md` section 2, entry 9): `ladder_analysis.py pair` pairs the
+dumps of two runs by index and checks only the cycle. A run with tlim = 4.5 ends with a
+shortened step and dumps at t = 4.500, its partner with tlim = 8.5 dumps at the same cycle
+at t = 4.516 (Q64, cycle 184), 4.504 (Q128 cycle 367, P256 cycle 734). The same happens
+between pairs in the halving test of `verdicts.py` and `make_figures.py` (L32p/L32m to 8.5
+against L32ph/L32mh to 4.5: cycle 92 at t = 4.5x against 4.500) and in the record ratios of
+the negative control (NC64p, NC128p to 4.5 against Q64p, Q128p to 8.5).
+
+Fix (chosen before the rerun): pair only dumps whose recorded times agree within 1e-9
+(absolute; dumps of equal cycles and equal steps agree bit for bit), and drop the others;
+no interpolation (the dumps are 0.5 time units apart, and the odd part, up to 870 times the
+even part, would leak into an interpolated even part). The same matching by time for the
+halving factors and for the negative-control ratios. Dropped dumps are listed in the
+output. The reader becomes sequential (seek + np.fromfile per variable, only H and M_i),
+no memory map (risk R12).
+
+Prediction (refuted by any differing verdict or by a spike left in the new figure):
+- the new pairs P256/P256m, Q128p/Q128m, Q64p/Q64m drop exactly one dump each, the last
+  (t = 4.504, 4.504, 4.516 against 4.500); every other row equals `results/final/` bit
+  for bit (same bytes read, same arithmetic); a regression pair without mismatch
+  (Q64ph/Q64mh) is identical to `results/final/` in every row;
+- the halving lists lose their last entry: N32 (even 3.862, odd 1.930), N64 (16.01,
+  1.966), N128 (9.02, 1.992); all other entries unchanged;
+- every verdict and every reported maximum of `summary.json` unchanged (A1-A5, negative
+  control: the maxima lie at earlier dumps); the middle panel of `fig_a4_paper.png` has no
+  point above 4.1 for the even factor.
+
+## Entry 13, 2026-11-20 22:35Z: predictions for A6 at 64^3 (item b), before the card run
+
+Set-up (`inputs/card_bc.list`, first six lines; `sr_a6.athinput`): the paper's set-up at
+N = 64 (nmax2 = 256, k_max = N/4, mode file `modes_n256.txt`, the Q64 rung of job C),
+Courant factor theta = 0.25, 0.125, 0.0625, s = +-1, to cycle 180 x (0.25/theta)
+(t = 180 pi/128 = 4.418, N = 4.31), dumps every 20 x (0.25/theta) cycles, so the three
+runs dump at the same times t = 20 k pi/128 (0.491 apart). L6 asks 64^3; entry 11 ran
+32^3. Analysis: `scripts/a6_analysis.py` with the mesh, the mode set and the mode file as
+options (defaults: the 32^3 case of entry 11), top shells |n|^2 >= 0.766 nmax2 (|n| >= 14
+here, |n| >= 7 at 32^3), low shells |n|^2 <= nmax2/4.
+
+Predictions (refuted where stated):
+- PB1 (A6): differences between theta = 0.25/0.125 and 0.125/0.0625 fall at order 4 +- 0.5
+  at every dump with t >= 0.98 where they exceed 1e-12 relative, for R^NR (all modes with
+  W > 1/2, the top shells, the low shells), the perturbations of phi, chi, K, and the box
+  mean of chi; the box means of phi and K sit at rounding as at 32^3 (not testable).
+  Refuted (A6 fails at 64^3) if any of these orders lies outside 3.5-4.5.
+- PB2 (what stays as at 32^3): the top shells have omega dt = 16 pi/128 = 0.39 at theta =
+  0.25, as |n| = 8 at 32^3, so the largest per-mode difference of R^NR between 0.25 and
+  0.125 after the entry is 1e-4 to 6e-4 (32^3: 2.9e-4); the deviation from the linear
+  solution of the top shells at the last dump is 3.6e-3 +- 10 percent at theta = 0.25 (the
+  Q64p run of job C, the same input apart from the dump cadence: 3.64e-3 over all modes at
+  N = 4.40) and mostly spatial: the first halving of theta changes it by 3-25 percent, the
+  second by less than 2 percent. Refuted if the first halving changes it by more than a
+  factor 2.
+- PB3 (what changes from 32^3): (i) the time error of the low shells (|n| <= 8 here) is 16
+  times smaller than at 32^3 for the same |n| (dt halved): D_n for |n| <= 8 at the last
+  dump changes by less than 10 percent between theta values; (ii) before the late entry
+  (dumps at t = 0.49, 0.98) the odd part of H at theta = 0.25 is no longer the pure time
+  error it was at 32^3 (factor 15.6 per halving, entry 11): the time error is 16 times
+  smaller (about 3e-14 of <[H]>) and the rounding floor (about 2e-14 at N = 64, entry 9) is
+  of the same size (job C: halving factors of the Q64 odd part 1.42, 1.77 at these
+  dumps). So odd(0.25)/odd(0.125) lies between 1.3 and 4, and odd(0.125)/odd(0.0625)
+  between 1.0 and 1.5. Refuted if the first ratio is 16 +- 3 (pure time error) or below
+  1.1 (pure floor).
+- PB4 (constraints): during the late entry (N >= 2.4) the odd part of H changes by less
+  than 5 percent between theta = 0.25 and 0.0625 (spatial truncation of the shells with
+  fewer than eight cells per wavelength, as at 32^3); the even part with its mean removed
+  by less than 1 percent. The box mean of the even part after the entry (N >= 3.4) is
+  H0 + the mean of the second-order part; H0 depends on dt only, and dt at 64^3,
+  theta = 0.25 equals dt at 32^3, theta = 0.125, so H0 = 1.7e-13 +- 20 percent of <[H]>
+  (job C's Q64 even mean: +1.7e-13 at N = 3.4-4.4); the differences of that mean between
+  theta values converge at order 4 +- 0.5 (32^3: 4.10). Refuted if the late-entry odd part
+  falls by more than 25 percent per halving.
+- Cost: Q64p ran 0.023 card-s per step; 2520 steps in all, under 3 minutes with the dumps.
+
+## Entry 14, 2026-11-20 22:40Z: predictions for the single-kick test L5 (item c), before the run
+
+Why: risk R2 (a defect of the stochastic hook that the tests cannot see) names L5 as the
+test never run; `codebase/DESIGN_REVIEW.md` 8.1: "single kick on a homogeneous
+background, one shell: H/[H] proportional to the amplitude squared; with q, M/[M] at
+rounding at first order; negative control: flipping I_Pi gives a first-order H/[H]
+(P-f)"; size 64^3.
+
+Set-up (expressible with the existing options; `inputs/sr_l5.athinput`,
+`inputs/modes_l5_n5.txt`, last eleven lines of `inputs/card_bc.list`): `id = flrw` (the
+homogeneous SR background at N*: phi0, pi0, Friedmann K, alpha = 1), `noise =
+mukhanov_sasaki` with `noise_nmax2 = 5` and a mode file whose rows |n|^2 = 1-4 are zero
+(their sources vanish identically, scalar_field_noise.cpp: shell factor = norm x (R W'' +
+(2R' + fric R) W')), so one shell, |n|^2 = 5, is kicked: 12 wave vectors of the kind
+(2, 1, 0), along no axis and no diagonal, where the stencil projector q and the continuum
+projector n are not parallel (for (1,0,0) or (1,1,1) they are, and the test would not see
+the projector). `noise_sigma = sqrt(5)` centres the window of the shell at t = 0, so the
+kick acts from the first step; the window reaches W = 0.99 at ln(aH) = 0.46. Dumps every
+cycle to cycle 32 (t = 0.785). Runs: stencil projector at s = noise_mode_scale = +-100,
++-50, 0 (K1p, K1m, K2p, K2m, K0); continuum projector at +-100, +-50 (C1p ... C2m); Pi kick
+flipped (noise_pi_sign = -1) at +-100 (N1p, N1m). The amplitude 100 lifts the
+second-order part of H (about 1e-14 of <[H]> per unit s^2 for one shell, my estimate from
+delta Pi = (Pi_b/H) I dt: -8 pi delta Pi^2 dominates) above the rounding floor of
+1e-14-1e-13 (entry 9) while R stays about 1e-3 (perturbative).
+
+Analysis (`scripts/l5_analysis.py`, written next): parts of a field X in s from the runs
+at +-s: X_o(s) = [X(s) - X(-s)]/2, X_e(s) = [X(s) + X(-s)]/2 - X(0); the first-order part
+X1 = [8 X_o(s/2) - X_o(s)]/3 (removes the third order exactly; s^5 left), cell by cell.
+rms over the box relative to the box means <[H]>, <[M]> of the record of the s = +100 run.
+
+Reference (dry check before the run, not a result; `scripts/l5_kick_ref.py`, reproduced
+in the registered analysis): one step of the kick alone, on the root mesh, gives
+rms|M|/<[M]> = 9.0e-17 with the stencil projector (rounding) and 1.29e-7 with the
+continuum projector (largest per-mode residual 1.6e-7); the relative mismatch between the
+second-difference symbol and the square of the first-difference symbol (which makes the
+discrete evolution violate the constraints at first order once the kicked fields evolve)
+is at most 7.1e-7 for this shell.
+
+Predictions:
+- PL1 (H second order): H_e (box mean removed) scales by 4.00 +- 0.02 between s = 100 and
+  50 at every dump; the first-order part of H stays below 1e-2 of H_e at every dump; the
+  record <|H|/[H]> of K1p over K2p is 3.9-4.1 from the first cycle on (H0 of the s = 0
+  run, a homogeneous residual of the time integration, is far smaller during 0.8 time
+  units). Magnitude of rms H_e/<[H]> at s = 100: 1e-11 to 1e-7. Refuted if the factor
+  leaves 3.9-4.1 where H_e exceeds 10 times the rms of H in K0 (box mean removed) and the
+  floor.
+- PL2 (M, the projector): continuum projector: first-order part M1/<[M]> = 1.3e-7 within
+  30 percent at the first dump (one step), staying of that order while the kick acts;
+  the difference M1(continuum) - M1(stencil), cell by cell, isolates the kick's projector
+  term exactly at first order (the evolution's part is the same in both runs to 1e-7
+  relative) and equals the reference 1.29e-7 within 10 percent at the first dump. Stencil
+  projector: M1/<[M]> at the first dump at most 1e-9 (the kick contributes rounding; the
+  evolution's sixth-order symbol mismatch of 7e-7 contributes about k^2 dt^2/8 x 7e-7 =
+  3e-10 after one step by my estimate [JUDGEMENT]) and growing about as t^2 at early
+  times; at the first dump M1(stencil) is below 1e-2 x M1(continuum). Refuted (a first-order
+  momentum violation of the kick with the stencil projector, i.e. a defect of the hook) if
+  the stencil run's M1 at the first dump exceeds 1e-2 x the continuum run's, or if the
+  difference of the two runs is not the reference value within 30 percent.
+  "M/[M] at rounding at first order" of DESIGN_REVIEW 8.1 is a statement about the kick:
+  in an evolved run it can hold only for the kick's own contribution, which this
+  difference measures; the stencil run's M1 itself is expected above rounding.
+- PL3 (negative control, P-f): with the Pi kick flipped the linear Hamiltonian
+  constraint is violated by 8 eps1 H I_R per unit time ((4/3) K dK - 16 pi Pi_b dPi with
+  dK = -eps1 I dt, dPi = -(Pi_b/H) I dt): the odd part of H in N1 is at least 1e3 times the
+  first-order part of H in K and at least 10 times the even part H_e of K1 at every dump;
+  rms H_o/<[H]> about 8 eps1 rms(I) t/12 = 1e-6 to 1e-5 at s = 100 (rms I about 1e-4 s
+  at t = 0). The record <|H|/[H]> of N1p exceeds that of K1p by 1e3 or more. Refuted if
+  the control's odd part is within a factor 100 of the proper run's H.

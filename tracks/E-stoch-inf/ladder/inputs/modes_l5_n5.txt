@@ -1,0 +1,9 @@
+# L5 single-kick test (ladder JOURNAL entry 14): one shell |n|^2 = 5, the row of modes_n64.txt
+# (core's sr_stochastic_modes.txt); shells 1-4 present in the mode set (noise_nmax2 = 5) carry zero
+# mode functions, so their sources vanish identically.
+# n2  Re_R  Im_R  Re_dR/dtau  Im_dR/dtau
+1 0.0 0.0 0.0 0.0
+2 0.0 0.0 0.0 0.0
+3 0.0 0.0 0.0 0.0
+4 0.0 0.0 0.0 0.0
+5 -2.87062211990056819e-05 1.63213753408990933e-05 5.45162305943231411e-05 3.95728023455133455e-05
