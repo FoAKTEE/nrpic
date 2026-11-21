@@ -180,6 +180,15 @@ lockstep check E-20261121-090057-19571c7 (JOURNAL entry 14).
      128^3) and is a floor over a magnitude proportional to the amplitude (4.3e-2 at
      s = 1/2), not an error of the solution; do not use it as an acceptance number.
   3. A1 for USR at 1e-3: from 64^3 on the margin is 40 (2.5e-5) and 750 (1.3e-6 at 128^3).
+  4. Cost per USR realisation in P1's set-up, measured (SCOPE 8, RISKS R9): 0.617 card-hours
+     on one A100 (1702 steps at 1.30 s per step with 21 dumps of 2.95 GB; 1.22 s per step
+     between dumps), 19.6 GB of card memory; R9's "630 card-hours per 1e3 USR realisations"
+     becomes 617 with these dumps, about 580 without them (run E-20261121-075255-8cf90e7).
+  5. G2 criterion "the USR case is reproduced": the evidence of this package is U-A0, U-A1,
+     U-A3, U-A5 and P-h passing on 64^3, 128^3 and 256^3, U-A2 passing on the ladder and
+     failing as written for the single 256^3 run on 10 of 68532 modes (smallest alpha), and
+     U-A4 failing as pre-registered (bars) but holding with the floor removed; the lead
+     decides whether that is "reproduced".
 - To core (new): the lockstep integration of the mode functions runs from N* with the
   run's step, so a shell deep inside the horizon accumulates RK4's phase error
   k^5 dt^4/600: 2.5e-3 for k = 64 dk at 256^3 (run E-20261121-090057-19571c7, within 3 %
