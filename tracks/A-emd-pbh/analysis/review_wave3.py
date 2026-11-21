@@ -312,6 +312,7 @@ R["parts"]["L9"] = {"values": v, "outer": outer, "holds": holds}
 sys.path.insert(0, os.path.join(WT, "python"))
 from nrpic import figstyle as fs  # noqa: E402
 import matplotlib  # noqa: E402
+import matplotlib.ticker  # noqa: E402
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
@@ -319,18 +320,23 @@ fs.use_style()
 fig, ax = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 6.4))
 a0 = ax[0, 0]
 labels = [c[0].replace(".json", "") for c in CMPS]
-vals = [max(c[1], 1e-17) for c in CMPS]
-cols = [fs.PAL["blue"] if c[2] else fs.PAL["red"] for c in CMPS]
+FLOOR = 1e-16
+vals = [max(c[1], FLOOR) for c in CMPS]
 y = np.arange(len(labels))
-a0.barh(y, vals, color=cols, height=0.6)
+for yi, v, c in zip(y, vals, CMPS):
+    col = fs.PAL["blue"] if c[2] else fs.PAL["red"]
+    a0.plot([FLOOR / 10, v], [yi, yi], color=col, lw=1.0)
+    a0.plot([v], [yi], "o", color=col, ms=5)
+    a0.text(v * 3, yi, "identical" if c[1] == 0 else f"{c[1]:.1e}", va="center", fontsize=6)
 a0.axvline(RTOL, **fs.GUIDE)
+a0.text(RTOL * 1.5, len(labels) - 0.6, "tolerance 1e-9", fontsize=6)
 a0.set_xscale("log")
 a0.set_xlim(1e-17, 1e-3)
 a0.set_yticks(y)
 a0.set_yticklabels(labels, fontsize=6)
 a0.invert_yaxis()
 a0.set_xlabel("largest relative difference to the registered run")
-a0.set_title("(a) reruns from registered outputs (floor 1e-17 = identical)", fontsize=8)
+a0.set_title("(a) reruns from registered outputs", fontsize=8)
 
 a1 = ax[0, 1]
 for n, c in (("N32", fs.PAL["blue"]), ("N64", fs.PAL["red"])):
@@ -343,7 +349,8 @@ if tb is not None:
 a1.set_ylim(1e-5, 1e3)
 a1.set_xlabel("tau (proper time of the dust)")
 a1.set_ylabel("largest |H| on the mesh")
-a1.set_title(f"(b) Szekeres N32: first non-finite record at tau = {tb} (claim: 24-28)", fontsize=8)
+a1.set_title(f"(b) Szekeres N32: first non-finite at tau = {tb}", fontsize=8)
+a1.text(18.5, 2e2, "claim: 24-28", fontsize=6)
 a1.legend(fontsize=7)
 
 a2 = ax[1, 0]
@@ -353,6 +360,7 @@ a2.set_xlabel("N (cells per side)")
 a2.set_ylabel("value")
 a2.set_xticks(Ns)
 a2.set_xticklabels([str(n) for n in Ns])
+a2.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
 a2.legend(fontsize=7)
 a2.set_title("(c) Szekeres files, eps = 0.2, one particle per cell", fontsize=8)
 
@@ -367,7 +375,7 @@ a3b.set_ylim(0, 65)
 a3b.axhline(60, **fs.MASK_LINE)
 a3b.set_ylabel("inner iterations (limit 60)", color=fs.PAL["green"])
 a3.set_xlabel("outer iteration")
-a3.legend(fontsize=7, loc="center right")
+a3.legend(fontsize=6, loc="center left", bbox_to_anchor=(0.0, 0.3))
 a3.set_title("(d) periodic P0L data (mu = 0.3, e = 0): solve against D3", fontsize=8)
 fig.tight_layout()
 figs = fs.save(fig, os.path.join(OUT, "fig_review_wave3"))
