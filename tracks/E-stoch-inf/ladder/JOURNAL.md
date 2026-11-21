@@ -988,3 +988,46 @@ What item (c) establishes (L5 of DESIGN_REVIEW 8.1, risk R2):
    first-order part.
 4. Card and processor executables agree (verdicts identical, direct quantities within 1e-7).
 No defect of the stochastic hook is seen; R2's "L5 never run" is closed.
+
+## Entry 22, 2026-11-21 04:53Z: outcome of item (d), the second realisation of P256 (predictions PD1-PD5 of entry 15); package closed
+
+No merged executable of core existed when this item was reached (no `scratch/core/exe/core_nrpic_v04`
+or `_v05`, no tag core-v0.4), so (d) is the second realisation, not the rerun on a merged
+executable; risk R1 (dependence on the executable) is therefore not tested by this package.
+
+Runs: card job E-20261121-032828-fe18c5f (Slurm 4762, P256s2 = P256 with `<job> rng_seed =
+20261120`, core/scalar-2 a58e95b; 1386 steps, 18 dumps, 1803 s, 0.501 card-hours, exit 0, peak
+GPU memory 19.6 GB); analysis E-20261121-045105-f797ebb (extract with the seed's amplitudes,
+judge, `seed2_compare.py` against P256 of E-20261115-194633-9e04ed8; 60 s on three cores,
+dumps read warm right after the job); outlier check E-20261121-045236-755a956. Copies:
+`results/seed2/`, `fig/seed2/fig_seed2.png` (looked at: shell maxima and medians of D_n, the
+history of max D_n, the shell spectra, the two constraint records on top of each other).
+The amplitudes of the two seeds are uncorrelated (|<alpha1, alpha2>| = 0.0013 = 1/sqrt(modes)).
+
+- PD1 (A1) CONFIRMED, PASS: box means within 2.0e-12 (phi), 6.3e-12 (Pi), 2.0e-12 (K) of the
+  Friedmann reference, e-folds within 1.28e-9 (predicted 2e-11 and 1e-8; seed 1: 2.0e-12,
+  8.6e-12, 2.0e-12, 1.28e-9).
+- PD2 (A2) PASS and of the same order as seed 1 (the task's form: ratio 1.76, in 0.25-4), but
+  REFUTED as I wrote it ("set by |n| = 32, equal to seed 1 within 10 percent"): max D_n over
+  |n| <= 32 is 2.12e-4 at |n|^2 = 621, not 1.21e-4 at |n|^2 = 1024. The outlier check shows
+  why: that mode has |alpha_n| = 6.5e-4 of the rms amplitude, so its small second-order part
+  (absolute deviation 5.8e-8 of the rms of R^lin) is large RELATIVE to its linear part.
+  Over the modes with |alpha_n| above half the rms the maximum is 1.208e-4 at |n|^2 = 1024 in
+  both realisations (equal within 0.1 percent), the median of D_n over |n| <= 32 equal within
+  0.04 percent, the maximum over all modes 4.494e-3 against 4.493e-3: the linear part of the
+  deviation is the same mode by mode, as entry 15 argued. [JUDGEMENT] A2 as a per-mode
+  relative criterion is set, in any realisation with 7e4 modes, by the few modes with
+  |alpha| near zero; it stays a factor 100 below 0.02 here.
+- PD3 (A3) CONFIRMED, PASS: 1051 modes, max |Q_n(N_f)/Q_n(N_k + 4) - 1| = 4.4e-6 (predicted
+  below 1e-5), drift 1.380e-4 per e-fold, equal to the full-MS drift within 2.1e-6.
+- PD4 (spectrum) CONFIRMED: shell ratios against the reference with the same alpha within
+  1.62e-4, Delta_lin over the slow-roll formula 1.0104-1.0109 for |n| <= 7 (the same digits as
+  seed 1), 0.21 percent of the shells beyond 3/sqrt(M_shell) (seed 1: 0.35).
+- PD5 (record) CONFIRMED: largest <|H|/[H]> 5.11e-11 and <|M|/[M]> 4.00e-4 against 5.10e-11 and
+  3.99e-4 (within 0.2 percent; predicted within 20).
+- Cost CONFIRMED: 1.30 card-s per step, 0.50 card-hours.
+
+Package state (wave 3): items (a)-(d) done. Card time of this round: 0.028 (items b, c) +
+0.501 (item d) = 0.53 card-hours of the 1.0 allowed. Not done here: R1 (merged executable),
+the USR case (G2), a halving pair at 256^3, L9, a run in another precision for the rounding
+floor.
