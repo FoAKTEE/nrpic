@@ -106,3 +106,35 @@ Refuted if: any particle task of local/nrpic is registered in a per-stage list; 
 deposit is not in after_timeintegrator; upstream has no per-stage task that mentions
 tmunu; or the driver does not run before_timeintegrator once before and
 after_timeintegrator once after the stage loop.
+
+## 2026-11-21 23:12 UTC, entry 1: restart after the cut of 2026-11-20 22:35 UTC
+
+- State found: W1 and W2 done and committed (5ab9e791; outbox
+  `tracks/kb/outbox/20261120T222130Z__to-core__upstream-watch.md`); the M1 prediction above
+  was uncommitted (committed now, 188630d3). A private copy held `code_modules.py`, the
+  `kb code modules` routing in `code_cli.py` and `tests/test_code_modules.py` (written
+  2026-11-20 22:29-22:33 UTC) and a trial report `scratch/kb/code_kb/tmp/code_modules_try.md`
+  (22:31 UTC). I did not read the trial report before writing the outcome of M1 below; the
+  prediction M1 (22:35 UTC) was written after that trial file existed, so it may not be blind
+  to it [JUDGEMENT]. The registered run below is the test of record.
+- The watch is not run again: it ran 25 h ago (kb-20261120-221925-1630d0b) within this
+  wave, and the package rule is never to redo finished work.
+- Module code: the private copy was refreshed from the worktree (other helpers changed kb/
+  since), the three files restored; 11 of 12 module tests passed, `first_sentences` did not
+  split before a numbered item ("2. deposit."): SENT_RE now also splits before a digit; then
+  12 of 12. Whole suite in the worktree: one failure, `test_meta_papers.py::
+  test_additions_file_is_valid` (61 additions against 26 expected), outside this package
+  (ingest3's request). Committed ad45d05f.
+
+## P4 prediction (parameter index at main), written before the run
+
+main carries tags core-v0.1 to core-v0.6 (`git tag -l`; core-v0.6 = 984bde68 is an ancestor
+of main 47ab19ab). The index records local/nrpic at 5deee18 (ingested 2026-11-19 16:15 UTC);
+`git diff --stat 5deee18 main -- athenak/src problems`: 124 files, +16528/-154; under
+src/particles and src/z4c 38 files, +8522/-94. Expectation: `kb ingest repo --this --ref
+main` indexes local/nrpic at 47ab19ab with more files than 790 (by about 20 to 40: new
+nrpic_*.cpp/hpp of v0.4 to v0.6 and new inputs), more symbols than 4634 (by 300 to 900) and
+more parameter reads than 1242 (by 100 to 250: the 61 + 25 + 26 options of v0.4 to v0.6
+plus their sub-keys). `kb link check` after `kb link load`: 25 links, at most 2 with problems
+(a symbol moved to another file or a line range changed; the paper side cannot change).
+Refuted if: the ingest fails; the counts do not grow; more than 2 links are bad.
