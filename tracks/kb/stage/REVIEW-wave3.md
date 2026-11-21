@@ -101,3 +101,58 @@ batches A1 of claims_tracks and the code_kb watch).
 | `claims_brief` | nothing in git | scratch/kb/claims_brief only | seeder of the brief's statements, `kb claim seed-brief`, tests; join of the brief-check rows; section-5 defect claims |
 
 No card job of kb is queued or running (squeue, 2026-11-21 12:58Z); kb's card allotment is 0.
+
+# Lead review of batch 9 (2026-11-21 evening): ingest3, claims_tracks, claims_brief, code_kb
+
+Rechecked from the artefacts by own SQL on snapshot kb-20261121-bbaafe5 and the working database
+(no helper ran this session; numbers with run ids in ../JOURNAL.md, entry of lead batch 9).
+
+## ingest3 (bibliography formats, claim remap, 35 additions)
+- Confirmed: 720 ok of 745 before my drop of gr-qc/0608095, 719 of 744 after (run
+  kb-20261121-234701-64e4f3d, `kb status`); 6 TeX papers without any bibliography entry, none ok
+  (their six old-style lists); 0 ok papers that cite without entries (strict rate = recorded rate);
+  bibliography entries 67865 - 4 (the dropped paper) = 67861 and citation rows 109730 - 7 = 109723,
+  as their final QA; in-corpus citations 14810. 0 dangling chunk references among all claims and 0
+  orphan vectors after their remap and my drop. `kb claim check` on the 16 seeds of their 20
+  papers: "same 16" (run kb-20261121-234437-8747d17), as they reported. Figure
+  fig_parse_status.png read: bars and rates equal the counts (the pdf bar of 3 sits low on the
+  symlog axis, cosmetic).
+- Not rechecked: the 14 bibliography formats one by one (their 14 tests pass in the suite).
+- Wrong: nothing found. Their open test failure (61 additions) is fixed here (below).
+
+## claims_tracks (159 queue claims)
+- Confirmed: claims 1-700 now fulltext 639 (175 with status checked), to_verify 19, judgement 41,
+  background 1, exactly their after-counts. Not rechecked: the 40-row audit (AUDIT.md) row by row.
+- Their request "guard kb claim check after relocate" is done (below); B's claim recorded (861).
+
+## claims_brief (112 seeds, 48 defect claims)
+- Confirmed: seeds 701-812 fulltext 42, refuted 11 (718, 737, 738, 742, 749, 752, 756, 766, 767,
+  782, 802), judgement 20, abstract 14 + background 6 + to_verify 19 = 39 open; defects 813-860
+  refuted 24, judgement 14, fulltext 8, abstract 2 (= 20 superseding + 4 facts as they state).
+  Figure fig_seeds_by_section.png read: section totals 8, 8, 54, 14, 5, 1, 2, 4, 1, 15 = 112.
+- Decision on the 17 corrected but unlabelled statements (CHECK_UNJOINED.tsv): NOT made claims.
+  Brief 12.8 seeds "the labelled statements of the main text" only; an unlabelled sentence is not
+  a seed. They stay as errata rows (coord/BRIEF_ERRATA.md) and become a claim through `kb claim
+  add` as soon as a track cites one (12.8, third item) [JUDGEMENT].
+- Refutations passed on (12.8, second item): F-hills 766, 767 and A-emd-pbh 742 (outbox).
+
+## code_kb (module descriptions, 25 link verdicts)
+- Confirmed: impl_links verified 19, claimed 5, refuted 1; `kb link check` 25/25 OK; `<z4c> nco`
+  has 0 parameter reads in the index and no `"nco"` string in athenak/src. Stale header of
+  kb/curated/paper_code_links.tsv corrected. M23 symbol change waits for core's answer.
+- Not rechecked: the task order of particles_tasks.cpp (report kb/reports/code_modules.md).
+
+## Lead's own items of this batch
+- Test of the additions: 60 rows and 744 papers, gr-qc/0608095 commented out of the manifest and
+  dropped from the papers table (decision 0024 item 2; run kb-20261121-234427-d6031d4). The task
+  text said 61/745; that count still included the dropped paper. Whole kb suite green.
+- Guard: `kb claim check` and re-seeding return "pinned" and leave label, status and locator rows
+  alone for a claim with a relocate event (relocate, verify --locator) or a person's label with a
+  different locator (kbtool/claims_db.py pinned_locator; test in test_claims.py).
+- C6b: `kb show` views end with "[kb snapshot <id>]", `kb cites` rows and every JSON hit of `kb
+  search`/`kb eq` carry "snapshot"; checked on db/current. KB-G2 C6b (verifier: WRONG) is now met.
+- `kb qa run` states the parse rate against the 95 % bar: 719/744 = 96.6 %, strict 96.6 %, met
+  (run kb-20261121-234721-b3aecfe). Its C1 "counts do not agree" came from missing downloads rows
+  of the 35 additions; `kb verify-downloads` (run kb-20261121-235128-dcd72a4) recorded all 60
+  additions ok; exit 1 is the known gr-qc/9412071 (PDF only).
+- Snapshots: kb-20261121-bbaafe5, then kb-20261121-aa0a2ae (db/current: claim 861, downloads).

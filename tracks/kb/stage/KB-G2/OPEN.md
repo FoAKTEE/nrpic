@@ -34,3 +34,9 @@ reservations for the gate review:
 - K7 module descriptions of src/z4c, src/particles, src/pgen, src/mesh, src/bvals (package
   `code_kb`, cut; upstream watch of 2026-11-20 done, message to core sent).
 - 24 sources fetched in wave 3a (brief check) not yet ingested (`ingest3`).
+
+## Closed after the signature (lead batch 9, 2026-11-21)
+- C6b: snapshot id in `kb show`, `kb cites` and every JSON hit (commit e4ad423a).
+- C2 remark: `kb qa run` states the parse rate against the bar: 719/744 = 96.6 %, strict 96.6 %
+  (run kb-20261121-234721-b3aecfe, snapshot kb-20261121-bbaafe5). The thin strict margin of the
+  signature (94.4-94.8 %) is gone with ingest3's parser.
