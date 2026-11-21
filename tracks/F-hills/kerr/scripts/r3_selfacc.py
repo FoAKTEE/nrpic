@@ -281,11 +281,11 @@ def fig(res, outdir):
     import figstyle as fs
     fs.use_style()
     rb = res["b"]
-    fig = plt.figure(figsize=(fs.FULL_WIDTH, 5.4))
-    ax1 = fs.inch_axes(fig, 0.75, 3.0, 3.1, 2.1)
-    ax2 = fs.inch_axes(fig, 4.7, 3.0, 3.1, 2.1)
-    ax3 = fs.inch_axes(fig, 0.75, 0.45, 3.1, 2.0)
-    ax4 = fs.inch_axes(fig, 4.7, 0.45, 3.1, 2.0)
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, 5.9))
+    ax1 = fs.inch_axes(fig, 0.75, 3.45, 3.0, 2.1)
+    ax2 = fs.inch_axes(fig, 4.75, 3.45, 3.0, 2.1)
+    ax3 = fs.inch_axes(fig, 0.75, 0.75, 3.0, 2.1)
+    ax4 = fs.inch_axes(fig, 4.75, 0.75, 3.0, 2.1)
     cols = fs.series_colors(4)
     for ratio, c in zip((30.0, 100.0, 300.0, 1000.0), cols):
         rows = sorted([r for r in rb if r["group"] == "q1" and abs(r["a0"] / 0.1 - ratio) < 1e-9 and r["V"] > 0 and r["ok"]],
@@ -297,11 +297,15 @@ def fig(res, outdir):
         ax2.semilogx(V, [r["a_meas"] / r["a_lo"] - 1 for r in rows], "o-", color=c, ms=3)
         ax2.semilogx(V, [r["a_meas"] / r["a_orb"] - 1 for r in rows], "s--", color=c, ms=3, mfc="none")
     ax1.set_xlabel(r"$V$ [$c$]")
-    ax1.set_ylabel(r"$|a_s|$ (lines: leading order)")
+    ax1.set_ylabel(r"$|a_s|$")
+    ax1.set_title("(a) $q=1$: measured (dots), leading order (lines)", fontsize=7)
     ax1.legend(fontsize=6)
     ax2.axhline(0, **fs.MASK_LINE)
     ax2.set_xlabel(r"$V$ [$c$]")
-    ax2.set_ylabel(r"$a_s/a_{\rm pred}-1$ (o: lead. order, squares: orbit form)")
+    ax2.set_ylabel(r"$a_s/a_{\rm pred}-1$")
+    ax2.set_title("(b) $q=1$: dots leading order, squares orbit form", fontsize=7)
+    for ax in (ax1, ax2):
+        ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
     # q and psi groups
     rq = [r for r in rb if r["group"] in ("q", "q2402", "psi", "phase") and r["ok"]]
     lab = [("q=%.2g, V=%g, %g" % (r["q12"], r["V"], r["a0"] / 0.1)) if r["group"] in ("q", "q2402") else
@@ -313,9 +317,10 @@ def fig(res, outdir):
         if r["group"] == "psi" and abs(r["psi"] - math.pi / 2) < 1e-9:
             ax3.annotate(r"$|a_s|=%.1e$" % abs(r["a_meas"]), (i, 0), fontsize=6, rotation=90, va="bottom")
     ax3.set_xticks(x)
-    ax3.set_xticklabels(lab, rotation=60, fontsize=5.5, ha="right")
+    ax3.set_xticklabels(lab, rotation=60, fontsize=5, ha="right")
     ax3.axhline(0, **fs.MASK_LINE)
-    ax3.set_ylabel("relative deviation")
+    ax3.set_ylabel(r"$a_s/a_{\rm pred}-1$")
+    ax3.set_title(r"(c) unequal masses ($q$, $V$, $a_0/m_b$), $\psi$, phase", fontsize=7)
     ax3.legend(fontsize=6)
     meas = res["c_meas"]
     for k, (beta, mk) in enumerate(((1.0, "o"), (3.0, "s"))):
@@ -327,7 +332,8 @@ def fig(res, outdir):
             ax4.plot(r0, [m["pred_drp_over_rp"] for m in rows], "-", color=c, lw=0.8)
     ax4.axhline(0, **fs.MASK_LINE)
     ax4.set_xlabel(r"release radius $r_0/r_t$ (2404 binary)")
-    ax4.set_ylabel(r"$\Delta r_p/r_p$: HRNA $-$ Newton (lines: R3)")
+    ax4.set_ylabel(r"$\Delta r_p/r_p$ (HRNA $-$ Newton)")
+    ax4.set_title("(d) CM pericentre shift, 2404 binary (lines: R3)", fontsize=7)
     ax4.legend(fontsize=5.5, ncol=2)
     fs.save(fig, os.path.join(outdir, "r3_selfacc"))
 
@@ -335,6 +341,7 @@ def fig(res, outdir):
 if __name__ == "__main__":
     if "--figure" in sys.argv:            # figure only, from the JSON of an earlier run
         i = sys.argv.index("--figure")
+        os.makedirs(sys.argv[i + 2], exist_ok=True)
         fig(json.load(open(sys.argv[i + 1])), sys.argv[i + 2])
         sys.exit(0)
     w = 1
