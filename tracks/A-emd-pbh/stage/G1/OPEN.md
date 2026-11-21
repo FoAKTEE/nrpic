@@ -14,12 +14,10 @@ reservation are in `../REVIEW-wave3.md` section 5. What remains open, none of it
    2026-11-20 (A-20261120-222620-0304d9d); the lead's rerun of that listing on 2026-11-21
    (A-20261121-075933-338a6ff, L3) finds all 55 files unchanged. Before G2: rerun the wave-1
    producers through `nrpic-run` (minutes on processors).
-3. **Two manifests of the runs_ball package not yet finished** when this session wrote the
-   package: A-20261119-164634-f1fe887 (BH-1R card run, Slurm 4665 completed, "submitted") and
-   A-20261120-223310-a9ce31a (fixed-box card job, Slurm 4748 completed, all members rc = 0,
-   "submitted"). The runs_ball helper of batch 2b closes them; if they are still open at the
-   sign-off, the track asks the orchestrator to waive them for G1 (outbox). Note App. B names
-   the first of them among the runs of Sec. V (plans).
+3. **Manifests**: the four the reviewer found open are closed: A-20261119-164634-f1fe887 and
+   A-20261120-223310-a9ce31a by the runs_ball helper of batch 2b (00:05 and 00:16 PST),
+   A-20261120-223123-f436c39 and A-20261120-223422-8cc4241 by the lead. The only open manifest
+   is conv_ball's live card job A-20261121-075926-d10c2c1 (Slurm 4776, queued), a G2 run.
 4. **Uncommitted files of a package in progress** (`periodic_threshold/`: `JOURNAL.md`,
    `inputs/peak_leak.athinput`, `scripts/ltb_reference.py`, `scripts/ltbref.py`; and while
    they work, the files of the runs_ball and conv_ball helpers): `nrpic-stage verify` fails its

@@ -187,7 +187,7 @@ Core's item 3 applies to the periodic decks: `alpha_exc` is an absolute lapse, o
 | # | Reservation | Answer |
 |---|---|---|
 | pre-1 | close C20 | done in this session (section 4) |
-| pre-2 | stranded manifests | A-20261120-223123-f436c39 and A-20261120-223422-8cc4241 closed by me (both exit 0). A-20261119-164634-f1fe887 and A-20261120-223310-a9ce31a belong to runs_ball, whose helper runs in this batch and is closing them; if they are still open at the sign-off, the track asks the orchestrator to waive them for G1 (outbox) |
+| pre-2 | stranded manifests | all four closed: A-20261120-223123-f436c39 and A-20261120-223422-8cc4241 by me (both exit 0), A-20261119-164634-f1fe887 and A-20261120-223310-a9ce31a by the runs_ball helper of this batch (both completed); no waiver needed |
 | pre-3 | verify on a clean commit | run in this session (G1/VERIFY_RESULTS.md); `clean` fails only on files of packages in progress (periodic_threshold, and the two helpers running beside me) |
 | 1 | no horizon yet | stays the main G2 risk; BH-1R (one static level, M/16) has a finder detection from t = 10.875 (raw file; runs_ball's registered analysis is in progress); conv_ball designs the three-mesh series around it |
 | 2 | SR-2 turnaround estimator | runs_ball entry 13 (prediction T) is the window-independent estimator; its run is runs_ball's task in this batch; until then the note quotes the three-point value only and makes no pass/fail statement |
@@ -199,4 +199,4 @@ Core's item 3 applies to the periodic decks: `alpha_exc` is an absolute lapse, o
 | 8 | "41 of 41" with history | STATUS.md quotes it with the two restated bands, two diagnostics and F5 partly refuted |
 | 9 | architecture schematic names core-v0.3 | redraw against core-v0.5 before G2 (note scripts; HANDOFF next) |
 | 10 | horizon-mass criterion may be unreachable | RISKS row 17 kept; conv_ball reports the error with its N and dx dependence; if it stalls the track asks the orchestrator to restate the criterion (to be sent with G2 evidence, not now) |
-| note | App. B cites an unfinished manifest | A-20261119-164634-f1fe887 is finished by runs_ball in this batch or waived |
+| note | App. B cites an unfinished manifest | A-20261119-164634-f1fe887 is finished (runs_ball, 00:05 PST, 2026-11-21) |
