@@ -1,0 +1,102 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "kb-20261121-233339-f153821",
+  "track": "kb",
+  "gate": "G3",
+  "kind": "scouting",
+  "purpose": "claims_brief step 5: ledger of the brief seeds and defect claims from the database (read only), unjoined CHECK rows, counts, figures (seeds by section and outcome; CHECK rows joined and review agreement)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "python3 -I tracks/kb/claims_brief/scripts/make_ledger.py --db /data/haiyangw/nrpic/kb-data/db/kb.sqlite --plan-run /data/haiyangw/nrpic/scratch/kb/kb-20261121-232142-3378910 --out \"$NRPIC_RUN_DIR\" > \"$NRPIC_RUN_DIR/ledger.log\" 2>&1 && MPLCONFIGDIR=\"$NRPIC_RUN_DIR/.mpl\" python3 -I tracks/kb/claims_brief/scripts/make_figures.py --ledger-run \"$NRPIC_RUN_DIR\" --review tracks/kb/claims_brief/REVIEW_SAMPLE.md --out \"$NRPIC_RUN_DIR/figures\" > \"$NRPIC_RUN_DIR/figures.log\" 2>&1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "f1538214d1d5f9f0cd5fc30e30dfe4d1e7073ad9",
+    "branch": "kb/main",
+    "dirty": false,
+    "package": [
+      "tracks/kb/claims_brief"
+    ],
+    "outside_package": {
+      "count": 6,
+      "first": [
+        " M tracks/kb/code_kb/README.md",
+        " M tracks/kb/code_kb/figures/fig_link_verdicts.pdf",
+        " M tracks/kb/code_kb/figures/fig_task_order.pdf",
+        " M tracks/kb/code_kb/figures/fig_watch_summary.pdf",
+        " M tracks/kb/code_kb/figures/fig_watch_summary.png",
+        "?? tracks/kb/outbox/20261121T233243Z__to-core__paper-code-links-tests.md"
+      ]
+    },
+    "merge_base_main": "47ab19ab7162e5dc8839958c1409b1947c3055c8",
+    "worktree": "wt/kb"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/kb/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/kb/claims_brief/REVIEW_SAMPLE.md",
+      "role": "input",
+      "sha256": "9f3137ed50c4e44a88c24431f70d991ee4804458376c156ca2dc56376227184d",
+      "bytes": 8763,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/kb/kb-20261121-233339-f153821",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T23:33:39Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 0.0,
+    "cores_allotted": 8,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 219,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
