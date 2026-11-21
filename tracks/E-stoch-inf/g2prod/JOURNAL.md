@@ -77,3 +77,13 @@ Predictions (each with what would refute it):
 Analysis is not part of this session (decision 0025 item 4: sessions load cards; analysis
 later). The analysis reuses `usr/scripts/` (pair analysis, lockstep) and `window/scripts/`
 readers; the outcome goes into entry 2 against these predictions.
+
+## entry-1 outcomes so far (lead of batch 5, 2026-11-21 12:43 PST)
+
+- R0 HELD (run E-20261121-202941-da16544, release processor build core-v0.6, 32^3, nmax2 16):
+  run A straight to N_f wrote 7 restart files (t = 0, 2, ..., 10 and the final one); run B
+  restarted from usr.00003.rst (t = 6); the final dump usr.sf.00020.dump, its mode file and the
+  last lines of usr.sf.hst and usr.sf.con.hst of A and B are byte-identical. A chain segment
+  that restarts this deck continues the same run. Cost: A took 2.5 s per step on one core
+  (213 steps), B half of it.
+- T, P256v6: queued (Slurm 4827, 4828) at 12:43 PST behind other owners' jobs; nothing run yet.

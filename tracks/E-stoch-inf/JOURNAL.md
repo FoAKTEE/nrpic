@@ -535,3 +535,25 @@ Predictions of the lead's checks (written before they ran):
   E-20261121-131000-b23055b, not a4res's code): largest odd/even of H over the dumps with t > 0:
   N64q16 0.455, N64q25 0.9997, N64q64 15.5 within 2 percent (a4res README); refuted beyond 2
   percent; a different box-mean or norm convention would show as a common factor.
+
+Outcomes of the checks:
+- R0 HELD (E-20261121-202941-da16544): restart of the production deck is byte-exact at 32^3 on
+  the release processor build (details g2prod/JOURNAL.md).
+- LC1: no difference in 5502 numeric leaves of a4res (rerun E-20261121-203016-7209255). This
+  "prediction" was written after the rerun had finished and been compared (12:34 vs commit at
+  12:35 PST); it is a post-hoc statement and is recorded as such in stage/REVIEW-wave3.md C.
+- LC2 HELD, better than predicted: window rerun E-20261121-203008-f104a3e identical in all 1079
+  numeric leaves and both tables (no BLAS-order difference).
+- LC3 HELD (E-20261121-203540-a9b5d10, own reader): 0.4548, 0.9997, 15.45 against 0.455,
+  0.9997, 15.5; figure looked at.
+- Review written: stage/REVIEW-wave3.md Part C. Nothing WRONG in either package; Q6 (a4res) and
+  W6, W2 per-mode clause, W3b premise, P-b (window) stay on record as failed predictions.
+
+Session close (about 12:50 PST). Did: SCOPE 4c (G2 criteria before production), package g2prod
+(deck, predictions, sequencer, restart check), submitted T and P256v6 on the release card build,
+sequencer running for nine USR chains; reviewed a4res and window; G2 checklist collected; one
+message acknowledged (release core-v0.6), two posted (core: a4res claims; orch: criteria, cards,
+allotment, A4 information). Card-hours used this session: 0 (both jobs still queued at close).
+Changed my mind about: the odd halving of U-A4' - with two amplitudes it is 2 by construction
+of the floor, so SCOPE 4c judges only the even halving. Open: everything that the g2prod runs
+will decide; the allotment for the last three labels; the timing before U320ap.

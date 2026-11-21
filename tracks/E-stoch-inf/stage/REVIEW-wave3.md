@@ -376,3 +376,80 @@ independent gate review; a gate reviewer may still ask a fresh agent for the 13 
 
 See `G1/STATUS.md`, `G1/CHECKLIST.md`, `G1/STAGE_REPORT.md` (rerun in this session). G0 is
 signed (2026-11-20) and not touched.
+
+# Part C. Batch 5 (lead of batch 5, 2026-11-21 afternoon): packages `a4res` and `window`
+
+Both packages finished in batches 3 and 4a and were not reviewed by a lead before. Method: the
+predictions in the packages' journals were checked to be ancestors of the runs they predict
+(git), each analysis was rerun from its registered outputs, the committed results were compared
+leaf by leaf with the rerun (`review5/scripts/compare_leaves.py`), one central number of a4res
+was recomputed with code that is not the package's (`review5/scripts/lead5_check.py`, reader of
+g1verify), and the figures the verdicts rest on were looked at. The lead's predictions LC1-LC3
+are in the track JOURNAL (batch 5 entry, commit a9b5d10c). LC1 was written after the a4res
+rerun had finished and been compared (12:34 PST against the commit at 12:35): it is on record
+as a post-hoc statement, not a prediction.
+
+## C1. a4res (strict A4 against resolution; card run E-20261121-131000-b23055b, 0.188 card-hours)
+
+- Predictions Q1-Q8 (`a4res/JOURNAL.md` entry 3) are in commit b23055b, the commit of the card
+  run's id: written before the job. Q9-style post-hoc checks (entry 5) are labelled as such.
+- Rerun E-20261121-203016-7209255 (2 cores, 253 s) of `a4_analysis.py` and `post_checks.py`:
+  5442 numeric leaves of `a4res.json` and 60 of `post.json` identical to the committed files
+  (relative difference 0; the one string that differs is the input path); `verdicts.md`
+  identical apart from wall times. CONFIRMED.
+- Own code (LC3, run E-20261121-203540-a9b5d10, verifier's reader, box means removed, rms over
+  the box, pairs at equal times): largest odd/even of H over the dumps with t > 0: N64q16
+  0.4548 (package 0.455), N64q25 0.9997 (0.9997), N64q64 15.45 (15.5); of |M| 0.314, 0.795,
+  13.83 (package 13.8 for N64q64). LC3 HELD. Figure `fig_lead5_ratio.png` in the run directory,
+  looked at: the same curves as `a4res/fig/fig_ratio.png` panel (a) (also looked at).
+- Confirmed: strict A4 holds at 12.8 and 16 cells per shortest source wavelength and fails at
+  10.7 and 8; core's crossing at 12.7 cells (Q2); halving where testable (Q4); order 5.80-5.84
+  (Q7); records (Q8).
+- Not confirmed by me: Q3 (twin agreement 1.000-1.059) and Q5 (I did not rerun the twin with
+  other code); the stencil symbols of step 1 (C1 of core) beyond the rerun.
+- On record as failed: Q6 (even parts of N64q64 and N128q64 differ by 10.9 percent at t = 0.147,
+  within 3.1 percent at the 35 other dumps; the interpolation explanation refuted post hoc,
+  cause not found). A4'(b) "fails" for N64q16, N128q100, N128q64 in `verdicts.md` means no
+  qualifying dump at 10 floors, not a measured failure (the README says so; correct).
+- What the track does: forwards "For the A4 ruling" to orch as information (no new ruling
+  asked; A4' of decision 0021 stands); tells core that C1-C3 are confirmed and C4 does not hold
+  (outbox 20261121T203614Z). The optional 3-card-minute run with common dump times for Q6 is
+  not queued: Q6 concerns A4'(a) at G1 resolution in the L set-up and decides no G2 criterion;
+  it stays in OPEN (G2) as a known unexplained deviation at one dump.
+
+## C2. window (sensitivity L9; card job 4740, run E-20261120-222424-0eb754b, 0.384 card-hours)
+
+- Predictions W1-W8 (`window/JOURNAL.md` entry 1) are in commit 0eb754b, the commit of the
+  card run's id: written before the job. The post-hoc P-a, P-b (entry 4) came after the main
+  analysis and before their own run (78859e9b before E-20261121-155344-78859e9).
+- Rerun E-20261121-203008-f104a3e (2 cores, 565 s) of `analyse_window.py` and
+  `posthoc_window.py` from the registered dumps: 427 numeric leaves of `summary_usr.json`, 371 of
+  `summary_sr.json`, 281 of `posthoc_usr.json` identical to the committed files (relative
+  difference 0; one string, the input path, differs); `table_usr.md`, `table_sr.md` identical.
+  LC2 HELD (better than predicted: no BLAS-order difference at all).
+- Figures looked at: `window/fig/fig_usr_shift_Nf.png` (shift of the odd-part shell power at the
+  last dump: below 2e-4 to k = 16 dk, rising to 9e-3 at 32 dk; sigma = 2 raises and sigma = 0.5
+  lowers the top shells systematically, each below its NR-vs-reference bound |e_w| + |e_b|).
+- Confirmed: W1, W3a, W4, W5, W7, W8 hold as the package states; the U-W criterion of SCOPE 4c
+  rests on these numbers (1.9e-4 to k_max/2, 9.1e-3 to k_max).
+- On record as failed and correct as stated: W6 refuted (late records depend on sigma by x0.14
+  to x21.7); W2's per-mode clause failed (2.4e-2 on single small modes); W3b's premise failed
+  for USR; P-b refuted for sigma = 2 at 6 <= k < 12.
+- Weak points, and what the track does: (i) the "error of the shift" is a bound that holds by
+  construction because the linear shift is zero; no independent error per window (no resolution
+  pair per window) exists. SCOPE 4c U-W states the criterion as a bound, labelled as fixed after
+  the scan; a resolution pair per window is not queued (it would cost about 0.4 card-hours per
+  window at 128^3; listed in OPEN of G2 as optional). (ii) The predictions were judged at the last
+  dump cN = 9.585 (t = 10.0), not at N_f = 10: the g2prod deck dumps at t = tlim exactly
+  (dump_dt = tlim/20), so G2 judges at N_f. (iii) The window runs are 128^3 on the scouting
+  executable core_scalar-2; U-W is a statement about the window, not about the release; the
+  release repeat of the baseline is U256ap/am.
+- The README's request: RISKS R8 updated (scan done, U-W); the note's \pending{} marker for
+  window (Sec. IX) is left to the next note session (no note text in this session, decision 0025
+  item 4).
+
+## C3. Stage packages after this review
+
+G0 and G1 are signed and not touched. G2: `stage/G2/CHECKLIST.md` collected this session (20
+items); C7, C8 hold evidence pointers and stay OPEN until g2prod has run; C9 PASS; C4 proposed
+NA (no kinetic matter before the hand-over). No gate is complete for review.
