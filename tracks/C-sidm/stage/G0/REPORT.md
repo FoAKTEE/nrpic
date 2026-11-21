@@ -239,3 +239,13 @@ requested (outbox).
 | 2 | core's operator checked (T0-T5, T9-T11 on processors; T6-T8 card); collisionless scans (monoenergetic, King b = 1); F21 b = 0.1 particle models; first collisional cluster runs | G1 package; G2 started |
 | 3 | three-way convergence of the thresholds; T12 and curved-spacetime budgets | G2 package |
 | 4-5 | Kn scan of M_BH/M with convergence; fluid-limit anchor | G3 package |
+
+## Correction after signing (lead, 2026-11-21, batch 4a)
+
+Locator of arXiv:2601.17117 in sections 1, 2 and 6 (`SIDM_MS.tex:476`): line 476 holds the
+horizon time 580 t_0 and the mass m ~ 3e-8 M; the black-hole mass of about 200 M_sun is at
+line 481 (which repeats the other two). Read in `kb-data/raw/arxiv/2601.17117/v2/src` by the
+lead; the note's README item 5 had it that 476 holds only the strong-gravity discussion, which
+is not so. The three numbers of the note's items 1-3 were corrected in wave 2 (commit
+d3872ff5). Nothing else in the signed package changes.
+

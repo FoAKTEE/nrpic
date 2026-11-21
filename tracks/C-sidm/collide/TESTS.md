@@ -200,6 +200,31 @@ run C-20261121-075535-b35b8fb).
   k lambda = 0.2, run C-20261120-223321-3d088d4) is reported; its form (linear or quadratic
   in dx) is open.
 
+## 2c. Reference temperatures and windows named after the G1 verifier (lead, 2026-11-21)
+
+The G1 verifier (`../stage/G1/VERIFIER.md` section 2, items 2 and 5) found three definitions
+that the text above leaves open. They are named here AFTER the data; each verdict is given for
+every reading, and a reading that fails stays on record.
+- T4: the fit window is the one of the test text, all 16 snapshots t = 0, 0.01, ..., 0.15
+  tau_rel. Slope over exact: 0.9963, 0.9826 (theta_2 = 1e-3), 1.0003, 1.0088 (theta_2 = 1)
+  (verifier V5, run C-20261121-081036-0d6117b; the lead's wave-2 recheck gave the same). The
+  values 0.9924, 0.9792, 0.9959, 1.0088 of `../box_tests/README.md` used one snapshot fewer.
+  Both sets pass.
+- T6(b): chi(kappa_1) is taken at the mean temperature of the two reservoirs, theta = 0.015;
+  the literal statistic is then 0.994, 1.027. At the final temperature of the gas, 0.01336, it
+  is 1.051, 1.086 (verifier, run C-20261121-081715-2ad1421). Both pass [0.95, 1.10]; the
+  T6(b) verdict of section 2b against the nonlinear reference (f = 1.029, 1.063) is unchanged.
+- T9, KS clause: the reference is Maxwell-Juttner at the temperature of the FINAL total energy,
+  the equilibrium the gas reaches (with `nanbu` weights energy is conserved in expectation
+  only; T9's own drift clause covers that, z = 2.42 < 4). With it all 16 class tests have
+  p >= 0.084, and against each class's own temperature p >= 0.089 (verifier V5b, reproduced
+  exactly by the lead, run C-20261121-155116-ba83d16). The strict reading at the temperature
+  of the INITIAL energy FAILS for the light class of seed 3 (p = 1.7e-4 < 1e-3); its cause is
+  that seed's energy drift (theta_final / theta_initial - 1 = +4.8e-3), not the shape. On
+  record as failed; T9 is a test of the track's own list, not one the brief names in C-pre-1.
+- T7: the number-mode bias quoted in 2b (+5 to +43 percent) holds for the heat package's fit
+  window; the verifier's estimator gives +4, +13, +79 percent. The bias is the finding.
+
 ## 3. Order and cost
 
 T0, T0b, T1, T2 first (processors, minutes). Then T3-T5 and T11 (1e6 particles, about

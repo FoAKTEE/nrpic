@@ -11,7 +11,9 @@ beyond short phrases. Labels as in `SCOPE.md`.
 - Model: truncated Maxwell-Boltzmann with Tolman-Klein temperature, parameters
   b = kT(R)/mc^2 and w(0) (main.tex:103-118); equation of state integrals and TOV
   (122-153). Reproduced by `scripts/king_sequence.py` (run C-sidm-20261115-115348-eb8b752).
-- Adiabatic-index criterion reached at v(0) = 0.566 c, Z(0) = 0.750 for b = 0.1;
+- Adiabatic-index criterion (trial function xi = r e^Phi, a late bound: the exact fundamental
+  mode with the same gamma goes unstable at Z(0) = 0.6348; G1 verifier V4, stage/G1/VERIFIER.md
+  section 2 item 4) reached at v(0) = 0.566 c, Z(0) = 0.750 for b = 0.1;
   0.566-0.564 c and 0.750-0.622 for b = 0.1-0.5 (274) [VERIFIED; our solver: w(0) =
   4.05115, Z(0) = 0.7500].
 - Maximum of the fractional binding energy 0.0352 at v(0) = 0.506 c, Z(0) = 0.548 (b = 0.1);

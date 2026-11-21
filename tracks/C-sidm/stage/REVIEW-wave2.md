@@ -46,7 +46,9 @@ Confirmed (recomputed from the registered outputs, run C-20261115-193332-48771b4
   run C-20261115-170741-248af65).
 - T10 (run C-20261115-165902-f9b1c8f): the particle records of the final snapshots of 8
   and 64 MeshBlocks and of the restarts from cycles 0, 37, 74 are byte-identical to 1
-  MeshBlock; seed 8 differs in every particle (385554 collisions).
+  MeshBlock; seed 8 differs in every particle. (Corrected 2026-11-21 after the G1 verifier: the
+  385554 collisions are those of the seed-7 runs mb1, mb8, mb64; seed 8 has 385838; lead run
+  C-20261121-155049-ecf8893.)
 - T3-T5 (run C-20261115-170539-28432c3): my quadratic fit gives T4 slope/exact 0.9924,
   0.9792, 0.9959, 1.0088 with the window 0.15 tau_rel of the sample, as the helper; KS p of
   the final |u| against MJ(theta_eq) 0.084, 0.77, 0.987, 0.917; sum M W exact.
