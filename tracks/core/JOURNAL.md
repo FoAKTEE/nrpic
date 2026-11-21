@@ -1185,3 +1185,15 @@ Faults of mine in this session, on record: the first wording of C1's evidence sa
 ladder rows carry over "byte for byte" from the wave-1 regressions; core-v0.4 differed
 in classes a and b and the full ladder runs were not repeated, so it was reworded to a
 judgement before the commit.
+
+### Stage check (2026-11-21T16:20Z)
+
+`nrpic-stage verify core G2` with output checksums read run outputs for 13 minutes and
+had reached the runs of 2026-11-19 when I stopped it by its process id (log
+`scratch/core/tmp/lead_b4a/verify.log`, exit 143); with `--no-checksums` it took 5.5
+minutes and FAILS on two checks: no working note, and 10 of 1405 runs with record
+problems (9 runs name the executables of `core_cosmo-amr`, published again after the
+runs; job 4810 not finished). The 11th of the first pass, core-20261119-143517-ec2f4fc
+(gauge test E2, job 4641, both cases rc 0, never closed), is closed now with
+`nrpic-run finish`. `nrpic-stage report`: verdict FAIL, eight items FAIL (C1, C2, C6,
+C7, C12, C14, C15, C16); decision requested: keep core at G2 in progress.

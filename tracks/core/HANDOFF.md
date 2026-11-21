@@ -36,7 +36,7 @@ Decided in this session:
   a card), not one case.
 
 G2 (CHECKLIST.md, 18 items): PASS C3, C4, C5, C8, C9, C10, C11, C13, C17, C18; FAIL C1,
-C2, C6 (unless `VERIFY_RESULTS.md` says otherwise; see STAGE_REPORT.md), C7, C12, C14,
+C2, C6 (verify FAIL: no note, 10 runs with record problems), C7, C12, C14,
 C15, C16. What closes it: ladder row 4 on M/8 against a collisionless control (Track C's
 drift package shows M/4 pushes clusters outward), the oblate collapse after W27, a
 coupled set-up converged three ways, a redrawn architecture schematic
@@ -64,7 +64,9 @@ Open with other owners:
 Traps:
 - `nrpic-ctx ack` commits by itself (inbox_acks.txt).
 - `nrpic-stage verify` exports the committed tip and checks every run manifest; it writes
-  VERIFY_RESULTS.{json,md} into the stage directory (commit them with the report).
+  VERIFY_RESULTS.{json,md} into the stage directory (commit them with the report). With
+  output checksums it does not finish in 25 minutes on core's 1405 runs: use
+  `--no-checksums` (5.5 minutes) and say so.
 - A full commit hash is copied from `git rev-parse`; exit status 3 of an AthenaK run is
   the guard's stop; `athena_cpu_omp` is not a byte reference; `runs/` in .gitignore hides
   `tracks/core/runs/` (a hand-written manifest needs `git add -f`).
