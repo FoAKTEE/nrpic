@@ -588,7 +588,7 @@ below 1e-6 of the raw strain in rms. Refuted if any equality fails or rms G_tot 
 exceeds 1e-6 on a double dump (the single dump has the float32 floor and only the equalities
 are predicted there).
 
-## 2026-11-21 13:00 Outcome of the gauge-module check (run B-20261121-125606-e2ebf60)
+## 2026-11-21 12:58 Outcome of the gauge-module check (run B-20261121-125606-e2ebf60)
 
 Confirmed: on the three dumps G and G_tot of gwdiag.gauge equal first_source's bit for bit
 (max |difference| 0.0) and `corrected` is exactly raw - G_tot; rms G_tot / rms raw = 1.1e-13
@@ -597,7 +597,7 @@ For the linear waves of this package the gauge piece is negligible, as it should
 non-TT part is first order in the discrete divergence, not a coordinate change of size h.
 No figure: the check is a set of equalities and three ratios.
 
-## 2026-11-21 13:10 Outcome of F2, k = 2 pi (1,2,0) (analysis B-20261121-125625-7af3965)
+## 2026-11-21 13:01 Outcome of F2, k = 2 pi (1,2,0) (analysis B-20261121-125625-7af3965)
 
 Runs: N = 16, 32, 48 on processors (B-20261120-222849-3b921b7), N = 64 on the card
 (B-20261120-222841-acfe21d/f120N64); 33 dumps each, t = 4/sqrt 5 at the end.
@@ -660,7 +660,7 @@ of the whole linearized Z4c system with its stencils and integrator, and the dia
 differ by the sixth-order Weyl stencil (spectral: 2e-11). Failed prediction on record: F2-4
 per dump.
 
-## 2026-11-21 13:20 Outcome of XS, the time and space parts of the X error (analyses B-20261121-125625-18183ef card, B-20261121-130242-7781791 processors, split B-20261121-130317-4e8107e)
+## 2026-11-21 13:03 Outcome of XS, the time and space parts of the X error (analyses B-20261121-125625-18183ef card, B-20261121-130242-7781791 processors, split B-20261121-130317-4e8107e)
 
 Runs: card B-20261120-222841-acfe21d (xdt3N16..64, the reference card executable, the
 reference data files) and processors B-20261120-222849-e5673dc (N = 16, 32, the reference
@@ -685,8 +685,8 @@ Cross polarization, TT, t = 10 [VERIFIED]:
 - **XS-1 confirmed.** The 0.001 errors equal the 2S prediction at that step to <= 0.03 per cent
   at N = 16, 32, 48 and 0.2 per cent at N = 64 (bands 5 and 20 per cent); the measured time
   part equals the predicted one to 4 digits at every N. The split: at the production step
-  (0.01) the X error is 89 per cent space at N = 16 (amplitude), and time-dominated from
-  N = 32 on: at N = 64 the time part is 1.43e-7 of 1.40e-7 in amplitude (the space part,
+  (0.01) the X error is space-dominated at N = 16 (amplitude: space -7.84e-5, time
+  +7.9e-6) and time-dominated from N = 32 on: at N = 64 the time part is 1.43e-7 of 1.40e-7 in amplitude (the space part,
   -3.1e-9, has the other sign) and 2.57e-7 of 2.76e-7 in phase. The space part converges at
   orders 7.05, 7.23, 8.06 (amplitude; Kreiss-Oliger, symbol 7.05, 7.23, 8.06) and 5.97, 5.96,
   5.81 (phase; the sixth-order stencil, symbol 5.97, 5.97, 5.81). The processor runs give
