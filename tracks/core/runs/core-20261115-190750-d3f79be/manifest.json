@@ -1,0 +1,39 @@
+{
+ "run_id": "core-20261115-190750-d3f79be",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/core/tmp/idsolve/exe_a7a32cd/athena_cpu",
+  "-i",
+  "deposit_smr.athinput",
+  "time/tlim=2.0",
+  "particles/deposit_max_level=1"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-190750-d3f79be",
+ "commit": "d3f79be",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/tests/deposit_smr.athinput",
+   "sha256": "58966d8e5af94dc09eb02bd51e837dae3579189fbbe33d4fcb6ff125e8eeb7b8"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/regress/ic/random.nrp",
+   "sha256": "aedb53c568f15477f9a54331ca752934d3f0051e302d4b28c2297bb6b7c36d43"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve/exe_a7a32cd/athena_cpu",
+   "sha256": "383bbb5b39eea3de3d02a30a27f250b2d1efc3bd25612c1a8b1d4cf8119559c1",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-190750-d3f79be",
+ "purpose": "regression of the relativistic mode, case dep, executable new",
+ "kind": "scouting",
+ "tag": "regress-dep-new",
+ "state": "finished",
+ "wall_time_s": 3.74,
+ "exit_status": 0,
+ "cores": 4,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T19:07:50Z"
+}

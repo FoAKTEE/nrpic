@@ -79,6 +79,41 @@ def cell_entity(i, j, k):
     return _u64(i) | (_u64(j) << np.uint64(21)) | (_u64(k) << np.uint64(42))
 
 
+# Fourier modes of a periodic box (twin of ModeEntity, StochasticModeStream of
+# athenak/src/utils/rng_mesh.hpp)
+MODE_ENTITY_OFFSET = 1 << 20
+STOCHASTIC_MODE_BIT = 1 << 16
+
+
+def _mode_index(n):
+    """Signed integer wave number(s) in [-2**20, 2**20) shifted to [0, 2**21)."""
+    a = np.asarray(n)
+    if a.dtype.kind not in "iu":
+        if a.dtype.kind != "O" or not all(isinstance(v, (int, np.integer))
+                                          for v in a.ravel()):
+            raise TypeError("a wave number of a mode entity must be an integer")
+    a = a.astype(np.int64)
+    if a.size and (a.min() < -MODE_ENTITY_OFFSET or a.max() >= MODE_ENTITY_OFFSET):
+        raise ValueError("a wave number of a mode entity must lie in [-2**20, 2**20)")
+    return a + MODE_ENTITY_OFFSET
+
+
+def mode_entity(nx, ny, nz):
+    """Entity of the Fourier mode with the integer wave numbers (nx, ny, nz), each in
+    [-2**20, 2**20): ``cell_entity(nx + 2**20, ny + 2**20, nz + 2**20)``.  The wave
+    numbers are those of the mode on the root mesh; ``entity_hi`` stays 0."""
+    return cell_entity(_mode_index(nx), _mode_index(ny), _mode_index(nz))
+
+
+def stochastic_mode_stream(dof=0):
+    """Stream word of the amplitudes of degree of freedom ``dof`` (below 2**16) keyed
+    by modes: ``stream(STREAM_STOCHASTIC, 2**16 + dof)``."""
+    d = _u64(dof)
+    if d.size and int(d.max()) >= STOCHASTIC_MODE_BIT:
+        raise ValueError("the degree of freedom of a mode stream must be below 2**16")
+    return stream(STREAM_STOCHASTIC, d | np.uint64(STOCHASTIC_MODE_BIT))
+
+
 def mulhi64(a, b):
     """Upper 64 bits of the 128-bit product of unsigned 64-bit integers."""
     a = _u64(a)

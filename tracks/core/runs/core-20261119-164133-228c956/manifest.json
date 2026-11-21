@@ -1,0 +1,46 @@
+{
+ "run_id": "core-20261119-164133-228c956",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/tracks/core/analysis/cosmo_amr/t15_options.py",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/.work/build_cpu_b/src/athena",
+  "--cores",
+  "4",
+  "--out",
+  "."
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-164133-228c956",
+ "commit": "228c956",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/cosmo_amr/t15_options.py",
+   "sha256": "59a467941af6f15f7b9b0c49bb3ae97a22eb5374bba8e5138a4858743122f9f3"
+  },
+  {
+   "path": "tracks/core/analysis/cosmo_amr/amrlib.py",
+   "sha256": "0b0c97e9ca666d8e5f55e3375f289d080df29d0d658702acc54f50eff75b08d1"
+  },
+  {
+   "path": ".work/build_cpu_b/src/athena",
+   "sha256": "745860125ef65bea7fdde0eb9fb9fdaebcfc3c2a3d8d8ca93e6c98ff768a4546"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-cosmo-amr/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-164133-228c956",
+ "purpose": "T15 of cosmo-amr: guard options stop_dt_below, stop_no_particles, check_dcycle and the region of the horizon (region_horizon) on a unit puncture, with the published processor executable; hand-written manifest because nrpic-run refused (16 cores busy in live local runs of core)",
+ "kind": "scouting",
+ "tag": "cosmo-amr-T15",
+ "state": "finished",
+ "wall_time_s": 64.67,
+ "exit_status": 0,
+ "cores": 4,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T16:41:33Z"
+}

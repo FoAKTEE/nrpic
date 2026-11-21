@@ -1,0 +1,53 @@
+{
+ "run_id": "core-20261115-163549-7be94e4",
+ "owner": "core",
+ "track": "core",
+ "gate": "G2",
+ "purpose": "T4 card against processors: the 32^3 case for 20 steps on processors (1, 8, 64 MeshBlocks, restart) compared field by field with the card run card32 of core-20261115-155404-24c88e3",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/scalar2/t7_layout.py",
+  "--exe",
+  ".work/exe/athena_cpu_a58e95b",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-163549-7be94e4",
+  "--card-run",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-155404-24c88e3/card32"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-scalar2",
+ "commit": "7be94e4f4bd6931eaa2bf16c2480eb9385f366db",
+ "branch": "core/scalar-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_a58e95b",
+   "sha256": "c69266ec765c8296b005871c6865991f2a5ac59f7ebd2ac3f03d383b57f9439e"
+  },
+  {
+   "path": ".work/exe/athena_gpu_a58e95b",
+   "sha256": "dd716bc93cab1494725d76bec55b434c965608fa50fcabb88ee05f9f355226b1"
+  },
+  {
+   "path": "problems/scalar/sr_stochastic.athinput",
+   "sha256": "d1ad721d9b2b495b49782ca31a3c18efc24f1eb58c23eeff29d3fc12747efea6"
+  },
+  {
+   "path": "tracks/core/analysis/scalar2/t7_layout.py",
+   "sha256": "aa7e2d507cb562667ad68bf25c52796063c4f5c8a7890cd99e2cf86b7742c612"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-163549-7be94e4",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-163549-7be94e4"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:35:50Z",
+ "cores": 3,
+ "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
+ "status": "completed",
+ "wall_time_s": 95.54,
+ "exit_status": 0,
+ "end_utc": "2026-11-15T16:37:26Z",
+ "core_hours": 0.0796
+}

@@ -1,0 +1,101 @@
+READY: executables of branch core/build-openmp (threaded processor build, for all tracks)
+=========================================================================================
+
+athena_cpu          processors, THREADED (Kokkos OpenMP; scripts/build_cpu_omp.sh)
+athena_cpu_serial   processors, one thread (Kokkos Serial; scripts/build_cpu.sh), as the
+                    release processor executable
+athena_gpu          one A100 (scripts/build_gpu.sh, CUDA 12.6)
+All three from the source in COMMIT. athenak/src differs from release core-v0.3 only in
+particles/nrpic_threads.hpp (new), particles/particles.hpp (one include, one member),
+particles/nrpic.cpp (five lines around the deposit kernel) and parameter_input.cpp (one
+macro name). Scouting runs only (decision 0013); the release follows when core merges the
+branch. Interface: tracks/core/interfaces/threaded_build.md on core/build-openmp, read with
+  git show core/build-openmp:tracks/core/interfaces/threaded_build.md
+Journal (predictions, outcomes, run ids): tracks/core/JOURNAL-omp.md on the same branch.
+
+1. Running athena_cpu with threads
+   Set the thread count explicitly (the OpenMP default is all 144 hardware threads) and
+   stay within six cores per session (decision 0019; CLAUDE.md, "Pause flag, restarts,
+   load"). Recommended placement on this machine:
+     OMP_NUM_THREADS=6 OMP_PROC_BIND=true \
+     OMP_PLACES=$(python3 <repo>/scripts/omp_places.py 6) athena_cpu -i deck.athinput
+   or, with a log of the placement, the load and the processor share:
+     ATHENA_EXE=<this dir>/athena_cpu THREADS=6 scripts/cpu_run.sh RUNDIR deck.athinput
+   Do not use OMP_PLACES=cores with OMP_PROC_BIND=spread or close: every job of every
+   session is then bound to the same cores. Register the run with --cores 6 --wait S
+   (when the owner's cores are busy the run waits; it is not registered by hand).
+
+2. New option (read only if present; absent = byte-identical behaviour)
+   <particles> deposit_threads = atomic | private
+     atomic   (default; the only mode of athena_cpu_serial and athena_gpu) every cloud
+              corner is added with an atomic addition. Correct under threads, but the
+              order of the additions is free, so with deposition a threaded run does not
+              repeat itself bit for bit (it does to rounding; section 3).
+     private  athena_cpu only: every thread adds into its own copy of the source array,
+              the copies are summed cell by cell in thread order after the deposit. A run
+              repeats itself bit for bit at a fixed thread count. Memory: one source array
+              (10 components, all cells with ghosts) per thread, zeroed and summed at each
+              deposit. athena_cpu_serial and athena_gpu print a note and add atomically.
+   The option cannot be added on the command line to a deck that lacks it (AthenaK
+   overrides only parameters the deck has): add the line to the <particles> block.
+   Example input: problems/tests/deposit_threads.athinput (the deposit test with the
+   option; particle file and command in its header). Check run of the example:
+   core-20261119-160548-c46c55f (two runs at 4 threads byte-identical; the serial
+   executable prints the note and gives the files of the deck without the option).
+
+3. What is tested (tracks/core/interfaces/threaded_build.md section 4; journal entries
+   6 to 11; regression set of 13 cases: geodesics, deposit on a refined mesh, cosmology
+   box with Z4c, Oppenheimer-Snyder collapse, gas multigrid on a uniform and a refined
+   mesh, Newtonian mode, collisions, scalar field with and without noise, Z4c benchmark,
+   vacuum puncture with tracers and horizon finder)
+   - athena_cpu_serial gives the files of release core-v0.3 byte for byte, all 13 cases
+     (run core-20261119-154940-1c3e906, puncture core-20261119-155520-0bc529f).
+   - athena_cpu at 4 and 16 threads against one thread (run core-20261119-155057-57325bc):
+     without deposit every evolved field byte-identical (geodesics, Z4c benchmark,
+     puncture with tracers and horizon finder, scalar field, collision snapshots); with
+     deposit at most 1.3e-12 of the largest number of a file, deposit identity at 1e-14;
+     the gas multigrid and the Newtonian mode agree to the solver tolerance (their
+     iterates depend on the thread count).
+   - The cause of that dependence is the rounding of the plain sum of the volume mean
+     in Multigrid::CalculateAverage, not a race: with the sum taken in a fixed order (a
+     diagnostic executable outside the tree) the defects are the same at 1, 2, 4 and 6
+     threads and the Jeans case is byte-identical between 1 and 4 threads (runs
+     core-20261120-223248-8a370f3, core-20261121-030052-6acdca9). The tree is unchanged.
+   - Kokkos bounds checking under 4 threads, atomic and private: no error
+     (run core-20261119-155830-248f393).
+   - private: two runs at a fixed thread count byte-identical (dep, east, os, newton).
+   - Restarts under threads (run core-20261121-030132-89a7c84; cosmology box with Z4c
+     and Newtonian mode): a run continued from a restart file written half way equals
+     the uninterrupted run in every datum at one thread and at four threads with
+     private; with atomic additions at four threads within 4.0e-15.
+   - athena_gpu (run core-20261119-164717-b187f36, Slurm 4666, analysed in
+     core-20261120-220500-c759cdc): the deposit test and the cosmology box agree with one
+     thread of athena_cpu to 5.8e-13 of the largest number of a file; deposit identity
+     1e-15. It has run nothing else.
+   NOT tested: MPI with threads; adaptive refinement under threads; restarts of refined
+   meshes or of runs with collisions under threads, or at another thread count than the
+   run that wrote the file; athena_gpu beyond those two cases (its device code is that
+   of core-v0.3: without the option nrpic_threads.hpp compiles to the same atomic
+   additions).
+
+4. Speed (interface text sections 5 and 6; journal entries 11, 16, 21, 26, 28, 29;
+   figs/scaling.png). Seconds per step on a quiet machine (2026-11-20), one thread / six
+   threads / one A100 (run core-20261119-144437-6718c76):
+     vacuum puncture, refined, 1.4e6 cells        90.8 / 15.7  / 0.175   card = 90 x six
+     cluster, 1e5 particles, Z4c, 1.6e6 cells    115.9 / 20.1  / 0.279   card = 72 x six
+     64^3 cosmology box, 2.1e6 particles, Z4c     48.6 / 8.86  / 0.119   card = 74 x six
+     Newtonian mode, periodic 128^3, 5.1e5         4.11 / 0.929 / 0.078  card = 11.9 x six
+     Newtonian mode, isolated 128^3, 1.4e5         2.23 / 0.409 / 0.650  six = 1.6 x card
+   On the loaded machine of 2026-11-19, 16 threads were 13 to 14 times one thread, 32
+   threads 22 to 26 times. Which runs to move to processors (wait in the card queue 2 to
+   3 hours): with Z4c only runs of a few hundred steps (about 2 minutes of card time);
+   the periodic Newtonian mode below about 10^4 steps at 128^3 (a quarter of an hour of
+   card time); the Newtonian mode with isolated boundaries always. CORRECTION of the
+   text published here on 2026-11-19: "one A100 is not faster for the Newtonian mode"
+   was wrong for periodic boxes (the card is 11.9 times six threads), and "particles in
+   an analytic metric: always on processors" was never measured and is withdrawn.
+
+5. Identity of the files: the sha256 of athena_cpu (8f223f75...) and athena_cpu_serial
+   (ae24bb76...) are those recorded by the regression runs above; athena_gpu (5b1e90e7...)
+   is the executable of the card smoke test (run core-20261119-164717-b187f36). The
+   three files are unchanged since 2026-11-19 (source a9c34e7a); only this text changed.

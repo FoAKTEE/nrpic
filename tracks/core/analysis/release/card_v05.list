@@ -1,0 +1,14 @@
+# Card check of release candidate core-v0.5 (prediction C and K1 to K6 of JOURNAL.md,
+# 2026-11-21): decks that quick_v05.py wrote for its processor runs (run
+# core-20261121-065009-29b855c), run on one A100 with the merged card executable, and the
+# cluster of package mpi on one rank.  Judged by card_v05.py against those processor runs.
+#   harness/bin/nrpic-run submit --launcher batch --list <this file> --exe .work/build_gpu_v05rc/src/athena
+s3g /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/s3g/new/deck.athinput
+usr /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/usr/new/deck.athinput
+trk /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/trk/new/deck.athinput
+peak /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/peak/new/deck.athinput
+dep /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/d_ser0/deck.athinput
+depp /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/d_ser/deck.athinput
+fine /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/f_ser/deck.athinput
+finet /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/g_ser/deck.athinput
+cluster problems/tests/mpi_cluster.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/mpi/t3_cluster/cluster.nrp problem/comp0_file=/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/mpi/t3_cluster/cluster.tab

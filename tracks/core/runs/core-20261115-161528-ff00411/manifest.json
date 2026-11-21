@@ -1,0 +1,82 @@
+{
+ "run_id": "core-20261115-161528-ff00411",
+ "owner": "core",
+ "registered_by": "tracks/core/analysis/dfix/runreg.py (by hand: nrpic-run submit fails)",
+ "purpose": "Card checks of work package dfix: T1 static tracer, T3 accretion, T4 Kepler, T5 pair horizon, memory at 2700 slots, 16^3 against 32^3 MeshBlocks on the three-puncture mesh, T1 acceptance (horizon_calib 250 M)",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "tracks/core/analysis/dfix/run_cases.py",
+  "--card",
+  "--time",
+  "00:50:00",
+  "tracks/core/analysis/dfix/cases/card_checks.list"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-dfix",
+ "commit": "ff004119fd8a0afba7c409454472e00fd9dd2caf",
+ "branch": "core/requests-adf",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/dfix/run_cases.py",
+   "sha256": "9b984be0bc3e9f6a504c92531993ef6a1af757923557da7eb570da0355841708"
+  },
+  {
+   "path": "tracks/core/analysis/dfix/cases/card_checks.list",
+   "sha256": "2925daa9e422123b43fcba3c1c365a8237efd803fc5021bc015457d21ee81a09"
+  },
+  {
+   "path": ".work/build_gpu/src/athena",
+   "sha256": "f423de38f6f9ff47096b9848e264c8b00c5281775ea3f221bca0d8057ec857ee"
+  },
+  {
+   "path": "problems/tests/tracer_mesh_circular.athinput",
+   "sha256": "23bceb210b63109bd4c760f58e98f676aff1572adb88eb5d70c6fa2b0a7e0a22"
+  },
+  {
+   "path": "problems/tests/accretion_static.athinput",
+   "sha256": "5570df3c1474d473dd99279d6f947d79cf9458b975e1bfc3260f91eb0b95ef61"
+  },
+  {
+   "path": "problems/tests/newton_point_mass.athinput",
+   "sha256": "400778fe81cf0c798f8a08273caa52f34ab44c79112c46d46c17599d6bb3971b"
+  },
+  {
+   "path": "problems/tests/pair_horizon.athinput",
+   "sha256": "c263bf3b23475cbab6b46f56a761608833a1cf3b2a7b7a347af67cddb7784388"
+  },
+  {
+   "path": "problems/puncture/by_triple.athinput",
+   "sha256": "76506fd8f806c96da1322c2c1ba5b26caa628905c3b4e4b01291e9cc6ef99622"
+  },
+  {
+   "path": "problems/puncture/horizon_calib.athinput",
+   "sha256": "f885004bef5d9f2e9f436529d8c1f5a267853fc891824d5424336a93fda2ff75"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-161528-ff00411",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-161528-ff00411"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:15:29Z",
+ "cores": 1,
+ "status": "stopped",
+ "slurm_job": 4456,
+ "slurm_state": "TIMEOUT (limit 00:50:00; elapsed 00:50:18)",
+ "card_start_utc": "2026-11-15T17:12:10Z",
+ "end_utc": "2026-11-15T18:02:28Z",
+ "wall_time_s": 3018.0,
+ "card_hours": 0.8383,
+ "completed_by": "hand, session dfix-2 (runreg.py had ended with session dfix-1)",
+ "cases_state": {
+  "t1_circ": "completed (exit 0, 1.2 s)",
+  "t3_acc": "completed (exit 0, 8.5 s)",
+  "t4_kepler": "stopped by the Slurm limit at t = 18.02 of 20 (cycle 9010; about 0.33 s per step on the card)",
+  "t5_pair": "not started",
+  "mem2700": "not started",
+  "bench16": "not started",
+  "bench32": "not started",
+  "t1_accept": "not started"
+ }
+}

@@ -165,6 +165,22 @@ struct SfNoiseOptions {
 };
 
 //----------------------------------------------------------------------------------------
+//! \struct SfDiagOptions
+//! \brief options of the constraint record <basename>.sf.con.hst and of the extended
+//! dumps (scalar_field_diag.cpp).  Read only when present in the input, so that the
+//! parameter list of existing inputs is unchanged.
+
+struct SfDiagOptions {
+  int con_dcycle = 0;            // cycles between records of <basename>.sf.con.hst
+  bool dump_metric = false;      // dumps: add gt_ij and At_ij
+  bool dump_magnitudes = false;  // dumps: add [H], [M] and M_i in BSSN form
+  bool dump_constraints = true;  // dumps: H, M_i, E
+  bool dump_noise = true;        // dumps: the stochastic fields
+  bool con_signed = false;       // record: signed means of H, M_i and the spread of H
+                                 // about its mean (scalar_field_diag.cpp)
+};
+
+//----------------------------------------------------------------------------------------
 //! \class ScalarField
 
 class ScalarField {
@@ -273,6 +289,24 @@ class ScalarField {
   void NoiseUpdate(Driver *d, int stage);
   void NoiseFieldsOfState();
   void NoiseWriteState(Real time, int ncycle, bool header);
+
+  // ---- initial slice of the stochastic-inflation runs (scalar_field_slice.cpp)
+  void InitialSlice(ParameterInput *pin, const Real phib0, const Real pib0);
+  bool slice_done = false;           // the stochastic sources were set up by InitialSlice
+  Real mode_scale = 1.0;             // factor on the mode functions of the mode file
+
+  // ---- constraint magnitudes and extended dumps (scalar_field_diag.cpp)
+  SfDiagOptions dopt;
+  DvceArray5D<Real> u_mag;           // [H], [M], M_i in BSSN form (active cells)
+  bool mag_alloc = false;
+  void DiagInit(ParameterInput *pin);
+  template <int NGHOST>
+  void ConstraintMagnitudesT();
+  void ConstraintMagnitudes();
+  void WriteConstraintHistory(Real time, int ncycle, bool header);
+  void ConstraintSignedMeans(Real out[7]);
+  bool DumpIsExtended() const;
+  void WriteDumpExtended(Real time);
 
  private:
   MeshBlockPack* pmy_pack;  // ptr to MeshBlockPack containing this ScalarField

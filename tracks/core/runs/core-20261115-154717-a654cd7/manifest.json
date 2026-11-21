@@ -1,0 +1,43 @@
+{
+ "run_id": "core-20261115-154717-a654cd7",
+ "owner": "core",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/verify/ladder2/make_ics.py",
+  "--out",
+  ".",
+  "--yc",
+  "0.69",
+  "0.67",
+  "--no-prolate",
+  "--jobs",
+  "d:0.69,0.67"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-154717-a654cd7",
+ "commit": "a654cd7",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "tracks/core/verify/ladder2/make_ics.py",
+   "sha256": "889bb17e361ff0d3ea24cff9593093abbf0ea7c9d263a3ee52b53c3b1d02b7f6"
+  },
+  {
+   "path": "problems/ic/make_ic.py",
+   "sha256": "62ab7a3f8952faf7defe6ecb58b038dc99d2221f7cb6c05dcf20fb62d158cb92"
+  },
+  {
+   "path": "python/nrpic/st_cluster.py",
+   "sha256": "81dc4c66731cef81c76473e532d6a443ef1a42b9b3a91e90fb68620412db1bd1"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-154717-a654cd7",
+ "purpose": "verify wave 2: initial data of the cluster-threshold bisection round 2 (y_c 0.69 0.67; protocol of runs/st/yc0605_v5), card job list",
+ "kind": "scouting",
+ "tag": "",
+ "state": "finished",
+ "wall_time_s": 2.84,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T15:47:17Z"
+}

@@ -1,0 +1,152 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261119-141940-2e6368f",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "X of coll2-close: the crashed incremental card build of 819d588 (.work/build_gpu) with only its nine objects finished after the header change of 07:40:08 recompiled and relinked; the two smoke decks of gpu_job3.sh on one A100 (exit status; outputs against the clean build f46f159 in job 4485)",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-141940-2e6368f/batch.list"
+  ],
+  "cwd": "scratch/core/core-20261119-141940-2e6368f",
+  "git": {
+    "sha": "2e6368fd9976dd1924e6a19e8872d930a2c1071c",
+    "branch": "core/collisions-2",
+    "dirty": false,
+    "merge_base_main": "71acd0c330b65dad3a9cac337c6f78e8a1bacc44",
+    "worktree": "wt/core-coll2"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_geodesic",
+    "exe": "/data/haiyangw/nrpic/scratch/core/tmp/coll2close/stale_objs/athena_gpu_rebuilt9",
+    "exe_sha256": "6adc74ce526d09fe5a5f2132b925928256e6f5a99f6f6a149e2762b57a6ad221",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-coll2/.venv"
+  },
+  "input": {
+    "file": "problems/tests/coll_box_static.athinput",
+    "sha256": "e3a5b4233b4ecb6e1ddba2da97465ec13646c35e6ce3652eef91132978f74b80",
+    "overrides": {
+      "particles/particle_file": "/data/haiyangw/nrpic/scratch/core/tmp/coll2/smoke_card_4485/static.nrp",
+      "time/nlim": "5",
+      "particles/coll_sigma": "50.0"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2/smoke_card_4485/static.nrp",
+      "role": "input",
+      "sha256": "b47adc1eb36b1f4e8711ee5585b880370fae2012f914eb2892c05df2442612f8",
+      "bytes": 1200016,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2close/stale_objs/athena_gpu_rebuilt9",
+      "role": "exe",
+      "sha256": "6adc74ce526d09fe5a5f2132b925928256e6f5a99f6f6a149e2762b57a6ad221",
+      "bytes": 102815312,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2close/smoke_rebuilt9.list",
+      "role": "list",
+      "sha256": "1956a9382ab98597fbb4369a33d97fdbf48b32c1690e5f36f44e6476bb2ba739",
+      "bytes": 292,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "problems/tests/coll_box_static.athinput",
+      "role": "athinput:static",
+      "sha256": "e3a5b4233b4ecb6e1ddba2da97465ec13646c35e6ce3652eef91132978f74b80",
+      "bytes": 2738,
+      "tracked": true
+    },
+    {
+      "path": "problems/tests/perturb_flat.athinput",
+      "role": "athinput:pert",
+      "sha256": "30ac1da1391b3dac0542545ba7468bb2646c5edb32225bc9e42251154aec9da6",
+      "bytes": 2107,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "static",
+      "input": "problems/tests/coll_box_static.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/coll2/smoke_card_4485/static.nrp",
+        "time/nlim=5",
+        "particles/coll_sigma=50.0"
+      ]
+    },
+    {
+      "name": "pert",
+      "input": "problems/tests/perturb_flat.athinput",
+      "args": []
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": 22.0,
+    "wall_limit": "00:05:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.0833,
+    "gpu_hours": 0.0061,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "core-20261119-141940-2e6368f",
+    "job_ids": [
+      "4634"
+    ]
+  },
+  "outputs": {
+    "dir": "scratch/core/core-20261119-141940-2e6368f",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "9a0310eccde58ab3d37dd79ceb5c6911ecb1b08291c38a5b031e79c1698894e6",
+    "bytes": 104270036,
+    "files": 16
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-19T14:19:41Z",
+  "started": "2026-11-19T07:34:55-08:00",
+  "ended": "2026-11-19T07:35:16-08:00",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.5281,
+    "gpu_hours_reserved": 1.0,
+    "gpu_hours_without_gate": 5.8613,
+    "cores_busy": 1,
+    "runs": 958,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-19T15:36:03Z"
+}

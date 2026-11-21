@@ -1,0 +1,128 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261119-150818-615d921",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "R a, b: ten scalar-field cases of wave 1 byte by byte against release core-v0.3; the three stochastic examples (20 steps, restart) against the published executable of core/scalar-2",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/scalar3/r1_regress.py",
+    "--release",
+    "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+    "--scalar2",
+    "/data/haiyangw/nrpic/scratch/core/exe/core_scalar-2/athena_cpu",
+    "--new",
+    ".work/exe/athena_cpu_cea3a49",
+    "--workers",
+    "1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "615d9217450e2c88f20573edb45202f0eb20e08f",
+    "branch": "core/scalar-3",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/scalar3"
+    ],
+    "outside_package": {
+      "count": 1,
+      "first": [
+        "?? tracks/core/interfaces/scalar_field_3.md"
+      ]
+    },
+    "merge_base_main": "27b2ced9be0f020a4206d89e3cc982ada5c4367c",
+    "worktree": "wt/core-scalar3"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-scalar3/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": ".work/exe/athena_cpu_cea3a49",
+      "role": "input",
+      "sha256": "c58e84876bdbd56616cd252115d09dc80da7ba6c3d25bdbafa529c7c352301d2",
+      "bytes": 249396704,
+      "tracked": false
+    },
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+      "role": "input",
+      "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c",
+      "bytes": 246469568,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_scalar-2/athena_cpu",
+      "role": "input",
+      "sha256": "c69266ec765c8296b005871c6865991f2a5ac59f7ebd2ac3f03d383b57f9439e",
+      "bytes": 249396176,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/analysis/scalar3/r1_regress.py",
+      "role": "argv",
+      "sha256": "13554bc957f1e5cf31372016719ac9bcb98f2ea02843027c2ad9ce8446c5c21c",
+      "bytes": 5155,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 1386.086,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261119-150818-615d921",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "102d56afa47298395b34889af75ad442a875c767c1674e81d547a9441a9d1a35",
+    "bytes": 533961156,
+    "files": 269
+  },
+  "status": "failed",
+  "exit_code": 1,
+  "registered": "2026-11-19T15:08:20Z",
+  "started": "2026-11-19T15:08:20Z",
+  "ended": "2026-11-19T15:31:26Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.5281,
+    "gpu_hours_reserved": 5.4433,
+    "gpu_hours_without_gate": 5.8613,
+    "cores_busy": 15,
+    "runs": 1006,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-19T15:42:08Z"
+}

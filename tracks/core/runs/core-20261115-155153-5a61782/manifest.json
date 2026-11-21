@@ -1,0 +1,34 @@
+{
+ "run_id": "core-20261115-155153-5a61782",
+ "owner": "core",
+ "purpose": "Reference numbers of the pair model for the collision tests in the static conformal metric (scbox.pair_reference, 4e6 pairs per case, both collision modes)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/gradient_ref.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-155153-5a61782/ref.json",
+  "--npair",
+  "4000000"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-155153-5a61782",
+ "commit": "5a617824fb96e2835e466b08f991e474d4ae4470",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/collisions/scbox.py",
+   "sha256": "a909f6b6ebc4b00a6fe4bd8ba9156d4d8a5c3e5fa3e48e8d05359ea40786fbc9"
+  },
+  {
+   "path": "tracks/core/analysis/collisions/gradient_ref.py",
+   "sha256": "9b0a33d24d1fbcc8d296c53aa843ff62fc7ba7f6e811858222e67891e86eec64"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-155153-5a61782",
+ "host": "anta",
+ "start_utc": "2026-11-15T15:51:53Z",
+ "cores": 2,
+ "wall_time_s": 664.96,
+ "exit_status": 0,
+ "core_hours": 0.3694
+}
