@@ -39,7 +39,7 @@ late drift of V-1 is gone, |drift| <= 4.8e-5 over 100-200 M [VERIFIED, lead Z3]:
 1+log the late drift was the outer boundary. ES-1G (core's lapse_leak, D-20261119-142633-6f72922):
 the dust is sliced on its exact curve (wall within 1.7e-4 to tau = 206 M), but the horizon mass
 grows by +6.96e-3 over 100-199.5 M while the hole shrinks to 0.78 M in coordinates. ES-1GB (ES-1G
-with the faces at +-384 M, D-20261121-125900-ea4c442, to 188 M so far) follows ES-1G to 4.2e-9 and
+with the faces at +-384 M, D-20261121-125900-ea4c442, ends at 188 M) follows ES-1G to 4.2e-9 and
 grows the same, +4.16e-3 at 188 M: the growth is NOT the boundary [VERIFIED, g2runs; lead Y1]; the
 batch-2a reading that it was is withdrawn. V-1GB (V-1B with lapse_leak, D-20261121-125909-06f856e)
 grows too, +1.26e-3 by 199.5 M; the null test ES-1GB minus V-1GB reaches 3.5e-3 at 188 M. The

@@ -15,9 +15,9 @@ last-result: Q16 D-20261121-085652-7e189a2 (secondary_infall); ES-1GB D-20261121
              0/0/0 (D-20261121-130510-7e14c5f); lead checks Y1-Y5 held (D-20261121-154912-27e91c6,
              -155215-0611c24; stage/REVIEW-wave3.md section 9); Y1(d) failed by 0.5 per cent
              (null test 1.005e-4 up to 90 M against "below 1e-4"); Y3's guessed cause was wrong
-next:        1. When Slurm 4805 (ES-1GB segment 2) and 4806 (ES-F) finish: g2runs/tools/finish_g2.sh
-                es1gb, then esf; judge B1/B3/B5 to 199.5 M and ES-F's P1-P7, (i)-(iii), D1-D4
-                (flux_tools JOURNAL entry 7) with a fresh prediction file
+next:        1. When Slurm 4806 (ES-F, running since 16:14Z) finishes: g2runs/tools/finish_g2.sh esf;
+                judge P1-P7, (i)-(iii), D1-D4 as pre-registered (flux_tools JOURNAL entry 7). ES-1GB
+                ended at 188 M (chain capped at one segment; closed, D-20261121-125900-ea4c442)
              2. Card, after those: ES-1B (ES-1 with 1+log and the faces at +-384 M) against V-1B, the
                 null test without lapse_leak (decision 0022); then the M/16 nest of the pair
              3. drift_controls: judge Pb1-Pb5 with its three untracked tools, README; note v2 with
@@ -33,6 +33,6 @@ offers:      Einstein-Straus data and exact references (es_runs/make_data.py); v
              (g2runs/inputs); ES-F data (flux_tools/esf_data.py, D-20261119-145022-2208a19); Kerr
              spike reference (spike/kerr_lib.py); Newtonian-mode infall references with the measured
              mesh kernel at a vertex and at a cell centre (secondary_infall/nm_shells.py)
-budget:      card-hours (nrpic-run budget, 2026-11-21 16:00Z): G1 4.41 used; G2 1.56 used, 2.95
-             reserved (ES-1GB 0.98 of which segment 1 ~0.83 ran; ES-F 1.97), 25.49 left. This lead
-             session used 0 card-hours and one core. Two D jobs queued: Slurm 4805, 4806.
+budget:      card-hours (nrpic-run budget, 2026-11-21 16:40Z): G1 4.41 used; G2 2.39 used (ES-1GB
+             closed: 0.83), 1.97 reserved (ES-F), 25.64 left. This lead session used 0 card-hours
+             and one core. One D job: Slurm 4806 (ES-F), running.

@@ -452,5 +452,7 @@ re-implemented from nm_analyze's docstring); no helper code. Script `stage/revie
   a/a_i = 16 under the ruled wording, with the profile within 16 per cent of two self-similar solutions.
 - changed my mind about: R13 for lapse_leak (my predecessor's boundary reading was a judgement; tested by
   ES-1GB, failed).
-- open: G1 complete for review, not passed; card jobs Slurm 4805 (ES-1GB segment 2) and 4806 (ES-F) queued;
+- open: G1 complete for review, not passed; ES-F (Slurm 4806) running since ~16:14Z; ES-1GB ends at 188 M:
+  its chain was capped at one segment (MAX_SEGMENTS=1 from its 0.98 card-hour reservation), segment 2 (Slurm
+  4805) stopped without running; closed by me at 16:40Z (failed, 0.83 card-hours);
   drift_controls and flux_tools packages open (HANDOFF); G2 null test without lapse_leak next (ES-1B).

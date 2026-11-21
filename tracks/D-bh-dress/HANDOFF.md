@@ -5,7 +5,7 @@ Written for a reader with no memory of the last session. Rewritten at the end of
 State (2026-11-21, end of the lead session of batch 4a): G0 signed (coord/GATES.md). G1: every item PASS
 in the lead's judgement; the package `stage/G1/` is complete for the orchestrator's independent review
 (decision 0016 item 4) and is NOT passed. G2 in scouting. Owner: D-bh-dress, branch `track/D-bh-dress`,
-worktree `wt/D-bh-dress`. Two card jobs of D are queued (below); do not submit a third.
+worktree `wt/D-bh-dress`. One card job of D is running (ES-F, Slurm 4806, below).
 
 Run next: `cd /data/haiyangw/nrpic/wt/D-bh-dress && git merge --no-edit main && harness/bin/nrpic-ctx inbox &&
   git status --short && squeue -u $USER && harness/bin/nrpic-run status | grep -E '\?|\*'` (a "?" is a run whose
@@ -24,11 +24,12 @@ What is established this round (run ids in REVIEW-wave3 section 9):
 - Note v1 (`note/main.pdf`, 18 pages) compiled and checked; it names ES-1G, ES-F, drift controls and the
   late Newtonian run only as pending work.
 
-Card jobs queued (both chains under scripts/submit_chain.sh; read by package g2runs):
-- Slurm 4805 = run D-20261121-125900-ea4c442, ES-1GB segment 2 (t = 188-200 M). When DONE:
-  `tracks/D-bh-dress/g2runs/tools/finish_g2.sh es1gb` (closes the run, reruns compare_horizons and the slice
-  mass); judge B1 at 199.5 M (already refuted at 188 M), B3, B5 in g2runs/JOURNAL.md.
-- Slurm 4806 = run D-20261121-144631-aa7ce9b, ES-F (dust filling the bubble, 1+log, faces at +-192 M,
+Card jobs (chains under scripts/submit_chain.sh; read by package g2runs):
+- ES-1GB, run D-20261121-125900-ea4c442: its chain was capped at one segment (MAX_SEGMENTS=1, set from the
+  0.98 card-hour reservation), so segment 2 (Slurm 4805) stopped without running and the run ends at
+  t = 188 M; closed by the lead at 16:40Z (status failed, 0.83 card-hours). B1 is refuted at 188 M; B3, B5
+  are judged to 188 M. Extending it to 200 M is not worth a card under decision 0022.
+- Slurm 4806, RUNNING since about 16:14Z, = run D-20261121-144631-aa7ce9b, ES-F (dust filling the bubble, 1+log, faces at +-192 M,
   release core-v0.4 card executable; 1.97 card-hours reserved). When DONE: `finish_g2.sh esf`, then judge
   P1-P7, (i)-(iii), D1-D4 as pre-registered in flux_tools/JOURNAL.md entry 7 (deviation of the executable:
   g2runs JOURNAL entry 3). If its chain needs a third segment (above ~1.3 card-hours more than planned),

@@ -226,7 +226,7 @@ failed on a syntax error of mine, kept on record). Figures looked at: `batch4a_c
 | Y4 figures | consistent with the numbers |
 | Y5 Q16 profile against the verifier's self-similar solution | held: 16.3 per cent |
 
-### 9.1 g2runs (FINISHED as a session; card runs ES-1GB segment 2 and ES-F queued)
+### 9.1 g2runs (FINISHED as a session; ES-F running; ES-1GB ends at 188 M, its second segment capped)
 
 Confirmed from the finder summaries (Y1, run D-20261121-154912-27e91c6):
 - [VERIFIED] ES-1GB (faces at +-384 M) equals ES-1G (+-192 M) to 2.9e-15 for t <= 90 M and to
@@ -326,5 +326,7 @@ Confirmed (Y2, Y5):
    +-384 M has its floor (V-1B, 4.8e-5 over 100-200 M at M/8). Next card runs, one change each:
    ES-1B (ES-1, 1+log, faces at +-384 M) against V-1B, the matched null test without lapse_leak;
    then the M/16 nest of the pair. lapse_leak runs wait for core-v0.7. No card job was submitted
-   this session: two D jobs are queued (ES-1GB segment 2, Slurm 4805; ES-F, Slurm 4806).
+   this session. ES-F (Slurm 4806) is running; ES-1GB's second segment (Slurm 4805) stopped without
+   running because its chain was capped at one segment (MAX_SEGMENTS=1 from the 0.98 card-hour
+   reservation): the run ends at t = 188 M and was closed at 16:40Z (status failed, 0.83 card-hours).
 3. WRITING_GUIDE.md exception 1 extended to data keys of registered outputs (note package request).
