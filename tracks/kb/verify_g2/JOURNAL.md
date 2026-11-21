@@ -157,7 +157,7 @@ artefact of my regular expressions. Refuted if two or more verdicts are wrong, o
 the failure verdicts (A for astro-ph/0306304, 2009.08715, 2403.15126, 2509.01320,
 gr-qc/9906015; B for 2403.15126 and 0710.5073) is a scan artefact.
 
-## Entry 7 (2026-11-21 08:00 UTC): outcome of the source check P2; predictions for C1, C5, C6, KB-G0
+## Entry 7 (2026-11-21 07:57 UTC): outcome of the source check P2; predictions for C1, C5, C6, KB-G0
 
 Outcome of P2 (draw kb-20261120-223339-b842a8a; I read each source with grep/sed, read-only):
 - 9 of the 10 papers with status ok: the overall verdict (success) is right. Spot checks against
