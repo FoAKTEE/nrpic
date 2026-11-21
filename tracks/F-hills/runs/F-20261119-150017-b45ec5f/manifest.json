@@ -83,30 +83,47 @@
     "nodes": 1,
     "gpus": 1,
     "cores": 1,
-    "walltime_s": null,
+    "walltime_s": 45285.0,
     "wall_limit": null,
     "segments_max": 26,
     "gpu_hours_requested": 25.5667,
-    "gpu_hours": null,
+    "gpu_hours": 12.5828,
     "particles": null
   },
   "slurm": {
     "partition": "preempt",
     "job_name": "F-20261119-150017-b45ec5f",
-    "job_ids": []
+    "job_ids": [
+      "4650",
+      "4669",
+      "4672",
+      "4675",
+      "4678",
+      "4681",
+      "4684",
+      "4738",
+      "4750",
+      "4752",
+      "4754",
+      "4761",
+      "4766",
+      "4769",
+      "4773",
+      "4780"
+    ]
   },
   "outputs": {
     "dir": "scratch/F-hills/F-20261119-150017-b45ec5f",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "6c0b152701f6ea42d651cd0a07f1163805612042a53868f2dc5b91ae8787a1b7",
+    "bytes": 176244276411,
+    "files": 267
   },
-  "status": "submitted",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-19T15:00:17Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-19T10:06:36-08:00",
+  "ended": "2026-11-21T01:19:05-08:00",
   "parents": [
     "F-20261115-174602-c6879fe"
   ],
@@ -120,5 +137,6 @@
     "cores_busy": 13,
     "runs": 152,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
-  }
+  },
+  "finished": "2026-11-21T16:20:49Z"
 }
