@@ -142,3 +142,19 @@ abstract 2; statuses refuted 24, located 15, checked 8, unlocated 1 (r11's INSPI
 metadata locator only); every TeX locator part resolves; 20 claims with supersedes set, each
 pointing to the printed claim of its entry; a second run adds nothing. Refuted if any count
 differs or a TeX locator stays unresolved.
+
+Outcome of P5 (run kb-20261121-233151-3bb85dc): "new 48", then "same 48"; claims 813-860:
+refuted 24, judgement 14, fulltext 8, abstract 2; statuses refuted 24, located 15, checked 8,
+unlocated 1; 20 claims with supersedes, all pointing to the refuted printed claim of their
+entry; 64 locator rows, 64 resolved; recheck: 46 claims with TeX locators, 0 unresolved.
+Held in every count. `kb claim check --id` was not run: it re-checks only the wave-1 seeds
+(claims_cli.cmd_check walks claims_parse.wave1_sources()), so for these claims the package's
+`seed-brief --recheck` is the check, and it found nothing unresolved.
+
+## P6 (prediction before the ledger and figures run, read only)
+
+Ledger from the database and the plan: 112 seed rows with outcomes verified 42, refuted 11,
+annotated located 8, annotated partial 1, judgement annotated 3, judgement without a CHECK row
+17, open without a CHECK row 30; 48 defect rows; 304 unjoined CHECK rows (219 on unlabelled
+lines, 85 outside the labelled statements). Refuted if any count differs from the database
+counts of P4 and P5.
