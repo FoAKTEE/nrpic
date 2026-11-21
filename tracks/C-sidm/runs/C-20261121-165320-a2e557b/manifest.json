@@ -1,0 +1,107 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-20261121-165320-a2e557b",
+  "track": "C-sidm",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "G1 gate reviewer R1: independent check of T5 (entropy increase) on the T3-T5 boxes of run C-20261115-170539-28432c3 with the reviewer's own KL estimator (equal-probability bins under MJ(theta_eq)); predictions R1.1-R1.4 in stage/G1/GATE_REVIEW.md (commit a2e557be)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "/data/haiyangw/nrpic/scratch/C-sidm/tmp/gate_review_G1/t5_kl_check.py",
+    "/data/haiyangw/nrpic/scratch/C-sidm/C-20261115-170539-28432c3",
+    "/data/haiyangw/nrpic/scratch/C-sidm/C-20261115-165028-a559ab8/design.json",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "a2e557be36128afa9c1f90c350a44b6e47c39bc5",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "merge_base_main": "9aa744050b6dd76e8847e202b1b6f245a0cda107",
+    "worktree": "wt/C-sidm"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/C-sidm/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/C-sidm/tmp/gate_review_G1/t5_kl_check.py",
+      "role": "input",
+      "sha256": "c1facc0801cf83e222e5c86ca0cc44a153c3cb3db373b215c48460bceab7b79a",
+      "bytes": 6818,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/C-sidm/C-20261115-165028-a559ab8/design.json",
+      "role": "input",
+      "sha256": "91cd083733889028e18cd689c54632d1644610c3374b2c51e3ae155044bd4afe",
+      "bytes": 3132,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/C-sidm/C-20261115-170539-28432c3/sha256sums.txt",
+      "role": "input",
+      "sha256": "baac7d6001a852260554758b81027828344faea37daf0c0cad554db327e14525",
+      "bytes": 40323,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/C-sidm/C-20261121-165320-a2e557b",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T16:53:20Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 45.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0142,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 188,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
