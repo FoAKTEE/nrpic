@@ -342,3 +342,19 @@ pass 663, ok and fail 21 (13 bibliography, among them 1201.4794 and gr-qc/030400
 mine has fewer than half of its sectioning commands as sections (2209.06775). T2 **confirmed**.
 The bar (674.5 papers) is passed under my definition by 4.5 papers; my verdict on C3 rests on
 the [JUDGEMENT] that a letter with run-in headings has no sections to lose.
+
+## Entry 14 (2026-11-21 08:15 UTC): verdicts committed (ef9d2d34, pushed); C9 journal part; comparison
+
+After the commit of both VERIFIER.md files I read tracks/kb/JOURNAL.md for C9 (grep for failed
+runs and refuted predictions) and then the package's KB-G2 EVIDENCE.md and CHECKLIST.md and
+KB-G0 CHECKLIST.md. C9: the lead's journal records the failed W9 run
+kb-20261115-182907-3f69615 with its cause (journal line 384 ff.) and many refuted predictions
+("L2 refuted as worded", line 58; number verdicts refuted, line 231). The package names three
+more failed runs of wave 1 (KB-G0 C6: kb-20261115-154858-b0d8c8f, kb-20261115-164121-5aca10c,
+kb-20261115-181519-d78b8d4) that my manifest scan did not count as failed.
+
+Prediction (K1) for `scripts/compare.py`: the two wave-1 runs with exit 1 carry a status word
+other than "failed" in their hand-written manifests (else my scan would have listed them);
+d78b8d4 reads as completed; the number of TeX papers without any bibliography entry is close
+to the package's 20 (OPEN.md, quoted in its C1 evidence). Refuted by status "failed" in those
+manifests, or a count outside 15-25.
