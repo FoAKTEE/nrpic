@@ -406,7 +406,7 @@ wave-2 cc1_kn10 (cell s1) has linear crossings alpha_min = 0.5, 0.4, 0.3 at 166.
   are judged against these. d3_kninf also gives drift's third period point (drift JOURNAL
   entry 6, its prediction, judged by drift or the lead).
 
-## 2026-11-21 03:26 UTC Entry 9: job 2 running; a cosine fit of the controls (prediction)
+## 2026-11-21 03:23 UTC Entry 9: job 2 running; a cosine fit of the controls (prediction)
 
 D1 job 2 (run C-20261121-025633-bb8dac4, Slurm 4756) started 03:22 UTC; smoke run rc = 0.
 While it runs: `analyze_decisive.py` gets the cosine form A (1 - cos 2 pi t/P) + c of
@@ -417,3 +417,8 @@ Prediction for the test on the wave-2 controls: the fit to alpha_c(t) - alpha_c(
 0-300 M reproduces drift's values (run C-20261120-222211-aa1be86, drift's report): P = 399 M
 and A = 0.0154 (CC1), P = 355 M and A = 0.0086 (CC2), to the quoted digits. Refuted by any
 difference beyond them: then the fitted series differs from drift's.
+Outcome (development run of the script in `scratch/C-sidm/tmp/decisive_test/`, unregistered;
+the registered analysis after job 2 repeats it): CC1 P = 399.24(31) M, A = 0.015409(35); CC2
+P = 355.44(41) M, A = 0.008586(35); rms of the residual 8e-4. HOLDS: drift's values to the
+quoted digits. Figure `fig_controls.png` looked at: the dashed fits follow both controls; the
+largest rise of alpha_c is 0.0334 at 201.5 M (CC1) and 0.0185 at 206.75 M (CC2).

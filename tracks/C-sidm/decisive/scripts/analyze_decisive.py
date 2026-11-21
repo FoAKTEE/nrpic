@@ -75,6 +75,25 @@ def window_mean(t, y, a, b):
     return float(np.mean(y[k])) if np.any(k) else None
 
 
+def f_cos(t, A, P, c):
+    """Excursion form of drift/scripts/controls.py (copied): A (1 - cos 2 pi t/P) + c."""
+    return A * (1.0 - np.cos(2.0 * np.pi * t / P)) + c
+
+
+def cos_fit(t, y):
+    """Least-squares fit of f_cos with drift's starting values; y = alpha_c - alpha_c(0) of a control."""
+    from scipy.optimize import curve_fit
+    ok = np.isfinite(y)
+    t, y = t[ok], y[ok]
+    try:
+        p, cov = curve_fit(f_cos, t, y, p0=(0.5 * np.nanmax(y), 2.0 * t[np.nanargmax(y)], 0.0), maxfev=20000)
+    except Exception as e:  # noqa: BLE001
+        return dict(error=str(e))
+    res = y - f_cos(t, *p)
+    return dict(A=float(p[0]), P=float(p[1]), c=float(p[2]), sd=[float(v) for v in np.sqrt(np.diag(cov))],
+                rms=float(np.sqrt(np.mean(res ** 2))))
+
+
 def crossing(t, y, level):
     """First time y falls below level, linear between the two records around it."""
     i = np.flatnonzero(y < level)
@@ -132,6 +151,10 @@ def analyse(name, d, ctrl):
     else:
         out["alpha_c_max_dev_from_start"] = float(np.nanmax(np.abs(ap - ap[0])))
         out["alpha_c_dev_t100"] = window_mean(t, ap - ap[0], 95.0, 105.0)
+        out["alpha_c_max_rise"] = float(np.nanmax(ap - ap[0]))
+        out["t_alpha_c_max_rise"] = float(t[int(np.nanargmax(ap - ap[0]))])
+        out["cos_fit"] = cos_fit(t, ap - ap[0])
+        ser["cosfit"] = out["cos_fit"]
     ch = os.path.join(d, "cc.coll.hst")
     if os.path.exists(ch):
         c = C.read_hst(ch)
@@ -408,11 +431,15 @@ def figures(outdir, res, ser):
     fig.subplots_adjust(left=0.2, right=0.97, bottom=0.16, top=0.95)
     for name, s in ser.items():
         if name.endswith("_kninf"):
-            ax.plot(s["t"], s["ap"] - s["ap"][0], lw=1.0, label=name)
+            ln, = ax.plot(s["t"], s["ap"] - s["ap"][0], lw=1.0, label=name)
+            fc = s.get("cosfit", {})
+            if "P" in fc:
+                ax.plot(s["t"], f_cos(s["t"], fc["A"], fc["P"], fc["c"]), color=ln.get_color(), ls="--", lw=0.8,
+                        label=f"fit P = {fc['P']:.0f} M")
     ax.axhline(0.0, **fs.MASK_LINE)
     ax.set_xlabel(r"$t/M$")
     ax.set_ylabel(r"$\alpha_c(t) - \alpha_c(0)$, controls")
-    ax.legend(fontsize=7)
+    ax.legend(fontsize=6)
     fig.savefig(os.path.join(outdir, "fig_controls.png"), dpi=200)
     plt.close(fig)
 
