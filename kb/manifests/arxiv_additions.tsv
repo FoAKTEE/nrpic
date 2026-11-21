@@ -60,3 +60,17 @@ gr-qc/9703066	G06	2	core (tracks/core/interfaces/multi_puncture.md cites v2 main
 2607.09285	G13	1	kb brief check novelty (wave 3a; S5, neutrinos), fetched 2026-11-19 15:42 UTC	0016-6	PBH mass growth from neutrinos in the radiation era
 2607.09326	G03	1	kb brief check s37_38 (wave 3a; open question 20; also used by s7_s8), fetched 2026-11-19 15:20 UTC	0016-6	nonlinear stability of Einstein-de Sitter universes (Einstein-Euler)
 2609.14755	G18	1	kb brief check s37_38 (wave 3a; brief line 235), fetched 2026-11-19 15:20 UTC; read by s39_frontier	0016-6	horizon response in self-consistent Einstein-Vlasov black-hole environments; G02 the alternative
+# Rows 2610.28890 to 2611.23627 (kb ingest3, 2026-11-21): the 11 frontier papers that the s39_frontier package of
+# wave 3a recommended for the tracks (scratch/orch/wave3a_reports/kb.md, kb:s39_frontier requests), fetched by
+# ingest3 (run kb-20261121-215209-964397e). Priority 1: recommended by kb, no track asked yet.
+2610.28890	G18	1	kb s39_frontier (wave 3a) recommendation; fetched by kb ingest3 2026-11-21 (run kb-20261121-215209-964397e)	0016-6	Track C: recalibrated gravothermal conductivity interpolation
+2610.28745	G18	1	kb s39_frontier (wave 3a) recommendation; fetched by kb ingest3 2026-11-21 (run kb-20261121-215209-964397e)	0016-6	Track C: SIDM gravothermal collapse time across Knudsen numbers
+2610.33150	G18	1	kb s39_frontier (wave 3a) recommendation; fetched by kb ingest3 2026-11-21 (run kb-20261121-215209-964397e)	0016-6	Track D: general-relativistic Eddington inversion of the dark-matter phase space
+2611.08145	G18	1	kb s39_frontier (wave 3a) recommendation; fetched by kb ingest3 2026-11-21 (run kb-20261121-215209-964397e)	0016-6	Track D: truncated dark-matter spike in an Einstein-cluster model
+2611.13170	G18	1	kb s39_frontier (wave 3a) recommendation; fetched by kb ingest3 2026-11-21 (run kb-20261121-215209-964397e)	0016-6	Track D: depletion of dark-matter spikes by black-hole mergers
+2610.01964	G13	1	kb s39_frontier (wave 3a) recommendation; fetched by kb ingest3 2026-11-21 (run kb-20261121-215209-964397e)	0016-6	Track A: locating critical solutions in NR with automatic differentiation; G06 the alternative
+2610.26669	G20	1	kb s39_frontier (wave 3a) recommendation; fetched by kb ingest3 2026-11-21 (run kb-20261121-215209-964397e)	0016-6	Track E: mean-field backreaction (UV sensitivity) in single-field inflation; G11 the alternative
+2602.11652	G20	1	kb s39_frontier (wave 3a) recommendation; fetched by kb ingest3 2026-11-21 (run kb-20261121-215209-964397e)	0016-6	Track E: numerical stochastic formalism with non-Markovianity
+2606.28005	G20	1	kb s39_frontier (wave 3a) recommendation; fetched by kb ingest3 2026-11-21 (run kb-20261121-215209-964397e)	0016-6	Track E: UV artefacts (hidden spikes) in ultra-slow-roll potentials
+2605.22525	G21	1	kb s39_frontier (wave 3a) recommendation; fetched by kb ingest3 2026-11-21 (run kb-20261121-215209-964397e)	0016-6	Track F: binary scattering and eccentric vZLK around a supermassive black hole
+2611.23627	G06	1	kb s39_frontier (wave 3a) recommendation; fetched by kb ingest3 2026-11-21 (run kb-20261121-215209-964397e)	0016-6	core (information): higher-order smoothness indicator as refinement criterion
