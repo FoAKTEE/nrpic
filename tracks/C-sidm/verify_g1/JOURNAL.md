@@ -350,3 +350,37 @@ Predictions:
   including 0.5331, 0.5404, 0.6348; the manifest purpose says "near the E_b maximum and at
   both fluid onsets". I have not opened the files. My predictions above were formed from the
   papers; the names are noted here so that the reader can judge.
+
+## Entry 10 (2026-11-21 00:12 PST) V4 debug evaluations (not of record) and sharpened predictions
+
+(Entry 9 was written at 23:57 on 2026-11-20, not 00:02.)
+Debug evaluations of v4_ev.py before the run of record (interactive, not registered; numbers
+here only motivate the method, the run of record repeats them):
+- At F21's marginal row (b = 0.1, w(0) = 4.05150) my equilibrium gives M = 0.0142545 (F21
+  0.0142556), E_rest 0.0147413 (0.0147424), eps 0.0330228 (0.0330243), R 0.368803 (0.368001,
+  their grid), Z(0) 0.750099 (0.750107), rho(0) 81.79233 (81.7923), p(0) 8.740059 (8.74006),
+  v(0) 0.566189 (0.566189), <gamma> 1.621166 (1.62117), gamma_cr 1.621186 (1.62117). F21's
+  closed-form gamma_cr equals my K = 1 Rayleigh quotient to 4e-13. The formulation reproduces
+  F21 (prediction of entry 9 holds at this row; the run of record checks five rows).
+- The polynomial Rayleigh-Ritz basis (r/R)^{2k} did not converge with K (lowest omega^2 at
+  that row -0.0006, -0.88, -1.61, -2.15, -2.54, -2.80 for K = 1..6), although each single
+  basis function has a positive quotient there: the mode is concentrated in the core
+  (rho_c/rho_mean = 1206), which powers of r/R represent badly. Replaced by piecewise-linear
+  finite elements for eta = xi/(r e^Phi) on J elements uniform in u = sqrt(r/R) (the F21 trial
+  function is eta = const, inside the space, so FEM <= K = 1 by construction); diagonal
+  scaling of the mass matrix before the generalised eigenproblem. Converged: J = 100, 200, 400
+  agree to 1e-4 relative at all points tried. The FEM eigenvector at that row is concentrated
+  in the core (eta falls from 1 at r/R = 0.02 to 0.24 at 0.4 and changes sign near the surface).
+- Consequence seen in the debug evaluation (b = 0.1, F21's gamma = 1 + p/u): exact omega^2
+  = +0.89 at Z(0) = 0.548, -0.050 at 0.638, -3.32 at 0.750, while the F21 trial function is
+  +1.06, +0.71, -0.0006 there. So the exact fluid onset with F21's own gamma lies near
+  Z(0) = 0.63, well before F21's 0.750; the "insensitivity to xi" of F21 line 220 does not hold
+  for these centrally condensed models [JUDGEMENT until the run of record].
+- Juttner Gamma_1: b = 0.1 exact -1.67 at Z(0) = 0.548 and +0.027 at 0.087; King: exact
+  +1e-5 at y0 = 0.02, -8e-5 at 0.05 (F21's gamma: stable up to y0 = 0.334 at least).
+Sharpened predictions for the run of record (v4_ev.py at the commit after this entry):
+- King Juttner exact onset y0 in (0.02, 0.05); King with F21's gamma: no onset below the E_b
+  maximum.
+- F21 b = 0.1: F21-gamma K = 1 onset at Z(0) = 0.750 +- 0.002 (reproduction), exact onset
+  in (0.548, 0.638); Juttner: K = 1 and exact onsets both in (0.087, 0.548), exact below K = 1.
+- J = 400 onset equal to J = 200 to 1e-4 in y0.
