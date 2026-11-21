@@ -338,3 +338,48 @@ at both resolutions (L), and A4' was written after the data were seen. My recomm
 [JUDGEMENT]: rule A4' in, with (d) read as "the maxima over the entry differ by at least
 1e3" and the floor defined as the non-scaling part, and keep the strict A4 on record as
 failed for the reason above.
+
+## Comparison with the track's numbers (written after the verdicts above were committed, db88f63)
+
+Read now, for the first time: `ladder/results/final/summary.json`, `ladder/results/floor/floor.json`,
+`ladder/results/a6/a6.json`, `stage/G1/STATUS.md`, and, to understand two disagreements,
+`ladder/results/final2/summary.json`. The verdicts above were not changed after reading them.
+
+Agreements (within 10 percent; most to three digits): A1 per run (e.g. P256 phi 2.0e-12, Pi
+8.55e-12, K 1.99e-12; L32p e-folds 5.52e-6: same as mine); A2 max over k <= k_max/2 on every
+rung (L32p 8.76e-5, L64p 2.70e-6, L128p 2.54e-6, L256p 1.74e-6, Q64p 9.73e-5, Q128p 9.91e-5,
+P256 1.208e-4) and over all k (4.08e-3, 9.65e-5, 7.09e-6, 3.13e-6, 4.00e-3, 4.07e-3, 4.49e-3),
+the worst modes (|n|^2 = 16, 5, 1024), the alpha-corrected shell spectrum against the
+reference (1.6e-4 to 1.9e-4) and its slow-roll ratio (1.0104-1.0109 for |n| <= 7); A3 drifts
+(NR 1.382e-4, MS 1.385e-4, difference 1.444e-6 on L32p: identical to four digits) and the
+exclusion of -4 eps1 (factor ~350); A5 orders 32 -> 64 (H 3.79, 4.20, 5.64, 5.60, 5.54, 5.54,
+5.55; M 3.12, 3.62, 5.91, 5.64, 5.55, 5.56, 5.57: identical), 64 -> 128 (5.33-5.82) and the
+negative orders at 128 -> 256; the floor exponent (2.48 fitted, mine 2.45-2.51); the first e-fold
+where the odd part exceeds the even part (1.51, 1.99, 2.96, 3.44 for N = 32-256); the odd and
+even parts themselves (e.g. odd H on L32 at t = 2.50: 5.351e-11 both); odd/even maxima at
+N = 32, 64, 128 (745, 655, 869; mine 743, 659, 867); halving 2.00 and 4.00 away from the last
+dump; record maxima at N = 64 and 256 (4.77e-11, 5.07e-11); controls' <|M|/[M]> 0.204-0.216;
+A6 orders 3.93-4.08; cost 0.503 card-hours.
+
+Disagreements above 10 percent:
+
+| # | Quantity | Track | Mine | Reading |
+|---|---|---|---|---|
+| 1 | max odd/even of H at N = 256 (P256) | 385 (`final/summary.json`; `STATUS.md`: "385-870 ... at every N = 32-256") | 25 at t <= 4.0, the last time-matched dump | the track's own `final2/summary.json` gives 25.1 (last paired time 4.0): 385 came from pairing P256 at t = 4.5038 with P256m at t = 4.5000. STATUS.md still quotes it. |
+| 2 | halving factors at the last listed dump | even 16.01 (N = 64), 9.02 (N = 128), 3.86 (N = 32); odd 1.93, 1.97 (`final/`) | 3.99-4.00 and 2.000 at every time-matched dump | the same time mismatch (h runs end at 4.5); `final2` drops these entries |
+| 3 | A3 max |ratio_NR/ratio_MS - 1| | 4.57e-6 (L32p), 2.67e-6 (L64p), 2.69e-6 (L128p); STATUS "within 4.6e-6" | 2.72e-6, 2.37e-6, 2.38e-6 (68, 13, 13 percent apart; P256, Q64p, Q128p within 7 percent) | immaterial against 1 percent; the drifts agree to four digits, so the difference is in the dump taken as N_k + 4 or in the reference at that dump [JUDGEMENT] |
+| 4 | A1 maxima quoted in STATUS ("1.1e-12 (phi), 2.0e-12 (K) on every rung") | 1.1e-12, 2.0e-12 | phi 2.0e-12 (P256), K 3.6e-12 (L32p); the track's own summary.json has the same 2.0e-12 and 3.63e-12 | STATUS understates by 1.8; immaterial (threshold 1e-4) |
+| 5 | record <|M|/[M]> max at N = 256 | 2.72e-4 (`final`), 3.25e-4 (`final2`, window t <= 4.6) | 3.99e-4 (P256's whole record, t <= 8.5) | window, not a contradiction; A4'(c) passes either way |
+| 6 | record <|H|/[H]> max at N = 128 | 4.43e-11 (`final`) | 5.04e-11 | `final2` gives 5.04e-11 (from the constraint record) |
+| 7 | separation of the negative control | "4e4-1.5e5 times the proper run" (max over time of the record ratio) | odd-part ratio 2e3-3.6e6 early, minimum 89-179 at the end of the entry; ratio of maxima 1709-1874 | different statistics; STATUS's figure is the best case. It matters for A4'(d), which fails pointwise. |
+| 8 | second-order part "independent of N within 2.2 percent" | 64 <-> 128: 0.978-1.015; the track's own 128 -> 256 ratios 0.85-0.99 | raw 128/256 up to 17 percent at t = 0.5; 0.8 percent after each run's floor is removed | STATUS's 2.2 percent holds for 64 <-> 128 only; 128 <-> 256 needs the floor removed |
+| 9 | card against processor (A14) | 2.2e-15 | noise fields of U2: 3.2e-16 to 4.4e-16 of their maximum | different normalisation [JUDGEMENT]; not part of A7 |
+
+Nothing in the track's numbers changes a verdict above. Items 1, 2 and 4 are errors in
+`ladder/results/final/` or `stage/G1/STATUS.md` that the lead should correct (the track's
+`final2` already corrects 1, 2 and 6).
+
+Note ledger: the only ledger committed under `note/tables/` (HEAD of track/E-stoch-inf at
+the time of writing) is `ledger.tex` of note v0 (G0, runs of 2026-11-15: references,
+cost model); no G1 ledger was committed, so the recomputation of ten G1 ledger numbers was
+not available.
