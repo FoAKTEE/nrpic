@@ -42,7 +42,7 @@ tracks/A-emd-pbh/conv_ball ...`; commands in each manifest under `tracks/A-emd-p
 
 ## Runs and results
 
-Outcomes of every prediction: JOURNAL.md (entries 4, 5, 8 so far). Runs of this package:
+Outcomes of every prediction: JOURNAL.md (entries 4, 5, 8, 9, 10 so far). Runs of this package:
 
 | run id | what | state |
 |---|---|---|
@@ -56,10 +56,13 @@ Outcomes of every prediction: JOURNAL.md (entries 4, 5, 8 so far). Runs of this 
 | A-20261121-075926-d10c2c1 | card job 1 (Slurm 4776): A, B, A-L32, A-R1.25, A-R1.35, A-N8; 0.29 card-hours | completed |
 | A-20261121-085252-f4ed504 | analysis of job 1 (convergence.md, fig_convergence.png) | completed |
 | A-20261121-083336-6a82131 | chain of C (Slurm 4781, then 4786, ...) | running |
-| A-20261121-091934-ac62f5f | card job 3a (Slurm 4784): B-N8, A-N64 | running |
+| A-20261121-091934-ac62f5f | card job 3a (Slurm 4784): B-N8, A-N64; 0.84 card-hours | completed |
+| A-20261121-104359-4ce67d9 | analysis of B-N8 | completed |
+| A-20261121-110025-e6aec8c | analysis of A-N64 (with all earlier numbers) | completed |
+| A-20261121-110017-471b0ae | card job 3b (Slurm 4787): B-R1.25, B-R1.35, B-L32 | submitted |
 | A-20261121-100945-3985b90 | interim analysis of C after its first segment (t <= 6.32): turnaround leg | completed |
 
-Results of job 1 (analysis A-20261121-085252-f4ed504; errors against the exact solution of
+Results of jobs 1 and 3a (analyses A-20261121-085252-f4ed504, -104359-4ce67d9, -110025-e6aec8c; errors against the exact solution of
 each member's own data; DESIGN.md section 4):
 
 | member | first detection t | first-detection error (M) | trapping, band 2.603 (M) | turnaround V3 / C (M) | core eps at turnaround | horizon mass, median |
@@ -70,6 +73,8 @@ each member's own data; DESIGN.md section 4):
 | A-R1.25 | 10.906 | +0.100 | -0.049 | -0.020 / +0.021 | 8.0e-3 | +6.7e-3 |
 | A-R1.35 | 10.938 | +0.164 | -0.029 | -0.025 / +0.017 | 8.3e-3 | +1.0e-2 |
 | A-N8 | 10.813 | +0.109 | -0.047 | -0.048 / -0.017 | 4.2e-3 | -1.3e-3 |
+| A-N64 (4969736 particles) | 10.812 | +0.146 | -0.048 | -0.040 / -0.015 | 6.2e-3 | +5.0e-4 |
+| B-N8 (4969736 particles) | 10.750 | +0.071 | -0.028 | -0.015 / -0.008 | 3.5e-3 | -3.0e-4 |
 
 So far: the horizon is found in every member and in every search after the first; the
 first-detection and trapping errors fall from A to B at orders 1.5 and 2.1; the horizon-mass
@@ -83,13 +88,17 @@ C after its first segment (t <= 6.32, analysis A-20261121-100945-3985b90): core 
 at the turnaround 8.1e-3, 3.1e-3, 1.1e-3 (A, B, C; order about 1.4); turnaround time (cycloid
 fit) -0.0148, -0.0127, -0.0035 M: converges only from B to C (order 1.9).
 
+Particles (job 3a): at mesh B the time errors no longer depend on the particle number (B-N8
+against B: 0.003 M in the first-detection error); the horizon mass does: its median error is
+-2.1e-3 with one particle per cell and -3.0e-4 with eight (B-N8_horizon.png: 1e-4 to 7e-4 from
+t = 11.5 to 16), below the source's fiducial OS level of 1e-3; A-N64 gives +5.0e-4.
+
 ## Pending card runs
 
 | run | members | expected cost | state |
 |---|---|---|---|
-| A-20261121-083336-6a82131 (chain) | C (M/64, 4969736 particles) | about 2.1 card-hours, 3 segments | segment 1 done (t = 6.32), segment 2 Slurm 4786 |
-| A-20261121-091934-ac62f5f (batch) | B-N8, A-N64 | about 1 card-hour (A-N64 may be cut near t = 14-15 by the wall) | Slurm 4784 running |
-| lists/job3b.list (not yet submitted) | B-R1.25, B-R1.35, B-L32 | about 0.5 card-hours | after 3a |
+| A-20261121-083336-6a82131 (chain) | C (M/64, 4969736 particles) | about 2.1 card-hours, 3 segments | segment 1 done (t = 6.32), segment 2 Slurm 4786 running from 02:59 |
+| A-20261121-110017-471b0ae (batch) | B-R1.25, B-R1.35, B-L32 | about 0.5 card-hours | Slurm 4787 |
 
 Submit: `harness/bin/nrpic-run submit --kind scouting --gate G2 --package
 tracks/A-emd-pbh/conv_ball --purpose '...' --launcher batch --exe
