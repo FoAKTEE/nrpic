@@ -1,21 +1,21 @@
 # Re-verification: kb KB-G2
 
-`harness/bin/nrpic-stage verify kb KB-G2` on 2026-11-19T16:34:40Z, clean export of commit `72bce805da7e` in `scratch/kb/tmp/stage-verify/kb-KB-G2-72bce80-20261119T163335Z`. Result: **PASS**.
+`harness/bin/nrpic-stage verify kb KB-G2` on 2026-11-21T13:12:21Z, clean export of commit `42d4ee7eedc8` in `scratch/kb/tmp/stage-verify/kb-KB-G2-42d4ee7-20261121T131032Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | PASS | worktree clean (outside the stage directory being assembled) |
+| clean | FAIL | 13 uncommitted paths: commit them first (tracks/kb/code_kb/JOURNAL.md, tracks/kb/stage/KB-G0/VERIFY_RESULTS.json, tracks/kb/stage/KB-G0/VERIFY_RESULTS.md, tracks/kb/claims_tracks/decisions/C1.tsv, tracks/kb/claims_tracks/decisions/C1_annot.tsv) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 72bce805da7e (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G2-72bce80-20261119T163335Z/tree |
+| export | PASS | clean export of 42d4ee7eedc8 (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G2-42d4ee7-20261121T131032Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | WARN | no tracks/<ID>/note/main.tex (working note) |
-| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: stage/KB-G2/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016) |
+| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: stage/KB-G2/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
 | style | PASS | 1 style copies equal harness/style/SHA256SUMS (figstyle.py) |
 | fig-script | PASS | 3 figures, each with its script |
 | min-figs | PASS | 0 schematics and 3 data figures (brief 13.4 asks at least 0 and 0 at KB-G2) |
-| runs | PASS | 117 run manifests finished (77 hand-written, read as decision 0012 allows), output checksums verified where recorded |
+| runs | PASS | 139 run manifests finished (77 hand-written, read as decision 0012 allows), output checksums verified where recorded |
 | run-notes | WARN | 76 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 38 lines |
+| status | PASS | STATUS.md has 35 lines |
 | rerun | PASS | 5 of 5 scripts and commands ran cleanly in the export |
 | compare | PASS | 6 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 6 committed figure files regenerated |

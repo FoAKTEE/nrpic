@@ -1,15 +1,15 @@
 {
   "track": "kb",
   "gate": "KB-G2",
-  "commit": "72bce805da7e629ca2550c56a915541141fff95b",
-  "verified_utc": "2026-11-19T16:34:40Z",
-  "export": "/data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G2-72bce80-20261119T163335Z",
-  "result": "PASS",
+  "commit": "42d4ee7eedc87245f02031deccbba27000defb00",
+  "verified_utc": "2026-11-21T13:12:21Z",
+  "export": "/data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G2-42d4ee7-20261121T131032Z",
+  "result": "FAIL",
   "checks": [
     {
       "check": "clean",
-      "status": "PASS",
-      "message": "worktree clean (outside the stage directory being assembled)",
+      "status": "FAIL",
+      "message": "13 uncommitted paths: commit them first (tracks/kb/code_kb/JOURNAL.md, tracks/kb/stage/KB-G0/VERIFY_RESULTS.json, tracks/kb/stage/KB-G0/VERIFY_RESULTS.md, tracks/kb/claims_tracks/decisions/C1.tsv, tracks/kb/claims_tracks/decisions/C1_annot.tsv)",
       "detail": null
     },
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 72bce805da7e (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G2-72bce80-20261119T163335Z/tree",
+      "message": "clean export of 42d4ee7eedc8 (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G2-42d4ee7-20261121T131032Z/tree",
       "detail": null
     },
     {
@@ -39,7 +39,7 @@
     {
       "check": "package",
       "status": "PASS",
-      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: stage/KB-G2/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016)",
+      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: stage/KB-G2/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md",
       "detail": null
     },
     {
@@ -63,7 +63,7 @@
     {
       "check": "runs",
       "status": "PASS",
-      "message": "117 run manifests finished (77 hand-written, read as decision 0012 allows), output checksums verified where recorded",
+      "message": "139 run manifests finished (77 hand-written, read as decision 0012 allows), output checksums verified where recorded",
       "detail": null
     },
     {
@@ -362,7 +362,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 38 lines",
+      "message": "STATUS.md has 35 lines",
       "detail": null
     },
     {

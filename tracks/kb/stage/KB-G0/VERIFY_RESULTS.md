@@ -1,24 +1,24 @@
 # Re-verification: kb KB-G0
 
-`harness/bin/nrpic-stage verify kb KB-G0` on 2026-11-15T18:41:59Z, clean export of commit `f39d62d23b33` in `scratch/kb/tmp/stage-verify/kb-KB-G0-f39d62d-20261115T184116Z`. Result: **PASS**.
+`harness/bin/nrpic-stage verify kb KB-G0` on 2026-11-21T13:10:32Z, clean export of commit `42d4ee7eedc8` in `scratch/kb/tmp/stage-verify/kb-KB-G0-42d4ee7-20261121T130704Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | PASS | worktree clean (outside the stage directory being assembled) |
+| clean | FAIL | 11 uncommitted paths: commit them first (tracks/kb/code_kb/JOURNAL.md, tracks/kb/claims_tracks/decisions/C1.tsv, tracks/kb/claims_tracks/decisions/C1_annot.tsv, tracks/kb/claims_tracks/decisions/D1.tsv, tracks/kb/claims_tracks/decisions/D1_annot.tsv) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of f39d62d23b33 (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G0-f39d62d-20261115T184116Z/tree |
+| export | PASS | clean export of 42d4ee7eedc8 (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G0-42d4ee7-20261121T130704Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | WARN | no tracks/<ID>/note/main.tex (working note) |
-| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: stage/KB-G0/SCOPE.md; REVIEW.md present |
+| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: stage/KB-G0/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
 | style | PASS | 1 style copies equal harness/style/SHA256SUMS (figstyle.py) |
-| fig-script | PASS | 1 figures, each with its script |
-| min-figs | PASS | 0 schematics and 1 data figures (brief 13.4 asks at least 0 and 0 at KB-G0) |
-| runs | PASS | 86 run manifests finished (74 hand-written, read as decision 0012 allows), output checksums verified where recorded |
-| run-notes | WARN | 74 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 34 lines |
-| rerun | PASS | 3 of 3 scripts and commands ran cleanly in the export |
-| compare | PASS | 2 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
-| regenerate | PASS | all 2 committed figure files regenerated |
+| fig-script | PASS | 3 figures, each with its script |
+| min-figs | PASS | 0 schematics and 3 data figures (brief 13.4 asks at least 0 and 0 at KB-G0) |
+| runs | PASS | 139 run manifests finished (77 hand-written, read as decision 0012 allows), output checksums verified where recorded |
+| run-notes | WARN | 76 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
+| status | PASS | STATUS.md has 35 lines |
+| rerun | PASS | 5 of 5 scripts and commands ran cleanly in the export |
+| compare | PASS | 6 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| regenerate | PASS | all 6 committed figure files regenerated |
 
 ## run-notes
 
@@ -165,9 +165,29 @@
 ```
 [
  [
+  "note/figures/fig_w2b_review.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_kbg2.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_kbg2.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
   "note/figures/fig_w2_review.png",
   "PASS",
   "pixel rms 0.0"
+ ],
+ [
+  "note/figures/fig_w2b_review.png",
+  "PASS",
+  "identical"
  ],
  [
   "note/figures/fig_w2_review.pdf",
