@@ -162,3 +162,12 @@ visible at once; the relativistic numbers of that run were already right).
   reference ODE (rtol 1e-11, atol 1e-14) instead of my 1e-12 the largest difference is
   1.9607e-12, the printed 1.96e-12. So the second reading's agreement sits at the shared ODE
   tolerance; the R values themselves carry ~1.6e-9 from it, far below the printed digits.
+
+## 2026-11-21 09:35 PST — entry 4: close
+
+Report written: `stage/G1/VERIFIER-C18b.md` (58 numbers on 22 lines: 56 CONFIRMED, line 59's
+two NOT CONFIRMED as worded, none WRONG). Every figure looked at (pancake, small rows,
+residuals, Weyl, second reading). Not done: P16' per-shell fractions and P16'(v) (not ledger
+rows; routed here by the lead's review but outside this package's list). Scratch test copies
+under scratch/B-emd-gw/tmp/c18b_* are unregistered dry runs of the same scripts; the
+registered outputs are the run directories named in the README.
