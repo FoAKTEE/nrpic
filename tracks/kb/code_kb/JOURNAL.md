@@ -204,7 +204,7 @@ the option-of links M05 (NrpicInit reads tolerance) need the AthenaK path), 0 re
 Refuted would be: a named test whose record shows the property failing (identity not met,
 invariants off the published digits) for the code path of the link.
 
-## L1 search notes and E1 prediction (evidence checks), 23:40 UTC
+## L1 search notes and E1 prediction (evidence checks), 23:27 UTC
 
 Search by hand (entries of docs/TESTLOG.md and cosmo/TESTLOG.md, the decks and command lines
 of the runs they name under the main checkout's untracked runs/, the source at 47ab19ab).
@@ -227,3 +227,37 @@ Prediction E1: all 203 locator checks pass (a development pass already passed af
 links athena.log -> athena.<stamp>.log were followed within their directory; this is not
 blind) and the nco scan finds no parameter read of `nco` in athenak/src. Refuted if any
 check fails in the registered run or a `"nco"` read exists.
+
+## E1 outcome (run kb-20261121-232843-cbf311f, 23:28 UTC)
+
+`scratch/kb/kb-20261121-232843-cbf311f/{LINKS.tsv,link_evidence.json,out.txt}`; LINKS.tsv
+copied to the package. [VERIFIED by the run] 203 locator checks, 0 failed: prediction held.
+Verdicts 19 verified, 5 claimed (M18, M19, M20, M24, M25), 1 refuted (M23).
+nco: 4 lines of athenak/src at 47ab19ab contain the word `nco`, all in outputs/restart.cpp
+(154, 166, 257, 306: a local count `nco = pz4c->ptracker.size()`); no parameter read of
+`"nco"`. The trackers are counted by z4c.cpp:256-262, which loops while `co_<n>_type`
+exists. So `<z4c> nco = 2` (problems/jeans/jeans.athinput:127) is read by nothing: dead.
+[VERIFIED by the run and z4c.cpp:259 read by hand]
+
+## L1 outcome
+
+- Verified 19 (predicted 14 to 20: held); claimed 5 (predicted 5 to 11: held, at the low
+  end); refuted 1 (predicted 0: FAILED). M24 and M19 claimed as predicted. The refutation
+  is of the link, not of the code: the symbol named for the identity of L759-762 computes
+  a different diagnostic, and the identity itself is verified under M21/M22.
+- The prediction did not foresee that the named tests of M18, M20 and M25 do not reach
+  their symbols (no Z4c in the mesh-path deck; static refinement in the refined-mesh deck).
+
+## E2 prediction (kb link list, load, check, list; kb code nco), written before the run
+
+`kb link add` would duplicate, not update: add_link INSERTs a new row with no lookup of the
+link key (kb/kbtool/links_paper_code.py:205-219), so the verdicts go through
+kb/curated/paper_code_links.tsv (status and evidence columns only, apply_verdicts.py; the
+other columns and the comment lines are byte-identical, checked) and `kb link load`, which
+deletes the curated rows of owner kb and inserts the file again (links_paper_code.py:180).
+Expect: `kb link list --paper 2611.12831` gives 25 rows before and 25 after (the load
+replaces); `kb link check` 25 links, 0 with problems; after the load the database has 19
+verified, 5 claimed, 1 refuted. `kb code nco --kind param --repo local/nrpic`: hits only in
+input files (problems/jeans/jeans.athinput and others), no read in athenak/src. Refuted if the
+row count changes, a link check problem appears, or the param index has an athenak/src read
+of nco.
