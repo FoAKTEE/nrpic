@@ -1,0 +1,95 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-184940-09e7911",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "gauge-2 analysis of card job B: expanding balls L1 (cells M/2, T = 1 M) and L2 (cells M/4, T = 0.5 M) with the matter weight against the exact solution and the card runs of the first pass",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/gauge2/ball2.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "--tag",
+    "jobB",
+    "ball-l1-rho=/data/haiyangw/nrpic/scratch/core/core-20261121-175300-77c17ae/ball-l1-rho:128:32.0:t2_sharp_h0p5:1.0:leak1-n128",
+    "ball-l2-rho=/data/haiyangw/nrpic/scratch/core/core-20261121-175300-77c17ae/ball-l2-rho:160:20.0:t2_bound_h0p25:2.0:bound-leak05-n160"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "09e79113124052e59d9c98f8f370c3c5eb44e060",
+    "branch": "core/gauge-2",
+    "dirty": false,
+    "merge_base_main": "9aa744050b6dd76e8847e202b1b6f245a0cda107",
+    "worktree": "wt/core-s1"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-s1/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/gauge2/ball2.py",
+      "role": "argv",
+      "sha256": "2b3a1e451b9f4999db7bc52f66b3937f32fc9da1db03a16598c44aec1d563848",
+      "bytes": 7160,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-184940-09e7911",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T18:49:41Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "core-20261121-175300-77c17ae"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 6.9873,
+    "gpu_hours_reserved": 1.45,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1459,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
