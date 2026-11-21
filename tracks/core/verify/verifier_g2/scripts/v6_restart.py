@@ -49,10 +49,18 @@ def run(cmd, cwd):
 
 
 def rst_cycle(path):
+    """ncycle from the restart header (athenak/src/outputs/restart.cpp lines 219-236:
+    parameter text ending in '<par_end>\\n', int nmb_total, int root_level, RegionSize
+    (9 doubles), two RegionIndcs (19 ints each), Real time, Real dt, int ncycle)."""
+    import struct
     with open(path, "rb") as fh:
-        head = fh.read(4096).decode("latin1")
-    m = re.search(r"cycle\s*=\s*(\d+)", head)
-    return int(m.group(1)) if m else None
+        b = fh.read(65536)
+    h = b.find(b"<par_end>")
+    if h < 0:
+        return None
+    h += 10
+    (cyc,) = struct.unpack_from("<i", b, h + 248)
+    return cyc
 
 
 def read_hist(path):
@@ -136,8 +144,8 @@ def main():
         rcA, wA = run([exe, "-i", inp, "-d", A] + c["args"] + extra, A)
         rsts = sorted(glob.glob(os.path.join(A, "rst", "*.rst")))
         cyc = {p: rst_cycle(p) for p in rsts}
-        mid = [p for p, cy in cyc.items() if cy == n]
-        end = [p for p, cy in cyc.items() if cy == 2 * n]
+        mid = sorted(p for p, cy in cyc.items() if cy == n)
+        end = sorted(p for p, cy in cyc.items() if cy == 2 * n)
         entry = {"rcA": rcA, "wallA_s": wA, "rst_cycles_A": {os.path.basename(p): cy for p, cy in cyc.items()}}
         if not mid:
             entry["error"] = "no restart file of cycle n"
