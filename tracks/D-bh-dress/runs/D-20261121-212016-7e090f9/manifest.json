@@ -1,0 +1,162 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261121-212016-7e090f9",
+  "track": "D-bh-dress",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "note_v2 N1: Kerr spike seed 2 stationarity in AthenaK (analytic Kerr-Schild a=0.8), 48000 test particles in 6 files, 20000 M, dt 0.05, release core-v0.3 processor build as seed 1 (D-bh-dress-20261115-172611-1e40191)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "cd tracks/D-bh-dress/spike && python3 drive_runs.py --ic /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-211717-7b6374b --out \"$NRPIC_RUN_DIR\" --exe /data/haiyangw/nrpic/.work/build_cpu_v03/src/athena --athinput kerr_geodesic.athinput --files kerr_0.nrp kerr_1.nrp kerr_2.nrp kerr_3.nrp kerr_4.nrp kerr_5.nrp -- time/tlim=20000 particles/snap_dt=100 particles/dt=0.05"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "7e090f94571fb330b3174fe9421ba5e018bcb85e",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/note_v2"
+    ],
+    "outside_package": {
+      "count": 3,
+      "first": [
+        "?? tracks/D-bh-dress/drift_controls/tools/compare_runs.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/count_blocks.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/slice_profiles.py"
+      ]
+    },
+    "merge_base_main": "9d43b229377786cc62ef7bb666b765abfdab30bc",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/D-bh-dress/spike/kerr_geodesic.athinput",
+      "role": "input",
+      "sha256": "b90522005601cd71047f71d84fd6010b911f9ca556831d43bc75ba204bbc412d",
+      "bytes": 1464,
+      "tracked": true
+    },
+    {
+      "path": "tracks/D-bh-dress/spike/drive_runs.py",
+      "role": "input",
+      "sha256": "714e3dc155abc1b5d0bde51e12405f0e80a361897d7ebd9f3e30a1486f0b1e01",
+      "bytes": 1844,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-211717-7b6374b/kerr_0.nrp",
+      "role": "input",
+      "sha256": "91d484ef218be43c2436b14270b7f0caf7a3d8454025a57e4b3d0a8da4d03bd8",
+      "bytes": 480016,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-211717-7b6374b/kerr_1.nrp",
+      "role": "input",
+      "sha256": "23777643a08bf2cc34045ae6b416c00d77ad00df6cca7e8a3c72584787f6abc3",
+      "bytes": 480016,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-211717-7b6374b/kerr_2.nrp",
+      "role": "input",
+      "sha256": "4318333aabee4abeadd28cd0de11eb37d8a7cc7e1f14822ee23202e3c39bb0ee",
+      "bytes": 480016,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-211717-7b6374b/kerr_3.nrp",
+      "role": "input",
+      "sha256": "0a57828fb61363c71a96895495c5ac8a71af80d560e8de3fad786451fb80d83d",
+      "bytes": 480016,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-211717-7b6374b/kerr_4.nrp",
+      "role": "input",
+      "sha256": "6ea81e4b0ed6e83de2a70fdeb1b07e87807de0b440ab31198f2119ee4c1538b8",
+      "bytes": 480016,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-211717-7b6374b/kerr_5.nrp",
+      "role": "input",
+      "sha256": "abf38fc092c84c4777617eec4c4da0160270705c64ae33d0b60c467a3c0e3096",
+      "bytes": 480016,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+      "role": "input",
+      "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c",
+      "bytes": 246469568,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 6,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261121-212016-7e090f9",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T21:20:16Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 30.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 3.2047,
+    "gpu_hours_reserved": 21.6333,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 6,
+    "runs": 254,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
