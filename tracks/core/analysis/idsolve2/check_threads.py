@@ -44,13 +44,20 @@ def residuals(d):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--exe", required=True)
-    ap.add_argument("--serial-exe", required=True)
+    ap.add_argument("--exe", default="")
+    ap.add_argument("--serial-exe", default="")
     ap.add_argument("--threads", type=int, default=4)
     ap.add_argument("--cases", nargs="*", default=[])
     ap.add_argument("--twice", default="")
+    ap.add_argument("--redraw", default="", help="run directory of an earlier run: draw its "
+                    "figure again from its check_threads.json, no case is run")
     a = ap.parse_args()
     root = lib2.run_root()
+    if a.redraw:
+        import json
+        with open(os.path.join(a.redraw, "check_threads.json")) as f:
+            lib2.publish(figure(json.load(f), root))
+        return 0
     exe = os.path.abspath(a.exe)
     rep = dict(run=lib2.run_id(), exe=exe, serial_exe=a.serial_exe, threads=a.threads,
                cases={}, repeat={})
@@ -83,10 +90,16 @@ def main():
             bad += 1
     out = os.path.join(root, "check_threads.json")
     lib2.save_json(out, rep)
-    # figure: differences of the fields, and the residuals each build reaches
+    lib2.publish([out] + figure(rep, root))
+    return 1 if bad else 0
+
+
+def figure(rep, root):
+    """Differences of the fields, and the residuals each build reaches."""
+    a = argparse.Namespace(threads=rep["threads"])
     fs.use_style()
     names = [n for n in rep["cases"] if rep["cases"][n]["exit"] == 0]
-    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 2.6))
+    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.2))
     x = np.arange(len(names))
     floor = 1e-18
     for k, (key, lab, c) in enumerate((("dpsi_rel", r"$\psi$", fs.PAL["blue"]),
@@ -98,7 +111,7 @@ def main():
     axs[0].set_ylim(1e-17, 1e-1)
     axs[0].set_xticks(x)
     axs[0].set_xticklabels(names, fontsize=6, rotation=15)
-    axs[0].set_ylabel("largest difference over the maximum")
+    axs[0].set_ylabel("largest difference / maximum", fontsize=9)
     axs[0].set_title("%d threads against the serial build" % a.threads, fontsize=7)
     axs[0].legend(fontsize=6)
     for key, mk, lab in (("H_last", "o", r"$\max|H|$ after the solve"),
@@ -112,14 +125,14 @@ def main():
     axs[1].set_xticks(x)
     axs[1].set_xticklabels(names, fontsize=6, rotation=15)
     axs[1].set_xlim(-0.6, len(names) - 0.4)
-    axs[1].set_ylabel("constraint monitor of the record")
-    axs[1].legend(fontsize=5, ncol=2, loc="upper center", bbox_to_anchor=(0.5, 1.22))
+    axs[1].set_ylabel("monitor after the solve", fontsize=9)
+    axs[1].set_title("residuals reached", fontsize=7)
+    axs[1].legend(fontsize=5, ncol=2, loc="center", bbox_to_anchor=(0.5, 0.5))
     fig.tight_layout()
     p = os.path.join(root, "check_threads")
     fs.save(fig, p)
     plt.close(fig)
-    lib2.publish([out, p + ".png", p + ".pdf"])
-    return 1 if bad else 0
+    return [p + ".png", p + ".pdf"]
 
 
 if __name__ == "__main__":
