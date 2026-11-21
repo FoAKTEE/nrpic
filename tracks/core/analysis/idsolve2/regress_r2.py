@@ -35,13 +35,17 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
 
-def replay(old, new, old_exe, new_exe):
-    """Run the steps of old/run.log in the directory new with the new executable."""
+def replay(old, new, old_exe, new_exe, threads=1):
+    """Run the steps of old/run.log in the directory new with the new executable (threads:
+    OMP_NUM_THREADS of a threaded build, unbound)."""
     os.makedirs(new, exist_ok=True)
     shutil.copyfile(os.path.join(old, "in.athinput"), os.path.join(new, "in.athinput"))
     steps = [shlex.split(ln[2:]) for ln in open(os.path.join(old, "run.log"))
              if ln.startswith("$ ")]
-    env = dict(os.environ, OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1", MKL_NUM_THREADS="1")
+    env = dict(os.environ, OMP_NUM_THREADS=str(threads), OPENBLAS_NUM_THREADS="1",
+               MKL_NUM_THREADS="1")
+    if threads > 1:
+        env["OMP_PROC_BIND"] = "false"
     t0 = time.time()
     rc = 0
     with open(os.path.join(new, "run.log"), "w") as log:
