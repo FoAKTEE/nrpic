@@ -1,0 +1,165 @@
+{
+ "regime": {
+  "closed_form": "omega/(c k1) = 2 sqrt(9 pi^2) sqrt(delta/a_c delta) / (pi/2) = 12 sqrt(delta/0.56) for a_c = 0.56/delta",
+  "endpoints_ac_0.56": [
+   0.8017837257372731,
+   3.5856858280031805
+  ],
+  "endpoints_ac_1.686_over_3": [
+   0.8003557927683124,
+   3.579299917631362
+  ],
+  "grid_first_last_delta": [
+   0.002551406520031287,
+   0.0495353520895917
+  ],
+  "grid_ratio_min_max": [
+   0.8099851617738187,
+   3.568986125763871
+  ],
+  "rates": {
+   "64": {
+    "sha256_ok": true,
+    "cycles": 1404,
+    "cpu_s": 63.78301,
+    "rate_mine": 5770348.185198535,
+    "rate_code": 5770348.0,
+    "dt_values": [
+     0.01000084,
+     0.0110499,
+     0.01220901,
+     0.01348972,
+     0.01490477,
+     0.015625
+    ],
+    "dt_model": 0.015625
+   },
+   "128": {
+    "sha256_ok": true,
+    "cycles": 2773,
+    "cpu_s": 1301.822,
+    "rate_mine": 4467125.6869218685,
+    "rate_code": 4467127.0,
+    "dt_values": [
+     0.0078125
+    ],
+    "dt_model": 0.0078125
+   }
+  },
+  "cost": [
+   {
+    "delta": 0.01,
+    "n": 64,
+    "nz": 64,
+    "steps": 1387,
+    "card_hours": 0.01750297461024058
+   },
+   {
+    "delta": 0.01,
+    "n": 128,
+    "nz": 128,
+    "steps": 2774,
+    "card_hours": 0.36174762872140076
+   },
+   {
+    "delta": 0.01,
+    "n": 256,
+    "nz": 256,
+    "steps": 5547,
+    "card_hours": 5.786918807548984
+   },
+   {
+    "delta": 0.01,
+    "n": 256,
+    "nz": 16,
+    "steps": 5547,
+    "card_hours": 0.3616824254718115
+   },
+   {
+    "delta": 0.0025,
+    "n": 64,
+    "nz": 64,
+    "steps": 2902,
+    "card_hours": 0.03662122012899651
+   },
+   {
+    "delta": 0.0025,
+    "n": 128,
+    "nz": 128,
+    "steps": 5803,
+    "card_hours": 0.7567489147333413
+   },
+   {
+    "delta": 0.0025,
+    "n": 256,
+    "nz": 256,
+    "steps": 11605,
+    "card_hours": 12.106939383740032
+   },
+   {
+    "delta": 0.0025,
+    "n": 256,
+    "nz": 16,
+    "steps": 11605,
+    "card_hours": 0.756683711483752
+   }
+  ],
+  "measured_64_cpu_hours": 0.017717502777777776
+ },
+ "slurm_pancake": {
+  "4373": {
+   "elapsed_s": 1023,
+   "card_hours": 0.2841666666666667,
+   "tres": "billing=1,cpu=1,gres/gpu=1,node=1"
+  },
+  "4388": {
+   "elapsed_s": 710,
+   "card_hours": 0.19722222222222222,
+   "tres": "billing=1,cpu=1,gres/gpu=1,node=1"
+  },
+  "total": 0.48138888888888887
+ },
+ "flrw": {
+  "flrw_n32_cpu_sd": {
+   "sha256_matches_manifest": true,
+   "a_end": 4.0,
+   "max_rel_err_lapse": 1.9142559093410227e-07,
+   "records": 65,
+   "max_rel_err_alpha_min": 1.9142559093410227e-07,
+   "max_rel_err_alpha_max": 1.9142559093410227e-07
+  },
+  "dtexp_test/lim": {
+   "sha256_matches_manifest": true,
+   "a_end": 36.0,
+   "max_rel_err_lapse": 7.001900970138308e-08,
+   "records": 361,
+   "max_rel_err_alpha_min": 7.001901380920827e-08,
+   "max_rel_err_alpha_max": 7.001900625969171e-08,
+   "cstat_sha256_matches_manifest": false,
+   "Hr_max_last": 6.046351675429349e-08,
+   "a_last_cstat": 36.0,
+   "Hr_max_largest": 6.059430064087116e-08
+  }
+ },
+ "ellipsoid": {
+  "t2": 26.959496835520305,
+  "S": 0.00012256297662373883,
+  "E_mpmath_quadrature": 9.797680096180205e-05,
+  "E_closed": 9.797680096180205e-05,
+  "rel_dev_mpmath_50digits": 0.0,
+  "rel_dev_double_GL": 1.1102230246251565e-16,
+  "P_over_closed_at_t": [
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ "lapse2": {
+  "mean_KijKij_over_pi2A2": 0.9999999999999999,
+  "conformal_alpha_minus_1": -1.6449341888602476e-10,
+  "onelog_alpha_minus_1": -9.869605133161485e-10,
+  "closed_conformal": -1.6449340668482263e-10,
+  "closed_onelog": -9.869604401089357e-10
+ }
+}

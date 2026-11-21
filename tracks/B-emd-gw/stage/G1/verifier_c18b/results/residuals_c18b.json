@@ -1,0 +1,128 @@
+{
+ "jit0p3": {
+  "N": 2097152,
+  "n": [
+   64,
+   64,
+   64
+  ],
+  "h": 0.0625,
+  "mass_sum": 7.641270090385931,
+  "mass_sum_id_json": 7.641270090385931,
+  "deposit_integral_over_mass": 1.0000000000000004,
+  "A_nyquist_zero": {
+   "max_hamiltonian_residual": 9.99265781231884e-10,
+   "max_hamiltonian_term": 1.0406446802940672,
+   "max_momentum_residual": 0.0007628667399551328,
+   "max_momentum_source": 0.026110739543646087,
+   "momentum_residual_power_share_shell_ge_28": 0.9999999995952785,
+   "momentum_residual_power_share_on_nyquist_planes": 0.9999999995952785,
+   "interpolation_sensitivity": {
+    "cubic_bspline_ndimage": {
+     "max_hamiltonian_residual": 3.698974460064619e-11,
+     "max_abs_psi_difference_at_particles": 2.812694738540955e-05
+    },
+    "linear_ndimage": {
+     "max_hamiltonian_residual": 2.993410408436148e-09,
+     "max_abs_psi_difference_at_particles": 4.2236828410091576e-05
+    }
+   }
+  },
+  "B_nyquist_kept": {
+   "max_hamiltonian_residual": 9.99265781231884e-10,
+   "max_hamiltonian_term": 1.0406446802940672,
+   "max_momentum_residual": 0.0007628667399551328,
+   "max_momentum_source": 0.026110739543646087
+  },
+  "id_json": {
+   "max_hamiltonian_residual": 3.699018868985604e-11,
+   "max_hamiltonian_term": 1.0406446796128128,
+   "max_momentum_residual": 0.0007628667399551294,
+   "jitter": 0.3
+  }
+ },
+ "jit0p1": {
+  "N": 2097152,
+  "n": [
+   64,
+   64,
+   64
+  ],
+  "h": 0.0625,
+  "mass_sum": 7.641270090385935,
+  "mass_sum_id_json": 7.641270090385935,
+  "deposit_integral_over_mass": 1.0,
+  "A_nyquist_zero": {
+   "max_hamiltonian_residual": 3.277544902147156e-10,
+   "max_hamiltonian_term": 0.8666353329856608,
+   "max_momentum_residual": 0.00028277865704102664,
+   "max_momentum_source": 0.02117462074739315,
+   "momentum_residual_power_share_shell_ge_28": 0.9999999999755231,
+   "momentum_residual_power_share_on_nyquist_planes": 0.9999999999755234,
+   "interpolation_sensitivity": {
+    "cubic_bspline_ndimage": {
+     "max_hamiltonian_residual": 4.4962922274294215e-12,
+     "max_abs_psi_difference_at_particles": 9.522471484446626e-06
+    },
+    "linear_ndimage": {
+     "max_hamiltonian_residual": 9.393343880503835e-10,
+     "max_abs_psi_difference_at_particles": 1.550464954247488e-05
+    }
+   }
+  },
+  "B_nyquist_kept": {
+   "max_hamiltonian_residual": 3.277544902147156e-10,
+   "max_hamiltonian_term": 0.8666353329856608,
+   "max_momentum_residual": 0.00028277865704102664,
+   "max_momentum_source": 0.02117462074739315
+  },
+  "id_json": {
+   "max_hamiltonian_residual": 4.496181205126959e-12,
+   "max_hamiltonian_term": 0.866635332964833,
+   "max_momentum_residual": 0.00028277865704101623,
+   "jitter": 0.1
+  }
+ },
+ "jit0": {
+  "N": 2097152,
+  "n": [
+   64,
+   64,
+   64
+  ],
+  "h": 0.0625,
+  "mass_sum": 7.64127009038594,
+  "mass_sum_id_json": 7.64127009038594,
+  "deposit_integral_over_mass": 1.0000000000000002,
+  "A_nyquist_zero": {
+   "max_hamiltonian_residual": 4.781841589363012e-12,
+   "max_hamiltonian_term": 0.778278503764684,
+   "max_momentum_residual": 4.85722573273506e-17,
+   "max_momentum_source": 0.01913043801360994,
+   "momentum_residual_power_share_shell_ge_28": 0.5530097353273112,
+   "momentum_residual_power_share_on_nyquist_planes": 0.323055050494633,
+   "interpolation_sensitivity": {
+    "cubic_bspline_ndimage": {
+     "max_hamiltonian_residual": 4.782063633967937e-12,
+     "max_abs_psi_difference_at_particles": 4.621966143147915e-09
+    },
+    "linear_ndimage": {
+     "max_hamiltonian_residual": 6.522460349600578e-11,
+     "max_abs_psi_difference_at_particles": 2.8462948249430298e-06
+    }
+   }
+  },
+  "B_nyquist_kept": {
+   "max_hamiltonian_residual": 4.781841589363012e-12,
+   "max_hamiltonian_term": 0.778278503764684,
+   "max_momentum_residual": 4.85722573273506e-17,
+   "max_momentum_source": 0.01913043801360994
+  },
+  "id_json": {
+   "max_hamiltonian_residual": 4.782285678572862e-12,
+   "max_hamiltonian_term": 0.7782785037646831,
+   "max_momentum_residual": 3.122502256758253e-17,
+   "jitter": 0.0
+  }
+ }
+}
