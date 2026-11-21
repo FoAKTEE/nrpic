@@ -497,3 +497,126 @@ theta; T7 at theta 0.003 corrected for the cell-size dependence measured by the 
 set (quadratic and linear forms, t8 run C-20261120-223321-3d088d4); the eps = 0.05 set alone
 with its expected standard error; S-pairs with the design Monte Carlo noise model instead
 of the 4-seed variance at k lambda 0.1.
+
+## 2026-11-21 03:05 Outcomes of the 22:26 predictions and of S-pairs (figures looked at)
+
+Figures read before the numbers below were written down: `figs/T8_card_convergence.png`,
+`T8_cpu_convergence.png`, `T8_changes.png`, `T7_eps0.05_vs_0.2.png`,
+`T7_th0.003_e0.05_card.png`, `T7_th0.003_e0.2_pooled.png`, `T7_th0.1_e0.2_pooled.png`,
+`T7_th1_e0.2_pooled.png`, `cardcpu_th0.003.png`, `cardcpu_th0.1.png`, `cardcpu_th1.png`,
+`seedpairs.png`, `summary_c6.png`. Defects seen: the two `T8_*_convergence.png` have
+overlapping dx tick labels and the card one a clipped y label (`T8_changes.png`, made later
+from the same numbers, is the readable one); the pooled theta 0.1 and 1 panels draw the
+theta = 0.003 pass band and the 1.025 line, which do not apply there; the seedpairs title is
+clipped at the right. None hides a number used here.
+
+P-pf: HELD. (i) The particle files regenerated in C-20261119-162353-7985a9a are
+byte-identical to the shared ones (sha256 67cef549... seed 1, e61ba0fd... seed 2, 30000016
+bytes each; run C-20261120-222547-e1c0353). (ii) In all 72 cases that started (25 of 27 in
+-222547-e1c0353, the two others being the lost cases; 47 of 47 in C-20261120-222846-029c453,
+card job B and the T7 processor runs), the first snapshot holds x, u, m bit-identical to its
+particle file. No case read a half-written file.
+
+P-T8 (card job A, one seed, 4e6; analyses C-20261120-222624-cae43d6, C-20261120-223321-3d088d4):
+HELD as stated. f = kappa/kappa_1 at k lambda 0.2: dt 0.05/0.1/0.2 t_coll: 1.0169, 1.0222,
+1.0203; pmax 0.05/0.1/0.2: 1.0221, 1.0222, 1.0274; dx lambda/8, /4, /2: 1.0116, 1.0222, 1.0403
+(n_trunc 0 in all seven; max P 0.105-0.207; at least 20 particles in every cell). Changes
+between the two finest values: dt -0.52 percent (-0.85 of the expected sd of a change, 0.61
+percent), pmax -0.006 percent (-0.01 sd), dx -1.04 percent (-1.70 sd); all below 2 percent.
+Sign and size clauses: dt, "kappa rises with dt, below resolution": f(0.05) < f(0.1) but
+f(0.2) < f(0.1); nothing resolved, as predicted. pmax, "no effect beyond noise": held
+(|z| <= 0.83 for both changes). dx, "kappa rises with dx": HELD and resolved: monotone, and
+a quadratic f0 + c (dx/lambda)^2 has c = 0.115 +- 0.025 (4.7 sd from zero with the
+independent-run sd, a conservative error because the variants share one sample).
+"The lambda/2 -> lambda/4 change is about four times the lambda/4 -> lambda/8 change":
+observed 1.74 against 1.04 percent, ratio 1.7; D = (f(1/2) - f(1/4)) - 4 (f(1/4) - f(1/8))
+= -0.024 +- 0.028: neither refuted (0.9 sd) nor confirmed; a linear form fits as well
+(chi^2 0.04 against 0.76). The cell-size bias at the dx of the T7 runs (0.245 lambda):
++0.69 +- 0.15 percent (quadratic) or +1.87 +- 0.39 percent (linear). Margin to the 2 percent
+criterion: 1.6 sd for dx, 2.4 sd for dt.
+
+P-T8c (processors, seeds 1, 2 x 5e5; C-20261120-222620-6ecac07, -223321-3d088d4): HELD. Largest
+change between neighbouring values 4.27 percent (seed 1, pmax 0.05 -> 0.1), all others
+<= 3.68 percent; expected sd of a change 1.73 percent. The two seeds' base values differ by
+3.6 percent (0.9974, 1.0332; 2.1 sd of a difference). The finest changes exceed 2 percent in
+four of six cases (1.0-2.5 sd), as the 15:41 entry said they could: this set cannot judge the
+2 percent criterion. Both seeds agree with the card on the dx trend (+3.1, +3.3 percent from
+lambda/4 to lambda/2).
+
+P-eps (C-20261120-223208-4ca3110 over -222702-e2e02df and -223001-eb81eb7): HELD.
+f(eps 0.05) - f(eps 0.2) = -2.05 percent at k lambda 0.2 (z = -1.62 with the expected se
+1.26 percent) and +1.27 percent at 0.4 (z = +0.45, se 2.80 percent); weighted -1.49 +- 1.15
+percent. The two eps 0.05 seeds agree with each other far better than expected (0.998 and
+1.004 at k lambda 0.2, expected per-seed sd 1.7 percent): two seeds say nothing about that.
+The eps 0.05 set alone, extrapolated through its two k lambda (summary run
+C-20261121-030328-e3ffc6d): f0 = 0.983 with expected se 0.019 (0.007 from the two-seed
+scatter), 0.4 expected se below the lower edge 0.99 of the T7 interval: consistent with the
+interval, not a precision result, as P-eps said.
+
+P-T7hot (theta 0.1 and 1; C-20261120-222954-b1a06ed, -223001-eb81eb7, -223203-b38a7d7,
+summary -030328-e3ffc6d). Values (k lambda -> 0): theta 0.1: 1.0957 +- 0.0051 (N-weighted,
+card and processor seeds), 1.1013 +- 0.0052 (unweighted), 1.0877 +- 0.0042 (card seeds
+alone); theta 1: 0.9914 +- 0.0035, 0.9854 +- 0.0046, 1.0021 +- 0.0012 (the card-alone errors
+come from two seeds and are not reliable).
+- Expected 1.0 +- 0.1 at theta 0.1 and 0.75 +- 0.25 at theta 1 [JUDGEMENT of 14:50]: the
+  central values FAILED (measured 1.10 and 0.99); the ranges were met only at their upper
+  edges (the unweighted 1.1013 lies 0.001 above 1.10). The mean-free-path estimate had the
+  wrong shape: kappa/kappa_1 rises by 7-8 percent from theta 0.003 to 0.1 and returns to 0.99 at
+  theta 1.
+- (i) card and processor agree: held in the reading below. With the two-processor-seed noise
+  (as cardcpu computes z) 2 of 12 card seeds lie beyond 3 (z = -14.5 at theta 0.1, k lambda
+  0.1, where the two processor seeds agree to 0.2 percent; -3.36 at theta 1, k lambda 0.4);
+  with the theta 0.003 noise model (z_ref) 1 of 12 (-3.06). S-pairs below assigns the excess
+  to the noise model at k lambda 0.1, not to the card.
+- (ii) chi^2 of the extrapolation below 9 (1 dof): HELD in every form: 2.04 and 3.01
+  (weighted), 1.21 and 0.79 (unweighted), 1.35 and 8.74 (card alone).
+- (iii) f_N above f_S at every k lambda: HELD, in the group means and in every one of the 24
+  seeds (f_N: 1.126, 1.181, 1.695 at theta 0.1 and 1.003, 1.020, 1.422 at theta 1 for
+  k lambda 0.1, 0.2, 0.4; f_S: 1.105, 1.099, 1.122 and 0.995, 0.997, 1.038). The sound bias
+  of the number mode is small at k lambda 0.1 at theta 1 (+0.8 percent) and large at 0.4.
+- Post hoc (entry 03:02): the order-4 relativistic Chapman-Enskog value of verify_g1 V1a
+  (run C-20261120-222423-519f12b) is 1.0988 +- 0.0015 (theta 0.1) and 0.9933 +- 0.0010
+  (theta 1) in units of kappa_1. Measured N-weighted values lie -0.28 percent (z = -0.58) and
+  -0.19 percent (z = -0.51) from it; the unweighted ones +0.23 (+0.46) and -0.80 percent
+  (-1.67). The first-order CE value at theta 1 (0.9407) is 14 se below the measurement: the
+  code reproduces the relativistic Sonine correction (+5.6 percent at theta 1), not only
+  the first approximation [VERIFIED by runs, against a reference that is itself unreviewed].
+
+P-cc (theta 0.003, card seed 5 at 4e6 against the processor seeds; C-20261120-223203-b38a7d7):
+HELD. z = +1.79, +1.19, +0.27 at k lambda 0.1, 0.2, 0.4 (all three positive; their mean
+1.08 is 1.9 sd of a mean of three, not significant). The card executable is not suspect for
+this test.
+
+S-pairs (post hoc; C-20261121-025837-8b5b9ee; summary C-20261121-030328-e3ffc6d). (a) chi^2 of
+the 15 card z_ref = 46.8, above the 95 percent range 6.3-27.5; mean z_ref = -0.29 +- 0.26: no
+common card offset. (b) Same-executable seed pairs: chi^2 = 32.3 for 12 pairs, 28.2 of it at
+k lambda 0.1 (4 pairs: card pair at theta 0.1 z = 4.5, processor pair at theta 1 z = 2.78);
+1.8 and 2.3 for the 4 pairs each at 0.2 and 0.4. So the excess is at k lambda 0.1 and in
+both executables: the noise model there is too small. Its unit variance at k lambda 0.1 comes
+from four theta 0.003 processor seeds (s2 = 24); the design Monte Carlo gives s2 = 150
+(design run C-20261119-144117-37b2328, fit_rel_sd at eps 0.2 and 4e6). With the design noise
+the 12 pairs give chi^2 = 8.7 for 12 and the two large pair z become 1.91 and 1.36 [JUDGEMENT:
+the 4-seed variance is low by chance, P(chi^2_3 < 3 x 24/150) = 0.08; the design noise may
+itself be high, at k lambda 0.2 the 8-seed variance is 71 against 177]. Conclusion: no sign
+of a card bias at theta 0.1 and 1 within these statistics.
+
+P-T7pool (theta 0.003, eps 0.2, all seeds): (a) in [0.99, 1.06]: HELD, 1.0208 +- 0.0034
+(unweighted, C-20261120-223001-eb81eb7) and 1.0250 +- 0.0025 (N-weighted, -223203-b38a7d7).
+(b) "weighted 1.02 +- 0.004, within 2 se of 1.019": FAILED narrowly: 1.0250 is 2.3 se (of
+0.0025) above 1.019, and the weighted extrapolation has chi^2 = 6.57 for 1 dof (p = 0.01);
+with the se scaled by sqrt(chi^2) (0.0064) the difference is 0.9 se. The weights give the one
+card seed (4e6) 10/14 and 10/18 of the weight, and that seed lies above the processor mean at
+all three k lambda [JUDGEMENT: one realisation pulls the weighted value].
+
+New finding, post hoc (summary C-20261121-030328-e3ffc6d): at theta 0.003 the measured
+conductivity at dx = lambda/4 lies 0.5-1.0 percent below the order-4 relativistic CE value
+1.0296 +- 0.0010 of V1a (processor 1.0192 +- 0.0038, z = -2.7; pooled 1.0208, -2.5; weighted
+1.0250, -1.7 or -0.7 with the scaled se). Removing the cell-size bias of P-T8 lowers it
+further: 1.012-1.018 (quadratic) or 1.000-1.006 (linear), i.e. 1.2-2.9 percent below CE
+(z between -1.8 and -5.3 depending on the form and the error). All these values stay inside
+[0.99, 1.06], so T7 passes in every form; whether the zero-cell-size conductivity of the
+operator is 1-3 percent below Chapman-Enskog is [TO VERIFY]: it rests on one card seed for
+the cell-size form, the time-step dependence is not resolved, and V1a itself is unreviewed
+(its theta = 1e-4 order-4 value 1.0233 +- 0.0015 and its non-relativistic order-4 value
+1.0267 +- 0.0005 differ by 2.1 se, so its own error may be underestimated at the 0.2-0.3
+percent level).
