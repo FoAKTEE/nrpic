@@ -131,6 +131,23 @@ E-20261121-080134-a0cc3eb. All scouting, gate G2.
 | records <abs M/[M]> late | 1.07e-2 | 2.47e-2 (4.3e-2 at s = 1/2) | a floor over [M] proportional to s (P1:541's "1e-2" is no error measure) |
 | cost on one A100 | 12 s per run | 132 s per run, 0.155 s per step | |
 
+U256, P1's production set-up (256^3, nmax2 = 4096, k_max = 64 dk, s = +1): card run
+E-20261121-075255-8cf90e7 (job 4774, 0.617 card-hours), analysis E-20261121-084815-63462b8,
+lockstep check E-20261121-090057-19571c7 (JOURNAL entry 14).
+
+| Item | Result | Verdict |
+|---|---|---|
+| U-A0, max abs dN | 1.6e-9 | pass |
+| U-A1, <Pi> / <phi> / <K> | 4.2e-5 (the s^2 backreaction) / 1.2e-9 / 2.4e-11 | pass |
+| U-A2, single run, per mode at N_f, k <= 32 dk (68532 modes) | median 2.6e-4, rms 7.9e-4, max 5.9e-2; 10 modes above 0.02, all with abs(alpha) in the smallest 0.07 % | FAILED as written (an additive part over a small amplitude); over the shell rms at most 9.1e-4 |
+| U-A3, k <= 3 dk | 0.9923 to 1.0016 | pass |
+| U-A5, shell power ratio at N_f | k <= 32 dk: 5.9e-4; top shells 6.7e-3 | as predicted |
+| lockstep record of the mode functions | 2.55e-3 for the top shell = k^5 dt^4/600 (RK4 phase error from N*; within 3 % on 2934 shells); R^NR of the top shells inherits it | the U2 prediction (1e-6) failed; cause found |
+| P-h one-point at N_f | rms R^NR 0.89452 (linear field of the realisation 0.89436, ensemble 0.89366); skewness 0.0024, excess kurtosis 0.0011; max abs 4.568 (linear 4.562; 5.1 rms); R^NR - R_lin rms 9.7e-4 | Gaussian, linear to 1e-3 of the rms; no "outliers ~ 10" (P1:534) in this realisation |
+| where the linear per-mode comparison loses meaning | worst mode passes 1e-3 at cN 6.0 and 0.02 at cN 7.0 (rms R^NR 0.15, 0.72); the rms over modes stays below 1e-3 to N_f | meaningful at the 1e-3 level through N_f |
+| records | <abs H'/[H]> 2.9e-12 at most; <abs M/[M]> 2.5e-2 in USR, 2.1e-3 at N_f | as predicted |
+| cost per realisation (SCOPE 8) | 1702 steps, 1.30 s per step, 37.0 min on one A100 = 0.617 card-hours; 19.6 GB card memory; 21 dumps of 2.95 GB (62 GB) | |
+
 ## Requests
 
 - To core:
@@ -157,4 +174,12 @@ E-20261121-080134-a0cc3eb. All scouting, gate G2.
      128^3) and is a floor over a magnitude proportional to the amplitude (4.3e-2 at
      s = 1/2), not an error of the solution; do not use it as an acceptance number.
   3. A1 for USR at 1e-3: from 64^3 on the margin is 40 (2.5e-5) and 750 (1.3e-6 at 128^3).
+- To core (new): the lockstep integration of the mode functions runs from N* with the
+  run's step, so a shell deep inside the horizon accumulates RK4's phase error
+  k^5 dt^4/600: 2.5e-3 for k = 64 dk at 256^3 (run E-20261121-090057-19571c7, within 3 %
+  on 2934 shells), and the injected sources of the top shells carry it (U-A5 6.7e-3 in
+  power for the top shell). Sub-stepping the lockstep record (n sub-steps lower it by n^4),
+  or starting each shell from its Bunch-Davies form when k/(aH) falls below some bound,
+  would remove it at no cost to the field evolution. Not blocking: U-A2 gates k <= 32 dk,
+  where this part is below 8e-5.
 - To nobody else.
