@@ -1,0 +1,87 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261121-230816-3d85012",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "periodic_diag analysis of R2 (card deck, zero shift, processors) against card job 4799 P0L and S1L",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 python -I tracks/A-emd-pbh/periodic_diag/scripts/analyse_runs.py --name refined --tmax 3.2 --vn /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-212800-d7f31a4 --run card_P0L=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-131600-02b5d41/P0L:0.01953125 --run card_S1L=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-131600-02b5d41/S1L:0.01953125 --run R2=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-212853-4a52dea/R2:0.01953125 --out \"$NRPIC_RUN_DIR\""
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "3d850129033f223d04266b36d7a1443270845081",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/periodic_diag"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "9d43b229377786cc62ef7bb666b765abfdab30bc",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261121-230816-3d85012",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T23:08:17Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 5.5103,
+    "gpu_hours_reserved": 3.9334,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 0,
+    "runs": 228,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
