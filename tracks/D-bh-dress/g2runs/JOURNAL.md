@@ -247,3 +247,47 @@ of Misner-Sharp mass concentrated at the hole and falling off over R ~ 2-20 M, w
 exterior intact. [JUDGEMENT] A constraint violation that grows at the shrinking hole
 (6.4 cells of M/8 in radius at 188 M), not an inflow from outside; V-1GB decides whether
 it needs the dust.
+
+## Entry 6 (06:47 PST): V-1GB outcome; ES-F submitted
+
+V-1GB D-20261121-125909-06f856e (Slurm 4795, 05:59-06:46 PST, one segment, DONE at
+t = 200 M, 0.7811 card-hours, closed with nrpic-run finish). ES-F submitted at 06:46 PST
+as D-20261121-144631-aa7ce9b (Slurm 4806, pending), the command of entry 3.
+Analysis D-20261121-144657-cf510fc (compare_horizons.py on ES-1G, ES-1GB to 188 M, V-1B,
+V-1GB; figure looked at: four panels, all four runs visible, the pair differences down to
+1e-17 in panel (c)).
+- C1 FAILED: V-1GB drift from 100 M is [-5.60e-4, +1.265e-3] on 100-199.5 M (band
+  [-6e-4, +1e-3]); D(199.5) = +1.265e-3. It dips to -5.6e-4 at ~140 M and grows from
+  ~160 M, the same shape as ES-1G/ES-1GB (minimum -4.2e-4 at 126 M, +6.97e-3 at 199.5 M)
+  but later and five times smaller. V-1B (same mesh, plain 1+log): within 4.8e-5.
+- C2 REFUTED: |M_ES-1GB - M_V-1GB| equals rounding (1e-15) to t ~ 12 M, stays below
+  1e-6 to ~30 M and below 1.0e-4 to 90 M, exceeds 2e-4 from 137.5 M on and reaches
+  3.53e-3 at 188 M. On 30-100 M the null test holds at 1e-4 (C2's band 2.5e-4), not
+  after ~135 M.
+- C3 FAILED on the radius, HELD on the mass: V-1GB's horizon shrinks too (1.398 M at
+  25 M, 0.875 M at 199.5 M; ES-1GB 0.795 M at 188 M, ES-1G 0.776 M at 199.5 M; V-1B grows
+  to 2.196 M); band 0.78 +- 0.08 missed by 0.015. M_AH(100) - 1 = +1.186e-3 (band
+  (1.1 +- 0.2)e-3).
+- C4 HELD: 0.781 card-hours, finite, 28 tracers removed, none escaped; mesh minimum of
+  the lapse 0.0475-0.0584 after 108 M (ES-1GB 0.050-0.066; V-1B 0.019-0.021).
+Reading of entries 5-6 together:
+- [VERIFIED] The outer boundary does not cause ES-1G's late horizon growth (entry 5: the
+  hole of ES-1GB follows ES-1G to 4.2e-9 to t = 188 M while the exterior mass is kept,
+  B4'); HB is refuted.
+- [VERIFIED] The relaxed lapse makes the late growth even in vacuum: V-1GB grows by
+  +1.27e-3 over 160-200 M where V-1B (plain 1+log, same mesh, same faces) stays within
+  4.8e-5. With the dust outside the bubble the growth starts earlier and is 3-5 times
+  larger (ES-1GB +4.16e-3 at 188 M against V-1GB's +0.62e-3 at 188 M, read from the same
+  json).
+- [JUDGEMENT] HG with a dust-dependent rate: lapse_leak shrinks the hole in coordinates
+  (0.78-0.88 M, 6-7 cells of M/8 by 200 M, where plain 1+log keeps it at 2.2 M); the
+  slice mass then grows in a region concentrated at the hole (B4', entry 5) as the
+  horizon loses resolution; the dust outside changes the lapse and shift inside the
+  bubble (the two runs separate from 12 M on, long before matter could reach the hole)
+  and makes the hole shrink faster (0.795 against ~0.89 M at 188 M), hence the earlier
+  growth. Not shown: that the growth falls with resolution (an M/16 nest of ES-1GB and
+  V-1GB would show it; the lead's plan has it next).
+- Consequence for G2: with lapse_leak at M/8 the null test (ES-1GB against V-1GB) holds
+  at 1e-4 only to t ~ 100-135 M; over 100-200 M the floor is 3.5e-3, set by the gauge and
+  resolution at the hole, not by the faces. The faces at +-384 M are still worth keeping
+  for the exterior mass (B4').
