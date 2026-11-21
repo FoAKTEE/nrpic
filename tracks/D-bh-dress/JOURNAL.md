@@ -378,7 +378,7 @@ and gave the same numbers; its only change was the tick labels of panel d).
   fig_newton_numbers.json not refreshed); figure scripts rerun in the clean export PASS. Report:
   FAIL with C7 and C16 open. Gates complete for review: none (G0 already signed).
 
-## 2026-11-21T15:55Z  session lead-wave3-batch4a (Opus)  predictions of the lead's re-checks of secondary_infall (batch 2b), g2runs and note (batch 3), written before they run
+## 2026-11-21T15:47Z  session lead-wave3-batch4a (Opus)  predictions of the lead's re-checks of secondary_infall (batch 2b), g2runs and note (batch 3), written before they run
 
 Readers: the previous leads' `stage/review_wave3/wave3_check.py` (finder summaries) and
 `stage/review_wave2/infall_check.py` (Newtonian-mode snapshots, turnaround and dress flags
@@ -412,3 +412,45 @@ re-implemented from nm_analyze's docstring); no helper code. Script `stage/revie
   (9 pi^2/16) dm/dlambda^3), lies within 25 per cent in every bin (package: 16 per cent against its
   seeded solution). Refuted if any bin deviates by more than 25 per cent; a deviation that moves by more
   than 10 per cent when r_ta moves by 3 per cent is recorded as r_ta-dominated.
+
+## 2026-11-21T16:20Z  session lead-wave3-batch4a (Opus)  outcomes of Y1-Y5; commits d794a485..(this entry)  runs D-20261121-154912-27e91c6, D-20261121-155215-0611c24 (D-20261121-154902-f2724c5 failed)
+
+(The prediction entry above was first headed 15:55Z; it was written at 15:47Z, corrected here.)
+
+- Y1 HELD except one clause: ES-1GB equals ES-1G to 2.9e-15 up to 90 M and 4.2e-9 up to 188 M; ES-1GB's
+  drift from 100 M is +4.157e-3 at 188 M (ES-1G at 188 M: +4.157e-3), so the late growth under lapse_leak is
+  not the outer boundary and the batch-2a reading is withdrawn; V-1GB [-5.60e-4, +1.265e-3], V-1B
+  [-4.84e-5, +1.98e-5]; mean coordinate radius V-1GB 0.875 M, V-1B 2.196 M. Y1(d): the null test reaches
+  1.005e-4 at t ~ 62 M, so "below 1e-4 up to 90 M" failed by 0.5 per cent (immaterial); above 2e-4 from
+  137.5 M without return; 3.53e-3 at 188 M.
+- Y2 HELD: Q16 keeps all 520048 particles; at a/a_i = 8.00 and 15.96 M_ta and dress equal the README to 4e-5;
+  at "4" and "12" the snapshots are at 3.976 and 12.020, so absolute values differ (-0.5, +0.2 per cent) but
+  the ratios to the hybrid_cc shells agree with the README within 0.05 points (M_ta +0.21, +0.16, +0.17,
+  +0.78 per cent; dress +0.42, -0.05, +0.17, +0.10). P192 misses 16462 dust particles (0.704 M) at 29.97,
+  the first at a/a_i = 23.56.
+- Y3 HELD in its first part (18 pages, no undefined reference; two overfull vboxes of 6.1 pt in the page
+  builder), REFUTED in its guessed cause: the two growth tables are identical; 3.43 is nm_analyze's
+  interpolation of the ratio at a/a_i = 2, 3.31 my predecessor's interpolation of the masses, between
+  snapshots at 1.954 and about 2.05. STATUS now says 0.5-3.4 per cent.
+- Y4 HELD: batch4a_check.png, batch4a_profile.png, compare_horizons.png, axis_profiles.png,
+  w3_Q16_late_profiles.png agree with the numbers (cosmetic: compare_horizons panel (c) legend on the data).
+- Y5 HELD: Q16 profile at 15.96 against the verifier's seedless self-similar solution, my r_ta = 246.4 M:
+  largest deviation 16.3 per cent (bin next to the outermost caustic), rms 10.6; with r_ta -3 / +3 per cent
+  24.9 / 21.6 per cent (moves by 8.6 points, below my 10-point mark for "r_ta-dominated").
+- Side failure: my first registered run D-20261121-154902-f2724c5 failed on a Python syntax error (a
+  keyword with a minus sign); kept on record; the script was fixed and rerun.
+
+## 2026-11-21T16:30Z  session lead-wave3-batch4a (Opus)  close of the session
+
+- did: merged main (core-v0.6, rulings 0021-0022); read CLAUDE.md, charter to "Owners", decisions 0021-0022,
+  the brief ranges, the batch 2b and 3 reports; rechecked secondary_infall, g2runs and note from their
+  artefacts (Y1-Y5, two registered runs, five figures looked at); wrote stage/REVIEW-wave3.md sections 9-10;
+  G1: C7 PASS (decision 0021 item 2 wording, Q16 and Y5), C16 PASS (note v1), CHECKLIST, STATUS, OPEN,
+  EVIDENCE, REVIEW recollected; nrpic-stage collect, verify, report; WRITING_GUIDE exception 1 extended to
+  data keys; outbox to orch and core; four inbox messages acknowledged; STATUS, HANDOFF, RISKS rewritten.
+- found: lapse_leak's late growth is the gauge at the hole, not the faces (ES-1GB); D-pre-3 holds to
+  a/a_i = 16 under the ruled wording, with the profile within 16 per cent of two self-similar solutions.
+- changed my mind about: R13 for lapse_leak (my predecessor's boundary reading was a judgement; tested by
+  ES-1GB, failed).
+- open: G1 complete for review, not passed; card jobs Slurm 4805 (ES-1GB segment 2) and 4806 (ES-F) queued;
+  drift_controls and flux_tools packages open (HANDOFF); G2 null test without lapse_leak next (ES-1B).

@@ -1,43 +1,38 @@
 # Re-verification: D-bh-dress G1
 
-`harness/bin/nrpic-stage verify D-bh-dress G1` on 2026-11-21T07:07:14Z, clean export of commit `9182d4dddadd` in `scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G1-9182d4d-20261121T064019Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify D-bh-dress G1` on 2026-11-21T16:31:51Z, clean export of commit `5ce52d25b1f4` in `scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G1-5ce52d2-20261121T155518Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | FAIL | 3 uncommitted paths: commit them first (tracks/D-bh-dress/drift_controls/tools/compare_runs.py, tracks/D-bh-dress/drift_controls/tools/count_blocks.py, tracks/D-bh-dress/drift_controls/tools/slice_profiles.py) |
-| sync | FAIL | main has commits not merged: run nrpic-ctx sync |
-| export | PASS | clean export of 9182d4dddadd (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G1-9182d4d-20261121T064019Z/tree |
+| sync | PASS | main is merged into the branch |
+| export | PASS | clean export of 5ce52d25b1f4 (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G1-5ce52d2-20261121T155518Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
-| note-pdf | WARN | note/main.pdf is older than the last change of its .tex files |
+| note-pdf | PASS | note/main.pdf committed after the last .tex change |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 10 figures, each with its script |
 | min-figs | PASS | 2 schematics and 8 data figures (brief 13.4 asks at least 2 and 1 at G1) |
-| runs | FAIL | 3 of 188 runs have problems; 3 waived |
-| runs-waived | WARN | failures of the manifest check waived: 3 hand-written manifests of waves 1 and 2 listed in EVIDENCE.md (decision 0016 item 3) |
+| runs | FAIL | 2 of 238 runs have problems; 6 waived |
+| runs-waived | WARN | failures of the manifest check waived: 3 hand-written manifests of waves 1 and 2 listed in EVIDENCE.md (decision 0016 item 3); 3 runs named in main's coord/WAIVERS.md (decision 0019 item 6): D-20261115-170002-8cefc3e: outputs moved into the run directory after the run finished; data unchanged (decision 0021); D-20261115-170326-dfb2a02: outputs moved into the run directory after the run finished; data unchanged (decision 0021); D-20261115-193755-3a53b08: outputs moved into the run directory after the run finished; data unchanged (decision 0021) |
 | run-notes | WARN | 100 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 37 lines |
+| status | PASS | STATUS.md has 39 lines |
 | rerun | PASS | 10 of 10 scripts and commands ran cleanly in the export |
-| compare | FAIL | 28 regenerated files compared with the committed ones; 1 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| compare | PASS | 28 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 20 committed figure files regenerated |
 
 ## runs
 
 ```
 {
- "D-20261115-170002-8cefc3e": [
-  "output not in sha256sums.txt: v1_es_slice.pdf",
-  "output not in sha256sums.txt: v1_es_slice.json",
-  "output not in sha256sums.txt: v1_es_slice.png"
+ "D-20261121-125900-ea4c442": [
+  "status is submitted: not finished (nrpic-run finish)",
+  "missing /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-125900-ea4c442/sha256sums.txt"
  ],
- "D-20261115-170326-dfb2a02": [
-  "output not in sha256sums.txt: es.horizon_summary_0.txt.from_cwd"
- ],
- "D-20261115-193755-3a53b08": [
-  "output not in sha256sums.txt: misplaced_out/es_check.png",
-  "output not in sha256sums.txt: misplaced_out/es_check.json",
-  "output not in sha256sums.txt: misplaced_out/es_check.pdf"
+ "D-20261121-144631-aa7ce9b": [
+  "status is submitted: not finished (nrpic-run finish)",
+  "missing /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-144631-aa7ce9b/sha256sums.txt"
  ]
 }
 ```
@@ -63,6 +58,31 @@
   "problems": [
    "production run without preregistered_in"
   ]
+ },
+ "D-20261115-170002-8cefc3e": {
+  "waived_by": "coord/WAIVERS.md",
+  "reason": "outputs moved into the run directory after the run finished; data unchanged (decision 0021)",
+  "problems": [
+   "output not in sha256sums.txt: v1_es_slice.pdf",
+   "output not in sha256sums.txt: v1_es_slice.json",
+   "output not in sha256sums.txt: v1_es_slice.png"
+  ]
+ },
+ "D-20261115-170326-dfb2a02": {
+  "waived_by": "coord/WAIVERS.md",
+  "reason": "outputs moved into the run directory after the run finished; data unchanged (decision 0021)",
+  "problems": [
+   "output not in sha256sums.txt: es.horizon_summary_0.txt.from_cwd"
+  ]
+ },
+ "D-20261115-193755-3a53b08": {
+  "waived_by": "coord/WAIVERS.md",
+  "reason": "outputs moved into the run directory after the run finished; data unchanged (decision 0021)",
+  "problems": [
+   "output not in sha256sums.txt: misplaced_out/es_check.png",
+   "output not in sha256sums.txt: misplaced_out/es_check.json",
+   "output not in sha256sums.txt: misplaced_out/es_check.pdf"
+  ]
  }
 }
 ```
@@ -87,7 +107,8 @@
   "input tracks/D-bh-dress/secondary_infall/nm_run.py changed since the run (sha256 differs)"
  ],
  "D-20261115-170803-d988f59": [
-  "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)"
+  "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
+  "input tracks/D-bh-dress/secondary_infall/nm_field.py changed since the run (sha256 differs)"
  ],
  "D-20261115-170824-788678f": [
   "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
@@ -164,8 +185,7 @@
   "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)",
   "no scratch/D-bh-dress/D-20261115-171545-d7e01a7/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
- "D-20261115-171733-633d422": [
-  "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/
+ "D-202
 ```
 
 ## compare
@@ -249,8 +269,8 @@
  ],
  [
   "note/figures/fig_newton_numbers.json",
-  "FAIL",
-  "text differs (not only numbers)"
+  "PASS",
+  "identical"
  ],
  [
   "note/figures/fig_esrun.pdf",
