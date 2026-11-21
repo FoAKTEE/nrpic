@@ -1,0 +1,26 @@
+{
+ "run_id": "core-20261119-155057-57325bc",
+ "owner": "core",
+ "command": [
+  "bash",
+  "/data/haiyangw/nrpic/wt/core-omp/tracks/core/omp/regress_threads.sh",
+  "O3"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-155057-57325bc",
+ "commit": "57325bc",
+ "source_modified_since_commit": false,
+ "inputs": [],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-155057-57325bc",
+ "purpose": "omp P2-P5, P9-P11: the threaded build O3 at 4 and 16 threads (two runs each) against one thread of O3, all 13 regression cases; then the deposit cases with deposit_threads = private at 1, 4, 16 threads (two runs each); byte and number comparison of every output file. Registered by hand: nrpic-run refused (16 cores of core busy in other sessions)",
+ "kind": "scouting",
+ "tag": "omp-regress-threads",
+ "state": "finished",
+ "status": "failed",
+ "registered_by_hand": "nrpic-run refused (cores of owner core busy in other sessions)",
+ "wall_time_s": 2764.62,
+ "exit_status": 1,
+ "cores": 16,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T15:50:57Z",
+ "note": "exit 1 of the atomic part: (a) the puncture case used a deck that AthenaK refuses (two restart blocks; fixed in 501ba4f and run again in core-20261119-155520-0bc529f), (b) its verdict used the first measure of entry 5 (rel_file). The comparisons were made again with the measure of the predictions (rel_max) by recompare.py in run core-20261119-163800 and later (summary_floor.json in atomic/ and priv/): no failure."
+}

@@ -225,8 +225,8 @@ requested ids, XML with a DOCTYPE. Gzipped PostScript stays `src/main.tex` (as b
 - `nrpic-env create [--no-kokkos]` makes `<worktree>/.venv` from `harness/env/uv.lock`; in a
   linked worktree it then checks out Kokkos by reference; in the main checkout it never touches
   Kokkos. `nrpic-env check` skips wt/ and the data roots of the main checkout.
-- The machine file's default executables are the core-v0.3 builds (`.work/build_gpu_v03`,
-  `.work/build_cpu_v03`); `--exe` chooses another, e.g. `scratch/core/exe/<branch>/` (0013).
+- The machine file's default executables are those of the release named in CLAUDE.md
+  (`.work/build_gpu_<version>`, `.work/build_cpu_<version>`); `--exe` chooses another, e.g. `scratch/core/exe/<branch>/` (0013).
 - `harness/hooks/pre-commit` (brief 13.1) rejects files above 5 MB, added lines that look
   like secrets (documentation placeholders pass: EXAMPLE keys, runs like `abcdefgh`, a key
   header without key material), run manifests that are not JSON objects or whose run_id differs

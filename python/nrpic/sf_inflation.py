@@ -227,6 +227,14 @@ def code_background(case):
     return v, dv, case["phi0"], case["pi0"]
 
 
+def code_d2v(case):
+    """V'' of the case in code units (for the linear twin nrpic.sf_lattice)."""
+    from . import scalar_field as sf
+    if case["potential"] == "quadratic":
+        return sf.potential_d2("quadratic", mass=case["mass"])
+    return sf.potential_d2("inflection", lam=case["lambda"], vev=case["vev"])
+
+
 # ------------------------------------------------------------- twin of the initial slice
 def window(n2, length, a, hub, eps1, sigma=1.0, sharpness=5.0):
     """W and dW/dtau of the shells (SPEC 3): W = (1 + tanh x)/2, x = s ln(sigma a H/k)."""

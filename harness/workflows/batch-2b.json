@@ -1,6 +1,6 @@
 {
  "name": "2b (2026-11-21, window from 23:50 PST)",
- "what": "three core source packages; packages of tracks A-F and the knowledge base from the planners; lead of Track C",
+ "what": "three core source packages; packages of tracks A-F and the knowledge base; leads of tracks A and C; verifier and G2 runs",
  "items": [
   {
    "type": "core-src",
@@ -13,6 +13,11 @@
   {
    "type": "core-src",
    "key": "faces"
+  },
+  {
+   "type": "lead",
+   "owner": "A-emd-pbh",
+   "extra": "Extra for this owner: the independent reviewer of gate G1 recommends PASS WITH RESERVATIONS once checklist item C20 is closed (stage/G1/GATE_REVIEW.md): close it in this session and answer the reservations."
   },
   {
    "type": "pkg",
@@ -30,6 +35,13 @@
    "key": "first_source"
   },
   {
+   "type": "task",
+   "owner": "B-emd-gw",
+   "key": "stage/G1/verifier_c18",
+   "title": "fresh verifier for G1 item C18",
+   "task": "Independent verification for gate G1 of this owner (checklist item C18), as a fresh reader who trusts nothing: do not read the leads' reviews (stage/REVIEW-*.md), STATUS.md, HANDOFF.md or the journals first. Recompute with your own short code, from the registered raw outputs (manifests under tracks/B-emd-gw/runs/, outputs under scratch/B-emd-gw/), every number of the ledger and of the tables of the working note (tracks/B-emd-gw/note/) that no earlier verifier has recomputed (the earlier verifiers' reports under stage/G0 and stage/G1 say what they covered: read only their coverage lists), and the results of the packages finished since (the report files named above list them). Per item CONFIRMED, NOT CONFIRMED or WRONG with the evidence, in tracks/B-emd-gw/stage/G1/VERIFIER-C18.md; then compare with the track's own review and list the differences. Commit path-limited and push."
+  },
+  {
    "type": "lead",
    "owner": "C-sidm"
   },
@@ -44,9 +56,22 @@
    "key": "secondary_infall"
   },
   {
+   "type": "task",
+   "owner": "D-bh-dress",
+   "key": "g2runs",
+   "title": "first G2 runs: far boundary with the relaxed lapse, dust-filled bubble",
+   "task": "The next G2 runs of this track, as the lead named them on 2026-11-21 (HANDOFF.md, stage/REVIEW-wave3.md): ES-1GB (the vacuum-bubble data with the relaxed lapse and the outer faces at 384 M; input built from es_runs/inputs/es1g_dx8.athinput plus the root level of drift_controls/inputs/v1b_bnd384.athinput), its vacuum control V-1GB, then ES-F (dust filling the bubble; flux_tools/inputs/esf_dx8.athinput, command in HANDOFF.md). Use the release executables of core-v0.4. Before each run write its prediction and pass criterion in your journal (for ES-1GB: does the horizon growth of ES-1G, +6.96e-3 over 100-200 M, go away when the boundary is far? what would show that it does not come from the boundary?). Submit through harness/bin/nrpic-run (two jobs of the owner at a time), analyse with the existing scripts (es_runs, drift_controls, flux_tools/esf_analyse.py), look at every figure, and report the horizon-mass drift against the control and, for ES-F, the mass growth against the integrated particle flux through the horizon. Also carry secondary_infall's run to a/a_i = 30 on processors if no other session of this batch does (the package secondary_infall runs beside you: read its journal first). At most three card-hours.",
+   "card_hours": 3
+  },
+  {
    "type": "pkg",
    "owner": "E-stoch-inf",
    "key": "usr"
+  },
+  {
+   "type": "pkg",
+   "owner": "E-stoch-inf",
+   "key": "note"
   },
   {
    "type": "pkg",
@@ -57,6 +82,13 @@
    "type": "pkg",
    "owner": "kb",
    "key": "verify_g2"
+  },
+  {
+   "type": "core-task",
+   "key": "answers",
+   "task": "Close what the merge of release core-v0.5 left open (tracks/core/HANDOFF.md and the last entry of tracks/core/JOURNAL.md on core/nrpic; the merge session's report is in the report file core.md). In this order: (1) the card check of the release (run core-20261121-070946-1907f7b, Slurm job 4772): if it finished, judge it as tracks/core/RELEASE-v0.5.md describes, write the outcome there and in scratch/core/exe/core_nrpic_v05/READY; also the pending card results of the packages cosmo-amr (job 4763: T14b, T10g) and mpi (job 4733) into their journals and READY files; if the card executable fails a case, say so first in your report. (2) Register a byte regression of the release builds /data/haiyangw/nrpic/.work/build_cpu_v05/src/athena and (one short case) .work/build_gpu_v05/src/athena against the candidate executables with the drivers of tracks/core/analysis/release/. (3) Post the answers to the tracks: one outbox file per track (harness/bin/nrpic-ctx post from this worktree) answering every open request to core that releases v0.4 and v0.5 serve (coord/REQUESTS.md on main; the notes the merge session left in the journal): done with the option name and an example input, deferred to which unfinished branch, or declined with the reason. (4) Read and acknowledge the inbox of core (harness/bin/nrpic-ctx inbox; messages 76 to 87 are unread, among them new requests of D, F and B); triage the new requests in tracks/core/interfaces/REQUESTS_WAVE3.md. (5) scripts/submit_chain.sh: decision 0021 item 6 (an exit by signal 137 or 143 without the code's own termination message is an outside kill: resubmit the segment, at most twice; run the chain's executable under a run-specific process name so that a pattern kill by another project cannot hit it), with a test that fakes the kill. (6) STATUS.md, HANDOFF.md, JOURNAL.md of core brought up to date; commit, push core/nrpic. No source change beyond the script of step 5.",
+   "fable": false
   }
- ]
+ ],
+ "note": "Release core-v0.5 followed on 2026-11-21 (tag core-v0.5 on main: threaded processor build, several ranks for the particle module, refinement with horizon finder and tracker in periodic runs, the scalar field's ultra-slow-roll case; executables .work/build_gpu_v05 and .work/build_cpu_v05, candidate set with the threaded and MPI builds under scratch/core/exe/core_nrpic_v05/; its card check, Slurm job 4772, was pending at the release). The reports of batch 2a (leads of B, D, E, F; gate review of A's G1; the two releases) are appended to the report files. Rulings of the orchestrator on the leads' requests: coord/DECISIONS/0021."
 }

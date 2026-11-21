@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261120-221222-38f0369",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-mpi/tracks/core/analysis/mpi/mpi_tests.py",
+  "--case",
+  "t7_probes",
+  "--out",
+  "t7_probes"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261120-221222-38f0369",
+ "commit": "38f0369",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/tests/mpi_cluster.athinput",
+   "sha256": "a68ccc15b6e88b73361ba00b1c0ca6dfacaf2589ea5010d28c29511cb16ce38b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261120-221222-38f0369",
+ "purpose": "mpi T7 t7_probes: cluster of T3 with probes 1 to 7 on 1, 2, 4 ranks, 16 cycles (journal entry 24 of JOURNAL-mpi.md); registered by hand: nrpic-run refused (15 cores of owner core busy)",
+ "kind": "scouting",
+ "tag": "mpi-t7",
+ "state": "finished",
+ "wall_time_s": 74.31,
+ "exit_status": 0,
+ "cores": 6,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-20T22:12:22Z"
+}

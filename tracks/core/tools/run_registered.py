@@ -87,7 +87,9 @@ def main():
     write({"run_id": run_id, "owner": "core", "command": cmd, "cwd": out,
            "commit": commit, "source_modified_since_commit": bool(dirty),
            "inputs": inputs, "output_directory": out, "purpose": a.purpose,
-           "kind": a.kind, "tag": a.tag, "state": "running", "cores": a.cores,
+           "kind": a.kind, "tag": a.tag, "state": "running", "status": "running",
+           "registered_by_hand": "nrpic-run refused (cores of owner core busy in other "
+                                 "sessions)", "cores": a.cores,
            "card_hours": a.card_hours,
            "started_utc": now.strftime("%Y-%m-%dT%H:%M:%SZ")})
     t0 = time.time()
@@ -108,6 +110,9 @@ def main():
         "kind": a.kind,
         "tag": a.tag,
         "state": "finished",
+        "status": "completed" if proc.returncode == 0 else "failed",
+        "registered_by_hand": "nrpic-run refused (cores of owner core busy in other "
+                              "sessions)",
         "wall_time_s": round(wall, 2),
         "exit_status": proc.returncode,
         "cores": a.cores,

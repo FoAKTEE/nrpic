@@ -227,6 +227,10 @@ class Z4c {
 
   // following only used for time-evolving flow
   Real dtnew;
+  // <z4c> dt_lightspeed = f > 0: the step is also limited by f dx / (coordinate speed
+  // of light), evaluated every cycle (z4c_newdt.cpp); 0: off
+  Real dt_lightspeed = 0.0;
+  Real cmax_light = 0.0;   // largest coordinate light speed of the last evaluation
 
   // geodesic grid for wave extr
   std::vector<std::unique_ptr<SphericalGrid>> spherical_grids;
@@ -265,6 +269,7 @@ class Z4c {
   TaskStatus ExpRKUpdate(Driver *d, int stage);
   TaskStatus Z4cFloorChi(Driver *pdrive, int stage);
   TaskStatus NewTimeStep(Driver *d, int stage);
+  Real LightSpeedTimeStep();     // min of dx / (coordinate light speed), z4c_newdt.cpp
   TaskStatus ApplyPhysicalBCs(Driver *d, int stage);
   TaskStatus EnforceAlgConstr(Driver *d, int stage);
 
