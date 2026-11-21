@@ -1,0 +1,153 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261121-080222-2293fae",
+  "track": "B-emd-gw",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "first_source r3 P16': jittered lattice without any wave (64^3, A = 0.3, seed 7, 2.1M particles) to a = 20.25 on one card, release core-v0.5; decides leakage against linear response of the grid-scale TT of jit0p3",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-080222-2293fae/batch.list"
+  ],
+  "cwd": "scratch/B-emd-gw/B-20261121-080222-2293fae",
+  "git": {
+    "sha": "2293fae6c04f4266fc7cbc8f70ba85b98946e09d",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/first_source"
+    ],
+    "outside_package": {
+      "count": 3,
+      "first": [
+        "?? tracks/B-emd-gw/gw_diag/gwdiag/gauge.py",
+        "?? tracks/B-emd-gw/gw_diag/tests/test_gauge.py",
+        "?? tracks/B-emd-gw/waves/scripts/check_gauge.py"
+      ]
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cosmo",
+    "exe": "/data/haiyangw/nrpic/.work/build_gpu_v05/src/athena",
+    "exe_sha256": "2512c8d59af960093e86eb05add6485ca8ad08e8f6ba8b03b099166507b61ea4",
+    "cmake_flags": [
+      "-DPROBLEM=built_in_pgens",
+      "-DAthena_ENABLE_MPI=OFF",
+      "-DAthena_ENABLE_OPENMP=OFF",
+      "-DKokkos_ARCH_ICX=ON",
+      "-DKokkos_ENABLE_DEBUG=OFF",
+      "-DKokkos_ENABLE_DEBUG_BOUNDS_CHECK=OFF",
+      "-DCMAKE_CXX_COMPILER=/data/haiyangw/nrpic/.work/build_gpu_v05/nvcc_wrapper_pinned",
+      "-DCUDAToolkit_ROOT=/usr/local/cuda-12.6",
+      "-DKokkos_ENABLE_SERIAL=ON",
+      "-DKokkos_ENABLE_CUDA=ON",
+      "-DKokkos_ARCH_AMPERE80=ON",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG"
+    ],
+    "toolchain": "nvcc 12.6 (host g++ 11.4.0)"
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": {
+    "file": "tracks/B-emd-gw/first_source/inputs/conv.athinput",
+    "sha256": "96c8f31728dcb18b136aa398d699b6000c8e33d171ff7f7ecef0ef09c425fe2c",
+    "overrides": {
+      "time/tlim": "7.0",
+      "particles/particle_file": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-075249-d019ace/jit0p3_nw/particles.nrp",
+      "problem/id_file": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-075249-d019ace/jit0p3_nw/fields.bin"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_gpu_v05/src/athena",
+      "role": "exe",
+      "sha256": "2512c8d59af960093e86eb05add6485ca8ad08e8f6ba8b03b099166507b61ea4",
+      "bytes": 107789152,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/B-emd-gw/first_source/inputs/batch_r3_p16.list",
+      "role": "list",
+      "sha256": "f0215a1942214769d2053dcd3423f93dcd7e2cb1120ed0fbef45e8ff37b87301",
+      "bytes": 732,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/first_source/inputs/conv.athinput",
+      "role": "athinput:jit0p3_nw",
+      "sha256": "96c8f31728dcb18b136aa398d699b6000c8e33d171ff7f7ecef0ef09c425fe2c",
+      "bytes": 3774,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "jit0p3_nw",
+      "input": "tracks/B-emd-gw/first_source/inputs/conv.athinput",
+      "args": [
+        "time/tlim=7.0",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-075249-d019ace/jit0p3_nw/particles.nrp",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-075249-d019ace/jit0p3_nw/fields.bin"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:20:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.15,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "B-20261121-080222-2293fae",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261121-080222-2293fae",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-21T08:02:23Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.3119,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 0,
+    "runs": 242,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
