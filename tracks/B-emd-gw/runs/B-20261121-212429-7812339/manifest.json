@@ -1,0 +1,115 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261121-212429-7812339",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "G1 gate reviewer's own check A (not the track's work): amplitude scaling of the spectral-Weyl against TT difference of test F at N = 16 (amplitude scan x10, x1, x1/10, every dump) and a clean replot of run B-20261121-212222-3260317; predictions A1-A4 in stage/G1/GATE_REVIEW.md (commit 78123393)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "env",
+    "OMP_NUM_THREADS=2",
+    "OPENBLAS_NUM_THREADS=2",
+    "python3",
+    "/data/haiyangw/nrpic/scratch/B-emd-gw/gate_review_G1/review_ascan.py"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "781233936c0ef9a8ce25aff581ce908540ab2484",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "merge_base_main": "9d43b229377786cc62ef7bb666b765abfdab30bc",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/gate_review_G1/review_ascan.py",
+      "role": "input",
+      "sha256": "fd3035fad97dbb0bad9279d7001c608056c9c70cf3dcd0d160640c780b7948dd",
+      "bytes": 5526,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/gate_review_G1/review_checks.py",
+      "role": "input",
+      "sha256": "5623c4531aaab983b030ee1dfdde992f3ab742322993de41f36dce565e0e3f27",
+      "bytes": 14882,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/gate_review_G1/figstyle.py",
+      "role": "input",
+      "sha256": "5d3b78ad8c2c02e428b675e3d7e35a32cbc8f053d1aeedd4fde66f27da55676e",
+      "bytes": 7953,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-212222-3260317/review_checks.json",
+      "role": "input",
+      "sha256": "edbb13b2da5609a7decb5cc77165d4f6a43605bd991fca9a9b910517d60b3e2a",
+      "bytes": 10434,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261121-212429-7812339",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T21:24:30Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.6912,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 8,
+    "runs": 296,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
