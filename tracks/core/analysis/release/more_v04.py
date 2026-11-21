@@ -4,6 +4,7 @@ inputs that quick_v04.py does not run, each started with the merged executable a
 the executable its branch published, compared byte for byte (classes of regress_v04.py).
 
     more_v04.py --new ATHENA --out DIR [--cores N] [--tests boost,...] [--exe-dir DIR]
+    more_v04.py --new ATHENA --out DIR --replot DIR_OF_AN_EARLIER_CALL
 
 Tests (branch; option exercised):
   boost   id-solver        idsolve/gaussian_boost.athinput at 32 cells (id_vector)
@@ -123,10 +124,8 @@ def figure(out, summary):
     a = ax[1]
     wn = [summary["tests"][c]["wall_time_s"]["new"] for c in names]
     wb = [summary["tests"][c]["wall_time_s"]["branch"] for c in names]
-    a.barh(y + 0.18, np.maximum(wn, 0.05), height=0.34, color=fs.PAL["red"],
-           label="merged")
-    a.barh(y - 0.18, np.maximum(wb, 0.05), height=0.34, color=fs.PAL["blue"],
-           label="branch")
+    a.barh(y + 0.18, np.maximum(wn, 0.05), height=0.34, color=fs.PAL["red"])
+    a.barh(y - 0.18, np.maximum(wb, 0.05), height=0.34, color=fs.PAL["blue"])
     for yy, c in zip(y, names):
         e = summary["tests"][c]["exit"]
         a.text(0.97, yy, "exit %d, %d" % (e["new"], e["branch"]), ha="right", va="center",
@@ -136,8 +135,7 @@ def figure(out, summary):
     a.set_yticklabels(names)
     a.tick_params(axis="y", which="minor", left=False, right=False)
     a.set_xlim(0.03, max(max(wn), max(wb), 1.0)*60)
-    a.set_xlabel("wall time on one core (s)", labelpad=2)
-    a.legend(loc="lower right", fontsize=8)
+    a.set_xlabel("wall time on one core (s): red merged, blue branch", labelpad=2)
     fs.save(fig, os.path.join(out, "fig_more_v04"))
 
 
@@ -148,9 +146,18 @@ def main():
     ap.add_argument("--cores", type=int, default=1)
     ap.add_argument("--tests", default=",".join(TESTS))
     ap.add_argument("--exe-dir", default=qk.EXE_DIR)
+    ap.add_argument("--replot", default=None,
+                    help="directory of an earlier call: draw its more_summary.json "
+                         "again into --out, run nothing")
     a = ap.parse_args()
     out = os.path.abspath(a.out)
     os.makedirs(out, exist_ok=True)
+    if a.replot:
+        with open(os.path.join(a.replot, "more_summary.json")) as f:
+            summary = json.load(f)
+        figure(out, summary)
+        print("MORE EXAMPLES", summary["verdict"], "(figure of", a.replot + ")")
+        return 0 if summary["verdict"] == "PASS" else 1
     new = os.path.abspath(a.new)
     names = a.tests.split(",")
     jobs = []
