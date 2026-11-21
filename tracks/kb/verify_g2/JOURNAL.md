@@ -297,7 +297,7 @@ Outcome R3 (ad-hoc listing, scratch/kb/verify_g2/db_mtimes_{before,after}_golden
 listing of kb-data/db (sizes, modes, mtimes, among them kb.sqlite-wal) and of kb-data/logs is
 identical before and after the golden search: confirmed for that run.
 
-## Entry 11 (2026-11-21 08:10 UTC): the package's QA report read; prediction for the final tally
+## Entry 11 (2026-11-21 08:07 UTC): the package's QA report read; prediction for the final tally
 
 After entry 10 was committed (c2ccdc3d) I read the QA output of the named run
 kb-20261119-161633-1d05960 (QA_REPORT.md, its sections C1, C2, C3 and C7; an output directory
