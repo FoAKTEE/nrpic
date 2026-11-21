@@ -329,3 +329,25 @@ upper bound: the table-density residuals), 7 recount rows agree, 2 independent r
   |dE/E| 1.3328e-6, |dL/L| 1.9329e-10 (ledger 1.33e-6, 1.93e-10); count ratio 4-6 Gm second
   half 0.985 against my reference (ledger 0.976 against the track's): my a = 0 reference and
   the track's agree to about 1 per cent in this range, unlike a = 0.8 (V4).
+
+### Outcome of entry 6 (20:03 PST), run D-20261121-035106-0c619ee
+
+Prediction held: twice the r and angle nodes change my 0-4 integral by +0.02 per cent and
+the 4-6 integral by -0.02 per cent (expected 155.71 and 634.59); without the cut E < 0.99 the
+0-4 integral would be 2.5 per cent larger. My local n (E < 1) equals the track's curves to
+0.3-0.6 per cent at r = 3, 3.5, 5, 8 (theta = pi/2, pi/3) and 2.6 (equator); -4.7 per cent at
+r = 2.6, cos theta = 0.5 (inner edge, the track's coarse r grid). So my reference is converged
+and agrees locally with the track's; the 13 and 5.5 per cent lie in how the track integrated
+its expected counts.
+
+## Entry 7 (20:05 PST): V4c, a radius definition as the cause? prediction
+
+Pattern of my expected over the track's: +13, +5.5, +1.2, +0.3, -0.2 per cent from the inner
+to the outer range: the inner ranges lose, the last gains. That is what taking the range
+boundaries in the Cartesian Kerr-Schild radius R = sqrt(r^2 + a^2 sin^2 theta) instead of the
+spheroidal r would do (R > r by up to a^2/(2r)). Script `v4c_radius.py` recomputes my expected
+counts with Cartesian boundaries (boundary shift of my converged grid) and the run's counts
+with both radii. Prediction: with Cartesian boundaries my expected counts come within 2 per
+cent of the track's in every range; the run's counts with the spheroidal r equal the
+track's time averages (they did in V4: 132.17 against 0.959 x 137.79 = 132.1). If the
+Cartesian version does not close the gap, the cause stays open.
