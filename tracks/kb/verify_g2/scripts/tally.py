@@ -54,6 +54,10 @@ def main():
         return f
     res["ok_but_fail_mine"] = {p: why(p) for p in sorted(ok - mine)}
     res["not_ok_but_pass_mine"] = {p: st[p] for p in sorted(mine - ok)}
+    # sensitivity: S needs only >= 1 section; papers of mine with fewer than half of the
+    # sectioning commands the verifier counts
+    res["mine_with_partial_sections"] = sorted(p for p in mine if byid[p]["my_sec"] >= 2
+                                               and byid[p]["db_sec"] < 0.5 * byid[p]["my_sec"])
     # A' relies on the metadata abstract being served: check kb show --abstract on papers
     # without an abstract chunk
     noabs = sorted(r["paper_id"] for r in rows if not r["db_abs_chunk"])

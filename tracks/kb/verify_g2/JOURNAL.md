@@ -310,3 +310,23 @@ mine (lenient, corrected) 684/710, with letters failed 675/710, strict corrected
 `kb show --abstract` on papers without an abstract chunk prints the metadata abstract (recall
 of its words >= 0.9). Refuted by other counts (then entry 9 is wrong) or by an empty or
 different abstract (then A' is not served and my definition falls back to strict A).
+
+## Entry 12 (2026-11-21 08:12 UTC): outcome of T1; the leniency check had a hole
+
+Tally run kb-20261121-080749-3dfab11: the counts are as predicted (684, 675, 658 of 710) and
+`kb show --abstract` prints the metadata abstract for the 8 papers without an abstract chunk
+I tried (recall of its words 1.0 in all 8), so A' is served. But its list of review papers
+that pass my lenient definition contains astro-ph/0306304 and gr-qc/9906015, the two papers
+whose S and B gaps I had read at the source (entry 7). Cause (my error): lenient_check.py
+examined only the strict successes, not the lenient ones. T1 is therefore **refuted** in
+substance: entry 9's count of genuine gaps was incomplete. Fixed: lenient_check.py now also
+examines lenient successes. Ad-hoc rerun (debugging, registered rerun follows) flags five
+review papers, all plain TeX or old styles with numbered headings and reference lists that
+the database lacks (0 sections, 0 bibliography entries): astro-ph/0306304, astro-ph/9306009
+(`{\bf I. INTRODUCTION}` ... `VI. CONCLUSIONS`), astro-ph/9510056 (A&A macros `\titlea`,
+`\titleb` at flat.tex:1897-2260, `\begref{References}` with `\ref` entries at 2511 ff.),
+gr-qc/9604001 (`{\bf 1. Introduction}`), gr-qc/9906015. All five are genuine gaps.
+Corrected rates under my definition (S, E, B, A'): 684 - 5 = 679/710 = 95.6 % with the nine
+letters counted as parsed, 670/710 = 94.4 % if they are not; strict A: 658/710 = 92.7 %.
+Prediction (T2) for the registered reruns: lenient_check finds exactly these five more (17
+flagged in all); tally with the nine gaps gives 679, 670 and 658.

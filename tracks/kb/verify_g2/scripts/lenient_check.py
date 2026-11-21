@@ -53,7 +53,7 @@ def main():
     rows = json.load(open(a.scan))["rows"]
     out = []
     for r in rows:
-        if not r["success"]:
+        if not (r["success"] or r["success_lenient"]):      # lenient successes too (entry 12)
             continue
         s_len = r["my_sec"] == 0 and r["db_sec"] == 0
         b_len = r["my_cite_cmds"] == 0
@@ -63,7 +63,7 @@ def main():
         s_gap = s_len and lk["n_heads"] >= 2
         b_gap = b_len and r["db_bib"] == 0 and (lk["bibitem"] > 0 or lk["references_env"] or lk["items_after_refs"] >= 3
                                                or lk["ref_lines_after_refs"] >= 3)
-        rec = dict(paper_id=r["paper_id"], status=r["status"], S_lenient=s_len, B_lenient=b_len, db_sec=r["db_sec"],
+        rec = dict(paper_id=r["paper_id"], status=r["status"], strict_success=r["success"], S_lenient=s_len, B_lenient=b_len, db_sec=r["db_sec"],
                    db_bib=r["db_bib"], db_cit=r["db_cit"], db_eq=r["db_eq"], **lk, S_gap=s_gap, B_gap=b_gap)
         out.append(rec)
         print(json.dumps(rec))
