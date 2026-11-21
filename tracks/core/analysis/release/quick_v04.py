@@ -241,9 +241,9 @@ def figure(out, curves):
     from nrpic import figstyle as fs
     import matplotlib.pyplot as plt
     fs.use_style()
-    fig, ax = plt.subplots(2, 3, figsize=(fs.FULL_WIDTH, 5.0))
-    fig.subplots_adjust(left=0.085, right=0.985, bottom=0.10, top=0.94, wspace=0.42,
-                        hspace=0.42)
+    fig, ax = plt.subplots(2, 3, figsize=(fs.FULL_WIDTH, 5.4))
+    fig.subplots_adjust(left=0.085, right=0.985, bottom=0.09, top=0.94, wspace=0.62,
+                        hspace=0.48)
     red, blue = fs.PAL["red"], fs.PAL["blue"]
     a = ax[0, 0]
     if "lw" in curves:
@@ -255,7 +255,7 @@ def figure(out, curves):
         a.set_xticklabels(["16", "32"])
         a.minorticks_off()
         a.legend()
-    a.set_xlabel("cells per side $N$", labelpad=-2)
+    a.set_xlabel("cells per side $N$", labelpad=2)
     a.set_ylabel(r"$L_1$ error of $\tilde\gamma_{ij}$")
     a.set_title("oblique wave, one period", fontsize=10)
     a = ax[0, 1]
@@ -266,8 +266,9 @@ def figure(out, curves):
         a.legend(loc="lower right")
         b = a.twinx()
         b.semilogy(c["t"][1:], np.maximum(c["err"][1:], 1e-16), color="grey", lw=1.0)
-        b.set_ylabel("relative error (grey)")
-    a.set_xlabel(r"time $t\,H_0$", labelpad=-2)
+        a.text(0.97, 0.96, "grey, right axis:\nrelative error", transform=a.transAxes,
+               ha="right", va="top", fontsize=8, color="grey")
+    a.set_xlabel(r"time $t\,H_0$", labelpad=2)
     a.set_ylabel(r"lapse $\alpha$")
     a.set_title(r"lapse relaxation, $T=0.2/H_0$", fontsize=10)
     a = ax[0, 2]
@@ -278,7 +279,7 @@ def figure(out, curves):
         a.axhline(2.6e-12, **fs.MASK_LINE)
         a.axhline(1.46e-5, **fs.MASK_LINE)
         a.legend(loc="center right")
-    a.set_xlabel("e-folds", labelpad=-2)
+    a.set_xlabel("e-folds", labelpad=2)
     a.set_ylabel("constraint ratio")
     a.set_title("stochastic slice and sources", fontsize=10)
     a = ax[1, 0]
@@ -288,7 +289,7 @@ def figure(out, curves):
         a.semilogy(c["iter"], c["maxH"], "s--", ms=3, color=red, label=r"max$|H|$")
         a.axhline(1.0e-10, **fs.GUIDE)
         a.legend()
-    a.set_xlabel("outer iteration", labelpad=-2)
+    a.set_xlabel("outer iteration", labelpad=2)
     a.set_ylabel("initial-data solve")
     a.set_title("Gaussian at rest, 32 cells", fontsize=10)
     a = ax[1, 1]
@@ -297,17 +298,17 @@ def figure(out, curves):
         a.plot(c["t"], (np.array(c["r"]) - 8.0)*1.0e3, color=red, label="merged")
         a.axhline(0.0, color=blue, label="circular orbit")
         a.legend(loc="upper left")
-    a.set_xlabel(r"time $t/M$", labelpad=-2)
+    a.set_xlabel(r"time $t/M$", labelpad=2)
     a.set_ylabel(r"$(r - 8M)/10^{-3}M$")
-    a.set_title(r"tracer ($m=0$) on the mesh metric", fontsize=10)
+    a.set_title(r"tracer ($m=0$), mesh metric", fontsize=10)
     a = ax[1, 2]
     if "coll" in curves:
         c = curves["coll"]
         a.semilogy(c["cycle"], np.maximum(c["rel"], 1e-20), "o", ms=3, color=red)
         a.axhline(2.2e-16, **fs.GUIDE)
-    a.set_xlabel("step", labelpad=-2)
+    a.set_xlabel("step", labelpad=2)
     a.set_ylabel(r"$|\Delta\sum MH|/\sum MH$ per step")
-    a.set_title("collisions, metric at each particle", fontsize=10)
+    a.set_title("collisions, particle metric", fontsize=10)
     fs.save(fig, os.path.join(out, "fig_quick_v04"))
 
 
@@ -320,10 +321,15 @@ def main():
     ap.add_argument("--exe-dir", default=EXE_DIR,
                     help="directory of the published branch executables")
     ap.add_argument("--analyse-only", action="store_true",
-                    help="reuse the runs in --out (exit codes from its summary.json)")
+                    help="reuse the runs in --runs (exit codes from its summary.json)")
+    ap.add_argument("--runs", default=None,
+                    help="with --analyse-only: directory of an earlier call whose runs "
+                         "are compared and evaluated again (default: --out)")
     a = ap.parse_args()
     out = os.path.abspath(a.out)
     os.makedirs(out, exist_ok=True)
+    # where the runs are: --out, or the directory of an earlier call
+    runs = os.path.abspath(a.runs) if (a.analyse_only and a.runs) else out
     names = a.tests.split(",")
     new = os.path.abspath(a.new)
     jobs = []
@@ -334,21 +340,21 @@ def main():
                                                     "athena_cpu")))
     codes, walls = {}, {}
     if a.analyse_only:
-        with open(os.path.join(out, "summary.json")) as f:
+        with open(os.path.join(runs, "summary.json")) as f:
             old = json.load(f)["tests"]
         for n, lab, _ in jobs:
             codes[(n, lab)] = old[n]["exit"][lab]
             walls[(n, lab)] = old[n]["wall_time_s"][lab]
     else:
         with cf.ThreadPoolExecutor(max_workers=a.cores) as pool:
-            futs = {pool.submit(run, exe, os.path.join(out, n, lab), n): (n, lab)
+            futs = {pool.submit(run, exe, os.path.join(runs, n, lab), n): (n, lab)
                     for n, lab, exe in jobs}
             for fut in cf.as_completed(futs):
                 codes[futs[fut]], walls[futs[fut]] = fut.result()
                 print("ran %-7s %-6s exit %d  %.1f s" % (futs[fut] + (codes[futs[fut]],
                                                                     walls[futs[fut]])),
                       flush=True)
-    summary = {"new": new, "sha256_new": rg.sha256(new), "tests": {}}
+    summary = {"new": new, "sha256_new": rg.sha256(new), "runs": runs, "tests": {}}
     ok = True
     for n in names:
         br = TESTS[n][0]
@@ -362,7 +368,7 @@ def main():
             exe_b = os.path.join(a.exe_dir, "core_" + br, "athena_cpu")
             t["branch_exe"] = exe_b
             t["sha256_branch"] = rg.sha256(exe_b)
-            db, dn = os.path.join(out, n, "branch"), os.path.join(out, n, "new")
+            db, dn = os.path.join(runs, n, "branch"), os.path.join(runs, n, "new")
             prepared = sorted(set(prepared_files(db)) | set(prepared_files(dn)))
             res = rg.compare(n, db, dn, skip=prepared)
             t.update({k: res[k] for k in ("identical", "a", "b", "a+b", "other", "details",
@@ -384,7 +390,7 @@ def main():
         ok = ok and good
         summary["tests"][n] = t
     have = [n for n in names if codes[(n, "new")] == 0]
-    num, curves = evaluate(out, have)
+    num, curves = evaluate(runs, have)
     summary["numbers"] = num
     for k, v in num.items():
         print("%-24s %.6g  band [%g, %g]  %s" % (k, v["value"], v["band"][0], v["band"][1],

@@ -326,3 +326,29 @@ class b; that is what Q2 predicts, with 6 preparation products reported separate
 of them differing (`clump/particles.json`).
 Card list `analysis/release/card_v04.list`: the eleven cases of the quick test with the
 particle files that run core-20261120-222724-75e323c prepared (checksummed as inputs).
+
+### Outcomes (2026-11-21)
+
+Q2 (run core-20261121-025955-bd47414, 4 cores, 537 s, exit 0, QUICK TESTS PASS):
+PREDICTION HELD. Of the files AthenaK writes, 38 identical and 2 of class b against the
+branch executables (lw16 `bin/lwo.z4c.00001.bin`: `<output2> last_time` 1000 against 0;
+eta `bin/bye.con_H.00001.bin`: `<output3> last_time` 10 against 0: the branch
+executables of requests-b and gauge do not have the Finalize correction of
+requests-adf), none other. Six preparation products, one differing
+(`clump/particles.json`, the directory name). The 13 numbers equal those of the first
+attempt bit for bit, and every file the merged executable wrote equals its file of the
+first attempt (56 files compared; `particles.json` of clump and clump0 aside). So the
+merged executable gives, for the example of each branch, the bytes of that branch.
+Figure `fig_quick_v04.png` looked at. What it shows beyond the bands: the oblique-wave
+error falls by 2^3.17 from 16 to 32 cells, not 2^6: at 32 cells it sits a factor 7 above
+the sixth-order guide. The package found a part of second order in the amplitude that
+does not fall with resolution after one period (READY of requests-b, test T8), which
+would give this [JUDGEMENT: not tested here]; the band [3, 13] of my quick test is
+therefore a weak check of the order and no more than "the generator and the error file
+work". Layout defects of the figure (axis labels over tick labels and over the next
+panel, one title cut) corrected in the driver; the figure is remade from the same runs
+(`--analyse-only --runs`).
+Regression figure: run core-20261121-030235-cc329f5 (supersedes -030223-bd2eddc, whose
+legend covered a bar), looked at: 75 compared items, 62 identical, 8 a, 5 b, no other.
+Option scan `verify/options_at.py core-v0.3 HEAD`: 61 added, 0 removed, 0 changed
+defaults (`scratch/core/tmp/lead_v04/options_v03_v04.json`).
