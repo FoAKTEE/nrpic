@@ -1116,3 +1116,14 @@ sha256 107fd235...3dbab9, `athena_gpu` 7b2cceed...879ac6; the pre-merge pair und
   run of the multigrid solver on a refined mesh. I expect about 1e-13 (the deposit sums
   in a different order on a card). Refuted, as a fault of one of the two paths on a
   refined mesh, above 1e-6.
+
+### T12 first attempt failed (a fault of my script, not of the code)
+
+Run core-20261121-081152-5fc1ea4 ended with exit status 1: all four example runs ended
+with exit status 0 and their checks passed, but the comparison of the refined-mesh
+example with the card run divided by the largest value of column 9 (the integral of
+K da), which is zero without expansion in both runs, and the result was not a number.
+The other thirteen columns were between 4e-15 and 2.2e-13 in that run. Corrected (a
+column that is zero in the card run is compared absolutely and listed); rerun below.
+The prediction is unchanged, but I have now seen its numbers before the run that
+counts.

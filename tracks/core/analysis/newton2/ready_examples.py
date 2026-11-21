@@ -152,8 +152,11 @@ def main():
         card = table(os.path.join(a.smr, "newton.newton.hst"))
         m = len(hst["smr"])
         cols = slice(4, 18)
+        # a column that is zero in the card run (the integral of K da without expansion)
+        # is compared absolutely
         sc = np.abs(card[:, cols]).max(axis=0)
-        dev = np.abs(hst["smr"][:, cols] - card[:m, cols]).max(axis=0)/sc
+        dev = np.abs(hst["smr"][:, cols] - card[:m, cols]).max(axis=0)/np.where(sc > 0, sc, 1.0)
+        e["smr"]["zero_columns"] = [int(k) + 5 for k in np.nonzero(sc == 0)[0]]
         e["smr"]["reference"] = a.smr
         e["smr"]["time_equal"] = bool(np.array_equal(hst["smr"][:, 0], card[:m, 0]))
         e["smr"]["dev_columns_5_18_max"] = float(dev.max())
