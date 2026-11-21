@@ -47,7 +47,7 @@ Journal `nr_first/JOURNAL.md` (E1-E11), README `nr_first/README.md`.
 | E10 S2g (card) | F-20261119-143443-f11ebb9 (pending, Slurm 4640); E10a F-20261119-144351-b448f38 | `figures/fig_e10a_s3_s2_compare.png`, `results/e10a_s3_s2_compare.json` |
 | E11 why 1632 MeshBlocks | F-20261119-143851-47595bd (failed: header offset), F-20261119-143931-4fbf2d0, F-20261119-144024-988d5c9, F-20261119-144425-10a94b7 | `figures/fig_e11_tree_check.png`, `results/e11_tree_check.json`, `results/e11_tree_path.json` |
 | C0 analysis scripts | F-20261115-174432-291868f | scripts |
-| P1 passage (card chain) | F-20261119-150017-b45ec5f (Slurm 4650, submitted 15:00Z) | `STATUS.md` here |
+| P1 passage (card chain) | F-20261119-150017-b45ec5f (Slurm 4650 ... 4780; DONE at t = 280 M on 2026-11-21 01:19 PST; finished in nrpic-run 2026-11-21) | `STATUS.md` here |
 
 ## Lead's checks of wave 2b
 
@@ -74,6 +74,10 @@ Review: `../REVIEW-wave3.md`; lead's checks L1-L3 in `tracks/F-hills/JOURNAL.md`
 | note (paused) | G1 schematics and data figures, ledger tables 3-4, G1 text | F-20261120-222908-4ffcfba, F-20261120-222959-156c8be |
 | g2mesh (cut) | MeshBlock trees of P1's set-up at three resolutions; one card batch (3000 slots at m/16 fit) | F-20261120-222426-86392c3, F-20261120-222636-46d03e0, F-20261120-222810-e408386 (card, last case aborted) |
 | lead, 2026-11-21 | L1 P1 merger (own parser), L3 eih tests, T5 and T4 | F-20261121-063449-4dcca98, F-20261121-063520-abab33e, F-20261121-063527-b4453db (first attempt failed by method), F-20261121-063646-d826df4 |
+| junk_gauge (closed in batch 2b, reviewed in batch 4a) | E10 judged; J4g geometry; J4 refuted (merger burst in its window); J4b three-hole window energy 2.2-2.8e-6 M; J4c l and frequency content | F-20261121-075309-b6996ce, F-20261121-075600-4480a13, F-20261121-075803-8e1955b (and the round-1 runs above) |
+| binary_conv (batch 3; partial, chains queued; reviewed in batch 4a) | P1's binary alone at m/8 (decays like P1) and m/16 (no decay to 7.7 M); references; cost; P1b inputs | F-20261121-130358-6cf186a (R8 card), F-20261121-130351-04074e1 (R16n card chain, segment 1 of 3; Slurm 4807 queued), F-20261121-153707-1eaa5d4 (R12 card chain, queued, Slurm 4809), F-20261121-130405-77ad9f6, F-20261121-130646-56612a0, F-20261121-131003-75a2b29, F-20261121-153759-af77173, F-20261121-153844-fbc75ac, F-20261121-154046-c99ccb9 |
+| kerr (batch 3; closed; reviewed in batch 4a) | F-pre-2 Kerr: T5-T8, R3, 2402.02178 reproduced in part in a static slicing; 'cks' slicing pump | F-20261121-131507-d9da8f1, F-20261121-131516-34d8c26, F-20261121-132010-a654642, F-20261121-132028-86ae5d0, F-20261121-131555-91aa063 (figure step failed; figure F-20261121-132235-7df540a), F-20261121-132131-326dfd1 (scan), F-20261121-132817-eacfe46 (analysis; first F-20261121-132346-b3b6c0e superseded), F-20261121-132821-5610cdb |
+| lead, batch 4a | L4 binary_conv from the raw files and own 1PN; L4f 1PN variants; L4e rerun; L5, L5b own FFI of the junk window; L6 reruns of kerr T8 and the 2402 analysis | F-20261121-155018-620fe7f, F-20261121-155353-e4d3354, F-20261121-155442-5f15a25, F-20261121-155457-5f36517, F-20261121-155549-4359678, F-20261121-155605-7d21f63, F-20261121-155614-7997653 |
 
 ## Not part of G1 (wave 3a, beside wave 2b)
 

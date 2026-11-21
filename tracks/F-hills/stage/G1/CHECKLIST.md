@@ -30,13 +30,13 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [ ] **C6** F-pre-1 and F-pre-2 reproduce the curves of the literature
   - status: FAIL
-  - evidence: F-pre-1 met for 0911.1136 and 1804.02911 (STATUS.md T1; verifier K2, K3 confirmed); KHSR (1201.4794) not reproduced (G0 verifier D8). F-pre-2 met for 2404.16270 Schwarzschild (verifier K5 with its own HRNA, runs F-20261121-032337-9c6d87a, -032325-f58a391); Kerr (2402.02178) not reproduced (package kerr cut before any outcome). 2026-11-21
-- [ ] **C7** Constraint residuals and junk radiation of the three-puncture data are quantified
-  - status: OPEN
-  - evidence: constraints quantified (nr_first E2, F-20261115-173547-a02af7d, -181434-b9c8916; card smoke F-20261115-174602-c6879fe); junk of one member measured by junk_gauge (E/m = 7e-5, range 4e-5 to 2e-4; runs F-20261120-222808-b65001c, -223018-a5c0838, -223121-c921d2d; not yet reviewed by the lead); junk of the three-hole data not measured (J4 predicted). 2026-11-21
+  - evidence: F-pre-1 met for 0911.1136 and 1804.02911 (STATUS.md T1; verifier K2, K3 confirmed); KHSR (1201.4794) not reproduced (G0 verifier D8). F-pre-2 met for 2404.16270 Schwarzschild (verifier K5, runs F-20261121-032337-9c6d87a, -032325-f58a391) and in part for Kerr 2402.02178 (package kerr: InclD s = 0, L_z < 0, L_z = 0 within the pi/6 grid at 15/15 pericentres, K2 figure, afin retrograde half; not the L_z > 0 boundary at beta = 0.52-0.68 nor the prograde half of afin; runs F-20261121-132131-326dfd1, -132817-eacfe46, repeated by the lead F-20261121-155614-7997653, F-20261121-155605-7d21f63). FAIL only on KHSR. 2026-11-21 batch 4a
+- [x] **C7** Constraint residuals and junk radiation of the three-puncture data are quantified
+  - status: PASS
+  - evidence: [JUDGEMENT, with reservations] Constraints quantified (nr_first E2, F-20261115-173547-a02af7d, -181434-b9c8916; card smoke F-20261115-174602-c6879fe). Junk: one member E/m = 7e-5 (4e-5 to 2e-4; F-20261120-222808-b65001c, -223018-a5c0838, -223121-c921d2d); three-hole data at P1's spheres: burst 0.40-0.63e-6 M at u of about -33 M, then a steady emission of 5.0-5.4e-8 M per M; window u in [-35, 6] holds 2.3-2.8e-6 M (junk_gauge J4b F-20261121-075600-4480a13; lead L5, L5b F-20261121-155457-5f36517, -155549-4359678). Reservations (OPEN.md 5): l <= 8 only; m/8 binary spirals in numerically; steady part not identified; remeasure at P1b. 2026-11-21 batch 4a
 - [ ] **C8** One complete vacuum passage is done
   - status: FAIL
-  - evidence: P1 (run F-20261119-150017-b45ec5f) runs to t = 280 M but its binary merged at t = 48.8 M, before the passage (p1 entry 4; lead run F-20261121-063449-4dcca98): not a Hills passage that the references can be compared with; cause most likely the members' resolution at m/8 (TO VERIFY). STATUS.md T4. 2026-11-21
+  - evidence: P1 (run F-20261119-150017-b45ec5f) ended at t = 280 M (12.58 card-hours), but its binary merged at t = 48.8 M before the passage (lead F-20261121-063449-4dcca98); cause the m/8 member resolution (binary_conv R8, R16n: F-20261121-130358-6cf186a, -130351-04074e1; decision 0022 item 4). P1b at m/16 waits for rule P1b-D (JOURNAL.md batch 4a). 2026-11-21 batch 4a
 
 ## Rulings of the orchestrator on the criteria (coord/DECISIONS; check that they apply to G1)
 
@@ -81,4 +81,4 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: failed and stopped runs kept with manifests and journal entries: F-20261115-173601-2fae2dc (S3/S2, slot limit), F-20261115-173606-efcbf69 (withdrawn), F-20261115-173719-923135a, F-20261119-143851-47595bd, F-20261115-174959-9e8a361 (stopped), F-20261115-174142-2a79515 (superseded), F-20261115-175542-b49d687; failed predictions on record: nr_first/JOURNAL.md (E1(b), E3 items 1, 2, 5, E4 rerun counts, E7 first-search masses), newton3/JOURNAL.md (Q1, Q3, Q4 bounds), stage/G0/JOURNAL.md (SC0d, SC2, SC6), JOURNAL.md (V4-V7 of wave 1)
 - [x] **C20** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: PASS
-  - evidence: STATUS.md, HANDOFF.md rewritten and a JOURNAL.md entry appended by the lead at the end of batch 2a (2026-11-21)
+  - evidence: STATUS.md, HANDOFF.md rewritten and a JOURNAL.md entry appended by the lead at the end of batch 4a (2026-11-21)

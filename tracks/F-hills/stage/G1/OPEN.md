@@ -1,24 +1,26 @@
-# G1 of F-hills: what the gate still lacks (2026-11-21, lead, batch 2a)
+# G1 of F-hills: what the gate still lacks (2026-11-21, lead, batch 4a)
 
-1. **A complete vacuum Hills passage (T4).** P1 (run F-20261119-150017-b45ec5f) will reach
-   t = 280 M with segment 15 or 16 of its chain (segment 14, Slurm 4769, running at 22:24 PST
-   2026-11-20), but its binary merged at t = 48.8 M, before the passage (p1 entry 4; lead run
-   F-20261121-063449-4dcca98). Cause not established; the deciding test is the isolated binary
-   at m/8 and m/16 (about 60 M; RISKS R15). Then a passage that keeps its binary.
-2. **Junk radiation of the three-hole data (T3).** Single member measured (junk_gauge, not yet
-   reviewed by the lead); three-hole junk from P1's spheres predicted (J4), not measured; P1's
-   spheres also carry the merger signal after t = 48.8 M.
-3. **F-pre-1: KHSR (1201.4794)** not reproduced (G0 verifier D8); one result planned (SCOPING 5).
-4. **F-pre-2 for Kerr (T2).** Package `kerr` cut before any outcome (uncommitted predictions).
-5. **Note.** The G1 revision of `note/main.tex` is written (paused package); registered rerun of
-   `run_all.py`, compile, checker and page reading are not done; the lead's ledger corrections
-   (verifier D7, D9, row 57) wait for that rerun.
-6. **Verifier of the G1 material.** None yet; to be asked when items 1-5 are done.
-7. **Gauge (E10).** S2g analysed by junk_gauge (runs F-20261120-222403-b8dc28c,
-   -222415-137ada9) but E10's outcome is not recorded in `nr_first/JOURNAL.md`.
-8. **Small defects listed, not fixed.** `three_punctures/scripts/newton_start.py` reads the
+1. **A complete vacuum Hills passage (T4, CHECKLIST C8).** P1 (run F-20261119-150017-b45ec5f)
+   ended at t = 280 M, but its binary merged at t = 48.8 M before the passage; the cause is the
+   m/8 member resolution (binary_conv; decision 0022 item 4). P1b at m/16 is prepared
+   (`binary_conv/inputs/p1b_R16n.athinput`) and announced in STATUS.md (32 card-hours); it is
+   submitted when rule P1b-D holds (JOURNAL.md, batch 4a): it waits for R16n segments 2-3
+   (Slurm 4807, then its successor) and R12 (Slurm 4809).
+2. **F-pre-1: KHSR (1201.4794)** not reproduced (G0 verifier D8); one result planned with
+   newton3 (`e_orb`, processor minutes; SCOPING 5). (C6)
+3. **Note (C15, C17).** The G1 revision of `note/main.tex` is written (paused package);
+   registered rerun of `run_all.py`, compile, checker and page reading not done; the lead's
+   ledger corrections (verifier D7, D9, row 57) wait for that rerun; the Kerr row, P1's merger
+   and its cause, and the junk numbers of batch 4a are not in the note.
+4. **Verifier of the G1 material (C18).** None yet; to be asked when items 1-3 are done.
+5. **Reservations on T3 (C7).** The three-hole junk is measured with P1's m/8 binary, which
+   spirals in numerically; most of the window's energy is a steady emission whose source is
+   not identified; extraction stops at l = 8. To be remeasured at P1b's spheres.
+6. **Small defects listed, not fixed.** `three_punctures/scripts/newton_start.py` reads the
    pre-fix energy fields; `nr_first/scripts/single_analysis.py` repeats the last mass after a
-   run's end in `m_at`.
-9. **For G2.** q = 4 at m/16 fits one card (3000 slots at 78785 MiB, g2mesh card run; its
-   analysis by g2mesh pending); the G2 plan is about 100 card-hours (SCOPING 9) and is re-costed
-   after item 1; a q = 10 passage needs momenta from a GR parabola (verifier D1).
+   run's end in `m_at`; binary_conv's README and BC-3 label fractional mass drifts "per M";
+   geodesic_binary S4 (Kerr, chart 'cks') carries the slicing pump (rerun in 'bks').
+7. **For G2.** q = 4 at m/16 fits one card (3000 slots at 78785 MiB; g2mesh's analysis
+   pending); the G2 resolution ladder must start at m/16 (m/8 merges the binary), which raises
+   its cost; the G2 plan is re-costed after P1b; the gauge leg (mass-scaled profile of
+   junk_gauge) moves to G2.

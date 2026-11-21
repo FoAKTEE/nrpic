@@ -6,5 +6,7 @@ The lead's rechecks of the helpers, from their artefacts:
 - waves 2 and 2b (newton3_fix, note, nr_first, second_check, nr_finish): `../REVIEW-wave2.md`
   and `../../JOURNAL.md`, lead session of wave 2b (checks V8-V11).
 - wave 3 (eih of wave 3a; the parts of p1, junk_gauge, g2mesh and note that were finished when
-  round 1 was cut): `../REVIEW-wave3.md` and `../../JOURNAL.md`, lead session of 2026-11-21 (L1-L3).
+  round 1 was cut): `../REVIEW-wave3.md` and `../../JOURNAL.md`, lead session of 2026-11-21 (L1-L3);
+- wave 3, batches 2b and 3 (junk_gauge, binary_conv, kerr): `../REVIEW-wave3.md` (second part)
+  and `../../JOURNAL.md`, lead session of 2026-11-21T15:55Z (L4-L6).
 The second agent's check of the plan is `SECOND_CHECK.md` (wave 2); no verifier of the G1 material yet.

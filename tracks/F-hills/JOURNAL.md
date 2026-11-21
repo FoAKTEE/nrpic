@@ -564,3 +564,72 @@ r of about 30). (b) Analysis rerun (run F-20261121-155614-7997653) equals
 `kerr_2402_summary.json` in all 6772 values (MET; `fig_incld.png` read: L_z > 0 median 1-3
 steps below the paper at beta = 0.52-0.68, the other panels within one step). (c) My
 derivation gives the same coefficient 2M/r as the package's 2H (JUDGEMENT, on paper).
+
+### P1b: decision of this session (decision 0022 item 4) and the rule for the next one
+
+State (07:45-08:15 PST): the isolated m/16 binary (R16n, run F-20261121-130351-04074e1) has
+reached t = 7.74 M of the about 100 M the passage needs (segment 1; segment 2 is Slurm 4807,
+pending since 07:05 PST; segment 3 follows by itself). R12 (run F-20261121-153707-1eaa5d4,
+Slurm 4809) has not started. Two jobs of this owner are queued, so nothing may be submitted.
+Neither "has reached" nor "will reach by its trend" is shown: the m/16 binary does not decay
+over 0-7.7 M, but the order of convergence that the extrapolation needs is not established
+(review: the 1PN references spread by 0.019 M at 7.5 M, the deviations being judged are of the
+same size; order anywhere above about 1.2). DECISION: P1b is NOT submitted in this session.
+
+Pre-registered rule P1b-D for the session that reads R16n segments 2-3 and R12 (written now,
+before the data; Delta s(t) = s(0) - s(t) of the tracker separation; R8 values VERIFIED in
+run F-20261121-155018-620fe7f: Delta s_8(15) = 0.3054, Delta s_8(20) = 0.5766 M):
+- D1 (three resolutions, needs R12 to 15 M and R16n to 15 M): fit Delta s_h(15) = Delta s_c +
+  C h^p with h = 1, 2/3, 1/2 (cells in units of m/8). Submit P1b at m/16 if the sequence is
+  monotone, p >= 2 and Delta s_c(15) lies in -0.02 to 0.12 M (the 1PN variants give 0.011-0.097
+  M at 15 M, run F-20261121-155353-e4d3354). Then the m/16 merger time is at least 53 x 2^2 =
+  210 M by the stretch model of BC-3 [JUDGEMENT].
+- D2 (R16n alone, if R12 has not landed): submit if Delta s_16(20) <= 0.10 M (R8 reaches that
+  decay at about t = 10 M, so the m/16 decay is at least twice slower: merger after about
+  106 M or later) AND R16n's member masses stay flat (fractional drift below 1e-4 per M) AND
+  its tracker separation has no step larger than 0.01 M.
+- Not submitted if D1 gives p < 1.5, a non-monotone sequence, or D2 fails: then the next
+  passage needs finer members than m/16 (m/16 at q = 4 already uses 2514 of 3000 slots on one
+  card) or a wider binary; the lead decides with the R12 and R16n data.
+- What is submitted under D1 or D2: `binary_conv/inputs/p1b_R16n.athinput`, chain command of
+  binary_conv JOURNAL BC-4 item 6 with `--gpu-hours 32` (32 segments of 50 min, about 26.7
+  card-hours, to 170-205 M), executable `athena_keep_trackers_bc.sh` running the byte copy of
+  release core-v0.5's card build that R8 and R16n ran (`bc-ak05-gpu`), with main's
+  `scripts/submit_chain.sh` of release core-v0.6 (resubmits after an outside kill), constant
+  shift_eta = 2 as P1, R8, R16n. Announced in STATUS.md now (decision 0014): 32 card-hours,
+  G1 allotment 50, used about 15.1 (P1 12.58 by sacct over its 16 jobs, S2g 0.52, wave 2 0.30,
+  binary_conv 1.67), 3.3 more queued in binary_conv.
+
+### What else this session did
+
+- P1's chain ended DONE at t = 280 M (2026-11-21 01:19 PST); finished in nrpic-run (manifest
+  commit eb0b2230; 267 files, 165 GB checksummed). Card-hours by sacct over its 16 jobs: 12.58.
+- Stage G1 brought up to date: STATUS.md (T2 Kerr in part, T3 met with reservations, T4 not
+  met), OPEN.md, EVIDENCE.md (batch 2b-4a runs), CHECKLIST C6 FAIL (KHSR only), C7 PASS with
+  reservations, C8 FAIL, C20 PASS; REVIEW.md points to the batch-4a review.
+- RISKS: R15 updated (cause settled at m/8), R17 new (no sharp 1PN reference), R18 new ('cks'
+  slicing pump), R4, R6, R7, R8, R16 updated.
+- Left alone: g2mesh's uncommitted `scripts/card_analysis.py` (package cut, in progress).
+
+### Session summary (lead, batch 4a)
+
+did: reviewed junk_gauge, binary_conv and kerr from their artefacts with my own parsers and
+integrations (seven registered runs); closed P1 in nrpic-run; decided not to submit P1b and
+wrote the rule P1b-D for the session that reads the queued chains; brought the G1 package up to
+date; posted 6 messages, acknowledged 4.
+found: binary_conv's numbers repeat exactly, but its 1PN reference is one of three equivalent
+ones that differ by 0.019 M at 7.5 M and 0.158 M at 20 M, so the claimed order (>= 3.3) and the
+"m/16 survives 100 M" extrapolation are not established; junk_gauge's window energy repeats
+within 8 percent, but three quarters of it is a steady emission, not the junk burst
+(0.4-0.6e-6 M); kerr's T8 and 2402 analysis repeat exactly.
+evidence: runs F-20261121-155018-620fe7f, -155353-e4d3354, -155442-5f15a25, -155457-5f36517,
+-155549-4359678, -155605-7d21f63, -155614-7997653; P1 finish eb0b2230.
+changed my mind about: reading "follows EIH within 0.006 M" as accuracy (the 1PN form matters at
+that level for members at 0.11-0.33 c); the three-hole junk number (mostly not junk).
+open: R16n segments 2-3 and R12 (Slurm 4807, 4809) and rule P1b-D; KHSR; p1 analysis to 280 M;
+note; g2mesh; G1 verifier.
+failed predictions this session: L4b (my 1PN within 0.005 M of the package's: 0.158 M apart at
+20 M), L4c (R16n within 0.01 M of my 1PN: 0.019; R8 > 0.05 M inside: 0.043), L4d in two clauses
+(R16n hrms criterion; R8 drift range read from fractional values), L5b at 48 M (early energy
+0.63e-6 against <= 0.6e-6). Met: L4a, L4e, L4f, L5, L6a-c, the rest of L4d and L5b.
+card-hours used this session: 0 (no submission; two F-hills jobs queued throughout).
