@@ -207,3 +207,24 @@ Interface: `tracks/core/interfaces/id_solver.md`; readers:
 | `<base>.idsolve.bin` | `id_dump = true`: 8 bytes `NRIDSOL1`, 3 int64 (n1, n2, n3: cells of the uniform mesh), 6 float64 (x1min, x1max, x2min, x2max, x3min, x3max), int64 number of fields (7), then per field n3*n2*n1 float64, first index fastest: psi (solved), K, Abar_ij Abar_ij, E (source of the code for the solved psi), H of the constraint monitor at the last evaluation, the seven-point residual there, H of the monitor at the first evaluation (trial or psi = 1). At the faces of a mesh that is not periodic the monitor inside the solver sees the 1/r continuation of psi; the first field dump of the run (`<base>.field.00000.bin`) holds the monitor of the state as the evolution starts from it (outflow ghost cells). |
 | `<base>.idsolve.txt` with `id_vector = true` | six more columns per record: 14 the largest residual of the vector equation over its scale (compared with `id_tol`), 15 and 16 its largest and root-mean-square value, 17 the largest \|M\| of the constraint monitor, 18 the norm of the mean removed from the residual (periodic mesh; 0 otherwise), 19 V cycles of the vector step that followed; one more summary line (`# vector equation: ...`) |
 | `<base>.idvector.bin` | `id_vector = true` and `id_dump = true`: 8 bytes `NRIDVEC1`, the header of `<base>.idsolve.bin` (3 int64, 6 float64, int64 number of fields, 15), then 15 fields of n3*n2*n1 float64, first index fastest: W_x, W_y, W_z; the right side s_i of the vector equation (`8 pi psi^6 S_i + (2/3) psi^6 d_i K - d_j Abar_ij(trial)`, 3); its residual in stencil form (3); M_i of the constraint monitor at the last evaluation (3) and at the first (3). Reader: `tracks/core/analysis/idsolve/run_vector.py` (`read_idvector_bin`). |
+
+## Files added by release core-v0.5
+
+Written only with the option or the build named; the files of the releases before keep
+their formats. Interface texts: `tracks/core/interfaces/cosmo_amr.md`, `mpi.md`,
+`scalar_field_3.md`, `threaded_build.md`.
+
+| File | Written when | Content |
+|---|---|---|
+| `<base>.region.hst` | `<particles> region_dcycle > 0` | text, one record every `region_dcycle` cycles: time, cycle; for the whole mesh the proper volume V, the proper-volume means of K and of the lapse, the coordinate-volume mean of the lapse, sqrt(<H^2>), sqrt(<(16 pi E)^2>), <E> (means weighted with sqrt(gamma) dV over the leaf cells); then for every sphere (`region_radius1..4`, and the one of `region_horizon`) its radius and, inside and then outside, V, sqrt(<H^2>), sqrt(<(16 pi E)^2>), <E>, max \|H\|. The header line names the columns (`H2_in_s1`, `E2_out_s1`, ...); reader `tracks/core/analysis/cosmo_amr/amrlib.py` (`read_hst`) |
+| `<base>.guard.txt` | the guard `<z4c_guard>` stops a run (exit status 3) | text: time, cycle and step of the stop, the reason, the last check that passed, MeshBlocks and cells, the number of non-finite values (per variable) and of cells with chi <= 0, the first such cell with its MeshBlock, level, cell size, position and all evolved fields, the particles left, excised and escaped |
+| `<base>.horizon_status_<n>.txt` | `<fastflow> diagnostics = true` | text, one line per search of horizon n: cycle, time, found (0 or 1), reason (0 found, 1 area not finite, 2 mean expansion not finite, 3 mean expansion above `hmean_tol`, 4 mean radius negative, 5 area mass below 1e-10, 6 iteration limit), flow iterations, area, area mass, mean and smallest coordinate radius, mean expansion, smallest \|mean expansion\| reached, surface points outside the mesh, centre x, y, z, and the reason in words after `#` |
+| `rst/<base>.NNNNN.rst.amr` | restart output of `nrpic_cosmo` on an adaptive mesh | 8 bytes `NRPAMR01`, int64 number of MeshBlocks, int64 cycle, int64 pending (1: the regrid of that cycle follows the file), then per MeshBlock in global order five int32: level, lx1, lx2, lx3, cycles since its last change |
+| `<base>.mpi.hst` | a run of the MPI build on more than one rank | text, one record per record of `<base>.nrpic.hst`: time, cycle, particles handed to other ranks and deposit packets sent since the last record, then the particles on each rank |
+| `<base>.sf.con.hst`, columns 21 to 27 | `<scalar_field> con_signed = true` | after the 20 columns of release core-v0.4: the signed box means <H>, <M_x>, <M_y>, <M_z>, and with H' = H - <H>: <\|H'\|/[H]>, max \|H'\|/[H], rms H'; reader `python/nrpic/scalar_field.py` (`read_con_history`) |
+
+Since release core-v0.5 the summary file of the horizon finder
+(`<base>.horizon_summary_<n>.txt`) and the file of the compact-object tracker
+(`<base>.co_<n>.txt`) are opened at their first record and therefore lie in the run
+directory given with `-d`; the releases before opened them in the directory the
+executable was started in.
