@@ -1,0 +1,353 @@
+{
+ "case": "t2_kerr_cic",
+ "ranks": [
+  1,
+  2,
+  4
+ ],
+ "bytes": {
+  "swarm.traj.bin": {
+   "size": 10079872,
+   "np2": true,
+   "np4": true
+  },
+  "swarm.trajmet.bin": {
+   "size": 21419728,
+   "np2": false,
+   "np4": false
+  },
+  "swarm.part.00000.bin": {
+   "size": 288032,
+   "np2": true,
+   "np4": true
+  },
+  "swarm.part.00001.bin": {
+   "size": 186224,
+   "np2": true,
+   "np4": true
+  },
+  "swarm.part.00002.bin": {
+   "size": 77144,
+   "np2": true,
+   "np4": true
+  },
+  "swarm.part.00003.bin": {
+   "size": 30416,
+   "np2": true,
+   "np4": true
+  },
+  "swarm.part.00004.bin": {
+   "size": 11768,
+   "np2": true,
+   "np4": true
+  },
+  "rst/swarm.00000.rst.prt": {
+   "size": 304384,
+   "np2": true,
+   "np2_rest_identical": true,
+   "np2_header_max_rel": 0.0,
+   "np2_header_exact": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "np4": true,
+   "np4_rest_identical": true,
+   "np4_header_max_rel": 0.0,
+   "np4_header_exact": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ]
+  },
+  "rst/swarm.00001.rst.prt": {
+   "size": 12772,
+   "np2": true,
+   "np2_rest_identical": true,
+   "np2_header_max_rel": 0.0,
+   "np2_header_exact": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "np4": false,
+   "np4_rest_identical": true,
+   "np4_header_max_rel": 1.5083008736320798e-16,
+   "np4_header_exact": [
+    true,
+    true,
+    true,
+    false,
+    true,
+    true,
+    true
+   ]
+  }
+ },
+ "histories": {
+  "swarm.nrpic.hst": {
+   "records": 401,
+   "columns": 32,
+   "np2": {
+    "identical": false,
+    "max_rel": 1.2002187110631313e-13,
+    "column": 28,
+    "exact_columns": 16
+   },
+   "np4": {
+    "identical": false,
+    "max_rel": 1.1237181184699874e-13,
+    "column": 27,
+    "exact_columns": 16
+   }
+  }
+ },
+ "snapshots": {
+  "swarm.part.00000.bin": {
+   "time": 0.0,
+   "n": 4000,
+   "tags_ascending": true,
+   "np2": 0.0,
+   "np4": 0.0
+  },
+  "swarm.part.00001.bin": {
+   "time": 25.0,
+   "n": 2586,
+   "tags_ascending": true,
+   "np2": 0.0,
+   "np4": 0.0
+  },
+  "swarm.part.00002.bin": {
+   "time": 50.0,
+   "n": 1071,
+   "tags_ascending": true,
+   "np2": 0.0,
+   "np4": 0.0
+  },
+  "swarm.part.00003.bin": {
+   "time": 75.0,
+   "n": 422,
+   "tags_ascending": true,
+   "np2": 0.0,
+   "np4": 0.0
+  },
+  "swarm.part.00004.bin": {
+   "time": 100.0,
+   "n": 163,
+   "tags_ascending": true,
+   "np2": 0.0,
+   "np4": 0.0
+  }
+ },
+ "fields": {
+  "bin/swarm.tmunu.00000.bin": {
+   "time": 0.0,
+   "blocks": 64,
+   "max_abs": {
+    "tmunu_E": 0.0004976497148163617,
+    "tmunu_Sx": 0.0001779046724550426,
+    "tmunu_Sxx": 0.00010655785445123911,
+    "tmunu_Sxy": 5.466143193189055e-05,
+    "tmunu_Sxz": 5.127422264195047e-05,
+    "tmunu_Sy": 0.0002332842705072835,
+    "tmunu_Syy": 0.00012352447083685547,
+    "tmunu_Syz": 5.21813562954776e-05,
+    "tmunu_Sz": 0.00020390217832755297,
+    "tmunu_Szz": 0.00010151832248084247
+   },
+   "np2": {
+    "max_rel": 0.0,
+    "component": "tmunu_E"
+   },
+   "np4": {
+    "max_rel": 0.0,
+    "component": "tmunu_E"
+   }
+  },
+  "bin/swarm.tmunu.00001.bin": {
+   "time": 50.0,
+   "blocks": 64,
+   "max_abs": {
+    "tmunu_E": 0.0005910486215725541,
+    "tmunu_Sx": 0.00020035202032886446,
+    "tmunu_Sxx": 0.00035384990042075515,
+    "tmunu_Sxy": 9.050842345459387e-05,
+    "tmunu_Sxz": 7.29632520233281e-05,
+    "tmunu_Sy": 0.0001791217946447432,
+    "tmunu_Syy": 0.00020813055743929,
+    "tmunu_Syz": 4.8108304326888174e-05,
+    "tmunu_Sz": 0.00019203992269467562,
+    "tmunu_Szz": 0.0001359109446639195
+   },
+   "np2": {
+    "max_rel": 0.0,
+    "component": "tmunu_E"
+   },
+   "np4": {
+    "max_rel": 0.0,
+    "component": "tmunu_E"
+   }
+  },
+  "bin/swarm.tmunu.00002.bin": {
+   "time": 100.0,
+   "blocks": 64,
+   "max_abs": {
+    "tmunu_E": 0.0002599703148007393,
+    "tmunu_Sx": 0.00016804088954813778,
+    "tmunu_Sxx": 0.0001463411026634276,
+    "tmunu_Sxy": 6.266448326641694e-05,
+    "tmunu_Sxz": 0.00010307564662070945,
+    "tmunu_Sy": 0.00022820486628916115,
+    "tmunu_Syy": 0.0002312765282113105,
+    "tmunu_Syz": 7.062964141368866e-05,
+    "tmunu_Sz": 0.00013101015065331012,
+    "tmunu_Szz": 8.707089727977291e-05
+   },
+   "np2": {
+    "max_rel": 0.0,
+    "component": "tmunu_E"
+   },
+   "np4": {
+    "max_rel": 0.0,
+    "component": "tmunu_E"
+   }
+  }
+ },
+ "identity": {
+  "np1": {
+   "max_dE_over_sum_mW": 0.006381286956035916,
+   "max_dS_over_sum_mW": 0.0013499452725572697,
+   "records": 401
+  },
+  "np2": {
+   "max_dE_over_sum_mW": 0.006381286956035916,
+   "max_dS_over_sum_mW": 0.0013499452725572781,
+   "records": 401
+  },
+  "np4": {
+   "max_dE_over_sum_mW": 0.006381286956034523,
+   "max_dS_over_sum_mW": 0.0013499452725571955,
+   "records": 401
+  }
+ },
+ "mpi": {
+  "np2": {
+   "handed_over": 4939,
+   "deposit_packets": 30470,
+   "particles_per_rank_first": [
+    1975,
+    2025
+   ],
+   "particles_per_rank_last": [
+    80,
+    83
+   ]
+  },
+  "np4": {
+   "handed_over": 8974,
+   "deposit_packets": 61724,
+   "particles_per_rank_first": [
+    994,
+    981,
+    1013,
+    1012
+   ],
+   "particles_per_rank_last": [
+    40,
+    40,
+    47,
+    36
+   ]
+  }
+ },
+ "trajmet": {
+  "records": 157498,
+  "np2": {
+   "metric_identical": true,
+   "sources_max_rel": 4.446651350654925e-16
+  },
+  "np4": {
+   "metric_identical": true,
+   "sources_max_rel": 5.189648920434246e-16
+  }
+ },
+ "particles": 4000,
+ "runs": {
+  "1": {
+   "dir": "/data/haiyangw/nrpic/scratch/core/core-20261119-152553-8f245d7/t2_kerr_cic/np1",
+   "command": [
+    "/home/emost/codes/openmpi/bin/mpirun",
+    "--bind-to",
+    "none",
+    "-np",
+    "1",
+    "/data/haiyangw/nrpic/wt/core-mpi/.work/build_cpu_mpi/src/athena",
+    "-i",
+    "/data/haiyangw/nrpic/wt/core-mpi/problems/tests/mpi_kerr_swarm.athinput",
+    "-d",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-152553-8f245d7/t2_kerr_cic/np1",
+    "particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261119-152553-8f245d7/t2_kerr_cic/swarm.nrp",
+    "particles/deposit=true",
+    "particles/traj_ntrack=1000000",
+    "particles/deposit_shape=cic"
+   ],
+   "exit": 0,
+   "wall_s": 98.5
+  },
+  "2": {
+   "dir": "/data/haiyangw/nrpic/scratch/core/core-20261119-152553-8f245d7/t2_kerr_cic/np2",
+   "command": [
+    "/home/emost/codes/openmpi/bin/mpirun",
+    "--bind-to",
+    "none",
+    "-np",
+    "2",
+    "/data/haiyangw/nrpic/wt/core-mpi/.work/build_cpu_mpi/src/athena",
+    "-i",
+    "/data/haiyangw/nrpic/wt/core-mpi/problems/tests/mpi_kerr_swarm.athinput",
+    "-d",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-152553-8f245d7/t2_kerr_cic/np2",
+    "particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261119-152553-8f245d7/t2_kerr_cic/swarm.nrp",
+    "particles/deposit=true",
+    "particles/traj_ntrack=1000000",
+    "particles/deposit_shape=cic"
+   ],
+   "exit": 0,
+   "wall_s": 98.5
+  },
+  "4": {
+   "dir": "/data/haiyangw/nrpic/scratch/core/core-20261119-152553-8f245d7/t2_kerr_cic/np4",
+   "command": [
+    "/home/emost/codes/openmpi/bin/mpirun",
+    "--bind-to",
+    "none",
+    "-np",
+    "4",
+    "/data/haiyangw/nrpic/wt/core-mpi/.work/build_cpu_mpi/src/athena",
+    "-i",
+    "/data/haiyangw/nrpic/wt/core-mpi/problems/tests/mpi_kerr_swarm.athinput",
+    "-d",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-152553-8f245d7/t2_kerr_cic/np4",
+    "particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261119-152553-8f245d7/t2_kerr_cic/swarm.nrp",
+    "particles/deposit=true",
+    "particles/traj_ntrack=1000000",
+    "particles/deposit_shape=cic"
+   ],
+   "exit": 0,
+   "wall_s": 98.5
+  }
+ },
+ "exe": "/data/haiyangw/nrpic/wt/core-mpi/.work/build_cpu_mpi/src/athena"
+}

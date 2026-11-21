@@ -1,8 +1,107 @@
 # What core's G2 still lacks
 
-Two states: the release candidate core-v0.4 (2026-11-21, first section) and the list
-written after the wave-1 integration (2026-11-15, below, with its numbering kept; items
-that core-v0.4 changes are marked there by the first section).
+Three states: the release candidate core-v0.5 (2026-11-21, first section), the release
+core-v0.4 (second section) and the list written after the wave-1 integration
+(2026-11-15, below, with its numbering kept; items that a release changes are named in
+the section of that release).
+
+## Release candidate core-v0.5 (2026-11-21): branches left out, items changed, defects
+
+**Branches left out of core-v0.5: none of the four offered.** core/scalar-3,
+core/build-openmp, core/cosmo-amr and core/mpi passed the maintainer's review and are
+merged (`tracks/core/RELEASE-v0.5.md`); the byte regression against core-v0.4 passes
+with them (run core-20261121-063859-e410ee3). Not part of core-v0.5 because they are
+not finished (for core-v0.6): core/id-solver-2 (refined meshes and punctures in the
+initial-data solve), core/clump-table (equilibrium clumps with momentum from tables),
+core/newton-2 (Newtonian mode, second pass), core/oblate (oblate collapse of the
+ladder), core/z4c-faces (outer faces of Z4c). Nothing of them is in the source of the
+candidate.
+
+Items of the lists below that core-v0.5 changes:
+- 11 of 2026-11-15 (run continues when the state is non-finite): answered by the guard
+  `<z4c_guard>`, on by default (exit status 3).
+- 12 of 2026-11-15 (step ignores the lapse): answered by `<z4c> dt_lightspeed`.
+- d of core-v0.4 (`hmean_tol` in a cosmological box): unchanged in the source; the
+  reason of a failed search is now in `<basename>.horizon_status_<n>.txt`
+  (`<fastflow> diagnostics`), and the example inputs set 1e30.
+- "the particle module is single-rank" (core-v0.4, last paragraph of its changelog
+  section): answered by core/mpi, with the limits below.
+
+Defects and limits of core-v0.5 itself (found by the packages or at the merge):
+- a. Five things act without an option (`CHANGELOG.md`, section core-v0.5): the guard
+  stops a Z4c run with non-finite fields with exit status 3; the summary file of the
+  horizon finder and the tracker file lie in the `-d` directory; surface points and
+  tracker positions are mapped into a periodic box; `nrpic_cosmo` enrols a refinement
+  function; a run on several ranks is no longer refused at once. None changes a byte
+  of the twelve regression set-ups; the second moves files of every run that is started
+  outside its run directory with `-d`.
+- b. `athena_cpu_omp` (threaded build) does not give the bytes of the serial build, at
+  one thread either: 44 of 75 regression items differ at rounding level (run
+  core-20261121-070623-077b056; module histories 1.2e-15, constraint statistics up to
+  1.4e-10). With the flags of the serial build (`OMP_OPT=debug`) the nine set-ups
+  without Z4c are identical and the three with Z4c still differ at rounding (run
+  core-20261121-071842-f5a8b56): no threaded build is a reference for byte comparisons.
+- c. Several ranks, options that stop the run with a message: `pusher = newton`,
+  `collisions`, `test_kick`, `curv_dt` (package), `removal_record`, `acc_nsphere`,
+  `peri_count`, `perturb_gamma`, `id_solve`, `region_dcycle`, `deposit_fine_shape`
+  (added at the merge). Tracks C (collisions), D (accretion diagnostics, Newtonian
+  mode) and the initial-data solver therefore stay on one rank.
+- d. Several ranks, horizon finder: with deposit, at four cells per horizon radius, the
+  finder returns different surfaces on 1, 2 and 4 ranks from identical fields (masses
+  1.02456, 1.02604, 1.02449; journal of package mpi, entry 27), and the particles
+  removed inside the horizon then differ (43 against 41 of 2000). On ONE rank a change
+  of the finder's flow constant by 1e-13 changes the same search by 4.8e-3 in the
+  smallest radius and the removed number from 43 to 41 (run
+  core-20261120-223502-f9a2c02 of the package, its log read by the lead; the package
+  has not written the outcome). So excision by a horizon is not reproducible between
+  rank counts where the finder's flow does not converge; with a converged finder it
+  was identical (test particles around a moving puncture, entry 26).
+- e. Several ranks: the constraint statistics `cstat.hst` differ by 8.5e-10 in the
+  largest relative Hamiltonian constraint between 1 and 2 ranks of the cluster test
+  (module history 4.6e-13); not tested on several ranks: tracers, clumps with
+  momentum, the gauge options of core-v0.4, the scalar field, `<particles_amr>`, the
+  guard; MPI with threads; a card build with MPI (the package's build ran two ranks on
+  one card; its two-card job 4733 is not judged; no MPI card executable is published
+  with core-v0.5).
+- f. `deposit_fine_shape`: no limiter (negative leaf-cell energy in sparse regions,
+  -0.10 of E_max for random particles with the linear cloud); one rank only. The
+  executables that package cosmo-amr published on 2026-11-19 (source 3c44b74) deposit
+  the linear cloud with a discontinuity; core-v0.5 has the corrected form (1548d49).
+- g. Deposit on refined meshes with quadratic or cubic clouds placed on the level of
+  their particle's MeshBlock: a uniform lattice is not uniform across a level boundary
+  (35 and 15 per cent in E; found by package cosmo-amr, T3c, also in the releases
+  before). Use `deposit_shape = cic` on refined meshes, or one level for every cloud.
+- h. Adaptive refinement in `nrpic_cosmo`: no sub-cycling (one global step); the source
+  filter acts at the cell size of each level; after the first regrid of Track A's S1
+  data the largest relative constraint is about twice that of the unrefined run with
+  either spreading; restarts on refined meshes agree to round-off, not bit for bit;
+  the horizon surfaces found in the scouting run lie in a region that violates the
+  constraints at order one (no horizon in a state that satisfies them is shown).
+- i. Threads: adaptive refinement, restarts of refined meshes and of collisional runs,
+  and the kernels release core-v0.4 added have not been run under threads; gas
+  self-gravity and the Newtonian mode depend on the thread count through the plain sum
+  of `Multigrid::CalculateAverage` (the package's diagnostic patch is not in the tree).
+- j. Scalar field: nothing at 256^3; one seed; Track E's criterion A4 as written cannot
+  be met at four cells per shortest wavelength (first-order part of the constraints,
+  `scalar_field_3.md` section 4); two unexplained departures under `lapse_kdriver` and
+  `lapse_harmonic = 0.05`.
+- k. Carried from core-v0.4 unchanged: d (`hmean_tol`), e (the particle restart file
+  stores the previous sources for all `max_nmb_per_rank` MeshBlocks), f (the comment in
+  `particles.hpp`: no source of this release touched that line; the source commit of
+  the candidate could have corrected it and I did not, to keep the merges free of
+  edits that no branch made), g (id_solve), h (clumps with momentum).
+- l. Requests of package cosmo-amr to the lead that are NOT done in this release: an
+  excision threshold relative to the mean lapse (`alpha_exc` is absolute); a tolerance
+  of the finder on the mean expansion; a particle restart file that holds only the
+  MeshBlocks that exist.
+- m. The release drivers ran five example inputs against the branch executables, the
+  two examples of package mpi on 1 and 2 ranks against the package's runs, thirteen
+  runs of the threaded deposit, and nine short cases on a card
+  (`RELEASE-v0.5.md`); the capability tests of the packages and the verification ladder
+  were not rerun on the merged executables. Example inputs of the READY that no run of
+  the merged executables has started: `punc_box16`, `mpi_box_periodic`,
+  `mpi_cluster_smr`, `mpi_cluster_amr`, `mpi_puncture_exc`, `mpi_two_card_triple`, and
+  `peak_amr.athinput` at its own resolution (the 32^3 deck of T9 was run).
 
 ## Release candidate core-v0.4 (2026-11-21): branches left out, items changed, defects
 
