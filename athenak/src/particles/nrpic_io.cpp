@@ -9,6 +9,7 @@
 //! particle input files and particle restart files.  All files are written by a single
 //! rank in native byte order.
 
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
@@ -28,6 +29,7 @@
 #include "particles/particles.hpp"
 #include "particles/nrpic_kernels.hpp"
 #include "particles/nrpic_mesh.hpp"
+#include "particles/nrpic_mpi.hpp"
 
 namespace particles {
 
@@ -35,6 +37,11 @@ namespace {
 void NrpicFatal(const std::string &msg) {
   std::cout << "### FATAL ERROR in nrpic_io.cpp" << std::endl << msg << std::endl;
   std::exit(EXIT_FAILURE);
+}
+
+// On several ranks the files of the module are written by rank 0 (nrpic_mpi.cpp).
+bool NrpicFileWriter(const bool multirank) {
+  return (!multirank || global_variable::my_rank == 0);
 }
 
 // index of the stress component S_ab in the source container (Sxx Sxy Sxz Syy Syz Szz)
@@ -133,6 +140,7 @@ void Particles::NrpicProbe(Real dt) {
       if (has_tm) { le += w*tm(mb,Tmunu::I_Tmunu_E,k,j,i); }
       lw += w;
     }, Kokkos::Sum<Real>(sa), Kokkos::Sum<Real>(se), Kokkos::Sum<Real>(sw));
+    if (nr_multirank) { NrpicMpiProbe(px, py, pz, sa, se, sw); }     // several ranks
 
     if (sw > 0.0) {
       const Real anew = sa/sw;
@@ -186,6 +194,7 @@ void Particles::NrpicWriteHistory(Real time, int ncycle, bool header) {
     }, Kokkos::Sum<Real>(sm), Kokkos::Sum<Real>(sux), Kokkos::Sum<Real>(suy),
        Kokkos::Sum<Real>(suz));
   }
+  nrpic::MpiSum({&sm, &sux, &suy, &suz});                            // several ranks
   sum_m = sm; sum_mu[0] = sux; sum_mu[1] = suy; sum_mu[2] = suz;
 
   // minimum of the lapse over the mesh
@@ -200,6 +209,7 @@ void Particles::NrpicWriteHistory(Real time, int ncycle, bool header) {
     KOKKOS_LAMBDA(const int m, const int k, const int j, const int i, Real &lmin) {
       lmin = fmin(lmin, m1(m,NRM_ALP,k,j,i));
     }, Kokkos::Min<Real>(amin));
+    nrpic::MpiMin({&amin});                                          // several ranks
   }
 
   // mesh statistics: proper volume, volume-weighted mean of K, extrema of the lapse
@@ -236,8 +246,22 @@ void Particles::NrpicWriteHistory(Real time, int ncycle, bool header) {
       }
     }, Kokkos::Sum<Real>(vol), Kokkos::Sum<Real>(kvol), Kokkos::Max<Real>(amax),
        Kokkos::Max<Real>(emax), Kokkos::Min<Real>(lemin));
+    nrpic::MpiSum({&vol, &kvol});                                    // several ranks
+    nrpic::MpiMax({&amax, &emax});
+    nrpic::MpiMin({&lemin});
     emin = (lemin < 1.0e299) ? lemin : 0.0;
   }
+  // several ranks: numbers of the whole run, written by rank 0
+  int np_all = np, nmb_all = pmy_pack->nmb_thispack;
+  int pmaxit = push_maxit, punconv = push_unconverged;
+  if (nr_multirank) {
+    np_all = pm->nprtcl_total;
+    nmb_all = pm->nmb_total;
+    nrpic::MpiMax({&pmaxit});
+    nrpic::MpiSum({&punconv});
+    NrpicMpiWriteHistory(time, ncycle, header);
+  }
+  if (!NrpicFileWriter(nr_multirank)) return;
 
   std::string fname = nr_basename + ".nrpic.hst";
   std::FILE *fp = std::fopen(fname.c_str(), header ? "w" : "a");
@@ -261,10 +285,10 @@ void Particles::NrpicWriteHistory(Real time, int ncycle, bool header) {
   std::fprintf(fp, "%.15e %d %d %.15e %.15e %.15e %.15e %.15e %.15e %.15e %.15e %.15e "
                "%.15e %.15e %.15e %.15e %d %.15e %d %.15e %d %d %d "
                "%.15e %.15e %.15e %.15e",
-               time, ncycle, np, sum_m, sum_mw, sum_mu[0], sum_mu[1], sum_mu[2],
+               time, ncycle, np_all, sum_m, sum_mw, sum_mu[0], sum_mu[1], sum_mu[2],
                dep_sum[0], dep_sum[1], dep_sum[2], dep_sum[3], alpha_probe, e_probe,
                tau_probe, amin, n_excised, mass_excised, n_escaped, mass_escaped,
-               push_maxit, push_unconverged, pmy_pack->nmb_thispack,
+               pmaxit, punconv, nmb_all,
                dep_sum_filt[0], dep_sum_filt[1], dep_sum_filt[2], dep_sum_filt[3]);
   std::fprintf(fp, " %.15e %.15e %.15e %.15e %.15e", vol, (vol > 0.0) ? kvol/vol : 0.0,
                amax, emax, emin);
@@ -299,7 +323,9 @@ void Particles::NrpicWriteConstraintStats(Real time, bool header) {
   const int nmb = pmy_pack->nmb_thispack;
   const int ikhat = z4c::Z4c::I_Z4C_KHAT, itheta = z4c::Z4c::I_Z4C_THETA;
   const int ichi = z4c::Z4c::I_Z4C_CHI;
-  const Real ncell = static_cast<Real>(nmb)*indcs.nx1*indcs.nx2*indcs.nx3;
+  // (several ranks: the cells of the whole mesh)
+  const Real ncell = static_cast<Real>(nr_multirank ? pm->nmb_total : nmb)
+                     *indcs.nx1*indcs.nx2*indcs.nx3;
 
   Real chimin = 1.0e300, chimax = -1.0e300, kmin = 1.0e300, kmax = -1.0e300;
   Real emin = 1.0e300, emax = -1.0e300, thmax = 0.0;
@@ -426,6 +452,11 @@ void Particles::NrpicWriteConstraintStats(Real time, bool header) {
       lthsum += fabs(u0(m,itheta,k+ks_,j+js_,i+is_));
     }, Kokkos::Max<Real>(zmax), Kokkos::Sum<Real>(zsum), Kokkos::Sum<Real>(thsum));
   }
+  // several ranks: extrema and sums of the whole mesh, written by rank 0
+  nrpic::MpiMin({&chimin, &kmin, &emin});
+  nrpic::MpiMax({&chimax, &kmax, &emax, &thmax, &hmax, &hrmax, &mmax, &mrmax, &zmax});
+  nrpic::MpiSum({&hsum, &hrsum, &msum, &mrsum, &zsum, &thsum});
+  if (!NrpicFileWriter(nr_multirank)) return;
 
   std::string fname = nr_basename + ".cstat.hst";
   std::FILE *fp = std::fopen(fname.c_str(), header ? "w" : "a");
@@ -492,6 +523,9 @@ void Particles::NrpicWriteLine(Real time, bool header) {
       }
     }
   }
+  // several ranks: each cell of the line is set by one rank; rank 0 writes
+  nrpic::MpiSumArray(buf.data() + 1, buf.size() - 1);
+  if (!NrpicFileWriter(nr_multirank)) return;
   if (header) {
     std::string ftxt = nr_basename + ".line.txt";
     std::FILE *ft = std::fopen(ftxt.c_str(), "w");
@@ -554,9 +588,15 @@ void Particles::NrpicWriteEnergyField(Real time, int index) {
       }
     }
   }
+  // several ranks: each cell is set by one rank, so the sums are exact.  Rank 0 writes
+  // the file; the others go through the same statements into the null device, because
+  // the sums of the constraint arrays below sit between the writes.
+  nrpic::MpiSumArray(e.data(), ncell);
+  nrpic::MpiSumArray(c.data(), ncell);
   char num[16];
   std::snprintf(num, sizeof(num), "%05d", index);
   std::string fname = nr_basename + ".field." + num + ".bin";
+  if (!NrpicFileWriter(nr_multirank)) { fname = "/dev/null"; }
   std::FILE *fp = std::fopen(fname.c_str(), "wb");
   if (fp == nullptr) NrpicFatal("cannot open " + fname);
   const std::int64_t dims[3] = {g1, g2, g3};
@@ -574,6 +614,8 @@ void Particles::NrpicWriteEnergyField(Real time, int index) {
                         z4c::Z4c::I_Z4C_ALPHA};
     std::vector<double> buf(ncell);
     for (int n=0; n<7; ++n) {
+      // several ranks: the cells of the other ranks still hold the sum of the last array
+      if (nr_multirank) { std::fill(buf.begin(), buf.end(), 0.0); }
       for (int m=0; m<nmb; ++m) {
         const std::int64_t i0 = static_cast<std::int64_t>(
             std::floor((sz(m).x1min - pm->mesh_size.x1min)/d1 + 0.5));
@@ -591,6 +633,7 @@ void Particles::NrpicWriteEnergyField(Real time, int index) {
           }
         }
       }
+      nrpic::MpiSumArray(buf.data(), ncell);                         // several ranks
       std::fwrite(buf.data(), sizeof(double), ncell, fp);
     }
   }
@@ -764,15 +807,19 @@ void Particles::NrpicWriteConservation(Real time, Real dt, bool header, bool wri
       lsea += fabs(ce)/dd; lspa += sqrt(cp2)/dd;
     }, Kokkos::Sum<Real>(ser), Kokkos::Max<Real>(mer), Kokkos::Sum<Real>(spr),
        Kokkos::Max<Real>(mpr), Kokkos::Sum<Real>(sea), Kokkos::Sum<Real>(spa));
-    const Real nc = static_cast<Real>(ncell);
+    Real nc = static_cast<Real>(ncell);
+    nrpic::MpiSum({&ser, &spr, &sea, &spa, &nc});                    // several ranks
+    nrpic::MpiMax({&mer, &mpr});
+    if (NrpicFileWriter(nr_multirank)) {
     std::string fname = nr_basename + ".cons.hst";
     std::FILE *fp = std::fopen(fname.c_str(), "a");
     if (fp == nullptr) NrpicFatal("cannot open " + fname);
     std::fprintf(fp, "%.15e %.6e %.6e %.6e %.6e %.6e %.6e\n", time - dt, ser/nc, mer,
                  spr/nc, mpr, sea/nc, spa/nc);
     std::fclose(fp);
+    }
   }
-  if (header) {
+  if (header && NrpicFileWriter(nr_multirank)) {
     std::string fname = nr_basename + ".cons.hst";
     std::FILE *fp = std::fopen(fname.c_str(), "w");
     if (fp == nullptr) NrpicFatal("cannot open " + fname);
@@ -803,8 +850,9 @@ void Particles::NrpicWriteConservation(Real time, Real dt, bool header, bool wri
 
 void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
   std::string fname = nr_basename + ".traj.bin";
-  std::FILE *fp = std::fopen(fname.c_str(), truncate ? "wb" : "ab");
-  if (fp == nullptr) NrpicFatal("cannot open " + fname);
+  const bool writer = NrpicFileWriter(nr_multirank);     // several ranks: rank 0
+  std::FILE *fp = writer ? std::fopen(fname.c_str(), truncate ? "wb" : "ab") : nullptr;
+  if (writer && fp == nullptr) NrpicFatal("cannot open " + fname);
   const int np = nprtcl_thispack;
   const bool mesh_metric = (nropt.metric == NrpicMetric::mesh);
   // With a mesh metric the fields reconstructed at each tracked particle are written to
@@ -813,11 +861,12 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
   // null particle), and the deposited E and S_i interpolated to it with the
   // cloud-in-cell weights, in the same order as the records of the trajectory file.
   std::FILE *fpm = nullptr;
-  if (mesh_metric) {
+  if (mesh_metric && writer) {
     std::string fmet = nr_basename + ".trajmet.bin";
     fpm = std::fopen(fmet.c_str(), truncate ? "wb" : "ab");
     if (fpm == nullptr) NrpicFatal("cannot open " + fmet);
   }
+  std::vector<double> buf, mbuf;
   if (np > 0) {
     auto rh = Kokkos::create_mirror_view_and_copy(HostMemSpace(), prtcl_rdata);
     auto ih = Kokkos::create_mirror_view_and_copy(HostMemSpace(), prtcl_idata);
@@ -838,7 +887,9 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
       proto.ncell[0] = indcs.nx1 + 2*indcs.ng;
       proto.ncell[1] = indcs.nx2 + 2*indcs.ng;
       proto.ncell[2] = indcs.nx3 + 2*indcs.ng;
-      DvceArray2D<Real> pmet("pmet", NRM_NVAR + 5, np);
+      // (one more row than is written: the sum of the weights, for several ranks)
+      DvceArray2D<Real> pmet("pmet", NRM_NVAR + 6, np);
+      const bool mrank = nr_multirank;
       const int nmb = pmy_pack->nmb_thispack;
       const int is = indcs.is, js = indcs.js, ks = indcs.ks;
       const int ie = indcs.ie, je = indcs.je, ke = indcs.ke;
@@ -904,15 +955,18 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
             sw += w;
           }
         }
-        const Real isw = (sw > 0.0) ? 1.0/sw : 0.0;
+        // several ranks: the sums stay as they are until the cells that other ranks
+        // hold have been added (NrpicMpiTrajSources)
+        const Real isw = mrank ? 1.0 : ((sw > 0.0) ? 1.0/sw : 0.0);
         pmet(NRM_NVAR+1,p) = se*isw;
         pmet(NRM_NVAR+2,p) = sx*isw;
         pmet(NRM_NVAR+3,p) = sy*isw;
         pmet(NRM_NVAR+4,p) = sz3*isw;
+        pmet(NRM_NVAR+5,p) = sw;
       });
+      if (mrank && has_tm) { NrpicMpiTrajSources(pmet); }
       mh = Kokkos::create_mirror_view_and_copy(HostMemSpace(), pmet);
     }
-    std::vector<double> buf, mbuf;
     buf.reserve(8*static_cast<size_t>(std::min(np, nropt.traj_ntrack)));
     for (int p=0; p<np; ++p) {
       if (ih(PTAG,p) < nropt.traj_ntrack) {
@@ -927,12 +981,21 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
         }
       }
     }
-    if (!buf.empty()) std::fwrite(buf.data(), sizeof(double), buf.size(), fp);
-    if (fpm != nullptr && !mbuf.empty()) {
-      std::fwrite(mbuf.data(), sizeof(double), mbuf.size(), fpm);
-    }
   }
-  std::fclose(fp);
+  if (np == 0 && nr_multirank && mesh_metric && nropt.deposit) {
+    DvceArray2D<Real> none;       // this rank only answers the requests of the others
+    NrpicMpiTrajSources(none);
+  }
+  // several ranks: the records of all ranks on rank 0, in the order of the tags
+  NrpicMpiGatherRecords(buf, 8);
+  NrpicMpiGatherRecords(mbuf, NRM_NVAR + 7);
+  if (fp != nullptr && !buf.empty()) {
+    std::fwrite(buf.data(), sizeof(double), buf.size(), fp);
+  }
+  if (fpm != nullptr && !mbuf.empty()) {
+    std::fwrite(mbuf.data(), sizeof(double), mbuf.size(), fpm);
+  }
+  if (fp != nullptr) std::fclose(fp);
   if (fpm != nullptr) std::fclose(fpm);
 }
 
@@ -944,6 +1007,8 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
 //!   (proper time of each particle; affine parameter of a null particle)
 
 void Particles::NrpicWriteSnapshot(Real time) {
+  // several ranks: rank 0 writes, holding all particles in tag order meanwhile
+  if (!NrpicMpiGatherBegin()) { snap_number++; return; }
   char number[16];
   std::snprintf(number, sizeof(number), ".part.%05d.bin", snap_number);
   std::string fname = nr_basename + number;
@@ -979,6 +1044,7 @@ void Particles::NrpicWriteSnapshot(Real time) {
   // with <particles> peri_count: N int32, the pericentre passages of each particle
   NrpicAccWriteSnapshot(fp);
   std::fclose(fp);
+  NrpicMpiGatherEnd();
   snap_number++;
 }
 
@@ -1035,6 +1101,8 @@ void Particles::NrpicLoadParticleFile(const std::string &fname) {
 //! pN_u3, pN_m (N = 0 ... nparticles-1), given in the coordinates of the run
 
 void Particles::NrpicCreateParticles() {
+  // several ranks: rank 0 reads; the first ownership pass distributes the particles
+  if (nr_multirank && global_variable::my_rank != 0) return;
   if (!nr_particle_file.empty()) {
     NrpicLoadParticleFile(nr_particle_file);
     return;
@@ -1069,6 +1137,9 @@ void Particles::NrpicCreateParticles() {
 //!   (gid, tag, species)
 
 void Particles::NrpicWriteRestart(const std::string &fname) {
+  // several ranks: rank 0 writes, holding all particles in tag order meanwhile; the
+  // others send it their part of the source densities of the coming step
+  if (!NrpicMpiGatherBegin()) { NrpicMpiWriteStepSources(nullptr); return; }
   std::FILE *fp = std::fopen(fname.c_str(), "wb");
   if (fp == nullptr) NrpicFatal("cannot open " + fname);
   const int np = nprtcl_thispack;
@@ -1121,7 +1192,9 @@ void Particles::NrpicWriteRestart(const std::string &fname) {
     has_ts = 1;
   }
   std::fwrite(&has_ts, sizeof(std::int64_t), 1, fp);
-  if (has_ts == 1) {
+  if (has_ts == 1 && nr_multirank) {
+    NrpicMpiWriteStepSources(fp);         // several ranks: all MeshBlocks of the mesh
+  } else if (has_ts == 1) {
     auto tsh = Kokkos::create_mirror_view_and_copy(Kokkos::HostSpace(),
                                                    pmy_pack->ptmunu->u_tmunu_step);
     std::int64_t dims[5];
@@ -1132,6 +1205,7 @@ void Particles::NrpicWriteRestart(const std::string &fname) {
   // accretion diagnostics: a block of their own, only when one of them is on
   NrpicAccWriteRestart(fp);
   std::fclose(fp);
+  NrpicMpiGatherEnd();
   if (nropt.newton) { NrpicNewtonWriteRestart(fname + ".nwt"); }
 }
 
@@ -1140,6 +1214,8 @@ void Particles::NrpicWriteRestart(const std::string &fname) {
 //! \brief reads the particle restart file written by NrpicWriteRestart
 
 void Particles::NrpicReadRestart(const std::string &fname) {
+  // several ranks: rank 0 reads and shares the state (end of this function)
+  if (nr_multirank && global_variable::my_rank != 0) { NrpicMpiShareRestart(); return; }
   std::FILE *fp = std::fopen(fname.c_str(), "rb");
   if (fp == nullptr) NrpicFatal("cannot open particle restart file " + fname);
   char magic[9] = {0};
@@ -1231,6 +1307,7 @@ void Particles::NrpicReadRestart(const std::string &fname) {
   if (global_variable::my_rank == 0) {
     std::cout << "NRPIC: restarted " << np << " particles from " << fname << std::endl;
   }
+  if (nr_multirank) { NrpicMpiShareRestart(); }      // several ranks
   if (nropt.newton) { NrpicNewtonReadRestart(fname + ".nwt"); }
 }
 

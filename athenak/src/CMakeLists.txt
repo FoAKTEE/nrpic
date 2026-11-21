@@ -134,6 +134,7 @@ add_executable(
         particles/particles_tasks.cpp
         particles/nrpic.cpp
         particles/nrpic_io.cpp
+        particles/nrpic_mpi.cpp
         particles/nrpic_curvature.cpp
         particles/nrpic_kick.cpp
         particles/nrpic_collide.cpp

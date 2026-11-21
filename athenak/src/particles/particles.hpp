@@ -488,6 +488,32 @@ class Particles {
   DvceArray5D<Real> ids_coarse;                // unused coarse array of that exchange
   void NrpicIdSolveInit(ParameterInput *pin);
   void NrpicSolveInitialData();
+  // ---- more than one MPI rank (particles/nrpic_mpi.cpp, interfaces/mpi.md) ----
+  bool nr_multirank = false;        // the run has more than one rank
+  DvceArray2D<Real> gb_ext;         // extent of every MeshBlock of the mesh (g, 0..5)
+  DvceArray2D<int> gb_lr;           // its logical level and its rank (g, 0..1)
+  int gb_nmb = 0, gb_seq = -1;      // size of that table, mesh update it belongs to
+  DvceArray2D<Real> dep_aux;        // deposit: Lorentz factor and level shift of a cloud
+  DvceArray2D<Real> mpi_save_r;     // arrays of rank 0 while it holds all particles
+  DvceArray2D<int> mpi_save_i;      // for a file write
+  int mpi_save_np = -1;
+  std::int64_t mpi_nmoved = 0;      // particles handed to other ranks and deposit
+  std::int64_t mpi_npacket = 0;     // packets sent by this rank since the last record
+  void NrpicMpiInit(ParameterInput *pin);
+  void NrpicMpiBuildBlockTable();
+  void NrpicMpiUpdateCounts();
+  void NrpicMpiAssignBlocks();
+  void NrpicMpiRemoveFlagged();
+  void NrpicMpiDepositRemote();
+  void NrpicMpiProbe(const Real px, const Real py, const Real pz, Real &sa, Real &se,
+                     Real &sw);
+  bool NrpicMpiGatherBegin();
+  void NrpicMpiGatherEnd();
+  void NrpicMpiGatherRecords(std::vector<double> &buf, const int nrec);
+  void NrpicMpiTrajSources(DvceArray2D<Real> &pmet);
+  void NrpicMpiWriteStepSources(std::FILE *fp);
+  void NrpicMpiShareRestart();
+  void NrpicMpiWriteHistory(Real time, int ncycle, bool header);
 
  private:
   MeshBlockPack* pmy_pack;  // ptr to MeshBlockPack containing this Particles

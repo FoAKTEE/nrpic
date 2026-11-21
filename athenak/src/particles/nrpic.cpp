@@ -17,8 +17,9 @@
 //!   5. NrpicDeposit     deposit E, S_i, S_ij at t^{n+1}, filter, update constraints
 //!   6. NrpicDiagnostics probe, history, trajectories, snapshots
 //!
-//! The module assumes a single MPI rank: deposition and ownership are resolved by a
-//! search over all MeshBlocks of the pack.
+//! Deposition and ownership are resolved by a search over all MeshBlocks of the pack.
+//! On more than one MPI rank the functions of nrpic_mpi.cpp take over where a particle
+//! or its cloud leaves the MeshBlocks of the rank (hooks marked "several ranks").
 
 #include <algorithm>
 #include <cmath>
@@ -42,6 +43,7 @@
 #include "particles/nrpic_metrics.hpp"
 #include "particles/nrpic_mesh.hpp"
 #include "particles/nrpic_cosmo_ext.hpp"
+#include "particles/nrpic_mpi.hpp"
 // last: this header defines the macro NDIM, which collides with a member of Tmunu
 #include "z4c/fastflow.hpp"
 
@@ -56,11 +58,6 @@ void Particles::NrpicInit(ParameterInput *pin) {
   if (!(pm->three_d)) {
     std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__ << std::endl
               << "Particles of type nrpic require a 3D mesh" << std::endl;
-    std::exit(EXIT_FAILURE);
-  }
-  if (global_variable::nranks > 1) {
-    std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__ << std::endl
-              << "Particles of type nrpic run on a single MPI rank" << std::endl;
     std::exit(EXIT_FAILURE);
   }
 
@@ -627,6 +624,7 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
 //! if it has left the mesh.  Valid on uniform, statically and adaptively refined meshes.
 
 void Particles::NrpicAssignBlocks() {
+  if (nr_multirank) { NrpicMpiAssignBlocks(); return; }      // several ranks
   const int np = nprtcl_thispack;
   if (np == 0) return;
   auto &pr = prtcl_rdata;
@@ -656,6 +654,7 @@ void Particles::NrpicAssignBlocks() {
 //! arrays, keeping the order of the remaining particles
 
 void Particles::NrpicRemoveFlagged() {
+  if (nr_multirank) { NrpicMpiRemoveFlagged(); return; }     // several ranks
   Mesh *pm = pmy_pack->pmesh;
   const int np = nprtcl_thispack;
   if (np == 0) return;
@@ -813,6 +812,16 @@ void Particles::NrpicDepositSources() {
   const bool fine_lin = fine_shape && (nb == 2);
   const int nx = fine_lin ? 1 : 0;
   const int ns = nb + 2*nx;
+  // several ranks (nrpic_mpi.cpp): table of all MeshBlocks, and the Lorentz factor and
+  // level of each cloud, kept for the part of the deposit that crosses rank boundaries
+  const bool mrank = nr_multirank;
+  if (mrank && static_cast<int>(dep_aux.extent(1)) < np) {
+    Kokkos::realloc(dep_aux, 2, np);
+  }
+  auto daux = dep_aux;
+  auto gbx = gb_ext;
+  auto gbl = gb_lr;
+  const int gnmb = gb_nmb;
 
   nrpic::MeshMetric proto;
   proto.bspline = nropt.interp_bspline;
@@ -915,6 +924,10 @@ void Particles::NrpicDepositSources() {
           Real zf = nrpic::WrapCoord(xb0[2] + c3*h[2], dmin[2], dlen[2], per[2]);
           int mb = nrpic::FindBlock(sz, nmb, mo, xf, yf, zf);
           if (mb >= 0) { lmax = (lev(mb) > lmax) ? lev(mb) : lmax; }
+          if (mb < 0 && mrank) {      // several ranks: a MeshBlock of another rank
+            const int g = nrpic::FindBlockGlobal(gbx, gnmb, xf, yf, zf);
+            if (g >= 0) { lmax = (gbl(g,0) > lmax) ? gbl(g,0) : lmax; }
+          }
         }
         lmax = (lmax > lcap) ? lcap : lmax;
         if (lmax > lev0) {
@@ -922,6 +935,10 @@ void Particles::NrpicDepositSources() {
           h[0] *= fac; h[1] *= fac; h[2] *= fac;
         }
         ldep = lmax;
+      }
+      if (mrank) {                    // several ranks: kept for NrpicMpiDepositRemote
+        daux(0,p) = wrel;
+        daux(1,p) = static_cast<Real>(ldep - lev0);
       }
       // (2) weights of the cloud on the lattice of the deposition level: B-splines of
       //     degree one (cloud in cell, two cells per direction), two (triangular shaped
@@ -1101,6 +1118,7 @@ void Particles::NrpicDepositSources() {
     sum_mw = smw;
   }
   thread_dep.End(dep);
+  if (nr_multirank) { NrpicMpiDepositRemote(); }     // several ranks: clouds across them
 
   // Compensation of the cloud (deposit_comp_c = c > 0): one pass (-c, 1+2c, -c)^3 over
   // the deposited densities.  A cloud of second moment s^2 dx^2 per direction lowers a
@@ -1159,6 +1177,7 @@ void Particles::NrpicDepositSources() {
   }, Kokkos::Sum<Real>(se), Kokkos::Sum<Real>(sx), Kokkos::Sum<Real>(sy),
      Kokkos::Sum<Real>(szz), Kokkos::Sum<int>(nbad));
   dep_sum[0] = se; dep_sum[1] = sx; dep_sum[2] = sy; dep_sum[3] = szz;
+  nrpic::MpiSum({&dep_sum[0], &dep_sum[1], &dep_sum[2], &dep_sum[3]});   // several ranks
   if (nbad > 0) {
     n_bad_det_total += nbad;
     if (n_bad_det_reports < 50) {
@@ -1402,6 +1421,8 @@ void Particles::NrpicFilterSources() {
   }, Kokkos::Sum<Real>(se), Kokkos::Sum<Real>(sx), Kokkos::Sum<Real>(sy),
      Kokkos::Sum<Real>(szz));
   dep_sum_filt[0] = se; dep_sum_filt[1] = sx; dep_sum_filt[2] = sy; dep_sum_filt[3] = szz;
+  nrpic::MpiSum({&dep_sum_filt[0], &dep_sum_filt[1], &dep_sum_filt[2],
+                 &dep_sum_filt[3]});                                    // several ranks
 }
 
 //----------------------------------------------------------------------------------------
@@ -1444,6 +1465,7 @@ void Particles::NrpicStepSources() {
     if (pmy_pack->pz4c != nullptr) {
       dt_next = std::min(dt_next, pm->cfl_no*pmy_pack->pz4c->dtnew);
     }
+    nrpic::MpiMin({&dt_next});      // several ranks: the step is that of the whole mesh
     if (pm->dt > 0.0 && dt_next > 0.0) { half = 0.5*dt_next/pm->dt; }
   }
   par_for("nrpic_stepsrc", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie,
@@ -1578,6 +1600,7 @@ TaskStatus Particles::NrpicDeposit(Driver *pdriver, int stage) {
 //! after a restart, and after every change of the mesh by AMR.
 
 void Particles::NrpicInitializeSources() {
+  if (nr_multirank) { NrpicMpiUpdateCounts(); }      // several ranks: particle numbers
   if (nropt.metric != NrpicMetric::mesh) return;
   if (nropt.newton) {
     NrpicNewtonInitialize();
