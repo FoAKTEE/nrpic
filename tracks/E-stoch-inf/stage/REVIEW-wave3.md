@@ -167,3 +167,212 @@ pair at 128^3/256^3, R^NR floor separation, absolute constraint levels).
   The verifier's report is in (C16 PASS). Not met: C6 (A4' ruling) and the note products C8,
   C9, C13, C14, C15. Verify fails only on `clean` and `runs`, both from the cut packages (not
   G1 material). Not complete for the independent gate review of decision 0016 item 4.
+
+---
+
+# Part B. Batch 3 (lead of batch 3, 2026-11-21): packages `note` and `usr` of batch 2b
+
+Lead of batch 3 (Opus), 2026-11-21 12:58Z onward. Packages reviewed: `note` (the G1 products
+C8, C9, C13-C15 of the working note) and `usr` (the ultra-slow-roll case on the cards, G2
+material), both finished in batch 2b. Not reviewed: `a4res`, which a helper session of this
+batch is working on in this worktree at the same time (it committed its scripts and
+submitted card job 4798, run E-20261121-131000-b23055b, pending at 13:30Z); and `window`
+(card job 4740 finished on 2026-11-20; its manifest was closed by the lead with `nrpic-run
+finish`, 721 files checksummed; nothing else touched, no analysis yet). Method as in Part A: (1) every analysis of both
+packages rerun unchanged from its registered outputs and every JSON leaf, PNG and table
+compared (run E-20261121-130021-0140e4e, `review3/scripts/rerun4.sh`, `note_compare.py`,
+`compare_json.py`); (2) own code on the raw dumps for the central usr numbers (run
+E-20261121-130236-e39e143, `review3/scripts/lead4_check.py`: the verifier's reader
+`g1verify/scripts/nrsf.py`, numpy FFT, nothing of `usr/scripts/` imported); (3) every figure
+looked at (13 of `usr/fig/`, the 7 new or redrawn of `note/figures/`, the lead's
+`fig_lead4.png`); (4) every helper outcome compared with the prediction written before its
+run, with git ancestry; (5) the note's G1 ledger compared row by row with the independent
+values of the verifier and of the leads' own-code runs (B4). The lead's predictions LR4,
+LU1-LU3 were committed before the runs (owner `JOURNAL.md`, entry 2026-11-21T12:58Z; commit
+0140e4ef).
+
+## B1. Helper predictions against outcomes (journals, checked against the outputs)
+
+### note (`note/JOURNAL.md`, predictions N4-N12)
+
+Ancestry: N4-N8 were committed with the wave-3 set-up (e2f926e3, 2026-11-20); N9-N10 are in
+1849987a (before run E-20261121-075717-1849987), N11 in 7fbe919a (before -080526-7fbe919), N12
+in 6112292a (before -080840-6112292). Outcomes: N4 held (drafted unregistered, then reproduced by
+the registered runs); N5/N9 held (every input passes its checksum); N6/N9 held (every figure
+repeats with pixel rms 0); N7 held (94-102 s against 10 min); **N8 FAILED in part** (the ladder
+README's A1 maxima, claims g22, g23); N10, N11, N12 held. Cosmetic defect: the journal heading
+"08:20 UTC" of the outcome of run -075717 is out of order (that outcome is already in commit
+7fbe919a of 08:05Z); it does not affect the order of prediction and run.
+
+### usr (`usr/JOURNAL.md`, entries 9-15)
+
+Ancestry: entry 9.3 is in ba66218 (14:26 PST), before job 4742 started (14:36:46 PST, sacct).
+**Entry 10 (the amended bar of U-A4 for H, 3e-13 instead of 1e-12 of <[H]>) was first committed
+in 7f764776 at 23:50 PST, after job 4742 had run**; its pre-registration rests on its own time
+stamp (22:35Z) and on the batch-2a HANDOFF's description of the then-uncommitted file. It
+rescues no verdict: with the original bar the even part of H at s = 1/2 (at most 3.4e-13 of
+<[H]>) is judged at no dump; with the amended bar it is judged at one dump and fails (3.82).
+Entries 12.1, 13, 14.1, 14.3 are each in the commit of the run they predict or earlier (a0cc3eb2;
+1f579fe3 before job 4783 at 01:40 PST; 19571c7f; 2f068acc). Entry 12.1 is labelled post hoc by
+its author.
+
+| Prediction | Outcome (checked) | Verdict |
+|---|---|---|
+| 9.3 G1a: U-A0/U-A1 on 64^3, 128^3 | abs dN 4.2e-7, 2.6e-8; <Pi> 2.50e-5, 1.33e-6 | held |
+| 9.3 G1b: lockstep 2.6e-5, 1.6e-6 +- 30 % | 3.57e-5, 2.25e-6 | **FAILED** (1.4 x; cause tested in 14.2: RK4 phase error) |
+| 9.3 G1c, G1d, G1e: odd-part per-mode error, even/odd 2.19e-5, U-A3 | as predicted (1.14e-4, 2.12e-6; 2.187e-5, half at s = 1/2; 4.8e-5, 2.5e-6) | held |
+| 9.3 G1f: record of H 6.2e-9, 3.6e-10 | 6.24e-9, 3.75e-10 | held |
+| 9.3 G1f: record <abs M/[M]> at most 1e-3 | 1.07e-2, 2.47e-2, 4.3e-2 (late) | **FAILED** |
+| 9.3 G1f / U-A4 (a), (b): halving 4.00 and 2.00 +- 0.05 above the bars | H even 3.82 at its one judged dump; M even 3 of 20 within; M odd 0 of 20 | **FAILED** as pre-registered |
+| 9.3 G1f: odd part of M during USR at 128^3 lower by 16-90 | per dump 37-60 to cN 4.05; max over the window 4.6e-4 | **FAILED** as written (window max), held per dump |
+| 9.3 U-A4 (c), (d) | orders 5.15-5.90 where above the floor; strict A4 at 128^3 holds for M (0.079), H not judged | held where judged |
+| 9.3 G1g: cost | 0.157 card-hours | held |
+| 12.1 F1 (post hoc): floor-corrected even factor 4.00 +- 0.10 | 3.987-4.001 (H and M, ten dumps each) | held (not blind) |
+| 12.1 F2 | 8/20 and 10/20 within 15 % | **FAILED** |
+| 9.3 U1, U4, U5, U6, U7, U8 (U256) | all inside their ranges (abs dN 1.6e-9; <Pi> 4.17e-5; U-A3 0.9923-1.0016; U-A5 5.9e-4/6.7e-3; rms 0.89452, skew 0.0024, max 4.568; records; 1.298 s per step, 0.617 card-hours, 19.6 GB) | held |
+| 9.3 U2: lockstep within 1e-6 | 2.55e-3 | **FAILED** (by 2500; the RK4 phase error k^5 dt^4/600) |
+| 9.3 U3: U-A2 as written on the single U256 | max 5.9e-2 on 10 of 68532 modes | **FAILED** (small-alpha clause held: all ten have rank below 7e-4) |
+| 9.3 U3 refutation clause (shell-normalised < 0.02 at every dump) | 6e4 ... 8.7e-2 at the first four dumps | **FAILED** as written (normalisation by a reference the window has not switched on) |
+| 13: late M of U256m odd > even, even/odd in [0.05, 0.7] | 0.15-0.44 to cN 8.0, then 0.81-1.00 | **FAILED** from cN 8.5 |
+| 14.1 L1-L3, 14.3 (four clauses), 9.3 U256m (three clauses) | as predicted | held |
+
+## B2. The lead's runs (predictions LR4, LU1-LU3, committed in 0140e4ef before the runs)
+
+- **LR4 CONFIRMED in (a), (b), (d) and for the committed copies; REFUTED in (c) by 13 leaves**
+  (run E-20261121-130021-0140e4e, 3 cores, 30 min; comparison `review3/results/batch3/
+  rerun4_compare.json`, `note_compare.json`; figure `review3/fig/fig_rerun4.png`, looked at;
+  its title still names the batch-2a packages, a label of the shared comparer). (a) group 1:
+  0 of 4220 numeric leaves differ (the current script writes 386 more leaves than the
+  registered run, added by later commits of the package); floor split 0 of 241 (one string,
+  the source path); quick records 0 of 294. (b) pair U256/U256m: 0 of 12289; and the single-run
+  section U256 equals the summary of E-20261121-084815-63462b8 in all 4279 shared leaves. (d)
+  note: all 12 PNGs byte-identical to the committed and to the registered ones (pixel rms 0),
+  all six tables byte-identical. Every committed copy in `usr/results/runs/` equals its run's
+  output. (c) lockstep: 13 of 56 leaves differ, all from the code-time reference of the 3414
+  shells at 256^3: lowest-shell error 9.3072e-8 against 9.2992e-8 (8.6e-4 relative, 8e-11
+  absolute), top shell 5e-9 relative, the ratios of L1 by at most 6.5e-7 and of L3 and the
+  odd-part ratios by at most 8e-9; the 64^3 and 128^3 entries are bit-equal. Reading
+  [JUDGEMENT, not tested by a run that could fail]: my rerun exported OPENBLAS_NUM_THREADS=3
+  where the registered run left it unset, so the reference ODE integration ran with another
+  BLAS thread count and differs at its tolerance. No verdict changes (L1 0.9734-1.0235 within
+  the factor 2; L3 and 14.3 unchanged to 8 digits). The lowest-shell number 9.3e-8 is
+  therefore known to about 1e-10 absolute.
+
+- **LU1 CONFIRMED** (own code, phi part of R^NR only): at N_f, rms 0.8945204 (U256) and
+  0.8945199 (U256m) against the helper's 0.8945204, 0.8945199; skewness 0.0023740 and 0.0006108
+  (helper 0.0023740, 0.0006108); max abs R 4.5678 and 4.5567 (4.5678, 4.5567); even/odd of the
+  mode coefficients 2.533496e-4 over the 68532 modes 0 < |n|^2 <= 1024 (helper 2.533497e-4) and
+  2.8766e-4 over the 548958 modes |n|^2 <= 4096 (helper 2.88e-4). The agreement to six or seven
+  digits without the chi and anisotropic parts confirms that R^NR is carried by delta phi in
+  USR (the helper's parts 6.1e-6, 1.6e-6). The even part relative to the odd one is not flat
+  in k (`fig_lead4.png` (a): 3.7e-4 at |n| <= 3, 2.4e-4 at |n| ~ 15, 3.1e-4 at the top shells).
+- **LU2 CONFIRMED against the file, my written prediction FAILED for dump 4**: at dumps 4, 6, 8
+  (cN 2.06, 3.06, 4.05) all 18 numbers (raw even, raw odd and floor-corrected even factors of H
+  and M) equal `floor_split` E-20261121-080134-a0cc3eb to relative difference 0 (same
+  definitions, independent code). The values I wrote for dump 4 were copied from the dump at
+  cN 1.55 (index 3), a transcription error of mine, on record.
+- **LU3 CONFIRMED in part, FAILED in part**: record maximum of <abs M/[M]> 2.5193e-2 (U256, at
+  cN 6.64) and 2.5195e-2 (U256m); value at N_f 2.1269e-3 and 2.1283e-3: the final values differ
+  in the fourth digit (7e-4 relative). Reading [JUDGEMENT]: the record of abs M is not even in
+  s once the even part of M is as large as the odd part, which entry 15 measured from cN 8.5
+  on; the helper's "records equal to 4 digits" holds for the maxima, not for the late values.
+  Card time from sacct: jobs 4742, 4774, 4783 ran 9:24, 37:00, 36:42 = 0.157, 0.617, 0.612
+  card-hours (one card each): confirmed.
+- Figure `review3/fig/fig_lead4.png` (copied from the run): (a) even/odd per shell, (b) the
+  halving factors of LU2, (c) the two records; looked at.
+
+## B3. Per package: confirmed, not confirmed, wrong
+
+**note.** Confirmed: C8, C9, C14 (architecture with four states, data flow, timeline: looked
+at; they match the state of the program on 2026-11-21 except that "ultra-slow-roll runs at
+256^3 on cards" is still drawn as under way, true when drawn); C13 (four G1 data figures, one
+script each, from registered outputs; the rerun reproduces them, B2); C15 (main.tex v1, 16
+pages; its A4 text states the strict failure on record and A4' as ruled by decision 0021
+item 1, read in the extracted text); the ledger rows equal their files (the rerun's ledger is
+byte-identical, B2) and 27 of its 40 track rows agree with an independent value (B4). Not
+confirmed: core's three rows (labelled [TO VERIFY] in the ledger; the check belongs to
+`a4res`); the 13 rows of B4 marked "track only". Wrong: N8's two README numbers (fixed now in
+`ladder/README.md`); the journal heading time (cosmetic); Table V's spread row (cosmetic). The
+note's requests 1-3 are done by the lead (`NOTATION.md`, `WRITING_GUIDE.md`,
+`ladder/README.md`); request 4 is done in `stage/G1/CHECKLIST.md`; request 5 waits for
+`a4res`, `window` and the usr text.
+
+**usr.** Confirmed: the six card runs and both 256^3 runs ran to N_f with rc 0 on the
+core_scalar-3 card build (sacct, manifests); U-A0, U-A1, U-A3 on every rung; U-A2 on the odd
+part (pairs at 64^3, 128^3, 256^3); the even/odd split, the one-point statistics and the
+second-order skewness of the 256^3 pair (LU1, own code); the halving and floor reading of
+group 1 (LU2); the cost per USR realisation, 0.617 card-hours (sacct); the lockstep reading
+(L1-L3, its figure); every figure shows what the journal says. Not confirmed: that the
+s-independent floor is rounding (a reading, as the helper says; no run in another precision);
+the cause of the late momentum level at 256^3 (1.6e-13 to 1.9e-13 absolute, seven times the
+128^3 floor; not named); whether 10 modes failing U-A2 in a single run would fail in a second
+realisation (one realisation only). Wrong: "records equal to 4 digits" for U256m (LU3: the
+late values differ at 7e-4); the pre-registration of entry 10 cannot be dated by git (B1).
+All its failed predictions are on record in its journal.
+
+**What the track does about the usr findings.**
+1. The card pre-registration (entries 9.1 and 10) stands as the record of what was predicted.
+   U-A2 for the single U256 run and U-A4 as pre-registered stay FAILED on record.
+2. Proposal to orch (outbox, this session): read U-A2 at 256^3 on the odd part of a mirrored
+   pair (as at 64^3 and 128^3) and U-A4 on the parts with the s-independent floor removed,
+   the floor from the odd parts of the halving pair (U-A4', the analogue of A4' of decision
+   0021). Both are after the data; the strict forms stay failed.
+3. "USR case reproduced" (G2) is not declared now [JUDGEMENT]: the linear USR dynamics are
+   reproduced in P1's set-up to 1.1e-4 per mode, but G2 also asks for the window sensitivity
+   (package `window`: its job has run, no analysis), resolution in P1's set-up (one 256^3
+   resolution so far), and runs on the release executable (core-v0.5 contains scalar-3).
+4. RISKS R9 is updated with the measured 0.617 card-hours per USR realisation.
+5. Request to core (outbox): sub-step the lockstep record of the mode functions (or start each
+   shell later), which removes the RK4 phase error of the top shells; not blocking.
+6. Open, for a later usr session: a halving pair at 256^3 (s = +-1/2, about 1.2 card-hours)
+   for the late momentum level; a second U256 realisation for the small-alpha modes.
+
+## B4. The note's G1 ledger against independent values (C16, ledger part)
+
+The verifier's report was written before the ledger existed (its last paragraph); its
+comparison section and verdicts V1-V7 give independent values for most rows. "V" = the
+verifier (`stage/G1/VERIFIER.md`, own reader, own MS, own Philox; line of the value), "L2a" =
+the lead of batch 2a (own code, Part A section 3), "L3" = this lead (LU1), "rerun" = the same
+script rerun bit for bit only.
+
+| Ledger row | Ledger | Independent value | Status |
+|---|---|---|---|
+| A1 box means phi, Pi, K | 2.0e-12, 8.6e-12, 3.6e-12 | V 348-349: P256 phi 2.0e-12, Pi 8.55e-12; V 78: Pi 8.6e-12, K 3.6e-12 over all runs (phi 3.2e-12 incl. controls) | agrees |
+| A1 e-folds 32-128 | 5.5e-6, 3.3e-7, 2.0e-8 | V 82: same | agrees |
+| A2 ladder, paper set-up, all-mode maxima | 8.8e-5 ... 1.21e-4; 4.08e-3, 9.65e-5, 7.09e-6 | V 101-107, 350-351: same to three digits | agrees |
+| A2 mode counts | 548958, 68532 | V 107 (68532); L3 (548958, 68532 on the hemisphere) | agrees |
+| A2 stencil wave number reference 6.16e-3 | 6.16e-3 | none | track only |
+| shell ratio, slow-roll ratio | 1.9e-4; 1.0104-1.0109 | V 353: 1.6e-4 to 1.9e-4; 1.0104-1.0109 | agrees |
+| A3 modes, ratio, drift, code minus MS, FLRW drift | 1051; 4.6e-6; 1.379-1.405e-4; 1.75e-6; 0.0513-0.0527, 365 | V 123-132: 1051; 2.4-3.2e-6 (dump choice, V 370); 1.4e-4; 1.7e-6; 0.0516-0.0530, factor ~350 (V 355) | agrees (ratio within the definition difference) |
+| A4 odd/even maxima 32-256 | 745, 655, 869, 25 | V 360: 743, 659, 867; L2a LW2: 25.15 | agrees |
+| A4 e-folds of maxima; first odd > even | 2.47 ... 3.91; 1.51, 1.99, 2.96, 3.44 | V 357-358 (first crossing the same); maxima e-folds none | crossing agrees; maxima e-folds rerun only |
+| A4 record maxima | 5.1e-11; 3.8e-4 | V 144-146: 5.1e-11; 3.8-4.0e-4 | agrees |
+| A4 halving 32^3 | odd 1.9999-2.0000, even 3.991-4.000 | V 160-162: 1.9989-2.0000, 3.986-4.000 (L32, Q64, Q128) | agrees |
+| A4 convergence set-up odd/even 15.4, 0.27, 0.53 | | V 157-159 qualitative (L64 above, L128/L256 below) | qualitative only |
+| Negative control ranges | 4e4-1.5e5; 0.20-0.22 | V 165-169, 361: M 0.204-0.216; H ratio "different statistic" (V 374) | M agrees; H range track only |
+| A5 orders H, M | 4.20-5.82; 5.55-5.91 | V 355-356: identical | agrees |
+| Floor exponent H; M | 2.48; 2.63 | V 206: 2.45-2.51; M none | H agrees; M track only |
+| Floor at 256^3 first/last | 6.0e-13, 6.9e-15 | V 208: 6.3e-13 ... 3.3e-15 (out-band definition) | same order, other definition |
+| Even part 64 vs 128 | 0.022 | V 375: 0.978-1.015 | agrees |
+| Record H at N_f per rung | 3.12e-12, 1.83e-13, 1.12e-14 | none | track only |
+| A6 orders; uniform residual order | 3.93-4.08; 4.10 | V 230-233, 362: 3.93-4.10; 4.10 | agrees |
+| A6 R^NR difference 2.9e-4; top-shell D_n; odd-part change 0.041 | | none | track only (three rows) |
+| A7 noise and restart 0; card vs processor 2.2e-15 | | V 247-254: 0 words; V 376: 3.2-4.4e-16 (other normalisation) | 0 agrees; 2.2e-15 normalisation differs |
+| A7 22 of 22; release vs branch 18.9e6 words, 0 differ | | the verifier's own (V 255-258); L2a LR1 | own runs |
+| Analysis rows (15/15; 2.35e-4, 0.999, 0.657; reader 0, 7.5e-10; E6 factors) | | wave-2b lead's independent extraction (E-20261119-150238-b81e33f) for E6 and the reader; V 97 (R^NR at t = 0 to 1e-10) | partly; synthetic-test rows track only |
+| Cost 0.503 card-hours, 1811 s; steps 1386; 1.13-1.30 s per step | | V 265-267: 0.5031, 1811 s; steps and s/step none | cost agrees; two rows track only |
+| Verifier rows | | the verifier's own numbers | own |
+| Core rows (mu/k^2, 692, 12.7, 20 dk) | | none; labelled [TO VERIFY] | open (package `a4res`) |
+
+Summary: the ledger has 45 rows: 2 are the verifier's own numbers, 3 are core's (labelled
+[TO VERIFY] in the note), and 40 are the track's. Of these 40, 27 agree with an independent
+value (V, L2a, L3; rows 32, 37-39 only in part, as marked) and 13 are the track's alone (rows
+7, 16, 20, 21, 23 for M, 24, 26, 28-30, 35, 36, 40 of `note/tables/ledger_g1.md`), each
+reproduced by a rerun of its registered analysis or of the ledger (Part A LR; B2 LR4). No row disagrees beyond a
+stated difference of definition. [JUDGEMENT] This meets the ledger part of C16 for an
+independent gate review; a gate reviewer may still ask a fresh agent for the 13 track-only rows.
+
+## B5. Stage packages after this review
+
+See `G1/STATUS.md`, `G1/CHECKLIST.md`, `G1/STAGE_REPORT.md` (rerun in this session). G0 is
+signed (2026-11-20) and not touched.

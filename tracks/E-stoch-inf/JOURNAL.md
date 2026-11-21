@@ -470,3 +470,40 @@ Predictions of the lead check, written before any run of this session (refuted w
   (U256) and the value at N_f 2.127e-3; U256m equal to U256 in these two to 4 digits
   (entry 15: "records equal to 4 digits"); card time of jobs 4742, 4774, 4783 from sacct
   0.157, 0.617, 0.612 card-hours (one card each). Refuted by a difference in the 4th digit.
+
+Outcomes (13:31Z). Runs E-20261121-130021-0140e4e (LR4, 3 cores, 30 min) and
+E-20261121-130236-e39e143 (LU1-LU3, 2 cores, 21 s); figures `stage/review3/fig/fig_rerun4.png`,
+`fig_lead4.png` looked at; results copied to `stage/review3/results/batch3/`.
+- LR4 CONFIRMED in (a), (b), (d): group 1 0/4220 numeric leaves differ, floor split 0/241, quick
+  records 0/294, pair 0/12289, single-run U256 section = summary of -084815-63462b8 in all 4279
+  shared leaves; note: 12 PNGs byte-identical, six tables byte-identical; every committed copy
+  equals its run. REFUTED in (c): 13 of 56 lockstep leaves differ, all from the 256^3 code-time
+  reference (lowest shell 9.3072e-8 against 9.2992e-8, 8.6e-4 relative; L1 ratios 6.5e-7; L3
+  8e-9). Cause read, not tested: my script exported OPENBLAS_NUM_THREADS=3, the registered run
+  left it unset [JUDGEMENT]. No verdict changes.
+- LU1 CONFIRMED: rms 0.8945204/0.8945199, skewness 0.0023740/0.0006108, max abs R 4.5678/4.5567,
+  even/odd 2.533496e-4 (68532 modes) and 2.8766e-4 (548958 modes), all as the helper's to six or
+  more digits, from the phi part alone.
+- LU2 CONFIRMED against the file (18 numbers, relative difference 0); my written prediction
+  FAILED for dump 4: I had copied the values of the dump at cN 1.55 (index 3), not 2.06.
+- LU3 CONFIRMED for the maxima (2.5193e-2, 2.5195e-2) and the card time (0.157, 0.617, 0.612);
+  FAILED for "equal to 4 digits" at N_f: 2.1269e-3 against 2.1283e-3 (7e-4 relative): the
+  record of abs M is not even in s once the even part of M is as large as the odd part.
+- Also found while the runs ran: a helper session of this batch works on `a4res` in this
+  worktree (commits c4061303-aed608d2; card job 4798, run E-20261121-131000-b23055b, pending);
+  the lead leaves it alone. `nrpic-stage verify G1 --no-checksums` (on 67413b28): every check
+  passes except `clean` (my uncommitted review) and `runs` (my rerun then still running, and
+  a4res's submitted job).
+
+Session close (13:45Z). Did: reviewed `note` and `usr` from their artefacts
+(`stage/REVIEW-wave3.md` Part B: helper predictions with git ancestry, reruns, own code, every
+figure, the ledger row by row); closed the manifest of window's finished job 4740; judged all 18
+G1 items PASS (`stage/G1/CHECKLIST.md`, `STATUS.md`, `OPEN.md`, `EVIDENCE.md` 10-11); applied the
+note's requests (NOTATION, WRITING_GUIDE, ladder README A1 row); acknowledged two messages;
+posted four (core: lockstep-record-substep; orch: usr-acceptance-after-data,
+schedule-window-r1-a4res, g1-package-complete). Found: nothing wrong in the results of either
+package; usr entry 10 cannot be dated before its job by git (rescues no verdict); "records equal
+to 4 digits" holds for maxima only; note journal heading time out of order (cosmetic). Changed
+my mind about: G1 completeness (C6 by decision 0021, C8-C15 delivered, C16's ledger part by the
+B4 cross-check). Open: the G1 gate review (orch); U-A2'/U-A4' ruling; window analysis; a4res job
+4798; P256 on the release card build. Card-hours this session: 0.

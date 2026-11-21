@@ -1,0 +1,165 @@
+{
+ "figures": {
+  "fig_background.png": {
+   "new_vs_committed": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   },
+   "committed_vs_registered": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   }
+  },
+  "fig_cost.png": {
+   "new_vs_committed": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   },
+   "committed_vs_registered": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   }
+  },
+  "fig_deltan.png": {
+   "new_vs_committed": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   },
+   "committed_vs_registered": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   }
+  },
+  "fig_freezing.png": {
+   "new_vs_committed": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   },
+   "committed_vs_registered": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   }
+  },
+  "fig_noise.png": {
+   "new_vs_committed": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   },
+   "committed_vs_registered": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   }
+  },
+  "fig_sr_constraints.png": {
+   "new_vs_committed": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   },
+   "committed_vs_registered": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   }
+  },
+  "fig_sr_freezing.png": {
+   "new_vs_committed": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   },
+   "committed_vs_registered": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   }
+  },
+  "fig_sr_modes.png": {
+   "new_vs_committed": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   },
+   "committed_vs_registered": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   }
+  },
+  "fig_sr_order.png": {
+   "new_vs_committed": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   },
+   "committed_vs_registered": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   }
+  },
+  "schem_architecture.png": {
+   "new_vs_committed": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   },
+   "committed_vs_registered": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   }
+  },
+  "schem_dataflow.png": {
+   "new_vs_committed": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   },
+   "committed_vs_registered": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   }
+  },
+  "schem_timeline.png": {
+   "new_vs_committed": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   },
+   "committed_vs_registered": {
+    "bytes_equal": true,
+    "pixel_rms": 0.0
+   }
+  }
+ },
+ "tables": {
+  "claims.json": {
+   "new_vs_committed": true,
+   "committed_vs_registered": true
+  },
+  "claims.md": {
+   "new_vs_committed": true,
+   "committed_vs_registered": true
+  },
+  "ledger.tex": {
+   "new_vs_committed": true,
+   "committed_vs_registered": true
+  },
+  "ledger_g1.md": {
+   "new_vs_committed": true,
+   "committed_vs_registered": true
+  },
+  "ledger_g1.tex": {
+   "new_vs_committed": true,
+   "committed_vs_registered": true
+  },
+  "parameters.tex": {
+   "new_vs_committed": true,
+   "committed_vs_registered": true
+  }
+ },
+ "summary": {
+  "n_png": 12,
+  "png_bytes_equal_new": 12,
+  "png_pixel_rms_max_new": 0.0,
+  "png_bytes_equal_registered": 12,
+  "tables_equal_new": [
+   "claims.json",
+   "claims.md",
+   "ledger.tex",
+   "ledger_g1.md",
+   "ledger_g1.tex",
+   "parameters.tex"
+  ],
+  "tables_differ_new": []
+ }
+}

@@ -1,0 +1,252 @@
+{
+ "usr.g1": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-130021-0140e4e/usr/g1/summary.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-075307-4542ce1/summary.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/results/runs/summary_E-20261121-075307-4542ce1.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 4220,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 80,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [
+    "/U128hm/U_A5_shell_power_ratio_end/max_abs_k_le_kmask",
+    "/U128hm/U_A5_shell_power_ratio_end/modes_per_shell_min",
+    "/U128hm/U_A5_shell_power_ratio_end/rms_k_le_kmask",
+    "/U128hm/U_A5_shell_power_ratio_end/worst_shell_n2_k_le_kmask",
+    "/U128hm/linear_breaks/dev_max_t[0]",
+    "/U128hm/linear_breaks/dev_max_t[10]",
+    "/U128hm/linear_breaks/dev_max_t[11]",
+    "/U128hm/linear_breaks/dev_max_t[12]",
+    "/U128hm/linear_breaks/dev_max_t[13]",
+    "/U128hm/linear_breaks/dev_max_t[14]"
+   ],
+   "only_in_second": [],
+   "n_only_first": 386,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 4220,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 80,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ },
+ "usr.floor": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-130021-0140e4e/usr/floor/floor_split.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-080134-a0cc3eb/floor_split.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/results/runs/floor_split_E-20261121-080134-a0cc3eb.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 241,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 85,
+   "other_differing": 1,
+   "other_diffs": [
+    [
+     "/source",
+     "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-130021-0140e4e/usr/g1/summar",
+     "../results/runs/summary_E-20261121-075307-4542ce1.json"
+    ]
+   ],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 241,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 85,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ },
+ "usr.quick": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-130021-0140e4e/usr/quick/quick_records.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-075022-7f76477/quick_records.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/results/runs/quick_records_E-20261121-075022-7f76477.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 294,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 72,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 294,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 72,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ },
+ "usr.pair": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-130021-0140e4e/usr/pair/summary.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-101756-6bffd0c/summary.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/results/runs/summary_E-20261121-101756-6bffd0c.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 12289,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 32,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 12289,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 32,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ },
+ "usr.lock": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-130021-0140e4e/usr/lock/lockstep_shells.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-103157-96fee1d/lockstep_shells.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/results/runs/lockstep_shells_E-20261121-103157-96fee1d.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 56,
+   "numeric_differing": 13,
+   "max_rel": 0.000855295375346896,
+   "max_rel_key": "/U256/lock_lowest",
+   "other_leaves": 3,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 56,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 3,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ },
+ "usr.u256single": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-130021-0140e4e/usr/pair/summary.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-084815-63462b8/summary.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/results/runs/summary_E-20261121-084815-63462b8.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 4279,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 17,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [
+    "/U256_U256m/U_A2n_even_over_odd_end",
+    "/U256_U256m/U_A2n_even_over_odd_max",
+    "/U256_U256m/U_A2n_max_at_cN",
+    "/U256_U256m/U_A2n_t[0]",
+    "/U256_U256m/U_A2n_t[10]",
+    "/U256_U256m/U_A2n_t[11]",
+    "/U256_U256m/U_A2n_t[12]",
+    "/U256_U256m/U_A2n_t[13]",
+    "/U256_U256m/U_A2n_t[14]",
+    "/U256_U256m/U_A2n_t[15]"
+   ],
+   "only_in_second": [],
+   "n_only_first": 8025,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 4279,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 17,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ }
+}

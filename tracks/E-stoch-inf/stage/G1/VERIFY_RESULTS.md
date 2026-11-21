@@ -1,34 +1,34 @@
 # Re-verification: E-stoch-inf G1
 
-`harness/bin/nrpic-stage verify E-stoch-inf G1` on 2026-11-21T06:57:09Z, clean export of commit `5aa8bcd4767d` in `scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-5aa8bcd-20261121T065649Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify E-stoch-inf G1` on 2026-11-21T13:18:01Z, clean export of commit `67413b28db8c` in `scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-67413b2-20261121T131636Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | FAIL | 17 uncommitted paths: commit them first (tracks/E-stoch-inf/note/scripts/common.py, tracks/E-stoch-inf/note/scripts/fig_background.py, tracks/E-stoch-inf/note/scripts/ledger.py, tracks/E-stoch-inf/note/scripts/run_all.py, tracks/E-stoch-inf/note/scripts/schem_architecture.py) |
+| clean | FAIL | 1 uncommitted paths: commit them first (tracks/E-stoch-inf/stage/REVIEW-wave3.md) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 5aa8bcd4767d (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-5aa8bcd-20261121T065649Z/tree |
+| export | PASS | clean export of 67413b28db8c (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-67413b2-20261121T131636Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: spec/scope/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
 | note-pdf | PASS | note/main.pdf committed after the last .tex change |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
-| fig-script | PASS | 7 figures, each with its script |
-| min-figs | PASS | 2 schematics and 5 data figures (brief 13.4 asks at least 2 and 1 at G1) |
-| runs | FAIL | 2 of 131 runs have problems |
+| fig-script | PASS | 12 figures, each with its script |
+| min-figs | PASS | 3 schematics and 9 data figures (brief 13.4 asks at least 2 and 1 at G1) |
+| runs | FAIL | 2 of 147 runs have problems |
 | run-notes | WARN | 30 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | status | PASS | STATUS.md has 37 lines |
-| rerun | PASS | 7 of 7 scripts and commands ran cleanly in the export |
-| compare | PASS | 14 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
-| regenerate | PASS | all 14 committed figure files regenerated |
+| rerun | PASS | 12 of 12 scripts and commands ran cleanly in the export |
+| compare | PASS | 24 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| regenerate | PASS | all 24 committed figure files regenerated |
 
 ## runs
 
 ```
 {
- "E-20261120-222424-0eb754b": [
-  "status is submitted: not finished (nrpic-run finish)"
+ "E-20261121-130021-0140e4e": [
+  "status is running: not finished (nrpic-run finish)"
  ],
- "E-20261120-222621-ba66218": [
+ "E-20261121-131000-b23055b": [
   "status is submitted: not finished (nrpic-run finish)"
  ]
 }
@@ -201,14 +201,44 @@
   "identical"
  ],
  [
+  "note/figures/fig_sr_order.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_sr_order.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/schem_dataflow.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/schem_dataflow.svg",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
   "note/figures/fig_cost.png",
   "PASS",
   "identical"
  ],
  [
+  "note/figures/fig_sr_freezing.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
   "note/figures/fig_cost.pdf",
   "PASS",
   "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_sr_freezing.png",
+  "PASS",
+  "identical"
  ],
  [
   "note/figures/fig_deltan.png",
@@ -237,6 +267,26 @@
  ],
  [
   "note/figures/fig_freezing.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_sr_modes.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_sr_modes.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_sr_constraints.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_sr_constraints.pdf",
   "PASS",
   "regenerated (vector files carry dates; the PNG preview is compared)"
  ]
