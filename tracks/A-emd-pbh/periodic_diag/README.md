@@ -40,10 +40,14 @@ particles only when the step is large), the deposit (unchanged between G0 and G1
 first shell crossing (none before t = 5 in the exact reference), outputs (none at 2.3-2.4),
 and the guard (it fires at 4.8 and 15.1, after the jump).
 
-**Second finding (not the card's cause):** the relaxation term of `lapse_leak` is stiff; on a
-64^3 root mesh (dt up to 0.23, lapse_leak x dt up to 4.7) the relaxed lapse leaves its track
-from t ~ 2 and blows up (U0, run A-20261121-212150-20ffbb6); Test B puts the limit at
-lapse_leak x dt ~ 2.5 at the grid scale [consistent with U0; not isolated by a run of its own].
+**Second finding (not the card's cause) [VERIFIED]:** the relaxation term of `lapse_leak` is
+stiff; on a 64^3 root mesh (dt up to 0.23, lapse_leak x dt up to 4.7) the relaxed lapse
+leaves its track from t ~ 2, its grid-scale part jumps at t = 3.2 and the run ends on the
+guard (U0 with the Gamma-driver, U8 without it, the same to the cycle), while lapse_leak 5
+(lapse_leak x dt <= 1.6) runs smoothly to t = 12 (U9) (runs A-20261121-212150-20ffbb6,
+A-20261121-223054-ae9af0c, analysis A-20261121-224448-b53226c, `figures/fig_leak.png`).
+Test B puts the limit at lapse_leak x dt ~ 2.5 at the grid scale (2.79 for the homogeneous
+mode).
 
 **Refuted predictions on record (JOURNAL.md):** U0 as a reproduction of the card's
 mechanism (entry 1); the G0 onset time and "G0 grows from round-off" (entries 3, 6); Test B
@@ -72,7 +76,7 @@ Lowering shift_Gamma alone does not suffice (Test B': 0.3 gives a threshold of 0
 | `inputs/diag_uniform.athinput` | the card deck's physics on the 64^3 root mesh without the static levels |
 | `inputs/diag_uniform_seed.athinput` | the same with white noise 1e-10 in every evolved field (`<problem> noise_amp`), tlim 10 |
 | `outbox_draft/20261121T2300Z__to-core__periodic-gamma-driver-step.md` | the request to core with run ids, for the lead to post (this package may not write the outbox) |
-| `scripts/run_uniform.sh` | uniform-mesh cases U0..U7 (relaxed lapse) and G0..G4 (lapse frozen) |
+| `scripts/run_uniform.sh` | uniform-mesh cases U0..U9 (relaxed lapse; U1-U7 not run) and G0..G4 (lapse frozen; G3, G4 not run) |
 | `scripts/run_uniform2.sh` | the seeded frozen-lapse cases G5 (cfl 1.0), G6 (cfl 0.6), G7 (shift_Gamma 0.3; not run, entry 8) |
 | `scripts/run_refined.sh` | the card deck itself on processors: R0 (as job 4799), R1 (cfl 0.5), R2 (zero shift) |
 | `scripts/vonneumann.py` | Test B: RK4 amplification of the discrete Gamma-driver, 1+log/relaxation and light subsystems with the code's stencils |
@@ -95,6 +99,8 @@ Lowering shift_Gamma alone does not suffice (Test B': 0.3 gives a threshold of 0
 | A-20261121-222557-2d8e53c, A-20261121-222610-72ddd83 | uniform analysis, attempts 1-2 | figure overflow, colours; superseded |
 | A-20261121-222626-2cb28d0 | uniform analysis | `figures/fig_uniform.png` |
 | A-20261121-222713-efe9eb8 | Test B': shift_Gamma 0.3 | threshold 0.94 (level 4), 0.90 (root) |
+| A-20261121-223054-ae9af0c | U8, U9: relaxed lapse, zero shift, leak 20 / 5 | U8 fails as U0 (jump t = 3.18, guard 4.80); U9 smooth to 12 |
+| A-20261121-224448-b53226c | analysis of U0, U8, U9 | `figures/fig_leak.png` |
 | A-20261121-212853-4a52dea | R2: card deck, zero shift, cfl 1.0, processors | R2_ROW |
 
 ## How to rerun
@@ -131,7 +137,9 @@ To the lead of A-emd-pbh:
   not run here). Budget about 41 card-minutes for P0L to t = 140 and two segments for S1L.
 - Not done in this package (cost on processors): R0 (the card deck with the Gamma-driver
   reproduced on processors, about 1.7 h on 4 threads) and R1 (cfl 0.5 on the card deck,
-  about 3.5 h); the uniform-mesh variants U1-U7 (they carry the stiff relaxation of U0).
+  about 3.5 h); the uniform-mesh variants U1-U7 (they carry the stiff relaxation of U0) and G3/G4 (S1 data,
+  TSC deposit without filter: the matter and deposit were excluded by G1/G2 and by the
+  common onset of P0L and S1L instead).
 
 To core (in the draft message): (i) a step limit that counts the gauge speeds (Gamma-driver
 sqrt(4 shift_Gamma/3 gt^dd), 1+log sqrt(2 alpha chi gt^dd)) with the RK4/KO threshold 0.685,
