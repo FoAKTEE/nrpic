@@ -200,7 +200,13 @@ def read_horizon(dirs, base="ball", n=0):
                 v = [float(t) for t in line.split()]
                 if len(v) >= 12 and np.isfinite(v[2]):
                     rows.append(v[:12])
-    return np.array(rows) if rows else np.zeros((0, 12))
+    if not rows:
+        return np.zeros((0, 12))
+    # conv_ball: a restarted segment appends to the same summary and repeats the searches
+    # after its restart time: keep the last row of each search time, in time order
+    rows = np.array(rows)
+    _, last = np.unique(np.round(rows[::-1, 1], 9), return_index=True)
+    return rows[len(rows) - 1 - last]
 
 
 def read_snapshot(path):
