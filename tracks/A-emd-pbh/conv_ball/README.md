@@ -6,7 +6,10 @@ horizon-formation time against the exact solution converge in particle number, m
 and ball radius; the horizon-mass error is of the order of the source paper's
 Oppenheimer-Snyder test; plus the boundary leg of the common three-way convergence (9.2).
 
-State: see "Runs and results" below and the last entries of JOURNAL.md.
+State (2026-11-21 04:10 PST): every planned member has run and been analysed (14 card runs in
+4 card jobs, 3.50 card-hours of the cap of 6); outcomes in JOURNAL.md entries 4-12; no card run
+is pending. Final numbers: analysis A-20261121-120257-a2eb839 (convergence.md,
+convergence.json, fig_convergence.png under scratch/A-emd-pbh/<run id>/).
 
 ## What is here
 
@@ -38,11 +41,10 @@ tracks/A-emd-pbh/conv_ball ...`; commands in each manifest under `tracks/A-emd-p
    --list tracks/A-emd-pbh/conv_ball/lists/job1.list --wall 00:58:00`; C as a chain:
    `--launcher chain --exe <same> --gpu-hours 3 -- $(cat lists/C.args)`.
 4. Analysis: `python scripts/analyse.py --card <card run dir> [--card <chain dir>:C]
-   [--prior NAME=<numbers.json>] --out DIR`.
+   [--prior NAME=<numbers.json>] [--prior-turnaround <turnaround.json>] --out DIR` (the
+   command of each analysis is in its manifest).
 
 ## Runs and results
-
-Outcomes of every prediction: JOURNAL.md (entries 4, 5, 8, 9, 10 so far). Runs of this package:
 
 | run id | what | state |
 |---|---|---|
@@ -53,61 +55,61 @@ Outcomes of every prediction: JOURNAL.md (entries 4, 5, 8, 9, 10 so far). Runs o
 | A-20261121-075404-ac51b7e | ball 1.35 times larger, lattices nestA, nestB | completed |
 | A-20261121-075916-0b98e86 | processor smoke test of every deck (all pass) | completed |
 | A-20261121-080727-e2f9074 | smoke figure: initial psi^4 on the nested line within 5e-13 of exact | completed |
-| A-20261121-075926-d10c2c1 | card job 1 (Slurm 4776): A, B, A-L32, A-R1.25, A-R1.35, A-N8; 0.29 card-hours | completed |
-| A-20261121-085252-f4ed504 | analysis of job 1 (convergence.md, fig_convergence.png) | completed |
-| A-20261121-083336-6a82131 | chain of C (Slurm 4781, then 4786, ...) | running |
-| A-20261121-091934-ac62f5f | card job 3a (Slurm 4784): B-N8, A-N64; 0.84 card-hours | completed |
+| A-20261121-075926-d10c2c1 | card job 1 (Slurm 4776): A, B, A-L32, A-R1.25, A-R1.35, A-N8; 0.29 card-h | completed |
+| A-20261121-085252-f4ed504 | analysis of job 1 | completed |
+| A-20261121-083336-6a82131 | chain of C (Slurm 4781, 4786, 4789), t = 0 -> 16; 1.86 card-h | completed |
+| A-20261121-100945-3985b90 | interim analysis of C after segment 1 (turnaround leg) | completed |
+| A-20261121-091934-ac62f5f | card job 3a (Slurm 4784): B-N8, A-N64; 0.84 card-h | completed |
 | A-20261121-104359-4ce67d9 | analysis of B-N8 | completed |
-| A-20261121-110025-e6aec8c | analysis of A-N64 (with all earlier numbers) | completed |
-| A-20261121-110017-471b0ae | card job 3b (Slurm 4787): B-R1.25, B-R1.35, B-L32 | submitted |
-| A-20261121-100945-3985b90 | interim analysis of C after its first segment (t <= 6.32): turnaround leg | completed |
+| A-20261121-110025-e6aec8c | analysis of A-N64 | completed |
+| A-20261121-110017-471b0ae | card job 3b (Slurm 4787): B-R1.25, B-R1.35, B-L32; 0.51 card-h | completed |
+| A-20261121-115055-4554451 | analysis of job 3b | completed |
+| A-20261121-120257-a2eb839 | final analysis: C and the convergence of all legs | completed |
 
-Results of jobs 1 and 3a (analyses A-20261121-085252-f4ed504, -104359-4ce67d9, -110025-e6aec8c; errors against the exact solution of
-each member's own data; DESIGN.md section 4):
+Errors against the exact solution of each member's own data (DESIGN.md section 4: ddet =
+particles' proper time at the finder's radius minus the exact trapping time of that shell, at
+the first detection; dtrap = trapping time per particle, band R_i = 2.603 M; turnaround by the
+cycloid fit; eta = largest core |R/R_exact - 1| at the turnaround; mass = finder
+sqrt(A/16 pi) against the exact horizon mass of the same slice, median over the detections):
 
-| member | first detection t | first-detection error (M) | trapping, band 2.603 (M) | turnaround V3 / C (M) | core eps at turnaround | horizon mass, median |
+| member | first detection t | ddet (M) | dtrap (M) | turnaround C (M) | eta | mass median |
 |---|---|---|---|---|---|---|
-| A (M/16) | 10.875 | +0.193 | -0.093 | -0.037 / -0.015 | 8.1e-3 | +7.4e-3 |
-| B (M/32) | 10.781 | +0.068 | -0.022 | -0.033 / -0.013 | 3.1e-3 | -2.1e-3 |
-| A-L32 | 10.875 | +0.193 | -0.093 | -0.037 / -0.015 | 8.1e-3 | +7.4e-3 |
-| A-R1.25 | 10.906 | +0.100 | -0.049 | -0.020 / +0.021 | 8.0e-3 | +6.7e-3 |
-| A-R1.35 | 10.938 | +0.164 | -0.029 | -0.025 / +0.017 | 8.3e-3 | +1.0e-2 |
-| A-N8 | 10.813 | +0.109 | -0.047 | -0.048 / -0.017 | 4.2e-3 | -1.3e-3 |
-| A-N64 (4969736 particles) | 10.812 | +0.146 | -0.048 | -0.040 / -0.015 | 6.2e-3 | +5.0e-4 |
-| B-N8 (4969736 particles) | 10.750 | +0.071 | -0.028 | -0.015 / -0.008 | 3.5e-3 | -3.0e-4 |
+| A (M/16, 1 per cell) | 10.875 | +0.193 | -0.093 | -0.0148 | 8.1e-3 | +7.4e-3 |
+| B (M/32, 1 per cell) | 10.781 | +0.068 | -0.022 | -0.0127 | 3.1e-3 | -2.1e-3 |
+| C (M/64, 1 per cell) | 10.750 | +0.017 | -0.0077 | -0.0030 | 1.1e-3 | -2.1e-4 |
+| A-N8 | 10.813 | +0.109 | -0.047 | -0.0172 | 4.2e-3 | -1.3e-3 |
+| A-N64 (4969736 particles) | 10.812 | +0.146 | -0.048 | -0.0153 | 6.2e-3 | +5.0e-4 |
+| B-N8 (4969736 particles) | 10.750 | +0.071 | -0.028 | -0.0083 | 3.5e-3 | -3.0e-4 |
+| A-R1.25 | 10.906 | +0.100 | -0.049 | +0.0210 | 8.0e-3 | +6.7e-3 |
+| A-R1.35 | 10.938 | +0.164 | -0.029 | +0.0173 | 8.3e-3 | +1.0e-2 |
+| B-R1.25 | 10.750 | +0.065 | -0.015 | -0.0041 | 3.7e-3 | -1.9e-3 |
+| B-R1.35 | 10.750 | +0.107 | -0.008 | -0.0048 | 5.8e-3 | -1.25e-3 |
+| A-L32 | identical to A to 1e-7 | | | | | |
+| B-L32 | identical to B to 1e-11 | | | | | |
 
-So far: the horizon is found in every member and in every search after the first; the
-first-detection and trapping errors fall from A to B at orders 1.5 and 2.1; the horizon-mass
-error (median) falls from 7.4e-3 to 2.1e-3 in magnitude (B: twice the source's fiducial OS
-level of 1e-3, main.tex:945); the turnaround time does not converge between A and B (a flat
-maximum set by slopes of the shell error; R_max converges); the outer boundary at 16 M and
-32 M gives identical results to 1e-7; at A's mesh the time errors vary with the ball radius by
-more than the mesh step (open: B-R1.25, B-R1.35). The mesh triple needs C.
+Findings (JOURNAL.md entry 12):
+- mesh (A, B, C): the first-detection error falls 0.193 -> 0.068 -> 0.017 M (orders 1.5, 2.0),
+  the trapping error 0.093 -> 0.022 -> 0.0077 M (2.1, 1.5), the finder's lag behind the first
+  trapped slice 0.43 -> 0.20 -> 0.09 (1.1, 1.1); the horizon mass error 7.4e-3 -> 2.1e-3 -> 2.1e-4
+  (C below the source's fiducial Oppenheimer-Snyder level of 1e-3, main.tex:945, and its best AMR
+  particle RMS 7.3e-4, main.tex:1484); the shell error at the turnaround converges at order 1.4;
+  the turnaround time converges only from B to C (order 2.1; a flat maximum).
+- particles: at mesh B the time errors no longer depend on the particle number; the horizon
+  mass does (B: -2.1e-3 with 1 per cell, -3.0e-4 with 8); at fixed N = 4969736 the mass error is
+  2-5e-4 on all three meshes.
+- ball radius: the time errors vary with the ball radius by 0.09 M at A and 0.04 M at B (the
+  dependence shrinks with the mesh); the mass by under 1e-3.
+- outer boundary 16 M against 32 M: identical results at A and B.
 
-C after its first segment (t <= 6.32, analysis A-20261121-100945-3985b90): core shell error
-at the turnaround 8.1e-3, 3.1e-3, 1.1e-3 (A, B, C; order about 1.4); turnaround time (cycloid
-fit) -0.0148, -0.0127, -0.0035 M: converges only from B to C (order 1.9).
-
-Particles (job 3a): at mesh B the time errors no longer depend on the particle number (B-N8
-against B: 0.003 M in the first-detection error); the horizon mass does: its median error is
--2.1e-3 with one particle per cell and -3.0e-4 with eight (B-N8_horizon.png: 1e-4 to 7e-4 from
-t = 11.5 to 16), below the source's fiducial OS level of 1e-3; A-N64 gives +5.0e-4.
+Not done: the ball-radius leg on C; a finer constant-occupancy member for the turnaround time.
 
 ## Pending card runs
 
-| run | members | expected cost | state |
-|---|---|---|---|
-| A-20261121-083336-6a82131 (chain) | C (M/64, 4969736 particles) | about 2.1 card-hours, 3 segments | segment 1 done (t = 6.32), segment 2 Slurm 4786 running from 02:59 |
-| A-20261121-110017-471b0ae (batch) | B-R1.25, B-R1.35, B-L32 | about 0.5 card-hours | Slurm 4787 |
-
-Submit: `harness/bin/nrpic-run submit --kind scouting --gate G2 --package
-tracks/A-emd-pbh/conv_ball --purpose '...' --launcher batch --exe
-/data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu --list
-tracks/A-emd-pbh/conv_ball/lists/job3a.list --wall 00:58:00`; analyse with
-`python tracks/A-emd-pbh/conv_ball/scripts/analyse.py --card <run dir> [--card <chain dir>:C]
---prior NAME=<numbers.json> ... --prior-turnaround <turnaround.json> --out '$NRPIC_RUN_DIR'`
-(numbers of job 1: scratch/A-emd-pbh/A-20261121-085252-f4ed504/<member>_numbers.json).
+None. A suggested next member, if the lead wants the ball-radius leg at the finest mesh: C-R1.25
+(deck nest64_L16; needs the nestC lattice of the 1.25 ball, `prep_bh.py` with the 1.25 arguments
+of "How to rerun" and `--nlat --nested nestC:64:16:1`, a MEMBERS line in `make_lists.py`, and a
+chain of about 2 card-hours).
 
 ## Requests
 
-None yet.
+None to other owners.
