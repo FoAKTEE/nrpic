@@ -935,3 +935,42 @@ Prediction W2: shells of N128L with the cell-centre kernel (kernel_cc and hybrid
 kernel_nx128_cc.txt, dx = 2.75 M) give a dress at a/a_i = 2 within 1 % of N128Lc's 0.1751 M
 (vertex-kernel shells 0.1694, i.e. -3.3 %), and M_ta at 2-8 unchanged within 0.3 %. Refuted if
 the cell-centre shells are not nearer the run at a/a_i = 2 than the vertex shells.
+
+## 2026-11-21T09:35Z  outcomes Q16 and W2
+
+Q16 analysis D-20261121-092757-34faefa (`nm_late.txt`, `nm_late_profiles_Q16.png`,
+`nm_estimators.png` looked at), energies D-20261121-092757-ed934e7, lost particles
+D-20261121-092757-3df1172. Last snapshot a/a_i = 15.956 (t = 1393.8 M); "16" below means it,
+with the shells read at the same snapshot time.
+Q1 holds: every group inside r_last(16) = 26.4 M keeps its energy within 0.4 % (r0 = 16-19 M
+-0.2 %, 19-22 +0.1 %, 22-24 -0.06 %, 24-25.5 -0.18 %, 25.5-26.4 -0.37 %). The edge layer moves as
+expected in kind but less than in P192: 26.4-27.5 -1.1 %, 27.5-29 -2.2 %, 29-30.5 -0.7 %,
+30.5-31.7 +16 %.
+Q2 masses against hybrid_cc / kernel_cc (both from the flags and from the flag-free
+estimators, which agree to 0.1 %): a/a_i = 4: M_ta 2.5966 (+0.18 / +0.42 %), dress 0.7952
+(+0.47 / +0.84 %): holds. 8: 4.8146 (+0.16 / +0.58 %), dress 2.1484 (-0.05 / +0.31 %): holds.
+12 (not predicted): 7.0468 (+0.17 / +0.62 %), dress 3.5406 (+0.20 / +0.73 %). 15.96: M_ta
+9.3017 (+0.80 / +1.28 %): REFUTED (band hybrid_cc + 0.5 %); dress 4.9109 (+0.11 / +0.64 %):
+holds. The M_ta excess at 16 is carried by the shells just outside r_last that lost 1-2 % of
+their energy and turn around early [JUDGEMENT from Q1; same mechanism as P192, ten times
+smaller]. dress/M_ta = 0.528 (holds, band 0.520-0.541; self-similar 0.625), M_ta/(M a/a_i) =
+0.583 (holds, band 0.571-0.584; asymptote 0.565). Dress at a/a_i = 2: -4.1 % (hybrid_cc), at
+1.5 +13 % (0.06 M of the innermost dust; not predicted).
+Q3 holds: profile against the self-similar solution at 15.96 on [0.0748, 0.3], 6 bins: 0.959,
+0.993, 1.043, 0.981, 0.841, 0.929, largest deviation 15.9 % (X = 20 %), rms 7.6 % (15 %). The
+shells deviate by 15.0-20.4 % (rms 10-13 %) on the same bins; run/shells largest 15-20 %.
+Q4 holds: mean local slope -2.55 against -2.50 (0.15), least-squares slope -2.66 against
+-2.58 (0.2).
+Q5 holds for particles and clump: no particle lost (largest dust radius 448 M at the end,
+closed form 396 M, box 444 M: the edge again runs ahead, by 13 %), clump within 0.0052 dx,
+90 % radius at most 0.076 dx; total momentum up to 0.016 M c (not predicted). Cost: 2580 steps
+(predicted 2000-2500: refuted by 3 %), 1844 s (holds).
+At a/a_i = 8 the run is within 3.6 % of the self-similar solution on its two bins in range
+([0.186, 0.3]).
+
+W2 (D-20261121-092808-6ae5321 kernel_cc, -092816-a91da6b hybrid_cc of N128L; comparison
+D-20261121-092852-a0c75f0): N128Lc's dress at a/a_i = 2 (0.1751 M) lies +1.8 % / +1.6 % above
+the cell-centre shells, +3.3 % / +3.1 % above the vertex shells; at 1.5 +1.6 % against +7.8 %.
+REFUTED as worded (within 1 %), the weaker part holds (nearer): the kernel mismatch explains
+about half of the verifier's 0.5-3.3 % at a/a_i = 2. M_ta at 2-8 unchanged within 0.2 %
+(holds).
