@@ -1,2 +1,2 @@
 # t1b: refined region touching the +x face, stock against the full set without damping, executable of f6f9a0d
-analyze_t1.py /data/haiyangw/nrpic/scratch/core/core-20261121-081236-84b1a29 --out $OUT/results/t1b.json --fig $OUT/figs/t1b_smrface
+analyze_t1.py /data/haiyangw/nrpic/scratch/core/core-20261121-081236-84b1a29 --label full_set --out $OUT/results/t1b.json --fig $OUT/figs/t1b_smrface

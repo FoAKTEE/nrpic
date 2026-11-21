@@ -8,7 +8,10 @@ prolongation.  Stock conditions against the full set with damping, eight steps.
 Measures at the last dump (journal entry 9): non-finite values in any dump; the largest
 |H| in the face layer (within 4 of the +x face) on the fine part (cells of 1/2) and on
 the coarse part of that face; the largest |H| in the junction zone (within 4 of the +x
-face, 2 <= max(|y|, |z|) < 6: the fine/coarse junction sits at 4).
+face and within 2 of the fine/coarse junction, whose place max(|y|, |z|) = 8 is read
+from the cells: the refined region of the input, |y|, |z| < 3.9, is rounded outward to
+whole MeshBlocks of 8 cells.  Until 2026-11-21 the zone was taken at 2 <= max(|y|, |z|)
+< 6, where there is no junction; journal entry 13).
 """
 
 import argparse
@@ -22,6 +25,7 @@ import flib
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.collections import PolyCollection  # noqa: E402
 from nrpic import figstyle as fs  # noqa: E402
 
 LBOX = 16.0
@@ -50,8 +54,11 @@ def one(rundir):
     t = np.maximum(np.abs(y), np.abs(z))
     fine = lay & (dx < 0.75) & (dx > 0.3)
     coarse = lay & (dx > 0.75) & (t < 12.0)   # away from the other faces
-    junc = lay & (t >= 2.0) & (t < 6.0)
-    r = {"time": d.time, "nonfinite": nonfinite(rundir),
+    # the fine/coarse junction on the face: the refined region is rounded outward to
+    # whole MeshBlocks, so its edge is read from the cells, not from the input
+    jpos = float((t[fine] + 0.5 * dx[fine]).max())
+    junc = lay & (t >= jpos - 2.0) & (t < jpos + 2.0)
+    r = {"time": d.time, "nonfinite": nonfinite(rundir), "junction_at": jpos,
          "H_face_fine_max": float(a[fine].max()), "H_face_coarse_max": float(a[coarse].max()),
          "H_junction_max": float(a[junc].max()),
          "G_face_fine_max": float(gz[fine].max()), "G_face_coarse_max": float(gz[coarse].max()),
@@ -77,6 +84,8 @@ def main():
     p.add_argument("rundir")
     p.add_argument("--out", default=os.path.join(flib._HERE, "results", "t1.json"))
     p.add_argument("--fig", default=os.path.join(flib._HERE, "figs", "t1_smrface"))
+    p.add_argument("--label", default="full set with damping",
+                   help="name of the case smr_full in the figure (underscores become spaces)")
     a = p.parse_args()
     res, maps = {}, {}
     for c in ("smr_stock", "smr_full"):
@@ -97,7 +106,7 @@ def main():
     fig, axs = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH * 0.8, 5.6))
     fig.subplots_adjust(left=0.11, right=0.9, bottom=0.09, top=0.94, wspace=0.3, hspace=0.3)
     col = {"smr_stock": fs.PAL["red"], "smr_full": fs.PAL["blue"]}
-    lab = {"smr_stock": "stock", "smr_full": "full set with damping"}
+    lab = {"smr_stock": "stock", "smr_full": a.label.replace("_", " ")}
     for c in ("smr_stock", "smr_full"):
         axs[0, 0].semilogy(res[c]["line_x"], np.maximum(np.abs(res[c]["line_H"]), 1e-12),
                            "o-", ms=2.5, lw=0.9, color=col[c], label=lab[c])
@@ -108,14 +117,19 @@ def main():
     axs[0, 0].set_title(r"towards the $+x$ face, $t = %g$" % s["time"], fontsize=10)
     axs[0, 0].legend(fontsize=8)
     axs[0, 1].set_xlabel(r"$y$ (boundary cells of the $+x$ face, $z = 0^+$)", labelpad=-1)
-    for yy in (-4.0, 4.0):
+    for yy in (-res["smr_full"]["junction_at"], res["smr_full"]["junction_at"]):
         axs[0, 1].axvline(yy, color="0.6", lw=0.8)
     axs[0, 1].set_title("along the face; grey: fine/coarse junction", fontsize=10)
     for ax, c in zip(axs[1], ("smr_stock", "smr_full")):
         x, y, dx, v = maps[c]
-        sc = ax.scatter(x, y, c=np.log10(np.maximum(v, 1e-12)), s=np.where(dx < 0.75, 3.0, 12.0),
-                        marker="s", cmap=fs.CMAP["dens"], vmin=-9, vmax=-3, rasterized=True,
-                        linewidths=0)
+        # every cell as a square of its own size (the mesh is refined)
+        h = 0.5 * np.asarray(dx)
+        verts = np.stack([np.stack([x - h, y - h], -1), np.stack([x + h, y - h], -1),
+                          np.stack([x + h, y + h], -1), np.stack([x - h, y + h], -1)], 1)
+        sc = PolyCollection(verts, array=np.log10(np.maximum(v, 1e-12)),
+                            cmap=fs.CMAP["dens"], rasterized=True, linewidths=0)
+        sc.set_clim(-9, -3)
+        ax.add_collection(sc)
         ax.set_xlim(8, 16)
         ax.set_ylim(-8, 8)
         ax.set_xlabel(r"$x$", labelpad=-1)

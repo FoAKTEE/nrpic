@@ -146,13 +146,20 @@ def main():
     for j, reg in enumerate(("inner", "shell", "faces", "all")):
         for i, q in enumerate(("H", "M", "T", "G")):
             ax = axs[i, j]
+            low = []
             for n in names:
                 h = res["cases"][n]
                 if not h:
                     continue
-                ax.semilogy(h["time"], np.maximum(h[f"{q}.{reg}.mean"], 1e-20),
+                v = np.asarray(h[f"{q}.{reg}.mean"], dtype=float)
+                ax.semilogy(h["time"], np.maximum(v, 1e-20),
                             color=cols[n], label=n,
                             ls="--" if n == "reference" else "-")
+                late = v[(np.asarray(h["time"]) > 0) & np.isfinite(v) & (v > 0)]
+                if late.size:
+                    low.append(late.min())
+            if low:  # the exact data of t = 0 (zero or rounding) do not set the range
+                ax.set_ylim(bottom=0.5 * min(low))
             if i == 0:
                 ax.set_title({"inner": rf"${r0:g} \leq r < 8$", "shell": r"$8 \leq r < 12$",
                               "faces": "within 4 of a face",

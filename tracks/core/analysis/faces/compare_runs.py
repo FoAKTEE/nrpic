@@ -7,7 +7,8 @@
 Cases are paired by name: <name><a> against <name><b>.  Every file of the two case
 directories is compared by its sha256, except athena.log (wall-clock times).  In the
 field dumps and history files the header repeats the input parameters, which are the
-same in both cases.  Exit status 1 if any file differs or is missing on one side.
+same in both cases.  Exit status 1 if any file differs or is missing on one side, or if
+a pair has no output file at all (unless --allow-empty: then it is only reported).
 """
 
 import argparse
@@ -61,6 +62,8 @@ def main():
     p.add_argument("--b", default="__rel")
     p.add_argument("--out", default="")
     p.add_argument("--fig", default="")
+    p.add_argument("--allow-empty", action="store_true",
+                   help="a pair without any output file is reported, not counted as a failure")
     a = p.parse_args()
     res = {}
     bad = False
@@ -76,8 +79,9 @@ def main():
         res[name] = {"files": len(ta), "identical": len(ta) - len([k for k in diff if k in ta]),
                      "different": diff}
         print(f"{name}: {len(ta)} files, {len(diff)} differ" +
-              ("" if not diff else ": " + ", ".join(diff[:8])))
-        bad = bad or bool(diff) or not ta
+              ("" if not diff else ": " + ", ".join(diff[:8])) +
+              ("" if ta else "  (no output file: this pair tests nothing)"))
+        bad = bad or bool(diff) or (not ta and not a.allow_empty)
     if a.out:
         with open(a.out, "w") as f:
             json.dump(res, f, indent=1)
