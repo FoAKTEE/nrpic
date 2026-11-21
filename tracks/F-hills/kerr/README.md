@@ -27,7 +27,7 @@ HRNA stays a semi-analytic reference outside `athenak/src` (decision 0010). Noth
 | `scripts/spin_trend.py` | survival against spin at r_p = 10 |
 | `scripts/digitize_2402.py`, `scripts/paper_2402.py` | vector-content reader and calibration of Figs. InclD and afin (the PDFs are parsed as text, never executed or rendered) |
 | `scripts/figstyle.py` | copy of `harness/style/figstyle.py` |
-| `results/` | copies of the runs' JSON outputs (named below); `paper_2402_digitized.json` = the paper's numbers with locators |
+| `results/` | copies of the runs' JSON outputs (named below); the paper's numbers read off its figures (`paper_2402_digitized.json`) are NOT in git (decision 0023 item 4, CLAUDE.md rule 9): copy at `/data/haiyangw/nrpic/scratch/F-hills/kerr_2402/paper_2402_digitized.json` (sha256 51ea5694...fdfd7d), and in the output directory of the analysis run F-20261121-132817-eacfe46 |
 | `figures/` | copies of the inspected figures (named below) |
 
 ## Model extension and conventions

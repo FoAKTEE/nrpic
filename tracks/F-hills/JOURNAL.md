@@ -633,3 +633,80 @@ failed predictions this session: L4b (my 1PN within 0.005 M of the package's: 0.
 (R16n hrms criterion; R8 drift range read from fractional values), L5b at 48 M (early energy
 0.63e-6 against <= 0.6e-6). Met: L4a, L4e, L4f, L5, L6a-c, the rest of L4d and L5b.
 card-hours used this session: 0 (no submission; two F-hills jobs queued throughout).
+
+## 2026-11-21T20:25Z lead, batch 5 (cards first; decision 0025 items 4-5)
+
+State at start (12:20 PST): both chains ended at their caps, no F-hills job queued (squeue);
+R16n (F-20261121-130351-04074e1) reached t = 23.34 M (restart 7), R12 (F-20261121-153707-1eaa5d4)
+t = 21.06 M (restart 6); the stray resubmissions (4820, 4822) ended by themselves with
+"MAX_SEGMENTS reached".
+
+Prediction before the analysis (L7, written before reading any R12 or R16n row past 7.74 M):
+rule P1b-D as pre-registered above applies unchanged. I expect D2 to hold: Delta s_16(20) in
+0.00-0.06 M (R8: 0.577), masses flat within 1e-4 per M, no step > 0.01 M; and D1 to give a
+monotone sequence R8 > R12 > R16n at 15 M with Delta s_12(15) in 0.04-0.15 M. Refuted if
+Delta s_16(20) > 0.10 M or the sequence is not monotone; the order p is the uncertain part
+(I give p >= 2 an even chance, because the m/16 loss may already be at the 1PN floor).
+
+L7 outcome (analysis run F-20261121-202021-3c4321e; figures `fig_orbit_conv.png`,
+`fig_horizons_H.png` read): Delta s at 15 M = 0.3054 (R8), 0.0881 (R12), 0.0865 (R16n) M;
+at 20 M 0.5766, 0.1970, 0.1959 M. R12 and R16n agree within 0.0017 M at every time to 21 M
+(the m/12 curve lies under the m/16 curve), R8 does not. Member masses of R16n drift -3.9e-5
+and -5.5e-5 per M, of R12 -5.0e-5 and -1.4e-4 per M (window 3-15 M); rms H 6e-4 (R8),
+1.4e-4 (R12), 4.5e-5 (R16n). Prediction L7: monotone sequence MET; Delta s_12(15) in
+0.04-0.15 MET (0.088); D2 FAILED (Delta s_16(20) = 0.196 M against <= 0.10 predicted
+0.00-0.06): the m/16 binary shrinks by 0.2 M in 20 M although it is converged.
+
+Rule P1b-D applied as written: R12 has landed, so D1 is the operative clause. D1: monotone
+(0.305 > 0.088 > 0.0865), three-point order p = 12.0 (>= 2), Delta s_c(15) = 0.0864 M (inside
+-0.02 to 0.12). D1 HOLDS: P1b at m/16 is submitted. D2 (only "if R12 has not landed") would
+fail on its first clause (0.196 > 0.10 M; masses flat MET). Reading of the numbers
+[JUDGEMENT]: p = 12 is not an order of convergence but the statement that m/12 and m/16 give
+the same orbit within 0.002 M, i.e. both are in the converged regime and m/8 is not. The
+rule's rationale ("then the m/16 merger time is at least 210 M") is REFUTED: the decay that
+remains at m/12-m/16 does not shrink with resolution, and the stretch fit of R12 and R16n to
+P1's shape gives a merger at 97 and 93 M (analysis.json "stretch"; it assumes P1's shape).
+Two readings are open: (E) the start state (Bowen-York momenta of Newtonian circular
+velocities) is eccentric in GR and the pair started near apocentre: s(t) then has a minimum
+and rises again within one orbit (phase rate 0.035-0.039 rad/M, period about 170 M); (I) the
+converged pair spirals in (coordinate or real) and merges near 95 M. Only a longer isolated
+run separates them, so the isolated m/16 binary must run further. It does not run FIRST: it
+runs beside P1b in the second card slot and stays ahead of it in simulated time (it starts at
+23.3 M and advances about 7.8 M per segment, P1b about 5.5-6.4 M), so a later session can stop
+P1b (`scripts/submit_chain.sh --stop`) as soon as the isolated binary merges before the
+passage's pericentre; letting P1b wait would leave a card idle for one to two days.
+
+### Card runs loaded in this session (decision 0025 items 4-5; predictions before submission)
+
+A. P1b, m/16 (`binary_conv/inputs/p1b_R16n.athinput`, tlim 200), chain of 31 segments
+   (--gpu-hours 31, about 25.9 card-hours; G1 has 31.6 left after R16n and R12 are closed),
+   executable `athena_keep_trackers_bc.sh` -> bc-ak05-gpu (byte copy of release core-v0.5's card
+   build, the series of R8/R12/R16n; same input options under v0.6, which changes nothing
+   without id_solve). No lapse_leak (constant shift_eta = 2, 1+log lapse), as P1.
+   Prediction: (A1) no common horizon of the two members before t = 60 M (P1 at m/8: 48.8 M);
+   (A2) the members' separation follows the isolated R16n within 0.05 M to t = 20 M;
+   (A3) by t = 200 M (or the chain's end, 170-205 M) the binary is separated: one member bound
+   to the heavy hole, the other unbound (Newton: m1 ejected, m2 bound with pericentre 5.81 M at
+   t = 122; HRNA: m2 ejected; stage/G1/STATUS.md); which member leaves I do not predict;
+   (A4) member horizon masses drift below 1e-4 per M; no common horizon of a member with the
+   heavy hole; (A5) the tree stays below 2864 MeshBlocks and the run fits 3000 slots.
+   Refuted: a member merger before the pericentre (A1, A3), a separation that departs from
+   R16n by more than 0.1 M by 20 M (A2), out of memory (A5).
+   Criterion to STOP it early (later session): run B shows a common horizon of the isolated
+   pair at a time before P1b has passed pericentre.
+B. R16n extension (isolated binary, m/16) from R16n's restart 7 (t = 23.34 M) to tlim 120,
+   13 segments (--gpu-hours 13, about 10.9 card-hours), new run directory, wrapper
+   `athena_resume_bc.sh` (first segment `-r .../F-20261121-130351-04074e1/rst/hills.00007.rst`),
+   same executable. Gate G2 (it is also the m/16 rung of the binary ladder; G1 has no room).
+   Prediction (reading E, probability about 0.6): s(t) reaches a minimum between 40 and 100 M
+   of 2.5-4.6 M and rises afterwards; no common horizon before 120 M; masses drift below
+   1e-4 per M. Refuted (reading I): a common horizon before 120 M, or s(t) falling
+   monotonically to below 2.5 M.
+C. P1b, m/12 (`binary_conv/inputs/p1b_R12.athinput`, tlim 200), 25 segments (--gpu-hours 25,
+   about 20.9 card-hours; model 25.1 segments to 200 M, an upper estimate), gate G2: the second
+   resolution of the passage (R12 = R16n alone within 0.002 M). Submitted now and HELD
+   (scontrol hold); a sequencer releases it when chain B has ended, so at most two F-hills jobs
+   are eligible at any time. Prediction: the same outcome as A (A1-A5); the separations of A and
+   C agree within 0.02 M to the pericentre; the ejected member's specific energy at infinity
+   agrees within 10 percent. Refuted: a different member ejected, or energies apart by more
+   than 25 percent.
