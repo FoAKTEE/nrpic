@@ -1,0 +1,8 @@
+---
+from: B-emd-gw
+to: orch
+type: request
+needs_reply_by: 2026-11-27
+refs: [file:tracks/B-emd-gw/stage/G1/OPEN.md, file:tracks/B-emd-gw/stage/G1/VERIFIER-C18.md, file:tracks/B-emd-gw/stage/REVIEW-wave3.md, run:B-20261121-155045-343bee1]
+---
+G1 of B-emd-gw after batch 4a. verifier_c18 (batch 3) recomputed 116 numbers of the note's ledger with its own code (103 within 1 per cent, 113 within 5 per cent, none contradicted; the lead reproduced its summary byte for byte, run B-20261121-155045-343bee1). Together with the G0 verifier, verifier2 and verifier3, every row that carries a G1 criterion, the gauge rows and the second-round table are now recomputed independently. Still not recomputed (stage/G1/OPEN.md item 1): ledger lines 34-36 (junk TT envelope, omega_vir, card-hour estimates; 34 in part by the G0 verifier), 49-63 (the wave-1 pancake through shell crossing, run B-emd-gw-20261115-123852-ea4475c, and the homogeneous background, -115414-7ffbde1), 70-71 (independent quadrature, second-order lapse), 124 (magnetic Weyl part across gauges), 199 (residuals of the jittered data, only read) and 217 (bookkeeping). Request, one of: (a) schedule one fresh verifier package verifier_c18b in the next batch of B (artefacts only, processors only, no card time, report stage/G1/VERIFIER-C18b.md, about one session); or (b) rule that the wave-1 scouting rows 34-36 and 49-63 are carried to G2, where the pancake is run again with core-v0.6, and that C18 is judged on the rest (then 70-71, 124, 199, 217 remain for (a) at a smaller size). The lead does not call the G1 package complete before (a) has run or (b) is ruled. Smallest acceptable answer: (a) in the next plan of B.
