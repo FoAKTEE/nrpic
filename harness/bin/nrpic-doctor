@@ -53,6 +53,10 @@ def boot_env(extra=None):
     return env
 
 
+KB_STATUS = {}                 # kb/ tree id -> result of `kb status` (row kb; one call per tree with --all)
+KB_STATUS_TIMEOUT = 180
+
+
 def sh(cmd, cwd, inp=None, env=None, timeout=120):
     try:
         return subprocess.run(cmd, cwd=cwd, input=inp, env=env or boot_env(), capture_output=True, text=True,
@@ -334,9 +338,15 @@ class Doctor:
         if not os.path.isfile(cli):
             return "MISSING", ("kb/bin/kb is not in this worktree (it arrives when main merges kb/main and the owner "
                                f"syncs); {ro_detail}")
-        p = sh([cli, "status"], self.w.wt, timeout=60)
+        # every worktree's kb/bin/kb reads the same kb-data/: with --all, one call per distinct kb/ tree
+        key = sh(["git", "rev-parse", "HEAD:kb"], self.w.wt).stdout.strip() or self.w.wt
+        p = KB_STATUS.get(key)
+        if p is None:
+            p = KB_STATUS[key] = sh([cli, "status"], self.w.wt, timeout=KB_STATUS_TIMEOUT)
         if p.returncode != 0:
-            return "FAIL", f"kb status failed: {(p.stderr or p.stdout).strip()[-200:]}"
+            return "FAIL", (f"kb status failed: {(p.stderr or p.stdout).strip()[-200:]}"
+                            + ("; it counts the rows of the kb writer's working database kb-data/db/kb.sqlite, "
+                               "slow while kb ingests" if p.returncode == 124 else ""))
         if self.me == "kb":
             return "PASS", "kb status works; this owner is the writer of kb-data/"
         if ro_ok is None:
@@ -402,8 +412,9 @@ class Doctor:
         if not installed:
             return ("MISSING", f"tree {tree}; pre-commit hook not installed (core.hooksPath unset; decision 0008); "
                                f"the hook {os.path.relpath(hook, os.path.dirname(os.path.dirname(HERE)))} in a throwaway repository: {verdict[1]}")
-        if d:
-            return "FAIL", f"tree {tree}: " + ", ".join(x[3:] for x in d[:5])
+        if d:                              # the brief's row asks for a clean tree too (end of a session)
+            return "FAIL", (f"tree {tree}: " + ", ".join(x[3:] for x in d[:5])
+                            + f"; pre-commit installed; {verdict[1]}")
         return ("PASS" if verdict[0] else "FAIL"), f"tree clean; pre-commit installed; {verdict[1]}"
 
     def try_pre_commit(self, hook):
