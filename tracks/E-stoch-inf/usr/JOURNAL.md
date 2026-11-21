@@ -656,3 +656,31 @@ Refuted if outside.
   floor-corrected parts, with the floor from the odd parts of the halving pair, or bar each
   part at three times the floor measured that way (not at a fixed fraction of <[C]>, which in
   USR falls by 1e5 relative to an absolute floor).
+
+## Entry 13, 2026-11-21 08:53 UTC: U256 ran (job 4774); U256m submitted before the U256 analysis ends, on condition
+
+U256 (card run E-20261121-075255-8cf90e7, core_scalar-3 athena_gpu 5cc2821): started
+00:05:38 PST, rc = 0, stopped on tlim at cycle 1702 (t = 10.437509), 21 dumps of 2.95 GB,
+job wall 37.0 min = 0.617 card-hours; 2208.8 s of run time = 1.298 s per step; card memory
+peak 19.6 GB. U8 (cost): 1.23 to 1.35 s per step holds; 0.58 to 0.64 card-hours holds;
+18 to 24 GB holds. The analysis (run E-20261121-084815-63462b8) started at 00:48 PST, 5.5
+minutes after the job: the first attempt, queued to start at the job's end, was refused by
+nrpic-run because `README.md` was uncommitted ("not clean where the run's code lives").
+
+Card-hours: group 1 0.157 + U256 0.617 = 0.774 of 1.5; left 0.726, so U256m goes with
+--wall 00:43:00 (0.717): at most 1.491 in all.
+
+Decision on U256m [JUDGEMENT]: the task allows it "only if steps 2 and 3 pass". Step 2:
+U-A0 to U-A3 pass on both rungs; U-A4 failed as pre-registered for a reason located in the
+bars (entry 12), and with the floor removed its second-order law holds (entry 12.2). Step 3
+is being analysed now. U256m is submitted now because two cards are busy for about 55
+minutes with one job ahead, so it cannot start before the U256 analysis (about 12 minutes)
+is judged; it is cancelled (scancel) if U256 fails U-A0, U-A1, U-A2 or U-A3.
+
+Added prediction for U256m (beside entry 9's): at 256^3 with nmax2 = 4096 the magnitude
+<[M]> is set by 549k modes with rms R up to 0.9, so the s-independent floor of entry 12.2
+(absolute 2e-14 to 3e-14 at 128^3 late, about twice that at 256^3 if it scales as 1/dx) is
+below 1e-3 of the parts of M at every dump after cN 1: late (cN > 7) the odd part of M
+exceeds the even part (first-order truncation of the top shells at 4 cells per wavelength)
+and the even/odd ratio of M lies in [0.05, 0.7]. Refuted if even/odd of M is within 15 %
+of 1 at cN > 7 (a floor) or above 1.
