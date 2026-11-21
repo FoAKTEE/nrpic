@@ -8,6 +8,8 @@
     kb claim verify N --by WHO --evidence TEXT [--locator L]     a person read the passage
     kb claim refute N --by WHO --evidence TEXT                   prints the tracks to notify
     kb claim stats [--json]
+    kb claim seed-brief [--dry-run] [--tsv PATH] [--join PKG ...] [--annotate TSV] [--defects] [--recheck]
+                                          the brief's labelled statements (12.8); kbtool/claims_brief.py
 
 Writes go to kb-data/db/kb.sqlite inside the writer lock; reads use --db, else kb.sqlite
 (the working database holds the queue between snapshots). Runs without the `kb` wiring as
@@ -386,6 +388,149 @@ def cmd_stats(a):
     return 0
 
 
+def cmd_seed_brief(a):
+    """`kb claim seed-brief`: the labelled statements of the brief's main text as seeds (brief
+    12.8; kbtool/claims_brief.py), and the helpers of package tracks/kb/claims_brief:
+    --join (CHECK.md rows of the brief check against the seeds, read only), --annotate FILE
+    (outcomes that change no label), --defects (defects of cited papers), --recheck (their
+    locators again)."""
+    from . import claims_brief as _cb
+    from .paths import default_brief
+    lay = layout(a.data_root)
+    by = a.by or _cb.BY_DEFAULT
+    path = a.brief or default_brief()
+    if not path or not os.path.exists(path):
+        print("brief not found; pass --brief", file=sys.stderr)
+        return 2
+    dbp = _db_path(lay, a)
+    if a.annotate:
+        rows = [ln.rstrip("\n").split("\t") for ln in open(a.annotate) if ln.strip() and not ln.startswith("#")]
+        n = collections.Counter()
+        for r in rows:
+            cid, evidence = int(r[0]), r[1]
+            status = r[2] if len(r) > 2 and r[2] else None
+            n["written" if _write(lay, "claim seed-brief annotate",
+                                  lambda con: _cb.annotate(con, cid, by, evidence, status)) else "same"] += 1
+        print("annotated: " + ", ".join(f"{k} {v}" for k, v in sorted(n.items())))
+        return 0
+    if a.defects or a.recheck:
+        if a.dry_run:
+            for d in _cb.defect_rows():
+                print(f"{d.key}\t{d.paper_id}\t{d.row}\trefute={d.refute}\tright={'yes' if d.right else 'no'}")
+            print(f"# {len(_cb.defect_rows())} defects")
+            return 0
+
+        def fn(con):
+            st = _store(lay, con)
+            if a.recheck:
+                return _cb.recheck_defects(con, st, by)
+            return [(d.key, _cb.add_defect(con, d, st, by)) for d in _cb.defect_rows()]
+        out = _write(lay, "claim seed-brief defects", fn)
+        if a.recheck:
+            for cid, key, status, ok, probs in out:
+                print(f"{cid}\t{key}\t{status}\t{'resolved' if ok else 'unresolved'}\t{'; '.join(probs)}")
+            print(f"# {len(out)} defect claims with locators, {sum(1 for x in out if not x[3])} unresolved")
+            return 0
+        cnt = collections.Counter()
+        for key, res in out:
+            for part, v in res.items():
+                if v:
+                    cnt[v[1]] += 1
+                    print(f"{key}\t{part}\tclaim {v[0]}\t{v[1]}")
+        print("defects: " + ", ".join(f"{k} {v}" for k, v in sorted(cnt.items())))
+        return 0
+    con = _cdb.connect(dbp, ro=True) if os.path.exists(dbp) else None
+    try:
+        statements, info = _cb.extract(path)
+        _cb.assign_tracks(statements, _cb.track_usage(con), _cb.sheet_ids(path))
+        if a.join:
+            rows, problems = [], []
+            for pkg in a.join:
+                if a.check_dir:
+                    md = open(os.path.join(a.check_dir, pkg, "CHECK.md"), encoding="utf-8").read()
+                else:
+                    md, commit = read_note(_cp.SourceSpec("kb", a.check_ref, f"tracks/kb/brief_check/{pkg}/CHECK.md"))
+                    print(f"{pkg}: CHECK.md at {a.check_ref} {commit[:10]}")
+                r, p = _cb.parse_check(md, pkg)
+                rows += r
+                problems += p
+            seeds = {}
+            if con is not None and _cdb.has_tables(con):
+                seeds = dict(con.execute("SELECT seed_key, claim_id FROM claim_meta WHERE seed_key LIKE ?",
+                                         (_cb.SEED_PREFIX + "%",)).fetchall())
+            out = _cb.join_rows(rows, statements)
+            cols = ("package", "n", "brief_line", "label_col", "row_label", "verdict", "seed_key", "claim_id",
+                    "seed_label", "how", "overlap", "tex_locators")
+            lines = ["\t".join(cols)]
+            for r, s, how, sc in out:
+                lines.append("\t".join(str(x) for x in (
+                    r.package, r.n, r.brief_line, r.label_col, r.label, r.verdict, s.seed_key() if s else "",
+                    seeds.get(s.seed_key(), "") if s else "", s.label if s else "", how, f"{sc:.2f}",
+                    "; ".join(f"{p}{v}:{f}:L{x}-{y}" for p, v, f, x, y in r.tex_locators()))))
+            if a.tsv:
+                os.makedirs(os.path.dirname(os.path.abspath(a.tsv)), exist_ok=True)
+                open(a.tsv, "w").write("\n".join(lines) + "\n")
+            c = collections.Counter(how for _, _, how, _ in out)
+            print(f"rows {len(rows)} (problems {len(problems)}): " + ", ".join(f"{k} {v}" for k, v in sorted(c.items())))
+            for p in problems:
+                print("problem: " + p, file=sys.stderr)
+            return 0
+        rows = _cb.seed_rows(statements)
+        if a.dry_run:
+            if a.tsv:
+                write_rows(a.tsv, rows)
+            _brief_summary(statements, info)
+            return 0
+    finally:
+        if con is not None:
+            con.close()
+    with writer_lock(lay, what="claims seed-brief"):
+        con = _cdb.connect(lay.db_work)
+        try:
+            _cdb.ensure(con)
+            con.execute("BEGIN")
+            counts = collections.Counter()
+            for s in statements:
+                cid, what = _cb.upsert(con, s, info["brief_sha256"], by)
+                counts[what] += 1
+                for r in rows:
+                    if r["seed_key"] == s.seed_key():
+                        r["claim_id"] = cid
+            con.execute("INSERT INTO ingest_log(at, step, target, status, message, tool_version) VALUES (?,?,?,?,?,?)",
+                        (_cdb.utcnow(), "claims-seed-brief", os.path.basename(path), "ok", json.dumps(dict(counts)),
+                         TOOL))
+            con.commit()
+        finally:
+            con.close()
+    print("seeded from the brief: " + ", ".join(f"{k} {v}" for k, v in sorted(counts.items())))
+    if a.tsv:
+        write_rows(a.tsv, rows)
+    _brief_summary(statements, info)
+    return 0
+
+
+def write_rows(path, rows):
+    os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
+    cols = list(rows[0].keys()) if rows else []
+    if rows and "claim_id" not in cols:
+        cols = ["claim_id"] + cols
+    with open(path, "w") as f:
+        f.write("\t".join(cols) + "\n")
+        for r in rows:
+            f.write("\t".join(str(r.get(c, "")).replace("\t", " ").replace("\n", " ") for c in cols) + "\n")
+
+
+def _brief_summary(statements, info):
+    by_sec = collections.defaultdict(collections.Counter)
+    for s in statements:
+        by_sec[s.section][s.label] += 1
+    for sec in sorted(by_sec):
+        print(f"section {sec:2d}: " + " ".join(f"{k}={v}" for k, v in sorted(by_sec[sec].items())))
+    lab = collections.Counter(s.label for s in statements)
+    print(f"main text {len(statements)} statements: " + ", ".join(f"{k} {v}" for k, v in sorted(lab.items())) +
+          f" | all labels by section {dict(sorted((str(k), v) for k, v in info['labels_by_section'].items()))}")
+
+
 def register(sub):
     p = sub.add_parser("claim", help="K8: evidence queue (seed, check, list, show, add, verify, refute, stats)")
     p.add_argument("--db", help="database to read (default kb.sqlite, the working database)")
@@ -398,6 +543,19 @@ def register(sub):
     s.add_argument("--rebuild", action="store_true",
                    help="empty the claim tables first; refused once a snapshot holds claims or a person set a label")
     s.set_defaults(fn=cmd_seed)
+    s = cs.add_parser("seed-brief", help="the labelled statements of the brief's main text as seeds (brief 12.8)")
+    s.add_argument("--brief", help="the brief (default: the checkout's copy)")
+    s.add_argument("--dry-run", action="store_true", help="extract and print counts, write nothing")
+    s.add_argument("--tsv", help="write a table of the seeds (or of --join) here")
+    s.add_argument("--by")
+    s.add_argument("--join", nargs="+", metavar="PACKAGE",
+                   help="read only: join the CHECK.md rows of these brief-check packages to the seeds")
+    s.add_argument("--check-ref", default="kb/brief-check", help="git ref of the brief-check packages")
+    s.add_argument("--check-dir", help="read <dir>/<package>/CHECK.md instead of the git ref (tests)")
+    s.add_argument("--annotate", metavar="TSV", help="claim_id TAB evidence [TAB status]: outcomes without a label change")
+    s.add_argument("--defects", action="store_true", help="enter the defects of cited papers (claims_brief.DEFECTS)")
+    s.add_argument("--recheck", action="store_true", help="resolve the locators of the defect claims again")
+    s.set_defaults(fn=cmd_seed_brief)
     s = cs.add_parser("check", help="re-check locators (automatic labels only)")
     s.add_argument("--id", type=int, nargs="+")
     s.add_argument("--by")
