@@ -58,7 +58,7 @@ def main():
             size=7.0, color=pf.ROSE)
     pf.brace(ax, 9.6, 14.8, 3.6, "", below=True)
     pf.text(ax, 12.2, 2.0, "null test off the relaxed lapse,\nfaces far out, to 500 M; M/16\n"
-            "pair; growth to 500 M; seed 2", size=7.0, color=pf.ROSE)
+            "pair; growth to 500 M; sampler", size=7.0, color=pf.ROSE)
     pf.brace(ax, 15.6, 20.8, 3.6, "", below=True)
     pf.text(ax, 18.2, 2.0, "convergence at finer cells;\nwarm dust and spin; puncture\n"
             "in a periodic box; card time", size=7.0, color=pf.ROSE)

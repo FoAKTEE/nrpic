@@ -394,7 +394,7 @@ def main():
            ", ".join(f"{100 * rk[k]['mean_d']:+.2f}" for k in ("10-16", "16-40")), KR),
           (sec, r"sum of the three inner $z$ values: first sample; second sample (test fixed before the run: no bias if the second exceeds $-1.5$)",
            f"{kz['test']['Z1_inner_sum']:+.2f}; {kz['test']['Z2_inner_sum']:+.2f}", KR),
-          (sec, r"second sample: $\chi^2$ of the binned counts, median (degrees of freedom); smallest $r/M$ before any plunge, first sample",
+          (sec, r"median $\chi^2$ of the binned counts (degrees of freedom), second sample; smallest $r/M$ reached, first sample",
            f"{kz['side']['seed2']['chi2_median']:.1f} ({kz['side']['seed2']['dof']}); {kz['side']['seed1']['min_r']:.3f}", ["kerr2_run", "kerr2_ana", "kerr_ana"]),
           (sec, r"second sample: particles that crossed $r_+$; distance of its initial $C$ from the capture boundary, $(C-C_{\rm crit})/C_{\rm crit}$ (smallest of the sample); plunge between $t/M$",
            f"{kz['plunger']['n_bad']}; {fnum(kz['plunger']['particle']['dist_rel'])} (rank {kz['plunger']['particle']['rank_of_dist']}); "
