@@ -1,14 +1,19 @@
 # C-sidm/drift: origin of the outward excursion of the collisionless King controls
 
-Helper package of owner C-sidm, wave 3, round 1 (`../PLAN-wave3.md`, package 6). Question
+Helper package of owner C-sidm, wave 3 (`../PLAN-wave3.md`, package 6). Question
 (`../RISKS.md` item 3): the two collisionless King controls of wave 2 (cc1_kninf, y0 =
 0.334032, run C-20261115-171058-c26cfad; cc2_kninf, y0 = 0.314, run
 C-20261115-171059-4b70228; static mesh with M/4 cells, N = 1e5, 300 M) move their central
 lapse up by 0.033 and 0.018 and back. Is this the mesh, particle noise, or a physical mode
 excited by the initial data? The answer decides the mesh of block A of
-`../threshold_scan/SCAN.md` (about 9.5 card-hours).
+`../threshold_scan/SCAN.md`.
 
-Predictions and outcomes: `JOURNAL.md` (entries 1-). Labels: [VERIFIED] computed in the
+Answer so far: the outward excursion is the mesh. On a mesh with M/8 cells in the centre it
+shrinks to 0.14 (CC1) and 0.10 (CC2) of its M/4 size, for both models [VERIFIED, runs (i),
+(iii)]. What remains on M/8 is a slow contraction after 200-250 M, not yet explained; run (vi)
+(queued) shows whether it turns or runs away, run (v) whether it is particle-noise relaxation.
+
+Predictions and outcomes: `JOURNAL.md` (entries 1-14). Labels: [VERIFIED] computed in the
 registered run named next to it; [JUDGEMENT]; [BACKGROUND]; [TO VERIFY].
 
 ## Contents
@@ -16,105 +21,115 @@ registered run named next to it; [JUDGEMENT]; [BACKGROUND]; [TO VERIFY].
 | Path | What it is |
 |---|---|
 | `scripts/controls.py` | Test D1: histories, snapshots and trajectories of a control (or of a run joined with its continuation): alpha_c excursion with two fit forms, coordinate and areal radii of the mass shells, mean Lorentz factor, H-norm2, Killing-energy sum, ripple periodogram; with `--pulsation` the lowest radial-pulsation eigenvalue of the King family (tmb b = 1, three adiabatic indices and a scaled proxy) as periods in M |
-| `scripts/compare.py` | Tests M8 and A: several series side by side (M/4 against M/8, 0-1000 M), ratios of amplitudes and periods, extrema of the 40 M mean, H-norm2 floors |
+| `scripts/compare.py` | Tests M8, A: several series side by side, ratios of amplitudes and periods (`--ratio`), correlation of the ripples about their 40 M running means (`--pair`), extrema of the 40 M mean, H-norm2 floors |
+| `scripts/diffusion.py` | Test D2: incoherent diffusion of every particle's Killing energy (random walk from noise), its rate D and time t_D, mean energy change |
 | `scripts/make_decks.py` | Writes `inputs/`: the M/8 decks, the N = 1e4 deck, one batch list per card job |
 | `inputs/cc{1,2}_kninf_M8.athinput` | (iii), (i): the wave-2 control decks with a level-7 region (M/8 cells) inside \|x\|_inf < 3.9 M; output cadence in time unchanged; restart files every 100 M |
-| `inputs/cc2_kninf_N1e4.athinput` | (v), optional: the cc2 control deck with the N = 1e4 file of wave 1 (run C-sidm-20261115-120610-b4592be) |
-| `inputs/job_{i,ii,iii,iv,v}.list` | one run per card job; (ii), (iv) restart the wave-2 runs from `rst/cc.00001.rst` (t = 300 M) to `time/tlim=1000`; every line ends with `-t 00:52:00` |
-| `figs/` | copies of the figures of the registered runs (all looked at) |
+| `inputs/cc2_kninf_N1e4.athinput` | (v): the cc2 control deck with the N = 1e4 file of wave 1 (run C-sidm-20261115-120610-b4592be), all particles tracked |
+| `inputs/job_{i,...,vi}.list` | one run per card job, every line ending with `-t 00:52:00`; (ii), (iv) restart the wave-2 runs at 300 M (dropped by the lead); (vi) restarts run (i) at 300 M with `time/tlim=1000` |
+| `figs/` | copies of figures of the registered runs (all looked at): `fig_drift_controls`, `fig_drift_fit`, `fig_drift_pulsation` (D1b), `fig_drift_M8` (four controls, run C-20261121-140518-9812635), `fig_drift_diffusion` (D2, run C-20261121-140431-b4786c4) |
 
 ## How to rerun
 
-From the worktree root, Python environment of the worktree (`harness/bin/nrpic-env create
---no-kokkos` once):
+From the worktree root (Python environment: `harness/bin/nrpic-env create --no-kokkos` once):
 
     R=/data/haiyangw/nrpic/scratch/C-sidm
-    # D1 (processors, 2 cores, about 20 s)
-    harness/bin/nrpic-run submit --kind scouting --gate G2 --package tracks/C-sidm/drift --cores 2 \
-      --purpose "drift D1" -- python3 tracks/C-sidm/drift/scripts/controls.py --pulsation \
-      --out '$NRPIC_RUN_DIR' cc1_kninf=$R/C-20261115-171058-c26cfad/cc1_kninf \
+    P="--kind scouting --gate G2 --package tracks/C-sidm/drift --cores 2"
+    # D1 (processors, about 20 s)
+    harness/bin/nrpic-run submit $P --purpose "drift D1" -- python3 tracks/C-sidm/drift/scripts/controls.py \
+      --pulsation --out '$NRPIC_RUN_DIR' cc1_kninf=$R/C-20261115-171058-c26cfad/cc1_kninf \
       cc2_kninf=$R/C-20261115-171059-4b70228/cc2_kninf
     # decks and lists
     python3 tracks/C-sidm/drift/scripts/make_decks.py
-    # one card job (k = i, ii, iii, iv, v); check squeue first: at most one job of this package
+    # one card job (k = i, iii, v, vi); first squeue: this package keeps at most one job queued
     harness/bin/nrpic-run submit --launcher batch --list tracks/C-sidm/drift/inputs/job_<k>.list \
-      --wall 00:55:00 --gpu-hours 0.75 --exe /data/haiyangw/nrpic/.work/build_gpu_v03/src/athena \
+      --wall 00:55:00 --gpu-hours 0.9 --exe /data/haiyangw/nrpic/.work/build_gpu_v03/src/athena \
       --kind scouting --gate G2 --package tracks/C-sidm/drift --particles 100000 --purpose "drift (<k>)"
-    # comparison of a card run with its M/4 control (processors)
-    harness/bin/nrpic-run submit --kind scouting --gate G2 --package tracks/C-sidm/drift --cores 2 \
-      --purpose "drift M8 cc2" -- python3 tracks/C-sidm/drift/scripts/compare.py --out '$NRPIC_RUN_DIR' \
-      --tag cc2_M8 cc2_M4=cc2:$R/C-20261115-171059-4b70228/cc2_kninf \
-      cc2_M8=cc2:$R/<run (i)>/cc2_kninf_M8 --ratio cc2_M8/cc2_M4
+    # the four controls on both meshes (M8 tests; about 1 min)
+    harness/bin/nrpic-run submit $P --purpose "drift M8" -- python3 tracks/C-sidm/drift/scripts/compare.py \
+      --out '$NRPIC_RUN_DIR' --tag cc_M8 cc1_M4=cc1:$R/C-20261115-171058-c26cfad/cc1_kninf \
+      cc1_M8=cc1:$R/C-20261121-125459-f03c4ba/cc1_kninf_M8 cc2_M4=cc2:$R/C-20261115-171059-4b70228/cc2_kninf \
+      cc2_M8=cc2:$R/C-20261120-222533-ce50a86/cc2_kninf_M8 --ratio cc1_M8/cc1_M4 --ratio cc2_M8/cc2_M4 \
+      --pair cc1_M8/cc2_M8 --pair cc1_M4/cc2_M4 --pair cc1_M4/cc1_M8
+    # D2 (about 1 min): the same four labels as LABEL=DIR, without the cc1:/cc2: model prefix
+    harness/bin/nrpic-run submit $P --purpose "drift D2" -- python3 tracks/C-sidm/drift/scripts/diffusion.py \
+      --out '$NRPIC_RUN_DIR' cc1_M4=$R/C-20261115-171058-c26cfad/cc1_kninf ... --ratio cc1_M8/cc1_M4
 
-The continuation of a wave-2 run needs the executable that wrote its restart file: the
-wave-2 `batch.list.exe` and `.work/build_gpu_v03/src/athena` have the same sha256
-(f9f2dc12...be3a1, JOURNAL entry 1).
+A continuation needs the executable that wrote its restart file: the batch executables of the
+wave-2 runs and of run (i) and `.work/build_gpu_v03/src/athena` have the same sha256
+(f9f2dc12..., JOURNAL entries 1 and 10).
 
 ## Results
 
-State: PAUSED at 22:35 UTC on 2026-11-20 (pause flag; JOURNAL entry 7); run (i) closed and judged by the C-sidm lead on 2026-11-21 (JOURNAL entry 8). Next: run (iii) (CC1 at M/8), then (v); (ii) and (iv) lose most of their purpose.
-
 | Test | Run id | Outcome |
 |---|---|---|
-| D1 processor analysis of the wave-2 controls | C-20261120-222211-aa1be86 (figures rerun in D1b, C-20261120-223139-2526c6d) | [VERIFIED] the excursion is a fundamental radial pulsation started at a turning point: cosine fits P = 399 M (CC1), 355 M (CC2), sine-with-trend 415 M and 393 M; amplitude A = 0.0154 and 0.0086 in alpha_c; areal radius of the 50 % shell up by 9.0 % and 5.0 % (0.78 of the coordinate change: not a coordinate drift); mean Lorentz factor anti-correlated (-0.998); H-norm2 uncorrelated (-0.49) and identical for both models; ripple rms 8e-4 (52.7-53.9 M), the same in both models (residual correlation 0.72, same seed). D1.1-D1.4 pass, D1.5 failed |
-| D1/D1b pulsation periods of the King family (tmb b = 1) | C-20261120-222211-aa1be86, C-20261120-223139-2526c6d | [VERIFIED] fluid fundamental mode with the F21 index: 358 M (CC1), 305 M (CC2), 260 M (y0 = 0.26); Juttner index: CC1 unstable, CC2 793 M, y0 = 0.26 326 M; dynamical estimate 22-24 M |
-| M/8 deck smoke (processors, nlim = 0) | C-20261120-222544-e5a7492 | [VERIFIED] 456 MeshBlocks on 8 physical levels; H-norm2(0) = 0.149 against 0.0235 at M/4 (particle noise of the deposit in smaller cells [JUDGEMENT]) |
-| (i) cc2_kninf_M8 | C-20261120-222533-ce50a86 (analysis C-20261121-075359-26e3b31, lead) | [VERIFIED] ran 300 M; the outward excursion shrinks to R = 0.22 (cosine A), 0.25 (sine with trend), 0.10 (largest 20 M mean) of M/4: numerical, second order or faster; no cosine form at M/8, slow contraction after 200 M (alpha_c -0.0041 at 300 M); H-norm2 floor 9.3 times higher; 8.30 s per M. M8.1, M8.3, M8.4 hold, M8.2 failed (JOURNAL entry 8) |
-| (ii)-(v) | none | not submitted (pause) |
+| D1 processor analysis of the wave-2 controls | C-20261120-222211-aa1be86 (figures D1b C-20261120-223139-2526c6d) | [VERIFIED] on M/4 the excursion is a physical expansion and return of the cluster (areal r50 +9.0 % CC1, +5.0 % CC2; 0.78 of the coordinate change; mean W anti-correlated -0.998), fitted by a cosine started at a turning point: P = 399 M (CC1), 355 M (CC2); fluid fundamental mode with the F21 index 358 and 305 M. D1.1-D1.4 pass, D1.5 failed |
+| M/8 deck smoke | C-20261120-222544-e5a7492 | [VERIFIED] 456 MeshBlocks on 8 levels; H-norm2(0) 6.3 times that of M/4 |
+| (i) cc2_kninf_M8 | C-20261120-222533-ce50a86 (analysis C-20261121-075359-26e3b31, lead) | [VERIFIED] largest excursion 0.0018 against 0.0179 (ratio 0.10); no cosine form; contraction after 200 M (alpha_c -0.0041, areal r50 -1.5 % at 300 M); 8.30 s per M. M8.1, M8.3, M8.4 hold, M8.2 failed (entry 8) |
+| (iii) cc1_kninf_M8 | C-20261121-125459-f03c4ba (analysis C-20261121-140057-92742cf; figure C-20261121-140518-9812635) | [VERIFIED] largest excursion 0.0046 against 0.0330 (ratio 0.14); cosine A ratio 0.13; contraction after 250 M (alpha_c -0.0020, areal r50 -0.9 % at 300 M); no collapse (alpha_min >= 0.659); H-norm2 floor 7.9e-3 (9.2 times M/4); 8.22 s per M. M8.1', M8.2'', M8.3', M8.4' hold; M8.2' (contracts faster than CC2) and M8.5' (ripple shared with CC2 on M/8: +0.25, not > 0.5) failed (entry 12) |
+| D2 energy diffusion of all particles | C-20261121-140356-f933a0e (figure C-20261121-140431-b4786c4) | [VERIFIED] incoherent variance of the Killing energy grows linearly (a random walk): D = 4.0e-8 (CC1) and 3.8e-8 per M (CC2) on M/4, 6.5e-8 and 5.8e-8 on M/8, ratio 1.6 (not the 9 of the H-norm2 floor); t_D = var(E_K)/D = 6.2-6.4e4 M (M/4), 4.0e4 M (M/8). D2.1, D2.3, D2.4 hold, D2.2 failed (entry 14) |
+| (vi) cc2_kninf_M8 continued from 300 M | C-20261121-140023-b0f113e (Slurm 4804) | pending in the queue (submitted 14:00 UTC 2026-11-21); predictions VI.1-VI.4, entry 10 |
+| (v) cc2_kninf at N = 1e4, M/4 | none | not submitted (one job of this package at a time; after (vi)); predictions N.1-N.6, entries 5, 11, 14 |
+| (ii), (iv) continuations of the M/4 controls | none | dropped by the C-sidm lead (`../HANDOFF.md`): the M/4 excursion is numerical |
 
-![controls](figs/fig_drift_controls.png)
+![four controls](figs/fig_drift_M8.png)
+
+Card-hours of this package: 0.69 (i) + 0.69 (iii) = 1.38 of 3.0 (sacct elapsed); (vi) will take
+about 0.87, (v) about 0.3.
 
 ## Pending runs
 
-Submit one at a time (this package keeps at most one card job in the queue; first check
-`squeue -u haiyangw -o '%i %j %T'`: nothing if two C-* jobs are queued or running):
+Run (vi) is queued (run C-20261121-140023-b0f113e, Slurm 4804). When it has ended:
 
-    cd /data/haiyangw/nrpic/wt/C-sidm && B="--wall 00:55:00 --gpu-hours 0.75 --exe /data/haiyangw/nrpic/.work/build_gpu_v03/src/athena --kind scouting --gate G2 --package tracks/C-sidm/drift --particles 100000"
-    # (ii) continuation of cc2_kninf, 300 -> 1000 M (about 41 min)
-    harness/bin/nrpic-run submit --launcher batch --list tracks/C-sidm/drift/inputs/job_ii.list $B --parent C-20261115-171059-4b70228 --purpose "drift (ii): continuation A' of cc2_kninf from its restart at 300 M to 1000 M"
-    # (iii) cc1_kninf on the M/8 mesh, 300 M (about 40 min at the predicted 2.3 x cost; read the cost of (i) first)
-    harness/bin/nrpic-run submit --launcher batch --list tracks/C-sidm/drift/inputs/job_iii.list $B --parent C-20261115-171058-c26cfad --purpose "drift (iii): cc1_kninf on a mesh with a level-7 region (M/8) inside |x| < 3.9 M, 300 M"
-    # (iv) continuation of cc1_kninf, 300 -> 1000 M
-    harness/bin/nrpic-run submit --launcher batch --list tracks/C-sidm/drift/inputs/job_iv.list $B --parent C-20261115-171058-c26cfad --purpose "drift (iv): continuation A' of cc1_kninf from its restart at 300 M to 1000 M"
-    # (v) optional, only within the 3.0 card-hour cap: cc2_kninf at N = 1e4, M/4, 300 M (about 17 min)
-    harness/bin/nrpic-run submit --launcher batch --list tracks/C-sidm/drift/inputs/job_v.list $B --purpose "drift (v): cc2_kninf at N = 1e4 (particle-number leg)"
+    cd /data/haiyangw/nrpic/wt/C-sidm && R=/data/haiyangw/nrpic/scratch/C-sidm
+    harness/bin/nrpic-run finish C-20261121-140023-b0f113e
+    harness/bin/nrpic-run submit --kind scouting --gate G2 --package tracks/C-sidm/drift --cores 2 \
+      --purpose "drift VI: cc2 on M/8 joined with its continuation (entry 10)" -- python3 \
+      tracks/C-sidm/drift/scripts/compare.py --out '$NRPIC_RUN_DIR' --tag cc2_M8A \
+      cc2_M8A=cc2:$R/C-20261120-222533-ce50a86/cc2_kninf_M8,$R/C-20261121-140023-b0f113e/cc2_kninf_M8_A
+    harness/bin/nrpic-run submit --kind scouting --gate G2 --package tracks/C-sidm/drift --cores 2 \
+      --purpose "drift D2 of (vi)" -- python3 tracks/C-sidm/drift/scripts/diffusion.py --out '$NRPIC_RUN_DIR' \
+      cc2_M8A=$R/C-20261120-222533-ce50a86/cc2_kninf_M8,$R/C-20261121-140023-b0f113e/cc2_kninf_M8_A
 
-Analysis of each (processors, 2 cores), for example (ii):
+Then judge VI.1-VI.4 (entry 10). Run (v) next (first `squeue -u haiyangw -o '%i %j %T'`:
+nothing if two C-* jobs are queued or running):
 
-    R=/data/haiyangw/nrpic/scratch/C-sidm
-    harness/bin/nrpic-run submit --kind scouting --gate G2 --package tracks/C-sidm/drift --cores 2 --purpose "drift A cc2" \
-      -- python3 tracks/C-sidm/drift/scripts/compare.py --out '$NRPIC_RUN_DIR' --tag cc2_A1000 \
-      cc2_A1000=cc2:$R/C-20261115-171059-4b70228/cc2_kninf,$R/<run (ii)>/cc2_kninf_A1000
+    harness/bin/nrpic-run submit --launcher batch --list tracks/C-sidm/drift/inputs/job_v.list \
+      --wall 00:55:00 --gpu-hours 0.5 --exe /data/haiyangw/nrpic/.work/build_gpu_v03/src/athena \
+      --kind scouting --gate G2 --package tracks/C-sidm/drift --particles 10000 \
+      --parent C-20261115-171059-4b70228 --purpose "drift (v): cc2_kninf at N = 1e4 on M/4 (particle-number leg)"
 
-Predictions to judge: JOURNAL entry 2 (M8.1-M8.4 for (i), (iii); A.1-A.5 for (ii), (iv)),
-entry 5 (N.1-N.3 for (v)), entry 6 (the decisive package's d3_kninf at y0 = 0.26).
+and analyse it with `compare.py --tag cc2_N` (`cc2_N1e5=cc2:<wave-2 dir> cc2_N1e4=cc2:<run (v) dir>
+--ratio cc2_N1e4/cc2_N1e5`) and `diffusion.py` (`--ratio cc2_N1e4/cc2_N1e5`) against N.1-N.6.
 
 ## Requests
 
-To the C-sidm lead (mesh of SCAN.md block A), preliminary because no M/8 run has finished:
+To the C-sidm lead, on the mesh and N of SCAN.md block A:
 
-1. [VERIFIED, D1] The excursion of the controls is not a gauge or coordinate drift and not
-   a random walk: it is the fundamental radial pulsation of the cluster, started at a
-   turning point, with periods of 355-415 M that sit within 10-25 % of the fluid
-   fundamental mode with the model's own index (305-358 M). Its size (5-9 % in areal
-   radius) is the response of a soft mode (omega^2/(4 pi rho_c) of about 0.006) to
-   whatever displaces the initial state from the code's equilibrium; which displacement
-   (mesh, particle noise, initial data) is still open: run (i) decides the mesh part.
-2. [JUDGEMENT, JOURNAL entry 4] On the M/4 mesh the threshold model CC1 oscillates with a
-   finite radial frequency (omega^2 of CC1 is 0.79 of CC2's, not zero); a straight line
-   through the two points crosses zero at y0 = 0.41-0.51. If (iii) (CC1 at M/8) does not
-   lengthen the period clearly, the code's collisionless onset lies above y0 = 0.334 on
-   that mesh, and block A's grid (0.314-0.354) may show no collapse in 1000 M. Do not
-   start block A before (i) and (iii) have run.
-3. Recommendation for block A, pending (i) and (iii): measure the period of the alpha_c
-   pulsation of every block-A run and locate the threshold as the zero of omega^2(y0)
-   (it needs no collapse and every control provides it), in addition to the fates; and
-   choose the mesh by the rule of JOURNAL entry 2 (M8.1): R <= 0.35 (second order) or
-   0.35-0.65 (first order): run block A on the M/8 mesh (about 2.3 times the cost, about
-   22 card-hours instead of 9.5) or as an M/4-M/8 pair at the bracket; R in 0.75-1.33:
-   the mesh is not the cause, M/4 is enough for block A, and the particle-number leg (v)
-   comes before the scan.
-4. The decisive package's d3_kninf (y0 = 0.26, M/4) is a third point of omega^2(y0) on the
-   same mesh; analyse it with `scripts/controls.py` (prediction: JOURNAL entry 6).
+1. [VERIFIED, runs (i), (iii) with C-20261121-140057-92742cf] Do not run block A on the M/4
+   mesh. There the mesh pushes the collisionless controls outward (alpha_c +0.018 and +0.033,
+   areal r50 +5 and +9 % within 200 M); on M/8 the same push is 7-10 times smaller. An outward
+   push of that size stabilises the models and would move the fate bracket to larger y0.
+2. [VERIFIED cost; JUDGEMENT on the choice] Run block A on the M/8 mesh (`make_decks.m8_deck`:
+   a level-7 region inside |x|_inf < 3.9 M, 456 MeshBlocks): 8.22-8.30 s per M, i.e. 2.3
+   card-hours per 1000 M run, about 23 card-hours for the ten runs of block A instead of 9.5.
+   If that is too much, run M/8 only at y0 = 0.324, 0.334032, 0.344 (both kicks, 14
+   card-hours) and leave 0.314 and 0.354 out until the bracket needs them.
+3. [JUDGEMENT] The M/8 controls are not stationary either: both contract slowly after
+   200-250 M (alpha_c -0.002 and -0.004, areal r50 -0.9 and -1.5 % at 300 M). Read every fate
+   of block A against a collisionless control of the same mesh, seed and N run as long, and
+   do not start block A before run (vi) shows whether this contraction turns (bounded) or
+   runs away by about 650 M. If it runs away, a stable model collapses on M/8 and the bracket
+   moves to smaller y0.
+4. [VERIFIED, D2; JUDGEMENT on the consequence] Particle noise at N = 1e5 diffuses the
+   particle energies slowly (t_D = 4e4 M on M/8, 6e4 M on M/4) and almost independently of the
+   mesh (factor 1.6), so N = 1e5 stays the choice for block A unless run (v) shows that the
+   contraction scales as 1/N (prediction N.6); then block A needs N = 1e6 near the threshold.
+5. [VERIFIED, M8.5'] The central-lapse ripple of two models on M/8 is only weakly shared
+   (+0.25), so the scatter between seeds has to be measured (your three seeds per model near
+   the threshold), not taken from one seed.
+6. [JUDGEMENT] The "zero of omega^2(y0)" route of my earlier request 3 (entry 4) is withdrawn:
+   the 300-400 M periods are the response to the mesh-made push on M/4, and on M/8 there is no
+   clean oscillation to fit.
 
 To core: none. To orch: none.
