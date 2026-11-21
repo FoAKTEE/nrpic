@@ -1,0 +1,30 @@
+{
+ "name": "4b (2026-11-21, late morning)",
+ "what": "independent reviews of gate G1 of tracks C and D; second C18 verifier of B; the relaxed-lapse defect in a spare worktree of core",
+ "note": "Releases core-v0.4 to v0.6 are on main. The reports of all earlier batches are appended to the report files. Rulings: coord/DECISIONS/0021 to 0023. The weekly usage window of the account is at 58 per cent: read only what your task needs.",
+ "items": [
+  {
+   "type": "gate",
+   "owner": "C-sidm",
+   "gate": "G1"
+  },
+  {
+   "type": "gate",
+   "owner": "D-bh-dress",
+   "gate": "G1"
+  },
+  {
+   "type": "task",
+   "owner": "B-emd-gw",
+   "key": "stage/G1/verifier_c18b",
+   "title": "second verifier for G1 item C18",
+   "task": "Second independent verification for gate G1 item C18 of this owner (decision 0023 item 2), as a fresh reader who trusts nothing: do not read the leads' reviews, STATUS.md, HANDOFF.md or the journals first. The first C18 verifier (stage/G1/VERIFIER-C18.md: read only its coverage list) recomputed 116 numbers; the ledger rows of the working note still without an independent value are lines 34-36, 49-63, 70-71, 124, 199 and 217 of the ledger (tracks/B-emd-gw/note/: the ledger file the note is built from; the lead's list is in stage/REVIEW-wave3.md section 'Batch 4a': read only that list). Recompute each from the registered raw outputs with your own short code (you may reuse the first verifier's reader scripts/vlib.py after checking it on an analytic field); per row CONFIRMED, NOT CONFIRMED or WRONG with the evidence, in tracks/B-emd-gw/stage/G1/VERIFIER-C18b.md; commit path-limited and push."
+  },
+  {
+   "type": "core-slot",
+   "slot": 1,
+   "key": "gauge-2",
+   "task": "The relaxed lapse, second pass (coord/DECISIONS/0022 item 3). Defect, measured by Track D: with <z4c> lapse_leak the horizon mass of a black hole grows late in a run even in vacuum. Run V-1GB (a puncture with the vacuum-bubble slice, lapse_leak = 0.5, outer faces at 384 M, finest cells M/8) drifts by [-5.6e-4, +1.27e-3] over 100 to 199.5 M, where the same run without the option stays within [-4.8e-5, +2.0e-5]; with dust (ES-1G) the growth is +7e-3 (tracks/D-bh-dress/g2runs, drift_controls and es_runs on branch track/D-bh-dress: journals, inputs, run ids; the option itself: coord/INTERFACES/cosmo_gauge.md section 7 and tracks/core/JOURNAL-gauge.md). Track A's collapse runs use the same option and found the horizon mass 2e-2 high at first detection (tracks/A-emd-pbh/verify_bh and conv_ball on its branch). Work: (1) reproduce the vacuum drift in the cheapest set-up that shows it (shorter run, smaller domain, coarser cells: say what you kept), prediction first; (2) find the cause with tests in which each candidate could fail, for example: the term acts in the wave zone where the 1+log lapse of a settling puncture overshoots alpha_0 slightly; the kink of max(ln(alpha/alpha_0), 0) at alpha = alpha_0; a slow change of the slicing that moves the horizon through the mesh; the finder on a drifting slice (compare with the slice Misner-Sharp mass: analysis/diag/slicemass.py); (3) correct the condition so that a black hole in vacuum is left as with plain 1+log to the level of the control and the expanding-matter tests of the gauge package still pass (candidates: a smooth onset; relaxation only where matter expands, tied to the local density or to K; switching off inside a radius around tracked black holes), off by default or a new option value so that existing runs stay bit-identical; (4) tests with predictions first: the vacuum drift with the corrected condition against the control; the expanding-ball tests L1 and L2 and the collapse L3 of the gauge package; Track D's Einstein-Straus data for 100 M: horizon mass and wall; byte regression against release core-v0.6 with the option absent. At most one and a half card-hours; measure the step time first and size jobs by it."
+  }
+ ]
+}
