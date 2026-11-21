@@ -226,3 +226,22 @@ and INSPIRE records loaded for all 11. Vectors: check 0 missing, 0 stale, 0 orph
   are cited by the corpus).
 Refuted by: an ok count other than 719, a paper hit rate below 27/32 in hybrid, or a fall of the
 in-corpus count.
+
+## Outcome P7 (run kb-20261121-215613-421a104; QA_REPORT.md, qa.json and out.txt read)
+
+Mostly held. QA C1: 745 of 745 manifest ids ingested; C3: 26 not ok (pdf 3, review 23), so ok 719,
+recorded rate 719/745 = 96.51 %, and the same 96.51 % with "ok, cites, no entry" counted as a
+failure (none left); 96.91 % with pdf counted as parsed. C7 golden questions: hybrid paper hits
+28/32 (87.5 %), locator hits 23/32 (71.9 %); text 27/32 and 21/32; rerank 28/32 and 25/32: the same
+as the last report (kb/QA_REPORT.md:122-124). C5: 67821 entries, 109207 citation rows, 14704 in the
+corpus. FAILED, the last item: the explicit `kb resolve-bib` after the QA changed nothing (in-corpus
+rows 14704 before and after), because every `kb ingest arxiv` already ends with the corpus
+resolution (papers_cli.cmd_ingest_arxiv); I had overlooked it. The QA report itself still states
+no rate against the 95 % bar (qa_*.py is not this package's code; the rates are in this README).
+
+## Prediction P8 (figures from the registered states)
+
+fig_bib_before_after: 0 entries before for all 20; after, 14 papers with entries reaching the cited
+keys mark, 6 at zero; citation rows with an entry equal all rows for the 14 that cite.
+fig_parse_status: strict rate 95.07 -> 96.34 -> 96.51 %, recorded 96.34 -> 96.34 -> 96.51 %, all
+above the 95 % line. Refuted by any bar or point that differs from the run outputs above.
