@@ -13,5 +13,9 @@ W1-W10 and Y1-Y6 of `../../JOURNAL.md`, runs D-20261115-193819-df9f812, -193821-
 proper time), verifier_g1 (its V2 finding reproduced from the track's table; the track's
 action on every WRONG and NOT CONFIRMED item), drift_controls (V-1B: the late drift of V-1 is
 the outer boundary), flux_tools (ES-F particle file exact), secondary_infall and note (what
-remains). Lead's checks Z1-Z6 of `../../JOURNAL.md`, run D-20261121-063617-3f2036f. A lead's
-recheck is not a fresh-context verifier; that is `VERIFIER.md` (item C17).
+remains). Lead's checks Z1-Z6 of `../../JOURNAL.md`, run D-20261121-063617-3f2036f. Section 9
+(batch 4a, 2026-11-21): secondary_infall (Q16 growth and profile, P192 losses), g2runs (ES-1GB
+refutes the boundary reading of ES-1G's growth; V-1GB grows in vacuum), note (compile; 3.43
+against 3.31 per cent explained). Lead's checks Y1-Y5, runs D-20261121-154912-27e91c6,
+-155215-0611c24. A lead's recheck is not a fresh-context verifier; that is `VERIFIER.md` (item
+C17).

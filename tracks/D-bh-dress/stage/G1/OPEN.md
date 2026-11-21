@@ -1,31 +1,31 @@
 # What the G1 package of D-bh-dress still lacks
 
-State after the lead session of batch 2a (2026-11-21). Against `CHECKLIST.md` (items OPEN)
-and `STATUS.md`. Verdict of the lead: G1 NOT MET; the package is not complete for the
-orchestrator's review under decision 0016 item 4. Closed since 2026-11-19: C9 (architecture
-schematic redrawn, run D-20261120-222429-026731f) and C17 (fresh-context verifier,
-`VERIFIER.md`).
+State after the lead session of batch 4a (2026-11-21). Against `CHECKLIST.md` and `STATUS.md`.
+Verdict of the lead: every G1 item PASS; the package is complete for the orchestrator's
+independent review under decision 0016 item 4 (the lead does not pass the gate). Closed in this
+session: C7 (D-pre-3 under decision 0021 item 2; Q16 and the lead's checks Y2, Y5 in
+`../REVIEW-wave3.md` section 9.2) and C16 (working note v1, section 9.3).
 
-1. C7: the D-pre-3 profile criterion. As written ("reproduce the r^-9/4 profile"; SCOPE:
-   "slope -9/4 +- 0.05 on [2 dx, r_ta/2]") an exact code fails it (G0 verifier C4). The
-   proposal `d-pre-3-criterion` (2026-11-15) is still open at orch (`coord/REQUESTS.md`;
-   asked again in outbox 2026-11-21). If the wording stays: the Newtonian-mode run to
-   a/a_i = 30 of package `secondary_infall` (design D-20261120-222358-e98ffbd, timing
-   0.66 s per step on six threads, matched shells to a/a_i = 30 done; about 0.4-0.8 h on
-   processors; isolated box, so processors, not cards, per core's correction of 2026-11-21).
-2. C16: the working note v1 (text c2e0571d, figures and ledger run D-20261120-223535-24f7f90)
-   must be compiled, pass `check_manuscript.py --compile`, have every page read, and carry the
-   verifier's wording corrections (dress at a/a_i = 2; profile "about 25 per cent, sensitive
-   to r_ta"; Hernquist gap [JUDGEMENT] in FdRW's curve; hole mass a choice; ledger: the
-   radius of "wall radius against the closed form", table residuals as upper bounds, the seeded
-   self-similar model described). Package `note`, cut on 2026-11-20.
-3. Recorded, not required for G1: the verifier's NOT CONFIRMED items (Hernquist on the axis;
-   eight ledger rows: box mid-transition orders, cost model, wall radius against the closed
-   form, smallest detectable change (two rows), chi^2 median, SFW Fig. 1 read-off, loss-cone
-   probes, self-similar lambda^(9/4), passed and captured fractions, radiation era); a second
-   sampler seed for the Kerr inner-range deficits (V4).
-4. G2 material, recorded here because it changes the plan: the late common drift of ES-1/V-1
-   after 165 M is the outer boundary in vacuum (V-1B, faces at +-384 M: |drift| <= 4.8e-5 over
-   100-200 M, D-20261120-222625-63abd72; lead Z3); ES-1G's +6.96e-3 growth is in the slice and
-   arrives with the exterior mass lost from the faces (es_runs K1-K2), not yet tested with the
-   faces at +-384 M.
+Nothing required for G1 is open. Recorded for the reviewer and for G2:
+
+1. The automated verify (`VERIFY_RESULTS.md`) fails "clean" while the package `drift_controls`
+   (cut on 2026-11-20, still in progress) has three untracked tools in the worktree
+   (`drift_controls/tools/compare_runs.py`, `count_blocks.py`, `slice_profiles.py`); they are not
+   G1 evidence and are left to their package. See `VERIFY_RESULTS.md` for the rest.
+2. Not confirmed by a second agent (recorded, not required): the Hernquist curve on the Kerr axis;
+   eight ledger rows of the note (box mid-transition orders, cost model, wall radius against the
+   closed form, smallest detectable change (two rows), chi^2 median, SFW Fig. 1 read-off,
+   loss-cone probes, self-similar lambda^(9/4), passed and captured fractions, radiation era); a
+   second sampler seed for the Kerr inner-range deficits (V4).
+3. D-pre-3 beyond G1: the approach to the self-similar solution on lambda = 0.01-0.06 needs a clean
+   run to a/a_i ~ 30 (initial ball resolved by about nine cells: nx ~ 450-500 or a refined centre);
+   Q16 has one resolution; no run used the fixed point mass `newton_pm_mass` (core measured it in
+   its own run: M_ta within 0.7 per cent of the closed form).
+4. G2 material that changed the plan: the late horizon growth under lapse_leak is not the outer
+   boundary (ES-1GB, D-20261121-125900-ea4c442) and appears in vacuum too (V-1GB,
+   D-20261121-125909-06f856e); decision 0022 item 3 moves the null test to 1+log or to core's
+   corrected option. The vacuum floor with 1+log and the faces at +-384 M is 4.8e-5 over 100-200 M
+   at M/8 (V-1B).
+5. Wording of the program: the brief's "reproduce the r^(-9/4) profile" (errata row 1.7 of
+   `coord/BRIEF_ERRATA.md`); `coord/REQUESTS.md` still lists `d-pre-3-criterion` as open although
+   decision 0021 item 2 ruled on it (asked to close, outbox of this session).
