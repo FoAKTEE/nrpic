@@ -170,8 +170,8 @@ def fig_watch(path, out):
     a2.set_ylabel("changed files")
     a2.legend(frameon=False, fontsize=7, loc="upper left")
     if not any(pt):
-        a2.text(0.98, 0.04, "src/particles: 0 changed files on every branch", transform=a2.transAxes,
-                ha="right", va="bottom", fontsize=7, color=fs.PAL["red"])
+        a2.text(0.98, 0.93, "src/particles: 0 changed files on every branch", transform=a2.transAxes,
+                ha="right", va="top", fontsize=7, color=fs.PAL["red"])
     a2.set_title("changed files (moved: against the last watch; new: against main)", fontsize=8)
     fig.tight_layout()
     return fs.save(fig, os.path.join(out, "fig_watch_summary"))
