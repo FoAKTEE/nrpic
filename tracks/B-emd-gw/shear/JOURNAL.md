@@ -122,3 +122,17 @@ Predictions, each with what refutes it:
   judged on the series, not here). Refuted if the run stops, or the observable differs from
   the linear value by more than a factor 2 (then the fan or the reader is wrong, not the
   mesh).
+
+## 2026-11-21 12:40 PST (lead of batch 5): smoke run outcome; series 1 submitted
+
+- Smoke run B-20261121-202359-d12511c (S1, N_y = 32, release v0.6 processor build): exit 0,
+  10 s; cos(theta) = 1.43108e-3 against the linear 1.43117e-3, Delta = -6.32e-5; ray k_x,
+  k_z drift 2.8e-15, tracer u_x, u_z drift 7.3e-13; alpha/a_O 2.7e-10 (`S1_n32/rays.json`).
+  Prediction (within 10 per cent of linear) MET. One resolution only: no claim on P7.
+- Series 1 = `inputs/series1.txt` (27 cases: S1-S4, M1-M2, L1-L2 at N_y = 32, 64, 128;
+  legs S1_n64_lap1, _ppc2, _ppc4), one local run, 4 at a time. Predictions: P4-P12 above,
+  unchanged; for L1 and L2 the fans are wide (relative half width 1.5, 61 rays) because the
+  linear slopes are not expected to bracket the root at beta = 0.5. Additional prediction:
+  every case reaches tlim (no guard stop) and the wall time is below 15 minutes per case
+  (smoke: 10 s at N_y = 32; cost proportional to N_y^2 at fixed HL).
+- Then: a summary script (Richardson extrapolation per case, figures) and outcomes P4-P12.
