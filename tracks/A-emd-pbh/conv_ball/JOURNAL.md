@@ -332,3 +332,64 @@ C's second segment stopped at the wall at 03:49 and its third (Slurm 4789) start
   coarser 4-8 M level, perturbs the core before its turnaround].
 - L leg at B (entry 6: B-L32 equals B to 1e-5 M): HOLDS, identical to 1e-11 in every quantity:
   the outer boundary at 16 M does not reach any measured quantity before t = 16 at either mesh.
+
+## 2026-11-21 04:10 PST, entry 12: C finished; the mesh triple; outcome of G3-G6 and of the series
+
+C (chain A-20261121-083336-6a82131: Slurm 4781, 4786, 4789; 01:19-04:01 with two waits; 1.86
+card-hours; peak 41.4 GB) reached t = 16 (STATUS DONE, tlim), closed. Final analysis
+A-20261121-120257-a2eb839 (all members; convergence.md, convergence.json, fig_convergence.png,
+figs/C_horizon.png, figs/C_events.png; fig_convergence and C_horizon looked at). Card time of the
+package this round: 0.294 + 1.856 + 0.840 + 0.513 = 3.50 card-hours (cap 6), from the manifests.
+
+Mesh triple (one particle per local cell; finest cell M/16, M/32, M/64; level boundaries fixed):
+
+| quantity | A | B | C | orders A-B, B-C | self-order |
+|---|---|---|---|---|---|
+| first detection t | 10.875 | 10.781 | 10.750 | | |
+| ddet, first-detection error (M) | +0.193 | +0.068 | +0.0166 | 1.51, 2.02 | 1.30 |
+| finder lag after the first trapped slice (code time) | 0.428 | 0.197 | 0.094 | 1.12, 1.06 | 1.17 |
+| dtrap, trapping per particle, band 2.603 (M) | -0.093 | -0.022 | -0.0077 | 2.05, 1.53 | 2.26 |
+| turnaround, cycloid C (M) | -0.0148 | -0.0127 | -0.0030 | 0.22, 2.09 | (-2.2) |
+| eta, core eps at turnaround | 8.1e-3 | 3.1e-3 | 1.1e-3 | 1.38, 1.49 | 1.31 |
+| horizon mass, median over detections | +7.4e-3 | -2.1e-3 | -2.1e-4 | 1.84, 3.31 (magnitude) | |
+| horizon mass, median t <= 12.5 | +5.5e-3 | -2.0e-3 | -2.0e-4 | 1.42, 3.36 (magnitude) | |
+
+Fixed particle number (4969736: A-N64, B-N8, C): ddet 0.146, 0.071, 0.0166 (orders 1.05, 2.09);
+dtrap -0.048, -0.028, -0.0077 (0.75, 1.87); mass median +5.0e-4, -3.0e-4, -2.1e-4.
+C's horizon mass follows the exact slice mass within 1e-5 to 6e-4 from t = 11.7 to 16 and within
+3e-3 in the first 0.3 M after formation (C_horizon.png).
+
+Outcomes:
+- G1 HOLDS for C: t = 16 with finite fields; 1.88 s per cycle against the model's 1.14 (the
+  particles, entry 6), within the factor 2; memory 41.4 GB against the model's 41.4 GiB.
+- G2 HOLDS: a horizon in every member of every leg (14 runs), first at t = 10.75-10.94, and in
+  every later search.
+- G3 HOLDS: |ddet| falls A -> B -> C (0.193, 0.068, 0.017 M), |ddet(C)| = 0.017 <= 0.08, order
+  2.02 between B and C (predicted >= 0.8).
+- G4 HOLDS: |dtrap| 0.093, 0.022, 0.0077 M within the bounds 0.15, 0.07, 0.04, monotonic, order
+  1.53 between B and C (predicted >= 1).
+- G5 REFUTED in its bounds (eta 1.4 times above them at every mesh; the turnaround time does not
+  converge from A to B), but the shell error at the turnaround converges at order 1.4 and the
+  turnaround time from B to C at order 2.1, reaching -0.003 M at C (the floor named in G5).
+- G6 HOLDS and is exceeded at C: the mass median falls from 7.4e-3 to 2.1e-4 in magnitude (orders
+  1.84, 3.31; the sign changes from A to B); C's 2.1e-4 is below the source's fiducial OS level
+  (Delta M/M_ADM <~ 1e-3, main.tex:945) and below its best AMR particle RMS (7.3e-4,
+  main.tex:1484), where G6 had predicted C at 1.5 to 5 times that level. The mass error at the
+  first detection is not a usable measure (entry 5): it is the estimator at the instant of
+  formation (C: -1.5e-3).
+- G7: L leg HOLDS at A and B (identical to 1e-7 and 1e-11); N leg HOLDS against the mesh
+  difference at A and B, and at B the time errors are independent of N (entry 9); R leg REFUTED
+  at A (entry 5) and HOLDS at B (entry 11): the ball-radius dependence shrinks with the mesh;
+  fixed-N sequence: ddet order 1.05 then 2.09, dtrap 0.75 then 1.87 (entries 6, 10).
+
+Reading for the G2 criterion of the sheet (coord/CHARTER.md 9.4) [JUDGEMENT; a second agent
+should check it from convergence.json and the figures]: in the spherical case the errors of the
+horizon-formation time (ddet, dtrap, finder lag) converge in mesh spacing at orders 1-2 with
+monotonic sequences over three meshes, and in particle number they are settled at mesh B; their
+ball-radius dependence shrinks with the mesh (A: spread 0.09 M, B: 0.04 M), but the R leg has
+been run on A and B only; the turnaround time converges only between B and C (a flat maximum),
+while the shell error at the turnaround converges at order 1.4 over all three meshes; the
+horizon-mass error reaches 2e-4 at C, of the order of (below) the source's OS test; the
+boundary leg is null (16 M against 32 M identical). Not done: the R leg on C, a second seed or
+lattice offset (the lattice is noise-free, so there is no sampling seed), the turnaround time
+from a constant-occupancy mesh finer than C.
