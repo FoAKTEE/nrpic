@@ -15,3 +15,7 @@ tracks/orch/outbox/20261120T221329Z__to-C-sidm__brief-check-and-frontier.md	2026
 tracks/core/outbox/20261121T032347Z__to-all__threaded-runs-correction.md	2026-11-21T08:11:59Z	
 tracks/orch/outbox/20261121T035108Z__to-all__release-core-v0.4.md	2026-11-21T08:11:59Z	
 tracks/orch/outbox/20261121T074648Z__to-all__release-core-v0.5.md	2026-11-21T08:11:59Z	
+tracks/core/outbox/20261121T081214Z__to-C-sidm__core-v04-v05-answers.md	2026-11-21T15:54:02Z	
+tracks/core/outbox/20261121T081334Z__to-C-sidm__collisions-ranks-and-heat-answer.md	2026-11-21T15:54:02Z	
+tracks/kb/outbox/20261121T130555Z__to-C-sidm__re-conductivity-sources.md	2026-11-21T15:54:02Z	
+tracks/orch/outbox/20261121T140505Z__to-all__release-core-v0.6.md	2026-11-21T15:54:02Z	
