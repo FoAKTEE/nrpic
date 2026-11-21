@@ -54,6 +54,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--card", action="append", required=True)
     ap.add_argument("--prior", action="append", default=[])
+    ap.add_argument("--prior-turnaround", action="append", default=[], help="turnaround.json of an earlier analysis")
     ap.add_argument("--out", required=True)
     ap.add_argument("--jobs", type=int, default=4)
     a = ap.parse_args()
@@ -82,7 +83,24 @@ def main():
     for n, path in numbers.items():
         for leg, x in GEOM[n][1]:
             specs += ["--member", f"{n}:{leg}:{x:g}:{path}"]
-    rc = subprocess.call([sys.executable, os.path.join(HERE, "converge.py")] + specs + ["--out", a.out],
+    # turnaround estimators of runs_ball entry 13 (cycloid fit C) on the core particles; the core
+    # and its exact shells are the same in all data sets (DESIGN.md 2f), so data set 3's prep serves
+    ok = [n for n, rc_ in res if rc_ == 0]
+    tspec = []
+    for n in ok:
+        tspec += ["--run", f"{a.out}:{n}:{1.0 / float(GEOM[n][0].split(':')[1]):g}:leak"]
+    ta_json = []
+    if tspec:
+        with open(os.path.join(a.out, "turnaround.log"), "w") as f:
+            rc_t = subprocess.call([sys.executable, os.path.join(HERE, "turnaround.py")] + tspec +
+                                   ["--prep", members["A"]["prep"], "--out", a.out, "--figdir", os.path.join(a.out, "figs")],
+                                   stdout=f, stderr=subprocess.STDOUT, env=dict(os.environ, MPLBACKEND="Agg"))
+        status["turnaround.py"] = rc_t
+        if rc_t == 0:
+            ta_json = ["--turnaround", os.path.join(a.out, "turnaround.json")]
+    for p in a.prior_turnaround:
+        ta_json += ["--turnaround", p]
+    rc = subprocess.call([sys.executable, os.path.join(HERE, "converge.py")] + specs + ta_json + ["--out", a.out],
                          env=dict(os.environ, MPLBACKEND="Agg"))
     json.dump(dict(compare_exit=status, numbers=numbers, converge_exit=rc),
               open(os.path.join(a.out, "analyse.json"), "w"), indent=1)

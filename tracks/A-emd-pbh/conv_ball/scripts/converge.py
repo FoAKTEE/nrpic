@@ -10,7 +10,9 @@ Quantities per member (definitions in DESIGN.md section 4; all from compare.py):
          (finder.first.tau_at_horizon - finder.first.tau_ah_exact_shell_at_r)
   dtrap  mean of tau_AH(num) - tau_AH(exact) per tracked particle of the band just inside
          the core edge (events.<band>.trapping.dtau_mean; band R2.603)
-  dta    mean core turnaround error (events.core.turnaround.dtau_mean), M
+  dta    mean core turnaround error (events.core.turnaround.dtau_mean; parabola vertex), M
+  dtaC   the same with the cycloid fit over the whole record (estimator C of
+         runs_ball/JOURNAL.md entry 13; turnaround.py, --turnaround)
   dRmax  mean relative core R_max error (events.core.turnaround.dRmax_rel_mean)
   eta    core |R/R_exact - 1| largest at the turnaround proper time (eps_groups.core)
   dm1    finder irreducible mass against the exact horizon mass of the same slice, at first
@@ -84,22 +86,31 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--member", action="append", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--turnaround", action="append", default=[],
+                    help="turnaround.json of turnaround.py (estimator C: cycloid fit over the whole record)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
+    tac = {}
+    for p in a.turnaround:
+        for r in C.load_json(p).get("runs", []):
+            st = r.get("stats", {}).get("C")
+            if st:
+                tac[r["label"]] = (st["dtau_mean"], st.get("dRmax_rel_mean", float("nan")))
     rows = []
     for spec in a.member:
         name, leg, x, path = spec.split(":", 3)
         res = C.load_json(path)
         ex = C.load_json(os.path.join(res["prep"], "exact.json"))
         q = quantities(res, float(ex["core"]["tau_ta"]))
+        q["dtaC"], q["dRmaxC"] = tac.get(name, (float("nan"), float("nan")))
         rows.append(dict(name=name, leg=leg, x=float(x), numbers=path, **q))
-    keys = ("ddet", "dtrap", "dta", "dRmax", "eta", "dm1", "dmmed")
+    keys = ("ddet", "dtrap", "dta", "dtaC", "dRmax", "dRmaxC", "eta", "dm1", "dmmed")
     summary = dict(members=rows, legs={})
-    lines = ["| member | leg | x | first detection t | ddet (M) | dtrap (M) | dta (M) | dRmax | eta | dm1 | dm median | finds |",
-             "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    lines = ["| member | leg | x | first detection t | ddet (M) | dtrap (M) | dta V3 (M) | dta C (M) | dRmax | eta | dm1 | dm median | finds |",
+             "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for r in rows:
         lines.append(f"| {r['name']} | {r['leg']} | {r['x']:g} | {r['tfirst']:.3f} | {r['ddet']:+.4f} | {r['dtrap']:+.4f} | "
-                     f"{r['dta']:+.4f} | {r['dRmax']:+.2e} | {r['eta']:.2e} | {r['dm1']:+.2e} | {r['dmmed']:+.2e} | {r['nfind']:g} |")
+                     f"{r['dta']:+.4f} | {r['dtaC']:+.4f} | {r['dRmax']:+.2e} | {r['eta']:.2e} | {r['dm1']:+.2e} | {r['dmmed']:+.2e} | {r['nfind']:g} |")
     for leg in ("mesh", "meshN", "N", "NB", "R", "RB", "L", "LB"):
         ismesh = leg.startswith("mesh")
         lr = sorted([r for r in rows if r["leg"] == leg], key=lambda r: -r["x"] if ismesh else r["x"])
@@ -140,10 +151,11 @@ def main():
     import matplotlib.pyplot as plt
     fig = plt.figure(figsize=(11.0, 5.6))
     fig.subplots_adjust(left=0.06, right=0.99, bottom=0.10, top=0.92, wspace=0.34, hspace=0.45)
-    labels = dict(ddet="first detection", dtrap="trapping (band 2.603)", dta="core turnaround",
+    labels = dict(ddet="first detection", dtrap="trapping (band 2.603)", dta="core turnaround (V3)",
+                  dtaC="core turnaround (cycloid C)", dRmaxC="core $R_{max}$ (C)",
                   dRmax="core $R_{max}$ (rel.)", eta="core |eps| at turnaround", dm1="mass, first detection",
                   dmmed="mass, median")
-    groups = [("ddet", "dtrap", "dta"), ("dm1", "dmmed", "eta", "dRmax")]
+    groups = [("ddet", "dtrap", "dta", "dtaC"), ("dm1", "dmmed", "eta", "dRmax")]
     ylabels = ["|time error| (M)", "|relative error|"]
     cols = dict(zip(keys, fs.series_colors(len(keys), "viridis") if hasattr(fs, "series_colors") else [None] * len(keys)))
     families = [(("mesh", "meshN"), "finest cell $h_f/M$", True), (("N", "NB"), "particles per finest cell", True),
