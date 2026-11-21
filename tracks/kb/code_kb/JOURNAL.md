@@ -138,3 +138,51 @@ more parameter reads than 1242 (by 100 to 250: the 61 + 25 + 26 options of v0.4 
 plus their sub-keys). `kb link check` after `kb link load`: 25 links, at most 2 with problems
 (a symbol moved to another file or a line range changed; the paper side cannot change).
 Refuted if: the ingest fails; the counts do not grow; more than 2 links are bad.
+
+## P4 outcome (run kb-20261121-231826-3b32fc1, 23:18-23:19 UTC)
+
+`scratch/kb/kb-20261121-231826-3b32fc1/{main_sha,ingest_repo,link_load,link_check}.txt`.
+[VERIFIED by the run]
+- local/nrpic indexed at 47ab19ab7162 (main): 869 files (was 790), 5030 symbols (4634),
+  1386 parameter reads (1242), 8038 input parameters (4257), 5467 chunks; 9.2 s.
+- `kb link load`: 25 links; `kb link check`: 25 links, 0 with problems.
+- Prediction: held for symbols (+396, predicted 300 to 900), parameter reads (+144,
+  predicted 100 to 250) and the link check (0 bad, predicted at most 2). FAILED for files:
+  +79, predicted +20 to 40. The added files since 5deee18 are 23 under athenak/src, 51 under
+  problems/ and 5 under python/nrpic (`git diff --name-only --diff-filter=A 5deee18 47ab19ab`),
+  79 in all: I underestimated the new example inputs (core publishes an example input per
+  option).
+
+## M1 outcome (runs kb-20261121-231936-a33f7f1 and kb-20261121-232013-52c350a)
+
+- First run: `kb code modules` without `--db` read `db/current`, the snapshot
+  kb-20261119-a782f1e, in which local/nrpic is still at 5deee18 (the default of every kb read
+  command, brief 12.10; the re-index went into the working database `db/kb.sqlite`). Kept
+  on record: it is the test at the commit the prediction names. Second run with `--db
+  kb-data/db/kb.sqlite`: local/nrpic at 47ab19ab (156 files in the five directories: z4c 30,
+  particles 29, pgen 64, mesh 17, bvals 16) and upstream at c5a0d7f9155a (119 files: 26, 4,
+  56, 17, 16); 392 and 372 task registrations. Report `kb/reports/code_modules.md` (from the
+  second run), `kb-data/build/code/<repo>/modules.json`. [VERIFIED by the runs]
+- At both 5deee18 and 47ab19ab (report "Task lists", table rows 4 to 8): Driver::Execute
+  runs `before_timeintegrator` once per cycle (driver.cpp:581 at 47ab19ab), then
+  `before_stagen`, `stagen`, `after_stagen` inside `for (int stage=1; stage<=(nexp_stages);
+  ++stage)` (584-590), then `after_timeintegrator` once (594). Particle tasks of the nrpic
+  path: NrpicSaveMetric in `before_timeintegrator`; NrpicPush, NrpicExcise, NrpicCollide (only
+  if `coll.on`), NrpicDeposit, NrpicDiagnostics in `after_timeintegrator`
+  (particles_tasks.cpp:34-51 at 47ab19ab, read by hand as well); the upstream particle tasks
+  (Push, NewGID, SendCnt, ...) sit after the block `if (is_nrpic)` that returns, so they do
+  not run for nrpic particles. No particle task in a per-stage list. Z4c::CalcRHS<2,3,4> is
+  queued at Task_Run (= `stagen`, numerical_relativity.cpp) with optional dependencies
+  MHD_SetTmunu, SF_SetTmunu (z4c_tasks.cpp:48-59). The tasks that touch tmunu:
+  DynGRMHD::SetTmunu and ScalarField::SetTmunu (stagen, each stage), Particles::NrpicDeposit
+  (after_timeintegrator, via NrpicDepositSources, NrpicFilterSources, NrpicStepSources,
+  NrpicAddLambda), Z4c::CalcRHS (stagen), Z4c::ADMConstraints_ (after_stagen, reads it).
+- Upstream c5a0d7f: particle tasks Push ... ClearSend in `before_timeintegrator`, none touches
+  tmunu; DynGRMHD::SetTmunu in `stagen` (dyn_grmhd.cpp:199) and Z4c::CalcRHS with the single
+  optional dependency MHD_SetTmunu: the sources are refreshed at every stage.
+- Prediction M1: held in every part at both commits. The statement of FIRST_QUESTIONS
+  question 9 still holds at main 47ab19ab: the particle sources are deposited once per step
+  after the last Runge-Kutta stage and held through the stages of the next step; upstream
+  refreshes them at every stage. [VERIFIED]
+- Not tested by this: whether `nexp_stages` > 1 for the integrators the runs use (rk3 or
+  rk4 in the inputs); the extraction reads the loop, not its count.
