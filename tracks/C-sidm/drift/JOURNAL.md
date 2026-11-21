@@ -466,3 +466,27 @@ Reading [JUDGEMENT]:
 
 Card-hours so far: (i) 0.69, (iii) 0.69 = 1.38 of 3.0. Run (vi) submitted 14:00 UTC as
 C-20261121-140023-b0f113e (Slurm 4804), pending behind six jobs of other owners.
+
+## 2026-11-21 14:05 UTC Entry 13: predictions for test D2 (noise heating from the particle records, no card)
+
+While (vi) waits for a card: every control writes all 1e5 particles with the metric at their
+positions every 25 M (`traj_ntrack = 100000`), so the Killing energy E_K = alpha W - beta.u of
+each particle is known at 13 times. In a smooth slowly changing potential E_K changes
+coherently (the same for particles on the same orbit); noise of the deposited source adds a
+random walk. Test D2 (`scripts/diffusion.py`, processors): per particle dE = E_K(t) - E_K(0);
+coherent part = mean of dE in 200 cells of (decile of E_K(0)) x (decile of the initial radius)
+x (sign of x.u at t = 0); incoherent part = the rest, variance s2(t); fit s2 = a + D t over
+25-300 M (a: the instantaneous noise of the metric at the particle; D: diffusion of E_K);
+t_D = var(E_K(0))/D, the time in which the noise would randomise the energy spread.
+Predictions (written before the script exists):
+- D2.1 s2 grows with t in all four controls, close to linearly from 25 to 300 M (D > 0, the
+  linear fit explains more than 80 % of the variance of s2 over those times).
+- D2.2 Noise heating follows the noise floor: D(M/8)/D(M/4) in [4, 15] for both models (the
+  H-norm2 floor ratio is 9.2-9.3). Refuted below 2 or above 30. Caveat written now: on M/4
+  part of the large coherent pulsation may survive the 200-cell subtraction and inflate
+  D(M/4), so a low ratio is then a lower bound; the M/4 value at 25-75 M, before the
+  pulsation is large, is the check.
+- D2.3 D of CC1 and CC2 agree within a factor 1.5 on the same mesh (same seed and sampler).
+- D2.4 On M/8, t_D lies between 3e3 and 1e5 M [JUDGEMENT, wide]: a 300 M run then
+  randomises 0.3-10 % of the energy spread, enough for the percent-level contraction of the
+  M/8 controls. t_D > 1e5 M rules noise heating out as its cause.
