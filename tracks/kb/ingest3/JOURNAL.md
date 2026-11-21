@@ -206,3 +206,23 @@ Held for the fetch: 11 of 11 sources ok (all tar e-prints; 2606.28005 and 2605.2
 arXiv-API and INSPIRE records ok for all 11 (none not-found). Groups (judgement; the s39 report
 names the track each one serves): G18 5 (C, D), G20 3 (E), G13 1 (A), G21 1 (F), G06 1 (core).
 Rows appended to the additions file (commit 070308fa; 61 rows, no problem). The ingest follows.
+
+## Outcome P6, second half (run kb-20261121-215402-46415c8; out.txt read)
+
+Held: 11 of 11 ingested with status ok (2610.01964, a short paper with 0 numbered sections, has
+score 0.85); every one has entries (33 to 112, all from .bib); grp from the additions file, arXiv-API
+and INSPIRE records loaded for all 11. Vectors: check 0 missing, 0 stale, 0 orphaned (45843 chunks,
+59821 equations). Papers 745.
+
+## Prediction P7 (QA run on the working database, kb qa run --hybrid; resolve-bib after)
+
+- Parse status 745 papers: ok 719, review 23, pdf 3; recorded rate 719/745 = 96.5 %; with "ok but
+  cites and has no entry" as failure the same 96.5 % (no such paper left); with pdf counted as
+  parsed 97.0 %.
+- Golden questions: paper hit rate within one question of the last report (hybrid 28/32,
+  QA_REPORT.md:123); the new papers could displace a hit, but no golden answer lies in the 20
+  re-ingested papers [JUDGEMENT]. Locator hit 23/32 hybrid, within one.
+- `kb resolve-bib` over all papers afterwards raises citations_in_corpus slightly (the 35 new papers
+  are cited by the corpus).
+Refuted by: an ok count other than 719, a paper hit rate below 27/32 in hybrid, or a fall of the
+in-corpus count.
