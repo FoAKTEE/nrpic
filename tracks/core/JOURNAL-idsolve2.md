@@ -1249,3 +1249,26 @@ It has never run together with `id_solve`.
  Refuted if a byte differs in (a), or a norm by more than 1e-4 at t = 1 or 2 (at t = 0
  the solved H is round-off, 1e-13: there the comparison is of the same numbers summed
  in another order and may differ in the last digits).
+
+**N held** (run core-20261121-082710-5866399, merged processor build, 1 core, 34 s;
+`test_n_numbers.json`; figure `figs/test_n`, looked at: the three lines of the record
+pass through the open symbols of the field dumps at t = 0, 1, 2; interior and shell
+rise from 1e-13 to 1e-3 in the first step, the exterior from 5e-7 to 1e-4).
+ (a) held: the 14 other files of the case (solver record and dumps, field dumps,
+     histories, particle files, table) are byte-identical to the run of M2 without the
+     options; the record has 5 lines (cycles 0 to 4).
+ (b) held: H2 of the record against the dumps, relative difference at most 9e-9
+     (bound 1e-5); the proper volumes to 1.2e-8 (bound 1e-6; r < 7: 1277, 1458, 1661 at
+     t = 0, 1, 2: the ball expands under the sphere of fixed coordinate radius).
+ (c) held: the shell from the record alone, to 4e-9.
+
+| t | H2 inside r < 7 | shell 7 <= r < 13.5 | outside 13.5 |
+|---|---|---|---|
+| 0 (after the solve) | 2.9e-13 | 6.9e-13 | 5.4e-7 |
+| 1 | 8.77e-4 | 1.50e-3 | 1.02e-4 |
+| 2 | 4.77e-4 | 9.59e-4 | 1.14e-4 |
+
+ (Root mean squares at dx = 2; the means of |H| of test B at this cell size were
+ 4.2e-4 and 7.6e-4 at t = 2.) So a track gets interior norms of solved data from the
+ code itself: `region_dcycle`, `region_radius1..4` in `<particles>`; the shell between
+ two spheres follows from their inside values as in (c).
