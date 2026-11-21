@@ -131,12 +131,14 @@ def main(outdir):
     ok_floor = all(r["i"]["dEb_rel"] < 1e-3 and r["ii"]["dEb_rel"] < 1e-3 for r in small) and \
         all(r["ii"]["de"] < 1e-3 for r in small if r["survived"][2])
     ok_i = bool(ok_slope and ok_floor)
+    # (iii) has no pass rule since entry 2 (it records the 'cks' defect); entry 1's rule kept as info
     ok_iii = all(r["n_outcome_diff"] <= 5 for r in r3)
     res = dict(i_ii=r12, iii=[{k: v for k, v in r.items() if k != "rows"} for r in r3],
-               iii_rows=r3, slopes=slopes, pass_i_ii_slope=bool(ok_i), pass_iii=bool(ok_iii))
+               iii_rows=r3, slopes=slopes, pass_i_ii_slope=bool(ok_i),
+               info_iii_entry1_rule_at_most_5_differ=bool(ok_iii))
     with open(os.path.join(outdir, "t7_spin_limit.json"), "w") as fh:
         json.dump(res, fh, indent=1, default=lambda o: o.tolist() if hasattr(o, "tolist") else float(o))
-    print(json.dumps(dict(slopes=slopes, iii=res["iii"], pass_i_ii_slope=ok_i, pass_iii=ok_iii),
+    print(json.dumps(dict(slopes=slopes, iii=res["iii"], pass_i_ii_slope=ok_i, info_iii=ok_iii),
                      indent=1))
     import matplotlib
     matplotlib.use("Agg")

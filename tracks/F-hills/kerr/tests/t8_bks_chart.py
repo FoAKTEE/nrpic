@@ -218,19 +218,34 @@ def main(outdir):
     ax1.set_ylabel(r"$|x_{\rm bks}-x_{\rm ref}|$ [$r_g$]")
     ax1.set_title("(c) single body, $a=0.9$", fontsize=8)
     ax1.legend(fontsize=5.5)
-    for ax, iota, ttl in ((ax2, math.pi, r"(d) retrograde $\iota=\pi$"), (ax3, 0.0, r"(d) prograde $\iota=0$")):
-        for (coords, spin), c, ls in ((("sch", 0.0), "k", "-"), (("cks", 0.0), cols[0], "-"), (("bks", 0.0), cols[1], ":"),
-                                      (("cks", 0.9), cols[2], "-"), (("bks", 0.9), cols[3], "-")):
+    # (d, middle) raw ln|E_b| of the retrograde binary: the runaway of 'cks'
+    for (coords, spin), c, ls in ((("sch", 0.0), "k", "-"), (("cks", 0.0), cols[0], "-"), (("bks", 0.0), cols[1], ":"),
+                                  (("cks", 0.9), cols[2], "-"), (("bks", 0.9), cols[3], "-")):
+        cv = cd[(coords, spin, math.pi)]
+        ax2.plot(cv["r"], cv["lnE"], ls, color=c, label=f"{coords} $a={spin:g}$")
+    ax2.set_title(r"(d) retrograde $\iota=\pi$: $\ln|E_b/E_b(0)|$", fontsize=8)
+    ax2.legend(fontsize=5.5)
+    # (d, right) odd part in iota, (iota = pi minus iota = 0)/2, minus that of 'sch', on a common r grid
+    rg = np.geomspace(99.0, 10.5, 300)
+
+    def odd(coords, spin, key="lnE"):
+        v = []
+        for iota in (math.pi, 0.0):
             cv = cd[(coords, spin, iota)]
-            ax.plot(cv["r"], cv["lnE"], ls, color=c, label=f"{coords} $a={spin:g}$")
-            if coords == "cks" and spin == 0.0:
-                ax.plot(cv["r"], cv["pred"], "--", color=c, label="cks prediction")
+            v.append(np.interp(rg, cv["r"][::-1], cv[key][::-1]))
+        return 0.5 * (v[0] - v[1])
+    o_s = odd("sch", 0.0)
+    for (coords, spin), c in ((("cks", 0.0), cols[0]), (("cks", 0.9), cols[2]), (("bks", 0.9), cols[3])):
+        ax3.plot(rg, odd(coords, spin) - o_s, "-", color=c, label=f"{coords} $a={spin:g}$ minus sch")
+    ax3.plot(rg, odd("cks", 0.0, "pred"), "--", color=cols[0], label="leading order (cks)")
+    ax3.set_ylim(-0.1, 0.4)
+    ax3.axhline(0, **fs.MASK_LINE)
+    ax3.set_title(r"(d) odd part in $\iota$ of $\ln|E_b|$", fontsize=8)
+    ax3.legend(fontsize=5.5)
+    for ax in (ax2, ax3):
         ax.set_xscale("log")
         ax.invert_xaxis()
         ax.set_xlabel(r"CM radius on the way in [$r_g$]")
-        ax.set_title(ttl, fontsize=8)
-    ax2.set_ylabel(r"$\ln|E_b/E_b(0)|$")
-    ax2.legend(fontsize=5.5)
     fs.save(fig, os.path.join(outdir, "t8_bks_chart"))
 
 
