@@ -252,3 +252,25 @@ Held, with one wording slip: 14 papers now have entries, 6 stay at zero; the ent
 cited-keys mark wherever there is one. Citation rows with an entry equal all rows for the 12 papers
 that cite (not 14: 1201.4794 and astro-ph/0003278 have entries but no citation row). Parse-status
 panel: strict 95.07 -> 96.34 -> 96.51 %, recorded 96.34 -> 96.34 -> 96.51 %, all above 95 %.
+
+## Entry 4 (2026-11-21 22:10 UTC): astro-ph/0003278, cause found by reading the derived flat.tex
+
+scan_math on its body (build/tex/astro-ph_0003278/flat.tex, derived data) returns one display span
+from offset 485 to the end of the body (43897): the paper defines `\newcommand\be{\begin{equation}}`
+and friends AFTER `\begin{document}`; the environment shorthand \be is substituted inside its own
+definition, so the definition opens an equation that never closes and the whole body is "math":
+no section, no `\cite` is outside math. [VERIFIED for this paper by the span dump]
+Fix (tex_structure.scan_math): skip definitions (\newcommand family, \def family,
+\DeclareMathOperator, \let, and aliases of them) when no math span is open.
+
+## Prediction P9 (definition skip; then a dry run of all 745 papers against the database)
+
+- Unit test: a body with `\newcommand\be{\begin{equation}}...` before a \section and a \cite yields
+  that section, the cite and exactly the equations written with \be...\ee.
+- astro-ph/0003278 after re-ingest: sections > 3, citation rows ~ 33 keys or more, all with entries;
+  status ok possible (no abstract environment problem expected) [JUDGEMENT].
+- Dry run of all 745 with the committed code, compared per paper with the database: no paper loses
+  bibliography entries; equation, section and entry counts unchanged for at least 95 % of the papers
+  not re-ingested today; the papers that change are those with definitions inside the body or with
+  citation macros (\refto-like) [JUDGEMENT]. Refuted by any paper that loses entries or sections, or
+  by changes in more than 5 % of the papers.
