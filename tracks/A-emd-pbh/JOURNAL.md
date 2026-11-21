@@ -235,3 +235,18 @@ fig_g1close_findings. Per-package verdicts: `stage/REVIEW-wave3.md`.
 A wrong judgement of mine, corrected before it left the review: I first wrote that the
 fixed-box job A-20261120-223310-a9ce31a (1 min 28 s) "probably failed early"; its status file
 and logs show all three members reached t = 24 with rc = 0 (30 s each on the card).
+
+### Predictions L10-L13 (runs_ball finished during this session; written before its re-check ran)
+
+runs_ball closed its runs and analyses at 00:29 PST (its journal entry 20). Re-check from the
+registered outputs, with the figure directory redirected to my run directory:
+- L10. compare.py and fields.py on BH-1R as in A-20261121-080558-02c3188: `bh_smr_numbers.json`
+  equal to 1e-9 relative. Refuted by a larger difference.
+- L11. excision.py, turnaround.py --breakdown and compare.py --line-hmax as in
+  A-20261121-081153-b92c08c: `excision.json`, `bd/turnaround.json`, `bh_smr_numbers.json` equal
+  to 1e-9 relative.
+- L12. Own reading of `bh_smr/ball.horizon_summary_0.txt` (A-20261119-164634-f1fe887): the first
+  converged search is at t = 10.875 with area mass 0.701 and mean coordinate radius 0.44 M, and
+  every later search converges (no NaN row after it: a persistent horizon, entry 12's claim).
+- L13. Own reading of `bh_n256/ball.horizon_summary_0.txt` (A-20261119-144419-13d5601): every
+  search of BH-1 at uniform M/8 returns NaN (entry 11, B2).
