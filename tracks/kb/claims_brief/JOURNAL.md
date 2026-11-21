@@ -53,3 +53,20 @@ Outcome of the dry run (dev2, 23:14Z, not yet registered; `tmp/dry2.tsv`): 112 s
 abstract 46, title_only 5, background 17, judgement 20, to_verify 24; by section 1:8, 2:8,
 3:54, 5:14, 6:5, 7:1, 8:2, 9:4, 10:1, 15:15; 112 unique keys. Held. The registered dry run and
 the write follow.
+
+Outcome of the write (run kb-20261121-231800-1988829; dry run kb-20261121-231750-f313add):
+first call "new 112", second call "same 112"; database: 112 claims with seed_key
+`brief:v2:%`, claim ids 701-812, abstract 46, title_only 5, background 17, judgement 20,
+to_verify 24. P1 held in every count; the seeder is idempotent.
+
+## P2 (prediction before the join of the CHECK.md rows, read only)
+
+The eleven CHECK.md files on kb/brief-check at 476a1763 all use the one header
+`| # | Brief line | Quotation | Label | Verdict | Locator | Note |` (checked by grep). awk count
+of their table rows: novelty 33, s310 74, s311 66, s31_32 61, s33 53, s34_36 66, s35 52,
+s37_38 60, s39_frontier 44, s5_s6 69, s7_s8 42; total 620, equal to BRIEF_ERRATA section 7.
+Prediction: the parser reads 620 rows with 0 problems. Most rows of sections 3.1 to 3.11 stand
+on labelled paragraphs whose bold lead-in rule covers the paragraph, so I expect at least half
+of the rows of the section-3 packages to join a seed; rows of sections 5 to 8 stand more often
+on unlabelled lines ("no seed on the line"). Refuted if the parser count differs from 620 or
+reports a problem, or if fewer than half of the section-3 rows join.
