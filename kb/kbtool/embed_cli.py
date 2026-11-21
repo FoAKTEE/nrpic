@@ -142,6 +142,7 @@ def cmd_search(a):
                                db=db, embedder=emb, model=_model_key(a.model))
         hits = [dict(h, rrf=h.get("rrf") or 0.0) for h in hits]
         if a.json:
+            hits, info = _stamp(lay, db, hits, info)
             json.dump({"hits": hits, "info": info}, sys.stdout, indent=1)
             sys.stdout.write("\n")
         else:
@@ -150,11 +151,19 @@ def cmd_search(a):
     hits, info = S.search(lay, a.query, k=a.k, mode=mode, kind=a.kind, paper=a.paper, group=a.group,
                           depth=a.depth, db=db, embedder=emb, model=_model_key(a.model) if emb else None)
     if a.json:
+        hits, info = _stamp(lay, db, hits, info)
         json.dump({"hits": hits, "info": info}, sys.stdout, indent=1)
         sys.stdout.write("\n")
     else:
         sys.stdout.write(S.format_hits(hits, info))
     return 0 if hits else 1
+
+
+def _stamp(lay, db, hits, info):
+    """Snapshot id in the JSON of a search (item C6b): in info and in every hit."""
+    from . import db as _dbm
+    sid = _dbm.snapshot_id(info.get("database") or _dbm.open_for_read(lay, db))
+    return [dict(h, snapshot=sid) for h in hits], dict(info, snapshot=sid)
 
 
 # ---------------------------------------------------------------- kb eq
@@ -183,6 +192,7 @@ def cmd_eq(a):
                           group=a.group, depth=a.depth, db=db, embedder=emb,
                           model=_model_key(a.model) if emb else None)
     if a.json:
+        hits, info = _stamp(lay, db, hits, info)
         json.dump({"hits": hits, "info": info}, sys.stdout, indent=1)
         sys.stdout.write("\n")
     else:

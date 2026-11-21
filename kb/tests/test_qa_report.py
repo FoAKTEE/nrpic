@@ -78,6 +78,10 @@ def test_report_on_synthetic_store(tmp_path, monkeypatch):
     monkeypatch.setattr(qa_golden, "QUESTIONS", [])
     text = qa_report.markdown(md_rep)
     assert "## C8." in text and "Blocked" not in text
+    # parse rate against the 95 per cent bar (lead batch 9)
+    pr = r1["parse"]
+    assert pr["bar"] == 0.95 and pr["ok"] <= r1["papers_total"] and pr["ok_strict"] <= pr["ok"]
+    assert pr["meets_bar"] is False and "Parse success rate" in text and "NOT met" in text
 
 
 def test_compare_meta():

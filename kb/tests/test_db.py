@@ -89,3 +89,15 @@ def test_writer_lock_excludes_second_writer(store):
         p.join(10)
     with lock.writer_lock(store.layout, timeout=5.0):
         pass
+
+
+def test_snapshot_id_names_snapshots_and_working_db(tmp_path):
+    """Item C6b (lead batch 9): readers print the snapshot id they read."""
+    from kbtool import db as D
+    snap = tmp_path / "kb-20261121-abc1234.sqlite"
+    snap.write_bytes(b"")
+    cur = tmp_path / "current"
+    os.symlink(snap.name, cur)
+    assert D.snapshot_id(str(cur)) == "kb-20261121-abc1234"
+    assert D.snapshot_id(str(tmp_path / "kb.sqlite")) == "working:kb.sqlite"
+    assert D.snapshot_id(str(tmp_path / "other.sqlite")) == "other.sqlite"

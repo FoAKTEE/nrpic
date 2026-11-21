@@ -161,6 +161,15 @@ def open_for_read(lay, which=None):
     return lay.db_work
 
 
+def snapshot_id(path):
+    """Name a reader's database for its output (item C6b): 'kb-YYYYMMDD-<sha7>' for a snapshot
+    (db/current resolved), 'working:kb.sqlite' for the working database, else the base name."""
+    base = os.path.basename(os.path.realpath(path))
+    if re.match(r"kb-\d{8}-[0-9a-f]{7}\.sqlite$", base):
+        return base[:-len(".sqlite")]
+    return f"working:{base}" if base == "kb.sqlite" else base
+
+
 def snapshot(lay):
     """Freeze kb.sqlite into kb-YYYYMMDD-<sha7>.sqlite and point `current` at it."""
     if not os.path.exists(lay.db_work):

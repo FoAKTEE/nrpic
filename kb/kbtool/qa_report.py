@@ -42,6 +42,9 @@ def _key(pid):
 
 
 # ---------------------------------------------------------------- C1, C2
+PARSE_BAR = 0.95          # brief 12.9: at least 95 per cent of the manifest parsed
+
+
 def c1_counts(con):
     # the manifest is brief section 17 plus the additions of decision 0016 item 6
     from . import meta_manifest as _mm
@@ -59,7 +62,18 @@ def c1_counts(con):
         ids = [i for i, r in man.items() if r["priority"] == p]
         by_pri[str(p)] = {"manifest": len(ids), "ingested": sum(1 for i in ids if i in papers),
                           "ok": sum(1 for i in ids if i in papers and papers[i][0] == "ok")}
+    # parse success rate against the 95 per cent bar of brief 12.9 (lead batch 9): status ok over the
+    # manifest; strict: an ok paper that has citation rows but no bibliography entry counts as failed
+    ok_ids = {i for i in man if i in papers and papers[i][0] == "ok"}
+    cites_no_bib = {r[0] for r in con.execute(
+        "SELECT DISTINCT citing FROM citations WHERE citing NOT IN (SELECT DISTINCT paper_id FROM bib_entries)")}
+    n_ok_strict = len(ok_ids - cites_no_bib)
+    parse = {"bar": PARSE_BAR, "ok": len(ok_ids), "rate": len(ok_ids) / len(man) if man else None,
+             "ok_strict": n_ok_strict, "rate_strict": n_ok_strict / len(man) if man else None,
+             "ok_citing_without_entries": sorted(ok_ids & cites_no_bib)}
+    parse["meets_bar"] = parse["rate_strict"] is not None and parse["rate_strict"] >= PARSE_BAR
     return {"manifest": len(man), "manifest_brief17": len(man) - n_add, "manifest_additions": n_add,
+            "parse": parse,
             "downloads_by_status": dict(by_status), "missing_downloads": missing_dl,
             "ingested_manifest": len(man) - len(not_ingested), "not_ingested": not_ingested,
             "papers_total": len(papers), "extras_ingested": extras, "by_priority": by_pri,
@@ -504,6 +518,11 @@ def markdown(rep):
     for p, d in c["by_priority"].items():
         a(f"- Priority {p}: {d['ingested']} of {d['manifest']} ingested, {d['ok']} with status ok.")
     a(f"- Missing or failed downloads: {', '.join(c['missing_downloads']) or 'none'}.")
+    pr = c.get("parse")
+    if pr:
+        a(f"- Parse success rate: {pr['ok']} of {c['manifest']} with status ok, {_pc(pr['rate'])}; strict (an ok "
+          f"paper that cites but has no bibliography entry counts as failed): {pr['ok_strict']}, "
+          f"{_pc(pr['rate_strict'])}. Bar {_pc(pr['bar'])}: {'met' if pr['meets_bar'] else 'NOT met'}.")
     a(f"- Verdict: {'counts agree' if c['agree'] else 'counts do NOT agree (lists above)'}.")
     a("")
     c = rep["C2"]

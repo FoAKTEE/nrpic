@@ -207,9 +207,13 @@ def cmd_resolve_bib(a):
     return 0
 
 
-def _ro(a):
+def _ro_path(a):
     lay = layout(a.data_root)
-    path = _db.open_for_read(lay, getattr(a, "db", None) or (lay.db_work if getattr(a, "work", False) else None))
+    return _db.open_for_read(lay, getattr(a, "db", None) or (lay.db_work if getattr(a, "work", False) else None))
+
+
+def _ro(a):
+    path = _ro_path(a)
     if not os.path.exists(path):
         raise SystemExit(f"no database at {path} (run kb init and kb ingest arxiv)")
     return _db.connect_ro(path)
@@ -236,6 +240,8 @@ def cmd_cites(a):
         rows = R.cites(con, a.paper_id.replace("arXiv:", ""), "in" if a.incoming else "out", a.context)
     finally:
         con.close()
+    sid = _db.snapshot_id(_ro_path(a))
+    rows = [dict(r, snapshot=sid) if isinstance(r, dict) else r for r in rows]
     print(json.dumps(rows, indent=1, ensure_ascii=False))
     return 0
 
@@ -315,6 +321,7 @@ def show_views(a):
         print(f"{pid}: nothing found", file=sys.stderr)
         return 1
     print(out[:a.max_chars] if a.max_chars else out)
+    print(f"[kb snapshot {_db.snapshot_id(_ro_path(a))}]")
     return 0
 
 
