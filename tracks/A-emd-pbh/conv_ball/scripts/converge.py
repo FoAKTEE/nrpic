@@ -19,8 +19,9 @@ Quantities per member (definitions in DESIGN.md section 4; all from compare.py):
   tfirst code time of the first detection
 
     converge.py --member NAME:LEG:X:<numbers.json> [...] --out DIR
-LEG is mesh, N, R or L; X the leg's abscissa (finest cell in M, particles per finest cell,
-ball radius factor lam, outer boundary in M). A member may sit in several legs (repeat it).
+LEG is mesh (one particle per cell), meshN (fixed particle number), N / NB (particles per
+cell on mesh A / B), R / RB (ball radius factor lam on A / B) or L / LB (outer boundary in M on
+A / B); X is the leg's abscissa. A member may sit in several legs (repeat it).
 """
 import argparse
 import json
@@ -99,17 +100,18 @@ def main():
     for r in rows:
         lines.append(f"| {r['name']} | {r['leg']} | {r['x']:g} | {r['tfirst']:.3f} | {r['ddet']:+.4f} | {r['dtrap']:+.4f} | "
                      f"{r['dta']:+.4f} | {r['dRmax']:+.2e} | {r['eta']:.2e} | {r['dm1']:+.2e} | {r['dmmed']:+.2e} | {r['nfind']:g} |")
-    for leg in ("mesh", "N", "R", "L"):
-        lr = sorted([r for r in rows if r["leg"] == leg], key=lambda r: -r["x"] if leg == "mesh" else r["x"])
+    for leg in ("mesh", "meshN", "N", "NB", "R", "RB", "L", "LB"):
+        ismesh = leg.startswith("mesh")
+        lr = sorted([r for r in rows if r["leg"] == leg], key=lambda r: -r["x"] if ismesh else r["x"])
         if len(lr) < 2:
             continue
         xs = [r["x"] for r in lr]
         d = dict(members=[r["name"] for r in lr], x=xs)
         for k in keys:
             es = [r[k] for r in lr]
-            d[k] = dict(values=es, orders=orders(xs, es) if leg == "mesh" else None,
+            d[k] = dict(values=es, orders=orders(xs, es) if ismesh else None,
                         spread=float(np.nanmax(es) - np.nanmin(es)) if np.any(np.isfinite(es)) else None)
-            if leg == "mesh" and len(es) >= 3 and all(math.isfinite(v) for v in es[:3]):
+            if ismesh and len(es) >= 3 and all(math.isfinite(v) for v in es[:3]):
                 d1, d2 = es[0] - es[1], es[1] - es[2]
                 d[k]["self_order"] = (math.log(abs(d1 / d2)) / math.log(2.0)) if d1 != 0 and d2 != 0 else None
         summary["legs"][leg] = d
@@ -121,7 +123,7 @@ def main():
             lines.append(f"  {k}: " + ", ".join(f"{v:+.3e}" for v in s["values"])
                          + (("  orders " + ", ".join(f"{v:.2f}" for v in o)) if o else "")
                          + (f"  self-order {s['self_order']:.2f}" if s.get("self_order") is not None else "")
-                         + (f"  spread {s['spread']:.2e}" if s.get("spread") is not None and leg != "mesh" else ""))
+                         + (f"  spread {s['spread']:.2e}" if s.get("spread") is not None and not ismesh else ""))
     lines.append("")
     lines.append(f"source paper OS level: Delta M/M_ADM <~ {OS_LEVEL:g} (main.tex:945); RMS of A1-A3 "
                  f"{', '.join(f'{v:.3e}' for v in OS_RMS)} (main.tex:1484)")
@@ -136,39 +138,60 @@ def main():
     from nrpic import figstyle as fs
     fs.use_style()
     import matplotlib.pyplot as plt
-    fig = plt.figure(figsize=(9.0, 6.4))
-    fig.subplots_adjust(left=0.08, right=0.98, bottom=0.08, top=0.94, wspace=0.32, hspace=0.42)
-    labels = dict(ddet="|first detection - exact| (M)", dtrap="|trapping, band 2.603| (M)", dta="|core turnaround| (M)",
-                  dRmax="|core R_max| (rel.)", eta="core |eps| at turnaround", dm1="|m_irr/m_slice - 1|, first",
-                  dmmed="|m_irr/m_slice - 1|, median")
-    cols = fs.series_colors(len(keys), "viridis") if hasattr(fs, "series_colors") else [None] * len(keys)
-    legs = [("mesh", "finest cell $h_f/M$"), ("N", "particles per finest cell"), ("R", r"ball radius factor $\lambda$"),
-            ("L", "outer boundary $/M$")]
-    for i, (leg, xl) in enumerate(legs):
-        ax = fig.add_subplot(2, 2, i + 1)
-        lr = sorted([r for r in rows if r["leg"] == leg], key=lambda r: r["x"])
-        if lr:
-            xs = np.array([r["x"] for r in lr])
-            for c_, k in zip(cols, keys):
-                ys = np.abs([r[k] for r in lr])
-                if np.any(np.isfinite(ys) & (ys > 0)):
-                    ax.plot(xs, ys, "o-", color=c_, lw=1.2, ms=4, label=labels[k])
-            if leg == "mesh":
-                x0 = xs.max()
-                for p, ls in ((1, ":"), (2, "--")):
-                    ax.plot(xs, 3e-2 * (xs / x0) ** p, color="0.5", lw=0.8, ls=ls)
-                ax.set_xscale("log", base=2)
+    fig = plt.figure(figsize=(11.0, 5.6))
+    fig.subplots_adjust(left=0.06, right=0.99, bottom=0.10, top=0.92, wspace=0.34, hspace=0.45)
+    labels = dict(ddet="first detection", dtrap="trapping (band 2.603)", dta="core turnaround",
+                  dRmax="core $R_{max}$ (rel.)", eta="core |eps| at turnaround", dm1="mass, first detection",
+                  dmmed="mass, median")
+    groups = [("ddet", "dtrap", "dta"), ("dm1", "dmmed", "eta", "dRmax")]
+    ylabels = ["|time error| (M)", "|relative error|"]
+    cols = dict(zip(keys, fs.series_colors(len(keys), "viridis") if hasattr(fs, "series_colors") else [None] * len(keys)))
+    families = [(("mesh", "meshN"), "finest cell $h_f/M$", True), (("N", "NB"), "particles per finest cell", True),
+                (("R", "RB"), r"ball radius factor $\lambda$", False), (("L", "LB"), "outer boundary $/M$", True)]
+    for gi, grp in enumerate(groups):
+        for fi, (legs, xl, logx) in enumerate(families):
+            ax = fig.add_subplot(2, 4, 4 * gi + fi + 1)
+            xt = set()
+            for li, leg in enumerate(legs):
+                lr = sorted([r for r in rows if r["leg"] == leg], key=lambda r: r["x"])
+                if not lr:
+                    continue
+                xs = np.array([r["x"] for r in lr])
+                xt.update(xs.tolist())
+                for k in grp:
+                    ys = np.abs([r[k] for r in lr])
+                    if np.any(np.isfinite(ys) & (ys > 0)):
+                        ax.plot(xs, ys, "o-" if li == 0 else "s--", color=cols[k], lw=1.2, ms=4,
+                                label=(labels[k] if li == 0 else None))
+                if leg == "mesh":
+                    x0 = xs.max()
+                    y0 = 3e-2 if gi == 1 else 0.3
+                    for pw, ls in ((1, ":"), (2, "-.")):
+                        ax.plot(xs, y0 * (xs / x0) ** pw, color="0.5", lw=0.8, ls=ls)
+            if gi == 1 and fi == 0:
                 ax.axhline(OS_LEVEL, **fs.GUIDE)
-            elif leg == "N":
-                ax.set_xscale("log", base=2)
-            ax.set_yscale("log")
-            ax.set_xticks(xs)
-            ax.set_xticklabels([f"{v:g}" for v in xs])
-        ax.set_xlabel(xl)
-        ax.set_ylabel("|error|")
-        ax.set_title(f"leg {leg}" + (" (grey: slopes 1, 2; dashed: OS level 1e-3)" if leg == "mesh" else ""), fontsize=8)
-        if i == 0:
-            ax.legend(fontsize=6, loc="lower right")
+            if not xt:
+                ax.text(0.5, 0.5, "no member analysed yet", ha="center", va="center", transform=ax.transAxes,
+                        fontsize=8, color="0.4")
+                ax.set_xticks([])
+                ax.set_yticks([])
+            if xt:
+                if logx:
+                    ax.set_xscale("log", base=2)
+                ax.set_yscale("log")
+                xs_ = sorted(xt)
+                ax.set_xticks(xs_)
+                ax.set_xticklabels([f"{v:g}" for v in xs_], fontsize=7)
+            ax.set_xlabel(xl, fontsize=8)
+            if fi == 0:
+                ax.set_ylabel(ylabels[gi])
+                ax.legend(fontsize=6, loc="lower right")
+            ttl = {0: "mesh (solid: one per cell; dashed: fixed N)", 1: "particles (solid: mesh A; dashed: B)",
+                   2: "ball radius (solid: A; dashed: B)", 3: "outer boundary (solid: A; dashed: B)"}[fi]
+            if gi == 0:
+                ax.set_title(ttl, fontsize=7.5)
+    fig.text(0.5, 0.965, "grey: slopes 1 (dotted) and 2 (dash-dot); dashed horizontal: source OS level 1e-3",
+             ha="center", fontsize=8)
     fs.save(fig, os.path.join(a.out, "fig_convergence"))
 
 
