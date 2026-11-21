@@ -24,7 +24,7 @@ next:        1. Card (two jobs at most): ES-1GB = es_runs/inputs/es1g_dx8 with t
                 wording corrections (closes C16); then G1 is complete if orch rules on C7
 blockers:    orch: ruling d-pre-3-criterion (third request 2026-11-21); core: a lapse-excision criterion
              not resting on alpha_exc (R14), the faces option benchmarked on V-1 (R13)
-needs:       orch: d-pre-3-criterion-third, g1-numbers-errata-reminder; core: boundary-benchmark-v1b,
+needs:       orch: d-pre-3-criterion-third, g1-numbers-errata-reminder, waive-three-wave2-runs; core: boundary-benchmark-v1b,
              es1g-outcome-for-gauge-ready, lapse-excision-criterion, particle-energy-and-crossing-record,
              finder-summary-outdir, trajmet-format-doc, newton-selfforce-doc, spike-mass-refinement,
              accretion-diagnostics item 3, newtonian-mode-point-mass (all in outbox/)

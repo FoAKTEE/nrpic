@@ -53,7 +53,8 @@ Lead's plan for G2 (REVIEW-wave3 section 8): every 200 M run with the faces at +
   diagnostics in one executable. Card-hours: 29.22 left toward G2; at most two D jobs in the queue.
 
 Decisions pending: orch on `outbox/20261121T064131Z__to-orch__d-pre-3-criterion-third.md` and
-  `...g1-numbers-errata-reminder.md`; core on the four outbox messages of 2026-11-21 (boundary benchmark,
+  `...g1-numbers-errata-reminder.md`, and the waiver of three wave-2 runs (`...waive-three-wave2-runs.md`;
+  stage/G1/VERIFY_RESULTS.md check "runs"); core on the four outbox messages of 2026-11-21 (boundary benchmark,
   ES-1G outcome and the shrinking hole, lapse-excision criterion, particle energy and crossing record) and
   the older open ones listed in STATUS.md `needs`.
 

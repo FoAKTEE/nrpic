@@ -372,3 +372,8 @@ and gave the same numbers; its only change was the tick labels of panel d).
   for the wrong signature.
 - open: G1 NOT met (C7 ruling at orch, C16 note); packages flux_tools, drift_controls,
   secondary_infall, note unfinished (HANDOFF); no card job queued; card-hours 5.19 used.
+- stage: `nrpic-stage verify D-bh-dress G1` on 9182d4d (07:07 UTC, 25 minutes, 110 GB of outputs
+  hashed): FAIL on clean (untracked drift_controls tools), sync (main moved; merged 0cb321d6), runs
+  (three wave-2 runs with outputs outside their sha256 lists; waiver requested), compare (the note's
+  fig_newton_numbers.json not refreshed); figure scripts rerun in the clean export PASS. Report:
+  FAIL with C7 and C16 open. Gates complete for review: none (G0 already signed).
