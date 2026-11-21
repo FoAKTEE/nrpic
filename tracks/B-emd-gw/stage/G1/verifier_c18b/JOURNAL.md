@@ -75,3 +75,56 @@ expectations and refutation criteria:
 
 What I will not do: rerun AthenaK (no source changed; the rows are about existing runs),
 use a card (0 card-hours), read the leads' reviews, STATUS, HANDOFF or journals.
+
+## 2026-11-21 09:05 PST — entry 2: outcomes of P1-P6 (runs B-20261121-170003-23f500e, B-20261121-170159-535438f)
+
+Run B-20261121-165713-459347e (first pancake pass) is superseded: it did not wrap the
+Newtonian sheet that starts at x = 1.008 L into the box, so the Newtonian crossings came out
+negative and the relativistic-minus-Newtonian differences were 14 (a reader error of mine,
+visible at once; the relativistic numbers of that run were already right).
+
+- P1 (line 34): held in substance. 12 sqrt(delta/0.56) = 0.802, 3.586 at the endpoints of the
+  stated range; the printed 0.81, 3.57 are the values at the first and last points of the
+  60-point grid inside the range (delta = 0.00255, 0.0495): 0.810, 3.569. a_c = 1.686/(3 delta)
+  = 0.562/delta, my own reading of the threshold, agrees with the 0.56 of cosmo/TESTLOG.md:139.
+- P2 (lines 35-36): held. All eight values to the printed digits (0.0175, 0.362, 5.79, 0.362;
+  0.0366, 0.757, 12.1, 0.757). Rates from cells x cycles / cpu time of the two logs (checksums
+  match the manifest): 5.770348e6 and 4.467126e6 (the code printed 4.467127e6); dt = 0.25 L/n is
+  what the logs show (the 64^3 log starts with smaller, expansion-limited steps: 1404 cycles
+  where the model counts 1387, so the measured 64^3 run took 0.01772 card-hours against the
+  estimate 0.0175). The model also predicts the pancake jobs: L1_n96 834 s against 834 s
+  measured, L1_n64 128 s against 135 s; the two small ones (8 s, 32 s against 13 s, 40 s) are
+  dominated by start-up. Within 30 per cent for the runs that matter.
+- P3 (lines 49-60): held for every printed number, with three qualifications.
+  Crossings: exact sheets 21.03 (printed 21); relativistic 21.81, 21.38, 21.27 (21.8, 21.4,
+  21.3); Newtonian 21.55, 21.22 (21.5, 21.2); four Hubble radii 22.85, proper time 22.28,
+  one Hubble radius 21.35 (22.8, 22.3, 21.3). Position differences at a = 10 (both runs
+  interpolated to a = 10 exactly): 0.003216, 0.003203, 0.003202 (96 cells vs Zel'dovich),
+  0.05168, ratio 16.14 (0.00322, 0.0032, 0.0032, 0.0517, 16.1); 64 cells one and two per cell
+  0.003195, 0.003205 (0.0032, 0.00321); Newtonian 0.001016, 0.002050, 0.000408 (0.00102,
+  0.00205, 0.000408). Constraints (code's cstat.hst, nearest record): Hr 1.576e-4, 1.289e-3,
+  3.216e-5, 4.249e-5; Mr 0.2112, 0.00631; ratios 30.35, 33.47; plane symmetry 4.51e-14,
+  1.25e-12. Card-hours: sacct 1023 s and 710 s on one card: 0.284, 0.197, 0.481.
+  My sub-prediction "discreteness raises the exact-sheet crossing by ~4e-4" FAILED: it is
+  +0.029, because a lattice point sits on the density peak, so the first pair is one-sided:
+  a - 1 = (1/delta)(1 + (k Delta)^2/6) with k Delta = 0.0935 (not the symmetric /24). The
+  printed "21" is unaffected.
+  Qualification 1 (line 59): "largest mean |H| after crossing, a = 22-42" is the largest of
+  the five dump epochs a = 22, 25, 30, 35, 41.9 (0.00706, 0.00203). Over all cstat records in
+  22 <= a <= 42 the largest is 0.00751 (a = 22.56) and 0.00254 (a = 23.31): 6 and 25 per cent
+  higher. Figure pancake_c18b.png panel (c) shows the peaks between the epochs.
+  Qualification 2 (line 56): the "a = 10" values are those of the record nearest a = 10
+  (a = 9.96). At a = 10.00 (interpolated, and from my own dump-based mean) they are 1.64e-4
+  and 3.6e-5, 4 and 12 per cent higher: the two-per-cell curve oscillates by a factor of
+  about three around a = 10 (panel c), so the second digit at "a = 10" is not robust.
+  Qualification 3: the code's Hr_mean column is |H| / sqrt(R^2 + (2K^2/3)^2 + (A.A)^2 +
+  (16 pi E)^2) averaged over cells (nrpic_io.cpp NrpicWriteConstraintStats); my own value from
+  the NRFIELD2 dumps (A.A dropped) equals it to 1e-9 relative where dump and record coincide
+  (a = 1, 25), so the column is what its header says.
+- P4 (line 63): held: 1.914e-7, 7.002e-8, 6.046e-8 (1.91e-7, 7e-8, 6.05e-8); both history
+  files match the manifest checksums. The cstat.hst of dtexp_test/lim that gives the third
+  value is not among the manifest's checksummed inputs (sha256 ed6353a8...; provenance gap).
+- P5 (line 70): held: closed form and mpmath quadrature of the third derivative at 50 digits
+  agree to 0 at 50 digits; a Gauss-Legendre double-precision quadrature 1.1e-16. The printed
+  2.22e-16 is a rounding unit: confirmed as "agreement at rounding", not as digits.
+- P6 (line 71): held: -1.6449e-10 (conformal), -9.8696e-10 (1+log), closed form and ODE.
