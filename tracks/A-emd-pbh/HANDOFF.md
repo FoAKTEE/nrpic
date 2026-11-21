@@ -45,6 +45,13 @@ manifests; their outputs land in `scratch/A-emd-pbh/<run id>/`).
   limit, AMR, periodic finder, region norms); still open: phase-1 periodic generator for
   mu >= 0.5 (core/id-solver-2), full K_ij and gamma_ij in the dumps (Szekeres eigenvalue test).
 - kb: conformal flatness of the comoving Szekeres slice; its apparent horizon against R = 2M.
+- core answered on 2026-11-21 (inbox, acknowledged): the K_ij eigenvalue test of the Szekeres hole
+  can use `variable = adm` with `double_precision = true` (adm_gxx..adm_Kzz, not yet checked by
+  core in nrpic_cosmo); the finder at four cells per horizon radius is sensitive at the 5e-3
+  level, so a first small surface counts only after consecutive searches agree; Newtonian energy
+  drift explained (RISKS row 16); requests still deferred: phase-1 generator, refined-level
+  solve (core/id-solver-2), special-relativistic push (core/newton-2), finder spin projection;
+  the K_ref lapse and softplus lapse are declined (`cosmo_gauge.md` 7.1).
 
 ## Traps
 

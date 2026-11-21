@@ -195,7 +195,7 @@ Core's item 3 applies to the periodic decks: `alpha_exc` is an absolute lapse, o
 | 4 | constraints of data set 2t as a whole | G2 item, kept in OPEN.md; core-v0.5 region norms (`<particles> region_dcycle`) give AthenaK's own t = 0 norms inside and outside the ball |
 | 5 | rows nobody recomputed | listed in OPEN.md (C18) |
 | 6 | wave-1 provenance | L3: unchanged since 2026-11-20; rerunning the wave-1 producers through nrpic-run is a G2 next action (minutes on processors) |
-| 7 | Newtonian energy drift | G2 item, no cause yet; core's newton-2 package (not in core-v0.5) is where a fix would come from |
+| 7 | Newtonian energy drift | cause named by core (message 20261121T081909Z, item 1; `newtonian_mode.md` section 7 on core/newton-2): the history's W is not an invariant of the scheme unless deposit and gather kernels coincide; the drift over a shell crossing is a property of the space discretisation (unchanged at half the step); with `deposit_shape = pcs` and `interp = bspline` the constant holds to 3.7e-6. The track re-tests one scan point with those settings before G2 [TO VERIFY by our own run] |
 | 8 | "41 of 41" with history | STATUS.md quotes it with the two restated bands, two diagnostics and F5 partly refuted |
 | 9 | architecture schematic names core-v0.3 | redraw against core-v0.5 before G2 (note scripts; HANDOFF next) |
 | 10 | horizon-mass criterion may be unreachable | RISKS row 17 kept; conv_ball reports the error with its N and dx dependence; if it stalls the track asks the orchestrator to restate the criterion (to be sent with G2 evidence, not now) |

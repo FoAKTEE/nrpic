@@ -40,10 +40,11 @@ blockers:    none from core for the ball (lapse_leak, guard, finder status, dt_l
                core-v0.4/v0.5). Box: a slicing that keeps the Hamiltonian constraint below order one after t = 9 in S1
                (core message 20261120T223017Z item 2); periodic generator for mu >= 0.5 (core/id-solver-2, not released).
              orch: sign-off of G1 (no waiver needed: the four manifests the reviewer found open are closed).
-needs:       orch: g1-sign-off-and-waivers (outbox 20261121T08*Z)
-             core: open requests of 2026-11-15 served by core-v0.4/v0.5 are to be re-triaged by core (REQUESTS_A2.md); new:
-               none this session
-             kb: Szekeres slice conformal flatness and apparent horizon versus R = 2M (szekeres/README, unchanged)
+needs:       orch: g1-sign-off-and-waivers and g1-no-waiver-needed (outbox 20261121T080815Z, T0832*Z); waiver of the
+               reviewer's failed attempt A-20261121-064515-aa13c8f (outbox waiver-reviewer-failed-attempt)
+             core: answered 2026-11-21 (core-v04-v05-answers; szekeres-dumps-kij: use variable = adm); still deferred:
+               phase-1 generator and refined-level solve (core/id-solver-2), SR push (core/newton-2), finder spin projection
+             kb: szekeres-conformal-flatness (outbox 20261121T080816Z)
 offers:      expanding-ball data and exact LTB shells: tracks/A-emd-pbh/expball/ (data sets 2t and 3)
              invariant comparison of AthenaK ball runs: tracks/A-emd-pbh/runs_ball/ (compare.py, turnaround.py)
              quasi-spherical Szekeres reference solution, conformal map, NRCOSMO1 files: tracks/A-emd-pbh/szekeres/ (to B)

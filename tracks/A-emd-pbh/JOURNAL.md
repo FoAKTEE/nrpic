@@ -267,3 +267,29 @@ registered outputs, with the figure directory redirected to my run directory:
   the finder mass within 1e-3 of the exact mass on the same slice from t of about 11.7 on, and
   2e-2 above it at the first detection.
 - L13 holds: all 64 searches of BH-1 at uniform M/8 return NaN.
+
+### End of the session (lead, batch 2b), 2026-11-21 ~00:50 PST
+
+- did: re-checked every package finished since 2026-11-15 from its registered outputs (G1
+  verifier, szekeres, g1close, gate review; runs_ball when it finished during the session):
+  runs A-20261121-075605-351d611, -075933-338a6ff, -082814-6fadb30; closed the two stranded runs
+  of cut packages; wrote `stage/REVIEW-wave3.md`; closed C20 (STATUS, JOURNAL, HANDOFF, RISKS);
+  decided C18; re-collected, verified (full, with checksums) and reported stage G1; extended
+  WRITING_GUIDE exception 1; copied the reviewer's script into the package; posted six outbox
+  messages (orch 3, core 1, kb 1, B 1) and acknowledged 16 inbox messages.
+- found: every rerun is bit-identical to its registered run (16 JSON files); my predictions
+  L1-L13 hold, L10 only on values (three keys added to compare.py after the run). BH-1R has a
+  persistent apparent horizon from t = 10.875 whose mass follows the exact slice mass to better
+  than 1e-3 after t ~ 11.7 (runs_ball, re-checked). Every deck of the track carries
+  hmean_tol_0 = 100, which core reports can stop the finder; BH-1 at M/8 never converged.
+- evidence: figures looked at: fig_review_wave3 (second run), fig_review_runs_ball,
+  bh_smr_horizon (L11 rerun), szekeres fig_code_geodesic, fig_dipole_order,
+  fig_mesh_constraints, g1close fig_g1close_findings.
+- changed my mind about: the fixed-box card job (1 min 28 s is a complete run, not an early
+  failure); the Newtonian energy drift (core names its cause: deposit and gather kernels
+  differ); the waiver I asked for the runs_ball manifests (not needed, they were closed).
+- my faults, on record: an empty figure panel in the first re-check run; a SameFileError in the
+  runs_ball rerun from my own `--figdir` redirect; a first wrong judgement of job 4748.
+- open: G1 sign-off (orchestrator); verify_bh, szekeres card series, periodic_threshold
+  (cut, not resumed); conv_ball card job 1 queued (Slurm 4776, run A-20261121-075926-d10c2c1).
+- card-hours this session: 0. Commits 0f5972c4 .. (this commit).
