@@ -980,3 +980,8 @@ build and adaptive refinement at a face. Card time of the package: 0.93 card-hou
 the card time of the package to at most 0.98 card-hours). It tests (k-b) and (k-c) of
 entry 12 as written there. k2 (the release card executable, for the byte comparison
 k-a) is not submitted. The evaluation is `specs/k1.txt` (`compare_data.py --pair`).
+Submitted 00:35 PST: run core-20261121-083511-2cff9df, Slurm job 4782, pending behind
+five jobs. PENDING at the end of this session: close it with `nrpic-run finish
+core-20261121-083511-2cff9df`, judge it with `an_batch.sh k1.txt` as a registered
+analysis, write the outcome here and replace the PENDING lines of READY
+(`analysis/faces/READY.txt` and its copy in the published directory).

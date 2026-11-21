@@ -51,7 +51,8 @@ commit cb50e22. Frozen executables of the stages (untracked, `.work/exe/`): base
 (27b2ced), sbc1 (224b962), sbc2 (6cd9972), sbc3 (cb50e22), merge0 (c0ada84, merged, with
 damping), sbc4 (ca6b46c), sbc5 (f6f9a0d: the delivered source).
 
-Not done: the card check of the delivered card executable (`plans/card_k1.list`,
-`card_k2.list`; prediction in journal entry 12): two jobs of core were queued when it
-was ready.
+Pending: the card check k1 of the delivered card executable, run
+core-20261121-083511-2cff9df (Slurm job 4782); close it with `nrpic-run finish` and judge
+it with `an_batch.sh k1.txt` (prediction in journal entry 12). Not submitted: k2
+(`plans/card_k2.list`, the release card executable, for byte identity on a card).
 

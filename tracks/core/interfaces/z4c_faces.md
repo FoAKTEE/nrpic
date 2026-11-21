@@ -155,8 +155,8 @@ Tested (processors unless said; every number with its run id in the journal):
 
 Not tested:
 - the card executable of the delivered source on a card (built only; the card runs D
-  used the source of 6cd9972, before the merge of core-v0.5). Lists for a two-minute
-  check: `analysis/faces/plans/card_k1.list`, `card_k2.list`.
+  used the source of 6cd9972, before the merge of core-v0.5). A check is pending: run
+  core-20261121-083511-2cff9df (Slurm job 4782; `analysis/faces/specs/k1.txt` judges it).
 - byte identity of the card executable without the options (processors only).
 - several MPI ranks; the threaded processor build; adaptive refinement at a face;
   restart of a run with the options (they are read from the input again; no state).
