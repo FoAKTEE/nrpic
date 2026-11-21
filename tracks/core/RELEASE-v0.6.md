@@ -1,9 +1,11 @@
 RELEASE core-v0.6 984bde68c6201c8f100ced3d6a7effbea9cafd80 REGRESSION PASS
 
-Card check of the candidate's card executable `athena_gpu`: PENDING when this file was
-written (run core-20261121-132052-f330004, Slurm job 4800, queued behind seven jobs;
+Card check of the candidate's card executable `athena_gpu`: PASS (run
+core-20261121-132052-f330004, Slurm job 4800, ran 2026-11-21 07:21 PST; judged in
+core-20261121-154700-2de4974 and core-20261121-154710-220c1b0 by the lead of batch 4a;
 section "Card check of `athena_gpu`"). The card executables of the three branches, the
-same source per capability, did run on a card (same section).
+same source per capability, did run on a card (same section). Release builds against
+the candidate: section "Release builds against the candidate".
 
 # Release candidate core-v0.6: three source branches of core on top of core-v0.5
 
@@ -172,11 +174,33 @@ quick test, the nine members cnx1 to cke zero in each.
 
 ## Card check of `athena_gpu`
 
-**Merged card executable: PENDING.** Run core-20261121-132052-f330004 (Slurm job 4800,
-list `analysis/release/card_v06.list`, 0.3 card-hours asked), submitted at 13:20Z behind
-seven jobs of other owners: six new cases (Newtonian plane wave with both symbols, the
-faces example, the solved puncture with the faces options, two cases of the solver) and
-the nine cases of core-v0.5. Prediction K6 is in the journal. To judge it:
+**Merged card executable: PASS (prediction K6 held).** Run core-20261121-132052-f330004
+(Slurm job 4800, list `analysis/release/card_v06.list`, 0.3 card-hours asked, 46 s
+used), submitted at 13:20Z, ran at 15:21Z (07:21 PST): six new cases (Newtonian plane
+wave with both symbols, the faces example, the solved puncture with the faces options,
+two cases of the solver) and the nine cases of core-v0.5; every case status 0.
+
+| Check (K6) | Judged in | Bound | Result |
+|---|---|---|---|
+| status of the fifteen cases | both | 0 | all 0 |
+| Newtonian histories of n_sp, n_7p (`*.newton.hst`, `*.newton.g1.hst`), columns above 1e-6 of the largest | core-20261121-154700-2de4974 (`card_v06.py`) | 1e-10 | 1.6e-11 (n_sp), 1.3e-11 (n_7p): held |
+| every history of f_full and c_cd1 (faces options) | same | 1e-7 | f_full identical (0); c_cd1 1.9e-10 (constraint statistics): held |
+| solver record of c_cd1, p5_mov_n64, g_smr1 | same | outer iterations equal (one on the refined mesh); psi_max to 1e-12 (1e-9 refined) | outer 22, 34, 20 on both; psi_max equal in 16 digits for c_cd1 and p5_mov_n64, 2.5e-15 for g_smr1: held |
+| nine cases of core-v0.5, K1 to K6 of that release | core-20261121-154710-220c1b0 (`card_v05.py`) | as in core-v0.5 | held: deposit sums 2.3e-13 at worst (trk), identity 9.9e-16, source dumps 3.1e-14 |
+
+Not bounded by K6 and different between card and processors, as for core-v0.5: ratios
+of residuals at rounding level in the constraint statistics. g_smr1 `gauss.cstat.hst`
+column 11 (Hr_max, the largest |H| over its local scale): 1.380745 on processors,
+1.379534 on the card (8.8e-4), while column 9 (H_max, absolute) agrees to 1.2e-12 of
+its value [VERIFIED by reading the two files]; trk column 15 (0.14 of its value, as in
+core-v0.5), s3g 1.4e-3, usr 4.0e-3 (constraint statistics of vacuum cases; the module
+histories of s3g and usr are judged by K1 to K6). Figures
+`scratch/core/core-20261121-154700-2de4974/fig_card_v06.png` (looked at: every bar of
+n_sp, n_7p below the blue dashed bound 1e-10, c_cd1 below the red 1e-7; the one bar
+above, g_smr1 cstat at 9e-4, is Hr_max, which no bound covers: the dashed lines are
+drawn across the whole width although each applies to its own cases) and
+`scratch/core/core-20261121-154710-220c1b0/fig_card_v05.png` (looked at: panel a below
+every bound; panel b high only for s3g, usr, trk). Commands used:
 ```
 harness/bin/nrpic-run finish core-20261121-132052-f330004
 harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 --purpose "card check K6 judged, new cases" -- python3 tracks/core/analysis/release/card_v06.py --card /data/haiyangw/nrpic/scratch/core/core-20261121-132052-f330004 --quick /data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc --r2 /data/haiyangw/nrpic/scratch/core/core-20261121-131250-f8df905 --out '$NRPIC_RUN_DIR'
@@ -196,6 +220,26 @@ checks ran):
 
 Card time of this session: 0.024 card-hours used (Kc, 87 s), 0.3 asked for job 4800.
 
+## Release builds against the candidate
+
+The clerk built the release executables from main after the merge (merge 36e51bae; the
+source trees of the tag and of main are the same). Their checksums differ from the
+candidate's (processor 91fc59b3... against 2ec1f232...; card ea473498... against
+168e5da6...), as builds in other directories do [VERIFIED by `sha256sum`]. Predictions
+R6 and G6: `tracks/core/JOURNAL.md`, entry of 2026-11-21T15:46Z (session core-lead-6).
+
+| Check | Run | Result |
+|---|---|---|
+| `.work/build_cpu_v06/src/athena` against the candidate `athena_cpu`, `regress_v04.py`, twelve set-ups, 3 cores | core-20261121-154737-dc1e4c1 (figure core-20261121-155317-1ee04bf) | 75 of 75 items identical, classes a, b, other empty: PASS (R6 held). Figure `fig_regress_v04.png` looked at: twelve bars, one colour |
+| `.work/build_gpu_v06/src/athena` on the fifteen cases of `card_v06.list`, against the processor runs (`card_v06.py`, `card_v05.py`) and the candidate's card run of job 4800 (`card_pair.py`) | core-20261121-154654-d3ec487, Slurm job 4810, 0.1 card-hours asked | PENDING: queued at 15:47Z behind jobs of other owners. To judge it: the three commands below; prediction G6 |
+
+```
+harness/bin/nrpic-run finish core-20261121-154654-d3ec487
+harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 --purpose "G6 (i) new cases" -- python3 tracks/core/analysis/release/card_v06.py --card /data/haiyangw/nrpic/scratch/core/core-20261121-154654-d3ec487 --quick /data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc --r2 /data/haiyangw/nrpic/scratch/core/core-20261121-131250-f8df905 --out '$NRPIC_RUN_DIR'
+harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 --purpose "G6 (i) cases of core-v0.5" -- python3 tracks/core/analysis/release/card_v05.py --card /data/haiyangw/nrpic/scratch/core/core-20261121-154654-d3ec487 --cpu /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c --out '$NRPIC_RUN_DIR'
+harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 --purpose "G6 (ii) release card build against the candidate's card run" -- python3 tracks/core/analysis/release/card_pair.py --a /data/haiyangw/nrpic/scratch/core/core-20261121-154654-d3ec487 --b /data/haiyangw/nrpic/scratch/core/core-20261121-132052-f330004 --cases n_sp,n_7p,f_full,c_cd1,p5_mov_n64,g_smr1,s3g,usr,trk,peak,dep,depp,fine,finet,cluster --out '$NRPIC_RUN_DIR'
+```
+
 ## Known defects
 
 `tracks/core/stage/G2/OPEN.md`, section of core-v0.6, items a to o; the READY of the
@@ -210,7 +254,8 @@ published executables. In short:
   lattice with fewer than one particle per cell and direction is pushed as a whole;
 - none of the three capabilities was run on several ranks, the faces options and the
   Fourier solver not with the threaded build, nothing with adaptive refinement;
-- the merged card executable had not run when this was written;
+- the merged card executable had not run when this was written (it ran later: job 4800,
+  PASS, section "Card check");
 - the capability tests of the packages and the verification ladder were not rerun on
   the merged executables: the release rests on the byte regression, on one example per
   branch against the branch's own executable, and on the solver's regressions repeated

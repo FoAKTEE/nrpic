@@ -103,3 +103,42 @@ Merges: 3ab47062 (requests-b), 120aa7cf (gauge), 54dc527e (scalar-2), e2498da4
 | six more READY examples against the branch executables, processors | core-20261121-031604-dccccbb | PASS: 42 files, 40 identical, 2 a (restart files of acc), 0 other; 12 runs status 0 | `scratch/core/core-20261121-032134-8dd42e4/fig_more_v04.png` (run core-20261121-032134-8dd42e4; -032119-f98c422 superseded) |
 | card check, 11 cases on one A100 | core-20261121-025945-54dc669 (Slurm job 4758, 0.0094 card-hours); judged by core-20261121-033000-f1c0f5d (-032851-5f911b8 superseded) | PASS: 11 status 0; 13 numbers in their bands; iteration and collision counts equal to the processor runs; differences within the bounds written before the run; the first session's relative bound on the wave error norm failed as written | `scratch/core/core-20261121-033000-f1c0f5d/fig_card_v04.png` |
 | options (scan) | `verify/options_at.py core-v0.3 HEAD`, `scratch/core/tmp/lead_v04/options_v03_v04.json` | 61 added, 0 removed, no default changed | -- |
+
+## Verification ladder, wave 2 (2026-11-15; `verify/LADDER.md`, `verify/README.md`, `verify/JOURNAL.md`)
+
+Card release executable of core-v0.3 (`.work/build_gpu_v03`), registered by hand
+(`tools/run_registered.py`, `verify/ladder2/cards.py`).
+
+| Row / product | Run ids | Result | Figure (looked at 2026-11-21) |
+|---|---|---|---|
+| 3, prolate at M/8 | card core-20261115-152845-5728b1d; comparison -162509-c691fb8 | horizon 32.25 M (M/16: 32.00 M; paper 32 M); largest M_AH 0.957 (0.967); PARTIAL | `verify/figs/prolate_resolution.png`, `prolate_mosaic.png` |
+| 3, oblate reference potential | core-20261115-154359-d74357f | closed form against quadrature to 4e-12; the collapse needs the component (branch core/oblate, unmerged) | `verify/figs/oblate_reference.png` (not opened this session) |
+| 4, bisection at M/4, rounds 1-2 and control | cards -152842-5728b1d, -152843-5728b1d, -154726-37450f2, -155617-06f844b; analyses -160501-ee15e0f, -170606-1c69507 | no member collapses; no bracket by the rule fixed before; migration criterion: [0.66, 0.70]; PARTIAL | `verify/figs/cluster_threshold.png` |
+| C9 three-way convergence | core-20261115-154736-f9f5edb | particle number, mesh, gauge and boundary on three set-ups | `verify/figs/convergence_three_way.png` |
+| C8, C14 schematics | -162615-ca0fd2b, -154738-f9f5edb | ladder (current verdicts); architecture (state 2026-11-15, stale) | `verify/figs/schem_ladder.png`, `schem_architecture.png` |
+
+Bearing from Track C (not core's runs; `git show track/C-sidm:tracks/C-sidm/drift/README.md`):
+collisionless King controls on M/4 move outward (central lapse +0.018, +0.033), on M/8
+seven to ten times less (runs C-20261120-222533-ce50a86, C-20261121-125459-f03c4ba;
+analysis C-20261121-140057-92742cf). Bearing from Track D on the relaxed lapse: OPEN.md
+first section, item p.
+
+## Release core-v0.5 (2026-11-21; `tracks/core/RELEASE-v0.5.md`, tag on c3eb42e0)
+
+| Check | Run id | Result |
+|---|---|---|
+| byte regression against core-v0.4, 12 set-ups | core-20261121-063859-e410ee3 | PASS |
+| quick tests of the four merged branches | core-20261121-065009-29b855c, judged -065726-bf06a85 | PASS |
+| card check of the merged card executable | core-20261121-074846-e830785 (job 4772) | PASS, K1 to K6 |
+| release builds against the candidate | -075456-a505400 (processors, 75/75), -075439-58c2787 (job 4775) judged -125722-91a199a, -125743-84f0e42 | PASS |
+
+## Release core-v0.6 (2026-11-21; `tracks/core/RELEASE-v0.6.md`, tag on 984bde68)
+
+| Check | Run id | Result | Figure (looked at) |
+|---|---|---|---|
+| byte regression against core-v0.5, 12 set-ups, serial | core-20261121-130202-7cf7db8 | PASS, 75/75 identical | `scratch/core/core-20261121-133153-89d375b/R/fig_regress_v04.png` |
+| MPI build without mpirun; threaded build | -132245-c02f6b7; -133243-74c17ff judged -134007-f8513b0 | 75/75; not a byte reference (as designed) | `fig_hst_pair.png` |
+| quick tests (newton-2, z4c-faces) | -130813-710b3cc | 38/38 files identical | `fig_quick_v06.png` |
+| solver regressions M1, R2 | -131148-6efd1b8, -131250-f8df905 | PASS | `analysis/idsolve2/figs/regress_r2_v06.png` |
+| card check of the merged card executable (K6) | -132052-f330004 (job 4800), judged -154700-2de4974, -154710-220c1b0 (session core-lead-6) | PASS: Newtonian 1.6e-11 (bound 1e-10), faces 1.9e-10 (1e-7), solver iterations equal, K1-K6 of v0.5 held | `fig_card_v06.png`, `fig_card_v05.png` of those runs (looked at 2026-11-21) |
+| branch card checks Kc, k1 | -125651-edde517 judged -133219-2c8f63c; -083511-2cff9df judged -134059-e3ab6f3 | held | `analysis/idsolve2/figs/card_k_kc.png` |
