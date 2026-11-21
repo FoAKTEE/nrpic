@@ -1,0 +1,135 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261121-085221-1f579fe",
+  "track": "E-stoch-inf",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "usr step 4: U256m, mirrored partner (s = -1) of U256 in P1's production set-up (256^3, nmax2 = 4096), for the odd/even split of R^NR, H and M_i at 256^3; same executable and dumps as U256; predictions JOURNAL entries 9 and 13; cancelled if U256 fails U-A0..U-A3",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-085221-1f579fe/batch.list"
+  ],
+  "cwd": "scratch/E-stoch-inf/E-20261121-085221-1f579fe",
+  "git": {
+    "sha": "1f579fe3f552583cfe0b2433fa0f35396e30600d",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/usr"
+    ],
+    "outside_package": {
+      "count": 3,
+      "first": [
+        "?? tracks/E-stoch-inf/a4res/scripts/a4lib.py",
+        "?? tracks/E-stoch-inf/a4res/scripts/make_list.py",
+        "?? tracks/E-stoch-inf/a4res/scripts/twin_predict.py"
+      ]
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "scalar_field",
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_scalar-3/athena_gpu",
+    "exe_sha256": "8dc2ae83e9861c797377577403136d39b3237abe5855f8c633e25b646885d494",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": {
+    "file": "tracks/E-stoch-inf/usr/inputs/usr_256s.athinput",
+    "sha256": "8b889773c11e3b5e98d09f7c4302123798d1d44949af18dbebc01f62b2017613",
+    "overrides": {
+      "scalar_field/noise_mode_scale": "-1.0"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_scalar-3/athena_gpu",
+      "role": "exe",
+      "sha256": "8dc2ae83e9861c797377577403136d39b3237abe5855f8c633e25b646885d494",
+      "bytes": 103521816,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/E-stoch-inf/usr/inputs/card_u256m.list",
+      "role": "list",
+      "sha256": "62d72d4c4a522528da7de52cc415d9053c44e656f6e90ce4f2f96b7e4a142c00",
+      "bytes": 243,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/usr/inputs/usr_256s.athinput",
+      "role": "athinput:U256m",
+      "sha256": "8b889773c11e3b5e98d09f7c4302123798d1d44949af18dbebc01f62b2017613",
+      "bytes": 2556,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "U256m",
+      "input": "tracks/E-stoch-inf/usr/inputs/usr_256s.athinput",
+      "args": [
+        "scalar_field/noise_mode_scale=-1.0"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:43:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.72,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "E-20261121-085221-1f579fe",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261121-085221-1f579fe",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-21T08:52:22Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 10.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.1567,
+    "gpu_hours_reserved": 1.47,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 3,
+    "runs": 139,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
