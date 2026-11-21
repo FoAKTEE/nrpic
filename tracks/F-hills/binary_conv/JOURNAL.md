@@ -117,3 +117,128 @@ with 2514 MeshBlocks (g2mesh's model and card test: 2514), `p1b_R12.athinput` wi
   4.969 against 4.966 at 20 M).
 So every reference keeps the separation within 4.93-4.97 M to t = 20 M, while P1 (m/8) was at
 4.286 at 20 M; the physical inspiral time is about 2600-3400 M.
+
+## 2026-11-21 BC-3, outcome of the first card segments (intermediate; analysis run F-20261121-153844-fbc75ac)
+
+Runs: R8 alone F-20261121-130358-6cf186a (one segment, Slurm 4797, t = 0-20.94 M, complete as
+planned; its chain resubmitted itself past MAX_SEGMENTS = 1 as job 4808, which I cancelled with
+`submit_chain.sh --stop` before it started, so the run is closed at its single segment); R16n alone
+F-20261121-130351-04074e1 (segment 1 of 3, Slurm 4796, t = 0-7.74 M; segment 2 queued as Slurm
+4807); R12 F-20261121-153707-1eaa5d4 submitted 07:37 PST (Slurm 4809, queued). Analysis
+`scripts/analyze.py` (first pass F-20261121-153759-af77173, second pass with the deviations from
+the references F-20261121-153844-fbc75ac); figures `fig_orbit_conv_intermediate.png`,
+`fig_horizons_H_intermediate.png` read. All numbers below are from these runs [VERIFIED].
+
+Separation s(t) (coordinate distance of the trackers), M:
+
+| t | Newton | EIH canonical | P1 (m/8, 3 holes) | R8 alone (m/8) | R16n alone (m/16) |
+|---|---|---|---|---|---|
+| 0 | 4.9519 | 4.9519 | 4.9519 | 4.9519 | 4.9519 |
+| 2.5 | 4.9469 | 4.9503 | 4.9421 | 4.9478 | 4.9502 |
+| 5 | 4.9439 | 4.9490 | 4.9115 | 4.9301 | 4.9548 |
+| 7.5 | 4.9430 | 4.9478 | 4.8539 | 4.8863 | 4.9477 |
+| 10 | 4.9442 | 4.9464 | 4.7798 | 4.8257 | - |
+| 15 | 4.9528 | 4.9412 | 4.5760 | 4.6465 | - |
+| 20 | 4.9693 | 4.9302 | 4.2855 | 4.3753 | - |
+
+- The m/16 binary follows the EIH (canonical) separation to 1e-4 M at t = 2.5 and 7.5 M; between
+  them it wobbles by at most 0.006 M (4.9548 at 5 M, above both references), a coordinate
+  oscillation of the same size as the Newton-EIH spread (0.005 M). Its deviation from EIH stays
+  within +-0.006 M over 0-7.74 M.
+- The m/8 binary alone decays like P1 from t of about 3 M on, with |Delta s| growing as t^2
+  (figure, lower left): 0.066 M at 7.5 M, 0.305 at 15, 0.577 at 20; minimum 4.3125 at 20.94 M.
+  It decays 0.67-0.87 times as fast as P1 (Delta s ratio 0.67 at 7.5 M, 0.84 at 15, 0.87 at
+  20). Time stretch against P1 (s_8(t) ~ s_P1(lambda t)): lambda = 0.914 (rms 0.014 M over
+  0.5-20.9 M), so the m/8 binary alone would merge at about 48.8/0.914 = 53 M if the stretch
+  held to the merger [JUDGEMENT].
+- At t = 7.5 M the m/8 binary is 0.0615 M inside EIH, the m/16 binary 0.0001 M; with the wobble
+  as the error of the m/16 value, the ratio is at most 0.006/0.0615 = 0.1, i.e. the m/8 error
+  falls by at least 10 when the cells are halved: an order p >= 3.3 (two-point; the Delta s ratio
+  gives 3.96 at 7.5 M) [arithmetic on VERIFIED numbers; no three-point order until R12 lands].
+- Phase (rad) at 7.5 M: Newton 0.346, EIH 0.290 (refs at 7.5 interpolated from the figure data:
+  not tabulated; see refs.json), P1 0.201, R8 0.225, R16n 0.239. The coordinate phase lags the
+  references at every resolution (gauge: the trackers start at rest with zero shift, multi_puncture
+  section 4) and converges far less than the separation (R8 0.225 against R16n 0.239).
+- Horizons: R16n finds both members in all 248 searches; masses 0.12742 / 0.12766 at the first
+  search and 0.12736 / 0.12763 at 7.7 M (flat: fitted drift -7e-5 and -5e-7 per M over 3-7.7 M),
+  mean coordinate radius 0.107-0.109 (14 cells). R8: 2 failed searches per finder, all at
+  t <= 0.25; masses 0.1257 / 0.1275 at first, 0.1303 / 0.1316 at 20.9 M (drift +1.0e-3 and
+  +1.4e-3 per M, P1 1.4e-3 / 1.7e-3), coordinate radius 0.110-0.112 (7 cells).
+- Constraint norm (history, rms H over the domain +-128): R16n 4e-5 after t = 1, R8 6e-4 (ratio
+  14 for a halved cell: order 3.8). R8 has one sample at t = 0.5 with H-norm2 = 1.83e4 (P1:
+  5.99 at the same time; R8 back to 10.9 at t = 1.0). A transient of one history sample, cause not
+  determined [TO VERIFY: a regrid at t = 0.5 with the release core-v0.5 executable on +-128; P1 ran
+  core-v0.3 on +-256]. All history columns finite; Volume constant.
+- Cost (segment logs, sacct): R8 2241 MeshBlock-cycles/s, 5362 cycles, 20.94 M in 0.835
+  card-hours, GPU peak 48.8 GB at 2000 slots, tree 1170 -> 1240; R16n 2302 MeshBlock-cycles/s,
+  3963 cycles, 7.74 M in 0.835 card-hours, peak 58.6 GB at 2400 slots, tree 1744 -> 1618.
+
+Predictions of BC-1:
+1. R8 alone within 0.10 M of P1 to the end of its window: MET (largest difference 0.0898 M at
+   20.94 M; 0.032 at 7.5, 0.070 at 15). Its sub-ranges: s(10) = 4.8257 in 4.73-4.83 MET (at the
+   edge); s(15) = 4.6465 outside 4.53-4.63, FAILED by 0.017 M. The isolated binary decays more
+   slowly than P1 by 13-33 percent: the third body (or the mesh and executable differences of
+   R8 against P1: +-128 against +-256, core-v0.5 against core-v0.3) adds to the decay, but most of
+   it is present without the heavy hole.
+2. Decay resolution driven, R16n's Delta s at most half of R8's: MET on the window available
+   (7.5 M: 0.0042 against 0.0657, ratio 0.064); the 15 M comparison waits for R16n segment 2.
+3. Order 1-4: two-point only, 3.96 (Delta s at 7.5 M) and >= 3.3 (deviation from EIH); inside the
+   range, three-point order NOT DONE (R12 queued).
+4. Horizons: every R16n search found; growth at R16n below half of R8's: MET. Member masses at
+   5 M in 0.128-0.140 at all resolutions: FAILED for R16n (0.1274, 0.1276), met for R8 (0.1282,
+   0.1285): the finer mesh gives the smaller (closer to bare) mass, i.e. the m/8 masses carry a
+   resolution excess of about 0.001.
+5. Finite fields, exit 0 at the wall clock, Volume constant: MET; the R8 constraint transient at
+   t = 0.5 was not predicted.
+6. Cost: start trees MET (exact). Rates: R8 2241 in 1800-2300 MET; R16n 2302 FAILED by 2
+   MeshBlock-cycles/s (above). Advance per segment: R8 20.94 M in 15-21 MET; R16n 7.74 M outside
+   5.5-7.5, FAILED (above): the measured trees (1618 at the end of the segment) are smaller than
+   the model's Newtonian mean (1725), so the cost model is slightly pessimistic.
+7. Verdict: next entry.
+
+## 2026-11-21 BC-4. Verdict and the input of P1b [JUDGEMENT unless marked]
+
+1. P1's merger at 48.8 M is a resolution effect of the m/8 members: the binary alone at m/8 decays
+   the same way (87 percent of P1's Delta s at 20 M), the binary alone at m/16 follows the 1PN
+   reference within 0.006 M over the first 7.7 M, and the error between them falls by at least ten
+   for a halved cell [VERIFIED numbers above]. The heavy hole adds a smaller part (13-33 percent of
+   the decay over 7.5-20 M) that this package does not separate from the mesh and executable
+   differences.
+2. Survival time. Physical inspiral 2600-3400 M (BC-2). Numerical: m/8 merges at about 49 M (P1)
+   or 53 M alone (stretch estimate). If the numerical decay rate scales as h^p with p >= 3.3, the
+   m/16 decay is at least ten times slower and the binary at m/16 merges after more than about
+   500 M; even p = 2 would give about 210 M. So m/16 should survive the 100 M of a passage, by
+   extrapolation from a 7.7 M window; R16n segments 2-3 (to about 23 M, queued) are the check:
+   refuted if R16n departs from EIH by more than 0.05 M by 20 M. m/12: with p >= 3.3 about 200 M,
+   with p = 2 about 120 M, i.e. likely but not shown; R12 (queued, 2 segments, about 16 M) decides
+   whether the 30 percent cheaper m/12 is enough.
+3. Resolution of P1b: m/16 (R16n: P1's mesh with an 11th level), constant shift_eta = 2 as P1 and
+   as tested here. The mass-scaled profile of junk_gauge's recommendation is not needed for the
+   orbit at m/16 and was not tested in this package.
+4. Input: `inputs/p1b_R16n.athinput` (written by `scripts/make_p1b.py` from P1's input; only the
+   comment, num_levels = 11 and max_nmb_per_rank = 3000 differ; start tree 2514 by `athena -m`,
+   run F-20261121-131003-75a2b29). 3000 slots ran on one card at 78785 MiB of 81920 (g2mesh,
+   F-20261120-222810-e408386); model maximum 2864 along the Newtonian tracks to 280 M.
+5. Cost from the measured R16n rate (2302 MeshBlock-cycles/s, elapsed/computing 1.002) and the
+   g2mesh model trees of P1's set-up at R16n along the Newtonian three-body tracks (mean 2428 to
+   150 M, 2470 to 200 M, 2527 to 280 M; run F-20261120-222426-86392c3), 512 cycles per M
+   [arithmetic, analysis run F-20261121-153844-fbc75ac]: 22.6 card-hours to 150 M, 30.6 to 200 M,
+   43.8 to 280 M, i.e. 27, 37 and 53 segments of 50 minutes. P1's own trees at m/8 were 10 percent
+   below the Newtonian model (g2mesh G2M-1 item 3), so these are upper estimates. m/12 for
+   comparison: 15.6 / 21.2 / 30.4 card-hours (if R12 shows it survives).
+6. Chain command for P1b (NOT submitted; the lead decides; the request is above eight card-hours,
+   so decision 0014 asks for an announcement in STATUS.md first; 200 M shown):
+
+       harness/bin/nrpic-run submit --kind scouting --gate G1 --launcher chain --gpu-hours 32 \
+           --package tracks/F-hills/binary_conv \
+           --exe tracks/F-hills/binary_conv/scripts/athena_keep_trackers_bc.sh \
+           --input /data/haiyangw/nrpic/scratch/F-hills/tmp/binary_conv/exe/bc-ak05-gpu \
+           --parent F-20261119-150017-b45ec5f --parent F-20261121-130351-04074e1 \
+           --preregistered '<the lead's P1b prediction in tracks/F-hills/JOURNAL.md>' \
+           --purpose "P1b: Hills passage q = 4 as P1 with the members at m/16 (R16n), 200 M" \
+           -- tracks/F-hills/binary_conv/inputs/p1b_R16n.athinput time/tlim=200
+
+   (`--gpu-hours 32` gives floor(32/0.983) = 32 segments of 50 min, about 26.7 card-hours and
+   about 32 x 6.3 M; raise it to about 38 for the full 200 M; `time/tlim=280` and about 54 for
+   280 M.) The chain resubmits one segment at a time; a segment advances about 5.3-6.3 M (three
+   holes, 2428-2527 blocks at 2302 MeshBlock-cycles/s).
