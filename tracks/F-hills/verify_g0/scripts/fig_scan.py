@@ -28,6 +28,7 @@ def main():
     ap.add_argument("--scan", required=True)
     ap.add_argument("--mu", default="")
     ap.add_argument("--s1", default="")
+    ap.add_argument("--scan4", default="", help="scan runs with the circular binary released at 4 r_t (V7's construction)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     mine = []
@@ -61,6 +62,17 @@ def main():
                                               [m["hrna_handoff"]["separated"] for m in mm], [m["hrna_handoff"]["plunge"] for m in mm])):
             axx.plot(x, y, "o", mfc="none", color=col)
         axx.plot(x, [m["hrna_grmatched"]["plunge"] for m in mm], "s", color=fs.PAL["red"], ms=4, label="mine, HRNA plunge, GR-matched CM")
+        m4 = []
+        for run in (a.scan4.replace("+", ",").split(",") if a.scan4 else []):
+            m4 += [m for m in json.load(open(os.path.join(SCR, run, "scan.json"))) if m["q"] == q]
+        if m4:
+            axx.plot([m["rp"] for m in m4], [m["newton"]["separated"] for m in m4], "x", color=fs.PAL["blue"], ms=7,
+                     label="mine, release 4 r_t: Newton sep.")
+            axx.plot([m["rp"] for m in m4], [m["newton"]["member_below_4M"] for m in m4], "x", color=fs.PAL["green"], ms=7,
+                     label="mine, release 4 r_t: Newton inside 4M")
+            axx.plot([m["rp"] for m in m4], [m["hrna_grmatched"]["plunge"] for m in m4], "+", color=fs.PAL["red"], ms=9,
+                     label="mine, release 4 r_t: HRNA plunge (GR CM)")
+            out.setdefault("release_4rt", []).extend(m4)
         mq = [m for m in mu if m["q"] == q]
         if mq:
             axx.plot([m["rp"] for m in mq], [m["newton"]["member_below_4M"] for m in mq], "^", color=fs.PAL["green"], ms=5,
