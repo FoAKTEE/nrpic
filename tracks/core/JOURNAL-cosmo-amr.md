@@ -1571,3 +1571,31 @@ Card: `squeue` holds two jobs of core (4758 of another package and my 4760 with 
 so no third: job 4760 is withdrawn (`scancel 4760`, run core-20261121-032510-c83f904
 closed as stopped before it started) and T14b's seven cases run in one job with T10g
 (`t14b_t10g.list`, 0.2 card-hours asked). Not waited for.
+
+## 2026-11-21 03:52  outcome of T10f: the jump is gone with the corrected deposit
+
+**T10f, run core-20261121-030904-1548d49** (case a5 of T10e with NEW2, one processor,
+68 cycles to t = 3.5, exit 0), **analysed against T10e by core-20261121-035043-d2a3257**
+(`t10f_summary.json`, figure `fig_t10f_compare`, looked at) [VERIFIED]:
+- At the cycles of the old jump the largest relative constraint is 0.0091, 0.0096,
+  0.0101 (cycles 52, 53, 54; first-order form: 0.0099, 0.066, 0.159) and the largest |H|
+  6.1e-4, 6.2e-4, 6.3e-4 (6.6e-4, 3.0e-3, 6.0e-3): **no jump**. The jump of T10e was the
+  flipping slope of the linear cloud and nothing else.
+- Largest value to t = 3.5: 0.0357 (first-order form 0.169, uniform spreading 0.0389,
+  no refinement 0.0197): PASS ("below 0.05"), slightly below the uniform spreading.
+  |H|_2/|16 pi E|_2 inside r = 2.45 at t = 3.5: 0.0117 (0.0414; 0.0116; no refinement
+  0.0073 at t = 3.36).
+- The clause "changes by less than 30 per cent from one cycle to the next" FAILED as
+  written: the relative constraint rises by a factor 1.40 at two cycles (t = 3.02 and
+  3.10). At those cycles the largest |H| itself changes by 2 and 19 per cent (largest
+  cycle-to-cycle factor of |H| after the regrid 1.19; first-order form 4.6), and the run
+  with the uniform spreading shows the same steps (1.19 and 1.27 in the relative
+  measure): the largest RELATIVE value moves to cells where its denominator is small.
+  The clause should have been written for |H|.
+- From t = 3.0 to 3.2 both refined runs, with either spreading, rise together from
+  0.010 to 0.03, away from the unrefined run (0.012 to 0.015): that rise belongs to the
+  refined level (the filter at each level's cell size is the candidate, T3b; not
+  separated here), not to the sampling of the clouds. Between the regrid and t = 2.9
+  the integral form is the smoothest of the three refined runs and stays 25 per cent
+  below the uniform spreading.
+- E stays positive (smallest 2.04e-4); identity 9.0e-14.
