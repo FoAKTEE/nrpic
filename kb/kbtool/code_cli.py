@@ -4,6 +4,9 @@ kbtool.cli:
     kb fetch-repos [--repo R ...] [--refresh] [--dry-run] [--work DIR]
     kb ingest repo [--repo R ... | --all] [--this [--ref REF]]     (routed from `kb ingest`)
     kb code "SYMBOL or text" [--repo R] [--kind function|class|param|file|text] [-k N] [--db PATH]
+    kb code modules [--repo R] [--report PATH] [--no-write] [--json] [--db PATH]
+        (K7 module descriptions and task-list order, kbtool.code_modules; with --kind other
+        than any, `modules` is searched as text)
     kb link add|list|check|load|explicit ...
     kb watch upstream [--no-fetch]
 """
@@ -69,6 +72,8 @@ def cmd_ingest_repo(argv, data_root=None):
 
 # ---------------------------------------------------------------- kb code
 def cmd_code(a):
+    if a.query == "modules" and a.kind == "any":
+        return cmd_modules(a)
     from . import code_query
     lay = layout(a.data_root)
     hits = code_query.search(lay, a.query, repo=a.repo, kind=a.kind, k=a.k, db=a.db)
@@ -78,6 +83,27 @@ def cmd_code(a):
     else:
         sys.stdout.write(code_query.format_hits(hits))
     return 0 if hits else 1
+
+
+# ---------------------------------------------------------------- kb code modules
+def cmd_modules(a):
+    from . import code_modules
+    lay = layout(a.data_root)
+    descs = code_modules.build(lay, repos=[a.repo] if a.repo else None, db=a.db, report=a.report,
+                               write=not a.no_write, log=lambda s: print(s, flush=True))
+    if a.json:
+        json.dump(descs, sys.stdout, indent=1, sort_keys=True)
+        sys.stdout.write("\n")
+        return 0
+    for d in descs:
+        sw = code_modules.source_writers(d)
+        print(f"{d['repo_id']} {d['commit_sha'][:12]}: {len(d['files'])} files, {len(d['tasks'])} task registrations"
+              + (f"; {d['modules_json']}" if d.get("modules_json") else ""))
+        for t in sw:
+            print(f"  tmunu: {t['task_function']} ({t['module']}) in {t['task_list']}, {t['when']}")
+    if a.report:
+        print(f"report: {a.report}")
+    return 0
 
 
 # ---------------------------------------------------------------- kb link
@@ -146,6 +172,8 @@ def register(sub, data_root_getter=None):
     s.add_argument("-k", type=int, default=20)
     s.add_argument("--db", help="database file (default db/current, else kb.sqlite)")
     s.add_argument("--json", action="store_true")
+    s.add_argument("--report", help="kb code modules: also write the markdown report here")
+    s.add_argument("--no-write", action="store_true", help="kb code modules: do not write modules.json")
     s.set_defaults(fn=cmd_code)
 
     s = sub.add_parser("link", help="K7: paper-code links (impl_links)")
