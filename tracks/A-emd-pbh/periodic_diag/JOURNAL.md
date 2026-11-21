@@ -327,3 +327,29 @@ from lapse_leak x dt = 2.9 at t = 1.4 takes a few cycles to show); U9 no jump: y
 failure was the stiff relaxation, not the Gamma-driver: removing the shift changes nothing
 (U8), lowering lapse_leak removes it (U9). This is now tested; it does not touch the card
 run (lapse_leak x dt <= 0.39 on level 4).
+
+## 2026-11-21 23:08Z, entry 12: R2 outcome (run A-20261121-212853-4a52dea; analysis A-20261121-230816-3d85012, fig_refined.png looked at) and the verdict
+
+R2 (the card deck peak_leak.athinput itself on the release core-v0.6 threaded processor
+build, 4 threads, P0L data with its 317 tracked particles, relaxed lapse, cfl 1.0,
+dt_lightspeed 0.25, shift switched off; 280 cycles to t = 3.0 in 1 h 39 min): no jump.
+The level-4 step follows the card's (0.833 at t = 2.38, where the card's P0L had 0.825 at
+its jump; slightly larger since |beta| no longer enters the light speed) and reaches 0.94 at
+t = 3.0. H_max 1.45e-2 at t = 2.37, 8.8e-3 at 2.74, 7.6e-3 at 3.0 (card P0L: 0.84 at 2.40,
+179 at 2.51); H-norm2 6.3e-3 at t = 2.51 and 5.5e-3 at 3.0 (card P0L 3.7e4 at 2.51);
+alpha_min and alpha_max follow the card's to the eye until the card's jump.
+Against entry 2: R2 no jump, H_max below 0.05 to t = 3.0: yes.
+R0 and R1 were not run (cost, README); the card itself is R0's evidence, and Test A ties its
+onset to the step.
+
+Verdict [VERIFIED in the sense of this package: each named cause had a run in which it could
+have failed]: the jump is the Gamma-driver's grid-scale instability once the light-speed
+step limit lets dt/dx on the finest level exceed 0.685 (Test B), reached at t = 1.70-1.77 in
+the card runs and visible at t = 2.4-2.5 after an amplification of about 10^8-10^9 (Test A).
+Taking the shift away removes it on the card deck itself (R2) and on the uniform mesh (G2);
+halving the step removes it (G1; G6 at 0.6 with a seed); the lapse relaxation, the level
+boundaries, the matter and the deposit are excluded by G0/G5 (frozen lapse, uniform mesh,
+still fail), by the common onset of P0L and S1L, and by G1/G2. Separately, the lapse_leak
+relaxation is stiff on coarse meshes (U0, U8, U9), which does not touch the card deck.
+Track A's periodic deck can run now with cfl_number 0.5 (the first card job is its
+refined-mesh test); the draft message to core is in outbox_draft/.

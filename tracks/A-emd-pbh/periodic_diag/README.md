@@ -10,7 +10,7 @@ Predictions and outcomes, also the refuted ones: `JOURNAL.md`.
 
 ## Verdict
 
-**Cause [VERIFIED by runs in which it could have failed; R2 below adds the card deck itself]:**
+**Cause [VERIFIED by runs in which it could have failed, the card deck itself included (R2)]:**
 the t = 2.5 jump of card job 4799 is a time-step instability of the Gamma-driver shift.
 The deck runs `cfl_number = 1.0` with `<z4c> dt_lightspeed = 0.25`; the light-speed limit
 (`athenak/src/z4c/z4c_newdt.cpp`, c = alpha sqrt(chi gt^dd) + |beta^d|) lets the step on the
@@ -29,7 +29,11 @@ first at the 3D grid-scale corner (Test B, run A-20261121-212800-d7f31a4).
   scale in beta^x and Gam^x (G0, G5); cfl 0.5 (G1), cfl 0.6 with a white-noise seed (G6) and
   zero shift (G2) stay smooth to t = 10-12 (runs A-20261121-212941-9e68be1,
   A-20261121-220510-6c46032, analysis A-20261121-222626-2cb28d0, `figures/fig_uniform.png`).
-- R2 (the card deck on processors, zero shift, cfl 1.0): R2_SUMMARY
+- The card deck itself on processors with the shift switched off and everything else as in
+  job 4799 (R2, run A-20261121-212853-4a52dea, analysis A-20261121-230816-3d85012,
+  `figures/fig_refined.png`): the level-4 step follows the card's (0.833 at t = 2.38, 0.94 at
+  t = 3.0) and nothing jumps: H_max 1.45e-2 at t = 2.37 and 7.6e-3 at 3.0, against 0.84 at
+  2.40 and 179 at 2.51 in the card's P0L.
 
 **Excluded as the cause:** a regrid (the mesh is static), the level boundaries as such (the
 instability appears on a uniform mesh), the lapse relaxation (frozen lapse in G0/G5 still
@@ -101,7 +105,8 @@ Lowering shift_Gamma alone does not suffice (Test B': 0.3 gives a threshold of 0
 | A-20261121-222713-efe9eb8 | Test B': shift_Gamma 0.3 | threshold 0.94 (level 4), 0.90 (root) |
 | A-20261121-223054-ae9af0c | U8, U9: relaxed lapse, zero shift, leak 20 / 5 | U8 fails as U0 (jump t = 3.18, guard 4.80); U9 smooth to 12 |
 | A-20261121-224448-b53226c | analysis of U0, U8, U9 | `figures/fig_leak.png` |
-| A-20261121-212853-4a52dea | R2: card deck, zero shift, cfl 1.0, processors | R2_ROW |
+| A-20261121-212853-4a52dea | R2: card deck, zero shift, cfl 1.0, processors | no jump to t = 3.0 (H_max 7.6e-3), step 0.83-0.94 dx on level 4 |
+| A-20261121-230816-3d85012 | analysis of R2 against the card's P0L and S1L | `figures/fig_refined.png` |
 
 ## How to rerun
 
@@ -114,6 +119,8 @@ $R --purpose "Test B" --cores 1 -- bash -c 'python -I '$P'/vonneumann.py --out "
 $R --purpose "U0" --cores 6 -- bash -c ''$P'/run_uniform.sh "$NRPIC_RUN_DIR" 6 U0'
 $R --purpose "G0-G2" --cores 2 -- bash -c ''$P'/run_uniform.sh "$NRPIC_RUN_DIR" 2 G0 G1 G2'
 $R --purpose "G5-G6" --cores 2 -- bash -c ''$P'/run_uniform2.sh "$NRPIC_RUN_DIR" 2 G5 G6'
+$R --purpose "U8-U9" --cores 2 -- bash -c ''$P'/run_uniform.sh "$NRPIC_RUN_DIR" 2 U8 U9'
+$R --purpose "Test B'" --cores 1 -- bash -c 'python -I '$P'/vonneumann.py --mu 0.3 --out "$NRPIC_RUN_DIR"'
 $R --purpose "R2" --cores 4 -- bash -c ''$P'/run_refined.sh "$NRPIC_RUN_DIR" 4 R2'
 $R --purpose "Test A" --cores 1 -- bash -c 'python -I '$P'/card_onset.py --job /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-131600-02b5d41 --vn <Test B run dir> --out "$NRPIC_RUN_DIR"'
 $R --purpose "analysis" --cores 1 -- bash -c 'python -I '$P'/analyse_runs.py --run G0=<dir>/G0 --run G1=<dir>/G1 ... --vn <Test B run dir> --out "$NRPIC_RUN_DIR"'
@@ -122,7 +129,7 @@ $R --purpose "analysis" --cores 1 -- bash -c 'python -I '$P'/analyse_runs.py --r
 Costs on the threaded processor build of release core-v0.6
 (`scratch/core/exe/core_nrpic_v06/athena_cpu_omp`): uniform 64^3 with the 262,144 particles
 of P0L about 3.3 s per cycle on 6 threads, 9.6 s on 2 (60-120 cycles per case); the card
-deck (288 blocks of 16^3) about 23 s per cycle on 4 threads.
+deck (288 blocks of 16^3) about 21 s per cycle on 4 threads (R2: 280 cycles in 1 h 39 min).
 
 ## Requests
 
