@@ -393,7 +393,7 @@ def scan(q, ab, rp, nphase, rtol, t_after, mu_conv="total", with_u=False, max_st
 
 
 # ------------------------------------------------------------------ 2404.16270 set-up (K5)
-def s1_setup(beta, sense, nphase, rtol, k0=50.0, k1=150.0):
+def s1_setup(beta, sense, nphase, rtol, k0=50.0, k1=150.0, max_steps=None):
     """HRNA at the set-up of arXiv:2404.16270 (article.tex:300-348, appendix.tex:138-179):
     M = 1, m1 = m2 = 5e-7 (M = 1e6 m_b), a0 with r_t = 101.3 M, CM released at (r0, 0),
     r0 = 50 r_t, on the Schwarzschild parabola (E = 1, L = sqrt(2 rp^2/(rp - 2))) with
@@ -440,13 +440,17 @@ def s1_setup(beta, sense, nphase, rtol, k0=50.0, k1=150.0):
         return stop, ynew
     # the time to reach 150 r_t is below 2 x (4/3)(r/2)^(3/2) for a parabola
     t_end = 2 * (4 / 3) * ((k1 * rt) / 2) ** 1.5 + 2 * (4 / 3) * (r0 / 2) ** 1.5
-    t, yE, done, nacc = vint.integrate(rhs, y, 0.0, t_end, rtol=rtol, atol=rtol * 1e-4, h0=1.0, callback=cb)
+    t, yE, done, nacc = vint.integrate(rhs, y, 0.0, t_end, rtol=rtol, atol=rtol * 1e-4, h0=1.0, callback=cb,
+                                       max_steps=max_steps)
+    capped = nacc >= (max_steps or 10 ** 12)
     plunged = ~alive.all(1)
     d = yE[:, 2:4] - yE[:, 0:2]
     E12 = 0.5 * m * m / mb * np.sum((yE[:, 6:8] - yE[:, 4:6]) ** 2, 1) - m * m / np.linalg.norm(d, axis=1)
     sep = plunged | (E12 > 0)
+    ok = ~capped
     return dict(beta=beta, sense=int(sense), nphase=nphase, rtol=rtol, r0_over_rt=k0, rend_over_rt=k1,
-                rp=rp, a0=a0, separated=float(sep.mean()), plunged=float(plunged.mean()),
+                rp=rp, a0=a0, separated=float(sep[ok].mean()), plunged=float(plunged[ok].mean()),
+                n_capped=int(capped.sum()), separated_capped_counted_as_is=float(sep.mean()),
                 reached_end=float(done.mean()), steps_max=int(nacc.max()), sep_flags=sep.astype(int).tolist())
 
 
@@ -565,7 +569,7 @@ def main():
         rows = []
         for b in (float(x) for x in a.betas.split(",")):
             for sense in (1, -1):
-                row = s1_setup(b, sense, a.nphase, a.rtol)
+                row = s1_setup(b, sense, a.nphase, a.rtol, max_steps=a.max_steps)
                 rows.append(row)
                 print(json.dumps({k: v for k, v in row.items() if k != "sep_flags"}), flush=True)
                 json.dump(rows, open(os.path.join(a.out, "s1check.json"), "w"), indent=1)
