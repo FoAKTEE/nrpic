@@ -22,3 +22,9 @@ models validation). For G1: section 1 (heat, T6-T8: confirmed, C6 met), section 
 v2 estimator confirmed, rates on runs quoted with their interval; C2 met with that
 restriction), sections 5 and 6 (note cut before its G1 text; verifier in progress).
 Sections 2 and 3 (decisive, drift) are G2 material.
+
+Wave 3, batch 4a (lead, 2026-11-21): `../REVIEW-wave3.md` sections 9 (verify_g1: VERIFIER.md
+checked from the artefacts, items 1 and 2 confirmed by runs C-20261121-155049-ecf8893 and
+C-20261121-155116-ba83d16, every WRONG or NOT CONFIRMED item answered), 10 (note v1: checker
+--compile rerun and six ledger rows rechecked, run C-20261121-155226-8ea9e47; C16 met) and 11
+(drift batch 3, G2 material).

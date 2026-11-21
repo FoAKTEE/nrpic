@@ -1,29 +1,24 @@
 # C-sidm G1: what the gate still lacks
 
-State at the end of the lead session of batch 2b (2026-11-21). Verdict of the lead: G1 NOT
-MET. Every criterion of the track sheet is now met (C6 "all tests of C-pre-1 pass", C7 "the
-baseline is reproduced") and so are C1-C5 and C9-C15; two package items are open. The
-package does not ask for a pass yet.
+State at the end of the lead session of batch 4a (2026-11-21). Verdict of the lead: every item
+of the checklist is met (C1-C7, C9-C19 PASS; C8 not applicable to G1). The lead judges the
+package complete for the independent review of decision 0016 item 4 and asks for it; the lead
+does not pass the gate. Nothing below blocks that review in the lead's judgement; each item is
+a stated limit for the reviewer.
 
-1. Working note with the G1 results (C16). The note package was cut by the usage limit on
-   2026-11-20 22:35 UTC while writing the G1 sections. Its figures and schematics exist
-   (registered run C-20261120-223007-fe3f39c, committed 077b849d); `note/main.tex`,
-   `references.bib`, `scripts/{common,ledger,schem_timeline}.py`, `tables/ledger.tex`,
-   `tables/runinfo.tex` and `schem_timeline.*` are edited and uncommitted in the worktree.
-   Remaining: the outcome of prediction N3 in `note/JOURNAL.md`; the G1 sections finished
-   (box tests of waves 2 and 2b, heat T6-T8 with the wave-3 numbers, models and the rate
-   restriction of C2, Juttner anchor and King onset; the cluster runs as G2 scouting); two
-   boxes of the architecture schematic updated (growth-rate fit decided; T7/T8 also on the
-   card); a second registered run_all; compile; manuscript checker with --compile; pages
-   read; commit. Owner: C-sidm (a note helper).
-2. Fresh-context verifier of the G1 material (C17). Package `verify_g1` (resumed in batch
-   2b): V1a-V1c, V2, V3 done and confirming; the rest of its plan and `stage/G1/VERIFIER.md`
-   outstanding. The lead then answers every WRONG or NOT CONFIRMED item. Owner: C-sidm (the
-   verify_g1 helper, then the lead).
-3. Minor gaps of the track's own extra tests (not of the brief's list; not blocking in the
-   lead's judgement): T10b for the T4 statistics (one short card job); the MPI variant of T10
-   (collisions stop on more than one rank in core-v0.5, `coord/INTERFACES/mpi.md`); T3-T5, T9,
-   T11 not repeated with `coll_energy = particle`; T8 on one card seed only.
+1. Readings named after the data (`collide/TESTS.md` section 2c, from the verifier's
+   `VERIFIER.md` section 2): the T4 fit window (16 snapshots), the T6(b) reference temperature
+   (both readings pass) and the T9 KS reference temperature (final energy). The strict T9
+   reading (initial energy) FAILS for the light class of seed 3 (p = 1.7e-4; cause: that seed's
+   energy drift, +4.8e-3 in theta) and stays on record. T9 is in the track's own list, not among
+   the tests the brief names in C-pre-1. For the reviewer to accept or refuse.
+2. No second check of: T5 (entropy; needs an estimator with a bias study), T8 and T6(a, c),
+   T0b, T10b, T11, R6; T8 rests on one card seed; T7 on the card was recomputed by the lead
+   only from the per-seed values. These are the limits of C6 and C17.
+3. Minor gaps of the track's own extra tests (not blocking): T10b for the T4 statistics (one
+   short card job); the MPI variant of T10 (collisions stop on more than one rank, core accepted
+   the port without a date); T3-T5, T9, T11 not repeated with `coll_energy = particle`.
 4. Reservations carried to G2: the zero-cell-size conductivity at theta 0.003 may lie 1-3
-   percent below the relativistic Chapman-Enskog value of V1a (itself unreviewed); growth
-   rates on runs are defined only with their fitting interval.
+   percent below the relativistic Chapman-Enskog value of V1a (itself checked by no second
+   agent); growth rates on runs are defined only with their fitting interval; the note's v1
+   ledger rows for card T7 at theta 0.1 and 1 and most growth-fit rows have no second check.

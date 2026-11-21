@@ -9,7 +9,7 @@ track and an implementation by core. Run ids are under `tracks/C-sidm/runs/`; th
 runs of the lead are C-sidm-20261115-131130-3077a99 (cross-checks X1-X5) and
 C-sidm-20261115-131135-3077a99 (reruns of every package); see `../G0/REVIEW.md`.
 
-**Verdict: G1 NOT MET.** The baseline and the specifications are done and independently
+**Batch 4a (2026-11-21, lead): every checklist item met (C16 note v1, C17 VERIFIER.md answered); the lead asks for the independent review and does not pass the gate. Limits: `OPEN.md`.** Earlier verdict, kept for the record: **G1 NOT MET.** The baseline and the specifications are done and independently
 checked; core committed the operator at the end of this session (3436846, untested by core),
 and its kernels pass the track's T0; the box tests T0b-T12 have not run.
 

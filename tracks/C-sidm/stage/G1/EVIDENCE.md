@@ -114,3 +114,22 @@ analyses C-20261121-035741-b3595d4, -052720-75f3fff, -062412-7473ef1, -075202-1a
 drift: D1 C-20261120-222211-aa1be86, -223139-2526c6d; M/8 smoke C-20261120-222544-e5a7492; run
 (i) C-20261120-222533-ce50a86 (card, 0.69 card-hours); analysis C-20261121-075359-26e3b31
 (lead). Lead's recheck C-20261121-075336-49f92da.
+
+## Wave 3, batches 2b-4a: verifier, note v1, lead's checks
+
+- Verifier (C17): `VERIFIER.md`; blind verdicts `../../verify_g1/VERDICTS_BLIND.md` (commit
+  00adbb95, before the claims); runs C-20261120-222423-519f12b, C-20261120-223130-6742500,
+  C-20261120-223133-2f98a0e, C-20261121-074926-5d9ae56, C-20261121-075256-2084cb5,
+  C-20261121-080313-84094f1, C-20261121-080720-dbcd7ff, C-20261121-081036-0d6117b,
+  C-20261121-081415-b8c9d29, C-20261121-081715-2ad1421; failed or superseded on record:
+  C-20261120-222754-14bd23d, C-20261121-080152-b8d0acd, C-20261121-080633-8ee41f7.
+- Note v1 (C16): `../../note/main.tex`, `main.pdf` (16 pages), commits d0cfe2ea, 2484c878;
+  figures and tables from run C-20261121-130335-d0cfe2e (126 inputs, sha256 ok).
+- Lead's checks (batch 4a): C-20261121-155049-ecf8893 (T10 counts; M/8 controls and energy
+  diffusion with own readers), C-20261121-155116-ba83d16 (V5b reproduced, JSON identical),
+  C-20261121-155226-8ea9e47 (checker --compile on a copy; ledger rows against run JSON);
+  failed on record: C-20261121-155220-5c0d480 (key error of the lead's script).
+- Definitions named after the verifier: `../../collide/TESTS.md` section 2c.
+- G2 material of batch 3 (drift): runs C-20261121-125459-f03c4ba (run (iii), card),
+  C-20261121-140057-92742cf, C-20261121-140356-f933a0e, C-20261121-140431-b4786c4,
+  C-20261121-140518-9812635; run (vi) C-20261121-140023-b0f113e (card).
