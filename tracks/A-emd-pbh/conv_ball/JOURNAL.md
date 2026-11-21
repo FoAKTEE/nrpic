@@ -267,3 +267,21 @@ C_events.png and convergence.md looked at; C has no finder search yet, the finde
   resolved only once the slope of its shell error near tau_ta is below about 1e-3 per M].
 - R_max: below 2e-3 at every mesh, non-monotonic (B's 2e-5 is a crossing of zero); the
   relative R_max error is no longer a usable convergence measure below about 2e-4.
+
+## 2026-11-21 02:50 PST, entry 9: B-N8 (job 3a, first member): outcome of the N-leg prediction at B
+
+B-N8 (mesh B, 8 particles per cell, 4969736 particles) finished at 02:43:45 (exit 0; 2048 cycles
+at about 1.2 s). Analysis A-20261121-104359-4ce67d9 (B-N8_horizon.png, B-N8_events looked at):
+first detection t = 10.750; ddet +0.0705 M (B: +0.0675); dtrap -0.0284 M (B: -0.0224); finder lag
+0.165 (B: 0.197); eta 3.5e-3 (B: 3.1e-3); turnaround V3 -0.0150, cycloid C -0.0083 M (B: -0.0331,
+-0.0127); horizon mass median -3.0e-4 (B: -2.1e-3), window t <= 12.5 -2.1e-4 (B: -2.0e-3).
+- Prediction (entry 6) "B and B-N8 differ in ddet and dtrap by less than |e(A) - e(B)| (0.125,
+  0.070 M) and by less than A and A-N8 do (0.084, 0.045 M)": HOLDS by a wide margin (0.003 and
+  0.006 M): at mesh B the first-detection and trapping times no longer depend on the particle
+  number, so their A -> B change (entry 5) is a mesh effect.
+- The horizon mass does depend on it: with 8 per cell the finder's mass follows the exact slice
+  mass within 1e-4 to 7e-4 from t = 11.5 to 16 (B-N8_horizon.png), below the source's fiducial
+  OS level (Delta M/M_ADM <~ 1e-3, main.tex:945) and below its best AMR particle RMS (7.3e-4,
+  main.tex:1484); with one per cell (B) it sits at -2e-3. [JUDGEMENT] The plateau error of B is
+  the discreteness of the accreted underdense shell (one lattice site per cell of 1/16-1/8 M
+  outside the core), as the steps of A's mass curve suggest (A_horizon.png).
