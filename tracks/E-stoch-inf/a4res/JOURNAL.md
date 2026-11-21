@@ -56,7 +56,7 @@ Disclosure: a development run of the script (not registered, `scratch/E-stoch-in
 sym_test`, 22:20Z) already printed the numbers before this entry; the registered run
 below is the one cited.
 
-## Entry 2, 2026-11-21 13:25Z: outcome of step 1 (run E-20261120-222312-6ee4bc5)
+## Entry 2, 2026-11-21 13:08Z: outcome of step 1 (run E-20261120-222312-6ee4bc5)
 
 A new session (batch 3) continues the package from the worktree: entry 1, the step-1
 script and its registered run were committed; `a4lib.py`, `make_list.py`,
