@@ -102,7 +102,7 @@ def main():
 
     fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.0),
                             gridspec_kw=dict(width_ratios=[16, 3.6, 9]))
-    fig.subplots_adjust(left=0.065, right=0.985, bottom=0.25, top=0.9, wspace=0.3)
+    fig.subplots_adjust(left=0.075, right=0.985, bottom=0.25, top=0.9, wspace=0.3)
     colc = {"identical": fs.PAL["blue"], "a": fs.PAL["yellow"], "b": fs.PAL["green"],
             "a+b": fs.PAL["orange"], "other": fs.PAL["red"]}
     labc = {"identical": "identical", "a": "a: unset bytes of a restart header",
@@ -114,15 +114,18 @@ def main():
         bottom = np.zeros(len(names))
         for c in CLASSES:
             y = np.array([res[part][n][c] for n in names], dtype=float)
-            if y.any() or c in ("identical", "other"):
-                ax.bar(x, y, 0.7, bottom=bottom, color=colc[c], label=labc[c])
+            ax.bar(x, y, 0.7, bottom=bottom, color=colc[c])
             bottom += y
         ax.set_xticks(x)
         ax.set_xticklabels(names, rotation=40, ha="right", fontsize=7)
         ax.set_title(title, fontsize=7.5)
         ax.set_xlim(-0.7, len(names) - 0.3)
+        ax.set_ylim(0, 1.45*bottom.max())
     axs[0].set_ylabel("output files compared")
-    axs[0].legend(loc="upper left", fontsize=6.5)
+    present = [c for c in CLASSES if c in ("identical", "other")
+               or any(v[c] for p in ("a", "b") for v in res[p].values())]
+    axs[0].legend([plt.Rectangle((0, 0), 1, 1, color=colc[c]) for c in present],
+                  [labc[c] for c in present], loc="upper left", fontsize=6.5, ncol=2)
     ax = axs[2]
     cols = [fs.PAL["red"], fs.PAL["blue"], fs.PAL["green"], fs.PAL["orange"]]
     for (k, v), col in zip(twins.items(), cols):
@@ -135,6 +138,8 @@ def main():
     else:
         ax.text(0.5, 0.5, "card twins: not run", transform=ax.transAxes, ha="center",
                 fontsize=8)
+        ax.set_xticks([])
+        ax.set_yticks([])
     ax.set_xlabel(r"time $t$")
     ax.set_title(r"card twins: max $|x_{\rm card} - x_{\rm proc}|/L$", fontsize=7.5)
     fs.save(fig, os.path.join(a.out, "t11_merged"))

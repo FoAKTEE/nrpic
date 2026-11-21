@@ -1049,3 +1049,39 @@ other and the legend covered a point; corrected in the script, numbers unchanged
   did not. This goes into the answer to Track A.
 - The 96^3 case did not run (deck fault, see the start of this session); it is in the
   next card job with MeshBlocks of 32^3.
+
+### T11a and T11b outcome: the merged processor build [VERIFIED]
+
+Builds of the merge commit's source (`athenak/` of 67ca9ce1, unchanged since: `git diff
+67ca9ce1 HEAD -- athenak python problems scripts` is empty), in the existing build
+directories: `scripts/build_cpu.sh .work/build_cpu` (164 s on six cores, sha256
+107fd235...3dbab9) and `scripts/build_gpu.sh .work/build_gpu` (530 s, sha256
+7b2cceed...879ac6). Both compiled without a change to the merged source.
+Runs: release driver core-20261121-080231-a98a070 (`analysis/release/regress_v04.py`,
+merged build against `/data/haiyangw/nrpic/.work/build_cpu_v05/src/athena`, twelve
+set-ups, 360 s on three cores); cases core-20261121-080229-0095e95 (`cases.py t11`, 275 s
+on three cores); judgement core-20261121-080905-9b3a151 (`t11_merged.json`, figure
+`t11_merged.png`, looked at: the y label was cut off and the legend lacked the class of
+the restart files; corrected in the script, numbers unchanged by `cmp`).
+- T11a, new options absent, against release core-v0.5: geo, boris, dep, east, os,
+  jeans, binary, c1 to c5 (73 files and the result lines of two logs), newton_ball,
+  newton_point, newton_wave, mesh_static (42 files): 117 items compared, 117 identical,
+  none in any other class; every run ended with exit status 0. Held; the refutation
+  clause (any differing file) is not met.
+- T11b, new options present, against the files of the pre-merge build: fft7 and fftsp
+  of T1 (21 files each), sin32_sp of T3 (15 files): every history, group and snapshot
+  file and every `.rst.prt`, `.rst.prt.nwt` file identical (50 files). The seven restart
+  files `rst/newton.0000<n>.rst` differ, each only in the 36 bytes of the nine members
+  of the mesh header that the code never sets (class a of the release regression: the
+  pre-merge build wrote 36 non-zero bytes there, the merged build 36 zero bytes). My
+  prediction said "identical byte for byte except parameter dumps" and did not name
+  this class, so it failed as worded for these seven files; the refutation clause (a
+  difference in a history or particle file) is not met. T10 had compared restart files
+  of the same builds as identical because both ran in the same process environment;
+  the bytes are uninitialised memory and no test of this package reads them.
+- So the tests of the Fourier solver and of the group history that ran with the
+  pre-merge processor build (T1, T2, T3, T4, T7, T8) stand for the merged build to the
+  extent that these three cases represent them: the same bytes in every result file.
+- T11c (card twins on the merged card build) is in card job core-20261121-080215-df3af65
+  (Slurm 4777, submitted 08:02Z, 25 minutes asked; behind three jobs of other owners,
+  estimated start 10:54Z).
