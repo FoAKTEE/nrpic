@@ -615,3 +615,92 @@ horizon_summary file):
   alone changes them; `figs/drift.png`).
   Caveat: Track D's run used the card executable of core-v0.2; the vacuum Z4c path is
   the same source (entry 6), and the three runs agree to 1e-15 at 50 M.
+
+## 2026-11-20, entry 11: batch 2b, session resumed at 23:47 PST; c4 for the ball (damping FAILED); decision; predictions of the closing tests
+
+State found (git status clean, journal ended with entry 10): main merged (release
+core-v0.5; one conflict in `z4c/z4c.hpp`, both sides kept: the include and the member of
+this package beside those of the gauge package). The runs of entry 10 had all ended with
+exit 0 and are closed now with `nrpic-run finish`: c4 (core-20261120-220735-a7966ff),
+punc_g4nw (core-20261120-222537-1011ec4), a1r2 (core-20261120-222543-9a83982) and the
+analysis run core-20261120-223202-120e973 (`results/c4_ball.json`, `c3_evo.json`; figures
+`figs/c4_ball_regions.png`, `c3_evo_regions.png`, looked at now). Times of this journal
+are local (PST); the "UTC" of entries 5 and 10 was the local time too.
+
+**c4, ball** (run core-20261120-220735-a7966ff against the full set without damping,
+ball_g4nw_met of core-20261119-164338-2dc0ab0; analysis core-20261120-223202-120e973):
+- (c4-e) FAILED. `sbc_damp_gam = 4` (ball_full_dg4, and with `sbc_damp_theta = 4`
+  ball_full_dgt4) is unstable: the largest |H| within 4 of a face is 4.7e-3 at t = 9,
+  7.6e-2 at t = 10, 0.35 at t = 11, 1.2 at t = 14, and the fields are not finite from
+  t = 15 (the executable of cb50e22 has no guard and ran on with exit 0).
+  `sbc_damp_gam = 1` reaches t = 16 but with the same growth later: 1.2e-2 at t = 14,
+  0.12 at t = 15 and 16, against 5e-3 without damping. The growth starts when the
+  constraint violation that the ball sends out reaches the faces (t of 8 to 10, entry 10).
+  lambda dt is 0.06 and 0.25, far inside the RK4 limit: the term itself, not the time
+  integration, is unstable there. [JUDGEMENT] on the mechanism, not tested: Gt^i_d is a
+  second-order difference of ghost cells that are extrapolated from the boundary cell,
+  so the term feeds the boundary cell's own metric error back into Gt^i and through the
+  Gamma driver into the shift.
+- (c4-a) HELD before the growth: face-layer mean of |Gt - Gt(gt)| at t = 4: 4.64e-4
+  without, 3.32e-4 at lambda = 1 (1.4 times), 2.05e-4 at lambda = 4 (2.3 times).
+- (c4-b) FAILED: `sbc_damp_theta = 4` lowers the face-layer mean |Theta| at t = 4 from
+  5.14e-5 to 4.96e-5 (4 per cent; predicted more than a factor 2); the shell mean |H| is
+  unchanged (8.57e-4), as predicted. At t = 8 and 16 the face-layer mean |H| is higher
+  with it (1.40e-3 against 1.02e-3; 2.06e-3 against 1.44e-3).
+- (c4-c): with both, the shell mean |H| at t = 8 is 8.72e-4 against 7.94e-4 (10 per cent
+  higher, at the edge of the clause "within 10 per cent"); not lower: H5 is not a main
+  carrier of the face error into the interior of the ball.
+
+**Decision** [JUDGEMENT]. The damping of the Gamma constraint in the boundary cells is
+unstable in one of the three set-ups and the damping of Theta gains nothing in the one
+where it was measured, so neither is delivered: `sbc_damp_gam`, `sbc_damp_theta` and
+`Z4cGammaFromMetric` are removed from the source (they stay at commit cb50e22, with which
+c4 and t1 ran; frozen executable `.work/exe/sbc3/`). The Gamma-constraint layer (H5) is
+lowered 5 to 12 times by the full set without them (entry 10) and is otherwise left as
+found. What is delivered: `ghost_falloff` with its powers, `sbc_variant = nonwave` with
+its powers, `sbc_speed`, `sbc_theta = cpbc | nonwave` (cpbc tested without gain, c1-e).
+
+**Predictions of the closing tests** [JUDGEMENT], written before the source is changed
+and before any of the runs or analyses below:
+- c2-c (entry 6, unchanged): after t = 11 punc_g4nw_met has a shell mean |H| at least 10
+  per cent below punc_g4nw.
+- c4-d, c4-e for the two punctures (entry 9, unchanged; the runs are those of cb50e22):
+  face-layer Gamma constraint at t = 4 more than 3 times lower with both dampings at 4,
+  no growth to t = 12. Whatever comes out, the decision above stands (the ball decides).
+- c5, boosted puncture against its reference with the faces at 32 (a1r2, to t = 8;
+  `specs/c5.txt`): (c5-a) shell (8 <= r < 12) mean |H| at t = 8: full set within a factor
+  1.5 of the reference, stock order 2 more than 5 times the reference (the vacuum
+  puncture gave 1.04 and 10). (c5-b) the face layer does not reach the truncation level:
+  mean |M_i| within 4 of a face at t = 4 is more than 10 times the reference's with the
+  full set (3.39e-6, entry 10) and more than 100 times with the stock conditions
+  (4.29e-5). Refuted if the full set is within a factor 3 of the reference there.
+- r2, regression after the merge (`plans/r2_regress.json`, `specs/r2.txt`): every output
+  file of the new processor executable without the options is byte-identical with the
+  release core-v0.5 (`/data/haiyangw/nrpic/.work/build_cpu_v05/src/athena`) for the three
+  package inputs, `problems/puncture/horizon_calib`, `by_binary`, `tests/z4c_bench`,
+  `scalar/kg_wave_smr` (the set of r1) and one periodic run with particles
+  (`problems/tests/mpi_box_periodic`, where no face exists). The difference of the source
+  to core-v0.5 is additions only (`git diff core-v0.5 -- athenak`: 7 files, no deletion).
+- m1, the options after the merge and after the removal (`plans/m1_merge.json`,
+  `specs/m1.txt`): the new executable against the frozen one of cb50e22 with the full
+  set (fall-off ghosts, order 4, nonwave, metric speed): ball 16 steps, vacuum and
+  boosted puncture 8 steps, the refined region at the +x face of t1 8 steps. Every array
+  of every field dump and every number of the history files is identical (largest
+  difference exactly 0): the merge brings only code behind its own options into the Z4c
+  path, and the removal leaves the arithmetic of the kept paths alone. The files
+  themselves differ (the parameter dump in their headers has the options of core-v0.4 and
+  v0.5), so arrays are compared, not bytes. Refuted by any non-zero difference; then the
+  merged executable with the damping still in (`.work/exe/merge0/`) says which of the two
+  changes made it.
+- t1b, the refined region at the +x face without the damping (`plans/t1b_smrface.json`,
+  new executable): no non-finite value; largest |H| within 4 of the +x face on the fine
+  part below 0.2 of the stock one (1.79e-3) and within a factor 3 of the value with
+  damping (2.0e-6); the junction zone below 3 times the stock face-layer maximum.
+- s1, the two options no run has used (`plans/s1_untested.json`, ball to t = 16 on top
+  of the full set): `sbc_speed = lapse` in place of metric changes the face-layer and
+  shell mean |H| at t = 8 by less than 30 per cent (chi and gt_ss are within 2 per cent
+  of 1 at the faces); `sbc_theta = nonwave` does not lower the face-layer mean |Theta|
+  at t = 4 by more than 20 per cent (b1-f of entry 3: it carries the constraint
+  violation of the neighbour into the boundary cell); both reach t = 16 with a
+  face-layer maximum of |H| below 3 times that of the stock run (1.57e-2). Refuted for
+  an option by growth or a non-finite value: then that value is refused in the input.
