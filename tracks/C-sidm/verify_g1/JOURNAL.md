@@ -517,3 +517,40 @@ Predictions:
   4 standard errors; the equal-weights case stops with an error that names the unequal masses
   (I saw that message already when listing the directory).
 - T5 (entropy) is not attempted: it needs an entropy estimator with its own bias study.
+
+## Entry 15 (2026-11-21 00:15 PST) V5 outcome (run C-20261121-081036-0d6117b) and one more prediction
+
+(Entry 14 was written at 00:09.) `figs/v5_box.png`, `results/v5_box.json`.
+- Quadrature of X = <v_Mol (W_b - W_a)/2> against 4e6-pair Monte Carlo: z = 0.99, 0.32, -1.27
+  (theta pairs 3e-3/1e-3, 3/1, 0.3/0.1); non-relativistic limit -2.018e-4 at 3e-3/1e-3 against
+  my quadrature -2.016e-4 [own algebra, entry 14]. Holds.
+- T10: final snapshots of mb1, mb64, rst0, rst1, rst2 bit-identical to mb8 (also the whole
+  files byte for byte); seed 8 differs in every momentum. History of the restarts identical to
+  mb8 record by record (100, 63, 26 records); the MeshBlock variants have identical counts but
+  differ in the last bits of the sums (sum_P, sum_MW, sum_W to <= 1.8e-13 relative; sum_Mu_i,
+  which are ~1e-18 absolute, differ in their rounding): summation order over blocks, which only
+  enters the history (as collisions.md 3.9 says). In T345 the B run's snapshot at cycle 49
+  equals the A run's last snapshot bit for bit in all four cases. Prediction holds. Not tested:
+  MPI ranks (no MPI in that executable).
+- T1 long: the exactly rounded sum M W of the snapshots does not change at all over 1e4 steps
+  (drift 0.0 in both seeds; momentum sums 2.4e-18); per-step defects <= 8.8e-7 of the bound;
+  n_trunc = 0; 1.56e7 collisions per seed. Holds (criterion 1e-11).
+- T4: fitted initial slope / my exact rate - 1 = -0.37, -1.74, +0.03, +0.88 percent (theta2 =
+  1e-3 s1, s2; 1 s1, s2), fit errors 0.5, 0.6, 0.4, 0.3 percent: all pass both clauses
+  (4 se + 1 percent; 5 percent). My tau_rel = (theta1 - theta2)/|rate| equals 100 snapshot
+  spacings to 0.1 percent, so the generator used the same initial rate. |v_a - v_b| instead of
+  v_Mol: 1.265 times the rate at theta2 = 1, 1.0007 at 1e-3 (TESTS T4 says 1.27, 1.0008).
+  Holds.
+- T3 (end of B, 15.0 tau_rel): KS p = 0.084, 0.77, 0.99, 0.92; <u^2/W> - 3 theta_eq: |z| <= 0.007;
+  populations at theta_eq: |z| <= 0.78. Holds.
+- T9: classes at the same theta: |z| <= 1.16 in all 8 seeds (holds); refusal with
+  coll_weights = equal names the unequal masses (holds); mean energy drift over the seeds
+  +5.3e-5 +- 2.2e-5 of the total energy (z = 2.42), momentum z = 0.40, 2.19, 1.08: zero within
+  4 se (holds, but the energy drift is positive in 7 of 8 seeds). KS against MJ at the theta of
+  the INITIAL energy: light class p = 1.7e-4 in seed 3 (fails p > 1e-3), all others >= 0.049.
+  Seed 3 has the largest energy drift (+1.48e-4); a drift dE raises theta by about dE (1 + <K>)/c_v
+  = 1.0e-4, which is what the light class shows (0.020202 against 0.020108).
+Prediction for v5_t9ks.py (run after this entry): with theta from the FINAL energy, or the
+class's own theta, every class passes KS p > 1e-3 in all 8 seeds, and the classes agree with
+the final-energy theta within 4 sigma: then the seed-3 failure is the temperature offset of the
+nanbu energy drift, not a departure from the Maxwell-Juttner shape.
