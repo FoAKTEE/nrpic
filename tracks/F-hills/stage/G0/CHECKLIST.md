@@ -1,6 +1,6 @@
 # Checklist: F-hills G0
 
-Collected by `harness/bin/nrpic-stage collect F-hills G0` on 2026-11-19T15:00:28Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect F-hills G0` on 2026-11-21T06:42:08Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
@@ -18,7 +18,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: tracks/F-hills/RISKS.md (rewritten 2026-11-19: allotments of decisions 0014/0016, core-v0.3 released, wave-2b risks of the passage), SCOPING.md section 11
 - [x] **C4** Compute estimate
   - status: PASS
-  - evidence: SCOPING.md section 9 from runs F-hills-20261115-131109-634fb86, -131348-634fb86, -131933-907e5fe, -045438-f62d553; recomputed in note figure fig_cost (runs F-20261115-180609-abc9f6e, F-20261115-173543-29e87e8). Correction: the q = 4 m/16 row uses puncture radius 1.2; the inputs use 1.8 (2514/2864/2568 MeshBlocks, 44.8 card-hours; note/tables/claims.md item 14), corrected in SCOPING.md section 9 on 2026-11-19 (lead V11)
+  - evidence: SCOPING.md section 9 from runs F-hills-20261115-131109-634fb86, -131348-634fb86, -131933-907e5fe, -045438-f62d553; recomputed in note figure fig_cost (runs F-20261115-180609-abc9f6e, F-20261115-173543-29e87e8); verifier K14 recount within 0.4 percent (run F-20261121-035817-0aca1c5). Corrections: q = 4 m/16 row (radius 1.8; lead V11, 2026-11-19); slot limit against card capacity and the G2 sum 131-135 (verifier D3, D5; amended 2026-11-21, lead run F-20261121-063504-00f0743); P1's measured cost row (about 13 card-hours to 280 M)
 
 ## Main products of G0 (charter 9.2)
 
@@ -41,8 +41,8 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 ## Rulings of the orchestrator on the criteria (coord/DECISIONS; check that they apply to G0)
 
 - [x] **C9** Track F (amends 0005). Mass ratio four for the convergence study and the first scan line; the passage at mass ratio ten follows when the mesh fits. The first passage of a clump binary comes right after the first black-hole passage. (0013)
-  - status: NA
-  - evidence: the ruling concerns G1-G3 (mass ratio of the convergence study and scan lines, timing of object (b)); followed already: the P1 input of wave 2 is at q = 4 (nr_first/inputs/p1_q4.athinput), the note plan (Sec. V, Fig. 7) and Sec. II C use it
+  - status: PASS
+  - evidence: the ruling concerns G1-G3 and is followed: P1 (the first passage) is at q = 4 (nr_first/inputs/p1_q4.athinput, run F-20261119-150017-b45ec5f); SCOPING.md sections 3, 6 and 9 named q = 10 until the verifier's D4 and were amended on 2026-11-21 (../REVIEW-wave3.md); the note follows 0013
 
 ## Minimum figures at G0 (brief 13.4)
 
@@ -63,7 +63,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [x] **C14** Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed)
   - status: PASS
-  - evidence: STAGE_REPORT.md (nrpic-stage report, rerun 2026-11-19), EVIDENCE.md and OPEN.md (updated by the lead in wave 2b), CHECKLIST.md (collect 2026-11-19), REVIEW.md (points to SCOPING.md section 10 for wave 1 and to ../REVIEW-wave2.md for waves 2 and 2b); scoping text SCOPING.md beside them, named in the report
+  - evidence: STAGE_REPORT.md (nrpic-stage report, rerun 2026-11-21), EVIDENCE.md and OPEN.md (updated by the lead in batch 2a), CHECKLIST.md (collect 2026-11-21), REVIEW.md (points to SCOPING.md section 10 for wave 1, ../REVIEW-wave2.md for waves 2 and 2b, ../REVIEW-wave3.md for wave 3); scoping text SCOPING.md beside them, named in the report; VERIFIER.md
 - [x] **C15** Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at
   - status: PASS
   - evidence: five data figures of the note, one script each (note/scripts/fig_*.py, czstyle.py copy equal to harness/style/SHA256SUMS), inputs read from registered run outputs with their recorded sha256 (26 files; one wave-1 run without checksums, said so), every PNG opened (note/JOURNAL.md N1-N4). The wave-1 package figures (newton3, geodesic_binary, three_punctures, checks) stay as package records
@@ -73,12 +73,12 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 - [x] **C17** Working note written with /paper-writing; its manuscript checker passed with --compile
   - status: PASS
   - evidence: paper-writing checker with --compile (note/README.md): 0 undefined references and citations, 0 overfull boxes; main text clean in all 16 checks; remaining hits are run ids in the ledger appendix and data keys in the scripts, accepted by exception 1 of WRITING_GUIDE.md. Not done: the reviewer step of a new paper (skill Sec. 10)
-- [ ] **C18** Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests
-  - status: OPEN
-  - evidence: no VERIFIER.md: this session has no subagent tool and the lead may not verify its own package. What exists: SECOND_CHECK.md, a check of the plan's two load-bearing claims by a second agent of wave 2 with its own code (novelty verdict holds; the q = 10 baseline disagreement is physical, HRNA's size of it inflated by two artefacts; the q = 10 start state turns at 5.77 M in GR), confirmed in part by the lead (V9a, run F-20261119-145449-245e984); it did not recompute the note's ledger. Requested of orch: a fresh verifier for G0 (on the plan, decision 0016 item 4), or a ruling that SECOND_CHECK.md is the verifier's report on the plan (outbox 20261119T*)
+- [x] **C18** Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests
+  - status: PASS
+  - evidence: VERIFIER.md (fresh verifier, package verify_g0, batch 1 of 2026-11-20; artefacts only; sections 1-3 committed fecdec04 before reading the earlier checks): 20 claims of the plan with verdicts (14 CONFIRMED, K4 NOT DONE, K6/K13 PARTLY, K12/K14/K15/K16 WRONG as worded) and ledger tables 1-2 of the note recomputed row by row, 57 of 57 (run F-20261121-035817-0aca1c5). The lead reran that recomputation from its registered outputs (run F-20261121-063712-25981e0: 56 rows identical, row 57 a stale locator after core-v0.4 rewrote multi_puncture.md) and checked every WRONG item at the source (run F-20261121-063504-00f0743); each is corrected in SCOPING.md (marked [amended: D1-D8]), in note/main.tex (D7, D10) or listed for the note's ledger rerun (D9, row 57): ../REVIEW-wave3.md. Table 3 of the ledger (G1 material) is for the G1 verifier (decision 0016 item 4)
 - [x] **C19** Null results and failed runs are on record (manifests and JOURNAL)
   - status: PASS
   - evidence: failed and stopped runs kept: wave 1 in EVIDENCE.md (F-hills-20261115-045124-ae6bca8, -125858-0232c4c, -131944-360a12e, -143824-2c937bc, -133009-2f7ad7f, -133013-2f7ad7f, -133034-bf31889); wave 2 F-20261115-173719-923135a (failed), F-20261115-173106-57c4b4c, -173112-a9e18a3, -173543-29e87e8 (stopped, nr_first/JOURNAL.md); failed predictions on record in JOURNAL.md (V4, V5, V6, V7, V5b), nr_first/JOURNAL.md (E4, E6) and note/JOURNAL.md (N2 item 3)
 - [x] **C20** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: PASS
-  - evidence: STATUS.md, HANDOFF.md rewritten and a JOURNAL.md entry appended by the lead at the end of wave 2b (2026-11-19), with P1 announced in STATUS before its submission
+  - evidence: STATUS.md, HANDOFF.md rewritten and a JOURNAL.md entry appended by the lead at the end of batch 2a (2026-11-21)

@@ -1,40 +1,37 @@
 # G0 of F-hills: what the gate still lacks
 
-State of 2026-11-19 (lead, wave 2b). The wave-1 items with their present state; closed items
-stay listed with what closed them.
+State of 2026-11-21 (lead, batch 2a). Closed items stay listed with what closed them.
 
-1. **Stage check.** Run: `CHECKLIST.md` (collect 2026-11-19), `VERIFY_RESULTS.md`
-   (`nrpic-stage verify`), `STAGE_REPORT.md` (`nrpic-stage report`). OPEN only through item 2.
-2. **Verifier's report (C18): OPEN.** No `VERIFIER.md`. A second agent checked the plan's
-   load-bearing claims in wave 2 (`SECOND_CHECK.md`: novelty verdict holds; both baseline drivers
-   have no defect; the q = 10 disagreement is physical capture, its size inflated in HRNA by the
-   initial-binary convention and a spurious self-acceleration; the q = 10 start state turns at
-   5.77 M in GR); the lead reproduced its last finding with own code (V9a). It did not recompute
-   the note's ledger. Asked of orch: a fresh verifier, or a ruling that `SECOND_CHECK.md` serves
-   as the verifier's report on the plan (decision 0016 item 4).
-3. **Objects (0005): CLOSED** by decisions 0013 and 0017: (a) then (b) right after the first (a)
-   passage, then (c).
+1. **Stage check.** `CHECKLIST.md` (collect 2026-11-21: 20 items, all judged), `VERIFY_RESULTS.md`
+   (`nrpic-stage verify`), `STAGE_REPORT.md` (`nrpic-stage report`). The harness verdict fails only
+   on items outside the plan (item 6).
+2. **Verifier's report (C18): CLOSED** by `VERIFIER.md` (fresh verifier, batch 1 of 2026-11-20):
+   20 claims; ledger tables 1-2 recomputed 57 of 57 (run F-20261121-035817-0aca1c5, rerun by the
+   lead F-20261121-063712-25981e0). Every WRONG or PARTLY item (D1-D10) is answered in
+   `../REVIEW-wave3.md` and corrected in `SCOPING.md` ([amended: D<n>]), `note/main.tex`, the risk
+   list, or listed for the note's ledger rerun (D9, row 57; `note/JOURNAL.md`, lead entry).
+3. **Objects (0005): CLOSED** by decisions 0013 and 0017.
 4. **Allotment: CLOSED** by decisions 0014 (50 card-hours to G1) and 0016 item 7 (120 toward G2).
-5. **Mass ratio of the scan lines: CLOSED** by decision 0013 (q = 4 for convergence and the first
-   scan line; q = 10 when the mesh fits). Consequence: q = 4 at m/16 needs 2864 MeshBlocks
-   (SCOPING section 9, corrected), above the 2700 slots of one card: two cards or 32^3 blocks
-   (core, `dfix-answers`: larger blocks need no source change; benchmark not run).
-6. **Capability: CLOSED.** Several moving black holes are in release core-v0.3 (CLAUDE.md); the
-   track has run them (nr_first E1-E11; P1 submitted, run F-20261119-150017-b45ec5f).
-7. **newton3 energies at finite q: CLOSED** by the Jacobi split (newton3_fix; runs
-   F-20261115-174139-3340bf3, F-20261115-175232-d399e83; tests 15/15, lead V10 run
-   F-20261119-145509-fb91531). Left: `three_punctures/scripts/newton_start.py` reads the old fields
-   (its wave-1 outputs are records; not rerun).
-8. **Unverified items carried**: Roche-lobe factor now located (Eggleton 1983 via 2002.10547
-   `hills.tex:353-357`, kb answer `locators-wanted`; 0.379 for equal masses); the quadrupole
-   energy of a parabolic flyby has no source in the knowledge base (kb: not found); SKR's
-   retrograde criterion (H1) and D-uniform averages; 2402.02178 not reproduced (G1 T2); cause of
-   HRNA's release-radius dependence (C2; the second check's self-acceleration is a candidate, test
-   R3 open).
-9. **Correction to the brief l. 275**: carried by `coord/BRIEF_ERRATA.md` (decision 0016 item 8)
-   if orch took it; not checked again here.
-10. **Object (b) inputs**: boosted equilibrium clumps are core's wave-3a package
-    (`core/clump-table`); the clump model from Track C is still open.
-11. **Corrections of wave-1 statements found in wave 2/2b** (`../REVIEW-wave2.md`): V4b covers
-    seven, not nine, points; SCOPING section 9's q = 4 m/16 row (corrected); HRNA percentages
-    are model outputs at release 4 r_t, not predictions; P1 is at q = 4.
+   The G2 plan is corrected to about 100 card-hours (SCOPING 9, verifier D3).
+5. **Mass ratio of the scan lines: CLOSED** by decision 0013. q = 4 at m/16 (largest tree 2864)
+   fits one card: 3000 slots ran at 78785 MiB of 81920 (g2mesh run F-20261120-222810-e408386;
+   verifier D5).
+6. **Harness FAILs that are not about the plan**: (a) three wave-2 run directories with outputs
+   moved in after the runs (waiver asked of orch on 2026-11-19 and again 2026-11-21, for
+   `coord/WAIVERS.md`); (b) P1's chain (run F-20261119-150017-b45ec5f) is still running; (c) the
+   worktree holds the uncommitted files of two packages cut on 2026-11-20 (`kerr/`,
+   `g2mesh/scripts/card_analysis.py`), left alone as instructed.
+7. **newton3 energies at finite q: CLOSED** (Jacobi split; lead V10).
+8. **Unverified items carried**: the quadrupole energy of a parabolic flyby has no source in the
+   knowledge base; SKR's retrograde criterion (H1) and D-uniform averages; 2402.02178 not
+   reproduced (G1 T2, package kerr in progress); KHSR (1201.4794) not reproduced (verifier D8;
+   planned at G1, SCOPING 5).
+9. **Correction to the brief l. 275**: errata row 1.5 to be reworded (verifier D6, N3; outbox to
+   orch 2026-11-21).
+10. **Object (b) inputs**: C-sidm's King and polytrope models are available (answer of 2026-11-19);
+    core's boosted table clumps are in progress (`core/clump-table`).
+11. **Corrections of earlier statements**: wave 2/2b in `../REVIEW-wave2.md`; wave 3 (the
+    verifier's D1-D10) in `../REVIEW-wave3.md`.
+
+Judgement [JUDGEMENT]: the G0 package is complete for an independent review (decision 0016
+item 4). The lead does not pass the gate.
