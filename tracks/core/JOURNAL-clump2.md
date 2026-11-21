@@ -1134,3 +1134,66 @@ or the evolution of a cluster with Z4c on a mesh that is not periodic.
   difference above 1e-6 within the first 10 M: then something in the two releases
   changes the evolution of this run without an option, and it has to be found before
   the executable is published as "TC and TF describe it".
+
+### Outcomes of EN, FX2 and D (run `core-20261121-125657-ab10302`, 12:57Z to 13:02Z, exit 0; figures `en/fig_energy_check.png`, `surf/fig_corr_surface.png`, `d/fig_metric_at_particles.png` of the run, all looked at)
+
+**EN: HELD.** Added mass of the correction over `M V^2/2`: 0.999992 (y_c = 0.6, M/R =
+0.175), 0.999996 (0.819, 0.100), 0.999998 (0.9, 0.061), 0.999999 (0.95, 0.032); predicted
+1 within 2e-4. The deviation, 1e-6 to 8e-6, grows with the compactness (figure). The
+correction of psi adds the kinetic energy of the bulk motion to the ADM mass for every
+model, as the stationarity argument says; `pmass/M - 1` is below 6e-14 in all four.
+
+**FX2: HELD; reading (ii).** With nothing interpolated across the edge the flux balance
+of the monopole equation leaves |J|/rs^2 of 6e-13 (half-width 0.05) and 5e-14 (0.1, 0.2,
+0.5); predicted below 2e-6. The spline version of the same check still gives -2.92e-5.
+So the solution of the corrected generator has no layer at the surface, the check of
+2026-11-19 was itself off by -2.9e-5, and the layer of the old correction was +5.4e-5,
+not +2.45e-5. The figure shows the pointwise residual of the radial equation: a spike of
+-3.4e-3 to +1e-3 within 0.03 M of the surface (the density ends as a square root there),
+equal for the solution and the written table, nothing elsewhere. (The figure lacks its
+y label: cut at the left edge.)
+
+**D: the coordinate lines crowd in the moving cluster; the summed momentum along the unit
+vector of the x lines drifts by a third (v = 0.3) to two thirds (v = 0.1) of `sum m u_x`.**
+- D1 HELD. `sum m W` with the metric at the particles over the history value: 1.00001
+  in all five cases (band 0.3 per cent). At t = 0: g~_xx = g~_yy = g~_zz = 1.00000;
+  budget of the coordinate speed 0.578 v (`v0.3`) and 0.573 v (`v0.1`) (band 0.570 to
+  0.590; measured over 0 to 2 M: 0.581 v, 0.575 v).
+- D2: `v0.1` HELD (g~_xx 0.9856, band 0.975 to 0.995; g~_yy, g~_zz 1.0103, 1.0101), `v0`
+  HELD (1.00003, 1.00015, 0.99982). `v0.3` MISSED on the strong side: g~_xx = 0.8859
+  (band 0.89 to 0.95), g~_yy = 1.0852, g~_zz = 1.0849 (band 1.02 to 1.06). The
+  refutation line (g~_xx within 0.02 of 1) is not met: the lines do crowd, and more
+  than the stretch of the cluster in coordinates (6.5 per cent) alone would give. Ratio
+  of the proper lengths along and across the motion of a coordinate sphere:
+  `(g~_xx/g~_yy)^(1/2)` = 0.9035 (`v0.3`), 0.9877 (`v0.1`).
+- D3 HELD. `sum m u_x/gamma_xx^(1/2)` from 0 to 50 M: 0.26904 -> 0.25982, -3.4 per cent
+  (`v0.3`; band -1 to -6; `sum m u_x` fell by 11.8 per cent); 0.08639 -> 0.08421, -2.5
+  per cent (`v0.1`; band -1 to -4.5; `sum m u_x` fell by 3.8). What is left is of the
+  size of the early drop (2.5 to 3.3 per cent within 10 M), which has the time scale of
+  the lapse transient.
+- D4: the budget HELD, the size of the shift MISSED. Budget of the coordinate speed at
+  50 M against the speed over 48 to 50 M: 0.7286 v against 0.7263 v (`v0.3`), 0.7026 v
+  against 0.7009 v (`v0.1`) (band 0.02 v). Mean shift at the particles: -0.0365 = 0.122 v
+  (`v0.3`) and -0.01335 = 0.134 v (`v0.1`) (predicted below 0.1 v). Of the 0.73 v the
+  matter term `alpha gamma^xj u_j/W` gives 0.607 v and the shift 0.122 v.
+- The figure (profiles on the axis of motion) shows more than the means: at 50 M the
+  conformal metric of `v0.3` is not compressed uniformly: g~_xx - 1 goes from +0.35
+  twelve M behind the centre through zero at 4 M behind it to -0.29 six M ahead; the
+  shift is a well of -0.061 (`v0.3`) and -0.020 (`v0.1`) centred 3 M behind the centre;
+  K-hat is antisymmetric, +-1.5e-3. (Two defects of the figure: the legend covers part
+  of the left panel, and the label of the right panel is cut at the edge.)
+- A reading after the fact [JUDGEMENT, not a prediction]: the data leave out the
+  Lorentz contraction (interface, section 8, item 3: 4.6 per cent at v = 0.3). At 50 M
+  the cluster of `v0.3` is 6.5 per cent longer along the motion than across in
+  coordinates (TC2), and the metric there shortens x against y by the factor 0.9035:
+  in proper length it is `1.065 x 0.9035 = 0.962` along against across, and 0.996 for
+  `v0.1` (1.008 x 0.9877). A cluster moving at v = 0.3 on a slice on which it moves is
+  contracted to 1/W = 0.954, at v = 0.1 to 0.995. The "elongation" of TC2 is then the
+  coordinate picture of a cluster that has taken its contracted shape.
+
+So the three failed parts of TC are, with a test in which each could have failed, mostly
+coordinates: the centre moves at 0.73 v because the normal observers of this slicing see
+0.61 v inside the well and the Gamma driver with eta = 2 has built 0.12 v of shift in
+50 M; `sum m u_x` is a coordinate component and falls with the crowding; what does not
+go away is a drift of -2.5 to -3.4 per cent in the orthonormal sum. TF (running) says
+whether a weaker damping of the shift brings the coordinate speed to v.
