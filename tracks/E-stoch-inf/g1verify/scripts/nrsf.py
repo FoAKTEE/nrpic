@@ -16,15 +16,26 @@ import numpy as np
 MAGIC = b"NRSFDMP2"
 
 
+MAGIC1 = b"NRSFDMP1"
+# NRSFDMP1 (release core-v0.3, athenak/src/scalar_field/scalar_field_io.cpp:13-17): the same
+# header without names; fixed order phi, Pi, chi, K, alpha, H, M_x, M_y, M_z, E, noise0, ...
+NAMES1 = ["phi", "Pi", "chi", "K", "alpha", "H", "Mx", "My", "Mz", "E"]
+
+
 def header(path):
     with open(path, "rb") as f:
         magic = f.read(8)
-        if magic != MAGIC:
-            raise ValueError(f"{path}: magic {magic!r}, not NRSFDMP2")
+        if magic not in (MAGIC, MAGIC1):
+            raise ValueError(f"{path}: magic {magic!r}, not NRSFDMP2/1")
         nmb, nx1, nx2, nx3, nvar, cycle, nnoise = struct.unpack("<7q", f.read(56))
         (time,) = struct.unpack("<d", f.read(8))
-        names = [f.read(16).rstrip(b"\0").decode() for _ in range(nvar)]
-    hbytes = 8 + 56 + 8 + 16 * nvar
+        if magic == MAGIC:
+            names = [f.read(16).rstrip(b"\0").decode() for _ in range(nvar)]
+        else:
+            names = NAMES1 + [f"noise{i}" for i in range(nnoise)]
+            if len(names) != nvar:
+                raise ValueError(f"{path}: NRSFDMP1 with nvar {nvar} != {len(names)}")
+    hbytes = 8 + 56 + 8 + (16 * nvar if magic == MAGIC else 0)
     ncell = nx1 * nx2 * nx3
     mbbytes = 32 + 48 + 8 * nvar * ncell
     size = os.path.getsize(path)
