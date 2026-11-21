@@ -1468,3 +1468,14 @@ Open, for whoever continues:
   `fig_metric_at_particles`, `fig_corr_surface`; legends over curves): the scripts were
   not rerun for them.
 - Several ranks, the threaded build and adaptive refinement with these options: not run.
+
+### Publication checked (run `core-20261121-135236-c82a082`, 13:52Z, exit 0)
+
+`scratch/core/exe/core_clump-table/` published at 13:52Z by `publish_exe.sh 7cc6c7b9`
+(the merge commit; `athenak/src` is unchanged since): `athena_gpu` (sha256 8b7e050e...),
+`athena_cpu` (3c662c4a...), `COMMIT`, `examples/` (six inputs), `generator/`,
+`SHA256SUMS`, `READY` (which says in capitals that the card executable waits for M2).
+Check of the directory as a track would use it: `sha256sum -c` passes; the generator
+run from `generator/` writes the tables and the lattice; `examples/clump_table_static.athinput`
+at 32 cells with the published processor executable (v = 0.3, curvature, correction,
+shift) gives the two history files of the same case of M1 byte for byte.
