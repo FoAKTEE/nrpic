@@ -159,7 +159,7 @@ def fig_before_after(before, after, path):
     ax.set_xlabel("claims (upper bar: before; lower bar: after)")
     ax.set_xlim(0, max(max(vb), max(left)) * 1.45)
     ax.minorticks_off()
-    ax.legend(loc="lower right", fontsize=7, frameon=False)
+    ax.legend(loc="upper right", fontsize=7, frameon=False)
     return fs.save(fig, path)
 
 
