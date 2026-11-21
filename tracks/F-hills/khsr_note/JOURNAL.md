@@ -196,3 +196,43 @@ K1 MET (-2.667 rounds to -2.7), K2 MET (12.223 and 17.422 r_t against 12.2 and 1
 Correction: khsr_ecc.py now leaves failed samples out of every statistic (count kept as
 n_fail) and stores ok in the npz. The scan is rerun; the first run stays on record. The
 probabilities of the first run already show the result (K3 judged on the rerun).
+
+## 2026-11-21 21:36Z K. outcome (scan F-20261121-212757-77cdc15, checks and figure F-20261121-213405-6596be1; figure read)
+
+Failed integrations left out: 22 of 23040 (at most 3 of 512 at one point). Every K3 number below
+from `results/khsr_checks.json`; figure `figures/fig_khsr_ecc.png` read (lines: parabolic
+approximation from the restricted problem; filled circles: three-body integration on the
+elliptic orbit; open squares: parabolic approximation from the parabolic three-body runs at the
+same phases).
+- K1 MET: -2.667 rounds to KHSR's -2.7 (ms.tex:746); the start state's E_orb equals it to 2e-13.
+- K2 MET: 12.223 and 17.422 r_t against 12.2 and 17.4 (ms.tex:624-626).
+- K3a MET: parabolic ratio primary/secondary 0.979-1.013 at every point (512 phases); ejection
+  probability equals P_dis; mean ejection energy equals the phase-averaged |dE| to 0.2 percent.
+- K3b MET: prograde ejection probability at r_a/r_t = 500 within 0.006 of P_dis at D = 0.3-1.5
+  (0.969/0.969 at D = 0.5, 0.918/0.922 at D = 1); at r_a/r_t = 100 it is 0.565, 0.568, 0.571,
+  0.453 of P_dis at D = 0.3, 0.5, 1, 1.5 (predicted 0.40-0.70); primary/secondary 0.083-0.154
+  for D <= 1 and 0 at D = 1.5 (predicted < 0.4); never above 1. The half-way point is not
+  reached at r_a/r_t = 100 for D = 0.5-1 (as predicted). Retrograde binaries lose their
+  ejections much sooner: at D = 0.3 the ejection probability falls from 0.363 (parabolic) to
+  0.172 at r_a/r_t = 500 and 0 at 130. Text of KHSR reproduced: no preference for the parabola,
+  the secondary preferred at small r_a (ms.tex:768-769); the fall sets in between 500 and 130
+  (prograde), "around 400" being KHSR's order-of-magnitude estimate (ms.tex:765-766).
+- K3c REFUTED at the edge, MET elsewhere: |P_direct - P_lines| <= 0.012 at every judged point
+  except prograde D = 2, r_a/r_t = 100, where the three-body integration ejects nobody (0 of 512)
+  and the approximation gives 0.037 (0.027 from the parabolic runs at the same phases, 14 of
+  512). Ratio within 15 percent except prograde D = 1.5, r_a/r_t = 130 (0.113 vs 0.138, 22
+  primary ejections: within the counting noise, 21 percent). Mean ejection energy within 3
+  percent where it is above 0.3 units; 4-11 percent (absolute <= 0.027 units) where it is
+  0.03-0.25 units: my relative tolerance was ill-posed for small energies.
+- K3d REFUTED at large D: the elliptic runs' phase-averaged |dE| is within 0.5 percent of the
+  parabolic one for D <= 1, but 0.8-1.2 percent low at D = 1.5 and 1.6-3.1 percent low at D = 2
+  (largest at r_a/r_t = 100, e = 0.98). [JUDGEMENT] KHSR's "non-parabolic results tend toward
+  a perfect overlapping with the parabolic results" (ms.tex:633-636) holds to this level; at the
+  edge of disruption, where the ejection probability is a threshold on the tail of the dE
+  distribution, a 2-3 percent smaller energy change removes the few ejections the
+  approximation still finds (the K3c point above).
+Verdict for G1 T1 / risk R14 [JUDGEMENT]: one KHSR result reproduced with newton3 on processors
+(the ejection against the eccentricity of the centre-of-mass orbit, Sec. 6.2, Fig. 4 and its
+text), with KHSR's parabolic approximation confirmed by the full three-body integration to
+0.012 in probability except at D = 2. Nothing digitised: comparisons are with KHSR's text and
+closed forms.
