@@ -717,3 +717,40 @@ long before turnaround); P3 REFUTED (no horizon: the run stops at 4.8, not 140);
 stop at 4.8). S1 REFUTED (stops at coordinate 15.1, not past 212.8); S2 REFUTED (no horizon); S3
 not judged. Request to core: outbox periodic-relaxed-lapse-blowup. No periodic card job of this
 owner until core answers; the long runs of batch 5 go to the expanding ball (threshold_ball).
+
+## 2026-11-21 23:15Z, Q: card job 2, P0L and S1L at cfl_number 0.5 (written before queueing; lead of batch 7)
+
+What changed against job 1 (run A-20261121-131600-02b5d41, Slurm 4799): `cfl_number` 1.0 -> 0.5 in
+`inputs/peak_leak.athinput` (header CORRECTION; cause of job 1's failure: package periodic_diag,
+decision 0027 item 2), executable release core-v0.6 (`.work/build_gpu_v06/src/athena`) instead of
+v0.5, and each member a chain of its own (`scripts/submit_chain.sh`, restarts exact for periodic
+set-ups, decision 0027 item 3) instead of one batch job. Data, particles, mesh (root 64^3, four
+static levels, finest dx = 0.0195), gauge (relaxed 1+log, lapse_leak 20, Gamma-driver 0.75,
+eta 2), deposit, finder and tlim (P0L 140, S1L 220) as job 1. Queued as lines 14 (P0L) and 15
+(S1L) of `threshold_ball/queue.txt`, behind the threshold scan; the sequencer registers each with
+nrpic-run when a slot frees. The remedy is tested on the uniform 64^3 mesh only (periodic_diag
+G1 at cfl 0.5, G6 at 0.6, lapse frozen); this job is its first test on the refined mesh with the
+relaxed lapse evolving [JUDGEMENT throughout].
+
+Q1 remedy (the test this job exists for): in neither member does the L2 norm of H jump by more
+than a factor 10 between consecutive history records anywhere in t in [1.5, 6] (job 1: four
+orders at t = 2.506 in both); H_max stays below 0.1 to t = 5 (R2, the card deck with zero shift
+on processors: 1.45e-2 at t = 2.37, 7.6e-3 at 3.0; job 1's P0L 0.84 at 2.40, 179 at 2.51); the
+level-4 step never exceeds 0.5 dx (read from the history's dt column); no grid-scale
+(odd-even) pattern in the beta^x or alpha line outputs at t = 2, 4, 6, 8, 10.
+Q2 health: no guard stop before t = 20 in either member (job 1: P0L 4.8, S1L 15.1).
+Q3 cost: about 0.17 s per step as job 1 (0.173); P0L about 14,300 steps (41 min), S1L about
+22,000 (65 min); within a factor 2, so P0L ends inside its 2 segments and S1L inside its 3.
+Then predictions P1-P4 (P0L against the exact reference B of run A-20261121-130103-e007f42) and
+S1-S3 (S1L) of entry 13:20Z apply unchanged; they are judged from this job, not rewritten.
+
+Refuted by: a jump or a guard stop of the kind of job 1 at a later time (for example t ~ 5, the
+same accumulated amplification reached at half the rate: then 0.5 is not below the refined
+mesh's threshold, and the gauge-speed limit core is asked for is needed before any periodic run);
+grid-scale growth in beta^x on level 4 or at a level boundary (a threshold lower than Test B's
+0.685 at the coarse-fine interface, which Test B does not model). A late failure (t > 20) with
+grid-scale growth at the collapsing centre where gt^xx > 1.9 would refute the margin of the
+periodic_diag README (shift speed above 1 where the conformal metric stretches), not the remedy
+for the expansion phase; the line outputs of gt (z4c tab) say which. A cost above a factor 2 is
+not a refutation of the physics: the chain then stops before tlim and is resumed
+(`scripts/submit_chain.sh <rundir> <deck> <same args>`).

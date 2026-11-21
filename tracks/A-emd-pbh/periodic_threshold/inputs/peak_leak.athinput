@@ -21,8 +21,21 @@
 # the real axis of RK4 (limit 2.79). The 1+log gauge speed sqrt(2 alpha chi) exceeds the
 # light speed by sqrt(2/alpha) where the lapse has collapsed [JUDGEMENT: tolerable while
 # the largest c sits in the background or at alpha >~ 0.1].
+# CORRECTION 2026-11-21 (batch 7; package periodic_diag, decision 0027 item 2): card job 4799
+# (run A-20261121-131600-02b5d41) ran this deck with cfl_number = 1.0 and jumped at t = 2.5.
+# The binding speed is not the 1+log speed (stable to dt/dx 0.97 on level 4) but the
+# Gamma-driver's, sqrt(4 shift_Gamma/3 gt^dd) = 1 in coordinates: with the code's stencils,
+# RK4 and diss 0.5 the shift is unstable above dt/dx = 0.685 (periodic_diag Test B, run
+# A-20261121-212800-d7f31a4), and at cfl 1.0 the level-4 step reached 0.83 dx by t = 2.4.
+# Now cfl_number = 0.5 (dt_lightspeed, Gamma-driver and relaxed lapse unchanged): the step
+# is at most 0.5 dx on every level (stable on the uniform mesh: periodic_diag G1, G6); margin
+# to gt^xx = (0.685/0.5)^2 = 1.9 where the conformal metric stretches [JUDGEMENT]. The
+# sentences above on dt growing to dx and on Kreiss-Oliger at dt = dx describe cfl 1.0 and
+# are superseded; find_every 64 is now every 0.625 time units at the late step 0.5 dx.
 # Executable: release core-v0.5 (.work/build_gpu_v05, build_cpu_v05): lapse_leak (v0.4),
-# guard, finder in a periodic box, dt_lightspeed, region norms (v0.5).
+# guard, finder in a periodic box, dt_lightspeed, region norms (v0.5). From batch 7 the
+# release core-v0.6 (.work/build_gpu_v06), byte-identical to v0.5 on the periodic
+# regression set-up (tracks/core/RELEASE-v0.6.md, set-up east).
 # Excision: particles where alpha < 0.1 (as core's ball_collapse and the track's horizon
 # run A-20261119-164634-f1fe887); in the E1 gauge of S1 the threshold 0.3 referred to a
 # lapse of order a.
@@ -104,7 +117,7 @@ x3max = 0.625
 <time>
 evolution  = dynamic
 integrator = rk4
-cfl_number = 1.0                        # with z4c/dt_lightspeed = 0.25 (header)
+cfl_number = 0.5                        # was 1.0 (job 4799); Gamma-driver unstable above dt/dx 0.685 (header, decision 0027)
 nlim       = -1
 tlim       = 140.0
 ndiag      = 50
