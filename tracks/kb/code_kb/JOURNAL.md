@@ -85,3 +85,24 @@ more than 500 changed lines in one file.
   Runge-Kutta stage through the optional dependency of Z4c_CalcRHS. [JUDGEMENT] Nothing to
   merge; worth core's attention if core ever rebases on upstream z4c_tasks.cpp (the
   dependency list of Z4c_CalcRHS and the new Theta factor touch the lines that read Tmunu).
+
+## M1 prediction (task-list order, written before `kb code modules` exists), 22:35 UTC
+
+Test: `kb code modules` extracts, from the source at the indexed commits (local/nrpic
+5deee18, IAS-Astrophysics/athenak c5a0d7f), the ExecuteTaskList calls of Driver::Execute,
+the module assembly order of MeshBlockPack::AddPhysics, and every AddTask/QueueTask call.
+Prediction (from FIRST_QUESTIONS question 9 and particles_tasks.cpp:30-45 at 5deee18):
+- local/nrpic: NrpicSaveMetric is the only particle task before the stage loop
+  (before_timeintegrator); NrpicPush, NrpicExcise (which reassigns MeshBlocks: the
+  redistribution), optional NrpicCollide, NrpicDeposit and NrpicDiagnostics are in
+  after_timeintegrator, i.e. once per step after all Runge-Kutta stages; no particle task
+  is in before_stagen/stagen/after_stagen; Z4c's CalcRHS is in stagen (every stage) with
+  optional dependencies MHD_SetTmunu and SF_SetTmunu (scalar field: a per-stage source,
+  not particles).
+- upstream: particle tasks (Push, NewGID, communication) in before_timeintegrator, none
+  mentions tmunu; DynGRMHD::SetTmunu queued as MHD_SetTmunu in the run queue (stagen), so
+  the sources are refreshed at every stage before Z4c_CalcRHS.
+Refuted if: any particle task of local/nrpic is registered in a per-stage list; the
+deposit is not in after_timeintegrator; upstream has no per-stage task that mentions
+tmunu; or the driver does not run before_timeintegrator once before and
+after_timeintegrator once after the stage loop.
