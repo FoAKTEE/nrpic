@@ -1,0 +1,120 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261121-025612-ed4a875",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "verifier3 V3: own TT and Weyl/Psi4 measurement of tests F (N16-64) and X (N16-64, x10) from the raw dumps (P3.1-P3.7)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "env",
+    "V3_WORKERS=5",
+    "OMP_NUM_THREADS=1",
+    "OPENBLAS_NUM_THREADS=1",
+    "MKL_NUM_THREADS=1",
+    "python3",
+    "tracks/B-emd-gw/stage/G1/verifier3/scripts/v3_measure.py"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "ed4a8751204061006b87fca7584988b5a6361f05",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/stage/G1/verifier3"
+    ],
+    "outside_package": {
+      "count": 20,
+      "first": [
+        " M tracks/B-emd-gw/note/JOURNAL.md",
+        " M tracks/B-emd-gw/note/figures/fig_baseline.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_gauge.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_newton.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_pancake.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_r2.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_r2.png",
+        " M tracks/B-emd-gw/note/figures/fig_scan.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_source.pdf",
+        " M tracks/B-emd-gw/note/figures/fig_waves.pdf",
+        " M tracks/B-emd-gw/note/figures/schem_architecture.svg",
+        " M tracks/B-emd-gw/note/figures/schem_dataflow.svg",
+        " M tracks/B-emd-gw/note/figures/schem_timeline.png",
+        " M tracks/B-emd-gw/note/figures/schem_timeline.svg",
+        " M tracks/B-emd-gw/note/main.pdf",
+        " M tracks/B-emd-gw/note/scripts/common.py",
+        " M tracks/B-emd-gw/note/tables/ledger.tex",
+        "?? tracks/B-emd-gw/gw_diag/gwdiag/gauge.py",
+        "?? tracks/B-emd-gw/gw_diag/tests/test_gauge.py",
+        "?? tracks/B-emd-gw/waves/scripts/check_gauge.py"
+      ]
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/stage/G1/verifier3/scripts/v3_measure.py",
+      "role": "argv",
+      "sha256": "bae2ba0cdfe4e22e6fc884b3ea9bdd152ce1b58558737ae0e4ed417bee14cacf",
+      "bytes": 7352,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 5,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261121-025612-ed4a875",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T02:56:12Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.6343,
+    "gpu_hours_reserved": 0.2,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 0,
+    "runs": 223,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
