@@ -667,3 +667,32 @@ peak (the lapse ladder decides refinement by a threshold; a rounding difference 
 move a regrid by one check, though T14b of the package saw none), and cluster (40
 cycles of a self-gravitating cluster: the package measured 5.4e-13 between two
 one-card runs of its build).
+
+### Regressions of the MPI and the threaded build (2026-11-21T07:16Z)
+
+- R2, MPI build started without mpirun: HELD. Run core-20261121-065743-1202666: 75
+  items identical to release core-v0.4, nothing of class a, b or other.
+- R2, threaded build at one thread: FAILED. Run core-20261121-070623-077b056
+  (`regress_v04.py` ends FAIL by its rule): 31 of 75 items identical (geo both files,
+  jeans all five, single files elsewhere), 44 differ. The differences are at rounding
+  level [VERIFIED by reading the histories of both runs with `card_v05.hst_columns`]:
+  every column of the module's histories above rounding agrees to 1.2e-15 (east 1.1e-15,
+  c4 1.2e-15, zero in the others), the constraint statistics to 1.4e-10 (east, column
+  9, H_max) and 1.9e-12 (c4, column 15); binary: the result lines of the multigrid log
+  differ. All 24 runs status 0. I had predicted identity for the ten set-ups without
+  multigrid, on the strength of the READY of build-openmp ("with one thread it equals
+  the atomic result"), which speaks of the threaded executable against itself, not
+  against the serial build. The quick test had shown the same an hour earlier (source
+  dump 1.1e-14 between the threaded build at one thread and the serial build).
+  Consequence for the release: `athena_cpu_omp` is not a reference for byte
+  comparisons; `athena_cpu` and `athena_cpu_mpi` are.
+- Cause not established. The two builds differ in two things: the flags (-O3 -DNDEBUG
+  against -O2) and the Kokkos back end (OpenMP against Serial). Test R3, prediction
+  written before the build: the threaded build with the flags of the serial build
+  (`OMP_OPT=debug scripts/build_cpu_omp.sh`, -O2 -g, asserts on) at one thread gives
+  the bytes of release core-v0.4 on the ten set-ups without multigrid (geo, boris, dep,
+  east, os, c1 to c5). If it does, the flags are the cause and a track that needs
+  threads AND bytes has a build for it. Refuted by any differing data byte in those
+  ten: then the back end itself changes the arithmetic at one thread (other inlining
+  and contraction in its kernels) and no threaded build is a byte reference. No
+  prediction for jeans and binary (the multigrid average).
