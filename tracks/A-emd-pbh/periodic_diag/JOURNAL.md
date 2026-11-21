@@ -143,3 +143,49 @@ R series (the card deck itself on processors, `scripts/run_refined.sh`; level 4 
   level 4 in the line outputs (every 0.1) by t = 2.4.
 - R2 (zero shift, cfl 1.0, to t = 3.0): no jump; H_max below 0.05 to t = 3.0.
 - R1 (cfl_number 0.5, to t = 3.0), only if the processors allow: no jump.
+
+## 2026-11-21 21:41Z, entry 3: outcome of Test B (run A-20261121-212800-d7f31a4; `fig_vonneumann.png` looked at) and of G0 (run A-20261121-212941-9e68be1, case G0)
+
+Test B. Gamma-driver subsystem: unstable for dt/dx > 0.685 on the card's level 4 (dx =
+0.0195), > 0.65 on the root mesh (dx = 0.3125, where eta dt is no longer small); without
+the Kreiss-Oliger term 0.77 and 0.80. The first unstable wave vector is the 3D grid-scale
+corner (pi, pi, pi) in both. Largest |R| per step at dx = 0.0195: 1.10 at dt/dx = 0.70,
+1.98 at 0.80, 2.10 at 0.81, 2.30 at 0.825, 5.8 at 1.0. Light: stable to dt/dx = 1.2.
+1+log lapse with leak 20 (alpha0 1.06, chi0 0.12): stable to 0.9675 on level 4, but on the
+root mesh unstable from 0.405 (|R| = 22.5 at 0.81), the stiff relaxation of entry 1.
+Against the prediction: the shift threshold 0.685 lies just below my band [0.70, 0.78]
+(the Kreiss-Oliger term LOWERS it: the grid-scale eigenvalues acquire a real part -1.5 dt/dx
+and leave the narrow tip of the RK4 region near 2.83i) but above the refutation bound 0.65;
+the growth at 0.81, 2.10, lies just above my band [1.2, 2.0]; lapse and light on level 4
+stable up to 1 within 3 per cent (lapse 0.9675): as predicted. The card's level-4 step was
+0.80-0.83 at cycles 240-251, i.e. inside the unstable range, and from cycle ~205 on above
+0.685 [Test A will put numbers on it].
+
+G0 (uniform 64^3, lapse frozen, Gamma-driver, cfl 1.0; to t = 12, no guard stop, 66 cycles):
+dt/dx passes 0.65 at t = 2.37 (cycle 21) and reaches 1.0 at t = 4.7. H_max falls smoothly
+from 1.45e-2 (t = 1.8) to 3.5e-3 (t = 7.47), then grows: 4.0e-3 (7.79), 1.75e-2 (8.10),
+7.7e-2 (8.41), 1.78 (8.72), i.e. by 4.4, 4.4 and 23 per cycle at dt/dx = 1.0 (Test B: 6.5 per
+step at the root mesh). Line output at t = 8.72: beta^x and Gam^x alternate in sign from cell
+to cell (beta^x +0.0126, -0.0181, +0.0148, -0.0127 ... at x = -1.72 ... -0.78; Gam^x +-0.2 to
+0.34), alpha (frozen) and Khat smooth; at t = 7.79 still smooth and odd in x; the x -> -x
+symmetry of the data is broken by the growing part (a round-off seed). After the burst the
+light-speed limit (which counts |beta|) cuts the step to dt/dx = 0.2-0.9 and H_max settles at
+0.3-2.
+Judgement against entry 2: the growth and its form (grid-scale beta and Gam, nothing in the
+frozen lapse) are as predicted; the TIME is refuted: onset at t = 8.1, 20 cycles after dt/dx
+passed 0.65, not within 3 cycles. My prediction ignored the seed: here the data are smooth,
+the shift starts at zero, and the grid-scale part grows from round-off; the amplification
+accumulated over the step history must reach about 1e12 before H shows it [to be computed
+from Test B along the run's own steps in the analysis].
+
+## 2026-11-21 21:41Z, entry 4: predictions for G5 and G6 (seeded by white noise), written before they run
+
+G0 grew from round-off. To bracket the threshold with a seed present, two more frozen-lapse
+cases on the uniform mesh carry white noise of relative amplitude 1e-10 in every evolved
+field (`<problem> noise_amp = 1e-10`, the robustness option of nrpic_cosmo), to t = 10:
+- G5 (cfl 1.0): grid-scale growth of beta^x / Gam^x and of H_max starts earlier than in G0
+  (onset t < 7.5, against 8.1), because the seed is about six orders above round-off.
+- G6 (cfl 0.6, so dt/dx <= 0.6 < 0.65): no growth to t = 10; H_max stays within a factor 2
+  of G1's at equal t (G1: cfl 0.5 without noise).
+Refuted: G5 not earlier than G0 (then the seed does not set the onset), G6 with growth
+(then the threshold on the root mesh lies below 0.6, and Test B is wrong for this code).
