@@ -27,3 +27,29 @@ C-20261115-165028-a559ab8: gaps 0.04476 at theta_2 = 1e-3 and 0.12202 at theta_2
   runs. Refuted by p < 1e-3 in any run.
 - R1.4 The mean W is constant to better than 1e-12 relative over each run (equal masses,
   pairwise exact conservation). Refuted by a drift above 1e-10.
+
+Outcome of R1 (run C-20261121-165320-a2e557b): all four held; numbers in the final version.
+
+## Reviewer's own check R2 (T6(a), long mean free path): prediction written before the run
+
+T6(a) and the T7 collisionless check are the long-mean-free-path end of "heat conduction at
+both ends" (brief C-pre-1) and have no second check (OPEN.md item 2; REVIEW-wave3.md section
+1 checks T6(b) and T7 only). Own reduction and own reference on the four cases of run
+C-20261119-145733-558136e (lambda/L = 1000 and 100, two seeds, 2e6 particles, box [10, 11)
+in x): (1) slab sums of the hot half from the first and last snapshots against the
+package's `reduced.npz`; (2) the same-sample free-streaming curve (t = 0 snapshot drifted
+with v = u/W); (3) the ensemble collisionless curve by 2D quadrature over Maxwell-Juttner
+momenta, with the variance of independent particles; (4) the initial slope over the first
+snapshot interval. Script `scratch/C-sidm/tmp/gate_review_G1/t6a_check.py` (checksummed).
+
+- R2.1 My slab sums of the first and last snapshots equal the package's reduced rows to
+  1e-12 relative. Refuted by a difference above 1e-10.
+- R2.2 At lambda/L = 1000 the data deviate from the same-sample free-streaming curve by less
+  than 0.3 ensemble noise units at every snapshot (about 8e3 collisions among 2e6
+  particles); at lambda/L = 100 by less than 1.0. Refuted by a larger deviation.
+- R2.3 Against the ensemble collisionless curve the rms deviation of the rest mass, M W and
+  M (W - 1) of the hot half over the run is below 1.5 noise units for both seeds at
+  lambda/L = 1000 (the TESTS.md criterion), near the package's 0.86-1.20. Refuted by an
+  rms above 1.5.
+- R2.4 The initial slope at lambda/L = 1000 is within 5 percent of the ensemble slope over
+  the same interval (TESTS.md), near the package's 1.001 and 0.978. Refuted otherwise.
