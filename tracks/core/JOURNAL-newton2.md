@@ -1217,3 +1217,81 @@ the same record, and columns 38 to 43 of the group history (J of the patch) with
 to 1e-15 through a shell crossing; here 9e5 particles and 420 steps). Refuted, as a
 fault of the merged card build or of the Fourier solver at a radix-3 size on a card,
 above 1e-6.
+
+### Third card job ran (Slurm 4777, 08:42:38Z to 08:47:37Z); T11c outcome [VERIFIED]
+
+Run core-20261121-080215-df3af65, merged card build (sha256 7b2cceed...879ac6): eight
+cases, all with exit status 0, 299 s = 0.083 card-hours (package total 0.44 of 1.0).
+Card time per case: chk_fftsp 0.9 s and chk_fft7 0.9 s for 601 cycles, chk_mg 26.6 s;
+emb96_fft 4.7 s (420 cycles, 9.1e5 particles); emb128_fft and emb128_fft7 15.7 s each
+(561 cycles, 2.1e6 particles), emb128_pcs_fft 42.2 s; emb256_fft 175 s (561 cycles,
+1.7e7 particles, 0.31 s per step, peak card memory 8.4 GiB).
+T11c, judgement core-20261121-084805-29f8e02 (`t11_merged.json`, figure
+`t11_merged.png` with the card panel), card twins of T1 against the processor cases of
+run core-20261119-144414-c629377 (13 snapshots, 602 records each):
+
+| pair | positions / box | momenta | K | W |
+|---|---|---|---|---|
+| chk_mg, mg | 1.5e-15 | 6.0e-15 | 5.2e-13 | 6.4e-13 |
+| chk_fft7, fft7 | 2.8e-16 | 1.4e-15 | 5.1e-13 | 6.4e-13 |
+| chk_fftsp, fftsp | 4.4e-16 | 1.6e-15 | 5.2e-13 | 7.3e-13 |
+| chk_fft7, chk_mg (both on the card) | 2.2e-15 | 8.9e-15 | 5.7e-15 | 5.5e-15 |
+
+Prediction (1e-9 and 1e-8): held, as for the pre-merge card build. The merged card
+executable is tested on a card for the multigrid and the Fourier solver of this mode.
+
+### T4d outcome: the embedded ellipsoid against the cell size [VERIFIED]
+
+Runs: the five embedded cases of card job core-20261121-080215-df3af65 with the 64^3
+runs of T4b, T4c and of card job 2a; analysis core-20261121-084820-a252870
+(`t4d_convergence.json`, figure `t4d_convergence.png`, looked at: open symbols mark a
+negative sign; the curves of the short axis of all runs at 128^3 and 256^3 lie together
+at -0.02 R_L before the crossing). First minimum of the short axis against the ODE
+crossing at 24.2525 t_k; "axes": largest |semi-axis - ODE|/R_L up to one t_k before it.
+
+| cells (dx/t_k) | linear cloud, spectral | linear cloud, seven-point | cubic cloud + comp., spline, spectral |
+|---|---|---|---|
+| 64^3 (0.75) | +2.56 per cent | +1.29 per cent (multigrid) | +0.92 per cent |
+| 96^3 (0.5) | +1.09 per cent | | |
+| 128^3 (0.375) | +0.42 per cent | -0.01 per cent (Fourier, seven_point) | -0.11 per cent |
+| 256^3 (0.1875) | -0.14 per cent | | |
+
+| | axes x, y, z | quadrupole energy against the ODE | Layzer-Irvine drift / max a\|W\| |
+|---|---|---|---|
+| linear, spectral, 64^3 | 0.111, 0.074, 0.083 | -42 per cent | 8.0e-3 |
+| linear, spectral, 96^3 | 0.043, 0.063, 0.089 | -26 per cent | 6.3e-3 |
+| linear, spectral, 128^3 | 0.0075, 0.043, 0.072 | -13 per cent | 5.2e-3 |
+| linear, spectral, 256^3 | 0.019, 0.034, 0.068 | -3.1 per cent | 3.1e-3 |
+| linear, seven-point, 128^3 | 0.019, 0.033, 0.066 | -3.2 per cent | 6.1e-3 |
+| cubic, spectral, 128^3 | 0.023, 0.027, 0.062 | -3.9 per cent | 3.0e-6 |
+
+- 96^3, linear cloud, spectral: +0.8 to +1.5 per cent predicted, +1.09 measured. Held;
+  refutation (above +2 per cent) not met.
+- 128^3, linear cloud, spectral: +0.4 to +0.9 predicted, +0.42 measured. Held, at the
+  edge. Refutation (above +1.5 per cent) not met.
+- 128^3, seven-point: +0.15 to +0.5 predicted, -0.01 measured. FAILED (below the range).
+- The two symbols 0.2 to 0.45 per cent apart at 128^3: 0.43. Held.
+- The kernels of T2 below the linear cloud at 128^3: 0.11 against 0.42 in size. Held,
+  with the sign I did not expect.
+- 256^3: +0.08 to +0.3 predicted, -0.14 measured. FAILED: the sign.
+- "axes falls by at least three per doubling": FAILED. The short axis does (0.111,
+  0.043, 0.0075, then 0.019 with the other sign), the largest of the three does not:
+  0.111, 0.089, 0.072, 0.068, and it is the long axis at 0.062 to 0.072 in every run at
+  128^3 and 256^3, whatever the kernel and the symbol.
+- What the numbers say. The lag of T4b is a discretisation error: the crossing-time
+  error of the linear cloud with the spectral symbol falls as 2.56, 1.09, 0.42 per cent
+  (observed orders 2.1 and 3.3 between successive cell sizes) and passes through zero.
+  The three finest runs (256^3 linear, 128^3 seven-point, 128^3 cubic) end between
+  -0.01 and -0.14 per cent, their short axes agree with each other to 0.005 R_L and sit
+  0.02 R_L below the ODE before the crossing, and their long axes sit 0.06 to 0.07 R_L
+  off it. So at these cell sizes the runs agree with each other better than with the
+  ODE: what remains is a difference between the particle patch in its periodic,
+  responding background and the track's ODE (model A), of 0.1 to 0.15 per cent in the
+  crossing time and 6 to 7 per cent of R_L in the long axis. I had allowed a floor of
+  "about 0.2 per cent" in the crossing time and predicted the wrong sign for it; I had
+  not expected the floor in the long axis. Which assumption of the ODE it is (the
+  periodic images, the background that the ODE keeps uniform, the homogeneity of the
+  ellipsoid) no run of mine separates [TO VERIFY, Track B's reference].
+- The Layzer-Irvine drift of the linear cloud falls slowly with the cell size (8.0e-3
+  to 3.1e-3 over a factor four); with the cubic cloud and the spline gather it is 3e-6
+  at both cell sizes.
