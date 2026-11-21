@@ -167,6 +167,6 @@ THREADS=6 scripts/cpu_run.sh runs/x problems/foo/foo.athinput time/nlim=100
   gas multigrid depends on the thread count through the rounding of the plain sum of its
   volume mean (no race); results agree to the solver tolerance.
 - Speed (tracks/core/interfaces/threaded_build.md, sections 5 and 6): six threads are 4.4
-  to 5.8 times one thread; one A100 is 74 to 90 times six threads for runs with Z4c and
+  to 5.8 times one thread; one A100 is 72 to 90 times six threads for runs with Z4c and
   11.9 times for the periodic Newtonian mode; the Newtonian mode with isolated
   boundaries is 1.6 times faster on six threads than on a card.

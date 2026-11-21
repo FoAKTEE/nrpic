@@ -1070,3 +1070,27 @@ right-hand side), so alone at one thread it needs 80 to 100 s per step (1.16 to 
 times faster than 115.9); six threads 17 to 21.5 s per step (21.1 in the afternoon);
 ratio 4.3 to 5.6. Refuted as "the cluster behaves like the puncture" if the one-thread
 run alone needs more than 105 s per step.
+
+## 2026-11-20 19:22 Entry 29: outcome of P19 (the cluster case alone)
+
+Run core-20261121-031150-04a2d5b (six cores granted; O3; load average 17 rising to 29):
+the cluster case at one thread alone, 3 cycles, 116.14 s per step; at six threads, 4
+cycles, 20.10 and 20.60 s per step (processor share 0.92, 0.93).
+- P19 FAILED and the refutation I named occurred: alone at one thread the cluster needs
+  116.1 s per step (predicted 80 to 100; refuted above 105), the same as side by side in
+  the afternoon (115.9). The cluster does not behave like the puncture. The six-thread
+  times lie in the predicted range (17 to 21.5); the ratio is 5.8 (predicted 4.3 to 5.6).
+- So the afternoon's slow one-thread run of the puncture case (131.9 against 90.8 alone)
+  was particular to that run; what held it back (its core, a neighbour on the sibling
+  hardware thread, the load) is NOT known, and "one-thread runs side by side on one
+  socket are slower" is not a general statement: cosmo 1.01, newton 1.12, cluster 1.00,
+  puncture 1.45.
+- Record of my predictions of this evening: every six-thread time fell inside its
+  predicted range (collapse, puncture, cluster); three of the four one-thread
+  predictions failed (cosmo alone, puncture alone, cluster alone). I cannot predict a
+  one-thread time on this shared machine to better than 30 to 45 per cent, and the
+  tracks should not read the "six over one" column more finely than that.
+
+Six threads on 2026-11-20, best of the day (seconds per step; six over one thread; one
+A100 over six threads): punc 15.68 (5.8; 90), cluster 20.10 (5.8; 72), cosmo 8.86 (5.5;
+74), newton periodic 0.929 (4.4; 11.9), collapse isolated 0.409 (5.4; 0.63).

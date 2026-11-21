@@ -140,7 +140,8 @@ core-20261119-150022-d0d8641, `figs/placement.png`).
 
 Series of 2026-11-20, quieter machine (load average 11 to 56), one and six threads, six
 being the limit per session since decision 0019 (runs core-20261120-220756-0eaaf74,
-core-20261121-025720-29ecba0, core-20261121-030310-46d891c; journal entries 21, 26, 28). Seconds
+core-20261121-025720-29ecba0, core-20261121-030310-46d891c, core-20261121-031150-04a2d5b;
+journal entries 21, 26, 28, 29). Seconds
 per step, and one A100 for the same decks (run core-20261119-144437-6718c76, Slurm 4643,
 release card executable, best of two; the isolated collapse from the card log of run
 core-20261115-120028-fee90ca):
@@ -148,22 +149,24 @@ core-20261115-120028-fee90ca):
 | case | 1 thread | 6 threads | six over one | one A100 | card over six threads | card memory (MiB) |
 |---|---|---|---|---|---|---|
 | punc | 90.8 | 15.7 | 5.8 | 0.175 (8.07e6 zone-cycles/s) | 90 | 9191 |
-| cluster | 115.9 | 21.11 | 5.5 | 0.279 (5.88e6 zone-cycles/s) | 76 | 12295 |
+| cluster | 115.9 | 20.1 | 5.8 | 0.279 (5.88e6 zone-cycles/s) | 72 | 12295 |
 | cosmo | 48.6 | 8.86 | 5.5 | 0.119 (1.76e7 particle updates/s) | 74 | 1787 |
 | newton, periodic | 4.11 | 0.929 | 4.4 | 0.0779 | 11.9 | 1563 |
 | collapse: Newtonian mode, isolated boundaries, 128^3, 137 376 particles | 2.23 | 0.409 | 5.4 | 0.650 | 0.63 | not logged |
 
-- The one-thread times are the best of that day's runs (four side by side on one socket
-  in the afternoon: 131.9, 115.9, 49.05, 4.61; cosmo and newton alone in the evening:
-  48.6, 4.11); with the afternoon's one-thread run the Newtonian box is 5.0 times faster
-  at six threads, with the evening's 4.4. Ratios between runs hours apart carry the
-  change of the load.
+- Every time is the best of that day's runs. One thread: four runs side by side on one
+  socket in the afternoon (131.9, 115.9, 49.05, 4.61) and each case alone in the evening
+  (90.8, 116.1, 48.6, 4.11). With the afternoon's one-thread run the Newtonian box is 5.0
+  times faster at six threads, with the evening's 4.4. Ratios between runs hours apart
+  carry the change of the load (11 to 56 over the day).
 - The afternoon's six-thread run of the puncture case was 7.9 times its one-thread run,
   more than the number of threads. Measured again in the evening, alone and back to
   back, one thread needs 90.8 s per step and six threads 15.7 and 17.2: 5.3 to 5.8. The
-  7.9 came from a one-thread run that was held back while it ran beside three other
-  one-thread runs on one socket under a higher load (131.9 s per step), not from the
-  case (run core-20261121-030310-46d891c, journal entry 28).
+  7.9 came from a one-thread run that was held back in the afternoon (131.9 s per
+  step), not from the case (run core-20261121-030310-46d891c, journal entry 28). What
+  held it back is not known: the cluster case, measured the same way, is as fast alone
+  as side by side (116.1 against 115.9; run core-20261121-031150-04a2d5b), so it is not
+  a general cost of running one-thread jobs side by side.
 - One A100 against 16 threads of the loaded day: 82 (punc), 66 (cluster), 57 (cosmo),
   10.5 (newton); the Z4c benchmark (uniform 128^3) runs at 1.85e7 zone-cycles/s on the
   card (0.113 s per step, 4373 MiB).
@@ -191,7 +194,7 @@ and on one card. The two card jobs of this package waited 2 h 11 min and 3 h 15 
 | Kind of run (measured deck) | t6 (s) | tc (s) | Sooner on six threads below | Card time of that run |
 |---|---|---|---|---|
 | Z4c in vacuum on a refined mesh of 1.4e6 cells (puncture, tracers, horizon finder) | 15.7 | 0.175 | 460 to 700 steps | 1.4 to 2.0 min |
-| Z4c with 1e5 particles on a refined mesh of 1.6e6 cells (cluster) | 21.1 | 0.279 | 350 to 520 steps | 1.6 to 2.4 min |
+| Z4c with 1e5 particles on a refined mesh of 1.6e6 cells (cluster) | 20.1 | 0.279 | 360 to 540 steps | 1.7 to 2.5 min |
 | Z4c with 2.1e6 particles on 64^3 (cosmology box, PCS, compensation) | 8.86 | 0.119 | 820 to 1240 steps | 1.6 to 2.5 min |
 | Newtonian mode, periodic, 128^3, 5.1e5 particles | 0.929 | 0.0779 | 8500 to 12 700 steps | 11 to 17 min |
 | Newtonian mode, isolated boundaries, 128^3, 1.4e5 particles | 0.409 | 0.650 | any length | (six threads are faster) |
@@ -199,7 +202,7 @@ and on one card. The two card jobs of this package waited 2 h 11 min and 3 h 15 
 What follows for the tracks:
 - Runs with Z4c: only short ones (tests, convergence checks at 16^3 to 64^3, the first
   few hundred steps of a new set-up) belong on processors; anything longer stays on the
-  cards, which are 74 to 90 times six threads. Track A's dx = M scouting at 128^3:
+  cards, which are 72 to 90 times six threads. Track A's dx = M scouting at 128^3:
   about 23 s per step on six threads [JUDGEMENT: the zone-cycle rate of the puncture
   case, 9.0e4 per second, applied to 2.1e6 cells] against about 0.1 s on a card, so
   fewer than about 310 to 470 steps.
@@ -214,7 +217,7 @@ What follows for the tracks:
   and the scalar field without particles were NOT measured on a card. The statement of
   2026-11-19 "always on processors" for them is withdrawn as unmeasured; the cosmology
   box, where push and deposit are most of the processor time, is 74 times faster on a
-  card. Use the rule: time a few steps on six threads; if the whole run then takes less
+  card than on six threads. Use the rule: time a few steps on six threads; if the whole run then takes less
   than the wait in the queue, run it on processors.
 
 Rules: a processor run is a registered run like any other (`nrpic-run submit --cores 6

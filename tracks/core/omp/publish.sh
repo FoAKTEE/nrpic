@@ -8,10 +8,29 @@
 # change against HEAD; each build directory is brought up to date first (an incremental
 # make that must not compile anything), so the executables are those of the source of HEAD.
 # READY is tracks/core/omp/READY.txt.
+#   publish.sh           builds are checked and the three executables installed anew
+#   publish.sh --ready   only the READY text is replaced: the published executables must
+#                        match SHA256SUMS, athenak/ must be unchanged since the source
+#                        commit named in COMMIT and clean; a line is appended to COMMIT
 set -euo pipefail
 WT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)
 DEST=/data/haiyangw/nrpic/scratch/core/exe/core_build-openmp
 cd "$WT"
+if [[ ${1:-} == --ready ]]; then
+  if [[ -n $(git status --porcelain -- athenak tracks/core/omp/READY.txt) ]]; then
+    echo "refused: athenak/ or READY.txt has uncommitted changes" >&2; exit 1
+  fi
+  src=$(git log -1 --format=%H -- athenak)
+  grep -q "source commit (last change of athenak/): $src" "$DEST/COMMIT" || {
+    echo "refused: athenak/ changed since the published source commit" >&2; exit 1; }
+  (cd "$DEST" && sha256sum --quiet -c SHA256SUMS) || {
+    echo "refused: a published executable does not match SHA256SUMS" >&2; exit 1; }
+  rm -f "$DEST/READY"
+  cp tracks/core/omp/READY.txt "$DEST/READY"
+  echo "READY text replaced $(date -u +%Y-%m-%dT%H:%M:%SZ) from HEAD $(git rev-parse HEAD) (executables unchanged, SHA256SUMS verified)" >> "$DEST/COMMIT"
+  ls -la "$DEST"; tail -2 "$DEST/COMMIT"
+  exit 0
+fi
 if [[ -n $(git status --porcelain -- athenak scripts) ]]; then
   echo "refused: athenak/ or scripts/ has uncommitted changes" >&2; exit 1
 fi

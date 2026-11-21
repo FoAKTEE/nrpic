@@ -78,11 +78,11 @@ Journal (predictions, outcomes, run ids): tracks/core/JOURNAL-omp.md on the same
    of core-v0.3: without the option nrpic_threads.hpp compiles to the same atomic
    additions).
 
-4. Speed (interface text sections 5 and 6; journal entries 11, 16, 21, 26, 28;
+4. Speed (interface text sections 5 and 6; journal entries 11, 16, 21, 26, 28, 29;
    figs/scaling.png). Seconds per step on a quiet machine (2026-11-20), one thread / six
    threads / one A100 (run core-20261119-144437-6718c76):
      vacuum puncture, refined, 1.4e6 cells        90.8 / 15.7  / 0.175   card = 90 x six
-     cluster, 1e5 particles, Z4c, 1.6e6 cells    115.9 / 21.1  / 0.279   card = 76 x six
+     cluster, 1e5 particles, Z4c, 1.6e6 cells    115.9 / 20.1  / 0.279   card = 72 x six
      64^3 cosmology box, 2.1e6 particles, Z4c     48.6 / 8.86  / 0.119   card = 74 x six
      Newtonian mode, periodic 128^3, 5.1e5         4.11 / 0.929 / 0.078  card = 11.9 x six
      Newtonian mode, isolated 128^3, 1.4e5         2.23 / 0.409 / 0.650  six = 1.6 x card
