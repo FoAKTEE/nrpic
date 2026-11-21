@@ -31,7 +31,7 @@ def main():
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     mine = []
-    for run in a.scan.split(","):
+    for run in a.scan.replace("+", ",").split(","):
         mine += json.load(open(os.path.join(SCR, run, "scan.json")))
     mu = json.load(open(os.path.join(SCR, a.mu, "scan.json"))) if a.mu else []
     v7 = json.load(open(os.path.join(SCR, "F-hills-20261115-145915-71abf93", "v7_summary.json")))
@@ -50,7 +50,12 @@ def main():
                   ("HRNA plunge", [r["hrna"]["plunge"] for r in rr], fs.PAL["red"]))
         for lab, y, col in series:
             axx.plot(rp, y, "-", color=col, lw=1.2, label=f"V7 {lab}")
-        mm = sorted([m for m in mine if m["q"] == q], key=lambda m: m["rp"])
+        seen, mm = set(), []
+        for m in mine:                                 # the first run holding a case wins
+            if m["q"] == q and m["rp"] not in seen:
+                seen.add(m["rp"])
+                mm.append(m)
+        mm.sort(key=lambda m: m["rp"])
         x = [m["rp"] for m in mm]
         for (lab, _, col), y in zip(series, ([m["newton"]["separated"] for m in mm], [m["newton"]["member_below_4M"] for m in mm],
                                               [m["hrna_handoff"]["separated"] for m in mm], [m["hrna_handoff"]["plunge"] for m in mm])):
@@ -76,7 +81,9 @@ def main():
         axx = ax[2]
         for s_, lab, col in ((1, "pro", fs.PAL["blue"]), (-1, "retro", fs.PAL["red"])):
             axx.plot(b, sep[il, meta["senses"].index(s_)].mean(-1), "-", color=col, lw=1.2, label=f"S1 HRNA {lab} (track)")
-        R7 = json.load(open(os.path.join(SCR, a.s1, "s1check.json")))
+        R7 = []
+        for run in a.s1.replace("+", ",").split(","):
+            R7 += json.load(open(os.path.join(SCR, run, "s1check.json")))
         for r in R7:
             col = fs.PAL["blue"] if r["sense"] == 1 else fs.PAL["red"]
             p = r["separated"]

@@ -193,9 +193,14 @@ def main():
     mine = dict(kv.split("=") for kv in a.mine.split(","))
     R1 = json.load(open(rf(mine["R1"], "closed_forms.json")))
     R3 = json.load(open(rf(mine["R3"], "passages.json")))
-    R4 = {(r["q"], r["rp"]): r for r in json.load(open(rf(mine["R4"], "scan.json")))}
+    R4 = {}
+    for run in mine["R4"].split("+"):                  # several scan runs; the first one holding a case wins
+        for r in json.load(open(rf(run, "scan.json"))):
+            R4.setdefault((r["q"], r["rp"]), r)
     R5 = json.load(open(rf(mine["R5"], "restricted.json")))
-    R7 = json.load(open(rf(mine["R7"], "s1check.json"))) if "R7" in mine else []
+    R7 = []
+    for run in (mine["R7"].split("+") if "R7" in mine else []):
+        R7 += json.load(open(rf(run, "s1check.json")))
     rows = parse_ledger()
     cop = coplanar()
     res = []
