@@ -274,3 +274,15 @@ Where this package stands:
   reference, size the next job from the measured s per M, and submit the next list when
   fewer than two C-* jobs are queued (order: d1_job2, d3_job3, d3_job4). Card time so far:
   none used by this package (4737 not started); reserved 0.65.
+
+## 2026-11-21 02:58 UTC Entry 6: resumed (batch of 2026-11-20 evening); D1 job 1 has run; job 2 sized and submitted
+
+Pause flag absent (02:54, 02:56 UTC). D1 job 1 (run C-20261120-221846-797bdbe, Slurm 4737) ran
+14:59:06-15:34:07 PST, 35.0 min, exit 0 for the smoke run and both 300 M runs
+(`batch.list.status` of the run); closed with `nrpic-run finish` (commit 150872b5). Measured
+cost [VERIFIED, `batch.list.status` times]: cc2_kn10_part_s1 1046 s, cc2_kn10_part_s2 1037 s
+for 300 M (3.49 and 3.46 s per M; prediction (h): 3.4-3.7 s per M, holds), smoke 18 s; job
+0.584 card-hours. The next jobs hold the same two 300 M runs, so --gpu-hours 0.65 and --wall
+00:55:00 stay (a third run would need 52 min plus start-up, too close to the limit). Queue at
+02:56 UTC: one job of the user (4754, F), no C-* job; drift's job 4741 completed at 16:30 PST.
+Submitting D1 job 2 (CC1 pair) now; the analysis of job 1 follows while it waits.
