@@ -34,18 +34,30 @@ def cmp_rst(pa, pb):
     out = {"param_lines_only_A": only_a[:20], "param_lines_only_B": only_b[:20],
            "binary_sizes": [len(da), len(db)], "binary_identical": da == db}
     if da != db and len(da) == len(db):
-        n = len(da) // 8
-        a = np.frombuffer(da[:8 * n], "<f8")
-        b = np.frombuffer(db[:8 * n], "<f8")
-        diff = a != b
-        fin = np.isfinite(a) & np.isfinite(b)
-        d = np.abs(a - b)[diff & fin]
-        rel = (np.abs(a - b) / np.maximum(np.abs(a), 1e-300))[diff & fin]
-        out.update({"n_words": int(n), "n_words_differ": int(diff.sum()),
-                    "first_word_differ": int(np.argmax(diff)) if diff.any() else None,
-                    "max_abs_diff": float(d.max()) if d.size else 0.0,
-                    "max_rel_diff": float(rel.max()) if rel.size else 0.0,
-                    "median_rel_diff_of_differing": float(np.median(rel)) if rel.size else 0.0})
+        A = np.frombuffer(da, np.uint8)
+        B = np.frombuffer(db, np.uint8)
+        out["n_bytes_differ"] = int(np.count_nonzero(A != B))
+        # the binary part starts with 252 bytes of ints and structs (restart.cpp 219-236),
+        # so the float64 words of the fields are not aligned with its start: try the
+        # eight offsets and keep the one with the smallest median relative difference
+        best = None
+        for sft in range(8):
+            n = (len(da) - sft) // 8
+            a = np.frombuffer(da[sft:sft + 8 * n], "<f8")
+            b = np.frombuffer(db[sft:sft + 8 * n], "<f8")
+            with np.errstate(all="ignore"):
+                diff = a != b
+                ok = diff & np.isfinite(a) & np.isfinite(b) & (np.abs(a) < 1e30) & (np.abs(a) > 1e-30)
+                rel = np.abs(a - b)[ok] / np.abs(a[ok])
+            med = float(np.median(rel)) if rel.size else 0.0
+            if best is None or med < best[1]:
+                best = (sft, med, int(n), int(diff.sum()), rel)
+        sft, med, n, nd, rel = best
+        out.update({"word_offset": sft, "n_words": n, "n_words_differ": nd,
+                    "fraction_words_differ": nd / n,
+                    "rel_diff_quantiles_50_99_9999": [float(np.quantile(rel, q)) for q in (0.5, 0.99, 0.9999)]
+                    if rel.size else None,
+                    "max_rel_diff": float(rel.max()) if rel.size else 0.0})
     return out
 
 
@@ -92,7 +104,7 @@ def main():
     for i, (case, r) in enumerate(res.items()):
         for name, c in r.items():
             if "binary_identical" in c:
-                v = 1e-18 if c["binary_identical"] else max(c.get("max_rel_diff", 1.0), 1e-18)
+                v = 1e-18 if c["binary_identical"] else max((c.get("rel_diff_quantiles_50_99_9999") or [1.0])[0], 1e-18)
                 labels.append(f"{case}: {name} (mesh+state)")
             else:
                 v = 1e-18 if c["identical"] else max(c["max_abs_diff"] or 1.0, 1e-18)
@@ -105,7 +117,7 @@ def main():
     ax.set_xlim(1e-18, 1)
     ax.set_yticks(y)
     ax.set_yticklabels(labels, fontsize=6)
-    ax.set_xlabel("largest difference restarted vs straight (relative for restart files; 1e-18 = identical)")
+    ax.set_xlabel("restarted vs straight: restart files median relative difference of differing words; trajectories largest |diff| (1e-18 = identical)")
     ax.set_title("V6b: restart on release core-v0.6 (run core-20261121-213713-952a0c4), aligned comparison", fontsize=8)
     fig.tight_layout()
     fs.save(fig, os.path.join(outdir, "fig_v6b_compare"))
