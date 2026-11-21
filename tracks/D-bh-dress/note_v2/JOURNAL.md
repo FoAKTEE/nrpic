@@ -178,3 +178,42 @@ of about -1.7 (computed exactly by fig_kerr_seeds.py of the note). Reading: no s
 bias; a deficit of one to two per cent inside 10 M is neither shown nor excluded by two seeds.
 What would decide it without the evolution: a direct test of the sampler at t = 0 with many
 more particles (the expected count in 0-4 M is 138 per 48000), or a third and fourth seed.
+
+## N2 outcome (2026-11-21T22:10Z): the build of note v2
+
+Registered builds (run_all.py, every one 14 of 14 scripts clean): D-20261121-220354-daadc10
+(first), -220513-c666211 (after the checker's wording points), -220624-879d83e (parameter table
+without the overfull row), **-220728-a41c2f0 (final; its figures/ and tables/ are the committed
+ones)**. The earlier three are superseded intermediate passes and stay on record.
+- B1 HELD: every script clean; fig_esf_numbers.json and fig_q16_numbers.json of the first build
+  equal the development ones byte for byte; the eight v1 *_numbers.json files equal v1's.
+- B2 PARTLY REFUTED: ledger parts 1-6 are byte-identical to v1's ledger.tex, and parts 7-10 are
+  new as planned; the claims check still counts 76 statements, 66 agree, but 15 of its
+  locators are no longer found because the lead rewrote stage/G1/STATUS.md (and other
+  documents) after v1 (values unchanged; the check is of the lead's documents, not of the note
+  text). Not fixed here: the claims check is v1's tool; the lead may retire it or re-anchor it.
+- B3 HELD after two fixes: the first checker pass found 9 negations, one "defect" (5.7), and one
+  overfull box of 1.9 pt in the parameter table (my new rows); rewritten and split, the final
+  pass gives 0 undefined references, 0 undefined citations, 0 overfull boxes; remaining hits:
+  4 negations whose content needs them (the power law not tested, not excluded, rather than
+  the boundary, not -9/4), 126 run ids in the ledger and scripts (exception 1 of the guide), 30
+  project names in scripts only (exception 1). Checker log: scratch/D-bh-dress/tmp/check_v2_final.log
+  (not registered: a check of the source, as in v1).
+- B4 HELD: 22 pages.
+Pages read (all 22, after the last build): the reading found Fig. 7 (the two Kerr seeds) out of
+citation order, ahead of the Schwarzschild and Kerr spike figures; the float was moved after the
+Kerr figure and the order checked again on pages 8-13. Every figure of the note was looked at as
+a PNG this session: fig_es, fig_constraints, fig_floor, fig_esrun, fig_spike, fig_kerr,
+fig_infall, fig_newton (v1 copies, regenerated identically), fig_esf, fig_q16, fig_kerr_seeds,
+schem_architecture, schem_timeline (new or redrawn).
+
+Observation, not tested: in the seed-2 profile figure of the analysis run
+(kerr_seed2_profile.png) the outermost radial bin (about 80-100 M) lies 7-9 per cent below the
+reference in every band at all three times; it lies outside the five ranges of the test.
+Whether seed 1 shows the same (an edge effect of the energy cut or of the reference grid) was
+not checked.
+
+Correction (22:12Z): N4 and the first draft of the note said "the analytic metric has no
+excision". That holds for the executable both seeds used (release core-v0.3, chosen so that
+the seed is the only change); release core-v0.4 added lapse-threshold removal on the analytic
+metrics (tracks/core/interfaces/REQUESTS_ADF.md on main, row D4). The note and README now say so.
