@@ -405,3 +405,46 @@ lies between my Juttner Gamma_1 onset and the F21-gamma onset (1 + p/u of MJ fal
 as fast as Gamma_1), i.e. Z(0) in (0.41, 0.63) exact. My verdict uses Gamma_1 = (d ln p/d ln
 n)_s = 1 + 1/c_v, the adiabatic index of the pulsation equation (F21 appendix line 386 defines
 gamma the same way).
+
+## Entry 12 (2026-11-21 00:16 PST) V4 run of record, then the model files; predictions for the comparison
+
+V4 run of record C-20261121-080313-84094f1 (`figs/v4_ev.png`, `results/v4_ev.json`) reproduced
+the numbers of entry 11 exactly. Outcomes against entries 9-10:
+- F21 Table 1, five rows: M, E_rest, eps, Z(0), rho(0), p(0), v(0), <gamma>, gamma_cr within
+  1.3e-4 (M at w(0) = 4.5: -1.1e-4; most within 1e-5); R within 0.25 percent (their 1e-3 grid);
+  closed-form gamma_cr = K = 1 quotient to 4e-13. Prediction holds.
+- (a) King E_b maximum y0 = 0.334032 (E_b = 0.0355886), zero 0.784518: paper 0.334 and 0.784
+  (2009.08163 line 953). Holds.
+- (b) King, Juttner Gamma_1(T_Tolman): exact onset y0 = 0.039192 (J = 400: 0.039191),
+  Z(0) = 0.0558, K = 1 onset 0.039350: far below the E_b maximum. Holds (predicted
+  [0.02, 0.15], sharpened (0.02, 0.05)). With F21's 1 + p/u: exact onset y0 = 0.37206 (Z(0) =
+  0.5757), K = 1 0.39612 - after the E_b maximum, not before it. Full-MJ 1 + p/u variant:
+  exact 0.11137.
+- (c) F21 b = 0.1: turning points Z(0) = 0.08913 (E max), 0.29966 (B max), 0.54041 (eps max,
+  eps = 0.035179). F21: 0.087, 0.297, 0.548 on their w(0) grid, eps_max 0.0352: holds within
+  their grid. Onsets: F21 gamma K = 1 Z(0) = 0.75001 (w(0) = 4.0511; F21 0.750, 4.05: holds);
+  exact 0.63482 (w(0) = 3.5871; predicted (0.548, 0.638): holds). Juttner Gamma_1(T_Tolman):
+  K = 1 Z(0) = 0.43567, exact 0.41253 (w(0) = 2.5329, v(0) = 0.4533) (predicted (0.087, 0.548),
+  exact below K = 1: holds). Full-MJ 1 + p/u: K = 1 0.59440, exact 0.54038 (between my two,
+  as predicted; it falls on the eps maximum 0.54041 to 3e-5 in Z(0) [observation, not
+  understood]). J = 400 onsets equal J = 200 to <= 6e-7 in y0. All holds.
+- Not predicted: F21's trial-function quotient turns positive again above Z(0) ~ 1.3 while
+  the exact eigenvalue stays negative (figure, lower left): the K = 1 criterion is not
+  reliable along this family.
+
+Model files. Listing their JSON fields (family, b, y0, role, and the scalar fields) showed me
+the track's labels: King 0.33403216 "threshold (computed y_max)"; b = 0.1 Z(0) = 0.5404 "E_b
+maximum (computed), F21 turning point", 0.6348 "fluid onset, F21 gamma = 1 + p/u", 0.5331
+"fluid onset, Juttner Gamma_1 at the energy-matched temperature". So the difference to my
+Juttner onset (0.4125) is one of definition: their temperature is the MJ temperature with the
+same mean energy per particle (<E>_MJ(T) = rho/n), mine the Tolman temperature b e^y of the
+truncated distribution. Predictions for v4_models.py (run after this entry):
+- At each model's y0 my E_b, C, Z(0), M (F21/King paper units), R/M, M0/M, n_c, rho_c, p_c
+  agree with the file to 1e-6 (both solve the same ODE; the King and b = 0.1 values listed
+  agree with mine to ~1e-8 where I can see them).
+- k = 0.5 polytrope (2009.08163 line 954): E_b maximum at 0.298 +- 0.001, zero 0.693 +- 0.001.
+- Energy-matched temperature: T_em < T_Tolman (truncation removes the tail), so Gamma_1 is
+  larger and the onset later than 0.4125; exact onset Z(0) = 0.533 +- 0.002 if the track used
+  the exact fundamental mode, about 0.56-0.60 if it used the trial function.
+- Particles of the threshold models: KS distance of the isotropic-radius distribution from my
+  enclosed rest mass below 1.36/sqrt(1e5) = 4.3e-3 (stratified samples: expect much less).

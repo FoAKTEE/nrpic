@@ -33,9 +33,12 @@ def moments(y, b):
     if y <= 0:
         return 0.0, 0.0, 0.0
     k = np.expm1(y)
-    T = b*np.exp(y)
     eps = 1 + k*GS**2
-    f = np.expm1(k*(1 - GS**2)/T)
+    if isinstance(b, str):          # "poly<k>": polytropic ansatz f = (1 - E/E0)^k_+ (2009.08163 l. 631)
+        f = (1 - eps*np.exp(-y))**float(b[4:])
+    else:
+        T = b*np.exp(y)
+        f = np.expm1(k*(1 - GS**2)/T)
     sq = GS*np.sqrt(k*(2 + k*GS**2))           # sqrt(eps^2 - 1)
     jac = 2*k*GS                               # d eps / ds
     n = 4*np.pi*np.sum(GW*f*eps*sq*jac)
@@ -67,7 +70,7 @@ def solve(y0, b, dense=False):
     M, _, N = sol.y_events[0][0]
     C = M/R
     Z0 = np.exp(y0)/np.sqrt(1 - 2*C) - 1
-    out = dict(y0=y0, b=b, w0=-np.expm1(-y0)/b, M=M, R=R, N=N, C=C, Eb=(N - M)/N, B=N - M,
+    out = dict(y0=y0, b=b, w0=(-np.expm1(-y0)/b if not isinstance(b, str) else None), M=M, R=R, N=N, C=C, Eb=(N - M)/N, B=N - M,
                Z0=Z0, eps_c0=np.expm1(y0), rho0=rho0, p0=p0, v0=np.sqrt(3*p0/rho0))
     return out, (sol if dense else None)
 
@@ -279,7 +282,7 @@ def figures(out, res):
     figstyle.use_style()
     P = figstyle.PAL
     fig, ax = plt.subplots(2, 2, figsize=(8, 6.4))
-    fig.subplots_adjust(left=0.1, right=0.98, bottom=0.08, top=0.95, wspace=0.3, hspace=0.33)
+    fig.subplots_adjust(left=0.1, right=0.91, bottom=0.08, top=0.95, wspace=0.42, hspace=0.33)
     # King E_b
     ys = np.linspace(0.02, 0.9, 120)
     eb = [solve(t, 1.0)[0]["Eb"] for t in ys]
