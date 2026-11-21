@@ -635,13 +635,13 @@ against 3e-16 and 2e-21 M in particle mode.
   scatter of t_c 0.40 M (particle 0.17 M); instantaneous dalpha difference of the two cell seeds
   rms 9.1e-4 (0-100 M) and 2.4e-3 (100-196 M), as for the particle seeds.
 
-## 2026-11-21 06:28 UTC Entry 14: package closed with job 5 pending
+## 2026-11-21 06:26 UTC Entry 14: package closed with job 5 pending
 
 D1 and D3 as designed (REVIEW-wave2 section 7, the brief's runs) have run and are analysed
 (entries 7, 10, 11, 13); README.md has the results table, the requests and the pending job.
 Card time used: 2.34 card-hours of allocation (jobs 1-4, sacct elapsed 35:01, 34:41, 35:38,
 35:11); job 5 (run C-20261121-062408-49fa14a, Slurm 4770) adds about 0.58 when it runs, 2.93 in
-all, within the cap of 3.0. At 06:28 UTC both cards are held by other jobs until about
+all, within the cap of 3.0. At 06:26 UTC both cards are held by other jobs until about
 07:15-07:25 UTC, so job 5 will end after this session; its finish and analysis commands and the
 decision rule for entry 10's prediction are in README "Pending". Nothing else of this package is
 open on the cards. The pause flag was absent at every check of this session.
