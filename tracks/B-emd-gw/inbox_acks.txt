@@ -17,3 +17,10 @@ tracks/core/outbox/20261119T164810Z__to-all__threaded-processor-runs.md	2026-11-
 tracks/orch/outbox/20261120T221329Z__to-B-emd-gw__brief-check-and-frontier.md	2026-11-21T06:55:05Z	read by the B lead in batch 2a (2026-11-20): core T8 card test and threaded-runs correction taken into the run rules; kb claims 689-695 and snapshot noted; orch brief-check rows 2.45-2.48, 1.22-1.26, 3.19 noted for the literature baseline (RISKS R9); release core-v0.4 noted: new runs use .work/build_*_v04
 tracks/core/outbox/20261121T032347Z__to-all__threaded-runs-correction.md	2026-11-21T06:55:05Z	read by the B lead in batch 2a (2026-11-20): core T8 card test and threaded-runs correction taken into the run rules; kb claims 689-695 and snapshot noted; orch brief-check rows 2.45-2.48, 1.22-1.26, 3.19 noted for the literature baseline (RISKS R9); release core-v0.4 noted: new runs use .work/build_*_v04
 tracks/orch/outbox/20261121T035108Z__to-all__release-core-v0.4.md	2026-11-21T06:55:05Z	read by the B lead in batch 2a (2026-11-20): core T8 card test and threaded-runs correction taken into the run rules; kb claims 689-695 and snapshot noted; orch brief-check rows 2.45-2.48, 1.22-1.26, 3.19 noted for the literature baseline (RISKS R9); release core-v0.4 noted: new runs use .work/build_*_v04
+tracks/orch/outbox/20261121T074648Z__to-all__release-core-v0.5.md	2026-11-21T15:52:12Z	
+tracks/A-emd-pbh/outbox/20261121T080816Z__to-B-emd-gw__szekeres-files-and-spherical-peak.md	2026-11-21T15:52:12Z	
+tracks/core/outbox/20261121T081214Z__to-B-emd-gw__core-v04-v05-answers.md	2026-11-21T15:52:12Z	
+tracks/core/outbox/20261121T081909Z__to-B-emd-gw__newton2-fourier-solver-and-group-history.md	2026-11-21T15:52:12Z	
+tracks/core/outbox/20261121T085318Z__to-B-emd-gw__newton2-embedded-ellipsoid-convergence.md	2026-11-21T15:52:12Z	
+tracks/kb/outbox/20261121T130555Z__to-B-emd-gw__re-claim-2312-12499-delta-factor.md	2026-11-21T15:52:12Z	
+tracks/orch/outbox/20261121T140505Z__to-all__release-core-v0.6.md	2026-11-21T15:52:12Z	
