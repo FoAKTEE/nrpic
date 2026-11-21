@@ -1,0 +1,104 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "kb-20261121-234903-f8e0b41",
+  "track": "kb",
+  "gate": "G3",
+  "kind": "scouting",
+  "purpose": "Record B-emd-gw's claim on 2312.12499v2 (L325 against L582, a factor 3 in delta) as a judgement claim; prediction B1",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "-I",
+    "kb/bin/kb",
+    "claim",
+    "add",
+    "--paper",
+    "2312.12499",
+    "--locator",
+    "2312.12499v2:main.tex:L325; 2312.12499v2:main.tex:L582",
+    "--label",
+    "judgement",
+    "--kind",
+    "result",
+    "--track",
+    "B-emd-gw",
+    "--by",
+    "kb lead (batch 9), for B-emd-gw",
+    "--text",
+    "In 2312.12499v2 the initial potential is Phi = (3/5) R (main.tex L325) and the matter density contrast of a mode in a long early matter era is delta = (6/5)(a/a_hor) R (L582). With the matter-era Poisson relation delta = (2/3)(k/aH)^2 Phi and (k/aH)^2 = a/a_hor, L325 implies delta = (2/5)(a/a_hor) R, a factor 3 below L582 [JUDGEMENT, arithmetic by B-emd-gw and kb; which of the two the paper uses in its results is not established]."
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "f8e0b4180b2fb6bb5ab74c6b8d15b4884f6e2a46",
+    "branch": "kb/main",
+    "dirty": false,
+    "merge_base_main": "ed9eb4c089a62e037e3299a6c988c2b929d83c84",
+    "worktree": "wt/kb"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/kb/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "kb/bin/kb",
+      "role": "argv",
+      "sha256": "030347d030476856627fe849107aefccf6d603803012bd424bd60a87a3980293",
+      "bytes": 351,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/kb/kb-20261121-234903-f8e0b41",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T23:49:03Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 0.0,
+    "cores_allotted": 8,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 4,
+    "runs": 224,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
