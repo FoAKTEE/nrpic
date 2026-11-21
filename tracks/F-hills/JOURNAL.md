@@ -502,3 +502,30 @@ L6 kerr: (a) the registered T8 test rerun (`kerr/tests/t8_bks_chart.py`) repeats
     |d ln|E_b|/dt| = (2M/r) omega_b |(n x V) . L_hat|, the same coefficient as the package's
     formula (2H, H = M/r) [JUDGEMENT: derivation on paper, written here before reading the
     package's derivation in detail; sign convention not checked]. Refuted by (a) or (b) differing.
+
+L4 first outcome (run F-20261121-155018-620fe7f, `review4_bc.json`; figure read below) and a
+new prediction L4f, written before its run:
+- L4a MET: the separations equal the BC-3 table at all six times (P1, R8, R16n to 1e-4 M);
+  largest |s_R8 - s_P1| = 0.0930 M at 20.94 M; Delta s ratios 0.670, 0.812, 0.865 (7.5, 15, 20).
+- L4b FAILED: my ADM 1PN integration gives 4.9494, 4.9419, 4.9290, 4.9105, 4.8551, 4.7723 at
+  2.5-20 M against the package's EIH-canonical 4.9503 ... 4.9302 (0.019 M apart at 7.5 M, 0.158
+  at 20 M); my Newton equals the package's Newton column to 1e-4 (MET). An unregistered
+  diagnostic of mine (scratch/F-hills/tmp/lead4a/diag.py, superseded by L4f) gave my own
+  harmonic EIH with v = dH/dp (truncated) 4.9383 at 7.5 and 4.8408 at 20 M: a third value.
+- L4c FAILED: R16n lies up to 0.019 M outside my ADM 1PN separation (at 7.5 M); R8 is 0.043 M
+  inside it at 7.5 M (predicted more than 0.05).
+- L4d: H-norm2 of R8 18292 at t = 0.5 and 10.9 at 1.0: MET. R16n: 58 and 41 searches after
+  t = 0.5 have hrms >= 1e-3 (my criterion), FAILED as worded; but their masses lie within 1e-4 of
+  the others (0.12736-0.12743, 0.12757-0.12768), so "found in every search" holds in substance.
+  R8's absolute mass rise is 1.3e-4 and 1.9e-4 per M (fractional 1.0e-3, 1.4e-3 per M): my
+  range 0.8-1.6e-3 per M FAILED because I read the package's fractional drifts as absolute; the
+  package's README and BC-3 label fractional drifts "per M" (small defect).
+L4f (prediction): the spread is the 1PN truncation ambiguity of a binary whose members move at
+  0.11-0.33 c (centre of mass at 0.22 c). (i) My own harmonic EIH started with v from an exact
+  inversion of the EIH-Lagrangian momenta (own fixed point) reproduces the package's
+  EIH-canonical column within 3e-4 M at all six times; (ii) the four 1PN variants (ADM
+  Hamiltonian; EIH with truncated v(p); EIH with exact v(p); each in the frame of the input)
+  spread by more than 0.1 M at 20 M and by more than 0.01 M at 7.5 M; (iii) the same variants
+  in the centre-of-mass frame (P_total removed from both momenta in proportion to the masses)
+  spread less than in the input frame. Refuted if (i) fails (then the package's reference
+  differs from mine for a reason not identified) or if (ii) fails.

@@ -9,6 +9,9 @@ files and integrates its own equations.
   review4.py bc <out> <R8 dir> <R16n dir> <P1 dir> <bin_m16.athinput>
       L4: tracker separations, own ADM 1PN two-body Hamiltonian (Schaefer-Jaranowski form,
       momenta canonical, bare masses), Newton, horizons, history H-norm2.
+  review4.py pn <out> <bin_m16.athinput>
+      L4f: 1PN variants of the isolated binary (ADM Hamiltonian; harmonic EIH started with v
+      from the truncated or the exact inversion of the momenta), input and centre-of-mass frame.
   review4.py junk <out> <P1 dir>
       L5: fixed-frequency integration (Reisswig and Pollney 2011) of r psi4 modes l = 2..8 at
       70 and 90 M (and 40, 48 M), energy in the retarded-time window [-35, 6] M.
@@ -294,11 +297,102 @@ def mode_junk(out, p1):
     print(json.dumps(res, indent=1))
 
 
+# ------------------------------------------------------------- L4f: 1PN ambiguity
+def eih_acc(x1, x2, v1, v2, m1, m2):
+    """Harmonic 1PN two-body accelerations (Blanchet, Living Rev. Rel. 17, 2 (2014), Eq. 203
+    to 1PN)."""
+    def a(xa, xb, va, vb, ma, mb):
+        X = xa - xb
+        r = np.linalg.norm(X)
+        n = X / r
+        br = (5 * ma / r + 4 * mb / r + 1.5 * np.dot(n, vb) ** 2 - np.dot(va, va)
+              + 4 * np.dot(va, vb) - 2 * np.dot(vb, vb))
+        return (-mb * n / r ** 2 + (mb / r ** 2) * br * n
+                + (mb / r ** 2) * (4 * np.dot(n, va) - 3 * np.dot(n, vb)) * (va - vb))
+    return a(x1, x2, v1, v2, m1, m2), a(x2, x1, v2, v1, m2, m1)
+
+
+def eih_momenta(x, v, m):
+    """p_a = dL/dv_a of the 1PN (EIH) Lagrangian, two bodies (own form)."""
+    out = np.zeros_like(v)
+    for a, b in ((0, 1), (1, 0)):
+        X = x[a] - x[b]
+        r = np.linalg.norm(X)
+        n = X / r
+        out[a] = (m[a] * v[a] * (1 + 0.5 * np.dot(v[a], v[a]) + 3 * m[b] / r)
+                  - 0.5 * m[a] * m[b] / r * (7 * v[b] + n * np.dot(n, v[b])))
+    return out
+
+
+def v_exact(x, p, m):
+    from scipy.optimize import fsolve
+    v0 = p / m[:, None]
+    sol = fsolve(lambda vv: (eih_momenta(x, vv.reshape(2, 3), m) - p).ravel(), v0.ravel(),
+                 xtol=1e-15)
+    return sol.reshape(2, 3)
+
+
+def run_eih(x, v, m, ts):
+    from scipy.integrate import solve_ivp
+
+    def rhs(t, y):
+        a1, a2 = eih_acc(y[0:3], y[3:6], y[6:9], y[9:12], m[0], m[1])
+        return np.concatenate([y[6:12], a1, a2])
+    s = solve_ivp(rhs, (0, ts[-1]), np.concatenate([x.ravel(), v.ravel()]), method="DOP853",
+                  rtol=1e-12, atol=1e-13, t_eval=ts)
+    return np.linalg.norm(s.y[0:3].T - s.y[3:6].T, axis=1)
+
+
+def mode_pn(out, inp):
+    m, x, p = read_punctures(inp)
+    ts = np.array([0, 2.5, 5, 7.5, 10, 15, 20])
+    tf = np.linspace(0, 20, 801)
+    res = {"times": ts.tolist()}
+    curves = {}
+    for frame in ("input", "cm"):
+        pp = p.copy()
+        if frame == "cm":
+            pp = p - np.outer(m / m.sum(), p.sum(0))
+        q = x.ravel()
+        v_tr = grad_cs(lambda z: ham(q, z, m[0], m[1], True), pp.ravel()).reshape(2, 3)
+        v_ex = v_exact(x, pp, m)
+        var = {"adm_hamiltonian": integrate(m, x, pp, 20.0, True, tf)[0],
+               "eih_v_truncated": run_eih(x, v_tr, m, tf),
+               "eih_v_exact": run_eih(x, v_ex, m, tf),
+               "newton": integrate(m, x, pp, 20.0, False, tf)[0]}
+        res[frame] = {k: np.interp(ts, tf, s).round(6).tolist() for k, s in var.items()}
+        pn = np.array([var[k] for k in ("adm_hamiltonian", "eih_v_truncated", "eih_v_exact")])
+        spread = pn.max(0) - pn.min(0)
+        res[frame]["spread_1pn"] = np.interp(ts, tf, spread).round(6).tolist()
+        res[frame]["v_exact_minus_truncated_max"] = float(np.abs(v_ex - v_tr).max())
+        curves[frame] = var
+    pkg = [4.9519, 4.9503, 4.9490, 4.9478, 4.9464, 4.9412, 4.9302]   # BC-3 table, EIH canonical
+    res["eih_v_exact_minus_package"] = (np.array(res["input"]["eih_v_exact"]) - pkg).round(6).tolist()
+    json.dump(res, open(os.path.join(out, "review4_pn.json"), "w"), indent=1)
+    plt, fs = _fig()
+    fig, ax = plt.subplots(1, 2, figsize=(fs.COLUMN_WIDTH * 2, 3.0), sharey=True)
+    sty = {"adm_hamiltonian": (fs.PAL["orange"], "-"), "eih_v_truncated": (fs.PAL["red"], "--"),
+           "eih_v_exact": (fs.PAL["blue"], "-."), "newton": (fs.PAL["green"], ":")}
+    for a_, frame in zip(ax, ("input", "cm")):
+        for k, s in curves[frame].items():
+            a_.plot(tf, s, color=sty[k][0], ls=sty[k][1], label=k.replace("_", " "))
+        a_.set_title(f"{frame} frame", fontsize=8)
+        a_.set_xlabel("t [M]")
+    ax[0].plot(ts, pkg, "ko", ms=3, label="package EIH canonical")
+    ax[0].set_ylabel("separation [M]")
+    ax[0].legend(loc="lower left", fontsize=6)
+    fig.subplots_adjust(left=0.09, right=0.98, top=0.9, bottom=0.17, wspace=0.05)
+    fs.save(fig, os.path.join(out, "fig_review4_pn"))
+    print(json.dumps(res, indent=1))
+
+
 if __name__ == "__main__":
     mode, out = sys.argv[1], sys.argv[2]
     os.makedirs(out, exist_ok=True)
     if mode == "bc":
         mode_bc(out, *sys.argv[3:7])
+    elif mode == "pn":
+        mode_pn(out, sys.argv[3])
     elif mode == "junk":
         mode_junk(out, sys.argv[3])
     else:
