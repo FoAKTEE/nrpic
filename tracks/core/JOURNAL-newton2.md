@@ -905,3 +905,59 @@ checked at 22:20Z). To publish: copy them to
 `/data/haiyangw/nrpic/scratch/core/exe/core_newton-2/athena_cpu` and `athena_gpu` and
 write COMMIT, SHA256SUMS and READY there (model: `exe/core_requests-adf/READY`). The
 regression T10 against the branch start and release core-v0.3 is done on this source.
+
+## 2026-11-21 session newton2-4 (batch 2b, continuation; started 07:47Z = 23:47 PST of 2026-11-20)
+
+State found [VERIFIED: `git status` clean, `git log`, `sacct -u $USER -S 2026-11-19`,
+`squeue`, the run directories]:
+- `git merge main` brought releases core-v0.4 and core-v0.5 into the branch with two
+  conflicts, both of the kind "each side added lines at the same place":
+  `athenak/src/CMakeLists.txt` (the two files of this package beside
+  `particles/nrpic_idsolve.cpp`) and `athenak/src/particles/particles.hpp` (the members
+  of the Fourier solver and of the groups beside those of the initial-data solver and of
+  the MPI path). Both sides kept (merge commit 67ca9ce1). The difference of the branch
+  to main in `athenak/` is now this package only: 17 lines of `nrpic_newton.cpp`, 2 of
+  `CMakeLists.txt`, 38 of `particles.hpp`, and the two new files.
+- The executables tested so far (`.work/build_cpu`, `.work/build_gpu`, source of commit
+  c6293772) are therefore no longer the source of the branch tip. They are kept as
+  `scratch/core/exe/core_newton-2/premerge/athena_cpu` (sha256 aa3b5857...8bac) and
+  `athena_gpu` (832cb882...a5b1); the build directories are rebuilt from the merged
+  source.
+- Card job 2a (Slurm 4736, run core-20261120-221835-4870ae5) ran 14:18 to 14:36 PST of
+  2026-11-20, 17.5 minutes = 0.29 card-hours (package total with job 4648: 0.36). Six
+  of its seven cases ended with exit code 0; `emb96_fft` stopped at start-up with "The
+  MeshBlock size must be power of two" (`Multigrid::Multigrid`): my deck for 96^3 has
+  MeshBlocks of 48^3, and the multigrid object is constructed also when the Fourier
+  solver gives the potential. A fault of my deck (T1c ran 48 x 80 x 112 cells with
+  MeshBlocks of 16^3), and a restriction to write into the interface text: with
+  `newton_poisson = fft` the mesh may have factors 3, 5, 7, the MeshBlocks stay powers
+  of two. The registry entry is closed as "failed (exit 1)" for that one case.
+- Card job 2b (T4d at 128^3 and 256^3) was never submitted. Two cards busy, nothing
+  queued at 07:48Z.
+
+Plan of this session, in this order: (1) registered analyses of job 2a (T6c in, T6c x,
+T4d at 64^3); (2) the merged source built for processors and cards, regression of the
+merged processor build (prediction below), a card job with the card twins of T1 on the
+merged card build and T4d at 96^3 (deck corrected), 128^3, 256^3; (3) documents;
+(4) executables published; (5) handoff and push.
+
+### Predictions for the merged build (T11), written before it exists
+
+Processor executable built from the merge commit (release core-v0.5 plus this package).
+- T11a, new options absent: the eleven set-ups of T10 (`cases.py`/`t10_regress.py`:
+  geo, boris, dep, east, os, jeans, binary, mesh_static, newton_ball, newton_point,
+  newton_wave) give output files identical byte for byte to those of release core-v0.5
+  (`/data/haiyangw/nrpic/.work/build_cpu_v05/src/athena`). Refuted by any differing
+  file other than a parameter dump that prints an option of this package.
+- T11b, new options present: the cases fft7 and fftsp of T1 (Fourier solver, both
+  symbols, plane wave N = 32 to t = 3) and the group-history case of T3 run with the
+  merged build give output files identical byte for byte to those of the pre-merge
+  build (runs core-20261119-144414-c629377 and core-20261119-160919-c6a7279), except
+  parameter dumps that print options added by the releases. The releases changed
+  nothing in the Newtonian path that these inputs take [JUDGEMENT from the release
+  changelogs; if a release correction acts there, the differing file and the changelog
+  entry are named]. Refuted by a difference in a history or particle file without such
+  an entry.
+- T11c, card twins of T1 on the merged card build (chk_mg, chk_fft7, chk_fftsp): within
+  1e-9 of the box and 1e-8 in K and W of the processor runs, as for the pre-merge card
+  build (measured there: 2e-15 and 7e-13).
