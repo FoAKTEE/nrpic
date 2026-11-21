@@ -412,3 +412,41 @@ evaluated exactly at X = x + zeta(x)):
 - P4.3: zeta recovered from the exact metric difference has a relative error 1.25 eps..1.34
   eps (order 1.000) and G built with it still leaves an eps^3 residual (3.00).
 Next: only now read first_source/fslib/gauge.py.
+
+## Entry 14 (19:27 PST): comparison with fslib/gauge.py, and predictions for the scan (v4_scan.py, v4_energy.py)
+
+Read first_source/fslib/gauge.py (after entry 13). Its G_tot = G + G_x maps the code's
+coordinates to "spatially transverse" ones (conformal metric = TT + homogeneous traceless
+part, A = Lambda h + h0) with xi from the traceless non-TT part of h:
+G = Lambda[M^T M - (2/3)(div xi)(M + M^T)], G_x = Lambda[M^T A + A M - (2/3)(tr M) A + (xi.grad) A],
+M_ki = d_i xi_k. Term by term this is my one-sided conformal formula (entry 12, form (b))
+with the old coordinates = transverse ones, h_old = A and zeta = xi: M^T M = d zeta.d zeta^T,
+(M + M^T) = 2 d_(i zeta_j), M^T A + A M + (xi.grad) A = L_zeta A. Its inversion
+xi_i = -i k_j h_ij/k^2 + (i/4) k_i (k k h)/k^4 is my route-B formula with the conformal
+trace term. Differences: (i) its products are dealiased on a 3/2 grid (mine: N grid and a
+2N grid as a check); (ii) it refers each gauge to its own transverse coordinates, whereas I
+also map zero shift -> Gamma driver directly with zeta = int beta dt (route A) or zeta from
+the metric difference (route B). The structure agrees [VERIFIED by reading against my
+derivation and my exact test]; I do not import or run it (the comparison of numbers is
+through the README/ledger rows, after my numbers).
+
+Predictions, before the runs:
+- P4.4 (zeta routes): zeta_B (metric difference) equals zeta_A (int beta dt) to O(delta)
+  relative: ~5 % at a = 5, growing with a. Refuted if they differ by more than 30 % at a = 5
+  (then the two runs are not related by a pure spatial map at first order: a different
+  slicing, or beta integrated wrongly).
+- P4.5 (raw difference): |c_gd - c_zs| / |c_zs| is of order one at every a (the Gamma
+  driver pushes the coordinates toward the transverse ones, removing the first-order
+  longitudinal part ~ delta, and the gauge piece is quadratic in it like the source term).
+- P4.6 (after the piece): routes A, B and T reduce the difference by a factor ~1/delta(a)
+  relative to raw: >= 5x at a = 5 and 10, less at a = 40, 60 where delta ~ 0.4-0.6 and the
+  third order is not small; route T and A agree with each other to O(delta). The 2N-grid
+  products change the numbers by < 10 % at a <= 20 (little power near Nyquist before
+  shell crossing). Refuted if the reduction at a = 5 is < 3x.
+- P4.7 (energies): for an induced (non-radiating) TT part h ~ a^2, rho_kin/rho_grad =
+  4 calH^2/k^2 = 8/(pi^2 a) for the (k,k,0) family: 0.068 at a = 12, falling as 1/a; the
+  box-averaged ratio of eps = 1 has its maximum near a = 12 at ~0.05-0.1, both gauges and
+  resolutions. The eps = 0 run (no TT source at second order) has a TT part from particle
+  noise and may show a larger ratio. Refuted if the eps = 1 maximum over a >= 12 exceeds
+  0.3 (a radiative component would dominate) or the |m| = sqrt 2 ratio departs from
+  8/(pi^2 a) by more than a factor 2 at a <= 20.
