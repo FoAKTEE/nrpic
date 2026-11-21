@@ -59,13 +59,16 @@ def hst_pair(pa, pb):
         return dict(error=str(e))
     if a.shape != b.shape:
         return dict(error="shapes %s and %s" % (a.shape, b.shape))
-    if not (np.isfinite(a).all() and np.isfinite(b).all()):
-        return dict(error="non-finite value")
+    na, nb = ~np.isfinite(a), ~np.isfinite(b)
+    if (na != nb).any():
+        return dict(error="non-finite values at different places")
+    nonfinite = int(na.sum())          # entries that are non-finite in both: left out
+    a, b = np.where(na, 0.0, a), np.where(nb, 0.0, b)
     mag = np.maximum(np.abs(a).max(axis=0), np.abs(b).max(axis=0))
     big = mag > 1e-6*mag.max() if mag.size else mag > 0
     d = np.abs(a - b).max(axis=0)
     rel = np.where(big, d/np.where(mag > 0, mag, 1.0), 0.0)
-    return dict(records=int(a.shape[0]), columns=int(a.shape[1]),
+    return dict(records=int(a.shape[0]), columns=int(a.shape[1]), nonfinite_both=nonfinite,
                 rel_large=float(rel.max()) if rel.size else 0.0,
                 column=int(rel.argmax()) + 1 if rel.size else 0,
                 abs_small=float(d[~big].max()) if (~big).any() else 0.0)
