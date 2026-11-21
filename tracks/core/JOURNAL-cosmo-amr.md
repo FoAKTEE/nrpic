@@ -1391,3 +1391,28 @@ cloud: second order (factor above 3); first-order form (PUB): its slope in a lat
 cell is the difference of the particle numbers of the two half-cell-shifted neighbours,
 an integer: rms at least three times the integral form at 48^3. Refuted for the new
 form as before.
+
+## 2026-11-21 03:15  outcome of T19b (again the lattice); prediction of T19c
+
+**T19b, run core-20261121-031330-4d924b0** (four particles per root cell along x;
+`t19_summary.json`) [VERIFIED], rms departure at 24^3 and 48^3 (largest in brackets):
+uniform spreading 0.0415 and 0.0221 (0.068, 0.047), factor 1.87: first order, PASS;
+integral form 0.0072 and 0.0075 (0.0169, 0.0168), factor 0.96: "falls by more than 3"
+FAILED, "below a third of the uniform spreading at 48^3" FAILED by 2 per cent (0.0075
+against 0.0074); quadratic cloud 0.0106 and 0.0037, factor 2.87 (predicted above 3:
+FAILED by a little); first-order form 0.021 and 0.037 (0.049, 0.086): five times the
+integral form at 48^3 and growing with resolution: PASS.
+The floor of the integral form is the lattice again: my bound "at most 0.4 per cent" took
+sinc^2(pi h/d) at the two ends of the range of d only; in between, at 4 pi/(1 + eps) =
+3.5 pi (eps = 0.14), it is 2/(3.5 pi)^2 = 1.65 per cent, and the largest departure
+measured is 1.69 and 1.68 per cent at the two resolutions. So with four particles per
+cell the leaf cells of the integral form are within the modulation of the lattice at both
+resolutions (five to three times better than the uniform spreading), and its own order
+is still not measured.
+
+**T19c** (`--ppx 16`: lattice modulation at most 2/(16 pi/1.3)^2 = 0.13 per cent).
+Prediction: uniform spreading as T19b (0.041, 0.022); integral form: rms 0.004 to 0.015
+at 24^3 (the tent itself: h^2 rho''/12 = 0.011 rms at h = 0.25), falling by more than 3
+to 48^3; quadratic cloud: falling by more than 3; first-order form: at least three
+times the integral form at 48^3. Refuted for the new form if its rms does not fall by
+at least 2.5 while its level is above 0.003.
