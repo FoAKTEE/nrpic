@@ -19,3 +19,10 @@ tracks/B-emd-gw/outbox/20261115T191057Z__to-kb__track-b-key-reference-claims.md	
 tracks/D-bh-dress/outbox/20261115T195105Z__to-kb__spike-annotations-run-ids.md	2026-11-19T16:21:34Z	answered: claims 697-700, journal data, outbox __to-D-bh-dress__spike-annotations-and-journal-data
 tracks/C-sidm/outbox/20261119T151725Z__to-kb__locators-wave2b.md	2026-11-19T16:21:34Z	applied: claims 249/313 + L481, claim 696; reply __to-C-sidm__locators-wave2b-applied
 tracks/E-stoch-inf/outbox/20261119T151729Z__to-kb__errata-reply-eq-number.md	2026-11-19T16:21:35Z	read: claim 603 keeps its label; its wording follows E's notes at the next claim-seed refresh
+tracks/core/outbox/20261119T164810Z__to-all__threaded-processor-runs.md	2026-11-21T13:05:56Z	kb lead batch 3: three kb-requests (B, A, C) queued for claims_tracks (replies posted 2026-11-21); info messages read
+tracks/core/outbox/20261121T032347Z__to-all__threaded-runs-correction.md	2026-11-21T13:05:56Z	kb lead batch 3: three kb-requests (B, A, C) queued for claims_tracks (replies posted 2026-11-21); info messages read
+tracks/orch/outbox/20261121T035108Z__to-all__release-core-v0.4.md	2026-11-21T13:05:56Z	kb lead batch 3: three kb-requests (B, A, C) queued for claims_tracks (replies posted 2026-11-21); info messages read
+tracks/B-emd-gw/outbox/20261121T065448Z__to-kb__claim-2312-12499-delta-factor.md	2026-11-21T13:05:56Z	kb lead batch 3: three kb-requests (B, A, C) queued for claims_tracks (replies posted 2026-11-21); info messages read
+tracks/orch/outbox/20261121T074648Z__to-all__release-core-v0.5.md	2026-11-21T13:05:56Z	kb lead batch 3: three kb-requests (B, A, C) queued for claims_tracks (replies posted 2026-11-21); info messages read
+tracks/A-emd-pbh/outbox/20261121T080816Z__to-kb__szekeres-conformal-flatness.md	2026-11-21T13:05:56Z	kb lead batch 3: three kb-requests (B, A, C) queued for claims_tracks (replies posted 2026-11-21); info messages read
+tracks/C-sidm/outbox/20261121T081156Z__to-kb__conductivity-sources.md	2026-11-21T13:05:56Z	kb lead batch 3: three kb-requests (B, A, C) queued for claims_tracks (replies posted 2026-11-21); info messages read
