@@ -55,6 +55,7 @@ conformal factor chi of the bubble fall (x = 5 M: 0.68 -> 0.49 from 50 to 180 M;
 | D-20261121-142005-52adf6d | slice mass of ES-1GB (t = 0-188 M) | | done (entry 5, B4') |
 | D-20261121-144657-cf510fc | ES-1G, ES-1GB, V-1B, V-1GB together | | done (entry 6) |
 | D-20261121-145907-f76095b | lapse, shift, chi on the axis of V-1B, V-1GB, ES-1GB (`tools/axis_profiles.py`) | | done (entry 7) |
+| D-20261121-150025-05937b2 | slice mass of V-1GB (t = 0-200 M) | | done (entry 8): the late growth is in the slice at the hole in vacuum too (M_H 1.00266 at 200 M, finder 1.00245) |
 
 ## Contents
 

@@ -341,3 +341,16 @@ with m(R) at 200 M falling outward from the hole (m at R ~ 2 M above m at R ~ 20
 than 5e-4), and the exterior (PG of mass M beyond the bubble) within 1e-3 of the bubble's
 mass out to R ~ 200 M. Refuted if the slice horizon mass stays below 1.0015 at 200 M (then
 the finder, not the slice, grows) or if m(R) is flat within 1e-4 on R = 2-20 M.
+
+Outcome S1 (07:02 PST; run D-20261121-150025-05937b2, figure `slicemass_V-1GB.png`
+looked at): slice M_H = 1.00119 (50 M), 1.00133 (100 M), 1.00086 (150 M), 1.00266 +- 2e-5
++- 2e-4 (200 M) against the finder's 1.00104, 1.00119, 1.00069, 1.00245: the slice follows
+the finder's dip and late rise, offset by +1.5e-4 to +2.1e-4 (first part HELD: within 3e-4
+at 200 M). m(R) at 200 M falls outward from 1.00263 at R ~ 2 M to 1.00192 (R ~ 20 M), 1.0013
+(R ~ 36 M), 1.0005 (R ~ 70 M) (second part HELD: 7.1e-4 between R ~ 2 and 20 M). Third part
+FAILED as worded: the exterior (R = 80-184 M: 1.0001-1.0009) is not within 1e-3 of the
+hole's 1.0026; it is within 1e-3 of the exact M = 1. The exact slice has m = 1 at every R;
+the run carries Misner-Sharp excesses of ~1e-3 that move through the bubble (a bump of
++3e-3 at R ~ 30 M at t = 50 M, near the old wall radius, figure) and a late excess that
+sits at the hole. [JUDGEMENT] So in vacuum, too, the late growth is constraint violation
+in the slice concentrated at the hole, not a finder artefact.
