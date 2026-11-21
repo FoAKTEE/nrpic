@@ -420,3 +420,20 @@ Predictions [JUDGEMENT]:
    judged on E_inf of item 3; I expect it below 1e-5 M and cannot say whether above 1e-6 M; if it
    is below 1e-6 M, item 4 fails on the low side for what the spheres can see, and the members'
    own junk (1.0e-5 to 5.2e-5 M scaled from S2g, J4 item 2) stays unmeasured at P1's resolution.
+
+## 2026-11-21 J4c. What the J4b window holds, by l and by frequency (prediction, after seeing J4b's totals and l shares)
+
+J4b ran (run F-20261121-075600-4480a13; outcome written below after J4c): the window [-35, 6]
+holds 2.5-2.8e-6 M at all four radii with 67-70 percent of it in l >= 4 (`P1b_junk.json`,
+"share"). So it is outgoing radiation from an off-centre source, and the extraction's l <= 8
+may cut part of it. `scripts/p1_lspec.py` gives E_l (l = 2..8) and the band shares of the
+window's spectrum (|omega| < 0.2, 0.2-0.5, 0.5-1, > 1 per M; all modes and l = 2 alone).
+Predictions [JUDGEMENT; a source about 23-25 M off the centre radiating at omega needs l up to
+about omega d]:
+1. E_l does not fall by more than a factor 3 from l = 4 to l = 8 at 70 and 90 M (so l > 8
+   carries energy the extraction misses; the window's energy is a lower bound).
+2. Band shares at 90 M (all modes): 0.2-0.5 the largest, above 0.4; above 1/M below 0.02
+   (J4b: 0.015); below 0.2 less than 0.3.
+3. At 40 M the band above 1/M has a larger share than at 90 M (2 M cells within 48 M carry
+   higher frequencies than the 4 M cells beyond).
+Refuted outside these.
