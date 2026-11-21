@@ -388,7 +388,7 @@ Method note (smoke, not registered, `scratch/C-sidm/tmp/drift_smoke`): the new `
 --pair` (residuals about the 40 M running mean) gives +0.57 for CC1 against CC2 on M/4; the
 registered value comes with the analysis of (iii). Threshold of M8.5' (entry 9) unchanged.
 
-## 2026-11-21 13:08 UTC Entry 11: a fourth prediction for run (v), on noise relaxation
+## 2026-11-21 12:59 UTC Entry 11: a fourth prediction for run (v), on noise relaxation
 
 Run (i) leaves two readings of the slow contraction of CC2 on M/8 after 200 M (entry 8): the
 real slow mode, or relaxation driven by the deposit noise, whose H-norm2 floor is 9.3 times
