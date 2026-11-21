@@ -9,7 +9,9 @@ Extension of package kerr (track F-hills, F-pre-2 for Kerr):
     against the CM's orbital angular momentum at release, node Omega, phase;
   * diagnostics of the final binary (energy, semi-major axis, eccentricity) with and without
     the time-dilation factor of the CM;
-  * the flat-space moving binary of test R3 (HRNA's spurious self-acceleration).
+  * the flat-space moving binary of test R3 (HRNA's spurious self-acceleration);
+  * coords 'bks' (Boyer-Lindquist time, Kerr-Schild space; hrna_bks.py) besides hrna's 'sch' and
+    'cks' (JOURNAL entry 2: 'cks' pumps or drains a moving binary at first order in M/r).
 The equations of motion are hrna.integrate (Eq. CoordtEqs of arXiv:2404.16270), unchanged.
 
 Conventions (G = c = M = 1).  Frame of the binary at release: e_a = unit position of the CM,
@@ -115,7 +117,11 @@ def parabolic_state(coords, spin, rp, Lz, r0, sigma_th=1, M=1.0, law="hrna"):
         return r * n, rd * n + r * thd * e_th + r * math.sin(th) * phd * e_ph, Q
     _, xc, uc = kerr.convert_state(0.0, xbl, ubl, "bl", "cks", a, M)
     xc = np.asarray(xc, float)
-    return xc, coord_velocity("cks", xc, np.asarray(uc, float), a, M), Q
+    vks = coord_velocity("cks", xc, np.asarray(uc, float), a, M)
+    if coords == "bks":                 # same spatial point, Boyer-Lindquist time (hrna_bks.py)
+        import hrna_bks
+        return xc, hrna_bks.cks_to_bks_velocity(xc, vks, a, M), Q
+    return xc, vks, Q
 
 
 # ------------------------------------------------------------------------------------------
@@ -152,6 +158,10 @@ def binary_basis(xc, vc, iota, Omega):
 
 def gamma_of(coords, spin, x, v, M=1.0):
     g, gi, dg = np.zeros((4, 4)), np.zeros((4, 4)), np.zeros((3, 4, 4))
+    if coords == "bks":
+        import hrna_bks
+        _, _, gam = hrna_bks.energy_lz(hrna.LAW_HRNA, hrna_bks.COORDS_BKS, M, spin * M, x, v, g, gi, dg)
+        return gam
     cc = hrna.COORDS_CKS if coords == "cks" else hrna.COORDS_SCH
     _, _, gam = hrna.energy_lz(hrna.LAW_HRNA, cc, M, spin * M, x, v, g, gi, dg)
     return gam
@@ -206,7 +216,7 @@ def integrate_y0(y0, law, coords, spin, m1, m2, a0, r_stop, r_apo_min, t_max, rt
     if _WK is None:
         _WK = hrna._work()
     lawc = hrna.LAW_NEWTON if law == "newton" else hrna.LAW_HRNA
-    cc = hrna.COORDS_CKS if coords == "cks" else hrna.COORDS_SCH
+    cc = {"sch": hrna.COORDS_SCH, "cks": hrna.COORDS_CKS, "bks": 2}[coords]
     a = spin * M
     if r_plunge is None:
         if lawc == hrna.LAW_NEWTON:
@@ -217,7 +227,11 @@ def integrate_y0(y0, law, coords, spin, m1, m2, a0, r_stop, r_apo_min, t_max, rt
             r_plunge = M + math.sqrt(M * M - a * a) + 0.05 * M
     mb = m1 + m2
     T0 = 2 * math.pi * math.sqrt(a0 ** 3 / mb)
-    return hrna.integrate(lawc, cc, hrna.PAIR_GRAVITY, M, a, m1, m2, 0.0, 0.0, y0, T0 / 200.0,
+    integ = hrna.integrate
+    if cc == 2:                         # Boyer-Lindquist time, Kerr-Schild space (hrna_bks.py)
+        import hrna_bks
+        integ = hrna_bks.integrate
+    return integ(lawc, cc, hrna.PAIR_GRAVITY, M, a, m1, m2, 0.0, 0.0, y0, T0 / 200.0,
                           rtol, atol, r_stop, r_apo_min, r_plunge, t_max, max_steps, a0,
                           int(record), hrna._A, hrna._B, hrna._C, hrna._E3, hrna._E5, _WK)
 

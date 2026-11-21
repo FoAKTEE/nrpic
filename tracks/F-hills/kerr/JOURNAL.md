@@ -138,3 +138,101 @@ k = 2.4e-10, at r0 = 50 r_t = 5065: Delta L = 3.1e-3, Delta L/L = 2e-4 (beta = 1
 k = 6.8e-7, r0 = 100 M: Delta L = 3.4e-3, Delta L/L = 7e-4. So R3 changes 2404's and 2402's
 separation fractions by (d sf/d beta) Delta beta <~ 1e-3 [prediction], too small to explain C2's
 0.025. F's own binary is tested with its parameters in the run (q = 10, released at 4 and 20 r_t).
+
+## Entry 2 (2026-11-21 13:20 UTC): restart; development runs; a defect of 'cks'; chart 'bks'; predictions for the registered tests
+
+Restart. The session of 2026-11-20 was cut at 14:35 PST with `hrna_incl.py`, T5, T6, the
+digitizer and entries 0-1 uncommitted; committed now unchanged (2be3eba7). Its development runs
+(`scratch/F-hills/tmp/kerr/dev_t5`, `dev_t6`, unregistered) passed: T5 (a) six inclined vs rotated
+coplanar encounters with equal step counts and matched-time position differences 1e-10 to 2.5e-9
+r_g, at the level of the rounding control (4e-11 to 1.3e-9); (b) `hrna_incl` reproduces
+`hrna.initial_state` to 5e-14 a0; (c) the Kerr mirror a = +-0.9 to 1.1e-9 (control 8e-10). T6:
+positions within 3.8e-8 r_g (r_p = 6) and 1.4e-9 (r_p = 10) of python/nrpic, E to 1e-12, L_z to
+3e-12, Q to 9e-11, pericentre to 1e-11, Q at release equal to Eq. (rp). They are rerun registered
+with unchanged code (deterministic: the same numbers are expected).
+
+T7 development run (`dev_t7`, the T7 of entry 1, all in 'cks'). FAILED predictions:
+- (iii) 'cks' against 'sch' at a = 0: survival differs in 17, 20, 23 of 64 orientations at
+  r_p = 7, 10, 13 (predicted: a few); survival fraction 0.41 vs 0.63 at r_p = 10, 0.59 vs 0.92
+  at r_p = 13; median |Delta a_fin| 0.4-0.7 a0 among common survivors.
+- (i) slope of |Delta E_b| against a 0.64-0.68 instead of 1 (a noise floor, below); (ii) slope 0
+  of |Delta L_b|: my error, the mirror orbit's binary must be rotated by pi about x before the
+  comparison (corrected in the test).
+
+Trace (development, `hrna.run_encounter` itself, so not an error of `hrna_incl`): 2402's binary,
+retrograde coplanar, r_p = 10, a = 0, `ic_gamma`: in 'cks' it hardens all the way in (E_b/E_0 =
+1.03 at r = 100, 1.08 at 69, 1.22 at 37, 2.4 at 11.6), runs away to E_b = 6000 E_0 (separation
+1e-4 a0) at t = 642 M, and the close pair ejects a member into the hole (outcome 6). In 'sch' the
+same binary ends with a = 0.956 a0, e = 0.023.
+
+Mechanism [derived here; tested by T8 (d)]. In Eq. CoordtEqs the pair force enters as
+(g^{ij} - g^{0j} v^i) A_j / Gamma^2. In 'cks' g^{0j} = 2 H n_j (H = M/r at a = 0), so each member
+gets an extra acceleration -2H (n.A_i) v_i along its own velocity, and the relative orbit the
+shear delta a_rel = 2 H m_b (n.d) V / |d|^3 with V the CM velocity. It is not symmetric; its
+orbit average is
+    d ln|E_b|/dt = -2 H omega_b (n x V) . L_hat_b = -2 (M/r) omega_b v_t cos(iota),
+prograde binaries are pumped (unbind), retrograde ones drained (harden), and because omega_b
+grows with |E_b| it runs away: |E_b|/|E_0| = (1 + 3K/2)^(-2/3) with
+K = int 2 H omega_0 v_t cos(iota) dt = 4 M omega_0 cos(iota) [arctan sqrt((r0 - r_p)/r_p) -
+arctan sqrt((r - r_p)/r_p)] on a Newtonian parabola. In words: 'cks' slices are tilted against
+the static ones by dt = (2 M r/Delta) dr, so HRNA takes the partner at a different time and
+displaces it by V (2M/r)(n.d). At fixed omega_b it does not depend on a0: it is not a tide but an
+equivalence-principle defect of HRNA in a non-static slicing. Size: 2402's binary has
+M omega_b = 0.0566, K = 0.28 cos(iota) at pericentre from r0 = 100 M; 2404's binary has
+M omega_b = 9.8e-4, 58 times less, which is why geodesic_binary S3 ('cks' vs 'sch' within 0.005
+in s.f.) did not see it. Consequence: HRNA in 'cks', the only Kerr chart of `hrna.py`, cannot be
+used for 2402's binary.
+
+New chart 'bks' (`hrna_bks.py`): Boyer-Lindquist time with the Cartesian Kerr-Schild space,
+t' = t_KS - F(r), F' = 2 M r/Delta. At a = 0 it is the Schwarzschild form 'sch' (metric equal to
+1e-17 in development); at a != 0 only the frame dragging remains in g'^{0i} (0.02 at r = 10 for
+a = 0.9, against 2H = 0.2 in 'cks'; falls like r^-2). `hrna`'s `accel_one`, `rhs`, `integrate`,
+`energy_lz` are recompiled from their own code objects with `metric` replaced, so the equations
+and the integrator are hrna's, not a copy. Development check (`dev_t8`): g g^-1 = 1 to 2e-15,
+derivatives against differences 8e-11, single body at a = 0.9 within 3e-9 r_g of python/nrpic,
+a = 0 encounters equal to 'sch' with the same step counts. Energy drift on the way in, odd part
+in iota of ln|E_b| ((iota = pi minus iota = 0)/2), 'cks' minus 'sch', at r = 50, 30, 15:
+0.040, 0.064, 0.113 against the leading-order prediction 0.041, 0.091, 0.235; 'bks' (a = 0.9)
+minus 'sch': 0.000, -0.007, 0.000.
+
+Predictions for the registered tests (re-runs of what development showed, for the record; not
+blind):
+- T5, T6: the development numbers, to the last digit.
+- T7, now in 'bks' for (i) and (ii); (iii) keeps 'cks' against 'sch' as the record of the defect:
+  |Delta L_hat_b| proportional to a (slope 0.8-1.2) in (i) and (ii); |Delta E_b|/|E_b| and
+  |Delta e| below 1e-3 for a <= 1e-3 (the final elements carry a noise floor of about 1e-4 from
+  the step at which the run stops; seen in development); at a = 0.9 the mirror pair differs by
+  1e-2 or more in E_b or e. (iii) 17-23 of 64 outcomes differ (the defect; no pass rule).
+- T8: (a) identities < 1e-12, derivatives < 1e-7, equality with 'sch' < 1e-12; (b) equal step
+  counts and matched-time positions < 1e-8 r_g; (c) < 1e-6 r_g, E to 1e-9, Q to 1e-8; (d) the odd
+  part 'cks' minus 'sch' within 10 percent of the leading-order prediction at r = 50 and below it
+  at r <= 30 (higher orders; refuted if above), 'bks' minus 'sch' below 20 percent of 'cks''s.
+
+R3 development (`scripts/r3_selfacc.py`, unregistered):
+- (a) The SC0d call and fit give -1.06473294303476e-4, equal to F-20261115-175620-df20ffe to all
+  digits. But that fit is biased: y = a t^2/2 without a linear term over T = 300 (2.4 relative
+  periods). The force is perpendicular to the CM velocity, so V turns at constant size (by 0.86
+  rad over 23 periods) and the CM moves on a circle of radius V^2/a_s (about 730 r_g for SC0d's
+  binary). Measured by the turning rate of the in-plane CM velocity: a_s = 1.0660e-4 at V = 0.28,
+  a0/m_b = 30, against entry 1's leading order 1.0671e-4 (0.1 percent); 0.01 percent at
+  a0/m_b = 1000; proportional to cos(psi) to 0.2 percent, zero at psi = 90 deg; the start phase
+  changes it by 0.3 percent. The agreement of 1.0647e-4 (biased fit) with 1.067e-4 (entry 1) was
+  partly luck.
+- FAILED (entry 1: the orbit form within 5 percent for any q): q12 = 0.5 gives 0.83-0.89 of it,
+  q12 = 0.1 gives 0.71 and -0.05. The unequal-mass binary's eccentricity grows (0.23-0.62 in the
+  window against 0.01-0.1 at the start) and the CM speed changes by up to 32 percent: the terms
+  2 (m2 - m1)/m_b (V.w) in the relative force and (m1^2 - m2^2)/m_b^2 w^2 in the CM force are not
+  small. Another HRNA artefact, for unequal masses; measured in the registered run for 2402's
+  mass ratio.
+Predictions for the registered R3 run: (a) as development; (b) q = 1: leading order within 1
+percent over V = 0.02-0.5, a0/m_b = 30-1000; V = 0 gives no turning (< 1e-3 of V = 0.28); psi
+and phase as development; q12 = 2/3: e grows by less than 1e-3 per period at a0/m_b = 20000
+[JUDGEMENT: the unequal-mass terms scale with w ~ (m_b/a0)^(1/2), 0.007 there against 0.18 at
+a0/m_b = 30]. (c) The CM pericentre of 2404's binary, HRNA minus Newton, mean over four phases:
+the R3 shift Delta r_p/r_p = L Delta L (r_p - 2)^2/(r_p^2 (r_p - 4)) with
+Delta L = (k/2)(r0^2 - r_p^2), positive prograde, negative retrograde; within 30 percent where it
+exceeds 3e-4 (beta = 3; beta = 1 at 50 and 70 r_t), right sign everywhere [JUDGEMENT on the
+tolerance: tidal coupling of the CM orbit differs between the laws]. Its effect on the
+separation fraction through the slope of S1's curve: below 2e-3 everywhere; at beta = 4.7
+retrograde it RAISES the s.f. with r0 (Delta beta > 0), by about 1e-3 from 20 to 70 r_t, while
+C2 found 0.6975 -> 0.68: R3 is not the cause of C2 (wrong sign, 17 times too small).
