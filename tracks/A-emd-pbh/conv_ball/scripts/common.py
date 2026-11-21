@@ -276,6 +276,18 @@ def line_points(rec, dx, dx_fine=None, fine_half=None):
     return np.stack([x1, 0.5 * d, 0.5 * d], axis=-1)
 
 
+def line_points_levels(rec, levels):
+    """conv_ball: cell centres of a formatted-table line output (slice_x2 = slice_x3 = 0.01)
+    through nested static levels [(b_l, h_l)] from the root to the finest (nested.py): a
+    cell whose centre has |x| < b_l belongs to level l (the finest such level) and sits at
+    y = z = h_l / 2."""
+    x1 = rec["x1v"]
+    d = np.full_like(x1, float(levels[0][1]))
+    for b, h in levels[1:]:
+        d = np.where(np.abs(x1) < b, float(h), d)
+    return np.stack([x1, 0.5 * d, 0.5 * d], axis=-1)
+
+
 def tensor6(rec, prefix):
     return np.stack([rec[prefix + c] for c in ("xx", "xy", "xz", "yy", "yz", "zz")], axis=-1)
 

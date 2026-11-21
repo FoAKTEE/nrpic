@@ -136,7 +136,16 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--figdir", default=None)
     ap.add_argument("--base", default="ball")
+    # conv_ball: nested static levels "outer:h_f" (nested.nest_levels); then --dx is the root
+    # cell and the line points take the cell of their level
+    ap.add_argument("--nest", default=None, help="conv_ball: OUTER:HF_INV of the nested geometry, e.g. 16:32")
     a = ap.parse_args()
+    a.levels = None
+    if a.nest:                                        # conv_ball
+        import nested as NS
+        o_, hf_ = a.nest.split(":")
+        a.levels = NS.nest_levels(1.0 / float(hf_), float(o_))
+        a.dx = a.levels[0][1]
     os.makedirs(a.out, exist_ok=True)
     tr = C.load_json(os.path.join(a.prep, "tracked.json"))
     ex = C.load_json(os.path.join(a.prep, "exact.json"))
@@ -329,7 +338,8 @@ def main():
     lines = []
     nonfinite_t = []
     for rec in adm:
-        x = C.line_points(rec, a.dx, a.dx_fine, a.fine_half)
+        x = (C.line_points_levels(rec, a.levels) if a.levels else      # conv_ball
+             C.line_points(rec, a.dx, a.dx_fine, a.fine_half))
         pos = x[:, 0] > 0
         g = C.tensor6(rec, "adm_g")[pos]
         K = C.tensor6(rec, "adm_K")[pos]
@@ -418,7 +428,8 @@ def main():
     # (exact areal radius 2m = 0.161 M)
     cser = []
     for L in lines:
-        s_ = L["r"] > 1.01 * a.dx * math.sqrt(0.75)
+        h_in = a.levels[-1][1] if a.levels else (a.dx_fine or a.dx)   # conv_ball: innermost cell
+        s_ = L["r"] > 1.01 * h_in * math.sqrt(0.75)
         if np.any(s_):
             k_ = int(np.nanargmax(np.where(s_, L["compact"], -np.inf)))
             cser.append((L["t"], float(L["compact"][k_]), float(L["r"][k_]), float(L["R"][k_]),
@@ -448,7 +459,18 @@ def main():
         mirr = math.sqrt(area / (16.0 * math.pi)) if area > 0 else np.nan
         # exact horizon of this slice: tracked particles' proper times on the slice
         it = int(np.argmin(np.abs(t - th_)))
-        tp = tau[it]
+        # conv_ball: proper times and coordinate radii of the tracked particles at the finder's
+        # time, linear between the bracketing trajectory records (the finder runs four times as
+        # often as the records); the nearest record where a bracket is not finite
+        jb = int(np.searchsorted(t, th_))
+        if 0 < jb < len(t) and t[jb] > t[jb - 1]:
+            wb = (th_ - t[jb - 1]) / (t[jb] - t[jb - 1])
+            tp = (1.0 - wb) * tau[jb - 1] + wb * tau[jb]
+            tp = np.where(np.isfinite(tp), tp, tau[it])
+            r_at = (1.0 - wb) * r[jb - 1] + wb * r[jb]
+            r_at = np.where(np.isfinite(r_at), r_at, r[it])
+        else:
+            tp, r_at = tau[it], r[it]
         okp = np.isfinite(tp) & np.isfinite(sh.tau_ah) & (Ri > ex["first_trapped"]["R_i"] - 0.05)
         m_slice = np.nan
         Ri_h = np.nan
@@ -476,15 +498,16 @@ def main():
         if a.gauge == "sr1":
             rb_h = rmean
         else:
-            rp = r[it]
+            rp = r_at                                  # conv_ball: r at the finder's time
             okr = np.isfinite(rp)
             o2 = np.argsort(rp[okr])
             rb_h = float(np.interp(rmean, rp[okr][o2], r0[okr][o2]))
         Ri_r = float(ball.R_of_rbar(np.array([rb_h]))[0])
         m_r = float(ball.at(np.array([Ri_r]))["m"][0])
         tah_r = float(XE.Shells(ball, np.array([min(Ri_r, ball.R_out)])).tau_ah[0])
-        tau_h = float(np.interp(rmean, np.sort(r[it][np.isfinite(r[it])]),
-                                tau[it][np.isfinite(r[it])][np.argsort(r[it][np.isfinite(r[it])])]))
+        okh = np.isfinite(r_at) & np.isfinite(tp)        # conv_ball: at the finder's time
+        oh = np.argsort(r_at[okh])
+        tau_h = float(np.interp(rmean, r_at[okh][oh], tp[okh][oh]))
         finder.append(dict(t=float(th_), mass=float(mass), m_irr=float(mirr), r_mean=float(rmean),
                            tau_at_horizon=tau_h, m_exact_slice=m_slice, R_i_exact_slice=float(Ri_h),
                            m_exact_tau_slice=m_tau, m_exact_shell_at_r=m_r, R_i_at_r=Ri_r,

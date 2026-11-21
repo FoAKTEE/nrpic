@@ -7,8 +7,10 @@ commit 9cddbfc6, copy in scripts/): data set 3 through horizon formation with th
 1+log lapse (lapse_leak = 8) and the Gamma-driver, particles excised below alpha = 0.1,
 PCS clouds at the finest local level with the fourth-order cloud compensation, finder from
 t = 9 with initial coordinate radius 1 M, 400 iterations, mass tolerance 1e-5. Cadences in
-code time are those of BH-1R (finder and trajectories every 0.125 M, histories every cycle,
-line outputs every 0.25 M); restart files every 4 M (chains).
+code time are those of BH-1R (trajectories every 0.125 M, histories every cycle, line
+outputs every 0.25 M) except the finder, which runs every 0.03125 M (four times as often as
+in BH-1R, so that its detection lag in proper time, at most 0.03 M x lapse, stays below the
+first-detection errors measured; DESIGN.md section 4); restart files every 4 M (chains).
 
     make_decks.py [--outdir DIR]
 """
@@ -88,7 +90,7 @@ damp_kappa2     = 0.0
 excise_chi      = 0.0
 
 <fastflow>
-find_every        = {every}
+find_every        = {find_every}
 metric_drvts      = interpolant
 num_horizons      = 1
 npunct            = 0
@@ -197,7 +199,7 @@ def deck(hf_inv, outer):
     name = f"nest{hf_inv}_L{int(outer)}"
     txt = TEMPLATE.format(name=name, n=g["n_root"], hroot_inv=1.0 / g["levels"][0][1], outer=outer, nb=g["block"],
                           L=g["L"], hf=hf_inv, blocks=g["leaf_blocks"], cells=g["leaf_cells"],
-                          regions="".join(regions) + "\n", every=every)
+                          regions="".join(regions) + "\n", every=every, find_every=every // 4)
     return name, txt
 
 

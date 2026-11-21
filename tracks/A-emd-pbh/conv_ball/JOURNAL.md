@@ -60,3 +60,75 @@ Next steps on restart, in order:
 4. processor smoke tests of the decks with core_gauge/athena_cpu (nlim 2; nest32/nest64 with
    a reduced mesh override);
 5. card job 1 (batch, 58 min): A, B, A-N8, A-N64, A-R1.25, A-L32, B-N8; then the chain of C.
+
+## 2026-11-20 23:58 PST, entry 3 (batch 2b): restart, design run, data, predictions (written before any simulation of the series)
+
+Restart: the flag is gone; nothing of this package ran since entry 2 (no card job, git log,
+squeue). Done since, in order:
+- design table, registered: run A-20261121-075131-2682bb0 (`design_calc.py`; fig_design.png
+  looked at: level structure of A, B, C against BH-1R; BH-1R's core-edge shells cross 2 M near
+  t = 5 and 1 M near t = 8.5, the horizon (finder radius 0.42-0.44 M) lies inside the finest
+  box). Model check: BH-1R 79.5 GiB and 1.7187 s/cycle against measured 78.7 GiB, 1.7187.
+- data, registered: data set 3 with the nested lattices nestA, nestA8, nestA64, nestB, nestB8,
+  nestC (run A-20261121-075356-1ad4c81: 77704, 621464, 4969736, 621464, 4969736, 4969736
+  particles; each sums to the rest mass 1.14593857; exact events as data set 3: turnaround
+  3.371611, tau_AH 9.551092, m 0.686563); the larger balls lam = 1.25 (A-20261121-075401-1412a08:
+  nestA 88280, nestB 706768; largest 2m/R 0.757) and lam = 1.35 (A-20261121-075404-ac51b7e:
+  91216, 729656; 0.884), with identical exact core events and m_AH(tau). The nested lattice
+  with 8 per cell on mesh h equals the lattice of mesh h/2 (same N and sites), so the series
+  also holds a fixed-N mesh sequence A-N64, B-N8, C (DESIGN.md 2d).
+- DESIGN.md written. Two changes against entry 2: the finder now runs every 0.03125 M (2, 4, 8
+  cycles), four times BH-1R's cadence, so that its detection lag (at most 0.03 M x lapse in
+  proper time) stays below the errors to be measured; compare.py interpolates the tracked
+  particles' proper times and radii linearly to the finder's time (was: nearest record), and
+  takes the line points of the nested levels (`--nest OUTER:HF`); `converge.py` tabulates the
+  legs.
+
+BH-1R raw finder summary (run A-20261119-164634-f1fe887, bh_smr/ball.horizon_summary_0.txt,
+read directly, not a registered analysis): first horizon at t = 10.875 with mass 0.70106 and
+mean radius 0.4425 M; mass 0.68571 at t = 11.375 (lowest), then rising to 0.70761 at t = 15.875;
+the exact first-trapped mass is 0.686563 and the exact m_AH grows to 0.69610 at tau_AH + 2.
+So at BH-1R's mesh the first detections sit about 2 per cent high and the later ones within
+about 1 per cent; this sets the scale of the predictions below [JUDGEMENT].
+
+### Prediction S (processor smoke tests, core_gauge/athena_cpu, before the card job)
+nest16_L16 (with nestA, and with the lam = 1.35 nestA data), nest16_L32 and nest32_L16 run 2
+cycles, nest32_L32, nest64_L16 and nest64_L32 initialize (nlim = 0) on their full meshes: all
+exit 0 with 288 (outer 16 M) or 344 (outer 32 M) MeshBlocks, finite history lines, and the
+particle count of their lattice. Refuted by a refusal of the 8^3 blocks with four ghost cells
+under static refinement (then nest16 needs blocks of 16^3: root 32^3 in 2 x 2 x 2 blocks, which
+breaks the one-block margin and needs a new geometry).
+
+### Prediction G (the series; all [JUDGEMENT])
+G1 runs: every member reaches t = 16 with finite fields outside the excised region
+(probability 0.8 each); cost within a factor 2 of the model (A 0.016, B 0.12, C 1.3
+card-hours).
+G2 finder: a horizon is found in every member of the mesh, N, R and L legs, first between
+t = 10.4 and 11.6 (BH-1R 10.875), and in every later search (probability 0.7 for the A-type
+members, which are coarser than BH-1R outside 1 M; 0.85 for B and C).
+G3 first-detection error ddet (DESIGN.md 4): in [-0.1, +0.4] M for A, |ddet| falling A -> B -> C
+with |ddet(C)| <= 0.08 M; apparent order between B and C at least 0.8.
+G4 trapping per particle of the band just inside the core edge (dtrap, R_i = 2.603): |dtrap| <=
+0.15 M (A), 0.07 M (B), 0.04 M (C), falling monotonically, order >= 1 between B and C (BH-1 at
+uniform M/2: -0.40 M, entry 9 of runs_ball).
+G5 turnaround: core |eps| at the exact turnaround (eta) below 6e-3 (A), 2e-3 (B), 7e-4 (C),
+order >= 1.5 per halving; mean core turnaround error |dta| below 0.03 M (A) and falling to C
+until it reaches the estimator's floor of about 3e-3 M (the parabola vertex of three records;
+runs_ball entry 13).
+G6 horizon mass: |dm1| (first detection) below 3e-2 at A and falling; the median |dmmed| about
+1e-2 (A), 5e-3 (B), 2.5e-3 (C), order about 1 (the top-hat jump of the density limits the
+order). Against the source's OS level (Delta M/M_ADM <~ 1e-3, main.tex:945; RMS 7.3e-4 to
+2.1e-3, main.tex:1484): C 1.5 to 5 times that level, i.e. "of the same order" only in the
+loose sense; a C error below 2e-3 would meet it plainly.
+G7 legs: the spread of ddet, dtrap and dmmed across the N leg at fixed mesh (A, A-N8, A-N64;
+B, B-N8) is smaller than the mesh difference |e(A) - e(B)| (resp. |e(B) - e(C)|) (the lattice
+is free of sampling noise, so the particle number acts only through the deposit); the fixed-N
+sequence A-N64, B-N8, C converges like A, B, C. R leg (A, A-R1.25, A-R1.35): the core errors
+change by less than half of |e(A) - e(B)| (the exact core is the same; only the envelope and
+the region near the boundary differ). L leg (A vs A-L32, B vs B-L32): ddet and dtrap differ by
+less than 0.01 M and dm1 by less than 1e-3 (a signal from the boundary at 16 M needs about
+15 M to reach the horizon, after the first detection).
+Refuted, for the G2 criterion, by: no horizon in B or C; |ddet|, |dtrap| or |dmmed| not
+falling from B to C (non-monotonic); a C mass error above 1e-2; a leg spread larger than
+the mesh difference of its member. A non-monotonic sequence is recorded as such (the source
+reports one for its fixed-N SMR sequence, main.tex:1485).

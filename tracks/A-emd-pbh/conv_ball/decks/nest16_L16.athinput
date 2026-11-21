@@ -102,7 +102,7 @@ damp_kappa2     = 0.0
 excise_chi      = 0.0
 
 <fastflow>
-find_every        = 8
+find_every        = 2
 metric_drvts      = interpolant
 num_horizons      = 1
 npunct            = 0
