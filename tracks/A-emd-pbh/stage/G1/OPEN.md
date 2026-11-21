@@ -29,5 +29,11 @@ reservation are in `../REVIEW-wave3.md` section 5. What remains open, none of it
 
 ## Automated checks (`nrpic-stage verify`)
 
-See `VERIFY_RESULTS.md` (run by the lead of batch 2b after these documents were committed) and,
-for the full run with output checksums of 2026-11-21T06:54Z, `GATE_REVIEW.md` section 3.
+Full verify with output checksums on the export of 0368f927, 2026-11-21 08:07-08:37 UTC
+(`VERIFY_RESULTS.md`): 13 PASS (sync, export, size, note, package, note-pdf, style,
+fig-script, min-figs, status, rerun 9 of 9, compare 14 files, regenerate 14 of 14), run-notes
+WARN (79 manifests read with defaults, waived by decision 0016 item 3), and two FAIL that do not
+come from G1 evidence: `clean` (files of packages in progress, item 4) and `runs` (A-20261120-
+223310-a9ce31a closed after the export; A-20261121-075926-d10c2c1 a queued G2 card job;
+A-20261121-064515-aa13c8f the reviewer's failed first attempt, whose scratch script was edited
+for its rerun: waiver asked in the outbox). Reading of each: `STAGE_REPORT.md`, last section.
