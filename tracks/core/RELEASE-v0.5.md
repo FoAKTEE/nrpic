@@ -222,7 +222,7 @@ journal (entry of 2026-11-21T07:47Z).
 | Check | Run | Result |
 |---|---|---|
 | `.work/build_cpu_v05/src/athena` against the candidate `athena_cpu`, `regress_v04.py`, twelve set-ups | core-20261121-075456-a505400 (figure core-20261121-080001-5da4067) | 75 of 75 items identical, classes a, b, other empty: PASS |
-| `.work/build_gpu_v05/src/athena` on the nine cases of `card_v05.list`, against the processor runs (`card_v05.py`) and against the candidate's card run (`card_pair.py`) | core-20261121-075439-58c2787, Slurm job 4775 | PENDING: queued behind jobs that hold both cards when this was written |
+| `.work/build_gpu_v05/src/athena` on the nine cases of `card_v05.list`, against the processor runs (`card_v05.py`) and against the candidate's card run (`card_pair.py`) | core-20261121-075439-58c2787, Slurm job 4775 (ran 2026-11-21 00:32 PST, nine cases, status 0); judged in core-20261121-125722-91a199a and core-20261121-125743-84f0e42 | PASS. (i) against processors K1 to K6 hold: sums 2.3e-13 at worst (trk), identity 9.9e-16, source dumps 3.1e-14. (ii) against the candidate's card run: s3g and usr byte-identical in all 12 files; module histories of the seven deposit cases within 1.2e-15 of each column (bound 1e-12); the constraint statistics differ as between card and processors (trk column 15, a ratio of rounding-level residuals, 1.8e-3; peak 4.6e-10; cluster 7.8e-10). Figures `fig_card_v05.png`, `fig_card_pair.png` of the two runs (looked at; the y label of panel b is cut at the top in both) |
 
 ## Check of the card executable of core/cosmo-amr (job 4763 of the package)
 
