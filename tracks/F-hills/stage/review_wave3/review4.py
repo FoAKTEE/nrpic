@@ -285,6 +285,9 @@ def mode_junk(out, p1):
                             E_l={str(k): v for k, v in sorted(El.items())},
                             u_range=[float(uu[0]), float(uu[-1])], dt=float(uu[1] - uu[0]))
         cum = np.concatenate([[0], np.cumsum(0.5 * (dE[1:] + dE[:-1]) * np.diff(uu))])
+        res[f"R{R}"]["E_early_m35_m28"] = float(np.interp(-28, uu, cum) - np.interp(-35, uu, cum))
+        res[f"R{R}"]["rate_m20_6"] = float((np.interp(6, uu, cum) - np.interp(-20, uu, cum)) / 26.0)
+        res[f"R{R}"]["E_m28_6"] = float(np.interp(6, uu, cum) - np.interp(-28, uu, cum))
         sel = (uu >= -40) & (uu <= 14)
         ax.plot(uu[sel], cum[sel] - np.interp(-35, uu, cum), color=c, label=f"R = {R} M")
     ax.axvspan(-35, 6, color="0.9", zorder=0)

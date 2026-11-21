@@ -529,3 +529,22 @@ L4f (prediction): the spread is the 1PN truncation ambiguity of a binary whose m
   in the centre-of-mass frame (P_total removed from both momenta in proportion to the masses)
   spread less than in the input frame. Refuted if (i) fails (then the package's reference
   differs from mine for a reason not identified) or if (ii) fails.
+
+L4e outcome (run F-20261121-155442-5f15a25): the rerun of binary_conv's registered analysis
+equals `results/analysis_intermediate.json` in every key: MET.
+L4f outcome (run F-20261121-155353-e4d3354, `review4_pn.json`, figure `fig_review4_pn.png`
+read): (i) MET, my harmonic EIH with the exact v(p) equals the package's EIH-canonical column
+within 5e-5 M at all six times; (ii) MET, the three 1PN variants in the input frame spread by
+0.0187 M at 7.5 M and 0.158 M at 20 M (ADM 4.7723, EIH truncated 4.8408, EIH exact 4.9302);
+(iii) MET narrowly (centre-of-mass frame 0.0171 and 0.125 M). So the package's reference is
+reproduced exactly, but it is one of several 1PN-equivalent references that differ by more
+than the R16n deviations being judged (the members move at 0.11-0.33 c).
+L5 outcome (run F-20261121-155457-5f36517, `review4_junk.json`, figure `fig_review4_junk.png`
+read): my own FFI energy in u in [-35, 6] M is 2.64, 2.48, 2.26, 2.35 e-6 M at 40, 48, 70, 90 M,
+0.92-0.95 of the package's 2.84, 2.62, 2.46, 2.52; l >= 4 share 0.69-0.71: MET. But the figure
+shows the cumulative energy rising quickly only over u of about -33 to -29 M and then steadily,
+with no plateau, to the end of the window at every radius.
+L5b (prediction, before its run): with the same integration, E over u in [-35, -28] M lies in
+0.3-0.6e-6 M at all four radii, and the mean rate dE/du over [-20, 6] M is 3-8e-8 M per M, equal
+within 30 percent at 70 and 90 M. If so, about two thirds of the window's energy is a steady
+outgoing emission and not a burst of the initial data. Refuted outside these ranges.
