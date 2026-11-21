@@ -803,3 +803,130 @@ multiply-adds (checked before the build).
   statement "unchanged without the options" holds for processors only. Submitted when
   the card build is finished; if the queue does not start them in this session they
   are named as pending.
+
+## 2026-11-21, entry 13: outcomes of the closing tests (r1, o1, r2, m1, t1b, s1, c2-c, c4 for the punctures, c5); the summary
+
+Source of everything below: commit f6f9a0d (processor executable frozen as
+`.work/exe/sbc5/athena_cpu`). Analysis runs: core-20261121-082457-ab56e8f (r1),
+core-20261121-082023-f8e7dab (o1, m1, t1b, s1, c5; first version of the figures),
+core-20261121-082550-fe84ced (r2 again, t1b, s1, c5 with corrected figures, summary).
+Results `results/{r1,o1,r2,m1,t1b,s1_ball,c5_punc,c5_boost,summary}.json`; figures
+`figs/{r1_regress,o1_objects,r2_regress,m1_merge,t1b_smrface,s1_ball_regions,
+c5_punc_regions,c5_boost_regions,summary}.png`, each looked at.
+
+**r1** (registered now; run core-20261120-220733-ea71a73): FAILED, as entry 12 describes:
+ball 8 of 11 files differ, boosted and vacuum puncture 3 of 5 each, by_binary 4 of 9,
+horizon_calib 5 of 10, kg_wave_smr 1 of 1. The analysis run carries the status "failed"
+for that reason.
+
+**o1** (new build against the release build, 204 object files): FAILED in the letter
+for one object, for a reason that is understood. Three of the four objects with another
+histogram are the changed sources (`z4c/z4c.cpp.o`, `z4c_Sbc.cpp.o`, `z4c_tasks.cpp.o`);
+the fourth, `mesh/meshblock_pack.cpp.o`, has 4467 instructions against 4469 and no
+fused multiply-add on either side: the size of the class `Z4c` that it passes to `new`
+and `delete` is 0xb30 instead of 0xae0 (the 80 bytes of `SbcExt`), and the compiler
+merged one cold exit path differently. No floating-point instruction differs in any
+unchanged file; `z4c_calcrhs.cpp.o` is back at the release's histogram.
+
+**r2** (run core-20261121-080705-f6f9a0d, new executable without the options against
+the release core-v0.5): HELD. Every output file is byte-identical: ball 11 files,
+vacuum puncture 5, boosted puncture 5, horizon_calib 10 (with restart, trajectory and
+horizon files), by_binary 9, kg_wave_smr 1, the periodic linear wave 4: 45 files, none
+differs. `tests/z4c_bench` has no output block and writes no file: that pair tests
+nothing (it was in the plan of r1 and cost ten core-minutes; it is reported, and the
+first evaluation, core-20261121-082154-74071af, ended with status 1 for it alone).
+
+**m1** (run core-20261121-080713-8a8fa28; revised statement of entry 12): HELD. With the
+full set the new executable and the frozen one of cb50e22 agree to rounding: largest
+difference of any dumped array or history number 2.9e-11 (ball, 16 steps), 7.3e-12
+(vacuum puncture, boosted puncture, refined region at the face; 8 steps), the size r1
+measured for the other right-hand side. So neither the merge of core-v0.5 nor the
+removal of the damping changed what the options compute.
+
+**t1b** (run core-20261121-081236-84b1a29; the full set without damping): HELD. No
+non-finite value. Largest |H| within 4 of the +x face: fine part 2.11e-6 against
+1.79e-3 with the stock conditions (1.2e-3 of it; with damping it was 2.0e-6), coarse
+part 6.8e-7 against 8.0e-4. CORRECTION of entry 10: the "junction zone" of the t1
+analysis lay at 2 <= max(|y|, |z|) < 6, where there is no junction: the refined region
+of the input (|y|, |z| < 3.9) is rounded outward to whole MeshBlocks of 8 cells, so the
+fine part of the face reaches to 8. With the junction read from the cells the zone
+(within 2 of it) has 2.11e-6 at most with the full set and 1.48e-3 with the stock
+conditions; along the face the boundary cells next to the junction have 6.5e-7 (full
+set), below the value at the face centre (1.3e-6): no excess at the junction
+(`figs/t1b_smrface.png`, now with the cells drawn in their size).
+
+**s1** (run core-20261121-081422-0e46ba2; ball to t = 16, new executable):
+- ball_full against ball_g4nw_met of c1 (executable of 6cd99721): the region means of
+  |H| agree to 2.3e-11 relative at every dump (predicted 1e-4): HELD. The tests c1 to
+  c3 speak for the delivered executable.
+- `sbc_speed = lapse`: HELD. Against metric the face-layer and shell mean |H| at t = 8
+  change by less than 1 per cent (1.02e-3 both; 7.93e-4 against 7.94e-4), at t = 16 the
+  shell is 9 per cent lower (1.79e-3 against 1.97e-3); reaches t = 16, face-layer
+  maximum of |H| 5.1e-3 at the end (stock 1.57e-2).
+- `sbc_theta = nonwave`: HELD (it does not help). Face-layer mean |Theta| 5.99e-5
+  against 5.14e-5 at t = 4 (17 per cent higher) and 8.20e-4 against 5.88e-4 at t = 16;
+  reaches t = 16, face-layer maximum 6.0e-3. The option is delivered as tested and not
+  recommended, like cpbc.
+
+**c2-c** (punc_g4nw of core-20261120-222537-1011ec4 against punc_g4nw_met): FAILED. At
+t = 12 the metric speeds give a shell mean |H| of 1.44e-5 against 1.40e-5 with unit
+speeds (3 per cent higher, predicted 10 per cent lower), a face layer of 1.19e-5
+against 8.5e-6 and a whole box of 1.83e-5 against 1.61e-5. In the ball the metric
+speeds were the better ones (c1-d: 26 per cent at t = 8, a factor 1.5 at t = 16). So
+`sbc_speed` is a second-order choice whose sign depends on the set-up; the gain of the
+set is in the ghost fill, the order and the non-wave part.
+
+**c4 for the punctures** (run core-20261120-220735-a7966ff, executable of cb50e22):
+- (c4-d) FAILED in the letter: the face-layer Gamma constraint at t = 4 falls 2.4 times
+  (9.1e-7 against 2.17e-6, vacuum) and 2.6 times (4.3e-6 against 1.13e-5, boosted) with
+  both dampings at 4, predicted more than 3.
+- (c4-e) held for the two punctures: no growth to t = 12; the whole-box mean |H| at
+  t = 12 is 1.58e-5 against 1.83e-5 (vacuum) and 2.24e-5 against 3.31e-5 (boosted).
+  The damping helps these two by 1.2 to 2.7 and blows up in the ball (entry 11): it
+  stays removed; a stable form would be worth a package of its own.
+
+**c5, boosted puncture against its reference** (faces at 32, run
+core-20261120-222543-9a83982, to t = 8):
+- (c5-a) HELD: shell (8 <= r < 12) mean |H| at t = 8: 4.37e-6 with the full set, 3.35e-6
+  in the reference (1.30 times), 5.02e-5 with the stock conditions (15 times).
+- (c5-b) HELD: face-layer mean |M_i| at t = 4: 3.39e-6 (full set), 3.24e-8
+  (reference), 4.29e-5 (stock): 105 and 1320 times the reference. The faces still make
+  a layer; it is 13 times weaker.
+- inner region 5 <= r < 8 at t = 8: 2.23e-5 (full set) = 2.23e-5 (reference), stock
+  2.63e-5.
+
+**Summary: mean |H| before and after** (`figs/summary.png`, `results/summary.json`;
+"full set" = `ghost_falloff = true`, `extrap_order = 4`, `sbc_variant = nonwave`,
+`sbc_speed = metric`; reference: the same cells with the faces at 32, valid to t of
+about 8 to 11):
+
+| set-up, region | t | stock | full set | reference |
+|---|---|---|---|---|
+| ball, r < 8 | 8 | 4.03e-3 | 3.54e-3 | 3.53e-3 |
+| ball, r < 8 | 16 | 1.69e-2 | 2.12e-3 | 3.9e-5 |
+| ball, 8 <= r < 12 | 8 | 2.80e-3 | 7.94e-4 | 7.35e-4 |
+| ball, whole box | 8 | 3.73e-3 | 1.08e-3 | 6.36e-4 |
+| ball, whole box | 16 | 7.07e-3 | 1.70e-3 | 4.10e-4 |
+| vacuum puncture, 5 <= r < 8 | 8 | 2.13e-5 | 1.63e-5 | 1.63e-5 |
+| vacuum puncture, 8 <= r < 12 | 8 | 2.09e-5 | 2.14e-6 | 2.05e-6 |
+| vacuum puncture, whole box r >= 5 | 8 | 1.07e-4 | 3.11e-6 | 1.23e-6 |
+| vacuum puncture, whole box r >= 5 | 12 | 1.14e-4 | 1.83e-5 | (none) |
+| boosted puncture, 5 <= r < 8 | 8 | 2.63e-5 | 2.23e-5 | 2.23e-5 |
+| boosted puncture, 8 <= r < 12 | 8 | 5.02e-5 | 4.37e-6 | 3.35e-6 |
+| boosted puncture, whole box r >= 5 | 8 | 1.48e-4 | 1.26e-5 | 1.84e-6 |
+| boosted puncture, whole box r >= 5 | 12 | 1.77e-4 | 3.31e-5 | (none) |
+
+Until the faces at 32 are felt the interior and the shell of all three set-ups sit at
+the reference with the full set; the whole-box mean, which the stock conditions hold at
+1e-4 from the first step (the monitor reading linear ghosts), falls 34 times (vacuum)
+and 12 times (boosted) at t = 8 and 3.5 times in the ball. What is left: the faces
+still reflect. The ball at t = 16 has an interior residual 55 times the reference
+(8 times below stock), and the face layers stay 30 (vacuum) to 100 (boosted) times
+above the truncation level of a mesh with distant faces.
+
+**Card check k: not submitted.** At 00:20 PST two jobs of owner core (4775, 4777,
+other sessions) were queued behind two running jobs, so by the rule of the machine
+nothing was submitted. The card executable of f6f9a0d is built and published but has
+not run on a card; the card tests of this package (D, entry 10) ran with the card
+executable of 6cd99721. The lists `plans/card_k1.list` and `card_k2.list` and the
+prediction of entry 12 stand for whoever has the next free slot.

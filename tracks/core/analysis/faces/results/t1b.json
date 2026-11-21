@@ -2,9 +2,10 @@
  "smr_stock": {
   "time": 0.5,
   "nonfinite": 0,
+  "junction_at": 8.0,
   "H_face_fine_max": 0.0017872767057269812,
   "H_face_coarse_max": 0.0008025497081689537,
-  "H_junction_max": 0.0016853692941367626,
+  "H_junction_max": 0.0014826188562437892,
   "G_face_fine_max": 6.755305009231472e-06,
   "G_face_coarse_max": 2.615900846965095e-06,
   "Mx_face_fine_max": 5.183226312510669e-05,
@@ -166,9 +167,10 @@
  "smr_full": {
   "time": 0.5,
   "nonfinite": 0,
+  "junction_at": 8.0,
   "H_face_fine_max": 2.1109833596710814e-06,
   "H_face_coarse_max": 6.778911370020069e-07,
-  "H_junction_max": 1.1029869710910134e-06,
+  "H_junction_max": 2.1109833596710814e-06,
   "G_face_fine_max": 2.2518202941817782e-07,
   "G_face_coarse_max": 2.222676890554809e-07,
   "Mx_face_fine_max": 2.853474825315061e-07,
@@ -330,6 +332,6 @@
  "ratios": {
   "H_face_fine": 0.00118111725672183,
   "H_face_coarse": 0.0008446718378960478,
-  "H_junction_full_over_stock_face_max": 0.0006171327403063587
+  "H_junction_full_over_stock_face_max": 0.00118111725672183
  }
 }
