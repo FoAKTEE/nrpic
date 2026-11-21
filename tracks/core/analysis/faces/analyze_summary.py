@@ -63,7 +63,8 @@ def main():
             row_tab = {}
             for j, reg in enumerate(("inner", "shell", "all")):
                 v = np.array(h[f"H.{reg}.mean"])
-                axs[i, j].semilogy(t, np.maximum(v, 1e-20), lw=1.2, label=ln["label"], **st)
+                ok = v > 0  # the exact data of t = 0 have no residual outside the matter
+                axs[i, j].semilogy(t[ok], v[ok], lw=1.2, label=ln["label"], **st)
                 for tq in (2.0, 4.0, 8.0, float(t.max())):
                     k = int(np.argmin(np.abs(t - tq)))
                     row_tab[f"{reg}@{t[k]:g}"] = float(v[k])
