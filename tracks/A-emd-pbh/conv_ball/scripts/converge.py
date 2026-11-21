@@ -18,6 +18,7 @@ Quantities per member (definitions in DESIGN.md section 4; all from compare.py):
   dm1    finder irreducible mass against the exact horizon mass of the same slice, at first
          detection (finder.m_irr_rel_err_vs_m_exact_slice.first)
   dmmed  the same, median over all detections
+  dmwin  the same, median over the detections up to t = T_WIN (12.5; the rows compare.py keeps)
   tfirst code time of the first detection
   lag    tfirst minus the first code time at which a tracked particle has reached the exact
          tau_AH of its own shell (compare.py first_trapped_slice)
@@ -52,6 +53,9 @@ def get(d, *keys):
     return float(d)
 
 
+T_WIN = 12.5   # common window of the mass median (a chain may be read before it reaches t = 16)
+
+
 def quantities(res, ex_core_tau_ta):
     q = {}
     f = res.get("finder", {}).get("first") or {}
@@ -60,6 +64,9 @@ def quantities(res, ex_core_tau_ta):
     q["dm1"] = get(res, "finder", "m_irr_rel_err_vs_m_exact_slice", "first")
     q["dmmed"] = get(res, "finder", "m_irr_rel_err_vs_m_exact_slice", "median")
     q["nfind"] = get(res, "finder", "n")
+    rows_ = [r for r in (res.get("finder", {}).get("rows") or [])
+             if r.get("t", 99) <= T_WIN and r.get("m_exact_slice") and math.isfinite(r["m_exact_slice"])]
+    q["dmwin"] = float(np.median([r["m_irr"] / r["m_exact_slice"] - 1.0 for r in rows_])) if rows_ else float("nan")
     ev = res.get("events", {})
     q["dtrap"] = get(ev, BAND, "trapping", "dtau_mean")
     q["dta"] = get(ev, "core", "turnaround", "dtau_mean")
@@ -107,13 +114,13 @@ def main():
         q = quantities(res, float(ex["core"]["tau_ta"]))
         q["dtaC"], q["dRmaxC"] = tac.get(name, (float("nan"), float("nan")))
         rows.append(dict(name=name, leg=leg, x=float(x), numbers=path, **q))
-    keys = ("ddet", "lag", "dtrap", "dta", "dtaC", "dRmax", "dRmaxC", "eta", "dm1", "dmmed")
+    keys = ("ddet", "lag", "dtrap", "dta", "dtaC", "dRmax", "dRmaxC", "eta", "dm1", "dmmed", "dmwin")
     summary = dict(members=rows, legs={})
-    lines = ["| member | leg | x | first detection t | ddet (M) | dtrap (M) | dta V3 (M) | dta C (M) | dRmax | eta | dm1 | dm median | finds |",
-             "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    lines = ["| member | leg | x | first detection t | ddet (M) | dtrap (M) | dta V3 (M) | dta C (M) | dRmax | eta | dm1 | dm median | dm median t<=12.5 | finds |",
+             "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for r in rows:
         lines.append(f"| {r['name']} | {r['leg']} | {r['x']:g} | {r['tfirst']:.3f} | {r['ddet']:+.4f} | {r['dtrap']:+.4f} | "
-                     f"{r['dta']:+.4f} | {r['dtaC']:+.4f} | {r['dRmax']:+.2e} | {r['eta']:.2e} | {r['dm1']:+.2e} | {r['dmmed']:+.2e} | {r['nfind']:g} |")
+                     f"{r['dta']:+.4f} | {r['dtaC']:+.4f} | {r['dRmax']:+.2e} | {r['eta']:.2e} | {r['dm1']:+.2e} | {r['dmmed']:+.2e} | {r['dmwin']:+.2e} | {r['nfind']:g} |")
     for leg in ("mesh", "meshN", "N", "NB", "R", "RB", "L", "LB"):
         ismesh = leg.startswith("mesh")
         lr = sorted([r for r in rows if r["leg"] == leg], key=lambda r: -r["x"] if ismesh else r["x"])
@@ -157,8 +164,8 @@ def main():
     labels = dict(ddet="first detection", lag="finder lag (code time)", dtrap="trapping (band 2.603)", dta="core turnaround (V3)",
                   dtaC="core turnaround (cycloid C)", dRmaxC="core $R_{max}$ (C)",
                   dRmax="core $R_{max}$ (rel.)", eta="core |eps| at turnaround", dm1="mass, first detection",
-                  dmmed="mass, median")
-    groups = [("ddet", "lag", "dtrap", "dta", "dtaC"), ("dm1", "dmmed", "eta", "dRmax")]
+                  dmmed="mass, median", dmwin="mass, median t <= 12.5")
+    groups = [("ddet", "lag", "dtrap", "dta", "dtaC"), ("dmmed", "dmwin", "eta", "dRmax")]
     ylabels = ["|time error| (M)", "|relative error|"]
     cols = dict(zip(keys, fs.series_colors(len(keys), "viridis") if hasattr(fs, "series_colors") else [None] * len(keys)))
     families = [(("mesh", "meshN"), "finest cell $h_f/M$", True), (("N", "NB"), "particles per finest cell", True),
