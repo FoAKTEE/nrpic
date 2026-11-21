@@ -24,3 +24,13 @@ What follows:
 4. More throughput needs more accounts at the same time: a second session signed in to
    another account can drive other owners with the same scripts (each owner has its own
    worktree and branch, so sessions do not collide).
+
+## Amendment after batch 1 (2026-11-20 22:30 PST)
+
+Batch 1 (thirteen sessions, 18:53 to 22:25 PST) finished with every session returning:
+it took the five-hour window from 0 to 50 per cent and the weekly window from 0 to 13
+per cent. So one window carries about twenty sessions to the end of their packages, not
+twelve, and a week about ninety. Half of a session's use falls in its first half hour.
+Batches are sized to about eighteen sessions per window from now on, and a session that
+is started late in a window counts against the next one for most of its work.
+
