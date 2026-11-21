@@ -42,7 +42,7 @@ tracks/A-emd-pbh/conv_ball ...`; commands in each manifest under `tracks/A-emd-p
 
 ## Runs and results
 
-See JOURNAL.md for the outcome of every prediction. Runs of this package:
+Outcomes of every prediction: JOURNAL.md (entries 4, 5 so far). Runs of this package:
 
 | run id | what | state |
 |---|---|---|
@@ -51,8 +51,47 @@ See JOURNAL.md for the outcome of every prediction. Runs of this package:
 | A-20261121-075356-1ad4c81 | data set 3 with the nested lattices | completed |
 | A-20261121-075401-1412a08 | ball 1.25 times larger, lattices nestA, nestB | completed |
 | A-20261121-075404-ac51b7e | ball 1.35 times larger, lattices nestA, nestB | completed |
-| A-20261121-075916-0b98e86 | processor smoke test of every deck | see JOURNAL |
-| A-20261121-075926-d10c2c1 | card job 1 (Slurm 4776): A, B, A-L32, A-R1.25, A-R1.35, A-N8 | see JOURNAL |
+| A-20261121-075916-0b98e86 | processor smoke test of every deck (all pass) | completed |
+| A-20261121-080727-e2f9074 | smoke figure: initial psi^4 on the nested line within 5e-13 of exact | completed |
+| A-20261121-075926-d10c2c1 | card job 1 (Slurm 4776): A, B, A-L32, A-R1.25, A-R1.35, A-N8; 0.29 card-hours | completed |
+| A-20261121-085252-f4ed504 | analysis of job 1 (convergence.md, fig_convergence.png) | completed |
+| A-20261121-083336-6a82131 | chain of C (Slurm 4781 and its successors) | see JOURNAL |
+
+Results of job 1 (analysis A-20261121-085252-f4ed504; errors against the exact solution of
+each member's own data; DESIGN.md section 4):
+
+| member | first detection t | first-detection error (M) | trapping, band 2.603 (M) | turnaround V3 / C (M) | core eps at turnaround | horizon mass, median |
+|---|---|---|---|---|---|---|
+| A (M/16) | 10.875 | +0.193 | -0.093 | -0.037 / -0.015 | 8.1e-3 | +7.4e-3 |
+| B (M/32) | 10.781 | +0.068 | -0.022 | -0.033 / -0.013 | 3.1e-3 | -2.1e-3 |
+| A-L32 | 10.875 | +0.193 | -0.093 | -0.037 / -0.015 | 8.1e-3 | +7.4e-3 |
+| A-R1.25 | 10.906 | +0.100 | -0.049 | -0.020 / +0.021 | 8.0e-3 | +6.7e-3 |
+| A-R1.35 | 10.938 | +0.164 | -0.029 | -0.025 / +0.017 | 8.3e-3 | +1.0e-2 |
+| A-N8 | 10.813 | +0.109 | -0.047 | -0.048 / -0.017 | 4.2e-3 | -1.3e-3 |
+
+So far: the horizon is found in every member and in every search after the first; the
+first-detection and trapping errors fall from A to B at orders 1.5 and 2.1; the horizon-mass
+error (median) falls from 7.4e-3 to 2.1e-3 in magnitude (B: twice the source's fiducial OS
+level of 1e-3, main.tex:945); the turnaround time does not converge between A and B (a flat
+maximum set by slopes of the shell error; R_max converges); the outer boundary at 16 M and
+32 M gives identical results to 1e-7; at A's mesh the time errors vary with the ball radius by
+more than the mesh step (open: B-R1.25, B-R1.35). The mesh triple needs C.
+
+## Pending card runs
+
+| run | members | expected cost | state |
+|---|---|---|---|
+| A-20261121-083336-6a82131 (chain) | C (M/64, 4969736 particles) | about 2.3 card-hours, 3 segments | Slurm 4781 |
+| lists/job3a.list (not yet submitted) | B-N8, A-N64 | about 1 card-hour | after C starts |
+| lists/job3b.list (not yet submitted) | B-R1.25, B-R1.35, B-L32 | about 0.5 card-hours | after 3a |
+
+Submit: `harness/bin/nrpic-run submit --kind scouting --gate G2 --package
+tracks/A-emd-pbh/conv_ball --purpose '...' --launcher batch --exe
+/data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu --list
+tracks/A-emd-pbh/conv_ball/lists/job3a.list --wall 00:58:00`; analyse with
+`python tracks/A-emd-pbh/conv_ball/scripts/analyse.py --card <run dir> [--card <chain dir>:C]
+--prior NAME=<numbers.json> ... --prior-turnaround <turnaround.json> --out '$NRPIC_RUN_DIR'`
+(numbers of job 1: scratch/A-emd-pbh/A-20261121-085252-f4ed504/<member>_numbers.json).
 
 ## Requests
 
