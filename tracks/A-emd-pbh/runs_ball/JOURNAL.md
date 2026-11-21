@@ -1018,7 +1018,7 @@ and with each other once the criterion is named. Proposed wording for the docume
 non-positive metric determinant at t = 32.875 (dx = M/2) and 30.25 (dx = M); fields non-finite
 from 33.125 and 30.75-31.0".
 
-## 2026-11-21 00:30 PST, entry 19: outcome of prediction F (SR-1L on a fixed box) and of S6
+## 2026-11-21 00:24 PST, entry 19: outcome of prediction F (SR-1L on a fixed box) and of S6
 
 Card run A-20261120-223310-a9ce31a (Slurm 4748, ran on its own 14:46:13-14:47:44 PST on
 2026-11-20, all three lines rc = 0, each to t = 24 by "Terminating on time limit"; card time
