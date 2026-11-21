@@ -1,0 +1,10 @@
+# annotations of batch C1 (claim_id TAB evidence)
+610	[evidence] 2108.11967v2 L491 (w0 = 0.3): M = 3.29993e-2 and R = 2.89200 give M/R = 1.14105e-2, the printed C is 1.41053e-2 (transposed digits) [arithmetic on the printed row].
+611	[evidence] 2108.11967v2 L493 (w0 = 1.1): printed p(0) = 1.09378e-3; the row's v(0)/c = 0.303616 and rho(0) = 0.355962 give p(0) = rho v^2/3 = 1.0938e-2, the relation that holds on the neighbouring rows (L492: 0.0508 = 0.0508) [arithmetic].
+612	[evidence] 2108.11967v2 L516 (b = 0.2 table, w0 = 0.05): M = 3.87808e-2, R = 9.672 give M/R = 4.0096e-3; printed C = 4.00960e-4 [arithmetic].
+613	[evidence] 2108.11967v2 L196-197: the printed e^{2 Phi} is the exponential of a positive integral, so it exceeds 1 inside the star, while a static star with Phi(inf) = 0 has e^{2 Phi} < 1 (TOV: e^{2 Phi} = exp(-2 int_r^inf dPhi)) [my derivation]; tables not recomputed here.
+614	[evidence] gr-qc/0601112v1 L694 prints 1/sqrt(alpha(0)) - 1; with alpha the lapse (L229-231) the central redshift is 1/alpha(0) - 1 [my derivation]; tables not recomputed here.
+615	[evidence] gr-qc/0601112v1 L810-813: column 0.42, 0.045, 0.052, 0.77; only 0.45, 0.52 keep it increasing.
+616	[evidence] 1101.3097v2 L410-412: text b = 25 sqrt(pi)/32 = 1.385; the footnote quotes BSI as 25 sqrt(pi)/(32 sqrt 6) = 0.565 (not the 1.002 it states) and says it should be 25 pi/32 = 2.454, which is neither the text's value nor BSI's 25 pi/(32 sqrt 6) = 1.002 (astro-ph/0110561v2 L394) [arithmetic].
+617	[evidence] 2601.17117v2 L233: b = 25 sqrt(pi)/32 with a = sqrt(16/pi), as in 1101.3097v2 L410.
+618	[evidence] astro-ph/0110561v2 L392-395: b = 25 pi/(32 sqrt 6) = 1.002, from transport theory; differs from 25 sqrt(pi)/32 = 1.385 of 1101.3097 and 2601.17117.

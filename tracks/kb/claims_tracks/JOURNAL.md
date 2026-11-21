@@ -63,3 +63,60 @@ Overall: 55-80 of 117 reach fulltext/checked, 2-8 refuted, 30-55 remain to_verif
 reason, 0-5 abstract or title_only; all 42 judgement/background annotated with the evidence
 that bears on them (none changes label). Refuted if fewer than 40 or more than 95 reach
 fulltext, or more than 12 are refuted.
+
+## A1 and B1 outcomes (runs kb-20261120-222903-226b273 and kb-20261120-223013-5330e45; written 2026-11-21 at the restart)
+
+The session of 2026-11-20 applied both batches before the usage-limit cut, but did not write
+their outcomes here. I reconstructed them from LEDGER.tsv (rows equal to the runs'
+ledger_rows.tsv) and from a read-only recount of kb.sqlite on 2026-11-21 at 21:15 UTC:
+- A1 (17 claims, the whole queue of A): 14 to_verify became fulltext/checked (5 with a
+  corrected locator: 54, 169, 28, 166, 167). 1 stays to_verify with a recorded reason: claim 9,
+  the boundary condition, which the paper does not state. 2 judgements were annotated (20, 170).
+  None was refuted.
+- B1 (14 of 15): 4 to_verify became fulltext/checked (219 and 226 with the abstract line added).
+  10 judgements were annotated. Claim 186 cites 2403.15126, which ingest3 re-ingests, so it was
+  left for the end of the package.
+- Prediction Q so far: verified 18 of 19 to_verify in A and B (the predicted share was 55-80
+  of 117 overall), refuted 0, kept 1. The A and B part runs above the predicted share. Q is
+  judged over the whole queue at the end.
+
+## 2026-11-21 21:15 UTC: restart (batch 6)
+
+State found: kb/main at b6f59456 (main merged), A1 and B1 applied and committed. The
+following were in the worktree, uncommitted: decisions/{C1,D1,E1}{,_annot}.tsv and
+scripts/batch_{C1,D1,E1}.sh, written in the last minute before the cut and never run. No
+run manifest exists for them, and the database still shows those claims in their
+pre-batch states: C 14, D 28 and E 7 in the queue, and claim 345 fulltext/checked.
+
+I re-read every decision of C1, D1 and E1 at its locator in the stored source before running
+it (read_claim.py, terminal only). Each statement matched the text, and I checked the
+arithmetic again:
+- 610: 3.29993e-2/2.892 = 1.141e-2.
+- 611: 0.355962 x 0.303616^2 / 3 = 1.094e-2.
+- 612: 3.87808e-2/9.672 = 4.010e-3.
+- 616: 25 sqrt(pi)/(32 sqrt 6) = 0.565; 25 pi/(32 sqrt 6) = 1.002.
+- 604/605: the prefactors.
+- 606: the Girsanov ratio, rederived.
+- 608: the Friedmann factor.
+- 697: I checked the corrected root of eq. lmax numerically. With Delta, R(x) = 0 holds to
+  1e-12 for three (a, E, x) sets; with the printed a^2 - x(x-2) the square root has a
+  negative argument. The check is registered below as part of run D1 (scripts/check_697.py).
+- D's run values for 682: reference.json in scratch/D-bh-dress/D-bh-dress-20261115-145636-5259f48
+  gives 2.5897 and 0.0922.
+I changed no decision.
+
+### Prediction CDE (before the runs of C1, D1, E1)
+- Every kb command of the three scripts exits 0. Each batch run exits 0.
+- C: 257, 258, 259, 303 and 308 become fulltext/checked. 303 gets the new locator 2105.05556v1
+  paper.tex L75 and L88-89, which resolves (status checked). The 9 judgements keep their label
+  and status and gain one annotate event each.
+- D: 380, 408, 417, 418, 419, 420, 682 and 683 become fulltext/checked. 370 becomes fulltext
+  with two resolved locators. 346, 381, 409, 412, 413, 414 and 416 stay to_verify with an
+  annotate event each. 344, 379, 388, 398, 679 and 681 (judgement) and 415 (background) keep
+  their label.
+- 399 keeps the judgement label; its locator moves to L322-326, and the status becomes located.
+- 697-700 change status from unlocated to located or partial; their labels do not change.
+- 345 stays fulltext/checked and gains one event.
+- E: 7 judgements annotated, labels and statuses unchanged.
+Refuted by any FAILED line, a label change other than those listed, or a status of
+'unresolved' after a relocation.
