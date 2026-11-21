@@ -546,6 +546,127 @@ changed to take an optional part (runs3 | bh_smr; default all unchanged, commit 
 because its first part copies figures into figs/ and nrpic-run refuses a dirty package for
 the second registration. Registered analysis: see the outcome below (written after the run).
 
+Outcome (written 2026-11-21 after the registered runs; every figure named was looked at).
+Runs: analysis A-20261121-074923-d396d73 (compare.py on the six runs of card run
+A-20261119-144419-13d5601, fields.py, summary3.py; numbers `<label>_numbers.json`,
+`summary3.json`); excision and breakdown A-20261121-081153-b92c08c (`excision.json`,
+`bd/turnaround.json`); the light speed of S6 from the box analysis (entry 19). Figures:
+`figs/sr1l_n{128,256,256L32}_{shells,events,misner_sharp,horizon,gauge}.png`,
+`sr1l_n256_fields.png`, `fig_sr1l_comparison.png`, `bh_n{128,192,256}_{shells,events,
+misner_sharp,horizon,gauge}.png`, `bh_n256_fields.png`, `fig_bh1_summary.png`,
+`fig_excision.png`. The top-left panel of the three `sr1l_*_gauge.png` of run -074923- shows
+a(tau_c) as "reference" (defect 1 of entry 17); the figures of the box analysis replace them;
+the numbers are not affected.
+
+### S (SR-1L on 2t, relaxed lapse T = 0.125 M)
+
+- S1 HOLDS. All three runs reach their end with finite fields (dx = M and M/2 to t = 44,
+  M/4 to t = 24; `history.finite_end`). At dx = M/2 the mean |H| (cstat) is 1.73e-5 at t = 10
+  and 6.68e-5 at t = 40: growth 3.9 (bound 10). The largest |H| grows from 1.6e-4 (t = 20) to
+  3.2e-2 at t = 44 (`fig_sr1l_comparison.png` bottom left), at the centre, where the core
+  collapses (`sr1l_n256_fields.png`, t = 43).
+- S2 HOLDS. |alpha_c/alpha_ref - 1| is at most 5.7e-3 (M/2) and 5.6e-3 (M/4) for t <= 15 and
+  first exceeds 0.02 at t = 18.375 (M/2, M/4) and 18.5 (M), after the core turnaround
+  (t = 16.68 in the reference): no lapse front before the turnaround (SR-2 had 0.39).
+- S3 first part HOLDS, second part REFUTED. After the turnaround the central lapse stays
+  above the reference: the smallest alpha_c/alpha_ref - 1 on 16 <= t <= 44 in the history
+  series of the numbers file (every ~1/80 of the records) is +6.1e-3 (M/2), +6.3e-3 (M),
+  +6.0e-3 (M/4, to t = 24); the lapse is not driven down at all: alpha_c = 0.876 (M/2) and
+  0.943 (M) at t = 44 against a reference that falls below 0.1 at t = 40.3. Consequently the
+  central proper time at t = 44 is 43.44 (M/2) and 43.70 (M), outside the predicted 29.9-40 and
+  within 0.9 M of the first trapping (44.349). No horizon was found at any resolution (finder
+  rows: none; `line_horizon`: none; largest 2m/R on the line 0.236 at t = 0), as predicted:
+  the first horizon (R_AH = 0.161 M) lies inside the innermost line point (R of the innermost
+  point >= 0.44 M at M/2, `sr1l_n256_horizon.png` right). The runs end at t = 44 before any
+  tracked particle has reached the trapping time of its shell (`events`: no
+  first_trapped_tracked, missed_trapping 0): SR-1L at these meshes stops about 1 M short of
+  the first horizon of 2t, and would need t > 45 and refinement.
+- S4 dx = M/2 part REFUTED on the good side, the rest HOLDS. Largest core |R/R_exact - 1| at
+  tau = 16.894: 6.4e-4 at M/2 (predicted 1e-3 to 5e-3: smaller), 1.52e-4 at M/4 (< 1.5e-3),
+  1.38e-2 at M (> 1e-2). Mean core turnaround error (V3): -0.0063 M (M/2, bound 0.03),
+  -0.0049 M (M/4, bound 0.02), -0.594 M (M); mean R_max error +1.1e-4 (M/2), -3.3e-5 (M/4),
+  both within 0.2 per cent.
+- S5 HOLDS. Core error at tau = 16.894 falls from 6.40e-4 to 1.52e-4 between M/2 and M/4
+  (factor 4.2, apparent order 2.08; summary3 `orders`); between M and M/2 the order is 4.43
+  (dx = M is not in the asymptotic range, as for SR-1/SR-2). Caveat: M/4 has the box [-32,32]^3
+  and the h = M/4 lattice; entry 14 separates them.
+- S6: judged in entry 19 with `line_light_speed` of the box analysis.
+- Refutation clause of S: none met (no non-finite run, no central-lapse departure above 5 per
+  cent before t = 16, core error at tau = 16.894 well below 7.5e-3). The relaxed lapse is the
+  first gauge of this package that carries 2t from the initial slice to within 1 M of the first
+  trapping with shells errors of 1e-3 to 4e-2 (M/2: largest core error 5.8e-3 at tau = 30,
+  4.1e-2 at tau = 40).
+- Misner-Sharp mass on the line, r >= 2 M: largest relative error 2.2e-2 to t = 30 (M/2), 0.24
+  (M); 7.1e-2 at M/4 to t = 24, where the outflow boundary at 32 M has reached the envelope
+  (`sr1l_n256L32_misner_sharp.png`: the error rises beyond r = 8 M at t = 24;
+  `sr1l_n256L32_gauge.png`: mean |H| 4.9e-4 at t = 24, ten times the L = 64 runs, entering from
+  the boundary).
+
+### B (BH-1, data set 3, uniform dx = M/4, M/6, M/8 over [-16,16]^3)
+
+- B1 REFUTED. None of the three runs reaches t = 16 with finite fields. First non-positive
+  metric determinant (athena.log) at t = 14.3125 (M/4), 14.5 (M/6), 15.03125 (M/8); first
+  non-finite cstat record 14.375, 14.5, 15.03125; first non-finite z4c history record 14.5,
+  14.5, 15.25 (`bd/turnaround.json` of -081153-). Each run exits 0 and writes to t = 16 (HANDOFF
+  trap). The blow-up is at the centre: the largest |H| grows from 0.05-0.08 (t = 6-8) to 0.2
+  (t = 10), 0.65-1.0 (t = 12) and 10-20 (t = 14) (`bh_n*_gauge.png`), with a 2-4 cell
+  checkerboard of H and Theta in the central cells (`bh_n256_fields.png`, t = 10, 12); the
+  central lapse reaches its minimum (0.30 at M/4, 0.22 at M/6, 0.17 at M/8, near t = 12.5) and
+  then rises steeply to > 1 just before the blow-up (`fig_bh1_summary.png` bottom right).
+  Later breakdown at finer mesh (14.3 -> 14.5 -> 15.0).
+- B2 REFUTED. The finder (start radius 3.0 M, 1000 iterations, tolerance 1e-6, from t = 8 every
+  0.125 M) reported no horizon in any of its 64-65 searches in any run (all rows NaN).
+- B3 the finder part UNDECIDED (no detection); the per-particle part HOLDS at M/8. The first
+  slice with a trapped round sphere (a tracked particle past the exact trapping time of its
+  shell) is at code time 10.33 (M/4), 10.41 (M/6), 10.47 (M/8). Per particle of the core-edge
+  band (60 particles), the mean of tau_AH(numerical) - tau_AH(exact) is +0.191 (M/4), +0.040
+  (M/6), -0.010 M (M/8): within +-0.1 M at M/8, converging. Inner core shells trap early (R
+  falls through 2m up to 0.9 M early at R_i < 1.5; `bh_n256_events.png` bottom left), because the
+  numerical core crunches early (mean -0.45 M at M/8): the collapsing core is squeezed into the
+  innermost cells.
+- The uniform M/8 run's trapped points without a finder detection [VERIFIED from the line
+  outputs]: the line (y = z = dx/2) has an outermost marginally trapped sphere (2m/R > 1, K_T > 0)
+  from t = 11.0 to 11.75 at coordinate radius 0.435-0.469 M (3.5-3.8 cells), areal radius
+  1.39-1.43 M (exact R_AH 1.373), Misner-Sharp mass 0.694-0.716 against the exact shell mass
+  0.688-0.692 (+0.3 to +3.6 per cent; `bh_n256_horizon.png`); lines after t = 12.0 are cut
+  (|H| > 1). M/6: from 11.25, M/4: from 11.75. [JUDGEMENT] the finder, started at 3.0 M
+  coordinate radius, never converged onto a surface of coordinate radius 0.45 M: the same
+  failure that made BH-1R change the start radius to 1.0 M (entry 10 amendment); BH-1R then
+  found it (entry 12). Not tested: the finder at M/8 with the BH-1R settings.
+- B4 UNDECIDED (no finder mass). The line Misner-Sharp mass of the trapped sphere is 0.3-3.6
+  per cent above the exact mass at M/8 (above); this is not the finder's quantity.
+- B5 REFUTED. Largest core |eps| at the turnaround (tau = 3.37): 1.39e-2 (M/4), 6.75e-3 (M/6),
+  5.29e-3 (M/8) (bound 2e-3 at M/8); to tau = 9.05: 0.130, 0.078, 0.059 (bound 2e-2). Order
+  M/4 -> M/6: 1.77, M/6 -> M/8: 0.85 (not in a clean power law; the largest error sits at the
+  core edge, the top-hat jump, `bh_n256_shells.png`). Mean core turnaround error (V3): +0.071
+  (M/4), -0.011 (M/6), -0.011 M (M/8); mean R_max error +3.9e-3, -6.4e-4, -5.5e-4.
+- B6 HOLDS. alpha_c/alpha_ref - 1 is below 6.5e-5 to t = 2 in all three runs; it exceeds 0.02
+  at t = 3.84-3.88 and the lapse stays above the reference (`bh_n256_gauge.png`), as the source
+  paper reports for its OS run (main.tex:943: the central lapse follows the homogeneous expression
+  until the gauge characteristic from the surface arrives, and stays above it afterwards).
+- Refutation clause of B: met (no horizon at M/8 by t = 16; non-finite before t = 16, though
+  after the first trapped slice). Prediction B is refuted for uniform meshes up to M/8.
+
+### Excision (prediction E, entry 16; run A-20261121-081153-b92c08c, `fig_excision.png`)
+
+- E1 REFUTED, and the open question of entry 9 is answered. BH-1 at dx = M/2 removed 515
+  particles (rest mass 0.768) at t = 14.25-14.375 while the smallest lapse in any cell of the mesh
+  never fell below 0.484 (nrpic.hst [16], min at t = 12.5). All 291 tracked particles that
+  disappear had, at their last record (t = 14.0), a lapse at the particle (trajmet, the b-spline
+  interpolant of the run) below alpha_exc: median 0.096, at r < 0.11 M from the origin, moving
+  with |u_i| = 8-11. So the lapse criterion (a) removed them, through the interpolated lapse at
+  the particle, at a place where every cell value was about 0.5. [JUDGEMENT, TO VERIFY by core]
+  the interpolant undershoots the cell values near the origin, where eight MeshBlocks meet.
+- E2 HOLDS for BH-1R, REFUTED for BH-1 at M/8. BH-1R: removals from t = 12.70 (after the first
+  trapped slice, 10.54), 325784 particles of rest mass 0.827 by t = 16; the particles missing
+  between snapshots sat at coordinate radius <= 0.345 M (median 0.146-0.153), inside the finder's
+  horizon (mean radius 0.42-0.43 M); the tracked ones had a last recorded lapse of 0.10-0.11
+  (73 of 453 below 0.1): criterion (a). But 74208 of them (rest mass 0.259) went while the
+  smallest cell value of the lapse was still >= 0.1 (12.70-12.98): the same interpolant effect,
+  small here. BH-1 at M/4, M/6, M/8: every particle is removed at the blow-up (14.19, 14.5,
+  15.03), the bulk with finite lapse at their last record (M/6: median 0.996, M/8: 0.40):
+  criterion (c), non-finite particle states, as the fields become non-finite.
+
 ## 2026-11-20, entry 12: outcome of entry 10 (BH-1R, one refined level)
 
 Written after the registered analysis of BH-1R (see below).
@@ -691,7 +812,7 @@ Prediction E [JUDGEMENT]:
   (code time > 10.5), by criterion (a), inside the horizon (last recorded coordinate radius of a
   removed tracked particle below the finder's mean radius, where the finder found one).
 
-## 2026-11-21 00:20 PST, entry 17: two defects of compare.py found in the first registered analyses, and what is registered next
+## 2026-11-21 00:11 PST, entry 17: two defects of compare.py found in the first registered analyses, and what is registered next
 
 Registered so far this session: A-20261121-074923-d396d73 (SR-1L at dx = M, M/2, M/4; BH-1 at
 M/4, M/6, M/8; `after_runs3.sh runs3`, completed) and A-20261121-080558-02c3188 (BH-1R;
