@@ -1,0 +1,131 @@
+# binary_conv (F-hills, wave 3 batch 3): the binary of passage P1 ALONE, members at m/12.
+# R12: root 48^3 on +-128, 10 levels, every cell 2/3 of bin_m8 (wave zone included).
+# Made from tracks/F-hills/nr_first/inputs/p1_q4.athinput (P1, run F-20261119-150017-b45ec5f)
+# by removing comp2 (the heavy hole, M = 1) and nothing else in <problem>: same bare masses
+# (0.125), positions, Bowen-York momenta (so the binary keeps P1's centre-of-mass momentum
+# (0.0466, 0.0312), about 0.22 c toward where M was), corrections and gauge (constant
+# shift_eta = 2, eta m = 0.25). Mesh: the cells of P1 (R8 of g2mesh: root cells 8 M, 10 levels,
+# members at level 9, cells 1/64 = m/8; wave zone level 2 within 48, level 1 within 100) on half
+# P1's domain, +-128 with root 32^3 (JOURNAL BC-0: 10 percent fewer blocks, no boundary signal
+# at the binary before about 146 M).
+# Changes besides comp2: tlim 100, no full-field outputs at t = 0, max_nmb_per_rank from the
+# tree model of this package (scripts/tree_cost.py). Siblings: bin_m12 (root 48^3, every cell
+# 2/3), bin_m16 (11 levels, members m/16). Chain with scripts/athena_keep_trackers_bc.sh.
+
+<comment>
+problem   = binary_conv: P1's binary alone, members m/12
+
+<job>
+basename  = hills
+
+<mesh>
+nghost    = 4
+nx1       = 48
+x1min     = -128.0
+x1max     = 128.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 48
+x2min     = -128.0
+x2max     = 128.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 48
+x3min     = -128.0
+x3max     = 128.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement          = adaptive
+num_levels          = 10
+max_nmb_per_rank    = 2400
+ncycle_check        = 4
+refinement_interval = 8
+
+<z4c_amr>
+method            = tracker
+radius_0_rad      = 48.0
+radius_0_reflevel = 2
+radius_1_rad      = 100.0
+radius_1_reflevel = 1
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 100.0
+ndiag      = 100
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0       # as P1: eta m = 0.25 for a member
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+tracker_mode    = ode
+nrad_wave_extraction = 4
+extraction_radius_0  = 40.0
+extraction_radius_1  = 48.0
+extraction_radius_2  = 70.0
+extraction_radius_3  = 90.0
+extraction_nlev      = 10
+waveform_dt          = 0.25
+
+<problem>
+pgen_name       = nrpic_cf
+ncomp           = 2
+comp0_type      = puncture
+comp0_mass      = 0.125
+comp0_x1        = -7.8694832795
+comp0_x2        = -21.7944554502
+comp0_x3        = 0.0
+comp0_p1        = 0.0134969953
+comp0_p2        = 0.0259652475
+comp0_p3        = 0.0
+comp0_corr      = approx
+comp1_type      = puncture
+comp1_mass      = 0.125
+comp1_x1        = -11.4963685661
+comp1_x2        = -25.1659740897
+comp1_x3        = 0.0
+comp1_p1        = 0.0331350977
+comp1_p2        = 0.0052828910
+comp1_p3        = 0.0
+comp1_corr      = approx
+corr_background = true
+lapse           = precollapsed
+puncture_setup  = true
+puncture_radius = 1.8
+
+<output1>
+file_type = hst
+dt        = 0.5
+
+<output2>
+file_type = bin
+variable  = z4c_alpha
+slice_x3  = 0.001
+dt        = 10.0
+
+<output3>
+file_type = bin
+variable  = con_H
+slice_x3  = 0.001
+dt        = 10.0
+
+<output4>
+file_type = rst
+dt        = 5.0
