@@ -359,3 +359,31 @@ is submitted, sharpened by what run (i) showed for CC2 (entry 8):
 - M8.5' The ripple of CC1 and CC2 at M/8 is the same realisation: the residuals about their
   own 40 M running means correlate above +0.5 (at M/4 the cosine-fit residuals gave 0.72).
   Refuted below +0.5.
+
+## 2026-11-21 13:12 UTC Entry 10: an M/8 continuation (vi) in place of the dropped (ii), (iv); predictions
+
+Why [JUDGEMENT]: block A of SCAN.md is to run on M/8 for 1000 M (lead's decision,
+`../HANDOFF.md`). Run (i) shows the stable model CC2 (y0 = 0.314, below the threshold)
+contracting on M/8 after 200 M, faster towards the end (alpha_c - alpha_c(0) at 250 and
+300 M: -0.0012 and -0.0041, run C-20261121-075359-26e3b31 `compare_cc2_M8.json`). If that
+contraction runs away within 1000 M, a stable model collapses on the mesh of block A and the
+fate-based bracket is wrong; if it turns, M/8 is fit for the scan. One 52 min job continues
+run (i) from its restart at 300 M (`rst/cc.00003.rst`, written 00:30:45 UTC at the end of run
+(i); its executable `batch.list.exe` has the sha256 f9f2dc12... of the release card
+executable). Order of this session: (iii) (queued), then (vi), then (v) (cheapest), within the
+cap: 0.69 + about 0.72 + 0.87 + 0.3 = 2.6 card-hours.
+
+Predictions for (vi) cc2_kninf_M8_A (restart of (i) at 300 M, `time/tlim=1000`, cut at 52 min):
+- VI.1 Exact continuation: np = 1e5 and sum_m bit-identical to run (i); the first alpha_c
+  records after 300 M join the last records of (i) within 1e-3. Refuted otherwise.
+- VI.2 Bounded: the contraction turns. The 40 M mean of alpha_c - alpha_c(0) has a minimum
+  between 330 and 600 M, no lower than -0.02, and alpha_c stays above 0.5 [JUDGEMENT, 55 %].
+  Refuted by a monotone decline to the end of the segment. If the decline steepens (below
+  -0.03 at the end) I read it as a runaway towards collapse of a model that should be stable,
+  i.e. M/8 at N = 1e5 is not fit for block A without more particles or a stronger filter.
+- VI.3 The H-norm2 floor stays at 7-9e-3 (mean over the segment within 1.5 times the
+  100-300 M mean 7.9e-3 of (i)). A growth above that is a numerical instability.
+- VI.4 Cost: 7.5-9.1 s per M, so the segment ends between 640 and 710 M.
+Method note (smoke, not registered, `scratch/C-sidm/tmp/drift_smoke`): the new `compare.py
+--pair` (residuals about the 40 M running mean) gives +0.57 for CC1 against CC2 on M/4; the
+registered value comes with the analysis of (iii). Threshold of M8.5' (entry 9) unchanged.

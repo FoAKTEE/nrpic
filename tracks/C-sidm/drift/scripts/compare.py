@@ -2,7 +2,7 @@
 """Tests M8 and A of drift/JOURNAL.md entry 2: the controls on two meshes and to 1000 M.
 
     python3 compare.py --out DIR --tag NAME LABEL=MODEL:DIR[,DIR...] [LABEL=MODEL:DIR ...]
-                       [--ratio LABEL_FINE/LABEL_COARSE ...]
+                       [--ratio LABEL_FINE/LABEL_COARSE ...] [--pair LABEL_A/LABEL_B ...]
 
 LABEL is a free name (for example cc2_M4, cc2_M8, cc2_A1000), MODEL is cc1 or cc2 (it
 selects the model files), DIR an AthenaK output directory; several directories are joined
@@ -10,7 +10,10 @@ in time order (controls.join_hst), so the wave-2 run and its continuation give o
 from 0 to 1000 M. Every series is analysed by controls.analyse (fits, radii, areal radii,
 Killing-energy sum, ripple). --ratio a/b reports A(a)/A(b) and P(a)/P(b) of the cosine and
 sine-with-trend fits and of the maximum of the 20 M mean. The extrema of the 40 M mean
-(times and values) are listed for the continuation test A.2.
+(times and values) are listed for the continuation test A.2. --pair a/b reports the
+correlation of the residuals of a and b about their own 40 M running means on common
+times (test M8.5' of JOURNAL entry 9: do two models on one mesh share the ripple of one
+particle realisation?), which needs no cosine form.
 
 Writes DIR/compare_<tag>.json and DIR/fig_<tag>.png.
 """
@@ -57,6 +60,7 @@ def main():
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"))
     ap.add_argument("--tag", required=True)
     ap.add_argument("--ratio", action="append", default=[])
+    ap.add_argument("--pair", action="append", default=[])
     a = ap.parse_args()
     if not a.out:
         sys.exit("give --out or run through nrpic-run")
@@ -105,6 +109,21 @@ def main():
         ratios[rq] = out
         print("ratio", rq, json.dumps(out), flush=True)
     res["_ratios"] = ratios
+    pairs = {}
+    for pq in a.pair:
+        pa, pb = pq.split("/")
+        sa, sb = ser[pa], ser[pb]
+        t0 = max(sa["t"][0], sb["t"][0]) + 20.0
+        t1 = min(sa["t"][-1], sb["t"][-1]) - 20.0
+        tt = np.arange(t0, t1 + 1e-9, 0.25)
+        ea = np.interp(tt, sa["t"], sa["y"] - K.smooth(sa["t"], sa["y"], 40.0))
+        eb = np.interp(tt, sb["t"], sb["y"] - K.smooth(sb["t"], sb["y"], 40.0))
+        ok = np.isfinite(ea) & np.isfinite(eb)
+        pairs[pq] = {"residual_correlation_40M": float(np.corrcoef(ea[ok], eb[ok])[0, 1]),
+                     "rms_a": float(np.std(ea[ok])), "rms_b": float(np.std(eb[ok])),
+                     "t_range": [float(tt[ok][0]), float(tt[ok][-1])]}
+        print("pair", pq, json.dumps(pairs[pq]), flush=True)
+    res["_pairs"] = pairs
     with open(os.path.join(a.out, f"compare_{a.tag}.json"), "w") as fp:
         json.dump(res, fp, indent=1, default=float)
 

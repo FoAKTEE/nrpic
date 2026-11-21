@@ -21,6 +21,10 @@
 
 (v)         cc2_kninf_N1e4 (optional particle-number leg): the wave-2 deck of cc2_kninf with
             the N = 1e4 file of wave 1, M/4 mesh, 300 M.
+(vi)        cc2_kninf_M8_A: continuation of run (i) (cc2_kninf_M8, run
+            C-20261120-222533-ce50a86) from its restart rst/cc.00003.rst (+ .prt), written at
+            t = 300 M, with time/tlim = 1000; one 52 min job reaches about 650-680 M at the
+            8.3 s per M of run (i) (JOURNAL entry 10). Same executable as (ii), (iv).
 
 Every list line ends with `-t 00:52:00`: athena stops by itself before the Slurm limit
 (55 min) and writes all outputs, a restart file included.
@@ -37,6 +41,7 @@ import make_decks as D  # noqa: E402  (set_key)
 
 SCRATCH = "/data/haiyangw/nrpic/scratch/C-sidm"
 WAVE2 = {"cc1": ("C-20261115-171058-c26cfad", "cc1_kninf"), "cc2": ("C-20261115-171059-4b70228", "cc2_kninf")}
+M8RUN = {"cc2": ("C-20261120-222533-ce50a86", "cc2_kninf_M8")}   # run (i), restart files every 100 M
 WALL = "00:52:00"
 REGION7 = """<refined_region2>
 level = 7          # drift package: cells of M/8 inside |x|_inf < 3.9 M (SCAN.md block B, mesh leg)
@@ -108,6 +113,8 @@ def main():
         "job_iv": ("cc1_kninf_A1000", os.path.join(SCRATCH, WAVE2["cc1"][0], WAVE2["cc1"][1], "rst", "cc.00001.rst"),
                    ["time/tlim=1000"]),
         "job_v": ("cc2_kninf_N1e4", f"{rel}/cc2_kninf_N1e4.athinput", []),
+        "job_vi": ("cc2_kninf_M8_A", os.path.join(SCRATCH, M8RUN["cc2"][0], M8RUN["cc2"][1], "rst", "cc.00003.rst"),
+                   ["time/tlim=1000"]),
     }
     for job, (name, inp, args) in jobs.items():
         with open(os.path.join(out, f"{job}.list"), "w") as f:
