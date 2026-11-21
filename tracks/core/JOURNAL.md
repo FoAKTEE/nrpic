@@ -397,3 +397,18 @@ status of the merged executable where the branch executable ends with 0. If both
 non-zero for a case, my arguments are at fault and the case says nothing about the
 merge. Not covered by any run of the merged executable even then: waveform_at_new_time,
 lapse_leak on a ball, the restart schedule after a stop, the periodic Newtonian box.
+
+Outcome of S (run core-20261121-031604-dccccbb, 4 cores, 285 s, exit 0, MORE EXAMPLES
+PASS): PREDICTION HELD. All twelve runs status 0. 42 files AthenaK wrote: 40 identical,
+2 of class a (`rst/acc.0000{0,1}.rst`: 36 non-zero unset bytes with the executable of
+requests-adf, none with the merged one), none of class b, none other. Per case (files):
+boost 7, spin 4, pairh 8, uneq 9, acc 8 (6 + 2 a), kepler 6. Preparation products equal
+in both directories except `spin/particles.json` (directory name). Wall times of merged
+and branch executable within 3 per cent of each other except acc (3.6 against 4.0 s).
+Figure `scratch/core/core-20261121-032134-8dd42e4/fig_more_v04.png` looked at (third
+drawing: the first had its legend over the exit labels, the second a cut axis label).
+With Q2: fifteen example inputs of the READY give, with the merged executable, the
+bytes of the branch that wrote them. Still started by no run of the merged executable:
+`waveform_at_new_time`, `lapse_leak` on a ball (`ball_leak`, `es_gauge`), the restart
+after a stop (`restart_schedule`), the periodic Newtonian box, `clump_puncture`,
+`jeans_mc`, the id-solver ball and torus, `accretion_tracker`.

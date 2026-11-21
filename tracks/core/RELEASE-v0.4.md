@@ -128,6 +128,31 @@ core-20261120-222724-75e323c, is on record as failed: its driver compared
 `clump/particles.json`, a record of the particle generator that holds the name of the
 run directory; every file AthenaK wrote had the same bytes then as now.
 
+## Six more example inputs of the READY on processors: PASS
+
+Run core-20261121-031604-dccccbb (driver `analysis/release/more_v04.py`, 4 cores,
+285 s): example inputs the quick test does not run, merged executable against the
+branch's executable, byte for byte. A start-up and identity check, not a test of the
+physics.
+
+| Case | Branch | Input | Option exercised | Files | identical | a | other |
+|---|---|---|---|---|---|---|---|
+| boost | id-solver | `problems/idsolve/gaussian_boost.athinput`, 32 cells | `id_vector` | 7 | 7 | 0 | 0 |
+| spin | clump-curvature | `problems/clump/clump_spin.athinput` | `comp0_s3` (initial data) | 4 | 4 | 0 | 0 |
+| pairh | requests-adf | `problems/tests/pair_horizon.athinput` | `punc_pair_a/b` (two steps) | 8 | 8 | 0 | 0 |
+| uneq | gauge | `problems/puncture/by_unequal.athinput`, one step | `shift_eta_profile` on a pair | 9 | 9 | 0 | 0 |
+| acc | requests-adf | `problems/tests/accretion_static.athinput`, 400 steps | removal record, flux spheres, pericentre counter | 8 | 6 | 2 | 0 |
+| kepler | requests-adf | `problems/tests/newton_point_mass.athinput`, 100 steps | `newton_pm_mass` | 6 | 6 | 0 | 0 |
+| all | | | | 42 | 40 | 2 | 0 |
+
+The two files of class a are the restart files of acc (the executable of requests-adf
+does not have the zeroed header bytes of requests-b). All twelve runs ended with status
+0. Figure: `scratch/core/core-20261121-032134-8dd42e4/fig_more_v04.png` (looked at).
+Example inputs of the READY that no run of the merged executable has started:
+`ball_leak`, `es_gauge`, `restart_schedule` (the restart after a stop),
+`newton_point_mass_periodic`, `clump_puncture`, `jeans_mc`, `idsolve/ball`,
+`idsolve/torus`, `accretion_tracker`, and the option `waveform_at_new_time`.
+
 ## Card check of `athena_gpu`
 
 PENDING when this file was written (2026-11-21T03:13Z): Slurm job 4758, run

@@ -100,5 +100,6 @@ Merges: 3ab47062 (requests-b), 120aa7cf (gauge), 54dc527e (scalar-2), e2498da4
 | the same, first call of the driver | core-20261120-220849-cea5881 | FAIL by the driver's rule for a case without files (binary); rule corrected, same runs | -- |
 | quick tests, 9 cases against the branch executables, processors | core-20261121-025955-bd47414 | PASS: 40 files, 38 identical, 2 b, 0 other; 13 numbers in their bands | `scratch/core/core-20261121-031018-6759268/fig_quick_v04.png` (run core-20261121-031018-6759268) |
 | the same, first attempt | core-20261120-222724-75e323c | failed: the driver compared a record of the particle generator (directory name); AthenaK files equal | first figure, layout defects |
+| six more READY examples against the branch executables, processors | core-20261121-031604-dccccbb | PASS: 42 files, 40 identical, 2 a (restart files of acc), 0 other; 12 runs status 0 | `scratch/core/core-20261121-032134-8dd42e4/fig_more_v04.png` (run core-20261121-032134-8dd42e4; -032119-f98c422 superseded) |
 | card check, 11 cases on one A100 | core-20261121-025945-54dc669 (Slurm job 4758) | see `RELEASE-v0.4.md`, section "Card check" | see there |
 | options (scan) | `verify/options_at.py core-v0.3 HEAD`, `scratch/core/tmp/lead_v04/options_v03_v04.json` | 61 added, 0 removed, no default changed | -- |
