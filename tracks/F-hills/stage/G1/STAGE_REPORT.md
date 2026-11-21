@@ -173,3 +173,14 @@ Lead's judgement 2026-11-21: G1 NOT met. P1's binary merged at t = 48.8 M before
   their criteria (`../../JOURNAL.md`, lead wave 2b, "P1: decision"): the run-health criteria
   were met; the failed predictions (first-search horizon masses, S2's settling value, the
   single-puncture cost) and the unmeasured junk do not bear on running P1.
+
+## Lead's notes (wave 3, batch 2a, 2026-11-21; supersede the wave-2b notes where they differ)
+
+- P1 (run F-20261119-150017-b45ec5f) is in its last segments (Slurm 4769 from t = 231.9 M); its
+  binary merged at t = 48.8 M (p1 entry 4; lead's own parser, run F-20261121-063449-4dcca98), so
+  criterion C8 (one complete vacuum passage) is FAIL in substance; RISKS R15; the deciding test is
+  the isolated binary at m/8 and m/16.
+- C6 FAIL: KHSR (G0 verifier D8) and Kerr (package kerr cut before any outcome) are open.
+- C10, C11 PASS: G1 schematics drawn by the note package (run F-20261120-222908-4ffcfba), read.
+- C17, C18 OPEN: the note's G1 revision is paused before its compile; no G1 verifier yet.
+- Review of the wave-3 material: `../REVIEW-wave3.md` (eih confirmed; p1's merger confirmed).
