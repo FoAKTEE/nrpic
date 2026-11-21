@@ -1,0 +1,131 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "F-20261121-202021-3c4321e",
+  "track": "F-hills",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "lead batch 5: analysis of R8, R12 (to 21.06 M), R16n (to 23.34 M) for rule P1b-D",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    ".venv/bin/python3",
+    "tracks/F-hills/binary_conv/scripts/analyze.py",
+    "--run",
+    "R8=/data/haiyangw/nrpic/scratch/F-hills/F-20261121-130358-6cf186a",
+    "--run",
+    "R16n=/data/haiyangw/nrpic/scratch/F-hills/F-20261121-130351-04074e1",
+    "--run",
+    "R12=/data/haiyangw/nrpic/scratch/F-hills/F-20261121-153707-1eaa5d4",
+    "--p1",
+    "/data/haiyangw/nrpic/scratch/F-hills/F-20261119-150017-b45ec5f",
+    "--refs",
+    "/data/haiyangw/nrpic/scratch/F-hills/F-20261121-130646-56612a0/refs.json",
+    "--g2model",
+    "/data/haiyangw/nrpic/scratch/F-hills/F-20261120-222426-86392c3/model.json",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "3c4321e7d3c74246ea9877376059193476f260f7",
+    "branch": "track/F-hills",
+    "dirty": false,
+    "package": [
+      "tracks/F-hills/binary_conv"
+    ],
+    "outside_package": {
+      "count": 2,
+      "first": [
+        " M tracks/F-hills/JOURNAL.md",
+        "?? tracks/F-hills/g2mesh/scripts/card_analysis.py"
+      ]
+    },
+    "merge_base_main": "edc49c3c2bfc34ed7b43f53231af641c7df90d2b",
+    "worktree": "wt/F-hills"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/F-hills/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/F-hills/binary_conv/scripts/analyze.py",
+      "role": "argv",
+      "sha256": "a3431c302a8261466e8f864d0a585e415ce523f64ce98fe0bf36b740956b9ff0",
+      "bytes": 18751,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/F-hills/F-20261121-130646-56612a0/refs.json",
+      "role": "argv",
+      "sha256": "15e1f6d8333d982470c54160fa17de7221270a191084fd9900397133623c1421",
+      "bytes": 192356,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/F-hills/F-20261120-222426-86392c3/model.json",
+      "role": "argv",
+      "sha256": "91cb33667eafe8ed9cfaaeee535cd6244c6096778717181a8ebf78039db7ce4c",
+      "bytes": 325647,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/F-hills/F-20261121-202021-3c4321e",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T20:20:22Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "F-20261121-130351-04074e1",
+    "F-20261121-130358-6cf186a",
+    "F-20261121-153707-1eaa5d4"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 50.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 14.2414,
+    "gpu_hours_reserved": 4.9167,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 234,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
