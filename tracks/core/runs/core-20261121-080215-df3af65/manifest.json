@@ -1,0 +1,228 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-080215-df3af65",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "newton2 third card job, merged card build (releases core-v0.4, core-v0.5 plus newton-2): card twins of T1 (T11c: chk_fftsp, chk_fft7, chk_mg) and T4d, the embedded ellipsoid at 96^3, 128^3 (linear cloud with both symbols, kernels of T2) and 256^3, Fourier solver",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/core/core-20261121-080215-df3af65/batch.list"
+  ],
+  "cwd": "scratch/core/core-20261121-080215-df3af65",
+  "git": {
+    "sha": "df3af65480290850e23a9190f8c885fa1e402ff0",
+    "branch": "core/newton-2",
+    "dirty": false,
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/core-newton2"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_newton",
+    "exe": "/data/haiyangw/nrpic/wt/core-newton2/.work/build_gpu/src/athena",
+    "exe_sha256": "7b2cceed9b5bdddc91f65835ef68171143aaade9bb48ab1742a4b457e5879ac6",
+    "cmake_flags": [
+      "-DPROBLEM=built_in_pgens",
+      "-DAthena_ENABLE_MPI=OFF",
+      "-DAthena_ENABLE_OPENMP=OFF",
+      "-DKokkos_ARCH_ICX=ON",
+      "-DKokkos_ENABLE_DEBUG=OFF",
+      "-DKokkos_ENABLE_DEBUG_BOUNDS_CHECK=OFF",
+      "-DCMAKE_CXX_COMPILER=/data/haiyangw/nrpic/wt/core-newton2/.work/build_gpu/nvcc_wrapper_pinned",
+      "-DCUDAToolkit_ROOT=/usr/local/cuda-12.6",
+      "-DKokkos_ENABLE_SERIAL=ON",
+      "-DKokkos_ENABLE_CUDA=ON",
+      "-DKokkos_ARCH_AMPERE80=ON",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG"
+    ],
+    "toolchain": "nvcc 12.6 (host g++ 11.4.0)"
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-newton2/.venv"
+  },
+  "input": {
+    "file": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/chk_fftsp.athinput",
+    "sha256": "2f5cc0e3016bd6f2c3c72632af1102794b15cde3a31b96b595313c9b71724e8a",
+    "overrides": {}
+  },
+  "inputs": [
+    {
+      "path": ".work/build_gpu/src/athena",
+      "role": "exe",
+      "sha256": "7b2cceed9b5bdddc91f65835ef68171143aaade9bb48ab1742a4b457e5879ac6",
+      "bytes": 108491696,
+      "tracked": false
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/card.list",
+      "role": "list",
+      "sha256": "6d4bdef56123a8a4d3d036926d149ffcf9d18497e8badbb4feb6a78996da2145",
+      "bytes": 823,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/chk_fftsp.athinput",
+      "role": "athinput:chk_fftsp",
+      "sha256": "2f5cc0e3016bd6f2c3c72632af1102794b15cde3a31b96b595313c9b71724e8a",
+      "bytes": 3633,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/chk_fft7.athinput",
+      "role": "athinput:chk_fft7",
+      "sha256": "308153b107cca3760a07c70bba26e51e43a0a00712ff37154153c641b68c3523",
+      "bytes": 3587,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/chk_mg.athinput",
+      "role": "athinput:chk_mg",
+      "sha256": "848524689ae8f921af3bb402d7b10c04785bbee3f515a4deb88e494fce224b8d",
+      "bytes": 2980,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/emb96_fft.athinput",
+      "role": "athinput:emb96_fft",
+      "sha256": "004122c176cc78ed62fb87affd0165bc09e1befb08a48fc1c3d7258c9bffef86",
+      "bytes": 3635,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/emb128_fft.athinput",
+      "role": "athinput:emb128_fft",
+      "sha256": "2ae7c63f79b5d246f3d4c255ea9e48087ba9b18a472932cf055cc79e1a71d4e5",
+      "bytes": 3624,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/emb128_fft7.athinput",
+      "role": "athinput:emb128_fft7",
+      "sha256": "d2efb37bc1992aad6d91306902888e1833b2f79d083a5126b1254f0bfeae7966",
+      "bytes": 3578,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/emb128_pcs_fft.athinput",
+      "role": "athinput:emb128_pcs_fft",
+      "sha256": "54c8ff8cd873d0b5305b9bf32a3cb75f935565be4495d92ce7f910cce5750426",
+      "bytes": 3541,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/emb256_fft.athinput",
+      "role": "athinput:emb256_fft",
+      "sha256": "edb63e43cdd5c70fe4c30f08efd1a15f66fe684cd1040c2ac72ee21f3ffa7962",
+      "bytes": 3624,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "chk_fftsp",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/chk_fftsp.athinput",
+      "args": []
+    },
+    {
+      "name": "chk_fft7",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/chk_fft7.athinput",
+      "args": []
+    },
+    {
+      "name": "chk_mg",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/chk_mg.athinput",
+      "args": []
+    },
+    {
+      "name": "emb96_fft",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/emb96_fft.athinput",
+      "args": []
+    },
+    {
+      "name": "emb128_fft",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/emb128_fft.athinput",
+      "args": []
+    },
+    {
+      "name": "emb128_fft7",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/emb128_fft7.athinput",
+      "args": []
+    },
+    {
+      "name": "emb128_pcs_fft",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/emb128_pcs_fft.athinput",
+      "args": []
+    },
+    {
+      "name": "emb256_fft",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261121-075459-5872c31/emb256_fft.athinput",
+      "args": []
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:25:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.42,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "core-20261121-080215-df3af65",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/core/core-20261121-080215-df3af65",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-21T08:02:17Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "core-20261121-075459-5872c31"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 6.0704,
+    "gpu_hours_reserved": 0.3,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 7,
+    "runs": 1378,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
