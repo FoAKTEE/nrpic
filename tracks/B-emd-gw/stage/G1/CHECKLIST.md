@@ -1,6 +1,6 @@
 # Checklist: B-emd-gw G1
 
-Collected by `harness/bin/nrpic-stage collect B-emd-gw G1` on 2026-11-21T15:52:49Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect B-emd-gw G1` on 2026-11-21T20:33:19Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.

@@ -1,34 +1,19 @@
 # What G1 of B-emd-gw still lacks
 
-State 2026-11-21, batch 4a (lead). Items 1-2 are owed before the lead would call the
-package complete; 3-7 are open science and wording items that G1 records (none blocks a
-criterion). Done since batch 2a: verifier_c18 (stage/G1/VERIFIER-C18.md); the waves README
-wordings of verifier3 and the analysis of F2 and XS (waves round 1); the first_source README
-wordings of verifier2, P12, P13, the (1 + eps^2) test and the run without a wave (round 3);
-G_tot and the double-precision reader in gw_diag (old items 3-8). Core answered old items 9
-and 10 in release core-v0.6 (Fourier Poisson solver with the spectral symbol, second moments
-of particle groups; core messages of 2026-11-21 08:19Z and 08:53Z).
+State 2026-11-21, batch 5 (lead). Nothing owed by the gate remains: item C18 is met (the
+second verifier, stage/G1/VERIFIER-C18b.md, recomputed the last ledger rows; line 59 and lines
+34, 56, 63 are reworded as it asks), and the note v3 corrections are made (CHECKLIST C17,
+C18). What follows is recorded at G1 and blocks no criterion.
 
-## Owed by the gate
+## Small additions not made (not corrections)
 
-1. C18, the rest of the ledger recomputed by an independent agent: ledger lines 34-36 (junk
-   TT envelope and slope, 34 in part by the G0 verifier; omega_vir; card-hour estimates),
-   49-63 (wave-1 pancake through shell crossing, run B-emd-gw-20261115-123852-ea4475c, and
-   the homogeneous background, -115414-7ffbde1), 70-71 (independent quadrature of the
-   ellipsoid energy, second-order lapse of a closed box), 124 (magnetic Weyl part across the
-   two gauges), 199 (constraint residuals of the jittered data, recompute rather than read),
-   217 (second-reading bookkeeping); and, not required but useful, P16'(v) and the per-shell
-   fractions of round 3. One fresh package (verifier_c18b): processors only, artefacts only,
-   report `stage/G1/VERIFIER-C18b.md`. Alternative: a ruling of the orchestrator that the
-   wave-1 scouting rows 34-36 and 49-63 move to G2, where the pancake is run again
-   (outbox 20261121T*__to-orch__c18-remaining-rows.md).
-2. Note v3 wording (C17 stays PASS; these are corrections): ledger row 168 "forward
-   combination"; row 101 maxima over the double-precision dumps (0.00882 over all dumps for
-   eps = 1) with the driven-shift value 0.018; rows 118-119 define s and add the direct
-   zero-shift-to-driven map; row 125 says that 5.48e-5 is the initial slice (evolved dumps
-   3.8e-3 to 0.0408); row 197 quotes the floor as about 1e-12; the (1 + eps^2) sentence
-   carries its range (0.6-3.6 per cent for a = 30-60 at delta = 0.0025; fails at a = 20);
-   then `nrpic-stage report` again.
+1. Ledger: a row for verifier3's direct zero-shift-to-driven map of the gauge rows 118-119
+   (residual 2.3e-5 to 2.7e-3 in stage/REVIEW-wave3.md) and the driven-shift value 0.018 of
+   row 101; both are numbers of the verifier's runs, to be read into ledger.py with their run
+   ids when the note is next rebuilt.
+2. The verifier_c18b qualifications 3b (the second digit of the two-per-cell value at a = 10 is
+   not robust; the ratios are) and 3e (the window a <= 64 excludes the dump at a = 64.07) are
+   recorded here; the reworded rows state what was measured.
 
 ## Recorded at G1 (open, not blocking)
 
