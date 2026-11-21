@@ -39,8 +39,9 @@ continued from the worktree at 18:54 PST (entry 5).
   abstract, Sec. IV E and App. B; timeline brought to the wave-3 state (3f015fa0, 8b7304f5).
 - Stage package: `nrpic-stage collect`, items C7, C8, C11, C16, C17, C18, C20 judged,
   EVIDENCE.md (close-out runs; hand-written manifests of waves 1-2), OPEN.md rewritten,
-  `nrpic-stage verify` and `report`, README section "Close-out, wave 3" (see the last
-  commits of this package).
+  `nrpic-stage verify --no-checksums` (14 of 16; `clean` and `runs` fail on other helpers'
+  work in progress) and `report` (FAIL only on C20), README section "Close-out, wave 3"
+  (8f681d68, 72ac63ce merge of main, bcbe7f13).
 
 ## How to rerun
 
