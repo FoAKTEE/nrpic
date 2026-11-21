@@ -11,8 +11,10 @@ code here. Status: deliverables exist and are tested (see "Validation"); open it
 | `gwdiag/tt.py` | TT projection (Lambda projector) in Fourier space; h^TT and d_tau h^TT from (gamma, K) or from the Z4c variables; energy densities and spectrum; +/x and helicity amplitudes |
 | `gwdiag/weyl.py` | Ricci tensor, E_ij, B_ij from (gamma_ij, K_ij) with FD order 2/4/6 or spectral derivatives; triad for a fixed direction or AthenaK's radial triad; Psi_4 |
 | `gwdiag/analytic.py` | reference fields written as arrays: superpositions of linear plane waves (TT gauge), exact pure-gauge Minkowski (random spatial coordinates and slicing), scalar (longitudinal) data |
-| `gwdiag/readers.py` | readers of AthenaK restart (`.rst`, double), binary mesh output (`.bin`, float32) and NRFIELD dumps; Z4c -> ADM |
-| `tests/` | pytest unit tests (14; two of them need real files, see below) |
+| `gwdiag/readers.py` | readers of AthenaK restart (`.rst`, double), binary mesh output (`.bin`, float32 only: kept unchanged for old callers) and NRFIELD dumps; Z4c -> ADM |
+| `gwdiag/binio.py` | `read_bin`: AthenaK binary mesh output in single AND double precision (`<outputN> double_precision`, release core-v0.4), several MeshBlocks, slices; merged from `waves/wlib/measure.read_bin` and `first_source/fslib/binread.py` (wave 3) |
+| `gwdiag/gauge.py` | second-order spatial-gauge piece of the flat TT projection: `gauge_piece` (G), `gauge_piece_A`, `gauge_piece_total` (G_tot = G + cross terms with the TT and homogeneous parts), `tt_strain` / `tt_strain_from_conformal` (raw Lambda h, G, corrected = raw - G); adopted unchanged from `first_source/fslib/gauge.py` (wave 3) |
+| `tests/` | pytest unit tests (28; two need real restart/NRFIELD files and skip without them; the binio tests read two real `bin` dumps of registered runs when present) |
 | `scripts/validate_tt.py`, `validate_weyl.py`, `validate_athenak.py` | validation runs with figures and JSON |
 | `scripts/registered.py` | runs a command as a registered run (manifest in `../runs/<run_id>/`) |
 | `scripts/cosmo_demo.py`, `cosmo_demo_plot.py` | scouting: the diagnostics on restart dumps of full-GR cosmology runs |
@@ -93,10 +95,26 @@ hel = tt.helicity_spectrum(hTT, hdTT, g, chi_bar=chi.mean())
 gamma, K, alpha, beta = readers.z4c_to_adm(d)
 E, B = weyl.electric_magnetic(gamma, K, g, order=6)     # order 6 = AthenaK with nghost = 4
 p4 = weyl.psi4(E, B, gamma, g, direction=(1, 0, 0))
+
+from gwdiag import binio, gauge                          # binary mesh output, either precision
+d = binio.read_bin("bin/xw.z4c.00040.bin", strip_prefix=True)
+chi, gt, At, trK, alpha, beta = readers.z4c_tensors(d)
+s = gauge.tt_strain_from_conformal(gt, d["grid"])       # s["raw"], s["G"], s["corrected"]
 ```
-Which dump: the restart file is the only full-mesh output in double precision. The binary
-output (`file_type = bin`) is float32: a diagonal metric component `1 + h` with `h ~ 1e-6` keeps
-only ~1 digit of h; use it only for fields that vanish in the background. NRFIELD dumps
+Which dump: the restart file and, from release core-v0.4 on, the binary output with
+`<outputN> double_precision = true` (read with `binio.read_bin`) are full-mesh outputs in double
+precision. The default binary output is float32: a diagonal metric component `1 + h` with
+`h ~ 1e-6` keeps only ~1 digit of h; use it only for fields that vanish in the background.
+`readers.read_bin` reads float32 only; `binio.read_bin` reads both (it takes the size from the
+header line `size of variable`, absent in release files, which are float32).
+
+Gauge-corrected strain (`gauge.tt_strain`): `raw = Lambda h` is the flat projection of
+`h = tilde gamma - delta`; `G_tot` is its second-order piece that a spatial coordinate change
+`x = x' + xi` puts in, with `xi` recovered from the traceless non-TT part of h; `corrected =
+raw - G_tot` is the TT strain in spatially transverse coordinates on the same slice, to third
+order. The slicing is not changed (on data with a changed slicing the residual stays second
+order: `tests/test_gauge.py`). Derivation and the outcomes that led to the cross terms:
+`../first_source/JOURNAL.md` (P6, P7). NRFIELD dumps
 (particles module) carry E, chi and constraints, not the conformal metric or A_ij: not enough.
 Only uniform meshes are assembled. Memory of `electric_magnetic`: about 60 full arrays
 (1 GB at 128^3).
@@ -105,7 +123,7 @@ Only uniform meshes are assembled. Memory of `electric_magnetic`: about 60 full 
 
 ```
 cd tracks/B-emd-gw/gw_diag
-python3 -m pytest -q -p no:cacheprovider tests/          # 12 pass, 2 skip without real files
+.venv/bin/python -m pytest -q -p no:cacheprovider tests/   # from the worktree root: 26 pass, 2 skip without real files
 GWDIAG_RST=<a .rst> GWDIAG_NRFIELD=<a .field.NNNNN.bin> python3 -m pytest -q tests/test_readers.py
 python3 scripts/registered.py --purpose "..." --kind scouting -- python3 scripts/validate_tt.py
 python3 scripts/registered.py --purpose "..." -- python3 scripts/validate_weyl.py
@@ -129,6 +147,9 @@ Each validation takes 7-40 s on 4-8 cores. Outputs land in
 | d_tau h^TT from tilde A against time differences of the dumps | equals the truncation of the differences (2.55e-2 vs 2.57e-2; 7.8e-4 vs 7.9e-4) | same |
 | AthenaK weyl output vs gwdiag radial-triad Psi_4 | 3e-7..1.8e-6 at t_n - 7 dt; output lags by waveform_dt - dt | same |
 | readers: own vs periodic_z4c reader bit-identical; synthetic multi-block rst with trackers; real cosmology rst (8 blocks) and NRFIELD | pass | unit tests |
+| binio: synthetic multi-block files in both precisions and slices exact; float32 files equal to `readers.read_bin`; truncated file refused; real double dump (test F, N = 16, t = 0) and real float32 dump (16^3) | pass (7 tests) | unit tests; dumps of B-20261119-142016-ee73a03 and B-emd-gw-20261115-113216-0ea0f74 |
+| gauge: inverse of the longitudinal part; pure spatial gauge removed at second order (residual ~ eps^3); slicing part not removed; G_A and G_tot with a homogeneous anisotropy; TT wave survives the correction; `tt_strain` raw ~ eps^2, corrected ~ eps^3 on pure spatial gauge | pass (7 tests) | unit tests (six ported from `first_source/tests/test_gauge.py`) |
+| gauge module = first_source's on real dumps: G and G_tot bit-identical, corrected = raw - G_tot exactly; rms G_tot / rms raw 1.1e-13 (F2, N = 32), 5.0e-15 (X, N = 32), 7.2e-8 (float32 16^3 linear wave) | pass | B-20261121-125606-e2ebf60 (`../waves/scripts/check_gauge.py`) |
 
 Scouting on existing full-GR cosmology dumps (`runs/cosmo/dav_c256_n128_{t,pcs4bt}`, 128^3,
 a = 1..1000; runs B-emd-gw-20261115-120846-d1509b5 and -121143-0eace55, `figs/cosmo_tt.png`):
@@ -147,6 +168,8 @@ rho_GW/rho_bar reaches 3e-12 .. 1e-11 at a = 1000; rms B/E = 3e-3, rms(Lambda E)
 * Psi_4 / E with matter: the `S_ij` term is supported but no reader supplies `S_ij` (AthenaK's
   `tmunu` is not in the restart file).
 * Not tested on a refined mesh (readers refuse it).
+* `gauge.tt_strain` corrects the spatial gauge only, to second order; a slicing change stays in
+  the strain at second order. The flat Lambda inside it is still the flat projection.
 
 ## Requests
 

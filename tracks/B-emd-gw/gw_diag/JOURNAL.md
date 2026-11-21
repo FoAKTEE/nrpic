@@ -339,3 +339,22 @@ Figure `figs/cosmo_tt.png`; numbers in `results_cosmo.json`, `cosmo_ratios.json`
 (5) PASSED: at the last dump of the quadratic run rms B/rms E = 2.9e-3 and rms(Lambda E)/rms E =
     9.7e-3: the Weyl field of the box is the Coulomb-type tidal part; Psi_4 along x (rms 4.9e-10)
     is not a wave measure here.
+
+## 2026-11-21 Wave 3: binio and gauge adopted (G1 OPEN item 9, first_source request 1)
+
+Written by the waves helper (prediction and outcome also in `../waves/JOURNAL.md`, entries of
+2026-11-20 and 2026-11-21 12:57). Additive: no existing function changed its signature or
+output; `readers.read_bin` still reads float32 only.
+- `gwdiag/binio.py` (commit 5499ec6c): one reader of `bin` output in both precisions, merged
+  from `waves/wlib/measure.read_bin` and `first_source/fslib/binread.py`; 7 tests, two on real
+  dumps of registered runs (double: B-20261119-142016-ee73a03; float32:
+  B-emd-gw-20261115-113216-0ea0f74).
+- `gwdiag/gauge.py` (commit 57232954): `first_source/fslib/gauge.py` with its functions
+  unchanged (only the import is relative), plus `tt_strain` and `tt_strain_from_conformal`;
+  `tests/test_gauge.py` ports first_source's six tests and adds one for `tt_strain` (raw strain
+  ~ eps^2, corrected ~ eps^3 on pure spatial gauge).
+- Prediction (waves/JOURNAL 12:57): on real dumps the adopted G and G_tot equal first_source's
+  bit for bit, corrected = raw - G_tot exactly, rms G_tot / rms raw < 1e-6 on double dumps.
+  Outcome, run B-20261121-125606-e2ebf60: all equalities hold on F2 (N = 32), X (N = 32) and
+  the float32 16^3 wave; ratios 1.1e-13, 5.0e-15 and 7.2e-8 [VERIFIED]. Confirmed.
+- Whole suite: 26 pass, 2 skip (the restart and NRFIELD tests without real files).
