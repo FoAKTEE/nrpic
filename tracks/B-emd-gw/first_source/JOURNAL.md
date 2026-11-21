@@ -894,3 +894,53 @@ in the noise through its cross term with the x wave (proportional to delta A).
   of cross x g_cross of jit0p3's prediction (B-20261119-142733-932e595) for 3 <= a <= 20.
 - (vi) rms TT of all modes of the no-wave run: within a factor 2 of jit0p3's for
   2 <= a <= 20 under (L); <= 0.3 of it under (X).
+
+## Outcome of P12 and P13 (comparison B-20261121-075302-a9fcc43, `conv_eps1.png` looked at)
+
+Inputs: e1_p1 = e1_p1_n64 and e1_p27 = e1_p3_n64 (analysis B-20261120-223241-f1efd4f of card
+run B-20261119-153655-2deca0a), e1_n128 = e1_p1_n128 (analysis B-20261120-223236-e213594, same
+card run), e1_p8 = cw_eps1 of B-20261115-180834-c77a132 (wave 2), e1_n32 = cw_eps1 of
+B-20261115-184650-2d155b6 (32^3, 8 per cell, wave 2), e1_rep of B-20261119-155418-80d45af.
+Single-precision dumps (every 0.1; 0.2 at 128^3), differences of c_+(K1) relative to the
+second run of each pair, read as fixed in the entry of 14:35 PST.
+- P12(a) CONFIRMED: for 2 <= a <= 40, max |c(1)/c(27) - 1| = 7.8e-5 and |c(8)/c(27) - 1| =
+  7.4e-5 (bound 1e-3). The three loadings differ from each other by the same 3e-5 rms
+  (1 vs 8: 7.6e-5 max), flat in a from a = 1.2 on: a difference of the initial data of each
+  lattice that does not grow, not a convergence floor of the evolution.
+- P12(b) CONFIRMED: for 80 <= a <= 140, max |c(8)/c(27) - 1| = 3.4e-5 < max |c(1)/c(27) - 1| =
+  2.5e-4, and |c(8)/c(27) - 1| <= 3.4e-5 for a <= 100 (bound 3 percent). After shell crossing
+  only the 1-per-cell run moves away (to 6.4e-4 of |s| at most); 8 and 27 per cell agree to
+  the level they had before. The box-mode strain is converged in particle number at 8 per
+  cell to 3e-5 relative through a = 140 (c_+/s between 1.82 and 2.55 there, 27 per cell).
+- P12(c) confirmed in round 2 (rerun = wave-2 run to 1.4e-10 single, 1e-12 double); here again
+  1.4e-10 (a <= 40) and 2.4e-10 (80-140).
+- P13(a) CONFIRMED: for 2 <= a <= 40, max |c(128, 1)/c(64, 8) - 1| = 1.6e-4 and
+  |c(128, 1)/c(64, 1) - 1| = 1.8e-4 (bound 1e-3).
+- P13(b) CONFIRMED: rms over 80 <= a <= 140 of c(128, 1)/c(64, 8) - 1 is 1.30e-2, below the
+  3.39e-2 of c(64, 8)/c(32, 8) - 1 (maxima 3.2e-2 and 6.2e-2). The ratio 2.6 of the rms
+  differences is an observed order of about 1.4 after shell crossing [JUDGEMENT: two
+  differences only; a Richardson estimate of the error left at 128^3 would be ~1.3e-2/
+  (2^1.4 - 1) ~ 0.8 percent]. Whether 128^3 has 1 or 64^3 has 1 or 8 per cell does not show
+  (the two mesh differences 128-64 overlap in the figure: 1.295e-2 and 1.295e-2 rms).
+- Seen in the figure, not predicted: before shell crossing (a <~ 60) the mesh differences
+  are ~1e-4 of |s| for both 64-32 and 128-64, i.e. they do not fall with the mesh; they rise
+  steeply from a ~ 60-70 on. The pre-crossing difference behaves like the particle-number one
+  (a fixed offset of each set of initial data) [JUDGEMENT, not tested].
+
+Decision on the 128^3 run at 8 per cell (step 4(ii) of the brief), written before any card
+submission of this session: NOT RUN.
+- The brief's condition is "only if step 3 leaves the mesh leg inconclusive: P13(b) refuted,
+  or the 1-per-cell 128^3 run dominated by particle noise after shell crossing". P13(b) is
+  confirmed. The particle-number effect at 64^3 after shell crossing is |c(64, 1)/c(64, 8) - 1|
+  = 1.4e-4 rms, a hundredth of the mesh difference |c(128, 1)/c(64, 1) - 1| = 1.3e-2: the 128^3
+  run is not dominated by particle noise; the mesh leg is conclusive.
+- Said plainly: the inequality in parentheses of the brief, which the entry of 14:35 PST
+  (lines 825-828) copied, reads "|c(128,1)/c(64,1) - 1| larger than |c(64,8)/c(64,1) - 1|", and
+  that literal inequality holds (1.3e-2 > 1.4e-4). It is the opposite of its own words ("128^3
+  dominated by particle noise" means the particle effect is the larger one) and would fire
+  whenever the mesh error exceeds the particle error, i.e. in the converged case. I follow the
+  words and the "only if ... inconclusive" of the brief, not the inverted parenthesis; the
+  lead may overrule. Cost if wanted: a chain of ~1.3 card-hours (journal line 480), which this
+  package's cap of 1.6 would allow after P16' (~0.1). What it would add: the mesh sequence
+  32, 64, 128 at a fixed 8 per cell, and the particle effect at 128^3, which the data above
+  bound only by extrapolation [JUDGEMENT].
