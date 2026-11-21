@@ -196,7 +196,7 @@ def main():
     import matplotlib.pyplot as plt
     fs.use_style()
     fig, ax = plt.subplots(2, 3, figsize=(10.0, 5.6), sharex=True, sharey=True)
-    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.10, top=0.94, wspace=0.06,
+    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.12, top=0.94, wspace=0.06,
                         hspace=0.10)
     sfine = np.linspace(-0.49, 0.49, 197)
     show = (3, 4, 5, 6)             # leaves of cell -1 (right), cell 0, cell +1 (left)
@@ -220,11 +220,13 @@ def main():
             q.axhline(0.0, color="grey", lw=0.5, ls=":")
             q.set_title(f"{shape}, " + ("fine shape" if mode == "lin" else "uniform spreading"),
                         fontsize=9)
-            if im_ == 1:
-                q.set_xlabel(r"offset $s$ of the particle from the cell centre (cells)")
+            if im_ == 1 and ic_ == 1:
+                q.set_xlabel(r"offset $s$ of the particle from the centre of cell 0 (cells)")
             if ic_ == 0:
                 q.set_ylabel("share of the leaf cell")
     ax[0, 0].legend(frameon=False, fontsize=7, loc="center left")
+    fig.text(0.07, 0.01, "points: run; lines: the forms in the script (dashed: integral "
+             "form of the linear cloud)", fontsize=7)
     fs.save(fig, os.path.join(a.out, "fig_t17_continuity"))
     plt.close(fig)
     return 0

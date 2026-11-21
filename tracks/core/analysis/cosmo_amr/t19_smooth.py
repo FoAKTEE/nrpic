@@ -141,8 +141,8 @@ def main():
     from nrpic import figstyle as fs
     import matplotlib.pyplot as plt
     fs.use_style()
-    fig, ax = plt.subplots(1, 3, figsize=(10.0, 3.3))
-    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.16, top=0.92, wspace=0.28)
+    fig, ax = plt.subplots(1, 3, figsize=(10.0, 3.9))
+    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.30, top=0.92, wspace=0.30)
     lab = {"const": "linear cloud, uniform spreading",
            "pub": "linear cloud, fine shape, first-order form (3c44b74)",
            "new": "linear cloud, fine shape, integral form",
@@ -157,8 +157,9 @@ def main():
         q.axhline(0.0, color="grey", lw=0.5, ls=":")
         q.set_xlabel(r"$x$")
         q.set_title(f"{n//3} root cells per wavelength", fontsize=9)
-    ax[0].set_ylabel(r"$E/\rho_0$ on the leaf cells minus the exact density")
-    ax[0].legend(frameon=False, fontsize=6.5, loc="upper center")
+    ax[0].set_ylabel(r"$E/\rho_0$ minus exact, leaf cells")
+    ax[0].legend(frameon=False, fontsize=7.5, ncol=2, loc="upper left",
+                 bbox_to_anchor=(0.0, -0.22))
     q = ax[2]
     hs = np.array([L/n for n in NS])
     for i, name in enumerate(order):
@@ -166,7 +167,10 @@ def main():
                  label=lab[name])
     q.loglog(hs, 0.02*(hs/hs[0]), color="grey", lw=0.6, ls="--")
     q.loglog(hs, 0.02*(hs/hs[0])**2, color="grey", lw=0.6, ls=":")
-    q.set_xlabel("root cell size")
+    q.set_xticks(hs)
+    q.set_xticklabels([f"{v:g}" for v in hs])
+    q.minorticks_off()
+    q.set_xlabel("root cell size (dashed, dotted: first and second order)")
     q.set_ylabel("rms departure")
     fs.save(fig, os.path.join(a.out, "fig_t19_smooth"))
     plt.close(fig)
