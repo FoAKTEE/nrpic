@@ -590,3 +590,80 @@ Read, not judged: run core-20261120-223502-f9a2c02 of package mpi (its `run.log`
    t = 0.1875 by 4.8e-3 in the smallest radius and the removed particles from 43 to 41,
    while the three searches before agree to 1.9e-10 or better. This is the outcome its
    entry 28 (P7g) asked for; the entry is the package's to write.
+
+### Quick tests (2026-11-21T06:50Z to 06:58Z)
+
+Builds from the clean tree at c3eb42e0, each in a new directory: threaded
+`.work/build_omp_v05rc` (`scripts/build_cpu_omp.sh`, 360 s on three jobs, sha256
+4d327a4d...), MPI `.work/build_cpu_mpi_v05rc` (`CMAKE_EXTRA="-DAthena_ENABLE_MPI=ON"
+scripts/build_cpu.sh`, Open MPI of `/home/emost/codes/openmpi`, 306 s, sha256
+003736e1...). Correction of the entry above: the regression R took 265 s (manifest),
+not 283.
+
+Run core-20261121-065009-29b855c (driver `analysis/release/quick_v05.py`, 6 cores, 31
+AthenaK runs) ended **FAIL** through two checks; both are errors of my driver, found by
+looking at what differs, and the runs were evaluated again without running anything in
+core-20261121-065726-bf06a85 (**PASS**; figure `fig_quick_v05.png` looked at after a
+first version with overlapping labels was redrawn):
+- the driver compared the whole history of the fine-shape run with the plain run and
+  asked for 1e-13: 1.65e-7 of the largest number. The columns that differ are E_probe,
+  E_max and E_min (14, 31, 32), which the fine shape must change; the mesh integrals
+  (columns 9 to 12) agree to 5.2e-14 of sum m W. The prediction ("sums conserved to
+  1e-13") was right, the check was not what it said.
+- prediction Q-mpi, clause "history within 1e-11", FAILED as I wrote it: the constraint
+  statistics `cl.cstat.hst` differ by 8.5e-10 between 1 and 2 ranks (column 11, the
+  largest relative Hamiltonian constraint), the history of the module by 4.6e-13. I had
+  taken the READY's "history 5e-13" as a bound for every history file. The package's own
+  run with its branch executable (core-20261119-154814-ca46836) has 8.502235846576052e-10
+  and 4.636286737306016e-13: the same digits. The check now judges the history of the
+  module and reports the statistics beside the package's value.
+Outcomes against the predictions Q:
+- Q-s3 HELD: `sr_stochastic_gauge` (con_signed, 27 columns) and `usr_stochastic`, 12
+  steps: 6 and 6 files identical to the executable of core/scalar-3.
+- Q-amr HELD: `flrw_tracker` (12 steps) and `peak_amr` as case ladder of T9 (10 steps,
+  64 to 120 MeshBlocks, fine-shape deposit, region norms): 5 and 5 files identical to
+  the executable of core/cosmo-amr (source 1548d49).
+- Q-omp HELD: two runs at 4 threads with `private` byte-identical; 4 threads against 1:
+  2.1e-18 (history), 1.2e-16 (source dump in double precision); atomic at 4 threads the
+  same; the serial executable prints "this executable adds atomically" and gives the
+  bytes of the deck without the option, and the bytes of `athena_cpu_serial` of
+  core/build-openmp. Deposit identity 5.5e-14 at worst.
+  Not predicted, measured: the threaded build at ONE thread against the serial build:
+  history 4.2e-22, source dump 1.1e-14 of the largest number, i.e. not the same bits
+  (the two builds differ in optimisation level, -O3 -DNDEBUG against -O2).
+- New combination HELD: fine-shape deposit through the per-thread copies: two runs at 4
+  threads byte-identical; 4 threads against 1: 1.1e-18 (history), 2.1e-16 (dump);
+  atomic at 4 threads 3.6e-16; 1 thread against the serial build 1.1e-14; tsc with
+  fine shape 7.5e-15; identity 3.0e-14 at worst; the fine shape changes the dump by
+  0.52 of its largest value against the plain cic deposit (so the branch is taken) and
+  the integrals by 5.2e-14.
+- Q-mpi: Kerr swarm on 1 and 2 ranks: 9 particle files identical (trajectories, metric
+  at the particles, five snapshots, two particle restart files), 2119 particles handed
+  over. Cluster on 1 and 2 ranks: positions 3.1e-15 (bound 1e-13), history of the
+  module 4.6e-13 (bound 1e-11), identity 7.8e-15 and 1.7e-15 (bound 1e-14), 2786
+  particles handed over and 53923 deposit packets. HELD except the clause above.
+  Added after the run: every file of these four runs against the package's runs with
+  its branch executable (core-20261119-145615-4c98c59, core-20261119-154814-ca46836):
+  10 of 12, 11 of 13, 20 of 24 and 21 of 25 files identical; the others are the mesh
+  restart files, whose data are identical outside the 36 header bytes that core-v0.4
+  zeroes and whose parameter dump holds the run directory and four lines of the
+  example inputs that the package edited after those runs (`deposit_comp_c`,
+  `filter_compensate`, `source_density`, `source_extrap`).
+- The stop added at the merge: `mpi_deposit_smr` with `deposit_fine_shape` on 2 ranks
+  ends with status 1 and "<particles> deposit_fine_shape (the part of a cloud on another
+  rank has no fine shape) has not been ported to more than one MPI rank"; on one rank
+  of the same executable the deck runs (status 0).
+
+### Prediction of the card check, written before the card executable exists
+
+List `analysis/release/card_v05.list` (nine cases, decks of the quick run), judged by
+`card_v05.py`: K1 every case status 0; K2 particle sums and mesh integrals (columns 4
+to 12 of the history of the module) within 1e-10 of sum m W of the processor run; K3
+deposit identity on the card within 1e-13; K4 MeshBlock counts of trk and peak equal
+at every record, tracker path within 1e-12; K5 source dumps of the four deposit cases
+within 1e-12 of the largest number; K6 the card prints the note of `deposit_threads`.
+Refuted by a status other than 0 or a number above its bound. Where I am least sure:
+peak (the lapse ladder decides refinement by a threshold; a rounding difference could
+move a regrid by one check, though T14b of the package saw none), and cluster (40
+cycles of a self-gravitating cluster: the package measured 5.4e-13 between two
+one-card runs of its build).
