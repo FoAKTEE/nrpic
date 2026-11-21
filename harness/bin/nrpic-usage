@@ -2,7 +2,8 @@
 """Read the account's plan usage, and watch it against a threshold.
 
     harness/bin/nrpic-usage probe                       one reading, printed and stored
-    harness/bin/nrpic-usage watch [--threshold 95] [--interval 240] [--near 90] [--near-interval 75]
+    harness/bin/nrpic-usage watch [--threshold 95] [--interval 240] [--near 90] [--near-interval 75] [--cycle]
+    harness/bin/nrpic-usage resume [--near 90] [--launch-max 90]
     harness/bin/nrpic-usage show                        last stored reading
 
 How it reads: Claude Code has no command that reports plan usage, but a non-interactive
@@ -11,17 +12,26 @@ holds the utilisation (0 to 1) and the reset time of each window (`seven_day`, a
 `five_hour` when present). `probe` makes one minimal call on the small model for that
 event; nothing of the project is sent beyond the fixed one-line prompt.
 
-`watch` exits when ANY window (weekly or five-hour) reaches the threshold, after writing
-the flag file locks/PAUSE, which every agent of the program checks and obeys by itself
-(CLAUDE.md). `resume` waits for that flag, then for the reset of the window that tripped
-it, removes the flag when every window is below --near, and exits with a RESUME line.
+`watch` probes every --interval seconds (every --near-interval seconds once a window is
+above --near per cent). When ANY window (weekly or five-hour) reaches --threshold per cent
+it writes the flag file locks/PAUSE (JSON: window, pct, resets_at, ts, threshold), which
+every agent of the program checks and obeys by itself (CLAUDE.md), prints a line beginning
+`PAUSE` and exits with status 0. Six consecutive probes without a reading count as unknown,
+which decision 0018 treats as at the threshold: the flag is written with window "unknown"
+and watch exits with status 3. With --cycle it does not exit: after writing the flag it
+waits as `resume` does, removes the flag, and watches again.
 
-`watch` probes every --interval seconds (every --near-interval seconds once the weekly
-utilisation is above --near per cent) and exits with status 0 and a line beginning
-`PAUSE` when the weekly utilisation reaches --threshold per cent. It exits with status 3
-after six consecutive probes without a reading (usage unknown is treated as unsafe by
-the caller). Readings are stored in <main checkout>/locks/usage.json and appended to
-locks/usage.log. It never stops anything itself: the session that started it does.
+`resume` waits for the flag, then for the reset time of the window that tripped it (plus
+90 s), probes, and removes the flag when that window is below --near per cent and every
+other window is below --launch-max per cent (decision 0018: no workflow is launched above
+90 per cent); then it prints a line beginning `RESUME` and exits. While another window
+holds it (above --launch-max), the flag is rewritten with that window and its reset time,
+and resume waits for that reset in turn. Readings are stored in <main checkout>/locks/
+usage.json and appended to locks/usage.log. It never stops anything itself.
+
+The self-test harness/tests/test_nrpic_usage.py imports this file and calls main() with a
+scratch root, recorded event streams in place of the call to the service, and a simulated
+clock; the command line has no option for either.
 """
 import argparse
 import json
@@ -29,6 +39,12 @@ import os
 import subprocess
 import sys
 import time
+
+PROMPT = "Reply with the single word ok."
+CMD = ["claude", "-p", PROMPT, "--model", "haiku", "--output-format", "stream-json", "--verbose",
+       "--no-session-persistence", "--max-turns", "1", "--disallowedTools", "Bash Edit Write Read Agent"]
+RESET_GRACE = 90          # seconds after a window's reset time before the first probe
+MISSES = 6                # probes in a row without a reading: unknown (decision 0018)
 
 
 def root():
@@ -38,24 +54,22 @@ def root():
     return os.path.dirname(common)
 
 
-def probe(rt):
-    work = os.path.join(rt, "scratch", "orch", "usage")
-    os.makedirs(work, exist_ok=True)
-    cmd = ["claude", "-p", "Reply with the single word ok.", "--model", "haiku",
-           "--output-format", "stream-json", "--verbose", "--no-session-persistence",
-           "--max-turns", "1", "--disallowedTools", "Bash Edit Write Read Agent"]
-    rec = {"ts": int(time.time()), "ok": False}
-    try:
-        p = subprocess.run(cmd, cwd=work, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=180)
-    except Exception as e:                                   # timeout, missing executable
-        rec["error"] = repr(e)[:200]
-        return rec
-    rec["exit"] = p.returncode
+def call_service(cwd):
+    """(exit code, stdout) of the one minimal call; the only place that reaches the service."""
+    p = subprocess.run(CMD, cwd=cwd, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=180)
+    return p.returncode, p.stdout
+
+
+def parse_stream(rc, text, ts):
+    """The reading of one stream-json output: {ts, ok, exit, windows: {name: {pct, resets_at, status}}, ...}."""
+    rec = {"ts": int(ts), "ok": False, "exit": rc}
     windows = {}
-    for line in p.stdout.splitlines():
+    for line in (text or "").splitlines():
         try:
             o = json.loads(line)
         except ValueError:
+            continue
+        if not isinstance(o, dict):
             continue
         if o.get("type") == "rate_limit_event":
             info = o.get("rate_limit_info") or {}
@@ -78,20 +92,129 @@ def probe(rt):
     return rec
 
 
-def store(rt, rec):
-    d = os.path.join(rt, "locks")
-    os.makedirs(d, exist_ok=True)
-    if rec.get("ok"):
-        tmp = os.path.join(d, "usage.json.tmp")
-        json.dump(rec, open(tmp, "w"), indent=1)
-        os.replace(tmp, os.path.join(d, "usage.json"))
-    with open(os.path.join(d, "usage.log"), "a") as f:
-        f.write(json.dumps(rec) + "\n")
+class Usage:
+    """The commands, with the root, the service call, the clock and sleep as parameters (the
+    self-test passes a scratch root, recorded streams and a simulated clock)."""
+
+    def __init__(self, rt, service=None, clock=time.time, sleep=time.sleep, out=None):
+        self.rt = rt
+        self.service = service or call_service
+        self.clock = clock
+        self.sleep = sleep
+        self.out = out or sys.stdout
+        self.locks = os.path.join(rt, "locks")
+        self.flag = os.path.join(self.locks, "PAUSE")
+
+    def say(self, s):
+        print(s, file=self.out, flush=True)
+
+    def probe(self):
+        work = os.path.join(self.rt, "scratch", "orch", "usage")
+        os.makedirs(work, exist_ok=True)
+        ts = self.clock()
+        try:
+            rc, text = self.service(work)
+        except Exception as e:                               # timeout, missing executable
+            return {"ts": int(ts), "ok": False, "error": repr(e)[:200]}
+        return parse_stream(rc, text, ts)
+
+    def store(self, rec):
+        os.makedirs(self.locks, exist_ok=True)
+        if rec.get("ok"):
+            self._write_json(os.path.join(self.locks, "usage.json"), rec)
+        with open(os.path.join(self.locks, "usage.log"), "a") as f:
+            f.write(json.dumps(rec) + "\n")
+
+    def _write_json(self, path, obj):
+        tmp = path + ".tmp"
+        with open(tmp, "w") as f:
+            json.dump(obj, f, indent=1)
+        os.replace(tmp, path)
+
+    def reading(self):
+        rec = self.probe()
+        self.store(rec)
+        self.say(line(rec))
+        return rec
+
+    def write_flag(self, window, pct, resets_at, threshold):
+        os.makedirs(self.locks, exist_ok=True)
+        self._write_json(self.flag, {"window": window, "pct": pct, "resets_at": resets_at,
+                                     "ts": int(self.clock()), "threshold": threshold})
+
+    def read_flag(self):
+        try:
+            with open(self.flag) as f:
+                d = json.load(f)
+            return d if isinstance(d, dict) else {}
+        except (OSError, ValueError):
+            return {}
+
+    def watch(self, threshold, interval, near, near_interval, cycle=False):
+        misses = 0
+        while True:
+            rec = self.reading()
+            if rec.get("ok"):
+                misses = 0
+                name, w = max(rec["windows"].items(), key=lambda kv: kv[1]["pct"])
+                if w["pct"] >= threshold:
+                    self.write_flag(name, w["pct"], w.get("resets_at"), threshold)
+                    self.say(f"PAUSE {name} usage {w['pct']:.0f}% >= {threshold:.0f}%; resets_at "
+                             f"{w.get('resets_at')}; flag locks/PAUSE written")
+                    if not cycle:
+                        return 0
+                    self.resume(near, threshold, wait_for_flag=False)
+                    continue
+                wait = near_interval if w["pct"] >= near else interval
+            else:
+                misses += 1
+                if misses >= MISSES:
+                    self.write_flag("unknown", None, None, threshold)
+                    self.say(f"UNKNOWN {MISSES} probes in a row gave no reading; treated as at the threshold "
+                             "(decision 0018): flag locks/PAUSE written")
+                    if not cycle:
+                        return 3
+                    misses = 0
+                    self.resume(near, threshold, wait_for_flag=False)
+                    continue
+                wait = 60
+            self.sleep(wait)
+
+    def resume(self, near, launch_max, wait_for_flag=True):
+        while not os.path.exists(self.flag):                 # nothing to do until a pause is flagged
+            if not wait_for_flag:
+                return 0
+            self.sleep(60)
+        while True:
+            flag = self.read_flag()
+            until = (flag.get("resets_at") or 0) + RESET_GRACE
+            now = self.clock()
+            if until > now:
+                self.sleep(min(until - now, 900))
+                continue
+            rec = self.reading()
+            if rec.get("ok"):
+                tripped = flag.get("window")
+                hold = [(n, w) for n, w in rec["windows"].items()
+                        if w["pct"] >= (near if n == tripped else launch_max)]
+                if not hold:
+                    if os.path.exists(self.flag):
+                        os.remove(self.flag)
+                    self.say(f"RESUME {tripped or 'the'} window below {near:.0f}%, every other below "
+                             f"{launch_max:.0f}%; flag locks/PAUSE removed")
+                    return 0
+                n, w = max(hold, key=lambda kv: (kv[1].get("resets_at") or 0))
+                if n != tripped and w.get("resets_at") and w.get("resets_at") > (flag.get("resets_at") or 0):
+                    self.write_flag(n, w["pct"], w.get("resets_at"), flag.get("threshold"))
+                    self.say(f"HOLD {n} usage {w['pct']:.0f}% >= {launch_max:.0f}%; flag rewritten until its "
+                             f"reset at {w.get('resets_at')}")
+                    continue
+            self.sleep(300)
 
 
 def line(rec):
     if not rec.get("ok"):
-        return time.strftime("%F %H:%M:%S") + "  no reading: " + str(rec.get("error"))
+        return time.strftime("%F %H:%M:%S", time.localtime(rec.get("ts") or 0)) + "  no reading: " + str(rec.get("error"))
     parts = []
     for name, w in sorted(rec["windows"].items()):
         r = time.strftime("%a %H:%M", time.localtime(w["resets_at"])) if w.get("resets_at") else "?"
@@ -99,69 +222,28 @@ def line(rec):
     return time.strftime("%F %H:%M:%S", time.localtime(rec["ts"])) + "  " + "; ".join(parts)
 
 
-def main():
-    ap = argparse.ArgumentParser()
+def main(argv=None, usage=None):
+    ap = argparse.ArgumentParser(prog="nrpic-usage", description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=["probe", "watch", "show", "resume"])
     ap.add_argument("--threshold", type=float, default=95.0)
     ap.add_argument("--interval", type=int, default=240)
     ap.add_argument("--near", type=float, default=90.0)
     ap.add_argument("--near-interval", type=int, default=75)
-    a = ap.parse_args()
-    rt = root()
+    ap.add_argument("--launch-max", type=float, default=90.0)
+    ap.add_argument("--cycle", action="store_true")
+    a = ap.parse_args(argv)
+    u = usage or Usage(root())
     if a.cmd == "show":
-        p = os.path.join(rt, "locks", "usage.json")
-        print(line(json.load(open(p))) if os.path.exists(p) else "no stored reading")
+        p = os.path.join(u.locks, "usage.json")
+        u.say(line(json.load(open(p))) if os.path.exists(p) else "no stored reading")
         return 0
     if a.cmd == "probe":
-        rec = probe(rt)
-        store(rt, rec)
-        print(line(rec))
+        rec = u.reading()
         return 0 if rec.get("ok") else 3
     if a.cmd == "resume":
-        flagp = os.path.join(rt, "locks", "PAUSE")
-        while not os.path.exists(flagp):                  # nothing to do until a pause is flagged
-            time.sleep(60)
-        while True:
-            try:
-                flag = json.load(open(flagp))
-            except (OSError, ValueError):
-                flag = {}
-            until = (flag.get("resets_at") or 0) + 90
-            now = time.time()
-            if until > now:
-                time.sleep(min(until - now, 900))
-                continue
-            rec = probe(rt)
-            store(rt, rec)
-            print(line(rec), flush=True)
-            if rec.get("ok") and all(w["pct"] < a.near for w in rec["windows"].values()):
-                os.remove(flagp)
-                print("RESUME usage below %.0f%% in every window; flag locks/PAUSE removed" % a.near, flush=True)
-                return 0
-            time.sleep(300)
-    misses = 0
-    while True:
-        rec = probe(rt)
-        store(rt, rec)
-        print(line(rec), flush=True)
-        if rec.get("ok"):
-            misses = 0
-            name, w = max(rec["windows"].items(), key=lambda kv: kv[1]["pct"])
-            if w["pct"] >= a.threshold:
-                flag = {"window": name, "pct": w["pct"], "resets_at": w.get("resets_at"), "ts": rec["ts"],
-                        "threshold": a.threshold}
-                json.dump(flag, open(os.path.join(rt, "locks", "PAUSE"), "w"), indent=1)
-                print(f"PAUSE {name} usage {w['pct']:.0f}% >= {a.threshold:.0f}%; resets_at {w.get('resets_at')}; "
-                      f"flag locks/PAUSE written", flush=True)
-                return 0
-            wait = a.near_interval if w["pct"] >= a.near else a.interval
-        else:
-            misses += 1
-            if misses >= 6:
-                print("UNKNOWN six probes in a row gave no reading", flush=True)
-                return 3
-            wait = 60
-        time.sleep(wait)
+        return u.resume(a.near, a.launch_max)
+    return u.watch(a.threshold, a.interval, a.near, a.near_interval, cycle=a.cycle)
 
 
 if __name__ == "__main__":
