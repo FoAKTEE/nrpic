@@ -172,3 +172,113 @@ exist. The next lead answers each of its items.
 Card time of round 1 (sacct): heat 0.52, decisive 2.92 (five jobs), drift 0.69; total 4.13
 card-hours. No card job of the owner queued or running at 08:00 UTC; this session submitted
 none.
+
+# Batch 4a (lead, 2026-11-21 15:45 UTC on), packages finished since batch 2b
+
+Packages: `verify_g1` (VERIFIER.md, batch 2b), `note` v1 (batch 3), `drift` (batch 3, partial:
+run (vi) running at the start of this session). Predictions L23-L28 were written and committed
+before any check ran (`../JOURNAL.md` 2026-11-21T15:50Z, commit bf279bd3). Own code:
+`review_wave3/rv_batch4a.py` (own readers of the histories and of the trajectory files from
+`docs/FORMATS.md`; a coherent part of the energy change different from the package's) and
+`review_wave3/rv_note_b4a.py`. Runs: C-20261121-155049-ecf8893 (L23, L26, L27),
+C-20261121-155116-ba83d16 (rerun of the verifier's V5b), C-20261121-155220-5c0d480 (FAILED: a
+JSON key of my script; on record), C-20261121-155226-8ea9e47 (L25). Figures looked at:
+`rv_drift_b4a.png`, `v5_t9ks.png` (rerun), `note/figures/fig_heat.png`,
+`note/figures/schem_architecture.png`.
+
+## 9. verify_g1 (closed; VERIFIER.md, commits 00adbb95 blind verdicts, 8329cf06)
+
+Order: the blind verdicts were committed and pushed before the claims were read (git log:
+00adbb95 precedes 2ad1421* and 8329cf06), as decision 0016 item 4 asks.
+
+Confirmed from the artefacts:
+- Item 1 (L23 HOLDS): my own count from `box.coll.hst` of run C-20261115-165902-f9b1c8f gives
+  385554 collisions for mb1, mb8 and mb64 and 385838 for seed8. REVIEW-wave2.md:49 attached the
+  count to the wrong run; corrected there.
+- Item 2 (L24 HOLDS): rerunning `verify_g1/v5_t9ks.py` from the registered T9 outputs gives a
+  JSON identical to the verifier's (run C-20261121-155116-ba83d16): KS p = 1.72e-4 for the light
+  class of seed 3 at the temperature of the initial energy; p >= 0.084 at that of the final
+  energy, >= 0.089 at each class's own. Figure looked at: only that one point lies below 1e-3.
+- The verifier's other verdicts agree with numbers the lead had recomputed earlier (T4 with 16
+  snapshots: REVIEW-wave2.md:68-71; T7 rows: section 1 above; t_c and King onsets).
+
+Not confirmed by me: V4 (own Einstein-Vlasov solver and pulsation code) was not rerun; its
+headline numbers (0.6348, 0.5331, 0.32143, 0.334032) agree with the track's own independent
+runs and with the lead's L15 (C-20261119-151502-cb831a8).
+
+WRONG or NOT CONFIRMED items of VERIFIER.md and what the track does:
+1. REVIEW-wave2.md:49 count of seed 8 (WRONG wording): corrected (commit 4051c352).
+2. T9 KS clause without a named temperature (UNSUPPORTED as written): `collide/TESTS.md`
+   section 2c names the temperature of the final energy, AFTER the data, and keeps the strict
+   reading (initial energy) as FAILED on record (seed 3 light class, p = 1.7e-4; its cause is the
+   energy drift of that seed, +4.8e-3 in theta). T9 is in the track's own list, not among the
+   tests the brief names in C-pre-1, so C6 does not change. Named for the orchestrator's review
+   (outbox gate status).
+3. Number-mode bias sizes (DIFFER in size): `heat/README.md` and TESTS 2c now give both sets
+   with their windows (+5, +11, +43 percent; verifier +4, +13, +79). Finding unchanged.
+4. F21's onset 0.750 (trial function): labelled as a late trial-function bound in
+   `scope/REFERENCES.md`; the note v1 already does so (checked: `note/main.tex` line 132 calls
+   it the trial criterion, sufficient for instability, with the exact onset below it);
+   `gravothermal/README.md` labels it "(F21 trial)" already.
+5. T6(b), T4 definitions: named in TESTS 2c (T6(b) at the mean reservoir temperature 0.015,
+   literal 0.994, 1.027; at the final 0.01336 1.051, 1.086; both pass; T4 on 16 snapshots).
+Items the verifier could not check (T5 entropy, card T7/T8, T6(a, c), T0b, T10b, T11, R6, the
+MPI variant of T10, the growth pipeline, card cluster runs): T5 and the card T7/T8 are the gaps
+that matter for C6. T7 on the card was recomputed exactly by the lead (section 1); T5 and T8
+have no second check. They go to the G1 reviewer as stated limits, and T5 into the next
+verifier's list.
+
+## 10. note v1 (closed; commits d0cfe2ea, 2484c878)
+
+Confirmed (L25 HOLDS, run C-20261121-155226-8ea9e47): the checker of `note/README.md` with
+--compile on a copy of the note: 0 undefined references, 0 undefined citations, one overfull
+box of 1.09 pt, 16 pages; the remaining candidates are run ids and locators in the ledger
+appendix and two generated-file comments, the guide's accepted exceptions. Six ledger rows
+equal the JSON of their runs to the printed digits (t_c 184.02, 185.29, 178.86 and sd 3.40 of
+C-20261121-075202-1a37fb9; card T8 changes -0.0052, -0.0001, -0.0104 of C-20261120-223321-3d088d4;
+drift ratios 0.22, 0.25, 0.10 of C-20261121-075359-26e3b31; growth-fit bias +6.9e-4 and -6.1e-4
+of C-20261120-222716-9d86ebc). `fig_heat.png` panel (d) and the redrawn architecture schematic
+show what the package says (looked at). Sec. IV H agrees with sections 2-3 above (drift mostly
+numerical; y0 = 0.26 collapses at Kn = 1; threshold and collapsed mass left open).
+
+Not confirmed: I did not read all 16 pages myself (the package did; the checker's compile and
+the two figures I looked at are my evidence). The v1 ledger rows that no second agent has
+recomputed: card T7 at theta 0.1 and 1, the growth-fit rows other than the two above.
+
+Wrong: nothing in the note. The package's README item 5 (G0 locator) was half right: line 476
+of 2601.17117 does hold 580 t_0 and 3e-8 M; the 200 M_sun is at 481. Corrected by an
+appended section of `G0/REPORT.md` (the three numbers of its items 1-3 had been corrected in
+wave 2, commit d3872ff5; `G1/STATUS.md` item 2 also carries the corrected bounds already).
+
+What the track does: C16 MET (note v1 with G1 sections, checker passed with --compile); C9 and
+C14 updated with the new run. The next note version adds the follow-up cluster figures (decisive,
+drift (iii), (vi)) with their own script.
+
+## 11. drift, batch 3 (partial: run (vi) was running; run (v) not submitted)
+
+Confirmed (own reader, run C-20261121-155049-ecf8893; L26 HOLDS, L27 HOLDS):
+- Run (iii) CC1 on M/8: largest centred 20 M mean of alpha_c - alpha_c(0) 0.00455 at 195.75 M
+  (M/4: 0.03295 at 205.25 M), ratio 0.138; +-5 M mean at 300 M -0.00202; H-norm2 over 100-300 M
+  7.86e-3 (M/4 8.53e-4); alpha_min >= 0.659; np = 1e5 and sum_m unchanged. CC2 ratio 0.099. All
+  as the package reports (entry 12). The outward excursion of the M/4 controls is a mesh effect
+  for both models [VERIFIED, one seed, one N].
+- D2 with my own reader and my own coherent part (800 equal-count cells in E_K(0) and the
+  conserved angular momentum |x x u|(0), times the sign of x.u): D over 25-300 M is 0.97-1.01
+  times the package's in all four controls (1.06-1.09 over 25-75 M); D(M/8)/D(M/4) = 1.67 (CC1),
+  1.54 (CC2). The diffusion is a linear random walk (figure: dots on the package's dashed
+  curves), and the package's 200 cells (empty cells and cells of 2320 particles) do not leave
+  coherent motion in its 'incoherent' part. D2.2 FAILED as the package says: the energy
+  diffusion grows by 1.6, not by the factor 9 of the constraint floor.
+- Predictions of the package: M8.1', M8.2'', M8.3', M8.4', D2.1, D2.3, D2.4 HOLD; M8.2', M8.5',
+  D2.2 FAILED (entries 12, 14). I agree with each verdict from my numbers.
+
+Not confirmed: the reading that the slow contraction on M/8 is either noise relaxation or a slow
+evolution of the model in this code (entry 14) - that needs (vi) and (v). The Richardson
+estimate of entry 12 is arithmetic on two meshes, not a convergence test [JUDGEMENT].
+
+Wrong: nothing. Cosmetic: the title of my own panel (c) is clipped at the right.
+
+What the track does: block A of `../threshold_scan/SCAN.md` will not run on M/4 (decided in
+batch 2b; now for both models). Whether it runs on M/8 at N = 1e5 waits for (vi) (does the
+contraction of a stable model turn?) and (v) (does it scale with 1/N?). Run (v) (0.3
+card-hours, within the package's cap) is submitted by the lead when (vi) has ended (section 12).

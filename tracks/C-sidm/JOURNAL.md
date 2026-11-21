@@ -421,3 +421,17 @@ Predictions (own code in `stage/review_wave3/rv_batch4a.py`, written before it r
   (about 650-700 M) lies in [-0.015, -0.004], and alpha_c stays above 0.5 (no collapse).
   Refuted by a minimum of the 40 M mean before the end followed by a rise of more than 0.002,
   or by a value outside the interval.
+
+## 2026-11-21T16:10Z  session C-sidm lead (wave 3, batch 4a)  outcomes L23-L27
+
+- L23 HOLDS (run C-20261121-155049-ecf8893): T10 collisions 385554 (mb1, mb8, mb64), 385838 (seed8).
+- L24 HOLDS (run C-20261121-155116-ba83d16): the rerun of verify_g1/v5_t9ks.py gives a JSON
+  identical to the verifier's run C-20261121-081415-b8c9d29 (light class, seed 3: KS p 1.72e-4
+  at the theta of the initial energy).
+- L25 HOLDS (run C-20261121-155226-8ea9e47; the first attempt C-20261121-155220-5c0d480 FAILED on
+  a JSON key of my script): checker --compile 0 undefined references and citations, 1 overfull
+  box of 1.09 pt, 16 pages; six ledger rows equal their runs' JSON.
+- L26 HOLDS: CC1 M/8 largest 20 M mean 0.00455 at 195.75 M, M/4 0.03295, ratio 0.138; at 300 M
+  -0.00202; H-norm2 7.86e-3 (M/8), 8.53e-4 (M/4).
+- L27 HOLDS: D with my 800 equal-count (E_K, |x x u|, sign x.u) cells is 0.97-1.01 of the
+  package's (25-300 M); D(M/8)/D(M/4) = 1.67 (CC1), 1.54 (CC2).
