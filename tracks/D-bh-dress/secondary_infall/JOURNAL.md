@@ -990,3 +990,27 @@ nm_threadcheck.py) seven cores. Not pushed (helper; the lead pushes).
 Open for a later session: a clean run beyond a/a_i = 16 (needs the initial ball resolved by
 about nine cells, nx ~ 450-500 or a refined centre), the run with the fixed point mass, the
 mechanism of the edge-layer error inside one cell, a second resolution of Q16.
+
+## 2026-11-21T20:36Z  (D-bh-dress lead, batch 5) design and prediction Q16-256: the second resolution of Q16
+
+Why: the G1 gate review (stage/G1/GATE_REVIEW.md, coord/GATES.md) passed D-pre-3 with the
+reservation that its margins are thin and rest on one resolution. Q16-256 = Q16
+(D-20261121-085652-7e189a2) with ONE change, nx 192 -> 256 (MeshBlocks 64^3, so 4^3 blocks):
+dx = 3.469 M against 4.625 M, the initial ball edge 9.14 cells out (6.85 in Q16), the same
+particles (nm_ic.py: ndust, clump and edge do not depend on nx), the same box +-444 M, clump
+at a cell centre (shift 0.5 cells), dtmax 1.0, snapshots every 9.612 M, restart files every
+300 M, a/a_i = 16; the same executable as Q16 (core_build-openmp/athena_cpu: the run continues
+Q16's series), six threads bound. Quantities as Q16's analysis (nm_analyze.py); "16" means the
+last snapshot (a/a_i ~ 15.96).
+Prediction (written before the run starts):
+QR1 masses converge: M_ta at a/a_i = 4, 8, 12 within 0.5 % of Q16 (2.5966, 4.8146, 7.0468 M),
+    dress within 1 % (0.7952, 2.1484, 3.5406 M). Refuted if M_ta differs by more than 1 % or
+    the dress by more than 2 % at any of them (then Q16's G1 margins depend on resolution).
+QR2 the edge-layer excess shrinks: M_ta at 16 in [9.23, 9.29] M, below Q16's 9.3017 (Q16
+    +0.8 % above its hybrid_cc shells 9.227 M); refuted if M_ta(16) >= 9.3017.
+QR3 profile against the self-similar solution on Q16's six bins of [0.075, 0.3]: largest
+    deviation <= 16 % (Q16 15.9 %), each bin within 5 % of Q16's ratio.
+QR4 dress/M_ta at 16 = 0.528 +- 0.01; mean local slope -2.55 +- 0.1 (self-similar -2.50).
+QR5 energy test: every group inside r_last(16) = 26.4 M within 0.3 % of its initial energy
+    (Q16 0.4 %), the layer 26.4-30.5 M within 1.5 % (Q16 up to 2.2 %); no particle lost.
+Cost: 3000-3600 steps, 1.0-2.5 h on six threads.
