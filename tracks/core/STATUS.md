@@ -12,8 +12,11 @@ last-result: byte regression on processors, twelve set-ups: 75 items, 62 identic
              last_time lines of the parameter dump only, none other (run
              core-20261120-221607-4985804); quick tests of the seven branches: 40 files,
              38 identical, 2 last_time only, 13 numbers in their bands (run
-             core-20261121-025955-bd47414); card check of the candidate: see
-             RELEASE-v0.4.md, section "Card check" (run core-20261121-025945-54dc669).
+             core-20261121-025955-bd47414); six more READY examples: 42 files, 40
+             identical, 2 unset restart bytes (core-20261121-031604-dccccbb); card
+             check on one A100: 11 cases status 0, counts equal to the processor runs,
+             differences within the bounds written before the run (card run
+             core-20261121-025945-54dc669, analysis core-20261121-033000-f1c0f5d).
 next:        1. release clerk: merge core/nrpic into main, tag core-v0.4, build
                 .work/build_{gpu,cpu}_v04, copy the interface documents, announce the
                 corrections that act without an option (CHANGELOG.md)
@@ -32,4 +35,4 @@ offers:      /data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v04/ (athena_cpu,
              COMMIT, SHA256SUMS, branches/READY.<branch>); release drivers
              tracks/core/analysis/release/{regress_v04,quick_v04,card_v04}.py
 budget:      G2: 5.5 card-hours used by core's packages (nrpic-run budget, 2026-11-21);
-             this package asked 0.2 card-hours (one job) of its one card-hour
+             this package used 0.0094 card-hours (one job of 34 s) of its one card-hour

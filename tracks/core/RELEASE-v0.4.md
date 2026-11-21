@@ -153,17 +153,40 @@ Example inputs of the READY that no run of the merged executable has started:
 `newton_point_mass_periodic`, `clump_puncture`, `jeans_mc`, `idsolve/ball`,
 `idsolve/torus`, `accretion_tracker`, and the option `waveform_at_new_time`.
 
-## Card check of `athena_gpu`
+## Card check of `athena_gpu`: PASS
 
-PENDING when this file was written (2026-11-21T03:13Z): Slurm job 4758, run
-core-20261121-025945-54dc669, queued behind four jobs. It runs the eleven cases of the
-quick test (`analysis/release/card_v04.list`, 0.2 card-hours asked) with the candidate
-card executable; `analysis/release/card_v04.py` then judges prediction C of the journal
-(every case status 0; the thirteen numbers in their bands; iteration and collision
-counts equal to the processor runs; differences to the processor runs within stated
-bounds). Until this paragraph is replaced by the outcome, `athena_gpu` of the candidate
-is built and not run. The card executables of the seven branches were each tested on a
-card by their packages; the merged source is their union.
+Card run core-20261121-025945-54dc669 (Slurm job 4758, one A100, 34 s, 0.0094
+card-hours): the eleven cases of `analysis/release/card_v04.list` (the nine cases of the
+quick test, the oblique wave at 32 cells and the clump without its curvature) with the
+candidate card executable. Judged against the processor runs of the same inputs by
+`analysis/release/card_v04.py`, run core-20261121-033000-f1c0f5d, against the
+predictions written before the job ran (journal, C and C1 to C5).
+
+| Check | Result |
+|---|---|
+| every case ends with status 0 | 11 of 11 |
+| the thirteen numbers of the quick test in their bands | all inside |
+| initial-data solve: outer iterations, conjugate-gradient steps, V cycles | 17 and 17; equal in every iteration |
+| collisions: per step, pairs without a root, rejected | equal in all 20 steps (141140); 0 and 0; 848 and 848 |
+| tracer radius, card against processor, 300 M | at most 2.4e-13 M (bound 1e-9) |
+| lapse of the homogeneous universe, 65 records | within 2.6e-15 (bound 1e-10) |
+| snapshots of the perturbing-force case | bit-equal (bound 1e-12) |
+| moving clump, 21 history columns that do not vanish by symmetry | 5.0e-14 at t = 0, 6.1e-11 after one step |
+| oblique wave, error norm card against processor | 9.0e-17 at 16 cells, 4.8e-16 at 32 cells (bound 1e-14) |
+
+Two statements of the predictions did not come out as written. The first session's
+bound "error norms of the oblique wave to 1e-12 relative" failed (1.7e-6 and 8.1e-5
+relative): the error norm is 5e-11 and 6e-12 on fields of order one, so the absolute
+bound above is the meaningful one (written before the run). My bound of 1e-10 on the
+constraint norms of the clump at t = 0 is not tested by the file I named, which prints
+six digits (equal in all six); the row of the 16-digit history above replaces it.
+Reported and not judged: differences of history columns at rounding level (sums that
+vanish by symmetry, constraint norms of exact data, the relative momentum constraint of
+the homogeneous universe, maxima at the tolerance of the solve); list in the journal.
+Figure: `scratch/core/core-20261121-033000-f1c0f5d/fig_card_v04.png` (looked at).
+Not run on a card with the merged executable: anything beyond these eleven short cases
+(the longest is 20 steps of collisions and 300 M of one tracer); the six additional
+examples of the section above ran on processors only.
 
 ## Known defects
 

@@ -412,3 +412,41 @@ bytes of the branch that wrote them. Still started by no run of the merged execu
 `waveform_at_new_time`, `lapse_leak` on a ball (`ball_leak`, `es_gauge`), the restart
 after a stop (`restart_schedule`), the periodic Newtonian box, `clump_puncture`,
 `jeans_mc`, the id-solver ball and torus, `accretion_tracker`.
+
+Outcome of C (card run core-20261121-025945-54dc669, Slurm job 4758, one A100, 34 s =
+0.0094 card-hours, started 03:27:57Z; judged by run core-20261121-033000-f1c0f5d, which
+supersedes core-20261121-032851-5f911b8: same data and checks, labels of the figure):
+CARD CHECK PASS.
+- C1 held: all eleven cases status 0.
+- C2 held: the thirteen numbers inside their bands on the card. `sr_H_ratio_start`
+  2.6247552e-12 against 2.62475534e-12 on processors (5.4e-8 relative): inside, as
+  predicted.
+- C3 held: 17 outer iterations on both, conjugate-gradient steps and V cycles equal in
+  every iteration; collisions equal in each of the 20 steps (141140), no pair without a
+  root on either, 848 rejected on both.
+- C4: tracer |r_card - r_cpu| at most 2.4e-13 M over 300 M (bound 1e-9; positions
+  1.0e-12); lapse of the homogeneous universe within 2.6e-15 at all 65 records (bound
+  1e-10); snapshots of the perturbing-force case bit-equal (bound 1e-12): held. Clump:
+  `M-norm2` and `H-norm2` at t = 0 are equal in the six digits that file prints, which
+  resolves 5e-6 and not my bound of 1e-10: that item, as I wrote it, is NOT TESTED by
+  the file I named. The 21 columns of `clump.nrpic.hst` that do not vanish by symmetry
+  (16 digits) agree to 5.0e-14 at t = 0 and 6.1e-11 after one step, so the first
+  session's "with deposit, agreement to 1e-10 at the start" HELD on that file.
+- C5 held: |RMS-L1(card) - RMS-L1(cpu)| = 9.0e-17 at 16 cells and 4.8e-16 at 32 cells
+  (bound 1e-14); the order from 16 to 32 cells is 3.1677 on the card, 3.1676 on
+  processors.
+- The first session's bound "lw_oblique error norms to 1e-12 relative" FAILED as
+  written: 1.7e-6 and 8.1e-5 relative. I expected this before the run (C5 above): the
+  error norm is 5e-11 and 6e-12 on fields of order one, so rounding of 1e-16 in the
+  fields is that fraction of it. Its other parts held (status 0, iteration counts).
+- Reported, not judged (figure, middle panel): the largest difference of a history
+  column over the column maximum. Over the columns above 1e-10 it is below 1e-10 in
+  twelve of eighteen files; larger in `leak/flrwleak.cstat.hst` (Mr_mean 0.45, Mr_max
+  0.2: |M|/[M] where both are at rounding in a homogeneous universe, M_max 2.7e-14),
+  `leak/flrwleak.z4c.user.hst` (1.5e-6: one unit of the last of six printed digits of
+  H-norm2), `sr` (max|H| and max |M|/[M]: 1e-3 to 2e-3 relative, 1.9e-13 and 8.7e-8
+  absolute), `ids/gauss.cstat.hst` (Hr_max 2.4e-5), and the constraint norms of the
+  linear wave (1e-21, differing at 1e-2). [JUDGEMENT] each is a quantity at rounding
+  level or at the tolerance of a solve; none was tested further.
+Figure `scratch/core/core-20261121-033000-f1c0f5d/fig_card_v04.png` looked at. Card time
+of this package: 0.0094 card-hours of the one allowed.

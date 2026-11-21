@@ -54,8 +54,11 @@ Defects and limits of core-v0.4 itself (found by the packages or at the merge):
 - h. Clumps with momentum: Gaussian components only; the sum of the particles'
   covariant momenta drifts by 1.6 per cent in 2 M (1.3 without the curvature), cause
   unknown.
-- i. The release drivers (`tracks/core/analysis/release/`) compare one example per
-  branch; the capability tests of the packages were not rerun on the merged executables.
+- i. The release drivers (`tracks/core/analysis/release/`) ran fifteen example inputs
+  against the branch executables on processors and eleven short cases on a card; the
+  capability tests of the packages and the verification ladder were not rerun on the
+  merged executables. Ten example inputs named in the READY were started by no run of
+  the merged executable (list in `RELEASE-v0.4.md`).
 
 ## State 2026-11-15, after the wave-1 integration
 

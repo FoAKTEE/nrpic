@@ -11,21 +11,14 @@ core-v0.4 has the options and the corrections that act without an option;
 `tracks/core/stage/G2/OPEN.md` (first section) the defects. Executables with READY:
 `/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v04/`.
 Owner: core, branch `core/nrpic`, worktree `/data/haiyangw/nrpic/wt/core`.
-Run next: `cd /data/haiyangw/nrpic/wt/core && git merge --no-edit main && harness/bin/nrpic-run status core-20261121-025945-54dc669`
-(if `RELEASE-v0.4.md`, section "Card check", still says PENDING: close the card job as
-described below; otherwise go on to the wave-3a branches for core-v0.5).
+Run next: `cd /data/haiyangw/nrpic/wt/core && git merge --no-edit main && harness/bin/nrpic-ctx inbox --show`
+(then: if main carries the tag core-v0.4, start core-v0.5: the nine wave-3a branches,
+with the release drivers below; if not, the release clerk has not run yet and nothing
+of core-v0.4 is left for core to do).
 
-Card check of the candidate (run core-20261121-025945-54dc669, Slurm job 4758, eleven
-cases of `analysis/release/card_v04.list` with `.work/build_gpu_v04rc/src/athena`). When
-the job has ended:
-```
-harness/bin/nrpic-run finish core-20261121-025945-54dc669
-harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 --parent core-20261121-025945-54dc669 --purpose "card check of core-v0.4 judged against the processor runs" -- python3 tracks/core/analysis/release/card_v04.py --card /data/haiyangw/nrpic/scratch/core/core-20261121-025945-54dc669 --cpu /data/haiyangw/nrpic/scratch/core/core-20261121-025955-bd47414 --out '$NRPIC_RUN_DIR'
-```
-then look at `fig_card_v04.png`, write the outcome against predictions C and C1 to C5
-of `JOURNAL.md` (entries 2026-11-20T22:10Z and 2026-11-21T02:58Z), replace the section
-"Card check" of `RELEASE-v0.4.md`, the STATUS paragraph of athena_gpu and item C of
-`scratch/core/exe/core_nrpic_v04/READY`, commit, push.
+All checks of the candidate are closed: byte regression (PASS), quick tests of the seven
+branches (PASS), six more READY examples (PASS), card check on one A100 (PASS, Slurm
+job 4758). No run is pending.
 
 Files to read first: `tracks/core/STATUS.md`; `tracks/core/RELEASE-v0.4.md`;
 `tracks/core/stage/G2/OPEN.md`; the last two entries of `tracks/core/JOURNAL.md`; for a
