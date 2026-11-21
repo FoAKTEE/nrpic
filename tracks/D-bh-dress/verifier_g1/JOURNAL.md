@@ -129,3 +129,35 @@ Development before the registered V2 run (2026-11-20 19:00-19:15 PST, written be
 - Attempts to break added before the run: half the number of r_i bins (150) for M_ta and
   dress; r_ta scaled by 0.97 and 1.03 in the profile; the profile against the two other
   self-similar solutions.
+
+### Outcome of the first V2 run (19:15 PST), run D-20261121-031031-e23da04
+
+- P2a held: my M_ta at a/a_i = 2, 4 (8): N128c 1.5058, 2.5955; N64c 1.5060, 2.5955; N128Lc
+  1.5056, 2.5940, 4.8159 M; largest difference from the claimed run values 0.14 per cent
+  (N128Lc at 2). Half the r_i bins: changes up to 0.10 per cent.
+- P2b held: dress N128c 0.1749, 0.7990; N64c 0.1741, 0.7957; N128Lc 0.1749, 0.7955, 2.1527 M;
+  largest difference 0.3 per cent.
+- P2c: my "kernel on the clump, unsoftened dust" shells are WRONG as a reference: M_ta 5 per
+  cent (a/a_i = 4) and 19 per cent (8) below every run and every other force law, growing
+  with time (figure `v2_growth_ratio.png` of this run). Suspected cause (not yet tested): the
+  unsoftened shell-shell force at the centre with a fixed step heats the passing shells.
+  The other two laws agree with the runs: kernel on all enclosed mass and point (s = 0.25 M)
+  give M_ta within 0.08 per cent at a/a_i = 2, 4, 8 and dress within 0.4 per cent at 4 and 8,
+  but at a/a_i = 2 the dress of the runs lies 1.6 (N128c), 2.3 (N64c), 3.1 (N128Lc) per cent
+  above my kernel shells and 0.0-0.6 per cent above my point shells. So the claim "0.1-0.5
+  per cent" does not hold for the dress at a/a_i = 2 against a kernel reference; the
+  difference is within the spread of my reference's force laws (1-2.6 per cent at a = 2).
+- P2d held marginally: caustic lambda_1 = 0.3630 (500, 0.01), 0.3610-0.3618 (200);
+  N128Lc at a/a_i = 8 on [0.1, 0.3]: ratios 0.741, 0.864, 1.048, 1.171, 1.138, 1.017, 0.798,
+  0.927, largest deviation 25.9 per cent (25.2-25.4 against the two other self-similar
+  solutions; 32.5 and 34.5 with r_ta scaled by 0.97 and 1.03). At a/a_i = 4 N128c and N64c lie
+  at 0.41-1.05 of the solution. Figure `v2_profile.png` looked at: the runs follow the solution
+  outside lambda = 0.1 and show the caustic at 0.36-0.40.
+
+Second V2 run (prediction, 19:25 PST): the same script, the growth figures against the
+kernel-on-all shells and the point shells, plus two step checks: kernel-on-clump at dt =
+0.002 and kernel-on-all at dt = 0.005. If the kernel-on-clump deficit is the step at the
+centre, it shrinks by at least a factor 2 at dt = 0.002; if it does not shrink, the cause is
+something else (then I say "cause open"). Kernel-on-all must move by less than 0.1 per cent
+(M_ta) with the halved step, else my kernel reference is not converged either. All run
+numbers must reproduce exactly (processor analysis of the same snapshots).

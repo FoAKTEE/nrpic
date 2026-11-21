@@ -244,9 +244,11 @@ def main():
         kM, kC = kepler_Mta(res, tq)
         kern = load_kernel(kfile)
         sh = {}
-        for law in ("kernel_seed", "kernel_all", "point"):
+        for law, lw, dtl in (("kernel_seed", "kernel_seed", 0.01), ("kernel_seed_dt0.002", "kernel_seed", 0.002),
+                             ("kernel_all", "kernel_all", 0.01), ("kernel_all_dt0.005", "kernel_all", 0.005),
+                             ("point", "point", 0.005)):
             print("  shells", law, flush=True)
-            sh[law] = shells(res, kern, law, dx, list(tq), dt=(0.005 if law == "point" else 0.01))
+            sh[law] = shells(res, kern, lw, dx, list(tq), dt=dtl)
         aa = [r["a"] for r in rows]
         summ = {"dx": dx, "M_clump": res["Mcl"], "hubble_fit_vr_over_r_t0": res["hub"], "at": {}}
         for A in (2, 4, 8):
@@ -268,6 +270,12 @@ def main():
                 d["claim_ref_dress"] = CLAIM_REF[name]["dress"][A]
             summ["at"][str(A)] = d
         mask = np.array(aa) >= 1.5
+        for law in sh:
+            for key, a0 in (("Mta", 1.5), ("dress", 2.0), ("dress", 3.0)):
+                mk = np.array(aa) >= a0 - 1e-9
+                run_ = np.array([r[key] for r in rows])[mk]
+                ref_ = np.array([x[key] for x in sh[law]])[mk]
+                summ["max_rel_dev_%s_vs_%s_from_a%.1f" % (key, law, a0)] = float(np.max(np.abs(run_ / ref_ - 1)))
         summ["max_rel_dev_Mta_vs_kernel_seed_after_1.5"] = float(np.max(np.abs(np.array([r["Mta"] for r in rows])[mask] /
                                                                               np.array([x["Mta"] for x in sh["kernel_seed"]])[mask] - 1)))
         summ["rows"] = rows
@@ -284,10 +292,10 @@ def main():
         aa = np.array([r["a"] for r in summ["rows"]])
         for key, ax in (("Mta", axs[0]), ("dress", axs[1])):
             run = np.array([r[key] for r in summ["rows"]])
-            ref = np.array([x[key] for x in summ["shells"]["kernel_seed"]])
+            ref = np.array([x[key] for x in summ["shells"]["kernel_all"]])
             ax.plot(aa, run, color=cols[name], label=name + " (run)")
             ax.plot(aa, ref, color=fs.PAL["blue"], ls="--", lw=1.0)
-    axs[0].plot([], [], color=fs.PAL["blue"], ls="--", lw=1.0, label="my shells, kernel on clump")
+    axs[0].plot([], [], color=fs.PAL["blue"], ls="--", lw=1.0, label="my shells, measured kernel")
     axs[0].set_ylabel(r"$M_{\rm ta}$ ($M$)")
     axs[1].set_ylabel(r"dress ($M$)")
     axs[1].set_xlabel(r"$a/a_i$")
@@ -301,14 +309,31 @@ def main():
         m = aa >= 1.2
         for key, ls in (("Mta", "-"), ("dress", "--")):
             run = np.array([r[key] for r in summ["rows"]])
-            ref = np.array([x[key] for x in summ["shells"]["kernel_seed"]])
+            ref = np.array([x[key] for x in summ["shells"]["kernel_all"]])
+            refp = np.array([x[key] for x in summ["shells"]["point"]])
             ax.plot(aa[m], run[m] / ref[m] - 1, color=cols[name], ls=ls, label="%s %s" % (name, key))
+            ax.plot(aa[m], run[m] / refp[m] - 1, color=cols[name], ls=":", lw=0.8)
+    ax.plot([], [], color="k", ls=":", lw=0.8, label="against point shells (s = 0.25 M)")
     ax.axhline(0, **fs.GUIDE)
     ax.set_ylim(-0.05, 0.05)
     ax.set_xlabel(r"$a/a_i$")
     ax.set_ylabel("run / my kernel shells - 1")
     ax.legend(loc="lower right", ncol=2, fontsize=8)
     fs.save(fig, out + "/v2_growth_ratio")
+
+    fig, ax = plt.subplots(1, 1, figsize=(fs.COLUMN_WIDTH * 1.6, 3.4))
+    fig.subplots_adjust(left=0.15, right=0.97, bottom=0.14, top=0.96)
+    summ = res_json["runs"][list(res_json["runs"])[-1]]
+    aa = np.array([r["a"] for r in summ["rows"]])
+    run = np.array([r["Mta"] for r in summ["rows"]])
+    for law, c in zip(summ["shells"], fs.SERIES):
+        ref = np.array([x["Mta"] for x in summ["shells"][law]])
+        ax.plot(aa[1:], ref[1:] / run[1:] - 1, color=c, label=law)
+    ax.axhline(0, **fs.GUIDE)
+    ax.set_xlabel(r"$a/a_i$")
+    ax.set_ylabel(r"shell $M_{\rm ta}$ / run $M_{\rm ta}$ - 1 (%s)" % list(res_json["runs"])[-1])
+    ax.legend(loc="lower left", fontsize=8)
+    fs.save(fig, out + "/v2_shell_variants")
 
     # self-similar: main solution and two numerical checks
     print("self-similar", flush=True)
