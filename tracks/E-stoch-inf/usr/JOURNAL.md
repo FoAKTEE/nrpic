@@ -636,3 +636,23 @@ runs of a pair). f and a_odd follow from the odd parts at s = 1 and 1/2.
 - F2: where the odd factor is 1.00 +- 0.05 (odd parts at the floor), the even part equals the
   odd part within 15 % at both s.
 Refuted if outside.
+
+### 12.2 Outcome of the floor reading (run E-20261121-080134-a0cc3eb, `fig/fig_card_g1_floor.png`, looked at)
+
+- F1 holds: with the floor f fitted from the odd parts, the even factor of H is 3.991 to
+  4.001 and that of M 3.987 to 4.001 at all ten judged dumps each (cN 0.53 to 5.04); the raw
+  factors there were 3.60 to 3.99. The H dip to 3.82 at cN 0.53 and the M fall from cN 4.5
+  on are the floor in quadrature. The second-order parts of both constraints scale as s^2
+  to 1e-3 wherever they are resolved.
+- F2 FAILED as written: 8 of 20 (H) and 10 of 20 (M) within 15 %. The odd part sits at the
+  floor also early (cN 0.5 to 1.5), where the even part is 12 to 60 times above it; F2
+  assumed that "odd at the floor" meant "everything at the floor". Late (cN 6.5 to 8.5),
+  where both are at the floor, even/odd is 0.92 to 1.19.
+- The fitted floor f, absolute: H 1.25e-12 at cN 0.53, falling about as chi (e^-2N) to
+  4e-15 at cN 5 and flat after; M 8.5e-13 falling to 2.6e-14 at cN 5 and flat (2e-14 to
+  3e-14 to N_f, the size core gives for |M| late). The first-order (odd) part of M at 128^3
+  exceeds the floor only for cN 2 to 4.5 (a_odd 1e-13 to 3.3e-13), as the top shell enters.
+- Consequence for U-A4 on these cards [JUDGEMENT, for the lead]: judge the halving on the
+  floor-corrected parts, with the floor from the odd parts of the halving pair, or bar each
+  part at three times the floor measured that way (not at a fixed fraction of <[C]>, which in
+  USR falls by 1e5 relative to an absolute floor).
