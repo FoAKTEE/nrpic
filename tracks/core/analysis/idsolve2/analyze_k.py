@@ -50,6 +50,17 @@ def one(dc, dp):
         a, b = lib2.read_idvector(vc), lib2.read_idvector(vp)
         wmax = max(np.abs(w).max() for w in b["W"])
         out["dW_rel"] = float(max(np.abs(x - y).max() for x, y in zip(a["W"], b["W"]))/wmax)
+    bc, bp = (os.path.join(d, base + ".idsolve.blk.bin") for d in (dc, dp))
+    if os.path.exists(bc) and os.path.exists(bp):   # refined mesh: dump per MeshBlock
+        a, b = lib2.read_blk(bc), lib2.read_blk(bp)
+        out["blocks"] = [int(a["nmb"]), int(b["nmb"])]
+        out["dpsi_rel"] = float(np.abs(a["psi"] - b["psi"]).max()/np.abs(b["psi"]).max())
+        out["H_after_card"] = float(np.abs(a["H"]).max())
+        out["H_after_proc"] = float(np.abs(b["H"]).max())
+        if "Wx" in a and "Wx" in b:
+            wmax = max(np.abs(b[k]).max() for k in ("Wx", "Wy", "Wz"))
+            out["dW_rel"] = float(max(np.abs(a[k] - b[k]).max()
+                                      for k in ("Wx", "Wy", "Wz"))/wmax)
     dumps = sorted(glob.glob(os.path.join(dp, base + ".field.*.bin")))
     if dumps:
         last = os.path.basename(dumps[-1])
@@ -70,6 +81,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--card", required=True)
     ap.add_argument("--pair", action="append", default=[])
+    ap.add_argument("--tag", default="", help="suffix of the numbers file and the figure")
+    ap.add_argument("--other", default="card", help="what --card holds (label of the figure)")
     a = ap.parse_args()
     res = dict(run=lib2.run_id(), card=a.card, cases={})
     for p in a.pair:
@@ -79,7 +92,7 @@ def main():
         print(name, {k: v for k, v in res["cases"][name].items()
                      if k in ("outer_card", "outer_proc", "dpsi_rel", "dW_rel")}, flush=True)
     root = lib2.run_root()
-    out = os.path.join(root, "analyze_k_numbers.json")
+    out = os.path.join(root, "analyze_k_numbers%s.json" % a.tag)
     fs.use_style()
     fig, ax = plt.subplots(figsize=(fs.COLUMN_WIDTH, 2.4))
     names = list(res["cases"])
@@ -87,7 +100,7 @@ def main():
                                         ("dW_rel", r"$W$", fs.PAL["red"]))):
         v = [res["cases"][n].get(key, np.nan) for n in names]
         ax.bar(np.arange(len(names)) + 0.35*k, np.maximum(v, 1e-18), 0.35, color=c,
-               label=lab + " card against processor")
+               label=lab + " %s against processor" % a.other)
     # region means of |H| of the last field dump: only regions whose mean is above
     # round-off (1e-9) are compared; one symbol per case, the largest over its regions
     first = True
@@ -107,7 +120,7 @@ def main():
     ax.set_ylabel("largest relative difference")
     ax.legend(fontsize=5)
     fig.tight_layout()
-    p = os.path.join(root, "card_k")
+    p = os.path.join(root, "card_k" + a.tag)
     fs.save(fig, p)
     plt.close(fig)
     lib2.publish([out, p + ".png", p + ".pdf"])

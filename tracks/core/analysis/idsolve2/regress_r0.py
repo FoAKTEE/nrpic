@@ -81,7 +81,7 @@ def compare(da, db):
     return same, differ
 
 
-def figure(report, cases, out):
+def figure(report, cases, out, tag=""):
     """Files identical and differing per case (bars), into figs/ and the run directory."""
     sys.path.insert(0, os.path.join(WT, "python"))
     from nrpic import figstyle as fs
@@ -102,7 +102,7 @@ def figure(report, cases, out):
     ax.legend(fontsize=6, loc="lower right")
     fig.tight_layout()
     for d in (os.path.join(HERE, "figs"), out):
-        fs.save(fig, os.path.join(d, "regress_r0"))
+        fs.save(fig, os.path.join(d, "regress_r0" + tag))
     plt.close(fig)
 
 
@@ -113,6 +113,7 @@ def main():
     ap.add_argument("--cases", default=",".join(CASES))
     ap.add_argument("--jobs", type=int, default=2)
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", "."))
+    ap.add_argument("--tag", default="", help="suffix of regress_r0<tag>.json and the figure")
     a = ap.parse_args()
     cases = [c for c in a.cases.split(",") if c]
     jobs = []
@@ -133,8 +134,9 @@ def main():
         print("%-16s identical files: %3d  differing: %s  exit 0 in both: %s"
               % (c, len(same), differ if differ else "none", ok), flush=True)
     report["all_identical"] = (bad == 0)
-    figure(report, cases, a.out)
-    for p in (os.path.join(a.out, "regress_r0.json"), os.path.join(HERE, "regress_r0.json")):
+    figure(report, cases, a.out, a.tag)
+    for p in (os.path.join(a.out, "regress_r0%s.json" % a.tag),
+              os.path.join(HERE, "regress_r0%s.json" % a.tag)):
         with open(p, "w") as f:
             json.dump(report, f, indent=1)
             f.write("\n")

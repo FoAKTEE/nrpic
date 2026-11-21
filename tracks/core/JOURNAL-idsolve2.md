@@ -1004,3 +1004,106 @@ and closed as stopped within a minute; it never ran. The card build of 4266c2d i
 therefore compiled and not run. What stands for cards is K, with the build of 76add0c,
 on branches the change does not touch. Its list is kept:
 `scratch/core/tmp/idsolve2/close/card_kb/card.list`.
+
+## 2026-11-21, entry 15: batch 2b, a new session; main with releases core-v0.4 and core-v0.5 merged; predictions M0, M1, M2, T, Kc
+
+The session of entry 14 ended inside the usage limit (2026-11-20 22:34 UTC) after the
+combined analysis of the puncture tests. A new session took over on 2026-11-21 at 07:45
+UTC (batch 2b). Read again: `CLAUDE.md` (releases core-v0.4 and core-v0.5, the pause
+flag), `coord/CHARTER.md` to "Owners", brief lines 493-553, 688-706, 834-860, decisions
+0020 and 0021, this journal from entry 10, `interfaces/id_solver2.md`, the regression
+scripts, `tracks/core/CHANGELOG.md` (the changes without an option of the two releases).
+
+State found [VERIFIED: `git status`, `git log`, `sacct`, the run directories]:
+- the last commit was 4dca56f (close of the analysis run core-20261120-223200-e3b90d8);
+  its numbers and three figures lay untracked in the analysis directory, each equal byte
+  for byte to the copy in the run directory: committed (fc4c7e4). Figures looked at
+  (`figs/test_p_convergence_all`, `test_p_extra_all`, `test_p_profiles_all`): P2 falls
+  along the dx^2 line and P1 stays flat at 2.8e-4 (middle panel); the error of P1 over
+  dx^2 rises by 4 per halving while the P2 curves of the three meshes lie on each other;
+  the R^-2 and R^-1 lines of P6; u at the three punctures flat from a cell of 1/8 on.
+  Defects of the figures: the tick labels of the middle panel of the convergence figure
+  overlap (minor ticks of the log axis), and the legend of the third panel of
+  `test_p_extra_all` lies over two reference lines. **The signed mean of u - u_ref at
+  half-width 16** promised in entry 14: -2.75e-4, -2.60e-4, -2.69e-4 at dx = 1, 0.5,
+  0.25 (`test_p_numbers_all.json`, `e_mid_mean` of `p1_st_n*`; predicted in entry 10:
+  -2.6e-4): with -6.25e-5 at 32 and -2.32e-5 at 64 the fall per doubling is 4.2 and
+  3.3 to 3.6.
+- R0b (entry 13) was never submitted (the helper stopped at the pause flag,
+  `scratch/core/tmp/idsolve2/close/submit_r0b.log`); Kb was withdrawn (entry 14). No
+  card job of this package is queued or has run since K. The published executables are
+  still the builds of 76add0c (`scratch/core/exe/core_id-solver-2/COMMIT`), although the
+  interface speaks of a second publication of 4266c2d: that publication was not made.
+- `git merge main` (releases core-v0.4 and core-v0.5: 61 and 25 options, the threaded
+  and the MPI build, adaptive refinement, guard) had one conflict, `docs/FORMATS.md`
+  (both sides appended at the same place: both kept, 395e17d). Against main this branch
+  now differs in `athenak/src` only in `gravity/mg_gravity.cpp` (the refusal of Robin
+  faces on refined meshes removed), `multigrid/multigrid.hpp` (1 line),
+  `multigrid/multigrid_driver.cpp` (1 line), `multigrid/multigrid_robin.cpp`,
+  `particles/nrpic_idfar.hpp` (new), `particles/nrpic_idsolve.cpp`,
+  `particles/particles.hpp` (10 lines) [VERIFIED: `git diff --stat main`]; main's copies
+  of the solver files are those of `core/id-solver` (`git diff core/id-solver main` is
+  empty for them). Processor build of the merge compiled (163 s, no new warning);
+  copy for the tests: `scratch/core/tmp/idsolve2/b2b/exe_395e17d/athena_cpu`.
+
+What this session does: R0b and Kb are replaced by tests of the merged source, because
+that is what core's lead will merge and what the tracks should run (it has the threaded
+build, refinement in `nrpic_cosmo`, the region norms). Then the second publication.
+
+**Predictions** (written before any run of the merged executable).
+
+ **M0** (`regress_r0.py --tag _v05`; base: release core-v0.5,
+ `/data/haiyangw/nrpic/.work/build_cpu_v05/src/athena`; the nine set-ups of R0, none with
+ `id_solve`): every output file byte-identical. Refuted by one differing byte.
+
+ **M1** (`regress_m1.py`; the release holds the first pass, so this is the regression
+ "new options absent" for runs that do use `id_solve`; the four example inputs of
+ `problems/idsolve/` at 32 cells; the release executable against the merged build with
+ `id_far = robin` and with no new option):
+ (a) `gauss_robin`, `ball_robin` (matter at rest, the fill of the first pass): every
+     file byte-identical to the release's;
+ (b) `torus_robin`, `torus_default` (periodic: no far field, matter at rest): every file
+     byte-identical;
+ (c) `gboost_robin` (moving matter): not byte-identical (the term 4 pi psi S of the
+     Jacobian is new), the same outer iterations, psi to 1e-13 and W to 1e-13 of its
+     maximum (R1 of entry 4 against the first-pass executable: 6e-15 and 5e-16);
+ (d) what changes for a user of the release without any new option (the far field is on
+     by default on a mesh with no periodic face): the record gets its two new lines;
+     `gauss_default`: max|dpsi| below 1e-7 (a centred monopole: both fills are exact for
+     it); `ball_default`: below 1e-5 (psi - 1 is 1e-3/r there); `gboost_default`: psi
+     as `gauss_default`, W changed by 3e-4 to 5e-3 of its maximum (the closure error
+     of the plain fill, 0.9 per cent of W at the faces, is a solution of the homogeneous
+     equation and nearly uniform).
+ Refuted: a differing byte in (a) or (b); in (c) a change of the iteration count or
+ above 1e-10; (d) is a measurement for the changelog, its bounds are estimates.
+ This is also the first run of `problems/idsolve/ball` and `torus` by the release
+ executable (the release report lists both as never started by the merged build).
+
+ **M2** (`regress_r2.py --tag _merge`; the eight cases of run
+ core-20261120-222207-4266c2d replayed with the merged build: puncture in mode code with
+ and without matter, three static levels, moving Gaussian with the far field, refined
+ Gaussian, refined torus with moving matter, the Zel'dovich ball with its evolution, and
+ the changed case `p5_mov_n64` as the build of 4266c2d wrote it): every file
+ byte-identical, 76 files (69 of the seven and the 7 of `p5_mov_n64` that differed in
+ R2). The one candidate for a difference I know: correction 2 of core-v0.4
+ (`Driver::Finalize` no longer advances `last_time` of an output written off its
+ schedule), which would show in the parameter dump embedded in the last file of `bin/`
+ of the two refined cases and nowhere else. Refuted by a differing byte anywhere else,
+ in particular in any `.idsolve.*`, `.idvector.bin` or history file.
+
+ **T** (threaded build of the merged source, `scripts/build_cpu_omp.sh`, 4 threads; the
+ cases `w1_far_n32`, `g_smr1`, `p5_mov_n64` and `zsol_n32` with its evolution against
+ their serial runs of M2; analysis `analyze_k.py --other threaded`): not byte-identical (sums in
+ another order), the same outer iterations within one, psi and W equal to 1e-10 of
+ their maxima, the far-field line to 1e-10, the region means of |H| of `zsol_n32` at
+ t = 2 to 1e-6. Refuted if an iteration count differs by more than one or a field by
+ more than 1e-8: then the second pass has a race in the threaded build and READY must
+ say so.
+
+ **Kc** (card build of the merged source on one A100, at most 0.2 card-hours reserved;
+ against processor runs of the same source): `p5_mov_n64` and `w1_far_n128` (the list of
+ Kb) and, never run on a card before, the refined cases `g_smr1`, `t_smr_mov` and
+ `p3_by_st`: the same outer iterations (within one on the refined meshes, where
+ BiCGStab is used), psi and W to 1e-12 of their maxima on the uniform meshes and 1e-9
+ on the refined ones, P_ADM_x of `p5_mov_n64` = 0.5499999519755 to 1e-11. Refuted if an
+ iteration count differs by more than one or a field by more than 1e-8.

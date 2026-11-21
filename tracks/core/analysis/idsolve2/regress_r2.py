@@ -115,6 +115,7 @@ def main():
     ap.add_argument("--old-exe", required=True)
     ap.add_argument("--same", nargs="*", default=[])
     ap.add_argument("--changed", nargs="*", default=[])
+    ap.add_argument("--tag", default="", help="suffix of regress_r2<tag>.json and the figure")
     a = ap.parse_args()
     root = lib2.run_root()
     new_exe = os.path.abspath(a.exe)
@@ -146,12 +147,15 @@ def main():
                 print("    far old", lo["far"], "\n    far new", ln["far"],
                       "\n    largest change of W over max|W|: %.3e" % ln["dW_rel_max"])
     rep["all_same_identical"] = (bad == 0)
-    out = os.path.join(root, "regress_r2.json")
+    out = os.path.join(root, "regress_r2%s.json" % a.tag)
     lib2.save_json(out, rep)
     # figure: files per case, and the right side along the x axis of the changed case
     fs.use_style()
     names = list(rep["cases"])
-    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 0.22*len(names) + 1.2))
+    ncol = 2 if rep["changed"] else 1
+    fig, axs = plt.subplots(1, ncol, figsize=(fs.FULL_WIDTH if ncol == 2 else fs.COLUMN_WIDTH,
+                                              0.22*len(names) + 1.2), squeeze=False)
+    axs = axs[0]
     y = list(range(len(names)))
     ns = [len(rep["cases"][c]["identical"]) for c in names]
     nd = [len(rep["cases"][c]["differ"]) for c in names]
@@ -167,12 +171,12 @@ def main():
                         color=fs.PAL["red"], label="before")
         axs[1].semilogy(e["new"]["x"], np.maximum(e["new"]["s_x_axis"], 1e-20), "--",
                         color=fs.PAL["blue"], label="after")
-    axs[1].set_xlabel("$x$ (cells nearest $y=z=0$)")
-    axs[1].set_ylabel("$|s_x|$ of the vector equation")
     if rep["changed"]:
+        axs[1].set_xlabel("$x$ (cells nearest $y=z=0$)")
+        axs[1].set_ylabel("$|s_x|$ of the vector equation")
         axs[1].legend(fontsize=5)
     fig.tight_layout()
-    p = os.path.join(root, "regress_r2")
+    p = os.path.join(root, "regress_r2" + a.tag)
     fs.save(fig, p)
     plt.close(fig)
     lib2.publish([out, p + ".png", p + ".pdf"])
