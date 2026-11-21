@@ -162,10 +162,10 @@ def main():
                 m = win(a3, 3.0, 20.0)
                 out[f"ratio_{K}_A03_A01_a3_20"] = [float(np.nanmin(np.abs(rK[m]))), float(np.nanmedian(np.abs(rK[m]))), float(np.nanmax(np.abs(rK[m])))]
                 out[f"phase_{K}_A03_A01_a3_20"] = [float(np.nanmin(np.angle(rK[m]))), float(np.nanmedian(np.angle(rK[m]))), float(np.nanmax(np.angle(rK[m])))]
+            rt = series(C["jit0p3"], "rms_TT") / interp(t1, series(C["jit0p1"], "rms_TT"), t3)
             for lo, hi in ((3.0, 20.0), (20.0, 40.0), (40.0, 140.0)):
                 m = win(a3, lo, hi)
                 out[f"ratio_rmsTT_A03_A01_a{lo}_{hi}_minmedmax"] = [float(np.nanmin(rt[m])), float(np.nanmedian(rt[m])), float(np.nanmax(rt[m]))]
-            rt = series(C["jit0p3"], "rms_TT") / interp(t1, series(C["jit0p1"], "rms_TT"), t3)
             for lo, hi in ((1.5, 10.0), (10.0, 40.0), (80.0, 140.0)):
                 m = win(a3, lo, hi)
                 out[f"ratio_rmsTT_A03_A01_a{lo}_{hi}"] = [float(np.nanmin(rt[m])), float(np.nanmedian(rt[m])), float(np.nanmax(rt[m]))]

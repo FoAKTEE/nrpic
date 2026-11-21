@@ -826,3 +826,71 @@ stand as written. Added now, how the script reads them (no change of a threshold
   only if P13(b) is refuted, or if the 1-per-cell 128^3 run is dominated by particle noise
   after shell crossing: rmsrel_a80.0_140.0 of e1_n128_vs_e1_p1 (|c(128, 1)/c(64, 1) - 1|)
   larger than that of e1_p1_vs_e1_p8 (|c(64, 1)/c(64, 8) - 1|, normalised by c(64, 8)).
+
+# Wave 3, batch 2b (2026-11-20 23:48 PST): round 3 continued after the cut of 14:35 PST
+
+State found (git log, run manifests, scratch): steps 1 and 2 of the round are done and
+committed (journal above; e2135942, f89fea8d). The round-1 session submitted step 3(a) just
+before the cut, and both analyses ran unattended to exit 0; the lead closed them with
+`nrpic-run finish` in batch 2a: B-20261120-223236-e213594 (`analyze_scan.py`, KINDS=bin,dbin,
+NWORK=4, e1_p1_n128: 122 dumps, 0 errors) and B-20261120-223241-f1efd4f (e1_p1_n64, e1_p3_n64:
+241 dumps each, 0 errors). Not done: conv_compare of P12/P13, the analysis of the four 32^3
+companions, the (1 + eps^2) test, the P16 run, the 128^3 decision, the README. No card job of
+the owner is queued (squeue 23:49 PST). Pause flag absent. Main merged into the branch at the
+start of this session (53ffa254: release core-v0.5).
+
+Defect found in `scripts/conv_compare.py` before using it (commit f89fea8d, not yet run): the
+added A = 0.3/0.1 rms-TT windows used `rt` one line before it was assigned (NameError whenever
+jit0p1 is given). Corrected by moving the assignment up; no number of an earlier run came
+from that code (round 2 ran the version before f89fea8d).
+
+`scripts/build_ic_jitter.sh` takes RATIOS (default 1,0,0, as before) for the run of P16'.
+
+Executable of the new runs: release core-v0.5 (`.work/build_gpu_v05/src/athena`, cards;
+`.work/build_cpu_v05/src/athena`, processors), the newest merged state, named by CLAUDE.md.
+Its READY (`scratch/core/exe/core_nrpic_v05/READY`) says everything of core-v0.4 is unchanged;
+core-v0.4's READY lists `<outputN> double_precision = true` (line 66). Card check of the v0.5
+card build: PASS (job 4772, same READY). The changes without an option of v0.4 and v0.5
+(CHANGELOG lines 49-71, 155-173: guard, file places, restart padding, tracers, linear waves,
+collisions) do not touch a uniform periodic `nrpic_cosmo` run [JUDGEMENT from the list], so the
+v0.5 run is comparable with jit0p3 of the requests-b executable.
+
+## P16' (written before the initial data of the discriminating run were made)
+
+Run: the jittered lattice of jit0p3 without any wave. make_waves at 7db34a5 (as jit0p3),
+ratios (0, 0, 0) with delta = 0.01 (d = delta x ratios = 0, so delta has no effect; if the
+tool refused, the smallest delta it accepts would be used and said), A = 0.3 cells along y
+and z, seed 7 (the same deviates as jit0p3), 64^3, two per cell and direction (2,097,152
+particles); `inputs/conv.athinput` with tlim = 7.0 (a = 20.25) on one card. Name jit0p3_nw.
+Compared with jit0p3 of B-20261119-142833-19edd82 (analyses B-20261119-160530-7bdcb45 and
+null spectra B-20261119-161734-a3a1366) at the same dumps: tau = 0.1 (bin 00001),
+a = 2.25 (z4cd 00001), a = 12.25 (z4cd 00005).
+
+The two readings of P16: (L) leakage of the grid-scale non-TT part through the flat spectral
+projector, linear in the noise, independent of the x wave; (X) a genuine TT response linear
+in the noise through its cross term with the x wave (proportional to delta A).
+- (i) The grid-scale non-TT part is set by the noise alone: the shell power of the traceless
+  non-TT part of h summed over |k|L/2pi >= 16 equals that of jit0p3 within 20 percent at the
+  three dumps. Refuted if not (then the x wave shapes the grid-scale scalar part and (ii)
+  must be read per shell).
+- (ii) Decision. D = (TT power of h at |k|L/2pi >= 16, no wave) / (same, jit0p3), at the
+  three dumps. (L) predicts D in 0.25-4 and the per-shell ratio P_TT/P_nonTT at |k|L/2pi =
+  16, 24, 31 within a factor 2 of jit0p3's. (X) predicts D <= 0.1: what is left is the
+  noise-noise term, second order in A, and the measured A-scaling of the grid-scale TT
+  (ratio 2.87 for a factor 3 in A, lines 685-687) leaves no room for an A^2 part of that size.
+  D in 0.1-0.25: both contribute; named so. My expectation: (L).
+- (iii) Initial data: the tool's momentum-constraint residual is at the level of the plain
+  lattice (<= 1e-12; 3.1e-17 for jit0, line 549), not 7.6e-4 as for jit0p3: the residual of
+  the jittered data comes from the x-wave momenta modulated by the jitter (the JUDGEMENT of
+  line 553). Refuted if >= 1e-6. Hamiltonian residual as for jit0p3 (within a factor 10 of
+  3.7e-11).
+- (iv) Box modes: `null_prediction.py` on the new data before the card run gives the
+  noise-noise term at K1 and K2 (the cross term vanishes but for the x-mean of the noise);
+  measured h_+ at K1 and K2 within 40 percent in modulus and 0.5 rad in phase for
+  3 <= a <= 20 (the tolerances of P11b'). Secondary: the noise-noise prediction has not been
+  tested alone before.
+- (v) Since the deviates are the same, c(jit0p3) - c(jit0p3_nw) at K1 and K2 is the cross
+  term of the x wave with the noise (plus third-order pieces): within 40 percent and 0.5 rad
+  of cross x g_cross of jit0p3's prediction (B-20261119-142733-932e595) for 3 <= a <= 20.
+- (vi) rms TT of all modes of the no-wave run: within a factor 2 of jit0p3's for
+  2 <= a <= 20 under (L); <= 0.3 of it under (X).
