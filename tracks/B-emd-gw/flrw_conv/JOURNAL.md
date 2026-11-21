@@ -328,7 +328,7 @@ Leg F (every run reached a = 998.5-1000.2):
   unresolved cell-scale structure, not of the scale factor, whose errors stay below 6e-5.
 - Momentum constraint: the relative norm Mr is rounding over rounding on a homogeneous
   slice (definition in athenak/src/particles/nrpic_io.cpp), so the absolute |M| is shown:
-  at most 1.2e-11 for the lattices, 1.2e-2 to 5.1e-2 at the start with A2 noise, falling
+  at most 1.2e-11 for the lattices, 3.4e-3 to 5.1e-2 at the start with A2 noise, falling
   as the run expands.
 
 Leg B (test B, 1e-7 plane wave, a = 1 to 999.3-999.7):
