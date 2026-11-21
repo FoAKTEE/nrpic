@@ -28,10 +28,10 @@ def main():
     os.makedirs(out, exist_ok=True)
     cz.use_style()
     fig = plt.figure(figsize=(7.0, 3.5))
-    W, Hh = 2.7, 1.25
+    W, Hh = 2.62, 1.25
     axes = {}
     for j, case in enumerate(("quadratic", "inflection")):
-        x0 = 0.78 + j * (W + 0.74)
+        x0 = 0.72 + j * (W + 0.80)   # right panel ends 0.26 in from the edge (its "10" label)
         axes[case] = (cz.inch_axes(fig, x0, 1.82, W, Hh), cz.inch_axes(fig, x0, 0.52, W, Hh))
     for case, (a1, a2) in axes.items():
         d = np.load(C.path(RUN, f"{case}.npz"))

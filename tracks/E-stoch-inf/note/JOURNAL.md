@@ -154,3 +154,49 @@ Predictions (written before any new script ran):
   all to agree, because the lead's re-check reran the ladder's scripts bit-identically;
   the likeliest exceptions are ranges printed from rounded per-rung values. Refuted by any
   disagreement, which is then listed (the files win).
+
+## 2026-11-21 07:57 UTC: batch 2b, the same package resumed; state found and new predictions
+
+The session of 2026-11-20 22:20 UTC was cut by the usage limit after writing the scripts
+(uncommitted: `common.py`, `ledger.py`, `run_all.py`, `fig_background.py`, the schematics, the
+four `fig_sr_*.py`); no registered run, no text. Since then: releases core-v0.4 (scalar-2:
+slice at N*, record, dumps) and core-v0.5 (scalar-3: inflection case, signed means, linear
+twin; `coord/INTERFACES/scalar_field_3.md`); the ladder's wave-3 items and the verifier
+g1verify finished and were reviewed by the lead of batch 2a (`stage/REVIEW-wave3.md`); the
+lead rewrote `stage/G1/STATUS.md`; decision 0021 item 1 took A4' (clause (d) on the maxima
+over the entry, the floor = the part that does not scale with the amplitude; strict A4 stays
+on record as failed).
+
+Choices [JUDGEMENT]: (1) the task text says not to use the outputs of the other packages of
+the round "because they are in progress"; g1verify and ladder3 have finished and been
+reviewed, so the note quotes a few of their reviewed numbers through document locators in
+the ledger (rows V and L), while a4res, usr and window (still open) get marked placeholders
+in the text. (2) The odd/even maxima of the constraint come from the committed pair JSON of
+`results/final/` restricted to dumps with t <= 4.5, where both runs of a pair share the time
+(the dump at t = 4.5038 of P256 paired with 4.5000 gave the old 385); the time-matched
+re-analysis `results/final2/` gives the same 745, 655, 869, 25. (3) The architecture
+schematic now shows four states: core-v0.3, core-v0.4/v0.5 (the branch pieces, released on
+2026-11-21), track analysis, new or under way. (4) Core's explanation is read in the released
+copy `coord/INTERFACES/scalar_field_3.md` (lines 143-164), still [TO VERIFY] by the track.
+
+Outcomes already seen while drafting (scripts run by hand into
+`scratch/E-stoch-inf/tmp/note_draft/`, not registered; every PNG looked at):
+- **N4 held.** A2 recomputed from the per-mode arrays equals `summary.json` for P256, L32p,
+  L64p, L128p, L256p (relative difference 0); A3 from P256.npz equals `P256_judge_a3.npz`
+  (difference 0); first dump with odd > even 1.509, 1.990, 2.956, 3.435 e-folds = floor.json;
+  A6 orders 3.933-4.081.
+- **N8 failed in part.** Against the rewritten STATUS.md the numbers agree; the ladder
+  README's A1 maxima differ: phi 1.1e-12 printed against 2.0e-12 (P256), K 2.0e-12 against
+  3.6e-12 (L32p) (claims g22, g23; the verifier's disagreement 4). The files win; the note
+  quotes the computed values.
+- The schematics and `fig_background` (right panel's last tick label now inside the canvas)
+  were looked at after each change.
+
+Predictions for the registered regeneration run (written before it):
+- **N9 (repeat and checksums).** The run of `run_all.py` on two cores completes; every input
+  passes its sha256 against its run (or the committed copy against the run's sha256sums);
+  every figure and schematic repeats with pixel rms 0; the ledger finds every document number
+  of the rows C, V, L on its line. Refuted by a failure of any of these.
+- **N10 (claims).** 104 claims, 7 differing: the five G0 differences of 2026-11-15 (c16-c19,
+  c21) and g22, g23. Refuted by any other count.
+- **N7 restated.** Wall time below 10 minutes (each P256 figure reads a 447 MB array twice).

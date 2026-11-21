@@ -1,11 +1,16 @@
-"""Schematic: stage timeline of Track E (note v0).
+"""Schematic: stage timeline of Track E, state of 2026-11-21 (wave 3, batch 2b).
 
-Gates and indicative times: spec/scope/SCOPE.md section 10 (charter 9.2); content of each
-gate: the track sheet (brief 798, charter 9.8) as made concrete in SCOPE.md section 4 and
-stage/G1/STATUS.md; the ruling of decision 0013 (continue to G1 and G2, scope of G3 decided
-at G2); the card-hour allotment of decision 0014; what each step waits for: the outbox
-requests of 2026-11-15T14:10Z and core's answer (scalar-field-merged message).
-Gate positions are evenly spaced; the labels give the indicative times. No data are read.
+Gates and indicative times: spec/scope/SCOPE.md section 10 (charter 9.2). State of each gate:
+G0 passed (decision 0013: continue to G1 and G2, scope of G3 decided at G2; accepted by
+decision 0017); G1 not yet met (stage/G1/STATUS.md, OPEN.md): spectrum, freezing and the
+constraints in the reworded criterion A4' (ruling 0021 item 1) are met, the strict A4 failed
+on record; missing are the note's G1 products (this package) and the gate review; the
+slice, record and dumps are released in core-v0.4, the verifier report exists
+(stage/G1/VERIFIER.md); open besides: P256 on the release card build (OPEN.md item 3).
+G2 = the ultra-slow-roll case
+plus the sensitivity to window, Courant factor and resolution (SCOPE 4b, last paragraph;
+ladder/README.md "Not done"). Gate positions are evenly spaced; the labels give the
+indicative times. No data are read.
 """
 import os
 import sys
@@ -14,17 +19,18 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import paperfig as pf  # noqa: E402
 
 STEM = "schem_timeline"
-W, H = 30.0, 12.4
+W, H = 30.0, 12.8
+PASSED, NOW, AHEAD = pf.GREEN_DARK, pf.SLATE, pf.RED
 GATES = [
-    ("G0 feasibility", "week 2", pf.GREEN_DARK,
-     "specification, code base,\ncompute estimate; group:\ncontinue, shrink, downgrade"),
-    ("G1 slow roll", "week 8", pf.GREEN_DARK,
-     "spectrum per mode, freezing,\nconstraints converge;\nbackground, order, noise"),
-    ("G2 ultra-slow roll", "month 4", pf.SLATE,
+    ("G0 feasibility", "week 2", PASSED,
+     "specification, code base,\ncost; passed: continue\nto G1 and G2"),
+    ("G1 slow roll", "week 8", NOW,
+     "spectrum, freezing and\nconstraints met as ruled;\nstrict criterion failed"),
+    ("G2 ultra-slow roll", "month 4", AHEAD,
      "USR case reproduced;\nwindow, Courant factor\nand resolution varied"),
-    ("G3 tail statistics", "month 9", pf.RED,
-     "many realisations against\ndelta-N; compaction\nfunction to Track A"),
-    ("G4 paper", "month 12", pf.RED,
+    ("G3 tail statistics", "month 9", AHEAD,
+     "many realisations against\ndelta N; compaction\nfunction to Track A"),
+    ("G4 paper", "month 12", AHEAD,
      "manuscript and\nreproduction package"),
 ]
 
@@ -46,24 +52,27 @@ def main():
         pf.callout(ax, x - cw / 2 + 0.1, 6.5, cw, 3.7, title, body, bar=col, size=7.0,
                    title_size=8.0, band=0.8)
         pf.line(ax, (x, y0 + 0.35), (x, 6.5), color=pf.GREY_LINE)
-    pf.text(ax, 0.9, 11.3, "now: wave 2; G0 submitted, the group's decision pending "
-            "(ruling: continue to G1 and G2)", size=7.5, ha="left", italic=True)
-    ax.add_patch(pf.Polygon([(4.6, 5.95), (5.0, 5.95), (4.8, 5.65)], closed=True,
+    pf.text(ax, 0.9, 11.75, "now: wave 3 (21 November 2026); G0 passed, G1 not yet met",
+            size=7.5, ha="left", italic=True)
+    xn = 8.0
+    ax.add_patch(pf.Polygon([(xn - 0.2, 5.95), (xn + 0.2, 5.95), (xn, 5.65)], closed=True,
                             fc=pf.RED, ec="none", zorder=8))
-    pf.text(ax, 4.8, 6.25, "now", size=7.0, color=pf.RED)
+    pf.text(ax, xn, 6.25, "now", size=7.0, color=pf.RED)
     needs = [
-        (3.6, 8.8, "initial slice at the start,\nmode and transfer tables,\n"
-                   "analysis of the output"),
-        (9.6, 14.8, "slow-roll runs at 256 cells\nand the ladder; about one\n"
-                    "card-hour"),
-        (15.6, 20.8, "cost of one realisation\nmeasured; scope of G3\n"
-                     "decided by the group"),
-        (21.6, 26.6, "hundreds of card-hours\nor smaller boxes and\nimportance sampling"),
+        (3.6, 8.8, "G1 sections of this note,\ngate review; the 256-cell\nrun on the released cards"),
+        (9.6, 14.8, "USR runs at 256 cells and\nthe sensitivity runs; scope\nof G3 decided at G2"),
+        (15.6, 20.8, "hundreds of card-hours\nor smaller boxes and\nimportance sampling"),
+        (21.6, 26.6, "tail statistics written\nup; hand-over to\nthe particle runs"),
     ]
     for x0, x1, txt in needs:
         pf.brace(ax, x0, x1, 3.75, "", below=True)
         pf.text(ax, 0.5 * (x0 + x1), 2.15, txt, size=7.0, color=pf.ROSE)
     pf.text(ax, 0.6, 0.45, "needs between gates", size=7.5, italic=True, ha="left")
+    pf.panel(ax, 17.6, 0.12, 11.8, 0.9, radius=0.35, fill=pf.CREAM_LEG)
+    for x0, col, lab in ((18.0, PASSED, "passed"), (21.6, NOW, "in progress"),
+                         (26.0, AHEAD, "ahead")):
+        ax.add_patch(pf.Circle((x0 + 0.3, 0.57), 0.25, fc=col, ec="none", zorder=4))
+        pf.text(ax, x0 + 0.8, 0.57, lab, size=7.5, bold=True, ha="left")
     pf.save(fig, os.path.join(out, STEM))
 
 

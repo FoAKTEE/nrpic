@@ -33,6 +33,24 @@ RUNS = {
     "E-20261115-135532-3f958a1": ("E-stoch-inf", "lead's independent background, freezing and delta-N checks", True),
     "core-20261115-143907-cea4c86": ("core", "core's card throughput of Z4c, field and sources at 128^3", False),
     "E-20261115-172423-5234cce": ("E-stoch-inf", "Markov-tanh noise of the release executable against the standard and a cancellation-free reference", True),
+    # gate G1: the slow-roll ladder (ladder/README.md) and the checks of its pipeline
+    "E-20261115-194633-9e04ed8": ("E-stoch-inf", "final analysis of the slow-roll ladder: A1-A5, spectrum, halving, negative controls, cost (ladder/results/final/, per-mode arrays res/*.npz)", True),
+    "E-20261119-142713-32c883a": ("E-stoch-inf", "floor analysis of the odd constraint parts, A5 before the floor, halving, crossing against ln(N/8) (ladder/results/floor/)", True),
+    "E-20261119-145230-ff0dff2": ("E-stoch-inf", "temporal order A6 at N = 32, Courant 0.25, 0.125, 0.0625 (ladder/results/a6/, a6_modes.npz)", True),
+    "E-20261115-172618-f948386": ("E-stoch-inf", "card job A: P256, 256^3 slow roll in the paper's set-up, 8.1 e-folds (cost from the manifest)", True),
+    "E-20261115-171445-36152c4": ("E-stoch-inf", "synthetic tests T1-T5 of the analysis module", True),
+    "E-20261115-172935-ddfade0": ("E-stoch-inf", "ladder reader against core's, R^NR at t = 0", True),
+    "E-20261115-174214-74becdd": ("E-stoch-inf", "extraction factor of the anisotropic term of R^NR (SPEC 9 E6)", True),
+    "E-20261115-180533-24a7781": ("E-stoch-inf", "noise validation of the card base case: frozen scheme, MeshBlock layouts (A11)", True),
+    "E-20261115-184748-9b010fa": ("E-stoch-inf", "card against processors (A14)", True),
+    "E-20261119-141654-c2a10d1": ("E-stoch-inf", "restart bit-identity on processors and card (A12)", True),
+}
+
+# committed copies of run outputs: repository path (relative to the track) -> (run id, path in the run)
+COMMITTED = {
+    "ladder/results/final": ("E-20261115-194633-9e04ed8", "res"),
+    "ladder/results/floor": ("E-20261119-142713-32c883a", ""),
+    "ladder/results/a6": ("E-20261119-145230-ff0dff2", ""),
 }
 
 _cache = {}
@@ -98,6 +116,32 @@ def path(run_id, rel):
 
 def load_json(run_id, rel):
     with open(path(run_id, rel)) as f:
+        return json.load(f)
+
+
+def committed(rel):
+    """Absolute path of a committed copy of a run output (relative to the track directory,
+    e.g. 'ladder/results/final/P256_judge.json'), after checking that its sha256 equals the
+    one the run recorded for the original. Read from the repository, so a clean export
+    (nrpic-stage verify) needs only the run's sha256sums.txt."""
+    d, fn = os.path.split(rel)
+    if d not in COMMITTED:
+        raise SystemExit(f"{rel}: not a committed copy of a registered run")
+    run_id, sub = COMMITTED[d]
+    orig = fn if (fn == "summary.json" and sub == "res") else (f"{sub}/{fn}" if sub else fn)
+    p = os.path.join(TRACK, rel)
+    key = (run_id, orig)
+    if key not in _cache:
+        got = sha256(p)
+        rec = recorded(run_id)
+        if rec.get(orig) != got:
+            raise SystemExit(f"{rel}: sha256 {got} differs from {run_id}/{orig} ({rec.get(orig)})")
+        _cache[key] = (got, f"manifest (committed copy {rel})")
+    return p
+
+
+def committed_json(rel):
+    with open(committed(rel)) as f:
         return json.load(f)
 
 

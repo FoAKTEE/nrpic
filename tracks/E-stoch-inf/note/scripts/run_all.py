@@ -1,4 +1,4 @@
-"""Run every figure script, both schematics and the ledger of the note into one directory
+"""Run every figure script, the schematics and the ledger of the note into one directory
 (the registered run of the note package), then check that a second run of each figure
 script gives the same PNG (prediction N3 of ../JOURNAL.md).
 
@@ -12,7 +12,8 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 FIGS = ["fig_background", "fig_freezing", "fig_deltan", "fig_noise", "fig_cost",
-        "schem_architecture", "schem_timeline"]
+        "fig_sr_modes", "fig_sr_freezing", "fig_sr_constraints", "fig_sr_order",
+        "schem_architecture", "schem_dataflow", "schem_timeline"]
 
 
 def main():
