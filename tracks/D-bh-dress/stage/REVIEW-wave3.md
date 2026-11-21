@@ -202,3 +202,129 @@ corrections (section 2) into the text and ledger.
    with the faces at +-384 M; decides whether ES-1G's +7e-3 is the boundary) and the matched
    V-1GB (V-1B with lapse_leak); then ES-F as pre-registered; then the M/16 nest.
 3. No card job was submitted in this session (no card-hours were named for the lead).
+
+## 9. Lead session of batch 4a (2026-11-21 15:45-17:00 UTC, Opus)
+
+Packages finished since the lead of batch 2a: `secondary_infall` (batch 2b, closed), `g2runs`
+(batch 3, session closed; its two card runs are queued) and `note` (batch 3, closed). Still open
+and left alone: `drift_controls` (cut 2026-11-20; three untracked tools) and `flux_tools` (its
+ES-F run was submitted by g2runs and is queued; the judging is g2runs' `finish_g2.sh esf`).
+
+Method as before: my predictions Y1-Y5 were committed to `../JOURNAL.md` (commits d794a485 and
+the Y5 commit) before the checks ran; no helper code. Scripts `review_wave3/batch4a_check.py`
+(readers of `wave3_check.py` and `review_wave2/infall_check.py`) and `review_wave3/batch4a_profile.py`.
+Runs D-20261121-155215-0611c24 is Y5; D-20261121-154912-27e91c6 is Y1-Y2 (D-20261121-154902-f2724c5
+failed on a syntax error of mine, kept on record). Figures looked at: `batch4a_check.png`,
+`batch4a_profile.png` (mine), `compare_horizons.png` (D-20261121-144657-cf510fc),
+`axis_profiles.png` (-145907-f76095b), `secondary_infall/figs/w3_Q16_late_profiles.png`.
+
+| Check | Outcome |
+|---|---|
+| Y1 g2runs horizons from the raw finder summaries | held, with one marginal clause (below) |
+| Y2 Q16 growth, particle counts of Q16 and P192 | held (after matching the snapshot times) |
+| Y3 note compiles; 3.43 against 3.31 per cent | compile held; my guess of the cause was wrong |
+| Y4 figures | consistent with the numbers |
+| Y5 Q16 profile against the verifier's self-similar solution | held: 16.3 per cent |
+
+### 9.1 g2runs (FINISHED as a session; card runs ES-1GB segment 2 and ES-F queued)
+
+Confirmed from the finder summaries (Y1, run D-20261121-154912-27e91c6):
+- [VERIFIED] ES-1GB (faces at +-384 M) equals ES-1G (+-192 M) to 2.9e-15 for t <= 90 M and to
+  4.2e-9 up to 188 M (panel a: rounding until ~133 M, then growing). Its drift from 100 M is
+  +4.157e-3 at 188 M, the same as ES-1G's +4.157e-3 at that time. **The late horizon growth of
+  ES-1G is not the outer boundary.** This refutes my predecessor's reading (sections 1 and 3 of
+  this file, HANDOFF and STATUS of batch 2a: "likely the boundary [JUDGEMENT]"); that reading
+  was a judgement, it was tested, and it failed. What section 3 established for V-1 (1+log,
+  vacuum) stands.
+- [VERIFIED] V-1GB (V-1B with lapse_leak) drifts over [-5.60e-4, +1.265e-3] on 100-199.5 M
+  (claim +1.27e-3: within one unit of the last digit), V-1B over [-4.84e-5, +1.98e-5]. Mean
+  coordinate radius at the end: V-1GB 0.875 M, V-1B 2.196 M, ES-1GB 0.795 M at 188 M.
+- [VERIFIED] Null test ES-1GB minus V-1GB: largest |difference| up to 90 M is 1.005e-4 (at
+  t ~ 62 M), so the package's "below 1e-4 up to 90 M" holds only to rounding (my clause Y1(d)
+  failed by 0.5 per cent; immaterial); above 2e-4 from 137.5 M on, without return; 3.53e-3 at
+  188 M. Floor of the null test with lapse_leak at M/8: about 3.5e-3 over 100-188 M.
+- Figures: `compare_horizons.png` shows the same (its panel (c) legend sits on the data,
+  cosmetic); `axis_profiles.png` shows the lapse at x = 1 M near 0.43 (lapse_leak) against 0.19
+  (1+log) at 180 M, the shift peak 0.16 against 0.40 and chi at 5 M falling from 0.68 to about
+  0.50 in V-1GB: the numbers of the package's L1/L2 reading. The mechanism stays [JUDGEMENT].
+- Not rechecked: the slice masses (S1, B4'), X1 (executable change neutral), T1/T2 tool tests.
+- Consequence (decision 0022 item 3): the G2 null test runs without lapse_leak, or with core's
+  corrected option (first item of core-v0.7). ES-F (queued, D-20261121-144631-aa7ce9b) has no
+  lapse_leak in its input (1+log, faces at +-192 M), so it is not affected by this defect; its
+  faces are close, but V-1 at +-192 M drifted by 1.4e-4 over 100-200 M, small against the
+  predicted growth of 0.1-0.25 M.
+
+### 9.2 secondary_infall (FINISHED, batch 2b)
+
+Confirmed (Y2, Y5):
+- [VERIFIED] Q16 (D-20261121-085652-7e189a2): every one of 520048 particles is in the box at
+  a/a_i = 15.96. M_ta and dress at 8.00 and 15.96 equal the README's 4.815/2.148 and
+  9.302/4.911 to 4e-5. At "4" and "12" the README quotes values at a/a_i = 4.00 and 12.00; the
+  nearest snapshots are 3.976 and 12.020, so my absolute values differ (-0.5, +0.2 per cent),
+  but the ratios to the hybrid_cc shells at the same a agree with the README within 0.05 points:
+  M_ta +0.21, +0.16, +0.17, +0.78 per cent and dress +0.42, -0.05, +0.17, +0.10 per cent at
+  3.98, 8.00, 12.02, 15.96 (kernel_cc: +0.43 to +1.26 per cent). dress/M_ta 0.528 and
+  M_ta/(M a/a_i) 0.583 at 15.96, as claimed.
+- [VERIFIED] P192 (D-20261121-075559-31835c4) misses 16462 dust particles (0.704 M) at its last
+  snapshot (a/a_i = 29.97); the first goes missing at 23.56 (panel f).
+- [VERIFIED, Y5, D-20261121-155215-0611c24] Q16's dust profile at 15.96 in six 0.1-dex bins on
+  lambda = 0.075-0.3, my r_ta = 246.4 M (zero of the mean radial velocity), against the
+  fresh verifier's seedless self-similar solution: largest deviation 16.3 per cent (last bin,
+  lambda ~ 0.27, next to the outermost caustic), rms 10.6 per cent; 24.9 and 21.6 per cent with
+  r_ta moved by -3 and +3 per cent. The package gives 16 per cent (rms 7.6) against its own
+  seeded solution: two references and two r_ta estimators give the same bound.
+- Figure `w3_Q16_late_profiles.png`: run and three shell laws on the self-similar line from
+  lambda ~ 0.04 to 0.3 at 15.96; below it inside lambda ~ 0.05 (seed and softening of 4 dx).
+- Not rechecked: the cause of P192's late failure (shell energies), the kernel's dependence on
+  the clump position, R8 (threaded build), the regression of 617 leaves. The package's
+  [JUDGEMENT] that a clean a/a_i = 30 run needs nx ~ 450-500 is accepted; it is not needed for
+  G1 under decision 0021 item 2.
+- Erratum asked by the package (wave-2 shells used the vertex kernel while the runs had the
+  clump at a cell centre; about half of the dress excess at a/a_i = 2): taken into
+  `G1/STATUS.md` (this session). Masses from a/a_i = 3 on are unaffected.
+- Closing: complete. D-pre-3 under the wording of decision 0021 item 2 is met (section 10).
+
+### 9.3 note (FINISHED, batch 3)
+
+- [VERIFIED] The committed source (`git archive` of this branch into scratch) compiles with
+  latexmk to 18 pages with no undefined reference or citation; the log has two "Overfull \vbox
+  (6.1pt too high) while \output is active" (page builder, not a line overrun), which the
+  checker's 0 overfull boxes (it counts hboxes) does not see. Cosmetic; recorded.
+- [VERIFIED] 3.43 against 3.31 per cent (N128Lc, dress over the kernel shells at a/a_i = 2): the
+  two growth tables are identical (`secondary_infall/nm_growth_cellcentre.txt` and `nm_growth.txt`
+  of D-20261115-190541-e27453d); the note's ledger takes nm_analyze's interpolation of the ratio
+  at a/a_i = 2 (3.43), my predecessor's Z4 interpolated the two masses (3.31), between snapshots at
+  1.954 and about 2.05. My guess (two tables) was wrong. Both are correct; STATUS now says
+  "0.5-3.4 per cent at a/a_i = 2, by interpolation between snapshots".
+- Not rechecked: the 51 + 3 ledger rows (P11, P13 of the package), the claims check.
+- G1 item C16 is met: v1 compiled, checked with `--compile`, every page read by the package
+  (note/JOURNAL.md 2026-11-21T13:06Z), the verifier's corrections in.
+- Open, recorded (not G1): P14 three data keys of registered outputs ("ES-1",
+  pass_e0.1_s0.5_a100) caught by the forbid list; the package asks for an exception in
+  WRITING_GUIDE.md (I add it, section 10); a second agent for the eight ledger rows the verifier
+  left NOT CONFIRMED.
+
+### 9.4 What the track does about the verifier's items (update of section 2)
+
+| Verifier item | State now |
+|---|---|
+| V2 dress at a/a_i = 2 WRONG as worded | corrected in STATUS and the note (0.5-3.4 per cent at 2; within 1.1 from 3); half of the N128Lc excess is the reference's vertex kernel (secondary_infall, D-20261121-092852-a0c75f0) |
+| V2 profile "about 25 per cent, sensitive to r_ta" | carried; Q16 at a/a_i = 16 gives 16 per cent against both self-similar solutions (Y5), so the profile approaches the solution as a/a_i grows |
+| V2 seeded vs seedless not compared | done in effect: Y5 used the verifier's seedless solution, the package its seeded one, same bound |
+| V3 axis curve NOT CONFIRMED | open, G2-time item (STATUS) |
+| V4 inner-range deficits | open, second sampler seed (G2) |
+| V5 eight ledger rows NOT CONFIRMED | open; the note package did not get a second agent (no subagent tool) |
+
+## 10. Lead's decisions of batch 4a
+
+1. G1 criteria: C7 PASS under decision 0021 item 2 (growth against matched shells within 1.1
+   per cent from a/a_i = 3 in three wave-2 runs and within 0.8 per cent to a/a_i = 16 in Q16; profile
+   within 16 per cent of the self-similar solution at a/a_i = 16, about 25 at 8; r^-9/4 not
+   claimed). C16 PASS (note v1). With C19 refreshed, every G1 item is PASS: the package is complete
+   for the orchestrator's independent review (decision 0016 item 4). I do not pass the gate.
+2. G2 plan after decision 0022 item 3: the vacuum null test with plain 1+log and the faces at
+   +-384 M has its floor (V-1B, 4.8e-5 over 100-200 M at M/8). Next card runs, one change each:
+   ES-1B (ES-1, 1+log, faces at +-384 M) against V-1B, the matched null test without lapse_leak;
+   then the M/16 nest of the pair. lapse_leak runs wait for core-v0.7. No card job was submitted
+   this session: two D jobs are queued (ES-1GB segment 2, Slurm 4805; ES-F, Slurm 4806).
+3. WRITING_GUIDE.md exception 1 extended to data keys of registered outputs (note package request).

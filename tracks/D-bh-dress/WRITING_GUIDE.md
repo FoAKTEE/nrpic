@@ -22,7 +22,10 @@ the note. Started 2026-11-15 with the note v0 (gate G0).
    the main text and the captions follow 4.1 and 5.5. The scripts that build the ledger
    (`scripts/ledger.py`, `scripts/run_all.py`, the run table of `scripts/common.py`) name
    the track's documents and runs they check; the checker's 5.5 and 5.8 hits there and in
-   the ledger appendix are accepted under this exception.
+   the ledger appendix are accepted under this exception. So are the data keys of registered
+   outputs that a figure script must use to read them (for example a series named "ES-1" in
+   a run's JSON, or a case name such as `pass_e0.1_s0.5_a100`), provided they appear only in
+   the script and never in the typeset text (lead, batch 4a, 2026-11-21).
 2. Evidence labels of the program ([VERIFIED], [BACKGROUND], [JUDGEMENT], [TO VERIFY])
    stay out of the typeset text; the main text says in words what is established, what is
    our choice, and what is open. The labels live in the journals and the ledger.
