@@ -235,3 +235,38 @@ tables) and 5.8 (scripts the guide's exception names, plus `schem_dataflow.py`, 
 exception does not yet name); every caption within five typeset lines. Refuted by an
 undefined reference, an overfull box, a 5.5/5.8 hit in the main text or a caption before
 the appendix, or a caption past five lines on the rendered page.
+
+## 2026-11-21T03:12Z, entry 6: outcome of the compile and page reading; text fixes; prediction for a second note run
+
+**P8 outcome (compile and check, before the fixes below).** `latexmk`: 12 pages, 0 undefined
+references or citations, 0 overfull boxes. `check_manuscript.py --compile` with the guide's
+`--forbid` list: candidates only under 5.5 (47, all in the ledger appendix and its tables) and
+5.8 (28, all in scripts: `ledger.py` 13, `schem_dataflow.py` 9, `handreg.py` 4,
+`run_all.py` 2); no hit in the main text or a caption before the appendix. Captions within
+five lines on the rendered pages. P8 holds. Every page read (pages 1-12 at 110 dpi).
+
+Found by reading the pages, and fixed in `main.tex` [JUDGEMENT]:
+- Abstract "A verifier ... recomputed every number of the note" and Sec. IV E "every computed
+  number of the ledger ... It confirmed every value": too wide. VERIFIER.md section 2 left
+  aside the predicted card-hours (2.1, NOT CONFIRMED), the four cross-check differences
+  (2.1, "transcription ... not re-run"), and of the wave-2 rows now in Table IV the
+  tracked-particle residuals, |H| at t = 20, the two central-lapse rows and the compactness
+  on the axes (not in its 2.4; "Not recomputed: the horizon statements"). The abstract and
+  Sec. IV E now say so, and App. B names these rows.
+- App. B: a run-id suffix ("-155056-ec1b816") broke after its leading hyphen; the six
+  suffixes are kept in one box (`\mbox`), two lines of that paragraph are now loose
+  (underfull), which reads acceptably.
+- Sec. III B "is the set of the threshold line" -> "set-up".
+- Fig. 6 (timeline) showed "now: wave 2; G0 and G1 judged together" with the marker before
+  G0, stale since G0 passed on 2026-11-19 (`coord/GATES.md` line 8). `schem_timeline.py` now
+  marks "now: wave 3 of the program; G0 passed, G1 at its review" just after G1, and the
+  bracket G1 -> G2 names what G2 needs after wave 2 (a slicing that reaches trapping, a
+  resolved first trapped sphere, convergence runs), as in note Sec. V. Dry render in
+  `scratch/A-emd-pbh/tmp/g1close/tl_dry/` looked at.
+
+Prediction for the second registered run of `run_all.py` (P10): 8 of 8 scripts clean; every
+output byte-identical to the run A-20261120-223316-92c27f5 except `schem_timeline.{png,svg}`
+(the change above) and the PDF/SVG dates; ledger 53 rows, 71 claims, the same 2
+disagreements; all inputs "sha256 ok". After the copy the note compiles to 12 pages with 0
+undefined references and 0 overfull boxes. Refuted by any other changed output or a new
+disagreement.

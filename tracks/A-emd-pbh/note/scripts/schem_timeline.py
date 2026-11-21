@@ -1,9 +1,10 @@
-"""Schematic: stage timeline of Track A (note v0).
+"""Schematic: stage timeline of Track A (note v0; state updated for note v1, 2026-11-20).
 
 Gates and indicative times: coord/CHARTER.md section 9.2; track criteria: charter 9.4 as
 made concrete in scope/SCOPE.md section 7; state and order: SCOPE.md 10.2, 10.7, 10.8,
 stage/G1/STATUS.md, decision 0013 (threshold line in the periodic box, G1 scan design
-accepted on the reference-based design), decision 0014 (card-time allotment).
+accepted on the reference-based design), decision 0014 (card-time allotment); G0 passed on
+2026-11-19 (coord/GATES.md); the G1 needs after wave 2: note Sec. V.
 Gate positions are evenly spaced; the time labels give the charter's targets. No data are read.
 """
 import os
@@ -46,17 +47,17 @@ def main():
                    title_size=8.0, band=0.8)
         pf.line(ax, (x, y0 + 0.35), (x, 6.3), color=pf.GREY_LINE)
     # now
-    pf.text(ax, 0.9, 10.9, "now: wave 2 of the program; G0 and G1 judged together",
+    pf.text(ax, 0.9, 10.9, "now: wave 3 of the program; G0 passed, G1 at its review",
             size=7.5, ha="left", italic=True)
-    ax.add_patch(pf.Polygon([(0.9, 5.75), (1.3, 5.75), (1.1, 5.45)], closed=True,
+    ax.add_patch(pf.Polygon([(9.8, 5.75), (10.2, 5.75), (10.0, 5.45)], closed=True,
                             fc=pf.RED, ec="none", zorder=8))
-    pf.text(ax, 1.1, 6.05, "now", size=7.0, color=pf.RED)
+    pf.text(ax, 10.0, 6.05, "now", size=7.0, color=pf.RED)
     # what each step waits for
     pf.brace(ax, 3.6, 8.8, 3.6, "", below=True)
-    pf.text(ax, 6.2, 2.25, "done in wave 1: offline references,\ninitial data, predictions",
+    pf.text(ax, 6.2, 2.25, "done in waves 1-2: offline references,\ninitial data, predictions",
             size=7.0, color=pf.ROSE)
     pf.brace(ax, 9.6, 14.8, 3.6, "", below=True)
-    pf.text(ax, 12.2, 2.25, "release core-v0.3 merged;\nfirst ball runs; card time",
+    pf.text(ax, 12.2, 2.0, "slicing that reaches trapping;\nresolved first trapped sphere;\nconvergence runs, card time",
             size=7.0, color=pf.ROSE)
     pf.brace(ax, 15.6, 20.8, 3.6, "", below=True)
     pf.text(ax, 18.2, 2.0, "peak data on a constant-K slice,\ncollapse slicing in the box,\n"
