@@ -507,3 +507,31 @@ to 4 digits" holds for maxima only; note journal heading time out of order (cosm
 my mind about: G1 completeness (C6 by decision 0021, C8-C15 delivered, C16's ledger part by the
 B4 cross-check). Open: the G1 gate review (orch); U-A2'/U-A4' ruling; window analysis; a4res job
 4798; P256 on the release card build. Card-hours this session: 0.
+
+## 2026-11-21T20:19Z  session lead wave 3, batch 5 (Opus)  commits 3ac9fcb7..  runs see below
+
+Aim (decision 0025 items 4-5): leave the cards loaded with G2 production runs, unattended, after
+fixing the USR G2 criteria (decision 0023 item 1); review the finished packages `window` and
+`a4res` from their artefacts.
+
+Done before any run (commits 43dcc9cc, then the time correction): SCOPE section 4c (floor
+f^2 = max(0, (4 o_{s/2}^2 - o_s^2)/3), clause on the maxima, U-A2', U-A4'(a)-(d), U-R, U-S,
+U-W); package `g2prod` with deck, queue, sequencer, restart check and its predictions
+(`g2prod/JOURNAL.md` entry 1: R0, T, P256v6, U256a, U320, U256b, U256h, U256nc).
+
+Submitted (12:29 PST): timing E-20261121-202929-43dcc9c (Slurm 4827), P256v6
+E-20261121-202935-31520bc (Slurm 4828); R0 on processors E-20261121-202941-da16544; sequencer
+pid 2542133 (scratch/E-stoch-inf/g2prod_seq/). Review reruns: window E-20261121-203008-f104a3e,
+a4res E-20261121-203016-7209255.
+
+Predictions of the lead's checks (written before they ran):
+- LC1 (a4res rerun): every numeric leaf of a4res.json and post.json equal (the analysis is
+  deterministic on processors); refuted by any difference beyond 1e-12 relative.
+- LC2 (window rerun): summary_usr.json, summary_sr.json, posthoc_usr.json equal up to BLAS
+  thread-count rounding (<= 1e-9 relative) - the batch-3 rerun of usr found 8.6e-4 on lockstep
+  leaves from the BLAS thread count, so a difference up to 1e-3 on fitted leaves would not
+  refute a verdict; refuted if any verdict (W1-W8) changes.
+- LC3 (own reader, stage/review5/scripts/lead5_check.py on the raw dumps of
+  E-20261121-131000-b23055b, not a4res's code): largest odd/even of H over the dumps with t > 0:
+  N64q16 0.455, N64q25 0.9997, N64q64 15.5 within 2 percent (a4res README); refuted beyond 2
+  percent; a different box-mean or norm convention would show as a common factor.
