@@ -547,3 +547,24 @@ F-20261121-075309-b6996ce (J4g), all read-only on P1, F-20261119-150017-b45ec5f]
 - So the junk of P1's data lies between about 1.5e-6 M (seen at the spheres) and 5e-5 M (the
   members' scaled junk at its upper end); against the binary's Newtonian binding energy
   m1 m2 / 2a = 1.6e-3 M that is at most about 3 percent [arithmetic].
+
+## 2026-11-21 G. Gauge recommendation for the passages after P1 (written into README)
+
+[JUDGEMENT, from E3, E10 and P1] Use core's mass-scaled shift damping (shift_eta = 2/M, profile on,
+M_ref = M, width 4) for the next passage, after a 400-cycle three-hole card smoke and with a
+profile arm in the lead's isolated-binary test; full text, reasons and what is untested in
+README "Gauge recommendation". One reading added for it [VERIFIED, column meanradius of
+`single.horizon_summary_0.txt` of S3, S2 (run F-20261115-173601-2fae2dc) and S2g (run
+F-20261119-143443-f11ebb9)]: S2g's coordinate horizon has mean radius 1.06 m (t = 10), 1.03 (14),
+0.99 (20), 1.01 (40, 89.5), between S3's 1.16-1.18 and S2's 0.92-0.89 m: the profile gives the
+member S3's horizon mass but not S3's coordinate size (my first README draft said it did; corrected
+before commit).
+
+## 2026-11-21 State at the end of the package (batch 2b)
+
+Done: S2g finished; E10 judged (nr_first JOURNAL); single-member junk (J1-J3c); three-hole junk
+(J4g, J4, J4b, J4c); gauge recommendation; README with the G1 T3 text. Failed predictions on
+record: J2 (2 of its bounds), J3 (4 of 6), J3b (3 of 4), J3c (2 of 3), J4a (1), J4g (3 clauses,
+narrowly), J4 (all six items of item 6 but (v) on the main window), J4b (items 1, 2 second clause,
+5), J4c (one clause by 0.001). Not done: a second-agent review of J3-J4c; nothing is pending on the
+cards. P1's chain (segment 15, Slurm 4773) keeps appending; J4b does not depend on it.
