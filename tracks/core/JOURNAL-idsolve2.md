@@ -1126,3 +1126,101 @@ build, refinement in `nrpic_cosmo`, the region norms). Then the second publicati
  **M2b** (written before its run; the reference of Kc at 128 cells): `w1_far_n128` of
  run core-20261119-155750-c923762 (build of 76add0c) replayed with the merged build:
  every file byte-identical, as `w1_far_n32` in M2.
+
+## 2026-11-21, entry 16: outcomes of M0, M1, M2, M2b, T; Kc not submitted
+
+All with the builds of the merge commit 395e17d (`athenak/src` unchanged since):
+processor build `scratch/core/tmp/idsolve2/b2b/exe_395e17d/athena_cpu` (sha256
+195df980...), card build `athena_gpu` (0fb76bdb...), threaded build `athena_cpu_omp`
+(eed2ae51...).
+
+**M0 held** (run core-20261121-080113-2230974, 3 cores; `regress_r0_v05.json`; figure
+`figs/regress_r0_v05`, looked at: nine blue bars, no red; its x label was cut and the
+figure was drawn again from the numbers, run core-20261121-080921-42e8213). Without
+`id_solve` the merged processor build writes the bytes of release core-v0.5: 59 files
+of nine set-ups (geodesics with both pushers 2 + 2, deposit on a refined mesh 1, East's
+cosmology 12, Oppenheimer-Snyder on a refined mesh 16, Jeans 5, binary on four multigrid
+levels 1, Newtonian mode isolated 11 and periodic 9), both executables exit 0.
+
+**M1** (run core-20261121-080151-4db2e1d, 2 cores, 12 cases of 9 to 13 s;
+`regress_m1.json`; figure `figs/regress_m1`, looked at: left the files per pair, right
+the largest change of psi and W; drawn twice more, the x label was cut and then the rows
+of the right panel were not those of the left: runs core-20261121-080921-42e8213 and
+core-20261121-080946-f294477).
+
+| pair (release core-v0.5 against the merged build) | files identical / differing | outer it. | max\|dpsi\| | dW / max\|W\| |
+|---|---|---|---|---|
+| `gauss_robin` | 8 / 0 | 17, 17 | 0 | |
+| `ball_robin` | 9 / 0 | 25, 25 | 0 | |
+| `torus_robin`, `torus_default` | 8 / 0 each | 23, 23 | 0 | |
+| `gboost_robin` | 4 / 7 | 17, 17 | 6.0e-15 | 5.1e-16 |
+| `gauss_default` | 2 / 6 | 17, 17 | 9.7e-9 | |
+| `ball_default` | 3 / 6 | 25, 25 | 3.6e-8 | |
+| `gboost_default` | 4 / 7 | 17, 17 | 1.48e-6 | 2.67e-3 |
+
+ (a), (b) held: with `id_far = robin` the Gaussian at rest and the expanding ball, and
+     the torus with or without the option, are byte-identical to the release in every
+     file (records, dumps, the first field dump, histories).
+ (c) held: the moving Gaussian with `id_far = robin` has the same 17 outer iterations,
+     psi to 6.0e-15 and W to 5.1e-16 of its maximum, the numbers of R1.
+ (d) the default far field changes psi by 9.7e-9 (Gaussian at rest; predicted below
+     1e-7: held) and 3.6e-8 (ball; predicted below 1e-5: held, 8.5e-5 of max|psi - 1| =
+     4.2e-4), W of the moving Gaussian by 2.67e-3 of its maximum (predicted 3e-4 to
+     5e-3: held). **Failed: psi of the moving Gaussian changes by 1.48e-6, not "as
+     `gauss_default`"** (predicted below 1e-7). I left out that the scalar equation
+     holds Abar_ij Abar_ij, which changes with W [JUDGEMENT: no run separates the two
+     parts]. The monitor after the solve is the same within 1 per cent in every pair
+     (1.5e-11, 1.3e-12, 8.2e-10). So against release core-v0.5 this branch changes
+     results without an option in exactly these cases: `id_solve` on a mesh with no
+     periodic face (the far field; sizes above), and `id_solve` with moving matter (the
+     Jacobian term; round-off). A torus run and a run without `id_solve` do not change.
+ This run is also the first start of `problems/idsolve/ball` and `torus` with the
+ release executable: both converge (25 and 23 outer iterations at 32 cells).
+
+**M2 held** (run core-20261121-080135-890689a, 1 core, 423 s; `regress_r2_merge.json`;
+figure `figs/regress_r2_merge`, looked at: eight blue bars; its x label is cut at the
+right edge, shortened in the script for later runs, not drawn again). The eight cases of
+run core-20261120-222207-4266c2d replayed with the merged build are byte-identical in
+every file: 7 + 9 + 6 + 12 + 10 + 10 + 15 + 10 = 79 files (I wrote 76 in the
+prediction: `p5_mov_n64` has 10 files, 3 of them inputs), the `bin/` files of the two
+refined cases and the evolution of the Zel'dovich ball included. Correction 2 of
+core-v0.4 does not touch these cases.
+
+**M2b held** (run core-20261121-081010-968d6d6, 1 core; `regress_r2_merge128.json`):
+`w1_far_n128` (5.9 million particles) replayed is byte-identical in its 12 files; the
+replay took 723 s on one core.
+
+**T held, with room** (run core-20261121-081048-0c563b2, threaded build, 4 threads,
+unbound; `check_threads.json`; figure `figs/check_threads`, looked at: differences of
+1e-16 to 2e-14 in the left panel, open and filled symbols on each other in the right;
+the labels of its first version were cut, drawn again in run
+core-20261121-082203-67b37a4; the script is `check_threads.py`, which uses
+`analyze_k.one`).
+
+| case | outer it. / linear steps, serial and 4 threads | psi | W | max\|H\|, max\|M\| after (both) | wall, serial -O2 / 4 threads -O3 |
+|---|---|---|---|---|---|
+| `w1_far_n32` | 17 / 33 both | 7.5e-16 | 3.4e-16 | 1.57e-11, 1.86e-4 | 14 s / 3.9 s |
+| `g_smr1` (two static levels, BiCGStab) | 20 / 81 both | 2.2e-15 | | 2.02e-11 | 85 s / 18.9 s |
+| `p5_mov_n64` (puncture in moving shell) | 34 / 80 both | 6.0e-16 | 8.2e-16 | 8.4e-12, 2.06e-7 | 153 s / 34.1 s |
+| `zsol_n32` with evolution to t = 2 | 51 / 137 both | 4.4e-16 | 2.3e-14 | 2.18e-12, 1.02e-5 | 31 s / 8.0 s |
+
+ The counts are equal in every case, so the bound of 1e-10 holds by five orders and the
+ amendment was not needed; the far-field lines agree in all 13 digits of M_psi and
+ P_ADM; the region means of |H| of the ball at t = 2 agree to 3e-13 (interior, shell,
+ exterior, faces). `w1_far_n32` run twice with 4 threads: its 12 files are
+ byte-identical. Not tested: other thread counts, `deposit_threads = private`, bound
+ threads, the torus and the 128-cell cases with threads. The wall times include the
+ steps that write the particle files and compare builds with different optimisation
+ (`-O2` with asserts against `-O3`): they are not a scaling measurement.
+
+**Kc not submitted.** Since 08:02 UTC the queue has held two card jobs of owner core
+(Slurm 4775 and 4777, both pending behind jobs of tracks F, E, A, B and of another
+user), so the rule forbids a third. Staged for whoever has the next free slot:
+`scratch/core/tmp/idsolve2/b2b/card_kc/card.list` (five cases with their inputs and
+particle files beside it), executable `.../b2b/exe_395e17d/athena_gpu`, processor
+references `scratch/core/core-20261121-080135-890689a/4266c2d__*` and
+`scratch/core/core-20261121-081010-968d6d6/c923762__w1_far_n128`, analysis
+`analyze_k.py --tag _kc --card <run dir> --pair <case>=<reference>`. What stands for
+cards: K with the card build of 76add0c (uniform meshes, 128 cells). The card build of
+the merged source compiles and has not run on a card; neither has any refined mesh of
+the solver, with any build.
