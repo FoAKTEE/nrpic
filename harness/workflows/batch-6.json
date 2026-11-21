@@ -1,0 +1,55 @@
+{
+ "name": "6 (2026-11-21 afternoon: work that needs no card)",
+ "what": "gate review of G1 of Track B; diagnosis of the periodic set-up of A; notes of D and F; analysis of B; two packages of the knowledge base; verifier for gate G2 of core",
+ "note": "Releases core-v0.4 to v0.6 are on main. Gates signed: G0 of every track, G1 of A, C, D and E, KB-G0 to KB-G2. Rulings: coord/DECISIONS/0021 to 0026. The cards are loaded with every owner's long runs (decision 0026 item 1): do not submit card jobs in this batch and do not touch queued chains or sequencers; processors only, at most 6 cores. The reports of all earlier batches are appended to the report files. The weekly usage window of the account is at 73 per cent: read only what your task needs.",
+ "items": [
+  {
+   "type": "gate",
+   "owner": "B-emd-gw",
+   "gate": "G1"
+  },
+  {
+   "type": "task",
+   "owner": "A-emd-pbh",
+   "key": "periodic_diag",
+   "title": "why the periodic set-up fails: diagnosis on processors",
+   "task": "Diagnose, on processors and without changing source, why the periodic set-up of package periodic_threshold fails. Evidence so far: card job 4799 (run A-20261121-131600-02b5d41): both members were stopped by the guard of release core-v0.5 (conformal factor not positive), P0L at t = 4.8 and S1L at t = 15.1, and in both the norm of the Hamiltonian constraint jumps by about 1e4 at t = 2.5 (the lead's reading run A-20261121-203120-eaba95f with its figure; the lead's latest message to core in tracks/A-emd-pbh/outbox/; periodic_threshold/README.md, JOURNAL.md and decks). Prediction first, for every run. (1) Reproduce the jump in the smallest, coarsest set-up that shows it on processors (threaded build: scripts/cpu_run.sh with the release executables of core-v0.6 in scratch/core/exe/core_nrpic_v06/, at most 6 cores; look at uptime first). (2) Locate it: where in the box and in which variables the constraint first grows (dumps around t = 2.5), and which event coincides: a regrid or the edge of the refined region, the lapse relaxation, a step limit, the first shell crossing, the deposit across levels, the guard itself. (3) Test each candidate with a run in which it could fail: with and without <z4c> lapse_leak; uniform mesh against refined; halved step; deposit shape and filter; against the earlier periodic runs of this track that did not fail (what differs). (4) Verdict: the cause if a run shows it, otherwise what is excluded; a minimal reproducing input with its command, posted to core (outbox message of type request with run ids); and what Track A can run in the periodic set-up meanwhile. Figures looked at; README.md; JOURNAL.md. Do not touch the queued chains or the sequencer of this owner."
+  },
+  {
+   "type": "task",
+   "owner": "F-hills",
+   "key": "khsr_note",
+   "title": "Newtonian reference result, passage P1 to its end, note close-out",
+   "task": "Three items the lead lists as next (tracks/F-hills/HANDOFF.md). (1) The result of arXiv:1201.4794 (find it through the knowledge base: harness/bin/nrpic-ctx and the kb tools; single comparison values with their locator only, nothing digitized is committed) reproduced with the track's Newtonian three-body reference newton3 on processors; prediction first. (2) The analysis of passage P1 to 280 M (package p1): what the run with the early-merged binary still shows (remnant, recoil, constraint history, horizon masses), with figures. (3) The note's close-out: the G1 sections brought up to date with binary_conv's convergence result (m/12 and m/16 agree; the converged pair still shrinks: risk R19) and the kerr package; every number with a ledger row and run id; registered run_all; compile; manuscript checker; pages read. Do not touch the queued chains or the sequencer of this owner."
+  },
+  {
+   "type": "task",
+   "owner": "D-bh-dress",
+   "key": "note_v2",
+   "title": "working note v2; second seed of the Kerr spike test",
+   "task": "Working note v2 of this track (tracks/D-bh-dress/note/, written with /paper-writing; guide and notation one level above the manuscript). Bring it to the state after gate G1 (signed 2026-11-21 with reservations): stage/G1/GATE_REVIEW.md lists what the note must change (the sentences near main.tex lines 198-200 on the infall criterion: decision 0021 item 2, and that the power law itself is not tested, errata row 1.7; run Q16; the vacuum control V-1B as the floor of the null test; the 'Looked at' column of the stage report's figure table; the stale header of the timeline schematic). Add the first G2 result ES-F (g2runs/JOURNAL.md entry 10 and the lead's review: the horizon mass follows the exact mass of the spherical dust solution within 0.25 per cent and the growth closes against the removed flux to 1.5e-3 once the control is subtracted; one run at one resolution) and the relaxed-lapse finding as it bears on this track (coord/DECISIONS/0025 item 3). Every number with a ledger row and run id; registered run_all; compile; manuscript checker; read the pages. Second, on processors: the second sampler seed of the Kerr spike test that the gate review asks for (inner-range deficits 3.1, 1.8, 0.9 per cent), prediction first. Do not touch the queued chains or the sequencer of this owner."
+  },
+  {
+   "type": "pkg",
+   "owner": "B-emd-gw",
+   "key": "flrw_conv"
+  },
+  {
+   "type": "pkg",
+   "owner": "kb",
+   "key": "ingest3"
+  },
+  {
+   "type": "pkg",
+   "owner": "kb",
+   "key": "claims_tracks"
+  },
+  {
+   "type": "task",
+   "owner": "core",
+   "key": "verify/verifier_g2",
+   "title": "fresh verifier for gate G2 of core",
+   "task": "Independent verification for core's gate G2: the stage package lacks a fresh verifier's report (tracks/core/stage/G2/OPEN.md, first section). You are a fresh verifier in core's worktree, not its lead: do not read STATUS.md, HANDOFF.md, the REVIEW files or the conclusions of the journals before your own verdicts are committed; change no source; do not touch the queued row-4 chains or their sequencer; commit path-limited (only tracks/core/stage/G2/VERIFIER.md, tracks/core/verify/verifier_g2/** and your run manifests). From tracks/core/stage/G2/EVIDENCE.md and CHECKLIST.md take the claims of the verification ladder (brief lines 834-860) that core marks as met, and for a sample that covers every met row and every release (core-v0.3 to core-v0.6) recompute the stated number from the registered raw outputs with short code of your own (python/nrpic readers only after a check on an analytic case): Kerr geodesics against the published digits, Oppenheimer-Snyder collapse, the cluster sequence, the deposition identities, exact restart, the Newtonian-mode checks, the box tests of the collision operator, the scalar-field ladder, the residual orders of the initial-data solver, the boundary tests. Predictions first: what you expect to confirm and what would refute it. Per claim CONFIRMED, NOT CONFIRMED or WRONG with the evidence; registered runs (harness/bin/nrpic-run); figures made and looked at. tracks/core/stage/G2/VERIFIER.md: what was checked and how, the table per claim, what could not be checked, the three weakest points of the package. Push core/nrpic."
+  }
+ ]
+}
