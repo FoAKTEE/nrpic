@@ -493,3 +493,9 @@ offset is a mode effect. Decision rule: with the three cell values, the mode eff
 |mean(part) - mean(cell)| against sigma = sqrt(s_cell^2/3 + s_part^2/2), s the sample
 standard deviations; a mode effect is shown if the ratio exceeds 3, excluded at the 1 M level
 if the difference is below 0.5 M.
+Processor work while job 3 waits (04:05 UTC): the D3 branch of `analyze_decisive.py` (never
+run on D3 output) tested on a mock, CC2 histories linked under D3 names in
+`scratch/C-sidm/tmp/d3mock/` (unregistered development run): it reads the runs, takes the
+`d3_kninf` control, writes `fig_d3_contraction.png` (now three panels: dalpha against t and
+against collisions per particle, alpha_min against t); looked at; the D3 numbers it printed are
+the CC2 numbers, as they must be. Queue rule kept: one job of this package at a time.

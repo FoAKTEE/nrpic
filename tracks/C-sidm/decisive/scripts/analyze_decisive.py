@@ -401,24 +401,37 @@ def figures(outdir, res, ser):
         plt.close(fig)
     # F3: D3 against CC2, relative contraction
     if any(n.startswith("d3_") for n in ser):
-        fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0))
-        fig.subplots_adjust(left=0.09, right=0.985, bottom=0.16, top=0.95, wspace=0.3)
-        cmap = {"10": fs.PAL["blue"], "1": fs.PAL["red"]}
+        fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.0))
+        fig.subplots_adjust(left=0.07, right=0.99, bottom=0.16, top=0.95, wspace=0.38)
+        cmap = {"10": fs.PAL["blue"], "1": fs.PAL["red"], "inf": "k"}
         for name in sorted(ser):
             p = parse(name)
             s = ser[name]
-            if p is None or "dal" not in s or p["model"] not in ("d3", "cc2"):
+            if p is None or p["model"] not in ("d3", "cc2"):
+                continue
+            if p["mode"] not in (None, "part") and not (p["mode"] == "cell" and p["seed"] == 1):
                 continue
             ls = "-" if p["model"] == "d3" else ":"
+            axs[2].semilogy(s["t"], np.where(s["amin"] > 0, s["amin"], np.nan), color=cmap.get(p["kn"], "k"),
+                            ls=ls, lw=1.0)
+            if "dal" not in s:
+                continue
             axs[0].plot(s["t"], s["dal"], color=cmap.get(p["kn"], "k"), ls=ls, lw=1.1,
                         label=f"{p['model'].upper()} Kn = {p['kn']} {p['mode']} s{p['seed']}")
             if "ct" in s:
                 cpp = np.interp(s["t"], s["ct"], 2.0 * s["ncum"] / N_PART)
                 axs[1].plot(cpp, s["dal"], color=cmap.get(p["kn"], "k"), ls=ls, lw=1.1)
-        for ax in axs:
+        for ax in axs[:2]:
             ax.axhline(0.0, **fs.MASK_LINE)
             ax.set_ylim(-0.01, 0.1)
             ax.set_ylabel(r"$\alpha_c^{\rm control} - \alpha_c$")
+        axs[0].set_xlim(0, 300)
+        axs[2].axhline(0.3, **fs.GUIDE)
+        axs[2].set_ylim(0.03, 1.0)
+        axs[2].set_xlim(0, 300)
+        axs[2].set_xlabel(r"$t/M$")
+        axs[2].set_ylabel(r"$\alpha_{\min}$ on the mesh")
+        axs[2].text(0.03, 0.04, "solid D3, dotted CC2\nblack: Kn = inf", transform=axs[2].transAxes, fontsize=6)
         axs[0].set_xlabel(r"$t/M$")
         axs[1].set_xlabel("collisions per particle")
         axs[1].set_xscale("log")
