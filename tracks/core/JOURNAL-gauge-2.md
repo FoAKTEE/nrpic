@@ -115,3 +115,31 @@ Runs: V4 with `lapse_leak = 0` (control) and `lapse_leak = 0.5`, 100 M each.
 - (c) Faces at 64 M: no feature in the control's mass above 1e-3 that starts between 45
   and 100 M (the faces' signal needs about 64/1.3 = 49 M to reach the hole; in Track D's
   V-1 with faces at 192 M the late drift was 1.4e-4) [JUDGEMENT].
+
+## Entry 2 (09:15): card job A, test V8 with the release executable; prediction written before submission
+
+The cards are busy (two jobs of F running, one of core and one of another user waiting),
+so the job that needs no new source goes in first: V8 (finest cells M/8, 288 MeshBlocks
+of 16^3, faces at +-64 M) for 200 M with `lapse_leak = 0.5` and with plain 1+log, release
+core-v0.6 card executable, list `tracks/core/analysis/gauge2/card_a.list`. The step time
+on a card is not measured yet: from core's ES test of the first pass (1.8e6 cells in
+blocks of 16^3, 0.19 s per step, run core-20261115-202901-b4430da) I expect 0.125 s per
+step, 6400 steps = 13 to 14 minutes per run, 0.45 card-hours for the pair; each run has a
+wall limit of 21 minutes, so the job cannot take more than 0.72 card-hours.
+
+Prediction V8-a:
+- (a) V8 with the relaxed lapse reproduces V-1GB: horizon radius within 4 per cent of
+  1.325, 1.086 and 0.875 M at t = 50, 100 and 199.5 M; mass drift from its value at
+  100 M with a dip between -2e-4 and -9e-4 in 120 to 160 M and a rise to more than
+  +6e-4 at 199.5 M (V-1GB: -5.6e-4 and +1.27e-3). The near faces do not matter for this
+  run [JUDGEMENT from Track D's ES-1GB = ES-1G]. Refuted if the drift over 100 to
+  199.5 M stays inside [-1.5e-4, +1.5e-4] (then the reduced set-up does not show the
+  defect and the faces or the size of the M/8 region matter).
+- (b) V8 with plain 1+log: radius within 4 per cent of V-1B's until 50 M (2.04 M at
+  50 M). Mass drift from 100 M inside [-3e-4, +3e-4] to 199.5 M [JUDGEMENT: V-1B had
+  5e-5 with faces at 384 M and V-1 -1.4e-4 with faces at 192 M from 165 M on; here the
+  faces are at 64 M and their signal can arrive from 50 M on]. If the control leaves
+  that band the reduced set-up is not a clean control after the arrival time, and the
+  clean control stays Track D's V-1B.
+- (c) The relaxed run separates from the control in mass by less than 3e-4 before 100 M
+  and by more than 1e-3 at 199.5 M.
