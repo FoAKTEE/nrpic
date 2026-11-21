@@ -1249,3 +1249,73 @@ s = +1e-6, each to 1e-5; tsc and pcs with fine shape: J below 1e-5; all three wi
 uniform spreading: J below 1e-5 and the two leaves of a root cell equal. Refuted if cic
 with fine shape shows no jump: then the reading is wrong and the jump of T10e has
 another cause.
+
+## 2026-11-21 03:12  outcome of T17: the fine-shape deposit of the linear cloud is discontinuous; the corrected form; predictions of the tests after the change
+
+**T17, run core-20261121-030438-e52cdb3** (`nrpic-run submit --launcher local`, which
+accepts the run now; published processor executable; 72 cases, exit 0; `t17_summary.json`,
+figure `fig_t17_continuity`, looked at; kept as `figs/fig_t17_continuity_3c44b74.png`)
+[VERIFIED]:
+- cic with `deposit_fine_shape`: J = 0.2500; the shares of the six leaf cells are
+  (-0.125, 0.125, 0.625, 0.375, 0, 0) at s = -1e-6 and (0, 0, 0.375, 0.625, 0.125, -0.125)
+  at s = +1e-6; over all twelve offsets the shares equal the first-order form with the
+  slopes (+1, -1) to 5.6e-16: PASS, the reading holds. Smallest share -0.125.
+- tsc and pcs with `deposit_fine_shape`: J = 7.5e-7 (the change expected from moving the
+  particle by 2e-6 cells): continuous, PASS; smallest shares -0.015 and -0.005.
+- uniform spreading, all three shapes: J = 5e-7, equal leaves: PASS.
+So the jump of T10e has a cause that could have failed this test and did not: with the
+linear cloud a quarter of a particle changes its leaf cell when the particle passes the
+centre of a lattice cell of its cloud. Not yet shown that it is the only cause of the jump
+of T10e (T10f below).
+
+**Corrected form for the linear cloud** (the quadratic and cubic clouds keep the
+first-order form, which is continuous). In one direction, for a lattice cell at offset u
+from the particle (in lattice cells), the leaf cell number s of nsub gets
+
+    wf_s = integral of B1 over the leaf cell + (w - integral of B1 over the lattice cell)/nsub,
+
+B1 the assignment function of the linear cloud (the tent of half-width one lattice cell
+centred on the particle), w = B1(u) the weight of the lattice cell. The three directions
+multiply as before. Properties [my derivation, tested below]: (a) continuous in the
+particle position, provided the lattice cells at |u| between 1 and 1.5 are visited too:
+they carry no weight but their leaf cells get shares that sum to zero (the stencil of
+the linear cloud with fine shape is 4^3 lattice cells instead of 2^3); (b) the leaf cells
+of a lattice cell sum to w: the conservation identity is untouched; (c) on a regular
+lattice the integrals of B1 sum to 1/nsub in every leaf cell and the corrections cancel
+(sum of B1 = sum of its cell integrals = 1): a uniform distribution stays uniform to
+round-off; (d) a linear density gradient is reproduced exactly, a smooth density to
+second order in the lattice cell; (e) the smallest share of a leaf cell is -1/16 of the
+particle per direction for nsub = 2 (first-order form: -1/8), density -1/8 of that of the
+lattice cell at most for any nsub (first-order form: -1/2). The other candidate, the
+central difference of the lattice weights as slope (the unlimited linear prolongation of
+the cloud-level deposit), is continuous and exact for a linear gradient too, but keeps no
+information on where inside its cell the particle is and undershoots twice as much
+(-1/4 of the cell density at the far edge); not taken.
+Source: `NrpicDepositSources` only, inside the branches of `deposit_fine_shape`; without
+the option, and with it for quadratic and cubic clouds, the arithmetic is unchanged.
+
+**Predictions of the tests with the changed source** (processors; NEW2 = this worktree's
+build after the change, PUB = the published executable of 3c44b74):
+- T17b (`t17_continuity.py`, NEW2): cic with fine shape: J below 2e-6; shares equal the
+  reference "integral" of the script to 1e-14 at all twelve offsets; smallest share
+  -0.0625 (at s = +-1e-6, the neighbours of the particle's cell). The other five cases:
+  the summary numbers of run core-20261121-030438-e52cdb3 digit for digit. Refuted by a
+  jump, or by a departure from the reference above 1e-12.
+- T0c (`t0_regress.py`, NEW2 against the release): every output byte-identical, as T0.
+- T1b (`t1_identity.py`, NEW2): identity at most 1e-13 in the 18 unfiltered refined
+  cases, the six cic cases with fine shape included (T1: 1.65e-14); the histories of the
+  cases without fine shape and of the tsc and pcs cases with it are byte-identical to
+  T1's (run core-20261119-154351-64067cd). Smallest leaf-cell E with cic and fine shape
+  on these sparse random particles: above -0.31 E_max of T1; I expect about half.
+- T2b (`t2_flrw.py`, NEW2): Sf (static patch, one particle per root cell, fine shape,
+  linear cloud) and every other case homogeneous to 1e-12 in chi and E as in T2; M (the
+  lattice drifting through the patch that follows the tracker) too.
+- T9b (`t9_peak.py`, NEW2): ladder with fine shape: largest relative constraint after
+  the regrid at most the 0.0116 of T9 [JUDGEMENT; the uniform spreading gave 0.0072];
+  particle number, rest mass, identity as T9; the cases without fine shape byte-identical
+  to T9's.
+- T10f (`t10e_jump.py --cases a5`, NEW2, the S1 data to t = 3.5, one processor, about 40
+  minutes): no jump: Hr_max changes by less than 30 per cent from one cycle to the next
+  at every cycle after the regrid (T10e a5: a factor 6.7 at cycle 53), and its largest
+  value to t = 3.5 is below 0.05 (a5 0.169, a5c 0.039, u5 0.020). Refuted by a one-cycle
+  jump: then the deposit has another discontinuity, or the jump another cause.
