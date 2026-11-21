@@ -227,3 +227,36 @@ limits, the first L = 8 figure had cut the curves above 1e-5). Figures looked at
 Not done (also in README.md and DESIGN.md section 10): card timing at 128^3 and 256^3
 (owner at its two card jobs), a full-GR run of this box, relativistic data at L = 8 with
 more outer iterations or lower amplitudes, Newtonian runs at 128 and 256 cells.
+
+## 2026-11-21 12:52 PST (lead of batch 5): first full-relativity run of the box; predictions
+
+Written before either run. Aim (decision 0025 item 4): the first full-GR population run of
+DESIGN.md section 8 ("scouting of the scan"), sigma1 = 0.028 at L = 8, nc = 3.2, seed 1,
+128^3, one particle per cell, to a = 143. sigma1 = 0.028 first because the 64^3 data at
+sigma1 = 0.056, L = 8 did not reach the outer tolerance (I1 above) and section 10 expects
+0.028 to converge.
+
+Step 1, initial data (processors, `scripts/run_gr_ic.sh 128 "8" "--nc 3.2 --sigma1 0.028
+--seed 1 --ppc 1"`, one thread). Predictions: outer change of psi below 1e-9 within the 18
+outer iterations of make_field.build; Hamiltonian residual below 1e-10; max|psi_N| about
+0.044 (0.0883 of I1 at sigma1 = 0.056 times 1/2, linear in the amplitude; the 128^3 field
+shares every mode below the cut with 64^3, so the mesh changes it little); wall time 30-90
+min (209 s at 64^3, L = 4, times about 10 for 8x the cells, more outer iterations at L = 8)
+[JUDGEMENT]. Refuted if the outer iteration stalls above 1e-7 or gives NaN; then the GR run
+is not submitted and the amplitude is halved again.
+
+Step 2, GR run (card, chain, release core-v0.6 executable, deck `inputs/pop_gr_run.athinput`,
+submitted by the sequencer of `../cards/` once step 1 has converged and a card slot of the
+owner is free). Predictions [JUDGEMENT]:
+- G1. The run reaches a = 143 (t = 21.916) without a guard stop; card time 0.2-0.6 h (model
+  0.18 card-h of DESIGN.md section 7 plus the dumps: 88 double-precision Z4c dumps of about
+  0.35 GB and 22 particle snapshots).
+- G2. Mean relative Hamiltonian violation (cstat Hr_mean) below 1e-2 to a = 30 and below 5e-2
+  to a = 143 (one particle per cell; the pancake reached 0.0075 at its five dumps after
+  crossing with one per cell, ledger row 59); refuted above 0.1 or if it grows without bound.
+- G3. Halos: by the sigma1 a scaling (P4), the GR box at a = 2 a_N resembles the Newtonian
+  L = 8 run at a_N (fidL8, analysis_fidL8.json): halo counts at a = 60 within the count noise
+  of those at a_N = 30, the largest mass within 10 per cent. Relativistic corrections at
+  Phi_vir ~ 0.03 are of that order or smaller.
+- G4. The TT strain at the box modes is dominated by the near field until a ~ 100 (section
+  6 at L = 8), and its rms grows at least as fast as a over 30 <= a <= 143.
