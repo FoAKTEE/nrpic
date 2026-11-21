@@ -143,3 +143,77 @@ Prediction V8-a:
   clean control stays Track D's V-1B.
 - (c) The relaxed run separates from the control in mass by less than 3e-4 before 100 M
   and by more than 1e-3 at 199.5 M.
+
+## Entry 3 (09:13-09:20): the processor runs of V4 were mis-sized and stopped; the plan after that
+
+Runs core-20261121-170823-ee64248 (control) and core-20261121-170829-197d265 (relaxed),
+V4 on two threads each, had reached t = 2 M after 4.5 minutes: 15 processor-seconds per
+step, not 2.3. My error: the line "cpu time used" of AthenaK's summary is wall time, so
+the 112 s of the 48-step timing run on six threads were 670 processor-seconds (6.3e4
+cell-steps per wall second on six threads, about 1e4 per processor-second with blocks of
+8^3; 1.5e4 with blocks of 16^3). 100 M of V4 would cost 6 processor-hours per run. Both
+runs were stopped (`nrpic-run stop`, status stopped). Prediction V4-a is NOT TESTED; the
+radius and mass comparison moves to the card runs of entry 2 (V8, the same prediction in
+kind: V8-a).
+
+Consequences for the plan [JUDGEMENT]:
+- Every run with a black hole goes to a card: job A (queued, Slurm 4812) for the
+  reproduction, one job B for the cause tests and the tests of the corrected condition.
+  Job B can only be submitted when core has fewer than two jobs in the queue (4810 of
+  another core session is waiting in front of 4812).
+- Processors: byte regression, the identity of the corrected condition with plain
+  1+log in vacuum on a coarse mesh, the homogeneous universe, the expanding ball at
+  cells of 1 M.
+
+## Entry 4 (09:20): the source of the second pass; predictions of the processor tests T1 to T3
+
+### Source (commit 90f52f4d, `athenak/src/z4c/z4c_gauge_ext.hpp` only)
+
+    d_t alpha += - (alpha/T) w_m(rho) w_h(x) F(ln(alpha/alpha_0))
+
+Three factors, each read only if its parameter is present in `<z4c>`; with none of them
+(or all three at zero) the kernel runs the statement of the first pass unchanged:
+- `lapse_leak_rho = rho_c`: w_m = S(2 rho/rho_c - 1), S(s) = s^2 (3 - 2 s) clamped to
+  [0, 1]; rho is the energy density of the matter source that Z4c::CalcRHS reads at
+  that stage (the sources, or the densities times 1/sqrt(gamma), or the assembled
+  total). Exactly zero at and below rho_c/2, so vacuum, tracers of mass 1e-30 and a run
+  without a matter module are plain 1+log bit for bit; one above rho_c.
+- `lapse_leak_hole = r_h`: w_h = product over all compact-object trackers of
+  S(|x - x_A|/r_h - 1): zero within r_h, one beyond 2 r_h.
+- `lapse_leak_onset = delta`: F(x) = x^2/(x + delta) for x > 0 instead of max(x, 0).
+Why the density and not K [JUDGEMENT]: on the slice of the Einstein-Straus data K < 0
+both in the dust and in the vacuum bubble, so K cannot tell them apart; what differs is
+that the vacuum has a stationary slice which plain 1+log finds (Track D's V-1B), and the
+dust has none (its lapse grows as 1 + 6 ln a without the term). The hole radius is the
+other candidate of decision 0022; it needs a radius of the order of the bubble if cause
+C4 is right, and is there for the cause test C3 and as an alternative.
+
+### Predictions, written before the runs
+
+T1 (coarse vacuum mesh, 64^3 cells of 2 M, no refinement, 10 M; the puncture is not
+resolved, the test is one of the code path):
+- restricted to the matter (`lapse_leak = 0.5`, `lapse_leak_rho = 1e-8`) writes the
+  bytes of plain 1+log in every output file (after the parameter dump of the mesh
+  slices). Refuted by one differing data byte.
+- the first pass differs from plain 1+log: its largest lapse stays below 1.08 while
+  plain 1+log exceeds 1.1 before 10 M. If the two were identical the test would not
+  exercise the term.
+- `lapse_leak_hole = 1000` with a tracker at the puncture: the files of plain 1+log
+  with the same tracker; a tracker alone changes no file that both runs write.
+- `lapse_leak_onset = 1e-9` equals the kink to 1e-6 in the constraint history.
+T2 (homogeneous dust universe, rate 5/H_0, t = 2/H_0, density 0.119 falling to about
+6e-3): with `lapse_leak_rho = 1e-3` the histories of the lapse and of the volume equal
+those of the first pass to 1e-10 relative (the weight is exactly one; the product by
+1.0 may change the last bit). Refuted by a difference above 1e-10.
+T3 (L1, marginally bound ball R_b = 10 M, cells 1 M, 10 M; T = 1 M and 0.5 M;
+`lapse_leak_rho = 1e-5` against a ball density of 2.4e-4 falling to 8.5e-5):
+- (a) first pass, new executable against release core-v0.6: every file identical.
+- (b) [JUDGEMENT] with the restriction the exterior vacuum is plain 1+log: its lapse
+  rises above the capped interior (I expect 1.3 to 2.0 just outside the surface at
+  10 M, against exp(6 T H) = 1.31 and 1.14 inside), and the difference spreads into the
+  ball by diffusion over sqrt(2 T t) = 4.5 M (T = 1 M) and 3.2 M (T = 0.5 M), not as a
+  front that focuses at the centre. So: core shells within a factor 2 of the first
+  pass (3.1e-3 at T = 1 M in the first pass, cells 1 M), every other group within a
+  factor 2 as well, central lapse within 5 per cent of the homogeneous value. Refuted,
+  and the density weight alone not acceptable for a ball in vacuum, if a group is worse
+  by more than a factor 2 or the central lapse departs by more than 5 per cent.

@@ -1,0 +1,169 @@
+# problems/es/v1_small.athinput with the parameter lapse_leak_rho (at zero: off).
+# Built by tracks/core/analysis/gauge2/make_inputs.py.
+#
+# Reduced vacuum control of the Einstein-Straus set-up (test V of tracks/core/JOURNAL-gauge-2.md):
+# Track D's V-1GB (tracks/D-bh-dress/g2runs/inputs/v1gb_bnd384.athinput on branch
+# track/D-bh-dress: one Schwarzschild hole, M = 1, on the slice K_T = -f(R) sqrt(2M/R^3)
+# of the Einstein-Straus data, f rising from 0 at R = 4 M to 1 at R = 36 M, Painleve-
+# Gullstrand beyond; no dust; 140 tracers of mass 1e-30) on a smaller mesh:
+#   kept     data (v1.tab, v1.nrp and the puncture of bare mass m_p), gauge, finder,
+#            particle settings, finest cells M/8, 2:1 nest around the puncture;
+#   changed  outer faces at +-64 M instead of +-384 M; MeshBlocks of 16^3 instead of
+#            24^3, so that M/8 covers +-4 M (not +-6 M), M/4 +-8 M, M/2 +-16 M,
+#            1 M +-32 M, 2 M the rest: 288 MeshBlocks, 1.18e6 cells (Track D: 400
+#            MeshBlocks, 5.5e6 cells); no restart and no constraint slices.
+# refined_region1/level=3 gives finest cells of M/4 (232 MeshBlocks, step 0.0625 M).
+# Variants (command line): z4c/lapse_leak=0.0 plain 1+log (Track D's V-1B);
+# the options of the second pass (lapse_leak_rho, lapse_leak_onset,
+# lapse_leak_hole) must be added to the <z4c> block to be used.
+# Data: tracks/D-bh-dress/es_runs/make_data.py (run D-20261115-170213-d2c2131, directory
+# v1/); give particles/particle_file and problem/comp0_file on the command line.
+
+<comment>
+problem   = V-1: vacuum control of ES-1 (same f-slice, no dust)
+
+<job>
+basename  = v1s
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -64.0
+x1max     = 64.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -64.0
+x2max     = 64.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -64.0
+x3max     = 64.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement       = static
+
+<refined_region1>
+level = 4
+x1min = -1.5
+x1max = 1.5
+x2min = -1.5
+x2max = 1.5
+x3min = -1.5
+x3max = 1.5
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 100.0
+ndiag      = 200
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+lapse_leak      = 0.5      # 1/T, T = 2 M (Track D's V-1GB); 0.0: plain 1+log (V-1B)
+lapse_leak_alpha = 1.0     # reference lapse
+lapse_leak_rho  = 0.0      # rho_c: relaxation only where the matter density exceeds rho_c/2 (0: everywhere)
+
+<fastflow>
+find_every        = 16
+metric_drvts      = interpolant
+num_horizons      = 1
+npunct            = 0
+ntheta            = 16
+lmax              = 8
+use_puncture_0    = -1
+center_x_0        = 0.0
+center_y_0        = 0.0
+center_z_0        = 0.0
+initial_radius_0  = 0.8
+flow_iterations_0 = 400
+flow_alpha_beta_const_0 = 1.0
+hmean_tol_0       = 100.0
+mass_tol_0        = 1.0e-5
+start_time_0      = 0.0
+stop_time_0       = 1000.0
+verbose           = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+interp         = hermite
+tolerance      = 1.0e-10
+max_iterations = 100
+deposit        = true
+deposit_shape  = cic
+nfilter        = 1
+filter_compensate = false
+alpha_exc      = 0.05
+ah_exc_factor  = 0.8
+hist_dcycle    = 10
+traj_dcycle    = 8
+traj_ntrack    = 140
+snap_dt        = 1000.0
+probe_x1       = 46.0
+probe_x2       = 0.0
+probe_x3       = 0.0
+nprobe         = 7
+probe1_x1      = 1.0
+probe1_x2      = 0.0
+probe1_x3      = 0.0
+probe2_x1      = 4.0
+probe2_x2      = 0.0
+probe2_x3      = 0.0
+probe3_x1      = 20.0
+probe3_x2      = 0.0
+probe3_x3      = 0.0
+probe4_x1      = 36.0
+probe4_x2      = 0.0
+probe4_x3      = 0.0
+probe5_x1      = 56.0
+probe5_x2      = 0.0
+probe5_x3      = 0.0
+probe6_x1      = 80.0
+probe6_x2      = 0.0
+probe6_x3      = 0.0
+probe7_x1      = 152.0
+probe7_x2      = 0.0
+probe7_x3      = 0.0
+particle_file  = v1.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 2
+comp0_type = table
+comp0_file = v1.tab
+comp1_type = puncture
+comp1_mass = 1.0239688282062387
+lapse      = precollapsed
+shift      = zero
+
+<output1>
+file_type = hst
+dt        = 1.0
+
+<output2>
+file_type = bin
+variable  = z4c
+slice_x3  = 0.001
+dt        = 10.0
