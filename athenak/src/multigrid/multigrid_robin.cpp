@@ -8,8 +8,7 @@
 //! falls off as 1/r about a centre, r u = const across the face (MGRobinFill in
 //! multigrid.hpp).  The condition is linear and homogeneous and the solver is a full
 //! approximation scheme, so the same fill serves every level of the MeshBlocks and of
-//! the root grid.  Octets (refined meshes) are not covered: the driver of the gravity
-//! module refuses mg_bc = robin on a multilevel mesh.
+//! the root grid, and RobinBoundaryOctet the octets of a refined mesh.
 //! Used by the initial-data solver of the particle module (particles/nrpic_idsolve.cpp)
 //! for the conformal factor, psi - 1 proportional to 1/r at the faces of the mesh.
 
@@ -96,5 +95,57 @@ void MultigridDriver::RobinBoundaryRoot() {
     auto u = mgroot_->GetCurrentData_h();
     const int nvar = u.extent_int(1);
     MGRobinFill(u, 0, nvar, ngh, n1, n2, n3, x1, x2, x3, d1, d2, d3, rob);
+  }
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn void MultigridDriver::RobinBoundaryOctet(MGOctet &oct, bool fcbuf)
+//! \brief Robin ghost cells of an octet of a refined mesh at the faces of the mesh:
+//! fcbuf = false the octet itself (2 cells per direction), fcbuf = true its coarse
+//! buffer (the parent cell and its neighbours, 1 cell per direction); called from
+//! ApplyPhysicalBoundariesOctet, whose fill it replaces when mg_bc = robin
+
+namespace {
+// a flat octet array with the index order of a five-dimensional view
+struct RobinOctetView {
+  Real *d;
+  int nc;
+  Real& operator()(const int, const int v, const int k, const int j, const int i) const {
+    return d[((v*nc + k)*nc + j)*nc + i];
+  }
+};
+} // namespace
+
+void MultigridDriver::RobinBoundaryOctet(MGOctet &oct, bool fcbuf) {
+  const LogicalLocation &loc = oct.loc;
+  const int lev = loc.level - locrootlevel_;
+  const int ngh = mgroot_->ngh_;
+  bool face[6];
+  face[0] = (loc.lx1 == 0);
+  face[1] = (loc.lx1 == (nrbx1_ << lev) - 1);
+  face[2] = (loc.lx2 == 0);
+  face[3] = (loc.lx2 == (nrbx2_ << lev) - 1);
+  face[4] = (loc.lx3 == 0);
+  face[5] = (loc.lx3 == (nrbx3_ << lev) - 1);
+  bool any = false;
+  for (int f = 0; f < 6; ++f) {
+    face[f] = face[f] && (mg_mesh_bcs_[f] == BoundaryFlag::mg_robin);
+    any = any || face[f];
+  }
+  if (!any) return;
+  // an octet of this level covers the mesh size over (nrbx << lev) in each direction
+  const RegionSize &ms = pmy_mesh_->mesh_size;
+  const Real w1 = (ms.x1max - ms.x1min)/static_cast<Real>(nrbx1_ << lev);
+  const Real w2 = (ms.x2max - ms.x2min)/static_cast<Real>(nrbx2_ << lev);
+  const Real w3 = (ms.x3max - ms.x3min)/static_cast<Real>(nrbx3_ << lev);
+  const Real x1 = ms.x1min + loc.lx1*w1 - robin_o_[0];
+  const Real x2 = ms.x2min + loc.lx2*w2 - robin_o_[1];
+  const Real x3 = ms.x3min + loc.lx3*w3 - robin_o_[2];
+  if (fcbuf) {
+    RobinOctetView v{cbuf_.data(), 1 + 2*ngh};
+    MGRobinFill(v, 0, nvar_, ngh, 1, 1, 1, x1, x2, x3, w1, w2, w3, face);
+  } else {
+    RobinOctetView v{oct.u, oct.nc};
+    MGRobinFill(v, 0, nvar_, ngh, 2, 2, 2, x1, x2, x3, 0.5*w1, 0.5*w2, 0.5*w3, face);
   }
 }

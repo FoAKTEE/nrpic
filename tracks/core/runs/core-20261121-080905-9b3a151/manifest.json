@@ -1,0 +1,95 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-080905-9b3a151",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "newton2 T11 judgement (processor parts a and b): merged processor build against release core-v0.5 with the new options absent, and against the files of the pre-merge build with the Fourier solver and the groups",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    ".venv/bin/python",
+    "tracks/core/analysis/newton2/t11_merged.py",
+    "--t11",
+    "/data/haiyangw/nrpic/scratch/core/core-20261121-080229-0095e95",
+    "--rel",
+    "/data/haiyangw/nrpic/scratch/core/core-20261121-080231-a98a070"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "9b3a15109522fec19759bcfa14e182fb0d220fec",
+    "branch": "core/newton-2",
+    "dirty": false,
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/core-newton2"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-newton2/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/newton2/t11_merged.py",
+      "role": "argv",
+      "sha256": "4f1a8f3f9f6206b1ba920aef888ab2c102246a1bc684e9aaaab95fab8b4f3439",
+      "bytes": 7833,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 7.499,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-080905-9b3a151",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "43a809841175032dccf9698bbf7c0e6b85691106f1a4fa6d5e223fc669f200ec",
+    "bytes": 125218,
+    "files": 4
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-21T08:09:06Z",
+  "started": "2026-11-21T08:09:06Z",
+  "ended": "2026-11-21T08:09:14Z",
+  "parents": [
+    "core-20261121-080229-0095e95",
+    "core-20261121-080231-a98a070"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 6.0704,
+    "gpu_hours_reserved": 0.72,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 7,
+    "runs": 1386,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-21T08:09:14Z"
+}

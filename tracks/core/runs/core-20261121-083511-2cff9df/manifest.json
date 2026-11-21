@@ -1,0 +1,152 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-083511-2cff9df",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "faces k1: card check of the published card executable (source f6f9a0d): vacuum puncture 4 steps without the options, 8 steps with the full set; to be compared with the processor runs of r2 and m1",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/core/core-20261121-083511-2cff9df/batch.list"
+  ],
+  "cwd": "scratch/core/core-20261121-083511-2cff9df",
+  "git": {
+    "sha": "2cff9df37bee712dbd9945f1563bf1e924924131",
+    "branch": "core/z4c-faces",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/faces"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/core-faces"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_z4c-faces/athena_gpu",
+    "exe_sha256": "1ba978caf3ad40376d1326e267191912da70e659cb31f13f28cf2077cdc1408d",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-faces/.venv"
+  },
+  "input": {
+    "file": "tracks/core/analysis/faces/inputs/punc.athinput",
+    "sha256": "f889add2311d6f1d8c8df82529be4152c710087f50b61fd1fcb20693aea57fcc",
+    "overrides": {
+      "time/nlim": "4"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_z4c-faces/athena_gpu",
+      "role": "exe",
+      "sha256": "1ba978caf3ad40376d1326e267191912da70e659cb31f13f28cf2077cdc1408d",
+      "bytes": 108251720,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/analysis/faces/plans/card_k1.list",
+      "role": "list",
+      "sha256": "b77a196f267ca34bc21ac53633d930e9eb6f254745d1424948b42c57dbc82728",
+      "bytes": 292,
+      "tracked": true
+    },
+    {
+      "path": "tracks/core/analysis/faces/inputs/punc.athinput",
+      "role": "athinput:stock",
+      "sha256": "f889add2311d6f1d8c8df82529be4152c710087f50b61fd1fcb20693aea57fcc",
+      "bytes": 2205,
+      "tracked": true
+    },
+    {
+      "path": "tracks/core/analysis/faces/inputs/punc_ext.athinput",
+      "role": "athinput:full",
+      "sha256": "8c93447f57f0f8e0e29c575845c80b4e3f8c06c913295439b2f7fdaf4d23520f",
+      "bytes": 2894,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "stock",
+      "input": "tracks/core/analysis/faces/inputs/punc.athinput",
+      "args": [
+        "time/nlim=4"
+      ]
+    },
+    {
+      "name": "full",
+      "input": "tracks/core/analysis/faces/inputs/punc_ext.athinput",
+      "args": [
+        "time/nlim=8",
+        "z4c/extrap_order=4",
+        "z4c/ghost_falloff=true",
+        "z4c/sbc_variant=nonwave",
+        "z4c/sbc_speed=metric"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": 3.0,
+    "wall_limit": "00:03:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.05,
+    "gpu_hours": 0.0008,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "core-20261121-083511-2cff9df",
+    "job_ids": [
+      "4782"
+    ]
+  },
+  "outputs": {
+    "dir": "scratch/core/core-20261121-083511-2cff9df",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "a954fa90a35228eed94327c805e298df65689e4a0d38b2f91198a959e3828122",
+    "bytes": 150266524,
+    "files": 21
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-21T08:35:13Z",
+  "started": "2026-11-21T01:40:41-08:00",
+  "ended": "2026-11-21T01:40:44-08:00",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 6.0704,
+    "gpu_hours_reserved": 0.72,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 8,
+    "runs": 1409,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-21T13:40:59Z"
+}

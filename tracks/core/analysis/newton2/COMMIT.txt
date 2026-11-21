@@ -1,0 +1,20 @@
+67ca9ce1942f96c23600a5feaeea96c8a530b70b
+branch core/newton-2; the trees athenak/, python/, problems/, scripts/ of this commit (the
+merge of main at 9f7f85be, that is release core-v0.5, into the branch) are the source both
+executables were built from: scripts/build_cpu.sh .work/build_cpu and scripts/build_gpu.sh
+.work/build_gpu in wt/core-newton2, linked 2026-11-21 07:52:58 and 08:01:49 UTC; make -n
+compiles nothing in either build directory; the four trees are unchanged up to the branch
+tip at the time of publication (ede6f1bb: git diff 67ca9ce1 ede6f1bb -- athenak python
+problems scripts is empty). Against tag core-v0.5 the source differs by this package only:
+athenak/src/particles/nrpic_newton_fft.cpp and nrpic_newton_groups.cpp (new), 17 lines of
+nrpic_newton.cpp, 38 of particles.hpp, 2 of CMakeLists.txt.
+Kokkos 6739bc623081648af9e752b616d9671527922cbf.
+sha256 athena_cpu 107fd235e47b6dbdab876b2dbeffb7246c7a7a89f4e6d867b297d1616d3dbab9
+sha256 athena_gpu 7b2cceed9b5bdddc91f65835ef68171143aaade9bb48ab1742a4b457e5879ac6
+
+premerge/: the executables of the same package before the merge, source commit
+c6293772f444aa4d0ce0d32ddee2d44b67da3d48 (branch start core/requests-adf plus this package;
+without the capabilities of releases core-v0.4 and core-v0.5), built 2026-11-19; every test
+T1 to T10 of the package and the card jobs 4648 and 4736 ran with them.
+sha256 premerge/athena_cpu aa3b58577cc0a15c1cef47d9237ba8f3959c144518dde3d0dd3bd7748f9f8bac
+sha256 premerge/athena_gpu 832cb8828bddb90be8e33184676432a603b41b9ddbea8504e832291d795aa5b1

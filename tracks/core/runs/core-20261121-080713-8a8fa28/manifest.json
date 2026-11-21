@@ -1,0 +1,119 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-080713-8a8fa28",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "faces m1: the full set (fall-off ghosts, order 4, nonwave, metric speed) with the executable of f6f9a0d against the frozen executable of cb50e22: ball 16 steps, vacuum and boosted puncture 8 steps, refined region at the +x face 8 steps; arrays compared",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    ".venv/bin/python",
+    "tracks/core/analysis/faces/run_set.py",
+    "tracks/core/analysis/faces/plans/m1_merge.json",
+    "--jobs",
+    "2"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "8a8fa28d255d0d559b3a3cad191411e24ab56a6f",
+    "branch": "core/z4c-faces",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/faces"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/core-faces"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-faces/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": ".work/exe/sbc5/athena_cpu",
+      "role": "input",
+      "sha256": "25438222e4cc9a5c1117bebf444df421dd87dc5aceec0385cbb88b8d38c7544c",
+      "bytes": 261993416,
+      "tracked": false
+    },
+    {
+      "path": ".work/exe/sbc3/athena_cpu",
+      "role": "input",
+      "sha256": "da5599d6c361d53e9c6047737a0752cc931084187736847ee53d6a67f3dc95c3",
+      "bytes": 247287576,
+      "tracked": false
+    },
+    {
+      "path": "tracks/core/analysis/faces/run_set.py",
+      "role": "argv",
+      "sha256": "0c301efbe1609ab32d6d6a2a79a758e26d96280db144440586934cef3c653365",
+      "bytes": 4203,
+      "tracked": true
+    },
+    {
+      "path": "tracks/core/analysis/faces/plans/m1_merge.json",
+      "role": "argv",
+      "sha256": "f54675a1aa067677e2d663fb0358224d1892d1079844a5dedfce76ade95f13ee",
+      "bytes": 2400,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": 298.498,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-080713-8a8fa28",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "71355f5bc367721d76e8df39d065533db83393dae5e10d42066934eb2e732a0e",
+    "bytes": 229012819,
+    "files": 82
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-21T08:07:17Z",
+  "started": "2026-11-21T08:07:17Z",
+  "ended": "2026-11-21T08:12:15Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 6.0704,
+    "gpu_hours_reserved": 0.72,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 9,
+    "runs": 1385,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-21T08:12:33Z"
+}

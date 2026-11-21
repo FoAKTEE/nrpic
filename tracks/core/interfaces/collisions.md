@@ -398,8 +398,14 @@ Limits and open points.
   of collisions rises by 3.6 percent from cells of 2 M to 1 M and by 1.0 percent from 1
   to 0.5 M (the square of the density averaged over a cell is below the average of the
   square).
-- Heat conduction (the track's tests T6 to T8) was NOT tested: no run of this package
-  measures a transport coefficient. The dependence of transport coefficients on the
+- Heat conduction (the track's tests T6 to T8) was NOT tested by this package: no run of
+  it measures a transport coefficient. Track C tested it on both executables of
+  core/collisions-2 (now release core-v0.4), processors and card: T6 PASS, T7 PASS at
+  theta 0.003 (kappa/kappa_1 = 1.019 +- 0.004 on processors, 1.0250 +- 0.0025 with the
+  card seeds, interval [0.99, 1.06]), T8 PASS on one card seed; card and processors agree
+  in the conductivity within 0.3 to 1 per cent (`tracks/C-sidm/heat/README.md`, "Verdict
+  for G1 C6"; C's recheck run C-20261121-075535-b35b8fb; message `heat-conduction-tested`
+  of 2026-11-21; not rerun by core). The dependence of transport coefficients on the
   cell size is open.
 - `nanbu` conserves energy and momentum only on average: the temperature of a gas of
   2e5 macroparticles with masses 1:4 random-walks by 0.4 percent in 25 collision times.

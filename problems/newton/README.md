@@ -10,9 +10,11 @@ results of the tests below: `tracks/core/interfaces/newtonian_mode.md`.
 |---|---|
 | `isolated.athinput` | isolated domain, multipole boundary of the multigrid solver, no expansion |
 | `periodic.athinput` | periodic box, comoving coordinates, matter-dominated scale factor |
-| `isolated_smr.athinput` | `isolated.athinput` with one static refinement level: a trial, not verified (interface note, section 6) |
+| `isolated_smr.athinput` | `isolated.athinput` with one static refinement level (interface note, sections 6 and 7.6: what was tested on refined meshes and what was not) |
+| `periodic_fft.athinput` | `periodic.athinput` with the Fourier Poisson solver (`newton_poisson = fft`, `newton_fft_symbol`) and one particle group (`newton_ngroup`): the example input of the options of work package newton2 (interface note, section 7) |
+| `embedded_ellipsoid.athinput` | a patch (species 0) inside background particles (species 1) in a periodic expanding box, group history of the patch: Track B's embedded ellipsoid |
 | `analyze_conservation.py` | test T6: moving, rotating ball: conservation laws, six components of the second moment |
-| `make_ic.py` | particle files of the tests: point mass with tracers, homogeneous ball, plane wave |
+| `make_ic.py` | particle files of the tests: point mass with tracers, homogeneous ball (also deformed: `--axes`, `--vgrad`, `--rotate`; inside a background: `--background`), plane wave |
 | `analyze_field.py` | tests T1 and T2: field of a point mass and of a ball against the exact fields |
 | `analyze_collapse.py` | test T3: cold collapse of a ball against the cycloid, energy, second moment |
 | `analyze_wave.py` | test T4: plane wave against Zel'dovich, `cosmo/newton/pm.py` and the numpy scheme |
@@ -54,7 +56,31 @@ python3 ../../tracks/core/tools/compare_restart.py FULL_DIR CONTINUED_DIR
 ```
 
 MeshBlocks must be cubes with a power-of-two size (a restriction of the multigrid
-solver); with `nx = 32` use `meshblock/nx1=16` and so on.
+solver, which is built also when the Fourier solver is chosen); with `nx = 32` use
+`meshblock/nx1=16` and so on.
+
+## Options of work package newton2 (second pass)
+
+```
+# Fourier Poisson solver on a periodic uniform mesh (cells per direction: products of
+# 2, 3, 5, 7); newton_fft_symbol = seven_point reproduces the multigrid solution
+EXE -i periodic_fft.athinput particles/particle_file=wave32.nrp
+
+# Zel'dovich-deformed ball of Track A (units of arXiv:2605.04487: R_L = 1, M = 1/2):
+#   S_i = a0 (1 - a0 lambda_i), D_i = H0 a0 (1 - 2 a0 lambda_i)
+python3 make_ic.py ball --out ball.nrp --radius 1 --mass 0.5 --spacing 0.05 --ntracer 0 \
+    --axes S1 S2 S3 --vgrad D1 D2 D3 [--rotate 3]
+
+# a patch inside a homogeneous background in a periodic box, moments of the patch alone
+python3 make_ic.py ball --out embedded.nrp --center 24 24 24 --radius 1.5 --mass 0.75 \
+    --spacing 0.125 --ntracer 0 --axes S1 S2 S3 --vgrad D1 D2 D3 --background 0 48 64 RHO_B
+EXE -i embedded_ellipsoid.athinput        # writes newton.newton.g1.hst
+```
+
+The tests of these options, with the scripts of the tracks as generators and references:
+`tracks/core/analysis/newton2/cases.py` (cases) and `t<n>_*.py` (judgement); results in
+`tracks/core/interfaces/newtonian_mode.md` section 7 and
+`tracks/core/interfaces/REQUESTS_NEWTON2.md`.
 
 ## What the tests established
 

@@ -1,0 +1,1362 @@
+# Journal of core, work package "idsolve2": the initial-data solver, second pass
+
+Branch `core/id-solver-2` (from `core/id-solver`, a7a32cd source), worktree
+`wt/core-idsolve2`. Units G = c = 1; expansion has K < 0. Labels: [VERIFIED] read or
+measured here (locator or run id), [BACKGROUND] standard result not re-derived here,
+[JUDGEMENT] inference or design, [TO VERIFY] open. Runs are registered with
+`harness/bin/nrpic-run submit` (run ids `core-<UTC date>-<time>-<commit7>`, manifests in
+`tracks/core/runs/`, outputs in `scratch/core/<run_id>/`). First pass: `JOURNAL-idsolve.md`,
+`interfaces/id_solver.md`. Wave 3a, 2026-11-19.
+
+## 2026-11-19, entry 1: what was read; design of the second pass; predictions A
+
+Read: `CLAUDE.md`; `coord/CHARTER.md` to the end of "Owners"; brief lines 493-553,
+688-706, 834-860; decisions 0010, 0016, 0017; `interfaces/id_solver.md` and
+`JOURNAL-idsolve.md` in full (with the failed predictions); the requests
+`track/A-emd-pbh:tracks/A-emd-pbh/outbox/20261115T183720Z__to-core__refined-level-constraint-solve.md`,
+`...183719Z__to-core__phase1-generator-cmc.md`,
+`track/F-hills:tracks/F-hills/outbox/20261115T1507Z__to-core__moving-clump-initial-data.md`;
+of the source: `particles/nrpic_idsolve.cpp` (all), `multigrid/multigrid_robin.cpp`,
+`multigrid.hpp` 380-813, `multigrid_driver.cpp` 1700-1830 and 2201-2370,
+`gravity/mg_gravity.cpp` 55-300, `particles/nrpic_newton.cpp` 186-372,
+`pgen/nrpic/nrpic_cf.cpp` 395-648, `nrpic_bowen_york.hpp`, `nrpic_puncture_setup.hpp` 1-80,
+`z4c/z4c_tasks.cpp` (boundary tasks), `bvals/bvals.hpp` 215-237.
+
+Facts found while reading [VERIFIED, file and line of this worktree]:
+
+- Meshes of AthenaK have no covered cells: every active cell of every MeshBlock is a
+  leaf; a fine-coarse face is handled by a coarse array per block (restriction) and by
+  prolongation into the fine ghost cells. Z4c does this with its own high-order scheme
+  (`RestrictCC(u0, coarse_u0, true)`, `ProlongateCC(u0, coarse_u0, true)`,
+  `z4c_tasks.cpp` 268-296); `MeshBoundaryValuesCC` takes the same flag in its constructor.
+- The multigrid Poisson solver runs on refined meshes (octets between root grid and
+  MeshBlocks); its octet boundary routine knows zero value and zero gradient only
+  (`multigrid_driver.cpp` 1724-1822); `mg_bc = robin` stops on a refined mesh
+  (`mg_gravity.cpp` 79-84).
+- The puncture components of `nrpic_cf` live in `<problem>` as `comp<c>_type = puncture`,
+  `_mass`, `_x1..3`, `_p1..3`, `_s1..3` (`nrpic_bowen_york.hpp` 324-360), and the
+  Bowen-York curvature is added in closed form (`BYAddCurvature`, 97-117).
+- A defect of the multigrid module outside this package, found while checking my own
+  expansion against it [VERIFIED by transcribing the formulas into numpy,
+  `tracks/core/analysis/idsolve2/check_multipole_upstream.py`]: the l = 3, m = 0 term
+  of the multipole boundary (`mg_bc = multipole`, `mporder = 4`, the default) uses
+  z (z^2 - 3 r^2), which is not harmonic (its Laplacian is -24 z); the solid harmonic is
+  z (5 z^2 - 3 r^2) (`multigrid_driver.cpp` 2282 for the moment, `multigrid.hpp` 800 for
+  the evaluation). For 20 random point sources within the unit cube the expansion as
+  coded is off by 8.4e-4, 1.1e-4, 1.3e-5 of the potential at r = 8, 16, 32 (it falls as
+  r^-3, the order of the wrong term), against 4.8e-6, 1.5e-7, 4.6e-9 with the corrected
+  term. It affects the Newtonian mode on isolated domains for sources without mirror
+  symmetry in z about the expansion centre. Not changed here (it would change existing
+  results of another package); reported to core's lead.
+
+### Design [JUDGEMENT unless labelled]
+
+**(1) Far field at the faces (option `id_far`, default `multipole`).** The first pass
+filled the ghost cells of psi - 1 and of W_i by r u = const between a ghost cell and its
+mirror cell. That is exact for a monopole only, and the far field of W depends on the
+direction already at order 1/r. Now the same fill acts on the remainder u - u_far, where
+u_far is the exterior multipole expansion (orders 0 to `id_far_lmax` = 4) of the right
+side of the equation about the Robin centre, with moments summed over the cells inside
+the sphere that fits into the mesh (`id_far_radius`, a fraction of the distance to the
+nearest face, default 1):
+
+    psi_far = psi_s - (1/4 pi) sum_l M_l[rhs of (1)](n) / r^(l+1),
+    W_far,i = (7/8) V_i - (1/8)(d_i U + x_j d_i V_j),   lap V_i = s_i,  lap U = -x_j s_j,
+
+with s_i the right side of the vector equation (2) and V_i, U expanded in the same way
+(for s_i = 8 pi P_i delta this is the Bowen-York field -(7 P_i + n_i n.P)/(4 r); the
+decomposition was checked by hand: lap W_i = s_i - (1/4) d_i d_j V_j and
+d_j W_j = (3/4) d_j V_j). The expansion (`particles/nrpic_idfar.hpp`) uses raw monomial
+moments of degree <= 4 and Legendre polynomials; checked against direct summation in numpy
+(`check_multipole_upstream.py`: error 4.8e-6, 1.5e-7, 4.6e-9 at r = 8, 16, 32 source
+sizes for lmax = 4, falling as r^-5). The fill is affine in the field with the same
+linear part as before, so the inner iterations (which see corrections with the plain
+fill) are unchanged and the fixed point moves to the solution with the right far field;
+the moments are those of the previous evaluation (they lag one outer iteration).
+The record gets a line with M_ADM = -M_0[rhs]/(2 pi) (+ bare masses), P_ADM,i =
+M_0[s_i]/(8 pi) (+ puncture momenta) and J_ADM from the antisymmetric first moment.
+
+**(2) Coupled solve.** The alternation of the first pass stays (one deposit per outer
+iteration serves both residuals). New: the matter term of sigma is exact for moving
+particles without filter: psi^5 E = sum m W/(psi dV) with W^2 = 1 + psi^-4 u_i u_i gives
+d/dpsi = -(psi^4)(E + 2 S), S the trace of the deposited stress; sigma gets + 4 pi psi^4 S.
+For particles at rest S = 0 exactly and nothing changes.
+
+**(3) Refined meshes.** (a) Ghost cells of psi, W and the corrections across levels with
+the Z4c scheme (restriction, exchange, prolongation); the coarse array gets the plain 1/r
+fill at mesh faces. (b) With `id_residual = code` every evaluation writes the metric
+through the Z4c variables and their own exchange, then back, so that the monitor the
+solver drives to zero is the one the run evaluates at t = 0 on its level structure (the
+ghost cells at the faces of the mesh keep the solver's fill). (c) The seven-point operator
+with prolongated ghost cells is not symmetric: BiCGStab with the multigrid solve as right
+preconditioner replaces conjugate gradients (`id_lin_solver`, default `bicgstab` on a
+refined mesh, `cg` otherwise). (d) Robin fill on the octets of the multigrid solver, so
+that `mg_bc = robin` works on a refined mesh. (e) A dump per MeshBlock
+(`<basename>.idsolve.blk.bin`).
+
+**(4) Punctures.** psi = psi_s + u, psi_s = 1 + sum m_c/(2|x - x_c|) in closed form from
+the puncture components of `nrpic_cf`; the seven-point operator acts on u; within
+`id_puncture_radius` (default 1) bare masses of a puncture the residual is the stencil
+form whatever `id_residual` (the monitor differentiates the singular metric: its
+truncation error applied to m/2r at distance R is of order (dx/R)^6 m/R^3, which a fixed
+physical radius lets fall as dx^6); the far field is psi_s + u_far; the Bowen-York
+curvature of the punctures is subtracted in closed form before the trial curvature is
+differentiated in (2) (it is divergence free); P and S of the punctures enter the ADM
+line.
+
+**(5)** Track A's CMC generator on the torus: the same solver with K = -3H and moving
+particles (vector part on the torus); to be answered after the tests.
+
+Default behaviour: with `id_solve` the far field is on by default (the plain fill has a
+known error); `id_far = robin` recovers the first pass. Without `id_solve` nothing is
+read or called, as before.
+
+### Predictions A (written before the first run of the new executable)
+
+**R1 first pass recovered.** With `id_far = robin` and particles at rest the new
+executable writes the bytes of the published first-pass executable (a7a32cd,
+`scratch/core/exe/core_id-solver/athena_cpu`) for gauss_code_n32 of T1 (record, dumps,
+histories): the far field is off, wk has one more component, sigma gets + 0. For the
+moving Gaussian (gboost, V1) psi and W agree to 1e-9 relative but not in every bit (the
+new term of sigma). Refuted if a byte differs in the first case.
+
+**W1 moving Gaussian (V2 again), far field against plain fill.** m = 1, sigma = 2, half
+width 16, u_x = 0.1, N = 32, 64, 128, scalar mode code, vector stencil form, against the
+semi-analytic continuum W of `run_vector.py`.
+ (a) Plain fill: relative error of W_x at the face centres 8.6e-3 and 9.3e-3 at N = 32,
+     64 (V2) and about the same at 128. Far field: below 2e-3 at N = 32 and falling by at
+     least 3 per halving (what is left is the truncation error of the solution, of order
+     (dx/L)^2).
+ (b) Largest relative error of |W| over the outermost active layer of cells: plain fill
+     above 1e-2 at every N; far field below 4e-3 at N = 32, falling by at least 3 per
+     halving.
+ (c) Central error unchanged by the far field to 20 per cent (-1.18e-2, -3.6e-3 at
+     dx = 1, 0.5).
+ (d) P_ADM of the record equals sum m u_x of the particle file to 1e-9 relative (the
+     cloud conserves the sum; all matter is inside r < 16). The momentum from a surface
+     integral of (L W)_xj over cubes of half-width 8 to 14 through cell centres equals it
+     to 2 per cent at N = 32 and converges at second order (factor above 3 per halving) for
+     both fills: the closure error is a solution of the homogeneous equation and carries
+     no flux, so this integral cannot tell the fills apart; (a) and (b) can.
+ (e) The vector residual falls by 0.13 to 0.14 per outer iteration as in V1 (the linear
+     part of the fill is unchanged); at most 20 outer iterations.
+ Refuted if the face error with the far field does not fall with resolution, or exceeds
+ half of the plain-fill error at N = 64.
+
+**W2 off-centre moving Gaussian** (centre (3, 2, 0), Robin centre at the origin, N = 64,
+u_x = 0.1): J_ADM of the record = (0, 0, -2 P) to 1e-9 relative (first moment of the
+deposit); face error of W against the translated continuum solution: lmax = 4 below
+3e-3; lmax = 0 at least 3 times larger; plain fill at least 1e-2. Refuted if lmax = 4 is
+not the best of the three.
+
+**C1 coupled solve with fast particles** (the Gaussian with u_x = 1, Lorentz factor about
+1.4; N = 32, 64; scalar and vector part in mode code): converges within 40 outer
+iterations; max|H| of the monitor below 1e-9 away from the faces; the vector part ends at
+`id_vector_tol` or by the stall rule with max|M| at least 1e3 times below its value
+before; psi(0) - 1 changes by less than 5 per cent between N = 32 and 64 (second order).
+Refuted if it does not converge or psi goes non-positive.
+
+## 2026-11-19, entry 2: registration; predictions B (end-to-end: the Zel'dovich ball)
+
+Registration: `nrpic-run submit` works in this worktree (venv made with `nrpic-env create
+--no-kokkos`). The allotment of 16 cores at a time is counted per owner, and five other
+packages of core were running (15 cores busy), so tests A went in with 2 cores and
+without the 128-cell cases (run core-20261119-145332-1ac049d); the 128-cell cases go to a
+card job. Each test script is one registered run that writes the particle files and
+input files of its cases into its run directory, runs them, analyses them and copies
+numbers and figures to `tracks/core/analysis/idsolve2/`. The executable of a run is a
+copy of the build of the commit (`scratch/core/tmp/idsolve2/exe_<commit7>/`), so that a
+later build cannot change it under a running test.
+
+Smoke runs before the registered ones (`scratch/core/tmp/idsolve2/byhand-*`, by hand,
+not registered, no number of them is used as a result) showed that the far-field fill
+runs to convergence and led to two changes before the commit of the source (1ac049d):
+the expansion is evaluated from precomputed coefficients of homogeneous polynomials with
+an analytic gradient (the first version, a triple loop per evaluation and numerical
+gradients, made the 32-cell solve 60 per cent slower), and the moments are always
+accumulated to degree 4 so that the J_ADM line does not depend on `id_far_lmax`.
+
+**B, the end-to-end test.** The expanding ball of Track A (`make_ball.py --Rb 10 --edge 2`,
+M = 1, Hubble rate H = sqrt(2 M/Rb^3) = 0.0447, density 3 H^2/(8 pi) = 2.39e-4), with a
+triaxial Zel'dovich displacement in its growing mode (`make_ic.py zeldovich`): Lagrangian
+position q -> x_i = (1 + e_i) q_i with e = (0.05, 0, -0.05), and momentum u_i = H e_i q_i
+relative to the normal observers (largest |u| 0.022). Now S_i is not zero: moving matter
+together with the curvature of the table, the combination the first pass did not test.
+Mesh half-width 32, N = 32, 64, 128 (dx = 2, 1, 0.5), no filter, density-form sources and
+conformal-time lapse (the settings of tests E and F), evolution to t = 2 with field dumps
+at t = 0, 1, 2. Four data sets per resolution: `sph` (sphere, solved), `zoff` (Zel'dovich,
+not solved), `zsol` (Zel'dovich, scalar and vector part solved, both in mode code),
+`zsca` (Zel'dovich, scalar part only). Norms over regions, never over the whole mesh
+(test F): interior r < 7, shell 7 <= r < 13.5, exterior, face layer (4 length units).
+Predictions [JUDGEMENT]:
+ (a) before the solve (`zoff`, t = 0): max|H| about 1e-2 and a shell mean of |H| of 3e-4
+     to 5e-4 at the two finer meshes (T3, F: a property of the data); interior mean of
+     |M| about 5e-5 (8 pi rho H e r = 9e-5 at r = 7), the same within 30 per cent at the
+     two finer meshes;
+ (b) after (`zsol`, t = 0): max|H| in interior and shell below 1e-10 at every resolution;
+     the interior mean of |M| at least 100 times below (a) (the vector part ends at its
+     tolerance or by the stall rule);
+ (c) `zsca`: H as in (b); the interior mean of |M| within 10 per cent of (a);
+ (d) record: |P_ADM| below 1e-10 (the momenta are odd in q), M_ADM of `zsol` within 1e-3
+     of that of `sph`;
+ (e) evolution: in interior and shell the mean of |H| of `zsol` stays within a factor 1.5
+     of `sph` at t = 1 and t = 2 at every resolution (the solved data keep the residual
+     at the level of the spherical case);
+ (f) at dx = 0.5 the shell mean of |H| of `zoff` at t = 2 is at least 3 times that of
+     `zsol`;
+ (g) the face layer has the same mean |H| at t = 2 in the four runs of one resolution to
+     10 per cent (1.3e-4 in test F): whole-mesh norms cannot tell the data apart;
+ (h) the interior mean of |M| at t = 1 of `zsol` is at least 2 times below that of `zsca`
+     at dx = 0.5 (the residual of the data is now above truncation level, unlike V6).
+Refuted: (b) if the solve does not converge at some resolution; (e) if `zsol` exceeds
+`sph` by more than a factor 2 in interior or shell at dx = 0.5.
+
+## 2026-11-19, entry 3: predictions C (refined meshes, torus with moving matter)
+
+Source for C: the Robin fill on the octets of the multigrid solver
+(`MultigridDriver::RobinBoundaryOctet`, `multigrid_robin.cpp`; one hook at the top of
+`ApplyPhysicalBoundariesOctet`), the refusal of `mg_bc = robin` on refined meshes removed
+(`mg_gravity.cpp`); in the solver the exchange across levels, the Z4c round trip of mode
+code and BiCGStab were already in 1ac049d. Said plainly: one smoke run was made before
+these predictions were written (`scratch/core/tmp/idsolve2/smoke/smr1`, the Gaussian of T1
+with one static level, not registered): it converged in mode stencil after 4 and in mode
+code after 20 outer iterations. The predictions below are for what that run did not show.
+Script `test_c.py`; the monitor of the run is read from the run's own output of the
+constraint variables (`<output> file_type = bin, variable = con`), per MeshBlock.
+
+**G, Gaussian at rest (exact psi) on refined meshes, Robin faces.** Lattice h = 0.25.
+Uniform dx = 1 (`g_uni32`) and 0.5 (`g_uni64`); root dx = 1 with one static level in
+|x_i| < 4 (`g_smr1`, also in mode stencil: `g_smr1_st`) and a second level in |x_i| < 2
+(`g_smr2`).
+ (a) mode code converges within 30 outer iterations on the refined meshes, mode stencil
+     within 6;
+ (b) the run's own monitor at t = 0, more than 4 length units from the faces of the mesh:
+     max|H| below 1e-9 on every level in mode code, the cells at the level boundaries
+     included (the solver's metric passes through the Z4c exchange of the run);
+ (c) relative error of psi - 1 at the centre (r < 1): `g_smr1` within 30 per cent of
+     `g_uni64` (the truncation error of the deposit follows the local cell size), `g_smr2`
+     not larger than `g_smr1`; at r = 6 (root level) the refined runs within 30 per cent
+     of `g_uni32`;
+ (d) `g_smr1_st` within a factor 2 of `g_smr1` at the centre;
+ (e) M_psi of `g_smr1` within 1e-3 of `g_uni64`.
+ Refuted if the monitor has a floor above 1e-7 at the level boundaries, or no convergence.
+
+**T, plane wave on the torus (K = -3H, a slice of constant mean curvature).** H = 1,
+L = 2, 32 root cells, eight lattice sites per root cell.
+ (a) `t_uni` (uniform, A = 0.1): as T4, at most 30 outer iterations, max|H| below 2e-9;
+ (b) `t_smr` (static level in the cube [0.5, 1.5]^3, lattice twice finer in that cube):
+     converges within 40 outer iterations; the run's monitor has max|H| below 1e-8 on both
+     levels; without the solve (`t_smr_off`) max|H| above 0.1;
+ (c) `t_smr_mov` (momenta of the growing mode, u_x = H times the displacement, vector
+     part in mode code): converges; max|M| at least 100 times below its value before; the
+     mean of the vector residual removed on the torus below 1e-10 of its scale (total
+     momentum zero);
+ (d) uniform torus with moving matter at A = 0.1, 0.5, 0.9 (density contrast up to
+     A/(1 - A) = 9): the Newton iteration converges within `id_maxit` = 60 at every
+     amplitude, psi > 0. Refuted if A = 0.5 does not converge.
+
+**Z, the Zel'dovich ball of test B with a refined centre** (root dx = 2, one static level
+with dx = 1 in |x_i| < 16; lattice h = 0.5), evolution to t = 2 with the settings of B.
+ (a) `z_smr_sol` converges; the run's monitor at t = 0 has max|H| below 1e-9 in interior
+     and shell;
+ (b) at t = 1 and t = 2 the interior and shell means of |H| of `z_smr_sol` are within a
+     factor 2 of the uniform run `zsol_n64` of test B (the same cell size in the matter),
+     and at t = 1 the shell mean is below that of `z_smr_off`.
+ Refuted if the refined solved run has 5 times the |H| of the uniform one in the matter.
+
+## 2026-11-19, entry 4: outcome of tests A at 32 and 64 cells; the queue
+
+Run core-20261119-145332-1ac049d (processor build of 1ac049d, 13 cases, 2 cores, 12
+minutes), numbers `analysis/idsolve2/test_a_numbers.json`, figure `figs/test_a_far.png`
+(looked at: the plain fill's error of W_x rises to 1e-2 towards the faces along x, the
+far-field curve stays below 6e-4 everywhere outside the matter; middle panel: second
+order for the far field, flat for the plain fill; tick labels of the middle panel
+overlap, to be redrawn with the 128-cell points).
+
+**R1 held.** With `id_far = robin` and matter at rest the six output files of
+gauss_code_n32 (record, dump, field dump, three histories) are byte-identical to those of
+the published first-pass executable. For the moving Gaussian every file differs in some
+byte, as predicted (the new term of sigma), with psi equal to 6.0e-15 and W to 5.1e-16
+of its maximum, 17 outer iterations in both (prediction: 1e-9).
+
+**W1 held at 32 and 64 cells** (128 cells pending, card job).
+
+| | plain 1/r fill, N = 32 / 64 | far field, N = 32 / 64 |
+|---|---|---|
+| W_x at the x-face centres, relative error | -8.55e-3 / -9.28e-3 | +9.3e-4 / +2.36e-4 |
+| W_x at the y-face centres | +2.11e-3 / +1.73e-3 | +6.4e-4 / +1.59e-4 |
+| largest error of W over the outermost layer | 2.20e-2 / 2.22e-2 | 1.19e-3 / 2.98e-4 |
+| mean over the outermost layer | 1.20e-2 / 1.24e-2 | 7.8e-4 / 1.97e-4 |
+| W_x at the centre | -1.175e-2 / -3.60e-3 | -1.108e-2 / -2.94e-3 |
+
+ (a), (b): the far field removes the closure error; what is left falls by 3.95 and 4.0
+ per halving. (c): the central error changes by 6 and 18 per cent: the closure error of
+ the plain fill, a solution of the homogeneous equation, reached the centre with 6.5e-4
+ at 64 cells. (d): P_ADM of the record equals sum m u_x to 3e-13; the surface integral
+ over cubes of half-width 9.5 to 13.75 differs from it by -5.6e-5 to -2.1e-5 (N = 32) and
+ -1.4e-5 to -5.1e-6 (N = 64), second order, and by the same amounts with the plain fill
+ (-5.2e-5 to -3.3e-5, -1.3e-5 to -8.3e-6), as predicted: the surface integral cannot
+ see the closure error. At half-width 7.5 the integral misses 9e-4 and 3.7e-4 of the
+ momentum: matter beyond the surface (3.75 sigma), not truncation. (e): residual ratio
+ 0.136 to 0.141 per outer iteration, 17 outer iterations.
+
+**W2 held, except for one bound.** Off-centre Gaussian (centre (3, 2, 0)), 64 cells:
+largest error of W over the outermost layer 5.6e-4 (lmax = 4), 0.116 (lmax = 0), 0.108
+(plain fill); at the face centres 2.2e-4, 1.1e-4, 9.5e-5 against 5.7e-3 to 9.9e-3
+(lmax = 0) and 4.9e-3 to 1.15e-2 (plain). J_ADM = (0, 7e-16, -0.2282094778), that is -2
+times P_ADM = 0.1141047394. Failed bound: P_ADM differs from sum m u_x = 0.11410473958 by
+1.4e-9 relative and J_z from -2 sum m u_x by 6e-10 and from -2 P_ADM... both above or at
+my 1e-9: the lattice reaches r = 14 from its centre, 17.6 from the Robin centre, beyond
+the sphere of the moments (16): 1.4e-9 of the momentum lies outside. The moments are
+those of the sphere, as designed; my bound ignored the shift.
+
+**C1 held.** u_x = 1 (P = 1.141, M_psi = 1.4286 and 1.4284 at 32 and 64 cells): 30 and
+36 outer iterations; max|H| of the monitor away from the faces 2.1e-11 and 2.4e-11
+(before 0.57 and 0.65); the vector part ends at `id_vector_tol` (9.9e-7) with max|M|
+0.20 -> 3.3e-7 and 0.23 -> 1.4e-7; psi - 1 at the centre 0.24302 and 0.25143 (3.3 per
+cent apart).
+
+**Processors and cards.** After this run the allotment of owner core (16 cores at a
+time, decision 0006) was full with the runs of other packages of core, and nine jobs
+waited for the two cards (six of owner core). Tests B and C wait in a loop that
+submits them when the allotment has room (`scratch/core/tmp/idsolve2/submit_wait.sh`);
+no card job was added to the queue.
+
+**Smoke runs between entries 3 and 4, and what they changed** (by hand in
+`scratch/core/tmp/idsolve2/`, not registered; they led to a source change, so they are
+reported). (1) The torus with a refined cube, matter at rest (`t_smr`): mode code
+converges in 27 outer iterations, and the run's own constraint output shows max|H|
+2.6e-10 (root level) and 1.15e-9 (refined level): the run sees what the solver solved.
+(2) The same with moving matter and the vector part in mode code: the vector residual
+stalled at 6e-2 of its scale and W was frozen after 12 iterations with max|M| 1.8e-2
+(before 9.8e-2). Where it sits (bins by distance from the level boundary): with the
+vector part in stencil form, converged to 5e-14, the monitor's |M| is 2.0e-2, 7.4e-3,
+1.7e-3 in the first, second and third fine cell next to the level boundary and below
+6.5e-4 further in (deep inside 2.0e-4, as on a uniform mesh of the fine cell size:
+9e-5 to 2e-4); on the coarse side 4.0e-3 in the first cell. Reading [JUDGEMENT; the run
+that could refute it is the registered t_smr_mov after the change]: the monitor of a
+cell next to a level boundary differentiates K_ij across prolongated ghost cells and
+sees the difference of the second-order truncation errors of L W on the two levels,
+divided by the cell size; no correction of W removes it, and with the monitor as
+residual those cells stall the iteration for the whole mesh. Change (76add0c): with
+`id_vector_residual = code` on a refined mesh the residual is the stencil form in the
+ng - 1 cells on either side of a level boundary. A smoke run of the changed code:
+vector residual 1.3e-3 (uniform torus: 1.4e-3), max|M| still 2.0e-2 at the level
+boundary. (3) Uniform torus, moving matter, A = 0.1, 32 cells, max|M| of the monitor
+before 0.095: after, mode code 2.6e-4, stencil form 9.2e-4; with one filter pass
+(`nfilter = 1`) mode code 2.0e-6, stencil form 3.9e-4. The filter removes the content at
+the Nyquist wavenumber that the monitor's operator cannot balance.
+
+## 2026-11-19, entry 5: a new session continues; tests B, C launched; predictions R0, P, W1 at 128 cells, K (card)
+
+A new session took the package over at 15:31 UTC from commit 76add0c and the uncommitted
+entry 4 (committed as 3d26b50). The submission loop of the previous session had stopped
+(no process left, its log ends at 15:27 UTC). Read again: `CLAUDE.md`, `coord/CHARTER.md`
+to "Owners", brief lines 493-553, 688-706, 834-860, decisions 0010, 0016, 0017, 0018,
+`harness/RULES.md`, `interfaces/id_solver.md`, `JOURNAL-idsolve.md` (all), this journal,
+`particles/nrpic_idsolve.cpp` (all), the two requests of Track A,
+`pgen/nrpic/nrpic_bowen_york.hpp` 1-96, `python/nrpic/bowen_york.py` 1-232.
+
+Launched (processor build of 76add0c, predictions of entries 2 and 3 unchanged): test B
+at 32, 64 and 128 cells as run core-20261119-153416-3d26b50 (4 cores: the allotment of
+owner core had 4 free), test C as run core-20261119-153510-d1eaa30 (1 core, what was
+left). The 128-cell cases of B run on processors, not on a card.
+
+**R0 regression against the release** (`regress_r0.py`): without `id_solve` the
+executable of this branch writes the same bytes as the release executable core-v0.3
+(`.work/build_cpu_v03/src/athena`) in the seven relativistic set-ups of
+`regress_relativistic.py` (geo, boris, dep, east, os, jeans, binary: the binary has four
+multigrid levels, so the octet boundary routine with its new Robin hook is passed with the
+multipole kind) and the two Newtonian set-ups (isolated with multipole faces, periodic).
+Refuted if any output file or result line of the log differs.
+
+**P, punctures** (`test_p.py`; the singular part psi_s = 1 + sum m/2r in closed form, u
+solved). References: for one Bowen-York puncture (m = 1, P = 0.5 along x) the multipole
+solution `bowen_york.solve_axisym` (lmax 12): m_ADM = 1.145565, u at the puncture 0.028368,
+and the mass that the moments within r = 16 give, m + 2 Q(16) with Q(R) = -R^2 u_0'(R):
+1.119594; for a puncture (m = 1, at rest) in a Gaussian shell of particles at rest
+(mass 0.5, radius 6, width 1) the radial solution of lap u = -2 pi Etilde/(psi_s + u)
+computed in `test_p.py`: m_ADM = 1.448858, u(0) = 0.036309. Said plainly: two smoke runs at
+32 cells were made before these predictions (`scratch/core/tmp/idsolve2/smoke_p/`, by
+hand, not registered: the vacuum puncture in mode stencil and the shell in mode code with
+radius 3), to check that a run without particles and the analysis work; what they showed
+is quoted where a prediction uses it.
+ P1 vacuum Bowen-York puncture, N = 32, 64, 128 (dx = 1, 0.5, 0.25):
+  (a) mode stencil converges in at most 8 outer iterations; the largest error of u for
+      1 < r < 12 is 3.0e-4 at N = 32 (smoke) and falls by at least 3 per halving; the
+      error in the eight cells next to the puncture falls by at least 2.5 per halving (the
+      source is of order r^3 at the puncture, u is only C^2 there);
+  (b) M_psi of the record equals m + 2 Q(16) = 1.119594 to 2e-4 at every N (smoke:
+      1.119678 at N = 32) and is NOT the ADM mass: the Bowen-York source falls as r^-4 and
+      what lies beyond the sphere of the moments, 0.026 for P = 0.5 and r = 16, is missing;
+  (c) mode code with id_puncture_radius 1: at N = 32 it does not converge or its error of
+      u is more than 10 times that of mode stencil (the sixth-order monitor differentiates
+      psi_s^4 at r = 1.7 dx); at N = 128 it converges and its error falls by at least 16
+      between N = 64 and 128 (the truncation of the monitor at a fixed radius goes as
+      dx^6), but stays above the stencil error;
+  (d) mode code with radius 3: converges at N = 64 and 128 with an error of u within a
+      factor 2 of mode stencil; the monitor outside the radius after the solve below 1e-9
+      (more than 4 length units from the faces);
+ P2 puncture in the shell, N = 32, 64, 128 (lattice h = dx/2):
+  (a) mode stencil and mode code (radius 3) converge; the error of u for 3 < r < 12 falls
+      by at least 3 per halving in both modes; at N = 128 the two modes agree with the
+      reference to 1e-4 of u(0) or better;
+  (b) M_psi of the record within 2e-4 of 1.448858 at N = 32 (smoke, mode code: 1.448946)
+      and converging (factor 3 or more per halving);
+  (c) mode code: the monitor outside radius 3 and away from the faces below 1e-10;
+ P3 refined mesh: root 32^3 (dx = 1), static levels in |x_i| < 8 (dx = 0.5) and |x_i| < 4
+     (dx = 0.25), lattice h = 0.125:
+  (a) the shell in mode code (radius 3) and in mode stencil converge (BiCGStab); the error
+      of u at the puncture (level 2) is at most 1.5 times that of p2_c3_n64 (the shell
+      lies mostly on level 1, dx = 0.5); the monitor after the solve below 1e-8 on every
+      level, away from the faces and outside radius 3;
+  (b) the vacuum puncture in mode stencil: the largest error of u for 1 < r < 12 at most 2
+      times that of p1_st_n64;
+ P4 three punctures (m = 1, 0.6, 0.4 at (-3,0,0), (3,1,0), (0,-4,1); momenta (0,0.2,0),
+     (0,-0.2,0.1), (0.1,0,-0.1); spin (0,0,0.2) on the first), mode stencil, N = 32, 64, 128:
+  (a) at most 8 outer iterations; P_ADM of the record is the sum of the momenta,
+      (0.1, 0, 0), and J_ADM the sum of spins and x_c times P_c, both to round-off;
+  (b) u at each puncture converges: |u_128 - u_64| at most a third of |u_64 - u_32|;
+  (c) the closed-form second-order corrections of `nrpic_cf` (comp_corr = approx with the
+      background factor) agree with u at the punctures to 30 per cent (they omit the
+      cross terms of the curvatures and orders above P^2);
+ P5 the puncture of P1 in the shell of P2 moving with u_x = 0.1 (sum m u_x = 0.05), both
+     parts in mode code (radius 3), N = 64: converges; P_ADM_x of the record = 0.55 to
+     1e-6 relative (the momentum of the deposit plus that of the puncture); the vector part
+     ends at id_vector_tol or by the stall rule with the monitor's max|M| at least 100
+     times lower.
+ Refuted (design) if P1 (a) or P2 (a) fails: then the split psi_s + u or the stencil near
+ the puncture is wrong.
+
+**W1 at 128 cells** (`test_a.py --tests w1`, processors): far field: relative error of W_x
+at the x-face centres 6e-5 (2.36e-4/4) within a factor 1.5, largest error over the
+outermost layer below 1e-4; plain fill: 9e-3 at the face centres and above 1e-2 over the
+layer, as at 32 and 64 cells.
+
+**K card check** (card build of 76add0c, one A100, at most 0.5 card-hours reserved): the
+vacuum puncture (mode stencil and mode code radius 3) at 128 cells, the moving Gaussian
+with the far field at 128 cells and the solved Zel'dovich ball `zsol` at 128 cells with its
+evolution to t = 2: the same outer iterations as the processor runs, psi (and W) equal to
+1e-12 relative, the region means of |H| at t = 2 equal to 1e-6 relative (card runs with
+deposition are not bit-reproducible). Refuted if an iteration count differs by more than
+one or a field by more than 1e-9.
+
+## 2026-11-19, entry 6: card job K queued; test G (Track A's CMC peak) predicted
+
+Card job K: run core-20261119-154414-2506b80, Slurm job 4656 (batch launcher, card build
+of 76add0c copied to `scratch/core/tmp/idsolve2/exe_76add0c/athena_gpu`, list
+`scratch/core/tmp/idsolve2/card_k/card.list`, 0.6 card-hours reserved), waiting behind
+about twenty jobs. Tests R0, P and W1 (128 cells) wait for room in the allotment of owner
+core (loops `submit_wait.sh`, logs `scratch/core/tmp/idsolve2/submit_*.log`).
+
+**G, the phase-1 generator of Track A on the CMC slice with the code's solver**
+(`test_g.py`; request `...183719Z__to-core__phase1-generator-cmc.md`). The data are those
+of Track A's T4 (`t4_cmc_route.py` on `track/A-emd-pbh`, functions `ge_fields`, `run_case`,
+copied with their source named): a curvature peak with mu, e = 0.2, eps_i = k/(aH) = 0.2
+on a torus of side 20/k = 100 (H = 1), gradient-expansion psi_GE, K = -3H, Ahat_GE, E from
+the Hamiltonian constraint of psi_GE and Shat from the momentum constraint (spectral
+derivatives), one particle per cell at the cell centre carrying Ehat and Shat. The code
+reads psi_GE, K and Ahat_GE (`nrpic_cosmo id = file`), starts from psi = 1 and solves with
+K and Ahat held fixed. psi_GE solves the continuum constraint with this E exactly, so the
+solved psi differs from it only by the discretisation of the code; measure: Track A's
+c = max|dpsi - <dpsi>| / max|psi_GE - <psi_GE>|. Track A's Python solve diverged at mu = 0.5
+(runs A-emd-pbh-20261115-160718-e04c0cc, -161134-f3949f8, quoted from their DESIGN.md 2.2).
+Said plainly: one smoke run (mu = 0.5, 32 cells, by hand, `scratch/core/tmp/idsolve2/
+smoke_g/`, not registered) was made to check the files: it converged after 8 outer
+iterations with c = 1.6e-5, max|H| 1.2e-9 after, and 49 to 50 conjugate-gradient steps in
+most Newton steps (the inner solve stops at id_lin_maxit = 50).
+Cases: mu = 0.03, 0.3, 0.5, 0.7 at 64 cells, mu = 0.5 at 32 cells, mu = 0.5 at 64 cells
+with the vector part (mode code). Predictions [JUDGEMENT]:
+ (a) every case converges within 80 outer iterations, mu = 0.5 and 0.7 included;
+ (b) c at 64 cells below 1e-4 for mu <= 0.5, and for mu = 0.5 at least 4 times below the
+     value at 32 cells;
+ (c) the monitor after the solve, max|H| below 1e-8 in every case; the mean offset of
+     psi from psi_GE below 1e-6;
+ (d) with the vector part: converges, c within 10 per cent of the scalar-only case, and
+     the monitor's max|M| at least 10 times lower after the solve (or W frozen by the
+     stall rule);
+ (e) the inner solve is poorly preconditioned on a box of 100 Hubble lengths (the
+     Poisson preconditioner against sigma/k_min^2 of order 1e3): for mu >= 0.3 at 64
+     cells at least half of the Newton steps use all id_lin_maxit = 50 steps.
+Refuted (machinery) if mu = 0.5 does not converge or c at 64 cells exceeds 1e-3.
+
+## 2026-11-19, entry 7: outcomes of R0 and G
+
+**R0 held** (run core-20261119-154842-de22625, 1 core, `regress_r0.json`, figure
+`figs/regress_r0`, looked at: every bar identical, none differing). Without `id_solve`
+the processor build of 76add0c writes the same bytes as the release executable
+core-v0.3 in all nine set-ups: geo 2 files, boris 2, dep 1, east 12, os 16, jeans 5
+(and the result lines of its log), binary 1, Newtonian isolated 11, periodic 9; both
+executables exit 0 in every case.
+
+**G, Track A's CMC peak with the code's solver** (run core-20261119-160329-ab0aa92,
+2 cores, `test_g_numbers.json`, figure `figs/test_g_cmc`, looked at: the solved profiles
+lie on psi_GE, the difference peaks at the centre at a few 1e-7 for mu >= 0.3 at 64 cells,
+residual histories fall by about a decade per Newton step after the third):
+
+| case | outer it. | c = max\|dpsi - <dpsi>\| / max\|psi_GE - <psi_GE>\| | max\|H\| before -> after | mean offset |
+|---|---|---|---|---|
+| mu = 0.03, 64^3 | 9 | 1.0e-7 | 0.56 -> 3.2e-10 | 0 |
+| mu = 0.3, 64^3 | 10 | 3.6e-7 | 8.6 -> 1.5e-9 | 2e-12 |
+| mu = 0.5, 32^3 | 8 | 1.6e-5 | 19.0 -> 1.2e-9 | -6.5e-10 |
+| mu = 0.5, 64^3 | 10 | 5.2e-7 | 20.4 -> 3.1e-9 | -1.4e-11 |
+| mu = 0.7, 64^3 | 11 | 6.3e-7 | 41.8 -> 2.2e-9 | -6.1e-11 |
+| mu = 0.5, 64^3, vector part | 10 | 5.2e-7 | 20.4 -> 3.1e-9 | -1.4e-11 |
+
+ (a) held: every case converged, mu = 0.5 and 0.7 included (Track A's Python solve
+     diverged at 0.5), in 8 to 11 outer iterations.
+ (b) held: c below 1e-4 at 64 cells for every mu (at most 6.3e-7); for mu = 0.5 it falls by
+     31 from 32 to 64 cells (predicted at least 4).
+ (c) held: max|H| after 3.2e-10 to 3.1e-9 (bound 1e-8); mean offsets at most 6.5e-10.
+ (d) held: with the vector part c is the same to 1e-5 relative; the monitor's max|M|
+     falls from 1.58e-7 to 1.66e-9 (factor 95), ending at id_vector_tol after 10
+     iterations (the GE data satisfy the momentum constraint to the truncation of the
+     monitor).
+ (e) failed for mu = 0.3, held for 0.5 and 0.7: Newton steps that used all 50 inner steps:
+     4 of 10 (mu = 0.3), 6 of 10 (0.5), 6 of 11 (0.7). The inner solve is poorly
+     preconditioned on a box of 100 Hubble lengths, as predicted, but the Newton
+     iteration converges regardless (each step still reduces the residual by about 10).
+ Also seen: the proper density E of the code is uniform to 0.5 per cent on the CMC slice
+ (max E over its mean 1.0047 to 1.0049 for mu >= 0.3), while Ehat = psi^6 E peaks at 4
+ times its mean: the density contrast of the CMC slice is of order eps^2 zeta [JUDGEMENT,
+ consistent with Track A's DESIGN.md 2.2].
+ Consequence for request (5): the machinery of the code solves Track A's CMC data at
+ 64^3 to c of a few 1e-7 where their solver diverged; what the code does not provide is
+ the generator of the trial fields (Track A's `ge_fields`, here copied into the test) and
+ a field format with a non-conformally-flat metric.
+
+## 2026-11-19, entry 8: outcome of C (refined meshes, torus, refined Zel'dovich ball); a fault of the analysis
+
+Run core-20261119-153510-d1eaa30 (processor build of 76add0c, 15 cases, 1 core, 25 min),
+analysed again by run core-20261119-161309-b04b4dd; `test_c_numbers.json`, figure
+`figs/test_c_refined` (looked at: second-order profiles of the psi error with the refined
+runs between the uniform ones, residual histories, the monitor per level).
+
+**A fault of the analysis, found before any number of it was used.** The first analysis
+inside the run read the six numbers per MeshBlock of the binary output as x1i, x2i, x3i,
+dx1, dx2, dx3 (as the docstring of `athenak/vis/python/bin_convert.py` says); AthenaK
+writes x1min, x1max, x2min, x2max, x3min, x3max (`outputs/binary.cpp` 139, 198-201
+[VERIFIED]). The masks "4 length units from the faces" and the radial regions were
+therefore wrong, and the monitor on level 0 of the Gaussian appeared as 1.9e-3 (the face
+cells). The reader is fixed (commit 0540281, `test_c.py` `read_con`)
+and the analysis repeated as its own registered run; all numbers below are from it.
+
+**G** (Gaussian at rest, Robin faces):
+ (a) held: mode code 20 (one level) and 22 (two levels) outer iterations, mode stencil 4.
+ (b) held: the run's own monitor at t = 0 more than 4 units from the faces, max|H| per
+     level: one level 2.4e-12 (root), 2.0e-11 (level 1); two levels 5.9e-13, 4.0e-12,
+     1.9e-11; uniform 1.4e-11 (32^3), 1.1e-11 (64^3). The cells at the level boundaries
+     are included: the solver's metric passes through the Z4c exchange of the run.
+ (c) centre held, r = 6 failed: relative error of psi - 1 at r < 1: -5.01e-3 (one level)
+     against -5.03e-3 (uniform dx = 0.5); two levels +3.0e-4 (smaller, as predicted). At
+     r = 6 (root level, dx = 1) the refined runs have 5.4e-4 and 9.6e-4 against 1.67e-3 for
+     the uniform dx = 1 run: not "within 30 per cent" but 2 to 3 times smaller. The error
+     there is the far field of the error of the deposited monopole, which the finer centre
+     makes smaller (as in the first pass, T1 (e)); my prediction took it as local.
+ (d) failed: mode stencil on the refined mesh has -2.03e-3 at the centre against -5.01e-3
+     in mode code (factor 2.5, predicted within 2), the same relation as on uniform meshes
+     in the first pass (T1: -2.43e-3 against -5.22e-3); the stencil run leaves the monitor at
+     1.4e-3 (level 1).
+ (e) held: M_psi 1.000647 (one level) against 1.000651 (uniform 64^3).
+**T** (torus, K = -3H):
+ (a) held: t_uni 24 outer iterations, max|H| 1.15e-9.
+ (b) held: t_smr (refined cube, nested lattice) 27 iterations, max|H| 2.6e-10 (root),
+     1.15e-9 (level 1); without the solve 0.73 and 1.86.
+ (c) failed on one count: t_smr_mov converges (27 iterations) and the mean removed from the
+     vector residual is 1.4e-17, but the monitor's max|M| falls only from 9.8e-2 to 2.0e-2
+     (predicted at least 100 times): W stalls (relative residual 1.3e-3) and max|M| sits at
+     the level boundary (level 1: 2.0e-2, root 4.0e-3; mean 1.1e-3 and 2.8e-4). The smoke
+     runs of entry 4 had shown it; this run confirms that the stencil form near the
+     boundary (76add0c) does not remove it. Reading [JUDGEMENT]: K_ij = psi^-2 (Abar + L W)
+     with L W from second-order central differences on each level; the monitor
+     differentiates K_ij across prolongated ghost cells and sees the jump of the
+     truncation error of L W between the levels over the fine cell size, a first-order
+     error in M that no W removes. A fourth-order L W in mode code would lower it by about
+     (k dx)^2; not done (section limits of the interface).
+ (d) held: uniform torus with moving matter, A = 0.1, 0.5, 0.9: 24, 26, 33 outer
+     iterations, psi >= 0.964; max|M| 0.095 -> 2.6e-4, 0.56 -> 5.0e-3, 1.32 -> 4.3e-2 (the
+     vector part stalls at relative residuals 1.4e-3, 3.8e-3, 1.2e-2: the Nyquist content of
+     the deposit, as in the first pass).
+**Z** (Zel'dovich ball of B, root dx = 2, level 1 with dx = 1 in |x_i| < 16):
+ (a) held: z_smr_sol converges in 43 iterations; at t = 0 interior and shell max|H|
+     1.8e-13 and 1.6e-12 (root level away from the faces 6.9e-8).
+ (b) held: means of |H| at t = 1 (interior 5.51e-5, shell 1.71e-4) and t = 2 (1.05e-4,
+     1.85e-4) equal those of the uniform 64^3 run of B (zsol_n64: 5.52e-5, 1.71e-4;
+     1.05e-4, 1.84e-4) to 1 per cent; at t = 1 the shell mean is below z_smr_off (4.01e-4).
+ The vector part on this mesh stalls at max|M| 2.6e-4 (uniform 64^3: 2.6e-6), again at the
+ level boundary (|x_i| = 16, in the curved exterior of the table); the interior mean of
+ |M| is 9.8e-7 (uniform 8.9e-7).
+Answer to Track A's request on refined levels [VERIFIED in these runs]: the solve runs on
+the level structure of the run, and the run's own Hamiltonian monitor at t = 0 is at
+1e-11 to 1e-9 on every level, level boundaries included (Track A measured 0.077 to 0.18
+with data interpolated onto refined blocks).
+
+## 2026-11-19, entry 9: outcome of W1 at 128 cells; P2
+
+**W1 at 32, 64, 128 cells held** (run core-20261119-155750-c923762, 1 core; the 32- and
+64-cell cases repeat run -145332-1ac049d to all digits printed; `test_a_numbers.json`,
+figure `figs/test_a_far`, looked at: the far-field curves fall by 4 per halving in the
+middle panel, the plain fill stays flat; the surface momentum converges at second order
+for both fills). Far field at 128 cells: W_x at the x-face centres +5.9e-5 (prediction
+6e-5 within 1.5), y-face centres 4.0e-5, largest error over the outermost layer 7.5e-5
+(prediction below 1e-4); the factors 64 -> 128 are 3.98 and 3.99. Plain fill: -9.5e-3 at
+the x-face centres and 2.25e-2 over the layer (does not fall). Central error -7.5e-4
+(far) against -1.40e-3 (plain): at 128 cells the closure error of the plain fill is
+half of the central error. P_ADM of the record 0.1141047395752 against sum m u_x =
+0.11410473958 (round-off); surface integral at half-width 13.75: 1.25e-6 relative (5e-6 at
+64, 2.0e-5 at 32 cells).
+
+**P2, a puncture in a matter shell** (run core-20261119-161842-b92b298, 1 core;
+`test_p_numbers_p2.json`, figure `figs/test_p_profiles_p2`, looked at: the solved u lies
+on the radial reference at all three resolutions and (u - u_ref)/dx^2 is one curve, with
+its maximum at the shell, r = 6 to 7):
+
+| case | outer it. | u - u_ref at the puncture | max\|u - u_ref\|, 3 < r < 12 | M_psi (ref 1.448858) | monitor outside r_p |
+|---|---|---|---|---|---|
+| stencil, 32 / 64 / 128 | 4 / 3 / 3 | -1.4e-5 / -3.5e-6 / -8.8e-7 | 1.12e-4 / 2.9e-5 / 7.3e-6 | 1.448967 / .448885 / .448864 | 0.083 / 0.24 / 7.6e-3 |
+| code, r_p = 3, 32 / 64 / 128 | 25 / 22 / 17 | +2.0e-4 / -6.1e-6 / -1.2e-6 | 2.9e-4 / 5.7e-5 / 1.4e-5 | 1.448946 / .448893 / .448866 | 4.4e-13 |
+
+ (a) held for convergence and order: both modes converge; the error over 3 < r < 12 falls
+     by 3.9 and 4.0 (stencil), 5.0 and 4.0 (code); at 128 cells the error at the puncture
+     is 2.4e-5 (stencil) and 3.3e-5 (code) of u(0) = 0.0363, inside 1e-4; but the largest
+     error over the shell region is 2.0e-4 and 3.9e-4 of u(0), not 1e-4: my bound "agree
+     with the reference to 1e-4 of u(0)" fails for the maximum (the deposit's
+     second-order error of the shell at r = 6).
+ (b) held at 32 cells (8.8e-5, 1.09e-4 from the reference), converging at 4.0 and 4.1 per
+     halving in mode stencil; in mode code the factors are 2.5 and 4.2, the first below my
+     3 (failed for that step).
+ (c) held: mode code leaves the monitor at 4.4e-13 outside radius 3 and away from the
+     faces. Mode stencil leaves it at 0.08 to 0.24 next to the puncture (r of 1 to 2: the
+     sixth-order monitor differentiating psi_s^4), which is the monitor's error on the
+     singular part, not an error of the data (u converges at second order there).
+
+## 2026-11-20, entry 10: wave 3, a new session closes the package; what was found; predictions P6, P7
+
+The session of 2026-11-19 was cut off by the usage limit of the account after entry 9. A
+new session took over on 2026-11-20 at 22:00 UTC (merge of main: decisions 0018, 0019,
+the pre-commit hook, the pause flag). Read again: `CLAUDE.md`, `coord/CHARTER.md` to
+"Owners", brief lines 493-553, 688-706, 834-860, decisions 0016 to 0019, `harness/RULES.md`,
+this journal, `interfaces/id_solver2.md`, `test_p.py`, `analyze_k.py`, of
+`nrpic_idsolve.cpp` lines 462-560, 812-960, 1040-1240.
+
+State found [VERIFIED: `git status`, `nrpic-run status`, `sacct`]: source unchanged since
+76add0c; every processor run of entry 5 had finished unattended (B at 32, 64, 128 cells
+core-20261119-153416-3d26b50; P1 -165458-ecdaa7c; P3 and P4 -170050-f228951; P5
+-170028-77f7173), their numbers and figures lay uncommitted in the analysis directory
+(committed as a3c5a8f, each file equal to the copy in its run directory); the card job K
+(core-20261119-154414-2506b80, Slurm job 4656) had run its four cases in 1 min 56 s
+(0.032 card-hours) and was not closed (closed now with `nrpic-run finish`). Not done at
+the cut-off: outcomes of B at 128 cells, P1, P3, P4, P5, K; the placeholders of the
+interface; READY; publication. Outcomes: entry 11.
+
+Two things the finished P runs show, which the tests below follow up (the numbers are
+in entry 11): (i) the error of u of the vacuum Bowen-York puncture does not fall with
+the cell size: it is 2.6e-4 to 2.9e-4 over 1 < r < 12 at 32, 64 and 128 cells, nearly
+uniform in space (root mean square 2.6e-4 to 2.8e-4), in both residual modes; (ii) u at
+the three punctures of P4 has not converged at dx = 0.25 (successive differences fall
+by 0.63, 0.24, 0.48 instead of at most a third).
+
+**P6, the face distance for a Bowen-York puncture** (`test_p.py --tests p6`; the vacuum
+puncture of P1, m = 1, P = 0.5, mode stencil; mesh half-width 32 at dx = 1 and 0.5 (64
+and 128 cells) and half-width 64 at dx = 1 (128 cells); the half-width 16 cases are those
+of P1). Reading to be tested [JUDGEMENT]: the Bowen-York source of the scalar equation
+falls as r^-4, lap u = -c/r^4 beyond the matter with c = (15/16) P^2 at leading order
+(angle average of (1/8) Abar^2 with psi = 1), so u = Q_inf/r - c/(2 r^2), and the moments
+within the sphere of radius R (the half-width) hold Q(R) = Q_inf - c/R. The remainder
+u - u_far is then c/(R r) - c/(2 r^2) beyond R, which the 1/r fill does not represent:
+d(r v)/dr = c/(2 r^2) where the fill assumes 0. The error is a solution of the
+homogeneous equation, nearly a constant e0 with e0 = -(c/2) <1/r^2> over the faces,
+about -0.64 c/(2 R^2) for a cube. With c from the reference (c/R = Q_inf - Q(16) =
+0.01298, c = 0.208; leading order 0.234 less the factor psi^-7) that is -2.6e-4 for
+R = 16, as seen. Predictions:
+ (a) the mean of u - u_ref over 1 < r < 12 is negative and falls as R^-2: -6.5e-5 within
+     20 per cent at half-width 32 for both cell sizes, and -1.6e-5 within a factor 1.5
+     at half-width 64 (there the truncation error at dx = 1, about 1e-5, is of the same
+     size);
+ (b) M_psi of the record equals m + 2 Q(R) of the reference (`by_reference`, `m_inside`)
+     to 1e-4 at half-width 32 and 64; its deficit against the ADM mass 1.145565 is
+     0.0260 at R = 16 (measured in P1) and about 0.013 and 0.0065 at R = 32 and 64;
+ (c) at most 6 outer iterations in every case.
+ Refuted (the reading) if the mean error does not fall by 3 to 5 when the half-width
+ doubles at fixed cell size.
+
+**P7, the three punctures of P4 on refined meshes** (`test_p.py --tests p7`; root 32^3
+with dx = 1, MeshBlocks of 8^3, static levels: |x_i| < 8 (dx = 0.5), |x_i| < 6 (0.25),
+then cubes about each puncture of half-width 2 (0.125), 1 (0.0625) and 0.5 (0.03125);
+cases `p7_l2` to `p7_l5` by the finest level; mode stencil, BiCGStab). Reading to be
+tested [JUDGEMENT]: the source (1/8) psi^-7 Abar^2 of a puncture of bare mass m peaks at
+r = 3 m/8 for its momentum (r^3/(r + m/2)^7) and at r = m/12 for its spin
+(r/(r + m/2)^7): 0.15 to 0.375 for the three momenta and 0.083 for the spin of the first
+puncture, not resolved by dx = 0.25. Predictions:
+ (a) every case converges in at most 8 outer iterations; P_ADM and J_ADM of the record
+     as in P4, (0.1, 0, 0) and (0.5, -0.2, -0.6), to round-off;
+ (b) `p7_l2` agrees with the uniform 128-cell run of P4 at each puncture to 5 per cent
+     of u (the same cell size at the punctures; the far field differs little);
+ (c) the differences of u at each puncture between successive cases fall: |u_l4 - u_l3|
+     at most 0.4 |u_l3 - u_l2| and |u_l5 - u_l4| at most 0.4 |u_l4 - u_l3| for the two
+     punctures without spin; for the spinning one the second ratio holds (its source is
+     resolved from dx = 0.0625 on);
+ (d) u at the punctures on the finest mesh lies above the uniform 128-cell values
+     (0.0164, 0.0121, 0.0109) and within 40 per cent of the closed-form second-order
+     values of `nrpic_cf` (0.0157, 0.0100, 0.0078), which omit the cross terms of the
+     curvatures of different punctures.
+ Refuted (the reading) if the differences do not fall from `p7_l3` on.
+
+## 2026-11-20, entry 11: outcomes of B (128 cells included), P1, P3, P4, P5 and the card check K
+
+**B, the end-to-end test** (run core-20261119-153416-3d26b50, processor build of 76add0c,
+12 cases on 4 cores; `test_b_numbers.json`; figures `figs/test_b_static`,
+`test_b_evolution`, `test_b_slices`, looked at: at t = 0 the solved sets sit at 1e-13 to
+1e-12 in |H| at every cell size and the unsolved one at 1e-4 to 1e-3; in the evolution
+panels the four sets of one resolution end on one point in the face layer; the slices at
+128 cells show the same pattern for the solved Zel'dovich ball and the solved sphere, a
+bright ring at the edge of the unsolved ball, and for the scalar-only set a haze of 1e-7
+to 1e-6 that reaches the faces). Regions: interior r < 7, shell 7 <= r < 13.5, face
+layer 4 length units; means of |H| and |M| over the cells of a region; N = 32, 64, 128.
+
+| | N = 32 | 64 | 128 |
+|---|---|---|---|
+| `zoff`, t = 0: max\|H\| in the shell; shell mean; interior mean \|M\| | 2.81e-3; 5.8e-4; 2.44e-4 | 2.79e-3; 4.08e-4; 5.99e-5 | 2.84e-3; 3.76e-4; 5.57e-5 |
+| `zsol`, t = 0: max\|H\| interior; shell; interior mean \|M\| | 7.9e-13; 2.2e-12; 5.2e-6 | 2.7e-13; 1.7e-12; 8.9e-7 | 1.2e-13; 2.2e-12; 3.2e-7 |
+| `sph`, t = 0: interior mean \|M\| | 5.2e-6 | 8.4e-7 | 2.8e-7 |
+| `zsca`, t = 0: max\|H\| shell; interior mean \|M\| | 1.6e-12; 2.45e-4 | 2.2e-12; 6.00e-5 | 1.6e-12; 5.57e-5 |
+| outer iterations `sph` / `zsol` / `zsca` | 51 / 51 / 25 | 44 / 44 / 24 | 43 / 41 / 25 |
+| t = 2, interior mean \|H\|: `sph` / `zsol` / `zsca` / `zoff` | 4.18e-4 / 4.18e-4 / 4.51e-4 / 2.84e-4 | 1.03e-4 / 1.05e-4 / 9.4e-5 / 1.06e-4 | 7.8e-6 / 1.12e-5 / 1.34e-5 / 6.8e-5 |
+| t = 2, shell mean \|H\|: `sph` / `zsol` / `zsca` / `zoff` | 7.61e-4 / 7.63e-4 / 8.41e-4 / 9.95e-4 | 1.83e-4 / 1.84e-4 / 1.83e-4 / 3.55e-4 | 1.79e-5 / 2.06e-5 / 4.93e-5 / 2.57e-4 |
+| t = 2, face layer mean \|H\|, the four sets | 1.130e-4, 1.129e-4, 1.129e-4, 1.130e-4 | 1.322e-4 (all four) | 1.305e-4 (all four) |
+
+ (a) failed on one count: the largest |H| of the unsolved data is 2.8e-3 at every
+     resolution, not "about 1e-2" (I took the number of test T3 of the first pass, a
+     different ball); the shell mean is 4.1e-4 and 3.8e-4 at the two finer meshes
+     (predicted 3e-4 to 5e-4) and the interior mean of |M| 6.0e-5 and 5.6e-5 (predicted
+     about 5e-5, equal within 30 per cent): held.
+ (b) H held: after the solve max|H| in interior and shell is 1e-13 to 2e-12 at every
+     resolution. M failed at 32 and 64 cells: the interior mean of |M| falls by 47, 67
+     and 173 (predicted at least 100). The vector part ends by the stall rule (relative
+     residual 3.0e-4, 5.7e-5, 2.1e-5; max|M| 3.2e-3 -> 1.0e-5, 7.8e-4 -> 2.6e-6,
+     2.3e-4 -> 1.1e-6), and what is left is what the solved sphere has as well (5.2e-6,
+     8.4e-7, 2.8e-7): the floor is not the displacement.
+ (c) held: `zsca` has H as (b) and its interior mean of |M| equals the unsolved one to
+     0.2 per cent.
+ (d) held as written, and worth little: |P_ADM| is 1e-15; M_psi of the far-field line is
+     1.81e-3, 5.1e-4, 2.9e-4 for `zsol` and 1.58e-3, 3.4e-4, 8.4e-5 for `sph`, within 1e-3
+     of each other but neither is a mass: on the table of format 2 (flat slices, the
+     mass in K) M_psi is the monopole of the correction psi - 1 and tends to zero with
+     the cell size for the sphere; the difference `zsol` - `sph`, 2.3e-4, 1.8e-4, 2.0e-4,
+     does not.
+ (e) held: in interior and shell the mean of |H| of `zsol` over that of `sph` is 1.00
+     at 32 cells, 1.02 and 1.00 at 64 cells, and at 128 cells 1.29 (t = 1) and 1.43
+     (t = 2) in the interior, 1.04 and 1.15 in the shell (bound 1.5; refutation at 2).
+     The ratio grows with resolution: at dx = 0.5 the truncation error of the evolution
+     has fallen to where the two data sets differ. Both converge: `zsol` at t = 2 falls
+     by 4.0 and 9.4 (interior), 4.1 and 8.9 (shell) per halving.
+ (f) held: at dx = 0.5 the shell mean of |H| of `zoff` at t = 2 is 12.5 times that of
+     `zsol` (1.3 and 1.9 at dx = 2 and 1); the unsolved data stay at the residual they
+     start with (3.8e-4 at t = 0, 2.6e-4 at t = 2) while the solved data converge.
+ (g) held: the face layer has the same mean |H| at t = 2 in the four sets of one
+     resolution to three digits (1.13e-4, 1.32e-4, 1.31e-4), larger than interior and
+     shell of the solved sets at 128 cells by 6 to 12: whole-mesh norms cannot tell the
+     data apart.
+ (h) held: the interior mean of |M| at t = 1 of `zsol` is 4.9 times below `zsca` at
+     dx = 0.5 (1.02e-5 against 5.01e-5); at t = 2 the shell mean of |H| is 2.4 times
+     below. The vector part matters once the data are resolved.
+ Cost on one processor core at 128 cells: the solve of `zsol` 31 minutes (41 outer
+ iterations; file times of its run directory), the 16 steps to t = 2 another 58 minutes.
+
+**P1, vacuum Bowen-York puncture** (m = 1, P = 0.5; run core-20261119-165458-ecdaa7c;
+`test_p_numbers_p1.json`; figures `figs/test_p_profiles_p1`, `test_p_convergence_p1`,
+looked at: the solved u lies below the reference by a nearly uniform amount that is
+visible towards the faces; |u - u_ref|/dx^2 rises by 4 per halving, that is the error
+does not fall; the tick labels of the convergence figure overlap and its third profile
+column is empty in this subset: redrawn with the combined analysis).
+
+| case, N = 32 / 64 / 128 | outer it. | max\|u - u_ref\|, 1 < r < 12 | rms there | M_psi (m + 2 Q(16) = 1.119594) | monitor outside r_p |
+|---|---|---|---|---|---|
+| stencil | 5 / 5 / 5 | 2.95e-4 / 2.80e-4 / 2.87e-4 | 2.75e-4 / 2.60e-4 / 2.69e-4 | 1.119678 / .119911 / .119779 | 0.08 / 0.25 / 7e-3 |
+| code, r_p = 1 | 30 / 30 / 24 | 2.9e-2 / 3.9e-2 / 2.70e-4 | 5.5e-3 / 6.0e-3 / 2.43e-4 | 1.110334 / 1.130738 / 1.119733 | 4e-12 |
+| code, r_p = 3 | 22 / 20 / 20 | 1.9e-4 / 2.73e-4 / 2.86e-4 | 1.5e-4 / 2.5e-4 / 2.7e-4 | 1.119516 / .119900 / .119776 | 6e-12 / 5e-12 / 8e-13 |
+
+ (a) failed where it matters: mode stencil converges in 5 outer iterations, but the
+     error over 1 < r < 12 does not fall with the cell size (2.95e-4, 2.80e-4, 2.87e-4;
+     predicted a factor 3 per halving). It is nearly uniform (root mean square 2.6e-4 to
+     2.75e-4), 1 per cent of u at the puncture (0.02837), the same in mode code. The
+     design refutation "the split psi_s + u or the stencil near the puncture is wrong"
+     does not follow: P2 (a puncture at rest in a matter shell, where the source is
+     compact) converges at second order with the same split. Reading and test: P6
+     (entry 10).
+ (b) failed at 64 cells: M_psi differs from m + 2 Q(16) by +8e-5, +3.2e-4, +1.9e-4
+     (bound 2e-4), without order. It is not the ADM mass, as predicted (1.1456; 0.026
+     lies beyond r = 16). [JUDGEMENT, not tested] the scatter is the staircase of the
+     sphere of the moments: a shell of thickness d at r = 16 holds 1.6e-3 d of M_psi.
+ (c) held, except the last clause: with radius 1 the error at 32 and 64 cells is 100
+     and 140 times that of mode stencil (the monitor differentiates psi_s^4 at 1 to 2
+     cells from the puncture: unusable), at 128 cells it falls by 144 to 2.7e-4, which is
+     not above the stencil error: both sit on the floor of (a).
+ (d) held: with radius 3 mode code converges at every N with the error of mode stencil
+     (ratio 0.65, 0.98, 1.00) and leaves the monitor at 8e-13 to 6e-12 outside the
+     radius.
+
+**P3, refined mesh** (root dx = 1, levels in |x_i| < 8 and < 4; run
+core-20261119-170050-f228951; `test_p_numbers_p3p4.json`).
+ (a) held: the puncture in the shell converges in mode code (radius 3; 25 outer
+     iterations, BiCGStab) and in mode stencil (4); the error of u at the puncture in
+     mode code is 6.0e-6 against 6.1e-6 for the uniform 64-cell run of P2; the monitor
+     after the solve is 1.6e-13, 5.3e-13, 5.6e-13 on the three levels (outside radius 3,
+     away from the faces). Mode stencil on this mesh has 2.0e-5 at the puncture and
+     3.1e-5 over 3 < r < 12 (uniform 64 cells: 3.5e-6 and 2.9e-5).
+ (b) held, and says little: the vacuum puncture on the refined mesh has the error of
+     the uniform runs, 2.80e-4 (the floor of P1 (a)), 5 outer iterations.
+
+**P4, three punctures** (same run; uniform meshes of 32, 64, 128 cells).
+ (a) held: 5 outer iterations each; P_ADM = (0.1, 0, 0) and J_ADM = (0.5, -0.2, -0.6)
+     to all digits printed (the sums of the momenta, and of the spins and x_c times P_c,
+     worked out by hand).
+ (b) failed for two of three: u at the punctures (mean of the eight nearest cells) is
+     0.0082, 0.0133, 0.0164 (first), 0.0086, 0.0114, 0.0121 (second), 0.0067, 0.0096,
+     0.0109 (third) at dx = 1, 0.5, 0.25: successive differences fall by 0.63, 0.24,
+     0.48 (predicted at most a third). Reading and test: P7 (entry 10).
+ (c) failed for the third: against the closed-form second-order values (0.0157, 0.0100,
+     0.0078) the 128-cell values differ by 5, 20 and 40 per cent (bound 30), and are not
+     converged.
+
+**P5, puncture with momentum inside a moving shell** (64 cells, both parts in mode code,
+radius 3; run core-20261119-170028-77f7173; `test_p_numbers_p5.json`). Converges (34
+outer iterations; max|H| 1.4e-2 -> 8.4e-12); the vector part ends by the stall rule
+with the monitor's max|M| 5.6e-4 -> 2.1e-7 (factor 2700; predicted at least 100): held.
+**Failed: P_ADM_x of the record is 0.5500562851, not 0.55 to 1e-6.** Two parts. (1) My
+number: the particle file has sum m u_x = 0.0499999520 (`shell.json`: the lattice sum of
+the shell is 0.49999952, not 0.5). (2) A defect: the record is 5.633e-5 above
+0.5 + 0.0499999520. Where it is [VERIFIED from the dumped right side s_x of the vector
+equation, `punc.idvector.bin`, summed over spheres with
+`scratch/core/tmp/idsolve2/close/p5_check.py`, by hand, an analysis of an existing
+output]: the sum of s_x dV/(8 pi) over r < 12 is 0.04999995197550574, the particle sum
+to all digits; between r = 12 and 16 the right side is below 7e-18 everywhere except in
+the outermost layer of active cells, where it is up to 3.2e-5 and the 576 cells of that
+layer inside the sphere of the moments add 5.633e-5; over the whole mesh the layer adds
+2.9e-4 (0.6 per cent of the momentum of the matter). Reading [JUDGEMENT until the run
+of entry 12]: the ghost cells at the faces hold the outflow copy of the trial curvature
+(the boundary condition of Z4c has acted before the solver starts), and the solver
+subtracts the closed-form Bowen-York curvature at the position of the ghost cell
+(`nrpic_idsolve.cpp` 540-555): the difference is not zero there and its central
+difference puts a source into the outermost active cells. Only runs with the vector
+part and a puncture with momentum or spin take this branch (of all tests: P5).
+
+**K, card check** (card run core-20261119-154414-2506b80, Slurm job 4656, one A100,
+0.032 card-hours; analysis core-20261120-220527-e2690ef; `analyze_k_numbers.json`,
+figure `figs/card_k`, looked at: bars at 1e-16 to 1e-13; the first version of the
+figure repeated one legend entry four times and compared region means that are round-off
+(1e-13) in three static cases: script corrected, figure redrawn in entry 13). Held with
+room: in the four cases at 128 cells (vacuum puncture in mode stencil and in mode code
+with radius 3, moving Gaussian with the far field, solved Zel'dovich ball with its
+evolution to t = 2) the card build of 76add0c takes the same outer iterations (5, 20,
+16, 41) and linear steps (8, 22, 29, 105) as the processor build; psi agrees to 2e-16,
+7e-16, 2e-15, 1e-15 of its maximum and W to 1.5e-15 and 3.5e-13 (predicted 1e-12); the
+far-field lines agree to 12 digits in M_psi; the region means of |H| of the ball at
+t = 2 agree to 3e-11 (interior), 8e-12 (shell), 1.7e-10 (exterior), 9e-14 (faces)
+(predicted 1e-6). Wall time on the card: 7 s, 11 s, 40 s, and 57 s for the ball with
+its 16 steps (one processor core: 166 s, 422 s, and 90 minutes for the ball).
+
+## 2026-11-20, entry 12: first publication; the defect of P5 read again; a change of the source and its predictions (R2, P5b)
+
+**Published** (22:16 UTC): `/data/haiyangw/nrpic/scratch/core/exe/core_id-solver-2/`
+with `athena_cpu`, `athena_gpu` (builds of 76add0c, equal byte for byte to the copies
+the tests ran), COMMIT, SHA256SUMS, READY; branch pushed at 5b5a1ab. The interface has
+the outcomes of B, P, K, the limits for punctures and the answers for Tracks D and F.
+
+**Correction of entry 11 (P5).** I wrote that the ghost cells at the faces hold "the
+outflow copy" of the trial curvature. Read in the source [VERIFIED,
+`athenak/src/bvals/physics/z4c_bcs.cpp` 171-176, 201-206]: the outflow condition of Z4c
+fills its ghost cells by `Extrapolate<order>` of the Z4c variables, not by a copy. The
+mechanism stands with that word changed: the trial curvature in a ghost cell at a face
+is an extrapolation, the solver subtracts the closed-form Bowen-York curvature at the
+ghost position, and the difference (the error of the extrapolation, 5e-3 of Abar at
+r = 16 with dx = 0.5 by the size of the source seen in P5) enters the central difference
+of the outermost active cells. [JUDGEMENT until P5b.]
+
+**Change of the source** (`nrpic_idsolve.cpp`, inside the branch `vec && bys.curv`
+only, after the loop `ids_abr`; 49 lines): in the ghost cells at the faces of the mesh
+that are neither periodic nor block boundaries the remainder (trial curvature minus
+Bowen-York) is continued linearly from the two nearest active cells, in x1, then x2,
+then x3. For a trial that is the Bowen-York curvature the remainder is then zero to
+round-off in the ghost cells too. No other branch is touched: runs without punctures,
+with punctures at rest, or without `id_vector` execute the same statements as before.
+Processor build compiled (22:18 UTC).
+
+**Predictions** (written before any run of the changed executable; script
+`regress_r2.py`, which replays the steps of earlier cases with the new executable in a
+new directory and compares every file byte for byte):
+ R2 (must not change): the cases `w1_far_n32` (run -155750-c923762), `zsol_n32` with its
+    evolution (-153416-3d26b50), `g_smr1` and `t_smr_mov` (-153510-d1eaa30), `p1_c3_n32`
+    (-165458-ecdaa7c), `p2_c3_n32` (-161842-b92b298), `p3_by_st` (-170050-f228951): every
+    file byte-identical to the old case directory (processor runs are reproducible, and
+    none of these cases takes the changed branch). Refuted by one differing byte.
+ P5b (must change, `p5_mov_n64` of -170028-77f7173): the right side s_x in the outermost
+    layer of active cells falls from 3.2e-5 to below 1e-12; the sum of s_x dV/(8 pi) over
+    the whole mesh equals the sum over r < 12, 0.0499999519755057, to 1e-12 (it was
+    0.05029); P_ADM_x of the record = 0.5499999519755 to 1e-11; outer iterations 34
+    within 3; the monitor's max|M| after the solve within a factor 2 of 2.05e-7; W
+    changes by less than 1 per cent of its maximum (the spurious source was 0.6 per cent
+    of the momentum of the matter, at the faces). Refuted (the reading of the defect) if
+    the layer keeps a right side above 1e-8.
+ Then: R0 again with the new executable, the card build and a card run of `p5_mov_n64`
+ against the processor run, and the second publication.
+
+## 2026-11-20, entry 13: predictions for the card run of the changed build (Kb) and R0 again
+
+Written before either run. Processor and card builds of 4266c2d exist
+(`scratch/core/tmp/idsolve2/exe_4266c2d/`).
+ **Kb** (card build of 4266c2d on one A100, at most 0.2 card-hours reserved): the changed
+ case `p5_mov_n64` and, for the branches that were not touched, `w1_far_n128` of K: the
+ same outer iterations as the processor runs of the same source (34; 16), psi and W equal
+ to 1e-12 of their maxima, P_ADM_x of `p5_mov_n64` = 0.5499999519755 to 1e-11. Refuted if
+ an iteration count differs by more than one or a field by more than 1e-9.
+ **R0b** (`regress_r0.py` with the processor build of 4266c2d against release core-v0.3,
+ the nine set-ups of R0): every output file byte-identical, as for 76add0c (the change is
+ inside the solver, which is not called without `id_solve`).
+
+## 2026-11-20, entry 14: outcomes of P6, P7, R2, P5b; the card run Kb withdrawn
+
+**P6, face distance for the Bowen-York puncture** (run core-20261120-221417-415acfd,
+processor build of 76add0c, 1 core; `test_p_numbers_p6p7.json`; figure
+`figs/test_p_extra_p6p7`, looked at: the mean error against the half-width follows the
+R^-2 line, the deficit of M_psi the R^-1 line; the tick labels of its third panel
+overlapped and are set by hand in the script now).
+
+| half-width R, dx | outer it. | mean of u - u_ref, 1 < r < 12 | rms | M_psi | m + 2 Q(R) | M_ADM - M_psi |
+|---|---|---|---|---|---|---|
+| 16, 1 / 0.5 / 0.25 (P1) | 5 | rms only: see right | 2.75e-4 / 2.60e-4 / 2.69e-4 | 1.119678 / .119911 / .119779 | 1.119594 | 0.0259 |
+| 32, 1 | 5 | -7.66e-5 | 7.8e-5 | 1.131708 | 1.131791 | 0.0139 |
+| 32, 0.5 | 5 | -6.25e-5 | 6.3e-5 | 1.131980 | 1.131791 | 0.0136 |
+| 64, 1 | 4 | -2.32e-5 | 2.8e-5 | 1.138343 | 1.138467 | 0.0072 |
+
+ (a) held: the mean error is negative and falls as R^-2: -6.25e-5 and -7.66e-5 at R = 32
+     (predicted -6.5e-5 within 20 per cent: 4 and 18 per cent off), -2.32e-5 at R = 64
+     (predicted -1.6e-5 within a factor 1.5: 1.45). Per doubling of R it falls by 4.2
+     (dx = 0.5, from the rms at R = 16), 3.6 and 3.3 (dx = 1): the reading of entry 10
+     stands, the floor of P1 is the r^-4 tail of the Bowen-York source beyond the sphere
+     of the moments. The signed mean at R = 16 comes with the combined analysis.
+ (b) failed for two of three: M_psi differs from m + 2 Q(R) by -8e-5, +1.9e-4, -1.2e-4
+     (bound 1e-4), the scatter of P1 (b). The deficit against the ADM mass halves with R:
+     0.0259, 0.0136 to 0.0139, 0.0072 (predicted about 0.013 and 0.0065).
+ (c) held: 5, 5, 4 outer iterations.
+ For a track: the error of u from the tail is 0.21 P^2/(2 R^2) times 0.64 in size (m = 1),
+ that is 2.7e-4 (16/R)^2 for P = 0.5 [VERIFIED for P = 0.5, R = 16 to 64; the P^2 scaling
+ is JUDGEMENT]; M_psi + 2 c/R with c = 0.21 (P/0.5)^2 estimates the ADM mass.
+
+**P7, three punctures on refined meshes** (same run; cell size at the punctures 0.25,
+0.125, 0.0625, 0.03125; 0.49 to 0.81 million cells).
+
+| u at the puncture | uniform dx = 1 / 0.5 / 0.25 (P4) | refined 0.25 / 0.125 / 0.0625 / 0.03125 | closed form |
+|---|---|---|---|
+| 1: m = 1, P = 0.2, S = 0.2 | 0.00820 / 0.01326 / 0.01644 | 0.016445 / 0.017313 / 0.017436 / 0.017440 | 0.01568 |
+| 2: m = 0.6, P = 0.224 | 0.00858 / 0.01138 / 0.01205 | 0.012054 / 0.012057 / 0.012049 / 0.012042 | 0.01003 |
+| 3: m = 0.4, P = 0.141 | 0.00665 / 0.00956 / 0.01095 | 0.010950 / 0.011126 / 0.011114 / 0.011107 | 0.00781 |
+
+ (a) held: 5, 5, 4, 4 outer iterations (BiCGStab); P_ADM = (0.1, 0, 0) and J_ADM =
+     (0.5, -0.2, -0.6) to all digits in every case.
+ (b) held: `p7_l2` equals the uniform 128-cell run at the punctures to 1e-4 of u.
+ (c) held for the spinning puncture (differences 8.7e-4, 1.2e-4, 4e-6: ratios 0.14,
+     0.03); failed as written for the other two: their differences are 3e-6, -8e-6,
+     -7e-6 (second) and 1.8e-4, -1.2e-5, -7e-6 (third), so the ratios are not below 0.4,
+     but the differences themselves are 6e-4 of u or less from 0.125 on. All three
+     drift by the same -7e-6 between the last two cases, with M_psi (2.051854 ->
+     2.051842): a common shift, not the punctures' own sources [JUDGEMENT].
+ (d) failed on two counts: the second puncture ends 1e-3 below its uniform 128-cell
+     value, not above; the third differs from the closed form by 42 per cent (bound 40;
+     first and second 11 and 20 per cent). The closed form is the self part of each
+     puncture; the regular parts of the other two at its position are not in it
+     [JUDGEMENT, not tested]. There is no independent reference for these data here:
+     P7 is a self-convergence test.
+ The reading of entry 10 stands where it could have failed: with cells of 0.125 and
+ below the values stop moving (to 0.7, 0.1, 0.2 per cent at 0.125), and the uniform
+ mesh at dx = 0.25 was 5.7, 0.1 and 1.4 per cent off, the spinning puncture worst (its
+ source peaks at m/12).
+
+**R2 held** (run core-20261120-222207-4266c2d, processor build of 4266c2d, 1 core;
+`regress_r2.json`, figure `figs/regress_r2`, looked at: seven blue bars, the changed
+case with 3 identical files (its inputs) and 7 differing; the y label of the right
+panel is cut at the top). Replayed with the changed executable, the seven cases that do
+not take the changed branch write the bytes of their old case directories:
+`p1_c3_n32` 7 files, `p2_c3_n32` 9, `p3_by_st` 6, `w1_far_n32` 12, `g_smr1` 10,
+`t_smr_mov` 10, `zsol_n32` with its evolution 15 (particle files, records, dumps, field
+dumps, histories).
+
+**P5b held** (same run, `p5_mov_n64` replayed):
+
+| | before (76add0c) | after (4266c2d) |
+|---|---|---|
+| largest \|s_x\| in the outermost layer of active cells | 3.18e-5 | 8.5e-18 |
+| sum of s_x dV/(8 pi): r < 12 / r < 16 / whole mesh | 0.0499999520 / 0.0500562851 / 0.0502925390 | 0.04999995197551 in all three |
+| P_ADM_x of the record | 0.5500562851 | 0.5499999519755 |
+| outer iterations; max\|M\| of the monitor after | 34; 2.053e-7 | 34; 2.058e-7 |
+
+ W changes by 2.0e-4 of its maximum (predicted below 1 per cent), M_psi by 5e-9. The
+ right side beyond the matter is at round-off everywhere, the outermost layer included
+ (right panel of the figure), and the record's momentum is the puncture's plus the
+ particle sum to 13 digits. With the run in which it could have failed, the reading of
+ entry 12 is [VERIFIED]: the spurious source was the extrapolation error of the Z4c
+ boundary condition on the Bowen-York curvature in the face ghost cells.
+
+**Kb withdrawn.** I registered and submitted the card job (core-20261120-223022-2f5bbc0,
+Slurm job 4747) in the same command that printed the queue, and the queue already held
+two jobs of owner core: three at once, against the rule. Withdrawn with `nrpic-run stop`
+and closed as stopped within a minute; it never ran. The card build of 4266c2d is
+therefore compiled and not run. What stands for cards is K, with the build of 76add0c,
+on branches the change does not touch. Its list is kept:
+`scratch/core/tmp/idsolve2/close/card_kb/card.list`.
+
+## 2026-11-21, entry 15: batch 2b, a new session; main with releases core-v0.4 and core-v0.5 merged; predictions M0, M1, M2, T, Kc
+
+The session of entry 14 ended inside the usage limit (2026-11-20 22:34 UTC) after the
+combined analysis of the puncture tests. A new session took over on 2026-11-21 at 07:45
+UTC (batch 2b). Read again: `CLAUDE.md` (releases core-v0.4 and core-v0.5, the pause
+flag), `coord/CHARTER.md` to "Owners", brief lines 493-553, 688-706, 834-860, decisions
+0020 and 0021, this journal from entry 10, `interfaces/id_solver2.md`, the regression
+scripts, `tracks/core/CHANGELOG.md` (the changes without an option of the two releases).
+
+State found [VERIFIED: `git status`, `git log`, `sacct`, the run directories]:
+- the last commit was 4dca56f (close of the analysis run core-20261120-223200-e3b90d8);
+  its numbers and three figures lay untracked in the analysis directory, each equal byte
+  for byte to the copy in the run directory: committed (fc4c7e4). Figures looked at
+  (`figs/test_p_convergence_all`, `test_p_extra_all`, `test_p_profiles_all`): P2 falls
+  along the dx^2 line and P1 stays flat at 2.8e-4 (middle panel); the error of P1 over
+  dx^2 rises by 4 per halving while the P2 curves of the three meshes lie on each other;
+  the R^-2 and R^-1 lines of P6; u at the three punctures flat from a cell of 1/8 on.
+  Defects of the figures: the tick labels of the middle panel of the convergence figure
+  overlap (minor ticks of the log axis), and the legend of the third panel of
+  `test_p_extra_all` lies over two reference lines. **The signed mean of u - u_ref at
+  half-width 16** promised in entry 14: -2.75e-4, -2.60e-4, -2.69e-4 at dx = 1, 0.5,
+  0.25 (`test_p_numbers_all.json`, `e_mid_mean` of `p1_st_n*`; predicted in entry 10:
+  -2.6e-4): with -6.25e-5 at 32 and -2.32e-5 at 64 the fall per doubling is 4.2 and
+  3.3 to 3.6.
+- R0b (entry 13) was never submitted (the helper stopped at the pause flag,
+  `scratch/core/tmp/idsolve2/close/submit_r0b.log`); Kb was withdrawn (entry 14). No
+  card job of this package is queued or has run since K. The published executables are
+  still the builds of 76add0c (`scratch/core/exe/core_id-solver-2/COMMIT`), although the
+  interface speaks of a second publication of 4266c2d: that publication was not made.
+- `git merge main` (releases core-v0.4 and core-v0.5: 61 and 25 options, the threaded
+  and the MPI build, adaptive refinement, guard) had one conflict, `docs/FORMATS.md`
+  (both sides appended at the same place: both kept, 395e17d). Against main this branch
+  now differs in `athenak/src` only in `gravity/mg_gravity.cpp` (the refusal of Robin
+  faces on refined meshes removed), `multigrid/multigrid.hpp` (1 line),
+  `multigrid/multigrid_driver.cpp` (1 line), `multigrid/multigrid_robin.cpp`,
+  `particles/nrpic_idfar.hpp` (new), `particles/nrpic_idsolve.cpp`,
+  `particles/particles.hpp` (10 lines) [VERIFIED: `git diff --stat main`]; main's copies
+  of the solver files are those of `core/id-solver` (`git diff core/id-solver main` is
+  empty for them). Processor build of the merge compiled (163 s, no new warning);
+  copy for the tests: `scratch/core/tmp/idsolve2/b2b/exe_395e17d/athena_cpu`.
+
+What this session does: R0b and Kb are replaced by tests of the merged source, because
+that is what core's lead will merge and what the tracks should run (it has the threaded
+build, refinement in `nrpic_cosmo`, the region norms). Then the second publication.
+
+**Predictions** (written before any run of the merged executable).
+
+ **M0** (`regress_r0.py --tag _v05`; base: release core-v0.5,
+ `/data/haiyangw/nrpic/.work/build_cpu_v05/src/athena`; the nine set-ups of R0, none with
+ `id_solve`): every output file byte-identical. Refuted by one differing byte.
+
+ **M1** (`regress_m1.py`; the release holds the first pass, so this is the regression
+ "new options absent" for runs that do use `id_solve`; the four example inputs of
+ `problems/idsolve/` at 32 cells; the release executable against the merged build with
+ `id_far = robin` and with no new option):
+ (a) `gauss_robin`, `ball_robin` (matter at rest, the fill of the first pass): every
+     file byte-identical to the release's;
+ (b) `torus_robin`, `torus_default` (periodic: no far field, matter at rest): every file
+     byte-identical;
+ (c) `gboost_robin` (moving matter): not byte-identical (the term 4 pi psi S of the
+     Jacobian is new), the same outer iterations, psi to 1e-13 and W to 1e-13 of its
+     maximum (R1 of entry 4 against the first-pass executable: 6e-15 and 5e-16);
+ (d) what changes for a user of the release without any new option (the far field is on
+     by default on a mesh with no periodic face): the record gets its two new lines;
+     `gauss_default`: max|dpsi| below 1e-7 (a centred monopole: both fills are exact for
+     it); `ball_default`: below 1e-5 (psi - 1 is 1e-3/r there); `gboost_default`: psi
+     as `gauss_default`, W changed by 3e-4 to 5e-3 of its maximum (the closure error
+     of the plain fill, 0.9 per cent of W at the faces, is a solution of the homogeneous
+     equation and nearly uniform).
+ Refuted: a differing byte in (a) or (b); in (c) a change of the iteration count or
+ above 1e-10; (d) is a measurement for the changelog, its bounds are estimates.
+ This is also the first run of `problems/idsolve/ball` and `torus` by the release
+ executable (the release report lists both as never started by the merged build).
+
+ **M2** (`regress_r2.py --tag _merge`; the eight cases of run
+ core-20261120-222207-4266c2d replayed with the merged build: puncture in mode code with
+ and without matter, three static levels, moving Gaussian with the far field, refined
+ Gaussian, refined torus with moving matter, the Zel'dovich ball with its evolution, and
+ the changed case `p5_mov_n64` as the build of 4266c2d wrote it): every file
+ byte-identical, 76 files (69 of the seven and the 7 of `p5_mov_n64` that differed in
+ R2). The one candidate for a difference I know: correction 2 of core-v0.4
+ (`Driver::Finalize` no longer advances `last_time` of an output written off its
+ schedule), which would show in the parameter dump embedded in the last file of `bin/`
+ of the two refined cases and nowhere else. Refuted by a differing byte anywhere else,
+ in particular in any `.idsolve.*`, `.idvector.bin` or history file.
+
+ **T** (threaded build of the merged source, `scripts/build_cpu_omp.sh`, 4 threads; the
+ cases `w1_far_n32`, `g_smr1`, `p5_mov_n64` and `zsol_n32` with its evolution against
+ their serial runs of M2; analysis `analyze_k.py --other threaded`): not byte-identical (sums in
+ another order), the same outer iterations within one, psi and W equal to 1e-10 of
+ their maxima, the far-field line to 1e-10, the region means of |H| of `zsol_n32` at
+ t = 2 to 1e-6. Refuted if an iteration count differs by more than one or a field by
+ more than 1e-8: then the second pass has a race in the threaded build and READY must
+ say so.
+
+ **Kc** (card build of the merged source on one A100, at most 0.2 card-hours reserved;
+ against processor runs of the same source): `p5_mov_n64` and `w1_far_n128` (the list of
+ Kb) and, never run on a card before, the refined cases `g_smr1`, `t_smr_mov` and
+ `p3_by_st`: the same outer iterations (within one on the refined meshes, where
+ BiCGStab is used), psi and W to 1e-12 of their maxima on the uniform meshes and 1e-9
+ on the refined ones, P_ADM_x of `p5_mov_n64` = 0.5499999519755 to 1e-11. Refuted if an
+ iteration count differs by more than one or a field by more than 1e-8.
+
+ **Amendment of T before any run** (read after the entry was committed:
+ `tracks/core/interfaces/threaded_build.md` lines 101-102 [VERIFIED there]: the
+ iterates of the multigrid solver depend on the thread count through the rounding of
+ the volume mean, reproducibly at a fixed count; no race). The multigrid solve is the
+ preconditioner of every Newton step here, so the bound of 1e-10 on the fields holds
+ only as long as both runs make the same iterations. Where a count differs by one, or
+ where the vector part ends by its stall rule (`zsol_n32`: relative residual 3e-4 at
+ the end), the fields may differ by the size of the last correction: psi by 1e-9 of
+ its maximum, W by up to 1e-3 of its maximum. T is then judged on the residuals each
+ run reaches (max|H| and max|M| of the monitor after the solve within a factor 2 of
+ the serial run) and on the region means at t = 2 (1 per cent), and a race is read
+ only from a residual that the threaded run does not reach or from a difference
+ between two threaded runs of the same thread count (`w1_far_n32` is run twice with
+ 4 threads: its files must be byte-identical).
+
+ **M2b** (written before its run; the reference of Kc at 128 cells): `w1_far_n128` of
+ run core-20261119-155750-c923762 (build of 76add0c) replayed with the merged build:
+ every file byte-identical, as `w1_far_n32` in M2.
+
+## 2026-11-21, entry 16: outcomes of M0, M1, M2, M2b, T; Kc not submitted
+
+All with the builds of the merge commit 395e17d (`athenak/src` unchanged since):
+processor build `scratch/core/tmp/idsolve2/b2b/exe_395e17d/athena_cpu` (sha256
+195df980...), card build `athena_gpu` (0fb76bdb...), threaded build `athena_cpu_omp`
+(eed2ae51...).
+
+**M0 held** (run core-20261121-080113-2230974, 3 cores; `regress_r0_v05.json`; figure
+`figs/regress_r0_v05`, looked at: nine blue bars, no red; its x label was cut and the
+figure was drawn again from the numbers, run core-20261121-080921-42e8213). Without
+`id_solve` the merged processor build writes the bytes of release core-v0.5: 59 files
+of nine set-ups (geodesics with both pushers 2 + 2, deposit on a refined mesh 1, East's
+cosmology 12, Oppenheimer-Snyder on a refined mesh 16, Jeans 5, binary on four multigrid
+levels 1, Newtonian mode isolated 11 and periodic 9), both executables exit 0.
+
+**M1** (run core-20261121-080151-4db2e1d, 2 cores, 12 cases of 9 to 13 s;
+`regress_m1.json`; figure `figs/regress_m1`, looked at: left the files per pair, right
+the largest change of psi and W; drawn twice more, the x label was cut and then the rows
+of the right panel were not those of the left: runs core-20261121-080921-42e8213 and
+core-20261121-080946-f294477).
+
+| pair (release core-v0.5 against the merged build) | files identical / differing | outer it. | max\|dpsi\| | dW / max\|W\| |
+|---|---|---|---|---|
+| `gauss_robin` | 8 / 0 | 17, 17 | 0 | |
+| `ball_robin` | 9 / 0 | 25, 25 | 0 | |
+| `torus_robin`, `torus_default` | 8 / 0 each | 23, 23 | 0 | |
+| `gboost_robin` | 4 / 7 | 17, 17 | 6.0e-15 | 5.1e-16 |
+| `gauss_default` | 2 / 6 | 17, 17 | 9.7e-9 | |
+| `ball_default` | 3 / 6 | 25, 25 | 3.6e-8 | |
+| `gboost_default` | 4 / 7 | 17, 17 | 1.48e-6 | 2.67e-3 |
+
+ (a), (b) held: with `id_far = robin` the Gaussian at rest and the expanding ball, and
+     the torus with or without the option, are byte-identical to the release in every
+     file (records, dumps, the first field dump, histories).
+ (c) held: the moving Gaussian with `id_far = robin` has the same 17 outer iterations,
+     psi to 6.0e-15 and W to 5.1e-16 of its maximum, the numbers of R1.
+ (d) the default far field changes psi by 9.7e-9 (Gaussian at rest; predicted below
+     1e-7: held) and 3.6e-8 (ball; predicted below 1e-5: held, 8.5e-5 of max|psi - 1| =
+     4.2e-4), W of the moving Gaussian by 2.67e-3 of its maximum (predicted 3e-4 to
+     5e-3: held). **Failed: psi of the moving Gaussian changes by 1.48e-6, not "as
+     `gauss_default`"** (predicted below 1e-7). I left out that the scalar equation
+     holds Abar_ij Abar_ij, which changes with W [JUDGEMENT: no run separates the two
+     parts]. The monitor after the solve is the same within 1 per cent in every pair
+     (1.5e-11, 1.3e-12, 8.2e-10). So against release core-v0.5 this branch changes
+     results without an option in exactly these cases: `id_solve` on a mesh with no
+     periodic face (the far field; sizes above), and `id_solve` with moving matter (the
+     Jacobian term; round-off). A torus run and a run without `id_solve` do not change.
+ This run is also the first start of `problems/idsolve/ball` and `torus` with the
+ release executable: both converge (25 and 23 outer iterations at 32 cells).
+
+**M2 held** (run core-20261121-080135-890689a, 1 core, 423 s; `regress_r2_merge.json`;
+figure `figs/regress_r2_merge`, looked at: eight blue bars; its x label is cut at the
+right edge, shortened in the script for later runs, not drawn again). The eight cases of
+run core-20261120-222207-4266c2d replayed with the merged build are byte-identical in
+every file: 7 + 9 + 6 + 12 + 10 + 10 + 15 + 10 = 79 files (I wrote 76 in the
+prediction: `p5_mov_n64` has 10 files, 3 of them inputs), the `bin/` files of the two
+refined cases and the evolution of the Zel'dovich ball included. Correction 2 of
+core-v0.4 does not touch these cases.
+
+**M2b held** (run core-20261121-081010-968d6d6, 1 core; `regress_r2_merge128.json`):
+`w1_far_n128` (5.9 million particles) replayed is byte-identical in its 12 files; the
+replay took 723 s on one core.
+
+**T held, with room** (run core-20261121-081048-0c563b2, threaded build, 4 threads,
+unbound; `check_threads.json`; figure `figs/check_threads`, looked at: differences of
+1e-16 to 2e-14 in the left panel, open and filled symbols on each other in the right;
+the labels of its first version were cut, drawn again in run
+core-20261121-082203-67b37a4; the script is `check_threads.py`, which uses
+`analyze_k.one`).
+
+| case | outer it. / linear steps, serial and 4 threads | psi | W | max\|H\|, max\|M\| after (both) | wall, serial -O2 / 4 threads -O3 |
+|---|---|---|---|---|---|
+| `w1_far_n32` | 17 / 33 both | 7.5e-16 | 3.4e-16 | 1.57e-11, 1.86e-4 | 14 s / 3.9 s |
+| `g_smr1` (two static levels, BiCGStab) | 20 / 81 both | 2.2e-15 | | 2.02e-11 | 85 s / 18.9 s |
+| `p5_mov_n64` (puncture in moving shell) | 34 / 80 both | 6.0e-16 | 8.2e-16 | 8.4e-12, 2.06e-7 | 153 s / 34.1 s |
+| `zsol_n32` with evolution to t = 2 | 51 / 137 both | 4.4e-16 | 2.3e-14 | 2.18e-12, 1.02e-5 | 31 s / 8.0 s |
+
+ The counts are equal in every case, so the bound of 1e-10 holds by five orders and the
+ amendment was not needed; the far-field lines agree in all 13 digits of M_psi and
+ P_ADM; the region means of |H| of the ball at t = 2 agree to 3e-13 (interior, shell,
+ exterior, faces). `w1_far_n32` run twice with 4 threads: its 12 files are
+ byte-identical. Not tested: other thread counts, `deposit_threads = private`, bound
+ threads, the torus and the 128-cell cases with threads. The wall times include the
+ steps that write the particle files and compare builds with different optimisation
+ (`-O2` with asserts against `-O3`): they are not a scaling measurement.
+
+**Kc not submitted.** Since 08:02 UTC the queue has held two card jobs of owner core
+(Slurm 4775 and 4777, both pending behind jobs of tracks F, E, A, B and of another
+user), so the rule forbids a third. Staged for whoever has the next free slot:
+`scratch/core/tmp/idsolve2/b2b/card_kc/card.list` (five cases with their inputs and
+particle files beside it), executable `.../b2b/exe_395e17d/athena_gpu`, processor
+references `scratch/core/core-20261121-080135-890689a/4266c2d__*` and
+`scratch/core/core-20261121-081010-968d6d6/c923762__w1_far_n128`, analysis
+`analyze_k.py --tag _kc --card <run dir> --pair <case>=<reference>`. What stands for
+cards: K with the card build of 76add0c (uniform meshes, 128 cells). The card build of
+the merged source compiles and has not run on a card; neither has any refined mesh of
+the solver, with any build.
+
+## 2026-11-21, entry 17: prediction N (the region norms of core-v0.5 on solved data)
+
+The interface and READY tell the tracks to judge data in the matter region; so far that
+needed the script `test_b.py` on field dumps. Release core-v0.5 writes norms inside and
+outside spheres (`<particles> region_dcycle`, `particles/nrpic_region.cpp`: cells whose
+centre lies inside the sphere, weight sqrt(gamma) dV, H2 = sqrt(<H^2>); the record of
+cycle 0 is written after the solve, `nrpic_io.cpp` 1352 and 1376 [VERIFIED by reading]).
+It has never run together with `id_solve`.
+
+ **N** (`test_n.py`; `zsol_n32` of M2, solve and evolution to t = 2, with
+ `region_dcycle = 1`, `region_radius1 = 7`, `region_radius2 = 13.5`, the radii of the
+ regions of test B):
+ (a) every file of the case except the new `ball.region.hst` (and the input) is
+     byte-identical to the run of M2 without the three options;
+ (b) at the times of the three field dumps (t = 0, 1, 2) H2 inside r < 7, inside
+     r < 13.5 and outside r = 13.5 of the record equal the same norms formed from the
+     dump (H in double precision, weight chi^-3/2 from chi in single precision) to 1e-5,
+     and the proper volumes to 1e-6;
+ (c) the shell 7 <= r < 13.5 follows from the record alone,
+     H2_shell^2 = (V_in2 H2_in2^2 - V_in1 H2_in1^2)/(V_in2 - V_in1), and equals the dump's
+     to 1e-5 at t = 1 and 2.
+ Refuted if a byte differs in (a), or a norm by more than 1e-4 at t = 1 or 2 (at t = 0
+ the solved H is round-off, 1e-13: there the comparison is of the same numbers summed
+ in another order and may differ in the last digits).
+
+**N held** (run core-20261121-082710-5866399, merged processor build, 1 core, 34 s;
+`test_n_numbers.json`; figure `figs/test_n`, looked at: the three lines of the record
+pass through the open symbols of the field dumps at t = 0, 1, 2; interior and shell
+rise from 1e-13 to 1e-3 in the first step, the exterior from 5e-7 to 1e-4).
+ (a) held: the 14 other files of the case (solver record and dumps, field dumps,
+     histories, particle files, table) are byte-identical to the run of M2 without the
+     options; the record has 5 lines (cycles 0 to 4).
+ (b) held: H2 of the record against the dumps, relative difference at most 9e-9
+     (bound 1e-5); the proper volumes to 1.2e-8 (bound 1e-6; r < 7: 1277, 1458, 1661 at
+     t = 0, 1, 2: with K < 0 the proper volume inside a fixed coordinate radius grows).
+ (c) held: the shell from the record alone, to 4e-9.
+
+| t | H2 inside r < 7 | shell 7 <= r < 13.5 | outside 13.5 |
+|---|---|---|---|
+| 0 (after the solve) | 2.9e-13 | 6.9e-13 | 5.4e-7 |
+| 1 | 8.77e-4 | 1.50e-3 | 1.02e-4 |
+| 2 | 4.77e-4 | 9.59e-4 | 1.14e-4 |
+
+ (Root mean squares at dx = 2; the means of |H| of test B at this cell size were
+ 4.2e-4 and 7.6e-4 at t = 2.) So a track gets interior norms of solved data from the
+ code itself: `region_dcycle`, `region_radius1..4` in `<particles>`; the shell between
+ two spheres follows from their inside values as in (c).
+
+## 2026-11-21, entry 18: second publication; prediction T128
+
+**Published** (08:29 UTC): `/data/haiyangw/nrpic/scratch/core/exe/core_id-solver-2/` with
+`athena_cpu` (sha256 195df980...), `athena_cpu_omp` (eed2ae51...), `athena_gpu`
+(0fb76bdb...), COMMIT, SHA256SUMS (checked with `sha256sum -c`), READY; source the
+merge 395e17d (no change of `athenak/` or `scripts/` up to the publishing commit
+59a60f6). The first publication is kept as `core_id-solver-2.old.1795249743`. A
+temporary directory `.core_id-solver-2.new` of the session of 2026-11-20 lay beside it
+with the two executables of 4266c2d (the publication that was cut off; same checksums
+as `scratch/core/tmp/idsolve2/exe_4266c2d/`): its files were overwritten by this
+publication's and the directory renamed into place.
+
+**T128** (written before its run; `check_threads.py --tag _n128`; the threaded build
+with 6 threads on `zsol_n128`, the solved Zel'dovich ball at 128 cells with its
+evolution to t = 2, against the serial run of the build of 76add0c in run
+core-20261119-153416-3d26b50, which M2 ties to the merged serial build at 32 cells):
+41 outer iterations and 105 linear steps as the serial run; psi to 1e-12 and W to 1e-9
+of their maxima; max|H| and max|M| of the monitor after the solve as the serial run
+within 1 per cent (1e-13 to 2e-12 in the matter; 1.07e-6); the region means of |H| at
+t = 2 (interior 1.12e-5, shell 2.06e-5, faces 1.31e-4 in entry 11) to 1e-6; wall time
+below 30 minutes (serial: 31 minutes for the solve and 58 for the 16 steps). Refuted if
+an iteration count differs by more than one, or a region mean at t = 2 by more than 1
+per cent.
+
+## 2026-11-21, entry 19: outcome of T128; figures of the puncture tests; where the package stands
+
+**T128 held, with room** (run core-20261121-082948-264c21a, threaded build of the merge,
+6 threads, unbound; `check_threads_n128.json`; figure `figs/check_threads_n128`, looked
+at: one case, bars at 1e-15 (psi) and 4e-13 (W), the symbols of the two builds at the
+same heights). The solved Zel'dovich ball at 128 cells with its evolution to t = 2
+against the serial run of the build of 76add0c (run core-20261119-153416-3d26b50):
+
+| | serial (76add0c, `-O2`, asserts) | 6 threads (merge, `-O3`) |
+|---|---|---|
+| outer iterations / linear steps | 41 / 105 | 41 / 105 |
+| max\|H\|, max\|M\| of the monitor after the solve | 2.22e-12, 1.0745e-6 | 2.22e-12, 1.0745e-6 |
+| M_psi of the far-field line | 2.870921477485e-4 | 2.870921477464e-4 |
+| region means of \|H\| at t = 2: interior, shell, faces | 1.1209e-5, 2.0597e-5, 1.3047e-4 | equal to 2e-11, 1e-11, 1e-13 |
+| wall: solve; 16 steps | 31 min; 58 min | 2 min 27 s; 5 min 43 s (file times) |
+
+ psi agrees to 1.1e-15 and W to 3.7e-13 of their maxima (bounds 1e-12 and 1e-9); the
+ whole case took 494 s (bound 30 minutes). The factor 10 to 13 in wall time is threads
+ and compiler flags together (the serial build has asserts and `-O2`): no scaling
+ measurement. With M2 (the serial build of the merge equals the build before it byte
+ for byte at 32 cells) this ties the threaded executable to test B at its finest mesh.
+
+**Figures of the puncture tests** drawn again (run core-20261121-083909-267d8c8, the
+analysis of entry 14 with the corrected script; numbers unchanged but for the run id):
+`figs/test_p_convergence_all` (looked at: the ticks 0.25, 0.5, 1 of the middle panel no
+longer overlap) and `figs/test_p_extra_all` (the legend of the third panel above the
+axes, clear of the reference lines).
+
+**Where the package stands** (for a reader with no memory).
+- Source: branch `core/id-solver-2` = main at release core-v0.5 plus the second pass
+  (`git diff main`: `nrpic_idsolve.cpp`, `nrpic_idfar.hpp`, `multigrid_robin.cpp`, one
+  line each in `multigrid.hpp` and `multigrid_driver.cpp`, six lines removed in
+  `mg_gravity.cpp`, nine lines of `particles.hpp`, two rows of `docs/FORMATS.md`,
+  `problems/idsolve/`). `athenak/src` unchanged since the merge commit 395e17d.
+- Published: `scratch/core/exe/core_id-solver-2/` (`athena_cpu`, `athena_cpu_omp`,
+  `athena_gpu`, COMMIT, SHA256SUMS, READY), built from 395e17d.
+- Interface: `tracks/core/interfaces/id_solver2.md` (section 8: what changes against
+  core-v0.5, for the changelog of the release that takes this branch).
+- Tests of this session, all on processors: M0, M1, M2, M2b, T, N, T128 (entries 15 to
+  19); every prediction held except one clause of M1 (psi of the moving Gaussian
+  changes by 1.5e-6 with the default far field, not 1e-7).
+- **Open**: (1) the card check Kc of the published card build was never submitted (two
+  card jobs of owner core queued at every look: 08:02, 08:10, 08:22, 08:29, 08:39 UTC);
+  staged in `scratch/core/tmp/idsolve2/b2b/card_kc/` (entry 16 has the command). Until
+  it runs, `athena_gpu` of this publication is compiled and untested; K stands for the
+  card build of 76add0c only. (2) Not done in the package at all: a fourth-order L W
+  for the vector part at level boundaries (the stall of test C), a far field on meshes
+  with some periodic faces, MPI, trial metrics that are not conformally flat, adaptive
+  refinement after t = 0, an independent reference for three-puncture data. (3) The
+  default `id_far = multipole` changes results of release core-v0.5 without an option
+  (M1): core's lead decides at the merge whether that default stands (I judge it right:
+  it removes a closure error of 0.9 per cent of W that no resolution removes; `id_far =
+  robin` restores the release's bytes).
+- Card time of the package: 0.032 card-hours (K); none in this session.
+- READY of the publication rewritten in place at 08:40 UTC (T128 added; executables
+  unchanged; COMMIT has the line, SHA256SUMS redone and checked). Its source text:
+  `scratch/core/tmp/idsolve2/b2b/READY.v4`; the script of the publication:
+  `scratch/core/tmp/idsolve2/b2b/publish3.sh`.
+- Runs of this session (all registered with `nrpic-run`, processors, scouting, gate G2):
+  core-20261121-080113-2230974 (M0), -080151-4db2e1d (M1), -080135-890689a (M2),
+  -081010-968d6d6 (M2b), -081048-0c563b2 (T), -082710-5866399 (N), -082948-264c21a
+  (T128); figures drawn again: -080921-42e8213, -080946-f294477, -082203-67b37a4,
+  -083909-267d8c8.

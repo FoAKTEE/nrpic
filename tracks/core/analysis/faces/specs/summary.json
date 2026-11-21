@@ -1,0 +1,73 @@
+{
+ "rows": [
+  {
+   "title": "ball",
+   "lines": [
+    {
+     "label": "stock",
+     "json": "../results/c1b_ball.json",
+     "case": "ball_e2",
+     "style": "stock"
+    },
+    {
+     "label": "full set",
+     "json": "../results/c1b_ball.json",
+     "case": "ball_g4nw_met",
+     "style": "new"
+    },
+    {
+     "label": "faces at 32",
+     "json": "../results/c1b_ball.json",
+     "case": "reference",
+     "style": "ref"
+    }
+   ]
+  },
+  {
+   "title": "vacuum puncture",
+   "lines": [
+    {
+     "label": "stock",
+     "json": "../results/c5_punc.json",
+     "case": "punc_e2",
+     "style": "stock"
+    },
+    {
+     "label": "full set",
+     "json": "../results/c5_punc.json",
+     "case": "punc_g4nw_met",
+     "style": "new"
+    },
+    {
+     "label": "faces at 32",
+     "json": "../results/c5_punc.json",
+     "case": "reference",
+     "style": "ref"
+    }
+   ]
+  },
+  {
+   "title": "boosted puncture",
+   "lines": [
+    {
+     "label": "stock",
+     "json": "../results/c5_boost.json",
+     "case": "boost_e2",
+     "style": "stock"
+    },
+    {
+     "label": "full set",
+     "json": "../results/c5_boost.json",
+     "case": "boost_g4nw_met",
+     "style": "new"
+    },
+    {
+     "label": "faces at 32",
+     "json": "../results/c5_boost.json",
+     "case": "reference",
+     "style": "ref"
+    }
+   ]
+  }
+ ]
+}

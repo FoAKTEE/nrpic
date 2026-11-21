@@ -1,0 +1,3 @@
+# c3: horizon proxy (faces at 16 M), stock against the full set; D: Track D's drift input on a card with the full set and with the ghost fill only, against Track D's own run
+analyze_proxy.py --stock /data/haiyangw/nrpic/scratch/core/core-20261119-161449-d22d256/punc_sf_e2_h --case full=/data/haiyangw/nrpic/scratch/core/core-20261119-162245-b68f4a9/punc_full_h --out $OUT/results/c3_proxy.json --fig $OUT/figs/c3_proxy
+analyze_drift.py --ref /data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-121313-284ec4f --case full=/data/haiyangw/nrpic/scratch/core/core-20261119-155540-6c84b8a/full --case ghost=/data/haiyangw/nrpic/scratch/core/core-20261119-155547-b22024e/ghost --out $OUT/results/drift.json --fig $OUT/figs/drift

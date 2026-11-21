@@ -1,0 +1,224 @@
+{
+ "fine_in_uni64": {
+  "rundir": "/data/haiyangw/nrpic/scratch/core/core-20261120-221835-4870ae5/fine_in_uni64",
+  "steps": 400,
+  "t_end": 0.8,
+  "mass_change": 0.0,
+  "com_drift_end": 5.938124199037882e-06,
+  "com_drift_max": 5.938124199037882e-06,
+  "momentum_drift_max": 1.0813141451311416e-05,
+  "angular_momentum_initial": [
+   0.013439041759878211,
+   -0.020158562639817322,
+   0.04031712527963463
+  ],
+  "angular_momentum_drift_max": 1.1057023762753832e-05,
+  "energy0": -0.0719018922790837,
+  "energy_rel_end": 8.260685007260993e-05,
+  "energy_rel_max": 9.741521423680928e-05,
+  "mg_cycles_mean": 19.0,
+  "columns": {
+   "xx": {
+    "dI": 9.328344152472758e-06,
+    "d2I": 3.937499186559458e-05,
+    "d3I": 2.5763137539057373e-14
+   },
+   "xy": {
+    "dI": 1.7059995231177987e-06,
+    "d2I": 4.7664060941669876e-06,
+    "d3I": 1.5389023872259915e-13
+   },
+   "xz": {
+    "dI": 7.699515069273374e-06,
+    "d2I": 7.119702780724282e-06,
+    "d3I": 9.159722982774808e-14
+   },
+   "yy": {
+    "dI": 5.814246640288162e-06,
+    "d2I": 8.556439040469904e-06,
+    "d3I": 8.121950218494846e-14
+   },
+   "yz": {
+    "dI": 1.1948123212014708e-05,
+    "d2I": 1.0893876176947487e-05,
+    "d3I": 6.104546926666281e-14
+   },
+   "zz": {
+    "dI": 5.595709180359384e-06,
+    "d2I": 6.339963738416316e-06,
+    "d3I": 4.6090290005306453e-14
+   }
+  },
+  "completed": true,
+  "mg_cycles_max": 26.0,
+  "mg_defect_max": 2.067721262034574e-12,
+  "meshblocks": [
+   "Root grid = 4 x 4 x 4 MeshBlocks",
+   "Total number of MeshBlocks = 64",
+   "Number of MeshBlocks in the pack: 64"
+  ],
+  "particles": 47048,
+  "inside_fine_region": [
+   47048,
+   47048,
+   47048,
+   47048,
+   47048
+  ],
+  "changed_region_between_snapshots": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "changed_region_first_to_last": 0
+ },
+ "fine_in_uni128": {
+  "rundir": "/data/haiyangw/nrpic/scratch/core/core-20261120-221835-4870ae5/fine_in_uni128",
+  "steps": 400,
+  "t_end": 0.8,
+  "mass_change": 0.0,
+  "com_drift_end": 7.13254562935259e-06,
+  "com_drift_max": 7.13254562935259e-06,
+  "momentum_drift_max": 9.555868989706181e-06,
+  "angular_momentum_initial": [
+   0.013439041759878211,
+   -0.020158562639817322,
+   0.04031712527963463
+  ],
+  "angular_momentum_drift_max": 1.5570139699936344e-05,
+  "energy0": -0.07195076581356111,
+  "energy_rel_end": -2.0319114969208866e-05,
+  "energy_rel_max": 4.5894057045892103e-05,
+  "mg_cycles_mean": 18.0,
+  "columns": {
+   "xx": {
+    "dI": 9.336273646347198e-06,
+    "d2I": 2.820148421517768e-05,
+    "d3I": 3.5810126265881103e-14
+   },
+   "xy": {
+    "dI": 1.7165543882893754e-06,
+    "d2I": 3.7686238497973814e-06,
+    "d3I": 1.5207068174850293e-13
+   },
+   "xz": {
+    "dI": 7.74867011104446e-06,
+    "d2I": 7.980212360053561e-06,
+    "d3I": 9.117909334899127e-14
+   },
+   "yy": {
+    "dI": 5.8380710075188725e-06,
+    "d2I": 7.225143160017008e-06,
+    "d3I": 9.835213837714457e-14
+   },
+   "yz": {
+    "dI": 1.203409892329666e-05,
+    "d2I": 1.3290329101782487e-05,
+    "d3I": 7.253562348521138e-14
+   },
+   "zz": {
+    "dI": 5.624333803059291e-06,
+    "d2I": 4.878947268254073e-06,
+    "d3I": 4.585265561332335e-14
+   }
+  },
+  "completed": true,
+  "mg_cycles_max": 25.0,
+  "mg_defect_max": 2.329631365108967e-11,
+  "meshblocks": [
+   "Root grid = 4 x 4 x 4 MeshBlocks",
+   "Total number of MeshBlocks = 64",
+   "Number of MeshBlocks in the pack: 64"
+  ],
+  "particles": 47048,
+  "inside_fine_region": [
+   47048,
+   47048,
+   47048,
+   47048,
+   47048
+  ],
+  "changed_region_between_snapshots": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "changed_region_first_to_last": 0
+ },
+ "fine_in_smr": {
+  "rundir": "/data/haiyangw/nrpic/scratch/core/core-20261120-221835-4870ae5/fine_in_smr",
+  "steps": 400,
+  "t_end": 0.8,
+  "mass_change": 0.0,
+  "com_drift_end": 7.187268683000634e-06,
+  "com_drift_max": 7.187268683000634e-06,
+  "momentum_drift_max": 1.0341343736454586e-05,
+  "angular_momentum_initial": [
+   0.013439041759878211,
+   -0.020158562639817322,
+   0.04031712527963463
+  ],
+  "angular_momentum_drift_max": 1.563385197671336e-05,
+  "energy0": -0.0719600029406698,
+  "energy_rel_end": -2.0294533040306832e-05,
+  "energy_rel_max": 4.5887540584523424e-05,
+  "mg_cycles_mean": 18.0,
+  "columns": {
+   "xx": {
+    "dI": 9.336778126414665e-06,
+    "d2I": 2.8179807540167883e-05,
+    "d3I": 3.5864691089075276e-14
+   },
+   "xy": {
+    "dI": 1.7167929585601748e-06,
+    "d2I": 3.7713853602615242e-06,
+    "d3I": 1.6058888096515281e-13
+   },
+   "xz": {
+    "dI": 7.749355193368361e-06,
+    "d2I": 7.969657453445595e-06,
+    "d3I": 9.102560143601317e-14
+   },
+   "yy": {
+    "dI": 5.8381536163229226e-06,
+    "d2I": 7.241507359432705e-06,
+    "d3I": 1.1801191472528363e-13
+   },
+   "yz": {
+    "dI": 1.203443467074003e-05,
+    "d2I": 1.3315882183897241e-05,
+    "d3I": 6.052446418969102e-14
+   },
+   "zz": {
+    "dI": 5.624411848856254e-06,
+    "d2I": 4.877945303279617e-06,
+    "d3I": 4.5850803776006835e-14
+   }
+  },
+  "completed": true,
+  "mg_cycles_max": 24.0,
+  "mg_defect_max": 1.525202933361572e-11,
+  "meshblocks": [
+   "Root grid = 4 x 4 x 4 MeshBlocks",
+   "Total number of MeshBlocks = 120",
+   "Number of MeshBlocks in the pack: 120"
+  ],
+  "particles": 47048,
+  "inside_fine_region": [
+   47048,
+   47048,
+   47048,
+   47048,
+   47048
+  ],
+  "changed_region_between_snapshots": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "changed_region_first_to_last": 0
+ }
+}

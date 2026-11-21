@@ -140,6 +140,8 @@ add_executable(
         particles/nrpic_collide.cpp
         particles/nrpic_perturb.cpp
         particles/nrpic_newton.cpp
+        particles/nrpic_newton_fft.cpp
+        particles/nrpic_newton_groups.cpp
         particles/nrpic_idsolve.cpp
         particles/nrpic_accretion.cpp
         particles/nrpic_refine.cpp
@@ -231,6 +233,8 @@ add_executable(
         z4c/z4c_update.cpp
         z4c/z4c_gauge.cpp
         z4c/z4c_Sbc.cpp
+        z4c/z4c_bcs_falloff.cpp
+        z4c/z4c_sbc_ext.cpp
         z4c/z4c_calculate_weyl_scalars.cpp
         z4c/z4c_wave_extr.cpp
         z4c/z4c_amr.cpp
