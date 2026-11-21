@@ -210,3 +210,11 @@ Read each claim at its stored locator in the stored source; details are in AUDIT
   eta(x,t) (L388-397). The claim's row is "no item-by-item ablation", so the claim stays
   supported: no on/off comparison of the profile is reported. I record the correction as an
   annotation (AU1), and the verdict does not change.
+
+### Prediction L1 (claims on the papers that ingest3 re-ingests, processed last)
+ingest3 has not re-ingested anything yet. Its journal records only the baseline, and its
+remap counts 21 claims on the 20 papers. L1 verifies 658-662 (1201.4794) and 183
+(2403.15126) at their own locators, then runs `kb claim check --id` on them, and annotates
+186. Expected: 6 fulltext/checked, 186 judgement/unlocated with one annotation, no FAILED line.
+658-662 are `served:` rows, not seed rows (ingest3 journal), so `kb claim check` may report
+them as not seeded without changing them. That is not a failure.

@@ -119,7 +119,7 @@ Notes on single claims:
 
 ## What follows
 
-- The 465 machine-located claims that were not drawn stay `located`. This audit's rate does
+- The 462 machine-located claims that were not drawn stay `located`. This audit's rate does
   not license marking them checked.
 - Fragments are a defect of the seeder: it splits one note row into several claims at each
   locator. I ran a read-only lookup on kb.sqlite (2026-11-21, 21:30 UTC) for machine-located
