@@ -70,3 +70,32 @@ on labelled paragraphs whose bold lead-in rule covers the paragraph, so I expect
 of the rows of the section-3 packages to join a seed; rows of sections 5 to 8 stand more often
 on unlabelled lines ("no seed on the line"). Refuted if the parser count differs from 620 or
 reports a problem, or if fewer than half of the section-3 rows join.
+
+Outcome of P2 (run kb-20261121-231835-5f7d281): 620 rows, 0 problems (held). Joined to a seed:
+316 rows (label and quotation 244, only seed of its label 49, quotation 23); not joined: 219
+"no seed on the line" (the line has no label: s39_frontier all 44 rows, s5_s6 54, s7_s8 37,
+s34_36 30), 85 "quotation outside the labelled statements" (an unlabelled sentence of a
+labelled line). Section-3 packages: 289 of 476 rows joined (61 per cent): held overall, but not
+per package (s34_36 14 of 66, s37_38 17 of 60, s39_frontier 0 of 44). 65 of the 112 seeds have
+at least one row.
+
+## Rules of step 2 [JUDGEMENT]
+
+Script `scripts/plan_outcomes.py` (read only) turns the join into one action per seed:
+judgement seed -> annotate (never verified or refuted from the literature, brief 12.8);
+a row CORRECTED whose errata row stands in section 1 or 3 of coord/BRIEF_ERRATA.md -> refute
+(evidence: the package rows and the errata row ids); CORRECTED only with a section-2 errata row
+(an imprecision) -> annotate, status partial; all rows CONFIRMED or CONFIRMED (precision) and
+every row with at least one TeX locator that resolves in the database -> verify (fulltext) with
+the first resolving locator of each row; otherwise -> annotate, status located. A seed is
+verified only when every row on it supports it, so one unsupported part keeps the label.
+Review sample: 30 rows, seed 20261121, 3 per package and 2 for novelty, s7_s8, s39_frontier,
+drawn from rows with a TeX locator, joined rows first.
+
+## P3 (prediction before the review sample)
+
+Each package's locators were range-checked by its own registered run (BRIEF_ERRATA section 7),
+not their content. I expect at most 3 of the 30 to disagree (the threshold of the task), most
+likely through a locator that is on the right topic but does not carry the number or the
+wording the row claims. Refuted if 4 or more disagree; then no row of the remaining set is
+upgraded and they go in as located, not checked.
