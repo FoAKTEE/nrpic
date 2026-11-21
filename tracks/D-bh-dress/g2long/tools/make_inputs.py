@@ -33,6 +33,9 @@ P_ES1 = os.path.join(TRK, "es_runs", "inputs", "es1_dx8.athinput")
 P_ESF = os.path.join(TRK, "flux_tools", "inputs", "esf_dx8.athinput")
 P_V1B = os.path.join(TRK, "drift_controls", "inputs", "v1b_bnd384.athinput")
 OUT = os.path.join(PKG, "inputs")
+SCR = "/data/haiyangw/nrpic/scratch/D-bh-dress"
+OLD_ESF_DATA = SCR + "/D-20261119-145022-2208a19"
+NEW_ESF_DATA = SCR + "/D-20261121-203042-82deeec"
 
 
 def rep(text, old, new, count=1):
@@ -126,7 +129,14 @@ def build():
     b = set_tlim(set_basename(add_root(add_root(es1)), "es", "es1l"), "200.0", "500.0")
     out["es1l"] = header("es1l", "es_runs/inputs/es1_dx8.athinput", two) + h2 + b
     b = set_tlim(set_basename(add_root(add_root(esf)), "esf", "esfl"), "200.0", "500.0")
-    out["esfl"] = header("esfl", "flux_tools/inputs/esf_dx8.athinput", two) + h3 + b
+    # the ES-F table ends at rbar = 345 M with exterior = zero (covers the +-192 M corner
+    # only); the +-768 M corner is at 1330 M: table and particles of the data run with
+    # --rbar_max 1340 (rows to 345 M and particles identical to the ES-F data run)
+    b = rep(b, OLD_ESF_DATA + "/esf.nrp", NEW_ESF_DATA + "/esf.nrp")
+    b = rep(b, OLD_ESF_DATA + "/esf.tab", NEW_ESF_DATA + "/esf.tab")
+    out["esfl"] = header("esfl", "flux_tools/inputs/esf_dx8.athinput",
+                         two + "; data run " + os.path.basename(NEW_ESF_DATA)
+                         + " (table to 1340 M)") + h3 + b
     m16 = "add one level (M/16) on +-2.9 M (snaps to +-3 M), tlim 500 -> 300 M"
     for name, base in (("v1l16", "v1l"), ("es1l16", "es1l")):
         hb, bb = split_header(out[base])

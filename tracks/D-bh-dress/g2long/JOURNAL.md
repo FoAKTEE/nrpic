@@ -97,3 +97,16 @@ H1 the late finder bias falls with resolution: M_V1L16 - 1 on 100-300 M in [3e-5
 H2 F_V16(300) <= 5e-5, below the M/8 floor on the same window.
 H3 |D_ES1L16 - D_V1L16| on 100-300 M no larger than |D_ES1L - D_V1L| on the same window.
 H4 cost from S3's block count: (blocks/456) x 2 (half the step) x the M/8 cost per M.
+
+## Entry 2 (2026-11-21 13:05 PST, before any card run): ES-F's table does not reach the new corner
+
+The smoke S2 log (D-20261121-202936-ebc09f0) prints for esf.tab "table covers the mesh corner
+of ES-1 (+-192 M -> 332.6 M) ... exterior = zero": beyond rbar = 345 M the curvature KL, KT
+of the ES-F slice is set to zero, a jump in the momentum constraint at 345 M that would
+reach the hole after ~250 M on the +-768 M mesh (corner 1330 M). ES-1 and V-1 tables have
+exterior = pg (exact continuation), so only ES-FL is affected. Fix: the ES-F data maker with
+`--rbar_max 1340` (run D-20261121-203042-82deeec): its 17250 table rows up to 345 M are
+byte-identical to those of D-20261119-145022-2208a19, its header lines are identical, and
+its particle file esf.nrp is byte-identical (cmp). `inputs/esfl.athinput` now reads table and
+particles of that run (tools/make_inputs.py). S2 is repeated on the new input (S2b) with
+the same prediction as S2.

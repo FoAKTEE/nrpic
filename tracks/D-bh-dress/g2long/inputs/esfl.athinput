@@ -1,6 +1,6 @@
 # ES-FL: dust filling the bubble; ES-F (flux_tools) with the faces at +-768 M (Track D, package g2long).
 # Built by tracks/D-bh-dress/g2long/tools/make_inputs.py from flux_tools/inputs/esf_dx8.athinput:
-# two coarser root levels (+-192 -> +-768 M, root dx 16 M), tlim 200 -> 500 M. Gauge plain 1+log (no lapse_leak, decision 0025 item 3).
+# two coarser root levels (+-192 -> +-768 M, root dx 16 M), tlim 200 -> 500 M; data run D-20261121-203042-82deeec (table to 1340 M). Gauge plain 1+log (no lapse_leak, decision 0025 item 3).
 # Executable: release core-v0.6 (.work/build_gpu_v06/src/athena).
 # Predictions and criteria: g2long/JOURNAL.md entry 1. Parent header follows.
 #
@@ -179,7 +179,7 @@ probe6_x3      = 0.0
 probe7_x1      = 152.0
 probe7_x2      = 0.0
 probe7_x3      = 0.0
-particle_file  = /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261119-145022-2208a19/esf.nrp
+particle_file  = /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203042-82deeec/esf.nrp
 removal_record = true
 acc_nsphere    = 3
 acc_radius1    = 5.0
@@ -194,7 +194,7 @@ acc_dcycle     = 10
 pgen_name  = nrpic_cf
 ncomp      = 2
 comp0_type = table
-comp0_file = /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261119-145022-2208a19/esf.tab
+comp0_file = /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203042-82deeec/esf.tab
 comp1_type = puncture
 comp1_mass = 1.0
 lapse      = precollapsed
