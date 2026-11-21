@@ -79,7 +79,7 @@ areal 9.25 M (D_GR = 1.17), the q = 10 state (conic 8.00 M) is bound to M (E = 0
 turns at 5.77 M (D_GR = 0.89, not 1.24) [VERIFIED: lead V9 run F-20261119-145449-245e984,
 verifier R1 run F-20261121-030100-b88c2d3, second check SC7]. A scan line meant to be equally
 spaced in depth is built from a GR parabola, L = (2 r_p^2/(r_p - 2))^(1/2) M, in this reading,
-and the q = 10 input is rebuilt that way before it is run (RISKS R14).
+and the q = 10 input is rebuilt that way before it is run (RISKS R9).
 
 ## 4. The scale estimate of brief l. 275, its correction, and what is new
 

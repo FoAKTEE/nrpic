@@ -48,6 +48,7 @@ the Introduction and the acknowledgments.
 | Subsection of the problem | what fixes the answer | scales of the encounter; the plunge bound; objects and observables |
 | Subsection of the set-up | the parts of the calculation | the calculation (architecture); reference solutions; the passages in full relativity; numerical methods (last) |
 | Subsection of the tests | one test per subsection | Newtonian limit; geodesic baseline in its own regime; the two references at mass ratios four and ten; the first passages; mesh and cost |
+| Tests, split for G1 (2026-11-21, lead, on the note helper's request) | reference against full relativity | "Reference solutions: tests and predictions" (the subsections above); "Full relativity: data, members, mesh, and the first passage" (data at the start, a single member, mesh and tree with cost, the first passage) |
 
 Special cases entered as limits (2.2): the restricted three-body problem enters as the
 q -> infinity limit of the full Newtonian problem; the Newtonian problem as the
@@ -64,7 +65,8 @@ the full-relativity passage.
 - Parameter values that define the figures: mass ratios q = 4 and 10; binary separations
   a_b = 5 M and 3 M; pericentres of the first passages; start at four tidal radii; finest
   cells m/8 and m/16; the plunge radius 2.5 M of the geodesic baseline; the comparison radius
-  4M; the binary mass 1e-6 M of the geodesic scan.
+  4M; the binary mass 1e-6 M of the geodesic scan; the shift damping eta m = 2 and 0.25, the
+  momentum P = m/4 and the cells m/4 of the single-member and data figures (added 2026-11-21).
 - Everything else (fractions, energies, MeshBlock counts, card-hours, deviations) is in the
   ledger.
 
@@ -105,3 +107,8 @@ script names, run directory names, the machine and card names. Checker:
 | fig_passage | the first passages: which member leaves differs between the references from about 100 M on | the two passage inputs |
 | fig_cost | the m/8 passages fit one card; m/16 at q = 10 does not | m/8, m/16 |
 | schem_timeline | the gates and what each waits for | none |
+| schem_dataflow | a passage from the input through chained card segments, readers and references to the note | none |
+| fig_constraints | the constraint residual of the three-black-hole data at the start, three variants | cells m/4 to m/16 |
+| fig_single | a single member: tracker speed and horizon mass under two shift dampings | P = m/4, eta m = 2 and 0.25, cells m/8 |
+| fig_tree | the MeshBlock tree along the passage and its cost | m/8, m/16 |
+| fig_smoke | the first card segments of the passage: rate, memory, trackers, horizons | P1 input, m/8 |
