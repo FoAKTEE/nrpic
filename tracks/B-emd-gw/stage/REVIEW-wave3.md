@@ -68,7 +68,7 @@ Not confirmed / corrected:
 | Ledger rows 118-119 | CONFIRMED (reduction factors to 1 per cent); normalization s undefined | accepted; note v3 defines s and adds the direct-map row (residual 2.3e-5 to 2.7e-3) |
 | Rows 120-125, eps = 0.1, 0.3 in rows 116-117 | NOT CHECKED | open for the G2 verifier |
 | Its failed predictions P3.5, P4.5, P4.7 | on record in its JOURNAL | nothing to do |
-| V4 residual after the gauge piece above the third-order estimate | [JUDGEMENT], untested | open item of G2 (gauge leg); RISKS R10 |
+| V4 residual after the gauge piece above the third-order estimate | [JUDGEMENT], untested | open item of G2 (gauge leg); RISKS R4 |
 | Future scans in double-precision bin | request | adopted: the delta = 0.0025 and round-3 decks already write `dbin`; flrw_conv and population decks to do the same |
 
 ### waves (wave 2b, and the x10 check of round 1)

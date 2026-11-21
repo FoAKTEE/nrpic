@@ -173,3 +173,37 @@ open: G1 criterion 1 (oblique and expanding-box waves), G1 schematics, note Sec.
 independent verifier of the wave-2 runs, jittered null, particle-number convergence;
 requests to orch on the verifier file name and the runs check of nrpic-stage verify.
 Card-hours this session: 0 (all review runs on processors); owner total 0.99 of 40.
+
+## 2026-11-21T06:29Z  session B-emd-gw lead (wave 3, batch 2a)  commits 84b251fd..(this push)  runs B-20261121-063617-6183015, B-20261121-063835-826c461
+
+did: merged main (release core-v0.4); found no session or card job of the owner running;
+closed seven runs of round 1 that had ended unattended with exit 0 (`nrpic-run finish`:
+B-20261120-222841-acfe21d, -222849-3b921b7, -222849-e5673dc, -222955-c8e16e3,
+-223006-24448ac, -223236-e213594, -223241-f1efd4f); committed the stranded outputs of the
+finished note v2 package after `cmp` of 28 files against run B-20261120-223319-cc5320d; left
+the uncommitted gauge module of waves round 1 alone. Wrote predictions L1-L3 before any
+review run (stage/review_wave3/JOURNAL.md, ecb32b71), rechecked verifier3, waves, note v1/v2,
+verifier2 and population from their artefacts (stage/REVIEW-wave3.md); appended the erratum
+to REVIEW-wave2.md; named the measure behind "1.3e-15 L" in newton_tests/README.md;
+judged the G1 checklist after `nrpic-stage collect`, rewrote stage/G1 EVIDENCE, OPEN,
+STATUS, added stage/G1/REVIEW.md; five outbox messages (orch: C18 verifier, note PDF size;
+core: in-situ Fourier output and a correction of its bracket; kb: claim on 2312.12499);
+seven inbox messages acknowledged; STATUS, HANDOFF, RISKS rewritten.
+found: L1 held except one pair (F cross amplitude at N = 64, 1.07 percent, 3.4e-10 absolute):
+the waves and verifier3 readings agree on every other number but the X plus amplitude at
+N >= 48. L2 failed: my third reading of X at N = 64 gives the waves value (plus 1.53836e-7,
+x10 1.41541e-7), not verifier3's 1.3775e-7. L2b failed as predicted (the projection route
+equals direct contraction to 2e-16); the cause is verifier3's summary, which keeps only the
+part of the mode in phase with the exact cos(K.x) and reports the rest as spatial quadrature
+(1.61e-8 at N = 64, x1; 1.75e-9 at x10; cross 2.4e-13): a definition, not an error; the
+truncation error is 1.40e-7. L3 failed: 2312.12499 line 581 is three times (not twice) the
+line-324 route in delta. Population P5 mass ratios reach +14.3 percent (report: +12).
+evidence: the two runs above; figure stage/review_wave3/figs/lw3_crit1.png (looked at);
+note figures fig_waves, fig_r2, schem_architecture, schem_dataflow, population pop_compare,
+pop_gw_fid looked at; kb-data source of 2312.12499 lines 318-330 and 572-590 and of
+2403.15126 lines 1040-1078 read.
+changed my mind about: which X plus amplitude to quote (neither reading's; the cross or x10
+value); G1 readiness (criteria met; the package still lacks C18).
+open: C18 verifier package (request to orch); waves, first_source, flrw_conv, shear round 1
+(HANDOFF); note v3 wordings; `nrpic-stage verify` and `report` for G1 (see the end of this
+entry). Card-hours this session: 0 (processors only); owner total 2.48 of 40.
