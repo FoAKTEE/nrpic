@@ -723,3 +723,12 @@ code's RK4()4[2S] with the expansion step limit (time part, equal to the predict
 digits) plus a spatial part of order 7 (amplitude) and 6 (phase) that equals the symbol; at
 N >= 32 the step limit, not the mesh, sets the error. Failed predictions on record: XS-3
 bound at N = 64 (marginal), XS-4.
+
+## 2026-11-21 13:06 Prediction of the reader check (check_readers.py, never run before)
+
+binio.read_bin (gw_diag, commit 5499ec6c) against the two readers it merges
+(waves/wlib/measure.read_bin, first_source/fslib/binread.read_bin) and gw_diag's old
+readers.read_bin, on the dumps of the gauge check plus the F2 N = 64 card dump (one MeshBlock
+of 64^3, double): every variable equal bit for bit to both merged readers on all four files
+and the grids equal; on the float32 file also equal to readers.read_bin; on the double files
+the old reader misreads (it assumes float32). Refuted if any equality fails.
