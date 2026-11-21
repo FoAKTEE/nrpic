@@ -1,0 +1,23 @@
+{
+ "reference": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/chain/input.athinput + chain/config.sh EXTRA_ARGS",
+ "new": "problems/jeans/jeans_mc.athinput",
+ "parameters_reference": 176,
+ "parameters_new": 182,
+ "added": {
+  "problem/comp1_p1": "-2.5331192412806132e-05",
+  "problem/comp1_p2": "-0.021855624754435855",
+  "problem/comp1_p3": "-2.3365086345044562e-05",
+  "problem/comp2_p1": "-2.5331192412806132e-05",
+  "problem/comp2_p2": "0.021936558943432015",
+  "problem/comp2_p3": "-2.3365086345044562e-05"
+ },
+ "removed": [],
+ "changed": {
+  "comment/problem": [
+   "collapse and merger of two overdensities inside a cluster",
+   "two overdensities inside a cluster, momentum constraint solved for the clumps"
+  ]
+ },
+ "overrides": 35,
+ "only_expected_differences": true
+}

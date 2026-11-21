@@ -170,6 +170,7 @@ ScalarField::ScalarField(MeshBlockPack *ppack, ParameterInput *pin) :
   pbval_u->InitializeBuffers((nsf));
 
   NoiseInit(pin);
+  DiagInit(pin);
 }
 
 //----------------------------------------------------------------------------------------
@@ -372,6 +373,9 @@ TaskStatus ScalarField::Diagnostics(Driver *pdriver, int stage) {
   const int ncycle = pm->ncycle + 1;
   if (opt.hist_dcycle > 0 && ncycle % opt.hist_dcycle == 0) {
     WriteHistory(time, ncycle, false);
+  }
+  if (dopt.con_dcycle > 0 && ncycle % dopt.con_dcycle == 0) {
+    WriteConstraintHistory(time, ncycle, false);
   }
   bool dump = (opt.dump_dcycle > 0 && ncycle % opt.dump_dcycle == 0);
   if (opt.dump_dt > 0.0 && time >= dump_next_time - 1.0e-12*std::fabs(dump_next_time)) {

@@ -1,0 +1,42 @@
+{
+ "run_id": "core-20261115-162609-9dd5b98",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-bfix/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-bfix/tracks/core/analysis/bfix/t7_constraint_drift.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-bfix/.work/exe/athena_cpu_w1",
+  "--t3-dir",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160633-7d80187",
+  "--out",
+  "."
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-162609-9dd5b98",
+ "commit": "9dd5b98",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_w1",
+   "sha256": "c32a1389c06e58887cd3c38bb92512d413b91eaa8153baac170ac889f7ceeced"
+  },
+  {
+   "path": "problems/cosmo/east.athinput",
+   "sha256": "61890ec7060b7505b8679e8a58aef4c1668e55a9a6d3b2aaf90e88ec5efcdd81"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-bfix/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-162609-9dd5b98",
+ "purpose": "T7: constraint level restored by the evolution against the time step (P8): plane4_fd and jit4_fd of T3 to t=0.3 with dt_expansion 0.01 and 0.0025",
+ "kind": "scouting",
+ "tag": "T7",
+ "state": "finished",
+ "wall_time_s": 36.01,
+ "exit_status": 0,
+ "cores": 4,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T16:26:09Z"
+}

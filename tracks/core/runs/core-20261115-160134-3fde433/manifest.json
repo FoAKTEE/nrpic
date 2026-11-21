@@ -1,0 +1,51 @@
+{
+ "run_id": "core-20261115-160134-3fde433",
+ "owner": "core",
+ "track": "core",
+ "gate": "G2",
+ "purpose": "T8 curvature perturbation R^NR extracted from the dumps against the coarse-grained linear solution W R alpha of the lockstep record, 32^3, nmax2 = 64, to t = 3.2, with the negative control noise_pi_sign = -1 (processors)",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/scalar2/t8_rnr.py",
+  "--exe",
+  ".work/exe/athena_cpu_a58e95b",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160134-3fde433"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-scalar2",
+ "commit": "3fde433628d251ca5690dc0d5af95167a2e904d1",
+ "branch": "core/scalar-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_a58e95b",
+   "sha256": "c69266ec765c8296b005871c6865991f2a5ac59f7ebd2ac3f03d383b57f9439e"
+  },
+  {
+   "path": "problems/scalar/sr_stochastic.athinput",
+   "sha256": "d1ad721d9b2b495b49782ca31a3c18efc24f1eb58c23eeff29d3fc12747efea6"
+  },
+  {
+   "path": "problems/scalar/sr_stochastic_modes.txt",
+   "sha256": "3e885408a9a1122f93997d46092b3a4141afac15415b73027556e75f82424031"
+  },
+  {
+   "path": "tracks/core/analysis/scalar2/t8_rnr.py",
+   "sha256": "0923b7a188c7aaeafed8a42e21442ad75838ad46c802e2cddc7ffc97cec09d75"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160134-3fde433",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-160134-3fde433"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:01:34Z",
+ "cores": 2,
+ "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
+ "status": "completed",
+ "wall_time_s": 194.72,
+ "exit_status": 0,
+ "end_utc": "2026-11-15T16:04:49Z",
+ "core_hours": 0.1082
+}

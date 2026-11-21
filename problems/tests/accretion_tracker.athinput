@@ -1,0 +1,98 @@
+# Test T7 of work package dfix (journal of core): the flux sphere of the accretion
+# diagnostics follows a moving puncture.  Bowen-York puncture with momentum (the set-up
+# of puncture_setup_restart.athinput), 4000 light particles in the shell 1.9 < r < 2.1
+# around its starting position, moving radially in and out; sphere of radius 2 centred
+# on puncture tracker 0.  Particle file: tracks/core/analysis/dfix/t7_tracker.py.
+
+<comment>
+problem   = accretion diagnostics about a moving puncture
+
+<job>
+basename  = atr
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = -8.0
+x1max     = 8.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 32
+x2min     = -8.0
+x2max     = 8.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 32
+x3min     = -8.0
+x3max     = 8.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement          = adaptive
+num_levels          = 3
+max_nmb_per_rank    = 512
+ncycle_check        = 2
+refinement_interval = 2
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 24
+tlim       = 100.0
+ndiag      = 1
+
+<z4c>
+lapse_oplog     = 2.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+tracker_mode    = ode
+
+<fastflow>
+find_every      = 8
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-10
+max_iterations = 100
+deposit        = false
+alpha_exc      = 0.05
+hist_dcycle    = 1
+snap_dt        = 0.25
+particle_file  = atr.nrp
+removal_record = true
+acc_nsphere    = 1
+acc_radius1    = 2.0
+acc_tracker    = 0
+peri_count     = true
+acc_dcycle     = 1
+
+<problem>
+pgen_name       = nrpic_cf
+ncomp           = 1
+comp0_type      = puncture
+comp0_mass      = 1.0
+comp0_x1        = 0.1
+comp0_x2        = -0.2
+comp0_x3        = 0.05
+comp0_p1        = 0.3
+comp0_s3        = 0.2
+comp0_corr      = approx
+lapse           = precollapsed
+puncture_setup  = true
+puncture_radius = 1.2
+
+<output1>
+file_type = hst
+dcycle    = 1

@@ -1,0 +1,66 @@
+{
+ "run_id": "core-20261115-161021-b4430da",
+ "owner": "core",
+ "package": "gauge",
+ "tag": "g-bound-leak025-n080",
+ "purpose": "expanding ball with the old and the new lapse: bound-leak025-n080 (cells 80, half-width 20, lapse leak025, ball --Rb 5 --e0 0.16 --RE 10)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_cpu_b4430da",
+  "-i",
+  "/data/haiyangw/nrpic/wt/core-gauge/problems/ball/ball_leak.athinput",
+  "-d",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-161021-b4430da",
+  "mesh/nx1=80",
+  "mesh/nx2=80",
+  "mesh/nx3=80",
+  "mesh/x1min=-20.0",
+  "mesh/x1max=20.0",
+  "mesh/x2min=-20.0",
+  "mesh/x2max=20.0",
+  "mesh/x3min=-20.0",
+  "mesh/x3max=20.0",
+  "meshblock/nx1=40",
+  "meshblock/nx2=40",
+  "meshblock/nx3=40",
+  "time/tlim=12.0",
+  "particles/traj_dcycle=2",
+  "particles/traj_ntrack=2078",
+  "particles/particle_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p5.nrp",
+  "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p5.tab",
+  "problem/shift=zero",
+  "z4c/lapse_leak=4.0"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-161021-b4430da",
+ "commit": "b4430da64df8892bb68b2d633959da3faa0255d8",
+ "head_at_run": "56cbc5a9cd5a6023552d5fba49e303f56671f98b",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-gauge/problems/ball/ball_leak.athinput",
+   "sha256": "d5ea2db65d16e6beaee139890e7595e44f9693f7cf6a09165ddba341bfb82987"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_cpu_b4430da",
+   "sha256": "07af4a6ca2daf886f67a804a3b3c631c4879bf6739f431209bff5b56a8919917"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p5.nrp",
+   "sha256": "4fb8218acb69274cf10f30342bc6142bcdf6ce1c73022095db66d086fec58e63"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p5.tab",
+   "sha256": "31a0f780183d816338982c2a39457e1075f08f65f71e863ec43fa427590c0bbf"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_bound_h0p5.json",
+   "sha256": "134fab5ed7eb53eed944bdbab3df59df8f4b9f572a3357c2704862e685c85aeb"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-161021-b4430da",
+ "wall_time_s": 3612.3,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-161021"
+}

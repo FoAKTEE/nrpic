@@ -29,6 +29,12 @@
 //!         The right-hand side must stay positive: the gradient energy must be smaller
 //!         than the kinetic energy.  With <problem> control = true, Pi = pi0 everywhere
 //!         (the momentum constraint is then violated at first order in amp).
+//!  stochastic  the initial slice of the stochastic-inflation runs: the homogeneous
+//!         universe of id = flrw (phi0, pi0: the background at the start, on the
+//!         attractor) plus the linear perturbations of the coarse-grained curvature
+//!         perturbation, synthesized with the modes and amplitudes of the stochastic
+//!         sources (<scalar_field> noise = mukhanov_sasaki and its mode file).  Options
+//!         slice_window, slice_k2, slice_delta_pi: scalar_field/scalar_field_slice.cpp.
 
 #include <cmath>
 #include <cstdint>
@@ -79,8 +85,11 @@ void ProblemGenerator::ScalarFieldTests(ParameterInput *pin, const bool restart)
     kind = 1;
   } else if (id.compare("plane") == 0) {
     kind = 2;
+  } else if (id.compare("stochastic") == 0) {
+    kind = 3;
   } else {
-    SfTestFatal("<problem> id = '" + id + "' not recognized (wave, flrw, plane)");
+    SfTestFatal("<problem> id = '" + id + "' not recognized (wave, flrw, plane, "
+                "stochastic)");
   }
   const Real phi0 = pin->GetOrAddReal("problem", "phi0", 0.0);
   const Real pi0 = pin->GetOrAddReal("problem", "pi0", 0.0);
@@ -184,7 +193,7 @@ void ProblemGenerator::ScalarFieldTests(ParameterInput *pin, const bool restart)
     if (kind == 0) {
       phi = phi0 + amp*cos(phase);
       pi = pi0 + amp*omega*sin(phase);
-    } else if (kind == 1) {
+    } else if (kind == 1 || kind == 3) {
       Real v, dv;
       scalarfield::SfPotentialEval(pot, tab, phi, v, dv);
       trk = -sqrt(24.0*M_PI*(0.5*pi*pi + v));
@@ -230,6 +239,8 @@ void ProblemGenerator::ScalarFieldTests(ParameterInput *pin, const bool restart)
     case 3: pmbp->pz4c->ADMToZ4c<3>(pmbp, pin); break;
     case 4: pmbp->pz4c->ADMToZ4c<4>(pmbp, pin); break;
   }
+  // perturbations of the stochastic-inflation slice on the homogeneous background
+  if (kind == 3) { psf->InitialSlice(pin, phi0, pi0); }
   pmbp->pz4c->Z4cToADM(pmbp);
   if (global_variable::my_rank == 0) {
     std::cout << "ScalarField: initial data, id = " << id << std::endl;

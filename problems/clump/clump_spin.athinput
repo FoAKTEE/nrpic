@@ -1,0 +1,104 @@
+# A rotating Gaussian matter clump with the extrinsic curvature that solves the momentum
+# constraint (the Bowen-York spin curvature smeared with the Gaussian,
+# athenak/src/pgen/nrpic/nrpic_clump_curvature.hpp; options and tests:
+# tracks/core/interfaces/moving_clumps.md).  Conformal mass 0.2, width 1, angular
+# momentum 0.04 along z: the momentum density is (S x d) g/(2 sigma^2), rotation speed
+# about 0.1 at one width.  Initial data only (nlim = 0), 64^3 cells of [-8, 8]^3.
+# Particles:
+#   problems/ic/make_ic.py clumps --gaussian 0.2,1,0,0,0,0,0,0,0,0,0.04 --N 100000 \
+#       --seed 1 --out <rundir> --prefix particles
+# (the JSON holds the <problem> block; comp0_p1..3 there is the small net momentum of the
+# sample).  With weighted lattice particles this is test T3 of
+# tracks/core/JOURNAL-clump.md (run core-20261115-154749-e1a4d0c); the evolution of a
+# rotating clump has not been run.
+
+<comment>
+problem   = rotating Gaussian clump with the smeared Bowen-York spin curvature
+
+<job>
+basename  = clump
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -8.0
+x1max     = 8.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -8.0
+x2max     = 8.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -8.0
+x3max     = 8.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 0
+tlim       = 1.0
+ndiag      = 1
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-10
+max_iterations = 50
+deposit        = true
+deposit_shape  = cic
+nfilter        = 4
+filter_compensate = true
+filter_comp_c  = -1.0
+alpha_exc      = 0.0
+hist_dcycle    = 1
+particle_file  = particles.nrp
+
+<problem>
+pgen_name   = nrpic_cf
+ncomp       = 1
+comp0_type  = gaussian
+comp0_mass  = 0.2
+comp0_sigma = 1.0
+comp0_x1    = 0.0
+comp0_x2    = 0.0
+comp0_x3    = 0.0
+comp0_p1    = 0.0
+comp0_p2    = 0.0
+comp0_p3    = 0.0
+comp0_s1    = 0.0
+comp0_s2    = 0.0
+comp0_s3    = 0.04
+lapse       = isotropic
+
+<output1>
+file_type = hst
+dt        = 0.125
+
+<output2>
+file_type = bin
+variable  = con
+dt        = 1.0

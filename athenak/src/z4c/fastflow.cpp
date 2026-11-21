@@ -133,6 +133,30 @@ FastFlow::FastFlow(MeshBlockPack *pmbp, ParameterInput *pin, int n):
                                             "wait_until_punc_are_close_" + n_str, 0);
   use_puncture_massweighted_center = pin->GetOrAddBoolean("fastflow",
                                      "use_puncture_massweighted_center_" + n_str, 0);
+  // Common horizon of one pair among several punctures: with punc_pair_a_<n> and
+  // punc_pair_b_<n> the trigger wait_until_punc_are_close_<n> compares the distance of
+  // these two punctures with merger_distance times the sum of their two masses, and
+  // use_puncture_massweighted_center_<n> takes the centre of mass of the two.  Without
+  // them all punctures count (largest distance, sum of all masses), so that a merger of
+  // two holes is not searched for while a third is far away.  merger_distance_<n>
+  // replaces the common merger_distance for this surface.  The parameters are read only
+  // if present (the parameter dump of existing inputs does not change).
+  if (pin->DoesParameterExist("fastflow", "punc_pair_a_" + n_str) ||
+      pin->DoesParameterExist("fastflow", "punc_pair_b_" + n_str)) {
+    pair_a = pin->GetInteger("fastflow", "punc_pair_a_" + n_str);
+    pair_b = pin->GetInteger("fastflow", "punc_pair_b_" + n_str);
+    if (pair_a < 0 || pair_b < 0 || pair_a >= npunct || pair_b >= npunct ||
+        pair_a == pair_b) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "<fastflow> punc_pair_a_" << n_str << " and punc_pair_b_"
+                << n_str << " must name two different punctures below npunct = "
+                << npunct << std::endl;
+      exit(EXIT_FAILURE);
+    }
+  }
+  if (pin->DoesParameterExist("fastflow", "merger_distance_" + n_str)) {
+    merger_distance = pin->GetReal("fastflow", "merger_distance_" + n_str);
+  }
 
   // Timer
   start_time = pin->GetOrAddReal("fastflow", "start_time_" + n_str,
@@ -1529,6 +1553,15 @@ void FastFlow::ComputeSphericalHarmonics() {
 //! \fn Real FastFlow::PuncMaxDistance()
 //! \brief Max Euclidean distance between punctures.
 Real FastFlow::PuncMaxDistance() {
+  if (pair_a >= 0) {
+    // the pair this surface belongs to
+    Real d2 = 0.0;
+    for (int a = 0; a < 3; ++a) {
+      d2 += SQR(pmbp->pz4c->ptracker[pair_a]->GetPos(a) -
+                pmbp->pz4c->ptracker[pair_b]->GetPos(a));
+    }
+    return Kokkos::sqrt(d2);
+  }
   Real maxdist = 0.0;
   for (int pix = 0; pix < npunct; ++pix) {
     Real xp = pmbp->pz4c->ptracker[pix]->GetPos(0);
@@ -1571,6 +1604,10 @@ Real FastFlow::PuncMaxDistance(const int pix) {
 //! \fn Real FastFlow::PuncSumMasses()
 //! \brief Return sum of puncture's intial masses.
 Real FastFlow::PuncSumMasses() {
+  if (pair_a >= 0) {
+    return pmbp->pz4c->ptracker[pair_a]->GetMass() +
+           pmbp->pz4c->ptracker[pair_b]->GetMass();
+  }
   Real mass = 0.0;
   for (int p = 0; p < npunct; ++p) {
     mass += pmbp->pz4c->ptracker[p]->GetMass();
@@ -1587,6 +1624,7 @@ void FastFlow::PuncWeightedMassCentralPoint(Real *xc, Real *yc, Real *zc) {
   Real sumz = 0.0;
   Real divsum = 0.0; // sum of m_i to later divide by
   for (int p = 0; p < npunct; p++) {
+    if (pair_a >= 0 && p != pair_a && p != pair_b) continue;   // only the pair
     Real x = pmbp->pz4c->ptracker[p]->GetPos(0);
     Real y = pmbp->pz4c->ptracker[p]->GetPos(1);
     Real z = pmbp->pz4c->ptracker[p]->GetPos(2);
@@ -1604,7 +1642,9 @@ void FastFlow::PuncWeightedMassCentralPoint(Real *xc, Real *yc, Real *zc) {
 
 //----------------------------------------------------------------------------------------
 //! \fn bool FastFlow::PuncAreClose()
-//! \brief Check when the maximal distance between all punctures is below threshold.
+//! \brief Check when the maximal distance between all punctures is below threshold;
+//! with punc_pair_a_<n>, punc_pair_b_<n>: the distance between these two, against the
+//! sum of their two masses.
 bool FastFlow::PuncAreClose() {
   Real const mass = PuncSumMasses();
   Real const maxdist = PuncMaxDistance();

@@ -1,0 +1,125 @@
+# Two Gaussian matter clumps with opposite momenta (one of them rotating) beside a
+# Bowen-York puncture with momentum, at t = 0: the smeared curvature of the clumps and
+# the Bowen-York curvature of the puncture superpose (test T7 of
+# tracks/core/JOURNAL-clump.md, tracks/core/analysis/clump/puncture_clump_check.py).
+# Clumps of conformal mass 0.2 and width 1 at x = -3 and +3 with momenta -0.04 and +0.04
+# along y, the second with spin 0.02 along z; puncture of bare mass 1 at (0, 5, 0), a
+# cell corner, with momentum 0.1 along x; 128^3 cells of [-8, 8]^3.  Particles:
+#   problems/ic/make_ic.py clumps --gaussian 0.2,1,-3,0,0,0,-0.04,0 \
+#       --gaussian 0.2,1,3,0,0,0,0.04,0,0,0,0.02 --puncture 1,0,5,0,0.1,0,0 \
+#       --sampler lattice --lattice-h 0.125
+# (the particle masses use psi with the puncture's m/2r).
+
+<comment>
+problem   = two moving Gaussian clumps beside a Bowen-York puncture, initial data
+
+<job>
+basename  = clump
+
+<mesh>
+nghost    = 4
+nx1       = 128
+x1min     = -8.0
+x1max     = 8.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 128
+x2min     = -8.0
+x2max     = 8.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 128
+x3min     = -8.0
+x3max     = 8.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 0
+tlim       = 1.0
+ndiag      = 1
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-10
+max_iterations = 50
+deposit        = true
+deposit_shape  = cic
+nfilter        = 4
+filter_compensate = true
+filter_comp_c  = -1.0
+alpha_exc      = 0.0
+hist_dcycle    = 1
+particle_file  = particles.nrp
+
+<problem>
+pgen_name   = nrpic_cf
+ncomp       = 3
+comp0_type  = gaussian
+comp0_mass  = 0.2
+comp0_sigma = 1.0
+comp0_x1    = -3.0
+comp0_x2    = 0.0
+comp0_x3    = 0.0
+comp0_p1    = 0.0
+comp0_p2    = -0.04
+comp0_p3    = 0.0
+comp0_s1    = 0.0
+comp0_s2    = 0.0
+comp0_s3    = 0.0
+comp1_type  = gaussian
+comp1_mass  = 0.2
+comp1_sigma = 1.0
+comp1_x1    = 3.0
+comp1_x2    = 0.0
+comp1_x3    = 0.0
+comp1_p1    = 0.0
+comp1_p2    = 0.04
+comp1_p3    = 0.0
+comp1_s1    = 0.0
+comp1_s2    = 0.0
+comp1_s3    = 0.02
+comp2_type  = puncture
+comp2_mass  = 1.0
+comp2_x1    = 0.0
+comp2_x2    = 5.0
+comp2_x3    = 0.0
+comp2_p1    = 0.1
+comp2_p2    = 0.0
+comp2_p3    = 0.0
+comp2_s1    = 0.0
+comp2_s2    = 0.0
+comp2_s3    = 0.0
+lapse       = precollapsed
+
+<output1>
+file_type = hst
+dt        = 0.125
+
+<output2>
+file_type = bin
+variable  = con
+dt        = 1.0

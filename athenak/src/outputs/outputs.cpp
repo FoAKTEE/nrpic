@@ -274,6 +274,11 @@ Outputs::Outputs(ParameterInput *pin, Mesh *pm) {
       } else if (opar.file_type.compare("bin") == 0) {
         opar.single_file_per_rank = pin->GetOrAddBoolean(opar.block_name,
           "single_file_per_rank", false);
+        // NRPIC: optional double-precision data (docs/FORMATS.md).  Read only if
+        // present, so that the parameter dump of existing inputs does not change.
+        if (pin->DoesParameterExist(opar.block_name, "double_precision")) {
+          opar.double_precision = pin->GetBoolean(opar.block_name, "double_precision");
+        }
         pnode = new MeshBinaryOutput(pin,pm,opar);
         pout_list.insert(pout_list.begin(),pnode);
       } else if (opar.file_type.compare("cart") == 0) {
