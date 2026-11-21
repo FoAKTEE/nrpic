@@ -599,3 +599,26 @@ drift from its value at 100 M stays inside [-1.5e-4, +1.5e-4] until 199.5 M (V-1
 `v8-hole16` the radius fell from 1.58 to 1.31 M between 100 and 150 M, which I attribute
 to the faces of that run]. Refuted, and the radius 16 M only a delay, if the radius
 falls below 1.2 M or the drift leaves [-4e-4, +4e-4].
+
+## Entry 10 (11:25): the cleaned source verified on processors; state while job F waits
+
+Source commit 984110c3 (`lapse_leak_hole` only), builds `.work/build_cpu_g2b` and
+`.work/build_gpu_g2b` (scripts/build_cpu.sh, scripts/build_gpu.sh).
+Outcome T7 (run core-20261121-190712-c3e50b6, `results/ptests_T7.json`): HELD in every
+part. First pass, cleaned build = release core-v0.6 (L1, 8 steps): 9 of 9 files.
+Switch-off within 8 M on the coarse vacuum mesh, cleaned build = build 90f52f4d: 9 of 9
+files, so the card results of jobs A and B carry over to the cleaned source as far as
+the processors can show. Radius beyond the mesh = plain 1+log: 7 files identical, 2
+identical after the parameter dump. The run with 8 M differs from the first pass and
+from plain 1+log in 6 files each (the weight is active).
+Byte regression of the cleaned build against release core-v0.6 (run
+core-20261121-190715-f702a98, `regress_v04.py`): PASS, twelve set-ups, 75 of 75 items.
+The example `problems/es/es_gauge_hole.athinput` starts with the cleaned processor
+build (344 MeshBlocks, two steps; unregistered smoke test in `scratch/core/tmp/
+g2_example`): "Z4c gauge: lapse excess over 1 relaxes at the rate 0.5, off within 16 of
+every tracker (in full beyond 32)".
+
+Card job F (run core-20261121-190709-8b205e5, Slurm 4821, card build of 984110c3) was
+submitted at 11:07 and waits behind a job of Track F and one of another user.
+Card time used so far: job A 0.32, job B 0.68 card-hours; job F is expected to take
+0.46 (limit 0.55), which brings the item to 1.46 of 1.5.
