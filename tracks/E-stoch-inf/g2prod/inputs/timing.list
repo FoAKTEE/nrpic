@@ -1,0 +1,5 @@
+# g2prod timing job (JOURNAL entry 1, T): 40 steps of the USR production deck on the release card
+# build core-v0.6 at 256^3, 320^3 and 384^3, no field dumps; step time and card memory from athena.log.
+T256 tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput time/nlim=40 scalar_field/dump_dt=1000.0 output1/dt=1000.0
+T320 tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput time/nlim=40 scalar_field/dump_dt=1000.0 output1/dt=1000.0 mesh/nx1=320 mesh/nx2=320 mesh/nx3=320 meshblock/nx1=320 meshblock/nx2=320 meshblock/nx3=320
+T384 tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput time/nlim=40 scalar_field/dump_dt=1000.0 output1/dt=1000.0 mesh/nx1=384 mesh/nx2=384 mesh/nx3=384 meshblock/nx1=384 meshblock/nx2=384 meshblock/nx3=384

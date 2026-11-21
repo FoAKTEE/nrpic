@@ -1,0 +1,12 @@
+# Queue of the g2prod sequencer (scripts/sequencer.sh). One run per line: <label> <gpu-hours> <purpose>|<athena args>
+# The deck is g2prod/inputs/usr_prod.athinput; launcher chain on the release card build core-v0.6; kind production,
+# gate G2, preregistered in g2prod/JOURNAL.md entry 1. Lines run in order, at most two card jobs of E eligible at a time.
+U256ap 1.97 USR seed A s=+1 256^3 (release repeat of U256)|job/rng_seed=20261115 scalar_field/noise_mode_scale=1.0
+U256am 1.97 USR seed A s=-1 256^3 (release repeat of U256m)|job/rng_seed=20261115 scalar_field/noise_mode_scale=-1.0
+U320ap 2.95 USR seed A s=+1 320^3 (resolution U-R)|job/rng_seed=20261115 scalar_field/noise_mode_scale=1.0 mesh/nx1=320 mesh/nx2=320 mesh/nx3=320 meshblock/nx1=320 meshblock/nx2=320 meshblock/nx3=320
+U256bp 1.97 USR seed B s=+1 256^3 (second seed U-S)|job/rng_seed=20261116 scalar_field/noise_mode_scale=1.0
+U256bm 1.97 USR seed B s=-1 256^3 (second seed U-S)|job/rng_seed=20261116 scalar_field/noise_mode_scale=-1.0
+U320am 2.95 USR seed A s=-1 320^3 (resolution U-R, odd part)|job/rng_seed=20261115 scalar_field/noise_mode_scale=-1.0 mesh/nx1=320 mesh/nx2=320 mesh/nx3=320 meshblock/nx1=320 meshblock/nx2=320 meshblock/nx3=320
+U256hp 1.97 USR seed A s=+1/2 256^3 (halving U-A4')|job/rng_seed=20261115 scalar_field/noise_mode_scale=0.5
+U256hm 1.97 USR seed A s=-1/2 256^3 (halving U-A4')|job/rng_seed=20261115 scalar_field/noise_mode_scale=-0.5
+U256nc 0.98 USR seed A s=+1 256^3 sign-flip control to the end of the entry cN = ln 32 (U-A4'(d))|job/rng_seed=20261115 scalar_field/noise_mode_scale=1.0 scalar_field/noise_pi_sign=-1.0 time/tlim=3.75

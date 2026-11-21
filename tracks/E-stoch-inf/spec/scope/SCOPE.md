@@ -148,6 +148,43 @@ as written until it rules.
   floor being the part that does not scale with s and grows with N (N^2.5 measured between
   128 and 256). Factor and floor model were fixed after the data were seen [JUDGEMENT].
 
+## 4c. G2 criteria of the USR case, fixed before the G2 production runs (2026-11-21)
+
+Decision 0023 item 1 asks that the floor and the clause on the maxima are defined here before
+any G2 production run. Written by the lead of batch 5 on 2026-11-21 before package `g2prod`
+submitted anything. U-A2' and U-A4' were proposed after the scouting data (outbox
+20261121T131021Z usr-acceptance-after-data); what is new here is that their definitions are
+closed, and that the release runs of `g2prod` are judged by them as written [JUDGEMENT]. The
+strict U-A2 and U-A4 of `usr/JOURNAL.md` entries 9.1 and 10 stay FAILED on record.
+
+Common rules. P1's set-up: nmax2 = 4096 (k_max = 64 dk), window s = 5, sigma = 1, Courant 0.25,
+deck `g2prod/inputs/usr_prod.athinput`, release card build core-v0.6. "At N_f" means the dump at
+t = tlim (the 21st dump, recorded time equal to tlim within 1e-9). Pairs are read only at equal
+recorded times (|dt| <= 1e-9). Odd and even parts: O = (X(+s) - X(-s))/2, E = (X(+s) + X(-s))/2
+of the same seed and N. **Clause on the maxima:** wherever a clause says "every mode" or "at
+every dump", it is the maximum over all of them, with no exclusion of small |alpha_n| and no
+dump dropped; a maximum over time is never used where a clause is stated at N_f; pointwise
+ratios are reported beside any clause stated on maxima. **Floor:** for a constraint C (H, or
+M_i taken together) at one dump, with box means removed, o_s and o_{s/2} the rms of the odd
+parts at amplitudes s and s/2: f^2 = max(0, (4 o_{s/2}^2 - o_s^2)/3), the part of C that does
+not scale with s. No other floor (out-band, fixed bar, assumed) is used for G2.
+
+| Id | Criterion (G2, USR) | Threshold |
+|---|---|---|
+| U-A0, U-A1, U-A3 | as pre-registered (`usr/JOURNAL.md` entry 10 table), on every release run | 1e-5 in N; 1e-3; 10 percent |
+| U-A2' | D_n = abs(O_n/(s W_n R_n alpha_n L^-3/2) - 1) at N_f for every mode with k <= k_max/2 (68532 modes at 256^3), continuum mode equation (SCOPE 4 A2 wording), on the mirrored pair of each seed | max_n D_n < 0.02; reported: the same to k_max, single-run D_n, even/odd rms (U-A2n, must stay < 0.3) |
+| U-A4'(a) | even parts of H and of M with the floor removed, sqrt(e_s^2 - f^2)/sqrt(e_{s/2}^2 - f^2), at every dump where e_{s/2} > 3 f, from the pairs at s = 1 and 1/2 (seed A, 256^3) | 4.00 +- 0.05 |
+| U-A4'(b) | the floor itself: with two amplitudes the odd halving is 2 by construction of f, so it is no test; instead f/o_{s/2} is reported per dump, and the clause holds where o_{s/2} > 3 f | reported; (a) judged only there |
+| U-A4'(c) | records <abs H'/[H]> (con_signed) and <abs M/[M]> over the whole run, maxima, every release run | below 1e-9 and 1e-1 (U256: 2.9e-12, 2.5e-2; the M record holds a floor over [M], which is proportional to s, so it doubles at s = 1/2: 128^3 group 1 2.47e-2 -> 4.3e-2) [JUDGEMENT: bar set from the scouting values] |
+| U-A4'(d) | sign-flip control (noise_pi_sign = -1) against the proper run, odd part of H: ratio of the maxima over the entry (cN <= ln(N/8)); pointwise ratios reported | >= 1e3 (only if the control run exists; queued last in g2prod) |
+| U-R | resolution at fixed modes, N = 256 and 320, seed A: (i) max_n D_n (k <= k_max/2) of the odd parts falls from 256 to 320 by a factor 2.0-4.5; (ii) shell power at N_f of the s = +1 runs agrees between N within 1e-3 for k <= 32 dk and 1e-2 to 64 dk; (iii) even/odd rms of the second-order part at N_f agrees between N within 5 percent | as stated |
+| U-S | second seed (B) at 256^3: U-A2', U-A3 as above; one-point rms of R^NR at N_f within 5e-3 of the ensemble lattice value 0.89366 (`usr/results/usr_reference.json`) | as stated |
+| U-W | window sensitivity (L9): the criterion on the window parameters is the result of package `window` (run E-20261121-154733-0d1fbda): the odd-part shell power at N_f of s = 2.5, 10 and sigma = 0.5, 2 against s = 5, sigma = 1 shifts by less than the NR-vs-reference bound per shell and by at most 1e-3 to k_max/2 and 2e-2 to k_max (measured 1.9e-4 and 9.1e-3). No further window run is part of G2; the late constraint records are NOT required to be window-independent (W6 refuted) | met by the scan [VERIFIED by the window package and the lead's rerun, `stage/REVIEW-wave3.md` Part C] |
+
+"The USR case is reproduced" (G2) = U-A0, U-A1, U-A2', U-A3 on the release build at 256^3 for
+seeds A and B, U-A4'(a) at 256^3, U-R and U-W; U-A4'(c) and U-S as stated; U-A4'(d) if its run
+exists. Package `g2prod` (`../../g2prod/JOURNAL.md` entry 1) holds the predictions per run.
+
 Gates: G0 (brief 798) = specification, code-base assessment and compute estimate complete,
 then the group's decision. G1 = SR spectrum (A2), freezing (A3), constraints converge (A4,
 A5), with A1, A6, A7 recommended (`../../stage/G1/STATUS.md`). G2 = USR reproduced (A2, A3,
