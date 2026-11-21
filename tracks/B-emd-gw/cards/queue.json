@@ -1,0 +1,153 @@
+{
+ "_comment": "Queue of B-emd-gw read by cards/sequencer.py (decision 0025 item 5). Card entries are submitted in this order, at most two card jobs of the owner eligible at a time. Edit, commit; the sequencer re-reads this file every five minutes.",
+ "finish": [
+  "B-20261121-202304-dc3020e",
+  "B-20261121-202335-3e6a898",
+  "B-20261121-202946-ec4a156",
+  "B-20261121-202830-417af0c"
+ ],
+ "entries": [
+  {
+   "name": "pop_s028_gr",
+   "kind": "card",
+   "needs": [
+    {
+     "result_ok": "B-20261121-202946-ec4a156"
+    },
+    {
+     "json_below": [
+      "B-20261121-202946-ec4a156",
+      "gr_L8_n128/id.json",
+      "outer_last_change_of_psi",
+      1e-07
+     ]
+    },
+    {
+     "json_below": [
+      "B-20261121-202946-ec4a156",
+      "gr_L8_n128/id.json",
+      "max_hamiltonian_residual",
+      1e-09
+     ]
+    }
+   ],
+   "argv": [
+    "harness/bin/nrpic-run",
+    "submit",
+    "--kind",
+    "scouting",
+    "--gate",
+    "G2",
+    "--package",
+    "tracks/B-emd-gw/population",
+    "--purpose",
+    "population: full-GR run of the box, 128^3, L = 8, nc = 3.2, sigma1 = 0.028, seed 1, one particle per cell, to a = 143 (DESIGN.md section 8, scouting of the amplitude scan; predictions in population/JOURNAL.md 2026-11-21)",
+    "--launcher",
+    "chain",
+    "--exe",
+    "/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena",
+    "--gpu-hours",
+    "3",
+    "--",
+    "tracks/B-emd-gw/population/inputs/pop_gr_run.athinput",
+    "mesh/nx1=128",
+    "mesh/nx2=128",
+    "mesh/nx3=128",
+    "meshblock/nx1=64",
+    "meshblock/nx2=64",
+    "meshblock/nx3=64",
+    "mesh/x1max=8.0",
+    "mesh/x2max=8.0",
+    "mesh/x3max=8.0",
+    "particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-202946-ec4a156/gr_L8_n128/particles.nrp",
+    "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-202946-ec4a156/gr_L8_n128/fields.bin"
+   ]
+  },
+  {
+   "name": "pop_s014_ic",
+   "kind": "local",
+   "needs": [
+    {
+     "result_any": "B-20261121-202946-ec4a156"
+    }
+   ],
+   "argv": [
+    "harness/bin/nrpic-run",
+    "submit",
+    "--kind",
+    "scouting",
+    "--gate",
+    "G2",
+    "--package",
+    "tracks/B-emd-gw/population",
+    "--purpose",
+    "population: relativistic initial data at 128^3, L = 8, nc = 3.2, sigma1 = 0.014, seed 1 (input of the second full-GR population run)",
+    "--cores",
+    "2",
+    "--background",
+    "--",
+    "bash",
+    "tracks/B-emd-gw/population/scripts/run_gr_ic.sh",
+    "128",
+    "8",
+    "--nc 3.2 --sigma1 0.014 --seed 1 --ppc 1"
+   ]
+  },
+  {
+   "name": "pop_s014_gr",
+   "kind": "card",
+   "needs": [
+    {
+     "result_ok": "@pop_s014_ic"
+    },
+    {
+     "json_below": [
+      "@pop_s014_ic",
+      "gr_L8_n128/id.json",
+      "outer_last_change_of_psi",
+      1e-07
+     ]
+    },
+    {
+     "json_below": [
+      "@pop_s014_ic",
+      "gr_L8_n128/id.json",
+      "max_hamiltonian_residual",
+      1e-09
+     ]
+    }
+   ],
+   "argv": [
+    "harness/bin/nrpic-run",
+    "submit",
+    "--kind",
+    "scouting",
+    "--gate",
+    "G2",
+    "--package",
+    "tracks/B-emd-gw/population",
+    "--purpose",
+    "population: full-GR run of the box, 128^3, L = 8, nc = 3.2, sigma1 = 0.014, seed 1, one particle per cell, to a = 143 (DESIGN.md section 8, scouting of the amplitude scan; predictions in population/JOURNAL.md 2026-11-21)",
+    "--launcher",
+    "chain",
+    "--exe",
+    "/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena",
+    "--gpu-hours",
+    "3",
+    "--",
+    "tracks/B-emd-gw/population/inputs/pop_gr_run.athinput",
+    "mesh/nx1=128",
+    "mesh/nx2=128",
+    "mesh/nx3=128",
+    "meshblock/nx1=64",
+    "meshblock/nx2=64",
+    "meshblock/nx3=64",
+    "mesh/x1max=8.0",
+    "mesh/x2max=8.0",
+    "mesh/x3max=8.0",
+    "particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/@pop_s014_ic/gr_L8_n128/particles.nrp",
+    "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/@pop_s014_ic/gr_L8_n128/fields.bin"
+   ]
+  }
+ ]
+}

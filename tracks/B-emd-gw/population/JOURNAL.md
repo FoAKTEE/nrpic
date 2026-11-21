@@ -260,3 +260,11 @@ owner is free). Predictions [JUDGEMENT]:
   Phi_vir ~ 0.03 are of that order or smaller.
 - G4. The TT strain at the box modes is dominated by the near field until a ~ 100 (section
   6 at L = 8), and its rms grows at least as fast as a over 30 <= a <= 143.
+
+Queued behind it (same entry, written before any run): the second amplitude of the scan,
+sigma1 = 0.014 (initial data started by the sequencer when the first data are done; GR run
+when they have converged). Predictions: data converge faster than at 0.028 (max|psi_N| about
+0.022); the GR run behaves as G1-G2 with smaller violations; by the sigma1 a scaling its box
+at a = 143 resembles the 0.028 box at a = 71.5 and the Newtonian fidL8 box at a_N = 36
+(halo counts within the count noise); G4 with the strain smaller by roughly the square of the
+amplitude ratio at equal stage [JUDGEMENT].
