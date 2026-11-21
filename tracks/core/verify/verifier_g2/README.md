@@ -20,6 +20,7 @@ The report is `tracks/core/stage/G2/VERIFIER.md`; predictions and outcomes are i
 | `scripts/v4_flrw.py` | V4: homogeneous dust universe against own Einstein-de Sitter solution |
 | `scripts/v5_mpi.py` | V5b: particle module on 1, 2, 4 MPI ranks |
 | `scripts/v6_restart.py` | V6: straight against restarted runs on release core-v0.6 (fresh simulations) |
+| `scripts/v6b_compare.py` | V6b: aligned comparison of V6 (restart files after the parameter text, float64 words at the right offset; trajectories by time and tag) |
 | `scripts/v7a_point.py` | V7a: Newtonian point-mass forces (own snapshot reader `read_snap`) |
 | `scripts/v7b_pancake.py` | V7b: Fourier Poisson solver against the exact Zel'dovich slab moment |
 | `scripts/v8_coll.py` | V8: collisional relaxation (conservation, own Maxwell-Juttner KS and pressure) |
@@ -46,13 +47,16 @@ matplotlib). The simulations of V6 and V11 use
 
 ## Requests
 
-- To core (lead): correct three texts found wrong or ambiguous (VERIFIER.md, table):
+- To core (lead): correct five texts found wrong or ambiguous (VERIFIER.md section 3):
   CHECKLIST C3 "|Theta| 1.1e-11" is the history column Theta-norm2 (a volume integral of
   Theta^2), the pointwise max |Theta| is 2.3e-7; `interfaces/scalar_field.md` test 1 says
   omega_meas/omega_h - 1 = -1.2e-8 ... -1.34e-8, the data give -1.21e-9 ... -1.31e-9 (the
   RK4 phase error at dt = 1/512); `interfaces/newtonian_mode.md` 5.2 counts 846 tracers at
   r >= 0.5, there are 706; `interfaces/id_solver.md` T1 "error of psi - 1" is the relative
-  error of psi - 1. Also note in OPEN.md the restart result of V6 (VERIFIER.md).
+  error of psi - 1; LADDER row 2 "0.998670" is 0.9986707. Also carry in OPEN.md (and in
+  CLAUDE.md's "restarts are exact", through orch) the restart result of V6: exact for the
+  periodic set-up and the particle state, not for the Z4c mesh state with outflow faces
+  and refinement (runs core-20261121-213713-952a0c4, core-20261121-215228-d1f36f4).
 - To core (lead): register the pre-program runs that carry ladder rows 2 and 4
   (`runs/os/nocap_sc`, `runs/st/*`, untracked) or rerun them on a release, so the rows do
   not rest on unregistered directories.
