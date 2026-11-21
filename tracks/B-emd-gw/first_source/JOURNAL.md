@@ -1042,3 +1042,18 @@ i.e. |k|L/2pi >= 8 (kcut 8), and the per-shell ratios at shells 8, 12, 15; the b
 predictions of (iv) come from `null_prediction.py` on the 32^3 data, those of (v) from the
 32^3 prediction of B-20261119-143224-f0e6727. `scripts/p16_compare.py` takes kcut and shells;
 `scripts/run_cpu_r2.sh` takes THREADS and EXTRA (tlim).
+
+### P16' initial data and prediction (64^3), before the card run
+
+- Initial data, run B-20261121-075249-d019ace (`jit0p3_nw.log`): make_waves took ratios
+  (0, 0, 0) with delta = 0.01 (no substitute delta needed): max velocity 0.0, max |Ahat| 0.0,
+  2,097,152 particles, masses 0.9985-1.0014 of the mean, Hamiltonian residual 2.1e-11.
+- (iii) CONFIRMED: momentum-constraint residual of the tool 0.0 (jit0p3: 7.6e-4); Hamiltonian
+  2.1e-11 (jit0p3: 3.7e-11). The momentum residual of the jittered data came from the moving
+  particles of the x wave (with the jitter); without the wave there is none.
+- (iv) prediction, run B-20261121-080207-6edafb2 (`null_prediction.json`, `.png` looked at):
+  static noise-noise term at K1 1.23e-8 + 3.62e-8 i (jit0p3: 1.28e-8 + 3.71e-8 i), cross term
+  1e-12 (the x-mean of the noise only); rms_nn 1.73e-7 (jit0p3 1.75e-7). Predicted late modulus
+  |h_+(K1)| ~ 0.36 x 3.8e-8 ~ 1.4e-8, K2 ~ 5e-9 (figure).
+- Card run submitted: B-20261121-080222-2293fae, Slurm job 4778 (queued behind two jobs of
+  other owners at 00:02 PST), release core-v0.5 card executable, 0.15 card-hours requested.
