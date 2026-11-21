@@ -214,3 +214,18 @@ Outcomes:
   dm median (7.4e-3, 6.7e-3, 1.0e-2) and eta (8.1e-3, 8.0e-3, 8.3e-3) stay within it. Whether
   the ball-radius dependence shrinks with the mesh is the question for B-R1.25 (job 3).
 Open: C (mesh triple, fixed-N sequence), job 3 (B-N8, A-N64, B-R1.25, B-L32).
+
+## 2026-11-21 01:10 PST, entry 6: plan change for job 3 and predictions for its members (before job 3 is submitted)
+
+Particles cost 2e-7 card-seconds per particle and step (A-N8 against A), three times the
+model; job 3 is split into 3a (B-N8, A-N64) and 3b (B-R1.25, B-R1.35 new, B-L32 last); C is
+re-estimated at about 2.3 card-hours (DESIGN.md section 3a).
+Predictions [JUDGEMENT], written before 3a and 3b run:
+- R leg at B: across lam = 1, 1.25, 1.35 the spread of ddet and dtrap at B is at most half the
+  spread at A (A: 0.093 and 0.064 M), i.e. the ball-radius dependence shrinks with the mesh.
+  Refuted by a spread at B of more than 0.047 M (ddet) or 0.032 M (dtrap).
+- N leg at B: B and B-N8 differ in ddet and dtrap by less than |e(A) - e(B)| (0.125, 0.070 M) and
+  by less than A and A-N8 do (0.084, 0.045 M).
+- fixed-N mesh sequence (A-N64, B-N8, C; 4969736 particles each): |ddet| and |dtrap| fall
+  monotonically, order >= 1 between A-N64 and B-N8.
+- B-L32 equals B to 1e-5 M in ddet and dtrap (as A-L32 did).

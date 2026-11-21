@@ -60,7 +60,7 @@
   "prep": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestA8"
  },
  "B-N8": {
-  "job": "job3",
+  "job": "job3a",
   "deck": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/conv_ball/decks/nest32_L16.athinput",
   "args": [
    "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
@@ -70,7 +70,7 @@
   "prep": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestB8"
  },
  "A-N64": {
-  "job": "job3",
+  "job": "job3a",
   "deck": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/conv_ball/decks/nest16_L16.athinput",
   "args": [
    "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
@@ -80,7 +80,7 @@
   "prep": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestA64"
  },
  "B-R1.25": {
-  "job": "job3",
+  "job": "job3b",
   "deck": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/conv_ball/decks/nest32_L16.athinput",
   "args": [
    "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075401-1412a08/expball_tophat_HRb0p875_M1p95312_dc1p5_rm5p27041.tab",
@@ -89,8 +89,18 @@
   ],
   "prep": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075401-1412a08/nestB"
  },
+ "B-R1.35": {
+  "job": "job3b",
+  "deck": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/conv_ball/decks/nest32_L16.athinput",
+  "args": [
+   "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075404-ac51b7e/expball_tophat_HRb0p945_M2p46037_dc1p5_rm5p67857.tab",
+   "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075404-ac51b7e/nestB/expball_tophat_HRb0p945_M2p46037_dc1p5_rm5p67857_nestB_track.nrp",
+   "particles/traj_ntrack=1320"
+  ],
+  "prep": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075404-ac51b7e/nestB"
+ },
  "B-L32": {
-  "job": "job3",
+  "job": "job3b",
   "deck": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/conv_ball/decks/nest32_L32.athinput",
   "args": [
    "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",

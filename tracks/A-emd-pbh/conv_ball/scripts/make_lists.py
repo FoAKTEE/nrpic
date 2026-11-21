@@ -28,11 +28,16 @@ MEMBERS = {
     "A-R1.25": ("nest16_L16", "1.25", "nestA"),
     "A-R1.35": ("nest16_L16", "1.35", "nestA"),
     "B-R1.25": ("nest32_L16", "1.25", "nestB"),
+    "B-R1.35": ("nest32_L16", "1.35", "nestB"),
     "A-L32": ("nest16_L32", "3", "nestA"),
     "B-L32": ("nest32_L32", "3", "nestB"),
 }
+# job 3 of DESIGN.md split after job 1 (JOURNAL entry 6): particles cost about 2e-7 card-seconds per
+# particle and step (A-N8 against A), three times the model, so B-N8 and A-N64 fill one job; B-R1.35
+# is added and B-L32 goes last (A-L32 equalled A to 1e-7; the ball-radius leg is the open one)
 JOBS = {"job1": ["A", "B", "A-L32", "A-R1.25", "A-R1.35", "A-N8"],
-        "job3": ["B-N8", "A-N64", "B-R1.25", "B-L32"]}
+        "job3a": ["B-N8", "A-N64"],
+        "job3b": ["B-R1.25", "B-R1.35", "B-L32"]}
 
 
 def args_of(name):

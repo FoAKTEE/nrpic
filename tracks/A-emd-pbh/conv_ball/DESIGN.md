@@ -155,3 +155,15 @@ the member. The comparison level is the source's Oppenheimer-Snyder test: Delta 
 sequence (main.tex:1484-1485) [VERIFIED]. Its error is that of the final mass after all the
 dust has fallen in, against M_ADM; ours is the mass of a horizon that is still growing,
 against the exact slice, which is the harder measure [JUDGEMENT].
+
+### 3a. Change after job 1 (2026-11-21 01:10 PST; JOURNAL.md entries 5 and 6)
+
+Measured on job 1 (run A-20261121-075926-d10c2c1): particles cost about 2e-7 card-seconds per
+particle and step (A-N8 185 s against A 76 s for 543760 more particles over 1024 steps), three
+times the model's 6.2e-8; the mesh part matches the model within 1.2 (B 537 s against 446 s).
+New estimates: B-N8 about 39 min, A-N64 about 18 min, B-R1.25 and B-R1.35 about 9.5 min each,
+B-L32 about 11 min; C about 2 s per step, 2.3 card-hours, so its chain (cap three segments of
+50 min) is just long enough. Job 3 is split: job 3a = B-N8, A-N64 (lists/job3a.list); job 3b =
+B-R1.25, B-R1.35 (added: the ball-radius leg at A varied by more than the mesh step, entry 5),
+B-L32 last (A-L32 equalled A to 1e-7). Card total about 0.29 + 2.3 + 1.0 + 0.5 = 4.1 card-hours,
+inside the cap of 6.
