@@ -75,3 +75,51 @@ K3 (the result: Fig. 4 and its text).
 Cost: about 31000 three-body integrations (6 D x 5 orbits x 2 senses x 512) plus the K2
 arithmetic: 10-20 min on 4 cores [JUDGEMENT from newton3 P3: 2400 integrations in about 2 min
 on 4 cores].
+
+## 2026-11-21 21:35Z P. P1 from t = 112.4 M to its end (280 M): prediction
+
+Run F-20261119-150017-b45ec5f (chain DONE, finished by the lead in nrpic-run, commit eb0b2230).
+What I had seen of t > 112.4 before writing this (so these are NOT predictions): the last two
+rows of `hills.horizon_summary_0.txt` (t = 279.9: mass 0.2662, |S| = 0.0473), the last row of
+`hills.z4c.user.hst` (t = 280: H-norm2 = 0.297, C-norm2 0.54, M-norm2 0.22) and the last row of
+`hills.co_2.txt` (t = 280.0, heavy hole at x = -0.75, y = 4.34). Reading: the H norm (as
+p1/checks.py takes it, sqrt of H-norm2) is 0.545 at t = 280 against 6.0e-5 at t = 112 (p1
+analysis F-20261120-222808-0e709b6 / p1_checks.json): the constraints grew by four orders of
+magnitude in the second half. Everything below was written before any other look.
+
+Readers: package p1's `scripts/run_all.sh` (unchanged, registered through this package) for the
+health items, horizons, trajectories, segments, energies, ledger; my own `scripts/p1_280.py`
+for the remnant, recoil and constraint items.
+
+P1-a remnant orbit. At t = 112.38 the remnant (0.268) is 11.82 M from M approaching at 0.208
+(p1_checks.json at_end). Prediction [JUDGEMENT]: a single closest approach between t = 113 and
+135 at a coordinate distance of 7-11.8 M, then recession; at t = 280 more than 20 M from M and
+receding; no common horizon of the remnant with M by t = 280 (finders 0/1 never report a mass
+above 0.5; finder 2 stays at 1.00-1.02). Refuted by a common horizon, a second pericentre
+before 280, or a turn inside 7 M.
+P1-b recoil. Equal members (horizon masses 0.1370 and 0.1390 just before the merger) and no
+spin: the physical kick is zero by symmetry up to the tide of M. Prediction: the remnant's
+coordinate velocity, fitted over t = 52-60, equals the extrapolation of the members' mean
+velocity fitted over t = 36-46, within 0.01 (units of c) in magnitude. Refuted if larger
+(that would be a gauge or tracker artefact of the merger, not a kick).
+P1-c remnant horizon. Mass 0.2684-0.2700 from t = 50 to 280 apart from finder scatter, drift
+below 0.5 percent over 60-280 M [JUDGEMENT; the remnant has about twice the members' cells per
+radius]; dimensionless spin |S|/m^2 of 0.60-0.72, the equal-mass non-spinning remnant value
+0.686 [BACKGROUND, NR literature, not looked up here] within the finder's accuracy. (The last
+row I saw gives 0.0473/0.2662^2 = 0.667, so the end value is not a prediction; the value at
+t = 60-100 is.) Refuted if the spin at t = 60-100 is outside 0.60-0.72.
+P1-d heavy hole. Mass growth from the first good search (t = 4) to t = 280 below 1 percent;
+spin |S|/M^2 below 0.02 (it starts without spin; the remnant's passage cannot spin it up at
+the 1e-2 level).
+P1-e constraint history. The rise of the H norm (above ten times its t = 112 value) starts at
+t = 170-260 [JUDGEMENT: the 1+log lapse pulse of the start reaches the outer face at 256 M after
+about 181 M (speed sqrt(2)), light after 256 M; the faces are where a norm over the whole
+volume, 512^3, is dominated]. Refuted if the rise starts before 150 (then the remnant's
+encounter with M at 113-135 M, or the merger, would be the place) or after 260.
+P1-f radiation at the spheres to t = 280. Finite; ordering E(40) > E(48) > E(70) > E(90)
+kept (the dissipation of the coarse wave zone, which already orders the t = 112 values); E(90)
+at t = 280 at least ten times its t = 112 value 7.1e-6 M, because the merger burst (t = 48.8
+at 19.8 M from the origin) reaches 90 M after t of about 120 [arithmetic]. Refuted otherwise.
+P1-g health (P1 prediction item 1 of the lead, JOURNAL.md l. 306-308): trackers to 280 M
+without a gap above one step and finite; tree within 1016-1870 MeshBlocks seen so far; card
+time below the lead's predicted 17-20 card-hours (12.58 by sacct already recorded by the lead).
