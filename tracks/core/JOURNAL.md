@@ -862,3 +862,18 @@ the prediction ("the kernel takes it from the file name given to execve") is wha
 second run tests, with `#!/bin/bash` (the kernel executes the linked script itself).
 Prediction for the second run: the same statuses and counts, and the name nrc-<hash>
 in every comm.log line. For AthenaK, which is an ELF binary, there is no interpreter.
+
+### Outcome of the chain test, second run: HELD
+
+Run core-20261121-080619-6a0793f (third run core-20261121-080635-3405fca: the same with
+the legend of the figure inside it; figure `fig_submit_chain.png` looked at): every
+status sequence and sbatch count as predicted (A: Q Q Q D, 4; B: Q Q F "killed from
+outside 3 times in a row (exit 137)", 3; C: five Q then D, 6; D: F "exit status 1", 1;
+E: F "exit status 137", 1; G: Q D, 2, under the default name although its config had
+no PROC_NAME); H refused with no sbatch call. Every fake process recorded its own name
+as nrc-<hash> (six different names for six chains), and `chain/athena` and
+`chain/nrc-<hash>` are one file (link count 2) [VERIFIED: `comm.log`, `ls -l`]. So the
+kernel names a process started through the hard link after the link, as predicted.
+Not tested: a real Slurm job and a real AthenaK (the change touches neither the sbatch
+line nor what AthenaK does); a running chain keeps the script it was started with
+(sbatch spools it), so chains of other owners change only after they sync with main.
