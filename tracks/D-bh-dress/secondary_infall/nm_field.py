@@ -44,6 +44,9 @@ def load(rundir):
     snaps = sorted(glob.glob(os.path.join(rundir, "*.part.*.bin")))
     t, cyc, x, u, m, tag = nw.read_snapshot(snaps[-1])
     t0, _, x0, u0, m0, tag0 = nw.read_snapshot(snaps[0])
+    # wave 3: positions relative to the clump (nm_run.py --shift_cells moves the whole
+    # configuration; wave-2 field runs have shift 0, so their numbers are unchanged)
+    x = x - np.asarray(p.get("shift", [0.0, 0.0, 0.0]))[None, :]
     k = (tag >= p["tag_tracer"][0]) & (tag < p["tag_tracer"][1])
     order = np.argsort(tag[k])
     xt, ut = x[k][order], u[k][order]
@@ -126,7 +129,8 @@ def main():
                 if k.sum() >= 5:
                     rows_k.append((np.sqrt(lo * hi), np.median(f[k]), np.percentile(f[k], 16),
                                    np.percentile(f[k], 84), k.sum()))
-            kfile = os.path.join(a.out, "kernel_nx%d.txt" % d["meta"]["nx"])
+            cc = any(abs(c_) > 0 for c_ in p.get("shift", [0.0, 0.0, 0.0]))
+            kfile = os.path.join(a.out, "kernel_nx%d%s.txt" % (d["meta"]["nx"], "_cc" if cc else ""))
             np.savetxt(kfile, np.array(rows_k), header="q=r/dx  median(g_r r^2/M)  p16  p84  n"
                        "   (clump-only one-step run %s)" % d["dir"])
             out["kernel_file"] = kfile
