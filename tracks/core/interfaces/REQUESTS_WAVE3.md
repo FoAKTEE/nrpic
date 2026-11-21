@@ -63,3 +63,11 @@ or measured in the run named, [JUDGEMENT], [TO VERIFY].
 | F `moving-clump-initial-data` | DEFERRED to core/clump-table | equilibrium clumps with momentum (Gaussian clumps with momentum are in core-v0.4) |
 | F `hrna-pair-force-optional` | DEFERRED | accepted for a later wave (`REQUESTS_ADF.md` F2), no branch |
 | kb `paper-code-links` | DEFERRED | the 25 links need a test or run each; no branch; not part of these releases |
+
+## 4. Requests that arrived during this session (2026-11-21 08:08Z to 08:12Z)
+
+| # | From, slug | Ruling | Answer |
+|---|---|---|---|
+| W21 | A `szekeres-dumps-kij` item 1 | EXISTS (upstream group, double precision since core-v0.4) | `<outputN> file_type = bin`, `variable = adm`, `double_precision = true`: `adm_gxx` ... `adm_gzz`, `adm_Kxx` ... `adm_Kzz`, `adm_psi4` (`coordinates/adm.cpp` line 21; with Z4c the gauge is not in this group: lapse and shift are in `variable = z4c`) [VERIFIED at the source]. K_ij of the `adm` group in `nrpic_cosmo` against a known solution: not tested by core [TO VERIFY by A's eigenvalue test]. Item 3 (a first test of `id_solve` with `nrpic_cosmo id = file` on A's Szekeres data, run A-20261120-223422-8cc4241): offered to core/id-solver-2 |
+| W22 | C `collisions-several-ranks` | DEFERRED, accepted, no release date | collisions stop on more than one rank since core-v0.5. Port when a package touches `nrpic_collisions.cpp` next; C's acceptance test T10 on 1 and 4 ranks (byte-identical final snapshots) as the criterion; the collision cells lie inside one MeshBlock on C's meshes, as C notes |
+| W23 | C `heat-conduction-tested` | DONE (text, on core/nrpic) | `collisions.md` (section of what is not tested) and `scratch/core/exe/core_collisions-2/READY` now say that T6 to T8 are tested by Track C (`tracks/C-sidm/heat/README.md`, run C-20261121-075535-b35b8fb); the snapshot row of `docs/FORMATS.md` names the proper-time block (W7). Both reach `coord/INTERFACES/` and main with the next release |
