@@ -272,7 +272,7 @@ unpredicted count, not as a test. Reading the flagged sources (grep, read-only):
 Corrected rates under my definition: lenient (A') 688 - 4 = 684/710 = 96.3 %; counting the
 nine letters as failures too, 675/710 = 95.07 %; strict (A) 662 - 4 = 658/710 = 92.7 %.
 
-## Entry 10 (2026-11-21 08:07 UTC): golden retrieval scored; outcomes of R2 and R3
+## Entry 10 (2026-11-21 08:06 UTC): golden retrieval scored; outcomes of R2 and R3
 
 Golden search run kb-20261121-074940-08426cc (96 calls, all rc=0, 07:49:41-08:05:44 UTC),
 scored by kb-20261121-080557-06d44ba (37 answer ranges of 32 questions, all mapped; my map and
