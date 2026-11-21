@@ -118,7 +118,7 @@ with 2514 MeshBlocks (g2mesh's model and card test: 2514), `p1b_R12.athinput` wi
 So every reference keeps the separation within 4.93-4.97 M to t = 20 M, while P1 (m/8) was at
 4.286 at 20 M; the physical inspiral time is about 2600-3400 M.
 
-## 2026-11-21 BC-3, outcome of the first card segments (intermediate; analysis run F-20261121-153844-fbc75ac)
+## 2026-11-21 BC-3, outcome of the first card segments (intermediate; analysis run F-20261121-154046-c99ccb9)
 
 Runs: R8 alone F-20261121-130358-6cf186a (one segment, Slurm 4797, t = 0-20.94 M, complete as
 planned; its chain resubmitted itself past MAX_SEGMENTS = 1 as job 4808, which I cancelled with
@@ -126,7 +126,8 @@ planned; its chain resubmitted itself past MAX_SEGMENTS = 1 as job 4808, which I
 F-20261121-130351-04074e1 (segment 1 of 3, Slurm 4796, t = 0-7.74 M; segment 2 queued as Slurm
 4807); R12 F-20261121-153707-1eaa5d4 submitted 07:37 PST (Slurm 4809, queued). Analysis
 `scripts/analyze.py` (first pass F-20261121-153759-af77173, second pass with the deviations from
-the references F-20261121-153844-fbc75ac); figures `fig_orbit_conv_intermediate.png`,
+the references F-20261121-153844-fbc75ac, third pass with the comparison to P1
+F-20261121-154046-c99ccb9, whose `analysis.json` is copied to `results/analysis_intermediate.json`); figures `fig_orbit_conv_intermediate.png`,
 `fig_horizons_H_intermediate.png` read. All numbers below are from these runs [VERIFIED].
 
 Separation s(t) (coordinate distance of the trackers), M:
@@ -147,7 +148,7 @@ Separation s(t) (coordinate distance of the trackers), M:
   within +-0.006 M over 0-7.74 M.
 - The m/8 binary alone decays like P1 from t of about 3 M on, with |Delta s| growing as t^2
   (figure, lower left): 0.066 M at 7.5 M, 0.305 at 15, 0.577 at 20; minimum 4.3125 at 20.94 M.
-  It decays 0.67-0.87 times as fast as P1 (Delta s ratio 0.67 at 7.5 M, 0.84 at 15, 0.87 at
+  It decays 0.67-0.87 times as fast as P1 (Delta s ratio 0.67 at 7.5 M, 0.81 at 15, 0.87 at
   20). Time stretch against P1 (s_8(t) ~ s_P1(lambda t)): lambda = 0.914 (rms 0.014 M over
   0.5-20.9 M), so the m/8 binary alone would merge at about 48.8/0.914 = 53 M if the stretch
   held to the merger [JUDGEMENT].
@@ -174,8 +175,8 @@ Separation s(t) (coordinate distance of the trackers), M:
   3963 cycles, 7.74 M in 0.835 card-hours, peak 58.6 GB at 2400 slots, tree 1744 -> 1618.
 
 Predictions of BC-1:
-1. R8 alone within 0.10 M of P1 to the end of its window: MET (largest difference 0.0898 M at
-   20.94 M; 0.032 at 7.5, 0.070 at 15). Its sub-ranges: s(10) = 4.8257 in 4.73-4.83 MET (at the
+1. R8 alone within 0.10 M of P1 to the end of its window: MET (largest difference 0.093 M at
+   20.94 M; 0.032 at 7.5, 0.070 at 15, 0.079 at 17, 0.090 at 20). Its sub-ranges: s(10) = 4.8257 in 4.73-4.83 MET (at the
    edge); s(15) = 4.6465 outside 4.53-4.63, FAILED by 0.017 M. The isolated binary decays more
    slowly than P1 by 13-33 percent: the third body (or the mesh and executable differences of
    R8 against P1: +-128 against +-256, core-v0.5 against core-v0.3) adds to the decay, but most of
@@ -222,7 +223,7 @@ Predictions of BC-1:
 5. Cost from the measured R16n rate (2302 MeshBlock-cycles/s, elapsed/computing 1.002) and the
    g2mesh model trees of P1's set-up at R16n along the Newtonian three-body tracks (mean 2428 to
    150 M, 2470 to 200 M, 2527 to 280 M; run F-20261120-222426-86392c3), 512 cycles per M
-   [arithmetic, analysis run F-20261121-153844-fbc75ac]: 22.6 card-hours to 150 M, 30.6 to 200 M,
+   [arithmetic, analysis runs F-20261121-153844-fbc75ac and F-20261121-154046-c99ccb9]: 22.6 card-hours to 150 M, 30.6 to 200 M,
    43.8 to 280 M, i.e. 27, 37 and 53 segments of 50 minutes. P1's own trees at m/8 were 10 percent
    below the Newtonian model (g2mesh G2M-1 item 3), so these are upper estimates. m/12 for
    comparison: 15.6 / 21.2 / 30.4 card-hours (if R12 shows it survives).
