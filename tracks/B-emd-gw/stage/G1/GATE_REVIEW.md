@@ -50,3 +50,21 @@ remainder step below half the median step dropped).
 | N1 | F_raw = E/(M (2 alpha)^(7/2)) = 0.062059 (N = 32), 0.077205 (N = 64) | off by more than 1 per cent |
 | N2 | F_raw and tau_x = t_x/t_turn the same for the four alphas at each N to <= 1e-10 (track: 7e-15, 3e-14; tau_x 2.524849, 2.506970) | spread above 1e-8 |
 | N3 | t_x of the benchmark at N = 32, 64, 128: 24.0659, 23.8955, 23.8604; order 2.28 +- 0.05; Richardson 23.851 against the ODE 23.8524 (`newton_tests/README.md` N1) | t_x off by more than 1e-4 relative or order outside the range |
+
+### Check A (added after run B-20261121-212222-3260317, before its own run)
+
+Run B-20261121-212222-3260317 gave a spectral-Weyl against TT difference of 1.29e-10 to
+1.30e-10 at t_end at every N (F4 as written, <= 1e-10, failed; not refuted at 1e-9), and
+2.1e-13 at t = 0. It does not change with N, so it is not truncation. Hypothesis: it is of
+third order in the amplitude, the coupling of the second-order non-TT field (which grows as
+t^2 to 1.44e-4 of the wave, `waves/README.md` item 3) to the wave, which the TT projection
+of h and the nonlinear Weyl tensor treat differently. Test on the amplitude scan of test F at
+N = 16 (run B-20261119-153637-02c822f: `flat_s10` amplitude x10, `flat_s0p1` x1/10) and the
+x1 run above, every dump:
+
+| # | Prediction | Refuted if |
+|---|---|---|
+| A1 | the difference at t_end scales as A^2: 1.3e-8 at x10 (ratio to x1 within 100 +- 10) | ratio below 50 or above 200 |
+| A2 | at x1/10 it is <= 1e-11 (A^2 gives 1.3e-12; rounding may hold it higher) | above 3e-11 |
+| A3 | at x10 it grows with time roughly as t^2 (Delta/t^2 over the second half of the run constant within a factor 2) | a factor above 3 |
+| A4 | the forward-combination amplitude and phase errors at N = 16 are the same for the three amplitudes to <= 6e-4 of themselves (track: `waves/README.md` item 4) | above 1e-3 |
