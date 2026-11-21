@@ -1,4 +1,4 @@
-# Slow-roll ladder toward gate G1 (E-stoch-inf, helper package of waves 2 and 2b)
+# Slow-roll ladder toward gate G1 (E-stoch-inf, helper package of waves 2, 2b and 3)
 
 The slow-roll (SR, quadratic) case of arXiv:2512.14649 run in this repository's AthenaK with
 core's published executables of branch `core/scalar-2` (a58e95b,
@@ -6,7 +6,7 @@ core's published executables of branch `core/scalar-2` (a58e95b,
 restated in `JOURNAL.md` entry 1 before any run; A6 in entry 8): power spectrum against the
 linear (Mukhanov-Sasaki) and slow-roll results, freezing of super-horizon modes by the
 criterion of SPEC 7.3, convergence of the constraints, temporal order. Predictions and
-outcomes: `JOURNAL.md` (entries 1-11).
+outcomes: `JOURNAL.md` (entries 1-11; wave 3: entries 12 and later).
 
 ## Results (each with its run; details and the failed predictions in `JOURNAL.md`)
 
@@ -16,7 +16,8 @@ outcomes: `JOURNAL.md` (entries 1-11).
 | A2 per mode, |n| <= k_max/2 | PASS | 8.8e-5 (L32) to 1.7e-6 (L256); paper set-up Q64 9.7e-5, Q128 9.9e-5, P256 1.21e-4 (threshold 0.02) | same |
 | A3 freezing | PASS | 1051 modes per rung: power ratio within 4.6e-6, drift 1.4e-4 per e-fold = full MS within 1.8e-6 (threshold 2.5e-3; FLRW lattice -0.05) | same |
 | Spectrum against linear and slow-roll results | PASS | shell ratios within 1.9e-4; Delta_lin/slow-roll formula 1.0104-1.0109 for |n| <= 7 | same |
-| A4 constraints of second order during the entry | FAIL in the paper's set-up (k_max = N/4) at N = 32-256; PASS in the k_max/dk = 8 set-up from N = 128 | odd (first-order) part of H up to 385-870 times the even part from N = ln(N/8); magnitude <= 5.1e-11 (within 10 x P1's 1e-10); halving 2.00 (odd), 4.00 (even) | same; floor analysis E-20261119-142713-32c883a |
+| A4 constraints of second order during the entry | FAIL in the paper's set-up (k_max = N/4) at N = 32-256; PASS in the k_max/dk = 8 set-up from N = 128 | odd (first-order) part of H up to 385-870 times the even part from N = ln(N/8); magnitude <= 5.1e-11 (within 10 x P1's 1e-10); halving 2.00 (odd), 4.00 (even). SUPERSEDED in part by the next row: "385" (P256) and the halving factors 16.0, 9.0 at the last dump came from dumps 0.004-0.016 apart in time | same; floor analysis E-20261119-142713-32c883a |
+| A4, time-matched pairs (wave 3, item a) | verdicts unchanged (FAIL in the paper's set-up, magnitude PASS) | pairs only at equal recorded times (no interpolation): odd/even of H at most 745 (N = 32), 655 (64), 869 (128), 25 (256, last matched dump N = 3.93; the P256 peak at N = 4.4 has no time-matched partner); halving 3.99-4.00 (even) and 2.00 (odd) after the entry, no spike; record maxima from every cycle to t = 4.6: H 4.7e-11-5.1e-11, M 3.3e-4-4.0e-4 | E-20261120-223038-684821a, E-20261121-025932-7a21f34 (`results/final2/`, `fig/final2/`) |
 | A5 convergence before the floor | PASS with the floor made operational (JOURNAL entry 9) | odd part order 4.2-5.8 (H), 5.6-5.9 (M) on 32 -> 64 -> 128; floor independent of the amplitude, growing as N^2.5 | same |
 | A6 temporal order (N = 32, Courant 0.25, 0.125, 0.0625) | PASS | differences of R^NR and of the perturbations of phi, chi, K and of <chi> fall at order 3.93-4.08; time error of R^NR at Courant 0.25 below 3e-4; the top-shell deviation of A2 and the late-entry first-order constraint part are spatial | runs E-20261119-142317-c851f27, analysis E-20261119-145230-ff0dff2 |
 | A7 restart (NOISE_SPEC A12) | PASS | U4 bit-identical to U2 on processors and on a card (whole dump files equal) | E-20261119-141654-c2a10d1 |
@@ -43,6 +44,8 @@ Card time used by the package: 1.42 card-hours (jobs A, B, C) of the two allowed
 | `scripts/selftest.py`, `extraction_check.py`, `modefile_check.py` | reader against core's, R^NR at t = 0; the factor of the anisotropic term (SPEC 9 E6); mode files against Track E's MS reference |
 | `scripts/run_list_cpu.sh` | runs a list on the processors inside a registered run |
 | `results/final/`, `fig/final/` | JSON and figures of the final analysis of all rungs (E-20261115-194633-9e04ed8) |
+| `results/final2/`, `fig/final2/` | wave 3, item (a): time-matched pairs P256/P256m, Q128p/m, Q64p/m, Q64ph/mh, `summary.json` (with `max_record_con`), `compare.json` against `results/final/`; `fig_a4_paper.png` (time-matched halving and control panels), `fig_halving_fix.png` (old against new) |
+| `scripts/compare_final2.py` | item (a): pairs and summary of `results/final2/` against `results/final/`, sequential against memory-map reader |
 | `results/floor/`, `fig/floor/` | floor analysis (E-20261119-142713-32c883a) |
 | `results/a6/`, `fig/a6/` | A6 analysis |
 | `results/a12/` | A12 validations (E-20261119-141654-c2a10d1) |
