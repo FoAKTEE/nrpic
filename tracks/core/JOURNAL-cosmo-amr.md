@@ -1545,3 +1545,29 @@ to the cycle between 901d8b3 and 3c44b74 (T12).
 
 **T14b submitted**: run core-20261121-032510-c83f904, Slurm job 4760 (0.1 card-hours
 asked, six minutes of wall time), behind jobs of tracks C and E and one of core (4758).
+
+## 2026-11-21 03:33  prediction of T10g (the scouting run again with the corrected deposit); T14b joins its job
+
+The scouting run of this package, T10b, was made with the first-order form of the linear
+cloud. **T10g**: the same deck (`t10g_scout.athinput`, generated from
+`problems/cosmo_amr/peak_amr.athinput`: S1 data, lapse ladder, fine shape, light-speed
+step, guard, `alpha_exc = 0.3`, limit 2000 MeshBlocks, tlim 16) with the card executable
+of source 1548d49, the four finder surfaces of T10c searching from t = 10.5 every 16
+cycles, and no restart files. The finder does not act on the evolution, so T10g against
+T10b is the change of the deposit (and the run-to-run differences of a card).
+Prediction [JUDGEMENT]: (1) no one-cycle jump of the largest relative constraint near
+t = 2.95; at t = 5 it is below T10b's 0.26; (2) the mesh: level 1 at t = 2.20 as T10b
+(the lapse of the same data), levels 2, 3, 4 within 0.3 of T10b's 7.58, 8.73, 9.65;
+fewer than 2000 MeshBlocks; (3) the end: the guard stops the run between t = 11 and
+12.5 at a lapse minimum on the y axis; I do not expect the corrected deposit to carry
+the run further (the gauge and the data are the same, and the centre violates the
+constraints at order one from t = 9 in the static run S1 too, which has no fine shape);
+(4) the finders at (0, -0.59, 0) and (0, +0.59, 0) find surfaces before the end, with an
+area mass between 0.3 and 1.5 when they first appear (T10c: 0.63 at t = 11.26); the
+central ones find nothing; (5) negative leaf-cell E shallower than T10b's 5 per cent of
+E_max: below 3 per cent. Refuted for (1) by a one-cycle jump; for (3) by an end before
+t = 11 or a run beyond 12.5; for (4) by no surface at either point.
+Card: `squeue` holds two jobs of core (4758 of another package and my 4760 with T14b),
+so no third: job 4760 is withdrawn (`scancel 4760`, run core-20261121-032510-c83f904
+closed as stopped before it started) and T14b's seven cases run in one job with T10g
+(`t14b_t10g.list`, 0.2 card-hours asked). Not waited for.

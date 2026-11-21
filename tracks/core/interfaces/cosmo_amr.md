@@ -1,7 +1,9 @@
 # Interface: refined meshes and horizons in periodic cosmology runs (work package cosmo-amr)
 
 Owner core, branch `core/cosmo-amr`, wave 3a (2026-11-19); card check and scouting run
-closed in wave 3 (2026-11-20, sections 4.5 and 7). For Track A's threshold line in
+closed in wave 3 (2026-11-20, sections 4.5 and 7); **the fine-shape deposit of the linear
+cloud was found wrong and corrected on 2026-11-21 (source 1548d49; sections 2.2, 4.6):
+the executables published on 2026-11-19 (source 3c44b74) are replaced.** For Track A's threshold line in
 the periodic box (decisions 0013, 0016 item 5). Triage of the track's requests:
 `REQUESTS_A2.md` (same directory). Predictions and outcomes of every test:
 `tracks/core/JOURNAL-cosmo-amr.md`. Test scripts: `tracks/core/analysis/cosmo_amr/`
@@ -23,7 +25,7 @@ release did not have (adaptive refinement with `nrpic_cosmo` crashed).
 | Capability | Options | Source |
 |---|---|---|
 | Adaptive refinement in `nrpic_cosmo` (static refinement worked before) | `<amr_criterion0> method = user`, `<z4c_amr>`, `<particles_amr>` | `particles/nrpic_refine.cpp` |
-| Coarse clouds sampled on fine leaf cells to first order | `<particles> deposit_fine_shape` | `particles/nrpic.cpp` (`NrpicDepositSources`) |
+| Coarse clouds sampled on fine leaf cells with their shape (linear cloud: leaf-cell integrals of the assignment function; quadratic and cubic: first order) | `<particles> deposit_fine_shape` | `particles/nrpic.cpp` (`NrpicDepositSources`, `NrpicTentCdf`) |
 | Apparent-horizon finder in a periodic box; status of every search; files in the run directory | `<fastflow> diagnostics` | `z4c/fastflow.cpp` |
 | Compact-object tracker in a periodic box; refinement around it across faces; tracker that stays in a uniform lapse | `<z4c> tracker_walk_tol` | `z4c/compact_object_tracker.cpp`, `z4c/z4c_amr.cpp` |
 | Stop with a diagnostic when a field is not finite | `<z4c_guard>` | `particles/nrpic_guard.cpp` |
@@ -93,15 +95,57 @@ executable) starts the counters at zero, as upstream AthenaK does. Test T11.
 
 `<particles> deposit_fine_shape = true` (default false): where a cloud lives on a level
 coarser than the leaf cells it covers (level cap, `deposit_adaptive`), the weight of each
-lattice cell of the cloud is distributed over its leaf cells as w + (dw/dx)(x - x_c), with
-the analytic slope of the assignment function (cloud in cell, quadratic, cubic), instead
-of uniformly. Each lattice cell keeps its weight, so the conservation identity is
-unchanged (T1); the slopes of a regular lattice cancel, so a uniform distribution stays
-uniform (T2); a smooth density is second-order accurate on the leaf cells. No limiter:
-the weight of a single cloud at its edge can be negative, so in a sparse distribution
-(about one particle per coarse cell) leaf cells can carry negative E (T1: down to -0.31
-of E_max for random particles). Used only where the leaf cells are at most 32 times finer
-than the cloud's cells; beyond that the released uniform spreading is used.
+lattice cell of the cloud is distributed over its leaf cells with the shape of the
+assignment function instead of uniformly.
+
+- Quadratic and cubic clouds (`tsc`, `pcs`): to first order about the centre of the
+  lattice cell, w + (dw/dx)(x - x_c), with the analytic slope of the assignment function.
+- Linear cloud (`cic`), **changed on 2026-11-21 (source 1548d49)**: a leaf cell gets the
+  integral of the assignment function over it (the tent of half-width one lattice cell
+  centred on the particle), plus the same amount in every leaf cell of the lattice cell
+  such that they sum to the weight of the lattice cell. The tent reaches half a cell into
+  the lattice cells beside the two of the cloud, so with the option the linear cloud
+  visits 4^3 lattice cells instead of 2^3; the outer ones carry no weight, and their leaf
+  cells get shares that sum to zero. One consequence: a cloud in a coarse MeshBlock next
+  to a finer one now changes leaf cells of the fine block even when every cloud sits on
+  the finest level it can (T1b).
+
+Properties, all three shapes [VERIFIED in the tests named, section 4.6]: every lattice
+cell keeps its weight, so the conservation identity is unchanged (T1, T1b); a regular
+lattice stays uniform (T2, T2b); the leaf cells follow the particle continuously (T17b);
+a smooth density is second-order accurate on the leaf cells (T19c; T3 for the quadratic
+cloud in an evolved wave). No limiter: the weight of a single cloud can be negative at
+its edge (linear cloud, leaf cells half the lattice cell: at most 1/16 of the particle
+per direction), so in a sparse distribution leaf cells can carry negative E (T1b, 4096
+random particles: down to -0.10 of E_max with the linear cloud, -0.07 quadratic, -0.04
+cubic). Used only where the leaf cells are at most 32 times finer than the cloud's
+cells; beyond that the released uniform spreading is used.
+
+**The first form of the option for the linear cloud was wrong** (source 3c44b74, the
+executables published on 2026-11-19): it used the first-order form with the slopes
+(+1, -1) of the tent. The tent has its kink at the particle, so the slope of a lattice
+cell flips when the particle passes the centre of that cell, and a quarter of the
+particle changes its leaf cell at once (T17: the shares of the two halves go from
+0.625, 0.375 to 0.375, 0.625). On a regular lattice the flips cancel, which is all that
+T2, T5 and the plane wave T3 (quadratic cloud) exercised; on any other lattice the leaf
+cells are wrong at first order and do not converge (T19c: rms departure from a smooth
+density 0.016 and 0.013 at 8 and 16 root cells per wavelength, against 0.0061 and 0.0016
+with the corrected form). It made the one-cycle jump of the Hamiltonian constraint in
+the scouting run (T10e, T10f; section 7). Affected results, linear cloud with
+`deposit_fine_shape` on particles that are not a regular lattice at rest: the `ladder`,
+`chi`, `ppc` and `lohner` cases of T9 and the `ladder` case of T14 (repeated: T9b, T14b),
+and the scouting run T10b (section 7; not repeated).
+
+When it helps [VERIFIED in the tests named]: on sources without the binomial filter it
+removes the staircase of the uniform spreading (T3b: Hamiltonian constraint on the patch
+20 times smaller; T19c: 13 times closer to a smooth density at 16 cells per wavelength).
+On data built with the source filter at the root cell size, which the track's present
+data are, it does not help at a regrid: largest relative constraint after the regrid
+0.0125 with it against 0.0072 with the uniform spreading (T9b), and T10F_PLACEHOLDER
+Independent of the leaf cells: one particle per root cell on a lattice stretched by 30
+per cent carries a modulation of 7 per cent rms at the cell scale through the linear
+cloud itself (2 sinc^2(pi h/d) for particle spacing d; 3 per cent with the quadratic
+cloud; T19), which only more particles per cell or the source filter remove.
 
 ### 2.3 Horizon finder and tracker in a periodic box
 
@@ -197,7 +241,7 @@ New files: `particles/nrpic_cosmo_ext.hpp`, `particles/nrpic_refine.cpp`,
 | `main.cpp` | include; `return` | exit status of the guard |
 | `outputs/restart.cpp` | include; one line after `NrpicWriteRestart` | `<file>.rst.amr` |
 | `pgen/nrpic/nrpic_cosmo.cpp` | include; 4 lines at the top of `NrpicCosmology`; `shift_x1..3` (13 lines) and the shift in the initial data (1 line) | refinement function, counters on restart, uniform shift |
-| `particles/nrpic.cpp` | include; `NrpicInit` (5 lines); `NrpicDepositSources`: slopes `gs` of the three clouds and the fine-shape branch (about 50 lines inside the kd > 0 branch) | fine-shape deposit, region options |
+| `particles/nrpic.cpp` | include; `NrpicInit` (5 lines); new function `NrpicTentCdf` before `NrpicDepositSources`; in `NrpicDepositSources`: `fine_lin`, `nx`, `ns` after `fine_shape` (5 lines), slopes `gs` of the three clouds and `sdl`, the loop over the lattice cells (`ns` instead of `nb`, `own`; one `continue` in the kd <= 0 branch and one before the uniform spreading), the fine-shape branch (about 70 lines inside the kd > 0 branch) | fine-shape deposit, region options |
 | `particles/nrpic_io.cpp` | `NrpicStartup` (3 lines), `NrpicDiagnostics` (3 lines) | region records |
 | `particles/particles.hpp` | `NrpicOptions::deposit_fine`; struct `NrpicRegionOptions`; 4 members of `Particles` | |
 | `z4c/z4c.cpp`, `z4c/z4c.hpp` | include; constructor (6 lines); 2 members, 1 method | `dt_lightspeed`, guard options |
@@ -212,7 +256,9 @@ Processor runs unless stated; NEW = the processor executable of this branch, REL
 core-v0.3 (`.work/build_cpu_v03/src/athena`). Run ids of the form
 `core-20261119-HHMMSS-<commit7>`. Every test has its figure (looked at) and its
 prediction in the journal, written before it ran; failed predictions are listed in
-section 5.
+section 5. The rows of this table are runs with the sources 901d8b3 and 3c44b74; the tests
+of 2026-11-21, among them the repeats with the corrected fine shape of the linear cloud
+(source 1548d49), are in section 4.6.
 
 | Test | What | Run | Result [VERIFIED] |
 |---|---|---|---|
@@ -322,8 +368,28 @@ processor runs (analysis core-20261120-220634-d26a0b6, figure `fig_t14_card`) [V
 
 So the refinement function, the tracker, the light-speed step, the fine-shape deposit, the
 region norms and the guard give on a card what they give on the processors, to round-off.
-Not compared on a card: the finder on a found horizon (T4, T15), restarts (T11; the
-restart of T10c is pending, section 7), the walk tracker (T13).
+Not compared on a card: the finder on a known horizon (T4, T15), the walk tracker (T13).
+A restart of an adaptive run on a card and the finder on found surfaces: T10c (section
+7). The card executable of 1548d49: T14b (section 4.6).
+
+### 4.6 Tests of 2026-11-21: the fine shape of the linear cloud, the repeats, the finder
+
+PUB = the processor executable published on 2026-11-19 (source 3c44b74), NEW2 = the
+processor build of source 1548d49 (`.work/build_cpu_b`), published on 2026-11-21. Run ids
+`core-20261121-HHMMSS-<commit7>` unless written in full. All [VERIFIED] in the run named.
+
+| Test | What | Run | Result |
+|---|---|---|---|
+| T10e | where the constraint jump of the scouting run comes from: the S1 data to t = 3.5 without refinement (u5), as the scouting run (a5), with the uniform spreading (a5c), with every cloud on the root level (a5r); PUB | `core-20261120-222729-6cfac05` | u5: smooth, largest relative H 0.020; a5: 0.0099, 0.066, 0.159 at three consecutive cycles around t = 2.946, twenty cycles after the regrid and with no change of the mesh; largest 0.169; a5c: no jump, largest 0.039; a5r equal to a5 in every digit (the adaptive cloud level is the root to t = 3.5) |
+| T17, T17b | is the deposit continuous in the particle position: one particle moved through the centre of a root cell inside a level-1 patch, clouds on the root level; three shapes, uniform and fine-shape spreading; twelve offsets | PUB `-030438-e52cdb3`; NEW2 `-030910-0c046a7` | PUB, linear cloud with fine shape: the shares of the leaf cells jump by 0.25 of the particle at the cell centre. NEW2: continuous (1.0e-6 for a move of 2e-6 cells), shares equal to the integral form to 9.4e-16, smallest share -1/16. Quadratic and cubic clouds and the uniform spreading: continuous, the same numbers with both executables |
+| T19, T19b, T19c | a smooth density (lattice displaced along x, contrast 30 per cent, 8 and 16 root cells per wavelength) on the leaf cells of a patch, clouds on the root level; 1, 4, 16 particles per root cell along x | `-031145-ffc12b3`, `-031330-4d924b0`, `-031446-5b1fdcd` | sixteen particles, rms departure at the two resolutions: uniform spreading 0.041, 0.021 (first order); integral form 0.0061, 0.0016 (second order); quadratic cloud 0.0105, 0.0027; first-order form of PUB 0.016, 0.013 (does not converge). With one and four particles per cell the modulation of the lattice through the cloud is what is measured (7 per cent rms; 1.7 per cent at most), and the predictions of convergence failed (section 5) |
+| T0c | regression, options absent, NEW2 against REL (the seven set-ups of T0) | `-031231-75fa120` | every output file byte-identical, restart files included |
+| T1b, T18a | T1 with NEW2; its bytes against T1 | `-031032-614792a`, `-032122-0f3369f` | identity at most 1.65e-14 (energy), 1.1e-16 (momentum) in the 18 unfiltered refined cases; 18 of 22 cases byte-identical to T1; the four that differ are the linear cloud with fine shape |
+| T2b, T18c | T2, T5, T6, T7, T8 with NEW2; bytes against T2 | `-031920-494ac64`, `-032946-d860245` | homogeneous to 1.6e-14 (chi) and 4.2e-14 (E) with every patch; the lattice drifting through the patch with fine shape (M): 2.7e-14, 9.6e-14, tracker within 1.0e-13; 18 of 20 cases byte-identical to T2 (M differs at round-off; U only in the first column of the finder status file, section 4.3) |
+| T9b, T18b | T9 with NEW2; bytes against T9 | `-031701-cff3117`, `-032213-1d17e30` | MeshBlock histories, particle number, rest mass, identity (3.2e-14) as T9; largest relative H after the regrid 0.0125 with fine shape (first-order form of T9: 0.0116), 0.0072 with the uniform spreading; the uniform-spreading and the release case byte-identical to T9 |
+| T10f | case a5 of T10e with NEW2 | `core-20261121-030904-1548d49` | T10F_ROW |
+| T10c | the last stretch of the scouting run again, from its restart file at t = 10, with four finder surfaces that can flow; card, published card executable of 3c44b74 | `core-20261121-025527-eb8e6b7` (Slurm job 4755, 264 s; analysis `-032345-839e721`) | section 7 |
+| T14b | card check of the card executable of 1548d49 on the decks of T2b (U, S, Sf, A, M, G) and T9b (ladder) | `core-20261121-032510-c83f904` (Slurm job 4760) | T14B_ROW |
 
 ## 5. Predictions that failed (details in the journal)
 
@@ -360,6 +426,24 @@ restart of T10c is pending, section 7), the walk tracker (T13).
   (the lapse ratio of these data passes 0.9 there); "the first bad cell lies within 0.6/k
   of the centre": it lies at 0.637; "without a horizon" was not tested, the finder of the
   deck could not search (section 7).
+- T10e: "with the uniform spreading the same jump within a factor two" (my reading had
+  been that the source filter at each level's cell size makes the jump): there is no
+  jump with the uniform spreading, and the largest relative constraint is 4.3 times
+  smaller. The jump belonged to the fine-shape deposit of the linear cloud (T17).
+- The design note of 2026-11-19 for `deposit_fine_shape` ("the slopes of a regular
+  lattice cancel", "second-order accurate") was tested on regular lattices only; for the
+  linear cloud it was wrong on every other lattice (section 2.2).
+- T19 and T19b: "uniform spreading first order, integral form second order" with one and
+  with four particles per root cell: nothing converges with one (7 per cent rms at both
+  resolutions) and the integral form sits at 0.0072 and 0.0075 with four. The lattice of
+  spacing d is modulated by 2 sinc^2(pi h/d) through a tent of half-width h, which I had
+  left out (T19) and then bounded at the ends of the range of d only (T19b). T19c, with
+  sixteen particles, shows the orders.
+- T9b: "largest relative constraint after the regrid at most the 0.0116 of T9": 0.0125.
+  On these filtered data the corrected form is not better at the regrid than the old one.
+- T10c: the restarted run on the card agrees with the uninterrupted one to 2e-6 to 1e-2
+  after 32 cycles, not to round-off as on the processors (T11); not separated from the
+  run-to-run differences of card runs in a stretch that amplifies them (section 7).
 
 ## 6. Regression
 
@@ -370,6 +454,13 @@ output file of seven set-ups (geodesics with both pushers, deposit on a static m
 East et al. data, Oppenheimer-Snyder on a static mesh, homogeneous universe, puncture
 with finder on a static periodic mesh), restart files included. T12 shows that the
 published executable reproduces the tested one on the cases of T1, T2 and T9.
+
+T0c (run core-20261121-031231-75fa120): the same for the processor build of source
+1548d49, published on 2026-11-21. T18a, T18b, T18c: of the 48 cases of T1, T2 and T9
+repeated with it, 38 are byte-identical to the runs of 2026-11-19; the ten that differ
+are the nine with the linear cloud and `deposit_fine_shape` on particles that are not
+at rest on the cell centres (the purpose of the change), and one finder status file
+whose first column had changed before (section 4.3).
 
 ## 7. Scouting run of S1 with adaptive refinement (T10)
 
