@@ -708,3 +708,58 @@ one-card runs of its build).
   -DNDEBUG and not with -O2) and the OpenMP build for the set-ups with Z4c (they differ
   with either flags) [VERIFIED by these two runs; which statement of the Z4c kernels is
   compiled differently was not looked for]. No threaded build is a byte reference.
+
+### PAUSED (flag `locks/PAUSE` found at 2026-11-21T07:27Z): where I stopped
+
+Done and pushed (origin/core/nrpic = 1b9c9f14 before this entry): the four merges
+(source c3eb42e0), the four builds, the byte regression (PASS), the quick tests (PASS),
+the regressions of the MPI and the threaded build, the flags test R3,
+`RELEASE-v0.5.md` (first line REGRESSION PASS), `CHANGELOG.md` section core-v0.5,
+`stage/G2/OPEN.md` section core-v0.5, `docs/FORMATS.md`, the last sections of
+`interfaces/{mpi,threaded_build,cosmo_amr}.md`, STATUS, HANDOFF, and the published
+directory `scratch/core/exe/core_nrpic_v05/` (four executables, COMMIT, SHA256SUMS,
+READY, branches/).
+Not done:
+1. The card check. Run core-20261121-070946-1907f7b, Slurm job 4772, was still queued
+   (the queue gave 08:02Z as its start). It may run on its own. `athena_gpu` of the
+   candidate has not run on a card; RELEASE-v0.5.md and the READY say so. Closing
+   steps: HANDOFF.md, "ONE RUN IS PENDING". Card time used by this package: none.
+2. The messages to the tracks (one per track, which of its requests of
+   `coord/REQUESTS.md` releases core-v0.4 and core-v0.5 serve): not started because
+   of the flag. What I had read for them, so that the next session need not look it up
+   again [each from the triage texts `interfaces/REQUESTS_{A2,ADF,B}.md`,
+   `cosmo_gauge.md` section 7 and the source; none of it is posted]:
+   - A: done in core-v0.5: `nrpic-cosmo-user-ref-func` (refinement function,
+     `<particles_amr>`), `periodic-horizon-finder` items 1 to 3 (points mapped into the
+     box, `<fastflow> diagnostics`, files in the `-d` directory),
+     `refined-mesh-diagnostics` (`<particles> region_dcycle`), `stop-on-nonfinite`
+     (`<z4c_guard>`, default on), `step-limit-coordinate-light-speed` (`<z4c>
+     dt_lightspeed`), `processor-executable-threads` (`athena_cpu_omp`),
+     `amr-for-first-horizon` (answered: no sub-cycling; example `peak_amr.athinput`);
+     done in core-v0.4: `gauge-expanding-ball` (`<z4c> lapse_leak`; the K_ref and
+     softplus forms declined with reasons in `cosmo_gauge.md` 7.1). Deferred to the
+     unfinished branches: phase-1 generator, CMC slice, refined-level constraint solve,
+     Zel'dovich ball (core/id-solver-2); special-relativistic push, snapshots at
+     chosen times, per-species moments, which W the Newtonian history reports
+     (core/newton-2). Not answered by either release: the finder keys and the restart
+     question of `scouting-runs-ball`, the finder's spin projection, dispersion data.
+   - B: done in core-v0.4: the linear-wave correction and the jitter tool; in
+     core-v0.5: the threaded build. Deferred: TT part of the initial data; species
+     history and the Poisson order (both exist on the unfinished core/newton-2); the
+     new request `insitu-fourier-modes` of 2026-11-21 is unread.
+   - C: nothing new in core-v0.5; collisions stop on several ranks; the four format
+     requests, the ADM-mass diagnostic and collisions on refined meshes stay deferred.
+   - D: done in core-v0.5: `finder-summary-outdir` (files in the `-d` directory),
+     `openmp-cpu-build` (`athena_cpu_omp`), `trajmet-format-doc` (FORMATS.md: 17
+     values); in core-v0.4: `lapse_leak`, `publish-gauge-exe`. Deferred: outer
+     boundary (core/z4c-faces), throughput and self-force text (core/newton-2), proper
+     time on analytic metrics, mass refinement near the hole. Four new requests of
+     2026-11-21 are unread.
+   - E: done in core-v0.5: `rng::ModeEntity`, the meaning of stream 3 and the epoch
+     rule (`rng.md` sections 6 and 6.2), `con_signed`.
+   - F: done in core-v0.4: `shift_eta_profile`, the card memory at 2700 MeshBlocks
+     (`REQUESTS_ADF.md`, row mem2700), Gaussian clumps with momentum; in core-v0.5: the
+     MPI processor build (no MPI card build released). Deferred: equilibrium clumps
+     with momentum (core/clump-table). Two new requests of 2026-11-21 are unread.
+3. The inbox of core holds twelve messages of 2026-11-19 to 2026-11-21 that I listed
+   and did not read or acknowledge (numbers 76 to 87 of `nrpic-ctx inbox`).
