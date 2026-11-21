@@ -1,6 +1,7 @@
 READY of core/requests-adf (work package dfix of core: requests of tracks D, A and F that
-are not gauge). Written 2026-11-15; updated 2026-11-19 (session dfix-3: card runs of T5,
-T7 and the memory at 2700 slots; the executables are unchanged). Evidence and every number: branch core/requests-adf,
+are not gauge). Written 2026-11-15; updated 2026-11-20 (sessions dfix-3 and dfix-4: card
+runs of T5, T7 and the memory at 2700 slots; the executables are unchanged: athenak/ of
+the branch tip equals that of 3f75eb8). Evidence and every number: branch core/requests-adf,
 tracks/core/JOURNAL-dfix.md and tracks/core/interfaces/REQUESTS_ADF.md
 (git show core/requests-adf:<path>). Test scripts and case lists:
 tracks/core/analysis/dfix/; figures: tracks/core/analysis/dfix/figs/.
@@ -15,7 +16,9 @@ STATUS
               exact references, positions within 1.2e-12 of the processor run (judgement
               run core-20261115-180353-7d7116d of card run core-20261115-161528-ff00411);
               and for T5 (pair horizon: masses equal to the processor run to 1e-15, run
-              core-20261119-140644-074f8e3) and T7 (sphere on a moving tracker: T7_READY).
+              core-20261119-140644-074f8e3) and T7 (sphere on a moving tracker: counts equal to the
+              processor run, positions within 8.9e-16; card run
+              core-20261119-143036-185800a, judged core-20261120-220150-b6041db).
               The restart test T2 changes host code only (Driver::Finalize) and ran on
               processors only.
 Everything not named below behaves as release core-v0.3: output files of existing
@@ -102,7 +105,11 @@ NEW OPTIONS (each read only if present; off by default)
    far pair and the all-puncture surface wait). Not tested: a merger during an evolution.
 
 MEMORY of the three-hole mesh (problems/puncture/by_triple.athinput, three finders, 16^3
-MeshBlocks) at max_nmb_per_rank = 2700, measured with athena_gpu: MEM_READY
+MeshBlocks) at max_nmb_per_rank = 2700, measured with athena_gpu: peak 70753 MiB of the 81920 MiB of an A100, allocated at
+the start (run core-20261119-143036-185800a, 32 cycles, 1100 MeshBlocks; predicted 70.9e3
++- 2.0e3). 25.65 MiB per slot between 2400 and 2700 slots: a card holds about 3100 slots
+with three finders [JUDGEMENT, linear in the slots]. The slot limit does not change the
+evolution (history equal to the 2400-slot run in every printed digit).
 
 NOT IN THESE EXECUTABLES (REQUESTS_ADF.md section 1): special-relativistic Newtonian
 push, snapshots at chosen times, Zel'dovich ball in make_ic.py, pair force, puncture on
@@ -113,5 +120,5 @@ against 32^3 MeshBlock benchmark on the three-hole mesh (Track F) and the 250 M 
 run of problems/puncture/horizon_calib.athinput (Track D); case lines bench16, bench32,
 t1_accept in tracks/core/analysis/dfix/cases/card_checks.list.
 
-CARD TIME of the package: CARD_TOTAL card-hours (0.068 T1 reproduction, 0.838 card checks,
-0.009 timing job, CARD_JOB2 card cases of 2026-11-19).
+CARD TIME of the package: 0.923 card-hours (0.068 T1 reproduction, 0.838 card checks,
+0.009 timing job, 0.008 card cases of 2026-11-19).
