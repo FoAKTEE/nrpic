@@ -106,7 +106,8 @@ def main():
     for lab in labs:
         t, r, tc, hmax, tz, hn, amin, amax = data[lab]["series"]
         axs[0, 0].plot(t[1:], r, color=cols[lab], label=lab)
-        axs[0, 1].semilogy(tc, hmax, color=cols[lab], label=lab)
+        hh = np.where(np.isfinite(hmax) & (hmax < 1e8), hmax, np.nan)
+        axs[0, 1].semilogy(tc, hh, color=cols[lab], label=lab)
         axs[1, 0].plot(t, amin, color=cols[lab], label=lab)
         axs[1, 0].plot(t, amax, color=cols[lab], ls="--", lw=1.0)
     if args.vn:
@@ -115,6 +116,7 @@ def main():
             axs[0, 0].axhline(thr, color="k", lw=1.0, ls=ls)
     axs[0, 0].set_ylabel(r"$\Delta t/\Delta x$ (finest)")
     axs[0, 1].set_ylabel(r"$H_{\max}$ (cstat)")
+    axs[0, 1].set_ylim(1e-4, 1e4)
     axs[1, 0].set_ylabel(r"$\alpha_{\min}$ (solid), $\alpha_{\max}$ (dashed)")
     for ax in (axs[0, 0], axs[0, 1], axs[1, 0]):
         ax.set_xlabel("t")
@@ -125,14 +127,15 @@ def main():
     for lab in labs:
         rows = res[lab]["lines_alternating_finest"]
         tt = [q["t"] for q in rows if q["z4c_betax"] is not None]
-        bb = [max(q["z4c_betax"], 1e-16) for q in rows if q["z4c_betax"] is not None]
-        aa = [max(q["z4c_alpha"], 1e-16) for q in rows if q["z4c_alpha"] is not None]
+        bb = [min(max(q["z4c_betax"], 1e-16), 1e8) for q in rows if q["z4c_betax"] is not None]
+        aa = [min(max(q["z4c_alpha"], 1e-16), 1e8) for q in rows if q["z4c_alpha"] is not None]
         ax.semilogy(tt, bb, "o-", ms=3, color=cols[lab], label=lab + r": $\beta^x$")
         ax.semilogy(tt[:len(aa)], aa, "s--", ms=2.5, lw=1.0, color=cols[lab],
                     label=lab + r": $\alpha$")
     ax.set_xlabel("t")
     ax.set_xlim(0, args.tmax)
     ax.set_ylabel("cell-to-cell alternation (finest, line)")
+    ax.set_ylim(1e-9, 1e2)
     ax.legend(loc="upper left", fontsize=7, ncol=2)
     fig.savefig(os.path.join(args.out, "fig_" + args.name + ".png"))
     for lab in labs:
