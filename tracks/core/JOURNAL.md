@@ -1345,3 +1345,14 @@ Plan and predictions, written before any run of this session:
   cluster models stays (0.900, 0.819), collapses (0.605 by 191 M, 0.500 by 104.3 M) and
   rises toward one (0.283) as LADDER row 4 says. Refuted by any number differing beyond
   its printed digits.
+
+### Q1 outcome (23:18Z-23:25Z): inventory run core-20261121-231825-135474c
+
+Held for inputs, executable copies, logs and both history files in all ten directories
+(two builds: `eea69999...` and `bbb74535...`; chains keep theirs in `chain/`). FAILED as
+written for the horizon summaries: absent in `st/yc0900_v4`, `st/yc0819_v4`,
+`st/migration_yc0500_v4`, `st/yc0756_unpert`, where no finder ran; their ladder numbers
+come from the history files, so nothing the ladder states is without its file. Figure
+`fig_inventory.png` looked at. The directories are named as pre-program in
+`verify/preprogram/README.md` (no manifest written after the fact: the source commit and
+the command lines are not recoverable).

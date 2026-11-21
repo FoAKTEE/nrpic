@@ -10,7 +10,9 @@ Sources of numbers. "Paper" is Wu & Most, arXiv:2611.12831, read in
 `refs/arxiv_2611.12831/src/main.tex` (untracked, line numbers given). "Earlier" numbers
 come from `docs/TESTLOG.md` (line numbers), the tables
 `paper/sections/tables/tab_outcomes.tex` and `tab_setups.tex`, and the run directories
-under `/data/haiyangw/nrpic/runs/` (untracked). The self-gravitating numbers below were
+under `/data/haiyangw/nrpic/runs/` (untracked; pre-program directories without a manifest,
+named and inventoried with sha256 in `preprogram/README.md`, run
+core-20261121-231825-135474c). The self-gravitating numbers below were
 re-read from the run files by `ladder_measure.py` (analysis run
 `core-20261115-032826-45e1779`, output `scratch/core/core-20261115-032826-45e1779/
 ladder_numbers.json`, figure `figs/ladder_overview_core-20261115-032826-45e1779.png`,
