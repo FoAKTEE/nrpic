@@ -88,12 +88,22 @@ def cmd_ingest_arxiv(argv, data_root=None):
     p.add_argument("--limit", type=int)
     p.add_argument("--json", action="store_true")
     p.add_argument("--no-meta", action="store_true", help="do not read the metadata records back into the rows")
+    p.add_argument("--remap-claims", action="store_true",
+                   help="carry the claims that point into each paper to its new chunks and flat ranges "
+                        "(kbtool.claims_remap), in the same writer-lock hold as the paper's rows")
+    p.add_argument("--dry-run", action="store_true",
+                   help="parse only and write one summary per paper (counts, no paper text) into --out; "
+                        "nothing is written to the database or the build directory")
+    p.add_argument("--out", help="directory for --dry-run summaries and the --remap-claims report")
     a = p.parse_args(argv)
+    if a.dry_run and not a.out:
+        p.error("--dry-run needs --out")
     _ensure_converter()
     from . import papers_ingest as P
     from . import tex_text as T
     lay = layout(data_root)
-    _db.init_db(lay)
+    if not a.dry_run:
+        _db.init_db(lay)
     rows = _manifest_rows()
     ids = select_ids(lay, a, rows)
     jobs = max(1, min(a.jobs, MAX_JOBS))
@@ -106,9 +116,21 @@ def cmd_ingest_arxiv(argv, data_root=None):
     else:
         ex = ProcessPoolExecutor(max_workers=jobs)
         results = ex.map(_analyse, work, chunksize=1)
+    if a.out:
+        os.makedirs(a.out, exist_ok=True)
     for k, res in enumerate(results, start=1):
-        status = P.store(lay, res)
         doc = res[2] or {}
+        if a.dry_run:
+            status = res[5]
+            with open(os.path.join(a.out, _inv.id_key(res[0]) + ".json"), "w") as f:
+                json.dump(dry_summary(res), f, indent=1)
+        else:
+            status = P.store(lay, res, remap_claims=a.remap_claims)
+            rm = P.result_remap.get(res[0])
+            if rm and rm.get("claims"):
+                print(f"     remap {res[0]}: {rm['claims']} claims ({rm['claims_changed']} changed), {rm['rows']} "
+                      f"locator rows ({rm['rows_changed']} changed), flat identical {rm['identical_flat']}, "
+                      f"{json.dumps(rm['methods'], sort_keys=True)}", flush=True)
         summary[res[0]] = status
         q = (doc.get("quality") or {}).get("score")
         print(f"{k:4d}/{len(ids)} {res[0]:18s} {status:16s} score {q if q is not None else '-'} "
@@ -117,6 +139,15 @@ def cmd_ingest_arxiv(argv, data_root=None):
               f"({(doc.get('bib') or {}).get('source')}) {doc.get('error') or ''}", flush=True)
     if jobs != 1:
         ex.shutdown()
+    if a.remap_claims and a.out:
+        with open(os.path.join(a.out, "remap.json"), "w") as f:
+            json.dump(P.result_remap, f, indent=1)
+    if a.dry_run:
+        counts = {}
+        for s in summary.values():
+            counts[s] = counts.get(s, 0) + 1
+        print(f"# dry run done in {time.time() - t0:.1f} s: {json.dumps(counts, sort_keys=True)}; nothing written")
+        return 0
     with writer_lock(lay, what="resolve-bib"):
         con = _db.connect_rw(lay.db_work)
         try:
@@ -138,6 +169,27 @@ def cmd_ingest_arxiv(argv, data_root=None):
     print(f"# done in {time.time() - t0:.1f} s: {json.dumps(counts, sort_keys=True)}; corpus resolution {json.dumps(r)}"
           f"; metadata {json.dumps(meta, sort_keys=True)}")
     return 0 if not counts.get("failed") else 1
+
+
+def dry_summary(res):
+    """What a parse found, as counts and keys only (no paper text): for --dry-run."""
+    pid, chk, doc, flat, smap, status = res
+    doc = doc or {}
+    bib = doc.get("bib") or {}
+    ents = bib.get("entries") or []
+    return {"paper_id": pid, "status": status, "score": (doc.get("quality") or {}).get("score"),
+            "review_reasons": doc.get("review_reasons", []), "bib_source": bib.get("source"),
+            "bib_files": bib.get("files"), "bib_notes": bib.get("notes"), "bib_entries": len(ents),
+            "bib_with_arxiv": sum(1 for e in ents if e.get("arxiv")), "bib_with_doi": sum(1 for e in ents if e.get("doi")),
+            "cited_keys": bib.get("cited_keys"), "cited_with_entry": bib.get("cited_with_entry"),
+            "unreached_file": bib.get("unreached_file"), "keys_sample": [e.get("cite_key") for e in ents[:5]],
+            "cites": sum(1 for c in doc.get("cites", []) if not c.get("nocite")),
+            "cite_aliases": sorted({c["alias"] for c in doc.get("cites", []) if c.get("alias")}),
+            "sections": len(doc.get("sections", [])), "equations": len(doc.get("equations", [])),
+            "chunks": len(doc.get("chunks", [])),
+            "chunks_noncomment": sum(1 for c in doc.get("chunks", []) if c.get("kind") != "comment"),
+            "bibliography_at": doc.get("bibliography_at"),
+            "flat_chars": len(flat or ""), "error": doc.get("error")}
 
 
 def cmd_resolve_bib(a):

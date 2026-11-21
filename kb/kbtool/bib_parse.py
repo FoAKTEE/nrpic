@@ -14,6 +14,7 @@ import re
 
 from . import tex_files as F
 from . import tex_macros as M
+from . import tex_structure as S
 
 OLD_ARCHIVES = ("astro-ph", "gr-qc", "hep-th", "hep-ph", "hep-ex", "hep-lat", "nucl-th", "nucl-ex", "math-ph",
                 "math", "physics", "quant-ph", "cond-mat", "nlin", "cs", "q-bio", "q-fin", "stat", "chao-dyn",
@@ -74,37 +75,102 @@ def arxiv_from_doi(text):
 
 # ------------------------------------------------------------------ .bbl / thebibliography
 BIBITEM_RE = re.compile(r"\\bibitem(?![A-Za-z@])")
+# the commands that start one entry of a reference list: \bibitem[label]{key} (LaTeX, natbib,
+# REVTeX, pandoc), \harvarditem[short]{authors}{year}{key} (harvard), \reference (AASTeX: no key)
+ITEM_RE = re.compile(r"\\(bibitem|harvarditem|reference)(?![A-Za-z@])")
 ENTRY_RE = re.compile(r"\\entry\s*\{([^{}]*)\}\s*\{([^{}]*)\}")      # biblatex .bbl
+REF_ENV_RE = re.compile(r"\\begin\s*\{(" + "|".join(sorted(S.REF_ENVS, key=len, reverse=True)) + r")\}")
+BIBITEM_TARGETS = ("bibitem", "harvarditem")
 
 
-def parse_bbl(text):
-    """Entries of a .bbl or thebibliography text: [{cite_key, raw}] in order."""
+def expand_item_aliases(text, aliases):
+    """Rewrite macros that stand for \\bibitem (tex_structure.command_aliases) into \\bibitem:
+    a bare alias is renamed; a macro with the key as argument k is replaced by
+    \\bibitem{<arg k>} followed by its other arguments, which are entry text."""
+    if not aliases:
+        return text
+    pat = re.compile(r"\\(" + "|".join(re.escape(a) for a in sorted(aliases, key=len, reverse=True))
+                     + r")(?![A-Za-z@])")
+    out, pos = [], 0
+    for m in pat.finditer(text):
+        if m.start() < pos:
+            continue
+        target, nargs, karg = aliases[m.group(1)]
+        if karg is None:
+            out.append(text[pos:m.start()] + "\\" + target)
+            pos = m.end()
+            continue
+        a = S.command_args(text, m.end(), 0, nargs)
+        if not a or len(a[1]) < karg:
+            continue
+        rest = " ".join(x for k, x in enumerate(a[1]) if k != karg - 1)
+        out.append(text[pos:m.start()] + "\\%s{%s} %s" % (target, a[1][karg - 1], rest))
+        pos = a[2]
+    out.append(text[pos:])
+    return "".join(out)
+
+
+def ref_region(text):
+    """(start, end, env) of the first reference-list environment in text whose body holds
+    entry commands, or None."""
+    for m0 in REF_ENV_RE.finditer(text):
+        env = m0.group(1)
+        start = m0.end()
+        for _ in range(S.REF_ENVS[env]):
+            g, e = M.read_group(text, start)
+            if g is None:
+                break
+            start = e
+        mend = re.compile(r"\\end\s*\{" + re.escape(env) + r"\}").search(text, start)
+        end = mend.start() if mend else len(text)
+        if ITEM_RE.search(text, start, end):
+            return start, end, env
+    return None
+
+
+def parse_bbl(text, aliases=None):
+    """Entries of a .bbl text or of a reference list written in the TeX: [{cite_key, raw, label}]
+    in order. The list is the first reference-list environment (thebibliography, references,
+    thereferences, CSLReferences) that holds entries, else the whole text. \\reference entries
+    have no key: they get '#<n>' (n counts entries from 1), which no \\cite can name."""
     text = F.strip_comments_text(text)
     if ENTRY_RE.search(text) and "\\endentry" in text:
         return _parse_biblatex_bbl(text)
-    m0 = re.search(r"\\begin\s*\{thebibliography\}", text)
-    if m0:
-        g, e = M.read_group(text, m0.end())
-        start = e if g is not None else m0.end()
-    else:
-        start = 0
-    mend = re.search(r"\\end\s*\{thebibliography\}", text[start:])
-    end = start + mend.start() if mend else len(text)
-    region = text[start:end]
-    items = list(BIBITEM_RE.finditer(region))
+    text = expand_item_aliases(text, aliases)
+    r = ref_region(text)
+    region = text[r[0]:r[1]] if r else text
+    items = list(ITEM_RE.finditer(region))
     out = []
     for k, m in enumerate(items):
         nxt = items[k + 1].start() if k + 1 < len(items) else len(region)
+        kind = m.group(1)
         i = m.end()
         g, j = M.read_group(region, i, "[", "]")
         label = None
         if g is not None:
             label, i = g, j
+        if kind == "reference":
+            g, j = M.read_group(region, i)            # AASTeX writes \reference{} (empty group)
+            if g is not None and not g.strip():
+                i = j
+            raw = region[i:nxt].strip()
+            if raw:
+                out.append({"cite_key": f"#{len(out) + 1}", "raw": raw, "label": label, "item": kind})
+            continue
+        if kind == "harvarditem":
+            a = S.command_args(region, i, 0, 3)
+            if not a:
+                continue
+            authors, year, key = a[1]
+            label = (f"{label} " if label else "") + f"{authors} {year}".strip()
+            raw = region[a[2]:nxt].strip()
+            out.append({"cite_key": key.strip(), "raw": raw, "label": label, "item": kind})
+            continue
         key, j = M.read_group(region, i)
         if key is None:
             continue
         raw = region[j:nxt].strip()
-        out.append({"cite_key": key.strip(), "raw": raw, "label": label})
+        out.append({"cite_key": key.strip(), "raw": raw, "label": label, "item": kind})
     return out
 
 
@@ -296,14 +362,59 @@ def entry_title(e):
 
 
 # ------------------------------------------------------------------ choice of source
-def bibliography(root, main_rel, flat, struct):
-    """Entries of the paper with their identifiers. Returns dict(source, files, entries, notes)."""
+def _cited_keys(struct):
+    return {k for c in struct.get("cites", []) if not c.get("nocite") for k in c["keys"] if k != "*"}
+
+
+def unreached_reference_file(root, reached, cited, aliases):
+    """A .tex file of the source that the main file does not reach and that holds a reference
+    list with entries for keys the paper cites: (relative name, entries) or (None, [])."""
+    best, best_entries, best_hits = None, [], 0
+    reached = {r["file"] if isinstance(r, dict) else r for r in (reached or [])}
+    for f in F.list_files(root):
+        if not f.lower().endswith(".tex") or f in reached:
+            continue
+        p = F.safe_join(root, f)
+        if not p:
+            continue
+        try:
+            text = F.read_text(p)[0]
+        except OSError:
+            continue
+        text = F.strip_comments_text(text)
+        al = dict(aliases or {})
+        al.update(S.command_aliases(M.collect(text), BIBITEM_TARGETS))
+        text = expand_item_aliases(text, al)
+        r = ref_region(text)
+        if not r:
+            continue
+        entries = parse_bbl(text[r[0]:r[1]])
+        hits = len(cited & {e["cite_key"] for e in entries})
+        if hits > best_hits:
+            best, best_entries, best_hits = f, entries, hits
+    return best, best_entries
+
+
+def bibliography(root, main_rel, flat, struct, macros=None, reached=None):
+    """Entries of the paper with their identifiers. Returns dict(source, files, entries, notes,
+    cited_keys, cited_with_entry, unreached_file). `macros` (tex_macros.collect of the flat text)
+    gives the macros that stand for \\bibitem; `reached` lists the files the flattening read."""
     notes = []
     files = F.list_files(root)
     main_stem = os.path.splitext(main_rel)[0] if main_rel else None
     has_bibcmd = bool(struct.get("bibliography_files")) or bool(re.search(r"\\addbibresource|\\bibliography\s*\{",
                                                                           flat))
-    inline = re.search(r"\\begin\s*\{thebibliography\}", flat)
+    aliases = S.command_aliases({**S.xparse_macros(flat), **(macros if macros is not None else M.collect(flat))},
+                                BIBITEM_TARGETS)
+    if aliases:
+        notes.append("macros standing for an entry command: " +
+                     ", ".join(f"\\{k} -> \\{v[0]}" for k, v in sorted(aliases.items())))
+    xflat = expand_item_aliases(flat, aliases)
+    reg = ref_region(xflat)
+    if reg and reg[2] != "thebibliography":
+        notes.append(f"reference list in a {reg[2]} environment")
+    inline = reg is not None
+    unreached = None
     bbls = [f for f in files if f.lower().endswith(".bbl")]
     chosen_bbl = None
     if main_stem and main_stem + ".bbl" in bbls:
@@ -315,11 +426,11 @@ def bibliography(root, main_rel, flat, struct):
         notes.append(f"{len(bbls)} .bbl files; took the largest, {chosen_bbl}")
     entries, source, used = [], None, []
     if inline and not has_bibcmd:
-        entries = parse_bbl(flat[inline.start():])
+        entries = parse_bbl(xflat[reg[0]:reg[1]])
         source = "thebibliography"
     elif chosen_bbl and has_bibcmd:
         p = F.safe_join(root, chosen_bbl)
-        entries = parse_bbl(F.read_text(p)[0]) if p else []
+        entries = parse_bbl(F.read_text(p)[0], aliases) if p else []
         source, used = "bbl", [chosen_bbl]
     if not entries and has_bibcmd:
         names = [b if b.endswith(".bib") else b + ".bib" for b in struct.get("bibliography_files", [])]
@@ -342,14 +453,21 @@ def bibliography(root, main_rel, flat, struct):
             source, used = "bib", bibs
             notes.append(f".bib entries: {len(allb)} parsed, {len(entries)} cited")
     if not entries and inline:
-        entries = parse_bbl(flat[inline.start():])
+        entries = parse_bbl(xflat[reg[0]:reg[1]])
         source = "thebibliography"
     if not entries and chosen_bbl:
         p = F.safe_join(root, chosen_bbl)
-        entries = parse_bbl(F.read_text(p)[0]) if p else []
+        entries = parse_bbl(F.read_text(p)[0], aliases) if p else []
         source, used = "bbl", [chosen_bbl]
         if entries:
             notes.append("used a .bbl although the TeX has no \\bibliography command")
+    cited = _cited_keys(struct)
+    if not entries and cited and reached is not None:
+        f, ents = unreached_reference_file(root, reached, cited, aliases)
+        if f:
+            entries, source, used, unreached = ents, "thebibliography", [f], f
+            notes.append(f"reference list taken from {f}, a file the main file does not reach "
+                         f"(the paper cites and has no other entry)")
     for e in entries:
         if source == "bib":
             arx, doi, eprint = bib_entry_ids(e)
@@ -357,4 +475,6 @@ def bibliography(root, main_rel, flat, struct):
         else:
             arx, doi, eprint, n_ids = bbl_entry_ids(e)
         e.update({"arxiv": arx, "doi": doi, "eprint": eprint, "n_arxiv_ids": n_ids, "title": entry_title(e)})
-    return {"source": source, "files": used, "entries": entries, "notes": notes}
+    keys = {e["cite_key"] for e in entries}
+    return {"source": source, "files": used, "entries": entries, "notes": notes, "cited_keys": len(cited),
+            "cited_with_entry": len(cited & keys), "unreached_file": unreached}

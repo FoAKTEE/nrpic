@@ -221,12 +221,25 @@ def parse_tex(src_root):
         "bibliography_files": st["bibliography_files"], "bibliography_at": st["bibliography_at"],
         "appendix_at": st["appendix_at"],
     }
-    bib = B.bibliography(src_root, mainf["main"], flat, st)
+    bib = B.bibliography(src_root, mainf["main"], flat, st, macros=macros, reached=fl["files"])
     doc["bib"] = {"source": bib["source"], "files": bib["files"], "notes": bib["notes"],
+                  "cited_keys": bib["cited_keys"], "cited_with_entry": bib["cited_with_entry"],
+                  "unreached_file": bib["unreached_file"],
                   "entries": [{k: e.get(k) for k in ("cite_key", "raw", "arxiv", "doi", "eprint", "n_arxiv_ids",
                                                       "title")} for e in bib["entries"]]}
     doc["parse_seconds"] = round(time.time() - t0, 3)
     return doc, flat, fl["source_map"]
+
+
+def review_reasons(doc):
+    """Reasons, besides a low quality score, to put a TeX paper on the review list: it cites
+    with \\cite-family commands and no bibliography entry was found."""
+    out = []
+    n_cite = sum(1 for c in doc.get("cites", []) if not c.get("nocite"))
+    bib = doc.get("bib") or {}
+    if n_cite and not bib.get("entries"):
+        out.append(f"cites ({n_cite} commands, {bib.get('cited_keys', 0)} keys) and has no bibliography entry")
+    return out
 
 
 def parse_pdf(pdf_path, timeout=120):
@@ -283,6 +296,10 @@ def write_paper(con, pid, chk, doc, flat_sha, status):
                   "unresolved_inputs": doc.get("unresolved_inputs", []), "class": doc.get("class"),
                   "bib_source": doc["bib"]["source"], "bib_files": doc["bib"]["files"],
                   "bib_notes": doc["bib"]["notes"], "flatten_notes": doc.get("flatten_notes", []),
+                  "bib_cited_keys": doc["bib"].get("cited_keys"),
+                  "bib_cited_with_entry": doc["bib"].get("cited_with_entry"),
+                  "bib_unreached_file": doc["bib"].get("unreached_file"),
+                  "review_reasons": doc.get("review_reasons", []),
                   "parse_seconds": doc.get("parse_seconds"), "error": doc.get("error")}
     con.execute("INSERT INTO papers(paper_id, title, authors_json, abstract, grp, priority, version, source_kind, "
                 "main_tex, parse_status, parse_score, sha256, ingested_at, flat_sha256, title_source, parse_json, "
@@ -386,6 +403,10 @@ def analyse(lay, pid, row):
         else:
             doc, flat, smap = parse_tex(src)
         status = "ok" if doc["quality"]["score"] >= REVIEW_THRESHOLD else "review"
+        reasons = review_reasons(doc)
+        doc["review_reasons"] = reasons
+        if reasons and status == "ok":
+            status = "review"
         if chk.get("source_kind") == "pdf":
             status = "pdf"
         return pid, chk, doc, flat, smap, status
@@ -397,27 +418,46 @@ def analyse(lay, pid, row):
         return pid, chk, doc, "", None, "failed"
 
 
-def store(lay, result):
-    """Write one analysed paper (build files and rows) under the writer lock."""
+def store(lay, result, remap_claims=False, by="kb ingest arxiv --remap-claims"):
+    """Write one analysed paper (build files and rows) under the writer lock. With
+    remap_claims the claims that point into the paper follow it to its new chunk ids and
+    flat ranges (kbtool.claims_remap), in the same lock hold and the same transaction; the
+    remap summary is kept in result_remap[pid]."""
     pid, chk, doc, flat, smap, status = result
     with writer_lock(lay, what=f"ingest {pid}"):
         con = _db.connect_rw(lay.db_work)
+        build_saved = None
         try:
             con.execute("BEGIN")
             if doc is None:
                 _db.log(con, "ingest-arxiv", pid, "skipped", f"download status {chk['status']}")
             else:
+                before = None
+                if remap_claims:
+                    from . import claims_remap as CR
+                    before = CR.capture(con, lay, pid)
+                    build_saved = CR.save_build(lay, pid)
                 write_build(lay, pid, doc, flat, smap)
                 write_paper(con, pid, chk, doc, _sha(flat) if flat else None, status)
+                if remap_claims:
+                    result_remap[pid] = CR.apply(con, lay, pid, before, by)
                 _db.log(con, "ingest-arxiv", pid, status,
                         json.dumps({"score": doc["quality"].get("score"), "sections": len(doc["sections"]),
                                     "equations": len(doc["equations"]), "chunks": len(doc["chunks"]),
                                     "bib": len(doc["bib"]["entries"]), "bib_source": doc["bib"]["source"],
+                                    "review_reasons": doc.get("review_reasons", []),
+                                    "claims_remapped": (result_remap.get(pid) or {}).get("claims")
+                                    if remap_claims else None,
                                     "error": doc.get("error")}))
             con.commit()
         except Exception:
             con.rollback()
+            if build_saved:
+                CR.restore_build(lay, pid, build_saved)      # the rows were rolled back: so are the files
             raise
         finally:
             con.close()
     return status
+
+
+result_remap = {}

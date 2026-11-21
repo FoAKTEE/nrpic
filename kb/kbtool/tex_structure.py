@@ -33,7 +33,58 @@ SECTION_LEVELS = {"part": 0, "chapter": 0, "section": 1, "subsection": 2, "subsu
 CITE_RE = re.compile(r"\\(cite|citep|citet|citealt|citealp|citeauthor|citeyear|citeyearpar|onlinecite|Cite|Citep|"
                      r"Citet|Citealt|Citealp|parencite|textcite|autocite|footcite|supercite|cites|nocite|citenum)"
                      r"(\*?)(?![A-Za-z@])")
+CITE_CMDS = ("cite", "citep", "citet", "citealt", "citealp", "citeauthor", "citeyear", "citeyearpar", "onlinecite",
+             "Cite", "Citep", "Citet", "Citealt", "Citealp", "parencite", "textcite", "autocite", "footcite",
+             "supercite", "cites", "nocite", "citenum")
+# environments that hold a reference list: LaTeX thebibliography, REVTeX-3 and AASTeX `references`,
+# AASTeX `thereferences`, pandoc's CSLReferences (number of mandatory arguments after \begin{...})
+REF_ENVS = {"thebibliography": 1, "references": 0, "thereferences": 0, "CSLReferences": 2}
 LABEL_RE = re.compile(r"\\label\s*\{([^{}]*)\}")
+
+
+XPARSE_RE = re.compile(r"\\(?:NewDocumentCommand|RenewDocumentCommand|ProvideDocumentCommand|DeclareDocumentCommand)"
+                       r"\s*(?:\{\s*\\([A-Za-z@]+)\s*\}|\\([A-Za-z@]+))\s*\{([^{}]*)\}")
+
+
+def xparse_macros(text):
+    """Definitions written with xparse (\\NewDocumentCommand\\name{mm}{body}) whose arguments are all
+    mandatory ('m'), in the form of tex_macros.collect. tex_macros does not read xparse; these are
+    used only to find aliases of \\cite and \\bibitem (pandoc's \\citeproc is one)."""
+    out = {}
+    for m in XPARSE_RE.finditer(text):
+        spec = re.sub(r"\s+", "", m.group(3))
+        if spec and set(spec) != {"m"}:
+            continue
+        body, _ = M.read_group(text, m.end())
+        if body is None:
+            continue
+        out[m.group(1) or m.group(2)] = {"nargs": len(spec), "default": None, "body": body, "kind": "xparse",
+                                         "at": m.start()}
+    return out
+
+
+def command_aliases(macros, targets):
+    """Macros that stand for one of the commands in `targets`, found from their definitions
+    (\\def\\bi{\\bibitem}, \\newcommand{\\bib}[1]{\\bibitem{#1}}, \\def\\ct{\\cite},
+    \\newcommand{\\sortbibitem}[2]{...\\bibitem{#1} #2...}), never from a list of names.
+    Returns {name: (target, nargs, key_arg)}: key_arg is the 1-based argument that the body
+    passes to the target as its key (None for a bare alias, which keeps the caller's arguments)."""
+    out = {}
+    tre = "|".join(re.escape(t) for t in sorted(targets, key=len, reverse=True))
+    bare = re.compile(r"\s*\\(" + tre + r")\s*")
+    keyed = re.compile(r"\\(" + tre + r")(?![A-Za-z@])\s*(?:\[[^\]]*\]\s*)?\{\s*#([1-9])\s*\}")
+    for name, sp in (macros or {}).items():
+        if name in targets or "@" in name:
+            continue
+        body = sp.get("body") or ""
+        m = bare.fullmatch(body)
+        if m and sp.get("nargs", 0) == 0:
+            out[name] = (m.group(1), 0, None)
+            continue
+        m = keyed.search(body)
+        if m and sp.get("nargs", 0) >= int(m.group(2)):
+            out[name] = (m.group(1), sp["nargs"], int(m.group(2)))
+    return out
 TOKEN_RE = re.compile(r"\\begin\s*\{([^{}]*)\}|\\end\s*\{([^{}]*)\}|\\([A-Za-z@]+)|\\(.)|\$\$|\$", re.S)
 
 
@@ -322,6 +373,14 @@ def extract(flat, macros=None):
     if mapp:
         appendix_at = mapp.start()
     bibenv = find_envs(body, {"thebibliography"}, math_mask)
+    if not bibenv:
+        # other reference-list environments count only when they hold items (a `references`
+        # environment of another meaning stays body text)
+        item_names = ["bibitem", "reference", "harvarditem"] + \
+            list(command_aliases({**xparse_macros(flat), **macros}, ("bibitem", "harvarditem")))
+        item_re = re.compile(r"\\(?:" + "|".join(re.escape(n) for n in item_names) + r")(?![A-Za-z@])")
+        bibenv = [e for e in find_envs(body, set(REF_ENVS) - {"thebibliography"}, math_mask)
+                  if item_re.search(body[e["inner_start"]:e["inner_end"]])]
     mbib = re.search(r"\\bibliography\s*\{([^{}]*)\}", body)
     bib_start = None
     if bibenv:
@@ -539,15 +598,36 @@ def extract(flat, macros=None):
 
     # --- citations
     cites = []
-    for mc in CITE_RE.finditer(body):
+    cite_al = command_aliases({**xparse_macros(flat), **macros}, CITE_CMDS)
+    cite_re = CITE_RE
+    if cite_al:
+        cite_re = re.compile(r"\\(" + "|".join(re.escape(c) for c in sorted(set(CITE_CMDS) | set(cite_al),
+                                                                             key=len, reverse=True))
+                             + r")(\*?)(?![A-Za-z@])")
+    for mc in cite_re.finditer(body):
         if math_mask.inside(mc.start()):
+            continue
+        cmd = mc.group(1)
+        if cmd in cite_al:
+            target, nargs, karg = cite_al[cmd]
+            if karg is None:
+                a = command_args(body, mc.end(), 2, 1)
+                keys_tex = a[1][0] if a else None
+            else:
+                a = command_args(body, mc.end(), 0, nargs)
+                keys_tex = a[1][karg - 1] if a and len(a[1]) >= karg else None
+            if not a or keys_tex is None:
+                continue
+            keys = [k.strip() for k in keys_tex.split(",") if k.strip()]
+            cites.append({"cmd": target, "alias": cmd, "keys": keys, "start": off + mc.start(), "end": off + a[2],
+                          "section": section_at(mc.start()), "nocite": target == "nocite"})
             continue
         a = command_args(body, mc.end(), 2, 1)
         if not a:
             continue
         keys = [k.strip() for k in a[1][0].split(",") if k.strip()]
-        cites.append({"cmd": mc.group(1), "keys": keys, "start": off + mc.start(), "end": off + a[2],
-                      "section": section_at(mc.start()), "nocite": mc.group(1) == "nocite"})
+        cites.append({"cmd": cmd, "keys": keys, "start": off + mc.start(), "end": off + a[2],
+                      "section": section_at(mc.start()), "nocite": cmd == "nocite"})
 
     # --- labels map for \ref
     labels = {}
