@@ -684,3 +684,65 @@ below 1e-3 of the parts of M at every dump after cN 1: late (cN > 7) the odd par
 exceeds the even part (first-order truncation of the top shells at 4 cells per wavelength)
 and the even/odd ratio of M lies in [0.05, 0.7]. Refuted if even/odd of M is within 15 %
 of 1 at cN > 7 (a floor) or above 1.
+
+## Entry 14, 2026-11-21 09:00 UTC: outcomes of U256 against entry 9.3 (analysis E-20261121-084815-63462b8)
+
+Analysis run E-20261121-084815-63462b8 (`scripts/analyse_cards.py --group u256`, 3 cores, 9.8
+min; 26 s for the code-time MS reference of 3414 shells, then 35 s per dump) of card run
+E-20261121-075255-8cf90e7; numbers in `results/runs/summary_E-20261121-084815-63462b8.json`,
+figures `fig/fig_card_u256_{modes,spectrum,onepoint,constraints}.png` (each looked at).
+548958 modes (|n|^2 <= 4096), 68532 of them with k <= 32 dk; 21 dumps, the last at N_f
+(cN = 10.000).
+
+| Pre-registered (9.3) | Outcome | Verdict |
+|---|---|---|
+| U1: abs dN < 1e-6 at every landmark | 1.6e-9 at most (N_f) | holds; U-A0 passes |
+| U1: <Pi> at most 1e-4 relative (time part 9.3e-8, backreaction about 4e-5) | 4.17e-5 at N_f (the estimated backreaction) | holds; U-A1 passes (1e-3) |
+| U1: <phi>, <K> below 1e-8 | 1.15e-9, 2.4e-11 | holds |
+| U2: lockstep record within 1e-6 of the reference at N_f | 2.55e-3 | FAILED (by 2500); reading in 14.1, tested there |
+| U3: shell-normalised deviation at N_f in [1e-4, 1e-2] | max 9.1e-4, rms 2.6e-4 (k <= 32 dk) | holds |
+| U3: U-A2 as written passes, max in [1e-4, 2e-2] | max 5.9e-2 at mode (12, -14, 18); 10 of 68532 modes above 0.02, 37 above 0.01; median 2.6e-4, rms 7.9e-4 | FAILED; U-A2 (0.02) fails as written for the single run |
+| U3: if the max exceeds 1e-3 its mode is among the 1 % of modes with the smallest abs(alpha) | the worst mode has abs(alpha) 0.0066, rank 3e-5; all ten modes above 0.02 have rank below 7e-4 | holds |
+| U3: refuted if the shell-normalised deviation exceeds 0.02 at a dump | 6e4, 6e2, 6.0, 8.7e-2 at the first four dumps (cN 0 to 1.55); at most 3.3e-3 from cN 2.05 on, 1.2e-3 from 2.55 on | FAILED as written; the early values divide by the shell rms of a reference that the window has not yet switched on (W of order e^-26 for the top shells at cN 1.5), a normalisation that means nothing there [JUDGEMENT]; the run-normalised per-mode deviation (entry 2's measure) is below 1.6e-6 at those dumps |
+| U4: U-A3, k <= 3 dk within 2 % of the full MS | 0.9923 to 1.0016 (worst: the mode with abs(alpha) 0.15) | holds; U-A3 passes (10 %) |
+| U5: U-A5 shell ratios within 1e-3 for k <= 32 dk, 1e-2 for the top shells | 5.9e-4 (rms 8.9e-5); top shells 6.7e-3 (shell 4096) | holds |
+| U6: rms of R^NR in the band equal to the realisation's linear value within 1e-3 | 0.894520 against 0.894364 (1.7e-4) | holds |
+| U6: and to the ensemble 0.894 within 0.005 | 0.89452 against 0.89366 (sqrt of 0.79863, entry 4) | holds |
+| U6: full lattice within 1 % of the band | 0.8945204 against 0.8945204; rms(full - band) 1.8e-4 | holds |
+| U6: skewness abs <= 0.05, excess kurtosis abs <= 0.1 | 0.0024 (linear field 0.0009), 0.0011 (0.0011) | holds |
+| U6: max abs(R^NR) within 2 % of the linear field's, between 3.5 and 6; refuted above 7 | 4.568 against 4.562 (0.13 %); 5.1 rms | holds; P1:534's "outliers ~ 10" not seen in this realisation |
+| U6: pointwise rms(R^NR_band - R_lin) at most 1e-2 of the rms | 9.7e-4 = 1.1e-3 of the rms; largest 5.8e-3 | holds |
+| U7: <abs H'/[H]> at most in [1e-12, 1e-9] | 2.89e-12 (t = 0), 1.4e-12 in USR, 6.5e-15 late | holds |
+| U7: <abs M/[M]> at most in [5e-3, 5e-2] during USR | 2.51e-2 (near cN 6.5) | holds |
+| U7: <abs M/[M]> at N_f in [1e-3, 2e-2] (P1:541 "around 1e-2") | 2.13e-3 | holds |
+| U8: 1.23 to 1.35 s per step, 0.58 to 0.64 card-hours, 18 to 24 GB | 1.298 s, 0.617 card-hours, 19.6 GB | holds (entry 13) |
+
+Where the linear per-mode comparison loses meaning (asked by the task) [VERIFIED for this
+realisation]: nowhere before N_f at the level of the shells. The deviation of R^NR from
+the linear field L^-3/2 W R alpha, per mode over its largest reference amplitude, has an
+rms over the 68532 modes k <= 32 dk that stays below 1e-3 to N_f (7.9e-4 there); its
+largest value passes 1e-3 at cN 6.03 and 0.02 at cN 7.02, always on modes with the
+smallest abs(alpha), when rms R^NR is 0.15 and 0.72. Over the shell rms the deviation is
+at most 9.1e-4 at N_f, and the real-space field differs from the linear one by 1.1e-3 of
+its rms with rms R^NR = 0.894 (Delta_R up to about 1 at 64 dk, `fig/fig_card_u256_spectrum.png`).
+The comparison is therefore meaningful at the 1e-3 level through N_f; what a single run
+cannot say is how much of the 1e-3 is second order (even in s) and how much is the time
+step: U256m splits it.
+
+### 14.1 Lockstep record of U256: reading and predictions before `scripts/lockstep_shells.py` runs
+
+Reading [JUDGEMENT]: the lockstep integration of the mode functions uses the run's step
+(dt = 6.136e-3) from N*, when the top shells are deep inside the horizon (k dt = 0.39 for
+k = 64 at a = 1). RK4's phase error per step is about (omega dt)^5/120; with omega = k/a and
+a ~ e^t it sums to about k^5 dt^4/600, which is 2.5e-3 for k = 64 at 256^3 (measured
+2.55e-3), 1.2e-6 for the top shell at 128^3 and 2.0e-5 at 64^3 (group 1 measured 2.25e-6
+and 3.57e-5 as the maximum over shells, with the background part 1.6e-6 and 2.5e-5).
+Predictions (refuted if outside):
+- L1: at 256^3 the lockstep error per shell at N_f follows k^5 dt^4/600 within a factor 2
+  for every shell with k >= 24 dk (where this part exceeds 1e-5).
+- L2: at 64^3 and 128^3 the lockstep error per shell is the background part (the value of
+  the lowest shells) plus k^5 dt^4/600; the top shell (k = 8) exceeds the lowest shell by
+  1.0e-5 to 4e-5 at 64^3 and by at most 3e-6 at 128^3.
+- L3: at 256^3 the median per-mode error of R^NR at N_f in each shell with k >= 40 dk lies
+  between 0.5 and 2 times the lockstep error of that shell (the sources inherit the phase
+  error when the window lets them in).
