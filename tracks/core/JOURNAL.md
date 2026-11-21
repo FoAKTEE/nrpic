@@ -275,7 +275,7 @@ the verdict line is a defect of my driver (it compared a preparation product). T
 stays on record as failed; the driver is corrected (preparation products are listed
 before AthenaK starts and reported separately) and the test is run again.
 
-## 2026-11-21T03:00Z  session core-lead-2 (wave 3, evening batch: release candidate core-v0.4, continued)
+## 2026-11-21T02:58Z  session core-lead-2 (wave 3, evening batch: release candidate core-v0.4, continued)
 
 State found: branch at e22fd12c (pushed), one untracked file of the first session
 (`analysis/release/fig_regress_v04.py`, complete, never run), run
@@ -318,7 +318,7 @@ C  (first session, above) stays as written. What I add before the card job, with
    Refuted by a crash, a number outside its band, a differing count in C3, or a
    difference above the bounds of C4 and C5.
 
-Correction of Q2 before the run (03:12Z): the counts "43 identical" above, and the
+Correction of Q2 before the run (02:59Z): the counts "43 identical" above, and the
 per-test counts of the first attempt, include five preparation products that were equal
 (leak `particles.nrp`, clump `particles.nrp`, ids `gauss_h0p5.nrp` and `.json`, coll
 `box.nrp`). Of the files AthenaK writes the first attempt has 38 identical and 2 of
