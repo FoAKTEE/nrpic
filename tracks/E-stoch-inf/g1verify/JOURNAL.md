@@ -264,7 +264,7 @@ t = 1.00 bit-identical to both; the .modes files are byte-identical. The constra
 history records may differ in the last bits (box sums over MeshBlocks in another order).
 Refuted by a single differing word in a dump.
 
-## Entry 6 (2026-11-20 19:32 PST): outcomes V4, V5, V7c
+## Entry 6 (2026-11-20 19:22 PST): outcomes V4, V5, V7c
 
 Constraint pass E-20261121-030657-c1afe38 (completed; 289 dumps hashed, all equal to the
 runs' lists; P256 read by seek after its pass-1 check; my purpose text wrongly said L256p was
@@ -323,7 +323,7 @@ restart from cycle 12: bit-identical at t = 1.03; mode files byte-identical; rec
 by box-sum rounding only (<= 1.7e-14 relative, except the e-fold column at t = 0, whose value
 is itself rounding).
 
-## Entry 7 (2026-11-20 19:35 PST, 03:35Z on 11-21): figures, verdicts, comparison; package closed
+## Entry 7 (2026-11-20 19:29 PST, 03:29Z on 11-21): figures, verdicts, comparison; package closed
 
 Figures: registered run E-20261121-032413-0672bf9 (make_figs.sh), every PNG looked at with
 the Read tool (V1-V7; dev versions in g1verify_tmp/figdev looked at first, fixes: V3 deformed
