@@ -1,0 +1,123 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-20261121-075359-26e3b31",
+  "track": "C-sidm",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "drift M8 cc2: run (i) cc2_kninf_M8 against the M/4 control (predictions M8.1-M8.4, drift/JOURNAL.md entry 2; lead batch 2b)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/C-sidm/drift/scripts/compare.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "--tag",
+    "cc2_M8",
+    "cc2_M4=cc2:/data/haiyangw/nrpic/scratch/C-sidm/C-20261115-171059-4b70228/cc2_kninf",
+    "cc2_M8=cc2:/data/haiyangw/nrpic/scratch/C-sidm/C-20261120-222533-ce50a86/cc2_kninf_M8",
+    "--ratio",
+    "cc2_M8/cc2_M4"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "26e3b315a19c33b028a22443af52c7622531d026",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "package": [
+      "tracks/C-sidm/drift"
+    ],
+    "outside_package": {
+      "count": 25,
+      "first": [
+        " M tracks/C-sidm/note/figures/fig_box_step.pdf",
+        " M tracks/C-sidm/note/figures/fig_collisions.pdf",
+        " M tracks/C-sidm/note/figures/fig_knudsen.pdf",
+        " M tracks/C-sidm/note/figures/fig_sequences.pdf",
+        " M tracks/C-sidm/note/figures/schem_architecture.png",
+        " M tracks/C-sidm/note/figures/schem_architecture.svg",
+        " M tracks/C-sidm/note/figures/schem_timeline.png",
+        " M tracks/C-sidm/note/figures/schem_timeline.svg",
+        " M tracks/C-sidm/note/main.tex",
+        " M tracks/C-sidm/note/references.bib",
+        " M tracks/C-sidm/note/scripts/common.py",
+        " M tracks/C-sidm/note/scripts/ledger.py",
+        " M tracks/C-sidm/note/scripts/schem_timeline.py",
+        " M tracks/C-sidm/note/tables/ledger.tex",
+        "?? tracks/C-sidm/note/figures/fig_box_summary.pdf",
+        "?? tracks/C-sidm/note/figures/fig_box_summary.png",
+        "?? tracks/C-sidm/note/figures/fig_cluster.pdf",
+        "?? tracks/C-sidm/note/figures/fig_cluster.png",
+        "?? tracks/C-sidm/note/figures/fig_heat.pdf",
+        "?? tracks/C-sidm/note/figures/fig_heat.png"
+      ]
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/C-sidm"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/C-sidm/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/C-sidm/drift/scripts/compare.py",
+      "role": "argv",
+      "sha256": "ed8404b44279dcda67a3505ac1854532e1831a1fd6e3647050e6618cf37eb86e",
+      "bytes": 6897,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/C-sidm/C-20261121-075359-26e3b31",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T07:53:59Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 45.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 5.8567,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 165,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
