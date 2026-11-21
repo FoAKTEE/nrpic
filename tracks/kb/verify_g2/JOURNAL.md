@@ -132,7 +132,7 @@ locations as question-level `file` and `lines` = [[a, b], ...]. My scorer's load
 this form; I added it (score_search.py, load_golden) without changing the scoring rules of
 entry 3. All 32 expected papers are in the snapshot (ad-hoc check of the loader).
 
-## Entry 6 (2026-11-21 07:53 UTC): held-out retrieval scored; prediction for the source check
+## Entry 6 (2026-11-21 07:52 UTC): held-out retrieval scored; prediction for the source check
 
 Outcome of R1 (score run kb-20261121-075156-b84a189 on the raw outputs of
 kb-20261120-222546-ea894c8; 24 held-out questions, all 24 answer ranges mapped, my map and
@@ -156,3 +156,58 @@ bibliography or an abstract present in the source and absent from the database),
 artefact of my regular expressions. Refuted if two or more verdicts are wrong, or if any of
 the failure verdicts (A for astro-ph/0306304, 2009.08715, 2403.15126, 2509.01320,
 gr-qc/9906015; B for 2403.15126 and 0710.5073) is a scan artefact.
+
+## Entry 7 (2026-11-21 08:00 UTC): outcome of the source check P2; predictions for C1, C5, C6, KB-G0
+
+Outcome of P2 (draw kb-20261120-223339-b842a8a; I read each source with grep/sed, read-only):
+- 9 of the 10 papers with status ok: the overall verdict (success) is right. Spot checks against
+  the source: section commands equal my count in all 10 (e.g. 2610.08045 23, 2107.12735 33);
+  .bbl rows equal the database's bibliography (2110.11249 58 = 58, 1701.00303 83 = 83,
+  1303.2899 31 = 31, 1706.09309 63 = 63, 2104.12293 8 = 8); 2610.08045 has only a .bib
+  (`\bibliography{biblio}`): 84 cited keys = 84 entries in the database.
+- 0710.5073 (ok): the B failure is real. The bibliography is a `references` environment
+  (REVTeX 3) with 28 `\bibitem` at backreaction2prdrv.tex:587-705; the database has 0 entries but
+  51 citation rows.
+- 2403.15126 (review): B and A failures real. 116 entries made by a custom `\sortbibitem` macro
+  inside `thebibliography` (pII_GW_Vir_C2_Arx.tex:117-129, 1719 ff.); database 0 entries,
+  122 citation rows. The abstract is a bold heading (line 171) with the environment commented
+  out (line 185). My count of the source bibliography (1, the `\bibitem` inside the macro
+  definition) is an undercount; the verdict is unaffected (database 0).
+- 2009.08715 (review): A failure real (abstract as `{\bf Abstract}` at HDR.tex:223).
+- 2509.01320 (review): A failure real (SciPost `\section*{Abstract}` at
+  notes_cosmo_beyond_FLRW.tex:108); the text is in the database as a section, not as an
+  abstract chunk.
+- astro-ph/0306304 (review) and gr-qc/9906015 (review): A failure real (abstract unmarked:
+  `\footnotesize` block at main.tex:34-50; plain TeX "Summary:" at main.tex:90). BUT my S and B
+  verdicts are wrong for both: the papers have numbered sections written as bold or font
+  headings (`{\bf I. Introduction}` main.tex:56; `{\rma 3.1. ...}` main.tex:599) and a reference
+  list without `\cite` (`\item` list after "References" at main.tex:696; 21 `\ref` lines after
+  main.tex:1250), none of which is in the database (0 sections, 0 bibliography entries). My scan
+  passes S when there is no sectioning command and B when there is no `\cite`, which is too
+  lenient for such papers.
+P2 is **refuted** on its first bar (component verdicts wrong in 2 of 15 papers, 4 component
+verdicts), **confirmed** on its second (every failure verdict is a real gap of the database).
+Consequence: my rate 662/710 is an upper bound in this respect; the papers where S or B pass
+only because the source has no sectioning command or no `\cite` are counted in the figure run
+(step 7), which tells how large the bound's slack can be. [VERIFIED, sources at the locators]
+
+Predictions (P3), checks script `scripts/checks_c1_c5_c6.py`:
+- C1: all 684 + 26 = 710 manifest ids are in the snapshot, no extra paper, group and priority
+  agree; all 63 + 1 repositories are present, each with a 40-hex commit and >= 1 file; the
+  684 rows of arxiv.tsv are each found in the brief line SOURCE.json names. Refuted by any
+  missing id or repository, or a repository without commit or files.
+- C5: every snapshot file has mode 0444; the readers' default is db/current (static: the
+  `open_for_read` function; dynamic: in a fake data root, `kb search` without --db finds the
+  word that is only in the snapshot and not the word added to kb.sqlite afterwards, and the
+  snapshot's bytes are unchanged by the reads). Refuted by a writable snapshot or a default
+  that reads kb.sqlite.
+- C6: sha256 of kb-20261119-a782f1e.sqlite starts with a782f1e; the earlier snapshots named in
+  the wave-1/2 runs exist with matching sha prefixes; the snapshot's own ingest_log does NOT
+  hold its own snapshot row (it is written into kb.sqlite after the copy, kbtool/db.py:192-195)
+  but holds the rows of the earlier snapshots. "Locators carry it": I expect the answer of
+  `kb search` to name the database file (text footer, JSON info.database) but no per-hit
+  snapshot field; I will judge that as partly met. Refuted (for the sha part) by any prefix
+  mismatch.
+- KB-G0 C1: the directories of brief 12.2 exist; the reasons for the tools are NOT expected in
+  kb/README.md (the brief asks for them in JOURNAL, which I may not open), so that part will
+  likely stay NOT CHECKED.
