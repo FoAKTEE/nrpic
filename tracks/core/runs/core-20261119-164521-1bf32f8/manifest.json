@@ -1,0 +1,24 @@
+{
+ "run_id": "core-20261119-164521-1bf32f8",
+ "owner": "core",
+ "command": [
+  "bash",
+  "/data/haiyangw/nrpic/wt/core-omp/tracks/core/omp/analyse_scaling.sh"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-164521-1bf32f8",
+ "commit": "1bf32f8",
+ "source_modified_since_commit": false,
+ "inputs": [],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-164521-1bf32f8",
+ "purpose": "omp: figure and table of the strong scaling (phases 1, serial, 4, 16, 32, 64 threads); no card numbers yet (job 4643 pending)",
+ "kind": "scouting",
+ "tag": "omp-analyse-scaling",
+ "state": "finished",
+ "status": "completed",
+ "registered_by_hand": "nrpic-run refused (cores of owner core busy in other sessions)",
+ "wall_time_s": 2.39,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T16:45:21Z"
+}

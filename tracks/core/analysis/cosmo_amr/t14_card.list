@@ -1,0 +1,9 @@
+# T14: card check of the published card executable (source 3c44b74) on decks of the processor
+# tests T2 (U, S, A, M, G of run core-20261119-151654-e01b46e) and T9 (ladder of run
+# core-20261119-154404-64067cd); prediction in tracks/core/JOURNAL-cosmo-amr.md (entry of T14)
+U /data/haiyangw/nrpic/scratch/core/core-20261119-151654-e01b46e/U/flrw.athinput
+S /data/haiyangw/nrpic/scratch/core/core-20261119-151654-e01b46e/S/flrw.athinput
+A /data/haiyangw/nrpic/scratch/core/core-20261119-151654-e01b46e/A/flrw.athinput
+M /data/haiyangw/nrpic/scratch/core/core-20261119-151654-e01b46e/M/flrw.athinput
+G /data/haiyangw/nrpic/scratch/core/core-20261119-151654-e01b46e/G/flrw.athinput
+ladder /data/haiyangw/nrpic/scratch/core/core-20261119-154404-64067cd/ladder/peak.athinput

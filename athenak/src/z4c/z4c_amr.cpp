@@ -109,6 +109,33 @@ void Z4c_AMR::RefineTracker(MeshBlockPack *pmbp) {
       Real dmin2 = SQ(pt->GetPos(0) - cx) \
                    + SQ(pt->GetPos(1) - cy) \
                    + SQ(pt->GetPos(2) - cz);
+      // periodic mesh: the nearest image of the tracker counts, so that the refined
+      // region continues across a face of the box (the unshifted image is the term
+      // above; nothing changes on a mesh that is not periodic)
+      {
+        const Real bmin[3] = {x1min, x2min, x3min}, bmax[3] = {x1max, x2max, x3max};
+        const Real len[3] = {pmesh->mesh_size.x1max - pmesh->mesh_size.x1min,
+                             pmesh->mesh_size.x2max - pmesh->mesh_size.x2min,
+                             pmesh->mesh_size.x3max - pmesh->mesh_size.x3min};
+        const bool per[3] = {
+          pmesh->mesh_bcs[BoundaryFace::inner_x1] == BoundaryFlag::periodic,
+          pmesh->mesh_bcs[BoundaryFace::inner_x2] == BoundaryFlag::periodic,
+          pmesh->mesh_bcs[BoundaryFace::inner_x3] == BoundaryFlag::periodic};
+        if (per[0] || per[1] || per[2]) {
+          Real d2 = 0.0;
+          for (int a = 0; a < 3; ++a) {
+            Real da = std::numeric_limits<Real>::max();
+            for (int s = -1; s <= 1; ++s) {
+              if (s != 0 && !per[a]) continue;
+              const Real xp = pt->GetPos(a) + s*len[a];
+              const Real cl = fmax(bmin[a], fmin(xp, bmax[a]));
+              da = fmin(da, fabs(xp - cl));
+            }
+            d2 += SQ(da);
+          }
+          dmin2 = fmin(dmin2, d2);
+        }
+      }
 
       // safety net for radius = 0: dmin2 = 0 inside the block but 0 < SQ(0) is false
       bool iscontained =

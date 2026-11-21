@@ -1,0 +1,37 @@
+{
+ "run_id": "core-20261119-154346-a1c8dd6",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-mpi/.work/build_cpu_mpi/src/athena",
+  "-i",
+  "geodesic.athinput",
+  "time/tlim=20.0",
+  "particles/hist_dcycle=100",
+  "particles/pusher=boris",
+  "particles/metric=lattice"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-154346-a1c8dd6",
+ "commit": "a1c8dd6",
+ "source_modified_since_commit": true,
+ "inputs": [
+  {
+   "path": "problems/kerr/geodesic.athinput",
+   "sha256": "31c6c43cb59447ec212b35fe1c019012d20d8483cda718e33e03cbd2b039ddc0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mpi/.work/build_cpu_mpi/src/athena",
+   "sha256": "1be068cac77ccfe697037acb4e96bfc11f99d84905b62504e4299edfb0ede153",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-154346-a1c8dd6",
+ "purpose": "regression of the relativistic mode, case boris, executable new",
+ "kind": "scouting",
+ "tag": "regress-boris-new",
+ "state": "finished",
+ "wall_time_s": 1.49,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T15:43:46Z"
+}
