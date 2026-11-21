@@ -1,0 +1,104 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261121-084342-e388a26",
+  "track": "B-emd-gw",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "first_source r3 P16' at 32^3: shell spectra of TT and non-TT parts of the run without any wave at tau = 0.1, a = 2.25, a = 12.25",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "env",
+    "OMP_NUM_THREADS=1",
+    "OPENBLAS_NUM_THREADS=1",
+    "python3",
+    "tracks/B-emd-gw/first_source/scripts/null_spectrum.py",
+    "nw_tau0.1=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-080244-f575dfe/jit0p3_nw/bin/cw.z4c.00001.bin",
+    "nw_a2=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-080244-f575dfe/jit0p3_nw/bin/cw.z4cd.00001.bin",
+    "nw_a12=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-080244-f575dfe/jit0p3_nw/bin/cw.z4cd.00005.bin"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "e388a26179335eae7a9e4706350b032c64fa4f3d",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/first_source"
+    ],
+    "outside_package": {
+      "count": 3,
+      "first": [
+        "?? tracks/B-emd-gw/gw_diag/gwdiag/gauge.py",
+        "?? tracks/B-emd-gw/gw_diag/tests/test_gauge.py",
+        "?? tracks/B-emd-gw/waves/scripts/check_gauge.py"
+      ]
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/first_source/scripts/null_spectrum.py",
+      "role": "argv",
+      "sha256": "57212df03d579c42dbd8efcf0ce2a001a9ce956aae82adb654838bd53df6b188",
+      "bytes": 3682,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261121-084342-e388a26",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T08:43:42Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.3119,
+    "gpu_hours_reserved": 0.15,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 0,
+    "runs": 247,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
