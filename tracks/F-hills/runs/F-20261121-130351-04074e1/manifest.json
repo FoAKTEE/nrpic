@@ -1,0 +1,127 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "F-20261121-130351-04074e1",
+  "track": "F-hills",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "binary_conv R16n: P1's binary alone (no heavy hole, same positions, momenta, gauge), members m/16 (11 levels, +-128), 3 segments (about 19 M of tlim 100); release core-v0.5 card build (byte copy bc-ak05-gpu) behind the tracker-keeping wrapper",
+  "preregistered_in": "tracks/F-hills/binary_conv/JOURNAL.md#2026-11-21-bc-1-prediction-for-the-three-runs-written-before-submission",
+  "launcher": "chain",
+  "command": [
+    "scripts/submit_chain.sh",
+    "/data/haiyangw/nrpic/scratch/F-hills/F-20261121-130351-04074e1",
+    "/data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/binary_conv/inputs/bin_m16.athinput"
+  ],
+  "cwd": "scratch/F-hills/F-20261121-130351-04074e1",
+  "git": {
+    "sha": "04074e18d6b44828b4f33d4b237ae54bc3da6c9c",
+    "branch": "track/F-hills",
+    "dirty": false,
+    "package": [
+      "tracks/F-hills/binary_conv"
+    ],
+    "outside_package": {
+      "count": 2,
+      "first": [
+        "?? tracks/F-hills/g2mesh/scripts/card_analysis.py",
+        "?? tracks/F-hills/kerr/tests/t7_spin_limit.py"
+      ]
+    },
+    "merge_base_main": "973f2dbc2e32338b1ea99d14ee4d03719af9a8c7",
+    "worktree": "wt/F-hills"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/binary_conv/scripts/athena_keep_trackers_bc.sh",
+    "exe_sha256": "2f019d8f859ddc239cd2fb07c7bc364b640836b2d25ad6cb969572797e86085a",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/F-hills/.venv"
+  },
+  "input": {
+    "file": "tracks/F-hills/binary_conv/inputs/bin_m16.athinput",
+    "sha256": "179a4e9aae8c6c4c6884af62bf12b4076759a4f82d6ccab2c5ee262e0ee00557",
+    "overrides": {}
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/F-hills/tmp/binary_conv/exe/bc-ak05-gpu",
+      "role": "input",
+      "sha256": "2512c8d59af960093e86eb05add6485ca8ad08e8f6ba8b03b099166507b61ea4",
+      "bytes": 107789152,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/F-hills/binary_conv/scripts/athena_keep_trackers_bc.sh",
+      "role": "exe",
+      "sha256": "2f019d8f859ddc239cd2fb07c7bc364b640836b2d25ad6cb969572797e86085a",
+      "bytes": 1407,
+      "tracked": true
+    },
+    {
+      "path": "tracks/F-hills/binary_conv/inputs/bin_m16.athinput",
+      "role": "athinput",
+      "sha256": "179a4e9aae8c6c4c6884af62bf12b4076759a4f82d6ccab2c5ee262e0ee00557",
+      "bytes": 3436,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": 3,
+    "gpu_hours_requested": 2.95,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "F-20261121-130351-04074e1",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/F-hills/F-20261121-130351-04074e1",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-21T13:03:52Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "F-20261119-150017-b45ec5f"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 50.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.8239,
+    "gpu_hours_reserved": 25.5667,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 204,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
