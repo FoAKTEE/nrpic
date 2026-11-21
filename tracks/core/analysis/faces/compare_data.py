@@ -13,8 +13,8 @@ byte for byte: their headers repeat the parameters.  So the arrays are compared:
   text   (history files and the like) the lines that do not start with '#', as text;
          if they differ, the largest absolute difference of the numbers
 
-athena.log is skipped (wall-clock times).  Exit status 1 if any value differs or a file
-is missing on one side.
+athena.log is skipped (wall-clock times).  Exit status 1 if a difference is larger than
+--tol (default 0: any difference) or a file is missing on one side.
 """
 
 import argparse
@@ -122,6 +122,8 @@ def main():
     p.add_argument("--b", default="__rel")
     p.add_argument("--out", default="")
     p.add_argument("--fig", default="")
+    p.add_argument("--tol", type=float, default=0.0,
+                   help="largest absolute difference that still passes (default 0: exact)")
     a = p.parse_args()
     res = {}
     bad = False
@@ -150,7 +152,7 @@ def main():
               f"{r['compared'] - r['identical']} differ, largest difference "
               f"{r['max_abs_diff']:.3e}" +
               ("" if not r["missing"] else "; missing: " + ", ".join(r["missing"][:6])))
-        bad = bad or r["compared"] != r["identical"] or bool(r["missing"]) or not fa
+        bad = bad or r["max_abs_diff"] > a.tol or bool(r["missing"]) or not fa
     if a.out:
         with open(a.out, "w") as f:
             json.dump(res, f, indent=1)

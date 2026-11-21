@@ -1,4 +1,4 @@
-{"exe": ".work/exe/sbc4/athena_cpu",
+{"exe": ".work/exe/sbc5/athena_cpu",
  "note": "r2: the processor executable after the merge of core-v0.5 and the removal of the damping, options absent, against the release core-v0.5",
  "ball": {"M": 0.5, "Rb": 6, "edge": 1.5, "h": 0.5},
  "cases": {

@@ -705,3 +705,88 @@ and before any of the runs or analyses below:
   violation of the neighbour into the boundary cell); both reach t = 16 with a
   face-layer maximum of |H| below 3 times that of the stock run (1.57e-2). Refuted for
   an option by growth or a non-finite value: then that value is refused in the input.
+
+## 2026-11-21, entry 12: the regression r1 had FAILED and nobody had looked; cause (an inline function in the options header changes how the compiler builds the right-hand side); correction; m1 revised
+
+**r1 was never evaluated.** The cut session started r1 (core-20261120-220733-ea71a73: the
+processor executable of cb50e22 without the options against the release core-v0.3) and
+wrote its comparison spec, but no outcome. Looked at now (first by hand, then as the
+registered analysis named in entry 13): the outputs are NOT byte-identical. Files that
+differ: ball 8 of 11, vacuum puncture 3 of 5, boosted puncture 3 of 5, by_binary 4 of 9,
+horizon_calib 5 of 10, kg_wave_smr 1 of 1 (z4c_bench writes no file in two steps, so it
+tests nothing). The differences are in the last bits: largest difference of a dumped
+array 4.7e-10 (ball, 8 steps), 7.3e-12 (puncture, 4 steps); the constraint dump of the
+puncture at t = 0 differs in 30 per cent of its cells, uniformly over the block, by
+4.5e-13 at most. The claim "byte-identical without the option" of entry 3 was made for
+the first source version (224b9629) and was true for it only.
+
+**Where it came in** (unregistered diagnostics, `scratch/core/tmp/faces_bisect/`: one
+step of `inputs/punc.athinput` with each frozen executable, sha256 of `punc.con.00000.bin`
+and `punc.z4c.00001.bin`): base (27b2ced), sbc1 (224b9629), release core-v0.3 and release
+core-v0.5 give the same two files; sbc2 (6cd99721), sbc3 (cb50e22), the merged source
+(`.work/exe/merge0`) and the merged source without the damping (`.work/exe/sbc4`, ca6b46cb)
+give two other files, the same among the four. So the change came with the second source
+version of this package and has nothing to do with the merge or the removal.
+
+**Cause** [VERIFIED for the file named, by compilation]. Instruction counts of the object
+files of this build against those of the release build
+(`/data/haiyangw/nrpic/.work/build_cpu_v05`, same flags `-O2 -g -march=icelake-server`):
+`z4c_adm.cpp.o` the same (23505 instructions, 226 fused multiply-adds), but
+`z4c_calcrhs.cpp.o` 34670 instructions and 469 fused multiply-adds against 34683 and 467,
+although `z4c_calcrhs.cpp` is unchanged. Compiling that one file with variants of the
+headers (8 s each; `faces_bisect/cc.sh`, overlay directory first on the include path):
+
+| `z4c.hpp` / `z4c_sbc_ext.hpp` | instructions | fused multiply-adds |
+|---|---|---|
+| release `z4c.hpp` | 34683 | 467 |
+| release + the two method declarations | 34683 | 467 |
+| release + `#include "z4c/z4c_sbc_ext.hpp"` only (no member) | 34670 | 469 |
+| current, member `sbc` moved to the end of the class | 34670 | 469 |
+| current `z4c.hpp`, options header of 224b9629 | 34683 | 467 |
+| current `z4c.hpp`, options header with data members and declarations only | 34683 | 467 |
+| the same with the current includes and the inline `Fatal` | 34683 | 467 |
+| current options header with `Read` only declared | 34683 | 467 |
+| current options header without `<cstdlib>` | 34670 | 469 |
+
+The body of the inline `SbcExt::Read` (strings, a dozen parameter look-ups) in a header
+that `z4c.hpp` includes makes g++ 11.4 compile the right-hand side kernel of another file
+with two more contractions into fused multiply-adds. Neither the layout of the class nor
+the declarations matter. How the compiler gets there is not examined [JUDGEMENT: the
+template instances the body brings into the translation unit shift its inlining
+decisions]. The lesson for every package of core: a header reached from `z4c.hpp` holds
+declarations and data, no function bodies of any size; and "no code path changed" does
+not give byte identity, only the regression run does.
+
+**What it means for the runs of this package.** Every run with the executables sbc2 and
+sbc3 (c0 to c4, t1, b2, c3, the card runs D on their own compiler) solved the same
+equations with a right-hand side that rounds differently in two places. The stock
+references of a1 (base executable) and the option runs therefore differ by that rounding
+beside the options; r1 measures its size (7e-12 after 4 steps of the puncture, 5e-10
+after 8 steps of the ball), 5 to 7 orders below the smallest effect quoted in entries 7
+to 11. No conclusion changes; the byte regression is what was false.
+
+**Correction.** `SbcExt::Read` (and `Fatal`) moved into the new file
+`athenak/src/z4c/z4c_sbc_ext.cpp`; the header keeps the data members, the one-line
+`Extended()` and the declaration, and includes only `athena.hpp`. With it
+`z4c_calcrhs.cpp` compiles to the release's 34683 instructions and 467 fused
+multiply-adds (checked before the build).
+
+**Predictions** [JUDGEMENT], before the new build is finished:
+- o1 (`compare_objects.py`, new build against the release build, `specs/o1.txt`): every
+  object file has the same histogram of instructions as in the release build, except
+  those of the changed sources (`z4c/z4c.cpp`, `z4c_Sbc.cpp`, `z4c_tasks.cpp`); the two
+  new files exist on one side only. Refuted by any other object: then another header
+  effect is left.
+- r2 as in entry 11 (byte-identical with core-v0.5; the periodic case is
+  `problems/tests/lw_oblique.athinput`, a linear wave, because `mpi_box_periodic` named
+  there has no spacetime solver and needs a generated particle file).
+- m1 REVISED before it runs: the frozen executable of cb50e22 has the other right-hand
+  side, so exact equality of the arrays cannot hold and is not what the test can show.
+  New statement: with the full set the new executable agrees with the frozen one to
+  rounding: largest difference of any dumped array and history number below 1e-7 (the
+  dumps are single precision) for the four cases, and of the size r1 measured (below
+  1e-8 for the arrays of magnitude below 0.1). Refuted by a difference above 1e-7: then
+  the merge or the removal changed the arithmetic of the options.
+- s1 gets a third case, ball_full (the full set, new executable, to t = 16): its region
+  means of |H| agree with ball_g4nw_met of c1 (executable sbc2) to 1e-4 relative at
+  every dump.

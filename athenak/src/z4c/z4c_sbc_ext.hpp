@@ -72,13 +72,9 @@
 //! (sbc_damp_gam, sbc_damp_theta of commit cb50e22) was unstable in the expanding-ball
 //! test and is removed (tracks/core/JOURNAL-faces.md, entry 11).
 
-#include <cmath>
-#include <cstdlib>
-#include <iostream>
-#include <string>
-
 #include "athena.hpp"
-#include "parameter_input.hpp"
+
+class ParameterInput;
 
 namespace z4c {
 
@@ -104,79 +100,12 @@ struct SbcExt {
     return variant != 0 || theta_mode != 0 || speed != 0;
   }
 
-  static void Fatal(const char *file, int line, const std::string &msg) {
-    std::cout << "### FATAL ERROR in " << file << " at line " << line << std::endl
-              << msg << std::endl;
-    std::exit(EXIT_FAILURE);
-  }
-
-  void Read(ParameterInput *pin) {
-    if (pin->DoesParameterExist("z4c", "sbc_variant")) {
-      const std::string v = pin->GetString("z4c", "sbc_variant");
-      if (v.compare("sommerfeld") == 0) {
-        variant = 0;
-      } else if (v.compare("nonwave") == 0) {
-        variant = 1;
-      } else {
-        Fatal(__FILE__, __LINE__, "<z4c> sbc_variant = '" + v +
-              "' not recognized (sommerfeld, nonwave)");
-      }
-      if (variant == 1) {
-        q_khat = pin->GetOrAddReal("z4c", "sbc_power_khat", 3.0);
-        q_a = pin->GetOrAddReal("z4c", "sbc_power_a", 3.0);
-        q_gam = pin->GetOrAddReal("z4c", "sbc_power_gam", 3.0);
-        v_khat = pin->GetOrAddReal("z4c", "sbc_v_khat", std::sqrt(2.0));
-        // as in the first version of this option: the Theta options are dumped with it
-        (void) pin->GetOrAddString("z4c", "sbc_theta", "sommerfeld");
-        q_theta = pin->GetOrAddReal("z4c", "sbc_power_theta", 3.0);
-      }
-    }
-    if (pin->DoesParameterExist("z4c", "sbc_v_khat")) {
-      v_khat = pin->GetReal("z4c", "sbc_v_khat");
-    }
-    if (pin->DoesParameterExist("z4c", "sbc_theta")) {
-      const std::string th = pin->GetString("z4c", "sbc_theta");
-      if (th.compare("sommerfeld") == 0) {
-        theta_mode = 0;
-      } else if (th.compare("nonwave") == 0) {
-        theta_mode = 1;
-        q_theta = pin->GetOrAddReal("z4c", "sbc_power_theta", 3.0);
-      } else if (th.compare("cpbc") == 0) {
-        theta_mode = 2;
-      } else {
-        Fatal(__FILE__, __LINE__, "<z4c> sbc_theta = '" + th +
-              "' not recognized (sommerfeld, nonwave, cpbc)");
-      }
-      theta_nonwave = (theta_mode == 1);
-    }
-    if (pin->DoesParameterExist("z4c", "sbc_speed")) {
-      const std::string sp = pin->GetString("z4c", "sbc_speed");
-      if (sp.compare("unit") == 0) {
-        speed = 0;
-      } else if (sp.compare("lapse") == 0) {
-        speed = 1;
-      } else if (sp.compare("metric") == 0) {
-        speed = 2;
-      } else {
-        Fatal(__FILE__, __LINE__, "<z4c> sbc_speed = '" + sp +
-              "' not recognized (unit, lapse, metric)");
-      }
-    }
-    // removed options: refuse them unless they are at their neutral value
-    for (const char *old : {"sbc_damp_gam", "sbc_damp_theta"}) {
-      if (pin->DoesParameterExist("z4c", old) && pin->GetReal("z4c", old) != 0.0) {
-        Fatal(__FILE__, __LINE__, std::string("<z4c> ") + old + " was removed: unstable "
-              "in the expanding-ball test (tracks/core/JOURNAL-faces.md, entry 11)");
-      }
-    }
-    if (pin->DoesParameterExist("z4c", "ghost_falloff")) {
-      ghost_falloff = pin->GetBoolean("z4c", "ghost_falloff");
-      if (ghost_falloff) {
-        ghost_q_metric = pin->GetOrAddReal("z4c", "ghost_power_metric", 1.0);
-        ghost_q_curv = pin->GetOrAddReal("z4c", "ghost_power_curv", 1.0);
-      }
-    }
-  }
+  // reads the options that are present in the input (z4c_sbc_ext.cpp).  Not inline on
+  // purpose: this header is included by z4c.hpp and so by every file of the solver,
+  // and with the body here g++ 11.4 compiled the right-hand side of z4c_calcrhs.cpp
+  // differently (two more fused multiply-adds), which changed every run in the last
+  // bits also without the options (tracks/core/JOURNAL-faces.md, entry 12).
+  void Read(ParameterInput *pin);
 };
 
 } // namespace z4c

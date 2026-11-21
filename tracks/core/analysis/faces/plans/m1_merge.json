@@ -1,4 +1,4 @@
-{"exe": ".work/exe/sbc4/athena_cpu",
+{"exe": ".work/exe/sbc5/athena_cpu",
  "note": "m1: the full set with the new executable (__new) against the frozen executable of cb50e22 (__rel); arrays are compared (compare_data.py)",
  "ball": {"M": 0.5, "Rb": 6, "edge": 1.5, "h": 0.5},
  "cases": {
