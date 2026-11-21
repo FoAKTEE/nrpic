@@ -126,3 +126,11 @@ median in 0.85-1.2 for both jitters, extremes within 0.6-1.5 (the ledger's range
 0.93-1.33 and 0.73-1.01), phases within 0.4 rad; (c) rms TT of all modes over my static
 all-mode estimate, 3 <= a <= 20, in 10-17 for jitter 0.3 (ledger 12-14.7). Refuted: a median
 outside 0.7-1.4 or a phase error above 1 rad.
+
+## Entry 4 (05:24 PST): prediction for row 125, before running P3
+
+P3 (scripts/p3_slicing.py) on the 2 x 14 restart dumps of runs/cosmo/dav_c256_n128_t and
+_pcs4bt: the largest correlation of d ln alpha with d ln gamma^(1/6) over 1 < a <= 121 is
+<= -0.99 (ledger -0.999), and the rms ratio spans about 5e-5 to 0.04 (ledger 5.48e-5, 0.0408),
+both reproduced to 5 per cent if my a (mean of chi) selects the same dumps. Refuted: a
+correlation above -0.99 or a ratio off by more than 20 per cent.
