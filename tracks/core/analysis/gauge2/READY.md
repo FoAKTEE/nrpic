@@ -77,5 +77,25 @@ TRIED AND REMOVED (in commit 90f52f4d, not in these executables)
   swinging by 4e-3. lapse_leak_onset (smooth onset of the term): no effect on the
   defect. Inputs that carry these lines run unchanged (the parameters are not read).
 
-LATE DRIFT, CARD CHECK
-  (filled when card job F has run; see the end of this file)
+LATE DRIFT (vacuum, 200 M; card job F, card build of 984110c3, faces at 256 M)
+  Horizon mass, drift from its value at 100 M over 100 to 199.5 M:
+     plain 1+log (Track D's V-1B)        [-4.8e-5, +2.0e-5]   radius 2.15 to 2.20 M
+     first pass (Track D's V-1GB)        [-5.6e-4, +1.26e-3]  radius 1.09 to 0.875 M
+     lapse_leak_hole = 16                [0, +2.08e-4]        radius 1.64 to 1.31 M
+  With the option the mass has transient wiggles of up to 2e-4 until 116 M and is then
+  flat within 4.4e-5 to 199.5 M, 2.5e-4 above the control. The horizon radius is steady
+  near 1.6 M until about 110 M and then falls again, at -3.5e-3 per M at the end: the
+  option delays the shrinking by about 100 M, it does not stop it. It is a mitigation
+  for runs of up to about 200 M at cells of M/8 (10 cells in the horizon radius at
+  200 M instead of 7), NOT a cure: the level of plain 1+log is not reached.
+  Cheapest set-up that shows the defect in the mass: the vacuum set-up at finest cells
+  M/4 (refined_region1/level=4 with the faces at +-128 M), 100 M, 4 minutes on a card:
+  first pass 3.1e-2 against 1.7e-3 for plain 1+log (largest minus smallest, 40 to 99 M).
+
+CARD CHECK
+  athena_gpu (984110c3) ran card job F (run core-20261121-190709-8b205e5: the 200 M
+  vacuum run with the option, and plain 1+log and the first pass at M/4), all exit 0.
+  It did not rerun the Einstein-Straus test; that ran with the card build of 90f52f4d
+  (kept: scratch/core/gauge2/exe/athena_gpu_90f52f4), whose processor twin writes the
+  same bytes as athena_cpu here with the option active.
+  Card time of the item: 1.49 card-hours (jobs A 0.32, B 0.68, F 0.49).

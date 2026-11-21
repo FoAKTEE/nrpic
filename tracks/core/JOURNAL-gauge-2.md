@@ -622,3 +622,120 @@ Card job F (run core-20261121-190709-8b205e5, Slurm 4821, card build of 984110c3
 submitted at 11:07 and waits behind a job of Track F and one of another user.
 Card time used so far: job A 0.32, job B 0.68 card-hours; job F is expected to take
 0.46 (limit 0.55), which brings the item to 1.46 of 1.5.
+
+## Entry 11 (12:15-12:30): outcome of job F; what the correction does and does not do; handoff
+
+Job F: run core-20261121-190709-8b205e5 (Slurm 4821, 11:43:35 to 12:13:15, three runs,
+all exit 0, 0.49 card-hours, card build of the cleaned source 984110c3). Analyses
+core-20261121-200532-b95d775 (`results/v_numbers_jobF.json`, `figs/v_jobF.png`) and
+core-20261121-201340-af2287a (`results/v_numbers_jobF_v4.json`, `figs/v_jobF_v4.png`),
+both figures looked at. Card time of the item: 0.32 + 0.68 + 0.49 = 1.49 of 1.5
+card-hours.
+
+### Outcome V8-f: the late drift in vacuum with `lapse_leak_hole = 16` (M/8, faces at 256 M, 200 M)
+
+| t / M | plain 1+log (V-1B): mass, radius | first pass (V-1GB) | off within 16 M (`v8far-hole16`) |
+|---|---|---|---|
+| 50 | 1.000939, 2.038 | 1.001041, 1.325 | 1.000994, 1.588 |
+| 100 | 1.000937, 2.147 | 1.001186, 1.086 | 1.001036, 1.638 |
+| 120 | 1.000923, 2.166 | 1.000811, 1.022 | 1.001213, 1.567 |
+| 160 | 1.000933, 2.187 | 1.000854, 0.932 | 1.001183, 1.444 |
+| 199.5 | 1.000928, 2.196 | 1.002450, 0.875 | 1.001215, 1.306 |
+| mass drift from 100 M, 100 to 199.5 M | [-4.8e-5, +2.0e-5] | [-5.6e-4, +1.26e-3] | [0, +2.08e-4] |
+| mass, largest minus smallest, 120 to 199.5 M | 6.8e-5 | 1.8e-3 | 4.4e-5 |
+| mass, largest minus smallest, 40 to 199.5 M | 6.8e-5 | 1.8e-3 | 3.7e-4 |
+
+- FAILED as written, not refuted: the drift from 100 M reaches +2.08e-4 at 116.5 M
+  (band +-1.5e-4) and the radius is below 1.4 M at 30 to 37 M (1.38 M) and from 170 M on
+  (1.31 M at the end); the refutation marks (radius below 1.2 M, drift beyond 4e-4) are
+  not reached.
+- What the run shows [VERIFIED]: the mass has transient wiggles of up to 2e-4 between
+  65 and 116 M (the lapse front of the freed zone dying out; they are in `es-hole` and
+  in `v8-hole16` at the same times, so the bump I had put down to the faces in entry 9
+  was this), then it is flat within 4.4e-5 from 120 to 199.5 M, 2.5e-4 above the
+  control. The dip and the late rise of the first pass are gone: over 100 to 199.5 M
+  the band is 2.1e-4 instead of 1.8e-3. It is not the control's 6.8e-5.
+- What it also shows [VERIFIED]: the horizon radius is steady near 1.6 M only until
+  about 110 M and then falls again, 1.57, 1.44, 1.31 M at 120, 160, 199.5 M, at
+  -3.5e-3 per M over the last 50 M (the first pass falls at -1.5e-3 per M there, from
+  0.95 M). chi at 5 M is 0.84, 0.86 at 50, 100 M and 0.74 at 180 M. So a radius of 16 M
+  delays the shrinking by about 100 M and starts it from a larger horizon; it does not
+  stop it. At this rate the horizon would be back at 0.9 M near 320 M [JUDGEMENT,
+  extrapolation]. My estimate of entry 8 (several hundred M from 16 M at the speed of
+  the shift) was too long by a factor 3 to 4: the transport is not only the drift of
+  the normal observers, or the partially held zone between 16 and 32 M counts for more
+  than its weight suggests. Not resolved here.
+
+### Outcome V4 (a), (b): the defect with coarser cells (M/4, faces at 128 M, 100 M)
+
+- (a) HELD: control radius 2.014 M at 50 M and 2.115 M at 99 M (V-1B 2.038, 2.147);
+  mass between largest and smallest over 40 to 99 M 1.7e-3 (a slow fall).
+- (b) HELD: first-pass radius 1.319 M at 50 M, 1.040 M at 99 M (V-1GB 1.325, 1.086 M at
+  100 M); its mass leaves the control by +5.1e-3 at 50 M, +9e-3 at 70 M and -2.1e-2 at
+  99 M; spread over 40 to 99 M 3.1e-2, 18 times the control's.
+- So the cheapest set-up that shows the defect in the mass itself is V4: finest cells
+  M/4, faces at 128 M, 100 M, 4 minutes per run on a card (0.07 card-hours), against
+  0.78 card-hours for Track D's V-1GB. The radius histories at M/4 lie on Track D's at
+  M/8 to 1 to 4 per cent; the mass error of the relaxed run grows as its horizon falls
+  from 5.5 to 4.2 cells, the control with 8 cells stays smooth. This is the last link
+  of cause C4 (fewer cells across a shrinking horizon), in a run in which it could
+  have failed.
+
+### Where the item stands
+
+Established: the cause (the relaxation term stretches the coordinates of a vacuum whose
+normal observers diverge, and the horizon shrinks into too few cells); two candidate
+causes excluded by runs (kink, action near the hole); the density weight refuted as a
+correction and removed; `lapse_leak_hole` implemented, bit-identical when absent or
+without a tracker, and tested: Einstein-Straus 100 M (horizon 1.6 M, steady; mass band
+4.4e-4 with its transient, flat after 78 M; wall 2.1e-4 at 30 M, 6.3e-4 at 100 M),
+vacuum 200 M (late band 2.1e-4, flat within 4.4e-5 after 120 M).
+NOT established: "a black hole in vacuum is left as with plain 1+log to the level of
+the control". With r_h = 16 M the late band is 2.1e-4 against the control's 6.8e-5, there
+is a transient of 2e-4 before 120 M, the horizon shrinks again after 110 M, and the wall
+of the Einstein-Straus bubble is followed 3.4 times less closely at 30 M than by the
+first pass. The option is a mitigation for runs up to about 200 M, not the cure.
+
+### Handoff (for a reader with no memory)
+
+State. Branch `core/gauge-2` (worktree `wt/core-s1`), pushed. Source: one file changed
+against release core-v0.6, `athenak/src/z4c/z4c_gauge_ext.hpp` (commit 984110c3); no
+shared file touched (the hooks of the first pass in `z4c.hpp`, `z4c.cpp`,
+`z4c_calcrhs.cpp` are unchanged). Executables: `scratch/core/exe/core_gauge-2/`
+(athena_gpu, athena_cpu, COMMIT, SHA256SUMS, READY), built from 984110c3; the builds
+that ran jobs A and B (commit 90f52f4d, with the two removed factors) are kept in
+`scratch/core/gauge2/exe/`. Interface text: `tracks/core/interfaces/cosmo_gauge.md`
+section 9 (proposal for `coord/INTERFACES/cosmo_gauge.md`). Example:
+`problems/es/es_gauge_hole.athinput`; reduced vacuum set-up
+`problems/es/v1_small.athinput`. Everything else: `tracks/core/analysis/gauge2/`
+(`README` is this journal; `make_inputs.py --check`, the card lists `card_*.list`,
+`vanalysis.py`, `es2.py`, `ball2.py`, `ptests.py`, `vident.py`, `figs/`, `results/`).
+
+Failed or untested predictions, kept on record: V4-a not tested (processor runs
+mis-sized, stopped); T1 one number (largest lapse of the first pass 1.108, not below
+1.08); T3 (b) for T = 0.5 M (refuted: the density weight costs the surface shells a
+factor 4); V8-a (a) refuted (faces at 64 M), (c) not testable; ES-c (a) to (d) refuted
+or failed (density weight); L2-c, L3-c refuted (density weight); ES-h wall and mass band
+failed (not refuted); V8-h mass part not testable; ES-f2 not tested at 100 M (job D
+cancelled), its 30 M part answered against the first-pass run: the wall is 3.4 times
+better without the switch-off; T7 held; V8-f failed as written (not refuted); V4 (c) not
+tested (tracker runs at M/4 dropped for card time).
+
+Open (new lines of work, none started):
+1. A cure instead of a delay. The far zone that stays held keeps stretching and reaches
+   the hole after about 100 M with r_h = 16 M. Candidates [JUDGEMENT]: a larger radius
+   where the matter allows it (not tested; in vacuum r_h can be any size); a term that
+   holds the lapse of expanding matter without giving up alpha - 2 ln sqrt(gamma) in
+   vacuum (the density weight did that and failed on the lapse step at the surface, so
+   it would need a transition layer wider than a cell around the matter); a shift
+   condition that takes the stretching out again.
+2. Einstein-Straus beyond 100 M with the option, and the first pass on the same mesh to
+   100 M (dropped here for card time): Track D's ES-1GB and V-1GB with
+   `lapse_leak_hole = 16` to 200 M would be the direct test of their null-test floor.
+3. Other radii (between 6 and 16 M, and above), several trackers, a moving hole, MPI.
+4. Holes that form in the run (Track A, L3): no tracker exists before the collapse, the
+   option does nothing for them; the first pass's advice (finer cells at the centre)
+   stands. Track A's horizon mass 2e-2 high at first detection was not looked at here.
+5. The outer faces: an outflow face at 64 M changes the horizon mass by 2e-3 to 3e-3
+   after 53 M (plain 1+log) or 71 M (relaxed), at 128 M the tracers beyond 56 M lose
+   accuracy from 50 M on. Reduced set-ups need the faces further than the run is long.

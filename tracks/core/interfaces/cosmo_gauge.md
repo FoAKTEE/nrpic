@@ -420,13 +420,18 @@ D-20261120-222625-63abd72, D-20261121-125909-06f856e).
 | same: lapse at the dust tracers (48 M) off the homogeneous model; largest lapse on the mesh | | 1.3 per cent; 1.11 | 1.2 per cent; 1.62 at 15 to 20 M (the front inside r_h), 1.05 from 80 M |
 | vacuum (the same slice without dust, reduced mesh `problems/es/v1_small.athinput`, faces at 64 M: valid until 50 to 70 M): horizon radius at 20, 30, 50, 65 M | 2.06, 1.91, 2.04, 2.09 M (V-1B) | 1.38, 1.42, 1.33, 1.24 M | 1.90, 1.39, 1.59, 1.75 M |
 | same: horizon mass over 35 to 65 M | 1.7e-5 (V-1B) | 8.4e-5 | 8.2e-5 |
+| vacuum, faces at 256 M, 200 M (`v8far-hole16`, cleaned card build): horizon radius at 50, 100, 160, 199.5 M | 2.04, 2.15, 2.19, 2.20 M (V-1B) | 1.33, 1.09, 0.93, 0.875 M (V-1GB) | 1.59, 1.64, 1.44, 1.31 M |
+| same: drift of the horizon mass from its value at 100 M, 100 to 199.5 M | [-4.8e-5, +2.0e-5] | [-5.6e-4, +1.26e-3] | [0, +2.08e-4]: a step of 2e-4 until 116 M, then flat |
+| same: horizon mass, largest minus smallest, 120 to 199.5 M / 40 to 199.5 M | 6.8e-5 / 6.8e-5 | 1.8e-3 / 1.8e-3 | 4.4e-5 / 3.7e-4 |
+| vacuum at finest cells M/4, faces at 128 M, 100 M (`v4-ctl`, `v4-leak`): horizon mass, largest minus smallest, 40 to 99 M; radius at 99 M | 1.7e-3; 2.12 M (8.5 cells) | 3.1e-2; 1.04 M (4.2 cells) | not run |
 | expanding ball L1, bound ball L2, collapse L3 (no tracker) | | section 7.1 | identical with the first pass byte for byte on processors: L1 at cells 1 M to 10 M (17 files), first 16 steps of L2 at cells M/2 (9 files), first 8 steps of L3 (7 files) |
 | a radius beyond the mesh (`lapse_leak_hole = 1000`, coarse vacuum mesh, processors) | the same bytes | | |
 | byte regression against release core-v0.6, option absent (twelve set-ups, processors) | | 75 of 75 items identical | |
 
-What the table does not show: that the late drift of the horizon mass (100 to 200 M) is
-gone. The runs above end at 100 M (Einstein-Straus) or lose their validity at 65 M
-(vacuum, near faces); see 9.5 for the run that reaches 200 M.
+Processor checks of the cleaned source (commit 984110c3) [VERIFIED, journal entry 10]:
+with the switch-off active (8 M, coarse vacuum mesh) it writes the bytes of the build
+that ran the card tests of the first three rows (commit 90f52f4d); the 200 M and M/4
+rows ran with its own card build.
 
 ### 9.4 Tried and removed
 
@@ -443,3 +448,39 @@ Two more factors existed in commit 90f52f4d and were removed after their tests
   where matter expands") is therefore not a correction.
 - a smooth onset of the term (`lapse_leak_onset`): no effect on the defect.
 An input that still carries these lines runs unchanged: the parameters are not read.
+
+### 9.5 What the option does and does not do
+
+[VERIFIED, journal entry 11] In vacuum with r_h = 16 M over 200 M: the dip and the late
+rise of the first pass are gone (band over 100 to 200 M 2.1e-4 instead of 1.8e-3; flat
+within 4.4e-5 from 120 M on), but the control's level (6.8e-5) is not reached: the
+lapse front of the freed zone leaves transient wiggles of up to 2e-4 in the horizon
+mass until about 116 M (78 M on the Einstein-Straus data), and the mass settles 2.5e-4
+above the control. The horizon radius is steady near 1.6 M until about 110 M and then
+falls again (1.31 M at 200 M, -3.5e-3 per M at the end): the zone beyond 2 r_h is still
+held and its stretching reaches the hole about 100 M later than in the first pass. So
+with r_h = 16 M the option is a mitigation for runs of up to about 200 M at cells of
+M/8 (the horizon keeps 10 cells in its radius where the first pass keeps 7), not a
+cure. On the Einstein-Straus data the price is a wall followed 3.4 times less closely
+at 30 M (2.1e-4) than by the first pass.
+
+Advice [JUDGEMENT]: for a black hole inside expanding dust (Track D) use
+`lapse_leak_hole` with 2 r_h at the inner edge of the dust and a tracker at the
+puncture; measure a null test of the horizon mass after the transient (from 80 to
+120 M on); keep the horizon above 10 cells by resolution if the run is longer than
+200 M. For a hole in vacuum with no expanding matter nearby do not use `lapse_leak` at
+all. Cheapest set-up that shows the defect: `problems/es/v1_small.athinput` with
+finest cells M/4 and the faces at 128 M, 100 M, 4 minutes on a card (first pass against
+plain 1+log: horizon mass band 3.1e-2 against 1.7e-3).
+
+### 9.6 Not tested, open
+
+Einstein-Straus data beyond 100 M with the option, and the first pass to 100 M on the
+same mesh; radii other than 6 and 16 M; more than one tracker, a moving hole, MPI;
+holes that form during the run (no tracker before the collapse: the option does
+nothing; Track A's horizon mass at first detection was not examined); a cure of the
+stretching itself (a wider transition around matter for a density-tied term, or a
+shift condition); the mechanism by which the stretching of the held zone reaches the
+hole after about 100 M (the drift of the normal observers alone gives several hundred
+M). The outer faces: an outflow face at 64 M changes the horizon mass by 2e-3 to 3e-3
+after 53 M (plain 1+log) or 71 M (relaxed lapse).
