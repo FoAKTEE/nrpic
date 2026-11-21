@@ -206,3 +206,83 @@ scratch/B-emd-gw/tmp/verifier3/v3_submit.log). Nothing uncommitted in this direc
 did not run `git merge main` (the package brief forbids merge in this shared worktree;
 main is ahead only by harness/coord commits). I read the V3 scripts again before running
 them; no change. Next: run v3_measure.py (registered, 5 cores), then v3_summary.py.
+
+## Entry 7 (19:06 PST): V3 outcome (runs B-20261121-025826-80973e3 measurement, B-20261121-030121-58fe5dc summary)
+
+Failed attempts on record: B-20261121-025612-ed4a875 (killed by my own 120 s shell timeout
+around the foreground local launcher), B-20261121-030110-52ae004 (summary script sorted a
+string key with the resolutions; fixed in commit 58fe5dc5). Numbers below are from
+`results/v3_summary.json` (copy of the summary run's output); figures `figs/v3_*.png`,
+all looked at.
+
+Test F (flat, k = 2 pi (1,1,1), 4 periods, t = 2.3094) [VERIFIED, run B-20261121-030121-58fe5dc]:
+
+| N | amp. error (TT, +) | phase lag (TT, +) | TT vs Psi4 spectral, max over t | TT vs Psi4 FD6, max |
+|---|---|---|---|---|
+| 16 | -1.41e-4 | 2.53e-4 | 3.19e-6 | 4.13e-5 |
+| 32 | -1.72e-6 | 1.22e-5 | 5.08e-8 | 6.60e-7 |
+| 48 | -1.57e-7 | 2.27e-6 | 4.44e-9 | 5.82e-8 |
+| 64 | -3.09e-8 | 7.07e-7 | 1.02e-9 | 1.05e-8 |
+
+- Orders, amplitude: 6.4 (16-32), 5.9 (32-48), 5.7 (48-64); phase: 4.4, 4.2, 4.05 (RK4 in
+  time with dt = h/4 takes over). Cross: identical to 3 digits at N <= 48; at N = 64
+  -3.17e-8 against -3.09e-8 (2.6 %, an absolute 4e-16: round-off of 1 + h).
+- P3.1 holds within the factor 3 (N32 -1.7e-6 against -1e-6, N48 -1.6e-7 against -6e-8);
+  "+ and x equal to 1 % of the error" fails at N = 64 only (2.6 %, round-off).
+- P3.2 holds (2.53e-4 / 1.22e-5 / 2.27e-6 / 7.07e-7 against 2.6e-4 / 1.2e-5 / 2.3e-6 / 7e-7).
+- P3.3 holds: the spectral Psi4 and TT differ by 3.2e-6 at N16 with order 6.0, 6.0, 5.2
+  (floor ~4e-10 at N64); FD6 Weyl differs by its own truncation, 4.1e-5 at N16, order 6.0.
+  The TT-Psi4 difference oscillates in time, zero at every half period (it equals my
+  'backward fraction' to 3 digits). Interpretation [JUDGEMENT, tested in entry 8]: the data
+  are the continuum wave, the discrete scheme's mode has w_sd = w (1 - theta^6/1120), so a
+  backward discrete wave of relative size delta/2 is excited; TT measures both, Psi4 along
+  +n only the forward one.
+- nonTT_frac (non-TT part of gt - delta over the TT part) grows linearly in time to 1.44e-4
+  at t = 2.31, the same at every N; the TT part outside +-K is <= 1.3e-9: the mode
+  coefficients are not touched. Where it lives: entry 8.
+
+Test X (EdS, k = (pi/2)(1,1,0), t = 0..10) [VERIFIED, same runs]:
+
+| N | amp. error (TT, +) | phase lag (TT, +) | phase lag (TT, x) | TT vs Weyl spectral, max | TT vs Weyl FD6, max |
+|---|---|---|---|---|---|
+| 16 | -7.05e-5 | 8.30e-5 | 8.30e-5 | 1.91e-8 | 5.13e-5 |
+| 32 | +1.32e-6 | 3.09e-6 | 3.06e-6 | 2.23e-8 | 8.20e-7 |
+| 48 | +4.23e-7 | 6.48e-7 | 5.88e-7 | 2.41e-8 | 7.22e-8 |
+| 64 | +1.38e-7 | 3.85e-7 | 2.76e-7 | 2.30e-8 | 1.66e-8 |
+| 64, x10 | +1.40e-7 | 2.89e-7 | 2.79e-7 | 2.31e-8 | 1.68e-8 |
+
+- Background: |a_num/a_ex - 1| <= 5.1e-8 (N16) .. 3.2e-8 (N64), alpha 7e-8, K 3.4e-8; chi
+  uniform to 4e-15; Theta <= 3.6e-9. P3.4 (<= 1e-6) holds.
+- P3.5 holds at N16 (-7.05e-5 against -8e-5; phase 8.3e-5 against 9e-5) and FAILS from
+  N32 on: the amplitude error changes sign (a gain) and converges with order 2.8 (32-48)
+  and 3.9 (48-64), not ~7: +1.3e-6 / +4.2e-7 / +1.4e-7 against -7e-7 / -4e-8 / -5e-9.
+  The phase lag converges with order 4.8, 3.9, then 1.8 (N48-64, polarization +) or 2.6
+  (x). The gain appears once the step is set by the grid (dt = h/4: from t = 1.1 at N64,
+  2.1 at N48, 4.2 at N32, never at N16, read from the dump cycles) and is the same for
+  both polarizations and both amplitudes [VERIFIED]; that it is a time-integration or
+  matter-coupling error rather than a spatial one is my [JUDGEMENT], not tested here.
+- P3.6: spectral Weyl and TT agree to 1.9e-8 .. 2.4e-8, independent of N and of the
+  amplitude (x10: 2.31e-8): above my 1e-8 by a factor 2.4 (within the factor 3); FD6
+  Weyl differs by its truncation, 5.1e-5 at N16 (my 1e-5 was 5x low), order 6.0.
+- P3.7 (plus/cross, x1 against x10 at N64): amplitude errors equal for + and x and for x1
+  and x10 (1.38e-7 / 1.40e-7 / 1.40e-7 / 1.40e-7): truncation. The phase lag of + at x1
+  carries an extra 1.1e-7 rad (3.85e-7 against 2.76e-7 for x); at x10 the asymmetry is
+  1.1e-8 rad, ten times smaller in the relative measure, i.e. a fixed absolute error in h
+  of ~2e-13 in the components that carry e+ (diagonal and xy, where gt = 1 + h): round-off,
+  as predicted, not nonlinearity (that would grow with amplitude). The imaginary
+  (sin K.x) part of the + mode shows the same: 1.6e-8 at x1, 1.75e-9 at x10; x: 2.4e-13.
+  Asymmetry grows with N (N16: 4e-9, N32 2.4e-8, N48 6e-8, N64 1.1e-7 rad) because the
+  number of steps does and the truncation error falls.
+
+## Entry 8 (19:10 PST): predictions for the V3 supplement (scripts/v3_extra.py), before the run
+
+- P3.8 (F): |Z_TT - Z_Psi4,sp| / |Z_ex| = |delta sin(w t)| with delta = w_sd/w - 1 from the
+  symbol of the sixth-order second derivative, |delta| = 3.20e-6, 5.09e-8, 4.48e-9, 7.98e-10
+  at N = 16..64; the measured maximum within 10 % of |delta| at N <= 48 (N64: plus a
+  round-off floor ~4e-10). Refuted if the ratio leaves [0.9, 1.1] at N <= 48.
+- P3.9 (X): the TT-Weyl (spectral) difference has the size and the slow time dependence of
+  the relative error of calH_num = -alpha K/3 (2-5e-8), at every N. Refuted if it is a
+  factor > 3 away from the calH error or follows a different time dependence.
+- P3.10 (F, last dump): the non-TT part of gt - delta sits mainly at k = 0 (a secular drift
+  of the mean conformal metric, round-off or second order), not at +-K. Refuted if more
+  than half of its power is at +-K (then a longitudinal first-order part exists).
