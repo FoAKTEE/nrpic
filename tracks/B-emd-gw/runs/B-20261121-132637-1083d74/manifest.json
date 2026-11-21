@@ -1,0 +1,114 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261121-132637-1083d74",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "verifier_c18 M1e: own diagnostics with the spatial-gauge pieces of the earlier three-wave runs (runs/cosmo/dav_c256_n128_t, _pcs4bt, restart dumps at a = 36 and 1000; ledger lines 26-27)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "env",
+    "OMP_NUM_THREADS=1",
+    "python3",
+    "tracks/B-emd-gw/stage/G1/verifier_c18/scripts/m1_measure.py",
+    "--gauge",
+    "--workers",
+    "2",
+    "--kinds",
+    "rst",
+    "--base",
+    "east",
+    "--only",
+    ".00002.rst,.00013.rst",
+    "dav_t=/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_t",
+    "dav_pcs4bt=/data/haiyangw/nrpic/runs/cosmo/dav_c256_n128_pcs4bt"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "1083d74a6758ef0f4c1721d81af0f6b2993bd2f4",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/stage/G1/verifier_c18"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "973f2dbc2e32338b1ea99d14ee4d03719af9a8c7",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/stage/G1/verifier_c18/scripts/m1_measure.py",
+      "role": "input",
+      "sha256": "b0e023d26a5fe95ae36f8c944db46f05cbddd28565b64b2f4baf10e2af50cd24",
+      "bytes": 3056,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/stage/G1/verifier_c18/scripts/vlib.py",
+      "role": "input",
+      "sha256": "d793f8208eb6b2a13567f28b10c9d868f7ba4fdb68ce292eca9f29f5518f5d6c",
+      "bytes": 17010,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261121-132637-1083d74",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T13:26:37Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.6912,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 0,
+    "runs": 268,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
