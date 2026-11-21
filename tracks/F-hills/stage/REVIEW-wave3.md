@@ -128,3 +128,102 @@ D9 and the second alpha value), the G0 package is complete for an independent re
 decision 0016 item 4 [JUDGEMENT]. The harness verdict still fails on three wave-2 run
 directories with moved-in outputs (waiver asked of orch since 2026-11-19, repeated) and on runs
 in flight (P1's chain).
+
+---
+
+# Review of the packages finished in batches 2b and 3 (lead, batch 4a, 2026-11-21)
+
+Lead of F-hills, main merged at 4b1194b1 (releases core-v0.4 to v0.6 on main). Checked from the
+artefacts, not from the packages' conclusions. Predictions L4-L6 and their outcomes:
+`../JOURNAL.md`, entry 2026-11-21T15:55Z (predictions committed in 2539625e before any check
+ran). My script: `review_wave3/review4.py` (own parsers of trackers, horizons, history and
+waveforms; own ADM 1PN Hamiltonian and harmonic EIH; own fixed-frequency integration; it
+imports none of the packages' readers).
+
+| Lead run | What | Outcome |
+|---|---|---|
+| F-20261121-155018-620fe7f | L4a-d: binary_conv separations, horizons, H-norm2 from the raw files; own 1PN and Newton | separations equal; my 1PN differs from the package's reference (below) |
+| F-20261121-155353-e4d3354 | L4f: three 1PN variants of the isolated binary | package's EIH reproduced to 5e-5 M; the variants spread by 0.16 M at 20 M |
+| F-20261121-155442-5f15a25 | L4e: rerun of binary_conv's registered analysis | identical in every key |
+| F-20261121-155457-5f36517, F-20261121-155549-4359678 | L5, L5b: own FFI energy of P1's junk window | within 8 percent of junk_gauge; 75-83 percent of it is a steady emission |
+| F-20261121-155605-7d21f63 | L6a: rerun of kerr T8 | identical (232 values) |
+| F-20261121-155614-7997653 | L6b: rerun of kerr's 2402 analysis | identical (6772 values) |
+
+Figures read: `fig_review4_bc.png`, `fig_review4_pn.png`, `fig_review4_junk.png` (lead runs);
+`t8_bks_chart.png`, `fig_incld.png` (reruns); the packages' figures named below.
+
+## binary_conv (batch 3; partial: R16n segments 2-3 and R12 queued)
+
+Confirmed by me:
+- The separations of P1, R8 (m/8 alone) and R16n (m/16 alone) in BC-3 to 1e-4 M at 2.5-20 M;
+  the largest |s_R8 - s_P1| 0.0930 M at 20.94 M; Delta s ratios R8/P1 0.670, 0.812, 0.865 at
+  7.5, 15, 20 M. So the m/8 binary decays like P1 without the heavy hole, and the m/16 binary
+  does not decay over 0-7.7 M (Delta s 0.004 M against R8's 0.066 M at 7.5 M) [VERIFIED].
+- Horizons: R16n member masses flat (0.12736-0.12768 in every search, fitted drift below 1e-5
+  per M); R8 masses rise (absolute 1.3e-4 and 1.9e-4 per M). R8's H-norm2 sample 18292 at
+  t = 0.5 (P1 5.99) and 10.9 at t = 1.0 [VERIFIED].
+- The registered analysis repeats exactly (L4e); the Newtonian reference repeats to 1e-4 M.
+Not confirmed:
+- "R16n follows EIH within 0.006 M" as evidence of accuracy. The package's EIH-canonical
+  reference is reproduced exactly by my EIH with the exact inversion v(p), but two other
+  1PN-equivalent references from the same data (ADM Hamiltonian; EIH with the truncated v(p))
+  differ from it by 0.019 M at 7.5 M and 0.158 M at 20 M (L4f). The members move at
+  0.11-0.33 c, so the 1PN truncation is not sharp at this level. R16n lies +0.019 M from my
+  ADM reference at 7.5 M, R8 -0.043 M.
+- Hence the two-point order ">= 3.3 (deviation from EIH)" is not established: with the
+  continuum Delta s(7.5) anywhere in the 1PN spread (0.004-0.023 M) the m/8 and m/16 errors
+  give an order anywhere above about 1.2. The 3.96 from the Delta s ratio assumes a continuum
+  Delta s of zero. Only the three-point (R12) or later R16n data decide the order.
+- The verdict "m/16 survives 100 M" (BC-4 item 2) is an extrapolation from 7.7 M with an order
+  not established; with p = 1.2 the m/16 merger would come near 110 M.
+Wrong (small, corrected in this review, not in the package's files): the README and BC-3 give
+fractional mass drifts (d ln m / dt: 1.0e-3, 1.4e-3 for R8; -7e-5, -5e-7 for R16n) labelled "per
+M" as if absolute. My threshold (hrms < 1e-3) rejects 58 and 41 R16n searches whose masses are
+within 1e-4 of the rest, so "found in every search" holds in substance.
+What the track does: decision on P1b below (not submitted); the BC-5 check "refuted if R16n
+departs from EIH by more than 0.05 M by 20 M" is replaced by the lead's decision rule P1b-D
+(JOURNAL, this session), which needs no 1PN reference.
+
+## junk_gauge (batch 2b; closed)
+
+Confirmed by me:
+- J4b's energy in the window u in [-35, 6] M: my own FFI gives 2.64, 2.48, 2.26, 2.35 e-6 M at
+  40, 48, 70, 90 M, 0.92-0.95 of the package's; l >= 4 share 0.69-0.71 [VERIFIED].
+- It arrives at the same retarded time at every sphere (outgoing radiation) [VERIFIED, figure].
+- J4 "as written" refuted by P1's merger burst (my L1 of batch 2a shows the merger at 48.8 M;
+  not recomputed here).
+Not confirmed / qualified:
+- The reading of the window's energy as the junk of the three-hole data. The cumulative
+  energy rises quickly only over u of about -33 to -28 M (0.40-0.63e-6 M at the four radii)
+  and then steadily at 5.0-5.4e-8 M per M at every radius to the end of the window (L5b):
+  75-83 percent of the 2.2-2.8e-6 M is a steady outgoing emission, not a burst of the initial
+  data. Its source is not identified; P1's numerically decaying m/8 binary (separation 4.95 to
+  3.36 M by t = 30 M) is the likeliest feed [JUDGEMENT]. So for G1 T3 the three-hole junk is
+  0.4-0.6e-6 M in its first 7 M of retarded time (l <= 8, FFI 0.2/M), with the window total
+  2.2-2.8e-6 M as an upper bound in time and the l <= 8 cut as a lower bound in l.
+- The single-member junk (E/m = 7e-5) and E10: not rerun by me (the package's figures read).
+- The gauge recommendation (mass-scaled profile): a judgement; binary_conv tested the constant
+  shift_eta = 2 at m/16 instead. The track keeps the constant gauge for P1b (comparability
+  with P1 and with R16n) and moves the profile arm to the G2 gauge leg [JUDGEMENT].
+Wrong: nothing found in the numbers.
+
+## kerr (batch 3; closed)
+
+Confirmed by me: T8 and the 2402 analysis repeat exactly from their registered inputs; the
+figures show what the README says (InclD: L_z > 0 at beta = 0.52-0.68 one to three steps more
+stable than the paper, the other families within one step; T8: the 'cks' runaway of the
+retrograde a = 0.9 binary and the 'bks' chart following 'sch'). My own estimate of the slicing
+pump has the package's coefficient 2M/r [JUDGEMENT].
+Not confirmed (not rerun): T5-T7, R3, the scan itself, the spin trend and its reading, the
+digitization of the paper's figures. Consequence for earlier results: geodesic_binary S4 (Kerr,
+equatorial, chart 'cks') may carry the pump; it is not a G1 claim and is listed for rerun in
+'bks'. The Schwarzschild results of T2 used 'sch' and are not affected.
+Note on rule 9: `kerr/results/paper_2402_digitized.json` holds marker coordinates read from the
+paper's figures, with locators (numbers, not the figures or the source) [JUDGEMENT: allowed];
+named to orch for awareness.
+
+## Packages still cut (not reviewed; state in HANDOFF)
+
+p1 (analysis to 280 M; P1's chain ended DONE at t = 280 M on 2026-11-21 01:19 PST and is
+finished in nrpic-run by me in this session), note (paused), g2mesh (`scripts/card_analysis.py`
+uncommitted, left alone).
