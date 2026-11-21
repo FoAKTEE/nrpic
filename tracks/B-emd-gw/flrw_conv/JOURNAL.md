@@ -498,8 +498,8 @@ figure `fig_step` looked at (third panel: differences of D_*/A a between step li
   cells and one per cell. This matches in sign and size the amplitude floor seen at 128
   cells (-1.76e-6, flat from a = 2, entry 9) and at 64 cells (-7.2e-7 at a = 100 with a mesh
   part of the other sign). In the first e-fold every mesh runs at the same step (the limit
-  0.002 of the expansion time, below the Courant step until a = 1.7 at 128 cells and
-  a = 26 at 32 cells), so the floor of the amplitude error at 64 and 128 cells is the
+  0.002 of the expansion time, dt = 0.002 (1 + t/2), below the Courant step until a = 1.7
+  at 128 cells, 7.0 at 64 and 28 at 32 cells), so the floor of the amplitude error at 64 and 128 cells is the
   step error of the start, second order in the step limit. That the start error at 128
   cells is the same as at 32 is [JUDGEMENT] from sign and size; it was not run at 128.
 - The fitted decaying-mode amplitude moves with the step (eps 5.54e-6, 3.87e-6, 3.42e-6;
