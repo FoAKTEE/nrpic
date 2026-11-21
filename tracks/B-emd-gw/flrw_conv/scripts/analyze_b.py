@@ -70,9 +70,20 @@ def main():
             s[f"df_{key}_fd_maxabs"] = float(np.abs(g[f"df_{key}_fd"][inner]).max())
             s[f"e_{key}_maxabs"] = float(np.abs(g[f"e_{key}"]).max())
             s[f"e_{key}_end"] = float(g[f"e_{key}"][-1])
+            # plateau (3 <= a, away from the end) and early part (a <= 2) of the f error
+            late = (g["a"] >= 3.0) & (g["a"] <= g["a"][-1]/1.05)
+            early = (g["a"] >= 1.05) & (g["a"] <= 2.0)
+            s[f"df_{key}_plateau_median"] = float(np.median(np.abs(g[f"df_{key}"][late])))
+            s[f"df_{key}_plateau_max"] = float(np.abs(g[f"df_{key}"][late]).max())
+            s[f"df_{key}_early_max"] = float(np.abs(g[f"df_{key}"][early]).max())
         s["f_delta_num_at"] = {f"{a0:g}": at(g, "f_delta", a0) for a0 in AREF}
         s["fref_delta_at"] = {f"{a0:g}": at(g, "fref_delta", a0) for a0 in AREF}
         s["decaying_fit"] = fl.decaying_fit(g)
+        s["decaying_fit_log"] = fl.decaying_fit_log(g)
+        per, amp = fl.oscillation_period(g["t"], g["e_phi"])
+        s["phi_osc_period_t"] = per
+        s["phi_osc_amp"] = amp
+        s["phi_osc_speed_L_over_P"] = fl.L/per
         s["phi_amp_start"] = float(g["phi_amp"][0])
         s["phi_amp_end"] = float(g["phi_amp"][-1])
         s["resid_max"] = float(g["resid"].max())
@@ -138,30 +149,41 @@ def main():
     plt.close(fig)
 
     # ---- figure 3: convergence at fixed a ------------------------------------------
-    fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
-    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.17, top=0.93, wspace=0.35)
+    # Measures that do not pass through zero: the largest amplitude error over the run, the
+    # plateau of the f error (median over 3 <= a) and its early part (largest over a <= 2).
+    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0))
+    fig.subplots_adjust(left=0.09, right=0.99, bottom=0.16, top=0.93, wspace=0.3)
     mesh = [k for k in order if parse(k)[1] == 1]
     ppcs = [k for k in order if parse(k)[0] == 32]
-    for a0, mk in ((2.0, "o"), (10.0, "s"), (50.0, "^"), (900.0, "v")):
-        for j, key in enumerate(("e_delta", "df_star")):
-            x = [parse(k)[0] for k in mesh]
-            y = [abs(summ[k][f"{key}_at"][f"{a0:g}"]) for k in mesh]
-            axs[j].loglog(x, y, marker=mk, lw=0.8, label=f"a = {a0:g}")
+    meas = ((r"largest $|D_\delta/D_{\rm ref} - 1|$", lambda s: s["e_delta_maxabs"], "o"),
+            (r"$|f_\delta - f_{\rm ref}|$, plateau ($a \geq 3$)",
+             lambda s: s["df_delta_plateau_median"], "s"),
+            (r"$|f_\star - 1|$, plateau ($a \geq 3$)", lambda s: s["df_star_plateau_median"], "^"),
+            (r"$|f_\star - 1|$, early ($a \leq 2$)", lambda s: s["df_star_early_max"], "v"))
+    for j, (lab, fun, mk) in enumerate(meas):
+        x = [parse(k)[0] for k in mesh]
+        y = [fun(summ[k]) for k in mesh]
+        axs[0].loglog(x, y, marker=mk, lw=0.9, color=fs.SERIES[j], label=lab)
         x = [parse(k)[1] for k in ppcs]
-        y = [abs(summ[k]["e_delta_at"][f"{a0:g}"]) for k in ppcs]
-        axs[2].loglog(x, y, marker=mk, lw=0.8, label=f"a = {a0:g}")
-    for ax in axs[:2]:
-        xs = np.array([16.0, 128.0])
-        lo, hi = ax.get_ylim()
-        for sl in (-2.0, -4.0):
-            yy = hi*(xs/16.0)**sl
-            ax.loglog(xs, yy, color="k", lw=0.7, ls="--")
-            ax.text(xs[-1], yy[-1], f" {sl:g}", fontsize=7, va="center")
-        ax.set_xlabel(r"cells per side $N$ (1 per cell)")
-    axs[0].set_ylabel(r"$|D_\delta/D_{\rm ref} - 1|$")
-    axs[1].set_ylabel(r"$|f_\star - 1|$")
-    axs[2].set_xlabel(r"particles per cell (32 cells)")
-    axs[2].set_ylabel(r"$|D_\delta/D_{\rm ref} - 1|$")
+        y = [fun(summ[k]) for k in ppcs]
+        axs[1].loglog(x, y, marker=mk, lw=0.9, color=fs.SERIES[j])
+    xs = np.array([16.0, max(parse(k)[0] for k in mesh)])
+    y0 = summ[mesh[0]]["df_star_plateau_median"]
+    for sl in (-2.0, -4.0):
+        yy = y0*(xs/16.0)**sl
+        axs[0].loglog(xs, yy, **{**fs.GUIDE, "lw": 0.8}, zorder=0)
+        axs[0].text(xs[-1], yy[-1], rf" $N^{{{sl:g}}}$", fontsize=7, va="center")
+    axs[0].set_xlabel(r"cells per side $N$ (1 per cell)")
+    axs[0].set_xticks([k for k in (16, 32, 64, 128) if k <= xs[-1]])
+    axs[0].set_xticklabels([str(k) for k in (16, 32, 64, 128) if k <= xs[-1]])
+    axs[0].minorticks_off()
+    axs[0].set_xlim(13, xs[-1]*1.6)
+    axs[0].set_ylabel("error")
+    axs[1].set_xlabel(r"particles per cell $N_c$ (32 cells)")
+    axs[1].set_xticks([1, 8, 27])
+    axs[1].set_xticklabels(["1", "8", "27"])
+    axs[1].minorticks_off()
+    axs[1].set_ylabel("error")
     axs[0].legend(fontsize=6.5, loc="lower left")
     fs.save(fig, os.path.join(out, "fig_b_conv"))
     plt.close(fig)
@@ -189,6 +211,13 @@ def main():
         for key in EST:
             print(f"   {key:5s} max|f-fref| {s[f'df_{key}_maxabs']:.2e} (fd {s[f'df_{key}_fd_maxabs']:.2e}); "
                   f"max|e| {s[f'e_{key}_maxabs']:.2e}, end {s[f'e_{key}_end']:+.2e}")
+        dl = s["decaying_fit_log"]
+        print(f"   plateau median |f-fref| delta {s['df_delta_plateau_median']:.2e} star "
+              f"{s['df_star_plateau_median']:.2e} phi {s['df_phi_plateau_median']:.2e}; early max "
+              f"star {s['df_star_early_max']:.2e}; log fit: eps {dl['eps']:+.2e}, const f error "
+              f"{dl['df_const']:+.2e}, rms {dl['rms_resid']:.1e}; phi oscillation period "
+              f"{s['phi_osc_period_t']:.3f} (L/P = {s['phi_osc_speed_L_over_P']:.3f}), amp "
+              f"{s['phi_osc_amp']:.1e}")
         print(f"   f_delta at a=1.1, 10, 1000: "
               + ", ".join(f"{s['f_delta_num_at'][k]:.6f}/{s['fref_delta_at'][k]:.6f}"
                           for k in ("1.1", "10", "900")))

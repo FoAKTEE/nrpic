@@ -160,6 +160,39 @@ def decaying_fit(g, amax=5.0):
             "n_points": int(m.sum()), "amax": amax}
 
 
+def decaying_fit_log(g, amax=30.0):
+    """Fit ln(D_star/(A a)) = c0 + c1 ln a + eps a^-5/2 on a <= amax (linear least squares).
+
+    D_star = A_+ a^(1 + c1) (1 + eps a^-5/2) separates the decaying mode (eps, relative to
+    the growing mode at a = 1) from a constant growth-rate error c1 of the discretisation,
+    which the two-term fit of decaying_fit absorbs into eps."""
+    m = g["a"] <= amax
+    a = g["a"][m]
+    y = np.log1p(g["e_star"][m])
+    M = np.stack([np.ones_like(a), np.log(a), a**-2.5], axis=1)
+    coef, *_ = np.linalg.lstsq(M, y, rcond=None)
+    res = y - M @ coef
+    return {"c0": float(coef[0]), "df_const": float(coef[1]), "eps": float(coef[2]),
+            "f_err_at_a1_from_eps": float(-2.5*coef[2]), "rms_resid": float(np.sqrt(np.mean(res**2))),
+            "n_points": int(m.sum()), "amax": amax}
+
+
+def oscillation_period(t, e, tmin=5.0):
+    """Dominant period (in conformal time) of the oscillating part of e(t) on t >= tmin:
+    linear trend removed, resampled on a uniform grid, peak of the periodogram."""
+    m = t >= tmin
+    tt, ee = t[m], e[m]
+    if len(tt) < 16:
+        return float("nan"), float("nan")
+    tu = np.linspace(tt[0], tt[-1], 4*len(tt))
+    eu = np.interp(tu, tt, ee)
+    eu = eu - np.polyval(np.polyfit(tu, eu, 1), tu)
+    p = np.abs(np.fft.rfft(eu*np.hanning(len(eu))))**2
+    fr = np.fft.rfftfreq(len(tu), tu[1] - tu[0])
+    i = 1 + np.argmax(p[1:])
+    return float(1.0/fr[i]), float(np.sqrt(2.0*np.mean(eu**2)))
+
+
 def save_json(obj, path):
     def conv(o):
         if isinstance(o, (np.floating, np.integer)):

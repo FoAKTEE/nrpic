@@ -24,6 +24,8 @@ import flrwlib as fl  # noqa: E402
 
 AREF = (1.5, 3.0, 10.0, 30.0, 100.0, 300.0, 1000.0)
 MEAS = ("e_alpha", "e_chi", "e_V", "e_K")
+PF2_COLS = {"nrpic": ("int_E", "alpha_min", "alpha_max", "proper_volume", "mean_K", "E_max", "E_min"),
+            "cstat": ("chi_min", "chi_max", "K_min", "K_max", "E_min", "E_max")}
 LAB = {"e_alpha": r"$|\alpha - a|/a$ (extrema)", "e_chi": r"$|\chi^{-1/2} - a|/a$ (extrema)",
        "e_V": r"$|(V/L^3)^{1/3}/a - 1|$ (volume)", "e_K": r"$|(-\langle K\rangle/3)^{-2/3}/a - 1|$"}
 
@@ -76,6 +78,13 @@ def main():
             s[f"{key}_end"] = float(d[key][-1])
         s["delta_E_max_at"] = {f"{a0:g}": at(d, "E_max", a0) for a0 in AREF}
         s["delta_E_min_at"] = {f"{a0:g}": at(d, "E_min", a0) for a0 in AREF}
+        # signed: E_min a^3/rho_0 - 1 below -1 means a negative cell density (compensated cloud)
+        s["E_min_signed_min"] = float(np.min(d["E_min"]))
+        neg = np.nonzero(d["E_min"] < -1.0)[0]
+        s["a_first_negative_E"] = float(d["a"][neg[0]]) if len(neg) else None
+        for key in ("Hr_mean", "M_max"):
+            s[f"{key}_end"] = float(d[key][-1])
+            s[f"{key}_max"] = float(np.nanmax(d[key][1:]))
         ref = data.get(f"f_n{n}_p1_a0")
         if ia > 0 and ref is not None:
             for key in MEAS:
@@ -88,6 +97,37 @@ def main():
                 s[f"{key}_noise_max_a_le_30"] = float(np.nanmax(npart[lin]))
                 s[f"{key}_noise_max"] = float(np.nanmax(npart))
         summ[name] = s
+    # PF2: lattices of 8 and 27 per cell against 1 per cell, every column of both history
+    # files on the same records (largest relative difference)
+    for n in (16, 32, 64):
+        base = f"f_n{n}_p1_a0"
+        if base not in runs:
+            continue
+        hb = {f: fl.load_hst(os.path.join(fl.rundir(runs[base]), f"flrw.{f}.hst"))
+              for f in ("nrpic", "cstat")}
+        for p in (2, 3):
+            other = f"f_n{n}_p{p}_a0"
+            if other not in runs or other not in summ:
+                continue
+            worst, wcol = 0.0, ""
+            for f in ("nrpic", "cstat"):
+                ho = fl.load_hst(os.path.join(fl.rundir(runs[other]), f"flrw.{f}.hst"))
+                for col, v in hb[f].items():
+                    # physical columns only: sums of momenta and constraint norms are
+                    # rounding-level on a lattice at rest
+                    if col not in PF2_COLS[f] or col not in ho:
+                        continue
+                    w = ho[col]
+                    m = min(len(v), len(w))
+                    scale = np.maximum(np.abs(v[:m]), 1e-300)
+                    big = np.abs(v[:m]) > 1e-6*np.abs(v[:m]).max()   # skip rounding-level columns
+                    if not big.any():
+                        continue
+                    r = float(np.max(np.abs(w[:m] - v[:m])[big]/scale[big]))
+                    if r > worst:
+                        worst, wcol = r, f"{f}:{col}"
+            summ[other]["lattice_reldiff_vs_p1"] = worst
+            summ[other]["lattice_reldiff_column"] = wcol
     fl.save_json(summ, os.path.join(out, "flrw_f.json"))
 
     # ---- figure 1: lattices -------------------------------------------------------
@@ -170,15 +210,29 @@ def main():
                 x, y = np.array(pts).T
                 axs[1].loglog(x, y, marker=mk[key], ls="-" if j == 0 else ":", lw=0.8,
                               color=fs.SERIES[MEAS.index(key)])
-    xs = np.array([1.0, 27.0])
-    for ax, xs, slopes, lab in ((axs[0], np.array([1.0, 27.0]), (-0.5, -1.0), r"$N_c$"),
-                                (axs[1], np.array([16.0, 64.0]), (-1.0, 0.0), r"$N$")):
-        y0 = ax.get_ylim()
-        for sl in slopes:
-            yy = np.sqrt(y0[0]*y0[1])*(xs/xs[0])**sl
-            ax.loglog(xs, yy, color="k", lw=0.8, ls="--")
-            ax.text(xs[-1], yy[-1], f" slope {sl:g}", fontsize=7, va="center")
-        ax.set_xlabel(lab)
+    # predicted laws (PF5), anchored on the first point of the series they describe:
+    # extrema of alpha ~ N_c^-1/2 and ~ h; box averages ~ 1/N_c and mesh-independent
+    def anchor(sel, key, a0, xkey):
+        pts = sorted((summ[k][xkey], summ[k].get(f"{key}_noise_at", {}).get(a0, np.nan))
+                     for k in summ if sel(summ[k]))
+        return pts[0] if pts else (np.nan, np.nan)
+    for ax, xs, xkey, sel, laws in (
+            (axs[0], np.array([1.0, 27.0]), "ppc", lambda s: s["n"] == 32 and s["noise"] == 2,
+             (("e_alpha", "3", -0.5, r"$N_c^{-1/2}$"), ("e_V", "30", -1.0, r"$N_c^{-1}$"))),
+            (axs[1], np.array([16.0, 64.0]), "n", lambda s: s["ppc"] == 1 and s["noise"] == 2,
+             (("e_alpha", "3", -1.0, r"$N^{-1}$"), ("e_V", "30", 0.0, r"$N^{0}$")))):
+        for key, a0, sl, lab in laws:
+            x0, y0 = anchor(sel, key, a0, xkey)
+            yy = y0*(xs/xs[0])**sl
+            ax.loglog(xs, yy, **fs.GUIDE, zorder=0)
+            ax.text(xs[-1]*0.97, yy[-1]*1.6, lab, fontsize=7, ha="right", va="bottom")
+    axs[0].set_xlabel(r"particles per cell $N_c$ (32 cells, A2)")
+    axs[1].set_xlabel(r"cells per side $N$ (1 per cell, A2)")
+    axs[1].set_xticks([16, 32, 64])
+    axs[1].set_xticklabels(["16", "32", "64"])
+    axs[1].minorticks_off()
+    axs[0].set_xticks([1, 8, 27])
+    axs[0].set_xticklabels(["1", "8", "27"])
     axs[0].set_ylabel("noise part (A2, 32 cells)")
     axs[1].set_ylabel("noise part (A2, 1 per cell)")
     axs[0].legend(fontsize=6, ncol=2, loc="lower left")
@@ -188,18 +242,25 @@ def main():
     # ---- figure 4: constraints ----------------------------------------------------
     allc = sorted(data, key=lambda k: parse(k))
     colsa = dict(zip(allc, fs.series_colors(len(allc), "viridis")))
-    fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.8))
-    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.17, top=0.95, wspace=0.35)
+    # The relative momentum constraint Mr = |M|/sqrt(sum of its terms squared)
+    # (athenak/src/particles/nrpic_io.cpp) is rounding over rounding on a homogeneous slice,
+    # so the absolute M_max is shown instead.
+    fig, axs = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 5.4), sharex=True)
+    fig.subplots_adjust(left=0.1, right=0.99, bottom=0.09, top=0.97, wspace=0.3, hspace=0.08)
     for name in allc:
         d = data[name]
         n, nc, ia = parse(name)
-        for ax, key in zip(axs, ("Hr_max", "Mr_max", "Theta_max")):
-            ax.loglog(d["ac"], np.maximum(d[key], 1e-20), color=colsa[name], lw=0.9,
+        for ax, key in zip(axs.flat, ("Hr_max", "Hr_mean", "M_max", "Theta_max")):
+            ax.loglog(d["ac"][1:], np.maximum(d[key][1:], 1e-20), color=colsa[name], lw=0.9,
                       ls="-" if ia else "--", label=rf"$N={n}$, {nc}/cell, A{ia}")
-    for ax, lab in zip(axs, (r"largest $H_r$", r"largest $M_r$", r"largest $|\Theta|$")):
-        ax.set_xlabel(r"$a$")
+    for ax, lab in zip(axs.flat, (r"largest $H_r$", r"box mean of $H_r$",
+                                  r"largest $|M|$ (absolute)", r"largest $|\Theta|$")):
         ax.set_ylabel(lab)
-    axs[2].legend(fontsize=5.5, ncol=2, loc="lower left")
+    for ax in axs[1]:
+        ax.set_xlabel(r"$a$")
+    axs[0, 0].text(0.03, 0.93, "solid: position noise; dashed: lattices",
+                   transform=axs[0, 0].transAxes, fontsize=7)
+    axs[1, 1].legend(fontsize=5.5, ncol=2, loc="lower left")
     fs.save(fig, os.path.join(out, "fig_f_constraints"))
     plt.close(fig)
 
@@ -207,6 +268,12 @@ def main():
         line = " ".join(f"{k[2:]}={s[f'{k}_max']:.2e}" for k in MEAS)
         print(f"{name}: a_end={s['a_end']:.1f} max {line}; Hr start {s['Hr_max_start']:.1e} "
               f"after a=2 {s['Hr_max_max_after_a2']:.1e} end {s['Hr_max_end']:.1e}")
+        print(f"   M_max {s['M_max_max']:.1e}, Hr_mean end {s['Hr_mean_end']:.1e}, signed min of "
+              f"E a^3/rho0 - 1 {s['E_min_signed_min']:+.2e} (first below -1 at a = "
+              f"{s['a_first_negative_E']})")
+        if "lattice_reldiff_vs_p1" in s:
+            print(f"   lattice vs 1/cell: largest relative difference {s['lattice_reldiff_vs_p1']:.1e} "
+                  f"({s['lattice_reldiff_column']})")
         if "e_alpha_noise_at" in s:
             print("   noise part alpha:", {k: f"{v:.2e}" for k, v in s["e_alpha_noise_at"].items()})
             print("   noise part V:    ", {k: f"{v:.2e}" for k, v in s["e_V_noise_at"].items()})
