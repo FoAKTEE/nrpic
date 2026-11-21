@@ -1,0 +1,236 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261121-075926-d10c2c1",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "conv_ball card job 1 (DESIGN.md section 3, prediction G of JOURNAL entry 3): data set 3 through horizon formation on the nested static meshes, members A (finest M/16), B (M/32), A-L32 (outer boundary 32 M), A-R1.25 and A-R1.35 (balls 1.25 and 1.35 times larger), A-N8 (8 particles per cell); core_gauge executable, t = 0 -> 16",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075926-d10c2c1/batch.list"
+  ],
+  "cwd": "scratch/A-emd-pbh/A-20261121-075926-d10c2c1",
+  "git": {
+    "sha": "d10c2c100a0432a4bcf7c651db7793edf1084c32",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/conv_ball"
+    ],
+    "outside_package": {
+      "count": 39,
+      "first": [
+        " M tracks/A-emd-pbh/analysis/review_wave3.py",
+        " M tracks/A-emd-pbh/periodic_threshold/JOURNAL.md",
+        "?? tracks/A-emd-pbh/periodic_threshold/inputs/peak_leak.athinput",
+        "?? tracks/A-emd-pbh/periodic_threshold/scripts/ltb_reference.py",
+        "?? tracks/A-emd-pbh/periodic_threshold/scripts/ltbref.py",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n128_events.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n128_gauge.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n128_horizon.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n128_misner_sharp.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n128_shells.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n192_events.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n192_gauge.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n192_horizon.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n192_misner_sharp.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n192_shells.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n256_events.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n256_fields.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n256_gauge.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n256_horizon.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n256_misner_sharp.png"
+      ]
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu",
+    "exe_sha256": "c3560e53988ad855cc93a9f444c48c728249950242e736d0828cc44dbcd85e72",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": {
+    "file": "tracks/A-emd-pbh/conv_ball/decks/nest16_L16.athinput",
+    "sha256": "c1e3eb8396b4f8e22dab90a06fcba7e0e65e9f9c5a636c912fde41d2e4a0652a",
+    "overrides": {
+      "problem/comp0_file": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+      "particles/particle_file": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestA/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_nestA_track.nrp",
+      "particles/traj_ntrack": "1313"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu",
+      "role": "exe",
+      "sha256": "c3560e53988ad855cc93a9f444c48c728249950242e736d0828cc44dbcd85e72",
+      "bytes": 102311528,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/A-emd-pbh/conv_ball/lists/job1.list",
+      "role": "list",
+      "sha256": "568bf1b8e056ad3f85f273feb28527a7baf9a0134245d180a974598ac22e0eac",
+      "bytes": 2572,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/conv_ball/decks/nest16_L16.athinput",
+      "role": "athinput:A",
+      "sha256": "c1e3eb8396b4f8e22dab90a06fcba7e0e65e9f9c5a636c912fde41d2e4a0652a",
+      "bytes": 3981,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/conv_ball/decks/nest32_L16.athinput",
+      "role": "athinput:B",
+      "sha256": "f8e7834e781a12beaeee5093a94b0d6f2aa2c9021c7f049eb96cb9a8d854e172",
+      "bytes": 3987,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/conv_ball/decks/nest16_L32.athinput",
+      "role": "athinput:A-L32",
+      "sha256": "c7e009701c516548773e71d3700c9276aed9c315284fe9736d3256cec48b257e",
+      "bytes": 4117,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/conv_ball/decks/nest16_L16.athinput",
+      "role": "athinput:A-R1.25",
+      "sha256": "c1e3eb8396b4f8e22dab90a06fcba7e0e65e9f9c5a636c912fde41d2e4a0652a",
+      "bytes": 3981,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/conv_ball/decks/nest16_L16.athinput",
+      "role": "athinput:A-R1.35",
+      "sha256": "c1e3eb8396b4f8e22dab90a06fcba7e0e65e9f9c5a636c912fde41d2e4a0652a",
+      "bytes": 3981,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/conv_ball/decks/nest16_L16.athinput",
+      "role": "athinput:A-N8",
+      "sha256": "c1e3eb8396b4f8e22dab90a06fcba7e0e65e9f9c5a636c912fde41d2e4a0652a",
+      "bytes": 3981,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "A",
+      "input": "tracks/A-emd-pbh/conv_ball/decks/nest16_L16.athinput",
+      "args": [
+        "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestA/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_nestA_track.nrp",
+        "particles/traj_ntrack=1313"
+      ]
+    },
+    {
+      "name": "B",
+      "input": "tracks/A-emd-pbh/conv_ball/decks/nest32_L16.athinput",
+      "args": [
+        "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestB/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_nestB_track.nrp",
+        "particles/traj_ntrack=1318"
+      ]
+    },
+    {
+      "name": "A-L32",
+      "input": "tracks/A-emd-pbh/conv_ball/decks/nest16_L32.athinput",
+      "args": [
+        "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestA/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_nestA_track.nrp",
+        "particles/traj_ntrack=1313"
+      ]
+    },
+    {
+      "name": "A-R1.25",
+      "input": "tracks/A-emd-pbh/conv_ball/decks/nest16_L16.athinput",
+      "args": [
+        "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075401-1412a08/expball_tophat_HRb0p875_M1p95312_dc1p5_rm5p27041.tab",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075401-1412a08/nestA/expball_tophat_HRb0p875_M1p95312_dc1p5_rm5p27041_nestA_track.nrp",
+        "particles/traj_ntrack=1315"
+      ]
+    },
+    {
+      "name": "A-R1.35",
+      "input": "tracks/A-emd-pbh/conv_ball/decks/nest16_L16.athinput",
+      "args": [
+        "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075404-ac51b7e/expball_tophat_HRb0p945_M2p46037_dc1p5_rm5p67857.tab",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075404-ac51b7e/nestA/expball_tophat_HRb0p945_M2p46037_dc1p5_rm5p67857_nestA_track.nrp",
+        "particles/traj_ntrack=1315"
+      ]
+    },
+    {
+      "name": "A-N8",
+      "input": "tracks/A-emd-pbh/conv_ball/decks/nest16_L16.athinput",
+      "args": [
+        "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestA8/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_nestA8_track.nrp",
+        "particles/traj_ntrack=1318"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:58:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.97,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "A-20261121-075926-d10c2c1",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261121-075926-d10c2c1",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-21T07:59:26Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.3979,
+    "gpu_hours_reserved": 1.0833,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 6,
+    "runs": 176,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
