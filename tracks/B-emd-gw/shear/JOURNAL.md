@@ -143,3 +143,14 @@ Predictions, each with what refutes it:
   refused `--fanA -0.1555...,0.5,21` (argparse reads a value that begins with "-" as an
   option; `M2_n32/ic.log`). My error in run_cases.py, not in the list. Fix: the fan is passed
   as `--fanA=<value>`. Predictions of the entry above unchanged; series 1 resubmitted as is.
+
+## 2026-11-21 12:58 PST (lead of batch 5): series 1 ended (raw outcome, not analysed)
+
+Run B-20261121-202830-417af0c, closed by the sequencer as failed (exit 1 because one case
+failed). 26 of 27 AthenaK runs reached tlim (wall 10-150 s each). Failed: S1_n64_lap1
+(lapse_harmonic = 1) stopped by the guard at t = 0.578, cycle 175 (non-finite Khat in 22
+cells; nine cells with a non-positive metric determinant at t = 0.576 before it): prediction
+P10 cannot be judged; cause not established (RISKS R18). Ray analysis failed (analyze_rc = 1)
+for L2_n32, L2_n64, L2_n128: NaN in the transport step of analyze_rays.py (line 182), i.e. no
+arrival time for the wide fan at beta = 0.5, HL = 4; not yet looked into. P4-P9, P11, P12
+wait for the summary script (Richardson per case, figures).

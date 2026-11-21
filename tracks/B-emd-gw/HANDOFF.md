@@ -18,9 +18,9 @@ Files to read first: `STATUS.md`; `cards/README.md` (queue and sequencer); the j
 
 | Run id | What | Where it runs | Output | Read by |
 |---|---|---|---|---|
-| B-20261121-202304-dc3020e | flrw_conv J2: b_n64_p1, f_n64_p1_a0, f_n64_p1_a2 (batch, v0.3 exe, about 0.6 card-h) | Slurm 4824 | scratch/B-emd-gw/B-20261121-202304-dc3020e/<case>/ | `flrw_conv/scripts/analyze_f.py`, `analyze_b.py` (with J1 = B-20261120-222955-c8e16e3, P1 = -223006-24448ac); predictions entry 1 and 4 |
+| B-20261121-202304-dc3020e | flrw_conv J2: b_n64_p1, f_n64_p1_a0, f_n64_p1_a2 (batch, v0.3 exe; DONE 12:44, exit 0, 0.35 card-h, closed) | Slurm 4824 | scratch/B-emd-gw/B-20261121-202304-dc3020e/<case>/ | `flrw_conv/scripts/analyze_f.py`, `analyze_b.py` (with J1 = B-20261120-222955-c8e16e3, P1 = -223006-24448ac); predictions entry 1 and 4 |
 | B-20261121-202335-3e6a898 | flrw_conv J3: b_n128_p1 to a = 1001, chain of at most 6 segments (v0.3 exe, 2.4-3.1 card-h) | Slurm 4825, then its own resubmissions | scratch/B-emd-gw/B-20261121-202335-3e6a898/ (chain/ holds STATUS, events.log) | same; `scripts/submit_chain.sh --status <rundir>` |
-| B-20261121-202830-417af0c | shear series 1, 27 cases (processors, 4 threads, release v0.6) | local background | scratch/B-emd-gw/B-20261121-202830-417af0c/<case>/rays.json | a summary script still to write (Richardson per case, figures), outcomes P4-P12 of shear/JOURNAL.md |
+| B-20261121-202830-417af0c | shear series 1, 27 cases (processors, 4 threads, release v0.6; DONE 12:37, closed as failed because S1_n64_lap1 stopped) | local background | scratch/B-emd-gw/B-20261121-202830-417af0c/<case>/rays.json | a summary script still to write (Richardson per case, figures), outcomes P4-P12 of shear/JOURNAL.md |
 | B-20261121-202946-ec4a156 | population initial data, 128^3, L = 8, sigma1 = 0.028 (processors, 1 thread) | local background | .../gr_L8_n128/{fields.bin, particles.nrp, id.json, make_ic.log} | the sequencer (convergence test on id.json), then the GR run |
 
 The sequencer (`cards/sequencer.py`, pid in `scratch/B-emd-gw/sequencer/pid`, log

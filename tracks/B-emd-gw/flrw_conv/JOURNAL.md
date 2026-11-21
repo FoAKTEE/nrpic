@@ -265,3 +265,10 @@ b_n128_p1), unchanged. Specific to the two jobs:
   command, `scripts/submit_chain.sh <rundir> <deck>`).
 Refuted as in entry 1: any |f - reference| reaching 1e-2, or errors that do not fall from 32
 to 64 to 128 cells without a floor whose cause a run has tested.
+
+## Entry 5 (2026-11-21 12:58 PST, lead of batch 5): J2 ended; J3 running
+
+J2 = B-20261121-202304-dc3020e ended 12:44 PST, all three cases exit 0 at t = 61.277
+(a = 1001; 11963 steps for b_n64_p1, 11613 for each f_n64 case), 0.35 card-h by Slurm
+accounting against the 0.57 estimated (entry 1). Closed by the sequencer. Not analysed.
+J3 = B-20261121-202335-3e6a898 started 12:44 on a card (segment 1 of at most 6).
