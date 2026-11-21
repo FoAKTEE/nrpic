@@ -1,0 +1,101 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261121-063617-6183015",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "lead review wave 3, L1 and L2: waves vs verifier3 numbers of criterion 1; third reading of test X at N = 64 (x1, x10) from the raw dumps (predictions stage/review_wave3/JOURNAL.md)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "env",
+    "OMP_NUM_THREADS=2",
+    "OPENBLAS_NUM_THREADS=2",
+    "python3",
+    "tracks/B-emd-gw/stage/review_wave3/scripts/lw3_crit1.py"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "6183015b5220874cd2fba2a40cc699b3651372fa",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/stage/review_wave3"
+    ],
+    "outside_package": {
+      "count": 3,
+      "first": [
+        "?? tracks/B-emd-gw/gw_diag/gwdiag/gauge.py",
+        "?? tracks/B-emd-gw/gw_diag/tests/test_gauge.py",
+        "?? tracks/B-emd-gw/waves/scripts/check_gauge.py"
+      ]
+    },
+    "merge_base_main": "66254fe4e9c379502c3c5e2695166cfbdc885668",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.4",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "1d9d1411b0a0e9661af34c0e25f4a573458e63356237cb3db88b2a77115aaa99",
+    "machine_file_sha256": "524890b3a2c985c1c3a7159e7b005fff511ff355fc2ef6f2274171654f6a53e2",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/stage/review_wave3/scripts/lw3_crit1.py",
+      "role": "argv",
+      "sha256": "58e836df074e84759ea78dc0ba9bfa61ba9662f281e23756fcdb392c58150b01",
+      "bytes": 10226,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261121-063617-6183015",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T06:36:17Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.6912,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 0,
+    "runs": 232,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
