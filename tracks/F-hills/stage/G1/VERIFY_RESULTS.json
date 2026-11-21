@@ -1,15 +1,15 @@
 {
   "track": "F-hills",
   "gate": "G1",
-  "commit": "085e6b9f39a4c99732503070d157f87f6edc3e93",
-  "verified_utc": "2026-11-21T07:06:59Z",
-  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-085e6b9-20261121T070623Z",
+  "commit": "b28da30ae0c5387c373c9020edb5a862843933d2",
+  "verified_utc": "2026-11-21T16:22:50Z",
+  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-b28da30-20261121T162201Z",
   "result": "FAIL",
   "checks": [
     {
       "check": "clean",
       "status": "FAIL",
-      "message": "2 uncommitted paths: commit them first (tracks/F-hills/g2mesh/scripts/card_analysis.py, tracks/F-hills/kerr/)",
+      "message": "1 uncommitted paths: commit them first (tracks/F-hills/g2mesh/scripts/card_analysis.py)",
       "detail": null
     },
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 085e6b9f39a4 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-085e6b9-20261121T070623Z/tree",
+      "message": "clean export of b28da30ae0c5 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-b28da30-20261121T162201Z/tree",
       "detail": null
     },
     {
@@ -69,9 +69,12 @@
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "1 of 201 runs have problems",
+      "message": "2 of 234 runs have problems",
       "detail": {
-        "F-20261119-150017-b45ec5f": [
+        "F-20261121-130351-04074e1": [
+          "status is submitted: not finished (nrpic-run finish)"
+        ],
+        "F-20261121-153707-1eaa5d4": [
           "status is submitted: not finished (nrpic-run finish)"
         ]
       }
@@ -304,7 +307,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 38 lines",
+      "message": "STATUS.md has 40 lines",
       "detail": null
     },
     {
