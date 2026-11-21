@@ -238,3 +238,32 @@ over its first 160 cycles (4096 cycles to t = 16: about 2.1 card-hours in three 
 41557 MiB on the card (model 41.4 GiB). Job 3a (run A-20261121-091934-ac62f5f, Slurm 4784:
 B-N8, A-N64) was submitted when C started; job 3b waits until 3a runs (one pending job per
 package).
+
+## 2026-11-21 02:15 PST, entry 8: C after its first segment (t = 6.32): the turnaround leg of the mesh triple
+
+C's first segment stopped at the wall limit at t = 6.324 (cycle 1619, 02:09); the chain resubmitted
+itself (Slurm 4786, pending). Job 3a (Slurm 4784) started at 02:09: B-N8 runs at 1.17 s per cycle
+(2048 cycles, about 40 min), so A-N64 (about 19 min) will probably be cut by the 58-min wall near
+t = 14-15; its first detection and the window t <= 12.5 would still be inside the record.
+
+Interim analysis A-20261121-100945-3985b90 (analyse.py on C's directory with the job-1 numbers;
+C_events.png and convergence.md looked at; C has no finder search yet, the finder starts at t = 9):
+
+| mesh | eta (core eps at tau_ta) | turnaround V3 (M) | turnaround C (M) | R_max V3 | R_max C |
+|---|---|---|---|---|---|
+| A (M/16) | 8.1e-3 | -0.0370 | -0.0148 | +1.8e-3 | +1.2e-3 |
+| B (M/32) | 3.1e-3 | -0.0331 | -0.0127 | +2.0e-5 | -1.5e-4 |
+| C (M/64) | 1.1e-3 | -0.0082 | -0.0035 | +1.4e-4 | +1.1e-4 |
+
+- eta: orders 1.38 and 1.49, self-convergence order 1.31: converges at order about 1.4. G5's
+  bound for C (7e-4) is REFUTED (1.1e-3), as it was for A and B: the shell error at the
+  turnaround is about 1.4 times larger than predicted at every mesh, and converges at the
+  predicted order within 0.1.
+- turnaround time: does not converge from A to B (orders 0.16 V3, 0.22 C) but does from B to C
+  (orders 2.02 V3, 1.87 C), so the self-convergence order is negative (-2.7, -2.2): the sequence
+  is not in its asymptotic range at A and B. C's per-particle scatter is +-0.02 M (B: +-0.05 M,
+  C_events.png against B_events.png). With the cycloid fit C reaches -0.0035 M, at the floor of
+  about 3e-3 M named in G5 [JUDGEMENT: the turnaround time of a shell, a flat maximum, is
+  resolved only once the slope of its shell error near tau_ta is below about 1e-3 per M].
+- R_max: below 2e-3 at every mesh, non-monotonic (B's 2e-5 is a crossing of zero); the
+  relative R_max error is no longer a usable convergence measure below about 2e-4.
