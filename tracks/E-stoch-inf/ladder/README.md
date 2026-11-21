@@ -34,15 +34,20 @@ Card time used by the package: 1.42 card-hours (jobs A, B, C) of the two allowed
 | `inputs/sr_a6.athinput`, `inputs/a6proc.list` | A6: the base input with dumps every `dump_dcycle` cycles; six processor runs at Courant 0.25, 0.125, 0.0625, s = +-1, N = 32 |
 | `inputs/modes_n{64,256,1024,4096}.txt` | mode files (R, dR/dtau at N* per shell); 64 = core's `problems/scalar/sr_stochastic_modes.txt`, the others from core's `make_case.py --kstart 100` (run E-20261115-171633-f574079) |
 | `inputs/jobA.list`, `jobB.list`, `jobC.list` | card batches (P256; P256m + L256p; L256m + N = 64, 128 rungs, halving, negative controls) |
+| `inputs/card_bc.list` | wave 3, card job of items (b) and (c): A6 at 64^3 (T25p ... T06m, `sr_a6.athinput` with nmax2 = 256, dumps every 20 x 0.25/theta cycles) and the eleven L5 runs |
+| `inputs/sr_l5.athinput`, `inputs/modes_l5_n5.txt`, `inputs/l5proc.list` | L5 single kick: `id = flrw` background, one kicked shell \|n\|^2 = 5 (zero rows for 1-4), `noise_sigma = sqrt 5`, 64^3, dumps every cycle to cycle 32; the same eleven runs for the processors |
+| `inputs/jobD.list` | item (d): P256 with `<job> rng_seed = 20261120` (second realisation) |
 | `inputs/proc32.list`, `proc64.list` | processor runs (N = 32 rung; N = 64 hedge to t = 4.5) |
 | `scripts/ladder_lib.py` | own NRSFDMP2 reader, mode coefficients on the hemisphere, R^NR extraction, linear reference (background + MS per shell, window), amplitudes from `../noise/ref/philox_ref.py` |
 | `scripts/ladder_analysis.py` | `extract` (per dump R^NR, reference, constraint statistics; A1), `pair` (odd/even parts under s -> -s), `judge` (A2, A3, shell spectrum) |
 | `scripts/analyse_all.py`, `scripts/verdicts.py` | the three on every ladder run found; A1-A5, negative control, cost -> `summary.json` |
 | `scripts/floor_analysis.py` | floor of the odd parts (N^q from 128 -> 256), A5 before the floor, halving, first e-fold of odd > even against ln(N/8), even part with the floor in quadrature |
-| `scripts/a6_analysis.py` | A6: differences between Courant factors at equal times, orders, D_n per Courant factor, constraint parts |
+| `scripts/a6_analysis.py` | A6: differences between Courant factors at equal times, orders, D_n per Courant factor, constraint parts (`--nmesh --nmax2 --modefile` for 64^3) |
+| `scripts/l5_kick_ref.py`, `scripts/l5_analysis.py`, `scripts/l5_compare.py` | L5: one-step kick reference (rms M/<[M]> per projector), parts in s cell by cell with the first order by Richardson in s and verdicts PL1-PL3, processors against card (PL4) |
+| `scripts/seed2_compare.py` | item (d): second realisation of P256 against the first |
 | `scripts/make_figures.py`, `scripts/figstyle.py` | figures (style copied from `harness/style/figstyle.py`) |
 | `scripts/selftest.py`, `extraction_check.py`, `modefile_check.py` | reader against core's, R^NR at t = 0; the factor of the anisotropic term (SPEC 9 E6); mode files against Track E's MS reference |
-| `scripts/run_list_cpu.sh` | runs a list on the processors inside a registered run |
+| `scripts/run_list_cpu.sh` | runs a list on the processors inside a registered run (`MAXJOBS=k`: at most k at a time) |
 | `results/final/`, `fig/final/` | JSON and figures of the final analysis of all rungs (E-20261115-194633-9e04ed8) |
 | `results/final2/`, `fig/final2/` | wave 3, item (a): time-matched pairs P256/P256m, Q128p/m, Q64p/m, Q64ph/mh, `summary.json` (with `max_record_con`), `compare.json` against `results/final/`; `fig_a4_paper.png` (time-matched halving and control panels), `fig_halving_fix.png` (old against new) |
 | `scripts/compare_final2.py` | item (a): pairs and summary of `results/final2/` against `results/final/`, sequential against memory-map reader |
