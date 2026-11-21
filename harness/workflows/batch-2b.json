@@ -82,6 +82,13 @@
    "type": "pkg",
    "owner": "kb",
    "key": "verify_g2"
+  },
+  {
+   "type": "core-task",
+   "key": "answers",
+   "task": "Close what the merge of release core-v0.5 left open (tracks/core/HANDOFF.md and the last entry of tracks/core/JOURNAL.md on core/nrpic; the merge session's report is in the report file core.md). In this order: (1) the card check of the release (run core-20261121-070946-1907f7b, Slurm job 4772): if it finished, judge it as tracks/core/RELEASE-v0.5.md describes, write the outcome there and in scratch/core/exe/core_nrpic_v05/READY; also the pending card results of the packages cosmo-amr (job 4763: T14b, T10g) and mpi (job 4733) into their journals and READY files; if the card executable fails a case, say so first in your report. (2) Register a byte regression of the release builds /data/haiyangw/nrpic/.work/build_cpu_v05/src/athena and (one short case) .work/build_gpu_v05/src/athena against the candidate executables with the drivers of tracks/core/analysis/release/. (3) Post the answers to the tracks: one outbox file per track (harness/bin/nrpic-ctx post from this worktree) answering every open request to core that releases v0.4 and v0.5 serve (coord/REQUESTS.md on main; the notes the merge session left in the journal): done with the option name and an example input, deferred to which unfinished branch, or declined with the reason. (4) Read and acknowledge the inbox of core (harness/bin/nrpic-ctx inbox; messages 76 to 87 are unread, among them new requests of D, F and B); triage the new requests in tracks/core/interfaces/REQUESTS_WAVE3.md. (5) scripts/submit_chain.sh: decision 0021 item 6 (an exit by signal 137 or 143 without the code's own termination message is an outside kill: resubmit the segment, at most twice; run the chain's executable under a run-specific process name so that a pattern kill by another project cannot hit it), with a test that fakes the kill. (6) STATUS.md, HANDOFF.md, JOURNAL.md of core brought up to date; commit, push core/nrpic. No source change beyond the script of step 5.",
+   "fable": false
   }
- ]
+ ],
+ "note": "Release core-v0.5 followed on 2026-11-21 (tag core-v0.5 on main: threaded processor build, several ranks for the particle module, refinement with horizon finder and tracker in periodic runs, the scalar field's ultra-slow-roll case; executables .work/build_gpu_v05 and .work/build_cpu_v05, candidate set with the threaded and MPI builds under scratch/core/exe/core_nrpic_v05/; its card check, Slurm job 4772, was pending at the release). The reports of batch 2a (leads of B, D, E, F; gate review of A's G1; the two releases) are appended to the report files. Rulings of the orchestrator on the leads' requests: coord/DECISIONS/0021."
 }
