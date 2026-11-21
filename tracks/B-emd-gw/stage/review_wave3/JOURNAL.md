@@ -94,3 +94,56 @@ contraction e_p:c(K) gives 1.5384e-7 (plus) and the route through tt_project giv
 the difference sits in the projection step. Refuted if the direct contraction with its basis
 and reader already gives 1.3775e-7 (then it is the reader or the basis, and I name neither as
 the cause).
+
+## Outcome of L2b (run B-20261121-063835-826c461): REFUTED; the cause is found elsewhere
+
+- verifier3's projection route equals the direct contraction to 2e-16 (x1 and x10, both
+  polarizations, with and without the mask): the prediction that the difference sits in the
+  projection step is refuted. Its own route gives |Z_+| / (2 |Z_x|) - 1 = 1.39e-8 at x1, the
+  same plus-cross modulus difference as waves and my reading.
+- Reading `v3_summary.py` (lines 99-112) after the run: the summary builds
+  Z = Re H + i Re H'/|K| and records the imaginary parts separately ("max spatial quadrature").
+  So verifier3's amplitude error is that of the part of the mode in phase with cos(K.x) of the
+  exact solution, while waves and I take the modulus of the complex amplitude. The plus
+  polarization carries a spatial-quadrature part (a shift of the standing wave's nodes) of
+  7.2e-9, 1.27e-8, 1.61e-8 at N = 32, 48, 64 (x1) and 1.75e-9 at x10, against 2.4e-13 for the
+  cross (v3_summary.json): equal to the waves-minus-verifier differences of the plus amplitude
+  (7.2e-9, 1.27e-8, 1.61e-8; x10 1.75e-9). [VERIFIED by the numbers of the two runs; the
+  identification is arithmetic, not a new run.]
+- Verdict on verifier3's X1 item: both readings are right for their definition. The README's
+  plus amplitudes at N = 48, 64 are the moduli of the complex amplitude and include the
+  rounding share of the plus polarization (1/A: it falls ninefold at x10), which lives in the
+  spatial quadrature; verifier3's values leave that share out. What the track states: the X plus
+  amplitude at N >= 48 at amplitude 1e-6 is rounding-limited by 1.3e-8 to 1.6e-8 relative; the
+  truncation error at N = 64 is the cross value 1.399e-7, which the x10 run gives for both
+  polarizations (1.40e-7 to 1.42e-7). Small defect, corrected in the stage documents and as a
+  lead note in waves/README.md.
+
+## Outcome of L3 (reading of kb-data/raw/arxiv/2312.12499/v2/src/main.tex; no run)
+
+- Line 324: Phi = (3/5) R for modes entering in the early matter era. Lines 581-582:
+  delta(k, a) = (6/5) (a/a_hor) R_k = (6/5) (a/a_rh) (k^2/H_eq^2) R_k. With the matter-era Poisson
+  relation delta = (2/3) (k/calH)^2 Phi (the code's k^2 psi_N = (3/2) delta_N in units calH = 1,
+  cosmo/ic/make_field.py:9) and (k/calH(a))^2 = a/a_hor in matter domination, line 324 gives
+  delta = (2/5) (a/a_hor) R. So line 581 is three times the line-324 route in delta (nine in the
+  power) [VERIFIED as a reading; which line the paper's numbers use is not checked].
+- My prediction (a factor two, or a power-spectrum factor) is REFUTED: the factor is three in
+  delta itself, as the population helper wrote. DESIGN.md follows line 324 and the code's
+  Poisson relation, which is the standard matter-era result [JUDGEMENT]; the factor is a
+  literature caveat for the comparison with 2312.12499, to be recorded by kb (request).
+
+## Further checks without runs
+
+- population/results/compare.json: P9 radiated ratio 7.98-18.75 (expected 11.31), near field
+  6.14-11.05 (expected 8.0); Layzer-Irvine 4.7e-4 to 8.4e-4 (P7); 25 halos at a = 30 for fid and
+  seed 2 (P3): as reported. P5: 11 of 16 matched, mass ratios -23.5 to +14.3 per cent (the report
+  says -24 to +12: the upper end is 14.3). Figures pop_compare.png and pop_gw_fid.png looked at:
+  they show what the report says; in pop_gw_fid.png (left) the legend lies over the red curve
+  and the square labelled "halos of a = 20" sits at a = 30.
+- verifier2 (wave 2b): compare.json gives 1.02 per cent at a = 75.8 (eps = 1, 32^3 against 64^3)
+  and 1.93 per cent at a = 80 (Gamma driver), the values of its NOT CONFIRMED item 2; the linearity
+  rows of the note's ledger (row 94: 0.000497, 0.00213) agree with its item 1.
+- note v2: fig_waves.png and fig_r2.png looked at: panels, legends and predicted lines as the
+  captions say; in fig_r2 (b, c) the y range reaches 1e3 above data that end near 2 (space, not
+  an error). Ledger row 168 gives the spectral Weyl-TT difference 1.22e-11 without saying
+  "forward combination"; row 101 gives 0.00821 sampled at the restart cadence (verifier3).
