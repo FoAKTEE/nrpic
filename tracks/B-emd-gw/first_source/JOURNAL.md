@@ -1057,3 +1057,35 @@ predictions of (iv) come from `null_prediction.py` on the 32^3 data, those of (v
   |h_+(K1)| ~ 0.36 x 3.8e-8 ~ 1.4e-8, K2 ~ 5e-9 (figure).
 - Card run submitted: B-20261121-080222-2293fae, Slurm job 4778 (queued behind two jobs of
   other owners at 00:02 PST), release core-v0.5 card executable, 0.15 card-hours requested.
+
+## Outcome of P16' at 32^3 (run B-20261121-080244-f575dfe; analyses B-20261121-084323-e71765f, spectra B-20261121-084342-e388a26 and B-20261121-080252-3033fb6 (jit0p3); comparison B-20261121-084352-8b1c988, `p16_compare.png` looked at)
+
+Run: release core-v0.5 serial processor build, 32^3, 262,144 particles, to tau = 7.0 (a = 20.25),
+rc = 0, 2415 s of processor time. Compared with jit0p3 at 32^3 (B-20261119-143238-b7961ef),
+grid-scale band |k|L/2pi >= 8 (k h >= pi/2), dumps tau = 0.1 (a = 1.10), a = 2.27, a = 12.31.
+- (i) non-TT power of h at >= 8, no wave over jit0p3: 0.999, 0.986, 0.54. CONFIRMED at the
+  first two dumps (within 20 percent); REFUTED at a = 12, where the wave has enhanced the
+  grid-scale scalar part of jit0p3 by a factor 1.8.
+- (ii) Decision: D = TT power at >= 8, no wave over jit0p3 = 0.9996, 0.918, 0.366: in 0.25-4 at
+  all three dumps, so (L) and not (X) (X predicted <= 0.1). The per-shell ratio P_TT/P_nonTT,
+  no wave over jit0p3, at shells 8, 12, 15: 0.996, 0.998, 0.999 (tau = 0.1); 0.89, 1.02, 1.13
+  (a = 2.3); 0.91, 0.35, 0.50 (a = 12; shell 12 outside the factor 2 of (L)). So: the
+  grid-scale TT field of the jittered null is, at a <~ 2, the same with and without the wave
+  to 0.04-8 percent in power: it is set by the noise alone (projector leakage of the noise's
+  scalar field, linear in A), not by a cross term with the wave. By a = 12 the wave adds to it
+  (D = 0.37: the wave raises the grid-scale TT power by 2.7 and the grid-scale non-TT power by
+  1.8) [JUDGEMENT: the wave modulates the noise field it carries, which changes both the
+  scalar power and its leakage; this run cannot split that further].
+- (iv) REFUTED: the box modes of the run without any wave are 0.43-0.74 (median 0.51) of the
+  noise-noise prediction at K1, phase 0.18-1.17 rad; at K2 0.07-0.81 with phases to -2.7 rad
+  (3 <= a <= 20). The noise-noise term of `null_prediction.py` does not predict the box modes
+  of the noise alone at 32^3 (it over-predicts them by about 2 at K1). This explains the
+  refuted K2 A-ratio of P11(c') at 32^3 above.
+- (v) CONFIRMED, and better than the full prediction for jit0p3: c(jit0p3) - c(no wave) is
+  0.93-1.01 (K1) and 0.88-1.03 (K2) of the cross-term prediction in modulus, phases within
+  0.12 rad, for 3 <= a <= 20. The cross term of the wave with the noise potential, read from
+  the initial data, predicts its part of the box-mode strain to 1-12 percent.
+- (vi) rms TT of all modes, no wave over jit0p3: 0.97-1.00 for a <= 2, 0.86-0.96 for
+  2 <= a <= 5, 0.48-0.85 for 5 <= a <= 20: within the factor 2 of (L), above the 0.3 of (X).
+- (iii) at 32^3: momentum residual of the tool 0.0, Hamiltonian 8.2e-13 (B-20261121-080035-188411b).
+At a = 20.25: rms TT 5.2e-6, rho_kin/rho_grad 0.065 (quasi-static).
