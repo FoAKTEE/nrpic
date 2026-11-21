@@ -186,3 +186,44 @@ Refuted if: the ingest fails; the counts do not grow; more than 2 links are bad.
   refreshes them at every stage. [VERIFIED]
 - Not tested by this: whether `nexp_stages` > 1 for the integrators the runs use (rk3 or
   rk4 in the inputs); the extraction reads the loop, not its count.
+
+## L1 prediction (verdicts of the 25 paper-code links), written before the search, 23:24 UTC
+
+Rule: verified = the named test has an entry in docs/TESTLOG.md or cosmo/TESTLOG.md with a
+recorded outcome (numbers), a record that ties it to a run (directory with the input deck
+and output, or a committed figure/table), a commit that carries the entry, and the input
+reaches the linked symbol (problem generator, pusher, metric, deposit options on the code
+path); claimed = no test found, or the test does not reach the symbol, or no record of the
+run; refuted = a record contradicts the link.
+Expectation [JUDGEMENT]: the DT entries of 2026-11-13 hold numbers but name few run
+directories; runs/ (untracked) holds decks for most. Expect 14 to 20 verified, 5 to 11
+claimed (M19 certainly: no test named; M24 likely: "every isolated-system run" names no
+entry; M01/M02/M05-M07 through the "standalone build" only if that build calls the same
+kernels as AthenaK, which it does by construction since it includes nrpic_kernels.hpp, but
+the option-of links M05 (NrpicInit reads tolerance) need the AthenaK path), 0 refuted.
+Refuted would be: a named test whose record shows the property failing (identity not met,
+invariants off the published digits) for the code path of the link.
+
+## L1 search notes and E1 prediction (evidence checks), 23:40 UTC
+
+Search by hand (entries of docs/TESTLOG.md and cosmo/TESTLOG.md, the decks and command lines
+of the runs they name under the main checkout's untracked runs/, the source at 47ab19ab).
+Draft verdicts: 19 verified, 5 claimed (M18, M19, M20, M24, M25), 1 refuted (M23). Findings
+that set verdicts:
+- M23: NrpicWriteConservation is the conservation-law diagnostic (residuals of
+  nabla_b T^ab = 0, nrpic_io.cpp:643-661), returns on refined meshes (:665) and entered the
+  code in f219aded (2026-11-14), a day after the named test (495d451c). The identity of the
+  paper (L759-762, sum over leaf cells = particle sums) is dep_sum of NrpicDepositSources
+  (nrpic.cpp:1179) written by NrpicWriteHistory (nrpic_io.cpp:289).
+- M20: the named test runs/dev/dep_smr uses `refinement = static`: no regrid, so the call of
+  NrpicInitializeSources after a regrid (mesh_refinement.cpp:189) never runs in it.
+- M18, M25: the named test (problems/tests/mesh_static.athinput) has `<adm> dynamic = false`
+  and no `<z4c>` block: neither Z4c::CalcRHS nor Z4c::ADMConstraints runs.
+- M13: verified on the static order (run kb-20261121-232013-52c350a) plus the named test
+  reaching AssembleTasks; [JUDGEMENT] the named test runs only the particle half.
+Script `scripts/link_evidence.py` encodes every locator (entry heading at its line at
+47ab19ab, the commit that added it, deck or command-line text, source line at 47ab19ab).
+Prediction E1: all 203 locator checks pass (a development pass already passed after the
+links athena.log -> athena.<stamp>.log were followed within their directory; this is not
+blind) and the nco scan finds no parameter read of `nco` in athenak/src. Refuted if any
+check fails in the registered run or a `"nco"` read exists.
