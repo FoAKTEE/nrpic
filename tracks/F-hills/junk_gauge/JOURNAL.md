@@ -340,3 +340,13 @@ boundary 256 M. Retarded time with M = 1.25 (sum of the bare masses) [JUDGEMENT]
    hold, the junk of the three-hole data is bounded above by E_inf and the scaled estimate
    (1.8e-5 M at most for what the members radiate on their own cells), and P1's prediction item 4
    is met only as an upper bound.
+
+## 2026-11-21 J0b. Restart in batch 2b (23:47 PST on the machine's clock)
+
+Main merged (c442b569, release core-v0.5). Found committed: J0-J4a and the J4 prediction; not
+done: E10's outcome, the J4 measurement, the gauge recommendation, README. P1's chain is at
+segment 15 (Slurm 4773), waveforms to t = 253.25 M at all four spheres (last rows of
+`rpsi4_real_00{40,48,70,90}.txt`). New since J4 was written [VERIFIED, `tracks/F-hills/p1/
+JOURNAL.md` lines 173-183]: P1's binary MERGED at t = 48.8 M (common horizon from t = 48.81 M),
+19.8 M from the grid origin; |x_1 - x_2| below 2 M at t = 39.2, 1 M at 44.1. E10's outcome is now
+appended to `nr_first/JOURNAL.md` (items 1, 4, 5 met; 2 and 3 failed in one clause each).

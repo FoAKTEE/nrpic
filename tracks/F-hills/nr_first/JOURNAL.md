@@ -682,3 +682,51 @@ Not done: E10 (S2g) is queued (Slurm job 4640, run F-20261119-143443-f11ebb9); i
 stands and its outcome is not recorded; the commands are in README, "Pending". The junk energy
 of a single member is still not measured.
 Card-hours used by this package: 0.30 (S3, S2, P1 smoke); reserved for S2g: at most 0.98.
+
+## 2026-11-21 E10, outcome (run F-20261119-143443-f11ebb9; analyses F-20261120-222403-b8dc28c, F-20261120-222415-137ada9)
+
+Written by the helper junk_gauge (wave 3). S2g (Slurm 4640) ran 2026-11-19 08:24-08:55 PST,
+exit 0, "Terminating on time limit" at t = 90 m, cycle 2880 (`S2g/athena.20261119-082406.log`);
+0.524 card-hours (manifest). Closed with `nrpic-run finish` (completed). Both analyses were run
+as written in README "Pending", with `--parent F-20261119-143443-f11ebb9`; criteria of E10
+unchanged. Figures `fig_s2g_compare.png`, `fig_single_gauge.png`, `fig_single_junk.png` of the
+two runs read. Numbers [VERIFIED, `s2g_compare.json`, `single_analysis.json` of those runs]:
+1. Settling (tracker): MET. S2g between S3 and S2 in every 2 m window of t = 5-14 (f = 0.527,
+   0.560, 0.597, 0.615 against S3 0.431-0.468 and S2 0.757-0.764), above S3 in every window of
+   5-22; f(10-20) = 0.635 (0.50-0.65); f(30-40) = 0.765 > f(10-20); f(60-90) = 0.847 (0.6-0.9).
+   Speed ratio S2g/S3 1.15-1.32 over t = 2-22 (figure; f(10-20) ratio 0.635/0.478 = 1.33, at the
+   top of the "about 1.1-1.3" read from core's E1). Not refuted. S2g never settles in 90 m: f is
+   0.863 at t = 89.8 and still rising (settling time by the 5-percent rule 56.7 m); lag behind
+   the boosted track 5.57 m at t = 89 (`single_analysis.json` lag_at).
+2. Horizon mass: MET except one clause. First converged search t = 3.5, 1.007885 (1.006-1.010):
+   met. Medians minus S3's: -2.1e-5 (4-6), +1.5e-4 (12-14), +3.2e-4 (17-22): within 5e-4, met;
+   refutation (1e-3) not reached. Drift 4-6 -> 12-14 +6.85e-4 (+2.5e-4 to +1.3e-3): met. Drift
+   4-6 -> 80-90: +0.197 percent (1.007675 -> 1.009662): FAILED, just below the predicted 0.2-3
+   percent; the mass rises to t = 35 and is flat from t = 40 on (medians 1.009641 over 40-50,
+   1.009662 over 80-90; figure), so the "drift over 90 m" is a settling of the horizon, not a
+   steady drift. Spin at most 1.14e-4 (below 1e-3): met.
+3. Junk energy: band MET, equality FAILED. `single_analysis.py` (high-passed news, window of the
+   script): E/m = 3.69e-4 (30 m), 2.80e-4 (40), 2.41e-4 (50), inside 1e-5 to 5e-4, but 30 m is
+   53 percent above 50 m (predicted within 25 percent). The package junk_gauge measured the
+   junk with separated methods (its JOURNAL J1-J3c; runs F-20261120-222808-b65001c,
+   F-20261120-223018-a5c0838, F-20261120-223121-c921d2d): FFI (omega_0 = 0.2/m) 1.25e-4, 8.65e-5,
+   8.52e-5 at 30, 40, 50 m, again 46 percent apart, because a slow near-zone signal of the moving
+   hole follows the pulse and falls with R. Its reading: E_junk/m = 7e-5 (range 4e-5 to 2e-4);
+   the numbers of `single_analysis.py` contain the integrated near-zone offset and are upper
+   bounds. The pulse itself arrives at fixed retarded time with r psi4_20 peaks of 2.93e-3,
+   3.03e-3, 3.09e-3 at 30, 40, 50 m (`single_analysis.json`).
+4. Constraint norm: MET. <H^2>^(1/2) between 4.12e-5 and 5.32e-5 after t = 10 (3e-5 to 1e-4),
+   growth after t = 20 a factor 1.12; spike 1.18e-3 at t = 1.25 (before 5 m, allowed).
+5. Run health: MET. The tree is at most 400 + 1372 created = 1772 MeshBlocks at any time (log:
+   1372 created, 196 deleted, 1576 at the end; mean 4610672 / 2880 = 1601), below 2000; 1828 s
+   to cycle 2800 and 1877 s of cpu time in all (31.3 min, below 40 min); no non-finite value;
+   176 searches found, 4 missed, none after t = 4 m.
+Score: items 1, 4, 5 met; item 2 met but for the drift-to-the-end clause (0.197 against 0.2
+percent); item 3 met in its band, failed in its equality across radii.
+Reading for the gauge [JUDGEMENT]: core's mass-scaled profile at the member's own damping (eta m =
+2 at the hole, 0.25 far) gives the member's horizon the behaviour of S3 (eta m = 2 everywhere:
+medians within 3.2e-4) and a tracker between S3 and S2 that keeps accelerating for 90 m (0.86 at
+the end, above S2's settled 0.76). It changes nothing that would make a passage unsafe in this
+single-hole test: constraints as S3, no missed search after 4 m, no non-finite value. Three holes
+are untested with the profile (outbox 20261119T151429Z, unanswered). The recommendation for the
+passages after P1 is written in `tracks/F-hills/junk_gauge/README.md`.

@@ -123,10 +123,15 @@ HRNA ejects m2 (+0.970); P1 decides by t = 200 M.
 
 ## Pending (not done by this package)
 
-- S2g: run F-20261119-143443-f11ebb9, Slurm job 4640 (queued at 14:34 UTC behind ten jobs;
-  Slurm's estimate of the start 19:58 UTC). When it has ended:
+- S2g: DONE (2026-11-21, helper junk_gauge). Run F-20261119-143443-f11ebb9 completed (t = 90 m,
+  0.524 card-hours) and is finished in `nrpic-run`; analyses F-20261120-222403-b8dc28c
+  (`s2g_compare.py`) and F-20261120-222415-137ada9 (`single_analysis.py`), both with
+  `--parent F-20261119-143443-f11ebb9`, outputs in their run directories. E10 outcome in
+  `JOURNAL.md` ("E10, outcome"): items 1, 4, 5 met; item 2 failed only in the drift to t = 90
+  (0.197 against 0.2-3 percent: the mass settles at 1.00966 from t = 40 on); item 3 met in its
+  band, failed in the equality across 30-50 m (near-zone signal after the pulse). Commands, for a
+  rerun:
 
-      harness/bin/nrpic-run finish F-20261119-143443-f11ebb9
       G=/data/haiyangw/nrpic/scratch/F-hills/F-20261119-143443-f11ebb9
       S=/data/haiyangw/nrpic/scratch/F-hills/F-20261115-173601-2fae2dc
       harness/bin/nrpic-run submit --kind scouting --gate G1 --package tracks/F-hills/nr_first \
@@ -135,11 +140,11 @@ HRNA ejects m2 (+0.970); P1 decides by t = 200 M.
       ... --purpose "nr_first E10: S2g junk energy" \
           -- .venv/bin/python tracks/F-hills/nr_first/scripts/single_analysis.py - $S/S3 $S/S2 $G/S2g
 
-  then record the outcome of E10 against its predictions in `JOURNAL.md` (criteria unchanged),
-  read the figures, and decide on the gauge of P1 (section "P1").
-- Junk energy of a single member (E3 prediction 3) and the m/16 partner S1: not measured; S2g
-  measures the junk at m/8 if it reaches t = 90 m.
-- The decision on P1 (lead).
+- Junk energy of a single member (E3 prediction 3): measured on S2g by `tracks/F-hills/junk_gauge`
+  (E_junk/m = 7e-5, range 4e-5 to 2e-4; its JOURNAL J3-J3c). The m/16 partner S1: not run.
+- Gauge of the passages after P1: recommendation in `tracks/F-hills/junk_gauge/README.md`
+  [JUDGEMENT]; the profile with three holes is untested (request to core, outbox
+  20261119T151429Z).
 
 ## Requests
 
