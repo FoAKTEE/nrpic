@@ -572,3 +572,14 @@ runs is therefore set by the collisional (gravothermal) contraction, the relativ
 deciding at most the last few percent of it; the wave-2 reading "CC2 collapses because it lies
 near the onset" is not supported. Whether the contraction rate itself is physical or set by the
 method (collision cells of M/4, heat transport at the cell size) is D2's question.
+
+## 2026-11-21 05:50 UTC Entry 12: sharpened prediction for d3_kn10_part_s1 (job 4 running, output not looked at)
+
+Job 4 (run C-20261121-052716-6b64f97, Slurm 4767) started at 05:48 UTC. Entry 4 (D3b, D3d) stays
+the prediction of record; from the Kn = 1 outcome (entry 11) I add [JUDGEMENT]: D3 contracted at
+0.56 of CC2's early rate at Kn = 1; at Kn = 10 the same ratio gives D100 = 0.024 (band
+0.012-0.040; CC2 0.0426) and t(dalpha >= 0.01) in 50-90 M (CC2 46 M). The collapse time scales
+either with time (1.29 x CC2's 206.6 M = 267 M) or with collisions per particle (1.56 x 2.88 =
+4.5 per particle, more than D3 collects in 300 M at Kn = 10); I give 50 percent to a collapse
+before 300 M, and if it comes, after 240 M. A collapse before 240 M, or D100 above 0.040, would
+mean that at Kn = 10 the model's distance from the onset matters even less than at Kn = 1.
