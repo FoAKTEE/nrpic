@@ -138,6 +138,27 @@ To the lead (owner of `spec/` and `spec/scope/SCOPE.md`); proposals, not adopted
    (entries 7 and 10, run E-20261119-141654-c2a10d1); its runs E-20261115-170727-d15df12 and
    E-20261115-180526-6b68c33 are closed.
 
+6. (wave 3) Entry 9's A4 number "odd/even up to 385 at N = 256" was read at a dump whose two
+   runs stood 0.0038 apart in time; with time-matched pairs it is 25 at N = 3.93 and the
+   P256 peak at N = 4.4 has no time-matched partner (`results/final2/`, JOURNAL entries
+   16-17). Every verdict is unchanged. Wherever STATUS, the note or the stage package quote
+   385 for P256, please quote the time-matched value.
+7. (wave 3) DESIGN_REVIEW 8.1 row L5, "with q, M/[M] at rounding at first order", holds for
+   the kick only: the stencil projector removes the kick's first-order momentum term
+   exactly (continuum - stencil = independent one-step reference within 1.2 percent), but an
+   evolved run carries a first-order M of 6e-7 of [M] at 64^3, Courant 0.25, which is the
+   fourth-order time error of the evolution (step halved: factor 15.5-19.5; mesh halved at
+   equal step: 1.00). Proposed wording: "the first-order part of M/[M] is the same with
+   either projector up to the projector term, which equals the one-step reference; that
+   remainder converges at order 4 in dt" (JOURNAL entries 20-21).
+
+To core (information): the stencil projector (`noise_projector = stencil`, request R3 of
+`coord/INTERFACES/scalar_field.md` 7.4, "constraint behaviour in an evolved run only as a
+smoke test") is now checked in evolved runs at 32^3 and 64^3 on both executables of
+core/scalar-2: H second order to 1e-6 in the halving factor, no first-order defect of the
+sources' stage timing (that would halve, not divide by 16, with the step), card and
+processor runs agree (L5, JOURNAL entries 14, 20, 21; `results/l5/`). No request.
+
 To core (information for package scalar3, item "first-order truncation at late mode
 entry"): the first-order part enters exactly with the shells of fewer than eight cells per
 wavelength (first dump with odd > even at N = 1.51, 1.99, 2.96, 3.44 against ln(N/8) =
