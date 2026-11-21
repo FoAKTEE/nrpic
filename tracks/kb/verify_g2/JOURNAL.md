@@ -296,3 +296,17 @@ all three modes on the frozen snapshot, and also on my held-out set. [VERIFIED, 
 Outcome R3 (ad-hoc listing, scratch/kb/verify_g2/db_mtimes_{before,after}_golden.txt): the
 listing of kb-data/db (sizes, modes, mtimes, among them kb.sqlite-wal) and of kb-data/logs is
 identical before and after the golden search: confirmed for that run.
+
+## Entry 11 (2026-11-21 08:10 UTC): the package's QA report read; prediction for the final tally
+
+After entry 10 was committed (c2ccdc3d) I read the QA output of the named run
+kb-20261119-161633-1d05960 (QA_REPORT.md, its sections C1, C2, C3 and C7; an output directory
+the task lets me read). Its retrieval numbers are those I recomputed (entry 10). Its parse
+section lists 26 papers not ok (pdf 3, review 23) and states no rate against the 95 % bar.
+
+Prediction (T1) for `scripts/tally.py` on the registered scan and leniency outputs, gaps
+hep-ph/9809574, 1201.4794, gr-qc/0304002, astro-ph/9607124 and the nine letters of entry 9:
+mine (lenient, corrected) 684/710, with letters failed 675/710, strict corrected 658/710;
+`kb show --abstract` on papers without an abstract chunk prints the metadata abstract (recall
+of its words >= 0.9). Refuted by other counts (then entry 9 is wrong) or by an empty or
+different abstract (then A' is not served and my definition falls back to strict A).
