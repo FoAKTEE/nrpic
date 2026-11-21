@@ -546,3 +546,48 @@ Predictions, by hand from the closed forms (MDPBH.tex:680, 695, 743) [JUDGEMENT]
 - L background of the relaxed lapse with T = 0.05: alpha = exp(6 T H) within 1e-3 after
   t = 0.5; the coordinate time of 8.8 t_H (t = 86.4 - t_i) within 0.5 of the proper time.
 Refuted as stated per item; a crash of the script is recorded and fixed, not hidden.
+
+### R1 outcome (runs A-20261121-125808-7366ccd and, with the anisotropy measure corrected, A-20261121-130103-e007f42; `figures/fig_ltb_reference.png` looked at)
+
+Numbers from `ltb_reference.json` of A-20261121-130103-e007f42 (every other number identical
+to the first run):
+- A1 holds: every shell bound, crunch time increasing with r, no shell crossing to tau = 3000.
+- A2 holds: central crunch tau = 85.72 (t = 86.39, 8.817 t_H).
+- A3 holds: the earliest R = 2M is at the innermost sampled shell (r = 0.005) at
+  tau = 85.725, 3.8e-4 after the central crunch. The exact solution of the paper's profile
+  at mu = 0.3 therefore HAS trapped spheres before any shell crossing, but its apparent
+  horizon is born at the centre with the central singularity and grows outward from zero
+  mass. P0L keeps mu = 0.3 and is compared shell by shell, with the horizon mass against
+  time as the second test.
+- B1 REFUTED: the code's own slice has shell ages from 0.577 (r0 = 0.30) to 0.670 (far
+  field 0.668-0.670, t_i = 0.667): the centre is 13 per cent "young", a bang-time (decaying)
+  perturbation in the make_field data at eps_i = 1. No shell crossing in any of the 14
+  directions to tau = 600 all the same. All shells bound (the far shells weakly: the box
+  mean of zeta, 3.07e-3, sits in the background of B).
+- B2 REFUTED in its bound: at equal Misner-Sharp mass the code's slice turns around,
+  traps and crunches 16-17 per cent EARLIER than A (median for 0.8 < r0 < 3; at most 30
+  per cent there; 35 per cent at r0 = 0.3; agreement only near r0 = 3.5; beyond r0 = 5
+  the comparison loses meaning, A's far shells crunching at tau ~ 1e4). Central crunch of
+  the code's data: tau = 56.83 (5.87 t_H) against 85.72 (8.82 t_H) for the paper's profile.
+  [VERIFIED for the spherical evolution of the code's t = 0 data] The data that make_field
+  builds at mu = 0.3, eps_i = 1 are NOT the paper's mu = 0.3 spacetime: they collapse 1.5
+  times earlier in proper time. Any comparison of the code's mu with the paper's threshold
+  (0.32 < mu_c <= 0.33) has to go through reference B (or a generator that builds the
+  paper's slice: request 1 of DESIGN section 8).
+- B3 REFUTED at its stated bound, as a measurement: M of the diagonal shells against the
+  axis shells interpolated in ln M against ln r0 differ by 4.7e-3 at most for 0.5 < r0 < 5
+  (the first run's 0.14 was an artefact of interpolating M linearly in r0, M ~ r0^3);
+  panel (a) shows axes and diagonals on one curve; +x, -x, +y, -z identical to the digits
+  printed. Interpolation between axis shells 0.3 apart remains a candidate for the rest
+  [JUDGEMENT].
+- P as computed: zeta at the face 5.8e-8 of mu, at the nearest image 1e-29, box mean of
+  zeta 3.07e-3. The images are negligible for the comparison; the zero mode is in B.
+- L partly refuted: alpha = exp(6TH) holds after t ~ 0.3 (panel d; 1.052 at t = 3, 1.002 at
+  t = 100), but the proper time of the background runs 0.54 (t = 10), 0.95 (t = 86) and 1.12
+  (t = 200) ahead of the coordinate time (I said within 0.5); 8.8 t_H is coordinate time
+  84.6, 21.9 t_H is 212.8.
+
+Reference B for P0L, axis shells (r0, M; tau of turnaround, R = 2M, crunch):
+0.30, 0.032; 28.1, 56.8, 56.8 | 0.60, 0.247; 30.4, 61.1, 61.5 | 0.91, 0.789; 34.6, 68.6,
+69.7 | 1.21, 1.745; 41.0, 80.0, 82.6 | 1.52, 3.145; 50.5, 96.9, 101.7 | 1.83, 4.993; 64.6,
+122.2, 129.8 | 2.15, 7.298; 85.7, 160.8, 172.1 (all shells: `ltb_reference.json`, key B.shells).
