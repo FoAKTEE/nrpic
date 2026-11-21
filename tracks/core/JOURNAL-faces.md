@@ -790,3 +790,16 @@ multiply-adds (checked before the build).
 - s1 gets a third case, ball_full (the full set, new executable, to t = 16): its region
   means of |H| agree with ball_g4nw_met of c1 (executable sbc2) to 1e-4 relative at
   every dump.
+- k, card check of the merged card executable (`plans/card_k1.list` with the new card
+  executable: the vacuum puncture 4 steps without the options, 8 steps with the full
+  set; `plans/card_k2.list`: the 4 steps with the release card executable
+  `/data/haiyangw/nrpic/.work/build_gpu_v05/src/athena`; two jobs of two minutes, which
+  is what is left of the card-hour of this package after the 0.93 of entry 10):
+  (k-a) the two runs without the options give byte-identical files (no deposition, so a
+  card run repeats); (k-b) the card run without the options agrees with the processor
+  run punc__new of r2 to rounding (largest array difference below 1e-7); (k-c) the card
+  run with the full set agrees with punc_full__new of m1 to the same level. Refuted for
+  (k-a) by any differing file: then the card build has its own sensitivity and the
+  statement "unchanged without the options" holds for processors only. Submitted when
+  the card build is finished; if the queue does not start them in this session they
+  are named as pending.
