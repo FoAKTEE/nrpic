@@ -39,8 +39,11 @@ def main():
             q = os.path.join(a.run, case, "new", rel)
             rep["%s/%s" % (case, rel)] = (cv.hst_pair(q, p) if os.path.exists(q)
                                           else dict(error="missing"))
-    nid = sum(v["identical"] for v in summ["cases"].values())
-    nall = sum(v["identical"] + v["a"] + v["b"] + v["a+b"] + v["other"]
+    def n(x):
+        return len(x) if isinstance(x, (list, dict)) else int(x)
+
+    nid = sum(n(v["identical"]) for v in summ["cases"].values())
+    nall = sum(n(v["identical"]) + n(v["a"]) + n(v["b"]) + n(v["a+b"]) + n(v["other"])
                for v in summ["cases"].values())
     out = dict(run=a.run, identical=nid, items=nall, hst=rep,
                exits={c: v["exit"] for c, v in summ["cases"].items()})
