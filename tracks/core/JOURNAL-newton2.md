@@ -1202,3 +1202,18 @@ this mode; a fourth-order Laplacian on isolated meshes; the special-relativistic
 9f7f85be; it differs from tag core-v0.5 by this package only (`git diff core-v0.5
 core/newton-2 -- athenak python problems scripts docs`), lines listed in
 `REQUESTS_NEWTON2.md` section 7. The byte regression against core-v0.5 is T11a.
+
+### T4d at 96^3 on a processor, started while the card job waits (08:22Z); prediction for its card twin
+
+The card job stands behind two jobs of other owners. The 96^3 case of T4d was planned
+as a processor case (entry of 2026-11-20) and is started now on one core with the
+merged processor build (`cases.py t4d_p96`, MeshBlocks of 32^3; about an hour by the
+throughput of T4b). Its prediction stands: first minimum of the short axis late by
++0.8 to +1.5 per cent, refuted above +2 per cent.
+New, for the pair of this run and the case emb96_fft of the card job (the same deck
+and particle file content, merged card build): the first minimum of the short axis at
+the same record, and columns 38 to 43 of the group history (J of the patch) within
+1e-9 of the largest value of each column at every record (the card twins of T1 agreed
+to 1e-15 through a shell crossing; here 9e5 particles and 420 steps). Refuted, as a
+fault of the merged card build or of the Fourier solver at a radix-3 size on a card,
+above 1e-6.

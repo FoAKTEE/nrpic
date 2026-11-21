@@ -469,7 +469,9 @@ def t4d(out, exe, jobs, rec, which="p64"):
         cases = [Case("emb64_pcs_fft", embedded_deck(pf, H, 64, 32, 0.04, PCS))]
     else:
         pf, H, commit = embedded_ic(out, 96)
-        cases = [Case("emb96_fft", embedded_deck(pf, H, 96, 48, 0.04*64/96))]
+        # MeshBlocks of 32^3: the multigrid object, built also with the Fourier solver,
+        # refuses 48^3 (the fault of the card2 deck)
+        cases = [Case("emb96_fft", embedded_deck(pf, H, 96, 32, 0.04*64/96))]
     rec["refs"] = {"B-emd-gw": commit}
     return run_all(out, cases, exe, jobs, rec)
 
