@@ -102,8 +102,8 @@ def figure(out, summary):
     import matplotlib.pyplot as plt
     fs.use_style()
     names = list(summary["tests"])
-    fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0))
-    fig.subplots_adjust(left=0.09, right=0.985, bottom=0.16, top=0.93, wspace=0.28)
+    fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.3))
+    fig.subplots_adjust(left=0.09, right=0.985, bottom=0.23, top=0.95, wspace=0.28)
     y = np.arange(len(names))[::-1]
     a = ax[0]
     left = np.zeros(len(names))
@@ -119,7 +119,7 @@ def figure(out, summary):
     a.set_yticklabels(names)
     a.tick_params(axis="y", which="minor", left=False, right=False)
     a.set_xlim(0, max(left.max(), 1.0)*2.1)
-    a.set_xlabel("files AthenaK wrote, merged against branch executable", labelpad=2)
+    a.set_xlabel("files AthenaK wrote,\nmerged against branch executable", labelpad=2)
     a.legend(loc="center right", fontsize=8)
     a = ax[1]
     wn = [summary["tests"][c]["wall_time_s"]["new"] for c in names]
@@ -135,7 +135,7 @@ def figure(out, summary):
     a.set_yticklabels(names)
     a.tick_params(axis="y", which="minor", left=False, right=False)
     a.set_xlim(0.03, max(max(wn), max(wb), 1.0)*60)
-    a.set_xlabel("wall time on one core (s): red merged, blue branch", labelpad=2)
+    a.set_xlabel("wall time on one core (s)\nred: merged, blue: branch", labelpad=2)
     fs.save(fig, os.path.join(out, "fig_more_v04"))
 
 
