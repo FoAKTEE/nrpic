@@ -454,3 +454,51 @@ failed predictions this session: L1 clause "separation decreasing monotonically 
 from earlier sessions and decided now: P1 item 2 (separation by t = 200 M) REFUTED by the merger.
 card-hours used this session: 0 submitted by the lead; P1's chain ran on (segments 8-14, about
 5.3 card-hours since the last lead session; 10.72 in total by sacct).
+
+## 2026-11-21T15:55Z  session lead F-hills (wave 3, batch 4a)  commits 5b2ad0df..  runs (below)
+
+Lead of F-hills after batches 2b (junk_gauge) and 3 (binary_conv, kerr). Main merged (release
+core-v0.6 on main). Pause flag absent. Queue at 07:45 PST: two jobs of this owner pending
+(binary_conv R16n segment 2, Slurm 4807; R12, Slurm 4809), so nothing may be submitted now
+(CLAUDE.md, two jobs per owner). G0 is signed (coord/GATES.md, 2026-11-20); G1 is the gate.
+
+### Predictions of my checks (written and committed before any check runs)
+
+My script `stage/review_wave3/review4.py` (own parsers of AthenaK's raw tracker, horizon,
+history and waveform files; own 1PN integration; it imports none of the packages' readers).
+
+L4 binary_conv (runs F-20261121-130358-6cf186a R8, F-20261121-130351-04074e1 R16n, P1
+F-20261119-150017-b45ec5f):
+ a. Separations of the trackers at t = 2.5, 5, 7.5, 10, 15, 20 M equal the package's BC-3 table
+    to 2e-4 M (P1, R8, R16n where present); largest |s_R8 - s_P1| on 0-20.94 M is 0.093 +- 0.002
+    M, at t > 20 M. Refuted by any larger difference.
+ b. My own integration of the ADM 1PN two-body Hamiltonian (momenta of the input read as
+    canonical, positions as ADM coordinates; Hamilton's equations by complex-step gradients)
+    gives separations within 0.005 M of the package's "EIH canonical" column at the same six
+    times; my Newtonian integration (v = p/m) within 2e-4 M of its Newton column. Refuted
+    outside (then "R16n follows the 1PN reference" depends on the reference's form).
+ c. R16n stays within 0.01 M of my 1PN separation over 0-7.74 M; R8 is more than 0.05 M inside
+    it at 7.5 M. Refuted otherwise.
+ d. Horizons: R16n has no failed or repeated search with hrms < 1e-3 after t = 0.5 in either
+    finder and masses 0.1273-0.1278 over 3-7.7 M; R8's masses rise by 0.8-1.6e-3 per M over
+    5-20 M. The R8 history file holds H-norm2 above 1e3 at t = 0.5 and below 20 at t = 1.0.
+ e. A rerun of the package's registered analysis (`binary_conv/scripts/analyze.py`, same
+    command as F-20261121-154046-c99ccb9) gives the same numbers as
+    `results/analysis_intermediate.json` (identical for every shared key: the chains have not
+    advanced since). Refuted by any difference.
+L5 junk_gauge (P1's waveforms, run F-20261119-150017-b45ec5f): my own fixed-frequency
+    integration (omega_0 = 0.2/M, record cut at u = 14 M, 4 M cosine tapers, u = t - R*,
+    R* = R + 2 M ln(R/(2 M) - 1), M = 1.25) gives the energy in u in [-35, 6] M at R = 70 and
+    90 M within 20 percent of the package's 2.46e-6 and 2.52e-6 M, and an l >= 4 share in
+    0.55-0.80. Refuted outside 20 percent (then the T3 number is method-dependent beyond its
+    quoted FFI spread).
+L6 kerr: (a) the registered T8 test rerun (`kerr/tests/t8_bks_chart.py`) repeats its JSON to
+    1e-10 relative (processor, deterministic), in particular the 'cks' odd part 0.0398 against
+    the leading-order 0.0412 at r = 50; (b) the registered analysis of the 2402 scan
+    (`kerr/scripts/analysis_2402.py` on scan F-20261121-132131-326dfd1) repeats
+    `kerr_2402_summary.json`. (c) My own estimate of the slicing pump: pairing the members at
+    equal Kerr-Schild time displaces the separation by (2M/r) V (n . dx); for a circular binary
+    the orbit-averaged work of the Newtonian pair force on that displacement gives
+    |d ln|E_b|/dt| = (2M/r) omega_b |(n x V) . L_hat|, the same coefficient as the package's
+    formula (2H, H = M/r) [JUDGEMENT: derivation on paper, written here before reading the
+    package's derivation in detail; sign convention not checked]. Refuted by (a) or (b) differing.
