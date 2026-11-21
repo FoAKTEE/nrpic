@@ -1,0 +1,53 @@
+{
+ "P3": {
+  "max_rel_wall_vs_closed": 6.661338147750939e-16,
+  "max_abs_mass_minus_1": 0.0,
+  "R_wall_0": 35.99999999999999
+ },
+ "P4": {
+  "R0=6": {
+   "E": -0.16666666666664884,
+   "tau_closed": 14.826927804641656,
+   "tau_csv_first_below": 15.0,
+   "tau_plan": 15.0,
+   "tau_rest_cycloid": 14.826921005005508
+  },
+  "R0=10": {
+   "E": -0.0999735565877622,
+   "tau_closed": 34.44232300938478,
+   "tau_csv_first_below": 34.6,
+   "tau_plan": 34.6,
+   "tau_rest_cycloid": 33.700869851892335
+  },
+  "R0=20": {
+   "E": -0.0375,
+   "tau_closed": 244.7364245202302,
+   "tau_csv_first_below": 244.8,
+   "tau_plan": 244.8,
+   "tau_rest_cycloid": 97.97025681266544
+  },
+  "R0=28": {
+   "E": -0.004489905190002109,
+   "tau_closed": 7309.777595651433,
+   "tau_csv_first_below": null,
+   "tau_plan": null,
+   "tau_rest_cycloid": 163.203635610126
+  }
+ },
+ "P5": {
+  "inner_max_abs_rho_over_rho0": 2.2230567807085196e-05,
+  "inner_at_R": 31.340109596940326,
+  "inner_coarser": {
+   "drbar_x2": 8.885415478667545e-05,
+   "drbar_x4": 0.00035530259943160304
+  },
+  "plateau_max_rel_dev": 1.679453691671995e-07,
+  "exterior_max_abs_rho_over_rho0": 3.2786034864338245e-09,
+  "plateau_minus_KT_over_H": 1.0,
+  "plateau_minus_KL_over_H": 1.0
+ },
+ "M": 1.0,
+ "m_p": 1.0239688282062387,
+ "H": 0.005581162949114639,
+ "rho0": 3.718183334770104e-06
+}
