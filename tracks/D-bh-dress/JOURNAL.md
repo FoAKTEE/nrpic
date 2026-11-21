@@ -377,3 +377,31 @@ and gave the same numbers; its only change was the tick labels of panel d).
   (three wave-2 runs with outputs outside their sha256 lists; waiver requested), compare (the note's
   fig_newton_numbers.json not refreshed); figure scripts rerun in the clean export PASS. Report:
   FAIL with C7 and C16 open. Gates complete for review: none (G0 already signed).
+
+## 2026-11-21T15:55Z  session lead-wave3-batch4a (Opus)  predictions of the lead's re-checks of secondary_infall (batch 2b), g2runs and note (batch 3), written before they run
+
+Readers: the previous leads' `stage/review_wave3/wave3_check.py` (finder summaries) and
+`stage/review_wave2/infall_check.py` (Newtonian-mode snapshots, turnaround and dress flags
+re-implemented from nm_analyze's docstring); no helper code. Script `stage/review_wave3/batch4a_check.py`.
+
+- Y1 (g2runs, raw finder summaries of ES-1G D-20261119-142633-6f72922, ES-1GB D-20261121-125900-ea4c442,
+  V-1B D-20261120-222625-63abd72, V-1GB D-20261121-125909-06f856e): (a) ES-1GB equals ES-1G within 1e-13
+  for t <= 90 M and within 1e-8 to 188 M (claim 2.9e-15, 4.2e-9); (b) ES-1GB drift M(t) - M(100 M) at
+  188 M is +4.16e-3 (+-0.02e-3), so the outer boundary is not the cause of the late growth; (c) V-1GB
+  drift on 100-199.5 M spans [-5.6e-4, +1.27e-3], V-1B [-4.8e-5, +2.0e-5]; (d) ES-1GB minus V-1GB below
+  1e-4 up to 90 M, above 2e-4 from 137.5 M, 3.5e-3 (+-0.1e-3) at 188 M; (e) mean coordinate radius at the
+  last time: V-1GB 0.875 M, V-1B 2.20 M. Refuted if any number differs beyond the stated tolerance or
+  two units of the last printed digit.
+- Y2 (secondary_infall Q16 D-20261121-085652-7e189a2, P192 D-20261121-075559-31835c4): (a) Q16 M_ta and
+  dress at a/a_i = 4, 8, 12, 15.96 equal 2.597/0.795, 4.815/2.148, 7.047/3.541, 9.302/4.911 within
+  0.3 per cent; (b) no particle of Q16 is missing at its last snapshot; (c) P192 misses 16462 dust
+  particles (0.70 M) at its last snapshot and none before a/a_i = 23; (d) Q16 M_ta over the hybrid_cc
+  shells (D-20261121-085600-c436f4a) at 15.96 is +0.8 per cent (+-0.2), within 0.3 per cent at 4-12.
+  Refuted if my numbers differ by more than these bands.
+- Y3 (note): main.pdf has 18 pages; a compile of the committed source in scratch gives no undefined
+  reference or citation; the 3.43 per cent the note gives for N128Lc at a/a_i = 2 and the 3.31 of
+  stage/G1/STATUS.md come from two different reference tables (my guess: 3.43 against the kernel shells
+  of the wave-2 analysis -190541-e27453d, 3.31 against nm_growth_cellcentre.txt), so both are right for
+  their reference and STATUS must name one. Refuted if one of them is a misprint of the same table.
+- Y4: the figures I look at (compare_horizons, slicemass_ES-1GB, slicemass_V-1GB, axis_profiles,
+  w3_Q16_late_profiles, w3_P192_energy, my own panel, two note pages) agree with the numbers.
