@@ -162,3 +162,19 @@ first sample after removal lags by at most 0.5 M of t = 0.7 M of tau at dM/dtau 
 D4 minimum > 0 and no value below 0 (removal at 0.3 of the way to the centre); D3 holds;
 P1 kappa_late = 1.40 to 1e-3. On synth_growth_x0.97: bin medians negative, between -0.7 %
 and 0, growing in size with tau. Anything else is a defect of the evaluator.
+
+Outcome T2 (runs D-20261121-130605-ded836f synth_exact, D-20261121-130611-46aa59c
+synth_growth_x0.97; figure `esf_criteria.png` of the first looked at). synth_exact: (iii)
+holds, 25 bins counted, bin medians in [+5.3e-6, +8.5e-4], overall +3.1e-4: HELD; D4 minimum
++0.433 M, none below 0: HELD; P1 kappa_late = 1.400: HELD; criterion (i) of compare.py
+max violation 0.003 sigma, closure +0.86 %. D3 FAILED in the synthetic (minimum margin
+-1.12e-3, 45536 of 61592 below -3e-4): the margin sits at -9.4e-4 for t > 30 M in panel
+(c), which is minus V-1's finder bias (M_ctrl - 1 = +9.4e-4); the synthetic finder has no
+bias, so subtracting the control's bias pushes it below. My prediction overlooked that; the
+evaluator does what entry 7 defines, and D3 is meaningful only when the run's finder has
+the control's bias (a real run). Not changed. synth x0.97: (iii) holds, bin medians in
+[-5.2e-3, +1.4e-4], overall -2.7e-3: HELD in size (inside -0.7 % to 0) but not every
+median is negative as predicted: an early bin is +1.4e-4, where the growth is small and the
+finder-sample lag dominates; closure -2.2 %.
+Correction of the clock: entries 2 and 3 were written at 05:03 and 05:05 PST (date), not
+05:15 and 05:25 as their headings say; T2 ran at 05:06 PST.
