@@ -1599,3 +1599,55 @@ closed as stopped before it started) and T14b's seven cases run in one job with 
   the integral form is the smoothest of the three refined runs and stays 25 per cent
   below the uniform spreading.
 - E stays positive (smallest 2.04e-4); identity 9.0e-14.
+
+## 2026-11-21 03:56  republication, message to Track A, state of the package (closed with one card job pending)
+
+Published `scratch/core/exe/core_cosmo-amr/` again, from source 1548d49: `athena_cpu`
+(sha256 0ea4080b..., the file that ran T0c, T1b, T2b, T9b, T17b, T19c, T10f; `cmp` with
+the build), `athena_gpu` (bd2c06c3..., NOT yet run on a card), `COMMIT`, `SHA256SUMS`,
+`READY` (rewritten: the defect and what it affected first). The executables of 3c44b74
+with their files moved to the subdirectory `3c44b74/` (checksums verified after the
+move). The example input `problems/cosmo_amr/peak_amr.athinput` got a comment at
+`deposit_fine_shape` and still starts (unregistered zero-cycle run with the new
+processor executable, `scratch/core/tmp/cosmo-amr-parse/`, exit 0).
+Posted to A-emd-pbh: `tracks/core/outbox/20261121T035432Z__to-A-emd-pbh__cosmo-amr-fine-
+shape-corrected-finder-finds-surfaces.md` (the defect and which of their runs it could
+touch, T10e/T10f, the new executables and that the card one is unchecked, T10c's
+surfaces and their worth, the lattice modulation). Interface text: `cosmo_amr.md`
+sections 2.2 (rewritten), 3, 4.6 (new), 5, 6, 7, 8; `REQUESTS_A2.md` section 5b.
+
+State, for a reader with no memory:
+- Done today: T10e judged (the constraint jump of the scouting run belonged to
+  `deposit_fine_shape` with the linear cloud); T17 found the defect (slope of the tent
+  flips at the cell centre), T19c showed that the first-order form does not converge on
+  an irregular lattice; source corrected in `NrpicDepositSources` (commit 1548d49);
+  T17b, T19c, T1b, T2b, T9b, T10f, T0c, T18a-c with the corrected source (identity,
+  homogeneity, continuity, second order, no jump on S1, byte regression against the
+  release); T10c on a card (the finder finds two surfaces at the lapse minima of S1).
+- PENDING, one card job: run core-20261121-033223-e1d596b, Slurm job 4763, 0.2 card-hours
+  asked, expected by the queue at 2026-11-21 06:15 UTC: T14b (card check of the new card
+  executable, seven cases) and T10g (the scouting run from t = 0 with the corrected
+  deposit and the four finder surfaces). Predictions: entries of 03:26 and 03:33. To
+  close: `harness/bin/nrpic-run finish core-20261121-033223-e1d596b`; then, each as a
+  registered local run, `t14_card.py --card <run dir> --t2
+  /data/haiyangw/nrpic/scratch/core/core-20261121-031920-494ac64 --t9
+  /data/haiyangw/nrpic/scratch/core/core-20261121-031701-cff3117` (it judges U, S, A, M, G
+  and ladder; compare Sf with T2b's Sf by hand), `t10_scout.py` on `<run dir>/s1g`
+  against the track's S1 as for T10b, and `t10c_finder.py --run <run dir>/s1g --base
+  /data/haiyangw/nrpic/scratch/core/core-20261120-220816-09f6f79/s1amr`; look at the
+  figures; write the outcomes here, in `cosmo_amr.md` (rows T14b and T10g of section 4.6,
+  section 7, the status of `athena_gpu` in the header and in section 8) and in READY
+  (STATUS of `athena_gpu`), and post the outcome to A-emd-pbh.
+- Not done: a limiter for the fine shape (negative leaf cells in sparse regions); the
+  cause of the rise of the constraint on the refined level after t = 3 of S1 with both
+  spreadings; the restart on a card against the uninterrupted run separated from the
+  card's run-to-run difference; the size of the particle restart files and an excision
+  threshold relative to the mean lapse (both in shared files: requests to the core
+  lead); the crash of the very first T10 attempt (not reproduced).
+- For the merge into `core/nrpic`: take the tip of this branch (source 1548d49), not
+  3c44b74; in `particles/nrpic.cpp` the change of today is the new function
+  `NrpicTentCdf` before `NrpicDepositSources` and, inside that function, five lines
+  after `fine_shape`, `sdl`, the loop header over the lattice cells (`ns`, `nx`, `own`),
+  two `continue` lines and the fine-shape branch (`cosmo_amr.md` section 3).
+Card time of the package: 0.153 card-hours used (T14 11 s, T10 3 s, T10d 20 s, T10b
+244 s, T10c 264 s) and 0.2 reserved by the pending job, of the one allowed.
