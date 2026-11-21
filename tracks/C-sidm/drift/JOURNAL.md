@@ -333,7 +333,7 @@ Runs (ii) and (iv) (continuations at M/4) lose most of their purpose: the M/4 ex
 numerical [JUDGEMENT]. Card time of run (i): 0.69 card-hours of allocation (sacct elapsed
 41:32).
 
-## 2026-11-21 12:58 UTC Entry 9 (helper, batch 3): state; predictions for run (iii) after run (i)
+## 2026-11-21 12:54 UTC Entry 9 (helper, batch 3): state; predictions for run (iii) after run (i)
 
 State found: entries 1-8 committed; run (i) closed and judged (entry 8); the lead dropped
 (ii) and (iv) (`../HANDOFF.md` "drift" and "Lead decisions of this session": block A of SCAN.md
@@ -360,7 +360,7 @@ is submitted, sharpened by what run (i) showed for CC2 (entry 8):
   own 40 M running means correlate above +0.5 (at M/4 the cosine-fit residuals gave 0.72).
   Refuted below +0.5.
 
-## 2026-11-21 13:12 UTC Entry 10: an M/8 continuation (vi) in place of the dropped (ii), (iv); predictions
+## 2026-11-21 12:57 UTC Entry 10: an M/8 continuation (vi) in place of the dropped (ii), (iv); predictions
 
 Why [JUDGEMENT]: block A of SCAN.md is to run on M/8 for 1000 M (lead's decision,
 `../HANDOFF.md`). Run (i) shows the stable model CC2 (y0 = 0.314, below the threshold)
