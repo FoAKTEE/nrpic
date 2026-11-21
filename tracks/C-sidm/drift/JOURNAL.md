@@ -282,3 +282,53 @@ Where I stopped:
   a + b t + A sin(x + 3 pi/2) = a + b t - A cos(x): the free fit finds independently that
   the excursion starts at a turning point (run C-20261120-222211-aa1be86, `controls.json`).
 - Card-hours used by this package so far: 0 (job (i) has not started).
+
+## 2026-11-21 07:57 UTC Entry 8 (C-sidm lead, batch 2b): outcome of run (i) and of entry 6
+
+Run (i) cc2_kninf_M8 (run C-20261120-222533-ce50a86, Slurm 4741) ran 23:49:16-00:30:46 UTC
+on 2026-11-20/21, exit 0, 300 M; closed by the lead with `nrpic-run finish`. Analysis with
+this package's `compare.py` as README "How to rerun" prescribes: run
+C-20261121-075359-26e3b31 (`fig_cc2_M8.png` looked at); the lead's own cosine fit (run
+C-20261121-075336-49f92da) agrees on the M/4 control (P 355.5 M, A 0.00859) and finds no
+cosine form at M/8 (its grid fit runs to the edge, P > 1400 M with A < 0).
+
+| | M/4 (wave 2) | M/8 (run i) | ratio |
+|---|---|---|---|
+| largest 20 M mean of alpha_c - alpha_c(0), at | 0.0179 at 208 M | 0.0018 at 125 M | 0.099 |
+| cosine fit A, P | 0.0086, 355 M | 0.0019, 272 M (poor fit) | 0.22, 0.77 |
+| sine with trend A, P | 0.0099, 393 M | 0.0025, 425 M | 0.25, 1.08 |
+| alpha_c - alpha_c(0) at 300 M (+-5 M mean) | +0.0041 | -0.0041 | |
+| areal radius of the 50 percent shell at 300 M | +1.1 percent | -1.5 percent | |
+| H-norm2, mean 100-300 M | 8.6e-4 | 7.9e-3 | 9.3 |
+| ripple rms | 8.0e-4 | 1.5e-3 | 1.9 |
+
+Against entry 2:
+- M8.1 R = 0.22 (cosine), 0.25 (sine with trend), 0.10 (largest 20 M mean): inside the bet
+  [0.15, 0.65] for the fitted amplitudes, below it for the maximum; not refuted (R < 0.75).
+  By the decision rule the outward excursion of the M/4 control is numerical, of second order
+  or faster in the cell size [VERIFIED for CC2, one seed].
+- M8.2 FAILED as written: the M/8 record is not a cosine started at a turning point (maximum
+  of 0.0018 at 110-125 M, back through zero at about 215 M, then falling to -0.0041 by 300 M),
+  so no period comparable with 355-393 M can be read; the clause for R < 0.3 (period from the
+  times of the maximum and of the return) gives a half period of about 215 M, 40 percent
+  shorter than at M/4.
+- M8.3 HOLDS: the late H-norm2 rises 9.3 times (> 1.5), so the floor is particle noise of the
+  deposit, not truncation error.
+- M8.4 HOLDS: 456 MeshBlocks, 8 physical levels, np = 1e5 and sum_m bit-identical to 300 M;
+  2489 s for 300 M (8.30 s per M, 41.5 min) inside 6.8-9.7 s per M.
+- Not predicted [VERIFIED, same runs]: on the M/8 mesh the collisionless CC2 control contracts
+  slowly after about 200 M (alpha_c -0.0041 and areal r50 -1.5 percent at 300 M, mean W up
+  by 0.002). [JUDGEMENT] Two readings: the start of the real slow mode once the mesh no longer
+  pushes the cluster outward, or numerical relaxation by the nine times larger deposit noise.
+  Either way the M/8 control is not stationary either, and collisional effects must still be
+  read against a control of the same mesh and seed.
+
+Entry 6 (d3_kninf, decisive job 3, run C-20261121-035737-295e5c3; the lead's fit): P = 282 M in
+[260, 380] and below P(CC2) = 355 M; A = 0.0022 < 0.0086: HOLDS. omega^2 = (2 pi/P)^2 is
+4.96e-4 per M^2 at y0 = 0.26, against 3.12e-4 (CC2) and 2.48e-4 (CC1) on the same mesh.
+
+Mesh rule (entry 2): R <= 0.65, so block A of SCAN.md runs on M/8 (or as an M/4-M/8 pair at
+the bracket); run (iii) (CC1 at M/8) is now the most informative next card job, then (v).
+Runs (ii) and (iv) (continuations at M/4) lose most of their purpose: the M/4 excursion is
+numerical [JUDGEMENT]. Card time of run (i): 0.69 card-hours of allocation (sacct elapsed
+41:32).

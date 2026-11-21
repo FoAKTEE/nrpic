@@ -52,14 +52,14 @@ wave-2 `batch.list.exe` and `.work/build_gpu_v03/src/athena` have the same sha25
 
 ## Results
 
-State: PAUSED at 22:35 UTC on 2026-11-20 (pause flag); see JOURNAL entry 7.
+State: PAUSED at 22:35 UTC on 2026-11-20 (pause flag; JOURNAL entry 7); run (i) closed and judged by the C-sidm lead on 2026-11-21 (JOURNAL entry 8). Next: run (iii) (CC1 at M/8), then (v); (ii) and (iv) lose most of their purpose.
 
 | Test | Run id | Outcome |
 |---|---|---|
 | D1 processor analysis of the wave-2 controls | C-20261120-222211-aa1be86 (figures rerun in D1b, C-20261120-223139-2526c6d) | [VERIFIED] the excursion is a fundamental radial pulsation started at a turning point: cosine fits P = 399 M (CC1), 355 M (CC2), sine-with-trend 415 M and 393 M; amplitude A = 0.0154 and 0.0086 in alpha_c; areal radius of the 50 % shell up by 9.0 % and 5.0 % (0.78 of the coordinate change: not a coordinate drift); mean Lorentz factor anti-correlated (-0.998); H-norm2 uncorrelated (-0.49) and identical for both models; ripple rms 8e-4 (52.7-53.9 M), the same in both models (residual correlation 0.72, same seed). D1.1-D1.4 pass, D1.5 failed |
 | D1/D1b pulsation periods of the King family (tmb b = 1) | C-20261120-222211-aa1be86, C-20261120-223139-2526c6d | [VERIFIED] fluid fundamental mode with the F21 index: 358 M (CC1), 305 M (CC2), 260 M (y0 = 0.26); Juttner index: CC1 unstable, CC2 793 M, y0 = 0.26 326 M; dynamical estimate 22-24 M |
 | M/8 deck smoke (processors, nlim = 0) | C-20261120-222544-e5a7492 | [VERIFIED] 456 MeshBlocks on 8 physical levels; H-norm2(0) = 0.149 against 0.0235 at M/4 (particle noise of the deposit in smaller cells [JUDGEMENT]) |
-| (i) cc2_kninf_M8 | C-20261120-222533-ce50a86 | queued (Slurm 4741), not run when the package paused |
+| (i) cc2_kninf_M8 | C-20261120-222533-ce50a86 (analysis C-20261121-075359-26e3b31, lead) | [VERIFIED] ran 300 M; the outward excursion shrinks to R = 0.22 (cosine A), 0.25 (sine with trend), 0.10 (largest 20 M mean) of M/4: numerical, second order or faster; no cosine form at M/8, slow contraction after 200 M (alpha_c -0.0041 at 300 M); H-norm2 floor 9.3 times higher; 8.30 s per M. M8.1, M8.3, M8.4 hold, M8.2 failed (JOURNAL entry 8) |
 | (ii)-(v) | none | not submitted (pause) |
 
 ![controls](figs/fig_drift_controls.png)

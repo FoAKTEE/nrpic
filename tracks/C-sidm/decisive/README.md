@@ -130,7 +130,7 @@ Kn = 1, the count z of D3 at Kn = 1 (-9.9; -2.3 after adding back the balance re
 
 | Job | List | Runs | State |
 |---|---|---|---|
-| D1 job 5 | `inputs/d1_job5.list` | cc1_kn10_cell_s2, cc1_kn10_cell_s3 | run C-20261121-062408-49fa14a, Slurm 4770, submitted 06:24 UTC, pending |
+| D1 job 5 | `inputs/d1_job5.list` | cc1_kn10_cell_s2, cc1_kn10_cell_s3 | run C-20261121-062408-49fa14a, Slurm 4770: COMPLETED 07:42 UTC, closed and analysed by the lead (C-20261121-075202-1a37fb9): t_c = 185.29 and 178.86 M; cell sd 3.40 M; mode effect not shown (ratio 1.32), not excluded at 1 M; JOURNAL entry 15 |
 
 When Slurm 4770 has ended (`squeue -j 4770` empty), from `/data/haiyangw/nrpic/wt/C-sidm`:
 

@@ -645,3 +645,38 @@ all, within the cap of 3.0. At 06:26 UTC both cards are held by other jobs until
 07:15-07:25 UTC, so job 5 will end after this session; its finish and analysis commands and the
 decision rule for entry 10's prediction are in README "Pending". Nothing else of this package is
 open on the cards. The pause flag was absent at every check of this session.
+
+## 2026-11-21 07:57 UTC Entry 15 (C-sidm lead, batch 2b): outcome of job 5
+
+Job 5 (run C-20261121-062408-49fa14a, Slurm 4770) ran 07:07:35-07:42:26 UTC, exit 0 for the
+smoke run and both runs (300 M each, 1040 s for s3); closed by the lead with `nrpic-run
+finish`. Analysis with this package's script, as README "Pending" prescribes:
+C-20261121-075202-1a37fb9 (all D1/D3 runs); the lead's own reader (run
+C-20261121-075336-49f92da, `stage/review_wave3/rv_clusters.py`) gives the same t_c to the last
+digit for all 15 collisional runs (figure `rv_clusters.png` looked at).
+
+| CC1, Kn = 10, t_c (linear crossing of alpha_min = 0.3) | s1 | s2 | s3 | mean | sd |
+|---|---|---|---|---|---|
+| cell mode (s1 wave 2, release executable; s2, s3 collisions-2 with `coll_energy = cell`) | 184.018 | 185.292 | 178.862 | 182.724 | 3.40 |
+| particle mode (job 2) | 184.928 | 185.847 | | 185.387 | 0.65 |
+
+Against entry 10:
+- "the two cell seeds within 1.5 M of each other and of 184.02 M": FAILED. s2 lies 1.27 M
+  after s1, s3 5.16 M before it (6.43 M between s2 and s3).
+- Decision rule: |mean(part) - mean(cell)| = 2.66 M, sigma = sqrt(s_cell^2/3 + s_part^2/2) =
+  2.02 M, ratio 1.32 < 3: a mode effect is NOT shown; the difference is above 0.5 M, so it is
+  not excluded at the 1 M level either. The lead's prediction L17 (both cell seeds in
+  [182.5, 186.5] M) FAILED for s3 as well.
+- Reading [JUDGEMENT]: at the threshold model the collapse time scatters by about 3 M (sd of
+  all five CC1 runs 2.83 M, 1.5 percent of t_c) from seed to seed, fifteen times CC2's 0.21 M
+  (four runs). Entry 10's reading (the realisation matters more near the threshold) holds
+  and is now measured in the cell mode too; the operator's energy defect remains without a
+  measurable effect on t_c (CC2: +0.18 M; CC1: +2.7 +- 2.0 M). One seed per point is not
+  enough near the threshold: the G2 scan needs at least three seeds per model within about
+  0.02 in y0 of the threshold.
+- Bookkeeping: np = 1e5 and sum_m bit-identical up to t_c in both runs; 1040 s for 300 M
+  (3.47 s per M), as jobs 1-4. Card time of job 5: 0.58 card-hours of allocation (sacct
+  elapsed 34:51); package total 2.92 of the 3.0 cap.
+- README "[TO VERIFY] restart of d3_kn10_part_s1 at 300 M": VERIFIED; the deck writes restart
+  files every 300 M (`<output> file_type = rst, dt = 300`) and `rst/cc.00001.rst` was written
+  at the end of the run (22:06:25 PST, the run's exit time).

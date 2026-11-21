@@ -174,6 +174,32 @@ before the run it concerns.
   rate stays as written (runs C-20261119-143049-0cf699a, C-20261119-145925-dbcfb9c; lead's
   recheck C-20261119-151502-cb831a8).
 
+## 2b. Wording after the heat-conduction runs (lead, 2026-11-21)
+
+Accepted from the heat package (`../heat/README.md`, "Requests"; each reading was declared
+in `../heat/JOURNAL.md` before the run it concerns); no criterion is loosened, and every
+number below comes from the runs named there, rechecked by the lead (stage/REVIEW-wave3.md,
+run C-20261121-075535-b35b8fb).
+- T6(a): at lambda/L = 100 the deviation from the collisionless curve scales with the
+  square root of the collided fraction (stochastic scatter), not with t/t_coll; reported as
+  such.
+- T6(b): the reference is the nonlinear isobaric solution (`../heat/scripts/isobaric.py`);
+  the literal statistic of a code with kappa = kappa_1 is 0.967, so the interval [0.95,
+  1.10] means kappa/kappa_1 in [0.982, 1.138]. The box is one-dimensional (transverse
+  lambda x lambda); sound ringing and the early kinetic lag limit T6(b) to a check of kappa
+  at the few-percent level.
+- T6(c): at lambda/L = 0.1 the step rings acoustically; no diffusive curve applies.
+- T7: the amplitude fitted is the entropy combination A_S of the number mode and the
+  W - 1 weighted mode (sound waves bias the number mode alone by +5 to +43 percent);
+  eps = 0.2 is allowed with the nonlinear-reference correction (eps = 0.05 on the card
+  agrees with it, run C-20261120-223208-4ca3110). At theta = 0.1 and 1 the result is
+  compared, as a report and not a criterion, with the relativistic Chapman-Enskog values of
+  `../verify_g1/` V1a (run C-20261120-222423-519f12b), which no second agent has checked.
+- T8: without sub-cycling the rate deficit is zero while no pair exceeds P = 1; the dx trend
+  (kappa/kappa_1 = 1.012, 1.022, 1.040 at dx = lambda/8, /4, /2 on one card seed at
+  k lambda = 0.2, run C-20261120-223321-3d088d4) is reported; its form (linear or quadratic
+  in dx) is open.
+
 ## 3. Order and cost
 
 T0, T0b, T1, T2 first (processors, minutes). Then T3-T5 and T11 (1e6 particles, about
