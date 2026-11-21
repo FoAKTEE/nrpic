@@ -149,3 +149,27 @@ V10, V11, V5b-c. What cannot be reached in a few hours is listed as not checked.
   order). At t = 0 the monitor is 8.5e-9 with either fill (the ghosts are not extrapolated
   before the first step). Prediction (ratio 8-16, stock within 10 per cent) held.
   CONFIRMED.
+
+## Entry 4, 2026-11-21T21:54Z: outcome V6 (restart), release core-v0.6 processor executable
+
+- Third attempt core-20261121-213713-952a0c4 ran both set-ups: east (periodic, Z4c and
+  4096 particles, 16^3, restart at cycle 10 of 20) and os (Oppenheimer-Snyder, Z4c on a
+  static refinement with outflow faces, restart at cycle 3 of 6). Its byte comparison of
+  the restart files from their first byte is misleading (the parameter text of B is
+  longer, the trajectory files of B start at the restart); the aligned comparison is
+  core-20261121-215228-d1f36f4 (first V6b run core-20261121-215013-5564584 compared
+  float64 words at the wrong offset; superseded).
+- east: binary part of the restart files at cycle 20 identical; trajectories and metric at
+  the particles (470 records after the restart) identical; history rows after the restart
+  identical; particle snapshot identical. Exact. Prediction held.
+- os: particle state in the restart files (.prt) identical; history rows within 5e-13
+  relative (mean K) and the Z4c user history identical to its five printed digits; but the
+  mesh part of the restart file at cycle 6 differs in 64 per cent of its float64 words,
+  median relative difference 2.8e-13, 99th percentile 1.7e-7, largest 0.28 (small
+  values). Not exact; as `interfaces/mpi.md` row 4 says for one rank. I did not separate
+  the cause (outflow ghost refill or refinement) by a run in which it could fail.
+  Prediction held in kind (not exact), the size I predicted (1e-9 at the faces) was not
+  measured as such: I measured the whole restart file, not the face layer.
+- Verdict: "restarts are exact" (CLAUDE.md, machine section) holds for the periodic set-up
+  and the particle state; WRONG as a general statement for Z4c with outflow faces and
+  static refinement; core's own caveat (mpi.md row 4) CONFIRMED on the release.
