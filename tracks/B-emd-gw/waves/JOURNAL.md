@@ -659,3 +659,67 @@ amplitude, phase and both polarizations against the exact wave, the code's error
 of the whole linearized Z4c system with its stencils and integrator, and the diagnostics
 differ by the sixth-order Weyl stencil (spectral: 2e-11). Failed prediction on record: F2-4
 per dump.
+
+## 2026-11-21 13:20 Outcome of XS, the time and space parts of the X error (analyses B-20261121-125625-18183ef card, B-20261121-130242-7781791 processors, split B-20261121-130317-4e8107e)
+
+Runs: card B-20261120-222841-acfe21d (xdt3N16..64, the reference card executable, the
+reference data files) and processors B-20261120-222849-e5673dc (N = 16, 32, the reference
+script and executable, byte-identical data): only `particles/dt_expansion` changed (0.01 ->
+0.001), 3585 steps at every N as predicted. `results/xdt_card_results.json`,
+`results/xdt_cpu_results.json`, `results/xs_split.json`, `figs/xdt_card_errors.png`,
+`figs/xdt_cpu_errors.png`, `figs/xs_split.png` (looked at: the cross-polarization errors of
+the 0.001 runs lie on the 2S curves at every N and time; the reference curves sit above them
+from N = 32 on; arg R of the 0.001 runs lies on or just above the reference curves; the
+spectral Weyl vs TT difference drops from 1e-9..2e-8 (oscillating with the standing wave) to
+1e-12..1e-10 with spikes at t = 2 and 6 common to all N; in the split figure the measured time
+part lies on the 2S time part and the 0.001 errors on the 1e-4 (space) line).
+Cross polarization, TT, t = 10 [VERIFIED]:
+
+| N | e(0.01) amp / phase | e(0.001) amp / phase | 2S at 0.001 | time part measured = e(0.01) - e(0.001) | 2S time part |
+|---|---|---|---|---|---|
+| 16 | -7.0481e-5 / 8.3039e-5 | -7.8413e-5 / 7.1982e-5 | -7.8413e-5 / 7.1982e-5 | 7.9328e-6 / 1.1057e-5 | 7.9328e-6 / 1.1057e-5 |
+| 32 | 1.3169e-6 / 3.0650e-6 | -5.9288e-7 / 1.1463e-6 | -5.9289e-7 / 1.1463e-6 | 1.9097e-6 / 1.9186e-6 | 1.9097e-6 / 1.9187e-6 |
+| 48 | 4.2498e-7 / 5.8797e-7 | -3.1549e-8 / 1.0209e-7 | -3.1554e-8 / 1.0206e-7 | 4.5653e-7 / 4.8588e-7 | 4.5653e-7 / 4.8588e-7 |
+| 64 | 1.3989e-7 / 2.7624e-7 | -3.1034e-9 / 1.9201e-8 | -3.1089e-9 / 1.9167e-8 | 1.4299e-7 / 2.5704e-7 | 1.4299e-7 / 2.5704e-7 |
+
+- **XS-1 confirmed.** The 0.001 errors equal the 2S prediction at that step to <= 0.03 per cent
+  at N = 16, 32, 48 and 0.2 per cent at N = 64 (bands 5 and 20 per cent); the measured time
+  part equals the predicted one to 4 digits at every N. The split: at the production step
+  (0.01) the X error is 89 per cent space at N = 16 (amplitude), and time-dominated from
+  N = 32 on: at N = 64 the time part is 1.43e-7 of 1.40e-7 in amplitude (the space part,
+  -3.1e-9, has the other sign) and 2.57e-7 of 2.76e-7 in phase. The space part converges at
+  orders 7.05, 7.23, 8.06 (amplitude; Kreiss-Oliger, symbol 7.05, 7.23, 8.06) and 5.97, 5.96,
+  5.81 (phase; the sixth-order stencil, symbol 5.97, 5.97, 5.81). The processor runs give
+  the cross errors of the card runs to 4e-14 (amplitude) and 1.5e-12 (phase) at N = 16, 32.
+- **XS-2 confirmed.** Max |a/a_ex - 1| = 2.10e-11 to 2.21e-11, |alpha/a - 1| = 3.77e-11 to
+  3.96e-11 at N = 16..64 (2S predictor 1.8e-11 and 3.3e-11; bound 1e-9); at 0.01 they were
+  3.2e-8 to 5.1e-8 and 5.5e-8 to 7.0e-8.
+- **XS-3 confirmed in direction, its bound missed at N = 64.** The spectral-Weyl vs TT
+  difference (maximum over the dumps) falls from 1.91e-8, 2.23e-8, 2.41e-8, 2.30e-8 to
+  1.79e-10, 7.30e-11, 1.97e-10, 2.76e-10 (factors 107, 305, 122, 83; at the last dump
+  6.0e-11 to 7.3e-11); predicted <= 2e-10 and at least a factor 100: met at N = 16, 32, 48,
+  missed at N = 64 (2.76e-10, factor 83; the maximum is one spike at t = 6); not refuted
+  (refutation above 2e-9). So the 2e-8 offset of the reference X runs is a step effect
+  [VERIFIED]. Whether it enters through the background error in calH h' (the 2026-11-19
+  judgement) or through the mode's own time error is not separated: both fall with the step
+  [JUDGEMENT open]. The order-6 Weyl vs TT now converges at order 5.97, 5.99, 5.91 down to
+  8.1e-9 at N = 64 (at 0.01 it stopped at the 1.66e-8 offset).
+- **XS-4 refuted.** The polarization-ratio error (rounding of the plus polarization) does not
+  grow with the number of steps: arg R at t = 10 is -3.84e-9 / -3.76e-9 (N = 16, processors,
+  ratio 1.02), -2.19e-8 / -2.44e-8 (N = 32, processors, 0.90), -1.088e-7 / -1.079e-7 (N = 64,
+  card, 1.008) for 10.0, 8.7 and 5.4 times more steps; I predicted a growth between the square
+  root of the steps ratio and the ratio itself. The card and the processor executables give
+  arg R different by 1.8e-9 and 8.6e-9 at N = 16 and 32, so the card-vs-processor pairs at
+  N = 16, 32, 48 (ratios 1.51, 1.25, 1.08) carry that much noise. [JUDGEMENT, consistent with
+  the x10 check] The rounding acts as an error rate in the right-hand side, fixed by the state
+  (relative size 1e-16 (N/L)^2/(|k|^2 |h|), the 2026-11-19 16:00 estimate), which the
+  integrator accumulates over time whatever the step; independent rounding per step would
+  average out in the mode coefficient. At the small step the plus polarization of X is
+  therefore rounding-limited from N = 48 on (phase 1.66e-7 and 1.28e-7 against 2S 1.02e-7
+  and 1.92e-8), while the cross polarization is not.
+
+Verdict for the time/space split: done. The X errors at the production step are those of the
+code's RK4()4[2S] with the expansion step limit (time part, equal to the prediction to 4
+digits) plus a spatial part of order 7 (amplitude) and 6 (phase) that equals the symbol; at
+N >= 32 the step limit, not the mesh, sets the error. Failed predictions on record: XS-3
+bound at N = 64 (marginal), XS-4.
