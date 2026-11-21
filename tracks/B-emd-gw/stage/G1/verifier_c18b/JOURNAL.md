@@ -128,3 +128,37 @@ visible at once; the relativistic numbers of that run were already right).
   agree to 0 at 50 digits; a Gauss-Legendre double-precision quadrature 1.1e-16. The printed
   2.22e-16 is a rounding unit: confirmed as "agreement at rounding", not as digits.
 - P6 (line 71): held: -1.6449e-10 (conformal), -9.8696e-10 (1+log), closed form and ODE.
+
+## 2026-11-21 09:25 PST — entry 3: outcomes of P7-P9 (runs B-20261121-170611-c616c57, B-20261121-171152-4241a93, B-20261121-171519-ad8f227)
+
+- P8 (line 199): held. Own PCS deposit + the code's compensation pass + spectral derivatives
+  give momentum residuals 7.628667399551e-4, 2.827786570410e-4 (id.json: the same to 4e-15
+  relative) and 4.9e-17 for the unjittered lattice (id.json 3.1e-17: rounding). The deposit
+  integrates to the particle sum to 4e-16. The Hamiltonian residual came out 1.0e-9 and
+  3.3e-10 for the jittered cases with my first choice of psi at the particles (tensor cubic
+  Lagrange): a sub-prediction that FAILED (expected ~1e-11). Cause shown by a run that could
+  have failed: with the cubic B-spline interpolant (scipy ndimage order 3) the residuals are
+  3.6990e-11, 4.4963e-12, 4.782e-12, equal to id.json to four digits; with linear
+  interpolation 3.0e-9. The jittered psi has grid-scale structure (the interpolants differ by
+  2.8e-5 at the particles), which enters E through W - 1 ~ 2e-5. So the printed 3.7e-11 is the
+  residual for the tool's interpolant; any other reasonable interpolant gives <= 3e-9, still
+  negligible against the largest term (1.04). New finding: the momentum residual sits on the
+  Nyquist planes of the mesh (share of its power 1 - 4e-10 for jitter 0.3): it is the part of
+  the jittered momentum source at the mesh frequency, which spectral first derivatives
+  cannot represent and the vector solve therefore drops.
+- P7 (line 124): held. Own restart reader (checked: t = 0 dump equals the code's field dump
+  for chi to float32 rounding 5.9e-8 and for Khat, Theta, alpha exactly; det(gtilde) - 1
+  <= 8.9e-16 and gtilde^ij Atilde_ij <= 5.4e-20 at all 46 dumps) and own full nonlinear B_ij
+  (checked on an analytic TT wave: cross amplitude to 5e-16). Medians over the 13 common dumps
+  with 1.5 < a <= 64: magnetic Weyl 0.001205, flat TT strain 0.01385 (printed 0.00121, 0.0139).
+  Sensitivity: the dump at t = 14.008 has a = 64.07 and falls just outside the window; with it
+  (14 dumps) the medians are 0.00185 and 0.0157. The B_x amplitude passes through zero near
+  a = 6 and 42, where the relative difference spikes (figure weyl_c18b.png); the median is
+  robust to those two.
+- P9 (line 217): held. 30 pairs (6 + 6 + 3 + 3 + 4 + 4 + 4). Every printed value agrees with
+  the comparison files to its three digits (largest relative difference 3.8e-3 = rounding,
+  e.g. 1.0 for 1.0038). My own reduction agrees with the files exactly for 22 numbers and to
+  <= 1.6e-9 for the eight departure ratios R; with the integration tolerance of the track's
+  reference ODE (rtol 1e-11, atol 1e-14) instead of my 1e-12 the largest difference is
+  1.9607e-12, the printed 1.96e-12. So the second reading's agreement sits at the shared ODE
+  tolerance; the R values themselves carry ~1.6e-9 from it, far below the printed digits.
