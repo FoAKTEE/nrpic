@@ -85,3 +85,35 @@ Predictions:
 7. Extrapolated verdict [JUDGEMENT, to be decided by 2 and 3]: if p is about 2, the merger time
    scales as h^-2: about 49 M at m/8, 110 M at m/12, 195 M at m/16, so m/16 survives 100 M and
    m/12 is marginal; if p is about 1, 73 M and 98 M, and m/16 is marginal.
+
+## 2026-11-21 BC-0 / BC-1 item 6, outcome of the mesh check (run F-20261121-130405-77ad9f6)
+
+`athena -m` of release core-v0.5 (processor build) gives start trees of 1170 (bin_m8), 1784
+(bin_m12) and 1744 (bin_m16) MeshBlocks, equal to the tree model in every case [VERIFIED,
+`mesh_m*/athena_m.log` and `tree_cost_m*.json` of the run]. Model along the Newtonian tracks to
+100 M (sampled every 0.5 M): mean 1262 / 1704 / 1725, maximum 1632 / 1896 / 2024, all below the
+slots of the inputs (2000 / 2400 / 2400). Card cost to 100 M at 2000 MeshBlock-cycles/s: 4.5,
+9.1, 12.3 card-hours (26 in all). Item 6 (start trees) MET; rates and advance per segment wait
+for the cards.
+
+P1b candidates (run F-20261121-131003-75a2b29, `athena -m`): `inputs/p1b_R16n.athinput` starts
+with 2514 MeshBlocks (g2mesh's model and card test: 2514), `p1b_R12.athinput` with 2414.
+
+## 2026-11-21 BC-2, outcome: references (run F-20261121-130646-56612a0; figure read)
+
+`scripts/refs.py` from bin_m8's punctures; figure `fig_refs.png` read [VERIFIED for the run]:
+- Newton (v = P/m): separation 4.943-5.279 M over 0-100 M (e = 0.033 ellipse), 4.944 at 10 M,
+  4.953 at 15 M, 4.969 at 20 M; orbital phase 0.462 rad at 10 M, 0.922 at 20 M, 4.30 at 100 M.
+- EIH with P read as canonical 1PN momenta: 4.946 (10), 4.941 (15), 4.930 (20), minimum 4.375
+  at about 73 M; phase 0.386 (10), 0.773 (20), 4.32 (100).
+- EIH with v = P/m: widens to 9.67 M by 100 M. With the binary moving at 0.22 c, reading the
+  Bowen-York momenta as velocities is not a consistent 1PN state (its v^2 terms are as large as
+  the binding); the canonical reading is the consistent one [JUDGEMENT]. Kept on the figure as
+  the spread of the 1PN start-state ambiguity.
+- Newton plus the 2.5PN dissipative Hamiltonian (1805.07240 Eq. H2.5PN): Iddd self-test 5e-6
+  (finite difference); the binary reaches a separation of 2 (m1 + m2) at T = 3400 M, against
+  Peters' 3388 M for the same bare masses (0.4 percent) and 3012 / 2574 M for masses 0.130 /
+  0.137. Over 0-20 M the radiation changes the separation by less than 0.003 M (Newton
+  4.969 against 4.966 at 20 M).
+So every reference keeps the separation within 4.93-4.97 M to t = 20 M, while P1 (m/8) was at
+4.286 at 20 M; the physical inspiral time is about 2600-3400 M.
