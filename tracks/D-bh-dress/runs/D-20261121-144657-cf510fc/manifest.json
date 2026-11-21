@@ -1,0 +1,104 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261121-144657-cf510fc",
+  "track": "D-bh-dress",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "V-1GB complete, ES-1GB to 188 M: compare_horizons.py on ES-1G, ES-1GB, V-1B, V-1GB (C1-C3, null test); g2runs JOURNAL entry 1",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/D-bh-dress/g2runs/tools/compare_horizons.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "ES-1G=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261119-142633-6f72922:es",
+    "ES-1GB=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-125900-ea4c442:es1gb",
+    "V-1B=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261120-222625-63abd72:v1b",
+    "V-1GB=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-125909-06f856e:v1gb"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "cf510fcfdbca7fd8aaf5e4f1dfbab2206d6bd087",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/g2runs"
+    ],
+    "outside_package": {
+      "count": 3,
+      "first": [
+        "?? tracks/D-bh-dress/drift_controls/tools/compare_runs.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/count_blocks.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/slice_profiles.py"
+      ]
+    },
+    "merge_base_main": "4f50dadd449682c2669cbe40564981146bdbb81e",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/D-bh-dress/g2runs/tools/compare_horizons.py",
+      "role": "argv",
+      "sha256": "916e7ebabcc85ba2ea9500aaebfd4aa33c017d22ecc3a780a17d6325df159710",
+      "bytes": 9600,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261121-144657-cf510fc",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T14:46:57Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 30.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.5586,
+    "gpu_hours_reserved": 2.95,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 232,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
