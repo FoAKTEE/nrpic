@@ -1,0 +1,114 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "kb-20261121-222607-c7bf84d",
+  "track": "kb",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "ingest3: final figures and BEFORE_AFTER.tsv on the final state (run kb-20261121-222222-28b1c1b)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "python3 -I tracks/kb/ingest3/scripts/fig_before_after.py --before /data/haiyangw/nrpic/scratch/kb/kb-20261121-212037-0b37880/before.json --reingest /data/haiyangw/nrpic/scratch/kb/kb-20261121-213832-67fadc6/after_check.json --final /data/haiyangw/nrpic/scratch/kb/kb-20261121-222222-28b1c1b/final.json --dry /data/haiyangw/nrpic/scratch/kb/kb-20261121-220637-9f109de/dry --out \"$NRPIC_RUN_DIR\" > \"$NRPIC_RUN_DIR/out.txt\" 2>&1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "c7bf84de010f6eda6293b32d328abf1cb006f2ef",
+    "branch": "kb/main",
+    "dirty": false,
+    "package": [
+      "tracks/kb/ingest3"
+    ],
+    "outside_package": {
+      "count": 1,
+      "first": [
+        " M tracks/kb/code_kb/JOURNAL.md"
+      ]
+    },
+    "merge_base_main": "9d43b229377786cc62ef7bb666b765abfdab30bc",
+    "worktree": "wt/kb"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/kb/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/kb/kb-20261121-212037-0b37880/before.json",
+      "role": "input",
+      "sha256": "dc776fdbd09e903e29aec9080b345b666dcea7a7cab867c0fe5384a82c598842",
+      "bytes": 35638,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/kb/kb-20261121-213832-67fadc6/after_check.json",
+      "role": "input",
+      "sha256": "250e9c194c930a1ab4d543636e64e18408df4e44136eaa29c60c4a0e12f83157",
+      "bytes": 33388,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/kb/kb-20261121-222222-28b1c1b/final.json",
+      "role": "input",
+      "sha256": "881fe3e861244eeafe079ff67aafa347bb49923f17708ccff7a500dd94c14e5c",
+      "bytes": 99853,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/kb/kb-20261121-222607-c7bf84d",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T22:26:07Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 0.0,
+    "cores_allotted": 8,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 204,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
