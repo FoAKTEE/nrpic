@@ -205,3 +205,27 @@ the command line only parameters the deck declares); nrpic-run closed the run as
 because the driver script returns 0. No result; superseded by the next run with the deck
 `inputs/diag_uniform_seed.athinput` (noise_amp = 1e-10 declared, tlim 10). Prediction of
 entry 4 unchanged.
+
+## 2026-11-21 22:26Z, entry 6: G5 and G6 outcomes (run A-20261121-220510-6c46032); a failed Test A attempt
+
+G5 (seeded 1e-10, cfl 1.0, lapse frozen; to t = 10, 54 cycles): the same step history as G0
+(dt/dx 0.65 at t = 2.37, 1.0 from t = 5.0); H_max leaves its smooth decline at t = 7.47
+(6.8e-3 against 3.8e-3 one cycle before; G0 3.5e-3 at that time), 5.3e-2 at 7.79, 0.355 at
+8.10, 1.02 at 8.32; then the light-speed limit cuts the step and H_max stays at 0.2-0.7.
+G6 (seeded, cfl 0.6; to t = 10, 73 cycles, dt/dx = 0.600 from t ~ 2): no growth; H_max falls
+smoothly to 1.84e-3 at t = 10 (G1, cfl 0.5 without noise: 1.80e-3 at t = 10). G6 as
+predicted (within a factor 2 of G1, no growth): a step of 0.6 dx is below the threshold
+with a seed present.
+G5 against entry 4: "earlier than G0, onset t < 7.5": formally yes (first departure at
+7.47 against G0's 7.79-8.10), but only by about one cycle. With 4 to 6 per cycle at dt/dx =
+1, a seed six orders above round-off should have moved the onset by eight cycles. So my
+entry-3 reading "G0 grows from round-off" is REFUTED: G0's own grid-scale seed is already
+within a factor of about 10 of the 1e-10 noise. [JUDGEMENT, not tested] the particle
+sources (shot noise of 262,144 particles deposited with CIC; the momentum density enters
+d_t Gam^i directly) seed the grid-scale shift mode in every particle run, so the onset in
+a particle run comes a fixed number of cycles after the step passes the threshold.
+
+Test A first attempt (run A-20261121-222439-65eebaa) failed in my script: the onset search
+took the t = 0 line (H_max 0.49, the data's own constraint violation) as the first line
+above ten times the baseline. Fixed (search after t = 1) in `card_onset.py` and the same
+in `analyse_runs.py`; rerun next.

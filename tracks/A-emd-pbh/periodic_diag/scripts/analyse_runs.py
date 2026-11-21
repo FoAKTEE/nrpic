@@ -7,7 +7,8 @@ the cell-to-cell alternating part of beta^x, Gam^x and alpha on the line outputs
         [--tmax T] [--vn DIR]
 
 DX is the finest cell size of the run (default 0.3125, the uniform 64^3 mesh). Onset: the
-first cstat line whose H_max exceeds ten times the median of H_max over 0.3 < t < 2.
+first cstat line after t = 1 whose H_max exceeds ten times the median of H_max over
+0.3 < t < 2.
 """
 import argparse
 import glob
@@ -53,7 +54,7 @@ def main():
         cz, zh = load_hst(os.path.join(d, "peak.z4c.user.hst"))
         tz, hn = zh[:, 0], zh[:, cz.index("H-norm2")]
         base = np.median(hmax[(tc > 0.3) & (tc < 2.0)])
-        big = np.nonzero(hmax > 10 * base)[0]
+        big = np.nonzero((hmax > 10 * base) & (tc > 1.0))[0]
         log = open(os.path.join(d, "athena.log")).read()
         guard = "NRPIC guard" in log
         rec = {"dir": d, "dx": dx, "last_t": float(t[-1]), "cycles": int(nh[-1, cn.index("ncycle")]),

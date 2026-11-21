@@ -87,11 +87,11 @@ def main():
         tc = cst[:, 0]
         hmax = cst[:, cs.index("H_max")]
         cz, zh = load_hst(os.path.join(d, "peak.z4c.user.hst"))
-        # first step above the threshold, and first cstat line with H_max > 10 x its
-        # median over t < 2
+        # first step above the threshold, and first cstat line after t = 1 with H_max > 10 x
+        # its median over 0.3 < t < 2
         k = int(np.argmax(r > thr))
         base = np.median(hmax[(tc > 0.3) & (tc < 2.0)])
-        j = int(np.argmax(hmax > 10 * base))
+        j = int(np.argmax((hmax > 10 * base) & (tc > 1.0)))   # t = 0 carries the data's H
         m = {"first_step_above_threshold": {"cycle": int(cyc[k]), "t": float(t[k]),
                                             "dt_over_dx": float(r[k]), "threshold": thr},
              "Hmax_baseline_t0.3_2": float(base),
