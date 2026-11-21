@@ -811,3 +811,41 @@ G  Release card build, one short card job (the nine cases of `card_v05.list`, 13
    card does not fix), their module histories within 1e-12 of each column [JUDGEMENT].
    Refuted for (ii) by a difference in s3g or usr, or by a deposit-case history column
    above 1e-12.
+
+### Outcomes S and R (2026-11-21T08:00Z)
+
+S HELD. Run core-20261121-075446-4944747 (`t14b_sf.py`): Sf on the card uniform to
+  1.3e-14 (chi) and 2.3e-14 (E), alpha_max equal to T2b's processor run to 1.1e-15, 34
+  MeshBlocks at every record, identity 4.4e-16. Figure `fig_t14b_sf.png` looked at.
+R HELD. Run core-20261121-075456-a505400 (`regress_v04.py`, 6 cores): the release
+  processor build `.work/build_cpu_v05/src/athena` against the candidate `athena_cpu`:
+  75 of 75 items identical, classes a, b, other empty, every run status 0. Figure of
+  run core-20261121-080001-5da4067 looked at (twelve bars, one colour). So the release
+  executable and the candidate differ in their bytes (sha256 222b8fa4... against
+  b462068a...) and not in any output of the twelve set-ups.
+Also closed (package records, details in their journals): cosmo-amr T10g (two of five
+predictions failed as written) and mpi P6 (rate clause of P6c failed), P7g (held).
+G: card job 4775 queued (priority) since 07:54Z.
+
+### Prediction of the chain test (decision 0021 item 6), written before it runs
+
+Change of `scripts/submit_chain.sh`: an exit of the executable with status 137 or 143
+without a line "Terminating on" and without a signal to the job itself is an outside
+kill: the segment is resubmitted, at most MAX_OUTSIDE_KILLS = 2 times in a row (the count
+is reset by a segment that ends at the wall clock or the time limit); the executable
+runs as `chain/<PROC_NAME>`, a hard link to `chain/athena`, default `nrc-<8 hex of the
+rundir>`; a PROC_NAME containing "athena" is refused; a chain whose config has no
+PROC_NAME gets the default at its next segment. Test `scripts/tests/test_submit_chain.py`
+(fake sbatch and squeue, a fake executable that kills its own process id), prediction:
+A kill9, kill15, wall, tlim: QUEUED, QUEUED, QUEUED, DONE; 4 calls of sbatch.
+B kill9 three times: QUEUED, QUEUED, FAILED "killed from outside 3 times"; 3 calls.
+C kill9, kill15, wall, kill9, kill9, tlim: five times QUEUED, then DONE; 6 calls.
+D exit 1 without a message: FAILED at once ("exit status 1"); 1 call.
+E SIGKILL after "Terminating on time limit": FAILED ("exit status 137"); 1 call.
+G old config without PROC_NAME: kill9 then tlim: QUEUED, DONE, under the default name.
+H PROC_NAME=athena_run1 refused at start, no sbatch call.
+Every fake process reads its own name in /proc/self/comm as nrc-<hash>, the same for
+the segments of one chain and different between chains. Refuted by any other status
+sequence or call count, or by a process named athena. Where I am least sure: that
+/proc/self/comm of a bash script is the name of the hard link it was started through
+(the kernel takes it from the file name given to execve) [JUDGEMENT, tested here].
