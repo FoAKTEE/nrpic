@@ -260,3 +260,28 @@ at the constant-f peaks 1.0005 (a = 0.8) and 0.9990 (a = 0.5), at r = 12 to 5e-5
 - Caveat: at a = 0 my Lz scan found up to 23 disjoint valid intervals at some radius (root
   classification at near-degenerate roots); the doubled quadrature moved the a = 0 peak by
   7e-5 only, so the effect on the numbers above is small, but it is a fragility of my code.
+
+## Entry 5 (2026-11-20 19:55 PST): V5, the numerical ledger at 78d470ca, prediction
+
+Read: `git show 78d470ca:tracks/D-bh-dress/note/tables/ledger.tex` (51 values in 4 parts) and,
+for the run each row names and the definitions, `78d470ca:.../note/scripts/ledger.py` and
+`common.py`. Script `v5_ledger.py`: every row is either "independent" (my own code from the
+raw output: table rows, particle file, snapshots, finder output, closed forms), "recount" (a
+number read off the run's log/JSON/manifest and recounted, e.g. a log2 of two stored residual
+maxima), or "not done" with the reason. Where independence would take hours I do not rerun
+the track's wave-1 analyses (no time in this window); those rows are "not done".
+Smoke run of parts 1, 2, 4 before registration (scratch/D-bh-dress/tmp/vg1/v5smoke): 31 rows,
+all independent and recount rows agree with the ledger to its printed digits except (i) the
+table density residuals, which my 4th-order differences find SMALLER than the ledger (3.4e-7
+and 8.1e-10 against 2.22e-5 and 1.68e-7), (ii) the self-similar rows (slopes, lambda_1, mass
+inside it), where my seedless solution is a different model (lambda_1 0.3630 against
+0.3553), and (iii) a tracer count of 0, a bug of mine (tracers carry the placeholder mass
+1e-30, not 0), fixed.
+Predictions for the registered run: the part-1, 2, 4 rows as in the smoke run; part 3:
+constant-f peak 0.8699e8 at 7.58 within 0.3 per cent (my V3 code at a = 0), GS ratios 2.590
+and 0.0922 within 0.5 per cent (closed form with my peak), Hernquist a = 0 peak 2.437e18 within
+0.6 per cent, deviation from FdRW 5-39 Gm about 1.7 per cent (ledger 1.0 per cent: my curve
+sits 0.5-1.7 per cent below the digitised one, V3), AthenaK Schwarzschild spike: |dE/E| and
+|dL/L| maxima within 5 per cent of 1.33e-6 and 1.93e-10, count ratio 4-6 Gm within 1 per cent
+of 0.976. A row is WRONG if my independent value differs from the ledger by more than its
+printed precision plus my stated uncertainty and I can show my value is right.
