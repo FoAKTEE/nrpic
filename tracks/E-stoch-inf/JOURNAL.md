@@ -303,3 +303,55 @@ checkout (the `cd` applied to a background subshell only); it wrote an export un
 - Stage checks: `nrpic-stage verify E-stoch-inf G0 --no-checksums` PASS on 1d25517c (16 checks,
   ledger rerun included); G1 verify PASS on d480131e and rerun after the last commits; reports
   written with the decision paragraphs (G0: complete for review; G1: not met, not complete).
+
+## 2026-11-21T06:35Z  session lead wave 3, batch 2a (Opus)  commits 08ef0ccd..  runs see below
+
+Lead review of the wave-3 packages that finished in batch 1 (`g1verify`, `ladder`); stage
+packages G0 and G1; outbox; owner files. State found: main merged (release core-v0.4 on main,
+CLAUDE.md names `.work/build_{gpu,cpu}_v04`); no pause flag; no card job of this owner queued
+or running. The packages `note`, `a4res`, `usr`, `window` of round 1 were cut at 14:35 PST on
+2026-11-20 and are not finished: uncommitted files of `note/scripts/` (six modified, five new),
+`a4res/scripts/` (three new), `usr/JOURNAL.md` and `usr/scripts/` (two new) are left alone
+(HANDOFF lists them). Two card jobs of those packages ran to completion while their sessions
+were gone (Slurm 4740 window scan, E-20261120-222424-0eb754b, 23 min; 4742 usr group 1,
+E-20261120-222621-ba66218, 9.4 min); their manifests still say "submitted" and no analysis
+exists; left to their packages.
+
+Plan of the lead check (artefacts, not conclusions): (1) rerun the final analysis steps of
+both packages unchanged from their registered inputs (`stage/review3/scripts/rerun_all.sh`)
+and compare every JSON leaf with the registered output and with the committed copy
+(`compare_json.py`); (2) own code on the raw dumps for the new ladder results
+(`stage/review3/scripts/lead3_check.py`, built on the lead's wave-2b `stage/G1/scripts/lead_check.py`;
+parameters read from the code's logged command line, amplitudes from core's twin
+`mode_alpha`, LSODA references); (3) read every figure of both packages.
+
+Predictions, written before either run (refuted where stated):
+- LR (reruns): every numeric leaf of the twelve reruns (g1verify v123, v45, v45 addendum, v6,
+  v7, v7 on the G1 executable; ladder final2, a6_64, l5 card, l5 scaling, seed-2 judge and
+  comparison) equals the registered output bit for bit, apart from path-like strings; every
+  committed copy equals its registered output. Refuted by a numeric leaf that differs by more
+  than 1e-12 relative (a difference at 1e-15 would be thread-order rounding, recorded, not
+  refuting) or by a committed copy that differs from its run's output.
+- LW1 (seed 2 of P256, own code): seed read from the log 20261120, nmax2 4096; A2 maximum over
+  |n| <= 32 at N_f 2.12e-4 within 10 percent (set by a mode with small |alpha|), over all modes
+  4.49e-3 within 10 percent; A3 max |Q(N_f)/Q(N_k+4) - 1| below 1e-5, |drift| below 1.5e-4 per
+  e-fold; A1 phi, Pi, K below 4e-12, 1.3e-11, 4e-12; e-folds minus ln a below 1e-8. Refuted if
+  A2 differs by more than 10 percent from 2.12e-4 or any verdict changes.
+- LW2 (P256 constraint split): odd/even of H at time-matched dumps at most 25.1 within 2
+  percent, at t = 4.0; the index-paired last dump has times 0.0038 apart and odd/even 385
+  within 5 percent. Refuted if the matched maximum exceeds 50 or the index-paired value is
+  below 100 (then the verifier's explanation of the 385 would be wrong).
+- LW3 (records): whole-record maxima <|H|/[H]>, <|M|/[M]>: P256 5.10e-11, 3.99e-4; P256s2
+  5.11e-11, 4.00e-4, within 1 percent; P256 to t = 4.6: H 5.10e-11 at t = 4.547.
+- LW4 (A6 at 64^3): Richardson orders of the perturbations of phi, chi, K in 3.8-4.2 at the
+  dumps t >= 0.98, of <chi> 4.03 within 0.1; odd part of H at Courant 0.25 over that at 0.0625:
+  0.97 and 1.62 within 5 percent at t = 0.49, 0.98, within 1.5e-3 of 1 at the dumps with
+  e-folds >= 2.4. Refuted if an order leaves 3.5-4.5.
+- LW5 (L5, card): even part of H at s = 100 over s = 50: 4.0000 within 1e-4 at every dump
+  after t = 0; first-order M after one step 5.94e-7 (stencil) and 6.08e-7 (continuum) of
+  <[M]> within 5 percent, continuum minus stencil 1.309e-7 within 5 percent (reference 1.293e-7).
+  Refuted if the stencil's first-order M is below 1e-8 or the difference is not 1.29e-7 within
+  30 percent.
+- LW6 (L5 step test, 32^3): first-order M at Courant 0.25 over 0.125, common dumps with
+  t <= 0.25: 15.5-19.5. Refuted if at most 4 (a ratio near 2 would be a first-order
+  stage-timing defect of the hook).
