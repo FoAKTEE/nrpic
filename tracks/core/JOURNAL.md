@@ -1147,3 +1147,41 @@ debug information) [VERIFIED by `sha256sum`]. No source change in this session.
   of the largest column (atomic deposition on the card is not repeatable bit for bit;
   for core-v0.5 the module histories agreed to 1.2e-15). Refuted by a status other than
   0, a difference in f_full, s3g or usr, or a history column beyond 1e-12.
+
+### Outcomes (2026-11-21T15:56Z)
+
+- **K6 held.** Job 4800 ran at 15:21Z (46 s), fifteen cases with status 0. Judged in
+  core-20261121-154700-2de4974 (`card_v06.py`: Newtonian histories within 1.6e-11 of
+  processors, bound 1e-10; f_full identical, c_cd1 1.9e-10, bound 1e-7; solver outer
+  iterations 22, 34, 20 on both, psi_max equal to 2.5e-15 at worst) and
+  core-20261121-154710-220c1b0 (`card_v05.py`: K1 to K6 of core-v0.5 held, deposit sums
+  2.3e-13 at worst, identity 9.9e-16, dumps 3.1e-14). Not bounded and different: Hr_max
+  (column 11) of `gauss.cstat.hst` of g_smr1, 1.380745 against 1.379534 (8.8e-4), while
+  H_max agrees to 1.2e-12 [VERIFIED by reading both files]; the same class as trk column
+  15 of core-v0.5 (0.14 again). Figures looked at; in `fig_card_v06.png` the dashed
+  bounds run across all cases although each applies to its own, so the g_smr1 bar seems
+  to cross one: noted in the release file, the script not changed.
+- **R6 held.** Release processor build against the candidate: 75 of 75 items identical,
+  classes a, b, other empty (core-20261121-154737-dc1e4c1; figure
+  core-20261121-155317-1ee04bf looked at).
+- **G6 open.** Job 4810 (run core-20261121-154654-d3ec487) queued at 15:47Z; commands to
+  judge it in `RELEASE-v0.6.md`, section "Release builds against the candidate".
+
+Records written: `RELEASE-v0.6.md` (first lines, card section, release builds),
+`scratch/core/exe/core_nrpic_v06/READY` (athena_gpu line), `CHANGELOG.md` (section "Run
+scripts" of core-v0.6: the chain script), `REQUESTS_WAVE3.md` section 5 (W24 relaxed
+lapse first for core-v0.7, W25 to W29), inbox acknowledged (E lockstep, orch release).
+
+G2 package: `nrpic-stage collect` gave 18 items (two new of decision 0012/0016, renumbered
+from C12); filled: 10 PASS, 8 FAIL. G2 is not met (OPEN.md, first section): ladder rows 3
+and 4 PARTIAL, no single three-way convergence study, no note, no verifier, architecture
+schematic stale, no REVIEW/SCOPE documents in the stage directory. Read for it: Track C's
+drift package (M/4 mesh pushes clusters outward, seven to ten times less on M/8: core's
+M/4 bisection does not test the threshold) and Track D's g2runs (relaxed lapse grows a
+vacuum horizon by 1.3e-3; the term acts wherever alpha > alpha_0,
+`z4c_gauge_ext.hpp` line 19).
+
+Faults of mine in this session, on record: the first wording of C1's evidence said the
+ladder rows carry over "byte for byte" from the wave-1 regressions; core-v0.4 differed
+in classes a and b and the full ladder runs were not repeated, so it was reworded to a
+judgement before the commit.

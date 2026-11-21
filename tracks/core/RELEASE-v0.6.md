@@ -220,6 +220,26 @@ checks ran):
 
 Card time of this session: 0.024 card-hours used (Kc, 87 s), 0.3 asked for job 4800.
 
+## Release builds against the candidate
+
+The clerk built the release executables from main after the merge (merge 36e51bae; the
+source trees of the tag and of main are the same). Their checksums differ from the
+candidate's (processor 91fc59b3... against 2ec1f232...; card ea473498... against
+168e5da6...), as builds in other directories do [VERIFIED by `sha256sum`]. Predictions
+R6 and G6: `tracks/core/JOURNAL.md`, entry of 2026-11-21T15:46Z (session core-lead-6).
+
+| Check | Run | Result |
+|---|---|---|
+| `.work/build_cpu_v06/src/athena` against the candidate `athena_cpu`, `regress_v04.py`, twelve set-ups, 3 cores | core-20261121-154737-dc1e4c1 (figure core-20261121-155317-1ee04bf) | 75 of 75 items identical, classes a, b, other empty: PASS (R6 held). Figure `fig_regress_v04.png` looked at: twelve bars, one colour |
+| `.work/build_gpu_v06/src/athena` on the fifteen cases of `card_v06.list`, against the processor runs (`card_v06.py`, `card_v05.py`) and the candidate's card run of job 4800 (`card_pair.py`) | core-20261121-154654-d3ec487, Slurm job 4810, 0.1 card-hours asked | PENDING: queued at 15:47Z behind jobs of other owners. To judge it: the three commands below; prediction G6 |
+
+```
+harness/bin/nrpic-run finish core-20261121-154654-d3ec487
+harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 --purpose "G6 (i) new cases" -- python3 tracks/core/analysis/release/card_v06.py --card /data/haiyangw/nrpic/scratch/core/core-20261121-154654-d3ec487 --quick /data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc --r2 /data/haiyangw/nrpic/scratch/core/core-20261121-131250-f8df905 --out '$NRPIC_RUN_DIR'
+harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 --purpose "G6 (i) cases of core-v0.5" -- python3 tracks/core/analysis/release/card_v05.py --card /data/haiyangw/nrpic/scratch/core/core-20261121-154654-d3ec487 --cpu /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c --out '$NRPIC_RUN_DIR'
+harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 --purpose "G6 (ii) release card build against the candidate's card run" -- python3 tracks/core/analysis/release/card_pair.py --a /data/haiyangw/nrpic/scratch/core/core-20261121-154654-d3ec487 --b /data/haiyangw/nrpic/scratch/core/core-20261121-132052-f330004 --cases n_sp,n_7p,f_full,c_cd1,p5_mov_n64,g_smr1,s3g,usr,trk,peak,dep,depp,fine,finet,cluster --out '$NRPIC_RUN_DIR'
+```
+
 ## Known defects
 
 `tracks/core/stage/G2/OPEN.md`, section of core-v0.6, items a to o; the READY of the

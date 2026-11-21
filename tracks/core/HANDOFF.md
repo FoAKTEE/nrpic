@@ -2,89 +2,70 @@
 
 Written for a reader with no memory of the last session. Rewritten at the end of every session.
 
-State (2026-11-21, batch 3, session core-lead-5): release candidate core-v0.6 is written
-on `core/nrpic` and pushed: `tracks/core/RELEASE-v0.6.md`, first line
-`RELEASE core-v0.6 984bde68c6201c8f100ced3d6a7effbea9cafd80 REGRESSION PASS`. Merged on
-top of release core-v0.5, one merge commit each: core/newton-2 (a1fffa58), core/z4c-faces
-(1419f19a), core/id-solver-2 (984bde68, the source commit). Executables:
-`/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v06/` (four, with COMMIT, SHA256SUMS,
-READY, branches/). It is NOT on main yet: the release clerk merges and tags.
+State (2026-11-21, batch 4a, session core-lead-6): release core-v0.6 is on main (tag on
+984bde68) and closed except one card job. Its merged card executable PASSED the card check
+(job 4800, prediction K6 held); the release processor build of main
+(`.work/build_cpu_v06`) is byte-identical with the candidate (75 of 75). The G2 package of
+core is brought to the state after core-v0.6: G2 is NOT met (`stage/G2/OPEN.md`, first
+section). No source was changed in this session.
 Owner: core, branch `core/nrpic`, worktree `/data/haiyangw/nrpic/wt/core`.
-Run next: `cd /data/haiyangw/nrpic/wt/core && git merge --no-edit main && harness/bin/nrpic-run status core-20261121-132052-f330004`
+Run next: `cd /data/haiyangw/nrpic/wt/core && git merge --no-edit main && harness/bin/nrpic-run status core-20261121-154654-d3ec487`
 
-ONE RUN IS PENDING: the card check of the merged card executable, run
-core-20261121-132052-f330004, Slurm job 4800 (0.3 card-hours asked; queued behind seven
-jobs of other owners at 13:45Z). Prediction K6 is in the journal (entry of
-2026-11-21T12:55Z). To close it (the worktree must be clean for `nrpic-run submit`):
-1. `harness/bin/nrpic-run finish core-20261121-132052-f330004`
-2. the two `nrpic-run submit ... card_v06.py` and `... card_v05.py` commands printed in
-   `tracks/core/RELEASE-v0.6.md`, section "Card check of `athena_gpu`"
-3. look at `fig_card_v06.png` and `fig_card_v05.png`; write the outcome against K6 into
-   that section (replace "PENDING" there and in the second line of the file), into the
-   line `athena_gpu` of `scratch/core/exe/core_nrpic_v06/READY` and into the journal;
-   commit, push. `card_v06.py` judges the six new cases (bounds: Newtonian history 1e-10,
-   histories with the faces options 1e-7, solver iterations equal and psi_max to 1e-12,
-   1e-9 on the refined mesh); `card_v05.py` the nine cases of core-v0.5 (K1 to K6 of that
-   release). If a bound fails by a ratio of rounding-level residuals in a constraint
-   column (as trk column 15 for core-v0.5), say so and judge on the absolute numbers.
+ONE RUN IS PENDING: the release card build `.work/build_gpu_v06/src/athena` on the fifteen
+cases of `analysis/release/card_v06.list`, run core-20261121-154654-d3ec487, Slurm job
+4810 (0.1 card-hours asked; queued at 15:47Z). Prediction G6 is in the journal (entry of
+2026-11-21T15:46Z). To close it (the worktree must be clean for `nrpic-run submit`): the
+four commands in `tracks/core/RELEASE-v0.6.md`, section "Release builds against the
+candidate"; look at the three figures (`fig_card_v06.png`, `fig_card_v05.png`,
+`fig_card_pair.png`); write the outcome into that section (replace PENDING), into the
+line `athena_gpu` of `scratch/core/exe/core_nrpic_v06/READY` (it says "queued as job
+4810") and into the journal; commit, push. In `fig_card_v06.png` the dashed bounds run
+across all cases although each applies to its own cases: g_smr1's constraint-statistics
+bar (Hr_max, a ratio of rounding-level residuals, 8.8e-4 in job 4800) is bounded by
+nothing.
 
-Files to read first: `tracks/core/STATUS.md`; the last entry of `tracks/core/JOURNAL.md`
-(with the faults of the session); `tracks/core/RELEASE-v0.6.md`;
-`tracks/core/stage/G2/OPEN.md` (first section, core-v0.6: branches left out, limits a
-to o); `tracks/core/CHANGELOG.md`, section core-v0.6.
+Files to read first: `tracks/core/STATUS.md`; the last entry of `tracks/core/JOURNAL.md`;
+`tracks/core/stage/G2/OPEN.md` (first section: is G2 met, what is missing, defects p-t);
+`tracks/core/interfaces/REQUESTS_WAVE3.md` section 5 (order of work for core-v0.7).
 
-Decided in this session (journal, 12:55Z):
-- the default `id_far = multipole` of the initial-data solver stands (it changes solved
-  data against core-v0.5 on meshes with no periodic face; `id_far = robin` restores the
-  bytes for matter at rest);
-- the nine never-set members of the mesh header needed no change: zero since core-v0.4.
+Decided in this session:
+- core-v0.7 holds W24 (relaxed-lapse fix, first), W26 core/clump-table, W27 core/oblate;
+  E's lockstep sub-steps (W25) go to core-v0.8 [maintainer's judgement; E's reply-by is
+  2026-12-05].
+- The release card check ran the whole fifteen-case list for the release build (46 s on
+  a card), not one case.
 
-Left out of core-v0.6, for the next release:
-- core/clump-table: not closed when the candidate was built. At 13:37Z its tip
-  (099882b3) had "merge notes for core's lead in the interface text"; read its report
-  and READY when its session has returned, then review, merge, regress as below.
-- core/oblate: tip 4f01a81f of 2026-11-20, does not hold core-v0.5; it must merge main
-  and publish executables with READY first.
+G2 (CHECKLIST.md, 18 items): PASS C3, C4, C5, C8, C9, C10, C11, C13, C17, C18; FAIL C1,
+C2, C6 (unless `VERIFY_RESULTS.md` says otherwise; see STAGE_REPORT.md), C7, C12, C14,
+C15, C16. What closes it: ladder row 4 on M/8 against a collisionless control (Track C's
+drift package shows M/4 pushes clusters outward), the oblate collapse after W27, a
+coupled set-up converged three ways, a redrawn architecture schematic
+(`verify/figscripts/schem_architecture.py`), a working note, a fresh-context verifier,
+REVIEW.md/SCOPE.md in the stage directory.
 
-How the release checks run (registered; the worktree clean at `nrpic-run submit`):
-byte regression `analysis/release/regress_v04.py --base OLD --new NEW --out DIR --cores 3`
-(6 min) and `fig_regress_v04.py RUNDIR --out DIR`; quick tests `quick_v06.py --new NEW
---base OLD --out DIR --regress REGRESSION_RUN` (3 min; `--redraw OLDDIR` draws again);
-the solver's `analysis/idsolve2/regress_m1.py` (it overwrites the package's
-`regress_m1.json` and `figs/regress_m1.pdf`: restore them with `git checkout --`) and
-`regress_r2.py --tag _<release> --same <case directories>`; a build that is not a byte
-reference: `hst_pair_v06.py REGRESSION_RUN --out DIR`; card `nrpic-run submit --launcher
-batch --list analysis/release/card_v06.list --exe <gpu> --gpu-hours 0.3`. For the next
-release: copy `quick_v06.py`, `card_v06.py` and the list, put in the examples of the
-branches merged then, take core-v0.6 as the base.
+W24, what is known (do not rediscover): `<z4c> lapse_leak` adds
+`-(alpha/T) max(ln(alpha/alpha_0), 0)` to d_t alpha wherever alpha > alpha_0
+(`athenak/src/z4c/z4c_gauge_ext.hpp` line 19), matter or not; Track D's V-1GB (vacuum,
+faces +-384 M, M/8) grows its horizon mass by 1.27e-3 over 100-200 M against 5e-5 without
+the option; inputs and runs in `git show track/D-bh-dress:tracks/D-bh-dress/g2runs/README.md`.
 
-Executables (read-only): candidate `scratch/core/exe/core_nrpic_v06/`; release
-core-v0.5 `.work/build_{gpu,cpu}_v05` (main checkout) and `scratch/core/exe/core_nrpic_v05/`;
-older releases `.work/build_{gpu,cpu}_v04`, `_v03`. Build directories of the candidate
-in `wt/core/.work/`: `build_cpu_v06rc`, `build_gpu_v06rc`, `build_omp_v06rc`,
-`build_cpu_mpi_v06rc` (the card list of job 4800 names `build_gpu_v06rc`: do not rebuild
-there before the job has run).
+Executables (read-only): release core-v0.6 `.work/build_{gpu,cpu}_v06` (main checkout);
+candidate `scratch/core/exe/core_nrpic_v06/` (four, READY with the card check);
+`wt/core/.work/build_*_v06rc` build directories of the candidate.
 
 Open with other owners:
-- orch/clerk: merge `core/nrpic` into main, tag `core-v0.6`, release builds, copy
-  `z4c_faces.md`, `id_solver2.md`, `REQUESTS_NEWTON2.md`, `newtonian_mode.md` to
-  `coord/INTERFACES/`, announce the default far field of `id_solve` (section "For the
-  release clerk" of `RELEASE-v0.6.md`).
-- Tracks: no outbox message was written in this session; the packages newton2 and faces
-  wrote theirs. Tracks A, D, F should learn of the far-field default with the clerk's
-  announcement.
-- Requests triaged in `REQUESTS_WAVE3.md` and accepted without a branch are unchanged
-  (W1, W2, W6, W15, W16, W18, W22).
+- orch: outbox message of this session (gate status of core G2, release closed).
+- Track D: G2 null tests without `lapse_leak` until W24 is released (decision 0022).
+- Track C: its run (vi) (Slurm 4804, M/8 control to 1000 M) decides whether the M/8
+  contraction turns; core's row-4 bisection on M/8 should read it first.
+- Branches core/clump-table (tip ff11719d, holds core-v0.5 not v0.6) and core/oblate (tip
+  4f01a81f, does not hold core-v0.5): both merge main before the next release.
 
 Traps:
-- A full commit hash is copied from `git rev-parse`: this session first wrote forty
-  digits by hand into the release file (corrected before the push; journal).
-- `regress_m1.py` and `analyze_k.py` of package idsolve2 copy their results into the
-  package directory: tracked files change or new files appear, and `nrpic-run submit`
-  refuses a dirty tree until they are restored or committed.
-- `an_batch.sh k1.txt` of package faces ends with status 1 although the data agree: it
-  lists the card's log files as missing.
-- Exit status 3 of an AthenaK run is the guard's stop; `athena_cpu_omp` is not a byte
-  reference; `runs/` in .gitignore hides `tracks/core/runs/` (a hand-written manifest
-  needs `git add -f`).
-- The clock: `date -u`. Temporary files of the lead: `scratch/core/tmp/lead_v06/`.
+- `nrpic-ctx ack` commits by itself (inbox_acks.txt).
+- `nrpic-stage verify` exports the committed tip and checks every run manifest; it writes
+  VERIFY_RESULTS.{json,md} into the stage directory (commit them with the report).
+- A full commit hash is copied from `git rev-parse`; exit status 3 of an AthenaK run is
+  the guard's stop; `athena_cpu_omp` is not a byte reference; `runs/` in .gitignore hides
+  `tracks/core/runs/` (a hand-written manifest needs `git add -f`).
+- The clock: `date -u`. Temporary files of the lead: `scratch/core/tmp/lead_b4a/`.
