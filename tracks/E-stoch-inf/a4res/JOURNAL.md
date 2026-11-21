@@ -222,3 +222,24 @@ Measured floor f_o at t = 0.13: 4.1e-13 (64^3) and 2.2e-12 (128^3) in absolute r
 the ladder's floor model predicted 4.1e-13 and 2.3e-12 (entry 3 run, `prediction.json`).
 A4' (SCOPE 4b, as ruled in decision 0021): (a) holds in all six set-ups; (b) holds in the
 three where testable; (c) holds; (d) not part of this job.
+
+## Entry 5, 2026-11-21 15:25Z: post-hoc check of Q6, final run, close
+
+Run E-20261121-152010-371d5f1: `a4_analysis.py` again (fig_checks margin only; every
+number of `a4res.json` equal to E-20261121-151643-c2c0f5a apart from wall times, checked),
+then `post_checks.py` (`results/post.json`, `fig/fig_post.png`, looked at).
+- Q6 post hoc, prediction of entry 4 REFUTED: at t = 0, where both runs dump at the same
+  time, E_A(N64q64)/E_A(N128q64) = 0.99993 (H) and 1.00000 (M); but the three-point
+  quadratic interpolation still gives 0.917 (H) and 0.961 (M) at t = 0.147 (log-linear:
+  0.891, 0.952). The even part falls by a factor 2.7 from t = 0 to 0.135 and is not
+  monotonic over the next dumps (H at 128^3: 3.42e-11, 1.25e-11, 0.97e-11, 1.41e-11 at
+  t = 0, 0.135, 0.258, 0.380), so the dump spacing of 0.125 does not resolve it and no
+  interpolation settles the point. Cause not named. A run that would settle it: N64q64
+  and N128q64 (p, m) with dump_dt a multiple of the 64^3 step (both runs then dump at
+  the same times), about 3 card-minutes; not submitted (the package's question does not
+  depend on it: the strict-A4 verdicts use no comparison across resolutions).
+- A4'(b) post hoc at O_B > 5 f_o: O_A/O_B = 1.973-1.979 (N64q16, H, 5 dumps),
+  1.972-1.991 (N128q100, H and M, 21 dumps), inside 2.00 +- 0.05; N128q64 has no such
+  dump (its half-pair odd part peaks at 1.9-2.0 floors), N64q16 M none (3.7 floors).
+
+Card time of the package: 0.19 card-hours (cap 0.5). Pending runs: none.
