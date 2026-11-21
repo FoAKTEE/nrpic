@@ -26,11 +26,12 @@ outcomes: `JOURNAL.md`. Results in short: section Results below.
 | `scripts/analyse_cards.py` | the card runs against entries 9-10: `--group g1` (pairs, halving, ladder 64 -> 128, constraint parts odd/even in s) or `--group u256` (single run or pair; one-point statistics) |
 | `scripts/quick_records.py` | records only (con.hst, lockstep .modes, athena.log): a check of a card job in seconds |
 | `scripts/floor_split.py` | post-hoc: the s-independent floor of the constraint parts from the halving pair, floor-corrected halving factors |
+| `scripts/lockstep_shells.py` | lockstep record per shell at N_f against the code-time MS reference (RK4 phase error k^5 dt^4/600), and the per-shell error of R^NR (single run and, with U256m, the odd part) against it |
 | `scripts/figstyle.py` | copy of `harness/style/figstyle.py` |
 | `results/usr_reference.json` | all numbers of the reference run E-20261119-143905-f2bcde3 (code inputs, landmarks, a table every 0.5 e-fold, twins, spectrum at N_f, lattice variances, mode-file checksums) |
 | `results/landmarks.csv` | times and field values a run must reproduce (code units), one row per landmark |
 | `results/usr_spectrum_Nf.csv` | per shell up to nmax2 = 4096: crossing, Delta_R at N_f (full MS, FLRW lattice), slow-roll estimate at crossing, enhancement |
-| `results/runs/summary_<run_id>.json` | numbers of the analyses: E-20261119-145842-74b52ec (first batch), E-20261119-152843-c201aad (both batches, final); cards: E-20261121-075307-4542ce1 (group 1); `quick_records_E-20261121-075022-7f76477.json`, `floor_split_E-20261121-080134-a0cc3eb.json` |
+| `results/runs/summary_<run_id>.json` | numbers of the analyses: E-20261119-145842-74b52ec (first batch), E-20261119-152843-c201aad (both batches, final); cards: E-20261121-075307-4542ce1 (group 1), E-20261121-084815-63462b8 (U256); `quick_records_E-20261121-075022-7f76477.json`, `floor_split_E-20261121-080134-a0cc3eb.json`, `lockstep_shells_E-20261121-090057-19571c7.json` |
 | `inputs/modes_usr_n{16,64,256,1024,4096}.txt` | mode files (R, dR/dtau at N* per shell, code units; Bunch-Davies at N0 for every shell) |
 | `inputs/usr_base.athinput` | 32^3 base input for core_scalar-2, initial slice at N* |
 | `inputs/usr_256.athinput` | production set-up of P1 (256^3, nmax2 = 4096) without the dumps of H, M (base of `usr_256s.athinput`) |
@@ -81,10 +82,15 @@ From the worktree root (`/data/haiyangw/nrpic/wt/E-stoch-inf`), with the worktre
       --launcher batch --exe /data/haiyangw/nrpic/scratch/core/exe/core_scalar-3/athena_gpu \
       --list tracks/E-stoch-inf/usr/inputs/card_g1.list --gpu-hours 0.4 --wall 00:24:00 --purpose "..."
     #   (card_u256.list: --gpu-hours 0.97 --wall 00:58:00)
+    #   (card_u256m.list: --gpu-hours 0.72 --wall 00:43:00)
     harness/bin/nrpic-run submit --package tracks/E-stoch-inf/usr --kind scouting --gate G2 \
       --launcher local --cores 3 --purpose "..." -- bash -c 'cd tracks/E-stoch-inf/usr/scripts && \
       export OMP_NUM_THREADS=3 && python3 analyse_cards.py --group g1 --run <card run dir> \
       --ref ../results --out "$NRPIC_RUN_DIR" --workers 3'      # or --group u256
+    # U256 with U256m: --group u256 --run <U256 run dir> --run <U256m run dir> (the pair is
+    # formed across the two run directories); lockstep check:
+    #   python3 lockstep_shells.py --g1 <group-1 run dir> --u256 <U256 run dir> \
+    #     --coeffs <analysis run dir>/coeffs_N256.npz --ref ../results --out "$NRPIC_RUN_DIR"
 
 Traps: `nrpic-run` starts its command without a shell (write `$NRPIC_RUN_DIR` only inside
 `bash -c '...'`); a production run for G2 is refused before G1's sign-off, so these are

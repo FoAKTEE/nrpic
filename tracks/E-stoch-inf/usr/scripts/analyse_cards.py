@@ -103,9 +103,10 @@ def shell_norm(modes, cref):
 
 
 # ----------------------------------------------------------------------------- one mesh
-def analyse_mesh(names, rundir, cfg, ci, workers, out_dir):
-    """All runs of one mesh size: dump loop, then per-run and pair metrics."""
-    dirs = {n: os.path.join(rundir, n) for n in names}
+def analyse_mesh(names, dirs, cfg, ci, workers, out_dir):
+    """All runs of one mesh size (dirs: run name -> its directory): dump loop, then per-run
+    and pair metrics."""
+    dirs = {n: dirs[n] for n in names}
     dumps = {n: cl.dump_list(dirs[n]) for n in names}
     nd = min(len(v) for v in dumps.values())
     hdrs = {n: [ul.read_header(p) for p in dumps[n][:nd]] for n in names}
@@ -305,6 +306,9 @@ def analyse_mesh(names, rundir, cfg, ci, workers, out_dir):
         sh_max = np.array([relN[modes.shell_of == j].max() for j in range(modes.shell_n2.size)])
         key = f"{p[0]}_{p[1]}"
         d = dict(U_A2s=dict(max_end=float(relN[km].max()), rms_end=float(np.sqrt(np.mean(relN[km]**2))),
+                            median_end=float(np.median(relN[km])),
+                            even_over_odd_rms_end_kmask=float(np.sqrt(np.sum(np.abs(even[-1][km])**2) /
+                                                                      np.sum(np.abs(s * odd[-1][km])**2))),
                             worst_mode=modes.n[w].tolist(), worst_shell_n2=int(modes.n2[w]),
                             max_all_modes_end=float(relN.max()),
                             dev_max_t=[float(x) for x in np.max(np.where(km, dev, 0.0), axis=1)],
@@ -694,15 +698,17 @@ def main():
                 break
     if not found:
         raise SystemExit("no run of the group found")
+    # group the runs by mesh size; the runs of one mesh may sit in different run directories
+    # (U256 and U256m are two card runs), so analyse_mesh gets a directory per run
     bymesh = {}
     for n, d in found.items():
         N = ul.read_header(cl.dump_list(os.path.join(d, n))[0])["nx"][0]
-        bymesh.setdefault((N, d), []).append(n)
+        bymesh.setdefault(N, {})[n] = os.path.join(d, n)
     meshes = {}
     S = dict(group=a.group, ref_run=r.get("run_id"), runs=a.run, found=found, bar=BAR)
-    for (N, d), names in sorted(bymesh.items()):
-        names = [n for n in cfg["runs"] if n in names]
-        m = analyse_mesh(names, d, cfg, ci, a.workers, a.out)
+    for N, dmap in sorted(bymesh.items()):
+        names = [n for n in cfg["runs"] if n in dmap]
+        m = analyse_mesh(names, dmap, cfg, ci, a.workers, a.out)
         meshes[N] = m
         S.update(m["S"])
         S.update(m["P"])

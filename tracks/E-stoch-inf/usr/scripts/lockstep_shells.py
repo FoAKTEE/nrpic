@@ -54,14 +54,15 @@ def main():
                       top_minus_lowest=float(x["rel"][-1] - x["rel"][0]),
                       pred_top=float(pred[-1]))
         print(n, {k: v for k, v in out[n].items()}, flush=True)
-    # L1: 256^3, shells k >= 24
+    stats = lambda v: dict(n=int(v.size), ratio_min=float(v.min()), ratio_max=float(v.max()),
+                           ratio_median=float(np.median(v)),
+                           within_05_2=int(np.sum((v >= 0.5) & (v <= 2.0)))) if v.size else dict(n=0)
+    # L1: 256^3, shells k >= 24 (within_05_2 = within a factor 2)
     x = L["U256"]
     pred = x["k"]**5 * x["dt"]**4 / 600.0
     sel = x["k"] >= 24.0 - 1e-9
     ratio = x["rel"][sel] / pred[sel]
-    out["L1"] = dict(n=int(sel.sum()), ratio_min=float(ratio.min()), ratio_max=float(ratio.max()),
-                     ratio_median=float(np.median(ratio)),
-                     within_factor2=int(np.sum((ratio >= 0.5) & (ratio <= 2.0))))
+    out["L1"] = stats(ratio)
     print("L1", out["L1"], flush=True)
     # L2: 64^3 and 128^3 top minus lowest shell
     out["L2"] = {n: dict(top_minus_lowest=out[n]["top_minus_lowest"], pred=out[n]["pred_top"]) for n in ("U64p", "U128p")}
@@ -79,9 +80,24 @@ def main():
     ks = np.sqrt(sh.astype(float))
     s3 = ks >= 40.0 - 1e-9
     q = med[s3] / x["rel"][s3]
-    out["L3"] = dict(n=int(s3.sum()), ratio_min=float(q.min()), ratio_max=float(q.max()),
-                     ratio_median=float(np.median(q)), within_05_2=int(np.sum((q >= 0.5) & (q <= 2.0))))
+    out["L3"] = stats(q)
     print("L3", out["L3"], flush=True)
+    med_odd = None
+    if "c_U256m" in z.files:
+        # entry 14.3: the odd part of the pair U256/U256m against the same reference
+        odd = 0.5 * (z["c_U256"][-1] - z["c_U256m"][-1])
+        even = 0.5 * (z["c_U256"][-1] + z["c_U256m"][-1])
+        rel_o = np.abs(odd / cr - 1.0)
+        med_odd = np.array([np.median(rel_o[inv == j]) for j in range(sh.size)])
+        k_m = np.sqrt(n2m.astype(float))
+        km32 = k_m <= 32.0 + 1e-9
+        qo = med_odd[s3] / x["rel"][s3]
+        out["P14_3"] = dict(
+            odd_median_k_le_32=float(np.median(rel_o[km32])), odd_max_k_le_32=float(rel_o[km32].max()),
+            even_over_odd_rms_k_le_32=float(np.sqrt(np.sum(np.abs(even[km32])**2) / np.sum(np.abs(odd[km32])**2))),
+            single_run_failures_odd=[float(v) for v in rel_o[km32][rel_m[km32] > 0.02]],
+            odd_shell_median_over_lock_k_ge_40=stats(qo))
+        print("P14_3", out["P14_3"], flush=True)
     with open(os.path.join(a.out, "lockstep_shells.json"), "w") as fp:
         json.dump(out, fp, indent=1)
 
@@ -101,6 +117,8 @@ def main():
     ax[0].set_ylabel(r"$|R_{\rm lock}-R_{\rm ref}|/|R_{\rm ref}|$ at $N_f$")
     ax[0].legend(loc="upper left", fontsize=6)
     ax[1].semilogy(ks, med, color=cols[2], lw=0.8, label=r"U256: shell median of $|c/c_{\rm ref}-1|$ ($R^{\rm NR}$)")
+    if med_odd is not None:
+        ax[1].semilogy(ks, med_odd, color=cols[1], lw=0.8, label=r"U256/U256m odd part: shell median")
     ax[1].semilogy(x["k"], x["rel"], color=cols[0], lw=0.8, label="U256: lockstep record of the shell")
     ax[1].axvline(40.0, **fs.MASK_LINE)
     ax[1].set_xlabel(r"$|n| = k/dk$")
