@@ -925,3 +925,13 @@ Q3 Profile at a/a_i = 16 against the self-similar solution on [0.075, 0.3] (6 bi
 Q4 Slopes at 16: mean local slope within 0.15 of the self-similar -2.50, least-squares slope
    within 0.2 of -2.58.
 Q5 No particle lost before a/a_i = 16 at r0 < r_last; clump within 0.01 dx; cost as above.
+
+## 2026-11-21T09:29Z  Q16 finished (D-20261121-085652-7e189a2: 2580 steps, 1844 s, six threads; setup.json and particles identical to tmp/q16_setup); prediction W2 (wave-2 dress at a/a_i = 2)
+
+The fresh verifier of G1 found the wave-2 dress at a/a_i = 2 0.5-3.3 % above the kernel shells
+(stage/G1/VERIFIER.md, V2). Hypothesis: the wave-2 shells used the vertex kernel, the runs had
+the clump at a cell centre (stronger near field, earlier infall of the innermost dust).
+Prediction W2: shells of N128L with the cell-centre kernel (kernel_cc and hybrid_cc,
+kernel_nx128_cc.txt, dx = 2.75 M) give a dress at a/a_i = 2 within 1 % of N128Lc's 0.1751 M
+(vertex-kernel shells 0.1694, i.e. -3.3 %), and M_ta at 2-8 unchanged within 0.3 %. Refuted if
+the cell-centre shells are not nearer the run at a/a_i = 2 than the vertex shells.
