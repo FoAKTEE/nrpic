@@ -224,7 +224,7 @@ to `legend()` explicitly (the style already sets it, so the PNGs are unchanged b
   (PNG bytes), every other PNG and every table is byte-identical. Refuted by any other
   difference.
 
-## 08:15 UTC: outcome of run E-20261121-080526-7fbe919; the ledger table did not fit
+## 08:07 UTC: outcome of run E-20261121-080526-7fbe919; the ledger table did not fit
 
 - **N11 held.** Completed (102 s); against E-20261121-075717-1849987 only the PNGs of
   `fig_sr_constraints` and `schem_dataflow` changed (PDF and SVG files carry creation stamps
@@ -239,3 +239,26 @@ to `legend()` explicitly (the style already sets it, so the PNGs are unchanged b
 - **N12 (prediction for the third run).** Completes as before (N9, N10); against run
   E-20261121-080526-7fbe919 only `tables/ledger_g1.tex` changes, every PNG and every other
   table is byte-identical. Refuted by any other difference.
+
+## 08:20 UTC: outcome of run E-20261121-080840-6112292 (final) and of the checks
+
+- **N12 held.** Completed; against E-20261121-080526-7fbe919 only `tables/ledger_g1.tex`
+  differs (all PNGs and every other table byte-identical); every figure repeated with pixel
+  rms 0; 104 claims, 7 differ (c16-c19, c21, g22, g23). Its outputs are the committed
+  `figures/` and `tables/` (sha256 of each copied file found in its `sha256sums.txt`).
+- Checker (`check_manuscript.py --main main.tex --compile`, forbid list of the guide): 0
+  undefined references or citations, 0 overfull boxes, no "Float too large"; remaining
+  candidates are the run ids of the ledger tables (5.5) and track document names in script
+  docstrings (5.8), accepted under exception 1 (README Requests 2 proposes to extend it).
+- All 16 pages of `main.pdf` read (Read with pages 1-6, 7-12, 13-16): captions within five
+  lines; the stretched gaps of pages 1 and 4 are gone; Tables IV and V fit; the red
+  `\pending{}` markers stand in Secs. VII C and IX. One cosmetic point left: the justified
+  row "V the verifier's runs ..." of Table V spreads its words.
+- `latexmk -c` removed the auxiliary files (ignored by `.gitignore` in any case).
+
+What this package established (run ids in the ledger): the G1 figures (a)-(d) and the
+schematics are drawn by one script each from registered outputs and reproduce the ladder's
+verdict numbers exactly (N4); the G1 numbers of `stage/G1/STATUS.md` agree with the files to
+their printed digits, the ladder README's A1 maxima do not (g22, g23); the note states the
+strict A4 failure on record, A4' as ruled (decision 0021), the post-hoc floor definition and
+core's explanation as awaiting the track's check.
