@@ -226,3 +226,48 @@ line 11) and G1 open for the infall profile criterion and this note.
   only where they are content. Refuted by any other hit I cannot remove.
 - P15 (pages). The compiled note has 13 to 16 pages; no caption runs past five lines; the
   figures appear in the order of first citation.
+
+## 2026-11-21T13:06Z  batch 3: outcomes of P13-P15; note v1 compiled, checked, every page read
+
+Registered runs (each `nrpic-run submit --package tracks/D-bh-dress/note`, exit 0, 11 of 11
+scripts clean): D-20261121-130021-e7a9166 (first pass), -130215-83e6c7b (parameter labels,
+script comments), -130347-5b37c59 (Newtonian-mode rows in their own ledger table),
+-130510-7e14c5f (four more claims; its figures and tables are the committed ones).
+
+- P13 holds. Every PNG of the final run is byte-identical to D-20261120-223535-24f7f90 except
+  `schem_timeline.png` (new gate state, looked at); PDFs and SVGs differ only by their creation
+  date and random clip ids. `fig_newton_numbers.json` differs by the one new field. All 91
+  value-and-run pairs of the old ledger are present unchanged among the 94 rows; parameter
+  values identical (labels shortened). New rows: dress over matched shells - 1 at a/a_i = 2
+  0.55, 1.40, 3.43 per cent; largest from a/a_i = 3 on 0.28, 0.68, 1.03 per cent (equal to the
+  lead's Z4 on the cell-centre table); the second agent's profile deviation 0.259, and 0.325,
+  0.345 with r_ta times 0.97, 1.03; self-similar model tau_max 300, softening 1e-5.
+- Claims check: 76 statements, 66 agree, 10 need a remark. New remark: stage/G1/STATUS.md:22
+  says "0.5-3.3 per cent at a/a_i = 2"; the note's numbers give 3.43 for the coarsest run (the
+  lead's 3.31 is from the infall package's cell-centre table). "Within 1.1 per cent from 3 on"
+  and the verifier's 25.9, 32.5, 34.5 agree. 13 statements of the superseded STATUS.md are no
+  longer found in the rewritten file (unchanged since D-20261120-223535-24f7f90).
+- P14 partly refuted. Final checker (`--compile`, the guide's forbid list): 0 undefined
+  references, 0 undefined citations, 0 overfull boxes; 14 of 16 checks clean, 5.1 negations
+  clean after one rewrite. Remaining hits: 5.5 only in the ledger appendix (94, run ids,
+  exception 1); 5.8 in `ledger.py`, `common.py`, `run_all.py`, `handreg.py` (exception 1) and
+  three data keys of registered outputs (`"ES-1"` in `fig_esrun.py:217`, `pass_e0.1_s0.5_a100`
+  twice in `fig_infall.py`). The "ES-1" key was not predicted. On the way: the first compile had
+  one overfull box (parameter table, 22.6 pt; labels shortened) and project names in comments of
+  three figure scripts (reworded).
+- P15 refuted: 18 pages (predicted 13-16): the ledger grew to six tables of one page each. Also
+  found by reading the pages, and fixed: the Kerr figure was numbered before the Schwarzschild
+  spike figure though cited after it (floats swapped); ledger part 5 ran off the bottom of its
+  page (Newtonian-mode rows moved into part 6); the parameter appendix had no sentence. No
+  caption exceeds five lines. Every page of the final PDF read (pages 1-10 and 17-18 as images
+  after the last layout change; 11-16, unchanged tables and references, checked by text).
+
+Text changes of this round (main.tex): abstract without the doubled spike clause and with the
+three failed predictions named; the first run's level, drift and 1+log model each stated as
+refuted; "agree to rounding error" corrected to "far below the floor" (es_runs JOURNAL entry 8);
+the lapse described as following the model only for the first few M; the dust advancing
+"somewhat faster than coordinate time"; the late drift open, its distant-boundary control named
+as run and being analysed (no numbers); dress wording per the verifier; profile deviation
+sensitive to r_ta; Hernquist gap judged to lie in the published curve, black-hole mass named
+as our choice (FdRW kerrdm.tex:127 quote the Galactic-centre lower bound); plan with the
+pending runs named without numbers; timeline at G0 passed.

@@ -1,45 +1,59 @@
-# note: working note v0 of Track D (gate G0)
+# note: working note v1 of Track D (gates G0 and G1)
 
-Helper package of D-bh-dress, wave 2 (2026-11-15). The REVTeX working note of S4 (black-hole
-growth in an expanding collisionless medium, the dark-matter dress, the null test of
-cosmological coupling), its figures and schematics, the numerical ledger, and a check of the
-lead's documents against the run outputs. Predictions and outcomes: `JOURNAL.md`. Guide and
-notation (paper-writing skill, one level above the manuscript): `../WRITING_GUIDE.md`,
-`../NOTATION.md`. No simulation was run: every script reads outputs of runs registered in
-wave 1 (`scripts/common.py` lists them).
+Helper package of D-bh-dress. The REVTeX working note of S4 (black-hole growth in an
+expanding collisionless medium, the dark-matter dress, the null test of cosmological
+coupling), its figures and schematics, the numerical ledger, and a check of the lead's
+documents against the run outputs. Predictions and outcomes: `JOURNAL.md` (P1-P6 wave 2,
+P7-P15 wave 3). Guide and notation (paper-writing skill, one level above the manuscript):
+`../WRITING_GUIDE.md`, `../NOTATION.md`. No simulation is run here: every script reads
+outputs of registered runs (`scripts/common.py` lists them).
 
 ## What is here
 
 | Path | Content |
 |---|---|
-| `main.tex`, `references.bib`, `main.pdf` | the note (REVTeX 4.2, two columns, 10 pages) and its compiled pages |
-| `figures/fig_*.{pdf,png}` | five data figures, each made by `scripts/<same name>.py` from registered run outputs: `fig_es` (bubble slice and exact shell motion), `fig_constraints` (constraint convergence offline and in AthenaK at t = 0), `fig_floor` (horizon-mass floor of a vacuum black hole), `fig_spike` (probe-limit spike and its stationarity in AthenaK), `fig_infall` (self-similar infall, growth, capture) |
+| `main.tex`, `references.bib`, `main.pdf` | the note v1 (REVTeX 4.2, two columns, 18 pages, state of 2026-11-21) and its compiled pages |
+| `figures/fig_*.{pdf,png}` | data figures, each made by `scripts/<same name>.py` from registered run outputs (table below) |
 | `figures/fig_*_numbers.json` | the numbers each figure script derived (read by `ledger.py`) |
-| `figures/schem_*.{png,svg}` | the two schematics of the stage check (architecture, timeline), `paperfig.py` |
-| `tables/ledger.tex` | the ledger appendix: every number of the note with its run id |
+| `figures/schem_*.{png,svg}` | architecture schematic (G1 item C9) and stage timeline, `paperfig.py` |
+| `tables/ledger.tex` | the ledger appendix: every number of the note with its run id (six tables) |
 | `tables/parameters.tex` | the parameter table of the note |
-| `tables/claims.md`, `tables/claims.json` | 36 numbers of `stage/G0/REPORT.md`, `stage/G1/STATUS.md`, `STATUS.md` checked against the run outputs (31 agree; five remarks) |
+| `tables/claims.md`, `tables/claims.json` | 76 statements of the lead's and the packages' documents checked against the run outputs (66 agree, 10 remarks) |
 | `scripts/common.py` | the run ids the note reads; inputs checked against each run's `sha256sums.txt` where it has one |
 | `scripts/run_all.py` | runs every `fig_*`, `schem_*` and `ledger.py` into one directory (the registered run) |
-| `scripts/handreg.py` | registers and runs a local run by hand when `nrpic-run` refuses (adapted from Track A's note package) |
+| `scripts/handreg.py` | registers a run by hand when `nrpic-run` refuses (wave 2 only) |
 | `scripts/czstyle.py`, `scripts/paperfig.py` | unchanged copies of `harness/style/` |
 
+Figures and the runs they read (all drawn by the run of every script
+D-20261121-130510-7e14c5f, whose outputs are the committed ones):
+
+| Figure | Reads |
+|---|---|
+| `schem_architecture` (C9: exists / provided by core / new; run chain) | nothing (sources named in its docstring) |
+| `schem_timeline` (G0 passed; G1 open for the infall criterion and this note) | nothing |
+| `fig_es`, `fig_constraints`, `fig_floor`, `fig_spike`, `fig_infall` | wave-1 runs of `common.py` (unchanged since v0) |
+| `fig_kerr` (Kerr spike against FdRW; AthenaK stationarity) | D-bh-dress-20261115-171615-8adbbdd, -172611-1e40191, -172646-ed6a510, -174954-786ddcc |
+| `fig_newton` (Newtonian-mode growth and profile) | D-20261115-171503-4262f03, -171505-62940f4, -171507-d1058a9; analysis -190541-e27453d; self-similar -123813-97afeea |
+| `fig_esrun` (wall, crossings, horizon-mass drift against the control, 1+log lapse) | D-20261115-172726-60ba4c2, -172730-c6d151b; analyses D-20261119-141839-8686bd7, -142929-bb375ff; data D-20261115-170213-d2c2131 |
+
+The ledger also reads the fresh-context verifier's infall run D-20261121-031711-0d79cb3
+(profile deviation with r_ta moved by 3 per cent), labelled "second agent" in its row.
+
 Registered runs of this package (manifests under `../runs/`, outputs under
-`/data/haiyangw/nrpic/scratch/D-bh-dress/<run_id>/`): D-bh-dress-20261115-171128-38634d6
-(first pass, superseded) and D-bh-dress-20261115-171627-18706fb (the committed figures and
-tables). Both registered by hand: `harness/bin/nrpic-run submit --package tracks/D-bh-dress/note`
-refused because of an untracked `es.horizon_summary_0.txt` in the worktree root.
+`/data/haiyangw/nrpic/scratch/D-bh-dress/<run_id>/`): wave 2 D-bh-dress-20261115-171128-38634d6,
+-171627-18706fb (by hand); wave 3 D-20261120-222413-4a67fa2, -222422-983f3f6, -222424-d7cd958,
+-222429-026731f, -222430-452c907 (single figures), -223535-24f7f90 (all; outputs not copied, the
+session was cut); batch 3 D-20261121-130021-e7a9166, -130215-83e6c7b, -130347-5b37c59
+(superseded intermediate passes), -130510-7e14c5f (final).
 
 ## How to rerun
 
-From the worktree root, with the worktree environment (`harness/bin/nrpic-env create --no-kokkos`):
+From the worktree root, with the worktree environment (`harness/bin/nrpic-env create --no-kokkos`),
+on a committed state of `note/` (nrpic-run refuses uncommitted changes in the package):
 
-    harness/bin/nrpic-run submit --kind scouting --gate G0 --package tracks/D-bh-dress/note \
-        --purpose "note v0: figures, schematics, ledger" -- \
+    harness/bin/nrpic-run submit --kind scouting --gate G1 --package tracks/D-bh-dress/note \
+        --cores 2 --purpose "note: figures, schematics, ledger" -- \
         .venv/bin/python tracks/D-bh-dress/note/scripts/run_all.py
-    # if nrpic-run refuses (an untracked file outside tracks/), the same by hand:
-    .venv/bin/python tracks/D-bh-dress/note/scripts/handreg.py --gate G0 --purpose "..." \
-        --refusal "<message>" -- .venv/bin/python tracks/D-bh-dress/note/scripts/run_all.py
     # copy <run dir>/figures/* to note/figures/ and <run dir>/tables/* to note/tables/, then
     cd tracks/D-bh-dress/note && latexmk -pdf main.tex
     python3 <paper-writing skill>/scripts/check_manuscript.py --main main.tex --compile \
@@ -48,41 +62,41 @@ From the worktree root, with the worktree environment (`harness/bin/nrpic-env cr
 Each figure script also runs alone (`python scripts/fig_es.py`, output to `figures/`);
 `ledger.py` without `--out` reads `figures/*_numbers.json` and writes `tables/`.
 
-## State (2026-11-15)
+## State (2026-11-21, batch 3)
 
-Done: guide and notation; five data figures and two schematics, each looked at; ledger,
-parameter table and claims check from registered runs; note v0 compiled and read;
-`../stage/G0/STAGE_REPORT.md` from `nrpic-stage report` with the helper's sections
-(proposed statuses, the five remarks of the claims check, a draft decision paragraph).
-Predictions P1-P6 and outcomes in `JOURNAL.md` (P4 and P5 partly refuted, causes found by
-runs in which they could have failed; P6 refuted only by one data key).
-Not done: the paper-writing reviewers of step 4 (no subagent tool in this session);
-`nrpic-stage verify` (it writes into the stage directory); a fresh-context verifier of the
-note's ledger; journal data of the references (the bibliography has arXiv eprints, titles and
-authors read from the sources).
+Done: C9 schematic (redrawn in wave 3, looked at again this round); timeline at the gate state
+(G0 passed, coord/GATES.md line 11); data figures of the Kerr spike, the Newtonian-mode infall
+and the first bubble run with its control, each from registered runs and looked at; sections
+"Tests so far" and "Plan and open items" with the failed predictions of the first run (level,
+drift, 1+log model) stated as refuted, the late common drift after about 165 M open, the infall
+criterion open at the orchestrator; the verifier's wording corrections (dress at a/a_i = 2,
+profile sensitive to r_ta, Hernquist gap judged to lie in FdRW's curve, black-hole mass a
+choice, wall column, upper bounds, self-similar model); ledger extended (94 rows, all old values
+reproduced) and claims check (76 statements); checker with `--compile`: 0 undefined references
+or citations, 0 overfull boxes, remaining hits only in the ledger appendix, the registration
+scripts and three data keys (JOURNAL entry of 2026-11-21T13:06Z); every page of `main.pdf` read.
+
+Not in this version, by the package brief (results of parallel packages, named as pending
+work only, with no numbers): the relaxed-lapse run, the late-drift controls (the
+distant-boundary control has run; its reading is the lead's), the first run with dust at the
+black hole, the Newtonian-mode run to a/a_i = 30. The verifier's corrections are taken in,
+because the lead's HANDOFF and REVIEW-wave3 section 2 ask for them after the brief was written.
+
+Not done: paper-writing reviewers of step 4 (no subagent tool); a second-agent check of the
+eight ledger rows the verifier left NOT CONFIRMED; the axis curve of the Kerr Hernquist spike by
+a second agent; journal data of the references.
 
 ## Requests
 
-- To the lead of D-bh-dress: (1) carry the proposed statuses of `stage/G0/STAGE_REPORT.md`
-  ("Products of the note package") into `stage/G0/CHECKLIST.md`, rerun
-  `harness/bin/nrpic-stage report D-bh-dress G0`, and write "Decision requested" (draft in the
-  report); (2) correct `stage/G1/STATUS.md:13` (0.625 is run -125613-248fdaf; -123813-97afeea
-  prints m(lambda_1) = 0.654), `:11` (5.8-5.9 is the box "mid transition"; 5.3 and 4.7 over
-  the region), `:12` (0.02 per cent holds for the peak only), `:52` and REPORT.md section 3
-  (exact arrival times 14.83 M and 34.44 M), `REPORT.md:101` (analysis run -125739-a18d74d);
-  (3) compute the cost of the vacuum control V-1 with the model before submitting it;
-  (4) add `cd tracks/D-bh-dress/note/scripts && python ledger.py` to a `stage/G0/VERIFY`
-  command list so that `nrpic-stage verify` regenerates the ledger and the claims check, and
-  run `nrpic-stage verify D-bh-dress G0`; (5) rewrite STATUS.md and HANDOFF.md (C18): the note
-  and the schematics exist now; (6) when ES-1 and V-1 have run, rerun `scripts/run_all.py`
-  and extend Sec. IV of the note.
-- To orch: `harness/bin/nrpic-run submit --package DIR` refuses when any untracked file sits
-  outside `tracks/` (here `es.horizon_summary_0.txt` in the worktree root, written by another
-  helper's AthenaK run whose working directory is the worktree root). Same request as Track
-  A's note helper: ignore untracked files outside the package and the shared code, or have
-  runs never write into the worktree root.
-- To the helper whose AthenaK run writes `es.*` into the worktree root (through the lead): set
-  the run's working directory under `scratch/`.
-- To kb: journal data (or confirmation that none exists) for the eleven references of
-  `references.bib`; the Bertschinger 1985 and Fillmore-Goldreich 1984 sources (already
-  requested in `../outbox/20261115T1510Z__to-kb__dress-and-coupling-sources.md`).
+- To the lead of D-bh-dress: (1) mark G1 item C16 PASS with evidence: `main.pdf` of
+  2026-11-21 from run D-20261121-130510-7e14c5f, checker `--compile` 0/0/0 (JOURNAL entry
+  2026-11-21T13:06Z); (2) `stage/G1/STATUS.md:22` "0.5-3.3 per cent at a/a_i = 2": the note's
+  numbers give 3.43 for N128Lc (the 3.31 is from the cell-centre table): say "0.5-3.4" or name
+  the table; (3) extend exception 1 of `../WRITING_GUIDE.md` to data keys of registered outputs
+  read by the figure scripts (`"ES-1"` in fig_esrun.py, `pass_e0.1_s0.5_a100` in fig_infall.py),
+  the only 5.8 hits left outside the exception; (4) when the relaxed-lapse run, the drift
+  controls, the matter run and the late Newtonian-mode run are judged, add them to the note
+  (next version) with their run ids.
+- To orch: the ruling `d-pre-3-criterion` (the note states the question as open at the program
+  level: r^(-9/4) is only the asymptote of the self-similar solution).
+- To kb: journal data of the eleven references (still open from wave 2).
