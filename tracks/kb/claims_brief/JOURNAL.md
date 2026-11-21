@@ -158,3 +158,18 @@ annotated located 8, annotated partial 1, judgement annotated 3, judgement witho
 17, open without a CHECK row 30; 48 defect rows; 304 unjoined CHECK rows (219 on unlabelled
 lines, 85 outside the labelled statements). Refuted if any count differs from the database
 counts of P4 and P5.
+
+Outcome of P6 (run kb-20261121-233339-f153821): ledger counts as predicted (verified 42,
+refuted 11, annotated located 8, partial 1, judgement annotated 3, judgement without row 17,
+open without row 30; 48 defect rows; 304 unjoined rows, 219 + 85). Held. Figures looked at:
+fig_seeds_by_section (section 3 carries 54 of the 112 seeds and most outcomes; sections 1, 9,
+10, 15 mostly judgement or without a row) and fig_check_review (s39_frontier joins nothing;
+all 30 reviewed rows agree). The registered figures are byte-identical to the trial ones I
+inspected first (cmp); the trial legend overlapped the s5_s6 bar and was moved before the run.
+
+## Entry: close (2026-11-21 23:36Z)
+
+Deliverables written: module, subcommand, 11 tests (suite green apart from the known
+test_meta_papers failure), 112 seeds, 42 verified, 11 refuted, 12 annotated, 48 defect
+claims, review sample, ledger, figures, outbox message to orch. Open items and requests in
+README.md.

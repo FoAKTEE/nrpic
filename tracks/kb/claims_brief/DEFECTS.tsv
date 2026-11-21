@@ -1,0 +1,49 @@
+entry	part	claim_id	paper_id	label	status	supersedes	errata_row	locator
+r1-2108.11967-table1	printed	813	2108.11967	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r1	2108.11967v2:main.tex:L491; 2108.11967v2:main.tex:L493; 2108.11967v2:main.tex:L516
+r1-2108.11967-table1	right	814	2108.11967	judgement	located	813	coord/BRIEF_ERRATA.md section 5 r1	2108.11967v2:main.tex:L491; 2108.11967v2:main.tex:L493; 2108.11967v2:main.tex:L516
+r1-2108.11967-e2phi	printed	815	2108.11967	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r1	2108.11967v2:main.tex:L197
+r2-gr-qc0601112-Zc	printed	816	gr-qc/0601112	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r2	gr-qc/0601112v1:ssevnum7.tex:L694
+r2-gr-qc0601112-Zc	right	817	gr-qc/0601112	judgement	located	816	coord/BRIEF_ERRATA.md section 5 r2	gr-qc/0601112v1:ssevnum7.tex:L694
+r2-gr-qc0601112-table3	printed	818	gr-qc/0601112	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r2	gr-qc/0601112v1:ssevnum7.tex:L809-813
+r2-gr-qc0601112-table3	right	819	gr-qc/0601112	judgement	located	818	coord/BRIEF_ERRATA.md section 5 r2	gr-qc/0601112v1:ssevnum7.tex:L811-812
+r3-1101.3097-b-footnote	printed	820	1101.3097	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r3	1101.3097v2:sidm1.tex:L411-412
+r3-1101.3097-b-footnote	right	821	1101.3097	fulltext	checked	820	coord/BRIEF_ERRATA.md section 5 r3	1101.3097v2:sidm1.tex:L410; 2601.17117v2:SIDM_MS.tex:L233; astro-ph/0110561v2:SIDMGT_Xiv2.tex:L393-394
+r4-2502.06783-eq17	printed	822	2502.06783	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r4	2502.06783v3:main_V2PRD.tex:L318-321
+r4-2502.06783-eq17	right	823	2502.06783	judgement	located	822	coord/BRIEF_ERRATA.md section 5 r4	2502.06783v3:main_V2PRD.tex:L318-321; 2502.06783v3:main_V2PRD.tex:L490
+r5-2502.06783-draw	printed	824	2502.06783	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r5	2502.06783v3:main_V2PRD.tex:L876-884
+r5-2502.06783-draw	right	825	2502.06783	judgement	located	824	coord/BRIEF_ERRATA.md section 5 r5	2502.06783v3:main_V2PRD.tex:L876-884
+r5-2610.32592-draw	printed	826	2610.32592	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r5	2610.32592v1:appendix.tex:L487-491
+r5-2610.32592-draw	right	827	2610.32592	judgement	located	826	coord/BRIEF_ERRATA.md section 5 r5	2610.32592v1:appendix.tex:L487-491
+r6-2206.11234-weight	printed	828	2206.11234	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r6	2206.11234v2:method.tex:L78; 2206.11234v2:method.tex:L151
+r6-2206.11234-pole	printed	829	2206.11234	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r6	2206.11234v2:appendix.tex:L168-173
+r7-2512.14649-friedmann	printed	830	2512.14649	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r7	2512.14649v2:PRD_v2.tex:L108
+r7-2512.14649-friedmann	right	831	2512.14649	judgement	located	830	coord/BRIEF_ERRATA.md section 5 r7	2512.14649v2:PRD_v2.tex:L108
+r7-2512.14649-usr	printed	832	2512.14649	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r7	2512.14649v2:PRD_v2.tex:L534
+r7-2512.14649-usr	right	833	2512.14649	judgement	located	832	coord/BRIEF_ERRATA.md section 5 r7	2512.14649v2:PRD_v2.tex:L534
+r8-1305.2619-prose	printed	834	1305.2619	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r8	1305.2619v1:SFWpaper.tex:L443
+r8-1305.2619-prose	right	835	1305.2619	judgement	located	834	coord/BRIEF_ERRATA.md section 5 r8	1305.2619v1:SFWpaper.tex:L443
+r8-1305.2619-action	printed	836	1305.2619	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r8	1305.2619v1:SFWpaper.tex:L413-418
+r8-1305.2619-action	right	837	1305.2619	judgement	located	836	coord/BRIEF_ERRATA.md section 5 r8	1305.2619v1:SFWpaper.tex:L413-418
+r8-1305.2619-fig3	printed	838	1305.2619	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r8	1305.2619v1:SFWpaper.tex:L695-700
+r8-1305.2619-fig3	right	839	1305.2619	judgement	located	838	coord/BRIEF_ERRATA.md section 5 r8	1305.2619v1:SFWpaper.tex:L695-700
+r9-1707.06302-boost	printed	840	1707.06302	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r9	1707.06302v2:kerrdm.tex:L929-931
+r9-1707.06302-boost	right	841	1707.06302	judgement	located	840	coord/BRIEF_ERRATA.md section 5 r9	1707.06302v2:kerrdm.tex:L929-931
+r10-2611.12831-L729	printed	842	2611.12831	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r10	2611.12831v1:main.tex:L729
+r11-2604.03628-jref	printed	843	2604.03628	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r11 (s310)	meta:arxiv-api/2604.03628
+r11-2604.03628-jref	right	844	2604.03628	abstract	unlocated	843	coord/BRIEF_ERRATA.md section 5 r11 (s310)	meta:inspire/2604.03628
+r12-1203.6185-titles	fact	845	1203.6185	abstract	located		coord/BRIEF_ERRATA.md section 5 r12 (s311)	1203.6185v1:bbbhPRD.tex:L8-14; meta:inspire/1203.6185; meta:arxiv-api/1203.6185
+r13-1807.01711-abstract	printed	846	1807.01711	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r13 (s33)	1807.01711v2:INCAPRD2019.tex:L106
+r13-1807.01711-abstract	right	847	1807.01711	fulltext	checked	846	coord/BRIEF_ERRATA.md section 5 r13 (s33)	1807.01711v2:INCAPRD2019.tex:L524; 1807.01711v2:INCAPRD2019.tex:L644
+r14-2512.13673-abstract	printed	848	2512.13673	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r14 (s34_36)	2512.13673v1:main.tex:L80
+r14-2512.13673-abstract	right	849	2512.13673	fulltext	checked	848	coord/BRIEF_ERRATA.md section 5 r14 (s34_36)	2512.13673v1:main.tex:L114; 2512.13673v1:main.tex:L135; 2512.13673v1:main.tex:L309
+r14-2512.13673-L276	printed	850	2512.13673	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r14 (s34_36)	2512.13673v1:main.tex:L276
+r14-2512.13673-L276	right	851	2512.13673	judgement	located	850	coord/BRIEF_ERRATA.md section 5 r14 (s34_36)	2512.13673v1:main.tex:L135; 2512.13673v1:main.tex:L238
+r15-2508.10070-variance	printed	852	2508.10070	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r15 (s35)	2508.10070v1:main.tex:L81; 2508.10070v1:main.tex:L322; 2508.10070v1:main.tex:L775
+r15-2508.10070-variance	right	853	2508.10070	fulltext	checked	852	coord/BRIEF_ERRATA.md section 5 r15 (s35)	2508.10070v1:main.tex:L767; 2409.00435v3:main.tex:L62
+r16-astro-ph0608642-MH	printed	854	astro-ph/0608642	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r16 (s5_s6)	astro-ph/0608642v1:ms.tex:L197-198
+r16-astro-ph0608642-MH	right	855	astro-ph/0608642	judgement	located	854	coord/BRIEF_ERRATA.md section 5 r16 (s5_s6)	2002.12778v2:CKSY2021.tex:L276-291
+r17-2607.09326-abstract	printed	856	2607.09326	refuted	refuted		coord/BRIEF_ERRATA.md section 5 r17 (s7_s8)	2607.09326v1:main.tex:L96
+r17-2607.09326-abstract	right	857	2607.09326	fulltext	checked	856	coord/BRIEF_ERRATA.md section 5 r17 (s7_s8)	2607.09326v1:main.tex:L141; 2607.09326v1:main.tex:L299-300
+q1-2403.03470-burnett	fact	858	2403.03470	fulltext	checked		brief-check report (novelty): record Burnett's conjecture proven	2403.03470v1:wavecoordinate.arxiv.240305.tex:L116-125; 2403.03470v1:wavecoordinate.arxiv.240305.tex:L143
+q2-1903.01490-masses	fact	859	1903.01490	fulltext	checked		brief-check report (novelty): record the lattice horizon masses	1903.01490v2:spinning_BH_v2_CT.tex:L653-657
+q3-2506.17641-seed	fact	860	2506.17641	fulltext	checked		brief-check report (s37_38): record both seed estimates	2506.17641v3:sidmacc.tex:L133; 2506.17641v3:sidmacc.tex:L145

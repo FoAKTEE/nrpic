@@ -1,0 +1,305 @@
+package	n	brief_line	verdict	reason	errata_prov
+novelty	1	398	PRECISION	quotation outside the labelled statements	
+novelty	2	398	CONFIRMED	quotation outside the labelled statements	
+novelty	3	398	CONFIRMED	quotation outside the labelled statements	
+novelty	4	400	CONFIRMED	no seed on the line	
+novelty	5	400	PRECISION	no seed on the line	nov.3
+novelty	6	404	CONFIRMED	no seed on the line	
+novelty	11	410	PRECISION	quotation outside the labelled statements	nov.5
+novelty	12	410	PRECISION	quotation outside the labelled statements	
+novelty	13	410	PRECISION	quotation outside the labelled statements	nov.6
+novelty	15	416	CONFIRMED	no seed on the line	
+novelty	17	432	PRECISION	no seed on the line	
+novelty	18	434	CORRECTED	no seed on the line	nov.1
+novelty	19	435	PRECISION	no seed on the line	
+novelty	20	435	PRECISION	no seed on the line	nov.8
+novelty	21	435	PRECISION	no seed on the line	nov.7
+novelty	23	441	CONFIRMED	no seed on the line	
+novelty	24	441	PRECISION	no seed on the line	
+novelty	25	442	CONFIRMED	no seed on the line	
+novelty	26	442	CONFIRMED	no seed on the line	
+novelty	27	443	CONFIRMED	no seed on the line	
+novelty	28	443	PRECISION	no seed on the line	
+novelty	29	443	PRECISION	no seed on the line	
+s311	49	273	CONFIRMED	quotation outside the labelled statements	
+s311	50	273	CONFIRMED	quotation outside the labelled statements	
+s311	54	273	PRECISION	quotation outside the labelled statements	s311.8
+s31_32	38	152	CONFIRMED	quotation outside the labelled statements	
+s31_32	39	152	CONFIRMED	quotation outside the labelled statements	
+s31_32	40	156	CORRECTED	quotation outside the labelled statements	s31.1
+s31_32	46	157	CONFIRMED	quotation outside the labelled statements	
+s31_32	47	158	CONFIRMED	no seed on the line	
+s31_32	48	158	CONFIRMED	no seed on the line	
+s31_32	49	159	PRECISION	no seed on the line	
+s31_32	50	159	CONFIRMED	no seed on the line	
+s31_32	51	159	CORRECTED	no seed on the line	s31.3
+s31_32	52	159	CONFIRMED	no seed on the line	
+s31_32	57	162	CONFIRMED	no seed on the line	
+s31_32	58	162	CONFIRMED	no seed on the line	
+s33	1	166	PRECISION	quotation outside the labelled statements	s33.3
+s33	12	168	CORRECTED	quotation outside the labelled statements	s33.1
+s33	13	168	CONFIRMED	quotation outside the labelled statements	s33.1
+s33	14	168	PRECISION	quotation outside the labelled statements	s33.6
+s33	15	170	CONFIRMED	quotation outside the labelled statements	
+s33	22	176	CONFIRMED	no seed on the line	
+s33	23	176	CONFIRMED	no seed on the line	
+s33	24	176	CONFIRMED	no seed on the line	
+s33	25	176	CONFIRMED	no seed on the line	
+s33	26	176	CONFIRMED	no seed on the line	
+s33	27	176	CONFIRMED	no seed on the line	
+s33	28	176	CONFIRMED	no seed on the line	
+s33	29	176	CONFIRMED	no seed on the line	
+s33	39	180	CONFIRMED	quotation outside the labelled statements	
+s33	40	182	CONFIRMED	quotation outside the labelled statements	
+s33	49	184	CONFIRMED	quotation outside the labelled statements	
+s33	50	184	CONFIRMED	quotation outside the labelled statements	
+s33	51	184	CONFIRMED	quotation outside the labelled statements	
+s33	52	184	CONFIRMED	quotation outside the labelled statements	
+s33	53	184	CONFIRMED	quotation outside the labelled statements	
+s34_36	1	190	CONFIRMED	quotation outside the labelled statements	
+s34_36	2	190	CONFIRMED	quotation outside the labelled statements	
+s34_36	3	190	CONFIRMED	quotation outside the labelled statements	
+s34_36	4	190	CONFIRMED	quotation outside the labelled statements	
+s34_36	5	190	CONFIRMED	quotation outside the labelled statements	
+s34_36	6	190	CONFIRMED	quotation outside the labelled statements	
+s34_36	7	190	CONFIRMED	quotation outside the labelled statements	
+s34_36	8	190	PRECISION	quotation outside the labelled statements	s34.3
+s34_36	11	191	PRECISION	no seed on the line	s34.4
+s34_36	12	191	CONFIRMED	no seed on the line	
+s34_36	13	191	PRECISION	no seed on the line	s34.4
+s34_36	14	192	CONFIRMED	no seed on the line	
+s34_36	15	192	CONFIRMED	no seed on the line	
+s34_36	16	192	CONFIRMED	no seed on the line	
+s34_36	17	192	CONFIRMED	no seed on the line	
+s34_36	18	192	CONFIRMED	no seed on the line	
+s34_36	19	192	CONFIRMED	no seed on the line	
+s34_36	20	192	CONFIRMED	no seed on the line	
+s34_36	21	192	CONFIRMED	no seed on the line	
+s34_36	22	193	CONFIRMED	no seed on the line	
+s34_36	23	193	CONFIRMED	no seed on the line	
+s34_36	24	193	CONFIRMED	no seed on the line	
+s34_36	25	193	PRECISION	no seed on the line	s34.5
+s34_36	26	193	CONFIRMED	no seed on the line	
+s34_36	27	193	CONFIRMED	no seed on the line	
+s34_36	28	194	CONFIRMED	no seed on the line	
+s34_36	29	194	CONFIRMED	no seed on the line	
+s34_36	30	194	CONFIRMED	no seed on the line	
+s34_36	31	194	CONFIRMED	no seed on the line	
+s34_36	32	219	CONFIRMED	no seed on the line	
+s34_36	33	219	CONFIRMED	no seed on the line	
+s34_36	34	219	PRECISION	no seed on the line	s36.4
+s34_36	35	219	CORRECTED	no seed on the line	s36.1
+s34_36	36	219	PRECISION	no seed on the line	s36.4
+s34_36	37	219	CONFIRMED	no seed on the line	
+s34_36	38	219	CONFIRMED	no seed on the line	
+s34_36	39	219	CONFIRMED	no seed on the line	
+s34_36	40	219	CONFIRMED	no seed on the line	
+s34_36	50	221	CONFIRMED	quotation outside the labelled statements	
+s34_36	51	221	CONFIRMED	quotation outside the labelled statements	
+s34_36	52	221	CONFIRMED	quotation outside the labelled statements	
+s34_36	53	221	CONFIRMED	quotation outside the labelled statements	
+s34_36	54	221	PRECISION	quotation outside the labelled statements	s36.7
+s34_36	55	221	CONFIRMED	quotation outside the labelled statements	s36.8
+s34_36	56	221	PRECISION	quotation outside the labelled statements	
+s34_36	57	221	CONFIRMED	quotation outside the labelled statements	
+s34_36	58	221	PRECISION	quotation outside the labelled statements	
+s34_36	59	221	PRECISION	quotation outside the labelled statements	s36.8
+s34_36	61	222	CORRECTED	quotation outside the labelled statements	s36.2
+s34_36	62	222	CONFIRMED	quotation outside the labelled statements	s36.9
+s34_36	63	222	CONFIRMED	quotation outside the labelled statements	
+s34_36	64	222	PRECISION	quotation outside the labelled statements	s36.9
+s35	1	198	CONFIRMED	quotation outside the labelled statements	
+s35	2	198	CONFIRMED	quotation outside the labelled statements	
+s35	3	198	CONFIRMED	quotation outside the labelled statements	
+s35	4	198	CONFIRMED	quotation outside the labelled statements	
+s35	5	198	CONFIRMED	quotation outside the labelled statements	
+s35	6	198	CONFIRMED	quotation outside the labelled statements	
+s35	7	198	CONFIRMED	quotation outside the labelled statements	s35.11
+s35	8	198	PRECISION	quotation outside the labelled statements	s35.11
+s35	25	207	CONFIRMED	quotation outside the labelled statements	
+s35	27	207	CONFIRMED	quotation outside the labelled statements	
+s35	28	207	CONFIRMED	quotation outside the labelled statements	
+s35	35	209	PRECISION	no seed on the line	s35.6
+s35	36	209	CONFIRMED	no seed on the line	
+s37_38	1	226	CONFIRMED	no seed on the line	
+s37_38	2	226	CONFIRMED	no seed on the line	
+s37_38	3	226	CONFIRMED	no seed on the line	
+s37_38	4	226	CONFIRMED	no seed on the line	
+s37_38	5	226	CONFIRMED	no seed on the line	
+s37_38	6	227	PRECISION	no seed on the line	s37.3
+s37_38	7	227	PRECISION	no seed on the line	
+s37_38	8	227	PRECISION	no seed on the line	
+s37_38	9	227	PRECISION	no seed on the line	s37.3
+s37_38	10	227	PRECISION	no seed on the line	
+s37_38	11	227	PRECISION	no seed on the line	s37.2
+s37_38	12	227	PRECISION	no seed on the line	s37.3
+s37_38	14	228	PRECISION	quotation outside the labelled statements	
+s37_38	15	228	PRECISION	quotation outside the labelled statements	s37.4
+s37_38	17	229	PRECISION	quotation outside the labelled statements	
+s37_38	18	229	PRECISION	quotation outside the labelled statements	
+s37_38	19	229	PRECISION	quotation outside the labelled statements	
+s37_38	20	229	CONFIRMED	quotation outside the labelled statements	
+s37_38	21	229	PRECISION	quotation outside the labelled statements	s37.5
+s37_38	26	234	CONFIRMED	quotation outside the labelled statements	
+s37_38	27	234	CONFIRMED	quotation outside the labelled statements	
+s37_38	28	234	PRECISION	quotation outside the labelled statements	s38.2
+s37_38	29	234	PRECISION	quotation outside the labelled statements	s38.2
+s37_38	30	234	CONFIRMED	quotation outside the labelled statements	
+s37_38	31	234	CONFIRMED	quotation outside the labelled statements	
+s37_38	40	235	CONFIRMED	quotation outside the labelled statements	
+s37_38	41	235	CONFIRMED	quotation outside the labelled statements	
+s37_38	42	235	PRECISION	quotation outside the labelled statements	s38.3
+s37_38	43	235	CONFIRMED	quotation outside the labelled statements	
+s37_38	44	235	CONFIRMED	quotation outside the labelled statements	
+s37_38	45	235	PRECISION	quotation outside the labelled statements	s38.3
+s37_38	46	235	PRECISION	quotation outside the labelled statements	s38.3
+s37_38	48	235	CONFIRMED	quotation outside the labelled statements	
+s37_38	49	235	PRECISION	quotation outside the labelled statements	
+s37_38	51	236	CONFIRMED	no seed on the line	
+s37_38	52	236	CONFIRMED	no seed on the line	
+s37_38	53	236	PRECISION	no seed on the line	s38.4
+s37_38	54	236	PRECISION	no seed on the line	s38.4
+s37_38	55	236	CONFIRMED	no seed on the line	
+s37_38	56	236	PRECISION	no seed on the line	
+s37_38	57	237	PRECISION	no seed on the line	s38.5
+s37_38	58	237	PRECISION	no seed on the line	s38.5
+s37_38	59	583	PRECISION	quotation outside the labelled statements	s7.20
+s39_frontier	1	239	CORRECTED	no seed on the line	s39.5
+s39_frontier	2	243	CONFIRMED	no seed on the line	
+s39_frontier	3	243	PRECISION	no seed on the line	s39.6
+s39_frontier	4	243	CORRECTED	no seed on the line	s39.1
+s39_frontier	5	244	CONFIRMED	no seed on the line	
+s39_frontier	6	244	CONFIRMED	no seed on the line	
+s39_frontier	7	244	CORRECTED	no seed on the line	s39.2
+s39_frontier	8	245	CONFIRMED	no seed on the line	
+s39_frontier	9	245	CONFIRMED	no seed on the line	
+s39_frontier	10	245	CONFIRMED	no seed on the line	
+s39_frontier	11	245	CONFIRMED	no seed on the line	
+s39_frontier	12	246	PRECISION	no seed on the line	s39.7
+s39_frontier	13	246	CONFIRMED	no seed on the line	
+s39_frontier	14	247	PRECISION	no seed on the line	s39.7
+s39_frontier	15	247	PRECISION	no seed on the line	s39.8
+s39_frontier	16	248	CONFIRMED	no seed on the line	
+s39_frontier	17	248	CONFIRMED	no seed on the line	
+s39_frontier	18	248	CONFIRMED	no seed on the line	
+s39_frontier	19	249	CONFIRMED	no seed on the line	
+s39_frontier	20	249	PRECISION	no seed on the line	s39.9
+s39_frontier	21	250	CONFIRMED	no seed on the line	
+s39_frontier	22	250	PRECISION	no seed on the line	s39.7
+s39_frontier	23	250	CONFIRMED	no seed on the line	
+s39_frontier	24	251	CONFIRMED	no seed on the line	s39.10
+s39_frontier	25	251	CONFIRMED	no seed on the line	
+s39_frontier	26	251	PRECISION	no seed on the line	s39.10
+s39_frontier	27	252	PRECISION	no seed on the line	s39.11
+s39_frontier	28	252	PRECISION	no seed on the line	s39.11
+s39_frontier	29	252	CORRECTED	no seed on the line	s39.3
+s39_frontier	30	253	CONFIRMED	no seed on the line	
+s39_frontier	31	253	PRECISION	no seed on the line	s39.12
+s39_frontier	32	254	CONFIRMED	no seed on the line	
+s39_frontier	33	254	CONFIRMED	no seed on the line	
+s39_frontier	34	254	CONFIRMED	no seed on the line	
+s39_frontier	35	255	CONFIRMED	no seed on the line	s39.4
+s39_frontier	36	255	CORRECTED	no seed on the line	s39.4
+s39_frontier	37	243	CORRECTED	no seed on the line	s39.1
+s39_frontier	38	246	CORRECTED	no seed on the line	s39.13
+s39_frontier	39	247	PRECISION	no seed on the line	s39.14
+s39_frontier	40	248	PRECISION	no seed on the line	s39.14
+s39_frontier	41	250	PRECISION	no seed on the line	
+s39_frontier	42	252	PRECISION	no seed on the line	
+s39_frontier	43	253	PRECISION	no seed on the line	
+s39_frontier	44	255	PRECISION	no seed on the line	
+s5_s6	5	410	PRECISION	quotation outside the labelled statements	s5_s6.6
+s5_s6	6	410	PRECISION	quotation outside the labelled statements	s5_s6.6
+s5_s6	7	410	CONFIRMED	quotation outside the labelled statements	
+s5_s6	9	416	CONFIRMED	no seed on the line	
+s5_s6	12	422	PRECISION	no seed on the line	
+s5_s6	13	428	PRECISION	no seed on the line	
+s5_s6	14	432	PRECISION	no seed on the line	
+s5_s6	15	434	CORRECTED	no seed on the line	s5_s6.1
+s5_s6	16	435	CONFIRMED	no seed on the line	
+s5_s6	17	435	PRECISION	no seed on the line	
+s5_s6	18	435	CONFIRMED	no seed on the line	
+s5_s6	20	441	CONFIRMED	no seed on the line	
+s5_s6	21	441	PRECISION	no seed on the line	
+s5_s6	22	441	PRECISION	no seed on the line	
+s5_s6	23	442	CONFIRMED	no seed on the line	
+s5_s6	24	442	PRECISION	no seed on the line	
+s5_s6	25	443	PRECISION	no seed on the line	s5_s6.7
+s5_s6	26	443	PRECISION	no seed on the line	
+s5_s6	27	443	PRECISION	no seed on the line	s5_s6.7
+s5_s6	28	499	CORRECTED	no seed on the line	s5_s6.2
+s5_s6	29	499	CONFIRMED	no seed on the line	
+s5_s6	30	499	PRECISION	no seed on the line	
+s5_s6	31	500	CONFIRMED	no seed on the line	
+s5_s6	32	500	CONFIRMED	no seed on the line	
+s5_s6	33	500	CONFIRMED	no seed on the line	
+s5_s6	34	500	CONFIRMED	no seed on the line	
+s5_s6	35	500	CONFIRMED	no seed on the line	
+s5_s6	36	500	CONFIRMED	no seed on the line	
+s5_s6	37	501	PRECISION	no seed on the line	s5_s6.8
+s5_s6	38	501	CONFIRMED	no seed on the line	
+s5_s6	39	501	CONFIRMED	no seed on the line	
+s5_s6	40	501	CONFIRMED	no seed on the line	
+s5_s6	41	501	CONFIRMED	no seed on the line	
+s5_s6	42	501	PRECISION	no seed on the line	s5_s6.8
+s5_s6	43	505	CONFIRMED	no seed on the line	
+s5_s6	44	506	PRECISION	no seed on the line	s5_s6.9
+s5_s6	45	506	CORRECTED	no seed on the line	s5_s6.3
+s5_s6	46	507	PRECISION	no seed on the line	
+s5_s6	47	508	PRECISION	no seed on the line	
+s5_s6	52	516	CONFIRMED	no seed on the line	
+s5_s6	53	516	PRECISION	no seed on the line	
+s5_s6	54	516	CONFIRMED	no seed on the line	
+s5_s6	55	524	CONFIRMED	no seed on the line	
+s5_s6	56	526	PRECISION	no seed on the line	s5_s6.11
+s5_s6	57	530	PRECISION	no seed on the line	s5_s6.12
+s5_s6	58	534	CONFIRMED	no seed on the line	
+s5_s6	59	534	PRECISION	no seed on the line	s5_s6.13
+s5_s6	60	534	CORRECTED	no seed on the line	s5_s6.4
+s5_s6	61	534	PRECISION	no seed on the line	
+s5_s6	62	534	CONFIRMED	no seed on the line	
+s5_s6	63	542	PRECISION	no seed on the line	s5_s6.13
+s5_s6	64	542	PRECISION	no seed on the line	
+s5_s6	65	542	PRECISION	no seed on the line	s5_s6.13
+s5_s6	66	550	CONFIRMED	no seed on the line	
+s5_s6	67	550	CONFIRMED	no seed on the line	s5_s6.17
+s5_s6	68	550	PRECISION	no seed on the line	s5_s6.17
+s5_s6	69	550	CONFIRMED	no seed on the line	
+s7_s8	1	558	CONFIRMED	no seed on the line	s78.3
+s7_s8	2	558	PRECISION	no seed on the line	s78.3
+s7_s8	3	559	PRECISION	no seed on the line	
+s7_s8	4	560	CONFIRMED	no seed on the line	
+s7_s8	5	560	CONFIRMED	no seed on the line	
+s7_s8	6	560	PRECISION	no seed on the line	s78.4
+s7_s8	7	561	PRECISION	no seed on the line	
+s7_s8	8	562	CONFIRMED	no seed on the line	
+s7_s8	9	562	CONFIRMED	no seed on the line	
+s7_s8	10	562	PRECISION	no seed on the line	
+s7_s8	11	566	PRECISION	no seed on the line	
+s7_s8	12	566	PRECISION	no seed on the line	
+s7_s8	13	569	PRECISION	no seed on the line	
+s7_s8	14	570	PRECISION	no seed on the line	
+s7_s8	15	576	PRECISION	no seed on the line	
+s7_s8	16	578	PRECISION	no seed on the line	
+s7_s8	17	580	CONFIRMED	no seed on the line	
+s7_s8	18	580	CONFIRMED	no seed on the line	
+s7_s8	19	581	PRECISION	no seed on the line	
+s7_s8	20	582	CONFIRMED	no seed on the line	
+s7_s8	23	587	CONFIRMED	no seed on the line	
+s7_s8	24	587	CONFIRMED	no seed on the line	
+s7_s8	25	587	PRECISION	no seed on the line	
+s7_s8	26	588	CONFIRMED	no seed on the line	
+s7_s8	27	588	CONFIRMED	no seed on the line	
+s7_s8	28	588	PRECISION	no seed on the line	
+s7_s8	29	590	PRECISION	no seed on the line	
+s7_s8	30	592	CONFIRMED	no seed on the line	
+s7_s8	33	604	CONFIRMED	quotation outside the labelled statements	
+s7_s8	34	605	CONFIRMED	no seed on the line	
+s7_s8	35	606	PRECISION	no seed on the line	s78.6
+s7_s8	36	607	PRECISION	no seed on the line	
+s7_s8	37	608	CONFIRMED	no seed on the line	s78.7
+s7_s8	38	610	PRECISION	no seed on the line	
+s7_s8	39	613	PRECISION	no seed on the line	
+s7_s8	40	613	CONFIRMED	no seed on the line	
+s7_s8	41	613	PRECISION	no seed on the line	
+s7_s8	42	615	PRECISION	no seed on the line	
