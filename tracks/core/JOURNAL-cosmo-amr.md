@@ -1651,3 +1651,61 @@ State, for a reader with no memory:
   two `continue` lines and the fine-shape branch (`cosmo_amr.md` section 3).
 Card time of the package: 0.153 card-hours used (T14 11 s, T10 3 s, T10d 20 s, T10b
 244 s, T10c 264 s) and 0.2 reserved by the pending job, of the one allowed.
+
+## 2026-11-21 08:05  lead of core (session core-lead-4): outcomes of T14b (case Sf) and T10g
+
+The package's session was closed with job 4763 pending; the lead of core judged T14b's
+six scripted cases in batch 2a (run core-20261121-063923-5ed0a51, `cosmo_amr.md` section
+9). Here the rest, read-only on the outputs of run core-20261121-033223-e1d596b (closed
+with `nrpic-run finish`: recorded "failed (exit 3)" because G and T10g end with the
+guard's designed stop; job 4763 took 9 min 55 s = 0.165 card-hours).
+
+**T14b, case Sf** (`t14b_sf.py`, the measures `t14_card.py` applies to U, S, A; run
+core-20261121-075446-4944747; figure `fig_t14b_sf.png` looked at: E and chi spreads of
+card and processors on top of each other, rising to 2e-14; alpha_max at 0 or 1e-15)
+[VERIFIED]: status 0; chi uniform to 1.3e-14 and E to 2.3e-14 on the card (processors
+1.4e-14, 2.4e-14); alpha_max equal to T2b's processor run to 1.1e-15; 34 MeshBlocks at
+every record on both; identity 4.4e-16 on the card. Every bound of the prediction of
+03:26 held. With the scripted cases, T14b is complete: the card executable of 1548d49
+gives the processor results.
+
+**T10g** (analyses core-20261121-075138-9b502d7 with `t10_scout.py` and
+core-20261121-075143-de83e49 with `t10c_finder.py`; the first call,
+core-20261121-075122-3c3724d, passed T10b's directory as `--more`, which the script
+appends as a restart continuation: my error, kept on record, not used; figures
+`fig_t10_scout.png` and `fig_t10c_finder.png` looked at) against the prediction of 03:33
+[VERIFIED from the summaries and `peak.cstat.hst`]:
+- (1) HELD. No jump at t = 3.06 (T10b: largest relative constraint 0.0081 to 0.0996
+  between two records, |H| by a factor 6.7). Here the largest step between records of
+  `cstat.hst` in t = 2.5 to 3.6 is 0.0135 to 0.0344 at t = 3.36, with |H| changing by a
+  factor 1.20 there (the relative measure moving to cells of small denominator, as T10f
+  saw). At t = 4.89: 0.055 against T10b's 0.262.
+- (2) HELD. Level 1 at t = 2.205 (cycle 33); MeshBlock count steps at t = 7.583 (120 to
+  176), 8.730 (232), 9.583 (288), 9.778 (512) against T10b's levels 2, 3, 4 at 7.58, 8.73,
+  9.65; at most 1464 MeshBlocks (below 2000); 77.4 GB of card memory at the peak.
+- (3) FAILED as written, in both clauses. The guard stopped the run at t = 12.504 (cycle
+  1101), 0.004 beyond the bound 12.5 and 0.73 later than T10b (11.778): the corrected
+  deposit did carry the run further, against my expectation. Reason "conformal factor
+  chi not positive"; at that check chi <= 0 in 5,450,360 of 5,996,544 cells and every
+  particle (262,144) excised, after a last check (t = 12.5016) with alpha_min 4.9e-3,
+  alpha_max 54.1, chi in 3.4e-4 to 2.2e-3. The guard names the first such cell in loop
+  order (MeshBlock 0, the corner of the box), so where the failure began cannot be read
+  from it: the clause "at a lapse minimum on the y axis" is NOT TESTED by this run.
+  T10b ended the same way one step after its last sane record (chi <= 0 in 2,970,584 of
+  3,244,032 cells), there with a non-finite value first found at level 4 on the y axis.
+- (4) HELD. The finders at (0, -0.59, 0) and (0, +0.59, 0) find surfaces from t = 11.634
+  (cycle 816) to the last search at 12.466, 18 of 34 searches each; area mass 0.779 at
+  the first (bound 0.3 to 1.5; T10c: 0.634 at t = 11.264), rising to 0.839; mean
+  coordinate radius 0.084 to 0.095; the two surfaces agree to 2e-5 in the mass. The
+  central finders (radius 2 and 0.8) end all 34 searches at the iteration limit.
+- (5) FAILED. Deepest negative leaf-cell E: -3.08e-3 at t = 10.73, 3.6 per cent of E_max
+  there (8.44e-2), against the bound 3 per cent; T10b on the same measure: 5.3 per cent
+  (-4.45e-3 at t = 11.71). Shallower than T10b, not below 3 per cent. The ratio E_min/E_max
+  at a single record reaches -0.105 (t = 10.09; T10b -0.256).
+- Particles are removed from t = 11.326 on (alpha_min 0.31 there, the deck's absolute
+  `alpha_exc = 0.3`); 639 removed at the last sane record. Rest mass and identity
+  (4.4e-16) unchanged while all particles are present.
+What the surfaces are worth is unchanged from T10c: they appear 0.9 before the end in a
+state whose centre violates the Hamiltonian constraint at order one (largest relative
+value 1.73 from t = 10 on), four to five cells of level 4 in radius; not evidence of a
+black hole. Card time of the package: 0.153 + 0.165 = 0.318 of the one card-hour.
