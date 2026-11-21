@@ -284,11 +284,15 @@ def main():
     tr = np.array(refs["series"]["t"])
     tmax_plot = max([o["t"][-1] for k, o in O.items() if o is not None and k != "P1"] + [20.0])
     tmax_plot = min(max(tmax_plot * 1.15, 25.0), 100.0)
-    fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.8), constrained_layout=True)
+    fig, ax4 = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 5.2), constrained_layout=True)
+    axs = [ax4[0, 0], ax4[0, 1], ax4[1, 1], ax4[1, 0]]   # s(t), phase, Delta s vs h, Delta s(t)
     for name, st_ in (("newton", dict(color=fs.PAL["blue"], lw=1.0, label="Newton")),
                       ("eih_c", dict(color=fs.PAL["blue"], lw=1.0, ls="--", label="EIH, P canonical"))):
         axs[0].plot(tr, refs["series"][name]["sep"], **st_)
         axs[1].plot(tr, refs["series"][name]["phase"], **st_)
+        dsr = refs["series"][name]["sep"][0] - np.array(refs["series"][name]["sep"])
+        axs[3].loglog(tr[1:], np.abs(dsr[1:]), **st_)
+    smin_win = 5.0
     for k in ["P1"] + have:
         o = O[k]
         lab = {"P1": "P1 (three holes, m/8)", "R8": "alone, m/8", "R12": "alone, m/12",
@@ -297,9 +301,21 @@ def main():
         axs[0].plot(o["t"], o["s"], color=COL[k], lw=1.5, ls=ls, label=lab)
         live = o["s"] > 0.3                # phase only while the members are apart
         axs[1].plot(o["t"][live], o["phase"][live], color=COL[k], lw=1.5, ls=ls)
+        ds = o["s"][0] - o["s"]
+        ok = (o["t"] > 0) & (o["t"] <= tmax_plot)
+        axs[3].loglog(o["t"][ok], np.abs(ds[ok]), color=COL[k], lw=1.5, ls=ls)
+        win = o["t"] <= tmax_plot
+        smin_win = min(smin_win, float(o["s"][win].min()))
+    tt = np.array([1.0, tmax_plot])
+    axs[3].loglog(tt, 0.0017 * tt ** 2, **fs.MASK_LINE)
+    axs[3].text(tt[-1], 0.0017 * tt[-1] ** 2, " t^2", fontsize=6, va="center")
+    axs[3].set_xlim(1.0, tmax_plot)
+    axs[3].set_ylim(1e-4, 3.0)
+    axs[3].set_xlabel("t [M]")
+    axs[3].set_ylabel("|s(0) - s(t)| [M]")
     axs[0].set_xlim(0, tmax_plot)
     axs[1].set_xlim(0, tmax_plot)
-    axs[0].set_ylim(0, 5.6)
+    axs[0].set_ylim(max(0.0, smin_win - 0.1), 5.4)
     axs[0].set_xlabel("t [M]")
     axs[0].set_ylabel("coordinate separation [M]")
     axs[1].set_xlabel("t [M]")
