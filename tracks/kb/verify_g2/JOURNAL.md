@@ -107,3 +107,27 @@ the largest .bbl), else the cited keys found in the .bib files (all under `\noci
 else `\bibitem` in flat.tex; `.bib` files are found by basename. Added a lenient variant
 A' (an abstract in papers.abstract counts). Ad-hoc rerun after the fix: 662/710 (93.2 %),
 lenient 688/710 (96.9 %); the registered rerun follows (entry 5).
+
+## Entry 5 (2026-11-21 07:55 UTC): restart after the usage-limit cut; outcomes of the runs left behind
+
+The session of 2026-11-20 was cut at 22:35 UTC. This session continues from the worktree
+(merged main at b0e1fafb). State found: the held-out search run kb-20261120-222546-ea894c8 had
+ended by itself (exit 0 at 22:39:40 UTC, 72 calls, all rc=0) but was not finished; closed now
+with `nrpic-run finish` (commit a2a10899). The registered parse-scan rerun
+kb-20261120-223309-14e4cb6 and the 15-paper draw kb-20261120-223339-b842a8a (seed 20261121)
+were complete and finished.
+
+Outcome of P1 (registered rerun kb-20261120-223309-14e4cb6, scan.json): recorded status ok
+684/710 = 96.3 %, ok or pdf 687/710 = 96.8 %; my definition (S, E, B, A) 662/710 = 93.2 %;
+lenient (A' = abstract chunk or papers.abstract) 688/710 = 96.9 %. Components over all 710:
+S 709, E 701, B 696, A 680. The prediction (90-96 %, refuted above 98 or below 85) is
+**confirmed**; "B the weakest component" is **refuted**: A (abstract chunk with >= 50 % word
+recall of the metadata abstract) is the weakest (30 failures; 21 of the 23 review papers fail
+A). Whether these A failures are failures of the knowledge base or of my test is the subject
+of the 15-paper source check (entry 7). [VERIFIED, run kb-20261120-223309-14e4cb6]
+
+Golden file opened now (after the held-out set was committed at 8fb37106 and its search had
+run): kb/golden/questions.yaml version 1, 32 questions, one expected paper each, answer
+locations as question-level `file` and `lines` = [[a, b], ...]. My scorer's loader did not know
+this form; I added it (score_search.py, load_golden) without changing the scoring rules of
+entry 3. All 32 expected papers are in the snapshot (ad-hoc check of the loader).

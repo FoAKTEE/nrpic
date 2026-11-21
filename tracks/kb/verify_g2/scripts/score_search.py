@@ -66,6 +66,14 @@ def load_golden(path, con):
         raw_locs = q.get("locators") or q.get("locator") or q.get("expect_locators") or q.get("answer_locators") or []
         if isinstance(raw_locs, (str, dict)):
             raw_locs = [raw_locs]
+        # format of kb/golden/questions.yaml version 1 (seen when the file was opened after the
+        # held-out runs): question-level `file` and `lines` = [[a, b], ...], one range per pair
+        if not raw_locs and q.get("file") and q.get("lines"):
+            ls = q["lines"]
+            if ls and not isinstance(ls[0], (list, tuple)):
+                ls = [ls]
+            raw_locs = [dict(paper=papers[0] if papers else None, file=q["file"], lines=[int(x[0]), int(x[-1])])
+                        for x in ls]
         locs = []
         for r in raw_locs:
             pid = papers[0] if papers else None
