@@ -182,7 +182,7 @@ def figure(rep, root):
     axs[1].set_xlim(floor, 1.0)
     axs[1].set_yticks(y)
     axs[1].set_yticklabels([])
-    axs[1].invert_yaxis()
+    axs[1].set_ylim(axs[0].get_ylim())      # the rows of the left panel
     axs[1].set_xlabel("largest change against the release (no bar: none)")
     axs[1].legend(fontsize=5, loc="lower right")
     fig.tight_layout()

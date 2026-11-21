@@ -168,7 +168,7 @@ def main():
     axs[0].set_yticks(y)
     axs[0].set_yticklabels(names, fontsize=5)
     axs[0].invert_yaxis()
-    axs[0].set_xlabel("files compared (old case against its replay)")
+    axs[0].set_xlabel("files compared with the old case")
     axs[0].legend(fontsize=5, loc="lower right")
     for name, e in rep["changed"].items():
         axs[1].semilogy(e["old"]["x"], np.maximum(e["old"]["s_x_axis"], 1e-20), "-",
