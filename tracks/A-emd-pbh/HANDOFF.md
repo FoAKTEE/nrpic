@@ -33,9 +33,14 @@ carried to G2); `PLAN-wave3.md` (round 1: six packages and their card caps); `RI
 | `szekeres/` round 1 | cut; its file run A-20261120-223422-8cc4241 closed by the lead (exit 0, mass converged to 2e-10) | `szekeres/JOURNAL.md` entry 9: registered repeat of the eps choice (P16), one card job of 58 min for N = 64, 128, 256 to tau = 40 (P17-P23), the 8-per-cell check (needs `run_cpu_members.py` to accept NAME=DIR members); about 1.0-1.5 card-hours |
 | `periodic_threshold/` round 1 | cut; data run A-20261120-223123-f436c39 closed by the lead (prediction D3 holds); four files uncommitted: `JOURNAL.md` (one-line time fix), `inputs/peak_leak.athinput`, `scripts/ltb_reference.py`, `scripts/ltbref.py` | read the four files, commit them with their package, run the LTB reference (registered), smoke-test the leak deck on processors, write predictions, one card job (cap 2.5 card-hours). Use `hmean_tol_0 = 1e30`, finder diagnostics, `alpha_exc` relative to the mean lapse (core message 20261120T223017Z items 1, 3), and the guard (core-v0.5) |
 
-Card jobs of this owner queued or running at the end of this session: none seen in `squeue`
-(the helpers of runs_ball and conv_ball may have submitted since: check `squeue` and their
-manifests; their outputs land in `scratch/A-emd-pbh/<run id>/`).
+Card jobs of this owner at the end of this session (00:40 PST), both conv_ball's, read by
+`conv_ball/scripts/analyse.py` and `converge.py` (conv_ball JOURNAL entry 3, prediction G):
+- Slurm 4776, run A-20261121-075926-d10c2c1, RUNNING: card job 1 (members A, B, A-L32 and the
+  particle-number and radius legs; 0.97 card-hours requested); output
+  `scratch/A-emd-pbh/A-20261121-075926-d10c2c1/`.
+- Slurm 4781, run A-20261121-083336-6a82131, PENDING: chain of member C (finest cells M/64;
+  2.95 card-hours requested); output `scratch/A-emd-pbh/A-20261121-083336-6a82131/`.
+Close each with `harness/bin/nrpic-run finish <run id>` once Slurm reports it done.
 
 ## Decisions pending
 
