@@ -1,0 +1,169 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261121-032828-fe18c5f",
+  "track": "E-stoch-inf",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "ladder wave 3 item (d): second realisation of P256 (256^3, nmax2 = 4096, to t = 8.5) with <job> rng_seed = 20261120 on core/scalar-2 a58e95b (no merged executable exists); predictions PD1-PD5 in JOURNAL entry 15",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-032828-fe18c5f/batch.list"
+  ],
+  "cwd": "scratch/E-stoch-inf/E-20261121-032828-fe18c5f",
+  "git": {
+    "sha": "fe18c5f4a4537336ecb578e228bcf9263c90b71d",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/ladder"
+    ],
+    "outside_package": {
+      "count": 17,
+      "first": [
+        " M tracks/E-stoch-inf/note/scripts/common.py",
+        " M tracks/E-stoch-inf/note/scripts/fig_background.py",
+        " M tracks/E-stoch-inf/note/scripts/ledger.py",
+        " M tracks/E-stoch-inf/note/scripts/run_all.py",
+        " M tracks/E-stoch-inf/note/scripts/schem_architecture.py",
+        " M tracks/E-stoch-inf/note/scripts/schem_timeline.py",
+        " M tracks/E-stoch-inf/usr/JOURNAL.md",
+        "?? tracks/E-stoch-inf/a4res/scripts/a4lib.py",
+        "?? tracks/E-stoch-inf/a4res/scripts/make_list.py",
+        "?? tracks/E-stoch-inf/a4res/scripts/twin_predict.py",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_constraints.py",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_freezing.py",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_modes.py",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_order.py",
+        "?? tracks/E-stoch-inf/note/scripts/schem_dataflow.py",
+        "?? tracks/E-stoch-inf/usr/scripts/analyse_cards.py",
+        "?? tracks/E-stoch-inf/usr/scripts/card_lib.py"
+      ]
+    },
+    "merge_base_main": "44f7d887e2038f9d49e291bf339f7fedc97dddab",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "scalar_field",
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_scalar-2/athena_gpu",
+    "exe_sha256": "dd716bc93cab1494725d76bec55b434c965608fa50fcabb88ee05f9f355226b1",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": {
+    "file": "tracks/E-stoch-inf/ladder/inputs/sr_base.athinput",
+    "sha256": "362789c6b32d252684b7d94b469b4a48ef48ba80ff66df6ccd68930a69e408d5",
+    "overrides": {
+      "mesh/nx1": "256",
+      "mesh/nx2": "256",
+      "mesh/nx3": "256",
+      "meshblock/nx1": "256",
+      "meshblock/nx2": "256",
+      "meshblock/nx3": "256",
+      "scalar_field/noise_nmax2": "4096",
+      "scalar_field/noise_mode_file": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/inputs/modes_n4096.txt",
+      "scalar_field/noise_mode_scale": "1.0",
+      "time/tlim": "8.5",
+      "job/rng_seed": "20261120"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_scalar-2/athena_gpu",
+      "role": "exe",
+      "sha256": "dd716bc93cab1494725d76bec55b434c965608fa50fcabb88ee05f9f355226b1",
+      "bytes": 103171432,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/E-stoch-inf/ladder/inputs/jobD.list",
+      "role": "list",
+      "sha256": "ee60160423d015943da3527634af366b52e50d16962c045894edb15a355dbc35",
+      "bytes": 574,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/ladder/inputs/sr_base.athinput",
+      "role": "athinput:P256s2",
+      "sha256": "362789c6b32d252684b7d94b469b4a48ef48ba80ff66df6ccd68930a69e408d5",
+      "bytes": 2659,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "P256s2",
+      "input": "tracks/E-stoch-inf/ladder/inputs/sr_base.athinput",
+      "args": [
+        "mesh/nx1=256",
+        "mesh/nx2=256",
+        "mesh/nx3=256",
+        "meshblock/nx1=256",
+        "meshblock/nx2=256",
+        "meshblock/nx3=256",
+        "scalar_field/noise_nmax2=4096",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/inputs/modes_n4096.txt",
+        "scalar_field/noise_mode_scale=1.0",
+        "time/tlim=8.5",
+        "job/rng_seed=20261120"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:58:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.75,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "E-20261121-032828-fe18c5f",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261121-032828-fe18c5f",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-21T03:28:28Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 10.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.4618,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 3,
+    "runs": 118,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
