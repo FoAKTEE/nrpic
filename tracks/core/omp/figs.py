@@ -126,10 +126,15 @@ def fig_scaling(a):
         if 1 in best[case]:
             axs[1].plot(th, best[case][1][0]/t, "o-", color=cols[n])
     best2 = best_by(load_scaling(a.runs2), exe=a.exe) if a.runs2 else {}
-    for n, case in enumerate([c for c in ORDER if c in best2]):
+    for n, case in enumerate(ORDER + ["collapse"]):
+        if case not in best2:
+            continue
         th = sorted(best2[case])
         t = np.array([best2[case][k][0] for k in th])
-        axs[0].plot(th, t, "D--", color=cols[n], mfc="white", ms=5, lw=1.2)
+        axs[0].plot(th, t, "D--", color=cols[n], mfc="white", ms=5, lw=1.2,
+                    label=None if case in best else CASE_LABEL.get(case, case))
+        if case not in card and case in CARD_OTHER:    # card time of an earlier run
+            axs[0].axhline(CARD_OTHER[case], color=cols[n], lw=1.0, ls=":")
         if 1 in best2[case]:
             axs[1].plot(th, best2[case][1][0]/t, "D--", color=cols[n], mfc="white", ms=5,
                         lw=1.2)

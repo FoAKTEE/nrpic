@@ -1042,3 +1042,31 @@ the histories in the text of every record of the continued cycles.
 Not tested: restarts at another thread count than the run that wrote the file (the
 state is in the file, so only the grouping of sums changes; not run), restarts of
 refined meshes and of runs with collisions under threads, more than four threads.
+
+## 2026-11-20 19:12 Entry 28: outcome of P18 (the puncture case alone); prediction P19
+
+Run core-20261121-030310-46d891c (six cores granted; O3; load average 11.6 to 16.0;
+nothing else of this session running): the puncture case at one thread, 3 cycles, 90.81
+s per step; then at six threads, 4 cycles, 17.25 and 15.68 s per step (processor share
+0.87 and 0.92).
+- P18a FAILED: I predicted 110 to 132 s per step alone; it is 90.8, 1.45 times faster
+  than the 131.9 of the afternoon's run beside three other one-thread runs.
+- P18b: the times hold (15.5 to 18 predicted), the ratio does not: six threads over one
+  thread is 5.3 to 5.8, not 6.3 to 8.3. The refutation I named occurred (6.0 or below):
+  the speed-up of 7.9 of entry 21 was an artefact of a one-thread run held back, and
+  entry 21's reading was right for this case, against my expectation of entry 26. What
+  this run does not separate: being side by side from the higher load of the afternoon
+  (22 to 56 against 12 to 16); cosmo gained 1 per cent and newton 12 from the same change.
+Six-thread speed-ups of 2026-11-20 with the best one-thread time of the day: punc 5.8,
+cosmo 5.5, newton 4.4, collapse 5.4. With the evening's one-thread time the Newtonian
+box lies below the refutation bound of P14a (4.5), which it had passed with the
+afternoon's (4.96): P14a is refuted for that case. The cluster case has only the
+side-by-side one-thread run (115.9; ratio 5.5), which is now suspect.
+
+P19, written before the run (`scaling_series.sh cluster16`: the cluster case alone at
+one thread, 3 cycles, then at six threads, 4 cycles, two repeats): the cluster is a Z4c
+case on a refined mesh like the puncture (55 to 63 per cent of the kernel time in the
+right-hand side), so alone at one thread it needs 80 to 100 s per step (1.16 to 1.45
+times faster than 115.9); six threads 17 to 21.5 s per step (21.1 in the afternoon);
+ratio 4.3 to 5.6. Refuted as "the cluster behaves like the puncture" if the one-thread
+run alone needs more than 105 s per step.
