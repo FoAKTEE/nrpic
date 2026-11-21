@@ -450,3 +450,316 @@ CARD CHECK PASS.
   level or at the tolerance of a solve; none was tested further.
 Figure `scratch/core/core-20261121-033000-f1c0f5d/fig_card_v04.png` looked at. Card time
 of this package: 0.0094 card-hours of the one allowed.
+
+## 2026-11-21T06:32Z  session core-lead-3 (batch 2a: merge of four wave-3a branches, release candidate core-v0.5)
+
+State found [VERIFIED by the commands named]: `git merge --no-edit main` was a fast
+forward to 66254fe4 (main carries release core-v0.4 and its tag); worktree clean; no
+pause flag; no `RELEASE-v0.5.md`, no `scratch/core/exe/core_nrpic_v05/`. `squeue`: no
+job of core queued or running (4769 of F runs, 4770 of C waits). Tips to merge (local =
+origin): core/build-openmp 983351aa (source a9c34e7a), core/scalar-3 88544a5b (source
+5cc28211), core/cosmo-amr bb360ef2 (source 1548d49c, the corrected fine-shape deposit),
+core/mpi f9a2c022 (source ca46836a; since then only example inputs under
+`problems/tests/`). Slurm job 4763 of package cosmo-amr (T14b, T10g) ended COMPLETED
+after 9 min 55 s (`sacct -j 4763`); it is not judged by its package yet. Of package mpi
+two finished runs are unjudged in its worktree: the one-rank flow-perturbation run
+core-20261120-223502-f9a2c02 (manifest untracked there) and the two-card job 4733
+(COMPLETED, 78 s). I do not write into those worktrees.
+
+Review of the four diffs against main (`git diff main...<branch> -- athenak/src python
+problems scripts docs`), overlaps found before merging [VERIFIED by reading the diffs]:
+- build-openmp replaces the two `Kokkos::atomic_add` of the deposit kernel by
+  `dep.Add` and brackets the particle loop by `thread_dep.Begin/End`; with
+  `deposit_threads = private` the source array is OVERWRITTEN in `End` by the sum of
+  the per-thread copies.
+- cosmo-amr adds a third addition into the source array (branch `deposit_fine_shape`)
+  with `Kokkos::atomic_add`: in the merged kernel it must become `dep.Add`, or the
+  private mode would lose those shares.
+- mpi adds `NrpicMpiDepositRemote()` after the particle loop (packets of clouds that
+  reach other ranks, added with atomic additions through `nrpic_cloud.hpp`, a second
+  copy of the leaf-cell loop): it must come AFTER `thread_dep.End`, and its copy of the
+  kernel has no fine-shape branch, so `deposit_fine_shape` on several ranks would give
+  the uniform spreading for the remote part of a cloud and the fine shape for the local
+  part. Resolution planned: stop with a message on more than one rank for
+  `deposit_fine_shape`, as mpi does for the options it has not ported; the same stop for
+  the options of release core-v0.4 that write files or change particles outside the
+  ported functions (to be listed from the merged source), and for the files of
+  cosmo-amr written per rank.
+- scalar-3 touches the scalar field and `utils/rng_mesh.hpp` only; it contains the
+  commits of scalar-2, which release core-v0.4 has.
+
+### Predictions, written before any merged executable exists
+
+M  Order scalar-3, build-openmp, cosmo-amr, mpi (one merge commit each). Conflicts
+   expected in `nrpic.cpp` (deposit kernel: omp against cosmo-amr against mpi),
+   `particles.hpp`, `CMakeLists.txt`, `tracks/core/interfaces/rng.md` (scalar-3 against
+   the stream registry of release core-v0.4) and the shared records (`STATUS.md`,
+   `HANDOFF.md`). All four build as serial processor, card, threaded (omp) and MPI
+   processor executables.
+R  Byte regression of the serial processor executable against release core-v0.4
+   (`/data/haiyangw/nrpic/.work/build_cpu_v04/src/athena`), the twelve set-ups of
+   `regress_v04.py`, new options absent: all 75 items identical; classes a and b empty
+   (release core-v0.4 has both corrections). Refuted by one differing file. Where I
+   think it could fail: cosmo-amr changes code that runs without an option (the
+   horizon finder and tracker for periodic meshes, the step limit in `z4c_newdt.cpp`,
+   `nrpic_cosmo.cpp` setting the refinement function, the guard call in the driver);
+   its own regression (T0c) was against core-v0.3 on seven set-ups.
+R2 The MPI processor build started without mpirun and the threaded build at one thread:
+   the same 75 items identical to release core-v0.4. (Against core-v0.3 the MPI build
+   differed in 36 unset header bytes of the mesh restart files; core-v0.4 zeroes them,
+   so I predict no difference now.) The threaded build at one thread: READY of
+   build-openmp says its serial executable reproduces the release and the threaded one
+   at one thread equals the atomic result; for gas with multigrid (jeans, binary) the
+   iterates may differ between the Serial and the OpenMP back end even at one thread
+   [JUDGEMENT: the plain sum in `Multigrid::CalculateAverage` is a reduction whose
+   order the back end chooses]; I predict identical for the ten set-ups without
+   multigrid and make no prediction for jeans and binary.
+Q  One example per merged branch, merged serial executable against the branch's
+   published processor executable, byte for byte (branches lack the two corrections of
+   core-v0.4, so classes a and b may appear in restart files and final dumps):
+   Q-s3  `problems/scalar/sr_stochastic_gauge.athinput` (con_signed), 12 steps:
+         identical. And `usr_stochastic.athinput`, 12 steps: identical.
+   Q-amr `problems/cosmo_amr/flrw_tracker.athinput` and `peak_amr.athinput` (short):
+         identical to `core_cosmo-amr/athena_cpu` (source 1548d49).
+   Q-omp `problems/tests/deposit_threads.athinput` with the threaded build: two runs at
+         4 threads with `private` byte-identical; 1 against 4 threads within 1.3e-12 of
+         the largest number of a file (READY section 3); the serial executable prints
+         the note and gives the files of the deck without the option.
+   Q-mpi `mpi_kerr_swarm.athinput` on 1 and 2 ranks: particle files byte-identical;
+         `mpi_cluster.athinput` on 1 and 2 ranks: positions within 1e-13, history
+         within 1e-11 (READY T3: 4e-15 and 5e-13 after 40 cycles), deposit identity
+         1e-14. One rank of the MPI build against the serial executable: identical.
+   New in the merged source and tested by no branch: `deposit_threads = private` with
+   the fine-shape branch (threaded build, `peak_amr` or the refined deposit test with
+   `deposit_fine_shape`): 1 against 4 threads within 1e-12 of the largest number, and
+   sums conserved to 1e-13. Refuted by a difference of order of a cloud share (then
+   an addition bypasses the private copies).
+   Refuted in general by a file of class other, or a number outside the bound named.
+C  Card (at most one card-hour; one job): the card executable runs one short example
+   of each branch that deposits or evolves on a card (flrw_tracker, sr_stochastic_gauge,
+   deposit_threads deck without private, one mpi example on one rank) with status 0 and
+   within 1e-10 of the processor run in the conserved sums. If the queue does not give
+   a card in time, the job is named as pending and the release says what did not run.
+
+### Outcomes (2026-11-21)
+
+M  [VERIFIED: `git log --first-parent`] Four merge commits: scalar-3 604e9ad8,
+   build-openmp 0d0f5ba5, cosmo-amr e103b3e3, mpi c3eb42e0 (source commit of the
+   candidate: the last one that changes `athenak/`). Conflicts as predicted in
+   `rng.md` (rows 1, 2 and section 6.1 of core-v0.4 kept, row 3 of scalar-3 taken, its
+   table became section 6.2), `particles.hpp` (three times), `CMakeLists.txt`,
+   `nrpic.cpp` (cosmo-amr and mpi); NOT in `STATUS.md` or `HANDOFF.md` (the branches
+   did not touch them), and build-openmp merged `nrpic.cpp` without a conflict (I had
+   expected one). Three resolutions that no conflict marker asked for, each in its
+   merge commit: the additions of the fine-shape branch go through `dep.Add`;
+   `thread_dep.End` comes before `NrpicMpiDepositRemote`; `NrpicMpiInit` stops a run
+   on several ranks for `removal_record`, `acc_nsphere`, `peri_count`, `perturb_gamma`,
+   `id_solve`, `region_dcycle`, `deposit_fine_shape`.
+   Found by reading the cosmo-amr diff, three things act without an option: the guard
+   (`<z4c_guard> stop_nonfinite`, default true) stops a Z4c run whose fields are not
+   finite, exit status 3; `nrpic_cosmo` enrols a refinement function; the summary file
+   of the horizon finder and the tracker file are opened at the first record, i.e. in
+   the run directory of `-d` and no longer in the directory the executable was started
+   in [VERIFIED: `main.cpp` 359 to 386, `AddCoordinatesAndPhysics` before
+   `ChangeRunDir`]. The release drivers start AthenaK inside the run directory, so they
+   cannot see the third.
+   Serial processor build `.work/build_cpu_v05rc` from the clean tree at c3eb42e0:
+   156 s on six jobs, no error (sha256 b462068a...).
+R  HELD. Run core-20261121-063859-e410ee3 (6 cores, 283 s): the serial candidate against
+   release core-v0.4 (`.work/build_cpu_v04`, sha256 daada48f...), twelve set-ups, 75
+   items, all identical; classes a, b, other empty; every run status 0.
+T14b of package cosmo-amr (card job 4763, finished, not judged by its package): judged
+   here with the package's script, read-only on its outputs, run
+   core-20261121-063923-5ed0a51. Against the prediction of its journal (entry 03:26):
+   homogeneous cases uniform to 2.2e-14 (U, S, A) and 1.1e-13 (M) in E on the card
+   (bound 1e-12); alpha_max equal to the processor runs to 1.8e-15 (bound 1e-12);
+   M: MeshBlock counts equal at every record, tracker within 4.4e-16; ladder: 64 to 120
+   MeshBlocks at cycle 5 on both, 32768 particles and the rest mass unchanged, identity
+   2.2e-16 (bound 1e-13), Hr_max within 9.2e-12 of the processor value (bound 1e-9);
+   G: status 3 with its file, stop at cycle 16 against 18 on processors (not
+   predicted; the script prints FAIL for the cycle, as in T14). HELD. Sf is not judged
+   by the script. Figure `fig_t14_card.png` of that run looked at (three panels: lapse
+   ratio at 1e-16 to 1e-15, the unstable run departing from record 9 on, MeshBlock
+   counts on one line). So the card executable of source 1548d49 (the deposit of the
+   candidate) has run on a card with the processor result. T10g of the same job (the
+   scouting run for Track A) ended with the guard at t = 12.504, cycle 1101, "conformal
+   factor chi not positive" (`s1g/peak.guard.txt`); its judgement against the
+   prediction of entry 03:33 is the package's and Track A's, not done here.
+Read, not judged: run core-20261120-223502-f9a2c02 of package mpi (its `run.log`): on
+   ONE rank a change of the finder's flow constant by 1e-13 changes the search of
+   t = 0.1875 by 4.8e-3 in the smallest radius and the removed particles from 43 to 41,
+   while the three searches before agree to 1.9e-10 or better. This is the outcome its
+   entry 28 (P7g) asked for; the entry is the package's to write.
+
+### Quick tests (2026-11-21T06:50Z to 06:58Z)
+
+Builds from the clean tree at c3eb42e0, each in a new directory: threaded
+`.work/build_omp_v05rc` (`scripts/build_cpu_omp.sh`, 360 s on three jobs, sha256
+4d327a4d...), MPI `.work/build_cpu_mpi_v05rc` (`CMAKE_EXTRA="-DAthena_ENABLE_MPI=ON"
+scripts/build_cpu.sh`, Open MPI of `/home/emost/codes/openmpi`, 306 s, sha256
+003736e1...). Correction of the entry above: the regression R took 265 s (manifest),
+not 283.
+
+Run core-20261121-065009-29b855c (driver `analysis/release/quick_v05.py`, 6 cores, 31
+AthenaK runs) ended **FAIL** through two checks; both are errors of my driver, found by
+looking at what differs, and the runs were evaluated again without running anything in
+core-20261121-065726-bf06a85 (**PASS**; figure `fig_quick_v05.png` looked at after a
+first version with overlapping labels was redrawn):
+- the driver compared the whole history of the fine-shape run with the plain run and
+  asked for 1e-13: 1.65e-7 of the largest number. The columns that differ are E_probe,
+  E_max and E_min (14, 31, 32), which the fine shape must change; the mesh integrals
+  (columns 9 to 12) agree to 5.2e-14 of sum m W. The prediction ("sums conserved to
+  1e-13") was right, the check was not what it said.
+- prediction Q-mpi, clause "history within 1e-11", FAILED as I wrote it: the constraint
+  statistics `cl.cstat.hst` differ by 8.5e-10 between 1 and 2 ranks (column 11, the
+  largest relative Hamiltonian constraint), the history of the module by 4.6e-13. I had
+  taken the READY's "history 5e-13" as a bound for every history file. The package's own
+  run with its branch executable (core-20261119-154814-ca46836) has 8.502235846576052e-10
+  and 4.636286737306016e-13: the same digits. The check now judges the history of the
+  module and reports the statistics beside the package's value.
+Outcomes against the predictions Q:
+- Q-s3 HELD: `sr_stochastic_gauge` (con_signed, 27 columns) and `usr_stochastic`, 12
+  steps: 6 and 6 files identical to the executable of core/scalar-3.
+- Q-amr HELD: `flrw_tracker` (12 steps) and `peak_amr` as case ladder of T9 (10 steps,
+  64 to 120 MeshBlocks, fine-shape deposit, region norms): 5 and 5 files identical to
+  the executable of core/cosmo-amr (source 1548d49).
+- Q-omp HELD: two runs at 4 threads with `private` byte-identical; 4 threads against 1:
+  2.1e-18 (history), 1.2e-16 (source dump in double precision); atomic at 4 threads the
+  same; the serial executable prints "this executable adds atomically" and gives the
+  bytes of the deck without the option, and the bytes of `athena_cpu_serial` of
+  core/build-openmp. Deposit identity 5.5e-14 at worst.
+  Not predicted, measured: the threaded build at ONE thread against the serial build:
+  history 4.2e-22, source dump 1.1e-14 of the largest number, i.e. not the same bits
+  (the two builds differ in optimisation level, -O3 -DNDEBUG against -O2).
+- New combination HELD: fine-shape deposit through the per-thread copies: two runs at 4
+  threads byte-identical; 4 threads against 1: 1.1e-18 (history), 2.1e-16 (dump);
+  atomic at 4 threads 3.6e-16; 1 thread against the serial build 1.1e-14; tsc with
+  fine shape 7.5e-15; identity 3.0e-14 at worst; the fine shape changes the dump by
+  0.52 of its largest value against the plain cic deposit (so the branch is taken) and
+  the integrals by 5.2e-14.
+- Q-mpi: Kerr swarm on 1 and 2 ranks: 9 particle files identical (trajectories, metric
+  at the particles, five snapshots, two particle restart files), 2119 particles handed
+  over. Cluster on 1 and 2 ranks: positions 3.1e-15 (bound 1e-13), history of the
+  module 4.6e-13 (bound 1e-11), identity 7.8e-15 and 1.7e-15 (bound 1e-14), 2786
+  particles handed over and 53923 deposit packets. HELD except the clause above.
+  Added after the run: every file of these four runs against the package's runs with
+  its branch executable (core-20261119-145615-4c98c59, core-20261119-154814-ca46836):
+  10 of 12, 11 of 13, 20 of 24 and 21 of 25 files identical; the others are the mesh
+  restart files, whose data are identical outside the 36 header bytes that core-v0.4
+  zeroes and whose parameter dump holds the run directory and four lines of the
+  example inputs that the package edited after those runs (`deposit_comp_c`,
+  `filter_compensate`, `source_density`, `source_extrap`).
+- The stop added at the merge: `mpi_deposit_smr` with `deposit_fine_shape` on 2 ranks
+  ends with status 1 and "<particles> deposit_fine_shape (the part of a cloud on another
+  rank has no fine shape) has not been ported to more than one MPI rank"; on one rank
+  of the same executable the deck runs (status 0).
+
+### Prediction of the card check, written before the card executable exists
+
+List `analysis/release/card_v05.list` (nine cases, decks of the quick run), judged by
+`card_v05.py`: K1 every case status 0; K2 particle sums and mesh integrals (columns 4
+to 12 of the history of the module) within 1e-10 of sum m W of the processor run; K3
+deposit identity on the card within 1e-13; K4 MeshBlock counts of trk and peak equal
+at every record, tracker path within 1e-12; K5 source dumps of the four deposit cases
+within 1e-12 of the largest number; K6 the card prints the note of `deposit_threads`.
+Refuted by a status other than 0 or a number above its bound. Where I am least sure:
+peak (the lapse ladder decides refinement by a threshold; a rounding difference could
+move a regrid by one check, though T14b of the package saw none), and cluster (40
+cycles of a self-gravitating cluster: the package measured 5.4e-13 between two
+one-card runs of its build).
+
+### Regressions of the MPI and the threaded build (2026-11-21T07:16Z)
+
+- R2, MPI build started without mpirun: HELD. Run core-20261121-065743-1202666: 75
+  items identical to release core-v0.4, nothing of class a, b or other.
+- R2, threaded build at one thread: FAILED. Run core-20261121-070623-077b056
+  (`regress_v04.py` ends FAIL by its rule): 31 of 75 items identical (geo both files,
+  jeans all five, single files elsewhere), 44 differ. The differences are at rounding
+  level [VERIFIED by reading the histories of both runs with `card_v05.hst_columns`]:
+  every column of the module's histories above rounding agrees to 1.2e-15 (east 1.1e-15,
+  c4 1.2e-15, zero in the others), the constraint statistics to 1.4e-10 (east, column
+  9, H_max) and 1.9e-12 (c4, column 15); binary: the result lines of the multigrid log
+  differ. All 24 runs status 0. I had predicted identity for the ten set-ups without
+  multigrid, on the strength of the READY of build-openmp ("with one thread it equals
+  the atomic result"), which speaks of the threaded executable against itself, not
+  against the serial build. The quick test had shown the same an hour earlier (source
+  dump 1.1e-14 between the threaded build at one thread and the serial build).
+  Consequence for the release: `athena_cpu_omp` is not a reference for byte
+  comparisons; `athena_cpu` and `athena_cpu_mpi` are.
+- Cause not established. The two builds differ in two things: the flags (-O3 -DNDEBUG
+  against -O2) and the Kokkos back end (OpenMP against Serial). Test R3, prediction
+  written before the build: the threaded build with the flags of the serial build
+  (`OMP_OPT=debug scripts/build_cpu_omp.sh`, -O2 -g, asserts on) at one thread gives
+  the bytes of release core-v0.4 on the ten set-ups without multigrid (geo, boris, dep,
+  east, os, c1 to c5). If it does, the flags are the cause and a track that needs
+  threads AND bytes has a build for it. Refuted by any differing data byte in those
+  ten: then the back end itself changes the arithmetic at one thread (other inlining
+  and contraction in its kernels) and no threaded build is a byte reference. No
+  prediction for jeans and binary (the multigrid average).
+- R3 REFUTED in part. Run core-20261121-071842-f5a8b56 (threaded build with -O2 -g,
+  `.work/build_omp_dbg_v05rc`, one thread, 6 cores, against release core-v0.4): 53 of
+  75 items identical. Identical: geo, boris, dep, jeans, binary, c1, c2, c3, c5 (every
+  set-up that does not evolve the spacetime, the two multigrid cases among them, for
+  which I had made no prediction). Not identical: east (10 of 12 files), os (10 of
+  16), c4 (2 of 4), the three with Z4c, at rounding (module histories 8.8e-16,
+  constraint statistics 1.5e-10 in east and 1.8e-12 in c4); in os the first mesh and
+  particle restart files are identical, so the initial data agree and the evolution
+  does not. So the flags account for the particle-only set-ups (they differ with -O3
+  -DNDEBUG and not with -O2) and the OpenMP build for the set-ups with Z4c (they differ
+  with either flags) [VERIFIED by these two runs; which statement of the Z4c kernels is
+  compiled differently was not looked for]. No threaded build is a byte reference.
+
+### PAUSED (flag `locks/PAUSE` found at 2026-11-21T07:27Z): where I stopped
+
+Done and pushed (origin/core/nrpic = 1b9c9f14 before this entry): the four merges
+(source c3eb42e0), the four builds, the byte regression (PASS), the quick tests (PASS),
+the regressions of the MPI and the threaded build, the flags test R3,
+`RELEASE-v0.5.md` (first line REGRESSION PASS), `CHANGELOG.md` section core-v0.5,
+`stage/G2/OPEN.md` section core-v0.5, `docs/FORMATS.md`, the last sections of
+`interfaces/{mpi,threaded_build,cosmo_amr}.md`, STATUS, HANDOFF, and the published
+directory `scratch/core/exe/core_nrpic_v05/` (four executables, COMMIT, SHA256SUMS,
+READY, branches/).
+Not done:
+1. The card check. Run core-20261121-070946-1907f7b, Slurm job 4772, was still queued
+   (the queue gave 08:02Z as its start). It may run on its own. `athena_gpu` of the
+   candidate has not run on a card; RELEASE-v0.5.md and the READY say so. Closing
+   steps: HANDOFF.md, "ONE RUN IS PENDING". Card time used by this package: none.
+2. The messages to the tracks (one per track, which of its requests of
+   `coord/REQUESTS.md` releases core-v0.4 and core-v0.5 serve): not started because
+   of the flag. What I had read for them, so that the next session need not look it up
+   again [each from the triage texts `interfaces/REQUESTS_{A2,ADF,B}.md`,
+   `cosmo_gauge.md` section 7 and the source; none of it is posted]:
+   - A: done in core-v0.5: `nrpic-cosmo-user-ref-func` (refinement function,
+     `<particles_amr>`), `periodic-horizon-finder` items 1 to 3 (points mapped into the
+     box, `<fastflow> diagnostics`, files in the `-d` directory),
+     `refined-mesh-diagnostics` (`<particles> region_dcycle`), `stop-on-nonfinite`
+     (`<z4c_guard>`, default on), `step-limit-coordinate-light-speed` (`<z4c>
+     dt_lightspeed`), `processor-executable-threads` (`athena_cpu_omp`),
+     `amr-for-first-horizon` (answered: no sub-cycling; example `peak_amr.athinput`);
+     done in core-v0.4: `gauge-expanding-ball` (`<z4c> lapse_leak`; the K_ref and
+     softplus forms declined with reasons in `cosmo_gauge.md` 7.1). Deferred to the
+     unfinished branches: phase-1 generator, CMC slice, refined-level constraint solve,
+     Zel'dovich ball (core/id-solver-2); special-relativistic push, snapshots at
+     chosen times, per-species moments, which W the Newtonian history reports
+     (core/newton-2). Not answered by either release: the finder keys and the restart
+     question of `scouting-runs-ball`, the finder's spin projection, dispersion data.
+   - B: done in core-v0.4: the linear-wave correction and the jitter tool; in
+     core-v0.5: the threaded build. Deferred: TT part of the initial data; species
+     history and the Poisson order (both exist on the unfinished core/newton-2); the
+     new request `insitu-fourier-modes` of 2026-11-21 is unread.
+   - C: nothing new in core-v0.5; collisions stop on several ranks; the four format
+     requests, the ADM-mass diagnostic and collisions on refined meshes stay deferred.
+   - D: done in core-v0.5: `finder-summary-outdir` (files in the `-d` directory),
+     `openmp-cpu-build` (`athena_cpu_omp`), `trajmet-format-doc` (FORMATS.md: 17
+     values); in core-v0.4: `lapse_leak`, `publish-gauge-exe`. Deferred: outer
+     boundary (core/z4c-faces), throughput and self-force text (core/newton-2), proper
+     time on analytic metrics, mass refinement near the hole. Four new requests of
+     2026-11-21 are unread.
+   - E: done in core-v0.5: `rng::ModeEntity`, the meaning of stream 3 and the epoch
+     rule (`rng.md` sections 6 and 6.2), `con_signed`.
+   - F: done in core-v0.4: `shift_eta_profile`, the card memory at 2700 MeshBlocks
+     (`REQUESTS_ADF.md`, row mem2700), Gaussian clumps with momentum; in core-v0.5: the
+     MPI processor build (no MPI card build released). Deferred: equilibrium clumps
+     with momentum (core/clump-table). Two new requests of 2026-11-21 are unread.
+3. The inbox of core holds twelve messages of 2026-11-19 to 2026-11-21 that I listed
+   and did not read or acknowledge (numbers 76 to 87 of `nrpic-ctx inbox`).
