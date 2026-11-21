@@ -1224,3 +1224,28 @@ references `scratch/core/core-20261121-080135-890689a/4266c2d__*` and
 cards: K with the card build of 76add0c (uniform meshes, 128 cells). The card build of
 the merged source compiles and has not run on a card; neither has any refined mesh of
 the solver, with any build.
+
+## 2026-11-21, entry 17: prediction N (the region norms of core-v0.5 on solved data)
+
+The interface and READY tell the tracks to judge data in the matter region; so far that
+needed the script `test_b.py` on field dumps. Release core-v0.5 writes norms inside and
+outside spheres (`<particles> region_dcycle`, `particles/nrpic_region.cpp`: cells whose
+centre lies inside the sphere, weight sqrt(gamma) dV, H2 = sqrt(<H^2>); the record of
+cycle 0 is written after the solve, `nrpic_io.cpp` 1352 and 1376 [VERIFIED by reading]).
+It has never run together with `id_solve`.
+
+ **N** (`test_n.py`; `zsol_n32` of M2, solve and evolution to t = 2, with
+ `region_dcycle = 1`, `region_radius1 = 7`, `region_radius2 = 13.5`, the radii of the
+ regions of test B):
+ (a) every file of the case except the new `ball.region.hst` (and the input) is
+     byte-identical to the run of M2 without the three options;
+ (b) at the times of the three field dumps (t = 0, 1, 2) H2 inside r < 7, inside
+     r < 13.5 and outside r = 13.5 of the record equal the same norms formed from the
+     dump (H in double precision, weight chi^-3/2 from chi in single precision) to 1e-5,
+     and the proper volumes to 1e-6;
+ (c) the shell 7 <= r < 13.5 follows from the record alone,
+     H2_shell^2 = (V_in2 H2_in2^2 - V_in1 H2_in1^2)/(V_in2 - V_in1), and equals the dump's
+     to 1e-5 at t = 1 and 2.
+ Refuted if a byte differs in (a), or a norm by more than 1e-4 at t = 1 or 2 (at t = 0
+ the solved H is round-off, 1e-13: there the comparison is of the same numbers summed
+ in another order and may differ in the last digits).

@@ -5,6 +5,11 @@ Owner: core (branch `core/id-solver-2`, work package idsolve2 of wave 3a, starte
 `id_solve`, `id_vector`) stays valid; this document lists what the second pass adds and
 changes. Journal with predictions and outcomes: `tracks/core/JOURNAL-idsolve2.md`.
 
+State on 2026-11-21: the branch holds main with releases core-v0.4 and core-v0.5 merged
+(merge commit 395e17d; the first pass is part of both releases). The executables
+published in `scratch/core/exe/core_id-solver-2/` are built from that merge: release
+core-v0.5 plus the second pass. What changes against the release: section 8.
+
 Labels: [VERIFIED] read in the source of this branch (file and line) or measured in a
 registered run (run id), [JUDGEMENT] a design choice or reading, [TO VERIFY] open.
 Units G = c = 1; an expanding slice has K < 0.
@@ -72,10 +77,11 @@ E and Stilde = psi^6 S_i deposited by the module itself in every evaluation. New
    A's gradient-expansion peak in section 7 (test G).
 
 Default behaviour [VERIFIED by reading `NrpicIdSolveInit`, `nrpic_idsolve.cpp` 113-251]:
-without `id_solve` nothing is read or called (test R0: byte-identical to release
-core-v0.3). With `id_solve` on a mesh with no periodic face the far field is ON by
-default (`id_far = robin` restores the first pass; test R1: byte-identical to the
-first-pass executable for matter at rest). The new options are read only when present.
+without `id_solve` nothing is read or called (tests R0 and M0: byte-identical to release
+core-v0.3 before the merge and to release core-v0.5 after it). With `id_solve` on a mesh
+with no periodic face the far field is ON by default (`id_far = robin` restores the first
+pass; tests R1 and M1: byte-identical to the first-pass executable and to release
+core-v0.5 for matter at rest). The new options are read only when present.
 
 ## 2. Options (`<particles>` block, all read only if present)
 
@@ -114,32 +120,38 @@ curvature contributes K^2 terms. P_ADM = (1/8 pi) times the integral of the righ
 (2) plus the momenta of the punctures; J_ADM from its antisymmetric first moment plus the
 spins and x_c times P_c of the punctures.
 
-## 4. Lines of shared files touched (all of `core/id-solver` and `core/id-solver-2` against main)
+## 4. Lines of shared files touched (this branch against main at release core-v0.5)
 
-New files: `athenak/src/particles/nrpic_idsolve.cpp`, `nrpic_idfar.hpp`,
-`athenak/src/multigrid/multigrid_robin.cpp`. Lines of shared files (this branch):
+The first pass (`nrpic_idsolve.cpp`, `multigrid_robin.cpp`, its hooks in `nrpic.cpp`,
+`nrpic_io.cpp`, `particles.cpp`, `mg_gravity.*`, `multigrid_*`, `bvals.hpp`,
+`CMakeLists.txt`) is on main since core-v0.4. What this branch adds to main
+[VERIFIED: `git diff main` at 395e17d]:
 
-| File | Lines | What |
+| File | Lines (this branch) | What |
 |---|---|---|
-| `athenak/src/CMakeLists.txt` | 103, 141 | the two new source files |
-| `athenak/src/bvals/bvals.hpp` | 21 | `BoundaryFlag::mg_robin` appended to the enum |
-| `athenak/src/gravity/mg_gravity.cpp` | 77-92, 221-241 | `mg_bc = robin` and its centre (the refusal on refined meshes of the first pass is removed); `SolvePoisson` |
-| `athenak/src/gravity/mg_gravity.hpp` | 68-71 | `SolvePoisson`, `Threshold` |
-| `athenak/src/multigrid/multigrid.hpp` | 397-402, 506-508, 691-779 | Robin methods (with `RobinBoundaryOctet`, new) and members; `MGRobinFill` |
-| `athenak/src/multigrid/multigrid_driver.cpp` | 1726 (new), 2194-2195 | `if (robin_) { RobinBoundaryOctet(oct, fcbuf); return; }` at the top of `ApplyPhysicalBoundariesOctet`; `if (robin_) RobinBoundaryRoot();` |
-| `athenak/src/multigrid/multigrid_tasks.cpp` | 360-361 | `if (robin_) RobinBoundaryBlocks();` |
-| `athenak/src/particles/nrpic.cpp` | 276 | `NrpicIdSolveInit(pin);` |
-| `athenak/src/particles/nrpic_io.cpp` | 1237 | `NrpicSolveInitialData();` |
-| `athenak/src/particles/particles.cpp` | 122 | delete `pbval_ids` |
-| `athenak/src/particles/particles.hpp` | 153-176, 375-380 | `NrpicIdSolveOptions` (second-pass members 169-175, new); `ids_coarse`, `ids_punc` (new), methods |
-| `docs/FORMATS.md` | 142-154 | output files (second-pass rows new) |
+| `athenak/src/particles/nrpic_idfar.hpp` | new, 171 lines | multipole moments and exterior expansion (a header: no change of `CMakeLists.txt`) |
+| `athenak/src/particles/nrpic_idsolve.cpp` | 840 lines added, 68 removed (1790 in all) | far field, moving matter, refined meshes, punctures, BiCGStab, block dump |
+| `athenak/src/multigrid/multigrid_robin.cpp` | 11, 100-151 | `MultigridDriver::RobinBoundaryOctet` (new function) |
+| `athenak/src/multigrid/multigrid.hpp` | 400 | its declaration |
+| `athenak/src/multigrid/multigrid_driver.cpp` | 1726 | `if (robin_) { RobinBoundaryOctet(oct, fcbuf); return; }` at the top of `ApplyPhysicalBoundariesOctet` |
+| `athenak/src/gravity/mg_gravity.cpp` | 6 lines removed after line 80 | the refusal of `mg_bc = robin` on a refined mesh |
+| `athenak/src/particles/particles.hpp` | 216-222, 495-496 | second-pass members of `NrpicIdSolveOptions`; `ids_coarse` (comment), `ids_punc` |
+| `docs/FORMATS.md` | 210-211 | two rows (record lines of the second pass, block dump) |
+| `problems/idsolve/` | `puncture.athinput` (new), `make_ic.py`, `README.md` | puncture example, `shell`, `zeldovich`, `wave --nest --velocity` |
+
+The merge of main into this branch had one conflict, in `docs/FORMATS.md` (both sides
+appended after the same row; both kept).
 
 ## 5. Tests
 
 Predictions and outcomes, failed predictions included: `tracks/core/JOURNAL-idsolve2.md`
-entries 1 to 15. Scripts, numbers, figures: `tracks/core/analysis/idsolve2/` (`test_*.py`,
-`*_numbers.json`, `figs/`). Processor build of 76add0c unless stated; the published
-source is 4266c2d, which differs from it only in the branch tested by R2 and P5b. All numbers [VERIFIED] in the runs named.
+entries 1 to 16. Scripts, numbers, figures: `tracks/core/analysis/idsolve2/` (`test_*.py`,
+`regress_*.py`, `check_threads.py`, `*_numbers.json`, `figs/`). Which build ran what:
+rows R0 to K ran the processor build of 76add0c (the branch before the merge with main)
+unless stated; 4266c2d differs from it only in the branch tested by R2 and P5b; the
+published source is the merge 395e17d, tested by rows M0 to T, which tie it to the
+earlier rows byte for byte on processors (M2, M2b). All numbers [VERIFIED] in the runs
+named.
 
 | Test | What it shows | Outcome |
 |---|---|---|
@@ -153,6 +165,10 @@ source is 4266c2d, which differs from it only in the branch tested by R2 and P5b
 | G | Track A's CMC peak (gradient-expansion data on K = -3H, eps_i = 0.2, e = 0.2, torus of 100 Hubble lengths) solved by the code from psi = 1 | converges for mu = 0.03, 0.3, 0.5, 0.7 in 8 to 11 outer iterations (Track A's Python solve diverged at 0.5); solved psi equals psi_GE to c = 1.0e-7, 3.6e-7, 5.2e-7, 6.3e-7 of the perturbation at 64^3 (1.6e-5 at 32^3 for mu = 0.5); monitor after 3e-10 to 3e-9; with the vector part the same psi and max\|M\| 1.6e-7 -> 1.7e-9 (run core-20261119-160329-ab0aa92) |
 | P | punctures | P1 vacuum Bowen-York puncture (m = 1, P = 0.5) against the multipole reference: 5 (stencil) and 20 to 22 (code, radius 3) outer iterations; **the error of u does not fall with the cell size: 2.8e-4, 1 per cent of u at the puncture, at 32, 64, 128 cells with the faces at 16 m** (section 6); mode code with radius 1 is unusable below 128 cells (error 3e-2), with radius 3 it equals mode stencil and leaves the monitor at 1e-12 outside the radius. P2 puncture at rest in a matter shell against the radial reference: second order in both modes (error over 3 < r < 12: 1.1e-4, 2.9e-5, 7.3e-6; at the puncture 1.4e-5, 3.5e-6, 8.8e-7; M_psi within 1.1e-4, 2.7e-5, 6e-6 of the ADM mass 1.448858). P3 the same on two static levels: mode code 25 outer iterations, error at the puncture 6.0e-6, monitor 2e-13 to 6e-13 on every level. P4 three punctures with momenta and a spin: P_ADM and J_ADM of the record exact; **u at the punctures not converged at dx = 0.25** (section 6). P5 puncture with momentum in a moving shell, both parts in mode code: converges, max\|M\| 5.6e-4 -> 2.1e-7; **defect at the faces (section 6)**. P6 the vacuum puncture with the faces at 32 and 64: the mean error of u falls as R^-2 (-6.3e-5, -2.3e-5 against 2.7e-4 at 16). P7 the three punctures on refined meshes (cells of 0.25 to 0.03125 at the punctures): u at the punctures settles at 0.01744, 0.01204, 0.01111 (from 0.125 on to 0.7 per cent or better); no independent reference for these data (runs core-20261119-161842-b92b298, -165458-ecdaa7c, -170050-f228951, -170028-77f7173, core-20261120-221417-415acfd) |
 | R2, P5b | the change of 4266c2d (face ghost cells of the remainder of the trial curvature) | seven earlier cases replayed with the new processor build write the bytes of their old case directories (puncture in both modes with and without matter, three levels, moving Gaussian with the far field, refined Gaussian, refined torus with moving matter, the Zel'dovich ball with its evolution: 69 files); the changed case P5: largest right side in the outermost cell layer 3.2e-5 -> 8e-18, P_ADM_x 0.5500562851 -> 0.5499999519755 (puncture 0.5 plus particle sum 0.0499999519755), same 34 outer iterations, W changed by 2e-4 of its maximum (run core-20261120-222207-4266c2d) |
+| M0 | the merged build without `id_solve` against release core-v0.5 | all 59 output files of the nine set-ups of R0 byte-identical (run core-20261121-080113-2230974, `regress_r0_v05.json`) |
+| M1 | the merged build with `id_solve` against release core-v0.5 (which holds the first pass): the four example inputs of the first pass at 32 cells | with `id_far = robin`: Gaussian at rest, expanding ball and torus byte-identical in every file (8, 9, 8 files), moving Gaussian the same 17 outer iterations with psi to 6.0e-15 and W to 5.1e-16; with no new option (far field on by default): torus byte-identical; psi changes by 9.7e-9 (Gaussian at rest), 3.6e-8 (ball), 1.5e-6 (moving Gaussian), W of the moving Gaussian by 2.7e-3 of its maximum; same iteration counts and the same monitor after the solve (run core-20261121-080151-4db2e1d, `regress_m1.json`) |
+| M2, M2b | the merged build against the builds before the merge | eight cases replayed (puncture in mode code with and without matter, three static levels, moving Gaussian with the far field, refined Gaussian, refined torus with moving matter, Zel'dovich ball with its evolution, puncture with momentum in a moving shell as written by 4266c2d) write the bytes of their old directories, 79 files; the moving Gaussian at 128 cells (5.9 million particles) likewise, 12 files (runs core-20261121-080135-890689a, core-20261121-081010-968d6d6) |
+| T | threaded processor build (`scripts/build_cpu_omp.sh`) of the merged source, 4 threads, against the serial build | moving Gaussian with the far field, Gaussian on two static levels, puncture with momentum in a moving shell, Zel'dovich ball with its evolution: the same outer iterations (17, 20, 34, 51) and linear steps (33, 81, 80, 137); psi to 2.2e-15 and W to 2.3e-14 of their maxima; far-field lines equal in 13 digits; region means of \|H\| of the ball at t = 2 to 3e-13; one case run twice is byte-identical; 3.6 to 4.5 times faster than the serial `-O2` build (run core-20261121-081048-0c563b2, `check_threads.json`) |
 | K | card build on one A100 | card build of 76add0c, four cases at 128 cells (vacuum puncture in both modes, moving Gaussian with the far field, solved Zel'dovich ball with its evolution to t = 2): the same outer iterations and linear steps as the processor build; psi to 2e-15, W to 3.5e-13, region means of \|H\| at t = 2 to 2e-10; 7 to 57 s per case, 0.032 card-hours (card run core-20261119-154414-2506b80, analysis core-20261120-220527-e2690ef) |
 
 ## 6. Limits and what a track must know
@@ -197,9 +213,14 @@ source is 4266c2d, which differs from it only in the branch tested by R2 and P5b
      540-555) [JUDGEMENT for the mechanism; VERIFIED for the place and size from the
      dumped right side of P5]. In P5 it is up to 3.2e-5 per cell,
      2.9e-4 of momentum over the layer (0.6 per cent of the matter's), and P_ADM of the
-     far-field line is off by 5.6e-5 (1e-4 of the puncture's momentum). Not fixed in the
-     published executable (source 76add0c). **Fixed in the second publication (source 4266c2d)**: there the remainder (trial minus Bowen-York) is continued linearly into the face ghost cells; after the change the right side of the outermost layer is 8e-18 and P_ADM of the record equals the puncture's momentum plus the particle sum to 13 digits (P5b), and seven earlier cases that do not take this branch are byte-identical (R2). Punctures at rest (Track D) and runs
-     without `id_vector` are not affected.
+     far-field line is off by 5.6e-5 (1e-4 of the puncture's momentum). That was the
+     first publication (source 76add0c, 2026-11-20). **Fixed since 4266c2d, and in the
+     executables published now (merge 395e17d)**: the remainder (trial minus Bowen-York)
+     is continued linearly into the face ghost cells; the right side of the outermost
+     layer is then 8e-18 and P_ADM of the record equals the puncture's momentum plus the
+     particle sum to 13 digits (P5b), and seven earlier cases that do not take this
+     branch are byte-identical (R2). Punctures at rest (Track D) and runs without
+     `id_vector` were never affected.
 - **Large tori**: on a box of many Hubble lengths (G: L H = 100) the Poisson
   preconditioner of the Newton step is poor (sigma/k_min^2 of order 1e3); the inner
   solve uses all `id_lin_maxit` = 50 steps in about half of the Newton steps, and the
@@ -210,8 +231,12 @@ source is 4266c2d, which differs from it only in the branch tested by R2 and P5b
   cores.
 
 **Not done or not tested**:
-1. MPI (single rank, as the particle module); adaptive refinement beyond the level
-   structure at t = 0 (the solve runs once, on the mesh as it is at the start).
+1. MPI: a run with `id_solve` on more than one rank stops in `NrpicMpiInit` with a
+   message (release core-v0.5; the solver is not ported). Adaptive refinement beyond the
+   level structure at t = 0 (the solve runs once, on the mesh as it is at the start);
+   `id_solve` together with `<amr_criterion0> method = user` of core-v0.5 has not been
+   run. Threads: T covers four cases at 4 threads; other thread counts,
+   `deposit_threads = private`, the torus and 128-cell cases are not run with threads.
 2. A fourth-order L W for the vector part on refined meshes (would lower the stall at
    level boundaries by about (k dx)^2); a far field for meshes with some periodic and
    some open faces (the plain fill is used there).
@@ -222,9 +247,11 @@ source is 4266c2d, which differs from it only in the branch tested by R2 and P5b
 5. Puncture combinations not run: punctures with a table of format 2, with `nrpic_cosmo`;
    spinning punctures with matter.
 6. Card executable: K ran the card build of 76add0c on uniform meshes at 128 cells. The
-   card build of the published source 4266c2d is compiled and has not been run (its job
-   was withdrawn: two jobs of core were queued). Not run on any card: refined meshes,
-   the torus, the CMC peak, P2 to P7.
+   card build published now (merge 395e17d) compiles and **has not been run on a card**:
+   on 2026-11-20 its job was withdrawn and on 2026-11-21 none was submitted, both times
+   because two jobs of core were already queued. The check is staged (journal entry 16:
+   list, inputs, references, analysis command). Not run on any card with any build:
+   refined meshes, the torus, the CMC peak, P2 to P7, the change of 4266c2d.
 
 ## 7. Answers to the requests
 
@@ -262,6 +289,42 @@ second order, on uniform and on refined meshes (P2, P3: the case of Track D's dr
 black holes); three punctures with momenta and a spin with exact P_ADM and J_ADM of the
 record (P4; u at the punctures needs finer cells than a uniform mesh gives); a puncture
 with momentum inside moving matter (P5; converges, with the defect of section 6, item 4,
-at the faces). For Track F: put the faces far (the floor falls as P^2/R^2), refine about
-each puncture, and treat P_ADM of the record as good to 1e-4 of the punctures' momentum
-until the defect is fixed.
+at the faces in the first publication; fixed in the executables published now). For
+Track F: put the faces far (the floor falls as P^2/R^2) and refine about each puncture
+to cells of m/8 or smaller (P7).
+
+## 8. For the next release: what changes against core-v0.5
+
+For the changelog of the release that takes this branch (all [VERIFIED] by M0, M1, M2).
+
+**Options added** (`<particles>`, read only with `id_solve = true`, each only if
+present): `id_far`, `id_far_lmax`, `id_far_radius`, `id_lin_solver`, `id_punctures`,
+`id_puncture_radius` (section 2). Example inputs: `problems/idsolve/puncture.athinput`
+(`id_punctures`, `id_puncture_radius`), `gaussian_boost.athinput` (`id_far`,
+`id_far_lmax`, `id_far_radius` on the command line after adding the line to the block),
+a refined mesh in any of them (`id_lin_solver`).
+
+**Behaviour that changes without an option** (only in runs with `id_solve = true`; a
+run without it is byte-identical, M0):
+1. On a mesh with no periodic face the faces are filled with the far field
+   (`id_far = multipole` is the default). Sizes at 32 cells against release core-v0.5:
+   psi by 1e-8 (Gaussian at rest), 4e-8 (expanding ball), 1.5e-6 (moving Gaussian), W of
+   the moving Gaussian by 2.7e-3 of its maximum, the closure error of the first pass.
+   `id_far = robin` gives the release's bytes for matter at rest. A torus is not
+   affected.
+2. With moving matter the Jacobian of the scalar part holds the trace of the deposited
+   stress: psi and W change at round-off (6e-15, 5e-16), the iteration counts do not.
+3. Puncture components of `nrpic_cf` enter the solve as psi_s + u (`id_punctures =
+   true` is the default); the first pass had no treatment of punctures (it solved for
+   the whole psi on the mesh, where the monitor is unusable next to a puncture).
+4. A refined mesh no longer stops the solver ("implemented on uniform meshes only") or
+   `<gravity> mg_bc = robin`.
+5. The record `<basename>.idsolve.txt` gets a second header line and a far-field line
+   when the far field, a refined mesh, punctures or BiCGStab are in use; on a refined
+   mesh `id_dump` writes `<basename>.idsolve.blk.bin` (`docs/FORMATS.md`).
+
+**Regression to repeat on the release build**: `regress_r0.py --tag <tag>` (nine
+set-ups without `id_solve`), `regress_m1.py` (the first pass's examples against the
+release before), `regress_r2.py --same <case directories of run
+core-20261121-080135-890689a>` (eight second-pass cases, byte for byte), and the card
+check staged in journal entry 16.
