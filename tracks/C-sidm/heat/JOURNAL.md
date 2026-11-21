@@ -479,3 +479,21 @@ about their number n (15 card seeds with z_ref; 95 percent range of chi^2_15: 6.
 and their mean is 0 within 1/sqrt(n) = 0.26; (b) the chi^2 of the z of same-executable
 seed pairs is about the number of pairs. A card bias would show in (a) with one sign and
 not in (b); a noise model that is too small at theta 0.1 and 1 would raise both.
+
+## 2026-11-21 03:02 S-pairs result seen; a post-hoc summary run announced (no prediction possible)
+
+S-pairs ran (C-20261121-025837-8b5b9ee); its outcome is written with the others below.
+Found while reading the worktree: the fresh-context verifier of this owner (package
+`../verify_g1/`, run C-20261120-222423-519f12b, `ce_kappa.json`) computed the relativistic
+Chapman-Enskog conductivity of isotropic hard spheres in the Eckart frame (own Monte Carlo
+of the collision brackets, Sonine orders 1-4) at theta = 1e-4, 0.003, 0.1, 1. That is a
+reference for T7 at theta = 0.1 and 1, which the 22:26 prediction P-T7hot said did not
+exist. The 22:26 predictions are left as written; a comparison with it is post hoc (both
+sides were computed before this entry, and I have seen the T7 numbers), so it supports a
+verdict but cannot change "reported" for theta = 0.1 and 1 under TESTS.md T7 as written.
+Registered as one post-hoc arithmetic run (`scripts/summary_c6.py`, no new fit of
+simulation data): T7 extrapolations against the order-4 relativistic CE value at each
+theta; T7 at theta 0.003 corrected for the cell-size dependence measured by the card T8
+set (quadratic and linear forms, t8 run C-20261120-223321-3d088d4); the eps = 0.05 set alone
+with its expected standard error; S-pairs with the design Monte Carlo noise model instead
+of the 4-seed variance at k lambda 0.1.
