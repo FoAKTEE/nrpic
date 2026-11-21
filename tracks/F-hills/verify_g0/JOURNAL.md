@@ -104,3 +104,38 @@ Prediction: HRNA separated fraction at beta = 3 (pro, retro) and 10 (pro, retro)
 binomial sigma (about 0.03 at p = 0.9, 0.1 at p = 0.5 with 200 phases) of the ledger's
 0.985, 0.51, 0.993, 0.91 (run F-hills-20261115-142554-c10b371). WRONG if outside. A debug
 trial (16 phases, beta = 10) gave 1.0 and 0.875.
+
+## Entry 4 (2026-11-21 03:15 UTC): first outcomes, and a hypothesis about the V7 scan
+
+Outcomes so far (details in VERIFIER.md when written):
+- R1 F-20261121-030100-b88c2d3: closed forms reproduce 18.57/86.18/400, r_mb = L_mb = 4, Peters
+  6328.1, scales, start states, card-hours (plain mean of my recount within 0.4 percent of the
+  ledger's trapezoid). K6 prediction CONFIRMED in substance: 4 q^(2/3) is the condition
+  r_t > r_mb; separation needs only D <~ 2.085 at r_p >= 4 M, i.e. a_b/r_gb >~ 4 q^(2/3)/2.085
+  (14.1 at q = 20, 18.5 at q = 30). K15 prediction CONFIRMED: G2 items sum to 131 before
+  contingency against "about 120". K12: q = 10 start state turns at 5.77 M (isotropic, P/m
+  reading) or 7.00 M (Schwarzschild-coordinate reading), not 8 M; the GR parabola with
+  pericentre 8 M needs L = 4.618 against L_N = 4.194.
+- R2 F-20261121-030102-acb4dbd: my HRNA passes its self-tests (E, L to 4e-13 / 6e-12;
+  pericentre advance to 4e-9; static acceleration exact; flat limit 1e-6).
+- R3 F-20261121-030138-8d3ca16: every Newtonian passage number of the ledger reproduced; HRNA
+  q = 10 plunge crossing at t = 96.90 (ledger 97.1, a sample time); q = 4 HRNA ejected energy
+  drifts 0.978 -> 0.965 between t = 600 and 1500 (ledger 0.9703 lies inside).
+- R5 F-20261121-030155-1061bcb: sample-by-sample identical to the track's coplanar scan at all
+  14 points (same phases, my own integrator): K2 CONFIRMED (edges 2.085 and 0.405 also with wide
+  binaries followed to 300 r_t; retrograde D = 0.1 identical, which closes the V4 difference
+  the note still calls open at D = 0.1). Figure fig_restricted.png read (legend typo "retgrade"
+  in my own figure, cosmetic).
+- R6 F-20261121-030205-c4d2894: hybrid mode failed in every query (torch not found under
+  nrpic-run); rerun R6b F-20261121-030306-e8533e8 with the fix.
+- R4 (running) at q = 10, r_p = 7 and 8: HRNA hand-off plunge 0.978 and 0.944 (track 0.96, 0.94)
+  but Newton "member inside 4 M" 0.494 and 0.011 against the track's 0.62 and 0.056 (3.4 and
+  2.6 sigma), separated 0.878, 0.850 against 0.90, 0.88. My GR-matched start (the 2404 CM
+  construction, appendix.tex:173-179) plunges 0.944 and 0.911: entry-1 prediction for K13
+  ("falls well below 0.94") FAILED; the hand-off artefact is small at these r_p.
+
+Hypothesis H-mu (to test before I may read the lead's script): the track's V7 gave the CM the
+test-mass parabola speed of M alone (L = (2 M r_p)^(1/2)) instead of the two-body parabola of
+M + m_b, so its encounters are slightly bound and deeper. Prediction: with `--mu-conv M`, my
+Newton fractions at q = 10, r_p = 7 and 8 move to the track's 0.62 and 0.056 (inside 4 M)
+within 3 sigma. Refuted if they stay at 0.49 and 0.01, or overshoot beyond 3 sigma.

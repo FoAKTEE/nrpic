@@ -275,15 +275,19 @@ def passages(out, rtol):
 
 
 # ------------------------------------------------------------------ scans (K13)
-def start_states(M, m1, m2, ab, rp, phases, k0):
+def start_states(M, m1, m2, ab, rp, phases, k0, mu_conv="total"):
+    """mu_conv: 'total' puts the CM on the two-body parabola of M + m_b with pericentre rp
+    (the convention of the passage inputs); 'M' gives it the test-mass parabola speed of M
+    alone (a hypothesis about the track's V7 scan, tested in entry 4)."""
     mb = m1 + m2
     mu = M + mb
+    mu_v = mu if mu_conv == "total" else M
     rt = ab * (M / mb) ** (1 / 3)
     r0 = k0 * rt
     f0 = -np.arccos(2 * rp / r0 - 1)
     p = 2 * rp
     Rx = r0 * np.array([np.cos(f0), np.sin(f0)])
-    Rv = np.sqrt(mu / p) * np.array([-np.sin(f0), 1 + np.cos(f0)])
+    Rv = np.sqrt(mu_v / p) * np.array([-np.sin(f0), 1 + np.cos(f0)])
     u = np.tan(abs(f0) / 2)
     t_to_peri = np.sqrt(2 * rp ** 3 / mu) * (u + u ** 3 / 3)
     n = len(phases)
@@ -301,11 +305,11 @@ def start_states(M, m1, m2, ab, rp, phases, k0):
     return y, rt, t_to_peri
 
 
-def scan(q, ab, rp, nphase, rtol, t_after):
+def scan(q, ab, rp, nphase, rtol, t_after, mu_conv="total"):
     M, m1, m2 = 1.0, 0.5 / q, 0.5 / q
     mb = m1 + m2
     phases = (np.arange(nphase) + 0.5) * np.pi / nphase
-    y, rt, t_to_peri = start_states(M, m1, m2, ab, rp, phases, 10.0)
+    y, rt, t_to_peri = start_states(M, m1, m2, ab, rp, phases, 10.0, mu_conv)
     rhs = make_newton_rhs([M, m1, m2])
     # 10 r_t -> 4 r_t
     def cb_hand(to, yo, tn, yn, idx):
@@ -367,7 +371,7 @@ def scan(q, ab, rp, nphase, rtol, t_after):
         out[lab] = dict(separated=float(np.mean(plunged | (E12h > 0))), plunge=float(np.mean(plunged)),
                         cm_E_median=float(np.median(E0)), cm_L_median=float(np.median(L0)),
                         steps_max=int(nacc.max()))
-    out.update(q=q, a_b=ab, rp=rp, D=rp / rt, nphase=nphase, t_handoff_median=float(np.median(th)),
+    out.update(q=q, a_b=ab, rp=rp, D=rp / rt, nphase=nphase, mu_conv=mu_conv, t_handoff_median=float(np.median(th)),
                t_to_peri_from_10rt=t_to_peri, t_after=t_after, rtol=rtol)
     return out
 
@@ -527,6 +531,7 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--mode", choices=("passages", "scan", "selftest", "s1"), required=True)
     ap.add_argument("--betas", default="3,10")
+    ap.add_argument("--mu-conv", choices=("total", "M"), default="total")
     ap.add_argument("--rtol", type=float, default=1e-10)
     ap.add_argument("--nphase", type=int, default=180)
     ap.add_argument("--cases", default="10:3:8,10:3:13,4:5:9.82")
@@ -550,7 +555,7 @@ def main():
         rows = []
         for c in a.cases.split(","):
             q, ab, rp = (float(s) for s in c.split(":"))
-            row = scan(q, ab, rp, a.nphase, a.rtol, a.t_after)
+            row = scan(q, ab, rp, a.nphase, a.rtol, a.t_after, a.mu_conv)
             rows.append(row)
             print(json.dumps(row), flush=True)
             json.dump(rows, open(os.path.join(a.out, "scan.json"), "w"), indent=1)
