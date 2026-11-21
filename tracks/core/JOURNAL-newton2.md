@@ -1127,3 +1127,27 @@ The other thirteen columns were between 4e-15 and 2.2e-13 in that run. Corrected
 column that is zero in the card run is compared absolutely and listed); rerun below.
 The prediction is unchanged, but I have now seen its numbers before the run that
 counts.
+
+### T12 outcome: the examples of READY run with the published processor executable [VERIFIED]
+
+Run core-20261121-081316-b153b46 (`ready_examples.json`, figure `ready_examples.png`,
+looked at: K and -W of the two Fourier examples; the semi-axes of the patch start at
+3.37, 4.71, 6.07 as in T4b; the momentum curves of the processor and the card run of
+the refined mesh lie on each other), `scratch/core/exe/core_newton-2/athena_cpu`
+(sha256 107fd235...3dbab9), 20 cycles each.
+- `periodic_fft.athinput`, spectral and seven_point: exit status 0, 21 records in the
+  history and in the group file; the 21 records of the spectral example equal those of
+  the case fftsp of T11b as text. Held.
+- `embedded_ellipsoid.athinput`: exit status 0, the group holds 7208 particles of mass
+  0.75 (to 8e-15), 21 records. Held.
+- `isolated_smr.athinput` (47048 particles inside the refined MeshBlocks) against the
+  card run fine_in_smr of T6c (pre-merge card build): times equal, columns 5 to 18
+  within 2.2e-13 of the largest value of each column (column 9, the integral of K da,
+  is zero in both). Prediction 1e-9, expected 1e-13: held. This is the only
+  processor-against-card comparison of the multigrid solver on a refined mesh in the
+  package, over 20 steps, and between two builds (merged processor build, pre-merge
+  card build).
+- The figures of T6c and T4d were produced again after the layout corrections (runs
+  core-20261121-081457-ac86529, core-20261121-081505-3fa1046,
+  core-20261121-081511-37acd23; result files identical by `cmp`); they and those of
+  T11 and T12 are in `tracks/core/analysis/newton2/figs/`.

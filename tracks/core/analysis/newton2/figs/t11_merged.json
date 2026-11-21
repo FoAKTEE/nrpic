@@ -1,0 +1,293 @@
+{
+ "exe_new_sha256": "107fd235e47b6dbdab876b2dbeffb7246c7a7a89f4e6d867b297d1616d3dbab9",
+ "exe_rel_sha256": "222b8fa499d24f8f35b9fd773678dec66e68cc7f308113a3df621fdb4cd7ac7e",
+ "release_driver": {
+  "base_sha256": "222b8fa499d24f8f35b9fd773678dec66e68cc7f308113a3df621fdb4cd7ac7e",
+  "new_sha256": "107fd235e47b6dbdab876b2dbeffb7246c7a7a89f4e6d867b297d1616d3dbab9",
+  "verdict": "PASS"
+ },
+ "a": {
+  "geo": {
+   "identical": 2,
+   "a": 0,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 2,
+   "exit": [
+    0,
+    0
+   ],
+   "details": {}
+  },
+  "boris": {
+   "identical": 2,
+   "a": 0,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 2,
+   "exit": [
+    0,
+    0
+   ],
+   "details": {}
+  },
+  "dep": {
+   "identical": 1,
+   "a": 0,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 1,
+   "exit": [
+    0,
+    0
+   ],
+   "details": {}
+  },
+  "east": {
+   "identical": 12,
+   "a": 0,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 12,
+   "exit": [
+    0,
+    0
+   ],
+   "details": {}
+  },
+  "os": {
+   "identical": 16,
+   "a": 0,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 16,
+   "exit": [
+    0,
+    0
+   ],
+   "details": {}
+  },
+  "jeans": {
+   "identical": 5,
+   "a": 0,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 5,
+   "exit": [
+    0,
+    0
+   ],
+   "details": {}
+  },
+  "binary": {
+   "identical": 1,
+   "a": 0,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 1,
+   "exit": [
+    0,
+    0
+   ],
+   "details": {}
+  },
+  "c1": {
+   "identical": 5,
+   "a": 0,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 5,
+   "exit": [
+    0,
+    0
+   ],
+   "details": {}
+  },
+  "c2": {
+   "identical": 3,
+   "a": 0,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 3,
+   "exit": [
+    0,
+    0
+   ],
+   "details": {}
+  },
+  "c3": {
+   "identical": 14,
+   "a": 0,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 14,
+   "exit": [
+    0,
+    0
+   ],
+   "details": {}
+  },
+  "c4": {
+   "identical": 4,
+   "a": 0,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 4,
+   "exit": [
+    0,
+    0
+   ],
+   "details": {}
+  },
+  "c5": {
+   "identical": 10,
+   "a": 0,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 10,
+   "exit": [
+    0,
+    0
+   ],
+   "details": {}
+  },
+  "newton_ball": {
+   "identical": 17,
+   "a": 0,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 17,
+   "exit": [
+    0,
+    0
+   ],
+   "details": {}
+  },
+  "newton_point": {
+   "identical": 11,
+   "a": 0,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 11,
+   "exit": [
+    0,
+    0
+   ],
+   "details": {}
+  },
+  "newton_wave": {
+   "identical": 11,
+   "a": 0,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 11,
+   "exit": [
+    0,
+    0
+   ],
+   "details": {}
+  },
+  "mesh_static": {
+   "identical": 3,
+   "a": 0,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 3,
+   "exit": [
+    0,
+    0
+   ],
+   "details": {}
+  }
+ },
+ "b": {
+  "fft7": {
+   "identical": 19,
+   "a": 2,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 21,
+   "exit": [
+    0
+   ],
+   "reference": "/data/haiyangw/nrpic/scratch/core/core-20261119-144414-c629377/fft7",
+   "details": {
+    "rst/newton.00000.rst": {
+     "unset_bytes_base_nonzero": 36,
+     "unset_bytes_new_nonzero": 0
+    },
+    "rst/newton.00001.rst": {
+     "unset_bytes_base_nonzero": 36,
+     "unset_bytes_new_nonzero": 0
+    }
+   }
+  },
+  "fftsp": {
+   "identical": 19,
+   "a": 2,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 21,
+   "exit": [
+    0
+   ],
+   "reference": "/data/haiyangw/nrpic/scratch/core/core-20261119-144414-c629377/fftsp",
+   "details": {
+    "rst/newton.00000.rst": {
+     "unset_bytes_base_nonzero": 36,
+     "unset_bytes_new_nonzero": 0
+    },
+    "rst/newton.00001.rst": {
+     "unset_bytes_base_nonzero": 36,
+     "unset_bytes_new_nonzero": 0
+    }
+   }
+  },
+  "sin32_sp": {
+   "identical": 12,
+   "a": 3,
+   "b": 0,
+   "a+b": 0,
+   "other": 0,
+   "compared": 15,
+   "exit": [
+    0
+   ],
+   "reference": "/data/haiyangw/nrpic/scratch/core/core-20261119-160919-c6a7279/sin32_sp",
+   "details": {
+    "rst/newton.00000.rst": {
+     "unset_bytes_base_nonzero": 36,
+     "unset_bytes_new_nonzero": 0
+    },
+    "rst/newton.00001.rst": {
+     "unset_bytes_base_nonzero": 36,
+     "unset_bytes_new_nonzero": 0
+    },
+    "rst/newton.00002.rst": {
+     "unset_bytes_base_nonzero": 36,
+     "unset_bytes_new_nonzero": 0
+    }
+   }
+  }
+ },
+ "pass_a": true,
+ "pass_b": true
+}
