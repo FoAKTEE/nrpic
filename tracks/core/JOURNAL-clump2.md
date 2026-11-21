@@ -1284,3 +1284,85 @@ faces it scales as `psi^-7/R_f^2`: predicted `D - R` at the ends of the axis bet
 centre between 0.972 and 0.990. Refuted if the end value stays beyond -8e-5: then the
 difference is not the faces, and the two tools differ by 4 per cent in the equation
 they solve.
+
+### Outcomes of TF and G3 (card job `core-20261121-125455-bf583c8`, Slurm 4791, 23 min 09 s = 0.386 card-hours, seven runs `rc=0`; analysis `core-20261121-132124-ce58645`; figures `tf/fig_gauge_evolution.png`, `orbit_e01/fig_binary_evolution_e01.png`, `orbit_e01/fig_binary_evolution_history_e01.png`, `g3/fig_compare_two_runs.png` of the analysis run, all looked at)
+
+Card time of the package: 0.50 + 0.386 = 0.886 card-hours. No particle lost in any run.
+(Clock: the heading of the TS4 prediction says 13:20Z; `date` gave 13:17Z.)
+
+**G3 HELD.** Card run `v0.3` of TC against the processor run from its restart file, 276
+common records to 34.5 M: minimum lapse within 4.1e-15, `sum m u_x` 2.9e-15, `sum m W`
+8.9e-15, both norms equal in the printed digits (predicted 1e-9). No growth with time
+(figure). The card runs are not one member of a family spread by round-off.
+
+**TF1 (four times the particles, eta = 2): HELD. The drift is not particle noise.**
+`sum m u_x/P - 1` of `v0.3_n4` at 10, 25, 30, 50 M: -3.30, -6.34, -7.41, -11.97 per cent,
+against -3.31, -6.31, -7.35, -11.80 at 10^4 (band: within 0.6 per cent of P; largest
+difference 0.17). rms extent along x at 50 M +6.8 per cent (band +6.6 to +9.0; +8.7 at
+10^4), across +1.6 and +0.6. Speed over 30 to 50 M 0.7005 v (0.7029 v; band 0.01 v).
+The H-norm is half that of the 10^4 run throughout, as the noise would be.
+
+**TF2 (damping of the shift, zero initial shift): the direction HELD, two bands at
+eta = 0.3 MISSED on the slow side, the refutation line not met.**
+
+| `z4c/shift_eta` | speed 0-2 M | 10-30 M | 30-50 M | 40-50 M | x_c(50 M)/(50 v) | `sum m u_x/P - 1` at 50 M | its change 25-50 M | rms extent along x, across (50 M) |
+|---|---|---|---|---|---|---|---|---|
+| 2 (TC) | 0.581 v | 0.639 v | 0.703 v | 0.716 v | 0.655 | -11.8 % | -5.5 % | +8.7 %, +2.2 % |
+| 0.3 | 0.584 v | 0.772 v | 0.827 v | 0.835 v | 0.768 | -5.1 % | -1.2 % | -0.9 %, +2.8 % |
+| 0.1 | 0.584 v | 0.857 v | 0.892 v | 0.897 v | 0.834 | -3.3 % | -0.4 % | -2.9 %, +3.0 % |
+| 0.03 | 0.584 v | 0.919 v | 0.945 v | 0.947 v | 0.883 | -2.5 % | -0.2 % | -3.8 %, +3.1 % |
+
+- Speed over 0 to 2 M unchanged, 0.584 v in all three (band 0.57 to 0.60): held.
+- Speed over 30 to 50 M: eta = 0.3: 0.827 v (band 0.85 to 1.08: missed by 0.02; the
+  refutation line, below 0.8 v, is not met); 0.1: 0.892 v (band 0.85 to 1.15: held);
+  0.03: 0.945 v (band 0.8 to 1.25: held). x_c(50 M) at eta = 0.3: 0.768 of 50 v (band
+  0.78 to 0.98: missed by 0.01). My estimate "0.3 is near critical damping and reaches v
+  within 50 M" was too fast: at 50 M the speed still rises in every run (figure) and
+  only eta = 0.03 has flattened, at 0.947 v.
+- Change of `sum m u_x/P` between 25 and 50 M: -1.2 per cent (0.3), -0.4 (0.1) (band 2):
+  held. The second refutation line (falling by more than 3.5 per cent although the
+  speed has reached v) is not met.
+- rms extent along x at 50 M below +5 per cent: held, and more: the cluster is shorter
+  along the motion in coordinates, -0.9, -2.9, -3.8 per cent, and +2.8 to +3.1 across:
+  ratio 0.964, 0.943, 0.934 (1/W = 0.954).
+- Minimum lapse 0.7924 in all (band 0.74 to 0.85): held; `alpha_min` minus the run at
+  rest -0.0164 at 10 M, -0.0186 to -0.0187 at 50 M, the same for every eta (figure).
+  Norms over those of the run at rest after 5 M at most 1.11, 1.11, 1.18 (H) and 1.14,
+  1.17, 1.30 (M) (band 1.5): held; the largest at eta = 0.03.
+So the coordinate speed and the drift of `sum m u_x` of TC are set by the damping of the
+shift: with less damping the speed goes to 0.95 v and the drift to -2.5 per cent, the
+size test D found for the orthonormal sum at eta = 2 (-3.4 per cent).
+
+**TF3 (comoving initial shift, eta = 0.1): early part HELD, the mean over 50 M MISSED.**
+Speed over 0 to 2 M 0.984 v (band 0.93 to 1.06; estimate 1.004), over 0 to 4 M 0.947 v
+(band 0.88 to 1.05), over 0 to 50 M 0.854 v (band 0.88 to 1.08: missed). The cluster
+starts at v, the shift decays as exp(-0.1 t) faster than the driver builds its own, the
+speed falls to 0.80 v near 11 M and then follows the run without initial shift (0.874 v
+against 0.892 v over 30 to 50 M). Change of `sum m u_x/P` 25 to 50 M: -0.4 per cent
+(band 1.5): held. The comoving shift buys the first 10 M and nothing later.
+
+**TF4 (at rest, eta = 0.1): HELD.** |x_c| below 0.014 M (band 0.05); minimum lapse within
+9e-6 of the run with eta = 2 (band 0.002); radii within 0.17 per cent (band 1); norms
+1.001 (H) and 1.06 (M) of it. The damping does not act on a cluster at rest.
+
+**TF5 (binary, eta = 0.1, 125 M): HELD.** Separation 29.99 -> 29.62 (band 29.0 to 30.8;
+TE with eta = 2: 28.37); phase at 125 M 0.947 rad (band 0.87 to 1.02; first
+post-Newtonian 0.972; TE 0.799); angular velocity fitted over 40 to 125 M 0.9986 of the
+first post-Newtonian value (TE: 0.871), over the first 50 M 0.937 (TE: 0.735); slope of
+D over 40 to 125 M -0.0038 per M (TE: -0.0164). |sum m u| of each cluster falls by 2.2
+per cent in 12 M and stays between -1.7 and -2.1 per cent (TE: to -7.6); lapse 0.778 to
+0.785; radii of 10, 50, 90 per cent within 0.98 to 1.06 of their start; both norms fall
+and are flat from 90 M. The falling separation and the slow phase of TE were the slow
+shift. What stays open: D still falls, and faster with time (figure; 0.37 M in 125 M).
+An orbit that starts at its apocentre with eccentricity 0.03 would give this D(t)
+(`e D (1 - cos Omega t)`, Omega t = 0.97); 125 M is 15 per cent of the orbital period of
+808 M, so the run cannot tell an eccentricity from a remaining drift of the coordinates.
+
+**For the tracks** [VERIFIED for these runs; JUDGEMENT as a rule]: a moving cluster
+needs a shift damping well below the default of the cluster inputs: `z4c/shift_eta` of
+0.03/M to 0.1/M (M the mass of the cluster) brings the coordinate speed to 0.90 to 0.95 v
+within 50 M and stops the drift of `sum m u_x`; eta = 2/M leaves 0.72 v and a drift of
+-12 per cent that is coordinates, not physics. With a heavy puncture in the same domain
+the damping wanted near the puncture is of order 1/M_BH (release core-v0.4:
+`shift_eta_profile`, which follows the punctures); in Track F's units (clump 0.05 M_BH)
+eta = 2/M_BH is 0.1/M_clump, the value tested here.
