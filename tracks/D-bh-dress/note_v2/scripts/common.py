@@ -79,6 +79,9 @@ RUNS = {
     "esf_crit": "D-20261121-202142-ce0f509", # esf_criteria.py ((iii), D1-D4)
     "kerr2_ic": "D-20261121-211717-7b6374b", # Kerr initial data, second sampler seed
     "kerr2_run": "D-20261121-212016-7e090f9",  # AthenaK on analytic Kerr-Schild, seed 2, 20000 M
+    "kerr2_ana": "D-20261121-215955-0fb4ea2",  # its stationarity analysis (analyze_kerr.py)
+    "kerr_seeds": "D-20261121-220011-d0deb0b", # pre-registered comparison of the two seeds
+    "kerr_plunger": "D-20261121-220137-5123361",  # the one seed-2 particle that crossed r_+
 }
 
 CHECKED = []   # (run_id, relative path, "sha256 ok" | "no sha256sums.txt (wave-1 run)")

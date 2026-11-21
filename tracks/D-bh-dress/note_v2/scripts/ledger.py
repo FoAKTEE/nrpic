@@ -378,13 +378,13 @@ def main():
           (sec, r"card-hours of the run", f"{ef['card_hours']:.2f}", ["esf"])]
 
     kz = fn["kerr_seeds"]
-    KR = ["kerr_ic", "kerr_run", "kerr_ana", "kerr2_ic", "kerr2_run", "kerr2_ana", "kerr_seeds"]
+    KR = ["kerr_ana", "kerr2_ana", "kerr_seeds"]
     rk = kz["ranges"]
     sec = "Kerr spike on the analytic metric, two sampler seeds"
     E += [(sec, r"time average over expected count $-1$ in $r/M$ = 0--4, 4--6, 6--10: first sample (per cent)",
-           ", ".join(f"{100 * rk[k]['seed1']['d']:+.1f}" for k in ("0-4", "4-6", "6-10")), ["kerr_run", "kerr_ana"]),
+           ", ".join(f"{100 * rk[k]['seed1']['d']:+.2f}" for k in ("0-4", "4-6", "6-10")), ["kerr_run", "kerr_ana"]),
           (sec, r"the same, second sample (per cent)",
-           ", ".join(f"{100 * rk[k]['seed2']['d']:+.1f}" for k in ("0-4", "4-6", "6-10")), ["kerr2_ic", "kerr2_run", "kerr2_ana"]),
+           ", ".join(f"{100 * rk[k]['seed2']['d']:+.2f}" for k in ("0-4", "4-6", "6-10")), ["kerr2_ic", "kerr2_run", "kerr2_ana"]),
           (sec, r"error of a time average over independent orbit draws, second sample, same ranges (per cent)",
            ", ".join(f"{100 * rk[k]['seed2']['sig']:.1f}" for k in ("0-4", "4-6", "6-10")), ["kerr2_ana"]),
           (sec, r"mean of the two samples and its error, same ranges (per cent)",
@@ -394,8 +394,17 @@ def main():
            ", ".join(f"{100 * rk[k]['mean_d']:+.2f}" for k in ("10-16", "16-40")), KR),
           (sec, r"sum of the three inner $z$ values: first sample; second sample (test fixed before the run: no bias if the second exceeds $-1.5$)",
            f"{kz['test']['Z1_inner_sum']:+.2f}; {kz['test']['Z2_inner_sum']:+.2f}", KR),
-          (sec, r"second sample: $\chi^2$ of the binned counts, median (degrees of freedom); largest $|dE/E|$; smallest $r/M$",
-           f"{kz['side']['seed2']['chi2_median']:.1f} ({kz['side']['seed2']['dof']}); {fnum(kz['side']['seed2']['dE/E_max'])}; {kz['side']['seed2']['min_r']:.3f}", ["kerr2_run", "kerr2_ana"])]
+          (sec, r"second sample: $\chi^2$ of the binned counts, median (degrees of freedom); smallest $r/M$ before any plunge, first sample",
+           f"{kz['side']['seed2']['chi2_median']:.1f} ({kz['side']['seed2']['dof']}); {kz['side']['seed1']['min_r']:.3f}", ["kerr2_run", "kerr2_ana", "kerr_ana"]),
+          (sec, r"second sample: particles that crossed $r_+$; distance of its initial $C$ from the capture boundary, $(C-C_{\rm crit})/C_{\rm crit}$ (smallest of the sample); plunge between $t/M$",
+           f"{kz['plunger']['n_bad']}; {fnum(kz['plunger']['particle']['dist_rel'])} (rank {kz['plunger']['particle']['rank_of_dist']}); "
+           f"{kz['plunger']['particle']['t_plunge_bracket'][0]:.0f}--{kz['plunger']['particle']['t_plunge_bracket'][1]:.0f}", ["kerr2_ic", "kerr2_run", "kerr_plunger"]),
+          (sec, r"second sample, 0--4: time average over expected $-1$ with; without the plunged particle's later snapshots (per cent)",
+           f"{100 * (kz['plunger']['tavg04_seed2'] - 1):+.2f}; {100 * (kz['plunger']['tavg04_seed2_without_plunged'] - 1):+.2f}", ["kerr2_ana", "kerr_plunger"]),
+          (sec, r"without the plunged particle: sum of the inner $z$ of the second sample; two-seed means in 0--4, 4--6, 6--10 (per cent); combined inner $z$",
+           f"{kz['without_plunged']['Z2_inner_sum']:+.2f}; " +
+           ", ".join(f"{100 * kz['without_plunged']['ranges'][k]['mean_d']:+.1f}" for k in ("0-4", "4-6", "6-10")) +
+           f"; {kz['without_plunged']['two_seed_inner_combined_z']:+.2f}", KR + ["kerr_plunger"])]
 
     # ---- claims of the lead's documents against the files ----
     G1, G0, ST = "stage/G1/STATUS.md", "stage/G0/REPORT.md", "STATUS.md"

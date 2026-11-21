@@ -153,3 +153,28 @@ no excision), which raises seed 2's 0-4 time average by (fraction of snapshots a
 plunge) / (expected count 137.8), at most +0.73 per cent. Refuted if its C is farther than
 1e-2 from C_crit (then a defect of the sampler or the pusher beyond separatrix sensitivity),
 or if it never sits at r < 4 after the plunge.
+
+## N4 outcome (2026-11-21T22:05Z): run D-20261121-220137-5123361 (plunger.py; plunger.png looked at)
+
+**Prediction held** on every count. Exactly one particle (index 29068, file kerr_0) has a
+non-conserved energy. Its initial invariants lie (C - C_crit)/C_crit = 7.2e-6 from the capture
+boundary: the closest of all 48000 (rank 0; 74 particles lie within 1e-3, 562 within 1e-2), far
+inside the predicted 1e-3. It starts at r = 20.1 M with predicted pericentre 3.66 M, reaches
+3.64 M at the snapshot before, and is inside r_+ at the snapshot of t = 300 M (plunge between
+200 and 300 M, at its first pericentre passage); afterwards it sits at r = 0.40 M (the analytic
+metric has no excision) for 198 of 201 snapshots and is counted in 0-4 M. It raises seed 2's
+0-4 time average by 0.715 per cent (predicted at most 0.73): 0.9894 with it, 0.9822 without
+its post-plunge snapshots. [JUDGEMENT] The plunge is the separatrix sensitivity of an orbit that
+the sampler drew on the edge of the loss cone (a relative distance of 7e-6 against energy
+errors of order 1e-6 near pericentres of 2-4 M), not a defect of the sampler; seed 1 had no
+particle that close, which would explain why it had none.
+
+Consequence for N1, re-read with the post-plunge snapshots of that particle removed (a
+correction found after the run; the pre-registered reading above stays the primary one): seed
+2's deviations become -1.78, -1.04, -0.04 per cent in 0-4, 4-6, 6-10; Z2 about -1.0, still above
+-1.5 (H0 holds); but now all three inner ranges lie below the reference in both seeds, and the
+two-seed means are about -3.0 +- 2.7, -1.4 +- 1.4, -0.5 +- 0.7 per cent with a combined inner z
+of about -1.7 (computed exactly by fig_kerr_seeds.py of the note). Reading: no significant
+bias; a deficit of one to two per cent inside 10 M is neither shown nor excluded by two seeds.
+What would decide it without the evolution: a direct test of the sampler at t = 0 with many
+more particles (the expected count in 0-4 M is 138 per 48000), or a third and fourth seed.
