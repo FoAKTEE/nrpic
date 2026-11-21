@@ -31,7 +31,7 @@ outcomes: `JOURNAL.md`. Results in short: section Results below.
 | `results/usr_reference.json` | all numbers of the reference run E-20261119-143905-f2bcde3 (code inputs, landmarks, a table every 0.5 e-fold, twins, spectrum at N_f, lattice variances, mode-file checksums) |
 | `results/landmarks.csv` | times and field values a run must reproduce (code units), one row per landmark |
 | `results/usr_spectrum_Nf.csv` | per shell up to nmax2 = 4096: crossing, Delta_R at N_f (full MS, FLRW lattice), slow-roll estimate at crossing, enhancement |
-| `results/runs/summary_<run_id>.json` | numbers of the analyses: E-20261119-145842-74b52ec (first batch), E-20261119-152843-c201aad (both batches, final); cards: E-20261121-075307-4542ce1 (group 1), E-20261121-084815-63462b8 (U256); `quick_records_E-20261121-075022-7f76477.json`, `floor_split_E-20261121-080134-a0cc3eb.json`, `lockstep_shells_E-20261121-090057-19571c7.json` |
+| `results/runs/summary_<run_id>.json` | numbers of the analyses: E-20261119-145842-74b52ec (first batch), E-20261119-152843-c201aad (both batches, final); cards: E-20261121-075307-4542ce1 (group 1), E-20261121-084815-63462b8 (U256), E-20261121-101756-6bffd0c (U256 with U256m); `quick_records_E-20261121-075022-7f76477.json`, `floor_split_E-20261121-080134-a0cc3eb.json`, `lockstep_shells_E-20261121-{090057-19571c7,103157-96fee1d}.json` |
 | `inputs/modes_usr_n{16,64,256,1024,4096}.txt` | mode files (R, dR/dtau at N* per shell, code units; Bunch-Davies at N0 for every shell) |
 | `inputs/usr_base.athinput` | 32^3 base input for core_scalar-2, initial slice at N* |
 | `inputs/usr_256.athinput` | production set-up of P1 (256^3, nmax2 = 4096) without the dumps of H, M (base of `usr_256s.athinput`) |
@@ -40,7 +40,7 @@ outcomes: `JOURNAL.md`. Results in short: section Results below.
 | `inputs/card_usr.list` | card runs proposed in wave 3a, with costs (superseded by the lists below) |
 | `inputs/usr_card.athinput`, `inputs/usr_256s.athinput` | card inputs (64^3/128^3 ladder base; 256^3 production set-up) with H, M_i and metric dumps and con_signed |
 | `inputs/card_g1.list`, `inputs/card_u256.list`, `inputs/card_u256m.list` | group 1 (U64p/m, U128p/m, U128hp/hm), U256 (s = +1), U256m (s = -1) |
-| `fig/fig_usr_*.png` | reference figures; `fig/fig_run_*.png` figures of the processor runs; `fig/fig_card_g1_*.png` group 1 on the cards; `fig/fig_card_u256_*.png` U256 |
+| `fig/fig_usr_*.png` | reference figures; `fig/fig_run_*.png` figures of the processor runs; `fig/fig_card_g1_*.png` group 1 on the cards; `fig/fig_card_u256_*.png` U256; `fig/fig_card_u256pair_*.png` U256 with U256m; `fig/fig_card_lockstep.png` lockstep check |
 
 The case in code units (G = c = 1, time unit 1/H*, a* = 1, box 2 pi; SPEC 2.5), from run
 E-20261119-143905-f2bcde3:
@@ -115,7 +115,7 @@ E-20261119-152843-c201aad. All scouting, gate G2, no card time.
 | Second-order part of R^NR | 2e-5 of the first, scales as s^2 |
 | Constraints (U-A4) | not testable at 32^3: H record = background time residual (1.1e-7 of [H] at Courant 0.25); M record mixed in the entry, first-order stencil truncation (3e-4) during USR, rounding floor after USR |
 
-### Card runs (wave 3; JOURNAL entries 9-13)
+### Card runs (wave 3; JOURNAL entries 9-15)
 
 Executable core_scalar-3 athena_gpu (5cc2821) throughout. Group 1: card run
 E-20261120-222621-ba66218 (job 4742, 0.157 card-hours), record check
@@ -154,6 +154,19 @@ lockstep check E-20261121-090057-19571c7 (JOURNAL entry 14).
 | records | <abs H'/[H]> 2.9e-12 at most; <abs M/[M]> 2.5e-2 in USR, 2.1e-3 at N_f | as predicted |
 | cost per realisation (SCOPE 8) | 1702 steps, 1.30 s per step, 37.0 min on one A100 = 0.617 card-hours; 19.6 GB card memory; 21 dumps of 2.95 GB (62 GB) | |
 
+U256m, the mirrored partner (s = -1): card run E-20261121-085221-1f579fe (job 4783, 0.612
+card-hours), pair analysis E-20261121-101756-6bffd0c, lockstep check with the pair
+E-20261121-103157-96fee1d (JOURNAL entry 15).
+
+| Item | Result | Verdict |
+|---|---|---|
+| U-A2s, odd part per mode at N_f, k <= 32 dk | max 1.09e-4, median 4.2e-5; the ten single-run failures 3.4e-5 to 8.8e-5 | pass (0.02) |
+| U-A2n, even/odd rms at N_f | 2.53e-4 (k <= 32 dk), 2.88e-4 (all) | second order, as predicted from group 1 scaled by rms R |
+| odd part of the top shells | the lockstep phase error (shell median 1.01 to 1.76 times it, k >= 40 dk) | |
+| U-A3 on the odd part | 8.4e-5 | pass |
+| one-point skewness, part even in s | +0.0015 in both runs (linear field +-0.0009) | the non-Gaussian part of the evolution at N_f |
+| constraints | M odd part = the record (2.3e-2 at cN 6.5, top shells at 4 cells per wavelength), even part 10 times lower; strict A4 in the entry holds (H 0.40, M 0.45); late M odd = even, flat at 1.8e-13 absolute | late M at a level not explained (7 x the 128^3 floor) |
+
 ## Requests
 
 - To core:
@@ -185,10 +198,15 @@ lockstep check E-20261121-090057-19571c7 (JOURNAL entry 14).
      between dumps), 19.6 GB of card memory; R9's "630 card-hours per 1e3 USR realisations"
      becomes 617 with these dumps, about 580 without them (run E-20261121-075255-8cf90e7).
   5. G2 criterion "the USR case is reproduced": the evidence of this package is U-A0, U-A1,
-     U-A3, U-A5 and P-h passing on 64^3, 128^3 and 256^3, U-A2 passing on the ladder and
-     failing as written for the single 256^3 run on 10 of 68532 modes (smallest alpha), and
-     U-A4 failing as pre-registered (bars) but holding with the floor removed; the lead
-     decides whether that is "reproduced".
+     U-A3, U-A5 and P-h passing on 64^3, 128^3 and 256^3; U-A2 passing on the ladder and on
+     the odd part of the 256^3 pair (1.1e-4), and failing as written for the single 256^3
+     run on 10 of 68532 modes (their deviation is the part even in s over a small alpha);
+     U-A4 failing as pre-registered (bars) but holding with the floor removed (128^3). The
+     lead decides whether that is "reproduced"; the pre-registration says U-A2 is judged on
+     the single run for U256 (entry 9.1), so U-A2 for U256 stays failed as written.
+  6. Not explained: the late momentum parts of the 256^3 pair are equal and flat at
+     1.8e-13 absolute, 7 times the 128^3 floor (entry 15); a halving pair at 256^3
+     (s = +-1/2, about 1.2 card-hours) would tell a floor from a nonlinear part.
 - To core (new): the lockstep integration of the mode functions runs from N* with the
   run's step, so a shell deep inside the horizon accumulates RK4's phase error
   k^5 dt^4/600: 2.5e-3 for k = 64 dk at 256^3 (run E-20261121-090057-19571c7, within 3 %
