@@ -271,3 +271,28 @@ unpredicted count, not as a test. Reading the flagged sources (grep, read-only):
   row is not a parse failure there; the run-in labels are lost, which costs little.
 Corrected rates under my definition: lenient (A') 688 - 4 = 684/710 = 96.3 %; counting the
 nine letters as failures too, 675/710 = 95.07 %; strict (A) 662 - 4 = 658/710 = 92.7 %.
+
+## Entry 10 (2026-11-21 08:07 UTC): golden retrieval scored; outcomes of R2 and R3
+
+Golden search run kb-20261121-074940-08426cc (96 calls, all rc=0, 07:49:41-08:05:44 UTC),
+scored by kb-20261121-080557-06d44ba (37 answer ranges of 32 questions, all mapped; my map and
+the tool's sourcemap agree on every start except q05, 15 characters apart):
+| mode | paper hit top 10 | loc strict | loc slack 200 | paper rank 1 |
+|---|---|---|---|---|
+| text-only | 27/32 = 84.4 % | 20/32 = 62.5 % | 21/32 = 65.6 % | 20 |
+| hybrid | 28/32 = 87.5 % | 23/32 = 71.9 % | 23/32 = 71.9 % | 17 |
+| rerank | 28/32 = 87.5 % | 25/32 = 78.1 % | 25/32 = 78.1 % | 19 |
+Missed: q12 (2609.14218) in every mode; q11 (2609.14218) and q24 (astro-ph/0110561) in text and
+hybrid; q13 (2512.14649) in hybrid and rerank; q17 (2507.18312) in text and rerank; q06
+(rerank) and q07 (text) once each.
+
+Outcome R2: golden hybrid 87.5 % >= 85 % (confirmed); "held-out 5 to 15 points below golden"
+**refuted**: the held-out set scores at or above the golden set (text 87.5 vs 84.4, hybrid
+91.7 vs 87.5, rerank 87.5 vs 87.5). The stated refutation bars (golden hybrid < 80 %, held-out
+above golden by more than 10 points) are not reached. No sign of retrieval tuned to the golden
+set. The C4 bar (>= 80 % of golden questions with the right paper in the top ten) is met in
+all three modes on the frozen snapshot, and also on my held-out set. [VERIFIED, runs above]
+
+Outcome R3 (ad-hoc listing, scratch/kb/verify_g2/db_mtimes_{before,after}_golden.txt): the
+listing of kb-data/db (sizes, modes, mtimes, among them kb.sqlite-wal) and of kb-data/logs is
+identical before and after the golden search: confirmed for that run.
