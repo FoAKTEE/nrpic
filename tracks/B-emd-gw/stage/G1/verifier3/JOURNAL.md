@@ -196,7 +196,7 @@ Predictions (numbers from the KO, dispersion and RK4 symbols, P3.x):
 Refutation: errors off by more than a factor 3 from P3.1/P3.2/P3.5, or orders outside
 [3, 8], or a TT-Psi4 (spectral) difference above 1e-6 at N >= 32.
 
-## Entry 6 (2026-11-20 18:58 PST): restart after the five-hour cut of 14:35
+## Entry 6 (2026-11-20 18:56 PST): restart after the five-hour cut of 14:35
 
 Second session of this package (fresh context). State found: V1 and V2 complete and
 committed (runs B-20261120-222342-8cda367, B-20261120-222822-e26afae), V3 predictions
@@ -207,7 +207,7 @@ did not run `git merge main` (the package brief forbids merge in this shared wor
 main is ahead only by harness/coord commits). I read the V3 scripts again before running
 them; no change. Next: run v3_measure.py (registered, 5 cores), then v3_summary.py.
 
-## Entry 7 (19:06 PST): V3 outcome (runs B-20261121-025826-80973e3 measurement, B-20261121-030121-58fe5dc summary)
+## Entry 7 (19:04 PST): V3 outcome (runs B-20261121-025826-80973e3 measurement, B-20261121-030121-58fe5dc summary)
 
 Failed attempts on record: B-20261121-025612-ed4a875 (killed by my own 120 s shell timeout
 around the foreground local launcher), B-20261121-030110-52ae004 (summary script sorted a
@@ -274,7 +274,7 @@ Test X (EdS, k = (pi/2)(1,1,0), t = 0..10) [VERIFIED, same runs]:
   Asymmetry grows with N (N16: 4e-9, N32 2.4e-8, N48 6e-8, N64 1.1e-7 rad) because the
   number of steps does and the truncation error falls.
 
-## Entry 8 (19:10 PST): predictions for the V3 supplement (scripts/v3_extra.py), before the run
+## Entry 8 (19:04 PST): predictions for the V3 supplement (scripts/v3_extra.py), before the run
 
 - P3.8 (F): |Z_TT - Z_Psi4,sp| / |Z_ex| = |delta sin(w t)| with delta = w_sd/w - 1 from the
   symbol of the sixth-order second derivative, |delta| = 3.20e-6, 5.09e-8, 4.48e-9, 7.98e-10
@@ -287,7 +287,7 @@ Test X (EdS, k = (pi/2)(1,1,0), t = 0..10) [VERIFIED, same runs]:
   of the mean conformal metric, round-off or second order), not at +-K. Refuted if more
   than half of its power is at +-K (then a longitudinal first-order part exists).
 
-## Entry 9 (19:14 PST): outcome of the V3 supplement (run B-20261121-030542-b2e3eff)
+## Entry 9 (19:06 PST): outcome of the V3 supplement (run B-20261121-030542-b2e3eff)
 
 [VERIFIED, results/v3_extra.json, figs/v3_F_diag_diff.png, figs/v3_X_diag_diff.png]
 - P3.8 holds: max_t |Z_TT - Z_Psi4,sp| / |Z_ex| over |delta_disp| = 0.999 (N16), 0.999 (N32),
@@ -306,7 +306,7 @@ Test X (EdS, k = (pi/2)(1,1,0), t = 0..10) [VERIFIED, same runs]:
   (A^2 w t ~ 2.5e-11); not tested (no F run at a second amplitude). It does not enter the
   mode coefficients at K.
 
-## Entry 10 (19:25 PST): read waves/README.md 'Results' and 'Open' (after commits b2e3effe and 483924b9)
+## Entry 10 (19:07 PST): read waves/README.md 'Results' and 'Open' (after commits b2e3effe and 483924b9)
 
 Only now read: tracks/B-emd-gw/waves/README.md lines 52-160 (Results, Open). Their measure
 for both tests is the forward combination W = P + i P'/|k| at +k (for F my Z_TT used h
@@ -322,7 +322,7 @@ Predictions before the run:
   the amplitude may be off by round-off, ~1e-9 absolute).
 - C3: forward ratio Z_x / Z_+ equals 0.5 e^{i} to ~1e-9 in modulus and argument at every N.
 
-## Entry 11 (19:33 PST): outcome of C1-C3 (run B-20261121-030848-59f89b5) and the classification
+## Entry 11 (19:09 PST): outcome of C1-C3 (run B-20261121-030848-59f89b5) and the classification
 
 [VERIFIED, results/v3_classify.json]
 - C1 holds in kind, not in level: the forward TT combination and spectral Psi4 of F differ
@@ -350,3 +350,50 @@ Predictions before the run:
 - AthenaK's integrator `rk4` is RK4()4[2S] of Ketcheson (2010): read in
   athenak/src/driver/driver.cpp lines 145-176 [VERIFIED]. I did not rebuild the README's 2S
   predictor for X (not checked).
+
+## Entry 12 (19:14 PST): V4 derivation (second-order spatial gauge of the flat TT projection), before any test
+
+Set-up read (allowed, set-up only): first_source/inputs/crossed.athinput and the batch list
+of run B-20261115-165353-b592d43: the second-gauge run cw_eps1_gd differs from cw_eps1 only
+by shift_Gamma 0.75, shift_eta 1, shift_advect 1, lapse_advect 1. With lapse advection the
+lapse condition is d_t alpha - beta.d alpha = -(1/3) alpha^2 K, i.e. along the normal
+observers, so both runs have the same foliation and, on each slice, differ by a spatial
+diffeomorphism only [JUDGEMENT on the exact continuum statement; numerically up to
+truncation].
+
+Coordinates: X (zero shift) labels the normal observers; in the Gamma-driver gauge they move
+with dx/dt = -beta. So X = x + zeta(x, t), zeta = int_0^t beta dt' at first order (Eulerian
+and Lagrangian evaluation differ at second order in zeta, i.e. third order in what follows).
+Metric: gamma^gd_ij(x) = gamma^zs_kl(X(x)) d_i X^k d_j X^l.
+
+(a) Plain perturbation h = gamma/a^2 - delta. To second order, with zeta and h first order:
+    h^gd = h^zs + 2 d_(i zeta_j) + [zeta.d h_ij + h_kj d_i zeta^k + h_ik d_j zeta^k
+           + d_i zeta^k d_j zeta^k] + (pure gauge from the second-order part of zeta).
+    Lambda kills 2 d_(i v_j) for any v and every multiple of delta_ij (k != 0), so
+    G = Lambda[ L_zeta h^zs + d zeta . d zeta^T ]   (one-sided form)
+      = Lambda[ L_zeta hbar ],  hbar = (h^zs + h^gd)/2   (symmetric form),
+    using L_zeta (2 d_(i zeta_j)) = 2 d_(i v_j) + 2 d_i zeta^k d_j zeta_k, v = zeta.d zeta.
+(b) Conformal metric gt = det(gamma)^(-1/3) gamma, ht = gt - delta (AthenaK's z4c_g, the
+    quantity of gw_diag and, I expect, of the scan): gt is a density of weight -2/3,
+    gt^gd(x) = J^(-2/3) gt^zs_kl(X) d_i X^k d_j X^l, J = det(dX/dx) = 1 + div zeta + ...
+    To second order, dropping delta_ij and pure-gauge terms:
+    Gt = Lambda[ L_zeta ht^zs + d zeta . d zeta^T - (2/3)(div zeta)(ht^zs + 2 d_(i zeta_j)) ]
+       = Lambda[ L_zeta htbar - (2/3)(div zeta) htbar ],  htbar = (ht^zs + ht^gd)/2.
+    The extra density term matters whenever div zeta != 0 (the scalar part of the shift).
+zeta from the data, two ways: (A) trapezoid integral of beta over the dumps of the gd run;
+(B) from the first-order metric difference, Dt = ht^gd - ht^zs = 2 d_(i zeta_j) - (2/3)
+(div zeta) delta, solved mode by mode: k.zeta = -(3i/4) k_i k_j Dt_ij / k^2,
+zeta_i = [-i k_j Dt_ij - (1/3) k_i (k.zeta)] / k^2 (k = 0 dropped: a uniform translation is
+second order here by symmetry [JUDGEMENT]).
+
+Predictions for the exact pure-gauge test (scripts/v4_gauge_test.py, 32^3 periodic box of
+side 4, analytic first-order h made of a scalar part d_i d_j phi, a vector part and a TT
+wave, analytic zeta with curl and divergence, both scaled by eps; the transformed metric
+evaluated exactly at X = x + zeta(x)):
+- P4.1 Delta Lambda (exact transform) - G (one-sided) and - G (symmetric) fall as eps^3
+  (ratio 8 per halving of eps), while Delta Lambda itself falls as eps^2; for both (a) and
+  (b). Refuted if the residual falls only as eps^2 (missing or wrong second-order term).
+- P4.2 For (b), dropping the density term leaves an eps^2 residual (shows the term is
+  needed); using G of (a) on conformal data fails likewise.
+- P4.3 zeta recovered by (B) from the exact metric difference equals the analytic zeta up to
+  O(eps^2) (relative O(eps)).
