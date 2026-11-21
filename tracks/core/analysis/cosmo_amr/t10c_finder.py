@@ -104,7 +104,7 @@ def main():
     import matplotlib.pyplot as plt
     fs.use_style()
     fig, ax = plt.subplots(1, 3, figsize=(10.0, 3.2))
-    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.15, top=0.93, wspace=0.30)
+    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.15, top=0.90, wspace=0.34)
     for i, k in enumerate(fnd):
         if not fnd[k]["searches"]:
             continue
@@ -117,17 +117,18 @@ def main():
         ok = np.array([r["found"] > 0 for r in rows])
         mr = np.array([r["mean_radius"] for r in rows])
         am = np.array([r["area_mass"] for r in rows])
-        ax[1].plot(t[ok], mr[ok], "o-", ms=3, color=c, label=lab)
-        ax[1].plot(t[~ok], np.abs(mr[~ok]), "x", ms=4, color=c, alpha=0.4)
+        ax[1].semilogy(t[ok], mr[ok], "o-", ms=3, color=c, label=lab)
+        ax[1].semilogy(t[~ok], np.abs(mr[~ok]), "x", ms=4, color=c, alpha=0.4)
         if ok.any():
-            ax[2].semilogy(t[ok], am[ok], "o-", ms=3, color=c, label=lab)
+            ax[2].plot(t[ok], am[ok], "o-", ms=3 + i, mfc="none", color=c, label=lab)
     ax[0].set_yticks(range(7))
     ax[0].set_yticklabels(["found", "area nan", "exp. nan", "hmean tol", "radius < 0",
                            "mass < 1e-10", "iter. limit"], fontsize=7)
     ax[0].legend(frameon=False, fontsize=6, loc="center left")
-    ax[1].set_ylabel("mean coordinate radius (o found, x |last radius| of a failed search)",
-                     fontsize=7)
-    ax[2].set_ylabel(r"area mass $\sqrt{A/16\pi}$ of found surfaces")
+    ax[1].set_ylabel("mean coordinate radius")
+    ax[1].set_title("o found, x |last radius| of a failed search", fontsize=8)
+    ax[2].set_ylabel(r"area mass $\sqrt{A/16\pi}$")
+    ax[2].set_title("surfaces found", fontsize=8)
     for q in ax:
         q.set_xlabel("conformal time")
     fs.save(fig, os.path.join(a.out, "fig_t10c_finder"))
