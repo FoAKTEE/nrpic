@@ -1,7 +1,7 @@
 READY of core/gauge-2 (source item gauge-2 of core, batch 4b of wave 3, 2026-11-21): the
 relaxed lapse, second pass (decision 0022 item 3).
 Evidence and every number: branch core/gauge-2, tracks/core/JOURNAL-gauge-2.md (entries 1
-to 10) and tracks/core/interfaces/cosmo_gauge.md section 9 (git show core/gauge-2:<path>).
+to 11) and tracks/core/interfaces/cosmo_gauge.md section 9 (git show core/gauge-2:<path>).
 Scripts, lists, inputs, figures, numbers: tracks/core/analysis/gauge2/.
 
 STATUS

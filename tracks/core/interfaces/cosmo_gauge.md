@@ -338,7 +338,7 @@ excision threshold that does not rest on an absolute `alpha_exc` (W15).
 
 ## 9. Second pass of the relaxed lapse: switch-off around tracked black holes (branch `core/gauge-2`)
 
-Decision 0022 item 3. Journal `tracks/core/JOURNAL-gauge-2.md` (entries 1 to 10; every
+Decision 0022 item 3. Journal `tracks/core/JOURNAL-gauge-2.md` (entries 1 to 11; every
 number below has its run id there); scripts, lists, inputs, figures and numbers
 `tracks/core/analysis/gauge2/`. Source: `athenak/src/z4c/z4c_gauge_ext.hpp` only (the
 hooks of section 7 in `z4c.hpp`, `z4c.cpp` and `z4c_calcrhs.cpp` are untouched).
