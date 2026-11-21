@@ -1,0 +1,116 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261121-130316-84a54d4",
+  "track": "D-bh-dress",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "T1: compare_horizons.py on ES-1G, V-1B, V-1 (reproduce the lead recheck numbers); g2runs JOURNAL entry 1b",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/D-bh-dress/g2runs/tools/compare_horizons.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "ES-1G=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261119-142633-6f72922:es",
+    "V-1B=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261120-222625-63abd72:v1b",
+    "V-1=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-172730-c6d151b:v1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "84a54d4d26f53d89425d041f9bee16887cf71441",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/g2runs"
+    ],
+    "outside_package": {
+      "count": 16,
+      "first": [
+        " M tracks/D-bh-dress/note/figures/fig_constraints.pdf",
+        " M tracks/D-bh-dress/note/figures/fig_es.pdf",
+        " M tracks/D-bh-dress/note/figures/fig_esrun.pdf",
+        " M tracks/D-bh-dress/note/figures/fig_floor.pdf",
+        " M tracks/D-bh-dress/note/figures/fig_infall.pdf",
+        " M tracks/D-bh-dress/note/figures/fig_kerr.pdf",
+        " M tracks/D-bh-dress/note/figures/fig_newton.pdf",
+        " M tracks/D-bh-dress/note/figures/fig_spike.pdf",
+        " M tracks/D-bh-dress/note/figures/schem_architecture.svg",
+        " M tracks/D-bh-dress/note/figures/schem_timeline.svg",
+        " M tracks/D-bh-dress/note/main.pdf",
+        " M tracks/D-bh-dress/note/main.tex",
+        " M tracks/D-bh-dress/note/tables/parameters.tex",
+        "?? tracks/D-bh-dress/drift_controls/tools/compare_runs.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/count_blocks.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/slice_profiles.py"
+      ]
+    },
+    "merge_base_main": "4f50dadd449682c2669cbe40564981146bdbb81e",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/D-bh-dress/g2runs/tools/compare_horizons.py",
+      "role": "argv",
+      "sha256": "95f5010c3df73e44e4e6bb4043b4bc57b8feb6cb4466f014bf81f396dc6764f0",
+      "bytes": 9599,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261121-130316-84a54d4",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T13:03:16Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 30.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.7775,
+    "gpu_hours_reserved": 1.9666,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 2,
+    "runs": 223,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
