@@ -126,8 +126,14 @@ def main():
                 dst = os.path.join(d, os.path.basename(f))
                 if not os.path.exists(dst):
                     os.symlink(f, dst)
-        extra = [f"time/nlim={2 * n}", "output9/file_type=rst", f"output9/dcycle={n}"]
-        rcA, wA = run([exe, "-i", c["inp"], "-d", A] + c["args"] + extra, A)
+        # the command line cannot create a block: copy the input and append a restart output
+        inp = os.path.join(out, name, os.path.basename(c["inp"]))
+        with open(c["inp"]) as fh:
+            text = fh.read()
+        with open(inp, "w") as fh:
+            fh.write(text + f"\n<output9>\nfile_type = rst\ndcycle    = {n}\n")
+        extra = [f"time/nlim={2 * n}"]
+        rcA, wA = run([exe, "-i", inp, "-d", A] + c["args"] + extra, A)
         rsts = sorted(glob.glob(os.path.join(A, "rst", "*.rst")))
         cyc = {p: rst_cycle(p) for p in rsts}
         mid = [p for p, cy in cyc.items() if cy == n]
