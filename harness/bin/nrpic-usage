@@ -156,16 +156,18 @@ class Usage:
             rec = self.reading()
             if rec.get("ok"):
                 misses = 0
-                name, w = max(rec["windows"].items(), key=lambda kv: kv[1]["pct"])
-                if w["pct"] >= threshold:
-                    self.write_flag(name, w["pct"], w.get("resets_at"), threshold)
-                    self.say(f"PAUSE {name} usage {w['pct']:.0f}% >= {threshold:.0f}%; resets_at "
+                fh = getattr(self, "five_hour_threshold", None) or threshold     # decision 0020
+                lim = lambda nm: fh if nm == "five_hour" else threshold
+                name, w = max(rec["windows"].items(), key=lambda kv: kv[1]["pct"] - lim(kv[0]))
+                if w["pct"] >= lim(name):
+                    self.write_flag(name, w["pct"], w.get("resets_at"), lim(name))
+                    self.say(f"PAUSE {name} usage {w['pct']:.0f}% >= {lim(name):.0f}%; resets_at "
                              f"{w.get('resets_at')}; flag locks/PAUSE written")
                     if not cycle:
                         return 0
                     self.resume(near, threshold, wait_for_flag=False)
                     continue
-                wait = near_interval if w["pct"] >= near else interval
+                wait = near_interval if w["pct"] >= min(near, lim(name) - 12) else interval
             else:
                 misses += 1
                 if misses >= MISSES:
@@ -227,6 +229,7 @@ def main(argv=None, usage=None):
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=["probe", "watch", "show", "resume"])
     ap.add_argument("--threshold", type=float, default=95.0)
+    ap.add_argument("--five-hour-threshold", type=float, default=80.0)
     ap.add_argument("--interval", type=int, default=240)
     ap.add_argument("--near", type=float, default=90.0)
     ap.add_argument("--near-interval", type=int, default=75)
@@ -243,6 +246,7 @@ def main(argv=None, usage=None):
         return 0 if rec.get("ok") else 3
     if a.cmd == "resume":
         return u.resume(a.near, a.launch_max)
+    u.five_hour_threshold = a.five_hour_threshold
     return u.watch(a.threshold, a.interval, a.near, a.near_interval, cycle=a.cycle)
 
 
