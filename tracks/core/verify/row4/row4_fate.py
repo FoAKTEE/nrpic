@@ -125,7 +125,6 @@ def figure(res, runs, out):
         n = min(len(m["t"]), len(c["t"]))
         ax[1].plot(m["t"][:n], m["alpha_c"][:n] - c["alpha_c"][:n], color=col, lw=1.0,
                    label=fr"$y_c={r['yc']:.3f}$: {r['member_class']}")
-    ax[0].axhline(0.3 / 0.75, color="0.5", lw=0.6, ls=":")
     ax[0].set_xlabel(r"$t/M$")
     ax[0].set_ylabel(r"$\alpha_c/\alpha_c^{\rm eq}$")
     ax[0].set_title("(a) central lapse, member and control")
@@ -135,7 +134,7 @@ def figure(res, runs, out):
     ax[1].axvspan(W0, W1, color="0.9", zorder=0)
     ax[1].set_xlabel(r"$t/M$")
     ax[1].set_ylabel(r"$\alpha_c^{\rm kick}-\alpha_c^{\rm control}$")
-    ax[1].set_title("(b) member minus control (D: mean over shaded window)")
+    ax[1].set_title("(b) member minus control; D: mean over 200-300 M")
     ax[1].legend(fontsize=7)
     fig.tight_layout()
     for ext in ("png", "pdf"):

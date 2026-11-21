@@ -1295,3 +1295,28 @@ the other four held at once and released one at a time by
 `tracks/core/verify/row4/sequencer.sh` (setsid nohup, log
 `scratch/core/tmp/lead_b5/sequencer.log`). Order: 0.605 member, 0.755 member, 0.680
 member, 0.605 control, 0.755 control, 0.680 control.
+
+### What ran after the predictions (20:27Z-20:45Z)
+
+- Initial data: run core-20261121-202643-d66c4ee (`make_row4.py`): y_c = 0.605, 0.680,
+  0.755 with alpha_c = 0.6281, 0.6875, 0.7509, R/M = 5.750, 6.558, 7.902; turning point
+  y_c* = 0.6796 (E_b/M_0 = 0.036058), equal to run core-20261115-152805-47d8f25. The
+  0.755 cluster reaches R = 7.9 M, at the outer edge of the M/4 nest (blocks to 8 M);
+  its outermost particles sit in M/2 cells, as in the wave-1 run 0.756 on M/2 [noted,
+  not tested].
+- Deck smoke test on processors (release processor build, 0.680 member, 4 cycles): run
+  core-20261121-202702-c6a4d7d: 456 MeshBlocks, 64 of them at level 7 (M/8), dt = M/32,
+  "Terminating on cycle limit", 10^4 particles kept. Same block count as Track C's M/8
+  deck (456). AthenaK warns that `num_levels` is unused with static refinement.
+- Six chains submitted with `nrpic-run submit --launcher chain --gpu-hours 2.0` (release
+  card executable): run ids and jobs in STATUS.md and HANDOFF.md; jobs 4841-4844 held at
+  once, sequencer pid 2668479 started with setsid nohup. At 20:44Z all six were waiting
+  behind eleven jobs of other owners. P1-P4 open.
+- Code test of `row4_fate.py` on the wave-2 M/4 runs (core-20261121-204433-1c720e0; the
+  pairs exercise the code, they are not member and control): it reads, classifies and
+  draws (figure looked at). It shows that the late central-lapse swings of those runs
+  are larger than the 0.01 band, so a 100 M mean can move by about 0.01; the rule is not
+  changed after seeing this, the caveat goes with the outcome.
+
+Faults of mine on record: none known in this session beyond the G6 (ii) bound, which
+did not exclude the normalized constraint columns.

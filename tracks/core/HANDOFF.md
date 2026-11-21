@@ -2,72 +2,105 @@
 
 Written for a reader with no memory of the last session. Rewritten at the end of every session.
 
-State (2026-11-21, batch 4a, session core-lead-6): release core-v0.6 is on main (tag on
-984bde68) and closed except one card job. Its merged card executable PASSED the card check
-(job 4800, prediction K6 held); the release processor build of main
-(`.work/build_cpu_v06`) is byte-identical with the candidate (75 of 75). The G2 package of
-core is brought to the state after core-v0.6: G2 is NOT met (`stage/G2/OPEN.md`, first
-section). No source was changed in this session.
+State (2026-11-21 20:50Z, batch 5, session core-lead-7; no source change): release
+core-v0.6 is fully closed (its release card build passed, job 4810). Gate G2 of core is
+NOT met (`stage/G2/OPEN.md`, first section). This session queued the first level of the
+ladder-row-4 bisection on a static M/8 mesh: six card chains, of which two are eligible
+and four held; a sequencer outside the session releases the held ones.
 Owner: core, branch `core/nrpic`, worktree `/data/haiyangw/nrpic/wt/core`.
-Run next: `cd /data/haiyangw/nrpic/wt/core && git merge --no-edit main && harness/bin/nrpic-run status core-20261121-154654-d3ec487`
 
-ONE RUN IS PENDING: the release card build `.work/build_gpu_v06/src/athena` on the fifteen
-cases of `analysis/release/card_v06.list`, run core-20261121-154654-d3ec487, Slurm job
-4810 (0.1 card-hours asked; queued at 15:47Z). Prediction G6 is in the journal (entry of
-2026-11-21T15:46Z). To close it (the worktree must be clean for `nrpic-run submit`): the
-four commands in `tracks/core/RELEASE-v0.6.md`, section "Release builds against the
-candidate"; look at the three figures (`fig_card_v06.png`, `fig_card_v05.png`,
-`fig_card_pair.png`); write the outcome into that section (replace PENDING), into the
-line `athena_gpu` of `scratch/core/exe/core_nrpic_v06/READY` (it says "queued as job
-4810") and into the journal; commit, push. In `fig_card_v06.png` the dashed bounds run
-across all cases although each applies to its own cases: g_smr1's constraint-statistics
-bar (Hr_max, a ratio of rounding-level residuals, 8.8e-4 in job 4800) is bounded by
-nothing.
+## Six card chains are pending (ladder row 4, bisection level 1)
 
-Files to read first: `tracks/core/STATUS.md`; the last entry of `tracks/core/JOURNAL.md`;
-`tracks/core/stage/G2/OPEN.md` (first section: is G2 met, what is missing, defects p-t);
-`tracks/core/interfaces/REQUESTS_WAVE3.md` section 5 (order of work for core-v0.7).
+Rule, measured quantities and predictions P1-P4 were written before the runs:
+`tracks/core/JOURNAL.md`, entry of 2026-11-21T20:26Z. Package:
+`tracks/core/verify/row4/` (deck `st_m8.athinput`, initial data `make_row4.py`, fate
+analysis `row4_fate.py`, `sequencer.sh`). Initial data: run core-20261121-202643-d66c4ee.
 
-Decided in this session:
-- core-v0.7 holds W24 (relaxed-lapse fix, first), W26 core/clump-table, W27 core/oblate;
-  E's lockstep sub-steps (W25) go to core-v0.8 [maintainer's judgement; E's reply-by is
-  2026-12-05].
-- The release card check ran the whole fifteen-case list for the release build (46 s on
-  a card), not one case.
+| Model | Run id | First job | At 20:44Z |
+|---|---|---|---|
+| 0.605 kick | core-20261121-204230-3bcb118 | 4839 | eligible |
+| 0.755 kick | core-20261121-204232-f74c942 | 4840 | eligible |
+| 0.680 kick | core-20261121-204234-d010783 | 4841 | held |
+| 0.605 control | core-20261121-204235-0b25077 | 4842 | held |
+| 0.755 control | core-20261121-204237-ae00ca2 | 4843 | held |
+| 0.680 control | core-20261121-204239-2be5ac2 | 4844 | held |
 
-G2 (CHECKLIST.md, 18 items): PASS C3, C4, C5, C8, C9, C10, C11, C13, C17, C18; FAIL C1,
-C2, C6 (verify FAIL: no note, 10 runs with record problems), C7, C12, C14,
-C15, C16. What closes it: ladder row 4 on M/8 against a collisionless control (Track C's
-drift package shows M/4 pushes clusters outward), the oblate collapse after W27, a
-coupled set-up converged three ways, a redrawn architecture schematic
-(`verify/figscripts/schem_architecture.py`), a working note, a fresh-context verifier,
-REVIEW.md/SCOPE.md in the stage directory.
+The sequencer (pid 2668479, own session; a copy of `verify/row4/sequencer.sh` in
+`scratch/core/tmp/lead_b5/`) releases 4841, 4842, 4843, 4844 in that order whenever fewer
+than two jobs named `core-...` are running or pending without a hold (two looks 90 s
+apart). Log: `scratch/core/tmp/lead_b5/sequencer.log`. Stop it with
+`touch /data/haiyangw/nrpic/scratch/core/tmp/lead_b5/sequencer.stop` or `kill 2668479`.
+If it died with jobs still held: `scontrol release <jobid>` by hand, at most two core
+jobs eligible. Each chain asks 2.0 card-hours (at most two 59-minute segments); about
+0.6 card-hours per run is expected. A chain's job id changes per segment.
 
-W24, what is known (do not rediscover): `<z4c> lapse_leak` adds
-`-(alpha/T) max(ln(alpha/alpha_0), 0)` to d_t alpha wherever alpha > alpha_0
-(`athenak/src/z4c/z4c_gauge_ext.hpp` line 19), matter or not; Track D's V-1GB (vacuum,
-faces +-384 M, M/8) grows its horizon mass by 1.27e-3 over 100-200 M against 5e-5 without
-the option; inputs and runs in `git show track/D-bh-dress:tracks/D-bh-dress/g2runs/README.md`.
+Read them (exact commands):
 
-Executables (read-only): release core-v0.6 `.work/build_{gpu,cpu}_v06` (main checkout);
-candidate `scratch/core/exe/core_nrpic_v06/` (four, READY with the card check);
-`wt/core/.work/build_*_v06rc` build directories of the candidate.
+    cd /data/haiyangw/nrpic/wt/core && git merge --no-edit main
+    S=/data/haiyangw/nrpic/scratch/core
+    R="core-20261121-204230-3bcb118 core-20261121-204232-f74c942 core-20261121-204234-d010783 core-20261121-204235-0b25077 core-20261121-204237-ae00ca2 core-20261121-204239-2be5ac2"
+    cat $S/tmp/lead_b5/sequencer.log; squeue -h -u $(id -un) -o "%i %j %T %r" | grep core-
+    for r in $R; do scripts/submit_chain.sh --status $S/$r; done
+    # each chain whose status is DONE (or FAILED: look at $S/<run>/chain/ first):
+    for r in $R; do harness/bin/nrpic-run finish $r; done
+    # fates by the rule of 20:26Z (also works on runs still going: marked PROVISIONAL)
+    harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 \
+      --purpose "row 4 M/8 level 1: fates against controls (rule of JOURNAL 20:26Z)" -- \
+      python3 tracks/core/verify/row4/row4_fate.py --out '$NRPIC_RUN_DIR' \
+      0.605=$S/core-20261121-204230-3bcb118,$S/core-20261121-204235-0b25077 \
+      0.680=$S/core-20261121-204234-d010783,$S/core-20261121-204239-2be5ac2 \
+      0.755=$S/core-20261121-204232-f74c942,$S/core-20261121-204237-ae00ca2
 
-Open with other owners:
-- orch: outbox message of this session (gate status of core G2, release closed).
-- Track D: G2 null tests without `lapse_leak` until W24 is released (decision 0022).
-- Track C: its run (vi) (Slurm 4804, M/8 control to 1000 M) decides whether the M/8
-  contraction turns; core's row-4 bisection on M/8 should read it first.
-- Branches core/clump-table (tip ff11719d, holds core-v0.5 not v0.6) and core/oblate (tip
-  4f01a81f, does not hold core-v0.5): both merge main before the next release.
+Then look at `fig_row4_m8.png` of that run, write the outcomes of P1-P4 into the journal
+(also the failed ones), the card time per M (P4: from `chain/` logs or the athena logs'
+cpu time), and a row "Row 4, batch 5: M/8" in `verify/LADDER.md`. Next level by the rule:
+the midpoint of (y_lo, y_hi) with its control, new initial data with
+`make_row4.py --yc <mid>`, chains as above (two eligible at a time). An UNDECIDED middle
+(0.680) is first continued with its control to 600 M (restarts are exact): a new
+registered run with `--parent <old run>` that starts from the old run's 300 M restart file
+with `time/tlim=600`, as Track C's drift (vi) did (`git show
+track/C-sidm:tracks/C-sidm/drift/inputs/job_vi.list`); the restart needs the executable
+that wrote it (`.work/build_gpu_v06/src/athena`, also copied into each run's `chain/`). Seen while testing the script on the
+wave-2 M/4 runs (run core-20261121-204433-1c720e0, pairs chosen only to exercise the
+code): their late central-lapse swings are larger than the 0.01 band of the rule, so a
+100 M mean may be off by about 0.01; the rule stands as written, but say so if a member
+lands within 0.01 of a class border.
 
-Traps:
-- `nrpic-ctx ack` commits by itself (inbox_acks.txt).
-- `nrpic-stage verify` exports the committed tip and checks every run manifest; it writes
-  VERIFY_RESULTS.{json,md} into the stage directory (commit them with the report). With
-  output checksums it does not finish in 25 minutes on core's 1405 runs: use
-  `--no-checksums` (5.5 minutes) and say so.
-- A full commit hash is copied from `git rev-parse`; exit status 3 of an AthenaK run is
-  the guard's stop; `athena_cpu_omp` is not a byte reference; `runs/` in .gitignore hides
-  `tracks/core/runs/` (a hand-written manifest needs `git add -f`).
-- The clock: `date -u`. Temporary files of the lead: `scratch/core/tmp/lead_b4a/`.
+## Done in this session
+
+- Job 4810 judged (G6): PASS on both release card checks; the 1e-12 history bound of
+  G6 (ii) refuted in the normalized constraint columns only (journal, RELEASE-v0.6.md,
+  READY of `scratch/core/exe/core_nrpic_v06`).
+- REQUESTS_WAVE3.md section 5a: W24 enters core-v0.7 as a mitigation
+  (`lapse_leak_hole`, branch core/gauge-2 tip 61c8fc4d); W30 is the cure, with the three
+  candidates of `JOURNAL-gauge-2.md` entry 11 (decision 0025 item 3).
+- Outbox to orch: the nine run ids of decision 0023 item 5 with proposed WAIVERS lines.
+
+## Files to read first
+
+`tracks/core/STATUS.md`; the last entry of `tracks/core/JOURNAL.md`;
+`tracks/core/stage/G2/OPEN.md` (first section); `tracks/core/interfaces/REQUESTS_WAVE3.md`
+sections 5 and 5a (order of work for core-v0.7).
+
+## Open with other owners
+
+- orch: waiver lines (outbox 20261121T204332Z); an analysis session for row 4.
+- Track C: its drift package (`git show track/C-sidm:tracks/C-sidm/drift/README.md`) is the
+  reason for M/8; its run (vi) to 680 M showed the M/8 control contracting steadily
+  (alpha_c -0.022 by 680 M, no turn) - read it beside the 0.755 control.
+- Track D: null tests and long runs around a black hole without `lapse_leak` until W30
+  (decision 0025 item 3).
+- Branches core/clump-table (tip ff11719d) and core/oblate (tip 4f01a81f) merge main
+  before core-v0.7; core/gauge-2 (tip 61c8fc4d) is the W24 mitigation.
+
+## Traps
+
+- `nrpic-run` builds the job environment itself (`build_env` reads no caller variable):
+  a Slurm dependency cannot be passed through it; that is why the sequencer holds and
+  releases instead.
+- `refinement = static` leaves `num_levels` unused (AthenaK warns); the deck's levels
+  come from its refined regions.
+- `nrpic-ctx ack` commits by itself; `nrpic-stage verify` needs `--no-checksums` on
+  core's 1480 runs; exit status 3 of AthenaK is the guard's stop; `runs/` in .gitignore
+  hides `tracks/core/runs/` (a hand-written manifest needs `git add -f`).
+- The clock: `date -u`. Temporary files of the lead: `scratch/core/tmp/lead_b5/`.
