@@ -1,27 +1,27 @@
 {
   "track": "C-sidm",
   "gate": "G1",
-  "commit": "1135976467eb25c8e42b1c33a40bc85c09e9c1ca",
-  "verified_utc": "2026-11-21T08:32:04Z",
-  "export": "/data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G1-1135976-20261121T080105Z",
+  "commit": "be9cc29aa5a7acc09f008f8532dac059fc0e43dd",
+  "verified_utc": "2026-11-21T16:33:12Z",
+  "export": "/data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G1-be9cc29-20261121T155554Z",
   "result": "FAIL",
   "checks": [
     {
       "check": "clean",
-      "status": "FAIL",
-      "message": "10 uncommitted paths: commit them first (tracks/C-sidm/note/figures/schem_timeline.png, tracks/C-sidm/note/figures/schem_timeline.svg, tracks/C-sidm/note/main.tex, tracks/C-sidm/note/references.bib, tracks/C-sidm/note/scripts/common.py)",
+      "status": "PASS",
+      "message": "worktree clean (outside the stage directory being assembled)",
       "detail": null
     },
     {
       "check": "sync",
-      "status": "FAIL",
-      "message": "main has commits not merged: run nrpic-ctx sync",
+      "status": "PASS",
+      "message": "main is merged into the branch",
       "detail": null
     },
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 1135976467eb (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G1-1135976-20261121T080105Z/tree",
+      "message": "clean export of be9cc29aa5a7 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G1-be9cc29-20261121T155554Z/tree",
       "detail": null
     },
     {
@@ -39,7 +39,7 @@
     {
       "check": "package",
       "status": "PASS",
-      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016)",
+      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md",
       "detail": null
     },
     {
@@ -68,9 +68,13 @@
     },
     {
       "check": "runs",
-      "status": "PASS",
-      "message": "167 run manifests finished (25 hand-written, read as decision 0012 allows), output checksums verified where recorded",
-      "detail": null
+      "status": "FAIL",
+      "message": "1 of 185 runs have problems",
+      "detail": {
+        "C-20261121-140023-b0f113e": [
+          "status is submitted: not finished (nrpic-run finish)"
+        ]
+      }
     },
     {
       "check": "run-notes",
@@ -213,7 +217,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 40 lines",
+      "message": "STATUS.md has 42 lines",
       "detail": null
     },
     {
