@@ -43,7 +43,7 @@ This note records the scoping stage, the baselines that need no new code, and th
 \item the probe-limit spike is reproduced around nonrotating and spinning black holes and stays in equilibrium on the code's geodesics;
 \item at the scales a full-relativity run reaches, the black hole captures nearly all infalling matter, and particles in the code's Newtonian mode reproduce the shell calculation of the infall.
 \end{enumerate}
-Section~\ref{sec:plan} gives the plan and what is open. Table~\ref{tab:parameters} holds the parameters, and Tables~\ref{tab:ledger1}--\ref{tab:ledger5} every number of the note with the registered run that produced it.
+Section~\ref{sec:plan} gives the plan and what is open. Table~\ref{tab:parameters} holds the parameters, and Tables~\ref{tab:ledger1}--\ref{tab:ledger6} every number of the note with the registered run that produced it.
 
 \begin{figure*}
 \includegraphics[width=\textwidth]{schem_architecture.png}
@@ -164,15 +164,15 @@ Around a fixed Schwarzschild black hole the density of a spike that grows adiaba
 Schwarzschild is the nonrotating limit of the Kerr spike, and the same calculation with the capture boundary and the actions of Kerr orbits \cite{Ferrer:2017kerr} returns the Schwarzschild profile above at zero spin. For a constant distribution function it reproduces the published Kerr spikes at spins $0.5$ and $0.8$, on the equator and on the axis, with the equatorial inner edge at the marginally bound prograde orbit and a peak that rises with the spin (Fig.~\ref{fig:kerr}a). For the spike grown from a Hernquist cusp the agreement holds at zero spin and on the axis; for orbits with angular momentum along the spin our density lies a few per cent below the published curves near the peak (Fig.~\ref{fig:kerr}b). The black-hole mass of these curves is our choice: Ferrer et al.\ quote four million solar masses as a lower bound for the black hole at the Galactic center, and with it our nonrotating curve agrees with theirs. A second agent who implemented the published prescription independently finds nearly the same peak as ours and the same difference from the published curve. The difference grows with the spin, and at the highest spin it sits where the published curve has a narrow bump at its maximum, while the published curves for a constant distribution function, which need no matching of actions, agree with ours. We therefore judge that the difference lies in the published curve or in a detail of its computation that the paper leaves unstated. Moved by AthenaK on the analytic Kerr metric at spin $0.8$ for $20\,000M$, particles drawn from the grown equilibrium keep the counts of every radial range within their Poisson scatter and without trend, and keep the net prograde rotation and the contrast between equator and pole of the equilibrium (Fig.~\ref{fig:kerr}c).
 
 \begin{figure*}
-\includegraphics[width=\textwidth]{fig_kerr.pdf}
-\caption{Density spike of dark matter around a Kerr black hole on fixed orbits. (a) Constant distribution function on the equator at three spins: our calculation (lines) and the published curves (circles). (b) The same for a spike grown from a Hernquist cusp around a black hole of $4\times10^6$ solar masses. (c) Particle counts of the code at spin $0.8$ in five radial ranges over the equilibrium count, with bands of one Poisson standard deviation; $M=Gm$.}
-\label{fig:kerr}
-\end{figure*}
-
-\begin{figure*}
 \includegraphics[width=\textwidth]{fig_spike.pdf}
 \caption{Density spike of dark matter around a Schwarzschild black hole on fixed orbits. (a) Constant distribution function: relativistic profile and the Newtonian profile cut at $8Gm$ and at $4Gm$. (b) Spike grown from a Hernquist cusp around a black hole of $4\times10^6$ solar masses. (c) Particle counts of the code in four radial shells over the equilibrium count, with bands of one Poisson standard deviation; $M=Gm$.}
 \label{fig:spike}
+\end{figure*}
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{fig_kerr.pdf}
+\caption{Density spike of dark matter around a Kerr black hole on fixed orbits. (a) Constant distribution function on the equator at three spins: our calculation (lines) and the published curves (circles). (b) The same for a spike grown from a Hernquist cusp around a black hole of $4\times10^6$ solar masses. (c) Particle counts of the code at spin $0.8$ in five radial ranges over the equilibrium count, with bands of one Poisson standard deviation; $M=Gm$.}
+\label{fig:kerr}
 \end{figure*}
 
 \subsection{Secondary infall and capture}
@@ -185,7 +185,7 @@ The Newtonian infall around a seed in an Einstein-de Sitter background sets the 
 \label{fig:infall}
 \end{figure*}
 
-The same infall computed with particles in the Newtonian mode of the code reproduces the shell calculation (Fig.~\ref{fig:newton}). The seed is a compact clump of particles at the center of a cell, where its own field holds it in place; a fixed point mass, now a tested addition to the code, will replace it. At three cell sizes the turned-around mass agrees with shells that feel the measured force law of the mesh to a few parts in a thousand throughout (Fig.~\ref{fig:newton}a,b). The dress agrees with them to about one per cent once it has formed, from about three times the initial scale factor on; while it is young and small it lies a few per cent above them, by an amount that depends on the force law near the center. The density profile agrees with the matched shells within the scatter of its bins from four cells out to the turnaround radius, except at the outermost caustic, where a small part of the dress extends beyond the caustic of the shells, for a reason still open. Against the self-similar solution the profile agrees only in the outer part of the turnaround region and is flatter inside, where the seed still dominates (Fig.~\ref{fig:newton}c); even in the outer part, the deviation at the latest time depends on the turnaround radius used to scale the profile (Table~\ref{tab:ledger5}). The dress holds a smaller share of the turned-around mass than in the self-similar limit and approaches it slowly. The power law $r^{-9/4}$ lies far inside the radii these runs resolve.
+The same infall computed with particles in the Newtonian mode of the code reproduces the shell calculation (Fig.~\ref{fig:newton}). The seed is a compact clump of particles at the center of a cell, where its own field holds it in place; a fixed point mass, now a tested addition to the code, will replace it. At three cell sizes the turned-around mass agrees with shells that feel the measured force law of the mesh to a few parts in a thousand throughout (Fig.~\ref{fig:newton}a,b). The dress agrees with them to about one per cent once it has formed, from about three times the initial scale factor on; while it is young and small it lies a few per cent above them, by an amount that depends on the force law near the center. The density profile agrees with the matched shells within the scatter of its bins from four cells out to the turnaround radius, except at the outermost caustic, where a small part of the dress extends beyond the caustic of the shells, for a reason still open. Against the self-similar solution the profile agrees only in the outer part of the turnaround region and is flatter inside, where the seed still dominates (Fig.~\ref{fig:newton}c); even in the outer part, the deviation at the latest time depends on the turnaround radius used to scale the profile (Table~\ref{tab:ledger6}). The dress holds a smaller share of the turned-around mass than in the self-similar limit and approaches it slowly. The power law $r^{-9/4}$ lies far inside the radii these runs resolve.
 
 \begin{figure*}
 \includegraphics[width=\textwidth]{fig_newton.pdf}
@@ -214,6 +214,8 @@ Four rules carry the work so far. A vacuum black hole in a comoving vacuum bubbl
 \appendix
 
 \section{Parameters}\label{app:parameters}
+
+Table~\ref{tab:parameters} lists the physical and numerical parameters of the scenarios of this note.
 
 \input{tables/parameters}
 

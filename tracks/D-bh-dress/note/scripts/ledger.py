@@ -269,6 +269,7 @@ def main():
           (sec, r"captured fraction at $a/a_i=4$ for $\sigma_i=0.02,0.05,0.1,0.2$", ", ".join(f"{v:.3f}" for v in inf["shells"]["captured_fraction"].values()), ["shells_ana"]),
           (sec, r"radiation era: largest $|\Delta\eta|$ against the printed table; $y_{\rm eq}/y_{\rm ta}$", f"{fnum(rd_deta, 2)}; {min(rd_ratio):.4f}--{max(rd_ratio):.4f}", ["rd"])]
     nw = fn["newton"]["runs"]
+    sec = "Secondary infall with particles in the Newtonian mode of the code"   # own table: one page each
     N1, N2, N3 = nw["N128c"], nw["N64c"], nw["N128Lc"]
     NR = ["nm128c", "nm64c", "nm128Lc", "nm_ana"]
 
