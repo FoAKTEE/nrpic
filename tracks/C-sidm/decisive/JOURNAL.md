@@ -499,3 +499,76 @@ run on D3 output) tested on a mock, CC2 histories linked under D3 names in
 `d3_kninf` control, writes `fig_d3_contraction.png` (now three panels: dalpha against t and
 against collisions per particle, alpha_min against t); looked at; the D3 numbers it printed are
 the CC2 numbers, as they must be. Queue rule kept: one job of this package at a time.
+
+## 2026-11-21 05:33 UTC Entry 11: outcome of D3 job 3 (control and Kn = 1); job 4 submitted
+
+D3 job 3 (run C-20261121-035737-295e5c3, Slurm 4764) ran 04:49:44-05:25:35 UTC, exit 0 for the
+smoke run, d3_kninf (1054 s) and d3_kn1_part_s1 (1079 s); closed with `nrpic-run finish`. D3 job
+4 (d3_kn10_part_s1, cc2_kn10_cell_s2) submitted at 05:27 UTC as run C-20261121-052716-6b64f97,
+Slurm 4767. Analysis C-20261121-052720-75f3fff (jobs 1-3 and the wave-2 runs; figures
+`fig_d3_contraction.png`, `fig_controls.png` looked at). Numbers [VERIFIED] from its
+`summary.json`, except the lines marked (arithmetic), computed in this session from the same
+histories by the reader of `threshold_scan/common.py` (corrected count z, dalpha at fixed
+collisions per particle; not a registered run, repeated by the final analysis only in part).
+
+Control d3_kninf: alpha_c(0) = 0.71927; largest |alpha_c - alpha_c(0)| = 0.00529 (at 152 M),
++0.0026 at 100 M; cosine fit P = 282.3(1.2) M, A = 0.00221 (rms of the residual 7.5e-4); every
+particle kept; rest mass bit-identical; deposit identity 1.0e-15; 3.50 s per M.
+- (D3a) largest excursion between 0.003 and 0.018: HOLDS (0.0053); far below D3's distance from
+  the onset (0.048): D3 is cleanly on the stable side of the numerical equilibrium too.
+- For drift (its JOURNAL entry 6, its prediction, its verdict): the third period point is
+  P(y0 = 0.26) = 282 M with A = 0.0022 (CC2 355 M, A = 0.0086; CC1 399 M, A = 0.0154), in the
+  cosine form of `drift/scripts/controls.py` on 0-300 M; with less than one period in 300 M and
+  A only three times the residual rms, the period carries the fit-form error drift found (4-10
+  percent) or more [JUDGEMENT].
+
+d3_kn1_part_s1 (K = 251.509, sigma~ = 251.509):
+
+| quantity | D3 Kn = 1 (particle) | CC2 Kn = 1 (cell, wave 2) | CC1 Kn = 1 (cell, wave 2) |
+|---|---|---|---|
+| t_c record / linear crossing (M) | 100.5 / 100.46 | 77.75 / 77.75 | 72.5 / 72.43 |
+| alpha_min = 0.5 / 0.4 crossing (M) | 83.29 / 92.82 | 62.52 / 71.30 | 57.43 / 66.10 |
+| D25 / D50 | 0.0094 / 0.0613 | 0.0170 / 0.0991 | 0.0185 / 0.1134 |
+| t(dalpha >= 0.01), t(dalpha >= 0.03) (M) | 26.0, 38.5 | 21.25, 31.25 | 20.25, 30.75 |
+| slope of dalpha over 0-100 M (per M) | 3.57e-3 | 6.36e-3 | 6.49e-3 |
+| collisions per particle to t_c | 23.86 | 15.26 | 13.44 |
+| dalpha at 2 / 3 / 5 collisions per particle (arithmetic) | 0.0136 / 0.0356 / 0.0844 | 0.0177 / 0.0424 / 0.1036 | 0.0181 / 0.0444 / 0.1097 |
+| first excision; non-finite (M) | 115.5; 153.5 | 88.75; 162.25 | 83.25; 204.25 |
+
+Against prediction D3 (entry 4) and entry 8:
+- (D3c) D25 between 0.006 and 0.05: HOLDS (0.0094); D50 between 0.03 and 0.25: HOLDS (0.0613);
+  t(dalpha >= 0.01) between 12 and 45 M: HOLDS (26.0 M). D3 contracts relative to its control
+  at 0.56 of CC2's early rate: "comparable" (within a factor 3) HOLDS.
+- (D3d) Collapse at Kn = 1: the proportional form (t_c = 8.7 x CC2's = 680 M, no collapse in
+  300 M) FAILED: t_c = 100.46 M, 1.29 times CC2's 77.75 M (in collisions per particle 23.6
+  against 15.1, 1.56 times). My own 50 percent expectation of a collapse before 300 M came true.
+- Refutation clause of the hypothesis (no relative contraction, D50 < 0.005 at Kn = 1): not met;
+  the relative contraction is there and large (D50 = 0.061, 12 times the bound).
+- So: the gravothermal clause "contracts relative to its control at a rate comparable to CC2's"
+  HOLDS; the clause "collapses later in proportion to its distance from the onset" is REFUTED at
+  Kn = 1 (8.7 times the distance, 1.29 times the time).
+- (D3e) particle budget to t_c: summed dH 2.5e-15 of sum M H (HOLDS, bound 1e-13), +1.87e-21 M
+  per collision; no negative step before t_c (one-signed HOLDS here); n_noroot = 1 before t_c
+  (at 98.3 M, alpha_min about 0.33; 24372 by the excision at 115.5 M): FAILED by one pair;
+  n_balance 6.5e-3 of the collisions to 100 M and 7.1e-3 to t_c: FAILED (bound 1e-3; core's
+  tests reach 2.3e-2 at theta 0.2-0.3); max_dlam 0.77 before t_c: FAILED. Collisions per
+  particle in the first 25 M 1.7185 against the initial-rate value 1.72: HOLDS (0.1 percent).
+  First-step sum_P 214.00 against 214.6 from knudsen's initial rate (20.6 per particle per
+  300 M x 0.0625 M x 1e5/2; arithmetic): 0.3 percent. Count z before t_c -9.88 (FAILED as a
+  "|z| < 4" clause of D1 (g)); with the 8309 balance rejections and the one pair without root
+  added back to the collisions (arithmetic) z = -2.29: the deficit is the operator's
+  detailed-balance rejection, by design (n_coll counts accepted collisions, sum_P the
+  proposals). The same correction moves the Kn = 10 particle runs from z = -1.8..-0.75 to
+  -0.8..+0.3 (arithmetic).
+- (h) rest mass bit-identical before the first excision, deposit identity 2.0e-15: HOLD; cost 3.59
+  s per M (3.4-3.7: HOLDS).
+
+Reading [JUDGEMENT]: at Kn = 1 the relative contraction per collision is nearly the same for
+D3, CC2 and CC1 (dalpha at 3 collisions per particle 0.036, 0.042, 0.044; the curves against
+collisions per particle lie on top of each other, `fig_d3_contraction.png`, middle), and the
+collapse follows after 13-24 collisions per particle whatever the model's distance from the
+relativistic onset (8.7 times larger for D3 than for CC2). The collapse of these collisional
+runs is therefore set by the collisional (gravothermal) contraction, the relativistic onset
+deciding at most the last few percent of it; the wave-2 reading "CC2 collapses because it lies
+near the onset" is not supported. Whether the contraction rate itself is physical or set by the
+method (collision cells of M/4, heat transport at the cell size) is D2's question.
