@@ -1,0 +1,115 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261121-130410-0ff2a75",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "verifier_c18 M1b: own per-dump diagnostics with the spatial-gauge piece G_tot of the wave-2 scan: 64^3 eps0p1, eps0p3 (zero shift), eps1, eps1_gd (bin and rst), eps0 (bin, rst), 32^3 eps1, eps1_gd (bin)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "env",
+    "OMP_NUM_THREADS=1",
+    "python3",
+    "tracks/B-emd-gw/stage/G1/verifier_c18/scripts/m1_measure.py",
+    "--gauge",
+    "--workers",
+    "4",
+    "--kinds",
+    "bin,rst",
+    "eps1=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-165353-b592d43/cw_eps1",
+    "eps1_gd=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-165353-b592d43/cw_eps1_gd",
+    "eps0p1=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-164059-d802e82/cw_eps0p1",
+    "eps0p3=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-164059-d802e82/cw_eps0p3",
+    "eps0=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-164059-d802e82/cw_eps0",
+    "n32_eps1=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-165525-f7c2004/cw_eps1",
+    "n32_eps1_gd=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261115-165525-f7c2004/cw_eps1_gd"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "0ff2a751284b1550e6d753fef630b71e02dd6c83",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/stage/G1/verifier_c18"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "973f2dbc2e32338b1ea99d14ee4d03719af9a8c7",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/stage/G1/verifier_c18/scripts/m1_measure.py",
+      "role": "input",
+      "sha256": "c0db9713821d01a98fc436e7fc2b84b3eddb3bdbf3c809d93fc1eb81a0712483",
+      "bytes": 2511,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/stage/G1/verifier_c18/scripts/vlib.py",
+      "role": "input",
+      "sha256": "0f18a5ef759cdbe4bdaefbeea89636a1cbeee597d8fdac7c06d99c7e0d9b60ed",
+      "bytes": 16262,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261121-130410-0ff2a75",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T13:04:10Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.6912,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 2,
+    "runs": 259,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
