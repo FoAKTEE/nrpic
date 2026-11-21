@@ -6,7 +6,7 @@ paper_id	cited_keys_after	parse_status_before	bib_source_before	bib_entries_befo
 gr-qc/0107076	16	ok	None	0	0	22	0	13	67	40	0	ok	thebibliography	16	4	22	22	13	67	38	0
 gr-qc/9402041	13	ok	None	0	0	26	0	0	7	15	0	ok	thebibliography	13	0	26	26	0	7	14	0
 hep-ph/0011159	11	ok	None	0	0	16	0	7	7	15	0	ok	thebibliography	11	0	16	16	7	7	15	0
-astro-ph/0003278	0	review	None	0	0	0	0	0	1	1	0	review	thebibliography	33	20	0	0	0	1	1	0
+astro-ph/0003278	33	review	None	0	0	0	0	0	1	1	0	ok	thebibliography	33	20	67	67	13	33	35	0
 1201.4794	0	ok	None	0	0	0	0	10	29	40	5	ok	thebibliography	46	0	0	0	10	29	39	5
 gr-qc/0304002	38	ok	thebibliography	0	0	0	0	25	192	96	0	ok	thebibliography	38	2	58	58	25	192	96	0
 gr-qc/9703066	18	ok	thebibliography	0	0	31	0	0	16	15	0	ok	thebibliography	18	0	31	31	0	16	15	0

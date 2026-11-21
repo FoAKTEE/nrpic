@@ -71,8 +71,10 @@ def main():
     eb = [b20[p]["bib_entries"] for p in order]
     ea = [f20[p]["bib_entries"] for p in order]
     ck = [dry.get(p, {}).get("cited_keys") or 0 for p in order]
-    ax1.barh(y + h / 2, eb, height=h, color=FS.PAL["blue"], label="before (run -212037)")
-    ax1.barh(y - h / 2, ea, height=h, color=FS.PAL["red"], label="after (run -215402)")
+    run_b = os.path.basename(os.path.dirname(os.path.abspath(a.before)))
+    run_f = os.path.basename(os.path.dirname(os.path.abspath(a.final)))
+    ax1.barh(y + h / 2, eb, height=h, color=FS.PAL["blue"], label=f"before ({run_b[-15:]})")
+    ax1.barh(y - h / 2, ea, height=h, color=FS.PAL["red"], label=f"after ({run_f[-15:]})")
     ax1.plot(ck, y - h / 2, ls="none", marker="|", ms=9, mew=1.5, color="k", label="distinct cited keys")
     ax1.set_xscale("symlog", linthresh=1)
     ax1.set_xlim(0, 300)
