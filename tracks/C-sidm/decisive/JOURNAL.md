@@ -384,7 +384,7 @@ became non-finite at 289.5 M. The phase after the first excision is fragile in b
 (RISKS item on excision; core READY: coll_energy with excision untested); D1 measures nothing
 there.
 
-## 2026-11-21 03:03 UTC Entry 8: sharpened predictions for jobs 2-4 (written before they run)
+## 2026-11-21 03:00 UTC Entry 8: sharpened predictions for jobs 2-4 (written before they run)
 
 Entry 2 and entry 4 stay the predictions of record; these add sharper clauses from the CC2
 outcome (entry 7) [JUDGEMENT throughout]. References (analysis C-20261121-025928-94def70):
