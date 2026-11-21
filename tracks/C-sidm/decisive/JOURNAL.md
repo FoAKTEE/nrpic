@@ -573,7 +573,7 @@ deciding at most the last few percent of it; the wave-2 reading "CC2 collapses b
 near the onset" is not supported. Whether the contraction rate itself is physical or set by the
 method (collision cells of M/4, heat transport at the cell size) is D2's question.
 
-## 2026-11-21 05:50 UTC Entry 12: sharpened prediction for d3_kn10_part_s1 (job 4 running, output not looked at)
+## 2026-11-21 05:49 UTC Entry 12: sharpened prediction for d3_kn10_part_s1 (job 4 running, output not looked at)
 
 Job 4 (run C-20261121-052716-6b64f97, Slurm 4767) started at 05:48 UTC. Entry 4 (D3b, D3d) stays
 the prediction of record; from the Kn = 1 outcome (entry 11) I add [JUDGEMENT]: D3 contracted at
