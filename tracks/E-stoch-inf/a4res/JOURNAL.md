@@ -55,3 +55,33 @@ than 1 percent, or the second-order one matches it.
 Disclosure: a development run of the script (not registered, `scratch/E-stoch-inf/tmp/
 sym_test`, 22:20Z) already printed the numbers before this entry; the registered run
 below is the one cited.
+
+## Entry 2, 2026-11-21 13:25Z: outcome of step 1 (run E-20261120-222312-6ee4bc5)
+
+A new session (batch 3) continues the package from the worktree: entry 1, the step-1
+script and its registered run were committed; `a4lib.py`, `make_list.py`,
+`twin_predict.py` were left uncommitted by the session cut on 2026-11-20 and are
+committed now (the exact-time Twin of `twin_predict.py` is made optional, `--exact`: a
+dev test of this session, `scratch/E-stoch-inf/tmp/a4res_dev`, not registered, showed
+DOP853 at rtol 1e-11 needs about 30 s per 0.25 of time per set-up; the CodeTwin, which
+steps like the code, takes 0.2-0.5 s).
+
+Outcome (`run.log`, `symbols.json`, `fig_symbols.png` of the run, looked at):
+- C1 CONFIRMED [VERIFIED, own arithmetic on the coefficients parsed from
+  `finite_diff.hpp`]: mu/k^2 = 1.0988e-1, 3.5418e-2, 1.3172e-2, 2.5907e-3, 7.1049e-4,
+  2.4380e-4, 4.4449e-5 at 4, 5, 6, 8, 10, 12, 16 cells per wavelength (one axis); core
+  quotes 0.110, 2.6e-3, 4.4e-5 at 4, 8, 16: equal to the quoted digits. At k dx = pi/2
+  the second difference is 1.83 percent low in k^2 and the squared first difference 12.8
+  percent low; the second-order second difference is 18.9 percent low (core: 1.8, 12.8,
+  "about 19"). mu falls as (k dx)^6 (panel b: slope 6 above 8 cells).
+- C4 REFUTED: the ladder's stencil-k^2 reference uses the sixth-order symbol
+  (`ladder_lib.py:304-312`, `k2_stencil`). Evolving the ladder's reference with it for
+  all 3363 classes |n|^2 <= 1024 of P256 to t = 8.5 gives a largest difference to the
+  continuum reference of 6.255e-3 at n = (32, 0, 0); the ladder's judge recorded
+  `max_rel_diff_references` = 6.2548e-3 (`ladder/results/final/P256_judge.json`). The
+  fourth-order symbol would give 6.6e-2 and the second-order one 0.83. So the second-order
+  symbol does not explain 6.2e-3; the sixth-order symbol does, as the sub-horizon phase
+  error it accumulates from N* to crossing. The run follows the continuum reference
+  (1.2e-4) because a mode enters the lattice through the window from the code's own
+  continuum mode functions (ladder JOURNAL entry 6 [JUDGEMENT], SCOPE 4 A2 as amended);
+  this package did not test that further.
