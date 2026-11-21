@@ -6,12 +6,13 @@ gate:        G0 PASS (2026-11-20), G1 PASS with reservations (2026-11-21; coord/
 headline:    SR case of arXiv:2512.14649 reproduced to 1.2e-4 per mode at 256^3 (G1). USR case on
              scouting builds: odd part per mode 1.09e-4 at 256^3, spectrum at N_f window-independent
              within numerical error (<= 1.9e-4 to k_max/2). Release production ladder now queued.
-last-result: - Lead batch 5 (2026-11-21 12:19-13:2x PST): reviewed `window` and `a4res` from their
+last-result: - Lead batch 5 (2026-11-21 12:19-12:50 PST): reviewed `window` and `a4res` from their
                registered outputs (stage/REVIEW-wave3.md Part C; reruns E-20261121-203008-f104a3e,
                E-20261121-203016-7209255); SCOPE 4c (floor f^2 = (4 o_{s/2}^2 - o_s^2)/3, clause on
                the maxima, U-A2', U-A4', U-R, U-S, U-W); package g2prod with predictions (entry 1),
-               timing and P256 jobs, sequencer for nine USR chains; restart check R0
-               (E-20261121-202941-da16544).
+               timing and P256 jobs, sequencer for nine USR chains; restart of the deck byte-exact
+               (R0, E-20261121-202941-da16544). Reruns identical to the committed results; own-code
+               check of a4res holds (E-20261121-203540-a9b5d10). Nothing found wrong.
              - window (batch 4a): L9 scan analysed; W6 refuted (late USR constraint records depend on
                sigma by up to x21.7). a4res (batch 3): strict A4 holds at >= 12.8 cells per shortest
                wavelength, fails at 10.7 and 8; Q6 failed at one dump (cause not found).
