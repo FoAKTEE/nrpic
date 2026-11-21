@@ -1417,7 +1417,7 @@ to 48^3; quadratic cloud: falling by more than 3; first-order form: at least thr
 times the integral form at 48^3. Refuted for the new form if its rms does not fall by
 at least 2.5 while its level is above 0.003.
 
-## 2026-11-21 03:23  outcomes of T19c, T0c, T18a, T9b
+## 2026-11-21 03:22  outcomes of T19c, T0c, T18a, T9b
 
 **T19c, run core-20261121-031446-5b1fdcd** (sixteen particles per root cell along x;
 `t19_summary.json`, figure `fig_t19_smooth`, looked at, kept as `figs/fig_t19c_smooth.png`;
