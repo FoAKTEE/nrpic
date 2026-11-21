@@ -1118,3 +1118,32 @@ release.
 
 Card time: 0.024 card-hours used (Kc), 0.3 asked (job 4800). Processors: at most six
 cores at a time (builds and runs together).
+
+## 2026-11-21T15:46Z  session core-lead-6 (batch 4a: closing release core-v0.6, gate package G2)
+
+State at start: main merged (decision 0022, release core-v0.6 on main, tag on 984bde68).
+Slurm job 4800 (run core-20261121-132052-f330004, card check K6 of the merged card
+executable) COMPLETED in 46 s, fifteen cases with rc 0 in `batch.list.status`; not yet
+judged. Release builds on main: `.work/build_cpu_v06/src/athena` (sha256 91fc59b3...),
+`.work/build_gpu_v06/src/athena` (ea473498...); their checksums differ from the
+candidate's (2ec1f232..., 168e5da6...), as builds in other directories do (paths in the
+debug information) [VERIFIED by `sha256sum`]. No source change in this session.
+
+### Predictions, written before the release builds run (15:46Z)
+
+- **K6** stands as written in the entry of 12:55Z; judged now with `card_v06.py` and
+  `card_v05.py` on the outputs of job 4800.
+- **R6** (release processor build `.work/build_cpu_v06/src/athena` against the
+  candidate `scratch/core/exe/core_nrpic_v06/athena_cpu`, `regress_v04.py`, twelve
+  set-ups of wave 1): 75 of 75 items identical, classes a, b and other empty, as for
+  core-v0.5 (core-20261121-075456-a505400). Refuted by one differing item.
+- **G6** (release card build `.work/build_gpu_v06/src/athena` on the fifteen cases of
+  `card_v06.list`; the whole list ran in 46 s in job 4800, so the full list costs no
+  more card time than one case would wait for, and I ask 0.1 card-hours): (i) every case
+  status 0; against the processor runs `card_v06.py` and `card_v05.py` give the verdicts
+  they give for job 4800; (ii) against the candidate's card run (job 4800, `card_pair.py`)
+  the vacuum cases f_full, s3g and usr byte-identical in every file (they deposit
+  nothing), and every history of the other cases within 1e-12 of each column above 1e-6
+  of the largest column (atomic deposition on the card is not repeatable bit for bit;
+  for core-v0.5 the module histories agreed to 1.2e-15). Refuted by a status other than
+  0, a difference in f_full, s3g or usr, or a history column beyond 1e-12.
