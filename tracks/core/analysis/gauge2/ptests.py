@@ -13,6 +13,7 @@ T1  coarse vacuum mesh (problems/es/v1_small.athinput without refinement: 64^3 c
 T2  homogeneous dust universe (problems/cosmo/flrw_leak.athinput, rate 5): with
     lapse_leak_rho below the density the history equals that of the first pass.
 T4  the ball of T3 with lapse_leak_hole and no tracker: the bytes of the first pass.
+T5  the same for the first steps of L2 (bound ball, cells M/2) and of L3 (collapse mesh).
 T3  expanding ball L1 at cells of 1 M (problems/ball/ball_leak.athinput, t = 10 M): first
     pass with the release executable and with the new one (same bytes), and restricted
     to the matter, for T = 1 M and 0.5 M; shell errors against the exact solution and
@@ -79,6 +80,19 @@ def cases(new, rel):
         c[f"T3-{tag}"] = (new, b, ball_args() + [f"z4c/lapse_leak={rate}"])
         c[f"T3-{tag}-rho"] = (new, b, ball_args() + [f"z4c/lapse_leak={rate}",
                                                     f"z4c/lapse_leak_rho={RHO_BALL}"])
+    # T5: bound ball of L2 (cells M/2, 16 steps) and collapse mesh of L3 (8 steps)
+    l2 = ball_args(80, 20.0, "t2_bound_h0p5", 12.0) + ["meshblock/nx1=40", "meshblock/nx2=40",
+                                                        "meshblock/nx3=40", "time/nlim=16",
+                                                        "z4c/lapse_leak=2.0"]
+    with open(os.path.join(IC, "t2_bound_h0p25.json")) as f:
+        nt = json.load(f)["traj_ntrack"]
+    l3 = [f"particles/traj_ntrack={nt}", f"particles/particle_file={IC}/t2_bound_h0p25.nrp",
+          f"problem/comp0_file={IC}/t2_bound_h0p25.tab", "z4c/lapse_leak=2.0", "time/nlim=8"]
+    col = os.path.join(INP, "collapse_rho.athinput")
+    c["T5-l2-first"] = (new, b, l2)
+    c["T5-l2-hole"] = (new, b, l2 + ["z4c/lapse_leak_hole=5.0"])
+    c["T5-l3-first"] = (new, col, l3)
+    c["T5-l3-hole"] = (new, col, l3 + ["z4c/lapse_leak_hole=5.0"])
     c["T4-first"] = (new, b, ball_args() + ["z4c/lapse_leak=2.0"])
     c["T4-hole"] = (new, b, ball_args() + ["z4c/lapse_leak=2.0", "z4c/lapse_leak_hole=5.0"])
     return c
@@ -202,6 +216,13 @@ def main():
         check("T2 homogeneous universe: restricted to matter = first pass",
               max(dev.values()) < 1e-10,
               f"largest relative differences {dev}; lapse at the end {h1['alpha_max'][-1]:.6f}")
+    if "T5" in sel:
+        for k in ("l2", "l3"):
+            c = compare(d(f"T5-{k}-first"), d(f"T5-{k}-hole"))
+            check(f"T5 {k}: lapse_leak_hole without a tracker = first pass", not c["different"]
+                  and not c["only"] and (c["identical"] or c["payload"]),
+                  f"{len(c['identical'])} files identical, {len(c['payload'])} after the dump, "
+                  f"different {c['different']}, only {c['only']}")
     if "T4" in sel:
         c = compare(d("T4-first"), d("T4-hole"))
         check("T4 lapse_leak_hole without a tracker = first pass", not c["different"]

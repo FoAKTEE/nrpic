@@ -158,7 +158,7 @@ def main():
     fs.use_style()
     cols = fs.series_colors(max(len(runs), 2)) if hasattr(fs, "series_colors") else None
     fig, ax = plt.subplots(2, 3, figsize=(fs.FULL_WIDTH, 5.0))
-    fig.subplots_adjust(left=0.075, right=0.985, bottom=0.09, top=0.96, wspace=0.36,
+    fig.subplots_adjust(left=0.075, right=0.985, bottom=0.09, top=0.96, wspace=0.42,
                         hspace=0.28)
     color = {}
     for i, (name, h) in enumerate(runs.items()):
@@ -174,8 +174,8 @@ def main():
     for (name, h), ls in zip(refs.items(), (":", "--", "-.")):
         ax[0, 0].plot(h[:, 0], h[:, 2], color="0.5", lw=0.9, ls=ls, label=name)
         ax[0, 1].plot(h[:, 0], h[:, 1] - 1.0, color="0.5", lw=0.9, ls=ls)
-    ax[0, 0].set_ylabel(r"horizon radius (coordinate) $/M$")
-    ax[0, 1].set_ylabel(r"horizon mass $M_{\rm AH}/M-1$")
+    ax[0, 0].set_ylabel(r"horizon radius (coord.) $/M$")
+    ax[0, 1].set_ylabel(r"$M_{\rm AH}/M-1$")
     ax[0, 2].set_ylabel(r"$M_{\rm AH}$ minus control")
     mall = np.concatenate([h[h[:, 0] >= 8.0, 1] - 1.0 for h in runs.values()])
     if len(mall):
