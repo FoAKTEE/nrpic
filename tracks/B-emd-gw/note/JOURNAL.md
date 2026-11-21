@@ -412,3 +412,83 @@ citations, 0 overfull hboxes, every caption within five lines, checker clean in 
 N17 (pending items stay out). No number of the runs named pending above enters the text, a
 figure or the ledger; `grep` of their run ids in note/ finds them only in the journal and the
 README's pending list. Refuted otherwise.
+
+## Registered runs (wave 3, round 1)
+
+- B-20261120-222732-13e3e41 (commit 13e3e41, local, 1 core, exit 0): every figure, schematic and
+  table; committed copies 23 of 23 identical; claims 24 of 28 (the G0 record, unchanged).
+  Superseded after the rendered pages were read (fig_r2 legends over the data in (a) and (b);
+  run ids of multi-run ledger rows bottom-aligned; the timeline schematic still showing the waves
+  as a need between G0 and G1). Kept on record.
+- B-20261120-223319-cc5320d (commit cc5320d, exit 0): the run the note uses. `figures/` and
+  `tables/` are byte-identical copies of its outputs (checked with cmp, 0 differences over 30
+  files); fig_r2.png, schem_timeline.png and ledger.tex changed against the first run, every
+  other PNG and table identical. Recorded in `scripts/common.py` (NOTE_RUNS["v2"]).
+- Development runs into `scratch/B-emd-gw/tmp/note3/` (not cited): layout of fig_waves and fig_r2
+  (labels cut at the left edge, panel letters over markers, legends over data), all looked at.
+- The commit message of 13e3e41 calls the new ledger tables "VII-VIII"; they are Tables VI and
+  VII (Table I is the parameter table).
+
+## Outcomes of N12-N17 (2026-11-20, from run B-20261120-223319-cc5320d)
+
+N12 MOSTLY HOLDS; one sub-prediction REFUTED. Test F (oblique flat wave), TT, last dump: amplitude
+-1.409e-4, -1.717e-6, -1.574e-7, -3.10e-8; phase 2.531e-4, 1.218e-5, 2.273e-6, 7.067e-7
+(N = 16, 32, 48, 64), equal to waves/README.md. Largest |measured/symbol - 1|: 2.07 percent
+(amplitude, N = 64), 0.47 percent (phase): within the 2.5 percent predicted. Weyl minus TT 3.07e-5,
+4.91e-7, 4.42e-8, 8.47e-9, local orders 5.97, 5.94, 5.74; Weyl and TT phase errors equal to
+1.6e-11 rad; spectral Weyl minus TT <= 1.22e-11. Test X: cross polarization on the RK4()4[2S]
+prediction to <= 1.2e-4 relative at every N (holds). Plus polarization at N <= 32: 0.53 percent
+(amplitude) and 0.80 percent (phase, N = 32), so my "to 0.6 percent" is REFUTED for the phase at
+N = 32; the numbers come from predict_2s.json (ratio_2s_over_measured 0.9921) and final_results.json
+alike. The waves README's G1 paragraph says "<= 0.5 per cent (X, cross polarization at every N,
+plus polarization at N <= 32)": for the plus polarization at N = 32 it is 0.8 percent [VERIFIED,
+both files]; a rewording is requested (README, Requests). Plus at N = 48, 64: +2.6, +10.0 percent
+(amplitude), +10.2, +39.1 percent (phase), as predicted ("up to 40 percent"). First prediction
+(classical RK4, exact background) at N = 32: measured over it minus one -0.204 (amplitude), -0.045
+(phase): off by >= 15 percent in amplitude, holds. Spectral Weyl minus TT of X 1.91e-8 to 2.41e-8:
+holds.
+
+N13 HOLDS. My reduction (r2data.py) gives |measured|/|predicted| at K1 0.927-1.33 (jitter 0.3),
+0.942-1.27 (0.1); at K2 0.741-1.00, 0.728-1.01; largest |phase difference| 0.364, 0.184 (K1),
+0.081, 0.063 rad (K2); K1 ratio 0.3/0.1 2.12, 2.56 (median), 2.65; null over the eps = 0.1 signal
+0.0148, 0.0251, 0.0314 (a in 2-20, 20-80, 80-140); spectra 0.984, 0.949, 0.61. Identical to the
+first-source comparison files to 2e-12 relative over 30 numbers (ledger row r2_second).
+[JUDGEMENT] This second reading uses my own s g and the same dump selection and averaging windows
+as the helper's script (I adopted its 5 percent windows because the single-precision dumps carry
+rounding noise at delta = 0.0025), so it checks the reference and the bookkeeping, not the choice
+of method.
+
+N14 HOLDS. R(a) = 17.9, 16.8, 17.2, 19.1 (eps = 1, a = 20, 30, 40, 60) and 50.4, 16.8, 19.4, 18.3
+(eps = 0.3); windows 10.3, 12.6 (delta = 0.01) and 33.7, 41.7 (0.0025); collapse 1.06-1.47 and
+1.07-1.31; double-precision dumps 3.2e-4, 3.5e-4 for 2 <= a <= 10. In fig_r2 (c) the curves of the
+two amplitudes lie on each other within about a factor 1.5 for a delta/0.01 >= 5 (looked at).
+
+N15 HOLDS. Rerun 9.5e-13 (2 <= a <= 40), 4.7e-13 (80-140); parity: every difference 0.0 over
+2,097,152 particles and all fields.
+
+N16 HOLDS except the page count: 21 pages (predicted 19-20; the two new ledger tables take two
+full pages). latexmk and the checker: 0 undefined references, 0 undefined citations, 0 overfull
+boxes; main text clean except three hits of 4.3 for delta = 0.0025, a figure-defining parameter
+allowed by the guide (v2); the 5.5 and 5.8 hits are in the ledger appendix and the scripts
+(exception 1 of the guide). Every caption within five lines on the rendered page (the two new
+figure* captions take four and five lines). All 21 pages read at the first compile; pages 12,
+13, 14 and 21 again after the second run.
+
+N17 HOLDS. The run ids of the pending legs (B-20261119-153655-2deca0a, -143238-b7961ef,
+-144416-5f1ab7a, -153624-224805d) and of the x10 check (B-20261119-155758-458cf17) occur only in
+this journal and in README.md; the note says in one sentence each that they have run and are
+being analysed (Sec. V C; Sec. IV A).
+
+Beyond the task, found while reading the pages: the architecture schematic still showed the
+oblique wave, the double-precision dumps and the jittered lattice as "on a tested branch, not run
+by the track"; they are now green with their run ids in the docstring. The timeline schematic
+now places the waves as done and the independent check, the particle and mesh legs and the
+jitter without a wave as the needs; its old "card time" wording became "compute budget".
+
+## End of the package (14:36 PST)
+
+Done: guide and notation (Requests 1-2 and v2 entries), fig_waves (four panels), fig_r2, r2data,
+ledger Tables VI-VII and parameter rows, Sec. IV A, V A, V D, plan, summary, abstract,
+introduction; registered run B-20261120-223319-cc5320d; checker clean in the main text; pages
+read. Not done: reviewer subagents (existing draft edited in place); `nrpic-stage verify` (the
+lead's); any number of the pending legs.
