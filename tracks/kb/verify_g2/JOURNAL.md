@@ -131,3 +131,28 @@ run): kb/golden/questions.yaml version 1, 32 questions, one expected paper each,
 locations as question-level `file` and `lines` = [[a, b], ...]. My scorer's loader did not know
 this form; I added it (score_search.py, load_golden) without changing the scoring rules of
 entry 3. All 32 expected papers are in the snapshot (ad-hoc check of the loader).
+
+## Entry 6 (2026-11-21 07:53 UTC): held-out retrieval scored; prediction for the source check
+
+Outcome of R1 (score run kb-20261121-075156-b84a189 on the raw outputs of
+kb-20261120-222546-ea894c8; 24 held-out questions, all 24 answer ranges mapped, my map and
+the tool's sourcemap agree on every start offset, ends within 3 characters):
+| mode | paper hit top 10 | loc strict | loc slack 200 | paper rank 1 |
+|---|---|---|---|---|
+| text-only | 21/24 = 87.5 % | 12/24 = 50.0 % | 13/24 = 54.2 % | 14 |
+| hybrid | 22/24 = 91.7 % | 15/24 = 62.5 % | 15/24 = 62.5 % | 14 |
+| rerank | 21/24 = 87.5 % | 13/24 = 54.2 % | 14/24 = 58.3 % | 14 |
+The stated refutation bars of R1 are not met (hybrid 91.7 % is inside 60-96 %; rerank location
+58 % > 30 %; rerank is one question below hybrid, not more than two), so R1 stands, but the
+point estimates were too low: text-only paper hits 87.5 % lie above my range 55-85 % and the
+hybrid location rate 62.5 % above 25-60 %. BM25 alone does better on my paraphrased questions
+than I expected. Missed in every mode: H20 (1204.2019). Missed in some: H03 (only hybrid
+finds it), H17 (text misses), H22 (rerank misses), H24 (hybrid misses). [VERIFIED, runs above]
+
+Prediction (P2, the 15-paper source check of draw kb-20261120-223339-b842a8a, seed 20261121):
+reading each source I will agree with my scan's S, E, B, A verdicts in at least 14 of 15
+papers, and every failure verdict will turn out to be a real gap of the database (a
+bibliography or an abstract present in the source and absent from the database), not an
+artefact of my regular expressions. Refuted if two or more verdicts are wrong, or if any of
+the failure verdicts (A for astro-ph/0306304, 2009.08715, 2403.15126, 2509.01320,
+gr-qc/9906015; B for 2403.15126 and 0710.5073) is a scan artefact.
