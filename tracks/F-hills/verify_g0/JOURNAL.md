@@ -49,7 +49,7 @@ Prediction for the whole: most numbers are transcribed correctly (the ledger is 
 script from the run outputs); the defects, if any, are of interpretation: K6 ("needs"), K12/K13
 (construction of the geodesic start state), K15 (sum), K16 (stale q = 10 plan).
 
-## Entry 2 (2026-11-21 03:30 UTC, evening batch): restart, scope of C18, plan of the runs
+## Entry 2 (2026-11-21 03:00 UTC, evening batch): restart, scope of C18, plan of the runs
 
 Restart. The burst session of 14:00-14:35 PST committed entry 1 (dc5d3d31) and left four
 uncommitted scripts (`closed_forms.py`, `vint.py`, `restricted.py`, `threebody.py`) and no
