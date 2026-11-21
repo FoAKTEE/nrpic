@@ -598,3 +598,92 @@ one-core shell runs (6 cores in all).
 Refuted if any of these fails; then the size of the difference is reported against the
 physical differences between the two runs (only the build, thread count and summation order).
 Cost: 0.8-1.2 s per step at 3 threads, 25-35 min.
+
+## 2026-11-21T07:55Z  batch 2b: state found; design (part 2: step count and wall time); prediction P for the production run
+
+State at the start of this session (helper secondary_infall, batch 2b, from 07:47Z): the
+package directory clean at fd154b05; the wave-3 session before (cut at 22:35Z) had
+registered the design table (D-20261120-222358-e98ffbd), the timing run
+(D-20261120-222405-ce8922c), the matched shells of the production set-up (kernel
+D-20261120-222511-34be8a8, Plummer -222513-9849530, point -222515-c2ef5b8, hybrid
+-222758-acc6929), a hybrid reference of N128L (-222804-e5183e9) and R8, the N128Lc rerun on
+the threaded build (D-20261120-222550-e472402, completed, 1609 s, 1763 steps; NOT analysed
+yet; its prediction is the 22:27Z entry above). The production run had not been started
+and no prediction for it was written. Nothing stranded (no uncommitted file of this package).
+Orchestrator's ruling (coord/DECISIONS/0021 item 2): D-pre-3 is judged on the growth of the
+dress against matched shells and on the profile against the self-similar solution, from
+a/a_i = 3 on.
+
+Design, part 2 (step count). Run D-20261121-075022-87d85b7 (`nm_cost.py`, figure
+`nm_cost.png`, looked at): the code's step model dt = c min(dtmax, cfl dx/v_max(shells))
+calibrated on N128Lc against its kernel shells gives c = 0.706 (10-90 % of the per-record
+ratio 0.65-0.73) and reproduces N128Lc's step count (1739 model, 1760 actual). Applied to the
+production set-up (dx = 8.896 M, dtmax = 2): 3246 steps (kernel shells), 3523 (hybrid);
+120 / 360-380 / 1140-1235 steps to a/a_i = 4 / 8 / 16. With the measured 0.66 s per step on
+six threads: 0.60-0.65 h. (The point-mass shells, s = 0.05 M, would need 22 700 steps; they
+are no model of the run, whose centre is softened by the mesh.) R8 ran at 0.91 s per step
+on three threads at 128^3 with the step time rising by about 10 % from the start to the end
+(athena.log), so I allow 0.66-1.0 s per step: 0.6-1.0 h. a/a_i = 30 fits the 4-hour limit
+by a factor of four; the design of part 1 is kept unchanged (nx 192, L = 854 M, dx = 8.896 M,
+edge 1.1, 5e5 dust, clump of 19952 at a cell centre, snapshots every 9.612 M, restart files
+every 600 M), so that the four matched shell runs above remain its references. The spare
+time is not spent on a finer mesh: nx = 256 is outside this package's brief and the shells
+would have to be redone. Load before submission: 20 (one-minute), six cores.
+
+Prediction P (written before the production run starts). References: matched shells,
+analysis run D-20261121-075105-2cff004 (`nm_predict.txt`, figures `nm_predict_profiles.png`,
+`nm_predict_growth.png`, both looked at); self-similar solution of test 2
+(D-bh-dress-20261115-123813-97afeea). Two force laws bracket the run: "kernel" (the measured
+clump kernel applied to the whole enclosed mass: softens the dust like a point mass) and
+"hybrid" (kernel for the seed, the dust unsoftened outside 0.5 dx). At t = 0 the dust ball is
+only 4.1 cells in radius, so the bracket is wide here (1.6 % in M_ta at a/a_i = 30), unlike
+N128L (R_edge = 8.9 dx), where it is 0.1 % and the run lay 0.17 % above the hybrid and 0.29 %
+above the kernel at a/a_i = 8 (N128Lc 4.8159, hybrid 4.8079, kernel 4.8019 M; dress 2.1537
+against 2.1515 for both; runs D-20261115-171507-d1058a9, D-20261120-222804-e5183e9,
+D-20261115-170834-ac15adf).
+
+P1 Masses (M): shells kernel | hybrid at a/a_i = 8, 16, 30:
+   M_ta   4.712 | 4.789,   9.135 | 9.257,   16.804 | 17.073 (closed form 17.072);
+   dress  2.114 | 2.138,   4.825 | 4.907,    9.610 |  9.773.
+   The run's M_ta lies inside [kernel, hybrid] widened by 0.5 % on each side, and the dress
+   inside [kernel, hybrid] widened by 1 %, at all three; at 16 and 30 the run's M_ta lies
+   nearer the hybrid than the kernel [JUDGEMENT: a uniform ball spanning several cells
+   feels second-order accurate mesh gravity, interface section 5.3; the kernel law is the
+   cruder one for the dust]. Refuted if a value falls outside its band.
+P2 Ratios: dress/M_ta = 0.446-0.449 (8), 0.528-0.530 (16), 0.572 (30) in the shells; the
+   run within +-0.010 of these, i.e. still 7-9 % below the self-similar 0.625 at
+   a/a_i = 30, approached from below. M_ta/(M a/a_i) = 0.589-0.599 (8), 0.571-0.579 (16),
+   0.560-0.569 (30) in the shells against the asymptote 0.5648; the run within the shell
+   interval widened by 0.005. Refuted outside these bands.
+P3 Profile against the seeded self-similar rho(lambda) (selfsimilar_profile.npz binned in the
+   run's 0.1-dex bins, r_ta from the run's M_ta, range [lambda_min, 0.3], lambda_min =
+   max(4 dx/r_ta, 0.03)):
+   a/a_i = 30: lambda_min = 0.063, 7 bins; shells: largest |ratio - 1| 0.20 (kernel), 0.22
+     (hybrid), rms 0.11, 0.13. X = 25 %: every bin of the run within 25 %, rms below 15 %
+     (the run samples many more initial radii than the 4000 shells, so its bins should
+     scatter less, not more).
+   a/a_i = 16: lambda_min = 0.144, 4 bins; shells 0.22, 0.24 (rms 0.135, 0.143). X = 25 %,
+     rms below 15 %.
+   a/a_i = 8: lambda_min = 0.36 > 0.3: no bin; the production run does not test the profile
+     at 8 (N128Lc does: within 25 % on [0.1, 0.3], wave 2).
+   Refuted if one bin deviates by more than 25 % or the rms exceeds 15 % at 16 or 30.
+P4 Local logarithmic slope (centred over two bins, 0.2 dex), same range. Self-similar at
+   a/a_i = 30: -2.40, -2.43, -2.44, -2.40, -2.59, -2.84, -1.96 at lambda = 0.063-0.25 (mean
+   -2.44; least-squares slope of ln rho on the range -2.53; the steps come from the caustics).
+   Shells: mean -2.38 / -2.49, least squares -2.42 / -2.53, largest local difference 0.65 /
+   0.70. Prediction at 30: the run's mean local slope within 0.10 of -2.44, its least-squares
+   slope within 0.15 of -2.53, every local slope within 0.7 of the self-similar one. At 16
+   (two to four slopes): mean within 0.25 of the self-similar -2.51, least squares within
+   0.2 of -2.66. Refuted outside.
+P5 Clump and box: centre of mass within 0.01 dx of the cell centre, 90 % radius below 0.1 dx
+   (the clump, 0.3 M, is 0.034 dx), total momentum below 1e-2 M c; no particle leaves the box
+   (dust edge at a_end 761.7 M of 854 M). Energy is no check with the clump (wave 2).
+P6 Cost: 2500-5000 steps (model 3246-3523), 0.6-1.0 h on six threads. Refuted outside.
+What the run cannot show [VERIFIED from test 2, RUNS.md line 16]: rho ~ r^(-9/4). The
+self-similar density has the slope of m 0.705 on lambda in [3e-3, 3e-2] and 0.741 on
+[1e-4, 1e-3] (rho slopes -2.30 and -2.26); on the range this run resolves, [0.063, 0.3],
+its local slope is -2.4 to -2.8 with caustic steps. -9/4 is the asymptote below lambda ~
+1e-4, i.e. r = 0.06 M at a/a_i = 30 (r_ta = 569 M), inside the softened core and inside
+r = 2 M. Since r_ta grows as (a/a_i)^(4/3), lambda = 1e-4 reaches r = 10 M only near
+a/a_i ~ 1.5e3 [JUDGEMENT: the scaling of the closed form, not a run]. What the run tests is
+the approach to the self-similar m(lambda) and rho(lambda) on [0.06, 0.3] and the growth.
