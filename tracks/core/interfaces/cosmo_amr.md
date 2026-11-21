@@ -11,7 +11,10 @@ the periodic box (decisions 0013, 0016 item 5). Triage of the track's requests:
 [VERIFIED] measured in the run named or read at the locator, [JUDGEMENT], [TO VERIFY].
 
 Published executables: `scratch/core/exe/core_cosmo-amr/` (`athena_cpu`, `athena_gpu`,
-`COMMIT`, `SHA256SUMS`, `READY`).
+`COMMIT`, `SHA256SUMS`, `READY`): source 1548d49 since 2026-11-21; the processor
+executable is tested, the card executable has not run on a card yet (T14b pending,
+section 4.6). The executables of the first publication (source 3c44b74, card-tested in
+T14, with the defect of section 2.2) are kept in the subdirectory `3c44b74/`.
 
 Every new option is read only if it is present in the input; without them the executable
 reproduces release core-v0.3 byte for byte (section 6). Two things act by default and
@@ -376,8 +379,10 @@ A restart of an adaptive run on a card and the finder on found surfaces: T10c (s
 
 ### 4.6 Tests of 2026-11-21: the fine shape of the linear cloud, the repeats, the finder
 
-PUB = the processor executable published on 2026-11-19 (source 3c44b74), NEW2 = the
-processor build of source 1548d49 (`.work/build_cpu_b`), published on 2026-11-21. Run ids
+PUB = the processor executable published on 2026-11-19 (source 3c44b74, sha256
+74586012...; since the republication at `scratch/core/exe/core_cosmo-amr/3c44b74/`),
+NEW2 = the processor build of source 1548d49 (`.work/build_cpu_b`, sha256 0ea4080b...),
+published on 2026-11-21 03:54 UTC as `scratch/core/exe/core_cosmo-amr/athena_cpu`. Run ids
 `core-20261121-HHMMSS-<commit7>` unless written in full. All [VERIFIED] in the run named.
 
 | Test | What | Run | Result |
