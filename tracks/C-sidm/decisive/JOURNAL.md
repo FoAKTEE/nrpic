@@ -584,7 +584,7 @@ either with time (1.29 x CC2's 206.6 M = 267 M) or with collisions per particle 
 before 300 M, and if it comes, after 240 M. A collapse before 240 M, or D100 above 0.040, would
 mean that at Kn = 10 the model's distance from the onset matters even less than at Kn = 1.
 
-## 2026-11-21 06:28 UTC Entry 13: outcome of job 4 (D3 at Kn = 10, CC2 cell seed 2); job 5 submitted
+## 2026-11-21 06:25 UTC Entry 13: outcome of job 4 (D3 at Kn = 10, CC2 cell seed 2); job 5 submitted
 
 Job 4 (run C-20261121-052716-6b64f97, Slurm 4767) ran 05:48:36-06:23:47 UTC (35.2 min), exit 0
 for the smoke run, d3_kn10_part_s1 (1065 s) and cc2_kn10_cell_s2 (1040 s); closed with
