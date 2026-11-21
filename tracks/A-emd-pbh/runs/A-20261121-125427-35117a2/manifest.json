@@ -1,0 +1,149 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261121-125427-35117a2",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "verify_bh C2: initial slice of BH-1R and BH-1 (M/4, M/6, M/8) against the table: psi, K, deposited E on the x line at t=0, particle masses, total and rest mass",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "OMP_NUM_THREADS=1 python tracks/A-emd-pbh/verify_bh/scripts/c2_initial.py"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "35117a21b16777887b00ca02c22a9fc6a76d01d9",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/verify_bh"
+    ],
+    "outside_package": {
+      "count": 4,
+      "first": [
+        " M tracks/A-emd-pbh/periodic_threshold/JOURNAL.md",
+        "?? tracks/A-emd-pbh/periodic_threshold/inputs/peak_leak.athinput",
+        "?? tracks/A-emd-pbh/periodic_threshold/scripts/ltb_reference.py",
+        "?? tracks/A-emd-pbh/periodic_threshold/scripts/ltbref.py"
+      ]
+    },
+    "merge_base_main": "973f2dbc2e32338b1ea99d14ee4d03719af9a8c7",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-143524-334e553/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+      "role": "input",
+      "sha256": "cc046c81b217a95431e8153790f9b67b7189ede2d53d1227015edab7ae6b388b",
+      "bytes": 880635,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-143524-334e553/lat34/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_lat34_track.nrp",
+      "role": "input",
+      "sha256": "760b7d20782675f29841151e4a84a8a427ee31e96d36ca1feccb69040854c33e",
+      "bytes": 1240336,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-143524-334e553/lat51/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_lat51_track.nrp",
+      "role": "input",
+      "sha256": "01abd0e5eced2c8393777e0200ece47785fbaf7cff554ebe109e079f626e7aff",
+      "bytes": 4175956,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-143524-334e553/lat68/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_lat68_track.nrp",
+      "role": "input",
+      "sha256": "5d7601d1dea2d3b2cef605b5bd13588b1f76c9162766b886883ef1d5dc4c1c61",
+      "bytes": 9898096,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-164113-74f0f32/lat136/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_lat136_track.nrp",
+      "role": "input",
+      "sha256": "ba224fca543ecdb977ae03b4b8e9d9cbef186825b0562b3f2ba9e41e5954e9f6",
+      "bytes": 79032976,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-164634-f1fe887/bh_smr/ball.nrpic.hst",
+      "role": "input",
+      "sha256": "5615a12f21bb36d672343f495d03650606c2988aa21ba765c5fb762fa78b2dbc",
+      "bytes": 595933,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-164634-f1fe887/bh_smr/tab/ball.adm.00000.tab",
+      "role": "input",
+      "sha256": "0a49d0c4033f2b258a8feb6365c43a67684236a518745c1950598b3483fb7afc",
+      "bytes": 90133,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261121-125427-35117a2",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T12:54:28Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 5.4211,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 0,
+    "runs": 194,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
