@@ -201,4 +201,52 @@ card-hours, plus the third job (core-20261121-080215-df3af65, asked 25 minutes).
 
 ## 7. Tests of this package and their state
 
-@@SECTION7@@
+State on 2026-11-21. "Held" and "failed" refer to the predictions written in the
+journal before each run; a failed prediction is a result, not a defect of the code,
+unless the row says so. Processor runs with the pre-merge build (source c6293772) unless
+marked; T11 and T12 with the build of the merged source (release core-v0.5 plus this
+package, commit 67ca9ce1).
+
+| Test | Subject | Runs (cases; judgement) | Outcome |
+|---|---|---|---|
+| T1 | Fourier solver against the multigrid solver, the numpy scheme, a mesh with radices 3, 5, 7 | core-20261119-144414-c629377; core-20261119-145129-e89a132 | held: 2.2e-15 of the box, 3.9e-16, 1.8e-12 |
+| T2 | Track B's pancake against Zel'dovich, spectral symbol, n = 16, 32, 64 | core-20261119-150559-c1ff7ca, card core-20261119-145346-2f89b86; core-20261120-222443-f0bc314 | held: error at a = 2 lower by 17, 14.6, 7.7; within 13 and 6 per cent of `pm.py`. Failed: "mode minus `pm.py` below 5e-5 at a = 5" (6.6e-5 at n = 32) |
+| T3 | group history on the exact pancake, tag range, restart | core-20261119-160919-c6a7279; core-20261120-222422-4ef2e80 | held (parallel-axis shift 3.9e-12, physical columns 7e-16, slab I and dI 340 and 129 times better with the spectral symbol, continued files identical). Failed on the low side: d3I rms 0.26 per cent, predicted 0.5 to 1.5 |
+| T4a | deformed-ball generator against Track A's | core-20261119-152228-0ad3c0e; core-20261119-152928-6be4984 | held: equal in every value |
+| T4b, T4c | embedded ellipsoid at 64^3 against Track B's ODE, Fourier and multigrid | core-20261119-162746-a02d334, core-20261119-162455-e05ffa1; core-20261120-222425-078bcc0 | failed in three of four parts: first minimum of the short axis +2.56 (Fourier) and +1.29 per cent (multigrid) against "within 2"; semi-axes off by up to 0.11 R_L against 0.03; solvers 1.25 per cent apart against 0.3. Not refuted (5 per cent) |
+| T4d | the same with the kernels of T2, and against the cell size | card core-20261120-221835-4870ae5; core-20261121-081511-37acd23 | 64^3 with the cubic cloud: +0.92 per cent, held; "axes below 0.045" failed (0.047). 96^3 did not run (deck fault: MeshBlocks of 48^3). 96^3, 128^3, 256^3: card job core-20261121-080215-df3af65, PENDING |
+| T5 | Track D's secondary infall onto `newton_pm_mass` | core-20261119-165257-61d4b78; core-20261120-222417-4ca3f76 | held: turnaround mass on the closed form at a/a_i = 2 and within 2.6e-4 at 4, both placements equal; within 0.7 per cent at all 45 snapshots |
+| T6 | multigrid on a refined mesh, ball across the level boundary, lattice 0.0625 | core-20261119-160027-2c0c171; core-20261120-222437-191d56a | converges: held. Conservation within ten times the uniform mesh: failed (44 times in the momentum) |
+| T6b | ball inside the fine region, lattice 0.0625 | core-20261119-165447-0b9cb1e; core-20261120-222429-8971bdb | refined equals uniform 128^3 to 3e-4: held. Momentum below 1e-4: failed (2.1e-3 on both), and the conclusion I had attached to that failure was wrong |
+| T6c | the lattice against the cell size: coarser (64^3, lattice 0.125), fine (lattice 0.03125) inside and across the boundary | core-20261120-221737-74eed8b, card core-20261120-221835-4870ae5; core-20261120-222151-512227c, core-20261121-081457-ac86529, core-20261121-081505-3fa1046 | kick on a uniform mesh with a coarse lattice: held (1.15e-2; my range ended at 1e-2). No kick with a fine lattice on any mesh: held (1e-5). Ball across the boundary at most 3e-4: held (5.1e-5); "within five times the uniform mesh": 4.6, 5.3 (failed), 2.6 |
+| T7 | Layzer-Irvine drift against the step | core-20261119-153710-13876fa; core-20261119-160023-99dc253 | held: unchanged at half the step (0.27 and 0.03 per cent) |
+| T8 | self-force of one particle | core-20261119-152207-d4e656c; core-20261119-152742-a6810bd | held: slope 1.80 G m/dx^3 at a vertex, stable cell centre, 5.9 times smaller with the cubic cloud |
+| T9 | throughput on a card (a measurement) | card core-20261119-145346-2f89b86; core-20261120-220427-5d8547f | section 6 |
+| T10 | byte regression of the pre-merge build against the branch start and release core-v0.3 | core-20261119-152944-b2f41d3; core-20261119-160915-40df1d6 | held: 91 files identical to the branch start; against the release only `last_time` lines of four parameter dumps (correction of the branch start) |
+| card twins | T1 and T3 on a card, pre-merge card build | card core-20261119-145346-2f89b86; core-20261120-220427-5d8547f | held: positions within 1.4e-15 of the box, K and W 7.3e-13, group columns 6e-13 |
+| T11a | merged processor build against release core-v0.5, new options absent, sixteen set-ups | core-20261121-080231-a98a070, core-20261121-080229-0095e95; core-20261121-080954-30dec42 | held: 117 of 117 items identical |
+| T11b | merged processor build against the files of the pre-merge build, Fourier solver and groups | core-20261121-080229-0095e95; core-20261121-080954-30dec42 | 50 result files identical; seven restart files differ in the 36 never-set bytes of the mesh header only (a class my prediction did not name) |
+| T11c | card twins of T1 on the merged card build | card job core-20261121-080215-df3af65 | PENDING (Slurm 4777) |
+| T12 | the example lines of READY with the published processor executable | core-20261121-081316-b153b46 | held: all run; the refined-mesh example equals the card run of T6c to 2.2e-13 over 20 steps |
+
+Lines of shared source files touched by this package (for the merge into `core/nrpic`;
+relative to tag core-v0.5): `athenak/src/CMakeLists.txt` two lines after
+`particles/nrpic_newton.cpp`; `athenak/src/particles/particles.hpp` one block of 38
+lines after `NrpicNewtonReadRestart` (members `nw_fft*`, `nw_grp*`, seven methods);
+`athenak/src/particles/nrpic_newton.cpp`: two calls in `NrpicNewtonInit`, one in
+`NrpicNewtonInitialize`, the branch around `SolveSource` in `NrpicNewtonPotential`, one
+call in `NrpicNewtonFinishStep`, one at the end of `NrpicNewtonWriteHistory`. The merge
+of main (core-v0.4, core-v0.5) into this branch had two conflicts, both "each side
+added lines at the same place" (`CMakeLists.txt`, `particles.hpp`), resolved by keeping
+both; the branch now differs from tag core-v0.5 by this package only, so its merge into
+`core/nrpic` should need no resolution.
+
+Published: `/data/haiyangw/nrpic/scratch/core/exe/core_newton-2/` (`athena_cpu`,
+`athena_gpu` of the merged source; `premerge/` the pair every test before T11 ran
+with; COMMIT, SHA256SUMS, READY; copies of READY and COMMIT in
+`tracks/core/analysis/newton2/`).
+
+Not done: the judgement of card job core-20261121-080215-df3af65 (T11c, T4d at 96^3,
+128^3, 256^3); the relativistic self-force test of section 4; a separation of the two
+candidate terms at a level boundary (section 5); a profile of the isolated solver on a
+card (section 6).

@@ -424,10 +424,13 @@ of the deposit in this mode; adaptive refinement (the re-initialisation after a 
 change is written, `NrpicNewtonInitialize`, and has never run); the Fourier solver
 (uniform meshes only, by construction).
 
-**Cards.** Verified on one A100 for the isolated collapse on a uniform mesh only. Not
-run on a card: the periodic and expanding case, restart, refined meshes (the octets of
-the multigrid solver run on the host). Card time used by this work package: 0.19
-card-hours (Slurm jobs 4382 and 4405).
+**Cards.** Verified on one A100: the isolated collapse on a uniform mesh (first pass);
+the periodic expanding plane wave with the multigrid and the Fourier solver and the
+group history, each equal to its processor run to rounding through shell crossing
+(7.11); a ball on a mesh with one static level, 20 steps of the processor run equal to
+the card run to 2.2e-13 (7.12). Not run on a card: restart. Card time: first pass 0.19
+card-hours (Slurm jobs 4382 and 4405), second pass 0.36 (jobs 4648 and 4736) and the
+job of 7.12.
 
 **MPI.** One rank. The particle module runs on several ranks since release core-v0.5
 (`interfaces/mpi.md`), but `pusher = newton` stops there with a message
@@ -483,7 +486,7 @@ test), 1.4e5 particles (collapse).
 ## 7. Second pass (work package newton2, branch `core/newton-2`, 2026-11-19)
 
 Requests answered: `tracks/core/interfaces/REQUESTS_NEWTON2.md` (triage, files and lines
-touched). Predictions and outcomes of the tests T1 to T10: `tracks/core/JOURNAL-newton2.md`;
+touched, table of all tests). Predictions and outcomes of the tests T1 to T12: `tracks/core/JOURNAL-newton2.md`;
 scripts `tracks/core/analysis/newton2/` (`cases.py` runs the cases, `t<n>_*.py` judge
 them); figures and result files `tracks/core/analysis/newton2/figs/`. Every option below
 is read only if it is present in the input, and without it the output of a run is the
@@ -859,3 +862,30 @@ judged by core-20261120-220427-5d8547f, figure `card_judge.png`) [VERIFIED]:
   where the time goes was not profiled [TO VERIFY] (the sums of the multipole moments
   run on the host, section 1). Track B's pancake at n = 64 (262144 particles): 13.5 ms
   per step, 1.9e7 particle updates per second.
+
+### 7.12 The package on release core-v0.5: tests T11 and T12
+
+On 2026-11-21 main (releases core-v0.4 and core-v0.5) was merged into `core/newton-2`;
+the branch differs from tag core-v0.5 by this package only. The tests above ran with
+the builds of the source before that merge (commit c6293772); the merged source was
+built again and checked [VERIFIED; journal sections T11, T12]:
+- New options absent: sixteen existing set-ups (the twelve of the release regression,
+  the ball, point and plane-wave tests of this mode, the static mesh) give the files of
+  release core-v0.5, 117 of 117 items identical (runs core-20261121-080231-a98a070,
+  core-20261121-080229-0095e95; judgement core-20261121-080954-30dec42, figure
+  `t11_merged.png`).
+- New options present: the plane wave with the Fourier solver and both symbols (T1) and
+  the pancake with two groups and three dumps (T3), started from the decks of the
+  pre-merge runs, give the same bytes in every history, group and snapshot file (50
+  files); the seven restart files differ only in the 36 bytes of the mesh header that
+  the code never sets.
+- The example inputs of 7.1, 7.2 and 7.6 run with the published processor executable
+  as the READY file prints them (run core-20261121-081316-b153b46, figure
+  `ready_examples.png`); the ball on the refined mesh agrees with its card run (T6c,
+  pre-merge card build) to 2.2e-13 in columns 5 to 18 of the history over 20 steps.
+- Not yet judged: the card twins of T1 with the merged card build and the embedded
+  ellipsoid at 96^3, 128^3 and 256^3 (card job core-20261121-080215-df3af65, Slurm
+  4777, queued on 2026-11-21 08:02Z). Until then the merged card executable is
+  untested on a card.
+Executables: `/data/haiyangw/nrpic/scratch/core/exe/core_newton-2/` (READY, COMMIT,
+SHA256SUMS; `premerge/` holds the pair the earlier tests ran with).
