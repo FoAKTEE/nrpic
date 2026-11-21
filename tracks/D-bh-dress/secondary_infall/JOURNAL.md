@@ -715,7 +715,7 @@ wave-2 analysis D-20261115-190541-e27453d to 1e-12 relative (the new bins only e
 lists: the first 27 bin edges are equal to 1e-15); the only differences are added keys and
 longer lists. Refuted if any common leaf differs by more than 1e-12.
 
-## 2026-11-21T08:50Z  outcomes: production run P192, R8 (threaded build), regression T
+## 2026-11-21T08:43Z  outcomes: production run P192, R8 (threaded build), regression T
 
 Runs: production D-20261121-075559-31835c4 (completed, exit 0, 2914 steps, 2504 s on six
 threads); its analysis D-20261121-083847-95e881c (`nm_late.txt`, `nm_analysis.json`,
