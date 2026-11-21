@@ -241,3 +241,35 @@ changed my mind about: C18 scope: I had expected verifier_c18 to close it; its b
 wave-1 pancake and homogeneous rows out, so one more package (or a ruling) is needed.
 open: verifier_c18b or a ruling (orch); note v3; flrw_conv, shear, population (HANDOFF).
 Card-hours this session: 0 (processors only); owner total 2.51 of 40.
+
+## 2026-11-21T20:19Z  lead batch 5 (wave 3, cards first)  commits dc3020e6..  runs B-20261121-202304-dc3020e, -202335-3e6a898, -202359-d12511c, -202503-abdf6f0, -202548-3c3de2f, -202758-544416e, -202830-417af0c, -202946-ec4a156, -203254-928275f, -203426-ea1e945
+
+did: merged main (edc49c3c: rulings 0025). Loaded the cards first (decision 0025 item 4):
+flrw_conv J2 (batch, Slurm 4824) and J3 (chain, 4825; 128^3 now to a = 1001, new deck with
+restart output), both with J1's core-v0.3 executable, predictions in flrw_conv/JOURNAL.md
+entry 4 before submission. Shear: nprobe = 0, smoke run on the release v0.6 processor build,
+series 1 of 27 cases (one failed launch on a negative fan centre read as an option, fixed).
+Population: deck of the first full-GR run (128^3, L = 8, to a = 143, double dumps, snapshots,
+restarts), predictions G1-G4, initial data at sigma1 = 0.028 started; a sequencer
+(cards/sequencer.py, queue.json, setsid nohup, pid in scratch/B-emd-gw/sequencer/pid) submits the
+GR chain when the data converge and a card slot is free, then sigma1 = 0.014. G1: ledger rows 34,
+56, 59, 63 reworded as VERIFIER-C18b asks; the owed v3 corrections (rows 101, 118, 125, 168, 197)
+and the (1 + eps^2) sentence with its range and a new ledger row; note rebuilt, checker clean as
+in v2. Lead check of verifier_c18b from the artefacts with my own reader (prediction in
+review_wave3/JOURNAL.md first). CHECKLIST C18 PASS, OPEN.md without owed items; collect, verify
+(background), report.
+found: line 59 confirmed as the verifier says: over all records 0.00751 (a = 22.56) and 0.00254
+(a = 23.31); the printed 0.00706, 0.00203 are the maxima at the records nearest the five dumps.
+The verifier's pancake.py and small_rows.py rerun byte for byte. Smoke run: cos(theta) =
+1.43108e-3 against 1.43117e-3 linear (prediction met). Shear series: the f = 1 lapse leg stopped
+at t = 0.578 (guard, non-finite Khat; failed run, cause unknown); the L2 ray analysis failed at
+N_y = 32 and 64 (NaN in the transport step). Population data: outer contraction about 0.48 per
+iteration at 128^3, so the 1e-9 stopping tolerance may not be reached within 18 iterations
+(my prediction said it would); the sequencer accepts the data below 1e-7 and a Hamiltonian
+residual below 1e-9.
+failed: run B-20261121-202503-abdf6f0 (shear series, initial data refused a negative fan
+centre; my error in run_cases.py); S1_n64_lap1 inside series 1 (guard stop).
+changed my mind about: J3 to a = 51 only: with card time free (0025) the 128^3 leg runs to
+a = 1001, which tests PB3 over the whole expansion.
+open: analyse flrw_conv, shear, population runs (HANDOFF); orch's review of G1.
+Card-hours this session: none used yet; queued about 4.5 (J2, J3, two population runs).
