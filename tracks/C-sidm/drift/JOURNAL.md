@@ -467,7 +467,7 @@ Reading [JUDGEMENT]:
 Card-hours so far: (i) 0.69, (iii) 0.69 = 1.38 of 3.0. Run (vi) submitted 14:00 UTC as
 C-20261121-140023-b0f113e (Slurm 4804), pending behind six jobs of other owners.
 
-## 2026-11-21 14:05 UTC Entry 13: predictions for test D2 (noise heating from the particle records, no card)
+## 2026-11-21 14:03 UTC Entry 13: predictions for test D2 (noise heating from the particle records, no card)
 
 While (vi) waits for a card: every control writes all 1e5 particles with the metric at their
 positions every 25 M (`traj_ntrack = 100000`), so the Killing energy E_K = alpha W - beta.u of
