@@ -18,8 +18,8 @@ def grab(src, name, nxt):
 SRC = grab(core_js, 'SRC', 'CL'); CLERK = grab(core_js, 'CLERK', 'SLOT'); GATE = grab(rounds_js, 'GATE', 'AUX')
 pre = core_js[core_js.index('const ROOT = '):core_js.index('const SRC = ')]
 fn = core_js[core_js.index('const CW = ROOT'):core_js.index('// release candidate v0.4')].replace("phase: v === 'v0.6' ? 'Round' : 'Release ' + v", "phase: 'Core'")
-OWN = {'A-emd-pbh': 'track/A-emd-pbh', 'B-emd-gw': 'track/B-emd-gw', 'C-sidm': 'track/C-sidm', 'D-bh-dress': 'track/D-bh-dress', 'E-stoch-inf': 'track/E-stoch-inf', 'F-hills': 'track/F-hills', 'kb': 'kb/main'}
-READ = {'A-emd-pbh': 'problem S1 335-365; track sheet 708-725; verification suite 834-860', 'B-emd-gw': 'problem S2 366-379; track sheet 727-745; verification suite 834-860', 'C-sidm': 'problem S3 380-393; track sheet 747-764; verification suite 834-860', 'D-bh-dress': 'problem S4 394-405; track sheet 766-783; verification suite 834-860', 'E-stoch-inf': 'problem S11 445-465; track sheet 785-802; verification suite 834-860', 'F-hills': 'problem S12 466-492; track sheet 804-822; verification suite 834-860', 'kb': 'knowledge base 1218-1461'}
+OWN = {'A-emd-pbh': 'track/A-emd-pbh', 'B-emd-gw': 'track/B-emd-gw', 'C-sidm': 'track/C-sidm', 'D-bh-dress': 'track/D-bh-dress', 'E-stoch-inf': 'track/E-stoch-inf', 'F-hills': 'track/F-hills', 'kb': 'kb/main', 'core': 'core/nrpic'}
+READ = {'core': 'verification suite 834-860; stage gates 674-686; core track sheet 688-706', 'A-emd-pbh': 'problem S1 335-365; track sheet 708-725; verification suite 834-860', 'B-emd-gw': 'problem S2 366-379; track sheet 727-745; verification suite 834-860', 'C-sidm': 'problem S3 380-393; track sheet 747-764; verification suite 834-860', 'D-bh-dress': 'problem S4 394-405; track sheet 766-783; verification suite 834-860', 'E-stoch-inf': 'problem S11 445-465; track sheet 785-802; verification suite 834-860', 'F-hills': 'problem S12 466-492; track sheet 804-822; verification suite 834-860', 'kb': 'knowledge base 1218-1461'}
 items = []
 for it in spec['items']:
     it = dict(it)
