@@ -68,14 +68,14 @@ Test X (EdS, side 4, k = (pi/2)(1,1,0), eps_+ = 2e-6, eps_x = 1e-6, t = 0..10), 
 - Steps (from the dump cycles): dt = 0.0106 near t = 0 at every N (expansion limit
   0.01 (1 + t/2)), then h/4 from t = 1.1 (N64), 2.1 (N48), 4.2 (N32), never at N16.
 - The amplitude error changes sign (a gain) from N = 32 on and converges with orders 2.8 and
-  3.9; the gain appears when the step becomes h/4 and is the same for both polarizations and
-  both amplitudes.
+  3.9; the gain appears after the step has become h/4 (at t ~ 2.2 for N48 and N64, t ~ 4 for
+  N32) and is the same for both polarizations and both amplitudes.
 - Plus/cross: the argument of Z_x/Z_+ deviates by 4.0e-9, 2.44e-8, 5.98e-8, 1.09e-7 (N = 16..64)
   and by 1.09e-8 at x10: ten times smaller relative error at ten times the amplitude, i.e. a
   fixed absolute error ~2e-13 in the components that carry e+ (rounding). Moduli agree to
   <= 2.1e-9 (x1) and 2.8e-10 (x10).
-- TT vs spectral Weyl: N- and amplitude-independent 2e-8, following the zeros of the mode and
-  0.6-0.7 of |calH_num/calH - 1| (my Weyl inversion uses calH = -alpha K/3 of the numerical
+- TT vs spectral Weyl: N- and amplitude-independent 2e-8, following the zeros of the mode and,
+  at late times, 0.6-0.7 of |calH_num/calH - 1| (my Weyl inversion uses calH = -alpha K/3 of the numerical
   background) [VERIFIED, `figs/v3_X_diag_diff.png`].
 
 ## 3. Verdicts on the claims of waves/README.md (Results and Open) about F and X
