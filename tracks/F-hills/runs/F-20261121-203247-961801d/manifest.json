@@ -1,0 +1,131 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "F-20261121-203247-961801d",
+  "track": "F-hills",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "P1b at m/12 (run C of lead batch 5): the passage of P1b at the second member resolution (R12 = R16n alone within 0.002 M), tlim 200, 25 segments; held until run B (R16n extension) has ended, released by binary_conv/scripts/seq_release.sh",
+  "preregistered_in": "tracks/F-hills/JOURNAL.md#card-runs-loaded-in-this-session-decision-0025-items-4-5-predictions-before-submission",
+  "launcher": "chain",
+  "command": [
+    "scripts/submit_chain.sh",
+    "/data/haiyangw/nrpic/scratch/F-hills/F-20261121-203247-961801d",
+    "/data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/binary_conv/inputs/p1b_R12.athinput",
+    "time/tlim=200"
+  ],
+  "cwd": "scratch/F-hills/F-20261121-203247-961801d",
+  "git": {
+    "sha": "961801d9f269b9b89a6fa0eb983640f63e584cd5",
+    "branch": "track/F-hills",
+    "dirty": false,
+    "package": [
+      "tracks/F-hills/binary_conv"
+    ],
+    "outside_package": {
+      "count": 1,
+      "first": [
+        "?? tracks/F-hills/g2mesh/scripts/card_analysis.py"
+      ]
+    },
+    "merge_base_main": "edc49c3c2bfc34ed7b43f53231af641c7df90d2b",
+    "worktree": "wt/F-hills"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/binary_conv/scripts/athena_keep_trackers_bc.sh",
+    "exe_sha256": "2f019d8f859ddc239cd2fb07c7bc364b640836b2d25ad6cb969572797e86085a",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/F-hills/.venv"
+  },
+  "input": {
+    "file": "tracks/F-hills/binary_conv/inputs/p1b_R12.athinput",
+    "sha256": "e898de05638f1e156aff472f41c4a6ec412c3eedf3303250036c40261f41010e",
+    "overrides": {
+      "time/tlim": "200"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/F-hills/tmp/binary_conv/exe/bc-ak05-gpu",
+      "role": "input",
+      "sha256": "2512c8d59af960093e86eb05add6485ca8ad08e8f6ba8b03b099166507b61ea4",
+      "bytes": 107789152,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/F-hills/binary_conv/scripts/athena_keep_trackers_bc.sh",
+      "role": "exe",
+      "sha256": "2f019d8f859ddc239cd2fb07c7bc364b640836b2d25ad6cb969572797e86085a",
+      "bytes": 1407,
+      "tracked": true
+    },
+    {
+      "path": "tracks/F-hills/binary_conv/inputs/p1b_R12.athinput",
+      "role": "athinput",
+      "sha256": "e898de05638f1e156aff472f41c4a6ec412c3eedf3303250036c40261f41010e",
+      "bytes": 3223,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": 25,
+    "gpu_hours_requested": 24.5833,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "F-20261121-203247-961801d",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/F-hills/F-20261121-203247-961801d",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-21T20:32:48Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "F-20261119-150017-b45ec5f",
+    "F-20261121-153707-1eaa5d4",
+    "F-20261121-202021-3c4321e"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 50.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0514,
+    "gpu_hours_reserved": 12.7833,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 237,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
