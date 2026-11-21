@@ -96,7 +96,9 @@ as core did for its scouting input `by_triple.athinput` (header l. 1-8, Newtonia
   binary period is 103 GM/c^3: the binary turns about twice during the passage, and
   Peters/passage = 28, so it survives until the encounter. [VERIFIED]
 - Speeds: v_b = (a_b/r_gb)^(-1/2) = 0.18 c and v_ej ~ v_b q^(1/6) = 0.27 c at q = 10,
-  a_b = 30 [BACKGROUND scaling, 0911.1136 l. 92-106]: the ejected member is relativistic;
+  a_b = 30 [BACKGROUND scaling, 0911.1136 prp.tex:106-110 (corrected 2026-11-21, lead, after
+  coord/BRIEF_ERRATA.md row 2.81); prefactor taken as 1; kb's reading of Hills' numbers gives
+  1.10-1.35, i.e. 0.30-0.36 c (run kb-20261119-153659-4688c5b) TO VERIFY]: the ejected member is relativistic;
   the energy split is not a small correction to the Newtonian one. [JUDGEMENT]
 - The restricted three-body approximation behind the Newtonian scalings needs
   (M/m)^(1/3) >> 1 [VERIFIED: 0911.1136 l. 138-139]; at q = 10 it is 2.15. The Newtonian

@@ -104,7 +104,7 @@ found at all.
 - **arXiv:2605.22525** (Maeda, Okawa 2026): binary in the local inertial frame of Kerr
   with Riemann tidal terms; adiabatic, tidally affected, chaotic and disruptive regimes
   for unbound orbits. [VERIFIED: abstract] Not NR.
-- **arXiv:1203.6185** (Bai et al. 2011): a binary black hole in the potential of a third
+- **arXiv:1203.6185** (Cao, Yu, Lin and Bai 2012 on arXiv, `kb-data/meta/arxiv-api/1203.6185.json`; cited as "Bai et al. 2011" before 2026-11-21, errata section 5): a binary black hole in the potential of a third
   hole by a perturbative scheme, "instead of simulating the three-BH problem with a
   fully relativistic treatment". [VERIFIED: abstract]
 - Matter binaries: SPH with Newtonian self-gravity on a Schwarzschild or Kerr

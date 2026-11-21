@@ -289,3 +289,32 @@ Where I stopped (everything below is committed):
   damping and single-member junk; Kerr comparison) and Requests (guide: allowed numbers
   eta m = 2 and 0.25, P = m/4, cells m/4; outline: Sec. IV split into reference solutions and
   full relativity); (4) commit main.pdf and push.
+
+## 2026-11-21 Lead (batch 2a): corrections from the G0 verifier (stage/G0/VERIFIER.md)
+
+Applied by the lead to `main.tex` (text only; nothing rerun, the PDF is not rebuilt):
+- Sec. IV A (old l. 129): the BKRS fits are followed "to about one and a half times their stated
+  accuracy" (VERIFIER K3, D10: 0.015 and 0.017 against one percent); the inner retrograde
+  difference is closed at the innermost point by the verifier's run F-20261121-030155-1061bcb
+  (wide pairs followed), the second inner point is not rerun (N2).
+- Sec. IV B (old l. 140): "stays small ... throughout" was wrong (VERIFIER N1, D7; lead's run
+  F-20261121-063504-00f0743: a/R_curv at any time 0.199 prograde at beta = 10, 0.0056 while
+  bound); the sentence now says so.
+
+To apply on resume (in `scripts/ledger.py`, then the registered rerun of `run_all.py`; they
+change the predicted "ledger rows unchanged" of the pending rerun, so predict them first):
+1. Row "largest a_b/R_curv of a bound binary at beta = 10" (0.0056): add the any-time value
+   0.199 (s1.npz `alpha_all`, run F-hills-20261115-130405-ce17dcf) as a second number (D7).
+2. q = 4 geodesic ejected energy 0.9703: three digits and the time of evaluation; it drifts
+   0.9777 (t = 600 M) to 0.9650 (1500 M) (D9, verifier run F-20261121-030138-8d3ca16).
+3. q = 10 geodesic "plunges at t = 97.1 M": the crossing of 2.5 M is at 96.9 M; 97.1 is the first
+   sample inside (D9).
+4. Row "card memory, MeshBlock slots: about 3000" with locator `multi_puncture.md` lines 229-230:
+   release core-v0.4 rewrote the paragraph; now lines 235-247, "about 3100 slots with three
+   finders" (the lead's rerun of the verifier's ledger check, run F-20261121-063712-25981e0, fails
+   this row only).
+5. Every r_p of the first passages with the GR turning point beside it (D1): q = 4 9.81 M
+   (turning 9.25 M), q = 10 8.00 M (5.77 M) - table 3 has them; the text of Sec. II should say so.
+6. V7 percentages at r_p = 12-13 M (table 2) only with their construction (circular binary
+   released at 4 r_t); the plan's start rule (state integrated from 10 r_t) gives other numbers
+   (D2, verifier runs F-20261121-031920-5e6425e, F-20261121-034434-0113a18, F-20261121-040103-6b9074c).
