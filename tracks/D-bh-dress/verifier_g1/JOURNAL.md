@@ -211,3 +211,28 @@ Predictions for the registered run (what would make each claim WRONG):
   the track's 3.92e18; if mine were within 1 per cent of FdRW, the track's reference would be
   WRONG; if mine differed from both by more than 2 per cent, my own code is suspect.
 - Axis (theta = 0) cases: not computed (no claim on the axis will be CONFIRMED by me).
+
+## Entry 4 (2026-11-20 19:45 PST): V4, AthenaK stationarity in Kerr a = 0.8, prediction
+
+Script `v4_kerr_stat.py`: my reader over all 12 x 201 snapshots of run
+D-bh-dress-20261115-172611-1e40191; E, Lz, Q from the Kerr-Schild state with my formulas
+(module docstring; geometry from nrpic_metrics.hpp:22-85); counts in r ranges 0-4, 4-6, 6-10,
+10-16, 16-40 M; my reference counts from an off-equator generalisation of v3_kerr.py (C >=
+Lz^2/sin^2 + a^2(1-E^2)cos^2, J_t, J_phi with 1/sin(theta), n = J^t Sigma^2 sin(theta)) for
+the Hernquist DF cut at E < 0.99, normalised to all 48000 particles; block means of 1000 M
+for the uncertainty of time averages.
+Smoke tests (not registered): particles at t = 0 have 0.9085 <= E <= 0.98999816, so the cut
+E < 0.99 of the sampler's arguments is what the particles carry; chunk 0, t = 0 -> 20000 M:
+max |dE/E| 6.7e-6, |dLz| 6.4e-10, |dQ|/max(Q,1) 4.6e-6; my off-equator reference at mu = 0
+equals my equatorial code to 2e-6.
+
+Predictions:
+- P4a late/early ratios per range in 0.998-1.004 (claim 0.998-1.003). WRONG if any range is
+  outside 0.99-1.01 or differs from the claim by more than 0.003.
+- P4b over all particles and 20000 M: max |dE/E| < 1e-5, max |dQ|/max(Q,1) < 1e-5,
+  |dLz| < 1e-8. WRONG if any maximum exceeds 2e-5.
+- P4c my reference counts within 2 per cent of the track's expected counts in every range;
+  time averages 1-5 per cent below mine in 0-4, 4-6, 6-10, each at about one standard error
+  (block estimate), and within 0.5 per cent in 10-16 and 16-40. WRONG if my reference
+  differs from the track's by more than 3 per cent in an inner range (then the claimed
+  deficit is a property of their reference), or if an inner time average lies above mine.
