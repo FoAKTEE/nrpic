@@ -67,3 +67,41 @@ No card-hours used.
 - **core**: `docs/FORMATS.md` line 122 describes `.trajmet.bin` records as 12 values; the code
   (`athenak/src/particles/nrpic_io.cpp:811`) and `coord/INTERFACES/diagnostics.md` section 6
   write 17 (with the particle's proper time, E and S_i).
+
+## Close-out, wave 3 (g1close helper of A-emd-pbh, 2026-11-20)
+
+The verifier's corrections were checked at their sources (run A-20261120-222454-d16dbc6),
+then applied or rebutted; details and predictions in `../../g1close/JOURNAL.md`. The
+verifier's own files (`VERIFIER.md`, `JOURNAL.md`, `verifier/`, `figs/`) are unchanged.
+
+| Verifier locator | Outcome | Changed | Commit |
+|---|---|---|---|
+| finding 1 (median 0.86) | confirmed: 0.84 over mu <= 0.15, 0.86 over all six | ledger row prints both, labelled | 2c115cb1 |
+| finding 2 (common bang time) | confirmed: common to 1.2e-14 for R_i < 6.5; in the taper the age rises to 13.58 at the matter edge 9.43 (13.74 at R_i = 9.5) | note Sec. III A | 2c115cb1 |
+| finding 3 (units of M) | confirmed as a label defect | unit M_0 defined; "/M_0" throughout; a row in units of the total mass; STATUS section 3 | 2c115cb1 |
+| finding 4 (eight names) | confirmed | six names | 2c115cb1 |
+| finding 5 (stale state) | confirmed: 41 of 41, 4 diagnostics | note Secs. IV C, IV D, IV F, V; ledger groups; STATUS T2 | 2c115cb1 |
+| finding 6 (SR-2 turnaround estimator) | not re-judged here (runs_ball helper) | note and STATUS section 6 quote it as the three-point-vertex value, estimator-dependent, no pass/fail | 2c115cb1 |
+| finding 7 (wave-1 checksums) | listing of 55 files in run A-20261120-222620-0304d9d, 0 mismatches elsewhere | `note/scripts/common.py` checks against it; App. B sentence | 0304d9d9, f26e7f58, 2c115cb1 |
+| 2.1 (42.30 vs 42.36) | label | "light speed R_i/R, without the conformal factor" | 2c115cb1 |
+| 2.5 ("an order of magnitude") | confirmed loose | "several times below the hoop line" | 2c115cb1 |
+| 3.2 (half box at M/4) | confirmed | no convergence order quoted; ledger "the last with half the box" | 2c115cb1 |
+| 4.2 (STATUS T3 / C8 band) | wrong as written; the replacement "only the four p = 0 points" too narrow: 9 of 14 points lie in the band | STATUS T3, CHECKLIST C8 | 2c115cb1, 8f681d68 |
+| 4.5 (SR-1 breakdown criteria) | confirmed | criterion named in STATUS section 6 and the ledger | 2c115cb1 |
+| C11 | schematic in the note | Fig. 7 with caption, App. B | 2c115cb1 |
+
+Also: note v1 regenerated in runs A-20261120-223316-92c27f5 and A-20261121-030037-3f015fa,
+compiled (12 pages, 0 undefined references, 0 overfull boxes), checked, every page read; the
+abstract, Sec. IV E and App. B state which rows the verifier left aside; the timeline shows
+the wave-3 state (3f015fa0, 8b7304f5). Package: `nrpic-stage collect` (19 of 20 items kept),
+C7, C8, C11, C16, C17, C18, C20 judged, EVIDENCE.md, OPEN.md (8f681d68); `nrpic-stage
+verify --no-checksums` and `report` (last commit of the package). The full `verify` with
+output checksums was stopped by my 15-minute limit while hashing about 80 GB of the wave-2b
+card outputs (runs A-20261119-144419-13d5601, -164634-f1fe887); those runs record their
+checksums at finish, and `harness/bin/nrpic-run verify <run id>` checks one run.
+
+**For the lead: ready for gate review once the lead has rewritten the owner's STATUS.md,
+JOURNAL.md and HANDOFF.md (C20) and decided C18 (PASS on the verifier's scope; five new
+Table IV rows not recomputed by a fresh verifier, OPEN.md item 2).** The remaining `verify`
+failures (`clean`, `runs`) come from other helpers' work in progress in this worktree
+(OPEN.md, last section).

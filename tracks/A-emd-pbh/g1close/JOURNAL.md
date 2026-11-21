@@ -282,3 +282,34 @@ inputs "sha256 ok". Outputs copied into `note/`; App. B names this run. Compile:
 0 undefined references or citations, 0 overfull boxes; checker hits only in the appendix
 and the scripts. Pages 1-8 read again after the reflow (9-12 hold Fig. 7, the references and
 the unchanged ledger tables, read in entry 6).
+
+## 2026-11-21T03:25Z, entry 8: outcome of P9 (stage package); package closed
+
+- `nrpic-stage collect A-emd-pbh G1`: 20 items, 19 kept; C18 came back OPEN because its text
+  changed (decision 0016 names VERIFIER.md). Judged: C11 PASS (Fig. 7); C18 PASS as my
+  [JUDGEMENT] on the scope the gate asked of the verifier, with the rows no fresh verifier
+  recomputed listed (OPEN.md item 2; note App. B); C7 and C8 evidence brought to the
+  wave-2 state and the corrected band; C16, C17 evidence for note v1. **Not predicted in
+  P9:** C20 is FAIL: the owner's STATUS.md, JOURNAL.md, HANDOFF.md were last changed on
+  2026-11-15 and still say G0 not passed and C11/C18 open; I do not write them (the lead
+  does), so the checklist says so instead of keeping the wave-2 PASS.
+- EVIDENCE.md: the close-out runs and the 38 hand-written manifests of waves 1-2 that no
+  EVIDENCE.md named in full (the form "-153409/-153415" is not expanded by verify). After
+  that `runs` lists no hand-written manifest any more.
+- `nrpic-stage verify`: the full verify was stopped by my `timeout 900` while it hashed the
+  outputs of the wave-2b card runs (60 GB in A-20261119-144419-13d5601, 19 GB in
+  -164634-f1fe887). Rerun with `--no-checksums`: first `sync` failed (main had moved; merged,
+  72ac63ce), then 14 of 16 pass and two fail as P9 foresaw: `clean` (four uncommitted files
+  of the periodic_threshold helper) and `runs` (four unfinished manifests of other helpers:
+  BH-1R, the runs_ball fixed-box job, periodic_threshold D3, szekeres prep). rerun 9 of 9,
+  compare 14 files within tolerance, regenerate 14 of 14. P9 holds apart from C20 and the
+  checksum pass not run. Explained in OPEN.md.
+- `nrpic-stage report`: verdict FAIL (C20; clean, runs); the "Decision requested" text
+  rewritten for the wave-3 state, marked for the lead to revise; "looked at" filled per
+  figure. README section "Close-out, wave 3" with the line for the lead: ready for gate
+  review once C20 is done and C18 decided.
+
+Where the package stands: every correction of VERIFIER.md applied or rebutted (finding 6
+handed to the runs_ball helper); note v1 compiles without undefined references, every page
+read; stage/G1 regenerated with C11 and C18 judged; verify failures explained. Requests in
+`README.md`.

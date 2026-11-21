@@ -39,4 +39,23 @@ item, with the smallest action that closes each:
 
 ## Automated checks (`nrpic-stage verify`) that do not pass
 
-(filled from `VERIFY_RESULTS.md` of the run below)
+`nrpic-stage verify A-emd-pbh G1 --no-checksums` on 2026-11-21T03:20Z, clean export of
+72ac63ce (`VERIFY_RESULTS.md`): 14 of 16 checks pass (sync, export, size, note, package,
+note-pdf, style, fig-script, min-figs, status, rerun 9 of 9, compare 14 files within
+tolerance, regenerate 14 of 14; run-notes WARN). Two fail, neither from this package:
+
+- **clean**: four uncommitted paths of the periodic_threshold helper, who works in this
+  worktree at the same time (`periodic_threshold/JOURNAL.md`, `inputs/peak_leak.athinput`,
+  `scripts/ltb_reference.py`, `scripts/ltbref.py`). Passes when that helper commits.
+- **runs**: 4 of 167 manifests are not finished, all of other helpers' runs still in
+  progress this round: A-20261119-164634-f1fe887 (BH-1R card run, "submitted"; runs_ball),
+  A-20261120-223310-a9ce31a (fixed-box card job, "submitted"; runs_ball),
+  A-20261120-223123-f436c39 (periodic_threshold, "running"), A-20261120-223422-8cc4241
+  (szekeres, "running"). Passes when those helpers finish them with `nrpic-run finish`.
+  Every hand-written manifest of waves 1-2 is named in an EVIDENCE.md and waived (decision
+  0016 item 3).
+- **Not run in this verify: the output checksums.** The full `verify` (with checksums) was
+  stopped by my 15-minute limit while it hashed about 80 GB of wave-2b card outputs
+  (A-20261119-144419-13d5601: 60 GB, A-20261119-164634-f1fe887: 19 GB). The lead or the
+  reviewer reruns it without `--no-checksums` when the queue of helpers is empty (about 20
+  minutes of disk reading), or checks single runs with `harness/bin/nrpic-run verify <run id>`.
