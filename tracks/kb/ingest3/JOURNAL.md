@@ -199,3 +199,10 @@ One source call per id, sequential, then one --meta --service both call. All 11 
 for the 2 that lack one (2610.26669, 2606.28005) and INSPIRE records for all 11 (some not-found
 possible for the newest, 2611.23627). Then the same ingest as P5: 11 ingested, at least 9 ok.
 Refuted by: a source that is PDF-only or failed, or an ingest failure.
+
+## Outcome P6, first half (run kb-20261121-215209-964397e; out.txt and records read)
+
+Held for the fetch: 11 of 11 sources ok (all tar e-prints; 2606.28005 and 2605.22525 at v2), and
+arXiv-API and INSPIRE records ok for all 11 (none not-found). Groups (judgement; the s39 report
+names the track each one serves): G18 5 (C, D), G20 3 (E), G13 1 (A), G21 1 (F), G06 1 (core).
+Rows appended to the additions file (commit 070308fa; 61 rows, no problem). The ingest follows.
