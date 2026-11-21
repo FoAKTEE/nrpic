@@ -40,10 +40,13 @@ core-v0.1 released") and of every track's G2 (charter 9.2), item by item in
    expanding ball against the cell size, gauges and boundary on the ball); no single
    coupled set-up is converged in all three, and the cluster's fate is not converged in
    the mesh (item 2).
-4. Products: no working note (C15), no fresh-context verifier report (C16); the
-   architecture schematic is of 2026-11-15 and shows capabilities of core-v0.4 to v0.6
-   as "to be built" (C14); the clean-export rerun (`nrpic-stage verify`, C6) result is
-   in `VERIFY_RESULTS.md`.
+4. Products (brought up to date in batch 8): the working note exists and passed its
+   checker (`note/`, C15); the fresh-context verifier's report is in (`VERIFIER.md`,
+   C16, a sample of fourteen claims; its five text defects are corrected); the
+   architecture schematic is redrawn for core-v0.6 (C14). Still open: the clean-export
+   rerun (`nrpic-stage verify`, C6) has not been repeated since the note was written,
+   and the ladder rows 2 and 4 rest in part on pre-program directories, now named and
+   inventoried by sha256 (`verify/preprogram/README.md`) but without manifests.
 
 What is met: rows 1 and 2 PASS (geodesics, Oppenheimer-Snyder; `verify/LADDER.md`),
 core-v0.1 to core-v0.6 tagged, constraints behave, minimal full-GR kinetic runs,

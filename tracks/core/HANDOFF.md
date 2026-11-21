@@ -2,14 +2,15 @@
 
 Written for a reader with no memory of the last session. Rewritten at the end of every session.
 
-State (2026-11-21 20:50Z, batch 5, session core-lead-7; no source change): release
-core-v0.6 is fully closed (its release card build passed, job 4810). Gate G2 of core is
-NOT met (`stage/G2/OPEN.md`, first section). This session queued the first level of the
-ladder-row-4 bisection on a static M/8 mesh: six card chains, of which two are eligible
-and four held; a sequencer outside the session releases the held ones.
+State (2026-11-21 23:31Z, batch 8, session core-lead-8; no source change, no card job):
+gate G2 of core is NOT met (`stage/G2/OPEN.md`, first section; CHECKLIST 13 PASS, 5
+FAIL: C1/C7 ladder rows 3 and 4 partial, C2 three-way convergence, C6 clean-export
+verify not rerun, C12 package documents). This session corrected the texts the fresh
+verifier found, put the restart limit and the Gamma-driver step rule into OPEN.md,
+named the pre-program run directories, and wrote core's working note.
 Owner: core, branch `core/nrpic`, worktree `/data/haiyangw/nrpic/wt/core`.
 
-## Six card chains are pending (ladder row 4, bisection level 1)
+## Six card chains are pending (ladder row 4, bisection level 1; from batch 5, untouched)
 
 Rule, measured quantities and predictions P1-P4 were written before the runs:
 `tracks/core/JOURNAL.md`, entry of 2026-11-21T20:26Z. Package:
@@ -66,32 +67,50 @@ code): their late central-lapse swings are larger than the 0.01 band of the rule
 100 M mean may be off by about 0.01; the rule stands as written, but say so if a member
 lands within 0.01 of a class border.
 
-## Done in this session
+After the fates are judged, bring the note up to date: add the M/8 runs to
+`note/scripts/fig_clusters.py` (or a new `fig_row4_m8.py`) and their numbers to
+`note/scripts/ledger.py`, commit, run `note/scripts/run_all.py` as a registered run
+(`note/README.md`, "How to rerun"), copy its `figures/` and `tables/` into `note/`,
+edit section III D of `note/main.tex`, compile, run the checker, read the pages.
 
-- Job 4810 judged (G6): PASS on both release card checks; the 1e-12 history bound of
-  G6 (ii) refuted in the normalized constraint columns only (journal, RELEASE-v0.6.md,
-  READY of `scratch/core/exe/core_nrpic_v06`).
-- REQUESTS_WAVE3.md section 5a: W24 enters core-v0.7 as a mitigation
-  (`lapse_leak_hole`, branch core/gauge-2 tip 61c8fc4d); W30 is the cure, with the three
-  candidates of `JOURNAL-gauge-2.md` entry 11 (decision 0025 item 3).
-- Outbox to orch: the nine run ids of decision 0023 item 5 with proposed WAIVERS lines.
+## Done in this session (batch 8)
+
+- Verifier corrections (VERIFIER.md section 3): CHECKLIST C3 (Theta-norm2 is a
+  proper-volume integral of Theta^2; pointwise max|Theta| 2.27e-7), `interfaces/
+  scalar_field.md` test 1 (absolute vs relative frequency difference),
+  `newtonian_mode.md` 5.2 (706 tracers), `id_solver.md` T1 and `id_solver2.md` C
+  (measures), `verify/LADDER.md` row 2 (0.9986707). C16 PASS with the verifier's limit.
+- OPEN.md items u (restart limit, decision 0027 item 3) and v (step rule with a
+  Gamma-driver, 0027 item 2); REQUESTS_WAVE3.md section 5b, W31 (Track A's
+  periodic-gamma-driver-step: gauge speeds in the step limit, `lapse_leak` x dt warning,
+  `scripts/cpu_run.sh` footer); the cfl rule beside `dt_lightspeed` in `cosmo_amr.md`
+  2.4. Track A's messages 9 and 11 of the inbox acknowledged.
+- `verify/preprogram/` (README, INVENTORY.md, `inventory.py`; run
+  core-20261121-231825-135474c): the old run directories of ladder rows 2-4 with sha256
+  of inputs, executable copies, logs, histories.
+- Working note `note/` (main.tex/pdf, 8 pages; WRITING_GUIDE.md, NOTATION.md one level
+  up; figures and ledger by run core-20261121-232936-d979f1c). C14, C15 PASS.
+- Outbox to orch 20261121T233031Z: carry the interface corrections into coord/INTERFACES.
 
 ## Files to read first
 
-`tracks/core/STATUS.md`; the last entry of `tracks/core/JOURNAL.md`;
-`tracks/core/stage/G2/OPEN.md` (first section); `tracks/core/interfaces/REQUESTS_WAVE3.md`
-sections 5 and 5a (order of work for core-v0.7).
+`tracks/core/STATUS.md`; the last entry of `tracks/core/JOURNAL.md` (batch 8);
+`tracks/core/stage/G2/OPEN.md` (first section, items u and v); `tracks/core/note/README.md`;
+`tracks/core/interfaces/REQUESTS_WAVE3.md` sections 5, 5a, 5b (order of work for core-v0.7).
 
 ## Open with other owners
 
-- orch: waiver lines (outbox 20261121T204332Z); an analysis session for row 4.
-- Track C: its drift package (`git show track/C-sidm:tracks/C-sidm/drift/README.md`) is the
-  reason for M/8; its run (vi) to 680 M showed the M/8 control contracting steadily
-  (alpha_c -0.022 by 680 M, no turn) - read it beside the 0.755 control.
-- Track D: null tests and long runs around a black hole without `lapse_leak` until W30
-  (decision 0025 item 3).
-- Branches core/clump-table (tip ff11719d) and core/oblate (tip 4f01a81f) merge main
-  before core-v0.7; core/gauge-2 (tip 61c8fc4d) is the W24 mitigation.
+- orch: interface corrections into coord/INTERFACES (outbox 20261121T233031Z); waiver
+  lines (outbox 20261121T204332Z); an analysis session for row 4.
+- Inbox of core not read in this session (task scope): messages 1-8 and 10 of
+  `nrpic-ctx inbox` (F wave-extraction-lmax; D lapse-leak-growth-data,
+  newtonian-mode-edges; E a4res-claims-c1-c4; A bh1r-inte-deficit-two-levels; older).
+- Track A: W31 accepted for core-v0.7; A runs `cfl_number = 0.5` meanwhile and will
+  report its refined-mesh test.
+- Track C: its drift package is the reason for M/8 (read its run (vi) beside the 0.755
+  control). Track D: no `lapse_leak` around a black hole until W30.
+- Branches core/clump-table (tip ff11719d), core/oblate (tip 4f01a81f), core/gauge-2
+  (tip 61c8fc4d) merge main before core-v0.7.
 
 ## Traps
 
@@ -103,4 +122,8 @@ sections 5 and 5a (order of work for core-v0.7).
 - `nrpic-ctx ack` commits by itself; `nrpic-stage verify` needs `--no-checksums` on
   core's 1480 runs; exit status 3 of AthenaK is the guard's stop; `runs/` in .gitignore
   hides `tracks/core/runs/` (a hand-written manifest needs `git add -f`).
-- The clock: `date -u`. Temporary files of the lead: `scratch/core/tmp/lead_b5/`.
+- The clock: `date -u`. Temporary files of the lead: `scratch/core/tmp/lead_b8/` (this
+  session), `lead_b5/` (the sequencer).
+- The note's scripts check inputs by sha256 only where a run recorded one: wave-1 runs
+  have none (31 inputs "not recorded" in the log); the pre-program files are checked
+  against the inventory run.

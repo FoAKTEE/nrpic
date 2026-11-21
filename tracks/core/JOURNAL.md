@@ -1386,3 +1386,38 @@ limit with the gauge speeds).
 Longer version: the outline of `WRITING_GUIDE.md` with one paragraph per subsection
 (written as the main text directly; no separate 1000-word file). Step 4 (reviewer
 subagents) not run: no subagent tool in this session.
+
+### Q2 outcome (23:28Z-23:31Z): runs core-20261121-232757-f86d965, -232936-d979f1c
+
+Held, all three parts. (a) Kerr passage largest relative errors from the raw trajectories
+of regression G equal LADDER row 1 to four digits (2.781e-8, 0, 1.254e-7; 9.046e-8,
+1.136e-8, 7.825e-7; 2.162e-6, 5.304e-6, 5.060e-5; 2.046e-6, 3.788e-6, 5.289e-5);
+orders 2.0001/2.0003, 1.9998/1.9991, 1.9997/1.9989. (b) `runs/os/nocap_sc`: first
+horizon 16.3894 M, M_AH/M 1.000353, largest deviation to 60 M 1.338e-3, all 9328
+particles removed by 19.74 M; regression O: identical first horizon and mass, 6.345e-4
+to 25 M. The deviation first exceeds 1e-3 at 29.11 M and stays above from 30.92 M (the
+verifier's "from 31 M"). (c) the five fates as LADDER row 4 (0.900: 0.8862-0.8919;
+0.819: 0.7875-0.8190; horizons 191.0 M and 104.31 M, M_AH/M 0.99999, 1.0001; 0.283 at
+270 M 0.97598); M/4 bisection means equal the LADDER table to four digits. Inputs: 11
+sha256 checks passed (pre-program files against the inventory), 31 inputs without a
+recorded checksum (wave-1 manifests list no outputs). Figures looked at: fig_geodesic
+(after one layout change: running maxima instead of raw errors), fig_collapse,
+fig_clusters (legends moved off the data), schem_architecture (rescaled to page width;
+legend and tags moved). The second run differs from the first only by the ledger's
+escape of `<` and `>`, seen on page 8. Note compiled (8 pages, all read), checker: 0
+undefined references or citations, 0 overfull boxes.
+
+### Close of session core-lead-8 (23:32Z)
+
+Done: verifier corrections (five texts, C3 label, C16), OPEN.md u and v, W31, the
+pre-program inventory, the working note (C14, C15). No source change, no card job; the
+six row-4 chains and their sequencer untouched (4839 running at 23:30Z).
+Not done: `nrpic-stage verify` on the clean export (C6; the last full verify read run
+outputs for 13 minutes in batch 4a); reviewer subagents of the story-first procedure
+(no subagent tool); inbox messages outside the task (listed in HANDOFF.md).
+Faults of mine on record: the inventory prediction Q1 was written too broadly
+(horizon summaries exist only where a finder ran); the first ledger printed `<` as an
+inverted exclamation mark (OT1 encoding), seen on page 8 and fixed by a second
+registered run; the first architecture schematic was drawn at poster scale (text too
+small at page width) and had overlapping legend labels, both seen on the PNG and fixed
+before the registered run.
