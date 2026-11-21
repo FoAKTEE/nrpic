@@ -1,6 +1,6 @@
 # Lead review of the wave-3 packages of D-bh-dress
 
-Lead session of batch 2a, 2026-11-21 06:30-08:00 UTC (Opus). Packages that finished since the
+Lead session of batch 2a, 2026-11-21 06:29-07:20 UTC (Opus). Packages that finished since the
 lead of wave 2b (2026-11-19): `es_runs` (ES-1G closed) and `verifier_g1` (VERIFIER.md). Packages
 cut by the usage limit of 2026-11-20 and still open: `flux_tools`, `drift_controls`,
 `secondary_infall`, `note`; their finished parts are reviewed below, what remains is listed in
@@ -183,6 +183,13 @@ corrections (section 2) into the text and ledger.
   reserved; 29.22 left toward G2 (allotment 30 per gate, decision 0014).
 - `stage/G0/REPORT.md` (wave 1) is a file name decision 0012 no longer uses; G0 is signed
   with it in place (coord/GATES.md), so I leave the signed package unchanged.
+- `nrpic-stage verify D-bh-dress G1` (07:07 UTC, on 9182d4d; `stage/G1/VERIFY_RESULTS.md`): FAIL on
+  four checks, none a defect of the G1 evidence: clean (the three untracked drift_controls tools),
+  sync (main moved during the 25-minute verify; merged at 0cb321d6), runs (three wave-2 runs with
+  outputs outside their sha256 lists: D-20261115-170002-8cefc3e, -170326-dfb2a02, -193755-3a53b08;
+  waiver requested from orch), compare (`note/figures/fig_newton_numbers.json` lacks the key
+  `kernel_shells_at` that `fig_newton.py` writes since c2e0571d: the note package did not copy its
+  last outputs; open with the note). Rerun of 10 figure scripts in the clean export: PASS.
 - `docs/FORMATS.md` still gives `.trajmet.bin` as 12 doubles (17 in the source); request
   `trajmet-format-doc` to core is open (2026-11-15).
 

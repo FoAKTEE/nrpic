@@ -1,27 +1,27 @@
 {
   "track": "D-bh-dress",
   "gate": "G1",
-  "commit": "b7777f441e379cbf1655cfeddad9ad2be48cd6c4",
-  "verified_utc": "2026-11-19T15:44:55Z",
-  "export": "/data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G1-b7777f4-20261119T154350Z",
+  "commit": "9182d4dddadd14405b2325339a8d459fcff35944",
+  "verified_utc": "2026-11-21T07:07:14Z",
+  "export": "/data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G1-9182d4d-20261121T064019Z",
   "result": "FAIL",
   "checks": [
     {
       "check": "clean",
-      "status": "PASS",
-      "message": "worktree clean (outside the stage directory being assembled)",
+      "status": "FAIL",
+      "message": "3 uncommitted paths: commit them first (tracks/D-bh-dress/drift_controls/tools/compare_runs.py, tracks/D-bh-dress/drift_controls/tools/count_blocks.py, tracks/D-bh-dress/drift_controls/tools/slice_profiles.py)",
       "detail": null
     },
     {
       "check": "sync",
-      "status": "PASS",
-      "message": "main is merged into the branch",
+      "status": "FAIL",
+      "message": "main has commits not merged: run nrpic-ctx sync",
       "detail": null
     },
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of b7777f441e37 (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G1-b7777f4-20261119T154350Z/tree",
+      "message": "clean export of 9182d4dddadd (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G1-9182d4d-20261121T064019Z/tree",
       "detail": null
     },
     {
@@ -39,13 +39,13 @@
     {
       "check": "package",
       "status": "PASS",
-      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016)",
+      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md",
       "detail": null
     },
     {
       "check": "note-pdf",
-      "status": "PASS",
-      "message": "note/main.pdf committed after the last .tex change",
+      "status": "WARN",
+      "message": "note/main.pdf is older than the last change of its .tex files",
       "detail": null
     },
     {
@@ -57,29 +57,39 @@
     {
       "check": "fig-script",
       "status": "PASS",
-      "message": "7 figures, each with its script",
+      "message": "10 figures, each with its script",
       "detail": null
     },
     {
       "check": "min-figs",
       "status": "PASS",
-      "message": "2 schematics and 5 data figures (brief 13.4 asks at least 2 and 1 at G1)",
+      "message": "2 schematics and 8 data figures (brief 13.4 asks at least 2 and 1 at G1)",
       "detail": null
     },
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "1 of 153 runs have problems; 3 waived",
+      "message": "3 of 188 runs have problems; 3 waived",
       "detail": {
-        "D-20261119-142633-6f72922": [
-          "status is submitted: not finished (nrpic-run finish)"
+        "D-20261115-170002-8cefc3e": [
+          "output not in sha256sums.txt: v1_es_slice.pdf",
+          "output not in sha256sums.txt: v1_es_slice.json",
+          "output not in sha256sums.txt: v1_es_slice.png"
+        ],
+        "D-20261115-170326-dfb2a02": [
+          "output not in sha256sums.txt: es.horizon_summary_0.txt.from_cwd"
+        ],
+        "D-20261115-193755-3a53b08": [
+          "output not in sha256sums.txt: misplaced_out/es_check.png",
+          "output not in sha256sums.txt: misplaced_out/es_check.json",
+          "output not in sha256sums.txt: misplaced_out/es_check.pdf"
         ]
       }
     },
     {
       "check": "runs-waived",
       "status": "WARN",
-      "message": "3 hand-written manifests of waves 1 and 2 listed in EVIDENCE.md: failures of the manifest check waived (decision 0016 item 3)",
+      "message": "failures of the manifest check waived: 3 hand-written manifests of waves 1 and 2 listed in EVIDENCE.md (decision 0016 item 3)",
       "detail": {
         "D-bh-dress-20261115-121313-284ec4f": {
           "listed_in": "stage/G0/EVIDENCE.md",
@@ -104,7 +114,7 @@
     {
       "check": "run-notes",
       "status": "WARN",
-      "message": "97 runs read with defaults or not fully re-verifiable (nrpic-run lint)",
+      "message": "100 runs read with defaults or not fully re-verifiable (nrpic-run lint)",
       "detail": {
         "D-20261115-170700-b2c6d6e": [
           "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
@@ -125,73 +135,95 @@
           "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)"
         ],
         "D-20261115-170824-788678f": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
+          "input tracks/D-bh-dress/secondary_infall/nm_shells.py changed since the run (sha256 differs)"
         ],
         "D-20261115-170826-20d5d4a": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
+          "input tracks/D-bh-dress/secondary_infall/nm_shells.py changed since the run (sha256 differs)"
         ],
         "D-20261115-170827-ba851f0": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
+          "input tracks/D-bh-dress/secondary_infall/nm_shells.py changed since the run (sha256 differs)"
         ],
         "D-20261115-170829-0d86d49": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
+          "input tracks/D-bh-dress/secondary_infall/nm_shells.py changed since the run (sha256 differs)"
         ],
         "D-20261115-170831-b379b65": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
+          "input tracks/D-bh-dress/secondary_infall/nm_shells.py changed since the run (sha256 differs)"
         ],
         "D-20261115-170834-ac15adf": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
+          "input tracks/D-bh-dress/secondary_infall/nm_shells.py changed since the run (sha256 differs)"
         ],
         "D-20261115-170837-af64029": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
+          "input tracks/D-bh-dress/secondary_infall/nm_shells.py changed since the run (sha256 differs)"
         ],
         "D-20261115-170839-187b91b": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
+          "input tracks/D-bh-dress/secondary_infall/nm_shells.py changed since the run (sha256 differs)"
         ],
         "D-20261115-171245-a89f225": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
+          "input tracks/D-bh-dress/secondary_infall/nm_run.py changed since the run (sha256 differs)"
         ],
         "D-20261115-171247-cde0674": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
+          "input tracks/D-bh-dress/secondary_infall/nm_run.py changed since the run (sha256 differs)"
         ],
         "D-20261115-171414-93fdf13": [
           "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)"
         ],
         "D-20261115-171503-4262f03": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
+          "input tracks/D-bh-dress/secondary_infall/nm_run.py changed since the run (sha256 differs)"
         ],
         "D-20261115-171505-62940f4": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
+          "input tracks/D-bh-dress/secondary_infall/nm_run.py changed since the run (sha256 differs)"
         ],
         "D-20261115-171507-d1058a9": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
+          "input tracks/D-bh-dress/secondary_infall/nm_run.py changed since the run (sha256 differs)"
         ],
         "D-20261115-171508-94e8cb1": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)",
+          "no scratch/D-bh-dress/D-20261115-171508-94e8cb1/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "D-20261115-171532-ba23a99": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)",
+          "no scratch/D-bh-dress/D-20261115-171532-ba23a99/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "D-20261115-171534-ff5b0e9": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)",
+          "no scratch/D-bh-dress/D-20261115-171534-ff5b0e9/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "D-20261115-171543-d966aba": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)",
+          "no scratch/D-bh-dress/D-20261115-171543-d966aba/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "D-20261115-171545-d7e01a7": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)",
+          "no scratch/D-bh-dress/D-20261115-171545-d7e01a7/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "D-20261115-171733-633d422": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)",
+          "no scratch/D-bh-dress/D-20261115-171733-633d422/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "D-20261115-171818-a5aefe8": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)",
+          "no scratch/D-bh-dress/D-20261115-171818-a5aefe8/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "D-20261115-171953-908afff": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)",
+          "no scratch/D-bh-dress/D-20261115-171953-908afff/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "D-20261115-173149-7c6dd72": [
-          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)"
+          "hand-written (registered_by: hand: tracks/D-bh-dress/stage/G0/verify/hand_run.py, because harness/bin/nrpic-r)",
+          "no scratch/D-bh-dress/D-20261115-173149-7c6dd72/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "D-20261115-174734-a688058": [
           "hand-written (registered_by: hand: tracks/D-bh-dress/secondary_infall/nm_register.py, because harness/bin/nrp)",
@@ -219,13 +251,15 @@
           "status None read as completed from exit code 0",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status None read as completed"
+          "status None read as completed",
+          "no scratch/D-bh-dress/D-bh-dress-20261115-042626-f3da881/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ],
         "D-bh-dress-20261115-042653-f3da881": [
           "status None read as completed from exit code 0",
           "output directory read from a field other than outputs.dir",
           "no gate",
           "status None read as completed",
+          "no scratch/D-bh-dress/D-bh-dress-20261115-042653-f3da881/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input /data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/es_model.py changed since the run (sha256 differs)",
           "input /data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/make_es.py changed since the run (sha256 differs)"
         ],
@@ -234,6 +268,7 @@
           "output directory read from a field other than outputs.dir",
           "no gate",
           "status None read as completed",
+          "no scratch/D-bh-dress/D-bh-dress-20261115-042704-f3da881/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input /data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/es_model.py changed since the run (sha256 differs)"
         ],
         "D-bh-dress-20261115-043002-d51c7f2": [
@@ -241,6 +276,7 @@
           "output directory read from a field other than outputs.dir",
           "no gate",
           "status None read as completed",
+          "no scratch/D-bh-dress/D-bh-dress-20261115-043002-d51c7f2/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input /data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/code_t0_check.py changed since the run (sha256 differs)"
         ],
         "D-bh-dress-20261115-043033-4df1e76": [
@@ -248,6 +284,7 @@
           "output directory read from a field other than outputs.dir",
           "no gate",
           "status None read as completed",
+          "no scratch/D-bh-dress/D-bh-dress-20261115-043033-4df1e76/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input /data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/code_t0_check.py changed since the run (sha256 differs)"
         ],
         "D-bh-dress-20261115-043327-4df1e76": [
@@ -255,13 +292,15 @@
           "output directory read from a field other than outputs.dir",
           "no gate",
           "status None read as completed",
+          "no scratch/D-bh-dress/D-bh-dress-20261115-043327-4df1e76/sha256sums.txt (hand-written manifest; outputs not re-verifiable)",
           "input /data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/code_t0_check.py changed since the run (sha256 differs)"
         ],
         "D-bh-dress-20261115-043406-4df1e76": [
           "status None read as completed from exit code 0",
           "output directory read from a field other than outputs.dir",
           "no gate",
-          "status None read as completed"
+          "status None read as completed",
+          "no scratch/D-bh-dress/D-bh-dress-20261115-043406-4df1e76/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
         ]
       }
     },
@@ -274,13 +313,13 @@
     {
       "check": "rerun",
       "status": "PASS",
-      "message": "7 of 7 scripts and commands ran cleanly in the export",
+      "message": "10 of 10 scripts and commands ran cleanly in the export",
       "detail": null
     },
     {
       "check": "compare",
-      "status": "PASS",
-      "message": "19 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
+      "status": "FAIL",
+      "message": "28 regenerated files compared with the committed ones; 1 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
       "detail": [
         [
           "note/figures/fig_infall.pdf",
@@ -298,6 +337,11 @@
           "identical"
         ],
         [
+          "note/figures/fig_kerr.png",
+          "PASS",
+          "identical"
+        ],
+        [
           "note/figures/fig_es.pdf",
           "PASS",
           "regenerated (vector files carry dates; the PNG preview is compared)"
@@ -308,6 +352,16 @@
           "identical"
         ],
         [
+          "note/figures/fig_newton.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_kerr.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
           "note/figures/fig_es_numbers.json",
           "PASS",
           "identical"
@@ -316,6 +370,16 @@
           "note/figures/fig_constraints.pdf",
           "PASS",
           "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_kerr_numbers.json",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/fig_esrun.png",
+          "PASS",
+          "identical"
         ],
         [
           "note/figures/fig_floor.pdf",
@@ -333,6 +397,16 @@
           "identical"
         ],
         [
+          "note/figures/fig_newton_numbers.json",
+          "FAIL",
+          "text differs (not only numbers)"
+        ],
+        [
+          "note/figures/fig_esrun.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
           "note/figures/fig_constraints_numbers.json",
           "PASS",
           "identical"
@@ -341,6 +415,11 @@
           "note/figures/fig_spike.pdf",
           "PASS",
           "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_esrun_numbers.json",
+          "PASS",
+          "identical"
         ],
         [
           "note/figures/fig_constraints.png",
@@ -376,13 +455,18 @@
           "note/figures/schem_timeline.svg",
           "PASS",
           "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_newton.png",
+          "PASS",
+          "identical"
         ]
       ]
     },
     {
       "check": "regenerate",
       "status": "PASS",
-      "message": "all 14 committed figure files regenerated",
+      "message": "all 20 committed figure files regenerated",
       "detail": null
     }
   ]
