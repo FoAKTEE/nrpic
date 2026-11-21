@@ -1,0 +1,118 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-080113-2230974",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "M0 of idsolve2 (journal entry 15): without id_solve the processor build of the merge with main (395e17d) writes the bytes of release core-v0.5, nine set-ups",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/idsolve2/regress_r0.py",
+    "--base",
+    "/data/haiyangw/nrpic/.work/build_cpu_v05/src/athena",
+    "--new",
+    "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/exe_395e17d/athena_cpu",
+    "--jobs",
+    "3",
+    "--tag",
+    "_v05"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "2230974a11a453be8ff4941dd1c2f96c6d41b6df",
+    "branch": "core/id-solver-2",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/idsolve2"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/core-idsolve2"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-idsolve2/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/idsolve2/regress_r0.py",
+      "role": "argv",
+      "sha256": "4cf2f8afe65ab5832d12eefdcec46875aa2c22663b246352ab187301daa4c98e",
+      "bytes": 6406,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_cpu_v05/src/athena",
+      "role": "argv",
+      "sha256": "222b8fa499d24f8f35b9fd773678dec66e68cc7f308113a3df621fdb4cd7ac7e",
+      "bytes": 260888800,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/exe_395e17d/athena_cpu",
+      "role": "argv",
+      "sha256": "195df98010f4b2b64cbda281cfc2c7428863821c55bd9dfdcd0f923842c2310c",
+      "bytes": 262234216,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 3,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-080113-2230974",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T08:01:15Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 6.0704,
+    "gpu_hours_reserved": 0.3,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 1,
+    "runs": 1374,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
