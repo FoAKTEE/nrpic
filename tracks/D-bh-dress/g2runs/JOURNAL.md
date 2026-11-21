@@ -308,3 +308,27 @@ L2: ES-1GB against V-1GB: the dust lowers the lapse in the bubble (x = 5-30 M) b
 than 1 per cent from t ~ 50 M on [JUDGEMENT, from ES-1G's faster shrinking].
 Tool: tools/axis_profiles.py (finest level at each x on the +x axis of the z = 0.001
 slices every 10 M).
+
+Outcome L1-L2 (06:59 PST; run D-20261121-145907-f76095b, figure
+`axis_profiles.png` looked at: four panels, the three runs at t = 50, 100, 150, 180 M):
+- V-1B's lapse rises above 1 outside the hole (largest on x < 100 M: 1.43 at 50 M, 1.26 at
+  100 M, 1.18 at 180 M); V-1GB's stays at 1.04, 1.024, 1.015 (first part of L1 HELD in
+  kind; "within 1.01" FAILED: 1.04 at 50 M).
+- At the hole the relaxed lapse is HIGHER, not lower: alpha(x = 1 M) = 0.331, 0.378, 0.427
+  (V-1GB, t = 50, 100, 180 M) against 0.245, 0.207, 0.189 (V-1B). That part of L1 is
+  REFUTED.
+- The radial shift at the hole is smaller outward: beta^x(1 M) = 0.250, 0.200, 0.161 (V-1GB)
+  against 0.435, 0.413, 0.394 (V-1B); and the conformal factor chi in the bubble falls
+  steadily under the relaxed lapse (x = 5 M: 0.683, 0.581, 0.488 at 50, 100, 180 M; V-1B
+  0.870, 0.961, 1.018; x = 20 M: 0.58, 0.50, 0.45 against 0.89-0.95). L1's refutation
+  condition (agreement within 1 per cent) is far from met: the axis slices show the change.
+- L2 REFUTED in sign: the dust raises the bubble lapse slightly (x = 5 M: 0.889 against
+  0.883 at 50 M, 0.896 against 0.877 at 180 M), while it lowers chi further (x = 20 M: 0.348
+  against 0.454 at 180 M) and the outward shift at the hole (0.145 against 0.161 at 180 M).
+[JUDGEMENT] Reading: with the lapse capped at 1 outside the hole, the slice in the bubble
+is stretched over time (chi falls by ~30 per cent from 50 to 180 M at x = 5-20 M) while the
+Gamma-driver shift at the hole weakens; a horizon of fixed areal radius 2M then covers ever
+fewer coordinate cells (radius 1.40 -> 0.88 M in vacuum, -> 0.78 M with dust, where chi
+falls faster). The late mass growth comes when it is resolved by 6-7 cells of M/8. Under
+plain 1+log the opposite happens (chi near 1, outward shift 0.4, radius 2.2 M). Not
+tested: the same with an M/16 nest, or with a larger shift damping.

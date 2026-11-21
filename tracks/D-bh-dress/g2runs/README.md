@@ -22,6 +22,11 @@ at rounding to t ~ 12 M, below 1e-4 to 90 M, above 2e-4 from 137.5 M and 3.5e-3 
 [JUDGEMENT] The growth is the gauge and resolution at a hole that the relaxed lapse makes
 small (6-7 cells of M/8 by 200 M), faster with the dust outside the bubble; an M/16 nest of
 ES-1GB and V-1GB would test this (not run).
+On the axis (run D-20261121-145907-f76095b, entry 7) the relaxed lapse keeps the lapse
+near 1 outside the hole (V-1B: up to 1.43), raises it at the hole (0.43 against 0.19 at
+x = 1 M, t = 180 M), weakens the outward shift there (0.16 against 0.39) and lets the
+conformal factor chi of the bubble fall (x = 5 M: 0.68 -> 0.49 from 50 to 180 M; V-1B
+0.87 -> 1.02); with the dust chi falls faster (x = 20 M: 0.35 against 0.45 at 180 M).
 
 | Prediction (entry 1, 4) | Outcome | Verdict |
 |---|---|---|
@@ -49,6 +54,7 @@ ES-1GB and V-1GB would test this (not run).
 | D-20261121-141419-b9f1089 | ES-1GB segment 1 against ES-1G, V-1B, V-1 | | done (entry 5) |
 | D-20261121-142005-52adf6d | slice mass of ES-1GB (t = 0-188 M) | | done (entry 5, B4') |
 | D-20261121-144657-cf510fc | ES-1G, ES-1GB, V-1B, V-1GB together | | done (entry 6) |
+| D-20261121-145907-f76095b | lapse, shift, chi on the axis of V-1B, V-1GB, ES-1GB (`tools/axis_profiles.py`) | | done (entry 7) |
 
 ## Contents
 
@@ -58,6 +64,8 @@ ES-1GB and V-1GB would test this (not run).
 | `tools/x1_exe_check.sh` | X1: runs one input with the core/gauge and the release processor executables and compares every output byte for byte |
 | `tools/compare_horizons.py` | horizon mass, drift from 100 M, coordinate radius, pair differences; evaluates B1-B3, C1-C3 of entry 1; figure `compare_horizons.png` |
 | `tools/esf_criteria.py` | ES-F: criterion (iii), diagnostics D1-D4 and the numbers of P1, P2, P5, P6 of flux_tools entry 7 (esf_analyse.py of flux_tools gives (i), (ii)); figure `esf_criteria.png` |
+| `tools/axis_profiles.py` | lapse, radial shift and chi on the +x axis of the z4c slices, finest level at each x; figure `axis_profiles.png` |
+| `tools/x1_locate.py` | X1 follow-up: where two outputs differ (header lines or data) |
 | `tools/figstyle.py` | copy of `harness/style/figstyle.py` |
 | `inputs/` | the two inputs above |
 
@@ -95,4 +103,7 @@ ES-1GB and V-1GB would test this (not run).
    +4.2e-3 by 188 M; V-1B within 5e-5). The option acts only where alpha > alpha_0, so the
    shrinking comes through the lapse and shift profile of the bubble. Requested: a
    reading of the mechanism and a variant that keeps the trumpet size (or the resolution
-   it needs); inputs and outputs of the three runs are listed above.
+   it needs); inputs and outputs of the three runs are listed above. What the axis slices
+   show (entry 7): under lapse_leak the conformal factor chi of the bubble falls by ~30 per
+   cent from 50 to 180 M and the Gamma-driver shift at the hole drops from 0.25 to 0.16
+   (plain 1+log: chi ~ 1, shift ~ 0.4).
