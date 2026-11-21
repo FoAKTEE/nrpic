@@ -1,0 +1,172 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261121-110017-471b0ae",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "conv_ball card job 3b (DESIGN.md section 3a, predictions of JOURNAL entry 6): B-R1.25 and B-R1.35 (mesh B, balls 1.25 and 1.35 times larger; the ball-radius leg at B) and B-L32 (mesh B, outer boundary 32 M); core_gauge executable, t = 0 -> 16",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-110017-471b0ae/batch.list"
+  ],
+  "cwd": "scratch/A-emd-pbh/A-20261121-110017-471b0ae",
+  "git": {
+    "sha": "471b0ae7ea4da3af8095f113b7fa2670f6635d12",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/conv_ball"
+    ],
+    "outside_package": {
+      "count": 4,
+      "first": [
+        " M tracks/A-emd-pbh/periodic_threshold/JOURNAL.md",
+        "?? tracks/A-emd-pbh/periodic_threshold/inputs/peak_leak.athinput",
+        "?? tracks/A-emd-pbh/periodic_threshold/scripts/ltb_reference.py",
+        "?? tracks/A-emd-pbh/periodic_threshold/scripts/ltbref.py"
+      ]
+    },
+    "merge_base_main": "32ba2dc5a0844f64d081668c5ec2d976d73bc863",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu",
+    "exe_sha256": "c3560e53988ad855cc93a9f444c48c728249950242e736d0828cc44dbcd85e72",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": {
+    "file": "tracks/A-emd-pbh/conv_ball/decks/nest32_L16.athinput",
+    "sha256": "f8e7834e781a12beaeee5093a94b0d6f2aa2c9021c7f049eb96cb9a8d854e172",
+    "overrides": {
+      "problem/comp0_file": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075401-1412a08/expball_tophat_HRb0p875_M1p95312_dc1p5_rm5p27041.tab",
+      "particles/particle_file": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075401-1412a08/nestB/expball_tophat_HRb0p875_M1p95312_dc1p5_rm5p27041_nestB_track.nrp",
+      "particles/traj_ntrack": "1319"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu",
+      "role": "exe",
+      "sha256": "c3560e53988ad855cc93a9f444c48c728249950242e736d0828cc44dbcd85e72",
+      "bytes": 102311528,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/A-emd-pbh/conv_ball/lists/job3b.list",
+      "role": "list",
+      "sha256": "a41d0caa005af984fab88c04e6c08bf23562eb04e239b642cbd0c9492cbf6ddb",
+      "bytes": 1329,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/conv_ball/decks/nest32_L16.athinput",
+      "role": "athinput:B-R1.25",
+      "sha256": "f8e7834e781a12beaeee5093a94b0d6f2aa2c9021c7f049eb96cb9a8d854e172",
+      "bytes": 3987,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/conv_ball/decks/nest32_L16.athinput",
+      "role": "athinput:B-R1.35",
+      "sha256": "f8e7834e781a12beaeee5093a94b0d6f2aa2c9021c7f049eb96cb9a8d854e172",
+      "bytes": 3987,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/conv_ball/decks/nest32_L32.athinput",
+      "role": "athinput:B-L32",
+      "sha256": "4e3cabfe6023fe81180aefa6b29383b9876a3b82e2e74d72f21385176d5dd864",
+      "bytes": 4121,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "B-R1.25",
+      "input": "tracks/A-emd-pbh/conv_ball/decks/nest32_L16.athinput",
+      "args": [
+        "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075401-1412a08/expball_tophat_HRb0p875_M1p95312_dc1p5_rm5p27041.tab",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075401-1412a08/nestB/expball_tophat_HRb0p875_M1p95312_dc1p5_rm5p27041_nestB_track.nrp",
+        "particles/traj_ntrack=1319"
+      ]
+    },
+    {
+      "name": "B-R1.35",
+      "input": "tracks/A-emd-pbh/conv_ball/decks/nest32_L16.athinput",
+      "args": [
+        "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075404-ac51b7e/expball_tophat_HRb0p945_M2p46037_dc1p5_rm5p67857.tab",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075404-ac51b7e/nestB/expball_tophat_HRb0p945_M2p46037_dc1p5_rm5p67857_nestB_track.nrp",
+        "particles/traj_ntrack=1320"
+      ]
+    },
+    {
+      "name": "B-L32",
+      "input": "tracks/A-emd-pbh/conv_ball/decks/nest32_L32.athinput",
+      "args": [
+        "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestB/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_nestB_track.nrp",
+        "particles/traj_ntrack=1318"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:58:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.97,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "A-20261121-110017-471b0ae",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261121-110017-471b0ae",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-21T11:00:17Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 3.0517,
+    "gpu_hours_reserved": 2.95,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 0,
+    "runs": 189,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
