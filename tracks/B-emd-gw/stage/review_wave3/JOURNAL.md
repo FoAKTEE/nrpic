@@ -213,3 +213,9 @@ Before the check: if verifier_c18b is right, the largest Hr_mean over all cstat 
 0.00706 and 0.00203, which my own reader must reproduce at the records nearest the five dumps;
 and the record nearest a = 10 sits at a = 9.96 with the printed 1.58e-4 and 3.22e-5. Refuted
 if my maxima over all records equal the printed values (then the verifier misread the window).
+Outcome (run B-20261121-203426-ea1e945, figure lb5_line59.png looked at): prediction MET. Over
+all 114 records with 22 <= a <= 42 the largest Hr_mean is 0.00751 (a = 22.56, one per cell)
+and 0.00254 (a = 23.31, two per cell); at the records nearest the five dumps the largest are
+0.00706 and 0.00203, the printed values. Nearest record to a = 10: a = 9.962, 1.576e-4 and
+3.216e-5 (interpolated to a = 10.00: 1.641e-4 and 3.607e-5). The verifier's pancake.py and
+small_rows.py rerun from the registered outputs give byte-identical JSON files.

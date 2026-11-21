@@ -208,3 +208,38 @@ verifier2, verifier3, verifier_c18); not yet recomputed: ledger lines 34-36 (in 
 70-71, 124, 199 (residuals), 217. Owed: one more fresh verifier package (verifier_c18b,
 processors only, artefacts only) or a ruling that these wave-1 scouting rows may be carried
 to G2 (request to orch, this session).
+
+## Batch 5 (2026-11-21, lead): verifier_c18b
+
+Package `stage/G1/verifier_c18b/` (report `stage/G1/VERIFIER-C18b.md`), the second verifier of
+item C18: ledger lines 34-36, 49-63, 70-71, 124, 199, 217 recomputed from the registered
+outputs, processors only.
+
+Checked by the lead from the artefacts (run B-20261121-203426-ea1e945,
+`review_wave3/scripts/lb5_line59.py`, own reader of the cstat histories; figure
+`lb5_line59.png` and the verifier's `pancake_c18b.png` looked at):
+- CONFIRMED: line 59 as the verifier says. Largest Hr_mean over all records with
+  22 <= a <= 42: 0.00751 (a = 22.56) and 0.00254 (a = 23.31); at the records nearest the five
+  dumps: 0.00706 and 0.00203, the printed values. The printed numbers are right, the wording
+  ("a = 22-42") was not.
+- CONFIRMED: line 56 at the record nearest a = 10 (a = 9.962): 1.576e-4 and 3.216e-5; at
+  a = 10.00 interpolated 1.641e-4 and 3.607e-5 (4 and 12 per cent higher), finding 3b.
+- CONFIRMED: the verifier's pancake.py and small_rows.py, rerun from the registered outputs,
+  reproduce its JSON files byte for byte.
+- Not rechecked by the lead: lines 124, 199, 217 (finding 3e, 3f, 3g) beyond reading them;
+  they do not change a printed value.
+
+Verdicts and what the track does:
+| Item | Verifier | Lead | Action |
+|---|---|---|---|
+| Line 59 | NOT CONFIRMED as worded | confirmed | reworded "at the five dumps after crossing (a = 22, 25, 30, 35, 41.9)" (ledger runs B-20261121-202548-3c3de2f, -203254-928275f) |
+| Line 34 | CONFIRMED (1 per cent; grid ends) | accepted | reworded: ends of the 60-point grid (delta = 0.00255, 0.0495) |
+| Line 56 | CONFIRMED (records nearest a) | confirmed | reworded: records nearest a = 10, 15 (a = 9.96, 15.02) |
+| Line 63 | CONFIRMED; history file not in the run's inputs | accepted | the row names `runs/cosmo/dtexp_test/lim/flrw.cstat.hst` with its sha256 (ed6353a8ec0d794a...) |
+| 3f Nyquist-plane momentum residual | finding | accepted, open | what AthenaK's differences do with it is not checked; recorded in OPEN.md (not a G1 item) |
+| 3h exact-sheet crossing 21.029 | failed sub-prediction of the verifier | accepted | printed "21" unaffected |
+
+With this and the v3 corrections of verifier3 and verifier_c18 (rows 101, 118, 125, 168, 197,
+the (1 + eps^2) sentence with a new ledger row; run B-20261121-202758-544416e), item C18 is
+PASS and nothing owed by the gate remains (stage/G1/OPEN.md).
+
