@@ -287,7 +287,7 @@ for 300 M (3.49 and 3.46 s per M; prediction (h): 3.4-3.7 s per M, holds), smoke
 02:56 UTC: one job of the user (4754, F), no C-* job; drift's job 4741 completed at 16:30 PST.
 Submitting D1 job 2 (CC1 pair) now; the analysis of job 1 follows while it waits.
 
-## 2026-11-21 03:05 UTC Entry 7: outcome of D1 for CC2 (job 1, particle mode, seeds 1 and 2)
+## 2026-11-21 03:00 UTC Entry 7: outcome of D1 for CC2 (job 1, particle mode, seeds 1 and 2)
 
 Runs: card run C-20261120-221846-797bdbe (cc2_kn10_part_s1, cc2_kn10_part_s2); analyses
 C-20261121-025642-fb29332 (script as committed in entry 3/4) and C-20261121-025928-94def70
@@ -383,3 +383,25 @@ with 96 percent of the mass excised and alpha_min 0.050; wave-2 cc2_kn10 ran to 
 became non-finite at 289.5 M. The phase after the first excision is fragile in both modes
 (RISKS item on excision; core READY: coll_energy with excision untested); D1 measures nothing
 there.
+
+## 2026-11-21 03:03 UTC Entry 8: sharpened predictions for jobs 2-4 (written before they run)
+
+Entry 2 and entry 4 stay the predictions of record; these add sharper clauses from the CC2
+outcome (entry 7) [JUDGEMENT throughout]. References (analysis C-20261121-025928-94def70):
+wave-2 cc1_kn10 (cell s1) has linear crossings alpha_min = 0.5, 0.4, 0.3 at 166.22, 177.81,
+184.02 M, D100 = 0.0507, 2.483 collisions per particle before t_c; cc2_kn10 cell s1 206.66 M.
+
+- (D1-CC1, job 2) Both CC1 particle runs: t_c (linear crossing) within 1.0 M of 184.02 M, and
+  |t_c(s1) - t_c(s2)| < 1.0 M; the instantaneous seed difference of dalpha has rms below
+  2e-3 over 0-100 M; collisions per particle before t_c within 1 percent of
+  2.483 x t_c/184.25 (CC2: +0.4 percent); summed dH to t_c below 1e-15 of sum_MH_particles,
+  n_noroot = 0 to t_c. Refuted by a shift of the CC1 collapse beyond 1 M, which would make
+  the threshold model, unlike CC2, sensitive to the operator or to the realisation.
+- (D1-cell, job 4) cc2_kn10_cell_s2: t_c within 0.5 M of cell s1 (206.66 M) and of the
+  particle mean (206.64 M); the cell seed difference of collisions per particle before t_c
+  below 0.2 percent, which would make the particle-cell difference of +0.37 percent (entry 7)
+  a mode effect. Summed dE_particles to t_c within a factor 2 of seed 1 (2.16e-4).
+- (D3) With the seed scatter of entry 7, one seed resolves dalpha to about 1e-3 (rms of the
+  instantaneous seed difference) and a collapse time to about 0.5 M; the clauses of entry 4
+  are judged against these. d3_kninf also gives drift's third period point (drift JOURNAL
+  entry 6, its prediction, judged by drift or the lead).
