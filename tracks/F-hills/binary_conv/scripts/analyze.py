@@ -227,6 +227,24 @@ def main():
             row["p2_8_12"] = float(np.log(ds["R8"] / ds["R12"]) / np.log(1.5))
         conv[f"{T:g}"] = row
     res["convergence"] = conv
+    # deviation from the references at fixed t: d = s_ref(t) - s(t) (positive: closer than the reference)
+    trf = np.array(refs["series"]["t"])
+    res["refs_at"] = {nm: {f"{T:g}": float(np.interp(T, trf, refs["series"][nm]["sep"])) for T in TS}
+                      for nm in ("newton", "eih_c", "eih_v")}
+    dev = {}
+    for T in TS:
+        row = {}
+        for k in have + ["P1"]:
+            v = res[k]["s_at"][f"{T:g}"]
+            if v is not None:
+                row[k] = {nm: res["refs_at"][nm][f"{T:g}"] - v for nm in ("newton", "eih_c")}
+        if "R8" in row and "R16n" in row:
+            for nm in ("newton", "eih_c"):
+                a8, a16 = row["R8"][nm], row["R16n"][nm]
+                if a8 > 0 and a16 > 0:
+                    row[f"p2_8_16_{nm}"] = float(np.log2(a8 / a16))
+        dev[f"{T:g}"] = row
+    res["deviation_from_refs"] = dev
     ref8 = O.get("R8") if O.get("R8") is not None and O["R8"]["t"][-1] > 40 else O["P1"]
     ref8_name = "R8" if ref8 is not O["P1"] else "P1"
     tm8 = res[ref8_name].get("t_sep_below_0.1")
@@ -273,7 +291,7 @@ def main():
         res["p1b_cost"] = cost
     with open(os.path.join(out, "analysis.json"), "w") as f:
         json.dump(res, f, indent=1, default=lambda x: None)
-    print(json.dumps({k: res.get(k) for k in ("convergence", "stretch", "p1b_cost")}, indent=1, default=str))
+    print(json.dumps({k: res.get(k) for k in ("convergence", "deviation_from_refs", "stretch", "p1b_cost")}, indent=1, default=str))
     for k in list(runs) + ["P1"]:
         r = res.get(k, {})
         print(k, "t_end", r.get("t_end"), "s_at", r.get("s_at"), "t_common", r.get("t_common_horizon"))
