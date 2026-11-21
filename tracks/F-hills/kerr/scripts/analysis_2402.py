@@ -110,15 +110,17 @@ def main(scan_path, outdir):
             kp = pr["iota_over_pi"] * 6
             rows.append(dict(rp=r["rp"], beta=r["beta"], paper_k=kp, hrna_med=r["ic_med"], hrna_min=r["ic_min"],
                              hrna_max=r["ic_max"], hrna_k50=r["ic50"],
-                             in_range=bool(r["ic_min"] - 1e-6 <= kp <= r["ic_max"] + 1e-6),
-                             within_one_of_med=bool(abs(kp - r["ic_med"]) <= 1.0 + 1e-6),
-                             within_one_of_k50=bool(abs(kp - r["ic50"]) <= 1.0 + 1e-6)))
+                             # markers are digitized to 1e-5 of the axis (a marker at 0 reads -0.00002):
+                             # compare in grid units with a tolerance of 0.05 step
+                             in_range=bool(r["ic_min"] - 0.05 <= kp <= r["ic_max"] + 0.05),
+                             within_one_of_med=bool(abs(kp - r["ic_med"]) <= 1.05),
+                             within_one_of_k50=bool(abs(kp - r["ic50"]) <= 1.05)))
         comp[fam] = dict(rows=rows, n=len(rows), n_in_range=sum(r["in_range"] for r in rows),
                          n_within_one_med=sum(r["within_one_of_med"] for r in rows),
                          n_within_one_k50=sum(r["within_one_of_k50"] for r in rows))
     crit = [dict(rp=rp, beta=rt / rp, iota_c=cosiN_iota(rt / rp), k=cosiN_iota(rt / rp) / (math.pi / 6)) for rp in rps]
     newt_vs_crit = [dict(rp=r["rp"], k_newt_med=r["ic_med"], k_newt50=r["ic50"], k_crit=c["k"],
-                         within_one=bool(abs(r["ic50"] - c["k"]) <= 1.0 + 1e-6))
+                         within_one=bool(abs(r["ic50"] - c["k"]) <= 1.05))
                     for r, c in zip(resA["newt"], crit)]
     # K2: L_z < 0 at beta > 0.9 (r_p <= 7)
     k2 = [dict(rp=r["rp"], beta=r["beta"], hrna_k50=r["ic50"], hrna_med=r["ic_med"], crit_k=c["k"],
@@ -164,12 +166,23 @@ def main(scan_path, outdir):
     dfs = (fs_med - fs_paper) / math.pi
     afs = np.array(afin_maps)
     retro_h = afs[:, :, half:]
+    lz_bins = [(-5.3, -3.0), (-3.0, 0.0), (0.0, 3.0), (3.0, 5.0)]
+    by_lz = []
+    for lo, hi in lz_bins:
+        m = (lzs >= lo) & (lzs < hi)
+        by_lz.append(dict(lz_lo=lo, lz_hi=hi, iota_over_pi=(ios / math.pi).tolist(),
+                          hrna=sfmap[m].mean(0).tolist(), paper=P_surv[m].mean(0).astype(float).tolist(),
+                          hrna_pro=float(sfmap[m][:, :half].mean()), paper_pro=float(P_surv[m][:, :half].mean())))
+    pro_per_sample = [float(m[:, :half].mean()) for m in maps]
     resB = dict(nsamples=len(samples), agree_per_sample=agree, agree_majority=agree_major,
                 surv_paper=float(P_surv.mean()), surv_paper_pro=float(P_surv[:, :half].mean()),
                 surv_paper_retro=float(P_surv[:, half:].mean()),
                 surv_hrna=float(maps.mean()), surv_hrna_pro=float(maps[:, :, :half].mean()),
                 surv_hrna_retro=float(maps[:, :, half:].mean()),
                 surv_hrna_per_sample=[float(m.mean()) for m in maps],
+                surv_hrna_pro_per_sample=pro_per_sample, samples=[list(s) for s in samples],
+                by_lz=by_lz,
+                sf_vs_iota_hrna=sfmap.mean(0).tolist(), sf_vs_iota_paper=P_surv.mean(0).astype(float).tolist(),
                 first_surv_paper_over_pi=(fs_paper / math.pi).tolist(),
                 first_surv_hrna_med_over_pi=(fs_med / math.pi).tolist(),
                 first_surv_hrna_min_over_pi=(np.nanmin(fs_h, axis=0) / math.pi).tolist(),
@@ -184,7 +197,7 @@ def main(scan_path, outdir):
     summ["B"] = resB
     with open(os.path.join(outdir, "kerr_2402_summary.json"), "w") as fh:
         json.dump(summ, fh, indent=1)
-    brief = {k: v for k, v in resB.items() if not isinstance(v, list) or len(v) <= 8}
+    brief = {k: v for k, v in resB.items() if (not isinstance(v, list) or len(v) <= 8) and k != "by_lz"}
     print(json.dumps(dict(A_vs_paper={f: {k: v for k, v in c.items() if k != "rows"} for f, c in comp.items()},
                           newton_vs_cosiN=sum(r["within_one"] for r in newt_vs_crit), K2=k2, B=brief), indent=1))
     figures(summ, paper, crit, outdir, P_surv, sfmap, fs_paper, fs_h, lzs, ios)
@@ -198,8 +211,8 @@ def figures(summ, paper, crit, outdir, P_surv, sfmap, fs_paper, fs_h, lzs, ios):
     fs.use_style()
     resA = summ["A"]
     # ---- Fig. InclD comparison
-    fig = plt.figure(figsize=(fs.FULL_WIDTH, 5.6))
-    pos = [(0.7, 3.05), (4.6, 3.05), (0.7, 0.5), (4.6, 0.5)]
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, 6.0))
+    pos = [(0.7, 3.45), (4.6, 3.45), (0.7, 0.5), (4.6, 0.5)]
     titles = {"pos": r"$s=0.9$, equatorial $L_z>0$", "neg": r"$s=0.9$, equatorial $L_z<0$",
               "zero": r"$s=0.9$, $L_z=0$", "s0": r"$s=0$"}
     c_h, c_p, c_n = fs.PAL["blue"], fs.PAL["red"], "0.45"
@@ -263,11 +276,27 @@ def figures(summ, paper, crit, outdir, P_surv, sfmap, fs_paper, fs_h, lzs, ios):
     ax3.fill_betweenx(lzs, np.nanmin(fs_h, 0) / math.pi, np.nanmax(fs_h, 0) / math.pi, color=fs.PAL["blue"], alpha=0.2, lw=0)
     ax3.plot(np.nanmedian(fs_h, 0) / math.pi, lzs, "-", color=fs.PAL["blue"], label="HRNA median, range")
     ax3.axvline(crit[[c["rp"] for c in crit].index(10.0)]["iota_c"] / math.pi, color="k", lw=0.8, label="Eq. (cosiN)")
-    ax3.set_xlim(0.25, 0.75)
+    ax3.set_xlim(0.0, 0.75)
     ax3.set_xlabel(r"lowest surviving $\iota/\pi$")
     ax3.set_ylabel(r"$L_z/M$")
     ax3.legend(fontsize=5.5)
     fs.save(fig, os.path.join(outdir, "fig_afin"))
+    # ---- survival against iota by L_z band (scan B) and the Newton law of scan A at r_p = 10
+    fig = plt.figure(figsize=(fs.FULL_WIDTH, 2.7))
+    cols = fs.series_colors(4)
+    rn = [x for x in resA["newt"] if x["rp"] == 10.0][0]
+    for k, band in enumerate(summ["B"]["by_lz"]):
+        ax = fs.inch_axes(fig, 0.6 + 1.9 * k, 0.5, 1.6, 1.8)
+        ax.plot(band["iota_over_pi"], band["paper"], "-", color=fs.PAL["red"], label="2402.02178")
+        ax.plot(band["iota_over_pi"], band["hrna"], "-", color=fs.PAL["blue"], label="HRNA (8 orient.)")
+        ax.plot(np.array(rn["iotas"]) / math.pi, rn["sf"], ":", color="0.4", label="Newton, equatorial (24)")
+        ax.set_title(r"$L_z\in[%g, %g)$" % (band["lz_lo"], band["lz_hi"]), fontsize=7)
+        ax.set_xlabel(r"$\iota/\pi$")
+        ax.set_ylim(-0.03, 1.05)
+        if k == 0:
+            ax.set_ylabel(r"survival fraction, $r_p=10$")
+            ax.legend(fontsize=5.5, loc="lower right")
+    fs.save(fig, os.path.join(outdir, "fig_afin_sf"))
 
 
 if __name__ == "__main__":
