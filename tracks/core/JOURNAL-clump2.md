@@ -1087,3 +1087,50 @@ regression against release core-v0.5 without the new options and against the pre
 executable with them, a short card check of the merged card executable; (4) interface
 text, publication of the merged executables, records. What does not fit is named as not
 done.
+
+### TF submitted; D, EN, FX2 started (12:55Z to 12:57Z)
+
+- TF: `core-20261121-125455-bf583c8`, Slurm 4791, running at once (one card was free);
+  executable `.work/build_gpu` of source commit cbe1e3ef (sha256 3aaeb746...), named in
+  the purpose because the manifest's commit is the merge commit. Predictions: as written
+  at 22:44Z on 2026-11-20, unchanged.
+- EN, FX2, D: `core-20261121-125657-ab10302` (one core; `run_d.sh`; processor executable
+  of cbe1e3ef, kept at `scratch/core/tmp/clump2/exe_cbe1e3ef/`, because the restart files
+  of TC come from that source). Predictions: EN and D as written on 2026-11-20 (22:25Z,
+  22:34Z), FX2 as written at 22:44Z.
+
+### The merged source: predictions M1, R5, M2 (written 13:00Z, while the builds run; nothing of them has run)
+
+The builds in `.work/build_cpu`, `.work/build_gpu` are being remade from HEAD (main with
+release core-v0.5 merged, plus this package). What is published has to be this source,
+so it gets its own tests. Changes of the two releases that act without an option
+(`tracks/core/CHANGELOG.md`, lines 49 and 155): the guard stops a run with non-finite
+fields, two files change their place, periodic meshes, restart files and `last_time`
+lines of final dumps, particles of zero mass, analytic metrics, the linear wave, a
+rounding on cards with collisions. None of them touches the data that `nrpic_cf` builds
+or the evolution of a cluster with Z4c on a mesh that is not periodic.
+
+- **M1** (processors; `run_merged.sh`, `compare_tb.py`). TB at 32 and 64 cells, v = 0.1
+  and 0.3, kinds `curv` and `corr`, and at rest, with the merged build, against the same
+  cases of run `core-20261120-222933-0a01a56` (build of cbe1e3ef, same generator):
+  history files byte-identical, cell data of every dump byte-identical, every number of
+  `tb_residual_diag.json` equal (relative difference 0; the test passes below 1e-12).
+  Refuted by any difference: then the merge changed the data of a moving table
+  component, and the numbers of TB do not describe the published executable. The
+  comparer was tried on a pair that is equal (a run against itself: identical) and on a
+  pair that is not (the run with the old correction table against the one with the new:
+  the moving cases differ, the cases at rest are identical).
+- **R5** (processors). Release core-v0.5 (`.work/build_cpu_v05` of the main checkout)
+  against the merged build, inputs without the new options: `regress_cf`,
+  `cf_table_regress`, `by_static`, `jeans` (two cycles): every data file byte-identical.
+  Refuted by any difference.
+- **M2** (card, when a slot of owner core is free; about 2 min, 0.04 card-hours). `v0.3`
+  of TC again for 50 M with the merged card build, against TC's `v0.3` (card build of
+  cbe1e3ef). G2 found card and processor of one source equal to 3e-15 over 10 M. If no
+  change of the releases acts on this run: first record equal to 1e-11 relative (G);
+  minimum lapse, `sum m u_x`, `sum m W` within 1e-9 at every common record up to 50 M
+  (the round-off of the card deposit, amplified at most by the N-body dynamics over a
+  few dynamical times), the constraint norms equal in four printed digits. Refuted by a
+  difference above 1e-6 within the first 10 M: then something in the two releases
+  changes the evolution of this run without an option, and it has to be found before
+  the executable is published as "TC and TF describe it".
