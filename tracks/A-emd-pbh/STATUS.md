@@ -1,55 +1,41 @@
 # STATUS of A-emd-pbh
 
-gate:        G0 PASSED 2026-11-19 (coord/GATES.md, tag stage/A-emd-pbh/G0-pass-20261119). G1 package complete for sign-off
-             2026-11-21: independent gate review PASS WITH RESERVATIONS (stage/G1/GATE_REVIEW.md), its condition C20 closed by
-             the lead of batch 2b; C11, C18 PASS. G2 in progress (horizon formation of the spherical ball).
-headline:    The baseline of G1 holds and reproduces bit for bit (verifier, close-out, reviewer and Szekeres reruns); in full
-             relativity the expanding ball turns around as the exact solution says, and with the relaxed 1+log lapse and one
-             static level of M/16 (BH-1R) a persistent apparent horizon forms at t = 10.875 whose mass follows the exact mass
-             of its slice to better than 1e-3 after t ~ 11.7 M (runs_ball A-20261121-081153-b92c08c, re-checked in
-             A-20261121-082814-6fadb30; one resolution, not yet independently verified); no run has reached a horizon in the box.
-last-result: Lead re-check (runs A-20261121-075605-351d611, repeat -075933-338a6ff; stage/REVIEW-wave3.md): L1-L9 hold.
-               G1 verifier rerun identical: ledger 39 confirmed / 2 wrong (corrected) / 1 not confirmed (card-hour model);
-               criteria 19/19, Newtonian mode 17/17, ball 12/12. Gate reviewer's checks A-F identical. Wave-1 outputs
-               unchanged since their listing (55 files). Szekeres LTB limit, dipole order, error budget identical; 15/15 tests;
-               N = 32 geodesic slicing non-finite from tau = 26 (own reader).
-             G1 track criteria: T1 constraint orders 2.00/4.00 (flat ball), 3.98/3.94 (smoothed top hat 256->512);
-               T2 criteria 41 of 41 checks with 4 diagnostics (after two bands restated to the plotted window, two failures
-               turned diagnostics, prediction F5 partly refuted; wave 1 was 33 of 37); T3 met by decision 0013, and the
-               Newtonian mode puts the first-collapse time of 9 of the 14 scan points within +2.2e-4 to +6.3e-4 of the
-               isolated ellipsoid (spindle +1.5e-3; 64^3 controls +8.8e-4, +1.5e-3; 3.4e4-particle controls -2.4e-4,
-               -4.6e-4; run A-20261120-222454-d16dbc6).
-             Units: masses, radii, times of the scouting data in M_0 = 1 (total mass 1.0096 M_0).
-             SR-1 (geodesic slicing) breakdown at dx = M / M/2: first non-positive metric determinant t = 30.25 / 32.875,
-               norm(H) > 1e10 at 30.5 / 33.0, first non-finite line output 31.0 / 33.25. SR-2 turnaround at dx = M/4 with the
-               window-free estimators (runs_ball entry 18, A-20261121-081138-ebe70b4): +0.0178 M for the secular turnaround
-               (prediction R2 holds), +0.035 M for the local maximum (fails).
-             runs_ball (batch 2b, re-checked): BH-1 on uniform meshes M/4-M/8 forms no apparent horizon and breaks down at
-               t = 14.3-15.0; SR-1L (relaxed lapse) carries data set 2t to within 1 M of first trapping; at a fixed box the
-               core error converges at order 3.7 and 2.6 (entry 19, A-20261121-081605-f95b10c).
-             Stranded runs closed: Szekeres files A-20261120-223422-8cc4241 (mass converged to 2e-10), periodic P0L data
-               A-20261120-223123-f436c39 (prediction D3 holds: residuals 6e-12, c = 0.088, alpha_min 0.805).
-next:        1. Horizon formation in the ball (G2): verify_bh resumes from its journal entry 2 (registered C1-C5, VERIFIER.md:
-                the independent check of BH-1R); conv_ball analyses its card job 1 (Slurm 4776) and runs member C, with
-                hmean_tol_0 = 1e30 in new decks; report the horizon time and mass errors with their N and dx dependence.
-             2. Szekeres card series (64^3-256^3 to tau = 40, files ready in A-20261120-223422-8cc4241, about 1.2 card-hours)
-                and the periodic P0L run with the relaxed lapse against its LTB reference (periodic_threshold, files stranded).
-             3. Before G2: redraw the architecture schematic against core-v0.5; rerun the wave-1 producers through nrpic-run;
-                constraints of data set 2t in dx with core-v0.5 region norms; SR-2 turnaround with the window-free estimator.
-blockers:    none from core for the ball (lapse_leak, guard, finder status, dt_lightspeed, AMR in nrpic_cosmo now released in
-               core-v0.4/v0.5). Box: a slicing that keeps the Hamiltonian constraint below order one after t = 9 in S1
-               (core message 20261120T223017Z item 2); periodic generator for mu >= 0.5 (core/id-solver-2, not released).
-             orch: sign-off of G1 (no waiver needed: the four manifests the reviewer found open are closed).
-needs:       orch: g1-sign-off-and-waivers and g1-no-waiver-needed (outbox 20261121T080815Z, T0832*Z); waiver of the
-               reviewer's failed attempt A-20261121-064515-aa13c8f (outbox waiver-reviewer-failed-attempt)
-             core: answered 2026-11-21 (core-v04-v05-answers; szekeres-dumps-kij: use variable = adm); still deferred:
-               phase-1 generator and refined-level solve (core/id-solver-2), SR push (core/newton-2), finder spin projection
-             kb: szekeres-conformal-flatness (outbox 20261121T080816Z)
-offers:      expanding-ball data and exact LTB shells: tracks/A-emd-pbh/expball/ (data sets 2t and 3)
-             invariant comparison of AthenaK ball runs: tracks/A-emd-pbh/runs_ball/ (compare.py, turnaround.py)
-             quasi-spherical Szekeres reference solution, conformal map, NRCOSMO1 files: tracks/A-emd-pbh/szekeres/ (to B)
-             EMD criteria with amplitude conversion and the LTB profile of arXiv:2609.14218: tracks/A-emd-pbh/criteria/
-             periodic peak set-up (P0L spherical peak data, tracked axes): tracks/A-emd-pbh/periodic_threshold/
-             lead's re-check tool (reruns compared value by value): tracks/A-emd-pbh/analysis/review_wave3.py
-budget:      card-hours G2: 1.92 used (0.95 wave 2; jobs 4642 0.45, 4665 0.50, 4748 0.02) of 60; this session 0; no card job of
-               A queued at 2026-11-21 00:30 PST. Processors: this session 4 cores for 2 x 3.5 min.
+gate:        G0 PASSED 2026-11-19; G1 PASSED with reservations 2026-11-21 (coord/GATES.md, tag stage/A-emd-pbh/G1-pass-20261121).
+             G2 in progress: horizon formation of the spherical expanding ball against the exact solution.
+headline:    The expanding ball forms its apparent horizon on every mesh of the convergence series (conv_ball: first-detection
+             error 0.193, 0.068, 0.017 M at finest cells M/16, M/32, M/64; median horizon-mass error 7.4e-3, 2.1e-3, 2.1e-4;
+             A-20261121-120257-a2eb839), independently checked (verify_bh: C1, C2 confirmed; first-detection mass +2e-2 is not a
+             usable measure). Batch 5 put the first scan across a threshold of black-hole formation on the cards
+             (threshold_ball: finite-duration threshold of the top-hat ball at t_end = 45 M, exact bracket delta_c in (0.40, 0.42]).
+             The periodic box does not yet carry a relaxed-lapse run (job 4799 failed at t = 4.8 and 15.1).
+last-result: periodic_threshold card job 1 (A-20261121-131600-02b5d41, Slurm 4799): both members stopped on the guard (exit 3),
+               P0L at t = 4.815, S1L at t = 15.076; norm(H) jumps by ~1e4 at t = 2.506 in both (lead's reading
+               A-20261121-203120-eaba95f). Predictions P3, P4, S1, S2 refuted. Request to core.
+             threshold_ball design A-20261121-202520-3164672, data A-20261121-202812-cae4436 (exact tau_AH 15.39 ... 114.57 M for
+               delta_c 1.0 ... 0.2), smoke tests A-20261121-203156-d094c56 (failed: decks lacked `diagnostics`) and
+               A-20261121-203211-6d3ce73 (exit 0). Predictions T1-T6 in threshold_ball/JOURNAL.md entry 1.
+             conv_ball (batch 2b) and verify_bh (batch 3) results reviewed for the decision (stage/REVIEW-wave3.md section 6).
+cards:       running or queued (Slurm names A-*; sequencer keeps at most two):
+               A-20261121-204149-c48bd33 (Slurm 4838) B-d0.42, chain to t = 51;  A-20261121-204250-0bf45c7 (Slurm 4845) B-d0.40 to 54
+             waiting in threshold_ball/queue.txt (sequencer pid 2666191, scratch/A-emd-pbh/sequencer_threshold/):
+               A-mesh batch (A-d0.42, A-d0.40), B-d0.45, B-d0.50, B-d1.00, B-d0.70, B-d0.35, B-d0.20, C-R1.25 (conv_ball leg,
+               core_gauge), C-d0.42 (M/64, about 8 card-hours)
+next:        1. As chains finish: nrpic-run finish <run id>; analyse with conv_ball's compare.py (threshold_ball needs its own
+                analyse script: write it first, before the first member is read); judge T1-T6; figures.
+             2. When core answers periodic-relaxed-lapse-blowup: a periodic deck that runs past t = 10, then P0L against the LTB
+                reference and S1L; the AMR periodic run only after that.
+             3. Before the G2 review: second agent on conv_ball's G2 reading (its JOURNAL entry 12) and on threshold_ball's
+                outcomes; architecture schematic against core-v0.6; edge band reported separately in shell errors.
+blockers:    periodic box: core's answer on the relaxed-lapse blow-up (request 20261121, periodic-relaxed-lapse-blowup);
+             phase-1 periodic generator for mu >= 0.5 (core, deferred). Ball: none.
+needs:       core: periodic-relaxed-lapse-blowup and bh1r-inte-deficit-two-levels (both posted this session); still open from earlier:
+               refined-level K_ij dumps for the Szekeres test.
+             kb: szekeres-conformal-flatness (acknowledged by kb, waits for its claims package).
+offers:      expanding-ball data and exact LTB shells for any delta_c: threshold_ball/scripts/{design_scan,prep_scan}.py
+             nested static mesh decks with finder diagnostics: threshold_ball/decks/
+             card sequencer for an owner (two-job rule): threshold_ball/scripts/sequencer.sh
+             convergence series of horizon formation: conv_ball/ (README, convergence.md of A-20261121-120257-a2eb839)
+budget:      card-hours G2: 5.51 used, 3.93 reserved, 50.56 left of 60 at 12:44 PST (nrpic-run budget). This batch: the queue
+               asks 32.7 card-hours (model 15: B members 0.25-0.8 each, C-R1.25 2.3, C-d0.42 8.2), above the 8-hour mark of
+               decision 0014 in sum: announced here and to orch (outbox cards-loaded-threshold-scan). Processors this session:
+               1-4 cores for about 8 minutes.

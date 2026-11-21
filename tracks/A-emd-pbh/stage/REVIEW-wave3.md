@@ -200,3 +200,24 @@ Core's item 3 applies to the periodic decks: `alpha_exc` is an absolute lapse, o
 | 9 | architecture schematic names core-v0.3 | redraw against core-v0.5 before G2 (note scripts; HANDOFF next) |
 | 10 | horizon-mass criterion may be unreachable | RISKS row 17 kept; conv_ball reports the error with its N and dx dependence; if it stalls the track asks the orchestrator to restate the criterion (to be sent with G2 evidence, not now) |
 | note | App. B cites an unfinished manifest | A-20261119-164634-f1fe887 is finished (runs_ball, 00:05 PST, 2026-11-21) |
+
+## 6. Batch 5 (2026-11-21 afternoon, lead; decision 0025 items 4-5: cards first)
+
+Reviewed only what decided the next runs, from the artefacts.
+
+| Package (batch) | Confirmed | Not confirmed | Wrong | What the track does |
+|---|---|---|---|---|
+| conv_ball (2b, finished 12:02 UTC) | the registered final table and figure of A-20261121-120257-a2eb839 (convergence.md, fig_convergence.png looked at) carry the reported numbers: ddet 0.193, 0.068, 0.017 M; dmmed +7.4e-3, -2.1e-3, -2.1e-4; dm at first detection +4.5e-2 on B; boundary leg identical | the analysis was not rerun by the lead (decision needed only the numbers); the G2 reading of JOURNAL entry 12 still lacks a second agent | none found | mesh B (M/32) is taken as the working mesh of the scan; the missing C-R1.25 member is queued (threshold_ball queue line 12, core_gauge as the series) |
+| verify_bh (3) | its four findings bear on the scan: horizon-mass errors are judged on the median over detections, not at first detection (+2e-2 at BH-1R, +4.5e-2 at conv_ball B agree that the first-detection mass is not a usable measure); the C3 clock item is decided REFUTED (-0.046 M), as section 4 recommends | slice-or-finder origin of the first-detection excess: stays [TO VERIFY]; the scan writes field dumps at tau_AH - 2, tau_AH, tau_AH + 4 and lines every 0.25 M, from which the finder's radius can be checked on the line at first detection (the verifier's request) | "non-finite near 15.5" (runs_ball) is 15.03: corrected in the record by the verifier; nothing further | G2 tables state the particle selection of shell errors (edge band separately); int_E deficit of BH-1R at t = 0 (7.9e-4) posted to core (outbox bh1r-inte-deficit-two-levels) |
+| periodic_threshold (3) and its card job 1 (Slurm 4799, ran 07:16-07:21 PST) | both members failed (exit 3, guard); the lead's reading A-20261121-203120-eaba95f: a common jump of norm(H) by ~1e4 at t = 2.506 in both members | cause (deck/step vs data) | P3, P4, S1, S2 refuted (periodic_threshold/JOURNAL.md, entry 20:44Z) | no periodic long run; request to core periodic-relaxed-lapse-blowup; note to B (do not take the deck) |
+
+New package threshold_ball (this session): design run A-20261121-202520-3164672, data run
+A-20261121-202812-cae4436 (nine data sets, all rc 0), smoke tests A-20261121-203156-d094c56
+(failed: decks lacked `diagnostics`; fixed by copying the decks into the package) and
+A-20261121-203211-6d3ce73 (exit 0), predictions T1-T6 committed before the first submission.
+Twelve card runs queued behind a sequencer; at 12:43 PST two were submitted
+(A-20261121-204149-c48bd33, Slurm 4838; A-20261121-204250-0bf45c7, Slurm 4845).
+
+Gates: G0 and G1 are signed (coord/GATES.md); nothing to redo in stage/G0 and stage/G1. G2 is
+not ready for review: the threshold scan and C-R1.25 are on the cards, the second-agent check of
+conv_ball's G2 reading is owed, the architecture schematic still names core-v0.3.

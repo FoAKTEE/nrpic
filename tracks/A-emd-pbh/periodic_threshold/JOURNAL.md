@@ -700,3 +700,20 @@ core-v0.5 has adaptive refinement in nrpic_cosmo and its card build passed core'
 card check, which includes the 32^3 ladder deck of peak_amr; the package keeps one job in
 the queue, so it waits for job 1). Card-hours used by this package in wave 3: 0 (job 1
 asks for 0.97).
+
+## 2026-11-21 20:44Z, outcome of card job 1 (run A-20261121-131600-02b5d41, Slurm 4799), by the lead of batch 5
+
+Closed with nrpic-run finish: failed (exit 3). Both members stopped on the core-v0.5 guard (chi
+not positive): P0L at t = 4.815 (cycle 464; chi = -0.45, Khat = 1.0e7 at (0.459, 0.459, -0.518),
+level 4), S1L at t = 15.076 (cycle 1398; chi = -2e6). The lead's reading (run
+A-20261121-203120-eaba95f, `analysis/periodic_job4799.py`, figure fig_periodic_job4799.png looked
+at): in BOTH members the L2 norm of H jumps by about four orders of magnitude at t = 2.506
+(P0L 1.2 -> ~1e5; S1L 1.5 -> ~1e5), and |K|_max of P0L oscillates at 1-10 from then until the
+blow-up at 4.8. A jump at the same time in two data sets points at the deck or the step (cfl 1.0
+with dt_lightspeed 0.25), not at the matter [JUDGEMENT; no run has yet tested either].
+
+Predictions: P1 and P2 not judgeable beyond t = 4.8 (no line output was compared; the run ends
+long before turnaround); P3 REFUTED (no horizon: the run stops at 4.8, not 140); P4 REFUTED (guard
+stop at 4.8). S1 REFUTED (stops at coordinate 15.1, not past 212.8); S2 REFUTED (no horizon); S3
+not judged. Request to core: outbox periodic-relaxed-lapse-blowup. No periodic card job of this
+owner until core answers; the long runs of batch 5 go to the expanding ball (threshold_ball).

@@ -1,6 +1,6 @@
 # JOURNAL of threshold_ball (A-emd-pbh)
 
-## Entry 1, 2026-11-21 12:45 PST (lead of batch 5): predictions before any card run
+## Entry 1, 2026-11-21 12:40 PST (lead of batch 5; committed 12:41:43 as c48bd33b, first submission 12:41:49): predictions before any card run
 
 Design: DESIGN.md (design run A-20261121-202520-3164672, data run A-20261121-202812-cae4436,
 smoke tests A-20261121-203156-d094c56 failed: `diagnostics` not declared in the decks, then
@@ -48,3 +48,11 @@ Gauge note (decision 0025 item 3): the members are collapse runs with M/32 or fi
 and stop 4-8 M after the exact tau_AH, far short of the late vacuum drift of the relaxed lapse
 (about a hundred M); they keep lapse_leak = 8 as conv_ball. No null test or long run around an
 existing black hole is in this queue.
+
+## Entry 2, 2026-11-21 12:45 PST: submissions
+
+Sequencer started 12:41:49 (pid 2666191, state scratch/A-emd-pbh/sequencer_threshold/). Queue
+line 3 -> B-d0.42, run A-20261121-204149-c48bd33, Slurm 4838 (chain, MAX_SEGMENTS 2, v0.6
+executable confirmed in chain/config.sh); line 4 -> B-d0.40, run A-20261121-204250-0bf45c7,
+Slurm 4845. Both PENDING behind other owners' jobs at 12:44. The rest of the queue (lines 5-13)
+waits for the sequencer. Outcomes go into entry 3 onward; how to read them: HANDOFF.md of the owner.
