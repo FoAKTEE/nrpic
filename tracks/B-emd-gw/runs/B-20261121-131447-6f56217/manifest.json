@@ -1,0 +1,120 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261121-131447-6f56217",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "verifier_c18 P2: own second-order prediction (growing part) of the box-mode strain of the jittered nulls from their initial data, against the M1a measurement (rows 201-203, 206)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "env",
+    "OMP_NUM_THREADS=2",
+    "python3",
+    "tracks/B-emd-gw/stage/G1/verifier_c18/scripts/p2_null_pred.py",
+    "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-130345-622e9e4"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "6f562179adbafd3be4f353d65f1510461e9f4f99",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/stage/G1/verifier_c18"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "973f2dbc2e32338b1ea99d14ee4d03719af9a8c7",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/stage/G1/verifier_c18/scripts/p2_null_pred.py",
+      "role": "input",
+      "sha256": "16e119efcd9f6225abc25efab91192a7d75dd0a30bd6a9c6be9789b5d9bdb698",
+      "bytes": 6705,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/stage/G1/verifier_c18/scripts/vlib.py",
+      "role": "input",
+      "sha256": "51c7c33c0651c784b2e0a40cb42e315672b4aed0ed96dea098f09414ab3f55af",
+      "bytes": 16754,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-130345-622e9e4/m1_jit0p3.json",
+      "role": "input",
+      "sha256": "c815b11bd61c47215fdabae1aefe05a818864533eb920b564268c61aaab2f9a7",
+      "bytes": 211305,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-130345-622e9e4/m1_jit0p1.json",
+      "role": "input",
+      "sha256": "b0aac25e239ab61083c40bf6a6e902b535acdd25a93513c7cab62095c27abd24",
+      "bytes": 211229,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261121-131447-6f56217",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T13:14:47Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.6912,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 6,
+    "runs": 263,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
