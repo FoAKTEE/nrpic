@@ -886,3 +886,55 @@ differences, the orders at 4, D_n per Courant factor against |n|, and the parts 
   the first-order constraint part of A4's failure at late entry is spatial (independent of
   theta to 1e-3); the time error of R^NR at Courant 0.25 is below 6.2e-4 per mode; L6 of
   DESIGN_REVIEW 8.1 is done at the size it asks.
+
+## Entry 20, 2026-11-21 03:58Z: outcome of item (c), L5 on the card (PL1-PL3 of entry 14); a follow-up test and its prediction
+
+Runs: the eleven L5 runs of card job E-20261121-025643-02526ff (4 s each, exit 0, 33 dumps
+each); analysis E-20261121-034645-02a463e (`card/l5.json`, `card/fig_l5.png`); the first
+attempt E-20261121-034609-f573ddc FAILED (exit 1): `l5_analysis.py` fitted a log-log slope
+through the dump at t = 0 (log 0); fixed (rows of M from the first step on, commit 02a463e)
+and rerun.
+
+- PL1 (H of second order) CONFIRMED in its stated refutation criterion, REFUTED in one
+  sub-claim: the even part H_e scales by 3.999994-4.0000001 between s = 100 and 50 at every
+  dump (predicted 4.00 +- 0.02), the record <|H|/[H]> of K1p over K2p by 3.989-4.016
+  (predicted 3.9-4.1); rms H_e/<[H]> at s = 100 is 7.0e-11 to 1.6e-9 (predicted 1e-11 to 1e-7).
+  But the first-order part of H is NOT below 1e-2 of H_e at every dump: 2.2e-2 after the first
+  step, 1.2e-2 after the second, 0.16e-2-1.1e-2 after (H1/<[H]> = 1.0e-12-4.0e-12 at
+  s = 100, i.e. 1e-14-4e-14 per unit s).
+- PL2 (M, the projector): the kick's projector term is CONFIRMED to 1.2 percent: M1(continuum)
+  - M1(stencil), cell by cell, is 1.309e-7 of <[M]> after one step against the independent
+  one-step reference 1.293e-7 (`l5_kick_ref.py`; predicted within 10 percent), and stays
+  1.24e-7-1.31e-7 to t = 0.27. REFUTED: the stencil run's first-order part itself is
+  5.94e-7 of <[M]> after one step (predicted at most 1e-9), 0.977 times the continuum run's
+  (predicted below 1e-2), and it FALLS with time (log-log slope -0.19 over cycles 1-8;
+  predicted to grow as t^2), to 7.3e-8 at t = 0.785. Its rms adds in quadrature to the
+  projector term (5.94^2 + 1.31^2 = 6.08^2, the continuum value): a different spatial pattern.
+  So both runs carry a common first-order momentum violation of about 6e-7 of <[M]> that is
+  not the projector and that my estimate (symbol mismatch of 7e-7 x (k dt)^2) missed by three
+  orders of magnitude.
+- PL3 (negative control) CONFIRMED: with the Pi kick flipped the odd part of H is 4.4e5 times
+  the first-order part of the proper run at least and 2.6e3 times its even part at least
+  (predicted 1e3 and 10); rms 4.2e-7-4.5e-6 of <[H]> (predicted 1e-6 to 1e-5); the record ratio
+  N1p/K1p at least 2.4e3 (predicted 1e3).
+- Second order of M (not predicted): the even part of M at s = 100 is 3.4e-6 to 2e-4 of <[M]>
+  (proportional to s relative to the first-order [M]), above the first-order part from the
+  second step on.
+
+What the common first-order parts are is the open point for risk R2 (a defect of the hook
+would show here). Candidates [JUDGEMENT]: (a) the fourth-order time error of the sourced
+evolution (the window of sharpness 5 changes on a time scale of 0.2, so (dt/0.2)^4 / 120 is
+of order 1e-6 at dt = 0.0245); (b) spatial truncation (the shell has 28.6 cells per
+wavelength at 64^3); (c) a stage-timing defect of the sources (first order in dt, D4 of the
+design review). A cheap processor test separates them (`inputs/l5res.list`,
+`scripts/l5_scaling.py`): the five stencil runs K1p, K1m, K2p, K2m, K0 at 32^3 with Courant
+0.25 (A, dt = 0.049) and 0.125 (B, dt = 0.0245, the step of the 64^3 runs; C = the card runs
+at 64^3). A/B halves the step at a fixed mesh, B/C halves the mesh at a fixed step; compared at
+equal recorded times.
+
+Prediction (refuted where stated): (a) holds. M_first and H_first fall by 16 +- 4 from A to B
+at every common dump (fourth order in dt), and B/C lies in 0.8-1.5 (no spatial part of note
+at 14 or 28 cells per wavelength); H_even1 equal in A, B, C within 1 percent (the
+second-order violation does not depend on the discretisation). Refuted if A/B for M_first is
+below 4 at the common dumps (then not a fourth-order time error; a ratio near 2 would point to
+(c), a defect of the hook), or if B/C exceeds 4 (then spatial).

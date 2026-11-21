@@ -1,0 +1,13 @@
+# L5 resolution and step test (JOURNAL entry 20): the stencil-projector runs of L5 (K1p, K1m, K2p, K2m, K0) at 32^3
+# with Courant 0.25 (A, dt = 0.0491, 16 cycles) and 0.125 (B, dt = 0.0245 = dt of the 64^3 runs, 32 cycles), to t = 0.785;
+# processors, scripts/run_list_cpu.sh with MAXJOBS=3; executable core/scalar-2 a58e95b (athena_cpu).
+A/K1p tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 time/cfl_number=0.25 time/nlim=16 scalar_field/noise_mode_scale=100.0
+A/K1m tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 time/cfl_number=0.25 time/nlim=16 scalar_field/noise_mode_scale=-100.0
+A/K2p tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 time/cfl_number=0.25 time/nlim=16 scalar_field/noise_mode_scale=50.0
+A/K2m tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 time/cfl_number=0.25 time/nlim=16 scalar_field/noise_mode_scale=-50.0
+A/K0 tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 time/cfl_number=0.25 time/nlim=16 scalar_field/noise_mode_scale=0.0
+B/K1p tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 time/cfl_number=0.125 time/nlim=32 scalar_field/noise_mode_scale=100.0
+B/K1m tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 time/cfl_number=0.125 time/nlim=32 scalar_field/noise_mode_scale=-100.0
+B/K2p tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 time/cfl_number=0.125 time/nlim=32 scalar_field/noise_mode_scale=50.0
+B/K2m tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 time/cfl_number=0.125 time/nlim=32 scalar_field/noise_mode_scale=-50.0
+B/K0 tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 time/cfl_number=0.125 time/nlim=32 scalar_field/noise_mode_scale=0.0
