@@ -1,0 +1,476 @@
+{
+ "L32p": {
+  "dumps_new": 18,
+  "dumps_old": 18,
+  "dumps": [
+   {
+    "file": "sr.sf.00000.dump",
+    "t_new": 0.0,
+    "t_old": 0.0,
+    "cycle_new": 0,
+    "cycle_old": 0,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00001.dump",
+    "t_new": 0.5399612373357456,
+    "t_old": 0.5399612373357456,
+    "cycle_new": 11,
+    "cycle_old": 11,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00002.dump",
+    "t_new": 1.0308350894591514,
+    "t_old": 1.0308350894591514,
+    "cycle_new": 21,
+    "cycle_old": 21,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00003.dump",
+    "t_new": 1.521708941582557,
+    "t_old": 1.521708941582557,
+    "cycle_new": 31,
+    "cycle_old": 31,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00004.dump",
+    "t_new": 2.012582793705963,
+    "t_old": 2.012582793705963,
+    "cycle_new": 41,
+    "cycle_old": 41,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00005.dump",
+    "t_new": 2.5034566458293663,
+    "t_old": 2.5034566458293663,
+    "cycle_new": 51,
+    "cycle_old": 51,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00006.dump",
+    "t_new": 3.04341788316511,
+    "t_old": 3.04341788316511,
+    "cycle_new": 62,
+    "cycle_old": 62,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00007.dump",
+    "t_new": 3.5342917352885137,
+    "t_old": 3.5342917352885137,
+    "cycle_new": 72,
+    "cycle_old": 72,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00008.dump",
+    "t_new": 4.025165587411918,
+    "t_old": 4.025165587411918,
+    "cycle_new": 82,
+    "cycle_old": 82,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00009.dump",
+    "t_new": 4.516039439535321,
+    "t_old": 4.516039439535321,
+    "cycle_new": 92,
+    "cycle_old": 92,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00010.dump",
+    "t_new": 5.006913291658725,
+    "t_old": 5.006913291658725,
+    "cycle_new": 102,
+    "cycle_old": 102,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00011.dump",
+    "t_new": 5.5468745289944685,
+    "t_old": 5.5468745289944685,
+    "cycle_new": 113,
+    "cycle_old": 113,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00012.dump",
+    "t_new": 6.037748381117872,
+    "t_old": 6.037748381117872,
+    "cycle_new": 123,
+    "cycle_old": 123,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00013.dump",
+    "t_new": 6.5286222332412756,
+    "t_old": 6.5286222332412756,
+    "cycle_new": 133,
+    "cycle_old": 133,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00014.dump",
+    "t_new": 7.019496085364679,
+    "t_old": 7.019496085364679,
+    "cycle_new": 143,
+    "cycle_old": 143,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00015.dump",
+    "t_new": 7.510369937488083,
+    "t_old": 7.510369937488083,
+    "cycle_new": 153,
+    "cycle_old": 153,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00016.dump",
+    "t_new": 8.001243789611486,
+    "t_old": 8.001243789611486,
+    "cycle_new": 163,
+    "cycle_old": 163,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00017.dump",
+    "t_new": 8.5,
+    "t_old": 8.5,
+    "cycle_new": 174,
+    "cycle_old": 174,
+    "time_bits_equal": true,
+    "words": 720896,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   }
+  ],
+  "records": {
+   "sr.sf.hst": {
+    "rows_new": 175,
+    "rows_old": 175,
+    "identical_rows": 175,
+    "max_rel": 0.0
+   },
+   "sr.sf.con.hst": {
+    "rows_new": 175,
+    "rows_old": 175,
+    "identical_rows": 175,
+    "max_rel": 0.0
+   }
+  },
+  "total_differing_words": 0
+ },
+ "L32m": {
+  "dumps_new": 18,
+  "dumps_old": 18,
+  "dumps": [
+   {
+    "file": "sr.sf.00000.dump",
+    "t_new": 0.0,
+    "t_old": 0.0,
+    "cycle_new": 0,
+    "cycle_old": 0,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00001.dump",
+    "t_new": 0.5399612373357456,
+    "t_old": 0.5399612373357456,
+    "cycle_new": 11,
+    "cycle_old": 11,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00002.dump",
+    "t_new": 1.0308350894591514,
+    "t_old": 1.0308350894591514,
+    "cycle_new": 21,
+    "cycle_old": 21,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00003.dump",
+    "t_new": 1.521708941582557,
+    "t_old": 1.521708941582557,
+    "cycle_new": 31,
+    "cycle_old": 31,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00004.dump",
+    "t_new": 2.012582793705963,
+    "t_old": 2.012582793705963,
+    "cycle_new": 41,
+    "cycle_old": 41,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00005.dump",
+    "t_new": 2.5034566458293663,
+    "t_old": 2.5034566458293663,
+    "cycle_new": 51,
+    "cycle_old": 51,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00006.dump",
+    "t_new": 3.04341788316511,
+    "t_old": 3.04341788316511,
+    "cycle_new": 62,
+    "cycle_old": 62,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00007.dump",
+    "t_new": 3.5342917352885137,
+    "t_old": 3.5342917352885137,
+    "cycle_new": 72,
+    "cycle_old": 72,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00008.dump",
+    "t_new": 4.025165587411918,
+    "t_old": 4.025165587411918,
+    "cycle_new": 82,
+    "cycle_old": 82,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00009.dump",
+    "t_new": 4.516039439535321,
+    "t_old": 4.516039439535321,
+    "cycle_new": 92,
+    "cycle_old": 92,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00010.dump",
+    "t_new": 5.006913291658725,
+    "t_old": 5.006913291658725,
+    "cycle_new": 102,
+    "cycle_old": 102,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00011.dump",
+    "t_new": 5.5468745289944685,
+    "t_old": 5.5468745289944685,
+    "cycle_new": 113,
+    "cycle_old": 113,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00012.dump",
+    "t_new": 6.037748381117872,
+    "t_old": 6.037748381117872,
+    "cycle_new": 123,
+    "cycle_old": 123,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00013.dump",
+    "t_new": 6.5286222332412756,
+    "t_old": 6.5286222332412756,
+    "cycle_new": 133,
+    "cycle_old": 133,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00014.dump",
+    "t_new": 7.019496085364679,
+    "t_old": 7.019496085364679,
+    "cycle_new": 143,
+    "cycle_old": 143,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00015.dump",
+    "t_new": 7.510369937488083,
+    "t_old": 7.510369937488083,
+    "cycle_new": 153,
+    "cycle_old": 153,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00016.dump",
+    "t_new": 8.001243789611486,
+    "t_old": 8.001243789611486,
+    "cycle_new": 163,
+    "cycle_old": 163,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   },
+   {
+    "file": "sr.sf.00017.dump",
+    "t_new": 8.5,
+    "t_old": 8.5,
+    "cycle_new": 174,
+    "cycle_old": 174,
+    "time_bits_equal": true,
+    "words": 327680,
+    "differing_words": 0,
+    "differing_by_variable": {},
+    "max_rel_diff": 0.0
+   }
+  ],
+  "records": {
+   "sr.sf.hst": {
+    "rows_new": 175,
+    "rows_old": 175,
+    "identical_rows": 175,
+    "max_rel": 0.0
+   },
+   "sr.sf.con.hst": {
+    "rows_new": 175,
+    "rows_old": 175,
+    "identical_rows": 175,
+    "max_rel": 0.0
+   }
+  },
+  "total_differing_words": 0
+ }
+}

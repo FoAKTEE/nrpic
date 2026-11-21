@@ -1,6 +1,6 @@
 # Checklist: E-stoch-inf G1
 
-Collected by `harness/bin/nrpic-stage collect E-stoch-inf G1` on 2026-11-19T15:09:46Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect E-stoch-inf G1` on 2026-11-21T06:44:09Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
@@ -21,7 +21,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [x] **C4** Baseline data and figures
   - status: PASS
-  - evidence: ladder/results/final, floor, a6, a12 and ladder/fig/ (runs EVIDENCE.md 1); analysis/fig; stage/G1/fig/fig_lead_check.png
+  - evidence: ladder/results/final, final2 (time-matched pairing), floor, a6, a6_64, l5, seed2, a12 and ladder/fig/ (runs EVIDENCE.md 1 and 7); analysis/fig; g1verify/fig (verifier); stage/G1/fig/fig_lead_check.png; stage/review3/fig (lead of batch 2a)
 - [x] **C5** Interface documents
   - status: PASS
   - evidence: noise/NOISE_SPEC.md and RNG_REQUIREMENTS.md (track); coord/INTERFACES/ scalar field of core-v0.3; core's tracks/core/interfaces/scalar_field_2.md (branch core/scalar-2, written to SPEC 5.3 and 10; not yet released)
@@ -30,7 +30,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [ ] **C6** The power spectrum of the slow-roll case agrees with the analytic result, super-horizon modes freeze by the criterion of arXiv:2606.14853, the constraints converge
   - status: OPEN
-  - evidence: spectrum MET (A2: 1.21e-4 at 256^3 for |n| <= 32, E-20261115-172618-f948386; lead 8.76e-5 on L32p); freezing MET (A3: drift 1.4e-4 per e-fold against 2.5e-3, FLRW lattice excluded by 350); constraints converge in the sheet's sense (odd part order 4.2-5.9, H0 order 4, second-order part independent of N within 2.2 percent; E-20261115-194633-9e04ed8, E-20261119-142713-32c883a), but the owner's accepted A4 fails in its strict form in P1's set-up at every N (odd part up to 385-870 x even part from ln(N/8) e-folds) and A5's floor was defined after the data: ruling on A4'/A5' asked of orch (outbox 20261119). STATUS.md
+  - evidence: spectrum MET and verified (A2: 1.21e-4 at 256^3 for |n| <= 32, verifier the same; second seed 2.12e-4, 1.208e-4 over typical amplitudes); freezing MET and verified (A3: ratio within 2.4e-6 to 4.6e-6 of full MS, drift 1.4e-4 per e-fold, FLRW-lattice equation -0.052 per e-fold excluded); constraints converge in the sheet's sense, verified (odd part order 5.5-5.96, halving 2.000; even part halving 3.986-4.000, N-independent); but the owner's accepted A4 fails in its strict form in P1's set-up (odd/even up to 745-869 at N = 32-128, 25 at the last time-matched dump of N = 256) and A4' awaits orch's ruling (outbox 20261119T151727Z, repeated 2026-11-21 with the verifier's recommendation). STATUS.md, VERIFIER.md
 
 ## Rulings of the orchestrator on the criteria (coord/DECISIONS; check that they apply to G1)
 
@@ -42,13 +42,13 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [ ] **C8** Schematic: Updated architecture
   - status: OPEN
-  - evidence: not drawn: note/figures/schem_architecture.png shows the G0 state (836ac86); the initial slice, mode tables, constraint record, R^NR, per-mode and freezing analysis now exist (core/scalar-2, ladder/, analysis/)
+  - evidence: package `note` of wave 3 (cut by the usage limit on 2026-11-20 14:35 PST, not resumed): note/scripts/schem_architecture.py modified and not committed; no committed updated schematic yet
 - [ ] **C9** Schematic: Data-flow diagram
   - status: OPEN
-  - evidence: not drawn
+  - evidence: package `note` of wave 3 (cut by the usage limit on 2026-11-20 14:35 PST, not resumed): note/scripts/schem_dataflow.py written, not committed, figure not produced in a registered run
 - [x] **C10** Data figure: Baseline results
   - status: PASS
-  - evidence: ladder/fig/final/fig_spectrum.png, fig_a2_modes.png, fig_a3_freezing.png (looked at by the lead 2026-11-19; regenerated pixel-identically in run E-20261119-150842-ca70d37)
+  - evidence: ladder/fig/final/fig_spectrum.png, fig_a2_modes.png, fig_a3_freezing.png; wave 3: ladder/fig/final2/fig_a4_paper.png, fig/a6_64/fig_a6.png, fig/l5/fig_l5.png, fig/seed2/fig_seed2.png; all looked at by the lead (2026-11-19, 2026-11-21)
 - [x] **C11** Data figure: Validation figures for the analysis pipeline
   - status: PASS
   - evidence: analysis/fig/fig_t2_extraction.png, fig_plane_constraint_ratios.png; stage/G1/fig/fig_lead_check.png (script stage/G1/scripts/lead_check.py, run E-20261119-150238-b81e33f); all looked at
@@ -57,22 +57,22 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [x] **C12** Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed)
   - status: PASS
-  - evidence: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md, CHECKLIST.md, REVIEW.md (pointer to ../REVIEW-wave2.md), STATUS.md (criteria table); scoping text spec/scope/SCOPE.md
+  - evidence: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md, CHECKLIST.md, VERIFIER.md, REVIEW.md (pointer to ../REVIEW-wave2.md and ../REVIEW-wave3.md), STATUS.md (criteria table); scoping text spec/scope/SCOPE.md
 - [ ] **C13** Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at
   - status: OPEN
-  - evidence: style: ladder and lead figures use a copy of harness/style/figstyle.py; every PNG looked at; but the ladder's six final figures come from one script (ladder/scripts/make_figures.py), not one script per figure, and no G1 note figure exists yet
+  - evidence: style: ladder, verifier and lead figures use copies of harness/style/figstyle.py, every PNG looked at; the verifier has one script per figure (g1verify/scripts/fig_v1.py ... fig_v7.py); package `note` of wave 3 (cut by the usage limit on 2026-11-20 14:35 PST, not resumed): note/scripts/fig_sr_{modes,freezing,constraints,order}.py written, not committed, not run as a registered run
 - [ ] **C14** Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline
   - status: OPEN
-  - evidence: the G0 schematics (note/scripts/schem_*.py, paperfig.py) exist; updated G1 versions not drawn (C8, C9)
+  - evidence: package `note` of wave 3 (cut by the usage limit on 2026-11-20 14:35 PST, not resumed): G0 schematics exist; updated architecture, data-flow and timeline scripts modified/new and uncommitted
 - [ ] **C15** Working note written with /paper-writing; its manuscript checker passed with --compile
   - status: OPEN
-  - evidence: note/main.tex is the G0 note v0; G1 sections not written
-- [ ] **C16** Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests
-  - status: OPEN
-  - evidence: no fresh-context verifier of the G1 material (decision 0016 item 4); stage/G0/VERIFIER.md covered the plan; the lead's re-check (../REVIEW-wave2.md) is not a verifier
+  - evidence: package `note` of wave 3 (cut by the usage limit on 2026-11-20 14:35 PST, not resumed): note/main.tex is the G0 note v0; G1 sections not written; no G1 ledger
+- [x] **C16** Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests
+  - status: PASS
+  - evidence: VERIFIER.md (copy of g1verify/VERIFIER.md): fresh-context helper g1verify, own code from the raw dumps, verdicts V1-V7 committed (db88f631) before it read the track's numbers (c43e050c); runs EVIDENCE.md 6; the lead reran its analyses from the registered outputs (../REVIEW-wave3.md). Its 'every number of the Supplemental Material recomputed' part: no G1 ledger exists yet (note package unfinished), so the ledger recomputation is open with C15
 - [x] **C17** Null results and failed runs are on record (manifests and JOURNAL)
   - status: PASS
-  - evidence: failed and stopped runs kept with manifests: E-20261115-172521-e098160, -170651-885fc6e (literal run directory), -171628-1737ebe (failed |M| prediction), -171633-f574079 (final tail), E-20261119-145853-ef835c2 (lead's rerun, I/O bound); refuted predictions on record: ladder P5 and entry 6's attribution, analysis PS5 and T2a, verifier V6/V7/V2b items, owner A4 strict (ladder/JOURNAL.md, analysis/JOURNAL.md, stage/G0/JOURNAL.md, JOURNAL.md)
+  - evidence: failed and stopped runs kept with manifests: E-20261115-172521-e098160, -170651-885fc6e, -171628-1737ebe, -171633-f574079, E-20261119-145853-ef835c2; wave 3: E-20261121-030415-22d518b, -031936-16d6ae5, -034609-f573ddc, -063758-d643396 (lead); refuted predictions on record: ladder P5, entry 6, entries 16, 19-22 (eight in wave 3), g1verify entries 4-6, owner A4 strict (ladder/JOURNAL.md, g1verify/JOURNAL.md, JOURNAL.md); REVIEW-wave3.md section 1 lists them
 - [x] **C18** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: PASS
-  - evidence: STATUS.md, HANDOFF.md rewritten and JOURNAL.md appended by the lead on 2026-11-19
+  - evidence: STATUS.md, HANDOFF.md rewritten, JOURNAL.md appended and RISKS.md updated by the lead of batch 2a on 2026-11-21

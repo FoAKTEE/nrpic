@@ -355,7 +355,7 @@ Predictions, written before either run (refuted where stated):
 - LW6 (L5 step test, 32^3): first-order M at Courant 0.25 over 0.125, common dumps with
   t <= 0.25: 15.5-19.5. Refuted if at most 4 (a ratio near 2 would be a first-order
   stage-timing defect of the hook).
-- LR1 (risk R1 on processors, added 06:47Z before its run; the release core-v0.4 contains
+- LR1 (risk R1 on processors, added 06:39Z before its run; the release core-v0.4 contains
   core/scalar-2 since 2026-11-21): L32p and L32m of `ladder/inputs/proc32.list` rerun with the
   release processor executable `.work/build_cpu_v04/src/athena` (`stage/review3/scripts/r1_run.sh`)
   give dumps equal word for word in all variables, times and cycles to those of
@@ -363,3 +363,41 @@ Predictions, written before either run (refuted where stated):
   the release may write one more final dump (its correction "final outputs no longer advance
   last_time"). Refuted by any differing word: then the SR results of G1 depend on the
   executable, and the size of the difference decides whether the 256^3 rung must be rerun.
+
+Outcomes (06:47Z). Runs E-20261121-063551-7957a3d (LR, 4 cores, 11 min) and
+E-20261121-063816-64ac0dc (LW1-LW6, 2 cores, 8 min; its first attempt
+E-20261121-063758-d643396 FAILED on a recursion in my parameter reader, fixed in 64ac0dc5);
+figures `stage/review3/fig/fig_rerun.png`, `fig_lead3.png` looked at; results copied to
+`stage/review3/results/`.
+- LR CONFIRMED: all 38136 numeric leaves of the twelve reruns equal the registered outputs bit
+  for bit, and every committed copy equals its run's output; one string leaf differs (the npz
+  path in `P256s2_judge.json`, a path written by the rerun).
+- LW1 CONFIRMED: seed 20261120 and nmax2 4096 read from the code's command line; A2 2.121e-4
+  over |n| <= 32 (ladder 2.12e-4), 4.494e-3 over all modes; A3 3.80e-6 (ladder 4.4e-6: the
+  choice of the dump taken as N_k + 4, as between the ladder and the verifier on seed 1), drift
+  1.380e-4 per e-fold, 2.1e-6 from the reference; A1 2.16e-12, 6.31e-12, 2.15e-12; e-folds
+  1.28e-9 off.
+- LW2 CONFIRMED: odd/even of H at the time-matched dumps of P256/P256m at most 25.15 (t = 4.0);
+  the index-paired last dump has t = 4.50377 against 4.50000 and odd/even 384.8. The verifier's
+  explanation of the "385" holds; the even part at that pair is 1.6e-13, a quarter of the
+  plateau, i.e. the mismatch distorts the even part.
+- LW3 CONFIRMED: maxima P256 5.105e-11 / 3.994e-4 (H at t = 4.547), P256s2 5.112e-11 /
+  3.999e-4; P256 to t = 4.6: M 3.25e-4.
+- LW4 CONFIRMED in the parts that test A6, REFUTED in one sub-claim: <chi> order 4.03 at every
+  dump; odd part of H at Courant 0.25 over 0.0625: 0.968, 1.613 at t = 0.49, 0.98 and
+  1.00006-1.00047 from N = 2.42 on; orders of the perturbations of phi 3.89-4.03, chi 3.84-4.04
+  at t >= 0.98, and of K 3.92-4.02 from t = 1.47 on, but 3.52 at t = 0.98 (and 3.47 at t = 0.49),
+  outside my 3.8-4.2. My norm is the maximum over the box, the ladder's the rms (3.82-4.01 for
+  K); with the maximum the early K perturbation (before the entry) sits at the edge of A6's
+  band. Not a failure of A6 at t >= 0.98 (3.5-4.5) [JUDGEMENT: the max norm picks single cells
+  where the time error of K is not yet in its asymptotic regime].
+- LW5 CONFIRMED: even factor of H 3.9999936-4.0000001; first-order M after one step 5.943e-7
+  (stencil), 6.083e-7 (continuum), continuum minus stencil 1.3091e-7 (reference 1.293e-7).
+- LW6 CONFIRMED: A/B of the first-order M 15.55, 15.53, 16.02, 17.25, 19.46 at t = 0.05-0.25;
+  later it falls to 0.36 at t = 0.785 (the spatial part at 32^3, as the ladder recorded).
+- LR1 CONFIRMED (run E-20261121-064707-77ec326, 2 cores, 436 s per rung; `stage/review3/fig/fig_r1.png`
+  looked at): L32p and L32m on the release core-v0.4 processor build equal the core/scalar-2 runs
+  of E-20261115-172636-ce98836 word for word: 18 dumps each, 12976128 and 5898240 64-bit words,
+  0 differing, times and cycles bit-equal; `sr.sf.hst` and `sr.sf.con.hst` identical in all
+  175 rows; no extra final dump. So on processors the SR results of G1 do not depend on which
+  of the two executables made them; the card build is not tested (next card job).

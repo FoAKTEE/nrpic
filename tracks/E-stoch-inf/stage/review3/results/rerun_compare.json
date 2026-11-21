@@ -1,0 +1,452 @@
+{
+ "g1.v123": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-063551-7957a3d/g1/v123/v123.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-030207-fb6f090/v123.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/g1verify/results/v123.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 1363,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 0,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 1363,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 0,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ },
+ "g1.v45": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-063551-7957a3d/g1/v45/v45.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-031951-82984f8/v45.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/g1verify/results/v45.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 4523,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 230,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 4523,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 230,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ },
+ "g1.v45add": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-063551-7957a3d/g1/v45add/v45_addendum.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-032413-0672bf9/v45_addendum.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/g1verify/results/v45_addendum.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 255,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 0,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 255,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 0,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ },
+ "g1.v6": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-063551-7957a3d/g1/v6/v6.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-030522-c6907b6/v6.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/g1verify/results/v6.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 1744,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 119,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 1744,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 119,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ },
+ "g1.v7": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-063551-7957a3d/g1/v7/v7.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-030520-5a23d64/v7.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/g1verify/results/v7.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 381,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 197,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 381,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 197,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ },
+ "g1.v7g": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-063551-7957a3d/g1/v7g/v7_g1exe.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-031251-c48670d/v7_g1exe.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/g1verify/results/v7_g1exe.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 148,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 51,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 148,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 51,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ },
+ "ladder.final2": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-063551-7957a3d/ladder/final2/summary.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-025932-7a21f34/res/summary.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/results/final2/summary.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 649,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 39,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 649,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 39,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ },
+ "ladder.a6_64": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-063551-7957a3d/ladder/a6_64/a6.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-034414-bfd0285/a6.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/results/a6_64/a6.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 26468,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 11,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 26468,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 11,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ },
+ "ladder.l5card": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-063551-7957a3d/ladder/l5card/l5.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-034645-02a463e/card/l5.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/results/l5/card/l5.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 1654,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 4,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 1654,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 4,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ },
+ "ladder.l5scaling": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-063551-7957a3d/ladder/l5scaling/l5_scaling.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-040015-436a615/l5_scaling.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/results/l5/l5_scaling.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 773,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 3,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 773,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 3,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ },
+ "ladder.seed2judge": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-063551-7957a3d/ladder/seed2/P256s2_judge.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-045105-f797ebb/res/P256s2_judge.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/results/seed2/P256s2_judge.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 115,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 4,
+   "other_differing": 1,
+   "other_diffs": [
+    [
+     "/npz",
+     "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-063551-7957a3d/ladder/seed2/",
+     "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-045105-f797ebb/res/P256s2.np"
+    ]
+   ],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 115,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 4,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ },
+ "ladder.seed2cmp": {
+  "files": {
+   "new": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-063551-7957a3d/ladder/seed2cmp/seed2.json",
+   "registered": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-045105-f797ebb/compare/seed2.json",
+   "committed": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/results/seed2/seed2.json"
+  },
+  "new_vs_registered": {
+   "numeric_leaves": 63,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 10,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  },
+  "committed_vs_registered": {
+   "numeric_leaves": 63,
+   "numeric_differing": 0,
+   "max_rel": 0.0,
+   "max_rel_key": null,
+   "other_leaves": 10,
+   "other_differing": 0,
+   "other_diffs": [],
+   "path_diffs": 0,
+   "path_diff_examples": [],
+   "only_in_first": [],
+   "only_in_second": [],
+   "n_only_first": 0,
+   "n_only_second": 0
+  }
+ }
+}
