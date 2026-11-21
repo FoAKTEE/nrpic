@@ -484,7 +484,7 @@ Refuted if the ratio is below 1.5 (the start error does not converge with the st
 12 (fourth order). If it converges, the step-free start error at 32 cells is estimated by
 Richardson extrapolation from the three runs.
 
-## Entry 11 (2026-11-21 15:00 PST): outcome of P4; cause of the amplitude floor
+## Entry 11 (2026-11-21 14:58 PST): outcome of P4; cause of the amplitude floor
 
 P4 = run B-20261121-222813-560158b (s_n32_p1_dt05, step limit 0.0005, exit 0 at t = 4,
 14:28-14:57). Analysis with P3 and J1: run B-20261121-225745-773ffab (`analyze_step.py`),
