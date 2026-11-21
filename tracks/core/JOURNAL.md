@@ -1118,3 +1118,82 @@ release.
 
 Card time: 0.024 card-hours used (Kc), 0.3 asked (job 4800). Processors: at most six
 cores at a time (builds and runs together).
+
+## 2026-11-21T15:46Z  session core-lead-6 (batch 4a: closing release core-v0.6, gate package G2)
+
+State at start: main merged (decision 0022, release core-v0.6 on main, tag on 984bde68).
+Slurm job 4800 (run core-20261121-132052-f330004, card check K6 of the merged card
+executable) COMPLETED in 46 s, fifteen cases with rc 0 in `batch.list.status`; not yet
+judged. Release builds on main: `.work/build_cpu_v06/src/athena` (sha256 91fc59b3...),
+`.work/build_gpu_v06/src/athena` (ea473498...); their checksums differ from the
+candidate's (2ec1f232..., 168e5da6...), as builds in other directories do (paths in the
+debug information) [VERIFIED by `sha256sum`]. No source change in this session.
+
+### Predictions, written before the release builds run (15:46Z)
+
+- **K6** stands as written in the entry of 12:55Z; judged now with `card_v06.py` and
+  `card_v05.py` on the outputs of job 4800.
+- **R6** (release processor build `.work/build_cpu_v06/src/athena` against the
+  candidate `scratch/core/exe/core_nrpic_v06/athena_cpu`, `regress_v04.py`, twelve
+  set-ups of wave 1): 75 of 75 items identical, classes a, b and other empty, as for
+  core-v0.5 (core-20261121-075456-a505400). Refuted by one differing item.
+- **G6** (release card build `.work/build_gpu_v06/src/athena` on the fifteen cases of
+  `card_v06.list`; the whole list ran in 46 s in job 4800, so the full list costs no
+  more card time than one case would wait for, and I ask 0.1 card-hours): (i) every case
+  status 0; against the processor runs `card_v06.py` and `card_v05.py` give the verdicts
+  they give for job 4800; (ii) against the candidate's card run (job 4800, `card_pair.py`)
+  the vacuum cases f_full, s3g and usr byte-identical in every file (they deposit
+  nothing), and every history of the other cases within 1e-12 of each column above 1e-6
+  of the largest column (atomic deposition on the card is not repeatable bit for bit;
+  for core-v0.5 the module histories agreed to 1.2e-15). Refuted by a status other than
+  0, a difference in f_full, s3g or usr, or a history column beyond 1e-12.
+
+### Outcomes (2026-11-21T15:56Z)
+
+- **K6 held.** Job 4800 ran at 15:21Z (46 s), fifteen cases with status 0. Judged in
+  core-20261121-154700-2de4974 (`card_v06.py`: Newtonian histories within 1.6e-11 of
+  processors, bound 1e-10; f_full identical, c_cd1 1.9e-10, bound 1e-7; solver outer
+  iterations 22, 34, 20 on both, psi_max equal to 2.5e-15 at worst) and
+  core-20261121-154710-220c1b0 (`card_v05.py`: K1 to K6 of core-v0.5 held, deposit sums
+  2.3e-13 at worst, identity 9.9e-16, dumps 3.1e-14). Not bounded and different: Hr_max
+  (column 11) of `gauss.cstat.hst` of g_smr1, 1.380745 against 1.379534 (8.8e-4), while
+  H_max agrees to 1.2e-12 [VERIFIED by reading both files]; the same class as trk column
+  15 of core-v0.5 (0.14 again). Figures looked at; in `fig_card_v06.png` the dashed
+  bounds run across all cases although each applies to its own, so the g_smr1 bar seems
+  to cross one: noted in the release file, the script not changed.
+- **R6 held.** Release processor build against the candidate: 75 of 75 items identical,
+  classes a, b, other empty (core-20261121-154737-dc1e4c1; figure
+  core-20261121-155317-1ee04bf looked at).
+- **G6 open.** Job 4810 (run core-20261121-154654-d3ec487) queued at 15:47Z; commands to
+  judge it in `RELEASE-v0.6.md`, section "Release builds against the candidate".
+
+Records written: `RELEASE-v0.6.md` (first lines, card section, release builds),
+`scratch/core/exe/core_nrpic_v06/READY` (athena_gpu line), `CHANGELOG.md` (section "Run
+scripts" of core-v0.6: the chain script), `REQUESTS_WAVE3.md` section 5 (W24 relaxed
+lapse first for core-v0.7, W25 to W29), inbox acknowledged (E lockstep, orch release).
+
+G2 package: `nrpic-stage collect` gave 18 items (two new of decision 0012/0016, renumbered
+from C12); filled: 10 PASS, 8 FAIL. G2 is not met (OPEN.md, first section): ladder rows 3
+and 4 PARTIAL, no single three-way convergence study, no note, no verifier, architecture
+schematic stale, no REVIEW/SCOPE documents in the stage directory. Read for it: Track C's
+drift package (M/4 mesh pushes clusters outward, seven to ten times less on M/8: core's
+M/4 bisection does not test the threshold) and Track D's g2runs (relaxed lapse grows a
+vacuum horizon by 1.3e-3; the term acts wherever alpha > alpha_0,
+`z4c_gauge_ext.hpp` line 19).
+
+Faults of mine in this session, on record: the first wording of C1's evidence said the
+ladder rows carry over "byte for byte" from the wave-1 regressions; core-v0.4 differed
+in classes a and b and the full ladder runs were not repeated, so it was reworded to a
+judgement before the commit.
+
+### Stage check (2026-11-21T16:20Z)
+
+`nrpic-stage verify core G2` with output checksums read run outputs for 13 minutes and
+had reached the runs of 2026-11-19 when I stopped it by its process id (log
+`scratch/core/tmp/lead_b4a/verify.log`, exit 143); with `--no-checksums` it took 5.5
+minutes and FAILS on two checks: no working note, and 10 of 1405 runs with record
+problems (9 runs name the executables of `core_cosmo-amr`, published again after the
+runs; job 4810 not finished). The 11th of the first pass, core-20261119-143517-ec2f4fc
+(gauge test E2, job 4641, both cases rc 0, never closed), is closed now with
+`nrpic-run finish`. `nrpic-stage report`: verdict FAIL, eight items FAIL (C1, C2, C6,
+C7, C12, C14, C15, C16); decision requested: keep core at G2 in progress.
