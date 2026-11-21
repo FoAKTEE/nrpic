@@ -584,3 +584,15 @@ computation I had not done; predictions before the run (v6_claims.py):
   0.015 they become 0.994, 1.027 if the difference is only the reference temperature.
 - heat/README quotes my V1a as 1.0988 +- 0.0015 (theta 0.1) and 0.9933 +- 0.0010 (theta 1):
   my ce_kappa.json order 4 divided by 75 sqrt(pi)/64 should give these.
+
+## Entry 18 (2026-11-21 00:21 PST) Claim checks outcome (run C-20261121-081715-2ad1421); VERIFIER.md
+
+All four predictions of entry 17 held: 385554 collisions in mb1/mb8/mb64 of both T10 runs (seed 8:
+385838); release T10 snapshots byte-identical to 1 MeshBlock; King mass maximum at y0 = 0.098197
+(claim 0.0982; the rest mass peaks at 0.1050, `figs/v6_king_mass.png`); T6(b) literal at
+theta = 0.015: 0.9940, 1.0271 (claim 0.994, 1.027: the only difference is the reference
+temperature); CE ratios 1.0988(15), 0.9933(10) as quoted. VERIFIER.md written
+(`../stage/G1/VERIFIER.md`): claims found wrong or unsupported: the seed-8 collision count wording
+(REVIEW-wave2.md:49), the T9 KS clause without a named reference temperature, the fit-specific
+size of the number-mode bias, and (baseline paper) F21's trial-function onset cited as the onset.
+The blind verdicts were not changed.
