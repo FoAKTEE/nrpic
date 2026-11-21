@@ -1,0 +1,27 @@
+# C-sidm longruns queue (batch 5, 2026-11-21). One item per line, run in this order by
+# seq.sh with at most two card jobs of C-sidm eligible at a time:
+#   <item> <launcher batch|chain> <gpu-hours> <particles> <proc-name|-> <list or deck> <purpose...>
+# Predictions and criteria: tracks/C-sidm/JOURNAL.md entry 2026-11-21T20:25Z.
+timing    batch 0.40 100000  -             tracks/C-sidm/longruns/inputs/timing.list  T: step time of block A and D2 decks on core-v0.6 (20 M, 10 M)
+heat_C1   batch 0.92 4000000 -             tracks/C-sidm/longruns/inputs/heat_C1.list H: conductivity at k lambda 0.2, dx lambda/8..lambda/2 and dt 0.05, seeds 6 7
+A334s1c   chain 4    100000  csidm-A334s1c tracks/C-sidm/longruns/inputs/A8_y0p33403_s1_ctrl.athinput A: block A M/8, y0 0.334032 seed 1, control, 600 M
+A334s1i   chain 4    100000  csidm-A334s1i tracks/C-sidm/longruns/inputs/A8_y0p33403_s1_kin.athinput  A: block A M/8, y0 0.334032 seed 1, kick in, 600 M
+A334s1o   chain 4    100000  csidm-A334s1o tracks/C-sidm/longruns/inputs/A8_y0p33403_s1_kout.athinput A: block A M/8, y0 0.334032 seed 1, kick out, 600 M
+D2ctl     chain 2    100000  csidm-D2ctl   tracks/C-sidm/longruns/inputs/D2_cc2_kninf.athinput      D2: CC2 collisionless control on M/8, 300 M
+D2f2s1    chain 2    100000  csidm-D2f2s1  tracks/C-sidm/longruns/inputs/D2_cc2_kn10_f2_s1.athinput D2: CC2 Kn 10 particle mode M/8, coll_cell_factor 2, seed 1, 300 M
+D2f1s1    chain 2    100000  csidm-D2f1s1  tracks/C-sidm/longruns/inputs/D2_cc2_kn10_f1_s1.athinput D2: CC2 Kn 10 particle mode M/8, coll_cell_factor 1, seed 1, 300 M
+D2f4s1    chain 2    100000  csidm-D2f4s1  tracks/C-sidm/longruns/inputs/D2_cc2_kn10_f4_s1.athinput D2: CC2 Kn 10 particle mode M/8, coll_cell_factor 4, seed 1, 300 M
+heat_C2   batch 0.92 4000000 -             tracks/C-sidm/longruns/inputs/heat_C2.list H: conductivity at k lambda 0.1, dx lambda/8..lambda/2, seed 6
+A344s1c   chain 4    100000  csidm-A344s1c tracks/C-sidm/longruns/inputs/A8_y0p34400_s1_ctrl.athinput A: block A M/8, y0 0.344 seed 1, control, 600 M
+A344s1i   chain 4    100000  csidm-A344s1i tracks/C-sidm/longruns/inputs/A8_y0p34400_s1_kin.athinput  A: block A M/8, y0 0.344 seed 1, kick in, 600 M
+A344s1o   chain 4    100000  csidm-A344s1o tracks/C-sidm/longruns/inputs/A8_y0p34400_s1_kout.athinput A: block A M/8, y0 0.344 seed 1, kick out, 600 M
+A324s1c   chain 4    100000  csidm-A324s1c tracks/C-sidm/longruns/inputs/A8_y0p32400_s1_ctrl.athinput A: block A M/8, y0 0.324 seed 1, control, 600 M
+A324s1i   chain 4    100000  csidm-A324s1i tracks/C-sidm/longruns/inputs/A8_y0p32400_s1_kin.athinput  A: block A M/8, y0 0.324 seed 1, kick in, 600 M
+A324s1o   chain 4    100000  csidm-A324s1o tracks/C-sidm/longruns/inputs/A8_y0p32400_s1_kout.athinput A: block A M/8, y0 0.324 seed 1, kick out, 600 M
+D2f2s2    chain 2    100000  csidm-D2f2s2  tracks/C-sidm/longruns/inputs/D2_cc2_kn10_f2_s2.athinput D2: CC2 Kn 10 particle mode M/8, coll_cell_factor 2, seed 2, 300 M
+A334s2c   chain 4    100000  csidm-A334s2c tracks/C-sidm/longruns/inputs/A8_y0p33403_s2_ctrl.athinput A: block A M/8, y0 0.334032 seed 2, control, 600 M
+A334s2i   chain 4    100000  csidm-A334s2i tracks/C-sidm/longruns/inputs/A8_y0p33403_s2_kin.athinput  A: block A M/8, y0 0.334032 seed 2, kick in, 600 M
+A334s2o   chain 4    100000  csidm-A334s2o tracks/C-sidm/longruns/inputs/A8_y0p33403_s2_kout.athinput A: block A M/8, y0 0.334032 seed 2, kick out, 600 M
+A334s3c   chain 4    100000  csidm-A334s3c tracks/C-sidm/longruns/inputs/A8_y0p33403_s3_ctrl.athinput A: block A M/8, y0 0.334032 seed 3, control, 600 M
+A334s3i   chain 4    100000  csidm-A334s3i tracks/C-sidm/longruns/inputs/A8_y0p33403_s3_kin.athinput  A: block A M/8, y0 0.334032 seed 3, kick in, 600 M
+A334s3o   chain 4    100000  csidm-A334s3o tracks/C-sidm/longruns/inputs/A8_y0p33403_s3_kout.athinput A: block A M/8, y0 0.334032 seed 3, kick out, 600 M

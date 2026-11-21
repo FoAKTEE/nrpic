@@ -1,0 +1,5 @@
+# longruns timing job (core-v0.6): <name> <athinput> [athena args]
+T_A8_ctrl tracks/C-sidm/longruns/inputs/A8_y0p33403_s1_ctrl.athinput time/tlim=20
+T_D2_cc2_kn10_f1_s1 tracks/C-sidm/longruns/inputs/D2_cc2_kn10_f1_s1.athinput time/tlim=10
+T_D2_cc2_kn10_f2_s1 tracks/C-sidm/longruns/inputs/D2_cc2_kn10_f2_s1.athinput time/tlim=10
+T_D2_cc2_kn10_f4_s1 tracks/C-sidm/longruns/inputs/D2_cc2_kn10_f4_s1.athinput time/tlim=10
