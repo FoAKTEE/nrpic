@@ -37,7 +37,7 @@ import figstyle as fs  # noqa: E402
 
 H_OF = {"R8": 1.0, "R12": 2.0 / 3.0, "R16n": 0.5, "P1": 1.0}
 COL = {"R8": fs.PAL["red"], "R12": fs.PAL["orange"], "R16n": fs.PAL["green"], "P1": "0.45"}
-TS = (5.0, 10.0, 15.0, 20.0, 25.0, 30.0)
+TS = (2.5, 5.0, 7.5, 10.0, 15.0, 20.0, 25.0, 30.0)
 
 
 def orbit(rundir):
@@ -184,10 +184,16 @@ def main():
             for T in (5.0, 10.0, 15.0):
                 sel = mem & (np.abs(h["t"] - T) <= 0.5)
                 hz[n][f"mass_at_{T:g}"] = float(np.median(h["mass"][sel])) if sel.any() else None
-            sel = mem & (h["t"] >= 5) & (h["t"] <= 15)
+            t_hi = min(15.0, float(o["t"][-1]))
+            sel = mem & (h["t"] >= 3) & (h["t"] <= t_hi)
             if sel.sum() > 5:
-                hz[n]["frac_growth_5_15_per_M"] = float(np.polyfit(h["t"][sel], h["mass"][sel], 1)[0]
-                                                        / np.median(h["mass"][sel]))
+                hz[n]["frac_growth_per_M"] = float(np.polyfit(h["t"][sel], h["mass"][sel], 1)[0]
+                                                   / np.median(h["mass"][sel]))
+                hz[n]["growth_window"] = [3.0, t_hi]
+            sel8 = mem & (h["t"] >= 3) & (h["t"] <= 7.5)
+            if sel8.sum() > 5:
+                hz[n]["frac_growth_per_M_3_7.5"] = float(np.polyfit(h["t"][sel8], h["mass"][sel8], 1)[0]
+                                                         / np.median(h["mass"][sel8]))
             big = np.nonzero((h["mass"] >= 0.2) & (h["mass"] < 0.6))[0]
             if len(big):
                 tc = float(h["t"][big[0]])
@@ -300,7 +306,7 @@ def main():
     axs[1].set_ylabel("orbital phase [rad]")
     axs[0].legend(fontsize=6.5, frameon=False, loc="lower left")
     # Delta s against h at fixed t
-    for T, mk in zip((5.0, 10.0, 15.0, 20.0), ("o", "s", "^", "D")):
+    for T, mk in zip((5.0, 7.5, 10.0, 15.0, 20.0), ("o", "v", "s", "^", "D")):
         hs_, dv = [], []
         for k in have:
             v = res[k]["ds_at"][f"{T:g}"]
