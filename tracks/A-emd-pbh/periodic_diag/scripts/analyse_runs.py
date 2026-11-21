@@ -100,7 +100,7 @@ def main():
     import figstyle as fs
     fs.use_style()
     labs = list(res)
-    cols = dict(zip(labs, fs.SERIES * 3))
+    cols = dict(zip(labs, (fs.SERIES + ["k", "grey", "purple"]) * 2))
     fig, axs = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 6.0))
     fig.subplots_adjust(left=0.09, right=0.98, bottom=0.08, top=0.96, wspace=0.28, hspace=0.3)
     for lab in labs:
@@ -118,6 +118,7 @@ def main():
     axs[0, 1].set_ylabel(r"$H_{\max}$ (cstat)")
     axs[0, 1].set_ylim(1e-4, 1e4)
     axs[1, 0].set_ylabel(r"$\alpha_{\min}$ (solid), $\alpha_{\max}$ (dashed)")
+    axs[1, 0].set_ylim(0.0, 1.5)
     for ax in (axs[0, 0], axs[0, 1], axs[1, 0]):
         ax.set_xlabel("t")
         ax.set_xlim(0, args.tmax)
