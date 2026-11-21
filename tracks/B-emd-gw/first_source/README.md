@@ -48,6 +48,9 @@ the second round" below.
 | `scripts/null_prediction.py` | P11b': box-mode TT amplitudes of the jittered null predicted from its initial data |
 | `scripts/conv_compare.py` | outcomes of P11-P14 from the case JSON of analyze_scan.py: `conv_summary.json`, figures `conv_null`, `conv_eps1`, `conv_delta` |
 | `fslib/binread.py`, `tests/test_binread.py` | reader of bin output in single and double precision (2 tests) |
+| `scripts/eps2_test.py` | round 3: advance test of the (1 + eps^2) form of the departure (R and Q from the double-precision dumps): `eps2_summary.json`, `eps2_test.png` |
+| `scripts/p16_compare.py` | round 3: P16', the jittered lattice without any wave against jit0p3 (shell spectra, box modes, rms TT; `kcut`, `shells` for 32^3): `p16_summary.json`, `p16_compare.png` |
+| `inputs/batch_r3_p16.list` | round 3: card list of the run without any wave (64^3, tlim = 7.0, release core-v0.5) |
 
 ## How to rerun
 
@@ -97,6 +100,22 @@ nrpic-run submit --launcher local --cores 8 ... -- env NWORK=8 python3 tracks/B-
 nrpic-run submit --launcher local ... -- python3 tracks/B-emd-gw/first_source/scripts/conv_compare.py name=<case json> ... pred=<null_prediction.json>
 ```
 
+Round 3 (wave 3; same conventions; release core-v0.5 executables `.work/build_{gpu,cpu}_v05/src/athena`):
+
+```
+# P12/P13 (seconds): e1_p1, e1_p27, e1_n128 from the scan JSON of card run B-20261119-153655-2deca0a
+nrpic-run submit --launcher local ... -- python3 .../conv_compare.py e1_p1=... e1_p8=<B-20261115-180834-c77a132/cw_eps1.json> e1_p27=... e1_n128=... e1_n32=<B-20261115-184650-2d155b6/cw_eps1.json> e1_rep=...
+# (1 + eps^2) test (seconds): <mesh>/<case>=<case json>:<rst|dbin>
+nrpic-run submit --launcher local ... -- python3 .../eps2_test.py n32/d01_e1=<json>:rst n32/d0025_e1=<json>:dbin ...
+# P16': initial data without any wave (64^3 ~9 min on 2 threads; N=32 ~1 min)
+nrpic-run submit --launcher local --background --cores 2 ... -- env RATIOS=0,0,0 "CASES=jit0p3_nw:0.3:7:2" N=64 bash .../build_ic_jitter.sh
+nrpic-run submit --launcher local ... -- python3 .../null_prediction.py <ic dir>
+nrpic-run submit --launcher batch --wall 00:20:00 --gpu-hours 0.15 --exe .work/build_gpu_v05/src/athena --list .../inputs/batch_r3_p16.list ...
+nrpic-run submit --launcher local --background --cores 1 ... -- env ATHENA_CPU_EXE=.work/build_cpu_v05/src/athena EXTRA=time/tlim=7.0 bash .../run_cpu_r2.sh jit0p3_nw=<N=32 ic dir>
+# then analyze_scan.py on the case, null_spectrum.py nw_tau0.1=<bin 00001> nw_a2=<z4cd 00001> nw_a12=<z4cd 00005>, and
+nrpic-run submit --launcher local ... -- python3 .../p16_compare.py nw=<json> j3=<json> pred_nw=... pred_j3=... spec_nw=... spec_j3=... [kcut=8 shells=8,12,15]
+```
+
 ## State (end of the package, 2026-11-15)
 
 Established (numbers and run ids in `JOURNAL.md`; figures in `figs/`, looked at):
@@ -106,7 +125,8 @@ Established (numbers and run ids in `JOURNAL.md`; figures in `figs/`, looked at)
    c_+(k, k, 0) follows the second-order Poisson-gauge value s g(tau), s = -(5/6) phi_x phi_y
    = -3.08e-5 eps, including the junk oscillation of the conformally flat start, to 0.22
    percent (eps = 0.1, 0.3) and 0.44 percent (eps = 1) for 2 <= a <= 10; linear in eps to
-   0.05 percent; departures of 1-2 percent at a = 20, 6-11 at a = 40, and growth to 1.6-2.5
+   0.05 percent between eps = 0.1 and 0.3 (not for eps = 1: 0.2 percent at a = 9-10, of the
+   fourth-order form, verifier2, `../stage/G1/VERIFIER.md` row F3); departures of 1-2 percent at a = 20, 6-11 at a = 40, and growth to 1.6-2.5
    times s after shell crossing (a ~ 80-140). The TT field stays quasi-static
    (rho_kin/rho_grad <= 0.04); rho_GW/rho_bar up to 3.5e-6 (eps = 1).
 2. Null (eps = 0): TT amplitudes of h and tilde A at the round-off of the metric (<= 2.8e-16)
@@ -131,8 +151,11 @@ Established (numbers and run ids in `JOURNAL.md`; figures in `figs/`, looked at)
 Not done / open:
 - The late growth of c_+ after shell crossing agrees between 32^3 (processor runs
   B-20261115-165525-f7c2004) and 64^3 to 0.5 percent up to a = 80 and 3 percent at a = 100
-  (P8), but two meshes with one particle loading are not a convergence study: 128^3, more
-  particles per cell and a jittered-lattice null are the next runs.
+  (P8) at the sampled a for eps = 0.1 and 0.3; as a bound over 2 <= a <= 80 it fails for
+  eps = 1 (1.02 percent at a = 75.8) and the Gamma-driver run (1.9 percent at a = 80)
+  (verifier2, `../stage/G1/VERIFIER.md` row F7). Two meshes with one particle loading are
+  not a convergence study: 128^3, more particles per cell and a jittered-lattice null were
+  the next runs (second round and round 3 below).
 - G_tot removes the spatial gauge; the slicing gauge is bounded by a scaling argument with
   measured generators (P10), not computed exactly; the York (covariant) TT part is still not
   implemented.
