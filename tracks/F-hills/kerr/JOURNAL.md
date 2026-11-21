@@ -280,3 +280,69 @@ Predictions (before the run):
   fraction 0.563 (paper) reproduced within 0.08; retrograde half >= 0.95 and prograde half <= 0.25
   in both; survivors' median a_fin in the retrograde half within 0.1 a0 of the paper's.
 - P6 (the defect): s0cks differs from s0 by more than one grid step at several r_p <= 13 (entry 2).
+
+## Entry 4 (2026-11-21 13:35 UTC): outcomes of the registered tests T5-T8 and of R3
+
+T5 (F-20261121-131507-d9da8f1; figure `figures/t5_rotation.png`, read): passes as in development:
+inclined = rotated coplanar with equal step counts, matched-time positions 1.1e-10 to 2.5e-9 r_g
+against the rounding control 4e-11 to 1.3e-9; `hrna_incl` reproduces `hrna.initial_state` to
+5e-14 a0; the Kerr mirror to 1.1e-9. [VERIFIED]
+
+T6 (F-20261121-131516-34d8c26; `figures/t6_kerr_single.png`, read): passes; positions within
+3.8e-8 r_g (r_p = 6 retrograde whirl), <= 1.4e-9 at r_p = 10; E to 1e-12, Q to 6e-11. [VERIFIED]
+
+T7 (F-20261121-131522-058291d; rerun with the renamed output key F-20261121-132010-a654642,
+`figures/t7_spin_limit.png`, read). (i), (ii) in 'bks': |Delta L_hat_b| slopes 0.9998-1.0000
+against a; energies and e within 1e-3 of a = 0 for a <= 1e-3 (floor 4e-8 to 1.8e-4, non-monotonic:
+the stop step); at a = 0.9 the mirror pair differs by 0.04 / 0.26 in E_b and 0.50 in e (survivor).
+Prediction holds. (iii) 'cks' vs 'sch' at a = 0: 17, 20, 23 of 64 outcomes differ (the defect, as
+in development; the first run's key `pass_iii` = false is entry 1's rule, no longer a criterion).
+
+T8 (F-20261121-131539-417caed; rerun with the odd-part figure F-20261121-132028-86ae5d0,
+`figures/t8_bks_chart.png`, read). (a) g g^-1 = 1 to 1.9e-15, derivatives 7.8e-11, equal to 'sch'
+at a = 0 to 1.1e-15; (b) equal step counts, matched-time positions 8.8e-11 to 4.2e-10 r_g; (c)
+single body at a = 0.9 within 3.0e-9 r_g of python/nrpic (r_p = 6 and 10, L_z of both signs and
+0), E to 5e-13, Q to 9e-11. (d) odd part in iota of ln|E_b|, 'cks' minus 'sch': 0.0398 / 0.0636 /
+0.1127 at r = 50 / 30 / 15 against the leading order 0.0412 / 0.0911 / 0.2352: within 3.5 percent
+at r = 50, below it further in (holds); the curve oscillates about the prediction down to r = 20
+and rises steeply at r < 12 (figure). 'bks' (a = 0.9) minus 'sch': -0.0054 / -0.0069 / -0.0002,
+i.e. 0.20 / 0.13 / 0.002 of 'cks' (a = 0.9) at the same radii: the prediction "below 20 percent"
+holds at r <= 30 and is met only at the boundary at r = 50 (0.202). The frame-dragging residual of
+'bks' is a few 1e-3 in ln|E_b|, of opposite sign. [VERIFIED for (a)-(c); (d) measures the defect]
+
+R3 (F-20261121-131555-91aa063, 4 cores, 5 min; its figure step failed on a mathtext symbol after
+the JSON was written, run marked failed; figure from that JSON: F-20261121-132235-7df540a,
+`figures/r3_selfacc.png`, read):
+- (a) -1.06473294303476e-4, equal to F-20261115-175620-df20ffe to all printed digits. Holds.
+- (b) q = 1: the turning-rate measurement agrees with the leading order within 0.8 percent for
+  V <= 0.4 at every a0/m_b and within 0.03 percent at a0/m_b = 1000; FAILED at V = 0.5,
+  a0/m_b = 30: +2.3 percent (prediction 1 percent; +0.6 percent at a0/m_b = 100). V = 0: zero.
+  psi = 30, 60 deg: 0.1-0.2 percent; 90 deg: zero; start phase: 0.2 percent. The CM speed stays
+  constant to 8e-3 (a0/m_b = 30) and 2e-4 (1000): the force turns V and does not slow it.
+- q != 1 and 2402's mass ratio: FAILED prediction (entry 2: e grows by less than 1e-3 per period
+  at a0/m_b = 20000): at q12 = 2/3, a0/m_b = 20000 the eccentricity grows from 0.022 to 0.052 over
+  24 periods at V = 0.14 (1.25e-3 per period) and from 0.261 to 0.353 at V = 0.45 (3.8e-3 per
+  period). Mechanism [JUDGEMENT, from the algebra of entry 2]: for unequal masses the relative
+  force carries the factor 1 - V^2 - 2 (m2 - m1)/m_b (V.w) - ..., a modulation at the orbital
+  frequency that pumps e resonantly; its size goes with |m2 - m1|/m_b, V and w. For 2402's binary
+  (8.5 periods per passage at V = 0.14-0.45) this is Delta e of order 0.01-0.03 per passage from
+  HRNA alone [estimate from these rates]. a_s itself at a0/m_b = 20000 is 0.9986 (V = 0.14) and
+  0.95 (V = 0.45) of the leading order.
+- (c) CM pericentre of 2404's binary, HRNA minus Newton (mean of 4 phases) against the R3
+  prediction: r0 = 70 r_t: +7.1e-4 / -7.2e-4 (beta = 1, pred +-8.6e-4) and +1.46e-3 / -1.59e-3
+  (beta = 3, pred +-1.53e-3): within 18 percent, right sign. r0 = 50 r_t: beta = 3 prograde
+  +7.8e-4 (pred 7.8e-4) but retrograde -4.0e-4 (pred -7.8e-4), beta = 1 +7.4e-4 / -2.6e-4 (pred
+  +-4.4e-4): the phase spread (3.6e-4 to 1.7e-3) is of the size of the signal; 3 of 8 cases above
+  the 30 percent tolerance: FAILED as stated, the tolerance ignored the phase scatter of four
+  phases. r0 = 20 r_t: signal (7e-5 to 1.3e-4) below the spread; beta = 3 prograde has the wrong
+  sign (-2e-5, spread 1.7e-3). The r0^2 growth and the sign are confirmed where the signal exceeds
+  the scatter.
+- Effect on separation fractions (slope of S1's curve, geodesic_binary/results/s1_summary.json):
+  |Delta s.f.| <= 3.2e-3 (beta = 10, 70 r_t), <= 1.1e-3 at beta <= 5; at beta = 4.7 retrograde the
+  local slope of the 400-phase curve is zero, and the sign of the R3 shift (beta up for
+  retrograde) would raise the s.f. with r0 while C2 found 0.6975 -> 0.68. R3 is not the cause of
+  C2 (holds). Leading-order sizes (`c_pred` of the run): 2402's binary from r0 = 100 M:
+  Delta L/L = 5e-4 to 8e-4, Delta r_p/r_p = 1.1e-3 (r_p = 20) to 3.2e-3 (r_p = 6), small next to
+  the slicing defect. F's binary (m1 = m2 = 0.05, a0 = 3, M = 1): from 4 r_t Delta L/L = 0.023 to
+  0.036 (Delta r_p/r_p = 0.06-0.12 for r_p = 13-7); from 20 r_t Delta L/L = 0.76-0.95, i.e. the
+  perturbative estimate breaks down, consistent with SC0d (CM never closer than 30-44 M).
