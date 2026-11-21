@@ -100,7 +100,7 @@ def main():
 
     # ---- figure 2: parse status at three states
     states = [("baseline\n(710 papers)", B["overall"]), ("after re-ingest\n(710)", R["overall"]),
-              ("after 35 additions\n(745)", F["overall"])]
+              ("final: 35 additions,\n31 redone (745)", F["overall"])]
     fig = plt.figure(figsize=(FS.FULL_WIDTH, 3.4))
     fig.subplots_adjust(left=0.08, right=0.98, bottom=0.2, top=0.9, wspace=0.28)
     ax1 = fig.add_subplot(1, 2, 1)

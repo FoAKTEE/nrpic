@@ -299,3 +299,21 @@ that touch these papers keep status and label, their rows follow the lines (rema
 check` on the seeds among them reports "same"; 0 dangling chunk references; vectors 0 missing,
 stale, orphaned after `kb embed`. Refuted by any difference from the dry run, a status change other
 than astro-ph/0003278, or a dangling reference.
+
+## Outcome P10 (runs kb-20261121-221427-6d5b50d state before, kb-20261121-221440-2fd53d7 re-ingest; outputs read)
+
+Held. All 31 papers equal the dry run (entries, sections, equations, non-comment chunks, status; 0
+differences); 30 ok, 2009.08715 stays review; astro-ph/0003278 review -> ok (13 sections, 33
+equations, 33 entries, 38 citation commands). Database: ok 720, review 22, pdf 3; recorded = strict
+rate 720/745 = 96.64 %; entries 67865, citation rows 109730 (14810 in corpus). Three claims touch
+these papers (407 on 2303.06630; 606, 607 on 2206.11234; all seeds): the remap moved their 4
+locator rows to the new chunk ids with unchanged ranges (flat.tex byte-identical);
+`kb claim check --id 407 606 607`: "same 3", rows equal to the remap's; statuses and labels
+unchanged; 0 dangling chunk references. Vectors: 0 missing, 0 stale, 0 orphaned.
+
+## Prediction P11 (final QA on the working database, and figures on the final state)
+
+QA: ok 720 of 745 (96.64 %, the same with the strict definition); golden hits within one question
+of the first QA run (hybrid paper 28/32, location 23/32). Figures: the final state replaces "after
+35 additions" (745 papers, 720 ok); fig_bib_before_after shows astro-ph/0003278 with 33 cited keys
+and 33 citation-row keys with entries. Refuted by other counts or a hybrid paper hit rate below 27/32.
