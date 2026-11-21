@@ -1,6 +1,6 @@
 # Checklist: F-hills G1
 
-Collected by `harness/bin/nrpic-stage collect F-hills G1` on 2026-11-19T15:11:36Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect F-hills G1` on 2026-11-21T06:43:34Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
@@ -30,13 +30,13 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [ ] **C6** F-pre-1 and F-pre-2 reproduce the curves of the literature
   - status: FAIL
-  - evidence: F-pre-1 met (STATUS.md T1; independent check at seven points within 0.002/0.4 %, two retrograde points within 0.0063/1.2 %). F-pre-2 met for Schwarzschild (2404.16270: separation fraction within 0.0225, v_inf within 0.7 %), NOT for Kerr: 2402.02178's inclined-binary statement not reproduced (OPEN.md item 3)
+  - evidence: F-pre-1 met for 0911.1136 and 1804.02911 (STATUS.md T1; verifier K2, K3 confirmed); KHSR (1201.4794) not reproduced (G0 verifier D8). F-pre-2 met for 2404.16270 Schwarzschild (verifier K5 with its own HRNA, runs F-20261121-032337-9c6d87a, -032325-f58a391); Kerr (2402.02178) not reproduced (package kerr cut before any outcome). 2026-11-21
 - [ ] **C7** Constraint residuals and junk radiation of the three-puncture data are quantified
   - status: OPEN
-  - evidence: constraints quantified (E2: t = 0 norm 4.7e-5 at m/8 is truncation; corrected data 4.9e-7 = 1/33 of uncorrected; order 7.6-8; F-20261115-173547-a02af7d, -181434-b9c8916; nr_first/figures/fig_c0_constraints.png; card smoke equal, F-20261115-174602-c6879fe). Junk radiation NOT measured: S3/S2 stopped at the slot limit before the pulse reached 30 m; pending P1's spheres (F-20261119-150017-b45ec5f) and S2g (F-20261119-143443-f11ebb9)
+  - evidence: constraints quantified (nr_first E2, F-20261115-173547-a02af7d, -181434-b9c8916; card smoke F-20261115-174602-c6879fe); junk of one member measured by junk_gauge (E/m = 7e-5, range 4e-5 to 2e-4; runs F-20261120-222808-b65001c, -223018-a5c0838, -223121-c921d2d; not yet reviewed by the lead); junk of the three-hole data not measured (J4 predicted). 2026-11-21
 - [ ] **C8** One complete vacuum passage is done
-  - status: OPEN
-  - evidence: P1 at q = 4 (decision 0013) submitted 2026-11-19 as a chain, run F-20261119-150017-b45ec5f, Slurm 4650 (pending), 17-20 card-hours expected; smoke passed its run-health criteria (E7, V8d); predictions in JOURNAL.md (lead wave 2b) and STATUS.md here
+  - status: FAIL
+  - evidence: P1 (run F-20261119-150017-b45ec5f) runs to t = 280 M but its binary merged at t = 48.8 M, before the passage (p1 entry 4; lead run F-20261121-063449-4dcca98): not a Hills passage that the references can be compared with; cause most likely the members' resolution at m/8 (TO VERIFY). STATUS.md T4. 2026-11-21
 
 ## Rulings of the orchestrator on the criteria (coord/DECISIONS; check that they apply to G1)
 
@@ -46,12 +46,12 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 ## Minimum figures at G1 (brief 13.4)
 
-- [ ] **C10** Schematic: Updated architecture
-  - status: OPEN
-  - evidence: not drawn: the G0 architecture schematic (note/figures/schem_architecture.png) predates core-v0.3 and the NR runs of waves 2 and 2b
-- [ ] **C11** Schematic: Data-flow diagram
-  - status: FAIL
-  - evidence: no data-flow diagram exists yet (OPEN.md item 4)
+- [x] **C10** Schematic: Updated architecture
+  - status: PASS
+  - evidence: note/figures/schem_architecture.png updated to the state of core-v0.3 (exists / to be ported / new; multi-puncture data, trackers, finders, chain wrapper, readers, three references), script note/scripts/schem_architecture.py, run F-20261120-222908-4ffcfba (note package); PNG read by the note helper and by the lead on 2026-11-21. Drawn as of core-v0.3: two items it marks 'to be ported' (common horizon of one pair, mass-scaled shift damping) are in release core-v0.4 (`punc_pair_a_<n>`, `shift_eta_profile`); to update on the note's resume
+- [x] **C11** Schematic: Data-flow diagram
+  - status: PASS
+  - evidence: note/figures/schem_dataflow.png (input, chained card segments, output streams, readers, analyses with the references, note), script note/scripts/schem_dataflow.py, run F-20261120-222908-4ffcfba; PNG read by the note helper and by the lead on 2026-11-21
 - [x] **C12** Data figure: Baseline results
   - status: PASS
   - evidence: note/figures/fig_newton.png, fig_geodesic.png, fig_rp_scan.png, fig_passage.png (scripts note/scripts/fig_*.py, run F-20261115-180609-abc9f6e); nr_first/figures/fig_baselines_p1.png (F-20261115-174102-ffa764f); all looked at (note/JOURNAL.md; lead review)
@@ -72,13 +72,13 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: note/figures/schem_architecture.png and schem_timeline.png with note/scripts/paperfig.py (copy equal to harness/style/SHA256SUMS); their G1 updates are C10, C11
 - [ ] **C17** Working note written with /paper-writing; its manuscript checker passed with --compile
   - status: OPEN
-  - evidence: note v0 (11 pages, checker clean with --compile) covers G0 and the baselines; its G1 sections on the NR runs are not written
+  - evidence: note/main.tex rewritten to G1 state (note package, commit d746da26; two corrections by the lead 2026-11-21); registered rerun of run_all.py, latexmk, check_manuscript.py --compile and page reading NOT done (package paused, note/JOURNAL.md last entries)
 - [ ] **C18** Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests
   - status: OPEN
-  - evidence: no VERIFIER.md (no subagent tool in this session; the lead does not verify its own package); asked of orch (outbox 20261119T*). Second agent so far: ../G0/SECOND_CHECK.md (plan and baselines)
+  - evidence: no verifier of the G1 material yet; the G0 verifier checked ledger table 3 in four rows only (VERIFIER.md section 2)
 - [x] **C19** Null results and failed runs are on record (manifests and JOURNAL)
   - status: PASS
   - evidence: failed and stopped runs kept with manifests and journal entries: F-20261115-173601-2fae2dc (S3/S2, slot limit), F-20261115-173606-efcbf69 (withdrawn), F-20261115-173719-923135a, F-20261119-143851-47595bd, F-20261115-174959-9e8a361 (stopped), F-20261115-174142-2a79515 (superseded), F-20261115-175542-b49d687; failed predictions on record: nr_first/JOURNAL.md (E1(b), E3 items 1, 2, 5, E4 rerun counts, E7 first-search masses), newton3/JOURNAL.md (Q1, Q3, Q4 bounds), stage/G0/JOURNAL.md (SC0d, SC2, SC6), JOURNAL.md (V4-V7 of wave 1)
 - [x] **C20** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: PASS
-  - evidence: STATUS.md, HANDOFF.md rewritten and a JOURNAL.md entry appended by the lead at the end of wave 2b (2026-11-19); P1 announced in STATUS before submission
+  - evidence: STATUS.md, HANDOFF.md rewritten and a JOURNAL.md entry appended by the lead at the end of batch 2a (2026-11-21)

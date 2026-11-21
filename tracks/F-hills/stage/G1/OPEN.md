@@ -1,30 +1,24 @@
-# G1 of F-hills: what the gate still lacks (2026-11-19, lead, wave 2b)
+# G1 of F-hills: what the gate still lacks (2026-11-21, lead, batch 2a)
 
-1. **The complete vacuum passage (T4).** P1 (run F-20261119-150017-b45ec5f, Slurm 4650, chain of
-   up to 26 segments, 17-20 card-hours expected) waits in a shared card queue; the next session
-   follows it (`harness/bin/nrpic-run status F-20261119-150017-b45ec5f`,
-   `scripts/submit_chain.sh --status /data/haiyangw/nrpic/scratch/F-hills/F-20261119-150017-b45ec5f`),
-   closes it with `nrpic-run finish` and analyses it against the predictions in `JOURNAL.md`.
-   Known risks: member horizon masses drift (0.6-1.1e-4 per member mass per unit time at m/8 in
-   single punctures); the heavy hole's finder fails in the first few M; a tree above 2700 slots
-   would stop a segment (wave-1 maximum along the Newtonian track 2080); tracker files survive
-   restarts only through the wrapper.
-2. **Junk radiation of the three-hole data (T3).** Not measured: S3/S2 stopped before the pulse
-   reached 30 m. From P1's spheres (40-90 M) and S2g (run F-20261119-143443-f11ebb9, pending).
-3. **F-pre-2 for Kerr (T2).** 2402.02178's inclined-binary statement is not reproduced; the
-   equatorial Kerr HRNA exists. Also open from the second check: the flat-space moving-binary
-   test of HRNA's self-acceleration (R3) in `geodesic_binary/tests`.
-4. **G1 schematics and note.** Updated architecture and a data-flow diagram (brief 13.4) are not
-   drawn; the note has no G1 section on the NR runs (E2, E3, E7, E11, P1).
-5. **Verifier (C18).** No VERIFIER.md; asked of orch.
-6. **Gauge.** S2g (mass-scaled damping) pending; its outcome decides whether the profile is
-   tested with three holes before the next passages. Core: has `shift_eta_profile` run with three
-   holes? (outbox).
-7. **Small defects listed, not fixed.** `three_punctures/scripts/newton_start.py` reads the
-   pre-fix energy fields; `nr_first/scripts/single_analysis.py` repeats the last mass for times
-   after a run's end in `m_at`.
-8. **Second agent on the newton3 energy derivation.** The numbers agree between two codes (V10
-   against V5b); the derivation was read, not re-derived.
-9. **For G2.** q = 4 at m/16 needs 2864 MeshBlocks, above one card's 2700 slots (two cards or 32^3
-   blocks: core's benchmark bench16/bench32 not run); a q = 10 passage needs momenta from a GR
-   parabola (second check; V9a).
+1. **A complete vacuum Hills passage (T4).** P1 (run F-20261119-150017-b45ec5f) will reach
+   t = 280 M with segment 15 or 16 of its chain (segment 14, Slurm 4769, running at 22:24 PST
+   2026-11-20), but its binary merged at t = 48.8 M, before the passage (p1 entry 4; lead run
+   F-20261121-063449-4dcca98). Cause not established; the deciding test is the isolated binary
+   at m/8 and m/16 (about 60 M; RISKS R15). Then a passage that keeps its binary.
+2. **Junk radiation of the three-hole data (T3).** Single member measured (junk_gauge, not yet
+   reviewed by the lead); three-hole junk from P1's spheres predicted (J4), not measured; P1's
+   spheres also carry the merger signal after t = 48.8 M.
+3. **F-pre-1: KHSR (1201.4794)** not reproduced (G0 verifier D8); one result planned (SCOPING 5).
+4. **F-pre-2 for Kerr (T2).** Package `kerr` cut before any outcome (uncommitted predictions).
+5. **Note.** The G1 revision of `note/main.tex` is written (paused package); registered rerun of
+   `run_all.py`, compile, checker and page reading are not done; the lead's ledger corrections
+   (verifier D7, D9, row 57) wait for that rerun.
+6. **Verifier of the G1 material.** None yet; to be asked when items 1-5 are done.
+7. **Gauge (E10).** S2g analysed by junk_gauge (runs F-20261120-222403-b8dc28c,
+   -222415-137ada9) but E10's outcome is not recorded in `nr_first/JOURNAL.md`.
+8. **Small defects listed, not fixed.** `three_punctures/scripts/newton_start.py` reads the
+   pre-fix energy fields; `nr_first/scripts/single_analysis.py` repeats the last mass after a
+   run's end in `m_at`.
+9. **For G2.** q = 4 at m/16 fits one card (3000 slots at 78785 MiB, g2mesh card run; its
+   analysis by g2mesh pending); the G2 plan is about 100 card-hours (SCOPING 9) and is re-costed
+   after item 1; a q = 10 passage needs momenta from a GR parabola (verifier D1).

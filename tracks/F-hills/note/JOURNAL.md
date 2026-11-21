@@ -318,3 +318,7 @@ change the predicted "ledger rows unchanged" of the pending rerun, so predict th
 6. V7 percentages at r_p = 12-13 M (table 2) only with their construction (circular binary
    released at 4 r_t); the plan's start rule (state integrated from 10 r_t) gives other numbers
    (D2, verifier runs F-20261121-031920-5e6425e, F-20261121-034434-0113a18, F-20261121-040103-6b9074c).
+7. `schem_architecture`: release core-v0.4 provides the common horizon of one pair
+   (`<fastflow> punc_pair_a_<n>`) and the mass-scaled shift damping (`<z4c> shift_eta_profile`),
+   marked "to be ported" in the figure drawn as of core-v0.3; the chain's resubmission after an
+   outside kill is still new (p1 REQUESTS item 1).
