@@ -127,9 +127,14 @@ def main():
             name = f"e{o}_{'falloff' if fall else 'stock'}"
             d = os.path.join(outdir, name)
             os.makedirs(d, exist_ok=True)
-            cmd = [exe, "-i", inp, "-d", d, "time/nlim=1", f"z4c/extrap_order={o}"]
-            if fall:
-                cmd.append("z4c/ghost_falloff=true")
+            run_inp = inp
+            if fall:  # a parameter absent from the input cannot be set on the command line
+                run_inp = os.path.join(d, "punc_falloff.athinput")
+                with open(inp) as fh:
+                    text = fh.read()
+                with open(run_inp, "w") as fh:
+                    fh.write(text.replace("<z4c>\n", "<z4c>\nghost_falloff = true\n", 1))
+            cmd = [exe, "-i", run_inp, "-d", d, "time/nlim=1", f"z4c/extrap_order={o}"]
             with open(os.path.join(d, "stdout.txt"), "w") as fh:
                 rc = subprocess.call(cmd, cwd=d, stdout=fh, stderr=subprocess.STDOUT,
                                      env=dict(os.environ, OMP_NUM_THREADS="1"))
