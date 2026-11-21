@@ -22,11 +22,12 @@ outcomes: `JOURNAL.md` (entries 1-11; wave 3: entries 12 and later).
 | A6 temporal order (N = 32, Courant 0.25, 0.125, 0.0625) | PASS | differences of R^NR and of the perturbations of phi, chi, K and of <chi> fall at order 3.93-4.08; time error of R^NR at Courant 0.25 below 3e-4; the top-shell deviation of A2 and the late-entry first-order constraint part are spatial | runs E-20261119-142317-c851f27, analysis E-20261119-145230-ff0dff2 |
 | A6 at 64^3 in the paper's set-up (wave 3, item b; L6 asks 64^3) | PASS | orders 3.98-4.02 (R^NR, all modes with W > 1/2), 4.02 (top shells), 3.90-3.99 (low shells), 3.82-4.02 (perturbations of phi, chi, K), 4.03 (<chi>); top-shell D_n 3.57e-3, 4.4 percent temporal; late-entry odd part of H independent of theta to 1e-3 (spatial); H0 1.7e-13, order 4.05; largest per-mode time error of R^NR at Courant 0.25: 6.1e-4 | card E-20261121-025643-02526ff, analysis E-20261121-034414-bfd0285 (`results/a6_64/`, `fig/a6_64/`) |
 | L5 single kick, one shell \|n\|^2 = 5 on FLRW, 64^3 (wave 3, item c; risk R2) | PASS for the hook; two sub-predictions refuted | H second order: factor 3.99999-4.0000001 (s = 100/50); stencil projector: continuum - stencil = one-step reference within 1.2 percent; remaining first-order M 6e-7 of [M] after one step is the fourth-order time error (step halved: 15.5-19.5; mesh halved at equal dt: 1.00 while the kick acts); Pi-kick flip: odd part 4.4e5 times the proper first-order part; card = processors (verdicts identical, direct quantities within 1e-7) | card E-20261121-025643-02526ff + E-20261121-034645-02a463e; processors E-20261121-031110-041cdf7 + E-20261121-035509-790b1dc; 32^3 E-20261121-034950-06f01f9 + E-20261121-040015-436a615 (`results/l5/`, `fig/l5/`) |
+| Second realisation of P256 (wave 3, item d; seed 20261120, core/scalar-2) | PASS (A1-A3, spectrum) | A1 2.0e-12/6.3e-12/2.0e-12; A2 max over \|n\| <= 32 2.12e-4 (a mode with \|alpha\| = 6.5e-4 rms), 1.208e-4 over typical amplitudes = seed 1; A3 4.4e-6, drift = full MS within 2.1e-6; shell ratios 1.62e-4; records 5.11e-11 (H), 4.00e-4 (M) = seed 1 within 0.2 percent; 0.50 card-hours. R1 (merged executable) NOT tested: none existed | card E-20261121-032828-fe18c5f, analysis E-20261121-045105-f797ebb, E-20261121-045236-755a956 (`results/seed2/`, `fig/seed2/`) |
 | A7 restart (NOISE_SPEC A12) | PASS | U4 bit-identical to U2 on processors and on a card (whole dump files equal) | E-20261119-141654-c2a10d1 |
 | Negative control | PASS | H 4e4-1.5e5 times the proper run, M/[M] 0.20-0.22 | final analysis |
 | Cost | | 1.13-1.30 card-s per step at 256^3; 0.50 card-hours per 8-e-fold realisation | E-20261115-172618-f948386 |
 
-Card time used by the package: 1.42 card-hours (jobs A, B, C) of the two allowed in waves 2-2b; wave 3: 0.028 card-hours (items b, c) so far, of the 1.0 allowed.
+Card time used by the package: 1.42 card-hours (jobs A, B, C) of the two allowed in waves 2-2b; wave 3: 0.53 card-hours (items b, c: 0.028; item d: 0.501) of the 1.0 allowed.
 
 ## Contents
 
@@ -58,6 +59,7 @@ Card time used by the package: 1.42 card-hours (jobs A, B, C) of the two allowed
 | `results/floor/`, `fig/floor/` | floor analysis (E-20261119-142713-32c883a) |
 | `results/a6/`, `fig/a6/` | A6 analysis |
 | `results/a12/` | A12 validations (E-20261119-141654-c2a10d1) |
+| `results/seed2/`, `fig/seed2/` | wave 3, item (d): second realisation against the first (`seed2.json`), its extraction summary and verdicts, the outlier check |
 | `results/a6_64/`, `fig/a6_64/` | wave 3, item (b): A6 at 64^3 (E-20261121-034414-bfd0285) |
 | `results/l5/`, `fig/l5/` | wave 3, item (c): L5 on the card (`card/l5.json`, `kick_ref.json`, `fig_l5.png`), on the processors (`proc/l5.json`), comparison (`l5_compare.json`, `fig_l5_compare.png`), step/mesh test (`l5_scaling.json`, `fig_l5_scaling.png`) |
 | `results/proc32*/`, `results/P256/`, `fig/proc32*/`, `fig/P256/` | earlier partial analyses (wave 2), kept for the record |
@@ -94,6 +96,20 @@ From the worktree root, with the worktree's `.venv` (`harness/bin/nrpic-env crea
          --res RES_DIR --out "$NRPIC_RUN_DIR"'
     ... bash -c 'cd tracks/E-stoch-inf/ladder/scripts && python3 a6_analysis.py \
          --run A6_RUNDIR --out "$NRPIC_RUN_DIR"'
+    # wave 3 (exact commands in the manifests of the runs named in the results table):
+    # (a) ladder_analysis.py pair P M --out pair.json (time-matched); verdicts.py --res NEW
+    #     results/final --rundirs ...; make_figures.py --res NEW results/final WAVE2_RES
+    #     --only fig_a4; compare_final2.py --old results/final --new NEW --out DIR
+    # (b) card list inputs/card_bc.list (first six lines), then a6_analysis.py --run RUNDIR
+    #     --nmesh 64 --nmax2 256 --modefile inputs/modes_n256.txt --out DIR
+    # (c) the same card list (L5 lines) or inputs/l5proc.list with MAXJOBS=3 on the
+    #     processors; l5_analysis.py --run RUNDIR --out DIR; l5_compare.py --a CARD/l5.json
+    #     --b PROC/l5.json --out DIR; inputs/l5res.list (processors), then l5_scaling.py
+    #     --set A=RUN/A --set B=RUN/B --set C=CARD_RUNDIR --out DIR
+    # (d) card list inputs/jobD.list; ladder_analysis.py extract RUN/P256s2 --nmesh 256
+    #     --nmax2 4096 --modefile inputs/modes_n4096.txt --seed 20261120 --out R/P256s2.npz;
+    #     judge R/P256s2.npz --out R/P256s2_judge.json; seed2_compare.py --old-res WAVE2_RES
+    #     --new-res R --old P256 --new P256s2 --out DIR
 
 Traps: nrpic-run runs its command without a shell; write `$NRPIC_RUN_DIR` only inside
 `bash -c '...'` (run E-20261115-172521-e098160 wrote into a directory named
@@ -166,5 +182,6 @@ wavelength (first dump with odd > even at N = 1.51, 1.99, 2.96, 3.44 against ln(
 4 percent when the Courant factor falls from 0.25 to 0.0625 (entry 11). The early odd
 part at N = 32 and the uniform H0 are the fourth-order time error.
 
-Not done: the USR case (G2), a second seed, a halving pair at 256^3, A6 at 64^3 on a card
-(L6 asks 64^3; run here at 32^3 on processors), sensitivity L9.
+Not done: the USR case (G2), a halving pair at 256^3, sensitivity L9, a run in another
+precision for the rounding floor, and R1 (a rerun on a merged executable of core: none existed
+in wave 3). Done in wave 3: the pairing defect (a), A6 at 64^3 (b), L5 (c), a second seed (d).
