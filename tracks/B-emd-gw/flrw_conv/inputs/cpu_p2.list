@@ -1,0 +1,4 @@
+# flrw_conv processor run P2 (threaded executable of core/build-openmp, 6 threads): leg F at
+# 32^3, 1 per cell, Poisson-like position noise A3 = h/2 (initial data of run
+# B-20261120-223448-7f7c034). Optional row of the package (JOURNAL entry 7).
+f_n32_p1_a3 tracks/B-emd-gw/flrw_conv/inputs/flrw_prod.athinput mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 meshblock/nx1=16 meshblock/nx2=16 meshblock/nx3=16 particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-223448-7f7c034/f_n32_p1_a3/particles.nrp

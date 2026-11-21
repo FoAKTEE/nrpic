@@ -283,3 +283,111 @@ any output of J1, P1 or J2 is read beyond file names, record counts and the last
 J1, 64^3 from J2). The analysis is the registered run of `scripts/analyze_f.py` and
 `scripts/analyze_b.py` on that map. The predictions under test are those of entry 1
 (PF1-PF6, PB1-PB5) and entry 4 (J2), unchanged; the 128^3 leg of PB3 waits for J3.
+
+## Entry 7 (2026-11-21 13:24 PST): outcomes of legs F and B at 16-64 cells; prediction of P2
+
+### Outcomes (analysis v2: F = run B-20261121-211951-b735833, B = run B-20261121-211956-b30627b)
+
+The first registered analyses (B-20261121-211524-e54164d, B-20261121-211626-e2a4df8) gave
+the same numbers for every quantity they share; v2 adds the PF2 column check, the absolute
+momentum constraint, the plateau and early parts of the f error, a decaying-mode fit that
+separates a constant growth-rate error, and the period of the oscillation in the potential.
+A development check of v2 wrote into scratch/B-emd-gw/tmp/flrw_conv/dev (not used for
+numbers). All outcome numbers below are [VERIFIED] by the two v2 runs named above
+(`flrw_f.json`, `flrw_b.json` and the printed log in their run directories).
+
+Leg F (every run reached a = 998.5-1000.2):
+- PF1 held. Largest scale-factor error of the lattices over the run, extrema of alpha:
+  3.81e-7 (16 cells), 1.86e-7 (32), 1.23e-8 (64); volume 2.77e-7, 1.35e-7, 8.9e-9.
+  32 -> 64: factor 15.1 (predicted about 16, fourth order in the step); 16 -> 32: 2.05
+  (predicted 2-5).
+- PF2 held: 8 and 27 per cell against 1 per cell, largest relative difference over the
+  physical columns of both history files 2.1e-12 and 2.3e-12 (K_max, K_min).
+- PF3 held: Hr_max of the lattices at most 1.8e-7 (16), 8.5e-8 (32), 1.9e-8 (64).
+- PF4 held: with noise the largest scale-factor error of any measure is 5.3e-5 (16 cells,
+  A2, extrema of alpha); volume and mean K at most 1.9e-6.
+- PF5 held for the laws. Noise part of the alpha extrema at a = 3: 2.24e-5, 7.18e-6, 3.57e-6
+  for 1, 8, 27 per cell (1 : 0.32 : 0.16; predicted 1 : 0.354 : 0.192); A1 -> A2 x10.0;
+  16 -> 32 -> 64 cells 4.12e-5, 2.24e-5, 1.06e-5 (1 : 0.54 : 0.26; predicted proportional
+  to h). It does not grow with a (2.2e-5 at a = 3, 1.8e-5 at a = 300 at 32 cells): the
+  potential of the growing mode is constant. Noise part of the volume at a = 30:
+  2.12e-7, 2.15e-8, 6.40e-9 (1 : 0.10 : 0.030; predicted 1 : 0.125 : 0.037), x100 from A1
+  to A2, 1.75e-7, 2.12e-7, 2.41e-7 at 16, 32, 64 cells (mesh-independent within 40 percent),
+  proportional to a while linear (5.4e-8 at a = 10, 5.7e-7 at a = 100).
+- PF6 partly failed. Sizes of the box averages as predicted (volume noise part 2.6e-9 at
+  a = 1.5 rising to 1.5e-6); the alpha extrema at A2, 1 per cell, 32 cells are 2.3e-5,
+  above the predicted 1e-6 to 1e-5: the extrema of a field of 32768 cells sit about four
+  standard deviations out (Phi_rms 5.79e-6 of the initial data) [JUDGEMENT]. The Hamiltonian
+  constraint is not "damped" after the start: Hr_max falls from 2.9e-2 to 3e-3 by a = 1.5,
+  then grows with the cell-scale contrast to 0.66 at a = 1000 (32 cells, A2), 1.3 (64, A2);
+  box mean 0.05-0.06. The density contrast of the noise turns nonlinear at the cell scale
+  (largest |E a^3/rho_0 - 1| 0.46 at a = 30, 6.2 at a = 300 for 32 cells, A2), and the
+  compensated cubic cloud then deposits negative cell densities (signed minimum of
+  E a^3/rho_0 - 1 below -1 first at a = 60 (64 cells, A2), 140 (32, A2), 346 (16, A2),
+  622 (32, 8 per cell, A2); never at A1 or 27 per cell). These are properties of an
+  unresolved cell-scale structure, not of the scale factor, whose errors stay below 6e-5.
+- Momentum constraint: the relative norm Mr is rounding over rounding on a homogeneous
+  slice (definition in athenak/src/particles/nrpic_io.cpp), so the absolute |M| is shown:
+  at most 1.2e-11 for the lattices, 1.2e-2 to 5.1e-2 at the start with A2 noise, falling
+  as the run expands.
+
+Leg B (test B, 1e-7 plane wave, a = 1 to 999.3-999.7):
+- PB1 held for the density estimators, failed for the potential estimator. Largest
+  |f - f_ref| over 1.05 <= a: delta 8.4e-5, 6.5e-6, 4.9e-6 (16, 32, 64 cells); delta_* the
+  same within 10 percent. Potential (a phi from chi): 3.1e-3 (16), 3.0e-4 (32), 1.7e-4
+  (64), and above 1e-4 after a = 2 at every mesh: the potential carries an oscillation of
+  period 2.342 in conformal time (2.340 at 64 cells), i.e. L/P = 0.577 = 1/sqrt(3), the
+  coordinate speed of the slicing d_t alpha = -(1/3) alpha^2 K; its relative amplitude
+  9.3e-5, 1.1e-5, 6.2e-6 (16, 32, 64) and 7.2e-6, 7.1e-6 (8, 27 per cell) falls with mesh
+  and particle number. That it is a gauge wave of the lapse is [JUDGEMENT] from the speed.
+  The derivative of an oscillation of rising frequency in ln a amplifies it, so f from the
+  potential is the weakest estimator; it stays below 1e-2 everywhere.
+- PB2 held at 32 and 64 cells, not at 16. The decaying-mode fit with a separate constant
+  growth-rate error (ln(D_*/A a) = c0 + c1 ln a + eps a^-5/2 on a <= 30, rms residual
+  1.5e-7 to 2.1e-6) gives eps = +3.3e-5 (16), +4.5e-6 (32), +1.4e-6, +1.3e-6 (8, 27 per
+  cell), +2.5e-6 (64): f_* - 1 at a = 1 of -(5/2) eps, at most 8e-5 (16) and 1.1e-5 (32),
+  decaying as a^-5/2. The two-term fit of entry 1 (no constant term) gave -1.4e-4 at 16:
+  it absorbs the constant growth-rate error of 7.3e-5 at 16 cells into eps.
+- PB3 held for the plateau, failed for the floor. Plateau of the f error (median over
+  a >= 3): delta 6.71e-5, 4.91e-6, 3.03e-7; ratios 13.7 and 16.2, fourth order in the mesh.
+  Largest amplitude error |D_delta/D_ref - 1|: 4.9e-4, 3.4e-5, 1.4e-6 (factors 14 and 25).
+  No floor at 1e-6 in the plateau down to 3e-7. The early part (a <= 2) does not converge:
+  6.2e-5, 3.6e-6, 4.8e-6 at 16, 32, 64; it is the decaying mode of eps 2.5e-6 at 64 cells
+  (-(5/2) eps = -6e-6 at a = 1). Its cause is not named: candidates the initial-data solve
+  (Hamiltonian residual up to 3.6e-12, entry 2) and the start of the lapse; [TO VERIFY] by a
+  run that changes one of them.
+- PB4 failed for the amplitude, held for f. f of 1, 8, 27 per cell at 32 cells agree to
+  1.2e-6 in the plateau (4.91e-6, 1.20e-6, 1.53e-6 in size; constant-error terms +5.1e-6,
+  -1.5e-6, -1.8e-6). The amplitude error at a = 1000 is +3.39e-5, -1.06e-5, -1.30e-5: one
+  per cell differs from 8 and 27 by 4.5e-5, above the predicted 1e-5. 8 and 27 per cell
+  agree to 2.4e-6 in amplitude and 3e-7 in f: from 8 per cell on the error at 32 cells is
+  the mesh part; at one per cell a sampling part of opposite sign adds +6.5e-6 to f.
+- PB5 held: f_delta at a = 1.1, 10, 1000 is 0.888051, 0.986328, 0.999851 at 32 cells
+  against f_ref 0.888050, 0.986323, 0.999846; comparing f_delta with 1 would show -0.112
+  at a = 1.1, while f_* - 1 stays below 6e-6 in size there.
+- Constraints of leg B: Hr_max at most 3.4e-9 (32) and 1.3e-8 (64), the background part
+  (leg F lattices); mean-density error at most 2.3e-9.
+
+Verdict on criterion (a) at 16-64 cells: met. The scale-factor error is at most 3.8e-7
+for lattices and 5.3e-5 with noise, converging at fourth order in the step and falling with
+particle number and mesh as predicted; the growth rate agrees with the linear reference
+(f_ref = a/(a + 3/k^2) for delta, 1 for delta_*) to 6.5e-6 at 32 cells and 4.9e-6 at 64,
+with a plateau that converges at fourth order and an early decaying-mode part of a few 1e-6
+that does not converge between 32 and 64 cells (floor, cause [TO VERIFY]). The 128^3 row
+(J3) is pending.
+
+### Prediction of P2 (optional row: Poisson-like start), before the run
+
+Run: f_n32_p1_a3 (32 cells, 1 per cell, uniform displacements of +-h/2 per component,
+seed 1; initial data B-20261120-223448-7f7c034: compensated delta_rms 0.469, Phi_rms
+2.73e-4, <delta Phi> -9.02e-5), deck `inputs/flrw_prod.athinput`, processors (threaded
+executable of core/build-openmp, 6 threads, as P1), list `inputs/cpu_p2.list`.
+- Cost: 0.55-0.8 s per step at 6 threads (8 times P1's 16^3 at 4 threads), 5800 steps,
+  55-80 minutes.
+- Phi_rms is 47 times that of A2, <delta Phi> 2020 times. Extrema of alpha (first order in
+  Phi): noise part about 47 x 2.2e-5 = 1.0e-3 at a <= 3, then roughly constant (as A2 at
+  64 cells after it turned nonlinear) [JUDGEMENT]. Box averages (second order): 2020 x the
+  A2 values if the law held, 5e-6 at a = 1.5, 4e-4 at a = 30, 2e-3 at a = 300; the start is
+  nonlinear (delta_rms 0.47), so this is an order of magnitude only.
+- Refuted (sub-percent at Poisson-like noise) if any scale-factor measure reaches 1e-2
+  before a = 1000. Also recorded: whether the run reaches a = 1000 with finite fields.
