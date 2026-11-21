@@ -405,3 +405,15 @@ wave-2 cc1_kn10 (cell s1) has linear crossings alpha_min = 0.5, 0.4, 0.3 at 166.
   instantaneous seed difference) and a collapse time to about 0.5 M; the clauses of entry 4
   are judged against these. d3_kninf also gives drift's third period point (drift JOURNAL
   entry 6, its prediction, judged by drift or the lead).
+
+## 2026-11-21 03:26 UTC Entry 9: job 2 running; a cosine fit of the controls (prediction)
+
+D1 job 2 (run C-20261121-025633-bb8dac4, Slurm 4756) started 03:22 UTC; smoke run rc = 0.
+While it runs: `analyze_decisive.py` gets the cosine form A (1 - cos 2 pi t/P) + c of
+`drift/scripts/controls.py` (copied, not imported) for every Kn = inf control, so that the
+d3_kninf control yields the third point of the excursion period that drift asked for (drift
+JOURNAL entry 6; drift's own prediction for it is drift's to judge).
+Prediction for the test on the wave-2 controls: the fit to alpha_c(t) - alpha_c(0) over
+0-300 M reproduces drift's values (run C-20261120-222211-aa1be86, drift's report): P = 399 M
+and A = 0.0154 (CC1), P = 355 M and A = 0.0086 (CC2), to the quoted digits. Refuted by any
+difference beyond them: then the fitted series differs from drift's.
