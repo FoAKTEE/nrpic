@@ -135,3 +135,53 @@ that the end value already makes unlikely); replacement prediction for the part 
 seen, P1-e': between t = 112 and 280 the H norm never exceeds the start transient's maximum
 3.2e-4 (t = 1) and never exceeds ten times its t = 112 value; the M norm likewise stays within
 a factor ten of its t = 112 value. Refuted by any such excursion.
+
+## 2026-11-21 21:50Z P. outcome (runs F-20261121-212240-c43f35f: p1 readers; F-20261121-212441-1911b7d: p1_280.py; figures read)
+
+Numbers from `p1_280.json` and `p1_checks.json`, `ledger.json` of these runs; figures
+`fig_p1_280.png` (six panels) and p1's `fig_tracks_plane.png` read.
+- P1-a REFUTED in its time window and, marginally, in distance; MET on the merger with M. One
+  closest approach of the remnant to M after t = 60: t = 154.60 M at 6.99 M (coordinate), not
+  113-135 at 7-11.8 M; distance 10.29 at t = 120, 7.47 at 140, 7.03 at 160, 10.62 at 200, 24.25
+  at 280, receding at 0.158. The remnant swings round M by about three quarters of a turn
+  (fig_tracks_plane). No common horizon: finders 0/1 never above 0.2695 after t = 50, finder 2
+  at most 1.0078. [JUDGEMENT] The slow approach is the coordinate lag already seen before t =
+  112 (heavy hole moved 5.1 M against Newton's 8.0, p1 entry 3).
+- P1-b REFUTED: |v_rem(56) - v_cm,pre(56)| = 0.0218 (> 0.01); the direction changes by 1.8
+  degrees; the speed rises from 0.184 (members' mean, extrapolated) to 0.205 (remnant), +11
+  percent. The heavy hole's velocity changes by 0.0012 between the same windows. [JUDGEMENT]
+  Not a kick (zero by symmetry for equal members without spin): the members' coordinate speeds
+  lag their physical ones with eta m = 0.25 (E3, 0.5-0.76 of the boost), and the remnant has
+  eta m = 0.54; a gauge readjustment of the coordinate speed. No run here could have shown it
+  physical or not.
+- P1-c: drift clause MET, range clause REFUTED at the end, spin MET. Remnant mass (median of
+  the good rows) 0.26832 (60-100 M), 0.26909 (100-140, during the approach), 0.26794 (140-200),
+  0.26720 (240-280): drift -0.42 percent over 60-280 (below 0.5), but the end value is below
+  the predicted 0.2684. |S|/m^2 0.660 (60-100; range 0.655-0.665) inside 0.60-0.72; 0.677
+  during the approach, 0.662 at the end. Finders 0 and 1 agree to all digits shown.
+- P1-d MET: heavy hole +0.315 percent from its first good search (1.00419 at t = 4) to the
+  median of 240-280 (1.00736); |S|/M^2 below 3.3e-3 everywhere (medians 1.3e-3 during the
+  approach at 100-200, 1.5e-4 at 240-280). The rise and fall of the spin estimate with the
+  remnant's passage, and the mass branches 1e-3 apart in 100-260 M, are finder readings of a
+  tidally deformed horizon [JUDGEMENT], not a spin-up (it returns to 1.5e-4).
+- P1-e REFUTED (written on the misreading, see correction): no rise at all. P1-e' MET: the H
+  norm between 112 and 280 M lies within 4.66e-5 and 8.79e-5 (maximum at t = 258.5, 1.46 times
+  its t = 112 value 6.02e-5; the start transient's maximum is 3.17e-4 at t = 1); M norm within
+  3.65e-5 and 4.97e-5 (1.14 times its t = 112 value). The merger lowered the H norm from
+  1.5-1.8e-4 to 5.6e-5 (the members' high-gradient region disappears) [VERIFIED as a reading of
+  the curve; cause JUDGEMENT]. History finite, volume constant to 1e-4 (refinement).
+- P1-f MET: E(280) = 2.97e-3 (R = 40), 2.17e-3 (48), 2.08e-3 (70), 2.01e-3 (90) M, ordered as
+  predicted; E(90) rose from 7.1e-6 (t = 112) to 2.0e-3. Most of it arrives at t = 190-260, i.e.
+  from the remnant's pericentre at t = 154.6 (light from 7 M reaches 40-90 M after 33-83 M);
+  the four spheres agree within 4 percent from R = 48 on (2.01-2.17e-3), unlike the earlier,
+  strongly R-dependent part. [BACKGROUND formula, arithmetic] Peters' energy loss of a
+  parabolic passage, (85 pi/(12 sqrt 2)) m1^2 m2^2 (m1+m2)^(1/2) / r_p^(7/2), is 1.4e-3 M for
+  1.007 and 0.267 at r_p = 7 M: the same order as the measured 1.8-1.9e-3 added after t = 150
+  (coordinate pericentre; no claim beyond the order of magnitude).
+- P1-g: trackers MET (71680 common rows to t = 279.996, largest gap one step 3.9e-3, finite);
+  tree REFUTED on the low side (736-1870 MeshBlocks; 736 is new, after t = 112); card time
+  MET: 12.583 card-hours over 16 jobs (lead's 17-20 predicted, 21-25 segments: also low).
+- Not usable: the Newtonian two-body energy of remnant and M from coordinate velocities moves
+  from -0.0048 (t = 60) to -0.0173 (pericentre) to -0.0052 (280): it is not conserved through
+  the passage, so the coordinate velocities cannot say whether the remnant is bound
+  [JUDGEMENT].
