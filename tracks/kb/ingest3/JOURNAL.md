@@ -245,3 +245,10 @@ fig_bib_before_after: 0 entries before for all 20; after, 14 papers with entries
 keys mark, 6 at zero; citation rows with an entry equal all rows for the 14 that cite.
 fig_parse_status: strict rate 95.07 -> 96.34 -> 96.51 %, recorded 96.34 -> 96.34 -> 96.51 %, all
 above the 95 % line. Refuted by any bar or point that differs from the run outputs above.
+
+## Outcome P8 (run kb-20261121-220205-1dbcd51; both PNGs read)
+
+Held, with one wording slip: 14 papers now have entries, 6 stay at zero; the entry bars reach the
+cited-keys mark wherever there is one. Citation rows with an entry equal all rows for the 12 papers
+that cite (not 14: 1201.4794 and astro-ph/0003278 have entries but no citation row). Parse-status
+panel: strict 95.07 -> 96.34 -> 96.51 %, recorded 96.34 -> 96.34 -> 96.51 %, all above 95 %.

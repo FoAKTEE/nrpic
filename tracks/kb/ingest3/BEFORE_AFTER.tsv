@@ -1,0 +1,56 @@
+paper_id	cited_keys_after	parse_status_before	bib_source_before	bib_entries_before	bib_with_arxiv_before	citations_before	citations_with_entry_before	sections_before	equations_before	chunks_before	claim_locator_rows_before	parse_status_after	bib_source_after	bib_entries_after	bib_with_arxiv_after	citations_after	citations_with_entry_after	sections_after	equations_after	chunks_after	claim_locator_rows_after
+0710.5073	28	ok	None	0	0	51	0	0	25	23	0	ok	thebibliography	28	4	51	51	0	25	20	0
+1109.2484	101	ok	None	0	0	147	0	23	99	79	0	ok	thebibliography	104	79	147	147	23	99	64	0
+1302.5308	87	ok	None	0	0	119	0	58	109	111	0	ok	thebibliography	87	57	119	119	58	109	102	0
+1304.7791	38	ok	None	0	0	52	0	0	5	18	0	ok	thebibliography	38	7	52	52	0	5	12	0
+gr-qc/0107076	16	ok	None	0	0	22	0	13	67	40	0	ok	thebibliography	16	4	22	22	13	67	38	0
+gr-qc/9402041	13	ok	None	0	0	26	0	0	7	15	0	ok	thebibliography	13	0	26	26	0	7	14	0
+hep-ph/0011159	11	ok	None	0	0	16	0	7	7	15	0	ok	thebibliography	11	0	16	16	7	7	15	0
+astro-ph/0003278	0	review	None	0	0	0	0	0	1	1	0	review	thebibliography	33	20	0	0	0	1	1	0
+1201.4794	0	ok	None	0	0	0	0	10	29	40	5	ok	thebibliography	46	0	0	0	10	29	39	5
+gr-qc/0304002	38	ok	thebibliography	0	0	0	0	25	192	96	0	ok	thebibliography	38	2	58	58	25	192	96	0
+gr-qc/9703066	18	ok	thebibliography	0	0	31	0	0	16	15	0	ok	thebibliography	18	0	31	31	0	16	15	0
+2507.01095	103	ok	bbl	0	0	166	0	22	28	81	0	ok	bbl	103	5	166	166	22	28	81	0
+gr-qc/9906015	0	review	None	0	0	0	0	0	71	38	0	review	None	0	0	0	0	0	71	38	0
+astro-ph/9510056	0	review	None	0	0	0	0	0	50	44	0	review	None	0	0	0	0	0	50	44	0
+2602.00155	28	review	None	0	0	0	0	9	0	14	0	review	thebibliography	28	7	29	29	9	0	11	0
+2403.15126	100	review	thebibliography	0	0	122	0	17	35	72	15	review	thebibliography	117	33	122	122	17	35	72	15
+astro-ph/0306304	0	review	None	0	0	0	0	0	47	17	0	review	None	0	0	0	0	0	47	17	0
+astro-ph/9306009	0	review	None	0	0	0	0	0	61	35	0	review	None	0	0	0	0	0	61	35	0
+astro-ph/9607124	0	review	None	0	0	0	0	1	4	16	0	review	None	0	0	0	0	1	4	16	0
+gr-qc/9604001	0	review	None	0	0	0	0	0	82	66	0	review	None	0	0	0	0	0	82	66	0
+1007.0184 (additions24)		not in database										ok	thebibliography	22	2	42	42	9	108	19	0
+1312.1289 (additions24)		not in database										ok	bbl	30	20	40	40	5	70	41	0
+1402.7085 (additions24)		not in database										ok	thebibliography	15	1	60	60	16	137	27	0
+1805.07240 (additions24)		not in database										ok	bbl	343	190	787	787	48	565	170	0
+1904.13290 (additions24)		not in database										ok	thebibliography	31	1	53	53	6	46	20	0
+2009.08968 (additions24)		not in database										ok	bbl	57	7	165	165	89	660	266	0
+2012.14241 (additions24)		not in database										ok	bbl	38	3	103	103	64	294	87	0
+2107.00457 (additions24)		not in database										ok	thebibliography	35	0	79	79	39	15	96	0
+2306.17774 (additions24)		not in database										ok	bbl	35	4	43	43	22	169	48	0
+2402.08544 (additions24)		not in database										ok	bbl	49	4	165	165	45	432	111	0
+2402.17530 (additions24)		not in database										ok	thebibliography	31	3	73	73	40	496	97	0
+2403.03470 (additions24)		not in database										ok	bbl	35	4	75	75	37	201	76	0
+2404.07659 (additions24)		not in database										ok	bbl	124	9	230	230	54	117	113	0
+2406.11417 (additions24)		not in database										ok	bbl	17	14	26	26	4	11	15	0
+2505.00286 (additions24)		not in database										ok	bbl	40	11	59	59	37	207	68	0
+2508.13294 (additions24)		not in database										ok	bib	47	37	62	62	15	24	33	0
+2512.19454 (additions24)		not in database										ok	bib	20	3	31	31	27	96	39	0
+2602.01830 (additions24)		not in database										ok	bib	43	32	80	80	22	137	47	0
+2604.14911 (additions24)		not in database										ok	bib	47	13	94	94	28	269	52	0
+2606.16879 (additions24)		not in database										ok	bbl	22	1	26	26	9	31	22	0
+2606.26532 (additions24)		not in database										ok	bib	116	91	146	146	9	76	39	0
+2607.09285 (additions24)		not in database										ok	bib	81	67	172	172	9	20	35	0
+2607.09326 (additions24)		not in database										ok	bib	43	7	74	74	48	462	106	0
+2609.14755 (additions24)		not in database										ok	thebibliography	21	1	35	35	20	66	52	0
+2610.28890 (frontier11)		not in database										ok	bib	104	85	248	248	23	45	91	0
+2610.28745 (frontier11)		not in database										ok	bib	61	52	96	95	15	45	53	0
+2610.33150 (frontier11)		not in database										ok	bib	57	54	81	81	21	69	41	0
+2611.08145 (frontier11)		not in database										ok	bib	45	5	94	92	13	91	50	0
+2611.13170 (frontier11)		not in database										ok	bib	108	42	171	170	21	36	64	0
+2610.01964 (frontier11)		not in database										ok	bib	33	21	41	41	0	8	21	0
+2610.26669 (frontier11)		not in database										ok	bib	112	103	183	183	21	139	88	0
+2602.11652 (frontier11)		not in database										ok	bib	92	83	145	145	16	26	48	0
+2606.28005 (frontier11)		not in database										ok	bib	67	56	126	126	13	34	61	0
+2605.22525 (frontier11)		not in database										ok	bib	83	18	116	116	23	103	76	0
+2611.23627 (frontier11)		not in database										ok	bib	69	36	104	104	25	14	51	0
