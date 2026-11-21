@@ -351,3 +351,138 @@ hybrid_cc / kernel_cc (masses in M; `nm_analysis.json` of D-20261121-084720-b6aa
   least-squares slope, the masses at 8 and 16, the dress at 30, the momentum and the
   particle count fail (JOURNAL 08:43Z).
 
+**Q16, the run to a/a_i = 16 with the edge repaired as far as nx = 192 allows** (edge
+1.2 r_last, R_edge = 31.7 M = 6.85 cells, box +-444 M, dx = 4.625 M, 2580 steps, 1844 s on six
+threads; last snapshot a/a_i = 15.96). Run value, in brackets hybrid_cc / kernel_cc shells
+(`nm_analysis.json` of D-20261121-092757-34faefa):
+
+| a/a_i | M_ta | dress | dress/M_ta | M_ta/(M a/a_i) |
+|---|---|---|---|---|
+| 4 | 2.597 (+0.18 / +0.42 %) | 0.795 (+0.47 / +0.84 %) | 0.306 | 0.649 |
+| 8 | 4.815 (+0.16 / +0.58 %) | 2.148 (-0.05 / +0.31 %) | 0.446 | 0.602 |
+| 12 | 7.047 (+0.17 / +0.62 %) | 3.541 (+0.20 / +0.73 %) | 0.502 | 0.587 |
+| 15.96 | 9.302 (+0.80 / +1.28 %) | 4.911 (+0.11 / +0.64 %) | 0.528 | 0.583 |
+
+- [VERIFIED] Every shell inside r_last(16) keeps its energy within 0.4 % (run
+  D-20261121-092757-ed934e7); the edge layer outside it changes by -2 to +16 %, ten times less
+  than in P192, and the shells just outside r_last that became 1-2 % more bound account for
+  the M_ta excess of +0.8 % at 16 [JUDGEMENT on the attribution]. No particle is lost.
+- [VERIFIED] Profile against the self-similar solution at 15.96 on lambda = 0.075-0.3 (6 bins):
+  0.96, 0.99, 1.04, 0.98, 0.84, 0.93: largest deviation 16 %, rms 7.6 %; the matched shells at
+  the same resolution deviate by 15-20 % (rms 10-13 %). Local slope: mean -2.55 against the
+  self-similar -2.50 on the same bins, least squares -2.66 against -2.58. At a/a_i = 8 the
+  two bins in range ([0.19, 0.3]) are within 3.6 %.
+- Inside lambda ~ 0.05 the run (like the shells) lies below the self-similar profile: the seed
+  and the mesh softening (4 dx = 18.5 M = 0.075 r_ta) dominate there (`figs/w3_Q16_late_profiles.png`).
+- Predictions Q16 (JOURNAL 08:56Z): energy, dress, ratios, profile, slopes, particles and clump
+  hold; M_ta at 16 (+0.8 % against the band's +0.5 %) and the step count (2580 against
+  2000-2500) fail.
+- Figures: `figs/w3_Q16_late_profiles.png`, `figs/w3_Q16_late_growth.png`,
+  `figs/w3_Q16_estimators.png`, `figs/w3_Q16_energy.png`.
+
+**Wave-2 dress at a/a_i = 2 (the verifier's finding).** With the cell-centre kernel N128Lc's
+dress at 2 lies +1.6 to +1.8 % above the shells instead of +3.1 to +3.3 % (run
+D-20261121-092852-a0c75f0): about half of the verifier's 0.5-3.3 % is the reference's
+vertex kernel [VERIFIED]; the rest is not explained.
+
+### What D-pre-3 shows
+
+Wording (a), the sheet's "reproduce the r^(-9/4) profile":
+- [VERIFIED] The self-similar solution itself is not r^(-9/4) where any run resolves it: its
+  local density slope on lambda = 0.06-0.3 is -2.3 to -2.9 with caustic steps (mean -2.44 to
+  -2.50 on the bins used here), and -9/4 is its asymptote below lambda ~ 1e-4 (slope of m 0.741
+  on [1e-4, 1e-3], 0.705 on [3e-3, 3e-2]; test 2, D-bh-dress-20261115-123813-97afeea).
+- [VERIFIED] The runs resolve lambda >= 0.075 (Q16 at a/a_i = 16), >= 0.063 (P192 at 30),
+  >= 0.11 (N128Lc at 8), three and a half decades above that regime. On the resolved range the
+  run's slope agrees with the self-similar slope (Q16: -2.55 against -2.50), not with -9/4.
+- [JUDGEMENT] No uniform-mesh Newtonian run of this set-up can show r^(-9/4): at a/a_i = 30,
+  lambda = 1e-4 is r = 0.06 M, inside the softened core and inside r = 2 M; lambda = 1e-4 reaches
+  r = 10 M only near a/a_i ~ 1.5e3 (r_ta grows as (a/a_i)^(4/3)). The code has not reached and
+  is not claimed to reach r^(-9/4). Wording (a) is not met.
+
+Wording (b), the track's proposal, accepted by the orchestrator (coord/DECISIONS/0021 item 2):
+growth against matched shells and the approach to the self-similar m(lambda):
+- [VERIFIED] Growth: the turnaround mass and the dress of AthenaK's Newtonian mode follow
+  shells with the same (measured, cell-centre) mesh force within 0.2-0.6 % (M_ta) and 0.5 %
+  (dress) from a/a_i = 3 to 12 in Q16 (0.8 % at 16), in N128Lc to 0.3 % at a/a_i = 4-8 (wave
+  2, re-checked here), and in P192 to 0.6 % up to a/a_i ~ 12; the threaded processor build
+  gives the same statistics as the release (R8).
+- [VERIFIED] Approach to the self-similar solution: dress/M_ta rises 0.31, 0.45, 0.50, 0.53 at
+  a/a_i = 4, 8, 12, 16 toward 0.625, and M_ta/(M a/a_i) falls 0.65, 0.60, 0.59, 0.58 toward
+  0.565, as the shells do (Q16); the density profile in units of r_ta is within 16 % (rms 8 %)
+  of the seeded self-similar rho(lambda) on lambda = 0.075-0.3 at a/a_i = 16 (Q16), within 23 %
+  on 0.11-0.3 at 8 (N128Lc, 0.1-dex bins), and below it inside lambda ~ 0.05.
+- [JUDGEMENT] What is not shown: the approach on lambda = 0.01-0.06 that the shells reach by
+  a/a_i ~ 30 (RUNS.md line 17). The run to a/a_i = 30 (P192) cannot show it: its turnaround
+  shells after a/a_i ~ 12 started within one cell of the edge of the initial ball and had
+  their energies changed by -6 to +62 % during the first expansion (VERIFIED, see above), so
+  its late masses and profile test the set-up, not the approach. A clean a/a_i = 30 run needs
+  the initial ball resolved by about nine cells with its edge at least two cells outside
+  r_last(30) (as N128Lc had), which a uniform 192^3 isolated box cannot hold (it needs
+  roughly nx = 400 or a refined centre).
+
+### Not done (wave 3)
+
+- No clean run beyond a/a_i = 16; P192's late part is a documented set-up failure, not a result.
+- No run with the fixed point mass (`newton_pm_mass`, in release core-v0.4; whether the
+  threaded executable of core-v0.5 carries it was not checked); the clump stand-in at a cell
+  centre is what ran.
+- The mechanism of the edge-layer energy error inside one cell (deposit and gather of a sharp
+  edge near a cell-centred point mass) is not separated; the edge of the dust running 5-13 %
+  ahead of its closed-form orbit (N128Lc, Q16) is measured, not explained.
+- No convergence in dx of Q16 (one resolution); the profile comparison has 6 bins.
+
+### Requests (wave 3)
+
+1. D-bh-dress lead: for stage/G1 C7 (D-pre-3, judged per decision 0021 item 2): evidence is
+   N128Lc (wave 2) and Q16 (D-20261121-085652-7e189a2, analysis -092757-34faefa); P192
+   (D-20261121-075559-31835c4) is to be cited only with its set-up failure. Erratum for the
+   wave-2 claims: the matched shells there used the vertex kernel while the runs had the
+   clump at a cell centre; this explains about half of the dress excess at a/a_i = 2 that the
+   verifier found (D-20261121-092852-a0c75f0); masses from a/a_i = 3 on are unaffected.
+2. core (newtonian_mode.md, sections 5.2 and 6): (a) the near-field kernel of a compact mass
+   depends on its position in the cell: at a cell centre the force inside one cell is 2 to 8
+   times that at a vertex, Plummer s_eff 0.31 against 0.61 dx (runs D-20261121-084354-f534489,
+   -084357-8b3a981, -084407-ffb542d); (b) a uniform ball whose radius is only four cells
+   imprints energy errors of -6 to +62 % on the particles in its outer cell during the first
+   expansion (D-20261121-085254-a303729); at 6.85 cells -2 to +16 %, at 8.9 cells below 0.2 %
+   inside the edge layer. A line on the resolution needed at sharp edges would help other
+   tracks with ball set-ups (A, C).
+3. core: whether `newton_pm_mass` works in the threaded executable `athena_cpu_omp` of
+   core-v0.5; a rerun of Q16 with it would remove the clump's self-interaction (wave-2
+   request 1, now served in the release).
+### How to rerun (wave 3)
+
+From the worktree root (`wt/D-bh-dress`), package committed, `.venv` present. Each line is one
+registered run (`harness/bin/nrpic-run submit --kind scouting --gate G1 --package $P --cores N
+[--background] --purpose "..." -- <command>`, written `reg N <command>` below; output
+directories as in the run table above):
+
+    P=tracks/D-bh-dress/secondary_infall; S=/data/haiyangw/nrpic/scratch/D-bh-dress
+    X=/data/haiyangw/nrpic/scratch/core/exe/core_build-openmp/athena_cpu
+    SS=$S/D-bh-dress-20261115-123813-97afeea/selfsimilar_profile.npz
+    # the run to a/a_i = 30 (0.7 h on six threads) and to 16 (Q16)
+    reg 6 python3 $P/nm_run.py --kind infall --nx 192 --mb 64 --L 854 --aend 30 --edge_fac 1.1 --dtmax 2.0 \
+          --shift_cells 0.5 0.5 0.5 --snap_dt 9.612185332430899 --rst_dt 600 --threads 6 --bind --exe $X
+    reg 6 python3 $P/nm_run.py --kind infall --nx 192 --mb 64 --L 444 --aend 16 --edge_fac 1.2 --dtmax 1.0 \
+          --shift_cells 0.5 0.5 0.5 --snap_dt 9.612185332430899 --rst_dt 300 --threads 6 --bind --exe $X
+    # R8: N128Lc on the threaded build (three threads), and the check
+    reg 3 python3 $P/nm_run.py --kind infall --nx 128 --L 176 --aend 8 --dtmax 0.5 --shift_cells 0.5 0.5 0.5 --bind --exe $X
+    reg 1 python3 $P/nm_threadcheck.py --out '$NRPIC_RUN_DIR' --a N128Lc:$S/D-20261115-171507-d1058a9 --b R8:<R8 dir>
+    # cell-centre kernel: one-step field runs (release processor build) and their analysis
+    reg 1 python3 $P/nm_run.py --out '$NRPIC_RUN_DIR' --kind field --nx 64 --L 68 --onestep --shift_cells 0.5 0.5 0.5
+    reg 1 python3 $P/nm_run.py --out '$NRPIC_RUN_DIR' --kind field --nx 128 --L 68 --onestep --shift_cells 0.5 0.5 0.5
+    reg 1 python3 $P/nm_field.py --out '$NRPIC_RUN_DIR' --run cc64:<dir> --run cc128:<dir>
+    # matched shells (law kernel or hybrid; kernel_nx128_cc.txt; dx of the run; setup.json of the run)
+    reg 1 python3 $P/nm_shells.py --out '$NRPIC_RUN_DIR' --setup <run>/setup.json --law hybrid \
+          --kernel $P/kernel_nx128_cc.txt --dx 8.895833333333334 --label P192_hybridcc --snap_dt 9.612185332430899
+    # predictions, analysis, diagnostics
+    reg 1 python3 $P/nm_predict.py --out '$NRPIC_RUN_DIR' --setup <run>/setup.json --dx <dx> --selfsim $SS \
+          --ref hybrid_cc:<shells dir>/nm_shells_<label> ... --at 8 16 30
+    reg 1 python3 $P/nm_analyze.py --out '$NRPIC_RUN_DIR' --run P192:<run> --ref P192:hybrid_cc:<prefix> ... \
+          --selfsim $SS --late_at 4 8 16 30
+    reg 1 python3 $P/nm_lost.py   --out '$NRPIC_RUN_DIR' --run <run>
+    reg 1 python3 $P/nm_energy.py --out '$NRPIC_RUN_DIR' --run <run> --groups 20 24 27 29 31 32 33 35 36.3
+
+Wall times: P192 2504 s (2914 steps, six threads); R8 1609 s (three threads); shells with a
+kernel 8-22 s, point-mass shells 1.7 h (one core); analyses 20-60 s each.
