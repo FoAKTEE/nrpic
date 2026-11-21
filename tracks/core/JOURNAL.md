@@ -908,3 +908,137 @@ release card build on the card-check list, run core-20261121-075439-58c2787, Slu
 4775, queued for a card since 07:54Z (both cards busy with other jobs; a job of another
 core session, 4777, is queued too). Prediction G stands as written; the steps to close it
 are in HANDOFF.md. Card time of this session: 0.1 card-hours reserved, none used yet.
+
+## 2026-11-21T12:55Z  session core-lead-5 (batch 3: merge of three source branches, release candidate core-v0.6)
+
+### State found
+
+- `core/nrpic` at 123f407e, clean, pushed; main merged (dcdc2ad8). No pause flag.
+- The pending run of the last session, core-20261121-075439-58c2787 (release card build
+  of core-v0.5, Slurm job 4775), has run: nine cases, status 0 each (`nrpic-run status`).
+  It is judged below against prediction G of the entry of 07:47Z.
+- Branches offered [VERIFIED `git log`, `git merge-base --is-ancestor c3eb42e0`]:
+  core/newton-2 b7c9fc73 (closed, holds core-v0.5), core/z4c-faces 5d875275 (closed,
+  holds core-v0.5), core/id-solver-2 3087526a (partial: card check Kc staged, never
+  run). core/clump-table (7cc6c7b9, merged main at 04:52 PST, its session is at work)
+  and core/oblate (4f01a81f of 2026-11-20, does not hold core-v0.5, no READY for a
+  merged state) are not closed at 12:55Z; I look again before the builds start.
+
+### Review of the three diffs against main (source of core-v0.5), as maintainer
+
+core/z4c-faces (9 files, 814 lines added, none removed) [VERIFIED by reading the diff]:
+- Every option is read only if present (`SbcExt::Read`, `z4c_sbc_ext.cpp` 35-101); the
+  members default to the stock path (`variant = 0`, `theta_mode = 0`, `speed = 0`,
+  `ghost_falloff = false`); the three hooks are `if (sbc.Extended()) return ...` at the
+  top of `Z4cBoundaryRHS` and `if (sbc.ghost_falloff) GhostFalloff(...)` after the stock
+  fill in `Prolongate` and `ApplyPhysicalBCs`. So the new options are off by default.
+- How the failed byte regression was resolved (report of the package, journal entry 12
+  of the branch): not by masking a difference. The body of the option reader stood in
+  the header that `z4c.hpp` includes, and g++ 11.4 then compiled the unchanged
+  `z4c_calcrhs.cpp` with two more fused multiply-adds; the reader moved to
+  `z4c_sbc_ext.cpp`, the header keeps data members, the one-line `Extended()` and a
+  declaration. Evidence of the package: r2, 45 files of 7 set-ups byte-identical with
+  release core-v0.5, and the object comparison o1. That is the right repair; whether it
+  survives the merge with two branches that add members to `Particles` is what my
+  regression R tests (the cause is a compiler decision, so only a run says).
+- Kernel `Z4cBoundaryRHSNonwave` writes rhs of a boundary cell from rhs of the cell one
+  step inward along every direction in which it lies on a face; that cell is never a
+  boundary cell (MeshBlocks have at least four cells), so no cell is read after it was
+  written by another thread. `GhostFalloff` uses `Real G[4]` with p = `extrap_order`,
+  which `z4c.cpp` 173 clamps to 2..4. Both divide by the distance from the mesh origin:
+  a face through the origin is not guarded (documented as "not tested").
+- Removed options `sbc_damp_gam`, `sbc_damp_theta` stop the run if non-zero. Accepted.
+
+core/newton-2 (11 files, 1100 added, 37 removed) [VERIFIED by reading]:
+- Hooks: five lines in `nrpic_newton.cpp` (init of the two new parts, `if (nw_fft)` in
+  the potential, group sums after each kick and at the history); the two init functions
+  return at once unless `newton_poisson` or `newton_ngroup` is in the input and add no
+  parameter; the Fourier solver refuses a mesh that is refined, not periodic or in more
+  than one pack. `particles.hpp`: one block of 38 lines of members. Accepted.
+
+core/id-solver-2 (11 files, 1290 added, 68 removed) [VERIFIED by reading the shared
+hunks and the option reader; the 840 lines of `nrpic_idsolve.cpp` only where they
+decide defaults]:
+- Nothing is read unless `id_solve` is present and true (`NrpicIdSolveInit` 115-117).
+- `MGGravityDriver` no longer refuses `mg_bc = robin` on a refined mesh;
+  `ApplyPhysicalBoundariesOctet` goes to the new `RobinBoundaryOctet` only if `robin_`.
+  No released run can have reached either (the refusal stood in the way).
+- Five things change in runs with `id_solve = true` without an option (section 8 of
+  `id_solver2.md`): far field on by default on a mesh with no periodic face, the trace
+  of the stress in the Jacobian, punctures of `nrpic_cf` enter the solve, refined
+  meshes accepted, two more comment lines in the record.
+
+### Decision: the default `id_far = multipole` stands
+
+Asked by the package's report. Reasons: (1) against the semi-analytic continuum
+solution the plain fill of the first pass has an error of W at the faces of -8.6e-3
+and -9.3e-3 at 32 and 64 cells, which does not fall with the cell size, and the far
+field +9.3e-4 and +2.4e-4, which falls (test W1 of the package, `id_solver2.md` section
+5; off-centre: 5.6e-4 against 0.108, W2) [numbers of the package, not rerun by me];
+(2) the solver was released in core-v0.4 with gate G2 of core open and its limits
+listed, and no production run of a track rests on its bytes [JUDGEMENT: the tracks'
+solved data are scouting runs]; (3) `id_far = robin` gives the bytes of core-v0.5 for
+matter at rest (M1 of the package; my quick test Qi repeats it with the merged
+executable); (4) a torus is not affected. It enters the changelog as behaviour that
+changes without an option, with the sizes measured in M1.
+
+### The nine never-set members of the mesh header (newton-2's request)
+
+Nothing to change: `Mesh::ZeroUnusedMeshIndcs` (`mesh/mesh.cpp` 366-376) sets them to
+zero since core-v0.4, in the constructor (356) and after reading a restart header
+(`mesh/build_tree.cpp` 363) [VERIFIED by reading; changelog of core-v0.4, item 1 of the
+corrections]. The seven differing restart files of newton-2's T11b were written by its
+pre-merge build, whose source is older than core-v0.4. Prediction H below reads the
+bytes from files the candidate writes.
+
+### Predictions, written before any build or run
+
+Base of every byte comparison: `/data/haiyangw/nrpic/.work/build_cpu_v05/src/athena`.
+
+- **R** (driver `regress_v04.py`, twelve set-ups, new options absent): 75 of 75 items
+  identical, classes a, b and other empty. Refuted by one item that is not identical.
+  If it fails in the set-ups with Z4c only (east, os, c4), the first suspect is again a
+  compiler decision in files that include `z4c.hpp`; `compare_objects.py` of package
+  faces then names the object.
+- **Rm**: the MPI build started without mpirun: 75 of 75. **Ro** (threaded build at one
+  thread, not a byte reference): every run ends with status 0; geo and jeans identical,
+  the rest at rounding as for core-v0.5 (31 of 75 identical then); a difference above
+  1e-9 in a history column would be a finding.
+- **H**: in every mesh restart file the candidate writes in R (os, c5) the nine members
+  cnx1 to cke of `mesh_indcs` are zero. Refuted by one non-zero byte.
+- **Qn** (newton-2): the merged `athena_cpu` on `problems/newton/periodic_fft.athinput`
+  (wave of 32^3 particles, both symbols) with one group history writes the bytes of the
+  branch's `scratch/core/exe/core_newton-2/athena_cpu`, restart files included (both
+  sources zero the header). Refuted by a differing file.
+- **Qf** (z4c-faces): `problems/tests/z4c_faces.athinput` with `time/nlim=8`: (i) as
+  written (the full set) the bytes of the branch's `athena_cpu`; (ii) with the stock
+  values on the command line (`extrap_order=2 ghost_falloff=false
+  sbc_variant=sommerfeld sbc_speed=unit`) the bytes of the release executable run with
+  the same command line. Refuted by a differing file in (i) or (ii).
+- **Qi** (id-solver-2): (i) the package's `regress_m1.py` with the merged executable
+  against release core-v0.5 gives its M1: with `id_far = robin` Gaussian at rest,
+  expanding ball and torus byte-identical; with the default psi differs by 1e-8 to
+  1.5e-6 and nothing else of the first pass changes; (ii) `regress_r2.py --same` on the
+  case directories of run core-20261121-080135-890689a: the eight second-pass cases
+  byte-identical to the branch executable's files (79 files). Refuted by a differing
+  file in (i, robin, matter at rest) or in (ii).
+- **C** (the combinations the merge creates; none of the three branches touches the
+  code of another, so I expect no interaction): the faces options together with a
+  solved initial slice (`id_solve` on the expanding ball, then eight steps with the
+  full set of faces options) runs to the end with finite fields and with the initial
+  slice of the same run without the faces options (the solve happens before the first
+  step: `ball.idsolve.txt` identical). Refuted by a non-finite stop (status 3) or a
+  different record of the solve.
+- **Kc** (the package's prediction, entry 15 of `JOURNAL-idsolve2.md`, card executable
+  of the branch at 395e17d, sha256 0fb76bdb...): same outer iterations as processors
+  (within one on refined meshes), psi and W to 1e-12 of their maxima on uniform meshes
+  and 1e-9 on refined ones, P_ADM_x of `p5_mov_n64` = 0.5499999519755 to 1e-11; refuted
+  if an iteration count differs by more than one or a field by more than 1e-8.
+- **K6** (merged card executable, short list, at most 0.3 card-hours asked): every
+  case status 0; Newtonian plane wave with the Fourier solver: particle sums of the
+  history equal to processors to 1e-10 relative; faces example (8 steps, full set):
+  constraint norms of the history equal to processors to 1e-7 relative; two cases of
+  the id solver (`p5_mov_n64`, `g_smr1`): iteration counts as on processors (within one
+  on the refined mesh); two cases of core-v0.5 (`dep`, `cluster` of `card_v05.list`):
+  history columns 4 to 12 equal to processors to 1e-10 and the deposit identity below
+  1e-13. Refuted by a status other than 0 or a bound exceeded.
