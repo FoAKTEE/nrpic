@@ -620,3 +620,15 @@ the cell-size form, the time-step dependence is not resolved, and V1a itself is 
 (its theta = 1e-4 order-4 value 1.0233 +- 0.0015 and its non-relativistic order-4 value
 1.0267 +- 0.0005 differ by 2.1 se, so its own error may be underestimated at the 0.2-0.3
 percent level).
+
+## 2026-11-21 03:08 Package closed
+
+Summary runs: C-20261121-030252-b676218 and -030314-f3cd423 are superseded by
+C-20261121-030328-e3ffc6d (same numbers; the first two figures drew a line between the four
+temperatures of the CE reference and then put the legend over the data; looked at, both
+replaced). README.md now carries the results of both card jobs and of the closing
+analyses, the verdict for G1 C6 (T6 PASS, T7 PASS at theta 0.003 and REPORTED at 0.1 and 1,
+T8 PASS), the paragraph on the collisions-2 card executable, no pending runs, and the
+requests. Card time of the package: 0.516 card-hours (jobs A and B); none this session.
+Failed predictions on record in this package: S0 cost, P-T6a mechanism, P-T6b precision,
+P-T6c "diffusive at 0.1", P-T7hot central values, P-T7pool clause (b).
