@@ -56,6 +56,9 @@ def main():
         data[name] = fl.growth(d)
         cst[name] = fl.load_hst(os.path.join(d, "east.cstat.hst"))
     order = sorted(data, key=parse)
+    # common range of every run (a run still in progress ends early): the convergence
+    # figure compares the runs on 3 <= a <= a_common only
+    a_common = min(float(g["a"][-1]) for g in data.values())/1.05
     summ = {}
     for name in order:
         g = data[name]
@@ -76,6 +79,10 @@ def main():
             s[f"df_{key}_plateau_median"] = float(np.median(np.abs(g[f"df_{key}"][late])))
             s[f"df_{key}_plateau_max"] = float(np.abs(g[f"df_{key}"][late]).max())
             s[f"df_{key}_early_max"] = float(np.abs(g[f"df_{key}"][early]).max())
+            com = (g["a"] >= 3.0) & (g["a"] <= a_common)
+            s[f"df_{key}_plateau_common"] = float(np.median(np.abs(g[f"df_{key}"][com])))
+            s[f"e_{key}_maxabs_common"] = float(np.abs(g[f"e_{key}"][g["a"] <= a_common]).max())
+        s["a_common"] = a_common
         s["f_delta_num_at"] = {f"{a0:g}": at(g, "f_delta", a0) for a0 in AREF}
         s["fref_delta_at"] = {f"{a0:g}": at(g, "fref_delta", a0) for a0 in AREF}
         s["decaying_fit"] = fl.decaying_fit(g)
@@ -155,10 +162,13 @@ def main():
     fig.subplots_adjust(left=0.09, right=0.99, bottom=0.16, top=0.93, wspace=0.3)
     mesh = [k for k in order if parse(k)[1] == 1]
     ppcs = [k for k in order if parse(k)[0] == 32]
-    meas = ((r"largest $|D_\delta/D_{\rm ref} - 1|$", lambda s: s["e_delta_maxabs"], "o"),
-            (r"$|f_\delta - f_{\rm ref}|$, plateau ($a \geq 3$)",
-             lambda s: s["df_delta_plateau_median"], "s"),
-            (r"$|f_\star - 1|$, plateau ($a \geq 3$)", lambda s: s["df_star_plateau_median"], "^"),
+    ac = summ[order[0]]["a_common"]
+    meas = ((rf"largest $|D_\delta/D_{{\rm ref}} - 1|$, $a \leq {ac:.0f}$",
+             lambda s: s["e_delta_maxabs_common"], "o"),
+            (rf"$|f_\delta - f_{{\rm ref}}|$, median $3 \leq a \leq {ac:.0f}$",
+             lambda s: s["df_delta_plateau_common"], "s"),
+            (rf"$|f_\star - 1|$, median $3 \leq a \leq {ac:.0f}$",
+             lambda s: s["df_star_plateau_common"], "^"),
             (r"$|f_\star - 1|$, early ($a \leq 2$)", lambda s: s["df_star_early_max"], "v"))
     for j, (lab, fun, mk) in enumerate(meas):
         x = [parse(k)[0] for k in mesh]
@@ -168,7 +178,7 @@ def main():
         y = [fun(summ[k]) for k in ppcs]
         axs[1].loglog(x, y, marker=mk, lw=0.9, color=fs.SERIES[j])
     xs = np.array([16.0, max(parse(k)[0] for k in mesh)])
-    y0 = summ[mesh[0]]["df_star_plateau_median"]
+    y0 = summ[mesh[0]]["df_star_plateau_common"]
     for sl in (-2.0, -4.0):
         yy = y0*(xs/16.0)**sl
         axs[0].loglog(xs, yy, **{**fs.GUIDE, "lw": 0.8}, zorder=0)

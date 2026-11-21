@@ -1,0 +1,6 @@
+# flrw_conv processor runs P3 (threaded executable of core/build-openmp, 6 threads): leg B at
+# 32 cells, 1 per cell, to t = 4 (a = 9), step limit 0.002 (as J1) and 0.001. Tests whether
+# the early floor of f_* - 1 is set by the step (JOURNAL entry 8). Initial data of run
+# B-20261120-222902-6b0be3c.
+s_n32_p1_dt2 tracks/B-emd-gw/flrw_conv/inputs/mode_prod.athinput mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 meshblock/nx1=16 meshblock/nx2=16 meshblock/nx3=16 time/tlim=4.0 particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-222902-6b0be3c/b_n32_p1/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-222902-6b0be3c/b_n32_p1/fields.bin
+s_n32_p1_dt1 tracks/B-emd-gw/flrw_conv/inputs/mode_prod.athinput mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 meshblock/nx1=16 meshblock/nx2=16 meshblock/nx3=16 time/tlim=4.0 particles/dt_expansion=0.001 particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-222902-6b0be3c/b_n32_p1/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-222902-6b0be3c/b_n32_p1/fields.bin

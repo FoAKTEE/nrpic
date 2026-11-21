@@ -28,9 +28,18 @@ def load_hst(path):
             if line.startswith("#") and "[1]=" in line:
                 names = [tok.split("=")[1] for tok in line[1:].split() if "=" in tok]
                 break
-    d = np.loadtxt(path)
-    if d.ndim == 1:
-        d = d[None, :]
+    # rows of full length only: a run still writing may have left a partial last line
+    rows = []
+    with open(path) as f:
+        for line in f:
+            if line.startswith("#") or not line.strip():
+                continue
+            try:
+                rows.append([float(x) for x in line.split()])
+            except ValueError:
+                continue
+    ncol = max(len(r) for r in rows)
+    d = np.array([r for r in rows if len(r) == ncol])
     return {n: d[:, i] for i, n in enumerate(names) if i < d.shape[1]}
 
 
@@ -71,6 +80,15 @@ def read_line(d, base="east"):
     n = len(x)
     r = np.fromfile(os.path.join(d, f"{base}.line.bin"))
     r = r[:(len(r)//(1 + 5*n))*(1 + 5*n)].reshape(-1, 1 + 5*n)
+    # a chained run that restarts from a dump appends records again from the dump time:
+    # keep, walking backwards, only records earlier than the next kept one (later segment wins)
+    keep = np.zeros(len(r), dtype=bool)
+    tnext = np.inf
+    for i in range(len(r) - 1, -1, -1):
+        if r[i, 0] < tnext:
+            keep[i] = True
+            tnext = r[i, 0]
+    r = r[keep]
     out = {"t": r[:, 0], "x": x, "n": n}
     for i, k in enumerate(("chi", "alpha", "K", "E", "Sx")):
         out[k] = r[:, 1 + i*n:1 + (i + 1)*n]

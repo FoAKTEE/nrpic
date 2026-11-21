@@ -391,3 +391,25 @@ executable of core/build-openmp, 6 threads, as P1), list `inputs/cpu_p2.list`.
   nonlinear (delta_rms 0.47), so this is an order of magnitude only.
 - Refuted (sub-percent at Poisson-like noise) if any scale-factor measure reaches 1e-2
   before a = 1000. Also recorded: whether the run reaches a = 1000 with finite fields.
+
+## Entry 8 (2026-11-21 13:40 PST): P2 running; prediction of P3 (step and the early floor)
+
+P2 = run B-20261121-212128-67b349a started 13:21 (0.45 s per step at 6 threads, inside the
+predicted 0.55-0.8 s: faster). A development check of the B analysis with the partial
+output of J3 (128^3, still running, records to a = 161; not a result) suggested that the
+early part of the f_* error and the decaying-mode amplitude eps do not change from 64 to
+128 cells (about 5e-6 and 2.5e-6 to 2.8e-6), so the early floor is not a mesh error. Until
+a = 3 the step is set by the limit 0.002 of the expansion time at every mesh (Courant step
+0.0105, 0.0053, 0.0026 at 32, 64, 128 cells), so the step is the same in all runs there.
+
+P3 (`inputs/cpu_p3.list`, processors after P2, 6 threads): b_n32_p1 to t = 4 (a = 9) with
+the step limit 0.002 (s_n32_p1_dt2, as J1) and 0.001 (s_n32_p1_dt1); analysis
+`scripts/analyze_step.py` (fit ln(D_*/A a) = c0 + c1 ln a + eps a^-5/2 on a <= 8.5 for the
+two P3 runs and J1's b_n32_p1). About 1090 and 2180 steps at 0.45 s: 25 minutes.
+Prediction [JUDGEMENT]: the step is not the cause. The fourth-order integrator at a step of
+0.002 has a truncation error far below 1e-6 over a unit of time, so eps changes by less
+than 20 percent between the limits 0.002 and 0.001; and the processor run at 0.002 gives
+eps within 20 percent of J1's card run (same initial data, same deck). Refuted if eps of the
+0.001 run differs from that of the 0.002 run by more than 20 percent (then the step sets the
+floor), or if the card and processor runs at 0.002 differ by more than 20 percent (then the
+executables differ at this level and the comparison needs one executable).
