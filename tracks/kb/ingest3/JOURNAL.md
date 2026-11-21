@@ -163,3 +163,21 @@ The command skips what is stored: arXiv API requests for the 19 without a record
 and INSPIRE for the 20 without one (two batches of 10). All 19 arXiv records ok. INSPIRE: most ok;
 a paper of 2026 may have no record yet (status not-found) [JUDGEMENT]. Refuted by an arXiv failure
 or by a fetch of an id that already had a record.
+
+## Outcome P4 (run kb-20261121-214115-b07a4a7; out.txt and the records read)
+
+Held: exit 0; afterwards all 24 have an arXiv-API record (status ok) and an INSPIRE record (status
+ok), including the 2026 papers. Groups (my judgement, from title and use; alternatives in the note
+column): G03 15, G13 3, G21 2, G01 1, G04 1, G09 1, G18 1. Appended to kb/manifests/arxiv_additions.tsv
+(commit 02c76737; meta_manifest.check_additions: no problem, 50 rows).
+
+## Prediction P5 (ingest of the 24 additions, then tags, vectors, check)
+
+- 24 ingested, papers 710 -> 734; grp and priority from the additions file; titles from the arXiv
+  API (title_source arxiv-api) through the metadata load at the end of `kb ingest arxiv`.
+- Status: at least 20 ok; a few review possible (a long review chapter, 2406.11417; a math paper
+  without abstract environment) [JUDGEMENT]. None failed.
+- Every one of the 24 has bibliography entries and no cited key without an entry for more than 10
+  per cent of its keys; the TeX papers without an entry stay 6.
+- `kb embed --check --work` afterwards: 0 missing, 0 stale, 0 orphaned.
+Refuted by: a failed parse, a paper without entries, a grp other than the file's, or vectors missing.
