@@ -669,3 +669,13 @@ S1L (mu = 0.3, e = 0.2, the S1 data; S1 in the E1 gauge went non-finite at tau =
 Refuted by a guard stop before 212.8 without a horizon, or by no horizon to t = 220 in a
 healthy run (then S1 data are below the code's threshold in this gauge, or the finder
 fails: the status file says which).
+
+### Reader check of compare_ltb.py on the smoke run (A-20261121-131819-ed01cef; figure looked at)
+
+No prediction was written for this check of the script (stated here so that it is not
+mistaken for a test). Areal radius R = r sqrt(g_T) of the 316 tracked shells from the
+code's metric at the particles against reference B: 2.4e-5 at most over the 5 records
+(t <= 0.025), i.e. the code's t = 0 slice and the Fourier evaluation of R1 agree; the far
+lapse (|y| > 7) at cycle 4 is 1.12462 against 1.12483 of the homogeneous solution of the
+relaxed lapse; the central lapse rose from 0.81 to 0.96 in those four cycles. Panels of
+turnaround, horizon and constraint history are empty for four cycles, as they must be.

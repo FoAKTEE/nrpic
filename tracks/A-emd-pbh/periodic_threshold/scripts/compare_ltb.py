@@ -329,7 +329,7 @@ def main():
     cc = fs.series_colors(len(sel))
     ax1 = fig.add_subplot(3, 2, 1)
     ax2 = fig.add_subplot(3, 2, 2)
-    taug = np.linspace(0, max(1.0, np.nanmax(tau) if np.isfinite(tau).any() else 1.0), 600)
+    taug = np.linspace(0, np.nanmax(tau) if np.isfinite(tau).any() else 1.0, 600)
     for j, col in zip(sel, cc):
         ok = np.isfinite(Rc[:, j]) & np.isfinite(tau[:, j])
         ax1.plot(tau[ok, j], Rc[ok, j], color=col, lw=1.3,
@@ -339,7 +339,8 @@ def main():
         ax1.axhline(2 * M[j], color=col, lw=0.5, ls=":")
         ax2.plot(tau[ok, j], eps[ok, j], color=col, lw=1.2)
     ax1.set_xlabel(r"own proper time $\tau$")
-    ax1.set_ylabel(r"areal radius $R$ (dashed: exact B; dotted: $2M$)")
+    ax1.set_ylabel(r"areal radius $R$")
+    ax1.set_title(r"solid: code; dashed: exact B; dotted: $2M$", fontsize=7)
     ax1.legend(fontsize=6.5, loc="upper right")
     ax2.axhline(0, **fs.THIN)
     ax2.set_xlabel(r"own proper time $\tau$")

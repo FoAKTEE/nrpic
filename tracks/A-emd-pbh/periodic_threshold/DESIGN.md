@@ -400,6 +400,62 @@ section 3 as core provides them; (iii) S1 with adaptive refinement after the one
 (request 3), which also cuts the cost; (iv) S1 started from core's phase-1 data at
 eps_i = 0.2 (request 1).
 
+### 7.1 Wave 3 (2026-11-21): the relaxed 1+log lapse in the box, and the exact reference
+
+What changed since the scouting runs: release core-v0.5 (CLAUDE.md) carries the relaxed
+1+log lapse (`<z4c> lapse_leak`, core-v0.4), the guard (`<z4c_guard>`, exit status 3), the
+finder in a periodic box with a status file (`<fastflow> diagnostics`), the step limit by
+the coordinate speed of light (`<z4c> dt_lightspeed`) and constraint norms inside spheres
+(`region_*`): items 1, 3, 4 above and requests 3, 4, 7, 8 are served. Core also found
+that every deck of this track had `hmean_tol_0 = 100`, which ends every search in a
+cosmological box at its first iteration: the "no horizon" of S1 and S2 is therefore NOT
+evidence of no horizon (core-v0.5 READY, item 5; `scratch/core/exe/core_nrpic_v05/branches/READY.cosmo-amr`).
+
+Exact reference (R1, runs A-20261121-125808-7366ccd and A-20261121-130103-e007f42;
+`scripts/ltb_reference.py`, `scripts/ltbref.py`, `figures/fig_ltb_reference.png`):
+- A, the paper's profile (MDPBH.tex:573-743, simultaneous bang) at mu = 0.3: all shells
+  bound, no shell crossing, central crunch at tau = 85.72 from the slice (8.82 t_H);
+  the first marginally trapped sphere is born at the centre WITH the central crunch and
+  the apparent horizon grows outward from zero mass (globally naked at this mu,
+  MDPBH.tex:766-768) [VERIFIED by the run].
+- B, the exact spherical future of the code's own initial slice (M, E and age of the
+  shell of each tracked particle from fields.bin): same structure, but 1.5 times faster:
+  central crunch at tau = 56.8 (5.87 t_H); at equal Misner-Sharp mass the code's slice
+  turns around, traps and crunches 16-17 per cent earlier than A for 0.8 < r0 < 3 (35
+  per cent at r0 = 0.3); its central shells are 13 per cent "young" (age 0.577 against
+  t_i = 0.667: a bang-time, i.e. decaying, mode in make_field's data at eps_i = 1). So the
+  code's mu is not the paper's mu: a threshold comparison must go through B or through a
+  generator of the paper's slice (request 1) [VERIFIED for the spherical evolution].
+- Periodic images: zeta at the face 5.8e-8 of mu, at the nearest image ~1e-29; the
+  periodic solve removes the box mean of zeta, 3.07e-3, which B contains. Negligible for
+  the comparison inside r0 < 5.
+- B for P0L, axis shells (r0, M; tau of turnaround, R = 2M, crunch): 0.30, 0.032; 28.1,
+  56.8, 56.8 | 0.91, 0.789; 34.6, 68.6, 69.7 | 1.21, 1.745; 41.0, 80.0, 82.6 | 1.52, 3.145;
+  50.5, 96.9, 101.7 | 1.83, 4.993; 64.6, 122.2, 129.8 | 2.15, 7.298; 85.7, 160.8, 172.1.
+
+Deck `inputs/peak_leak.athinput` (mesh, deposit and outputs of S1): 1+log lapse with
+advection and `lapse_leak = 20` (T = 0.05: core's rule T <= 0.1 R/sqrt(2 alpha) gives 0.15
+for r_m and 0.06 for r = 1), Gamma-driver shift (0.75, eta 2, advection), cfl 1.0 with
+`dt_lightspeed = 0.25` (Courant number of light at most 0.25 everywhere; the step grows to
+the finest dx = 0.0195 once the expansion has slowed the coordinate light speed below
+0.25), guard on, finder from t = 40 every 64 cycles with `hmean_tol_0 = 1e30` and the
+status file, region norms in r_m and 0.6. Processor smoke test (A-20261121-130655-0e84f0d):
+both data sets run, the finder searches in the box, S1L repeats S1's t = 0 constraints
+(Hr_max 0.04714); the code's areal radius of the tracked particles equals B's at t = 0 to
+2.4e-5 (A-20261121-131819-ed01cef).
+
+Card job 1 (run A-20261121-131600-02b5d41, Slurm 4799, release core-v0.5 card build):
+P0L (spherical, mu = 0.3, to t = 140) and S1L (the S1 data, to t = 220, beyond 21.9 t_H =
+coordinate 212.8). Predictions P1-P4 and S1-S3: JOURNAL.md, entry of 2026-11-21 13:20Z.
+Outcome: JOURNAL.md (pending at the time of writing if not recorded there).
+
+Next: (i) the same decks with adaptive refinement on the release core-v0.5 (`<particles_amr>`,
+`deposit_fine_shape`; card-tested only on short cases, so first a processor check of the
+32^3 ladder deck); (ii) S1 with eight particles per root cell in the E1 gauge (item 2,
+deposit against gauge share of the constraint violation); (iii) a P0L resolution pair (finest
+dx halved) for the convergence that G2 asks for; (iv) data of the paper's slice (request 1)
+so that the code's mu and the paper's mu coincide.
+
 ## 8. Requests
 
 To core:
