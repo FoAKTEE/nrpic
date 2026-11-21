@@ -1,0 +1,129 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261119-165619-a6cb9fd",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "S: option con_signed (signed means of H, M_i and the spread of H in the constraint record), inflection case at 32^3 to t = 3; byte identity without it, columns against the dumps; journal entry 9",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/scalar3/s1_signed.py",
+    "--exe",
+    ".work/exe/athena_cpu_5cc2821",
+    "--workers",
+    "1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "a6cb9fde2dd3542869c11b5fd26de84e3467d0c9",
+    "branch": "core/scalar-3",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/scalar3"
+    ],
+    "outside_package": {
+      "count": 15,
+      "first": [
+        "?? tracks/core/outbox/20261119T1700Z__to-E-stoch-inf__scalar3-ready.md",
+        "?? tracks/core/runs/core-20261119-163902-403cd82/",
+        "?? tracks/core/runs/core-20261119-163903-403cd82/",
+        "?? tracks/core/runs/core-20261119-163904-403cd82/",
+        "?? tracks/core/runs/core-20261119-163905-403cd82/",
+        "?? tracks/core/runs/core-20261119-163906-403cd82/",
+        "?? tracks/core/runs/core-20261119-163912-403cd82/",
+        "?? tracks/core/runs/core-20261119-163917-403cd82/",
+        "?? tracks/core/runs/core-20261119-163929-403cd82/",
+        "?? tracks/core/runs/core-20261119-163944-403cd82/",
+        "?? tracks/core/runs/core-20261119-164601-a48c7e0/",
+        "?? tracks/core/runs/core-20261119-165056-a48c7e0/",
+        "?? tracks/core/runs/core-20261119-165104-a48c7e0/",
+        "?? tracks/core/runs/core-20261119-165112-a48c7e0/",
+        "?? tracks/core/runs/core-20261119-165203-a48c7e0/"
+      ]
+    },
+    "merge_base_main": "f51539c6f46a051b8c3c2d86501bcc6dfaa34f93",
+    "worktree": "wt/core-scalar3"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-scalar3/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": ".work/exe/athena_cpu_5cc2821",
+      "role": "input",
+      "sha256": "5201b88318fc69fb97ff41f4b775d6f02a3d6f7ebbbefd8830ca0f87baeacd33",
+      "bytes": 249583608,
+      "tracked": false
+    },
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "input",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    },
+    {
+      "path": "tracks/core/analysis/scalar3/s1_signed.py",
+      "role": "argv",
+      "sha256": "00b86fc8759dca36dff38108061448ad12ae1a44544d68e8760dee9187a61ecf",
+      "bytes": 7933,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 570.414,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261119-165619-a6cb9fd",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "34fca357f148d944d08bfc970d1343137af79e1b6bc7d01ba56c568eec2a79cd",
+    "bytes": 149162626,
+    "files": 56
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-19T16:56:20Z",
+  "started": "2026-11-19T16:56:20Z",
+  "ended": "2026-11-19T17:05:50Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 3.0326,
+    "gpu_hours_reserved": 6.34,
+    "gpu_hours_without_gate": 6.8613,
+    "cores_busy": 15,
+    "runs": 1236,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-20T22:01:45Z"
+}

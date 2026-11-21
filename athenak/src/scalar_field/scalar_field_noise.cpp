@@ -13,9 +13,10 @@
 //! mesh.  The coefficient of a mode is
 //!   c_n = (factor of its shell |n|^2) x alpha_n x (real factor of the field),
 //! with one complex unit Gaussian alpha_n = (z1 + i z2)/sqrt(2) per mode and degree of
-//! freedom, drawn with utils/rng.hpp:
-//!   stream = Stream(kStreamStochastic, 2^16 + dof),
-//!   entity = CellEntity(n_x + 2^20, n_y + 2^20, n_z + 2^20),  step = epoch,  draw 0
+//! freedom, drawn with utils/rng.hpp and utils/rng_mesh.hpp:
+//!   stream = StochasticModeStream(dof) = Stream(kStreamStochastic, 2^16 + dof),
+//!   entity = ModeEntity(n_x, n_y, n_z) = CellEntity(n_x + 2^20, n_y + 2^20, n_z + 2^20),
+//!   step = epoch,  draw 0
 //! (the keys of tracks/E-stoch-inf/noise/ref/philox_ref.py).  The epoch is 0 for frozen
 //! amplitudes and the cycle number reached at the end of the step for amplitudes that
 //! are new in every step.  A draw depends on the wave vector, the epoch, the degree of
@@ -448,16 +449,13 @@ void ScalarField::NoiseDrawAlpha(const std::uint64_t epoch) {
   auto hr = Kokkos::create_mirror_view(alpha_re);
   auto hi = Kokkos::create_mirror_view(alpha_im);
   const int ndof = static_cast<int>(alpha_re.extent(0));
-  const std::uint64_t off = static_cast<std::uint64_t>(1) << 20;
   const double rt = std::sqrt(0.5);
   for (int dof=0; dof<ndof; ++dof) {
-    const std::uint64_t stream = rng::Stream(
-        rng::kStreamStochastic, (1u << 16) | static_cast<std::uint32_t>(dof));
+    const std::uint64_t stream = rng::StochasticModeStream(
+        static_cast<std::uint32_t>(dof));
     for (int q=0; q<nmode; ++q) {
-      const std::uint64_t ent = rng::CellEntity(
-          static_cast<std::uint64_t>(mode_n[3*q] + static_cast<std::int64_t>(off)),
-          static_cast<std::uint64_t>(mode_n[3*q+1] + static_cast<std::int64_t>(off)),
-          static_cast<std::uint64_t>(mode_n[3*q+2] + static_cast<std::int64_t>(off)));
+      const std::uint64_t ent = rng::ModeEntity(mode_n[3*q], mode_n[3*q+1],
+                                                mode_n[3*q+2]);
       const rng::Key key{nopt.seed, stream, ent, epoch};
       double z[2];
       rng::Normal2(key, 0, z);
