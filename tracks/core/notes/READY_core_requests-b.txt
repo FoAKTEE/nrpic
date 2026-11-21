@@ -1,0 +1,115 @@
+READY of core/requests-b (work package bfix, requests of Track B). Written 2026-11-15;
+card test T8 added 2026-11-19 (session bfix-3). The executables and COMMIT are those of
+2026-11-15 (source 9c92f68, unchanged since).
+Evidence and every number: branch core/requests-b, tracks/core/JOURNAL-bfix.md and
+tracks/core/interfaces/REQUESTS_B.md (git show core/requests-b:<path>).
+
+STATUS
+  athena_cpu  processor executable: TESTED (tests T1, T1s, T2, T3 below; byte regression
+              of seven existing set-ups against the source of release core-v0.3).
+  athena_gpu  card executable, built from the same source: TESTED ON A CARD (tests T4,
+              run core-20261115-170758-f5f58f4, and T8, runs core-20261115-181436-
+              bd93f3e and core-20261115-181437-8d252cb; section CARD TEST at the end).
+              The only device code that changed is the kernel of the linear-wave
+              generator; the Z4c benchmark and two geodesic set-ups give the release
+              card executable's files byte for byte.
+Everything not named below behaves as release core-v0.3 (byte-identical outputs in the
+regression; restart files differ in 36 padding bytes, see 5).
+
+NEW OPTIONS (each is read only if present in the input; a parameter can be set on the
+command line only if the input file has it)
+
+1. Linear-wave generator, <problem> pgen_name = z4c_linear_wave
+   - corrected polarization tensor: any wave vector (kx1, kx2, kx3) now gives a
+     transverse-traceless wave (upstream: only kx2 = 0 or along an axis);
+   - amp_cross, phase_cross: cross polarization ex with its own amplitude and phase
+     (amp_cross = amp, phase_cross = 1.5707963267948966: circular wave);
+   - <basename>-errs.dat: L1 errors against the exact solution at the final time.
+   Example: problems/tests/lw_oblique.athinput
+     athena_cpu -i problems/tests/lw_oblique.athinput -d RUN mesh/nx1=16 mesh/nx2=16 \
+       mesh/nx3=16 meshblock/nx1=16 meshblock/nx2=16 meshblock/nx3=16
+   Tested (T1 core-20261115-154120-9c92f68, T1s core-20261115-160040-26eb826): tensor read
+   back from the code; constraints of Track B's case lw3d_check_diag 4.59e-21, 1.07e-21
+   (upstream 1.385e-9, 1.558e-9), scaling as A^4; general direction (1,2,0) converging
+   as h^12; one period of k = (1,1,1) at 16 and 32 cells within 0.2 per cent of the
+   Fourier-symbol prediction; cross and circular waves through gw_diag; Track B's
+   lw_x_prod and validate_athenak.py numbers reproduced.
+   Note: this generator leaves the ADM variables and the constraints empty at t = 0
+   (as upstream): use variable = z4c for the initial dump.
+
+2. Mesh output in double precision, <outputN> file_type = bin
+   - double_precision = true: 8-byte values, header line "size of variable=8"; any
+     variable or group (z4c, adm, tmunu, con, weyl); no ghost cells.
+   Example: <output1> of problems/tests/lw_oblique.athinput. Reader:
+   python/nrpic/athena_bin.py (read_bin; both precisions). docs/FORMATS.md.
+   Tested (T2 core-20261115-160138-26eb826, T3 core-20261115-160633-7d80187): equal to the
+   restart file bit for bit; tmunu holds E, S_i, S_ij of the time of the file (E itself);
+   z4c, tmunu and con of one output time belong to one time level.
+
+3. Time label of the Weyl scalar and of the waveforms, <z4c>
+   - waveform_at_new_time = true: the scalar is computed and labelled at the end of the
+     step (default: upstream, the row labelled t is Psi_4 of t + dt and a weyl mesh output
+     lags by waveform_dt - dt).
+   Example: add the line to <z4c> of
+   tracks/B-emd-gw/periodic_z4c/inputs/lw_3d.athinput (branch track/B-emd-gw).
+   Tested (T1, T2): Track B's fit of the lag gives 0 steps with the option, -7 without;
+   the default waveform series leads by omega dt.
+
+4. Thin periodic boxes and the lattice jitter (no source change; initial-data tool)
+   problems/cosmo/make_waves.py with python/nrpic/torus_id.py:
+     python3 problems/cosmo/make_waves.py --delta 0.01 --n 256,256,16 --ratios 1,0.3,0 \
+       --ppc 2 --shape pcs --dep-comp-c 0.16666666666666666 \
+       --dep-comp-c2 0.4666666666666667 --out DIR
+     ... --ratios 1,0,0 --jitter 0.3 --jitter-axes y,z --seed 7 [--fd-order 6]
+   then problems/cosmo/east.athinput with mesh/nx1.. and mesh/x1max.. from DIR/id.json
+   (key "box"), meshblock/nx3 = the number of layers, the probes inside the box, and the
+   production options of cosmo/README.md.
+   Tested (T3): 16 x 16 x 8 and 16 x 16 x 4 (one MeshBlock in z) equal the 16^3 cube to
+   3e-10 through shell crossing, particles to 7e-14 cells; four cells is the minimum.
+   Jitter: uniform, reproducible by seed, the same for a lattice site in any box.
+   Read section 5 of REQUESTS_B.md before a null run: with a noisy lattice the
+   constraint residual of the evolution is about one per cent of the source term
+   whichever constraint solve is used.
+
+5. Restart files: the 36 never-set bytes of the header are zero; identical runs give
+   identical restart files; old restart files are read as before (T2).
+
+NOT IN THIS BUILD: in-situ Fourier modes; initial data with a TT part; species selection
+in the Newtonian history; z4c_gauge_wave as a built-in generator (REQUESTS_B.md).
+
+CARD TEST (T4 added 2026-11-15T18:30Z, session bfix-2: results_t4.json of run
+core-20261115-170758-f5f58f4, Slurm job 4452, one A100, 0.051 card-hours. T8 added
+2026-11-19, session bfix-3: Slurm jobs 4480 and 4481, 0.094 card-hours, results_t8.json
+of the analysis run core-20261119-140545-b16cd96. Predictions and outcomes: journal,
+P5 and P10.)
+  Oblique wave k = (1,1,1), one period: N = 16 and 32 give the processor's amplitude and
+    phase errors to three digits; N = 64: -7.76e-9 and -1.758e-7 rad (Fourier symbol of
+    the scheme: -7.88e-9, -1.750e-7); N = 128: phase -1.36e-8 (symbol -1.07e-8), the
+    amplitude error at the rounding floor (+2.7e-10). gw_diag's Psi_4 against the
+    analytic value: 9.2e-5, 3.2e-6, 3.3e-7, 8.1e-7 for N = 16..128 (a floor from 64 on).
+    A non-TT part of 3.4e-6 A appears after one period at every N (16 to 128): it sets
+    the floor of the pointwise metric error and is of second order in A (T8: x9.99 and
+    x9.98 from A = 1e-6 to 1e-5 at N = 64 and 128).
+  Amplitude scan at N = 64 and 128 (T8, analysis core-20261119-140545-b16cd96): at 128
+    cells gw_diag's Psi_4 error is rounding at A = 1e-7, 1e-6 and 1e-5 (8.1e-6, 8.1e-7,
+    8.2e-8: proportional to 1/A); at A = 1e-5 amplitude and phase depart from the symbol
+    by -2.2e-10 and -1.7e-9 rad. One period shows the scheme's convergence up to 64 cells
+    (Psi_4 order 4.07 from 32 to 64 at A = 1e-5), not beyond.
+  Byte regression against the release card executable: geodesic with the midpoint and
+    with the Boris pusher identical (T4); the Z4c puncture benchmark with z4c and con
+    dumps and the history, 10 files, 973 MB, identical (T8).
+  Circular wave (amp = amp_cross = 1e-6, phase_cross = pi/2, N = 16) on the card: error
+    file 7.561685e-11 against the processor's 7.561707e-11; fields equal to rounding of
+    the order-one metric (3.7e-15 in gt, 3.5e-14 in At after 37 steps) (T8).
+  Thin boxes on the card: 16 x 16 x 8 and 16 x 16 x 4 equal the 16^3 cube to 3.3e-10
+    (1.3e-12 at the end); the x-thin box equals the z-thin one to 9e-13.
+  Track B's box 256 x 256 x 16 (1 048 576 particles, waves (1, 0.3, 0), delta = 0.01):
+    ran to t = 1 with every particle, 59 s, 4.7e6 zone-cycles per second. The layers
+    differ by mesh-scale noise: 1.2e-13 to 1.8e-13 absolute in At, 1.5e-14 in gt, 2.5e-12
+    in Gamma^i, also in the components that vanish exactly (Axz, gxz, Gamma^z); Theta,
+    whose maximum is 3.2e-8, differs by 2.7e-13 (analysis T4b, run
+    core-20261115-180817-4a0566d). Measure the TT content of a thin-box run against this
+    floor. It does not grow (T8): the same box to t = 4 (a = 9.0, 1024 cycles, 240 s,
+    every particle kept) ends with 5.1e-14 in At, 2.2e-14 in gt, 3.3e-12 in Gamma^i; At,
+    Khat and Theta decay, gt and Gamma^i stay level (mean factor per 0.25 in time over
+    the last eight dumps at most 1.14, in the lapse, which itself grows from 2.25 to 9.0).

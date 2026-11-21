@@ -1,0 +1,58 @@
+{
+ "run_id": "core-20261115-160138-26eb826",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-bfix/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-bfix/tracks/core/analysis/bfix/t2_output.py",
+  "--exe-new",
+  "/data/haiyangw/nrpic/wt/core-bfix/.work/exe/athena_cpu_w1",
+  "--exe-base",
+  "/data/haiyangw/nrpic/wt/core-bfix/.work/athena_cpu_base",
+  "--t1-dir",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-154120-9c92f68",
+  "--regress-report",
+  "/data/haiyangw/nrpic/wt/core-bfix/tracks/core/analysis/bfix/results/regress_cpu_w1.json",
+  "--out",
+  "."
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-160138-26eb826",
+ "commit": "26eb826",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_w1",
+   "sha256": "c32a1389c06e58887cd3c38bb92512d413b91eaa8153baac170ac889f7ceeced"
+  },
+  {
+   "path": ".work/athena_cpu_base",
+   "sha256": "094ea71cd611816696b1be981934f2fb74baac5d66d6678ede43b5a89dae393a"
+  },
+  {
+   "path": "problems/tests/lw_oblique.athinput",
+   "sha256": "6b001b1ffcb024fa0d6b9b0ad33c80808483c99344499fb1b3774680caeedc3e"
+  },
+  {
+   "path": "problems/cosmo/east.athinput",
+   "sha256": "61890ec7060b7505b8679e8a58aef4c1668e55a9a6d3b2aaf90e88ec5efcdd81"
+  },
+  {
+   "path": "tracks/core/analysis/bfix/results/regress_cpu_w1.json",
+   "sha256": "90a85ec42be463f83112b8b23b624d861f9bf1017fc56301457e15ca551cd357"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-bfix/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160138-26eb826",
+ "purpose": "T2: output for the GW analysis (P2a, P2c, P2d, P2b check): double-precision bin against restart and single output; restart padding on the east regression case; waveform labels from the two reruns of Track B's deck in T1; padding check of the regression report",
+ "kind": "scouting",
+ "tag": "T2",
+ "state": "finished",
+ "wall_time_s": 40.35,
+ "exit_status": 0,
+ "cores": 3,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T16:01:38Z"
+}

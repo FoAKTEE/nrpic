@@ -1,0 +1,5 @@
+# Second card job of session dfix-3 (journal, "Card cases still missing"): the full cases T7
+# and mem2700; every case capped by the athena wall clock (-t). Checked against the timing
+# job core-20261119-140644-074f8e3 before it starts (journal).
+t7_tracker problems/tests/accretion_tracker.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261115-163129-a200caf/run/atr.nrp -t 00:06:00
+mem2700    problems/puncture/by_triple.athinput mesh_refinement/max_nmb_per_rank=2700 time/nlim=32 output2/dt=1.0e6 output3/dt=1.0e6 -t 00:06:00

@@ -1,0 +1,58 @@
+{
+ "run_id": "core-20261115-160707-6537687",
+ "owner": "core",
+ "purpose": "G1 G2: one collision step on frozen particles in the static conformal metric with a gradient, coll_energy = cell and = particle, 14 cases, 8e6 particles, against the pair model (references core-20261115-160136/160137/160139-819d588)",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/run_gradient.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160707-6537687",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_cpu",
+  "--ref",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160136-819d588/ref.json",
+  "--ref",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160137-819d588/ref.json",
+  "--ref",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160139-819d588/ref.json",
+  "--nproc",
+  "6"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-160707-6537687",
+ "commit": "653768796a7d97ad128f3f51add3d5e1db6cd882",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_cpu",
+   "sha256": "c5d0a9879775ae019845922113eab06f5c6662cd0087b7ebd24a81c452a84192"
+  },
+  {
+   "path": "problems/tests/coll_box_static.athinput",
+   "sha256": "e3a5b4233b4ecb6e1ddba2da97465ec13646c35e6ce3652eef91132978f74b80"
+  },
+  {
+   "path": "tracks/core/analysis/collisions/run_gradient.py",
+   "sha256": "f4d661a38ea5e5a8e6c4882557085f20d5c0023d953cc5a515346b02c3260380"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-160136-819d588/ref.json",
+   "sha256": "c44dd367ace3cbf8734aa2cf63e37614a26304bdc933efd898a1e1f33296bf13"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-160137-819d588/ref.json",
+   "sha256": "03513c4161083e08ed138f7e1a64a7f6937ece7c14391b286744d4c63c4a2a29"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-160139-819d588/ref.json",
+   "sha256": "65d85930d01fa60b4de966ae36e80d04a01a542a8fbe1dc3fb038f1d8832df34"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160707-6537687",
+ "host": "anta",
+ "start_utc": "2026-11-15T16:07:08Z",
+ "cores": 6,
+ "wall_time_s": 2136.25,
+ "exit_status": 1,
+ "core_hours": 3.5604
+}

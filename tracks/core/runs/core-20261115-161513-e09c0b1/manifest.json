@@ -1,0 +1,52 @@
+{
+ "run_id": "core-20261115-161513-e09c0b1",
+ "owner": "core",
+ "track": "core",
+ "gate": "G2",
+ "purpose": "T8 at N = 64: curvature perturbation R^NR from the dumps against W R alpha of the lockstep record, nmax2 = 64, to t = 3.2 (processors, one core)",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/scalar2/t8_rnr.py",
+  "--exe",
+  ".work/exe/athena_cpu_a58e95b",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-161513-e09c0b1",
+  "--n",
+  "64",
+  "--no-control"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-scalar2",
+ "commit": "e09c0b1a84e0ed9d39cd690d0e9c21bd7f605938",
+ "branch": "core/scalar-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_a58e95b",
+   "sha256": "c69266ec765c8296b005871c6865991f2a5ac59f7ebd2ac3f03d383b57f9439e"
+  },
+  {
+   "path": "problems/scalar/sr_stochastic.athinput",
+   "sha256": "d1ad721d9b2b495b49782ca31a3c18efc24f1eb58c23eeff29d3fc12747efea6"
+  },
+  {
+   "path": "problems/scalar/sr_stochastic_modes.txt",
+   "sha256": "3e885408a9a1122f93997d46092b3a4141afac15415b73027556e75f82424031"
+  },
+  {
+   "path": "tracks/core/analysis/scalar2/t8_rnr.py",
+   "sha256": "b0287cbcca0bcdfb93178df2cb724d8148383fcf8acf914e091fde3eaa5b4a8d"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-161513-e09c0b1",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-161513-e09c0b1"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:15:14Z",
+ "cores": 1,
+ "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
+ "status": "stopped",
+ "end_utc": "2026-11-15T16:42Z",
+ "notes": "Interrupted at cycle 74 of about 131 (t = 1.82; last dump t = 1.6) when the session that started it ended (16:42Z); no analysis ran, no result. Status set by hand on 2026-11-15T18Z by the next session of package scalar2; rerun as part of test T12 (journal entry 12)."
+}

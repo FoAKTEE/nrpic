@@ -30,10 +30,11 @@ Little-endian (native order of the machine; `docs/FORMATS.md`):
 Read only for a new run (`<particles> particle_file`, `NrpicLoadParticleFile`, lines
 989-1026); tags are the positions in the file; the MeshBlock is found at start-up.
 Alternative for a few particles: `nparticles` and `pN_x1 .. pN_u3, pN_m` in the input
-(lines 1034-1057; species 0, m defaults to 0, i.e. a null particle).
+(lines 1034-1057; species 0, m defaults to 0, i.e. a tracer: a massive test particle
+without sources; amended by work package dfix, see `pusher.md` section 3).
 `x` are the coordinates of the run; `u_i` the covariant spatial four-velocity per unit
 rest mass in the same coordinates (for matter at rest with respect to the normal
-observers, `u_i = 0`); `m` the rest mass (`m = 0` null particle, `m = -t_e` light ray,
+observers, `u_i = 0`); `m` the rest mass (`m = 0` tracer, `m = -t_e` light ray,
 see `pusher.md`). Writers: `python/nrpic/io.py`, `cosmo/ic/nrp_io.py`.
 
 ## 3. Problem generators

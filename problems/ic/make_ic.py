@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Write NRPIC initial data: particle file (.nrp), radial table (.tab) and a
 JSON parameter file, for the Oppenheimer-Snyder ball, a monoenergetic
-Shapiro-Teukolsky cluster, the cold prolate spheroid, or the cluster with two
-Gaussian clumps of the Jeans-collapse problem.
+Shapiro-Teukolsky cluster, the cold prolate spheroid, the cluster with two
+Gaussian clumps of the Jeans-collapse problem, or isolated Gaussian clumps with
+momentum and spin.
 
 Examples
     make_ic.py os      --N 10000 --sampler lattice --out /tmp/ic
@@ -13,11 +14,27 @@ Examples
     make_ic.py st      --yc 0.756 --N 10000 --dpert 0.10 --no-consistent-table --out /tmp/ic
     make_ic.py prolate --e 0.9 --b 10 --N 10000 --seed 1 --out /tmp/ic
     make_ic.py jeans   --N 10000 --seed 1 --out /tmp/ic
+    make_ic.py jeans   --N 10000 --seed 1 --clump-curvature --out /tmp/ic
+    make_ic.py clumps  --gaussian 0.2,1,0,0,0,0.06,0,0 --N 100000 --out /tmp/ic
+    make_ic.py clumps  --gaussian 0.05,0.3,-1.5,0,0,0,0.01,0 \
+                       --gaussian 0.05,0.3,1.5,0,0,0,-0.01,0 \
+                       --puncture 1,0,-25,0,0.02,0,0 --N 20000 --out /tmp/ic
 
 jeans: envelope (species 0, radial table) + clumps A, B (species 1, 2, Gaussian
 conformal sources), see python/nrpic/clumps.py. The table holds the envelope's
 u = psi_env - 1 only (its lapse column is the isolated envelope's and is not used);
 the JSON lists every component of psi_tot and the <problem> block of nrpic_cf.
+--clump-curvature adds the clumps' momenta (comp<c>_p1..3: the problem generator then
+adds the smeared Bowen-York curvature that solves the momentum constraint for them);
+--clump-momentum-rule gaussian makes every clump particle carry an equal share of the
+clump's momentum, so that the momentum density is the Gaussian the curvature solves
+for (python/nrpic/clumps.py).
+
+clumps: isolated Gaussian clumps, each "mass,sigma,x,y,z,px,py,pz[,sx,sy,sz]" with
+momentum P and spin S, and optional punctures "mass,x,y,z[,px,py,pz[,sx,sy,sz]]"
+(python/nrpic/clumps.GaussianClumps); --N particles per clump; species = index of
+the clump. --sampler lattice puts weighted particles on a lattice of spacing
+--lattice-h (noise-free deposit, for tests).
 
 st with --dpert/--vpert: by default the table solves the Hamiltonian constraint
 for the perturbed particles (nrpic.st_cluster.PerturbedST; stem suffix '_hc'),
@@ -64,7 +81,7 @@ def _particle_stats(x, u, m):
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("model", choices=["os", "st", "prolate", "jeans"])
+    p.add_argument("model", choices=["os", "st", "prolate", "jeans", "clumps"])
     p.add_argument("--N", type=int, default=10000,
                    help="particle count (lattice: target count used to choose n_lat)")
     p.add_argument("--sampler", default=None,
@@ -129,6 +146,23 @@ def main(argv=None):
     g.add_argument("--independent-clumps", action="store_true",
                    help="sample clump B independently instead of as the pi-rotation "
                         "image of clump A about z")
+    g.add_argument("--clump-curvature", action="store_true",
+                   help="write the clumps' momenta sum m u_i into the <problem> block "
+                        "(comp<c>_p1..3): smeared Bowen-York curvature in nrpic_cf")
+    g.add_argument("--clump-momentum-rule", choices=["velocity", "gaussian"],
+                   default=None,
+                   help="velocity: one orthonormal bulk velocity per clump (default of "
+                        "jeans, as before); gaussian: equal momentum per particle, the "
+                        "momentum density the curvature solves for (default of clumps)")
+    g = p.add_argument_group("clumps")
+    g.add_argument("--gaussian", action="append", default=[],
+                   help="mass,sigma,x,y,z,px,py,pz[,sx,sy,sz] (repeatable)")
+    g.add_argument("--puncture", action="append", default=[],
+                   help="mass,x,y,z[,px,py,pz[,sx,sy,sz]] (repeatable)")
+    g.add_argument("--lattice-h", type=float, default=None,
+                   help="sampler lattice: spacing of the particle lattice")
+    g.add_argument("--lattice-rcut", type=float, default=6.0,
+                   help="sampler lattice: cut-off radius in units of sigma")
     a = p.parse_args(argv)
 
     os.makedirs(a.out, exist_ok=True)
@@ -211,7 +245,12 @@ def main(argv=None):
                            m_clump=a.clump_mass, sigma=a.clump_sigma, d=a.clump_x,
                            v=a.clump_v)
         mirror = not a.independent_clumps
-        x, u, m, sp = J.sample(a.N, a.seed, sampler, split, mirror)
+        if a.clump_momentum_rule in (None, "velocity"):
+            x, u, m, sp = J.sample(a.N, a.seed, sampler, split, mirror)
+        else:
+            x, u, m, sp = J.sample(a.N, a.seed, sampler, split, mirror,
+                                   momentum=a.clump_momentum_rule)
+            meta["clump_momentum_rule"] = a.clump_momentum_rule
         stem = a.prefix or f"jeans_N{a.N}_s{a.seed}"
         tabname = stem + ".tab"
         meta.pop("species")
@@ -248,6 +287,50 @@ def main(argv=None):
         meta["table_lapse"] = ("isolated-envelope static lapse; not used (initial lapse "
                                "(2 - psi_tot)/psi_tot, <problem> lapse = isotropic)")
 
+    elif a.model == "clumps":
+        if not a.gaussian:
+            p.error("clumps needs at least one --gaussian")
+        gs, bs = [], []
+        for spec in a.gaussian:
+            v = [float(c) for c in spec.split(",")]
+            if len(v) not in (8, 11):
+                p.error("--gaussian needs mass,sigma,x,y,z,px,py,pz[,sx,sy,sz]")
+            gs.append(dict(mass=v[0], sigma=v[1], centre=v[2:5], P=v[5:8],
+                           S=v[8:11] if len(v) == 11 else [0.0, 0.0, 0.0]))
+        for spec in a.puncture:
+            v = [float(c) for c in spec.split(",")]
+            if len(v) not in (4, 7, 10):
+                p.error("--puncture needs mass,x,y,z[,px,py,pz[,sx,sy,sz]]")
+            v += [0.0] * (10 - len(v))
+            bs.append(dict(mass=v[0], centre=v[1:4], P=v[4:7], S=v[7:10]))
+        sampler = a.sampler or "stratified"
+        G = clm.GaussianClumps(gs, bs)
+        rule = a.clump_momentum_rule or "gaussian"
+        x, u, m, sp = G.sample(a.N, a.seed, sampler, rule, a.lattice_h, a.lattice_rcut)
+        stem = a.prefix or f"clumps_N{len(m)}_s{a.seed}"
+        meta.pop("species")
+        meta.update(model="gaussian_clumps_with_momentum", M_ADM=G.M_adm,
+                    units="G=c=1", sampler=sampler,
+                    momentum_rule=rule,
+                    gaussians=[{k: (list(v) if hasattr(v, "__len__") else v)
+                                for k, v in g_.items()} for g_ in G.gaussians],
+                    punctures=[{k: (list(v) if hasattr(v, "__len__") else v)
+                                for k, v in b_.items()} for b_ in G.punctures])
+        if sampler == "lattice":
+            meta.update(lattice_h=a.lattice_h, lattice_rcut=a.lattice_rcut)
+        summ = G.particle_summary(x, u, m, sp)
+        meta["particles_by_clump"] = summ
+        prob = G.problem_block()
+        # the curvature is given the momentum the particles carry
+        for k, s_ in enumerate(summ):
+            for c_ in range(3):
+                prob[f"comp{k}_p{c_ + 1}"] = s_["sum_m_u"][c_]
+        meta["athenak"] = {"problem": prob,
+                           "particles": {"particle_file": stem + ".nrp"}}
+        meta["constraints"] = ("momentum constraint solved by the smeared Bowen-York "
+                               "curvature for the rule 'gaussian'; Hamiltonian residual "
+                               "-psi^-12 Abar_ij Abar_ij, second order in P and S")
+
     else:
         sym = not a.no_symmetrize
         N = a.N - a.N % 4 if sym else a.N
@@ -266,6 +349,17 @@ def main(argv=None):
         meta["net_momentum_removed"] = dict(
             mean_u=[float(v) for v in ubar],
             note="u_i -> u_i - sum(m u_i)/sum(m); sum m u_i = 0 afterwards")
+    if a.model == "jeans" and a.clump_curvature:
+        # momenta of the clumps as the particles carry them (after the mean removal)
+        cur = {}
+        for k in (1, 2):
+            Pk = (m[sp == k, None] * u[sp == k]).sum(0)
+            cur[f"comp{k}"] = [float(v) for v in Pk]
+            for c_ in range(3):
+                meta["athenak"]["problem"][f"comp{k}_p{c_ + 1}"] = float(Pk[c_])
+        meta["clump_curvature"] = dict(
+            momenta=cur, note="smeared Bowen-York curvature of nrpic_cf, "
+                              "comp<c>_p1..3 = sum m u_i of the clump's particles")
     nrp = os.path.join(a.out, stem + ".nrp")
     nio.write_nrp(nrp, x, u, m, sp)
     meta["particle_file"] = os.path.basename(nrp)
@@ -295,6 +389,12 @@ def main(argv=None):
         for k in ("e", "a", "b", "c_focal", "rhoN", "M_rest", "psibar_c", "I0", "Ja0", "Jb0"):
             print(f"  {k:9s} = {meta[k]!r}")
         print(f"  inside: psibar = c0 - cR (x^2+y^2) - cz z^2, {meta['psibar_coeffs_inside']}")
+    elif a.model == "clumps":
+        for k, s_ in enumerate(meta["particles_by_clump"]):
+            print(f"  clump {k}: N = {s_['N']}, sum m = {s_['sum_m']:.8f}, "
+                  f"sum mW = {s_['sum_mW']:.8f}, sum m u = "
+                  + ", ".join(f"{v:+.8e}" for v in s_["sum_m_u"])
+                  + f", v_max = {s_['v_max']:.4f}")
     elif a.model == "jeans":
         e, cl = meta["envelope"], meta["clumps"]
         print(f"  envelope: yc = {e['yc']:.10g}, M_env = {e['M_env']:.6g}, "

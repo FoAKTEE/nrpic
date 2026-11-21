@@ -1,0 +1,35 @@
+{
+ "rows": {
+  "1": {
+   "label": "1  Geodesics on fixed Kerr",
+   "status": "PASS",
+   "title": "geodesics on a fixed Kerr background",
+   "verdict": "PASS",
+   "evidence": "regression G, 104/104 checks (core-20261115-065452-3629622): errors of $E$, $L_z$, $Q$\nequal the paper's to two digits; orders 1.999-2.000 in $\\Delta t$."
+  },
+  "2": {
+   "label": "2  Oppenheimer-Snyder collapse",
+   "status": "PASS",
+   "title": "Oppenheimer-Snyder collapse",
+   "verdict": "PASS",
+   "evidence": "regression O, 13/13 (core-20261115-065901-3629622): first horizon at 16.39 M,\n$M_{AH}/M-1=3.5\\times10^{-4}$, largest $1.3\\times10^{-3}$ to 60 M (9328 lattice particles; paper $\\lesssim10^{-3}$)."
+  },
+  "3": {
+   "label_a": "3  Prolate collapse",
+   "status_a": "PARTIAL",
+   "label_b": "Oblate collapse",
+   "status_b": "BLOCKED",
+   "title": "oblate and prolate collapse",
+   "verdict": "PARTIAL",
+   "evidence": "prolate $e=0.9$, $10^4$ particles: horizon at 32.00 M (cells $M/16$) and 32.25 M ($M/8$);\n$M_{AH}$ largest 0.967 and 0.957, deficit falls with resolution. Oblate: blocked (needs source work)."
+  },
+  "4": {
+   "label": "4  Cluster sequence, stability threshold",
+   "status": "PARTIAL",
+   "title": "relativistic cluster sequence and threshold",
+   "verdict": "PARTIAL",
+   "evidence": "fates of $y_c$ = 0.900 ... 0.283 as in the paper. Bisection at $M/4$ (7 members): no collapse; 0.66, 0.64, 0.605\nmigrate to their equal-binding partner, 0.70, 0.72 stay: threshold in [0.66, 0.70], turning point $y_c^*=0.6796$."
+  }
+ },
+ "footer": "state 2026-11-15 17:10Z; numbers: tracks/core/verify/LADDER.md and JOURNAL.md (run ids there)"
+}

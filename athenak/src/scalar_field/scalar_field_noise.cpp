@@ -177,6 +177,11 @@ void ScalarField::NoiseInit(ParameterInput *pin) {
     nopt.kick_a = pin->GetOrAddBoolean("scalar_field", "noise_kick_a", true);
     nopt.pi_sign = pin->GetOrAddReal("scalar_field", "noise_pi_sign", 1.0);
     nopt.mode_file = pin->GetString("scalar_field", "noise_mode_file");
+    // factor on the mode functions of the file (read only if present: amplitude scans
+    // and sign flips of one realisation)
+    if (pin->DoesParameterExist("scalar_field", "noise_mode_scale")) {
+      mode_scale = pin->GetReal("scalar_field", "noise_mode_scale");
+    }
     if (nopt.window != kWindowTanh) {
       NoiseFatal("the Mukhanov-Sasaki sources need the derivatives of the window: "
                  "noise_window = tanh");
@@ -329,6 +334,9 @@ void ScalarField::NoiseInit(ParameterInput *pin) {
 
 void ScalarField::NoiseSetup(bool res_flag) {
   if (!nopt.on) return;
+  // already done by the problem generator (InitialSlice, scalar_field_slice.cpp), with
+  // the background of the homogeneous data
+  if (slice_done && !res_flag) return;
   Mesh *pm = pmy_pack->pmesh;
   auto &indcs = pm->mb_indcs;
   const int nmb = pmy_pack->nmb_thispack;
@@ -417,6 +425,9 @@ void ScalarField::NoiseSetup(bool res_flag) {
           NoiseFatal("the mode file " + nopt.mode_file + " has no row for |n|^2 = "
                      + std::to_string(shell_n2[s]));
         }
+      }
+      if (mode_scale != 1.0) {
+        for (int n=4; n<ny; ++n) { y0[n] *= mode_scale; }
       }
     }
   }
@@ -671,7 +682,9 @@ void ScalarField::NoiseStage(Driver *pdriver, int stage) {
     }
   } else {
     NoiseModeRHS(y0, yrhs);
-    NoiseSynthesize();
+    // without kicks nothing reads the fields of a stage (the mode functions are still
+    // integrated, as the linear reference of a run from the initial slice alone)
+    if (nopt.kick_pi || nopt.kick_k || nopt.kick_a) { NoiseSynthesize(); }
   }
 }
 

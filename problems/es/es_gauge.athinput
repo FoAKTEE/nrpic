@@ -1,0 +1,147 @@
+# Black hole in a vacuum bubble inside an expanding dust ball (Einstein-Straus type):
+# Track D's data set (tracks/D-bh-dress/einstein_straus/ on branch track/D-bh-dress,
+# make_es.py --Rb 56 --w_out 4 --hp 2.0: black hole M = 1, bubble wall at 36 M, dust
+# plateau with H = 5.58e-3/M out to 60 M, total mass 2.74 M) evolved for a few tens of M
+# with the gauge a puncture inside expanding dust needs (test ES of
+# tracks/core/JOURNAL-gauge.md):
+#   lapse  1+log with advection and relaxation of its excess over 1 (z4c/lapse_leak =
+#          1/T, here T = 2 M: one dust cell); the puncture is sliced by plain 1+log,
+#          the dust lapse stays near exp(6 T H) = 1.07 instead of growing as 1 + 6 ln a;
+#          z4c/lapse_leak=0.0 gives the old condition;
+#   shift  Gamma-driver with eta = 2/M, zero at the start;
+#   start  lapse psi^-2 from the table, dust at rest in the coordinates.
+# Mesh: cells 2 M everywhere (one lattice site per cell in the dust), halving to M/8
+# within 2 M of the puncture; outer boundary at 96 M, further than the light travel
+# time of a run of 30 M from the dust (the outflow condition is not transparent for
+# the Painleve-Gullstrand exterior).  Give particles/particle_file and
+# problem/comp0_file on the command line.  Track D's own first run (ES-1) uses a finer
+# mesh and a boundary at 180 to 256 M.
+
+<comment>
+problem   = black hole in a vacuum bubble inside an expanding dust ball
+
+<job>
+basename  = es
+
+<mesh>
+nghost    = 4
+nx1       = 48
+x1min     = -96.0
+x1max     = 96.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 48
+x2min     = -96.0
+x2max     = 96.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 48
+x3min     = -96.0
+x3max     = 96.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement       = static
+max_nmb_per_rank = 1024
+
+# root cells 4 M; 2 M for |x| < 80 M (rounded outward to the whole mesh); then halving
+# down to M/8 for |x| < 2 M around the puncture
+<refined_region1>
+level = 1
+x1min = -80.0
+x1max = 80.0
+x2min = -80.0
+x2max = 80.0
+x3min = -80.0
+x3max = 80.0
+
+<refined_region2>
+level = 5
+x1min = -2.0
+x1max = 2.0
+x2min = -2.0
+x2max = 2.0
+x3min = -2.0
+x3max = 2.0
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 30.0
+ndiag      = 100
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+lapse_leak      = 0.5      # 1/T of the relaxation of the excess lapse (0: plain 1+log)
+lapse_leak_alpha = 1.0     # reference lapse
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<fastflow>
+find_every        = 16
+metric_drvts      = interpolant
+num_horizons      = 1
+npunct            = 0
+ntheta            = 16
+lmax              = 8
+use_puncture_0    = -1
+center_x_0        = 0.0
+center_y_0        = 0.0
+center_z_0        = 0.0
+initial_radius_0  = 0.839
+flow_iterations_0 = 400
+flow_alpha_beta_const_0 = 1.0
+hmean_tol_0       = 100.0
+mass_tol_0        = 1.0e-5
+start_time_0      = 0.0
+stop_time_0       = 1.0e9
+verbose           = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+interp         = hermite
+tolerance      = 1.0e-10
+max_iterations = 50
+deposit        = true
+deposit_shape  = cic
+nfilter        = 1
+filter_compensate = false
+alpha_exc      = 0.05
+hist_dcycle    = 4
+traj_dcycle    = 8
+traj_ntrack    = 140
+snap_dt        = 10.0
+particle_file  = es.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 2
+comp0_type = table
+comp0_file = es.tab
+comp1_type = puncture
+comp1_mass = 1.0239688282062387
+lapse      = table          # the alpha column: psi^-2 (precollapsed lapse of the full psi)
+lapse_comp = 0
+shift      = zero           # dust at rest in the coordinates; 'table': areal radius frozen at t = 0
+
+<output1>
+file_type = hst
+dt        = 1.0

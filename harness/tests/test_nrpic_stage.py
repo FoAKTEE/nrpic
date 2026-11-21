@@ -210,6 +210,57 @@ def main():
          and not H.is_wave12("20261119") and H.run_date("x", {"started": "2026-11-20T01:00:00Z"}) == "20261120",
          "run ids of decision 0016 item 2 (orch included, both forms); wave dates before 2026-11-19")
 
+    # decision 0019 item 6: a run that main's committed coord/WAIVERS.md names has its failures of the
+    # manifest check waived (B's run whose outputs were moved after finish); nothing else counts
+    # (--package: the EVIDENCE.md removed above is another helper's change, recorded, not refused)
+    r = F.sh([os.path.join(A, "harness", "bin", "nrpic-run"), "submit", "--kind", "scouting", "--gate", "G1",
+              "--package", f"tracks/{OWNER}/analysis",
+              "--purpose", "run whose outputs change after finish", "--", "python3", "-c",
+              "import os; open(os.path.join(os.environ['NRPIC_RUN_DIR'], 'out.txt'), 'w').write('data\\n')"],
+             cwd=A, check=False)
+    mm = re.search(r"registered (\S+):", r.stdout)
+    if not c.ok(r.returncode == 0 and mm, "a registered run for the waiver test", r.stdout + r.stderr):
+        return c.done()
+    wrid = mm.group(1)
+    with open(os.path.join(repo, "scratch", OWNER, wrid, "out.txt"), "a") as f:
+        f.write("moved here after finish\n")
+    r = stage(A, ["verify", OWNER, "G1", "--no-rerun"])
+    d = results(A)
+    runs_detail = json.dumps(next(x for x in d["checks"] if x["check"] == "runs").get("detail") or {})
+    c.ok(r.returncode == 1 and status_of(d, "runs") == "FAIL" and wrid in runs_detail and "out.txt" in runs_detail,
+         "a registered run whose output changed after finish fails the manifest check (checksums)", r.stdout)
+    wtext = ("# Waivers of the manifest check (decision 0019 item 6)\n\n"
+             f"{wrid}  outputs moved into the run directory after the run finished; data unchanged\n")
+    open(os.path.join(repo, "coord", "WAIVERS.md"), "w").write(wtext)
+    r = stage(A, ["verify", OWNER, "G1", "--no-rerun"])
+    c.ok(r.returncode == 1 and status_of(results(A), "runs") == "FAIL",
+         "a waiver written on main but not committed does not count", r.stdout)
+    git(repo, "add", "--", "coord/WAIVERS.md")
+    git(repo, "commit", "-q", "-m", "Waiver of the manifest check", "--", "coord/WAIVERS.md")
+    git(A, "merge", "-q", "--no-edit", "main")
+    r = stage(A, ["verify", OWNER, "G1", "--no-rerun"])
+    d = results(A)
+    wv = next((x for x in d["checks"] if x["check"] == "runs-waived"), None)
+    c.ok(r.returncode == 0 and status_of(d, "runs") == "PASS" and wv is not None and wv["status"] == "WARN"
+         and (wv["detail"] or {}).get(wrid, {}).get("waived_by") == "coord/WAIVERS.md"
+         and "outputs moved" in wv["message"] and "0019" in wv["message"]
+         and "out.txt" in json.dumps(wv["detail"][wrid]["problems"]),
+         "committed on main and merged: the run's failures are waived and reported under runs-waived with the "
+         "reason (decision 0019 item 6)", r.stdout)
+    pw = H.parse_waivers(
+        "# Waivers\n\nProse that names A-20261120-101010-abcdef0 in the middle is no waiver.\n"
+        "| Run id | Reason |\n|---|---|\n| `B-20261115-164157-40b9f6d` | outputs moved |\n"
+        "- core-20261119-143232-4d1e995: checksum of a link\n"
+        "A-emd-pbh-20261115-112946-b7b431d — long form of wave 1\nnot-a-run-id  reason\n"
+        "C-20261120-010101-1234567\n")
+    c.ok(pw == {"B-20261115-164157-40b9f6d": "outputs moved", "core-20261119-143232-4d1e995": "checksum of a link",
+                "A-emd-pbh-20261115-112946-b7b431d": "long form of wave 1", "C-20261120-010101-1234567": "(no reason given)"},
+         "WAIVERS.md lines: a run id at the start (plain, list item, table cell, backticks; either form), then the "
+         "reason; prose and headers ignored", json.dumps(pw))
+    drop = [f"tracks/{OWNER}/runs/{wrid}"]
+    git(A, "rm", "-q", "-r", "--", *drop)
+    git(A, "commit", "-q", "-m", "A(run): drop the waived test run", "--", *drop)
+
     # report: FAIL while items are open, PASS when judged
     r = stage(A, ["verify", OWNER, "G1"])
     r = stage(A, ["report", OWNER, "G1"])
