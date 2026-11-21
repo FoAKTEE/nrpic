@@ -1,27 +1,27 @@
 {
   "track": "B-emd-gw",
   "gate": "G1",
-  "commit": "1197792fa0da011b2185cbc1ca3ce23f3fe4f962",
-  "verified_utc": "2026-11-21T07:20:08Z",
-  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-1197792-20261121T064418Z",
-  "result": "FAIL",
+  "commit": "5a1c117f3f66ce5724e33b87e632fb4cf9812a3f",
+  "verified_utc": "2026-11-21T16:40:32Z",
+  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-5a1c117-20261121T155417Z",
+  "result": "PASS",
   "checks": [
     {
       "check": "clean",
-      "status": "FAIL",
-      "message": "3 uncommitted paths: commit them first (tracks/B-emd-gw/gw_diag/gwdiag/gauge.py, tracks/B-emd-gw/gw_diag/tests/test_gauge.py, tracks/B-emd-gw/waves/scripts/check_gauge.py)",
+      "status": "PASS",
+      "message": "worktree clean (outside the stage directory being assembled)",
       "detail": null
     },
     {
       "check": "sync",
-      "status": "FAIL",
-      "message": "main has commits not merged: run nrpic-ctx sync",
+      "status": "PASS",
+      "message": "main is merged into the branch",
       "detail": null
     },
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 1197792fa0da (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-1197792-20261121T064418Z/tree",
+      "message": "clean export of 5a1c117f3f66 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-5a1c117-20261121T155417Z/tree",
       "detail": null
     },
     {
@@ -69,7 +69,7 @@
     {
       "check": "runs",
       "status": "PASS",
-      "message": "234 run manifests finished (78 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded",
+      "message": "273 run manifests finished (78 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded",
       "detail": null
     },
     {
@@ -356,7 +356,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 34 lines",
+      "message": "STATUS.md has 35 lines",
       "detail": null
     },
     {
