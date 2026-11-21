@@ -218,3 +218,20 @@ run's commit except two docstrings of `szekeres/szekeres/model.py` (`git diff --
   delta_N max 0.10-0.14, alpha_min 0.78-0.82, no inner solve at the 60-iteration limit. (I read
   its log while closing it, so this is a check of the helper's prediction, not a prediction of
   mine.)
+
+### Outcomes L1-L9 (runs A-20261121-075605-351d611 and its repeat A-20261121-075933-338a6ff)
+
+All nine hold. Every rerun is bit-identical to its registered run (L1-L5: twelve JSON files,
+1 375 numbers and 680 strings, no difference); the Szekeres tests pass 15 of 15; the N32
+Szekeres history is last finite at tau = 25.0 and non-finite from 26.0; the Szekeres files
+conserve the rest mass to 2e-10 between N = 128 and 256 with a deposit error of 1.2e-16; the
+P0L data meet every bound of D3 (residuals 6e-12 and 1e-11, c = 0.088, delta_N 0.118,
+alpha_min 0.805, at most 32 inner iterations). My own fault, on record: the first run's figure
+had an empty panel (every difference was exactly zero, below the axis floor); the repeat
+draws the zero differences as markers. Figures looked at: fig_review_wave3 (second run),
+szekeres fig_code_geodesic, fig_dipole_order, fig_mesh_constraints, g1close
+fig_g1close_findings. Per-package verdicts: `stage/REVIEW-wave3.md`.
+
+A wrong judgement of mine, corrected before it left the review: I first wrote that the
+fixed-box job A-20261120-223310-a9ce31a (1 min 28 s) "probably failed early"; its status file
+and logs show all three members reached t = 24 with rc = 0 (30 s each on the card).

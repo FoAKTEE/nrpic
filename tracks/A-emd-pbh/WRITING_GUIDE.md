@@ -23,7 +23,10 @@ the note. Started 2026-11-15 with the note v0 (gate G0).
    appendix and nowhere else; the main text and the captions follow 4.1 and 5.5. The
    scripts that build the ledger (`scripts/ledger.py`, `scripts/run_all.py`, the run table
    of `scripts/common.py`) name the track's documents and runs they check; the checker's
-   5.5 and 5.8 hits there and in the ledger appendix are accepted under this exception.
+   5.5 and 5.8 hits there and in the ledger appendix are accepted under this exception. The
+   same holds for the data-flow schematic (`scripts/schem_dataflow.py`, Fig. 7 in the ledger
+   appendix), which names the track's files and scripts by design (lead, 2026-11-21, on the
+   request of g1close).
 2. Evidence labels of the program ([VERIFIED], [BACKGROUND], [JUDGEMENT], [TO VERIFY])
    stay out of the typeset text; the main text states what is established, what is our
    choice, and what is open, in words. The labels live in the journals and the ledger.
@@ -101,3 +104,4 @@ its hardware. Checker call from `note/`:
 | constraints | the constraint residuals of smooth data fall at the order of the differences; a sharp edge does not converge | none |
 | ball | the core turns around and crunches inside an expanding envelope; the horizon mass grows after first trapping; geodesic slicing needs a shrinking step | H R_b = 1/2 |
 | timeline | the five gates, what each needs and where the track stands | none |
+| data flow (App. B) | how each number of the ledger travels from initial data through AthenaK and the registered analysis to the note, and where the verifier enters | none |
