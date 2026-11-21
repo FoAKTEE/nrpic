@@ -393,3 +393,12 @@ magnitude" (commit 102d696b) is withdrawn. Fixed in v4_kerr_stat.py; V4 rerun ne
 Prediction for the rerun: my expected counts within 1 per cent of the track's in every range
 (the grid ratio is 0.995 sin theta, a constant factor that normalisation removes); then the
 time averages lie about 4, 2, 1 per cent below in 0-4, 4-6, 6-10 and the claim holds.
+
+### Outcome of the V4 rerun (20:25 PST), run D-20261121-040826-9d5051a
+
+Prediction held: my expected counts 136.4, 601.6, 2469.2, 5366.5, 22580.2 against the track's
+137.8, 601.4, 2472.6, 5362.7, 22574.1 (-1.0, +0.03, -0.14, +0.07, +0.03 per cent); time averages
+3.1, 1.8, 0.9 per cent below in the inner ranges, 0.14 below and 0.13 above in the outer ones;
+t = 0: -6.1, +1.9, -0.7 per cent. Figure `v4_counts.png` of this run looked at. VERIFIER.md V4
+rewritten: the claim is CONFIRMED (not blind: the error was found with the track's grid in view).
+Comparison section added to VERIFIER.md.
