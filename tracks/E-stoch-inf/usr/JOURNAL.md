@@ -776,3 +776,50 @@ first grows with the amplitude, so at rms 0.8945 even/odd is 2.19e-5 x 0.8945/0.
 median for k >= 40 dk within a factor 2 of the lockstep error of the shell (14.2); U-A2s
 (odd part, k <= 32 dk) max below 2e-2 (passes), with the ten single-run failures of entry
 14 below 2e-3 in the odd part.
+
+## Entry 15, 2026-11-21 10:34 UTC: U256m and the odd/even split in P1's set-up (card run E-20261121-085221-1f579fe, analysis E-20261121-101756-6bffd0c, lockstep E-20261121-103157-96fee1d)
+
+U256m (job 4783, s = -1, same executable and input as U256): started 01:40:44 PST, rc = 0,
+stopped on tlim at cycle 1702; job wall 36.7 min = 0.612 card-hours, 2193.9 s run time
+(1.289 s per step), 19.6 GB. Card-hours of this package in batch 2b: 0.157 + 0.617 + 0.612 =
+1.386 of 1.5. The pair analysis (`analyse_cards.py --group u256 --run <U256> --run <U256m>`,
+3 cores, 13.5 min) and the lockstep check with the pair were registered; figures
+`fig/fig_card_u256pair_{modes,constraints}.png` and `fig/fig_card_lockstep.png` (this run's
+version, with the odd part), each looked at. Numbers:
+`results/runs/summary_E-20261121-101756-6bffd0c.json`,
+`results/runs/lockstep_shells_E-20261121-103157-96fee1d.json`.
+
+| Prediction | Outcome | Verdict |
+|---|---|---|
+| 9.3 U256m: odd part per mode at N_f, k <= 32 dk, at most 3e-4 | max 1.09e-4, rms 5.2e-5, median 4.2e-5 (68532 modes) | holds; U-A2s passes (0.02) |
+| 9.3: every mode at most 1e-2 (odd part) | 4.5e-3 (all 548958 modes up to 64 dk) | holds |
+| 9.3: even/odd rms in [2e-5, 1e-3] | 2.88e-4 at N_f (all modes); 2.53e-4 for k <= 32 dk | holds |
+| 14.3: even/odd rms over k <= 32 dk at N_f in [2.0e-4, 4.0e-4] (2.9e-4 from group 1 scaled by rms R) | 2.53e-4 | holds |
+| 14.3: odd-part median over k <= 32 dk below 1e-4 | 4.2e-5 | holds |
+| 14.3: odd-part shell median for k >= 40 dk within a factor 2 of the lockstep error | 1.007 to 1.76 (median 1.075) on all 2080 shells | holds |
+| 14.3: the ten single-run U-A2 failures (entry 14) below 2e-3 in the odd part | 3.4e-5 to 8.8e-5 | holds: the 6 % single-run deviations are the part even in s over a small abs(alpha) |
+| 9.3: the odd part of H first exceeds the even part between cN 3.0 and 4.2 | cN 4.04 | holds |
+| 13: late (cN > 7) M odd > even, even/odd of M in [0.05, 0.7]; refuted if within 15 % of 1 or above 1 | 0.15 (cN 7.0), 0.24, 0.44, then 0.81, 0.82, 1.00, 0.97 (cN 8.5 to 10) | FAILED from cN 8.5 on |
+| U-A3 on the odd part, k <= 3 dk | 0.99992 (8.4e-5) | holds |
+
+Further outcomes [VERIFIED for this pair]:
+- U256m alone repeats U256's single-run numbers where they are even in s: <Pi> 4.17e-5 (the
+  same backreaction), U-A2 single-run max 5.9e-2 (the same modes), lockstep 2.55e-3, records
+  equal to 4 digits; abs dN 1.6e-9.
+- One-point: rms R^NR 0.894520 (U256 0.894520), skewness +0.00061 against the linear field's
+  -0.00088 (U256: +0.00237 against +0.00088): the part of the skewness even in s is +0.00149
+  in both runs, the second-order (non-Gaussian) contribution of the evolution at N_f; max
+  abs R^NR 4.557.
+- Constraints at 256^3 (`fig/fig_card_u256pair_constraints.png`): the odd part of M follows
+  the record (2.3e-2 of <[M]> at cN 6.5, the first-order truncation of the top shells at
+  four cells per wavelength), the even part lies 10 times below it through USR; strict A4 in
+  the entry (cN <= 2.08) holds for H (odd/even at most 0.40) and M (0.45), since the top shell
+  enters only at cN 4.2. Late the M parts are equal and flat at 1.6e-13 to 1.9e-13 absolute
+  (1.4e-3 of <[M]>), 7 times the absolute floor of 128^3 (2.1e-14 to 2.9e-14) rather than the
+  2 times of a 1/dx scaling. Read as the s-independent floor of entry 12.2 reached at
+  256^3, larger than estimated in entry 13 [JUDGEMENT]; it is not shown to be a floor (a
+  halving pair at 256^3 would show it) and the cause of its size is not named.
+- What P1's set-up shows in sum: through N_f, with Delta_R up to about 1 at 64 dk and rms
+  R^NR 0.894, R^NR is linear per mode to 1.1e-4 in the odd part (k <= 32 dk) and to the
+  lockstep phase error above, with a second-order part 2.5e-4 to 2.9e-4 of the first (rms)
+  that also carries a one-point skewness of +0.0015.
