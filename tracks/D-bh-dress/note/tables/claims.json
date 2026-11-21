@@ -1,7 +1,7 @@
 [
  {
   "doc": "stage/G1/STATUS.md",
-  "line": 17,
+  "line": 20,
   "stated": "a = 0.9765922286441, m_p = 1.023968828206 M",
   "file_value": "0.9765922286441, 1.023968828206",
   "verdict": "agrees",
@@ -12,7 +12,7 @@
  },
  {
   "doc": "stage/G1/STATUS.md",
-  "line": 17,
+  "line": 20,
   "stated": "48 symbolic identities, lead rerun 48/48",
   "file_value": "48, 48 lines [OK]",
   "verdict": "agrees",
@@ -24,7 +24,7 @@
  },
  {
   "doc": "stage/G1/STATUS.md",
-  "line": 17,
+  "line": 20,
   "stated": "offline 3D orders 3.85-4.07 in seven sub-boxes",
   "file_value": "finest-pair orders of the largest residuals above round-off, seven boxes: 3.85-4.07",
   "verdict": "agrees",
@@ -46,7 +46,7 @@
  },
  {
   "doc": "stage/G1/STATUS.md",
-  "line": 17,
+  "line": 20,
   "stated": "3.2 at the inner dust edge",
   "file_value": "M 3.20, H 4.94",
   "verdict": "agrees",
@@ -57,7 +57,7 @@
  },
  {
   "doc": "stage/G1/STATUS.md",
-  "line": 17,
+  "line": 20,
   "stated": "deposited density equals rho to 1.1e-13",
   "file_value": "1.14e-13",
   "verdict": "agrees",
@@ -68,7 +68,7 @@
  },
  {
   "doc": "stage/G1/STATUS.md",
-  "line": 18,
+  "line": 21,
   "stated": "peak 0.8699e8 GeV/cm^3 at 7.58 Gm",
   "file_value": "0.86990e8 at 7.579",
   "verdict": "agrees",
@@ -79,7 +79,7 @@
  },
  {
   "doc": "stage/G1/STATUS.md",
-  "line": 18,
+  "line": 21,
   "stated": "against digitized SFW Fig. 1 to 0.02 per cent",
   "file_value": "peak height 1.5e-05, position 1.5e-04; whole curve 8.5-95 Gm 2.6e-03",
   "verdict": "agrees for the peak",
@@ -90,7 +90,7 @@
  },
  {
   "doc": "stage/G1/STATUS.md",
-  "line": 18,
+  "line": 21,
   "stated": "FdRW Schwarzschild curve to 1.0 per cent",
   "file_value": "0.0101",
   "verdict": "agrees",
@@ -101,7 +101,7 @@
  },
  {
   "doc": "stage/G1/STATUS.md",
-  "line": 18,
+  "line": 21,
   "stated": "48000 particles for 20000 M, chi^2/dof median 0.98",
   "file_value": "48000, 20000 M, 0.979",
   "verdict": "agrees",
@@ -112,7 +112,7 @@
  },
  {
   "doc": "stage/G1/STATUS.md",
-  "line": 18,
+  "line": 21,
   "stated": "loss-cone probes 1200/1200 inside cross, 0/1200 outside",
   "file_value": "1200/1200, 0",
   "verdict": "agrees",
@@ -135,7 +135,7 @@
  },
  {
   "doc": "stage/G1/STATUS.md",
-  "line": 19,
+  "line": 22,
   "stated": "slope of m 0.741 on [1e-4, 1e-3] r_ta, outermost caustic 0.355 r_ta",
   "file_value": "0.741, 0.3553",
   "verdict": "agrees",
@@ -158,7 +158,7 @@
  },
  {
   "doc": "stage/G1/STATUS.md",
-  "line": 19,
+  "line": 22,
   "stated": "eta_ta of 2106.07480 to 1.3e-5; the 0.964 of 1901.08528 reproduced",
   "file_value": "max |d_eta| 1.31e-05; y_eq/y_ta 0.9644-0.9645",
   "verdict": "agrees",
@@ -169,7 +169,7 @@
  },
  {
   "doc": "stage/G1/STATUS.md",
-  "line": 19,
+  "line": 22,
   "stated": "M_ta 1.52542, 2.62815 at a/a_i = 2, 4",
   "file_value": "1.52542, 2.62815",
   "verdict": "agrees",
@@ -180,7 +180,7 @@
  },
  {
   "doc": "stage/G1/STATUS.md",
-  "line": 20,
+  "line": 23,
   "stated": "drift 50 -> 490 M +2.95e-4 (M/8), +3.67e-5 (M/16)",
   "file_value": "2.95e-4, 3.67e-5",
   "verdict": "agrees",
@@ -192,7 +192,7 @@
  },
  {
   "doc": "stage/G1/STATUS.md",
-  "line": 20,
+  "line": 23,
   "stated": "smallest detectable change at M/16 2.0-2.5e-5 (windows from 50 M ending before 210 M)",
   "file_value": "1.96e-5-2.51e-5",
   "verdict": "agrees",
@@ -237,7 +237,7 @@
  },
  {
   "doc": "stage/G1/STATUS.md",
-  "line": 20,
+  "line": 23,
   "stated": "2.18 card-hours",
   "file_value": "0.654 + 1.523 = 2.177",
   "verdict": "agrees",
@@ -401,5 +401,456 @@
    "D-bh-dress-20261115-130954-49ed46f"
   ],
   "note": ""
+ },
+ {
+  "doc": "spike/README.md",
+  "line": 143,
+  "stated": "7.31 Gm and 1.0604e8 at 6.61 Gm  [0.9271e8, 7.31, 1.0604e8, 6.61]",
+  "file_value": "9.27105e+07, 7.31419, 1.06041e+08, 6.60611",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-171615-8adbbdd"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "spike/README.md",
+  "line": 142,
+  "stated": "within 0.88 % and 0.95 % of fig_rho_a  [0.88, 0.95]",
+  "file_value": "0.884328, 0.953507",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-171615-8adbbdd"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "spike/README.md",
+  "line": 144,
+  "stated": "Peak ratio a = 0.8 over a = 0: 1.219  [1.219]",
+  "file_value": "1.21919",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-171615-8adbbdd"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "spike/README.md",
+  "line": 162,
+  "stated": "4.083e18 at 5.07  [3.922e18, 5.06, 4.083e18, 5.07]",
+  "file_value": "3.92172e+18, 5.06059, 4.08257e+18, 5.07412",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-171615-8adbbdd"
+  ],
+  "note": "the published value is digitized from the arXiv source by the reference run"
+ },
+ {
+  "doc": "spike/README.md",
+  "line": 166,
+  "stated": "lies between ours (1.406) and their figure  [1.406, 1.451]",
+  "file_value": "1.40589, 1.45099",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-171615-8adbbdd"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "spike/README.md",
+  "line": 184,
+  "stated": "51.4 at t = 0, median 43.8, range 20-75  [51.4, 43.8, 20, 75]",
+  "file_value": "51.4053, 43.8274, 20.2812, 74.944",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-174954-786ddcc"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "spike/README.md",
+  "line": 186,
+  "stated": "late/early-half ratios 0.998, 1.003, 0.999, 1.000, 1.000  [0.998, 1.003, 0.999, 1.000, 1.000]",
+  "file_value": "0.997958, 1.00346, 0.999383, 0.999811, 1.00025",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-174954-786ddcc"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "spike/README.md",
+  "line": 192,
+  "stated": "(reference 2.267, 1.800, 1.069, 0.645, 0.352)  [2.267, 1.800, 1.069, 0.645, 0.352]",
+  "file_value": "2.26694, 1.80022, 1.06914, 0.644631, 0.351523",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-172646-ed6a510",
+   "D-bh-dress-20261115-174954-786ddcc"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "spike/README.md",
+  "line": 193,
+  "stated": "2.267, 1.810, 1.054, 0.655, 0.370  [2.267, 1.810, 1.054, 0.655, 0.370]",
+  "file_value": "2.26655, 1.80992, 1.05386, 0.656471, 0.370285",
+  "verdict": "disagrees",
+  "runs": [
+   "D-bh-dress-20261115-174954-786ddcc"
+  ],
+  "note": "last digit only: the 10-16 Gm value is 0.6565, printed 0.655"
+ },
+ {
+  "doc": "spike/README.md",
+  "line": 195,
+  "stated": "|dE/E| median 1.2e-8, max 7.9e-6  [1.2e-8, 7.9e-6]",
+  "file_value": "1.19183e-08, 7.87759e-06",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-174954-786ddcc"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "spike/README.md",
+  "line": 190,
+  "stated": "late-half 1.130, reference 1.127  [1.130, 1.127]",
+  "file_value": "1.12972, 1.12736",
+  "verdict": "agrees",
+  "runs": [
+   "D-bh-dress-20261115-172646-ed6a510",
+   "D-bh-dress-20261115-174954-786ddcc"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "secondary_infall/README.md",
+  "line": 107,
+  "stated": "| M_ta at a/a_i = 4 |  [2.5966, 2.5956, 2.5966, 2.5934, 2.5962, 2.5937]",
+  "file_value": "2.59656, 2.59563, 2.59656, 2.59344, 2.59616, 2.59367",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-171503-4262f03",
+   "D-20261115-171505-62940f4",
+   "D-20261115-171507-d1058a9",
+   "D-20261115-190541-e27453d"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "secondary_infall/README.md",
+  "line": 108,
+  "stated": "| M_ta at a/a_i = 8 |  [4.8159, 4.8019]",
+  "file_value": "4.81587, 4.80189",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-171503-4262f03",
+   "D-20261115-171505-62940f4",
+   "D-20261115-171507-d1058a9",
+   "D-20261115-190541-e27453d"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "secondary_infall/README.md",
+  "line": 110,
+  "stated": "| dress at a/a_i = 4 |  [0.7975, 0.7976, 0.7966, 0.7954, 0.7977, 0.7940]",
+  "file_value": "0.79755, 0.797611, 0.79662, 0.795415, 0.797703, 0.793965",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-171503-4262f03",
+   "D-20261115-171505-62940f4",
+   "D-20261115-171507-d1058a9",
+   "D-20261115-190541-e27453d"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "secondary_infall/README.md",
+  "line": 111,
+  "stated": "| dress at a/a_i = 8 |  [2.1537, 2.1515]",
+  "file_value": "2.15366, 2.15153",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-171503-4262f03",
+   "D-20261115-171505-62940f4",
+   "D-20261115-171507-d1058a9",
+   "D-20261115-190541-e27453d"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "secondary_infall/README.md",
+  "line": 112,
+  "stated": "| largest M_ta deviation after a/a_i = 1.5 |  [0.10, 0.12, 0.31]",
+  "file_value": "0.103826, 0.120185, 0.306685",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-171503-4262f03",
+   "D-20261115-171505-62940f4",
+   "D-20261115-171507-d1058a9",
+   "D-20261115-190541-e27453d"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "secondary_infall/README.md",
+  "line": 113,
+  "stated": "| profile, 4 dx to r_ta, outside the caustic bins |  [12, 6.5, 6.3, 26, 14]",
+  "file_value": "12.1033, 6.53231, 6.33994, 25.925, 13.6481",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-171503-4262f03",
+   "D-20261115-171505-62940f4",
+   "D-20261115-171507-d1058a9",
+   "D-20261115-190541-e27453d"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "secondary_infall/README.md",
+  "line": 131,
+  "stated": "dress/M_ta = 0.307 (a/a_i = 4) and 0.447 (8)  [0.307, 0.447]",
+  "file_value": "0.307156, 0.447201",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-171503-4262f03",
+   "D-20261115-171505-62940f4",
+   "D-20261115-171507-d1058a9",
+   "D-20261115-190541-e27453d"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "secondary_infall/README.md",
+  "line": 132,
+  "stated": "M_ta/(M a/a_i) = 0.649 and 0.602  [0.649, 0.602]",
+  "file_value": "0.64914, 0.601983",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-171503-4262f03",
+   "D-20261115-171505-62940f4",
+   "D-20261115-171507-d1058a9",
+   "D-20261115-190541-e27453d"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "secondary_infall/README.md",
+  "line": 133,
+  "stated": "growth exponent of the dress 1.70 at 4 and 1.25 at 8  [1.70, 1.25]",
+  "file_value": "1.70174, 1.24556",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-171503-4262f03",
+   "D-20261115-171505-62940f4",
+   "D-20261115-171507-d1058a9",
+   "D-20261115-190541-e27453d"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "secondary_infall/README.md",
+  "line": 125,
+  "stated": "r_sp99 18.4 against 15.9 M  [18.4, 15.9]",
+  "file_value": "18.3727, 15.8475",
+  "verdict": "disagrees",
+  "runs": [
+   "D-20261115-171503-4262f03",
+   "D-20261115-171505-62940f4",
+   "D-20261115-171507-d1058a9",
+   "D-20261115-190541-e27453d"
+  ],
+  "note": "last digit only: the matched-shell value is 15.85 (kernel law), printed 15.9"
+ },
+ {
+  "doc": "es_runs/README.md",
+  "line": 16,
+  "stated": "max over 100-200 M | 3.40e-4 | 1.37e-4  [3.40e-4, 1.37e-4]",
+  "file_value": "0.000340045, 0.000136755",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-172726-60ba4c2",
+   "D-20261115-172730-c6d151b",
+   "D-20261119-141839-8686bd7"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "es_runs/README.md",
+  "line": 17,
+  "stated": "| same, over 100-165 M  [-5.0e-5, 9.3e-5, -4.2e-5, 2.1e-5]",
+  "file_value": "-4.95515e-05, 9.34675e-05, -4.20892e-05, 2.11283e-05",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-172726-60ba4c2",
+   "D-20261115-172730-c6d151b",
+   "D-20261119-142929-bb375ff"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "es_runs/README.md",
+  "line": 18,
+  "stated": "| M_AH(100 M) - M | +9.55e-4 | +9.37e-4  [9.55e-4, 9.37e-4]",
+  "file_value": "0.000954728, 0.000937406",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-172726-60ba4c2",
+   "D-20261115-172730-c6d151b",
+   "D-20261119-141839-8686bd7"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "es_runs/README.md",
+  "line": 19,
+  "stated": "| wall tracers, max relative error for tau <= 200 M | 2.20e-3 | 1.59e-3  [2.20e-3, 1.59e-3]",
+  "file_value": "0.0021963, 0.00159384",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-172726-60ba4c2",
+   "D-20261115-172730-c6d151b",
+   "D-20261119-141839-8686bd7"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "es_runs/README.md",
+  "line": 20,
+  "stated": "| R0 = 6 M group reaches R = 2M (exact 14.827 M) | 14.826 M | 14.826 M  [14.827, 14.826, 14.826]",
+  "file_value": "14.8269, 14.8263, 14.8263",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-172726-60ba4c2",
+   "D-20261115-172730-c6d151b",
+   "D-20261119-141839-8686bd7"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "es_runs/README.md",
+  "line": 21,
+  "stated": "| R0 = 10 M group reaches R = 2M (exact 34.442 M) | 34.437 M | 34.437 M  [34.442, 34.437, 34.437]",
+  "file_value": "34.4423, 34.4368, 34.4365",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-172726-60ba4c2",
+   "D-20261115-172730-c6d151b",
+   "D-20261119-141839-8686bd7"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "es_runs/README.md",
+  "line": 22,
+  "stated": "| R0 = 20 M group (exact 244.74 M) | 244.09-244.51 M at t = 177 M  [244.74, 244.09, 244.51, 177]",
+  "file_value": "244.736, 244.089, 244.512, 177.335",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-172726-60ba4c2",
+   "D-20261119-141839-8686bd7"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "es_runs/README.md",
+  "line": 25,
+  "stated": "| dust proper time at t = 200 M (R0 = 48 M) | 279.7 M (model 1251 M)  [279.7, 1251]",
+  "file_value": "279.685, 1251.42",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-172726-60ba4c2",
+   "D-20261119-141839-8686bd7"
+  ],
+  "note": "279.7 is the middle of the range 279.49-279.88 over the group's tracers"
+ },
+ {
+  "doc": "es_runs/README.md",
+  "line": 26,
+  "stated": "| card-hours | 0.769 | 0.672  [0.769, 0.672]",
+  "file_value": "0.7694, 0.6719",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-172726-60ba4c2",
+   "D-20261115-172730-c6d151b"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "es_runs/JOURNAL.md",
+  "line": 238,
+  "stated": "max |drift(ES-1) - drift(V-1)| = 2.04e-4 = 1.49  [2.04e-4, 1.49]",
+  "file_value": "0.000203703, 1.48955",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-172726-60ba4c2",
+   "D-20261115-172730-c6d151b",
+   "D-20261119-141839-8686bd7"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "es_runs/JOURNAL.md",
+  "line": 282,
+  "stated": "1.292, 1.662, 1.636 at t = 10, 25, 50 M against  [1.292, 1.662, 1.636]",
+  "file_value": "1.29208, 1.66189, 1.63554",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-172726-60ba4c2",
+   "D-20261119-141839-8686bd7"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "es_runs/JOURNAL.md",
+  "line": 283,
+  "stated": "the homogeneous model 1.377, 2.096, 3.577  [1.377, 2.096, 3.577]",
+  "file_value": "1.3773, 2.09596, 3.5774",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261119-141839-8686bd7"
+  ],
+  "note": ""
+ },
+ {
+  "doc": "es_runs/JOURNAL.md",
+  "line": 419,
+  "stated": "-3H(tau): 1.00 (t = 0), 0.50 (10 M), 0.62 (20 M), 0.19 (30 M), 0.10 (40 M), -0.21 (50 M)  [1.00, 0.50, 0.62, 0.19, 0.10, -0.21]",
+  "file_value": "1, 0.494691, 0.6207, 0.193233, 0.100998, -0.209729",
+  "verdict": "disagrees",
+  "runs": [
+   "D-20261115-172726-60ba4c2",
+   "D-20261119-142929-bb375ff"
+  ],
+  "note": "last digit only: 0.4947 at t = 10 M, printed 0.50"
+ },
+ {
+  "doc": "es_runs/JOURNAL.md",
+  "line": 241,
+  "stated": "Then ES-1 - V-1 swings between +3.2e-4 and -2.3e-4  [3.2e-4, -2.3e-4]",
+  "file_value": "0.000322588, -0.000229032",
+  "verdict": "agrees",
+  "runs": [
+   "D-20261115-172726-60ba4c2",
+   "D-20261115-172730-c6d151b",
+   "D-20261119-142929-bb375ff"
+  ],
+  "note": "window t = 25-50 M here; the journal names 27-48 M"
+ },
+ {
+  "doc": "es_runs/JOURNAL.md",
+  "line": 239,
+  "stated": "The two horizon masses agree to 9e-16 until t = 23 M  [9e-16]",
+  "file_value": "8.63311e-09",
+  "verdict": "disagrees",
+  "runs": [
+   "D-20261115-172726-60ba4c2",
+   "D-20261115-172730-c6d151b",
+   "D-20261119-142929-bb375ff"
+  ],
+  "note": "the masses differ by up to 8.6e-9 for t <= 20 M and by more than 1e-9 from t = 19.5 M on; entry 8 (es_runs/JOURNAL.md:520) already corrects it"
  }
 ]

@@ -17,11 +17,11 @@ AthenaK at $t=0$, box `mid transition', orders of $H$; $M$ & 5.88; 5.76 & \textt
 AthenaK at $t=0$, region $4<r<30M$, orders of $H$; $M$ & 5.29; 4.69 & \texttt{\scriptsize D-bh-dress-20261115-043406-4df1e76} \\
 AthenaK at $t=0$, inner dust edge, orders of $H$; $M$ & 4.94; 3.20 & \texttt{\scriptsize D-bh-dress-20261115-043406-4df1e76} \\
 deposited density minus the exact density (largest) & $1.14\times10^{-13}$ & \texttt{\scriptsize D-bh-dress-20261115-043406-4df1e76} \\
-wall radius against the closed form; mass inside the wall minus $M$ & $6.66\times10^{-16}$; 0 & \texttt{\scriptsize D-bh-dress-20261115-043445-b782009} \\
+wall column $R_w(\tau)$ of the reference against the wall law (largest relative); mass inside the wall minus $M$ & $6.66\times10^{-16}$; 0 & \texttt{\scriptsize D-bh-dress-20261115-043445-b782009} \\
 wall radius at $\tau=50,100,150,200M$ (in $M$) & 46.99, 56.80, 65.84, 74.29 & \texttt{\scriptsize D-bh-dress-20261115-145950-23fa1c7} \\
 scale factor of the plateau at $\tau=200M$; $1+6\ln a$ & 1.927; 4.93 & \texttt{\scriptsize D-bh-dress-20261115-145950-23fa1c7} \\
 proper time to $R=2M$ from $6,10,20M$: closed form & 14.83, 34.44, 244.74 & \texttt{\scriptsize D-bh-dress-20261115-043445-b782009} \\
-density from the table: bubble (largest, in $\rho_0$); plateau (relative) & $2.22\times10^{-5}$; $1.68\times10^{-7}$ & \texttt{\scriptsize D-bh-dress-20261115-043445-b782009} \\
+density from the Hamiltonian constraint on the table, second-order differences (upper bounds): bubble (largest, in $\rho_0$); plateau (relative) & $2.22\times10^{-5}$; $1.68\times10^{-7}$ & \texttt{\scriptsize D-bh-dress-20261115-043445-b782009} \\
 modelled cost, outer edge $60M$, $200M$: $M/8$; $M/16$ (card-hours) & 1.37; 2.87 & \texttt{\scriptsize D-bh-dress-20261115-145950-23fa1c7} \\
 modelled cost of the data set as generated, $M/16$ (card-hours) & 11.3 & \texttt{\scriptsize D-bh-dress-20261115-145950-23fa1c7} \\
 \end{tabular}\end{ruledtabular}\end{table*}
@@ -40,8 +40,32 @@ largest spin $|S|/M^2$ after $5M$: $M/8$; $M/16$ & $1.78\times10^{-7}$; $5.65\ti
 card-hours of the two runs & 0.654; 1.523 & \texttt{\scriptsize D-bh-dress-20261115-121313-284ec4f} \newline \texttt{\scriptsize D-bh-dress-20261115-121314-284ec4f} \\
 \end{tabular}\end{ruledtabular}\end{table*}
 \begin{table*}
-\caption{Numerical ledger, part 3. Spike in the probe limit: each value with the registered run that produced it.}
+\caption{Numerical ledger, part 3. First run of the bubble and its vacuum control: each value with the registered run that produced it.}
 \label{tab:ledger3}
+\begin{ruledtabular}\begin{tabular}{p{0.44\textwidth}p{0.19\textwidth}p{0.27\textwidth}}
+Quantity & Value & Run \\ \hline
+$M_{\rm AH}(100M)-M$: bubble run; control (prediction $+1.5\times10^{-3}\pm3\times10^{-4}$) & $9.55\times10^{-4}$; $9.37\times10^{-4}$ & \texttt{\scriptsize D-20261115-172726-60ba4c2} \newline \texttt{\scriptsize D-20261115-172730-c6d151b} \newline \texttt{\scriptsize D-20261119-141839-8686bd7} \newline \texttt{\scriptsize es\_runs/JOURNAL.md:97} \\
+largest $|M_{\rm AH}(t)/M_{\rm AH}(100M)-1|$ on $[100,200]M$: bubble; control (prediction $3\times10^{-5}$) & $3.40\times10^{-4}$; $1.37\times10^{-4}$ & \texttt{\scriptsize D-20261115-172726-60ba4c2} \newline \texttt{\scriptsize D-20261115-172730-c6d151b} \newline \texttt{\scriptsize D-20261119-141839-8686bd7} \newline \texttt{\scriptsize es\_runs/JOURNAL.md:94} \\
+the same drift on $[100,165]M$, range: bubble; control & $-4.96\times10^{-5}$ to $9.35\times10^{-5}$; $-4.21\times10^{-5}$ to $2.11\times10^{-5}$ & \texttt{\scriptsize D-20261115-172726-60ba4c2} \newline \texttt{\scriptsize D-20261115-172730-c6d151b} \newline \texttt{\scriptsize D-20261119-142929-bb375ff} \\
+slope of the drift on $[100,200]M$ (per $M$): bubble; control & $-2.97\times10^{-6}$; $-9.47\times10^{-7}$ & \texttt{\scriptsize D-20261115-172726-60ba4c2} \newline \texttt{\scriptsize D-20261115-172730-c6d151b} \newline \texttt{\scriptsize D-20261119-141839-8686bd7} \\
+largest $|$drift of bubble run $-$ drift of control$|$; over the control's largest drift (refutation above 3) & $2.04\times10^{-4}$; 1.49 & \texttt{\scriptsize D-20261115-172726-60ba4c2} \newline \texttt{\scriptsize D-20261115-172730-c6d151b} \newline \texttt{\scriptsize D-20261119-141839-8686bd7} \newline \texttt{\scriptsize es\_runs/JOURNAL.md:109} \\
+$M_{\rm AH}$ bubble $-$ control: largest $|\cdot|$ for $t\le20M$; first above $10^{-9}$ at $t$ ($M$); range on $[25,50]M$ & $8.63\times10^{-9}$; 19.5; $-2.29\times10^{-4}$ to $3.23\times10^{-4}$ & \texttt{\scriptsize D-20261115-172726-60ba4c2} \newline \texttt{\scriptsize D-20261115-172730-c6d151b} \newline \texttt{\scriptsize D-20261119-142929-bb375ff} \\
+wall tracers, largest $|R/R_w-1|$ for $\tau\le200M$: bubble; control (prediction $3\times10^{-3}$) & 0.00220; 0.00159 & \texttt{\scriptsize D-20261115-172726-60ba4c2} \newline \texttt{\scriptsize D-20261115-172730-c6d151b} \newline \texttt{\scriptsize D-20261119-141839-8686bd7} \newline \texttt{\scriptsize es\_runs/JOURNAL.md:102} \\
+the same, bubble run, axis; diagonal tracers & 0.00220; 0.00173 & \texttt{\scriptsize D-20261115-172726-60ba4c2} \\
+proper time at $R=2M$, group from $6M$: bubble; control; exact ($M$) & 14.8262--14.8264; 14.8262--14.8264; 14.8269 & \texttt{\scriptsize D-20261115-172726-60ba4c2} \newline \texttt{\scriptsize D-20261115-172730-c6d151b} \newline \texttt{\scriptsize D-20261119-141839-8686bd7} \\
+the same, group from $10M$ & 34.4366--34.4370; 34.4363--34.4369; 34.4423 & \texttt{\scriptsize D-20261115-172726-60ba4c2} \newline \texttt{\scriptsize D-20261115-172730-c6d151b} \newline \texttt{\scriptsize D-20261119-141839-8686bd7} \\
+group from $20M$: crossing in the bubble run; exact; last proper time in the control ($M$) & 244.09--244.51; 244.74; 243.4 & \texttt{\scriptsize D-20261115-172726-60ba4c2} \newline \texttt{\scriptsize D-20261115-172730-c6d151b} \newline \texttt{\scriptsize D-20261119-141839-8686bd7} \\
+lapse at the plateau probe at $t=10,25,50M$: bubble run; homogeneous $1+\log$ model (prediction) & 1.292, 1.662, 1.636; 1.377, 2.096, 3.577 & \texttt{\scriptsize D-20261115-172726-60ba4c2} \newline \texttt{\scriptsize D-20261119-141839-8686bd7} \newline \texttt{\scriptsize es\_runs/JOURNAL.md:123} \\
+lapse at the plateau probe at $t=100,200M$: bubble; control; model & 1.369, 1.352; 1.230, 1.204; 6.59, 10.76 & \texttt{\scriptsize D-20261115-172726-60ba4c2} \newline \texttt{\scriptsize D-20261115-172730-c6d151b} \newline \texttt{\scriptsize D-20261119-141839-8686bd7} \\
+$K/(-3H)$ at the plateau tracer at $t=10,30,50,80,200M$ & 0.49, 0.19, -0.21, -0.40, 0.21 & \texttt{\scriptsize D-20261115-172726-60ba4c2} \newline \texttt{\scriptsize D-20261119-142929-bb375ff} \\
+dust proper time at $t=200M$ (plateau group); homogeneous model & 279.5--279.9; 1251 & \texttt{\scriptsize D-20261115-172726-60ba4c2} \newline \texttt{\scriptsize D-20261119-141839-8686bd7} \\
+smallest lapse on the mesh, range over the run; largest after $10M$: bubble; control & 0.00416--0.232, 2.13; 0.0118--0.232, 1.95 & \texttt{\scriptsize D-20261115-172726-60ba4c2} \newline \texttt{\scriptsize D-20261115-172730-c6d151b} \newline \texttt{\scriptsize D-20261119-142929-bb375ff} \\
+tracers removed at the horizon: bubble; control; dust mass at start and end ($M$) & 42; 28; 1.7396723727, 1.7396723727 & \texttt{\scriptsize D-20261115-172726-60ba4c2} \newline \texttt{\scriptsize D-20261115-172730-c6d151b} \\
+card-hours: bubble run; control & 0.769; 0.672 & \texttt{\scriptsize D-20261115-172726-60ba4c2} \newline \texttt{\scriptsize D-20261115-172730-c6d151b} \\
+\end{tabular}\end{ruledtabular}\end{table*}
+\begin{table*}
+\caption{Numerical ledger, part 4. Spike in the probe limit: each value with the registered run that produced it.}
+\label{tab:ledger4}
 \begin{ruledtabular}\begin{tabular}{p{0.44\textwidth}p{0.19\textwidth}p{0.27\textwidth}}
 Quantity & Value & Run \\ \hline
 constant $f$: peak density ($10^8$ GeV cm$^{-3}$) at $r/Gm$ & 0.8699 at 7.58 & \texttt{\scriptsize D-bh-dress-20261115-145636-5259f48} \\
@@ -55,10 +79,23 @@ largest $|\Delta E/E|$; $|\Delta L/L|$ over the run & $1.33\times10^{-6}$; $1.93
 count over equilibrium count, second half, $4$--$6\,Gm$ & 0.976 & \texttt{\scriptsize D-bh-dress-20261115-125739-a18d74d} \\
 loss-cone probes: plunging that crossed; bound that crossed & 1200 of 1200; 0 & \texttt{\scriptsize D-bh-dress-20261115-124246-aa9dee7} \newline \texttt{\scriptsize D-bh-dress-20261115-124249-aa9dee7} \\
 median crossing-time offset at $\Delta t$ and $\Delta t/2$ ($M$) & -0.0241; -0.00604 & \texttt{\scriptsize D-bh-dress-20261115-124246-aa9dee7} \newline \texttt{\scriptsize D-bh-dress-20261115-124249-aa9dee7} \\
+Kerr, constant $f$, equator: peak density ($10^8$ GeV cm$^{-3}$) at $r/Gm$ for $a=0.5$; $0.8$ & 0.9271 at 7.31; 1.0604 at 6.61 & \texttt{\scriptsize D-bh-dress-20261115-171615-8adbbdd} \\
+the same read off the published figure & 0.9256 at 7.25; 1.0585 at 6.53 & \texttt{\scriptsize D-bh-dress-20261115-171615-8adbbdd} \\
+constant $f$: largest relative deviation from the published curves, $a=0,0.5,0.8$ & 0.00455, 0.00884, 0.00954 & \texttt{\scriptsize D-bh-dress-20261115-171615-8adbbdd} \\
+constant $f$: peak ratio $a=0.8$ over $a=0$; the same from the published figure & 1.219; 1.219 & \texttt{\scriptsize D-bh-dress-20261115-171615-8adbbdd} \\
+Hernquist cusp, $a=0.8$: peak ($10^{18}$ GeV cm$^{-3}$) at $r/Gm$; published; ratio & 3.922 at 5.06; 4.083 at 5.07; 0.961 & \texttt{\scriptsize D-bh-dress-20261115-171615-8adbbdd} \\
+Hernquist cusp: median relative deviation from the published curves, $a=0,0.5,0.8$ & $-9.34\times10^{-4}$, -0.00535, -0.0102 & \texttt{\scriptsize D-bh-dress-20261115-171615-8adbbdd} \\
+Hernquist cusp: peak ratio $a=0.8$ over $a=0.5$; the same from the published figure & 1.406; 1.451 & \texttt{\scriptsize D-bh-dress-20261115-171615-8adbbdd} \\
+Kerr code at $a=0$ against the Schwarzschild reference: constant $f$; Hernquist (largest relative) & $8.93\times10^{-4}$; $3.79\times10^{-4}$ & \texttt{\scriptsize D-bh-dress-20261115-171615-8adbbdd} \\
+AthenaK, $a=0.8$: particles; duration ($M$); $\chi^2$ at $t=0$, median, range; degrees of freedom & 48000; 20000; 51.4, 43.8, 20.3--74.9; 47 & \texttt{\scriptsize D-bh-dress-20261115-172611-1e40191} \newline \texttt{\scriptsize D-bh-dress-20261115-172646-ed6a510} \newline \texttt{\scriptsize D-bh-dress-20261115-174954-786ddcc} \\
+late over early half of the counts in $0$--$4$, $4$--$6$, $6$--$10$, $10$--$16$, $16$--$40\,Gm$ & 0.998, 1.003, 0.999, 1.000, 1.000 & \texttt{\scriptsize D-bh-dress-20261115-174954-786ddcc} \\
+mean $L_z/Gm$ in the same ranges, late half; reference & 2.267, 1.810, 1.054, 0.656, 0.370; 2.267, 1.800, 1.069, 0.645, 0.352 & \texttt{\scriptsize D-bh-dress-20261115-172646-ed6a510} \newline \texttt{\scriptsize D-bh-dress-20261115-174954-786ddcc} \\
+largest $|\Delta E/E|$, median and largest; largest $|\Delta L_z|$; smallest radius reached ($Gm$) & $1.19\times10^{-8}$, $7.88\times10^{-6}$; $1.66\times10^{-9}$; 2.288 & \texttt{\scriptsize D-bh-dress-20261115-174954-786ddcc} \\
+equator over pole, inside $16\,Gm$: late half; reference & 1.130; 1.127 & \texttt{\scriptsize D-bh-dress-20261115-172646-ed6a510} \newline \texttt{\scriptsize D-bh-dress-20261115-174954-786ddcc} \\
 \end{tabular}\end{ruledtabular}\end{table*}
 \begin{table*}
-\caption{Numerical ledger, part 4. Secondary infall and capture: each value with the registered run that produced it.}
-\label{tab:ledger4}
+\caption{Numerical ledger, part 5. Secondary infall and capture: each value with the registered run that produced it.}
+\label{tab:ledger5}
 \begin{ruledtabular}\begin{tabular}{p{0.44\textwidth}p{0.19\textwidth}p{0.27\textwidth}}
 Quantity & Value & Run \\ \hline
 turned-around mass $M_{\rm ta}/M$ at $a/a_i=2,4,8$ (closed form) & 1.52542, 2.62815, 4.87098 & \texttt{\scriptsize D-bh-dress-20261115-145610-5259f48} \\
@@ -66,10 +103,23 @@ mass that reached the centre at $a/a_i=2,4,8$ ($M$) & 1.1902, 1.8276, 3.2153 & \
 $(M_{\rm ta}-M)/(Ma/a_i)$ at $a/a_i=2$; $100$; limit $(4/3\pi)^{2/3}$ & 0.263; 0.5581; 0.5648 & \texttt{\scriptsize D-bh-dress-20261115-145610-5259f48} \\
 turnaround radius at $a/a_i=2$ for $\epsilon=0.003,0.01,0.03,0.1$ ($M$) & 74.6, 33.4, 16.1, 7.2 & \texttt{\scriptsize D-bh-dress-20261115-120304-795eee9} \\
 black-hole mass, radial dust absorbed, $a/a_i=2,4$; doubling at $a/a_i$ & 1.193, 1.828; 4.52 & \texttt{\scriptsize D-bh-dress-20261115-125613-248fdaf} \\
+self-similar model: radial orbits, fixed-point iteration on $m(\lambda)$, orbit to $\tau$ (turnaround times); softening & 300; $1\times10^{-5}$ & \texttt{\scriptsize D-bh-dress-20261115-123813-97afeea} \\
 self-similar: slope of $m(\lambda)$ on $[10^{-4},10^{-3}]$; on $[3\times10^{-3},3\times10^{-2}]$ & 0.741; 0.705 & \texttt{\scriptsize D-bh-dress-20261115-123813-97afeea} \\
 outermost caustic $\lambda_1$; mass inside it ($M_{\rm ta}$) & 0.3553; 0.654 & \texttt{\scriptsize D-bh-dress-20261115-123813-97afeea} \\
 $\lambda^{9/4}\rho/\rho_b$ below $\lambda=10^{-4}$ & 3.02 & \texttt{\scriptsize D-bh-dress-20261115-123813-97afeea} \\
 fraction of the turned-around mass that passed the centre & 0.6247 & \texttt{\scriptsize D-bh-dress-20261115-125613-248fdaf} \\
 captured fraction at $a/a_i=4$ for $\sigma_i=0.02,0.05,0.1,0.2$ & 1.000, 1.000, 0.974, 0.740 & \texttt{\scriptsize D-bh-dress-20261115-125613-248fdaf} \\
 radiation era: largest $|\Delta\eta|$ against the printed table; $y_{\rm eq}/y_{\rm ta}$ & $1.3\times10^{-5}$; 0.9644--0.9645 & \texttt{\scriptsize D-bh-dress-20261115-122051-bf0d6b1} \\
+Newtonian mode: cells ($M$) of the three runs; last $a/a_i$ & 1.062, 2.125, 2.75; 4, 4, 8 & \texttt{\scriptsize D-20261115-171503-4262f03} \newline \texttt{\scriptsize D-20261115-171505-62940f4} \newline \texttt{\scriptsize D-20261115-171507-d1058a9} \newline \texttt{\scriptsize D-20261115-190541-e27453d} \\
+$M_{\rm ta}/M$ at $a/a_i=4$, three runs (matched shells); at $8$ & 2.5966 (2.5956), 2.5966 (2.5934), 2.5962 (2.5937); 4.8159 (4.8019) & \texttt{\scriptsize D-20261115-171503-4262f03} \newline \texttt{\scriptsize D-20261115-171505-62940f4} \newline \texttt{\scriptsize D-20261115-171507-d1058a9} \newline \texttt{\scriptsize D-20261115-190541-e27453d} \\
+dress ($M$) at $a/a_i=4$, three runs (matched shells); at $8$ & 0.7975 (0.7976), 0.7966 (0.7954), 0.7977 (0.7940); 2.1537 (2.1515) & \texttt{\scriptsize D-20261115-171503-4262f03} \newline \texttt{\scriptsize D-20261115-171505-62940f4} \newline \texttt{\scriptsize D-20261115-171507-d1058a9} \newline \texttt{\scriptsize D-20261115-190541-e27453d} \\
+largest $|M_{\rm ta}/M_{\rm ta}^{\rm shells}-1|$ after $a/a_i=1.5$: mesh kernel; Plummer law & 0.00104, 0.00120, 0.00307; 0.00271, 0.00841, 0.0168 & \texttt{\scriptsize D-20261115-171503-4262f03} \newline \texttt{\scriptsize D-20261115-171505-62940f4} \newline \texttt{\scriptsize D-20261115-171507-d1058a9} \newline \texttt{\scriptsize D-20261115-190541-e27453d} \\
+dress over matched shells $-1$, three runs: at $a/a_i=2$; largest from $a/a_i=3$ on & 0.55, 1.40, 3.43; 0.28, 0.68, 1.03 (per cent) & \texttt{\scriptsize D-20261115-171503-4262f03} \newline \texttt{\scriptsize D-20261115-171505-62940f4} \newline \texttt{\scriptsize D-20261115-171507-d1058a9} \newline \texttt{\scriptsize D-20261115-190541-e27453d} \\
+dress over $M_{\rm ta}$ at $a/a_i=4$; $8$; self-similar & 0.307; 0.447; 0.625 & \texttt{\scriptsize D-20261115-171503-4262f03} \newline \texttt{\scriptsize D-20261115-171505-62940f4} \newline \texttt{\scriptsize D-20261115-171507-d1058a9} \newline \texttt{\scriptsize D-20261115-190541-e27453d} \\
+$M_{\rm ta}/(Ma/a_i)$ at $a/a_i=4$; $8$; local growth exponent of the dress at $4$; $8$ & 0.649; 0.602; 1.70; 1.25 & \texttt{\scriptsize D-20261115-171503-4262f03} \newline \texttt{\scriptsize D-20261115-171505-62940f4} \newline \texttt{\scriptsize D-20261115-171507-d1058a9} \newline \texttt{\scriptsize D-20261115-190541-e27453d} \\
+profile from $4\Delta x$ to $r_{\rm ta}$ outside the caustic bins, largest (rms) deviation from the matched shells: $a/a_i=4$ two runs; $8$ & 0.121 (0.0653), 0.0634; 0.259 (0.136) & \texttt{\scriptsize D-20261115-171503-4262f03} \newline \texttt{\scriptsize D-20261115-171505-62940f4} \newline \texttt{\scriptsize D-20261115-171507-d1058a9} \newline \texttt{\scriptsize D-20261115-190541-e27453d} \\
+radius enclosing 99 of 100 parts of the dress at $a/a_i=4$, finest run; matched shells ($M$) & 18.4; 15.8 & \texttt{\scriptsize D-20261115-171503-4262f03} \newline \texttt{\scriptsize D-20261115-171505-62940f4} \newline \texttt{\scriptsize D-20261115-171507-d1058a9} \newline \texttt{\scriptsize D-20261115-190541-e27453d} \\
+run over self-similar density on $0.1\le\lambda\le0.35$: $a/a_i=4$; $8$ (range) & 0.54--0.93; 0.75--1.11 & \texttt{\scriptsize D-20261115-171503-4262f03} \newline \texttt{\scriptsize D-20261115-171505-62940f4} \newline \texttt{\scriptsize D-20261115-171507-d1058a9} \newline \texttt{\scriptsize D-20261115-190541-e27453d} \newline \texttt{\scriptsize D-bh-dress-20261115-123813-97afeea} \\
+second agent, $a/a_i=8$, $0.1\le\lambda\le0.3$: largest $|$run over self-similar $-1|$; with $r_{\rm ta}$ times $0.97$; $1.03$ & 0.259; 0.325; 0.345 & \texttt{\scriptsize D-20261121-031711-0d79cb3} \\
+largest offset of the seed clump from its cell centre, in cells & $1.36\times10^{-4}$, $2.02\times10^{-5}$, $6.64\times10^{-4}$ & \texttt{\scriptsize D-20261115-171503-4262f03} \newline \texttt{\scriptsize D-20261115-171505-62940f4} \newline \texttt{\scriptsize D-20261115-171507-d1058a9} \newline \texttt{\scriptsize D-20261115-190541-e27453d} \\
 \end{tabular}\end{ruledtabular}\end{table*}
