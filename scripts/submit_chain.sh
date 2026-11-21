@@ -19,6 +19,12 @@
 #                                                         from the next-newest restart
 #   SIGTERM (preemption, time-out, scancel)             -> resubmit from the newest
 #                                                         restart, unless --stop was used
+#   athena killed by a signal from outside the job      -> resubmit from the newest
+#     (exit status 137 or 143, no "Terminating on"         restart, at most
+#     line of AthenaK, the job itself got no signal)       MAX_OUTSIDE_KILLS (2) times in
+#                                                         a row; then FAILED (decision 0021
+#                                                         item 6: other projects on this
+#                                                         machine run `pkill -x athena`)
 # The input MUST contain a restart output block (file_type = rst) with a dt or dcycle
 # short enough that a preemption loses little work; restart files land in <rundir>/rst/.
 #
@@ -26,10 +32,17 @@
 # chain runs does not change the binary that reads its restart files. Re-running the
 # start command on an existing <rundir> resumes from the newest restart (e.g. after a
 # FAILED segment was fixed, or to pick up a new binary).
+# The copy is started under a run-specific name, <rundir>/chain/<PROC_NAME> (a hard link
+# to chain/athena; default nrc-<8 hex digits of the rundir path>), so that its process
+# name is not "athena" and a kill by name from another project (pkill -x athena, pkill
+# athena, killall athena) does not hit it. An ATHENA_EXE that is a wrapper script which
+# exec's another binary runs under that binary's name: the protection then does not hold.
 #
 # Environment at start: ATHENA_EXE (default build_gpu/src/athena), ATHENA_WALL (athena -t,
 #   default 00:50:00), SLURM_TIME (default 00:59:00), CPUS (1), PARTITION (preempt),
 #   MAX_SEGMENTS (default 100), JOB_NAME (default chain-<rundir name>),
+#   PROC_NAME (process name of the run, 1 to 15 of [A-Za-z0-9._-], not containing
+#   "athena"; default nrc-<hash>), MAX_OUTSIDE_KILLS (default 2),
 #   SLURM_EXTRA (extra sbatch options), CHECK_CMD (optional shell command run after each
 #   segment that ends normally, with the rundir as $1; nonzero exit -> FAILED)
 # State, Slurm output and per-segment logs are in <rundir>/chain/.
@@ -55,6 +68,20 @@ submit_segment() {
   echo "$jid" > "$C/jobid"
   log_event "submitted job $jid"
   echo "$jid"
+}
+
+# The process name of a run is the base name of the file executed (at most 15
+# characters). The default is derived from the rundir, so it is the same at every
+# (re)start of one chain and differs between chains.
+default_proc_name() { echo "nrc-$(printf '%s' "$RUNDIR" | sha1sum | cut -c1-8)"; }
+check_proc_name() {
+  if [[ ! $1 =~ ^[A-Za-z0-9._-]{1,15}$ || ${1,,} == *athena* || $1 == athena* ]]; then
+    echo "ERROR: PROC_NAME '$1' must be 1 to 15 of [A-Za-z0-9._-] and not contain 'athena'." >&2
+    return 1
+  fi
+}
+link_proc_name() {  # chain/<PROC_NAME>: the same file as chain/athena
+  ln -f "$C/athena" "$C/$PROC_NAME" 2>/dev/null || cp -p "$C/athena" "$C/$PROC_NAME"
 }
 
 job_active() {  # is the chain's last submitted job pending or running?
@@ -127,19 +154,26 @@ if [[ $mode == start ]]; then
   rm -f "$C/STOP"
   cp "$input" "$C/input.athinput"
   cp "$EXE" "$C/athena.tmp" && mv "$C/athena.tmp" "$C/athena"
+  PROC_NAME=${PROC_NAME:-$(default_proc_name)}
+  check_proc_name "$PROC_NAME" || exit 1
+  link_proc_name || exit 1
+  if [[ $(head -c 2 "$C/athena") == '#!' ]]; then
+    echo "WARNING: $EXE is a script; a binary it exec's runs under its own name, not $PROC_NAME."
+  fi
   {
     printf 'SCRIPT=%q\nSCRIPTS=%q\nEXE_SRC=%q\n' "$SCRIPTS/submit_chain.sh" "$SCRIPTS" "$EXE"
     printf 'ATHENA_WALL=%q\nSLURM_TIME=%q\nCPUS=%q\nPARTITION=%q\n' \
       "${ATHENA_WALL:-00:50:00}" "${SLURM_TIME:-00:59:00}" "${CPUS:-1}" "${PARTITION:-preempt}"
     printf 'MAX_SEGMENTS=%q\nJOB_NAME=%q\nSLURM_EXTRA=%q\nCHECK_CMD=%q\n' "${MAX_SEGMENTS:-100}" \
       "${JOB_NAME:-chain-$(basename "$RUNDIR")}" "${SLURM_EXTRA:-}" "${CHECK_CMD:-}"
+    printf 'PROC_NAME=%q\nMAX_OUTSIDE_KILLS=%q\n' "$PROC_NAME" "${MAX_OUTSIDE_KILLS:-2}"
     printf 'EXTRA_ARGS=('; for a in "$@"; do printf ' %q' "$a"; done; printf ' )\n'
   } > "$C/config.sh"
   # shellcheck source=/dev/null
   source "$C/config.sh"
   [[ $ATHENA_WALL =~ ^[0-9]+:[0-9]+:[0-9]+$ ]] || { echo "ATHENA_WALL must be hh:mm:ss" >&2; exit 1; }
   seg=$(cat "$C/segment" 2>/dev/null || echo 0)
-  log_event "start/resume: exe=$EXE args=${EXTRA_ARGS[*]}"
+  log_event "start/resume: exe=$EXE as $C/$PROC_NAME args=${EXTRA_ARGS[*]}"
   set_status QUEUED          # before sbatch: the job may start (and finish) at once
   jid=$(submit_segment) || { set_status FAILED "sbatch failed"; echo "ERROR: sbatch failed" >&2; exit 1; }
   echo "chain started in $RUNDIR: job $jid (athena -t $ATHENA_WALL, Slurm -t $SLURM_TIME)"
@@ -152,6 +186,13 @@ fi
 # shellcheck source=/dev/null
 source "$C/config.sh"
 seg=$(cat "$C/segment" 2>/dev/null || echo 0)
+# chains started before PROC_NAME existed get the default name at their next segment
+PROC_NAME=${PROC_NAME:-$(default_proc_name)}
+MAX_OUTSIDE_KILLS=${MAX_OUTSIDE_KILLS:-2}
+check_proc_name "$PROC_NAME" || { set_status FAILED "PROC_NAME"; exit 1; }
+if ! [[ $C/athena -ef $C/$PROC_NAME ]] && ! cmp -s "$C/athena" "$C/$PROC_NAME"; then
+  link_proc_name
+fi
 
 # Only one segment may run per rundir. A segment resubmitted on preemption can start
 # while the previous one is still being killed, so wait for the lock (athena inherits it).
@@ -211,7 +252,7 @@ for attempt in 1 2 3; do
   ln -sfn "$(basename "$log")" "$C/latest.log"
   log_event "attempt $attempt: athena ${args[*]}"
 
-  "$SCRIPTS/_athena_job.sh" "$RUNDIR" "$log" "$C/athena" "${args[@]}" &
+  "$SCRIPTS/_athena_job.sh" "$RUNDIR" "$log" "$C/$PROC_NAME" "${args[@]}" &
   child=$!
   while :; do
     wait "$child"; rc=$?
@@ -222,6 +263,11 @@ for attempt in 1 2 3; do
     break
   done
   if (( term )); then outcome=TERM; break; fi
+  # killed by a signal that did not reach this job (AthenaK installs no handler: SIGTERM
+  # gives 143, SIGKILL 137, and neither writes a "Terminating on" line)
+  if (( rc == 137 || rc == 143 )) && ! grep -q '^Terminating on' "$log"; then
+    outcome="KILLED:$rc"; break
+  fi
 
   final=$(grep -E '^time=.* cycle=' "$log" | tail -1)
   last_hst=$(for h in "$RUNDIR"/*.hst; do [[ -f $h ]] && tail -n 1 "$h"; done)
@@ -263,9 +309,18 @@ done
 case $outcome in
   TERM)     log_event "received SIGTERM (preemption, time limit or scancel)"
             resubmit "resubmitted after SIGTERM" ;;
-  CONTINUE) log_event "wall-clock limit reached at '$final'"
+  KILLED:*) nk=$(( $(cat "$C/outside_kills" 2>/dev/null || echo 0) + 1 ))
+            echo "$nk" > "$C/outside_kills"
+            log_event "athena killed from outside the job (exit ${outcome#KILLED:}, no termination message; $nk in a row)"
+            if (( nk > MAX_OUTSIDE_KILLS )); then
+              set_status FAILED "killed from outside $nk times in a row (exit ${outcome#KILLED:})"; exit 1
+            fi
+            resubmit "resubmitted after an outside kill ($nk of at most $MAX_OUTSIDE_KILLS)" ;;
+  CONTINUE) echo 0 > "$C/outside_kills"
+            log_event "wall-clock limit reached at '$final'"
             resubmit "resubmitted after wall-clock stop" ;;
-  DONE:*)   log_event "finished: $final"; set_status DONE "${outcome#DONE:}" ;;
+  DONE:*)   echo 0 > "$C/outside_kills"
+            log_event "finished: $final"; set_status DONE "${outcome#DONE:}" ;;
   FAILED:*) set_status FAILED "${outcome#FAILED:}"; exit 1 ;;
 esac
 exit 0

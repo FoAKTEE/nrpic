@@ -1,0 +1,2 @@
+# t1: refined region touching the +x face, stock against the full set with damping
+analyze_t1.py /data/haiyangw/nrpic/scratch/core/core-20261120-220734-23cb66f --out $OUT/results/t1.json --fig $OUT/figs/t1_smrface

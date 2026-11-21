@@ -1,0 +1,2 @@
+# r2 again with the pair that writes no file reported instead of failing the comparison (tests/z4c_bench has no output block: it tests nothing; the first evaluation, core-20261121-082154-74071af, ended with status 1 for that reason alone)
+compare_runs.py /data/haiyangw/nrpic/scratch/core/core-20261121-080705-f6f9a0d --allow-empty --out $OUT/results/r2.json --fig $OUT/figs/r2_regress

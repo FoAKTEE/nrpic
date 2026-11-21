@@ -1,0 +1,2 @@
+# r2: byte comparison of every output file, new processor executable (f6f9a0d, merged with core-v0.5) without the options against the release core-v0.5
+compare_runs.py /data/haiyangw/nrpic/scratch/core/core-20261121-080705-f6f9a0d --out $OUT/results/r2.json --fig $OUT/figs/r2_regress

@@ -1,0 +1,226 @@
+{
+ "run": "core-20261119-160329-ab0aa92",
+ "status": {
+  "g_mu0p03_n64": {
+   "wall_s": 114.9,
+   "status": "completed"
+  },
+  "g_mu0p3_n64": {
+   "wall_s": 129.3,
+   "status": "completed"
+  },
+  "g_mu0p5_n32": {
+   "wall_s": 14.0,
+   "status": "completed"
+  },
+  "g_mu0p5_n64": {
+   "wall_s": 136.4,
+   "status": "completed"
+  },
+  "g_mu0p7_n64": {
+   "wall_s": 148.8,
+   "status": "completed"
+  },
+  "g_mu0p5_n64_vec": {
+   "wall_s": 145.6,
+   "status": "completed"
+  }
+ },
+ "cases": {
+  "g_mu0p03_n64": {
+   "mu": 0.03,
+   "n": 64,
+   "vector": false,
+   "outer": 9,
+   "summary": [
+    "converged after 9 iteration(s), 333 conjugate-gradient steps, 1012 V cycles; max|H| 5.578160e-01 -> 3.187457e-10, rms H 3.477632e-02 -> 2.215171e-11, psi in [0.999405240135, 1.014803395321]"
+   ],
+   "lin": 333,
+   "vcycles": 1012,
+   "converged": true,
+   "rel_hist": [
+    0.04441982,
+    0.001000429,
+    7.517826e-07,
+    1.249869e-07,
+    2.947573e-08,
+    7.114077e-09,
+    1.743871e-09,
+    4.307112e-10,
+    1.066496e-10,
+    2.65268e-11
+   ],
+   "c_cmc": 1.0223310740416837e-07,
+   "mean_offset": 1.0177201700532789e-13,
+   "psi_ge_max_minus_1": 0.014803394111956747,
+   "psi_max_minus_1": 0.014803395320711177,
+   "H_after_max": 3.187456669988589e-10,
+   "H_before_max": 0.5578159519749477,
+   "E_max_over_mean": 1.000729166336091
+  },
+  "g_mu0p3_n64": {
+   "mu": 0.3,
+   "n": 64,
+   "vector": false,
+   "outer": 10,
+   "summary": [
+    "converged after 10 iteration(s), 436 conjugate-gradient steps, 1319 V cycles; max|H| 8.597001e+00 -> 1.524554e-09, rms H 4.474061e-01 -> 1.050689e-10, psi in [0.994072137882, 1.158885452757]"
+   ],
+   "lin": 436,
+   "vcycles": 1319,
+   "converged": true,
+   "rel_hist": [
+    0.4173909,
+    0.08234509,
+    0.003335495,
+    7.865046e-06,
+    7.116473e-07,
+    1.230274e-07,
+    2.212179e-08,
+    4.227205e-09,
+    1.047944e-09,
+    2.606195e-10,
+    6.5039e-11
+   ],
+   "c_cmc": 3.577648574234156e-07,
+   "mean_offset": 2.4188432946565337e-12,
+   "psi_ge_max_minus_1": 0.15888539647695743,
+   "psi_max_minus_1": 0.15888545275715793,
+   "H_after_max": 1.524553580580711e-09,
+   "H_before_max": 8.597001438977383,
+   "E_max_over_mean": 1.0043239605444416
+  },
+  "g_mu0p5_n32": {
+   "mu": 0.5,
+   "n": 32,
+   "vector": false,
+   "outer": 8,
+   "summary": [
+    "converged after 8 iteration(s), 347 conjugate-gradient steps, 1017 V cycles; max|H| 1.903471e+01 -> 1.171074e-09, rms H 9.257667e-01 -> 1.713538e-10, psi in [0.990376867919, 1.267830416989]"
+   ],
+   "lin": 347,
+   "vcycles": 1017,
+   "converged": true,
+   "rel_hist": [
+    0.6133362,
+    0.1729491,
+    0.0153242,
+    0.0001072805,
+    2.420546e-07,
+    2.490895e-08,
+    2.609225e-09,
+    2.728654e-10,
+    2.865544e-11
+   ],
+   "c_cmc": 1.5957847105609105e-05,
+   "mean_offset": -6.48653266539914e-10,
+   "psi_ge_max_minus_1": 0.26782618664086644,
+   "psi_max_minus_1": 0.2678304169891854,
+   "H_after_max": 1.1710743243213207e-09,
+   "H_before_max": 19.034712837089327,
+   "E_max_over_mean": 1.0047097413883714
+  },
+  "g_mu0p5_n64": {
+   "mu": 0.5,
+   "n": 64,
+   "vector": false,
+   "outer": 10,
+   "summary": [
+    "converged after 10 iteration(s), 443 conjugate-gradient steps, 1354 V cycles; max|H| 2.040486e+01 -> 3.097445e-09, rms H 9.257668e-01 -> 5.957289e-10, psi in [0.990144582792, 1.279101423450]"
+   ],
+   "lin": 443,
+   "vcycles": 1354,
+   "converged": true,
+   "rel_hist": [
+    0.6296852,
+    0.180979,
+    0.01682262,
+    0.0001399264,
+    1.237035e-06,
+    8.662611e-08,
+    1.852185e-08,
+    4.581064e-09,
+    1.131934e-09,
+    2.859952e-10,
+    7.425986e-11
+   ],
+   "c_cmc": 5.19171825871669e-07,
+   "mean_offset": -1.418799000523261e-11,
+   "psi_ge_max_minus_1": 0.27910127995895095,
+   "psi_max_minus_1": 0.2791014234495246,
+   "H_after_max": 3.0974449119723896e-09,
+   "H_before_max": 20.404862554177658,
+   "E_max_over_mean": 1.0048999124361275
+  },
+  "g_mu0p7_n64": {
+   "mu": 0.7,
+   "n": 64,
+   "vector": false,
+   "outer": 11,
+   "summary": [
+    "converged after 11 iteration(s), 490 conjugate-gradient steps, 1495 V cycles; max|H| 4.176422e+01 -> 2.247386e-09, rms H 1.654550e+00 -> 3.718394e-10, psi in [0.986236495787, 1.411977915349]"
+   ],
+   "lin": 490,
+   "vcycles": 1495,
+   "converged": true,
+   "rel_hist": [
+    0.7768033,
+    0.245722,
+    0.03198993,
+    0.0005311684,
+    2.127907e-06,
+    1.545196e-07,
+    3.322938e-08,
+    7.569417e-09,
+    1.925413e-09,
+    4.900685e-10,
+    1.26753e-10,
+    3.271078e-11
+   ],
+   "c_cmc": 6.267349793414665e-07,
+   "mean_offset": -6.126640710065923e-11,
+   "psi_ge_max_minus_1": 0.41197765961926347,
+   "psi_max_minus_1": 0.41197791534884987,
+   "H_after_max": 2.247386404063337e-09,
+   "H_before_max": 41.76422498343735,
+   "E_max_over_mean": 1.0047543967102786
+  },
+  "g_mu0p5_n64_vec": {
+   "mu": 0.5,
+   "n": 64,
+   "vector": true,
+   "outer": 10,
+   "summary": [
+    "converged after 10 iteration(s), 443 conjugate-gradient steps, 1350 V cycles; max|H| 2.040486e+01 -> 3.095163e-09, rms H 9.257668e-01 -> 5.957640e-10, psi in [0.990144582791, 1.279101423448]",
+    "vector equation: relative residual 8.897150e-05 -> 9.368131e-07, 120 V cycles; max|M| of the monitor 1.581869e-07 -> 1.663521e-09"
+   ],
+   "lin": 443,
+   "vcycles": 1350,
+   "converged": true,
+   "rel_hist": [
+    0.6296852,
+    0.180979,
+    0.01682262,
+    0.0001399198,
+    1.236636e-06,
+    8.675221e-08,
+    1.850728e-08,
+    4.566145e-09,
+    1.131023e-09,
+    2.858815e-10,
+    7.420516e-11
+   ],
+   "relv_first": 8.89715e-05,
+   "relv_last": 9.368131e-07,
+   "mmax_first": 1.581869e-07,
+   "mmax_last": 1.663521e-09,
+   "c_cmc": 5.191674135952285e-07,
+   "mean_offset": -1.4154772942438136e-11,
+   "psi_ge_max_minus_1": 0.27910127995895095,
+   "psi_max_minus_1": 0.2791014234483382,
+   "H_after_max": 3.0951634182039694e-09,
+   "H_before_max": 20.404862554177658,
+   "E_max_over_mean": 1.0048999124456361
+  }
+ }
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Analysis of the card test of work package mpi (card_job.sh).
 
-    python3 card_analysis.py <outdir of card_job.sh> [--figdir DIR]
+    python3 card_analysis.py <outdir of card_job.sh> [--figdir DIR] [--out DIR]
 
 Cluster (C1a, C1b one card each, C2 two cards): largest relative differences of the
 history columns of the module and of the particle positions, C1b - C1a (the scatter of
@@ -155,8 +155,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("base")
     ap.add_argument("--figdir", default=None)
+    ap.add_argument("--out", default=None,
+                    help="write card.json and the figure here instead of into BASE "
+                         "(for a run directory that is already closed)")
     a = ap.parse_args()
     base = os.path.abspath(a.base)
+    out = os.path.abspath(a.out) if a.out else base
+    os.makedirs(out, exist_ok=True)
     res = dict(summary=open(os.path.join(base, "summary.txt")).read().splitlines()
                if os.path.exists(os.path.join(base, "summary.txt")) else [],
                cluster={}, vacuum={}, cards=job_cards(base))
@@ -169,7 +174,7 @@ def main():
         row = log_numbers(os.path.join(d, "run.log"))
         row["gpu"] = gpu_memory(os.path.join(d, "gpumem.csv"))
         (res["vacuum"] if n.startswith("F") else res["cluster"]).setdefault(n, row)
-    with open(os.path.join(base, "card.json"), "w") as f:
+    with open(os.path.join(out, "card.json"), "w") as f:
         json.dump(res, f, indent=1)
     for line in res["summary"]:
         print(line)
@@ -185,7 +190,7 @@ def main():
                              v.get("zone_cycles_per_s", float("nan")),
                              {k: "%.0f->%.0f MiB" % (g["first_MiB"], g["peak_MiB"])
                               for k, g in v["gpu"].items()}))
-    dirs = [os.path.join(base, "figs")] + ([a.figdir] if a.figdir else [])
+    dirs = [os.path.join(out, "figs")] + ([a.figdir] if a.figdir else [])
     for p in figure(res, dirs):
         print("figure", p)
 

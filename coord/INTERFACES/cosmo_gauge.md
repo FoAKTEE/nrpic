@@ -313,3 +313,25 @@ horizon-mass drift (1.02e-3 against the bound 1e-3) and the largest lapse on the
 (1.109 against 1.09: I had bounded it by the dust plateau; the bubble's normal
 observers expand faster). Nothing in the run shows a defect of the condition. Not
 covered: runs longer than 30 M, a finer dust mesh, the outer boundary.
+
+## 8. Reported by Track D: ES-1G to 200 M (added by the lead of core, 2026-11-21)
+
+Track D ran ES with `<z4c> lapse_leak = 0.5`, T = 2 M, to 200 M on a card (run
+D-20261119-142633-6f72922, 0.794 card-hours, card executable of core/gauge, sha256
+c3560e53...; judged in D's `es_runs/JOURNAL.md` entry 9; D's recheck
+D-20261121-063617-3f2036f; message `es1g-outcome-for-gauge-ready` of 2026-11-21). As D
+reports it, not rerun by core:
+- 0 to 30 M equal to core's ES test (core-20261115-202901-b4430da): horizon mass 1.9e-5
+  apart at 10 M, the lapse at the same tracer 1e-5 apart, largest lapse 1.1086 in both.
+- The dust is sliced on its exact curve: lapse at the R0 = 48 M tracers within 1.3e-2 of
+  the homogeneous lapse_leak model over 10 to 200 M; wall tracers within 1.7e-4 of the
+  exact curve to tau = 206 M (1+log: 2.2e-3); no lapse pulse into the hole.
+- At the hole: the apparent horizon shrinks in coordinates from 1.40 M (t = 25 M) to
+  0.78 M (6.2 cells of M/8) at 200 M; the smallest lapse on the mesh rises from 0.039
+  (50 M) to 0.069 (200 M), above `alpha_exc = 0.05` from t = 108 M on; the horizon mass
+  grows by 7.0e-3 over 100 to 200 M while the exterior mass is lost through the outflow
+  faces (D's `boundary-benchmark-v1b`).
+Open: whether the shrinking coordinate size and the rising puncture lapse belong to
+`lapse_leak` with the Gamma-driver, and which `shift_eta` keeps the hole near 2 M
+(no run of core; `REQUESTS_WAVE3.md` W14); the faces (core/z4c-faces, W13); a lapse
+excision threshold that does not rest on an absolute `alpha_exc` (W15).

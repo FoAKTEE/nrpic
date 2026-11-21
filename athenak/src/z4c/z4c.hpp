@@ -22,6 +22,7 @@
 #include "athena_tensor.hpp"
 #include "geodesic-grid/geodesic_grid.hpp"
 #include "geodesic-grid/spherical_grid.hpp"
+#include "z4c/z4c_sbc_ext.hpp"
 #include "z4c/z4c_gauge_ext.hpp"
 
 // forward declarations
@@ -216,6 +217,7 @@ class Z4c {
     int dc_gaussian_center;
   };
   Options opt;
+  SbcExt sbc;             // options of the outer faces (z4c_sbc_ext.hpp)
   GaugeExtOptions gext;   // lapse relaxation and tracker-dependent shift damping
   Real diss;              // Dissipation parameter
 
@@ -277,6 +279,8 @@ class Z4c {
   TaskStatus UpdateExcisionMasks(Driver *d, int stage);
   TaskStatus ADMConstraints_(Driver *d, int stage);
   TaskStatus Z4cBoundaryRHS(Driver *d, int stage);
+  TaskStatus Z4cBoundaryRHSNonwave(Driver *d, int stage);  // z4c_sbc_ext.hpp
+  void GhostFalloff(DvceArray5D<Real> u, bool coarse);  // z4c_bcs_falloff.cpp
   TaskStatus RestrictU(Driver *d, int stage);
   TaskStatus RestrictWeyl(Driver *d, int stage);
   TaskStatus CCEDump(Driver *pdrive, int stage);

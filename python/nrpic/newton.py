@@ -14,8 +14,8 @@ Readers: the history file ``<base>.newton.hst``, the history ``<base>.nrpic.hst`
 particle snapshots ``<base>.part.NNNNN.bin``.
 
 The scheme of the code in numpy on a periodic uniform mesh (``scheme_fields``): the
-Poisson equation with the seven-point Laplacian and the gradient of the Catmull-Rom
-interpolant. It is an analysis tool, used to attribute the difference between the code
+Poisson equation with the seven-point Laplacian (or the spectral symbol of the Fourier
+solver) and the gradient of the Catmull-Rom interpolant. It is an analysis tool, used to attribute the difference between the code
 and the spectral reference ``cosmo/newton/pm.py``.
 """
 import struct
@@ -206,25 +206,27 @@ def hermite_weights(s):
 
 def gather_gradient(f, x, L):
     """Value and gradient of the Catmull-Rom interpolant of the periodic cell-centred
-    field f[n,n,n] (cell centres at (i + 1/2) L/n) at the points x[N,3]."""
-    n = f.shape[0]
-    h = L/n
-    xi = np.asarray(x)/h - 0.5
+    field f[n1,n2,n3] (cell centres at (i + 1/2) L_d/n_d) at the points x[N,3]. L is the
+    side of the box, or its three sides."""
+    nn = f.shape
+    Ls = np.broadcast_to(np.asarray(L, dtype=float), (3,))
+    hs = Ls/np.array(nn)
+    xi = np.asarray(x)/hs[None, :] - 0.5
     i0 = np.floor(xi).astype(np.int64)
     s = xi - i0
     w, dw = [], []
     for d in range(3):
         a, b = hermite_weights(s[:, d])
         w.append(a)
-        dw.append(b/h)
+        dw.append(b/hs[d])
     val = np.zeros(len(xi))
     grad = np.zeros((len(xi), 3))
     for a in range(4):
-        ix = (i0[:, 0] + a - 1) % n
+        ix = (i0[:, 0] + a - 1) % nn[0]
         for b in range(4):
-            iy = (i0[:, 1] + b - 1) % n
+            iy = (i0[:, 1] + b - 1) % nn[1]
             for c in range(4):
-                iz = (i0[:, 2] + c - 1) % n
+                iz = (i0[:, 2] + c - 1) % nn[2]
                 v = f[ix, iy, iz]
                 val += w[0][a]*w[1][b]*w[2][c]*v
                 grad[:, 0] += dw[0][a]*w[1][b]*w[2][c]*v
@@ -233,17 +235,27 @@ def gather_gradient(f, x, L):
     return val, grad
 
 
-def scheme_fields(rho, L, four_pi_g=4.0*np.pi):
-    """Potential of the seven-point Laplacian on the periodic mesh, lap Phi = four_pi_g
-    (rho - <rho>), with zero mean."""
-    n = rho.shape[0]
-    h = L/n
-    k1 = 2.0*np.pi*np.fft.fftfreq(n, d=h)
-    kr = 2.0*np.pi*np.fft.rfftfreq(n, d=h)
-    lam1 = (2.0*np.cos(k1*h) - 2.0)/h**2
-    lamr = (2.0*np.cos(kr*h) - 2.0)/h**2
-    lam = lam1[:, None, None] + lam1[None, :, None] + lamr[None, None, :]
+def scheme_fields(rho, L, four_pi_g=4.0*np.pi, symbol="seven_point"):
+    """Potential on the periodic mesh, lap Phi = four_pi_g (rho - <rho>), with zero
+    mean, for the density rho[n1,n2,n3] in a box of side L (or sides L[3]):
+    symbol = "seven_point": the seven-point Laplacian (multigrid solver of the code, and
+    <particles> newton_fft_symbol = seven_point); "spectral": the continuum operator
+    -k^2 (<particles> newton_poisson = fft, newton_fft_symbol = spectral)."""
+    nn = rho.shape
+    Ls = np.broadcast_to(np.asarray(L, dtype=float), (3,))
+    lam = []
+    for d in range(3):
+        h = Ls[d]/nn[d]
+        k = 2.0*np.pi*(np.fft.rfftfreq(nn[d], d=h) if d == 2
+                       else np.fft.fftfreq(nn[d], d=h))
+        if symbol == "seven_point":
+            lam.append((2.0*np.cos(k*h) - 2.0)/h**2)
+        elif symbol == "spectral":
+            lam.append(-k*k)
+        else:
+            raise ValueError(symbol)
+    lam = lam[0][:, None, None] + lam[1][None, :, None] + lam[2][None, None, :]
     lam[0, 0, 0] = 1.0
     Fk = four_pi_g*np.fft.rfftn(rho - rho.mean())/lam
     Fk[0, 0, 0] = 0.0
-    return np.fft.irfftn(Fk, s=(n, n, n))
+    return np.fft.irfftn(Fk, s=nn)

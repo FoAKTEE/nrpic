@@ -1,0 +1,4 @@
+{"exe": ".work/exe/sbc1/athena_cpu",
+ "cases": {
+  "boost_ref": {"input": "inputs/punc.athinput", "args": ["z4c/extrap_order=2", "time/tlim=8.0", "problem/comp0_p1=0.3", "problem/comp0_corr=approx", "mesh/nx1=64", "mesh/nx2=64", "mesh/nx3=64", "mesh/x1min=-32", "mesh/x1max=32", "mesh/x2min=-32", "mesh/x2max=32", "mesh/x3min=-32", "mesh/x3max=32"]}
+ }}
