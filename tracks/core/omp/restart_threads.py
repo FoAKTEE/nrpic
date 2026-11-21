@@ -18,6 +18,7 @@ import argparse
 import filecmp
 import glob
 import os
+import re
 import subprocess
 import sys
 
@@ -45,31 +46,61 @@ RCASES = {
 
 
 def history_diff(fa, fb):
-    """Records of the continued run's history fb against the same cycles of fa."""
+    """Records of the continued run's history fb against the same records of fa. A record
+    is named by the column the header calls ncycle; a history without one (constraint
+    statistics, the Z4c history: time in column 1) by its time, matched to the record of
+    fa whose time is nearest, within 1e-9 of the largest time (key "time")."""
     def recs(path):
-        out = {}
+        col, rows = None, []
         for ln in open(path):
-            if ln.startswith("#") or not ln.strip():
+            if ln.startswith("#"):
+                m = re.search(r"\[(\d+)\]=ncycle\b", ln)
+                if m:
+                    col = int(m.group(1)) - 1
                 continue
-            w = ln.split()
-            out[int(w[1])] = (ln.rstrip("\n"), np.array([float(x) for x in w]))
-        return out
-    ra, rb = recs(fa), recs(fb)
+            if not ln.strip():
+                continue
+            rows.append((ln.rstrip("\n"), np.array([float(x) for x in ln.split()])))
+        return col, rows
+    (ca, rowa), (cb, rowb) = recs(fa), recs(fb)
+    if ca is not None and cb in (None, ca):   # a continued run writes no header
+        key = "ncycle"
+        ra = {int(v[ca]): (t, v) for t, v in rowa}
+        rb = {int(v[ca]): (t, v) for t, v in rowb}
+    else:
+        key = "time"
+        ta = np.array([v[0] for _, v in rowa])
+        tmax = float(np.abs(ta).max()) if len(ta) else 1.0
+        ra = {i: r for i, r in enumerate(rowa)}
+        rb = {}
+        for n, (t, v) in enumerate(rowb):
+            i = int(np.argmin(np.abs(ta - v[0]))) if len(ta) else -1
+            ok = i >= 0 and abs(ta[i] - v[0]) <= 1.0e-9*max(tmax, 1.0e-300)
+            rb[i if ok else -1 - n] = (t, v)
     miss = [c for c in rb if c not in ra]
     cyc = [c for c in sorted(rb) if c in ra]
     if not cyc:
-        return {"kind": "history", "records": 0, "missing": len(miss), "rel_max": 0.0}
+        return {"kind": "history", "key": key, "records": 0, "missing": len(miss),
+                "int_columns_differ": 0, "rel_max": 0.0}
     a = np.array([ra[c][1] for c in cyc])
     b = np.array([rb[c][1] for c in cyc])
     full = np.array([v[1] for v in ra.values()])
     isint = np.all(full == np.round(full), axis=0)
     scale = float(np.abs(full[:, ~isint]).max()) if (~isint).any() else 1.0
     d = np.abs(a - b)
-    return {"kind": "history", "records": len(cyc), "missing": len(miss),
+    return {"kind": "history", "key": key, "records": len(cyc), "missing": len(miss),
             "cycles": [cyc[0], cyc[-1]],
             "text_identical": all(ra[c][0] == rb[c][0] for c in cyc),
             "int_columns_differ": int((d[:, isint] > 0).any(axis=0).sum()),
             "abs": float(d.max()), "rel_max": float(d[:, ~isint].max()/scale)}
+
+
+def same(v):
+    """The data of a compared file are identical: the bytes, the text of the history
+    records, or the MeshBlock data of a restart file (its parameter dump and the padding
+    bytes of its header differ between processes: omplib.number_diff)."""
+    return (v["kind"] == "identical" or bool(v.get("text_identical"))
+            or (v["kind"].startswith("rst-data") and v.get("ndiff") == 0))
 
 
 def compare(full, cont):
@@ -95,8 +126,7 @@ def compare(full, cont):
             hard |= bool(out[n]["missing"]) or bool(out[n]["int_columns_differ"])
     worst = max([v.get("rel_max", 0.0) for v in out.values()] + [0.0])
     return {"files": out, "worst_rel_max": worst, "structural_difference": hard,
-            "all_identical": all(v["kind"] == "identical" or v.get("text_identical")
-                                 for v in out.values()) and not hard}
+            "all_identical": all(same(v) for v in out.values()) and not hard}
 
 
 def main():
@@ -146,11 +176,10 @@ def main():
                 print("%-7s %-4s %-7s restart from %s: %2d files compared, %2d identical, "
                       "worst rel_max %.2e%s" % (
                           case, label, rec["mode"], rec["restart_from"], len(rec["files"]),
-                          sum(v["kind"] == "identical" or bool(v.get("text_identical"))
-                              for v in rec["files"].values()),
+                          sum(same(v) for v in rec["files"].values()),
                           rec["worst_rel_max"], "  FAIL" if flag else ""))
                 for n, v in rec["files"].items():
-                    if not (v["kind"] == "identical" or v.get("text_identical")):
+                    if not same(v):
                         print("            %-28s %-10s rel_max %.2e" % (
                             n, v["kind"], v.get("rel_max", float("nan"))))
             res["cases"][case][label] = rec

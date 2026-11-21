@@ -903,3 +903,37 @@ State for whoever resumes, in this order:
    histories without one). All through nrpic-run with the cores it grants.
 4. `analyse_scaling.sh` with RUN_P17 set regenerates figs/scaling.png and
    scaling_table.md with the second series (figs.py is ready, not yet run).
+
+## 2026-11-20 18:57 Entry 25: continuation (evening batch); what runs now, with which thread counts
+
+Session of the evening batch (decision 0020). `git merge --no-edit main` (44f7d887:
+decision 0020, harness, coord; no source). Worktree clean, nothing stranded, nothing of
+this package queued or running; `locks/PAUSE` absent at 18:54; load average 3.5; one card
+job of the owner in the queue list of all users (not of this package). The published
+executables are unchanged (source a9c34e7a).
+
+The three tests of entry 24, item 3, run now, each through `nrpic-run submit` with the
+cores it grants (`--wait`), one after the other so that the timings are not disturbed by
+this session's own runs. The predictions stand as written in entries 18, 19 and 20; the
+thread counts go back to those of the predictions, because the owner's cores are free
+tonight:
+- P17 (entry 20): `scaling_series.sh t1solo`, `collapse1`, `collapse6`.
+- P15 (entry 18) at 1, 2, 4 and 6 threads (`THREADS` unset in `mg_cause.sh`); parts a and
+  b are the test; part c's bound "below 2e-11" was a wrong guess of mine for a solve that
+  falls by 17.1 per V cycle (entry 24) and is NOT moved: it is expected to miss again at
+  2.303e-11, and the run will again end with exit 1 for that reason alone.
+- P16 (entry 19) at four threads (`restart_threads.py --threads 4`), not two.
+
+Change to `restart_threads.py` before the run (the defect of entry 24): a history record
+is named by the column its header calls ncycle (a continued run writes no header: the
+column is taken from the uninterrupted run's file); a history without such a column
+(constraint statistics, the Z4c history) is matched by time, to the nearest record within
+1e-9 of the largest time. A restart file whose MeshBlock data are identical counts as
+identical data (its parameter dump differs between the two processes by construction,
+its header padding by entry 7).
+Seen before the run, and so not a blind outcome: I tried the corrected comparison on the
+files that the stopped run core-20261120-223428-587c09a had left for the first
+configuration (east, one thread): two restart files with identical data, two particle
+restart files, three snapshots byte-identical, the three histories with identical text
+records. P16a for east is therefore already known to hold byte for byte; the other five
+configurations (east at four threads private and atomic, newton in all three) are blind.
