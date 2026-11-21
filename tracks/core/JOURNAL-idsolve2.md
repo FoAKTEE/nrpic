@@ -1351,3 +1351,12 @@ axes, clear of the reference lines).
   it removes a closure error of 0.9 per cent of W that no resolution removes; `id_far =
   robin` restores the release's bytes).
 - Card time of the package: 0.032 card-hours (K); none in this session.
+- READY of the publication rewritten in place at 08:40 UTC (T128 added; executables
+  unchanged; COMMIT has the line, SHA256SUMS redone and checked). Its source text:
+  `scratch/core/tmp/idsolve2/b2b/READY.v4`; the script of the publication:
+  `scratch/core/tmp/idsolve2/b2b/publish3.sh`.
+- Runs of this session (all registered with `nrpic-run`, processors, scouting, gate G2):
+  core-20261121-080113-2230974 (M0), -080151-4db2e1d (M1), -080135-890689a (M2),
+  -081010-968d6d6 (M2b), -081048-0c563b2 (T), -082710-5866399 (N), -082948-264c21a
+  (T128); figures drawn again: -080921-42e8213, -080946-f294477, -082203-67b37a4,
+  -083909-267d8c8.
