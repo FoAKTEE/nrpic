@@ -384,3 +384,24 @@ Sharpened predictions for the run of record (v4_ev.py at the commit after this e
 - F21 b = 0.1: F21-gamma K = 1 onset at Z(0) = 0.750 +- 0.002 (reproduction), exact onset
   in (0.548, 0.638); Juttner: K = 1 and exact onsets both in (0.087, 0.548), exact below K = 1.
 - J = 400 onset equal to J = 200 to 1e-4 in y0.
+
+## Entry 11 (2026-11-21 00:04 PST) V4 first run failed at the figure; numbers seen; variant added
+
+(Entry 10 was written at 00:01, not 00:12.)
+Run C-20261121-080152-b8d0acd computed everything and wrote v4_ev.json, then failed on the
+figure (`nrpic` not on the path: the script did not add the worktree's python/ directory).
+It stays on record as failed. Numbers it printed (the rerun of record must reproduce them):
+F21 Table 1 rows reproduced (M, E_rest, eps, Z(0), rho(0) to <= 1.3e-4; R to <= 0.25 percent,
+their grid); King E_b maximum y0 = 0.334032, zero 0.784518; F21 turning points Z(0) = 0.0891
+(E), 0.2997 (B), 0.5404 (eps); onsets: King 1+p/u K1 y0 0.3961, FEM 0.3721; King Juttner K1
+0.03935, FEM 0.03919; F21 1+p/u K1 Z(0) 0.75001, FEM 0.6348; F21 Juttner K1 0.4357, FEM 0.4125.
+Two of these coincide with names of the track's model files (entry 9): Z(0) = 0.5404 (my eps
+maximum) and 0.6348 (my exact onset with F21's gamma). The third name, 0.5331, matches none of
+my numbers. A plausible other reading of "Juttner adiabatic index" is 1 + p/u of a full
+Maxwell-Juttner gas at the local temperature (p = nT, u = n(<E> - 1)), which is not
+(d ln p/d ln n)_s; I add it as a labelled sensitivity variant (`mjpu`) so that a difference of
+definition can be told from an error. Prediction for the variant (before running): its onset
+lies between my Juttner Gamma_1 onset and the F21-gamma onset (1 + p/u of MJ falls with T half
+as fast as Gamma_1), i.e. Z(0) in (0.41, 0.63) exact. My verdict uses Gamma_1 = (d ln p/d ln
+n)_s = 1 + 1/c_v, the adiabatic index of the pulsation equation (F21 appendix line 386 defines
+gamma the same way).

@@ -20,6 +20,7 @@ from scipy import integrate, linalg, optimize, special
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+sys.path.insert(0, os.path.join(HERE, "..", "..", "..", "python"))
 import lib  # noqa: E402
 
 GS, GW = special.roots_legendre(48)
@@ -146,6 +147,7 @@ def pulsation(y0, b, J=200, Js=()):
     r, wr, p, rho, n, e2L, eL, Phi = (bg[k] for k in ["r", "wr", "p", "rho", "n", "e2L", "eL", "Phi"])
     g_f21 = 1 + p/(rho - n)
     g_mj = np.array([gamma1_mj(t) for t in bg["T"]])
+    g_mjpu = np.array([1 + t/(lib.mean_w(t) - 1) for t in bg["T"]])   # 1 + p/u of a full MJ gas
     e3 = np.exp(3*Phi)*eL
     den = np.sum(wr*e3*p*r**2)
     t1 = np.sum(wr*e3*(16*p + (e2L - 1)*(rho + p))*(e2L - 1)*r**2)/den/36
@@ -159,7 +161,8 @@ def pulsation(y0, b, J=200, Js=()):
     res["T_c"] = b*np.exp(y0)
     res["Gamma1_c"] = gamma1_mj(res["T_c"])
     B00 = np.sum(wr*eL**3*np.exp(-Phi)*(rho + p)*r**2*(r*np.exp(Phi))**2)
-    for lab, g in [("f21", g_f21), ("mj", g_mj)]:
+    res["gavg_mjpu"] = np.sum(wr*e3*g_mjpu*p*r**2)/den
+    for lab, g in [("f21", g_f21), ("mj", g_mj), ("mjpu", g_mjpu)]:
         lam, rq1, eta = fem_lowest(bg, g)
         res["omega2_" + lab] = lam
         res["omega2K1_" + lab] = rq1
@@ -229,7 +232,8 @@ def main():
 
     # ---------- onsets: F21 trial function (K1) and finite elements (J = 200; J = 400 check)
     keys = ["y0", "w0", "Z0", "v0", "C", "M", "R", "N", "Eb", "gavg_f21", "gavg_mj", "gamma_cr",
-            "gamma_c", "Gamma1_c", "T_c", "omega2K1_f21", "omega2_f21", "omega2K1_mj", "omega2_mj"]
+            "gamma_c", "Gamma1_c", "T_c", "omega2K1_f21", "omega2_f21", "omega2K1_mj", "omega2_mj",
+            "gavg_mjpu", "omega2K1_mjpu", "omega2_mjpu"]
 
     def val(pr, lab, kind):
         return pr[("omega2K1_" if kind == "K1" else "omega2_") + lab]
@@ -244,7 +248,7 @@ def main():
         ys = np.linspace(lo, hi, 70)
         scan = [pulsation(t, b) for t in ys]
         scans[fam] = [{k: s[k] for k in keys} for s in scan]
-        for lab in ["f21", "mj"]:
+        for lab in ["f21", "mj", "mjpu"]:
             for kind in ["K1", "FEM"]:
                 vals = np.array([val(s, lab, kind) for s in scan])
                 idx = np.where((vals[:-1] > 0) & (vals[1:] <= 0))[0]
