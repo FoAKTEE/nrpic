@@ -351,7 +351,7 @@ Predictions before the run:
   athenak/src/driver/driver.cpp lines 145-176 [VERIFIED]. I did not rebuild the README's 2S
   predictor for X (not checked).
 
-## Entry 12 (19:14 PST): V4 derivation (second-order spatial gauge of the flat TT projection), before any test
+## Entry 12 (19:11 PST): V4 derivation (second-order spatial gauge of the flat TT projection), before any test
 
 Set-up read (allowed, set-up only): first_source/inputs/crossed.athinput and the batch list
 of run B-20261115-165353-b592d43: the second-gauge run cw_eps1_gd differs from cw_eps1 only
@@ -398,7 +398,7 @@ evaluated exactly at X = x + zeta(x)):
 - P4.3 zeta recovered by (B) from the exact metric difference equals the analytic zeta up to
   O(eps^2) (relative O(eps)).
 
-## Entry 13 (19:18 PST): V4 pure-gauge test outcome (run B-20261121-031220-8b9c4d7)
+## Entry 13 (19:12 PST): V4 pure-gauge test outcome (run B-20261121-031220-8b9c4d7)
 
 [VERIFIED, results/v4_gauge_test.json, figs/v4_gauge_test.png] All three hold.
 - P4.1: Delta = Lambda(h') - Lambda(h) falls as eps^2 (log2 ratios 2.000) and Delta - G as
@@ -413,7 +413,7 @@ evaluated exactly at X = x + zeta(x)):
   eps (order 1.000) and G built with it still leaves an eps^3 residual (3.00).
 Next: only now read first_source/fslib/gauge.py.
 
-## Entry 14 (19:27 PST): comparison with fslib/gauge.py, and predictions for the scan (v4_scan.py, v4_energy.py)
+## Entry 14 (19:15 PST): comparison with fslib/gauge.py, and predictions for the scan (v4_scan.py, v4_energy.py)
 
 Read first_source/fslib/gauge.py (after entry 13). Its G_tot = G + G_x maps the code's
 coordinates to "spatially transverse" ones (conformal metric = TT + homogeneous traceless
@@ -451,7 +451,7 @@ Predictions, before the runs:
   0.3 (a radiative component would dominate) or the |m| = sqrt 2 ratio departs from
   8/(pi^2 a) by more than a factor 2 at a <= 20.
 
-## Entry 15 (19:28 PST): outcome of the scan and energy runs (B-20261121-031808-3ef8c39, B-20261121-031833-c0ec479)
+## Entry 15 (19:26 PST): outcome of the scan and energy runs (B-20261121-031808-3ef8c39, B-20261121-031833-c0ec479)
 
 [VERIFIED, results/v4_scan.json, results/v4_energy.json, figs/v4_scan.png, figs/v4_energy.png]
 c_+ = + coefficient at m = (1,1,0) of Lambda(gt/det^(1/3) - delta) (my e+ of khat = (1,1,0)/sqrt 2),
@@ -491,3 +491,18 @@ times agree to 2e-9 (64^3) and 5e-7 (32^3); beta = 0 at t = 0.
   part grows much more slowly than a^2 (c_+^zs ~ 1.5e-5 .. 2.0e-5 from a = 5 to 60), i.e. it is
   nearly static. Either way kinetic << gradient: no radiative component. The eps = 0 run has no
   TT source; its ratio (up to 6e3) is a ratio of two rounding-level quantities and meaningless.
+
+## Entry 16 (19:28 PST): read the ledger rows (after commit 009e24ee) and classified them
+
+Read only note/tables/ledger.tex lines 96-125 (the block "Spatial gauge of the projection",
+lines 114-125, and the energy row 101; the working copy differs from HEAD there only in the
+format of row 208). Classification in VERIFIER.md section 5. Facts found by comparing:
+- rows 118-119: my implementation of the transverse-reference method reproduces the ledger's
+  after/before ratios to 1 % (0.0164, 0.0212, 0.0207, 0.0608, 0.1045 against 0.0161, 0.0212,
+  0.0207, 0.0608, 0.1043); the absolute values differ by the normalization |s| against my
+  |c_+^zs| (factor 0.76-1.04). The direct map (route A) leaves 1-6x less at a >= 10.
+- row 101: the ledger's 0.00821 (eps 1) and 0.00857 (eps 0.1) are exactly my ratios at the
+  dumps nearest t = 5, 6, ..., 21 (restart cadence); over all bin dumps with a >= 12 the eps 1
+  maximum is 0.00882 at a = 13.0 (between two sampled times).
+- rows 116-117 (eps 1): |G_tot/c_+| = 0.0112 at a = 20 and 0.0397 at a = 40 as in the ledger.
+Not checked: rows 120-125 and the eps = 0.1, 0.3 entries of rows 116-117.

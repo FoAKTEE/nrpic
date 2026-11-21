@@ -15,7 +15,7 @@ checked by me in the run named; [JUDGEMENT] = my inference; [BACKGROUND] = stand
 | V1 exact solutions | (F) linear TT plane wave of `z4c_linear_wave` (core/requests-b) in ADM/Z4c variables; (X) tensor mode on Einstein-de Sitter in the code's gauge (a = (1 + t/2)^2, alpha = a, zero shift): T'' + (4/(t+2)) T' + k^2 T = 0, T = c1 j1(x)/x + c2 y1(x)/x, x = k (t+2), T(0) = 0, T'(0) = 1; Weyl parts E, B to first order. Sympy residuals, ODE integration (DOP853), the generator's polarization tensors against my basis | B-20261120-222342-8cda367 (failed attempt B-20261120-222232-3d7d57e) |
 | V2 readers and diagnostics | bin reader (single and double, header checks, re-blocked and truncated files), TT projection, Weyl E/B and fixed-direction Psi_4 tested on analytic flat and FLRW fields and on the initial dumps | B-20261120-222822-e26afae |
 | V3 measurement | all 337 dumps of F (N = 16, 32, 48, 64) and X (N = 16, 32, 48, 64, and 64 at x10): mode coefficients at +K of the TT route and of the Weyl route (spectral and sixth-order derivatives), background of X; errors against the exact solution, orders, plus/cross, x1/x10 | B-20261121-025826-80973e3 (measurement), B-20261121-030121-58fe5dc (summary), B-20261121-030542-b2e3eff (supplement), B-20261121-030848-59f89b5 (classification numbers, own F predictor); failed: B-20261121-025612-ed4a875 (my shell timeout), B-20261121-030110-52ae004 (key sort) |
-| V4 gauge piece | own derivation (plain and conformal metric), exact pure-gauge test, term-by-term comparison with `first_source/fslib/gauge.py`, recomputation from the raw scan dumps, TT energies | B-20261121-031220-8b9c4d7 (test); scan and energies: section 5 |
+| V4 gauge piece | own derivation (plain and conformal metric), exact pure-gauge test, term-by-term comparison with `first_source/fslib/gauge.py`, recomputation from the raw scan dumps, TT energies | B-20261121-031220-8b9c4d7 (test), B-20261121-031808-3ef8c39 (scan), B-20261121-031833-c0ec479 (energies) |
 
 Error measure: complex amplitude of each polarization at +K. F: Z = 2i c(K) of h (h alone),
 and the forward combination Z_F = (Z_h + i Z_h'/w)/2 (the README's W = P + i P'/|k|); X:
@@ -128,7 +128,72 @@ Holds for both set-ups [VERIFIED for the numbers; the level statements are mine]
 
 ## 5. V4: the spatial-gauge piece
 
-(written after the scan run; see JOURNAL entries 12-16)
+**Derivation** (JOURNAL entry 12, before any reading of fslib). Both scan runs use the lapse
+condition along the normal observers (the second-gauge run sets `lapse_advect = 1`), so they
+share the foliation and differ on each slice by a spatial map X = x + zeta(x), zeta = int beta dt
+at first order. For h = gamma/a^2 - delta, Lambda h_new = Lambda h_old + G + O(3) with
+G = Lambda[L_zeta h_old + d zeta . d zeta^T] = Lambda[L_zeta hbar] (hbar the mean of the two
+metrics); for the conformal metric gt = det(gamma)^(-1/3) gamma (a density of weight -2/3)
+Gt = Lambda[L_zeta ht_old + d zeta . d zeta^T - (2/3) div zeta (ht_old + 2 d_(i zeta_j))]
+= Lambda[L_zeta htbar - (2/3) div zeta htbar].
+
+**Exact pure-gauge test** [VERIFIED, B-20261121-031220-8b9c4d7, `figs/v4_gauge_test.png`]: on
+32^3, random first-order metric and displacement scaled by eps, exact transform: Lambda h
+changes as eps^2 (slope 2.000) and Lambda h - G as eps^3 (3.000), plain and conformal, one-sided
+and symmetric forms; on conformal data the plain formula (no density term) leaves 74 % of the
+change (slope 2): the -(2/3) div zeta term is needed for gt. zeta from the metric difference is
+exact to O(eps) and gives the same eps^3 residual.
+
+**fslib/gauge.py** (read after the test): `gauge_piece_total` = G + G_x with
+G = Lambda[M^T M - (2/3)(div xi)(M + M^T)], G_x = Lambda[M^T A + A M - (2/3)(tr M) A + (xi.grad) A],
+A = Lambda h + h0, xi from the traceless non-TT part of h. Term by term this is my one-sided
+conformal formula with the reference coordinates chosen spatially transverse (h_old = A,
+zeta = xi), and its inversion formula equals mine [VERIFIED by derivation and the exact test].
+It refers each gauge to its own transverse coordinates; its products are dealiased (mine on the
+N grid and, as a check, on a 2N grid: no difference above 1e-12 at m = (1,1,0)).
+
+**Recomputation from the raw scan dumps** (eps = 1, c_+ of Lambda(gt/det^(1/3) - delta) at
+m = (1,1,0), divided by |c_+^zs|; interpolated to t(a) between bin dumps) [VERIFIED,
+B-20261121-031808-3ef8c39, `figs/v4_scan.png`]:
+
+| a | raw, 64^3 | after G, zeta = int beta (direct) | after G, zeta from the metric difference | after G_tot in each gauge (my implementation of the fslib method) | raw, 32^3 | after G direct, 32^3 | float32 floor |
+|---|---|---|---|---|---|---|---|
+| 5 | 1.26e-3 | 2.31e-5 | 2.33e-5 | 2.06e-5 | 1.21e-3 | 3.28e-5 | 4.7e-6 |
+| 10 | 3.26e-3 | 4.15e-5 | 4.56e-5 | 6.92e-5 | 3.26e-3 | 5.10e-5 | 7.0e-6 |
+| 20 | 1.39e-2 | 4.81e-5 | 8.82e-5 | 2.88e-4 | 1.39e-2 | 5.8e-6 | 4.1e-6 |
+| 40 | 4.31e-2 | 6.57e-4 | 9.46e-4 | 2.62e-3 | 4.29e-2 | 7.81e-4 | 4.0e-6 |
+| 60 | 8.74e-2 | 2.71e-3 | 3.62e-3 | 9.13e-3 | 8.46e-2 | 4.95e-3 | 2.6e-6 |
+
+- The two displacement routes agree (zeta from the metric difference = int beta dt to 2e-4 ..
+  5e-3, the size of the first-order non-TT metric), and the transverse displacements satisfy
+  xi_gd - xi_zs = zeta to the same level: the two runs are related by a spatial map at first
+  order, as the derivation assumes.
+- The gauge piece removes the difference by 55x, 79x, 289x, 66x, 32x (direct route, 64^3);
+  G_tot in each gauge by 61x, 47x, 48x, 16x, 9.6x. The residual depends weakly on resolution
+  (64^3 over 32^3: 0.55 .. 0.8) and lies above the float32 rounding floor of the bin dumps.
+- TT energies [VERIFIED, B-20261121-031833-c0ec479, `figs/v4_energy.png`]: rho_kin/rho_grad of the
+  TT part (gw_diag definitions) over all dumps with a >= 12: largest 8.82e-3 (eps = 1, zero shift,
+  a = 13.0), 8.59e-3 (eps = 0.1, a = 99), 8.0e-3 (eps = 0.3), 1.80e-2 (eps = 1, Gamma driver,
+  a = 84); 32^3: 8.85e-3 and 1.35e-2. The TT part is nearly static (c_+ = 1.5e-5 .. 2.0e-5 from
+  a = 5 to 60), so kinetic << gradient; a TT wave would give a ratio near one.
+
+**Verdicts on the ledger rows** (note/tables/ledger.tex, block "Spatial gauge of the
+projection", lines 114-125, and the energy row, line 101; the working copy and HEAD agree there):
+
+| Row | Ledger | Mine | Verdict |
+|---|---|---|---|
+| 115 | exact pure-gauge data: slopes of Lambda h and Lambda h - G: 2, 3; with a slicing change Lambda h - G: 2 | 2.000, 3.000 (plain and conformal) | CONFIRMED for the spatial part; the slicing-change slope NOT CHECKED |
+| 116 | largest \|G_tot/c_+\| for a <= 20, zero shift, eps = 0.1, 0.3, 1: 0.0055, 0.00596, 0.0112 | eps = 1: 1.0e-3, 2.4e-3, 0.0112 at a = 5, 10, 20 | CONFIRMED for eps = 1 (sampled at three a only); eps = 0.1, 0.3 NOT CHECKED |
+| 117 | the same at a = 40: 0.0163, 0.0185, 0.0397 | eps = 1: 0.0397 | CONFIRMED for eps = 1 |
+| 118 | gauge difference of c_+ over \|s\|, as projected, a = 5..60: 0.00121, 0.0036, 0.0147, 0.0487, 0.115 | over \|c_+^zs\|: 1.26e-3, 3.26e-3, 1.39e-2, 4.31e-2, 8.74e-2 | CONFIRMED IN PART: same size and growth; the normalization differs (\|s\| is not \|c_+^zs\|: my/theirs 1.04, 0.91, 0.95, 0.89, 0.76) |
+| 119 | the same after G_tot in each gauge: 1.95e-5, 7.64e-5, 3.05e-4, 2.96e-3, 0.012 | 2.06e-5, 6.92e-5, 2.88e-4, 2.62e-3, 9.13e-3; after/before 0.0164, 0.0212, 0.0207, 0.0608, 0.1045 against the ledger's 0.0161, 0.0212, 0.0207, 0.0608, 0.1043 | CONFIRMED (reduction factors to 1 %; normalization as row 118). But the direct map leaves 1-6x less (4.8e-5 at a = 20, 2.7e-3 at a = 60): at a >= 10 much of the ledger's residual is the third-order remainder of the transverse-reference method, not a property of the code [JUDGEMENT] |
+| 120 | median corrected/projected where projected > 1e-3 \|s\|: 0.084, 0.0928; share 0.89 | my five a: 0.016 .. 0.10 (median 0.021) | NOT CHECKED (all dumps not processed) |
+| 121 | median with the quadratic piece alone: 5.24, 5.32 | not computed | NOT CHECKED |
+| 122 | departure from s g at a = 10, 20 | not computed (s, g not defined in what I read) | NOT CHECKED |
+| 123 | rms non-TT zero shift over driven shift, a >= 10: 16.2, 52.2 | not computed | NOT CHECKED |
+| 124 | median relative gauge difference, a <= 64: magnetic Weyl 0.00121, flat TT 0.0139 | not computed | NOT CHECKED |
+| 125 | first-order slicing of the three-wave runs | other runs | NOT CHECKED |
+| 101 | largest kinetic over gradient energy of the TT part for a >= 12: eps = 0.1, 1: 0.00857, 0.00821 | over all bin dumps: 0.00859 (a = 99), 0.00882 (a = 13.0); the ledger's values are exactly mine at the dumps nearest t = 5, 6, ..., 21 (the restart cadence) | NOT CONFIRMED AS WORDED for eps = 1 (the maximum over a >= 12 is 0.0088, at a = 13, between the sampled times); eps = 0.1 CONFIRMED; the conclusion (kinetic << gradient) holds, also for the driven shift (0.018) |
 
 ## 6. The three weakest points of the evidence for criterion 1
 
@@ -157,7 +222,31 @@ Holds for both set-ups [VERIFIED for the numbers; the level statements are mine]
   README's normalization.
 - Test F2 (direction (1,2,0)) and the X step-split run of round 1 (other helpers).
 - AthenaK's built-in Weyl/Psi_4 output.
+- V4: the slicing-change part of the pure-gauge test; ledger rows 120-125; eps = 0.1 and 0.3 in
+  rows 116-117; the gauge comparison at every dump (I used a = 5, 10, 20, 40, 60 only); the
+  restart (double-precision) dumps of the scan (I used the float32 bin dumps and estimated their
+  rounding floor); running fslib's own code (compared by formula and by my implementation of
+  its method, not executed).
 
 ## 8. Requests
 
-(section filled at the end)
+To the lead of B-emd-gw (rewordings; nothing blocks G1 criterion 1):
+1. waves/README F5 and the criterion paragraph: "spectral Weyl vs TT 1.2e-11" holds only for the
+   forward combination W = P + i P'/|k| (my evaluation: 6.4e-11); with h alone the two differ by
+   the backward discrete wave theta^6/1120 |sin w t| (3.2e-6 at N = 16). Say so.
+2. waves/README X1: the plus amplitudes at N = 48, 64 (4.362e-7, 1.538e-7) are above the cross
+   values by 1.1e-8 and 1.4e-8 relative; on the same dumps I get 4.2346e-7 and 1.3775e-7, equal
+   to the cross to 2e-9, and the x10 run gives 1.40e-7 for both. Flag them as rounding-limited or
+   replace them; "deviates by up to 39 %" is a phase statement.
+3. waves/README F2, F4, X2, X3: the Weyl-6 numbers depend on how the sixth-order curvature is
+   built (mine differs by 4-5 % in amplitude and 14-24 % in the TT difference); state the
+   construction next to the numbers.
+4. ledger row 101: give 0.0088 (eps = 1, a = 13.0, all dumps) or state that the maximum is over
+   the restart cadence; consider adding the driven-shift value 0.018 (a = 84).
+5. ledger rows 118-119: define s next to the rows; consider a row with the direct
+   zero-shift-to-driven-shift map (residual 2.3e-5, 4.2e-5, 4.8e-5, 6.6e-4, 2.7e-3 at
+   a = 5..60, 64^3), which shows that most of the G_tot residual at a >= 10 is the method.
+6. Future scans: the bin output of the scan is float32; at a <= 10 it puts a floor of ~5e-6
+   (relative to c_+) under gauge differences. Double-precision bin output (as in test X) removes it.
+
+To core: none.
