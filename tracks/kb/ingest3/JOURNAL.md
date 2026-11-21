@@ -317,3 +317,19 @@ QA: ok 720 of 745 (96.64 %, the same with the strict definition); golden hits wi
 of the first QA run (hybrid paper 28/32, location 23/32). Figures: the final state replaces "after
 35 additions" (745 papers, 720 ok); fig_bib_before_after shows astro-ph/0003278 with 33 cited keys
 and 33 citation-row keys with entries. Refuted by other counts or a hybrid paper hit rate below 27/32.
+
+## Outcome P11 (runs kb-20261121-222222-28b1c1b QA and final state, kb-20261121-222623-32b3c1e figures; QA_REPORT.md and both PNGs read)
+
+Held. QA: 745 of 745 ingested, 25 not ok (pdf 3, review 22): ok 720, rate 96.64 % recorded and
+strict, 97.05 % with pdf; golden hybrid paper 28/32, location 23/32; text 27/32, 21/32; rerank
+28/32, 25/32 (unchanged from the first QA run). 67865 entries, 109730 citation rows, 14810 in the
+corpus. Figures redrawn on the final state; astro-ph/0003278 now shows its 33 cited keys and its
+citation rows with entries. (The first figure run, kb-20261121-222607-c7bf84d, carried a stale
+run label in the legend; superseded by -222623-32b3c1e.)
+
+## Where this session stopped (2026-11-21 22:28 UTC)
+
+All steps 1-8 done, plus the definition-skip fix and the re-ingest of the 31 papers it changes.
+Not done: the six old-style reference lists and plain-TeX headings (optional), the snapshot (lead).
+One test of the kb suite fails since the additions: tests/test_meta_papers.py hard-codes 26 rows
+(request to the lead in README.md).
