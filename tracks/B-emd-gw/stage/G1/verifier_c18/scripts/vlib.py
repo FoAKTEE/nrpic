@@ -309,6 +309,10 @@ def measure(d, energies=True, spectrum=False, gauge=False):
         r["frac_ge15p5"] = float(P[mag >= 15.5].sum() / ms_tt)
     if gauge:
         Gq, Gt = gauge_piece(h, Fh, Th, g)
+        r["rms_Gq"] = float(np.sqrt(g.power(Gq).sum()))
+        r["rms_Gtot"] = float(np.sqrt(g.power(Gt).sum()))
+        r["rms_TT_minus_Gq"] = float(np.sqrt(g.power(Th - Gq).sum()))
+        r["rms_TT_minus_Gtot"] = float(np.sqrt(g.power(Th - Gt).sum()))
         for key, GG in (("Gq", Gq), ("Gtot", Gt)):
             AG = {nm: g.amp_from_fft(GG, m) for nm, (m, _, _) in BASIS.items()}
             for nm, (hp, hx) in pol(AG).items():

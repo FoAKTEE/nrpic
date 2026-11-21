@@ -182,3 +182,14 @@ Line 101: same finding as verifier3 (0.0088 over all dumps), still owed in ledge
 here: the wording of line 125 (initial slice), the second digit of line 197, and independent
 evidence for G_tot (exact pure-gauge test plus lines 116-123). Section 4 of VERIFIER-C18.md.
 Not done: line 124, the residuals of line 199, line 217, wave-1 lines outside the G0 claims.
+
+## Entry 7 (05:45 PST): wave-1 lines 26-27 (earlier three-wave runs), prediction before M1e
+
+M1e: m1_measure --gauge on the restart dumps east.00002 (a = 36) and east.00013 (a = 1000) of
+runs/cosmo/dav_c256_n128_t and _pcs4bt (128^3). Predictions: rms h^TT at a = 36 and 1000 equal
+the ledger's 1.21e-9, 2.49e-9 and 1.22e-9, 4.31e-9 to the printed digits (same definition:
+traceless conformal metric, TT, k = 0 and Nyquist removed); the last a is 1.0e3; the rms of
+the spatial-gauge piece (2.06e-10, 2.23e-10) is matched by my quadratic piece G (not G_tot) to
+10 per cent, and the rms after its removal (2.5e-9, 4.32e-9) to the printed digits; the
+kinetic over gradient energy (0.017, 0.0188) to 5 per cent. "Square of the rms non-TT part"
+(1.28e-9, 1.34e-9) is ambiguous: I report rms_nonTT and its square and judge which one fits.

@@ -19,14 +19,20 @@ import vlib  # noqa: E402
 OUT = os.environ.get("NRPIC_RUN_DIR", "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/m1")
 
 
+BASE = "cw"
+ONLY = None
+
+
 def files(d, kind):
     if kind == "bin":
-        return sorted(glob.glob(os.path.join(d, "bin", "cw.z4c.*.bin")))
-    if kind == "dbin":
-        return sorted(glob.glob(os.path.join(d, "bin", "cw.z4cd.*.bin")))
-    if kind == "rst":
-        return sorted(glob.glob(os.path.join(d, "rst", "cw.*.rst")))
-    raise ValueError(kind)
+        out = sorted(glob.glob(os.path.join(d, "bin", f"{BASE}.z4c.*.bin")))
+    elif kind == "dbin":
+        out = sorted(glob.glob(os.path.join(d, "bin", f"{BASE}.z4cd.*.bin")))
+    elif kind == "rst":
+        out = sorted(glob.glob(os.path.join(d, "rst", f"{BASE}.*.rst")))
+    else:
+        raise ValueError(kind)
+    return [f for f in out if ONLY is None or any(f.endswith(o) for o in ONLY)]
 
 
 def one(args):
@@ -50,8 +56,13 @@ def main():
     ap.add_argument("--kinds", default="bin,dbin")
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--light", action="store_true", help="box-mode amplitudes only (direct sums)")
+    ap.add_argument("--base", default="cw", help="basename of the dumps")
+    ap.add_argument("--only", default=None, help="comma-separated file-name endings to keep")
     ap.add_argument("cases", nargs="+")
     a = ap.parse_args()
+    global BASE, ONLY
+    BASE = a.base
+    ONLY = a.only.split(",") if a.only else None
     os.makedirs(OUT, exist_ok=True)
     for c in a.cases:
         name, d = c.split("=", 1)
