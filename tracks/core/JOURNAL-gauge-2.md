@@ -425,3 +425,47 @@ Prediction V4 (written before submission):
   to 100 M is below twice the control's for both. If the radius of `v4-hole32` at
   100 M is within 10 per cent of `v4-leak`, the far zone alone shrinks the hole and
   the tracker candidate is no correction at any radius that fits inside a bubble.
+
+## Entry 8 (10:40): first look at job B while it runs; why the hole shrinks; prediction for job D
+
+Job B (run core-20261121-175300-77c17ae, Slurm 4815) started at 10:12 when job A was
+stopped. First look at its first three runs (unregistered reads of the files while the
+job runs; the judged numbers follow from registered analyses in entry 9):
+- `es-rho` (relaxation only in the dust): the largest lapse on the mesh reaches 1.95,
+  the horizon mass swings by 4e-3 from 55 M on, tracer groups are off by per cents.
+- `es-hole` (relaxation off within 16 M of the puncture): horizon radius 1.6 M and
+  steady, mass flat from 78 M, wall tracers at the 6e-4 level.
+- `v8-hole16` to 72 M (before the faces): radius 1.4 to 1.75 M, not shrinking.
+Processor test T5 (run core-20261121-182235-6083050): `lapse_leak_hole` without a tracker
+writes the bytes of the first pass on the first 16 steps of L2 (bound ball, cells M/2;
+9 of 9 files) and the first 8 steps of L3 (collapse mesh; 7 of 7 files).
+
+Why the hole shrinks under the first pass [JUDGEMENT; consistent with every run so far,
+tested by the tracker runs]. Without shift, 1+log keeps alpha - 2 ln sqrt(gamma) constant
+along the normal observers: the lapse can only fall back to its stationary value if the
+volume element comes back too, so plain 1+log cannot stretch the coordinates for good.
+The relaxation term breaks exactly this: d(alpha - 2 ln sqrt(gamma))/dt = -(alpha/T)
+ln(alpha/alpha_0), so wherever the lapse is held above alpha_0 the volume element of the
+normal observers grows by (1/2T) times the time integral of ln(alpha/alpha_0) (with T =
+2 M and an excess of 0.07 falling to 0.015 that is a factor e in 200 M). In the dust that
+is the intended comoving expansion. In the vacuum bubble it is a stretching of the
+coordinates, and the normal observers carry it inward: they drift towards the puncture
+through the mesh at the speed of the shift (0.06 at 5 M, 0.25 at 1 M in job A), so the
+stretched elements made between 7 and 12 M, where the first pass holds the lapse just
+above 1, reach the horizon after 50 to 150 M. That is the delayed, slowing shrinking of
+V-1GB, and the reason a switch-off radius must cover the zone from which the normal
+observers reach the hole during the run (the shift is 0.002 at 20 M: from 16 M the
+drift takes more than 500 M).
+
+Job D (`card_d.list`): the first pass on the Einstein-Straus mesh of job B (same input
+as `es-hole` with `lapse_leak_hole = 0`), 100 M, about 9 minutes (0.15 card-hours; the
+item then stands at about 1.43 of 1.5). It is the reference on the same mesh, which I
+had dropped from job B.
+Prediction ES-f2 (written before submission): horizon radius within 5 per cent of
+Track D's ES-1G (1.40 M at 25 M, 1.06 M at 100 M); horizon mass rising, largest minus
+smallest over 40 to 100 M between 1.5e-4 and 4e-4; wall tracers (R_0 = 36 M) between
+2e-4 and 7e-4 and the group at 40 M between 1e-3 and 2e-3 until tau = 100 M, that is, the
+same as `es-hole` within a factor 2 (the wall error of this mesh is set by its cells of
+2 M, not by the switch-off) [JUDGEMENT]. If the first pass follows the wall three times
+better than `es-hole`, the switch-off costs accuracy at the wall and the radius 16 M is
+too close to it.
