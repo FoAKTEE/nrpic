@@ -1,0 +1,118 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261121-130242-7781791",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "waves r1 step 3: analysis of XS on processors (test X, dt_expansion=0.001, same executable and data as the reference runs) at N=16,32, against the exact mode, the 2S prediction and the reference; predictions XS-1..XS-4 JOURNAL 2026-11-20 22:30",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "env",
+    "NWORK=3",
+    "OMP_NUM_THREADS=1",
+    "python3",
+    "tracks/B-emd-gw/waves/scripts/analyze_r1.py",
+    "--mode",
+    "xdt",
+    "--tag",
+    "xdt_cpu_",
+    "--dt-expansion",
+    "0.001",
+    "--ref",
+    "tracks/B-emd-gw/waves/results/final_results.json",
+    "--ref-dumps",
+    "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-164402-7438a99",
+    "--runs",
+    "16=B-20261120-222849-e5673dc/N16,32=B-20261120-222849-e5673dc/N32"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "778179163e8044b3344430b9862c8d8e380b6774",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/waves"
+    ],
+    "outside_package": {
+      "count": 1,
+      "first": [
+        "?? tracks/B-emd-gw/stage/G1/verifier_c18/"
+      ]
+    },
+    "merge_base_main": "973f2dbc2e32338b1ea99d14ee4d03719af9a8c7",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/waves/scripts/analyze_r1.py",
+      "role": "argv",
+      "sha256": "7e3a1079c7ac324fe374d1da860d0dbdf5b3b88c634c9fbfa423cff3b4fe945c",
+      "bytes": 18625,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/waves/results/final_results.json",
+      "role": "argv",
+      "sha256": "ec85657b1559894fde850fb171b9999f1b17a62dac3bef9f160f2c6005b9edf1",
+      "bytes": 32023,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 3,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261121-130242-7781791",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T13:02:42Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.6912,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 0,
+    "runs": 255,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
