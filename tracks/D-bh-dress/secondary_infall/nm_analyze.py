@@ -14,9 +14,21 @@ Compares with the matched shell references (nm_shells.py) at the same times and 
 self-similar solution of test 2 (selfsimilar_profile.npz), r_ta from G M_ta t^2/r_ta^3 =
 pi^2/8 with the measured M_ta. Writes nm_analysis.json, nm_growth.txt and figures to --out.
 
+Wave 3 (late snapshots, a/a_i up to 30): the radial bins run to 2048 M (nm_late.LEDGES_LATE;
+its first 27 bins are the wave-2 bins, so wave-2 numbers are unchanged), the growth table
+includes a/a_i = 12, 16, 24, 30, and for every snapshot nearest to an a/a_i of --late_at
+(within 2 %) the "late" block compares, in units of lambda = r/r_ta with r_ta from the run's
+M_ta: the run's rho/rho_b with the self-similar solution binned in the same bins and with
+each matched shell reference (binned the same way at its nearest snapshot), on
+[lambda_min, 0.3] with lambda_min = max(4 dx/r_ta, 0.03), and the local logarithmic slopes
+(nm_late.compare, the code nm_predict.py used for the predictions). Extra figures:
+nm_late_profiles (profile, ratios, slopes per a/a_i) and nm_late_growth (dress/M_ta and
+M_ta/(M a/a_i) against the shells and the self-similar values; run/shells - 1).
+
 Usage: python3 nm_analyze.py --run LABEL:RUNDIR --ref LABEL:LAW:NPZ_JSON_PREFIX ...
-                             --selfsim selfsimilar_profile.npz
-  (--ref N128:kernel:/path/nm_shells_N128_kernel  attaches that reference to run N128)
+                             --selfsim selfsimilar_profile.npz [--late_at 4 8 16 30]
+  (--ref N128:kernel:/path/nm_shells_N128_kernel  attaches that reference to run N128;
+   LAW is kernel, plummer, point or hybrid)
 """
 import argparse
 import glob
@@ -32,9 +44,13 @@ sys.path.insert(0, os.path.normpath(os.path.join(HERE, "..", "..", "..", "python
 
 from common import load_figstyle, KAPPA, C_TA  # noqa: E402
 from nrpic import newton as nw                 # noqa: E402
+import nm_late as NL                           # noqa: E402
 
 SS_DRESS_FRAC = 2.0255 ** (-2.0 / 3.0)   # self-similar dress/M_ta (JOURNAL.md wave 1, 3d')
-LEDGES = np.geomspace(0.5, 256.0, 28)    # 0.1 dex bins for the profiles
+# 0.1 dex bins for the profiles (factor 2^(1/3)); wave 2 used geomspace(0.5, 256, 28), which
+# are the first 27 bins of these (identical to 1e-15)
+LEDGES = NL.LEDGES_LATE
+ROUND_A = (1.5, 2.0, 3.0, 4.0, 6.0, 8.0, 12.0, 16.0, 24.0, 30.0)
 
 
 def snaps_of(rundir):
@@ -145,6 +161,8 @@ def main():
     ap.add_argument("--stride", type=int, default=1,
                     help="use every stride-th snapshot (test of the sampling of the turnaround and "
                          "pericentre detection)")
+    ap.add_argument("--late_at", type=float, nargs="+", default=[4.0, 8.0, 16.0, 30.0],
+                    help="a/a_i of the late comparison with the self-similar solution")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     fs = load_figstyle()
@@ -184,10 +202,21 @@ def main():
             R[f"rm_{law}"], R[f"rd_{law}"] = rm, rd
         # growth at the round values of a/a_i
         out["growth"] = []
-        for aa in (1.5, 2.0, 3.0, 4.0, 6.0, 8.0):
-            if aa <= av[-1] + 1e-6:
-                out["growth"].append(dict(a=aa, mta=float(np.interp(aa, av, mta)),
-                                          dress=float(np.interp(aa, av, dr))))
+        for aa in ROUND_A:
+            if aa <= av[-1] * (1 + 2e-3):
+                ae = float(min(aa, av[-1]))      # the last snapshot may lie just before a_end
+                g_ = dict(a=aa, a_eval=ae, mta=float(np.interp(ae, av, mta)),
+                          dress=float(np.interp(ae, av, dr)))
+                g_.update(dress_over_mta=g_["dress"] / g_["mta"], mta_over_a=g_["mta"] / ae)
+                for law, ref in R["refs"].items():
+                    ag = ((p["t_i"] + ref["g_t"]) / p["t_i"]) ** (2.0 / 3.0)
+                    if ae <= ag[-1] * (1 + 2e-3):
+                        rm_ = float(np.interp(ae, ag, ref["g_mta"]))
+                        rd_ = float(np.interp(ae, ag, ref["g_dress"]))
+                        g_[f"{law}_mta"], g_[f"{law}_dress"] = rm_, rd_
+                        g_[f"{law}_mta_rel"] = g_["mta"] / rm_ - 1
+                        g_[f"{law}_dress_rel"] = g_["dress"] / rd_ - 1 if rd_ > 0 else None
+                out["growth"].append(g_)
         # local growth exponent of the dress, d ln M_dr / d ln a, over factors of 1.25 in a
         k = dr > 0
         lg = np.gradient(np.log(dr[k]), np.log(av[k]))
@@ -281,6 +310,49 @@ def main():
             prof.append(ent)
         out["profiles"] = prof
         R["prof"] = prof
+        # ---------- late comparison (wave 3): self-similar solution and shells in units of r_ta
+        late = []
+        for aa in a.late_at:
+            kk = int(np.argmin(np.abs(pa - aa)))
+            if abs(pa[kk] / aa - 1) > 0.02:
+                continue
+            pr = R["profiles"][kk]
+            tc = p["t_i"] + pr["t"]
+            rho_b = p["rho_i"] * (p["t_i"] / tc) ** 2
+            rho = np.array(pr["rho"])
+            mtak = float(R["rows"][kk]["mta"])
+            r_ta = NL.r_ta_of(mtak, tc)
+            cmp_, ssr, sl, sl_ss = NL.compare(rc, LEDGES, rho, ss, r_ta, R["dx"])
+            ent = dict(a_target=aa, a=float(pr["a"]), t=float(pr["t"]), M_ta=mtak,
+                       dress=float(R["rows"][kk]["dress"]), r_ta=float(r_ta), vs_selfsim=cmp_,
+                       rho=rho.tolist(), ssr=ssr.tolist(), slope=sl.tolist(), slope_ss=sl_ss.tolist())
+            for law, ref in R["refs"].items():
+                j = int(np.argmin(np.abs(ref["snap_t"] - pr["t"])))
+                rp = ref_profile(ref, j, rho_b)
+                mref = float(np.interp(ref["snap_t"][j], ref["g_t"], ref["g_mta"]))
+                r_ta_ref = NL.r_ta_of(mref, p["t_i"] + float(ref["snap_t"][j]))
+                cref, ssr_ref, slr, _ = NL.compare(rc, LEDGES, rp, ss, r_ta_ref, R["dx"])
+                ok = (rc >= 4 * R["dx"]) & (rc <= r_ta) & (rp > 0) & (rho > 0)
+                ratio = np.where(ok, rho / np.where(rp > 0, rp, np.nan), np.nan)
+                okl = ok & (rc / r_ta >= cmp_["lambda_min"]) & (rc / r_ta <= cmp_["lambda_max"])
+
+                def _dev(m_):
+                    if not m_.any():
+                        return None, None
+                    d_ = ratio[m_] - 1
+                    return float(np.max(np.abs(d_))), float(np.sqrt(np.mean(d_ ** 2)))
+                md4, rd4 = _dev(ok)
+                mdl, rdl = _dev(okl)
+                ent[f"ref_{law}"] = dict(
+                    rho=rp.tolist(), ssr=ssr_ref.tolist(), dt=float(ref["snap_t"][j] - pr["t"]),
+                    M_ta=mref, r_ta=float(r_ta_ref), slope=slr.tolist(), shells_vs_selfsim=cref,
+                    run_over_ref_4dx_rta=dict(r=rc[ok].tolist(), ratio=ratio[ok].tolist(),
+                                              max_dev=md4, rms_dev=rd4),
+                    run_over_ref_lambda_range=dict(lam=(rc[okl] / r_ta).tolist(),
+                                                   ratio=ratio[okl].tolist(), max_dev=mdl, rms_dev=rdl))
+            late.append(ent)
+        out["late"] = late
+        R["late"] = late
         summary[lab] = out
 
     # ---------- tables
@@ -297,7 +369,10 @@ def main():
 
     series = [fs.PAL["red"], fs.PAL["yellow"], fs.PAL["green"], fs.PAL["orange"]]
     cols = {lab: series[i % len(series)] for i, lab in enumerate(order)}
-    lsty = {"kernel": "-", "plummer": "--", "point": ":"}
+    lsty = {"kernel": "-", "plummer": "--", "point": ":", "hybrid": "-."}
+    a_max = max(max(x["a"] for x in runs[lab]["rows"]) for lab in order)
+    m_max = max(max(x["mta"] for x in runs[lab]["rows"]) for lab in order)
+    a_ticks = [t_ for t_ in (1.5, 2, 3, 4, 6, 8, 12, 16, 24, 30) if t_ <= a_max * 1.05]
 
     # ---------- figure 1: growth
     fig, axs = plt.subplots(2, 1, figsize=(fs.COLUMN_WIDTH * 1.5, 6.4), sharex=True,
@@ -322,23 +397,25 @@ def main():
                 axs[1].plot(av[k], mta[k] / R["rm_kernel"][k] - 1, "o", ms=2.5, color=c)
                 kd = k & (R["rd_kernel"] > 0.02)
                 axs[1].plot(av[kd], dr[kd] / R["rd_kernel"][kd] - 1, "s", ms=2.5, mfc="none", color=c)
-    aa = np.linspace(1, 8, 50)
+    aa = np.linspace(1, max(8.0, a_max), 50)
     axs[0].plot(aa, 1 + C_TA * aa, **fs.GUIDE, label=r"self-similar: $1 + 0.565\,a/a_i$, $0.625\,M_{\rm ta}$")
     axs[0].plot(aa, SS_DRESS_FRAC * (1 + C_TA * aa), **fs.GUIDE)
-    axs[0].plot([], [], color=fs.PAL["blue"], lw=1.0, label="shells, mesh kernel")
-    axs[0].plot([], [], color=fs.PAL["blue"], lw=1.0, ls="--", label="shells, Plummer $s_{\\rm eff}$")
-    axs[0].plot([], [], color=fs.PAL["blue"], lw=1.0, ls=":", label="shells, $s$ = 0.05")
+    laws_used = sorted({law for lab in order for law in runs[lab]["refs"]})
+    names = {"kernel": "mesh kernel", "plummer": "Plummer $s_{\\rm eff}$", "point": "$s$ = 0.05",
+             "hybrid": "hybrid (kernel seed, dust unsoftened)"}
+    for law in laws_used:
+        axs[0].plot([], [], color=fs.PAL["blue"], lw=1.0, ls=lsty[law], label=f"shells, {names[law]}")
     axs[0].set_yscale("log")
-    axs[0].set_ylim(0.02, 8)
+    axs[0].set_ylim(0.02, max(8.0, 1.5 * m_max))
     axs[0].set_ylabel(r"mass [$M$]")
     axs[0].legend(loc="lower right", fontsize=7, ncol=2)
     axs[1].axhline(0, **fs.GUIDE)
     axs[1].axhspan(-0.02, 0.02, color="grey", alpha=0.15)
     axs[1].set_ylim(-0.15, 0.15)
     axs[1].set_xscale("log")
-    axs[1].set_xlim(1.15, 8.5)
-    axs[1].set_xticks([1.5, 2, 3, 4, 6, 8])
-    axs[1].set_xticklabels(["1.5", "2", "3", "4", "6", "8"])
+    axs[1].set_xlim(1.15, max(8.5, 1.06 * a_max))
+    axs[1].set_xticks(a_ticks)
+    axs[1].set_xticklabels([f"{t_:g}" for t_ in a_ticks])
     axs[1].set_xlabel(r"$a/a_i$", labelpad=-2)
     axs[1].set_ylabel("run / kernel shells $-$ 1")
     fs.save(fig, os.path.join(a.out, "nm_growth"))
@@ -380,7 +457,7 @@ def main():
         axr.axhline(1, **fs.GUIDE)
         axr.axhspan(0.7, 1.3, color="grey", alpha=0.15)
         axr.set_ylim(0.3, 1.7)
-        axr.set_xlim(0.5, 250)
+        axr.set_xlim(0.5, max(250.0, 1.6 * R["prof"][-1]["r_ta_selfsim_def"]))
         axr.set_xlabel(r"$r$ [$GM/c^2$]", labelpad=-2)
         if i == 0:
             ax.set_ylabel(r"$\rho/\rho_b(t)$ (dust)")
@@ -396,7 +473,7 @@ def main():
     for lab in order:
         R = runs[lab]
         for ent in R["prof"]:
-            if not (abs(ent["a"] / 4.0 - 1) < 0.05 or abs(ent["a"] / 8.0 - 1) < 0.05):
+            if not any(abs(ent["a"] / x_ - 1) < 0.05 for x_ in (4.0, 8.0, 16.0, 30.0)):
                 continue
             rho = np.array(ent["rho"])
             ok = rho > 0
@@ -457,14 +534,153 @@ def main():
         if i == 0:
             axs[i].legend(loc="lower right", fontsize=7, markerscale=8)
         axs[i].set_xscale("log")
-        axs[i].set_xlim(0.3, 300)
-        axs[i].set_ylim(-1.6, 1.6)
+        axs[i].set_xlim(0.3, max(300.0, 1.6 * R["prof"][-1]["r_ta_selfsim_def"]))
+        vlim = max(1.6, 1.1 * float(np.nanpercentile(np.abs(ph["vr"]), 99.9)))
+        axs[i].set_ylim(-vlim, vlim)
         axs[i].set_title(f"{lab}, $a/a_i$ = {float(key):.2f}", fontsize=10)
         axs[i].set_xlabel(r"$r$ [$GM/c^2$]", labelpad=-2)
     axs[0].set_ylabel(r"$v_r$ [$c$]")
     fs.save(fig, os.path.join(a.out, "nm_phase"))
     plt.close(fig)
-    print(json.dumps({k: {kk: vv for kk, vv in v.items() if kk not in ("profiles",)}
+
+    # ---------- figure 6 (wave 3): late profiles in units of r_ta, one figure per run
+    rcL = np.sqrt(LEDGES[1:] * LEDGES[:-1])
+    for lab in order:
+        R = runs[lab]
+        L = R.get("late", [])
+        if not L:
+            continue
+        nc = len(L)
+        fig, axs = plt.subplots(3, nc, figsize=(max(fs.FULL_WIDTH * nc / 3.0, fs.COLUMN_WIDTH * 1.4), 6.8),
+                                sharex="col", gridspec_kw=dict(height_ratios=[2, 1, 1]), squeeze=False)
+        fig.subplots_adjust(left=0.09, right=0.98, bottom=0.08, top=0.95, hspace=0.05, wspace=0.28)
+        for j, ent in enumerate(L):
+            ax, axr, axl = axs[0, j], axs[1, j], axs[2, j]
+            lam = rcL / ent["r_ta"]
+            rho, ssr = np.array(ent["rho"]), np.array(ent["ssr"])
+            sl, sls = np.array(ent["slope"]), np.array(ent["slope_ss"])
+            ok, oks = rho > 0, np.isfinite(ssr) & (ssr > 0)
+            ax.plot(lam[oks], ssr[oks], color=fs.PAL["blue"], lw=1.6, label="self-similar, same bins")
+            axl.plot(lam, sls, color=fs.PAL["blue"], lw=1.6)
+            for law in R["refs"]:
+                rf = ent[f"ref_{law}"]
+                lr = rcL / rf["r_ta"]
+                rp, sr = np.array(rf["rho"]), np.array(rf["ssr"])
+                okr = rp > 0
+                ax.plot(lr[okr], rp[okr], color="k", ls=lsty[law], lw=0.9, label=f"shells, {law}")
+                with np.errstate(invalid="ignore", divide="ignore"):
+                    axr.plot(lr, np.where(okr, rp, np.nan) / sr, color="k", ls=lsty[law], lw=0.8)
+                axl.plot(lr, np.array(rf["slope"]), color="k", ls=lsty[law], lw=0.8)
+            ax.plot(lam[ok], rho[ok], "o", ms=3.0, color=fs.PAL["red"], label=f"{lab} (run)")
+            with np.errstate(invalid="ignore", divide="ignore"):
+                axr.plot(lam, np.where(ok, rho, np.nan) / ssr, "o-", ms=3.0, lw=1.0, color=fs.PAL["red"])
+            axl.plot(lam, sl, "o-", ms=3.0, lw=1.0, color=fs.PAL["red"])
+            lmin = ent["vs_selfsim"]["lambda_min"]
+            for axx in (ax, axr, axl):
+                axx.axvline(lmin, **fs.MASK_LINE)
+                axx.axvline(0.3, color="grey", lw=0.8, ls=":")
+                axx.axvline(2.0 * R["dx"] / ent["r_ta"], color="grey", lw=0.8, ls="-.")
+            ax.set_xscale("log")
+            ax.set_yscale("log")
+            ax.set_xlim(3e-3, 2.0)
+            ax.set_ylim(0.5, 1e5)
+            vs = ent["vs_selfsim"]
+            ax.set_title(f"$a/a_i$ = {ent['a']:.2f}" + (f", max dev {vs['max_dev']:.2f}" if vs["max_dev"] is not None else ""),
+                         fontsize=9)
+            axr.axhline(1, **fs.GUIDE)
+            axr.axhspan(0.75, 1.25, color="grey", alpha=0.15)
+            axr.set_ylim(0.2, 1.8)
+            axl.axhline(-2.25, **fs.GUIDE)
+            axl.set_ylim(-4.0, 0.0)
+            axl.set_xlabel(r"$\lambda = r/r_{\rm ta}$", labelpad=-2)
+            if j == 0:
+                ax.set_ylabel(r"$\rho/\rho_b(t)$ (dust)")
+                axr.set_ylabel("/ self-similar")
+                axl.set_ylabel(r"$d\ln\rho/d\ln r$")
+                ax.legend(loc="lower left", fontsize=6.5)
+        fs.save(fig, os.path.join(a.out, f"nm_late_profiles_{lab}"))
+        plt.close(fig)
+
+    # ---------- figure 7 (wave 3): approach of the masses to the self-similar values
+    fig, axs = plt.subplots(2, 1, figsize=(fs.COLUMN_WIDTH * 1.5, 6.0), sharex=True,
+                            gridspec_kw=dict(height_ratios=[1.6, 1]))
+    fig.subplots_adjust(left=0.14, right=0.97, bottom=0.08, top=0.98, hspace=0.05)
+    lawcol = {"kernel": fs.PAL["blue"], "hybrid": fs.PAL["green"], "point": fs.PAL["orange"],
+              "plummer": fs.PAL["yellow"]}
+    mk = ["o", "s", "^", "D"]
+    for i, lab in enumerate(order):
+        R = runs[lab]
+        av = np.array([x["a"] for x in R["rows"]])
+        mta = np.array([x["mta"] for x in R["rows"]])
+        dr = np.array([x["dress"] for x in R["rows"]])
+        st = max(1, len(av) // 60)
+        axs[0].plot(av[::st], mta[::st] / av[::st], mk[i % 4], ms=2.5, color=fs.PAL["red"],
+                    label=f"{lab}: $M_{{\\rm ta}}/(M a/a_i)$")
+        k = dr > 0
+        axs[0].plot(av[k][::st], (dr / mta)[k][::st], mk[i % 4], ms=2.5, mfc="none", color=fs.PAL["red"],
+                    label=f"{lab}: dress/$M_{{\\rm ta}}$")
+        ti = R["p"]["t_i"]
+        for law, ref in R["refs"].items():
+            ag = ((ti + ref["g_t"]) / ti) ** (2.0 / 3.0)
+            c = lawcol.get(law, "k")
+            if i == 0:
+                axs[0].plot(ag, ref["g_mta"] / ag, color=c, ls=lsty[law], lw=1.0, label=f"shells, {law}")
+                axs[0].plot(ag, ref["g_dress"] / ref["g_mta"], color=c, ls=lsty[law], lw=1.0)
+            rm = np.interp(av, ag, ref["g_mta"])
+            rd = np.interp(av, ag, ref["g_dress"])
+            kk = av >= 1.2
+            axs[1].plot(av[kk][::st], (mta / rm - 1)[kk][::st], mk[i % 4], ms=2.5, color=c,
+                        label=f"{lab} / {law}: $M_{{\\rm ta}}$")
+            kd = kk & (rd > 0.02)
+            axs[1].plot(av[kd][::st], (dr / np.where(rd > 0, rd, np.nan) - 1)[kd][::st], mk[i % 4], ms=2.5,
+                        mfc="none", color=c, label=f"{lab} / {law}: dress")
+    axs[0].axhline(C_TA, **fs.GUIDE)
+    axs[0].axhline(SS_DRESS_FRAC, **fs.GUIDE)
+    axs[0].text(1.25, C_TA - 0.045, "0.565", fontsize=7)
+    axs[0].text(1.25, SS_DRESS_FRAC + 0.015, "0.625", fontsize=7)
+    axs[0].set_ylim(0.0, 1.0)
+    axs[0].legend(fontsize=6, loc="lower right", ncol=2)
+    axs[1].axhline(0, **fs.GUIDE)
+    axs[1].axhspan(-0.01, 0.01, color="grey", alpha=0.15)
+    axs[1].set_ylim(-0.06, 0.06)
+    axs[1].set_xscale("log")
+    axs[1].set_xlim(1.15, max(8.5, 1.06 * a_max))
+    axs[1].set_xticks(a_ticks)
+    axs[1].set_xticklabels([f"{t_:g}" for t_ in a_ticks])
+    axs[1].set_xlabel(r"$a/a_i$", labelpad=-2)
+    axs[1].set_ylabel("run / shells $-$ 1")
+    axs[1].legend(fontsize=5.5, loc="lower right", ncol=2)
+    fs.save(fig, os.path.join(a.out, "nm_late_growth"))
+    plt.close(fig)
+
+    # ---------- table of the late comparison
+    with open(os.path.join(a.out, "nm_late.txt"), "w") as f:
+        f.write("# run a M_ta dress dress/M_ta M_ta/(M a/a_i) | vs self-similar on [lambda_min, 0.3]: "
+                "lambda_min nbins max_dev rms_dev fit_slope (ss) mean_local_slope (ss) max|dslope| "
+                "| per ref: M_ta_rel dress_rel run/shells max_dev rms_dev on the same range\n")
+        for lab in order:
+            for ent in runs[lab].get("late", []):
+                vs = ent["vs_selfsim"]
+                fmt = lambda x: "nan" if x is None else f"{x:.3f}"
+                line = (f"{lab} {ent['a']:.3f} {ent['M_ta']:.4f} {ent['dress']:.4f} "
+                        f"{ent['dress'] / ent['M_ta']:.4f} {ent['M_ta'] / ent['a']:.4f} | "
+                        f"{vs['lambda_min']:.4f} {vs['n_bins']} {fmt(vs['max_dev'])} {fmt(vs['rms_dev'])} "
+                        f"{fmt(vs.get('fit_slope'))} ({fmt(vs.get('fit_slope_ss'))}) {fmt(vs['slope_mean'])} "
+                        f"({fmt(vs['slope_ss_mean'])}) {fmt(vs['slope_max_absdiff'])}")
+                for law in runs[lab]["refs"]:
+                    rf = ent[f"ref_{law}"]
+                    mrel = ent["M_ta"] / rf["M_ta"] - 1
+                    j = int(np.argmin(np.abs(runs[lab]["refs"][law]["snap_t"] - ent["t"])))
+                    rd_ = float(np.interp(runs[lab]["refs"][law]["snap_t"][j], runs[lab]["refs"][law]["g_t"],
+                                          runs[lab]["refs"][law]["g_dress"]))
+                    lr_ = rf["run_over_ref_lambda_range"]
+                    line += (f" | {law}: {mrel:+.4f} {ent['dress'] / rd_ - 1 if rd_ > 0 else float('nan'):+.4f} "
+                             f"{fmt(lr_['max_dev'])} {fmt(lr_['rms_dev'])}")
+                f.write(line + "\n")
+                f.write("    ratios run/ss: " + " ".join(f"{l_:.3f}:{r_:.3f}" for l_, r_ in zip(vs["lam"], vs["ratio"]))
+                        + "\n    slopes run/ss: " + " ".join(f"{l_:.3f}:{s_:.2f}/{t_:.2f}" for l_, s_, t_ in
+                                                           zip(vs["slope_lam"], vs["slope"], vs["slope_ss"])) + "\n")
+    print(json.dumps({k: {kk: vv for kk, vv in v.items() if kk not in ("profiles", "late")}
                       for k, v in summary.items()}, indent=1))
 
 
