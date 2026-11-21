@@ -1,0 +1,26 @@
+{
+ "run_id": "core-20261119-160404-beddeac",
+ "owner": "core",
+ "command": [
+  "bash",
+  "/data/haiyangw/nrpic/wt/core-omp/tracks/core/omp/scaling_series.sh",
+  "t4"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-160404-beddeac",
+ "commit": "beddeac",
+ "source_modified_since_commit": false,
+ "inputs": [],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-160404-beddeac",
+ "purpose": "omp strong scaling, phase t4: O3 at four threads, the four scaling cases side by side, two repeats, places from omp_places.py. Registered by hand: nrpic-run refused (16 cores of core busy in other sessions)",
+ "kind": "scouting",
+ "tag": "omp-scaling-t4",
+ "state": "stopped",
+ "status": "stopped",
+ "registered_by_hand": "nrpic-run refused (cores of owner core busy in other sessions)",
+ "wall_time_s": 174.91,
+ "exit_status": 0,
+ "cores": 16,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T16:04:04Z",
+ "note": "stopped by hand at 08:08 PST (kill by process id): the four side-by-side runs chose their places with scripts/omp_places.py at the same moment and three of them were bound to the same four cores (OMP_PLACES={39,111},{44,116},{52,124},{66,138} for cluster, punc and newton); the timings are invalid and are not used. Repeated with disjoint places (scaling_series.sh after commit of 08:10)."
+}

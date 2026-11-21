@@ -20,6 +20,7 @@
 #include "tasklist/task_list.hpp"
 #include "bvals/bvals.hpp"
 #include "particles/nrpic_external.hpp"
+#include "particles/nrpic_threads.hpp"
 
 // forward declarations
 
@@ -303,6 +304,7 @@ class Particles {
   DvceArray5D<Real> met0;          // alpha, beta^i, gamma_ij at t^n
   DvceArray5D<Real> met1;          // alpha, beta^i, gamma_ij at t^{n+1}
   DvceArray5D<Real> tm_work;       // work array for the source filter
+  nrpic::ThreadDeposit thread_dep; // deposit target of a threaded build (nrpic_threads.hpp)
   DvceArray5D<Real> tm_prev;       // source densities of the previous deposit
   bool tm_prev_valid = false;      // tm_prev belongs to the current mesh
   DvceArray4D<Real> e_prev;        // sqrt(gamma) E of the previous deposit

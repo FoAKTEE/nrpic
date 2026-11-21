@@ -1,0 +1,96 @@
+--- a/athenak/src/multigrid/multigrid.cpp
++++ b/athenak/src/multigrid/multigrid.cpp
+@@ -11,6 +11,7 @@
+ // C++ headers
+ #include <algorithm>
+ #include <cmath>
++#include <cstdlib>    // getenv (DIAGNOSTIC)
+ #include <cstring>    // memset, memcpy
+ #include <iostream>
+ #include <sstream>    // stringstream
+@@ -757,6 +758,62 @@
+ }
+ 
+ //----------------------------------------------------------------------------------------
++// DIAGNOSTIC of work package omp (tracks/core/omp/tools/mg_average_diag.patch; never part
++// of the source tree): the volume-weighted sum of CalculateAverage in an order that does
++// not depend on the number of threads. Every line (m,k,j) is summed over i by one thread,
++// the line sums are added on the calling thread in index order. comp: both sums with
++// Neumaier's compensation (error of the order of one rounding of the result instead of
++// the accumulated rounding of the plain sum).
++
++namespace {
++inline void DiagAdd(Real &s, Real &c, const Real x, const bool comp) {
++  if (comp) {
++    volatile Real t = s + x;
++    if (std::abs(s) >= std::abs(x)) {
++      volatile Real d = s - t;
++      c += d + x;
++    } else {
++      volatile Real d = x - t;
++      c += d + s;
++    }
++    s = t;
++  } else {
++    s += x;
++  }
++}
++
++template <typename ViewT, typename RdxT>
++Real DiagOrderedSum(const ViewT &data, const RdxT &brdx, int nmmb, int ks, int ke,
++                    int js, int je, int is, int ie, int ll, bool comp) {
++  const int nk = ke - ks + 1, nj = je - js + 1;
++  Kokkos::View<Real***, Kokkos::HostSpace> line("mg_avg_line", nmmb, nk, nj);
++  Kokkos::parallel_for("MG::AverageLines",
++    Kokkos::RangePolicy<Kokkos::DefaultHostExecutionSpace>(0, nmmb*nk*nj),
++    [=](const int idx) {
++      const int m = idx/(nk*nj);
++      const int k = (idx - m*nk*nj)/nj;
++      const int j = idx - m*nk*nj - k*nj;
++      Real dx_m = brdx(m) * static_cast<Real>(1 << ll);
++      Real dV_m = dx_m * dx_m * dx_m;
++      Real s = 0.0, c = 0.0;
++      for (int i = is; i <= ie; ++i) {
++        DiagAdd(s, c, data(m, 0, k + ks, j + js, i) * dV_m, comp);
++      }
++      line(m, k, j) = s + c;
++    });
++  Real s = 0.0, c = 0.0;
++  for (int m = 0; m < nmmb; ++m) {
++    for (int k = 0; k < nk; ++k) {
++      for (int j = 0; j < nj; ++j) {
++        DiagAdd(s, c, line(m, k, j), comp);
++      }
++    }
++  }
++  return s + c;
++}
++} // namespace
++
++//----------------------------------------------------------------------------------------
+ //! \fn Real Multigrid::CalculateAverage(MGVariable type)
+ //! \brief Calculate volume-weighted average of variable 0 on current level
+ 
+@@ -770,7 +827,21 @@
+   int ll_l = ll;
+ 
+   Real sum = 0.0;
+-  if (on_host_) {
++  static const char *mg_average_env = std::getenv("MG_AVERAGE");   // DIAGNOSTIC
++  const bool diag = (mg_average_env != nullptr) && (std::strcmp(mg_average_env, "ordered") == 0
++                                                 || std::strcmp(mg_average_env, "comp") == 0);
++  const bool diag_comp = diag && std::strcmp(mg_average_env, "comp") == 0;
++  if (diag && on_host_) {
++    auto data = (type == MGVariable::src) ? src_[current_level_].h_view
++                                          : u_[current_level_].h_view;
++    sum = DiagOrderedSum(data, block_rdx_.h_view, nmmb_, ks, ke, js, je, is, ie, ll_l,
++                         diag_comp);
++  } else if (diag) {
++    auto data = (type == MGVariable::src) ? src_[current_level_].d_view
++                                          : u_[current_level_].d_view;
++    sum = DiagOrderedSum(data, block_rdx_.d_view, nmmb_, ks, ke, js, je, is, ie, ll_l,
++                         diag_comp);
++  } else if (on_host_) {
+     auto data = (type == MGVariable::src) ? src_[current_level_].h_view
+                                           : u_[current_level_].h_view;
+     auto brdx = block_rdx_.h_view;

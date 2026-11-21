@@ -287,6 +287,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
     pbval_tm = new MeshBoundaryValuesCC(pmy_pack, pin, false);
     pbval_tm->InitializeBuffers(Tmunu::N_Tmunu);
   }
+  thread_dep.Init(pin);     // deposit target of a threaded build (deposit_threads)
   NrpicKickInit(pin);       // test kick with reproducible random numbers
   NrpicCollideInit(pin);    // Monte Carlo collisions
   NrpicAccInit(pin);        // accretion diagnostics
@@ -761,6 +762,9 @@ void Particles::NrpicDepositSources() {
   Kokkos::deep_copy(DevExeSpace(), tm, 0.0);
   sum_mw = 0.0;
   for (int n=0; n<4; ++n) { dep_sum[n] = 0.0; }
+  // where the clouds are added: atomically into tm, or (threaded build, deposit_threads
+  // = private) into one copy of tm per thread, summed after the loop
+  const nrpic::DepositTarget dep = thread_dep.Begin(tm);
 
   const int np = nprtcl_thispack;
   auto pr = prtcl_rdata;
@@ -948,7 +952,7 @@ void Particles::NrpicDepositSources() {
           k = (k < ks) ? ks : ((k > ke) ? ke : k);
           const Real wv = w/(sz(mb).dx1*sz(mb).dx2*sz(mb).dx3);
           for (int n=0; n<Tmunu::N_Tmunu; ++n) {
-            Kokkos::atomic_add(&tm(mb,n,k,j,i), wv*q[n]);
+            dep.Add(mb, n, k, j, i, wv*q[n]);
           }
         } else {
           // finer leaves: the same density in every leaf cell inside the lattice cell
@@ -970,7 +974,7 @@ void Particles::NrpicDepositSources() {
                 const int i = i0 + ii;
                 if (i < is || i > ie) continue;
                 for (int n=0; n<Tmunu::N_Tmunu; ++n) {
-                  Kokkos::atomic_add(&tm(mb,n,k,j,i), wv*q[n]);
+                  dep.Add(mb, n, k, j, i, wv*q[n]);
                 }
               }
             }
@@ -980,6 +984,7 @@ void Particles::NrpicDepositSources() {
     }, Kokkos::Sum<Real>(smw));
     sum_mw = smw;
   }
+  thread_dep.End(dep);
 
   // Compensation of the cloud (deposit_comp_c = c > 0): one pass (-c, 1+2c, -c)^3 over
   // the deposited densities.  A cloud of second moment s^2 dx^2 per direction lowers a
