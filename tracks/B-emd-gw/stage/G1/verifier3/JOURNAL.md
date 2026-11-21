@@ -450,3 +450,44 @@ Predictions, before the runs:
   noise and may show a larger ratio. Refuted if the eps = 1 maximum over a >= 12 exceeds
   0.3 (a radiative component would dominate) or the |m| = sqrt 2 ratio departs from
   8/(pi^2 a) by more than a factor 2 at a <= 20.
+
+## Entry 15 (19:28 PST): outcome of the scan and energy runs (B-20261121-031808-3ef8c39, B-20261121-031833-c0ec479)
+
+[VERIFIED, results/v4_scan.json, results/v4_energy.json, figs/v4_scan.png, figs/v4_energy.png]
+c_+ = + coefficient at m = (1,1,0) of Lambda(gt/det^(1/3) - delta) (my e+ of khat = (1,1,0)/sqrt 2),
+interpolated linearly to t(a) between the bracketing bin dumps (float32); the two runs' dump
+times agree to 2e-9 (64^3) and 5e-7 (32^3); beta = 0 at t = 0.
+
+| a | c_+^zs (64^3) | raw \|c_gd - c_zs\|/\|c_zs\| | after G, zeta = int beta | after G, zeta from Delta h | after transverse-reference pieces | float32 floor (est.) |
+|---|---|---|---|---|---|---|
+| 5 | 1.4721e-5 | 1.26e-3 | 2.31e-5 | 2.33e-5 | 2.06e-5 | 4.7e-6 |
+| 10 | 1.6996e-5 | 3.26e-3 | 4.15e-5 | 4.56e-5 | 6.92e-5 | 7.0e-6 |
+| 20 | 1.6280e-5 | 1.39e-2 | 4.81e-5 | 8.82e-5 | 2.88e-4 | 4.1e-6 |
+| 40 | 1.7407e-5 | 4.31e-2 | 6.57e-4 | 9.46e-4 | 2.62e-3 | 4.0e-6 |
+| 60 | 2.0219e-5 | 8.74e-2 | 2.71e-3 | 3.62e-3 | 9.13e-3 | 2.6e-6 |
+
+32^3: raw 1.21e-3, 3.26e-3, 1.39e-2, 4.29e-2, 8.46e-2; after G (int beta) 3.28e-5, 5.10e-5,
+5.8e-6, 7.81e-4, 4.95e-3; transverse route 3.52e-5, 7.73e-5, 2.27e-4, 2.69e-3, 1.11e-2.
+- P4.4 holds: zeta from the metric difference equals int beta dt to 2.0e-4 (a = 5) .. 5.0e-3
+  (a = 60), about the rms of the first-order non-TT metric (4e-4 .. 5.5e-3), i.e. the
+  expected second-order difference; the transverse displacements obey zeta = xi_gd - xi_zs to
+  2.1e-4 .. 4.5e-3. max |d zeta| = 8.9e-4 (a = 5) .. 2.3e-2 (a = 60).
+- P4.5 REFUTED: the raw difference is 1.3e-3 .. 8.7e-2, not of order one. The Gamma driver
+  moves the coordinates only by |d zeta| <= 2.3e-2, and the metric perturbation in these
+  gauges stays ~5e-3 at a = 60 (my estimate confused the density contrast with h).
+- P4.6 holds: after the piece the difference falls by 55x, 79x, 289x, 66x, 32x (64^3, route A),
+  and by >= 9.6x on every route at every a; the 2N-grid products change nothing (<= 1e-12
+  relative: no aliasing into m = (1,1,0)). The residual is 2.3e-5 .. 2.7e-3, above the float32
+  floor (2.6e-6 .. 7e-6) and, at a >= 20, above my third-order estimate raw x h_rms (e.g.
+  4.8e-4 at a = 60 against 2.7e-3); it depends weakly on N (64 against 32: 0.7x .. 0.55x).
+  [JUDGEMENT] a non-convergent part (particle and deposit differences between the two runs,
+  nonlinear matter at a >= 40) dominates the residual, not the gauge formula. The transverse
+  route is worse than the direct one by 1-3.4x at a >= 10 (its displacements xi ~ the full
+  longitudinal part are larger than zeta, so its third-order remainder is larger).
+- P4.7 REFUTED in number, not in kind: rho_kin/rho_grad of the TT part for a >= 12 has maximum
+  8.8e-3 (64^3 eps 1 zero shift, at a = 13.0), 1.80e-2 (64^3 Gamma driver, a = 83.8), 8.0e-3
+  (eps 0.3), 8.6e-3 (eps 0.1, a = 99), 8.8e-3 / 1.35e-2 (32^3 zero shift / Gamma driver); the
+  (k,k,0) family 6.7e-3 at a = 12.6, ten times below 8/(pi^2 a) = 0.064 for h ~ a^2: the TT
+  part grows much more slowly than a^2 (c_+^zs ~ 1.5e-5 .. 2.0e-5 from a = 5 to 60), i.e. it is
+  nearly static. Either way kinetic << gradient: no radiative component. The eps = 0 run has no
+  TT source; its ratio (up to 6e3) is a ratio of two rounding-level quantities and meaningless.
