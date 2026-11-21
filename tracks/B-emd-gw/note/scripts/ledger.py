@@ -402,7 +402,7 @@ LEDGER = [
         ("card_h", "card-hours of the relativistic runs: one per cell; two per cell; total"),
     ]),
     ("Homogeneous background", [
-        ("flrw", "largest relative lapse error, $a=4$ and $a=36$ (step limited); $\\mathcal H$ at $a=36$ (from \\texttt{runs/cosmo/dtexp\\_test/lim/flrw.cstat.hst}, sha256 \\texttt{ed6353a8ec0d794a}\\ldots, read but not checksummed by the run)"),
+        ("flrw", "largest relative lapse error, $a=4$ and $a=36$ (step limited); $\\mathcal H$ at $a=36$ (from \\texttt{runs/cosmo/dtexp\\_test/lim/flrw.cstat.hst}, sha256 \\texttt{ed6353a8ec0d794a}\\ldots; its checksum is recorded in this table, beside the files the run checksummed)"),
     ]),
     ("Semi-analytic Newtonian baseline", [
         ("za_slopes", "largest departure of the local slopes from $7/2$, $3/2$, $7/2$ for $\\delta_L\\le10^{-2}$: energy, peak frequency, peak"),
