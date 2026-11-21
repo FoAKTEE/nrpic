@@ -10,9 +10,13 @@
 #            1 M +-32 M, 2 M the rest: 288 MeshBlocks, 1.18e6 cells (Track D: 400
 #            MeshBlocks, 5.5e6 cells); no restart and no constraint slices.
 # refined_region1/level=3 gives finest cells of M/4 (232 MeshBlocks, step 0.0625 M).
-# Variants (command line): z4c/lapse_leak=0.0 plain 1+log (Track D's V-1B);
-# the options of the second pass (lapse_leak_rho, lapse_leak_onset,
-# lapse_leak_hole) must be added to the <z4c> block to be used.
+# Variants (command line): z4c/lapse_leak=0.0 plain 1+log (Track D's V-1B). For the
+# switch-off around the hole add to the <z4c> block: lapse_leak_hole = 16.0 and a
+# tracker, co_0_type = BH, co_0_x = 0.0, co_0_y = 0.0, co_0_z = 0.0 (the copy
+# tracks/core/analysis/gauge2/inputs/v8_var.athinput has them).
+# The outer faces at 64 M reach the hole after 53 M (plain 1+log) and 71 M (relaxed):
+# for longer runs move them out (mesh/x1min ... = -256, 256 with refined_region1/level=6
+# keeps the nest and the finest cells).
 # Data: tracks/D-bh-dress/es_runs/make_data.py (run D-20261115-170213-d2c2131, directory
 # v1/); give particles/particle_file and problem/comp0_file on the command line.
 

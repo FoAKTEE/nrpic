@@ -335,3 +335,111 @@ Open: whether the shrinking coordinate size and the rising puncture lapse belong
 `lapse_leak` with the Gamma-driver, and which `shift_eta` keeps the hole near 2 M
 (no run of core; `REQUESTS_WAVE3.md` W14); the faces (core/z4c-faces, W13); a lapse
 excision threshold that does not rest on an absolute `alpha_exc` (W15).
+
+## 9. Second pass of the relaxed lapse: switch-off around tracked black holes (branch `core/gauge-2`)
+
+Decision 0022 item 3. Journal `tracks/core/JOURNAL-gauge-2.md` (entries 1 to 10; every
+number below has its run id there); scripts, lists, inputs, figures and numbers
+`tracks/core/analysis/gauge2/`. Source: `athenak/src/z4c/z4c_gauge_ext.hpp` only (the
+hooks of section 7 in `z4c.hpp`, `z4c.cpp` and `z4c_calcrhs.cpp` are untouched).
+
+### 9.1 The defect and its cause
+
+Section 7.1 says that the term "vanishes where alpha <= alpha_0: a collapsing region and
+a black hole are sliced by plain 1+log", and section 7.3 that a puncture inside expanding
+dust is "sliced as in every verified isolated-system run". That holds for a hole on a
+slice with K = 0 around it (test P). It does not hold on the slice of the
+Einstein-Straus data, whose vacuum bubble has diverging normal observers
+(K_T = -f(R) sqrt(2M/R^3)): there the term acts on the whole bubble outside about 7 M
+from the first M on and holds its lapse at 1.04 to 1.015, where plain 1+log lets it rise
+to 1.4 to 1.7 and fall back.
+
+[VERIFIED: Track D's runs V-1B, V-1GB and this package's jobs A and B] With the first
+pass the horizon does not get the coordinate size that plain 1+log gives it on this slice
+(1.4 M instead of 2.06 M at 20 M) and then shrinks without stopping (1.09 M at 100 M,
+0.875 M at 200 M in vacuum; 1.06 M and 0.78 M inside dust), while the conformal factor
+chi of the bubble falls. The horizon mass follows with a delay: within 1e-4 of the
+control to 100 M, +1.3e-3 over 100 to 200 M in vacuum and +7e-3 with dust (Track D), when
+the horizon is down to 7 cells of M/8.
+
+[JUDGEMENT, consistent with every run of the package; tested by 9.3] Why: without shift
+1+log keeps alpha - 2 ln sqrt(gamma) constant along the normal observers, so a lapse
+that returns to its stationary value brings the volume element back with it. The
+relaxation term breaks this on purpose,
+
+    d(alpha - 2 ln sqrt(gamma))/dt = -(alpha/T) max(ln(alpha/alpha_0), 0),
+
+so where the lapse is held above alpha_0 the volume element of the normal observers
+grows by (1/2T) int ln(alpha/alpha_0) dt: in the dust the intended comoving expansion,
+in the vacuum bubble a stretching of the coordinates. The normal observers drift
+towards the puncture at the speed of the shift (0.06 at 5 M, 0.25 at 1 M) and carry the
+stretched elements into the hole within 50 to 150 M.
+
+Candidate causes that were tested and failed as causes [VERIFIED, journal entry 9]: the
+kink of max(.,0) (a smooth onset changes the horizon radius by 1 per cent); the action of
+the term within 6 M of the hole (switching it off there leaves the radius within 4 per
+cent of the first pass); the overshoot of a settling puncture (zero on a K = 0 slice);
+the horizon finder (Track D: the Misner-Sharp mass of the slice follows it).
+
+### 9.2 The option
+
+    <z4c> lapse_leak_hole = r_h      (absent or 0: the first pass, bit for bit)
+
+    d_t alpha = [section 1] - (alpha/T) w_h(x) max(ln(alpha/alpha_0), 0),
+    w_h = prod_A S(|x - x_A|/r_h - 1),   S(s) = s^2 (3 - 2 s) for 0 < s < 1, 0 below, 1 above
+
+over all compact-object trackers A (`<z4c> co_<A>_type`; positions of the current
+stage; at most 8): the term is off within r_h of every tracker and acts in full beyond
+2 r_h. Without a tracker the option does nothing and the kernel runs the statement of
+the first pass. A puncture that has no tracker needs one for this option: add
+`co_0_type = BH` and `co_0_x, co_0_y, co_0_z` to `<z4c>` (a tracker alone changes no
+other output). Example: `problems/es/es_gauge_hole.athinput` (Track D's
+Einstein-Straus data, r_h = 16 M; give `particles/particle_file` and
+`problem/comp0_file`).
+
+Choice of r_h [JUDGEMENT from two radii, 6 and 16 M]: large enough that the normal
+observers that start outside r_h do not reach the horizon during the run (the shift is
+0.02 at 20 M: from 16 M the drift takes several hundred M; 6 M is not enough), and
+small enough that 2 r_h stays inside the matter that needs the term. With the wall of
+Track D's bubble at 33 M, r_h = 16 M puts the wall at the edge of the full term and
+costs a factor 3 in the accuracy of the wall tracers (9.3); a smaller radius was not
+tried.
+
+### 9.3 Tests
+
+Card runs with finest cells M/8 unless said; "first pass" is `lapse_leak` without the
+option; ES-1G, V-1B, V-1GB are Track D's runs (D-20261119-142633-6f72922,
+D-20261120-222625-63abd72, D-20261121-125909-06f856e).
+
+| test | plain 1+log | first pass | `lapse_leak_hole = 16` |
+|---|---|---|---|
+| Einstein-Straus data, T = 2 M, 100 M (`es-hole`; mesh of `es_gauge_hole.athinput`): horizon radius at 25, 50, 75, 100 M | | ES-1G: 1.40, 1.33, 1.18, 1.06 M | 1.59, 1.61, 1.63, 1.65 M |
+| same: horizon mass over 40 to 99.5 M | | ES-1G: 1.00098 to 1.00125, rising (2.7e-4) | 1.00085 to 1.00129 (4.4e-4): wiggles of 2e-4 between 33 and 78 M while the lapse front of the freed zone dies out, flat afterwards |
+| same: wall tracers (R_0 = 36 M), areal radius at their proper time against the exact curve, until 30 / 60 / 100 M | Track D: 2.2e-3 at 200 M | 6.2e-5 / not run on this lattice / not run (Track D, lattice 1 M: 1.7e-4 at 206 M) | 2.1e-4 / 4.3e-4 / 6.3e-4 |
+| same: tracers at 20, 28, 40, 48, 56 M until 30 M | | 7.0e-5, 1.2e-4, 4.6e-4, 6.8e-5, 2.4e-4 | 3.8e-4, 5.2e-5, 4.8e-4, 8.3e-5, 2.1e-4 |
+| same: lapse at the dust tracers (48 M) off the homogeneous model; largest lapse on the mesh | | 1.3 per cent; 1.11 | 1.2 per cent; 1.62 at 15 to 20 M (the front inside r_h), 1.05 from 80 M |
+| vacuum (the same slice without dust, reduced mesh `problems/es/v1_small.athinput`, faces at 64 M: valid until 50 to 70 M): horizon radius at 20, 30, 50, 65 M | 2.06, 1.91, 2.04, 2.09 M (V-1B) | 1.38, 1.42, 1.33, 1.24 M | 1.90, 1.39, 1.59, 1.75 M |
+| same: horizon mass over 35 to 65 M | 1.7e-5 (V-1B) | 8.4e-5 | 8.2e-5 |
+| expanding ball L1, bound ball L2, collapse L3 (no tracker) | | section 7.1 | identical with the first pass byte for byte on processors: L1 at cells 1 M to 10 M (17 files), first 16 steps of L2 at cells M/2 (9 files), first 8 steps of L3 (7 files) |
+| a radius beyond the mesh (`lapse_leak_hole = 1000`, coarse vacuum mesh, processors) | the same bytes | | |
+| byte regression against release core-v0.6, option absent (twelve set-ups, processors) | | 75 of 75 items identical | |
+
+What the table does not show: that the late drift of the horizon mass (100 to 200 M) is
+gone. The runs above end at 100 M (Einstein-Straus) or lose their validity at 65 M
+(vacuum, near faces); see 9.5 for the run that reaches 200 M.
+
+### 9.4 Tried and removed
+
+Two more factors existed in commit 90f52f4d and were removed after their tests
+[VERIFIED, journal entries 6 and 9]:
+- a weight by the local matter density (`lapse_leak_rho`: the term only where matter
+  is). In vacuum it is plain 1+log exactly (byte for byte, processors and a card). But
+  the vacuum next to expanding matter has diverging normal observers too; with plain
+  1+log there and a capped lapse in the matter, the whole lapse difference sits on the
+  matter's surface: L2 (bound ball, cells M/4) shell errors 3 to 47 times those of the
+  first pass (surface 0.30), L3 turnaround at 1.32 to 1.35 R_0 instead of 1.25 and a
+  horizon mass 3 per cent high, Einstein-Straus wall off by 6e-2 and a horizon mass
+  swinging by 4e-3. Decision 0022's first alternative ("the relaxation must act only
+  where matter expands") is therefore not a correction.
+- a smooth onset of the term (`lapse_leak_onset`): no effect on the defect.
+An input that still carries these lines runs unchanged: the parameters are not read.

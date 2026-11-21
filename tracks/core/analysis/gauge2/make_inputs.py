@@ -7,9 +7,18 @@ makes this script fail instead of silently changing a test.
     make_inputs.py --check    compares with the files on disk (exit status 1 on a difference)
 
 Written (AthenaK takes on the command line only parameters that the input has, and the
-options of the second pass are read only if present, so every variant needs a file):
-  problems/es/es_gauge2.athinput     Einstein-Straus data for 100 M with the relaxation
-                                     only in the matter (example of lapse_leak_rho)
+option of the second pass is read only if present, so every variant needs a file; the
+lines lapse_leak_rho and lapse_leak_onset of these files belong to the two factors that
+were tested and removed, journal entry 9):
+  problems/es/es_gauge_hole.athinput Einstein-Straus data for 100 M with the relaxation
+                                     switched off around a tracker at the puncture (the
+                                     example of lapse_leak_hole)
+  inputs/es_rho.athinput             the same data with the relaxation only in the matter
+                                     (run es-rho of card job B, when the file was
+                                     problems/es/es_gauge2.athinput; the option
+                                     lapse_leak_rho was refuted and is no longer in the
+                                     source: an executable built after commit 90f52f4d
+                                     ignores the line)
   inputs/v8_rho.athinput             problems/es/v1_small.athinput + lapse_leak_rho
   inputs/v8_var.athinput             the same + a tracker at the puncture, lapse_leak_hole,
                                      lapse_leak_onset (all three options at zero = off)
@@ -60,7 +69,7 @@ es += [("tlim       = 30.0", "tlim       = 100.0"),
              "                           # Dust plateau 3.7e-6 at the start, 1.1e-6 at 100 M"),
        ("basename  = es", "basename  = es"),
        ("snap_dt        = 10.0", "snap_dt        = 25.0")]
-FILES["problems/es/es_gauge2.athinput"] = build(
+FILES["tracks/core/analysis/gauge2/inputs/es_rho.athinput"] = build(
     "problems/es/es_gauge.athinput", es,
     "# SECOND PASS OF THE RELAXED LAPSE (tracks/core/JOURNAL-gauge-2.md, interface\n"
     "# cosmo_gauge.md section 9): problems/es/es_gauge.athinput for 100 M with the\n"
@@ -83,6 +92,35 @@ FILES["tracks/core/analysis/gauge2/inputs/es_hole.athinput"] = build(
     "# problems/es/es_gauge2.athinput with the relaxation switched off around a tracker at\n"
     "# the puncture (lapse_leak_hole) instead of restricted to the matter.\n"
     "# Built by tracks/core/analysis/gauge2/make_inputs.py. Header of es_gauge follows.\n#\n")
+
+EXAMPLE_HEADER = """# SECOND PASS OF THE RELAXED LAPSE (tracks/core/JOURNAL-gauge-2.md; interface
+# cosmo_gauge.md section 9): problems/es/es_gauge.athinput for 100 M with the relaxation
+# switched off around the black hole,
+#   z4c/lapse_leak_hole = r_h   the term of z4c/lapse_leak is off within r_h of every
+#                               compact-object tracker and acts in full beyond 2 r_h;
+#   z4c/co_0_type = BH          a tracker at the puncture (it follows the hole).
+# With the relaxation everywhere (first pass) the vacuum bubble is held on a slice that
+# stretches the coordinates into the hole: the horizon shrinks in the coordinates (1.06 M
+# at 100 M, 0.78 M at 200 M in Track D's run) and its mass drifts late. With r_h = 16 M
+# the horizon keeps a radius of 1.6 M over 100 M; the relaxation is in full from 32 M on,
+# the bubble wall is at 33 M in the coordinates. The wall tracers follow the exact curve
+# to 2e-4 (30 M) and 6e-4 (100 M), three times less closely than with the relaxation
+# everywhere: choose r_h so that 2 r_h stays inside the matter that needs the term.
+# z4c/lapse_leak_hole=0.0 on the command line gives the condition of the first pass.
+# Other changes against the parent: outer faces at +-128 M (cells 4 M beyond 64 M),
+# tlim = 100, snap_dt. Built by tracks/core/analysis/gauge2/make_inputs.py.
+# Header of the parent follows.
+#
+"""
+FILES["problems/es/es_gauge_hole.athinput"] = build(
+    "problems/es/es_gauge.athinput", es[:-4] + [
+        ("tlim       = 30.0", "tlim       = 100.0"),
+        after("lapse_leak_alpha = 1.0     # reference lapse",
+              "lapse_leak_hole = 16.0     # r_h: relaxation off within r_h of the tracker at the puncture, in full\n"
+              "                           # beyond 2 r_h = 32 M (the bubble wall sits at 33 M in the coordinates)\n"
+              + TRACKER),
+        ("snap_dt        = 10.0", "snap_dt        = 25.0")],
+    EXAMPLE_HEADER)
 
 # ---- vacuum test V8
 FILES["tracks/core/analysis/gauge2/inputs/v8_rho.athinput"] = build(
