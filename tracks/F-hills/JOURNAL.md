@@ -384,3 +384,34 @@ outside; (c) my own test-mass check of T4 (1PN test-mass equation from its Lagra
 J = L of the Schwarzschild parabola; exact Schwarzschild by quadrature; both from and to
 r0 = 1e4 M) gives the error of the relativistic excess -0.27 +- 0.03 at areal r_p = 10 M and
 -0.09 +- 0.02 at 20 M.
+
+### Outcomes of L1-L3 (all figures read)
+
+L1 [VERIFIED, run F-20261121-063449-4dcca98, `fig_review3_p1.png`]: tracker separation 4.952 M
+at t = 0, below 2 / 1 / 0.5 / 0.1 M first at t = 39.16 / 44.07 / 46.34 / 48.79 M, 1e-6 M at
+t = 60; finder 0 reports a horizon of 0.2686 at t = 48.81 M, finder 1 0.2693 at 49.06 M (median
+0.2684 both), last separate members 0.1370 (t = 46.50) and 0.1390 (46.81); the heavy hole's
+finder good from t = 2.375 (1.00002) to 236.06 (1.00736). MET, except the clause "monotonically
+before t = 30 M": the separation rises by at most 3.0e-4 M in one sample (refuted as worded, a
+wiggle 6e-5 of the separation). Beyond p1's t = 112 M: the remnant (mean of trackers 0 and 1) is
+closest to tracker 2 at t = 154.6 M, 6.99 M coordinate distance, and at 16.9 M at t = 236.1 M,
+receding. So p1's merger result stands from my own parser.
+L2 [VERIFIED, run F-20261121-063504-00f0743, `fig_review3_g0.png`]: (a) 131 (134.8 with the
+m/16 row of 44.8); (b) 26.24 MiB per slot, 3122 slots, and core-v0.4's interface now states
+"about 3100 slots with three finders" (`coord/INTERFACES/multi_puncture.md:235-247`); (c) 0.1993
+(prograde) and 0.0734 (retrograde) at any time, 0.0056 and 0.0038 while bound; (d) 14.14 and
+18.52; (e) SCOPING lines 50, 114, 185 (and 6, 9 headings). All MET: the verifier's D3, D5, D6,
+D7 and D4 hold.
+L3 [VERIFIED]: (a) run F-20261121-063520-abab33e: 9 of 9, all 346 recorded values identical;
+(b) e_r = 0.1217 at a = 30 m_b and 0.2080 at 20 m_b (eih 0.1217, 0.2080): MET; (c) first attempt
+FAILED by method (run F-20261121-063527-b4453db): I imposed E_1PN = 0 at the pericentre, which
+leaves a hyperbola at large r (excess error -1.5, the orbit deflects less than Newton); the
+second attempt (run F-20261121-063646-d826df4) imposes E_1PN = 0 at r0 = 1e4 M and gives -0.3931,
+-0.2682, -0.1963, -0.0881, -0.0351 at areal r_p = 8, 10, 12, 20, 40 M, equal to eih's T4 to
+1e-9; my exact Schwarzschild angles equal eih's to 1e-12. MET. The failed first attempt is
+itself a measure of the 1PN ambiguity near pericentre: where the parabola is defined matters at
+order one inside 12 M.
+Also: rerun of the verifier's ledger recomputation (run F-20261121-063712-25981e0): 56 of 57 rows
+identical; row 57 ("about 3000 slots", `multi_puncture.md:229-230`) no longer agrees because
+release core-v0.4 rewrote that paragraph (now lines 235-247, "about 3100"): a stale locator
+of the note's ledger, not an error of the verifier.
