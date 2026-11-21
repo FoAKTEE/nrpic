@@ -232,3 +232,36 @@ State for the restart:
   `scripts/analyze_f.py` and `scripts/analyze_b.py`, figures into `figs/`, numbers into
   `results/`, outcomes against PF1-PF6 and PB1-PB5 here, verdict in README.
 Card time used by this package so far: none (J1 has not started).
+
+## Entry 4 (2026-11-21 12:30 PST, lead of batch 5): J2 and J3 submitted; predictions
+
+Written before either job runs. J1 (B-20261120-222955-c8e16e3, Slurm 4746) and P1
+(B-20261120-223006-24448ac) are completed and closed, not yet analysed; nothing of their
+outputs was read for this entry except the end lines of three logs (exit 0, 4.7e6 and 5.4e6
+zone-cycles/s at 32^3 with 1 per cell, 0.96e6 zone-cycles/s with 27 per cell).
+
+Executable: J2 and J3 continue the series of J1, so they use the same release executable
+`.work/build_gpu_v03/src/athena` (core-v0.3), not v0.6: a convergence series must come from
+one code; the changes of v0.4-v0.6 without an option are listed in the changelogs and are not
+tested against this series [JUDGEMENT].
+
+- J2 = `inputs/batch_j2.list` unchanged (b_n64_p1, f_n64_p1_a0, f_n64_p1_a2), one batch job,
+  estimate 0.57 card-h (entry 1, cost).
+- J3 changed from entry 2: leg B at 128^3 now runs to a = 1001 (t = 61.277), not to a = 51,
+  because card time is no longer the limit (decision 0025 item 4). Deck
+  `inputs/mode_prod_rst.athinput` = `mode_prod.athinput` plus a restart output every 4 units
+  of t; chained with `scripts/submit_chain.sh` (release core-v0.6 copy of the script), at
+  most 6 segments. Estimate 23000 steps, 0.37-0.49 s per step: 2.4-3.1 card-h (entry 1).
+
+Predictions: those of entry 1 (PF1-PF6 for J2's leg F at 64^3; PB1-PB5 for b_n64_p1 and
+b_n128_p1), unchanged. Specific to the two jobs:
+- J2: f_n64_p1_a0 scale-factor measures about 1/16 of f_n32_p1_a0's (PF1, step halved);
+  f_n64_p1_a2 noise part of alpha/chi extrema half that of f_n32_p1_a2 at equal A (PF5).
+- J3: |e_D| at 128^3 at most a quarter of that at 64^3 at every a where both have records
+  (PB3, second order or better), down to the floor of about 1e-6 in f; the 128^3 run passes
+  a = 1001 without the guard or the chain reporting a non-finite field.
+- Step time: 0.37-0.49 s per step at 128^3 with 1 per cell (read from the first segment's
+  log; if it is above 0.6 s the segment count may not suffice: resume with the same start
+  command, `scripts/submit_chain.sh <rundir> <deck>`).
+Refuted as in entry 1: any |f - reference| reaching 1e-2, or errors that do not fall from 32
+to 64 to 128 cells without a floor whose cause a run has tested.
