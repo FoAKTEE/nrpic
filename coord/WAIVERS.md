@@ -7,3 +7,4 @@ D-20261115-193755-3a53b08  outputs moved into the run directory after the run fi
 F-20261115-173719-923135a  outputs moved into the run directory after the run finished; data unchanged (decision 0021)
 F-20261115-181805-f9c3473  outputs moved into the run directory after the run finished; data unchanged (decision 0021)
 F-20261115-182100-613c9c6  outputs moved into the run directory after the run finished; data unchanged (decision 0021)
+A-20261121-064515-aa13c8f  the gate reviewer's failed first attempt; its scratch script was edited for the rerun A-20261121-064537-2bcf310
