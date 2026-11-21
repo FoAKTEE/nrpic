@@ -39,8 +39,8 @@ release.
 
 Particle-in-cell methods for the Einstein--Vlasov system follow collisionless matter
 with particles that move on geodesics of an evolving spacetime and deposit their
-stress-energy on the mesh that evolves the metric~\cite{Wu:2026nrpic}. The method of
-Ref.~\cite{Wu:2026nrpic} lives inside AthenaK~\cite{2026ApJS..283...27S}, whose
+stress-energy on the mesh that evolves the metric~\cite{Wu:2026pic}. The method of
+Ref.~\cite{Wu:2026pic} lives inside AthenaK~\cite{2026ApJS..283...27S}, whose
 numerical-relativity module evolves the Z4c system with moving punctures and adaptive
 refinement~\cite{Zhu:2024utz}. A program of six cosmology projects uses one shared copy
 of this coupling, maintained in one source tree: primordial black holes and
@@ -93,7 +93,7 @@ geodesics with an accretion record, and collisions that use the metric at each p
 The third and fourth (core-v0.5, core-v0.6) added a threaded processor build whose
 deposit repeats bit for bit at a fixed thread count, the particle module on several MPI
 ranks, adaptive refinement in the periodic box with a horizon finder and tracker there,
-a guard that stops a run whose fields are no longer finite, a step limit by the speed of
+a guard that stops a run as soon as a field value overflows, a step limit by the speed of
 light, constraint norms inside spheres, a Fourier Poisson solver for the Newtonian mode,
 outer faces of Z4c with a fall-off fill of the ghost cells and a radiative condition for
 the part of each field that is no wave, and a second pass of the elliptic solver with a
@@ -122,7 +122,8 @@ The brief of the program assigns four tests of its verification suite to the sha
 implementation: geodesics on a fixed background; the Oppenheimer--Snyder collapse with a
 horizon-mass error of the order of the source paper's; prolate collapse; and the
 stability of relativistic clusters. Figures~\ref{fig:geo} to~\ref{fig:clusters} are
-drawn from raw outputs by one registered run (\noterun), which also writes the ledger.
+drawn from raw outputs by one registered run, which also writes the ledger of
+Appendix~\ref{app:ledger}.
 
 \subsection{Geodesics on a fixed Kerr background}
 
@@ -167,8 +168,8 @@ interval (Fig.~\ref{fig:collapse}, right). Its mass stays a few hundredths below
 initial mass and falls slowly after its maximum; the deficit shrinks from the coarser to
 the finer mesh, and the missing mass sits outside the horizon as field content. Two
 resolutions give no order of convergence, and a third needs more memory than one card
-holds at this particle number. The oblate member of the row has an initial-data component
-on a branch that has not yet entered a release. The row is partial.
+holds at this particle number. The oblate member of the row has its initial-data component
+on a branch scheduled for the next release. The row is partial.
 
 \begin{figure*}
 \includegraphics[width=\textwidth]{figures/fig_collapse.pdf}
@@ -248,7 +249,7 @@ switches the term off inside a radius around each tracked puncture; this delays 
 drift and is named a mitigation. A cure, a term that holds the lapse of expanding matter
 without stretching the vacuum, is open.
 
-The step limit counts the speed of light but not the gauge speeds. The primordial
+The step limit counts the speed of light only. The primordial
 black-hole project found the Gamma-driver shift unstable at the grid scale once the step
 exceeds a fixed fraction of the finest cell; the rule until the next release keeps the
 Courant factor below that fraction, and the next release adds the gauge speeds to the

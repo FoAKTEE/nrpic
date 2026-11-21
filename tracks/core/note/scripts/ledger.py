@@ -157,6 +157,7 @@ def fmt(v, sig):
 def tex(s):
     return (s.replace("\\", "/").replace("_", r"\_").replace("%", r"\%").replace("&", r"\&")
             .replace("#", r"\#").replace("<~", r"$\lesssim$").replace(">=", r"$\geq$")
+            .replace("< ", r"$<$ ").replace("> ", r"$>$ ")
             .replace("^4", r"$^4$").replace("^2", r"$^2$").replace("|", r"$|$"))
 
 
