@@ -387,3 +387,18 @@ Predictions for (vi) cc2_kninf_M8_A (restart of (i) at 300 M, `time/tlim=1000`, 
 Method note (smoke, not registered, `scratch/C-sidm/tmp/drift_smoke`): the new `compare.py
 --pair` (residuals about the 40 M running mean) gives +0.57 for CC1 against CC2 on M/4; the
 registered value comes with the analysis of (iii). Threshold of M8.5' (entry 9) unchanged.
+
+## 2026-11-21 13:08 UTC Entry 11: a fourth prediction for run (v), on noise relaxation
+
+Run (i) leaves two readings of the slow contraction of CC2 on M/8 after 200 M (entry 8): the
+real slow mode, or relaxation driven by the deposit noise, whose H-norm2 floor is 9.3 times
+that of M/4 at the same N. Run (v) (M/4, N = 1e4) should have a noise floor of the same size
+(N.1 predicts about 10 times 8.6e-4) on the mesh whose outward push we know. So:
+- N.4 If the M/8 contraction is noise relaxation, run (v) contracts relative to the N = 1e5
+  control on the same mesh: alpha_c(1e4) - alpha_c(1e5), 20 M means at 280-300 M, below
+  -0.003, with sum mW/sum m rising relative to the control. Within +-0.003 means the noise
+  floor alone does not contract the cluster within 300 M, and the M/8 contraction is the
+  finer mesh's own (the slow mode, or an error of the other sign). [JUDGEMENT, 50/50.]
+  Caveat written now: the N = 1e4 sample has its own sqrt(N) deviation from the model, which
+  shifts the start of the radial mode; a difference that is already there by 50 M and does
+  not grow is that, not relaxation.

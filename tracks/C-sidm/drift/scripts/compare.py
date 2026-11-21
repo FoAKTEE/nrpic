@@ -134,7 +134,7 @@ def main():
     fs.use_style()
     cols = fs.SERIES
     fig, axs = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 5.2), sharex=True)
-    fig.subplots_adjust(left=0.09, right=0.985, bottom=0.09, top=0.97, wspace=0.28, hspace=0.1)
+    fig.subplots_adjust(left=0.105, right=0.985, bottom=0.09, top=0.97, wspace=0.36, hspace=0.1)
     for j, (label, s) in enumerate(ser.items()):
         c = cols[j % len(cols)]
         fc = res[label]["fits"].get("cos", {})
@@ -148,10 +148,12 @@ def main():
         axs[1, 0].plot(s["zt"], s["Hn"], color=c, lw=1.0)
         axs[1, 1].plot(s["t"], s["meanW"] - s["meanW"][0], color=c, lw=1.0)
     axs[0, 0].axhline(0.0, **fs.MASK_LINE)
-    axs[0, 0].set_ylabel(r"$\alpha_c(t)-\alpha_c(0)$ (thick: 20 M mean)")
+    axs[0, 0].set_ylabel(r"$\alpha_c(t)-\alpha_c(0)$")
     axs[0, 0].legend(fontsize=6, loc="best", frameon=False)
+    axs[0, 0].text(0.02, 0.97, "thin: record; thick: 20 M mean; dashed: cosine fit", fontsize=6,
+                   transform=axs[0, 0].transAxes, va="top")
     axs[0, 1].axhline(0.0, **fs.MASK_LINE)
-    axs[0, 1].set_ylabel(r"areal radius of the 50 % shell / initial $-1$")
+    axs[0, 1].set_ylabel(r"areal $r_{50}$ / initial $-\,1$")
     axs[1, 0].set_yscale("log")
     axs[1, 0].set_ylabel(r"$\|H\|_2^2$")
     axs[1, 1].axhline(0.0, **fs.MASK_LINE)
