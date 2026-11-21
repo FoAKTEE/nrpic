@@ -1,0 +1,160 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-212611-5973536",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "verifier_g2 V8: collision relaxation of core-20261115-134036-5684674, conservation, own Maxwell-Juttner KS and pressure",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/verify/verifier_g2/scripts/v8_coll.py",
+    "/data/haiyangw/nrpic/scratch/core/core-20261115-134036-5684674",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "59735364bb0afa54f93a8f181b0e2b1a9423385b",
+    "branch": "core/nrpic",
+    "dirty": false,
+    "package": [
+      "tracks/core/verify/verifier_g2"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "9d43b229377786cc62ef7bb666b765abfdab30bc",
+    "worktree": "wt/core"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-134036-5684674/shell_0.3/box.part.00000.bin",
+      "role": "input",
+      "sha256": "44c494f5b3f369c5614d482f8d7d0a106aab631f36b83d99874053dab98327b1",
+      "bytes": 28800032,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-134036-5684674/shell_0.3/box.part.00025.bin",
+      "role": "input",
+      "sha256": "28ad136eff06ead05394f56b9013ba7f604ecf67b48485a200cc4baaefacc53a",
+      "bytes": 28800032,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-134036-5684674/shell_2/box.part.00000.bin",
+      "role": "input",
+      "sha256": "29d7ae6255166ad0d5ba7f682870f9327a13016421c7a5279aeb495af3335c0e",
+      "bytes": 28800032,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-134036-5684674/shell_2/box.part.00025.bin",
+      "role": "input",
+      "sha256": "d5285687bf24bdeb37f1290a5156b5215c9d921f2aab50c773bc0b40128c658c",
+      "bytes": 28800032,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-134036-5684674/twotemp_0.01/box.part.00000.bin",
+      "role": "input",
+      "sha256": "b3fac40e70de659141e668ac38bc429e7a7f90436f373387f27868f25091813e",
+      "bytes": 28800032,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-134036-5684674/twotemp_0.01/box.part.00025.bin",
+      "role": "input",
+      "sha256": "4a589231f2653cad8ddb441f8440f2be3e7859d78ede32fb591dfc4de722ebce",
+      "bytes": 28800032,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-134036-5684674/twotemp_1/box.part.00000.bin",
+      "role": "input",
+      "sha256": "9ec9957d778cbf7012da475abbbec0f2e9dd9934dd5fc7d8bba3bc92ef8eb5dc",
+      "bytes": 28800032,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-134036-5684674/twotemp_1/box.part.00025.bin",
+      "role": "input",
+      "sha256": "56cd5945845c91062435d86d92414a4248fe4bf4dd8f56359d93dc7283e4aa90",
+      "bytes": 28800032,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/verify/verifier_g2/scripts/v8_coll.py",
+      "role": "argv",
+      "sha256": "b6fd9d669a4b673f81d47868586e9aba544cb37f477dffe37565a3e249f30a33",
+      "bytes": 5119,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-212611-5973536",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T21:26:12Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 8.1719,
+    "gpu_hours_reserved": 11.9002,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1486,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
