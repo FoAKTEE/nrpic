@@ -65,7 +65,8 @@ def isotropic_cdf(y0, b):
     # d ln rbar/dr = 1/(r sqrt(1 - 2m/r)); match rbar at R to the exterior r = rbar (1 + M/2rbar)^2
     rbs = 0.5*(R - M + np.sqrt(R*R - 2*M*R))
     integrand = 1/(r*np.sqrt(1 - 2*m/r))
-    lnrb = np.log(rbs) - (integrate.cumulative_trapezoid(integrand[::-1], r[::-1], initial=0.0))[::-1]
+    # integral over decreasing r is -int_r^R, so ln rbar(r) = ln rbar_s - int_r^R = ln rbar_s + that
+    lnrb = np.log(rbs) + (integrate.cumulative_trapezoid(integrand[::-1], r[::-1], initial=0.0))[::-1]
     rb = np.exp(lnrb)
     return rb/M, Nr/N, rbs/M, eq
 
