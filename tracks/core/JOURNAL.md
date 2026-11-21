@@ -763,3 +763,51 @@ Not done:
      with momentum (core/clump-table). Two new requests of 2026-11-21 are unread.
 3. The inbox of core holds twelve messages of 2026-11-19 to 2026-11-21 that I listed
    and did not read or acknowledge (numbers 76 to 87 of `nrpic-ctx inbox`).
+
+## 2026-11-21T07:47Z  session core-lead-4 (batch 2b: closing release core-v0.5)
+
+State found [VERIFIED by the commands named]: `git merge --no-edit main` brought main's
+release commits (tag core-v0.5 on c3eb42e0, `coord/INTERFACES/` copies, decision 0021);
+worktree clean; no pause flag; `squeue`: no job of core. `sacct`: job 4772 (the card
+check) COMPLETED 07:42:27Z to 07:42:40Z, job 4763 (cosmo-amr T14b, T10g) COMPLETED
+20:47 to 20:57 PST of 2026-11-20, job 4733 (mpi, two cards) COMPLETED. Release
+executables: `.work/build_cpu_v05/src/athena` (sha256 222b8fa4..., 260888800 bytes)
+and `.work/build_gpu_v05/src/athena` (2512c8d5...), built by the clerk from main, whose
+`athenak/src` equals c3eb42e0 (`git diff c3eb42e0 9f7f85be -- athenak/src`: empty);
+their checksums differ from the candidate's (b462068a..., 9d08dc13...), as
+RELEASE-v0.5.md said a build in another directory may.
+
+### Card check of the candidate (prediction K1 to K6 of the entry of 06:32Z): PASS
+
+Run core-20261121-070946-1907f7b finished (all nine cases status 0, 13 s of card), judged
+in core-20261121-074846-e830785: K1 to K6 held (sums 2.3e-13 of sum m W at worst,
+identity 9.9e-16, MeshBlock counts and tracker path equal, source dumps 3.1e-14, the
+note of `deposit_threads`). Panel b of `fig_card_v05.png` (looked at) is high for s3g,
+usr, trk only: columns that are ratios of rounding-level residuals (trk: Mr_max, whose
+numerator M_max is at most 1.7e-13; s3g, usr: pointwise max |M|/[M], while <|M|>
+agrees to 4e-6 of itself) [VERIFIED from the files]. Written into RELEASE-v0.5.md
+(section "Card check", now PASS) and the READY of `core_nrpic_v05` (STATUS, NOT TESTED,
+CARD CHECK).
+
+### Predictions, written before the runs of this session
+
+S  T14b case Sf of package cosmo-amr (card run of job 4763 against T2b's processor run;
+   `analysis/cosmo_amr/t14b_sf.py`, the measures `t14_card.py` applies to U, S, A): the
+   bounds of the package's prediction for the homogeneous cases (its entry of 03:26):
+   status 0; chi and E uniform on the card to 1e-12; alpha_max equal to the processor
+   run to 1e-12 at every record; the same MeshBlock counts; identity below 1e-13.
+   Refuted by any number above its bound.
+R  Byte regression of the release processor build against the candidate
+   (`regress_v04.py --base <candidate athena_cpu> --new .work/build_cpu_v05/src/athena`,
+   twelve set-ups): all 75 items identical, classes a, b, other empty. Same source, same
+   compiler and flags; the executables differ in their bytes (paths of the build
+   directory in the debug information) [JUDGEMENT: nothing that enters the arithmetic].
+   Refuted by one differing data byte.
+G  Release card build, one short card job (the nine cases of `card_v05.list`, 13 s on a
+   card): (i) `card_v05.py` against the processor runs: K1 to K6 hold with the bounds of
+   06:32Z; (ii) `card_pair.py` against the candidate's card run of job 4772: s3g and usr
+   (scalar field, no particles, no atomic additions) byte-identical in every file; the
+   seven deposit cases not necessarily byte-identical (atomic additions in an order a
+   card does not fix), their module histories within 1e-12 of each column [JUDGEMENT].
+   Refuted for (ii) by a difference in s3g or usr, or by a deposit-case history column
+   above 1e-12.
