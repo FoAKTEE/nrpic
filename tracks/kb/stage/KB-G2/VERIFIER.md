@@ -199,6 +199,47 @@ To the kb lead:
    definition and counts are in tracks/kb/verify_g2/ (tally.json of kb-20261121-080843-98907be).
 5. Use `tracks/kb/verify_g2/heldout.yaml` only as a held-out check; do not tune on it.
 
-## C9 addendum (written after the verdicts were committed)
+## C9 addendum (written after the verdicts were committed in ef9d2d34)
 
-Pending: the journal part of C9 is read only after this file is committed.
+tracks/kb/JOURNAL.md records the failed W9 run kb-20261115-182907-3f69615 with its cause
+(line 384 ff.) and refuted predictions ("L2 refuted as worded", line 58; number verdicts
+refuted, line 231); the package's C9 also names refuted predictions of the retrieval and
+pdf_meta helpers and the failed run kb-20261119-143242-737909d. The verdict stands. One
+defect of the record: two wave-1 runs that ended with exit code 1, kb-20261115-154858-b0d8c8f
+and kb-20261115-164121-5aca10c, carry the status word "finished" in their hand-written
+manifests, which nrpic-run reads as completed (run kb-20261121-081226-a4025cf); a reader of
+the manifests alone does not see them as failed.
+
+## Comparison with the package (written after the verdicts were committed)
+
+Read: tracks/kb/stage/KB-G2/EVIDENCE.md and CHECKLIST.md (collected 2026-11-19T16:21:41Z).
+No verdict above was changed.
+
+Numbers that agree:
+- C1: 710 of 710 manifest ids (684 + 26), 63 + 1 repositories.
+- C3 on the recorded status: ok 684/710 = 96.3 %, ok or pdf 687/710 = 96.8 %.
+- C3, bibliography: the package's OPEN.md count of 20 TeX papers without any bibliography entry
+  and the KB-G1 verifier's 11 status-ok papers among them are exactly my counts (20, 11; run
+  kb-20261121-081226-a4025cf); the package's "strictest reading" 673/710 = 94.8 % follows.
+- C4, question by question in sum: paper hits text 27, hybrid 28, rerank 28 of 32; location
+  hits 21, 23, 25 (the package widens the expected lines by 5, I widen the characters by 200;
+  same totals).
+- C5: default db/current, snapshots 0444. C6a: snapshot a782f1e from run
+  kb-20261119-161451-e15d1b8.
+- C9: the failed run kb-20261119-143242-737909d.
+
+Numbers or judgements that differ:
+- C3 under a definition: the package reports the recorded status (96.3 %) and calls the
+  bibliography gaps a borderline caveat (94.8 %). My definition gives 679/710 = 95.6 %: it
+  counts 21 status-ok papers as failures (the 11 without any entry, 2 more with less than
+  half of the source's bibliography, 7 with less than half of the equations, 1 without its
+  numbered sections) and 16 review or pdf papers as usable. The package does not mention the
+  equation shortfalls, the old-style papers without sections (defect 2) or the ten papers
+  whose citation rows have no entry.
+- C4 held-out: the package notes that its re-ranking was chosen on the 32 golden questions and
+  asks for a held-out set. My blind held-out set gives 87.5 / 91.7 / 87.5 % (text / hybrid /
+  rerank), at or above the golden rates: the in-sample choice did not inflate the result.
+- C6: the package marks "every locator cited carries the snapshot id" PASS on the ground that
+  every number of the package is on a782f1e; I judged the tool's locators (C6b WRONG): per-hit
+  locators and `kb show`/`kb cites` carry no id.
+- C8 of the package (verifier) was FAIL for want of a verifier; this report is that verifier's.

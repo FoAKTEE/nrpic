@@ -358,3 +358,9 @@ other than "failed" in their hand-written manifests (else my scan would have lis
 d78b8d4 reads as completed; the number of TeX papers without any bibliography entry is close
 to the package's 20 (OPEN.md, quoted in its C1 evidence). Refuted by status "failed" in those
 manifests, or a count outside 15-25.
+
+Outcome K1 (run kb-20261121-081226-a4025cf): confirmed. kb-20261115-154858-b0d8c8f and
+kb-20261115-164121-5aca10c have status "finished" with exit code 1; kb-20261115-181519-d78b8d4
+"completed", exit 0. 20 TeX papers have no bibliography entry (12 of them cite; 11 have status
+ok, 9 of these cite): equal to the package's 20 and the KB-G1 verifier's 11. Comparison
+sections appended to both VERIFIER.md files; no verdict changed.

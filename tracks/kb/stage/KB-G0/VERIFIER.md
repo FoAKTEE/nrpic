@@ -47,3 +47,26 @@ tracks/kb/verify_g2/JOURNAL.md.
 
 To the kb lead: name in kb/README.md (one line each) why each K0 tool was chosen or rejected,
 or point there to the JOURNAL entry; say what replaced `curated/seed_claims.jsonl`.
+
+## Comparison with the package (written after the verdicts were committed in ef9d2d34)
+
+Read: tracks/kb/stage/KB-G0/CHECKLIST.md (collected 2026-11-15T18:29:11Z). No verdict above was
+changed.
+
+Agree: the layout of brief 12.2 under kb-data; the frozen environments requirements-k0/k4/k6.lock;
+the readers' default db/current and snapshot mode 0444; the snapshots and their runs
+(f2fcda5 / kb-20261115-141500-b2e57be, 621430e / kb-20261115-164041-5aca10c, 3826a68 /
+kb-20261115-182741-7dafdf9, 44b7406, a848a06 / kb-20261115-183921-31d5b77), all of which I found
+with matching sha256 prefixes and mode 0444.
+
+Differ:
+- C1: the package points to kb/JOURNAL.md for the reasons of the tool choices; I did not open
+  it for that (my task allowed the journal for C9 only), so C1b stays NOT CHECKED. The package
+  does not mention the absent `uv.lock` and `curated/seed_claims.jsonl`.
+- C6: the package names three failed wave-1 runs; two of them (kb-20261115-154858-b0d8c8f,
+  kb-20261115-164121-5aca10c, exit code 1) are recorded with the status word "finished", which
+  nrpic-run reads as completed, and the third (kb-20261115-181519-d78b8d4) as completed with
+  exit 0 (its failure, a misplaced output, is in the journal only) (run
+  kb-20261121-081226-a4025cf). My manifest scan therefore counted 2 failed runs, not 5. The
+  verdict stands (failed runs are on record), with this defect of the record.
+- C5 of the package (verifier) was FAIL for want of a verifier; this report is that verifier's.
