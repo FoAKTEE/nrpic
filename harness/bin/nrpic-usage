@@ -47,6 +47,9 @@ RESET_GRACE = 90          # seconds after a window's reset time before the first
 MISSES = 6                # probes in a row without a reading: unknown (decision 0018)
 
 
+FLAG_NAME = os.environ.get("NRPIC_PAUSE_FLAG", "PAUSE")   # a second account uses its own flag name
+
+
 def root():
     here = os.path.dirname(os.path.abspath(__file__))
     common = subprocess.run(["git", "-C", here, "rev-parse", "--path-format=absolute", "--git-common-dir"],
@@ -103,7 +106,7 @@ class Usage:
         self.sleep = sleep
         self.out = out or sys.stdout
         self.locks = os.path.join(rt, "locks")
-        self.flag = os.path.join(self.locks, "PAUSE")
+        self.flag = os.path.join(self.locks, FLAG_NAME)
 
     def say(self, s):
         print(s, file=self.out, flush=True)
