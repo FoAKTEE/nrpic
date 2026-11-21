@@ -1,0 +1,6 @@
+{"exe": ".work/exe/sbc2/athena_cpu",
+ "cases": {
+  "boost_e2nw": {"input": "inputs/punc_ext.athinput", "args": ["time/nlim=1", "z4c/extrap_order=2", "z4c/sbc_variant=nonwave", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"]},
+  "boost_g2nw": {"input": "inputs/punc_ext.athinput", "args": ["time/nlim=1", "z4c/extrap_order=2", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"]},
+  "boost_g4nw": {"input": "inputs/punc_ext.athinput", "args": ["time/nlim=1", "z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"]}
+ }}

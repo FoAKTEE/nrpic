@@ -1,0 +1,2 @@
+# m1: arrays of the full set, new executable (f6f9a0d) against the frozen executable of cb50e22; passes if no difference exceeds 1e-7 (single-precision dumps)
+compare_data.py /data/haiyangw/nrpic/scratch/core/core-20261121-080713-8a8fa28 --tol 1e-7 --out $OUT/results/m1.json --fig $OUT/figs/m1_merge

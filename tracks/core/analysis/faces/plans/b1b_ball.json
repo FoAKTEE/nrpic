@@ -1,0 +1,6 @@
+{"exe": ".work/exe/sbc1/athena_cpu",
+ "ball": {"M": 0.5, "Rb": 6, "edge": 1.5, "h": 0.5},
+ "cases": {
+  "ball_nw_e4_q25": {"input": "inputs/ball_sbc.athinput", "args": ["z4c/extrap_order=4", "z4c/sbc_power_khat=2.5", "z4c/sbc_power_a=2.5"]},
+  "ball_nw_e4_th": {"input": "inputs/ball_sbc.athinput", "args": ["z4c/extrap_order=4", "z4c/sbc_theta=nonwave"]}
+ }}

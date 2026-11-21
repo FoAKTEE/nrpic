@@ -1,0 +1,36 @@
+{
+ "a": "/data/haiyangw/nrpic/wt/core-faces/.work/build_cpu",
+ "b": "/data/haiyangw/nrpic/.work/build_cpu_v05",
+ "compared": 204,
+ "only_a": [
+  "z4c/z4c_bcs_falloff.cpp.o",
+  "z4c/z4c_sbc_ext.cpp.o"
+ ],
+ "only_b": [],
+ "different": {
+  "mesh/meshblock_pack.cpp.o": {
+   "insns_a": 4467,
+   "insns_b": 4469,
+   "fma_a": 0,
+   "fma_b": 0
+  },
+  "z4c/z4c.cpp.o": {
+   "insns_a": 14592,
+   "insns_b": 14571,
+   "fma_a": 15,
+   "fma_b": 15
+  },
+  "z4c/z4c_Sbc.cpp.o": {
+   "insns_a": 8514,
+   "insns_b": 6058,
+   "fma_a": 57,
+   "fma_b": 22
+  },
+  "z4c/z4c_tasks.cpp.o": {
+   "insns_a": 12278,
+   "insns_b": 12207,
+   "fma_a": 1,
+   "fma_b": 1
+  }
+ }
+}

@@ -1,5 +1,9 @@
 RELEASE core-v0.5 c3eb42e0bf9b9804e569f7e6dd1603ac805a60eb REGRESSION PASS
 
+Card check of the candidate's card executable: PASS (run core-20261121-074846-e830785,
+section "Card check"). Release executables against the candidate: section "Release
+builds against the candidate".
+
 # Release candidate core-v0.5: four wave-3a source branches of core on top of core-v0.4
 
 Written by the lead of core on 2026-11-21 (decision 0019 item 4; batch 2a). The commit of
@@ -172,20 +176,53 @@ My bound "history within 1e-11" failed for the constraint statistics as I had wr
 gives the package's values. Figure: `scratch/core/core-20261121-065726-bf06a85/
 fig_quick_v05.png` (looked at; a first version with overlapping labels was redrawn).
 
-## Card check of `athena_gpu`: PENDING (one job in the queue)
+## Card check of `athena_gpu`: PASS
 
-Card run core-20261121-070946-1907f7b (Slurm job 4772, 0.2 card-hours asked, list
+Card run core-20261121-070946-1907f7b (Slurm job 4772, list
 `analysis/release/card_v05.list`: nine cases, the decks of the quick test and the
-cluster of package mpi on one rank) was submitted at 07:09Z behind jobs of other owners
-and had not started when this file was written. Until it is judged, `athena_gpu` of
-this candidate has NOT run on a card. What is known of its source on a card: the card
-executable of core/cosmo-amr (same deposit) passed its check (next section), and the
-card executables of core/scalar-3 and core/build-openmp ran their packages' cases
-(READY of the branches); the merged card executable itself: nothing.
-To close: `harness/bin/nrpic-run finish core-20261121-070946-1907f7b`, then
-`card_v05.py --card <its directory> --cpu
-/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c --out '$NRPIC_RUN_DIR'`
-as a registered local run, against the predictions K1 to K6 of the journal.
+cluster of package mpi on one rank) was submitted at 07:09Z, waited behind jobs of other
+owners and ran on 2026-11-21 from 07:42:27Z to 07:42:40Z (13 s, `sacct -j 4772`; card
+time 0.004 card-hours). Judged after the tag, in run core-20261121-074846-e830785
+(`card_v05.py`, against the processor runs of core-20261121-065009-29b855c), against the
+predictions K1 to K6 written before the job ran (journal, entry of 2026-11-21T06:32Z):
+
+| Check | Measured | Bound | Verdict |
+|---|---|---|---|
+| K1 status of the nine cases | all 0 | 0 | held |
+| K2 particle sums and mesh integrals (history columns 4 to 12) against processors, over sum m W | 2.3e-13 (trk) at worst; peak 1.5e-14, dep 5.3e-14, cluster 4.6e-14 | 1e-10 | held |
+| K3 deposit identity on the card | 9.9e-16 at worst | 1e-13 | held |
+| K4 MeshBlock counts of trk and peak at every record; tracker path of trk | equal; path identical (0.0) over 12 records | equal; 1e-12 | held |
+| K5 source dumps (double precision) of dep, depp, fine, finet over the largest number | 3.1e-14, 3.1e-14, 2.4e-14, 1.8e-14 | 1e-12 | held |
+| K6 `deposit_threads = private` on the card | prints "applies to the OpenMP build only; this executable adds atomically" | the note | held |
+
+Reported, not judged (figure panel b): the histories of the particle module and of the
+scalar field agree with processors to 6.4e-13 of each column; the constraint
+statistics differ more, because some of their columns are ratios of rounding-level
+residuals. In trk (homogeneous universe) the largest momentum constraint is 1.7e-13 at
+most, so its relative form Mr_max (column 15) differs by 0.14 of its value while the
+absolute M_max differs by 1.8e-14 [VERIFIED from the two files]; in s3g and usr the
+pointwise largest |M|/[M] (column 8 of `sf.con.hst`) differs by 1.4e-3 and 4.0e-3 of
+its value while the box means <|M|> differ by 4e-6 of theirs (2.5e-17 absolute)
+[VERIFIED]; that the pointwise maximum picks cells where the scale [M] is small is my
+reading [JUDGEMENT]. peak and cluster: largest constraint column 4.0e-9 and 4.9e-9 of
+its value, the size of the difference between rank counts (8.5e-10, quick test).
+Figure `scratch/core/core-20261121-074846-e830785/fig_card_v05.png` (looked at: every
+bar of panel a below its dashed bound; panel b high only for s3g, usr and trk).
+So the merged card executable gives the processor results on all nine cases.
+
+## Release builds against the candidate
+
+The clerk built the release executables from main after the merge (source equal to
+c3eb42e0: `git diff c3eb42e0 9f7f85be -- athenak/src` is empty). Their checksums differ
+from the candidate's (processor 222b8fa4... against b462068a..., 260888800 against
+260891072 bytes; card 2512c8d5... against 9d08dc13...), as a build in another directory
+may (paths in the debug information) [VERIFIED by `sha256sum`]. Prediction R and G of the
+journal (entry of 2026-11-21T07:47Z).
+
+| Check | Run | Result |
+|---|---|---|
+| `.work/build_cpu_v05/src/athena` against the candidate `athena_cpu`, `regress_v04.py`, twelve set-ups | core-20261121-075456-a505400 (figure core-20261121-080001-5da4067) | 75 of 75 items identical, classes a, b, other empty: PASS |
+| `.work/build_gpu_v05/src/athena` on the nine cases of `card_v05.list`, against the processor runs (`card_v05.py`) and against the candidate's card run (`card_pair.py`) | core-20261121-075439-58c2787, Slurm job 4775 (ran 2026-11-21 00:32 PST, nine cases, status 0); judged in core-20261121-125722-91a199a and core-20261121-125743-84f0e42 | PASS. (i) against processors K1 to K6 hold: sums 2.3e-13 at worst (trk), identity 9.9e-16, source dumps 3.1e-14. (ii) against the candidate's card run: s3g and usr byte-identical in all 12 files; module histories of the seven deposit cases within 1.2e-15 of each column (bound 1e-12); the constraint statistics differ as between card and processors (trk column 15, a ratio of rounding-level residuals, 1.8e-3; peak 4.6e-10; cluster 7.8e-10). Figures `fig_card_v05.png`, `fig_card_pair.png` of the two runs (looked at; the y label of panel b is cut at the top in both) |
 
 ## Check of the card executable of core/cosmo-amr (job 4763 of the package)
 
@@ -199,7 +236,9 @@ within 9.2e-12 (bound 1e-9), guard case status 3 with its file (stop at cycle 16
 against 18, not predicted). The prediction of the package's journal held. Figure
 `scratch/core/core-20261121-063923-5ed0a51/fig_t14_card.png` (looked at). Not judged:
 case Sf, and T10g, the scouting run of the same job (it ended with the guard at
-t = 12.504).
+t = 12.504). Both judged on 2026-11-21 by the lead (`JOURNAL-cosmo-amr.md`, entry of
+08:05): Sf PASS (run core-20261121-075446-4944747); T10g against its five predictions,
+three held, two failed as written (`cosmo_amr.md` section 7).
 
 ## Known defects
 

@@ -1,0 +1,22 @@
+{
+ "ex_full": {
+  "files": 5,
+  "identical": 1,
+  "different": [
+   "bin/punc.con.00000.bin",
+   "bin/punc.con.00001.bin",
+   "bin/punc.z4c.00000.bin",
+   "bin/punc.z4c.00001.bin"
+  ]
+ },
+ "ex_stock": {
+  "files": 5,
+  "identical": 1,
+  "different": [
+   "bin/punc.con.00000.bin",
+   "bin/punc.con.00001.bin",
+   "bin/punc.z4c.00000.bin",
+   "bin/punc.z4c.00001.bin"
+  ]
+ }
+}

@@ -397,6 +397,7 @@ class MultigridDriver {
   // Robin faces (multigrid_robin.cpp): the solution falls off as 1/r about robin_o_
   void RobinBoundaryBlocks();
   void RobinBoundaryRoot();
+  void RobinBoundaryOctet(MGOctet &oct, bool fcbuf);
   bool IsRobin() const { return robin_; }
   Real RobinOrigin(int d) const { return robin_o_[d]; }
 

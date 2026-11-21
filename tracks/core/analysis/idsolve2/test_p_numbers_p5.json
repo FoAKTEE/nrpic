@@ -1,0 +1,49 @@
+{
+ "run": "core-20261119-170028-77f7173",
+ "sources": [
+  "core-20261119-170028-77f7173"
+ ],
+ "status": {
+  "p5_mov_n64": {
+   "wall_s": 165.5,
+   "status": "completed"
+  }
+ },
+ "cases": {
+  "p5_mov_n64": {
+   "outer": 34,
+   "summary": [
+    "converged after 34 iteration(s), 80 conjugate-gradient steps, 329 V cycles; max|H| 1.402812e-02 -> 8.409827e-12, rms H 2.235764e-03 -> 6.251621e-13, psi in [1.028571441640, 2.215155126550]",
+    "vector equation: relative residual 1.000286e+00 -> 1.795688e-04 (stalled), 499 V cycles; max|M| of the monitor 5.582165e-04 -> 2.052781e-07",
+    "far field: M_psi = 1.553285552096e+00, P_ADM = (5.500562850657e-01, 1.263576338412e-20, 1.136274488075e-20), J_ADM = (-9.688567387200e-22, 1.222483839391e-17, 1.817097612713e-18) about the centre (0, 0, 0)"
+   ],
+   "far": {
+    "M": 1.553285552096,
+    "P": [
+     0.5500562850657,
+     1.263576338412e-20,
+     1.136274488075e-20
+    ],
+    "J": [
+     -9.6885673872e-22,
+     1.222483839391e-17,
+     1.817097612713e-18
+    ]
+   },
+   "lin": 80,
+   "vcycles": 329,
+   "converged": true,
+   "relv_first": 1.000286,
+   "relv_last": 0.0001795688,
+   "mmax_first": 0.0005582165,
+   "mmax_last": 2.052781e-07
+  }
+ },
+ "reference": {
+  "by_m_adm": 1.1455646453427775,
+  "by_u0": 0.028367791203249736,
+  "by_m_inside_16": 1.119593746014004,
+  "shell_m_adm": 1.4488575894354816,
+  "shell_u0": 0.03630941285891158
+ }
+}

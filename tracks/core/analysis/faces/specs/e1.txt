@@ -1,0 +1,4 @@
+# e1: the example input against the package inputs with the same values on the command line: arrays and history numbers, exact
+compare_data.py /data/haiyangw/nrpic/scratch/core/core-20261121-083038-5f7ea42 --out $OUT/results/e1.json --fig $OUT/figs/e1_example
+# and byte for byte (the headers of the files repeat the parameters; a difference here alone is a difference of the headers)
+compare_runs.py /data/haiyangw/nrpic/scratch/core/core-20261121-083038-5f7ea42 --out $OUT/results/e1_bytes.json

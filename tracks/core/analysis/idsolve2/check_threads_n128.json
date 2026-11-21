@@ -1,0 +1,94 @@
+{
+ "run": "core-20261121-082948-264c21a",
+ "exe": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/exe_395e17d/athena_cpu_omp",
+ "serial_exe": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/exe_76add0c/athena_cpu",
+ "threads": 6,
+ "cases": {
+  "zsol_n128": {
+   "exit": 0,
+   "wall_s": 494.0,
+   "serial_exe_in_log": true,
+   "serial_dir": "/data/haiyangw/nrpic/scratch/core/core-20261119-153416-3d26b50/zsol_n128",
+   "outer_card": 41,
+   "outer_proc": 41,
+   "lin_card": 105,
+   "lin_proc": 105,
+   "far_card": {
+    "M": 0.0002870921477464,
+    "P": [
+     -7.909973231244e-16,
+     -2.319956841262e-15,
+     1.319709320954e-15
+    ],
+    "J": [
+     1.844279971543e-16,
+     7.45442503468e-17,
+     -1.477080516131e-16
+    ]
+   },
+   "far_proc": {
+    "M": 0.0002870921477485,
+    "P": [
+     3.362801785608e-16,
+     -4.646410960247e-17,
+     1.807161529177e-15
+    ],
+    "J": [
+     -5.758714547331e-16,
+     9.569353606261e-17,
+     1.964504767185e-16
+    ]
+   },
+   "summary_card": [
+    "converged after 41 iteration(s), 105 conjugate-gradient steps, 418 V cycles; max|H| 2.842148e-03 -> 2.215955e-12, rms H 1.288306e-04 -> 1.438289e-13, psi in [0.998727179365, 1.001261927333]",
+    "vector equation: relative residual 3.747262e-03 -> 2.067368e-05 (stalled), 417 V cycles; max|M| of the monitor 2.305200e-04 -> 1.074535e-06",
+    "far field: M_psi = 2.870921477464e-04, P_ADM = (-7.909973231244e-16, -2.319956841262e-15, 1.319709320954e-15), J_ADM = (1.844279971543e-16, 7.454425034680e-17, -1.477080516131e-16) about the centre (0, 0, 0)"
+   ],
+   "summary_proc": [
+    "converged after 41 iteration(s), 105 conjugate-gradient steps, 418 V cycles; max|H| 2.842148e-03 -> 2.221522e-12, rms H 1.288306e-04 -> 1.438363e-13, psi in [0.998727179365, 1.001261927333]",
+    "vector equation: relative residual 3.747262e-03 -> 2.067368e-05 (stalled), 417 V cycles; max|M| of the monitor 2.305200e-04 -> 1.074535e-06",
+    "far field: M_psi = 2.870921477485e-04, P_ADM = (3.362801785608e-16, -4.646410960247e-17, 1.807161529177e-15), J_ADM = (-5.758714547331e-16, 9.569353606261e-17, 1.964504767185e-16) about the centre (0, 0, 0)"
+   ],
+   "dpsi_rel": 1.1088237696028184e-15,
+   "H_after_card": 2.215954848061517e-12,
+   "H_after_proc": 2.2215218036023977e-12,
+   "dW_rel": 3.717952816788281e-13,
+   "last_dump": "ball.field.00002.bin",
+   "regions": {
+    "interior": {
+     "card": 1.120949217163602e-05,
+     "proc": 1.1209492171833488e-05,
+     "rel": 1.7616060915202165e-11
+    },
+    "shell": {
+     "card": 2.0597089817353658e-05,
+     "proc": 2.0597089817554167e-05,
+     "rel": 9.734852886991381e-12
+    },
+    "exterior": {
+     "card": 4.863907033605431e-07,
+     "proc": 4.863907033928842e-07,
+     "rel": 6.649200761673444e-11
+    },
+    "faces": {
+     "card": 0.00013047126088827797,
+     "proc": 0.00013047126088826076,
+     "rel": 1.3191954589101406e-13
+    }
+   },
+   "threaded": {
+    "H_first": 0.002842148,
+    "H_last": 2.215955e-12,
+    "M_first": 0.00023052,
+    "M_last": 1.074535e-06
+   },
+   "serial": {
+    "H_first": 0.002842148,
+    "H_last": 2.221522e-12,
+    "M_first": 0.00023052,
+    "M_last": 1.074535e-06
+   }
+  }
+ },
+ "repeat": {}
+}

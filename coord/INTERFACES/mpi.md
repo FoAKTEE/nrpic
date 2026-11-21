@@ -274,7 +274,8 @@ the mesh exchange of AthenaK passes device buffers to the CUDA-aware Open MPI.
 ## 8. Answer to Track F (request `two-card-or-larger-blocks`)
 
 Option (1), two cards with MPI, is built and published (`scratch/core/exe/core_mpi/athena_gpu`,
-with `gpu_bind.sh`), but not yet measured: the card test (job 4663) is queued. It runs
+with `gpu_bind.sh`) and measured (job 4733, below; the first attempt, job 4663, started no
+two-rank run, journal entry 22). It runs
 exactly Track F's case D205_m16_r1.8_t+0090.5 of run F-hills-20261115-131348-634fb86
 (4502 MeshBlocks of 16^3, twelve levels, here static, three vacuum punctures of masses
 0.05, 0.05, 0.5 at the centres of its refined regions:
@@ -286,7 +287,23 @@ the journal (entry 9, P6c, P6d). On processors the code path is the one tested a
 vacuum Z4c on several ranks is upstream AthenaK code (the smoke test of journal entry 1
 ran it on two processor ranks). What Track F can do now: run its mesh-count inputs with
 `athena_cpu -m 2` to see the split over two ranks (no allocation), and plan with
-`max_nmb_per_rank` per card; the measured rate and memory follow when the job has run.
+`max_nmb_per_rank` per card.
+
+Measured on two cards (run core-20261120-220612-431e9b8, Slurm job 4733, judged by the
+lead in core-20261121-080037-2ee9973; journal entry 30) [VERIFIED]:
+
+| Run | MeshBlocks | Ranks, cards | MeshBlock-cycles per second | Peak memory per card |
+|---|---|---|---|---|
+| F8a (m/8) | 2332 | 1, 1 | 2542 | 58835 MiB |
+| F8b (m/8) | 2332 | 2, 2 | 1681 | 30349 MiB |
+| F16 (m/16) | 4502 | 2, 2 | 2026 | 57521 MiB |
+
+So the m/16 mesh, which one card cannot hold, runs on two cards at 57.5 GB per card;
+two cards do not make a mesh that fits one card faster (F8b runs at 0.66 of F8a; my
+prediction of 1.3 to 1.9 times faster failed, cause not examined). The cluster on two
+cards agrees with one card to 2.5e-13 in the history and 3.6e-15 in the positions,
+inside the scatter of two one-card runs (3.3e-13, 2.7e-15). The card build with MPI is
+the package's, source ca46836; it is not part of release core-v0.5.
 
 ## 9. In release candidate core-v0.5 (lead of core, 2026-11-21)
 
@@ -321,4 +338,9 @@ against sections 3.6 and 6:
   Hamiltonian constraint (the same value in run core-20261119-154814-ca46836).
 - Published: `scratch/core/exe/core_nrpic_v05/athena_cpu_mpi`. A card build with MPI is
   not part of the release (the package's build ran two ranks on one card, entry 23 of
-  its journal; its two-card job 4733 is not judged).
+  its journal, and on two cards, job 4733, judged after the release: section 8 and
+  journal entry 30).
+- The finder's sensitivity (entries 26 to 28) is a property of the finder at four cells
+  per horizon radius on one rank as well: a change of 1e-13 in its flow constant changes
+  the surface of the search of t = 0.1875 by 4.8e-3 and the excised particles from 43 to
+  41 (run core-20261120-223502-f9a2c02, entry 29).
