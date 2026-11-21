@@ -1,0 +1,33 @@
+{
+ "run_id": "core-20261115-154736-f9f5edb",
+ "owner": "core",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/verify/figscripts/convergence3.py",
+  "--out",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/verify/figs/convergence_three_way"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-154736-f9f5edb",
+ "commit": "f9f5edb",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "tracks/core/verify/figscripts/convergence3.py",
+   "sha256": "aca024ec7704d5e743040d0c7c94c2e37e1dd7e7d590d62fe32b6d43723cd286"
+  },
+  {
+   "path": "tracks/core/analysis/id/test2_numbers.json.gz",
+   "sha256": "9284c0cbbd914f7560338df0d26772c13bbd033f2bbcd1e95d42d7ee7d7d7950"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-154736-f9f5edb",
+ "purpose": "verify wave 2: three-way convergence figure of the coupled module for stage check C9 (particle number: cluster y_c=0.819 N=1e2..1e4; mesh and gauge/boundary: expanding ball runs of analysis/id)",
+ "kind": "scouting",
+ "tag": "",
+ "state": "finished",
+ "wall_time_s": 1.98,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T15:47:36Z"
+}

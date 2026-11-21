@@ -1,0 +1,35 @@
+{
+ "run_id": "core-20261115-153539-9702c09",
+ "owner": "core",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/verify/idcheck/t2d_t3.py"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-153539-9702c09",
+ "commit": "9702c09",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "tracks/core/verify/idcheck/t2d_t3.py",
+   "sha256": "05ae63bcf8e08bffd69a0be0f16abcc3cb6afabeda888790832d80d1884cadde"
+  },
+  {
+   "path": "tracks/core/analysis/id/test2_evolution.py",
+   "sha256": "5f509f010dd0d325a6ea36839dd76bca718c1019aa7be8fac66bd6b939880d4a"
+  },
+  {
+   "path": "tracks/core/analysis/id/idlib.py",
+   "sha256": "dbed4ab61dbc214ce7afc55a6923fd5a9338aa81d6ad597825f6ddd3631c91dc"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-153539-9702c09",
+ "purpose": "verify wave 2: open id analysis T2d and T3 (final figure; rerun of core-20261115-153429-cdc0f54 with the |H| panel framed)",
+ "kind": "scouting",
+ "tag": "",
+ "state": "finished",
+ "wall_time_s": 47.68,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T15:35:39Z"
+}

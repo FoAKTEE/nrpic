@@ -1,0 +1,51 @@
+{
+ "run_id": "core-20261115-180234-b4430da",
+ "owner": "core",
+ "package": "gauge",
+ "tag": "regress-by2-new",
+ "purpose": "regression R, vacuum binary puncture with trackers (by_binary, 12 cycles, small mesh), executable of this branch, new options absent",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_cpu_b4430da",
+  "-i",
+  "/data/haiyangw/nrpic/wt/core-gauge/problems/puncture/by_binary.athinput",
+  "-d",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-180234-b4430da",
+  "mesh/nx1=32",
+  "mesh/nx2=32",
+  "mesh/nx3=32",
+  "mesh/x1min=-32.0",
+  "mesh/x1max=32.0",
+  "mesh/x2min=-32.0",
+  "mesh/x2max=32.0",
+  "mesh/x3min=-32.0",
+  "mesh/x3max=32.0",
+  "meshblock/nx1=8",
+  "meshblock/nx2=8",
+  "meshblock/nx3=8",
+  "mesh_refinement/num_levels=5",
+  "time/nlim=12",
+  "output1/dt=0.001",
+  "output2/dt=0.001"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-180234-b4430da",
+ "commit": "b4430da64df8892bb68b2d633959da3faa0255d8",
+ "head_at_run": "3f710a385d078aca37496687919f7a9d7213655b",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-gauge/problems/puncture/by_binary.athinput",
+   "sha256": "cab30f98891024a33002be3b32aa22503e7d2c6f2182dd026711eb0afd12a2f8"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_cpu_b4430da",
+   "sha256": "07af4a6ca2daf886f67a804a3b3c631c4879bf6739f431209bff5b56a8919917"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-180234-b4430da",
+ "wall_time_s": 375.8,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-180234"
+}

@@ -109,9 +109,12 @@ Requirements and behaviour:
 
 ## Restart caveats found in the smoke tests (`runs/smoke/`)
 
-- Every wall-clock stop writes all outputs once at the stop time, and advances each
-  `dt`-based output's `last_time` by `dt`, so the next scheduled output of each kind
-  is skipped (outputs at t = 34.625 instead of t = 35, for example).
+- Every wall-clock stop writes all outputs once at the stop time. Up to release
+  core-v0.3 this advanced each `dt`-based output's `last_time` by `dt`, so the next
+  scheduled output of each kind was skipped after the restart (outputs at t = 34.625
+  instead of t = 35, for example). Corrected in `Driver::Finalize` (work package dfix,
+  test T2, run core-20261115-154901-d8ad7ec): the extra output leaves the schedule
+  unchanged, and the continued run writes every scheduled output.
 - History files are appended to. After a preemption, the lines between the last
   restart dump and the kill appear twice, and every restart adds a new header block.
   When analysing, de-duplicate by time and keep the last occurrence.

@@ -1,0 +1,129 @@
+READY: executables of branch core/scalar-2 (scalar field, second pass, for Track E)
+=================================================================================
+
+athena_cpu   processors (serial), athena_gpu   one A100; both built from the commit in
+the file COMMIT (source of athenak/ on branch core/scalar-2; nothing outside
+athenak/src/scalar_field/, pgen/nrpic/scalar_field_tests.cpp and the source list differs
+from release core-v0.3). Scouting runs only (decision 0013); the release follows when
+core merges the branch. Interface: tracks/core/interfaces/scalar_field_2.md on
+core/scalar-2 (amends coord/INTERFACES/scalar_field.md); predictions and outcomes:
+tracks/core/JOURNAL-scalar2.md. Read them with
+  git show core/scalar-2:tracks/core/interfaces/scalar_field_2.md
+
+New options, one example input: problems/scalar/sr_stochastic.athinput on core/scalar-2
+(with its mode file sr_stochastic_modes.txt; the slow-roll case of arXiv:2512.14649 in
+code units, 32^3, nmax2 = 64). Every new option is in that file:
+
+<problem> pgen_name = scalar_field
+  id = stochastic            initial slice at N*: homogeneous background (phi0, pi0 at
+                             N*) plus the coarse-grained linear perturbations of SPEC 5.3
+                             with the corrected delta Pi, from the mode file and the
+                             amplitudes of the stochastic sources (needs <scalar_field>
+                             noise = mukhanov_sasaki)
+  slice_window   = true      false: all modes in with W = 1 (with the kicks off: the
+                             initial-value problem without sources, test L3)
+  slice_k2       = stencil   k^2 of the Bardeen potential: stencil (discrete linear
+                             Hamiltonian constraint at rounding) or continuum
+  slice_delta_pi = corrected printed: negative control (first-order Hamiltonian residual)
+<scalar_field>
+  noise_mode_scale = 1.0     factor on the mode functions (slice and sources); -1 is the
+                             mirrored realisation
+  con_dcycle       = 1       record <basename>.sf.con.hst: <|H|/[H]>, max, <|M|/[M]>,
+                             max, with [H], [M] of arXiv:2512.14649 eq. (abscons), box
+                             means of phi, Pi, K, alpha, e-folds (0 or absent: off)
+  dump_metric      = true    double-precision dumps with gt_ij and At_ij (layout
+                             NRSFDMP2, names in the header; reader
+                             python/nrpic/scalar_field.py: read_dump)
+  dump_constraints = true    H, M_i, E in the dumps (false drops them)
+  dump_magnitudes  = false   [H], [M] and the M_i of the BSSN form in the dumps
+  dump_noise       = false   false drops the stochastic fields from the dumps
+Track E's dump set (phi, Pi, chi, gt_ij, K, At_ij, alpha): dump_metric = true,
+dump_constraints = false, dump_noise = false (17 variables, 2.3 GB per dump at 256^3).
+With noise_kick_pi = noise_kick_k = noise_kick_a = false no field is synthesized in the
+stages. Options that an input does not name keep the behaviour of release core-v0.3.
+
+Mode file and background for a case: on core/scalar-2,
+  python3 tracks/core/analysis/scalar2/make_case.py --case quadratic --nmax2 4096 \
+      --kstart 100 --out DIR
+(reference python/nrpic/sf_inflation.py; quadratic case in code units: mass =
+0.182877655899, phi0 = -2.66679478988, pi0 = 0.0297300406809, box 2 pi/sigma). Track E's
+own tables in the same format work as well.
+
+A command line may override only parameters that the input file has.
+A mode file started late (--kstart) has another phase per shell than one integrated
+from N0 (moduli equal to 1.6e-6): runs that are compared mode by mode must share one
+mode file.
+
+What is tested (run ids: tracks/core/runs/<id>/manifest.json on core/scalar-2, outputs
+scratch/core/<id>/; all runs used exactly these two executables)
+-------------------------------------------------------------------------------------
+Slow-roll case of arXiv:2512.14649 in code units, box 2 pi, nmax2 = 64, Courant 0.25,
+geodesic slicing, noise_level = 0, unless said otherwise.
+- Slice against its Python twin: coefficients of delta phi, delta Pi, chi - 1, delta K
+  within 3.6e-10 of their rms; constraints of the slice second order in the amplitude
+  (factors 4.005 and 2.000 per halving); linear Hamiltonian part at rounding (2.7e-14);
+  the printed delta Pi gives the first-order residual -4 eps1 H^2 Psi to 6e-7.
+  [core-20261115-154907-eb68eaa]
+- Background over 8.04 e-folds at 32^3: box means of phi, Pi, K within 6.4e-13, 4.5e-12,
+  3.6e-12 of the Friedmann and Klein-Gordon equations (A1: 1e-4); e-folds within 5.5e-6.
+  [core-20261115-155040-eb68eaa]
+- Constraint ratios in time at 32^3: <|H|/[H]> <= 4.7e-11, <|M|/[M]> <= 3.7e-4, falling
+  after the last crossing. Their parts: a uniform residual of the time integration
+  (3e-12 of [H], fourth order in the step), a first-order truncation part that
+  converges at order 5.5 to 5.8 on N = 32, 64, 128, and a second-order part that scales
+  as the amplitude squared (4.00) and does not depend on N. At N = 64 and 128 the
+  ratios stay at or below their initial 2.6e-12 and 1.46e-5. Negative control
+  noise_pi_sign = -1: H ratio 1e-7, M ratio 0.2.
+  [core-20261115-155040-eb68eaa, -161040-760b515; card -155404-24c88e3, -163726-7be94e4]
+- Curvature perturbation R^NR per mode from the dumps against W R alpha of the lockstep
+  record over 3.1 e-folds at 32^3: within 7.6e-5 for |n| <= 4 and 2.8e-3 for all 1054
+  modes (A2 asks 2e-2 for k <= k_max/2); control: 2. Without window and kicks
+  (nmax2 = 16): within 8.3e-4, frozen after the crossing. noise_level = 1: 2.8e-3.
+  [core-20261115-160134-3fde433, -161659-38adbb8, -162142-3407748]
+- 1, 8, 64 MeshBlocks and a restart: dumps bit-identical. [core-20261115-155719-383321a]
+- Track E's A4 read on the record when the amplitude is halved (N = 32 and 64): a
+  second-order M halves <|M|/[M]> (factor 2, since [M] is first order): 1.95 to 2.00
+  at N = 64 before the late entry, 1.00 in it (first-order truncation part). The
+  factor of <|H|/[H]> (0.76 to 5.04) is no order test while the uniform residual H0 of
+  the time integration is present; with H0 of a run at noise_mode_scale = 0
+  subtracted, rms(H - H0) scales by 3.86 to 3.99. R^NR at N = 64: 5.9e-5 for all modes
+  (2.8e-3 at N = 32); the lowest modes keep 1.2e-6, the second-order part of R^NR
+  (its first-order part agrees to 2.2e-7).
+  [core-20261115-175842-7d54ff5, -184939-657c2e4, -185018-5fed4ea]
+- Card against processors, same input: slice bit-identical; after 20 steps the fields
+  differ by at most 3.3e-14, the constraint fields by 3.4e-13.
+  [card core-20261115-155404-24c88e3 (Slurm job 4444); core-20261115-163549-7be94e4]
+- Track E's noise validation (NOISE_SPEC 9, 10): U1-U8 on processors (scaled base case)
+  and U9 on the card: frozen tanh and Markov Heaviside pass every test, A14 = 1.3e-15;
+  the full base case 64^3 x 300 passes on the card as well. Markov tanh: A1 fails at
+  1e-10 (8.5e-10 for the full case) against noise/ref/noise_ref.py as committed and
+  passes at 4e-15 when the reference forms the increment as the code does,
+  dW = sinh(s hubble dt)/(2 cosh x1 cosh x0); the code needed no change (it has formed
+  the increment so since 5a6953e, release core-v0.3).
+  [core-20261115-155122-eb68eaa, -160103-3fde433, -163855-7be94e4, -163910-7be94e4]
+- Existing behaviour: 120 output files of ten scalar-field cases of wave 1 and seven
+  relativistic and gravity set-ups unchanged against the executable of release
+  core-v0.3 (restart files up to 36 unset header bytes and the recorded restart path).
+  [core-20261115-161240-61bb520 on the files of -160549-a36abe3; -155731-383321a to
+  -160856-a36abe3]
+- Cost on one A100: 1.23 s per step at 256^3 with nmax2 = 4096, the sources and the
+  constraint record every step (1.01 s with the kicks off); 0.45 card-hours for 1304
+  steps. One processor core: 1.06e4 zone-cycles per second at 32^3.
+
+Not tested, known limits
+------------------------
+- No run beyond 128^3 with dumps (256^3: ten steps for the cost only); the inflection
+  (USR) case has not been run; no refined mesh; one seed.
+- With nmax2 = (N/4)^2 (four cells per shortest wavelength, the set-up of the paper) the
+  last shells give a first-order truncation part of the constraints (4.7e-11 and 3.7e-4
+  at 32^3); it is absent at eight cells per wavelength.
+- The slice satisfies the constraints at first order only; a* = 1 only.
+- rng::ModeEntity and the wording of rng.md (request (c) of noise-unit-test-results) are
+  not done; keys unchanged.
+
+Corrections
+-----------
+- 2026-11-15T18Z: the file COMMIT of the first publication (16:43Z) named a58e95b4,
+  which is no commit (a typing error); the source is
+  a58e95b6ebd41a6f0fdc388f6fe3d2468ad1eebc. The executables are unchanged (same
+  checksums as in COMMIT before and after).

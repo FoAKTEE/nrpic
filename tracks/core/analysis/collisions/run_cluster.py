@@ -3,6 +3,7 @@
 problems/st/st_cluster.athinput, Z4c with particle sources) with and without collisions.
 
   run_cluster.py OUTDIR [--exe ATHENA] [--tlim 150] [--kn 30,3] [--n 10000]
+                 [--energy cell,particle]
 
 Runs: "off" (no collision option), "sigma0" (operator on, cross-section zero),
 "knXX" (cross-section per unit mass sigma = 1/(rho0_c R Kn) with the central rest-mass
@@ -10,6 +11,16 @@ density and the areal radius of the model). Collision cells are blocks of 4^3 me
 (2 M wide where the mesh has dx = M/2). Compared: central lapse, radii enclosing 10, 50
 and 90 percent of the rest mass, rest mass, the deposit identity, the pair defects and
 the change of the particle energy caused by the collision steps.
+With --energy the collisional runs are made once per value of <particles> coll_energy
+(names knXX_cell, knXX_particle; history columns 32 to 36): the change of the sum of
+M H, H = alpha W - beta^i u_i with the metric at each particle, in the collision steps.
+
+Split use, for the card runs registered with `nrpic-run submit --launcher batch`:
+  run_cluster.py PREP --prepare [options]      initial data, decks and PREP/batch.list
+                                               (`<name> <deck> <overrides...>`), no run
+  run_cluster.py OUT --analyse RUNDIR --ic PREP/ic [options]
+                                               the analysis of the runs RUNDIR/<name>
+                                               (summary.json, fig_cluster.png into OUT)
 """
 import argparse
 import filecmp
@@ -50,7 +61,7 @@ def mass_radii(snap, fracs=(0.1, 0.5, 0.9)):
     return [float(r[int(f*len(r))]) for f in fracs]
 
 
-def make_figure(out, runs, hst, snaps, model):
+def make_figure(out, runs, hst, snaps, model, rdir=None):
     """Central lapse, mass radii, cumulative collisions and the cumulative change of the
     particle energy by the collision steps, for all runs."""
     fs = common.style()
@@ -73,15 +84,19 @@ def make_figure(out, runs, hst, snaps, model):
         for j in range(3):
             axs[0, 1].plot(tt, rr[:, j], color=cols[name], ls=ls, lw=1.2)
         if name not in ("off", "off2"):
-            c = collide.read_history(os.path.join(out, name, "st.coll.hst"))
+            c = collide.read_history(os.path.join(rdir or out, name, "st.coll.hst"))
             axs[1, 0].plot(c["time"], np.cumsum(c["n_coll"]), color=cols[name], ls=ls, lw=1.2)
             axs[1, 1].plot(c["time"], np.cumsum(c["dE_particles"])/c["sum_MW_particles"][0],
                            color=cols[name], ls=ls, lw=1.2)
+            if "dH_particles" in c:
+                axs[1, 1].plot(c["time"],
+                               np.cumsum(c["dH_particles"])/c["sum_MH_particles"][0],
+                               color=cols[name], ls="--", lw=1.2)
     axs[0, 0].axhline(model["alpha_c"], **fs.GUIDE)
     axs[0, 0].set_ylabel("central lapse")
     axs[0, 1].set_ylabel("radii of 10, 50, 90 percent of the rest mass")
     axs[1, 0].set_ylabel("collisions (cumulative)")
-    axs[1, 1].set_ylabel(r"cumulative $\Delta(\Sigma MW)$ of the collision steps / $\Sigma MW$")
+    axs[1, 1].set_ylabel(r"cumulative $\Delta(\Sigma MW)$ (solid), $\Delta(\Sigma MH)$ (dashed)")
     for ax in axs.ravel():
         ax.set_xlabel(r"$t/M$")
     axs[0, 0].legend(fontsize=8, ncol=2)
@@ -100,13 +115,24 @@ def main():
                     help="coll_cell_factor of the collisional runs, comma separated")
     ap.add_argument("--skip-null", action="store_true",
                     help="do not run the repeated baseline and the run with sigma = 0")
+    ap.add_argument("--energy", default="",
+                    help="values of coll_energy for the collisional runs, comma separated "
+                         "(empty: the option is absent, as in wave 1)")
+    ap.add_argument("--prepare", action="store_true",
+                    help="write the initial data, the decks and OUT/batch.list, run nothing")
+    ap.add_argument("--analyse", default="",
+                    help="run nothing; analyse the run directories RUNDIR/<name> made from "
+                         "the batch.list of a --prepare call (its initial data: --ic)")
+    ap.add_argument("--ic", default="",
+                    help="with --analyse: the directory of the initial data (default OUT/ic)")
     args = ap.parse_args()
     out = os.path.abspath(args.out)
     os.makedirs(out, exist_ok=True)
-    ic = os.path.join(out, "ic")
-    subprocess.run([sys.executable, MAKE_IC, "st", "--yc", "0.819", "--N", str(args.n),
-                    "--sampler", "stratified", "--seed", "1", "--out", ic, "--prefix",
-                    "st"], check=True, stdout=subprocess.DEVNULL)
+    ic = os.path.abspath(args.ic) if (args.analyse and args.ic) else os.path.join(out, "ic")
+    if not args.analyse:
+        subprocess.run([sys.executable, MAKE_IC, "st", "--yc", "0.819", "--N", str(args.n),
+                        "--sampler", "stratified", "--seed", "1", "--out", ic, "--prefix",
+                        "st"], check=True, stdout=subprocess.DEVNULL)
     model = json.load(open(os.path.join(ic, "st.json")))
     rho0_c, radius = model["rho0_c"], model["R_areal"]
     kns = [float(k) for k in args.kn.split(",") if k]
@@ -122,6 +148,12 @@ def main():
         fp.write(text.replace(anchor, anchor + coll_block)
                  .replace(job, job + "rng_seed  = 4242\n"))
     factors = [int(f) for f in args.factors.split(",") if f]
+    energies = [e for e in args.energy.split(",") if e]
+    deck_coll_e = os.path.join(out, "st_cluster_coll_energy.athinput")
+    if energies:
+        with open(deck_coll_e, "w") as fp:
+            fp.write(text.replace(anchor, anchor + coll_block + "coll_energy      = cell\n")
+                     .replace(job, job + "rng_seed  = 4242\n"))
     base = [f"particles/particle_file={os.path.join(ic, 'st.nrp')}",
             f"problem/comp0_file={os.path.join(ic, 'st.tab')}", f"time/tlim={args.tlim}",
             f"particles/snap_dt={args.snap_dt}"]
@@ -136,16 +168,40 @@ def main():
         sig[kn] = 1.0/(rho0_c*radius*kn)
         for f in factors:
             name = f"kn{kn:g}" if f == 4 else f"kn{kn:g}_f{f}"
-            runs[name] = (deck_coll, base + [f"particles/coll_sigma={sig[kn]!r}",
-                                             f"particles/coll_cell_factor={f}"])
+            if not energies:
+                runs[name] = (deck_coll, base + [f"particles/coll_sigma={sig[kn]!r}",
+                                                 f"particles/coll_cell_factor={f}"])
+            for en in energies:
+                runs[f"{name}_{en}"] = (deck_coll_e, base + [
+                    f"particles/coll_sigma={sig[kn]!r}", f"particles/coll_cell_factor={f}",
+                    f"particles/coll_energy={en}"])
+    if args.prepare:
+        with open(os.path.join(out, "batch.list"), "w") as fp:
+            for name, (deck, ov) in runs.items():
+                fp.write(" ".join([name, deck] + list(ov)) + "\n")
+        print(open(os.path.join(out, "batch.list")).read(), end="")
+        sys.exit(0)
+    rdir = os.path.abspath(args.analyse) if args.analyse else out
     summary = {"model": {k: model[k] for k in ("yc", "M0", "R_areal", "rho0_c", "alpha_c")},
                "tlim": args.tlim, "n": args.n, "sigma": {f"kn{k:g}": v for k, v in sig.items()},
                "exe": args.exe, "exe_sha256": common.sha256(args.exe), "runs": {}}
     ok = True
     for name, (deck, ov) in runs.items():
-        code, wall = common.run_athena(args.exe, deck, os.path.join(out, name), ov)
+        if args.analyse:
+            # exit status from the run's log (gpu_batch.sh keeps it in batch.list.status)
+            lg = os.path.join(rdir, name, "athena.log")
+            done = os.path.isfile(lg) and "Terminating on" in open(lg).read()
+            code, wall = (0 if done else 1), float("nan")
+            if done:
+                for line in open(lg):
+                    if line.startswith("cpu time used"):
+                        wall = float(line.split("=")[1])
+        else:
+            code, wall = common.run_athena(args.exe, deck, os.path.join(out, name), ov)
         summary["runs"][name] = {"exit": code, "wall_s": round(wall, 1)}
         ok = ok and code == 0
+    if args.analyse:
+        summary["run_directory"] = rdir
     if not ok:
         with open(os.path.join(out, "summary.json"), "w") as fp:
             summary["ok"] = False
@@ -153,8 +209,8 @@ def main():
         print(json.dumps(summary, indent=1))
         sys.exit(1)
 
-    hst = {k: read_nrpic_hst(os.path.join(out, k, "st.nrpic.hst")) for k in runs}
-    snaps = {k: [collide.read_snapshot(p) for p in common.snapshots(os.path.join(out, k), "st")]
+    hst = {k: read_nrpic_hst(os.path.join(rdir, k, "st.nrpic.hst")) for k in runs}
+    snaps = {k: [collide.read_snapshot(p) for p in common.snapshots(os.path.join(rdir, k), "st")]
              for k in runs}
     ref = hst["off"]
     t_dyn = float(np.sqrt(radius**3/model["M0"]))
@@ -186,7 +242,7 @@ def main():
             r["end_max_dx_to_off"] = float(np.max(np.abs(sa["x"][ia] - sb["x"][ib])))
             r["end_max_du_to_off"] = float(np.max(np.abs(sa["u"][ia] - sb["u"][ib])))
         if name not in ("off", "off2"):
-            c = collide.read_history(os.path.join(out, name, "st.coll.hst"))
+            c = collide.read_history(os.path.join(rdir, name, "st.coll.hst"))
             nc = np.maximum(c["n_coll"], 1.0)
             mp = float(snaps[name][0]["m"][0])
             r.update(collisions=int(c["n_coll"].sum()), sum_P=float(c["sum_P"].sum()),
@@ -210,6 +266,37 @@ def main():
                      count_z=float((c["n_coll"].sum() - c["sum_P"].sum())
                                    / np.sqrt(max(c["sum_P"].sum(), 1e-300)))
                      if c["sum_P"].sum() > 0 else 0.0)
+            if "dH_particles" in c:
+                r.update(dH_particles_sum_rel=float(c["dH_particles"].sum()
+                                                    / c["sum_MH_particles"][0]),
+                         dH_particles_abs_sum_rel=float(np.abs(c["dH_particles"]).sum()
+                                                        / c["sum_MH_particles"][0]),
+                         n_noroot=int(c["n_noroot"].sum()),
+                         n_balance=int(c["n_balance"].sum()),
+                         max_dlam=float(c["max_dlam"].max()),
+                         count_z=float((c["n_coll"].sum() + c["n_balance"].sum()
+                                        + c["n_noroot"].sum() - c["sum_P"].sum())
+                                       / np.sqrt(max(c["sum_P"].sum(), 1e-300))))
+    # the two values of coll_energy against each other (same cross-section and cells)
+    cmp_modes = {}
+    for name in runs:
+        if name.endswith("_cell") and name[:-5] + "_particle" in runs:
+            a, b = name, name[:-5] + "_particle"
+            ha, hb = hst[a], hst[b]
+            nmin = min(len(ha["time"]), len(hb["time"]))
+            ra = np.array([mass_radii(s) for s in snaps[a]])
+            rb = np.array([mass_radii(s) for s in snaps[b]])
+            k = min(len(ra), len(rb))
+            na = summary["runs"][a]["collisions"]
+            nb = summary["runs"][b]["collisions"]
+            cmp_modes[name[:-5]] = dict(
+                lapse_max_diff=float(np.max(np.abs(ha["alpha_probe"][:nmin]
+                                                   - hb["alpha_probe"][:nmin]))),
+                radii_max_rel_diff=float(np.max(np.abs(rb[:k]/ra[:k] - 1.0))),
+                collisions=[na, nb],
+                collisions_z=float((nb - na)/np.sqrt(max(na + nb, 1))))
+    if cmp_modes:
+        summary["compare_energy_modes"] = cmp_modes
     if args.skip_null:
         good = True
         for name, r in summary["runs"].items():
@@ -222,18 +309,18 @@ def main():
         with open(os.path.join(out, "summary.json"), "w") as fp:
             json.dump(summary, fp, indent=1)
         print(json.dumps(summary, indent=1))
-        make_figure(out, runs, hst, snaps, model)
+        make_figure(out, runs, hst, snaps, model, rdir)
         sys.exit(0 if summary["ok"] else 1)
     # null: operator on with zero cross-section against operator absent
-    s_off = common.snapshots(os.path.join(out, "off"), "st")
-    s_sig = common.snapshots(os.path.join(out, "sigma0"), "st")
+    s_off = common.snapshots(os.path.join(rdir, "off"), "st")
+    s_sig = common.snapshots(os.path.join(rdir, "sigma0"), "st")
     summary["null_snapshots_identical"] = bool(
         len(s_off) == len(s_sig) and all(filecmp.cmp(a, b, shallow=False)
                                          for a, b in zip(s_off, s_sig)))
     summary["null_history_identical"] = bool(filecmp.cmp(
-        os.path.join(out, "off", "st.nrpic.hst"), os.path.join(out, "sigma0", "st.nrpic.hst"),
+        os.path.join(rdir, "off", "st.nrpic.hst"), os.path.join(rdir, "sigma0", "st.nrpic.hst"),
         shallow=False))
-    s_off2 = common.snapshots(os.path.join(out, "off2"), "st")
+    s_off2 = common.snapshots(os.path.join(rdir, "off2"), "st")
     summary["baseline_twice_snapshots_identical"] = bool(
         len(s_off) == len(s_off2) and all(filecmp.cmp(a, b, shallow=False)
                                           for a, b in zip(s_off, s_off2)))
@@ -264,7 +351,7 @@ def main():
         json.dump(summary, fp, indent=1)
     print(json.dumps(summary, indent=1))
 
-    make_figure(out, runs, hst, snaps, model)
+    make_figure(out, runs, hst, snaps, model, rdir)
     sys.exit(0 if summary["ok"] else 1)
 
 

@@ -1,0 +1,221 @@
+{
+ "wall": {
+  "/data/haiyangw/nrpic/scratch/core/core-20261119-140644-074f8e3/t5_pair": {
+   "dir": "/data/haiyangw/nrpic/scratch/core/core-20261119-140644-074f8e3/t5_pair",
+   "wall_s": 17.0,
+   "exit": 0,
+   "mem_baseline_mib": 14.0,
+   "mem_peak_mib": 6899.0,
+   "last_cycle": 2,
+   "last_time": 0.03125,
+   "meshblocks_start": 232,
+   "termination": "Terminating on cycle limit",
+   "zone_cycles_per_s": 1361002.0,
+   "athena_cpu_time_s": 1.396429
+  },
+  "/data/haiyangw/nrpic/scratch/core/core-20261119-143036-185800a/t7_tracker": {
+   "dir": "/data/haiyangw/nrpic/scratch/core/core-20261119-143036-185800a/t7_tracker",
+   "wall_s": 6.0,
+   "exit": 0,
+   "mem_baseline_mib": 14.0,
+   "mem_peak_mib": 13311.0,
+   "last_cycle": 24,
+   "last_time": 0.75,
+   "meshblocks_start": 120,
+   "termination": "Terminating on cycle limit",
+   "zone_cycles_per_s": 2609631.0,
+   "athena_cpu_time_s": 4.520363
+  },
+  "/data/haiyangw/nrpic/scratch/core/core-20261119-143036-185800a/mem2700": {
+   "dir": "/data/haiyangw/nrpic/scratch/core/core-20261119-143036-185800a/mem2700",
+   "wall_s": 21.0,
+   "exit": 0,
+   "mem_baseline_mib": 14.0,
+   "mem_peak_mib": 70753.0,
+   "last_cycle": 0,
+   "last_time": 0.0,
+   "meshblocks_start": 1100,
+   "termination": "Terminating on cycle limit",
+   "zone_cycles_per_s": 7796815.0,
+   "athena_cpu_time_s": 18.49206
+  },
+  "/data/haiyangw/nrpic/scratch/core/core-20261119-140644-074f8e3/mem_time": {
+   "dir": "/data/haiyangw/nrpic/scratch/core/core-20261119-140644-074f8e3/mem_time",
+   "wall_s": 5.0,
+   "exit": 0,
+   "mem_baseline_mib": 14.0,
+   "mem_peak_mib": 70753.0,
+   "last_cycle": 0,
+   "last_time": 0.0,
+   "meshblocks_start": 1100,
+   "termination": "Terminating on cycle limit",
+   "zone_cycles_per_s": 5524200.0,
+   "athena_cpu_time_s": 3.262445
+  },
+  "/data/haiyangw/nrpic/scratch/core/core-20261119-140644-074f8e3/t7_time": {
+   "dir": "/data/haiyangw/nrpic/scratch/core/core-20261119-140644-074f8e3/t7_time",
+   "wall_s": 6.0,
+   "exit": 0,
+   "mem_baseline_mib": 14.0,
+   "mem_peak_mib": 13311.0,
+   "last_cycle": 9,
+   "last_time": 0.28125,
+   "meshblocks_start": 120,
+   "termination": "Terminating on cycle limit",
+   "zone_cycles_per_s": 2194898.0,
+   "athena_cpu_time_s": 2.015437
+  }
+ },
+ "t5": {
+  "records_card": {
+   "0": 2,
+   "1": 0,
+   "2": 0
+  },
+  "records_cpu": {
+   "0": 2,
+   "1": 0,
+   "2": 0
+  },
+  "mass_card": [
+   1.019897394183159,
+   1.019870373627595
+  ],
+  "mass_cpu": [
+   1.019897394183159,
+   1.019870373627596
+  ],
+  "mass_card_minus_cpu_max": 1.1102230246251565e-15,
+  "mean_radius_card_minus_cpu_max": 1.6653345369377348e-16,
+  "time_card": [
+   0.0,
+   0.015625
+  ]
+ },
+ "t7": {
+  "card": {
+   "records": 25,
+   "t_end": 0.75,
+   "centre_minus_tracker_max": 0.03125,
+   "centre_minus_tracker_row_before_max": 5.551115123125783e-17,
+   "record_time_minus_row_time_minus_dt_max": 0.0,
+   "centre_displacement": 0.0023561936947040815,
+   "number_identity_maxerr": 0.0,
+   "mass_identity_maxerr": 4.1359030627651384e-25,
+   "n_inside_start": 1990.0,
+   "n_inside_end": 2048.0,
+   "n_in": 1021.0,
+   "n_out": 963.0,
+   "n_excised": 0.0,
+   "mE_in": 7.331059455753183e-10,
+   "mE_out": 6.7794277185061e-10,
+   "snapshots": [
+    {
+     "time": 0.0,
+     "history_time": 0.0,
+     "inside_counted_here": 1990,
+     "inside_history": 1990.0,
+     "closest_to_sphere": 5.699577930506905e-06
+    },
+    {
+     "time": 0.25,
+     "history_time": 0.25,
+     "inside_counted_here": 1997,
+     "inside_history": 1997.0,
+     "closest_to_sphere": 1.2621631660714172e-05
+    },
+    {
+     "time": 0.5,
+     "history_time": 0.5,
+     "inside_counted_here": 2074,
+     "inside_history": 2074.0,
+     "closest_to_sphere": 1.2216771624107281e-05
+    },
+    {
+     "time": 0.75,
+     "history_time": 0.75,
+     "inside_counted_here": 2048,
+     "inside_history": 2048.0,
+     "closest_to_sphere": 0.00025322841481711933
+    }
+   ]
+  },
+  "cpu_counts": {
+   "n_in": 1021.0,
+   "n_out": 963.0,
+   "n_excised": 0.0,
+   "n_inside_end": 2048.0,
+   "records": 25
+  },
+  "counts_equal_cpu": true,
+  "snapshot_contents_card": [
+   1990.0,
+   1997.0,
+   2074.0,
+   2048.0
+  ],
+  "snapshot_contents_cpu": [
+   1990.0,
+   1997.0,
+   2074.0,
+   2048.0
+  ],
+  "history_count_columns_equal": true,
+  "centre_card_minus_cpu_max": 1.1102230246251565e-16,
+  "snapshot_position_card_minus_cpu_max": [
+   [
+    0.0,
+    0.0
+   ],
+   [
+    0.25,
+    4.440892098500626e-16
+   ],
+   [
+    0.5,
+    8.881784197001252e-16
+   ],
+   [
+    0.75,
+    8.881784197001252e-16
+   ]
+  ]
+ },
+ "mem2700": {
+  "run": {
+   "dir": "/data/haiyangw/nrpic/scratch/core/core-20261119-143036-185800a/mem2700",
+   "wall_s": 21.0,
+   "exit": 0,
+   "mem_baseline_mib": 14.0,
+   "mem_peak_mib": 70753.0,
+   "last_cycle": 0,
+   "last_time": 0.0,
+   "meshblocks_start": 1100,
+   "termination": "Terminating on cycle limit",
+   "zone_cycles_per_s": 7796815.0,
+   "athena_cpu_time_s": 18.49206
+  },
+  "predicted_band_mib": [
+   68900.0,
+   72900.0
+  ],
+  "model_mib": 70941.375,
+  "peak_in_band": true,
+  "mib_per_slot_2700": 26.204814814814814,
+  "slope_2400_to_2700_mib_per_slot": 25.64666666666667,
+  "history_common_times": [
+   0.0,
+   0.25,
+   0.5,
+   0.5
+  ],
+  "history_max_rel_diff_per_time": [
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "history_identical_printed": true,
+  "timing_run_peak_mib": 70753.0
+ }
+}

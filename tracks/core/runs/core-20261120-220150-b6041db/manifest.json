@@ -1,0 +1,118 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261120-220150-b6041db",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "dfix-3 judgement of the card cases T5, T7 and mem2700 (Slurm jobs 4631, 4638) against the processor runs and the 2400-slot card run, by the predictions of JOURNAL-dfix.md session dfix-3",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/dfix/card2_judge.py",
+    "--t5",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-140644-074f8e3/t5_pair",
+    "--t7",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-143036-185800a/t7_tracker",
+    "--mem",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-143036-185800a/mem2700",
+    "--mem-timing",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-140644-074f8e3/mem_time",
+    "--timing",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-140644-074f8e3/t7_time",
+    "--cpu-t5",
+    "/data/haiyangw/nrpic/scratch/core/core-20261115-161025-3f75eb8/new",
+    "--cpu-t7",
+    "/data/haiyangw/nrpic/scratch/core/core-20261115-163129-a200caf/run",
+    "--ref-mem",
+    "/data/haiyangw/nrpic/scratch/core/core-20261115-120834-d08c476",
+    "--fig",
+    "$NRPIC_RUN_DIR/dfix_card2"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "b6041dbc0d39fccda0bd6202289d6a09fcde6478",
+    "branch": "core/requests-adf",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/dfix"
+    ],
+    "outside_package": {
+      "count": 1,
+      "first": [
+        " M tracks/core/interfaces/multi_puncture.md"
+      ]
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/core-dfix"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-dfix/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/dfix/card2_judge.py",
+      "role": "argv",
+      "sha256": "abd08e28cacba67524d321386a0eddcb18f96c75749dbfe0ddf4e17450ae2899",
+      "bytes": 11125,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 4.786,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261120-220150-b6041db",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "35cd65cb00ef787d76963c09d85fea214e32c26ffab0e1dbd7c8ece3ad8b7de7",
+    "bytes": 239937,
+    "files": 4
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-20T22:01:52Z",
+  "started": "2026-11-20T22:01:52Z",
+  "ended": "2026-11-20T22:01:57Z",
+  "parents": [
+    "core-20261119-143036-185800a",
+    "core-20261119-140644-074f8e3"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 3.0326,
+    "gpu_hours_reserved": 6.34,
+    "gpu_hours_without_gate": 6.8613,
+    "cores_busy": 0,
+    "runs": 1226,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-20T22:01:57Z"
+}

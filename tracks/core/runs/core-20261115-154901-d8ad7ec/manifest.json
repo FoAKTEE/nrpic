@@ -1,0 +1,51 @@
+{
+ "run_id": "core-20261115-154901-d8ad7ec",
+ "owner": "core",
+ "registered_by": "tracks/core/analysis/dfix/runreg.py (by hand: nrpic-run submit fails)",
+ "purpose": "T2 output schedule across a restart, second version of the hook: release core-v0.3 against the corrected Driver::Finalize (uninterrupted, cycle-limit stop, wall-clock stop)",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/dfix/t2_restart.py",
+  "--old",
+  "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core-dfix/.work/build_cpu/src/athena",
+  "--fig",
+  "tracks/core/analysis/dfix/figs/t2_restart"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-dfix",
+ "commit": "d8ad7ecca6132bd583fc31d5383353ac9df0cec8",
+ "branch": "core/requests-adf",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49"
+  },
+  {
+   "path": "tracks/core/analysis/dfix/t2_restart.py",
+   "sha256": "28f37495d6a7fa15bd2dc73ef71f212edc5254e4c1b88390831bc7b2ac30b240"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+   "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "48f26e05fbb5c5c39b076bef76ab599d518a965b9bdf32b8b2213986d3c54085"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-154901-d8ad7ec",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-154901-d8ad7ec"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T15:49:02Z",
+ "cores": 1,
+ "status": "completed",
+ "wall_time_s": 33.41,
+ "exit_status": 0,
+ "end_utc": "2026-11-15T15:49:35Z",
+ "core_hours": 0.0093
+}
