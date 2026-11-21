@@ -974,3 +974,19 @@ the cell-centre shells, +3.3 % / +3.1 % above the vertex shells; at 1.5 +1.6 % a
 REFUTED as worded (within 1 %), the weaker part holds (nearer): the kernel mismatch explains
 about half of the verifier's 0.5-3.3 % at a/a_i = 2. M_ta at 2-8 unchanged within 0.2 %
 (holds).
+
+## 2026-11-21T09:31Z  close of the batch-2b session (helper secondary_infall)
+
+Done: design, step model and prediction before the run (07:55Z); the run to a/a_i = 30 (P192,
+D-20261121-075559-31835c4) with its analysis, failure of the late-time predictions and its
+cause (edge-layer energy error, VERIFIED); the threaded-build check R8 against N128Lc; the
+cell-centre kernel; the run to a/a_i = 16 with the edge 6.85 cells out (Q16,
+D-20261121-085652-7e189a2), whose growth, ratios, profile and slopes hold within the
+predicted bands except M_ta at 16 (+0.8 %); README section "Wave 3" with both wordings of
+D-pre-3. Every registered run of this session is closed (26 completed, one failed at start);
+nothing is queued or running; 0 card-hours. Processor use: six threads for P192 (0.70 h) and
+Q16 (0.51 h), one core for analyses; once (about two minutes, debug pass of
+nm_threadcheck.py) seven cores. Not pushed (helper; the lead pushes).
+Open for a later session: a clean run beyond a/a_i = 16 (needs the initial ball resolved by
+about nine cells, nx ~ 450-500 or a refined centre), the run with the fixed point mass, the
+mechanism of the edge-layer error inside one cell, a second resolution of Q16.
