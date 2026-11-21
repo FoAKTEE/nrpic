@@ -1,50 +1,25 @@
 # Re-verification: C-sidm G1
 
-`harness/bin/nrpic-stage verify C-sidm G1` on 2026-11-19T15:44:10Z, clean export of commit `53b13916e214` in `scratch/C-sidm/tmp/stage-verify/C-sidm-G1-53b1391-20261119T154332Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify C-sidm G1` on 2026-11-21T08:32:04Z, clean export of commit `1135976467eb` in `scratch/C-sidm/tmp/stage-verify/C-sidm-G1-1135976-20261121T080105Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | FAIL | 2 uncommitted paths: commit them first (tracks/C-sidm/stage/G0/VERIFY_RESULTS.json, tracks/C-sidm/stage/G0/VERIFY_RESULTS.md) |
+| clean | FAIL | 10 uncommitted paths: commit them first (tracks/C-sidm/note/figures/schem_timeline.png, tracks/C-sidm/note/figures/schem_timeline.svg, tracks/C-sidm/note/main.tex, tracks/C-sidm/note/references.bib, tracks/C-sidm/note/scripts/common.py) |
 | sync | FAIL | main has commits not merged: run nrpic-ctx sync |
-| export | PASS | clean export of 53b13916e214 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G1-53b1391-20261119T154332Z/tree |
+| export | PASS | clean export of 1135976467eb (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G1-1135976-20261121T080105Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016) |
 | note-pdf | PASS | note/main.pdf committed after the last .tex change |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
-| fig-script | PASS | 6 figures, each with its script |
-| min-figs | PASS | 2 schematics and 4 data figures (brief 13.4 asks at least 2 and 1 at G1) |
-| runs | FAIL | 6 of 106 runs have problems |
+| fig-script | PASS | 11 figures, each with its script |
+| min-figs | PASS | 3 schematics and 8 data figures (brief 13.4 asks at least 2 and 1 at G1) |
+| runs | PASS | 167 run manifests finished (25 hand-written, read as decision 0012 allows), output checksums verified where recorded |
 | run-notes | WARN | 25 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | status | PASS | STATUS.md has 40 lines |
-| rerun | PASS | 6 of 6 scripts and commands ran cleanly in the export |
-| compare | PASS | 12 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
-| regenerate | PASS | all 12 committed figure files regenerated |
-
-## runs
-
-```
-{
- "C-20261119-144535-2c7b6a4": [
-  "status is running: not finished (nrpic-run finish)"
- ],
- "C-20261119-144545-c606492": [
-  "status is running: not finished (nrpic-run finish)"
- ],
- "C-20261119-150335-73fd40f": [
-  "status is submitted: not finished (nrpic-run finish)"
- ],
- "C-20261119-150347-e100007": [
-  "status is submitted: not finished (nrpic-run finish)"
- ],
- "C-20261119-152752-0ffa031": [
-  "status is running: not finished (nrpic-run finish)"
- ],
- "C-20261119-154032-e450dfc": [
-  "status is running: not finished (nrpic-run finish)"
- ]
-}
-```
+| rerun | PASS | 11 of 11 scripts and commands ran cleanly in the export |
+| compare | PASS | 22 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| regenerate | PASS | all 22 committed figure files regenerated |
 
 ## run-notes
 
@@ -52,15 +27,18 @@
 {
  "C-sidm-20261115-115344-eb8b752": [
   "output directory read from a field other than outputs.dir",
-  "no gate"
+  "no gate",
+  "no scratch/C-sidm/C-sidm-20261115-115344-eb8b752/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "C-sidm-20261115-115348-eb8b752": [
   "output directory read from a field other than outputs.dir",
-  "no gate"
+  "no gate",
+  "no scratch/C-sidm/C-sidm-20261115-115348-eb8b752/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "C-sidm-20261115-115400-eb8b752": [
   "output directory read from a field other than outputs.dir",
-  "no gate"
+  "no gate",
+  "no scratch/C-sidm/C-sidm-20261115-115400-eb8b752/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "C-sidm-20261115-120610-b4592be": [
   "status 'done' read as completed",
@@ -72,7 +50,8 @@
  ],
  "C-sidm-20261115-120703-9b3e868": [
   "output directory read from a field other than outputs.dir",
-  "no gate"
+  "no gate",
+  "no scratch/C-sidm/C-sidm-20261115-120703-9b3e868/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "C-sidm-20261115-120715-38ab057": [
   "hand-written (launcher 'local (tracks/C-sidm/gravothermal/register.py)')",
@@ -96,7 +75,8 @@
  ],
  "C-sidm-20261115-121302-313d399": [
   "output directory read from a field other than outputs.dir",
-  "no gate"
+  "no gate",
+  "no scratch/C-sidm/C-sidm-20261115-121302-313d399/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "C-sidm-20261115-121400-d463e1a": [
   "hand-written (launcher 'local (tracks/C-sidm/gravothermal/register.py)')",
@@ -161,18 +141,8 @@
   "input python/nrpic/io.py changed since the run (sha256 differs)"
  ],
  "C-sidm-20261115-131130-3077a99": [
-  "no gate"
- ],
- "C-sidm-20261115-131135-3077a99": [
-  "no gate"
- ],
- "C-sidm-20261115-132327-eab8e41": [
-  "no gate"
- ],
- "C-sidm-20261115-132624-13a77db": [
-  "no gate"
- ]
-}
+  "no gate",
+  "no scratch/C-sidm/C-sidm-20261115-131130-3077a99/sh
 ```
 
 ## compare
@@ -190,12 +160,52 @@
   "regenerated (vector files carry dates; the PNG preview is compared)"
  ],
  [
+  "note/figures/fig_box_summary.png",
+  "PASS",
+  "identical"
+ ],
+ [
   "note/figures/fig_collisions.png",
   "PASS",
   "identical"
  ],
  [
+  "note/figures/schem_dataflow.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/schem_dataflow.svg",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
   "note/figures/fig_box_step.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_cluster.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_cluster.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_heat.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_box_summary.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_heat.png",
   "PASS",
   "identical"
  ],
@@ -208,6 +218,11 @@
   "note/figures/schem_architecture.png",
   "PASS",
   "identical"
+ ],
+ [
+  "note/figures/fig_onsets.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
  ],
  [
   "note/figures/fig_knudsen.pdf",
@@ -223,6 +238,11 @@
   "note/figures/fig_box_step.pdf",
   "PASS",
   "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_onsets.png",
+  "PASS",
+  "identical"
  ],
  [
   "note/figures/fig_sequences.pdf",
