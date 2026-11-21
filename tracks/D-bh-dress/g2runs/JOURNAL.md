@@ -228,3 +228,22 @@ files, which differ in `last_time` lines and in 36 bytes right after the header 
 zeroed members of `Mesh::mesh_indcs`: correction 1). HELD: the change of executable is
 neutral on these data on processors; ES-1GB against ES-1G is one change (the faces).
 No "not used" or lapse_leak warning from either executable.
+
+Outcome B4' (06:22 PST; run D-20261121-142005-52adf6d on the dumps at t = 0, 50,
+100, 150 and 188.03 M (the wall-stop dump of segment 1; the 200 M dump does not exist yet);
+figure `slicemass_ES-1GB.png` looked at):
+(a) asymptotic m = 2.739671 (50 M), 2.739839 (100 M): HELD (ES-1G: 2.7398, 2.7149).
+(b) shell medians on R = 113-217 M: 2.7407-2.7421 at 150 M; on R = 119-223 M:
+    2.7406-2.7414 at 188 M: HELD (within 0.07 per cent). The face error is visible only
+    beyond R ~ 250 M (m 2.29 on r = 296-352 M at 150 M, 1.72 at 188 M): the exterior keeps
+    its mass where ES-1G lost it (ES-1G: 2.007 at 150 M, 0.92 at 200 M as outer values).
+(c) bubble M_H = 1.001358 at 150 M (HELD) and 1.005391 +- 1.1e-4 +- 4.0e-4 at 188 M
+    against the band 1.0005-1.0030: FAILED (the finder gives 1.005298 at 188 M).
+Where the extra mass sits at 188 M (shell table of the same run): m(R) falls outward from
+1.0054 at the horizon (R ~ 2 M) through 1.0050 (R ~ 5.6), 1.0038 (R ~ 15), 1.0029 (R ~ 27)
+to 1.0021-1.0027 at R ~ 40-58 and 1.0012 next to the wall; at 150 M it was 1.00134 at the
+horizon and 1.0010-1.0011 on R = 10-40 M. So between 150 and 188 M the slice gains ~4e-3
+of Misner-Sharp mass concentrated at the hole and falling off over R ~ 2-20 M, with the
+exterior intact. [JUDGEMENT] A constraint violation that grows at the shrinking hole
+(6.4 cells of M/8 in radius at 188 M), not an inflow from outside; V-1GB decides whether
+it needs the dust.
