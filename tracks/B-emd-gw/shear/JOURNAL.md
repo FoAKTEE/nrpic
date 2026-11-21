@@ -110,3 +110,15 @@ Predictions, each with what refutes it:
   lapse_harmonic = 1 at S1 N_y = 64); (3) for M2, L1, L2 a wide fan first (linear slopes
   are far off at beta = 0.5); (4) summary script with Richardson extrapolation and
   figures; (5) outcomes P4-P12, README. No card job submitted (the owner had two queued).
+
+## 2026-11-21 12:32 PST (lead of batch 5): deck fix; smoke run again; predictions
+
+- Deck fix as the entry above asks: `nprobe = 0` in `inputs/shear.athinput` (nothing else
+  changed). Executable from now on: the release core-v0.6 processor build
+  `/data/haiyangw/nrpic/.work/build_cpu_v06/src/athena` (new series; given with --exe).
+- Prediction of the smoke run S1_n32 (before it runs): AthenaK reaches tlim = 1.5 (exit 0,
+  no guard stop); `rays.json` is written; cos(theta) within 10 per cent of the linear
+  value 1.4312e-3 of `results/ref_table.json` (a 32-cell mesh, one resolution: P4-P7 are
+  judged on the series, not here). Refuted if the run stops, or the observable differs from
+  the linear value by more than a factor 2 (then the fan or the reader is wrong, not the
+  mesh).
