@@ -15,7 +15,7 @@ rc_all=0
 for m in A:nest16_L32:nestA:1317 B:nest32_L32:nestB:1319; do
   IFS=: read -r name deck lat ntr <<< "$m"
   d=$OUT/$name; mkdir -p "$d"
-  ( cd "$d" && "$EXE" -i "$WT/tracks/A-emd-pbh/conv_ball/decks/$deck.athinput" -d "$d" "${common[@]}" \
+  ( cd "$d" && "$EXE" -i "$WT/tracks/A-emd-pbh/threshold_ball/decks/$deck.athinput" -d "$d" "${common[@]}" \
       particles/particle_file=$P/$lat/${STEM}_${lat}_track.nrp particles/traj_ntrack=$ntr > athena.log 2>&1 )
   rc=$?; echo "$name rc=$rc"; [ $rc -ne 0 ] && rc_all=1
   grep -i -m3 "warn\|not used\|unknown\|error" "$d/athena.log"

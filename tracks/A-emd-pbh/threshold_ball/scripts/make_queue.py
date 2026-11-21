@@ -14,7 +14,8 @@ import os
 import shlex
 
 PKG = "tracks/A-emd-pbh/threshold_ball"
-DECKS = "tracks/A-emd-pbh/conv_ball/decks"
+DECKS = "tracks/A-emd-pbh/threshold_ball/decks"
+DECKS_CONV = "tracks/A-emd-pbh/conv_ball/decks"
 V06 = "/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena"
 GAUGE = "/data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu"
 T_END = 45.0          # end time of the threshold definition (DESIGN.md section 1)
@@ -83,7 +84,7 @@ def main():
     latc = r["lattices"]["nestC"]
     purp = ("conv_ball member C-R1.25 (queued by threshold_ball): data set 3 core in a ball 1.25 times larger, nested mesh C "
             "(finest M/64, outer 16 M), core_gauge executable as the conv_ball series, t = 0 -> 16 (threshold_ball JOURNAL entry 1)")
-    lines.append(f"{pre} --launcher chain --exe {GAUGE} --gpu-hours 4 --purpose {q(purp)} -- {DECKS}/nest64_L16.athinput "
+    lines.append(f"{pre} --launcher chain --exe {GAUGE} --gpu-hours 4 --purpose {q(purp)} -- {DECKS_CONV}/nest64_L16.athinput "
                  + " ".join(q(x) for x in [f"problem/comp0_file={os.path.join(r['dir'], r['stem'] + '.tab')}",
                                            f"particles/particle_file={os.path.join(r['dir'], 'nestC', r['stem'] + '_nestC_track.nrp')}",
                                            f"particles/traj_ntrack={latc['n_track']}"]))
