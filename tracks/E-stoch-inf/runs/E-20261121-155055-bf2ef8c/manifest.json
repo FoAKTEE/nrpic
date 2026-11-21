@@ -1,0 +1,89 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261121-155055-bf2ef8c",
+  "track": "E-stoch-inf",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "Independent gate review of G1 (reviewer of batch 4a): sha256 of the SR ladder's scalar-field records, A1 against my own Friedmann/KG background, e-fold error, record maxima of <|H|/[H]> and <|M|/[M]> (A4'(c), negative controls, second seed); predictions in stage/G1/GATE_REVIEW.md commit bf2ef8cd",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "/data/haiyangw/nrpic/scratch/E-stoch-inf/gate_review_G1/review_checks.py",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "bf2ef8cdfd06faa3db2211c866157cabf809717f",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "merge_base_main": "4b1194b16885b51f4b7831b4a0fec65be764242c",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/gate_review_G1/review_checks.py",
+      "role": "argv",
+      "sha256": "7dd93e97fa47611ca76433e4993017262b3d4be8f189e726151b439db8edd3ea",
+      "bytes": 7744,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261121-155055-bf2ef8c",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T15:50:55Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 10.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.1507,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 2,
+    "runs": 150,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
