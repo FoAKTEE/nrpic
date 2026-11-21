@@ -389,7 +389,7 @@ vertex kernel [VERIFIED]; the rest is not explained.
 
 Wording (a), the sheet's "reproduce the r^(-9/4) profile":
 - [VERIFIED] The self-similar solution itself is not r^(-9/4) where any run resolves it: its
-  local density slope on lambda = 0.06-0.3 is -2.3 to -2.9 with caustic steps (mean -2.44 to
+  local density slope on lambda = 0.06-0.3 is -2.0 to -2.9 with caustic steps (mean -2.44 to
   -2.50 on the bins used here), and -9/4 is its asymptote below lambda ~ 1e-4 (slope of m 0.741
   on [1e-4, 1e-3], 0.705 on [3e-3, 3e-2]; test 2, D-bh-dress-20261115-123813-97afeea).
 - [VERIFIED] The runs resolve lambda >= 0.075 (Q16 at a/a_i = 16), >= 0.063 (P192 at 30),
@@ -405,7 +405,7 @@ growth against matched shells and the approach to the self-similar m(lambda):
 - [VERIFIED] Growth: the turnaround mass and the dress of AthenaK's Newtonian mode follow
   shells with the same (measured, cell-centre) mesh force within 0.2-0.6 % (M_ta) and 0.5 %
   (dress) from a/a_i = 3 to 12 in Q16 (0.8 % at 16), in N128Lc to 0.3 % at a/a_i = 4-8 (wave
-  2, re-checked here), and in P192 to 0.6 % up to a/a_i ~ 12; the threaded processor build
+  2, re-checked here), and in P192 to 0.6 % from a/a_i = 6 to 12 (1.0 % for the dress at 4); the threaded processor build
   gives the same statistics as the release (R8).
 - [VERIFIED] Approach to the self-similar solution: dress/M_ta rises 0.31, 0.45, 0.50, 0.53 at
   a/a_i = 4, 8, 12, 16 toward 0.625, and M_ta/(M a/a_i) falls 0.65, 0.60, 0.59, 0.58 toward
@@ -418,8 +418,9 @@ growth against matched shells and the approach to the self-similar m(lambda):
   their energies changed by -6 to +62 % during the first expansion (VERIFIED, see above), so
   its late masses and profile test the set-up, not the approach. A clean a/a_i = 30 run needs
   the initial ball resolved by about nine cells with its edge at least two cells outside
-  r_last(30) (as N128Lc had), which a uniform 192^3 isolated box cannot hold (it needs
-  roughly nx = 400 or a refined centre).
+  r_last(30) (as N128Lc had), which a uniform 192^3 isolated box cannot hold (with edge
+  1.2 r_last and the box 1.06-1.12 times the edge orbit it needs nx ~ 450-500, or a refined
+  centre) [JUDGEMENT: from the design table D-20261120-222358-e98ffbd].
 
 ### Not done (wave 3)
 
