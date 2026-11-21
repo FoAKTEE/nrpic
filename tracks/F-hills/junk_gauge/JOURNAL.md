@@ -437,3 +437,113 @@ about omega d]:
 3. At 40 M the band above 1/M has a larger share than at 90 M (2 M cells within 48 M carry
    higher frequencies than the 4 M cells beyond).
 Refuted outside these.
+
+## 2026-11-21 J4, outcome as written (run F-20261121-075600-4480a13; `P1w50_junk.json`, `P1w12_junk.json`; figures `fig_p1_waves.png`, `fig_p1_energy.png`, `fig_p1_extrap.png` read)
+
+P1's waveforms read to t = 253.25 M (all four windows complete at all radii). Whole record,
+FFI omega_0 = 0.2 central [VERIFIED, the JSON files of the run]:
+| R | E [-35, 50] | E [-35, 12] | (2,+-2) share [-35, 50] | l >= 4 share [-35, 50] |
+|---|---|---|---|---|
+| 40 | 7.41e-5 | 4.31e-6 | 0.019 | 0.84 |
+| 48 | 7.44e-5 | 4.04e-6 | 0.018 | 0.84 |
+| 70 | 6.93e-5 | 3.82e-6 | 0.022 | 0.84 |
+| 90 | 6.35e-5 | 3.91e-6 | 0.028 | 0.82 |
+Lines E_inf + a/R through the four radii: [-35, 50] 5.7e-5, [-35, 12] 3.5e-6 (FFI 0.2).
+Window check of item 4: dE/du at u = 50 is 0.44-0.82 of its value at u = 30 (no rise), so the
+check as written passes; but the figures show the merger burst inside the window: dE/du peaks at
+u = 24.9 (40, 48 M) and 27.8-28.0 (70, 90 M) at 4.3e-6 to 9.3e-6, the arrival J4g puts at u >= 19
+for the last M before the merger. The check was built for a passage burst at u >= 57 and does not
+catch an earlier one.
+1-6 of item 6:
+(i) E at 40 M on [-35, 50] between 1e-7 and 2e-5: FAILED (7.4e-5, the merger's burst); at 48 M
+    below 40 M: FAILED (equal within 0.4 percent).
+(ii) on [-35, 12] E(90) < E(40)/3: REFUTED (3.9e-6 against 4.3e-6): the window holds radiation,
+    not the near zone I expected.
+(iii) no pulse common to 40, 48, 70 M above 2e-6 M: REFUTED: 3.8-4.3e-6 M arrives at the same
+    retarded time at all four radii on [-35, 12], and 6-7e-5 M on [-35, 50].
+(iv) dominant modes (2,+-2): FAILED; l >= 4 carries 0.82-0.84 of [-35, 50] and 0.54-0.60 of
+    [-35, 12]; (2,+-2) 0.02-0.03 and 0.07-0.15.
+(v) P_z below 1e-3 |P|: met on [-35, 50] (1.8e-4 to 8e-4); on [-35, 12] FAILED at 40, 70, 90 M
+    (up to 3.4e-2 at 40 M, where |P| is small).
+(vi) E_inf on [-35, 12] below 2e-6: FAILED (3.5e-6).
+Item 2's "less than 10 percent of the members' junk, below 2e-6 M, reaches 40 M": FAILED as
+stated (4.3e-6 on [-35, 12], 2.8e-6 on J4b's window, at 40 M), with what that energy is open (J4b,
+J4c). Item 3 (a) (binary's radiation 2-4e-6 M after FFI over the window): not separable here.
+So J4's premises were wrong twice: P1 has no passage burst at u >= 57 but a merger burst from
+u of about 19 on, and what precedes it at the spheres is radiation of an off-centre source in
+high l, not a near-zone field.
+
+## 2026-11-21 J4b, outcome (run F-20261121-075600-4480a13; `P1b_junk.json`, `p1_extrap.json`; same figures)
+
+Window [-35, 6] M, record cut at u = 14 M [VERIFIED, `P1b_junk.json`, `p1_extrap.json`]:
+| R | FFI 0.1 | FFI 0.2 | FFI 0.3 | time domain | hf_frac | P (FFI 0.2) | l >= 4 share |
+|---|---|---|---|---|---|---|---|
+| 40 | 4.21e-6 | 2.84e-6 | 2.24e-6 | 1.9e-4 | 0.28 | (-4.2e-7, -1.37e-6, -3.2e-8) | 0.70 |
+| 48 | 3.67e-6 | 2.62e-6 | 2.04e-6 | 4.6e-5 | 0.20 | (-2.9e-7, -1.15e-6, -6e-10) | 0.69 |
+| 70 | 3.66e-6 | 2.46e-6 | 1.81e-6 | 4.5e-5 | 0.050 | (-1.6e-7, -8.8e-7, 1.7e-9) | 0.67 |
+| 90 | 3.72e-6 | 2.52e-6 | 1.87e-6 | 6.0e-5 | 0.015 | (-1.1e-7, -8.2e-7, 1.7e-9) | 0.67 |
+E_inf (FFI 0.2): 2.19e-6 (line through the four radii), 2.75e-6 (through 70 and 90); FFI 0.1
+3.3e-6 / 3.9e-6, FFI 0.3 1.5e-6 / 2.1e-6. Noise outside the window (rate before u = -35 times
+41 M): 6e-8 to 8e-7, 2-30 percent of E (largest at 40 M). The cumulative energy (figure) rises
+within 3 M of u = -35 at every radius, then grows steadily to u = 6; the record before u = -35 is
+quiet at 70 and 90 M (r psi4 1e-6 to 1e-5) and rises there by one to two decades.
+1. hf_frac below 0.01 at 70 and 90 M: FAILED (0.050, 0.015); the share falls outward (0.28 at
+   40, 0.20 at 48 M), so frequencies above 1/M are carried by the 2 M cells and lost in the 4 M
+   cells beyond 48 M [JUDGEMENT].
+2. E at 70 and 90 M in 1e-7 to 1e-5 and within a factor 2: met (2.46e-6, 2.52e-6). E(40) more
+   than 3 E(90): FAILED (1.13): no near zone; the window's energy arrives at fixed retarded time
+   with the same size at 40-90 M, so it is outgoing radiation.
+3. E_inf (70-90) in -1e-6 to 1e-5: met (2.75e-6); four-radius E_inf within 1e-5 of it: met
+   (2.19e-6).
+4. FFI 0.1, 0.3 within a factor 2 of 0.2 at 70, 90 M: met (1.49 / 1.47 and 0.74 / 0.74).
+5. |P_z| below 1e-3 |P|: met at 48 M only (5e-4); FAILED at 40 (2.2e-2), 70 (1.9e-3), 90 M
+   (2.1e-3). |P| < E: met (|P|/E = 0.51, 0.45, 0.36, 0.33). P points from the origin toward the
+   binary ((-0.14, -0.99) at 90 M; the binary is at (-0.38, -0.92) of 25 M) and shrinks outward
+   as an off-centre source seen at finite R should [JUDGEMENT]; the line in 1/R gives P_y,inf
+   -3.3e-7 (four radii) or -6.0e-7 (70, 90): the junk's momentum at infinity is not determined
+   better than "below 1e-6 M".
+6. P1 prediction item 4 (junk 1e-6 to 1e-4 M through the 40-90 M spheres by t = 150 M): MET,
+   with E_inf 2.2-2.8e-6 M (FFI 0.2; 1.5-3.9e-6 over the FFI variants), arriving by t = 106 M at
+   90 M. What the number holds (J4c): radiation in l = 2..8 with E_l flat in l, so l > 8 would add
+   more (a lower bound in l), and it includes the binary's slow inspiral before t of about 31 M,
+   my estimate 1e-6 M after FFI (an upper bound for the junk alone). The time domain does not
+   work here (1e-4 level; its quadratic is fitted to a record holding the inspiral).
+
+## 2026-11-21 J4c, outcome (run F-20261121-075803-8e1955b; `p1_lspec.json`, figure `fig_p1_lspec.png` read)
+
+[VERIFIED, `p1_lspec.json`] E_l over l = 2..8 in J4b's window, R = 90 M: 4.7, 3.6, 3.1, 3.1, 3.3,
+3.7, 3.8 e-7; R = 70 M: 4.5, 3.7, 2.7, 3.1, 3.1, 3.6, 3.9 e-7; at 40 and 48 M the same shape
+(4.9 to 3.3 to 4.4 e-7). Band shares (all modes, |omega| < 0.2 / 0.2-0.5 / 0.5-1 / > 1): 90 M
+0.30 / 0.54 / 0.15 / 0.015; 70 M 0.27 / 0.59 / 0.10 / 0.050; 40 M 0.22 / 0.42 / 0.08 / 0.28;
+l = 2 alone 0.59-0.72 below 0.2/M at every radius.
+1. E_l not falling by more than 3 from l = 4 to 8 at 70, 90 M: met (it rises, 1.4 and 1.2 times).
+2. At 90 M: 0.2-0.5 the largest and above 0.4: met (0.54); above 1/M below 0.02: met (0.015);
+   below 0.2 under 0.3: FAILED by 0.001 (0.301).
+3. Above 1/M larger at 40 than at 90 M: met (0.28 against 0.015).
+Reading [JUDGEMENT]: the junk window holds radiation of a source about 25 M off the centre at
+0.2-0.5/M spread evenly over l = 2..8 and beyond; the l = 2 part is mostly below 0.2/M, where the
+binary's own emission lies (2 Omega = 0.09-0.16/M for r12 = 4.95-3.4 M). The extraction up to
+l = 8 does not converge in l for this source; the energy that passes the spheres is at least
+the measured 2.5e-6 M and, if E_l stays flat to l of about omega d = 5-12, up to about twice it.
+
+## 2026-11-21 Junk of the three-hole data: what is established (for G1 T3)
+
+[VERIFIED numbers from runs F-20261121-075600-4480a13 (J4, J4b), F-20261121-075803-8e1955b (J4c),
+F-20261121-075309-b6996ce (J4g), all read-only on P1, F-20261119-150017-b45ec5f]
+- In the retarded-time window [-35, 6] M, which ends before P1's inspiral emission (tenfold its
+  early level from t = 28.7 M) can reach any point of a sphere, the spheres at 40, 48, 70 and 90 M
+  receive 2.8, 2.6, 2.5, 2.5 e-6 M (FFI 0.2): the same at fixed retarded time, so outgoing
+  radiation; E_inf = 2.2-2.8e-6 M (1.5-3.9e-6 with the FFI variants). Momentum below 1.4e-6 M at
+  every radius, pointing toward the binary and falling outward (off-centre source at finite R).
+- It is spread evenly over l = 2..8 (67-70 percent in l >= 4) at 0.2-0.5/M: an off-centre source
+  that the l <= 8 extraction resolves only in part (the number is a lower bound in l, up to about
+  twice larger). It also contains the binary's slow inspiral of the first 30 M (about 1e-6 M by
+  my estimate): the junk alone is between about 1.5e-6 and 5e-6 M [JUDGEMENT].
+- The members' junk at its own frequency (about 3/M) is not carried by the wave zone: the share
+  above 1/M falls from 0.28 at 40 M (2 M cells) to 0.015 at 90 M (4 M cells). The single-member
+  measurement (S2g, J3c: E/m = 7e-5, range 4e-5 to 2e-4) scaled to P1's members gives 1.8e-5 M
+  (1.0e-5 to 5.2e-5) radiated near the members [JUDGEMENT, scaling of J4 item 2], several times
+  what the spheres see; it is lost in the wave zone of P1's grid, not measured there.
+- So the junk of P1's data lies between about 1.5e-6 M (seen at the spheres) and 5e-5 M (the
+  members' scaled junk at its upper end); against the binary's Newtonian binding energy
+  m1 m2 / 2a = 1.6e-3 M that is at most about 3 percent [arithmetic].
