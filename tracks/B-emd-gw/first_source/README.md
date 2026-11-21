@@ -230,18 +230,34 @@ Established (numbers and run ids in `JOURNAL.md`, sections from "Wave 3, round 1
    the departure at delta = 0.0025 is 1/17-1/19 of that at 0.01 and dev/(1 + eps^2) agrees
    between eps = 0.3 and 1 to 0.6-3.6 percent on both meshes; at a = 20 it fails (Q = 1.16 at
    32^3, 1.10 at 64^3; R = 21.5 for eps = 0.3 at 32^3).
-7. P16' (jittered lattice without any wave; initial data B-20261121-075249-d019ace (64^3),
-   B-20261121-080035-188411b (32^3)): the jittered data without the wave have no momentum
-   residual (0.0 against 7.6e-4 with the wave): the residual came from the wave's moving
-   particles. The runs: see "Pending" (filled in when analysed).
+7. P16' (jittered lattice without any wave, A = 0.3, seed 7; cards: run B-20261121-080222-2293fae
+   at 64^3, 0.0275 card-hours; processors: B-20261121-080244-f575dfe at 32^3; comparisons
+   B-20261121-085202-b95efda and B-20261121-084352-8b1c988): the grid-scale TT field of the
+   jittered null is that of the lattice noise alone through the flat projector (leakage), not
+   a cross term with the wave: at a <= 2.3 its power at k h >= pi/2 is the same with and without
+   the wave to 0.6-14 percent (64^3) and 0.04-8 percent (32^3), with the same per-shell fraction
+   of the non-TT part. By a = 12 the wave has added grid-scale TT and non-TT power (D = 0.27 at
+   64^3, 0.37 at 32^3); there the two are not separated. Box modes: jit0p3 minus the run
+   without wave follows the cross-term prediction from the initial data (moduli 0.73-1.18,
+   phases within 0.12 rad, both meshes); the noise-alone box modes are over-predicted by the
+   noise-noise formula (K1 median 0.56 and 0.51 of it). The jittered data without the wave have
+   no momentum residual (0.0 against 7.6e-4): the residual came from the wave's moving
+   particles.
 8. README wordings of verifier2 (`../stage/G1/OPEN.md` item 4) corrected in the section above.
 
 Failed predictions of round 3 (on record in JOURNAL): P11(c') at K2 at 32^3 (A-ratio 3.06
 against 3.43 +- 10 percent: the noise-noise term is over-predicted); (1 + eps^2) test at
 a = 20 (Q 1.10-1.16 outside 0.95-1.05; R = 21.5 for eps = 0.3 at 32^3 outside 12-20); P14(c)
-read at 32^3 at a = 10 (collapse ratio 1.53 and 1.95, outside 50 percent).
+read at 32^3 at a = 10 (collapse ratio 1.53 and 1.95, outside 50 percent); P16'(i) at a = 12
+(the wave changes the grid-scale non-TT power, 0.31 and 0.54 against 0.8-1.2); P16'(ii) per-shell
+ratio at a = 12 outside the factor 2 (0.19 at shell 24 of 64^3, 0.35 at shell 12 of 32^3);
+P16'(iv) (noise-alone box modes 0.45-0.90 of the noise-noise prediction at K1, phases to 0.59
+rad, 64^3; worse at 32^3).
 
-Pending: see the end of JOURNAL.md.
+Card time of round 3: 0.0275 card-hours (P16', job 4778), plus 0.6125 of card job 4655 of the
+second round (closed in round 3). Pending: none of this package's runs. Not done: 128^3 at 8 per
+cell (decision above); the definition question of `../note/README.md` request 6
+(rho_GW/rho_bar 3.5e-6 against 4.2e-6) was not taken up here.
 
 ## Requests
 
@@ -299,3 +315,32 @@ To core:
    directions the solve does not absorb. Worth a line in REQUESTS_B.md section 5 or a fix.
 12. Thanks for the double-precision bin output: it was needed here (P14(a)); please keep it in
    the release.
+
+Round 3 (wave 3, 2026-11-21):
+
+To the B-emd-gw lead (`../stage/G1/OPEN.md`; numbering of its 2026-11-20 batch-2a version, and
+of the round-1 brief in brackets):
+13. Item 6 [7] (particle number, 128^3): outcomes written (P12, P13 CONFIRMED; README round 3,
+   items 1-3). Close it, or overrule the decision not to run 128^3 at 8 per cell (~1.3 card-hours,
+   a chain; the brief's parenthetical trigger was inverted, JOURNAL "Outcome of P12 and P13").
+14. Item 7 [8] (grid-scale TT of a jittered lattice): the run without any wave is made at 64^3
+   and 32^3 and decides for projector leakage at a <= 2.3 (P16'); after the wave grows the two
+   mix. Request 9 above (cut k h >= pi/2 from TT spectra of noisy lattices) is now tested.
+   Item 7 can be closed with that wording.
+15. [11] (delta = 0.0025): reproduced at 32^3; the (1 + eps^2) form of the departure holds to
+   0.6-3.6 percent for a = 30-60 at delta = 0.0025 on both meshes and fails at a = 20 (Q = 1.10-1.16);
+   the note's sentence on (1 + eps^2) should carry that range (`../note/README.md` request 4 is
+   answered by JOURNAL "Outcomes at 32^3").
+16. Item 4: the two README wordings of verifier2 are corrected (State, 2026-11-15).
+17. Item 8 (G_tot into gw_diag) is not this package's; nothing new from here.
+18. The commits of this session are on the branch, not pushed (helper rule of batch 2b).
+
+To core:
+19. Information for REQUESTS_B.md section 5 (request 11 above): the momentum-constraint residual
+   of `make_waves.py --jitter` appears only with a moving wave: 0.0 for the jittered lattice
+   without a wave (A = 0.3, 64^3 and 32^3; runs B-20261121-075249-d019ace, -080035-188411b),
+   7.6e-4 with the plane wave. The jitter modulates the momentum density of the moving particles.
+20. Information: the release core-v0.5 processor build writes double-precision dumps of
+   `inputs/conv.athinput` byte-identical to those of the core/requests-b build (8 cycles at
+   32^3, `cmp` by hand on runs B-20261121-075754-ee53848 and B-20261119-142500-72b1213; not a
+   registered comparison).

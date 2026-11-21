@@ -1126,3 +1126,14 @@ box-mode noise of a jittered lattice with a wave is the cross term (predicted to
 from the initial data) plus the noise-alone term, which the second-order noise-noise formula
 gets only to a factor ~2 (P11(c') at K2 and P16'(iv) refuted for that reason); (3) after the wave
 grows (a ~ 12 at delta = 0.01) the wave and the noise do not separate at the grid scale.
+
+## End of round 3 (2026-11-21 00:55 PST)
+
+Closed: the four manifests of the second round (completed, by the round-1 session); P12, P13,
+the 32^3 companions (P11, P14) and the (1 + eps^2) advance test judged with figures looked at;
+the 128^3 run at 8 per cell decided against (reason above, lead may overrule); P16' run and
+analysed at 64^3 (card, 0.0275 card-hours) and 32^3 (processors). README "State of round 3"
+and requests 13-20 written; summaries `results/r2_*`, figures `figs/r2_*`. Package tests: 8 pass
+(`tests/`, run by hand). No run of this package is queued or running. Card time used in this
+session: 0.0275 card-hours of the 1.6 allowed. Commits not pushed (helper rule of batch 2b).
+Open, not taken up: `../note/README.md` request 6 (definition of rho_GW/rho_bar 3.5e-6).
