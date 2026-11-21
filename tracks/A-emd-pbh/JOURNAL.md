@@ -293,3 +293,36 @@ registered outputs, with the figure directory redirected to my run directory:
 - open: G1 sign-off (orchestrator); verify_bh, szekeres card series, periodic_threshold
   (cut, not resumed); conv_ball card job 1 queued (Slurm 4776, run A-20261121-075926-d10c2c1).
 - card-hours this session: 0. Commits 0f5972c4 .. (this commit).
+
+## 2026-11-21T20:55Z  session lead-batch5 (wave 3)  commits 349447ac..(this commit)  runs (see end of entry)
+
+Aim (decision 0025 items 4-5): leave the cards loaded with this owner's long runs, registered and
+chained, with a HANDOFF from which a later session reads them.
+
+- Periodic job 4799 (run A-20261121-131600-02b5d41) closed: failed, exit 3 (guard) at t = 4.815
+  (P0L) and 15.076 (S1L). Own reading A-20261121-203120-eaba95f (figure looked at): norm(H) jumps by
+  ~1e4 at t = 2.506 in both members. Predictions P3, P4, S1, S2 refuted (periodic_threshold journal
+  entry 20:44Z). Decision: no periodic long run; request to core; note to B.
+- verify_bh's open point, as far as it decides runs: horizon masses are judged on the median over
+  detections (first detection +2e-2 at BH-1R, +4.5e-2 at conv_ball B); the clock item is REFUTED
+  as its section 4 recommends; the slice-or-finder question stays [TO VERIFY] and the scan writes
+  the dumps that answer it.
+- New package threshold_ball. Reasoning [JUDGEMENT]: the top-hat core of the ball always traps
+  before its crunch, so the spherical scan has only the finite-duration threshold of SCOPE
+  section 3; t_end = 45 M gives the exact bracket delta_c in (0.40, 0.42]. Design run
+  A-20261121-202520-3164672, data A-20261121-202812-cae4436, smoke tests A-20261121-203156-d094c56
+  (FAILED: `diagnostics` not declared in conv_ball's decks; my oversight, fixed by package decks)
+  and A-20261121-203211-6d3ce73 (exit 0). Predictions T1-T6 committed (c48bd33b, 12:41:43 PST)
+  before the first submission (12:41:49).
+- Sequencer started (pid 2666191), queue of 12 card runs (model 15 card-hours, 32.7 requested).
+  Submitted by it: A-20261121-204149-c48bd33 (Slurm 4838, B-d0.42), A-20261121-204250-0bf45c7
+  (Slurm 4845, B-d0.40), both PENDING at 12:45.
+- Posts: core periodic-relaxed-lapse-blowup, core bh1r-inte-deficit-two-levels, B-emd-gw
+  periodic-spherical-test-status, orch cards-loaded-threshold-scan; acks: kb
+  re-szekeres-conformal-flatness, orch release-core-v0.6.
+- Gates: G0, G1 signed; G2 not ready for review (scan running; second agent owed on conv_ball's G2
+  reading; schematic names core-v0.3).
+- Card-hours used this session: 0 (two chains pending). Processors: 1-4 cores for about 8 min.
+- Runs: A-20261121-202520-3164672, A-20261121-202812-cae4436, A-20261121-203120-eaba95f,
+  A-20261121-203156-d094c56 (failed), A-20261121-203211-6d3ce73; card A-20261121-204149-c48bd33,
+  A-20261121-204250-0bf45c7 (pending).

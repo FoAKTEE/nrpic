@@ -1,76 +1,92 @@
 # HANDOFF of A-emd-pbh
 
-Written for a reader with no memory, by the lead of batch 2b (wave 3), 2026-11-21 ~00:40 PST.
+Written for a reader with no memory, by the lead of batch 5 (wave 3), 2026-11-21 ~12:55 PST.
 
-State in three lines: G0 is signed (2026-11-19). G1 is complete for sign-off: the independent
-gate review recommends PASS WITH RESERVATIONS, its one condition (C20, these owner files) is
-closed, and every helper's analysis reruns bit for bit (`stage/REVIEW-wave3.md`). G2 is under
-way on the spherical ball: BH-1R (relaxed 1+log lapse, one static level of M/16) has a
-persistent apparent horizon from t = 10.875 whose mass follows the exact mass of its slice to
-better than 1e-3 after t ~ 11.7 (runs_ball, re-checked); its independent check (verify_bh) and
-the three-mesh series (conv_ball, card job queued) are open.
+State in three lines: G0 and G1 are signed (coord/GATES.md). G2 (horizon formation of the
+spherical expanding ball against the exact solution) has its convergence series (conv_ball) and
+its independent check (verify_bh); this batch put the first threshold scan (threshold_ball) and
+conv_ball's missing C-R1.25 member on the cards behind an unattended sequencer. The periodic box
+has no working relaxed-lapse run (card job 4799 failed; request to core).
 
 Owner: A-emd-pbh, branch `track/A-emd-pbh`, worktree `/data/haiyangw/nrpic/wt/A-emd-pbh`.
-Run next: `cd /data/haiyangw/nrpic/wt/A-emd-pbh && git merge --no-edit main && git status --short && harness/bin/nrpic-run status | grep -v completed && squeue -u $USER && harness/bin/nrpic-ctx inbox`
-  (then: read the batch-2b reports of runs_ball and conv_ball in
-  `/data/haiyangw/nrpic/scratch/orch/wave3_reports/A-emd-pbh.md`, re-check their finished
-  analyses as in `analysis/review_wave3.py`, and start the packages below that are still open).
+Run first: `cd /data/haiyangw/nrpic/wt/A-emd-pbh && git merge --no-edit main && git status --short && squeue -u $USER -o "%.8i %.28j %.8T %.10M" | grep " A-" ; tail -5 /data/haiyangw/nrpic/scratch/A-emd-pbh/sequencer_threshold/sequencer.log; cat /data/haiyangw/nrpic/scratch/A-emd-pbh/sequencer_threshold/done.txt; harness/bin/nrpic-run status | grep -v completed | grep "A-2026112[1-9]"; harness/bin/nrpic-ctx inbox`
 
-Files to read first: `STATUS.md`; `stage/REVIEW-wave3.md` (what is confirmed, the finder-tolerance
-finding, the answers to the reviewer); `stage/G1/GATE_REVIEW.md` sections 5-6 (reservations
-carried to G2); `PLAN-wave3.md` (round 1: six packages and their card caps); `RISKS.md` rows
-1, 17, 18, 23, 24; the package journals named below.
+Files to read first: `STATUS.md`; `threshold_ball/DESIGN.md` and `threshold_ball/JOURNAL.md`
+(predictions T1-T6, entry 1, committed before the first submission); `stage/REVIEW-wave3.md`
+section 6; `RISKS.md` rows 23, 27-30; `conv_ball/README.md` (the measures and the scripts the
+scan is read with).
+
+## The cards: what runs, how to see it, how to stop it
+
+A sequencer (`threshold_ball/scripts/sequencer.sh`, started 12:41:49 PST with setsid nohup, pid in
+`scratch/A-emd-pbh/sequencer_threshold/sequencer.pid`, at start 2666191) reads
+`threshold_ball/queue.txt` and, every 5 minutes, submits the next line through
+`harness/bin/nrpic-run submit` when fewer than two Slurm jobs named `A-*` of this user are queued
+or running. It commits each run manifest on `track/A-emd-pbh` (nrpic-run does). Its record:
+`done.txt` (queue line number, time, rc, run id), `sequencer.log`.
+- See it: `ps -p $(cat /data/haiyangw/nrpic/scratch/A-emd-pbh/sequencer_threshold/sequencer.pid)`.
+- Stop it gracefully: `touch /data/haiyangw/nrpic/scratch/A-emd-pbh/sequencer_threshold/STOP`
+  (it exits at its next check); at once: `kill <pid from sequencer.pid>` (numeric PID only).
+- Restart it (it skips lines already in done.txt): `cd /data/haiyangw/nrpic/wt/A-emd-pbh && rm -f /data/haiyangw/nrpic/scratch/A-emd-pbh/sequencer_threshold/STOP && setsid nohup tracks/A-emd-pbh/threshold_ball/scripts/sequencer.sh tracks/A-emd-pbh/threshold_ball/queue.txt /data/haiyangw/nrpic/scratch/A-emd-pbh/sequencer_threshold >> /data/haiyangw/nrpic/scratch/A-emd-pbh/sequencer_threshold/nohup.out 2>&1 < /dev/null &`
+- It is refused (and retries, five times per line, then marks the line skipped) while
+  `tracks/A-emd-pbh/threshold_ball/` has uncommitted changes: commit that package promptly.
+  A skipped line is submitted by hand: `cd /data/haiyangw/nrpic/wt/A-emd-pbh && eval "harness/bin/nrpic-run submit $(sed -n <N>p tracks/A-emd-pbh/threshold_ball/queue.txt)"`.
+- The sequencer also runs while the pause flag exists (card time is not limited by the usage
+  window, decision 0025 item 4); stop it if the orchestrator asks.
+
+Queue (`queue.txt` line: member, what it is, model card-hours; data run A-20261121-202812-cae4436):
+
+| line | member | run id / Slurm (12:45 PST) | tlim | model card-h | read by |
+|---|---|---|---|---|---|
+| 3 | B-d0.42 (delta_c 0.42, M/32, outer 32 M, v0.6) | A-20261121-204149-c48bd33 / 4838 PENDING | 51 | 0.6 | T1, T3 |
+| 4 | B-d0.40 | A-20261121-204250-0bf45c7 / 4845 PENDING | 54 | 0.6 | T2, T3 |
+| 5 | A-d0.42 + A-d0.40 (batch, M/16) | sequencer | 51, 54 | 0.1 | T4 |
+| 6-11 | B-d0.45, B-d0.50, B-d1.00, B-d0.70, B-d0.35, B-d0.20 | sequencer | 47, 42, 23, 31, 62, 70 | 0.25-0.8 each | T1, T2 |
+| 12 | C-R1.25 (conv_ball's ball-radius leg on mesh C, core_gauge, deck conv_ball/decks/nest64_L16) | sequencer | 16 | 2.3 | T5 |
+| 13 | C-d0.42 (M/64, nestC 4969736 particles) | sequencer | 51 | 8.2 | T4 |
+
+Each line is a chain (`scripts/submit_chain.sh` of core-v0.6; MAX_SEGMENTS = floor(card-hours
+requested / 59 min); process name nrc-<hash>, not "athena") except line 5 (a batch job).
+nrpic-run cannot pass PROC_NAME, so the default run-specific name holds. Outputs:
+`scratch/A-emd-pbh/<run id>/` (chain state in `chain/`, `scripts/submit_chain.sh --status <dir>`).
+A chain that stops after its last segment before tlim (cost model off by more than about 2.5)
+resumes with `scripts/submit_chain.sh <rundir> <deck> <same args>` from the newest restart; it then
+needs a new registration note in the package journal.
+
+When a run ends: `harness/bin/nrpic-run finish <run id>`; then the analysis. threshold_ball has
+no analysis script yet: write `threshold_ball/scripts/analyse.py` around conv_ball's
+`scripts/compare.py` (copy; `--gauge leak --leak 8 --nest 32:32` for B, `32:16` A, `32:64` C, and
+`--prep <data run>/<dc set>/nestB` etc.), register it, compare with T1-T6, record outcomes in
+`threshold_ball/JOURNAL.md` entry 3 onward, figures looked at. Also read the step time of the first
+B chain (T6: 0.25-0.40 s per cycle) and correct the model in DESIGN.md if it is outside.
+Disk: C chains write 5.1 GB per restart; remove superseded restart files after finish and verify
+(RISKS row 30).
 
 ## Packages and what remains
 
-| Package | State at 2026-11-21 00:40 PST | What remains (restart from) |
+| Package | State | What remains |
 |---|---|---|
-| `g1close/` | done (batch 1) | nothing |
-| G1 verifier, gate review | done | nothing; the reviewer's script is now in `stage/G1/gate_review/` |
-| `runs_ball/` | done in batch 2b (00:29 PST; entries 11-20, README results table); re-checked by the lead (REVIEW-wave3 section 2b, run A-20261121-082814-6fadb30) | its entry 20 lists what is open: labels of the `_box` turnaround figures; BH-1R at a second refined resolution (that is conv_ball); excision near MeshBlock corners (a hypothesis, README request to core); the finder at uniform M/8 with BH-1R's settings and `hmean_tol_0 = 1e30` |
-| `conv_ball/` | running in batch 2b (DESIGN, predictions, decks, `converge.py`, `analyse.py` committed by it) | `conv_ball/JOURNAL.md` last entry: prep runs of the nested lattices, processor smoke tests, card job 1 (A, B, A-N8, A-N64, A-R1.25, A-L32, B-N8; about 0.2 card-hours), chain for member C (about 1.3 card-hours); executable `scratch/core/exe/core_gauge` for every member. Set `hmean_tol_0 = 1e30` and `<fastflow> diagnostics = true` (needs a core-v0.5 executable; if the series stays on core_gauge, read the finder from the line diagnostics) |
-| `verify_bh/` | cut 2026-11-20 14:34, no registered run | `verify_bh/JOURNAL.md` entry 2: submit c1_exact, c2_initial, c3_horizon bh_smr, c4_lines, c5_shells with `nrpic-run submit --package tracks/A-emd-pbh/verify_bh`, then VERIFIER.md sections 1-3, figures, README, then section 4 (comparison with runs_ball entries 11-12). 0 card-hours, about an hour |
-| `szekeres/` round 1 | cut; its file run A-20261120-223422-8cc4241 closed by the lead (exit 0, mass converged to 2e-10) | `szekeres/JOURNAL.md` entry 9: registered repeat of the eps choice (P16), one card job of 58 min for N = 64, 128, 256 to tau = 40 (P17-P23), the 8-per-cell check (needs `run_cpu_members.py` to accept NAME=DIR members); about 1.0-1.5 card-hours |
-| `periodic_threshold/` round 1 | cut; data run A-20261120-223123-f436c39 closed by the lead (prediction D3 holds); four files uncommitted: `JOURNAL.md` (one-line time fix), `inputs/peak_leak.athinput`, `scripts/ltb_reference.py`, `scripts/ltbref.py` | read the four files, commit them with their package, run the LTB reference (registered), smoke-test the leak deck on processors, write predictions, one card job (cap 2.5 card-hours). Use `hmean_tol_0 = 1e30`, finder diagnostics, `alpha_exc` relative to the mean lapse (core message 20261120T223017Z items 1, 3), and the guard (core-v0.5) |
-
-Card jobs of this owner at the end of this session (00:40 PST), both conv_ball's, read by
-`conv_ball/scripts/analyse.py` and `converge.py` (conv_ball JOURNAL entry 3, prediction G):
-- Slurm 4776, run A-20261121-075926-d10c2c1, RUNNING: card job 1 (members A, B, A-L32 and the
-  particle-number and radius legs; 0.97 card-hours requested); output
-  `scratch/A-emd-pbh/A-20261121-075926-d10c2c1/`.
-- Slurm 4781, run A-20261121-083336-6a82131, PENDING: chain of member C (finest cells M/64;
-  2.95 card-hours requested); output `scratch/A-emd-pbh/A-20261121-083336-6a82131/`.
-Close each with `harness/bin/nrpic-run finish <run id>` once Slurm reports it done.
+| `threshold_ball/` | new this batch; on the cards | analysis script, outcomes T1-T6, README with results; then the bisection is done (exact bracket (0.40, 0.42] has ratio 1.05). Next scan after it: the triaxial (Zel'dovich) ball with core-v0.6 `id_solve` on a refined mesh (its vector part stalls at level boundaries, coord/INTERFACES/id_solver2.md test C) |
+| `conv_ball/` | done (batch 2b) | second agent on its G2 reading (JOURNAL entry 12); C-R1.25 queued here |
+| `verify_bh/` | done (batch 3) | slice-or-finder origin of the first-detection mass excess [TO VERIFY]: read the threshold_ball field dumps at tau_AH and the lines at first detection |
+| `periodic_threshold/` | card job 1 failed (journal entry 20:44Z) | wait for core's answer (outbox periodic-relaxed-lapse-blowup); then a deck that runs past t = 10, P0L against the LTB reference, S1L; refinement after that |
+| `szekeres/` round 1 | cut 2026-11-20 (journal entry 9) | card series N = 64, 128, 256 to tau = 40 (about 1-1.5 card-hours): add to the queue when the threshold scan has run |
+| `runs_ball/`, `g1close/`, G1 review | done | nothing |
 
 ## Decisions pending
 
-- orch: sign-off of G1 (outbox 20261121T080815Z__to-orch__g1-sign-off-and-waivers and its
-  follow-up: the runs_ball manifests are closed, no waiver is needed).
-- core: re-triage of the 2026-11-15 requests that core-v0.4/v0.5 now serve (gauge, guard, step
-  limit, AMR, periodic finder, region norms); still open: phase-1 periodic generator for
-  mu >= 0.5 (core/id-solver-2), full K_ij and gamma_ij in the dumps (Szekeres eigenvalue test).
-- kb: conformal flatness of the comoving Szekeres slice; its apparent horizon against R = 2M.
-- core answered on 2026-11-21 (inbox, acknowledged): the K_ij eigenvalue test of the Szekeres hole
-  can use `variable = adm` with `double_precision = true` (adm_gxx..adm_Kzz, not yet checked by
-  core in nrpic_cosmo); the finder at four cells per horizon radius is sensitive at the 5e-3
-  level, so a first small surface counts only after consecutive searches agree; Newtonian energy
-  drift explained (RISKS row 16); requests still deferred: phase-1 generator, refined-level
-  solve (core/id-solver-2), special-relativistic push (core/newton-2), finder spin projection;
-  the K_ref lapse and softplus lapse are declined (`cosmo_gauge.md` 7.1).
+- core: periodic-relaxed-lapse-blowup; bh1r-inte-deficit-two-levels (both posted 2026-11-21);
+  deferred earlier: phase-1 periodic generator for mu >= 0.5, refined-level solve, finder spin.
+- kb: szekeres-conformal-flatness (kb acknowledged; waits for its claims package).
+- orch: informed of the loaded cards (outbox cards-loaded-threshold-scan).
 
 ## Traps
 
-- `hmean_tol_0 = 100` in every existing deck can stop the finder at its first iteration
-  (RISKS row 23); "no detection" is not "no horizon".
-- Helpers share this worktree: commit path-limited (`git commit -- <paths>`), never `git add -A`;
-  `nrpic-run submit --package <dir>` so that other packages' changes do not block a run.
-- Szekeres scripts write figures into `szekeres/figures/` as well as the run directory: a rerun
-  rewrites tracked PNGs (the lead's re-check redirects `common.FIGDIR`).
-- Card runs on core-v0.3/core_gauge executables run on with non-finite fields and exit 0; read
-  the first non-finite record. core-v0.5 stops them with exit status 3.
-- Hand-registered runs of waves 1-2 (`runs_ball/runreg.py`, `periodic_threshold/scripts/register_run.py`,
-  `newton/register.py`, `criteria/runlog.py`) are closed with their own tools.
-- AthenaK's finder summary: core-v0.5 writes it into the run directory; older executables write
-  it into the working directory (run from the run directory).
-- Periodic background time: t/t_H = ((1 + tau/2)^2/6)^(3/2) for eps_i = 1 (tau = code time).
+- The conv_ball decks do not declare `<fastflow> diagnostics`: AthenaK refuses a command-line
+  parameter that the deck lacks (smoke test A-20261121-203156-d094c56). Use threshold_ball/decks.
+- `hmean_tol_0 = 100` in the decks stops the finder at its first iteration (RISKS 23): the queue
+  overrides it with 1e30.
+- The outcome of the threshold is judged in the shell's proper time (ddet), not in coordinate time
+  (RISKS 28).
+- Helpers sharing the worktree: commit path-limited, `nrpic-run submit --package <dir>`.
 - Kill processes by numeric PID only; never `pkill -f`.
