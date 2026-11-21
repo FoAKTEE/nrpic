@@ -171,3 +171,55 @@ for collinear velocities, dg = -u_1 u_2 dmu, int sinh^2 = F). Predictions:
   the start.
 Refuted if any of these fails; a failure of the 4-se clause alone, explained by the
 sample-to-ensemble difference, would be reported as such.
+
+## Entry 7 (2026-11-20 23:58 PST) Restart after the usage-limit cut; V2 run started; V3 predictions
+
+Restart (new session of this package): the worktree held my V2 script with an uncommitted
+change (the Moller quadrature split at the |eta_1 - eta_2| kink); it agrees with the closed
+form to 4e-14 at theta 1e-3 ... 10 (smoke check, not of record; the run of record repeats it).
+Committed (5d9ae56) and started as run C-20261121-074926-5d9ae56 with the predictions of
+entry 6 unchanged. Blind status: in reading the section list of the collisions-2 interface
+text I saw the table row of section 11.6 for T12 (core's own claim about its run
+core-20261115-182101-3a6e046: same collisions with and without the flat twin, z = -0.03).
+That is core's statement on its own run, not the track's reading of its runs; I note it here
+so that the reader can weigh my V3 accordingly.
+
+V3 (run C-20261119-143049-0cf699a; decks `box_tests/inputs/box_static.athinput` and
+`box_c2.athinput`, arguments in each `athena.log`). Set-up read from the files: coordinate
+box [10, 11)^3, 32^3 cells, gamma_ij = psi0^4 delta_ij, psi0 = 1.1, alpha0 = 0.8, zero
+shift, `metric = mesh` with `<adm> dynamic = false`; sum M = 1 per coordinate volume
+(nrpic.hst column 4), proper volume 1.771561 = psi0^6 (column 28). Flat twins: box side
+1.21 = psi0^2, dt_flat = alpha0 dt (0.0254785 = 0.8 x 0.0318482), same sigma and seed.
+Own derivation [JUDGEMENT, standard kinetic theory]: the number of collisions per proper
+four-volume is (1/2) n^2 sigma_tot <v_Mol> with n the particle density in the frame of the
+normal observer and <v_Mol> the Moller mean of that frame (an invariant combination, since
+n_a n_b v_Mol is invariant: collisions.md section 1 says the same [BACKGROUND]). A coordinate
+cell of volume dV_c has proper volume psi0^6 dV_c, a coordinate step dt is a proper time
+alpha0 dt, so collisions per coordinate time and coordinate volume are
+alpha0 psi0^6 x (1/2) n_p^2 sigma <v_Mol>, n_p the proper density: alpha0 psi0^6 =
+1.417249 times the flat rate per unit time and volume at the same proper density and
+temperature. Per step of the run, with rest-mass density rho_p = sum M/(psi0^6 V_c):
+expected collisions (1/2) N rho_p sigma_m <v_Mol>(theta_s) alpha0 dt, theta_s from <W> of
+the initial snapshot with W = sqrt(1 + delta^ij u_i u_j/psi0^4) (the snapshot holds
+covariant u_i). Numbers at theta = 0.1: rho_p = 0.564474, sigma = 0.202463,
+<v_Mol>(0.1) = 0.618059, alpha0 dt = 0.0254785: about 900 collisions per step, 1.8e5 in the
+run (Poisson 0.24 percent), against 1993 per step in the flat T2 box at the same dt (ratio
+alpha0/psi0^6 = 0.4516).
+Predictions:
+- Sum of n_coll over the 200 steps within 4 Poisson standard errors of 200 x the expected
+  per-step value, and mean sum_P within 0.5 percent of it, in all four curved cases (theta
+  0.1, 1; seeds 1, 2) and the `cell` case.
+- Pair counting: sum_W of cycle 1 equals my own sum over the coordinate cells of
+  N_c (N_c - 1) sigma M alpha0 dt / (2 psi0^6 dV_c), positions advanced by one straight
+  push x + alpha0 u_i dt/(psi0^4 W) from the initial snapshot, to 1e-12 relative.
+- Twins: n_tested and n_coll identical in every step between curved and flat twin;
+  end-snapshot momenta u_i/psi0^2 (curved) equal to the flat u_i within 1e-12 absolute and
+  positions psi0^2 (x - 10) equal to x_flat - 10 within 1e-11; hence the ratio of the
+  collision counts per coordinate time and volume is alpha0 psi0^6 to the definition of the
+  twin.
+- Conservation: per step |dE|, max|dP_i| below 1e-14 sqrt(n_coll + 1) of sum_MW; snapshot
+  sums of M u_i (covariant) constant to 1e-13 of sum M W; n_noroot = n_balance = 0 and
+  max_dlam below 1e-13 (homogeneous metric: the particle metric is the cell metric).
+- `cell` against `particle` (theta 0.1, seed 1): identical n_tested and n_coll in every step.
+Refuted if any fails; a failure of the 4-sigma clause alone in one of five cases at about
+the 4-sigma level would be reported, not explained away.
