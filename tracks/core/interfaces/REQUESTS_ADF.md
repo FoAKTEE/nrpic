@@ -109,6 +109,16 @@ of a run. Options in `<particles>` (read only if present):
 | `peri_rmax` | -1 | > 0: only passages closer than this |
 | `acc_dcycle` | `hist_dcycle` | cycles between records of `<basename>.acc.hst` |
 
+What E is (added 2026-11-21 on Track D's request `particle-energy-and-crossing-record`):
+E = alpha W - beta^i u_i = -u_t, the energy conjugate to the code's time vector. It is
+the Killing energy of a stationary spacetime only where that time vector is the Killing
+vector, i.e. where the lapse is normalised to one at large radius and the shift
+vanishes there. In the moving-puncture gauge of D's ES-1 and V-1 runs D measured E at
+1.3 to 2.5 times the Killing energy of the same particle (run D-20261119-144248-0143469):
+sums of m E from the removal record and the flux spheres are budgets in the code's time,
+not Killing energies; weight crossings per particle with its initial-data energy through
+the tag.
+
 `<basename>.acc.hst` (text): time, cycle, centre, number and rest mass and sum of m E
 of the excised particles, number and rest mass of the escaped ones, number and rest
 mass of the particles with at least one and at least two passages, and per sphere its

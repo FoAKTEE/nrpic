@@ -1,0 +1,120 @@
+READY of core/z4c-faces (work package "faces" of core, waves 3a and 3): outer faces of
+the spacetime solver (Z4c). Written 2026-11-21 when the package closed.
+Evidence and every number: branch core/z4c-faces, tracks/core/JOURNAL-faces.md (entries
+1 to 14) and tracks/core/interfaces/z4c_faces.md (options, recommended settings, table
+of results). Scripts, plans, inputs, figures: tracks/core/analysis/faces/ (figs/summary.png).
+
+STATUS
+  athena_cpu  processor executable (scripts/build_cpu.sh, g++ 11.4, -O2 -g) of source
+              commit f6f9a0d, which contains release core-v0.5: TESTED (r2, m1, t1b, s1,
+              e1 below; through m1 and s1 the earlier tests c0 to c3 speak for it).
+  athena_gpu  card executable (scripts/build_gpu.sh, CUDA 12.6, one A100) of the same
+              source: BUILT, CARD CHECK PENDING. The card runs of this package (Track
+              D's long vacuum puncture, twice 345 M) used the card executable of 6cd9972,
+              before the merge of core-v0.5. Pending: run core-20261121-083511-2cff9df
+              (Slurm job 4782, submitted 2026-11-21 00:35 PST behind five jobs): this
+              executable on the vacuum puncture, 4 steps without and 8 steps with the
+              options. To judge it:
+                harness/bin/nrpic-run finish core-20261121-083511-2cff9df
+                harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local \
+                  --package tracks/core/analysis/faces --purpose "faces analysis k1" \
+                  -- bash tracks/core/analysis/faces/an_batch.sh k1.txt
+              (passes if the card run agrees with the processor runs of r2 and m1 to
+              1e-7; prediction in journal entry 12). Until then treat athena_gpu as
+              built only. Not submitted: the same 4 steps with the release card
+              executable (plans/card_k2.list), for byte identity without the options.
+Everything not named below behaves as release core-v0.5. Without the options every
+output file is byte-identical with the release on processors (r2: 45 files of 7
+set-ups: expanding ball with particles, vacuum and Bowen-York puncture with static
+refinement, horizon_calib with restart and horizon finder, by_binary, kg_wave_smr,
+a periodic linear wave). Not checked for the card executable.
+Every option is read only if it is present in <z4c>; an input must declare a parameter
+to change it on the command line (AthenaK accepts there only parameters the input has).
+
+WHAT IT IS FOR
+With outflow faces the stock code (a) fills the ghost cells by linear extrapolation and
+(b) applies a Sommerfeld condition that assumes a 1/r fall-off. (a) makes a layer of
+Hamiltonian residual 8 x 1.1 m / r^3 in the boundary cells from the first step, which
+does not fall with the cell size and dominates whole-mesh norms; (b) drives every field
+that is stationary but not 1/r (Bowen-York and Painleve-Gullstrand curvature) and makes
+the momentum-constraint layer; both send an error inward at the speed of light.
+
+NEW OPTIONS (block <z4c>)
+Example input with all of them: problems/tests/z4c_faces.athinput (vacuum puncture,
+faces at 16 M; 30 core-minutes to t = 12, or time/nlim=8 for 80 s):
+    athena_cpu -i problems/tests/z4c_faces.athinput -d RUN
+The tested combination ("the full set") is
+    extrap_order = 4, ghost_falloff = true, sbc_variant = nonwave, sbc_speed = metric
+
+1. ghost_falloff = true | false (default false); ghost_power_metric, ghost_power_curv
+   (default 1). Ghost cells at outflow, diode and vacuum faces extrapolate
+   (f - f_inf) r^q instead of f (f_inf = 1 for chi, gt_xx, gt_yy, gt_zz, alpha; 0
+   otherwise; r from the origin of the mesh) with the weights of the stock fill. Use it
+   with extrap_order = 4 (an existing option; needs nghost >= 4).
+     athena_cpu -i problems/tests/z4c_faces.athinput -d RUN z4c/sbc_variant=sommerfeld z4c/sbc_speed=unit
+   Tested: boundary-cell |H| of a puncture after one step 7.9e-6 against 1.9e-3 (c0);
+   face-layer mean |H| 10 to 14 times lower at order 2 alone (c2); a refined region that
+   touches a face, also the coarse array before prolongation (t1b).
+2. sbc_variant = nonwave | sommerfeld (default sommerfeld); sbc_power_khat, sbc_power_a,
+   sbc_power_gam (default 3); sbc_v_khat (default sqrt 2). In the outermost active
+   cells d_t f = R[f] + (d_t f - R[f])_p (r_p / r)^q for Khat, Gamma^i, A_ij, with R the
+   Sommerfeld operator and p the cell one step inward: exact for a stationary r^-(q-1).
+     athena_cpu -i problems/tests/z4c_faces.athinput -d RUN problem/comp0_p1=0.3 problem/comp0_corr=approx
+   Tested: ball, Bowen-York puncture (momentum constraint in the face layer 13 times
+   lower, c2, c5). Only together with option 1 and order 4: on linear stock ghosts it
+   doubles the layer of a boosted puncture (c0b).
+3. sbc_speed = unit | lapse | metric (default unit). Speeds of R[f]: 1 (sbc_v_khat for
+   Khat); alpha and sqrt(f alpha) with shift advection; the coordinate speeds
+   alpha sqrt(chi / gt_ss) with shift advection.
+     athena_cpu -i problems/tests/z4c_faces.athinput -d RUN z4c/sbc_speed=lapse
+   Tested: metric in every long run. Against unit, in the ball: face-layer difference
+   to the reference 26 per cent lower at t = 8, mean |H| 1.5 times lower at t = 16; in
+   the vacuum puncture: shell mean |H| 3 per cent higher at t = 12. lapse in the ball
+   only (within 1 per cent of metric at t = 8, stable to t = 16).
+4. sbc_theta = sommerfeld | nonwave | cpbc (default sommerfeld); sbc_power_theta
+   (default 3). Theta in the boundary cells: as option 2, or d_t Theta = -alpha s^k
+   d_k Theta + beta^k d_k Theta (arXiv:1212.2901).
+     athena_cpu -i problems/tests/z4c_faces.athinput -d RUN z4c/sbc_theta=cpbc
+   Tested in the ball only: both are stable to t = 16 and gain nothing (face-layer mean
+   |Theta| 3 to 21 and 17 to 39 per cent higher). Leave it at sommerfeld.
+The expanding ball of the tests (initial data by problems/ic/make_ball.py):
+    python3 problems/ic/make_ball.py --M 0.5 --Rb 6 --edge 1.5 --h 0.5 --tracers "" --sample 0 --out ID --prefix ball
+    athena_cpu -i tracks/core/analysis/faces/inputs/ball_ext.athinput -d RUN \
+       z4c/extrap_order=4 z4c/ghost_falloff=true z4c/sbc_variant=nonwave z4c/sbc_speed=metric \
+       particles/particle_file=ID/ball.nrp problem/comp0_file=ID/ball.tab
+Track D's long puncture run with the options: tracks/core/analysis/faces/inputs/drift_dx8_ext.athinput.
+
+RESULTS (mean |H| at t = 8; stock / full set / same cells with the faces at 32)
+  ball             r < 8        4.03e-3 / 3.54e-3 / 3.53e-3    whole box  3.73e-3 / 1.08e-3 / 6.4e-4
+  vacuum puncture  8 <= r < 12  2.09e-5 / 2.14e-6 / 2.05e-6    r >= 5     1.07e-4 / 3.11e-6 / 1.2e-6
+  boosted puncture 8 <= r < 12  5.02e-5 / 4.37e-6 / 3.35e-6    r >= 5     1.48e-4 / 1.26e-5 / 1.8e-6
+  ball at t = 16, r < 8: 1.69e-2 / 2.12e-3 / 3.9e-5: the faces still reflect.
+  Track D's run (card, 345 M, faces at 128 M): horizon-mass excursions 1.08e-4 -> 6.1e-5
+  (210 to 260 M) and 1.52e-4 -> 3.3e-5 (295 to 345 M); mass equal to 9e-6 before 180 M.
+
+TESTED WITH athena_cpu OF THIS DIRECTORY (run ids in journal entries 13 and 14)
+  r2   without the options against release core-v0.5: 45 files byte-identical
+  m1   full set against the executable of the earlier tests: agreement to 3e-11
+  t1b  refined region at an outflow face: no non-finite value, face layer 1.2e-3 of stock
+  s1   ball to t = 16: full set (equal to the earlier run to 2e-11), lapse speed, Theta nonwave
+  e1   the example input gives exactly the arrays of the package input with the same values
+NOT TESTED
+  the card executable on a card; byte identity of the card executable without the
+  options; several MPI ranks; the threaded build; adaptive refinement at a face; restart
+  with the options; matter near a face; a far field not centred on the origin of the
+  mesh (r in every formula is the distance from the origin); a mesh that is not a cube;
+  faces nearer than 16 M; processor runs longer than t = 40; the scalar field's faces
+  (untouched); reflect, inflow or user faces beside outflow faces.
+REMOVED
+  sbc_damp_gam, sbc_damp_theta (commit cb50e22): damping of the Gamma constraint in the
+  boundary cells was unstable in the ball (non-finite at t = 15), damping of Theta gained
+  nothing. A non-zero value of either stops the run at start.
+FOR WHOEVER MERGES THIS BRANCH
+  Shared files touched: z4c/z4c.hpp (one include, one member after "Options opt;", two
+  method declarations), z4c/z4c.cpp (one line after user_Sbc), z4c/z4c_tasks.cpp (one
+  line each in Prolongate and ApplyPhysicalBCs), z4c/z4c_Sbc.cpp (two lines at the top
+  of Z4cBoundaryRHS, new functions at the end), CMakeLists.txt (two files). Keep
+  z4c_sbc_ext.hpp free of function bodies: with the option reader inline g++ compiled
+  the unchanged z4c_calcrhs.cpp differently and the byte regression failed (journal
+  entry 12). tracks/core/analysis/faces/compare_objects.py <build A> <build B> shows
+  such a change in two minutes without a run.

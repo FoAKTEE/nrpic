@@ -1723,6 +1723,7 @@ void MultigridDriver::SetOctetBoundariesBeforeTransfer(bool folddata) {
 
 void MultigridDriver::ApplyPhysicalBoundariesOctet(MGOctet &oct, bool fcbuf) {
   if (pmy_mesh_->strictly_periodic) return;
+  if (robin_) { RobinBoundaryOctet(oct, fcbuf); return; }
   const LogicalLocation &loc = oct.loc;
   int lev = loc.level - locrootlevel_;
   int ngh = mgroot_->ngh_;

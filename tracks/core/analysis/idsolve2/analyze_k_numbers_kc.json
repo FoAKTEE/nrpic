@@ -1,0 +1,272 @@
+{
+ "run": "core-20261121-133219-2c8f63c",
+ "card": "/data/haiyangw/nrpic/scratch/core/core-20261121-125651-edde517",
+ "cases": {
+  "p5_mov_n64": {
+   "outer_card": 34,
+   "outer_proc": 34,
+   "lin_card": 80,
+   "lin_proc": 80,
+   "far_card": {
+    "M": 1.553285547007,
+    "P": [
+     0.5499999519755,
+     -6.003985389796e-33,
+     1.703108810315e-33
+    ],
+    "J": [
+     1.376341809688e-30,
+     1.656538896596e-18,
+     -2.35408335896e-32
+    ]
+   },
+   "far_proc": {
+    "M": 1.553285547007,
+    "P": [
+     0.5499999519755,
+     4.41457681333e-32,
+     -3.03249814675e-32
+    ],
+    "J": [
+     -5.497696065013e-31,
+     1.66999440957e-17,
+     -4.919890042468e-18
+    ]
+   },
+   "summary_card": [
+    "converged after 34 iteration(s), 80 conjugate-gradient steps, 329 V cycles; max|H| 1.402812e-02 -> 8.407803e-12, rms H 2.235764e-03 -> 6.253748e-13, psi in [1.028571445379, 2.215155130795]",
+    "vector equation: relative residual 1.000286e+00 -> 1.795685e-04 (stalled), 499 V cycles; max|M| of the monitor 5.582165e-04 -> 2.057500e-07",
+    "far field: M_psi = 1.553285547007e+00, P_ADM = (5.499999519755e-01, -6.003985389796e-33, 1.703108810315e-33), J_ADM = (1.376341809688e-30, 1.656538896596e-18, -2.354083358960e-32) about the centre (0, 0, 0)"
+   ],
+   "summary_proc": [
+    "converged after 34 iteration(s), 80 conjugate-gradient steps, 329 V cycles; max|H| 1.402812e-02 -> 8.404144e-12, rms H 2.235764e-03 -> 6.253917e-13, psi in [1.028571445379, 2.215155130795]",
+    "vector equation: relative residual 1.000286e+00 -> 1.795685e-04 (stalled), 499 V cycles; max|M| of the monitor 5.582165e-04 -> 2.057500e-07",
+    "far field: M_psi = 1.553285547007e+00, P_ADM = (5.499999519755e-01, 4.414576813330e-32, -3.032498146750e-32), J_ADM = (-5.497696065013e-31, 1.669994409570e-17, -4.919890042468e-18) about the centre (0, 0, 0)"
+   ],
+   "dpsi_rel": 5.011942546104194e-16,
+   "H_after_card": 0.9936051755908597,
+   "H_after_proc": 0.99360517559086,
+   "dW_rel": 2.4827251532171145e-14,
+   "last_dump": "punc.field.00000.bin",
+   "regions": {
+    "interior": {
+     "card": 0.01384268220454445,
+     "proc": 0.013842682204544621,
+     "rel": 1.2406383501697495e-14
+    },
+    "shell": {
+     "card": 1.4949294552756348e-12,
+     "proc": 1.4950044355669168e-12,
+     "rel": 5.015389218798679e-05
+    },
+    "exterior": {
+     "card": 4.904823610498688e-13,
+     "proc": 4.905108210099774e-13,
+     "rel": 5.8021064754451955e-05
+    },
+    "faces": {
+     "card": 0.00012520038639186103,
+     "proc": 0.0001252003863919379,
+     "rel": 6.139752140107788e-13
+    }
+   },
+   "proc_dir": "/data/haiyangw/nrpic/scratch/core/core-20261121-080135-890689a/4266c2d__77f7173__p5_mov_n64",
+   "regions_rel_max": 6.139752140107788e-13
+  },
+  "w1_far_n128": {
+   "outer_card": 16,
+   "outer_proc": 16,
+   "lin_card": 29,
+   "lin_proc": 29,
+   "far_card": {
+    "M": 1.005579195636,
+    "P": [
+     0.1141047395752,
+     0.0,
+     0.0
+    ],
+    "J": [
+     0.0,
+     4.417437057588e-18,
+     1.369664322055e-18
+    ]
+   },
+   "far_proc": {
+    "M": 1.005579195635,
+    "P": [
+     0.1141047395752,
+     0.0,
+     0.0
+    ],
+    "J": [
+     0.0,
+     2.802449682551e-17,
+     -9.593539702629e-18
+    ]
+   },
+   "summary_card": [
+    "converged after 16 iteration(s), 29 conjugate-gradient steps, 152 V cycles; max|H| 4.757423e-01 -> 2.807652e-11, rms H 1.715470e-02 -> 2.818974e-12, psi in [1.018290388477, 1.199533228658]",
+    "vector equation: relative residual 1.000000e+00 -> 4.760234e-14, 423 V cycles; max|M| of the monitor 2.366907e-02 -> 1.388237e-05",
+    "far field: M_psi = 1.005579195636e+00, P_ADM = (1.141047395752e-01, 0.000000000000e+00, 0.000000000000e+00), J_ADM = (0.000000000000e+00, 4.417437057588e-18, 1.369664322055e-18) about the centre (0, 0, 0)"
+   ],
+   "summary_proc": [
+    "converged after 16 iteration(s), 29 conjugate-gradient steps, 152 V cycles; max|H| 4.757423e-01 -> 2.789342e-11, rms H 1.715470e-02 -> 2.819126e-12, psi in [1.018290388477, 1.199533228658]",
+    "vector equation: relative residual 1.000000e+00 -> 5.174327e-14, 423 V cycles; max|M| of the monitor 2.366907e-02 -> 1.388237e-05",
+    "far field: M_psi = 1.005579195635e+00, P_ADM = (1.141047395752e-01, 0.000000000000e+00, 0.000000000000e+00), J_ADM = (0.000000000000e+00, 2.802449682551e-17, -9.593539702629e-18) about the centre (0, 0, 0)"
+   ],
+   "dpsi_rel": 1.6659825643684242e-15,
+   "H_after_card": 2.80765166090901e-11,
+   "H_after_proc": 2.7893415500962093e-11,
+   "dW_rel": 9.869971465367062e-16,
+   "last_dump": "gboost.field.00000.bin",
+   "regions": {
+    "interior": {
+     "card": 1.4521041641864119e-12,
+     "proc": 1.4491359443646496e-12,
+     "rel": 0.0020482687171655346
+    },
+    "shell": {
+     "card": 9.96015839310917e-13,
+     "proc": 9.96919922969889e-13,
+     "rel": 0.0009068769097108854
+    },
+    "exterior": {
+     "card": 3.585561714973803e-13,
+     "proc": 3.5876072805011935e-13,
+     "rel": 0.000570175430992224
+    },
+    "faces": {
+     "card": 8.076013408483311e-05,
+     "proc": 8.076013408503819e-05,
+     "rel": 2.5393325958286907e-12
+    }
+   },
+   "proc_dir": "/data/haiyangw/nrpic/scratch/core/core-20261121-081010-968d6d6/c923762__w1_far_n128",
+   "regions_rel_max": 2.5393325958286907e-12
+  },
+  "g_smr1": {
+   "outer_card": 20,
+   "outer_proc": 20,
+   "lin_card": 81,
+   "lin_proc": 81,
+   "far_card": {
+    "M": 1.000647344132,
+    "P": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "J": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "far_proc": {
+    "M": 1.000647344132,
+    "P": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "J": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "summary_card": [
+    "converged after 20 iteration(s), 81 conjugate-gradient steps, 490 V cycles; max|H| 4.584367e-01 -> 2.018547e-11, rms H 1.695458e-02 -> 1.777186e-12, psi in [1.018637844777, 1.196895038539]",
+    "far field: M_psi = 1.000647344132e+00, P_ADM = (0.000000000000e+00, 0.000000000000e+00, 0.000000000000e+00), J_ADM = (0.000000000000e+00, 0.000000000000e+00, 0.000000000000e+00) about the centre (0, 0, 0)"
+   ],
+   "summary_proc": [
+    "converged after 20 iteration(s), 81 conjugate-gradient steps, 490 V cycles; max|H| 4.584367e-01 -> 2.021288e-11, rms H 1.695458e-02 -> 1.777311e-12, psi in [1.018637844777, 1.196895038539]",
+    "far field: M_psi = 1.000647344132e+00, P_ADM = (0.000000000000e+00, 0.000000000000e+00, 0.000000000000e+00), J_ADM = (0.000000000000e+00, 0.000000000000e+00, 0.000000000000e+00) about the centre (0, 0, 0)"
+   ],
+   "blocks": [
+    120,
+    120
+   ],
+   "dpsi_rel": 2.226206286519383e-15,
+   "H_after_card": 2.018546780635571e-11,
+   "H_after_proc": 2.021288174554826e-11,
+   "proc_dir": "/data/haiyangw/nrpic/scratch/core/core-20261121-080135-890689a/4266c2d__d1eaa30__g_smr1",
+   "regions_rel_max": null
+  },
+  "t_smr_mov": {
+   "outer_card": 27,
+   "outer_proc": 27,
+   "lin_card": 123,
+   "lin_proc": 123,
+   "far_card": null,
+   "far_proc": null,
+   "summary_card": [
+    "converged after 27 iteration(s), 123 conjugate-gradient steps, 957 V cycles; max|H| 1.864742e+00 -> 1.152260e-09, rms H 4.436844e-01 -> 1.842082e-10, psi in [0.995024849772, 1.005383252433]",
+    "vector equation: relative residual 1.000000e+00 -> 1.322498e-03 (stalled), 394 V cycles; max|M| of the monitor 9.810565e-02 -> 2.017267e-02"
+   ],
+   "summary_proc": [
+    "converged after 27 iteration(s), 123 conjugate-gradient steps, 957 V cycles; max|H| 1.864742e+00 -> 1.152422e-09, rms H 4.436844e-01 -> 1.841822e-10, psi in [0.995024849772, 1.005383252433]",
+    "vector equation: relative residual 1.000000e+00 -> 1.322498e-03 (stalled), 394 V cycles; max|M| of the monitor 9.810565e-02 -> 2.017267e-02"
+   ],
+   "blocks": [
+    120,
+    120
+   ],
+   "dpsi_rel": 4.417113660638547e-16,
+   "H_after_card": 1.1522597562628262e-09,
+   "H_after_proc": 1.1524215304947508e-09,
+   "dW_rel": 4.504438728201734e-15,
+   "proc_dir": "/data/haiyangw/nrpic/scratch/core/core-20261121-080135-890689a/4266c2d__d1eaa30__t_smr_mov",
+   "regions_rel_max": null
+  },
+  "p3_by_st": {
+   "outer_card": 5,
+   "outer_proc": 5,
+   "lin_card": 18,
+   "lin_proc": 18,
+   "far_card": {
+    "M": 1.11972165121,
+    "P": [
+     0.5,
+     0.0,
+     0.0
+    ],
+    "J": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "far_proc": {
+    "M": 1.11972165121,
+    "P": [
+     0.5,
+     0.0,
+     0.0
+    ],
+    "J": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "summary_card": [
+    "converged after 5 iteration(s), 18 conjugate-gradient steps, 118 V cycles; max|H| 3.298736e-02 -> 7.269666e-03, rms H 5.191386e-04 -> 3.273761e-05, psi in [1.020945054770, 3.337542986137]",
+    "far field: M_psi = 1.119721651210e+00, P_ADM = (5.000000000000e-01, 0.000000000000e+00, 0.000000000000e+00), J_ADM = (0.000000000000e+00, 0.000000000000e+00, 0.000000000000e+00) about the centre (0, 0, 0)"
+   ],
+   "summary_proc": [
+    "converged after 5 iteration(s), 18 conjugate-gradient steps, 118 V cycles; max|H| 3.298736e-02 -> 7.269666e-03, rms H 5.191386e-04 -> 3.273761e-05, psi in [1.020945054770, 3.337542986137]",
+    "far field: M_psi = 1.119721651210e+00, P_ADM = (5.000000000000e-01, 0.000000000000e+00, 0.000000000000e+00), J_ADM = (0.000000000000e+00, 0.000000000000e+00, 0.000000000000e+00) about the centre (0, 0, 0)"
+   ],
+   "blocks": [
+    176,
+    176
+   ],
+   "dpsi_rel": 3.326468091157851e-16,
+   "H_after_card": 2.6749730637178106,
+   "H_after_proc": 2.6749730637178217,
+   "proc_dir": "/data/haiyangw/nrpic/scratch/core/core-20261121-080135-890689a/4266c2d__f228951__p3_by_st",
+   "regions_rel_max": null
+  }
+ }
+}

@@ -1,0 +1,168 @@
+{
+ "run": "core-20261121-080135-890689a",
+ "exe": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/exe_395e17d/athena_cpu",
+ "old_exe": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/exe_4266c2d/athena_cpu",
+ "cases": {
+  "4266c2d__ecdaa7c__p1_c3_n32": {
+   "kind": "same",
+   "old": "/data/haiyangw/nrpic/scratch/core/core-20261120-222207-4266c2d/ecdaa7c__p1_c3_n32",
+   "exit": 0,
+   "wall_s": 7.9,
+   "old_exe_in_log": true,
+   "identical": [
+    "in.athinput",
+    "punc.cstat.hst",
+    "punc.field.00000.bin",
+    "punc.idsolve.bin",
+    "punc.idsolve.txt",
+    "punc.nrpic.hst",
+    "punc.z4c.user.hst"
+   ],
+   "differ": []
+  },
+  "4266c2d__b92b298__p2_c3_n32": {
+   "kind": "same",
+   "old": "/data/haiyangw/nrpic/scratch/core/core-20261120-222207-4266c2d/b92b298__p2_c3_n32",
+   "exit": 0,
+   "wall_s": 13.8,
+   "old_exe_in_log": true,
+   "identical": [
+    "in.athinput",
+    "punc.cstat.hst",
+    "punc.field.00000.bin",
+    "punc.idsolve.bin",
+    "punc.idsolve.txt",
+    "punc.nrpic.hst",
+    "punc.z4c.user.hst",
+    "shell.json",
+    "shell.nrp"
+   ],
+   "differ": []
+  },
+  "4266c2d__f228951__p3_by_st": {
+   "kind": "same",
+   "old": "/data/haiyangw/nrpic/scratch/core/core-20261120-222207-4266c2d/f228951__p3_by_st",
+   "exit": 0,
+   "wall_s": 14.8,
+   "old_exe_in_log": true,
+   "identical": [
+    "in.athinput",
+    "punc.cstat.hst",
+    "punc.idsolve.blk.bin",
+    "punc.idsolve.txt",
+    "punc.nrpic.hst",
+    "punc.z4c.user.hst"
+   ],
+   "differ": []
+  },
+  "4266c2d__c923762__w1_far_n32": {
+   "kind": "same",
+   "old": "/data/haiyangw/nrpic/scratch/core/core-20261120-222207-4266c2d/c923762__w1_far_n32",
+   "exit": 0,
+   "wall_s": 13.9,
+   "old_exe_in_log": true,
+   "identical": [
+    "boost.json",
+    "boost.nrp",
+    "gauss_h0p5.json",
+    "gauss_h0p5.nrp",
+    "gboost.cstat.hst",
+    "gboost.field.00000.bin",
+    "gboost.idsolve.bin",
+    "gboost.idsolve.txt",
+    "gboost.idvector.bin",
+    "gboost.nrpic.hst",
+    "gboost.z4c.user.hst",
+    "in.athinput"
+   ],
+   "differ": []
+  },
+  "4266c2d__d1eaa30__g_smr1": {
+   "kind": "same",
+   "old": "/data/haiyangw/nrpic/scratch/core/core-20261120-222207-4266c2d/d1eaa30__g_smr1",
+   "exit": 0,
+   "wall_s": 84.8,
+   "old_exe_in_log": true,
+   "identical": [
+    "bin/gauss.con.00000.bin",
+    "bin/gauss.con.00001.bin",
+    "g.json",
+    "g.nrp",
+    "gauss.cstat.hst",
+    "gauss.idsolve.blk.bin",
+    "gauss.idsolve.txt",
+    "gauss.nrpic.hst",
+    "gauss.z4c.user.hst",
+    "in.athinput"
+   ],
+   "differ": []
+  },
+  "4266c2d__d1eaa30__t_smr_mov": {
+   "kind": "same",
+   "old": "/data/haiyangw/nrpic/scratch/core/core-20261120-222207-4266c2d/d1eaa30__t_smr_mov",
+   "exit": 0,
+   "wall_s": 103.1,
+   "old_exe_in_log": true,
+   "identical": [
+    "bin/torus.con.00000.bin",
+    "bin/torus.con.00001.bin",
+    "in.athinput",
+    "torus.cstat.hst",
+    "torus.idsolve.blk.bin",
+    "torus.idsolve.txt",
+    "torus.nrpic.hst",
+    "torus.z4c.user.hst",
+    "w.json",
+    "w.nrp"
+   ],
+   "differ": []
+  },
+  "4266c2d__3d26b50__zsol_n32": {
+   "kind": "same",
+   "old": "/data/haiyangw/nrpic/scratch/core/core-20261120-222207-4266c2d/3d26b50__zsol_n32",
+   "exit": 0,
+   "wall_s": 30.7,
+   "old_exe_in_log": true,
+   "identical": [
+    "ball.cstat.hst",
+    "ball.field.00000.bin",
+    "ball.field.00001.bin",
+    "ball.field.00002.bin",
+    "ball.idsolve.bin",
+    "ball.idsolve.txt",
+    "ball.idvector.bin",
+    "ball.json",
+    "ball.nrp",
+    "ball.nrpic.hst",
+    "ball.tab",
+    "ball.z4c.user.hst",
+    "in.athinput",
+    "zel.json",
+    "zel.nrp"
+   ],
+   "differ": []
+  },
+  "4266c2d__77f7173__p5_mov_n64": {
+   "kind": "same",
+   "old": "/data/haiyangw/nrpic/scratch/core/core-20261120-222207-4266c2d/77f7173__p5_mov_n64",
+   "exit": 0,
+   "wall_s": 153.3,
+   "old_exe_in_log": true,
+   "identical": [
+    "in.athinput",
+    "punc.cstat.hst",
+    "punc.field.00000.bin",
+    "punc.idsolve.bin",
+    "punc.idsolve.txt",
+    "punc.idvector.bin",
+    "punc.nrpic.hst",
+    "punc.z4c.user.hst",
+    "shell.json",
+    "shell.nrp"
+   ],
+   "differ": []
+  }
+ },
+ "changed": {},
+ "all_same_identical": true
+}

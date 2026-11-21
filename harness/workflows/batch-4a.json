@@ -1,0 +1,40 @@
+{
+ "name": "4a (2026-11-21 morning)",
+ "what": "leads of tracks B, C, D, F; independent review of gate G1 of Track E; window analysis of E; core closes release v0.6 and its gate package",
+ "note": "Releases core-v0.4, v0.5 and v0.6 are on main (CLAUDE.md; announcements in tracks/orch/outbox/). The reports of batches 2a, 2b and 3 are appended to the report files. Rulings: coord/DECISIONS/0021 and 0022. The weekly usage window of the account is at 54 per cent with six days to go: read only what your task needs and write nothing twice.",
+ "items": [
+  {
+   "type": "gate",
+   "owner": "E-stoch-inf",
+   "gate": "G1"
+  },
+  {
+   "type": "lead",
+   "owner": "B-emd-gw"
+  },
+  {
+   "type": "lead",
+   "owner": "C-sidm"
+  },
+  {
+   "type": "lead",
+   "owner": "D-bh-dress"
+  },
+  {
+   "type": "lead",
+   "owner": "F-hills",
+   "extra": "Extra for this owner: decide the next passage. The package binary_conv found that the first passage's early merger came from the member resolution (stage of its chains: the m/16 and m/12 runs of the isolated binary are queued or running; read their state with scripts/submit_chain.sh --status and squeue). If the isolated m/16 binary has reached, or by its trend will reach, the hundred M the passage needs without merging, submit the passage P1b at m/16 as a chain through harness/bin/nrpic-run with the input binary_conv prepared (announce the card-hours in STATUS.md first; it continues after this session and the next session analyses it; use the release executable of core-v0.6 or v0.5 as binary_conv tested, and the chain script of release v0.6, which resubmits after an outside kill). If that is not yet shown, do not submit: name exactly what is waited for."
+  },
+  {
+   "type": "pkg",
+   "owner": "E-stoch-inf",
+   "key": "window"
+  },
+  {
+   "type": "core-task",
+   "key": "g2close",
+   "task": "Close release core-v0.6 and bring core's gate package up to date. (1) The card check of the merged card executable: run core-20261121-132052-f330004, Slurm job 4800: if it finished, judge it as tracks/core/RELEASE-v0.6.md says and write the outcome there and in scratch/core/exe/core_nrpic_v06/READY; register a byte regression of the release builds /data/haiyangw/nrpic/.work/build_cpu_v06/src/athena (and one short card case for .work/build_gpu_v06) against the candidate with the drivers of tracks/core/analysis/release/. (2) tracks/core/CHANGELOG.md: add the chain-script change (outside-kill resubmission) to the core-v0.6 section. (3) The G2 package of core (tracks/core/stage/G2/: STAGE_REPORT via harness/bin/nrpic-stage collect, verify, report; EVIDENCE, OPEN, CHECKLIST): every row of the verification ladder of brief lines 834-860 marked CORE with its evidence as it stands after releases v0.4 to v0.6 (rows 3 and 4: prolate collapse at a second resolution done, oblate collapse still without its component; the cluster threshold bisection gave no bracket by the rule fixed beforehand; Track C's finer-mesh controls bear on it: read tracks/C-sidm/drift on branch track/C-sidm), every known defect (OPEN.md of each release; decision 0022 item 3: the relaxed lapse makes a black hole's horizon mass grow in vacuum, measured by Track D: tracks/D-bh-dress/g2runs on its branch), and a plain statement whether G2 is met and what is missing. (4) tracks/core/interfaces/REQUESTS_WAVE3.md: the triage of open requests updated with the new ones (the relaxed-lapse defect first; clump-table and oblate for release v0.7; id-solver-2's open limits). (5) STATUS.md, HANDOFF.md, RISKS.md, JOURNAL.md of core; one outbox message to orch with the gate status; commit, push core/nrpic. No source change.",
+   "fable": false
+  }
+ ]
+}

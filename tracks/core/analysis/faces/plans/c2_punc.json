@@ -1,0 +1,10 @@
+{"exe": ".work/exe/sbc2/athena_cpu",
+ "cases": {
+  "punc_g2": {"input": "inputs/punc_ext.athinput", "args": ["z4c/extrap_order=2", "z4c/ghost_falloff=true"]},
+  "punc_g4nw": {"input": "inputs/punc_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave"]},
+  "punc_g4nw_met": {"input": "inputs/punc_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "z4c/sbc_speed=metric"]},
+  "punc_g4nw_cp": {"input": "inputs/punc_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "z4c/sbc_theta=cpbc"]},
+  "boost_g2": {"input": "inputs/punc_ext.athinput", "args": ["z4c/extrap_order=2", "z4c/ghost_falloff=true", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"]},
+  "boost_g4nw": {"input": "inputs/punc_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"]},
+  "boost_g4nw_met": {"input": "inputs/punc_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "z4c/sbc_speed=metric", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"]}
+ }}

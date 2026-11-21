@@ -1,0 +1,118 @@
+# ball_ext.athinput: ball.athinput with every option of the outer faces (z4c_sbc_ext.hpp) set to the
+# value of the stock conditions, so that each can be changed on the command line.
+# Package faces (outer boundaries of Z4c): expanding dust ball with the
+# Painleve-Gullstrand exterior (K_ij falls as r^(-3/2)) on a uniform mesh whose outflow
+# faces are close to the ball.  Base: problems/ball/ball.athinput; the differences are
+# the mesh (half-width 16, cells of 1), the field dumps and the listed boundary options.
+# Initial data (tracks/core/analysis/faces/run_set.py makes them):
+#   problems/ic/make_ball.py --M 0.5 --Rb 6 --edge 1.5 --h 0.5 --tracers '' --sample 0
+# Variants from the command line: mesh/nx*, mesh/x*min, x*max (reference box),
+# z4c/extrap_order, the <z4c> sbc_* options.
+
+<comment>
+problem   = expanding dust ball, outflow faces near the ball
+
+<job>
+basename  = ball
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = -16.0
+x1max     = 16.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 32
+x2min     = -16.0
+x2max     = 16.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 32
+x3min     = -16.0
+x3max     = 16.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 16.0
+ndiag      = 8
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_volume    = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+excise_chi      = 0.0
+extrap_order    = 2
+sbc_variant     = sommerfeld   # options of the outer faces (z4c_sbc_ext.hpp); these
+sbc_power_khat  = 3.0          # values give the stock conditions of the release
+sbc_power_a     = 3.0
+sbc_power_gam   = 3.0
+sbc_theta       = sommerfeld   # sommerfeld | nonwave | cpbc
+sbc_power_theta = 3.0
+sbc_v_khat      = 1.4142135623730951
+sbc_speed       = unit         # unit | lapse | metric
+ghost_falloff   = false        # ghost cells by fall-off extrapolation
+ghost_power_metric = 1.0
+ghost_power_curv   = 1.0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+interp         = hermite
+tolerance      = 1.0e-10
+max_iterations = 50
+deposit        = true
+deposit_shape  = cic
+deposit_comp_c = 0.0
+deposit_comp_c2 = 0.0
+nfilter        = 1
+filter_compensate = false
+source_density = false
+source_extrap  = false
+alpha_exc      = -1.0
+hist_dcycle    = 4
+cstat_dcycle   = 1
+traj_ntrack    = 0
+particle_file  = ball.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = table
+comp0_file = ball.tab
+lapse      = table
+lapse_comp = 0
+shift      = zero
+
+<output1>
+file_type = hst
+dt        = 0.25
+
+<output2>
+file_type = bin
+variable  = con
+dt        = 1.0
+
+<output3>
+file_type = bin
+variable  = z4c
+dt        = 1.0

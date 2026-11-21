@@ -1,0 +1,106 @@
+# Newtonian mode of the particle module in a periodic box with a prescribed
+# matter-dominated expansion, with the Fourier Poisson solver (work package newton2,
+# tracks/core/interfaces/newtonian_mode.md section 7): problems/newton/periodic.athinput
+# with <particles> newton_poisson = fft. The solver needs a uniform mesh that is periodic
+# in all directions, with cell numbers that are products of 2, 3, 5 and 7; the <gravity>
+# block stays (four_pi_G; the multigrid module is built but not called). Also shown: the
+# second moments of a particle group (newton_ngroup), here of all particles about their
+# centroid, in <basename>.newton.g1.hst.
+
+<comment>
+problem   = NRPIC Newtonian mode, periodic box with expansion, Fourier Poisson solver
+
+<job>
+basename  = newton
+
+<mesh>
+nghost    = 2
+nx1       = 32
+x1min     = 0.0
+x1max     = 4.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = 0.0
+x2max     = 4.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = 0.0
+x3max     = 4.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk2          # not used by the particles; the driver needs one
+cfl_number = 1.0
+nlim       = -1
+tlim       = 3.0
+ndiag      = 100
+
+<gravity>
+four_pi_G      = 12.566370614359172   # G = 1
+threshold      = 0.0      # 0: V cycles until the defect stops falling; > 0: defect norm
+niteration     = -1       # fixed number of V cycles when threshold < 0
+npresmooth     = 1
+npostsmooth    = 1
+full_multigrid = false    # false: start from the potential of the previous step
+fmg_ncycle     = 1
+show_defect    = 0
+mg_nghost      = 1
+root_on_host   = false
+
+<particles>
+particle_type  = nrpic
+pusher         = newton    # Newtonian mode: Poisson equation, kick-drift-kick
+interp         = hermite   # potential at the particles: hermite (Catmull-Rom) or bspline
+dt             = 0.005     # step in conformal time
+newton_cfl     = 0.0
+newton_mg_tol  = 0.0       # > 0: the Poisson solve may end at this fraction of the
+                           # norm of the source (0: until the defect stops falling)
+newton_expansion = power   # a = (1 + newton_hubble t/n)^n, n = newton_exponent
+newton_hubble  = 1.0
+newton_exponent = 2.0      # 2: matter era
+newton_poisson = fft       # multigrid (default, also when absent) or fft
+newton_fft_symbol = spectral   # spectral: -1/k^2; seven_point: symbol of the
+                           # seven-point Laplacian (the multigrid solution to rounding)
+newton_ngroup  = 1         # particle groups with their own second-moment history
+newton_group1_species = -1 # species of the group (-1: every species)
+newton_group1_tag_min = -1 # first and last tag of the group (-1: no bound)
+newton_group1_tag_max = -1
+newton_group1_x1 = 2.0     # reference point: positions enter as the image nearest to it
+newton_group1_x2 = 2.0
+newton_group1_x3 = 2.0
+deposit        = true
+deposit_shape  = cic       # cloud shape: cic, tsc or pcs
+nfilter        = 0         # binomial passes on the deposited density
+filter_compensate = false
+filter_comp_c  = -1.0
+deposit_comp_c = 0.0
+deposit_comp_limit = 0.0
+deposit_comp_c2 = 0.0
+hist_dcycle    = 1
+traj_dcycle    = 0
+traj_ntrack    = 0
+snap_dt        = 0.25
+probe_x1       = 1.0       # crest of the wave (largest density)
+probe_x2       = 1.0
+probe_x3       = 1.0
+nprobe         = 1
+probe1_x1      = 3.0       # trough
+probe1_x2      = 3.0
+probe1_x3      = 3.0
+particle_file  = particles.nrp
+
+<problem>
+pgen_name = nrpic_newton   # particles only; nothing is set on the mesh
+
+<output1>
+file_type = rst
+dt        = 1.0e30

@@ -1,0 +1,96 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-075122-3c3724d",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "cosmo-amr T10g judged: scouting run of Track A's S1 with the corrected fine-shape deposit (card executable of 1548d49, job 4763) against the track's static S1; prediction: JOURNAL-cosmo-amr.md entry 2026-11-21 03:33",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/cosmo_amr/t10_scout.py",
+    "--run",
+    "/data/haiyangw/nrpic/scratch/core/core-20261121-033223-e1d596b/s1g",
+    "--s1",
+    "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-160349-9d232d2/run",
+    "--more",
+    "/data/haiyangw/nrpic/scratch/core/core-20261120-220816-09f6f79/s1amr",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "3c3724dcf795eaa820256948ad714f9e681f82b0",
+    "branch": "core/nrpic",
+    "dirty": false,
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/core"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/cosmo_amr/t10_scout.py",
+      "role": "argv",
+      "sha256": "3ccc61e6a25d50d6f4957f3af87e3657353b0e3593d77aa6aec1e28f77442df9",
+      "bytes": 16413,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 4.211,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-075122-3c3724d",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "0093747c798b037541fcc1422cac9809995c5066c8876581e4c0e83fe892ef90",
+    "bytes": 720994,
+    "files": 6
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-21T07:51:23Z",
+  "started": "2026-11-21T07:51:23Z",
+  "ended": "2026-11-21T07:51:28Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 6.0704,
+    "gpu_hours_reserved": 0.2,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 1,
+    "runs": 1364,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-21T07:51:28Z"
+}
