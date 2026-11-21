@@ -71,3 +71,16 @@ wave-1 shell references D-bh-dress-20261115-123516-cff68f1, -123518-cff68f1,
 -123530-cff68f1 and reruns -124330-75000d9, -124332-75000d9, -124334-75000d9,
 -124336-75000d9, -124338-75000d9; wave-1 loss-cone analyses D-bh-dress-20261115-124246-aa9dee7,
 -124249-aa9dee7, -124257-aa9dee7.
+
+## Wave 3 (2026-11-20 and 2026-11-21)
+
+| Artefact | Path | Run |
+|---|---|---|
+| ES-1G closed and judged (G1-G7, J1-J6, K1-K2) | `es_runs/JOURNAL.md` entry 9, `es_runs/README.md` "ES-1G results", `results/es1g_judge.json`, `es_extra_es1g.json`, `slicemass_es1g.txt`; figs `es_runs/figs/es1g/*.png` (`judge_horizon.png` L, `slicemass_ES-1G.png` L) | card D-20261119-142633-6f72922; analyses D-20261120-221754-ae3dafe, -222042-59c7d82 (superseded for figures), -222424-230f936, -222956-6abf860 |
+| Fresh-context verifier of the G1 material (C17) | `stage/G1/VERIFIER.md` (= `verifier_g1/VERIFIER.md`), `verifier_g1/` scripts and JOURNAL; figs in the run directories (`v2_growth_ratio.png` L, `v3_hern_a0.8.png` L) | D-20261120-222209-871e07f, D-20261121-031031-e23da04, -031711-0d79cb3, -033209-9c0bd44, -034048-17427b0, -035106-0c619ee, -040417-8a3c402, -035114-8a3cb38, -040636-e8d5352, -040826-9d5051a |
+| Architecture schematic redrawn (C9), timeline, note v1 figures and ledger | `note/scripts/schem_architecture.py`, `schem_timeline.py`, `fig_kerr.py`, `fig_newton.py`, `fig_esrun.py`, `run_all.py`; `note/figures/schem_architecture.png` (L) | D-20261120-222413-4a67fa2, -222422-983f3f6, -222424-d7cd958, -222429-026731f, -222430-452c907, -223535-24f7f90 |
+| Late-drift decomposition (step 1A) | `drift_controls/tools/step1.py`, `results/step1.json`, figs `drift_controls/figs/step1_*.png` | D-20261120-222107-cc4937b |
+| Boundary control V-1B (faces at +-384 M) and finder pre-flight | `drift_controls/inputs/v1b_bnd384.athinput`, `tools/probe_finder_es.py` | card D-20261120-222625-63abd72 (0.778 card-hours); pre-flight D-20261120-222820-94f20b3 |
+| ES-F construction checked by a second agent; pre-registration of the ES-F run | `flux_tools/check_esf_construction.py`, `results/check_esf_construction.json`, fig `figs/check_esf_construction.png` (L); `flux_tools/JOURNAL.md` entries 6, 6b, 7 | D-20261120-222314-ed5d325, -222651-3180e07, -222815-f8d1b42; data D-20261119-145022-2208a19 |
+| D-pre-3 toward a/a_i = 30: design, timing, matched shells, R8 rerun | `secondary_infall/nm_design.py`, `nm_run.py`, `nm_shells.py`, `nm_late.py` | D-20261120-222358-e98ffbd, -222405-ce8922c, -222511-34be8a8, -222513-9849530, -222515-c2ef5b8, -222758-acc6929, -222804-e5183e9, -222550-e472402 |
+| Lead's re-check Z1-Z5 (ES-1G horizon and tracers, V-1B against V-1, dress at a/a_i = 2, ES-F particle file) | `stage/review_wave3/wave3_check.py`, fig `wave3_check.png` (L); `../REVIEW-wave3.md` | D-20261121-063617-3f2036f |
