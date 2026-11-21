@@ -6,6 +6,9 @@
 #
 #   scripts/run_list_cpu.sh <exe> <list> [<out>]
 #
+# MAXJOBS=k in the environment runs at most k entries at a time (wave 3; default: all at
+# once).
+#
 # <out> defaults to $NRPIC_RUN_DIR (set by harness/bin/nrpic-run for a registered run);
 # it must be an existing absolute directory.  nrpic-run passes its command without a
 # shell, so a literal '$NRPIC_RUN_DIR' on its command line is not expanded: leave <out>
@@ -19,12 +22,16 @@ if [[ $OUT != /* || ! -d $OUT ]]; then
   exit 2
 fi
 ROOT=$(pwd)
+MAXJOBS=${MAXJOBS:-0}
 export OMP_NUM_THREADS=1
 : > "$OUT/status.txt"
 pids=()
 names=()
 while read -r name deck rest; do
   [[ -z ${name:-} || $name == \#* ]] && continue
+  if (( MAXJOBS > 0 )); then
+    while (( $(jobs -rp | wc -l) >= MAXJOBS )); do wait -n || true; done
+  fi
   mkdir -p "$OUT/$name"
   cp "$ROOT/$deck" "$OUT/$name/"
   (

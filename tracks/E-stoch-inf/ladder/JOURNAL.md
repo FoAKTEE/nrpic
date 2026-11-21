@@ -824,3 +824,20 @@ changes in the record of G1: the A4 numbers of P256 in entry 9 ("odd/even up to 
 replaced by 25 at the last time-matched dump (N = 3.93), with the warning that the P256 peak at
 N = 4.4 has no time-matched partner; the record maxima come from `max_record_con`. Every
 verdict is unchanged.
+
+## Entry 18, 2026-11-21 03:14Z: L5 also on the processors (hedge against the queue); prediction
+
+Why: at 03:10Z card job 4757 (items b, c) waits behind four jobs (two cards, one held by
+another user), and items (b) and (d) need the card; L5 needs none (one shell, 12 modes, 64^3,
+32 cycles per run). So the eleven L5 runs of `card_bc.list` run unchanged on the processor
+executable of core/scalar-2 (`inputs/l5proc.list`, `scripts/run_list_cpu.sh` with the new
+`MAXJOBS=3`, three cores). Not a repetition: the processor runs are byte-reproducible, and the
+card runs of job 4757 will be compared with them.
+
+Predictions: PL1-PL3 of entry 14, unchanged, for the processor runs. In addition (PL4), when the
+card runs exist: every quantity of `l5.json` (rms parts, factors) agrees between processors and
+card within 1e-6 relative where it lies above 1e-3 of its largest value over the run (the two
+builds differ only in the order of floating-point operations; the first-order part M1 of the
+stencil run, itself a difference of nearly equal numbers, may differ more and is excluded).
+Refuted if a verdict of PL1-PL3 differs between the platforms. Cost: about 5-15 min per run on
+one core (Z4c at 64^3 plus 12 modes; the 32^3 rung with 1054 modes ran 2.9 s per step).

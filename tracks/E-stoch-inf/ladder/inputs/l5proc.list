@@ -1,0 +1,13 @@
+# L5 single-kick test on the processors (JOURNAL entry 18): the eleven L5 runs of card_bc.list, unchanged,
+# run with scripts/run_list_cpu.sh and MAXJOBS=3 (executable core/scalar-2 a58e95b, athena_cpu).
+K1p tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=100.0
+K1m tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=-100.0
+K2p tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=50.0
+K2m tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=-50.0
+K0 tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=0.0
+C1p tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=100.0 scalar_field/noise_projector=continuum
+C1m tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=-100.0 scalar_field/noise_projector=continuum
+C2p tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=50.0 scalar_field/noise_projector=continuum
+C2m tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=-50.0 scalar_field/noise_projector=continuum
+N1p tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=100.0 scalar_field/noise_pi_sign=-1.0
+N1m tracks/E-stoch-inf/ladder/inputs/sr_l5.athinput scalar_field/noise_mode_scale=-100.0 scalar_field/noise_pi_sign=-1.0
