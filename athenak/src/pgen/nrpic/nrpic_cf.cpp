@@ -36,6 +36,9 @@
 //! <particles> particle_file.
 //! Punctures may carry linear momentum and spin (Bowen-York curvature, K_ij = psi^-2
 //! Abar_ij) and a regular correction of their conformal factor: nrpic_bowen_york.hpp.
+//! Gaussian components may carry linear momentum and spin (the Bowen-York curvature
+//! smeared with the Gaussian, which solves the momentum constraint for a clump whose
+//! particles carry that momentum density): nrpic_clump_curvature.hpp.
 //! <problem> puncture_setup = true adds a tracker, an initial refined region and a
 //! horizon finder for every puncture: nrpic_puncture_setup.hpp.
 
@@ -58,6 +61,7 @@
 #include "particles/particles.hpp"
 #include "pgen/pgen.hpp"
 #include "pgen/nrpic/nrpic_bowen_york.hpp"
+#include "pgen/nrpic/nrpic_clump_curvature.hpp"
 
 namespace {
 
@@ -492,6 +496,8 @@ void ProblemGenerator::NrpicConformallyFlat(ParameterInput *pin, const bool rest
   std::vector<Real> bytab_h;
   const nrpic_by::BYSet by = nrpic_by::BYRead(pin, ncomp, bytab_h);
   const DvceArray1D<Real> bytab = nrpic_by::BYDeviceTable(bytab_h);
+  // momentum and spin of the Gaussian components (smeared Bowen-York curvature)
+  const nrpic_clump::ClumpSet clumps = nrpic_clump::ClumpRead(pin, ncomp);
 
   const std::string lapse = pin->GetOrAddString("problem", "lapse", "one");
   const int lcomp = pin->GetOrAddInteger("problem", "lapse_comp", 0);
@@ -580,6 +586,19 @@ void ProblemGenerator::NrpicConformallyFlat(ParameterInput *pin, const bool rest
       Real ab[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
       for (int c=0; c<by.n; ++c) {
         nrpic_by::BYAddCurvature(by.punc[c], x, y, z, ab);
+      }
+      const Real ipsi2 = 1.0/(psi*psi);
+      int q = 0;
+      for (int a=0; a<3; ++a) {
+        for (int b=a; b<3; ++b) {
+          adm.vK_dd(m,a,b,k,j,i) += ipsi2*ab[q++];
+        }
+      }
+    }
+    if (clumps.n > 0) {
+      Real ab[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+      for (int c=0; c<clumps.n; ++c) {
+        nrpic_clump::ClumpAddCurvature(clumps.c[c], x, y, z, ab);
       }
       const Real ipsi2 = 1.0/(psi*psi);
       int q = 0;

@@ -1,0 +1,54 @@
+{
+ "run_id": "core-20261115-162142-3407748",
+ "owner": "core",
+ "track": "core",
+ "gate": "G2",
+ "purpose": "T10 noise_level = 1 with the initial slice: R^NR per mode against W R alpha of the lockstep record, 32^3, nmax2 = 64, to t = 3.2 (processors)",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/scalar2/t8_rnr.py",
+  "--exe",
+  ".work/exe/athena_cpu_a58e95b",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-162142-3407748",
+  "--level",
+  "1",
+  "--no-control"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-scalar2",
+ "commit": "340774811806b8e51c0e00f05789fdb31f2f1d2c",
+ "branch": "core/scalar-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_a58e95b",
+   "sha256": "c69266ec765c8296b005871c6865991f2a5ac59f7ebd2ac3f03d383b57f9439e"
+  },
+  {
+   "path": "problems/scalar/sr_stochastic.athinput",
+   "sha256": "d1ad721d9b2b495b49782ca31a3c18efc24f1eb58c23eeff29d3fc12747efea6"
+  },
+  {
+   "path": "problems/scalar/sr_stochastic_modes.txt",
+   "sha256": "3e885408a9a1122f93997d46092b3a4141afac15415b73027556e75f82424031"
+  },
+  {
+   "path": "tracks/core/analysis/scalar2/t8_rnr.py",
+   "sha256": "8e1901b8559779834678ada77d1b2279c14c917cef703e8fe23f3ed3511d9a89"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-162142-3407748",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-162142-3407748"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:21:43Z",
+ "cores": 1,
+ "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
+ "status": "completed",
+ "wall_time_s": 194.9,
+ "exit_status": 0,
+ "end_utc": "2026-11-15T16:24:58Z",
+ "core_hours": 0.0541
+}

@@ -22,6 +22,7 @@
 #include "athena_tensor.hpp"
 #include "geodesic-grid/geodesic_grid.hpp"
 #include "geodesic-grid/spherical_grid.hpp"
+#include "z4c/z4c_gauge_ext.hpp"
 
 // forward declarations
 class Coordinates;
@@ -215,6 +216,7 @@ class Z4c {
     int dc_gaussian_center;
   };
   Options opt;
+  GaugeExtOptions gext;   // lapse relaxation and tracker-dependent shift damping
   Real diss;              // Dissipation parameter
 
   // Boundary communication buffers and functions for u
@@ -233,6 +235,12 @@ class Z4c {
   Real waveform_dt;
   Real last_output_time;
   int nrad; // number of radii to perform wave extraction
+  // NRPIC: <z4c> waveform_at_new_time (docs/UPSTREAM_DEFECTS.md, item 2).  The Weyl
+  // scalar and the waveforms are computed at the end of a step, from the state of
+  // time + dt.  Upstream chooses the step and labels the result by the time at its
+  // start; with the option they are chosen and labelled by the time at its end.
+  bool waveform_at_new_time;
+  Real WeylStepTime() const;
 
   // CCE
   Real cce_dump_dt;

@@ -357,6 +357,9 @@ TaskStatus MultigridDriver::PhysicalBoundary(Driver *pdrive, int stage) {
       }
     });
 
+  // Robin faces (mg_bc = robin) replace the fill of the kernel above
+  if (robin_) RobinBoundaryBlocks();
+
   return TaskStatus::complete;
 }
 

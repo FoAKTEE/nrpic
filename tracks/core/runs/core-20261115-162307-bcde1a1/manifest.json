@@ -1,0 +1,34 @@
+{
+ "run_id": "core-20261115-162307-bcde1a1",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+  "-i",
+  "binary_gravity.athinput",
+  "time/nlim=1"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-162307-bcde1a1",
+ "commit": "bcde1a1",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "athenak/inputs/tests/binary_gravity.athinput",
+   "sha256": "8c82926cb27b98f2971a3558cb6c57b737c615d1c549cc414e9955bdec094e50"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+   "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-162307-bcde1a1",
+ "purpose": "regression of the relativistic mode, case binary, executable baseline",
+ "kind": "scouting",
+ "tag": "regress-binary-baseline",
+ "state": "finished",
+ "wall_time_s": 48.63,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T16:23:07Z"
+}

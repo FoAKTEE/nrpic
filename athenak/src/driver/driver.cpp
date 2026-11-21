@@ -657,8 +657,23 @@ void Driver::Finalize(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
   // cycle through output Types and load data / write files
   //  This design allows for asynchronous outputs to implemented in the future.
   for (auto &out : pout->pout_list) {
+    // Every writer advances the time of its last output by dt, which is right when the
+    // final output falls on the schedule (a run that ends at tlim).  A run that stops
+    // between two scheduled times (wall clock limit, cycle limit, tlim off the schedule)
+    // writes an extra file here; advancing the schedule for it made the continued run
+    // skip the next scheduled output of every kind.  The extra output therefore leaves
+    // the schedule where it was: the interval is zero while the writer runs, so that
+    // the time of the last output it stores (also in the parameter dump inside a
+    // restart file) is unchanged.  No writer uses the interval for anything else.
+    // Compared in single precision, as in Driver::Execute.
+    auto &opar = out->out_params;
+    const Real dt_saved = opar.dt;
+    const bool off_schedule = (opar.dt > 0.0) && (opar.last_time >= 0.0) &&
+        (static_cast<float>(pmesh->time) < static_cast<float>(opar.last_time + opar.dt));
+    if (off_schedule) { opar.dt = 0.0; }
     out->LoadOutputData(pmesh);
     out->WriteOutputFile(pmesh, pin);
+    opar.dt = dt_saved;
   }
 
   // call any problem specific functions to do work after main loop

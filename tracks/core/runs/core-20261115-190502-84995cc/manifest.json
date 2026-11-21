@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261115-190502-84995cc",
+ "owner": "core",
+ "purpose": "Baseline for the byte comparison: P2 P3 P4 rate, conservation, null runs, release executable core-v0.3",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/run_rate.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-190502-84995cc",
+  "--exe",
+  "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+  "--nproc",
+  "8"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-190502-84995cc",
+ "commit": "84995ccea78529d6231989795721fe6c9bc97415",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/collisions/run_rate.py",
+   "sha256": "1090e3dad075564af72442652f967b0a18e310b36f2ce719d0fe20a5e0874386"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+   "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-190502-84995cc",
+ "host": "anta",
+ "start_utc": "2026-11-15T19:05:02Z",
+ "cores": 8,
+ "wall_time_s": 248.05,
+ "exit_status": 0,
+ "core_hours": 0.5512
+}

@@ -69,6 +69,9 @@ void ScalarField::Startup(bool res_flag) {
   if (opt.hist_dcycle > 0) {
     WriteHistory(pm->time, pm->ncycle, true);
   }
+  if (dopt.con_dcycle > 0) {
+    WriteConstraintHistory(pm->time, pm->ncycle, true);
+  }
   if (opt.dump_dcycle > 0 || opt.dump_dt > 0.0) {
     NoiseFieldsOfState();
     WriteDump(pm->time);
@@ -234,6 +237,10 @@ void ScalarField::WriteHistory(Real time, int ncycle, bool header) {
 //! \brief the fields of the active cells in double precision (format: top of this file)
 
 void ScalarField::WriteDump(Real time) {
+  if (DumpIsExtended()) {   // layout NRSFDMP2 (scalar_field_diag.cpp)
+    WriteDumpExtended(time);
+    return;
+  }
   Mesh *pm = pmy_pack->pmesh;
   auto &indcs = pm->mb_indcs;
   const int is = indcs.is, js = indcs.js, ks = indcs.ks;
