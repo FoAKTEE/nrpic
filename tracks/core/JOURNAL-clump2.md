@@ -1234,3 +1234,13 @@ of `nrpic_cf` components as not tested.
 - No prediction, reported: the size of `A = s_rest - psi_t(rest)`, what the mesh solve
   changes in a cluster at rest (the deposit and the difference stencils; the solver's
   tests found -5e-3 at the centre of a Gaussian of width 2 at this cell size).
+
+### G3: prediction (written 13:08Z, before the comparison is made)
+
+The run that test D started by mistake is a processor run of `v0.3` from the card's
+restart file of t = 0, with records up to 34.5 M (`core-20261120-223538-742c0b7/v0.3_t0`,
+closed as failed; its histories are complete up to the stop). Against the card run of
+TC it extends G2 from 10 M to 34.5 M. Predicted: minimum lapse, `sum m u_x`, `sum m W`
+within 1e-9 at every common record, the norms equal to 1e-6 relative. Refuted above
+1e-6 in the lapse or the sums before 34.5 M: then the card run of 50 M is one member of
+a family that round-off spreads, and the late numbers of TC and TF carry that spread.
