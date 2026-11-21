@@ -39,10 +39,12 @@ Predictions (what I expect if the track is right):
   are tracers only (tags < 140). WRONG if any dust particle lies inside, or any dust tag
   disappears.
 
-### Outcome of entry 1 (14:25 PST), run D-20261120-222209-871e07f
+### Outcome of entry 1 (14:23 PST), run D-20261120-222209-871e07f
 
-All four predictions held (`v1_results.json`, figures `v1_wall.png`, `v1_inner.png`,
-`v1_horizon.png`, `v1_dust_wall.png`, all looked at).
+P1a-P1c held; P1d as I worded it (nearest of the 14 wall directions) FAILED at t >= 175 M,
+while its refutation criterion (a dust particle inside the wall) was not met once the wall
+is interpolated between the directions (below). Files: `v1_results.json`, figures
+`v1_wall.png`, `v1_inner.png`, `v1_horizon.png`, `v1_dust_wall.png`, all looked at.
 - P1a: wall, max over tau <= 200 M: ES-1 2.196e-3 (axis tracers; diagonal 1.734e-3),
   V-1 1.594e-3. The second areal-radius definition (det gamma / n.gamma.n)^(1/4) r gives the
   same digits. Attempt to break: over the whole run (tau up to 283 M in ES-1, 250 M in V-1)
@@ -67,3 +69,63 @@ All four predictions held (`v1_results.json`, figures `v1_wall.png`, `v1_inner.p
   the innermost dust layer itself (fit a + b(r0 - 36.4) + c q4 + d q6, residual <= 0.020 M,
   rms 0.007 M) the smallest margin is 0.1356 M at t = 200 M (lowest cubic harmonic alone:
   0.1359 M); within 6 degrees of the 14 wall tracers, model-free, 0.126 M. No dust inside.
+
+## Entry 2 (2026-11-20 14:25 PST): V2, D-pre-3 in AthenaK's Newtonian mode, prediction
+
+Script `v2_infall.py`. Inputs: the snapshots of N128c D-20261115-171503-4262f03, N64c
+-171505-62940f4, N128Lc -171507-d1058a9 and their `setup.json` (eps, t_i, tag ranges of
+clump and dust, dx); the measured kernel files `secondary_infall/kernel_nx{64,128}.txt` as
+the only input taken from the track's analysis (for my matched shell reference).
+
+My definitions (written before computing):
+- Centre: mass-weighted centre of the clump particles in each snapshot. Initial radius r_i
+  and direction n0 of every dust particle from snapshot 0. a/a_i = ((t + t_i)/t_i)^(2/3).
+- Dress(t): dust mass on the shells that have passed through the centre at least once.
+  A particle has passed once it lies on the far side, (x - c).n0 < 0; the passage front
+  r_c(t) is the outermost initial radius at which half of the particles of a thin r_i bin
+  have passed (shells that passed twice lie inside it). Dress = dust mass with r_i < r_c.
+- Turnaround mass M_ta(t): clump mass plus the dust mass with r_i < r_ta,i(t), where
+  r_ta,i is the outermost initial radius at which the median radial velocity of the
+  not-yet-passed particles of a thin r_i bin crosses zero; r_ta(t) is the current radius
+  of that shell.
+- References: (i) point-mass Kepler closed form for M_ta with the actual enclosed mass
+  (clump + lattice dust inside r_i, Hubble velocity eps r_i at t_i); (ii) my own spherical
+  shell code (3000 shells built from the lattice of snapshot 0, leapfrog, sorting for the
+  enclosed mass, reflection at the centre) with three force laws: measured kernel on the
+  clump only, measured kernel on all enclosed mass, point mass with 0.25 M softening.
+- Self-similar profile: Bertschinger-type collisionless solution, my own fixed-point
+  iteration of Lambda'' = -(pi^2/8) tau^(2/3) m(Lambda tau^(-8/9))/Lambda^2 with
+  m(lambda) = int_0^1 H(lambda - Lambda(tau) tau^(-8/9)) d(tau^(-2/3)), and
+  rho/rho_b = (9 pi^2/16) m'(lambda)/(3 lambda^2), compared in bins (bin-averaged from m).
+
+Predictions:
+- P2a my M_ta of the runs equals the claimed run values (1.5063, 2.5966; 1.5064, 2.5966;
+  1.5077, 2.5962, 4.8159 M) within 0.3 per cent. WRONG if more than 1 per cent off.
+- P2b my dress equals the claimed run values (0.1744, 0.7975; 0.1736, 0.7966; 0.1751, 0.7977,
+  2.1537 M) within 2 per cent (definitions may differ at the front). WRONG if more than
+  5 per cent off without a definitional reason I can show.
+- P2c run against my kernel-matched shell reference: M_ta within 0.5 per cent and dress
+  within 1 per cent at a/a_i = 2 (dress: 3 per cent), 4 and 8; point-mass Kepler M_ta within
+  1 per cent. WRONG if M_ta differs by more than 1 per cent or the dress by more than 2 per
+  cent at a/a_i = 4 or 8 from my kernel reference.
+- P2d my self-similar solution: outermost caustic near lambda = 0.36, m ~ lambda^(3/4) at
+  small lambda; N128Lc at a/a_i = 8 within 25 per cent of it on lambda in [0.1, 0.3]
+  (8 logarithmic bins). WRONG if a bin there deviates by more
+  than 30 per cent.
+
+Development before the registered V2 run (2026-11-20 19:00-19:15 PST, written before it):
+- The first self-similar solver (solve_ivp with a Python right-hand side, reflection by an
+  event at Lambda = 1e-6) did not finish one fixed-point sweep in 10 minutes; stopped. It is
+  replaced by `v2_selfsim.py` (signed radial orbit through a centre softened by 1e-4 in
+  Lambda, adaptive leapfrog, m as an exact quadrature along the steps). Smoke tests (not
+  registered, scratch/D-bh-dress/tmp/vg1/ss_*.txt): outermost caustic lambda_1 = 0.3580,
+  0.3618, 0.3610, 0.3630 for (tau_max, eta) = (30, 0.02), (200, 0.01), (200, 0.005),
+  (500, 0.01); m(0.1) = 0.306-0.304; the eight bins on [0.1, 0.3] move by up to 4 per cent
+  between tau_max = 200 and 500 (caustics cross bin edges). So the reference itself carries
+  a few per cent per bin; the registered run uses (500, 0.01) and reports the other two.
+- Smoke test of my snapshot reader on N64c (not registered): M_ta = 1.5060 and 2.5955 M,
+  dress 0.1741 and 0.7957 M at a/a_i = 2 and 4, i.e. within 0.12 per cent of the claimed run
+  values. The registered run repeats this and adds the shells and the self-similar profile.
+- Attempts to break added before the run: half the number of r_i bins (150) for M_ta and
+  dress; r_ta scaled by 0.97 and 1.03 in the profile; the profile against the two other
+  self-similar solutions.
