@@ -312,3 +312,20 @@ less than 3 per cent and the 4-6 integral by less than 1 per cent, so my +13 and
 stand; the local ratios stay within 1 per cent. If doubling moves the 0-4 integral toward the
 track's by more than half the gap, my V4 reference was under-resolved and the claim's
 numbers stand.
+
+### Outcome of entry 5 (19:55 PST), run D-20261121-035114-8a3cb38
+
+46 rows (some ledger rows split or merged): 27 independent rows agree (one of them only as an
+upper bound: the table-density residuals), 7 recount rows agree, 2 independent rows differ,
+2 are not comparable (my self-similar solution is a different model), 8 not done. Figures
+`v5_floor.png`, `v5_spike_counts.png` looked at.
+- Differs (1): constant-f peak position 7.554 against 7.58 Gm with the height equal to 1e-4
+  (0.86999e8 against 0.8699e8); the maximum is flat (25 radii, 0.025 apart); the position is
+  not a meaningful 0.3 per cent number. Not WRONG.
+- Differs (2): Hernquist a = 0, deviation from FdRW on 5-39 Gm: mine 1.67 per cent, ledger
+  1.01 per cent; the ledger number belongs to the track's curve, mine to my curve (0.5-0.7 per
+  cent lower than the track's at large r, V3). Not a defect of the ledger.
+- Part-3 predictions held: GS ratios 2.58997 and 0.09207; AthenaK Schwarzschild spike
+  |dE/E| 1.3328e-6, |dL/L| 1.9329e-10 (ledger 1.33e-6, 1.93e-10); count ratio 4-6 Gm second
+  half 0.985 against my reference (ledger 0.976 against the track's): my a = 0 reference and
+  the track's agree to about 1 per cent in this range, unlike a = 0.8 (V4).
