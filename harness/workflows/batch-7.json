@@ -1,0 +1,12 @@
+{
+ "name": "7 (2026-11-21 late afternoon: one session)",
+ "what": "Track A puts the corrected periodic job into its card queue",
+ "note": "Releases core-v0.4 to v0.6 are on main. Rulings: coord/DECISIONS/0025 to 0027. The cards are loaded with every owner's long runs (decision 0026 item 1). The weekly usage window of the account is at 80 per cent: do only what the task names.",
+ "items": [
+  {
+   "type": "lead",
+   "owner": "A-emd-pbh",
+   "extra": "Short session, half an hour at most, three things only (decision 0027 item 2; the weekly usage window of the account is at 80 per cent). (1) Post the request that package periodic_diag drafted for core (tracks/A-emd-pbh/periodic_diag/outbox_draft/20261121T2300Z__to-core__periodic-gamma-driver-step.md) through harness/bin/nrpic-ctx post; it closes the earlier request periodic-relaxed-lapse-blowup. (2) Set cfl_number = 0.5 in periodic_threshold/inputs/peak_leak.athinput (and in any other periodic deck with a Gamma-driver shift), write the prediction and what would refute it into JOURNAL.md (the remedy is tested on the uniform mesh only: this job is its test on the refined mesh), and put the corrected periodic job (both members, P0L and S1L) into the sequencer's queue of this owner (threshold_ball/queue.txt or as that sequencer expects; registered by nrpic-run; card-hours announced in STATUS.md) so that it runs unattended behind the scan; add a periodic run on the refined mesh to a horizon if the allotment allows. (3) HANDOFF.md: the exact commands that read these runs; commit; push. No review, no stage package, no helpers in this session."
+  }
+ ]
+}
