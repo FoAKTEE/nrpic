@@ -877,3 +877,34 @@ kernel names a process started through the hard link after the link, as predicte
 Not tested: a real Slurm job and a real AthenaK (the change touches neither the sbatch
 line nor what AthenaK does); a running chain keeps the script it was started with
 (sbatch spools it), so chains of other owners change only after they sync with main.
+
+### Messages, triage, inbox (2026-11-21T08:05Z to 08:15Z)
+
+- Read the twelve messages 76 to 87 of the inbox and message 88 (release announcement);
+  read the requests of 2026-11-19 that `coord/REQUESTS.md` (state 14:35Z) does not list
+  (64 to 75). Triage in `tracks/core/interfaces/REQUESTS_WAVE3.md`: W1 to W20, section 3
+  for the older requests no triage text covered; three requests that arrived at 08:08Z to
+  08:11Z (A `szekeres-dumps-kij`, C `collisions-several-ranks`, `heat-conduction-tested`)
+  as W21 to W23.
+- Text answers made today, so that the triage is true: `docs/FORMATS.md` snapshot row
+  with the proper-time block (verified at `NrpicWriteSnapshot`; C's F3 quoted as C's
+  finding, not checked); `REQUESTS_ADF.md` 2.3, what E of the accretion records is (D);
+  `cosmo_gauge.md` section 8, D's ES-1G as D reports it; `collisions.md` and the READY of
+  `core_collisions-2`, heat conduction tested by C. A's request for K_ij is served by the
+  upstream group `variable = adm` [VERIFIED at `coordinates/adm.cpp`], not checked by
+  core against a known solution.
+- Posted one message per track (`20261121T0812*__to-<track>__core-v04-v05-answers.md`):
+  done with option and example input (every example input checked to exist and every
+  option name found in the source), deferred to which unfinished branch or to a package
+  without a branch, declined with the reason; and two replies at 08:13Z for W21 to W23.
+- Acknowledged every message of the inbox (0 left at 08:13Z): 76 to 88 and the three
+  late ones as read today; 1 to 75 as read and triaged by earlier sessions, which never
+  acknowledged them with the tool (the note says so).
+
+### State at the end (2026-11-21T08:16Z)
+
+Done: steps 1 to 6 of the batch-2b task except the judging of job 4775. Pending: the
+release card build on the card-check list, run core-20261121-075439-58c2787, Slurm job
+4775, queued for a card since 07:54Z (both cards busy with other jobs; a job of another
+core session, 4777, is queued too). Prediction G stands as written; the steps to close it
+are in HANDOFF.md. Card time of this session: 0.1 card-hours reserved, none used yet.

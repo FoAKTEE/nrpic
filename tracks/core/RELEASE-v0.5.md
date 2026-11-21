@@ -210,6 +210,20 @@ Figure `scratch/core/core-20261121-074846-e830785/fig_card_v05.png` (looked at: 
 bar of panel a below its dashed bound; panel b high only for s3g, usr and trk).
 So the merged card executable gives the processor results on all nine cases.
 
+## Release builds against the candidate
+
+The clerk built the release executables from main after the merge (source equal to
+c3eb42e0: `git diff c3eb42e0 9f7f85be -- athenak/src` is empty). Their checksums differ
+from the candidate's (processor 222b8fa4... against b462068a..., 260888800 against
+260891072 bytes; card 2512c8d5... against 9d08dc13...), as a build in another directory
+may (paths in the debug information) [VERIFIED by `sha256sum`]. Prediction R and G of the
+journal (entry of 2026-11-21T07:47Z).
+
+| Check | Run | Result |
+|---|---|---|
+| `.work/build_cpu_v05/src/athena` against the candidate `athena_cpu`, `regress_v04.py`, twelve set-ups | core-20261121-075456-a505400 (figure core-20261121-080001-5da4067) | 75 of 75 items identical, classes a, b, other empty: PASS |
+| `.work/build_gpu_v05/src/athena` on the nine cases of `card_v05.list`, against the processor runs (`card_v05.py`) and against the candidate's card run (`card_pair.py`) | core-20261121-075439-58c2787, Slurm job 4775 | PENDING: queued behind jobs that hold both cards when this was written |
+
 ## Check of the card executable of core/cosmo-amr (job 4763 of the package)
 
 The package left one card job unjudged (T14b: its card executable of source 1548d49,
@@ -222,7 +236,9 @@ within 9.2e-12 (bound 1e-9), guard case status 3 with its file (stop at cycle 16
 against 18, not predicted). The prediction of the package's journal held. Figure
 `scratch/core/core-20261121-063923-5ed0a51/fig_t14_card.png` (looked at). Not judged:
 case Sf, and T10g, the scouting run of the same job (it ended with the guard at
-t = 12.504).
+t = 12.504). Both judged on 2026-11-21 by the lead (`JOURNAL-cosmo-amr.md`, entry of
+08:05): Sf PASS (run core-20261121-075446-4944747); T10g against its five predictions,
+three held, two failed as written (`cosmo_amr.md` section 7).
 
 ## Known defects
 
