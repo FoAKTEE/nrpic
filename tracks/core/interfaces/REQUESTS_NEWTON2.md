@@ -232,10 +232,13 @@ package, commit 67ca9ce1).
 Lines of shared source files touched by this package (for the merge into `core/nrpic`;
 relative to tag core-v0.5): `athenak/src/CMakeLists.txt` two lines after
 `particles/nrpic_newton.cpp`; `athenak/src/particles/particles.hpp` one block of 38
-lines after `NrpicNewtonReadRestart` (members `nw_fft*`, `nw_grp*`, seven methods);
+lines after `NrpicNewtonReadRestart` (members `nw_fft*`, `nw_grp*`, six methods);
 `athenak/src/particles/nrpic_newton.cpp`: two calls in `NrpicNewtonInit`, one in
 `NrpicNewtonInitialize`, the branch around `SolveSource` in `NrpicNewtonPotential`, one
-call in `NrpicNewtonFinishStep`, one at the end of `NrpicNewtonWriteHistory`. The merge
+call in `NrpicNewtonFinishStep`, one at the end of `NrpicNewtonWriteHistory`. Outside
+`athenak/`: `python/nrpic/newton.py` (`scheme_fields` takes the symbol),
+`docs/FORMATS.md` (one line for the group file), `problems/newton/` (two inputs, the
+generator options, the README). The merge
 of main (core-v0.4, core-v0.5) into this branch had two conflicts, both "each side
 added lines at the same place" (`CMakeLists.txt`, `particles.hpp`), resolved by keeping
 both; the branch now differs from tag core-v0.5 by this package only, so its merge into
