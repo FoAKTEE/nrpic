@@ -402,3 +402,67 @@ that of M/4 at the same N. Run (v) (M/4, N = 1e4) should have a noise floor of t
   Caveat written now: the N = 1e4 sample has its own sqrt(N) deviation from the model, which
   shifts the start of the radial mode; a difference that is already there by 50 M and does
   not grow is that, not relaxation.
+
+## 2026-11-21 14:01 UTC Entry 12: outcome of run (iii) (CC1 at M/8); run (vi) queued
+
+Run (iii) cc1_kninf_M8: run C-20261121-125459-f03c4ba (Slurm 4792, 13:18-13:59 UTC, exit 0,
+300 M, sacct elapsed 41:09 = 0.69 card-hours). Analysis: run C-20261121-140057-92742cf
+(`compare.py --tag cc_M8`, all four controls; `fig_cc_M8.png` looked at: top left the alpha_c
+excursions, top right the areal r50, bottom the H-norm2 and mean W; the note "thin: record ..."
+overlaps the legend's first line, fixed in the script for the next run).
+
+Numbers [VERIFIED, `compare_cc_M8.json` of run C-20261121-140057-92742cf]:
+
+| | CC1 M/4 | CC1 M/8 | CC2 M/4 | CC2 M/8 |
+|---|---|---|---|---|
+| largest 20 M mean of alpha_c - alpha_c(0), at | 0.0330 at 206 M | 0.0046 at 196 M | 0.0179 at 208 M | 0.0018 at 125 M |
+| alpha_c - alpha_c(0), +-5 M means at 100 / 200 / 250 / 300 M | 0.0163 / 0.0329 / 0.0283 / 0.0173 | 0.0026 / 0.0046 / 0.0022 / -0.0020 | 0.0108 / 0.0176 / 0.0113 / 0.0041 | 0.0012 / 0.0012 / -0.0012 / -0.0041 |
+| cosine fit A, P; sine with trend A, P | 0.0154, 399; 0.0168, 415 | 0.0020, 317; 0.0044, 499 | 0.0086, 355; 0.0099, 393 | 0.0019, 272; 0.0025, 425 |
+| areal r50 at 300 M / initial - 1; largest change | +4.4 %; 9.0 % | -0.9 %; 0.9 % | +1.1 %; 5.0 % | -1.5 %; 1.5 % |
+| mean W at 300 M minus initial | -0.0066 | +0.0011 | -0.0016 | +0.0022 |
+| H-norm2 at t = 0; mean 100-300 M | 0.0230; 8.5e-4 | 0.150; 7.9e-3 | 0.0235; 8.6e-4 | 0.149; 7.9e-3 |
+| lowest alpha_min on the grid | 0.662 | 0.659 | 0.677 | 0.671 |
+| ripple rms about the 40 M mean | 6.0e-4 | 6.8e-4 | 5.7e-4 | 6.2e-4 |
+
+Ratios M/8 over M/4: CC1 max of the 20 M mean 0.138, cosine A 0.128, sine-with-trend A 0.261,
+H-norm2 floor 9.2, H-norm2(0) 6.5; CC2 0.099, 0.221, 0.253, 9.3, 6.4. Residual correlations about
+the 40 M means: CC1 against CC2 on M/4 +0.57, on M/8 +0.25; CC1 on M/4 against M/8 +0.20.
+
+Against entry 9:
+- M8.1' PASS: R_max = 0.138 (CC1) <= 0.35, like CC2 (0.099). On both models the outward
+  excursion of the M/4 controls shrinks by a factor 7-10 at M/8: it is numerical, of second
+  order or faster in the cell size [VERIFIED for both models, one seed and one N].
+- M8.2' FAILED: alpha_c(300 M) - alpha_c(0) = -0.0020 for CC1, above the -0.0041 of CC2. CC1 on
+  M/8 rises a little longer (to 196 M against 125 M) and turns down later; by 300 M it has
+  contracted less than CC2 (areal r50 -0.9 % against -1.5 %). Its late decline (250 -> 300 M:
+  -0.0042) is as steep as CC2's (-0.0029), so the difference is the later turn, not the slope.
+- M8.2'' PASS: no collapse; alpha_min on the grid >= 0.659.
+- M8.3' PASS: late H-norm2 7.9e-3, 9.2 times M/4, the same as CC2 on M/8 (the two curves lie on
+  top of each other in the figure).
+- M8.4' PASS: 456 MeshBlocks at every record, np = 1e5, sum_m bit-identical, 0 unconverged
+  pushes, 2466.7 s for 300 M = 8.22 s per M.
+- M8.5' FAILED: the CC1-CC2 correlation of the ripple on M/8 is +0.25 (< 0.5), while on M/4 the
+  same measure gives +0.57. The constraint noise is the same realisation on M/8 (identical
+  H-norm2 curves), but the central lapse ripple on M/8 is not mostly shared. [JUDGEMENT] On the
+  finer cells the probe sees cell-scale noise that decorrelates between two models whose
+  particles sit at slightly different (scaled) positions; on M/4 a larger-scale shared part
+  dominates.
+
+Reading [JUDGEMENT]:
+1. The question of the package is answered for the outward excursion: it is the mesh. Both
+   models, M/4 -> M/8, lose 86-90 % of the largest excursion; the 300-400 M "periods" of D1 are
+   the response of the cluster's slow radial mode to a mesh-made push, not a property to read
+   the threshold from. Reading 2 of entry 2 and entry 4 (the code's onset above 0.334 on M/4)
+   stands for M/4 only.
+2. Neither model is stationary on M/8: after the small rise both contract slowly (alpha_c down,
+   r50 down, mean W up), CC2 from about 200 M, CC1 from about 250 M. A Richardson estimate that
+   treats M/4 and M/8 as asymptotic (arithmetic on the +-5 M means above, not a test) gives for
+   the continuum a contraction with p = 2, y8 - (y4 - y8)/3: CC1 -0.0020, -0.0048, -0.0065,
+   -0.0084 and CC2 -0.0020, -0.0043, -0.0054, -0.0068 at 100, 200, 250, 300 M; with p = 3 the
+   same sign from 200 M on. So the next question is whether this contraction is real (slow
+   evolution of the collisionless King models in this code), relaxation by the deposit noise
+   (nine times larger floor on M/8), or turns: runs (vi) (CC2 on M/8 to about 650 M) and (v)
+   (noise floor of M/8 on the M/4 mesh) separate these.
+
+Card-hours so far: (i) 0.69, (iii) 0.69 = 1.38 of 3.0. Run (vi) submitted 14:00 UTC as
+C-20261121-140023-b0f113e (Slurm 4804), pending behind six jobs of other owners.

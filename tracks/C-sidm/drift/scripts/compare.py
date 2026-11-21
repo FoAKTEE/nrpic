@@ -149,9 +149,8 @@ def main():
         axs[1, 1].plot(s["t"], s["meanW"] - s["meanW"][0], color=c, lw=1.0)
     axs[0, 0].axhline(0.0, **fs.MASK_LINE)
     axs[0, 0].set_ylabel(r"$\alpha_c(t)-\alpha_c(0)$")
-    axs[0, 0].legend(fontsize=6, loc="best", frameon=False)
-    axs[0, 0].text(0.02, 0.97, "thin: record; thick: 20 M mean; dashed: cosine fit", fontsize=6,
-                   transform=axs[0, 0].transAxes, va="top")
+    axs[0, 0].legend(fontsize=6, loc="best", frameon=False,
+                     title="thin: record; thick: 20 M mean; dashed: cosine fit", title_fontsize=6)
     axs[0, 1].axhline(0.0, **fs.MASK_LINE)
     axs[0, 1].set_ylabel(r"areal $r_{50}$ / initial $-\,1$")
     axs[1, 0].set_yscale("log")
