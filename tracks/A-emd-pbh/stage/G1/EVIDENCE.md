@@ -24,3 +24,27 @@ analysis runs A-emd-pbh-20261115-162133-208f933, -162237-a614467, -161253-b8c1dc
 -154356-527a6d1; the lead's own A-20261115-182021-6cb33de (time-offset bug) and
 A-20261115-182329-ad14d95 (unexpanded output path). Refuted predictions are listed in
 the helpers' journals and in `../REVIEW-wave2.md` section 2.
+
+## Close-out, wave 3 (g1close helper, 2026-11-20)
+
+| What | Runs | Where |
+|---|---|---|
+| Fresh verifier of G1 (C18): ledger of the note, criteria checks, newton/, runs_ball | A-20261119-142905-c813c01 | `VERIFIER.md`, `verifier/`, `figs/` |
+| Data-flow schematic (C11) | A-20261119-143347-37240f3 | `note/figures/schem_dataflow.png`, Fig. 7 of the note |
+| The verifier's findings checked at their sources (median, bang times, units, criteria tallies, Newtonian band) | A-20261120-222454-d16dbc6 | `../../g1close/JOURNAL.md` entry 2, `findings.json`, `fig_g1close_findings.png` |
+| Integrity of the wave-1 outputs behind the ledger (VERIFIER.md finding 7): sha256 of the 55 files of the seven run directories without `sha256sums.txt` (A-emd-pbh-20261115-120425-80492f8, -122117-aa1c84d, -130256-a7374a4, -130402-f5566fb, -130609-947c898, -161813-6c820fb, -163358-9b2d048); the eight directories with one verified, 0 mismatches; nothing written into the listed directories | A-20261120-222620-0304d9d | `../../g1close/JOURNAL.md` entry 3; listing `scratch/A-emd-pbh/A-20261120-222620-0304d9d/` |
+| Note v1 (figures, schematics, ledger, parameter table, claims check) | A-20261120-223316-92c27f5, A-20261121-030037-3f015fa (the committed copies) | `note/`, `../../g1close/JOURNAL.md` entries 5-7 |
+
+## Hand-written manifests of waves 1 and 2 (decision 0016 item 3)
+
+The package relies on these runs, whose manifests were written by hand before 2026-11-19
+(besides those named above and in `../G0/EVIDENCE.md`); their failures of the manifest check
+are waived by that decision. Listed in full because a range such as "-153409/-153415" is not
+expanded by `nrpic-stage verify`.
+
+- Note v0: A-20261115-161947-09324e1.
+- Lead's reruns of wave 1 (failed, on record): A-emd-pbh-20261115-125932-574c747, A-emd-pbh-20261115-125932-779f753.
+- Newtonian mode (T3): A-emd-pbh-20261115-153409-dc27b98, A-emd-pbh-20261115-153415-dc27b98, A-emd-pbh-20261115-153424-dc27b98, A-emd-pbh-20261115-161309-9d3703a, A-emd-pbh-20261115-161537-aa788d9, A-emd-pbh-20261115-162554-d32d331, A-emd-pbh-20261115-164220-dd9fec7, A-emd-pbh-20261115-164450-4528861.
+- Expanding ball, SR-1/SR-2 (analysis pipeline): A-emd-pbh-20261115-153719-91b03d1, A-emd-pbh-20261115-153843-7172b66, A-emd-pbh-20261115-153845-7172b66, A-emd-pbh-20261115-155056-ec1b816, A-emd-pbh-20261115-162359-d32d331, A-emd-pbh-20261115-163141-73eb185, A-emd-pbh-20261115-164353-96e301d, A-emd-pbh-20261115-164539-0b18e84, A-emd-pbh-20261115-164541-0b18e84, A-emd-pbh-20261115-164733-b2aaf0c.
+- Criteria (T2): A-emd-pbh-20261115-161813-6c820fb, A-emd-pbh-20261115-162524-d32d331, A-emd-pbh-20261115-163443-c0b21e5.
+- Periodic box (set-up tests and scouting runs named in note Sec. V): A-emd-pbh-20261115-153520-0576e01, A-emd-pbh-20261115-153527-0576e01, A-emd-pbh-20261115-154250-527a6d1, A-emd-pbh-20261115-154735-69e8f8b, A-emd-pbh-20261115-154740-69e8f8b, A-emd-pbh-20261115-155737-8422a4a, A-emd-pbh-20261115-155754-8422a4a, A-emd-pbh-20261115-155802-9a6596f, A-emd-pbh-20261115-160349-9d232d2, A-emd-pbh-20261115-160557-962be1a, A-emd-pbh-20261115-160718-e04c0cc, A-emd-pbh-20261115-161134-f3949f8, A-emd-pbh-20261115-161829-dba94f6, A-emd-pbh-20261115-170751-a2287be.
