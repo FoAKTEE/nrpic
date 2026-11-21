@@ -298,3 +298,15 @@ cpu_run_check, cpu_run_check2) cpu_run.sh prints "awk: fatal: cannot use gawk bu
 returned 0 in the G runs and the 2 is the footer's. In U0 (guard, status 3) the script left
 at `wait` under set -e, which is why that exit status was athena's. Reported to core in the
 draft message (item iii); none of our results depends on it.
+
+## 2026-11-21 22:30Z, entry 10: predictions for U8 and U9 (isolating the stiff relaxation of U0), written before they run
+
+U0 mixed the Gamma-driver and the relaxed lapse on the root mesh. Two cases without shift:
+- U8 (relaxed lapse, lapse_leak 20, zero shift, cfl 1.0, to t = 12): the lapse leaves its
+  relaxation track once lapse_leak x dt passes about 2.5-2.8 (dt ~ 0.13-0.14, t ~ 1.3-1.5)
+  and H jumps (H_max above ten times its 0.3-2 median) between t = 2 and 4; guard stop or
+  blow-up before t = 12.
+- U9 (as U8 with lapse_leak 5, so lapse_leak x dt <= 1.6): no jump to t = 12 (the background
+  lapse settles near exp(1.2 H) instead of exp(6 T H) with T = 0.05, so the early step is
+  smaller; that is the price).
+Refuted: U8 without a jump (then the shift, not the relaxation, failed in U0), U9 with one.

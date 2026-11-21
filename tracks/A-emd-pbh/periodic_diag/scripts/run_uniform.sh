@@ -7,6 +7,7 @@
 #   U2  zero shift (shift_Gamma = 0)       U3  lapse_leak = 0 (pure 1+log)
 #   U4  TSC deposit, no filter             U5  the S1 data (mu = 0.3, e = 0.2)
 #   U6  time/cfl_number = 0.65             U7  time/cfl_number = 0.8
+#   U8  zero shift (relaxed lapse, leak 20) U9  zero shift, lapse_leak = 5 (JOURNAL entry 10)
 # G cases: the lapse frozen (lapse_oplog 0, lapse_advect 0, lapse_leak 0), JOURNAL entry 2:
 #   G0  Gamma-driver, cfl 1.0              G1  time/cfl_number = 0.5
 #   G2  zero shift                         G3  the S1 data
@@ -35,6 +36,9 @@ for c in "$@"; do
     U5) args=("${s1[@]}") ;;
     U6) args=("${p0[@]}" time/cfl_number=0.65) ;;
     U7) args=("${p0[@]}" time/cfl_number=0.8) ;;
+    U8) args=("${p0[@]}" z4c/shift_Gamma=0.0 z4c/shift_eta=0.0 z4c/shift_advect=0.0) ;;
+    U9) args=("${p0[@]}" z4c/shift_Gamma=0.0 z4c/shift_eta=0.0 z4c/shift_advect=0.0
+              z4c/lapse_leak=5.0) ;;
     G0) args=("${p0[@]}" "${geo[@]}") ;;
     G1) args=("${p0[@]}" "${geo[@]}" time/cfl_number=0.5) ;;
     G2) args=("${p0[@]}" "${geo[@]}" z4c/shift_Gamma=0.0 z4c/shift_eta=0.0
