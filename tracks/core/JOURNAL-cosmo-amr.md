@@ -1319,3 +1319,38 @@ build after the change, PUB = the published executable of 3c44b74):
   at every cycle after the regrid (T10e a5: a factor 6.7 at cycle 53), and its largest
   value to t = 3.5 is below 0.05 (a5 0.169, a5c 0.039, u5 0.020). Refuted by a one-cycle
   jump: then the deposit has another discontinuity, or the jump another cause.
+
+## 2026-11-21 03:11  source changed (1548d49); outcome of T17b; chain of repeats started; prediction of T19
+
+Source: `athenak/src/particles/nrpic.cpp`, `NrpicDepositSources` (the helper
+`NrpicTentCdf` before it; the stencil of the linear cloud with `deposit_fine_shape`
+grows to 4^3 lattice cells; the leaf shares of the linear cloud by the integral form).
+Both builds done (`.work/build_cpu_b`, `.work/build_gpu_b`, a minute each).
+
+**T17b, run core-20261121-030910-0c046a7** (NEW2; `t17_summary.json`) [VERIFIED]: cic
+with fine shape: J = 1.0e-6 (predicted below 2e-6), shares equal the integral reference
+to 9.4e-16 at all twelve offsets, smallest share -0.0625: PASS. The other five cases
+print the same six numbers as with the published executable (J 5.0e-7, 7.5e-7, 5.0e-7,
+7.5e-7, 5.0e-7; departures 3.89e-16, 5.55e-16, 3.33e-16, 3.33e-16, 2.78e-16): PASS.
+
+Running: T10f (run core-20261121-030904-1548d49, one processor, about 40 minutes) and
+the chain T1b, T0c, T9b, T2b (four processors, one after the other; predictions in the
+entry of 03:06).
+
+**T19, a smooth density on the leaf cells** (`t19_smooth.py`, processors, no step): box
+[-3, 3)^3, root 24^3 and 48^3, static level 1 on [-1, 1]^3, clouds on the root level, no
+filter; one particle per root cell on a lattice displaced along x by (delta/k) sin(k q),
+k = pi, delta = 0.3 (density rho_0/(1 + 0.3 cos(k q)), 8 and 16 root cells per
+wavelength; the lattice spacing varies by 30 per cent, so particles pass cell centres at
+different places). Leaf cells with |x| < 0.75 on one x line; departure of E/rho_0 from
+the exact density at the leaf centre, rms and largest. Cases: uniform spreading, fine
+shape with NEW2 (integral form) and with PUB (first-order form), linear cloud; quadratic
+cloud with fine shape.
+Prediction: uniform spreading: first order, rms falls by 1.6 to 2.4 from 24 to 48
+(staircase, about delta k h/4 = 0.06 and 0.03 at the largest); NEW2 integral form:
+second order, rms falls by more than 3, and at 48 it is below a third of the uniform
+spreading; quadratic cloud: second order as well (factor above 3); PUB first-order form
+of the linear cloud: larger than NEW2 at both resolutions, largest departure at least
+twice that of NEW2 at 48 (leaf cells where a particle sits near a cell centre while its
+neighbours are not one cell away). Refuted for the new form if its rms does not fall
+faster than that of the uniform spreading, or if it is not below it at 48.
