@@ -280,3 +280,24 @@ watch_diff.json of kb-20261120-222055-dd59ec1. A development pass (scratch/kb/co
 showed blue legend patches in fig_link_verdicts and the legend over a box in
 fig_task_order; both fixed before the registered run. Also writes the parameter-index rows
 of `nco` (expected: 0).
+
+## F1 outcome (runs kb-20261121-233219-304e3e7 and kb-20261121-233234-7319264)
+
+Three figures, each looked at with Read. fig_link_verdicts: the counts per area match
+LINKS.tsv (pusher 7 verified; Z4c 1 verified, 3 claimed; refinement 2 verified, 2 claimed;
+diagnostics 1 refuted). fig_task_order: the local column shows NrpicSaveMetric alone before
+the stage loop, the tmunu writers DynGRMHD/ScalarField::SetTmunu in stagen,
+NrpicDeposit in after_timeintegrator; the upstream column has its particle tasks in
+before_timeintegrator and an empty after_timeintegrator. fig_watch_summary: 120 unchanged,
+3 moved, 1 new, 1 removed; src/z4c files 1, 4, 61; src/particles 0. In the first run the
+label "src/particles: 0 changed files" lay on the third bar; the second run moved it (the
+figures in `figures/` are from the second run). Parameter-index rows of nco: 0
+(nco_params.txt).
+
+## 2026-11-21 23:36 UTC, entry 2: package closed
+
+Deliverables in place: kb code modules with 12 tests (ad45d05f), kb/reports/code_modules.md
+(d437ceb9), the 25 verdicts in the curated TSV and the database (3759b31b, run
+kb-20261121-232940-3759b31), LINKS.tsv, scripts, figures, README, outbox message
+`tracks/kb/outbox/20261121T233243Z__to-core__paper-code-links-tests.md`. Watch: done in
+batch 1 (W1, W2), not repeated. Open items: README "Open items".
