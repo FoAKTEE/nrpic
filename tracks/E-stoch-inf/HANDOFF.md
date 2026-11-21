@@ -1,62 +1,74 @@
 # HANDOFF of E-stoch-inf
 
-State in three lines: Track E (stochastic inflation in NR, S11) passed G0 (signed 2026-11-20).
-Its G1 package is complete for the independent gate review: all 18 items judged PASS by the
-lead of batch 3 (A4' adopted by decision 0021; the note's G1 products exist); G1 is not passed
-until orch's review. G2 has begun: the USR case ran on the cards at 64^3-256^3 (package `usr`).
+State in three lines: Track E (stochastic inflation in NR, S11) passed G0 (2026-11-20) and G1
+(2026-11-21, with reservations; coord/GATES.md). G2 is in production: the USR criteria are fixed
+in `spec/scope/SCOPE.md` section 4c, and package `g2prod` loads the cards unattended.
 
 Run next: cd /data/haiyangw/nrpic/wt/E-stoch-inf && git merge --no-edit main && git status --short && harness/bin/nrpic-ctx inbox --show
 
-Packages still in progress (left alone by the lead of batch 3):
-- `window` (G2, window sensitivity L9): card job 4740 ran on 2026-11-20 (run
-  E-20261120-222424-0eb754b; the lead of batch 3 closed its manifest with `nrpic-run finish`,
-  721 files checksummed). Remains: `window/scripts/analyse_window.py` (committed) against the
-  predictions W1-W8 of `window/JOURNAL.md` entry 1, figures, README. Processors only.
-- `a4res` (check of core's resolution explanation for strict A4): a helper session of batch 3
-  worked on it in this worktree at the same time as the lead (commits c4061303, b23055be,
-  94dfa93e, aed608d2: predictions in `a4res/JOURNAL.md` entry 3, analysis script, README) and
-  submitted card job 4798 (run E-20261121-131000-b23055b, 24 SR runs at 64^3/128^3, pending at
-  13:30Z). Its own report says what remains; the lead of batch 3 did not review it. When the job
-  has run: `nrpic-run finish E-20261121-131000-b23055b`, then the analysis of `a4res/scripts/`.
+## Card runs in flight (package g2prod, release card build core-v0.6)
 
-Then, depending on answers (outbox of 2026-11-21 13:10Z):
-- orch schedules the G1 gate review (`outbox/*__to-orch__g1-package-complete.md`); the reviewer
-  reads `stage/G1/{STATUS,CHECKLIST,OPEN,VERIFIER}.md` and `stage/REVIEW-wave3.md` (B4: the
-  ledger cross-check, 13 rows track-only).
-- orch rules on U-A2' (U-A2 at 256^3 on the odd part of a mirrored pair) and U-A4' (halving on
-  floor-corrected parts) (`outbox/*__to-orch__usr-acceptance-after-data.md`); then write the
-  USR criteria into `spec/scope/SCOPE.md` and start `stage/G2/` (`nrpic-stage collect
-  E-stoch-inf G2`).
-- Card: P256 on the release card build `.work/build_gpu_v05/src/athena` with
-  `ladder/inputs/jobA.list` (0.5 card-hours) against E-20261115-172618-f948386 (risk R1, G1
-  reservation 1). USR runs on the release core-v0.5 (contains scalar-3).
-- core answers the lockstep request (`outbox/*__to-core__lockstep-record-substep.md`).
+Predictions per run: `g2prod/JOURNAL.md` entry 1 (written before the first submission).
+Submitted by the lead of batch 5 (2026-11-21 12:29 PST), batch jobs:
+- T, timing (40 steps at 256^3, 320^3, 384^3): run E-20261121-202929-43dcc9c, Slurm 4827.
+  Read: `grep -h 'cpu time\|zone-cycles\|cycle=' scratch/E-stoch-inf/E-20261121-202929-43dcc9c/T*/athena.log`
+  (outputs in /data/haiyangw/nrpic/scratch/E-stoch-inf/<run_id>/<name>/). Judge prediction T.
+- P256v6, slow roll 256^3 (G1 reservation 2): run E-20261121-202935-31520bc, Slurm 4828.
+  Compare with E-20261115-172618-f948386 using `ladder/scripts/` (P256_judge as in ladder README).
+Then the sequencer submits, in this order, one chain each (labels of `g2prod/queue.txt`):
+U256ap, U256am, U320ap, U256bp, U256bm, U320am, U256hp, U256hm, U256nc. Output of a chain:
+/data/haiyangw/nrpic/scratch/E-stoch-inf/<run_id>/ (dumps usr.sf.000NN.dump, records
+usr.sf.hst, usr.sf.con.hst; chain state in chain/).
 
-Files to read first: `STATUS.md`; `stage/G1/STATUS.md`, `OPEN.md`; `stage/REVIEW-wave3.md`
-Part B; `usr/README.md` (Results, Requests) and `usr/JOURNAL.md` entries 9-15; `RISKS.md`
-(R1, R7-R9, R17, R19, R21, R22); `JOURNAL.md` (last entry).
+Sequencer (setsid, started 12:29 PST, pid in the file below; outlives sessions):
+- See:   cat /data/haiyangw/nrpic/scratch/E-stoch-inf/g2prod_seq/state.tsv  (label, run id, status, time)
+         tail -20 /data/haiyangw/nrpic/scratch/E-stoch-inf/g2prod_seq/seq.log
+         ps -o pid,etime,cmd -p "$(cat /data/haiyangw/nrpic/scratch/E-stoch-inf/g2prod_seq/pid)"
+         squeue -u $USER -o '%i %j %T %M' | grep ' E-'
+- A chain: scripts/submit_chain.sh --status /data/haiyangw/nrpic/scratch/E-stoch-inf/<run_id>
+- Stop the sequencer: touch /data/haiyangw/nrpic/scratch/E-stoch-inf/g2prod_seq/STOP (exits within
+  5 min; running chains go on), or kill <numeric pid from the pid file>. Stop a chain:
+  harness/bin/nrpic-run stop <run_id>.
+- Restart it (if it died; it skips labels already submitted or finished):
+  cd /data/haiyangw/nrpic/wt/E-stoch-inf && setsid nohup bash tracks/E-stoch-inf/g2prod/scripts/sequencer.sh > /data/haiyangw/nrpic/scratch/E-stoch-inf/g2prod_seq/nohup.out 2>&1 < /dev/null &
+- It closes finished runs itself (`nrpic-run finish`, which commits the manifest on this branch);
+  push those commits at the next session. It needs `tracks/E-stoch-inf/g2prod/` committed: never
+  leave uncommitted edits there. A submission refused by the allotment (10 card-hours toward
+  G2) is retried every 15 min; the last three labels need earlier runs closed or a larger
+  allotment (asked of orch, outbox of this session).
+- A chain that ends FAILED with "MAX_SEGMENTS reached" (preempted too often) resumes from its
+  newest restart: edit MAX_SEGMENTS in <rundir>/chain/config.sh, then
+  ATHENA_EXE=/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena JOB_NAME=<run_id> PROC_NAME=E-<label> MAX_SEGMENTS=<n> scripts/submit_chain.sh <rundir> tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput <athena args of the manifest's command>
+  and record it in g2prod/JOURNAL.md (it is a hand restart, outside nrpic-run).
+- Before U320ap starts (third label): read the timing T; if 320^3 does not fit or is slower than
+  4 s per step, touch STOP and rethink the queue.
 
-Decisions pending: G1 sign-off (orch, after an independent review); U-A2'/U-A4' (orch);
-whether "the USR case is reproduced" (owner, at the G2 package, after window and resolution).
+## Packages
+
+- `g2prod` (in progress): runs above; analysis (entry 2) when they have run: reuse
+  `usr/scripts/analyse_cards.py`, `floor_split.py`, `lockstep_shells.py` (U-A0..U-A3, odd/even
+  parts, floor) and `window/scripts/analyse_window.py` readers; judge SCOPE 4c and the predictions
+  of entry 1; figures for each criterion, looked at.
+- `window`, `a4res`: finished and reviewed in this session (`stage/REVIEW-wave3.md` Part C).
+- R0 restart check: run E-20261121-202941-da16544 (processors); outcome in JOURNAL (this session).
+
+Files to read first: `STATUS.md`; `spec/scope/SCOPE.md` 4c; `g2prod/JOURNAL.md`; `stage/G2/CHECKLIST.md`;
+`stage/REVIEW-wave3.md` Part C; `RISKS.md` (R1, R13, R17, R21-R24).
+
+Decisions pending: orch: allotment toward G2 (20 asked); whether a 384^3 pair is wanted (third
+rung of U-R). Owner, at the G2 package: "the USR case is reproduced" against SCOPE 4c.
 
 Traps:
-- `nrpic-stage verify` fails on `runs` while a card job of a package is "submitted" (now 4798 of
-  `a4res`) and on `clean` while a helper has uncommitted files; never commit or delete another
-  package's files to silence it.
-- Executables: release core-v0.5 (`.work/build_{gpu,cpu}_v05`) contains scalar-2 and scalar-3;
-  the G1 SR runs used `core_scalar-2` a58e95b, the USR card runs `core_scalar-3` 5cc2821
-  (scouting). No SR/USR run has used the threaded processor build `athena_cpu_omp` of
-  core-v0.5 yet (its READY tests the deposit): compare it with the serial build first. The guard `<z4c_guard>` is on by default in core-v0.5 (exit status 3).
-- Pair dumps of two runs only at equal recorded times (|dt| <= 1e-9) (the "385" came from this).
-- Cold 128^3-256^3 dumps: read sequentially (seek + fromfile), never through numpy's memmap; two
-  256^3 runs read together take about 50-70 s per dump when the disk is shared.
-- `<abs M/[M]>` of the record is not even in s late in USR (U256 and U256m differ at 7e-4 at
-  N_f); compare pairs on the dumps' odd and even parts, not on record ratios.
-- Large figure PDFs stay in run directories; commit PNGs. `note/main.pdf` (1.3 MB) is exempt
-  from the 1 MB guideline (decision 0021 item 3).
-- Commit path-limited (`git commit -- <paths>`); `nrpic-run finish` and `nrpic-ctx post/ack`
-  commit by themselves.
-- `$NRPIC_RUN_DIR` in a command: inside `bash -c '...'` (RULES.md). A local `nrpic-run submit`
-  blocks until the run ends: never wrap it in `timeout`.
+- `nrpic-stage verify` fails on `runs` while card jobs are submitted; never delete or commit
+  another package's files to silence it.
+- Pair dumps only at equal recorded times (|dt| <= 1e-9). Cold 256^3 dumps: read sequentially
+  (seek + fromfile), never through numpy's memmap; 320^3 dumps are 5.8 GB each.
+- `<abs M/[M]>` of the record is not even in s late in USR; compare pairs on dumps' odd/even parts.
+- The odd halving is 2 by construction of the floor (two amplitudes): only the even halving is a
+  test (SCOPE 4c, U-A4'(b)).
+- Large figure PDFs stay in run directories; commit PNGs. Commit path-limited; `nrpic-run
+  finish` and `nrpic-ctx post/ack` commit by themselves.
+- `$NRPIC_RUN_DIR` in a command: inside `bash -c '...'`. A local `nrpic-run submit` blocks unless
+  --background; never wrap it in `timeout`.
 - Never read the brief whole; line ranges: S11 445-465, track sheet 785-802, gates 674-686,
   verification suite 834-860, context protocol 957-1004, M11 544-547.

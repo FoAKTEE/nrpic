@@ -1,42 +1,45 @@
 # STATUS of E-stoch-inf
 
-gate:        G0 PASS (signed 2026-11-20, coord/GATES.md). G1: all 18 checklist items PASS in the
-             owner's judgement; package complete for the independent gate review (decision 0016
-             item 4); NOT passed until reviewed and signed. G2 in progress (USR on the cards).
-headline:    The slow-roll case of arXiv:2512.14649 passes A1-A3, A5-A7 and A4' (decision 0021) up
-             to 256^3, verified independently; the ultra-slow-roll case runs to N_f at 256^3 on one
-             card in 0.617 card-hours and follows linear theory per mode to 1.1e-4 (odd part), with
-             a second-order part 2.5e-4 of the first and a one-point skewness of +0.0015.
-last-result: - note (batch 2b): G1 products C8, C9, C13-C15: schematics, four G1 data figures with one
-               script each, main.pdf v1 (16 pages, checker clean), G1 ledger of 45 rows (run
-               E-20261121-080840-6112292).
-             - usr (batch 2b): group 1 64^3/128^3 (E-20261120-222621-ba66218): U-A0..U-A3 pass;
-               U256/U256m in P1's set-up (E-20261121-075255-8cf90e7, -085221-1f579fe): U-A0, U-A1,
-               U-A3, U-A5, one-point pass, U-A2 on the odd part 1.09e-4; single-run U-A2 and U-A4
-               FAILED as pre-registered; the lockstep record carries RK4 phase error k^5 dt^4/600.
-             - Lead batch 3: every analysis of note and usr rerun (E-20261121-130021-0140e4e): all
-               leaves and PNGs identical except 13 lockstep-reference leaves (at most 8.6e-4
-               relative, BLAS thread count; no verdict changes); own code on the raw dumps
-               (E-20261121-130236-e39e143) reproduces even/odd 2.533e-4, skewness, rms, max and the
-               group-1 halving factors; ledger cross-check: 27 of 40 track rows agree with
-               independent values, 13 track-only (stage/REVIEW-wave3.md B4).
-next:        1. Independent G1 gate review (orch; outbox g1-package-complete).
-             2. window: analyse job 4740 against W1-W8 (processors); P256 on the release card build
-                .work/build_gpu_v05 (0.5 card-hours) for risk R1.
-             3. After orch's ruling on U-A2'/U-A4': USR criteria into SCOPE, stage/G2 collect; USR runs
-                on release core-v0.5; a4res analysis when job 4798 has run.
-blockers:    G1: none of the owner's (gate review by orch). G2: ruling on U-A2'/U-A4' (orch); window
-             analysis and a4res job 4798 (pending in the shared queue).
-needs:       orch: g1-package-complete, usr-acceptance-after-data, schedule-window-r1-a4res (outbox
-             2026-11-21 13:10Z-13:4xZ); earlier a4-ruling-with-verifier (answered by decision 0021).
-             core: lockstep-record-substep (request, not blocking).
-offers:      - SR ladder 32^3-256^3, two seeds, with verdicts: ladder/ (track/E-stoch-inf).
-             - USR card runs 64^3-256^3 with mirrored and halved pairs, analysis and lockstep law: usr/.
-             - Working note v1 with G1 sections and ledger: note/main.pdf.
-             - Independent verifier tools (reader, Philox, MS, R^NR, odd/even split): g1verify/scripts/.
-             - Lead's check code: stage/review3/scripts/ (reruns, own-code checks).
-             - Reproduction spec with errata: spec/SPEC.md; MS references: spec/ref/.
-             - Stochastic delta-N solvers and reference statistics: langevin/ (to A-emd-pbh).
-             - Noise validator A0-A15: noise/ (to core, C-sidm).
-budget:      G1 1.96 of 10 card-hours used; G2 1.39 (usr) + 0.38 (window job 4740) used, a4res job
-             4798 pending (cap 0.5); this session 0 card-hours (processors only, at most 5 cores).
+gate:        G0 PASS (2026-11-20), G1 PASS with reservations (2026-11-21; coord/GATES.md). G2 in
+             production: criteria fixed in spec/scope/SCOPE.md 4c before any G2 production run
+             (decision 0023 item 1); stage/G2/CHECKLIST.md collected, items open.
+headline:    SR case of arXiv:2512.14649 reproduced to 1.2e-4 per mode at 256^3 (G1). USR case on
+             scouting builds: odd part per mode 1.09e-4 at 256^3, spectrum at N_f window-independent
+             within numerical error (<= 1.9e-4 to k_max/2). Release production ladder now queued.
+last-result: - Lead batch 5 (2026-11-21 12:19-13:2x PST): reviewed `window` and `a4res` from their
+               registered outputs (stage/REVIEW-wave3.md Part C; reruns E-20261121-203008-f104a3e,
+               E-20261121-203016-7209255); SCOPE 4c (floor f^2 = (4 o_{s/2}^2 - o_s^2)/3, clause on
+               the maxima, U-A2', U-A4', U-R, U-S, U-W); package g2prod with predictions (entry 1),
+               timing and P256 jobs, sequencer for nine USR chains; restart check R0
+               (E-20261121-202941-da16544).
+             - window (batch 4a): L9 scan analysed; W6 refuted (late USR constraint records depend on
+               sigma by up to x21.7). a4res (batch 3): strict A4 holds at >= 12.8 cells per shortest
+               wavelength, fails at 10.7 and 8; Q6 failed at one dump (cause not found).
+card plan:   (announced before submission, decision 0014; allotment toward G2 10 card-hours, used 1.77
+             at 12:23 PST) release card build core-v0.6, package g2prod:
+             | T timing 4827 | 0.15 | P256v6 4828 | 0.5 | U256 a+-, b+-, h+-1/2 | 6 x 0.65 |
+             | U320 a+, a- | 2 x 1.6 (estimate, measured by T) | U256nc control | 0.25 |
+             total about 8.0 card-hours; no single run above 8. The last three need either the
+             earlier runs closed at actual cost or the allotment raised (asked: 20).
+runs pending: E-20261121-202929-43dcc9c (Slurm 4827, timing), E-20261121-202935-31520bc (Slurm
+             4828, P256v6); queue of the sequencer (scratch/E-stoch-inf/g2prod_seq/state.tsv):
+             U256ap, U256am, U320ap, U256bp, U256bm, U320am, U256hp, U256hm, U256nc.
+next:        1. Read T (step time, memory at 320^3/384^3) before U320ap starts; judge P256v6 against
+                E-20261115-172618-f948386 (prediction P256v6).
+             2. When U256ap/am have run: U-A0..U-A3, U-A2' and the release-vs-scouting comparison;
+                then U-R, U-S, U-A4'(a) as the chains finish (g2prod entry 2, figures).
+             3. Stage G2: fill CHECKLIST C1-C20 (C4 "first full-GR kinetic run": NA for E before the
+                hand-over, to be confirmed by orch), working note G2 sections, a fresh verifier.
+blockers:    allotment for the last three g2prod runs (orch); the shared card queue.
+needs:       orch: allotment toward G2 raised to 20 card-hours (also for a 384^3 pair, third rung
+             of U-R); acknowledgement that SCOPE 4c answers decision 0023 item 1.
+             core: lockstep record sub-stepping (request 2026-11-21 13:10Z, not blocking).
+offers:      - SR ladder 32^3-256^3 with verdicts: ladder/. USR card runs and analysis: usr/.
+             - Window scan L9 and its sensitivity table: window/. Strict-A4 resolution law: a4res/.
+             - G2 criteria text: spec/scope/SCOPE.md 4c. Sequencer for unattended chains:
+               g2prod/scripts/sequencer.sh (reusable by other owners: edit WT, Q, labels).
+             - Stochastic delta-N reference statistics: langevin/ (to A-emd-pbh). Noise validator:
+               noise/ (to core, C-sidm). Working note v1: note/main.pdf.
+budget:      G1 2.15 used (closed). G2 1.77 used + g2prod about 8.0 planned (reservations 0.42 +
+             0.97 now). This session: 0 card-hours used so far (jobs queued); processors at most
+             5 cores (two reruns of 2, restart check of 1).
