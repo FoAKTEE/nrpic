@@ -374,7 +374,7 @@ is exceeded and it should be stopped with scripts/submit_chain.sh --stop.
 Not done: ES-F analysis (no data); secondary_infall's run beyond a/a_i = 16 (entry 2, cost);
 M/16 nests of ES-1GB and V-1GB (not in this package). Not pushed (helper).
 
-## Entry 10 (2026-11-21 12:36 PST, D-bh-dress lead, batch 5): ES-F outcome
+## Entry 10 (2026-11-21 12:33 PST, D-bh-dress lead, batch 5): ES-F outcome
 
 ES-F D-20261121-144631-aa7ce9b (Slurm 4806) reached tlim = 200 M in ONE segment of 48.7 min
 (08:14:19-09:02:59 PST, 6400 cycles; 0.81 card-hours); closed completed by `finish_g2.sh esf`,

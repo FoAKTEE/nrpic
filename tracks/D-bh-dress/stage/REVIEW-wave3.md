@@ -330,3 +330,45 @@ Confirmed (Y2, Y5):
    running because its chain was capped at one segment (MAX_SEGMENTS=1 from the 0.98 card-hour
    reservation): the run ends at t = 188 M and was closed at 16:40Z (status failed, 0.83 card-hours).
 3. WRITING_GUIDE.md exception 1 extended to data keys of registered outputs (note package request).
+
+## 11. Lead session of batch 5 (2026-11-21 12:19 PST on, Opus; decision 0025 items 3-5)
+
+No helper package finished since batch 4a; the G1 gate was signed with reservations
+(coord/GATES.md, 2026-11-21). This session reviewed only what the card plan needed.
+
+11.1 ES-F (flux_tools pre-registration, g2runs finish script) - CONFIRMED by the lead from the
+raw outputs: the run reached 200 M in one segment (0.81 card-hours); the lead re-read the
+finder file (M_AH 1.04155, 1.10735, 1.17514, 1.24278 at 50, 100, 150, 199.5 M; finite at 400
+samples), the accretion history (first excision 7.8 M, 57722 removals, none escaped, max
+m_inside1 0.0101 after 20 M) and looked at `esf_growth.png` and `esf_criteria.png`: the finder
+curve lies on the exact m(R0) at tau_H(R0) over tau = 0-265 M, the (iii) bin medians sit at
++0.2 per cent inside the +-1 per cent band, D3 margins are all above -3e-4, every removal is
+0.075-0.43 M of proper time after tau_H. Outcomes against flux_tools entry 7 in
+g2runs/JOURNAL.md entry 10: all predictions held except P3 (i), which fails at the single
+finder sample t = 0.5 M (initial finder dip, sigma 2.8e-5 there), and P3 (ii-tau), predicted
+to fail and holding. Not confirmed: a second resolution, faces beyond +-192 M (both in the
+long runs below).
+
+11.2 Smoke tests of the long-run inputs found a set-up defect before any card time: the ES-F
+table ends at 345 M with `exterior = zero`, so on a +-768 M mesh the slice's curvature would
+jump to zero at 345 M. Fixed by re-running the data maker with `--rbar_max 1340`
+(D-20261121-203042-82deeec; rows to 345 M and particles byte-identical); g2long JOURNAL entry 2.
+
+## 12. Lead's decisions of batch 5
+
+1. Long card runs toward G2, all plain 1+log (decision 0025 item 3), release core-v0.6, the
+   faces at +-768 M so that no face reaches the hole before ~540 M: V-1L (control) and ES-1L
+   (null test) to 500 M; ES-FL (growth and dress, the ES-F data) to 500 M; the M/16 pair
+   V-1L16, ES-1L16 to 300 M (mesh convergence of the floor and of the null test). Criteria N
+   (null test) and G (growth against flux) and every prediction: g2long/JOURNAL.md entry 1,
+   committed before any run. Caps 3.5 + 4.0 + 4.0 + 5.0 + 6.0 = 22.5 card-hours (estimate
+   ~14); G2 had 26.8 left.
+2. The ES-1B/V-1B pair at +-384 M planned in section 10 is replaced by ES-1L/V-1L at
+   +-768 M: it contains the same 0-200 M comparison (V-1L against V-1B is prediction V2) and
+   reaches 500 M without the faces.
+3. Queue: R1, R2 eligible; R3-R5 held and released by a sequencer process
+   (scratch/D-bh-dress/g2long_seq/) when fewer than two D jobs are active (0025 item 5).
+4. D-pre-3 reservation: Q16-256 (Q16 with nx 256), processors, six threads, prediction in
+   secondary_infall/JOURNAL.md (20:36Z).
+5. drift_controls stays open (its three untracked tools are left as found); note v2 waits for
+   the long runs.
