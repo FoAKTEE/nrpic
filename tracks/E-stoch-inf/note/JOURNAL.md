@@ -200,3 +200,26 @@ Predictions for the registered regeneration run (written before it):
 - **N10 (claims).** 104 claims, 7 differing: the five G0 differences of 2026-11-15 (c16-c19,
   c21) and g22, g23. Refuted by any other count.
 - **N7 restated.** Wall time below 10 minutes (each P256 figure reads a 447 MB array twice).
+
+## 08:20 UTC: outcome of run E-20261121-075717-1849987; one more run for a symbol
+
+- **N9 held.** Completed in 94 s on two cores; every input passed its checksum; all twelve
+  figures and schematics repeated with pixel rms 0 (`repeat.json`); every document number of
+  the rows C, V, L found on its line.
+- **N10 held.** 104 claims, 97 agree, 7 differ: c16-c19, c21 (as on 2026-11-15) and g22, g23
+  (the ladder README's A1 maxima).
+- **N7 held.** 94 s against the 10 minutes predicted.
+- Its outputs were copied into `figures/` and `tables/` (each file's sha256 is in the run's
+  `sha256sums.txt`), and the timeline, whose wording changed after the draft, was looked at
+  again.
+
+While writing the G1 sections a symbol collision appeared: the ladder calls the noise
+amplitude scale s, which the note already uses for the steepness of the window. The note
+calls the amplitude lambda; `fig_sr_constraints.py` (axis label of panel b) and
+`schem_dataflow.py` (one block) change accordingly, and four scripts pass `frameon=False`
+to `legend()` explicitly (the style already sets it, so the PNGs are unchanged by that).
+
+- **N11 (prediction for the second run).** The new run completes with N9 and N10 as before;
+  against run E-20261121-075717-1849987 only `fig_sr_constraints` and `schem_dataflow` change
+  (PNG bytes), every other PNG and every table is byte-identical. Refuted by any other
+  difference.

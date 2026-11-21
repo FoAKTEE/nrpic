@@ -530,6 +530,411 @@
    "computed": 1.4233138513367936,
    "agree": true,
    "what": "USR var/var_lin at sigma = 1"
+  },
+  {
+   "id": "g01",
+   "doc": "stage/G1/STATUS.md",
+   "line": 24,
+   "printed": "1.21e-4",
+   "computed": 0.00012077580305021462,
+   "agree": true,
+   "what": "A2, 256^3 paper set-up, max D_n for |n| <= 32"
+  },
+  {
+   "id": "g02",
+   "doc": "stage/G1/STATUS.md",
+   "line": 24,
+   "printed": "68532",
+   "computed": 68532.0,
+   "agree": true,
+   "what": "A2, modes with |n| <= 32 at 256^3"
+  },
+  {
+   "id": "g03",
+   "doc": "stage/G1/STATUS.md",
+   "line": 24,
+   "printed": "1.7e-6",
+   "computed": 1.7381396726113147e-06,
+   "agree": true,
+   "what": "A2, smallest rung maximum"
+  },
+  {
+   "id": "g04",
+   "doc": "stage/G1/STATUS.md",
+   "line": 24,
+   "printed": "9.9e-5",
+   "computed": 9.906399046168776e-05,
+   "agree": true,
+   "what": "A2, largest rung maximum (Q128)"
+  },
+  {
+   "id": "g05",
+   "doc": "stage/G1/STATUS.md",
+   "line": 25,
+   "printed": "1051",
+   "computed": 1051.0,
+   "agree": true,
+   "what": "A3, modes with N_f - N_k >= 6"
+  },
+  {
+   "id": "g06",
+   "doc": "stage/G1/STATUS.md",
+   "line": 25,
+   "printed": "4.6e-6",
+   "computed": 4.571728552837939e-06,
+   "agree": true,
+   "what": "A3 ratio, largest over the rungs"
+  },
+  {
+   "id": "g07",
+   "doc": "stage/G1/STATUS.md",
+   "line": 25,
+   "printed": "1.38e-4",
+   "computed": 0.00013789380965820202,
+   "agree": true,
+   "what": "A3 drift, largest at 256^3 (P256)"
+  },
+  {
+   "id": "g08",
+   "doc": "stage/G1/STATUS.md",
+   "line": 25,
+   "printed": "0.052",
+   "computed": 0.051981688383701534,
+   "agree": true,
+   "what": "drift of the deformed equation, mean over the A3 shells"
+  },
+  {
+   "id": "g09",
+   "doc": "stage/G1/STATUS.md",
+   "line": 28,
+   "printed": "2.0e-12",
+   "computed": 1.9994006450474444e-12,
+   "agree": true,
+   "what": "A1 phi, largest over every rung"
+  },
+  {
+   "id": "g10",
+   "doc": "stage/G1/STATUS.md",
+   "line": 28,
+   "printed": "8.6e-12",
+   "computed": 8.553158181712206e-12,
+   "agree": true,
+   "what": "A1 Pi, largest over every rung"
+  },
+  {
+   "id": "g11",
+   "doc": "stage/G1/STATUS.md",
+   "line": 28,
+   "printed": "3.6e-12",
+   "computed": 3.6286529336848616e-12,
+   "agree": true,
+   "what": "A1 K, largest over every rung"
+  },
+  {
+   "id": "g12",
+   "doc": "stage/G1/STATUS.md",
+   "line": 28,
+   "printed": "5.5e-6",
+   "computed": 5.5222961687917405e-06,
+   "agree": true,
+   "what": "A1 e-folds from <chi>, 32^3"
+  },
+  {
+   "id": "g13",
+   "doc": "stage/G1/STATUS.md",
+   "line": 27,
+   "printed": "745",
+   "computed": 744.775993713874,
+   "agree": true,
+   "what": "largest odd/even of H, 32^3, time-matched dumps"
+  },
+  {
+   "id": "g14",
+   "doc": "stage/G1/STATUS.md",
+   "line": 27,
+   "printed": "655",
+   "computed": 654.8098532688475,
+   "agree": true,
+   "what": "same, 64^3"
+  },
+  {
+   "id": "g15",
+   "doc": "stage/G1/STATUS.md",
+   "line": 27,
+   "printed": "869",
+   "computed": 868.8985962673038,
+   "agree": true,
+   "what": "same, 128^3"
+  },
+  {
+   "id": "g16",
+   "doc": "stage/G1/STATUS.md",
+   "line": 27,
+   "printed": "25",
+   "computed": 25.146024599343146,
+   "agree": true,
+   "what": "same, 256^3 (last time-matched dump)"
+  },
+  {
+   "id": "g17",
+   "doc": "stage/G1/STATUS.md",
+   "line": 27,
+   "printed": "4e4",
+   "computed": 40270.457780753975,
+   "agree": true,
+   "what": "negative control, record H ratio, smallest of the maxima"
+  },
+  {
+   "id": "g18",
+   "doc": "stage/G1/STATUS.md",
+   "line": 27,
+   "printed": "1.5e5",
+   "computed": 149323.25385133942,
+   "agree": true,
+   "what": "negative control, record H ratio, largest"
+  },
+  {
+   "id": "g19",
+   "doc": "stage/G1/STATUS.md",
+   "line": 26,
+   "printed": "2.2",
+   "computed": 2.152343263653478,
+   "agree": true,
+   "what": "even part, 64^3 against 128^3, percent"
+  },
+  {
+   "id": "g20",
+   "doc": "stage/G1/STATUS.md",
+   "line": 26,
+   "printed": "4.1",
+   "computed": 4.0999507520585965,
+   "agree": true,
+   "what": "order of the uniform residual in the time step (lowest)"
+  },
+  {
+   "id": "g21",
+   "doc": "stage/G1/STATUS.md",
+   "line": 35,
+   "printed": "0.503",
+   "computed": 0.5031,
+   "agree": true,
+   "what": "card-hours of the 256^3 realisation (manifest)"
+  },
+  {
+   "id": "g22",
+   "doc": "ladder/README.md",
+   "line": 15,
+   "printed": "1.1e-12",
+   "computed": 1.9994006450474444e-12,
+   "agree": false,
+   "what": "A1 phi, largest over every rung"
+  },
+  {
+   "id": "g23",
+   "doc": "ladder/README.md",
+   "line": 15,
+   "printed": "2.0e-12",
+   "computed": 3.6286529336848616e-12,
+   "agree": false,
+   "what": "A1 K, largest over every rung"
+  },
+  {
+   "id": "g24",
+   "doc": "ladder/README.md",
+   "line": 15,
+   "printed": "3.3e-7",
+   "computed": 3.319326307149595e-07,
+   "agree": true,
+   "what": "A1 e-folds from <chi>, 64^3"
+  },
+  {
+   "id": "g25",
+   "doc": "ladder/README.md",
+   "line": 15,
+   "printed": "2.0e-8",
+   "computed": 2.035601553984634e-08,
+   "agree": true,
+   "what": "same, 128^3"
+  },
+  {
+   "id": "g26",
+   "doc": "ladder/README.md",
+   "line": 16,
+   "printed": "8.8e-5",
+   "computed": 8.762264302906493e-05,
+   "agree": true,
+   "what": "A2, 32^3 rung"
+  },
+  {
+   "id": "g27",
+   "doc": "ladder/README.md",
+   "line": 16,
+   "printed": "9.7e-5",
+   "computed": 9.725719797496115e-05,
+   "agree": true,
+   "what": "A2, 64^3 paper set-up"
+  },
+  {
+   "id": "g28",
+   "doc": "ladder/README.md",
+   "line": 17,
+   "printed": "4.6e-6",
+   "computed": 4.571728552837939e-06,
+   "agree": true,
+   "what": "A3 ratio, largest over the rungs"
+  },
+  {
+   "id": "g29",
+   "doc": "ladder/README.md",
+   "line": 17,
+   "printed": "1.8e-6",
+   "computed": 1.7505138596606213e-06,
+   "agree": true,
+   "what": "A3 drift, code minus full equation"
+  },
+  {
+   "id": "g30",
+   "doc": "ladder/README.md",
+   "line": 18,
+   "printed": "1.9e-4",
+   "computed": 0.0001867830673627502,
+   "agree": true,
+   "what": "shell ratio against the reference with the same alpha, all rungs"
+  },
+  {
+   "id": "g31",
+   "doc": "ladder/README.md",
+   "line": 18,
+   "printed": "1.0104",
+   "computed": 1.0104084275065606,
+   "agree": true,
+   "what": "linear spectrum over the slow-roll formula, |n| <= 7, lowest"
+  },
+  {
+   "id": "g32",
+   "doc": "ladder/README.md",
+   "line": 18,
+   "printed": "1.0109",
+   "computed": 1.0108971684299222,
+   "agree": true,
+   "what": "same, highest"
+  },
+  {
+   "id": "g33",
+   "doc": "ladder/README.md",
+   "line": 21,
+   "printed": "4.2",
+   "computed": 4.2023907527711355,
+   "agree": true,
+   "what": "A5 order of the odd part of H, lowest"
+  },
+  {
+   "id": "g34",
+   "doc": "ladder/README.md",
+   "line": 21,
+   "printed": "5.8",
+   "computed": 5.817837838271915,
+   "agree": true,
+   "what": "A5 order of the odd part of H, highest"
+  },
+  {
+   "id": "g35",
+   "doc": "ladder/README.md",
+   "line": 21,
+   "printed": "5.6",
+   "computed": 5.552164301694965,
+   "agree": true,
+   "what": "A5 order of the odd part of M, lowest"
+  },
+  {
+   "id": "g36",
+   "doc": "ladder/README.md",
+   "line": 21,
+   "printed": "5.9",
+   "computed": 5.909147606350236,
+   "agree": true,
+   "what": "A5 order of the odd part of M, highest"
+  },
+  {
+   "id": "g37",
+   "doc": "ladder/README.md",
+   "line": 22,
+   "printed": "3.93",
+   "computed": 3.9331970662670317,
+   "agree": true,
+   "what": "A6 orders, lowest"
+  },
+  {
+   "id": "g38",
+   "doc": "ladder/README.md",
+   "line": 22,
+   "printed": "4.08",
+   "computed": 4.08078492168045,
+   "agree": true,
+   "what": "A6 orders, highest"
+  },
+  {
+   "id": "g39",
+   "doc": "ladder/README.md",
+   "line": 27,
+   "printed": "0.20",
+   "computed": 0.20435165080906345,
+   "agree": true,
+   "what": "negative control <|M|/[M]>, smallest maximum"
+  },
+  {
+   "id": "g40",
+   "doc": "ladder/README.md",
+   "line": 27,
+   "printed": "0.22",
+   "computed": 0.2156282035082107,
+   "agree": true,
+   "what": "negative control <|M|/[M]>, largest maximum"
+  },
+  {
+   "id": "g41",
+   "doc": "ladder/README.md",
+   "line": 28,
+   "printed": "1.13",
+   "computed": 1.1304945504087194,
+   "agree": true,
+   "what": "seconds per step at 256^3, lowest"
+  },
+  {
+   "id": "g42",
+   "doc": "ladder/README.md",
+   "line": 28,
+   "printed": "1.30",
+   "computed": 1.2998008658008657,
+   "agree": true,
+   "what": "seconds per step at 256^3, highest"
+  },
+  {
+   "id": "g43",
+   "doc": "ladder/README.md",
+   "line": 180,
+   "printed": "1.51",
+   "computed": 1.5088484785059946,
+   "agree": true,
+   "what": "first dump with odd > even, 32^3"
+  },
+  {
+   "id": "g44",
+   "doc": "ladder/README.md",
+   "line": 180,
+   "printed": "3.44",
+   "computed": 3.435447253518106,
+   "agree": true,
+   "what": "first dump with odd > even, 256^3"
+  },
+  {
+   "id": "g45",
+   "doc": "ladder/README.md",
+   "line": 20,
+   "printed": "25",
+   "computed": 25.146024599343146,
+   "agree": true,
+   "what": "time-matched odd/even, 256^3"
   }
  ],
  "inputs": [
@@ -570,6 +975,12 @@
    "checksum": "manifest"
   },
   {
+   "run": "E-20261115-171445-36152c4",
+   "file": "test_sfa.json",
+   "sha256": "e28f23942f066156308cb7852d097ea976bce13d3d26bd304108fc5d8038b845",
+   "checksum": "manifest"
+  },
+  {
    "run": "E-20261115-172423-5234cce",
    "file": "val_cf/validation.json",
    "sha256": "99bbdb992d370e3fe6ddf9c4fe8149344da8f83e38ec77772ad668eef4a3feff",
@@ -579,6 +990,132 @@
    "run": "E-20261115-172423-5234cce",
    "file": "val_std/validation.json",
    "sha256": "09c344d70c2baa86ee653cad9dd329e92d15adc8f8323fc9cb06f8475e332358",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-20261115-172935-ddfade0",
+   "file": "selftest.json",
+   "sha256": "63e95ebb295872010da91fc3c6430cf2725cf3e5940ad166ed1378a446f4befb",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-20261115-174214-74becdd",
+   "file": "extraction_check.json",
+   "sha256": "2573f5c6fe663d1dacec72ec5624816b0e9a8119b21165761dba4213571d88ca",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-20261115-180533-24a7781",
+   "file": "val_card_frozen/validation.json",
+   "sha256": "2dbb2b8b2baf1cc6fba688477ea5641d0f09effd409dc0c29db21e59fa8cf5e7",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-20261115-184748-9b010fa",
+   "file": "val_a14/validation.json",
+   "sha256": "15ed3fcd8eca1e6b3bcf994ee46146d4e16658578f858558ae0c5d2e0617af78",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-20261115-194633-9e04ed8",
+   "file": "res/L128p.npz",
+   "sha256": "8d4936d4d5d8fe50c7b7fb356725e6b47b8107072add82546e3a430ee410fdcc",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-20261115-194633-9e04ed8",
+   "file": "res/L32p.npz",
+   "sha256": "6a3a436d7462b01e0485fff1c5bf2e5389f53f00f298d3c275e318820fc6a7f5",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-20261115-194633-9e04ed8",
+   "file": "res/L64p.npz",
+   "sha256": "aaa87332fd763fa5a86f656164e4cc37c5928eacb91a37c3ebd729e156953b20",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-20261115-194633-9e04ed8",
+   "file": "res/P256_judge.json",
+   "sha256": "0a2d49c7a5e2317169235eaceb7f0b2942602bbed446a074a924106a89000d68",
+   "checksum": "manifest (committed copy ladder/results/final/P256_judge.json)"
+  },
+  {
+   "run": "E-20261115-194633-9e04ed8",
+   "file": "res/pair_L128p_L128m.json",
+   "sha256": "db11951acd26b4ab27011e3c1c9cb69ac9843af2515304bf761452afa06de605",
+   "checksum": "manifest (committed copy ladder/results/final/pair_L128p_L128m.json)"
+  },
+  {
+   "run": "E-20261115-194633-9e04ed8",
+   "file": "res/pair_L256p_L256m.json",
+   "sha256": "0d6c13cb404bc153f59c17acf69fc5e89be03b8862ca790f8e190232ab88a8ce",
+   "checksum": "manifest (committed copy ladder/results/final/pair_L256p_L256m.json)"
+  },
+  {
+   "run": "E-20261115-194633-9e04ed8",
+   "file": "res/pair_L32p_L32m.json",
+   "sha256": "49d29e8e1681b9b9fe3b47f861fa387b7419b06a4c4c94fe4749b440b6d286c1",
+   "checksum": "manifest (committed copy ladder/results/final/pair_L32p_L32m.json)"
+  },
+  {
+   "run": "E-20261115-194633-9e04ed8",
+   "file": "res/pair_L64p_L64m.json",
+   "sha256": "e33f559edbe18dcaeec4e461b599806de7e711c9624fe4337c091042510b93f1",
+   "checksum": "manifest (committed copy ladder/results/final/pair_L64p_L64m.json)"
+  },
+  {
+   "run": "E-20261115-194633-9e04ed8",
+   "file": "res/pair_P256_P256m.json",
+   "sha256": "6e19710d0228a87776a6c331c1b9ed57c6e897b859290c39454ff6043d5dd9e3",
+   "checksum": "manifest (committed copy ladder/results/final/pair_P256_P256m.json)"
+  },
+  {
+   "run": "E-20261115-194633-9e04ed8",
+   "file": "res/pair_Q128p_Q128m.json",
+   "sha256": "17157c17f52ca90fdf1b80d3ec5204db134ab33f300f1fc8929ef844d0cc9736",
+   "checksum": "manifest (committed copy ladder/results/final/pair_Q128p_Q128m.json)"
+  },
+  {
+   "run": "E-20261115-194633-9e04ed8",
+   "file": "res/pair_Q64p_Q64m.json",
+   "sha256": "85b5c70f410291aa0257be48333dd4165546dcc68663710f107eb604fd95e06b",
+   "checksum": "manifest (committed copy ladder/results/final/pair_Q64p_Q64m.json)"
+  },
+  {
+   "run": "E-20261115-194633-9e04ed8",
+   "file": "summary.json",
+   "sha256": "a5f46d0b803520352abdc1ea3bc77c027b6c7cfd9bad5c589bbbed4796e5c7c4",
+   "checksum": "manifest (committed copy ladder/results/final/summary.json)"
+  },
+  {
+   "run": "E-20261119-141654-c2a10d1",
+   "file": "val_card_a12/validation.json",
+   "sha256": "3de78d25bc1a85b087047aaee9231fa1da718202ad38ca292c3c88b4b58b2eda",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-20261119-141654-c2a10d1",
+   "file": "val_proc_a12/validation.json",
+   "sha256": "a9f5e26a8c11ac82b1487b9da735a3af93316ebc39581b0be5b3407a807bc8e9",
+   "checksum": "manifest"
+  },
+  {
+   "run": "E-20261119-142713-32c883a",
+   "file": "floor.json",
+   "sha256": "6900a7082279396c715837b29184edd21639611058f57b93b1fa0882ff5808b4",
+   "checksum": "manifest (committed copy ladder/results/floor/floor.json)"
+  },
+  {
+   "run": "E-20261119-145230-ff0dff2",
+   "file": "a6.json",
+   "sha256": "d8298859483862da7ba6132302972a8625b9d606196b58dc58095f1e531f6540",
+   "checksum": "manifest (committed copy ladder/results/a6/a6.json)"
+  },
+  {
+   "run": "E-20261119-145230-ff0dff2",
+   "file": "a6_modes.npz",
+   "sha256": "a2cf7df5bc142d995265ba1dc1384e366d1acf161ecf38dd4d3856485773f21f",
    "checksum": "manifest"
   },
   {

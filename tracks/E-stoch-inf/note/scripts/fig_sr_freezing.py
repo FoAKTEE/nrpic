@@ -111,7 +111,7 @@ def main():
     a.set_ylim(0.78, 1.04)
     a.set_xlabel(r"$N-N_k$")
     a.set_ylabel(r"$|\mathcal{R}_n|^2\,/\,|\mathcal{R}_n|^2_{N_k+4}$")
-    a.legend(fontsize=7, loc="lower left", handlelength=1.8)
+    a.legend(frameon=False, fontsize=7, loc="lower left", handlelength=1.8)
     a.text(0.95, 0.90, "(a)", transform=a.transAxes, ha="right", fontsize=9)
     # (b) ratio per mode
     k = np.sqrt(n2)

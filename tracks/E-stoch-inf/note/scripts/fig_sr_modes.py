@@ -97,7 +97,7 @@ def main():
     b.set_xlim(-0.2, 8.4)
     b.set_xlabel(r"$N-N_*$")
     b.set_ylabel(r"largest $D_n$ inside the window")
-    b.legend(fontsize=6.5, loc="lower right", ncol=1, handlelength=1.6)
+    b.legend(frameon=False, fontsize=6.5, loc="lower right", ncol=1, handlelength=1.6)
     b.text(0.04, 0.05, "(b)", transform=b.transAxes, fontsize=9)
     cz.save(fig, os.path.join(out, "fig_sr_modes"))
     bad = []

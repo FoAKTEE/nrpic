@@ -76,7 +76,7 @@ def main():
             size=6.4, color=pf.ROSE)
     # 3. analysis
     panel(ax, 15.0, 8.8, "Analysis", "registered runs of the track")
-    box(ax, 15.4, R1, 3.9, "odd and even parts\n" r"of $\mathcal{H}$, $\mathcal{M}$ ($s=\pm1$, $\pm\frac{1}{2}$)", TRACK)
+    box(ax, 15.4, R1, 3.9, "odd and even parts\n" r"of $\mathcal{H}$, $\mathcal{M}$ ($\lambda=\pm1$, $\pm\frac{1}{2}$)", TRACK)
     box(ax, 15.4, R2, 3.9, "A4, A5: halving,\norder, floor", TRACK)
     box(ax, 15.4, R3, 3.9, "negative control:\n" r"$\Pi$ kick flipped", TRACK)
     box(ax, 15.4, R4, 3.9, "A1 from the record;\nA6: three time steps", TRACK)

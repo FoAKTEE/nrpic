@@ -1,15 +1,17 @@
 """Figure: the Hamiltonian constraint of the slow-roll reproduction split into the parts odd
-and even in the noise amplitude s (criterion A4 and the proposals A4', A5').
+and even in the noise amplitude (criterion A4 and the reworded A4' adopted by decision 0021).
 
-A mirrored pair of runs (s = +1 and s = -1, same Gaussian numbers) gives
-H_odd = (H(+) - H(-))/2, first order in s, and H_even = (H(+) + H(-))/2, second order;
+The amplitude scale of the noise (the code's noise_mode_scale, the ladder's s) is called lambda
+in the note, because s is the steepness of the window there (NOTATION.md).
+A mirrored pair of runs (lambda = +1 and -1, same Gaussian numbers) gives
+H_odd = (H(+) - H(-))/2, first order in lambda, and H_even = (H(+) + H(-))/2, second order;
 their rms over the box divided by the box mean of the term magnitude [H].
 (a) odd (solid) and even (dashed) parts in the paper's set-up k_max = N/4 for N = 32, 64,
     128, 256 cells per side; ticks at ln(N/8) e-folds after the start, where the first
     shell with fewer than eight cells per wavelength enters the window; dotted: the floor
     model of the odd part, F(N, t) = odd_256(t) (N/256)^q, fitted on the convergence
     ladder (k_max = 8 dk) between 128^3 and 256^3.
-(b) factor by which each part falls when s is halved (pairs s = +-1 and s = +-1/2): 2 for a
+(b) factor by which each part falls when lambda is halved (pairs +-1 and +-1/2): 2 for a
     first-order part, 4 for a second-order part, 1 for the amplitude-independent floor.
 
 Inputs: the committed ladder/results/final/pair_{L32p_L32m, Q64p_Q64m, Q128p_Q128m,
@@ -69,7 +71,7 @@ def main():
     a.set_xlim(-0.15, 4.5)
     a.set_xlabel(r"$N-N_*$")
     a.set_ylabel(r"rms of the part of $\mathcal{H}$ / $\langle[\mathcal{H}]\rangle$")
-    a.legend(fontsize=7, loc="upper left", ncol=2, handlelength=1.8, columnspacing=1.0)
+    a.legend(frameon=False, fontsize=7, loc="upper left", ncol=2, handlelength=1.8, columnspacing=1.0)
     a.text(0.97, 0.05, "(a)", transform=a.transAxes, ha="right", fontsize=9)
     hv = fl["halving"]
     for n in (32, 64, 128):
@@ -85,7 +87,7 @@ def main():
     b.set_ylim(0.0, 5.0)
     b.set_xlim(-0.15, 4.5)
     b.set_xlabel(r"$N-N_*$")
-    b.set_ylabel(r"factor between $s=1$ and $s=1/2$")
+    b.set_ylabel(r"factor between $\lambda=1$ and $\lambda=1/2$")
     b.text(0.04, 0.05, "(b)", transform=b.transAxes, fontsize=9)
     cz.save(fig, os.path.join(out, "fig_sr_constraints"))
     # prediction N4: first dump with odd > even near ln(N/8); same as the floor analysis

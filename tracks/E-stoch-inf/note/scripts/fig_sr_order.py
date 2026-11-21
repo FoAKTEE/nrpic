@@ -65,7 +65,7 @@ def main():
     a.set_xlim(0.2, 4.6)
     a.set_xlabel(r"$N-N_*$")
     a.set_ylabel("largest relative difference")
-    a.legend(fontsize=7, loc="lower right", handlelength=2.0)
+    a.legend(frameon=False, fontsize=7, loc="lower right", handlelength=2.0)
     a.text(0.4, 3e-3, r"$\theta=0.25$ vs $0.125$", fontsize=7, color=PAIRS["T25-T12"][0])
     a.text(0.4, 1.2e-3, r"$\theta=0.125$ vs $0.0625$", fontsize=7, color=PAIRS["T12-T06"][0])
     a.text(0.05, 0.05, "(a)", transform=a.transAxes, fontsize=9)
@@ -78,7 +78,7 @@ def main():
     b.set_xlim(0.2, 4.6)
     b.set_xlabel(r"$N-N_*$")
     b.set_ylabel("order in the time step")
-    b.legend(fontsize=7, loc="upper right", ncol=2, handlelength=1.8, columnspacing=0.8)
+    b.legend(frameon=False, fontsize=7, loc="upper right", ncol=2, handlelength=1.8, columnspacing=0.8)
     b.text(0.05, 0.05, "(b)", transform=b.transAxes, fontsize=9)
     k = np.sqrt(zm["n2"])
     for t in ("T25", "T12", "T06"):
@@ -94,7 +94,7 @@ def main():
     c.set_ylim(1e-8, 1e-1)
     c.set_xlabel(r"$k/k_{\sigma*}$")
     c.set_ylabel(r"$D_n$ at the last dump")
-    c.legend(fontsize=7, loc="upper left", handlelength=1.0, markerscale=2.0)
+    c.legend(frameon=False, fontsize=7, loc="upper left", handlelength=1.0, markerscale=2.0)
     c.text(0.95, 0.05, "(c)", transform=c.transAxes, ha="right", fontsize=9)
     cz.save(fig, os.path.join(out, "fig_sr_order"))
     lo = min(min(v["orders"]) for k_, v in s["A6"].items() if k_ in ("R_all", "R_top", "R_low",
