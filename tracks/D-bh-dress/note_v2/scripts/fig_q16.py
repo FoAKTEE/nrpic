@@ -52,6 +52,9 @@ def parse_late(path):
                             dress_over_mta=float(f[4]), mta_over_a=float(f[5]),
                             lam_min=float(vs[0]), nbins=int(vs[1]),
                             max_dev=float(vs[2]), rms_dev=float(vs[3]))
+            if vs[1] != "0":
+                out[cur].update(fit_slope=float(vs[4]), fit_slope_ss=float(vs[5].strip("()")),
+                                mean_local_slope=float(vs[6]), mean_local_slope_ss=float(vs[7].strip("()")))
             m = re.search(r"hybrid_cc: ([+-][0-9.]+) ([+-][0-9.]+)", ln)
             out[cur]["hybrid_rel"] = [float(m.group(1)), float(m.group(2))]
             m = re.search(r"kernel_cc: ([+-][0-9.]+) ([+-][0-9.]+)", ln)

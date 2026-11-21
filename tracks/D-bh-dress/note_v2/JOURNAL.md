@@ -59,3 +59,43 @@ late/early-half ratios within 2 sigma_rel of 1 in every range; the outer two ran
 
 Cost: seed 1 took 1278 s on 12 single-core processes (4000 particles each); seed 2 with
 8000 per process on 6 cores, about 45 min. No card-hour.
+
+## N2 (2026-11-21T21:33Z): note v2 build, predictions
+
+Text changes made (from stage/G1/GATE_REVIEW.md sections 5-6 and the task): the sentences of
+v1's "Plan and open items" (old main.tex lines 198-200: run to a larger scale factor "belongs
+to the next version", D-pre-3 criterion "open, ruling requested", late drift "open") are
+replaced; the infall section says that the criterion was changed after the first runs by a
+ruling (decision 0021 item 2) and that the power law itself is not tested and why (errata row
+1.7); Q16 is in the text, in a new figure (fig_q16) and in ledger part 7; the matched vacuum
+control with the faces at +-384 M (V-1B) is named as the floor of the null test (floor
+subsection, first-run subsection, ledger part 8); the relaxed-lapse finding (decisions 0022
+item 3, 0025 item 3) has its own subsection and ledger rows (V-1GB, ES-1G, ES-1GB); ES-F is a new
+subsection with fig_esf and ledger part 9; the timeline header and the architecture chain are
+at the post-G1 state. Scripts developed into scratch/D-bh-dress/tmp/note_v2_dev* (not
+registered; development only, nothing from there is committed or cited).
+
+Checks of my own figure scripts against the packages' registered analyses, before the
+registered run (development output, recorded here so the run can refute them):
+- fig_esf.py recomputes from the raw ES-F outputs (finder summary, removed record, energies by
+  tag, V-1 finder summary) D1 raw 9.879e-3 and control-subtracted 1.469e-3, F_rem 0.24137 and
+  the (iii) overall median 2.198e-3: equal to esf_criteria.json / esf_analysis.json to all
+  printed digits. New number of mine: the largest |control-subtracted closure| after 20 M is
+  3.9e-3 (the end value 1.5e-3 is one sample of a band of about 1e-3 around 2e-3).
+- fig_q16.py: largest |run/hybrid_cc - 1| over all snapshots with 3 <= a/a_i <= 12 is 0.43 per
+  cent (M_ta) and 0.91 per cent (dress); the infall README's 0.2-0.6 and 0.5 per cent are at
+  the tabulated epochs 4, 8, 12 only. The note quotes "within half a per cent" (M_ta) and
+  "within one per cent" (dress), which hold for every snapshot.
+
+Predictions for the registered build (run_all with the 14 scripts; then latexmk; then the
+checker with --compile and the forbid list of WRITING_GUIDE.md):
+- B1: run_all reports every script clean; the regenerated fig_esf_numbers.json and
+  fig_q16_numbers.json equal the development ones (same inputs, same code).
+- B2: ledger.py writes ten ledger parts (1-6 of v1 unchanged in content, 7 Q16, 8 vacuum
+  controls and relaxed lapse, 9 ES-F, 10 Kerr seeds) and the claims check of v1 (76
+  statements, 66 agree) unchanged, because no v1 input changed.
+- B3: the checker reports 0 undefined references, 0 undefined citations, 0 overfull boxes;
+  forbidden-name hits only in the ledger appendix and scripts (exception 1 of the guide).
+- B4: 22-24 pages.
+Refuted if any script fails, a v1 ledger value changes, or the checker finds a defect I then
+have to fix (I will record what and fix it).
