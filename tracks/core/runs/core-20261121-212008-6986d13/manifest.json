@@ -1,0 +1,184 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-212008-6986d13",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "verifier_g2 V1: Kerr geodesic invariants, dt order, pericentre recomputed from raw trajectories of core-20261115-065452-3629622 with own metrics and reference integration",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/verify/verifier_g2/scripts/v1_kerr.py",
+    "/data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "6986d131efe616953564cb28c370f1a25a156d21",
+    "branch": "core/nrpic",
+    "dirty": false,
+    "package": [
+      "tracks/core/verify/verifier_g2"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "9d43b229377786cc62ef7bb666b765abfdab30bc",
+    "worktree": "wt/core"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/bchol_ks_dt0.005/geo.traj.bin",
+      "role": "input",
+      "sha256": "d532e790ac402a9a44c2d1ed6dad0bbf6b214a1f45bc4529f8cdc7ac6760f160",
+      "bytes": 2944128,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/bchol_ks_dt0.01/geo.traj.bin",
+      "role": "input",
+      "sha256": "ea6a2aa5fa2f38fb5043037a0ba415321110da0fa093bef82f55465a84ddbc9d",
+      "bytes": 1472128,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/bchol_ks_dt0.02/geo.traj.bin",
+      "role": "input",
+      "sha256": "0349ae5c4afcc9c26aea686e6bf96fa57254ce4ce379b97a14740721a728af05",
+      "bytes": 736064,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/bchol_lat_dt0.01/geo.traj.bin",
+      "role": "input",
+      "sha256": "4d79e0e8c0428ad479da74ac24d008039a4815baef14c908069a0cd37b12d8e8",
+      "bytes": 1472128,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/bsym_ks_dt0.005/geo.traj.bin",
+      "role": "input",
+      "sha256": "0bae07a5ba2839a5c0e84a4ea8a313feff54d90acb468d6afd4a60f39a04fd63",
+      "bytes": 2944128,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/bsym_ks_dt0.01/geo.traj.bin",
+      "role": "input",
+      "sha256": "bdd91e75f3de5b578797948b8e021cc6718aecd273c9280349292ec63f6c48a0",
+      "bytes": 1472128,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/bsym_ks_dt0.02/geo.traj.bin",
+      "role": "input",
+      "sha256": "95071377f4b82b117780bc19e62dfd2e9ba5e37806d423cdb897517e213710cb",
+      "bytes": 736064,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/mid_ks_dt0.005/geo.traj.bin",
+      "role": "input",
+      "sha256": "db2dd11873068a584046fd384169c2deafb2c014c5aee09f080d838bcdd2464b",
+      "bytes": 2944128,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/mid_ks_dt0.01/geo.traj.bin",
+      "role": "input",
+      "sha256": "cebdf748191c183f560ff576e2616be328a0330fd8602c28aef72bad1cb66e57",
+      "bytes": 1472128,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/mid_ks_dt0.02/geo.traj.bin",
+      "role": "input",
+      "sha256": "7a22d4a16a320d44eb6d4d1ffd30a88fd9412e00b79ea5a1d80d91193f139578",
+      "bytes": 736064,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-065452-3629622/mid_lat_dt0.01/geo.traj.bin",
+      "role": "input",
+      "sha256": "e2e82514c00674b3efc370fd167d57fe5b8b4d5550f84d02a02fb4f06ae90db0",
+      "bytes": 1472128,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/verify/verifier_g2/scripts/v1_kerr.py",
+      "role": "argv",
+      "sha256": "abcbd4c9085f485a1128f4ff7fb91f8ac4cb8d5d48d3611c4fe54b9b853c3e33",
+      "bytes": 9436,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-212008-6986d13",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T21:20:09Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 8.1719,
+    "gpu_hours_reserved": 11.9002,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1480,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
