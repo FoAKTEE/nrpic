@@ -1197,3 +1197,101 @@ runs; job 4810 not finished). The 11th of the first pass, core-20261119-143517-e
 (gauge test E2, job 4641, both cases rc 0, never closed), is closed now with
 `nrpic-run finish`. `nrpic-stage report`: verdict FAIL, eight items FAIL (C1, C2, C6,
 C7, C12, C14, C15, C16); decision requested: keep core at G2 in progress.
+
+## 2026-11-21T20:26Z  session core-lead-7 (batch 5: cards first; no source change)
+
+State at start: main merged (decision 0025). Job 4810 (run core-20261121-154654-d3ec487,
+release card build on the fifteen cases) COMPLETED at 17:21Z in 48 s, fifteen cases rc 0;
+closed with `nrpic-run finish` and judged below against prediction G6 (entry of 15:46Z).
+
+### Outcome G6 (release card build `.work/build_gpu_v06/src/athena`), 20:21Z
+
+- (i) HELD. `card_v06.py` CARD PASS (status, newton, faces, solver held; Newtonian
+  histories within 1.6e-11 of processors, c_cd1 1.9e-10; solver outer iterations 22, 34,
+  20 as on processors), run core-20261121-202028-a32d12c; `card_v05.py` CARD PASS (K1 to
+  K6 held; deposit sums 2.3e-13 at worst, identity 9.9e-16, dumps 3.1e-14), run
+  core-20261121-202041-0b6d418. Not bounded, as for job 4800: g_smr1 `gauss.cstat.hst`
+  column 11 (Hr_max) 2.8e-3 against processors.
+- (ii) PARTLY REFUTED. Against the candidate's card run (job 4800), run
+  core-20261121-202057-a5b2ed6: the vacuum cases f_full (5 of 5 files), s3g (6 of 6) and
+  usr (6 of 6) byte-identical: held. Every module history (`*.nrpic.hst`) within 2.2e-15
+  and every `z4c.user.hst` equal or within 1.7e-29 absolute: held. The bound 1e-12 on
+  every history column is refuted in the constraint-statistics files only: `cstat.hst`
+  column 11 (Hr_max) of g_smr1 1.9e-3 and of cluster 7.6e-10, column 12 (Hr_mean) of
+  p5_mov_n64 1.4e-11, column 15 (Mr_max) of trk 2.0e-2 and of peak 2.1e-10; H_max
+  (column 9) is not among them. These columns are ratios of a residual to the sum of the
+  magnitudes of its terms, taken where both are at rounding level, so they carry the
+  card's non-repeatable atomic deposit at order one [JUDGEMENT; the same class as
+  g_smr1 column 11 in job 4800 and trk column 15 of core-v0.5]. My prediction did not
+  exclude them; it should have. Verdict on the release card build: PASS on the release
+  criteria (both CARD PASS), with that bound of G6 (ii) refuted as written. Figures
+  `fig_card_v06.png`, `fig_card_v05.png`, `fig_card_pair.png` looked at (the pair figure
+  shows the five cstat bars, 1e-11 to 2e-2, and the module bars near 1e-14).
+
+### Ladder row 4 on the M/8 mesh: rule, measured quantity, predictions (20:26Z, before any run)
+
+Why again: on M/4 the mesh pushes clusters outward and stabilises them (Track C's drift
+package, `git show track/C-sidm:tracks/C-sidm/drift/README.md`, requests 1-3), so core's
+M/4 bisection (`verify/LADDER.md` row 4, wave 2) did not test the threshold. Why not a
+growth rate: Track C's G1 gate review (`git show
+track/C-sidm:tracks/C-sidm/stage/G1/GATE_REVIEW.md`, C2) found growth rates on cluster runs
+window-dependent (ln|d| concave) and binds "no constant growth rate" at G2; the measured
+quantity here is therefore the collapse time, or the contraction against a control.
+
+Set-up (all six runs the same except y_c and the kick): wave-2 protocol (10^4 stratified
+particles, seed 1, equilibrium table, `--no-consistent-table`), deck
+`tracks/core/verify/row4/st_m8.athinput`: the release input `problems/st/st_cluster_amr.athinput`
+on a STATIC mesh with the level-6 nest (M/4) inside |x|_inf < 6 M and a level-7 region
+(M/8) inside |x|_inf < 3.9 M (Track C's M/8 region), nothing finer; finder every 32 cycles
+(every 1 M as before); to 300 M; release card executable
+`/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena`; chains with restarts every 20 M.
+- Member: one-percent uniform inward kick (`--vpert 0.01`). Control: the same model, same
+  seed and particle positions, no kick (`--vpert 0`), same mesh, run as long. The control
+  carries what the mesh and the particle noise do by themselves; the kick is the only
+  difference [JUDGEMENT: for these collisionless runs "collisionless control" is read as
+  "the run without the perturbation"].
+- First level of the bisection: ends y_c = 0.605 (collapsed at 191 M on the earlier
+  finer AMR mesh, `runs/st/yc0605_v5`) and 0.755 (0.756 unperturbed stayed 800 M); middle
+  0.680 (turning point of E_b/M_0 at y_c* = 0.6796, run core-20261115-152805-47d8f25).
+
+Measured quantities (script to be written for the analysis, reading `st.nrpic.hst` column
+13, the central lapse at the origin probe, and `st.horizon_summary_0.txt`):
+- t_c: the first time an apparent horizon is found or the central lapse falls below 0.3.
+- D = mean of alpha_c over 200-300 M of the member minus the same mean of its control
+  (when neither collapses by 300 M). Also kept: the mean of each run against its own
+  equilibrium alpha_c, and the coordinate r50 of the particles from the snapshots.
+
+Class of a member (fixed now):
+- COLLAPSE: t_c <= 300 M. CONTRACTS: no collapse and D < -0.02. EXPANDS: no collapse and
+  D > +0.02. STAYS: |D| <= 0.01. UNDECIDED: 0.01 < |D| <= 0.02.
+- If the control collapses and the member does not, the model counts as unstable
+  (the noise alone takes it away) and the member as UNDECIDED in D.
+Side of a model: UNSTABLE if the member or the control collapses, or the member
+CONTRACTS or EXPANDS; STABLE if the member STAYS and its control does not collapse.
+Bracket: y_lo = the largest UNSTABLE y_c, y_hi = the smallest STABLE y_c; valid only if
+y_lo < y_hi and no UNDECIDED member lies between them. Next level: the midpoint of
+(y_lo, y_hi) with its control. An UNDECIDED middle is continued with its control to
+600 M (restarts are exact) before any next level. A non-monotone outcome (a STABLE model
+below an UNSTABLE one) gives no bracket and is recorded as such.
+
+Predictions:
+- P1. 0.605 member COLLAPSES with t_c between 120 and 300 M; its control does not
+  collapse before the member. Refuted by no collapse by 300 M (then M/8 still
+  stabilises at 10^4 particles, or the earlier collapse needed the AMR mesh).
+- P2. 0.755 member STAYS (|D| <= 0.01), no collapse in member or control, and the
+  control's own 200-300 M mean within 0.01 of its equilibrium alpha_c (Track C's M/8
+  controls drifted 0.002-0.004 by 300 M). Refuted by a collapse, |D| > 0.01 or a control
+  drift beyond 0.01.
+- P3. 0.680 member does not collapse by 300 M and is STAYS or UNDECIDED (a growth time
+  near the turning point exceeds 300 M). Refuted by a collapse (threshold above y_c*)
+  or CONTRACTS/EXPANDS beyond 0.02.
+- P4. Cost: 6.4 to 8.3 s of card time per M (Track C's M/8 deck with 10^5 particles:
+  8.2-8.3 s per M), 0.55-0.7 card-hours per run to 300 M, 3.3-4.2 for the six runs;
+  each fits one 50-minute segment. Refuted by more than 10 s per M.
+
+Queue: six chains registered with `nrpic-run submit --launcher chain --gpu-hours 2.0`
+(at most two segments each; 12 card-hours asked at most, about 4 expected); two eligible,
+the other four held at once and released one at a time by
+`tracks/core/verify/row4/sequencer.sh` (setsid nohup, log
+`scratch/core/tmp/lead_b5/sequencer.log`). Order: 0.605 member, 0.755 member, 0.680
+member, 0.605 control, 0.755 control, 0.680 control.
