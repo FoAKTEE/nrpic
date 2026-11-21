@@ -322,3 +322,22 @@ P-V7c CONFIRMED: 8 MeshBlocks vs one: all 22 variables bit-identical at t = 0, 0
 restart from cycle 12: bit-identical at t = 1.03; mode files byte-identical; records differ
 by box-sum rounding only (<= 1.7e-14 relative, except the e-fold column at t = 0, whose value
 is itself rounding).
+
+## Entry 7 (2026-11-20 19:35 PST, 03:35Z on 11-21): figures, verdicts, comparison; package closed
+
+Figures: registered run E-20261121-032413-0672bf9 (make_figs.sh), every PNG looked at with
+the Read tool (V1-V7; dev versions in g1verify_tmp/figdev looked at first, fixes: V3 deformed
+curve shown only once W ~ 1, V5 tick labels and spectrum panel, V7 left out the processor's
+shortened last dump). nrpic-run verify PASS on every run of this package and on the small
+producing runs used (proc32, proc64, a6proc, U2/U4 processors, U4 card); the big card runs
+(jobs A, B, C, the U card batch) were checked file by file through the sha256 of every dump
+read (pass 1, pass 2, constraint pass, V7).
+
+VERIFIER.md verdicts committed (db88f63) before the track's numbers were read; then the
+comparison (c43e050): agreement to three digits on A1, A2, A3 drifts, A5 orders, odd/even
+parts, cost; nine disagreements above 10 percent, none changing a verdict; the largest is the
+track's P256 odd/even maximum 385 in `ladder/results/final/` and `stage/G1/STATUS.md`, which
+comes from pairing dumps 0.0038 apart in time (the track's own final2 gives 25, as I do).
+No G1 ledger was committed under note/tables, so that recomputation was not available.
+Not done: nothing of V1-V7; open points are listed in VERIFIER.md (weak points) and README
+(Requests).
