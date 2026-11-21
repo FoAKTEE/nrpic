@@ -332,3 +332,12 @@ fewer coordinate cells (radius 1.40 -> 0.88 M in vacuum, -> 0.78 M with dust, wh
 falls faster). The late mass growth comes when it is resolved by 6-7 cells of M/8. Under
 plain 1+log the opposite happens (chi near 1, outward shift 0.4, radius 2.2 M). Not
 tested: the same with an M/16 nest, or with a larger shift damping.
+
+## Entry 8 (07:00 PST, before the analysis): slice mass of V-1GB
+
+Prediction S1: the late growth of V-1GB is in the slice as for ES-1G/ES-1GB: slicemass.py on
+V-1GB's restart dumps gives M_H at 200 M within 3e-4 of the finder's (1.00245 at 199.5 M),
+with m(R) at 200 M falling outward from the hole (m at R ~ 2 M above m at R ~ 20 M by more
+than 5e-4), and the exterior (PG of mass M beyond the bubble) within 1e-3 of the bubble's
+mass out to R ~ 200 M. Refuted if the slice horizon mass stays below 1.0015 at 200 M (then
+the finder, not the slice, grows) or if m(R) is flat within 1e-4 on R = 2-20 M.
