@@ -113,14 +113,16 @@ def main():
         floor_used=floor,
         pass_=bool(fac and 3.9 <= min(fac) and max(fac) <= 4.1 and
                    max(r["H_first"] / r["H_even1"] for r in later) < 1e-2))
-    mrows = [r for r in rows if "M_first_K" in r]
+    # from the first step on (t = 0 holds no kick; run E-20261121-034609-f573ddc failed on it)
+    mrows = [r for r in rows if "M_first_K" in r and r["cycle"] >= 1]
     if mrows:
         r1 = mrows[0]
         refv = ref["continuum"]["rms_M_over_mean_magnitude"] if ref else None
         early = [r for r in mrows if r["cycle"] <= 8]
         tt = np.array([r["time"] for r in early])
         mk = np.array([r["M_first_K"] for r in early])
-        slope = float(np.polyfit(np.log(tt), np.log(mk), 1)[0]) if len(early) >= 3 else None
+        ok = (tt > 0) & (mk > 0)
+        slope = float(np.polyfit(np.log(tt[ok]), np.log(mk[ok]), 1)[0]) if ok.sum() >= 3 else None
         res["PL2"] = dict(
             first_dump=dict(cycle=r1["cycle"], time=r1["time"], M_first_K=r1["M_first_K"],
                             M_first_C=r1["M_first_C"], C_minus_K=r1["M_first_C_minus_K"],
