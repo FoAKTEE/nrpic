@@ -1085,3 +1085,34 @@ the restart files; corrected in the script, numbers unchanged by `cmp`).
 - T11c (card twins on the merged card build) is in card job core-20261121-080215-df3af65
   (Slurm 4777, submitted 08:02Z, 25 minutes asked; behind three jobs of other owners,
   estimated start 10:54Z).
+
+### Correction to the T11b entry above (08:12Z)
+
+Its sentence "T10 had compared restart files of the same builds as identical because
+both ran in the same process environment" names a cause that no run of mine tested.
+What is established: in T10 and in T11a restart files of two builds compared equal; in
+T11b seven restart files differ in exactly the 36 header bytes that the release
+regression lists as never set (`regress_v04.py`, class a). Why the content of those
+bytes differs between these runs and not between those is not established.
+
+### T12 prediction (written before the run): the examples of READY with the published processor executable
+
+The merged executables are copied to `scratch/core/exe/core_newton-2/` (`athena_cpu`
+sha256 107fd235...3dbab9, `athena_gpu` 7b2cceed...879ac6; the pre-merge pair under
+`premerge/`). `ready_examples.py` starts the three example lines of the READY file with
+`athena_cpu`, 20 cycles each:
+- `periodic_fft.athinput` with the plane wave N = 32, spectral and seven_point: exit
+  status 0, 21 records in `newton.newton.hst` and in `newton.newton.g1.hst`; the records
+  of `newton.newton.hst` of the spectral example equal, as text, the first 21 of the
+  case fftsp of T11b (the same input but for the group, which does not act on the
+  state). Refuted by one differing record.
+- `embedded_ellipsoid.athinput` with the particle file of the README line: exit status
+  0, the group holds 7208 particles of mass 0.75 (the patch of T4b), 21 records.
+- `isolated_smr.athinput` with the ball of T6c in (lattice 0.03125, inside the refined
+  MeshBlocks, step 0.002): exit status 0, and columns 5 to 18 of the history (K, W,
+  the Layzer-Irvine column, momentum, angular momentum, centre of mass) equal those of
+  the card run fine_in_smr (pre-merge card build, job 4736) within 1e-9 of the largest
+  value of each column over the first 21 records: the first processor twin of a card
+  run of the multigrid solver on a refined mesh. I expect about 1e-13 (the deposit sums
+  in a different order on a card). Refuted, as a fault of one of the two paths on a
+  refined mesh, above 1e-6.
