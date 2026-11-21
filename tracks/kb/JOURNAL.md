@@ -672,3 +672,37 @@ snapshot a782f1e with SQL, the verifier's raw search outputs and three sources, 
    no snapshot id; search hits have no snapshot field. Refuted if an id is printed.
 8. The manifests of kb-20261115-154858-b0d8c8f and kb-20261115-164121-5aca10c carry a status
    other than failed while their log or exit code says 1.
+
+### Outcome L1 (run kb-20261121-125746-a03875b, 12:57Z; check.json, figure fig_lead_check_vg2.png)
+
+All eight parts held [VERIFIED, scratch/kb/kb-20261121-125746-a03875b/check.json]:
+1. paper hits and rank-1 counts from the raw lists equal the verifier's in all six set-mode
+   pairs (held-out 21/22/21, rank 1 14/14/14; golden 27/28/28, rank 1 20/17/19);
+2. ok 684, review 23, pdf 3; 20 TeX papers without bibliography (11 ok); 10 with citation rows
+   but no entry; 25 without abstract chunk; 24 of 64 repositories without code chunks;
+3. the scan's database columns equal my SQL for 710 of 710 papers (no difference at all);
+4. definition re-evaluated: S 709, E 701, B 696, A' 710; 688 lenient, 679 after gaps, 670 with
+   the letters failed (strict 658 taken from its tally, not recomputed by me);
+5. 0710.5073: 28 `\bibitem`, one `references` environment; 1201.4794: 46 `\reference`;
+   gr-qc/0304002: the `\def\bi{\bibitem}` and 39 uses;
+6. 8fb37106 at 22:24:05Z is an ancestor of the search run's commit, run started 22:25:46Z;
+7. `kb show --abstract` and `kb cites --out` print no snapshot id; hits have no snapshot field;
+8. both wave-1 manifests: status "finished", exit_code 1.
+Figures read: mine (bars equal; legend of panel (a) overlaps the last bars, cosmetic), the
+verifier's fig_ranks.png (misses as counted) and fig_parse.png (database equation counts mostly
+above the verifier's display counts; seven E failures below the half line).
+
+- did: reviewed verify_g2 from its artefacts (stage/REVIEW-wave3.md); committed stranded B1
+  ledger rows; corrected two manifests to failed; named the tool-choice reasons in kb/README.md;
+  KB-G0 C5 and KB-G2 C8 PASS with VERIFIER.md, C3 and C6 evidence rewritten with the verifier's
+  readings; OPEN.md of both rewritten with the defects and who removes them; nrpic-stage
+  collect, verify, report for both; outbox: kb-g0-g2-gate-review, kb-cut-packages-schedule (orch),
+  replies "queued" to A, B, C; 7 inbox messages acknowledged.
+- found: nothing wrong in the verifier's numbers; it was right that C6b is unmet on the strict
+  reading; C1b reasons exist (kb/JOURNAL.md L24-36, 205, 231); the parameter index is stale
+  (main has core-v0.4 and core-v0.5; index at 5deee18).
+- changed my mind about: C6 of KB-G2: PASS on the brief's wording (the note records the id), but
+  the tool must carry the id; written down both ways for the reviewer.
+- failed predictions: none this session (L1 held).
+- open: the four cut packages (HANDOFF table); C6b code fix after ingest3; parameter index at
+  main; raw source.bin modes.
