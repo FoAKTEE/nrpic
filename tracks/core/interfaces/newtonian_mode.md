@@ -409,22 +409,29 @@ positions within 1.5e-4 of the radius.
 
 ## 6. Not done, limits, open points
 
-**Refined meshes: a trial only.** On a mesh with one static level (point mass, run
-core-20261115-121732-dc623d1) the solver converges, the force inside the fine region
-equals that of the uniform fine mesh (all digits of the table of the journal), the
-coarse region lies between the two uniform meshes, and within two coarse cells of the
-level boundary the force error is one per cent rms and up to nine per cent on single
-tracers. Not done: any run in which particles cross a level boundary; conservation on a
-refined mesh; the level options of the deposit in this mode; adaptive refinement (the
-re-initialisation after a mesh change is written, `NrpicNewtonInitialize`, and has never
-run). [TO VERIFY] before any use on refined meshes.
+**Refined meshes: the solve is verified on one static level; open points remain.**
+First pass (point mass, run core-20261115-121732-dc623d1): the solver converges, the
+force inside the fine region equals that of the uniform fine mesh, the coarse region
+lies between the two uniform meshes, and within two coarse cells of the level boundary
+the force error is one per cent rms and up to nine per cent on single tracers. Second
+pass (7.6): with all matter on the fine level a run equals the run on the uniform fine
+mesh; a ball that crosses the level boundary keeps its momentum to 5e-5 M v and its
+energy to 4e-4 over 0.7 free-fall times, about five times the errors of the uniform
+coarse mesh, and these errors grow steadily while mass lies on both sides of the
+boundary (whether from the solve at the interface or from the deposit there is
+[TO VERIFY]). Not done: more than one level; a refined periodic mesh; the level options
+of the deposit in this mode; adaptive refinement (the re-initialisation after a mesh
+change is written, `NrpicNewtonInitialize`, and has never run); the Fourier solver
+(uniform meshes only, by construction).
 
 **Cards.** Verified on one A100 for the isolated collapse on a uniform mesh only. Not
 run on a card: the periodic and expanding case, restart, refined meshes (the octets of
 the multigrid solver run on the host). Card time used by this work package: 0.19
 card-hours (Slurm jobs 4382 and 4405).
 
-**MPI.** Single rank, the restriction of the particle module (`nrpic.cpp` 60-64).
+**MPI.** One rank. The particle module runs on several ranks since release core-v0.5
+(`interfaces/mpi.md`), but `pusher = newton` stops there with a message
+(`nrpic_mpi.cpp`), and so do the options of section 7.
 
 **Scale factor.** Power law only. No table, no cosmological constant, and no check that
 the mean density of the particles matches the scale factor.
@@ -449,7 +456,13 @@ is not conserved exactly (2.5e-5 in the test of 5.5); the energy K + W of the hi
 not an invariant of the scheme and jumps where structure falls below a cell (7.4); the
 force is of first order in dx
 in a cell that holds a density jump; with one particle per cell the discreteness error
-of a cold lattice falls only at order 1.5.
+of a cold lattice falls only at order 1.5; a cold lattice that is coarser than the cells
+it sits in (fewer than one particle per cell and direction, as on a refined level or on
+a mesh finer than the lattice) is pushed as a whole by the self-forces of its particles,
+which all sit at the same place of their cells: a momentum change of 2e-3 to 1e-2 M v in
+the first tenth of a free-fall time, against 1e-5 with one or more particles per cell
+and direction (7.6). Sample matter with at least one particle per cell and direction of
+the finest level it occupies.
 
 **Solver.** Seven-point Laplacian, second order (on a periodic uniform mesh the Fourier
 solver of section 7.1 removes this error). Convergence factor about four per V
@@ -634,6 +647,66 @@ cubic cloud with the spline gather lowers the self-force by 5.9. Momentum is not
 conserved by it. The fixed point mass `newton_pm_mass` is not deposited and has no
 self-force (7.10). The relativistic mode shares the deposit and gather kernels; whether
 a compact clump feels the same force there is [TO VERIFY] (not run in this package).
+
+### 7.6 Multigrid solver on a refined mesh: tests T6, T6b, T6c
+
+The moving, rotating cold ball of 5.5 (no exact solution: the conservation laws are the
+test) on the isolated 64^3 mesh, on the same mesh with one static level (refined
+MeshBlocks |x_i| < 1; `problems/newton/isolated_smr.athinput`) and on the uniform 128^3
+mesh, cloud-in-cell, Catmull-Rom, step 0.002, to t = 0.8 (0.7 free-fall times)
+[VERIFIED; journal sections T6, T6b, T6c]. Largest change over the run: momentum in
+units of M v with v = (G M/R)^(1/2), centre of mass off uniform motion in units of R,
+angular momentum and energy relative.
+
+| ball and its lattice | mesh | momentum | centre of mass | angular momentum | energy |
+|---|---|---|---|---|---|
+| inside the fine region, lattice 0.0625 (T6b) | uniform 64^3 (one particle per cell) | 8.6e-5 | 6.3e-5 | 1.3e-4 | 3.7e-4 |
+| | uniform 128^3 (one per eight cells) | 2.119e-3 | 1.531e-3 | 4.518e-3 | 3.350e-4 |
+| | 64^3 + one level | 2.118e-3 | 1.530e-3 | 4.518e-3 | 3.349e-4 |
+| inside the fine region, lattice 0.125 (T6c) | uniform 64^3 (one per eight cells) | 1.15e-2 | 8.4e-3 | 1.7e-2 | 1.2e-3 |
+| inside the fine region, lattice 0.03125 (T6c) | uniform 64^3 | 1.08e-5 | 5.9e-6 | 1.11e-5 | 9.7e-5 |
+| | uniform 128^3 (one per cell) | 9.6e-6 | 7.13e-6 | 1.557e-5 | 4.589e-5 |
+| | 64^3 + one level | 1.03e-5 | 7.19e-6 | 1.563e-5 | 4.589e-5 |
+| across the level boundary, lattice 0.0625 (T6) | uniform 64^3 | 2.5e-5 | 1.8e-5 | 4.3e-5 | 1.4e-4 |
+| | 64^3 + one level | 1.10e-3 | 8.4e-4 | 1.57e-3 | 2.9e-4 |
+| across the level boundary, lattice 0.03125 (T6c) | uniform 64^3 | 1.09e-5 | 4.9e-6 | 3.7e-6 | 8.0e-5 |
+| | 64^3 + one level | 5.06e-5 | 2.60e-5 | 9.6e-6 | 3.58e-4 |
+
+Runs: T6 cases core-20261119-160027-2c0c171, analysis core-20261119-162137-9fb3dbf;
+T6b core-20261119-165447-0b9cb1e, core-20261120-220647-94e6931; T6c lattice 0.125
+core-20261120-221737-74eed8b, core-20261120-222151-512227c; T6c lattice 0.03125 on a
+card, job core-20261120-221835-4870ae5, analyses core-20261121-075046-7bfe4b9 and
+core-20261121-075106-6968fd7. Figures `t6_smr.png`, `t6b_smr.png`, `t6c_coarse.png`,
+`t6c_in.png`, `t6c_x.png`.
+
+What the table says:
+- The solver converges on the refined mesh at every step, 18 V cycles per step to
+  rounding as on the uniform meshes (largest defect norm 4e-11).
+- With all matter on the fine level the refined mesh gives the run of the uniform fine
+  mesh: the four numbers agree to 3 parts in 10^4 (lattice 0.0625) and to 8 per cent in
+  the momentum, 1 per cent in the others (lattice 0.03125, where they are 200 times
+  smaller).
+- The kick of 1e-3 that the first test (T6) showed on the refined mesh is not an effect
+  of the refinement: the uniform 128^3 mesh shows the same, and so does the uniform 64^3
+  mesh with a lattice of two cells. It is the cold lattice with fewer than one particle
+  per cell and direction (section 6, properties of the scheme): every particle sits at
+  the same place of its cell and all feel the same self-force (7.5) until the motion has
+  scrambled the positions; the momentum jumps in the first 0.05 to 0.15 time units and
+  is constant afterwards. With one or more particles per fine cell and direction it is
+  gone (1e-5).
+- What the level boundary itself costs is the last pair of rows: with the ball sampled
+  at the fine cell size, 13304 of its 137376 particles change the level during the run,
+  and the errors are 4.6 (momentum), 5.3 (centre of mass), 2.6 (angular momentum) and 4.5
+  (energy) times those of the uniform coarse mesh. They grow steadily through the run
+  instead of jumping at its start, as a small force that acts while mass lies on both
+  sides of the boundary would make them; whether it comes from the solve at the
+  coarse-fine interface or from the deposit there was not separated [TO VERIFY].
+Predictions that failed here: "conservation on the refined mesh within ten times the
+uniform values" (T6: 44 times, because of the lattice), "momentum below 1e-4 when all
+mass is on the fine level" (T6b: the same kick on the uniform fine mesh), "each error
+within five times the uniform mesh" (T6c: 5.3 for the centre of mass).
+Not tested: more than one level, a periodic refined mesh, adaptive refinement, a seed
+(`newton_pm_mass`) on a refined mesh, the cubic cloud on a refined mesh.
 
 ### 7.7 Existing results unchanged: test T10
 
