@@ -20,5 +20,6 @@ a stated limit for the reviewer.
    the port without a date); T3-T5, T9, T11 not repeated with `coll_energy = particle`.
 4. Reservations carried to G2: the zero-cell-size conductivity at theta 0.003 may lie 1-3
    percent below the relativistic Chapman-Enskog value of V1a (itself checked by no second
-   agent); growth rates on runs are defined only with their fitting interval; the note's v1
-   ledger rows for card T7 at theta 0.1 and 1 and most growth-fit rows have no second check.
+   agent); growth rates on runs are defined only with their fitting interval; most growth-fit
+   rows of the note's v1 ledger have no second check (card T7 at theta 0.1 and 1 was recomputed
+   by the lead from the per-seed values, run C-20261121-075535-b35b8fb).

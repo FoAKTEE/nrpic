@@ -243,7 +243,8 @@ numerical; y0 = 0.26 collapses at Kn = 1; threshold and collapsed mass left open
 
 Not confirmed: I did not read all 16 pages myself (the package did; the checker's compile and
 the two figures I looked at are my evidence). The v1 ledger rows that no second agent has
-recomputed: card T7 at theta 0.1 and 1, the growth-fit rows other than the two above.
+recomputed: the growth-fit rows other than the two above (card T7 at theta 0.1 and 1 was
+recomputed in section 1, run C-20261121-075535-b35b8fb).
 
 Wrong: nothing in the note. The package's README item 5 (G0 locator) was half right: line 476
 of 2601.17117 does hold 580 t_0 and 3e-8 M; the 200 M_sun is at 481. Corrected by an

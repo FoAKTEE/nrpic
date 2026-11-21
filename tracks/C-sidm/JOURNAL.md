@@ -422,7 +422,7 @@ Predictions (own code in `stage/review_wave3/rv_batch4a.py`, written before it r
   Refuted by a minimum of the 40 M mean before the end followed by a rise of more than 0.002,
   or by a value outside the interval.
 
-## 2026-11-21T16:10Z  session C-sidm lead (wave 3, batch 4a)  outcomes L23-L27
+## 2026-11-21T15:55Z  session C-sidm lead (wave 3, batch 4a)  outcomes L23-L27
 
 - L23 HOLDS (run C-20261121-155049-ecf8893): T10 collisions 385554 (mb1, mb8, mb64), 385838 (seed8).
 - L24 HOLDS (run C-20261121-155116-ba83d16): the rerun of verify_g1/v5_t9ks.py gives a JSON
