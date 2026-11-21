@@ -187,8 +187,11 @@ def log_results(path):
         return [ln for ln in f if any(k in ln for k in LOGKEYS) and "time" not in ln]
 
 
-def compare(case, a, b):
-    fa, fb = out_files(a), out_files(b)
+def compare(case, a, b, skip=()):
+    """classes of the files of two run directories; skip: files (relative paths) that
+    AthenaK did not write (products of the preparation of the run directory)."""
+    fa = [f for f in out_files(a) if f not in skip]
+    fb = [f for f in out_files(b) if f not in skip]
     res = {"identical": [], "a": [], "b": [], "a+b": [], "other": [], "details": {}}
     for f in sorted(set(fa) | set(fb)):
         if f not in fa or f not in fb:

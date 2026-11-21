@@ -317,3 +317,12 @@ C  (first session, above) stays as written. What I add before the card job, with
       absolute at both resolutions, order from 16 to 32 cells inside [3, 13].
    Refuted by a crash, a number outside its band, a differing count in C3, or a
    difference above the bounds of C4 and C5.
+
+Correction of Q2 before the run (03:12Z): the counts "43 identical" above, and the
+per-test counts of the first attempt, include five preparation products that were equal
+(leak `particles.nrp`, clump `particles.nrp`, ids `gauss_h0p5.nrp` and `.json`, coll
+`box.nrp`). Of the files AthenaK writes the first attempt has 38 identical and 2 of
+class b; that is what Q2 predicts, with 6 preparation products reported separately, one
+of them differing (`clump/particles.json`).
+Card list `analysis/release/card_v04.list`: the eleven cases of the quick test with the
+particle files that run core-20261120-222724-75e323c prepared (checksummed as inputs).

@@ -15,7 +15,10 @@ orbit, 300 M), pert, coll (collisions-2: perturbing force; collisions with the m
 each particle in a static well, 20 steps).  lw32 and clump0 run with the merged
 executable only (they serve the convergence order and the ratio).
 
-Classes of the byte comparison: regress_v04.py (identical, a, b, a+b, other).  Writes
+Classes of the byte comparison: regress_v04.py (identical, a, b, a+b, other).  Files
+that the preparation of a run directory wrote before AthenaK started (particle files
+and the generator's records, which hold the directory name) are not output: they are
+listed in DIR/<test>/<new|branch>.prepared.json and reported under "prepared".  Writes
 DIR/summary.json and DIR/fig_quick_v04.{pdf,png}.  Exit status 0 if every run ended with
 status 0, no file is of class "other" and every number lies inside its band.
 """
@@ -105,6 +108,10 @@ def run(exe, d, name):
     _, inp, prep, args = TESTS[name]
     os.makedirs(d, exist_ok=True)
     extra = prep(d) if prep else []
+    # what the preparation wrote (particle files and their records) is no output of
+    # AthenaK: listed here, beside the run directory, and compared separately
+    with open(d + ".prepared.json", "w") as f:
+        json.dump(rg.out_files(d), f)
     t0 = time.time()
     env = dict(os.environ, OMP_NUM_THREADS="1")
     with open(os.path.join(d, "athena.log"), "w") as log:
@@ -112,6 +119,24 @@ def run(exe, d, name):
                             cwd=d, stdout=log, stderr=subprocess.STDOUT,
                             env=env).returncode
     return rc, round(time.time() - t0, 1)
+
+
+def prepared_files(d):
+    """files the preparation wrote into run directory d (empty for runs of the driver
+    before it kept the list)."""
+    try:
+        with open(d + ".prepared.json") as f:
+            return json.load(f)
+    except OSError:
+        return []
+
+
+def same_bytes(a, b):
+    try:
+        with open(a, "rb") as fa, open(b, "rb") as fb:
+            return fa.read() == fb.read()
+    except OSError:
+        return False
 
 
 def hst(path):
@@ -337,9 +362,13 @@ def main():
             exe_b = os.path.join(a.exe_dir, "core_" + br, "athena_cpu")
             t["branch_exe"] = exe_b
             t["sha256_branch"] = rg.sha256(exe_b)
-            res = rg.compare(n, os.path.join(out, n, "branch"), os.path.join(out, n, "new"))
+            db, dn = os.path.join(out, n, "branch"), os.path.join(out, n, "new")
+            prepared = sorted(set(prepared_files(db)) | set(prepared_files(dn)))
+            res = rg.compare(n, db, dn, skip=prepared)
             t.update({k: res[k] for k in ("identical", "a", "b", "a+b", "other", "details",
                                           "files")})
+            t["prepared"] = {f: same_bytes(os.path.join(db, f), os.path.join(dn, f))
+                             for f in prepared}
             good = good and codes[(n, "branch")] == 0 and not res["other"] \
                 and res["files"] > 0
             print("%-7s vs core/%-15s files %3d  identical %3d  a %d  b %d  a+b %d  "
@@ -348,6 +377,9 @@ def main():
                   flush=True)
             for f in res["other"]:
                 print("        other: %s %s" % (f, res["details"].get(f, "")), flush=True)
+            for f, same in t["prepared"].items():
+                print("        prepared, not compared as output: %s (%s in the two "
+                      "directories)" % (f, "equal" if same else "differs"), flush=True)
         t["verdict"] = "pass" if good else "FAIL"
         ok = ok and good
         summary["tests"][n] = t
