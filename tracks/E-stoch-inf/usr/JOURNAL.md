@@ -513,3 +513,55 @@ thresholds 4.00 +- 0.05 and 2.00 +- 0.05 are unchanged. Added prediction: where 
 halved part of H lies within a factor 10 of the floor, a floor in quadrature lowers the
 even halving factor of H to between 3.85 and 4.0, and the odd halving factor of H to
 between 1.9 and 2.0.
+
+## Entry 11, 2026-11-21 07:53 UTC: batch 2b; group 1 has run (job 4742); quick check of its records; U256 submitted before the full analysis
+
+State found: the session of entry 10 was cut at 14:35 PST on 2026-11-20 with entry 10,
+`scripts/analyse_cards.py` and `scripts/card_lib.py` uncommitted (now committed, 7f764776).
+Its group-1 job 4742 (run E-20261120-222621-ba66218, core_scalar-3 athena_gpu 5cc2821) ran
+afterwards, 14:36:46 to 14:46:10 PST, all six entries rc = 0 and stopped on tlim (wall 9 min
+24 s, 0.157 card-hours), 33 GB of dumps. Its manifest still read "submitted".
+
+Deviation from entry 9.2 ("U256 runs only after group 1 is analysed") [JUDGEMENT]: the reason
+written there was that this card build had run only a 20-step comparison. That risk is
+answered by the records alone, which take seconds: run E-20261121-075022-7f76477
+(`scripts/quick_records.py`, no dump read) on all six runs:
+
+| run | dumps | t of the last dump | lockstep at N_f | max <Pi> rel. | <Pi> rel. at N_f | max abs dN | max <abs H/[H]> | <abs H'/[H]> max, entry / USR / late | <abs M/[M]> max, entry / USR / late |
+|---|---|---|---|---|---|---|---|---|---|
+| U64p, U64m | 41 | 10.437508874066 | 3.57e-5 | 2.50e-5 | 2.50e-5 | 4.2e-7 | 6.24e-9 | 2.87e-12 / 1.0e-12 / 3.7e-16 | 1.6e-5 / 3.7e-4 / 1.07e-2 |
+| U128p, U128m | 21 | same | 2.25e-6 | 1.33e-6 | 1.33e-6 | 2.6e-8 | 3.75e-10 | 2.87e-12 / 1.1e-13 / 7.4e-16 | 1.6e-5 / 8.05e-4 / 2.47e-2 |
+| U128hp, U128hm | 21 | same | record = s x reference (0.5; the quick check assumes abs(s) = 1) | 1.50e-6 | 1.50e-6 | 2.6e-8 | 3.75e-10 | 7.19e-13 / 2.9e-14 / 5.5e-16 | 8.3e-6 / 1.57e-3 / 4.30e-2 |
+
+Outcomes against entry 9.3 (the records only; the dump parts follow in the full analysis):
+- G1a: holds. <Pi> at N_f 2.50e-5 (64; predicted 2.6e-5 +- 15 %) and 1.33e-6 (128; 1.6e-6
+  +- 15 %, lower bound 1.36e-6: just outside if read as the run's value). The +-1/2 run reads
+  1.50e-6: the s^2 part is -2.25e-7 at s = 1 (two equations, s = 1 and 1/2), so the time part
+  is 1.56e-6 at 128^3 (inside) and 2.52e-5 at 64^3; the s^2 part equals the 2.3e-7 that
+  entry 9 took from M64p at 32^3 for the backreaction. |dN| 4.2e-7 < 5e-7 and 2.6e-8 < 5e-8.
+  <phi>, <K> below 1e-7: 2.1e-8, 5.4e-9 (64). Pass of U-A0 (1e-5) and U-A1 (1e-3).
+- G1b: FAILED narrowly. Lockstep 3.57e-5 (64) and 2.25e-6 (128) against 2.6e-5 and 1.6e-6
+  within 30 %: both are 1.37 to 1.40 times the prediction (the ratio 64/128 is 15.9, fourth
+  order as predicted; the prediction took the Pi error of the background for the error of
+  the modes' record, which is 1.4 times larger).
+- G1f, record of H: holds. max <abs H/[H]> 6.24e-9 (64) and 3.75e-10 (128) against 6.2e-9 and
+  3.6e-10 +- 30 %. The record of H' = H - <H> is largest at t = 0 (2.87e-12, the same on both
+  rungs and four times smaller at s = 1/2: the second-order residual of the initial slice,
+  set by the modes, not by the mesh) and stays inside [1e-12, 1e-9] only at the start; after
+  the entry it falls to 1e-13 (128) and to 4e-16 to 7e-16 late, so "at most in [1e-12, 1e-9]
+  during the entry" holds (its maximum is 2.87e-12 at t = 0).
+- G1f, record of M: FAILED. "<abs M/[M]> at most 1e-3 on both rungs": 1.07e-2 (64), 2.47e-2
+  (128), 4.30e-2 (128, s = 1/2), the maxima late (cN > 7). During USR 3.7e-4 (64), 8.05e-4
+  (128), 1.57e-3 (s = 1/2). The record grows with N (factor 2.2) and as 1/s (factor 1.95), as
+  a rounding floor relative to a magnitude [M] that is proportional to s does; this is the
+  "rounding floor after USR" of entry 8 at 32^3, which the prediction left out. The
+  first-order stencil part of entry 8 (3.2e-4 at k_max dx = pi/4) is not visible under the
+  floor at 128^3. Cause named only as a reading; the dump parts (odd/even in s) test it.
+- G1g, cost: holds. U64 12 s of card time each, U128 132 s each (851 steps, 0.155 s per
+  step), job 0.157 card-hours (predicted 0.12 to 0.30); card memory peak 0.96 GB (64), 3.2 GB
+  (128) (below 5 GB).
+
+The build therefore runs the case to N_f with the background and the lockstep record as
+predicted; U256 (`inputs/card_u256.list`, same executable) is submitted now, before the
+dumps are analysed, so that the card queue is not idle while the analysis runs. Card-hours
+so far 0.157 of 1.5.
