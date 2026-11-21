@@ -392,7 +392,7 @@ executable of core/build-openmp, 6 threads, as P1), list `inputs/cpu_p2.list`.
 - Refuted (sub-percent at Poisson-like noise) if any scale-factor measure reaches 1e-2
   before a = 1000. Also recorded: whether the run reaches a = 1000 with finite fields.
 
-## Entry 8 (2026-11-21 13:40 PST): P2 running; prediction of P3 (step and the early floor)
+## Entry 8 (2026-11-21 13:31 PST): P2 running; prediction of P3 (step and the early floor)
 
 P2 = run B-20261121-212128-67b349a started 13:21 (0.45 s per step at 6 threads, inside the
 predicted 0.55-0.8 s: faster). A development check of the B analysis with the partial
