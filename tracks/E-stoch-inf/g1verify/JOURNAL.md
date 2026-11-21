@@ -263,3 +263,62 @@ at t = 0, 0.50, 1.00 in all 17 variables, and a restart from cycle 12 gives the 
 t = 1.00 bit-identical to both; the .modes files are byte-identical. The constraint and
 history records may differ in the last bits (box sums over MeshBlocks in another order).
 Refuted by a single differing word in a dump.
+
+## Entry 6 (2026-11-20 19:32 PST): outcomes V4, V5, V7c
+
+Constraint pass E-20261121-030657-c1afe38 (completed; 289 dumps hashed, all equal to the
+runs' lists; P256 read by seek after its pass-1 check; my purpose text wrongly said L256p was
+read by seek too: it was read whole and hashed). Analysis E-20261121-031951-82984f8 (the first
+attempt E-20261121-031936-16d6ae5 failed on a record column name, my bug). Numbers are rms
+over the box divided by the record's <[H]> (<[M]> for M) of the proper run.
+
+V4 [VERIFIED]:
+- P-V4a PARTLY FAILED. Shape confirmed: in the paper's set-up the odd part rises above the
+  even part from t = 2.0 (Q64), 3.0 (Q128), 3.5 (P256), i.e. when shells with k dx ~ pi/4
+  enter (ln(N/8) e-folds after N*), and peaks at 6.0e-11 (Q64, t = 3.0) and 5.5e-11 (Q128,
+  t = 4.0): it does not fall with N. P256's peak is not captured (P256m ends at t = 4.5 and its
+  last dump has the cycle but not the time of P256's; at t = 4.0 the odd part is 1.7e-11 and
+  rising). Magnitude FAILED: I predicted 1e-9 to 1e-8 (20-200 times too high) and an even
+  plateau of 3e-11 to 3e-10 (observed 7e-13, 40 times lower). L set-up as predicted: odd
+  maximum 5.4e-11 (L32), 1.2e-12 (L64, comparable to the even plateau and above it after
+  t = 2), in-band 2e-14 (L128) and 3e-16 (L256), far below.
+- P-V4b CONFIRMED with the floor as SCOPE 4b defines it (the part that does not scale with
+  s, rms(C(s) - 2C(s/2)) or rms(C(s) - 4C(s/2))): odd halving 1.9989-2.0000, even
+  3.986-4.000 (L32, Q64, Q128). With my out-band "floor" instead, Q64 (1.77) and Q128 (1.43;
+  even 3.66) fail at t <= 2: in the paper's set-up the out band |n|^2 > 9 nmax2 is a corner
+  of the cube and holds only a fifth of the rounding, so it underestimates the floor.
+- P-V4c CONFIRMED: record <|H|/[H]> max 5.1e-11 (P set, every N), 2.6e-12 (L set N >= 64,
+  at t = 0, the slice); <|M|/[M]> max 4.0e-4 (P set), 1.5e-5 to 1.8e-5 (L set N >= 64),
+  largest when the k dx ~ pi/2 shells enter.
+- P-V4d PARTLY FAILED: NC odd part / proper odd part 2e3 to 3.6e6 during the early entry, but
+  only 120 (NC32, t = 3.0), 89 (NC64, t = 3.5), 180 (NC128, t = 4.0) at the end of the entry,
+  where the proper run's discretisation part peaks and the control's first-order violation
+  has decayed; ratio of the maxima 1874, 1709, 1853. Record of the controls: <|H|/[H]> max
+  9.9e-8 (I predicted 1e-6 to 1e-5: FAILED, 10-100 times lower), <|M|/[M]> 0.21 (confirmed).
+- P-V4e CONFIRMED: strict A4 fails (record halving factors F_H 0.83-1.99 on L32, 2.0-4.6
+  on Q64, 2.0-4.1 on Q128 during the entry; F_M 1.0-2.0): the record carries the uniform
+  s^0 residual (box mean of H: 2-3e-12 on L32, 3-5e-13 on Q64/Q128; order 4.1 in the Courant
+  factor, V6) early and the s^1 discretisation part late. A4' (a), (b), (c) pass; (d)
+  passes on the maxima and fails pointwise at the end of the entry.
+- Not predicted: with each run's out-band floor removed in quadrature, the even parts of
+  L128 and L256 (same modes) agree within 0.8 percent at every dump (raw: up to 17 percent at
+  t = 0.5, where L256 is floor-dominated) [VERIFIED arithmetic on 82984f8, addendum script].
+
+V5 [VERIFIED]: P-V5a CONFIRMED: spatial order of the odd part of H, 32 -> 64: 5.54-5.64 for
+t >= 1.5, 3.8-4.3 at t <= 1 (time error, dt ~ dx, dominating while only low shells are in);
+64 -> 128 (in-band part, the total is floor-dominated at 128): 5.2-5.9 for t = 1.5-5.0,
+4.0-4.1 at t <= 1; 128 -> 256 (in-band): 5.8-5.96 for t >= 2. M likewise (5.6-5.9).
+P-V5b: floor (out band) grows as N^2.45-2.51 between 64, 128, 256 at t <= 3 (L), N^2.42-2.49
+(P); equal in the odd and the even part (within 1 percent) and in the proper and the halved
+pair (0.93-1.07); the non-scaling parts satisfy rms(e - 4e_h)/rms(o - 2o_h) = 1.8-1.9 =
+sqrt(17/5) of independent noise in the four runs; level 1.2e-13 (L128) and 6.3e-13 (L256)
+at t = 0.5, falling as the expansion (1/a^2). Shape: FAILED in part: the floor spectrum is
+flat (white) at late times and rises towards the corner of the cube only at t ~ 2.5 (I
+predicted ~k^4 throughout): the white part is the rounding of the evaluation of H itself.
+Attribution to double-precision rounding: supported by four of five predicted signatures.
+
+V7c [VERIFIED] (E-20261121-031049-27cdc06 run, E-20261121-031251-c48670d comparison):
+P-V7c CONFIRMED: 8 MeshBlocks vs one: all 22 variables bit-identical at t = 0, 0.54, 1.03;
+restart from cycle 12: bit-identical at t = 1.03; mode files byte-identical; records differ
+by box-sum rounding only (<= 1.7e-14 relative, except the e-fold column at t = 0, whose value
+is itself rounding).
