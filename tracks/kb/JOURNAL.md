@@ -733,3 +733,14 @@ Predictions written before the runs of this session.
 - B1 (B's claim on 2312.12499v2, read by me at main.tex L322-326 and L579-583): `kb claim add`
   writes one judgement claim (number 861) with two locator rows that both resolve. Refuted if a
   locator does not resolve or the add is refused.
+- B1 outcome (runs kb-20261121-234903-f8e0b41, kb-20261121-234914-e160024): partly failed.
+  `kb claim add` wrote claim 861 but no locator rows (add stores the locator string only); a
+  `kb claim relocate` wrote the two rows, both resolved (chunk ids empty: equation lines).
+- Q1 outcome (run kb-20261121-234721-b3aecfe, snapshot kb-20261121-bbaafe5): held on its second
+  branch: 719/744 = 96.6 % with status ok, strict 719 (96.6 %), bar met; golden questions as
+  ingest3 (hybrid 28/32 papers, 23/32 locations; rerank 28/32, 25/32). Not predicted: C1 says
+  the counts do not agree, because the 35 additions of wave 3 have no downloads row (verify-
+  downloads last ran 2026-11-15; ingest3's QA had the same verdict).
+- V1 (kb verify-downloads, then a second snapshot): downloads rows for all 744 manifest ids plus
+  the repositories, ok 743 and problem 1 (the existing one), no record 0; C1 then agrees by the
+  report's own rule (recomputed by my SQL). Refuted if any of the 35 is missing or failed.
