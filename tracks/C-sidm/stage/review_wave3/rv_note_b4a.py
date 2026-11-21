@@ -31,7 +31,7 @@ def main():
     gv = json.load(open(f"{SCR}/C-20261120-222716-9d86ebc/growth_validation_v2.json"))
     tc = s["groups"]["cc1_kn10_cell"]["t_c_interp"]
     card = [x for x in t8["sets"] if x["n"] == 4000000][0]["params"]
-    r = cm["cc2_M8/cc2_M4"]
+    r = cm.get("_ratios", cm)["cc2_M8/cc2_M4"]
     rows = {
         "decisive t_c CC1 Kn=10 cell": ", ".join(f"{v:.2f}" for v in tc),
         "decisive sd": f"{statistics.stdev(tc):.2f}",
