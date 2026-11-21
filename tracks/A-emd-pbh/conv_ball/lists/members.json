@@ -1,0 +1,112 @@
+{
+ "A": {
+  "job": "job1",
+  "deck": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/conv_ball/decks/nest16_L16.athinput",
+  "args": [
+   "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+   "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestA/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_nestA_track.nrp",
+   "particles/traj_ntrack=1313"
+  ],
+  "prep": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestA"
+ },
+ "B": {
+  "job": "job1",
+  "deck": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/conv_ball/decks/nest32_L16.athinput",
+  "args": [
+   "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+   "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestB/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_nestB_track.nrp",
+   "particles/traj_ntrack=1318"
+  ],
+  "prep": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestB"
+ },
+ "A-L32": {
+  "job": "job1",
+  "deck": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/conv_ball/decks/nest16_L32.athinput",
+  "args": [
+   "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+   "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestA/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_nestA_track.nrp",
+   "particles/traj_ntrack=1313"
+  ],
+  "prep": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestA"
+ },
+ "A-R1.25": {
+  "job": "job1",
+  "deck": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/conv_ball/decks/nest16_L16.athinput",
+  "args": [
+   "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075401-1412a08/expball_tophat_HRb0p875_M1p95312_dc1p5_rm5p27041.tab",
+   "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075401-1412a08/nestA/expball_tophat_HRb0p875_M1p95312_dc1p5_rm5p27041_nestA_track.nrp",
+   "particles/traj_ntrack=1315"
+  ],
+  "prep": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075401-1412a08/nestA"
+ },
+ "A-R1.35": {
+  "job": "job1",
+  "deck": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/conv_ball/decks/nest16_L16.athinput",
+  "args": [
+   "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075404-ac51b7e/expball_tophat_HRb0p945_M2p46037_dc1p5_rm5p67857.tab",
+   "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075404-ac51b7e/nestA/expball_tophat_HRb0p945_M2p46037_dc1p5_rm5p67857_nestA_track.nrp",
+   "particles/traj_ntrack=1315"
+  ],
+  "prep": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075404-ac51b7e/nestA"
+ },
+ "A-N8": {
+  "job": "job1",
+  "deck": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/conv_ball/decks/nest16_L16.athinput",
+  "args": [
+   "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+   "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestA8/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_nestA8_track.nrp",
+   "particles/traj_ntrack=1318"
+  ],
+  "prep": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestA8"
+ },
+ "B-N8": {
+  "job": "job3",
+  "deck": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/conv_ball/decks/nest32_L16.athinput",
+  "args": [
+   "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+   "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestB8/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_nestB8_track.nrp",
+   "particles/traj_ntrack=1320"
+  ],
+  "prep": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestB8"
+ },
+ "A-N64": {
+  "job": "job3",
+  "deck": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/conv_ball/decks/nest16_L16.athinput",
+  "args": [
+   "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+   "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestA64/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_nestA64_track.nrp",
+   "particles/traj_ntrack=1320"
+  ],
+  "prep": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestA64"
+ },
+ "B-R1.25": {
+  "job": "job3",
+  "deck": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/conv_ball/decks/nest32_L16.athinput",
+  "args": [
+   "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075401-1412a08/expball_tophat_HRb0p875_M1p95312_dc1p5_rm5p27041.tab",
+   "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075401-1412a08/nestB/expball_tophat_HRb0p875_M1p95312_dc1p5_rm5p27041_nestB_track.nrp",
+   "particles/traj_ntrack=1319"
+  ],
+  "prep": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075401-1412a08/nestB"
+ },
+ "B-L32": {
+  "job": "job3",
+  "deck": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/conv_ball/decks/nest32_L32.athinput",
+  "args": [
+   "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+   "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestB/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_nestB_track.nrp",
+   "particles/traj_ntrack=1318"
+  ],
+  "prep": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestB"
+ },
+ "C": {
+  "job": "job2 (chain)",
+  "deck": "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/conv_ball/decks/nest64_L16.athinput",
+  "args": [
+   "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+   "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestC/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_nestC_track.nrp",
+   "particles/traj_ntrack=1320"
+  ],
+  "prep": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestC"
+ }
+}
