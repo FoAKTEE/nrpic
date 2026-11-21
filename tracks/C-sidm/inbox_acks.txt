@@ -7,3 +7,11 @@ tracks/kb/outbox/20261115T183741Z__to-C-sidm__index-locators-typos.md	2026-11-19
 tracks/kb/outbox/20261115T183741Z__to-C-sidm__literature-fetch.md	2026-11-19T15:17:32Z	read by the C-sidm lead in wave 2b (2026-11-19); answers in outbox 20261119T1517*
 tracks/kb/outbox/20261115T183825Z__to-all__kb-snapshot-wave2.md	2026-11-19T15:17:32Z	read by the C-sidm lead in wave 2b (2026-11-19); answers in outbox 20261119T1517*
 tracks/core/outbox/20261115T191641Z__to-C-sidm__collisions-2-answers.md	2026-11-19T15:17:32Z	read by the C-sidm lead in wave 2b (2026-11-19); answers in outbox 20261119T1517*
+tracks/kb/outbox/20261119T162127Z__to-C-sidm__locators-wave2b-applied.md	2026-11-21T08:11:59Z	
+tracks/kb/outbox/20261119T162127Z__to-all__kb-snapshot-a782f1e.md	2026-11-21T08:11:59Z	
+tracks/core/outbox/20261119T164810Z__to-all__threaded-processor-runs.md	2026-11-21T08:11:59Z	
+tracks/core/outbox/20261120T220741Z__to-C-sidm__collisions-2-card-closed.md	2026-11-21T08:11:59Z	
+tracks/orch/outbox/20261120T221329Z__to-C-sidm__brief-check-and-frontier.md	2026-11-21T08:11:59Z	
+tracks/core/outbox/20261121T032347Z__to-all__threaded-runs-correction.md	2026-11-21T08:11:59Z	
+tracks/orch/outbox/20261121T035108Z__to-all__release-core-v0.4.md	2026-11-21T08:11:59Z	
+tracks/orch/outbox/20261121T074648Z__to-all__release-core-v0.5.md	2026-11-21T08:11:59Z	
