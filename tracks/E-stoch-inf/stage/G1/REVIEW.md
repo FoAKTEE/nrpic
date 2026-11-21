@@ -9,3 +9,8 @@
   new ladder results recomputed with the lead's own code (E-20261121-063816-64ac0dc,
   `../review3/scripts/lead3_check.py`), and risk R1 tested on processors against the release
   core-v0.4. Every verifier finding and what the track does about it: section 2 there.
+- Wave 3 (batch 3, 2026-11-21): `../REVIEW-wave3.md` Part B: the packages `note` (the G1
+  products C8, C9, C13-C15) and `usr` (G2 material); every analysis of both rerun from the
+  registered outputs (run E-20261121-130021-0140e4e), the central USR numbers recomputed with
+  own code (E-20261121-130236-e39e143), every figure looked at, and the note's G1 ledger
+  compared row by row with independent values (B4, the ledger part of C16).

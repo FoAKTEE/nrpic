@@ -26,6 +26,12 @@ the reproduction) except where stated.
 | H, M (constraints) | `\mathcal{H}`, `\mathcal{M}` | Hamiltonian and momentum constraint; [H], [M] their term magnitudes | Sec. II C |
 | sigma_lin | `\sigma_\mathrm{lin}` | standard deviation of linear delta N over the band | Sec. IV B |
 | theta | `\theta` | Courant factor dt/dx | Sec. III D |
+| lambda | `\lambda` | amplitude scale of the noise (the code's `noise_mode_scale`, the ladder's s); +-1 in mirrored pairs, +-1/2 in halved pairs | Sec. VI A |
+| R^NR_n | `\mathcal{R}^\mathrm{NR}_n` | curvature perturbation of lattice mode n reconstructed from chi, gt_ij, phi | Sec. VI A |
+| R^lin_n | `\mathcal{R}^\mathrm{lin}_n` | its linear reference W_k R_k alpha_n | Sec. VI A |
+| D_n, Q_n | | per-mode deviation from the linear reference; per-mode power ratio of the freezing criterion (Eq. 8) | Sec. VI |
+| H_odd, H_even | `\mathcal{H}_\mathrm{odd}`, `\mathcal{H}_\mathrm{even}` | parts of a constraint odd and even in lambda, (C(lambda) -+ C(-lambda))/2 (Eq. 9; also for M_i) | Sec. VII B |
+| q_a, kappa_a, mu_a | | symbols of the first and the second difference of the stencils, mu_a = kappa_a - q_a^2 (Eq. 10) | Sec. VII C |
 
 ## Named results
 
@@ -35,6 +41,7 @@ the reproduction) except where stated.
 | the freezing criterion | per-mode power ratio between N_k + 4 and N_f against the full Mukhanov-Sasaki ratio | Sec. II C |
 | the deformed equation | Mukhanov-Sasaki equation without metric perturbations (arXiv:2606.14853) | Sec. II C |
 | the corrected momentum of the initial slice | delta Pi with -sqrt(2 eps1) Mpl H Psi_B | Sec. III C |
+| the decay law | Eq. 5: loss of power of the deformed equation, -4 eps1 per e-fold | Sec. II C |
 
 ## Preamble macros
 
@@ -43,6 +50,7 @@ the reproduction) except where stated.
 | `\dd` | the differential |
 | `\Mpl` | reduced Planck mass |
 | `\Ham`, `\Mom` | Hamiltonian and momentum constraints |
+| `\pending{}` | red marker for a result of a package still in progress |
 
 ## Overlaps kept on purpose
 
@@ -51,3 +59,4 @@ the reproduction) except where stated.
 | N | e-folds; cells per side of the lattice | the lattice size is written "256 cells per side" or N^3 only in the parameter table and figure axes; e-folds always carry a subscript or appear in N - N_* |
 | sigma | window parameter; standard deviation (sigma_lin) | the standard deviation always carries the subscript lin |
 | H | Hubble rate; Hamiltonian constraint | the constraint is `\Ham` (calligraphic) |
+| s, lambda | steepness of the window; the ladder's and the usr package's s is the amplitude scale | the note writes the amplitude scale as lambda; s is the steepness only (added batch 3 on the note package's request) |

@@ -24,7 +24,8 @@ the note. Started 2026-11-15 with the note v0 (gate G0, feasibility).
    the captions follow 4.1 and 5.5. The scripts that build the ledger
    (`scripts/ledger.py`, `scripts/common.py`, `scripts/costmodel.py`) name the track's
    documents and runs they check; the checker's 5.5 and 5.8 hits there and in the ledger
-   appendix are accepted under this exception.
+   appendix are accepted under this exception, and so are those in the provenance lines
+   (docstrings) of every figure and schematic script (added in batch 3).
 2. Evidence labels of the program ([VERIFIED], [BACKGROUND], [JUDGEMENT], [TO VERIFY]) stay
    out of the typeset text; the main text says in words what is established (by a run or at
    the source), what is our choice, and what is open. The labels live in the journals, the
@@ -45,7 +46,7 @@ and the run ids to the reproduction package.
 
 | Level | Axis it splits along | Headings |
 |---|---|---|
-| Section | the steps of the argument | Introduction; The problem and the test cases; Set-up and numerical methods; Reference solutions and tests; Cost and the decision at the gate; What is open; Summary; appendices: parameters, errata, ledger |
+| Section | the steps of the argument | Introduction; The problem and the test cases; Set-up and numerical methods; Reference solutions and tests; Cost and the decision at the gate; Slow-roll reproduction (runs and analysis; background and amplitude of every mode; freezing; order in time); Constraints (record; odd and even parts; criterion); Validation, reproducibility and cost; What is open; Summary; appendices: parameters, errata, ledger |
 | Subsection of the problem | what fixes the answer | stochastic sources; the two test cases; acceptance criteria |
 | Subsection of the set-up | the parts of the calculation | the code; the noise; the initial slice; numerical methods (last) |
 | Subsection of the tests | one test per subsection | freezing reference; delta-N reference; reproducible noise; errata of the sources |
@@ -57,12 +58,15 @@ without metric perturbations (the deformed Mukhanov-Sasaki equation).
 ## Allowed numbers (4.1)
 
 - Exact analytic factors and powers: 2 pi, 8 pi^2, k^3/(2 pi^2), -4 eps1 (the decay rate of
-  the deformed equation), e^(-2 dN), H^4, 3 - eps2 (friction), ln(N/4).
+  the deformed equation), e^(-2 dN), H^4, 3 - eps2 (friction), ln(N/4), ln(N/8) (the
+  e-folds after N* at which shells with fewer than eight cells per wavelength enter).
 - Structural integers: two test cases, three noise schemes, five gates, three levels of
   backreaction (0, 1, 2), four RK stages, six kick components, sixth-order stencils.
 - Labels: gates G0-G4; acceptance criteria A1-A8; noise tests A0-A15; ladder tests L0-L9;
   levels 0-2 of the stochastic backreaction.
-- Parameter values that define the figures and the cases: N = 256, k_max = 64 dk, sigma = 1,
+- Parameter values that define the figures and the cases: the lattice sizes 32^3-256^3,
+  k_max = 8 dk and (N/4) dk, lambda = +-1 and +-1/2, "four cells per wavelength", "sixty
+  randomly chosen modes" (a figure parameter), N = 256, k_max = 64 dk, sigma = 1,
   s = 5, Courant factor 0.25, sigma = 0.01, 0.1, 1 of the delta-N references, the e-fold
   counts N* - N0 = 5, 3 and N_f - N* = 8, 10, N_e = N* + 15, the threshold eps2 = 3 of USR.
 - Everything else (residuals, ratios, costs, slopes) is in the ledger appendix.

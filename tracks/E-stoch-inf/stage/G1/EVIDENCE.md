@@ -117,3 +117,27 @@ dumps; predictions and outcomes `g1verify/JOURNAL.md`; report `VERIFIER.md` (cop
 `fig_halving_fix.png`; `ladder/fig/a6_64/fig_a6.png`; `ladder/fig/l5/fig_l5.png`,
 `fig_l5_scaling.png`; `ladder/fig/seed2/fig_seed2.png`; the lead's `../review3/fig/fig_rerun.png`,
 `fig_lead3.png`, `fig_r1.png`.
+
+## 10. Wave 3, batch 2b: the note's G1 products (helper package `note/`)
+
+- Runs: E-20261121-080840-6112292 (final regeneration: four G1 data figures, three schematics,
+  `fig_background`, ledger and claims; every figure repeats with pixel rms 0);
+  E-20261121-075717-1849987 and E-20261121-080526-7fbe919 (superseded, kept on record; reasons
+  in `note/JOURNAL.md`).
+- Artefacts: `note/scripts/{schem_architecture,schem_dataflow,schem_timeline,fig_background,
+  fig_sr_modes,fig_sr_freezing,fig_sr_constraints,fig_sr_order,ledger,common,run_all}.py`;
+  `note/figures/*.png`; `note/tables/ledger_g1.{md,tex}`, `claims.md`; `note/main.tex`,
+  `note/main.pdf` (v1, 16 pages); predictions N4-N12 in `note/JOURNAL.md`.
+
+## 11. Wave 3, batch 3: the lead's checks (`../REVIEW-wave3.md` Part B)
+
+- E-20261121-130021-0140e4e: every analysis of `note` and `usr` rerun unchanged from its
+  registered outputs; JSON leaves, PNGs and tables compared (`../review3/scripts/rerun4.sh`,
+  `compare_json.py`, `note_compare.py`).
+- E-20261121-130236-e39e143: own code on the raw USR dumps (`../review3/scripts/lead4_check.py`,
+  the verifier's reader): even/odd and one-point statistics of the 256^3 pair, group-1 halving,
+  records; figure `../review3/fig/fig_lead4.png`.
+- The ledger cross-check of C16: `../REVIEW-wave3.md` B4.
+- Figures looked at by the lead of batch 3: `note/figures/schem_architecture.png`,
+  `schem_dataflow.png`, `schem_timeline.png`, `fig_sr_modes.png`, `fig_sr_freezing.png`,
+  `fig_sr_constraints.png`, `fig_sr_order.png`; `../review3/fig/fig_lead4.png`.

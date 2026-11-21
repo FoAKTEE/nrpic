@@ -12,7 +12,7 @@ outcomes: `JOURNAL.md` (entries 1-11; wave 3: entries 12 and later).
 
 | Threshold | Verdict | Numbers | Runs |
 |---|---|---|---|
-| A1 background | PASS | box means within 1.1e-12 (phi), 8.6e-12 (Pi), 2.0e-12 (K); e-folds 5.5e-6, 3.3e-7, 2.0e-8 at N = 32, 64, 128 (fourth order) | final analysis E-20261115-194633-9e04ed8 |
+| A1 background | PASS | box means within 2.0e-12 (phi, P256), 8.6e-12 (Pi), 3.6e-12 (K, L32p) (corrected by the lead of batch 3 from 1.1e-12 and 2.0e-12: verifier disagreement 4, note claims g22, g23); e-folds 5.5e-6, 3.3e-7, 2.0e-8 at N = 32, 64, 128 (fourth order) | final analysis E-20261115-194633-9e04ed8 |
 | A2 per mode, |n| <= k_max/2 | PASS | 8.8e-5 (L32) to 1.7e-6 (L256); paper set-up Q64 9.7e-5, Q128 9.9e-5, P256 1.21e-4 (threshold 0.02) | same |
 | A3 freezing | PASS | 1051 modes per rung: power ratio within 4.6e-6, drift 1.4e-4 per e-fold = full MS within 1.8e-6 (threshold 2.5e-3; FLRW lattice -0.05) | same |
 | Spectrum against linear and slow-roll results | PASS | shell ratios within 1.9e-4; Delta_lin/slow-roll formula 1.0104-1.0109 for |n| <= 7 | same |
