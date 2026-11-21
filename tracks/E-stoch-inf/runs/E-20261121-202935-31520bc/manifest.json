@@ -1,0 +1,163 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261121-202935-31520bc",
+  "track": "E-stoch-inf",
+  "gate": "G2",
+  "kind": "production",
+  "purpose": "g2prod P256v6: slow-roll 256^3 (paper set-up, ladder/inputs/jobA.list) again on the release card build core-v0.6 against E-20261115-172618-f948386 (G1 reservation 2, risk R1); prediction P256v6 of g2prod/JOURNAL.md entry 1",
+  "preregistered_in": "tracks/E-stoch-inf/g2prod/JOURNAL.md#entry-1",
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-202935-31520bc/batch.list"
+  ],
+  "cwd": "scratch/E-stoch-inf/E-20261121-202935-31520bc",
+  "git": {
+    "sha": "31520bcde038ae6cfa27956ebe80c7c3d288d149",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/g2prod"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "edc49c3c2bfc34ed7b43f53231af641c7df90d2b",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "scalar_field",
+    "exe": "/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena",
+    "exe_sha256": "ea473498500f8efc211f5ee9572cd393aad019d035f819f825fe0b79d5114851",
+    "cmake_flags": [
+      "-DPROBLEM=built_in_pgens",
+      "-DAthena_ENABLE_MPI=OFF",
+      "-DAthena_ENABLE_OPENMP=OFF",
+      "-DKokkos_ARCH_ICX=ON",
+      "-DKokkos_ENABLE_DEBUG=OFF",
+      "-DKokkos_ENABLE_DEBUG_BOUNDS_CHECK=OFF",
+      "-DCMAKE_CXX_COMPILER=/data/haiyangw/nrpic/.work/build_gpu_v06/nvcc_wrapper_pinned",
+      "-DCUDAToolkit_ROOT=/usr/local/cuda-12.6",
+      "-DKokkos_ENABLE_SERIAL=ON",
+      "-DKokkos_ENABLE_CUDA=ON",
+      "-DKokkos_ARCH_AMPERE80=ON",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG"
+    ],
+    "toolchain": "nvcc 12.6 (host g++ 11.4.0)"
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": {
+    "file": "tracks/E-stoch-inf/ladder/inputs/sr_base.athinput",
+    "sha256": "362789c6b32d252684b7d94b469b4a48ef48ba80ff66df6ccd68930a69e408d5",
+    "overrides": {
+      "mesh/nx1": "256",
+      "mesh/nx2": "256",
+      "mesh/nx3": "256",
+      "meshblock/nx1": "256",
+      "meshblock/nx2": "256",
+      "meshblock/nx3": "256",
+      "scalar_field/noise_nmax2": "4096",
+      "scalar_field/noise_mode_file": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/inputs/modes_n4096.txt",
+      "scalar_field/noise_mode_scale": "1.0",
+      "time/tlim": "8.5"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena",
+      "role": "exe",
+      "sha256": "ea473498500f8efc211f5ee9572cd393aad019d035f819f825fe0b79d5114851",
+      "bytes": 109664600,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/E-stoch-inf/ladder/inputs/jobA.list",
+      "role": "list",
+      "sha256": "f46ef74b973dd096b9ecb31021a9db4e128bfe809b7284f736d46c9113c1056c",
+      "bytes": 416,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/ladder/inputs/sr_base.athinput",
+      "role": "athinput:P256",
+      "sha256": "362789c6b32d252684b7d94b469b4a48ef48ba80ff66df6ccd68930a69e408d5",
+      "bytes": 2659,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "P256",
+      "input": "tracks/E-stoch-inf/ladder/inputs/sr_base.athinput",
+      "args": [
+        "mesh/nx1=256",
+        "mesh/nx2=256",
+        "mesh/nx3=256",
+        "meshblock/nx1=256",
+        "meshblock/nx2=256",
+        "meshblock/nx3=256",
+        "scalar_field/noise_nmax2=4096",
+        "scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/inputs/modes_n4096.txt",
+        "scalar_field/noise_mode_scale=1.0",
+        "time/tlim=8.5"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:58:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.9667,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "E-20261121-202935-31520bc",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261121-202935-31520bc",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-21T20:29:35Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 10.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.7687,
+    "gpu_hours_reserved": 0.4167,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 153,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
