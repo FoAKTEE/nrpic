@@ -528,3 +528,17 @@ Sharper predictions for (v), added before it is submitted (N.1-N.4 of entries 5 
   (v) minus that of the N = 1e5 control on M/4 is below -0.005 at 300 M (several times the
   -0.0014 to -0.0024 of the M/8 runs, whose D is 0.15 of the expected D(1e4)). Within +-0.002
   means noise relaxation is not the cause of the M/8 contraction.
+
+## 2026-11-21 14:17 UTC Entry 15: where this session stops
+
+- Done this session: run (iii) and its analysis (entry 12), test D2 (entry 14), the M/8
+  continuation (vi) prepared, predicted (entry 10) and submitted, predictions N.4-N.6 for (v),
+  README with results, pending runs and the recommendation for block A.
+- Queued, not started: run (vi) C-20261121-140023-b0f113e (Slurm 4804), behind seven jobs of
+  other owners at 14:16 UTC (both cards busy); at their time limits it starts about 16:30-17:20
+  UTC, after this session's window. It runs by itself; the closing and analysis commands are
+  in README "Pending runs", the predictions in entry 10.
+- Not submitted: run (v) (one job of this package at a time; it follows (vi)); command in
+  README "Pending runs", predictions N.1-N.6 (entries 5, 11, 14).
+- Card-hours used by this package: 1.38 ((i) 0.69, (iii) 0.69); (vi) will add about 0.87,
+  (v) about 0.3: 2.55 of the 3.0 cap.
