@@ -122,6 +122,25 @@ struct NrpicOptions {
                                // geodesic that carries no sources; true (null): m = 0
                                // follows a null geodesic on the mesh metric, the rule of
                                // releases core-v0.2 and core-v0.3
+  // ---- refined meshes in periodic runs (package cosmo-amr) ----
+  bool deposit_fine = false;   // <particles> deposit_fine_shape: where the cells of a
+                               // cloud are coarser than the leaf cells, the weight of
+                               // each cloud cell is distributed over its leaf cells to
+                               // first order (weight and slope of the assignment
+                               // function), not as a constant
+};
+
+//----------------------------------------------------------------------------------------
+//! \struct NrpicRegionOptions
+//  \brief options of the constraint norms inside and outside spheres (nrpic_region.cpp)
+
+struct NrpicRegionOptions {
+  int dcycle = 0;                       // <particles> region_dcycle (0: off)
+  Real center[3] = {0.0, 0.0, 0.0};     // region_x1, region_x2, region_x3
+  int nsphere = 0;                      // number of radii region_radius1..4
+  Real radius[4] = {0.0, 0.0, 0.0, 0.0};
+  int horizon = -1;                     // region_horizon: index of a horizon finder
+  Real horizon_factor = 1.0;            // region_horizon_factor
 };
 
 //----------------------------------------------------------------------------------------
@@ -420,6 +439,10 @@ class Particles {
   NrpicPerturbOptions pert;
   void NrpicPerturbInit(ParameterInput *pin);
   void NrpicPerturbKick(const Real t0, const Real t1);
+  // constraint norms inside and outside spheres on any mesh (nrpic_region.cpp)
+  NrpicRegionOptions region;
+  void NrpicRegionInit(ParameterInput *pin);
+  void NrpicWriteRegion(Real time, int ncycle, bool header);
 
   // ---- Newtonian mode of the nrpic module (particles/nrpic_newton.cpp) ----
   NrpicExternalOptions next;        // fixed point mass, background acceleration

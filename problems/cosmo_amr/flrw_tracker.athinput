@@ -1,0 +1,139 @@
+# Homogeneous dust universe in moving coordinates, with a compact-object tracker that
+# crosses a face of the periodic box and adaptive refinement that follows it (work package
+# cosmo-amr of core, test T5 of tracks/core/JOURNAL-cosmo-amr.md, case M of
+# tracks/core/analysis/cosmo_amr/t2_flrw.py). Conformal-time lapse, frozen uniform shift
+# beta^x = -0.5 (problem/shift_x1): the tracker moves as x = 2.5 + 0.5 t and crosses
+# x = 3 at t = 1. Box [-3, 3)^3, root 24^3, MeshBlocks 8^3, one refinement level.
+# Particles: python3 cosmo/ic/make_lattice.py --n 24 --ppc 1 --L 6 --xmin -3 --out .
+# Options of the package: tracks/core/interfaces/cosmo_amr.md.
+
+<comment>
+problem = homogeneous dust universe
+
+<job>
+basename = flrw
+
+<mesh>
+nghost = 4
+nx1 = 24
+x1min = -3.0
+x1max = 3.0
+ix1_bc = periodic
+ox1_bc = periodic
+nx2 = 24
+x2min = -3.0
+x2max = 3.0
+ix2_bc = periodic
+ox2_bc = periodic
+nx3 = 24
+x3min = -3.0
+x3max = 3.0
+ix3_bc = periodic
+ox3_bc = periodic
+
+<meshblock>
+nx1 = 8
+nx2 = 8
+nx3 = 8
+
+<time>
+evolution = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim = -1
+tlim = 2.5
+ndiag = 20
+
+<z4c>
+lapse_oplog = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic = 0.3333333333333333
+lapse_volume = 0.0
+lapse_kdriver = 0.0
+lapse_advect = 0.0
+shift_Gamma = 0.0
+shift_eta = 0.0
+shift_advect = 0.0
+diss = 0.5
+damp_kappa1 = 0.02
+damp_kappa1_over_alpha = false
+damp_kappa2 = 0.0
+damp_kappa_gam = 0.0
+damp_ch = 0.0
+damp_ch_dx = 0.0
+damp_ch_chipow = 0.0
+excise_chi = 0.0
+co_0_type = BH
+co_0_x = 2.5
+co_0_y = 0.1
+co_0_z = 0.1
+co_0_radius = 0.3
+co_0_reflevel = 1
+dt_lightspeed = 1.0          # step at most cfl dx / (coordinate light speed): here 1 + |beta| = 1.5
+# tracker_mode = walk         # a tracker that follows the minimum of the lapse instead of -beta;
+# tracker_walk_tol = 1.0e-6   # with walk: move only to a neighbour lower by this fraction
+
+<particles>
+particle_type = nrpic
+pusher = midpoint
+interp = hermite
+dt_expansion = 0.0
+metric = mesh
+tolerance = 1.0e-12
+max_iterations = 50
+deposit = true
+nfilter = 0
+filter_compensate = false
+filter_comp_c = -1.0
+deposit_comp_c = 0.0
+deposit_comp_limit = 0.0
+deposit_comp_c2 = 0.0
+deposit_shape = cic
+deposit_max_level = 31
+deposit_adaptive = true
+deposit_min_level = 0
+deposit_ppc = 2.0
+deposit_max_coarsen = 31
+alpha_exc = -1.0
+ah_exc_factor = -1.0
+hist_dcycle = 1
+snap_dt = -1.0
+probe_x1 = 0.01
+probe_x2 = 0.01
+probe_x3 = 0.01
+nprobe = 0
+cstat_dcycle = 1
+cons_dcycle = 0
+traj_dcycle = 0
+traj_ntrack = 0
+lambda = 0.0
+source_density = true
+source_extrap = true
+particle_file = particles.nrp
+region_dcycle = 1            # <basename>.region.hst: norms in and out of the sphere
+region_radius1 = 1.5
+deposit_fine_shape = true    # coarse clouds sampled on the leaf cells with their shape
+
+<problem>
+pgen_name = nrpic_cosmo
+id = flrw
+hubble = 1.0
+shift_x1 = -0.5             # the universe in coordinates moving with +0.5 along x (tests)
+
+<output1>
+file_type = hst
+dt = 0.5
+
+<mesh_refinement>
+refinement = adaptive
+num_levels = 2
+max_nmb_per_rank = 256
+ncycle_check = 4
+refinement_interval = 4
+
+<amr_criterion0>
+method = user
+
+<z4c_amr>
+method = tracker             # level co_0_reflevel within co_0_radius of the tracker (nearest image)
+

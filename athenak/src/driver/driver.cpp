@@ -27,6 +27,7 @@
 #include "radiation/radiation.hpp"
 #include "driver.hpp"
 #include "particles/particles.hpp"
+#include "particles/nrpic_cosmo_ext.hpp"
 #include "scalar_field/scalar_field.hpp"
 #include "gravity/gravity.hpp"
 #include "utils/utils.hpp"
@@ -474,6 +475,11 @@ void Driver::Initialize(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool re
   if (pmesh->pmb_pack->pscalar != nullptr) {
     pmesh->pmb_pack->pscalar->Startup(res_flag);
   }
+  // nrpic_cosmo on an adaptive mesh, restarted from a file written before the regrid of
+  // its cycle: that regrid now (particles/nrpic_refine.cpp)
+  if (res_flag && pmesh->adaptive && nrpic::CosmoRefineTakePending()) {
+    pmesh->pmr->AdaptiveMeshRefinement(this, pin);
+  }
 
   //---- Step 2.  Compute time step (if problem involves time evolution)
   hydro::Hydro *phydro = pmesh->pmb_pack->phydro;
@@ -552,7 +558,9 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool wdfla
     if (wall_time > 0.) {
       elapsed_time = UpdateWallClock();
     }
-    while ((pmesh->time < tlim) && (pmesh->ncycle < nlim || nlim < 0) &&
+    // guard of the NRPIC module: stop when the spacetime fields are not finite
+    const bool guard_stop = nrpic::GuardCheck(pmesh);   // initial data
+    while (!guard_stop && (pmesh->time < tlim) && (pmesh->ncycle < nlim || nlim < 0) &&
            (elapsed_time < wall_time)) {
       if (global_variable::my_rank == 0) {OutputCycleDiagnostics(pmesh);}
       if (wdflag) {WatchDog(0);}
@@ -608,6 +616,9 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool wdfla
       pmesh->dt_last_completed = pmesh->dt;
       nmb_updated_ += pmesh->nmb_total;
       npart_updated_ += pmesh->nprtcl_total;
+      // NRPIC guard: leave the loop before the scheduled outputs of this cycle;
+      // Driver::Finalize writes every output once
+      if (nrpic::GuardCheck(pmesh)) break;
       // load balancing efficiency
       if (global_variable::nranks > 1) {
         int minnmb = std::numeric_limits<int>::max();
@@ -635,6 +646,7 @@ void Driver::Execute(Mesh *pmesh, ParameterInput *pin, Outputs *pout, bool wdfla
 
       // AMR
       if (pmesh->adaptive) {pmesh->pmr->AdaptiveMeshRefinement(this, pin);}
+      if (pmesh->adaptive) {nrpic::CosmoRefineNoteCall(pmesh);}   // for restart files
       // compute new timestep AFTER all Meshblocks refined/derefined
       pmesh->NewTimeStep(tlim);
       RefreshSTSCycleState(pmesh);
@@ -698,6 +710,8 @@ void Driver::Finalize(Mesh *pmesh, ParameterInput *pin, Outputs *pout) {
         std::cout << std::endl << "Terminating on cycle limit" << std::endl;
       } else if (pmesh->time >= tlim) {
         std::cout << std::endl << "Terminating on time limit" << std::endl;
+      } else if (nrpic::GuardExitStatus() != 0) {
+        std::cout << std::endl << "Terminating on the NRPIC guard" << std::endl;
       } else {
         std::cout << std::endl << "Terminating on wall clock limit" << std::endl;
       }
