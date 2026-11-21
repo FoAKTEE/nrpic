@@ -69,7 +69,7 @@ def horizons():
     dn = me - mv
     above2 = t[np.abs(dn) > 2e-4]
     out["Y1d"] = dict(max_le90=float(np.abs(dn[t <= 90]).max()),
-                      first_t_above_2e-4=float(above2[0]) if len(above2) else None,
+                      first_t_above_2em4=float(above2[0]) if len(above2) else None,
                       all_above_after_first=bool(np.all(np.abs(dn[t >= above2[0]]) > 2e-4)) if len(above2) else None,
                       at188=float(dn[np.argmin(np.abs(t - 188.0))]), t_last=float(t[-1]))
     return S, out
