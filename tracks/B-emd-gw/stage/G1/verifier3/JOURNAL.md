@@ -397,3 +397,18 @@ evaluated exactly at X = x + zeta(x)):
   needed); using G of (a) on conformal data fails likewise.
 - P4.3 zeta recovered by (B) from the exact metric difference equals the analytic zeta up to
   O(eps^2) (relative O(eps)).
+
+## Entry 13 (19:18 PST): V4 pure-gauge test outcome (run B-20261121-031220-8b9c4d7)
+
+[VERIFIED, results/v4_gauge_test.json, figs/v4_gauge_test.png] All three hold.
+- P4.1: Delta = Lambda(h') - Lambda(h) falls as eps^2 (log2 ratios 2.000) and Delta - G as
+  eps^3 (3.000) for the plain and the conformal metric, one-sided and symmetric forms; at
+  eps = 1.25e-3 the rms residual is 0.2 % (plain) and 0.27 % (conformal) of Delta, and the
+  + coefficient at m = (1,1,0) is removed to 1e-3 (plain) and 3e-5 (conformal, symmetric
+  form) of itself.
+- P4.2: on conformal data the plain formula (no density term) leaves 74 % of Delta in rms and
+  23 % of the (1,1,0) + coefficient, falling only as eps^2: the -(2/3) div(zeta) term is
+  required for gt.
+- P4.3: zeta recovered from the exact metric difference has a relative error 1.25 eps..1.34
+  eps (order 1.000) and G built with it still leaves an eps^3 residual (3.00).
+Next: only now read first_source/fslib/gauge.py.
