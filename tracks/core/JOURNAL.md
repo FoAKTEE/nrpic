@@ -239,3 +239,81 @@ C  Card executable: the examples run to their end on one A100 (exit 0) and agree
    the processor runs to rounding where no deposit sum is involved (lw_oblique error
    norms to 1e-12 relative, id-solve iteration counts equal); with deposit, agreement
    to 1e-10 at the start. Refuted by a crash or a difference above these bounds.
+
+### 22:08Z to 22:55Z, recorded on 2026-11-21 by the session that continued (the first one was cut at 22:34Z by the usage limit)
+
+Merges made by the first session, one commit per branch, in the order planned: 3ab47062
+(requests-b), 120aa7cf (gauge), 54dc527e (scalar-2), e2498da4 (clump-curvature), de42b294
+(id-solver), 7b0fcf27 (requests-adf), f9323185 (collisions-2, 2026-11-20 22:05:31Z).
+Builds, both from scratch after the last merge [VERIFIED: build logs, 221 and 225
+compiled objects, configure lines of a new directory]: processors
+`.work/build_cpu_v04rc` 22:05Z to 22:08:31Z (156 s), card `.work/build_gpu_v04rc`
+22:16:11Z to 22:35:00Z (1129 s). The tree was clean at those times (`git.dirty = false`
+in the manifests registered at 22:08:49Z, 22:16:07Z and 22:27:24Z) and `git diff f9323185
+HEAD -- athenak python problems scripts` is empty today.
+
+Outcome of R (run core-20261120-221607-4985804, 3 cores, 398 s; the first attempt
+core-20261120-220849-cea5881 ended FAIL through the driver's own rule: the case binary
+writes no file and had "nothing compared"; rule corrected in 49858043, same runs):
+PREDICTION HELD. 12 set-ups, 73 output files and 2 sets of log result lines compared:
+60 files identical, 8 of class a (the five restart files of os, the three of c5: 36
+non-zero unset bytes in the release, 0 in the candidate), 5 of class b (jeans
+`bin/JeansWave.hydro_w.00001.bin`: `<output2> last_time` 0.1 against 0; c3: four final
+bin files, `last_time` 200 or 50 against 0), none of class a+b, none other. Every data
+byte, history line and snapshot equal. sha256 of the candidate processor executable
+8bff3107...d506, of the release d983155b...c25c.
+
+Outcome of Q, first attempt (run core-20261120-222724-75e323c, 1 core, 1663 s, exit 1):
+the driver printed QUICK TESTS FAIL for one item, `clump/particles.json`, class other
+("2240 and 2237 bytes"). That file is not written by AthenaK: `problems/ic/make_ic.py`
+writes it during the preparation of the run directory and records the output directory
+in it (`.../clump/branch` against `.../clump/new`: 3 characters, the only differing
+line; `diff` of the two files, checked today). Everything AthenaK wrote is of class
+identical or b: lw16 3 identical + 1 b, leak 7, eta 7 + 1 b, sr 4, clump 5, ids 8,
+tracer 3, pert 2, coll 4; all 13 numbers inside their bands. So Q held in substance and
+the verdict line is a defect of my driver (it compared a preparation product). The run
+stays on record as failed; the driver is corrected (preparation products are listed
+before AthenaK starts and reported separately) and the test is run again.
+
+## 2026-11-21T03:00Z  session core-lead-2 (wave 3, evening batch: release candidate core-v0.4, continued)
+
+State found: branch at e22fd12c (pushed), one untracked file of the first session
+(`analysis/release/fig_regress_v04.py`, complete, never run), run
+core-20261120-222724-75e323c registered and not closed. No `RELEASE-v0.4.md`, no
+`scratch/core/exe/core_nrpic_v04/`. No pause flag. main merged (0d35ba93; no source in it).
+Late commits on two merged branches, records only [VERIFIED: `git diff --stat
+HEAD...origin/core/<b>`]: requests-adf bc38aafc (READY text, card judgement figure,
+REQUESTS_ADF.md, diagnostics.md, multi_puncture.md), collisions-2 6801bffb and 4c798e7a
+(collisions.md, docs/COLLISIONS.md, journal, one outbox message). I merge them now: they
+are the closed records of the two packages and the interface texts the release copies.
+The card queue holds one job of core (4755), so one job of mine may be queued.
+
+### Predictions, written before the runs
+
+Q2 Quick tests again with the corrected driver, same executable (sha256 8bff3107...),
+   4 cores. Predicted: every file AthenaK writes has the bytes of the first attempt
+   (processor runs are reproducible), so 43 files identical and 2 of class b against
+   the branch executables, none other; the 13 numbers the same in all printed digits;
+   among the preparation products only `clump/particles.json` differs between the two
+   directories. Refuted by any file of class other, a number outside its band, or a
+   number that differs from the first attempt.
+C  (first session, above) stays as written. What I add before the card job, with my
+   own expectation where it differs:
+   C1 every case of the list ends with status 0 on one A100;
+   C2 the 13 numbers of the quick test, computed from the card runs, lie inside the same
+      bands; exception I expect: `sr_H_ratio_start` (2.6e-12, a rounding residual of the
+      slice) may leave [2e-12, 3.2e-12] on a card only if the slice differs, and the
+      READY of scalar-2 says the slice is bit-identical on a card, so I predict inside;
+   C3 ids: 17 outer iterations as on processors; coll: 141140 collisions and no pair
+      without a root, as on processors (the READY of collisions-2: no acceptance flips);
+   C4 against the processor runs of the same inputs: tracer |r_card - r_cpu| <= 1e-9 M
+      over 300 M; clump M-norm2 and H-norm2 at t = 0 within 1e-10 relative; leak
+      alpha_max within 1e-10 relative at every record; pert snapshots within 1e-12;
+   C5 lw: I expect the first session's bound "error norms to 1e-12 relative" to FAIL as
+      written: the error norm (5.3e-11 at 16 cells, 5.9e-12 at 32) is a difference of
+      fields of order one, so card rounding of 1e-16 to 1e-15 in the fields is 1e-5 to
+      1e-3 of it (the READY of requests-b has 7.561685e-11 against 7.561707e-11 for the
+      circular wave, 2.9e-6 relative). My bound: |RMS-L1(card) - RMS-L1(cpu)| <= 1e-14
+      absolute at both resolutions, order from 16 to 32 cells inside [3, 13].
+   Refuted by a crash, a number outside its band, a differing count in C3, or a
+   difference above the bounds of C4 and C5.
