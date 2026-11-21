@@ -1,0 +1,128 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-214230-ad24f6b",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "verifier_g2 V10b: initial-data solver on static refinement (core-v0.6 second pass, test C of core-20261119-153510-d1eaa30) against own continuum psi; monitor per level",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/verify/verifier_g2/scripts/v10b_idsolve2.py",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-153510-d1eaa30",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "ad24f6bd93de2e926016df98353d765e93762793",
+    "branch": "core/nrpic",
+    "dirty": false,
+    "package": [
+      "tracks/core/verify/verifier_g2"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "9d43b229377786cc62ef7bb666b765abfdab30bc",
+    "worktree": "wt/core"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-153510-d1eaa30/g_uni32/gauss.idsolve.bin",
+      "role": "input",
+      "sha256": "67d87b7c492c228153567e2bc849afdd930b3cfb6af82bc4f4d90282c4d4ab6d",
+      "bytes": 1835096,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-153510-d1eaa30/g_uni64/gauss.idsolve.bin",
+      "role": "input",
+      "sha256": "35a9f454556c6d2a1533b8c72bdf22176235be4826bc8ff64d508ed50039089d",
+      "bytes": 14680152,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-153510-d1eaa30/g_smr1/gauss.idsolve.blk.bin",
+      "role": "input",
+      "sha256": "21fae051ca79c70916398465703738cbf69014cf4c10024e84908524834a3ead",
+      "bytes": 3447408,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-153510-d1eaa30/g_smr2/gauss.idsolve.blk.bin",
+      "role": "input",
+      "sha256": "9bc42c7008f7c70b2999a311c63c89447d19c7c95fe4887a6b0d3288f1dc16c7",
+      "bytes": 5056176,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/verify/verifier_g2/scripts/v10b_idsolve2.py",
+      "role": "argv",
+      "sha256": "dbf70574774eb4c6d5ceec4a3c92eca87b4c0b11e557659cb77b44d7d4e1cb45",
+      "bytes": 5654,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-214230-ad24f6b",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T21:42:32Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 8.1719,
+    "gpu_hours_reserved": 11.9002,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 1,
+    "runs": 1493,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
