@@ -343,7 +343,7 @@ mine has fewer than half of its sectioning commands as sections (2209.06775). T2
 The bar (674.5 papers) is passed under my definition by 4.5 papers; my verdict on C3 rests on
 the [JUDGEMENT] that a letter with run-in headings has no sections to lose.
 
-## Entry 14 (2026-11-21 08:15 UTC): verdicts committed (ef9d2d34, pushed); C9 journal part; comparison
+## Entry 14 (2026-11-21 08:12 UTC): verdicts committed (ef9d2d34, pushed); C9 journal part; comparison
 
 After the commit of both VERIFIER.md files I read tracks/kb/JOURNAL.md for C9 (grep for failed
 runs and refuted predictions) and then the package's KB-G2 EVIDENCE.md and CHECKLIST.md and

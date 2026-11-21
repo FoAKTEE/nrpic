@@ -10,12 +10,13 @@ question set, and writes the verdicts into `tracks/kb/stage/KB-G2/VERIFIER.md` a
 | Path | What |
 |---|---|
 | `heldout.yaml` | blind held-out set: 24 questions in the verifier's words, expected paper and answer locator (file:lines of the source); committed 8fb37106 before any search. Nobody tunes retrieval on it |
-| `JOURNAL.md` | predictions and outcomes, entries 0-13 (and later) |
+| `JOURNAL.md` | predictions and outcomes, entries 0-14 |
 | `scripts/vg2common.py`, `locmap.py` | read-only snapshot access; own map from source lines to flat.tex characters |
 | `scripts/draw_heldout.py` | seeded stratified draw of the held-out papers |
 | `scripts/run_search.py`, `score_search.py` | `kb search` in three modes; own scorer (paper rank, location rank strict and with 200-char slack) |
 | `scripts/parse_scan.py`, `draw_parsecheck.py`, `lenient_check.py`, `tally.py` | own parse scan of 710 papers, the 15-paper source-check draw, the leniency check, the final C3 tally |
 | `scripts/checks_c1_c5_c6.py` | C1 counts, read-only default (static and in a fake data root), snapshot sha and modes, locators, directories, failed runs |
+| `scripts/compare.py` | counts for the comparison with the package (after the verdicts) |
 | `scripts/make_figures.py`, `figstyle.py` | figures (figstyle copied unchanged from harness/style) |
 | `figures/fig_ranks.png` | rank of the right paper and of the answer location per question, 3 modes, held-out and golden |
 | `figures/fig_parse.png` | parse components by recorded status; own counts of equations and bibliography entries against the database |
@@ -64,8 +65,11 @@ PNGs into figures/. A search costs about 1 s (text), 7 s (hybrid), 22 s (rerank)
 
 ## Open
 
-- C9 journal part and the comparison with the package: appended to the VERIFIER.md files after
-  the verdicts were committed.
+- Done after the verdicts (commit ef9d2d34): the C9 journal part and the comparison with the
+  package, appended to both VERIFIER.md files (run kb-20261121-081226-a4025cf; no verdict
+  changed). The package's counts agree with mine (C1, C3 status and bibliography counts, C4);
+  they differ in the parse definition, the held-out check, C6b and the status words of two
+  failed wave-1 runs.
 - Not checked (see the VERIFIER.md files): fidelity of the manifest to brief section 17 beyond
   ids, bibliography resolution and the citation graph, equation content, code-index content,
   the working database, the 26 raw directories outside the snapshot.
