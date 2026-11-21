@@ -592,7 +592,7 @@ def main():
 
     par = [r"% generated from registered run outputs; do not edit",
            r"\begin{table}",
-           r"\caption{Parameters of the black hole in a vacuum bubble as constructed, of the vacuum black hole that sets the floor, of the first run of the bubble and its control, of the Newtonian-mode infall, of the run with dust that reaches the black hole, and of the Kerr spike on the analytic metric. Lengths and times in units of the black-hole mass $M$.}",
+           r"\caption{Parameters of the black hole in a vacuum bubble as constructed, of the vacuum black hole that sets the floor, of the first run of the bubble and its control, of the Newtonian-mode infall, of the run with dust that reaches the black hole, and of the Kerr spike on the analytic metric. In the Newtonian-mode rows the value after the semicolon belongs to the run to $a/a_i=16$. Lengths and times in units of the black-hole mass $M$.}",
            r"\label{tab:parameters}",
            r"\begin{ruledtabular}\begin{tabular}{lr}",
            r"\multicolumn{2}{l}{\emph{Black hole in a vacuum bubble}} \\",
@@ -640,7 +640,7 @@ def main():
     st = {k: C.load_json(k, "setup.json") for k in ("nm128c", "nm64c", "nm128Lc", "q16")}
     if len({st[k]["eps"] for k in st}) != 1:
         raise SystemExit("the Newtonian-mode runs differ in eps")
-    par += [r"\multicolumn{2}{l}{\emph{Newtonian-mode infall (after the semicolon: run to 16)}} \\",
+    par += [r"\multicolumn{2}{l}{\emph{Newtonian-mode infall}} \\",
             rf"initial Hubble rate $\epsilon=H_iM$ & {st['nm128c']['eps']:g} \\",
             rf"seed clump: particles; radius & {st['nm128c']['n_clump']}; {st['nm128c']['r_clump']:g} \\",
             rf"dust particles & {st['nm128c']['n_dust']}, {st['nm128Lc']['n_dust']}; {st['q16']['n_dust']} \\",

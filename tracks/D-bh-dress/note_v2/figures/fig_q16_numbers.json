@@ -1,0 +1,141 @@
+{
+ "run": "D-20261121-085652-7e189a2",
+ "dx": 4.625,
+ "a_end": 15.955923843803514,
+ "n_total": 520048,
+ "n_alive_end": 520048,
+ "late": {
+  "3.976": {
+   "a": 3.976,
+   "M_ta": 2.5838,
+   "dress": 0.7866,
+   "dress_over_mta": 0.3045,
+   "mta_over_a": 0.6499,
+   "lam_min": 0.4601,
+   "nbins": 0,
+   "max_dev": NaN,
+   "rms_dev": NaN,
+   "hybrid_rel": [
+    0.0026,
+    0.0051
+   ],
+   "kernel_rel": [
+    0.0048,
+    0.0088
+   ],
+   "ratios": [],
+   "M_ta_flagfree": 2.5852,
+   "r_ta_measured": 39.862
+  },
+  "8.001": {
+   "a": 8.001,
+   "M_ta": 4.815,
+   "dress": 2.1486,
+   "dress_over_mta": 0.4462,
+   "mta_over_a": 0.6018,
+   "lam_min": 0.1858,
+   "nbins": 2,
+   "max_dev": 0.036,
+   "rms_dev": 0.025,
+   "fit_slope": NaN,
+   "fit_slope_ss": NaN,
+   "mean_local_slope": -2.471,
+   "mean_local_slope_ss": -2.597,
+   "hybrid_rel": [
+    0.0016,
+    -0.0004
+   ],
+   "kernel_rel": [
+    0.0059,
+    0.0032
+   ],
+   "ratios": [
+    [
+     0.227,
+     1.036
+    ],
+    [
+     0.286,
+     0.997
+    ]
+   ],
+   "M_ta_flagfree": 4.8095,
+   "r_ta_measured": 99.235
+  },
+  "15.956": {
+   "a": 15.956,
+   "M_ta": 9.3017,
+   "dress": 4.9109,
+   "dress_over_mta": 0.528,
+   "mta_over_a": 0.583,
+   "lam_min": 0.0748,
+   "nbins": 6,
+   "max_dev": 0.159,
+   "rms_dev": 0.076,
+   "fit_slope": -2.664,
+   "fit_slope_ss": -2.575,
+   "mean_local_slope": -2.55,
+   "mean_local_slope_ss": -2.499,
+   "hybrid_rel": [
+    0.008,
+    0.0011
+   ],
+   "kernel_rel": [
+    0.0128,
+    0.0064
+   ],
+   "ratios": [
+    [
+     0.091,
+     0.959
+    ],
+    [
+     0.115,
+     0.993
+    ],
+    [
+     0.145,
+     1.043
+    ],
+    [
+     0.183,
+     0.981
+    ],
+    [
+     0.231,
+     0.841
+    ],
+    [
+     0.29,
+     0.929
+    ]
+   ],
+   "M_ta_flagfree": 9.303,
+   "r_ta_measured": 247.131
+  }
+ },
+ "lost": {
+  "run": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-085652-7e189a2",
+  "L": 444.0,
+  "n_lost": 0,
+  "mass_lost": 0.0,
+  "n_lost_clump": 0,
+  "n_lost_dust": 0,
+  "first_loss_a": null,
+  "lost_and_expected": 0
+ },
+ "hybrid_maxrel_a3_12": {
+  "M_ta": 0.004312720350163168,
+  "dress": 0.009055069142661187
+ },
+ "kernel_maxrel_a3_12": {
+  "M_ta": 0.007197686716392981,
+  "dress": 0.013343091929861606
+ },
+ "profile_last": {
+  "a": 15.955923843803514,
+  "r_ta_selfsim_def": 247.30363253859784,
+  "r_ta_measured": 256.00000000000006,
+  "four_dx_over_rta": 0.07480682677442119
+ }
+}
