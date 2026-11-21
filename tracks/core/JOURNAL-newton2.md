@@ -1310,3 +1310,41 @@ The same case on the card: 4.7 s.
   the same files in a debugging pass: the diagonal components agree to 3.4e-13 in
   absolute value. The script now scales a tensor by its largest component; the
   registered rerun follows, and its numbers were seen before it.
+- Registered rerun core-20261121-085215-2053aa4 (`t4d_twin.json`, figure
+  `t4d_twin.png`, looked at: the two curves of the short axis lie on each other through
+  its minimum; the differences stay at 1e-14 for J and 1e-13 for K and W over the whole
+  run, no growth): 421 records in both runs, times equal; J of the patch within 3.2e-14
+  of its largest component, d2J/dT2 within 6.6e-14, K and W within 2.5e-13; the first
+  minimum of the short axis at record 397 in both (cosmic time 14.98987 t_k after the
+  turnaround). With the tensor scale the bound of 1e-9 holds with four orders to spare;
+  the refutation bound (1e-6) is not met in either measure for the diagonal components.
+- The processor run gives the 96^3 row of the T4d table again: it is the card run to
+  rounding, so +1.09 per cent stands for both.
+
+### Closing entry of session newton2-4 (08:53Z): the package is closed
+
+This replaces the "Pending" part of the handoff above; nothing is pending or running
+(`squeue` holds no job of this package; both background runs are closed in the
+registry).
+- Card job 4777 ran and is judged (T11c, T4d); the 96^3 case has a processor twin.
+- `newtonian_mode.md` 7.9 (table against the cell size, the floor against the ODE),
+  7.12 (merged card build, twin), section 6 "Cards"; `REQUESTS_NEWTON2.md` rows T4d,
+  T11c, T4d twin, section 6 (card time 0.44 of 1.0 card-hours), "Not done"; READY of
+  the published executables (`athena_gpu`: tested on a card), copy in
+  `tracks/core/analysis/newton2/READY.txt`; figures `t11_merged`, `t4d_convergence`,
+  `t4d_twin` in `figs/` with their rows of the README.
+- Registered runs of this session: 2 card (one closing of job 2a, job 4777), 5 case
+  runs on processors (T11 twice over two drivers, T12 twice, T4d at 96^3), 13 analyses;
+  two of them failed through faults of my comparison scripts and are on record
+  (core-20261121-081152-5fc1ea4, core-20261121-085145-9c8963d).
+- Predictions of this session that failed: T11b as worded (seven restart files differ
+  in never-set header bytes); T6c x "within five times the uniform mesh" for the centre
+  of mass (5.3); T4d "axes below 0.045" (0.047), 128^3 seven-point, 256^3 (sign), "axes
+  falls by three per doubling"; the twin criterion as first worded.
+- Open, for whoever continues (none blocks the use of the options): the term behind the
+  steady drift at a level boundary; the floor of the embedded ellipsoid against Track
+  B's ODE; the relativistic self-force of a compact clump; a profile of the isolated
+  solver on a card; more than one level, periodic refined meshes, adaptive refinement
+  in the Newtonian mode.
+- For core's lead: merge `core/newton-2` into `core/nrpic` (it contains main at
+  9f7f85be; diff against tag core-v0.5 is this package only; byte regression T11a).

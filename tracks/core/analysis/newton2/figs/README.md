@@ -12,7 +12,8 @@ Predictions and outcomes: `tracks/core/JOURNAL-newton2.md`.
 | `t3_groups` | T3: group history on the exact pancake | `t3_groups.py` | core-20261119-160919-c6a7279; card twin in core-20261119-145346-2f89b86 | core-20261120-222422-4ef2e80 |
 | `t4a_generator` | T4a: deformed ball of `make_ic.py` against Track A's generator | `t4a_generator.py` | core-20261119-152228-0ad3c0e | core-20261119-152928-6be4984 |
 | `t4b_embedded` | T4b, T4c: embedded ellipsoid, Fourier and multigrid, 64^3 | `t4b_embedded.py` | core-20261119-162746-a02d334, core-20261119-162455-e05ffa1 | core-20261120-222425-078bcc0 |
-| `t4d_convergence` | T4d: embedded ellipsoid against kernels (64^3 only; 96^3 to 256^3 are in card job core-20261121-080215-df3af65) | `t4d_convergence.py` | the two of T4b; case emb64_pcs_fft of card job core-20261120-221835-4870ae5 | core-20261121-081511-37acd23 |
+| `t4d_convergence` | T4d: embedded ellipsoid against the cell size (64^3 to 256^3) and the kernels | `t4d_convergence.py` | the two of T4b; case emb64_pcs_fft of card job core-20261120-221835-4870ae5; five cases of card job core-20261121-080215-df3af65 (decks: core-20261121-075459-5872c31) | core-20261121-084820-a252870 |
+| `t4d_twin` | T4d at 96^3 on a processor against the card (merged builds) | `t4d_twin.py` | core-20261121-082059-478b448; case emb96_fft of card job core-20261121-080215-df3af65 | core-20261121-085215-2053aa4 |
 | `t5_infall` | T5: secondary infall onto the fixed point mass | `t5_infall.py` | core-20261119-165257-61d4b78 | core-20261120-222417-4ca3f76 |
 | `t6_smr` | T6: ball across the level boundary, lattice 0.0625 | `t6_smr.py` | core-20261119-160027-2c0c171 | core-20261120-222437-191d56a |
 | `t6b_smr` | T6b: ball inside the fine region, lattice 0.0625 | `t6_smr.py` | core-20261119-165447-0b9cb1e | core-20261120-222429-8971bdb |
@@ -23,12 +24,13 @@ Predictions and outcomes: `tracks/core/JOURNAL-newton2.md`.
 | `t8_selfforce` | T8: self-force of one particle against its place in the cell | `t8_selfforce.py` | core-20261119-152207-d4e656c | core-20261119-152742-a6810bd |
 | `t10_regress` | T10: byte regression of the pre-merge build against the branch start and release core-v0.3 | `t10_regress.py` | core-20261119-152944-b2f41d3 | core-20261119-160915-40df1d6 |
 | `card_judge` | card twins of T1 and throughput (T9), pre-merge card build | `card_judge.py` | card job core-20261119-145346-2f89b86 (decks: core-20261119-145326-d509829) | core-20261120-220427-5d8547f |
-| `t11_merged` | T11a, T11b: merged processor build against release core-v0.5 and against the pre-merge build (the card panel is empty until job core-20261121-080215-df3af65 is judged) | `t11_merged.py` | core-20261121-080231-a98a070 (`analysis/release/regress_v04.py`), core-20261121-080229-0095e95 | core-20261121-080954-30dec42 |
+| `t11_merged` | T11: merged processor build against release core-v0.5 and against the pre-merge build; card twins of T1 on the merged card build | `t11_merged.py` | core-20261121-080231-a98a070 (`analysis/release/regress_v04.py`), core-20261121-080229-0095e95; card job core-20261121-080215-df3af65 | core-20261121-084805-29f8e02 |
 | `ready_examples` | T12: example lines of READY with the published processor executable | `ready_examples.py` (runs its own cases) | - | core-20261121-081316-b153b46 |
 
 Runs on record that produced no file here: analyses core-20261119-144855-2a2ef23
 (started too early, failed), core-20261119-144933-515de0f (wrote outside its run
 directory), core-20261119-162128-1cd17b2 (deck fault), core-20261121-081152-5fc1ea4
-(comparison script divided by a zero column); card job core-20261120-221728-59d6e64
+(comparison script divided by a zero column), core-20261121-085145-9c8963d (comparison
+scaled by columns that vanish by symmetry); card job core-20261120-221728-59d6e64
 (stopped before it started); the first versions of several figures before layout
 corrections (journal).

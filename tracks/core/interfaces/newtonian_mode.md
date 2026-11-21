@@ -919,6 +919,12 @@ built again and checked [VERIFIED; journal sections T11, T12]:
   seven-point symbol equals the multigrid run on the card to 2.2e-15. The Fourier
   solver with 601 solves takes 0.9 s of card time for this case, the multigrid solver
   to rounding 26.6 s.
-@@TWIN@@
+- The embedded ellipsoid at 96^3 (905968 particles, 420 steps through the collapse of
+  the short axis, a mesh size with the radix 3) on a processor and on a card, both
+  merged builds (runs core-20261121-082059-478b448 and the case emb96_fft of the card
+  job; comparison core-20261121-085215-2053aa4, figure `t4d_twin.png`): the moments of
+  the patch agree to 3.2e-14 of the largest component at every record, their second
+  derivatives to 6.6e-14, K and W to 2.5e-13, and the first minimum of the short axis
+  falls on the same record. 1813 s on one core against 4.7 s on the card.
 Executables: `/data/haiyangw/nrpic/scratch/core/exe/core_newton-2/` (READY, COMMIT,
 SHA256SUMS; `premerge/` holds the pair the earlier tests ran with).

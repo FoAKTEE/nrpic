@@ -1,7 +1,8 @@
 READY of core/newton-2 (work package newton2 of core: the Newtonian mode, second pass;
 requests of tracks B, A and D and core's deferred items). Written 2026-11-21 (batch 2b).
 Evidence and every number: branch core/newton-2, tracks/core/JOURNAL-newton2.md
-(predictions and outcomes of the tests T1 to T12, the failed ones included),
+(predictions and outcomes of the tests T1 to T12 and of three card jobs, the failed
+ones included),
 tracks/core/interfaces/newtonian_mode.md sections 6 and 7 (interface, results),
 tracks/core/interfaces/REQUESTS_NEWTON2.md (triage, lines of shared files touched).
 Read a file of the branch with: git show core/newton-2:<path>. Test scripts:
@@ -18,11 +19,13 @@ STATUS
               never-set bytes of the mesh header only); the three example inputs below
               run as printed (T12).
   athena_gpu  card executable (scripts/build_gpu.sh, CUDA 12.6, one A100) of the same
-              source. NOT YET RUN ON A CARD: its check (card twins of T1) and the
-              convergence runs of the embedded ellipsoid are Slurm job 4777 (run
-              core-20261121-080215-df3af65), queued at the time of writing. Until the
-              journal records that job, use premerge/athena_gpu for card runs of the
-              options below, or athena_gpu as scouting at your own check.
+              source. TESTED on a card (Slurm 4777, run core-20261121-080215-df3af65):
+              the plane wave with the multigrid solver and with the Fourier solver and
+              both symbols equals the processor runs to 1.5e-15 of the box through
+              shell crossing, K and W to 7.3e-13 (T11c); the embedded ellipsoid at 96^3
+              (9e5 particles, 420 steps) equals its processor run to 3.2e-14 in the
+              moments of the patch (T4d twin). Not run with this executable: refined
+              meshes on a card (premerge/athena_gpu ran them: T6c).
   premerge/athena_cpu, premerge/athena_gpu
               the same package on the branch start (core/requests-adf), without the
               capabilities of releases core-v0.4 and core-v0.5. TESTED: all of T1 to T10
@@ -88,8 +91,14 @@ NEW OPTIONS, <particles> block, Newtonian mode (pusher = newton)
    axis late by 2.56 per cent (linear cloud, spectral), 1.29 per cent (linear cloud,
    multigrid), 0.92 per cent (deposit_shape = pcs with compensation, interp = bspline,
    spectral): the run lags the ODE where the short axis spans fewer than three cells.
-   Not tested: more than two groups; a group cut by the periodic wrap; convergence of
-   the embedded ellipsoid with the cell size (job 4777).
+   Against the cell size the lag goes away (T4d, linear cloud, spectral: +2.56, +1.09,
+   +0.42, -0.14 per cent at 64^3, 96^3, 128^3, 256^3; cubic cloud at 128^3 -0.11): it
+   is a discretisation error. A floor against the ODE remains at every fine run: 0.1
+   per cent in the crossing time, 0.02 R_L in the short and 0.06 to 0.07 R_L in the long
+   axis before the crossing, the same for all kernels (a difference between the
+   particle patch in its periodic background and the ODE; not separated). On a card:
+   16 s at 128^3 (2.1e6 particles, 561 steps), 175 s at 256^3 (1.7e7 particles).
+   Not tested: more than two groups; a group cut by the periodic wrap.
 3. Generator of the tests, problems/newton/make_ic.py ball (Track A; no executable):
      --axes S1 S2 S3  --vgrad D1 D2 D3  [--rotate SEED]  [--background X0 X1 NB RHO]
    Tested: T4a (equal to Track A's make_deformed_ball.py in every position, velocity
@@ -133,7 +142,7 @@ isolated or refined meshes; the special-relativistic Newtonian push; snapshots a
 times; the Newtonian mode on more than one rank.
 
 OPEN (stated, not hidden)
-- Card check of athena_gpu and T4d at 96^3, 128^3, 256^3: Slurm 4777 pending.
+- What the floor of the embedded ellipsoid against Track B's ODE is (T4d).
 - Which term gives the steady drift of a ball across a level boundary: not separated.
 - The self-force of a compact clump in the relativistic mode: not measured.
 - Where the time goes on isolated meshes on a card (nine to fourteen times the

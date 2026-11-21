@@ -231,7 +231,7 @@ package, commit 67ca9ce1).
 | T11a | merged processor build against release core-v0.5, new options absent, sixteen set-ups | core-20261121-080231-a98a070, core-20261121-080229-0095e95; core-20261121-080954-30dec42 | held: 117 of 117 items identical |
 | T11b | merged processor build against the files of the pre-merge build, Fourier solver and groups | core-20261121-080229-0095e95; core-20261121-080954-30dec42 | 50 result files identical; seven restart files differ in the 36 never-set bytes of the mesh header only (a class my prediction did not name) |
 | T11c | card twins of T1 on the merged card build | card core-20261121-080215-df3af65 (Slurm 4777); core-20261121-084805-29f8e02 | held: positions within 1.5e-15 of the box, K and W 7.3e-13 |
-@@TWINROW@@
+| T4d twin | the embedded ellipsoid at 96^3 on a processor against the card, merged builds | core-20261121-082059-478b448, card core-20261121-080215-df3af65; core-20261121-085215-2053aa4 | moments of the patch equal to 3.2e-14 of the largest component, K and W 2.5e-13, same record of the minimum. My criterion as first worded (relative to each column) failed for the off-diagonal components, which vanish by symmetry (core-20261121-085145-9c8963d) |
 | T12 | the example lines of READY with the published processor executable | core-20261121-081316-b153b46 | held: all run; the refined-mesh example equals the card run of T6c to 2.2e-13 over 20 steps |
 
 Lines of shared source files touched by this package (for the merge into `core/nrpic`;
