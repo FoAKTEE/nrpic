@@ -8,6 +8,11 @@ Background time: the coordinate time is conformal time of the homogeneous soluti
 a = (1 + tau/2)^2 (cosmo/README.md), t/t_H = (a/a_H)^(3/2) with a_H = 6/eps_i^2 (P0).
 Away from the peak the lapse condition keeps this relation [JUDGEMENT; the K-driver
 references the largest lapse and the proper-volume mean of K].
+--gauge leak (wave 3, runs P0L/S1L with the relaxed 1+log lapse): the coordinate time is
+close to the proper time of the background, t/t_H = (t_i + t)/t_H with t_i = 2/(3 H_i),
+t_H = t_i (6/eps_i^2)^(3/2), a = ((t_i + t)/t_i)^(2/3); the lapse is shown as alpha (not
+alpha/a). The background proper time runs ahead of t by 0.5-1.1 for 10 < t < 200 (run
+A-20261121-130103-e007f42), below 1 per cent of t/t_H there.
 """
 import argparse
 import glob
@@ -70,7 +75,25 @@ def tab_series(run, var, axis):
     return out
 
 
+GAUGE = "e1"
+T_I = 2.0/3.0
+
+
+def a_of(t):
+    t = np.asarray(t, dtype=float)
+    if GAUGE == "leak":
+        return ((T_I + t)/T_I)**(2.0/3.0)
+    return (1.0 + 0.5*t)**2
+
+
+def lapse_norm(t):
+    """Divisor of the lapse in the figures: a (E1, conformal-time lapse) or 1 (leak)."""
+    return np.ones_like(np.asarray(t, dtype=float)) if GAUGE == "leak" else a_of(t)
+
+
 def t_over_tH(tau, eps):
+    if GAUGE == "leak":
+        return (T_I + np.asarray(tau, dtype=float))/(T_I*(6.0/eps**2)**1.5)
     a = (1.0 + 0.5*np.asarray(tau))**2
     return (a/(6.0/eps**2))**1.5
 
@@ -131,7 +154,7 @@ def figures(runs, eps, out, sums):
         if os.path.exists(cp):
             c = read_cols(cp)
             x = t_over_tH(c["time"], eps)
-            Ebar = c["E_min"]*0 + 3.0/(8.0*np.pi)/(1.0 + 0.5*c["time"])**6
+            Ebar = c["E_min"]*0 + 3.0/(8.0*np.pi)/a_of(c["time"])**3
             axs[0].loglog(x, c["E_max"]/Ebar, color=col, label=label)
             axs[2].loglog(x, np.maximum(c["Hr_max"], 1e-12), color=col)
             axs[2].loglog(x, np.maximum(c["Hr_mean"], 1e-12), color=col, ls="--")
@@ -139,7 +162,7 @@ def figures(runs, eps, out, sums):
         if os.path.exists(hp):
             h = read_cols(hp)
             x = t_over_tH(h["time"], eps)
-            a = (1.0 + 0.5*h["time"])**2
+            a = lapse_norm(h["time"])
             axs[1].semilogx(x, h["alpha_min"]/a, color=col)
             if "alpha_probe" in h:
                 axs[1].semilogx(x, h["alpha_probe"]/a, color=col, ls="--")
@@ -156,7 +179,8 @@ def figures(runs, eps, out, sums):
             ax.axvline(tz, color=cols[1], lw=1.0, ls=":", alpha=0.4)
     axs[0].set_ylabel(r"$E_{\max}/\bar E$")
     axs[0].legend(frameon=False, loc="upper left")
-    axs[1].set_ylabel(r"$\alpha/a$ (min; dashed: centre)")
+    axs[1].set_ylabel((r"$\alpha$" if GAUGE == "leak" else r"$\alpha/a$")
+                      + " (min; dashed: centre)")
     axs[2].set_ylabel(r"$H_r$ max (mean dashed)")
     axs[3].set_ylabel(r"$\Theta_{\max}$")
     axs[3].set_xlabel(r"$t/t_H$ (background)")
@@ -184,16 +208,17 @@ def figures(runs, eps, out, sums):
             key = {"x": "x1v", "y": "x2v", "z": "x3v"}[axn]
             for d, cl in zip(pick, cc):
                 o = np.argsort(d[key])
-                a = (1.0 + 0.5*d["time"])**2
+                a = a_of(d["time"])
                 if col == "tmunu_E":
                     y = d[col][o]/(3/(8*np.pi)/a**3)
                     ax.semilogy(d[key][o], y, color=cl, lw=1.0,
                                 label=f"{t_over_tH(d['time'], eps):.3g}")
                 else:
-                    ax.plot(d[key][o], d[col][o]/a, color=cl, lw=1.0)
+                    ax.plot(d[key][o], d[col][o]/lapse_norm(d["time"]), color=cl, lw=1.0)
             ax.set_xlim(-4, 4)
             ax.set_xlabel(f"{axn} (through the peak)")
-            ax.set_ylabel(r"$E/\bar E$" if col == "tmunu_E" else r"$\alpha/a$")
+            ax.set_ylabel(r"$E/\bar E$" if col == "tmunu_E" else
+                          (r"$\alpha$" if GAUGE == "leak" else r"$\alpha/a$"))
             if j == 0:
                 ax.legend(frameon=False, fontsize=7, title=r"$t/t_H$", title_fontsize=7)
         fs.save(fig, os.path.join(out, f"fig_scouting_profiles_{label}"))
@@ -204,7 +229,11 @@ def main():
     ap.add_argument("--run", action="append", required=True, help="LABEL=DIR")
     ap.add_argument("--eps-i", type=float, default=1.0)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--gauge", choices=("e1", "leak"), default="e1",
+                    help="time variable of the runs (module doc)")
     a = ap.parse_args()
+    global GAUGE
+    GAUGE = a.gauge
     os.makedirs(a.out, exist_ok=True)
     runs = [tuple(r.split("=", 1)) for r in a.run]
     sums = [summarise(lab, d, a.eps_i) for lab, d in runs]
