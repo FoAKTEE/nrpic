@@ -1,0 +1,106 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-20261121-081415-b8c9d29",
+  "track": "C-sidm",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "verify_g1 V5b: T9 end-state KS of each mass class against MJ at initial-energy, final-energy and own theta",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/C-sidm/verify_g1/v5_t9ks.py",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "b8c9d29c79201ddb067ff6b7dedec2c45aebc58a",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "package": [
+      "tracks/C-sidm/verify_g1"
+    ],
+    "outside_package": {
+      "count": 9,
+      "first": [
+        " M tracks/C-sidm/note/figures/schem_timeline.png",
+        " M tracks/C-sidm/note/figures/schem_timeline.svg",
+        " M tracks/C-sidm/note/main.tex",
+        " M tracks/C-sidm/note/references.bib",
+        " M tracks/C-sidm/note/scripts/common.py",
+        " M tracks/C-sidm/note/scripts/ledger.py",
+        " M tracks/C-sidm/note/scripts/schem_timeline.py",
+        " M tracks/C-sidm/note/tables/ledger.tex",
+        "?? tracks/C-sidm/note/tables/runinfo.tex"
+      ]
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/C-sidm"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/C-sidm/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/C-sidm/verify_g1/v5_t9ks.py",
+      "role": "argv",
+      "sha256": "e20d4ae85a9ec69c3ae8ada9df7919bcff6260949bd373bc23ab884f60cacc95",
+      "bytes": 3502,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/C-sidm/C-20261121-081415-b8c9d29",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T08:14:15Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 45.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0142,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 172,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
