@@ -1,0 +1,107 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-215013-5564584",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "verifier_g2 V6b: aligned comparison (restart files after the parameter text, trajectories by time and tag) of the V6 runs core-20261121-213713-952a0c4",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/verify/verifier_g2/scripts/v6b_compare.py",
+    "/data/haiyangw/nrpic/scratch/core/core-20261121-213713-952a0c4",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "5564584e68328452e32c6582f7fab2506e326700",
+    "branch": "core/nrpic",
+    "dirty": false,
+    "package": [
+      "tracks/core/verify/verifier_g2"
+    ],
+    "outside_package": {
+      "count": 1,
+      "first": [
+        "?? tracks/core/stage/G2/VERIFIER.md"
+      ]
+    },
+    "merge_base_main": "9d43b229377786cc62ef7bb666b765abfdab30bc",
+    "worktree": "wt/core"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261121-213713-952a0c4/v6_restart.json",
+      "role": "input",
+      "sha256": "eb1b82a8de83865b6aa10bce49008024bc38cd5bbf5816bc25dd65d08d656152",
+      "bytes": 3143,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/verify/verifier_g2/scripts/v6b_compare.py",
+      "role": "argv",
+      "sha256": "3af9b52d7914c176014aa4b7c315d9c6a60736ddef77bab97719060754638b22",
+      "bytes": 4802,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 21.761,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-215013-5564584",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "824d6fefe8178ce56428bd131575c25354bf622399a68b2657d11c0f27c7cf29",
+    "bytes": 93191,
+    "files": 4
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-21T21:50:14Z",
+  "started": "2026-11-21T21:50:14Z",
+  "ended": "2026-11-21T21:50:36Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 8.1719,
+    "gpu_hours_reserved": 11.9002,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1497,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  },
+  "finished": "2026-11-21T21:50:36Z"
+}

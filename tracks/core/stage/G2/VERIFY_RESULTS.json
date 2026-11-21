@@ -1,9 +1,9 @@
 {
   "track": "core",
   "gate": "G2",
-  "commit": "042f70bcd92bf368ff776dada536388a12a1c296",
-  "verified_utc": "2026-11-21T16:21:46Z",
-  "export": "/data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-042f70b-20261121T161613Z",
+  "commit": "3a775191967243fc5b4e95e0e66c4b232fab384b",
+  "verified_utc": "2026-11-21T23:37:00Z",
+  "export": "/data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-3a77519-20261121T233130Z",
   "result": "FAIL",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 042f70bcd92b (HEAD) in /data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-042f70b-20261121T161613Z/tree",
+      "message": "clean export of 3a7751919672 (HEAD) in /data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-3a77519-20261121T233130Z/tree",
       "detail": null
     },
     {
@@ -32,69 +32,133 @@
     },
     {
       "check": "note",
-      "status": "FAIL",
-      "message": "no tracks/<ID>/note/main.tex (working note)",
+      "status": "PASS",
+      "message": "tracks/<ID>/note/main.tex present",
       "detail": null
     },
     {
       "check": "package",
       "status": "PASS",
-      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); no verifier's report yet (VERIFIER.md, decision 0016)",
+      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); verifier's report VERIFIER.md",
+      "detail": null
+    },
+    {
+      "check": "note-pdf",
+      "status": "PASS",
+      "message": "note/main.pdf committed after the last .tex change",
       "detail": null
     },
     {
       "check": "style",
       "status": "PASS",
-      "message": "no figure scripts yet",
+      "message": "2 style copies equal harness/style/SHA256SUMS (paperfig.py, figstyle.py)",
       "detail": null
     },
     {
       "check": "fig-script",
       "status": "PASS",
-      "message": "0 figures, each with its script",
+      "message": "4 figures, each with its script",
       "detail": null
     },
     {
       "check": "min-figs",
       "status": "WARN",
-      "message": "0 schematics and 0 data figures (brief 13.4 asks at least 1 and 5 at G2)",
+      "message": "1 schematics and 3 data figures (brief 13.4 asks at least 1 and 5 at G2)",
       "detail": null
     },
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "10 of 1405 runs have problems",
+      "message": "6 of 1439 runs have problems; 9 waived",
       "detail": {
-        "core-20261120-220538-eafed07": [
-          "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_gpu changed since the run (sha256 differs)"
+        "core-20261121-204230-3bcb118": [
+          "status is submitted: not finished (nrpic-run finish)"
         ],
-        "core-20261120-220816-09f6f79": [
-          "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_gpu changed since the run (sha256 differs)"
+        "core-20261121-204232-f74c942": [
+          "status is submitted: not finished (nrpic-run finish)"
         ],
-        "core-20261121-025527-eb8e6b7": [
-          "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_gpu changed since the run (sha256 differs)"
+        "core-20261121-204234-d010783": [
+          "status is submitted: not finished (nrpic-run finish)"
         ],
-        "core-20261121-030438-e52cdb3": [
-          "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_cpu changed since the run (sha256 differs)"
+        "core-20261121-204235-0b25077": [
+          "status is submitted: not finished (nrpic-run finish)"
         ],
-        "core-20261121-031145-ffc12b3": [
-          "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_cpu changed since the run (sha256 differs)"
+        "core-20261121-204237-ae00ca2": [
+          "status is submitted: not finished (nrpic-run finish)"
         ],
-        "core-20261121-031330-4d924b0": [
-          "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_cpu changed since the run (sha256 differs)"
-        ],
-        "core-20261121-031446-5b1fdcd": [
-          "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_cpu changed since the run (sha256 differs)"
-        ],
-        "core-20261121-033330-614286b": [
-          "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_cpu changed since the run (sha256 differs)"
-        ],
-        "core-20261121-033435-0152dad": [
-          "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_cpu changed since the run (sha256 differs)"
-        ],
-        "core-20261121-154654-d3ec487": [
+        "core-20261121-204239-2be5ac2": [
           "status is submitted: not finished (nrpic-run finish)"
         ]
+      }
+    },
+    {
+      "check": "runs-waived",
+      "status": "WARN",
+      "message": "failures of the manifest check waived: 9 runs named in main's coord/WAIVERS.md (decision 0019 item 6): core-20261120-220538-eafed07: records scratch/core/exe/core_cosmo-amr/athena_gpu, published again after the run; outputs unaffected (decision 0023 item 5); core-20261120-220816-09f6f79: records scratch/core/exe/core_cosmo-amr/athena_gpu, published again after the run; outputs unaffected (decision 0023 item 5); core-20261121-025527-eb8e6b7: records scratch/core/exe/core_cosmo-amr/athena_gpu, published again after the run; outputs unaffected (decision 0023 item 5); core-20261121-030438-e52cdb3: records scratch/core/exe/core_cosmo-amr/athena_cpu, published again after the run; outputs unaffected (decision 0023 item 5); core-20261121-031145-ffc12b3: records scratch/core/exe/core_cosmo-amr/athena_cpu, published again after the run; outputs unaffected (decision 0023 item 5)",
+      "detail": {
+        "core-20261120-220538-eafed07": {
+          "waived_by": "coord/WAIVERS.md",
+          "reason": "records scratch/core/exe/core_cosmo-amr/athena_gpu, published again after the run; outputs unaffected (decision 0023 item 5)",
+          "problems": [
+            "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_gpu changed since the run (sha256 differs)"
+          ]
+        },
+        "core-20261120-220816-09f6f79": {
+          "waived_by": "coord/WAIVERS.md",
+          "reason": "records scratch/core/exe/core_cosmo-amr/athena_gpu, published again after the run; outputs unaffected (decision 0023 item 5)",
+          "problems": [
+            "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_gpu changed since the run (sha256 differs)"
+          ]
+        },
+        "core-20261121-025527-eb8e6b7": {
+          "waived_by": "coord/WAIVERS.md",
+          "reason": "records scratch/core/exe/core_cosmo-amr/athena_gpu, published again after the run; outputs unaffected (decision 0023 item 5)",
+          "problems": [
+            "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_gpu changed since the run (sha256 differs)"
+          ]
+        },
+        "core-20261121-030438-e52cdb3": {
+          "waived_by": "coord/WAIVERS.md",
+          "reason": "records scratch/core/exe/core_cosmo-amr/athena_cpu, published again after the run; outputs unaffected (decision 0023 item 5)",
+          "problems": [
+            "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_cpu changed since the run (sha256 differs)"
+          ]
+        },
+        "core-20261121-031145-ffc12b3": {
+          "waived_by": "coord/WAIVERS.md",
+          "reason": "records scratch/core/exe/core_cosmo-amr/athena_cpu, published again after the run; outputs unaffected (decision 0023 item 5)",
+          "problems": [
+            "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_cpu changed since the run (sha256 differs)"
+          ]
+        },
+        "core-20261121-031330-4d924b0": {
+          "waived_by": "coord/WAIVERS.md",
+          "reason": "records scratch/core/exe/core_cosmo-amr/athena_cpu, published again after the run; outputs unaffected (decision 0023 item 5)",
+          "problems": [
+            "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_cpu changed since the run (sha256 differs)"
+          ]
+        },
+        "core-20261121-031446-5b1fdcd": {
+          "waived_by": "coord/WAIVERS.md",
+          "reason": "records scratch/core/exe/core_cosmo-amr/athena_cpu, published again after the run; outputs unaffected (decision 0023 item 5)",
+          "problems": [
+            "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_cpu changed since the run (sha256 differs)"
+          ]
+        },
+        "core-20261121-033330-614286b": {
+          "waived_by": "coord/WAIVERS.md",
+          "reason": "records scratch/core/exe/core_cosmo-amr/athena_cpu, published again after the run; outputs unaffected (decision 0023 item 5)",
+          "problems": [
+            "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_cpu changed since the run (sha256 differs)"
+          ]
+        },
+        "core-20261121-033435-0152dad": {
+          "waived_by": "coord/WAIVERS.md",
+          "reason": "records scratch/core/exe/core_cosmo-amr/athena_cpu, published again after the run; outputs unaffected (decision 0023 item 5)",
+          "problems": [
+            "input /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_cpu changed since the run (sha256 differs)"
+          ]
+        }
       }
     },
     {
@@ -391,25 +455,13 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 36 lines",
+      "message": "STATUS.md has 37 lines",
       "detail": null
     },
     {
       "check": "rerun",
-      "status": "PASS",
-      "message": "0 of 0 scripts and commands ran cleanly in the export (none registered)",
-      "detail": null
-    },
-    {
-      "check": "compare",
-      "status": "PASS",
-      "message": "0 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
-      "detail": []
-    },
-    {
-      "check": "regenerate",
-      "status": "PASS",
-      "message": "all 0 committed figure files regenerated",
+      "status": "WARN",
+      "message": "re-run skipped (--no-rerun)",
       "detail": null
     }
   ]

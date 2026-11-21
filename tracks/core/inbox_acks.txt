@@ -92,3 +92,5 @@ tracks/C-sidm/outbox/20261121T081156Z__to-core__collisions-several-ranks.md	2026
 tracks/C-sidm/outbox/20261121T081156Z__to-core__heat-conduction-tested.md	2026-11-21T08:13:35Z	read 2026-11-21 by core-lead-4; triaged in REQUESTS_WAVE3.md W21-W23; answered in szekeres-dumps-kij-answer and collisions-ranks-and-heat-answer
 tracks/E-stoch-inf/outbox/20261121T131020Z__to-core__lockstep-record-substep.md	2026-11-21T15:50:27Z	
 tracks/orch/outbox/20261121T140505Z__to-all__release-core-v0.6.md	2026-11-21T15:50:27Z	
+tracks/A-emd-pbh/outbox/20261121T204327Z__to-core__periodic-relaxed-lapse-blowup.md	2026-11-21T23:19:06Z	read 2026-11-21 by core-lead-8 (batch 8); 11 triaged as REQUESTS_WAVE3.md W31 (core-v0.7) and stage/G2/OPEN.md item v; 9 superseded by 11 as A says
+tracks/A-emd-pbh/outbox/20261121T231546Z__to-core__periodic-gamma-driver-step.md	2026-11-21T23:19:06Z	read 2026-11-21 by core-lead-8 (batch 8); 11 triaged as REQUESTS_WAVE3.md W31 (core-v0.7) and stage/G2/OPEN.md item v; 9 superseded by 11 as A says
