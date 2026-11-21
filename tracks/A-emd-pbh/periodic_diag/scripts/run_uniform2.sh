@@ -4,6 +4,7 @@
 # build of release core-v0.6. Same deck and conventions as run_uniform.sh.
 #   run_uniform2.sh <outdir> <threads> <case> [<case> ...]
 #   G5  Gamma-driver, cfl 1.0, noise        G6  as G5 with time/cfl_number = 0.6
+#   G7  as G5 with z4c/shift_Gamma = 0.3 (JOURNAL entry 7)
 set -uo pipefail
 OUT=$1; T=$2; shift 2
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -18,6 +19,7 @@ for c in "$@"; do
   case $c in
     G5) args=("${p0[@]}" "${geo[@]}") ;;
     G6) args=("${p0[@]}" "${geo[@]}" time/cfl_number=0.6) ;;
+    G7) args=("${p0[@]}" "${geo[@]}" z4c/shift_Gamma=0.3) ;;
     *) echo "unknown case $c"; continue ;;
   esac
   mkdir -p "$OUT/$c"

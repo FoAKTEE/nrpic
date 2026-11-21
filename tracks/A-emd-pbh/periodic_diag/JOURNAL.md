@@ -234,3 +234,45 @@ Test A second attempt (run A-20261121-222459-4cb257c) ran, but its per-level spl
 line outputs found only levels 4 and 0: my equal-spacing test used a tolerance of 1e-6
 while the tab files print x to six digits. Fixed (1e-3 relative) in both analysis scripts;
 the onset and step numbers of that run do not depend on it. Rerun next.
+
+## 2026-11-21 22:27Z, entry 7: Test A outcome (run A-20261121-222539-c4e42fe; fig_card_onset.png looked at), uniform-run figure, and predictions for a cheaper remedy
+
+Test A (the card's own outputs; numbers from card_onset.json):
+- The level-4 step passes the Test B threshold 0.685 at cycle 201 (t = 1.70) in P0L and at
+  cycle 207 (t = 1.77) in S1L, and 0.73 at cycle 218 (t = 1.94); it reaches 0.825 (P0L) and
+  0.829 (S1L) before the jump. The two members' steps agree to 1.8 per cent up to t = 2.3.
+- First cstat line after t = 1 with H_max above ten times its 0.3-2 median: t = 2.397 in P0L
+  (0.84; previous line 0.0149 at 2.269), t = 2.490 in S1L (0.97; previous 0.0161 at 2.363).
+- The linear amplification of Test B accumulated over the card's own steps from the
+  threshold crossing: 10^5.8 (P0L) and 10^6.3 (S1L) to the last quiet line, 10^8.4 and 10^9.1
+  to the first jump line; between those two lines 10^2.7 predicted against an observed
+  growth of H_max by more than 10^1.75 (0.0149 to 0.84; the earlier value is the physical
+  constraint violation, so the unstable part grew by more). The scaled amplification curve
+  follows the observed rise in the figure (top right) for both members, and S1L's later
+  jump matches its later threshold crossing.
+- Line outputs: at t = 2.01 the cell-to-cell part of beta^x on level 4 is 4e-6 against a
+  maximum of 0.016 (no visible alternation); at t = 4.00 Gam^x alternates on level 4 (1.9e-2
+  of 0.20), level 3 (3.5e-2 of 0.13) and level 2 (7.5e-3), not on levels 1 and 0 (7e-5,
+  1.5e-4); alpha shows no alternation above its print precision on any level (5e-6).
+Judgement against entry 0: crossing of 0.73 between t = 1.8 and 2.1: yes (1.94); members'
+steps within 5 per cent: yes (1.8); no visible alternation at 2.01: yes; at 4.0 grid-scale
+beta^x and Gam^x inside the refined region and not outside: yes, but "inside level 4 far
+above outside it" is REFUTED as worded: at t = 4.0, 1.5 time units after the jump, level 3
+carries a larger alternation than level 4. The snapshots (every 2.0) cannot show where it
+began; the guard's first bad cell was on level 4 in both members, and Test B makes levels 3
+and coarser stable at these steps (dt/dx_3 <= 0.42). [JUDGEMENT: origin on level 4,
+spreading to levels 3 and 2 by t = 4; not shown by a run.]
+
+Uniform-run figure (run A-20261121-222626-2cb28d0, fig_uniform.png looked at): G0 and G5 jump
+at t = 8.1-8.7 after their step has sat at dt/dx = 1 since t = 5; G1, G2, G6 decline
+smoothly to t = 10-12; U0's lapse (bottom left) leaves its relaxation track at t = 2.5 and
+its alternation (bottom right) rises at t = 3.2 before that of beta^x.
+
+Predictions for a cheaper remedy than a smaller step (the Gamma-driver speed is
+sqrt(4 shift_Gamma/3) in coordinate units):
+- Test B' (vonneumann.py --mu 0.3): the shift threshold rises above dt/dx = 1.0 for both cell
+  sizes (scaling of the wave part alone gives 0.685 x sqrt(0.75/0.3) = 1.08; the KO term does
+  not scale).
+- G7 (seeded, lapse frozen, shift_Gamma 0.3, cfl 1.0, to t = 10): no growth; H_max within a
+  factor 2 of G2's (zero shift) at equal t.
+Refuted by a threshold below 1.0 in B' or growth in G7.
