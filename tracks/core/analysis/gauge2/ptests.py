@@ -14,6 +14,9 @@ T2  homogeneous dust universe (problems/cosmo/flrw_leak.athinput, rate 5): with
     lapse_leak_rho below the density the history equals that of the first pass.
 T4  the ball of T3 with lapse_leak_hole and no tracker: the bytes of the first pass.
 T5  the same for the first steps of L2 (bound ball, cells M/2) and of L3 (collapse mesh).
+T7  (--old BUILD) the source without the two refuted factors against the build that ran
+    the card tests and against the release: bytes of the first pass, of a run with the
+    switch-off active, and of plain 1+log.
 T3  expanding ball L1 at cells of 1 M (problems/ball/ball_leak.athinput, t = 10 M): first
     pass with the release executable and with the new one (same bytes), and restricted
     to the matter, for T = 1 M and 0.5 M; shell errors against the exact solution and
@@ -60,7 +63,7 @@ def ball_args(n=64, half=32.0, stem="t2_sharp_h1", tlim=10.0):
             "problem/shift=zero"]
 
 
-def cases(new, rel):
+def cases(new, rel, old=None):
     c = {}
     v = os.path.join(INP, "v8_var.athinput")
     r = os.path.join(INP, "v8_rho.athinput")
@@ -93,6 +96,18 @@ def cases(new, rel):
     c["T5-l2-hole"] = (new, b, l2 + ["z4c/lapse_leak_hole=5.0"])
     c["T5-l3-first"] = (new, col, l3)
     c["T5-l3-hole"] = (new, col, l3 + ["z4c/lapse_leak_hole=5.0"])
+    # T7: the source without the two refuted factors (new) against the build that ran
+    # the card tests (old) and against the release
+    if old:
+        short = ball_args() + ["z4c/lapse_leak=2.0", "time/nlim=8"]
+        c["T7-first-rel"] = (rel, b, short)
+        c["T7-first-new"] = (new, b, short)
+        hole = COARSE + ["z4c/lapse_leak=0.5", "z4c/lapse_leak_hole=8.0"]
+        c["T7-hole-old"] = (old, v, hole)
+        c["T7-hole-new"] = (new, v, hole)
+        c["T7-plain-new"] = (new, v, COARSE + ["z4c/lapse_leak=0.0"])
+        c["T7-far-new"] = (new, v, COARSE + ["z4c/lapse_leak=0.5", "z4c/lapse_leak_hole=1000.0"])
+        c["T7-leak-new"] = (new, v, COARSE + ["z4c/lapse_leak=0.5"])
     c["T4-first"] = (new, b, ball_args() + ["z4c/lapse_leak=2.0"])
     c["T4-hole"] = (new, b, ball_args() + ["z4c/lapse_leak=2.0", "z4c/lapse_leak_hole=5.0"])
     return c
@@ -159,15 +174,17 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--new", required=True)
     ap.add_argument("--rel", required=True)
+    ap.add_argument("--old", default="", help="build of the source with the three factors (T7)")
     ap.add_argument("--out", required=True)
     ap.add_argument("--threads", type=int, default=2)
     ap.add_argument("--jobs", type=int, default=3)
     ap.add_argument("--only", default="T1,T2,T3")
     a = ap.parse_args()
     a.new, a.rel, a.out = (os.path.abspath(p) for p in (a.new, a.rel, a.out))
+    a.old = os.path.abspath(a.old) if a.old else None
     os.makedirs(a.out, exist_ok=True)
     sel = a.only.split(",")
-    todo = {k: v for k, v in cases(a.new, a.rel).items() if k.split("-")[0] in sel}
+    todo = {k: v for k, v in cases(a.new, a.rel, a.old).items() if k.split("-")[0] in sel}
     res = dict(runs={}, checks={})
     with cf.ThreadPoolExecutor(max_workers=a.jobs) as ex:
         for name, rc in ex.map(lambda k: run(k, todo[k], a.out, a.threads), todo):
@@ -216,6 +233,21 @@ def main():
         check("T2 homogeneous universe: restricted to matter = first pass",
               max(dev.values()) < 1e-10,
               f"largest relative differences {dev}; lapse at the end {h1['alpha_max'][-1]:.6f}")
+    if "T7" in sel:
+        for x, y, what in (("T7-first-rel", "T7-first-new", "first pass, cleaned source = release"),
+                           ("T7-hole-old", "T7-hole-new",
+                            "switch-off within 8 M, cleaned source = source of the card tests"),
+                           ("T7-plain-new", "T7-far-new",
+                            "switch-off radius beyond the mesh = plain 1+log")):
+            c = compare(d(x), d(y))
+            check("T7 " + what, not c["different"] and not c["only"]
+                  and (c["identical"] or c["payload"]),
+                  f"{len(c['identical'])} files identical, {len(c['payload'])} after the dump, "
+                  f"different {c['different']}, only {c['only']}")
+        for x, what in (("T7-leak-new", "first pass"), ("T7-plain-new", "plain 1+log")):
+            c = compare(d("T7-hole-new"), d(x))
+            check(f"T7 switch-off within 8 M differs from {what} (the weight is active)",
+                  len(c["different"]) > 0, f"{len(c['different'])} files differ")
     if "T5" in sel:
         for k in ("l2", "l3"):
             c = compare(d(f"T5-{k}-first"), d(f"T5-{k}-hole"))

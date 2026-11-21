@@ -469,3 +469,133 @@ same as `es-hole` within a factor 2 (the wall error of this mesh is set by its c
 2 M, not by the switch-off) [JUDGEMENT]. If the first pass follows the wall three times
 better than `es-hole`, the switch-off costs accuracy at the wall and the radius 16 M is
 too close to it.
+
+## Entry 9 (10:55-11:10): outcomes of job B; the density weight is refuted and removed; job F replaces C and D
+
+Job B: run core-20261121-175300-77c17ae (Slurm 4815, 10:12:49 to 10:53:26, nine runs, all
+exit 0, 0.68 card-hours; with job A the item stands at 1.00). Registered analyses:
+core-20261121-184901-d62073f (`es2.py`: Einstein-Straus, collapse),
+core-20261121-184940-09e7911 (`ball2.py`), core-20261121-185349-b7f87a8 (`vanalysis.py`),
+core-20261121-185408-5ecd05b (`vident.py`). Numbers `results/es2_numbers_jobB.json`,
+`ball2_jobB.json`, `v_numbers_jobB.json`, `vident_v8rho.json`; figures
+`figs/es_g2_es-rho.png`, `es_g2_es-hole.png`, `es2_horizon_jobB.png`,
+`collapse_g2_collapse-rho.png`, `ball2_jobB.png`, `v_jobB.png`, all looked at.
+
+### The density weight (`lapse_leak_rho`): REFUTED as a correction
+
+| test | first pass | relaxation only in the matter |
+|---|---|---|
+| ES-c `es-rho`, horizon mass, largest minus smallest over 40 to 99.5 M | (Track D's ES-1G: 2.7e-4) | 4.2e-3 (0.99878 to 1.00295), swinging from 55 M on |
+| ES-c, horizon radius at 25, 50, 75, 100 M | (ES-1G: 1.40, 1.33, 1.18, 1.06 M) | 2.03, 1.41, 1.66, 2.07 M |
+| ES-c, wall tracers (R_0 = 36 M) until tau = 30 M / 100 M | 6.2e-5 / not run | 2.3e-2 / 6.3e-2 |
+| ES-c, tracers at 20, 28, 48, 56 M until 100 M | (30 M: 7e-5, 1.2e-4, 6.8e-5, 2.4e-4) | 2.9e-2, 2.8e-2, 1.1e-2, 3.0e-2 |
+| ES-c, largest lapse on the mesh; lapse at the dust tracers off the homogeneous model | 1.11; 1.3 per cent | 1.95; 4.6 per cent |
+| L1-c `ball-l1-rho` (cells M/2, T = 1 M): core, mid, outer, surface | 1.16e-3, 5.8e-4, 2.0e-3, 4.1e-3 | 1.15e-3, 2.2e-3, 3.9e-3, 5.9e-3 |
+| L2-c `ball-l2-rho` (cells M/4, T = 0.5 M): core, mid, outer, surface | 9.2e-3, 2.5e-3, 4.3e-3, 6.4e-3 | 2.7e-2, 5.6e-2, 8.7e-2, 0.30 |
+| L2-c, turnaround R/R_0 (exact 1.25); largest lapse | 1.2478; 1.17 | 1.251 to 1.261; 1.88 |
+| L3-c `collapse-rho`: turnaround R/R_0 and its proper time (exact 1.25 at 9.54 M) | 1.250 to 1.251 at 9.5 to 9.6 M | 1.32 to 1.35 at 11.8 to 14.2 M |
+| L3-c, horizon mass | 0.9980 to 1.0003 from 29 M | 0.968 at 26 M, 1.025 to 1.038 from 30 M |
+
+- ES-c (a) refuted in its sense (the radius swings between 1.4 and 2.1 M), (b) REFUTED
+  (4.2e-3 against 2e-4), (c) REFUTED also in the amended form (6.3e-2, above 2e-2), (d)
+  FAILED (4.6 per cent, lapse 1.95), (e) held (no dust inside the wall tracers; 28
+  tracers removed: the groups from 6 M and from 10 M).
+- L1-c held as written (core 1.15e-3, central lapse within 2.0 per cent); the mid shells
+  are 3.8 times worse than the first pass.
+- L2-c REFUTED (every group 3 to 47 times worse); L3-c REFUTED (turnaround and horizon
+  mass wrong by per cents: this is no longer a matter of coordinates, the evolution
+  itself has lost its accuracy).
+- Reading [JUDGEMENT, the lapse profiles of `ball2_jobB.png` and the largest lapse are
+  VERIFIED]: next to expanding matter the vacuum's normal observers diverge too; left
+  to plain 1+log its lapse grows (1.88 outside the bound ball, 1.95 in the bubble, 2.36
+  in the collapse run) against a capped lapse in the matter, and the step sits on the
+  surface: the front of the first wave again, now from outside. The entry-4 argument
+  ("the vacuum has a stationary slice which plain 1+log finds") is true only far from
+  moving matter.
+- V8-c HELD: on a card, with the branch executable, the relaxed lapse restricted to the
+  matter writes the lines of plain 1+log run with the release executable (25 lines of
+  the horizon summary, 15 and 41 of the two histories, to t = 12 M).
+
+### Cause tests C2 and C3 (V8, 30 M)
+
+| run | horizon radius at 15, 20, 30 M | mass minus control at 15, 20, 30 M |
+|---|---|---|
+| plain 1+log (control) | 1.517, 2.055, 1.907 | 0 |
+| first pass | 1.400, 1.375, 1.415 | -1.9e-4, -1.1e-4, -7.3e-5 |
+| C2 smooth onset, delta = 0.02 | 1.411, 1.388, 1.418 | -2.3e-4, -9.6e-5, -7.1e-5 |
+| C3 off within 6 M (full beyond 12 M) | 1.439, 1.429, 1.440 | -2.5e-4, -8.6e-5, -4.4e-5 |
+| off within 16 M (full beyond 32 M) | 1.528, 1.899, 1.386 | +5e-7, +1.1e-4, +9.3e-5 |
+
+- C2 (the kink) is NOT the cause: a smooth onset changes the radius by 1 per cent
+  (prediction held).
+- C3 (the action near the hole) is NOT the cause: with the term off inside 6 M the
+  radius follows the first pass within 4 per cent (prediction held).
+- C4 stands: freeing the bubble out to 16 M lets the lapse front form (largest lapse
+  1.62 in `es-hole`) and the horizon follow the control to 20 M (1.90 against 2.06 M).
+
+### The tracker candidate (`lapse_leak_hole = 16`)
+
+| quantity | first pass | off within 16 M of the puncture |
+|---|---|---|
+| ES-h `es-hole`, horizon radius at 25, 50, 75, 100 M | ES-1G: 1.40, 1.33, 1.18, 1.06 M | 1.59, 1.61, 1.63, 1.65 M |
+| ES-h, horizon mass over 40 to 99.5 M | ES-1G: 1.00098 to 1.00125 (2.7e-4, rising) | 1.00085 to 1.00129 (4.4e-4: wiggles between 33 and 78 M, flat afterwards) |
+| ES-h, wall tracers until tau = 30 / 60 / 100 M | 6.2e-5 / not run / not run | 2.1e-4 / 4.3e-4 / 6.3e-4 |
+| ES-h, tracers at 20, 28, 40, 48, 56 M until 30 M | 7.0e-5, 1.2e-4, 4.6e-4, 6.8e-5, 2.4e-4 | 3.8e-4, 5.2e-5, 4.8e-4, 8.3e-5, 2.1e-4 |
+| ES-h, lapse at the dust tracers off the homogeneous model; largest lapse | 1.3 per cent; 1.11 | 1.2 per cent; 1.62 (the front inside 16 M, gone by 80 M) |
+| V8-h `v8-hole16`, radius at 30, 40, 50, 60, 65 M | 1.415, 1.371, 1.325, 1.270, 1.242 | 1.386, 1.448, 1.588, 1.722, 1.749 |
+| V8-h, mass over 35 to 65 M | 1.001015 to 1.001099 (8.4e-5) | 1.000971 to 1.001054 (8.2e-5); control V-1B 1.7e-5 |
+
+- ES-h (b) radius HELD (1.61 and 1.65 M, steady); mass band FAILED as written (4.4e-4
+  against 1.5e-4), not refuted (the refutation was a radius below 1.2 M). (a) the wall:
+  FAILED (6.3e-4 against 3e-4 at 100 M); at equal proper time, 30 M, the wall is 3.4
+  times less accurate than in the first pass on the same lattice (2.1e-4 against
+  6.2e-5) and the bubble tracers at 20 M 5 times; the dust groups at 40, 48 and 56 M are
+  unchanged. The outer groups (56, 66, 78 M) reach 3e-3 to 5e-3 at 100 M from tau = 50 M
+  on: the faces of this mesh at 128 M [JUDGEMENT from the arrival times], not the gauge.
+  Lapse at the dust tracers HELD (1.2 per cent).
+- V8-h: radius HELD in the part that can be judged (not shrinking: 1.75 M at 65 M,
+  1.58 M at 100 M); the mass drift 100 to 150 M is NOT TESTABLE with faces at 64 M
+  (their signal is in every run from 71 M on). Until 65 M the mass band is that of the
+  first pass (8e-5), five times the control's.
+- So the tracker candidate removes the cause (the horizon no longer shrinks, on the
+  Einstein-Straus data for 100 M) at a price at the wall (a factor 3.4 at 30 M; 6.3e-4 at 100 M,
+  where plain 1+log has 2.2e-3 at 200 M in Track D's run). It is NOT
+  shown here that the late mass drift of 100 to 200 M is gone: no run of this package
+  reaches that time with silent faces yet. Job F is aimed at exactly that.
+
+### Decision on the source
+
+`lapse_leak_rho` gives wrong evolutions next to matter (L2, L3, ES) and `lapse_leak_onset`
+changes nothing. Both are removed from the source: `athenak/src/z4c/z4c_gauge_ext.hpp`
+keeps `lapse_leak_hole` only (the kernel no longer reads the matter sources). The
+executables that ran jobs A to B are kept as
+`scratch/core/gauge2/exe/athena_{cpu,gpu}_90f52f4`. Processor test T7 compares the
+cleaned build with the old one on a run with the switch-off active, and with the release
+on the first pass; the byte regression is repeated.
+
+Prediction T7 (before the run): first pass, cleaned build = release (L1, 8 steps), every
+file; switch-off within 8 M on the coarse vacuum mesh, cleaned build = build 90f52f4,
+every file (the arithmetic of the weighted term is unchanged: rate x alpha x excess x
+weight); radius beyond the mesh = plain 1+log; and the run with 8 M differs from both
+the first pass and plain 1+log (the weight is active). Byte regression against release
+core-v0.6: PASS, 75 of 75.
+
+### Job F (replaces C and D, cancelled while pending; `card_f.list`)
+
+The remaining 0.5 card-hours go to the test that the task names and that nothing so
+far answers: the late drift in vacuum with the corrected condition. `v8far-hole16`: V8
+with the faces at +-256 M (400 MeshBlocks, 0.19 s per step expected, 20 minutes, 0.34
+card-hours), 200 M, cleaned card build; compared with Track D's V-1B and V-1GB, which
+this mesh reproduced to 8e-6 while the faces were silent. Then `v4-ctl` and `v4-leak`
+(prediction V4 (a), (b) of entry 7; 0.12 card-hours). The first pass on the
+Einstein-Straus mesh (job D) and the tracker runs at M/4 are dropped; prediction ES-f2
+is therefore NOT TESTED at 100 M (its 30 M part is answered above by the first-pass run
+of 2026-11-15: the wall is 3.4 times better there, so by my own criterion the radius
+16 M is too close to a wall at 33 M).
+Prediction V8-f (written before submission): with the switch-off at 16 M the horizon
+radius stays above 1.4 M from 35 M to 199.5 M (V-1GB: 0.875 M at the end) and the mass
+drift from its value at 100 M stays inside [-1.5e-4, +1.5e-4] until 199.5 M (V-1B:
+[-4.8e-5, +2.0e-5]; V-1GB: [-5.6e-4, +1.27e-3]) [JUDGEMENT, two chances in three: in
+`v8-hole16` the radius fell from 1.58 to 1.31 M between 100 and 150 M, which I attribute
+to the faces of that run]. Refuted, and the radius 16 M only a delay, if the radius
+falls below 1.2 M or the drift leaves [-4e-4, +4e-4].
