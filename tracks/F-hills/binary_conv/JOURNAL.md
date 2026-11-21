@@ -155,8 +155,8 @@ Separation s(t) (coordinate distance of the trackers), M:
   as the error of the m/16 value, the ratio is at most 0.006/0.0615 = 0.1, i.e. the m/8 error
   falls by at least 10 when the cells are halved: an order p >= 3.3 (two-point; the Delta s ratio
   gives 3.96 at 7.5 M) [arithmetic on VERIFIED numbers; no three-point order until R12 lands].
-- Phase (rad) at 7.5 M: Newton 0.346, EIH 0.290 (refs at 7.5 interpolated from the figure data:
-  not tabulated; see refs.json), P1 0.201, R8 0.225, R16n 0.239. The coordinate phase lags the
+- Phase (rad) at 7.5 M: Newton 0.346, EIH 0.289 (linear interpolation in `refs.json` of run
+  F-20261121-130646-56612a0), P1 0.201, R8 0.225, R16n 0.239. The coordinate phase lags the
   references at every resolution (gauge: the trackers start at rest with zero shift, multi_puncture
   section 4) and converges far less than the separation (R8 0.225 against R16n 0.239).
 - Horizons: R16n finds both members in all 248 searches; masses 0.12742 / 0.12766 at the first
