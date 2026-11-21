@@ -135,3 +135,22 @@ D-20261121-202935-53afc1a, S2 D-20261121-202936-ebc09f0 (old table), S3
 D-20261121-202936-992542e, S2b D-20261121-203149-4904e96 (new table); outcomes below when
 they end. Block counts already in the logs: v1l and esfl 456 (S1, S2 held), es1l16 512 (S3
 held: 56 per level on levels 0-7 and 64 on level 8).
+
+## Entry 4 (2026-11-21 12:53 PST): outcome of the smoke tests (processors, release core-v0.6)
+
+All four ran 2 cycles and stopped on the cycle limit, exit 0 (18-21 min each on one core,
+1.28e4 zone-cycles per second).
+S1 v1l (D-20261121-202935-53afc1a): 456 MeshBlocks (56 on each of levels 0-6, 64 on level 7);
+   140 particles; finder at t = 0 M = 0.9923902364485537 against V-1's 0.9923902364485533:
+   HELD (4e-16).
+S2 esfl, old table (D-20261121-202936-ebc09f0): 456 MeshBlocks, 850724 particles, finder
+   0.9915211031392506 against ES-F's 0.9915211031392509: HELD. Superseded by S2b (entry 2).
+S2b esfl, table to 1340 M (D-20261121-203149-4904e96): table read with 67001 rows; 456
+   MeshBlocks; 850724 particles; finder 0.9915211031392506: HELD (the extension changes
+   nothing inside the ES-F mesh, as built).
+S3 es1l16 (D-20261121-202936-992542e): 512 MeshBlocks (56 on each of levels 0-7, 64 on level
+   8; inside the predicted 500-900); 696828 particles; finder 0.9998168466897429: HELD. At
+   t = 0 the finder's offset from the bare data is -7.6e-3 at M/8 (ES-1 and V-1:
+   0.99239024) and -1.8e-4 at M/16.
+Cost of R4, R5 from S3 (H4): 512/456 x 2 = 2.25 times the M/8 cost per M: V-1L16 to 300 M
+~3.0 card-hours (cap 5.0), ES-1L16 ~3.4 (cap 6.0).
