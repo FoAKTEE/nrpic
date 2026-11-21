@@ -9,7 +9,7 @@ brief.
 
 Usage:
   analyze.py --run R8=<rundir> [--run R12=<rundir>] [--run R16n=<rundir>]
-             --p1 <P1 rundir> --refs <refs.json> --out <dir>
+             --p1 <P1 rundir> --refs <refs.json> --out <dir> [--g2model <g2mesh model.json>]
 
 Order of convergence of Delta s(t) = s(0) - s(t) at fixed t, cells h = 1, 2/3, 1/2 (units of
 m/8): three-point p from (D8 - D12)/(D12 - D16) = (1 - (2/3)^p)/((2/3)^p - (1/2)^p), and the
@@ -233,9 +233,41 @@ def main():
         st[k] = dict(reference=ref8_name, lam=lam, rms=rms, window=[0.5, float(tmax)],
                      t_merge_estimate=(tm8 / lam if tm8 else None))
     res["stretch"] = st
+    # P1b cost: g2mesh model trees of P1's set-up (run F-20261120-222426-86392c3, model.json
+    # D_tracks: Newtonian three-body tracks to 280 M) times the cycles per M, divided by the
+    # rate measured here (MeshBlock-cycles per second of computing), times the measured ratio of
+    # Slurm elapsed time to computing time
+    if "--g2model" in a:
+        g2 = json.load(open(a[a.index("--g2model") + 1]))
+        cost = {}
+        rate_all = {k: [r["mbc_per_s"] for r in res[k]["ledger"] if r.get("mbc_per_s")]
+                    for k in runs}
+        over = [r["elapsed_s"] / r["cpu_s"] for k in runs for r in res[k]["ledger"]
+                if r.get("elapsed_s") and r.get("cpu_s")]
+        overhead = float(np.mean(over)) if over else 1.03
+        for var, own in (("R16n", "R16n"), ("R12", "R12")):
+            d = g2["D_tracks"][f"{var}_b16"]
+            tt = np.array(d["newton"]["t"])
+            nn = np.array(d["newton"]["n"])
+            rates = rate_all.get(own) or rate_all.get("R16n") or rate_all.get("R8") or []
+            if not rates:
+                continue
+            rate = float(np.median(rates))
+            cyc_per_M = 1.0 / d["dt"]
+            row = dict(rate_mbcps=rate, rate_from=own if rate_all.get(own) else "other run",
+                       overhead_elapsed_over_cpu=overhead, cycles_per_M=cyc_per_M,
+                       tree_max_280=int(nn.max()))
+            for T in (150.0, 200.0, 280.0):
+                sel = tt <= T
+                mean = float(nn[sel].mean())
+                ch = T * cyc_per_M * mean / rate / 3600.0 * overhead
+                row[f"to_{T:g}"] = dict(tree_mean=mean, card_hours=ch,
+                                        segments_of_50min=ch / (3000.0 * overhead / 3600.0))
+            cost[var] = row
+        res["p1b_cost"] = cost
     with open(os.path.join(out, "analysis.json"), "w") as f:
         json.dump(res, f, indent=1, default=lambda x: None)
-    print(json.dumps({k: res[k] for k in ("convergence", "stretch")}, indent=1, default=str))
+    print(json.dumps({k: res.get(k) for k in ("convergence", "stretch", "p1b_cost")}, indent=1, default=str))
     for k in list(runs) + ["P1"]:
         r = res.get(k, {})
         print(k, "t_end", r.get("t_end"), "s_at", r.get("s_at"), "t_common", r.get("t_common_horizon"))

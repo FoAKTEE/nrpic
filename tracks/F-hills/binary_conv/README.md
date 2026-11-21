@@ -73,6 +73,7 @@ Analysis (registered; reads whatever the run directories hold, partial runs incl
         [--run R12=/data/haiyangw/nrpic/scratch/F-hills/<R12 run id>] \
         --p1 /data/haiyangw/nrpic/scratch/F-hills/F-20261119-150017-b45ec5f \
         --refs /data/haiyangw/nrpic/scratch/F-hills/F-20261121-130646-56612a0/refs.json \
+        --g2model /data/haiyangw/nrpic/scratch/F-hills/F-20261120-222426-86392c3/model.json \
         --out '$NRPIC_RUN_DIR'
 
 State of a chain: `scripts/submit_chain.sh --status <run dir>`; close a finished one:
