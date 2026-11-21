@@ -326,12 +326,14 @@ def scan(q, ab, rp, nphase, rtol, t_after, mu_conv="total", with_u=False, max_st
             d = np.linalg.norm(yn[:, 2 + 2 * i:4 + 2 * i] - yn[:, 0:2], axis=1)
             dmin[idx, i] = np.minimum(dmin[idx, i], d)
         return np.zeros(len(idx), bool)
-    tn, yn, _, nacc = vint.integrate(rhs, yh, th, t_end, rtol=rtol, atol=rtol * 1e-3, h0=1e-2, callback=cb_newton)
+    tn, yn, _, nacc = vint.integrate(rhs, yh, th, t_end, rtol=rtol, atol=rtol * 1e-3, h0=1e-2, callback=cb_newton,
+                                     max_steps=max_steps)
     d = yn[:, 4:6] - yn[:, 2:4]
     E12 = 0.5 * m1 * m2 / mb * np.sum((yn[:, 10:12] - yn[:, 8:10]) ** 2, 1) - m1 * m2 / np.linalg.norm(d, axis=1)
     a12 = np.where(E12 < 0, -m1 * m2 / (2 * np.minimum(E12, -1e-300)), np.inf)
     out["newton"] = dict(separated=float(np.mean(E12 > 0)), wide_bound=float(np.mean((E12 < 0) & (a12 > 3 * ab))),
-                         member_below_4M=float(np.mean(dmin.min(1) < 4)), steps_max=int(nacc.max()))
+                         member_below_4M=float(np.mean(dmin.min(1) < 4)), steps_max=int(nacc.max()),
+                         unfinished=int(np.sum(tn < t_end * (1 - 1e-12))))
     # HRNA, two constructions of the state at 4 r_t
     xM, vM = yh[:, 0:2], yh[:, 6:8]
     yA = np.concatenate([yh[:, 2:4] - xM, yh[:, 4:6] - xM, yh[:, 8:10] - vM, yh[:, 10:12] - vM], 1)
