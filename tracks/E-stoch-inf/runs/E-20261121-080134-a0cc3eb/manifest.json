@@ -1,0 +1,108 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261121-080134-a0cc3eb",
+  "track": "E-stoch-inf",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "usr: post-hoc floor reading of the constraint parts of group 1 (JOURNAL entry 12.1, predictions F1, F2): s-independent floor from the odd parts at s = 1 and 1/2, floor-corrected even halving factors, figure",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "cd tracks/E-stoch-inf/usr/scripts && export OMP_NUM_THREADS=1 && python3 floor_split.py --summary ../results/runs/summary_E-20261121-075307-4542ce1.json --out \"$NRPIC_RUN_DIR\""
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "a0cc3eb29dbae59a94a4c1e2c9ab0948979b4689",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/usr"
+    ],
+    "outside_package": {
+      "count": 27,
+      "first": [
+        " M tracks/E-stoch-inf/note/figures/fig_background.pdf",
+        " M tracks/E-stoch-inf/note/figures/fig_background.png",
+        " M tracks/E-stoch-inf/note/figures/fig_cost.pdf",
+        " M tracks/E-stoch-inf/note/figures/fig_deltan.pdf",
+        " M tracks/E-stoch-inf/note/figures/fig_freezing.pdf",
+        " M tracks/E-stoch-inf/note/figures/fig_noise.pdf",
+        " M tracks/E-stoch-inf/note/figures/schem_architecture.png",
+        " M tracks/E-stoch-inf/note/figures/schem_architecture.svg",
+        " M tracks/E-stoch-inf/note/figures/schem_timeline.png",
+        " M tracks/E-stoch-inf/note/figures/schem_timeline.svg",
+        " M tracks/E-stoch-inf/note/tables/claims.json",
+        " M tracks/E-stoch-inf/note/tables/claims.md",
+        "?? tracks/E-stoch-inf/a4res/scripts/a4lib.py",
+        "?? tracks/E-stoch-inf/a4res/scripts/make_list.py",
+        "?? tracks/E-stoch-inf/a4res/scripts/twin_predict.py",
+        "?? tracks/E-stoch-inf/note/figures/fig_sr_constraints.pdf",
+        "?? tracks/E-stoch-inf/note/figures/fig_sr_constraints.png",
+        "?? tracks/E-stoch-inf/note/figures/fig_sr_freezing.pdf",
+        "?? tracks/E-stoch-inf/note/figures/fig_sr_freezing.png",
+        "?? tracks/E-stoch-inf/note/figures/fig_sr_modes.pdf"
+      ]
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261121-080134-a0cc3eb",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T08:01:34Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 10.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 1.87,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 135,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
