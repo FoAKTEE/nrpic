@@ -485,6 +485,28 @@ def main():
     put(find("card memory, MeshBlock slots"), [3000.0 if "about 3000" in " ".join(ln229) else None],
         "coord/INTERFACES/multi_puncture.md lines 229-230 read", note=" ".join(ln229))
 
+    # ---- extras for claims K8, K14, K18 (not ledger rows)
+    extras = {}
+    P4 = np.load(rf("F-hills-20261115-131801-907e5fe", "p4.npz"))
+    for qq in ("1e+06", "10"):
+        ref = P4[f"outcome_q{qq}_k40"]
+        extras[f"K18_q{qq}"] = {f"k{k}_same_outcome_as_k40": float(np.mean(P4[f"outcome_q{qq}_k{k}"] == ref))
+                                for k in (5, 10, 20) if f"outcome_q{qq}_k{k}" in P4.files}
+    k85 = int(np.argmin(np.abs(betas - 8.5)))
+    extras["K8_alpha_hrna"] = {"beta10_alpha_all_max": aall, "beta10_alpha_bound_max": amax,
+                               "beta8.5_alpha_all_max": float(max(S1["alpha_all"][il, j, k85].max() for j in range(2)))}
+    smoke = os.path.join(SCR, "F-20261115-174602-c6879fe", "batch.list.last.log")
+    peak = None
+    if os.path.isfile(smoke):
+        for ln in open(smoke):
+            m = re.search(r"gpu_mem_peak_MiB=(\d+)", ln)
+            if m:
+                peak = int(m.group(1))
+    extras["K14_card_memory"] = {"smoke_peak_MiB_at_2700_slots": peak, "card_MiB": 81920,
+                                 "MiB_per_slot_all_in": None if peak is None else peak / 2700,
+                                 "slots_if_linear_all_in": None if peak is None else 81920 / (peak / 2700)}
+    print(json.dumps(extras))
+
     # ---- write
     done = {r["i"] for r in res}
     for i, r in enumerate(rows):
@@ -492,7 +514,7 @@ def main():
             res.append(dict(i=i, table=r["table"], group=r["group"], quantity=r["quantity"], ledger=r["value"],
                             source=r["source"], mine=[], route="NOT RECOMPUTED", agree=False, note=""))
     res.sort(key=lambda x: x["i"])
-    json.dump(dict(rows=res, inputs_checked=CHECKED, ledger_sha256=sha(LEDGER)), open(os.path.join(a.out, "ledger_check.json"), "w"), indent=1)
+    json.dump(dict(rows=res, extras=extras, inputs_checked=CHECKED, ledger_sha256=sha(LEDGER)), open(os.path.join(a.out, "ledger_check.json"), "w"), indent=1)
     with open(os.path.join(a.out, "ledger_check.md"), "w") as f:
         f.write("| # | table | quantity | ledger value | source | my value | agree | route |\n|---|---|---|---|---|---|---|---|\n")
         for r in res:

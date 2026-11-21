@@ -139,3 +139,35 @@ test-mass parabola speed of M alone (L = (2 M r_p)^(1/2)) instead of the two-bod
 M + m_b, so its encounters are slightly bound and deeper. Prediction: with `--mu-conv M`, my
 Newton fractions at q = 10, r_p = 7 and 8 move to the track's 0.62 and 0.056 (inside 4 M)
 within 3 sigma. Refuted if they stay at 0.49 and 0.01, or overshoot beyond 3 sigma.
+
+## Entry 5 (2026-11-21 03:20 UTC): H-mu outcome, kb searches, sources, extras
+
+- R8 F-20261121-031300-a59f41f (H-mu): with the test-mass parabola speed of M alone, Newton
+  "member inside 4 M" becomes 0.689 (r_p = 7) and 0.417 (r_p = 8) against the track's 0.622 and
+  0.056: overshoots at r_p = 8 by far. H-mu REFUTED. The separated fractions under H-mu (0.911,
+  0.878) do match the track's (0.90, 0.88) better than mine (0.878, 0.850), but the inside-4 M
+  fraction does not. The cause of the difference in that diagnostic stays open [TO VERIFY after
+  sections 1-3, by reading the lead's script]. The diagnostic is steep in the encounter depth.
+- R6b F-20261121-030306-e8533e8: 12 queries x 2 modes, all hybrid queries answered. Union of
+  hits: 58 papers. No hit reports a full-NR calculation of a binary separated by a heavier hole
+  or a full-GR matter binary passing a hole. The NR candidates (2610.09336 head-on collisions,
+  abstract line 129; 2505.03934 equal masses, apssamp.tex:246; 2308.07365 equal masses, d = 8 M,
+  D = 30 M, TBH.tex:66; 2406.11985 q = 4, 9 bound, my R1; 2605.20320 head-on, not opened by me
+  beyond the novelty file's locator) are all in NOVELTY.md. Corpus citation graph: 2406.11985 is
+  cited in the corpus by 2505.03934, 2605.20320, 2610.09336 only. INSPIRE metadata of the
+  closest papers carries citation counts (2406.11985: 9 as fetched 2026-11-15) but no citing
+  list; I ran no new INSPIRE query (not granted; it would write into kb-data). K1 CONFIRMED
+  within these limits.
+- Sources read: 0710.0879 first.tex:141-146 (11 levels, h = M/80, boundary 640 M) and :291 with
+  the table header 288-289 (6.06 +- 0.02 is the 3BH1 column); 1004.1353 Punc_N.tex:185-194
+  ("finite error that does not converge", "change dramatically") and 1252-1258 ("one order of
+  magnitude bigger" junk difference); 2402.02178 main.tex:225 ("intractable"); 2406.11985
+  TBH3.tex:710 ("at least until 128:1:1"); prp.tex:597-599, 748-749, 784-785; mnras.tex:368,
+  375-377, 437, 440; article.tex:246-279, 300-348, 455-458; appendix.tex:6-12, 138-179. All
+  as the track quotes them.
+- Extras (trial of the ledger check): K18 from p4.npz: 10 r_t keeps 0.95 (M/m = 1e6) and 0.97
+  (10) of the 40 r_t outcomes, 5 r_t 0.92 and 0.90 (SCOPING 3 says "5 r_t only 90 percent":
+  0.92 at 1e6). K8: in the track's own S1 scan alpha = a/R_curv reaches 0.199 at beta = 10
+  and 0.148 at beta = 8.5 at pericentre (alpha_all); the ledger's 0.0056 is the maximum only
+  while the instantaneous pair energy is negative. K14: the card smoke F-20261115-174602-c6879fe
+  peaked at 70847 MiB with a slot limit of 2700 (26.2 MiB per slot all-in; 81920 MiB card).
