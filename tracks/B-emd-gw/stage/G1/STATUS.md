@@ -1,11 +1,49 @@
 # G1 status of B-emd-gw (pre-core baseline)
 
-State 2026-11-15, end of wave 2 (lead). Verdict of the lead: **G1 not met**. Of the three
-criteria of the track sheet (`coord/CHARTER.md` 9.5) as ruled by decision 0013, one is met
-(2), one is struck (3), one is met only in part (1); the G1 schematics, the note's G1
-sections and an independent verifier of the wave-2 runs are owed (`CHECKLIST.md`,
-`OPEN.md`). Run ids are under `tracks/B-emd-gw/runs/`. Corrections of the wave-1 version of
-this file (found by the note helper, `note/tables/claims.md`) are marked "corrected".
+State 2026-11-20, batch 2a (lead). Verdict of the lead: **G1 not met; one item owed.** Of the
+three criteria of the track sheet (`coord/CHARTER.md` 9.5) as ruled by decision 0013, two are
+met (1 and 2) and one is struck (3). The G1 schematics and the note's G1 sections exist
+(note v2). Owed: an independent recomputation of the ledger rows that no verifier has yet
+recomputed (checklist C18; `OPEN.md` item 1). The wave-2 text of this file follows,
+superseded where the sections below say so.
+
+## Criterion 1 (batch 2a): met for both set-ups
+
+- Test F (flat box, k = 2 pi (1,1,1), elliptic polarization, N = 16-64) and test X (free
+  tensor mode in the matter-era box of side 4, cosmological gauge, particle lattice, N = 16-64
+  and x10): both diagnostics recover amplitude, phase and both polarizations against the exact
+  solutions. F: amplitude error -1.409e-4 ... -3.10e-8, phase 2.531e-4 ... 7.067e-7 rad, local
+  orders 6.4-5.7 and 4.4-4.1, within 2.1 percent of the symbol-plus-RK4 prediction. X: errors
+  1e-4 (N = 16) to 1.4e-7 / 2.8e-7 rad (N = 64), the cross polarization within 0.5 percent of
+  the RK4()4[2S] prediction. The diagnostics agree to <= 6.4e-11 (F, forward combination;
+  theta^6/1120 with h alone, the backward discrete wave) and 2.4e-8 (X, the background error).
+  [VERIFIED: waves B-20261119-164402-7438a99; verifier3 B-20261121-030121-58fe5dc,
+  -030848-59f89b5; lead B-20261121-063617-6183015]
+- X plus polarization at N >= 48: a rounding share in the data (1/A; x10 run
+  B-20261119-155758-458cf17, analysis B-20261120-221708-d8eae03) of 1.3e-8 to 1.6e-8 relative,
+  in the spatial quadrature of the mode; the waves values (moduli) include it, verifier3's
+  (in-phase part) do not; the truncation error at N = 64 is 1.40e-7 (cross; x10 both)
+  [VERIFIED, runs B-20261121-063617-6183015, -063835-826c461; stage/REVIEW-wave3.md].
+- What criterion 1 does not cover (verifier3 section 6): the two diagnostics are two readings
+  of the same dumps at linear order; one wave vector per test with zero discrete divergence
+  (F2 along (1,2,0) has run, not analysed); no scalar perturbations in X.
+
+## Criterion 2 (batch 2a): met, now independently confirmed
+
+verifier2 (wave 2b, run B-20261119-142135-e582e09) confirmed the pancake sheet errors against
+the exact solution and the ellipsoid crossing (ODE 23.852370 t_k; code +0.895, +0.181,
++0.0336 percent, order 2.28). Reservation from G0 unchanged: the Omega-today scaling of
+2403.15126 is [TO VERIFY]; the criterion is judged on the emitted energy.
+
+## Corrections of the wave-2 text below (verifier2)
+
+- "linear in eps to 0.05 percent" holds for eps 0.1 against 0.3; eps = 1 departs by 0.2 percent
+  (fourth order, verifier2 run B-20261119-142015-da5ad0f).
+- "32^3 and 64^3 agree to 0.09 percent for a <= 40" stands (verifier2: at most 0.09 percent for
+  2 <= a <= 50); up to a = 80 the difference reaches 1.02 percent (eps = 1, a = 75.8) and 1.9
+  percent (driven shift).
+
+## Wave-2 text (2026-11-15)
 
 ## Criterion 1. "The two diagnostics agree on analytic linear waves": met for waves along an axis in a flat box; oblique and expanding cases open
 
