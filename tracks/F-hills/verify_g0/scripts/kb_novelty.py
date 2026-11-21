@@ -15,6 +15,9 @@ import os
 import subprocess
 
 KB_HYBRID = "/data/haiyangw/nrpic/wt/kb/kb/bin/kb"     # has kb/.venv with the model
+KB_PY = "/data/haiyangw/nrpic/wt/kb/kb/.venv/bin/python"  # called explicitly: under nrpic-run
+# PATH and VIRTUAL_ENV name this worktree's venv, and the tool's own re-exec then lacks torch
+# (first run F-20261121-030205-c4d2894: every hybrid query failed with that error)
 KB_TEXT = "/data/haiyangw/nrpic/kb/bin/kb"            # release tool, standard library
 DB = "/data/haiyangw/nrpic/kb-data/db/kb-20261119-a782f1e.sqlite"
 INSPIRE = "/data/haiyangw/nrpic/kb-data/meta/inspire"
@@ -39,13 +42,13 @@ CLOSEST = ["2406.11985", "2505.03934", "0710.0879", "0711.1165", "1004.1353", "2
 
 def run(cmd):
     p = subprocess.run(cmd, capture_output=True, text=True, timeout=600,
-                       env=dict(os.environ, OMP_NUM_THREADS="2"))
+                       env={k: v for k, v in dict(os.environ, OMP_NUM_THREADS="2").items() if k != "VIRTUAL_ENV"})
     return p.returncode, p.stdout, p.stderr
 
 
 def search(q, mode, k):
     if mode == "hybrid":
-        cmd = [KB_HYBRID, "search", "-k", str(k), "--threads", "2", "--json", "--db", DB, q]
+        cmd = [KB_PY, "-I", KB_HYBRID, "search", "-k", str(k), "--threads", "2", "--json", "--db", DB, q]
     else:
         cmd = [KB_TEXT, "search", "-k", str(k), "--text-only", "--json", "--db", DB, q]
     rc, out, err = run(cmd)
