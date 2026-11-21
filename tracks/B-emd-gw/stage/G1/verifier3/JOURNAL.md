@@ -305,3 +305,19 @@ Test X (EdS, k = (pi/2)(1,1,0), t = 0..10) [VERIFIED, same runs]:
   [JUDGEMENT] the second-order response of the mean metric to the momentum flux of the wave
   (A^2 w t ~ 2.5e-11); not tested (no F run at a second amplitude). It does not enter the
   mode coefficients at K.
+
+## Entry 10 (19:25 PST): read waves/README.md 'Results' and 'Open' (after commits b2e3effe and 483924b9)
+
+Only now read: tracks/B-emd-gw/waves/README.md lines 52-160 (Results, Open). Their measure
+for both tests is the forward combination W = P + i P'/|k| at +k (for F my Z_TT used h
+alone, which carries the backward discrete wave; for X my Z = H + i H'/k is theirs). To
+classify the F claims on their own measure, scripts/v3_classify.py recomputes the forward
+combination from my own per-dump numbers and adds my own symbol-plus-RK4 predictor of F.
+Predictions before the run:
+- C1: forward TT against spectral Psi4 (F) is at the round-off level, 1e-11 .. 1e-10, at
+  every N (P3.8 says the whole difference was the backward wave).
+- C2: my predictor (sixth-order symbol, KO sigma = 0.5 sum sin^8(theta/2)/h, RK4
+  amplification, 148 / ... cycles) reproduces the measured forward amplitude and phase
+  errors of F to within 3 % at every N (refuted if any ratio leaves [0.97, 1.03]; at N64
+  the amplitude may be off by round-off, ~1e-9 absolute).
+- C3: forward ratio Z_x / Z_+ equals 0.5 e^{i} to ~1e-9 in modulus and argument at every N.
