@@ -1,0 +1,127 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261121-083336-6a82131",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "conv_ball card chain, member C of the mesh triple (DESIGN.md section 3, prediction G of JOURNAL entry 3): data set 3 through horizon formation on the nested static mesh with finest cells M/64 (root 128^3 in 32^3 blocks, 288 blocks), nestC lattice of 4969736 particles (also the fixed-N mesh sequence with A-N64 and B-N8), core_gauge executable, t = 0 -> 16; model 1.3 card-hours, 41 GiB",
+  "preregistered_in": null,
+  "launcher": "chain",
+  "command": [
+    "scripts/submit_chain.sh",
+    "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-083336-6a82131",
+    "/data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/conv_ball/decks/nest64_L16.athinput",
+    "problem/comp0_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+    "particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestC/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_nestC_track.nrp",
+    "particles/traj_ntrack=1320"
+  ],
+  "cwd": "scratch/A-emd-pbh/A-20261121-083336-6a82131",
+  "git": {
+    "sha": "6a82131e8001946fda37d879e9d9748c56f9b17a",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/conv_ball"
+    ],
+    "outside_package": {
+      "count": 4,
+      "first": [
+        " M tracks/A-emd-pbh/periodic_threshold/JOURNAL.md",
+        "?? tracks/A-emd-pbh/periodic_threshold/inputs/peak_leak.athinput",
+        "?? tracks/A-emd-pbh/periodic_threshold/scripts/ltb_reference.py",
+        "?? tracks/A-emd-pbh/periodic_threshold/scripts/ltbref.py"
+      ]
+    },
+    "merge_base_main": "32ba2dc5a0844f64d081668c5ec2d976d73bc863",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu",
+    "exe_sha256": "c3560e53988ad855cc93a9f444c48c728249950242e736d0828cc44dbcd85e72",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": {
+    "file": "tracks/A-emd-pbh/conv_ball/decks/nest64_L16.athinput",
+    "sha256": "6b916640eb26737180993a0c84d131787f8fd9123cdd3e7dd6a7c559862121b4",
+    "overrides": {
+      "problem/comp0_file": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+      "particles/particle_file": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/nestC/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25_nestC_track.nrp",
+      "particles/traj_ntrack": "1320"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_gauge/athena_gpu",
+      "role": "exe",
+      "sha256": "c3560e53988ad855cc93a9f444c48c728249950242e736d0828cc44dbcd85e72",
+      "bytes": 102311528,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/A-emd-pbh/conv_ball/decks/nest64_L16.athinput",
+      "role": "athinput",
+      "sha256": "6b916640eb26737180993a0c84d131787f8fd9123cdd3e7dd6a7c559862121b4",
+      "bytes": 3991,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": 3,
+    "gpu_hours_requested": 2.95,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "A-20261121-083336-6a82131",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261121-083336-6a82131",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-21T08:33:36Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.9181,
+    "gpu_hours_reserved": 0.97,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 0,
+    "runs": 184,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
