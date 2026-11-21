@@ -181,3 +181,21 @@ column): G03 15, G13 3, G21 2, G01 1, G04 1, G09 1, G18 1. Appended to kb/manife
   per cent of its keys; the TeX papers without an entry stay 6.
 - `kb embed --check --work` afterwards: 0 missing, 0 stale, 0 orphaned.
 Refuted by: a failed parse, a paper without entries, a grp other than the file's, or vectors missing.
+
+## Outcome P5 (runs kb-20261121-214253-c459325 ingest, kb-20261121-214344-a576394 tags/vectors/check/state)
+
+Held, better than predicted on status: 24 of 24 ok (I allowed a few review; 2505.00286 has the
+lowest score, 0.7986). Every one has entries (15 to 343) and every citation row has an entry.
+grp equals the additions file for all 24; title_source arxiv-api and an INSPIRE recid for all 24.
+Papers 734: ok 708, review 23, pdf 3; TeX papers without an entry 6; recorded rate = strict rate =
+708/734 = 0.96458. Entries 66990, citation rows 107802 (14470 in corpus). Vectors: 1679 chunks and
+4709 equations embedded; check 0 missing, 0 stale, 0 orphaned (45199 chunks, 59211 equations).
+Claims: 0 dangling chunk references.
+
+## Prediction P6 (fetch of the 11 frontier papers recommended by s39_frontier)
+
+One source call per id, sequential, then one --meta --service both call. All 11 are 2026 (or
+2602/2606) papers with TeX sources on arXiv: 11 sources ok (tar or single TeX), arXiv-API records
+for the 2 that lack one (2610.26669, 2606.28005) and INSPIRE records for all 11 (some not-found
+possible for the newest, 2611.23627). Then the same ingest as P5: 11 ingested, at least 9 ok.
+Refuted by: a source that is PDF-only or failed, or an ingest failure.
