@@ -74,6 +74,7 @@ RUNS = {
     "r2_d3": "B-20261119-163027-f0d304f",         # per-dump diagnostics, delta = 0.0025, eps = 0.3
     "r2_rep": "B-20261119-155418-80d45af",        # per-dump diagnostics of the rerun of eps = 1
     "r2_rerun_cmp": "B-20261119-160607-ef83373",  # rerun against the wave-2 run (double precision)
+    "eps2": "B-20261121-075616-97f039f",          # round 3: advance test of the (1 + eps^2) form
     "r2_null_cmp": "B-20261119-163037-6553674",   # the helper's comparison of the nulls (second reading)
     "r2_delta_cmp": "B-20261119-164017-cd1ba52",  # the helper's comparison of the amplitudes (second reading)
     "r2_spec": "B-20261119-161734-a3a1366",       # shell spectra of the TT and non-TT parts

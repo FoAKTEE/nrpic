@@ -220,6 +220,10 @@ def values_v2(d, v):
     N, D, Fl = d["r2n"], d["r2d"], d["r2f"]
     ic = d["jit_ic"]
     v["r2_floor"] = ([Fl["rep_2_40"], Fl["rep_80_140"]], "r2_rerun_cmp")
+    # advance test of the (1 + eps^2) form at delta = 0.0025 (round 3, spline estimator)
+    E2 = common.load_json("eps2", "eps2_summary.json")["sets"]
+    q = [abs(E2[m]["Q_d0025_spline"][k] - 1.0) for m in ("n32", "n64") for k in ("30", "40", "50", "60")]
+    v["eps2"] = ([min(q), max(q), E2["n32"]["Q_d0025_spline"]["20"], E2["n64"]["Q_d0025_spline"]["20"]], "eps2")
     v["r2_parity"] = ([Fl["parity"], Sig(Fl["parity_n"], 7)], "r2_parity")
     v["r2_ic"] = ([ic["jit0p3"]["max_momentum_residual"], ic["jit0p1"]["max_momentum_residual"],
                    ic["jit0"]["max_momentum_residual"],
@@ -430,21 +434,21 @@ LEDGER_G1 = [
         ("fs_res", "$32^3$ against $64^3$: largest $|c_+$ ratio$-1|$, $5\\le a\\le40$: $\\epsilon=0.1,0.3,1$, driven shift"),
         ("fs_res_late", "the same, largest over the four cases for $40<a\\le80$; at $a=100$"),
         ("fs_box", "share of the four box modes in the mean square TT strain: $a=10$ ($\\epsilon=0.1,1$), $a=20$ ($0.1,1$)"),
-        ("fs_kin", "largest kinetic over gradient energy of the TT part for $a\\ge12$: $\\epsilon=0.1,1$"),
+        ("fs_kin", "largest kinetic over gradient energy of the TT part for $a\\ge12$, over the 22 double-precision dumps: $\\epsilon=0.1,1$"),
         ("fs_card", "card-hours of the scan: three cases; two gauges; total"),
     ]),
     ("Spatial gauge of the projection ($\\epsilon=1$, two gauges, $64^3$ unless stated)", [
         ("g_t0", "exact pure-gauge data: slope of $\\Lambda h$ and of $\\Lambda h-G$ in the gauge amplitude; with a slicing change, $\\Lambda h-G$"),
         ("g_size", "largest $|G_{\\rm tot}/c_+|$ for $a\\le20$, zero shift: $\\epsilon=0.1,0.3,1$"),
         ("g_size40", "the same at $a=40$"),
-        ("g_raw", "gauge difference of $c_+$ over $|s|$, as projected, $a=5,10,20,40,60$"),
+        ("g_raw", "gauge difference of $c_+$ over $|s|$ ($s$ the static amplitude at $\\epsilon=1$ of the first-source rows), as projected, $a=5,10,20,40,60$"),
         ("g_cor", "the same after $G_{\\rm tot}$ in each gauge"),
         ("g_median", "median of corrected over projected difference where the latter exceeds $10^{-3}|s|$: $64^3$, $32^3$; share of such dumps"),
         ("g_quad", "the same median with the quadratic piece alone: $64^3$, $32^3$"),
         ("g_dev", "departure from $sg$ at $a=10$: as projected, corrected; at $a=20$: as projected, corrected"),
         ("g_nonTT", "rms non-TT part, zero shift over driven shift, $a\\ge10$: smallest, largest ratio"),
         ("g_weyl", "median relative gauge difference for $a\\le64$: magnetic Weyl part; flat TT strain"),
-        ("g_slicing", "first-order slicing of the earlier three-wave runs, $1<a\\le121$: largest correlation of $\\delta\\ln\\alpha$ with $\\delta\\ln\\gamma^{1/6}$; rms of $\\delta\\ln(\\alpha\\gamma^{1/6})$ over that of $\\delta\\ln\\alpha$, smallest and largest"),
+        ("g_slicing", "first-order slicing of the earlier three-wave runs, $1<a\\le121$: largest correlation of $\\delta\\ln\\alpha$ with $\\delta\\ln\\gamma^{1/6}$; rms of $\\delta\\ln(\\alpha\\gamma^{1/6})$ over that of $\\delta\\ln\\alpha$, smallest (the initial slice) and largest"),
     ]),
     ("Newtonian mode of the code", [
         ("n_force", "force excess $[(k\\Delta x/2)/\\sin(k\\Delta x/2)]^2-1$ on the box mode, $N=16,32,64$"),
@@ -483,7 +487,7 @@ LEDGER_V2 = [
         ("wF_weyl_orders", "its local orders (16--32, 32--48, 48--64)"),
         ("wF_d1", "symbol error of the sixth-order first derivative at the wave, $N=16,32,64$"),
         ("wF_weyl_phase", "largest difference of the Weyl and TT phase errors over $N$ (rad)"),
-        ("wF_spec", "Weyl diagnostic with spectral derivatives minus TT, largest over $N$"),
+        ("wF_spec", "Weyl diagnostic with spectral derivatives minus TT (forward combination), largest over $N$"),
         ("wF_pol", "polarization ratio against the exact one, largest over $N$ and time: modulus; argument"),
         ("wF_t0", "TT amplitudes at $t=0$ against the data, largest over $N$ (rounding)"),
         ("wF_nonTT", "non-TT part over the wave at the end (second-order backreaction); TT content off the wave vector"),
@@ -503,7 +507,8 @@ LEDGER_V2 = [
         ("w_card", "card-hours of the two runs at $N=64$"),
     ]),
     ("Second round of the first source ($64^3$, eight particles per cell)", [
-        ("r2_floor", "rerun of $\\epsilon=1$ against the first run, largest relative difference of $c_+$ (double precision): $2\\le a\\le40$; $80\\le a\\le140$"),
+        ("r2_floor", "rerun of $\\epsilon=1$ against the first run, largest relative difference of $c_+$ (double precision): $2\\le a\\le40$; $80\\le a\\le140$ (a floor of about $10^{-12}$; the second digit is rounding of the diagnostic)"),
+        ("eps2", "advance test of the $1+\\epsilon^2$ form at $\\delta=0.0025$ (ratio $Q$ of the departures divided by $1+\\epsilon^2$, $\\epsilon=0.3$ and 1): $|Q-1|$ for $30\\le a\\le60$, smallest and largest over $32^3$ and $64^3$; $Q$ at $a=20$, $32^3$ and $64^3$"),
         ("r2_parity", "two initial-data tools without jitter: largest difference of positions, velocities, masses and fields; particles"),
         ("r2_ic", "jittered data: largest momentum residual, jitter 0.3, 0.1, none; largest Hamiltonian residual"),
         ("r2_maxTT", "largest TT amplitude after the first dump: smallest and largest, jitter 0.3; the same, 0.1; quiet lattice, largest"),
