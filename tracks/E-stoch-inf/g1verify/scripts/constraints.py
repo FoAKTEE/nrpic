@@ -109,13 +109,25 @@ for sname, keys in SETS.items():
     n2 = kgrid(N)
     fp, fm = nrsf.dumps(rp["dir"]), nrsf.dumps(rm["dir"])
     fh = [nrsf.dumps(runs[k]["dir"]) for k in keys[2:4]] if len(keys) == 4 else None
-    hp = {nrsf.header(p)["cycle"]: p for p in fp}
-    hm = {nrsf.header(p)["cycle"]: p for p in fm}
-    common = sorted(set(hp) & set(hm))
+    def bycycle(fl):
+        out_ = {}
+        for p in fl:
+            h_ = nrsf.header(p)
+            out_[h_["cycle"]] = (p, h_["time"])
+        return out_
+
+    # match dumps by cycle AND time: a run that stops at tlim = 4.5 writes its last dump after
+    # a shortened step, at the cycle the longer run dumps at t = 4.5038
+    tp, tm = bycycle(fp), bycycle(fm)
+    hp = {c: v[0] for c, v in tp.items()}
+    hm = {c: v[0] for c, v in tm.items()}
+    common = sorted(c for c in set(tp) & set(tm) if abs(tp[c][1] - tm[c][1]) < 1e-12)
     if fh:
-        hph = {nrsf.header(p)["cycle"]: p for p in fh[0]}
-        hmh = {nrsf.header(p)["cycle"]: p for p in fh[1]}
-        common = [c for c in common if c in hph and c in hmh]
+        tph, tmh = bycycle(fh[0]), bycycle(fh[1])
+        hph = {c: v[0] for c, v in tph.items()}
+        hmh = {c: v[0] for c, v in tmh.items()}
+        common = [c for c in common if c in tph and c in tmh and abs(tph[c][1] - tp[c][1]) < 1e-12
+                  and abs(tmh[c][1] - tp[c][1]) < 1e-12]
     rows = []
     for cyc in common:
         A, ha = load(keys[0], hp[cyc])
