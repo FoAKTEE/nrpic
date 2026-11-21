@@ -1,11 +1,13 @@
 # G1 status of B-emd-gw (pre-core baseline)
 
-State 2026-11-20, batch 2a (lead). Verdict of the lead: **G1 not met; one item owed.** Of the
+State 2026-11-21, batch 4a (lead). Verdict of the lead: **G1 not met; one item owed.** Of the
 three criteria of the track sheet (`coord/CHARTER.md` 9.5) as ruled by decision 0013, two are
-met (1 and 2) and one is struck (3). The G1 schematics and the note's G1 sections exist
-(note v2). Owed: an independent recomputation of the ledger rows that no verifier has yet
-recomputed (checklist C18; `OPEN.md` item 1). The wave-2 text of this file follows,
-superseded where the sections below say so.
+met (1 and 2) and one is struck (3); criterion 1 now also holds for the wave vector
+2 pi (1,2,0) (F2) and its time/space split (XS), rechecked by the lead with verifier3's code
+(run B-20261121-154933-a79da09). Owed: the ledger rows that no independent agent has yet
+recomputed (checklist C18, `OPEN.md` item 1: lines 34-36, 49-63, 70-71, 124, 199, 217), after
+verifier_c18 recomputed 116 numbers (`VERIFIER-C18.md`); and the note v3 wordings (`OPEN.md`
+item 2). The text below is the state of batch 2a and earlier, superseded where it differs.
 
 ## Criterion 1 (batch 2a): met for both set-ups
 

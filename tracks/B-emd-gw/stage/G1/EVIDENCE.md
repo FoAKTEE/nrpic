@@ -2,7 +2,7 @@
 
 Every run is registered under `tracks/B-emd-gw/runs/<run id>/manifest.json`, outputs under
 `scratch/B-emd-gw/<run id>/`. Wave-1 evidence is listed in `stage/G0/EVIDENCE.md`; this
-file lists what G1 rests on, waves 1, 2, 2b and 3 (updated by the lead, batch 2a, 2026-11-20).
+file lists what G1 rests on, waves 1, 2, 2b and 3 (updated by the lead, batch 4a, 2026-11-21).
 
 ## Criterion 1 (diagnostics on linear waves)
 
@@ -63,12 +63,20 @@ B-20261119-144134-092e73f, B-20261119-154315-c55b30f, B-20261119-155621-68170ca
 (stopped: B-20261119-143348-728c0e5, B-20261119-145328-4b3663f, B-20261119-153724-a6f1ab5,
 B-20261119-154528-9306cb1; failed: B-20261119-143836-644f0a9).
 
-## Runs of round 1 closed by the lead, not yet analysed (packages in progress)
+## Round 1 of wave 3 (batches 2b and 3), analysed and reviewed
 
-B-20261120-222841-acfe21d, B-20261120-222849-3b921b7, B-20261120-222849-e5673dc (waves F2,
-XS), B-20261120-222955-c8e16e3, B-20261120-223006-24448ac (flrw_conv, G2),
-B-20261120-223236-e213594, B-20261120-223241-f1efd4f (first_source round 3). Failed:
-B-20261120-223445-3686145 (shear smoke run, deck error recorded).
+| What | Files | Runs |
+|---|---|---|
+| waves F2, k = 2 pi (1,2,0), N = 16-64, TT and Weyl | `waves/results/f120_results.json`, `waves/figs/f120_*.png` | B-20261120-222849-3b921b7, -222841-acfe21d (card); analysis B-20261121-125625-7af3965 |
+| waves XS, time/space split of X | `waves/results/xs_split.json`, `waves/figs/xs_split.png` | B-20261120-222841-acfe21d, -222849-e5673dc; analyses B-20261121-125625-18183ef, -130242-7781791, split -130317-4e8107e |
+| gw_diag gauge and reader modules on real dumps | `gw_diag/gwdiag/{gauge,binio}.py` | B-20261121-125606-e2ebf60, -130433-3658490 |
+| first_source round 3: P12, P13, (1 + eps^2), P11/P14 at 32^3, P16' | `first_source/results/r2_*.json`, `first_source/figs/r2_*.png` | B-20261120-223236-e213594, -223241-f1efd4f; B-20261121-075302-a9fcc43, -075255-631c3d9, -075547-32aba8f, -075616-97f039f, -080222-2293fae (card), -080244-f575dfe, -085202-b95efda, -084352-8b1c988 |
+| verifier_c18 (C18) | `stage/G1/VERIFIER-C18.md`, `stage/G1/verifier_c18/` | B-20261121-130334-a86cff6 ... -132955-cb150b2 (12 runs) |
+| lead's review, batch 4a (L4-L7) | `stage/REVIEW-wave3.md`, `stage/review_wave3/` | B-20261121-154933-a79da09, -155017-9aec47a, -155045-343bee1 |
+
+Runs of G2 packages still in progress (not G1 evidence): B-20261120-222955-c8e16e3,
+B-20261120-223006-24448ac (flrw_conv); failed: B-20261120-223445-3686145 (shear smoke run,
+deck error recorded).
 
 ## Interface proposals and answers
 
@@ -80,8 +88,8 @@ history later, AwA generators not in this release.
 
 ## Budget
 
-Card-hours (`nrpic-run budget`, 2026-11-20 23:00 PST): 1.69 at gate G1, 0.31 at gate G2, 0.48 of
-wave 1 without a gate: 2.48 in all (sacct: 2.48), of 40 allotted to the next gate.
+Card-hours (`nrpic-run budget`, 2026-11-21 08:00 PST): 1.69 at gate G1, 0.34 at gate G2, 0.48 of
+wave 1 without a gate: 2.51 in all, of 40 allotted to the next gate.
 
 Release core-v0.4 (tag on f9323185, merged into main 2026-11-21) carries the corrected
 oblique generator, the double-precision bin output and the jitter tool that criterion 1 and

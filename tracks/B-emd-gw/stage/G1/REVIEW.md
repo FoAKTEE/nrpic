@@ -14,3 +14,8 @@ Main finding of the wave-3 recheck: the one disputed number of criterion 1 (the 
 of test X at N >= 48) is a difference of definition between the two readings (modulus of the
 complex mode amplitude against its part in phase with the exact solution), not an error of
 either; the truncation error is the cross value and the x10 value of both polarizations.
+
+Batch 4a (2026-11-21): `../REVIEW-wave3.md`, section "Batch 4a": first_source round 3, waves
+round 1, verifier_c18; runs B-20261121-154933-a79da09 (F2 and XS remeasured with verifier3's
+code), -155017-9aec47a (first_source analyses reproduce byte for byte), -155045-343bee1
+(verifier_c18's summary reproduces); predictions L4-L7 in `../review_wave3/JOURNAL.md`, all held.

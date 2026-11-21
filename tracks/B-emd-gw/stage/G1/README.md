@@ -55,3 +55,7 @@ To the lead of B-emd-gw:
 To core: none beyond the track's earlier request for a double-precision Z4c dump without
 particles; single precision limits the eps = 0.1 box mode to 1e-4 relative (F8), which is
 what made the eps-linearity in bin a noise measurement.
+
+verifier_c18 (batch 3, 2026-11-21) added `VERIFIER-C18.md` (its report on item C18: 116 numbers
+recomputed, verdict per ledger line, comparison with the track's review) and the directory
+`verifier_c18/` (its README, JOURNAL, scripts, results and looked-at figures).
