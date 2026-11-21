@@ -141,7 +141,9 @@ removes the staircase of the uniform spreading (T3b: Hamiltonian constraint on t
 20 times smaller; T19c: 13 times closer to a smooth density at 16 cells per wavelength).
 On data built with the source filter at the root cell size, which the track's present
 data are, it does not help at a regrid: largest relative constraint after the regrid
-0.0125 with it against 0.0072 with the uniform spreading (T9b), and T10F_PLACEHOLDER
+0.0125 with it against 0.0072 with the uniform spreading (T9b); over the 1.3 time units
+after the first regrid of the S1 run the two are equal within 10 per cent (largest
+relative constraint 0.036 against 0.039, T10f), both twice the unrefined run.
 Independent of the leaf cells: one particle per root cell on a lattice stretched by 30
 per cent carries a modulation of 7 per cent rms at the cell scale through the linear
 cloud itself (2 sinc^2(pi h/d) for particle spacing d; 3 per cent with the quadratic
@@ -387,9 +389,9 @@ processor build of source 1548d49 (`.work/build_cpu_b`), published on 2026-11-21
 | T1b, T18a | T1 with NEW2; its bytes against T1 | `-031032-614792a`, `-032122-0f3369f` | identity at most 1.65e-14 (energy), 1.1e-16 (momentum) in the 18 unfiltered refined cases; 18 of 22 cases byte-identical to T1; the four that differ are the linear cloud with fine shape |
 | T2b, T18c | T2, T5, T6, T7, T8 with NEW2; bytes against T2 | `-031920-494ac64`, `-032946-d860245` | homogeneous to 1.6e-14 (chi) and 4.2e-14 (E) with every patch; the lattice drifting through the patch with fine shape (M): 2.7e-14, 9.6e-14, tracker within 1.0e-13; 18 of 20 cases byte-identical to T2 (M differs at round-off; U only in the first column of the finder status file, section 4.3) |
 | T9b, T18b | T9 with NEW2; bytes against T9 | `-031701-cff3117`, `-032213-1d17e30` | MeshBlock histories, particle number, rest mass, identity (3.2e-14) as T9; largest relative H after the regrid 0.0125 with fine shape (first-order form of T9: 0.0116), 0.0072 with the uniform spreading; the uniform-spreading and the release case byte-identical to T9 |
-| T10f | case a5 of T10e with NEW2 | `core-20261121-030904-1548d49` | T10F_ROW |
+| T10f | case a5 of T10e with NEW2 | `core-20261121-030904-1548d49` (analysis `-035043-d2a3257`, figure `fig_t10f_compare`) | no jump: 0.0091, 0.0096, 0.0101 at the three cycles (largest cycle-to-cycle factor of |H| after the regrid 1.19; first-order form 4.6); largest relative H to t = 3.5: 0.036 (first-order form 0.169, uniform spreading 0.039, no refinement 0.020); |H|_2/|16 pi E|_2 inside r = 2.45 at t = 3.5: 0.0117 (0.041, 0.0116, 0.0073) |
 | T10c | the last stretch of the scouting run again, from its restart file at t = 10, with four finder surfaces that can flow; card, published card executable of 3c44b74 | `core-20261121-025527-eb8e6b7` (Slurm job 4755, 264 s; analysis `-032345-839e721`) | section 7 |
-| T14b | card check of the card executable of 1548d49 on the decks of T2b (U, S, Sf, A, M, G) and T9b (ladder) | `core-20261121-032510-c83f904` (Slurm job 4760) | T14B_ROW |
+| T14b | card check of the card executable of 1548d49 on the decks of T2b (U, S, Sf, A, M, G) and T9b (ladder) | `core-20261121-033223-e1d596b` (Slurm job 4763, with T10g; the first submission `core-20261121-032510-c83f904`, job 4760, was withdrawn before it started) | **PENDING**: the job had not started when the package was closed (2026-11-21 04:00 UTC; the queue gave 06:15 UTC). Until it is judged the card executable of 1548d49 has not run on a card |
 
 ## 5. Predictions that failed (details in the journal)
 
@@ -444,6 +446,10 @@ processor build of source 1548d49 (`.work/build_cpu_b`), published on 2026-11-21
 - T10c: the restarted run on the card agrees with the uninterrupted one to 2e-6 to 1e-2
   after 32 cycles, not to round-off as on the processors (T11); not separated from the
   run-to-run differences of card runs in a stretch that amplifies them (section 7).
+- T10f: "the largest relative constraint changes by less than 30 per cent from one cycle
+  to the next": a factor 1.40 at two cycles, while |H| itself changes by 2 and 19 per
+  cent there and the uniform-spreading run steps alike; the clause should have named
+  |H| (largest factor 1.19).
 
 ## 6. Regression
 
@@ -514,13 +520,16 @@ What this says:
   not be evidence of a black hole.
 - On the uniform mesh the largest relative constraint stays below 5.7e-3 (to t = 2.2);
   0.9 after level 1 appears it is 0.10 and then follows S1 (0.26 against 0.16 at t = 5).
-  Whether the refined level causes this jump is the subject of T10e (pending, below).
+  **That jump was a defect of the fine-shape deposit of the linear cloud** (T10e, T10f
+  below; section 2.2), with which this whole run was made. With the corrected deposit
+  the largest relative constraint is 0.014 at t = 3.06 and 0.036 at most to t = 3.5.
 - With the fine-shape deposit E is negative in leaf cells from t = 7.6 on (down to
   -4.6e-3, 5 per cent of E_max; S1: -1.8e-4), and E rings around the peak where the
   particles are sparse (figure `fig_t10_lines`, |x| between 2 and 4.5): the edge weights
-  of section 2.2 on real data. From t = 7.5 the adaptive run is denser at the centre than
-  S1 (E_max/<E> four to fifteen times) and its lapse falls faster; which of the
-  differences (mesh history, fine shape) does it is not separated.
+  of the first-order form on real data. From t = 7.5 the adaptive run is denser at the
+  centre than S1 (E_max/<E> four to fifteen times) and its lapse falls faster; which of
+  the differences (mesh history, fine shape, and the defect of its first-order form) does
+  it is not separated. The repeat with the corrected deposit is T10g (pending, below).
 - The finder of the deck never searched: 11 calls from t = 7.85, each ended at its first
   flow iteration with reason 3 (section 2.3, `hmean_tol`). [JUDGEMENT] S1's "no horizon
   in 44 calls" has the same cause (same options and data; S1 has no status file).
@@ -530,22 +539,69 @@ What this says:
 - The particle criterion never acted (at most 7.4 particles per leaf cell, threshold 8):
   the lapse ladder alone drove the mesh.
 
-**Open when the session was paused (2026-11-20 22:34 UTC, usage limit)**:
-- T10e, the constraint jump after the first regrid: running on four processors as run
-  core-20261120-222729-6cfac05 (`t10e_jump.py`: the deck to t = 3.5 without refinement, as
-  run, with the uniform spreading, with every cloud on the root level; about 50 minutes).
-  NOT JUDGED. Its script writes `t10e_summary.json` and `fig_t10e_jump.png` into the run
-  directory when the four cases end; prediction in the journal (entries of 2026-11-20
-  22:23 and 22:27).
-- T10c, the last stretch again with four finder surfaces that can flow: written and
-  predicted (journal, 22:23), NOT SUBMITTED (two card jobs of core were queued, then the
-  pause). Command: `harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher
-  batch --list tracks/core/analysis/cosmo_amr/t10c_finder.list --exe
-  /data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_gpu --gpu-hours 0.25 --wall
-  00:15:00 --purpose "T10c of cosmo-amr"`; analysis: `t10c_finder.py --run <case
-  directory> --base <case directory of core-20261120-220816-09f6f79>`. It would also be
-  the first restart of an adaptive run on a card. Card time of the package so far: 0.08
-  of the one card-hour.
+**T10e and T10f: the constraint jump after the first regrid** (processors; the S1 data
+to t = 3.5; runs core-20261120-222729-6cfac05 and core-20261121-030904-1548d49, analysis
+core-20261121-035043-d2a3257, figure `fig_t10f_compare`):
+
+| | largest relative H at cycles 52, 53, 54 (t = 2.909, 2.946, 2.984) | largest to t = 3.5 | |H|_2/|16 pi E|_2 inside r = 2.45 at t = 3.5 |
+|---|---|---|---|
+| no refinement | 0.0108, 0.0112, 0.0115 | 0.020 | 0.0073 (t = 3.36) |
+| lapse ladder, fine shape, first-order form (3c44b74, as T10b) | 0.0099, 0.066, 0.159 | 0.169 | 0.041 |
+| lapse ladder, uniform spreading | 0.0118, 0.0122, 0.0126 | 0.039 | 0.0116 |
+| lapse ladder, fine shape, integral form (1548d49) | 0.0091, 0.0096, 0.0101 | 0.036 | 0.0117 |
+
+The jump comes twenty cycles after the regrid, between two cycles in which the mesh does
+not change: it is the moment the first particles pass the centres of root cells inside
+the patch (section 2.2). With the corrected deposit it is gone. What remains: from
+t = 3.0 to 3.2 both refined runs rise together to about twice the unrefined run, whatever
+the spreading; that belongs to the refined level ([JUDGEMENT] the source filter at each
+level's cell size, sections 4.1 and 8), not to the sampling of the clouds.
+
+**T10c: the last stretch with a finder that can flow** (run core-20261121-025527-eb8e6b7,
+Slurm job 4755, the card executable of 3c44b74, 264 s = 0.073 card-hours, 77 GB of card
+memory; analysis core-20261121-032345-839e721, figure `fig_t10c_finder`). T10b restarted
+from its file at t = 10 with `-i t10c_finder.athinput`: four surfaces, `hmean_tol` 1e30,
+200 flow iterations, a search every 16 cycles; h0 at the centre with initial radius 2,
+h1 at the centre with 0.8, h2 and h3 at the lapse minima (0, -0.59, 0) and (0, +0.59, 0)
+with 0.25.
+
+- No search ends at its first iteration any more (112 searches; reasons 0, 4, 6).
+- **h2 and h3 find a surface** at eight searches in a row, from t = 11.264 (cycle 736)
+  to t = 11.712 (cycle 848): mean coordinate radius 0.072 rising to 0.091 (3.7 to 4.7
+  cells of level 4), smallest radius 0.058 to 0.072, area 20.2 to 29.6, area mass 0.634
+  to 0.767, 81 to 137 flow iterations; the two agree to 4e-5 in the mass. Before
+  t = 11.26 their flows run through the centre ("mean radius negative", 15 and 16
+  searches) or reach the iteration limit; the last search (t = 11.76) reaches the limit.
+- h0 and h1 find nothing: all 56 searches end at the iteration limit, at mean radii 1.93
+  to 1.96 and 0.51 to 0.73.
+- The run ends as T10b: guard stop at t = 11.7812, cycle 871, the same first cell.
+- The restart on a card: the same MeshBlock count as the uninterrupted T10b at all 445
+  paired records; after 32 cycles the time agrees to 2.3e-6, the largest lapse to
+  3.7e-6, the smallest lapse to 4.5e-3, E_max to 1.1e-2, and the two depart further as
+  the collapse proceeds. That is far above the round-off of the processor restarts
+  (section 4.2) and is not separated from the run-to-run differences of a card in a
+  stretch that amplifies any difference.
+
+What the two surfaces are worth: when they first appear the largest relative Hamiltonian
+constraint on the mesh is 1.73 and |H| reaches 9.3, the smallest lapse is 4e-3 of the
+mean, 110 particles have been removed by `alpha_exc`, each surface is four cells in
+radius, and the run was made with the first-order form of the fine shape. They show that
+the finder of this package searches and converges in a periodic adaptive run, half a
+time unit before the fields fail, at the two lapse minima on the y axis and not at the
+centre. They are not evidence of a black hole.
+
+**T10g, the scouting run again with the corrected deposit: PENDING** (run
+core-20261121-033223-e1d596b, Slurm job 4763, 0.2 card-hours asked together with T14b;
+the queue gave 2026-11-21 06:15 UTC as its start when the package was closed). Deck
+`tracks/core/analysis/cosmo_amr/t10g_scout.athinput`: T10b's with the card executable of
+1548d49, the four finder surfaces of T10c from t = 10.5, no restart files. Prediction in
+the journal (entry of 2026-11-21 03:33). To close it: `harness/bin/nrpic-run finish
+core-20261121-033223-e1d596b`; `t14_card.py --card <run directory> --t2
+scratch/core/core-20261121-031920-494ac64 --t9 scratch/core/core-20261121-031701-cff3117`
+for T14b (the script judges U, S, A, M, G and ladder; the case Sf, new in the list, is
+to be compared with the histories of T2b's Sf by hand); `t10_scout.py` and `t10c_finder.py --run <run directory>/s1g --base
+scratch/core/core-20261120-220816-09f6f79/s1amr` for T10g. Card time of the package so
+far: 0.153 of the one card-hour (T14 11 s, T10 3 s, T10d 20 s, T10b 244 s, T10c 264 s).
 
 ## 8. Not done, limits, open points
 
@@ -553,7 +609,17 @@ What this says:
 - The source filter acts at the cell size of each level; data filtered at the root level
   are inconsistent with the same passes on a finer level (journal 15:05, T3 with filter).
   The leading inconsistency on refined levels of the track's present data.
-- Negative leaf-cell E with `deposit_fine_shape` in sparse regions (section 2.2).
+- Negative leaf-cell E with `deposit_fine_shape` in sparse regions (section 2.2); no
+  limiter exists.
+- The card executable of source 1548d49 has not run on a card, and the scouting run has
+  not been repeated with the corrected deposit: T14b and T10g, one pending job (section
+  7). T10b's history after t = 2.9 carries the defect of the first-order form.
+- After the first regrid of the S1 run both spreadings leave the largest relative
+  constraint at about twice the unrefined run (0.036, 0.039 against 0.020 at t = 3.5,
+  T10f); not separated further.
+- One particle per root cell on a strongly deformed lattice: the linear cloud itself
+  modulates the density at the cell scale (T19: 7 per cent rms at 30 per cent stretch);
+  the track's data have one particle per root cell.
 - Released deposit, found here (T3c): with quadratic or cubic clouds placed on the level
   of their particle's MeshBlock (`deposit_max_level` above the root, no
   `deposit_adaptive`), a uniform lattice is NOT uniform across a level boundary (35 and
@@ -572,8 +638,14 @@ What this says:
 - Restarts on refined meshes agree with the uninterrupted run to round-off, not bit for
   bit (section 4.2); on a uniform mesh and right after a regrid they are bitwise.
 - MPI: built and tested without MPI only.
-- The finder on the track's case is untested: with the deck's `hmean_tol` it never flowed
-  (section 7); the restart with a working finder (T10c) is pending.
+- The finder on the track's case: with `hmean_tol` out of the way it finds two surfaces
+  at the lapse minima in T10c (section 7), in a region that violates the constraints at
+  order one. A horizon in a state that satisfies the constraints is not shown; the
+  surfaces at the centre (radii 2 and 0.8) never converge.
+- A restart of an adaptive run on a card agrees with the uninterrupted run to 1e-6 to
+  1e-2 after 32 cycles in the collapsing stretch of T10c; whether that is the restart or
+  the card's run-to-run difference is not separated (the same restart on processors, or
+  the uninterrupted card run twice, would tell).
 - The released particle restart file stores the previous sources for all
   `max_nmb_per_rank` MeshBlocks (`nrpic_io.cpp`, the block "has_ts": the five extents of
   the array and the whole array): 2.23 GB per restart file at a limit of 2000 MeshBlocks

@@ -166,6 +166,12 @@ source_density = true
 source_extrap  = true
 particle_file  = particles.nrp
 deposit_fine_shape = true    # coarse clouds sampled on the leaf cells with their shape
+                             # (linear cloud: needs the executables of source 1548d49,
+                             # published 2026-11-21; those of 3c44b74 jump when a particle
+                             # passes a cell centre: set false with them.  On these data,
+                             # built with the source filter, the uniform spreading (false)
+                             # gives the same constraint within 10 per cent: run
+                             # core-20261121-030904-1548d49)
 region_dcycle  = 16          # <basename>.region.hst: norms of H and 16 pi E in and out
 region_radius1 = 2.449489742783178   # compaction radius sqrt(6)/k
 region_radius2 = 0.6

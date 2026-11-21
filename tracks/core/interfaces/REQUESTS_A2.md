@@ -182,10 +182,40 @@ core-20261120-220816-09f6f79 against the track's A-emd-pbh-20261115-160349-9d232
   removes particles only at 0.007 of the mean lapse (248 removed from t = 11.15 on).
 - The first attempt (job 4654) died at start with a segmentation fault that did not
   repeat (five variants on a card, two on processors); unexplained.
-- Open (session paused by the usage limit): the last stretch again with four finder
-  surfaces that can flow (T10c, not submitted, `t10c_finder.list`), and the four runs
-  that separate the constraint jump after the first regrid (T10e, running on processors
-  as core-20261120-222729-6cfac05, not judged); `cosmo_amr.md` section 7.
+- Closed on 2026-11-21 (section 5b): T10e and T10c.
+
+## 5b. The fine-shape deposit of the linear cloud corrected; the finder finds surfaces (2026-11-21)
+
+Full account: `cosmo_amr.md`, sections 2.2, 4.6 and 7. In short [VERIFIED in the runs
+named there]:
+- **A2-8 (clouds across level boundaries), correction.** `deposit_fine_shape` with the
+  linear cloud, as published on 2026-11-19 (source 3c44b74), was wrong: a quarter of a
+  particle changed its leaf cell at once when the particle passed the centre of a
+  lattice cell of its cloud (T17), and on any lattice that is not regular the leaf cells
+  did not converge to a smooth density (T19c). It made the jump of the largest relative
+  Hamiltonian constraint from 0.01 to 0.16 in two cycles, twenty cycles after the first
+  regrid of the scouting run (T10e). Corrected in source 1548d49 (the leaf cells get the
+  integrals of the assignment function): continuous, second order (0.0061 to 0.0016 from
+  8 to 16 cells per wavelength), conservation identity 1.65e-14, the homogeneous universe
+  unchanged by a patch (4.2e-14), nothing changed without the option (byte-identical to
+  the release) or with quadratic and cubic clouds. On the S1 data the jump is gone
+  (0.0096 instead of 0.066; largest value to t = 3.5: 0.036, uniform spreading 0.039, no
+  refinement 0.020; T10f). New executables are published; the card executable has not
+  run on a card yet (job 4763 pending).
+- **A2-2 (finder), on the track's case.** With `hmean_tol` out of the way and four
+  surfaces, the restart of the scouting run from t = 10 (T10c, card) finds two surfaces
+  at the lapse minima (0, -0.59, 0) and (0, +0.59, 0) at eight searches in a row, t = 11.26
+  to 11.71: area mass 0.63 to 0.77, mean coordinate radius 0.072 to 0.091 (four cells of
+  level 4). The surfaces at the centre (radii 2 and 0.8) never converge. The region
+  violates the Hamiltonian constraint at order one when the surfaces appear (largest
+  relative value 1.73), so they are not evidence of a black hole; they show that the
+  finder searches and converges in the periodic adaptive run.
+- For the track's set-up: one particle per root cell on a lattice stretched by 30 per
+  cent carries a modulation of 7 per cent rms at the cell scale through the linear cloud
+  (3 per cent with the quadratic cloud; T19), before any filter or refinement.
+- Pending: the scouting run from t = 0 with the corrected deposit and the four surfaces
+  (T10g) and the card check of the new card executable (T14b), one card job
+  (core-20261121-033223-e1d596b, Slurm 4763).
 
 ## 6. Regression
 
