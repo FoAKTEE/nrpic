@@ -294,3 +294,41 @@ the helpers' scripts are not imported, except `gravothermal/tmb.py` and
 - open: D1-D3 (no card job submitted: the collisions-2 card executable awaits core's
   statement and the heat helper holds both card slots); review of the heat package when it
   ends; G1 remainder (`stage/G1/OPEN.md`). Card-hours used this session: 0.
+
+## 2026-11-21T07:51Z  session C-sidm lead (wave 3, batch 2b)  predictions before the review runs
+
+State found: worktree merged with main (core-v0.5); G0 signed (coord/GATES.md, 2026-11-20).
+Packages of round 1 since the last lead: heat (closed), decisive (closed, job 5 pending),
+drift and models (paused at the usage flag of 2026-11-20 22:33 UTC), note (cut at 22:35 UTC,
+uncommitted files), verify_g1 (cut at 22:35 UTC; a helper of batch 2b works on it now in this
+worktree). Card jobs: decisive job 5 (Slurm 4770, run C-20261121-062408-49fa14a) and drift (i)
+(Slurm 4741, run C-20261120-222533-ce50a86) both COMPLETED (sacct), both closed by me with
+`nrpic-run finish` at the start of this session. No card job of the owner queued. This lead
+session spends no card time (none named in its task).
+
+Predictions (written before the runs; own code in `stage/review_wave3/`):
+- L17 decisive job 5 (helper's prediction, decisive/JOURNAL.md entry 10, stands as written):
+  the cell seeds 2 and 3 of CC1 at Kn = 10 collapse (linear crossing of alpha_min = 0.3)
+  within 1.5 M of each other and of 184.02 M. Mine [JUDGEMENT]: both in [182.5, 186.5] M;
+  the mode effect is NOT shown by the decision rule (|mean(part) - mean(cell)| < 3 sigma),
+  and the difference is below 1.5 M. Refuted if a cell seed lies outside [181, 187] M or if
+  the rule shows a mode effect.
+- L18 own reader of `cc.nrpic.hst` (time, alpha_min; linear interpolation of the first
+  crossing of 0.3) reproduces the t_c of every D1/D3 run in the helper's summary.json within
+  0.01 M; the D3 control d3_kninf cosine fit A(1 - cos 2 pi t/P) + c gives P within 5 percent
+  of 282 M and A within 10 percent of 0.0022. Refuted by a larger difference.
+- L19 drift (i) cc2_kninf_M8 (helper's M8.1-M8.4 of drift/JOURNAL.md entry 2 stand as
+  written). Mine [JUDGEMENT, 50 percent]: R = A(M/8)/A(M/4) in [0.4, 1.0]; the period
+  P(M/8) within 15 percent of 355 M; the run reaches 300 M with np = 1e5 and sum_m
+  bit-identical. Refuted if R is outside [0.4, 1.0] (sharp side: R > 1.0 means the finer mesh
+  does not reduce the excursion).
+- L20 drift entry 6 on decisive's d3_kninf: P(0.26) in [260, 380] M and below P(CC2) = 355 M,
+  A(0.26) < 0.0086 (helper's prediction; judged here from L18's fit).
+- L21 heat: a rerun of `heat/scripts/summary_c6.py` reproduces the numbers of
+  C-20261121-030328-e3ffc6d exactly (same inputs); my own weighted mean of the per-seed T7
+  values at theta 0.003 agrees with 1.0250 +- 0.0025 to 1e-4. Refuted by a difference.
+- L22 models: a rerun of the unit tests `models/test_growth_v2.py` passes U1-U5 with the
+  numbers of C-20261120-222454-8721534; figures drawn by me from the two npz files show
+  (a) the v2 synthetic fits centred on the true rate with the 'first' reference biased high
+  by 2-5 percent, (b) concave ln|d| on the three y_c = 0.5 compensated samples. Refuted by a
+  different U-test outcome or by figures that contradict the helper's numbers.
