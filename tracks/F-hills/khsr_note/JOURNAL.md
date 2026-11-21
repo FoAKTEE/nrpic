@@ -279,3 +279,18 @@ percent sign out of the ledger, seven negations rewritten, one long decimal.
 Prediction of the final run: every PNG byte-identical to F-20261121-213906-f4b2b30 (fig_elliptic
 identical to fig_khsr: czstyle already draws legends without a frame); ledger.tex differs
 from that run's only by table 1b split off and the remnant-mass change written as a fraction.
+
+### 21:52Z N. outcome (final figure run F-20261121-214141-256f945; compile, checker, pages)
+
+Prediction of the final run MET: all 15 PNGs byte-identical to F-20261121-213906-f4b2b30
+(fig_elliptic = fig_khsr), ledger.tex differs only by table 1b split off and the fractional
+remnant-mass change. Outputs copied into `note/figures`, `note/tables`; appendix B names the run.
+latexmk: 24 pages, no undefined reference, no float too large; LaTeX still reports stuck
+floats (deferred to the \clearpage before Sec. VI, where they are placed: Figs. 10-14 on pages
+13-16). Checker (`check_manuscript.py`, forbid list of the guide plus the internal package
+names): remaining items are run ids in the appendix ledger (exception of the guide), script
+comments, and four negations kept as factual (two in the lead's v1 text); clean on percent
+signs, long decimals, frames, captions. Pages read: all 24 as a montage at low resolution, and
+pages 1, 7, 10, 15, 16, 17, 24 at 70 dpi (abstract, Fig. 4 and Sec. V A-B, Sec. V F, Figs. 13
+and 14, plan and summary, Table VII). Seen and left: the right panel of Fig. 4 repeats the
+line legend (cosmetic; README request).
