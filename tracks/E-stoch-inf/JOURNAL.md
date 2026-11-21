@@ -420,3 +420,53 @@ verifier's "floor" reservation belongs in the A4' ruling itself, so it went to o
 Open: A4' ruling (orch); the cut packages note, usr, window, a4res (HANDOFF lists what
 remains; their files untouched); P256 on the release card build (0.5 card-hours). No card job
 of this owner queued or running. Card-hours this session: 0 (processors only, at most 6 cores).
+
+## 2026-11-21T12:58Z  session lead wave 3, batch 3 (Opus)  commits f9a0eb01..  runs see below
+
+Lead review of the packages that finished since batch 2a: `note` (G1 products) and `usr` (USR
+case on the cards, G2 material), both of batch 2b. State found: main merged (f9a0eb01; releases
+core-v0.4 and core-v0.5 on main; decision 0021 item 1 adopted A4'); no pause flag; no card job
+of this owner queued or running; untracked `a4res/scripts/{a4lib,make_list,twin_predict}.py`
+(package `a4res`, still cut, left alone); `window` untouched since 2026-11-20 (card job 4740
+finished, manifest E-20261120-222424-0eb754b still "submitted", left to its package). Inbox:
+two info messages (release core-v0.5; core's answers on core-v0.4/v0.5).
+
+Git ancestry of the helpers' predictions (checked before the runs below): usr entry 9.3 is in
+ba66218 (14:26 PST), before job 4742 started (14:36:46 PST, sacct); entry 10 (the amended H bar
+of U-A4) is first committed in 7f764776 (23:50 PST), after that job ran, so its pre-registration
+rests on its own time stamp; entries 12.1, 13, 14.1, 14.3 are each in the commit of the run they
+predict or earlier (a0cc3eb2, 1f579fe3 before job 4783 at 01:40 PST, 19571c7f, 2f068acc). note
+N9-N12 are in the commits of the runs they predict (1849987a, 7fbe919a, 6112292a).
+
+Predictions of the lead check, written before any run of this session (refuted where stated):
+- LR4 (reruns from the registered outputs, unchanged scripts): (a) usr group 1
+  (`analyse_cards.py --group g1` on E-20261120-222621-ba66218), `floor_split.py` on the rerun's
+  summary and `quick_records.py`; (b) the U256/U256m pair analysis (`--group u256` on both runs);
+  (c) `lockstep_shells.py` as in E-20261121-103157-96fee1d; (d) the note's `run_all.py`. Every
+  numeric leaf of (a)-(c) equals the registered output to 1e-12 relative (threaded FFTs at 3
+  workers may reorder sums: a difference below 1e-12 is recorded, not refuting) and every
+  committed copy in `usr/results/runs/` equals its run's output; (d) every PNG of
+  `note/figures/` equals the rerun's in pixels (bytes may differ only by metadata) and
+  `note/tables/ledger_g1.{md,tex}`, `claims.md` are byte-identical. Also the single-run
+  section U256 of the pair summary equals the summary of E-20261121-084815-63462b8 in every
+  numeric leaf they share, to 1e-12. Refuted by any larger difference.
+- LU1 (own code on the raw dumps, the verifier's reader `g1verify/scripts/nrsf.py`, numpy FFT;
+  not the helper's card_lib): at N_f of U256 and U256m, R_phi = (H_b/Pi_b)(phi - <phi>) with
+  H_b = -<K>/(3<alpha>), Pi_b = <Pi>, which the helper finds to carry 1.00 of R^NR (chi part
+  6.1e-6, anisotropic 1.6e-6). Predicted: rms 0.89452 within 1e-4 in both runs; skewness
+  +0.00237 (U256) and +0.00061 (U256m) within 1e-4; max |R| 4.568 and 4.557 within 0.01; the
+  even/odd ratio of the mode coefficients, sqrt(sum|even|^2 / sum|odd|^2), 2.53e-4 over
+  0 < |n|^2 <= 1024 and 2.88e-4 over 0 < |n|^2 <= 4096, each within 10 percent. Refuted if
+  outside (the chi and anisotropic parts are too small to move any of these by more).
+- LU2 (own code, group-1 halving at 128^3, dumps 4, 6, 8 at cN 2.06, 3.06, 4.05): raw halving
+  factors of the odd and even parts of H and M (rms over cells; even parts with box means
+  removed; U128p/m against U128hp/hm), and the floor-corrected even factor with
+  f^2 = (4 o_h^2 - o_1^2)/3, equal to `floor_split` E-20261121-080134-a0cc3eb at those dumps
+  within 1e-6 relative (same definitions, independent code): raw even M 3.9918, 3.9108, 3.8323;
+  raw odd M 1.0008, 1.8007, 1.3580; corrected even M 4.0000, 3.9999, 4.0007; raw even H 3.9802,
+  3.9648, 3.9625. Refuted by a difference above 1e-3 (a different definition would show as
+  a percent-level difference).
+- LU3 (records, own parse of `usr.sf.con.hst`): the whole-record maxima of <|M|/[M]> 2.519e-2
+  (U256) and the value at N_f 2.127e-3; U256m equal to U256 in these two to 4 digits
+  (entry 15: "records equal to 4 digits"); card time of jobs 4742, 4774, 4783 from sacct
+  0.157, 0.617, 0.612 card-hours (one card each). Refuted by a difference in the 4th digit.
