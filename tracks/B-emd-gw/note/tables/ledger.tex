@@ -98,7 +98,7 @@ null $\epsilon=0$, all dumps to $a=140$: largest TT amplitude of $h$ (single, do
 $32^3$ against $64^3$: largest $|c_+$ ratio$-1|$, $5\le a\le40$: $\epsilon=0.1,0.3,1$, driven shift & 0.000861, 0.000319, 0.000232, 0.00022 & \texttt{\scriptsize B-20261115-184650-2d155b6} \\
 the same, largest over the four cases for $40<a\le80$; at $a=100$ & 0.016, 0.0318 & \texttt{\scriptsize B-20261115-184650-2d155b6} \\
 share of the four box modes in the mean square TT strain: $a=10$ ($\epsilon=0.1,1$), $a=20$ ($0.1,1$) & 0.963, 0.929, 0.843, 0.737 & \texttt{\scriptsize B-20261115-174722-ba1048d} \\
-largest kinetic over gradient energy of the TT part for $a\ge12$: $\epsilon=0.1,1$ & 0.00857, 0.00821 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
+largest kinetic over gradient energy of the TT part for $a\ge12$, over the 22 double-precision dumps: $\epsilon=0.1,1$ & 0.00857, 0.00821 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
 card-hours of the scan: three cases; two gauges; total & 0.252, 0.174, 0.426 & \texttt{\scriptsize B-20261115-164059-d802e82} \\
 \end{tabular}
 \end{ruledtabular}
@@ -115,14 +115,14 @@ Quantity & Value & Run \\
 exact pure-gauge data: slope of $\Lambda h$ and of $\Lambda h-G$ in the gauge amplitude; with a slicing change, $\Lambda h-G$ & 2, 3, 2 & \texttt{\scriptsize B-20261115-164221-6a6b779} \\
 largest $|G_{\rm tot}/c_+|$ for $a\le20$, zero shift: $\epsilon=0.1,0.3,1$ & 0.0055, 0.00596, 0.0112 & \texttt{\scriptsize B-20261115-174722-ba1048d} \\
 the same at $a=40$ & 0.0163, 0.0185, 0.0397 & \texttt{\scriptsize B-20261115-174722-ba1048d} \\
-gauge difference of $c_+$ over $|s|$, as projected, $a=5,10,20,40,60$ & 0.00121, 0.0036, 0.0147, 0.0487, 0.115 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
+gauge difference of $c_+$ over $|s|$ ($s$ the static amplitude at $\epsilon=1$ of the first-source rows), as projected, $a=5,10,20,40,60$ & 0.00121, 0.0036, 0.0147, 0.0487, 0.115 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
 the same after $G_{\rm tot}$ in each gauge & $1.95\times10^{-5}$, $7.64\times10^{-5}$, 0.000305, 0.00296, 0.012 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
 median of corrected over projected difference where the latter exceeds $10^{-3}|s|$: $64^3$, $32^3$; share of such dumps & 0.084, 0.0928, 0.89 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
 the same median with the quadratic piece alone: $64^3$, $32^3$ & 5.24, 5.32 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
 departure from $sg$ at $a=10$: as projected, corrected; at $a=20$: as projected, corrected & 0.00444, 0.00687, 0.0231, 0.0345 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
 rms non-TT part, zero shift over driven shift, $a\ge10$: smallest, largest ratio & 16.2, 52.2 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
 median relative gauge difference for $a\le64$: magnetic Weyl part; flat TT strain & 0.00121, 0.0139 & \texttt{\scriptsize B-20261115-180834-c77a132} \\
-first-order slicing of the earlier three-wave runs, $1<a\le121$: largest correlation of $\delta\ln\alpha$ with $\delta\ln\gamma^{1/6}$; rms of $\delta\ln(\alpha\gamma^{1/6})$ over that of $\delta\ln\alpha$, smallest and largest & -0.999, $5.48\times10^{-5}$, 0.0408 & \texttt{\scriptsize B-20261115-170610-c82b10c} \\
+first-order slicing of the earlier three-wave runs, $1<a\le121$: largest correlation of $\delta\ln\alpha$ with $\delta\ln\gamma^{1/6}$; rms of $\delta\ln(\alpha\gamma^{1/6})$ over that of $\delta\ln\alpha$, smallest (the initial slice) and largest & -0.999, $5.48\times10^{-5}$, 0.0408 & \texttt{\scriptsize B-20261115-170610-c82b10c} \\
 \multicolumn{3}{l}{\emph{Newtonian mode of the code}} \\
 force excess $[(k\Delta x/2)/\sin(k\Delta x/2)]^2-1$ on the box mode, $N=16,32,64$ & 0.013, 0.00322, 0.000804 & \texttt{\scriptsize B-20261115-190015-4dd3416} \\
 measured over predicted sheet error at $a=2,5$: $N=16$; $32$; $64$ & 0.9839, 0.9822, 0.9891, 1.019, 0.9999, 1.012 & \texttt{\scriptsize B-20261115-173904-a7297e3} \\
@@ -165,7 +165,7 @@ Weyl diagnostic (sixth-order stencils) minus TT, $N=16,32,48,64$ & $3.07\times10
 its local orders (16--32, 32--48, 48--64) & 5.97, 5.94, 5.74 & \texttt{\scriptsize B-20261119-164402-7438a99} \\
 symbol error of the sixth-order first derivative at the wave, $N=16,32,64$ & $2.54\times10^{-5}$, $4.06\times10^{-7}$, $6.38\times10^{-9}$ & \texttt{\scriptsize B-20261119-141844-2c5d622} \\
 largest difference of the Weyl and TT phase errors over $N$ (rad) & $1.6\times10^{-11}$ & \texttt{\scriptsize B-20261119-164402-7438a99} \\
-Weyl diagnostic with spectral derivatives minus TT, largest over $N$ & $1.22\times10^{-11}$ & \texttt{\scriptsize B-20261119-164402-7438a99} \\
+Weyl diagnostic with spectral derivatives minus TT (forward combination), largest over $N$ & $1.22\times10^{-11}$ & \texttt{\scriptsize B-20261119-164402-7438a99} \\
 polarization ratio against the exact one, largest over $N$ and time: modulus; argument & $1.03\times10^{-9}$, $1.08\times10^{-9}$ & \texttt{\scriptsize B-20261119-164402-7438a99} \\
 TT amplitudes at $t=0$ against the data, largest over $N$ (rounding) & $2.39\times10^{-11}$ & \texttt{\scriptsize B-20261119-164402-7438a99} \\
 non-TT part over the wave at the end (second-order backreaction); TT content off the wave vector & 0.000144, $1.3\times10^{-9}$ & \texttt{\scriptsize B-20261119-164402-7438a99} \\
@@ -194,7 +194,8 @@ card-hours of the two runs at $N=64$ & 0.0192 & \texttt{\scriptsize B-20261119-1
 Quantity & Value & Run \\
 \hline
 \multicolumn{3}{l}{\emph{Second round of the first source ($64^3$, eight particles per cell)}} \\
-rerun of $\epsilon=1$ against the first run, largest relative difference of $c_+$ (double precision): $2\le a\le40$; $80\le a\le140$ & $9.5\times10^{-13}$, $4.71\times10^{-13}$ & \texttt{\scriptsize B-20261119-160607-ef83373} \\
+rerun of $\epsilon=1$ against the first run, largest relative difference of $c_+$ (double precision): $2\le a\le40$; $80\le a\le140$ (a floor of about $10^{-12}$; the second digit is rounding of the diagnostic) & $9.5\times10^{-13}$, $4.71\times10^{-13}$ & \texttt{\scriptsize B-20261119-160607-ef83373} \\
+advance test of the $1+\epsilon^2$ form at $\delta=0.0025$ (ratio $Q$ of the departures divided by $1+\epsilon^2$, $\epsilon=0.3$ and 1): $|Q-1|$ for $30\le a\le60$, smallest and largest over $32^3$ and $64^3$; $Q$ at $a=20$, $32^3$ and $64^3$ & 0.00566, 0.0361, 1.16, 1.1 & \texttt{\scriptsize B-20261121-075616-97f039f} \\
 two initial-data tools without jitter: largest difference of positions, velocities, masses and fields; particles & 0, 2097152 & \texttt{\scriptsize B-20261119-142727-02878d1} \\
 jittered data: largest momentum residual, jitter 0.3, 0.1, none; largest Hamiltonian residual & 0.000763, 0.000283, $3.12\times10^{-17}$, $3.7\times10^{-11}$ & \texttt{\scriptsize B-20261119-141216-9c98929} \\
 largest TT amplitude after the first dump: smallest and largest, jitter 0.3; the same, 0.1; quiet lattice, largest & $1.27\times10^{-7}$, $5.98\times10^{-7}$, $4.41\times10^{-8}$, $2.04\times10^{-7}$, $2.77\times10^{-16}$ & \begin{tabular}[t]{@{}l@{}}\texttt{\scriptsize B-20261119-160530-7bdcb45}\\\texttt{\scriptsize B-20261119-161519-6e0bc42}\\\texttt{\scriptsize B-20261115-174722-ba1048d}\end{tabular} \\

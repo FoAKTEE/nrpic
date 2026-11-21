@@ -40,6 +40,7 @@ Committed copy: the file of the helper package that the run output should equal 
 | B-20261119-163037-6553674 | conv_summary.json | sha256 ok | first_source/results/r2_null_summary_64.json | yes |
 | B-20261119-164017-cd1ba52 | conv_summary.json | sha256 ok | first_source/results/r2_delta_summary_64.json | yes |
 | B-20261119-164402-7438a99 | final_results.json | sha256 ok | waves/results/final_results.json | yes |
+| B-20261121-075616-97f039f | eps2_summary.json | sha256 ok | - | - |
 | B-emd-gw-20261115-113102-bc5e082 | check_item3.json | sha256 ok | scope/results/check_item3.json | yes |
 | B-emd-gw-20261115-113148-4e5c33b | crossed_waves_tt.json | sha256 ok | scope/results/crossed_waves_tt.json | yes |
 | B-emd-gw-20261115-113632-2960145 | regime_estimates.json | sha256 ok | scope/results/regime_estimates.json | yes |
