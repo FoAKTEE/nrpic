@@ -1454,3 +1454,55 @@ built with two filter passes at the root cell size, the integral form is no bett
 the regrid than the first-order form and both are 1.7 times worse than the uniform
 spreading; consistent with the reading of T3b (with the filter the order of the two
 spreadings reverses), not explained beyond it.
+
+## 2026-11-21 03:25  outcome of T10c (the finder flows and finds two surfaces at the lapse minima); T18b
+
+**T10c, run core-20261121-025527-eb8e6b7** (Slurm job 4755, published card executable of
+3c44b74, restart of T10b from its file at t = 10 with `-i t10c_finder.athinput`; 264 s =
+0.073 card-hours, 77 GB of card memory), **analysed by core-20261121-032345-839e721**
+(`t10c_summary.json`, figure `fig_t10c_finder`, looked at; the first analysis
+core-20261121-032250-db52a52 stopped because a history continued by a restart in another
+directory has no header line, the second, core-20261121-032308-89ac400, drew the radii
+on a linear axis where the found ones could not be read; both kept on record)
+[VERIFIED]:
+- (a) no search ends with reason 3 at its first iteration: 112 searches (28 per surface,
+  every 16 cycles from cycle 432), reasons 0, 4 and 6 only: PASS.
+- (b) **the two surfaces at the lapse minima are found**: h2 at (0, -0.59, 0) and h3 at
+  (0, +0.59, 0), initial radius 0.25, find a surface at eight searches in a row, from
+  cycle 736 (t = 11.264) to cycle 848 (t = 11.712): mean coordinate radius 0.0716 rising to
+  0.0912 (3.7 to 4.7 cells of level 4; smallest radius 0.058 to 0.072), area 20.2 to
+  29.6, area mass 0.634 to 0.767, 81 to 137 flow iterations, the surface integral of the
+  expansion -2e-4 to -0.019; the two surfaces agree to 4e-5 in the mass (the data are
+  mirror symmetric in y). Before t = 11.26 these two end with "mean radius negative" (15
+  and 16 searches: the flow runs through the centre, no surface) or at the iteration
+  limit (cycles 432, 464 or 560, 720); the last search (cycle 864, t = 11.76) ends at
+  the iteration limit. Prediction "radius between 0.03 and 0.2, fewer than ten level-4
+  cells, area mass far below the 22 to 36 of the r = 2 sphere": PASS.
+- (c) h0 (centre, radius 2) and h1 (centre, radius 0.8): all 28 searches end at the
+  iteration limit (200) without convergence of the mass, mean radius 1.93 to 1.96 and
+  0.51 to 0.73: nothing found before t = 11, or at all: PASS.
+- (d) end: guard stop at t = 11.78116, cycle 871, exit status 3, first non-finite cell
+  again in MeshBlock 82 (level 4) at (-0.010, -0.635, -0.049) (T10b: t = 11.7781, cycle
+  871, the same cell): PASS.
+- The restart on the card against the uninterrupted T10b, 445 records paired by cycle:
+  the same MeshBlock count at every one; after 32 cycles the time agrees to 2.3e-6, the
+  largest lapse to 3.7e-6, the smallest lapse to 4.5e-3, E_max to 1.1e-2, and they depart
+  further as the collapse goes on (order one in alpha_min at the end; particle counts
+  differ once particles are removed). That is far above the round-off of T11b
+  (processors, 1e-10). Not separated: two card runs of the same deck differ from run to
+  run (the order of the atomic sums), and this stretch amplifies any difference; the
+  same restart on processors was not made.
+What the surfaces are worth: when they first appear (t = 11.264) the largest relative
+Hamiltonian constraint is 1.73 and |H| reaches 9.3 on the mesh, the smallest lapse is
+0.177 against 44.75 (4e-3 of the mean), 110 particles have been removed by the deck's
+`alpha_exc = 0.3`, and each surface is four cells in radius. They show that the finder
+of this package searches and converges in the periodic adaptive run of the track's
+case, 0.5 before the fields fail, at the two lapse minima on the y axis and not at the
+centre; they are not evidence of a black hole (entry of 2026-11-20 22:23: the centre
+violates the constraints at order one from t = 9).
+Card time of the package so far: 0.153 of the one card-hour.
+
+**T18b, run core-20261121-032213-1d17e30** [VERIFIED]: of the six cases of T9b, `ladderc`
+(uniform spreading) and `lohnerrel` (release executable) give the bytes of T9; ladder,
+chi, ppc and lohner (linear cloud with fine shape) differ: PASS (the cases without the
+option are unchanged).
