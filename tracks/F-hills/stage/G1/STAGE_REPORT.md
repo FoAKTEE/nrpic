@@ -1,21 +1,21 @@
 # Stage report: F-hills G1
 
-Date: 2026-11-19 · branch `track/F-hills` at `b95903f4e876` · checklist
+Date: 2026-11-21 · branch `track/F-hills` at `085e6b9f39a4` · checklist
 `tracks/F-hills/stage/G1/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
 
-**FAIL**. Tag: `stage/F-hills/G1-fail-20261119` (created and pushed by the orchestrator after review, decision 0003).
+**FAIL**. Tag: `stage/F-hills/G1-fail-20261121` (created and pushed by the orchestrator after review, decision 0003).
 
-- 8 checklist items not PASS or NA: C6 FAIL, C7 OPEN, C8 OPEN, C10 OPEN, C11 FAIL, C15 OPEN, C17 OPEN, C18 OPEN
-- verify reported FAIL: runs
+- 6 checklist items not PASS or NA: C6 FAIL, C7 OPEN, C8 FAIL, C15 OPEN, C17 OPEN, C18 OPEN
+- verify reported FAIL: clean, runs
 - no VERIFIER.md (step 7: verifier subagent; decision 0016 item 1, VERIFIER_REPORT.md accepted too)
 
 ## Package documents (decision 0012)
 
 | Document | State |
 |---|---|
-| `stage/G1/STAGE_REPORT.md` | written by this command |
+| `stage/G1/STAGE_REPORT.md` | present |
 | `stage/G1/EVIDENCE.md` | present |
 | `stage/G1/OPEN.md` | present |
 | `stage/G1/CHECKLIST.md` | present |
@@ -32,56 +32,61 @@ Date: 2026-11-19 · branch `track/F-hills` at `b95903f4e876` · checklist
 | C3 | Interface proposals submitted | outbox/20261115T1507Z__to-core__* (input format, pairwise common-horizon trigger, energy diagnostics, two cards or larger blocks), answered in core's dfix-answers (pairwise common horizon done; corrections taken into multi_puncture.md); outbox/20261119T*__to-core__* (tracker files on restart, finder at 4 cells per radius, found flag, damping with three holes) | PASS |
 | C4 | Baseline data and figures | newton3/figures (fig_skr_curves, fig_bkrs_and_h1, fig_general_pdis_energy, fig_finite_q, fig_energy_definition, fig_passages), geodesic_binary/figures (s1_sepfrac, s1_vinf), nr_first/figures/fig_baselines_p1.png; note figures fig_newton, fig_geodesic, fig_rp_scan, fig_passage; JSON in newton3/results, geodesic_binary/results, nr_first/results | PASS |
 | C5 | Interface documents | multi-puncture input written by newton3/scripts/puncture_input.py per coord/INTERFACES/multi_puncture.md section 2 (F's corrections taken in by core, dfix-answers); reader and wrapper interfaces documented in nr_first/README.md (nrread.py, athena_keep_trackers.sh, tree_check.py) | PASS |
-| C6 | F-pre-1 and F-pre-2 reproduce the curves of the literature | F-pre-1 met (STATUS.md T1; independent check at seven points within 0.002/0.4 %, two retrograde points within 0.0063/1.2 %). F-pre-2 met for Schwarzschild (2404.16270: separation fraction within 0.0225, v_inf within 0.7 %), NOT for Kerr: 2402.02178's inclined-binary statement not reproduced (OPEN.md item 3) | FAIL |
-| C7 | Constraint residuals and junk radiation of the three-puncture data are quantified | constraints quantified (E2: t = 0 norm 4.7e-5 at m/8 is truncation; corrected data 4.9e-7 = 1/33 of uncorrected; order 7.6-8; F-20261115-173547-a02af7d, -181434-b9c8916; nr_first/figures/fig_c0_constraints.png; card smoke equal, F-20261115-174602-c6879fe). Junk radiation NOT measured: S3/S2 stopped at the slot limit before the pulse reached 30 m; pending P1's spheres (F-20261119-150017-b45ec5f) and S2g (F-20261119-143443-f11ebb9) | OPEN |
-| C8 | One complete vacuum passage is done | P1 at q = 4 (decision 0013) submitted 2026-11-19 as a chain, run F-20261119-150017-b45ec5f, Slurm 4650 (pending), 17-20 card-hours expected; smoke passed its run-health criteria (E7, V8d); predictions in JOURNAL.md (lead wave 2b) and STATUS.md here | OPEN |
+| C6 | F-pre-1 and F-pre-2 reproduce the curves of the literature | F-pre-1 met for 0911.1136 and 1804.02911 (STATUS.md T1; verifier K2, K3 confirmed); KHSR (1201.4794) not reproduced (G0 verifier D8). F-pre-2 met for 2404.16270 Schwarzschild (verifier K5 with its own HRNA, runs F-20261121-032337-9c6d87a, -032325-f58a391); Kerr (2402.02178) not reproduced (package kerr cut before any outcome). 2026-11-21 | FAIL |
+| C7 | Constraint residuals and junk radiation of the three-puncture data are quantified | constraints quantified (nr_first E2, F-20261115-173547-a02af7d, -181434-b9c8916; card smoke F-20261115-174602-c6879fe); junk of one member measured by junk_gauge (E/m = 7e-5, range 4e-5 to 2e-4; runs F-20261120-222808-b65001c, -223018-a5c0838, -223121-c921d2d; not yet reviewed by the lead); junk of the three-hole data not measured (J4 predicted). 2026-11-21 | OPEN |
+| C8 | One complete vacuum passage is done | P1 (run F-20261119-150017-b45ec5f) runs to t = 280 M but its binary merged at t = 48.8 M, before the passage (p1 entry 4; lead run F-20261121-063449-4dcca98): not a Hills passage that the references can be compared with; cause most likely the members' resolution at m/8 (TO VERIFY). STATUS.md T4. 2026-11-21 | FAIL |
 | C9 | Track F (amends 0005). Mass ratio four for the convergence study and the first scan line; the passage at mass ratio ten follows when the mesh fits. The first passage of a clump binary comes right after the first black-hole passage. (0013) | followed: P1 and the convergence plan are at q = 4 (nr_first/inputs/p1_q4.athinput; STATUS.md); q = 10 waits for the mesh and for momenta from a GR parabola (V9a: the q = 10 input turns at 5.77 M in GR); the clump passage (object b) follows the first black-hole passage (core's wave-3a clump-table package) | PASS |
-| C10 | Schematic: Updated architecture | not drawn: the G0 architecture schematic (note/figures/schem_architecture.png) predates core-v0.3 and the NR runs of waves 2 and 2b | OPEN |
-| C11 | Schematic: Data-flow diagram | no data-flow diagram exists yet (OPEN.md item 4) | FAIL |
+| C10 | Schematic: Updated architecture | note/figures/schem_architecture.png updated to the state of core-v0.3 (exists / to be ported / new; multi-puncture data, trackers, finders, chain wrapper, readers, three references), script note/scripts/schem_architecture.py, run F-20261120-222908-4ffcfba (note package); PNG read by the note helper and by the lead on 2026-11-21. Drawn as of core-v0.3: two items it marks 'to be ported' (common horizon of one pair, mass-scaled shift damping) are in release core-v0.4 (`punc_pair_a_<n>`, `shift_eta_profile`); to update on the note's resume | PASS |
+| C11 | Schematic: Data-flow diagram | note/figures/schem_dataflow.png (input, chained card segments, output streams, readers, analyses with the references, note), script note/scripts/schem_dataflow.py, run F-20261120-222908-4ffcfba; PNG read by the note helper and by the lead on 2026-11-21 | PASS |
 | C12 | Data figure: Baseline results | note/figures/fig_newton.png, fig_geodesic.png, fig_rp_scan.png, fig_passage.png (scripts note/scripts/fig_*.py, run F-20261115-180609-abc9f6e); nr_first/figures/fig_baselines_p1.png (F-20261115-174102-ffa764f); all looked at (note/JOURNAL.md; lead review) | PASS |
 | C13 | Data figure: Validation figures for the analysis pipeline | nr_first/figures/fig_test_nrread_synthetic.png (reader test), fig_e10a_s3_s2_compare.png (comparison script on S3/S2), fig_e11_tree_check.png (tree model against restart trees), fig_e3_single_gauge.png (rerun F-20261119-145619-8246322), fig_e7_p1smoke.png; lead fig_review_nr.png (F-20261119-145434-82c05f2); all looked at by the lead (REVIEW-wave2.md). Drawn by the package scripts with python/nrpic/figstyle.py, not yet note figures | PASS |
 | C14 | Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed) | STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md, CHECKLIST.md, REVIEW.md (points to ../REVIEW-wave2.md and SCOPING.md section 10); the criterion-by-criterion text is STATUS.md beside them, the scoping text ../G0/SCOPING.md, both named in the report | PASS |
 | C15 | Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at | the G0 data figures of the note pass (zoom style, one script each, registered inputs, looked at); the G1 NR figures exist in nr_first/figures with their scripts and runs and were looked at, but are not yet note figures with scripts under note/scripts (OPEN.md item 4) | OPEN |
 | C16 | Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline | note/figures/schem_architecture.png and schem_timeline.png with note/scripts/paperfig.py (copy equal to harness/style/SHA256SUMS); their G1 updates are C10, C11 | PASS |
-| C17 | Working note written with /paper-writing; its manuscript checker passed with --compile | note v0 (11 pages, checker clean with --compile) covers G0 and the baselines; its G1 sections on the NR runs are not written | OPEN |
-| C18 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | no VERIFIER.md (no subagent tool in this session; the lead does not verify its own package); asked of orch (outbox 20261119T*). Second agent so far: ../G0/SECOND_CHECK.md (plan and baselines) | OPEN |
+| C17 | Working note written with /paper-writing; its manuscript checker passed with --compile | note/main.tex rewritten to G1 state (note package, commit d746da26; two corrections by the lead 2026-11-21); registered rerun of run_all.py, latexmk, check_manuscript.py --compile and page reading NOT done (package paused, note/JOURNAL.md last entries) | OPEN |
+| C18 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | no verifier of the G1 material yet; the G0 verifier checked ledger table 3 in four rows only (VERIFIER.md section 2) | OPEN |
 | C19 | Null results and failed runs are on record (manifests and JOURNAL) | failed and stopped runs kept with manifests and journal entries: F-20261115-173601-2fae2dc (S3/S2, slot limit), F-20261115-173606-efcbf69 (withdrawn), F-20261115-173719-923135a, F-20261119-143851-47595bd, F-20261115-174959-9e8a361 (stopped), F-20261115-174142-2a79515 (superseded), F-20261115-175542-b49d687; failed predictions on record: nr_first/JOURNAL.md (E1(b), E3 items 1, 2, 5, E4 rerun counts, E7 first-search masses), newton3/JOURNAL.md (Q1, Q3, Q4 bounds), stage/G0/JOURNAL.md (SC0d, SC2, SC6), JOURNAL.md (V4-V7 of wave 1) | PASS |
-| C20 | STATUS.md, JOURNAL.md and HANDOFF.md are current | STATUS.md, HANDOFF.md rewritten and a JOURNAL.md entry appended by the lead at the end of wave 2b (2026-11-19); P1 announced in STATUS before submission | PASS |
+| C20 | STATUS.md, JOURNAL.md and HANDOFF.md are current | STATUS.md, HANDOFF.md rewritten and a JOURNAL.md entry appended by the lead at the end of batch 2a (2026-11-21) | PASS |
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-19T15:22:08Z, clean export of `b95903f4e876`: **FAIL**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-21T07:06:59Z, clean export of `085e6b9f39a4`: **FAIL**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | PASS | worktree clean (outside the stage directory being assembled) |
+| clean | FAIL | 2 uncommitted paths: commit them first (tracks/F-hills/g2mesh/scripts/card_analysis.py, tracks/F-hills/kerr/) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of b95903f4e876 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-b95903f-20261119T152147Z/tree |
+| export | PASS | clean export of 085e6b9f39a4 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-085e6b9-20261121T070623Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: novelty/scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016) |
-| note-pdf | PASS | note/main.pdf committed after the last .tex change |
+| note-pdf | WARN | note/main.pdf is older than the last change of its .tex files |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
-| fig-script | PASS | 7 figures, each with its script |
-| min-figs | PASS | 2 schematics and 5 data figures (brief 13.4 asks at least 2 and 1 at G1) |
-| runs | FAIL | 2 of 158 runs have problems |
+| fig-script | PASS | 12 figures, each with its script |
+| min-figs | PASS | 3 schematics and 9 data figures (brief 13.4 asks at least 2 and 1 at G1) |
+| runs | FAIL | 1 of 201 runs have problems |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 49 lines |
-| rerun | PASS | 7 of 7 scripts and commands ran cleanly in the export |
-| compare | PASS | 19 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
-| regenerate | PASS | all 14 committed figure files regenerated |
+| status | PASS | STATUS.md has 38 lines |
+| rerun | PASS | 12 of 12 scripts and commands ran cleanly in the export |
+| compare | PASS | 33 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| regenerate | PASS | all 24 committed figure files regenerated |
 
 ## Figures
 
 | File | Script | Kind (data / schematic) | Looked at (PNG read) |
 |---|---|---|---|
-| note/figures/fig_cost.* | note/scripts/fig_cost.py | data | yes (lead, 2026-11-19; also note/JOURNAL.md N1-N4) |
-| note/figures/fig_geodesic.* | note/scripts/fig_geodesic.py | data | yes (lead, 2026-11-19; also note/JOURNAL.md N1-N4) |
-| note/figures/fig_newton.* | note/scripts/fig_newton.py | data | yes (lead, 2026-11-19; also note/JOURNAL.md N1-N4) |
-| note/figures/fig_passage.* | note/scripts/fig_passage.py | data | yes (lead, 2026-11-19; also note/JOURNAL.md N1-N4) |
-| note/figures/fig_rp_scan.* | note/scripts/fig_rp_scan.py | data | yes (lead, 2026-11-19; also note/JOURNAL.md N1-N4) |
-| note/figures/schem_architecture.* | note/scripts/schem_architecture.py | schematic | yes (lead, 2026-11-19; also note/JOURNAL.md N1-N4) |
-| note/figures/schem_timeline.* | note/scripts/schem_timeline.py | schematic | yes (lead, 2026-11-19; also note/JOURNAL.md N1-N4) |
+| note/figures/fig_constraints.* | note/scripts/fig_constraints.py | data | to be confirmed by the session |
+| note/figures/fig_cost.* | note/scripts/fig_cost.py | data | to be confirmed by the session |
+| note/figures/fig_geodesic.* | note/scripts/fig_geodesic.py | data | to be confirmed by the session |
+| note/figures/fig_newton.* | note/scripts/fig_newton.py | data | to be confirmed by the session |
+| note/figures/fig_passage.* | note/scripts/fig_passage.py | data | to be confirmed by the session |
+| note/figures/fig_rp_scan.* | note/scripts/fig_rp_scan.py | data | to be confirmed by the session |
+| note/figures/fig_single.* | note/scripts/fig_single.py | data | to be confirmed by the session |
+| note/figures/fig_smoke.* | note/scripts/fig_smoke.py | data | to be confirmed by the session |
+| note/figures/fig_tree.* | note/scripts/fig_tree.py | data | to be confirmed by the session |
+| note/figures/schem_architecture.* | note/scripts/schem_architecture.py | schematic | to be confirmed by the session |
+| note/figures/schem_dataflow.* | note/scripts/schem_dataflow.py | schematic | to be confirmed by the session |
+| note/figures/schem_timeline.* | note/scripts/schem_timeline.py | schematic | to be confirmed by the session |
 
 ## Verifier report
 
@@ -107,6 +112,13 @@ MISSING: the verifier subagent has not reported (`stage/G1/VERIFIER.md`, decisio
 - `F-20261119-143638-83ce321`: failed (exit 1), eih T4: test-mass parabolic orbits, EIH against exact Schwarzschild (swept angle, its L derivative, pericentre, capture): where 1PN stops being trustworthy
 - `F-20261119-150157-424bab2`: stopped (exit -15), eih far-release line, release-radius test: EIH only, release at 20 r_t (1PN-circular binary), q = 10 and 4, both senses, 360 phases
 - `F-20261119-150159-4a27aa2`: stopped (exit -15), eih far-release line, release-radius test: EIH only, release at 80 r_t (1PN-circular binary), q = 10 and 4, both senses, 360 phases
+- `F-20261120-222810-e408386`: failed (exit 134), g2mesh G2M-2 (G2 preparation): card memory and rate of P1's m/16 mesh at 16^3 with 3000 slots; memory per 32^3 slot and rate per cell at 32^3 against 16^3 on core's three-hole mesh with 7 levels; P1's m/8 mesh at 32^3 (predicted out of memory)
+- `F-20261120-223314-b1b64fa`: failed (exit 1), junk_gauge J4a: Newtonian point-mass track of P1 and its quadrupole luminosity (time profile of the physical emission, for the junk window)
+- `F-20261121-030146-34ad97e`: failed (exit -15), verify_g0 R4: own pericentre scan, 180 phases, Newton from 10 r_t to 4 r_t then full Newton, HRNA hand-off and HRNA with a GR-matched centre of mass (K13, ledger pericentre rows)
+- `F-20261121-030701-734c74b`: failed (exit -15), verify_g0 R7: own HRNA at the set-up of 2404.16270 (r0 = 50 r_t, Schwarzschild parabola), beta = 3 and 10, both senses, 200 phases (K5)
+- `F-20261121-031930-a640847`: failed (exit -15), verify_g0 R4c: remaining cases of the pericentre scan in parallel to R4 (q = 4 r_p = 9.82, 16), 180 phases (K13)
+- `F-20261121-032150-8309634`: failed (exit -15), verify_g0 R10: hypothesis H-u (Newtonian velocities read as u^i in the HRNA hand-off), q = 10 r_p = 8, 12, 13, 180 phases, step cap 300000 (K13)
+- `F-20261121-034441-f211f65`: failed (exit -15), verify_g0 R4e: pericentre scan q = 4 r_p = 16 with a step cap of 200000 per phase, 180 phases (K13)
 - `F-hills-20261115-045124-ae6bca8`: failed (exit None), Re-derive and check the scale estimate of brief line 275 (tidal radius in r_g, plunge bound, Peters time, passage times, Newtonian disruption window, published NR three-body configurations)
 - `F-hills-20261115-045332-ae6bca8`: superseded (exit None), Re-derive and check the scale estimate of brief line 275 (tidal radius in r_g, plunge bound, Peters time, passage times, Newtonian disruption window, published NR three-body configurations)
 - `F-hills-20261115-045407-bf52f4e`: superseded (exit None), Re-derive and check the scale estimate of brief line 275 (tidal radius in r_g, plunge bound, Peters time, passage times, Newtonian disruption window, published NR three-body configurations)
@@ -121,25 +133,31 @@ MISSING: the verifier subagent has not reported (`stage/G1/VERIFIER.md`, decisio
 ## Open risks
 
 
-Updated 2026-11-19 by the lead (wave 2b). Evidence and run ids: `stage/G1/STATUS.md`,
-`stage/REVIEW-wave2.md`, `JOURNAL.md`, `nr_first/JOURNAL.md`.
+Updated 2026-11-21 by the lead (wave 3, batch 2a). Evidence and run ids: `stage/REVIEW-wave3.md`,
+`stage/G0/VERIFIER.md`, `stage/G1/STATUS.md`, `JOURNAL.md`, `p1/JOURNAL.md`, `nr_first/JOURNAL.md`.
 
 | Risk | Likelihood | Effect | Watch | Response |
 |---|---|---|---|---|
-| R1 compute: G3 (about 500 card-hours) far above the allotments (50 to G1, 120 toward G2: decisions 0014, 0016); the two cards are shared with other users | certain | scan lines take weeks of queue | queue waits of P1's segments | q = 4 first (0013); object (b) passages are 3-10 times cheaper; chains keep one segment queued |
-| R2 q = 4 at m/16 needs 2864 MeshBlocks, above the 2700 slots of one card (69.2 GiB at 2700, 26.2 MiB per slot; smoke F-20261115-174602-c6879fe); q = 10 at m/16 needs 2654-4544 | certain on the present build | the G2 resolution triple does not fit | core's answer on 32^3 blocks (no source change; benchmark bench16/bench32 not run) | run the 32^3 benchmark with the release; two cards (core/mpi, wave 3a) |
-| R3 the passage P1 stops on the slot limit, as S3/S2 did (1632 > 1600: wave-zone radius plus the 2:1 rule, nr_first E11) | low (P1's tree 1716-1744 measured, wave-1 maximum 2080 along the Newtonian track, limit 2700) | a segment fails; restart with a higher limit costs memory | `slurm-*.out` and `athena.*.log` of each segment | restarts are exact: resume with `mesh_refinement/max_nmb_per_rank` raised up to about 3000 |
-| R4 member horizon masses drift at m/8: 0.6-1.1e-4 per member mass per unit time in single punctures (S3, S2), +1.3-1.5 % in 16 M in core's three-hole run | high | members 10-18 % heavier by t = 200 M if the rate persists; energies read against fixed masses biased | P1's horizon summaries | read member energies with the measured masses at each time; G2 resolution triple decides whether the drift converges away |
-| R5 the two baselines disagree on the outcome of P1 (Newton ejects m1, HRNA ejects m2; E6) and at q = 10 in kind; HRNA carries a spurious self-acceleration of a moving binary (second check) | certain | neither is the truth for NR | P1 | report NR against both, plus the 1PN (EIH) reference of wave 3a after review |
-| R6 gauge: with eta m = 0.25 the members' trackers settle at 0.76 of P/M_ADM in 4 m; with eta m = 2 still rising at 22 m; core's mass-scaled profile untested with three holes | medium | coordinate trajectories biased; q = 10 cannot use one constant eta | S2g (run F-20261119-143443-f11ebb9); core's answer | gauge-free observables (asymptotic speeds, horizon masses); profile only after a three-hole test |
-| R7 horizon finder at about 4 cells per radius: m2 not found at t = 0, heavy hole fails 17/25 early searches, "converged" poor surfaces (hrms 1e-2) | certain at m/8 | early masses unusable; a member merger may be missed | hrms column | read masses only with hrms < 1e-3, members from t = 0.5 M, heavy from about 4 M; request to core |
-| R8 approximate (superposed Bowen-York) data: corrected data's own residual 1/33 of uncorrected (E2); junk not measured yet | medium | outcomes near boundaries data-dependent | P1's spheres, S2g | junk from P1; constraint solve on the mesh (core id-solver-2) before G3 |
-| R9 GR reading of the start states: the q = 10 input turns at 5.77 M, not 8 M (second check, lead V9a); P1's at 9.25 M in the hole frame and at the capture boundary in other readings (V9b) | certain | the "r_p" label of an NR passage is reading-dependent | - | label passages by their GR turning point; build q = 10 momenta from a GR parabola |
-| R10 tracker files truncated on every restart (compact_object_tracker.cpp line 77) | certain until core fixes it | a chain keeps only its last segment's trajectory | `trk_keep/` in P1's run directory | wrapper `nr_first/scripts/athena_keep_trackers.sh`; request to core |
-| R11 chaos near outcome boundaries (2505.03934) | high near edges | single runs not representative | phase windows of newton3_fix (q = 4: 109-144 deg contain 127) | robust windows; distributions over phase at G3 |
-| R12 object (b) clumps must be mildly relativistic and must not relax during about 200 M | medium | (b) needs larger a_b or more particles | core clump-table (wave 3a), Track C models | G2 relaxation test |
-| R13 competition (RIT plans up to 128:1:1, 2406.11985; BAM scatters N black holes, 2505.03934) | medium | novelty window short for (a) | citation queries before each gate (second check: verdict holds on 2026-11-15) | (b) is the wider novelty |
-| R14 no fresh verifier for G0/G1 | - | gate review may be delayed | orch's answer (outbox 20261119T151429Z__to-orch__verifier-g0-g1) | SECOND_CHECK.md as the second agent's check of the plan |
+| R15 (new, highest) the members of a binary at m/8 do not hold their orbit: P1's binary (a_b = 5.1 M, members 0.125) merged at t = 48.8 M, before the passage (common horizon 0.268; p1 entry 4, lead run F-20261121-063449-4dcca98); no reference merges (inspiral time about 3400 M) | happened once; cause unknown | P1 is not a Hills passage; every m/8 passage may be invalid; the G2 ladder (m/8, m/12, m/16) may need finer members | the isolated binary at m/8 and m/16 for about 60 M | run that test before any further passage; gauge (eta, mass-scaled damping) and data (`corr`) as the other suspects; re-cost G2 after it |
+| R1 compute: G3 (about 500 card-hours) far above the allotments (50 to G1, 120 toward G2: decisions 0014, 0016); the two cards are shared with other users | certain | scan lines take weeks of queue | queue waits of P1's segments (0-40 min) | q = 4 first (0013); object (b) passages are 3-10 times cheaper; chains keep one segment queued; the corrected G2 plan is about 100 card-hours (SCOPING 9, verifier D3) |
+| R2 q = 4 at m/16 needs 2864 MeshBlocks | was "certain"; now LOW | - | g2mesh card job (run F-20261120-222810-e408386): 3000 slots ran at 78785 MiB of 81920 | the triple fits one card at `max_nmb_per_rank` 2950-3000 (verifier D5; core-v0.4 interface "about 3100"); q = 10 at m/16 (up to 4544) still does not; R16u (3466) does not |
+| R3 a passage stops on the slot limit | low | a segment fails | segment logs | restarts are exact: raise `max_nmb_per_rank` to 3000 |
+| R4 member horizon masses drift at m/8: 1.6-2.0e-4 per member mass per unit time in P1 before the merger (1.5-1.9 times the single-puncture rate) | high | energies read against fixed masses biased | horizon summaries | measured masses at each time; resolution decides |
+| R5 the references disagree with each other and none is a controlled approximation inside about 12 M (eih T4, reproduced by the lead to 1e-9); the geodesic model is at the edge of its own validity at the first passages' pericentres (a/R_curv reaches 0.2, verifier D7) | certain | no reference is the truth for NR | - | report NR against Newton, HRNA and EIH; quote reference percentages only with their start construction (verifier D2) and from the same start state as the NR data |
+| R6 gauge: eta m = 0.25 trackers settle at 0.76 of P/M_ADM; core's mass-scaled profile untested with three holes; E10 outcome not yet recorded | medium | coordinate trajectories biased; may contribute to R15 | E10 (junk_gauge) | gauge-free observables; decide E10 before the next passage |
+| R7 horizon finder at about 4 cells per radius at m/8 | certain at m/8 | early masses unusable | hrms column | masses only with hrms < 1e-3 |
+| R8 approximate (superposed Bowen-York) data; 1PN inconsistency of the Newtonian start states (eih: binaries e = 0.12-0.21 at 1PN, CM orbit reading-dependent) | medium | outcomes near boundaries data-dependent | junk (J4), eih's 1PN states | 1PN-consistent states built far out (eih `p1_state.py`; the lead's failed local match shows why); constraint solve on the mesh (core) |
+| R9 GR reading of the start states: q = 10 input turns at 5.77 M (bound CM), P1's at 9.25 M | certain | "r_p" labels reading-dependent | - | SCOPING 3 amended (verifier D1): every r_p with its GR turning point; q = 10 rebuilt from a GR parabola |
+| R10 tracker files truncated on every restart | certain until core fixes it | a chain keeps only its last segment | `trk_keep/` | wrapper `nr_first/scripts/athena_keep_trackers.sh`; reminder to core (2026-11-21) |
+| R16 (new) outside kills: segment 7 of P1 was killed by `pkill -x athena` from a session of another project of the account; the chain treated exit 143 as failure and stopped | happened once | lost segments, idle card time | chain `events.log` | run under a run-specific process name (P1 does: `p1-ak03-gpu`); proposal to orch (2026-11-21) |
+| R11 chaos near outcome boundaries (2505.03934) | high near edges | single runs not representative | phase windows | robust windows; distributions over phase at G3 |
+| R12 object (b) clumps must not relax during about 200 M; Track C's King models at y0 = 0.314 drift at the 1e-2 level over 200 M on M/4 cells (C-sidm answer 2026-11-19) | medium | (b) needs quieter models or finer meshes | C's relaxation runs; core clump-table | ask C for y0 = 0.25-0.30 when (b) starts; G2 relaxation test |
+| R13 competition (RIT up to 128:1:1, 2406.11985; BAM, 2505.03934; 2605.20320 three holes from rest) | medium | novelty window short for (a) | citation queries before each gate | (b) is the wider novelty |
+| R14 KHSR (1201.4794) not reproduced (verifier D8) | certain until done | F-pre-1 incomplete against the track sheet | - | one KHSR result at G1 with newton3 (processor minutes) |
+
+## Decision requested from the group
+
+Lead's judgement 2026-11-21: G1 NOT met. P1's binary merged at t = 48.8 M before the passage (not a Hills passage until the cause is known); KHSR (1201.4794), Kerr (2402.02178), the three-hole junk, the note's compile and a G1 verifier are open (OPEN.md). Not ready for an independent review. verify ran with --no-checksums (the G0 verify of the same session checked the checksums of the same runs).
 
 ## Lead's notes (wave 2b, 2026-11-19)
 
@@ -155,7 +173,3 @@ Updated 2026-11-19 by the lead (wave 2b). Evidence and run ids: `stage/G1/STATUS
   their criteria (`../../JOURNAL.md`, lead wave 2b, "P1: decision"): the run-health criteria
   were met; the failed predictions (first-search horizon masses, S2's settling value, the
   single-puncture cost) and the unmeasured junk do not bear on running P1.
-
-## Decision requested from the group
-
-Not complete for the orchestrator's review: G1 of F-hills is not met. Met: F-pre-1, the baselines, the validated analysis pipeline, interface proposals. Open: the complete vacuum passage P1 (run F-20261119-150017-b45ec5f, submitted 2026-11-19, 17-20 card-hours in the shared queue), the junk radiation of the three-hole data (from P1's spheres), F-pre-2 for Kerr (2402.02178), the G1 schematics and note sections, and a verifier. No decision is requested now; the package is resubmitted when P1 has been analysed.
