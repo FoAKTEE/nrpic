@@ -125,3 +125,67 @@ Pass 1 (run E-20261120-223154-d42de1a, completed exit 0 at 23:02Z, closed with n
 finish now): R^NR_n per mode and box means from all 18 dumps of P256 and all 10 of L256p,
 the sha256 of every dump equal to the run's sha256sums.txt (18 + 10 of 28). Wall 1851 s.
 No analysis of these numbers yet.
+
+## Entry 3 (2026-11-20 19:10 PST): predictions for V4, V5, V6, V7
+
+Written before constraints.py, v6 or v7 have run on the registered data (the dev run of
+session 1 in g1verify_tmp/condev was on L32 only and I have not read its numbers).
+
+Reasoning [JUDGEMENT, from SPEC 2-7 and the stencils, not from the track]: the sources are the
+continuum linear solution (continuum k, the frozen mode functions); the evolution uses sixth-
+order differences and RK4 at Courant 0.25. The linear constraints then hold only up to the
+truncation error: a part FIRST order in the amplitude s (odd in s) of relative size
+eps(k dx) (Laplacian symbol (k dx)^6/560: 2.7e-2 at k dx = pi/2, 4e-4 at pi/4, 6e-6 at pi/8,
+1e-7 at pi/16) plus the RK4 error (omega dt)^4 ~ (0.25 k dx)^4/120. The second-order part
+(even in s) is the physical one of P1:538-541, ~1e-10 of [H]. Rough size of the linear terms of
+H at crossing: eps1 R H^2 x O(10) ~ 4e-6 of the background terms, so odd/[H] ~ 3e-7 x eps.
+Rounding: H holds second differences, so rounding/[H] ~ 1e-16 sqrt(n_steps) (N/2pi)^2 x O(1)/12,
+growing as N^2 to N^2.5.
+
+V4 (constraints).
+- P-V4a: odd part of H (rms over the box, over <[H]>) in the paper's set-up (P256, Q128, Q64;
+  k_max dx = pi/2 at every N) reaches 1e-9 to 1e-8 when the last shells enter and does not
+  fall with N; it exceeds the even part (mean removed), which sits at 3e-11 to 3e-10 near
+  the end of the entry. In the L set-up the odd part falls with N: L32 ~ P-set level, L64
+  comparable to the even part, L128 and L256 well below it.
+- P-V4b: halving (s = 1 -> 1/2) divides the odd part by 2.00 and the even part (mean removed)
+  by 4.00, each within 2 percent where it is above the floor (L32, Q64, Q128).
+- P-V4c: the record <|H|/[H]> of the proper runs is below 1e-8 at all times; <|M|/[M]> is
+  first order or larger (1e-5 to 1e-2), largest when the k dx ~ pi/2 shells enter.
+- P-V4d: negative controls (noise_pi_sign = -1): odd part of H at least 1e3 times that of
+  the proper run of the same set-up during the entry; record <|H|/[H]> ~ 1e-6 to 1e-5,
+  <|M|/[M]> ~ 0.1 to 1 (P1:541).
+- P-V4e: strict A4 (record ratios scale with s^2 under halving) FAILS in the paper's set-up
+  once the odd part dominates (record halving factor drifting from ~4 towards ~2); A4'
+  (a), (b), (d) pass; A4'(c) passes for H and is at risk for M (the odd part of M over [M]
+  is zeroth order in s).
+Refuted: an odd part that falls with N in the P set-up, a halving factor of the even part
+outside 3.9-4.1 above the floor, or a negative control within a factor 100 of the proper run.
+
+V5 (A5, spatial order, L32/L64/L128 at k_max/dk = 8).
+- P-V5a: order of the odd part of H and M, log2(odd_N/odd_2N) at equal times, between 4 and
+  6.5 from 32 to 64 (sixth-order space, fourth-order time with dt ~ dx) and from 64 to 128
+  until the 128 odd part reaches the floor. Refuted: an order below 3.5 or above 7 above the
+  floor.
+- P-V5b: the floor (the part that does not scale with s: the out-of-band part |n|^2 > 9 nmax2
+  of the odd part, which no physics fills to third order, and odd(s) - 2 odd(s/2)) grows as
+  N^2 to N^2.5, its shell spectrum rises with k (second differences of white rounding:
+  ~k^4 in power), it is of the same size in the odd and the even part and in the proper and
+  halved pairs, and its level is 1e-14 to 1e-12 of [H] at 128-256. If all four hold, the
+  attribution to double-precision rounding is supported; a floor that scales with s, or is
+  flat in N, refutes it.
+
+V6 (A6, temporal order, T25/T12/T06 at N = 32, s = +-1).
+- P-V6: at common times, log2(|X_0.25 - X_0.125| / |X_0.125 - X_0.0625|) = 4.0 +- 0.3 for the
+  perturbations of phi, Pi, chi, K (box mean removed), for R^NR of the low modes and for the
+  odd and even parts of H. Refuted (A6 fails) by an order outside 3.5-4.5 while the
+  difference X_0.125 - X_0.0625 is above 100 times rounding; an order near 1 or 2 would point
+  at the stage times of the time-dependent source (SPEC 2.5).
+
+V7 (A7 and cost).
+- P-V7a: the card dumps of U1, U2, U3 (1, 8, 64 MeshBlocks; release core-v0.3) are
+  bit-identical in every variable, the noise fields included, at every dump; the processor
+  U4 (restart at cycle 150) is bit-identical to the processor U2 at the dumps after the
+  restart, and the card U4 to the card U2. Card against processor differs at 1e-16 to 1e-13
+  relative (not part of A7). Refuted by a single differing element within one platform.
+- P-V7b: one 256^3 realisation (P256 to t = 8.5) costs 0.5-1 card-hour on one A100.
