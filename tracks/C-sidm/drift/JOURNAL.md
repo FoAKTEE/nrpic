@@ -332,3 +332,30 @@ the bracket); run (iii) (CC1 at M/8) is now the most informative next card job, 
 Runs (ii) and (iv) (continuations at M/4) lose most of their purpose: the M/4 excursion is
 numerical [JUDGEMENT]. Card time of run (i): 0.69 card-hours of allocation (sacct elapsed
 41:32).
+
+## 2026-11-21 12:58 UTC Entry 9 (helper, batch 3): state; predictions for run (iii) after run (i)
+
+State found: entries 1-8 committed; run (i) closed and judged (entry 8); the lead dropped
+(ii) and (iv) (`../HANDOFF.md` "drift" and "Lead decisions of this session": block A of SCAN.md
+on M/8 after run (iii)). This session: (iii) cc1_kninf_M8, then (v) cc2_kninf_N1e4, one job at
+a time. Pause flag absent; no C-* job queued or running (12:55 UTC); the cards are free but
+one (another user's job). Card-hours so far 0.69 of 3.0.
+
+Predictions for run (iii) (cc1_kninf_M8, release card executable, 300 M), written before it
+is submitted, sharpened by what run (i) showed for CC2 (entry 8):
+- M8.1' The outward excursion is mostly the mesh for the threshold model too: the largest
+  20 M mean of alpha_c - alpha_c(0) is at most 0.35 x 0.0330 = 0.0116 (R_max <= 0.35; CC2
+  gave 0.10). Refuted if R_max > 0.35: then the M/4 excursion of CC1 is not mostly numerical.
+- M8.2' Late contraction at least as fast as CC2 on the same mesh: alpha_c(300 M) -
+  alpha_c(0) (mean over 295-300 M) below -0.0041 (CC2 at M/8), because CC1 is the softer model
+  [JUDGEMENT, 60 %]. Refuted if it is above -0.0041.
+- M8.2'' No collapse within 300 M: the central lapse stays above 0.5 [JUDGEMENT, 85 %]. A
+  collapse (alpha_c < 0.3) refutes and would put the code's M/8 collisionless threshold below
+  y0 = 0.334 (or show a numerical instability of the finer mesh).
+- M8.3' The late H-norm2 (mean 100-300 M) is 6-12 times that of CC1 at M/4 (8.5e-4), i.e.
+  5.1e-3 to 1.0e-2, near CC2's 7.9e-3 at M/8 (same seed, same deposit noise). Refuted outside.
+- M8.4' 456 MeshBlocks, np = 1e5, sum_m bit-identical, 7.5-9.1 s per M (8.30 s per M of run
+  (i) +- 10 %), 300 M reached within the 52 min limit. Refuted if the run stops early.
+- M8.5' The ripple of CC1 and CC2 at M/8 is the same realisation: the residuals about their
+  own 40 M running means correlate above +0.5 (at M/4 the cosine-fit residuals gave 0.72).
+  Refuted below +0.5.
