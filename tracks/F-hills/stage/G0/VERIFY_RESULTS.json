@@ -1,27 +1,27 @@
 {
   "track": "F-hills",
   "gate": "G0",
-  "commit": "7a24d7eca74891de14b7c3ba85be61f00505c6c4",
-  "verified_utc": "2026-11-19T15:20:29Z",
-  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G0-7a24d7e-20261119T150132Z",
+  "commit": "7bf8f9da55eeb732a931637cc7e5a7758df0ec3d",
+  "verified_utc": "2026-11-21T07:05:39Z",
+  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G0-7bf8f9d-20261121T064300Z",
   "result": "FAIL",
   "checks": [
     {
       "check": "clean",
-      "status": "PASS",
-      "message": "worktree clean (outside the stage directory being assembled)",
+      "status": "FAIL",
+      "message": "2 uncommitted paths: commit them first (tracks/F-hills/g2mesh/scripts/card_analysis.py, tracks/F-hills/kerr/)",
       "detail": null
     },
     {
       "check": "sync",
-      "status": "PASS",
-      "message": "main is merged into the branch",
+      "status": "FAIL",
+      "message": "main has commits not merged: run nrpic-ctx sync",
       "detail": null
     },
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 7a24d7eca748 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G0-7a24d7e-20261119T150132Z/tree",
+      "message": "clean export of 7bf8f9da55ee (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G0-7bf8f9d-20261121T064300Z/tree",
       "detail": null
     },
     {
@@ -39,13 +39,13 @@
     {
       "check": "package",
       "status": "PASS",
-      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: stage/G0/SCOPING.md, novelty/scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016)",
+      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: stage/G0/SCOPING.md, novelty/scope/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md",
       "detail": null
     },
     {
       "check": "note-pdf",
-      "status": "PASS",
-      "message": "note/main.pdf committed after the last .tex change",
+      "status": "WARN",
+      "message": "note/main.pdf is older than the last change of its .tex files",
       "detail": null
     },
     {
@@ -57,19 +57,19 @@
     {
       "check": "fig-script",
       "status": "PASS",
-      "message": "7 figures, each with its script",
+      "message": "12 figures, each with its script",
       "detail": null
     },
     {
       "check": "min-figs",
       "status": "PASS",
-      "message": "2 schematics and 5 data figures (brief 13.4 asks at least 2 and 0 at G0)",
+      "message": "3 schematics and 9 data figures (brief 13.4 asks at least 2 and 0 at G0)",
       "detail": null
     },
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "6 of 153 runs have problems",
+      "message": "4 of 201 runs have problems",
       "detail": {
         "F-20261115-173719-923135a": [
           "output not in sha256sums.txt: out/fig_test_nrread_synthetic.pdf",
@@ -94,13 +94,6 @@
           "output not in sha256sums.txt: out/fig_single_junk.png",
           "output not in sha256sums.txt: out/fig_single_junk.pdf",
           "output not in sha256sums.txt: out/fig_single_gauge.png"
-        ],
-        "F-20261119-143443-f11ebb9": [
-          "status is submitted: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/F-hills/F-20261119-143443-f11ebb9/sha256sums.txt"
-        ],
-        "F-20261119-145920-d7af935": [
-          "status is running: not finished (nrpic-run finish)"
         ],
         "F-20261119-150017-b45ec5f": [
           "status is submitted: not finished (nrpic-run finish)",
@@ -363,24 +356,29 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 49 lines",
+      "message": "STATUS.md has 51 lines",
       "detail": null
     },
     {
       "check": "rerun",
       "status": "PASS",
-      "message": "7 of 7 scripts and commands ran cleanly in the export",
+      "message": "12 of 12 scripts and commands ran cleanly in the export",
       "detail": null
     },
     {
       "check": "compare",
       "status": "PASS",
-      "message": "19 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
+      "message": "33 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
       "detail": [
         [
           "note/figures/fig_passage.png",
           "PASS",
           "identical"
+        ],
+        [
+          "note/figures/fig_single.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
         ],
         [
           "note/figures/fig_passage.pdf",
@@ -408,6 +406,11 @@
           "regenerated (vector files carry dates; the PNG preview is compared)"
         ],
         [
+          "note/figures/fig_constraints.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
           "note/figures/fig_rp_scan.png",
           "PASS",
           "identical"
@@ -418,7 +421,27 @@
           "identical"
         ],
         [
+          "note/figures/fig_single.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/schem_dataflow.png",
+          "PASS",
+          "identical"
+        ],
+        [
           "note/figures/fig_geodesic_numbers.json",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/schem_dataflow.svg",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_constraints_numbers.json",
           "PASS",
           "identical"
         ],
@@ -443,12 +466,32 @@
           "identical"
         ],
         [
+          "note/figures/fig_constraints.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/fig_tree.png",
+          "PASS",
+          "identical"
+        ],
+        [
           "note/figures/schem_architecture.svg",
           "PASS",
           "regenerated (vector files carry dates; the PNG preview is compared)"
         ],
         [
           "note/figures/fig_geodesic.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/fig_tree.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_smoke.png",
           "PASS",
           "identical"
         ],
@@ -463,6 +506,21 @@
           "regenerated (vector files carry dates; the PNG preview is compared)"
         ],
         [
+          "note/figures/fig_smoke.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_smoke_numbers.json",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/fig_tree_numbers.json",
+          "PASS",
+          "identical"
+        ],
+        [
           "note/figures/fig_rp_scan_numbers.json",
           "PASS",
           "identical"
@@ -471,13 +529,18 @@
           "note/figures/fig_newton.png",
           "PASS",
           "identical"
+        ],
+        [
+          "note/figures/fig_single_numbers.json",
+          "PASS",
+          "identical"
         ]
       ]
     },
     {
       "check": "regenerate",
       "status": "PASS",
-      "message": "all 14 committed figure files regenerated",
+      "message": "all 24 committed figure files regenerated",
       "detail": null
     }
   ]
