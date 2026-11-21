@@ -1,0 +1,137 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-214547-7a21ed3",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "verifier_g2 V11 (third attempt): boundary-cell H of a puncture, a0b against own stencil estimate; fresh one-step runs stock vs ghost_falloff on release core-v0.6",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/verify/verifier_g2/scripts/v11_faces.py",
+    "/data/haiyangw/nrpic/.work/build_cpu_v06/src/athena",
+    "tracks/core/analysis/faces/inputs/punc.athinput",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-143938-eded041",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "7a21ed33de7bb62a61b47614657632be765d1d68",
+    "branch": "core/nrpic",
+    "dirty": false,
+    "package": [
+      "tracks/core/verify/verifier_g2"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "9d43b229377786cc62ef7bb666b765abfdab30bc",
+    "worktree": "wt/core"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_cpu_v06/src/athena",
+      "role": "input",
+      "sha256": "91fc59b3920e3c9b2b308fda904bd1abe4c28426c26383c36854f2307e1a704c",
+      "bytes": 266226624,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/analysis/faces/inputs/punc.athinput",
+      "role": "input",
+      "sha256": "f889add2311d6f1d8c8df82529be4152c710087f50b61fd1fcb20693aea57fcc",
+      "bytes": 2205,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-143938-eded041/punc_e2/bin/punc.con.00001.bin",
+      "role": "input",
+      "sha256": "314fc1810939c351fd35ab8fa69057e2e6314bcb61ba5beb744589fe28b2c2de",
+      "bytes": 2546397,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-143938-eded041/punc_e3/bin/punc.con.00001.bin",
+      "role": "input",
+      "sha256": "2f889d955df3ed2ea571a22eefef5f357715b42e8899a7cd05e4979121a39ab5",
+      "bytes": 2546397,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-143938-eded041/punc_e4/bin/punc.con.00001.bin",
+      "role": "input",
+      "sha256": "58d4568b6f8236287c7b097b99f7bbb83a47ac18c8874e06a45a72d2e48336b0",
+      "bytes": 2546397,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/verify/verifier_g2/scripts/v11_faces.py",
+      "role": "argv",
+      "sha256": "7830f94bf36029e6dc922e912c1690b37782a983fd90f274c42dba897b42504a",
+      "bytes": 8799,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-214547-7a21ed3",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T21:45:49Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 8.1719,
+    "gpu_hours_reserved": 11.9002,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 1,
+    "runs": 1496,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
