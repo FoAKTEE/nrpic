@@ -1,0 +1,126 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261121-132955-cb150b2",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "verifier_c18 A3: summary of every recomputed number against the printed ledger or report value (ratio figure)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "env",
+    "OMP_NUM_THREADS=1",
+    "python3",
+    "tracks/B-emd-gw/stage/G1/verifier_c18/scripts/a3_summary.py",
+    "tracks/B-emd-gw/stage/G1/verifier_c18/results",
+    "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-132637-1083d74"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "cb150b20afb97a999acd2aa9e307a97f5b8aa9e7",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/stage/G1/verifier_c18"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "973f2dbc2e32338b1ea99d14ee4d03719af9a8c7",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/stage/G1/verifier_c18/scripts/a3_summary.py",
+      "role": "input",
+      "sha256": "36569d16ee91507644ded8e67bca0a3fd9cfbfc71140f407f90739dca1ffb9e0",
+      "bytes": 7975,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/stage/G1/verifier_c18/results/a1_rows.json",
+      "role": "input",
+      "sha256": "fe49a50d2f96c8e2e9cdab4b7e7a1d706895ff2b0d719da877f00a9706ad77ed",
+      "bytes": 7413,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/stage/G1/verifier_c18/results/a2_round3.json",
+      "role": "input",
+      "sha256": "61a6d9421bb6fabd58396518494455aa22eb9bb20ba865ca6208e5ece86de8b2",
+      "bytes": 5986,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/stage/G1/verifier_c18/results/p2_null_pred.json",
+      "role": "input",
+      "sha256": "8d1c6a89d6a044694a9e206b8a2f63ea9d0473792b84a5ff445c4613d089a9df",
+      "bytes": 73405,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/stage/G1/verifier_c18/results/p3_slicing.json",
+      "role": "input",
+      "sha256": "6e4184f5163cacbde34396119899c2ad5f7a72709cc6c83b7fb41fb74134109b",
+      "bytes": 5973,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261121-132955-cb150b2",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T13:29:55Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.6912,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 0,
+    "runs": 269,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
