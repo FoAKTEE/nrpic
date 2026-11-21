@@ -1197,3 +1197,40 @@ coordinates: the centre moves at 0.73 v because the normal observers of this sli
 50 M; `sum m u_x` is a coordinate component and falls with the crowding; what does not
 go away is a drift of -2.5 to -3.4 per cent in the orthonormal sum. TF (running) says
 whether a weaker damping of the shift brings the coordinate speed to v.
+
+### Test TS: the elliptic solver of the code on the moving cluster (predictions written 13:06Z, before any solve of a cluster has run)
+
+The task leaves open which tool corrects the conformal factor: the mesh solver or a
+radial solve per cluster. The radial solve is what this package built; the mesh solver
+(`<particles> id_solve`, release core-v0.4) is in the merged executable, so the two can
+be put on the same data for the first time. `run_idsolve_static.py`, new example input
+`problems/tests/clump_table_idsolve.athinput` (the static input plus `<gravity>` with
+Robin faces and `id_solve`, residual `code`, tolerance 1e-10, start from the trial psi).
+Three solves at 64 cells (dx = 0.5), quiet lattice, tables and particles of run
+`core-20261120-222933-0a01a56`: the cluster at rest; v = 0.3 with the boost-table
+curvature (trial psi_0); the same with the radial correction as the trial. The solver
+holds `Abar_ij` (from `K_ij` of the generator) and the particles' u_i and rest masses,
+and deposits again with the current psi at every evaluation (interface of the solver,
+section 4): that is the equation the radial correction solves to O(V^2) (its
+`-6 P dpsi` term is the dependence of W on psi), with the deposit and the cloud of the
+run in place of the continuum density. The interface of the solver lists the curvature
+of `nrpic_cf` components as not tested.
+
+- TS1. Each solve converges within 40 outer iterations (the Gaussian of the solver's
+  tests took 17 to 29) and leaves max|H| of the monitor below 1e-8 (before: of order
+  0.03 at the surface).
+- TS2. The solved psi of the two moving cases (two starts, one equation) agree to 1e-8
+  at every cell. Refuted above 1e-6: then the trial enters the solved equation (through
+  `Abar_ij = psi_t^2 K_ij` taken with the wrong psi, or the lapse).
+- TS3. With `D = s_curv - s_rest` (the motion's part of the mesh solution) and `R` the
+  radial correction as the code set it (`psi_t(corr) - psi_t(curv)` from the dumps of
+  TB): inside r < 14, `rms(D - R)/rms(R)` below 0.08 and `D/R` at the centre between
+  0.93 and 1.07 (R at the centre is `V^2 y_0(0)` = 3.6e-3). What may differ: terms of
+  order V^4 (2.3 per cent of the second-order residual), the change of the deposit
+  error with the motion (second order in the cell size times V^2), the Robin faces at
+  r = 16 (the correction has a part falling as r^-2). Refuted above 0.2: then the radial
+  correction and the mesh solver do not solve the same equation at second order, and
+  one of them is wrong for moving particles.
+- No prediction, reported: the size of `A = s_rest - psi_t(rest)`, what the mesh solve
+  changes in a cluster at rest (the deposit and the difference stencils; the solver's
+  tests found -5e-3 at the centre of a Gaussian of width 2 at this cell size).
