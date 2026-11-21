@@ -352,3 +352,35 @@ open: S2g's outcome (E10); P1's outcome and the junk energy; Kerr for F-pre-2; G
 note sections; a verifier for G0/G1; orch's ruling on the three run directories.
 failed predictions this session: none of V8-V11 failed; the P1 prediction is open.
 card-hours used this session: 0 (P1 and S2g pending; 0.30 used by the package in total).
+
+## 2026-11-21T06:35Z  session lead F-hills (wave 3, batch 2a)  commits 9ce19873..  runs (below)
+
+Start: main merged (9ce19873, release core-v0.4 on main); pause flag absent. State found:
+`verify_g0` finished (batch 1, VERIFIER.md committed and pushed); `eih` (wave 3a) finished and
+not yet reviewed; the five other packages of round 1 were cut at 14:35 PST on 2026-11-20:
+`note` (paused, committed), `junk_gauge` (committed to the J4 prediction), `p1` (journal entry 4
+and README, figures, results uncommitted), `kerr` (everything uncommitted, predictions only),
+`g2mesh` (one script uncommitted). P1's chain runs by itself: segment 14 (Slurm 4769) from
+t = 231.9 M. p1's uncommitted journal entry 4 reports that the binary MERGED at t = 48.8 M,
+before the passage.
+
+### Predictions of the lead's checks (written before any of them ran)
+
+L1 (P1 merger, own parser of the raw tracker and horizon files, not p1lib/nrread): the
+coordinate separation of trackers 0 and 1 falls below 0.1 M first at t = 48.8 +- 0.3 M; finder
+0 or 1 reports a horizon of mass 0.26-0.28 with hrms < 1e-3 from t = 48.8-49.2 M; before
+t = 30 M the separation decreases monotonically. Refuted if the separation stays above 2 M to
+t = 60 M or no finder reports a mass above 0.2 before t = 60 M.
+L2 (verifier's WRONG items, own arithmetic and own reading): (a) the G2 items of SCOPING 9 sum
+to 131 card-hours; (b) 70847 MiB at 2700 slots gives 26.2 MiB per slot and about 3100 slots on
+81920 MiB; (c) in s1.npz the largest alpha = a/R_curv at any time at beta = 10 (HRNA) is
+0.20 +- 0.01 while the ledger's 0.0056 is the bound-pair maximum; (d) 4 q^(2/3)/2.085 = 14.1
+(q = 20) and 18.5 (q = 30); (e) SCOPING sections 3, 6 and 9 name q = 10 for the first passage.
+L3 (eih): (a) the registered rerun of `tests/test_eih.py` passes 9 of 9 with the recorded numbers
+to the printed digits; (b) my own 1PN two-body integration (relative EIH equation in harmonic
+coordinates, Blanchet's form, written here) of a binary started with the Newtonian circular
+speed at a = 30 m_b, nu = 1/4, gives a radial eccentricity 0.09-0.13 (eih T5: 0.12); refuted
+outside; (c) my own test-mass check of T4 (1PN test-mass equation from its Lagrangian, E_1PN = 0,
+J = L of the Schwarzschild parabola; exact Schwarzschild by quadrature; both from and to
+r0 = 1e4 M) gives the error of the relativistic excess -0.27 +- 0.03 at areal r_p = 10 M and
+-0.09 +- 0.02 at 20 M.
