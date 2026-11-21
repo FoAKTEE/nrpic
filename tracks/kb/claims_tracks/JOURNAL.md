@@ -120,3 +120,22 @@ I changed no decision.
 - E: 7 judgements annotated, labels and statuses unchanged.
 Refuted by any FAILED line, a label change other than those listed, or a status of
 'unresolved' after a relocation.
+
+### Outcome CDE (runs kb-20261121-211743-d9dfe56 C1, kb-20261121-211759-c80bb03 D1, kb-20261121-211809-38a04d0 E1)
+All three runs exited 0 with no FAILED line [VERIFIED, run.log of each]. check_697.tsv: the
+corrected root gives R = 0 (|R| < 4e-12) in all six cases, and the printed root has a negative
+argument in all six.
+- C held as predicted: 5 to_verify became fulltext/checked. 303 now has 2 resolved locator
+  rows. 9 judgements were annotated.
+- D held, with one exception:
+  - 9 to_verify became fulltext/checked (682, 683, 380, 408, 417-420, 370).
+  - 7 stay to_verify with reasons.
+  - 7 judgements and 1 background were annotated.
+  - Refresh moved 697 to located and 698, 699 and 700 to partial. The numbers they quote are
+    D's run values, which are not in the paper, so the machine check calls them missing.
+  - Failed part of the prediction: 399 stayed judgement/partial after the relocation; I had
+    predicted located. The new locator resolves, but the claim's derived numbers (-12,
+    4 m^2 H^2) are not printed at L322-326. That is expected for a derivation, and the
+    label is right.
+- E held: 7 judgements were annotated, unchanged.
+Ledger rows were appended from each run's ledger_rows.tsv.
