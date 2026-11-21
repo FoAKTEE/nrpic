@@ -870,3 +870,58 @@ in [-0.06, -0.02] (more bound, the M_ta excess at 24 needs about -0.04 with t_ta
 |E|^(-3/2)); r0 in [32, 33] M (turning around at ~30): |dE/|E0|| < 0.02. In N128Lc every
 group inside r_last within 1 %. Refuted for H-E ("the M_ta excess is a change of the shells'
 energy") if the groups at r0 = 29-32 M show |dE/|E0|| < 0.01.
+
+## 2026-11-21T09:00Z  outcome E; the cause of the late mismatch; design and prediction Q16 (run to a/a_i = 16)
+
+E (runs D-20261121-085254-a303729 P192, -085255-a2f2550 N128Lc; `nm_energy.png` of P192
+looked at). Shell energies E = v^2/2 - M(<r)/r of single-stream, uncrossed dust against t = 0
+(median of the group, dE/|E0|), P192: r0 = 20-24 M -0.001 to -0.003 (until a/a_i 16);
+24-27 -0.011; 27-29 -0.034; 29-31 -0.057; 31-32 -0.056; 32-33 -0.024; 33-35 +0.138; 35-36.3
++0.62. Every change is in place by the first analysed snapshot (a/a_i = 1.76) and constant
+afterwards to 0.1 %: the error is imprinted during the first expansion, while the ball spans
+4-6 cells, and only in the outer cell of the ball (R_edge = 36.2 M, dx = 8.9 M); the
+shells 0.4 to 1 cell inside the edge became more bound by 3-6 %, the outermost 0.15 cell less
+bound by 14-62 %. N128Lc: every group within 0.2 % (edge layer r0 = 22-24.5 M: -0.18 %).
+Prediction E: edge > +0.10 holds; [29, 32] in [-0.06, -0.02] holds (-0.057, -0.056);
+[32, 33] within 0.02 refuted (-0.024). H-E holds: the M_ta excess is a change of the shells'
+energy [VERIFIED by this run]: with t_ta ~ |E|^(-3/2), -5.7 % in E makes the shells at
+r0 = 29-32 M turn around about 8 % earlier in time, which is the +6 % in M_ta at a/a_i = 24;
+the change of sign at r0 ~ 33 M lies by chance near r_last(30) = 32.9 M, which is why M_ta
+agrees with the closed form again at a/a_i = 30. The profile deviations at 16 and 30 (bump at
+lambda = 0.2-0.25, dip at 0.13 and at 0.23 for 16) come from the same shells, now on their
+first infall and orbits at other radii than in the shells.
+Conclusion for the run to a/a_i = 30: its growth is valid only while the turnaround shells
+start more than about 1.5 cells inside the edge of the initial ball, i.e. r0 < 24 M, until
+a/a_i ~ 12 (M_ta within 0.6 % of hybrid_cc at 6-12, dress within 0.6 % at 8-16); its
+late-time profile and masses test the set-up, not the code's approach to self-similarity.
+The design rule of wave 3 ("the shells that matter turn around inside the ball, the edge is
+1.1 r_last") is not enough on a mesh whose cell is a quarter of the ball's radius; wave 2
+(R_edge = 8.9 cells, edge 1.2 r_last) was fine. [JUDGEMENT on the mechanism inside the cell:
+the cloud-in-cell deposit and gather of a sharp edge that spans one cell and lies only
+four cells from a cell-centred point mass; not separated further.]
+
+Design Q16 (the brief's fallback, with the edge rule repaired as far as nx = 192 allows):
+a/a_i = 16, edge 1.2 r_last (R_edge = 31.7 M), box +-444 M (1.12 x the closed-form edge at
+the end, 396 M), nx = 192, MeshBlocks 64^3, dx = 4.625 M: R_edge = 6.85 cells, r_last(16) =
+26.4 M = 1.14 cells inside the edge; lambda_min = 4 dx/r_ta = 0.075 at a/a_i = 16 (design
+table D-20261120-222358-e98ffbd row 16/1.2/1.12/192). Clump at a cell centre, 5e5 dust, as
+before; dtmax 1.0; snapshots every 9.612 M; restart files every 300 M. Shells with the
+cell-centre kernel: kernel_cc D-20261121-085559-5551b3e, hybrid_cc -085600-c436f4a,
+kernel_cc64 -085602-01fbcdf (setup.json written by nm_ic.py into scratch tmp/q16_setup;
+the run's own setup.json is to be checked identical); predictions run
+D-20261121-085620-70d2fe8. Cost: about 2000-2500 steps at 0.66-1.0 s, 25-45 min on six threads.
+Prediction Q16 (written before the run starts):
+Q1 E-test: every group with r0 < 26.4 M (inside r_last(16)) within 1 % of its initial
+   energy; the edge layer (r0 > 27 M) may move by more [JUDGEMENT: R_edge/dx = 6.85 lies
+   between P192 (4.1: 3-6 %) and N128Lc (8.9: 0.2 %)]. Refuted if a group inside r_last moves
+   by more than 1 %.
+Q2 Masses: M_ta within [kernel_cc - 0.5 %, hybrid_cc + 0.5 %] at a/a_i = 4, 8, 16
+   (4: 2.586-2.592, 8: 4.787-4.807, 16: 9.214-9.257 M); dress within [kernel_cc - 1 %,
+   hybrid_cc + 1 %] (4: 0.789-0.791, 8: 2.142-2.149, 16: 4.888-4.914 M). dress/M_ta at 16:
+   0.530-0.531 (+-0.01) against the self-similar 0.625; M_ta/(M a/a_i) 0.576-0.579 (+-0.005)
+   against 0.565.
+Q3 Profile at a/a_i = 16 against the self-similar solution on [0.075, 0.3] (6 bins): the
+   shells deviate by at most 0.16-0.19 (rms 0.11-0.12); X = 20 %, rms below 15 %.
+Q4 Slopes at 16: mean local slope within 0.15 of the self-similar -2.50, least-squares slope
+   within 0.2 of -2.58.
+Q5 No particle lost before a/a_i = 16 at r0 < r_last; clump within 0.01 dx; cost as above.
