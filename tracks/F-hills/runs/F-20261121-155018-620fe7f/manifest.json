@@ -1,0 +1,123 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "F-20261121-155018-620fe7f",
+  "track": "F-hills",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "lead batch 4a L4: own check of binary_conv (tracker separations, own ADM 1PN and Newton two-body, horizons, H-norm2)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "env",
+    "OMP_NUM_THREADS=1",
+    ".venv/bin/python",
+    "tracks/F-hills/stage/review_wave3/review4.py",
+    "bc",
+    "$NRPIC_RUN_DIR",
+    "/data/haiyangw/nrpic/scratch/F-hills/F-20261121-130358-6cf186a",
+    "/data/haiyangw/nrpic/scratch/F-hills/F-20261121-130351-04074e1",
+    "/data/haiyangw/nrpic/scratch/F-hills/F-20261119-150017-b45ec5f",
+    "tracks/F-hills/binary_conv/inputs/bin_m16.athinput"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "620fe7f4b9e02d3492ddd83e6d4f2bd10cc660f0",
+    "branch": "track/F-hills",
+    "dirty": false,
+    "package": [
+      "tracks/F-hills/stage/review_wave3"
+    ],
+    "outside_package": {
+      "count": 1,
+      "first": [
+        "?? tracks/F-hills/g2mesh/scripts/card_analysis.py"
+      ]
+    },
+    "merge_base_main": "4b1194b16885b51f4b7831b4a0fec65be764242c",
+    "worktree": "wt/F-hills"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/F-hills/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/wt/F-hills/.venv/bin/python",
+      "role": "argv",
+      "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+      "bytes": 5937704,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/F-hills/stage/review_wave3/review4.py",
+      "role": "argv",
+      "sha256": "916faa52274fc7bb0831017fdea53bb960da6b10288dd6b52cd962cf4eeaec98",
+      "bytes": 12649,
+      "tracked": true
+    },
+    {
+      "path": "tracks/F-hills/binary_conv/inputs/bin_m16.athinput",
+      "role": "argv",
+      "sha256": "179a4e9aae8c6c4c6884af62bf12b4076759a4f82d6ccab2c5ee262e0ee00557",
+      "bytes": 3436,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/F-hills/F-20261121-155018-620fe7f",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T15:50:18Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "F-20261121-130358-6cf186a",
+    "F-20261121-130351-04074e1",
+    "F-20261119-150017-b45ec5f"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 50.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.6586,
+    "gpu_hours_reserved": 30.4834,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 227,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
