@@ -29,7 +29,9 @@
  "purpose": "T10e of cosmo-amr on processors: S1 data to t = 3.5 without refinement, as the scouting run, with uniform spreading, with clouds on the root level: where the constraint jump after the first regrid comes from; manifest written by hand: nrpic-run submit --launcher local refused (15 cores busy in live local runs of core)",
  "kind": "scouting",
  "tag": "",
- "state": "running",
+ "state": "finished",
+ "wall_time_s": 2518.41,
+ "exit_status": 0,
  "cores": 4,
  "card_hours": 0.0,
  "started_utc": "2026-11-20T22:27:29Z"
