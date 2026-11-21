@@ -128,3 +128,24 @@ V10, V11, V5b-c. What cannot be reached in a few hours is listed as not checked.
   core-20261121-212817-0f0f28b: the athena runs A completed (east 7 s, os 481 s) but my
   parser of the cycle in the restart header failed, so B did not run. Third attempt
   running (header parsed from athenak/src/outputs/restart.cpp lines 219-236).
+
+## Entry 3, 2026-11-21T21:48Z: outcome V11
+
+- V11 first attempt core-20261121-214423-6aa60c3: a0b analysis done, the fresh runs
+  failed (relative input path; athena could not open it). Second attempt
+  core-20261121-214458-603e123: stock runs done, `ghost_falloff` runs failed (a parameter
+  absent from the input cannot be set on the command line). Third attempt
+  core-20261121-214547-7a21ed3: all done.
+- Own derivation: sixth-order second derivative reading ghosts from p-point Lagrange
+  extrapolation gives the boundary-cell error coefficient 201/180 = 1.1167 (p = 2), and
+  0.1167, -0.0111 in the next two cells, as `z4c_faces.md` H1 says; my estimate of the
+  boundary-cell |H| at the face centre 8 x 1.1167 m / 15.5^3 = 2.399e-3; orders 3, 4
+  relative to 2: 0.1753, 0.0410.
+- Measured (a0b, branch faces; own .bin reader, chi at t = 0 equals psi^-4 to 3e-8):
+  1.8953e-3 = 0.790 of my estimate (claim 1.9e-3, 0.79); e3/e2 0.184, e4/e2 0.0480
+  (claim 0.18, 0.048). The release core-v0.6 executable gives the same value to all
+  digits (stock, order 2 and 4). Fall-off ghosts on the release: 1.53e-4 (order 2) and
+  7.9e-6 (order 4) after one step: 12.4 and 11.5 times lower (claim about 12 at every
+  order). At t = 0 the monitor is 8.5e-9 with either fill (the ghosts are not extrapolated
+  before the first step). Prediction (ratio 8-16, stock within 10 per cent) held.
+  CONFIRMED.
