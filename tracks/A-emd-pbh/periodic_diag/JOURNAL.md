@@ -310,3 +310,20 @@ U0 mixed the Gamma-driver and the relaxed lapse on the root mesh. Two cases with
   lapse settles near exp(1.2 H) instead of exp(6 T H) with T = 0.05, so the early step is
   smaller; that is the price).
 Refuted: U8 without a jump (then the shift, not the relaxation, failed in U0), U9 with one.
+
+## 2026-11-21 22:45Z, entry 11: U8 and U9 outcomes (run A-20261121-223054-ae9af0c; analysis A-20261121-224448-b53226c, fig_leak.png looked at)
+
+U8 (relaxed lapse with lapse_leak 20, zero shift, cfl 1.0): follows U0 almost exactly. The
+lapse leaves its relaxation track from t ~ 2.1 (alpha_max 1.077 at 1.91, 1.084 at 2.10,
+1.105 at 2.50), alpha_min falls from t = 2.7 (0.58 at 3.18, below 0 at 4.49), the
+cell-to-cell part of alpha on the line jumps from 3e-5 to 0.1 between t = 2.1 and 3.2,
+H_max jumps at t = 3.18 (7.0e-2 against 3.4e-3; U0: 3.18 as well), and the guard stops it
+on non-finite fields at t = 4.80. U9 (as U8 with lapse_leak 5, lapse_leak x dt <= 1.6): no
+jump to t = 12; H_max falls smoothly to 5.1e-4; the background lapse rises to 2.0 early and
+relaxes to 1.04 by t = 12.
+Against entry 10: U8 jump between t = 2 and 4 and guard stop before 12: yes; "leaves its
+track at t ~ 1.3-1.5": REFUTED in time, it shows from t ~ 2.1 (growth of 1.2 to 3 per cycle
+from lapse_leak x dt = 2.9 at t = 1.4 takes a few cycles to show); U9 no jump: yes. So U0's
+failure was the stiff relaxation, not the Gamma-driver: removing the shift changes nothing
+(U8), lowering lapse_leak removes it (U9). This is now tested; it does not touch the card
+run (lapse_leak x dt <= 0.39 on level 4).
