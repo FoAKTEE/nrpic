@@ -565,3 +565,74 @@ The build therefore runs the case to N_f with the background and the lockstep re
 predicted; U256 (`inputs/card_u256.list`, same executable) is submitted now, before the
 dumps are analysed, so that the card queue is not idle while the analysis runs. Card-hours
 so far 0.157 of 1.5.
+
+## Entry 12, 2026-11-21 08:01 UTC: outcomes of group 1 against entry 9.3 (analysis E-20261121-075307-4542ce1)
+
+Analysis run E-20261121-075307-4542ce1 (`scripts/analyse_cards.py --group g1`, 3 cores, 3.5
+min) of card run E-20261120-222621-ba66218; numbers in
+`results/runs/summary_E-20261121-075307-4542ce1.json`, figures `fig/fig_card_g1_{modes,
+constraints,halving,background,order}.png` (each looked at). 1054 modes (|n|^2 <= 64), 41
+dumps at 64^3, 21 at 128^3, the same times within each pair, the last at N_f.
+
+| Pre-registered (9.3) | Outcome | Verdict |
+|---|---|---|
+| G1a, U-A0: abs dN < 5e-7 (64), 5e-8 (128) | 4.2e-7, 2.6e-8 | holds; U-A0 (1e-5) passes |
+| G1a, U-A1: <Pi> at N_f 2.6e-5, 1.6e-6 +- 15 % | 2.50e-5, 1.33e-6 (time part 2.52e-5, 1.56e-6 after the s^2 part, entry 11) | holds for the time part; U-A1 (1e-3) passes |
+| G1b: lockstep 2.6e-5, 1.6e-6 +- 30 % | 3.57e-5, 2.25e-6 (ratio 15.9) | FAILED (1.4 times; entry 11) |
+| G1c: U64 odd-part max in [1e-4, 5e-4], worst shell abs(n)^2 >= 49 | 1.144e-4, mode (0, 8, 0), shell 64 | holds |
+| G1c: shells abs(n)^2 <= 16 in [1e-5, 5e-5] (64) | 1.94e-5 to 2.39e-5 | holds |
+| G1c: U128 max in [1e-6, 3e-5] | 2.12e-6 (2.16e-6 for the +-1/2 pair) | holds |
+| G1c: order 64 -> 128 per shell abs(n)^2 >= 49 in [4, 6.5] | 4.01 to 5.75 (shells 52, 56, 61 at 4.01); shells <= 48: 3.77 to 4.26 (the time step) | holds |
+| U-A2s (0.02) | 1.1e-4 (64), 2.1e-6 (128) | passes; single runs (U-A2 against s x reference) 5.3e-4 to 6.1e-4 (64), 5.7e-4 (128), 2.9e-4 (s = 1/2), worst mode (2, 1, -7), the one with the smallest abs(alpha): the even part over a small amplitude |
+| G1d, U-A2n: even/odd at N_f in [1e-5, 5e-5], same on both rungs; +-1/2 half of +-1 within 5 % | 2.187e-5 (64), 2.187e-5 (128), 1.094e-5 (+-1/2: 0.500 of +-1); largest 4.0e-5 at cN 3.6-3.8 | holds |
+| G1e, U-A3: abs(P/P_MS - 1) for k <= 3 dk at most 2e-4 (64), 2e-5 (128) | 4.8e-5, 2.5e-6 (odd parts); single runs 3.7e-4, 3.3e-4 | holds; U-A3 (10 %) passes |
+| R^NR parts at N_f | phi part 1.00, chi part 6.1e-6, anisotropic part 1.6e-6 of the total; linear and log chi forms differ by 3.6e-12 | as entry 9 U3 assumed (R^NR carried by delta phi) |
+| G1f: <H> of the +1 and -1 runs within 1e-3 while the uniform residual dominates | 128^3: 7e-12 to 1.1e-7 for cN 0.5-4, at most 8e-5 to cN 8.5, 8.1e-4 and 1.3e-3 at the last two dumps (<H> near its floor) | holds |
+| G1f: record <abs H/[H]> peaks 6.2e-9 (64), 3.6e-10 (128) +- 30 % | 6.24e-9, 3.75e-10 | holds |
+| G1f / U-A4(a): even parts scale by 4.00 +- 0.05 at s = 1 against 1/2 where the part at s = 1/2 exceeds the bar | H: one dump above 3e-13 of <[H]> (cN 0.53): 3.82; M (bar 1e-12 of <[M]>, all 20 dumps above): 3 of 20 within +-0.05; 3.83 to 3.995 for cN 0.5-4.05, then 3.6, 2.9, 2.0, 1.3, 1.07 and 0.94 to 1.19 after cN 6 | FAILED (H narrowly, 3.82 also below the 3.85 of entry 10; M from cN 4.5 on) |
+| G1f / U-A4(b): odd parts by 2.00 +- 0.05 | H: no dump above the bar (the odd part of H at 128^3 is at most 1.1e-13 of <[H]>); M: 0 of 20 within: 1.00 for cN <= 1.55 and after cN 5, 1.35 to 1.80 between | FAILED for M; not judged for H |
+| G1f: odd part of M during USR, 64^3 in [5e-5, 1e-3]; 128^3 lower by 16 to 90 | 64: plateau 2.1e-4 to 3.5e-4 (max 3.5e-4); 128: max over the window 4.6e-4 (at cN 6.5); per dump cN 2.55-4.05 lower by 37 to 60 (orders 5.2 to 5.9) | 64 holds; 128 FAILED as written (max over the window), holds per dump to cN 4.5 |
+| U-A4(c): odd parts converge 64 -> 128 at order 4 to 6 | H 5.53 to 5.69 and M 5.15 to 5.90 for cN 2.06-4.05, 4.7-4.8 at cN 4.54; outside: -2 to 3 (128^3 odd part at its floor) | holds where the 128^3 odd part is above its floor; H not above the bar anywhere, so formally not judged |
+| U-A4(d): strict A4 at 128^3 (cN <= 2.08) | M: odd/even at most 0.079; H: no dump above the bar (values odd/even at most 0.085) | holds for M; H not judged |
+| G1f: at 64^3 odd/even of H exceeds 1 at least once | 3.2 inside the entry (cN 2.07), 10.1 at most (cN 2.3) | holds |
+| G1f: record <abs H'/[H]> at most in [1e-12, 1e-9] during the entry | 2.87e-12 (t = 0) | holds |
+| G1f: record <abs M/[M]> at most 1e-3 | 1.07e-2, 2.47e-2, 4.3e-2 | FAILED (entry 11) |
+| G1g: cost | 0.157 card-hours, 0.155 s per step at 128^3 | holds |
+
+What the constraint figures show (`fig/fig_card_g1_constraints.png`, `_halving.png`,
+`_order.png`) [VERIFIED for these runs, reading JUDGEMENT]:
+- Even parts of H and M are the same on both rungs (order 0.00 +- 0.05 to cN 5): second-order
+  physics, not resolution; under halving they scale by 3.9 to 4.0 while they are above the
+  floor (to cN 4 for M, 4.5 for H).
+- Odd parts are the stencil truncation of the entering modes: at 64^3 the odd part of H
+  peaks (1.4e-12 of <[H]>) at cN 2.3, just after the top shell enters at 8 cells per
+  wavelength (cN = ln 8 = 2.08), and the odd part of M has a plateau 2e-4 to 3.5e-4 through
+  USR; they converge at order 5.2 to 5.9 to 128^3.
+- Below both lies a part independent of s: wherever the factor of a part is 1.00 the part has
+  the same absolute size at s = 1 and 1/2. For M it is 1e-8 to 6e-7 of <[M]> early and grows
+  to 1.4e-2 (128^3) and 6.4e-3 (64^3) late, at the same level in the odd and even parts and
+  higher at 128^3 by 2.2 (as rounding of first differences, ~1/dx); <[M]> is proportional to
+  s and falls with Pi_b through USR, so this floor relative to <[M]> rises by 1e5 while the
+  absolute floor stays. For H it is 3.6e-14 of <[H]> at t = 0 at 128^3 and 8.9e-15 at 64^3
+  (ratio 4.0, as rounding of second differences) and 3e-16 to 4e-16 of <[H]> late on both
+  rungs (algebraic terms; the derivative terms carry chi, which is e^-20 late). Core reads
+  the late M the same way (`scalar_field_3.md` on core/scalar-3, section 3: |M| floor 1e-14
+  to 3e-14 for every amplitude). Named as a reading only: the floor is not shown to be
+  rounding by a run in which it could have failed.
+- The pre-registered bars (3e-13 of <[H]>, 1e-12 of <[M]>) were taken from the SR ladder;
+  for USR the floor of M relative to <[M]> is 1e4 to 1e10 times that bar, so the bar did not
+  keep the floor out of (a)-(c). The failures of U-A4(a), (b) for M and of the M prediction
+  at 128^3 are therefore failures of the bar, not of a second-order law [JUDGEMENT]; U-A4 as
+  pre-registered is FAILED and stays on record.
+
+### 12.1 Post-hoc floor reading (not acceptance): predictions before `scripts/floor_split.py` runs
+
+Written after seeing the parts above (not blind). Model per dump: part(s) =
+sqrt((s^p a)^2 + f^2) with p = 1 (odd) or 2 (even) and one floor f per constraint,
+independent of s and the same in the odd and the even part (uncorrelated noise in the two
+runs of a pair). f and a_odd follow from the odd parts at s = 1 and 1/2.
+- F1: the floor-corrected even factor sqrt(E1^2 - f^2)/sqrt(Eh^2 - f^2) is 4.00 +- 0.10 for M
+  and for H at every dump where Eh^2 > 2 f^2 and f is resolved (4 oh^2 > o1^2).
+- F2: where the odd factor is 1.00 +- 0.05 (odd parts at the floor), the even part equals the
+  odd part within 15 % at both s.
+Refuted if outside.

@@ -1,0 +1,500 @@
+{
+ "U64p": {
+  "ndumps": 41,
+  "last_dump_time": 10.437508874065651,
+  "last_dump_cycle": 426,
+  "sign": 1.0,
+  "lock_max_end": 3.572787622544497e-05,
+  "record_columns": 27,
+  "Hp_ratio_finite": true,
+  "cost": {
+   "meshblock_cycles": 426,
+   "cpu_time_s": 12.41277,
+   "zone_cycles_per_s": 8996651.0,
+   "exit": "0",
+   "end": "2026-11-20T14:37:00-08:00",
+   "gpu_mem_baseline_MiB": "14",
+   "gpu_mem_peak_MiB": "963"
+  },
+  "U_A1_phi_rel_max": 2.096385049554382e-08,
+  "U_A1_Pi_rel_max": 2.5019755844008546e-05,
+  "U_A1_Pi_rel_end": 2.5019755844008546e-05,
+  "U_A1_K_rel_max": 5.352809995208837e-09,
+  "efolds_end": 9.999999578612059,
+  "efolds_exact_end": 9.999999999999963,
+  "t_end": 10.437508874065651,
+  "cycles": 426,
+  "U_A0_landmarks": [
+   {
+    "label": "eps2 = 0 up (eps1 maximum)",
+    "cN": 1.624001112193294,
+    "N_run": 1.6240010372682854,
+    "dN": -7.492500864181295e-08
+   },
+   {
+    "label": "eps2 = 3 up (USR onset)",
+    "cN": 2.523421176929555,
+    "N_run": 2.5234210636288363,
+    "dN": -1.1330071858495216e-07
+   },
+   {
+    "label": "phi = -sqrt2 v (inflection point)",
+    "cN": 4.531960247463813,
+    "N_run": 4.531960051591389,
+    "dN": -1.9587242405805227e-07
+   },
+   {
+    "label": "eps2 maximum",
+    "cN": 4.531969085417787,
+    "N_run": 4.5319688895449985,
+    "dN": -1.9587278821120435e-07
+   },
+   {
+    "label": "eps2 = 3 down (USR end)",
+    "cN": 6.550319681613715,
+    "N_run": 6.550319402406459,
+    "dN": -2.792072555379832e-07
+   },
+   {
+    "label": "eps2 = 0 down (eps1 minimum)",
+    "cN": 8.33104146183661,
+    "N_run": 8.331041109105936,
+    "dN": -3.527306748907222e-07
+   },
+   {
+    "label": "end N_f",
+    "cN": 10.0,
+    "N_run": 9.999999578612051,
+    "dN": -4.2138794853485706e-07
+   }
+  ],
+  "U_A0_max_abs_dN": 4.2138794853485706e-07,
+  "record": {
+   "H_ratio_max": 6.23570223638154e-09,
+   "M_ratio_max": 0.010651111102723765,
+   "M_ratio_end": 0.010651111102723765,
+   "M_ratio_max_entry": 1.578138711970178e-05,
+   "Hp_ratio_max_entry": 2.87281603789181e-12,
+   "M_ratio_max_usr": 0.0003678340208979672,
+   "Hp_ratio_max_usr": 9.969386889092626e-13,
+   "M_ratio_max_late": 0.010651111102723765,
+   "Hp_ratio_max_late": 3.663002394750431e-16,
+   "Hp_ratio_max": 2.87281603789181e-12
+  }
+ },
+ "U64m": {
+  "ndumps": 41,
+  "last_dump_time": 10.437508874065651,
+  "last_dump_cycle": 426,
+  "sign": -1.0,
+  "lock_max_end": 3.572787622544497e-05,
+  "record_columns": 27,
+  "Hp_ratio_finite": true,
+  "cost": {
+   "meshblock_cycles": 426,
+   "cpu_time_s": 12.09282,
+   "zone_cycles_per_s": 9234681.0,
+   "exit": "0",
+   "end": "2026-11-20T14:37:14-08:00",
+   "gpu_mem_baseline_MiB": "14",
+   "gpu_mem_peak_MiB": "963"
+  },
+  "U_A1_phi_rel_max": 2.096385049554382e-08,
+  "U_A1_Pi_rel_max": 2.5019756434638657e-05,
+  "U_A1_Pi_rel_end": 2.5019756434638657e-05,
+  "U_A1_K_rel_max": 5.352809995208837e-09,
+  "efolds_end": 9.999999578612059,
+  "efolds_exact_end": 9.999999999999963,
+  "t_end": 10.437508874065651,
+  "cycles": 426,
+  "U_A0_landmarks": [
+   {
+    "label": "eps2 = 0 up (eps1 maximum)",
+    "cN": 1.624001112193294,
+    "N_run": 1.6240010372682852,
+    "dN": -7.492500886385756e-08
+   },
+   {
+    "label": "eps2 = 3 up (USR onset)",
+    "cN": 2.523421176929555,
+    "N_run": 2.5234210636288363,
+    "dN": -1.1330071858495216e-07
+   },
+   {
+    "label": "phi = -sqrt2 v (inflection point)",
+    "cN": 4.531960247463813,
+    "N_run": 4.531960051591389,
+    "dN": -1.9587242405805227e-07
+   },
+   {
+    "label": "eps2 maximum",
+    "cN": 4.531969085417787,
+    "N_run": 4.5319688895449985,
+    "dN": -1.9587278821120435e-07
+   },
+   {
+    "label": "eps2 = 3 down (USR end)",
+    "cN": 6.550319681613715,
+    "N_run": 6.550319402406459,
+    "dN": -2.792072555379832e-07
+   },
+   {
+    "label": "eps2 = 0 down (eps1 minimum)",
+    "cN": 8.33104146183661,
+    "N_run": 8.331041109105936,
+    "dN": -3.527306748907222e-07
+   },
+   {
+    "label": "end N_f",
+    "cN": 10.0,
+    "N_run": 9.99999957861205,
+    "dN": -4.213879503112139e-07
+   }
+  ],
+  "U_A0_max_abs_dN": 4.213879503112139e-07,
+  "record": {
+   "H_ratio_max": 6.235702234682777e-09,
+   "M_ratio_max": 0.01070768720312282,
+   "M_ratio_end": 0.01070768720312282,
+   "M_ratio_max_entry": 1.578137971433805e-05,
+   "Hp_ratio_max_entry": 2.872806912072839e-12,
+   "M_ratio_max_usr": 0.00036989298327070686,
+   "Hp_ratio_max_usr": 1.0007184960488377e-12,
+   "M_ratio_max_late": 0.01070768720312282,
+   "Hp_ratio_max_late": 3.669901106042774e-16,
+   "Hp_ratio_max": 2.872806912072839e-12
+  }
+ },
+ "U128p": {
+  "ndumps": 21,
+  "last_dump_time": 10.437508874065651,
+  "last_dump_cycle": 851,
+  "sign": 1.0,
+  "lock_max_end": 2.2457704666017944e-06,
+  "record_columns": 27,
+  "Hp_ratio_finite": true,
+  "cost": {
+   "meshblock_cycles": 851,
+   "cpu_time_s": 132.0697,
+   "zone_cycles_per_s": 13513140.0,
+   "exit": "0",
+   "end": "2026-11-20T14:39:28-08:00",
+   "gpu_mem_baseline_MiB": "14",
+   "gpu_mem_peak_MiB": "3195"
+  },
+  "U_A1_phi_rel_max": 1.2089793530732617e-09,
+  "U_A1_Pi_rel_max": 1.3341800385889057e-06,
+  "U_A1_Pi_rel_end": 1.3341800385889057e-06,
+  "U_A1_K_rel_max": 3.24629115548455e-10,
+  "efolds_end": 9.999999974171152,
+  "efolds_exact_end": 9.999999999999963,
+  "t_end": 10.437508874065651,
+  "cycles": 851,
+  "U_A0_landmarks": [
+   {
+    "label": "eps2 = 0 up (eps1 maximum)",
+    "cN": 1.624001112193294,
+    "N_run": 1.6240011076003709,
+    "dN": -4.592923152912931e-09
+   },
+   {
+    "label": "eps2 = 3 up (USR onset)",
+    "cN": 2.523421176929555,
+    "N_run": 2.523421169995835,
+    "dN": -6.933719820523265e-09
+   },
+   {
+    "label": "phi = -sqrt2 v (inflection point)",
+    "cN": 4.531960247463813,
+    "N_run": 4.531960235463095,
+    "dN": -1.200071775286915e-08
+   },
+   {
+    "label": "eps2 maximum",
+    "cN": 4.531969085417787,
+    "N_run": 4.531969073417042,
+    "dN": -1.2000744398221741e-08
+   },
+   {
+    "label": "eps2 = 3 down (USR end)",
+    "cN": 6.550319681613715,
+    "N_run": 6.550319664503789,
+    "dN": -1.7109925920522073e-08
+   },
+   {
+    "label": "eps2 = 0 down (eps1 minimum)",
+    "cN": 8.33104146183661,
+    "N_run": 8.331041440218756,
+    "dN": -2.1617854173427986e-08
+   },
+   {
+    "label": "end N_f",
+    "cN": 10.0,
+    "N_run": 9.99999997417115,
+    "dN": -2.5828850169773432e-08
+   }
+  ],
+  "U_A0_max_abs_dN": 2.5828850169773432e-08,
+  "record": {
+   "H_ratio_max": 3.7514252989887496e-10,
+   "M_ratio_max": 0.024696489722685292,
+   "M_ratio_end": 0.021486506544783207,
+   "M_ratio_max_entry": 1.5781428520494303e-05,
+   "Hp_ratio_max_entry": 2.8729907819969862e-12,
+   "M_ratio_max_usr": 0.000805084933222468,
+   "Hp_ratio_max_usr": 1.1012660882853055e-13,
+   "M_ratio_max_late": 0.024696489722685292,
+   "Hp_ratio_max_late": 7.378190632068767e-16,
+   "Hp_ratio_max": 2.8729907819969862e-12
+  }
+ },
+ "U128m": {
+  "ndumps": 21,
+  "last_dump_time": 10.437508874065651,
+  "last_dump_cycle": 851,
+  "sign": -1.0,
+  "lock_max_end": 2.2457704666017944e-06,
+  "record_columns": 27,
+  "Hp_ratio_finite": true,
+  "cost": {
+   "meshblock_cycles": 851,
+   "cpu_time_s": 132.8632,
+   "zone_cycles_per_s": 13432440.0,
+   "exit": "0",
+   "end": "2026-11-20T14:41:43-08:00",
+   "gpu_mem_baseline_MiB": "14",
+   "gpu_mem_peak_MiB": "3195"
+  },
+  "U_A1_phi_rel_max": 1.2089793530732617e-09,
+  "U_A1_Pi_rel_max": 1.3341807342679238e-06,
+  "U_A1_Pi_rel_end": 1.3341807342679238e-06,
+  "U_A1_K_rel_max": 3.24629115548455e-10,
+  "efolds_end": 9.999999974171152,
+  "efolds_exact_end": 9.999999999999963,
+  "t_end": 10.437508874065651,
+  "cycles": 851,
+  "U_A0_landmarks": [
+   {
+    "label": "eps2 = 0 up (eps1 maximum)",
+    "cN": 1.624001112193294,
+    "N_run": 1.6240011076003709,
+    "dN": -4.592923152912931e-09
+   },
+   {
+    "label": "eps2 = 3 up (USR onset)",
+    "cN": 2.523421176929555,
+    "N_run": 2.523421169995835,
+    "dN": -6.933719820523265e-09
+   },
+   {
+    "label": "phi = -sqrt2 v (inflection point)",
+    "cN": 4.531960247463813,
+    "N_run": 4.531960235463095,
+    "dN": -1.200071775286915e-08
+   },
+   {
+    "label": "eps2 maximum",
+    "cN": 4.531969085417787,
+    "N_run": 4.531969073417042,
+    "dN": -1.2000744398221741e-08
+   },
+   {
+    "label": "eps2 = 3 down (USR end)",
+    "cN": 6.550319681613715,
+    "N_run": 6.550319664503789,
+    "dN": -1.7109925920522073e-08
+   },
+   {
+    "label": "eps2 = 0 down (eps1 minimum)",
+    "cN": 8.33104146183661,
+    "N_run": 8.331041440218756,
+    "dN": -2.1617854173427986e-08
+   },
+   {
+    "label": "end N_f",
+    "cN": 10.0,
+    "N_run": 9.99999997417115,
+    "dN": -2.5828850169773432e-08
+   }
+  ],
+  "U_A0_max_abs_dN": 2.5828850169773432e-08,
+  "record": {
+   "H_ratio_max": 3.751425297619977e-10,
+   "M_ratio_max": 0.02475750043958251,
+   "M_ratio_end": 0.02144506054463605,
+   "M_ratio_max_entry": 1.5781415168250995e-05,
+   "Hp_ratio_max_entry": 2.8729639233965328e-12,
+   "M_ratio_max_usr": 0.0008045470029668872,
+   "Hp_ratio_max_usr": 1.106119561298112e-13,
+   "M_ratio_max_late": 0.02475750043958251,
+   "Hp_ratio_max_late": 7.426049432226759e-16,
+   "Hp_ratio_max": 2.8729639233965328e-12
+  }
+ },
+ "U128hp": {
+  "ndumps": 21,
+  "last_dump_time": 10.437508874065651,
+  "last_dump_cycle": 851,
+  "sign": 1.0,
+  "lock_max_end": 0.4999992339247163,
+  "record_columns": 27,
+  "Hp_ratio_finite": true,
+  "cost": {
+   "meshblock_cycles": 851,
+   "cpu_time_s": 131.4846,
+   "zone_cycles_per_s": 13573270.0,
+   "exit": "0",
+   "end": "2026-11-20T14:43:56-08:00",
+   "gpu_mem_baseline_MiB": "14",
+   "gpu_mem_peak_MiB": "3195"
+  },
+  "U_A1_phi_rel_max": 1.2710979702127314e-09,
+  "U_A1_Pi_rel_max": 1.5031594162827091e-06,
+  "U_A1_Pi_rel_end": 1.5031594162827091e-06,
+  "U_A1_K_rel_max": 3.2123526556328624e-10,
+  "efolds_end": 9.99999997416801,
+  "efolds_exact_end": 9.999999999999963,
+  "t_end": 10.437508874065651,
+  "cycles": 851,
+  "U_A0_landmarks": [
+   {
+    "label": "eps2 = 0 up (eps1 maximum)",
+    "cN": 1.624001112193294,
+    "N_run": 1.624001107600262,
+    "dN": -4.593031954769344e-09
+   },
+   {
+    "label": "eps2 = 3 up (USR onset)",
+    "cN": 2.523421176929555,
+    "N_run": 2.5234211699935893,
+    "dN": -6.935965579657477e-09
+   },
+   {
+    "label": "phi = -sqrt2 v (inflection point)",
+    "cN": 4.531960247463813,
+    "N_run": 4.531960235459952,
+    "dN": -1.2003861016296469e-08
+   },
+   {
+    "label": "eps2 maximum",
+    "cN": 4.531969085417787,
+    "N_run": 4.531969073413898,
+    "dN": -1.200388854982748e-08
+   },
+   {
+    "label": "eps2 = 3 down (USR end)",
+    "cN": 6.550319681613715,
+    "N_run": 6.550319664500645,
+    "dN": -1.7113070072127812e-08
+   },
+   {
+    "label": "eps2 = 0 down (eps1 minimum)",
+    "cN": 8.33104146183661,
+    "N_run": 8.331041440215612,
+    "dN": -2.1620998325033725e-08
+   },
+   {
+    "label": "end N_f",
+    "cN": 10.0,
+    "N_run": 9.99999997416801,
+    "dN": -2.583199076866549e-08
+   }
+  ],
+  "U_A0_max_abs_dN": 2.583199076866549e-08,
+  "record": {
+   "H_ratio_max": 3.751988160643873e-10,
+   "M_ratio_max": 0.04298677271269454,
+   "M_ratio_end": 0.03682809102676433,
+   "M_ratio_max_entry": 8.286066566329985e-06,
+   "Hp_ratio_max_entry": 7.190034420279565e-13,
+   "M_ratio_max_usr": 0.0015667563748144127,
+   "Hp_ratio_max_usr": 2.895183029819188e-14,
+   "M_ratio_max_late": 0.04298677271269454,
+   "Hp_ratio_max_late": 5.51231233045652e-16,
+   "Hp_ratio_max": 7.190034420279565e-13
+  }
+ },
+ "U128hm": {
+  "ndumps": 21,
+  "last_dump_time": 10.437508874065651,
+  "last_dump_cycle": 851,
+  "sign": -1.0,
+  "lock_max_end": 0.4999992339247163,
+  "record_columns": 27,
+  "Hp_ratio_finite": true,
+  "cost": {
+   "meshblock_cycles": 851,
+   "cpu_time_s": 131.5091,
+   "zone_cycles_per_s": 13570740.0,
+   "exit": "0",
+   "end": "2026-11-20T14:46:10-08:00",
+   "gpu_mem_baseline_MiB": "14",
+   "gpu_mem_peak_MiB": "3195"
+  },
+  "U_A1_phi_rel_max": 1.271098162943004e-09,
+  "U_A1_Pi_rel_max": 1.5031596151883952e-06,
+  "U_A1_Pi_rel_end": 1.5031596151883952e-06,
+  "U_A1_K_rel_max": 3.2123526556328624e-10,
+  "efolds_end": 9.99999997416801,
+  "efolds_exact_end": 9.999999999999963,
+  "t_end": 10.437508874065651,
+  "cycles": 851,
+  "U_A0_landmarks": [
+   {
+    "label": "eps2 = 0 up (eps1 maximum)",
+    "cN": 1.624001112193294,
+    "N_run": 1.6240011076002612,
+    "dN": -4.593032842947764e-09
+   },
+   {
+    "label": "eps2 = 3 up (USR onset)",
+    "cN": 2.523421176929555,
+    "N_run": 2.5234211699935893,
+    "dN": -6.935965579657477e-09
+   },
+   {
+    "label": "phi = -sqrt2 v (inflection point)",
+    "cN": 4.531960247463813,
+    "N_run": 4.531960235459952,
+    "dN": -1.2003861016296469e-08
+   },
+   {
+    "label": "eps2 maximum",
+    "cN": 4.531969085417787,
+    "N_run": 4.531969073413898,
+    "dN": -1.200388854982748e-08
+   },
+   {
+    "label": "eps2 = 3 down (USR end)",
+    "cN": 6.550319681613715,
+    "N_run": 6.550319664500645,
+    "dN": -1.7113070072127812e-08
+   },
+   {
+    "label": "eps2 = 0 down (eps1 minimum)",
+    "cN": 8.33104146183661,
+    "N_run": 8.331041440215612,
+    "dN": -2.1620998325033725e-08
+   },
+   {
+    "label": "end N_f",
+    "cN": 10.0,
+    "N_run": 9.99999997416801,
+    "dN": -2.583199076866549e-08
+   }
+  ],
+  "U_A0_max_abs_dN": 2.583199076866549e-08,
+  "record": {
+   "H_ratio_max": 3.751988158841091e-10,
+   "M_ratio_max": 0.0430535931285498,
+   "M_ratio_end": 0.03707166725442159,
+   "M_ratio_max_entry": 8.28712372490616e-06,
+   "Hp_ratio_max_entry": 7.189815803081159e-13,
+   "M_ratio_max_usr": 0.0015706030616013376,
+   "Hp_ratio_max_usr": 2.9203533606738866e-14,
+   "M_ratio_max_late": 0.0430535931285498,
+   "Hp_ratio_max_late": 5.456988582930571e-16,
+   "Hp_ratio_max": 7.189815803081159e-13
+  }
+ }
+}
