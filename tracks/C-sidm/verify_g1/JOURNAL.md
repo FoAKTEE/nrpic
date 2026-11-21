@@ -478,3 +478,42 @@ C-20261121-080720-dbcd7ff, which is the run of record (`figs/v4_models.png`, red
 - Particle samples of three threshold models (1e5 each): the isotropic-radius distribution
   equals my enclosed rest-mass fraction to D = 1.0e-5 = 1/N (stratified sampler: exact
   quantiles); rbar_s mine = file to 1e-12; sum of the particle masses = my M0/M to 6e-13.
+
+## Entry 14 (2026-11-21 00:10 PST, from `date`) V5 set-up and predictions, before any computation
+
+(Entry 13 was written at 00:08.) Runs (layouts read from the run directories and decks):
+T10 C-20261119-143041-f94e350 (collisions-2 CPU, coll_energy = particle, 1e5 particles, 16^3
+cells, seed 7, 100 cycles; MeshBlocks 1, 8, 64; restarts written every 37 cycles of mb8 and
+resumed: rst0 (cycle 0), rst1 (37), rst2 (74), rst3 (100, no step); seed 8). T1 long
+C-20261115-170741-248af65 (release CPU, twotemp 0.3/0.1, 1e5 particles, 1e4 steps, seeds 1, 2).
+T3/T4 C-20261115-170539-28432c3 (release CPU, twotemp theta1 = 3 theta2, theta2 = 1e-3 and 1,
+N = 1e6, seeds 1, 2; A: snapshots every 0.01 tau_rel to 0.25, B: the same start run to 15 tau_rel
+with snapshots every 0.25). T9 C-20261115-170814-8a54b43 (release CPU, classes M and 4M with
+equal total mass, thetaA = 0.03, thetaB = 0.01, nanbu weights, 8 seeds; refusal case).
+Own exact initial relaxation rate [JUDGEMENT, own derivation]: an inter-population collision
+moves particle a of population 1 to energy (W_a + W_b)/2 on direction average (isotropic in
+the centre-of-momentum frame: <E_a'> = gamma_cm E* = E/2); collisions inside a population do
+not change its energy; so d e_1/dt = n_2 sigma <v_Mol (W_b - W_a)/2>_{MJ1 x MJ2} and with
+theta_i from the mean energy, d(theta_1 - theta_2)/dt = sigma X (n_2/c_v(theta_1) +
+n_1/c_v(theta_2)), X = <v_Mol (W_b - W_a)/2>; n_1 = n_2 = 1/2 (rho_0 = 1, m = 1). X by my
+two-dimensional quadrature (angular average of v_Mol in closed form, as in V2), checked by a
+Monte Carlo of 4e6 random pairs within 4 standard errors.
+Predictions:
+- T10: final snapshots of mb1, mb8, mb64, rst0, rst1, rst2 bit-identical after sorting by tag
+  (x, u, m, tag); the coll.hst records of rst1 and rst2 equal those of mb8 for the same cycles;
+  seed 8 differs. Extra: in T345 the B run's snapshot at 0.25 tau_rel equals the A run's last
+  snapshot bit for bit (same start, seed, step).
+- T1 long: relative drift of the exactly rounded sum M W over 1e4 steps below 1e-11 (I expect
+  < 1e-13); per-step defects below the T1 bound; n_trunc = 0.
+- T3 (end of B): KS p > 1e-3 of |u| against MJ(theta_eq) (theta_eq from the conserved mean
+  energy of the sample); <u^2/W> = 3 theta_eq within 4 sigma; both populations at theta_eq
+  within 4 sigma; all four cases.
+- T4: quadratic fit of theta_1 - theta_2 over the first 0.15 tau_rel (16 snapshots of A) gives
+  a slope within 4 se + 1 percent and within 5 percent of my exact rate, all four cases. My
+  own tau_rel = (theta_1 - theta_2)/|rate| should match the snapshot spacing x 100 to a few
+  percent if the generator used the same rate.
+- T9: at the end both classes at the same theta within 4 sigma and KS p > 1e-3 against
+  MJ(theta_eq); mean over the 8 seeds of the drifts of sum M W and sum M u_i zero within
+  4 standard errors; the equal-weights case stops with an error that names the unequal masses
+  (I saw that message already when listing the directory).
+- T5 (entropy) is not attempted: it needs an entropy estimator with its own bias study.
