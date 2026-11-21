@@ -321,3 +321,32 @@ Predictions before the run:
   errors of F to within 3 % at every N (refuted if any ratio leaves [0.97, 1.03]; at N64
   the amplitude may be off by round-off, ~1e-9 absolute).
 - C3: forward ratio Z_x / Z_+ equals 0.5 e^{i} to ~1e-9 in modulus and argument at every N.
+
+## Entry 11 (19:33 PST): outcome of C1-C3 (run B-20261121-030848-59f89b5) and the classification
+
+[VERIFIED, results/v3_classify.json]
+- C1 holds in kind, not in level: the forward TT combination and spectral Psi4 of F differ
+  by 6.0-6.4e-11 at every N (README: 1.2e-11), growing monotonically to the last dump (max
+  = final). [JUDGEMENT] my 3+1 Weyl evaluation feels the k = 0 second-order shear of
+  6.6e-11 (entry 9), which the flat TT projection does not; either way it is 1e-10 level.
+- C2 holds: my predictor (sixth-order symbol, KO sin^8, RK4 amplification, 148/296/444/592
+  cycles with a shortened last step) gives -1.409e-4 / 2.531e-4, -1.718e-6 / 1.217e-5,
+  -1.576e-7 / 2.270e-6, -3.167e-8 / 7.034e-7 (amplitude / phase at N = 16..64), the same
+  digits as the README's predicted column; measured/predicted = 1.000, 1.000, 0.998, 0.979
+  (amplitude) and 1.000, 1.000, 1.001, 1.005 (phase). Split at N16: KO -1.16e-4 of the
+  -1.41e-4 amplitude loss; semi-discrete dispersion 8.0e-5 of the 2.53e-4 rad lag, the rest
+  RK4.
+- C3 holds: forward Z_x/Z_+ = 0.5 e^{i} to <= 1.03e-9 (modulus) and 1.08e-9 (argument)
+  over all dumps and N (README: <= 1.1e-9).
+- F non-TT norm: late-time exponent 2.000 (fit over t > t_end/2) at every N: t^2 holds
+  after the early transient (fit over all t: 1.87).
+- X, 4 digits (TT, final): cross amplitude / phase 1.3169e-6 / 3.0650e-6 (N32), 4.2498e-7 /
+  5.8797e-7 (N48), 1.3989e-7 / 2.7624e-7 (N64), equal to the README's 2S-predicted column to
+  the last digit printed. Plus amplitude 1.3166e-6, 4.2346e-7, 1.3775e-7, which equals the
+  cross to <= 2e-9 relative, whereas the README's plus amplitudes 1.324e-6, 4.362e-7,
+  1.538e-7 exceed its own cross values by 7e-9, 1.1e-8, 1.4e-8. At x10 (N64) my plus is
+  1.3979e-7 against cross 1.4007e-7: the truncation value is 1.40e-7 for both, and my x1
+  plus reading is the closer one.
+- AthenaK's integrator `rk4` is RK4()4[2S] of Ketcheson (2010): read in
+  athenak/src/driver/driver.cpp lines 145-176 [VERIFIED]. I did not rebuild the README's 2S
+  predictor for X (not checked).
