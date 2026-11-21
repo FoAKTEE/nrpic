@@ -1176,3 +1176,76 @@ Nothing new is started. State, for a reader with no memory:
 Card time of the package: T14 11 s, T10 3 s, T10d 20 s, T10b 244 s: 0.08 card-hours of
 the one allowed. Scratch: the restart files of T10b take 12 GB
 (`scratch/core/core-20261120-220816-09f6f79/s1amr/rst/`); T10c needs `peak.00002.rst*`.
+
+## 2026-11-21 03:05  batch of the evening: state found; T10c submitted; outcome of T10e; prediction of T17
+
+Merged `main` (44f7d887; decision 0020 read; no pause flag). The worktree held one
+uncommitted file, the manifest of T10e rewritten by `run_registered.py` when the run
+ended (committed, eb8e6b7c). `squeue` showed no job of core: **T10c submitted**, run
+core-20261121-025527-eb8e6b7 (Slurm job 4755, 0.25 card-hours asked, published card
+executable); prediction in the entry of 2026-11-20 22:23. A job of another package of core
+(4758) joined the queue afterwards: two jobs of core are queued, nothing more is
+submitted until one ends.
+
+**T10e, run core-20261120-222729-6cfac05** (four processors, 2518 s, four cases, exit 0;
+`t10e_summary.json`, figure `fig_t10e_jump`, looked at; the per-cycle rows of
+`peak.cstat.hst` and the log of a5 read) [VERIFIED]:
+- u5 (no refinement): Hr_max rises smoothly to 0.0197 at t = 3.5, no jump (0.0122 at
+  t = 3.06): PASS ("below 0.02", by a hair).
+- a5 (as T10b): the mesh goes from 64 to 120 MeshBlocks at t = 2.205 (cycle 33), and
+  **Hr_max jumps in one cycle, from 0.0099 at t = 2.909 (cycle 52) to 0.066 at t = 2.946
+  (cycle 53) and 0.159 at t = 2.984**; H_max from 6.6e-4 to 3.0e-3 to 6.0e-3 in the same
+  two cycles; 0.0996 at t = 3.06 (T10b on the card: 0.10): PASS, it repeats T10b. Largest
+  value 0.169 at t = 3.25.
+- a5c (uniform spreading): no jump: 0.0118, 0.0122, 0.0126 at cycles 52, 53, 54; then a
+  smooth rise to 0.039 at t = 3.32, twice the unrefined run. The prediction "the same jump
+  within a factor two" FAILED: the jump of a5 is absent, and the largest value is 4.3
+  times smaller. My reading of 22:23 (the source filter at each level's cell size leads,
+  not the sampling of the cloud) is refuted for the jump.
+- a5r (clouds on the root level by `deposit_adaptive = false`, `deposit_max_level = 0`):
+  equal to a5 in every digit of `peak.cstat.hst` (largest difference 0): PASS, and it says
+  that in a5 the adaptive cloud level was the root for every particle to t = 3.5.
+- Identity at most 2.1e-13 in all four; E stays positive (smallest 2.0e-4).
+So the jump belongs to `deposit_fine_shape`, and it is not at the regrid: it comes 20
+cycles later, between two cycles in which the mesh does not change (the refinement
+checks are at cycles 48 and 56, both "+0"). A change of H by 2.4e-3 within one step is a
+change of 16 pi E by that amount in some cell, i.e. of E by 5e-5 where E is 4e-4 to 1e-3:
+5 to 12 per cent of the density of a leaf cell, at once.
+
+Reading of the deposit [VERIFIED by reading, `nrpic.cpp` 859-870 and 906-925]: with
+`deposit_fine_shape` a leaf cell at offset xi (in lattice cells, from the centre of the
+lattice cell) gets the weight (w + g xi)/nsub, g being the "analytic slope of the
+assignment function". For the linear cloud the two lattice cells of a cloud have the
+weights (1 - s, s) and the slopes (+1, -1), s the distance of the particle from the
+centre of the left cell. The assignment function of the linear cloud is a tent with its
+kink at the particle, so the slope taken for a whole lattice cell flips sign when the
+particle passes the centre of that cell: just before (s -> 1, right cell) the two leaf
+halves of the cell hold 0.625 and 0.375 of the particle (per direction), just after
+(s -> 0, the same cell now the left one) 0.375 and 0.625, and the neighbours change from
+(-0.125, +0.125) to nothing and from nothing to (+0.125, -0.125). A quarter of the
+particle changes its leaf cell at once. On a regular lattice all particles pass their
+centres together and the jumps cancel (T2, T5: uniform to 1e-13 while the lattice
+drifted); on a deformed lattice with one particle per root cell (the track's data) they
+do not. The quadratic and cubic clouds have continuous slopes (their `gs` are continuous
+through the change of the stencil), so [JUDGEMENT] only the linear cloud is affected;
+the example input and the scouting run use the linear cloud. My design note of
+2026-11-19 15:05 ("the slopes of a regular lattice cancel") tested only regular lattices
+and plane waves of amplitude 1e-7, in which no particle passes a cell centre.
+
+**T17, continuity of the deposit in the particle position** (`t17_continuity.py`,
+processors, the published processor executable first). Homogeneous-universe deck of T1
+(box [-3, 3)^3, root 24^3, cells h = 0.25), static level 1 on the central MeshBlock
+[-1, 1]^3, clouds capped at the root (`deposit_max_level = 0`), no filter, no step
+(`nlim = 0`); ONE particle of mass 1e-6 at (x_c + s h, 0.2, 0.175), x_c = 0.125 the centre
+of a root cell inside the patch; table of `tmunu_E` along the x line through the leaf row
+of the particle (y = z = 0.1875). Offsets s = -0.45, -0.3, -0.15, -0.05, -0.01, -1e-6,
++1e-6, 0.01, 0.05, 0.15, 0.3, 0.45; shapes cic, tsc, pcs; spreading uniform and
+`deposit_fine_shape`: 72 runs of a second each. Measure: the fractions f = E_leaf /
+(sum of E along the line) of the six leaf cells of the three root cells around x_c, and
+J = largest |f(s = +1e-6) - f(s = -1e-6)|.
+Prediction (from the reading above): cic with fine shape: J = 0.25, with the patterns
+(-0.125, 0.125, 0.625, 0.375, 0, 0) at s = -1e-6 and (0, 0, 0.375, 0.625, 0.125, -0.125) at
+s = +1e-6, each to 1e-5; tsc and pcs with fine shape: J below 1e-5; all three with the
+uniform spreading: J below 1e-5 and the two leaves of a root cell equal. Refuted if cic
+with fine shape shows no jump: then the reading is wrong and the jump of T10e has
+another cause.
