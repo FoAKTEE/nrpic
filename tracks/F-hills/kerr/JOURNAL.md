@@ -236,3 +236,47 @@ tolerance: tidal coupling of the CM orbit differs between the laws]. Its effect 
 separation fraction through the slope of S1's curve: below 2e-3 everywhere; at beta = 4.7
 retrograde it RAISES the s.f. with r0 (Delta beta > 0), by about 1e-3 from 20 to 70 r_t, while
 C2 found 0.6975 -> 0.68: R3 is not the cause of C2 (wrong sign, 17 times too small).
+
+## Entry 3 (2026-11-21 13:40 UTC): the reproduction scan, prediction before the run
+
+Design (`scripts/scan_2402.py`, analysis `scripts/analysis_2402.py`). The paper's fiducial binary
+(m2/m1 = 2/3, a0 = 0.125 M, m_b = 6.25e-6 M; main.tex:486, 504-515) on E = 1 orbits from BL r = 100 M
+in the equatorial plane (main.tex:491-502), sigma_theta = +1, binary circular in the CM proper
+time, outcome when the CM is back at r = 100 M (main.tex:610-611); survived = no member captured and
+E_b < 0 (Gamma-corrected relative velocity). The paper gives neither node nor phase (entry 0), so
+every cell is run for several orientations:
+- Scan A (K1, K2; Fig. InclD): families pos / neg / zero (s = 0.9 in 'bks'), s0 (a = 0, 'sch'),
+  s0cks (a = 0, 'cks': the defect, for the record), newt (Newtonian point mass); r_p = 6..20 M;
+  iota = k pi/12; 6 nodes x 4 phases = 24 orientations per cell; 28080 encounters.
+- Scan B (K3; Fig. afin): s = 0.9, r_p = 10, 'bks', the paper's 48 L_z x 36 iota cells, 4 nodes x
+  2 phases; 13824 encounters.
+- The paper's numbers are digitized inside the registered analysis from the vector content of
+  InclD.pdf and afin10M2e4.pdf (parsed as data; never rendered into the package, never committed).
+Reading rule for InclD (main.tex:584-585: survivors lie above a line): for each orientation the
+lowest surviving iota on the paper's pi/6 grid; median and range over the 24 orientations, and the
+lowest pi/6 iota where the survival fraction reaches 1/2.
+
+Tolerance and why [JUDGEMENT]: one grid step (pi/6) of InclD. The paper's markers are on that grid,
+its node and phase are unknown (the spread over orientations measures how much that matters), and
+HRNA differs from the paper's Fermi-frame model at O(M/r_p) = 0.1-0.17 in the binary's self-gravity
+(coordinate distance, slicing; T8: 'bks' keeps a frame-dragging residual of -0.005 to -0.007 in
+ln|E_b| on the way in) while the PN terms the paper adds are 5e-5 of the pair force (entry 0).
+
+Predictions (before the run):
+- P1 (pipeline control): the Newtonian law's boundary (survival >= 1/2) is within one grid step of
+  Eq. (cosiN) at every r_p, and the s0 family is within one step of the paper's shaded s = 0
+  region at every r_p (refuted at more than 2 of 15 r_p).
+- P2 (K1): for pos, neg, zero the paper's marker lies within the HRNA range over orientations, and
+  within one step of the HRNA median, at >= 12 of 15 r_p each.
+- P3 (K1 ordering at r_p <= 8): iota_c(neg) >= iota_c(pos) >= iota_c(zero) in the HRNA medians, as in
+  the paper's figure [reason: the retrograde equatorial orbit at r_p = 6-7 lies just outside its
+  marginally bound radius 5.66 M and whirls (T6: 1.85 turns at r_p = 6 against 1.07 prograde), so
+  the binary stays longer in the strong tide].
+- P4 (K2): at r_p = 6 and 7 (beta = 1.13, 0.97) the neg family's HRNA boundary lies ABOVE Eq. (cosiN)
+  (0.60-0.62 pi), i.e. less stable than Newton, as the paper's figure shows (iota_c = pi) and against
+  its text ("more stable", main.tex:586-593). Refuted if HRNA's boundary is at or below the criterion.
+- P5 (K3): the HRNA survival map at r_p = 10 has its boundary near pi/2 in every L_z row: the median
+  lowest surviving iota within pi/12 of the paper's in >= 70 percent of the 48 rows; survival
+  fraction 0.563 (paper) reproduced within 0.08; retrograde half >= 0.95 and prograde half <= 0.25
+  in both; survivors' median a_fin in the retrograde half within 0.1 a0 of the paper's.
+- P6 (the defect): s0cks differs from s0 by more than one grid step at several r_p <= 13 (entry 2).
