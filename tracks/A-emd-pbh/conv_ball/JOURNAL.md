@@ -285,3 +285,26 @@ first detection t = 10.750; ddet +0.0705 M (B: +0.0675); dtrap -0.0284 M (B: -0.
   main.tex:1484); with one per cell (B) it sits at -2e-3. [JUDGEMENT] The plateau error of B is
   the discreteness of the accreted underdense shell (one lattice site per cell of 1/16-1/8 M
   outside the core), as the steps of A's mass curve suggest (A_horizon.png).
+
+## 2026-11-21 03:05 PST, entry 10: A-N64 (job 3a, second member); job 3a closed, job 3b submitted
+
+Job 3a (run A-20261121-091934-ac62f5f, Slurm 4784, 02:09-02:59, 0.84 card-hours) closed: B-N8 and
+A-N64 exit 0 (A-N64 1024 cycles at 1.09 s, peak 5.4 GB). C's second segment started at 02:59
+(Slurm 4786); job 3b (run A-20261121-110017-471b0ae, Slurm 4787: B-R1.25, B-R1.35, B-L32) was
+submitted at 03:00.
+
+Analysis A-20261121-110025-e6aec8c (A-N64 with all earlier numbers; A-N64_horizon.png and
+convergence.md looked at): first detection t = 10.812; ddet +0.146 M; dtrap -0.048 M; lag 0.350;
+eta 6.2e-3; turnaround V3 -0.040, C -0.015 M; horizon mass median +5.0e-4 (window +5.2e-4).
+- N leg at A (1, 8, 64 per cell): ddet 0.193, 0.109, 0.146 and lag 0.43, 0.31, 0.35 are not
+  monotonic in N; dtrap -0.093, -0.047, -0.048 settles from 8 per cell on; the mass median
+  +7.4e-3, -1.3e-3, +5.0e-4 falls by 15 from 1 to 64 per cell. At mesh A the time errors
+  are set by the mesh once N >= 8 per cell (their N spread is below the A-B difference); the
+  mass error is set by the particles.
+- fixed-N mesh sequence (4969736 particles: A-N64, B-N8; C pending): ddet 0.146 -> 0.071 (order
+  1.05), lag 0.35 -> 0.165 (1.09), dtrap -0.048 -> -0.028 (0.75); mass median +5.0e-4 -> -3.0e-4
+  (sign change, magnitude order 0.75): at fixed particle number the horizon mass is already at
+  the 3-5e-4 level on both meshes, i.e. below the source's fiducial OS level of 1e-3
+  (main.tex:945) [VERIFIED for these two runs; C decides the third point]. Prediction of entry
+  6 ("|ddet|, |dtrap| fall monotonically, order >= 1 between A-N64 and B-N8"): HOLDS for ddet
+  (1.05), fails narrowly for dtrap (0.75).
