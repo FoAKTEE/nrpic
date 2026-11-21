@@ -91,7 +91,7 @@ V3 (A3, threshold 1 percent in the ratio; drift below 2.5e-3 per e-fold).
   (FLRW-lattice) drift -4 eps1 ~ -0.045 to -0.054. Refuted: ratio off by more than 1 percent
   (A3 fails), or a drift near the deformed one.
 
-## Entry 2 (2026-11-20 19:00 PST, 03:00Z on 11-21): second session; C0 outcome; pass 1 closed
+## Entry 2 (2026-11-20 18:57 PST, 02:57Z on 11-21): second session; C0 outcome; pass 1 closed
 
 Second session of this package (the first was cut at 14:35 PST by the five-hour limit). I
 re-read CLAUDE.md, CHARTER to "Owners" and 9.8, decisions 0010, 0013 (E), 0016-0020, SCOPE 4
