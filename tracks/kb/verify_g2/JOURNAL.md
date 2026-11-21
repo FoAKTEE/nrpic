@@ -311,7 +311,7 @@ mine (lenient, corrected) 684/710, with letters failed 675/710, strict corrected
 of its words >= 0.9). Refuted by other counts (then entry 9 is wrong) or by an empty or
 different abstract (then A' is not served and my definition falls back to strict A).
 
-## Entry 12 (2026-11-21 08:12 UTC): outcome of T1; the leniency check had a hole
+## Entry 12 (2026-11-21 08:08 UTC): outcome of T1; the leniency check had a hole
 
 Tally run kb-20261121-080749-3dfab11: the counts are as predicted (684, 675, 658 of 710) and
 `kb show --abstract` prints the metadata abstract for the 8 papers without an abstract chunk
