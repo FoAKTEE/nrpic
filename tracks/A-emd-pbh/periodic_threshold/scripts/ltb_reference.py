@@ -134,13 +134,21 @@ def main():
                 for tg, lb, r0, m, e, ag, r00, uu, t1, t2, t3, rm in zip(
                     tags, labels, qB["r0"], shB.M, shB.E, qB["age0"], qB["R0"], qB["U0"],
                     evB["tau_ta"], evB["tau_ah"], evB["tau_c"], evB["R_max"])])
-    # anisotropy: M at equal r0 along axes against diagonals (interpolated in r0)
+    # anisotropy: M at equal r0 along axes against diagonals, interpolated in ln M against
+    # ln r0 (M ~ r0^3 near the centre; a linear interpolation in r0 between axis shells
+    # 0.3 apart is wrong by up to 18 per cent at r0 ~ 0.5: first run A-20261121-125808-7366ccd)
     oa = np.argsort(qB["r0"][axes])
     Md = shB.M[diag]
-    Ma = np.interp(qB["r0"][diag], qB["r0"][axes][oa], shB.M[axes][oa])
+    Ma = np.exp(np.interp(np.log(qB["r0"][diag]), np.log(qB["r0"][axes][oa]),
+                          np.log(shB.M[axes][oa])))
     sel = (qB["r0"][diag] > 0.5) & (qB["r0"][diag] < 5.0)
+    s5 = qB["r0"] < 5.0
     res["B"]["anisotropy_axes_vs_diag"] = dict(
-        max_rel_M_diag_minus_axes_r0_0p5_to_5=fnum(np.max(np.abs(Md[sel] / Ma[sel] - 1.0))))
+        max_rel_M_diag_minus_axes_r0_0p5_to_5_loglog=fnum(np.max(np.abs(Md[sel] / Ma[sel]
+                                                                         - 1.0))))
+    res["B"]["age0_range_r0_below_5"] = [fnum(np.min(qB["age0"][s5])),
+                                         fnum(np.max(qB["age0"][s5]))]
+    res["B"]["tH_crunch_innermost"] = fnum(R.t_over_tH(res["B"]["tau_crunch_innermost"], eps))
 
     # ------------------------------------------------------------------ background (lapse_leak)
     tB, aB, alB, tauB = R.leak_background(a.rate, 260.0, dt=2e-3,
