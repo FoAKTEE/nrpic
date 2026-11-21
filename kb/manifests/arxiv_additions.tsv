@@ -32,3 +32,31 @@ gr-qc/0404056	G06	2	core (fetched with gr-qc/9703066 by a core session on 2026-1
 gr-qc/0606037	G06	2	core (fetched with gr-qc/9703066 by a core session on 2026-11-15 11:07 UTC, record mtimes)	0016-6	approximate binary-black-hole initial data
 gr-qc/0608095	G06	1	none found (fetched by another session on 2026-11-15 11:17 UTC, kb/JOURNAL.md:92)	0016-6	OFF-TOPIC: laser interferometry, fits no group; G06 is a placeholder; proposed for removal (probably a mistyped id)
 gr-qc/9703066	G06	2	core (tracks/core/interfaces/multi_puncture.md cites v2 main.tex)	0016-6	Brandt-Bruegmann multiple-black-hole initial data
+# Rows 1007.0184 to 2609.14755 (kb ingest3, 2026-11-21): the 24 sources fetched in wave 3a and not yet in the
+# database. Priority 2 = fetched for a track (F-hills); 1 = fetched by kb's own brief-check packages, no track
+# asked. Groups are [JUDGEMENT] of kb from the arXiv-API title (kb-data/meta/arxiv-api/<key>.json) and the use;
+# the note names the alternative where one exists (tracks/kb/ingest3/README.md).
+1007.0184	G03	1	kb brief check s37_38 (wave 3a; open question 20, EdS stability), fetched 2026-11-19 15:23 UTC	0016-6	Bianchi I isotropization with collisionless matter (Einstein-Vlasov mathematics)
+1312.1289	G21	2	F-hills (tracks/F-hills/eih/README.md:43, EIH accelerations), fetched 2026-11-19 14:25 UTC	0016-6	post-Newtonian effects in N-body dynamics; G08 the alternative
+1402.7085	G03	1	kb brief check s37_38 (wave 3a; open question 20), fetched 2026-11-19 15:20 UTC	0016-6	stability of surface-symmetric Einstein-Vlasov with a cosmological constant
+1805.07240	G21	2	F-hills (tracks/F-hills/binary_conv/scripts/refs.py:10, 2.5PN Hamiltonian), fetched 2026-11-19 14:25 UTC	0016-6	Hamiltonian PN dynamics of compact binaries (review); G06 the alternative
+1904.13290	G03	1	kb brief check s37_38 (wave 3a; open question 20), fetched 2026-11-19 15:20 UTC	0016-6	isotropization of slowly expanding spacetimes (Einstein-Vlasov)
+2009.08968	G03	1	kb brief check novelty (wave 3a; S7, Burnett), fetched 2026-11-19 15:38 UTC	0016-6	high-frequency limits and null-dust shells (mathematics)
+2012.14241	G03	1	kb brief check s37_38 (wave 3a; open question 20), fetched 2026-11-19 15:20 UTC	0016-6	stable cosmologies with charged collisionless matter
+2107.00457	G03	1	kb brief check s37_38 (wave 3a; open question 20), fetched 2026-11-19 15:20 UTC	0016-6	stability of slowly expanding dust spacetimes
+2306.17774	G03	1	kb brief check s37_38 (wave 3a; open question 20; also used by s7_s8), fetched 2026-11-19 15:20 UTC	0016-6	future stability of FLRW for spherically symmetric massless Einstein-Vlasov
+2402.08544	G03	1	kb brief check s37_38 (wave 3a; open question 20), fetched 2026-11-19 15:20 UTC	0016-6	past development of near-FLRW Einstein-scalar-field-Vlasov data
+2402.17530	G03	1	kb brief check s5_s6 (wave 3a; brief line 434, Burnett), fetched 2026-11-19 15:37 UTC	0016-6	reverse Burnett conjecture for null dusts
+2403.03470	G03	1	kb brief check s5_s6 and novelty (wave 3a; brief line 434, Burnett), fetched 2026-11-19 15:37 UTC	0016-6	Burnett's conjecture without symmetry in generalized wave coordinates
+2404.07659	G03	1	kb brief check novelty (wave 3a; S7), fetched 2026-11-19 15:38 UTC	0016-6	high-frequency solutions of the Einstein equations (mathematics)
+2406.11417	G13	1	kb brief check novelty (wave 3a; S5, free streaming), fetched 2026-11-19 15:42 UTC	0016-6	PBH formation during cosmic phase transitions (review chapter)
+2505.00286	G04	1	kb brief check s31_32 (wave 3a; dGREM hyperbolicity, M3), fetched 2026-11-19 14:26 UTC	0016-6	discrete de Rham (structure-preserving) scheme for the Einstein equations; G06 the alternative
+2508.13294	G09	1	kb brief check novelty (wave 3a; S7, gravitational-wave turbulence), fetched 2026-11-19 15:42 UTC	0016-6	emergent turbulence in nonlinear gravity; no group fits well, G09 (backreaction of high-frequency waves) chosen, G17 the alternative
+2512.19454	G03	1	kb brief check s37_38 (wave 3a; open question 20), fetched 2026-11-19 15:20 UTC	0016-6	critical threshold for the cosmological Euler-Poisson system; G05 the alternative
+2602.01830	G01	1	kb brief check s31_32 (wave 3a; dGREM hyperbolicity, M3), fetched 2026-11-19 14:26 UTC	0016-6	hyperbolicity of linearised 3+1 TEGR, the formulation under dGREM
+2604.14911	G03	1	kb brief check s37_38 (wave 3a; open question 20), fetched 2026-11-19 15:20 UTC	0016-6	Landau damping on expanding backgrounds (kinetic theory); G05 the alternative
+2606.16879	G03	1	kb brief check s37_38 (wave 3a; open question 20; also used by s7_s8), fetched 2026-11-19 15:20 UTC	0016-6	nonlinear stability of the matter-dominated universe (Gowdy numerics); G07 the alternative
+2606.26532	G13	1	kb brief check novelty (wave 3a; S5), fetched 2026-11-19 15:42 UTC	0016-6	PBH formation in bulk-viscous cosmology
+2607.09285	G13	1	kb brief check novelty (wave 3a; S5, neutrinos), fetched 2026-11-19 15:42 UTC	0016-6	PBH mass growth from neutrinos in the radiation era
+2607.09326	G03	1	kb brief check s37_38 (wave 3a; open question 20; also used by s7_s8), fetched 2026-11-19 15:20 UTC	0016-6	nonlinear stability of Einstein-de Sitter universes (Einstein-Euler)
+2609.14755	G18	1	kb brief check s37_38 (wave 3a; brief line 235), fetched 2026-11-19 15:20 UTC; read by s39_frontier	0016-6	horizon response in self-consistent Einstein-Vlasov black-hole environments; G02 the alternative
