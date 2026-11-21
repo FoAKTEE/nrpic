@@ -222,3 +222,38 @@ shells 2 s to 12 min; analysis 35 s.
    `es.horizon_summary_0.txt` into the worktree root should run AthenaK with `-d`.
 5. core or orch: the processor executable is Serial (one core); these runs are particle-bound
    (about 3 s per step for 520k particles), so an OpenMP processor build would shorten them.
+
+## Wave 3: toward the self-similar regime (helper secondary_infall, 2026-11-20/21)
+
+One Newtonian-mode run to a/a_i = 30 on core's threaded processor build
+(`/data/haiyangw/nrpic/scratch/core/exe/core_build-openmp/athena_cpu`, six threads, 0
+card-hours), against shells matched to the same mesh and the self-similar solution of
+test 2; and R8, the wave-2 run N128Lc repeated unchanged on the threaded build, as the check
+of that build at a/a_i = 4 and 8. Design, predictions and outcomes: `JOURNAL.md` from "Wave 3"
+(entries 2026-11-20T22:25Z to the end); every number below has its run id there.
+
+### Set-up of the run to a/a_i = 30 (P192)
+
+The wave-2 set-up scaled up: eps = 0.03 (t_i = 22.2 M), clump of 19952 particles (mass 1,
+r < 0.3 M) at a cell centre with the dust lattice symmetric about it, 500 248 dust particles
+on the lattice for 3 M <= r < 36.2 M (1.1 times the initial radius of the shell that turns
+around at a/a_i = 30), isolated box +-854 M (1.12 times the radius of the dust edge at the
+end), nx = 192 (MeshBlocks 64^3), dx = 8.896 M, to t = 3629 M (a/a_i = 30); snapshots every
+9.612 M (as N128Lc), restart files every 600 M. lambda_min = 4 dx/r_ta = 0.063 at
+a/a_i = 30 (r_ta = 569 M), 0.144 at 16, 0.36 at 8. Because the dust ball spans only 4.1 cells
+at t = 0, two shell references bracket the run: "kernel" (the measured clump kernel applied
+to all enclosed mass) and "hybrid" (kernel for the seed, dust unsoftened outside 0.5 dx).
+
+### Files (wave 3)
+
+| File | What it is |
+|---|---|
+| `nm_design.py` | design table: box, mesh, lambda_min and particle counts for candidate set-ups (closed-form turnaround) |
+| `nm_cost.py` | step count of a run from its matched shells, calibrated on N128Lc's history |
+| `nm_late.py` | shared late-time comparison: 0.1-dex bins to 2048 M, self-similar solution binned in the run's bins, local slopes, the range [max(4 dx/r_ta, 0.03), 0.3] |
+| `nm_predict.py` | predictions from the shell references and the self-similar solution (masses, ratios, profile, slopes) |
+| `nm_shells.py` | (extended) `--law hybrid`, `--snap_dt` |
+| `nm_run.py` | (extended) `--threads`, `--bind` (six least busy cores of one node, OMP_PROC_BIND=true, OMP_PLACES=cores inside that mask), `--snap_dt`, `--rst_dt` |
+| `nm_analyze.py` | (extended) bins to 2048 M, growth to a/a_i = 30, the "late" comparison per a/a_i, figures `nm_late_profiles_<run>`, `nm_late_growth`, table `nm_late.txt` |
+| `nm_threadcheck.py` | a run against another of the same input: inputs, history, particles by tag, masses, profiles |
+| `nm_jsondiff.py` | regression of the analysis script: two nm_analysis.json compared leaf by leaf |
