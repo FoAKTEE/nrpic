@@ -179,3 +179,16 @@ Held in full [VERIFIED, run.log and ledger_rows.tsv of each; read-only query of 
 - No FAILED line. No unresolved locator row on any processed fulltext claim (154 claim ids in
   the ledger).
 - kb claim verify --locator attached first locators to the six core claims that had none.
+
+## Prediction AU (before the audit draw of 40 machine-located fulltext claims)
+Population: the 502 claims with label fulltext and status located (machine located, nobody
+has read them). The sample is stratified by track, with largest-remainder proportional
+allocation (A 12, core 10, C 8, D 5, B 3, F 2), seed 20261121 (scripts/draw_audit.py,
+registered). Earlier audits found 29 of 30 right (wave 2, P2) and 9 of 10 right. I expect
+36-39 of 40 right, 1-4 with a wrong or imprecise locator (an off-by-a-few line, or a number
+found in a different place), and 0-1 with a wrong statement. Refuted if fewer than 34 are
+right or more than 2 statements are wrong.
+Rule: "right" means the passage at the stored locator supports the claim as worded. "Wrong
+locator" means the statement is in the paper but elsewhere, so it is relocated and then
+checked. "Wrong statement" means the paper says otherwise or does not say it, so it is
+refuted or set back to to_verify with the reason.
