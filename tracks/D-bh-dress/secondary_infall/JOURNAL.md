@@ -687,3 +687,30 @@ its local slope is -2.4 to -2.8 with caustic steps. -9/4 is the asymptote below 
 r = 2 M. Since r_ta grows as (a/a_i)^(4/3), lambda = 1e-4 reaches r = 10 M only near
 a/a_i ~ 1.5e3 [JUDGEMENT: the scaling of the closed form, not a run]. What the run tests is
 the approach to the self-similar m(lambda) and rho(lambda) on [0.06, 0.3] and the growth.
+
+## 2026-11-21T08:05Z  production run started; prediction for the regression test of the extended analysis
+
+Production run: D-20261121-075341-6310218 FAILED at start (exit 1, "The MeshBlock size must
+be power of two": I left out `--mb 64`, so nm_run.py chose nx/2 = 96; the design entry of
+22:25Z names 64^3). Closed as failed; repeated unchanged but for `--mb 64` as
+D-20261121-075559-31835c4 (started 07:56Z, six threads bound to cores 56, 62, 65, 67, 68, 69 of
+one node, each 89 % idle before the start). Its particle file is byte-identical to the timing
+run's (sha256 4f8dddfa..., D-20261120-222405-ce8922c), whose setup.json the four matched shell
+runs used. First 500 steps at 0.63-0.66 s per step, dt 1.29-1.33 M at t = 572-702 M.
+
+Analysis tools written while it runs: nm_analyze.py extended for the late snapshots (bins to
+2048 M; growth at 12, 16, 24, 30; a "late" block per a/a_i of --late_at with the profile, the
+slopes and the shells in units of r_ta, via nm_late.compare as in nm_predict.py; figures
+nm_late_profiles_<run>, nm_late_growth; table nm_late.txt), nm_threadcheck.py (R8 against
+N128Lc by particle tag, history, masses, profiles), nm_jsondiff.py (regression).
+A debug pass of nm_threadcheck.py ran unregistered in scratch/D-bh-dress/tmp/dbg_thread (to
+fix a figure label) on one core for about two minutes beside the six threads of the
+production run, i.e. seven cores for that time, one above the session's limit; nothing else
+runs beside the production run until it ends. That pass showed the R8 numbers before the
+registered run; the R8 prediction itself is the 22:27Z entry, written before R8 ran.
+
+Prediction T (regression of nm_analyze.py): run on N128Lc with the wave-2 references (kernel,
+Plummer, point), the extended script reproduces every numeric leaf of the N128Lc entry of the
+wave-2 analysis D-20261115-190541-e27453d to 1e-12 relative (the new bins only extend the
+lists: the first 27 bin edges are equal to 1e-15); the only differences are added keys and
+longer lists. Refuted if any common leaf differs by more than 1e-12.
