@@ -99,3 +99,15 @@ X1 (processor check, not gating) The release processor executable and core/gauge
    (`scratch/core/exe/core_gauge/athena_cpu`) give the same bytes for ES-1G's input over
    the first two cycles (history, horizon summary, particle history); a difference other
    than a parameter-dump line refutes "the executable change is neutral".
+
+## Entry 1b (05:08 PST, before the run): test of tools/compare_horizons.py on the parents
+
+Runs X1 (D-20261121-125946-fe3840a, processors, 2 cores) and the two card jobs
+(ES-1GB D-20261121-125900-ea4c442, Slurm 4794; V-1GB D-20261121-125909-06f856e, Slurm 4795;
+both pending behind jobs of core and C at 05:00 PST) were submitted.
+Prediction T1: on ES-1G, V-1B and V-1 the script reproduces the lead's numbers (run
+D-20261121-063617-3f2036f): ES-1G M_AH(100) - 1 = +1.1410e-3, D on 100-165 M
+[-4.17e-4, +9.46e-4], D(199.5) = +6.963e-3, radius 1.398 M (25 M) and 0.776 M (199.5 M);
+V-1B D on 100-199.5 M [-4.84e-5, +1.97e-5], D(199.5) = -9.2e-6; V-1B - V-1 first above
+5e-5 after 133 M. A difference in the printed digits refutes the reader (unique-time
+handling or the reference sample).
