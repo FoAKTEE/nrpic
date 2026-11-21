@@ -269,7 +269,115 @@ def main():
 
     # 10. hand-written manifests of wave 1 (decision 0012): read, never fatal
     hand_manifests(c, fx, A, used)
+    # 11. the orchestrator's runs on main, beside other agents
+    orch_runs(c, fx, A)
+    # 12. --wait: a local run waits for the owner's cores instead of being refused (C's lead-core-share)
+    wait_runs(c, fx, A)
     return c.done()
+
+
+def wait_runs(c, fx, A):
+    import re
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "holds 15 of 16 cores",
+                    "--cores", "15", "--background", "--", "bash", "-c", "sleep 8"])
+    m = re.search(r"registered (A-\d{8}-\d{6}-[0-9a-f]{7})", r.stdout)
+    if not c.ok(r.returncode == 0 and m, "--wait: a background run holding 15 of A's 16 cores", r.stdout + r.stderr):
+        return
+    bg = m.group(1)
+    li = os.path.join(fx["repo"], "scratch", "A-emd-pbh", bg, ".nrpic", "launch.json")
+    wait_until(lambda: os.path.isfile(li) and "pid" in json.load(open(li)), timeout=60)
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--cores", "2", "--dry-run",
+                    "--", "bash", "-c", "true"])
+    c.ok(r.returncode == 1 and "allotment 16" in r.stderr and "--wait SECONDS" in r.stderr,
+         "--wait: without it, 2 more cores are refused and the message names --wait", r.stderr)
+    t0 = time.time()
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "the lead's analysis, waits",
+                    "--cores", "2", "--wait", "120", "--", "bash", "-c", "echo after the wait"], timeout=300)
+    dt = time.time() - t0
+    m2 = re.search(r"registered (A-\d{8}-\d{6}-[0-9a-f]{7})", r.stdout)
+    c.ok(r.returncode == 0 and m2 and "waiting for cores" in r.stderr and "after the wait" in r.stdout and dt >= 25,
+         f"--wait 120: the run waited ({dt:.0f} s) until the background run ended, then ran", r.stdout + r.stderr)
+    bm = manifest(A, "A-emd-pbh", bg)
+    if bm["status"] != "completed":
+        run_cmd(A, ["finish", bg])
+    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--launcher", "chain",
+                    "--gpu-hours", "1", "--wait", "10", "--dry-run", "--", "x.athinput"])
+    c.ok(r.returncode == 1 and "--wait SECONDS is for local runs" in r.stderr, "--wait is refused for card launchers",
+         r.stderr)
+
+
+def orch_runs(c, fx, A):
+    """Owner orch registers from the main checkout: manifest in tracks/orch/runs/ on main, committed
+    path-limited while another agent holds index.lock, has a file staged and others modified."""
+    import re
+    import subprocess
+    repo = fx["repo"]
+    g = ["git", "-C", repo]
+    F.commit_file(repo, "tracks/orch/outbox/.gitkeep", "", "orch: outbox")
+    F.commit_file(repo, "tracks/orch/inputs/o.athinput", "<problem>\npgen_name = fake\n", "orch: a deck")
+    # another agent at work on main: a tracked document modified, a draft untracked, a file staged
+    with open(os.path.join(repo, "coord", "CHARTER.md"), "a") as f:
+        f.write("\nanother agent's edit in progress\n")
+    os.makedirs(os.path.join(repo, "coord", "digests"), exist_ok=True)
+    open(os.path.join(repo, "coord", "digests", "draft.md"), "w").write("draft\n")
+    open(os.path.join(repo, "coord", "STAGED.md"), "w").write("staged by another agent\n")
+    F.sh(g + ["add", "--", "coord/STAGED.md"])
+    lock = os.path.join(repo, ".git", "index.lock")
+    open(lock, "w").close()
+    t0 = time.time()
+    p = subprocess.Popen([os.path.join(repo, "harness", "bin", "nrpic-run"), "submit", "--kind", "scouting",
+                          "--gate", "G1", "--purpose", "orchestrator's analysis beside other agents", "--",
+                          "bash", "-c", "echo orch > \"$NRPIC_RUN_DIR/o.txt\""],
+                         cwd=repo, env=F.H.boot_env(), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    time.sleep(7)
+    held = p.poll() is None
+    os.remove(lock)
+    out, err = p.communicate(timeout=300)
+    m = re.search(r"registered (orch-\d{8}-\d{6}-[0-9a-f]{7})", out)
+    rid = m.group(1) if m else None
+    c.ok(p.returncode == 0 and rid and held and time.time() - t0 >= 7,
+         "orch: a run registered from the main checkout waits while another writer holds index.lock, then commits",
+         out + err)
+    if not rid:
+        return
+    shown = F.sh(g + ["show", f"main:tracks/orch/runs/{rid}/manifest.json"], check=False)
+    om = json.loads(shown.stdout) if shown.returncode == 0 else {}
+    c.ok(om.get("status") == "completed" and om.get("track") == "orch" and om["outputs"]["dir"] == f"scratch/orch/{rid}"
+         and open(os.path.join(repo, "scratch", "orch", rid, "o.txt")).read() == "orch\n",
+         "orch: manifest tracks/orch/runs/<run_id>/ committed on main (finished), output in scratch/orch/<run_id>/",
+         shown.stdout[-600:] + shown.stderr)
+    names = F.sh(g + ["log", "-2", "--format=%s", "--name-only"]).stdout
+    files = {l for l in names.splitlines() if "/" in l}
+    c.ok(files == {f"tracks/orch/runs/{rid}/manifest.json"} and f"orch(run): register {rid}" in names
+         and f"orch(run): finish {rid} (completed)" in names,
+         "orch: the two commits hold the manifest only (path-limited)", names)
+    staged = F.sh(g + ["diff", "--cached", "--name-only"]).stdout.split()
+    st = F.sh(g + ["status", "--porcelain"]).stdout
+    c.ok(staged == ["coord/STAGED.md"] and " M coord/CHARTER.md" in st and "?? coord/digests/" in st,
+         "orch: the other agent's staged, modified and untracked files are left as they were", st)
+    c.ok(om["git"].get("outside_package", {}).get("count", 0) >= 3 and om["git"].get("package") == [],
+         "orch: the other agent's files are recorded in manifest.git.outside_package, not refused",
+         json.dumps(om.get("git")))
+    with open(os.path.join(repo, "harness", "templates", "STATUS.md"), "a") as f:
+        f.write("\nan unfinished edit of the harness\n")
+    r = run_cmd(repo, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--dry-run", "--",
+                       "bash", "-c", "true"])
+    c.ok(r.returncode == 1 and "harness/templates/STATUS.md" in r.stderr and "code roots" in r.stderr,
+         "orch: a change in a code root (harness/) is refused", r.stderr)
+    F.sh(g + ["checkout", "-q", "--", "harness/templates/STATUS.md"])
+    r = run_cmd(repo, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "card", "--launcher", "chain",
+                       "--gpu-hours", "1", "--dry-run", "--", "tracks/orch/inputs/o.athinput"])
+    c.ok(r.returncode == 1 and "beyond the allotment" in r.stderr and "0019" in r.stderr,
+         "orch: no card-hours without a row in decision 0006 (card run refused)", r.stderr)
+    r = run_cmd(repo, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "x", "--cores", "7", "--dry-run",
+                       "--", "bash", "-c", "true"])
+    c.ok(r.returncode == 1 and "allotment 6" in r.stderr, "orch: seven cores refused (six per session, 0019)", r.stderr)
+    bud = run_cmd(repo, ["budget"]).stdout
+    c.ok("owner orch: 0 GPU-hours" in bud and "6 cores" in bud, "orch: budget prints the default allotment", bud)
+    r = run_cmd(A, ["lint", "--all"])
+    c.ok("orch: 1 runs (1 by nrpic-run" in r.stdout, "lint --all lists the orchestrator's runs, read from main", r.stdout)
+    r = run_cmd(repo, ["verify", rid])
+    c.ok(r.returncode == 0 and "PASS" in r.stdout, "orch: verify re-checks the run's checksums", r.stdout + r.stderr)
 
 
 HAND = {
@@ -291,6 +399,11 @@ HAND = {
                                           "outputs": {"files": 3}, "gate": "G1"},
     "A-emd-pbh-20261115-112414-6bb2b7d": {"run_id": "A-emd-pbh-20261115-112414-6bb2b7d", "status": "finished",
                                           "gate": "G1", "card_hours": 0.0},
+    # D, wave 2: a helper's registration script copied the nrpic-run schema (hand_marker: registered_by)
+    "A-20261115-120001-abcdef3": {"schema": "nrpic-run-manifest/1", "run_id": "A-20261115-120001-abcdef3",
+                                  "track": "A-emd-pbh", "gate": "G1", "status": "submitted", "launcher": "batch",
+                                  "registered_by": "hand: helper script", "resources": {"gpu_hours_requested": 5.0},
+                                  "outputs": {"dir": "scratch/A-emd-pbh/A-20261115-120001-abcdef3"}},
 }
 
 
@@ -327,6 +440,13 @@ def hand_manifests(c, fx, A, used_before):
     c.ok(r.returncode == 1 and "not registered by nrpic-run" in r.stderr, "finish refuses a hand-written run", r.stderr)
     r = run_cmd(A, ["stop", "A-emd-pbh-20261115-042626-f3da881"])
     c.ok(r.returncode == 1 and "not registered by nrpic-run" in r.stderr, "stop refuses a hand-written run", r.stderr)
+    r = run_cmd(A, ["finish", "A-20261115-120001-abcdef3"])
+    r2 = run_cmd(A, ["stop", "A-20261115-120001-abcdef3"])
+    st = run_cmd(A, ["status"]).stdout
+    c.ok(r.returncode == 1 and "registered_by" in r.stderr and r2.returncode == 1 and "not registered by nrpic-run"
+         in r2.stderr and "submitted?h" in st and "submitted*h" not in st,
+         "a hand registration that copied the schema: finish and stop refuse it, status marks it h and never live",
+         r.stderr + r2.stderr + st[-800:])
     od = os.path.join(fx["repo"], "scratch", "A-emd-pbh", "hand1")
     os.makedirs(od, exist_ok=True)
     r = run_cmd(A, ["verify", "A-emd-pbh-20261115-112946-b7b431d"])
