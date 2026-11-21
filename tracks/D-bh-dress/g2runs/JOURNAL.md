@@ -277,8 +277,8 @@ Reading of entries 5-6 together:
 - [VERIFIED] The relaxed lapse makes the late growth even in vacuum: V-1GB grows by
   +1.27e-3 over 160-200 M where V-1B (plain 1+log, same mesh, same faces) stays within
   4.8e-5. With the dust outside the bubble the growth starts earlier and is 3-5 times
-  larger (ES-1GB +4.16e-3 at 188 M against V-1GB's +0.62e-3 at 188 M, read from the same
-  json).
+  larger (ES-1GB +4.16e-3 at 188 M against V-1GB's +5.86e-4 at 188 M: V-1GB's finder
+  file of run D-20261121-125909-06f856e, 1.0017717 at 188 M against 1.0011858 at 100 M).
 - [JUDGEMENT] HG with a dust-dependent rate: lapse_leak shrinks the hole in coordinates
   (0.78-0.88 M, 6-7 cells of M/8 by 200 M, where plain 1+log keeps it at 2.2 M); the
   slice mass then grows in a region concentrated at the hole (B4', entry 5) as the
