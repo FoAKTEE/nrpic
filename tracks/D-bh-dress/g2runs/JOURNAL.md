@@ -191,3 +191,29 @@ B4' slicemass.py on the restart dumps of ES-1GB: (a) the asymptotic mass at t = 
     2.007 as its outer value; the face error of ES-1GB, entering at ~0.9 c from 384 M,
     should be beyond r ~ 200 M at t = 200 M); (c) M_H of the slice in the bubble within
     1.0005-1.0030 at 150 and 200 M (ES-1G 1.00136 and 1.00807).
+
+## Entry 5 (06:14 PST): ES-1GB, first segment (to t = 185.5 M), outcome so far
+
+Run D-20261121-125900-ea4c442 (Slurm 4794, started 05:24:55 PST; segment 1 ended at
+t = 185.5 M at the 50-min limit; the chain continues). 400 MeshBlocks (column 23 of the
+history), no "not used" warning in the segment log. Partial analysis
+D-20261121-141419-b9f1089 (compare_horizons.py; figure looked at):
+- ES-1GB and ES-1G horizon masses agree to 2.9e-15 up to t = 90 M and to 3.3e-9 at
+  185.5 M (largest difference on 30-185.5 M: 3.3e-9; it rises above 1e-9 only after
+  ~180 M). The horizon mass, the drift and the coordinate radius of the two runs lie on top
+  of each other in every panel. B2 first part HELD (<= 5e-5 to 90 M); the second part
+  ("separate by more than 2e-4 after 130 M", the HB expectation) did NOT happen: they
+  never separate by more than 3.3e-9.
+- Drift of ES-1GB from 100 M: [-4.17e-4, +9.47e-4] on 100-165 M (ES-1G's, to the last
+  digit), D(185.5 M) = +3.647e-3, already above B1's refutation line 3.5e-3.
+- So [VERIFIED for this pair, to t = 185.5 M] moving the outer faces from +-192 M to
+  +-384 M changes the horizon mass by at most 3.3e-9: the late growth of ES-1G (+3.6e-3 by
+  185.5 M, +6.97e-3 by 199.5 M) does NOT come from the outer boundary. HB is refuted for
+  the horizon; the lead's reading (REVIEW-wave3 sections 1, 3: "the natural reading is
+  that ES-1G's late growth comes through the outer boundary") does not hold. The
+  executable change (core/gauge -> release) did not change the hole either (2.9e-15 to
+  90 M; X1 on processors still running). Left: HG (gauge and resolution at the shrinking
+  hole) against HD (dust): V-1GB decides; the slice mass (B4') says whether the faces
+  still cost the exterior its mass.
+Tool change before the final analysis: panel (c) of compare_horizons now reaches down to
+1e-17 (the 1e-9 floor hid the pair's difference).

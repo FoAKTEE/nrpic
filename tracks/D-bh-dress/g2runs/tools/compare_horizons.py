@@ -197,11 +197,11 @@ def main():
                        ("V-1GB - V-1B (gauge)", p_v, fs.PAL["orange"])):
         if pr is not None:
             tc, d = pr
-            ax[1, 0].plot(tc, np.abs(d) + 1e-12, color=c, lw=1.2, label=lab)
+            ax[1, 0].plot(tc, np.abs(d) + 1e-17, color=c, lw=1.2, label=lab)
     ax[1, 0].set_yscale("log")
     ax[1, 0].axhline(2.5e-4, **fs.GUIDE)
     ax[1, 0].axhline(5e-5, color="k", lw=1.0, ls=":")
-    ax[1, 0].set_ylim(1e-9, 3e-2)
+    ax[1, 0].set_ylim(1e-17, 3e-2)
     ax[1, 0].set_xlabel(r"$t/M$")
     ax[1, 0].set_ylabel(r"$|\Delta M_{\rm AH}|/M$")
     ax[1, 0].legend(loc="lower right", fontsize=7, frameon=False)
