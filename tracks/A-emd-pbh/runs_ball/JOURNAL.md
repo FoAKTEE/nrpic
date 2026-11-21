@@ -671,6 +671,89 @@ the numbers are not affected.
 
 Written after the registered analysis of BH-1R (see below).
 
+Outcome (written 2026-11-21 after the registered runs; figures looked at). Card run
+A-20261119-164634-f1fe887 (Slurm 4665, 12:02-12:32 PST on 2026-11-19, rc = 0; closed by
+`nrpic-run finish` in this session). Analyses: A-20261121-080558-02c3188 (compare.py; its line
+diagnostics were cut after t = 0 by defect 2 of entry 17) and A-20261121-081153-b92c08c
+(compare.py with --line-hmax 1e3 and the `finder_g2` summary; excision; breakdown). Figures:
+`figs/bh_smr_{shells,events,misner_sharp,horizon,gauge}.png` (the last three replaced by the
+second analysis), `fig_excision.png`. BH-1R has no field dumps (fields.py: "no field dumps").
+
+Entry 10, item by item:
+- Reaches t = 16 with finite fields: HOLDS. No breakdown criterion fires (no non-positive
+  determinant in athena.log, no non-finite record in cstat, z4c, nrpic histories, line outputs
+  or trajectories; `bd/turnaround.json`).
+- The finder finds the horizon, first between t = 10.5 and 13 (amended range): HOLDS. First
+  detection at code time 10.875 (searches from t = 9 every 0.125 M; the 15 searches before
+  found nothing). The first slice that contains a trapped round sphere by the particles' own
+  clocks is at code time 10.54 (`first_trapped_slice`): the finder lags it by 0.33 M (B3's
+  bound for this lag was 0.5 M).
+- Clock of the shell at the horizon, 0 to +0.3 M late: REFUTED, on the early side and small.
+  At first detection the tracked particles at the finder's mean coordinate radius (0.4425 M;
+  shell R_i = 2.669) have proper time 9.785 against the exact trapping time 9.831 of that shell:
+  -0.046 M. From t = 11.25 on the difference stays within +-0.012 M on every detection
+  (`finder.rows`: tau_at_horizon against tau_ah_exact_shell_at_r).
+- Mass, |m_irr/m_exact(slice) - 1| below 3e-3 at first detection: REFUTED (1.97e-2: 0.7011
+  against 0.6875); as median over the first 4 M: HOLDS (-4.46e-4; median |err| 5.19e-4;
+  33 detections in [10.875, 14.875]). The error falls from 1.97e-2 to 1.25e-2, 3.5e-3, -3.3e-3,
+  -6.1e-3 (t = 11.375), -4.2e-3, -1.3e-3 and stays within 1e-3 from t = 11.75 to the last search
+  at 15.875 (3e-4 to 6.3e-4; `bh_smr_horizon.png` middle). The finder's mass first falls
+  (0.7011 -> 0.6857 at t = 11.375) while the exact mass rises, then joins it.
+- Core shells, largest |eps| at the turnaround below 1.5e-3: REFUTED (2.77e-3 at tau = 3.372;
+  1.09e-3 at tau = 1.69). Mean core turnaround error (V3) -0.0012 M, R_max -5.6e-5.
+- Refutation clause: "a mass error above 1e-2" is met for the first two detections only
+  (t = 10.875, 11.0); "no horizon by t = 16" is not met.
+
+Gate G2 items asked for in this round [numbers VERIFIED from the run ids above; comparisons
+JUDGEMENT]:
+- First finder detection: code time 10.875; exact first trapping tau_AH = 9.551 (core edge);
+  first trapped slice from the particles' clocks 10.54.
+- Proper time at the horizon against the exact tau_AH of the shell: -0.046 M at first
+  detection, within +-0.012 M afterwards. Per tracked particle (R falls through 2m), the
+  core-edge bands trap -0.0085 M (R_i = 2.60), -0.0029 (2.70), -0.0020 M (2.80) from the exact
+  times, mean over 108 core particles -0.0087 M (`events`); the uniform M/8 run had -0.010 for
+  its edge band but -0.39 M for the whole core (entry 11).
+- Irreducible mass against the exact horizon mass of the same slice: +1.97e-2 at first
+  detection, median -4.5e-4 over the first 4 M, |err| <= 6.3e-4 from t = 11.75 to 15.875.
+  Source paper [VERIFIED, refs/arxiv_2611.12831/src/main.tex]: final mass after excision against
+  the ADM mass "Delta M/M_ADM <~ 1e-3" for the fiducial Oppenheimer-Snyder run (line 945), RMS
+  over five seeds eps_M = 2.061e-3, 9.362e-4, 7.347e-4 for A1-A3 (line 1484). [JUDGEMENT] After
+  the first 0.9 M BH-1R's error (3e-4 to 6e-4) is of the same order as the source paper's
+  (below its 1e-3 and below A1-A3's RMS); at first detection it is an order larger. The
+  quantities differ: theirs is the final hole at t = 60 M against M_ADM, ours the first apparent
+  horizon while it grows (m_AH 0.6875 -> 0.708), against the exact LTB mass of the same slice
+  located with the particles' clocks; ours is one lattice (no seed average), one refined level,
+  and an outer boundary at 16 M that spoils the vacuum exterior (the line Misner-Sharp mass
+  beyond r = 7 M falls to -2.5 by t = 16, `bh_smr_misner_sharp.png`). The G2 criterion "of the
+  same order as in the OS test" is met by BH-1R after the formation transient, at one
+  resolution only: convergence is not shown (conv_ball's package).
+- Persistence: the horizon is found in all 41 searches from 10.875 to 15.875 (the run ends at
+  t = 16 without a search at 16); m_irr grows monotonically from t = 11.375 on, 0.6857 -> 0.7076,
+  with the exact mass of the same slices 0.6899 -> 0.7080. (The error sequence above is
+  computed from the four-digit masses of the rows; the figure shows the same values.)
+- Cross-check by the line (run -081153-): the line y = z = dx/2 has an outermost marginally
+  trapped sphere from t = 11.0 to 16.0 at coordinate radius 0.419-0.433 M (finder mean radius
+  0.418-0.443 M), Misner-Sharp mass 0.6955 against the exact shell 0.6884 at t = 11.0 (+1.0 per
+  cent), 0.7088 against 0.7084 at t = 16 (+0.06 per cent); it shows the same dip as the finder
+  (0.6862 at t = 11.5 against 0.6905). [JUDGEMENT] The early transient is in the slice, not in
+  the finder: two independent diagnostics agree on it.
+- Central lapse: follows the homogeneous reference within 5.7e-5 to t = 2, above it from
+  t = 3.84 (deviation > 0.02), below 0.5 at t = 10.06 and below 0.1 at t = 12.98, 0.073 at t = 16:
+  it collapses inside the horizon, as a 1+log lapse should; the central clock freezes at
+  tau = 9.84 (< crunch 10.63). On the uniform meshes it turned around at 0.17-0.30 and rose
+  before the blow-up (entry 11).
+- Constraints: largest |H| 0.05-0.09 at t = 6-8, 0.30 at 10, 1.43 at 12, 5.0 at 14, 4.8 at 16,
+  inside the horizon at the centre; mean |H| 2.5e-3 at t = 8, 3.5e-3 at t = 16 (growth 1.4);
+  Theta max 0.1 at t = 14 (`bh_smr_gauge.png`). No blow-up to t = 16, unlike the uniform M/8 run
+  (non-finite at 15.03) with the same root mesh outside [-3.9, 3.9]^3.
+- Particle excision (entry 11, E2): 325784 particles, rest mass 0.827 of 1.146, removed from
+  t = 12.70 by the lapse criterion, inside the horizon (coordinate radius <= 0.345 M); 74208
+  of them (0.259) while no cell value of the lapse was yet below 0.1.
+- The uniform M/8 run (no finder detection, trapped points on the line at 0.44-0.47 M from
+  t = 11.0, non-finite from 15.03): entry 11. With one refined level of M/16 and the finder
+  started at 1.0 M, the same data give a persistent horizon, finite fields to t = 16 and the
+  mass error above.
+
 ## 2026-11-20, entry 13: a turnaround estimator that does not depend on a fit window (prediction T, written before the estimator met any run)
 
 Why: the verifier (stage/G1/VERIFIER.md section 2.4, finding 6, section 4 point 1) found
