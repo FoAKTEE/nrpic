@@ -178,3 +178,16 @@ median is negative as predicted: an early bin is +1.4e-4, where the growth is sm
 finder-sample lag dominates; closure -2.2 %.
 Correction of the clock: entries 2 and 3 were written at 05:03 and 05:05 PST (date), not
 05:15 and 05:25 as their headings say; T2 ran at 05:06 PST.
+
+## Entry 4 (05:07 PST, before ES-1GB has started): B4 reworded
+
+B4 as written in entry 1 is wrong geometrically: at t = 200 M the dust of ES-1GB, on its
+exact curve under lapse_leak, spans R ~ 69-116 M (a/a_i ~ 1.93 at t = 200 M for
+H = 5.58e-3/M [JUDGEMENT, the homogeneous model]), so m(R) rises through it on 70-116 M and
+is not the plateau there. B4 now reads (still before any ES-1GB data exist):
+B4' slicemass.py on the restart dumps of ES-1GB: (a) the asymptotic mass at t = 50 and
+    100 M within 1e-3 of 2.7397 (ES-1G: 2.7398, 2.7149 NOT FLAT); (b) at t = 150 and 200 M
+    the shell medians of m on 130 <= R <= 190 M within 1 per cent of 2.7397 (ES-1G at 150 M:
+    2.007 as its outer value; the face error of ES-1GB, entering at ~0.9 c from 384 M,
+    should be beyond r ~ 200 M at t = 200 M); (c) M_H of the slice in the bubble within
+    1.0005-1.0030 at 150 and 200 M (ES-1G 1.00136 and 1.00807).
