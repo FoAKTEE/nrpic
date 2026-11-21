@@ -272,3 +272,14 @@ J2 = B-20261121-202304-dc3020e ended 12:44 PST, all three cases exit 0 at t = 61
 (a = 1001; 11963 steps for b_n64_p1, 11613 for each f_n64 case), 0.35 card-h by Slurm
 accounting against the 0.57 estimated (entry 1). Closed by the sequencer. Not analysed.
 J3 = B-20261121-202335-3e6a898 started 12:44 on a card (segment 1 of at most 6).
+
+## Entry 6 (2026-11-21 13:16 PST, helper of batch 6): analysis of J1, P1, J2 before reading
+
+Batch 6 takes no card (decision 0026 item 1); J3 (B-20261121-202335-3e6a898, chain, Slurm
+4825, 128^3 to a = 1001) is still running and is not touched. This entry is written before
+any output of J1, P1 or J2 is read beyond file names, record counts and the last time
+(t = 61.20-61.26 in every case: all sixteen runs reached a = 999-1001).
+`inputs/runs.json` maps the sixteen cases to their run directories (16^3 from P1, 32^3 from
+J1, 64^3 from J2). The analysis is the registered run of `scripts/analyze_f.py` and
+`scripts/analyze_b.py` on that map. The predictions under test are those of entry 1
+(PF1-PF6, PB1-PB5) and entry 4 (J2), unchanged; the 128^3 leg of PB3 waits for J3.
