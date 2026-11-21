@@ -1,0 +1,122 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261121-092757-34faefa",
+  "track": "D-bh-dress",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "D-pre-3 wave 3 Q16: analysis of the run to a/a_i = 16 (D-20261121-085652-7e189a2) against its cell-centre-kernel shells and the self-similar solution; outcome of prediction Q16",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/D-bh-dress/secondary_infall/nm_analyze.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "--run",
+    "Q16:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-085652-7e189a2",
+    "--ref",
+    "Q16:kernel_cc:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-085559-5551b3e/nm_shells_Q16_kernelcc",
+    "--ref",
+    "Q16:hybrid_cc:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-085600-c436f4a/nm_shells_Q16_hybridcc",
+    "--ref",
+    "Q16:kernel_cc64:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-085602-01fbcdf/nm_shells_Q16_kernelcc64",
+    "--selfsim",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123813-97afeea/selfsimilar_profile.npz",
+    "--late_at",
+    "4",
+    "8",
+    "16"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "34faefafc63080a33b3f09fb10b53295fcca0d8b",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/secondary_infall"
+    ],
+    "outside_package": {
+      "count": 3,
+      "first": [
+        "?? tracks/D-bh-dress/drift_controls/tools/compare_runs.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/count_blocks.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/slice_profiles.py"
+      ]
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/D-bh-dress/secondary_infall/nm_analyze.py",
+      "role": "argv",
+      "sha256": "2deadb750ef388a171916d7945e3d8526ab5c2e8580b6ac8520ad8fefe3b680c",
+      "bytes": 44163,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123813-97afeea/selfsimilar_profile.npz",
+      "role": "argv",
+      "sha256": "d8b610648ec743f3d69ddc76a8fe5037f0863e2a35e6f7e2ce878b88a5f63bb0",
+      "bytes": 32444,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261121-092757-34faefa",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T09:27:57Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 30.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 4.4119,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 212,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
