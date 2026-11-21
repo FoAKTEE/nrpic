@@ -481,7 +481,7 @@ that directory: option `<z4c> lapse_leak`, tested on cards; no guard, no periodi
 no `dt_lightspeed`). Runs are registered with `harness/bin/nrpic-run` (`--package
 tracks/A-emd-pbh/periodic_threshold`); run ids `A-<UTC>-<commit7>`.
 
-## 2026-11-20 22:40Z, D3: data of P0L (written before the run)
+## 2026-11-20 22:30Z, D3: data of P0L (written before the run)
 
 `scripts/build_p0l.sh`: `make_peak_ic.py --mu 0.3 --e 0 --p 0 --eps-i 1 --n 64 --nfilter 2
 --compensate` (the S1 settings with e = 0), then `track_select.py`, which reorders the
@@ -496,3 +496,53 @@ amplitude and a profile no steeper than the elliptical one along its short axis:
 below 1e-10, c between 0.05 and 0.2, delta_N max 0.12 (the Laplacian of the same Gaussian
 at the centre does not depend on e), alpha_min about 0.80. Refuted if the inner solves
 stagnate at the 60-iteration limit (then P0L moves to mu = 0.2).
+
+### D3 outcome (run A-20261120-223123-f436c39; closed by the lead in batch 2b; recorded 2026-11-21 12:58Z by the helper of batch 3)
+
+From `P0_mu0.3.log` and `P0_mu0.3/id.json` of the run: 17 outer steps, 29 to 33 inner
+iterations each (no stagnation at the 60-iteration limit), Hamiltonian residual 6.0e-12,
+momentum residual 1.0e-11 (prediction below 1e-10: holds), c = 0.088 (between 0.05 and
+0.2: holds), delta_N max 0.118 (prediction 0.12: holds), alpha_min 0.805 (about 0.80:
+holds). zeta_max 0.296, largest displacement 0.134 spacings, 317 tracked particles with
+r0 from 0 to 9.375 (`track.json`). P0L stays at mu = 0.3.
+
+The session of 2026-11-20 was cut after writing `scripts/ltbref.py`, `scripts/ltb_reference.py`
+and `inputs/peak_leak.athinput` (uncommitted, never run). This session commits them,
+runs the reference (R1 below) and finishes the decks.
+
+## 2026-11-21 13:00Z, R1: exact reference of the spherical peak (written before the run)
+
+`scripts/ltb_reference.py --data <P0 data> --mu 0.3 --rate 20` (processor, registered).
+Two references: A, the paper's profile with simultaneous bang (ltb2609.Profile2609,
+MDPBH.tex:573-743); B, the code's own initial slice (M, E and age of the shell of each
+tracked particle, from fields.bin by Fourier interpolation; ltbref.reference_B).
+Code units G = c = 1, H_i = 1 at a_i = 1, t_i = 2/3, k = eps_i = 1, t_H = t_i 6^(3/2) =
+9.80; tau is the proper time from the initial slice.
+
+Predictions, by hand from the closed forms (MDPBH.tex:680, 695, 743) [JUDGEMENT]:
+- A1 every shell bound (ktilde = (2 mu/3) e^(-u) (1 - mu u e^(-u)) > 0, u = r^2/6), the
+  crunch time t_s(r) increasing with r, and no shell crossing before the crunch of either
+  shell (simultaneous bang with t_s' > 0 [BACKGROUND: Hellaby-Lake conditions]).
+- A2 central crunch t_s(0) = (pi/3) m(0) ktilde(0)^(-3/2) with m(0) = 4 e^(3 mu)/(3 t_i^2) =
+  7.38, ktilde(0) = 0.2: t_s(0) = 86.4, tau = 85.7, 8.82 t_H.
+- A3 the first marginally trapped sphere (minimum over shells of the time of R = 2M) is
+  the centre at the central crunch: near r = 0, t_ah = t_s(r) - 4M/3 with
+  t_s(r) - t_s(0) = 15 r^2 and 4M/3 = 1.6 r^3, so t_ah grows outward. So the exact
+  solution HAS trapped spheres at mu = 0.3 before any shell crossing, but they appear
+  only with the central singularity and the apparent horizon grows outward from zero
+  mass (consistent with "globally naked" at mu = 0.32, MDPBH.tex:766-768). Refuted if the
+  minimum of t_ah sits at r > 0.1 r_m and earlier than t_s(0) by more than 1 per cent.
+- B1 the ages of the code's shells equal t_i = 2/3 within 3 per cent for r0 < 5 (the
+  data carry the growing mode only; nonlinear corrections ~ delta^2 ~ 1e-2), all shells
+  of r0 < 5 bound; B shows a shell crossing only if its ages spread (decaying mode).
+- B2 at equal Misner-Sharp mass the code's turnaround, R = 2M and crunch times differ from
+  A by less than 20 per cent for 0.8 < r0 < 3 (the code's slice at eps_i = 1 is not the
+  gradient-expansion slice of the paper: solve change c = 0.088, D3); sign not predicted.
+- B3 axes and diagonals give the same M at equal r0 within 1e-3 for 0.5 < r0 < 5
+  (64^3 lattice, spectral data, profile width 2.45 = 7.8 spacings).
+- P periodic images: zeta at the face (r = 10) 5.8e-8 of mu, at the nearest image
+  exp(-L^2/6) ~ 1e-29; the box mean of zeta removed by the periodic solve
+  mu (6 pi)^(3/2)/L^3 = 3.1e-3, a shift of the background that B contains and A not.
+- L background of the relaxed lapse with T = 0.05: alpha = exp(6 T H) within 1e-3 after
+  t = 0.5; the coordinate time of 8.8 t_H (t = 86.4 - t_i) within 0.5 of the proper time.
+Refuted as stated per item; a crash of the script is recorded and fixed, not hidden.
