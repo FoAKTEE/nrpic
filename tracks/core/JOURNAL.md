@@ -352,3 +352,30 @@ Regression figure: run core-20261121-030235-cc329f5 (supersedes -030223-bd2eddc,
 legend covered a bar), looked at: 75 compared items, 62 identical, 8 a, 5 b, no other.
 Option scan `verify/options_at.py core-v0.3 HEAD`: 61 added, 0 removed, 0 changed
 defaults (`scratch/core/tmp/lead_v04/options_v03_v04.json`).
+
+### Publication and records (2026-11-21T03:10Z to 03:15Z)
+
+- Published `/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v04/`: `athena_cpu`
+  (sha256 8bff3107...8955d506, the executable of R and Q2), `athena_gpu` (sha256
+  ab3ee2a6...4143623b, the executable the card job holds as `batch.list.exe`), `COMMIT`
+  (source f9323185), `SHA256SUMS` (checked), `READY` (19 new options or groups, one
+  example input each, all 25 example inputs exist in the tree [VERIFIED: test -f]),
+  `branches/READY.<branch>`.
+- Written: `RELEASE-v0.4.md` (REGRESSION PASS), `CHANGELOG.md` section core-v0.4,
+  `stage/G2/OPEN.md` first section (no branch left out; items 6, 7, 9, 15 changed by the
+  release; defects a to i), `stage/G2/EVIDENCE.md` section of the candidate, STATUS,
+  HANDOFF.
+- Review of the first session's merge resolutions by reading (`git show --cc`): hand
+  resolutions in z4c.cpp/hpp, CMakeLists.txt, nrpic.cpp, nrpic_io.cpp, particles.hpp,
+  docs/FORMATS.md, rng.md are unions of both sides; in `NrpicPush` the order is
+  perturbing kick, test kick, accretion bracket. Q2 is the test that each side kept its
+  behaviour.
+- Not changed: the comment of `NrpicCollideOptions::ext` (columns 32 to 35, should be
+  36). A source edit after the tests would make the published executables differ from
+  the source commit; it is OPEN.md item f.
+- Changed my mind about: the times in my headings (I wrote estimates 03:00Z and 03:12Z
+  where the clock said 02:58Z and 02:59Z; corrected from `git log`), and the count of
+  Q2 (corrected before the run).
+- Card check: job 4758 queued at 02:59Z behind 4755 (core), 4756 (C), 4757 (E); both
+  cards busy until about 03:27Z and 03:36Z (squeue at 03:12Z). Its outcome is recorded
+  below when it has run; until then RELEASE-v0.4.md and READY say PENDING.

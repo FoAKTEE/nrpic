@@ -1,36 +1,35 @@
 # STATUS of core
 
-gate:        G2 in progress (package tracks/core/stage/G2/, not passed: ladder rows 3-4 PARTIAL, no tag yet)
-headline:    the six wave-1 branches (rng, collisions, scalar field, initial data with
-             extrinsic curvature, Bowen-York punctures, Newtonian mode) are merged into
-             core/nrpic at 609a875 (proposed core-v0.3); the merged source reproduces
-             twelve existing set-ups byte for byte and the verify suite to the printed
-             digits, and every new capability passes its own tests.
-last-result: byte regression baseline vs merged identical on 12 set-ups (processor runs
-             core-20261115-145316..150256, -145323-5407341, -145448-3629622; card
-             -145921-3629622, -150426-9377fe8); verify suite G 104/104, O 13/13, F 13/13,
-             L 10/10 on the merged executables (core-20261115-065452/065901/065903/065904-
-             3629622); combined format-2 + Bowen-York curvature adds to float32 rounding
-             (core-20261115-150404-9377fe8); quick reruns of rng, collisions, scalar and
-             Newtonian tests equal the branch numbers (tracks/core/stage/G2/EVIDENCE.md).
-next:        1. ladder rows 3-4 on core-v0.3: prolate collapse at a second resolution and
-                oblate collapse; bisection of the cluster stability threshold (about 2
-                card-hours)
-             2. the wave-2 source items the tracks wait for: initial slice at N* for E,
-                lapse condition against the surface front for A and D, mass-scaled shift
-                damping for F, collision energy correction with C, B's output requests
-             3. finish the id analysis (T2d interior H, T3 crash) and the 13.4 figures,
-                working note and verifier report of the G2 package
-blockers:    tags core-v0.1/v0.2/v0.3 and the merge into main wait for the orchestrator
-             (outbox 20261115T1510Z__to-orch__core-tags-v01-v02-v03.md)
-needs:       orch: tags and merge; interface documents into coord/INTERFACES; anchor the
-             runs/ ignore rule; docs/ ownership; CLAUDE.md "What exists" and executables
-             (outbox 20261115T1510Z__to-orch__*). C, E, A, F: independent checks of the
-             merged capabilities (outbox 20261115T1510Z__to-<track>__*). kb: paper
-             metadata, Salmon et al. 2011.
-offers:      core/nrpic at 609a875: <particles> collisions, <scalar_field> (with
-             stochastic sources), nrpic_cf tables of format 2, Bowen-York punctures with
-             puncture_setup, <particles> pusher = newton, utils/rng.hpp; executables
-             wt/core/.work/build_cpu_609a875/src/athena, build_gpu_609a875/src/athena;
-             interface documents tracks/core/interfaces/*.md; CHANGELOG tracks/core/CHANGELOG.md
-budget:      about 3.4 GPU-hours used in wave 1 (lead 0.10, packages 3.3) of 40 to the next gate (decision 0006)
+gate:        G2 in progress (package tracks/core/stage/G2/: EVIDENCE and OPEN carry
+             core-v0.4, the rest is of wave 1; ladder rows 3-4: verify/LADDER.md of wave 2)
+headline:    release candidate core-v0.4 is written: the seven wave-2 source branches
+             (requests-b, gauge, scalar-2, clump-curvature, id-solver, requests-adf,
+             collisions-2) are merged into core/nrpic, source commit f9323185, none left
+             out; the byte regression against core-v0.3 passes and every branch's example
+             gives the bytes of the branch's own executable (tracks/core/RELEASE-v0.4.md).
+last-result: byte regression on processors, twelve set-ups: 75 items, 62 identical, 8
+             restart files differing in the 36 unset header bytes only, 5 files in
+             last_time lines of the parameter dump only, none other (run
+             core-20261120-221607-4985804); quick tests of the seven branches: 40 files,
+             38 identical, 2 last_time only, 13 numbers in their bands (run
+             core-20261121-025955-bd47414); card check of the candidate: see
+             RELEASE-v0.4.md, section "Card check" (run core-20261121-025945-54dc669).
+next:        1. release clerk: merge core/nrpic into main, tag core-v0.4, build
+                .work/build_{gpu,cpu}_v04, copy the interface documents, announce the
+                corrections that act without an option (CHANGELOG.md)
+             2. core-v0.5: finish and merge the nine wave-3a branches (cosmo-amr,
+                id-solver-2, clump-table, scalar-3, z4c-faces, newton-2, build-openmp,
+                mpi, oblate) with the release drivers of analysis/release/
+             3. combinations of new capabilities (OPEN.md item a) and the source items
+                of OPEN.md d, e, f (hmean_tol, particle restart size, one comment)
+blockers:    none for the release; the tag and the merge into main are the clerk's
+needs:       orch/clerk: tag core-v0.4 and release executables; CLAUDE.md "What exists"
+             row for core-v0.4. Tracks: read the corrections of CHANGELOG.md core-v0.4
+             before comparing with core-v0.3 runs (tracers with m = 0, restart bytes,
+             last_time of final outputs, oblique linear wave).
+offers:      /data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v04/ (athena_cpu,
+             athena_gpu, READY with every new option and one example input each,
+             COMMIT, SHA256SUMS, branches/READY.<branch>); release drivers
+             tracks/core/analysis/release/{regress_v04,quick_v04,card_v04}.py
+budget:      G2: 5.5 card-hours used by core's packages (nrpic-run budget, 2026-11-21);
+             this package asked 0.2 card-hours (one job) of its one card-hour
