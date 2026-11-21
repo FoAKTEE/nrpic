@@ -592,7 +592,7 @@ def main():
 
     par = [r"% generated from registered run outputs; do not edit",
            r"\begin{table}",
-           r"\caption{Parameters of the black hole in a vacuum bubble as constructed, of the vacuum black hole that sets the floor, of the first run of the bubble and its control, of the Newtonian-mode infall, of the run with dust that reaches the black hole, and of the Kerr spike on the analytic metric. In the Newtonian-mode rows the value after the semicolon belongs to the run to $a/a_i=16$. Lengths and times in units of the black-hole mass $M$.}",
+           r"\caption{Parameters of the black hole in a vacuum bubble as constructed, of the vacuum black hole that sets the floor, of the first run of the bubble and its control, of the Newtonian-mode infall, of the run with dust that reaches the black hole, and of the Kerr spike on the analytic metric. Lengths and times in units of the black-hole mass $M$.}",
            r"\label{tab:parameters}",
            r"\begin{ruledtabular}\begin{tabular}{lr}",
            r"\multicolumn{2}{l}{\emph{Black hole in a vacuum bubble}} \\",
@@ -643,12 +643,14 @@ def main():
     par += [r"\multicolumn{2}{l}{\emph{Newtonian-mode infall}} \\",
             rf"initial Hubble rate $\epsilon=H_iM$ & {st['nm128c']['eps']:g} \\",
             rf"seed clump: particles; radius & {st['nm128c']['n_clump']}; {st['nm128c']['r_clump']:g} \\",
-            rf"dust particles & {st['nm128c']['n_dust']}, {st['nm128Lc']['n_dust']}; {st['q16']['n_dust']} \\",
-            rf"cells & {N1['dx']:g}, {N2['dx']:g}, {N3['dx']:g}; {fn['q16']['dx']:g} \\",
-            rf"box half-width & {st['nm128c']['L']:g}, {st['nm64c']['L']:g}, {st['nm128Lc']['L']:g}; {st['q16']['L']:g} \\",
-            rf"last $a/a_i$ & {st['nm128c']['a_end']:g}, {st['nm64c']['a_end']:g}, {st['nm128Lc']['a_end']:g}; {st['q16']['a_end']:g} \\"]
+            rf"dust particles & {st['nm128c']['n_dust']}, {st['nm128Lc']['n_dust']} \\",
+            rf"cells & {N1['dx']:g}, {N2['dx']:g}, {N3['dx']:g} \\",
+            rf"box half-width & {st['nm128c']['L']:g}, {st['nm64c']['L']:g}, {st['nm128Lc']['L']:g} \\",
+            rf"last $a/a_i$ & {st['nm128c']['a_end']:g}, {st['nm64c']['a_end']:g}, {st['nm128Lc']['a_end']:g} \\",
+            rf"run to 16: cell; box half-width & {fn['q16']['dx']:g}; {st['q16']['L']:g} \\",
+            rf"run to 16: dust particles & {st['q16']['n_dust']} \\"]
     ed = C.load_json("esf_data", "esf.json")
-    par += [r"\multicolumn{2}{l}{\emph{Dust reaching the black hole (mesh as the first run)}} \\",
+    par += [r"\multicolumn{2}{l}{\emph{Dust reaching the black hole}} \\",
             rf"dust from; to & {ed['Rin']:g}; {ed['Rout']:g} \\",
             rf"Hubble rate $HM$; total mass & {ed['H']:.5f}; {ed['Mtot']:.4f} \\",
             rf"dust particles; tracers & {ed['n_dust']}; {ed['n_tracers']} \\",
