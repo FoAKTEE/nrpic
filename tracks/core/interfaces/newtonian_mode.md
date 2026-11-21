@@ -249,7 +249,7 @@ core-20261115-115136-9d84282 (N = 32), -115145- (64), -115155- (128); figure
 
 | | N = 32 | N = 64 | N = 128 | order |
 |---|---|---|---|---|
-| rms relative force error, 846 tracers with r >= 0.5 | 1.61e-2 | 4.94e-3 | 1.33e-3 | 1.70, 1.89 |
+| rms relative force error, 706 tracers with r >= 0.5 (count corrected after the fresh verifier, run core-20261121-212516-0f0a65b; the rms values are confirmed) | 1.61e-2 | 4.94e-3 | 1.33e-3 | 1.70, 1.89 |
 | the same by distance: 8 to 16 cells | 5.9e-3 | 6.5e-3 | 6.2e-3 | follows (dx/r)^2 |
 | beyond 16 cells | | 1.7e-3 | 1.3e-3 | |
 | inside 2 cells | 0.57 | 0.37 | 0.23 | softened, anisotropic |
