@@ -1,4 +1,4 @@
-RELEASE core-v0.6 984bde6861ac7c2fc04ab3c0bcba58d05a4a3bd9 REGRESSION PASS
+RELEASE core-v0.6 984bde68c6201c8f100ced3d6a7effbea9cafd80 REGRESSION PASS
 
 Card check of the candidate's card executable `athena_gpu`: PENDING when this file was
 written (run core-20261121-132052-f330004, Slurm job 4800, queued behind seven jobs;

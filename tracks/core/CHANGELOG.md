@@ -10,7 +10,7 @@ core-v0.3 = 609a875 (below).
 
 Record: `tracks/core/RELEASE-v0.6.md` (first line: source commit and regression
 verdict; the regression table; the quick tests; the card checks). Source commit
-**984bde68** (984bde6861ac7c2fc04ab3c0bcba58d05a4a3bd9) of `core/nrpic`: the last commit
+**984bde68** (984bde68c6201c8f100ced3d6a7effbea9cafd80) of `core/nrpic`: the last commit
 that changes `athenak/`, `python/`, `problems/` or `scripts/` (the merge of
 core/id-solver-2); later commits add records (`tracks/core/`) only. Executables built
 from it, with READY (every new option with one example input), COMMIT and SHA256SUMS:
