@@ -270,3 +270,15 @@ output byte-identical to the run A-20261120-223316-92c27f5 except `schem_timelin
 disagreements; all inputs "sha256 ok". After the copy the note compiles to 12 pages with 0
 undefined references and 0 overfull boxes. Refuted by any other changed output or a new
 disagreement.
+
+## 2026-11-21T03:20Z, entry 7: outcome of P10 (run A-20261121-030037-3f015fa)
+
+Run A-20261121-030037-3f015fa (`run_all.py`, commit 3f015fa, two cores, exit 0, finished by
+nrpic-run): **P10 holds.** 8 of 8 scripts clean; against the previous run every PNG and
+every table is byte-identical except `schem_timeline.png` (the intended change; the
+committed PNG looked at in the dry render and again on page 8); PDFs differ in 4-5 bytes
+(dates), SVGs in dates and ids; ledger 53 rows, 71 claims, the same 2 disagreements; 23
+inputs "sha256 ok". Outputs copied into `note/`; App. B names this run. Compile: 12 pages,
+0 undefined references or citations, 0 overfull boxes; checker hits only in the appendix
+and the scripts. Pages 1-8 read again after the reflow (9-12 hold Fig. 7, the references and
+the unchanged ledger tables, read in entry 6).

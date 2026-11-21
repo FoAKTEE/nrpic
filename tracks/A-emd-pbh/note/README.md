@@ -1,4 +1,4 @@
-# note: working note v0 of Track A (gate G0)
+# note: working note of Track A (v0 at gate G0, v1 at gate G1)
 
 Helper package of A-emd-pbh, wave 2 (2026-11-15). The REVTeX working note of S1 (primordial
 black holes from collisionless collapse in an early matter era), its figures and schematics,
@@ -36,6 +36,21 @@ From the worktree root, with the worktree environment (`harness/bin/nrpic-env cr
 
 Each figure script also runs alone (`python scripts/fig_landscape.py`, output to
 `figures/`), which is what `harness/bin/nrpic-stage verify` does.
+
+## State (2026-11-20, working note v1, gate G1)
+
+Note v1 (12 pages): the corrections of the G1 verifier (`../stage/G1/VERIFIER.md`) applied,
+the wave-2 state (criteria 41 of 41, Newtonian limit, first evolutions of the scouting data,
+the runs made since named in Sec. V without numbers), the data-flow schematic as Fig. 7 in
+App. B, the ledger in three tables. Made by the G1 close-out helper (`../g1close/`, journal
+entries 4-6). Figures, schematics and tables from run A-20261121-030037-3f015fa (the
+previous pass A-20261120-223316-92c27f5 differs only in the timeline); inputs without a
+`sha256sums.txt` of their own are checked against the integrity listing of run
+A-20261120-222620-0304d9d (`scripts/common.py`, `INTEGRITY_RUN`). Checker
+(`check_manuscript.py --compile` with the guide's `--forbid` list): 0 undefined references,
+0 overfull boxes, hits only in the ledger appendix and in the scripts; `schem_dataflow.py`
+names the track's files, which the guide's exception 1 does not yet list (request to the
+lead in `../g1close/README.md`). Every page read.
 
 ## State (2026-11-15)
 
