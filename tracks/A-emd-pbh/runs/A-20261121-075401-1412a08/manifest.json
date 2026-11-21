@@ -1,0 +1,131 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261121-075401-1412a08",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "conv_ball data, ball-radius leg: data set 3 inside a ball 1.25 times larger (same H = 0.1715/M, same core delta_c = 1.5 inside R1 = 2.653 M and compensation to R2 = 3.878 M, Einstein-de Sitter envelope to R_b, taper half width 0.168 M; mass 1.25^3 in the units of data set 3) with nested lattices nestA (M/16) and nestB (M/32)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python",
+    "tracks/A-emd-pbh/conv_ball/scripts/prep_bh.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "--HRb",
+    "0.875",
+    "--M",
+    "1.953125",
+    "--R1",
+    "0.52",
+    "--R2",
+    "0.76",
+    "--edge-w",
+    "0.16836734693877542",
+    "--nlat",
+    "--nested",
+    "nestA:16:16:1",
+    "nestB:32:16:1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "1412a08c0860d1396a7a4f1cb41420183008dba8",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/conv_ball"
+    ],
+    "outside_package": {
+      "count": 35,
+      "first": [
+        " M tracks/A-emd-pbh/periodic_threshold/JOURNAL.md",
+        "?? tracks/A-emd-pbh/periodic_threshold/inputs/peak_leak.athinput",
+        "?? tracks/A-emd-pbh/periodic_threshold/scripts/ltb_reference.py",
+        "?? tracks/A-emd-pbh/periodic_threshold/scripts/ltbref.py",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n128_events.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n128_gauge.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n128_horizon.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n128_misner_sharp.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n128_shells.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n192_events.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n192_gauge.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n192_horizon.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n192_misner_sharp.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n192_shells.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n256_events.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n256_gauge.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n256_horizon.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n256_misner_sharp.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n256_shells.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/sr1l_n128_events.png"
+      ]
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/A-emd-pbh/conv_ball/scripts/prep_bh.py",
+      "role": "argv",
+      "sha256": "9e9b26d5f130dbd7341b46caee5982fda0d533c61a9e7374d641672ebac3c547",
+      "bytes": 17428,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261121-075401-1412a08",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T07:54:01Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.3979,
+    "gpu_hours_reserved": 1.0833,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 5,
+    "runs": 172,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
