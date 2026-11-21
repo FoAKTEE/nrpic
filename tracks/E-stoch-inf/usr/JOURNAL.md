@@ -489,3 +489,27 @@ card-hours): odd part per mode at N_f for k <= 32 dk at most 3e-4, every mode at
 even/odd rms in [2e-5, 1e-3]; the odd part of H first exceeds the even part between
 cN = 3.0 and 4.2 (SR: from ln(N/8) = 3.47 e-folds on, when the first shell with fewer than
 eight cells per wavelength crosses).
+
+## Entry 10, 2026-11-20 22:35 UTC: addendum to the pre-registration, before group 1 has started (job 4742 pending)
+
+The analysis `scripts/analyse_cards.py` (with `scripts/card_lib.py`) was written and run on
+two code tests, which exercise the code paths only and give no number used here:
+(i) the 32^3 pair M64p/M64m of run E-20261119-144116-8aa7c22 renamed U64p/U64m: it
+reproduces the registered analysis E-20261119-152843-c201aad (odd-part U-A2 5.88e-3,
+even/odd 2.17e-5, U-A3 1.00067-1.00079, lockstep 5.6e-4, Pi 4.12e-4); (ii) four 12-cycle
+processor runs of `usr_card.athinput` (core_scalar-3 athena_cpu, s = +-1, +-1/2, unregistered,
+scratch/E-stoch-inf/tmp/usr/codetest) for the constraint split, the halving and the record
+columns of con_signed.
+
+Amendment of the bar of U-A4 (entry 9.1), from registered data, not from the code tests:
+the floor analysis of the SR ladder (run E-20261119-142713-32c883a,
+`../ladder/results/floor/floor.json`) has the even part of H at 7e-13 to 9.8e-13 of <[H]>
+during the entry at every N (k_max/dk = 8), and the odd part of H at its floor at 128^3,
+5e-14 to 1.1e-13 of <[H]>, growing as N^2.5. The bar "1e-12 of <[C]>" of entry 9.1 would
+therefore leave the even part of H unjudged for s = 1/2 (and nearly so for s = 1). New bar
+for H: 3e-13 of <[H]> (three times the floor measured at 128^3, as A5' of SCOPE 4b uses
+three times); for M unchanged (1e-12 of <[M]>, far below the parts, 1e-7 to 1e-5 in SR). The
+thresholds 4.00 +- 0.05 and 2.00 +- 0.05 are unchanged. Added prediction: where the
+halved part of H lies within a factor 10 of the floor, a floor in quadrature lowers the
+even halving factor of H to between 3.85 and 4.0, and the odd halving factor of H to
+between 1.9 and 2.0.
