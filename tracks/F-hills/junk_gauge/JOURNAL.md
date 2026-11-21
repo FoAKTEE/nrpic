@@ -350,3 +350,19 @@ segment 15 (Slurm 4773), waveforms to t = 253.25 M at all four spheres (last row
 JOURNAL.md` lines 173-183]: P1's binary MERGED at t = 48.8 M (common horizon from t = 48.81 M),
 19.8 M from the grid origin; |x_1 - x_2| below 2 M at t = 39.2, 1 M at 44.1. E10's outcome is now
 appended to `nr_first/JOURNAL.md` (items 1, 4, 5 met; 2 and 3 failed in one clause each).
+
+## 2026-11-21 J4g. Where and when P1's sources radiate, from the trackers (prediction)
+
+Why: J4's window [-35, 50] was cut against the Newtonian passage (J4a); P1's binary instead
+spirals in and merges at t = 48.8 M, 19.8 M from the origin (J0b). Before any P1 waveform is
+integrated I locate, from the trackers alone, the emission of that inspiral in retarded time.
+`scripts/p1_geometry.py` (docstring: separation r12, centre of mass x_b of the binary, a
+coordinate-track quadrupole luminosity L_trk as a proxy of the time profile [JUDGEMENT: not gauge
+invariant], the circular formula at the tracked separation, and u_near(t_e) = t_e - |x_b(t_e)|,
+the earliest retarded time at which anything emitted at t_e reaches any point of a sphere about
+the origin).
+Predictions [JUDGEMENT; r12 values below 2 M from p1 JOURNAL lines 174-175]: r12 = 4.95 at t = 0;
+L_trk over t = 2-20 within a factor 3 of the circular formula there (1.3e-7, J4a), and above three
+times that median from t = 25-35 M on, when r12 is 3.5-4.5 M and |x_b| 21-24 M, so u_near there
+is 2-14 M; anything emitted after t = 35 M reaches the spheres at u >= 12 M or later. Refuted if
+L_trk rises threefold before t = 20 or after t = 40.
