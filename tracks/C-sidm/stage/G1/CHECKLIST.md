@@ -1,6 +1,6 @@
 # Checklist: C-sidm G1
 
-Collected by `harness/bin/nrpic-stage collect C-sidm G1` on 2026-11-19T15:11:49Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect C-sidm G1` on 2026-11-21T07:59:40Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
@@ -10,9 +10,9 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 - [x] **C1** Baseline results obtainable without the NRPIC coupling
   - status: PASS
   - evidence: F21 sequences and criteria (C-pre-3, run C-sidm-20261115-120722-38ab057); exact fluid onsets with five adiabatic indices, incl. the Juttner Gamma_1 anchor Z(0) = 0.5331 (runs C-20261115-165315-7b473b8, recheck C-20261115-193332-48771b4); 26 equilibrium particle models (wave 1: 13 at 1e4, run C-sidm-20261115-120610-b4592be; wave 2: 5 King + 8 F21 b = 0.1 at 1e4 and 1e5, runs C-20261115-170126-b4f74af, C-20261115-170742-84990ed) with offline checks (M1, M2 pass; M3 240/243, the three failures are the check's own h^2 error, run C-20261115-171723-17d46f0); K of the track Knudsen definition for all of them (run C-20261115-193751-d3872ff); wave 2b: the Juttner fluid onset along the King family (b = 1), y0 = 0.32143 against the collisionless E_b maximum 0.33403, tmb checked against the King JSON to 3e-10 (lead's run C-20261119-151502-cb831a8, L15)
-- [ ] **C2** The analysis pipeline validated on them
-  - status: OPEN
-  - evidence: partly met. Box analysis: validated on synthetic snapshots (wave 1) and used on the box tests, recomputed independently by the lead (L8, run C-20261115-193332-48771b4). Cluster pipeline growth.py: collapse and crossing times recover 18 of 18 published numbers of the first paper (run C-20261115-170346-298a1ba, rerun identical in C-20261115-193332-48771b4); the growth-rate fit FAILED its synthetic-signal test G2 (bias +2-4 percent, coverage 0.58-0.90; cause found D1, run C-20261115-170713-cefe1c2) and G4; the fix is tested on synthetic signals only. Open: the fixed fit on runs (OPEN.md item 3)
+- [x] **C2** The analysis pipeline validated on them
+  - status: PASS
+  - evidence: MET with a restriction (lead, batch 2b, 2026-11-21; ../REVIEW-wave3.md section 4). Box analysis: validated on synthetic snapshots (wave 1), recomputed by the lead (L8, run C-20261115-193332-48771b4); heat analysis recomputed by the verifier from the raw runs (verify_g1 V1b, V1c: C-20261120-223130-6742500, C-20261120-223133-2f98a0e) and by the lead from the per-seed values (L21, C-20261121-075535-b35b8fb). Cluster pipeline: collapse and crossing times recover 18 of 18 published numbers of the first paper, also after the fix (G1', run C-20261120-222716-9d86ebc); fixed growth estimator growth_fit_v2 passes U1-U5 (C-20261120-222454-8721534) and on synthetic signals bias <= 0.07 percent, rms 0.40-0.66 percent, 3-SE coverage 0.96-1.00 (C-20261120-222716-9d86ebc; 1-SE coverage fails at sigma 0.1, cause found D3, C-20261120-223404-40668db); on the first paper's y_c = 0.5 runs ln|d| is concave, so a rate is quoted only with its interval and the seed scatter over a common interval (D2: 0.0557-0.0617 per M over 17.5-51.75 M); lead's figure rv_models.png (C-20261121-075535-b35b8fb). The quantities the G2 scan relies on (t_c, crossing times, fates, D25-D150 against a control) are validated: t_c recomputed by the lead's own reader for all 15 collisional runs (L18, C-20261121-075336-49f92da), seed scatter measured (decisive, C-20261121-075202-1a37fb9). Restriction: no constant growth rate is claimed on runs.
 - [x] **C3** Interface proposals submitted
   - status: PASS
   - evidence: collide/SPEC.md and RNG_REQUIREMENTS.md (wave 1) adopted by core in coord/INTERFACES/collisions.md and rng.md; wave-2 requests answered by core on core/collisions-2 (message 20261115T191641Z: stream-2 table in rng.md 6.1, static_conformal metric, perturb_gamma option, coll_energy = particle) and checked by the track in wave 2b (box_tests R1-R6, runs C-20261119-141502-95f0200 ... C-20261119-145925-dbcfb9c; lead's recheck L13); SPEC.md 4.5 carries core's sub-step rule; Knudsen definition in SPEC.md section 1
@@ -28,9 +28,9 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 ## Track-specific criteria of C-sidm for G1 (9.6 Track C: relativistic collapse of an SIDM core (S3))
 
-- [ ] **C6** All tests of C-pre-1 pass
-  - status: OPEN
-  - evidence: NOT MET (T6-T8 missing). Run and passed on core-v0.3 (processors; card for T10b): T0 (wave 1), T0b (6/6), T1 (16 + 4 + 2 runs, incl. 1e4 steps), T2 (16/16), T3, T4, T5 (4/4 each), T9 (8 seeds), T10 (MeshBlocks 1/8/64, restarts; no MPI build), T10b (T2 statistics), T11 (a, b, c) - runs C-20261115-170155-13ff01f, -165500-c67e036, -170741-248af65, -170539-28432c3, -170814-8a54b43, -165902-f9b1c8f, -170447-cb3b230, -180525-94ddd22, -174651-0ad8612; recomputed by the lead (L8). Wave 2b, on core/collisions-2 with coll_energy = particle: T0b 6/6 (C-20261119-141711-7db7a6a), T1 and T2 16/16 with counts identical to the release in every step (C-20261119-141806-af19c1c), T10 (C-20261119-143041-f94e350), option absent byte-identical to the release (C-20261119-141502-95f0200), and T12 (G2 item) in the static homogeneous metric (C-20261119-143049-0cf699a, analysis C-20261119-145925-dbcfb9c); recomputed by the lead (L13, ../REVIEW-wave2.md section 6). Not run: T6, T7, T8 (heat conduction at the long and short mean-free-path ends, named in C-pre-1): in progress in package heat/ (wave-3a helper; processor runs and two card jobs C-20261119-150335-73fd40f, C-20261119-150347-e100007 pending on 2026-11-19); the MPI variant of T10 (no MPI build); T10b for T4; T3-T5, T9, T11 not repeated with coll_energy = particle
+- [x] **C6** All tests of C-pre-1 pass
+  - status: PASS
+  - evidence: MET (lead, batch 2b; ../REVIEW-wave3.md section 1). The tests the brief names in C-pre-1 all pass: relaxation (T3), rate (T2), entropy (T5), heat conduction at both ends (T6-T8). Waves 1-2b on core-v0.3 and core/collisions-2: T0, T0b (6/6), T1, T2 (16/16), T3, T4, T5 (4/4 each), T9 (8 seeds), T10 (MeshBlocks 1/8/64, restarts), T10b (T2 statistics), T11 (a, b, c), T12 (G2 item) - runs C-20261115-170155-13ff01f, -165500-c67e036, -170741-248af65, -170539-28432c3, -170814-8a54b43, -165902-f9b1c8f, -170447-cb3b230, -180525-94ddd22, -174651-0ad8612, C-20261119-141711-7db7a6a, -141806-af19c1c, -143041-f94e350, -141502-95f0200, -143049-0cf699a, -145925-dbcfb9c; lead's L8, L13. Wave 3 (heat package, heat/README.md 'Verdict for G1 C6'; wording collide/TESTS.md section 2b): T6(a) PASS (C-20261119-145733-558136e; C-20261119-152744-2bba6de), T6(b) PASS f = 1.029, 1.063 (C-20261119-144535-2c7b6a4; C-20261119-160003-287b389; verifier 1.027, 1.062), T6(c) reported; T7 at theta 0.003 PASS 1.019 +- 0.004 (processors, C-20261119-161930-acd257b), 1.0250 +- 0.0025 (N-weighted with card seeds, C-20261120-223203-b38a7d7; lead's recompute identical, C-20261121-075535-b35b8fb), interval [0.99, 1.06]; T7 at theta 0.1, 1 reported 1.096 +- 0.005, 0.991 +- 0.004; collisionless check PASS (C-20261119-152845-017d186); T8 PASS on one card seed (C-20261120-222624-cae43d6, C-20261120-223321-3d088d4), T8 part 2 PASS (C-20261119-151044-a584069). Gaps of the track's own extra tests, not of the brief's list: T10b for the T4 statistics (one card job); the MPI variant of T10 cannot run (collisions stop on more than one rank in core-v0.5, coord/INTERFACES/mpi.md); T3-T5, T9, T11 not repeated with coll_energy = particle. Reservations: T8 rests on one card seed; the zero-cell-size conductivity may lie 1-3 percent below the relativistic Chapman-Enskog value [TO VERIFY at G2].
 - [x] **C7** The baseline is reproduced
   - status: PASS
   - evidence: F21 = arXiv:2108.11967 Tables 1 and 2 reproduced (run C-sidm-20261115-120722-38ab057; residuals as corrected in STATUS.md item 2); eps maximum Z(0) = 0.5404, exact onset 0.6348 confirmed by the verifier's independent solver (V2, V4, run C-20261115-170630-1037f6a); King y_max = 0.334032 against the printed 0.334 (V3)
@@ -43,12 +43,12 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 ## Minimum figures at G1 (brief 13.4)
 
-- [ ] **C9** Schematic: Updated architecture
-  - status: OPEN
-  - evidence: the architecture schematic of wave 2 (note/figures/schem_architecture.png) predates the box tests, the F21 particle models and the Juttner onset; to be redrawn with their new state
-- [ ] **C10** Schematic: Data-flow diagram
-  - status: OPEN
-  - evidence: no data-flow diagram drawn yet (particle files and tables -> AthenaK -> histories, snapshots, dumps -> analysis)
+- [x] **C9** Schematic: Updated architecture
+  - status: PASS
+  - evidence: note/figures/schem_architecture.png redrawn by the note package (registered run C-20261120-223007-fe3f39c, paperfig.py; committed 077b849d, byte-identical to the run output), shows box tests, F21 particle models, Juttner onsets, coll_energy = particle and T12 as tested; looked at by the lead (batch 2b). Two boxes to update in the note's next run: 'growth-rate fit, checked on runs' (C2 decided) and 'heat conduction T6-T8 on processors' (T7/T8 also ran on the card)
+- [x] **C10** Schematic: Data-flow diagram
+  - status: PASS
+  - evidence: note/figures/schem_dataflow.png (new; registered run C-20261120-223007-fe3f39c, paperfig.py; committed 077b849d): initial data -> AthenaK -> run outputs -> registered analyses -> note, with the checksum check of every input; looked at by the lead (batch 2b)
 - [x] **C11** Data figure: Baseline results
   - status: PASS
   - evidence: note/figures/fig_sequences.png (F21 and King sequences, fluid onsets), models/figs/fig_fluid_onset.png, fig_models.png; looked at
@@ -61,21 +61,21 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 - [x] **C13** Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed)
   - status: PASS
   - evidence: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md, CHECKLIST.md, REVIEW.md (pointer to ../REVIEW-wave2.md); STATUS.md (criteria by criterion); scoping text tracks/C-sidm/scope/SCOPE.md
-- [ ] **C14** Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at
-  - status: OPEN
-  - evidence: the G1 data figures are the helper packages' figures (python/nrpic/figstyle.py, several figures per script: box_tests/scripts/figures.py, models/figures.py); one-script-per-figure versions in note/scripts/ for the G1 figures are not made yet
+- [x] **C14** Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at
+  - status: PASS
+  - evidence: one script per figure in note/scripts/ (fig_box_summary.py, fig_heat.py, fig_onsets.py, fig_cluster.py beside the four G0 scripts), python/nrpic/figstyle.py, all run in registered run C-20261120-223007-fe3f39c which checks the sha256 of every input against its run (log.txt: every input 'sha256 ok'); the eight data PNGs committed (077b849d) and looked at by the lead (batch 2b). The wave-3 results (decisive, drift, card T7/T8) are not yet in note figures; they are G2 material
 - [x] **C15** Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline
   - status: PASS
   - evidence: note/figures/schem_architecture.png and schem_timeline.png drawn with paperfig.py (style copy verified); content update is C9
 - [ ] **C16** Working note written with /paper-writing; its manuscript checker passed with --compile
   - status: OPEN
-  - evidence: working note v0 (G0) passed the checker with --compile; it does not yet contain the G1 results (box tests, models, Juttner anchor, card runs)
+  - evidence: NOT MET. The note package was cut by the usage limit on 2026-11-20 22:35 UTC while writing the G1 sections: main.tex, references.bib, ledger tables and the timeline schematic are edited but uncommitted; no compile and no checker run since G0. Remaining (HANDOFF.md): N3 outcome, G1 sections, registered run_all, compile, checker with --compile, pages read, commit
 - [ ] **C17** Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests
   - status: OPEN
-  - evidence: no fresh-context verifier of the G1 material yet (decision 0016 item 4 puts a verifier of the later material in G1): box tests of waves 2 and 2b, models, Juttner anchor, King onset. The leads' rechecks (../REVIEW-wave2.md, L8-L15) are not that check. Owner: the next wave (a verifier helper given the artefacts)
+  - evidence: NOT MET YET. The fresh-context verifier package verify_g1 (wave 3, cut 2026-11-20, resumed in batch 2b in this worktree) has V1a-V1c (heat: CE brackets, T7, T6(b)), V2 (T1, T2) and V3 (T12) done and confirming (runs C-20261120-222423-519f12b, -222754-14bd23d, -223130-6742500, -223133-2f98a0e, C-20261121-074926-5d9ae56, -075256-2084cb5); stage/G1/VERIFIER.md not written yet. The lead answers each WRONG or NOT CONFIRMED item after it
 - [x] **C18** Null results and failed runs are on record (manifests and JOURNAL)
   - status: PASS
-  - evidence: failed runs on record: C-20261115-165742-2c645f8, -170221-b1a491c, -171137-9e3c807, -170231-4e68455 (wave 2); C-20261119-141614-e42b5ec (all six AthenaK runs exit 1, relative deck path; manifest says completed because the driver exited 0) and C-20261119-143049-0cf699a (T12 driver crashed on the figure after writing its JSON) (wave 2b); superseded analyses C-20261119-141836-2a00bed, -145801-111319f, -145850-49fd35b; failed predictions in box_tests/JOURNAL.md (T4 seed 2; wave 2b R3(iv) positions, R3(v') cost 1.68 > 1.5, R6(a) column 30), models/JOURNAL.md (G2, G4, G5, A1), threshold_scan/JOURNAL.md (P3.4, P3.7, P3.8, P3.10, P3.11, Test 4), JOURNAL.md
+  - evidence: failed runs on record: C-20261115-165742-2c645f8, -170221-b1a491c, -171137-9e3c807, -170231-4e68455 (wave 2); C-20261119-141614-e42b5ec, C-20261119-143049-0cf699a (wave 2b); wave 3: C-20261120-222339-663f963 (models U5), C-20261120-222852-7d55b7a, -222857-8ea9c42 (heat pooling, rerun), C-20261120-223424-f6ba00a (heat, registered at the pause, never started); superseded analyses C-20261119-141836-2a00bed, -145801-111319f, -145850-49fd35b, C-20261121-030252-b676218, -030314-f3cd423; failed predictions in box_tests/JOURNAL.md, models/JOURNAL.md (G2, G4, G5, A1; wave 3: U5 first try, G2' 1-SE coverage, G3', G6', G5' 30 percent clause), threshold_scan/JOURNAL.md, heat/JOURNAL.md (P-T7hot, P-T7pool (b), S0 cost, P-T6a, P-T6b, P-T6c), drift/JOURNAL.md (D1.5, M8.2), decisive/JOURNAL.md (entries 7-15: t_c scatter, sign of the contraction, D3 proportional clause, job 5), JOURNAL.md (L14(b), L15(b), L16, L17, L19)
 - [x] **C19** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: PASS
-  - evidence: the wave-2 lead was cut off before rewriting them; rewritten (STATUS, HANDOFF, RISKS) and appended (JOURNAL, predictions and outcomes L12-L15) by the wave-2b lead session on 2026-11-19
+  - evidence: rewritten (STATUS, HANDOFF, RISKS) and appended (JOURNAL: predictions L17-L22 and outcomes) by the lead session of batch 2b on 2026-11-21

@@ -356,3 +356,30 @@ figures `rv_clusters.png`, `fig_cc2_M8.png`, `rv_heat.png`, `rv_models.png` look
 - L22 HOLDS. v2 medians on synthetic signals within 0.04 percent of the truth; 'first' biased
   high (+7.5, +6.1, +1.6 percent in the median); ln|d_s| of the three y_c = 0.5 compensated runs
   concave from the start (local slope 0.07-0.08 falling below 0.01 per M by 100 M).
+
+## 2026-11-21T08:20Z  session C-sidm lead (wave 3, batch 2b)  commits f96faec0..(this entry's commit)  runs C-20261121-075202-1a37fb9, C-20261121-075336-49f92da, C-20261121-075359-26e3b31, C-20261121-075535-b35b8fb
+
+- did: merged main (core-v0.5); closed the two finished card jobs (decisive job 5, drift run
+  (i)) with `nrpic-run finish` and analysed them with the packages' scripts; rechecked heat,
+  decisive, drift and models from their registered outputs with own code
+  (`stage/review_wave3/`); drew the models validation figures the paused package lacked;
+  committed the note's figures and schematics that are byte-identical to its registered run
+  (the rest of the note's uncommitted work left to it); review `stage/REVIEW-wave3.md`;
+  outcome entries in `decisive/JOURNAL.md` (15) and `drift/JOURNAL.md` (8), their READMEs;
+  `collide/TESTS.md` section 2b (wording of T6-T8, no criterion loosened); G1 checklist
+  re-collected and judged (C2, C6, C9, C10, C14 now PASS; C16, C17 open), EVIDENCE, OPEN,
+  REVIEW updated, verify and report; five outbox messages (orch x2, core x2, kb); eight inbox
+  messages acknowledged; STATUS, HANDOFF, RISKS rewritten.
+- found: heat confirmed to the last bit (C6 met). The threshold model's collapse time scatters
+  by about 3 M between seeds (cell seed 3 at 178.86 M). The outward excursion of the M/4
+  controls is a mesh effect (0.10-0.25 of it left at M/8), and the M/8 control contracts
+  slowly after 200 M instead. The growth rate on the first paper's runs is window-dependent
+  (concave ln d), so rates are quoted with their interval.
+- changed my mind about: the reading of wave 2b that the controls' excursion is a physical
+  pulsation of the model (drift D1): at M/8 it is mostly gone; and about one seed being
+  enough for collapse times (true for CC2, not near the threshold).
+- failed predictions: L17 (CC1 cell seeds within [182.5, 186.5] M), L19 (R in [0.4, 1.0]);
+  the helpers' decisive entry 10 (job 5) and drift M8.2 failed as well.
+- open: note G1 sections (C16), VERIFIER.md (C17, verify_g1 working), models step 5, drift
+  runs (iii) and (v), decisive D2, T10b for T4, the CE deficit series at G2. Card-hours used
+  this session: 0 (round 1 of wave 3 in total 4.13).
