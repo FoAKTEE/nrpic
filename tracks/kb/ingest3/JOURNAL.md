@@ -274,3 +274,28 @@ Fix (tex_structure.scan_math): skip definitions (\newcommand family, \def family
   not re-ingested today; the papers that change are those with definitions inside the body or with
   citation macros (\refto-like) [JUDGEMENT]. Refuted by any paper that loses entries or sections, or
   by changes in more than 5 % of the papers.
+
+## Outcome P9 (run kb-20261121-220637-9f109de; dry.log, compare.json, compare.tsv read)
+
+Held. Unit test passes (commit d67628eb). Dry run of all papers (747 in the store, 745 in the
+database) compared with the rows: 33 of the 725 papers not re-ingested today would change (4.6 %,
+under the 5 % of the prediction, narrowly). None loses entries, sections or cited keys except the 3
+PDF-only papers, which `kb ingest arxiv` does not handle (they are ingested by `kb ingest pdf`): an
+artefact of the comparison, not a change. Gains: 14 papers get more cited keys (citation macros
+such as `\refto`; e.g. 1006.3717 23 -> 41 keys = its 41 entries), 3 get more entries through
+`\bibitem` aliases (1104.1167 18 -> 27, 1207.1286 8 -> 17, 1911.09469 9 -> 35). Losses: 13 papers
+lose 1-3 equations each, 27 rows in all; I read the 27 tex_raw values (database against a parse
+with the new code): every one is macro-definition text (`\beq{\begin{equation}} \def\eeq{...}`,
+`\newc{\ee}...` through an alias, `\beq {#1}\eeq` inside a definition), not an equation. In the
+database these spurious rows took the numbers 1, 2 (3), so every later equation number of those 13
+papers is shifted by 1-3 [VERIFIED for the rows listed; the number shift follows from the numbering
+code, not checked paper by paper]. astro-ph/0003278 (re-ingested today) would go review -> ok:
+13 sections, 33 equations, 33 cited keys all with entries.
+
+## Prediction P10 (re-ingest of those 30 papers and astro-ph/0003278 with --remap-claims)
+
+ids/redo31.txt. Counts equal the dry run's per paper; ok 719 -> 720 (astro-ph/0003278); claims
+that touch these papers keep status and label, their rows follow the lines (remap), and `kb claim
+check` on the seeds among them reports "same"; 0 dangling chunk references; vectors 0 missing,
+stale, orphaned after `kb embed`. Refuted by any difference from the dry run, a status change other
+than astro-ph/0003278, or a dangling reference.
