@@ -500,7 +500,7 @@ run on D3 output) tested on a mock, CC2 histories linked under D3 names in
 against collisions per particle, alpha_min against t); looked at; the D3 numbers it printed are
 the CC2 numbers, as they must be. Queue rule kept: one job of this package at a time.
 
-## 2026-11-21 05:33 UTC Entry 11: outcome of D3 job 3 (control and Kn = 1); job 4 submitted
+## 2026-11-21 05:28 UTC Entry 11: outcome of D3 job 3 (control and Kn = 1); job 4 submitted
 
 D3 job 3 (run C-20261121-035737-295e5c3, Slurm 4764) ran 04:49:44-05:25:35 UTC, exit 0 for the
 smoke run, d3_kninf (1054 s) and d3_kn1_part_s1 (1079 s); closed with `nrpic-run finish`. D3 job
