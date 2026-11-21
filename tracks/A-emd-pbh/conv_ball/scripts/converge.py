@@ -19,6 +19,8 @@ Quantities per member (definitions in DESIGN.md section 4; all from compare.py):
          detection (finder.m_irr_rel_err_vs_m_exact_slice.first)
   dmmed  the same, median over all detections
   tfirst code time of the first detection
+  lag    tfirst minus the first code time at which a tracked particle has reached the exact
+         tau_AH of its own shell (compare.py first_trapped_slice)
 
     converge.py --member NAME:LEG:X:<numbers.json> [...] --out DIR
 LEG is mesh (one particle per cell), meshN (fixed particle number), N / NB (particles per
@@ -67,6 +69,7 @@ def quantities(res, ex_core_tau_ta):
     q["eta"] = get(res, "eps_groups", "core", key, "maxabs") if key else float("nan")
     q["t_end"] = get(res, "history", "t_end")
     q["first_trapped_slice"] = get(res, "first_trapped_slice", "t_code")
+    q["lag"] = q["tfirst"] - q["first_trapped_slice"]     # finder's first detection after the first trapped slice
     return q
 
 
@@ -104,7 +107,7 @@ def main():
         q = quantities(res, float(ex["core"]["tau_ta"]))
         q["dtaC"], q["dRmaxC"] = tac.get(name, (float("nan"), float("nan")))
         rows.append(dict(name=name, leg=leg, x=float(x), numbers=path, **q))
-    keys = ("ddet", "dtrap", "dta", "dtaC", "dRmax", "dRmaxC", "eta", "dm1", "dmmed")
+    keys = ("ddet", "lag", "dtrap", "dta", "dtaC", "dRmax", "dRmaxC", "eta", "dm1", "dmmed")
     summary = dict(members=rows, legs={})
     lines = ["| member | leg | x | first detection t | ddet (M) | dtrap (M) | dta V3 (M) | dta C (M) | dRmax | eta | dm1 | dm median | finds |",
              "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
@@ -151,11 +154,11 @@ def main():
     import matplotlib.pyplot as plt
     fig = plt.figure(figsize=(11.0, 5.6))
     fig.subplots_adjust(left=0.06, right=0.99, bottom=0.10, top=0.92, wspace=0.34, hspace=0.45)
-    labels = dict(ddet="first detection", dtrap="trapping (band 2.603)", dta="core turnaround (V3)",
+    labels = dict(ddet="first detection", lag="finder lag (code time)", dtrap="trapping (band 2.603)", dta="core turnaround (V3)",
                   dtaC="core turnaround (cycloid C)", dRmaxC="core $R_{max}$ (C)",
                   dRmax="core $R_{max}$ (rel.)", eta="core |eps| at turnaround", dm1="mass, first detection",
                   dmmed="mass, median")
-    groups = [("ddet", "dtrap", "dta", "dtaC"), ("dm1", "dmmed", "eta", "dRmax")]
+    groups = [("ddet", "lag", "dtrap", "dta", "dtaC"), ("dm1", "dmmed", "eta", "dRmax")]
     ylabels = ["|time error| (M)", "|relative error|"]
     cols = dict(zip(keys, fs.series_colors(len(keys), "viridis") if hasattr(fs, "series_colors") else [None] * len(keys)))
     families = [(("mesh", "meshN"), "finest cell $h_f/M$", True), (("N", "NB"), "particles per finest cell", True),
