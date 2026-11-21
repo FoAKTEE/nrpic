@@ -66,8 +66,17 @@ conformal factor chi of the bubble fall (x = 5 M: 0.68 -> 0.49 from 50 to 180 M;
 | `tools/esf_criteria.py` | ES-F: criterion (iii), diagnostics D1-D4 and the numbers of P1, P2, P5, P6 of flux_tools entry 7 (esf_analyse.py of flux_tools gives (i), (ii)); figure `esf_criteria.png` |
 | `tools/axis_profiles.py` | lapse, radial shift and chi on the +x axis of the z4c slices, finest level at each x; figure `axis_profiles.png` |
 | `tools/x1_locate.py` | X1 follow-up: where two outputs differ (header lines or data) |
+| `tools/finish_g2.sh` | `es1gb` or `esf`: closes the card run once its chain is DONE and starts its registered analyses (compare_horizons and slicemass; esf_analyse and esf_criteria). Guards tested (exit 2 while QUEUED) |
 | `tools/figstyle.py` | copy of `harness/style/figstyle.py` |
 | `inputs/` | the two inputs above |
+
+## Pending (state at the end of this session)
+
+- ES-1GB segment 2 (t = 188 -> 200 M, Slurm 4805) and ES-F (Slurm 4806) are queued behind
+  jobs of other owners. When a chain's `STATUS` is DONE:
+  `tracks/D-bh-dress/g2runs/tools/finish_g2.sh es1gb` (or `esf`), look at the figures, and
+  write the outcomes of B1, B3, B5 (ES-1GB) and of P1-P7, (i)-(iii), D1-D4 (ES-F,
+  flux_tools/JOURNAL.md entry 7) into JOURNAL.md.
 
 ## How to rerun
 
