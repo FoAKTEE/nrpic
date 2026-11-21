@@ -172,11 +172,11 @@ def main():
     ev.terminal = True
     longrun = solve_ivp(rhs_newton_rr, (0, 2e4), np.concatenate([x0.ravel(), p0.ravel()]),
                         args=(m, True), method="DOP853", rtol=1e-10, atol=1e-13, events=ev,
-                        max_step=2.0)
+                        max_step=2.0, t_eval=np.arange(0.0, 2e4, 1.0))
     T_rr = float(longrun.t_events[0][0]) if len(longrun.t_events[0]) else None
     Xl = longrun.y[:6].T.reshape(-1, 2, 3)
     sl, _ = sep_phase(Xl)
-    res["newton_rr_inspiral"] = dict(T_to_2M=T_rr, t=longrun.t[::50].tolist(), sep=sl[::50].tolist())
+    res["newton_rr_inspiral"] = dict(T_to_2M=T_rr, t=longrun.t.tolist(), sep=sl.tolist())
     print("T_rr (to separation 2 M_b):", T_rr, " Peters:", res["peters"])
     for k in ("newton", "newton_rr", "eih_v", "eih_c"):
         sp = np.array(series[k]["sep"])
@@ -209,8 +209,8 @@ def main():
     for mm, T in res["peters"].items():
         axs[2].axvline(T, **fs.MASK_LINE)
     axs[2].set_xlabel("t [M]")
-    axs[2].set_ylabel("separation [M], Newton + 2.5PN")
-    axs[2].set_title(f"T(2.5PN) = {T_rr:.0f} M; Peters lines", fontsize=8)
+    axs[2].set_ylabel("separation [M]")
+    axs[2].set_title(f"Newton + 2.5PN to 2 m_b: {T_rr:.0f} M\n(grey: Peters, m = 0.137, 0.130, 0.125)", fontsize=7)
     fs.save(fig, os.path.join(out, "fig_refs"))
 
 
