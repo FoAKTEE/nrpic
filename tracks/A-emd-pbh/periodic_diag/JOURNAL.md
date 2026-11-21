@@ -189,3 +189,19 @@ field (`<problem> noise_amp = 1e-10`, the robustness option of nrpic_cosmo), to 
   of G1's at equal t (G1: cfl 0.5 without noise).
 Refuted: G5 not earlier than G0 (then the seed does not set the onset), G6 with growth
 (then the threshold on the root mesh lies below 0.6, and Test B is wrong for this code).
+
+## 2026-11-21 22:06Z, entry 5: G1 and G2 outcomes (run A-20261121-212941-9e68be1); the first G5/G6 attempt
+
+G1 (cfl 0.5, lapse frozen, Gamma-driver; to t = 12, 100 cycles, time limit): no growth;
+H_max falls smoothly to 1.25e-3 at t = 12. G2 (zero shift, cfl 1.0; to t = 12, 54 cycles,
+dt/dx = 1.0 from t = 4.7 on): no growth; H_max 1.57e-3 at t = 12. Both as predicted.
+With G0 this isolates the Gamma-driver at a large step: same data, same frozen lapse, same
+step history as G0 in G2; only the step (G1) or only the shift (G2) changed, and the growth
+is gone in both.
+
+First G5/G6 attempt (run A-20261121-220411-b7dd9ce): both cases stopped at once with
+"Parameter 'noise_amp' in block 'problem' on command line not found" (AthenaK accepts on
+the command line only parameters the deck declares); nrpic-run closed the run as completed
+because the driver script returns 0. No result; superseded by the next run with the deck
+`inputs/diag_uniform_seed.athinput` (noise_amp = 1e-10 declared, tlim 10). Prediction of
+entry 4 unchanged.
