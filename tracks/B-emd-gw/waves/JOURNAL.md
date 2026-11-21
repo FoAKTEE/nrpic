@@ -587,3 +587,75 @@ amplitude <= 2e-6, so xi ~ 1e-12 and G_tot (quadratic in xi plus xi times the TT
 below 1e-6 of the raw strain in rms. Refuted if any equality fails or rms G_tot / rms raw
 exceeds 1e-6 on a double dump (the single dump has the float32 floor and only the equalities
 are predicted there).
+
+## 2026-11-21 13:00 Outcome of the gauge-module check (run B-20261121-125606-e2ebf60)
+
+Confirmed: on the three dumps G and G_tot of gwdiag.gauge equal first_source's bit for bit
+(max |difference| 0.0) and `corrected` is exactly raw - G_tot; rms G_tot / rms raw = 1.1e-13
+(F2, N = 32, t = 4/sqrt 5), 5.0e-15 (X, N = 32, t = 10), 7.2e-8 (float32 16^3 wave) [VERIFIED].
+For the linear waves of this package the gauge piece is negligible, as it should be: their
+non-TT part is first order in the discrete divergence, not a coordinate change of size h.
+No figure: the check is a set of equalities and three ratios.
+
+## 2026-11-21 13:10 Outcome of F2, k = 2 pi (1,2,0) (analysis B-20261121-125625-7af3965)
+
+Runs: N = 16, 32, 48 on processors (B-20261120-222849-3b921b7), N = 64 on the card
+(B-20261120-222841-acfe21d/f120N64); 33 dumps each, t = 4/sqrt 5 at the end.
+`results/f120_results.json`, `figs/f120_errors.png`, `figs/f120_convergence.png` (looked at:
+TT amplitude and phase lie on the Z4c symbol curves at every N and time; the Weyl-6 phase
+curves cover the TT ones; the non-TT part at +k lies on the symbol curves, at N = 64 above
+it before t = 0.3; |Gamma at +k| follows the symbol at N = 16 and 32 including the nodes, at
+N = 48 it fills the nodes, at N = 64 it sits on a flat level about twice the symbol maximum.
+The Gamma panel's y-range reaches 1e-28 because of the zero at t = 0; readable, not redone).
+Numbers at the last dump, TT unless named [VERIFIED]:
+
+| N | amp + (symbol) | phase + (symbol) | amp x | phase x | Weyl-6 amp | Weyl-6 vs TT (max) | spectral vs TT (max) | back max (1 - w_h/k) | non-TT at +k max (symbol) | abs Gamma at +k max (symbol) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 16 | -6.6774e-3 (-6.6774e-3) | 4.3208e-3 (4.3208e-3) | -6.6774e-3 | 4.3208e-3 | -7.632e-3 | 9.61e-4 | 2.26e-11 | 1.525e-4 (1.530e-4) | 2.092e-5 (2.092e-5) | 2.600e-11 (2.600e-11) |
+| 32 | -6.3075e-5 (-6.3076e-5) | 9.4790e-5 (9.4789e-5) | -6.3076e-5 | 9.4789e-5 | -7.946e-5 | 1.64e-5 | 2.27e-11 | 2.567e-6 (2.568e-6) | 3.589e-7 (3.588e-7) | 4.464e-13 (4.464e-13) |
+| 48 | -3.9966e-6 (-3.9970e-6) | 1.1729e-5 (1.1727e-5) | -3.9971e-6 | 1.1728e-5 | -5.459e-6 | 1.46e-6 | 2.26e-11 | 2.283e-7 (2.284e-7) | 3.262e-8 (3.204e-8) | 4.19e-14 (3.99e-14) |
+| 64 | -5.7576e-7 (-5.7643e-7) | 2.9264e-6 (2.9238e-6) | -5.7659e-7 | 2.9249e-6 | -8.374e-7 | 2.62e-7 | 2.24e-11 | 4.109e-8 (4.085e-8) | 6.21e-9 (5.74e-9) | 1.45e-14 (7.1e-15) |
+
+Local orders (16-32, 32-48, 48-64): TT amplitude 6.73, 6.80, 6.73 (symbol 6.7, 6.8, 6.7);
+TT phase 5.51, 5.15, 4.83 (symbol 5.5, 5.2, 4.8); Weyl-6 amplitude 6.59, 6.60, 6.52 (phase
+equal to TT to 4 digits); Weyl-6 vs TT 5.87, 5.96, 5.97; non-TT at +k 5.87, 5.91, 5.76;
+Gamma 5.86, 5.83, then 3.70.
+
+- **F2-1 confirmed.** At t = 0 the TT amplitudes equal the generator's to <= 4.7e-12
+  relative (plus) and <= 2.4e-15 (cross); phases to <= 4e-16. gw_diag's pol_basis is the
+  generator's e+, ex for (1,2,0). (The plus value is the rounding of the diagonal 1 + h.)
+- **F2-2 confirmed.** Both polarizations equal the whole-Z4c symbol model to <= 0.12 per
+  cent (amplitude) and <= 0.09 per cent (phase) at every N, far inside the 10/30 per cent band.
+- **F2-3 confirmed.** Polarization-ratio errors <= 8.4e-10 (modulus) and <= 1.41e-9
+  (argument) at every N and time (bound 1e-8); they grow with N (3.3e-10, 5.5e-10, 8.1e-10,
+  1.4e-9 in argument): the rounding of the diagonal seen in X.
+- **F2-4 confirmed in part, refuted as worded per dump.** The sector driven by the discrete
+  divergence is there and is the model's: non-TT part at +k equal to the symbol to 0.02 per
+  cent (N = 16), 0.6 per cent (32), 13 per cent (48; median 0.5 per cent), falling at order
+  5.8-5.9; |Gamma at +k| equal to the symbol to 0.25 per cent at N = 16 and in median to 0.1
+  per cent at N = 32. But the per-dump band (20 per cent where the symbol is above 1e-15)
+  fails: at N = 32 one dump at a node of Gamma is 2.4 times the symbol, at N = 48 up to 1.56,
+  and at N = 64 Gamma sits at about 1.4e-14 (median 1.85, up to 4.7 times the symbol), and
+  the non-TT part at N = 64 is up to 7.4 times the symbol at the first dumps. So the
+  refutation clause "off by more than a factor 2 at N <= 48" is met by one dump at N = 32.
+  [JUDGEMENT, not tested] A floor of about 1e-15 to 1e-14 in the mode coefficient of Gamma
+  (relative 1e-10 to 1e-9 of A |k|), rounding of the diagonal metric through the derivatives
+  in the Gamma equation; it shows where the symbol value falls below it (the nodes, and
+  everywhere at N = 64). I did not predict this floor.
+- **F2-5 confirmed.** Order-6 Weyl vs TT = 0.80 |e1| at every N (9.61e-4, 1.64e-5, 1.46e-6,
+  2.62e-7; band |e2| to 2|e1|); spectral Weyl vs TT 2.2e-11 to 2.3e-11 at every N (bound
+  1e-9; test F along (1,1,1): 1.1e-11 to 1.2e-11). Both are the forward combination
+  W = P + i P'/|k| (verifier3's caveat: with h alone the two differ by the symbol of the time
+  derivative, VERIFIER.md section 3). Psi_4 sees the TT wave only: the non-TT part at +k does
+  not enter it.
+- **F2-6 confirmed.** Backward maxima 1.525e-4, 2.567e-6, 2.283e-7, 4.109e-8 against
+  |1 - w_h/k| = 1.530e-4, 2.568e-6, 2.284e-7, 4.085e-8 (ratios 0.997 to 1.006).
+- Whole-field non-TT fraction 1.45e-4 (N = 16) and 1.44e-4 (32, 48, 64): the second-order
+  part of (1,1,1) (1.44e-4), as predicted; the first-order part at +k (2.1e-5 at N = 16) adds
+  little.
+
+Verdict: along a direction with nonzero discrete divergence both diagnostics recover
+amplitude, phase and both polarizations against the exact wave, the code's errors are those
+of the whole linearized Z4c system with its stencils and integrator, and the diagnostics
+differ by the sixth-order Weyl stencil (spectral: 2e-11). Failed prediction on record: F2-4
+per dump.
