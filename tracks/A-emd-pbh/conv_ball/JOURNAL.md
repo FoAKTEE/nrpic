@@ -132,3 +132,21 @@ Refuted, for the G2 criterion, by: no horizon in B or C; |ddet|, |dtrap| or |dmm
 falling from B to C (non-monotonic); a C mass error above 1e-2; a leg spread larger than
 the mesh difference of its member. A non-monotonic sequence is recorded as such (the source
 reports one for its fixed-N SMR sequence, main.tex:1485).
+
+## 2026-11-21 00:08 PST, entry 4: outcome of prediction S (smoke tests); card job 1 submitted
+
+Card job 1 (run A-20261121-075926-d10c2c1, Slurm 4776; A, B, A-L32, A-R1.25, A-R1.35, A-N8)
+was submitted at 23:59 while the smoke tests ran, third in a queue of three pending jobs, so
+that it holds its place; it would have been cancelled had a smoke test failed.
+
+Outcome of S, run A-20261121-075916-0b98e86 (smoke.json) and its figure run
+A-20261121-080727-e2f9074 (fig_smoke.png looked at): HOLDS. All seven cases exit 0:
+nest16_L16 with data set 3 and with the 1.35 ball, nest16_L32 and nest32_L16 run 2 cycles with
+finite history lines (77704, 91216, 77704, 621464 particles); nest32_L32, nest64_L16 and
+nest64_L32 initialize (621464, 4969736, 4969736 particles). Mesh: 288 MeshBlocks (outer 16 M)
+and 344 (outer 32 M), 56 per level and 64 on the finest, as designed; 8^3 blocks with four
+ghost cells are accepted under static refinement. The initial psi^4 on the line through the
+nested levels equals expball's exact slice to 4.8e-13 (largest, inside the matter) for all
+three meshes, which also confirms the line-point reader of compare.py --nest (cells of
+M, 1/2, ..., 1/16 for nest16, levels changing at |x| = 1, 2, 4, 8 M). Not tested by the smoke:
+memory and speed on the card (the processor build reached 7.3e3 zone-cycles per second).
