@@ -194,19 +194,54 @@ summaries `results/r2_*`, all looked at):
    `inputs/conv.athinput` (smoke test B-20261119-142500-72b1213), `scripts/null_prediction.py`
    (reproduces s of the scan data to 0.02 percent).
 
-Pending or not done:
-- Card batch BC (Slurm job 4655, run B-20261119-153655-2deca0a, queued since 07:37 local): eps = 1
-  at 64^3 with 1 and 27 particles per cell and at 128^3 with 1 per cell (P12a, P12b, P13). Its
-  initial data exist (B-20261119-142435-275bd43). After the job: `nrpic-run finish`, then
-  `analyze_scan.py` on the three case directories (KINDS=bin,dbin; the 128^3 case at NWORK <= 4)
-  and `conv_compare.py e1_p1=... e1_p8=<B-20261115-180834-c77a132/cw_eps1.json> e1_p27=...
-  e1_n128=... e1_n32=<B-20261115-184650-2d155b6/cw_eps1.json> e1_rep=...`.
-- 128^3 at 8 per cell (16.8M particles, ~1.3 card-hours, a chain) was not run (cost).
-- Processor companion at 32^3 (requests-b processor executable): jittered nulls (run
-  B-20261119-143238-b7961ef), delta = 0.0025 eps = 1 (B-20261119-144416-5f1ab7a) and eps = 0.3
-  (B-20261119-153624-224805d); their prediction is B-20261119-143224-f0e6727.
-- The discriminating run for P16 (jittered lattice without any wave) and the cause of the
-  momentum-constraint residual of the jittered initial data are open.
+Pending at the end of the second round (all closed or decided in round 3, next section): card
+batch BC (job 4655, run B-20261119-153655-2deca0a) and its analysis; the 32^3 processor
+companions (B-20261119-143238-b7961ef, -144416-5f1ab7a, -153624-224805d); 128^3 at 8 per cell;
+the run of P16 without any wave; the cause of the momentum residual of the jittered data.
+
+## State of round 3 (wave 3, 2026-11-20 and 21)
+
+Established (numbers and run ids in `JOURNAL.md`, sections from "Wave 3, round 1" on; figures
+`figs/r2_*`, summaries `results/r2_*`, all looked at):
+
+1. Particle number (P12, comparison B-20261121-075302-a9fcc43 of the scan analyses
+   B-20261120-223241-f1efd4f and -223236-e213594 of card run B-20261119-153655-2deca0a):
+   c_+(K1) at eps = 1 differs between 1, 8 and 27 per cell (64^3) by <= 7.8e-5 for
+   2 <= a <= 40 (a fixed offset of each lattice's initial data, flat in a); after shell
+   crossing 8 against 27 per cell stays at 3.4e-5 (max, 80 <= a <= 140) while 1 per cell
+   moves to 2.5e-4. Converged in particle number at 8 per cell to 3e-5 through a = 140.
+2. Mesh (P13): 128^3 (1 per cell) against 64^3 agrees to 1.8e-4 for a <= 40; after shell
+   crossing rms |c(128)/c(64) - 1| = 1.3e-2 against 3.4e-2 for 64^3 against 32^3 (observed
+   order ~1.4 [JUDGEMENT, two differences]); the 128^3 result does not depend on 1 or 8 per
+   cell at 64^3 (both 1.295e-2). Before a ~ 60 the mesh differences are ~1e-4 of |s| for both
+   pairs and do not fall with the mesh.
+3. 128^3 at 8 per cell: NOT RUN, decided before any card submission (JOURNAL): the mesh leg is
+   conclusive (P13(b) confirmed; the particle effect at 64^3 after shell crossing, 1.4e-4, is a
+   hundredth of the mesh difference 1.3e-2). The brief's parenthetical trigger reads the other
+   way round and would have fired; it is recorded as inverted, the lead may overrule (~1.3
+   card-hours, a chain).
+4. 32^3 jittered nulls (P11 at 32^3, analysis B-20261121-075255-631c3d9, comparison
+   B-20261121-075547-32aba8f): box modes as predicted from the 32^3 initial data (moduli
+   0.71-0.98 of the prediction, phases within 0.24 rad, 3 <= a <= 20); the noise is 5.7 times
+   the 64^3 one (0.08-0.093 of the eps = 0.1 signal); rms TT linear in A (ratio 2.9).
+5. delta = 0.0025 at 32^3 (P14): reproduces 64^3 (|dev| <= 0.5 percent to a = 33 and 38;
+   R = 17-19 at a = 30-60).
+6. (1 + eps^2) advance test (B-20261121-075616-97f039f, double-precision dumps): for a = 30-60
+   the departure at delta = 0.0025 is 1/17-1/19 of that at 0.01 and dev/(1 + eps^2) agrees
+   between eps = 0.3 and 1 to 0.6-3.6 percent on both meshes; at a = 20 it fails (Q = 1.16 at
+   32^3, 1.10 at 64^3; R = 21.5 for eps = 0.3 at 32^3).
+7. P16' (jittered lattice without any wave; initial data B-20261121-075249-d019ace (64^3),
+   B-20261121-080035-188411b (32^3)): the jittered data without the wave have no momentum
+   residual (0.0 against 7.6e-4 with the wave): the residual came from the wave's moving
+   particles. The runs: see "Pending" (filled in when analysed).
+8. README wordings of verifier2 (`../stage/G1/OPEN.md` item 4) corrected in the section above.
+
+Failed predictions of round 3 (on record in JOURNAL): P11(c') at K2 at 32^3 (A-ratio 3.06
+against 3.43 +- 10 percent: the noise-noise term is over-predicted); (1 + eps^2) test at
+a = 20 (Q 1.10-1.16 outside 0.95-1.05; R = 21.5 for eps = 0.3 at 32^3 outside 12-20); P14(c)
+read at 32^3 at a = 10 (collapse ratio 1.53 and 1.95, outside 50 percent).
+
+Pending: see the end of JOURNAL.md.
 
 ## Requests
 
