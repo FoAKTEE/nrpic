@@ -6,7 +6,7 @@ its end, t = 280 M; (3) the note's close-out. Writes only `tracks/F-hills/khsr_n
 `tracks/F-hills/runs/`; the note itself (`note/`) and `p1/` belong to other packages, so items
 (2) and (3) are delivered here for the lead to carry over (README "Requests").
 
-## 2026-11-21 21:20Z entry 0: state found
+## 2026-11-21 21:15Z entry 0 (times UTC, from `date -u`; corrected after the first entries were stamped by estimate): state found
 
 - Worktree merged with main (91ab6280). Pause flag absent. Untracked: only
   `g2mesh/scripts/card_analysis.py` (another package's; left alone).
@@ -19,7 +19,7 @@ its end, t = 280 M; (3) the note's close-out. Writes only `tracks/F-hills/khsr_n
   1140-1152). Nothing is digitised: the comparison values are KHSR's text statements and
   closed forms, each with its line.
 
-## 2026-11-21 21:25Z K. KHSR with newton3: prediction (before any run)
+## 2026-11-21 21:18Z K. KHSR with newton3: prediction (before any run)
 
 Set-up (KHSR ms.tex:752: M/m = 1e6, m1/m2 = 3; coplanar, circular binary): the full
 Newtonian three-body driver of newton3 (`hills3.threebody.scatter`, unchanged) at M/m = 1e6,
@@ -76,7 +76,7 @@ Cost: about 31000 three-body integrations (6 D x 5 orbits x 2 senses x 512) plus
 arithmetic: 10-20 min on 4 cores [JUDGEMENT from newton3 P3: 2400 integrations in about 2 min
 on 4 cores].
 
-## 2026-11-21 21:35Z P. P1 from t = 112.4 M to its end (280 M): prediction
+## 2026-11-21 21:22Z P. P1 from t = 112.4 M to its end (280 M): prediction
 
 Run F-20261119-150017-b45ec5f (chain DONE, finished by the lead in nrpic-run, commit eb0b2230).
 What I had seen of t > 112.4 before writing this (so these are NOT predictions): the last two
@@ -124,7 +124,7 @@ P1-g health (P1 prediction item 1 of the lead, JOURNAL.md l. 306-308): trackers 
 without a gap above one step and finite; tree within 1016-1870 MeshBlocks seen so far; card
 time below the lead's predicted 17-20 card-hours (12.58 by sacct already recorded by the lead).
 
-### 21:40Z correction of entry P, before any analysis output was read
+### 21:23Z correction of entry P, before any analysis output was read
 
 I misread the history: H-norm2 is a volume integral; the norm p1/checks.py reports is
 sqrt(H-norm2 / Volume) (nrread.read_hst adds H2 = H-norm2 / Volume). The last row gives
@@ -136,7 +136,7 @@ seen, P1-e': between t = 112 and 280 the H norm never exceeds the start transien
 3.2e-4 (t = 1) and never exceeds ten times its t = 112 value; the M norm likewise stays within
 a factor ten of its t = 112 value. Refuted by any such excursion.
 
-## 2026-11-21 21:50Z P. outcome (runs F-20261121-212240-c43f35f: p1 readers; F-20261121-212441-1911b7d: p1_280.py; figures read)
+## 2026-11-21 21:26Z P. outcome (runs F-20261121-212240-c43f35f: p1 readers; F-20261121-212441-1911b7d: p1_280.py; figures read)
 
 Numbers from `p1_280.json` and `p1_checks.json`, `ledger.json` of these runs; figures
 `fig_p1_280.png` (six panels) and p1's `fig_tracks_plane.png` read.
@@ -186,7 +186,7 @@ Numbers from `p1_280.json` and `p1_checks.json`, `ledger.json` of these runs; fi
   the passage, so the coordinate velocities cannot say whether the remnant is bound
   [JUDGEMENT].
 
-## 2026-11-21 21:58Z K. first scan (F-20261121-212049-d91381f) and checks (F-20261121-212703-276a88b): defect found
+## 2026-11-21 21:28Z K. first scan (F-20261121-212049-d91381f) and checks (F-20261121-212703-276a88b): defect found
 
 The checks show mean ejection energies of 50.9 and mean |dE| of 13.7-60.8 units at five
 (D, r_a) points, each one with failed integrations (n_fail 1-3 of 512): my script did not

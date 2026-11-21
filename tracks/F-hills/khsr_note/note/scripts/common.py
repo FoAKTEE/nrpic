@@ -1,0 +1,194 @@
+"""Shared helpers of the note's figure and ledger scripts (F-hills, working note v0).
+
+Every number the scripts use is read from the output directory of a registered run,
+/data/haiyangw/nrpic/scratch/F-hills/<run_id>/ (manifest under tracks/F-hills/runs/<run_id>/),
+and every file is checked against the sha256 that the run recorded (its sha256sums.txt, or
+the output list of its manifest); wave-1 runs without either record are read as they are and
+reported as such. Outputs go to ../figures and ../tables next to this file unless --out DIR
+is given.
+"""
+import argparse
+import hashlib
+import json
+import os
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+NOTE = os.path.dirname(HERE)
+
+
+def _track_dir(p):
+    """tracks/F-hills above this file: the note works from tracks/F-hills/note/ and from a
+    working copy one level deeper (tracks/F-hills/<package>/note/, wave 3 batch 6)."""
+    while p != os.path.dirname(p):
+        if os.path.basename(p) == "F-hills" and os.path.basename(os.path.dirname(p)) == "tracks":
+            return p
+        p = os.path.dirname(p)
+    raise SystemExit("not inside tracks/F-hills")
+
+
+TRACK = _track_dir(NOTE)                            # tracks/F-hills
+WT = os.path.dirname(os.path.dirname(TRACK))        # worktree root
+SCRATCH = os.environ.get("NRPIC_F_SCRATCH", "/data/haiyangw/nrpic/scratch/F-hills")
+
+# the registered runs the note reads (key -> run id); manifests in tracks/F-hills/runs/
+RUNS = {
+    "scale": "F-hills-20261115-045435-f62d553",       # novelty: plunge bound, Peters time
+    "coplanar": "F-hills-20261115-130237-cbfaf6b",    # newton3 P1: restricted coplanar scan
+    "deep": "F-hills-20261115-132156-efddfc0",        # newton3 P1: deep supplement (D < 1e-3)
+    "coplanar_an": "F-hills-20261115-133222-9cb10db",  # newton3 P1: analysis of the two above
+    "skr": "F-hills-20261115-132703-0bfc352",         # newton3: comparison with SKR's figures
+    "general_an": "F-hills-20261115-133200-05ee76a",  # newton3 P2: isotropic scan analysis
+    "h1": "F-hills-20261115-132942-2f7ad7f",          # newton3 P7/P8: BKRS curves, survival criterion H1
+    "s1_an": "F-hills-20261115-142554-c10b371",       # geodesic_binary: analysis of S1, S2, S4
+    "v4": "F-hills-20261115-145246-090f5dc",          # lead V4: independent restricted problem
+    "v4b": "F-hills-20261115-145544-a314517",         # lead V4b: wide binaries followed on
+    "v5v6": "F-hills-20261115-145251-090f5dc",        # lead V5, V6
+    "v5b": "F-hills-20261115-145559-a314517",         # lead V5b
+    "v7": "F-hills-20261115-145915-71abf93",          # lead V7: pericentre scan
+    "mesh10": "F-hills-20261115-131348-634fb86",      # three_punctures: trees along q = 10
+    "mesh4": "F-hills-20261115-131933-907e5fe",       # three_punctures: trees along q = 4
+    "e1": "F-20261115-173543-29e87e8",                # nr_first E1: t = 0 trees at q = 4
+    "e6": "F-20261115-174102-ffa764f",                # nr_first E6: baselines of P1 at q = 4
+    "e4": "F-20261115-173821-b2c969a",                # nr_first E4: readers on a synthetic run
+    "n1": "F-20261115-174648-25514db",                # this package N1: passage time series
+    # wave 2b / wave 3 additions (note v1, gate G1)
+    "c0": "F-20261115-173547-a02af7d",                # nr_first E2 (C0): t = 0 data, 7 cases
+    "e2": "F-20261115-181434-b9c8916",                # nr_first E2: analysis (same JSON as -181053-d52f22d)
+    "e3raw": "F-20261115-173601-2fae2dc",             # nr_first E3: S3, S2 card runs (stopped at the slot limit)
+    "e3": "F-20261119-145619-8246322",                # lead: E3 analysis with the fixed horizon reader
+    "e10a": "F-20261119-144351-b448f38",              # nr_first E10a: window medians of S3, S2
+    "e11": "F-20261119-144425-10a94b7",               # nr_first E11: restart trees against the rule model
+    "e11path": "F-20261119-144024-988d5c9",           # nr_first E11: model tree along x = 0-20 m
+    "e7": "F-20261115-174602-c6879fe",                # nr_first E7: P1 smoke on a card (400 cycles)
+    "e7an": "F-20261119-144544-d9c8542",              # nr_first E7: passage analysis of the smoke
+    "v9": "F-20261119-145449-245e984",                # lead V9: GR reading of the start states
+    "newton3_pass": "F-20261115-180351-b8eb386",      # newton3_fix: passages with corrected energies
+    "flat": "F-20261115-175620-df20ffe",              # second check SC0d: binary moving in flat space
+    # wave 3 batch 6 additions (note v2, gate G1 close-out; package khsr_note)
+    "khsr": "F-20261121-212757-77cdc15",              # khsr_note K: KHSR elliptic orbits, newton3 driver
+    "bcan": "F-20261121-202021-3c4321e",              # binary_conv: analysis of the binary alone, m/8, m/12, m/16
+    "bc8": "F-20261121-130358-6cf186a",               # binary_conv R8: the binary alone at m/8 (card)
+    "bc12": "F-20261121-153707-1eaa5d4",              # binary_conv R12: the binary alone at m/12 (card)
+    "bc16": "F-20261121-130351-04074e1",              # binary_conv R16n: the binary alone at m/16 (card)
+    "p1": "F-20261119-150017-b45ec5f",                # the first passage P1 (card chain, 16 jobs, to 280 M)
+    "p1end": "F-20261121-212441-1911b7d",             # khsr_note: P1 after the merger to 280 M (p1_280.json)
+    "p1chk": "F-20261121-212240-c43f35f",             # khsr_note: package p1's readers on P1 to 280 M
+    "kerr": "F-20261121-132817-eacfe46",              # kerr: analysis of the 2402.02178 scan
+    "verpass": "F-20261121-030138-8d3ca16",           # G0 verifier: passages in the references, late times
+}
+
+# readers of the code's output (package nr_first, read only)
+NRREAD_DIR = os.path.join(TRACK, "nr_first", "scripts")
+
+
+def nrread():
+    """The readers of the code's output files (nrread.py of the package that wrote them)."""
+    if NRREAD_DIR not in sys.path:
+        sys.path.insert(0, NRREAD_DIR)
+    import nrread as nr  # noqa: E402
+    return nr
+
+CHECKED = []   # (run_id, relative path, state)
+
+
+def _sha256(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def manifest(key):
+    with open(os.path.join(TRACK, "runs", RUNS[key], "manifest.json")) as f:
+        return json.load(f)
+
+
+def run_file(key, rel):
+    """Absolute path of file `rel` of the run named by `key`, checked against its sha256."""
+    run_id = RUNS[key]
+    rdir = os.path.join(SCRATCH, run_id)
+    path = os.path.join(rdir, rel)
+    if not os.path.isfile(path):
+        raise SystemExit(f"missing output {path} of run {run_id}")
+    mpath = os.path.join(TRACK, "runs", run_id, "manifest.json")
+    if not os.path.isfile(mpath):
+        raise SystemExit(f"run {run_id} has no manifest under tracks/F-hills/runs/")
+    sums = os.path.join(rdir, "sha256sums.txt")
+    if os.path.isfile(sums):
+        table = {}
+        for line in open(sums):
+            parts = line.split(None, 1)
+            if len(parts) == 2:
+                table[parts[1].strip().lstrip("*").removeprefix("./")] = parts[0]
+        if rel not in table:
+            raise SystemExit(f"{rel} is not listed in {sums}")
+        if table[rel] != _sha256(path):
+            raise SystemExit(f"sha256 of {path} differs from the one run {run_id} recorded")
+        CHECKED.append((run_id, rel, "sha256 ok (sha256sums.txt)"))
+        return path
+    man = json.load(open(mpath))
+    rec = {}
+    outs = man.get("outputs")
+    if isinstance(outs, list):
+        for o in outs:
+            if isinstance(o, dict) and "sha256" in o:
+                rec[os.path.basename(o.get("path", ""))] = o["sha256"]
+                rec[o.get("path", "")] = o["sha256"]
+    elif isinstance(outs, dict):
+        for k in ("files", "sha256"):
+            v = outs.get(k)
+            if isinstance(v, dict):
+                for p, h in v.items():
+                    if isinstance(h, str):
+                        rec[p] = h
+                        rec[os.path.basename(p)] = h
+            elif isinstance(v, list):
+                for o in v:
+                    if isinstance(o, dict) and "sha256" in o:
+                        rec[o.get("path", "")] = o["sha256"]
+                        rec[os.path.basename(o.get("path", ""))] = o["sha256"]
+    for k in ("outputs_sha256", "output_sha256"):
+        if isinstance(man.get(k), dict):
+            for p, h in man[k].items():
+                rec[p] = h
+                rec[os.path.basename(p)] = h
+    if rel in rec:
+        if rec[rel] != _sha256(path):
+            raise SystemExit(f"sha256 of {path} differs from its manifest")
+        CHECKED.append((run_id, rel, "sha256 ok (manifest)"))
+    else:
+        CHECKED.append((run_id, rel, "no recorded sha256 (wave-1 run, read as it is)"))
+    return path
+
+
+def load_json(key, rel):
+    with open(run_file(key, rel)) as f:
+        return json.load(f)
+
+
+def out_dir(default_sub, argv=None):
+    """--out DIR (for a registered run) or ../<default_sub> next to the scripts."""
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out", default=None)
+    a, _ = ap.parse_known_args(argv if argv is not None else sys.argv[1:])
+    d = a.out or os.path.join(NOTE, default_sub)
+    os.makedirs(d, exist_ok=True)
+    return d
+
+
+def write_numbers(out, stem, numbers):
+    """Numbers a figure shows, with their run ids, for the ledger (stem_numbers.json)."""
+    with open(os.path.join(out, f"{stem}_numbers.json"), "w") as f:
+        json.dump(numbers, f, indent=1, sort_keys=True)
+
+
+def report_checks(stem):
+    for run_id, rel, st in CHECKED:
+        print(f"{stem}: input {run_id}/{rel}: {st}")
+
+
+def close(a, b, rel=1e-9, what=""):
+    if abs(a - b) > rel * max(1.0, abs(b)):
+        raise SystemExit(f"check failed: {what}: {a} against {b}")
