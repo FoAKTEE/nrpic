@@ -413,3 +413,42 @@ eps within 20 percent of J1's card run (same initial data, same deck). Refuted i
 0.001 run differs from that of the 0.002 run by more than 20 percent (then the step sets the
 floor), or if the card and processor runs at 0.002 differ by more than 20 percent (then the
 executables differ at this level and the comparison needs one executable).
+
+## Entry 9 (2026-11-21 14:08 PST): outcome of P2 (Poisson-like start); provisional 128^3 row
+
+P2 = run B-20261121-212128-67b349a (f_n32_p1_a3, threaded processor build, 6 threads):
+exit 0 at t = 61.277, 13:21-14:04 (0.45 s per step; predicted 0.55-0.8 s). Analysis: run
+B-20261121-220428-7367d5e (`analyze_f.py` on `inputs/runs.json` with the P2 case), figure
+`fig_f_noise` looked at. [VERIFIED by these two runs]
+- Sub-percent held at Poisson-like noise (the refutation was 1e-2): largest error over
+  a = 1-999 of the alpha extrema 4.69e-3, chi extrema 4.26e-3, proper volume 2.93e-3, mean K
+  2.13e-3.
+- Extrema of alpha: noise part 1.16e-3 (a = 1.5) and 1.04e-3 (a = 3), as predicted
+  (1.0e-3 = 47 x A2); not constant afterwards as predicted: 1.39e-3 (a = 30), 2.2e-3 (100),
+  3.2e-3 (300), up to 4.7e-3 near a = 1000. Failed in that part.
+- Box averages: noise part of the volume 5.0e-6 (a = 1.5), 3.7e-4 (30), 1.86e-3 (300)
+  against the A^2 extrapolation of the A2 run, 5e-6, 4e-4, 2e-3: the second-order law holds
+  to 10 percent although the start is nonlinear (delta_rms 0.47). Mean K: 6.4e-5 (a = 10),
+  6.6e-4 (100), 1.3e-3 (300).
+- The fields stay finite to the end. The relative Hamiltonian constraint is of order one from
+  the start (largest Hr 1.2 at t = 0, 1.7 at the end), the compensated cloud deposits
+  negative densities from the first record (signed minimum of E a^3/rho_0 - 1 is -38), and
+  the absolute momentum constraint reaches 0.88: the cell-scale structure is not resolved,
+  while the scale factor stays within 5e-3.
+This is the row of brief section 10 about particle noise at small amplitude: with one
+particle per cell displaced by up to half a cell, the box-averaged expansion deviates from
+FLRW by 3e-3 at a = 1000, growing with a while the structure grows; with A2 (one percent of
+a cell) by 1.5e-6.
+
+Provisional 128^3 row (J3 still running): run B-20261121-220441-06021c4, `analyze_b.py` on
+`inputs/runs_j3_partial.json` (J3 records to a = 189.5), figures `fig_b_conv`, `fig_b_error`
+looked at. Not a result of the finished run; numbers on the common range 3 <= a <= 180.5:
+- f plateau (median |f_* - 1|): 6.80e-5, 4.77e-6, 2.36e-7, 2.60e-8 at 16, 32, 64, 128 cells
+  (ratios 14.3, 20.2, 9.1): still converging at 128 cells.
+- Early part (a <= 2) 4.85e-6 at 128 (4.78e-6 at 64), eps = +2.77e-6 (64: +2.54e-6): the
+  floor does not move with the mesh.
+- The entry 4 prediction "|e_D| at 128^3 at most a quarter of 64^3's" fails provisionally:
+  the amplitude error at a = 100 is -1.76e-6 at 128 against -7.2e-7 at 64. At 64 and 128
+  cells the amplitude error is set in the first e-fold of expansion by the decaying-mode
+  part (it is flat at -1.76e-6 from a = 2 on at 128 cells) and no longer by the mesh; at 64
+  cells a mesh part of the other sign takes it through zero near a = 900.
