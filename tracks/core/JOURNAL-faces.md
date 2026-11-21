@@ -973,3 +973,10 @@ times the reference); (3) the horizon proxy with distant faces (c3 decides nothi
 both runs are under-resolved; about ten core-hours); (4) several ranks, the threaded
 build and adaptive refinement at a face. Card time of the package: 0.93 card-hours
 (the two runs D), none in this session.
+
+**Card check, one job of the two.** At 00:34 PST one job of core was left in the queue
+(4777), so one may be added: k1 (`plans/card_k1.list`, the published card executable:
+4 steps without the options, 8 steps with the full set; limit 3 minutes, which brings
+the card time of the package to at most 0.98 card-hours). It tests (k-b) and (k-c) of
+entry 12 as written there. k2 (the release card executable, for the byte comparison
+k-a) is not submitted. The evaluation is `specs/k1.txt` (`compare_data.py --pair`).

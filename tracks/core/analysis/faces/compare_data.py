@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Compare the DATA of pairs of cases of one run directory, value for value.
 
-    compare_data.py <run directory> [--a __new] [--b __rel] [--out results/x.json]
-                    [--fig figs/x]
+    compare_data.py [<run directory>] [--a __new] [--b __rel] [--pair name=dirA,dirB]...
+                    [--tol T] [--out results/x.json] [--fig figs/x]
 
 Cases are paired by name: <name><a> against <name><b>.  For two executables whose
 parameter dumps differ (new options with defaults), the output files cannot be equal
@@ -117,7 +117,10 @@ def figure(res, stem, la, lb):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("rundir")
+    p.add_argument("rundir", nargs="?", default="")
+    p.add_argument("--pair", action="append", default=[],
+                   help="name=dirA,dirB: compare two directories (repeatable); in "
+                        "place of, or beside, the pairs of a run directory")
     p.add_argument("--a", default="__new")
     p.add_argument("--b", default="__rel")
     p.add_argument("--out", default="")
@@ -127,13 +130,19 @@ def main():
     a = p.parse_args()
     res = {}
     bad = False
-    for c in sorted(os.listdir(a.rundir)):
+    pairs = []
+    for c in (sorted(os.listdir(a.rundir)) if a.rundir else []):
         if not c.endswith(a.a):
             continue
         name = c[:-len(a.a)]
         da, db = os.path.join(a.rundir, c), os.path.join(a.rundir, name + a.b)
-        if not os.path.isdir(db):
-            continue
+        if os.path.isdir(db):
+            pairs.append((name, da, db))
+    for q in a.pair:
+        name, dirs = q.split("=", 1)
+        da, db = dirs.split(",", 1)
+        pairs.append((name, da, db))
+    for name, da, db in pairs:
         fa, fb = files(da), files(db)
         r = {"files": len(fa), "missing": sorted(set(fa) ^ set(fb)), "compared": 0,
              "identical": 0, "max_abs_diff": 0.0, "different": []}
