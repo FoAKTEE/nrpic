@@ -930,3 +930,15 @@ nothing was submitted. The card executable of f6f9a0d is built and published but
 not run on a card; the card tests of this package (D, entry 10) ran with the card
 executable of 6cd99721. The lists `plans/card_k1.list` and `card_k2.list` and the
 prediction of entry 12 stand for whoever has the next free slot.
+
+## 2026-11-21, entry 14: the example input; prediction e1
+
+`problems/tests/z4c_faces.athinput`: the vacuum puncture of the package with the four
+options of the full set switched on in the input and every other option of the block
+listed at its default, with the command lines of the variants in its header. Prediction
+e1 [JUDGEMENT] (`plans/e1_example.json`, executable of f6f9a0d): run for 8 steps it
+gives exactly the arrays and history numbers of `inputs/punc_ext.athinput` with the
+same four values on the command line (largest difference 0), and with the four values
+set back to the stock ones on the command line, 4 steps, exactly those of
+`inputs/punc.athinput`, which has none of the options (an option present with its
+stock value is the same as an absent one). Refuted by any difference.
