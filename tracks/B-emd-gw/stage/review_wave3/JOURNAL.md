@@ -147,3 +147,34 @@ the cause).
   captions say; in fig_r2 (b, c) the y range reaches 1e3 above data that end near 2 (space, not
   an error). Ledger row 168 gives the spectral Weyl-TT difference 1.22e-11 without saying
   "forward combination"; row 101 gives 0.00821 sampled at the restart cadence (verifier3).
+
+## 2026-11-21T15:50Z lead batch 4a: predictions L4-L7 (written before any run)
+
+Packages under review: first_source round 3 (batch 2b), waves round 1 (batch 3),
+stage/G1/verifier_c18 (batch 3). Independent code for L4 and L5 is verifier3's own reader,
+TT projector and exact solution (stage/G1/verifier3/scripts/diag.py, exact.py, v3_measure.do_X),
+not the waves package's wlib.
+
+- L4 (waves F2, k = 2 pi (1,2,0)). With verifier3's reader and TT projector, the forward
+  combination W = c_h + i c_h'/|k| of the TT mode at +k, referred to the first dump
+  (amplitude |W_tot(t)|/|W_tot(0)| - 1 with |W_tot|^2 = |W_+|^2 + |W_x|^2, which does not
+  depend on the polarization basis; phase arg(W_+(t)/W_+(0)) + |k| t) at the last dump
+  (t = 1.78885) equals the waves values of f120_results.json (TT, amp_p_end, phase_p_end) to
+  1 per cent at N = 16, 32, 48, 64, and the orders between successive N are within 0.1 of
+  6.73/6.80/6.73 (amplitude) and 5.51/5.15/4.83 (phase). Refuted by any value beyond 1 per
+  cent (unless below 1e-10 absolute) or an order off by more than 0.1.
+- L5 (waves XS, time/space split of X). verifier3's do_X on the last dump (t = 10) of the
+  step test at dt_expansion = 0.001 (card run B-20261120-222841-acfe21d, xdt3N16..N64) gives
+  the cross-polarization errors of xdt_card_results.json (N = 64: amplitude -3.10e-9, phase
+  1.92e-8) to 5 per cent; with verifier3's own e(0.01) at N = 64 (v3_summary.json, TT x:
+  1.39888e-7, 2.76239e-7) the time part is 1.430e-7 (amplitude) and 2.570e-7 (phase) to 1 per
+  cent. Refuted by a difference beyond these bounds.
+- L6 (first_source round 3). The registered analyses conv_compare (B-20261121-075302-a9fcc43)
+  and p16_compare at 64^3 (B-20261121-085202-b95efda), rerun from their registered inputs
+  with the committed scripts, reproduce their JSON outputs bit for bit (processor, numpy,
+  deterministic). Refuted by any differing number.
+- L7 (verifier_c18). Its summary a3_summary.py rerun from its committed results reproduces
+  run B-20261121-132955-cb150b2 (116 numbers, 103 within 1 per cent, 113 within 5 per cent);
+  the line-125 claim (smallest rms ratio 5.48e-5 is the initial slice; evolved dumps 3.8e-3 to
+  0.0408) and the line-101 claim (0.00882 over all dumps for eps = 1) are in its result files.
+  Refuted by a differing count or a number not found as stated.
