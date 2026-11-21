@@ -1,0 +1,43 @@
+{
+ "run_id": "core-20261115-160913-0656925",
+ "owner": "core",
+ "purpose": "Cp: relativistic cluster y_c = 0.819 on the processor, two steps at Knudsen number 0.03, coll_energy = cell and = particle (energy budget of the collision steps with the metric at each particle)",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/run_cluster.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160913-0656925",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_cpu",
+  "--tlim",
+  "0.25",
+  "--kn",
+  "0.03",
+  "--snap-dt",
+  "0.125",
+  "--skip-null",
+  "--energy",
+  "cell,particle"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-160913-0656925",
+ "commit": "0656925f07a9451d8835515c75735bac14702007",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_cpu",
+   "sha256": "c5d0a9879775ae019845922113eab06f5c6662cd0087b7ebd24a81c452a84192"
+  },
+  {
+   "path": "tracks/core/analysis/collisions/run_cluster.py",
+   "sha256": "0e7f3662ea3ad904af6854a4109fbe0d69ad3811e1b0f0446c9abc4a7d2a6058"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160913-0656925",
+ "host": "anta",
+ "start_utc": "2026-11-15T16:09:13Z",
+ "cores": 1,
+ "wall_time_s": 1184.37,
+ "exit_status": 0,
+ "core_hours": 0.329
+}

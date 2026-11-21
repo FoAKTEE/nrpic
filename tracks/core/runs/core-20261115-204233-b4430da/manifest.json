@@ -1,0 +1,38 @@
+{
+ "run_id": "core-20261115-204233-b4430da",
+ "owner": "core",
+ "package": "gauge",
+ "tag": "gc-e1-prof20",
+ "purpose": "one boosted puncture, eta_0 = 20 with the profile, M_ref = 0.1 (test E1 d)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-gauge/scripts/gpu_run.sh",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-204233-b4430da",
+  "/data/haiyangw/nrpic/wt/core-gauge/problems/puncture/by_eta.athinput",
+  "z4c/shift_eta=20.0",
+  "z4c/shift_eta_profile=true",
+  "z4c/shift_eta_mref=0.1",
+  "-t",
+  "00:05:00"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-204233-b4430da",
+ "commit": "b4430da64df8892bb68b2d633959da3faa0255d8",
+ "head_at_run": "bc2cad7c08cd8d28559b7f9147e60045928fcf14",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-gauge/problems/puncture/by_eta.athinput",
+   "sha256": "9ef1e80e873e8866c39737f11897eba784ebfc3d622408ea86594c02e939a859"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_gpu_b4430da",
+   "sha256": "c3560e53988ad855cc93a9f444c48c728249950242e736d0828cc44dbcd85e72"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-204233-b4430da",
+ "wall_time_s": 86.6,
+ "cores": 1,
+ "card_hours": 0.02417,
+ "exit_status": 0,
+ "started": "20261115-204233"
+}

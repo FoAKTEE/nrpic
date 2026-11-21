@@ -95,6 +95,9 @@ class FastFlow {
   int lmpoints; // lmax * lmax
   int nh; // Counter variable
   bool wait_until_punc_are_close;
+  // punc_pair_a_<n>, punc_pair_b_<n>: this surface is the common horizon of these two
+  // punctures (-1: of all punctures, the original rule); see PuncAreClose
+  int pair_a = -1, pair_b = -1;
   [[maybe_unused]] bool use_stored_metric_drvts;
   int nhorizon; // Number of horizons
   std::string flow_function;

@@ -1,4 +1,66 @@
-# What core's G2 still lacks (state 2026-11-15, after the wave-1 integration)
+# What core's G2 still lacks
+
+Two states: the release candidate core-v0.4 (2026-11-21, first section) and the list
+written after the wave-1 integration (2026-11-15, below, with its numbering kept; items
+that core-v0.4 changes are marked there by the first section).
+
+## Release candidate core-v0.4 (2026-11-21): branches left out, items changed, defects
+
+**Branches left out of core-v0.4: none.** All seven wave-2 source branches passed the
+maintainer's review and are merged (requests-b, gauge, scalar-2, clump-curvature,
+id-solver, requests-adf, collisions-2; `tracks/core/RELEASE-v0.4.md`); the byte
+regression against core-v0.3 passes with them (run core-20261120-221607-4985804).
+Not part of core-v0.4 by plan (decision 0019 item 4): the nine wave-3a branches
+(cosmo-amr, id-solver-2, clump-table, scalar-3, z4c-faces, newton-2, build-openmp,
+mpi, oblate), which go into core-v0.5.
+
+Items of the 2026-11-15 list that core-v0.4 changes:
+- 6 (collision energy at the particles' metric): answered by `<particles> coll_energy =
+  particle` (sum M H kept to 6.3e-17 over 5104 collisions of a Z4c cluster on a card,
+  run core-20261119-143232-4d1e995, analysis core-20261120-220159-7418482). Open: a
+  residual of one sign from the root tolerance (+1.2e-20 of sum M H per collision).
+- 7 (lapse front from a sharp surface): answered by `<z4c> lapse_leak` (tests L1 to L3,
+  ES of package gauge). Open: the choice of T per problem; periodic boxes of Track A.
+- 9 (one shift_eta for all punctures): answered by `<z4c> shift_eta_profile`. Open: more
+  than two holes, widths other than 2 on a pair, the paper's factor on kappa_1.
+- 15 (36 never-set restart bytes): fixed (zero); regressions against core-v0.3 still
+  mask them, regressions against core-v0.4 need no mask.
+- 11 and 12 (run continues when the state is non-finite; step ignores the lapse): NOT
+  in core-v0.4; package cosmo-amr of wave 3a has both (core-v0.5).
+
+Defects and limits of core-v0.4 itself (found by the packages or at the merge):
+- a. No two new capabilities were run together. The quick tests show that each branch
+  keeps its own bytes in the merged executable; combinations (id_solve with moving
+  clumps, coll_energy with lapse_leak, accretion diagnostics with collisions, tracers
+  with the perturbing force) are untested.
+- b. Four corrections act without an option and change outputs of existing inputs
+  (restart header bytes, `last_time` of final outputs, tracers with m = 0 on the mesh
+  metric, the oblique linear wave); `CHANGELOG.md` section core-v0.4 lists them. A track
+  that compares against a core-v0.3 run must expect them.
+- c. On a card, collisional runs without the new options differ from core-v0.3 at
+  rounding (same pairs, momenta 2e-14): no byte regression of collisions on cards.
+- d. `<fastflow> hmean_tol_<n>` (default 100) is compared with the surface integral of
+  the expansion: in a cosmological box every search ends at its first iteration
+  [reported by package cosmo-amr, runs core-20261120-220816-09f6f79 and
+  core-20261120-222814-0b2b259; not rechecked by the lead]. Workaround: 1e30.
+- e. The particle restart file stores the previous-sources array for all
+  `max_nmb_per_rank` MeshBlocks (2.2 GB per file at a limit of 2000) [same package].
+- f. Comment only: `particles.hpp`, `NrpicCollideOptions::ext` says history columns 32
+  to 35; they are 32 to 36. Left as it is so that the published executables match the
+  source commit; to be corrected with the next source change.
+- g. id_solve: uniform meshes, one rank, no punctures; the vector part has a closure
+  error of about one per cent at the faces; `id_vector_residual` defaults to stencil,
+  which is not the recommended mode.
+- h. Clumps with momentum: Gaussian components only; the sum of the particles'
+  covariant momenta drifts by 1.6 per cent in 2 M (1.3 without the curvature), cause
+  unknown.
+- i. The release drivers (`tracks/core/analysis/release/`) ran fifteen example inputs
+  against the branch executables on processors and eleven short cases on a card; the
+  capability tests of the packages and the verification ladder were not rerun on the
+  merged executables. Ten example inputs named in the READY were started by no run of
+  the merged executable (list in `RELEASE-v0.4.md`).
+
+## State 2026-11-15, after the wave-1 integration
 
 Branches: all six wave-1 branches are merged into core/nrpic; none stays unmerged.
 

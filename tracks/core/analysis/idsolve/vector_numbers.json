@@ -1,0 +1,426 @@
+{
+ "V0": {
+  "gauss_code_n32": {
+   "published": "core-20261115-183042-ca15f8b",
+   "new": "core-20261115-183055-ca15f8b",
+   "files": [
+    "gauss.cstat.hst",
+    "gauss.field.00000.bin",
+    "gauss.idsolve.bin",
+    "gauss.idsolve.txt",
+    "gauss.nrpic.hst",
+    "gauss.z4c.user.hst"
+   ],
+   "differ": []
+  },
+  "torus_code_p1_n32": {
+   "published": "core-20261115-183447-ca15f8b",
+   "new": "core-20261115-183458-ca15f8b",
+   "files": [
+    "torus.cstat.hst",
+    "torus.field.00000.bin",
+    "torus.idsolve.bin",
+    "torus.idsolve.txt",
+    "torus.nrpic.hst",
+    "torus.z4c.user.hst"
+   ],
+   "differ": []
+  }
+ },
+ "runs": {
+  "gboost_stencil_n32": {
+   "run": "core-20261115-183111-ca15f8b",
+   "status": "exit 0, wall 9.1 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-183111-ca15f8b",
+   "n": 32,
+   "mode": "stencil",
+   "dx": 1.0,
+   "particle_file": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/gauss_h0p5_u0p1.nrp"
+  },
+  "gboost_code_n32": {
+   "run": "core-20261115-183121-ca15f8b",
+   "status": "exit 0, wall 11.3 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-183121-ca15f8b",
+   "n": 32,
+   "mode": "code",
+   "dx": 1.0,
+   "particle_file": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/gauss_h0p5_u0p1.nrp"
+  },
+  "gboost_stencil_n64": {
+   "run": "core-20261115-183134-ca15f8b",
+   "status": "exit 0, wall 63.0 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-183134-ca15f8b",
+   "n": 64,
+   "mode": "stencil",
+   "dx": 0.5,
+   "particle_file": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/gauss_h0p25_u0p1.nrp"
+  },
+  "gboost_code_n64": {
+   "run": "core-20261115-183239-ca15f8b",
+   "status": "exit 0, wall 88.1 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-183239-ca15f8b",
+   "n": 64,
+   "mode": "code",
+   "dx": 0.5,
+   "particle_file": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/gauss_h0p25_u0p1.nrp"
+  }
+ },
+ "analysis": {
+  "gboost_code_n32": {
+   "run": "core-20261115-183121-ca15f8b",
+   "n": 32,
+   "mode": "code",
+   "dx": 1.0,
+   "summary": "vector equation: relative residual 1.000000e+00 -> 3.255030e-15, 284 V cycles; max|M| of the monitor 2.025158e-02 -> 1.858206e-04",
+   "outer_iterations": 17,
+   "rhs_vs_deposit_rel": 6.852694775113801e-16,
+   "rhs_yz_rel": 0.0,
+   "operator_check_rel": 8.051916360758715e-15,
+   "relv_factors": [
+    0.0713561,
+    0.12737030190831616,
+    0.13534939410130087,
+    0.13713698326129564,
+    0.137899300584891,
+    0.1384263659361184,
+    0.1388331566913365,
+    0.1391710637269923,
+    0.1394525691388331,
+    0.1396941938176999,
+    0.13990358873326353,
+    0.14008509408705191,
+    0.14030879962753434,
+    0.14065432267297517,
+    0.1414215140462021,
+    0.15116285383580227,
+    0.32478619686352217
+   ],
+   "relv_final": 3.25503e-15,
+   "M_monitor_before": 0.02025158,
+   "M_monitor_after": 0.0001858206,
+   "H_max_after": 1.555342e-11,
+   "Wx_centre_code": -0.08097257252670137,
+   "Wx_centre_ref": -0.08193568201022661,
+   "rel_err_Wx_inner": -0.011754457397511353,
+   "rel_err_Wx_faces": [
+    -0.008553578683354178,
+    -0.008553578683354563,
+    0.0021108968093397477,
+    0.002110896809339815,
+    0.002110896809339916,
+    0.0021108968093397477
+   ],
+   "rel_err_Wx_face_max": 0.008553578683354563,
+   "P_flux": 0.11822614734725398,
+   "P_sum": 0.1141047395755342,
+   "P_rel_err": 0.0361195142905657
+  },
+  "gboost_code_n64": {
+   "run": "core-20261115-183239-ca15f8b",
+   "n": 64,
+   "mode": "code",
+   "dx": 0.5,
+   "summary": "vector equation: relative residual 1.000000e+00 -> 1.010328e-14, 323 V cycles; max|M| of the monitor 2.292183e-02 -> 5.339288e-05",
+   "outer_iterations": 17,
+   "rhs_vs_deposit_rel": 7.567996429124746e-16,
+   "rhs_yz_rel": 0.0,
+   "operator_check_rel": 2.989358589504275e-14,
+   "relv_factors": [
+    0.07537312,
+    0.13171673137585388,
+    0.13918490927739913,
+    0.14034862868663944,
+    0.1406034061805021,
+    0.1407373546007374,
+    0.14083544813737858,
+    0.14092741152121602,
+    0.1410080633991106,
+    0.1410834012243663,
+    0.14115699435942483,
+    0.14122064919952257,
+    0.14123361575112628,
+    0.1419194436109965,
+    0.15000000825846074,
+    0.19499997577518313,
+    0.5705131426706368
+   ],
+   "relv_final": 1.010328e-14,
+   "M_monitor_before": 0.02292183,
+   "M_monitor_after": 5.339288e-05,
+   "H_max_after": 1.086031e-11,
+   "Wx_centre_code": -0.08361576828599054,
+   "Wx_centre_ref": -0.08391742716848316,
+   "rel_err_Wx_inner": -0.0035947108088402605,
+   "rel_err_Wx_faces": [
+    -0.009277142843819247,
+    -0.009277142843819728,
+    0.00173379510751366,
+    0.0017337951075132505,
+    0.001733795107513387,
+    0.0017337951075135235
+   ],
+   "rel_err_Wx_face_max": 0.009277142843819728,
+   "P_flux": 0.11612562450939508,
+   "P_sum": 0.11410473957527244,
+   "P_rel_err": 0.01771078871609455
+  },
+  "gboost_stencil_n32": {
+   "run": "core-20261115-183111-ca15f8b",
+   "n": 32,
+   "mode": "stencil",
+   "dx": 1.0,
+   "summary": "vector equation: relative residual 1.000000e+00 -> 2.375761e-11, 195 V cycles; max|M| of the monitor 2.025158e-02 -> 1.831849e-04",
+   "outer_iterations": 12,
+   "rhs_vs_deposit_rel": 8.565868468892251e-16,
+   "rhs_yz_rel": 0.0,
+   "operator_check_rel": 4.751384449272905e-11,
+   "relv_factors": [
+    0.0713561,
+    0.12737030190831616,
+    0.13534939410130087,
+    0.13713698326129564,
+    0.137899300584891,
+    0.1384263659361184,
+    0.1388331566913365,
+    0.1391710637269923,
+    0.13945258521071685,
+    0.13969394721835368,
+    0.13990381957879608,
+    0.14009924694976325
+   ],
+   "relv_final": 2.375761e-11,
+   "M_monitor_before": 0.02025158,
+   "M_monitor_after": 0.0001831849,
+   "H_max_after": 0.00471033,
+   "Wx_centre_code": -0.08097257252108025,
+   "Wx_centre_ref": -0.08193568201022661,
+   "rel_err_Wx_inner": -0.011754457466115132,
+   "rel_err_Wx_faces": [
+    -0.008553578786439735,
+    -0.008553578786439203,
+    0.0021108967013026237,
+    0.0021108967013025903,
+    0.0021108967013026914,
+    0.0021108967013025903
+   ],
+   "rel_err_Wx_face_max": 0.008553578786439735,
+   "P_flux": 0.11822614733489316,
+   "P_sum": 0.1141047395755342,
+   "P_rel_err": 0.03611951418223702
+  },
+  "gboost_stencil_n64": {
+   "run": "core-20261115-183134-ca15f8b",
+   "n": 64,
+   "mode": "stencil",
+   "dx": 0.5,
+   "summary": "vector equation: relative residual 1.000000e+00 -> 3.020501e-11, 228 V cycles; max|M| of the monitor 2.292183e-02 -> 5.319402e-05",
+   "outer_iterations": 12,
+   "rhs_vs_deposit_rel": 7.567996429124746e-16,
+   "rhs_yz_rel": 0.0,
+   "operator_check_rel": 6.041970493163174e-11,
+   "relv_factors": [
+    0.07537312,
+    0.13171673137585388,
+    0.13918490927739913,
+    0.14034862868663944,
+    0.1406034061805021,
+    0.1407373546007374,
+    0.14083544813737858,
+    0.1409274300234868,
+    0.14100791359690282,
+    0.14108427744631408,
+    0.14115413729088833,
+    0.14121888147950398
+   ],
+   "relv_final": 3.020501e-11,
+   "M_monitor_before": 0.02292183,
+   "M_monitor_after": 5.319402e-05,
+   "H_max_after": 0.001421079,
+   "Wx_centre_code": -0.08361576827966288,
+   "Wx_centre_ref": -0.08391742716848316,
+   "rel_err_Wx_inner": -0.0035947108842438414,
+   "rel_err_Wx_faces": [
+    -0.009277142944898288,
+    -0.009277142944897988,
+    0.0017337949966423692,
+    0.0017337949966419936,
+    0.001733794996642642,
+    0.0017337949966424035
+   ],
+   "rel_err_Wx_face_max": 0.009277142944898288,
+   "P_flux": 0.11612562449688582,
+   "P_sum": 0.11410473957527244,
+   "P_rel_err": 0.01771078860646491
+  }
+ },
+ "V3": {
+  "sphere": {
+   "run": "core-20261115-183655-f406d54",
+   "status": "exit 0, wall 67.9 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-183655-f406d54",
+   "summary": "vector equation: relative residual 2.733161e-02 -> 4.544402e-12, 320 V cycles; max|M| of the monitor 7.783900e-04 -> 9.938907e-04",
+   "outer_iterations": 22,
+   "H_max_after": 1.070115e-12,
+   "relv_final": 4.544402e-12,
+   "M_monitor_before": 0.00077839,
+   "M_monitor_after": 0.0009938907,
+   "LW_max": 0.001051584751800132,
+   "Abar_max": 0.04423134172397873,
+   "W_max": 0.0006973263975102039,
+   "LW_over_Abar": 0.02377465188287621
+  },
+  "strained": {
+   "run": "core-20261115-183804-b034153",
+   "status": "exit 0, wall 77.4 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-183804-b034153",
+   "summary": "vector equation: relative residual 2.733161e-02 -> 1.832493e-12, 359 V cycles; max|M| of the monitor 7.783900e-04 -> 9.941025e-04",
+   "outer_iterations": 24,
+   "H_max_after": 2.163389e-12,
+   "relv_final": 1.832493e-12,
+   "M_monitor_before": 0.00077839,
+   "M_monitor_after": 0.0009941025,
+   "LW_max": 0.0012033062220913851,
+   "Abar_max": 0.04427422857785373,
+   "W_max": 0.0014509091999931178,
+   "LW_over_Abar": 0.027178479687690982
+  }
+ },
+ "V5": {
+  "sphere": {
+   "run": "core-20261115-185501-a7a32cd",
+   "status": "exit 0, wall 114.6 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-185501-a7a32cd",
+   "summary": "vector equation: relative residual 1.472297e-02 -> 5.696839e-05 (stalled), 384 V cycles; max|M| of the monitor 7.783900e-04 -> 2.522449e-06",
+   "outer_iterations": 44,
+   "H_max_after": 1.664432e-12,
+   "relv_final": 5.696839e-05,
+   "M_mean_before": 7.078779240834595e-06,
+   "M_mean_after": 1.883891337032101e-07,
+   "M_max_before": 0.0007783899765058085,
+   "M_max_after": 2.522427043732701e-06
+  },
+  "strained": {
+   "run": "core-20261115-185657-a7a32cd",
+   "status": "exit 0, wall 119.4 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-185657-a7a32cd",
+   "summary": "vector equation: relative residual 1.472297e-02 -> 5.667992e-05 (stalled), 384 V cycles; max|M| of the monitor 7.783900e-04 -> 2.540115e-06",
+   "outer_iterations": 44,
+   "H_max_after": 1.662068e-12,
+   "relv_final": 5.667992e-05,
+   "M_mean_before": 7.078779240834595e-06,
+   "M_mean_after": 1.885465684560083e-07,
+   "M_max_before": 0.0007783899765058085,
+   "M_max_after": 2.5365618053830497e-06
+  },
+  "gboost_n64": {
+   "run": "core-20261115-185858-a7a32cd",
+   "status": "exit 0, wall 77.7 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-185858-a7a32cd",
+   "summary": "vector equation: relative residual 1.000000e+00 -> 9.638329e-07, 149 V cycles; max|M| of the monitor 2.292183e-02 -> 3.833323e-08",
+   "outer_iterations": 17,
+   "H_max_after": 1.088563e-11,
+   "relv_final": 9.638329e-07,
+   "M_mean_before": 8.751723915758116e-05,
+   "M_mean_after": 2.5510768607096617e-09,
+   "M_max_before": 0.022921832643853807,
+   "M_max_after": 3.982328224249545e-08
+  },
+  "evolution": {
+   "run": "core-20261115-190018-a7a32cd",
+   "status": "exit 0, wall 264.6 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-190018-a7a32cd",
+   "time": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0,
+    1.25,
+    1.5,
+    1.75,
+    2.0
+   ],
+   "H_max": [
+    8.288080936947722e-06,
+    0.0006059313455139151,
+    0.0005758630458862705,
+    0.0004831085744451435,
+    0.0005704607454804809,
+    0.000703129495871738,
+    0.000627750592123629,
+    0.0006574492263939715,
+    0.0006800750175868944
+   ],
+   "H_mean": [
+    1.187629944756693e-07,
+    1.145115544769613e-05,
+    1.652499714627053e-05,
+    1.84220491285137e-05,
+    2.60962157696361e-05,
+    3.565252874396485e-05,
+    4.254191086399839e-05,
+    4.779577595913568e-05,
+    5.325130822858753e-05
+   ],
+   "M_max": [
+    2.105996191331258e-05,
+    0.0001281581277789504,
+    0.0002259984300240954,
+    0.000307476310278863,
+    0.0003055150226289751,
+    0.0003090903553867897,
+    0.0003020620937668664,
+    0.0002920105326288536,
+    0.0003034524124428813
+   ],
+   "M_mean": [
+    6.796591295678626e-07,
+    1.004097776136614e-05,
+    1.821230140970333e-05,
+    2.381194383090033e-05,
+    2.794987465596108e-05,
+    3.128274457039526e-05,
+    3.420001863179934e-05,
+    3.720832310072802e-05,
+    4.071505780659269e-05
+   ]
+  }
+ },
+ "V7": {
+  "gauss_code_n32": {
+   "reference_exe": "/data/haiyangw/nrpic/scratch/core/exe/core_id-solver/athena_cpu",
+   "reference": "core-20261115-190636-9ff0184",
+   "final": "core-20261115-190648-9ff0184",
+   "files": [
+    "gauss.cstat.hst",
+    "gauss.field.00000.bin",
+    "gauss.idsolve.bin",
+    "gauss.idsolve.txt",
+    "gauss.nrpic.hst",
+    "gauss.z4c.user.hst"
+   ],
+   "differ": []
+  },
+  "torus_code_p1_n32": {
+   "reference_exe": "/data/haiyangw/nrpic/scratch/core/exe/core_id-solver/athena_cpu",
+   "reference": "core-20261115-190659-9ff0184",
+   "final": "core-20261115-190710-d3f79be",
+   "files": [
+    "torus.cstat.hst",
+    "torus.field.00000.bin",
+    "torus.idsolve.bin",
+    "torus.idsolve.txt",
+    "torus.nrpic.hst",
+    "torus.z4c.user.hst"
+   ],
+   "differ": []
+  },
+  "gboost_stencil_n32": {
+   "reference_exe": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve/exe_7f118b9/athena_cpu",
+   "reference": "core-20261115-190721-d3f79be",
+   "final": "core-20261115-190731-d3f79be",
+   "files": [
+    "gboost.cstat.hst",
+    "gboost.field.00000.bin",
+    "gboost.idsolve.bin",
+    "gboost.idsolve.txt",
+    "gboost.idvector.bin",
+    "gboost.nrpic.hst",
+    "gboost.z4c.user.hst"
+   ],
+   "differ": [
+    "gboost.idsolve.txt"
+   ]
+  }
+ }
+}

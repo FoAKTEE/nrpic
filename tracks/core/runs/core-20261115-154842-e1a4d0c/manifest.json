@@ -1,0 +1,43 @@
+{
+ "run_id": "core-20261115-154842-e1a4d0c",
+ "owner": "core",
+ "purpose": "Test T4 of JOURNAL-clump.md: clump particles with one orthonormal velocity (the first paper's rule), residual with the curvature of the total momentum",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-clump/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-clump/tracks/core/analysis/clump/run_static.py",
+  "--set",
+  "t4",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-154842-e1a4d0c",
+  "--jobs",
+  "8"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-154842-e1a4d0c",
+ "commit": "e1a4d0c8f51d7e1332c46bef249532aab4fbbaca",
+ "branch": "core/clump-curvature",
+ "uncommitted_changes": [
+  "?? tracks/core/analysis/clump/static_check.py"
+ ],
+ "inputs": [
+  {
+   "path": "problems/tests/clump_static.athinput",
+   "sha256": "804f0677e191694553a81193f67a413ffca52ca4f2d34ea495915e17ff927289"
+  },
+  {
+   "path": "problems/ic/make_ic.py",
+   "sha256": "dec0d9348b051f3b40a575039677f2ed6498b59b8c4fb6c77b6a8cb745eb6411"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "53c0d32b6b1c5af2a18bdbe2a13edc62930a37a9582629d2baf78ecfa40e20e1"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-154842-e1a4d0c",
+ "host": "anta",
+ "start_utc": "2026-11-15T15:48:42Z",
+ "cores": 8,
+ "wall_time_s": 52.55,
+ "exit_status": 0,
+ "core_hours": 0.1168
+}

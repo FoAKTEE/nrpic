@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261115-160625-1311116",
+ "owner": "core",
+ "purpose": "Smoke test of the example inputs problems/clump/clump_moving.athinput (one cycle) and clump_spin.athinput (t = 0) with the generator commands of their headers, 10^5 stratified particles",
+ "kind": "scouting",
+ "command": [
+  "bash",
+  "-c",
+  "set -e; mkdir -p /data/haiyangw/nrpic/scratch/core/core-20261115-160625-1311116/moving /data/haiyangw/nrpic/scratch/core/core-20261115-160625-1311116/spin; /data/haiyangw/nrpic/wt/core-clump/.venv/bin/python /data/haiyangw/nrpic/wt/core-clump/problems/ic/make_ic.py clumps --gaussian 0.2,1,0,0,0,0.06,0,0 --N 100000 --seed 1 --out /data/haiyangw/nrpic/scratch/core/core-20261115-160625-1311116/moving --prefix particles; /data/haiyangw/nrpic/wt/core-clump/.venv/bin/python /data/haiyangw/nrpic/wt/core-clump/problems/ic/make_ic.py clumps --gaussian 0.2,1,0,0,0,0,0,0,0,0,0.04 --N 100000 --seed 1 --out /data/haiyangw/nrpic/scratch/core/core-20261115-160625-1311116/spin --prefix particles; cd /data/haiyangw/nrpic/scratch/core/core-20261115-160625-1311116/moving; /data/haiyangw/nrpic/wt/core-clump/.work/build_cpu/src/athena -i /data/haiyangw/nrpic/wt/core-clump/problems/clump/clump_moving.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-160625-1311116/moving time/nlim=1 > athena.log 2>&1; cd /data/haiyangw/nrpic/scratch/core/core-20261115-160625-1311116/spin; /data/haiyangw/nrpic/wt/core-clump/.work/build_cpu/src/athena -i /data/haiyangw/nrpic/wt/core-clump/problems/clump/clump_spin.athinput -d /data/haiyangw/nrpic/scratch/core/core-20261115-160625-1311116/spin > athena.log 2>&1; echo moving; cat /data/haiyangw/nrpic/scratch/core/core-20261115-160625-1311116/moving/clump.z4c.user.hst; echo spin; cat /data/haiyangw/nrpic/scratch/core/core-20261115-160625-1311116/spin/clump.z4c.user.hst"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-160625-1311116",
+ "commit": "13111162f02e4e91a22a0fd0e0e705934ebe045c",
+ "branch": "core/clump-curvature",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "problems/clump/clump_moving.athinput",
+   "sha256": "0ce18849b855cb2cb09222164c4ffad01d71910c9a7bec0335207c6302f16d1e"
+  },
+  {
+   "path": "problems/clump/clump_spin.athinput",
+   "sha256": "df306aee9577be4afdd79f516a995b6392a91c9a4247697ddc0bc4325408a631"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "53c0d32b6b1c5af2a18bdbe2a13edc62930a37a9582629d2baf78ecfa40e20e1"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160625-1311116",
+ "host": "anta",
+ "start_utc": "2026-11-15T16:06:26Z",
+ "cores": 1,
+ "wall_time_s": 37.05,
+ "exit_status": 0,
+ "core_hours": 0.0103
+}

@@ -1,0 +1,87 @@
+READY: executables of branch core/clump-curvature for scouting runs (decision 0013)
+================================================================================
+
+Published by core, work package clump. Scouting only: production waits for the merge
+into main and a release. Questions and defects: a message to core.
+
+Files in this directory
+  athena_gpu    card executable (A100, CUDA 12.6), sha256 in SHA256SUMS
+  athena_cpu    processor executable
+  COMMIT        the source commit of both builds, and what differs at the branch tip
+  examples/     one input per new option (below); each header has its generator command
+  generator/    python/nrpic and problems/ic of the same commit (make_ic.py with the
+                model `clumps` and the options `--clump-curvature`,
+                `--clump-momentum-rule`); run it from where it is, it finds its package
+  SHA256SUMS
+
+Behaviour without the new options: identical to release core-v0.3
+(.work/build_{gpu,cpu}_v03). Byte-identical data files on processors for the inputs of
+nrpic_cf with tables, Gaussians, a spheroid and punctures, the Oppenheimer-Snyder table
+with particles, a Bowen-York puncture with momentum, spin and correction, and the first
+paper's two-overdensity run (two cycles, 10^4 particles, eight levels) (test R); on the
+card for the first and third of these (test G).
+
+New options (problem generator nrpic_cf, block <problem>, a component of type gaussian)
+  comp<c>_p1, _p2, _p3   momentum P of the clump: sum of m_p u_(i,p) over its particles
+                         (Cartesian, covariant); default 0
+  comp<c>_s1, _s2, _s3   spin S of the clump about its centre; default 0
+The generator adds K_ij = psi^-2 Abar_ij with Abar_ij the Bowen-York curvature smeared
+with the Gaussian (closed form with erf), which solves the momentum constraint for a
+clump whose particles carry that momentum density. It adds linearly to the Bowen-York
+curvature of punctures (the same option names on type puncture) and to a table of
+format 2. All six zero or absent: no curvature. comp<c>_corr on a Gaussian stops the run.
+AthenaK takes on the command line only parameters the input file has: list the six with
+value 0 in the input if a variant switches them on.
+
+Example inputs (examples/; processors unless said)
+  clump_moving.athinput    momentum: comp0_p1 = 0.06 (P/m = 0.3), 64^3 cells, 2 M
+  clump_spin.athinput      spin: comp0_s3 = 0.04, initial data only
+  clump_puncture.athinput  two clumps with momenta (one also with spin) beside a
+                           Bowen-York puncture with momentum, initial data only
+  jeans_mc.athinput        the first paper's two overdensities with the clump curvature
+                           (particles and table of runs/jeans/n1e4_v19; a card run)
+Particles: python3 generator/problems/ic/make_ic.py clumps \
+               --gaussian m,sigma,x,y,z,px,py,pz[,sx,sy,sz] [--gaussian ...] \
+               [--puncture m,x,y,z[,px,py,pz[,sx,sy,sz]]] --N <per clump> \
+               --seed 1 --out <rundir> --prefix particles
+writes particles.nrp and particles.json; put athenak.problem of the JSON (it has
+comp<c>_p1..3 = the momenta of the sample) into the input. --clump-momentum-rule
+gaussian (default of clumps: every particle the same share of the momentum, the
+constraint holds in the continuum) or velocity (one velocity, the first paper's rule:
+3 percent of the uncorrected residual stays for a clump with psi = 1.08 at its centre).
+
+What is tested (journal tracks/core/JOURNAL-clump.md and interface
+tracks/core/interfaces/moving_clumps.md on branch core/clump-curvature; run ids there)
+  - derivation checked symbolically; Python reference: divergence equals 8 pi times the
+    momentum density to 2e-11, P_ADM = P and J_ADM = S to 2e-14
+  - one moving clump (m 0.2, sigma 1, P/m 0.3): momentum-constraint norm with the
+    curvature 0.127, 0.019, 5.7e-4 of the uncorrected one at 32, 64, 128 cells (what the
+    particle cloud and filter do to the Gaussian); equal-mass particles reach the
+    continuum part from 10^6 particles on (64 cells)
+  - Hamiltonian residual added by the curvature = -psi^-12 Abar_ij Abar_ij cell by cell
+    (single precision of the dumps), second order: 1 : 4 : 9 for P = 0.02, 0.04, 0.06
+  - spin: ratio 0.23, 0.032, 1.1e-3 at 32, 64, 128 cells; curvature field equal to the
+    reference to 2e-10
+  - two clumps (one with spin) beside a Bowen-York puncture with momentum: projection
+    of the residual on the clumps' smooth field -0.0003 (0.9997 without their
+    curvature); clump-puncture cross term in H equal to the reference to 7e-9
+  - one clump evolved 2 M (64 cells, processors): momentum-constraint norm at most 0.083
+    of the uncorrected run's; the Hamiltonian norm stays at 0.026-0.030 where without
+    the curvature it grows six-fold in 1.5 M
+  - the first paper's two-overdensity data at t = 0: the run's record reproduced in six
+    digits; with the curvature the smooth part of the momentum-constraint violation is
+    gone (projection 1.001 -> 0.021), the norm falls only 3.6 percent (the rest is
+    particle noise of 10^4 particles)
+  - card executable: records at t = 0 equal the processor's in all printed digits
+
+Not tested, or not there
+  - Gaussian components only. Equilibrium clumps (tables) with a bulk momentum, which
+    Track F's object (b) needs, are not implemented (interface section 8, item 1: the
+    formula is the same with the table's enclosed moments).
+  - No correction of psi for the second-order Hamiltonian residual.
+  - Evolution: one clump for 2 M on processors only; spin not evolved; one MPI rank only;
+    a single clump never on a refined mesh (the two-overdensity case is, at t = 0).
+  - A layer of cells at an outflow boundary keeps a momentum-constraint residual of
+    its own wherever K_ij does not vanish there (1e-5 for the test clump); cause untested.
+  - The sum of the particles' covariant momenta drifts by 1.6 percent in 2 M with the
+    curvature (1.3 without); not understood.
