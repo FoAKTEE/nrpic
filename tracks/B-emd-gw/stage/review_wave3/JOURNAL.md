@@ -57,3 +57,40 @@ a factor that, combined with the Poisson equation, is twice the 3/5 route (the r
 "factor 3" is then in the power spectrum, or the two lines describe different variables).
 Refuted if line 581 agrees with line 324 once the variables are matched. This is a reading
 of the source (kb-data), no run.
+
+## Outcome of L1 and L2 (run B-20261121-063617-6183015)
+
+`lw3_crit1.json`, `lw3_crit1.png` in the run directory (copied to `results/`, `figs/`).
+
+- Copies: the three committed JSON files equal their registered outputs byte for byte.
+- **L1 HOLDS except one pair, marginally REFUTED as written**: the two readings agree to 1 per
+  cent of the error or better on every number except the X plus amplitude at x1, N = 48 (waves
+  4.3616e-7, verifier 4.2346e-7, +3.0 per cent) and N = 64 (1.5384e-7 against 1.3775e-7,
+  +11.7 per cent), as predicted, and except the F cross amplitude at N = 64 (-3.2037e-8 against
+  -3.1697e-8: 1.07 per cent, 3.4e-10 absolute), which my 1 per cent bound did not allow; at
+  N = 64 the F amplitude error is 3e-8 and a 3e-10 difference is the round-off share of either
+  processing [JUDGEMENT]. The X plus amplitude at x10 differs by 1.25 per cent, 1.75e-9
+  absolute, inside the predicted 2e-9. Figure `figs/lw3_crit1.png` looked at: in (a) only
+  those points lie above the 1 per cent line; in (b) and (c) the plus curves of x1 leave the
+  cross from t = 4 on and the x10 plus curve lies on the cross curves.
+- **L2 REFUTED**: my third reading gives at x1 plus amplitude error 1.53836e-7, phase 3.84155e-7;
+  cross 1.39889e-7, 2.76239e-7; polarization ratio modulus -1.3947e-8, argument -1.0792e-7. That
+  is the waves reading to 1e-6 of itself (1.53836e-7, 3.84155e-7), not the verifier's 1.3775e-7.
+  At x10: plus 1.41541e-7, cross 1.40092e-7 (waves: 1.41542e-7, 1.40092e-7). The t = 0 check of
+  the basis holds (H_p'/A_p = 1 to 2e-11, imaginary part 2e-16). So two readings with different
+  code (waves/wlib and mine: direct sums over the cell centres, no projection) find the plus
+  amplitude 1.39e-8 above the cross at x1 and 1.45e-9 at x10 (a 1/A excess, rounding in the
+  data), while verifier3 finds plus = cross to 2e-9. My prediction took the verifier's side; it
+  failed. The disputed number is a property of the verifier's processing, not of the dumps.
+
+## L2b prediction (before the run): where verifier3's plus amplitude comes from
+
+verifier3 projects the whole field with its Fourier Lambda (`diag.tt_project`, rfftn and irfftn
+with the k = 0 and Nyquist planes removed), contracts with e_p in real space and takes the mode
+coefficient with a second FFT. For a TT basis tensor e_p:Lambda h(K) = e_p:h(K) exactly, so the
+two routes can differ only by rounding of the round trip or by the content the mask removes.
+Prediction: applied to the last x1 dump with verifier3's own reader and basis, the direct
+contraction e_p:c(K) gives 1.5384e-7 (plus) and the route through tt_project gives 1.3775e-7:
+the difference sits in the projection step. Refuted if the direct contraction with its basis
+and reader already gives 1.3775e-7 (then it is the reader or the basis, and I name neither as
+the cause).
