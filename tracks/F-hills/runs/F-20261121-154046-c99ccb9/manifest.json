@@ -1,0 +1,130 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "F-20261121-154046-c99ccb9",
+  "track": "F-hills",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "binary_conv BC-3 (intermediate, third pass: comparison with P1 added): R8 alone to 20.9 M, R16n alone to 7.74 M",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/F-hills/binary_conv/scripts/analyze.py",
+    "--run",
+    "R8=/data/haiyangw/nrpic/scratch/F-hills/F-20261121-130358-6cf186a",
+    "--run",
+    "R16n=/data/haiyangw/nrpic/scratch/F-hills/F-20261121-130351-04074e1",
+    "--p1",
+    "/data/haiyangw/nrpic/scratch/F-hills/F-20261119-150017-b45ec5f",
+    "--refs",
+    "/data/haiyangw/nrpic/scratch/F-hills/F-20261121-130646-56612a0/refs.json",
+    "--g2model",
+    "/data/haiyangw/nrpic/scratch/F-hills/F-20261120-222426-86392c3/model.json",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "c99ccb94aebdc77e604a69a441dbdd34fd995e84",
+    "branch": "track/F-hills",
+    "dirty": false,
+    "package": [
+      "tracks/F-hills/binary_conv"
+    ],
+    "outside_package": {
+      "count": 1,
+      "first": [
+        "?? tracks/F-hills/g2mesh/scripts/card_analysis.py"
+      ]
+    },
+    "merge_base_main": "973f2dbc2e32338b1ea99d14ee4d03719af9a8c7",
+    "worktree": "wt/F-hills"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/F-hills/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/F-hills/binary_conv/scripts/analyze.py",
+      "role": "argv",
+      "sha256": "a3431c302a8261466e8f864d0a585e415ce523f64ce98fe0bf36b740956b9ff0",
+      "bytes": 18751,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/F-hills/F-20261121-130646-56612a0/refs.json",
+      "role": "argv",
+      "sha256": "15e1f6d8333d982470c54160fa17de7221270a191084fd9900397133623c1421",
+      "bytes": 192356,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/F-hills/F-20261120-222426-86392c3/model.json",
+      "role": "argv",
+      "sha256": "91cb33667eafe8ed9cfaaeee535cd6244c6096778717181a8ebf78039db7ce4c",
+      "bytes": 325647,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/F-hills/F-20261121-154046-c99ccb9",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T15:40:46Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "F-20261121-130358-6cf186a",
+    "F-20261121-130351-04074e1",
+    "F-20261121-130646-56612a0",
+    "F-20261119-150017-b45ec5f",
+    "F-20261121-153844-fbc75ac"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 50.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.6586,
+    "gpu_hours_reserved": 30.4834,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 226,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
