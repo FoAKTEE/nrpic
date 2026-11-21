@@ -324,7 +324,7 @@ Read now: `stage/G0/SECOND_CHECK.md` (second agent, wave 2), `stage/G0/REVIEW.md
   model is not Newton even in flat space); I did not rerun the moving-binary test.
 
 **What none of us checked.**
-- The q = 4 scan at r_p = 16 M with my constructions: run F-20261121-034441-f211f65 was still running when this section was committed (pending; it does not change the verdicts).
+- The q = 4 scan at r_p = 16 M with my constructions: run F-20261121-034441-f211f65 found no result in 28 min (a few phases hit the step cap slowly) and was stopped; not done (it does not change the verdicts).
 - The HRNA self-force at 2404's own parameters and whether it explains the r0 dependence there
   (SECOND_CHECK R3, still open); a reference that converges in release radius at q = 10 (the
   wave-3a EIH reference exists but none of the G0 checks used it).
@@ -336,4 +336,4 @@ Read now: `stage/G0/SECOND_CHECK.md` (second agent, wave 2), `stage/G0/REVIEW.md
 - Whether the q = 10 input rebuilt from a GR parabola (RISKS R14) gives the intended r_p in the
   isotropic reading of the code's data (a statement about future work; nothing to check yet).
 
-Runs added with this section: F-20261121-040103-6b9074c and F-20261121-040112-d429b4c (scan released at 4 r_t, H-k0), F-20261121-040229-dad1b1b (figure). Pending: F-20261121-034441-f211f65 (q = 4, r_p = 16, capped).
+Runs added with this section: F-20261121-040103-6b9074c and F-20261121-040112-d429b4c (scan released at 4 r_t, H-k0), F-20261121-040229-dad1b1b (figure). Stopped without result: F-20261121-034441-f211f65 (q = 4, r_p = 16, capped).

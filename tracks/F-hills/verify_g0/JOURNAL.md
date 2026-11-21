@@ -260,3 +260,11 @@ binary at 10 r_t integrated to 4 r_t, as SCOPING 3 prescribes for the NR data, a
 binary released at 4 r_t in V7). At r_p = 13 M the Newton separated fraction is 0.24 or 0.42 and
 the HRNA plunge fraction 0.30, 0.16 or 0.02 depending on the start: the V7 numbers near the edge
 are properties of the construction, not of the encounter.
+
+## Entry 11 (2026-11-21 04:13 UTC): close
+
+R4e F-20261121-034441-f211f65 (q = 4, r_p = 16, capped) gave no case in 28 min; stopped (record:
+failed). The q = 4 scan beyond r_p = 9.82 M is not checked by me. VERIFIER.md has sections 1-4
+(sections 1-3 committed at fecdec04 before the earlier reviews were read; section 4 at 9d025d1e).
+Not done: H-u (moot after H-k0), q = 4 r_p = 16, the HRNA moving-binary self-force test, ledger
+table 3 beyond four rows.
