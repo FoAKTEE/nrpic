@@ -1,0 +1,62 @@
+{
+ "name": "2b (2026-11-21, window from 23:50 PST)",
+ "what": "three core source packages; packages of tracks A-F and the knowledge base from the planners; lead of Track C",
+ "items": [
+  {
+   "type": "core-src",
+   "key": "newton2"
+  },
+  {
+   "type": "core-src",
+   "key": "idsolve2"
+  },
+  {
+   "type": "core-src",
+   "key": "faces"
+  },
+  {
+   "type": "pkg",
+   "owner": "A-emd-pbh",
+   "key": "runs_ball"
+  },
+  {
+   "type": "pkg",
+   "owner": "A-emd-pbh",
+   "key": "conv_ball"
+  },
+  {
+   "type": "pkg",
+   "owner": "B-emd-gw",
+   "key": "first_source"
+  },
+  {
+   "type": "lead",
+   "owner": "C-sidm"
+  },
+  {
+   "type": "pkg",
+   "owner": "C-sidm",
+   "key": "verify_g1"
+  },
+  {
+   "type": "pkg",
+   "owner": "D-bh-dress",
+   "key": "secondary_infall"
+  },
+  {
+   "type": "pkg",
+   "owner": "E-stoch-inf",
+   "key": "usr"
+  },
+  {
+   "type": "pkg",
+   "owner": "F-hills",
+   "key": "junk_gauge"
+  },
+  {
+   "type": "pkg",
+   "owner": "kb",
+   "key": "verify_g2"
+  }
+ ]
+}
