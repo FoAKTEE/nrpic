@@ -245,6 +245,17 @@ def main():
                     row[f"p2_8_16_{nm}"] = float(np.log2(a8 / a16))
         dev[f"{T:g}"] = row
     res["deviation_from_refs"] = dev
+    # against P1 (same members at m/8 with the heavy hole): s_k - s_P1 and the Delta s ratio
+    for k in have:
+        o, p = O[k], O["P1"]
+        d = o["s"] - np.interp(o["t"], p["t"], p["s"])
+        i = int(np.argmax(np.abs(d)))
+        res[k]["vs_P1"] = dict(max_abs_diff=float(abs(d[i])), t_of_max=float(o["t"][i]),
+                               diff_at={f"{T:g}": (float(np.interp(T, o["t"], d)) if o["t"][-1] >= T
+                                                   else None) for T in TS + (17.0,)},
+                               ds_ratio_at={f"{T:g}": (res[k]["ds_at"][f"{T:g}"] / res["P1"]["ds_at"][f"{T:g}"]
+                                                       if res[k]["ds_at"][f"{T:g}"] is not None else None)
+                                            for T in TS})
     ref8 = O.get("R8") if O.get("R8") is not None and O["R8"]["t"][-1] > 40 else O["P1"]
     ref8_name = "R8" if ref8 is not O["P1"] else "P1"
     tm8 = res[ref8_name].get("t_sep_below_0.1")
