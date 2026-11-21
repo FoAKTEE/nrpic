@@ -710,3 +710,24 @@ C. P1b, m/12 (`binary_conv/inputs/p1b_R12.athinput`, tlim 200), 25 segments (--g
    C agree within 0.02 M to the pericentre; the ejected member's specific energy at infinity
    agrees within 10 percent. Refuted: a different member ejected, or energies apart by more
    than 25 percent.
+
+### Session summary (lead, batch 5)
+
+did: read R8/R12/R16n (registered analysis F-20261121-202021-3c4321e; figures read); applied
+rule P1b-D (D1 holds); closed R16n and R12 in nrpic-run; submitted A (P1b m/16,
+F-20261121-203144-b2cf16b), B (R16n extension to 120 M, F-20261121-203156-03efdd3) and C (P1b m/12,
+F-20261121-203247-961801d, held) with predictions above; started the sequencer
+(`binary_conv/scripts/seq_release.sh`, pid in scratch/F-hills/seq/seq.pid); took the digitized
+2402 numbers out of git; updated stage G1 (T4 row, OPEN item 1), RISKS (R15, new R19), review.
+found: m/12 = m/16 for the binary alone within 0.002 M to 21 M (converged); the converged pair
+still shrinks by 0.196 M in 20 M and departs from EIH by 0.17 M; the stretch fit puts a merger
+near 95 M. The extrapolation of batch 3 (m/16 survives 210-500 M) is refuted as reasoning.
+evidence: F-20261121-202021-3c4321e; finishes of F-20261121-130351-04074e1, -153707-1eaa5d4.
+changed my mind about: the decay at m/16 being a resolution effect (it is not: it no longer
+changes between m/12 and m/16).
+open: runs A, B, C (days of queue); the stop criterion on B; KHSR; p1 to 280 M; note; g2mesh
+(its uncommitted card_analysis.py left alone); G1 verifier.
+failed predictions this session: L7's D2 clause (Delta s_16(20) predicted 0.00-0.06 M, got
+0.196); binary_conv BC-4 item 2 (R16n within 0.05 M of EIH by 20 M: 0.174) and its survival
+extrapolation. Met: L7 monotone sequence and Delta s_12(15) range; BC-1 item 2.
+card-hours used this session: 0 run; queued 57.7 (A 25.9 G1, B 10.9 G2, C 20.9 G2).

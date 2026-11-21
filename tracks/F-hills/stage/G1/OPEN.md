@@ -1,11 +1,13 @@
-# G1 of F-hills: what the gate still lacks (2026-11-21, lead, batch 4a)
+# G1 of F-hills: what the gate still lacks (2026-11-21, lead, batch 5)
 
 1. **A complete vacuum Hills passage (T4, CHECKLIST C8).** P1 (run F-20261119-150017-b45ec5f)
    ended at t = 280 M, but its binary merged at t = 48.8 M before the passage; the cause is the
-   m/8 member resolution (binary_conv; decision 0022 item 4). P1b at m/16 is prepared
-   (`binary_conv/inputs/p1b_R16n.athinput`) and announced in STATUS.md (32 card-hours); it is
-   submitted when rule P1b-D holds (JOURNAL.md, batch 4a): it waits for R16n segments 2-3
-   (Slurm 4807, then its successor) and R12 (Slurm 4809).
+   m/8 member resolution (binary_conv; decision 0022 item 4). Rule P1b-D held in batch 5 (clause
+   D1; analysis F-20261121-202021-3c4321e): P1b at m/16 runs as chain F-20261121-203144-b2cf16b
+   (31 segments, tlim 200; days of queue). Open risk R19: the converged isolated binary shrinks
+   (0.196 M by 20 M); the R16n extension F-20261121-203156-03efdd3 (to 120 M) decides whether the
+   pair survives to the pericentre. Second resolution of the passage: F-20261121-203247-961801d
+   (m/12, held until the extension ends; released by `binary_conv/scripts/seq_release.sh`).
 2. **F-pre-1: KHSR (1201.4794)** not reproduced (G0 verifier D8); one result planned with
    newton3 (`e_orb`, processor minutes; SCOPING 5). (C6)
 3. **Note (C15, C17).** The G1 revision of `note/main.tex` is written (paused package);

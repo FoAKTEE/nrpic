@@ -227,3 +227,25 @@ named to orch for awareness.
 p1 (analysis to 280 M; P1's chain ended DONE at t = 280 M on 2026-11-21 01:19 PST and is
 finished in nrpic-run by me in this session), note (paused), g2mesh (`scripts/card_analysis.py`
 uncommitted, left alone).
+
+## Batch 5 (lead, 2026-11-21 afternoon): binary_conv's queued chains read; rule P1b-D
+
+Rerun from the registered outputs: analysis F-20261121-202021-3c4321e over R8
+(F-20261121-130358-6cf186a, to 20.94 M), R12 (F-20261121-153707-1eaa5d4, to 21.06 M) and R16n
+(F-20261121-130351-04074e1, to 23.34 M); both chains closed in nrpic-run (completed; 60 and 52
+files checksummed). Figures read: `fig_orbit_conv.png` (the m/12 curve lies under the m/16 curve
+throughout; m/8 apart), `fig_horizons_H.png` (masses flat at m/12-m/16, rms H 6e-4, 1.4e-4,
+4.5e-5 for m/8, m/12, m/16).
+
+| binary_conv claim or prediction | verdict | what the track does |
+|---|---|---|
+| BC-1 item 2: R16n's Delta s(15) at most half of R8's 0.305 M | CONFIRMED (0.0865) | - |
+| BC-4 item 2: R16n departs from EIH by at most 0.05 M by 20 M | WRONG (0.174 M) | replaced before the data by rule P1b-D (batch 4a); recorded as failed |
+| BC-4 item 2: m/16 survives the 100 M of a passage ("merges after 500 M; even p = 2: 210 M") | NOT CONFIRMED; the extrapolation is refuted as reasoning: the decay left at m/12-m/16 does not shrink with resolution (stretch fit: merger at 93-97 M) | R16n extended to 120 M beside P1b (run B); RISKS R19 |
+| R12 decides whether m/12 suffices (BC-5) | CONFIRMED that m/12 = m/16 for the binary alone within 0.002 M to 21 M | P1b at m/12 queued as the second resolution of the passage (run C, held) |
+| member masses flat at m/16 (BC-1) | CONFIRMED (-3.9e-5, -5.5e-5 per M) | - |
+| README "Results" table, separation at 20 M "(queued)" for m/16 | outdated | numbers above; README to be updated by the next binary_conv session |
+
+Rule P1b-D: clause D1 holds (monotone 0.305 > 0.088 > 0.0865 M; p = 12.0; continuum loss
+0.0864 M at 15 M); D2 applies only without R12 and would fail (0.196 > 0.10 M). P1b submitted
+(F-20261121-203144-b2cf16b). Details and predictions: JOURNAL.md, batch 5.
