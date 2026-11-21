@@ -423,7 +423,7 @@ P = 355.44(41) M, A = 0.008586(35); rms of the residual 8e-4. HOLDS: drift's val
 quoted digits. Figure `fig_controls.png` looked at: the dashed fits follow both controls; the
 largest rise of alpha_c is 0.0334 at 201.5 M (CC1) and 0.0185 at 206.75 M (CC2).
 
-## 2026-11-21 04:05 UTC Entry 10: outcome of D1 for CC1 (job 2); job 3 submitted; job 5 added
+## 2026-11-21 03:59 UTC Entry 10: outcome of D1 for CC1 (job 2); job 3 submitted; job 5 added
 
 D1 job 2 (run C-20261121-025633-bb8dac4, Slurm 4756) ran 03:22:34-03:57:15 UTC, exit 0 for the
 smoke run and both runs (1039 and 1036 s for 300 M); closed with `nrpic-run finish`. D3 job 3
