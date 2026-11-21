@@ -43,11 +43,16 @@ D1 = [  # name, model key, energy mode, seed
     ("cc1_kn10_part_s1", "cc1", "particle", 1),
     ("cc1_kn10_part_s2", "cc1", "particle", 2),
     ("cc2_kn10_cell_s2", "cc2", "cell", 2),
+    # added after job 2 (JOURNAL entry 10): the cell-mode seed scatter of CC1, whose particle
+    # runs collapsed 1.4 M later than the one wave-2 cell run
+    ("cc1_kn10_cell_s2", "cc1", "cell", 2),
+    ("cc1_kn10_cell_s3", "cc1", "cell", 3),
 ]
 # jobs of two runs each (300 M at 3.42-3.46 s per M is about 17-18 min per run); the CC2
 # pair first (the review's question is whether CC2's collapse is an artefact)
 D1_JOBS = [("d1_job1", ("cc2_kn10_part_s1", "cc2_kn10_part_s2")),
-           ("d1_job2", ("cc1_kn10_part_s1", "cc1_kn10_part_s2"))]
+           ("d1_job2", ("cc1_kn10_part_s1", "cc1_kn10_part_s2")),
+           ("d1_job5", ("cc1_kn10_cell_s2", "cc1_kn10_cell_s3"))]
 
 
 def header(name, lines):

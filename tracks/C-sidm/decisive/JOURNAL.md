@@ -422,3 +422,74 @@ the registered analysis after job 2 repeats it): CC1 P = 399.24(31) M, A = 0.015
 P = 355.44(41) M, A = 0.008586(35); rms of the residual 8e-4. HOLDS: drift's values to the
 quoted digits. Figure `fig_controls.png` looked at: the dashed fits follow both controls; the
 largest rise of alpha_c is 0.0334 at 201.5 M (CC1) and 0.0185 at 206.75 M (CC2).
+
+## 2026-11-21 04:05 UTC Entry 10: outcome of D1 for CC1 (job 2); job 3 submitted; job 5 added
+
+D1 job 2 (run C-20261121-025633-bb8dac4, Slurm 4756) ran 03:22:34-03:57:15 UTC, exit 0 for the
+smoke run and both runs (1039 and 1036 s for 300 M); closed with `nrpic-run finish`. D3 job 3
+(d3_kninf, d3_kn1_part_s1) submitted at 03:57 UTC as run C-20261121-035737-295e5c3, Slurm
+4764 (no other C-* job in the queue). Analysis C-20261121-035741-b3595d4 (jobs 1 and 2, the
+wave-2 runs; figures `fig_d1_lapse.png`, `fig_d1_diff.png`, `fig_d1_budget.png`,
+`fig_controls.png` looked at). Numbers [VERIFIED] from its `summary.json`.
+
+| quantity | cell s1 (wave 2) | part s1 | part s2 |
+|---|---|---|---|
+| t_c record / linear crossing (M) | 184.25 / 184.018 | 185.0 / 184.928 | 186.0 / 185.847 |
+| alpha_min = 0.5 / 0.4 crossing (M) | 166.22 / 177.81 | 166.90 / 178.54 | 167.79 / 179.51 |
+| D25 / D50 / D100 / D150 | 0.00259 / 0.01311 / 0.05069 / 0.1288 | 0.00260 / 0.01334 / 0.04917 / 0.1253 | 0.00281 / 0.01388 / 0.04878 / 0.1244 |
+| t(dalpha >= 0.01), t(dalpha >= 0.03) (M) | 44.25, 76.5 | 45.0, 77.75 | 43.25, 76.5 |
+| collisions per particle before t_c (count z) | 2.4828 (-0.30) | 2.4888 (-0.75) | 2.4956 (-1.83) |
+| first-step sum_P (n_coll) | 24.41630 (31) | 24.41389 (31) | 24.39603 (27) |
+| first excision; non-finite (M) | 193.75; 289.5 | 194.5; none to 300 | 195.25; 249.75 |
+
+Curve scatter: part s2 - part s1 rms 5.9e-4 (0-100 M), 2.8e-3 (100-175 M); part - cell s1
+mean over 100-174 M -2.0e-3 and -3.6e-3 (both particle seeds below the cell run from about 95 M,
+figure `fig_d1_diff.png`, right).
+
+Against entry 2 and entry 8 (CC1):
+- (a) D100 part mean 0.04898 against cell 0.05069: -1.7e-3, inside the bound 2e-3: HOLDS,
+  narrowly; sign "particle contracts more": FAILED (it contracts less, as in CC2).
+- (b) |D100(s1) - D100(s2)| = 3.9e-4, inside 2e-4 to 4e-3: HOLDS for CC1; curve rms 5.9e-4.
+- (c) both CC1 particle runs reach alpha_min < 0.3 before 300 M: HOLDS.
+- (d) seed scatter of t_c about 4 M (band 1-12 M): 0.92 M: FAILED, just below the band. The
+  scatter is five times that of CC2 (0.17 M).
+- (e) t_c(part mean) - t_c(cell s1) = +1.37 M: inside -15 to +3 M: HOLDS; central value -5 M
+  FAILED (sign opposite: particle later). Below the cause criterion (6 M, the measured scatter
+  being below 2 M): the defect is not a cause of the CC1 collapse. The shift is 2.1 times the
+  sigma from the particle seeds alone (0.65 M); one cell seed, so a mode effect of about 1 M
+  (0.7 percent of t_c) is neither shown nor excluded.
+- (f) particle budget to t_c: summed dH at most 2.8e-16 and 2.85e-16 of sum M H (HOLDS), +1.96e-21
+  and +1.98e-21 M per collision (HOLDS), one-signed FAILED (14 and 12 negative steps, at most
+  -3.1e-20 M; cumulative sum positive throughout), n_noroot = 0 to t_c (HOLDS; first at 188.5
+  and 188.75 M, 1787 and 1783 by the excision: FAILED for "to the first excision"), n_balance
+  6.0e-4 and 5.4e-4 to 150 M (HOLDS), 2.9e-3 and 3.2e-3 to t_c (FAILED), max_dlam 8.6e-3 and
+  7.6e-3 to 150 M (HOLDS), 0.22 and 0.19 to t_c (FAILED); sum M H -1.07 percent at 100 M, -20
+  percent at t_c (magnitude clause FAILED as for CC2).
+- (g) collisions per particle before t_c 2.489 and 2.496 against the scaled 2.493 and 2.507:
+  HOLDS (-0.2, -0.4 percent; entry 8: within 1 percent, HOLDS); |z| < 4: HOLDS; first-step
+  sum_P of s1 9.9e-5 relative from wave 2 (HOLDS), s2 0.3 pairing sd (HOLDS); n_trunc = 0.
+- (h) rest mass bit-identical before excision, deposit identity 2.4e-15 and 2.7e-15, cost 3.45
+  and 3.44 s per M: HOLD.
+- Entry 8 (D1-CC1): both t_c within 1.0 M of 184.02 M: FAILED for s2 (+1.83 M; s1 +0.91 M);
+  |t_c(s1) - t_c(s2)| < 1.0 M: HOLDS (0.92); rms of the seed difference over 0-100 M below
+  2e-3: HOLDS (5.9e-4); dH and n_noroot clauses: HOLD. Its refutation clause is met: the mean
+  particle-mode collapse moved by more than 1 M, so the threshold model is more sensitive than
+  CC2 to the realisation or to the operator (seed scatter 0.92 against 0.17 M) [VERIFIED for the
+  realisation; the operator part needs the cell scatter].
+
+Reading [JUDGEMENT]: near the collisionless threshold a fixed perturbation shifts the collapse
+time more, so the realisation matters more for CC1 than for CC2; the systematic offset of both
+particle seeds from the one cell run (from 95 M on) is what a mode effect would look like, but
+one cell seed cannot tell it from that run's own realisation.
+
+Job 5 (added; within the cap): `inputs/d1_job5.list` = cc1_kn10_cell_s2, cc1_kn10_cell_s3 (decks
+from `scripts/decks.py d1`, the wave-2 CC1 deck with rng_seed 2 and 3 and `coll_energy = cell`,
+which leaves the particles' evolution that of the release operator; card executable of
+collisions-2 as for every run here). Package total with it: 5 jobs x 0.58 = 2.9 card-hours of
+allocation (cap 3.0). Submitted after job 4, one job at a time.
+Prediction for job 5 [JUDGEMENT]: the two cell seeds have t_c (linear crossing) within 1.5 M of
+each other and of 184.02 M; their mean lies 0.5-2 M before the particle mean 185.39 M if the
+offset is a mode effect. Decision rule: with the three cell values, the mode effect is
+|mean(part) - mean(cell)| against sigma = sqrt(s_cell^2/3 + s_part^2/2), s the sample
+standard deviations; a mode effect is shown if the ratio exceeds 3, excluded at the 1 M level
+if the difference is below 0.5 M.
