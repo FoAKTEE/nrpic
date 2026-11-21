@@ -158,3 +158,93 @@ below about 1.5 M) or as a jump of the heavy hole's horizon mass; no capture as 
 followed by a growing distance. If m1 is still approaching at t = 112, it is judged later.
 Energies (newton3_fix convention): E_i against the barycentre of M and the other member is not
 conserved before the binary separates; only plotted.
+
+## Entry 4 (2026-11-20 22:45Z): outcome of the intermediate analysis (t <= 112.38 M)
+
+Runs [VERIFIED]: F-20261120-222808-0e709b6 (`nr_first/scripts/p1_analysis.py` as given, `--out`
+to its run directory; `results/p1_analysis.json`, `figures/fig_p1_analysis.png`),
+F-20261120-223001-3ca60fa (first pass of `scripts/run_all.sh`) and F-20261120-223252-ca18a81
+(second pass, adds the binary's relative orbit, the common-horizon diagnostics and the ledger
+from restart times; `results/p1_checks.json`, `ledger.json`, `baseline_tracks.json`, the five
+figures). All figures read. The baseline trajectories reproduce `nr_first/results/
+baselines_p1.json` (Newton r_min 12.068 / 5.777 M, CM pericentre 104.35 M; HRNA E1 -0.49995 u,
+E2 +0.9703 u, r_min 5.2065 / 14.399 M).
+
+THE MAIN RESULT: the binary merged at t = 48.8 M, before the passage [VERIFIED].
+- |x_1 - x_2| falls monotonically from 4.95 M at t = 0: below 2 M at t = 39.2, 1 M at 44.1,
+  0.5 M at 46.3, 0.1 M at 48.8, then to round-off (`fig_separations.png`,
+  `fig_p1_analysis.png`). The relative orbit (`fig_tracks_plane.png`, right) leaves the
+  circle of Newton and HRNA after about 10 M and curls into the centre in about a third of a
+  revolution (binary period 145 M).
+- Both member finders find a common horizon from t = 48.81 (finder 0) and 49.06 M (finder 1),
+  mass 0.2686 at first, median 0.2684, slowly drifting to 0.2688 at t = 112
+  (`fig_horizons.png`, middle). Last separate members: 0.13698 (t = 46.50) and 0.13901
+  (t = 46.81). The merger happened 24.9 M from M and 19.8 M from the grid origin (the centre of
+  the extraction spheres).
+- The binding energy from tracker positions and velocities is about -0.52 units at t = 1-20 M
+  against Newton's -0.31 (`fig_energies.png`; units 4.96e-3 M): the members' relative
+  coordinate motion is slow from the first M on (kinetic part about 0.32 of Newton's if the
+  potential part is Newton's [arithmetic]).
+- No reference has this. Newton: |x_1 - x_2| between 3.7 and 5.3 M to t = 100; HRNA 5-7.4 M;
+  EIH from the input state (eih `results/p1.json`, [TO VERIFY] context): with the velocity
+  reading the binary widens beyond 2 a_b at t = 64.9, with the canonical reading it survives.
+  The gravitational-wave inspiral time of a binary with a = 5.11 M, m1 = m2 = 0.125, e = 0.033
+  is about 3400 M (Peters' formula, (5/256) a^4 / (m1 m2 (m1 + m2)) [BACKGROUND formula,
+  arithmetic]).
+- Cause [JUDGEMENT, TO VERIFY]: a numerical loss of the members' orbital motion at m/8 (8 cells
+  per member mass, coordinate horizon about 7 cells in radius, E3), not physics: E3 measured
+  coordinate speeds of single boosted members at 0.52-0.76 of the boost speed at the same
+  resolution and gauge, and here the relative motion is slow from the start. A common horizon
+  is gauge invariant, so the merger is real in the simulation. What would decide it: the
+  isolated binary (the two members only, same a_b, momenta and gauge) at m/8 and at m/16 for
+  about 60 M; if it merges at m/8 and not at m/16, resolution is the cause. Request to the
+  lead (REQUESTS.md).
+
+Items of entry 3:
+- 1a trackers: three, 28771 common rows from t = 0 to 112.383, seven files each (six kept +
+  live), largest gap one step (3.906e-3 M), largest step 1.35e-3 M against a median of
+  0.83e-3 (no jump), all finite. MET.
+- 1b tree 1716-2400: REFUTED on the low side (decided before, entry 1): 1016-1870 MeshBlocks
+  over t = 0-112 (restart headers; 1870 at t = 5, 1016 at t = 75), below 1716 from t = 20 on;
+  never near the 2700 slots.
+- 1c 1900-2200 MeshBlock-cycles/s: segments 1-6 give 2242, 2186, 2171, 2061, 2028, 1963.
+  REFUTED by segment 1 (2 percent above); 2-6 inside. The rate falls with the tree (fewer
+  blocks per kernel launch [JUDGEMENT]).
+- 1d no non-finite value: trackers, the 225 history rows, the good horizon rows and the
+  radiated energies are finite. MET.
+- 1e history Volume: relative change exactly 0. MET.
+- Item 3, member horizon growth at t = 100 M: NOT JUDGEABLE as stated, the members do not exist
+  after t = 48.8. The rate before the merger is: m2 +7.4 percent by t = 46.8, m1 +5.7 percent
+  by 46.5, i.e. 2.0e-4 and 1.6e-4 per member mass, 1.5-1.9 times the top of the predicted
+  0.6-1.1e-4: the rate part FAILED (it would have given 12-16 percent at t = 100, inside the
+  2-25 percent band, if it had stayed linear).
+- Heavy hole below 1 percent by t = 100: +0.28 percent (1.00419 first good at t = 4.0, 1.00705
+  at t = 100). MET. After t = 93 its good searches fall on three branches 3e-4 apart in
+  relative mass (finder scatter, `fig_horizons.png` bottom).
+- 3a binary bound, not wider than 10.2 M at t <= 100: formally MET (|x_1 - x_2| <= 4.95), but
+  only because it merged; the assumption behind it (an intact binary at the passage) FAILED.
+- 3b closest approach of the centre of mass at t = 95-115 at 7-10 M: NOT DECIDED; at t = 112.38
+  the remnant is 11.82 M from M and still approaching at 0.21 (Newton's CM passed its
+  pericentre 9.76 M at t = 104.35). It is refuted unless the remnant turns before t = 115,
+  which would be outside 7-10 M; the resumed segment 8 decides.
+- 3c distances within 15 percent of Newton before t = 60: REFUTED, 33.5 percent (m1) and 31.9
+  percent (m2). The NR motion lags: the heavy hole moved 5.1 M by t = 112 against 8.0 in
+  Newton.
+P1 prediction item 2 (separation by t = 200, one member ejected, one bound): REFUTED at
+t = 48.8 M, there is no binary left to separate. Its last clause (no common horizon with the
+heavy hole by t = 280) is open: the remnant (0.268) passes M from t of about 115 on.
+Item 4 (junk energy at the spheres): not judged here (package junk_gauge). Recorded: E_rad to
+t = 112.25 M of 2.6e-4 (R = 40), 9.9e-5 (48), 5.4e-5 (70), 7.1e-6 M (90); the merger at 19.8 M
+from the centre emits after t = 48.8, so later parts of these curves are not junk.
+The eih expectation (m1 enters the region where GR captures): REFUTED for P1's data in the
+sense that it cannot happen: m1 merged with m2 24.9 M from M and never came closer to M than
+the remnant now is (11.8 M at t = 112.38).
+
+Decision on the chain [JUDGEMENT]: I leave it running (authorised: 10 card-hours). The rest of
+P1 is no longer a Hills passage, but it still gives the full-length health record (G1 T4 as a
+long three-hole run), the junk and burst signals at the spheres, and a full-GR close encounter
+of the remnant (0.268) with M at about 10 M, where the gravitational-wave loss at pericentre
+(about 4e-4 M for a parabolic orbit at 10 M [BACKGROUND formula, arithmetic]) exceeds the
+orbit's Newtonian energy. Stopping it is the lead's call (REQUESTS.md, item 3); stopping is
+`scripts/submit_chain.sh --stop <rundir>`, and the run can be resumed later from its restart
+files.
