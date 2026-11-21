@@ -236,3 +236,21 @@ fig_c4b_stencil looked at.
   (d > 0.1), 1.45e-3 (d > 0.2) (prediction failed for d > 0.05). M/8 at tau = 9.0: 2.3e-2
   (d > 0.05), 2.2e-2 (d > 0.1), 1.5e-2 (d > 0.2) (failed for d > 0.1). M/4 sits at 7e-3 in the
   whole core at tau = 3.37 (median +3.3e-3), a systematic offset, not an edge effect.
+
+## 2026-11-21 05:05 PST, entry 5: comparison with the producer's analysis; package closed
+
+After VERIFIER.md sections 1-3 were committed (c2fde301) I read runs_ball/JOURNAL.md entries
+11 and 12 (analyses A-20261121-074923-d396d73, -080558-02c3188, -081153-b92c08c), nothing
+else of that package. Every number I recomputed agrees with the producer's to the digits
+given where the estimators coincide (first detection 10.875; mass error +1.96e-2 against
+their +1.97e-2; 4 M median -4.59e-4 against -4.46e-4; C5 maxima 2.77e-3, 1.38e-2, 6.75e-3,
+5.29e-3 identical; non-finite times identical; turnaround offsets identical). Differences,
+each traced in VERIFIER.md section 4: (a) the clock at the horizon at the first detection,
+theirs -0.046 M (REFUTED), mine -0.024 (bin medians) with a lenient CONFIRMED in section 1:
+both negative, the producer's verdict is the stricter and better one; (b) field against
+finder: they judge the transient to be in the slice (line mass at the line's own marginal
+sphere), my line mass at the finder's radius agrees at 11.0 and 11.5 but not at 11.25, so I
+keep it open; (c) the M/8 first trapped line point: their reading behaves like my
+fourth-order variant (11.0, 11.25, 11.75 for M/8, M/6, M/4). New and not in their
+entries: int_E at t = 0 of BH-1R 7.9e-4 below sum_m. README.md written with the requests.
+Figures copied to figs/ (all eight looked at). No card time used.

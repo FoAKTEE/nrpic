@@ -126,3 +126,40 @@ Judging from these artefacts [JUDGEMENT]:
    forms there). G2 tables should state the particle selection, or report the edge band
    separately.
 6. Constraints ("constraints behave", line 71) were not checked by me.
+
+## 4. Comparison with the producer's analysis (read after sections 1-3 were committed, c2fde301)
+
+Read: runs_ball/JOURNAL.md entries 11 and 12 (outcomes of S, B and of entry 10), which cite
+the registered analyses A-20261121-074923-d396d73, A-20261121-080558-02c3188 and
+A-20261121-081153-b92c08c. I read the journal's numbers, not the analysis code or its
+outputs. The producer's own analysis already refutes, on its side, the items I mark WRONG:
+the claims C3-C5 given to me were the predictions of runs_ball entries 7 and 10, not the
+producer's outcomes.
+
+| Item | Producer (entry) | This verifier | Difference and cause |
+|---|---|---|---|
+| First finder detection | 10.875 (12) | 10.875 | none |
+| First slice with a trapped sphere by the particles' clocks | 10.54 (12) | 10.5 (first output with an exact horizon from bin medians), 10.625 (first output with a tracked particle past its tau_AH) | output cadence 0.125 M of the trajectories: mine are output times, theirs is interpolated |
+| m_irr against the exact slice mass at the first detection | +1.97e-2, 0.7011 against 0.6875 | +1.96e-2, 0.701055 against 0.687585 | 1e-4 in the slice mass: their four-digit masses and their locator of the trapped shell |
+| Error sequence 10.875-11.625 | 1.97e-2, 1.25e-2, 3.5e-3, -3.3e-3, -6.1e-3, -4.2e-3, -1.3e-3 | 1.96e-2, 1.25e-2, 3.7e-3, -3.1e-3, -5.9e-3, -4.2e-3, -1.3e-3 | <= 2e-4, same cause |
+| Median over the first 4 M (33 detections) | -4.46e-4 | -4.59e-4 | 1.3e-5, same cause |
+| Later error | within 1e-3 from 11.75 (3e-4 to 6.3e-4) | within 6e-4 from 11.75 | none |
+| Clock at the horizon at the first detection | -0.046 M (particles at r_h, shell 2.669: 9.785 against 9.831); REFUTED on the early side | -0.024 (bin medians at r_h), +0.024 mean of a 0.125 M wide band, individual -0.10 to +0.13; I wrote CONFIRMED within scatter | Different estimators; both values at r_h are negative. Read strictly, the claim "0 to 0.3 M past" fails by a few hundredths of M on the early side, as the producer says; my section-1 verdict is the lenient reading. I let section 1 stand as committed and record here that the producer's verdict is the stricter and better one. |
+| Is the early excess in the slice or in the finder? | in the slice [JUDGEMENT]: line Misner-Sharp mass of the line's own marginal sphere +1.0e-2 at 11.0, same dip at 11.5 (0.6862 against 0.6905) | line mass at the finder's r_h: +1.0e-2 at 11.0 (0.69546 against 0.68851, same as theirs), at 11.5 0.68628 against 0.69056 (same dip), but +9.9e-3 at 11.25 where the finder is -3.4e-3; undecided | Estimator: they evaluate the line at its own marginal sphere, I at the finder's radius, on the steep m(r) of the core edge, where 5e-3 in r is 1e-2 in m. At 11.0 and 11.5 we agree; 11.25 is the open point. I keep [TO VERIFY]. |
+| C5 BH-1R core at tau = 3.37 | 2.77e-3, REFUTED (12) | 2.77e-3 | none |
+| C5 BH-1 core at tau = 3.37, M/4, M/6, M/8 | 1.39e-2, 6.75e-3, 5.29e-3, REFUTED (11) | 1.38e-2, 6.75e-3, 5.29e-3 | none |
+| C5 BH-1 core late | 0.130, 0.078, 0.059 at tau = 9.05 | 0.128, 0.078, 0.057 at tau = 9.0 | evaluation time 9.05 against 9.0 |
+| Core turnaround mean error, R_max | +0.071, -0.011, -0.011, BH-1R -0.0012; R_max +3.9e-3, -6.4e-4, -5.5e-4, BH-1R -5.6e-5 | same to the digits given | none |
+| Per-particle trapping, BH-1R | edge bands -0.0085 (R_i 2.60), -0.0029 (2.70), -0.0020 (2.80); 108 core particles -0.0087 | band 2.603 -0.0093, band 2.703 -0.0028; 248 particles within -0.1..+0.35 of the edge -0.0021 | band widths and particle sets differ; band values agree within 1e-3 |
+| M/8 first trapped line sphere | from 11.0 to 11.75 at r 0.435-0.469, M/6 from 11.25, M/4 from 11.75 | 11.25 (2nd order, at line points), 11.0 at fourth order; M/6 11.25, M/4 11.75 at fourth order | Their reading behaves as my fourth-order variant c (all three runs agree with it); my default second-order stencil is 0.25 M late at M/8 and M/6. The reading dependence (0.75 M at M/8, none at M/16) is a result to keep. |
+| M/8 non-finite | determinant 15.03125, cstat 15.03125, z4c 15.25 (11) | nrpic and cstat 15.031, z4c and line 15.25 | none; the "near 15.5" of the claim came from the plan, not from the producer's analysis |
+| No finder result in BH-1 | 64-65 searches, all NaN; start radius 3.0 M [JUDGEMENT: finder never reached r 0.45] | same counts | I did not examine the finder settings |
+| int_E at t = 0 in BH-1R | not mentioned | 1.145039 against sum_m 1.145939 (-7.9e-4); uniform runs exact | new; cause open |
+| Constraints | mean |H| 2.5e-3 (t = 8) to 3.5e-3 (t = 16), largest 4.8-5.0 inside the horizon | not checked | - |
+
+Summary: every number I recomputed agrees with the producer's to the digits the journal
+gives, except where the estimator differs (clock at the horizon, field mass at 11.25, the
+line stencil), and each difference is traced above. Two points remain open for the lead:
+whether the 2e-2 first-detection excess is a property of the slice or of the finder (11.25
+disagrees between line and finder in my evaluation), and the 7.9e-4 int_E deficit of BH-1R
+at t = 0.
