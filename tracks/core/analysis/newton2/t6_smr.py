@@ -48,7 +48,7 @@ def main():
     fs.use_style()
     res = {}
     fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
-    fig.subplots_adjust(left=0.075, right=0.99, bottom=0.17, top=0.93, wspace=0.34)
+    fig.subplots_adjust(left=0.09, right=0.99, bottom=0.17, top=0.93, wspace=0.42)
     palette = [fs.PAL["blue"], fs.PAL["red"], fs.PAL["green"], fs.PAL["yellow"]]
     cols = {n: palette[i % len(palette)] for i, n in enumerate(a.cases)}
     labs = {n: (r"$64^3$ + one level" if "smr" in n else

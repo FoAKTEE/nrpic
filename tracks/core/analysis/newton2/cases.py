@@ -11,7 +11,11 @@ tracks/core/JOURNAL-newton2.md. Nothing here integrates particles; AthenaK does.
 against the step), t8 (self-force), t10 (regression against the branch start and the
 release); follow-ups: t4d_p64, t4d_p96 (embedded ellipsoid against resolution
 and kernels), t6c_in, t6c_x, t6c_coarse (lattice of the ball against the cell size),
-card2 (decks and list of the card job that holds T6c and T4d).
+card2 (decks and list of the card job that holds T6c and T4d); after the merge of
+releases core-v0.4 and core-v0.5: t11 (the merged processor build: Newtonian set-ups
+against release core-v0.5, cases of T1 and T3 against the files of the pre-merge build),
+card3 (decks and list of the card job of the merged card build: twins of T1, T4d at
+96^3, 128^3, 256^3).
 Output in --out (default $NRPIC_RUN_DIR, set by harness/bin/nrpic-run): one
 directory per case with input.athinput, athena.log and the files of the run, and
 cases.json (commands, wall times, exit codes).
@@ -35,6 +39,12 @@ MAIN = "/data/haiyangw/nrpic"
 EXE_NEW = os.path.join(ROOT, ".work", "build_cpu", "src", "athena")
 EXE_BASE = os.path.join(MAIN, "scratch", "core", "exe", "core_requests-adf", "athena_cpu")
 EXE_REL = os.path.join(MAIN, ".work", "build_cpu_v03", "src", "athena")
+EXE_V05 = os.path.join(MAIN, ".work", "build_cpu_v05", "src", "athena")
+SCRATCH = os.path.join(MAIN, "scratch", "core")
+# runs of the pre-merge build (source of commit c6293772) that T11b repeats
+PRE = {"fft7": os.path.join(SCRATCH, "core-20261119-144414-c629377", "fft7"),
+       "fftsp": os.path.join(SCRATCH, "core-20261119-144414-c629377", "fftsp"),
+       "sin32_sp": os.path.join(SCRATCH, "core-20261119-160919-c6a7279", "sin32_sp")}
 NEWTON = os.path.join(ROOT, "problems", "newton")
 PY = sys.executable
 
@@ -763,9 +773,117 @@ def card(out, exe, jobs, rec):
     return True
 
 
+def t11(out, exe, jobs, rec):
+    """T11, the processor build of the merged source (releases core-v0.4 and core-v0.5
+    plus this package). (a) The Newtonian set-ups of T10 and the tracer set-up
+    mesh_static with this build and with release core-v0.5, every output file byte for
+    byte (the twelve relativistic set-ups run with analysis/release/regress_v04.py).
+    (b) Cases that use the options of this package (fft7 and fftsp of T1, sin32_sp of
+    T3 with its two groups and its dumps), started from the decks of the pre-merge runs,
+    against the files of those runs. Files are classified as in the release regression
+    (identical; a: restart file differing in the 36 never-set bytes of its mesh header;
+    b: parameter dump differing in last_time lines; other)."""
+    import shutil
+    sys.path.insert(0, os.path.join(ROOT, "tracks", "core", "analysis", "dfix"))
+    sys.path.insert(0, os.path.join(ROOT, "tracks", "core", "analysis", "release"))
+    import t6_regress as t6r
+    import regress_v04 as rv
+    exes = {"new": exe, "rel": EXE_V05}
+    rec["exe_rel"] = EXE_V05
+    rec["exe_rel_sha256"] = rv.sha256(EXE_V05)
+    jobs_list = []          # (name, dir, cmd)
+    nc = t6r.newton_cases(out)
+    for case, args in nc.items():
+        for label, e in exes.items():
+            d = os.path.join(out, case, label)
+            os.makedirs(d, exist_ok=True)
+            jobs_list.append(("%s/%s" % (case, label), d, [e, "-i", args[0], "-d", d] + args[1:]))
+    prep = {}
+    for case, old in PRE.items():
+        d = os.path.join(out, case, "new")
+        os.makedirs(d, exist_ok=True)
+        prep[case] = []
+        for f in ("input.athinput", "particles.nrp", "particles.json"):
+            if os.path.exists(os.path.join(old, f)):
+                shutil.copy(os.path.join(old, f), d)
+                prep[case].append(f)
+        jobs_list.append(("%s/new" % case, d, [exe, "-i", "input.athinput", "-d", d]))
+    jobs_list.sort(key=lambda j: 0 if j[0].startswith("sin32") else 1)   # longest first
+
+    def one(j):
+        name, d, cmd = j
+        t0 = time.time()
+        rc = sh(cmd, cwd=d, log=os.path.join(d, "athena.log"))
+        print("%-22s exit %d  %.1f s" % (name, rc, time.time() - t0), flush=True)
+        return dict(name=name, cmd=cmd, exit=rc, wall_s=time.time() - t0)
+
+    with ThreadPoolExecutor(max_workers=jobs) as ex:
+        res = list(ex.map(one, jobs_list))
+    rec["cases"] = res
+    report = {"a": {}, "b": {}}
+    for case in nc:
+        report["a"][case] = rv.compare(case, os.path.join(out, case, "rel"),
+                                       os.path.join(out, case, "new"))
+    for case, old in PRE.items():
+        r = rv.compare(case, old, os.path.join(out, case, "new"), skip=tuple(prep[case]))
+        r["reference"] = old
+        report["b"][case] = r
+    bad = 0
+    for part in ("a", "b"):
+        for case, r in report[part].items():
+            bad += len(r["other"]) + (0 if r["compared"] else 1)
+            print("T11%s %-13s files %3d  identical %3d  a %d  b %d  a+b %d  other %d %s"
+                  % (part, case, r["files"], len(r["identical"]), len(r["a"]), len(r["b"]),
+                     len(r["a+b"]), len(r["other"]),
+                     [(f, r["details"].get(f)) for f in r["other"]] or ""), flush=True)
+    with open(os.path.join(out, "t11.json"), "w") as f:
+        json.dump(report, f, indent=1)
+    return bad == 0 and all(r["exit"] == 0 for r in res)
+
+
+def card3(out, exe, jobs, rec):
+    """Decks, particle files and the batch list of the card job of the merged card build:
+    the twins chk_fftsp, chk_fft7, chk_mg of T1 (T11c) and T4d at 96^3 (MeshBlocks of
+    32^3: the 48^3 of card2 stopped in the constructor of the multigrid object), at
+    128^3 with the linear cloud and both symbols and with the kernels of T2, at 256^3."""
+    ic = os.path.join(out, "ic")
+    os.makedirs(ic, exist_ok=True)
+    pf = os.path.join(ic, "wave32.nrp")
+    sh([PY, os.path.join(NEWTON, "make_ic.py"), "wave", "--out", pf, "--n", "32"])
+    per = os.path.join(NEWTON, "periodic.athinput")
+    fft = os.path.join(NEWTON, "periodic_fft.athinput")
+    wave = {"particles": {"particle_file": pf}}
+    nog = {"particles": {"newton_ngroup": 0}}
+    seven = {"particles": {"newton_fft_symbol": "seven_point"}}
+    decks = {"chk_fftsp": deck(fft, merge(wave, nog)),
+             "chk_fft7": deck(fft, merge(wave, nog, seven)),
+             "chk_mg": deck(per, wave)}
+    order = list(decks)
+    for n, mb, dt, variants in ((96, 32, 0.04*64/96, (("emb96_fft", None),)),
+                                (128, 64, 0.02, (("emb128_fft", None), ("emb128_fft7", seven),
+                                                 ("emb128_pcs_fft", PCS))),
+                                (256, 64, 0.02, (("emb256_fft", None),))):
+        pfe, H, commit = embedded_ic(out, n)
+        rec["refs"] = {"B-emd-gw": commit}
+        for name, extra in variants:
+            decks[name] = embedded_deck(pfe, H, n, mb, dt, extra)
+            order.append(name)
+    lines = ["# third card job of work package newton2 (cases.py card3): <name> <athinput>"]
+    for name in order:
+        path = os.path.join(out, name + ".athinput")
+        with open(path, "w") as f:
+            f.write(decks[name])
+        lines.append("%s %s" % (name, path))
+    with open(os.path.join(out, "card.list"), "w") as f:
+        f.write("\n".join(lines) + "\n")
+    rec["card_list"] = os.path.join(out, "card.list")
+    print("\n".join(lines))
+    return True
+
+
 TESTS = dict(card=card, t1=t1, t2=t2, t3=t3, t4a=t4a, t4b=t4b, t4c=t4c, t5=t5, t6=t6, t6b=t6b,
              t7=t7, t8=t8, t10=t10, t4d_p64=t4d, t4d_p96=t4d_p96, card2=card2,
-             t6c_in=t6c, t6c_x=t6c_x, t6c_coarse=t6c_coarse)
+             t6c_in=t6c, t6c_x=t6c_x, t6c_coarse=t6c_coarse, t11=t11, card3=card3)
 
 
 def main():
