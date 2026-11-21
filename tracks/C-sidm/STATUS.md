@@ -23,7 +23,7 @@ next:        1. drift run (v), N = 1e4 on M/4 (0.3 card-hours; command drift/REA
              3. then block A of threshold_scan/SCAN.md at the N and mesh (v) points to
                 (14-23 card-hours, announced first), and decisive D2 (collision cell size)
 blockers:    none outside the track; the cause of the M/8 contraction blocks block A
-needs:       orch: G1 review (20261121T*__to-orch__gate-status-batch4a), next batch
+needs:       orch: G1 review (20261121T164658Z gate-status-batch4a; verify PASS at f1c802ef), next batch
              (20261121T163254Z next-batch-drift-close); core: ADM-energy diagnostic,
              collisions on several ranks (accepted, no date), format findings F1-F3
              (deferred); kb: conductivity and DSMC sources (received, waits for claims_tracks)
