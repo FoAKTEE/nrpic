@@ -25,7 +25,8 @@ Behaviour without the new options: identical to release core-v0.5
 (.work/build_cpu_v05 of the main checkout): byte-identical data files on processors for
 the inputs of nrpic_cf with tables, Gaussians, a spheroid and punctures (16 files), the
 Oppenheimer-Snyder table with particles on a refined mesh (9), a Bowen-York puncture
-with momentum, spin and correction (5)@JEANS@ (test R5, run core-20261121-130253-260f4e3).
+with momentum, spin and correction (5), and the first paper's two-overdensity run (two
+cycles, 10^4 particles, eight levels; 20) (test R5, run core-20261121-130253-260f4e3).
 
 New options (problem generator nrpic_cf, block <problem>, a component of type table,
 format 1: an equilibrium cluster model)
@@ -116,7 +117,16 @@ What is tested (run ids in the journal and in section 6 of the interface)
     history files and cell data byte-identical (test M1)
 
 What is not tested, and known limits
-  - @M2@
+  - THE CARD EXECUTABLE athena_gpu HAS NOT YET BEEN RUN ON A CARD BY THIS PACKAGE. Its
+    check M2 (the run v0.3 of the first test again, against that run) was queued behind
+    seven jobs when this was written: Slurm 4803, run core-20261121-132629-47ccb97; its
+    outcome goes into the journal and section 6 of the interface. Every card run named
+    above used the card build of the same three source files before the merge of
+    release core-v0.5 (commit cbe1e3ef, sha256 3aaeb746...). What speaks for the
+    published build until then: the processor build of the same source gives byte-
+    identical data to the build before the merge with the new options on (M1) and to
+    release core-v0.5 without them (R5), and card and processor of one source agreed to
+    1e-14 over 34.5 M
   - a failed part of the first test stays on record: with shift_eta = 2 the centre does
     not move at v (0.65 of v t after 50 M), also with comp<c>_boost_shift
   - the binary is not shown to be circular: its separation still falls by 1.2 per cent

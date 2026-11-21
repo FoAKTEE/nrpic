@@ -1395,3 +1395,76 @@ Result for the choice of tool: the radial correction and the mesh solver give th
 second-order psi for a moving cluster to 3 per cent rms once the faces of the solver's
 box are at 32 M (7 per cent at 16 M, from its face condition); the mesh solver needs a
 uniform mesh and far faces, the radial tables need neither.
+
+### Outcomes of M1 and R5 (run `core-20261121-130253-260f4e3`, 13:02Z to 13:51Z, 48 min on one core, exit 0)
+
+- **M1 HELD.** TB at 32 and 64 cells with the merged processor build (sha256
+  3c662c4a...) against run `core-20261120-222933-0a01a56` (build of cbe1e3ef): the ten
+  cases (rest, v = 0.1 and 0.3, `curv` and `corr`) have byte-identical history files and
+  byte-identical cell data in every dump; the 45 numbers of the residual analysis are
+  equal (largest relative difference 0). The merge of releases core-v0.4 and core-v0.5
+  did not change the data of a moving table component.
+- **R5 HELD.** Release core-v0.5 against the merged build without the new options:
+  `regress_cf` 16 files, `cf_table_regress` 9, `by_static` 5, `jeans` (two cycles) 20:
+  all byte-identical; the t = 0 record of `jeans` equals that of the first paper's run
+  in every column but the round-off of a zero (2.3e-26 against 1.2e-26).
+
+### M2 not run yet; a slip with the queue (13:21Z to 13:27Z)
+
+- The card build of the merged source was ready at 13:12Z (987 s; sha256 8b7e050e...).
+  When TF ended I submitted M2 in one command line that printed the number of card
+  jobs of owner core (2: another session had submitted one twelve seconds before) and
+  submitted anyway: three jobs of core in the queue, against the rule. Withdrawn at
+  once (`nrpic-run stop`, run `core-20261121-132104-4377815`, closed as stopped; no card
+  time). Submitted again at 13:26Z when core had one job left: Slurm 4803, run
+  `core-20261121-132629-47ccb97` (list `card_m2.list`, now with `z4c/shift_eta=2.0`
+  because the example input carries 0.1). At 13:51Z it is eighth in the queue, behind
+  jobs that have been running for half an hour each: not waited for.
+- Judging it when it has run: `harness/bin/nrpic-run finish core-20261121-132629-47ccb97`,
+  then `nrpic-run submit ... -- bash tracks/core/analysis/clump2/run_tf_analysis.sh
+  core-20261121-125455-bf583c8 core-20261121-132629-47ccb97` (its last step compares
+  `v0.3` of M2 with `v0.3` of TC; prediction M2 above), and the row M2 of the interface.
+
+### Published; state at the end of session 4 (13:55Z)
+
+Card time of the package: 0.886 card-hours used (TC 0.13, TE 0.37, TF 0.39); M2 will add
+about 0.04. Processor runs of this session: D/EN/FX2 (5 min), M1/R5 (48 min), TS
+(7 min), TS4 (8 min), analysis of TF (1 min), all on one core each, all closed; the
+runaway restart of test D (14.3 h of one core, stopped) is the cost of a slip.
+
+Done in this package (both passes of the task):
+1. Equilibrium clusters with a bulk momentum in `nrpic_cf`: curvature from tabulated
+   radial moments, consistent particles, comoving shift; generator `make_ic.py boosted`.
+2. Second-order Hamiltonian residual: radial correction per cluster (leftover 1 to 3
+   per cent at 128 cells, falling with the cell size; added mass `M V^2/2` to 8e-6);
+   the mesh solver of the code on the same data agrees with it to 3 per cent (TS, TS4).
+3. Tests: constraints against resolution at v = 0.1 and 0.3 (TB), 50 M on a card (TC),
+   the cause of what failed there (D, TF: the damping of the shift), a binary (TE, and
+   with the lower damping in TF), card against processor (G, G2, G3), regression
+   against the releases (R, R5) and across the merge (M1).
+4. Executables published in `scratch/core/exe/core_clump-table/` with `READY`.
+
+Failed predictions on record (each in its entry above): the late coordinate speed and
+the summed momentum of TC; the comoving shift as a control; the separation of TE; the
+size of the correction's leftover before the generator fix (TB3) and the first reading
+of its cause; "J below 1e-6" by the first flux check; the speed at eta = 0.3 and the
+mean speed with the comoving shift (TF); g~_xx and the size of the shift in D; the
+centre ratio of TS4.
+
+Open, for whoever continues:
+- M2 (above). If it differs from TC by more than round-off, the published card build
+  must not be used until the cause is found: say so in `READY`'s directory by a file
+  `DEFECT` and tell core's lead.
+- The binary: one full orbit (808 M, about 1.2 card-hours at dx = M/2) with
+  `shift_eta` = 0.1 to tell an eccentricity of 0.03 from a remaining coordinate drift;
+  the momenta could then be tuned.
+- The part of the drift of the summed momentum that is not coordinates (2.5 to 3.4 per
+  cent within the first 10 M, on the time scale of the lapse): cause not tested
+  (candidate: the change from the maximal slice of the data to 1+log slicing).
+- A cluster beside a puncture in an evolution (Track F's object (b) in its real
+  setting); the cross terms of several bodies need the mesh solver on refined meshes
+  with punctures (work package idsolve2).
+- Cosmetic defects of three test figures (cut axis labels in `fig_gauge_evolution`,
+  `fig_metric_at_particles`, `fig_corr_surface`; legends over curves): the scripts were
+  not rerun for them.
+- Several ranks, the threaded build and adaptive refinement with these options: not run.
