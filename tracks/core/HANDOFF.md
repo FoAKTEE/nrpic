@@ -2,95 +2,72 @@
 
 Written for a reader with no memory of the last session. Rewritten at the end of every session.
 
-State (2026-11-21, batch 2a): release candidate core-v0.5 is written on `core/nrpic`.
-Four wave-3a source branches are merged on top of release core-v0.4, one merge commit
-each: core/scalar-3 (604e9ad8), core/build-openmp (0d0f5ba5), core/cosmo-amr (e103b3e3),
-core/mpi (c3eb42e0 = the source commit: the last commit that changes `athenak/`,
-`python/`, `problems/`, `scripts/`). `tracks/core/RELEASE-v0.5.md` has the verdict line
-(REGRESSION PASS), the regression table, the quick tests and the known defects;
-`tracks/core/CHANGELOG.md` section core-v0.5 the options and the five things that act
-without an option; `tracks/core/stage/G2/OPEN.md` (first section) the defects.
-Executables with READY: `/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v05/`
-(`athena_cpu`, `athena_gpu`, `athena_cpu_omp`, `athena_cpu_mpi`).
+State (2026-11-21, batch 4a, session core-lead-6): release core-v0.6 is on main (tag on
+984bde68) and closed except one card job. Its merged card executable PASSED the card check
+(job 4800, prediction K6 held); the release processor build of main
+(`.work/build_cpu_v06`) is byte-identical with the candidate (75 of 75). The G2 package of
+core is brought to the state after core-v0.6: G2 is NOT met (`stage/G2/OPEN.md`, first
+section). No source was changed in this session.
 Owner: core, branch `core/nrpic`, worktree `/data/haiyangw/nrpic/wt/core`.
-Run next: `cd /data/haiyangw/nrpic/wt/core && git merge --no-edit main && harness/bin/nrpic-run status core-20261121-070946-1907f7b`
-(the one open item: the card check, below).
+Run next: `cd /data/haiyangw/nrpic/wt/core && git merge --no-edit main && harness/bin/nrpic-run status core-20261121-154654-d3ec487`
 
-ONE RUN IS PENDING: the card check of `athena_gpu`, run core-20261121-070946-1907f7b,
-Slurm job 4772 (0.2 card-hours asked, nine short cases of
-`tracks/core/analysis/release/card_v05.list`). If RELEASE-v0.5.md still says "PENDING"
-in its section "Card check", close it:
-1. `harness/bin/nrpic-run finish core-20261121-070946-1907f7b`
-2. `harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 --purpose "core-v0.5: card check judged" -- python3 tracks/core/analysis/release/card_v05.py --card /data/haiyangw/nrpic/scratch/core/core-20261121-070946-1907f7b --cpu /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c --out '$NRPIC_RUN_DIR'`
-3. look at `fig_card_v05.png` of that run; judge against the predictions K1 to K6 of
-   the journal (entry of 2026-11-21T06:32Z, "Prediction of the card check"); write the
-   outcome into the journal, the section "Card check" of RELEASE-v0.5.md, the sections
-   STATUS and CARD CHECK of `scratch/core/exe/core_nrpic_v05/READY`, STATUS.md; commit,
-   push. If a check fails: it is a finding about the card executable, not a reason to
-   change the verdict line (that is the byte regression on processors); say so in
-   RELEASE-v0.5.md and tell the clerk in `tracks/core/outbox/`.
+ONE RUN IS PENDING: the release card build `.work/build_gpu_v06/src/athena` on the fifteen
+cases of `analysis/release/card_v06.list`, run core-20261121-154654-d3ec487, Slurm job
+4810 (0.1 card-hours asked; queued at 15:47Z). Prediction G6 is in the journal (entry of
+2026-11-21T15:46Z). To close it (the worktree must be clean for `nrpic-run submit`): the
+four commands in `tracks/core/RELEASE-v0.6.md`, section "Release builds against the
+candidate"; look at the three figures (`fig_card_v06.png`, `fig_card_v05.png`,
+`fig_card_pair.png`); write the outcome into that section (replace PENDING), into the
+line `athena_gpu` of `scratch/core/exe/core_nrpic_v06/READY` (it says "queued as job
+4810") and into the journal; commit, push. In `fig_card_v06.png` the dashed bounds run
+across all cases although each applies to its own cases: g_smr1's constraint-statistics
+bar (Hr_max, a ratio of rounding-level residuals, 8.8e-4 in job 4800) is bounded by
+nothing.
 
-Files to read first: `tracks/core/STATUS.md`; `tracks/core/RELEASE-v0.5.md`;
-`tracks/core/stage/G2/OPEN.md` (first section); the last entry of
-`tracks/core/JOURNAL.md`; for a capability its interface document under
-`tracks/core/interfaces/` (new: `scalar_field_3.md`, `threaded_build.md`,
-`cosmo_amr.md`, `mpi.md`, each with a last section on the release) and the journal of
-its package (`JOURNAL-{scalar3,omp,cosmo-amr,mpi}.md`).
+Files to read first: `tracks/core/STATUS.md`; the last entry of `tracks/core/JOURNAL.md`;
+`tracks/core/stage/G2/OPEN.md` (first section: is G2 met, what is missing, defects p-t);
+`tracks/core/interfaces/REQUESTS_WAVE3.md` section 5 (order of work for core-v0.7).
 
-Executables (read-only): the candidate, `wt/core/.work/build_{cpu,gpu,omp,cpu_mpi}_v05rc/
-src/athena` (= the published copies; sha256 in SHA256SUMS there); release core-v0.4
-`/data/haiyangw/nrpic/.work/build_{cpu,gpu}_v04/src/athena`. A threaded build with the
-flags of the serial build, used for one test and not published:
-`.work/build_omp_dbg_v05rc`. Build after a source change in a NEW directory:
-`scripts/build_cpu.sh`, `scripts/build_gpu.sh`, `scripts/build_cpu_omp.sh`,
-`CMAKE_EXTRA="-DAthena_ENABLE_MPI=ON" scripts/build_cpu.sh`, each with `JOBS=<n>` so
-that a session stays within six cores (card build: 13 minutes on four jobs).
+Decided in this session:
+- core-v0.7 holds W24 (relaxed-lapse fix, first), W26 core/clump-table, W27 core/oblate;
+  E's lockstep sub-steps (W25) go to core-v0.8 [maintainer's judgement; E's reply-by is
+  2026-12-05].
+- The release card check ran the whole fifteen-case list for the release build (46 s on
+  a card), not one case.
 
-How the release checks are run (each a registered run; the worktree must be clean when
-`nrpic-run submit` is called):
-- byte regression against the previous release, twelve set-ups, 5 minutes on 6 cores:
-  `analysis/release/regress_v04.py --base OLD --new NEW --out DIR --cores 6`; table and
-  figure: `analysis/release/fig_regress_v04.py RUNDIR --out DIR`
-- quick tests, 5 minutes on 6 cores: `analysis/release/quick_v05.py --serial S --omp O
-  --mpi M --out DIR --cores 6` (`--analyse-only --runs OLDDIR` evaluates again)
-- card: `nrpic-run submit --launcher batch --list
-  tracks/core/analysis/release/card_v05.list --exe <athena_gpu> --gpu-hours 0.2`, then
-  `analysis/release/card_v05.py` (above)
-For core-v0.6: copy `quick_v05.py` and `card_v05.py`, replace the cases by the examples
-of the READY files of the branches merged then, and take core-v0.5 as the base.
+G2 (CHECKLIST.md, 18 items): PASS C3, C4, C5, C8, C9, C10, C11, C13, C17, C18; FAIL C1,
+C2, C6 (verify FAIL: no note, 10 runs with record problems), C7, C12, C14,
+C15, C16. What closes it: ladder row 4 on M/8 against a collisionless control (Track C's
+drift package shows M/4 pushes clusters outward), the oblate collapse after W27, a
+coupled set-up converged three ways, a redrawn architecture schematic
+(`verify/figscripts/schem_architecture.py`), a working note, a fresh-context verifier,
+REVIEW.md/SCOPE.md in the stage directory.
+
+W24, what is known (do not rediscover): `<z4c> lapse_leak` adds
+`-(alpha/T) max(ln(alpha/alpha_0), 0)` to d_t alpha wherever alpha > alpha_0
+(`athenak/src/z4c/z4c_gauge_ext.hpp` line 19), matter or not; Track D's V-1GB (vacuum,
+faces +-384 M, M/8) grows its horizon mass by 1.27e-3 over 100-200 M against 5e-5 without
+the option; inputs and runs in `git show track/D-bh-dress:tracks/D-bh-dress/g2runs/README.md`.
+
+Executables (read-only): release core-v0.6 `.work/build_{gpu,cpu}_v06` (main checkout);
+candidate `scratch/core/exe/core_nrpic_v06/` (four, READY with the card check);
+`wt/core/.work/build_*_v06rc` build directories of the candidate.
 
 Open with other owners:
-- orch/clerk: tag, merge into main, release executables, interface documents to
-  `coord/INTERFACES/` (list in RELEASE-v0.5.md, "For the release clerk"), after the
-  card check.
-- Tracks: one message each of 2026-11-21 in `tracks/core/outbox/`
-  (`__to-<track>__core-v04-v05-answers.md`) says which of their requests releases
-  core-v0.4 and core-v0.5 serve, which are deferred (most to the five unfinished
-  branches), which declined.
-- Packages of core whose records are behind their runs: cosmo-amr (T14b judged by the
-  lead in run core-20261121-063923-5ed0a51; T10g of the same job 4763 unjudged; its
-  run manifest core-20261121-033223-e1d596b not finished), mpi (the outcome of its
-  entry 28, run core-20261120-223502-f9a2c02, manifest untracked in `wt/core-mpi`; the
-  two-card job 4733, run core-20261120-220612-431e9b8, unjudged).
-- 26 GB of restart files of run core-20261119-143232-4d1e995 and 12 GB of
-  core-20261120-220816-09f6f79 may be deleted once nothing reads them (orchestrator).
+- orch: outbox message of this session (gate status of core G2, release closed).
+- Track D: G2 null tests without `lapse_leak` until W24 is released (decision 0022).
+- Track C: its run (vi) (Slurm 4804, M/8 control to 1000 M) decides whether the M/8
+  contraction turns; core's row-4 bisection on M/8 should read it first.
+- Branches core/clump-table (tip ff11719d, holds core-v0.5 not v0.6) and core/oblate (tip
+  4f01a81f, does not hold core-v0.5): both merge main before the next release.
 
 Traps:
-- Exit status 3 of an AthenaK run is the guard's stop (`<basename>.guard.txt`), and
-  nrpic-run records such a run as failed.
-- `athena_cpu_omp` is not a byte reference, at one thread either; compare bytes with
-  `athena_cpu` or with `athena_cpu_mpi` started without mpirun.
-- The summary file of the horizon finder and the tracker file lie in the `-d`
-  directory since this release; the drivers start AthenaK inside the run directory and
-  cannot see that change.
-- Mesh restart files embed the parameter dump with the paths of the run: compare their
-  data (after `<par_end>`), as `quick_v05.py` does for the runs of package mpi.
-- A driver check that fails is first a question about the check: both FAIL verdicts of
-  the first quick run were errors of my checks (whole histories compared where local
-  columns must differ; one file's bound applied to another file).
-- AthenaK accepts on the command line only parameters that the input file has.
-- `runs/` in .gitignore also hides `tracks/core/runs/`: nrpic-run adds its manifests
-  itself; a hand-written manifest needs `git add -f`.
-- The clock: take times from `date -u`.
-- `scratch/core/` is shared by every core session: this session's temporary files are
-  in `scratch/core/tmp/lead_v05/`.
+- `nrpic-ctx ack` commits by itself (inbox_acks.txt).
+- `nrpic-stage verify` exports the committed tip and checks every run manifest; it writes
+  VERIFY_RESULTS.{json,md} into the stage directory (commit them with the report). With
+  output checksums it does not finish in 25 minutes on core's 1405 runs: use
+  `--no-checksums` (5.5 minutes) and say so.
+- A full commit hash is copied from `git rev-parse`; exit status 3 of an AthenaK run is
+  the guard's stop; `athena_cpu_omp` is not a byte reference; `runs/` in .gitignore hides
+  `tracks/core/runs/` (a hand-written manifest needs `git add -f`).
+- The clock: `date -u`. Temporary files of the lead: `scratch/core/tmp/lead_b4a/`.

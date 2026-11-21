@@ -1,9 +1,170 @@
 # What core's G2 still lacks
 
-Three states: the release candidate core-v0.5 (2026-11-21, first section), the release
-core-v0.4 (second section) and the list written after the wave-1 integration
-(2026-11-15, below, with its numbering kept; items that a release changes are named in
-the section of that release).
+Five states: the state after release core-v0.6 (2026-11-21, batch 4a, first section:
+the gate as a whole and the defects found since), the release candidate core-v0.6, the
+release core-v0.5, the release core-v0.4, and the list written after the wave-1
+integration (2026-11-15, below, with its numbering kept; items that a release changes
+are named in the section of that release).
+
+## State after release core-v0.6 (2026-11-21, batch 4a, session core-lead-6)
+
+**Is G2 met? No.** Criteria of the core sheet (brief 9.3, "G2: all of C3 passed,
+core-v0.1 released") and of every track's G2 (charter 9.2), item by item in
+`CHECKLIST.md`. What is missing, in the order it blocks:
+1. Ladder row 3 (oblate and prolate collapse) is PARTIAL. Prolate: horizon at the
+   paper's 32 M at two resolutions (32.00 M at M/16, 32.25 M at M/8), largest M_AH
+   0.967 and 0.957, the deficit falling with resolution but 3 per cent left; a third
+   resolution needs more than one card (`verify/LADDER.md`, row 3, wave 2). Oblate: no
+   oblate component in any release; the component and first collapse runs exist on the
+   unmerged branch core/oblate (`REQUESTS_WAVE3.md` W27), so the row has no released
+   evidence.
+2. Ladder row 4 (cluster stability threshold) is PARTIAL. The fates of the five models
+   agree with the paper; the bisection at M/4 (seven members, 300 M) gave no bracket by
+   the rule fixed before the runs (no member collapsed; only the migration criterion
+   written after round 1 brackets the threshold between 0.66 and 0.70 around the
+   turning point 0.6796), and the control y_c = 0.605 that collapsed on the finer AMR
+   mesh migrates at M/4 (`verify/LADDER.md`, row 4, wave 2). Track C's finer-mesh
+   controls bear on this directly: on M/4 the mesh pushes collisionless King clusters
+   outward (central lapse +0.018 and +0.033, areal r50 +5 and +9 per cent within 200 M),
+   seven to ten times less on M/8 (runs C-20261120-222533-ce50a86,
+   C-20261121-125459-f03c4ba, analysis C-20261121-140057-92742cf, numbers of Track C:
+   `git show track/C-sidm:tracks/C-sidm/drift/README.md`). An outward push of that size
+   stabilises a model [JUDGEMENT of Track C, shared here], which is what core's M/4
+   members did; so the M/4 bisection does not test the threshold, and the bisection has
+   to be repeated on M/8 or finer against a collisionless control of the same mesh run
+   as long (Track C's M/8 controls also contract slowly after 200-250 M; its run (vi)
+   to 1000 M, Slurm 4804, decides whether that turns). The growing central-lapse
+   oscillation of the cluster runs is still unexplained.
+3. Three-way convergence (C2): each direction is shown on a different set-up
+   (`verify/figs/convergence_three_way.png`: H-norm of the cluster against N, the
+   expanding ball against the cell size, gauges and boundary on the ball); no single
+   coupled set-up is converged in all three, and the cluster's fate is not converged in
+   the mesh (item 2).
+4. Products: no working note (C15), no fresh-context verifier report (C16); the
+   architecture schematic is of 2026-11-15 and shows capabilities of core-v0.4 to v0.6
+   as "to be built" (C14); the clean-export rerun (`nrpic-stage verify`, C6) result is
+   in `VERIFY_RESULTS.md`.
+
+What is met: rows 1 and 2 PASS (geodesics, Oppenheimer-Snyder; `verify/LADDER.md`),
+core-v0.1 to core-v0.6 tagged, constraints behave, minimal full-GR kinetic runs,
+constraint-norm figures, a slice mosaic with zoom boxes (`verify/figs/prolate_mosaic.png`),
+the ladder schematic, failed runs on record.
+
+**Defects found since release core-v0.6, first for core-v0.7:**
+- p. **Relaxed lapse in vacuum around a black hole** (decision 0022 item 3; Track D,
+  package g2runs): with `<z4c> lapse_leak = 0.5` the horizon of a vacuum-bubble
+  puncture shrinks in coordinates (1.40 to 0.875 M; 2.20 M without the option) and its
+  mass grows late, by [-5.6e-4, +1.27e-3] over 100-199.5 M against [-4.8e-5, +2.0e-5]
+  without the option (V-1GB against V-1B, faces at +-384 M, M/8; run
+  D-20261121-125909-06f856e, analysis D-20261121-144657-cf510fc, slice mass
+  D-20261121-150025-05937b2: M_H 1.00266 at 200 M) [numbers of Track D, not recomputed
+  by core]. With dust outside the bubble (ES-1GB) +4.2e-3 by 188 M. The term
+  `d_t alpha += -(alpha/T) max(ln(alpha/alpha_0), 0)` acts wherever alpha > alpha_0,
+  matter or not (`z4c/z4c_gauge_ext.hpp` line 19) [VERIFIED by reading]. Consequence:
+  `lapse_leak` is not usable around a black hole until fixed; gate-G2 null tests run
+  without it (decision 0022). Fix and test: `REQUESTS_WAVE3.md` W24.
+- q. Card checks of core-v0.6: the merged card executable PASSED its check (job 4800,
+  `RELEASE-v0.6.md`); item l of the candidate's section is closed. The release builds
+  of the main checkout against the candidate: `RELEASE-v0.6.md`, section "Release
+  builds against the candidate".
+- r. Not in core-v0.6, for core-v0.7: core/clump-table (equilibrium clumps with
+  momentum, executables with READY since 2026-11-21 13:52Z) and core/oblate (W26, W27).
+- s. Open limits of the initial-data solver after its second pass: items f to h below
+  and `REQUESTS_WAVE3.md` W28.
+- t. Lockstep record of the scalar field's mode functions carries RK4's phase error at
+  the top shells (k^5 dt^4/600; 2.55e-3 for the top shell at 256^3; Track E, runs
+  E-20261121-090057-19571c7, E-20261121-103157-96fee1d) [numbers of Track E]; not
+  blocking for E's gate (k <= 32 dk); W25, core-v0.8.
+
+Every other known defect is in the sections below, newest first: core-v0.6 items a to
+o, core-v0.5 items b to m, core-v0.4, and the list of 2026-11-15.
+
+## Release candidate core-v0.6 (2026-11-21): branches left out, items changed, defects
+
+**Branches left out of core-v0.6**, with the reason:
+- core/clump-table (equilibrium clumps with momentum from tables): not closed when the
+  candidate was built. Its session was running tests at 2026-11-21T12:57Z (tip
+  16cce79e, a registered run of that minute); the executables under
+  `scratch/core/exe/core_clump-curvature/` are those of the first pass of 2026-11-15.
+- core/oblate (oblate collapse of the verification ladder): not closed. Its tip
+  4f01a81f is of 2026-11-20 14:33 PST, does not hold release core-v0.5 (`git merge-base
+  --is-ancestor c3eb42e0 core/oblate` fails) and its READY of 2026-11-19 describes
+  executables older than core-v0.4.
+Nothing of either is in the source of the candidate. core/newton-2, core/z4c-faces and
+core/id-solver-2 passed the maintainer's review and are merged
+(`tracks/core/RELEASE-v0.6.md`); the byte regression against core-v0.5 passes with them
+(run core-20261121-130202-7cf7db8).
+
+Items of the lists below that core-v0.6 changes:
+- "the initial-data solver on uniform meshes without punctures" (carried from
+  core-v0.4): answered by core/id-solver-2 (static refinement, punctures of `nrpic_cf`),
+  with the limits f to h below.
+- "core/newton-2, core/z4c-faces, core/id-solver-2 unfinished" (section of core-v0.5):
+  merged.
+- 15 of 2026-11-15 (never-set restart bytes): unchanged since core-v0.4 (zero); asked
+  again by package newton2 because its pre-merge build was older than core-v0.4.
+
+Defects and limits of core-v0.6 itself (found by the packages or at the merge):
+- a. Five things change in runs with `id_solve = true` without an option
+  (`CHANGELOG.md`, section core-v0.6), first the far field at the faces: a solved
+  initial slice on a mesh with no periodic face is not the slice core-v0.5 made (psi by
+  1e-8 to 1.5e-6, W of moving matter by 2.7e-3 of its maximum); `id_far = robin` gives
+  the old bytes for matter at rest. Decided by the maintainer (journal, 12:55Z).
+- b. Faces options (`z4c_faces.md`): the faces still reflect. Expanding ball, mean |H|
+  in r < 8 at t = 16: 1.69e-2 stock, 2.12e-3 with the full set, 3.9e-5 with the faces at
+  twice the distance; the face layers stay 30 (vacuum puncture) to 100 (boosted) times
+  above the truncation level of a mesh with distant faces [numbers of the package].
+- c. Faces options: no constraint-absorbing treatment of Theta that works
+  (`sbc_theta = cpbc` and `nonwave` gain nothing; leave it at `sommerfeld`); the damping
+  options of the package were unstable in the ball and are removed (a non-zero
+  `sbc_damp_gam` or `sbc_damp_theta` stops the run). `sbc_speed = metric` is the tested
+  choice; in the vacuum puncture it is 3 per cent worse than unit speeds at t = 12.
+- d. Faces options: r in every formula is the distance from the origin of the mesh; a
+  far field centred elsewhere, a face through the origin (division by r = 0, not
+  guarded), a mesh that is not a cube, faces nearer than 16 M, reflect, inflow or user
+  faces beside outflow faces, matter near a face, adaptive refinement at a face, restart
+  with the options, several ranks and the threaded build are not tested.
+  `sbc_variant = nonwave` only together with `ghost_falloff = true` and
+  `extrap_order = 4` (on linear stock ghosts it doubles the layer of a boosted puncture).
+- e. Whole-mesh constraint norms with stock outflow faces are set from the first step
+  by the monitor reading linearly extrapolated ghost cells; judge initial data by the
+  region norms (`<particles> region_dcycle`), not by whole-mesh norms.
+- f. Solver, vector part with `id_vector_residual = code` on a refined mesh: the
+  monitor of the momentum constraint stalls at level boundaries (max|M| 2.0e-2 on the
+  refined torus against 2.6e-4 uniform) [package].
+- g. Solver, punctures: with momentum or spin the error of u has a floor set by the
+  distance R of the faces, 2.7e-4 (16 m/R)^2 for P = 0.5 m, whatever the cell size;
+  M_psi of the far-field line is not the ADM mass; three-puncture data have no
+  independent reference; use `id_residual = stencil`, or `code` with
+  `id_puncture_radius >= 3` [package].
+- h. Solver: no far field on a mesh with some periodic faces; more than one rank stops
+  with a message; trial metrics that are not conformally flat are refused; adaptive
+  refinement after t = 0 and `id_solve` with `<amr_criterion0> method = user` not run.
+- i. Fourier solver of the Newtonian mode: uniform periodic mesh in one pack, cell
+  numbers with the factors 2, 3, 5, 7, MeshBlocks stay power-of-two cubes; not tested
+  above 384^3 or with unequal cell sizes and moving particles. Group histories: at most
+  eight groups; a group cut by the periodic wrap not tested.
+- j. Newtonian mode, property of the scheme: a cold lattice with fewer than one
+  particle per cell and direction, commensurate with the mesh, is pushed as a whole by
+  the self-forces of its particles (momentum change 2.1e-3 M v at one particle per
+  eight cells, 1.15e-2 with a lattice of two cells, against 1e-5 with one particle per
+  cell and direction), on uniform meshes too [package newton2, tests T6, T6b, T6c].
+  Sample matter with at least one particle per cell and direction of the finest level.
+- k. Newtonian mode on refined meshes: one static level tested; a ball crossing the
+  level boundary keeps momentum to 5e-5 M v and energy to 4e-4, five times the uniform
+  coarse mesh; which term gives the drift is not separated.
+- l. Card checks at the time of writing: see `RELEASE-v0.6.md`, sections "Card check";
+  a row marked PENDING there is a job that had not run when the release file was
+  written.
+- m. Combinations: the faces options with a solved puncture ran (8 steps, finite, the
+  record of the solve unchanged); nothing else of the three branches was run together,
+  and none of them with adaptive refinement, threads beyond the solver's tests, or
+  several ranks.
+- n. As for core-v0.5: the capability tests of the packages and the verification
+  ladder were not rerun on the merged executables; the release rests on the byte
+  regression, on one example per branch against the branch's own executable, and on
+  the solver's regressions M1 and R2 repeated byte for byte.
+- o. Carried from core-v0.5 unchanged: items b to m of its section below.
 
 ## Release candidate core-v0.5 (2026-11-21): branches left out, items changed, defects
 

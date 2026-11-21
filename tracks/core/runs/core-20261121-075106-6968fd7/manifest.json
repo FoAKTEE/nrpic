@@ -1,0 +1,107 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-075106-6968fd7",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "newton2 T6c x analysis: conservation of the ball of T6 (across the level boundary) on a lattice of the fine cell size on 64^3 + one level and on uniform 64^3 (card job 2a)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    ".venv/bin/python",
+    "tracks/core/analysis/newton2/t6_smr.py",
+    "--run",
+    "/data/haiyangw/nrpic/scratch/core/core-20261120-221835-4870ae5",
+    "--ic",
+    "/data/haiyangw/nrpic/scratch/core/core-20261120-221659-da814e5/ic_x/spin.json",
+    "--cases",
+    "fine_x_uni64",
+    "fine_x_smr",
+    "--stem",
+    "t6c_x"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "6968fd73e072898ad14e1de02ebd9153338f4a8e",
+    "branch": "core/newton-2",
+    "dirty": false,
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/core-newton2"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-newton2/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/newton2/t6_smr.py",
+      "role": "argv",
+      "sha256": "bd5195199fd9d8cd212a8963404d1aaec5faa17fee4c06166924fa44cb894997",
+      "bytes": 5804,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261120-221659-da814e5/ic_x/spin.json",
+      "role": "argv",
+      "sha256": "536a611551aaca2097186095cb7aa3ee4d53dd6d2f26ce5ba717d4203000031c",
+      "bytes": 242,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 3.658,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-075106-6968fd7",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "799b11fcd03925c69b480844c16d166b1586122d598682777dae1e73229a4867",
+    "bytes": 582564,
+    "files": 8
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-21T07:51:07Z",
+  "started": "2026-11-21T07:51:07Z",
+  "ended": "2026-11-21T07:51:11Z",
+  "parents": [
+    "core-20261120-221835-4870ae5"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 5.9051,
+    "gpu_hours_reserved": 0.4,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 1,
+    "runs": 1363,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-21T07:51:11Z"
+}

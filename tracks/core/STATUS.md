@@ -1,46 +1,36 @@
 # STATUS of core
 
-gate:        G2 in progress (package tracks/core/stage/G2/: OPEN carries core-v0.5 and
-             core-v0.4, EVIDENCE core-v0.4, the rest is of wave 1; ladder rows 3-4:
-             verify/LADDER.md of wave 2)
-headline:    release candidate core-v0.5 is written: core/scalar-3, core/build-openmp,
-             core/cosmo-amr and core/mpi are merged into core/nrpic on top of release
-             core-v0.4, source commit c3eb42e0, none of the four left out; the byte
-             regression against core-v0.4 passes (tracks/core/RELEASE-v0.5.md). Four
-             executables are published; the card one has not run on a card yet.
-last-result: byte regression on processors, twelve set-ups: 75 of 75 items identical
-             for the serial build (run core-20261121-063859-e410ee3) and for the MPI
-             build without mpirun (core-20261121-065743-1202666); the threaded build
-             at one thread: 31 of 75, the rest at rounding level (my prediction
-             failed; core-20261121-070623-077b056). Quick tests PASS: 23 files of five
-             examples identical to the branch executables; threaded deposit with and
-             without the fine shape repeats bit for bit at 4 threads; swarm and
-             cluster on 1 and 2 ranks give the package's files (runs
-             core-20261121-065009-29b855c, judged in core-20261121-065726-bf06a85).
-             T14b of package cosmo-amr judged from its finished card job: held
-             (core-20261121-063923-5ed0a51).
-next:        1. card check of athena_gpu: Slurm job 4772 (run
-                core-20261121-070946-1907f7b): nrpic-run finish, then card_v05.py
-                (HANDOFF.md); write the outcome into RELEASE-v0.5.md, the READY and
-                the journal
-             2. release clerk: merge core/nrpic into main, tag core-v0.5, build
-                .work/build_{gpu,cpu}_v05, copy the interface documents, announce the
-                five things that act without an option (CHANGELOG.md)
-             3. core-v0.6: finish and merge core/id-solver-2, core/clump-table,
-                core/newton-2, core/oblate, core/z4c-faces; port to several ranks what
-                stops there (OPEN.md item c); the source items of OPEN.md k and l
-blockers:    none for the release record; the card check waits for the queue
-needs:       orch/clerk: tag core-v0.5 and release executables after the card check;
-             CLAUDE.md "What exists" row for core-v0.5. Tracks: exit status 3 is the
-             guard's stop; the finder's summary and the tracker file now lie in the
-             -d directory; athena_cpu_omp is not a byte reference. Packages cosmo-amr
-             and mpi: write the outcomes of T14b/T10g and of P7g and job 4733 into
-             their journals (the lead judged T14b and read P7g, RELEASE-v0.5.md).
-offers:      /data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v05/ (athena_cpu,
-             athena_gpu, athena_cpu_omp, athena_cpu_mpi, READY with every new option
-             and one example input each, COMMIT, SHA256SUMS, branches/READY.<branch>);
-             release drivers tracks/core/analysis/release/{regress_v04,quick_v05,
-             card_v05}.py and card_v05.list
-budget:      G2: 5.61 card-hours used by core's packages, 1.10 reserved (nrpic-run
-             budget, 2026-11-21); this package used none yet and reserved 0.2 (job
-             4772) of its one card-hour
+gate:        G2 NOT MET (package tracks/core/stage/G2/ brought to the state after
+             core-v0.6 on 2026-11-21: CHECKLIST 18 items, 10 PASS, 8 FAIL; OPEN.md first
+             section says what is missing; STAGE_REPORT.md from nrpic-stage report)
+headline:    release core-v0.6 closed: the card check of the merged card executable
+             PASSED (job 4800; prediction K6 held) and the release processor build of
+             main is byte-identical with the candidate (75 of 75). The release card
+             build waits in the queue (job 4810). Defect first for core-v0.7: the
+             relaxed lapse (lapse_leak) grows a black hole's horizon mass in vacuum
+             (decision 0022 item 3; Track D).
+last-result: K6 judged in core-20261121-154700-2de4974 (Newtonian 1.6e-11 of
+             processors, bound 1e-10; faces 1.9e-10, bound 1e-7; solver iterations
+             equal) and core-20261121-154710-220c1b0 (K1-K6 of core-v0.5 held); R6:
+             core-20261121-154737-dc1e4c1, 75/75 identical (figure
+             core-20261121-155317-1ee04bf).
+next:        1. job 4810 (run core-20261121-154654-d3ec487): finish, then card_v06.py,
+                card_v05.py, card_pair.py (commands in RELEASE-v0.6.md, section
+                "Release builds against the candidate"); judge against G6 (journal,
+                entry of 15:46Z); write into RELEASE-v0.6.md and READY
+             2. core-v0.7: W24 relaxed-lapse fix (test V-1GB to 5e-5), W26 clump-table
+                (merge main, review, regress), W27 oblate (merge main, T1/T2 again,
+                READY) (REQUESTS_WAVE3.md section 5)
+             3. G2: ladder row 4 bisection on M/8 against a collisionless control;
+                oblate collapse once merged; redraw the architecture schematic;
+                working note; a fresh-context verifier
+blockers:    none for the release; G2 rows 3-4 need card time (about 0.6 card-hours
+             per M/8 cluster run to 300 M) and the oblate merge
+needs:       orch: read the gate status (outbox of 2026-11-21, batch 4a); schedule a
+             verifier and a note session for core when the ladder rows close.
+             Track D: G2 null tests without lapse_leak until W24 is released.
+offers:      release core-v0.6 (CLAUDE.md); scratch/core/exe/core_nrpic_v06/READY with
+             the card check written in; release drivers tracks/core/analysis/release/
+budget:      G2: 6.58 card-hours used by core, 0.40 reserved, 33.02 left (nrpic-run
+             budget, 2026-11-21 15:55Z); job 4800 (asked in batch 3) used 46 s; this
+             session asked 0.1 for job 4810

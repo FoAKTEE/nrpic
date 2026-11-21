@@ -1,0 +1,143 @@
+# z4c_faces.athinput: the options of the outer faces of the spacetime solver
+# (athenak/src/z4c/z4c_sbc_ext.hpp; interface text coord/INTERFACES/z4c_faces.md or
+# tracks/core/interfaces/z4c_faces.md), switched on in the tested combination:
+#
+#   extrap_order  = 4        ghost cells through four cells (needs nghost >= 4)
+#   ghost_falloff = true     ... of (f - f_inf) r^q instead of f, f_inf = 1 for chi,
+#                            gt_xx, gt_yy, gt_zz, alpha and 0 otherwise
+#   sbc_variant   = nonwave  radiative condition with a non-wave part in the outermost
+#                            active cells for Khat, Gamma^i, A_ij
+#   sbc_speed     = metric   its speeds: alpha sqrt(chi / gt_ss), with shift advection
+#
+# The other lines of the block (powers, sbc_theta, sbc_v_khat) are at their defaults and
+# are listed so that each can be changed on the command line: AthenaK accepts there only
+# parameters the input file has.  With the eleven lines from sbc_variant to
+# ghost_power_curv removed and extrap_order = 2 this is a stock run, byte for byte.
+#
+# The set-up is the vacuum puncture of the package's tests: bare mass 1 at the origin (a
+# cell corner), moving-puncture gauge, static refinement (cells of 1, 1/2, 1/4), outflow
+# faces at 16.  The hole is resolved by M/4 only: the run shows the faces, not the hole.
+#
+#   athena -i problems/tests/z4c_faces.athinput -d RUN                 # to t = 12, 30 core-minutes
+#   athena -i problems/tests/z4c_faces.athinput -d RUN time/nlim=8     # 80 s
+#   ... z4c/extrap_order=2 z4c/ghost_falloff=false z4c/sbc_variant=sommerfeld z4c/sbc_speed=unit   # stock
+#   ... problem/comp0_p1=0.3 problem/comp0_corr=approx                 # Bowen-York puncture
+#   ... z4c/sbc_speed=lapse        z4c/sbc_theta=cpbc        z4c/ghost_power_curv=1.5
+#
+# What to look at: bin/punc.con.*.bin (con_H, con_M, con_Z), e.g. with
+# tracks/core/analysis/faces/analyze_evo.py --family punc --case full=RUN --out x.json --fig x
+# Mean |H| over r >= 5 at t = 8: 3.1e-6 with these options, 1.07e-4 with the stock ones,
+# 1.2e-6 with the faces at 32 (tracks/core/JOURNAL-faces.md, entry 13).
+
+<comment>
+problem   = puncture, outflow faces at 16 M, options of the outer faces switched on
+
+<job>
+basename  = punc
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = -16.0
+x1max     = 16.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 32
+x2min     = -16.0
+x2max     = 16.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 32
+x3min     = -16.0
+x3max     = 16.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 8
+nx2       = 8
+nx3       = 8
+
+<mesh_refinement>
+refinement       = static
+max_nmb_per_rank = 4096
+
+<refined_region1>
+level = 1
+x1min = -7.9
+x1max = 7.9
+x2min = -7.9
+x2max = 7.9
+x3min = -7.9
+x3max = 7.9
+
+<refined_region2>
+level = 2
+x1min = -3.9
+x1max = 3.9
+x2min = -3.9
+x2max = 3.9
+x3min = -3.9
+x3max = 3.9
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 12.0
+ndiag      = 16
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+extrap_order    = 4            # stock: 2
+sbc_variant     = nonwave      # sommerfeld | nonwave
+sbc_power_khat  = 3.0          # power of the non-wave part of Khat (exact for r^-(q-1))
+sbc_power_a     = 3.0          # ... of A_ij
+sbc_power_gam   = 3.0          # ... of Gamma^i
+sbc_theta       = sommerfeld   # sommerfeld | nonwave | cpbc (the two others gain nothing)
+sbc_power_theta = 3.0          # used with sbc_theta = nonwave
+sbc_v_khat      = 1.4142135623730951   # speed of Khat with sbc_speed = unit
+sbc_speed       = metric       # unit | lapse | metric
+ghost_falloff   = true         # ghost cells by fall-off extrapolation
+ghost_power_metric = 1.0       # q of chi, gt_ij, alpha, beta^i
+ghost_power_curv   = 1.0       # q of Khat, A_ij, Gamma^i, Theta
+
+<problem>
+pgen_name       = nrpic_cf
+ncomp           = 1
+comp0_type      = puncture
+comp0_mass      = 1.0
+comp0_x1        = 0.0
+comp0_p1        = 0.0
+comp0_p2        = 0.0
+comp0_p3        = 0.0
+comp0_s1        = 0.0
+comp0_s2        = 0.0
+comp0_s3        = 0.0
+comp0_corr      = none
+lapse           = precollapsed
+
+<output1>
+file_type = hst
+dt        = 0.25
+
+<output2>
+file_type = bin
+variable  = con
+dt        = 1.0
+
+<output3>
+file_type = bin
+variable  = z4c
+dt        = 1.0

@@ -1,0 +1,22 @@
+# Card check of release candidate core-v0.6 (prediction K6 of JOURNAL.md, 2026-11-21T12:55Z).
+# New cases: decks that quick_v06.py wrote for its processor runs (run
+# core-20261121-130813-710b3cc) and two cases of the initial-data solver staged by package
+# idsolve2 (decks equal to those of the processor replay core-20261121-131250-f8df905);
+# judged by card_v06.py.  Then the nine cases of card_v05.list, judged by card_v05.py
+# against the processor runs of core-20261121-065009-29b855c.
+#   harness/bin/nrpic-run submit --launcher batch --list <this file> --exe .work/build_gpu_v06rc/src/athena
+n_sp /data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc/n_sp/new/in.athinput
+n_7p /data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc/n_7p/new/in.athinput
+f_full /data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc/f_full/new/in.athinput
+c_cd1 /data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc/c_cd1/new/in.athinput
+p5_mov_n64 /data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/card_kc/p5_mov_n64/in.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/card_kc/p5_mov_n64/shell.nrp
+g_smr1 /data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/card_kc/g_smr1/in.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/card_kc/g_smr1/g.nrp
+s3g /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/s3g/new/deck.athinput
+usr /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/usr/new/deck.athinput
+trk /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/trk/new/deck.athinput
+peak /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/peak/new/deck.athinput
+dep /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/d_ser0/deck.athinput
+depp /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/d_ser/deck.athinput
+fine /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/f_ser/deck.athinput
+finet /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/g_ser/deck.athinput
+cluster problems/tests/mpi_cluster.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/mpi/t3_cluster/cluster.nrp problem/comp0_file=/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/mpi/t3_cluster/cluster.tab

@@ -1,0 +1,149 @@
+READY of core/newton-2 (work package newton2 of core: the Newtonian mode, second pass;
+requests of tracks B, A and D and core's deferred items). Written 2026-11-21 (batch 2b).
+Evidence and every number: branch core/newton-2, tracks/core/JOURNAL-newton2.md
+(predictions and outcomes of the tests T1 to T12 and of three card jobs, the failed
+ones included),
+tracks/core/interfaces/newtonian_mode.md sections 6 and 7 (interface, results),
+tracks/core/interfaces/REQUESTS_NEWTON2.md (triage, lines of shared files touched).
+Read a file of the branch with: git show core/newton-2:<path>. Test scripts:
+tracks/core/analysis/newton2/ (cases.py runs the cases, the other scripts judge them);
+figures and result files: tracks/core/analysis/newton2/figs/ (README.md there).
+
+STATUS
+  athena_cpu  processor executable (scripts/build_cpu.sh) of release core-v0.5 plus this
+              package (source commit in COMMIT). TESTED on processors: byte regression
+              against release core-v0.5 with the new options absent (T11a: 117 of 117
+              items identical, sixteen set-ups); the Fourier solver with both symbols and
+              the group history with its dumps give the result files of the pre-merge
+              build byte for byte (T11b: 50 files; seven restart files differ in the 36
+              never-set bytes of the mesh header only); the three example inputs below
+              run as printed (T12).
+  athena_gpu  card executable (scripts/build_gpu.sh, CUDA 12.6, one A100) of the same
+              source. TESTED on a card (Slurm 4777, run core-20261121-080215-df3af65):
+              the plane wave with the multigrid solver and with the Fourier solver and
+              both symbols equals the processor runs to 1.5e-15 of the box through
+              shell crossing, K and W to 7.3e-13 (T11c); the embedded ellipsoid at 96^3
+              (9e5 particles, 420 steps) equals its processor run to 3.2e-14 in the
+              moments of the patch (T4d twin). Not run with this executable: refined
+              meshes on a card (premerge/athena_gpu ran them: T6c).
+  premerge/athena_cpu, premerge/athena_gpu
+              the same package on the branch start (core/requests-adf), without the
+              capabilities of releases core-v0.4 and core-v0.5. TESTED: all of T1 to T10
+              on processors; on a card the plane wave with the multigrid and the Fourier
+              solver (positions equal to the processor runs to 1.4e-15 of the box
+              through shell crossing), the group history (6e-13), Track B's pancake at
+              n = 64, the throughput cases, the balls of T6c on uniform and refined
+              meshes, the embedded ellipsoid at 64^3 (card jobs 4648 and 4736).
+Without the options below a run gives the files of release core-v0.5, byte for byte
+(T11a). Every option is read only if it is present in the input. On more than one MPI
+rank `pusher = newton` stops with a message, as in the release.
+
+NEW OPTIONS, <particles> block, Newtonian mode (pusher = newton)
+1. Fourier Poisson solver on a periodic uniform mesh (Track B, Laplacian order):
+     newton_poisson    = fft        multigrid (default) | fft
+     newton_fft_symbol = spectral   spectral: Phi_k = -four_pi_G rho_k/k^2
+                                    seven_point: the symbol of the seven-point Laplacian
+                                    (the multigrid solution to rounding, no iteration)
+   Needs: periodic in all directions, no refinement, one pack, cells per direction a
+   product of 2, 3, 5, 7 (the directions may differ); MeshBlocks stay cubes with a
+   power-of-two size (96^3 cells: MeshBlocks of 32^3, not 48^3); the <gravity> block
+   stays in the input. Columns 48 and 50 of <basename>.newton.hst are zero.
+   Example:
+     python3 problems/newton/make_ic.py wave --out wave32.nrp --n 32
+     athena_cpu -i problems/newton/periodic_fft.athinput particles/particle_file=wave32.nrp -d RUN
+   Tested: T1 (seven_point equals the multigrid run to 2.2e-15 of the box at every
+   snapshot through shell crossing; spectral equals the numpy scheme of the code to
+   3.9e-16; a mesh of 48 x 80 x 112 cells to 1.8e-12 of the largest acceleration); T2,
+   Track B's pancake against Zel'dovich (largest sheet error at a = 2: n = 16 3.28e-4,
+   n = 32 9.55e-5, n = 64 4.58e-5, that is 17, 14.6 and 7.7 times below the multigrid
+   runs of the track and within 13 and 6 per cent of cosmo/newton/pm.py at n = 32, 64;
+   after the first crossings the gain is 1.2 to 5). Cost on a card with 2e6 particles:
+   0.14 s per step at 256^3 (7.3 GiB), 0.44 s at 384^3 (22.6 GiB).
+   Not tested: unequal cell sizes in the three directions with moving particles;
+   meshes above 384^3; several packs (refused).
+2. Second moments of particle groups (Track B, species history; Track A):
+     newton_ngroup         = 1      number of groups (at most 8)
+     newton_group1_species = 0      species of the group (-1 or absent: all)
+     newton_group1_tag_min = -1     first and last tag (position in the particle file;
+     newton_group1_tag_max = -1     -1 or absent: no bound)
+     newton_group1_x1 = 24.0  newton_group1_x2 = 24.0  newton_group1_x3 = 24.0
+                                    reference point of the nearest image (default: the
+                                    middle of the mesh)
+   Output <basename>.newton.g<g>.hst, 62 columns: number, mass, centroid and its
+   velocity; I_ij about the centroid in comoving coordinates with two derivatives in
+   the conformal time of the run and a difference quotient for the third; J_ij = a^2
+   I_ij in physical coordinates with derivatives in cosmic time (columns 38 to 62).
+   Format: docs/FORMATS.md, newtonian_mode.md 7.2.
+   Example (a patch as species 0 inside background particles, group 1 = the patch):
+     python3 problems/newton/make_ic.py ball --out embedded.nrp --center 24 24 24 \
+        --radius 1.5 --mass 0.75 --spacing 0.125 --ntracer 0 \
+        --axes 2.2477492612322503 3.1448230030708744 4.052021707899205 \
+        --vgrad -0.15721349249419472 -0.0944697966506601 -0.031017934277860017 \
+        --background 0 48 64 0.000583936065276324
+     athena_cpu -i problems/newton/embedded_ellipsoid.athinput particles/particle_file=embedded.nrp -d RUN
+   Tested: T3 on Track B's exact pancake (group of all particles equals the existing
+   history after the parallel-axis shift to 3.9e-12; physical columns equal the
+   conversion of the comoving ones to 7e-16; a slab as a tag range against the exact
+   solution: I to 9.1e-6, dI/dt 3.8e-5, d2I/dt2 3.9e-4, d3I/dt3 0.26 per cent rms with
+   the spectral symbol, against 3.1e-3, 4.9e-3, 9.6e-3 and 1.30 per cent with the
+   seven-point operator; a continued run writes identical files). T4b to T4d, the
+   embedded ellipsoid of Track B against its ODE at 64^3: first minimum of the short
+   axis late by 2.56 per cent (linear cloud, spectral), 1.29 per cent (linear cloud,
+   multigrid), 0.92 per cent (deposit_shape = pcs with compensation, interp = bspline,
+   spectral): the run lags the ODE where the short axis spans fewer than three cells.
+   Against the cell size the lag goes away (T4d, linear cloud, spectral: +2.56, +1.09,
+   +0.42, -0.14 per cent at 64^3, 96^3, 128^3, 256^3; cubic cloud at 128^3 -0.11): it
+   is a discretisation error. A floor against the ODE remains at every fine run: 0.1
+   per cent in the crossing time, 0.02 R_L in the short and 0.06 to 0.07 R_L in the long
+   axis before the crossing, the same for all kernels (a difference between the
+   particle patch in its periodic background and the ODE; not separated). On a card:
+   16 s at 128^3 (2.1e6 particles, 561 steps), 175 s at 256^3 (1.7e7 particles).
+   Not tested: more than two groups; a group cut by the periodic wrap.
+3. Generator of the tests, problems/newton/make_ic.py ball (Track A; no executable):
+     --axes S1 S2 S3  --vgrad D1 D2 D3  [--rotate SEED]  [--background X0 X1 NB RHO]
+   Tested: T4a (equal to Track A's make_deformed_ball.py in every position, velocity
+   and mass, with and without rotation; the JSON carries r_vol).
+
+ANSWERS WITHOUT A NEW OPTION
+- Which energy (Track A): column 6 of <basename>.newton.hst is W gathered at the
+  particles, column 7 the mesh sum. Neither is an invariant unless the deposit and the
+  gather kernel are the same function. With the defaults (linear cloud, Catmull-Rom)
+  the Layzer-Irvine constant drifts by 5e-3 of max a|W| at a shell crossing, the same
+  at half the step (T7); with deposit_shape = pcs and interp = bspline it holds to
+  3.7e-6 (embedded ellipsoid, T4d). For an energy budget use the second pair.
+- Self-force (Track D): a single particle feels its own cloud: zero at a mesh vertex
+  and at a cell centre, away from the vertex (slope 1.80 G m/dx^3, e-folding 0.75
+  (dx^3/Gm)^1/2), towards the cell centre, up to 0.97 G m/dx^2; 5.9 times smaller
+  with pcs and bspline (T8). newton_pm_mass (release core-v0.4) is not deposited and
+  has none: in Track D's infall the turnaround mass follows the closed form within 0.7
+  per cent at every snapshot for a seed at a vertex and at a cell centre alike (T5).
+- Refined meshes (core's deferred item): on one static level the multigrid solver
+  converges and gives the run of the uniform fine mesh where the matter is; a ball that
+  crosses the level boundary keeps its momentum to 5e-5 M v and its energy to 4e-4,
+  five times the uniform coarse mesh (T6c). Example:
+     python3 problems/newton/make_ic.py ball --out ball.nrp --center 0.05 -0.05 0.03 \
+        --radius 0.7 --mass 0.343 --spacing 0.03125 --ntracer 0 \
+        --velocity -0.2 0.15 -0.1 --omega 0.2 -0.3 0.6
+     athena_cpu -i problems/newton/isolated_smr.athinput particles/particle_file=ball.nrp particles/dt=0.002 -d RUN
+  This example on processors equals the card run of T6c to 2.2e-13 over 20 steps (T12).
+  Not tested: more than one level, periodic refined meshes, adaptive refinement, the
+  Fourier solver there (refused).
+
+PROPERTY OF THE SCHEME TO KNOW (newtonian_mode.md section 6 and 7.6)
+A cold lattice with fewer than one particle per cell and direction, commensurate with
+the mesh, is pushed as a whole by the self-forces of its particles: momentum change
+2.1e-3 M v at one particle per eight cells, 1.15e-2 with a lattice of two cells, in the
+first tenth of a free-fall time, against 1e-5 with one or more particles per cell and
+direction (T6, T6b, T6c). It appears on uniform meshes too. Sample matter with at least
+one particle per cell and direction of the finest level it occupies.
+
+NOT IN THESE EXECUTABLES (REQUESTS_NEWTON2.md section 1): a fourth-order Laplacian on
+isolated or refined meshes; the special-relativistic Newtonian push; snapshots at chosen
+times; the Newtonian mode on more than one rank.
+
+OPEN (stated, not hidden)
+- What the floor of the embedded ellipsoid against Track B's ODE is (T4d).
+- Which term gives the steady drift of a ball across a level boundary: not separated.
+- The self-force of a compact clump in the relativistic mode: not measured.
+- Where the time goes on isolated meshes on a card (nine to fourteen times the
+  periodic mesh at 256^3 and 384^3): not profiled.

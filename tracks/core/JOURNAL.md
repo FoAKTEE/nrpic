@@ -763,3 +763,437 @@ Not done:
      with momentum (core/clump-table). Two new requests of 2026-11-21 are unread.
 3. The inbox of core holds twelve messages of 2026-11-19 to 2026-11-21 that I listed
    and did not read or acknowledge (numbers 76 to 87 of `nrpic-ctx inbox`).
+
+## 2026-11-21T07:47Z  session core-lead-4 (batch 2b: closing release core-v0.5)
+
+State found [VERIFIED by the commands named]: `git merge --no-edit main` brought main's
+release commits (tag core-v0.5 on c3eb42e0, `coord/INTERFACES/` copies, decision 0021);
+worktree clean; no pause flag; `squeue`: no job of core. `sacct`: job 4772 (the card
+check) COMPLETED 07:42:27Z to 07:42:40Z, job 4763 (cosmo-amr T14b, T10g) COMPLETED
+20:47 to 20:57 PST of 2026-11-20, job 4733 (mpi, two cards) COMPLETED. Release
+executables: `.work/build_cpu_v05/src/athena` (sha256 222b8fa4..., 260888800 bytes)
+and `.work/build_gpu_v05/src/athena` (2512c8d5...), built by the clerk from main, whose
+`athenak/src` equals c3eb42e0 (`git diff c3eb42e0 9f7f85be -- athenak/src`: empty);
+their checksums differ from the candidate's (b462068a..., 9d08dc13...), as
+RELEASE-v0.5.md said a build in another directory may.
+
+### Card check of the candidate (prediction K1 to K6 of the entry of 06:32Z): PASS
+
+Run core-20261121-070946-1907f7b finished (all nine cases status 0, 13 s of card), judged
+in core-20261121-074846-e830785: K1 to K6 held (sums 2.3e-13 of sum m W at worst,
+identity 9.9e-16, MeshBlock counts and tracker path equal, source dumps 3.1e-14, the
+note of `deposit_threads`). Panel b of `fig_card_v05.png` (looked at) is high for s3g,
+usr, trk only: columns that are ratios of rounding-level residuals (trk: Mr_max, whose
+numerator M_max is at most 1.7e-13; s3g, usr: pointwise max |M|/[M], while <|M|>
+agrees to 4e-6 of itself) [VERIFIED from the files]. Written into RELEASE-v0.5.md
+(section "Card check", now PASS) and the READY of `core_nrpic_v05` (STATUS, NOT TESTED,
+CARD CHECK).
+
+### Predictions, written before the runs of this session
+
+S  T14b case Sf of package cosmo-amr (card run of job 4763 against T2b's processor run;
+   `analysis/cosmo_amr/t14b_sf.py`, the measures `t14_card.py` applies to U, S, A): the
+   bounds of the package's prediction for the homogeneous cases (its entry of 03:26):
+   status 0; chi and E uniform on the card to 1e-12; alpha_max equal to the processor
+   run to 1e-12 at every record; the same MeshBlock counts; identity below 1e-13.
+   Refuted by any number above its bound.
+R  Byte regression of the release processor build against the candidate
+   (`regress_v04.py --base <candidate athena_cpu> --new .work/build_cpu_v05/src/athena`,
+   twelve set-ups): all 75 items identical, classes a, b, other empty. Same source, same
+   compiler and flags; the executables differ in their bytes (paths of the build
+   directory in the debug information) [JUDGEMENT: nothing that enters the arithmetic].
+   Refuted by one differing data byte.
+G  Release card build, one short card job (the nine cases of `card_v05.list`, 13 s on a
+   card): (i) `card_v05.py` against the processor runs: K1 to K6 hold with the bounds of
+   06:32Z; (ii) `card_pair.py` against the candidate's card run of job 4772: s3g and usr
+   (scalar field, no particles, no atomic additions) byte-identical in every file; the
+   seven deposit cases not necessarily byte-identical (atomic additions in an order a
+   card does not fix), their module histories within 1e-12 of each column [JUDGEMENT].
+   Refuted for (ii) by a difference in s3g or usr, or by a deposit-case history column
+   above 1e-12.
+
+### Outcomes S and R (2026-11-21T08:00Z)
+
+S HELD. Run core-20261121-075446-4944747 (`t14b_sf.py`): Sf on the card uniform to
+  1.3e-14 (chi) and 2.3e-14 (E), alpha_max equal to T2b's processor run to 1.1e-15, 34
+  MeshBlocks at every record, identity 4.4e-16. Figure `fig_t14b_sf.png` looked at.
+R HELD. Run core-20261121-075456-a505400 (`regress_v04.py`, 6 cores): the release
+  processor build `.work/build_cpu_v05/src/athena` against the candidate `athena_cpu`:
+  75 of 75 items identical, classes a, b, other empty, every run status 0. Figure of
+  run core-20261121-080001-5da4067 looked at (twelve bars, one colour). So the release
+  executable and the candidate differ in their bytes (sha256 222b8fa4... against
+  b462068a...) and not in any output of the twelve set-ups.
+Also closed (package records, details in their journals): cosmo-amr T10g (two of five
+predictions failed as written) and mpi P6 (rate clause of P6c failed), P7g (held).
+G: card job 4775 queued (priority) since 07:54Z.
+
+### Prediction of the chain test (decision 0021 item 6), written before it runs
+
+Change of `scripts/submit_chain.sh`: an exit of the executable with status 137 or 143
+without a line "Terminating on" and without a signal to the job itself is an outside
+kill: the segment is resubmitted, at most MAX_OUTSIDE_KILLS = 2 times in a row (the count
+is reset by a segment that ends at the wall clock or the time limit); the executable
+runs as `chain/<PROC_NAME>`, a hard link to `chain/athena`, default `nrc-<8 hex of the
+rundir>`; a PROC_NAME containing "athena" is refused; a chain whose config has no
+PROC_NAME gets the default at its next segment. Test `scripts/tests/test_submit_chain.py`
+(fake sbatch and squeue, a fake executable that kills its own process id), prediction:
+A kill9, kill15, wall, tlim: QUEUED, QUEUED, QUEUED, DONE; 4 calls of sbatch.
+B kill9 three times: QUEUED, QUEUED, FAILED "killed from outside 3 times"; 3 calls.
+C kill9, kill15, wall, kill9, kill9, tlim: five times QUEUED, then DONE; 6 calls.
+D exit 1 without a message: FAILED at once ("exit status 1"); 1 call.
+E SIGKILL after "Terminating on time limit": FAILED ("exit status 137"); 1 call.
+G old config without PROC_NAME: kill9 then tlim: QUEUED, DONE, under the default name.
+H PROC_NAME=athena_run1 refused at start, no sbatch call.
+Every fake process reads its own name in /proc/self/comm as nrc-<hash>, the same for
+the segments of one chain and different between chains. Refuted by any other status
+sequence or call count, or by a process named athena. Where I am least sure: that
+/proc/self/comm of a bash script is the name of the hard link it was started through
+(the kernel takes it from the file name given to execve) [JUDGEMENT, tested here].
+
+### Outcome of the chain test, first run: FAILED by my fake, not by the script
+
+Run core-20261121-080555-9730e2a: all six status sequences, all sbatch counts, the final
+reasons and the refusal of `athena_run1` held as predicted (A to E, G, H). The name
+check failed in every scenario: the fake executable recorded the process name `bash`,
+because it began with `#!/usr/bin/env bash`, so `env` executed `bash` and the process
+took the name of that file [VERIFIED: comm.log of each scenario]. This tests the fake,
+not the chain: the name of the file the chain executes is never seen. My judgement in
+the prediction ("the kernel takes it from the file name given to execve") is what the
+second run tests, with `#!/bin/bash` (the kernel executes the linked script itself).
+Prediction for the second run: the same statuses and counts, and the name nrc-<hash>
+in every comm.log line. For AthenaK, which is an ELF binary, there is no interpreter.
+
+### Outcome of the chain test, second run: HELD
+
+Run core-20261121-080619-6a0793f (third run core-20261121-080635-3405fca: the same with
+the legend of the figure inside it; figure `fig_submit_chain.png` looked at): every
+status sequence and sbatch count as predicted (A: Q Q Q D, 4; B: Q Q F "killed from
+outside 3 times in a row (exit 137)", 3; C: five Q then D, 6; D: F "exit status 1", 1;
+E: F "exit status 137", 1; G: Q D, 2, under the default name although its config had
+no PROC_NAME); H refused with no sbatch call. Every fake process recorded its own name
+as nrc-<hash> (six different names for six chains), and `chain/athena` and
+`chain/nrc-<hash>` are one file (link count 2) [VERIFIED: `comm.log`, `ls -l`]. So the
+kernel names a process started through the hard link after the link, as predicted.
+Not tested: a real Slurm job and a real AthenaK (the change touches neither the sbatch
+line nor what AthenaK does); a running chain keeps the script it was started with
+(sbatch spools it), so chains of other owners change only after they sync with main.
+
+### Messages, triage, inbox (2026-11-21T08:05Z to 08:15Z)
+
+- Read the twelve messages 76 to 87 of the inbox and message 88 (release announcement);
+  read the requests of 2026-11-19 that `coord/REQUESTS.md` (state 14:35Z) does not list
+  (64 to 75). Triage in `tracks/core/interfaces/REQUESTS_WAVE3.md`: W1 to W20, section 3
+  for the older requests no triage text covered; three requests that arrived at 08:08Z to
+  08:11Z (A `szekeres-dumps-kij`, C `collisions-several-ranks`, `heat-conduction-tested`)
+  as W21 to W23.
+- Text answers made today, so that the triage is true: `docs/FORMATS.md` snapshot row
+  with the proper-time block (verified at `NrpicWriteSnapshot`; C's F3 quoted as C's
+  finding, not checked); `REQUESTS_ADF.md` 2.3, what E of the accretion records is (D);
+  `cosmo_gauge.md` section 8, D's ES-1G as D reports it; `collisions.md` and the READY of
+  `core_collisions-2`, heat conduction tested by C. A's request for K_ij is served by the
+  upstream group `variable = adm` [VERIFIED at `coordinates/adm.cpp`], not checked by
+  core against a known solution.
+- Posted one message per track (`20261121T0812*__to-<track>__core-v04-v05-answers.md`):
+  done with option and example input (every example input checked to exist and every
+  option name found in the source), deferred to which unfinished branch or to a package
+  without a branch, declined with the reason; and two replies at 08:13Z for W21 to W23.
+- Acknowledged every message of the inbox (0 left at 08:13Z): 76 to 88 and the three
+  late ones as read today; 1 to 75 as read and triaged by earlier sessions, which never
+  acknowledged them with the tool (the note says so).
+
+### State at the end (2026-11-21T08:16Z)
+
+Done: steps 1 to 6 of the batch-2b task except the judging of job 4775. Pending: the
+release card build on the card-check list, run core-20261121-075439-58c2787, Slurm job
+4775, queued for a card since 07:54Z (both cards busy with other jobs; a job of another
+core session, 4777, is queued too). Prediction G stands as written; the steps to close it
+are in HANDOFF.md. Card time of this session: 0.1 card-hours reserved, none used yet.
+
+## 2026-11-21T12:55Z  session core-lead-5 (batch 3: merge of three source branches, release candidate core-v0.6)
+
+### State found
+
+- `core/nrpic` at 123f407e, clean, pushed; main merged (dcdc2ad8). No pause flag.
+- The pending run of the last session, core-20261121-075439-58c2787 (release card build
+  of core-v0.5, Slurm job 4775), has run: nine cases, status 0 each (`nrpic-run status`).
+  It is judged below against prediction G of the entry of 07:47Z.
+- Branches offered [VERIFIED `git log`, `git merge-base --is-ancestor c3eb42e0`]:
+  core/newton-2 b7c9fc73 (closed, holds core-v0.5), core/z4c-faces 5d875275 (closed,
+  holds core-v0.5), core/id-solver-2 3087526a (partial: card check Kc staged, never
+  run). core/clump-table (7cc6c7b9, merged main at 04:52 PST, its session is at work)
+  and core/oblate (4f01a81f of 2026-11-20, does not hold core-v0.5, no READY for a
+  merged state) are not closed at 12:55Z; I look again before the builds start.
+
+### Review of the three diffs against main (source of core-v0.5), as maintainer
+
+core/z4c-faces (9 files, 814 lines added, none removed) [VERIFIED by reading the diff]:
+- Every option is read only if present (`SbcExt::Read`, `z4c_sbc_ext.cpp` 35-101); the
+  members default to the stock path (`variant = 0`, `theta_mode = 0`, `speed = 0`,
+  `ghost_falloff = false`); the three hooks are `if (sbc.Extended()) return ...` at the
+  top of `Z4cBoundaryRHS` and `if (sbc.ghost_falloff) GhostFalloff(...)` after the stock
+  fill in `Prolongate` and `ApplyPhysicalBCs`. So the new options are off by default.
+- How the failed byte regression was resolved (report of the package, journal entry 12
+  of the branch): not by masking a difference. The body of the option reader stood in
+  the header that `z4c.hpp` includes, and g++ 11.4 then compiled the unchanged
+  `z4c_calcrhs.cpp` with two more fused multiply-adds; the reader moved to
+  `z4c_sbc_ext.cpp`, the header keeps data members, the one-line `Extended()` and a
+  declaration. Evidence of the package: r2, 45 files of 7 set-ups byte-identical with
+  release core-v0.5, and the object comparison o1. That is the right repair; whether it
+  survives the merge with two branches that add members to `Particles` is what my
+  regression R tests (the cause is a compiler decision, so only a run says).
+- Kernel `Z4cBoundaryRHSNonwave` writes rhs of a boundary cell from rhs of the cell one
+  step inward along every direction in which it lies on a face; that cell is never a
+  boundary cell (MeshBlocks have at least four cells), so no cell is read after it was
+  written by another thread. `GhostFalloff` uses `Real G[4]` with p = `extrap_order`,
+  which `z4c.cpp` 173 clamps to 2..4. Both divide by the distance from the mesh origin:
+  a face through the origin is not guarded (documented as "not tested").
+- Removed options `sbc_damp_gam`, `sbc_damp_theta` stop the run if non-zero. Accepted.
+
+core/newton-2 (11 files, 1100 added, 37 removed) [VERIFIED by reading]:
+- Hooks: five lines in `nrpic_newton.cpp` (init of the two new parts, `if (nw_fft)` in
+  the potential, group sums after each kick and at the history); the two init functions
+  return at once unless `newton_poisson` or `newton_ngroup` is in the input and add no
+  parameter; the Fourier solver refuses a mesh that is refined, not periodic or in more
+  than one pack. `particles.hpp`: one block of 38 lines of members. Accepted.
+
+core/id-solver-2 (11 files, 1290 added, 68 removed) [VERIFIED by reading the shared
+hunks and the option reader; the 840 lines of `nrpic_idsolve.cpp` only where they
+decide defaults]:
+- Nothing is read unless `id_solve` is present and true (`NrpicIdSolveInit` 115-117).
+- `MGGravityDriver` no longer refuses `mg_bc = robin` on a refined mesh;
+  `ApplyPhysicalBoundariesOctet` goes to the new `RobinBoundaryOctet` only if `robin_`.
+  No released run can have reached either (the refusal stood in the way).
+- Five things change in runs with `id_solve = true` without an option (section 8 of
+  `id_solver2.md`): far field on by default on a mesh with no periodic face, the trace
+  of the stress in the Jacobian, punctures of `nrpic_cf` enter the solve, refined
+  meshes accepted, two more comment lines in the record.
+
+### Decision: the default `id_far = multipole` stands
+
+Asked by the package's report. Reasons: (1) against the semi-analytic continuum
+solution the plain fill of the first pass has an error of W at the faces of -8.6e-3
+and -9.3e-3 at 32 and 64 cells, which does not fall with the cell size, and the far
+field +9.3e-4 and +2.4e-4, which falls (test W1 of the package, `id_solver2.md` section
+5; off-centre: 5.6e-4 against 0.108, W2) [numbers of the package, not rerun by me];
+(2) the solver was released in core-v0.4 with gate G2 of core open and its limits
+listed, and no production run of a track rests on its bytes [JUDGEMENT: the tracks'
+solved data are scouting runs]; (3) `id_far = robin` gives the bytes of core-v0.5 for
+matter at rest (M1 of the package; my quick test Qi repeats it with the merged
+executable); (4) a torus is not affected. It enters the changelog as behaviour that
+changes without an option, with the sizes measured in M1.
+
+### The nine never-set members of the mesh header (newton-2's request)
+
+Nothing to change: `Mesh::ZeroUnusedMeshIndcs` (`mesh/mesh.cpp` 366-376) sets them to
+zero since core-v0.4, in the constructor (356) and after reading a restart header
+(`mesh/build_tree.cpp` 363) [VERIFIED by reading; changelog of core-v0.4, item 1 of the
+corrections]. The seven differing restart files of newton-2's T11b were written by its
+pre-merge build, whose source is older than core-v0.4. Prediction H below reads the
+bytes from files the candidate writes.
+
+### Predictions, written before any build or run
+
+Base of every byte comparison: `/data/haiyangw/nrpic/.work/build_cpu_v05/src/athena`.
+
+- **R** (driver `regress_v04.py`, twelve set-ups, new options absent): 75 of 75 items
+  identical, classes a, b and other empty. Refuted by one item that is not identical.
+  If it fails in the set-ups with Z4c only (east, os, c4), the first suspect is again a
+  compiler decision in files that include `z4c.hpp`; `compare_objects.py` of package
+  faces then names the object.
+- **Rm**: the MPI build started without mpirun: 75 of 75. **Ro** (threaded build at one
+  thread, not a byte reference): every run ends with status 0; geo and jeans identical,
+  the rest at rounding as for core-v0.5 (31 of 75 identical then); a difference above
+  1e-9 in a history column would be a finding.
+- **H**: in every mesh restart file the candidate writes in R (os, c5) the nine members
+  cnx1 to cke of `mesh_indcs` are zero. Refuted by one non-zero byte.
+- **Qn** (newton-2): the merged `athena_cpu` on `problems/newton/periodic_fft.athinput`
+  (wave of 32^3 particles, both symbols) with one group history writes the bytes of the
+  branch's `scratch/core/exe/core_newton-2/athena_cpu`, restart files included (both
+  sources zero the header). Refuted by a differing file.
+- **Qf** (z4c-faces): `problems/tests/z4c_faces.athinput` with `time/nlim=8`: (i) as
+  written (the full set) the bytes of the branch's `athena_cpu`; (ii) with the stock
+  values on the command line (`extrap_order=2 ghost_falloff=false
+  sbc_variant=sommerfeld sbc_speed=unit`) the bytes of the release executable run with
+  the same command line. Refuted by a differing file in (i) or (ii).
+- **Qi** (id-solver-2): (i) the package's `regress_m1.py` with the merged executable
+  against release core-v0.5 gives its M1: with `id_far = robin` Gaussian at rest,
+  expanding ball and torus byte-identical; with the default psi differs by 1e-8 to
+  1.5e-6 and nothing else of the first pass changes; (ii) `regress_r2.py --same` on the
+  case directories of run core-20261121-080135-890689a: the eight second-pass cases
+  byte-identical to the branch executable's files (79 files). Refuted by a differing
+  file in (i, robin, matter at rest) or in (ii).
+- **C** (the combinations the merge creates; none of the three branches touches the
+  code of another, so I expect no interaction): the faces options together with a
+  solved initial slice (`id_solve` on the expanding ball, then eight steps with the
+  full set of faces options) runs to the end with finite fields and with the initial
+  slice of the same run without the faces options (the solve happens before the first
+  step: `ball.idsolve.txt` identical). Refuted by a non-finite stop (status 3) or a
+  different record of the solve.
+- **Kc** (the package's prediction, entry 15 of `JOURNAL-idsolve2.md`, card executable
+  of the branch at 395e17d, sha256 0fb76bdb...): same outer iterations as processors
+  (within one on refined meshes), psi and W to 1e-12 of their maxima on uniform meshes
+  and 1e-9 on refined ones, P_ADM_x of `p5_mov_n64` = 0.5499999519755 to 1e-11; refuted
+  if an iteration count differs by more than one or a field by more than 1e-8.
+- **K6** (merged card executable, short list, at most 0.3 card-hours asked): every
+  case status 0; Newtonian plane wave with the Fourier solver: particle sums of the
+  history equal to processors to 1e-10 relative; faces example (8 steps, full set):
+  constraint norms of the history equal to processors to 1e-7 relative; two cases of
+  the id solver (`p5_mov_n64`, `g_smr1`): iteration counts as on processors (within one
+  on the refined mesh); two cases of core-v0.5 (`dep`, `cluster` of `card_v05.list`):
+  history columns 4 to 12 equal to processors to 1e-10 and the deposit identity below
+  1e-13. Refuted by a status other than 0 or a bound exceeded.
+
+### Amendment of prediction C before its run (13:05Z)
+
+Read after the entry above was committed and before the quick test ran:
+`nrpic_idsolve.cpp` 1787 calls `Z4c::ApplyPhysicalBCs`, which after the merge of
+core/z4c-faces also applies the fall-off fill when `ghost_falloff = true`. So with
+`id_residual = code` the record of the solve might differ with the faces options
+(the monitor reads ghost cells); with `stencil` I still expect it identical. C is run
+in both modes. (Written into this journal only now, with the outcomes; the test design
+in `quick_v06.py`, committed as 7cf7db88 before the run, has both modes.)
+
+### Outcomes (2026-11-21T13:45Z)
+
+Merges: a1fffa58 (newton-2), 1419f19a (z4c-faces), 984bde68 (id-solver-2), no conflict.
+Source commit of the candidate: 984bde68c6201c8f100ced3d6a7effbea9cafd80. Builds:
+serial 164 s on 6 jobs, card 1127 s on 3, MPI 479 s on 2, threaded 289 s on 4.
+
+- **R held.** 75 of 75 items identical with release core-v0.5, classes a, b, other
+  empty (run core-20261121-130202-7cf7db8). The compiler effect of the faces header
+  does not come back in the merged source.
+- **Rm held** (75 of 75, core-20261121-132245-c02f6b7). **Ro held**: every run status
+  0, 32 of 75 identical, geo and jeans identical, module histories within 1.2e-15,
+  constraint statistics within 1.4e-10 (east) and 1.9e-12 (c4), below the 1e-9 I set
+  (core-20261121-133243-74c17ff, judged in core-20261121-134007-f8513b0).
+- **H held.** 12 mesh restart files, the nine members zero in each
+  (core-20261121-130813-710b3cc).
+- **Qn held** (28 of 28 files identical with the branch executable). **Qf held** in
+  both parts (5 of 5 with the branch executable; 5 of 5 with release core-v0.5 at the
+  stock values). Same run.
+- **Qi held.** (i) `id_far = robin`: 8, 9, 8 files identical with core-v0.5 (Gaussian at
+  rest, ball, torus); default: psi by 9.7e-9, 3.6e-8, 1.48e-6, W by 2.67e-3, the numbers
+  of the package's M1 (core-20261121-131148-6efd1b8). (ii) 79 of 79 files identical
+  (core-20261121-131250-f8df905).
+- **C held, and the amendment's worry did not materialise**: the record of the solve
+  is byte-identical with and without the faces options in both modes; four runs status
+  0, finite; mean |H| after 8 steps 4.9e-4 without, 3.6e-4 with. Why the fall-off fill
+  does not enter the record in mode code I have not looked up in the source (the call
+  at 1787 may lie after the last residual): no cause is named.
+- **Kc held** (the package's prediction): outer iterations 34, 16, 20, 27, 5 on card
+  and processors, psi within 2.2e-15, W within 2.5e-14, P_ADM_x 5.499999519755e-01 on
+  both (card run core-20261121-125651-edde517, 87 s; judged in
+  core-20261121-133219-2c8f63c).
+- **K6 open**: job 4800 (run core-20261121-132052-f330004) submitted at 13:20Z, the
+  earliest moment the card build existed and a second slot of core was free; seven jobs
+  of other owners are ahead of it. Steps to judge it: `RELEASE-v0.6.md`, section "Card
+  check of `athena_gpu`".
+- Not predicted, closed on the way: the release card build of core-v0.5 (job 4775,
+  prediction G of 07:47Z) held in both parts (core-20261121-125722-91a199a,
+  core-20261121-125743-84f0e42; module histories of the two card runs within 1.2e-15);
+  the faces package's card check k1 (job 4782 had run at 01:40 PST and was never
+  judged): 7.3e-12 from processors in both cases, bound 1e-7
+  (core-20261121-134059-e3ab6f3, status failed by a side effect of the comparison
+  script: it lists the card's log files as missing).
+
+Faults of mine in this session, on record:
+1. `RELEASE-v0.6.md`, `CHANGELOG.md` and the published `COMMIT` first carried forty
+   hexadecimal digits for the source commit that I had written without taking them from
+   git (only the first eight were right). Found when `git rev-parse` was printed beside
+   the first line; corrected in all three files before anything was pushed (the commit
+   after the one that adds the release file). A full hash is copied from `git
+   rev-parse`, never completed by hand.
+2. `hst_pair_v06.py` failed in its first registered run (core-20261121-133938-efeb8b4:
+   the classes of the regression summary are lists) and in its second drew the
+   non-finite history of c5 as a bar (core-20261121-133947-f7d1d50); the third run
+   counts.
+3. The first drawing of `fig_quick_v06.png` had the legend over two bars; drawn again
+   (core-20261121-133153-89d375b).
+4. The amendment of C was written into the journal after the run, not before (above).
+
+Left out of the candidate: core/clump-table (at 13:37Z its tip 099882b3 says "merge
+notes for core's lead in the interface text"; no executables with READY for that state
+are published) and core/oblate (unchanged since 2026-11-20). Both go to the next
+release.
+
+Card time: 0.024 card-hours used (Kc), 0.3 asked (job 4800). Processors: at most six
+cores at a time (builds and runs together).
+
+## 2026-11-21T15:46Z  session core-lead-6 (batch 4a: closing release core-v0.6, gate package G2)
+
+State at start: main merged (decision 0022, release core-v0.6 on main, tag on 984bde68).
+Slurm job 4800 (run core-20261121-132052-f330004, card check K6 of the merged card
+executable) COMPLETED in 46 s, fifteen cases with rc 0 in `batch.list.status`; not yet
+judged. Release builds on main: `.work/build_cpu_v06/src/athena` (sha256 91fc59b3...),
+`.work/build_gpu_v06/src/athena` (ea473498...); their checksums differ from the
+candidate's (2ec1f232..., 168e5da6...), as builds in other directories do (paths in the
+debug information) [VERIFIED by `sha256sum`]. No source change in this session.
+
+### Predictions, written before the release builds run (15:46Z)
+
+- **K6** stands as written in the entry of 12:55Z; judged now with `card_v06.py` and
+  `card_v05.py` on the outputs of job 4800.
+- **R6** (release processor build `.work/build_cpu_v06/src/athena` against the
+  candidate `scratch/core/exe/core_nrpic_v06/athena_cpu`, `regress_v04.py`, twelve
+  set-ups of wave 1): 75 of 75 items identical, classes a, b and other empty, as for
+  core-v0.5 (core-20261121-075456-a505400). Refuted by one differing item.
+- **G6** (release card build `.work/build_gpu_v06/src/athena` on the fifteen cases of
+  `card_v06.list`; the whole list ran in 46 s in job 4800, so the full list costs no
+  more card time than one case would wait for, and I ask 0.1 card-hours): (i) every case
+  status 0; against the processor runs `card_v06.py` and `card_v05.py` give the verdicts
+  they give for job 4800; (ii) against the candidate's card run (job 4800, `card_pair.py`)
+  the vacuum cases f_full, s3g and usr byte-identical in every file (they deposit
+  nothing), and every history of the other cases within 1e-12 of each column above 1e-6
+  of the largest column (atomic deposition on the card is not repeatable bit for bit;
+  for core-v0.5 the module histories agreed to 1.2e-15). Refuted by a status other than
+  0, a difference in f_full, s3g or usr, or a history column beyond 1e-12.
+
+### Outcomes (2026-11-21T15:56Z)
+
+- **K6 held.** Job 4800 ran at 15:21Z (46 s), fifteen cases with status 0. Judged in
+  core-20261121-154700-2de4974 (`card_v06.py`: Newtonian histories within 1.6e-11 of
+  processors, bound 1e-10; f_full identical, c_cd1 1.9e-10, bound 1e-7; solver outer
+  iterations 22, 34, 20 on both, psi_max equal to 2.5e-15 at worst) and
+  core-20261121-154710-220c1b0 (`card_v05.py`: K1 to K6 of core-v0.5 held, deposit sums
+  2.3e-13 at worst, identity 9.9e-16, dumps 3.1e-14). Not bounded and different: Hr_max
+  (column 11) of `gauss.cstat.hst` of g_smr1, 1.380745 against 1.379534 (8.8e-4), while
+  H_max agrees to 1.2e-12 [VERIFIED by reading both files]; the same class as trk column
+  15 of core-v0.5 (0.14 again). Figures looked at; in `fig_card_v06.png` the dashed
+  bounds run across all cases although each applies to its own, so the g_smr1 bar seems
+  to cross one: noted in the release file, the script not changed.
+- **R6 held.** Release processor build against the candidate: 75 of 75 items identical,
+  classes a, b, other empty (core-20261121-154737-dc1e4c1; figure
+  core-20261121-155317-1ee04bf looked at).
+- **G6 open.** Job 4810 (run core-20261121-154654-d3ec487) queued at 15:47Z; commands to
+  judge it in `RELEASE-v0.6.md`, section "Release builds against the candidate".
+
+Records written: `RELEASE-v0.6.md` (first lines, card section, release builds),
+`scratch/core/exe/core_nrpic_v06/READY` (athena_gpu line), `CHANGELOG.md` (section "Run
+scripts" of core-v0.6: the chain script), `REQUESTS_WAVE3.md` section 5 (W24 relaxed
+lapse first for core-v0.7, W25 to W29), inbox acknowledged (E lockstep, orch release).
+
+G2 package: `nrpic-stage collect` gave 18 items (two new of decision 0012/0016, renumbered
+from C12); filled: 10 PASS, 8 FAIL. G2 is not met (OPEN.md, first section): ladder rows 3
+and 4 PARTIAL, no single three-way convergence study, no note, no verifier, architecture
+schematic stale, no REVIEW/SCOPE documents in the stage directory. Read for it: Track C's
+drift package (M/4 mesh pushes clusters outward, seven to ten times less on M/8: core's
+M/4 bisection does not test the threshold) and Track D's g2runs (relaxed lapse grows a
+vacuum horizon by 1.3e-3; the term acts wherever alpha > alpha_0,
+`z4c_gauge_ext.hpp` line 19).
+
+Faults of mine in this session, on record: the first wording of C1's evidence said the
+ladder rows carry over "byte for byte" from the wave-1 regressions; core-v0.4 differed
+in classes a and b and the full ladder runs were not repeated, so it was reworded to a
+judgement before the commit.
+
+### Stage check (2026-11-21T16:20Z)
+
+`nrpic-stage verify core G2` with output checksums read run outputs for 13 minutes and
+had reached the runs of 2026-11-19 when I stopped it by its process id (log
+`scratch/core/tmp/lead_b4a/verify.log`, exit 143); with `--no-checksums` it took 5.5
+minutes and FAILS on two checks: no working note, and 10 of 1405 runs with record
+problems (9 runs name the executables of `core_cosmo-amr`, published again after the
+runs; job 4810 not finished). The 11th of the first pass, core-20261119-143517-ec2f4fc
+(gauge test E2, job 4641, both cases rc 0, never closed), is closed now with
+`nrpic-run finish`. `nrpic-stage report`: verdict FAIL, eight items FAIL (C1, C2, C6,
+C7, C12, C14, C15, C16); decision requested: keep core at G2 in progress.
