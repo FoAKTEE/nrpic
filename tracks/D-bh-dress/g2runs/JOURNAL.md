@@ -291,3 +291,20 @@ Reading of entries 5-6 together:
   at 1e-4 only to t ~ 100-135 M; over 100-200 M the floor is 3.5e-3, set by the gauge and
   resolution at the hole, not by the faces. The faces at +-384 M are still worth keeping
   for the exterior mass (B4').
+
+## Entry 7 (06:59 PST, before the analysis): lapse and shift on the axis (processors, while both card jobs wait)
+
+Queue at 06:58 PST: ES-1GB segment 2 (Slurm 4805) and ES-F (4806) pending behind six jobs
+of other owners; no card work possible now. Question for the request to core: how does
+lapse_leak shrink the hole when it acts only where alpha > alpha_0 = 1?
+Prediction L1 [JUDGEMENT]: in V-1B (plain 1+log) the lapse rises above 1 in the expanding
+exterior and in the outer bubble (largest lapse on x < 100 M above 1.05 by t = 50 M), while
+in V-1GB and ES-1GB it stays within 1.01 of 1 there; near the hole (x = 1-2 M) the
+lapse of V-1GB lies below V-1B's at t = 100 M, and the radial shift at x = 1-2 M is more
+negative (inward) or smaller outward in V-1GB than in V-1B, which shrinks the coordinate
+horizon. Refuted if alpha and beta^x of V-1B and V-1GB agree within 1 per cent on
+0.5 < x < 30 M at t = 100 M (then the slices on the axis do not show the mechanism).
+L2: ES-1GB against V-1GB: the dust lowers the lapse in the bubble (x = 5-30 M) by more
+than 1 per cent from t ~ 50 M on [JUDGEMENT, from ES-1G's faster shrinking].
+Tool: tools/axis_profiles.py (finest level at each x on the +x axis of the z = 0.001
+slices every 10 M).
