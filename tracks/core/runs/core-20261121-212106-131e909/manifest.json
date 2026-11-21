@@ -1,0 +1,129 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-212106-131e909",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "verifier_g2 V2/V5a: OS horizon mass and deposition identity recomputed from core-20261115-065901-3629622 and runs/os/nocap_sc",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/verify/verifier_g2/scripts/v2_os.py",
+    "/data/haiyangw/nrpic/scratch/core/core-20261115-065901-3629622",
+    "/data/haiyangw/nrpic/runs/os/nocap_sc",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "131e9091d69a9d1abb31ed6f0489a802f538c935",
+    "branch": "core/nrpic",
+    "dirty": false,
+    "package": [
+      "tracks/core/verify/verifier_g2"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "9d43b229377786cc62ef7bb666b765abfdab30bc",
+    "worktree": "wt/core"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-065901-3629622/os.horizon_summary_0.txt",
+      "role": "input",
+      "sha256": "a4902638fdd6ed5c66822b976f116b71d205a09e90215e39b7654de87045b037",
+      "bytes": 14720,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-065901-3629622/os.nrpic.hst",
+      "role": "input",
+      "sha256": "740eb15b650b1d7f844ff72749bc5fe306573a9ea8d4ed7c5bc8630af6e3987b",
+      "bytes": 905329,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/runs/os/nocap_sc/os.horizon_summary_0.txt",
+      "role": "input",
+      "sha256": "445962954c930962567ee397441dfc2a95e25227a0f18c063e7af5e9943739c5",
+      "bytes": 68617,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/runs/os/nocap_sc/os.nrpic.hst",
+      "role": "input",
+      "sha256": "2f27361a5fcb3f47b00b9d619915c56f121c7dcd1a0280e1f5633090bb49d2db",
+      "bytes": 2440070,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/verify/verifier_g2/scripts/v2_os.py",
+      "role": "argv",
+      "sha256": "3db7fee59fa59d752be9247921d81f42af81a8cd0a9d3a97fe73a26121453173",
+      "bytes": 3842,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-212106-131e909",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T21:21:07Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 8.1719,
+    "gpu_hours_reserved": 11.9002,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1481,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
