@@ -114,3 +114,15 @@ report and the docstrings of first_source/scripts/eps2_test.py and p16_compare.p
 - P9c (1 + eps^2): Q(delta = 0.0025) within 1.00-1.04 for a = 30-60 on both meshes, R = 17-19.
 - P9d P16': D (TT power at |m| >= 16, no wave over wave) at tau = 0.1 and a = 2.3 near 0.99 and
   0.86 at 64^3, and near 0.27 at a = 12; to 3 per cent (the shell edge 15.5 or 16 may matter).
+
+## Entry 3 (05:16 PST): prediction for my own noise prediction (rows 201-203, 206), before running it
+
+P2 (scripts/p2_null_pred.py): static second-order strain h(K) = (20/(3K^2)) TT[dPhi dPhi](K)
+from the initial potential (psi^4 = 1 - 2 Phi), wave = unjittered data, noise = difference,
+growing part 3/5 of the noise, response g(tau) for every term (the track also carries the
+decaying parts; I do not). Predictions: (a) the code recovers -(5/6) phi_x phi_y on analytic
+crossed waves to 1e-10 relative; (b) |measured|/|predicted| at K1 and K2 for 3 <= a <= 20 has a
+median in 0.85-1.2 for both jitters, extremes within 0.6-1.5 (the ledger's ranges are
+0.93-1.33 and 0.73-1.01), phases within 0.4 rad; (c) rms TT of all modes over my static
+all-mode estimate, 3 <= a <= 20, in 10-17 for jitter 0.3 (ledger 12-14.7). Refuted: a median
+outside 0.7-1.4 or a phase error above 1 rad.
