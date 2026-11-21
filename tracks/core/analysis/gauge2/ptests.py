@@ -147,6 +147,7 @@ def main():
     ap.add_argument("--jobs", type=int, default=3)
     ap.add_argument("--only", default="T1,T2,T3")
     a = ap.parse_args()
+    a.new, a.rel, a.out = (os.path.abspath(p) for p in (a.new, a.rel, a.out))
     os.makedirs(a.out, exist_ok=True)
     sel = a.only.split(",")
     todo = {k: v for k, v in cases(a.new, a.rel).items() if k.split("-")[0] in sel}
