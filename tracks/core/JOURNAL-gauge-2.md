@@ -217,3 +217,61 @@ T3 (L1, marginally bound ball R_b = 10 M, cells 1 M, 10 M; T = 1 M and 0.5 M;
   factor 2 as well, central lapse within 5 per cent of the homogeneous value. Refuted,
   and the density weight alone not acceptable for a ball in vacuum, if a group is worse
   by more than a factor 2 or the central lapse departs by more than 5 per cent.
+
+## Entry 5 (09:25): card job B; predictions written before submission
+
+List `tracks/core/analysis/gauge2/card_b.list`, card executable of this branch. Nine
+runs in the order of their weight, each with a wall limit; the limits sum to 48.5
+minutes, the expected card time is about 31 minutes (0.5 card-hours) [JUDGEMENT, the
+step time on a card is still unmeasured: job A has not started]. With job A (0.45
+expected, 0.72 at most) the item stays below its 1.5 card-hours also if every run of job
+B uses its limit (0.72 + 0.81 = 1.53 is the bound; I stop job B if job A used its limit).
+
+Chosen density scales rho_c (`lapse_leak_rho`): Einstein-Straus dust 2e-7 (plateau
+3.7e-6 at the start, `es.json`; 1.1e-6 at 100 M); ball of L1 1e-5 (2.4e-4 falling to
+8.5e-5); bound ball of L2 and L3 1e-4 (1.9e-3, 9.8e-4 at turnaround).
+
+Predictions.
+- ES-c, `es-rho`: Track D's Einstein-Straus data (core's copy of the first pass: dust
+  lattice 2 M, 87128 particles), 100 M, T = 2 M, relaxation only in the dust.
+  (a) The horizon's coordinate radius exceeds 1.8 M by t = 25 M and stays between 1.8
+  and 2.4 M until 100 M (the vacuum bubble is sliced as Track D's V-1B: 2.02 M at 25 M,
+  2.15 M at 100 M). Refuted if it is below 1.6 M at 50 M.
+  (b) The horizon mass varies by less than 1e-4 (largest minus smallest) over 40 to
+  100 M (V-1B: 1.4e-5; the first pass V-1GB: 2.2e-4). Refuted above 2e-4.
+  (c) Wall tracers (R_0 = 36 M): areal radius at their proper time within 5e-4 of the
+  exact curve until tau = 100 M (first pass: 6.2e-5 until 30 M; Track D's ES-1G 1.7e-4
+  until 206 M; plain 1+log 2.2e-3). Refuted above 2.2e-3: then the corrected condition
+  follows the wall worse than no relaxation at all.
+  (d) Lapse at the dust tracers (R_0 = 48 M) within 3 per cent of the homogeneous
+  model; largest lapse on the mesh below 1.5, inside the bubble.
+  (e) No dust inside the wall tracers; the 14 tracers from 6 M removed near 15.5 M.
+- ES-f, `es-leak` (same mesh, relaxation everywhere as in the first pass): radius below
+  1.45 M at 25 M and below 1.15 M at 100 M; mass varying by more than 2e-4 over 40 to
+  100 M; wall within 3e-4. This is the defect on the same mesh.
+- L3-c, `collapse-rho`: the bound ball through its collapse, T = 0.5 M, cells M/8,
+  relaxation only in the matter. Horizon first found between 26 and 30 M (first pass
+  29 M, plain 1+log 18 M), then in every search; mass between 0.997 and 1.001 (first
+  pass 0.9980 to 1.0003); mean coordinate radius at 44 M between 0.7 and 1.1 M (first
+  pass 0.73 M); interior shell groups (outer at 2.5 m, mid at 4 m) median error below
+  2 per cent (first pass 1.0 and 0.73). Refuted by a missing horizon, a mass outside
+  0.995 to 1.003, or a group above 5 per cent.
+- L1-c, `ball-l1-rho` (cells M/2, T = 1 M): core shells below 2.4e-3 (first pass
+  1.16e-3), central lapse within 5 per cent of the homogeneous value.
+- L2-c, `ball-l2-rho` (cells M/4, T = 0.5 M): core, mid, outer, surface below 1.9e-2,
+  5e-3, 8.6e-3, 1.3e-2 (twice the first pass); largest R/R_0 of the turnaround between
+  1.245 and 1.252.
+- V8-c, `v8-rho` (12 M): horizon summary and histories equal to the control of job A at
+  the same times, byte for byte unless the card's deposit of the 1e-30 tracers changes
+  a last bit; in that case equal to 1e-12 relative.
+- Cause tests on V8, 30 M, compared with job A at 20 and 30 M (Track D: control 2.06
+  and 1.91 M, first pass 1.38 and 1.42 M):
+  C2 `v8-onset` (delta = 0.02, about half the lapse excess in the bubble): radius below
+  1.5 M at 20 and 30 M. The kink is the cause only if the radius is above 1.8 M.
+  C3 `v8-hole6` (term off within 6 M of the puncture, in full beyond 12 M): radius
+  below 1.6 M at 20 and 30 M. The action near the hole is the cause only if the radius
+  is above 1.8 M.
+  C4 `v8-hole20` (off within 20 M, in full beyond 40 M): radius above 1.6 M at 20 or
+  30 M, because the lapse front of plain 1+log forms between 8 and 30 M [JUDGEMENT:
+  K_T = -f sqrt(2M/R^3) of the table is largest near R = 20 to 26 M]. If this run also
+  stays below 1.5 M, the front is not what sets the size and C4 is wrong in that part.
