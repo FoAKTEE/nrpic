@@ -360,6 +360,7 @@ void Mesh::BuildTreeFromRestart(ParameterInput *pin, IOWrapper &resfile,
   hdos += sizeof(RegionSize);
   std::memcpy(&mesh_indcs, &(headerdata[hdos]), sizeof(RegionIndcs));
   hdos += sizeof(RegionIndcs);
+  ZeroUnusedMeshIndcs();  // NRPIC: restart files written before the fix carry noise here
   std::memcpy(&mb_indcs, &(headerdata[hdos]), sizeof(RegionIndcs));
   hdos += sizeof(RegionIndcs);
   std::memcpy(&time, &(headerdata[hdos]), sizeof(Real));

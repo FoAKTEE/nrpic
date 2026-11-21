@@ -17,8 +17,9 @@
 //!   5. NrpicDeposit     deposit E, S_i, S_ij at t^{n+1}, filter, update constraints
 //!   6. NrpicDiagnostics probe, history, trajectories, snapshots
 //!
-//! The module assumes a single MPI rank: deposition and ownership are resolved by a
-//! search over all MeshBlocks of the pack.
+//! Deposition and ownership are resolved by a search over all MeshBlocks of the pack.
+//! On more than one MPI rank the functions of nrpic_mpi.cpp take over where a particle
+//! or its cloud leaves the MeshBlocks of the rank (hooks marked "several ranks").
 
 #include <algorithm>
 #include <cmath>
@@ -41,6 +42,8 @@
 #include "particles/nrpic_kernels.hpp"
 #include "particles/nrpic_metrics.hpp"
 #include "particles/nrpic_mesh.hpp"
+#include "particles/nrpic_cosmo_ext.hpp"
+#include "particles/nrpic_mpi.hpp"
 // last: this header defines the macro NDIM, which collides with a member of Tmunu
 #include "z4c/fastflow.hpp"
 
@@ -55,11 +58,6 @@ void Particles::NrpicInit(ParameterInput *pin) {
   if (!(pm->three_d)) {
     std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__ << std::endl
               << "Particles of type nrpic require a 3D mesh" << std::endl;
-    std::exit(EXIT_FAILURE);
-  }
-  if (global_variable::nranks > 1) {
-    std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__ << std::endl
-              << "Particles of type nrpic run on a single MPI rank" << std::endl;
     std::exit(EXIT_FAILURE);
   }
 
@@ -148,6 +146,23 @@ void Particles::NrpicInit(ParameterInput *pin) {
     nropt.probes[n][0] = pin->GetReal("particles", pre + "x1");
     nropt.probes[n][1] = pin->GetReal("particles", pre + "x2");
     nropt.probes[n][2] = pin->GetReal("particles", pre + "x3");
+  }
+  {
+    // meaning of a particle without rest mass.  tracer: a test particle on a timelike
+    // geodesic (what the tracer inputs of problems/ have always meant); null: a null
+    // geodesic on the mesh metric, which releases core-v0.2 and core-v0.3 applied to
+    // every m = 0 particle.  Light rays carry m = -t_e < 0 and are null in either case.
+    // (not added to the input when absent: the parameter dump inside the restart files
+    // of existing set-ups stays as it was)
+    const std::string zm = pin->DoesParameterExist("particles", "zero_mass") ?
+                           pin->GetString("particles", "zero_mass") : "tracer";
+    if (zm != "tracer" && zm != "null") {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "<particles> zero_mass must be tracer or null"
+                << std::endl;
+      std::exit(EXIT_FAILURE);
+    }
+    nropt.zero_mass_null = (zm == "null");
   }
   nropt.lambda     = pin->GetOrAddReal("particles", "lambda", 0.0);
   nropt.source_density = pin->GetOrAddBoolean("particles", "source_density", false);
@@ -270,9 +285,18 @@ void Particles::NrpicInit(ParameterInput *pin) {
     pbval_tm = new MeshBoundaryValuesCC(pmy_pack, pin, false);
     pbval_tm->InitializeBuffers(Tmunu::N_Tmunu);
   }
+  thread_dep.Init(pin);     // deposit target of a threaded build (deposit_threads)
+  // refined meshes in periodic runs: shape of coarse clouds on fine cells, region norms
+  if (pin->DoesParameterExist("particles", "deposit_fine_shape")) {
+    nropt.deposit_fine = pin->GetBoolean("particles", "deposit_fine_shape");
+  }
+  NrpicRegionInit(pin);
   NrpicKickInit(pin);       // test kick with reproducible random numbers
   NrpicCollideInit(pin);    // Monte Carlo collisions
+  NrpicAccInit(pin);        // accretion diagnostics
+  NrpicPerturbInit(pin);    // radial force during an interval (nrpic_perturb.cpp)
   if (nropt.newton) { NrpicNewtonInit(pin); }
+  NrpicIdSolveInit(pin);    // initial-data solver
 }
 
 //----------------------------------------------------------------------------------------
@@ -363,6 +387,7 @@ void Particles::NrpicSharpenMetric(DvceArray5D<Real> &met, DvceArray5D<Real> &me
 //! old time level
 
 TaskStatus Particles::NrpicSaveMetric(Driver *pdriver, int stage) {
+  NrpicAccSaveCentre();     // accretion diagnostics: centre of the spheres at t^n
   if (nropt.metric == NrpicMetric::mesh && !metric_is_static) {
     std::swap(met0, met1);
     if (nropt.interp_bspline) { std::swap(met0s, met1s); }
@@ -375,7 +400,12 @@ TaskStatus Particles::NrpicSaveMetric(Driver *pdriver, int stage) {
 //! \brief advances all particles from t^n to t^{n+1}
 
 TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
-  if (nropt.newton) { return NrpicNewtonPush(pdriver, stage); }
+  NrpicAccBeforePush();     // accretion diagnostics: distances to the centre at t^n
+  if (nropt.newton) {
+    const TaskStatus ts = NrpicNewtonPush(pdriver, stage);
+    NrpicAccAfterPush();
+    return ts;
+  }
   Mesh *pm = pmy_pack->pmesh;
   const bool mesh_metric = (nropt.metric == NrpicMetric::mesh);
   if (mesh_metric && !metric_is_static) {
@@ -386,6 +416,8 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   push_unconverged = 0;
   const int np = nprtcl_thispack;
   if (np == 0) return TaskStatus::complete;
+  // perturbing force (nrpic_perturb.cpp): impulse of the first half of the step
+  if (pert.on) { NrpicPerturbKick(pm->time, pm->time + 0.5*pm->dt); }
 
   auto &indcs = pm->mb_indcs;
   auto &pr = prtcl_rdata;
@@ -401,6 +433,7 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   const NrpicMetric msrc = nropt.metric;
   const Real bh_mass = nropt.mass, bh_spin = nropt.spin, lat_dx = nropt.lattice_dx;
   const Real alpha_exc = nropt.alpha_exc;
+  const bool zm_null = nropt.zero_mass_null;
 
   // apparent-horizon excision: particles inside ah_exc_factor times the minimum
   // coordinate radius of a found horizon are removed
@@ -451,20 +484,24 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   KOKKOS_LAMBDA(const int p, int &lnun, int &lmxit) {
     Real x[3] = {pr(IPX,p), pr(IPY,p), pr(IPZ,p)};
     Real u[3] = {pr(IPVX,p), pr(IPVY,p), pr(IPVZ,p)};
-    // a particle without rest mass follows a null geodesic (midpoint pusher only);
     // a negative mass -t_e marks a null particle that waits at its position until the
-    // time t_e (a light ray emitted during the run)
+    // time t_e (a light ray emitted during the run; midpoint pusher on the mesh metric
+    // only).  A particle with m = 0 is a tracer on a timelike geodesic, as on the
+    // analytic metrics, unless <particles> zero_mass = null asks for a null geodesic.
     // The ray leaves at the step time nearest to t_e. Until then its momentum slots
     // hold the coordinate direction c^i of emission; at the launch they are replaced
     // by k_i = gamma_ij c^j / sqrt(gamma_kl c^k c^l), the null momentum of unit
     // frequency for the normal observer at the point of emission. The proper-time slot
     // of a null particle accumulates its affine parameter and is zero until the launch.
-    const Real eps = (pr(IPM,p) > 0.0) ? 1.0 : 0.0;
+    const Real eps = (pr(IPM,p) > 0.0 || (pr(IPM,p) == 0.0 && !zm_null)) ? 1.0 : 0.0;
     if (pr(IPM,p) < 0.0 && tnow + 0.5*dt < -pr(IPM,p)) return;
     const bool launch = (pr(IPM,p) < 0.0 && pr(IPTAU,p) == 0.0);
     Real dtau = 0.0;
     int it = 0;
     bool excise = false;
+    // why a particle is removed (accretion diagnostics): -2 lapse below alpha_exc,
+    // -3 inside a horizon, -4 state not finite
+    int code = -2;
     if (msrc == NrpicMetric::mesh) {
       const int m = pi(PGID,p) - gids;
       nrpic::MeshMetric met = proto;
@@ -493,7 +530,10 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
       for (int n=0; n<nah; ++n) {
         const Real d2 = SQR(x[0] - ahc[n][0]) + SQR(x[1] - ahc[n][1])
                         + SQR(x[2] - ahc[n][2]);
-        if (d2 < ahr2[n]) { excise = true; }
+        if (d2 < ahr2[n]) {
+          if (!excise) { code = -3; }
+          excise = true;
+        }
       }
       if (!excise) {
         if (boris) {
@@ -504,22 +544,50 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
       }
     } else if (msrc == NrpicMetric::kerr_schild) {
       nrpic::KerrSchildCart met{bh_mass, bh_spin};
-      it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)
-                 : nrpic::PushMidpoint(met, dt, tol, maxit, x, u);
+      if (alpha_exc > 0.0) {
+        nrpic::AdmPoint ap;
+        met(0, x, ap);
+        excise = (ap.alp < alpha_exc);
+      }
+      if (!excise) {
+        it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)
+                   : nrpic::PushMidpoint(met, dt, tol, maxit, x, u);
+      }
     } else if (msrc == NrpicMetric::kerr_schild_sph) {
       nrpic::KerrSchildSph met{bh_mass, bh_spin};
-      it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)
-                 : nrpic::PushMidpoint(met, dt, tol, maxit, x, u);
+      if (alpha_exc > 0.0) {
+        nrpic::AdmPoint ap;
+        met(0, x, ap);
+        excise = (ap.alp < alpha_exc);
+      }
+      if (!excise) {
+        it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)
+                   : nrpic::PushMidpoint(met, dt, tol, maxit, x, u);
+      }
     } else if (msrc == NrpicMetric::boyer_lindquist) {
       nrpic::BoyerLindquist met{bh_mass, bh_spin};
-      it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)
-                 : nrpic::PushMidpoint(met, dt, tol, maxit, x, u);
+      if (alpha_exc > 0.0) {
+        nrpic::AdmPoint ap;
+        met(0, x, ap);
+        excise = (ap.alp < alpha_exc);
+      }
+      if (!excise) {
+        it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)
+                   : nrpic::PushMidpoint(met, dt, tol, maxit, x, u);
+      }
     } else {
       nrpic::LatticeMetric<nrpic::KerrSchildCart> met{{bh_mass, bh_spin},
                                                       {0.0, 0.0, 0.0},
                                                       {lat_dx, lat_dx, lat_dx}};
-      it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)
-                 : nrpic::PushMidpoint(met, dt, tol, maxit, x, u);
+      if (alpha_exc > 0.0) {
+        nrpic::AdmPoint ap;
+        met(0, x, ap);
+        excise = (ap.alp < alpha_exc);
+      }
+      if (!excise) {
+        it = boris ? nrpic::PushBoris(met, triad, dt, tol, maxit, x, u)
+                   : nrpic::PushMidpoint(met, dt, tol, maxit, x, u);
+      }
     }
     if (it < 0) {
       lnun += 1;
@@ -528,9 +596,12 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
     lmxit = (it > lmxit) ? it : lmxit;
     // a particle whose state is no longer finite is removed with the excised ones
     Real chk = x[0] + x[1] + x[2] + u[0] + u[1] + u[2];
-    if (!(Kokkos::isfinite(chk))) { excise = true; }
+    if (!(Kokkos::isfinite(chk))) {
+      if (!excise) { code = -4; }
+      excise = true;
+    }
     if (excise) {
-      pi(PGID,p) = -2;
+      pi(PGID,p) = code;
     } else {
       pr(IPX,p) = x[0]; pr(IPY,p) = x[1]; pr(IPZ,p) = x[2];
       pr(IPVX,p) = u[0]; pr(IPVY,p) = u[1]; pr(IPVZ,p) = u[2];
@@ -539,7 +610,10 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   }, Kokkos::Sum<int>(nun), Kokkos::Max<int>(mxit));
   push_unconverged = nun;
   push_maxit = mxit;
+  // perturbing force: impulse of the second half of the step, at the new positions
+  if (pert.on) { NrpicPerturbKick(pm->time + 0.5*pm->dt, pm->time + pm->dt); }
   if (kick.on) { NrpicTestKick(); }
+  NrpicAccAfterPush();      // accretion diagnostics: crossings, pericentre counter
 
   return TaskStatus::complete;
 }
@@ -550,6 +624,7 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
 //! if it has left the mesh.  Valid on uniform, statically and adaptively refined meshes.
 
 void Particles::NrpicAssignBlocks() {
+  if (nr_multirank) { NrpicMpiAssignBlocks(); return; }      // several ranks
   const int np = nprtcl_thispack;
   if (np == 0) return;
   auto &pr = prtcl_rdata;
@@ -574,10 +649,12 @@ void Particles::NrpicAssignBlocks() {
 
 //----------------------------------------------------------------------------------------
 //! \fn  void Particles::NrpicRemoveFlagged
-//! \brief removes particles with negative grid ID (-1 left the mesh, -2 excised) and
-//! compacts the particle arrays, keeping the order of the remaining particles
+//! \brief removes particles with negative grid ID (-1 left the mesh; excised: -2 lapse
+//! threshold, -3 inside a horizon, -4 state not finite) and compacts the particle
+//! arrays, keeping the order of the remaining particles
 
 void Particles::NrpicRemoveFlagged() {
+  if (nr_multirank) { NrpicMpiRemoveFlagged(); return; }     // several ranks
   Mesh *pm = pmy_pack->pmesh;
   const int np = nprtcl_thispack;
   if (np == 0) return;
@@ -597,6 +674,7 @@ void Particles::NrpicRemoveFlagged() {
   }, Kokkos::Sum<int>(nesc), Kokkos::Sum<int>(nexc), Kokkos::Sum<Real>(mesc),
      Kokkos::Sum<Real>(mexc));
   if (nesc + nexc == 0) return;
+  NrpicAccRecordRemoved(acc_after_push);    // accretion diagnostics: record of each one
 
   n_escaped += nesc;
   n_excised += nexc;
@@ -631,11 +709,30 @@ void Particles::NrpicRemoveFlagged() {
 //! \brief removes excised and escaped particles and updates the MeshBlock of the others
 
 TaskStatus Particles::NrpicExcise(Driver *pdriver, int stage) {
+  acc_after_push = true;
   if (nropt.metric == NrpicMetric::mesh) {
     NrpicAssignBlocks();
     NrpicRemoveFlagged();
+  } else {
+    // analytic metrics: particles below the lapse threshold or with a state that is
+    // no longer finite are removed and counted as on the mesh
+    NrpicRemoveFlagged();
   }
+  acc_after_push = false;
   return TaskStatus::complete;
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn  Real NrpicTentCdf
+//! \brief integral from minus infinity to t of the assignment function of the linear
+//! cloud, the tent of half-width one (lattice cell) centred on zero.  Used by
+//! <particles> deposit_fine_shape.
+
+KOKKOS_INLINE_FUNCTION
+Real NrpicTentCdf(const Real t) {
+  if (t <= -1.0) { return 0.0; }
+  if (t >= 1.0) { return 1.0; }
+  return (t < 0.0) ? 0.5*(1.0 + t)*(1.0 + t) : 1.0 - 0.5*(1.0 - t)*(1.0 - t);
 }
 
 //----------------------------------------------------------------------------------------
@@ -683,6 +780,9 @@ void Particles::NrpicDepositSources() {
   Kokkos::deep_copy(DevExeSpace(), tm, 0.0);
   sum_mw = 0.0;
   for (int n=0; n<4; ++n) { dep_sum[n] = 0.0; }
+  // where the clouds are added: atomically into tm, or (threaded build, deposit_threads
+  // = private) into one copy of tm per thread, summed after the loop
+  const nrpic::DepositTarget dep = thread_dep.Begin(tm);
 
   const int np = nprtcl_thispack;
   auto pr = prtcl_rdata;
@@ -706,6 +806,22 @@ void Particles::NrpicDepositSources() {
   const bool per[3] = {nropt.periodic[0], nropt.periodic[1], nropt.periodic[2]};
   const int nb = nropt.deposit_shape + 1;              // cells per direction of a cloud
   const bool newton = nropt.newton;      // Newtonian mode: rest mass instead of energy
+  const bool fine_shape = nropt.deposit_fine;   // coarse clouds sampled on leaf cells
+  // ... for the linear cloud by the integrals of its assignment function over the leaf
+  // cells, which needs the lattice cells next to those of the cloud as well
+  const bool fine_lin = fine_shape && (nb == 2);
+  const int nx = fine_lin ? 1 : 0;
+  const int ns = nb + 2*nx;
+  // several ranks (nrpic_mpi.cpp): table of all MeshBlocks, and the Lorentz factor and
+  // level of each cloud, kept for the part of the deposit that crosses rank boundaries
+  const bool mrank = nr_multirank;
+  if (mrank && static_cast<int>(dep_aux.extent(1)) < np) {
+    Kokkos::realloc(dep_aux, 2, np);
+  }
+  auto daux = dep_aux;
+  auto gbx = gb_ext;
+  auto gbl = gb_lr;
+  const int gnmb = gb_nmb;
 
   nrpic::MeshMetric proto;
   proto.bspline = nropt.interp_bspline;
@@ -808,6 +924,10 @@ void Particles::NrpicDepositSources() {
           Real zf = nrpic::WrapCoord(xb0[2] + c3*h[2], dmin[2], dlen[2], per[2]);
           int mb = nrpic::FindBlock(sz, nmb, mo, xf, yf, zf);
           if (mb >= 0) { lmax = (lev(mb) > lmax) ? lev(mb) : lmax; }
+          if (mb < 0 && mrank) {      // several ranks: a MeshBlock of another rank
+            const int g = nrpic::FindBlockGlobal(gbx, gnmb, xf, yf, zf);
+            if (g >= 0) { lmax = (gbl(g,0) > lmax) ? gbl(g,0) : lmax; }
+          }
         }
         lmax = (lmax > lcap) ? lcap : lmax;
         if (lmax > lev0) {
@@ -816,10 +936,19 @@ void Particles::NrpicDepositSources() {
         }
         ldep = lmax;
       }
+      if (mrank) {                    // several ranks: kept for NrpicMpiDepositRemote
+        daux(0,p) = wrel;
+        daux(1,p) = static_cast<Real>(ldep - lev0);
+      }
       // (2) weights of the cloud on the lattice of the deposition level: B-splines of
       //     degree one (cloud in cell, two cells per direction), two (triangular shaped
       //     cloud, three cells) or three (piecewise cubic, four cells)
-      Real xb[3], wt[3][4];
+      // gs: derivative of each weight with respect to the position of its lattice cell,
+      // in lattice cells (used by deposit_fine_shape only)
+      // sdl: linear cloud, offset of the particle from the centre of the first lattice
+      // cell of its cloud, in lattice cells (used by deposit_fine_shape only)
+      Real xb[3], wt[3][4], gs[3][4];
+      Real sdl[3] = {0.0, 0.0, 0.0};
       for (int d=0; d<3; ++d) {
         Real xi = (xp[d] - gmin[d])/h[d] - 0.5;
         if (nb == 3) {
@@ -829,6 +958,10 @@ void Particles::NrpicDepositSources() {
           wt[d][1] = 0.75 - dd*dd;
           wt[d][2] = 0.5*SQR(0.5 + dd);
           wt[d][3] = 0.0;
+          gs[d][0] = 0.5 - dd;
+          gs[d][1] = 2.0*dd;
+          gs[d][2] = -(0.5 + dd);
+          gs[d][3] = 0.0;
           xb[d] = gmin[d] + (fl - 0.5)*h[d];
         } else if (nb == 4) {
           Real fl = floor(xi);
@@ -837,6 +970,10 @@ void Particles::NrpicDepositSources() {
           wt[d][1] = (3.0*sd*sd*sd - 6.0*sd*sd + 4.0)/6.0;
           wt[d][2] = (-3.0*sd*sd*sd + 3.0*sd*sd + 3.0*sd + 1.0)/6.0;
           wt[d][3] = sd*sd*sd/6.0;
+          gs[d][0] = 0.5*(1.0 - sd)*(1.0 - sd);
+          gs[d][1] = 2.0*sd - 1.5*sd*sd;
+          gs[d][2] = -2.0*(1.0 - sd) + 1.5*(1.0 - sd)*(1.0 - sd);
+          gs[d][3] = -0.5*sd*sd;
           xb[d] = gmin[d] + (fl - 0.5)*h[d];
         } else {
           Real fl = floor(xi);
@@ -845,22 +982,32 @@ void Particles::NrpicDepositSources() {
           wt[d][1] = sd;
           wt[d][2] = 0.0;
           wt[d][3] = 0.0;
+          gs[d][0] = 1.0;
+          gs[d][1] = -1.0;
+          gs[d][2] = 0.0;
+          gs[d][3] = 0.0;
+          sdl[d] = sd;
           xb[d] = gmin[d] + (fl + 0.5)*h[d];
         }
       }
-      for (int c=0; c<nb*nb*nb; ++c) {
-        const int c1 = c % nb, c2 = (c/nb) % nb, c3 = c/(nb*nb);
+      // lattice cells visited: those of the cloud (c1, c2, c3 from 0 to nb-1); with
+      // deposit_fine_shape and the linear cloud one more on either side (index -1 and
+      // nb), which carry no weight but whose leaf cells get shares that sum to zero
+      for (int c=0; c<ns*ns*ns; ++c) {
+        const int c1 = c % ns - nx, c2 = (c/ns) % ns - nx, c3 = c/(ns*ns) - nx;
+        const bool own = (c1 >= 0 && c1 < nb && c2 >= 0 && c2 < nb && c3 >= 0 && c3 < nb);
         // centre of the lattice cell, wrapped into the mesh in periodic directions
         const Real xf = nrpic::WrapCoord(xb[0] + c1*h[0], dmin[0], dlen[0], per[0]);
         const Real yf = nrpic::WrapCoord(xb[1] + c2*h[1], dmin[1], dlen[1], per[1]);
         const Real zf = nrpic::WrapCoord(xb[2] + c3*h[2], dmin[2], dlen[2], per[2]);
-        const Real w = wt[0][c1]*wt[1][c2]*wt[2][c3];
+        const Real w = own ? wt[0][c1]*wt[1][c2]*wt[2][c3] : 0.0;
         // (3) leaf cells covered by this (real or virtual) lattice cell.  A lattice
         //     cell lies inside a single MeshBlock.
         const int mb = nrpic::FindBlock(sz, nmb, mo, xf, yf, zf);
         if (mb < 0) continue;
         const int kd = lev(mb) - ldep;
         if (kd <= 0) {
+          if (!own) continue;       // a cell beside the cloud holds nothing of it
           // leaf at the deposition level or coarser: the leaf cell containing the cell
           int i = is + static_cast<int>(floor((xf - sz(mb).x1min)/sz(mb).dx1));
           int j = js + static_cast<int>(floor((yf - sz(mb).x2min)/sz(mb).dx2));
@@ -870,7 +1017,7 @@ void Particles::NrpicDepositSources() {
           k = (k < ks) ? ks : ((k > ke) ? ke : k);
           const Real wv = w/(sz(mb).dx1*sz(mb).dx2*sz(mb).dx3);
           for (int n=0; n<Tmunu::N_Tmunu; ++n) {
-            Kokkos::atomic_add(&tm(mb,n,k,j,i), wv*q[n]);
+            dep.Add(mb, n, k, j, i, wv*q[n]);
           }
         } else {
           // finer leaves: the same density in every leaf cell inside the lattice cell
@@ -882,6 +1029,74 @@ void Particles::NrpicDepositSources() {
               floor((yf - 0.5*h[1] - sz(mb).x2min)/sz(mb).dx2 + 0.5));
           const int k0 = ks + static_cast<int>(
               floor((zf - 0.5*h[2] - sz(mb).x3min)/sz(mb).dx3 + 0.5));
+          if (fine_shape && nsub <= 32) {
+            // <particles> deposit_fine_shape: inside a lattice cell of the cloud the
+            // weight follows the assignment function instead of being the same in every
+            // leaf cell.
+            // Quadratic and cubic clouds: to first order about the centre of the lattice
+            // cell, w + (dw/dx)(x - x_c).  The leaf cells lie symmetrically about that
+            // centre, so their weights sum to the weight of the lattice cell and the
+            // sums are conserved as before; the slopes of the clouds of a regular
+            // lattice cancel like their weights add to one, so a uniform distribution
+            // stays uniform; and the deposited density of a smooth distribution is
+            // correct to second order on the fine cells (no staircase at the cell size
+            // of the cloud).
+            // Linear cloud: its assignment function, the tent centred on the particle,
+            // has a kink at the particle, and the slope of a whole lattice cell would
+            // flip when the particle passes the centre of that cell (a quarter of the
+            // particle would change its leaf cell at once).  Instead a leaf cell gets
+            // the integral of the tent over it, plus the same amount in every leaf cell
+            // of the lattice cell such that they sum to the weight of the lattice cell:
+            // continuous in the position of the particle, conservative and uniform for
+            // a regular lattice as above.  The tent reaches half a cell into the
+            // lattice cells beside the cloud, which are therefore visited as well.
+            // The weight of a single cloud can turn slightly negative at its edge.
+            Real wf[3][32];
+            const int cc[3] = {c1, c2, c3};
+            const Real rsub = 1.0/static_cast<Real>(nsub);
+            bool empty = false;
+            for (int d=0; d<3; ++d) {
+              if (fine_lin) {
+                // u: particle minus centre of the lattice cell, in lattice cells
+                const Real u = sdl[d] - static_cast<Real>(cc[d]);
+                if (u <= -1.5 || u >= 1.5) { empty = true; break; }
+                const Real wd = (cc[d] >= 0 && cc[d] < nb) ? wt[d][cc[d]] : 0.0;
+                const Real f0 = NrpicTentCdf(-0.5 - u);
+                const Real shift = (wd - (NrpicTentCdf(0.5 - u) - f0))*rsub;
+                Real fa = f0;
+                for (int s=0; s<nsub; ++s) {
+                  const Real fb = NrpicTentCdf(-0.5 - u + static_cast<Real>(s+1)*rsub);
+                  wf[d][s] = (fb - fa) + shift;
+                  fa = fb;
+                }
+              } else {
+                for (int s=0; s<nsub; ++s) {
+                  const Real xis = (static_cast<Real>(s) + 0.5)*rsub - 0.5;
+                  wf[d][s] = (wt[d][cc[d]] + gs[d][cc[d]]*xis)*rsub;
+                }
+              }
+            }
+            if (empty) continue;
+            const Real ivf = 1.0/(sz(mb).dx1*sz(mb).dx2*sz(mb).dx3);
+            for (int kk=0; kk<nsub; ++kk) {
+              const int k = k0 + kk;
+              if (k < ks || k > ke) continue;
+              for (int jj=0; jj<nsub; ++jj) {
+                const int j = j0 + jj;
+                if (j < js || j > je) continue;
+                for (int ii=0; ii<nsub; ++ii) {
+                  const int i = i0 + ii;
+                  if (i < is || i > ie) continue;
+                  const Real wfv = wf[0][ii]*wf[1][jj]*wf[2][kk]*ivf;
+                  for (int n=0; n<Tmunu::N_Tmunu; ++n) {
+                    dep.Add(mb, n, k, j, i, wfv*q[n]);
+                  }
+                }
+              }
+            }
+            continue;
+          }
+          if (!own) continue;
           for (int kk=0; kk<nsub; ++kk) {
             const int k = k0 + kk;
             if (k < ks || k > ke) continue;
@@ -892,7 +1107,7 @@ void Particles::NrpicDepositSources() {
                 const int i = i0 + ii;
                 if (i < is || i > ie) continue;
                 for (int n=0; n<Tmunu::N_Tmunu; ++n) {
-                  Kokkos::atomic_add(&tm(mb,n,k,j,i), wv*q[n]);
+                  dep.Add(mb, n, k, j, i, wv*q[n]);
                 }
               }
             }
@@ -902,6 +1117,8 @@ void Particles::NrpicDepositSources() {
     }, Kokkos::Sum<Real>(smw));
     sum_mw = smw;
   }
+  thread_dep.End(dep);
+  if (nr_multirank) { NrpicMpiDepositRemote(); }     // several ranks: clouds across them
 
   // Compensation of the cloud (deposit_comp_c = c > 0): one pass (-c, 1+2c, -c)^3 over
   // the deposited densities.  A cloud of second moment s^2 dx^2 per direction lowers a
@@ -960,6 +1177,7 @@ void Particles::NrpicDepositSources() {
   }, Kokkos::Sum<Real>(se), Kokkos::Sum<Real>(sx), Kokkos::Sum<Real>(sy),
      Kokkos::Sum<Real>(szz), Kokkos::Sum<int>(nbad));
   dep_sum[0] = se; dep_sum[1] = sx; dep_sum[2] = sy; dep_sum[3] = szz;
+  nrpic::MpiSum({&dep_sum[0], &dep_sum[1], &dep_sum[2], &dep_sum[3]});   // several ranks
   if (nbad > 0) {
     n_bad_det_total += nbad;
     if (n_bad_det_reports < 50) {
@@ -1203,6 +1421,8 @@ void Particles::NrpicFilterSources() {
   }, Kokkos::Sum<Real>(se), Kokkos::Sum<Real>(sx), Kokkos::Sum<Real>(sy),
      Kokkos::Sum<Real>(szz));
   dep_sum_filt[0] = se; dep_sum_filt[1] = sx; dep_sum_filt[2] = sy; dep_sum_filt[3] = szz;
+  nrpic::MpiSum({&dep_sum_filt[0], &dep_sum_filt[1], &dep_sum_filt[2],
+                 &dep_sum_filt[3]});                                    // several ranks
 }
 
 //----------------------------------------------------------------------------------------
@@ -1245,6 +1465,7 @@ void Particles::NrpicStepSources() {
     if (pmy_pack->pz4c != nullptr) {
       dt_next = std::min(dt_next, pm->cfl_no*pmy_pack->pz4c->dtnew);
     }
+    nrpic::MpiMin({&dt_next});      // several ranks: the step is that of the whole mesh
     if (pm->dt > 0.0 && dt_next > 0.0) { half = 0.5*dt_next/pm->dt; }
   }
   par_for("nrpic_stepsrc", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie,
@@ -1379,6 +1600,7 @@ TaskStatus Particles::NrpicDeposit(Driver *pdriver, int stage) {
 //! after a restart, and after every change of the mesh by AMR.
 
 void Particles::NrpicInitializeSources() {
+  if (nr_multirank) { NrpicMpiUpdateCounts(); }      // several ranks: particle numbers
   if (nropt.metric != NrpicMetric::mesh) return;
   if (nropt.newton) {
     NrpicNewtonInitialize();

@@ -1,0 +1,3 @@
+# T1 reproduction on a card with the release executable of core-v0.3 (unchanged)
+r3_m0   /data/haiyangw/nrpic/.work/build_gpu_v03/src/athena {repo}/problems/puncture/horizon_calib.athinput time/tlim=20.0
+r4_meps /data/haiyangw/nrpic/.work/build_gpu_v03/src/athena {repo}/problems/puncture/horizon_calib.athinput time/tlim=20.0 particles/p0_m=1e-300 particles/p1_m=1e-300 particles/p2_m=1e-300 particles/p3_m=1e-300 particles/p4_m=1e-300 particles/p5_m=1e-300

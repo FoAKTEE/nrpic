@@ -1,0 +1,101 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261119-143706-92efe0f",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "omp T0/T1a: serial build of this branch against release core-v0.3 (P0), and the OpenMP builds on one thread against it (P1), 13 set-ups",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/omp/regress.py",
+    "--configs",
+    "S:1",
+    "O2:1",
+    "O3:1",
+    "--ref",
+    "R:1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "92efe0fdd35d6d0adb0e05841e14dba9260bc3f1",
+    "branch": "core/build-openmp",
+    "dirty": false,
+    "package": [
+      "tracks/core/omp"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "27b2ced9be0f020a4206d89e3cc982ada5c4367c",
+    "worktree": "wt/core-omp"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-omp/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/omp/regress.py",
+      "role": "argv",
+      "sha256": "f011b975c29b5d396006b065698265c2f62aacb7e8708c382af0506dd869f229",
+      "bytes": 4038,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 2267.607,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261119-143706-92efe0f",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "0346047fa2a0a697caf2014c1b9129e29fdcf4b6a4cf26d8778812083029c85a",
+    "bytes": 11409913364,
+    "files": 198
+  },
+  "status": "stopped",
+  "exit_code": -15,
+  "registered": "2026-11-19T14:37:07Z",
+  "started": "2026-11-19T14:37:07Z",
+  "ended": "2026-11-19T15:14:54Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.5281,
+    "gpu_hours_reserved": 1.9333,
+    "gpu_hours_without_gate": 5.8613,
+    "cores_busy": 0,
+    "runs": 964,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-19T15:19:59Z"
+}

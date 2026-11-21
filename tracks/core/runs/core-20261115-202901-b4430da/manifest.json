@@ -1,0 +1,54 @@
+{
+ "run_id": "core-20261115-202901-b4430da",
+ "owner": "core",
+ "package": "gauge",
+ "tag": "gc-es-leak2",
+ "purpose": "Einstein-Straus data of Track D for 30 M, lapse relaxation T = 2 M (test ES)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-gauge/scripts/gpu_run.sh",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-202901-b4430da",
+  "/data/haiyangw/nrpic/wt/core-gauge/problems/es/es_gauge.athinput",
+  "particles/particle_file=/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.nrp",
+  "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.tab",
+  "z4c/lapse_leak=0.5",
+  "-t",
+  "00:08:00"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-202901-b4430da",
+ "commit": "b4430da64df8892bb68b2d633959da3faa0255d8",
+ "head_at_run": "bc2cad7c08cd8d28559b7f9147e60045928fcf14",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-gauge/problems/es/es_gauge.athinput",
+   "sha256": "34f866e491db3adaa121feaa652562eaa2617ece773492ecad4db9d3611c5b7e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_gpu_b4430da",
+   "sha256": "c3560e53988ad855cc93a9f444c48c728249950242e736d0828cc44dbcd85e72"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.nrp",
+   "sha256": "d54c3914ed4760eb68e101a00530963b8c98c7cea4251ddaf1df74a1c8b52a09"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.tab",
+   "sha256": "9a69386c024713632985f20720a7c82cf3d85334ea20521282553e8581b8faef"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.json",
+   "sha256": "caa33cee58ba443a7c01af401a4d2a90ec5f19402cd2deb2a772393872ddac98"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es_reference.csv",
+   "sha256": "b31915e45b26c53a313273715891c83f74eafb1dbcf8c7a1cd4e11f731741706"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-202901-b4430da",
+ "wall_time_s": 185.4,
+ "cores": 1,
+ "card_hours": 0.05139,
+ "exit_status": 0,
+ "started": "20261115-202901"
+}

@@ -1,0 +1,49 @@
+{
+ "run_id": "core-20261115-161528-e09c0b1",
+ "owner": "core",
+ "track": "core",
+ "gate": "G2",
+ "purpose": "T1 initial slice, repeat of run core-20261115-154907-eb68eaa for the figure with the tidied layout (same executable and input)",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/scalar2/t1_slice.py",
+  "--exe",
+  ".work/exe/athena_cpu_a58e95b",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-161528-e09c0b1",
+  "--workers",
+  "12"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-scalar2",
+ "commit": "e09c0b1a84e0ed9d39cd690d0e9c21bd7f605938",
+ "branch": "core/scalar-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_a58e95b",
+   "sha256": "c69266ec765c8296b005871c6865991f2a5ac59f7ebd2ac3f03d383b57f9439e"
+  },
+  {
+   "path": "problems/scalar/sr_stochastic.athinput",
+   "sha256": "d1ad721d9b2b495b49782ca31a3c18efc24f1eb58c23eeff29d3fc12747efea6"
+  },
+  {
+   "path": "tracks/core/analysis/scalar2/t1_slice.py",
+   "sha256": "21b0c5344bc66bacdf209503a14304abc86cbfdd711ffc0827fdaea695859b54"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-161528-e09c0b1",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-161528-e09c0b1"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:15:28Z",
+ "cores": 12,
+ "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
+ "status": "completed",
+ "wall_time_s": 84.32,
+ "exit_status": 0,
+ "end_utc": "2026-11-15T16:16:53Z",
+ "core_hours": 0.2811
+}

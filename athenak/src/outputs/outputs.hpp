@@ -148,6 +148,7 @@ struct OutputParameters {
   bool logscale=true, logscale2=true;
   bool mass_weighted=false;
   bool single_file_per_rank=false; // DBF: parameter for single file per rank
+  bool double_precision=false;     // NRPIC: bin output writes Real instead of float
 };
 
 //----------------------------------------------------------------------------------------

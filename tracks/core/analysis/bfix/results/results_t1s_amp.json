@@ -1,0 +1,41 @@
+{
+ "amp": {
+  "amp": [
+   1e-07,
+   1e-06,
+   1e-05,
+   0.0001
+  ],
+  "H2": [
+   1.4440240671998972e-24,
+   4.5873486678310294e-21,
+   4.597280829613048e-17,
+   4.59733497328789e-13
+  ],
+  "M2": [
+   1.96312747636741e-25,
+   1.0697596636865489e-21,
+   1.0705852171556929e-17,
+   1.0705902685963737e-13
+  ],
+  "H2_ratio_per_decade": [
+   3176.7813099724463,
+   10021.651203126696,
+   10000.117773259562
+  ],
+  "M2_ratio_per_decade": [
+   5449.262345744569,
+   10007.717186365946,
+   10000.047183919596
+  ]
+ },
+ "meta": {
+  "exe": {
+   "new": "/data/haiyangw/nrpic/wt/core-bfix/.work/exe/athena_cpu_w1",
+   "base": "/data/haiyangw/nrpic/wt/core-bfix/.work/athena_cpu_base"
+  },
+  "bdir": "/data/haiyangw/nrpic/scratch/core/tmp/bfix/B",
+  "commit": "26eb826f8389c5546f0e66049dbb25e5524bf689",
+  "track_b_commit": "767eb9372b16e002aaf076f199a3cd6e1d34fdb6"
+ }
+}

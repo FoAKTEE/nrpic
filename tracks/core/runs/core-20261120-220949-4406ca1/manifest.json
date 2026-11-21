@@ -1,0 +1,97 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261120-220949-4406ca1",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "PSd: the columns of con_signed against running sums of the dumps of run core-20261119-165619-a6cb9fd (order of summation); JOURNAL-scalar3 entry 15",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/scalar3/s2_sumcheck.py",
+    "--data",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-165619-a6cb9fd"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "4406ca11e4d34b296b76652c190c901da554d02f",
+    "branch": "core/scalar-3",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/scalar3"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/core-scalar3"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-scalar3/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/scalar3/s2_sumcheck.py",
+      "role": "argv",
+      "sha256": "e38a06c9c14481c2c76ebc117e5df17940ef9021b6497a3ce271acb258170f1f",
+      "bytes": 6243,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 7.715,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261120-220949-4406ca1",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "9beb632f38c05eef3bee057d3a23b11b38b67710273677d027e1ec2a3c08b374",
+    "bytes": 65946,
+    "files": 3
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-20T22:09:50Z",
+  "started": "2026-11-20T22:09:50Z",
+  "ended": "2026-11-20T22:09:58Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 4.2199,
+    "gpu_hours_reserved": 2.98,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 14,
+    "runs": 1263,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-20T22:21:48Z"
+}

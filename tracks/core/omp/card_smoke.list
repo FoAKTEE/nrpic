@@ -1,0 +1,5 @@
+# Work package omp: the card build of core/build-openmp (deposit through the deposit target
+# of nrpic_threads.hpp, atomic) on the two deposit cases of the regression set, for
+# comparison with one thread of the processor build (run core-20261119-155057-57325bc).
+dep problems/tests/deposit_smr.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/regress/ic/random.nrp time/tlim=2.0 particles/deposit_max_level=1
+east problems/cosmo/east.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/regress/ic/east16/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/core/regress/ic/east16/fields.bin mesh/nx1=16 mesh/nx2=16 mesh/nx3=16 meshblock/nx1=8 meshblock/nx2=8 meshblock/nx3=8 time/nlim=20 particles/snap_dt=0.2 particles/traj_ntrack=46

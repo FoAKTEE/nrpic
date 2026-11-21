@@ -1,0 +1,50 @@
+{
+ "run_id": "core-20261115-155407-e41c24a",
+ "owner": "core",
+ "package": "gauge",
+ "tag": "smoke-es",
+ "purpose": "input smoke test, one cycle: es_gauge.athinput",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-gauge/.work/build_cpu/src/athena",
+  "-i",
+  "/data/haiyangw/nrpic/wt/core-gauge/problems/es/es_gauge.athinput",
+  "-d",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-155407-e41c24a",
+  "time/nlim=1",
+  "particles/particle_file=/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.nrp",
+  "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.tab"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-155407-e41c24a",
+ "commit": "e41c24a55859ab3f18bd436e3d39246adb0e5099",
+ "head_at_run": "7e4136440851526e717d139b0d59e861e7837359",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-gauge/problems/es/es_gauge.athinput",
+   "sha256": "84e53342af0f824966b4ec42cd0b568dcff8c26033844775558eabb42a249417"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-gauge/.work/build_cpu/src/athena",
+   "sha256": "8ac29c06b37f3f23e7839795addf0ae4f6fa4cb3363bc3ef2ebd282ad7a4e19c"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.nrp",
+   "sha256": "d54c3914ed4760eb68e101a00530963b8c98c7cea4251ddaf1df74a1c8b52a09"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.tab",
+   "sha256": "9a69386c024713632985f20720a7c82cf3d85334ea20521282553e8581b8faef"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.json",
+   "sha256": "caa33cee58ba443a7c01af401a4d2a90ec5f19402cd2deb2a772393872ddac98"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-155407-e41c24a",
+ "wall_time_s": 218.3,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-155407"
+}

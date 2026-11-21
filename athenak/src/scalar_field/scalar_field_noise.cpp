@@ -13,9 +13,10 @@
 //! mesh.  The coefficient of a mode is
 //!   c_n = (factor of its shell |n|^2) x alpha_n x (real factor of the field),
 //! with one complex unit Gaussian alpha_n = (z1 + i z2)/sqrt(2) per mode and degree of
-//! freedom, drawn with utils/rng.hpp:
-//!   stream = Stream(kStreamStochastic, 2^16 + dof),
-//!   entity = CellEntity(n_x + 2^20, n_y + 2^20, n_z + 2^20),  step = epoch,  draw 0
+//! freedom, drawn with utils/rng.hpp and utils/rng_mesh.hpp:
+//!   stream = StochasticModeStream(dof) = Stream(kStreamStochastic, 2^16 + dof),
+//!   entity = ModeEntity(n_x, n_y, n_z) = CellEntity(n_x + 2^20, n_y + 2^20, n_z + 2^20),
+//!   step = epoch,  draw 0
 //! (the keys of tracks/E-stoch-inf/noise/ref/philox_ref.py).  The epoch is 0 for frozen
 //! amplitudes and the cycle number reached at the end of the step for amplitudes that
 //! are new in every step.  A draw depends on the wave vector, the epoch, the degree of
@@ -177,6 +178,11 @@ void ScalarField::NoiseInit(ParameterInput *pin) {
     nopt.kick_a = pin->GetOrAddBoolean("scalar_field", "noise_kick_a", true);
     nopt.pi_sign = pin->GetOrAddReal("scalar_field", "noise_pi_sign", 1.0);
     nopt.mode_file = pin->GetString("scalar_field", "noise_mode_file");
+    // factor on the mode functions of the file (read only if present: amplitude scans
+    // and sign flips of one realisation)
+    if (pin->DoesParameterExist("scalar_field", "noise_mode_scale")) {
+      mode_scale = pin->GetReal("scalar_field", "noise_mode_scale");
+    }
     if (nopt.window != kWindowTanh) {
       NoiseFatal("the Mukhanov-Sasaki sources need the derivatives of the window: "
                  "noise_window = tanh");
@@ -329,6 +335,9 @@ void ScalarField::NoiseInit(ParameterInput *pin) {
 
 void ScalarField::NoiseSetup(bool res_flag) {
   if (!nopt.on) return;
+  // already done by the problem generator (InitialSlice, scalar_field_slice.cpp), with
+  // the background of the homogeneous data
+  if (slice_done && !res_flag) return;
   Mesh *pm = pmy_pack->pmesh;
   auto &indcs = pm->mb_indcs;
   const int nmb = pmy_pack->nmb_thispack;
@@ -418,6 +427,9 @@ void ScalarField::NoiseSetup(bool res_flag) {
                      + std::to_string(shell_n2[s]));
         }
       }
+      if (mode_scale != 1.0) {
+        for (int n=4; n<ny; ++n) { y0[n] *= mode_scale; }
+      }
     }
   }
   noise_ready = true;
@@ -437,16 +449,13 @@ void ScalarField::NoiseDrawAlpha(const std::uint64_t epoch) {
   auto hr = Kokkos::create_mirror_view(alpha_re);
   auto hi = Kokkos::create_mirror_view(alpha_im);
   const int ndof = static_cast<int>(alpha_re.extent(0));
-  const std::uint64_t off = static_cast<std::uint64_t>(1) << 20;
   const double rt = std::sqrt(0.5);
   for (int dof=0; dof<ndof; ++dof) {
-    const std::uint64_t stream = rng::Stream(
-        rng::kStreamStochastic, (1u << 16) | static_cast<std::uint32_t>(dof));
+    const std::uint64_t stream = rng::StochasticModeStream(
+        static_cast<std::uint32_t>(dof));
     for (int q=0; q<nmode; ++q) {
-      const std::uint64_t ent = rng::CellEntity(
-          static_cast<std::uint64_t>(mode_n[3*q] + static_cast<std::int64_t>(off)),
-          static_cast<std::uint64_t>(mode_n[3*q+1] + static_cast<std::int64_t>(off)),
-          static_cast<std::uint64_t>(mode_n[3*q+2] + static_cast<std::int64_t>(off)));
+      const std::uint64_t ent = rng::ModeEntity(mode_n[3*q], mode_n[3*q+1],
+                                                mode_n[3*q+2]);
       const rng::Key key{nopt.seed, stream, ent, epoch};
       double z[2];
       rng::Normal2(key, 0, z);
@@ -671,7 +680,9 @@ void ScalarField::NoiseStage(Driver *pdriver, int stage) {
     }
   } else {
     NoiseModeRHS(y0, yrhs);
-    NoiseSynthesize();
+    // without kicks nothing reads the fields of a stage (the mode functions are still
+    // integrated, as the linear reference of a run from the initial slice alone)
+    if (nopt.kick_pi || nopt.kick_k || nopt.kick_a) { NoiseSynthesize(); }
   }
 }
 
