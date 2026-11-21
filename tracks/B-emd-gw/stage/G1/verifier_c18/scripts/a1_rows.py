@@ -86,6 +86,20 @@ res["row197"] = {"n_pairs": len(pairs), "n_rep": len(rep), "n_orig": len(orig),
                  "maxrel_2_40": float(rel[(a197 >= 2) & (a197 <= 40)].max()),
                  "maxrel_80_140": float(rel[(a197 >= 80) & (a197 <= 140.5)].max()),
                  "a": a197.tolist(), "rel": rel.tolist()}
+# the same numbers through the FFT route of the amplitude (the rounding of the diagnostic itself
+# is of the size of the difference: T0b gives 4e-12 relative for the direct sum)
+def amp_fft_file(path, kind):
+    dd = vlib.read_rst(path) if kind == "rst" else vlib.read_bin(path)
+    gg = vlib.Grid(dd)
+    hh = vlib.traceless(vlib.tensor(dd, "g") - np.eye(3)[:, :, None, None, None])
+    A = {"K1": gg.amp_from_fft(gg.fft_t(hh), (1, 1, 0)), "K2": gg.amp_from_fft(gg.fft_t(hh), (1, -1, 0))}
+    return vlib.pol(A)["K1"][0].real
+
+
+relf = np.array([abs(amp_fft_file(p[0]["file"], "dbin") / amp_fft_file(p[1]["file"], "rst") - 1) for p in pairs])
+res["row197"]["fft_route_maxrel_2_40"] = float(relf[(a197 >= 2) & (a197 <= 40)].max())
+res["row197"]["fft_route_maxrel_80_140"] = float(relf[(a197 >= 80) & (a197 <= 140.5)].max())
+res["row197"]["fft_route_rel"] = relf.tolist()
 # the same with the single-precision dumps (every 0.1), as a cross-check of the pairing
 rb = series("e1_rep", "bin"); ob = series("eps1", "bin")
 tb = {round(r["time"], 9): r for r in ob}
@@ -184,8 +198,12 @@ s1 = vlib.s_static(0.01, 1.0)
 g118 = {}
 for lab, z, gd in (("64", "eps1", "eps1_gd"), ("32", "n32_eps1", "n32_eps1_gd")):
     rz, rg = series(z), series(gd)
-    tgm = {round(r["time"], 6): r for r in rg}
-    pr = [(r, tgm[round(r["time"], 6)]) for r in rz if round(r["time"], 6) in tgm and r["time"] > 0]
+    tg_ = np.array([r["time"] for r in rg])
+    pr = []                                   # pair dumps whose times agree to 1e-5 (one step is ~1e-2)
+    for r in rz:
+        j = int(np.argmin(np.abs(tg_ - r["time"])))
+        if abs(tg_[j] - r["time"]) < 1e-5 and r["time"] > 0:
+            pr.append((r, rg[j]))
     a = vlib.a_of_tau(np.array([p[0]["time"] for p in pr]))
     cz = np.array([p[0]["K1_plus"][0] for p in pr]); cg = np.array([p[1]["K1_plus"][0] for p in pr])
     gz = np.array([p[0]["Gtot_K1_plus"][0] for p in pr]); gg = np.array([p[1]["Gtot_K1_plus"][0] for p in pr])
@@ -213,8 +231,11 @@ res["row123"] = [float(rr_.min()), float(rr_.max())]
 r101 = {}
 for nm in ("eps0p1", "eps1"):
     rr = series(nm); a_ = vlib.a_of_tau(tau(rr))
-    kg = arr(rr, "kin") / arr(rr, "grad")
-    r101[nm] = float(kg[a_ >= 12].max())
+    gr = arr(rr, "grad")
+    kg = np.where(gr > 0, arr(rr, "kin") / np.where(gr > 0, gr, 1.0), 0.0)
+    ac = arr(rr, "a_chi")
+    r101[nm] = {"a_tau_ge12": float(kg[a_ >= 12].max()), "a_chi_ge12": float(kg[ac >= 12].max()),
+                "a_of_max": float(a_[a_ >= 12][np.argmax(kg[a_ >= 12])])}
 res["row101_control"] = r101
 # row 100 (box-mode share), wave-1-era quantity of the same runs, as an extra
 r100 = {}
