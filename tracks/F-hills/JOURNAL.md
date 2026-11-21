@@ -548,3 +548,19 @@ L5b (prediction, before its run): with the same integration, E over u in [-35, -
 0.3-0.6e-6 M at all four radii, and the mean rate dE/du over [-20, 6] M is 3-8e-8 M per M, equal
 within 30 percent at 70 and 90 M. If so, about two thirds of the window's energy is a steady
 outgoing emission and not a burst of the initial data. Refuted outside these ranges.
+L5b outcome (run F-20261121-155549-4359678): E over u in [-35, -28] M is 0.57, 0.63, 0.49,
+0.40 e-6 M at 40, 48, 70, 90 M (FAILED at 48 M by 0.03e-6, met at the others); the mean rate
+over [-20, 6] M is 5.3, 5.0, 5.2, 5.4 e-8 M per M (MET, equal within 8 percent at all radii).
+So 75-83 percent of the window's 2.3-2.6e-6 M is a steady outgoing emission at a rate the
+same at every sphere, and only 0.4-0.6e-6 M is the burst that arrives with the initial data.
+What the steady part is (the binary's own emission while the m/8 members spiral in
+numerically, the moving members crossing refinement boundaries, or else) is not identified
+[JUDGEMENT: P1's separation falls from 4.95 to 3.36 M by t = 30 M, which raises the quadrupole
+luminosity about sevenfold; a steady source that the m/8 artefact feeds is the likeliest].
+L6 outcome: (a) T8 rerun (run F-20261121-155605-7d21f63) equals the registered JSON in all 232
+values (MET; figure read: the 'cks' a = 0.9 retrograde binary runs away to ln|E_b/E_b0| of
+about 8 near r = 20, 'bks' stays with 'sch'; odd part of 'cks' follows the leading order to
+r of about 30). (b) Analysis rerun (run F-20261121-155614-7997653) equals
+`kerr_2402_summary.json` in all 6772 values (MET; `fig_incld.png` read: L_z > 0 median 1-3
+steps below the paper at beta = 0.52-0.68, the other panels within one step). (c) My
+derivation gives the same coefficient 2M/r as the package's 2H (JUDGEMENT, on paper).
