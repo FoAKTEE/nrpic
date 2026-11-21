@@ -1,0 +1,2 @@
+# o1: machine code of the new processor build against the release core-v0.5 build, object by object (histogram of instructions)
+compare_objects.py /data/haiyangw/nrpic/wt/core-faces/.work/build_cpu /data/haiyangw/nrpic/.work/build_cpu_v05 --jobs 2 --out $OUT/results/o1.json --fig $OUT/figs/o1_objects

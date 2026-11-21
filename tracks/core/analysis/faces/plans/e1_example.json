@@ -1,0 +1,8 @@
+{"exe": ".work/exe/sbc5/athena_cpu",
+ "note": "e1: the example input problems/tests/z4c_faces.athinput (__new) against the package inputs with the same values on the command line (__rel), same executable",
+ "cases": {
+  "ex_full__new": {"input": "../../../../problems/tests/z4c_faces.athinput", "args": ["time/nlim=8"]},
+  "ex_full__rel": {"input": "inputs/punc_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "z4c/sbc_speed=metric", "time/nlim=8"]},
+  "ex_stock__new": {"input": "../../../../problems/tests/z4c_faces.athinput", "args": ["z4c/extrap_order=2", "z4c/ghost_falloff=false", "z4c/sbc_variant=sommerfeld", "z4c/sbc_speed=unit", "time/nlim=4"]},
+  "ex_stock__rel": {"input": "inputs/punc.athinput", "args": ["time/nlim=4"]}
+ }}

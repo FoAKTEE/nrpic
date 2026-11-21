@@ -1,0 +1,67 @@
+{
+ "ball": {
+  "files": 11,
+  "identical": 3,
+  "different": [
+   "ball.cstat.hst",
+   "ball.nrpic.hst",
+   "bin/ball.con.00001.bin",
+   "bin/ball.con.00002.bin",
+   "bin/ball.con.00003.bin",
+   "bin/ball.z4c.00001.bin",
+   "bin/ball.z4c.00002.bin",
+   "bin/ball.z4c.00003.bin"
+  ]
+ },
+ "bench": {
+  "files": 0,
+  "identical": 0,
+  "different": []
+ },
+ "boost": {
+  "files": 5,
+  "identical": 2,
+  "different": [
+   "bin/punc.con.00000.bin",
+   "bin/punc.con.00001.bin",
+   "bin/punc.z4c.00001.bin"
+  ]
+ },
+ "bybin": {
+  "files": 9,
+  "identical": 5,
+  "different": [
+   "by2.co_0.txt",
+   "by2.co_1.txt",
+   "by2.horizon_summary_0.txt",
+   "by2.horizon_summary_1.txt"
+  ]
+ },
+ "hcal": {
+  "files": 10,
+  "identical": 5,
+  "different": [
+   "punc.horizon_summary_0.txt",
+   "punc.traj.bin",
+   "punc.trajmet.bin",
+   "rst/punc.00001.rst",
+   "rst/punc.00001.rst.prt"
+  ]
+ },
+ "kgsmr": {
+  "files": 1,
+  "identical": 0,
+  "different": [
+   "kgsmr.sf.hst"
+  ]
+ },
+ "punc": {
+  "files": 5,
+  "identical": 2,
+  "different": [
+   "bin/punc.con.00000.bin",
+   "bin/punc.con.00001.bin",
+   "bin/punc.z4c.00001.bin"
+  ]
+ }
+}

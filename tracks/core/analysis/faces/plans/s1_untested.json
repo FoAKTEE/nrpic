@@ -1,0 +1,8 @@
+{"exe": ".work/exe/sbc5/athena_cpu",
+ "note": "s1: the full set with the delivered executable, and the two option values no earlier run used on top of it",
+ "ball": {"M": 0.5, "Rb": 6, "edge": 1.5, "h": 0.5},
+ "cases": {
+  "ball_full": {"input": "inputs/ball_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "z4c/sbc_speed=metric"]},
+  "ball_full_lapse": {"input": "inputs/ball_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "z4c/sbc_speed=lapse"]},
+  "ball_full_thnw": {"input": "inputs/ball_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "z4c/sbc_speed=metric", "z4c/sbc_theta=nonwave"]}
+ }}

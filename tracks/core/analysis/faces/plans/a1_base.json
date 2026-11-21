@@ -1,0 +1,14 @@
+{"exe": ".work/build_cpu/src/athena",
+ "ball": {"M": 0.5, "Rb": 6, "edge": 1.5, "h": 0.5},
+ "cases": {
+  "ball_e2": {"input": "inputs/ball.athinput", "args": ["z4c/extrap_order=2"]},
+  "ball_e4": {"input": "inputs/ball.athinput", "args": ["z4c/extrap_order=4"]},
+  "ball_e2_d0": {"input": "inputs/ball.athinput", "args": ["z4c/extrap_order=2", "z4c/diss=0.0", "time/tlim=4.0"]},
+  "ball_ref": {"input": "inputs/ball.athinput", "args": ["z4c/extrap_order=2", "mesh/nx1=64", "mesh/nx2=64", "mesh/nx3=64", "mesh/x1min=-32", "mesh/x1max=32", "mesh/x2min=-32", "mesh/x2max=32", "mesh/x3min=-32", "mesh/x3max=32"]},
+  "punc_e2": {"input": "inputs/punc.athinput", "args": ["z4c/extrap_order=2"]},
+  "punc_e4": {"input": "inputs/punc.athinput", "args": ["z4c/extrap_order=4"]},
+  "punc_ref": {"input": "inputs/punc.athinput", "args": ["z4c/extrap_order=2", "mesh/nx1=64", "mesh/nx2=64", "mesh/nx3=64", "mesh/x1min=-32", "mesh/x1max=32", "mesh/x2min=-32", "mesh/x2max=32", "mesh/x3min=-32", "mesh/x3max=32"]},
+  "boost_e2": {"input": "inputs/punc.athinput", "args": ["z4c/extrap_order=2", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"]},
+  "boost_e4": {"input": "inputs/punc.athinput", "args": ["z4c/extrap_order=4", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"]},
+  "boost_ref": {"input": "inputs/punc.athinput", "args": ["z4c/extrap_order=2", "problem/comp0_p1=0.3", "problem/comp0_corr=approx", "mesh/nx1=64", "mesh/nx2=64", "mesh/nx3=64", "mesh/x1min=-32", "mesh/x1max=32", "mesh/x2min=-32", "mesh/x2max=32", "mesh/x3min=-32", "mesh/x3max=32"]}
+ }}
