@@ -234,3 +234,23 @@ when `nrpic-stage report` runs again.
   directories are left as they are and a ruling is asked of orch.
 - The verifier's report (C18) is missing; SECOND_CHECK.md is a second agent's check of the
   plan. Asked of orch (outbox `20261119T151429Z__to-orch__verifier-g0-g1.md`).
+
+## Lead's state of the package (wave 3, batch 2a, 2026-11-21; supersedes the wave-2b section above where they differ)
+
+- The verifier's report is in: `VERIFIER.md` (fresh verifier, batch 1 of 2026-11-20): 20 claims
+  with verdicts, ledger tables 1-2 recomputed 57 of 57 (run F-20261121-035817-0aca1c5; rerun by
+  the lead from its registered outputs, F-20261121-063712-25981e0, 56 rows identical and row 57 a
+  locator made stale by release core-v0.4). C18 PASS.
+- Every WRONG, PARTLY or NOT DONE item (D1-D10) was checked at the source by the lead (run
+  F-20261121-063504-00f0743) and answered in `../REVIEW-wave3.md`; corrections in `SCOPING.md`
+  (marked "[amended: D<n>]"), `note/main.tex`, `RISKS.md`; the note's ledger corrections wait for
+  the paused note package's rerun (`note/JOURNAL.md`, lead entry); none changes a G0 number beyond
+  the precision remarks D9.
+- `nrpic-stage verify` on 7bf8f9da: FAIL on `clean` (uncommitted files of the cut packages kerr and
+  g2mesh, left alone as instructed), `sync` (main moved by one commit during the verify; merged
+  since, f4dfb4d9) and `runs` (three wave-2 run directories, waiver asked of orch again on
+  2026-11-21; P1 in flight). Every other check PASS: rerun 12 of 12 scripts, 33 files compared,
+  0 differ, all 24 figure files regenerated. The PDF of the note is older than its .tex (the
+  note's G1 revision is paused; G0 content unchanged).
+- Lead's judgement: complete for an independent review (decision 0016 item 4). The lead does not
+  pass the gate.
