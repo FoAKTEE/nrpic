@@ -745,7 +745,7 @@ Predictions (refuted where stated):
   (5.1e-11, 4.0e-4), both set by the first-order truncation of the top shells.
 - Cost: 1.2-1.4 card-s per step, 0.45-0.55 card-hours (seed 1: 1811 s, 0.503).
 
-## Entry 16, 2026-11-21 03:00Z (wave 3, second burst): outcome of item (a); amendment and its prediction
+## Entry 16, 2026-11-21 02:58Z (wave 3, second burst): outcome of item (a); amendment and its prediction
 
 State found at 02:55Z: the first burst (cut at about 22:37Z on 2026-11-20) had committed entries
 12-15, the scripts and the lists, run the pairing rerun E-20261120-223038-684821a (exit 0 at
@@ -799,3 +799,28 @@ the amended script on the same inputs (scratch/E-stoch-inf/tmp/ladder_a2, not a 
   4e-4, all within a factor 10 of P1's 1e-10 (A4 magnitude PASS, as in entry 9);
 - the negative-control panel shows the H record ratio between 1e3 and 2e5 for N = 32, 64, 128
   from the first dump on and no point at t > 4.5. Refuted by an empty panel or a differing leaf.
+
+## Entry 17, 2026-11-21 03:01Z: outcome of the second rerun of item (a); item (a) closed
+
+Run E-20261121-025932-7a21f34 (processor, 2 cores, seconds; parent E-20261120-223038-684821a,
+whose four pair files it reuses as checksummed inputs). Outputs copied into `results/final2/`
+(the four time-matched pairs, `summary.json`, `compare.json`) and `fig/final2/`
+(`fig_a4_paper.png`, `fig_halving_fix.png`, both looked at).
+- CONFIRMED: `summary.json` equals that of 684821a in every leaf except the added
+  `last_paired_time` and `max_record_con` (checked leaf by leaf). Record maxima over every cycle
+  of both runs to t = 4.6: H 4.71e-11 (N32, t = 2.36), 4.83e-11 (N64, 3.07), 5.04e-11 (N128,
+  3.80), 5.10e-11 (N256, t = 4.547 in P256); M 3.71e-4, 3.83e-4, 3.96e-4, 3.25e-4. All within a
+  factor 10 of P1's 1e-10: the A4 magnitude criterion passes, as in entry 9.
+- CONFIRMED: the negative-control panel now shows the record ratio sign-flipped/proper, H up to
+  about 6e4 (N = 32) and 1.5e5 (N = 64, 128) during the first two e-folds, M up to 4e4, falling
+  to 1e2 after the entry; the curves end at the last common time (N = 4.39), no point at the
+  shortened last step.
+- The middle panel has no even factor above 4.1 (the spike of waves 2-2b is gone); the left panel
+  of `fig_halving_fix.png` shows the old spikes (16.0 at N = 64, 9.0 at N = 128) as crosses
+  beside the time-matched lines.
+
+Item (a) answers: pairing only at equal recorded times (|dt| <= 1e-9), no interpolation. What
+changes in the record of G1: the A4 numbers of P256 in entry 9 ("odd/even up to 385") are
+replaced by 25 at the last time-matched dump (N = 3.93), with the warning that the P256 peak at
+N = 4.4 has no time-matched partner; the record maxima come from `max_record_con`. Every
+verdict is unchanged.
