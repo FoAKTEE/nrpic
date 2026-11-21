@@ -718,3 +718,15 @@ Predictions written before the runs of this session.
   only the 16 wave-1 seeds 171-186 and reports them 'same' (ingest3 saw 'same 16' after its
   remap); 658-662 are served rows and are not reached. A 'pinned' count is possible for any of
   the 16 that a person relocated. Refuted if any of the 16 reports 'changed'.
+- D1 outcome (run kb-20261121-234427-d6031d4): held. Before: papers 1, chunks 43, equations 7,
+  figures 5, bib_entries 4, downloads 1, claims 0; also 7 citation rows and 22 vectors I had not
+  counted. After: all 0, papers 744.
+- K1 outcome (run kb-20261121-234437-8747d17): held, "checked: same 16"; 658-662 not reached
+  (served rows); 0 dangling chunk references in the 21 claims and in all claims; 0 orphan vectors.
+- S1 (snapshot): `kb snapshot` writes kb-20261121-<sha7>.sqlite and moves db/current to it;
+  `kb status` then names it; a reader on db/current sees 744 papers, 860 claims, and the code
+  index of local/nrpic at 47ab19ab. Refuted if current still points at kb-20261119-a782f1e or a
+  count differs from the working database.
+- Q1 (kb qa run on the new snapshot): parse rate 720/744 = 96.8 % with status ok (gr-qc/0608095
+  was ok, so 719/744 = 96.6 % if it was among the ok papers), strict rate the same (ingest3 found
+  no ok paper that cites without entries), bar met. Refuted if below 95 % or strict differs.
