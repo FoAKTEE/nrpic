@@ -1,14 +1,14 @@
 # Stage report: B-emd-gw G1
 
-Date: 2026-11-21 · branch `track/B-emd-gw` at `57988acf0e4d` · checklist
+Date: 2026-11-21 · branch `track/B-emd-gw` at `c94677a1f7de` · checklist
 `tracks/B-emd-gw/stage/G1/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
 
 **FAIL**. Tag: `stage/B-emd-gw/G1-fail-20261121` (created and pushed by the orchestrator after review, decision 0003).
 
-- 1 checklist items not PASS or NA: C18 OPEN
-- verify ran on 5a1c117; files changed since: tracks/B-emd-gw/HANDOFF.md, tracks/B-emd-gw/JOURNAL.md, tracks/B-emd-gw/RISKS.md, tracks/B-emd-gw/STATUS.md (run verify again)
+- verify ran on 907e78d; files changed since: tracks/B-emd-gw/HANDOFF.md, tracks/B-emd-gw/JOURNAL.md, tracks/B-emd-gw/RISKS.md, tracks/B-emd-gw/STATUS.md, tracks/B-emd-gw/outbox/20261121T205723Z__to-orch__chain-dependency-and-proc-name.md, tracks/B-emd-gw/runs/B-20261121-202304-dc3020e/manifest.json (run verify again)
+- verify reported FAIL: runs
 
 ## Package documents (decision 0012)
 
@@ -42,20 +42,20 @@ Date: 2026-11-21 · branch `track/B-emd-gw` at `57988acf0e4d` · checklist
 | C14 | Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed) | STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md, CHECKLIST.md, STATUS.md, VERIFIER.md (verifier2) and verifier3/VERIFIER.md in stage/G1/; the lead's rechecks are stage/REVIEW-wave2.md and stage/REVIEW-wave3.md (task-given names); scoping text scope/SCOPE.md | PASS |
 | C15 | Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at | every data figure from a registered run with one script each (figstyle), looked at; the note's figures and tables are byte copies of run B-20261120-223319-cc5320d (28 of 28, cmp by the lead) | PASS |
 | C16 | Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline | schem_architecture (exists / on a tested branch / to be written) and schem_timeline (G0 passed, G1 needs) with paperfig, note/scripts/schem_*.py, run B-20261120-223319-cc5320d; looked at | PASS |
-| C17 | Working note written with /paper-writing; its manuscript checker passed with --compile | note/main.pdf v2, 21 pages (REVTeX), built from run B-20261120-223319-cc5320d; latexmk: 0 undefined references or citations, 0 overfull boxes; the paper-writing checker is clean in the main text except the allowed delta = 0.0025 hits (note/JOURNAL.md, outcome N16); all pages read by the note helper. Rewordings owed for v3: ledger rows 101, 118-119, 168 (verifier3) and 125, 197 (verifier_c18) (stage/REVIEW-wave3.md); corrections, not failures of the item | PASS |
-| C18 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | met in part (lead's judgement, batch 4a). Recomputed by agents that did not produce them: the G1 claims of wave 1 (stage/G0/VERIFIER.md), the wave-2 first-source and Newtonian runs (verifier2, stage/G1/VERIFIER.md), the criterion-1 table and rows 101, 115-119 (verifier3), and now the second-round table (ledger lines 197-216), gauge lines 116-117 with eps = 0.1, 0.3 and 120-123, line 125, line 101, wave-1 lines 26-27 and the round-3 results (verifier_c18, stage/G1/VERIFIER-C18.md: 116 numbers, 103 within 1 per cent, 113 within 5 per cent, none contradicted; run B-20261121-132955-cb150b2, rerun byte for byte by the lead in B-20261121-155045-343bee1). Not yet recomputed: ledger lines 34-36 (34 in part by the G0 verifier), 49-63 (wave-1 pancake and homogeneous background), 70-71, 124, 199 (residuals), 217. Owed: verifier_c18b (one fresh package, processors only) or a ruling of the orchestrator that these wave-1 scouting rows move to G2 (outbox 20261121T*__to-orch__c18-remaining-rows.md) | OPEN |
+| C17 | Working note written with /paper-writing; its manuscript checker passed with --compile | note/main.pdf v3 (REVTeX), rebuilt 2026-11-21 from the ledger run B-20261121-203254-928275f (rows reworded in B-20261121-202548-3c3de2f and -202758-544416e) on top of the v2 figures of run B-20261120-223319-cc5320d; latexmk: 0 undefined references or citations, 0 overfull boxes. The v3 corrections owed by the verifiers are made: rows 101 (over the 22 double-precision dumps), 118 (s defined), 125 (smallest value is the initial slice), 168 (forward combination), 197 (floor about 1e-12; second digit is rounding), rows 34, 56, 59, 63 (VERIFIER-C18b), and the (1 + eps^2) sentence with its range (0.6-3.6 per cent for a = 30-60 at delta = 0.0025, 10-16 per cent off at a = 20; new ledger row, run B-20261121-075616-97f039f). Not added: the direct zero-shift-to-driven map row of verifier3 and the driven-shift value of row 101 (additions, not corrections; OPEN.md). The paper-writing checker was not rerun on v3 (the text changed in one sentence). | PASS |
+| C18 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | met (lead, batch 5, 2026-11-21). Every ledger row is now recomputed by an agent that did not produce it: wave-1 G1 claims (stage/G0/VERIFIER.md); wave-2 first source and Newtonian runs (verifier2, stage/G1/VERIFIER.md); criterion-1 table and rows 101, 115-119 (verifier3); second-round table, gauge rows, row 125, wave-1 rows 26-27 and the round-3 results including the (1 + eps^2) numbers (verifier_c18, stage/G1/VERIFIER-C18.md, run B-20261121-132955-cb150b2); the remaining rows 34-36, 49-63, 70-71, 124, 199, 217 (verifier_c18b, stage/G1/VERIFIER-C18b.md: 56 of 58 numbers CONFIRMED, none WRONG; runs B-20261121-170003-23f500e, -170159-535438f, -170611-c616c57, -171152-4241a93, -171519-ad8f227). Line 59, NOT CONFIRMED as worded, is reworded to "at the five dumps after crossing (a = 22, 25, 30, 35, 41.9)"; lines 34 (grid ends), 56 (records nearest a = 10, 15) and 63 (history file named with its sha256) reworded as the verifier asks (ledger runs B-20261121-202548-3c3de2f and B-20261121-202758-544416e; decision 0025 item 2). | PASS |
 | C19 | Null results and failed runs are on record (manifests and JOURNAL) | failed predictions and runs on record: first_source/JOURNAL.md (P1 as worded, P4, P6 with G), newton_tests/JOURNAL.md (P1a, P1b, P2a, H1a, H1c, H1d-3, N1d, N1e), waves/JOURNAL.md (F4, F6, X6, X3 at N = 32, A3, plus phase at N >= 48, cost), note/JOURNAL.md (N8 in part, N12 plus phase at N = 32, N16 page count), verifier2 and verifier3 journals (P3.5, P4.5, P4.7), population/JOURNAL.md (P2, P5, P8, P10b, I1), stage/review_wave2 (R5, R6) and stage/review_wave3 (L1 marginal, L2, L2b, L3); round 3 of first_source (P11(c') K2 at 32^3, (1 + eps^2) at a = 20, P14(c) at a = 10, P16'(i), (ii) at a = 12, P16'(iv)); waves round 1 (F2-4 per dump, XS-3 at N = 64, XS-4); verifier_c18 (its first restart parse, first 32^3 pairing, direct-sum bound); failed runs kept: B-20261115-161656-03d75e1, -164104-886798f, -170149-75036cf, B-20261119-142234-85da208, -145125-51e9f8f, -141813-91cfe8e, -143836-644f0a9, B-20261120-222232-3d7d57e, -223445-3686145, B-20261121-025612-ed4a875, -030110-52ae004 | PASS |
-| C20 | STATUS.md, JOURNAL.md and HANDOFF.md are current | STATUS.md, JOURNAL.md, HANDOFF.md, RISKS.md rewritten by the lead at the end of batch 4a (2026-11-21) | PASS |
+| C20 | STATUS.md, JOURNAL.md and HANDOFF.md are current | STATUS.md (33 lines), JOURNAL.md (entry 2026-11-21T20:19Z), HANDOFF.md (runs going, sequencer, packages in progress), RISKS.md (R10, R16 retired, R17, R18) rewritten by the lead at the end of batch 5 (2026-11-21) | PASS |
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-21T16:40:32Z, clean export of `5a1c117f3f66`: **PASS**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-21T21:09:01Z, clean export of `907e78daf040`: **FAIL**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 5a1c117f3f66 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-5a1c117-20261121T155417Z/tree |
+| export | PASS | clean export of 907e78daf040 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-907e78d-20261121T203333Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
@@ -63,10 +63,10 @@ Date: 2026-11-21 · branch `track/B-emd-gw` at `57988acf0e4d` · checklist
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 11 figures, each with its script |
 | min-figs | PASS | 3 schematics and 8 data figures (brief 13.4 asks at least 2 and 1 at G1) |
-| runs | PASS | 273 run manifests finished (78 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded |
+| runs | FAIL | 4 of 288 runs have problems; 1 waived |
 | runs-waived | WARN | failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): B-20261115-164157-40b9f6d: outputs moved into the run directory after the run finished; data unchanged |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 35 lines |
+| status | PASS | STATUS.md has 33 lines |
 | rerun | PASS | 11 of 11 scripts and commands ran cleanly in the export |
 | compare | PASS | 22 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 22 committed figure files regenerated |
@@ -122,13 +122,15 @@ Date: 2026-11-21 · branch `track/B-emd-gw` at `57988acf0e4d` · checklist
 - `B-20261120-223445-3686145`: failed (exit 1), shear smoke: S1 (beta 0.005, HL 1) N_y=32, release processor exe, initial data, rays, observer; pipeline check
 - `B-20261121-025612-ed4a875`: failed (exit -15), verifier3 V3: own TT and Weyl/Psi4 measurement of tests F (N16-64) and X (N16-64, x10) from the raw dumps (P3.1-P3.7)
 - `B-20261121-030110-52ae004`: failed (exit 1), verifier3 V3 summary: amplitude/phase errors, TT-Weyl differences, orders, plus/cross, x1 vs x10, figures, from run B-20261121-025826-80973e3
+- `B-20261121-202503-abdf6f0`: failed (exit 1), shear series 1: S1-S4, M1-M2, L1-L2 at N_y = 32, 64, 128 and legs lapse f = 1, 2 and 4 particles per cell; G2 multi-code row (shearing dust of arXiv:2003.08014)
+- `B-20261121-202830-417af0c`: failed (exit 1), shear series 1 (resubmitted after the fan-argument fix): S1-S4, M1-M2, L1-L2 at N_y = 32, 64, 128 and legs lapse f = 1, 2 and 4 particles per cell
 - `B-emd-gw-20261115-120531-40a3597`: failed (exit 1), scouting: TT energy spectrum, TT/non-TT ratio and Weyl parts on the restart dumps of the full-GR cosmology runs dav_c256_n128_t and dav_c256_n128_pcs4bt
 - `B-emd-gw-20261115-130926-a1c2237`: stopped (exit None), Lead re-check L1 of the five wave-1 packages: clean git-archive export of commit 2fb3dbff41a1dcba59577c9f8410ff4501f06f2c; all analysis scripts and tests rerun, results compared leaf by leaf with the committed/original results (compare_results.py); four periodic_z4c AthenaK cases re-executed with the release processor executable and compared byte by byte with the original runs
 
 ## Open risks
 
 
-State 2026-11-21, batch 4a (lead); rows changed since batch 2a say so. Likelihood and effect are JUDGEMENT; the watch
+State 2026-11-21, batch 5 (lead); rows changed since batch 4a say so. Likelihood and effect are JUDGEMENT; the watch
 column names the measurement that decides. Sources: `scope/SCOPE.md` section 8,
 `stage/G0/REVIEW.md`, `stage/G0/VERIFIER.md`, `stage/REVIEW-wave2.md`, `stage/REVIEW-wave3.md`,
 `stage/G1/verifier3/VERIFIER.md`, the helper journals.
@@ -144,22 +146,42 @@ column names the measurement that decides. Sources: `scope/SCOPE.md` section 8,
 | R7 Output volume: restart dumps carry the particles (380 MB per dump at 2.1M particles, 12 GB per run) | medium (was high) | limits cadence and resolution | dump size per run | double-precision bin output is in release core-v0.4 and used by every new deck (verifier3: float32 puts a floor of 3-7e-6 under gauge differences); a 256^3 double dump is 2.7 GB, 100 per run: in-situ low-k Fourier output requested from core (batch 2a) |
 | R8 Dependence on core: in-situ Fourier output (accepted by core, no branch), initial data at large amplitude; species history and the spectral Poisson symbol are in core-v0.6 (batch 4a) | medium (was medium) | delays N2 and the G3 population runs | core's answers; READY of core-v0.4 id_solve on the torus | the release executables for new runs; population tests id_solve at L = 8 before any request |
 | R9 Literature comparison: 2212.00425, 2312.12499 read at abstract level only; the Omega-today scaling of 2403.15126 is sigma^(5/2) with its own eq. (result_OmZ), not the stated 7/2 (verifier C8); the 144-392 prefactor gap varies as theta^(2/3) | medium | the "when does GR matter" comparison has no quantitative anchor | reading of the papers' spectra; kb claims; batch 2a: 2312.12499 lines 324 and 581 differ by a factor 3 in delta (kb request) | compare emitted energies (7/2 holds at emission), not Omega today, until settled; normalize with Phi = (3/5) R and the matter-era Poisson relation |
-| R10 Particle-number convergence of the background and growth rows not shown (first source: shown, batch 4a) | medium | G2 criterion | first source: 1 and 8 per cell within 7.8e-5 of 27 per cell for a <= 40, mesh 128^3 vs 64^3 1.8e-4 (P12, P13; confirmed by verifier_c18); flrw_conv: J1 B-20261120-222955-c8e16e3, P1 -223006-24448ac not analysed | analyse flrw_conv first; J2, J3 (1.25 card-h) after that |
+| R10 Particle-number convergence of the background and growth rows not shown (first source: shown, batch 4a) | medium | G2 criterion | first source: 1 and 8 per cell within 7.8e-5 of 27 per cell for a <= 40, mesh 128^3 vs 64^3 1.8e-4 (P12, P13; confirmed by verifier_c18); flrw_conv: J1, P1 ended, not analysed; batch 5: J2 (Slurm 4824) and J3 (4825, 128^3 to a = 1001, chained) submitted with the v0.3 executable of J1 | analyse J1-J3 and P1 against PF1-PF6, PB1-PB5 (flrw_conv/JOURNAL.md entries 1, 4) |
 | R11 Overlap: 2605.04487 names a fully relativistic treatment as future work (`main_v3.tex:2630`); 2312.12499 says the same (`main.tex:115`) | medium | novelty | arXiv listings | keep the plane-symmetric null, the gauge-controlled box-mode strain and the GR-minus-Newton statement per k as the distinct contribution |
 | R12 Short second-order comparison window: at delta = 0.01 the strain departs from s g by 1-2 percent at a = 20 and 6-11 percent at a = 40, growing with eps (beyond second order; 2610.08045 `main.tex:40-49`: secular growth of higher orders in matter domination) | certain | pre-crossing accuracy claims limited to a <= 10 | measured at delta = 0.0025 (round 2, P14): the departure falls as delta^2 (R = 17-19), window |dev| <= 0.5 percent to a = 34-42 | quote the window; the (1 + eps^2) advance test holds to 0.6-3.6 per cent for a = 30-60 at delta = 0.0025 and fails at a = 20 (Q = 1.10-1.16; batch 2b, confirmed by verifier_c18): quote its range |
 | R13 Newtonian reference force error (kh)^2/12 of the seven-point Laplacian (3.2e-3 at kh = 2 pi/32) | certain | biases GR-minus-Newton per mode at the 1e-3 level | core-v0.6: newton_poisson = fft with the spectral symbol removes it (core's pancake: 4.6e-5 at n = 64 against 1e-3 with seven points) | new GR-Newton comparisons use the spectral symbol, or quote the error |
 | R14 Rounding-level numbers depend on the reading (batch 2a): the X plus amplitude at N >= 48 differs by 1.3e-8 to 1.6e-8 between the modulus of the complex amplitude and its in-phase part | certain at amplitude 1e-6 | a disputed number in a ledger | state the measure next to every number below 1e-7 relative; the x10 runs give the truncation part | quote truncation errors from the cross polarization or from x10 runs |
 | R15 Usage-limit cuts strand runs and files (2026-11-19 and 2026-11-20: seven runs ended unattended, one package's outputs uncommitted, a gauge module left uncommitted) | high | lost or unregistered work | `git status`, `nrpic-run status` at every session start | leads close finished runs with `nrpic-run finish`; helpers commit after every step |
-| R16 C18 of G1 needs one more verifier session: wave-1 ledger rows (pancake, homogeneous background, estimates) were never recomputed by an independent agent (batch 4a) | certain | delays the G1 gate by one batch | orch's answer to c18-remaining-rows | verifier_c18b in the next batch, or a ruling that the wave-1 scouting rows move to G2 |
+| R16 C18 of G1 needed one more verifier session (batch 4a) | retired (batch 5) | - | verifier_c18b ran (56 of 58 numbers confirmed, none wrong); line 59 reworded | none: G1 package complete for review |
+| R17 Unattended queue (new, batch 5): the sequencer (cards/sequencer.py) submits card chains and starts processor runs between sessions and commits manifests (nrpic-run) in the worktree; a session that leaves population/ dirty blocks its submissions, a git lock makes a finish fail | medium | runs submitted late or a manifest left open | scratch/B-emd-gw/sequencer/sequencer.log, state.json; nrpic-run status | the sequencer retries every five minutes and never resubmits an entry; sessions commit before they stop; STOP file to halt it |
+| R18 Literal harmonic slicing in the shearing-dust test (new, batch 5): the S1 leg with lapse_harmonic = 1 stopped at t = 0.578 (guard: non-finite Khat; nine cells with a non-positive metric determinant first), run B-20261121-202830-417af0c | measured | P10 of shear (gauge independence of the observable) untested; the paper's harmonic-gauge numbers not reproduced in that gauge | the athena.log of S1_n64_lap1; a run at smaller step or N_y | cause not yet established; compare in the production lapse (f = 1/3) only until a run shows why f = 1 fails |
 
 ## Decision requested from the group
 
-Not requested yet. The lead judges G1 not met: criteria 1 and 2 are met (criterion 1 read
-independently three times and, for F2 and XS, remeasured by the lead with verifier3's code),
-criterion 3 is struck (decision 0013), schematics and note v2 pass; item C18 is open in part
-(ledger lines 34-36, 49-63, 70-71, 124, 199, 217; OPEN.md item 1). `nrpic-stage verify`:
-PASS (0 failed checks) on 5a1c117f. The gate will be requested after verifier_c18b or the
-orchestrator's ruling on those rows.
+Lead (batch 5): every G1 item passes (C18 PASS after verifier_c18b; note v3 corrections made); the only failed automatic check (runs) names four G2 runs of this session still running when verify read them, not G1 evidence (section Lead's assessment, batch 5). Package complete for the independent review; a rerun of verify after chain B-20261121-202335-3e6a898 ends should pass runs.
+
+## Lead's assessment (batch 5, 2026-11-21)
+
+Every G1 item of the checklist passes in the lead's judgement; the package is complete for the
+independent review (decision 0016 item 4). What changed since batch 4a: (1) C18 PASS. The second
+verifier (VERIFIER-C18b.md) recomputed the last ledger rows: 56 of 58 numbers CONFIRMED, none
+WRONG; line 59 was NOT CONFIRMED as worded and the lead confirmed that finding with his own
+reader (run B-20261121-203426-ea1e945: 0.00751 and 0.00254 over all records, the printed
+0.00706 and 0.00203 are the five-dump maxima); lines 59, 34, 56 and 63 are reworded as the
+verifier asks (decision 0025 item 2). (2) C17: the v3 corrections owed to verifier3 and
+verifier_c18 are made (rows 101, 118, 125, 168, 197; the (1 + eps^2) sentence with its range
+and a ledger row); note rebuilt from ledger run B-20261121-203254-928275f, 0 undefined
+references, 0 overfull boxes, the manuscript checker as clean as for v2. (3) OPEN.md holds no
+item owed by the gate.
+
+The automatic verify reports FAIL on one check only, `runs`: four runs registered in this
+session for G2 (flrw_conv J2 B-20261121-202304-dc3020e and J3 -202335-3e6a898, shear series 1
+-202830-417af0c, population initial data -202946-ec4a156) were still running when verify read
+their manifests. None is G1 evidence. J2 and the shear series have since been closed by the
+sequencer (cards/sequencer.py); J3 (a chain of about three card-hours) and the initial data
+close by themselves. Every other check passes: clean export, 11 of 11 scripts rerun, 22
+regenerated files equal to the committed ones, all figures regenerated. A rerun of verify
+after J3 ends should pass `runs` as well.
 
 ## Lead's assessment (batch 4a, 2026-11-21)
 

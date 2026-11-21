@@ -1,6 +1,6 @@
 # Checklist: B-emd-gw G1
 
-Collected by `harness/bin/nrpic-stage collect B-emd-gw G1` on 2026-11-21T20:33:19Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect B-emd-gw G1` on 2026-11-21T21:09:36Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
@@ -81,4 +81,4 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: failed predictions and runs on record: first_source/JOURNAL.md (P1 as worded, P4, P6 with G), newton_tests/JOURNAL.md (P1a, P1b, P2a, H1a, H1c, H1d-3, N1d, N1e), waves/JOURNAL.md (F4, F6, X6, X3 at N = 32, A3, plus phase at N >= 48, cost), note/JOURNAL.md (N8 in part, N12 plus phase at N = 32, N16 page count), verifier2 and verifier3 journals (P3.5, P4.5, P4.7), population/JOURNAL.md (P2, P5, P8, P10b, I1), stage/review_wave2 (R5, R6) and stage/review_wave3 (L1 marginal, L2, L2b, L3); round 3 of first_source (P11(c') K2 at 32^3, (1 + eps^2) at a = 20, P14(c) at a = 10, P16'(i), (ii) at a = 12, P16'(iv)); waves round 1 (F2-4 per dump, XS-3 at N = 64, XS-4); verifier_c18 (its first restart parse, first 32^3 pairing, direct-sum bound); failed runs kept: B-20261115-161656-03d75e1, -164104-886798f, -170149-75036cf, B-20261119-142234-85da208, -145125-51e9f8f, -141813-91cfe8e, -143836-644f0a9, B-20261120-222232-3d7d57e, -223445-3686145, B-20261121-025612-ed4a875, -030110-52ae004
 - [x] **C20** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: PASS
-  - evidence: STATUS.md, JOURNAL.md, HANDOFF.md, RISKS.md rewritten by the lead at the end of batch 4a (2026-11-21)
+  - evidence: STATUS.md (33 lines), JOURNAL.md (entry 2026-11-21T20:19Z), HANDOFF.md (runs going, sequencer, packages in progress), RISKS.md (R10, R16 retired, R17, R18) rewritten by the lead at the end of batch 5 (2026-11-21)
