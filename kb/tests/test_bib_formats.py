@@ -251,3 +251,30 @@ def test_pandoc_citeproc_is_a_cite_through_its_xparse_definition():
     assert [c["keys"] for c in st["cites"]] == [["ref-one"], ["ref-two"]]
     assert {c["alias"] for c in st["cites"]} == {"citeproc"}
     assert bib["cited_with_entry"] == 2
+
+
+BODY_DEFS = r"""\documentstyle[aps]{revtex}
+\begin{document}
+\newcommand\be{\begin{equation}}
+\newcommand\ee{\end{equation}}
+\def\bea{\begin{eqnarray}}
+\let\eea=\relax
+\section{First}
+Text \cite{d1}.
+\be a = b \label{eq:a} \ee
+\section{Second}
+More \cite{d2}.
+\begin{references}
+\bibitem{d1} D. One.
+\bibitem{d2} D. Two.
+\end{references}
+\end{document}
+"""
+
+
+def test_definitions_inside_the_body_are_not_math():
+    st, bib = parse(BODY_DEFS)
+    assert [s["title_tex"] if "title_tex" in s else None for s in st["sections"]] == ["First", "Second"]
+    assert [c["keys"] for c in st["cites"]] == [["d1"], ["d2"]]
+    assert [e["labels"] for e in st["equations"]] == [["eq:a"]]
+    assert [e["cite_key"] for e in bib["entries"]] == ["d1", "d2"]

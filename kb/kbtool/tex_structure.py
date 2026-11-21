@@ -102,11 +102,41 @@ def alph(n):
 
 
 # ------------------------------------------------------------------ scanning
+def definition_end(s, j, kind):
+    """End offset of the definition whose command (of kind `kind`: newcommand, def, let, ...)
+    ends at s[j], or None when it cannot be read (then nothing is skipped)."""
+    if j < len(s) and s[j] == "*":
+        j += 1
+    name, k = M.read_csname(s, j)
+    if not name:
+        return None
+    if kind == "let":
+        k2 = M.skip_space(s, k)
+        if k2 < len(s) and s[k2] == "=":
+            k2 = M.skip_space(s, k2 + 1)
+        other, k3 = M.read_csname(s, k2)
+        return k3 if other else None
+    if kind in ("def", "gdef", "edef", "xdef"):
+        b = s.find("{", k)
+        if b < 0 or b - k > 60 or not re.fullmatch(r"\s*(?:#[1-9])*\s*", s[k:b]):
+            return None
+        g, e = M.read_group(s, b)
+        return e if g is not None else None
+    for _ in range(2):                                  # [nargs][default]
+        g, k2 = M.read_group(s, k, "[", "]")
+        if g is None:
+            break
+        k = k2
+    g, e = M.read_group(s, k)
+    return e if g is not None else None
+
+
 def scan_math(body, aliases=None):
     """Spans of math and verbatim in body: list of dicts {kind: display|inline|verbatim,
     env, start, end, inner_start, inner_end}. `aliases` maps control words to
     '\\begin{env}' / '\\end{env}' (from tex_macros.env_aliases)."""
     aliases = aliases or {}
+    def_al = M.definition_aliases(body)
     spans = []
     i, n = 0, len(body)
     stack = None          # current open span: dict
@@ -115,6 +145,13 @@ def scan_math(body, aliases=None):
         if not m:
             break
         tok_begin, tok_end, word, sym = m.group(1), m.group(2), m.group(3), m.group(4)
+        if stack is None and word and (word in M.DEF_KINDS or word == "let" or word in def_al):
+            # a definition written inside the document (\newcommand\be{\begin{equation}}) is not
+            # math: skip it whole, or the shorthand opens an environment in its own definition
+            e = definition_end(body, m.end(), def_al.get(word, word))
+            if e:
+                i = e
+                continue
         if word and word in aliases:
             # a shorthand may stand for several \begin/\end (\bea = \begin{equation}\begin{aligned}):
             # the outermost environment counts, i.e. the first \begin or the last \end
