@@ -1107,3 +1107,18 @@ build, refinement in `nrpic_cosmo`, the region norms). Then the second publicati
  BiCGStab is used), psi and W to 1e-12 of their maxima on the uniform meshes and 1e-9
  on the refined ones, P_ADM_x of `p5_mov_n64` = 0.5499999519755 to 1e-11. Refuted if an
  iteration count differs by more than one or a field by more than 1e-8.
+
+ **Amendment of T before any run** (read after the entry was committed:
+ `tracks/core/interfaces/threaded_build.md` lines 101-102 [VERIFIED there]: the
+ iterates of the multigrid solver depend on the thread count through the rounding of
+ the volume mean, reproducibly at a fixed count; no race). The multigrid solve is the
+ preconditioner of every Newton step here, so the bound of 1e-10 on the fields holds
+ only as long as both runs make the same iterations. Where a count differs by one, or
+ where the vector part ends by its stall rule (`zsol_n32`: relative residual 3e-4 at
+ the end), the fields may differ by the size of the last correction: psi by 1e-9 of
+ its maximum, W by up to 1e-3 of its maximum. T is then judged on the residuals each
+ run reaches (max|H| and max|M| of the monitor after the solve within a factor 2 of
+ the serial run) and on the region means at t = 2 (1 per cent), and a race is read
+ only from a residual that the threaded run does not reach or from a difference
+ between two threaded runs of the same thread count (`w1_far_n32` is run twice with
+ 4 threads: its files must be byte-identical).
