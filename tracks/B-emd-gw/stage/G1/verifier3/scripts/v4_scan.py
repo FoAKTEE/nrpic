@@ -114,7 +114,8 @@ def pair_numbers(h_zs, h_gd, zA, grid):
     rmsA = float(np.sqrt(np.mean(zA ** 2)))
     r["zeta_A rms"] = rmsA
     r["|zeta_B - zeta_A| / |zeta_A|"] = float(np.sqrt(np.mean((zB - zA) ** 2)) / rmsA) if rmsA > 0 else None
-    r["|(zT_zs - zT_gd) - zeta_A| / |zeta_A|"] = (float(np.sqrt(np.mean((zTz - zTg - zA) ** 2)) / rmsA)
+    # transverse coordinates X_T = x_zs + xi_zs = x_gd + xi_gd and x_zs = x_gd + zeta: zeta = xi_gd - xi_zs
+    r["|(zT_gd - zT_zs) - zeta_A| / |zeta_A|"] = (float(np.sqrt(np.mean((zTg - zTz - zA) ** 2)) / rmsA)
                                                     if rmsA > 0 else None)
     r["max |d zeta_A|"] = float(np.max(np.abs(v4lib.grad_vec(zA, grid))))
     return r
@@ -168,6 +169,16 @@ def do_res(N):
             hg2, _ = upsample(hg, grid)
             zA2, _ = upsample(zetas[i], grid)
             rec["2N grid"] = pair_numbers(hz2, hg2, zA2, g2)
+            # float32 floor: add a second rounding-sized perturbation (uniform +-ulp/2 of the
+            # stored values) to both metrics and recompute the route-A residual
+            rng = np.random.default_rng(i)
+            ulp = np.spacing(np.float32(1.0)) / 2
+            hz_n = v4lib.conformal(gtz * (1 + ulp * rng.uniform(-1, 1, gtz.shape))) - EYE
+            hg_n = v4lib.conformal(gtg * (1 + ulp * rng.uniform(-1, 1, gtg.shape))) - EYE
+            q0 = rec["N grid"]
+            qn = pair_numbers(hz_n, hg_n, zetas[i], grid)
+            rec["float32 floor: |change of (c_gd - c_zs - G_A)|"] = abs(
+                (qn["c_gd"] - qn["c_zs"] - qn["G_A"]) - (q0["c_gd"] - q0["c_zs"] - q0["G_A"]))
             rec["rms ht_zs nonTT"] = float(np.sqrt(np.mean((hz - diag.tt_project(hz, grid)) ** 2)))
             vals.append(rec)
         out = {"a": a, "t(a)": ta, "dumps": [os.path.basename(fz[i0]), os.path.basename(fz[i1])],
@@ -175,6 +186,8 @@ def do_res(N):
         for key in ("raw gt: c_zs", "raw gt: c_gd"):
             out[key] = complex((1 - w) * vals[0][key] + w * vals[1][key])
         out["max |det gt - 1|"] = max(v["max |det gt - 1|"] for v in vals)
+        out["float32 floor rel"] = max(v["float32 floor: |change of (c_gd - c_zs - G_A)|"] for v in vals) / abs(
+            (1 - w) * vals[0]["N grid"]["c_zs"] + w * vals[1]["N grid"]["c_zs"])
         out["rms ht_zs nonTT"] = (1 - w) * vals[0]["rms ht_zs nonTT"] + w * vals[1]["rms ht_zs nonTT"]
         for gname in ("N grid", "2N grid"):
             q = {}
@@ -196,7 +209,8 @@ def do_res(N):
               f"B {out['N grid']['rel after B |c_gd - c_zs - G_B|']:.3g} "
               f"T {out['N grid']['rel after T |(c_gd - GT_gd) - (c_zs - GT_zs)|']:.3g} | 2N: "
               f"A {out['2N grid']['rel after A |c_gd - c_zs - G_A|']:.3g} "
-              f"T {out['2N grid']['rel after T |(c_gd - GT_gd) - (c_zs - GT_zs)|']:.3g}", flush=True)
+              f"T {out['2N grid']['rel after T |(c_gd - GT_gd) - (c_zs - GT_zs)|']:.3g} | f32 floor {out['float32 floor rel']:.3g}",
+              flush=True)
     return {"zs": zs_dir, "gd": gd_dir, "max |t_zs - t_gd| over dumps": tdiff, "max |beta| at t=0": beta0_max,
             "rows": rows}
 
@@ -244,6 +258,11 @@ for ax, N in zip(axs, [k for k in res if isinstance(k, int)]):
     ax.minorticks_off()
 axs[0].set_ylabel(r"$|\Delta c_+|/|c_+^{\rm zs}|$")
 axs[0].legend(loc="lower right", fontsize=6)
+for ax, N in zip(axs, [k for k in res if isinstance(k, int)]):
+    rows = res[N]["rows"]
+    ax.loglog([r["a"] for r in rows], [r["float32 floor rel"] for r in rows], "x", color="k", ms=4,
+              label="float32 rounding floor (est.)")
+axs[1].legend(loc="lower right", fontsize=6)
 axs[1].text(0.02, 0.03, "solid: products on N grid; dotted: on 2N grid", transform=axs[1].transAxes, fontsize=7)
 fs.save(fig, os.path.join(OUT, "v4_scan"))
 print("wall", res["wall_s"])
