@@ -1250,7 +1250,7 @@ uniform spreading: J below 1e-5 and the two leaves of a root cell equal. Refuted
 with fine shape shows no jump: then the reading is wrong and the jump of T10e has
 another cause.
 
-## 2026-11-21 03:12  outcome of T17: the fine-shape deposit of the linear cloud is discontinuous; the corrected form; predictions of the tests after the change
+## 2026-11-21 03:06  outcome of T17: the fine-shape deposit of the linear cloud is discontinuous; the corrected form; predictions of the tests after the change
 
 **T17, run core-20261121-030438-e52cdb3** (`nrpic-run submit --launcher local`, which
 accepts the run now; published processor executable; 72 cases, exit 0; `t17_summary.json`,

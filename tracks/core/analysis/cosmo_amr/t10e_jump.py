@@ -4,6 +4,7 @@ the first regrid of the scouting run comes from (prediction:
 tracks/core/JOURNAL-cosmo-amr.md, entries of T10e).
 
     t10e_jump.py --exe EXE --data DIR --out DIR [--tlim T] [--cores N] [--analyse-only]
+                 [--cases u5,a5,...]
 
 Track A's S1 data (DIR holds fields.bin and particles.nrp) with the example input
 problems/cosmo_amr/peak_amr.athinput, finder off, constraint statistics every cycle:
@@ -48,7 +49,9 @@ def main():
     ap.add_argument("--tlim", type=float, default=3.5)
     ap.add_argument("--cores", type=int, default=4)
     ap.add_argument("--analyse-only", action="store_true")
+    ap.add_argument("--cases", default="", help="comma-separated subset of the cases")
     a = ap.parse_args()
+    sel = [n for n in CASES if not a.cases or n in a.cases.split(",")]
     a.out, a.exe, a.data = (os.path.abspath(a.out), os.path.abspath(a.exe),
                             os.path.abspath(a.data))
     os.makedirs(a.out, exist_ok=True)
@@ -59,12 +62,12 @@ def main():
               "particles/region_dcycle=4", "output3/dt=0.25", "output7/dt=100.0"]
     if not a.analyse_only:
         jobs = [(a.exe, deck, os.path.join(a.out, n), "peak", tuple(common + CASES[n]), None)
-                for n in CASES]
+                for n in sel]
         rcs = A.run_many(jobs, a.cores)
-        for n, rc in zip(CASES, rcs):
+        for n, rc in zip(sel, rcs):
             print(f"{n:4s} exit {rc[0]:3d} wall {rc[1]:8.1f} s", flush=True)
     res, keep = {}, {}
-    for n in CASES:
+    for n in sel:
         rd = os.path.join(a.out, n)
         if not os.path.exists(os.path.join(rd, "peak.cstat.hst")):
             continue
@@ -95,6 +98,16 @@ def main():
                                      "Hr_max": float(s["Hr_max"][big[0]]),
                                      "Hr_max_before": float(s["Hr_max"][big[0]-1])}
                                     if len(big) else None)
+        # largest ratio of Hr_max between consecutive records (a one-cycle jump)
+        q = s["Hr_max"][2:]/s["Hr_max"][1:-1]
+        iq = int(np.argmax(q))
+        r["largest_step_ratio"] = {"ratio": float(q[iq]), "time": float(s["time"][iq+2])}
+        if len(ch):
+            w = s["time"][2:] > h["time"][ch[0]] + 1e-9
+            if np.any(w):
+                jq = int(np.argmax(np.where(w, q, 0.0)))
+                r["largest_step_ratio_after_regrid"] = {"ratio": float(q[jq]),
+                                                        "time": float(s["time"][jq+2])}
         # where on the x line |H| is largest, at the last table
         nt = len(glob.glob(os.path.join(rd, "tab", "peak.con.*.tab")))
         c, tc = con_line(rd, nt - 1)
