@@ -5,7 +5,7 @@ Written for a reader with no memory of the last session. Rewritten at the end of
 State (2026-11-21 23:31Z, batch 8, session core-lead-8; no source change, no card job):
 gate G2 of core is NOT met (`stage/G2/OPEN.md`, first section; CHECKLIST 13 PASS, 5
 FAIL: C1/C7 ladder rows 3 and 4 partial, C2 three-way convergence, C6 clean-export
-verify not rerun, C12 package documents). This session corrected the texts the fresh
+verify of batch 8 fails only on the six row-4 chains still queued, C12 package documents). This session corrected the texts the fresh
 verifier found, put the restart limit and the Gamma-driver step rule into OPEN.md,
 named the pre-program run directories, and wrote core's working note.
 Owner: core, branch `core/nrpic`, worktree `/data/haiyangw/nrpic/wt/core`.

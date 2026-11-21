@@ -1,8 +1,8 @@
 # STATUS of core
 
 gate:        G2 NOT MET (tracks/core/stage/G2/: CHECKLIST 18 items, 13 PASS, 5 FAIL:
-             C1 ladder rows 3, 4 partial; C2 three-way convergence; C6 clean-export
-             verify not rerun since the note; C7 = C1; C12 no REVIEW.md/SCOPE.md).
+             C1 ladder rows 3, 4 partial; C2 three-way convergence; C6 verify fails only on
+             the six row-4 chains still queued; C7 = C1; C12 no REVIEW.md/SCOPE.md).
              This session (batch 8, no cards, no source change) closed C14, C15, C16.
 headline:    the fresh verifier's five text defects are corrected (C3 label,
              scalar_field.md test 1, newtonian_mode.md 5.2, id_solver.md T1 and

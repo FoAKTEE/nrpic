@@ -43,9 +43,8 @@ core-v0.1 released") and of every track's G2 (charter 9.2), item by item in
 4. Products (brought up to date in batch 8): the working note exists and passed its
    checker (`note/`, C15); the fresh-context verifier's report is in (`VERIFIER.md`,
    C16, a sample of fourteen claims; its five text defects are corrected); the
-   architecture schematic is redrawn for core-v0.6 (C14). Still open: the clean-export
-   rerun (`nrpic-stage verify`, C6) has not been repeated since the note was written,
-   and the ladder rows 2 and 4 rest in part on pre-program directories, now named and
+   architecture schematic is redrawn for core-v0.6 (C14). The clean-export verify (C6)
+   of batch 8 fails only on the six row-4 chains still in the queue; also open: the ladder rows 2 and 4 rest in part on pre-program directories, now named and
    inventoried by sha256 (`verify/preprogram/README.md`) but without manifests.
 
 What is met: rows 1 and 2 PASS (geodesics, Oppenheimer-Snyder; `verify/LADDER.md`),

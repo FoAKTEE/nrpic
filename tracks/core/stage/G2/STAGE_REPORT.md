@@ -1,6 +1,6 @@
 # Stage report: core G2
 
-Date: 2026-11-21 · branch `core/nrpic` at `26a519c13587` · checklist
+Date: 2026-11-21 · branch `core/nrpic` at `3a7751919672` · checklist
 `tracks/core/stage/G2/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
@@ -8,8 +8,7 @@ Date: 2026-11-21 · branch `core/nrpic` at `26a519c13587` · checklist
 **FAIL**. Tag: `stage/core/G2-fail-20261121` (created and pushed by the orchestrator after review, decision 0003).
 
 - 5 checklist items not PASS or NA: C1 FAIL, C2 FAIL, C6 FAIL, C7 FAIL, C12 FAIL
-- verify ran on 042f70b; files changed since: CLAUDE.md, coord/BOARD.md, coord/BRIEF_ERRATA.md, coord/DECISIONS/0023-rulings-after-batch-4a.md, coord/DECISIONS/0024-inbox-rulings.md, coord/DECISIONS/0025-rulings-after-batch-4b.md (run verify again)
-- verify reported FAIL: note, runs
+- verify reported FAIL: runs
 
 ## Package documents (decision 0012)
 
@@ -32,7 +31,7 @@ Date: 2026-11-21 · branch `core/nrpic` at `26a519c13587` · checklist
 | C3 | Constraints behave | Dust collapse //H// equal to the earlier run (core-20261115-065901-3629622); homogeneous universe: history columns H-norm2 3.7e-10 and Theta-norm2 1.1e-11 (core-20261115-065903-3629622), both volume integrals of the squared constraint, sum over cells of sqrt(gamma) dV H^2 and sqrt(gamma) dV Theta^2 (`athenak/src/outputs/history.cpp` lines 186, 229; the file header truncates the second label to `Theta-norm`); pointwise max/Theta/ 2.27e-7 and max/H/ 1.69e-6 (fresh verifier, run core-20261121-212248-a7972d1; label corrected after VERIFIER.md section 3 item 1); format-2 and Bowen-York residuals at sixth order (JOURNAL-id.md test 1, JOURNAL-mp.md test 1a); solved initial data: monitor 1e-11 to 1e-9 on every level at t = 0 (id_solver2.md test C), Bowen-York puncture max/H/ 6.4e-12 after the solve on the merged card and processor executables (job 4800, core-20261121-154700-2de4974). Limits: sharp surfaces leave a non-converging constraint sheet (OPEN.md 2026-11-15 item 7); whole-mesh norms with stock outflow faces are set by the ghost cells (OPEN.md core-v0.6 item e). | PASS |
 | C4 | A first minimal full-GR kinetic run | Self-gravitating dust collapse with Z4c on the merged card executable, horizon mass to 6.3e-4 (core-20261115-065901-3629622); cluster with collisions at Kn = 30 and 3 (core-20261115-140316-8742cdf, -142625-67f8c1d); prolate collapse and seven cluster runs of wave 2 on release core-v0.3 (C1). | PASS |
 | C5 | Verification report (decision 0012: STAGE_REPORT.md with EVIDENCE.md and OPEN.md; no REPORT.md) | Verification report = this package (decision 0012): STAGE_REPORT.md (nrpic-stage report, 2026-11-21), EVIDENCE.md (run ids per release and per ladder row), OPEN.md (first section: whether G2 is met and what is missing; defects by release), with verify/LADDER.md (the ladder, row by row) and RELEASE-v0.4/5/6.md (regressions and card checks). | PASS |
-| C6 | Reproducibility package | Manifests of every run committed (tracks/core/runs/, 1405 read by verify), drivers in tracks/core/analysis/release/, verify/ladder2/, verify/figscripts/; release records with the commands to repeat every check (RELEASE-v0.6.md). nrpic-stage verify of 2026-11-21 on the clean export of the tip (VERIFY_RESULTS.md; first on 9776100b, again after closing the stranded run): FAIL on two checks. (i) note: no tracks/core/note/main.tex (written in batch 8, C15; the clean-export verify has not been rerun since). (ii) runs: 10 of 1405 runs have problems (11 in the first verify): 9 runs of 2026-11-20/21 name the executables of scratch/core/exe/core_cosmo-amr/, which were published again after the runs (sha256 differs; the outputs are not affected, the record of the input is), and 2 runs not closed: core-20261119-143517-ec2f4fc (gauge test E2, job 4641, both cases rc 0; closed with nrpic-run finish after the verify) and core-20261121-154654-d3ec487 (job 4810, pending). Output checksums were not re-verified in this run (--no-checksums): the full verify read run outputs for 13 minutes and was stopped by its process id at the runs of 2026-11-19 (log scratch/core/tmp/lead_b4a/verify.log). The ladder figures are not registered as fig_*.py scripts under note/scripts/, so verify regenerates no figure (min-figs WARN); since batch 8 note/scripts/fig_geodesic.py, fig_collapse.py, fig_clusters.py are (run core-20261121-232936-d979f1c). The run directories of ladder rows 2-4 made before the registry are named and inventoried by sha256 (verify/preprogram/README.md, run core-20261121-231825-135474c). | FAIL |
+| C6 | Reproducibility package | Manifests of every run committed (tracks/core/runs/, 1405 read by verify), drivers in tracks/core/analysis/release/, verify/ladder2/, verify/figscripts/; release records with the commands to repeat every check (RELEASE-v0.6.md). nrpic-stage verify of 2026-11-21 on the clean export of the tip (VERIFY_RESULTS.md; first on 9776100b, again after closing the stranded run): FAIL on two checks. (i) note: no tracks/core/note/main.tex (written in batch 8, C15). Verify rerun in batch 8 on the clean export of 3a775191 with --no-rerun --no-checksums (VERIFY_RESULTS.md): note, note-pdf, package, style, fig-script PASS; runs FAIL only for the six row-4 chains of batch 5 that are still queued or running (status submitted; nrpic-run finish when they end); the nine runs of decision 0023 item 5 are waived (coord/WAIVERS.md); min-figs WARN (1 schematic and 3 data figures in note/, brief 13.4 asks 5 at G2). (ii) runs: 10 of 1405 runs have problems (11 in the first verify): 9 runs of 2026-11-20/21 name the executables of scratch/core/exe/core_cosmo-amr/, which were published again after the runs (sha256 differs; the outputs are not affected, the record of the input is), and 2 runs not closed: core-20261119-143517-ec2f4fc (gauge test E2, job 4641, both cases rc 0; closed with nrpic-run finish after the verify) and core-20261121-154654-d3ec487 (job 4810, pending). Output checksums were not re-verified in this run (--no-checksums): the full verify read run outputs for 13 minutes and was stopped by its process id at the runs of 2026-11-19 (log scratch/core/tmp/lead_b4a/verify.log). The ladder figures are not registered as fig_*.py scripts under note/scripts/, so verify regenerates no figure (min-figs WARN); since batch 8 note/scripts/fig_geodesic.py, fig_collapse.py, fig_clusters.py are (run core-20261121-232936-d979f1c). The run directories of ladder rows 2-4 made before the registry are named and inventoried by sha256 (verify/preprogram/README.md, run core-20261121-231825-135474c). | FAIL |
 | C7 | All of C3 passed, core-v0.1 released | core-v0.1 (7daed19) and core-v0.2 to core-v0.6 are tagged (CHANGELOG.md, CLAUDE.md); C3 of the core sheet is not all passed: rows 3 and 4 PARTIAL (C1; OPEN.md first section items 1, 2). | FAIL |
 | C8 | Schematic: Verification ladder | verify/figs/schem_ladder.png (script verify/figscripts/schem_ladder.py with ladder_status.json; run core-20261115-162615-ca0fd2b), looked at 2026-11-21: rows 1-2 PASS, 3-4 PARTIAL, oblate open, as today. Its state line says 2026-11-15; no verdict has changed since. | PASS |
 | C9 | Data figure: Convergence figures (one each for particle number, mesh, gauge) | verify/figs/convergence_three_way.png (script verify/figscripts/convergence3.py, run core-20261115-154736-f9f5edb), three panels: particle number, mesh, gauge and boundary; looked at 2026-11-21. The figure exists; what it does not show is criterion C2's. | PASS |
@@ -48,25 +47,25 @@ Date: 2026-11-21 · branch `core/nrpic` at `26a519c13587` · checklist
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-21T16:21:46Z, clean export of `042f70bcd92b`: **FAIL**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-21T23:37:00Z, clean export of `3a7751919672`: **FAIL**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 042f70bcd92b (HEAD) in /data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-042f70b-20261121T161613Z/tree |
+| export | PASS | clean export of 3a7751919672 (HEAD) in /data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-3a77519-20261121T233130Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
-| note | FAIL | no tracks/<ID>/note/main.tex (working note) |
-| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); no verifier's report yet (VERIFIER.md, decision 0016) |
-| style | PASS | no figure scripts yet |
-| fig-script | PASS | 0 figures, each with its script |
-| min-figs | WARN | 0 schematics and 0 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | FAIL | 10 of 1405 runs have problems |
+| note | PASS | tracks/<ID>/note/main.tex present |
+| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); verifier's report VERIFIER.md |
+| note-pdf | PASS | note/main.pdf committed after the last .tex change |
+| style | PASS | 2 style copies equal harness/style/SHA256SUMS (paperfig.py, figstyle.py) |
+| fig-script | PASS | 4 figures, each with its script |
+| min-figs | WARN | 1 schematics and 3 data figures (brief 13.4 asks at least 1 and 5 at G2) |
+| runs | FAIL | 6 of 1439 runs have problems; 9 waived |
+| runs-waived | WARN | failures of the manifest check waived: 9 runs named in main's coord/WAIVERS.md (decision 0019 item 6): core-20261120-220538-eafed07: records scratch/core/exe/core_cosmo-amr/athena_gpu, published again after the run; outputs unaffected (decision 0023 item 5); core-20261120-220816-09f6f79: records scratch/core/exe/core_cosmo-amr/athena_gpu, published again after the run; outputs unaffected (decision 0023 item 5); core-20261121-025527-eb8e6b7: records scratch/core/exe/core_cosmo-amr/athena_gpu, published again after the run; outputs unaffected (decision 0023 item 5); core-20261121-030438-e52cdb3: records scratch/core/exe/core_cosmo-amr/athena_cpu, published again after the run; outputs unaffected (decision 0023 item 5); core-20261121-031145-ffc12b3: records scratch/core/exe/core_cosmo-amr/athena_cpu, published again after the run; outputs unaffected (decision 0023 item 5) |
 | run-notes | WARN | 1147 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 36 lines |
-| rerun | PASS | 0 of 0 scripts and commands ran cleanly in the export (none registered) |
-| compare | PASS | 0 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
-| regenerate | PASS | all 0 committed figure files regenerated |
+| status | PASS | STATUS.md has 37 lines |
+| rerun | WARN | re-run skipped (--no-rerun) |
 
 ## Figures
 
