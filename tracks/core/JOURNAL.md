@@ -1356,3 +1356,33 @@ come from the history files, so nothing the ladder states is without its file. F
 `fig_inventory.png` looked at. The directories are named as pre-program in
 `verify/preprogram/README.md` (no manifest written after the fact: the source commit and
 the command lines are not recoverable).
+
+### Working note: story first (paper-writing Sec. 10, steps 1-3), 23:30Z
+
+300-word version. Every science track of the program builds on one implementation of
+the particle-in-cell coupling between collisionless matter and the Z4c evolution inside
+AthenaK. This note says what that implementation is, what each of four releases added,
+and how far it has been verified against the rows of the verification ladder that core
+owns. The base pushes particles along geodesics with an implicit midpoint rule or a
+spacetime Boris rule, deposits their stress-energy with clouds across refinement levels,
+and feeds it to Z4c. On a fixed Kerr black hole both pushers conserve energy, angular
+momentum and the Carter constant to the paper's digits and converge at second order.
+A dust ball collapses to a black hole whose horizon mass agrees with the initial mass at
+the paper's level at formation and drifts slightly beyond it later. A prolate spheroid
+forms its horizon at the paper's time, with a mass deficit that shrinks with
+resolution but does not vanish at two resolutions. The five star clusters of the paper
+meet the paper's fates; the bisection of the stability threshold on a coarse mesh did
+not collapse because that mesh pushes clusters outward, and its repetition on a finer
+mesh is running. Four releases added collisions, scalar fields with stochastic
+sources, Newtonian reference gravity, elliptic initial data, several black holes,
+threads, several ranks, refinement in the periodic box and new outer faces, each tested
+by its package. A fresh verifier recomputed fourteen claims from raw outputs: the numbers
+hold; one general statement (exact restarts) holds only for periodic set-ups and the
+particle state; five texts needed a corrected measure or count. Open for the gate: the
+oblate data, the threshold on the finer mesh, three-way convergence of one coupled
+set-up, and two limits for the next release (the relaxed lapse near a black hole, a step
+limit with the gauge speeds).
+
+Longer version: the outline of `WRITING_GUIDE.md` with one paragraph per subsection
+(written as the main text directly; no separate 1000-word file). Step 4 (reviewer
+subagents) not run: no subagent tool in this session.

@@ -1,0 +1,294 @@
+\documentclass[aps,prd,twocolumn,superscriptaddress,nofootinbib,floatfix]{revtex4-2}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{longtable}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+
+\newcommand{\Mah}{M_{\rm AH}}
+\input{tables/runinfo.tex}
+
+\begin{document}
+
+\title{A shared particle-in-cell implementation of Einstein--Vlasov matter in AthenaK:\\
+releases and verification ladder}
+
+\author{The shared implementation (core) of a cosmology program}
+\date{Working note for gate G2, 21 November 2026}
+
+\begin{abstract}
+Six cosmology projects build on one implementation that couples collisionless matter,
+sampled by particles, to the Z4c evolution of the spacetime in the AthenaK framework.
+This note describes that implementation, what each of four releases added to it at the
+request of the projects, and how far it is verified. On a fixed Kerr black hole both
+particle pushers conserve the constants of geodesic motion to the level of the source
+paper and converge at second order. A collapsing dust ball forms a black hole whose
+horizon mass matches the initial mass at the paper's level when the horizon forms and
+departs slightly from it later. A prolate spheroid forms its horizon at the paper's
+time, with a mass deficit that shrinks with resolution. The five relativistic star
+clusters of the paper reach the paper's fates, while the bisection of their stability
+threshold on a coarse mesh found no collapse and is being repeated on a finer mesh. A
+verifier with no part in the work recomputed a sample of the claims from raw outputs;
+it confirmed the numbers and corrected one general statement about restarts. Two rows
+of the ladder remain partial, and two limits of the gauge are scheduled for the next
+release.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+Particle-in-cell methods for the Einstein--Vlasov system follow collisionless matter
+with particles that move on geodesics of an evolving spacetime and deposit their
+stress-energy on the mesh that evolves the metric~\cite{Wu:2026nrpic}. The method of
+Ref.~\cite{Wu:2026nrpic} lives inside AthenaK~\cite{2026ApJS..283...27S}, whose
+numerical-relativity module evolves the Z4c system with moving punctures and adaptive
+refinement~\cite{Zhu:2024utz}. A program of six cosmology projects uses one shared copy
+of this coupling, maintained in one source tree: primordial black holes and
+gravitational waves in an early matter era, the collapse of a self-interacting core,
+the growth of a black hole in a dark-matter dress, stochastic inflation, and the Hills
+mechanism. Each project specifies what it needs and checks it; the shared
+implementation builds it, tests it and releases it.
+
+This note is the verification report of the shared implementation. Section~\ref{sec:impl}
+describes the base coupling and the four releases that followed it.
+Section~\ref{sec:ladder} goes through the verification ladder, the tests the program's
+brief assigns to the shared implementation, row by row, with the evidence and what is
+still partial. Section~\ref{sec:limits} lists the limits that are known and scheduled.
+Every number behind a statement is in the ledger of Appendix~\ref{app:ledger}, with the
+registered run or the source line it comes from, and with the claim of the independent
+verifier where that verifier recomputed it.
+
+\section{The shared implementation}\label{sec:impl}
+
+\subsection{The base coupling}
+
+A particle carries its position and its covariant spatial momentum per unit mass, $u_i$,
+in the $3+1$ split with lapse $\alpha$, shift $\beta^i$ and spatial metric
+$\gamma_{ij}$. Two pushers advance it: an implicit midpoint rule and a spacetime Boris
+rule with two choices of tetrad. The metric and its first derivatives reach the particle
+through Catmull--Rom or cubic-spline interpolation of the mesh fields. Each particle
+deposits its energy density, momentum density and spatial stress with a cloud of
+second, third or fourth order; an optional binomial filter with compensation smooths the
+result, and the deposit across refinement levels conserves the integrated sources. The
+deposited sources enter the matter terms of Z4c. Particles inside an apparent horizon,
+or where the lapse falls below a bound, are removed with their mass and momentum on
+record. A periodic domain with a conformal-time lapse, sources in density form and a
+step limited by the expansion serve the cosmological set-ups. This base was tagged twice
+before the program began its own releases.
+
+\subsection{Four releases}
+
+Figure~\ref{fig:arch} shows the implementation by release, with the gates of the shared
+implementation above it. The first release of the program (core-v0.3) added
+counter-based random numbers that repeat on processors, cards and the Python twin;
+relativistic Monte Carlo collisions in the frame of the normal observer of each cell; a
+scalar field evolved with Z4c with stochastic sources; spherical initial data with
+extrinsic curvature; Bowen--York punctures with momentum and spin; and a Newtonian mode
+in which the same particles feel a multigrid potential. The second (core-v0.4) added
+linear gravitational waves of any wave vector, mesh output in double precision, a lapse
+relaxation where matter expands and a shift damping that follows the punctures, the
+initial slice of a stochastic-inflation run, clumps with momentum and spin, an elliptic
+solve of the constraints on the mesh before the first step, tracers on timelike
+geodesics with an accretion record, and collisions that use the metric at each particle.
+The third and fourth (core-v0.5, core-v0.6) added a threaded processor build whose
+deposit repeats bit for bit at a fixed thread count, the particle module on several MPI
+ranks, adaptive refinement in the periodic box with a horizon finder and tracker there,
+a guard that stops a run whose fields are no longer finite, a step limit by the speed of
+light, constraint norms inside spheres, a Fourier Poisson solver for the Newtonian mode,
+outer faces of Z4c with a fall-off fill of the ghost cells and a radiative condition for
+the part of each field that is no wave, and a second pass of the elliptic solver with a
+multipole far field, static refinement and punctures.
+
+Each release passes three checks before it is tagged. A byte regression runs the twelve
+set-ups of the base on the processor executable of the candidate and of its predecessor
+and compares every output file; the files are identical except for header bytes that
+the base never set and the lines that echo the parameters. A card check runs the same set-ups and the new capabilities on the
+merged card executable. Each capability arrives with an interface document that lists
+its options, its outputs and the tests its package ran, with figures; the projects check
+the capabilities they asked for from their side.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{figures/schem_architecture.png}
+\caption{The shared implementation by release (bottom) and the gates of the shared
+implementation with the release tags (top). Green: the base, verified on the first two
+rows of the ladder; slate: released capabilities, each tested by its own package; red:
+open items. Arrows on the right lead to the six projects that use the code.}
+\label{fig:arch}
+\end{figure*}
+
+\section{The verification ladder}\label{sec:ladder}
+
+The brief of the program assigns four tests of its verification suite to the shared
+implementation: geodesics on a fixed background; the Oppenheimer--Snyder collapse with a
+horizon-mass error of the order of the source paper's; prolate collapse; and the
+stability of relativistic clusters. Figures~\ref{fig:geo} to~\ref{fig:clusters} are
+drawn from raw outputs by one registered run (\noterun), which also writes the ledger.
+
+\subsection{Geodesics on a fixed Kerr background}
+
+The test follows a bound geodesic of eccentricity $0.99$ past a Kerr black hole of spin
+$a=0.9\,M$ in Kerr--Schild coordinates, with the metric either evaluated analytically at
+the particle or interpolated from a lattice. Figure~\ref{fig:geo} shows the largest
+relative errors of the energy, the axial angular momentum and the Carter constant along
+the passage, from the regression of the merged processor build. Every largest error
+equals the source paper's to the digits the paper prints; the midpoint rule keeps the
+axial angular momentum to round-off. The final position error falls with the square of
+the step for both pushers, and the pericentre agrees with the exact orbit. The row
+passes; the comparison with the integrators named in the brief remains to be made.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{figures/fig_geodesic.pdf}
+\caption{Kerr passage, $a=0.9\,M$, $e=0.99$. Left: running maximum of the relative error
+of the energy (solid) and of the Carter constant (dotted) for the two pushers with the
+analytic metric and with the interpolated lattice. Right: error of the final position
+against the step for the three pushers with the analytic metric; dashed: the square of
+the step.}
+\label{fig:geo}
+\end{figure*}
+
+\subsection{Oppenheimer--Snyder collapse}
+
+A homogeneous dust ball on a lattice of particles collapses from rest. The left panel of
+Fig.~\ref{fig:collapse} shows the horizon mass $\Mah$ against time. When the horizon
+forms, $\Mah$ equals the initial mass within the source paper's band, and the merged card
+build reproduces the reference run until the end of its window, with an identical first
+horizon. Later in the reference run the mass falls slowly below the band and stays just
+outside it; the paper reaches its band with about a hundred times more particles. The
+row passes on the criterion of the brief, an error of the order of the paper's. The
+deposition identity, the equality of the mesh integral of the deposited energy and the
+sum over the particles, holds to round-off throughout. Open: a sequence in particle
+number with several random seeds, as in the paper's appendix.
+
+\subsection{Oblate and prolate collapse}
+
+A prolate spheroid of particles collapses into a spindle and forms a horizon. At finest
+cells of $M/16$ and $M/8$ the first horizon appears at the paper's time within one search
+interval (Fig.~\ref{fig:collapse}, right). Its mass stays a few hundredths below the
+initial mass and falls slowly after its maximum; the deficit shrinks from the coarser to
+the finer mesh, and the missing mass sits outside the horizon as field content. Two
+resolutions give no order of convergence, and a third needs more memory than one card
+holds at this particle number. The oblate member of the row has an initial-data component
+on a branch that has not yet entered a release. The row is partial.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{figures/fig_collapse.pdf}
+\caption{Horizon masses. Left: Oppenheimer--Snyder collapse of a lattice of 9328
+particles, $\Mah/M-1$ of the reference run and of the merged card build; shaded: the
+source paper's level. Right: prolate collapse at two finest cell sizes; dashed: the
+paper's first-horizon time.}
+\label{fig:collapse}
+\end{figure*}
+
+\subsection{Steady states and the stability threshold}
+
+The monoenergetic clusters of the paper form a sequence in the central parameter $y_c$;
+the paper evolves five of them with a small inward kick. With $10^4$ particles on an
+adaptive mesh, the two stable models keep their central lapse $\alpha_c$
+within a narrow band and every particle, the models $y_c=0.605$ and $0.500$ collapse to
+black holes whose horizon mass equals the cluster's mass, and $y_c=0.283$ expands
+(Fig.~\ref{fig:clusters}, left). The fates agree with the paper; the collapse times are
+longer than the paper's, which the paper itself calls dependent on particle number and
+initial noise.
+
+The threshold lies near the turning point of the binding energy along the sequence,
+$y_c^\ast$. A bisection between the turning point and the collapsing model, on a mesh
+capped at cells of $M/4$, found no collapse within the evolved time
+(Fig.~\ref{fig:clusters}, right): members below $y_c^\ast$ moved to their partner of equal
+binding energy, those above stayed, and the same initial data that collapsed on the finer
+adaptive mesh migrated on the capped one. A collisionless cluster drifts outward on the
+coarse mesh, and far less on cells of $M/8$, by the control runs of the
+self-interacting-core project; an outward drift of that size stabilises a model. The
+bisection is therefore repeated on cells of $M/8$, each member beside an unkicked control
+on the same mesh, with the rule for its fate written before the runs; those runs are in
+the queue. The growing oscillation of the central lapse seen in every cluster run is
+still unexplained. The row is partial.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{figures/fig_clusters.pdf}
+\caption{Central lapse of the cluster models. Left: the five models of the paper's
+sequence on the adaptive mesh; crosses mark the first apparent horizon. Right: the
+bisection between the turning point and the collapsing model on a mesh capped at cells of
+$M/4$, labelled by $y_c$; the last member is the unkicked control.}
+\label{fig:clusters}
+\end{figure*}
+
+\subsection{Constraints, conservation and restarts}
+
+In the homogeneous expanding universe the proper-volume integrals of the squared
+Hamiltonian constraint and of the squared Z4c variable $\Theta$ stay small, as do their
+pointwise values, and the lapse, the mean extrinsic curvature and the proper volume
+follow the Einstein--de Sitter solution closely. Initial data solved on the mesh satisfy the
+constraints to the tolerance of the solver on every refinement level, also after the
+merge into the card build. With several MPI ranks the deposition identity and the
+particle positions agree with one rank to round-off. A restart repeats a periodic run
+byte for byte; with outflow faces and refinement it repeats the particle state exactly,
+while the mesh state differs at round-off, so a chained run of an isolated system
+repeats only up to the growth of round-off.
+
+\subsection{Independent check}
+
+A verifier with no part in this work, given the claims and the raw outputs but none of
+the conclusions, recomputed fourteen claims with its own readers and references: every
+met row of the ladder and at least one capability of each release. Twelve numbers agree
+to their printed digits. The general statement that restarts are exact held only for
+periodic set-ups and the particle state, as above. Five texts stated a measure or a count
+loosely: a volume norm printed as a pointwise maximum, an absolute frequency difference
+read as a relative one, a tracer count, an unstated relative error, and one rounded
+digit. All five are corrected, and the ledger marks which of its rows the verifier
+recomputed.
+
+\section{Known limits}\label{sec:limits}
+
+The lapse relaxation of the second release holds the lapse wherever it exceeds its
+reference value, matter or vacuum. Around a black hole in vacuum the horizon then
+shrinks in coordinates and its mass drifts late in the run, well beyond the band of the
+same run without the relaxation, as the black-hole-dress project found. Null tests and
+long runs around an existing black hole therefore run without it. The next release
+switches the term off inside a radius around each tracked puncture; this delays the
+drift and is named a mitigation. A cure, a term that holds the lapse of expanding matter
+without stretching the vacuum, is open.
+
+The step limit counts the speed of light but not the gauge speeds. The primordial
+black-hole project found the Gamma-driver shift unstable at the grid scale once the step
+exceeds a fixed fraction of the finest cell; the rule until the next release keeps the
+Courant factor below that fraction, and the next release adds the gauge speeds to the
+step limit.
+
+Further limits are on record with their tests: restarts of refined isolated systems
+repeat the mesh state at round-off only; the new outer faces reduce the reflection of
+the constraint layer without removing it; the second pass of the elliptic solver stalls
+in its vector part at level boundaries; and in the Newtonian mode a cold lattice coarser
+than the mesh is pushed by the self-forces of its own particles.
+
+\section{Summary}
+
+The base coupling passes the first two rows of the verification ladder on the merged and
+released executables, and four releases added what six projects asked for, each with its
+own tests and an interface document. The numbers of the ladder and of a sample of every
+release survive an independent recomputation from raw outputs. For the gate the shared
+implementation still needs: the oblate initial data in a release and its collapse, a
+third resolution or a particle-number pair for the prolate collapse, the stability
+threshold bracketed on the finer mesh against controls, and one coupled set-up converged
+in particle number, cell size and gauge together.
+
+\appendix
+
+\onecolumngrid
+\section{Numerical ledger}\label{app:ledger}
+
+Every number of this note, with the registered run that produced it or the source line
+it was read from, and the claim of the independent verifier (V1 to V11 of its report)
+where it recomputed the number from raw outputs. Rows of the four data sections were
+written by the run that made the figures (\noterun); the other rows are copied from the
+documents of the stage package with their runs. Runs whose identifier begins with a path
+are older than the program's run registry; their files are inventoried by checksum in
+run \texttt{core-20261121-231825-135474c}.
+
+{\small
+\input{tables/ledger.tex}
+}
+
+\twocolumngrid
+\bibliography{references}
+
+\end{document}
