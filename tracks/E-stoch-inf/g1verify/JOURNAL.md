@@ -90,3 +90,38 @@ V3 (A3, threshold 1 percent in the ratio; drift below 2.5e-3 per e-fold).
   below 1e-3 per e-fold and within 1e-4 of the full MS, and far from the deformed
   (FLRW-lattice) drift -4 eps1 ~ -0.045 to -0.054. Refuted: ratio off by more than 1 percent
   (A3 fails), or a drift near the deformed one.
+
+## Entry 2 (2026-11-20 19:00 PST, 03:00Z on 11-21): second session; C0 outcome; pass 1 closed
+
+Second session of this package (the first was cut at 14:35 PST by the five-hour limit). I
+re-read CLAUDE.md, CHARTER to "Owners" and 9.8, decisions 0010, 0013 (E), 0016-0020, SCOPE 4
+item 4 and 4b, SPEC 1-7 and the interface scalar_field_2.md sections 2-4 myself; nothing of
+the forbidden list (entry 0) was opened. The worktree held, from session 1: scripts nrsf,
+alpha, ref, rnr, catalog, check_infra, permode, v123 (committed d42de1a) and constraints.py
+(uncommitted, a dev run in scratch/E-stoch-inf/g1verify_tmp/condev, not evidence).
+
+C0 outcome (run E-20261120-222844-dbca87f, completed, exit 0) [VERIFIED]:
+- P-C0a CONFIRMED: my reader and core's read_dump (core/scalar-2) give 0 differing elements
+  in all 22 variables of dump 5 of L32p, L64p, L128p.
+- P-C0b CONFIRMED: 0 of 7160 sampled Philox keys differ from numpy.random.Philox at nmax2 =
+  4096 (548958 modes); AGM against numpy.log: 7.6e-10 relative at most (inside 1e-12? NO:
+  the prediction said 1e-12; the AGM form of rng.hpp is an approximation of the logarithm at
+  that level, so my "bit-exact intent" AGM and the library log differ by 7.6e-10. Failed
+  sub-prediction, harmless: alpha from the AGM agrees with core's twin mode_alpha to 5.0e-16
+  absolute, which is what matters). <|alpha|^2> = 1.00057, inside 3/sqrt(M) = 4.0e-3.
+- Background: my fixing gives the deck's phi0, pi0, mass to 1.2e-15 relative; H(0) = 1 in
+  code units; N(t = 8.5) = 8.0989, N(4.5) = 4.3876.
+- Mode files: modes_n64.txt equals my Bunch-Davies integration to 6e-13 (modulus) and 2e-13
+  (phase). modes_n256/1024/4096.txt equal mine to 1.6e-6 (modulus) and 2.7e-6 rad (phase):
+  integrated with a looser tolerance, 1e4 below the A2 threshold and 1e3 below A3's. Noted.
+- Lists and manifests: all six lists unchanged since submission (sha256 equal), mode-file
+  checksums equal, card list copies in the run directories equal.
+- P-C0c CONFIRMED: at t = 0, |R^NR_n/(L^-3/2 W R_n alpha_n) - 1| = 1.1e-10 to 7.5e-10 for
+  |n| = 1 (W = 1/2) on L32p, L64p, L128p, 0.8e-9 to 2.2e-9 for |n|^2 = 2, 3; 1e-7 to 1.6e-6
+  for |n|^2 >= 4 where W < 1e-3 (rounding/W as predicted). Phase within 1.5e-6 rad. So my
+  extraction, the phase convention and alpha are right.
+
+Pass 1 (run E-20261120-223154-d42de1a, completed exit 0 at 23:02Z, closed with nrpic-run
+finish now): R^NR_n per mode and box means from all 18 dumps of P256 and all 10 of L256p,
+the sha256 of every dump equal to the run's sha256sums.txt (18 + 10 of 28). Wall 1851 s.
+No analysis of these numbers yet.
