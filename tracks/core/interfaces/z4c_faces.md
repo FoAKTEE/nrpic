@@ -115,8 +115,9 @@ applied after the stock fill and has not been tested; periodic faces are untouch
 - The three first lines carry the gain and belong together: the non-wave part on linear
   stock ghosts makes the momentum layer of a boosted puncture worse (c0b: 1.9 times),
   and order 4 on the stock Sommerfeld rate amplifies the kink it makes in the ball (a1).
-- `sbc_speed = metric` helped the ball (shell mean |H| 26 per cent lower at t = 8, a
-  factor 1.5 at t = 16) and cost the vacuum puncture 3 per cent in the shell and 40 per
+- `sbc_speed = metric` helped the ball (face-layer difference to the reference 26 per
+  cent lower at t = 8; mean |H| 1.5 times lower in the interior and 1.6 times in the
+  shell at t = 16) and cost the vacuum puncture 3 per cent in the shell and 40 per
   cent in the face layer at t = 12; `lapse` is within 1 per cent of `metric` in the
   ball at t = 8 and 9 per cent lower in the shell at t = 16. Either is acceptable; all
   long tests ran with `metric`.
@@ -150,6 +151,7 @@ Tested (processors unless said; every number with its run id in the journal):
 | c3 | vacuum puncture with horizon finder, faces at 16 M, to t = 40 | horizon mass equal to the stock run to 8e-9 before t = 11; later the two differ by up to 1.3e-3, both under-resolved: decides nothing |
 | D (card, executable of 6cd9972) | Track D's `drift_dx8` to 345 M | section 4, last item |
 | m1 | the delivered executable against the one of the tests above, with the full set | agreement to rounding (3e-11) |
+| e1 | the example input `problems/tests/z4c_faces.athinput` against the package inputs with the same values on the command line | arrays and history numbers exactly equal |
 
 Not tested:
 - the card executable of the delivered source on a card (built only; the card runs D

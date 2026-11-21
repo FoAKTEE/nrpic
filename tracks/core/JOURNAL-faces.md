@@ -942,3 +942,34 @@ same four values on the command line (largest difference 0), and with the four v
 set back to the stock ones on the command line, 4 steps, exactly those of
 `inputs/punc.athinput`, which has none of the options (an option present with its
 stock value is the same as an absent one). Refuted by any difference.
+
+**e1** (run core-20261121-083038-5f7ea42, analysis core-20261121-083244-7bf063a,
+`results/e1.json`, `figs/e1_example.png`): HELD. The example input and the package
+input with the same four values on the command line give exactly the same arrays and
+history numbers (10209 compared, largest difference 0), and so do the example with the
+stock values on the command line and `inputs/punc.athinput`, which has no option at
+all. The byte comparison in the same analysis differs in the four dump files of each
+pair and gives the run its status "failed": the header of a dump repeats the
+parameters, which are written differently in the two inputs; the history files are
+byte-identical.
+
+**Published** (2026-11-21 00:33 PST): `/data/haiyangw/nrpic/scratch/core/exe/core_z4c-faces/`
+with `athena_cpu` (the frozen `.work/exe/sbc5/athena_cpu`, with which r2, m1, t1b, s1 and
+e1 ran), `athena_gpu` (`scripts/build_gpu.sh .work/build_gpu`, same source, not run on a
+card), `COMMIT`, `SHA256SUMS`, `READY` (copy: `analysis/faces/READY.txt`). Source of both:
+f6f9a0d; `git diff f6f9a0d HEAD -- athenak scripts` is empty.
+
+**State at the end of the session** (for a reader with no memory). Done: the
+investigation (entries 1 to 8), the options (ghost fill with fall-off, non-wave
+radiative condition, speeds, Theta variants), their tests on processors and on a card
+(entries 7 to 13), the byte regression against release core-v0.5 (r2), the interface
+text `tracks/core/interfaces/z4c_faces.md`, the example input, the published
+executables. Not done: (1) the card check k of the delivered card executable (two
+minutes; lists and prediction ready; not submitted because two jobs of core were
+queued); (2) a constraint-absorbing treatment that works: `sbc_theta = cpbc`,
+`nonwave` and the damping of Theta gained nothing, the damping of the Gamma constraint
+was unstable and is removed, so the faces still reflect (ball at t = 16: interior 55
+times the reference); (3) the horizon proxy with distant faces (c3 decides nothing:
+both runs are under-resolved; about ten core-hours); (4) several ranks, the threaded
+build and adaptive refinement at a face. Card time of the package: 0.93 card-hours
+(the two runs D), none in this session.
