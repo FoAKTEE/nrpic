@@ -98,7 +98,8 @@ def figure(report, cases, out, tag=""):
     ax.set_yticks(y)
     ax.set_yticklabels(cases, fontsize=7)
     ax.invert_yaxis()
-    ax.set_xlabel("output files compared (release against this branch)")
+    ax.set_xlabel("output files compared with the release's")
+    ax.set_xlim(0, max(1, max(a + b for a, b in zip(same, diff)))*1.05)
     ax.legend(fontsize=6, loc="lower right")
     fig.tight_layout()
     for d in (os.path.join(HERE, "figs"), out):
@@ -114,8 +115,15 @@ def main():
     ap.add_argument("--jobs", type=int, default=2)
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", "."))
     ap.add_argument("--tag", default="", help="suffix of regress_r0<tag>.json and the figure")
+    ap.add_argument("--redraw", default="", help="run directory of an earlier run: draw its "
+                    "figure again from its regress_r0<tag>.json, no case is run")
     a = ap.parse_args()
     cases = [c for c in a.cases.split(",") if c]
+    if a.redraw:
+        with open(os.path.join(a.redraw, "regress_r0%s.json" % a.tag)) as f:
+            report = json.load(f)
+        figure(report, [c for c in cases if c in report["cases"]], a.out, a.tag)
+        return 0
     jobs = []
     for c in cases:
         jobs.append((os.path.abspath(a.base), c, os.path.join(a.out, c, "base")))

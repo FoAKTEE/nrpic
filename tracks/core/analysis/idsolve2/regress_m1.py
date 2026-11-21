@@ -116,8 +116,15 @@ def main():
     ap.add_argument("--base", required=True)
     ap.add_argument("--new", required=True)
     ap.add_argument("--jobs", type=int, default=4)
+    ap.add_argument("--redraw", default="", help="run directory of an earlier run: draw its "
+                    "figure again from its regress_m1.json, no case is run")
     a = ap.parse_args()
     root = lib2.run_root()
+    if a.redraw:
+        import json
+        with open(os.path.join(a.redraw, "regress_m1.json")) as f:
+            lib2.publish(figure(json.load(f), root))
+        return 0
     status = lib2.run_cases(build_cases(root, os.path.abspath(a.base), os.path.abspath(a.new)),
                             a.jobs)
     rep = dict(run=lib2.run_id(), base=a.base, new=a.new, cells=N, status=status, pairs={})
@@ -146,7 +153,12 @@ def main():
     rep["failed_cases"] = bad
     out = os.path.join(root, "regress_m1.json")
     lib2.save_json(out, rep)
-    # figure: files per pair, and the largest change of psi (and W) per pair
+    lib2.publish([out] + figure(rep, root))
+    return 1 if bad else 0
+
+
+def figure(rep, root):
+    """Files per pair, and the largest change of psi (and W) per pair."""
     fs.use_style()
     names = list(rep["pairs"])
     fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 0.24*len(names) + 1.1))
@@ -158,11 +170,11 @@ def main():
     axs[0].set_yticks(y)
     axs[0].set_yticklabels(names, fontsize=6)
     axs[0].invert_yaxis()
-    axs[0].set_xlabel("files compared with the release's case")
+    axs[0].set_xlabel("files compared with the release's")
     axs[0].legend(fontsize=5, loc="lower right")
     floor = 1e-17
-    dp = [max(rep["pairs"][c].get("dpsi_max", 0.0), floor) for c in names]
-    dw = [max(rep["pairs"][c].get("dW_rel_max", 0.0), floor) for c in names]
+    dp = [rep["pairs"][c].get("dpsi_max", 0.0) or np.nan for c in names]
+    dw = [rep["pairs"][c].get("dW_rel_max", 0.0) or np.nan for c in names]
     axs[1].barh(y - 0.2, dp, height=0.4, color=fs.PAL["blue"], label=r"$\max|\Delta\psi|$")
     axs[1].barh(y + 0.2, dw, height=0.4, color=fs.PAL["orange"],
                 label=r"$\max|\Delta W|/\max|W|$")
@@ -171,14 +183,13 @@ def main():
     axs[1].set_yticks(y)
     axs[1].set_yticklabels([])
     axs[1].invert_yaxis()
-    axs[1].set_xlabel("largest change against the release (bar at $10^{-17}$: none)")
+    axs[1].set_xlabel("largest change against the release (no bar: none)")
     axs[1].legend(fontsize=5, loc="lower right")
     fig.tight_layout()
     p = os.path.join(root, "regress_m1")
     fs.save(fig, p)
     plt.close(fig)
-    lib2.publish([out, p + ".png", p + ".pdf"])
-    return 1 if bad else 0
+    return [p + ".png", p + ".pdf"]
 
 
 if __name__ == "__main__":
