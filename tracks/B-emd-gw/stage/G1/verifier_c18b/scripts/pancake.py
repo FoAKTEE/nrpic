@@ -58,7 +58,7 @@ def read_gr(d):
     y0, z0 = r0[r0[:, 1] == 0.0][0, 3:5]
     on = (np.abs(r0[:, 3] - y0) < 1e-12) & (np.abs(r0[:, 4] - z0) < 1e-12)
     tags = np.sort(r0[on, 1]).astype(int)
-    assert len(tags) == n, (d, len(tags), n)
+    assert len(tags) == n and (tags == np.arange(n)).all(), (d, len(tags), n)
     X = np.full((len(times), n), np.nan)
     TAU = np.full((len(times), n), np.nan)
     it = np.searchsorted(times, r[:, 0])
@@ -76,6 +76,9 @@ def read_gr(d):
     X, TAU = X[:, o], TAU[:, o]
     X = X[0] + np.cumsum(np.vstack([np.zeros(n), np.diff(X, axis=0)]) -
                          L*np.round(np.vstack([np.zeros(n), np.diff(X, axis=0)])/L), axis=0)
+    X -= L*np.floor(X[0]/L)[None, :]          # initial positions into [0, L)
+    o = np.argsort(X[0])
+    X, TAU = X[:, o], TAU[:, o]
     return {"t": times, "a": a_of_t(times), "x": X, "tau": TAU, "L": L, "n": n,
             "dir": d, "x0": X[0].copy()}
 
@@ -85,10 +88,10 @@ def read_nw(d):
     L = float(z["L"])
     x = np.array(z["x"], float)
     n = x.shape[1]
-    o = np.argsort(np.mod(x[0], L))
-    x = x[:, o]
     dx = np.diff(x, axis=0)
     x = x[0] + np.cumsum(np.vstack([np.zeros(n), dx - L*np.round(dx/L)]), axis=0)
+    x -= L*np.floor(x[0]/L)[None, :]          # initial positions into [0, L)
+    x = x[:, np.argsort(x[0])]
     t = np.array(z["tau"], float)
     assert np.allclose(np.array(z["a"]), a_of_t(t), rtol=1e-12), "a != (1+tau/2)^2"
     return {"t": t, "a": a_of_t(t), "x": x, "L": L, "n": n, "dir": d, "x0": x[0].copy(),
@@ -190,7 +193,7 @@ def read_snap(path):
     return t, rec, tag
 
 
-def symmetry(d, L):
+def symmetry(d, L, nline):
     snaps = sorted(glob.glob(os.path.join(d, "east.part.*.bin")))
     t0, r0, tag0 = read_snap(snaps[0])
     assert t0 == 0.0
@@ -202,12 +205,20 @@ def symmetry(d, L):
         x0 = np.array([xi0[tg] for tg in tag.tolist()])
         keys = np.round(x0/L*1e9).astype(np.int64)
         u, inv = np.unique(keys, return_inverse=True)
-        ref = np.zeros(len(u))
-        ref[inv] = r[:, 0]       # one member of each plane (the last written)
+        # reference member of each plane: the x-line observer (tags 0 .. nline-1)
+        ref = np.full(len(u), np.nan)
+        line = tag < nline
+        ref[inv[line]] = r[line, 0]
+        assert np.isfinite(ref).all()
         dx = r[:, 0] - ref[inv]
         dx -= L*np.round(dx/L)
+        lo = np.full(len(u), np.inf)
+        hi = np.full(len(u), -np.inf)
+        np.minimum.at(lo, inv, dx)
+        np.maximum.at(hi, inv, dx)
         out.append({"t": t, "a": float(a_of_t(t)), "nplanes": int(len(u)),
                     "spread_over_L": float(np.abs(dx).max()/L),
+                    "range_over_L": float((hi - lo).max()/L),
                     "max_u_perp": float(np.abs(r[:, 4:6]).max())})
     return out
 
@@ -282,9 +293,10 @@ def main():
     # plane symmetry from the snapshots of every relativistic run
     sym = {}
     for k, d in GR.items():
-        sym[k] = symmetry(d, gr[k]["L"])
+        sym[k] = symmetry(d, gr[k]["L"], gr[k]["n"])
     res["symmetry"] = sym
     res["symmetry_max_spread_over_L"] = max(s["spread_over_L"] for v in sym.values() for s in v)
+    res["symmetry_max_range_over_L"] = max(s["range_over_L"] for v in sym.values() for s in v)
     res["symmetry_max_u_perp"] = max(s["max_u_perp"] for v in sym.values() for s in v)
     with open(os.path.join(out, "pancake_c18b.json"), "w") as f:
         json.dump(res, f, indent=1, default=float)
@@ -295,6 +307,64 @@ def main():
              **{f"{k}_mingap": np.diff(np.hstack([r["x"], r["x"][:, :1] + r["L"]]), axis=1).min(axis=1)
                 / (r["L"]/r["n"]) for k, r in {**gr, **nw}.items()})
     print(json.dumps({k: v for k, v in res.items() if k != "symmetry"}, indent=1, default=float))
+    figure(gr, nw, res, out)
+
+
+def figure(gr, nw, res, out):
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import figstyle as fs
+    fs.use_style()
+    import matplotlib.pyplot as plt
+    fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.8))
+    ax = axs[0]
+    cols = {"L1_n32": fs.PAL["yellow"], "L1_n64": fs.PAL["blue"], "L1_n96": fs.PAL["green"],
+            "L4_n64": fs.PAL["red"], "L1_n64_p2": fs.PAL["orange"]}
+    for k, r in gr.items():
+        g = np.diff(np.hstack([r["x"], r["x"][:, :1] + r["L"]]), axis=1).min(axis=1)/(r["L"]/r["n"])
+        ax.plot(r["a"], g, color=cols[k], label=k.replace("_", " "))
+        ax.plot(res[k]["a_cross"], 0, "o", ms=3, color=cols[k])
+    for k, ls in (("N_n32", ":"), ("N_n64", "--")):
+        r = nw[k]
+        g = np.diff(np.hstack([r["x"], r["x"][:, :1] + r["L"]]), axis=1).min(axis=1)/(r["L"]/r["n"])
+        ax.plot(r["a"], g, color="k", ls=ls, lw=1.0, label=k.replace("_", " ") + " (Newton)")
+    ax.axvline(21.0, **fs.MASK_LINE)
+    ax.axhline(0.0, **fs.THIN)
+    ax.set_xlim(15, 25)
+    ax.set_ylim(-0.3, 0.6)
+    ax.set_xlabel(r"$a$ (coordinate label)")
+    ax.set_ylabel(r"smallest sheet gap$/h$")
+    ax.legend(fontsize=6, loc="upper right")
+    ax.set_title("(a) first crossing", fontsize=8)
+    ax = axs[1]
+    for k, r in {**gr, **nw}.items():
+        ex = np.abs(r["x"] - zel_x(r["x0"][None, :], r["a"][:, None], DELTA, r["L"])).max(axis=1)
+        nn = (r["a"] - 1.0)*DELTA/(2*np.pi/r["L"])
+        m = r["a"] > 1.05
+        c = cols.get(k, "k")
+        ls = "-" if k in gr else ("--" if k == "N_n64" else ":")
+        ax.semilogy(r["a"][m], ex[m]/nn[m], color=c, ls=ls, lw=1.0 if k in nw else 1.5)
+    ax.axvline(10.0, **fs.MASK_LINE)
+    ax.set_xlim(1, 21)
+    ax.set_xlabel(r"$a$")
+    ax.set_ylabel(r"max$|x-x_{\rm Z}|/[(a-1)\delta/k]$")
+    ax.set_title(r"(b) departure from Zel'dovich", fontsize=8)
+    ax = axs[2]
+    for k in ("L1_n64", "L1_n64_p2"):
+        c = read_cstat(GR[k])
+        ac = a_of_t(c["time"])
+        ax.semilogy(ac, c["Hr_mean"], color=cols[k], label=f"{k.replace('_', ' ')}, cstat.hst")
+        d = res[f"con_{k}"]["dumps"]
+        ax.semilogy([x["a"] for x in d], [x["Hr_mean_mine"] for x in d], "o", ms=3,
+                    mfc="none", color=cols[k], label="own, from field dumps")
+        ep = res[f"con_{k}"]["Hr_mean_at_5_epochs"]
+        ax.semilogy([float(e) for e in ep], list(ep.values()), "x", ms=4, color="k")
+    ax.axvspan(22, 42, color="grey", alpha=0.12)
+    ax.set_xlabel(r"$a$")
+    ax.set_ylabel(r"mean $|\mathcal{H}|$ relative")
+    ax.legend(fontsize=6, loc="lower right")
+    ax.set_title(r"(c) constraint (x: the five epochs)", fontsize=8)
+    fig.tight_layout()
+    fs.save(fig, os.path.join(out, "pancake_c18b"))
 
 
 if __name__ == "__main__":
