@@ -10,11 +10,12 @@
 #   with a header (threads, places, load of the machine) and a footer (exit status, wall
 #   time, processor time, share of the asked processor time that the run obtained).
 # - Blocking; returns athena's exit status. No Slurm: the processors are not scheduled,
-#   so the limit of 16 cores per session (CLAUDE.md) is the caller's to keep.
+#   so the limit of six cores per session (decision 0019, CLAUDE.md) is the caller's to
+#   keep.
 #
 # Environment:
 #   ATHENA_EXE  executable (default build_omp/src/athena)
-#   THREADS     number of threads (default: OMP_NUM_THREADS if set, else 16)
+#   THREADS     number of threads (default: OMP_NUM_THREADS if set, else 6)
 #   PLACES      auto (default): the THREADS least busy cores of one NUMA node, chosen by
 #               scripts/omp_places.py when the run starts, with OMP_PROC_BIND=true;
 #               none: no binding (OMP_PROC_BIND=false); anything else: an OMP_PLACES
@@ -31,7 +32,7 @@ fi
 SCRIPTS=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 REPO=$(dirname "$SCRIPTS")
 EXE=${ATHENA_EXE:-$REPO/build_omp/src/athena}
-THREADS=${THREADS:-${OMP_NUM_THREADS:-16}}
+THREADS=${THREADS:-${OMP_NUM_THREADS:-6}}
 PLACES=${PLACES:-auto}
 
 mkdir -p "$1"

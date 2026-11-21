@@ -140,7 +140,7 @@ Requirements and behaviour:
 scripts/build_cpu_omp.sh                         # -> build_omp/src/athena (Kokkos OpenMP)
 OMP_OPT=debug scripts/build_cpu_omp.sh build_omp_o2   # flags of the serial build (-O2 -g)
 DEBUG=1 scripts/build_cpu_omp.sh                 # Kokkos debug mode, View bounds checks
-THREADS=16 scripts/cpu_run.sh runs/x problems/foo/foo.athinput time/nlim=100
+THREADS=6 scripts/cpu_run.sh runs/x problems/foo/foo.athinput time/nlim=100
 ```
 
 - The build is `_build.sh omp`: `Athena_ENABLE_OPENMP=ON`, Kokkos OpenMP as the default
@@ -148,7 +148,8 @@ THREADS=16 scripts/cpu_run.sh runs/x problems/foo/foo.athinput time/nlim=100
   The serial build (`build_cpu.sh`) is unchanged and stays the reference for byte
   comparisons with earlier processor runs.
 - Set the thread count explicitly (`OMP_NUM_THREADS`; the OpenMP default is all 144
-  hardware threads) and keep within 16 cores per session (CLAUDE.md).
+  hardware threads) and keep within six cores per session (decision 0019, CLAUDE.md);
+  `cpu_run.sh` defaults to `THREADS=6`.
 - Placement: `cpu_run.sh` (default `PLACES=auto`) binds the threads to the least busy
   physical cores of one NUMA node, chosen by `omp_places.py` when the run starts
   (`OMP_PROC_BIND=true`). Do not use `OMP_PLACES=cores` with `OMP_PROC_BIND=spread|close`:
@@ -161,3 +162,11 @@ THREADS=16 scripts/cpu_run.sh runs/x problems/foo/foo.athinput time/nlim=100
   like a card run; `<particles> deposit_threads = private` makes it repeat byte for byte
   at a fixed thread count. The threaded executable with one thread is a different program
   from the serial build (other flags) and agrees with it to rounding, not byte for byte.
+  Restarts are exact under threads: a continued run equals the uninterrupted one datum
+  for datum at one thread and with `private` (with atomic additions to rounding). The
+  gas multigrid depends on the thread count through the rounding of the plain sum of its
+  volume mean (no race); results agree to the solver tolerance.
+- Speed (tracks/core/interfaces/threaded_build.md, sections 5 and 6): six threads are 4.4
+  to 5.8 times one thread; one A100 is 74 to 90 times six threads for runs with Z4c and
+  11.9 times for the periodic Newtonian mode; the Newtonian mode with isolated
+  boundaries is 1.6 times faster on six threads than on a card.
