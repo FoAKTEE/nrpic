@@ -401,3 +401,22 @@ figures `stage/review3/fig/fig_rerun.png`, `fig_lead3.png` looked at; results co
   0 differing, times and cycles bit-equal; `sr.sf.hst` and `sr.sf.con.hst` identical in all
   175 rows; no extra final dump. So on processors the SR results of G1 do not depend on which
   of the two executables made them; the card build is not tested (next card job).
+
+Session close (07:00Z). Did: reviewed `g1verify` and `ladder` from their artefacts
+(`stage/REVIEW-wave3.md`): all their analyses rerun bit for bit, the new ladder results
+recomputed with own code, every figure looked at, every helper outcome compared with its
+prediction (git ancestry checked); tested risk R1 on processors (release = branch, word for
+word); copied the verifier's report into `stage/G1/`, corrected `stage/G1/STATUS.md` by the
+verifier's findings D1-D8, recollected, verified and reported G1; reworded the L5 row of
+`codebase/DESIGN_REVIEW.md` (ladder request 7); acknowledged six messages; posted three
+(orch: a4-ruling-with-verifier, resume-cut-packages; core: scalar-checks-from-e).
+Found: nothing wrong in either package's wave-3 results; the stage package's "385" was wrong
+and is corrected; one sub-prediction of mine failed (K's max-norm order 3.52 at t = 0.98).
+Evidence: runs E-20261121-063551-7957a3d, -063816-64ac0dc, -064707-77ec326; failed on record
+-063758-d643396; figures `stage/review3/fig/fig_rerun.png`, `fig_lead3.png`, `fig_r1.png` and
+the packages' 14 figures listed in `stage/G1/EVIDENCE.md` section 9.
+Changed my mind about: R1 (the scouting caveat is now a card-build question only); the
+verifier's "floor" reservation belongs in the A4' ruling itself, so it went to orch.
+Open: A4' ruling (orch); the cut packages note, usr, window, a4res (HANDOFF lists what
+remains; their files untouched); P256 on the release card build (0.5 card-hours). No card job
+of this owner queued or running. Card-hours this session: 0 (processors only, at most 6 cores).

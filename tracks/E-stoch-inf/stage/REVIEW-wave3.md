@@ -158,3 +158,12 @@ that the stage package quoted was wrong and is corrected (D1).
 row L5 and the L5 remark of section 4 (ladder request 7). **Larger items listed, not fixed:**
 `OPEN.md` items 2-4 (note products; P256 on the release card build; P256m to t = 8.5, halved
 pair at 128^3/256^3, R^NR floor separation, absolute constraint levels).
+
+## 5. Stage packages after this review
+
+- G0: signed PASS on 2026-11-20 (`coord/GATES.md`, tag `stage/E-stoch-inf/G0-pass-20261120`);
+  every item was present then; not touched in this session.
+- G1: `nrpic-stage collect`, `verify --no-checksums`, `report` rerun on 5aa8bcd4/478299f9.
+  The verifier's report is in (C16 PASS). Not met: C6 (A4' ruling) and the note products C8,
+  C9, C13, C14, C15. Verify fails only on `clean` and `runs`, both from the cut packages (not
+  G1 material). Not complete for the independent gate review of decision 0016 item 4.
