@@ -75,6 +75,17 @@ def window_mean(t, y, a, b):
     return float(np.mean(y[k])) if np.any(k) else None
 
 
+def crossing(t, y, level):
+    """First time y falls below level, linear between the two records around it."""
+    i = np.flatnonzero(y < level)
+    if not len(i):
+        return None
+    i = int(i[0])
+    if i == 0:
+        return float(t[0])
+    return float(t[i - 1] + (level - y[i - 1]) * (t[i] - t[i - 1]) / (y[i] - y[i - 1]))
+
+
 def analyse(name, d, ctrl):
     h = C.read_hst(os.path.join(d, "cc.nrpic.hst"))
     t, ap = h["time"], h["alpha_probe"].copy()
@@ -83,6 +94,10 @@ def analyse(name, d, ctrl):
     out["t_exc"] = float(t[exc[0]]) if len(exc) else None
     low = np.flatnonzero(h["alpha_min"] < 0.3)
     out["t_c"] = float(t[low[0]]) if len(low) else None
+    # sub-cadence crossing times of alpha_min (history every 4 cycles = 0.25 M)
+    out["t_c_interp"] = crossing(t, h["alpha_min"], 0.3)
+    out["t_amin_0p5"] = crossing(t, h["alpha_min"], 0.5)
+    out["t_amin_0p4"] = crossing(t, h["alpha_min"], 0.4)
     bad = np.flatnonzero(~np.isfinite(h["alpha_probe"]) | (h["alpha_min"] > 1e300))
     out["t_nonfinite"] = float(t[bad[0]]) if len(bad) else None
     noexc = h["n_excised"] == 0
@@ -158,6 +173,29 @@ def analyse(name, d, ctrl):
             out["max_dlam_before_exc"] = float(np.nanmax(c["max_dlam"][bx])) if np.any(bx) else None
             out["sum_MH_particles_change_before_exc"] = float(c["sum_MH_particles"][bx][-1] / mh0 - 1.0)
             out["sum_MH_particles_maxdev_before_exc"] = float(np.max(np.abs(c["sum_MH_particles"][bx] / mh0 - 1.0)))
+            # the same up to the collapse criterion t_c (the excision record of cc.nrpic.hst comes
+            # every 4 cycles, so "before excision" can include the steps of the blow-up)
+            bt = pre
+            nbt = float(nc[bt].sum())
+            out["dH_rel_max_before_tc"] = float(np.max(np.abs(dH[bt]))) / mh0
+            out["dH_per_collision_before_tc_M"] = float(dH[bt][-1] / max(nbt, 1.0))
+            out["dH_negative_steps_before_tc"] = int(np.sum(c["dH_particles"][bt] < 0.0))
+            out["dH_min_step_before_tc_M"] = float(np.min(c["dH_particles"][bt]))
+            out["dH_max_step_before_tc_M"] = float(np.max(c["dH_particles"][bt]))
+            out["dH_cumulative_min_before_tc_M"] = float(np.min(dH[bt]))
+            out["n_noroot_before_tc"] = int(c["n_noroot"][bt].sum())
+            nr = np.flatnonzero(c["n_noroot"] > 0)
+            out["t_first_noroot"] = float(c["time"][nr[0]]) if len(nr) else None
+            out["n_balance_frac_before_tc"] = float(c["n_balance"][bt].sum() / max(nbt, 1.0))
+            for T in (100.0, 150.0):
+                k = c["time"] <= T
+                out[f"n_balance_frac_t{int(T)}"] = float(c["n_balance"][k].sum() / max(nc[k].sum(), 1.0))
+                out[f"max_dlam_t{int(T)}"] = float(np.nanmax(c["max_dlam"][k]))
+            out["max_dlam_before_tc"] = float(np.nanmax(c["max_dlam"][bt]))
+            out["sum_MH_particles_change_t100"] = float(np.interp(100.0, c["time"], c["sum_MH_particles"]) / mh0 - 1.0)
+            out["sum_MH_particles_change_before_tc"] = float(c["sum_MH_particles"][bt][-1] / mh0 - 1.0)
+            out["sum_MH_particles_0"] = mh0
+            ser["tc_coll"] = tc
     return out, ser
 
 
@@ -169,7 +207,8 @@ def group_stats(res):
         if p is None or p["mode"] is None:
             continue
         groups.setdefault((p["model"], p["kn"], p["mode"]), []).append(name)
-    keys = ("t_c", "D50", "D100", "rate_0_100", "t_dalpha_0p01", "collisions_per_particle_before_tc")
+    keys = ("t_c", "t_c_interp", "t_amin_0p5", "t_amin_0p4", "D25", "D50", "D100", "D150", "rate_0_100",
+            "t_dalpha_0p01", "t_dalpha_0p03", "collisions_per_particle_before_tc")
     out = {}
     for (mo, kn, mode), names in groups.items():
         g = dict(runs=sorted(names))
@@ -203,6 +242,30 @@ def group_stats(res):
                              z=float(diff / sig) if sig else None)
         comp[f"{mo}_kn{kn}"] = cc
     return out, comp
+
+
+def curve_scatter(res, ser):
+    """Instantaneous scatter of dalpha(t) between two runs of one (model, Kn): rms and largest |difference|
+    over windows; pairs of seeds of one mode, and every run against the cell-mode seed 1."""
+    out = {}
+    names = sorted(n for n in ser if parse(n) and parse(n)["mode"] and "dal" in ser[n])
+    for i, a in enumerate(names):
+        for b in names[i + 1:]:
+            pa, pb = parse(a), parse(b)
+            if (pa["model"], pa["kn"]) != (pb["model"], pb["kn"]):
+                continue
+            sa, sb = ser[a], ser[b]
+            dd = np.interp(sa["t"], sb["t"], sb["dal"], left=np.nan, right=np.nan) - sa["dal"]
+            tend = min(res[a].get("t_c") or 300.0, res[b].get("t_c") or 300.0) - 10.0
+            r = {}
+            for lo, hi in ((0.0, 100.0), (100.0, tend), (0.0, tend)):
+                k = (sa["t"] >= lo) & (sa["t"] <= hi) & np.isfinite(dd)
+                if np.sum(k) > 10:
+                    r[f"rms_{int(lo)}_{int(hi)}"] = float(np.sqrt(np.mean(dd[k] ** 2)))
+                    r[f"maxabs_{int(lo)}_{int(hi)}"] = float(np.max(np.abs(dd[k])))
+                    r[f"mean_{int(lo)}_{int(hi)}"] = float(np.mean(dd[k]))
+            out[f"{b} - {a}"] = r
+    return out
 
 
 def figures(outdir, res, ser):
@@ -244,6 +307,42 @@ def figures(outdir, res, ser):
             axs[0, j].legend(fontsize=7, loc="upper left")
         fig.savefig(os.path.join(outdir, "fig_d1_lapse.png"), dpi=200)
         plt.close(fig)
+    # F1b: differences between runs of one model (seed and mode), and alpha_min near t_c
+    if models:
+        fig, axs = plt.subplots(2, len(models), figsize=(fs.FULL_WIDTH, 5.0), squeeze=False)
+        fig.subplots_adjust(left=0.1, right=0.985, bottom=0.09, top=0.95, wspace=0.28, hspace=0.32)
+        for j, mo in enumerate(models):
+            ref = f"{mo}_kn10_cell_s1"
+            for name in sorted(ser):
+                p = parse(name)
+                if p is None or p["model"] != mo or p["kn"] != "10" or p["mode"] is None:
+                    continue
+                s = ser[name]
+                lab = f"{p['mode']} s{p['seed']}"
+                if ref in ser and name != ref and "dal" in s:
+                    r = ser[ref]
+                    dd = s["dal"] - np.interp(s["t"], r["t"], r["dal"], left=np.nan, right=np.nan)
+                    axs[0, j].plot(s["t"], dd, color=col[p["mode"]], ls=lsd.get(p["seed"], ":"), lw=1.0,
+                                   label=lab + " $-$ cell s1")
+                axs[1, j].plot(s["t"], s["amin"], color=col[p["mode"]], ls=lsd.get(p["seed"], ":"), lw=1.1,
+                               label=lab)
+            axs[0, j].axhline(0.0, **fs.MASK_LINE)
+            axs[0, j].axvspan(95, 105, color="grey", alpha=0.15, lw=0)
+            axs[0, j].set_xlim(0, 200)
+            axs[0, j].set_ylim(-4e-3, 4e-3)
+            axs[0, j].set_xlabel(r"$t/M$")
+            axs[0, j].set_ylabel(r"$\Delta(\alpha_c^{\rm control}-\alpha_c)$" + f" ({mo.upper()})")
+            axs[0, j].legend(fontsize=6, loc="upper left")
+            axs[1, j].axhline(0.3, **fs.GUIDE)
+            tcs = [res[n]["t_c_interp"] for n in ser if n.startswith(mo + "_kn10_") and res[n].get("t_c_interp")]
+            if tcs:
+                axs[1, j].set_xlim(min(tcs) - 12, max(tcs) + 4)
+            axs[1, j].set_ylim(0.2, 0.6)
+            axs[1, j].set_xlabel(r"$t/M$")
+            axs[1, j].set_ylabel(r"$\alpha_{\min}$" + f" ({mo.upper()}, Kn = 10)")
+            axs[1, j].legend(fontsize=6, loc="upper right")
+        fig.savefig(os.path.join(outdir, "fig_d1_diff.png"), dpi=200)
+        plt.close(fig)
     # F2: budget (particle: summed dH; cell: summed dE_particles), and cumulative collisions
     if any("dH" in s or "dEp" in s for s in ser.values()):
         fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
@@ -256,7 +355,8 @@ def figures(outdir, res, ser):
             c = col[p["mode"]] if p["model"] != "d3" else fs.PAL["green"]
             ls = lsd.get(p["seed"], ":") if p["model"] != "cc1" else ":"
             texc = res[name].get("t_exc") or 1e30
-            k = s["ct"] < texc
+            tcut = min(texc, res[name].get("t_c") or 1e30)
+            k = s["ct"] <= tcut
             if p["mode"] == "cell":
                 axs[0].semilogy(s["ct"][k], np.abs(s["dEp"][k]) + 1e-30, color=c, ls=ls, lw=1.0, label=name)
             if "dH" in s:
@@ -271,6 +371,7 @@ def figures(outdir, res, ser):
         axs[0].legend(fontsize=5, loc="center right")
         axs[1].set_xlabel(r"$t/M$")
         axs[1].set_ylabel(r"$\Sigma M H_p$ / initial $-1$ (push included)")
+        axs[1].text(0.03, 0.04, r"to $t_c$ (or the first excision)", transform=axs[1].transAxes, fontsize=6)
         axs[2].set_xlabel(r"$t/M$")
         axs[2].set_ylabel("collisions per particle")
         fig.savefig(os.path.join(outdir, "fig_d1_budget.png"), dpi=200)
@@ -345,9 +446,10 @@ def main():
         res[name], ser[name] = analyse(name, runs[name], ctrl)
         print(name, json.dumps({k: v for k, v in res[name].items() if not isinstance(v, (list, dict))}), flush=True)
     groups, comp = group_stats(res)
-    out = dict(runs=res, groups=groups, mode_comparison=comp,
+    cs = curve_scatter(res, ser)
+    out = dict(runs=res, groups=groups, mode_comparison=comp, curve_scatter=cs,
                inputs=dict(wave2={} if a.no_wave2 else WAVE2, batch=a.batch))
-    print(json.dumps(dict(groups=groups, mode_comparison=comp), indent=1))
+    print(json.dumps(dict(groups=groups, mode_comparison=comp, curve_scatter=cs), indent=1))
     with open(os.path.join(a.out, "summary.json"), "w") as f:
         json.dump(out, f, indent=1)
     figures(a.out, res, ser)
