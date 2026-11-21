@@ -23,7 +23,9 @@ READ = {'A-emd-pbh': 'problem S1 335-365; track sheet 708-725; verification suit
 items = []
 for it in spec['items']:
     it = dict(it)
-    if it['type'] == 'pkg':
+    if it['type'] == 'task':                 # a free brief for an owner, run as a package session
+        it['type'] = 'pkg'; it.setdefault('title', it['key']); it.setdefault('card_hours', 0); it['inline'] = True
+    if it['type'] == 'pkg' and not it.get('inline'):
         plan = json.load(open(ROOT + '/scratch/orch/wave3_plans/%s.json' % it['owner']))
         pk = {p['key']: p for p in plan['packages']}[it['key']]
         it.update(title=pk.get('title', ''), task=pk['task'], card_hours=pk.get('card_hours', 0))
