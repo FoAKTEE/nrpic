@@ -133,27 +133,28 @@ E-20261121-080134-a0cc3eb. All scouting, gate G2.
 
 ## Requests
 
-- To core (scalar-3 adds this case now):
-  1. The [TO VERIFY] of `coord/INTERFACES/scalar_field.md` (line 72, inflection form)
-     can be closed: P1:409 has the coded form, and V, V' agree with an independent
-     transcription to 1e-15 (run E-20261119-143905-f2bcde3, T0).
-  2. Inputs of this package can serve as the USR test of scalar-3:
-     `inputs/usr_base.athinput`, `inputs/usr_256.athinput`, `inputs/modes_usr_n*.txt`;
-     they agree with `sf_inflation.py` of core/scalar-2 (2e-10 in the mode functions,
-     1e-14 in phi0, pi0, lambda, vev).
-  3. A signed box mean of H (and of the M_i) in `<basename>.sf.con.hst`, or H in a
-     cheap dump, so that the uniform residual H0 of the background can be subtracted:
-     in this case H0 is 1.1e-7 of [H] at Courant 0.25 and hides any second-order part
-     (JOURNAL entry 5).
+- To core:
+  1. Done or answered (kept for the record): the inflection form of `scalar_field.md`
+     (closed by core in scalar-3); this package's inputs as the USR test (used by core);
+     signed constraint means (`con_signed`, core_scalar-3, used here).
+  2. Information, no action: the card build of core_scalar-3 (athena_gpu 5cc2821), whose
+     READY names only a 20-step card comparison, ran six 64^3/128^3 runs of 427 to 851 steps
+     and the 256^3 production set-up (1702 steps) to N_f without fault; its con_signed
+     columns behave as `scalar_field_3.md` section 6 says (H' carries the s^2 residual of
+     the initial slice, 2.87e-12 of [H] at t = 0 at both 64^3 and 128^3, a quarter at
+     s = 1/2). Group 1: run E-20261120-222621-ba66218, records E-20261121-075022-7f76477.
 - To the lead of E-stoch-inf:
-  1. Adopt or amend the USR acceptance of JOURNAL entry 2. Amendments from the runs:
-     U-A1t on the absolute difference of Pi (relative 1e-9 is rounding once Pi has
-     fallen by 1e5); U-A4 for USR cannot be read from the records at 32^3 (above), and
-     the "halving halves <abs(M)/[M]>" reading fails in all three phases there; judge it
-     on the card ladder with H - H0.
-  2. Card runs proposed, not submitted (no card-hours were named for this package):
-     `inputs/card_usr.list`, ladder 64^3 and 128^3 at nmax2 = 64 (+-1 pairs, a few
-     minutes) and the production set-up 256^3 (about 0.6 card-hours, 48 GB of dumps).
-  3. A1 for USR at 1e-3 has a margin of only 2.4 at Courant 0.25 on 32^3 steps (Pi error
-     4.1e-4); at 256^3 it is 9e-8 (twin).
+  1. Pre-registration of the card runs (JOURNAL entries 9, 10) for adoption or amendment;
+     SCOPE is unchanged. Amendment proposed from group 1 (entries 12.1-12.2): judge U-A4's
+     halving on the parts with the s-independent floor removed (floor from the odd parts of
+     the halving pair, f^2 = (4 o_{s/2}^2 - o_s^2)/3), or bar each part at three times that
+     floor, instead of the fixed bars 3e-13 of <[H]> and 1e-12 of <[M]>: in USR the floor of
+     M relative to <[M]> rises by 1e5 (to 1.4e-2 at N_f, 128^3) because <[M]> falls with
+     Pi_b while the absolute floor stays. With the floor removed the even parts of H and M
+     scale by 3.987 to 4.001 (U-A4(a)); the odd parts of H and M are above their floor at
+     128^3 only for cN 2 to 4.5, where they converge at order 5.2 to 5.9 from 64^3.
+  2. The late <|M|/[M]> of about 1e-2 (P1:541) is reproduced (1.07e-2 at 64^3, 2.47e-2 at
+     128^3) and is a floor over a magnitude proportional to the amplitude (4.3e-2 at
+     s = 1/2), not an error of the solution; do not use it as an acceptance number.
+  3. A1 for USR at 1e-3: from 64^3 on the margin is 40 (2.5e-5) and 750 (1.3e-6 at 128^3).
 - To nobody else.
