@@ -1151,3 +1151,54 @@ the refined mesh lie on each other), `scratch/core/exe/core_newton-2/athena_cpu`
   core-20261121-081457-ac86529, core-20261121-081505-3fa1046,
   core-20261121-081511-37acd23; result files identical by `cmp`); they and those of
   T11 and T12 are in `tracks/core/analysis/newton2/figs/`.
+
+### Handoff of session newton2-4 (written 08:20Z, before the third card job has run)
+
+**Done in this session** (all committed): main merged (core-v0.4, core-v0.5), both
+builds made from the merged source; card job 2a closed and judged (T6c in, T6c x, T4d
+at 64^3); T11a, T11b (merged processor build) and T12 (examples of READY) run and
+judged; `newtonian_mode.md` 7.6, 7.9, 7.12 and the paragraphs of section 6;
+`REQUESTS_NEWTON2.md` sections 5 to 7 and rows C1, C2; list of figures
+(`analysis/newton2/figs/README.md`); executables published in
+`/data/haiyangw/nrpic/scratch/core/exe/core_newton-2/` (`athena_cpu`, `athena_gpu` of
+commit 67ca9ce1; `premerge/` of c6293772; COMMIT, SHA256SUMS, READY; copies of READY
+and COMMIT in `tracks/core/analysis/newton2/`); answers posted to tracks B, A and D
+(`tracks/core/outbox/20261121T08190*`).
+
+**Pending: one card job.** Slurm 4777, run core-20261121-080215-df3af65 (25 minutes
+asked, 0.42 card-hours at most; package total so far 0.36 of 1.0), merged card build
+(sha256 7b2cceed...879ac6), list
+`scratch/core/core-20261121-075459-5872c31/card.list`: chk_fftsp, chk_fft7, chk_mg
+(T11c), emb96_fft, emb128_fft, emb128_fft7, emb128_pcs_fft, emb256_fft (T4d). Their
+predictions stand as written (T11c in this session's first entry; T4d in the entry of
+2026-11-20). When it has run (S = /data/haiyangw/nrpic/scratch/core, C3 = S/<run
+directory of the job>, P3 = S/core-20261121-075459-5872c31):
+1. `harness/bin/nrpic-run finish core-20261121-080215-df3af65`; read
+   `C3/batch.list.status`.
+2. T11c, registered: `.venv/bin/python tracks/core/analysis/newton2/t11_merged.py --t11
+   S/core-20261121-080229-0095e95 --rel S/core-20261121-080231-a98a070 --card C3 --t1
+   S/core-20261119-144414-c629377` (pass_c: positions within 1e-9 of the box, K and W
+   within 1e-8).
+3. T4d, registered: `.venv/bin/python tracks/core/analysis/newton2/t4d_convergence.py
+   --prep P3 --case cic64_sp:64:cic_sp:S/core-20261119-162746-a02d334/emb_fft --case
+   cic64_mg:64:cic_7p:S/core-20261119-162455-e05ffa1/emb_mg --case
+   pcs64:64:pcs_sp:S/core-20261120-221835-4870ae5/emb64_pcs_fft --case
+   cic96_sp:96:cic_sp:C3/emb96_fft --case cic128_sp:128:cic_sp:C3/emb128_fft --case
+   cic128_7p:128:cic_7p:C3/emb128_fft7 --case pcs128:128:pcs_sp:C3/emb128_pcs_fft --case
+   cic256_sp:256:cic_sp:C3/emb256_fft` (P3 holds `ic/embedded_setup.json` and needs
+   `refs/`: it was written by `cases.py card3`, which calls `embedded_ic`).
+4. Outcomes into this journal; `newtonian_mode.md` 7.9 (last bullet), 7.12 (last
+   bullet) and section 6 "Cards"; `REQUESTS_NEWTON2.md` rows T4d and T11c; the STATUS
+   lines of `athena_gpu` in READY (both copies); figures into `figs/` with their rows
+   of the README.
+
+**Open, not planned in this package** (stated in the interface text): which term gives
+the steady drift of a ball across a level boundary (T6c x); the self-force of a
+compact clump in the relativistic mode; a profile of the isolated solver on a card;
+more than one refinement level, periodic refined meshes and adaptive refinement in
+this mode; a fourth-order Laplacian on isolated meshes; the special-relativistic push.
+
+**For core's lead (merge into `core/nrpic`).** The branch already contains main at
+9f7f85be; it differs from tag core-v0.5 by this package only (`git diff core-v0.5
+core/newton-2 -- athenak python problems scripts docs`), lines listed in
+`REQUESTS_NEWTON2.md` section 7. The byte regression against core-v0.5 is T11a.
