@@ -40,3 +40,52 @@ On the working database (read-only), with tracks/kb/ingest3/scripts/kbstate.py:
 - Few claims touch the 20 papers (0 to 10 locator rows) [JUDGEMENT].
 Refuted by: a zero-bibliography list other than those 20, an ok count other than 684, or a strict
 rate other than 674/710.
+
+## Outcome P1 (run kb-20261121-212037-0b37880, before.json and out.txt read)
+
+Mostly held, one count failed. 710 papers: ok 684, review 23, pdf 3; recorded rate 0.96338. The
+zero-bibliography TeX papers are exactly the 20, 11 of them ok. FAILED: only 9 of the 11 ok papers
+have citation rows, not 10: gr-qc/0304002 cites through `\def\ct{\cite}`, so it has 0 citation rows
+as well as 0 entries (1201.4794 has no `\cite` at all). The verifier's "10 papers with citation rows
+but no entry" counts the 9 plus 2403.15126 (status review, 122 rows). Strict rate (ok minus ok with
+citation rows and no entry) = 675/710 = 0.95070, not 674/710. Database: 64968 bibliography entries,
+104995 citation rows (14208 in corpus), 700 claims (627 with a chunk, 0 dangling), 0 dangling chunk
+references in claim_locators.
+
+Claims touching the 20: 21 (more than my 0-10 guess [JUDGEMENT failed]): 171-186 on 2403.15126
+(seeds of tracks/B-emd-gw/scope/REFERENCES.md; 178 and 181 human-verified, 186 unlocated) and 658-662
+on 1201.4794 (`served:` rows of F-hills, not seeds: `kb claim check` does not reach them). None has a
+relocate or verify --locator event (claim_events read), so `kb claim check --id 171..186` is safe
+(HANDOFF trap).
+
+## Entry 2 (2026-11-21 21:50 UTC): parser and remap code (commit 776288ad)
+
+Written in the private copy scratch/kb/ingest3/dev/kb, full kb suite green there and again in the
+worktree before the commit. What changed: tex_structure.command_aliases finds macros that stand for
+\bibitem or \cite from their definitions (bare `\def\bi{\bibitem}`, or a body passing argument k as
+the key: `\bib[1]{\bibitem{#1}}`, `\sortbibitem[2]{...\bibitem{#1} #2...}`, `\refto[1]{Ref.~\cite{#1}}`),
+plus xparse `\NewDocumentCommand` (pandoc's `\citeproc{mm}{...\cite{#1}...}`); the reference-list
+environments `references`, `thereferences`, `CSLReferences` count (when they hold entries) and start
+the bibliography region, so their text is no longer body chunks; entries `\harvarditem[.]{a}{y}{key}`
+and AASTeX `\reference{}` (keys `#1`, `#2`, ...); a .tex the main file does not reach, only when the
+paper cites and has no entry, recorded as parse_json.bib_unreached_file; parse_json also gets
+bib_cited_keys, bib_cited_with_entry, review_reasons; the review rule; claims_remap and the options
+--remap-claims, --dry-run --out of `kb ingest arxiv`.
+
+Correction of the lead's cause list [VERIFIED, entry 1]: 2602.00155 is CSLReferences, not an
+unreached file; 2403.15126 is `\sortbibitem` (lead's list: "none found"); gr-qc/0304002 also cites
+through `\ct`. An exploratory dry run from the private copy (not registered; its numbers are not
+used) showed the counts below; the registered run with the committed code is the evidence.
+
+## Prediction P2 (registered dry run of the 20 with commit 776288ad; nothing written)
+
+- Entries equal the lead's item counts: 1201.4794 46, 2507.01095 103, gr-qc/0304002 38,
+  gr-qc/9703066 18, 2602.00155 28; the eight REVTeX-3 papers the counts of zero_bib.tsv (28, 104, 87,
+  38, 16, 13, 11, 33); 2403.15126 117 (the live `\sortbibitem` lines; grep -c gives 117).
+- Every cited key of these 14 has an entry (cited_with_entry = cited_keys); gr-qc/0304002 gets 55
+  citation commands through `\ct`; 2602.00155 gets 28 `\citeproc` citations.
+- Zero entries remain for exactly six: astro-ph/0306304, astro-ph/9306009, astro-ph/9510056,
+  astro-ph/9607124, gr-qc/9604001, gr-qc/9906015 (old styles without an environment, no \cite).
+- Status: the 11 ok papers stay ok; nothing becomes review by the new rule (each paper that cites
+  now has entries).
+Refuted by: any count above that differs, a cited key without entry, or a seventh zero.
