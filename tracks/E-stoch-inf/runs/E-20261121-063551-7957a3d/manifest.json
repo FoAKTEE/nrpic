@@ -1,0 +1,105 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261121-063551-7957a3d",
+  "track": "E-stoch-inf",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "lead review wave 3 (batch 2a), check LR: rerun of the final analysis steps of g1verify (v123, v45, v45 addendum, v6, v7, v7 G1 exe) and ladder (final2, a6_64, l5 card, l5 scaling, seed-2 extract/judge/compare) unchanged from their registered inputs; JSON leaf comparison against the registered outputs and the committed copies; prediction in JOURNAL entry 2026-11-21T06:35Z",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "bash tracks/E-stoch-inf/stage/review3/scripts/rerun_all.sh \"$NRPIC_RUN_DIR\" > \"$NRPIC_RUN_DIR/rerun.log\" 2>&1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "7957a3d66b02f12632ee29d50a34ef25cbbbc215",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/stage/review3"
+    ],
+    "outside_package": {
+      "count": 17,
+      "first": [
+        " M tracks/E-stoch-inf/note/scripts/common.py",
+        " M tracks/E-stoch-inf/note/scripts/fig_background.py",
+        " M tracks/E-stoch-inf/note/scripts/ledger.py",
+        " M tracks/E-stoch-inf/note/scripts/run_all.py",
+        " M tracks/E-stoch-inf/note/scripts/schem_architecture.py",
+        " M tracks/E-stoch-inf/note/scripts/schem_timeline.py",
+        " M tracks/E-stoch-inf/usr/JOURNAL.md",
+        "?? tracks/E-stoch-inf/a4res/scripts/a4lib.py",
+        "?? tracks/E-stoch-inf/a4res/scripts/make_list.py",
+        "?? tracks/E-stoch-inf/a4res/scripts/twin_predict.py",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_constraints.py",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_freezing.py",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_modes.py",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_order.py",
+        "?? tracks/E-stoch-inf/note/scripts/schem_dataflow.py",
+        "?? tracks/E-stoch-inf/usr/scripts/analyse_cards.py",
+        "?? tracks/E-stoch-inf/usr/scripts/card_lib.py"
+      ]
+    },
+    "merge_base_main": "66254fe4e9c379502c3c5e2695166cfbdc885668",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.4",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "1d9d1411b0a0e9661af34c0e25f4a573458e63356237cb3db88b2a77115aaa99",
+    "machine_file_sha256": "524890b3a2c985c1c3a7159e7b005fff511ff355fc2ef6f2274171654f6a53e2",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261121-063551-7957a3d",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T06:35:52Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 10.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.9626,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 127,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
