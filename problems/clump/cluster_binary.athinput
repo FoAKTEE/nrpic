@@ -8,7 +8,11 @@
 # tracks/core/interfaces/moving_clusters.md).  Mesh of st_cluster.athinput (cells M/2
 # over the matter, domain [-1024 M, 1024 M]^3, 16^3 MeshBlocks) with the refined region
 # widened to hold the orbit, [-32, 32]^2 x [-16, 16] (1408 MeshBlocks); 250 M, about a
-# third of an orbit (a whole orbit is about 0.9 card-hours).
+# third of an orbit (a whole orbit is about 1.2 card-hours).
+# Shift damping: z4c/shift_eta = 0.1 here (test TF, run orbit_e01, 125 M: separation
+# 29.99 -> 29.62, first post-Newtonian angular velocity to 0.14 per cent). Test TE ran
+# this input with z4c/shift_eta=2.0: the separation fell to 26.6 in 250 M and the phase
+# lagged, both effects of the slow shift.
 #
 # Tables and particles (10^4 stratified equal-mass particles per cluster):
 #   problems/ic/make_ic.py boosted --cluster-p 0.819,1,-15,0,0,0,-0.14631270419005796,0 \
@@ -78,7 +82,7 @@ lapse_harmonicf = 1.0
 lapse_harmonic  = 0.0
 lapse_advect    = 1.0
 shift_Gamma     = 0.75
-shift_eta       = 2.0
+shift_eta       = 0.1      # see the header; 2.0 in test TE
 shift_advect    = 1.0
 diss            = 0.5
 chi_div_floor   = 1.0e-5

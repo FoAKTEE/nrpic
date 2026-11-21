@@ -16,6 +16,12 @@
 #       problem/comp0_p2=-0.00013438703835621808 problem/comp0_p3=3.6945148809237404e-06 \
 #       problem/comp0_corr=table [problem/comp0_boost_shift=true]
 # With comp0_p1..3 = 0 the cluster is at rest (nothing of the boost table is read).
+#
+# Shift damping: z4c/shift_eta = 0.1 here. With the value 2.0 of st_cluster.athinput (a
+# cluster at rest) the moving cluster stays at 0.7 v in coordinates and sum m u_x drifts
+# by 12 per cent in 50 M (test TC, which ran this input with z4c/shift_eta=2.0); with
+# 0.1 it is at 0.90 v after 40 M and the drift is 3.3 per cent (test TF, run v0.3_e01);
+# 0.03 gives 0.95 v. The comoving initial shift decays as exp(-shift_eta t).
 
 <comment>
 problem   = moving monoenergetic relativistic cluster
@@ -73,7 +79,7 @@ lapse_harmonicf = 1.0
 lapse_harmonic  = 0.0
 lapse_advect    = 1.0
 shift_Gamma     = 0.75
-shift_eta       = 2.0
+shift_eta       = 0.1      # see the header; 2.0 in test TC
 shift_advect    = 1.0
 diss            = 0.5
 chi_div_floor   = 1.0e-5

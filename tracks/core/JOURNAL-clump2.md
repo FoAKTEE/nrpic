@@ -1366,3 +1366,32 @@ within 50 M and stops the drift of `sum m u_x`; eta = 2/M leaves 0.72 v and a dr
 the damping wanted near the puncture is of order 1/M_BH (release core-v0.4:
 `shift_eta_profile`, which follows the punctures); in Track F's units (clump 0.05 M_BH)
 eta = 2/M_BH is 0.1/M_clump, the value tested here.
+
+### Outcome of TS4 (run `core-20261121-131751-1e1879d`, 13:17Z to 13:25Z, exit 0; figures `box16/fig_idsolve_static.png`, `box32/fig_idsolve_static.png`; the second looked at, the first is the picture of TS at dx = 1)
+
+Each of the four solves converged in 25 outer iterations (max|H| 1.7e-3 and 1.8e-3 ->
+1.9e-12).
+
+| faces at | cells (dx = 1) | `D - R` at the ends of the axis | at the centre | `D/R` at the centre | `rms(D - R)/rms(R)`, r < 14 |
+|---|---|---|---|---|---|
+| 16 M | 32 | -1.44e-4 | -1.84e-4 | 0.948 | 0.070 |
+| 32 M | 64 | -4.44e-5 | -1.13e-4 | 0.968 | 0.034 |
+
+- End value HELD: -4.44e-5 (band -3.0e-5 to -4.8e-5); 0.31 of the value with the faces at
+  16 M (a quarter times at most 1.15 was the estimate: 0.25 to 0.29). The refutation
+  line (beyond -8e-5) is not met. The offset of TS is the Robin condition of the solver,
+  which takes the correction to fall as 1/r where it has a part falling as r^-2.
+- `D/R` at the centre MISSED by 0.004: 0.968 (band 0.972 to 0.990). I had taken the part
+  peaked at the centre from the run at dx = 0.5 (-3.4e-5); at dx = 1 it is -4.0e-5 with
+  the faces at 16 M and -6.8e-5 between the centre and the more distant ends at 32 M.
+  So beside the constant there is a difference that falls off outwards, 1 to 2 per cent
+  of R at the centre: of the size of the terms of order V^4 that the radial correction
+  leaves out and of the change of the deposit with the motion; this run does not
+  separate the two.
+- A at dx = 1: -6.3e-4 at the centre (dx = 0.5: -1.3e-4): the change that the mesh solve
+  makes in a cluster at rest falls as the square of the cell size (a factor 4.7).
+
+Result for the choice of tool: the radial correction and the mesh solver give the same
+second-order psi for a moving cluster to 3 per cent rms once the faces of the solver's
+box are at 32 M (7 per cent at 16 M, from its face condition); the mesh solver needs a
+uniform mesh and far faces, the radial tables need neither.
