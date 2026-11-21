@@ -316,6 +316,18 @@ def measure(d, energies=True, spectrum=False, gauge=False):
     return r
 
 
+def measure_light(d):
+    """Box-mode amplitudes at K1, K2 only (direct sums), for large meshes."""
+    g = Grid(d)
+    h = traceless(tensor(d, "g") - np.eye(3)[:, :, None, None, None])
+    r = {"time": d["time"], "a_chi": float(np.mean(d["chi"]) ** -0.5), "vsize": d["vsize"]}
+    A = {nm: g.amp_direct(h, m) for nm, (m, _, _) in BASIS.items()}
+    for nm, (hp, hx) in pol(A).items():
+        r[f"{nm}_plus"] = [hp.real, hp.imag]
+        r[f"{nm}_cross"] = [hx.real, hx.imag]
+    return r
+
+
 def gauge_piece(h, Fh, Th, g):
     """Spatial-gauge piece of the flat TT projection at second order (note Eq. (9)):
     G_tot = TT[ D^T D - (2/3)(div xi)(D + D^T) + D^T hR + hR D - (2/3)(div xi) hR + (xi.grad) hR ],

@@ -30,11 +30,11 @@ def files(d, kind):
 
 
 def one(args):
-    path, kind, gauge = args
+    path, kind, gauge, light = args
     t0 = time.time()
     try:
         dd = vlib.read_rst(path) if kind == "rst" else vlib.read_bin(path)
-        r = vlib.measure(dd, energies=True, spectrum=True, gauge=gauge)
+        r = vlib.measure_light(dd) if light else vlib.measure(dd, energies=True, spectrum=True, gauge=gauge)
     except Exception as e:  # keep the failure on record
         return {"file": path, "kind": kind, "error": repr(e)}
     with open(path, "rb") as f:
@@ -49,12 +49,13 @@ def main():
     ap.add_argument("--gauge", action="store_true")
     ap.add_argument("--kinds", default="bin,dbin")
     ap.add_argument("--workers", type=int, default=4)
+    ap.add_argument("--light", action="store_true", help="box-mode amplitudes only (direct sums)")
     ap.add_argument("cases", nargs="+")
     a = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
     for c in a.cases:
         name, d = c.split("=", 1)
-        jobs = [(p, k, a.gauge) for k in a.kinds.split(",") for p in files(d, k)]
+        jobs = [(p, k, a.gauge, a.light) for k in a.kinds.split(",") for p in files(d, k)]
         with ProcessPoolExecutor(a.workers) as ex:
             rows = list(ex.map(one, jobs, chunksize=2))
         rows.sort(key=lambda r: (r["kind"], r.get("time", -1)))

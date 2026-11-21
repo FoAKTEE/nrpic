@@ -79,3 +79,38 @@ Round 3 (iv), batch-2b report of first_source: P12 (1, 8, 27 per cell differ by 
 7.8e-5, 7.4e-5 for 2 <= a <= 40), P13 (128^3 vs 64^3 at most 1.6e-4 and 1.8e-4 for a <= 40;
 rms after crossing 1.30e-2 vs 3.39e-2), (1 + eps^2) test Q = 1.006-1.036 at a = 30-60:
 - P9: each reproduced to 3 per cent from the raw dumps. Refuted above 5 per cent.
+
+## Entry 2 (05:10 PST): tool tests T0 (run B-20261121-130334-a86cff6), P1, and more predictions
+
+T0 outcomes against entry 1:
+- T0a CONFIRMED: double vs single bin of the same time (jit0p3, four pairs): chi relative
+  <= 6.0e-8, gxx absolute 6.0e-8 (float32 rounding of 1 + h), gxy 1.5e-11; rst vs bin of the
+  wave-2 eps1 run (three pairs, same times to all digits): chi 3.9e-8 to 5.9e-8, gxy <= 5.8e-11.
+  The restart layout of the wave-2 executable has RegionIndcs of 19 int and a data-size word
+  per MeshBlock (my first parse assumed 22 int and a total: corrected before any use).
+  a from the mean of chi equals a(tau) = (1 + tau/2)^2 to 3e-5 relative.
+- T0b CONFIRMED in substance, my bound REFUTED for one route: the FFT route returns c_+ = A
+  to 3e-16 and the TT projection of a pure gradient is 0; the direct-sum route returns c_+ to
+  3.9e-12 relative (absolute 1.2e-17), above my bound of 1e-12 (summation rounding of the
+  phase factors; irrelevant at the signal level of 1e-5 to 1e-7).
+- T0c CONFIRMED: closed form against DOP853, largest difference 1.2e-11; envelope times a is
+  1.1-1.24 over tau = 5-17.
+- T0d CONFIRMED: pure gauge without TT part: TT h slope 2.000, TT h - Gq slope 3.000; with a TT
+  wave of the same order: TT h - TT[h_T] slope 2.000, minus G_tot slope 3.000.
+
+P1 (run B-20261121-130454-bbbf320): row 198 CONFIRMED (the two tools' files are byte-identical;
+2097152 particles, every difference 0). Row 199: the four numbers are those recorded by the
+tool in id.json (7.63e-4, 2.83e-4, 3.12e-17; 3.70e-11): read, not recomputed. The jitter is
+along y, z only, bounded by A h (max 0.29999974 h), uniform (rms A/sqrt3). Row 216: the batch
+manifest records 0.4806 card-h (walltime 1730 s): CONFIRMED as recorded.
+
+Predictions for round 3 (P9, refined before the M1c measurement; definitions from the batch-2b
+report and the docstrings of first_source/scripts/eps2_test.py and p16_compare.py):
+- P9a P12: max |c(1 ppc)/c(27 ppc) - 1| and |c(8)/c(27) - 1| for 2 <= a <= 40 reproduce 7.8e-5
+  and 7.4e-5 to 20 per cent (the times of two runs differ by up to a step; I carry the reference
+  by a cubic spline in tau, the track may do otherwise). Refuted above a factor 1.5.
+- P9b P13: 128^3 vs 64^3 for a <= 40 at most 1.6e-4 and 1.8e-4; rms after crossing 1.30e-2
+  (128,1 vs 64,8) and 3.39e-2 (64 vs 32): to 20 per cent.
+- P9c (1 + eps^2): Q(delta = 0.0025) within 1.00-1.04 for a = 30-60 on both meshes, R = 17-19.
+- P9d P16': D (TT power at |m| >= 16, no wave over wave) at tau = 0.1 and a = 2.3 near 0.99 and
+  0.86 at 64^3, and near 0.27 at a = 12; to 3 per cent (the shell edge 15.5 or 16 may matter).
