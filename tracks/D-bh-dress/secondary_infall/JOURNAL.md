@@ -819,3 +819,54 @@ D  Lost particles (diagnostic, prediction): they are dust from the outer edge of
    -0.618 per unit mass at t = 0), so its apocentre, 815 M by the closed form, moves past the
    face at 854 M if its early pull is a few per cent weaker than Newtonian, which a ball
    only 4 cells wide can give. Refuted if most lost mass started inside r_last or was dress.
+
+## 2026-11-21T09:00Z  outcomes of F-C, S-C, H2, D; prediction E (energy of the outer shells)
+
+F-C holds (runs D-20261121-084354-f534489 nx 64, -084357-8b3a981 nx 128, clump at a cell
+centre; field analysis D-20261121-084407-ffb542d; comparison D-20261121-084434-557b3e9,
+`nm_kernelcmp.png` looked at). The cell-centre kernel lies far above the vertex kernel
+inside one cell: f = 0.50-0.59 against 0.075-0.076 at q = 0.5 (ratio 6.6-7.9), 1.28-1.42
+against 0.64-0.66 at q = 1 (2.0-2.1); it overshoots point-mass gravity at q = 0.7-1 (up to
+1.42) where the vertex kernel overshoots at q = 1.5 (1.22); from q = 2 on both within 1.7 %
+of 1, from 4 on within 0.6 %. Plummer fit s_eff = 0.30-0.31 dx (vertex 0.61 dx). The two
+resolutions agree in q to 10-15 % inside one cell (cc128/cc64 = 0.85-0.90). The kernels are
+copied to kernel_nx64_cc.txt, kernel_nx128_cc.txt.
+S-C holds (shells with the cell-centre kernel: kernel_cc D-20261121-084453-961e836, hybrid_cc
+-084454-3f1fa54, kernel_cc64 -084455-b4c1f70; analysis D-20261121-084720-b6aaa6e,
+`nm_estimators.png` looked at): run against hybrid_cc / kernel_cc, M_ta -0.7 / -1.2 % at
+a/a_i = 2, -0.7 / -0.7 % at 3, -0.3 / -0.2 % at 4 (vertex kernel: -4.4 / -7.1 %, -3.4 / -5.6 %,
+-0.7 / -1.5 %); at 1.5 +2.3 / +1.4 % (vertex: +32 %). The dress at 4: -1.0 / -1.7 % (vertex
+-6.3 / -11 %); at 2 still +22 to +26 % (kernel_cc64: +5 %), where the dress is 0.2 M made of the
+innermost dust, within one cell. So the early mismatch was the wrong kernel of the
+reference, not the run [VERIFIED for a/a_i <= 4 by these runs].
+H2 REFUTED: the flag-free estimators agree with the flags. M_ta(v) - M_ta(flags) is -0.1 to
+-0.3 % at every a/a_i (e.g. 14.546 against 14.550 M at 24, 17.031 against 17.024 at 29.97);
+the dress from crossing the centre equals the flagged dress to all digits; the measured
+r_ta (zero of the median v_r) equals r_ta from M_ta to 0.1 % (568.6 against 568.4 M at
+29.97). The excess of the run over every shell law from a/a_i ~ 10 to 28 (largest +6.1 %
+against hybrid, hybrid_cc and point at a/a_i = 24, +8 % against kernel and kernel_cc;
+`nm_estimators.png`) is real: the run has turned around more mass than the shells then,
+and the same mass by 29.97. All shell laws agree with each other at 24 within 2 %
+(13.40-13.72 M), the run has 14.55 M.
+D holds (D-20261121-084720-32f2f10, `nm_lost.png` looked at): all 16 462 lost particles are
+dust with r0 = 35.1-36.2 M (> r_last = 32.9 M), none ever had v_r < 0 or crossed the centre;
+they leave through the faces (last seen at |x_i| = 0.99-1.005 L, still moving out at
+v_r = 0.11-0.23 c); exact Newtonian gravity keeps every one of them inside (apocentres
+709-831 M times the largest direction cosine: no particle expected out). The run's largest
+dust radius runs ahead of the closed-form edge orbit from a/a_i ~ 3 on (1110 against 760 M at
+29.97). Not predicted: the same happens in N128Lc (wave 2), less (D-20261121-085120-cbc7ecc:
+largest dust radius 162.8 against 155.2 M at a/a_i = 8, no particle lost). The outer edge of
+a lattice ball deposited on a mesh feels less than M/r^2 [JUDGEMENT: the cloud-in-cell
+deposit spreads the outermost layer over one cell, so some mass sits outside the outermost
+particles; the effect grows with dx/R_edge]. The lost mass started outside r_last, so by
+Birkhoff's theorem it does not act on the shells that turn around by a/a_i = 30.
+
+Prediction E (written before nm_energy.py runs; P192 and, for comparison, N128Lc):
+the specific energy E = v^2/2 - M(<r)/r of single-stream shells (r > 0.5 r_ta, not crossed)
+is exactly conserved in spherical Newtonian gravity. In P192 I expect, by the time each group
+leaves the single-stream region: r0 in [35, 36.3] M (the edge): dE/|E0| > +0.10 (they need
+about +0.12 to reach the faces); r0 in [29, 32] M (turning around at a/a_i ~ 20-26): dE/|E0|
+in [-0.06, -0.02] (more bound, the M_ta excess at 24 needs about -0.04 with t_ta ~
+|E|^(-3/2)); r0 in [32, 33] M (turning around at ~30): |dE/|E0|| < 0.02. In N128Lc every
+group inside r_last within 1 %. Refuted for H-E ("the M_ta excess is a change of the shells'
+energy") if the groups at r0 = 29-32 M show |dE/|E0|| < 0.01.
