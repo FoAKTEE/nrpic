@@ -1354,3 +1354,40 @@ of the linear cloud: larger than NEW2 at both resolutions, largest departure at 
 twice that of NEW2 at 48 (leaf cells where a particle sits near a cell centre while its
 neighbours are not one cell away). Refuted for the new form if its rms does not fall
 faster than that of the uniform spreading, or if it is not below it at 48.
+
+## 2026-11-21 03:14  outcome of T19 (prediction failed: the test measured the lattice, not the leaf cells); outcome of T1b; prediction of T19b
+
+**T19, run core-20261121-031145-ffc12b3** (eight cases, exit 0; `t19_summary.json`; figure
+not used) [VERIFIED]: rms departure from the exact density at 24^3 and 48^3: uniform
+spreading 0.0708 and 0.0679; integral form 0.0696 and 0.0742; quadratic cloud 0.0330 and
+0.0232; first-order form of the published executable 0.221 and 0.169 (largest 0.52 and
+0.43). The predictions "first order" and "second order" FAILED: nothing converges. What
+the test measured instead [my arithmetic, checked against the numbers]: a lattice of
+spacing d seen through a tent of half-width h is modulated by +-2 sinc^2(pi h/d), which
+is +-15 per cent at d = 1.3 h and +-9 per cent at d = 0.7 h; with one particle per root
+cell and a lattice stretched by 30 per cent the root-level density itself departs from
+the exact one by 7 per cent rms at any resolution (quadratic cloud: sinc^3, 3 per cent:
+0.033 and 0.023 measured). I had written "second order" for a lattice whose spacing I
+took to stay h. The one clause that holds: the first-order form is three times worse
+than the integral form (0.43 against 0.18 at the largest, predicted at least twice):
+on a stretched lattice its slopes do not cancel. For Track A: one particle per root
+cell on a lattice deformed by tens of per cent carries this modulation at the cell
+scale before any filter, whatever the leaf cells do.
+
+**T1b, run core-20261121-031032-614792a** (22 cases, exit 0) [VERIFIED]: identity
+|int_E/sum mW - 1| at most 1.65e-14, momentum 1.1e-16, in all 18 unfiltered refined
+cases; the six cic cases with fine shape 4.9e-15 to 5.2e-15: PASS. Smallest leaf-cell E
+with cic and fine shape, clouds on the root: -0.100 E_max (T1: -0.31): PASS. New: with
+clouds on the finest level the fine shape now changes the linear cloud too (smallest E
+-0.03 E_max, T1: 0): a cloud in a coarse MeshBlock next to a finer one reaches half a
+cell into the fine lattice cell beside it. Byte comparison with T1: below (T18).
+
+**T19b** (`t19_smooth.py --ppx 4`: four particles per root cell along x, so that the
+lattice modulation is 2 sinc^2(pi h/d) with d = h/4 (1 +- 0.3): at most 0.4 per cent).
+Prediction: uniform spreading: rms 0.03 to 0.05 at 24^3 (rho' h/4 with rho' rms =
+0.3 pi/sqrt 2), falling by 1.6 to 2.4 to 48^3; integral form: rms below 0.02 at 24^3,
+falling by more than 3, below a third of the uniform spreading at 48^3; quadratic
+cloud: second order (factor above 3); first-order form (PUB): its slope in a lattice
+cell is the difference of the particle numbers of the two half-cell-shifted neighbours,
+an integer: rms at least three times the integral form at 48^3. Refuted for the new
+form as before.

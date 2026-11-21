@@ -3,11 +3,12 @@
 smooth density when the clouds are one level coarser (prediction:
 tracks/core/JOURNAL-cosmo-amr.md, entry of T19).
 
-    t19_smooth.py --new EXE --pub EXE --out DIR [--cores N] [--analyse-only]
+    t19_smooth.py --new EXE --pub EXE --out DIR [--ppx P] [--cores N] [--analyse-only]
 
 Box [-3, 3)^3 of the homogeneous-universe deck, root N^3 (N = 24, 48), static level 1 on
-[-1, 1]^3, clouds on the root level, no filter, no step.  One particle per root cell on a
-lattice displaced along x, x = q + (delta/k) sin(k q), k = pi (wavelength 2, the width of
+[-1, 1]^3, clouds on the root level, no filter, no step.  P particles per root cell along
+x (default 4; one along y and z: T19 had P = 1, where the aliasing of the lattice in the
+cloud hides the leaf cells) on a lattice displaced along x, x = q + (delta/k) sin(k q), k = pi (wavelength 2, the width of
 the patch), delta = 0.3, so that the density is rho_0/(1 + delta cos(k q)); the lattice
 is offset by (0.37, 0.3, 0.2) root cells from the cell centres.  Table of tmunu_E along
 the x line through the origin's leaf row.  Cases: uniform spreading ("const"),
@@ -31,6 +32,7 @@ KW, DELTA = np.pi, 0.3
 OFF = (0.37, 0.3, 0.2)
 NS = (24, 48)
 MP = 1e-6
+PPX = 4
 
 
 def exact(x):
@@ -70,7 +72,7 @@ def line(rundir, n):
     x, e = d[xk], d["tmunu_E"]
     o = np.argsort(x)
     x, e = x[o], e[o]
-    rho0 = MP*n**3/L**3
+    rho0 = MP*PPX*n**3/L**3
     w = np.abs(x) < 0.75
     return x[w], e[w]/rho0
 
@@ -81,8 +83,11 @@ def main():
     ap.add_argument("--pub", required=True)
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", "."))
     ap.add_argument("--cores", type=int, default=4)
+    ap.add_argument("--ppx", type=int, default=4)
     ap.add_argument("--analyse-only", action="store_true")
     a = ap.parse_args()
+    global PPX
+    PPX = a.ppx
     a.out, a.new, a.pub = (os.path.abspath(a.out), os.path.abspath(a.new),
                            os.path.abspath(a.pub))
     os.makedirs(a.out, exist_ok=True)
@@ -96,7 +101,9 @@ def main():
         if not a.analyse_only:
             os.makedirs(ic, exist_ok=True)
             g = -L/2 + (np.arange(n) + 0.5)*h
-            qx, qy, qz = np.meshgrid(g + OFF[0]*h, g + OFF[1]*h, g + OFF[2]*h, indexing="ij")
+            gx = -L/2 + (np.arange(n*PPX) + 0.5)*h/PPX
+            qx, qy, qz = np.meshgrid(gx + OFF[0]*h/PPX, g + OFF[1]*h, g + OFF[2]*h,
+                                     indexing="ij")
             x = qx + DELTA/KW*np.sin(KW*qx)
             pos = np.stack([x.ravel(), qy.ravel(), qz.ravel()], axis=1)
             pos = (pos + L/2) % L - L/2
