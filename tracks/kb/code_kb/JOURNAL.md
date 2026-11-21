@@ -261,3 +261,22 @@ verified, 5 claimed, 1 refuted. `kb code nco --kind param --repo local/nrpic`: h
 input files (problems/jeans/jeans.athinput and others), no read in athenak/src. Refuted if the
 row count changes, a link check problem appears, or the param index has an athenak/src read
 of nco.
+
+## E2 outcome (run kb-20261121-232940-3759b31, 23:29 UTC)
+
+[VERIFIED by the run] `kb link list --paper 2611.12831`: 25 rows before, 25 after the load
+(the load replaces the curated rows; link ids restart at 1); after: 19 verified, 5 claimed,
+1 refuted; `kb link check`: 25 links, 0 with problems (exit 0). `kb code nco --kind param
+--repo local/nrpic`: the nearest parameters are `<problem> ncomp` (nrpic_idsolve.cpp:218,
+nrpic_cf.cpp:406, nrpic_puncture_setup.hpp:68); no `<z4c> nco`. Prediction held in every
+part but one: I expected hits in input files; the param query searches the reads of the
+source only, so the input file problems/jeans/jeans.athinput:127 does not appear there
+(FAILED sub-prediction; no consequence for the answer).
+
+## F1: figures (scripts/figs.py), from registered outputs only
+
+Inputs: LINKS.tsv of kb-20261121-232843-cbf311f, modules.json of kb-20261121-232013-52c350a,
+watch_diff.json of kb-20261120-222055-dd59ec1. A development pass (scratch/kb/code_kb/tmp)
+showed blue legend patches in fig_link_verdicts and the legend over a box in
+fig_task_order; both fixed before the registered run. Also writes the parameter-index rows
+of `nco` (expected: 0).
