@@ -198,8 +198,8 @@ def main():
     from nrpic import figstyle as fs
     import matplotlib.pyplot as plt
     fs.use_style()
-    fig, ax = plt.subplots(figsize=(7.6, 3.2))
-    fig.subplots_adjust(left=0.27, right=0.80, bottom=0.17, top=0.90)
+    fig, ax = plt.subplots(figsize=(9.4, 3.2))
+    fig.subplots_adjust(left=0.20, right=0.66, bottom=0.17, top=0.90)
     style = {"kill9": ("x", fs.SERIES[1], "outside SIGKILL (137)"),
              "kill15": ("+", fs.SERIES[1], "outside SIGTERM (143)"),
              "wall": ("o", fs.SERIES[0], "wall-clock stop"),
