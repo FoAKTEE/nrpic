@@ -1,0 +1,34 @@
+[
+ {
+  "beta": 10.0,
+  "sense": 1,
+  "nphase": 200,
+  "rtol": 1e-11,
+  "r0_over_rt": 50.0,
+  "rend_over_rt": 150.0,
+  "rp": 10.129999999999999,
+  "a0": 1.0130000000000001,
+  "separated": 1.0,
+  "plunged": 0.0,
+  "n_capped": 1,
+  "separated_capped_counted_as_is": 0.995,
+  "reached_end": 1.0,
+  "steps_max": 400000
+ },
+ {
+  "beta": 10.0,
+  "sense": -1,
+  "nphase": 200,
+  "rtol": 1e-11,
+  "r0_over_rt": 50.0,
+  "rend_over_rt": 150.0,
+  "rp": 10.129999999999999,
+  "a0": 1.0130000000000001,
+  "separated": 0.914572864321608,
+  "plunged": 0.0,
+  "n_capped": 1,
+  "separated_capped_counted_as_is": 0.91,
+  "reached_end": 1.0,
+  "steps_max": 400000
+ }
+]

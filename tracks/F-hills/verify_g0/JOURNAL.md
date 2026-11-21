@@ -191,3 +191,20 @@ r_p = 12). Prediction: with `hrna_u` the HRNA plunge fractions at q = 10, r_p = 
 to the track's 0.94, 0.69, 0.30 within 3 sigma (0.05, 0.10, 0.10). Refuted if they stay near
 my hand-off values or miss by more than 3 sigma. A 12-phase debug trial at r_p = 13 gave plunge
 0.17 (not evidence).
+
+## Entry 7 (2026-11-21 03:50 UTC): K5 outcome; run housekeeping
+
+- R7b F-20261121-032325-f58a391 (beta = 10) and R7c F-20261121-032337-9c6d87a (beta = 3), my
+  HRNA at 2404's own set-up, 200 phases, step cap 400000 per phase (5 phases capped of 800,
+  excluded): separated fraction beta = 3 pro 0.990, retro 0.510; beta = 10 pro 1.000, retro
+  0.915, against the ledger's 0.985, 0.51, 0.993, 0.91 (count fractions of 400 phases, s1.npz).
+  All within 3 sigma: prediction of entry 3 MET, K5 CONFIRMED by an independent code at two
+  beta. The uncapped R7 F-20261121-030701-734c74b was stopped (no case finished in 37 min;
+  record: failed/stopped, kept).
+- R4 F-20261121-030146-34ad97e stopped after 20 min on r_p = 12 (its scan.json holds r_p = 7, 8,
+  checksummed at finish). Replaced by capped runs R4d (q = 10, r_p = 12) and R4e (q = 4,
+  r_p = 16); R4c F-20261121-031930-a640847 (q = 4, r_p = 9.82 done, 16 running, uncapped) and
+  R10 (H-u) still running.
+- R4c, q = 4, r_p = 9.82: Newton separated 0.800 (track 0.84), inside 4 M 0.189 (0.30, 3.3
+  sigma), HRNA hand-off separated 0.961 (0.99), plunge 0.850 (0.94, 4.5 sigma); GR-matched plunge
+  0.894. My encounters are again shallower than the track's in every diagnostic.
