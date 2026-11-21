@@ -1244,3 +1244,43 @@ TC it extends G2 from 10 M to 34.5 M. Predicted: minimum lapse, `sum m u_x`, `su
 within 1e-9 at every common record, the norms equal to 1e-6 relative. Refuted above
 1e-6 in the lapse or the sums before 34.5 M: then the card run of 50 M is one member of
 a family that round-off spreads, and the late numbers of TC and TF carry that spread.
+
+### Outcome of TS (run `core-20261121-130601-6df5a3d`, 13:06Z to 13:13Z, exit 0; figure `fig_idsolve_static.png` of the run, looked at)
+
+- TS1 HELD. Outer iterations 25 (rest), 24 (`curv`), 25 (`corr`); 26 to 27 conjugate-
+  gradient steps, 79 to 86 V cycles; 139 to 145 s on one core. max|H| of the monitor
+  1.20e-3 -> 1.7e-12 (rest), 1.31e-3 -> 3.4e-12 (`curv`), 1.23e-3 -> 1.8e-12 (`corr`). (My
+  "of order 0.03 before" was the norm of the history file, not the largest H: wrong
+  number in the prediction, no consequence.) The solver takes the curvature of a moving
+  table component: the first test of `id_solve` on curvature set by `nrpic_cf`.
+- TS2 HELD. The two starts agree to 3.0e-14 at every cell (predicted 1e-8).
+- TS3 HELD, near the edge of the band. Inside r < 14: `rms(D - R)/rms(R)` = 0.0705 (band
+  0.08), `max|D - R|/max|R|` = 0.050, `D/R` at the centre 0.950 (band 0.93 to 1.07): R =
+  3.567e-3, D = 3.388e-3 at the centre. The mesh solver and the radial solve agree on
+  the motion's part of psi to 5 to 7 per cent.
+- A (no prediction): the mesh solve changes psi of the cluster at rest by -1.33e-4 at
+  the centre (rms 2.9e-5 inside r < 14), with a kink of +3e-5 at the surface (figure):
+  forty times less than for the Gaussian of the solver's tests, and 4 per cent of R.
+- The figure shows what the 5 to 7 per cent is: `D - R` is almost a constant, -1.45e-4
+  at both ends of the axis and -1.79e-4 at the centre. A constant is what a face
+  condition does. Reading [JUDGEMENT until TS4]: outside the matter the correction is
+  `C/r - k/(2 r^2)` with `k = <psi^-7 Abar^2> r^4/8`, about `(15/16) P^2 psi^-7` = 0.075
+  to 0.093 for P = 0.3145 (Bowen-York far field, angle average 7.5 P^2/r^4); the Robin
+  faces impose `d(r dpsi)/dr = 0`, which the second term violates by `k/(2 r^2)`, and the
+  solution answers with the constant `-k/(2 R_f^2)`: -1.5e-4 to -1.8e-4 for faces at
+  R_f = 16. The rest, -3.4e-5 peaked at the centre (1 per cent of R), has the size of
+  the terms of order V^4.
+
+### TS4: prediction (written 13:20Z, before the registered run)
+
+Seen before writing this: an unregistered trial of the extended script at 32 cells on
+the same box (dx = 1) gave the same offset as the run at dx = 0.5 (-1.44e-4 at the ends
+of the axis): the offset does not depend on the cell size. Not yet run: any other box.
+`run_ts4.sh`: rest and `curv` at dx = 1 with faces at 16 M (32 cells) and at 32 M (64
+cells); the trial psi from static runs on the same meshes. If the offset is the Robin
+faces it scales as `psi^-7/R_f^2`: predicted `D - R` at the ends of the axis between
+-3.0e-5 and -4.8e-5 for faces at 32 M (from -1.44e-4 at 16 M: a quarter, times up to
+1.15 for psi^-7 at the larger radius and the cube against the sphere), and `D/R` at the
+centre between 0.972 and 0.990. Refuted if the end value stays beyond -8e-5: then the
+difference is not the faces, and the two tools differ by 4 per cent in the equation
+they solve.

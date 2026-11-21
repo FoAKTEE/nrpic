@@ -3,7 +3,8 @@
 (<particles> id_solve) on the moving cluster of the static tests TB, against the radial
 second-order correction of psi.
 
-    run_idsolve_static.py [--tb RUN_ID/tb] [--n 64] [--v 0.3] [--out DIR]
+    run_idsolve_static.py [--tb RUN_ID/tb] [--n 64] [--v 0.3] [--box 32 --cells 128]
+                          [--kinds rest,curv,corr] [--out DIR]
 
 Three solves with problems/tests/clump_table_idsolve.athinput on the tables and the quiet
 lattice of a finished TB run (its directory ic/ and its cases.json): the cluster at rest
@@ -16,7 +17,10 @@ trial psi of the TB run's dumps of the same cases (single precision):
   D = s_curv - s_rest             the motion's part of the solved psi
   s_curv - s_corr                 the same equation from two starts
 
-Writes idsolve_static.json and fig_idsolve_static.{pdf,png} into --out.
+With --box B --cells N the mesh is [-B, B]^3 with N cells (test TS4: the faces further
+out); the trial psi then comes from runs of problems/tests/clump_table_static.athinput on
+that mesh, made here. Writes idsolve_static.json and fig_idsolve_static.{pdf,png} into
+--out.
 """
 import argparse
 import json
@@ -42,6 +46,7 @@ from nrpic import figstyle as fs  # noqa: E402
 
 EXE = os.environ.get("NRPIC_EXE_CPU", os.path.join(WT, ".work", "build_cpu", "src", "athena"))
 INPUT = os.path.join(WT, "problems", "tests", "clump_table_idsolve.athinput")
+STATIC = os.path.join(WT, "problems", "tests", "clump_table_static.athinput")
 RCUT = 14.0
 
 
@@ -62,17 +67,26 @@ def main():
     ap.add_argument("--tb", default="core-20261120-222933-0a01a56/tb")
     ap.add_argument("--n", type=int, default=64)
     ap.add_argument("--v", default="0.3")
+    ap.add_argument("--box", type=float, default=None, help="half-width of the mesh")
+    ap.add_argument("--cells", type=int, default=None, help="cells per direction with --box")
+    ap.add_argument("--kinds", default="rest,curv,corr")
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"))
     a = ap.parse_args()
     tb = os.path.join(SCRATCH, a.tb)
+    mesh = []
+    if a.box is not None:
+        for c in (1, 2, 3):
+            mesh += [f"mesh/nx{c}={a.cells}", f"mesh/x{c}min={-a.box!r}", f"mesh/x{c}max={a.box!r}"]
     with open(os.path.join(tb, "cases.json")) as f:
         tbc = json.load(f)["cases"]
     labels = dict(rest=f"q0_n{a.n}", curv=f"q{a.v}_n{a.n}_curv", corr=f"q{a.v}_n{a.n}_corr")
     env = dict(os.environ, OMP_NUM_THREADS="1")
     res = dict(exe=EXE, input=INPUT, tb=tb, cases={})
     sol, tri = {}, {}
+    labels = {k: labels[k] for k in a.kinds.split(",")}
     for kind, lab in labels.items():
         c = tbc[lab]
+        args = c["args"] if a.box is None else [x for x in c["args"] if not x.startswith("mesh/")] + mesh
         d = os.path.join(a.out, lab)
         os.makedirs(d, exist_ok=True)
         ic, tabs = c["ic"], c["tables"]
@@ -84,9 +98,9 @@ def main():
                 os.symlink(os.path.join(tb, "ic", src), link)
         t0 = time.time()
         with open(os.path.join(d, "athena.log"), "w") as log:
-            st = subprocess.run([EXE, "-i", INPUT, "-d", d, *c["args"]], cwd=d, stdout=log,
+            st = subprocess.run([EXE, "-i", INPUT, "-d", d, *args], cwd=d, stdout=log,
                                 stderr=subprocess.STDOUT, env=env).returncode
-        rec = dict(label=lab, args=c["args"], status=st, wall=time.time() - t0)
+        rec = dict(label=lab, args=args, status=st, wall=time.time() - t0)
         res["cases"][kind] = rec
         print(kind, lab, "status", st, f"{rec['wall']:.0f} s", flush=True)
         if st != 0:
@@ -101,8 +115,36 @@ def main():
                    psi_min=float(b["psi"].min()), psi_max=float(b["psi"].max()))
         n, lo = b["n"][0], b["box"][0]
         dx = (b["box"][1] - lo) / n
-        tri[kind] = trial_psi(os.path.join(tb, lab, "bin", "clump.adm_psi4.00000.bin"), n, lo, dx)
-    if len(sol) == 3:
+        tdir = os.path.join(tb, lab)
+        if a.box is not None:       # the trial psi on this mesh: the static input, no solve
+            tdir = os.path.join(a.out, lab + "_trial")
+            os.makedirs(tdir, exist_ok=True)
+            for dst in links:
+                if not os.path.lexists(os.path.join(tdir, dst)):
+                    os.symlink(os.readlink(os.path.join(d, dst)), os.path.join(tdir, dst))
+            with open(os.path.join(tdir, "athena.log"), "w") as log:
+                subprocess.run([EXE, "-i", STATIC, "-d", tdir, *args], cwd=tdir, stdout=log,
+                               stderr=subprocess.STDOUT, env=env, check=True)
+        tri[kind] = trial_psi(os.path.join(tdir, "bin", "clump.adm_psi4.00000.bin"), n, lo, dx)
+    if a.box is not None and "curv" in sol and "corr" not in tri:
+        # the radial correction on this mesh: one more static run (no solve)
+        lab = f"q{a.v}_n{a.n}_corr"
+        c = tbc[lab]
+        args = [x for x in c["args"] if not x.startswith("mesh/")] + mesh
+        tdir = os.path.join(a.out, lab + "_trial")
+        os.makedirs(tdir, exist_ok=True)
+        for dst in ("particles.nrp", "cluster_c0.tab", "cluster_c0.bst", "cluster_c0_corr.tab"):
+            src = os.readlink(os.path.join(a.out, labels["curv"], dst))
+            if not os.path.lexists(os.path.join(tdir, dst)):
+                os.symlink(src, os.path.join(tdir, dst))
+        with open(os.path.join(tdir, "athena.log"), "w") as log:
+            subprocess.run([EXE, "-i", STATIC, "-d", tdir, *args], cwd=tdir, stdout=log,
+                           stderr=subprocess.STDOUT, env=env, check=True)
+        b = sol["curv"]
+        n, lo = b["n"][0], b["box"][0]
+        tri["corr"] = trial_psi(os.path.join(tdir, "bin", "clump.adm_psi4.00000.bin"), n, lo,
+                                (b["box"][1] - lo) / n)
+    if "rest" in sol and "curv" in sol and "corr" in tri:
         b = sol["rest"]
         n, lo = b["n"][0], b["box"][0]
         dx = (b["box"][1] - lo) / n
@@ -112,8 +154,9 @@ def main():
         A = sol["rest"]["psi"] - tri["rest"]
         R = tri["corr"] - tri["curv"]
         D = sol["curv"]["psi"] - sol["rest"]["psi"]
-        C = sol["corr"]["psi"] - tri["corr"]
-        same = sol["curv"]["psi"] - sol["corr"]["psi"]
+        both = "corr" in sol
+        C = sol["corr"]["psi"] - tri["corr"] if both else np.zeros_like(A)
+        same = sol["curv"]["psi"] - sol["corr"]["psi"] if both else np.zeros_like(A)
         rms = lambda f: float(np.sqrt(np.mean(f[w] ** 2)))  # noqa: E731
         mx = lambda f: float(np.max(np.abs(f[w])))  # noqa: E731
         h = n // 2
@@ -127,11 +170,15 @@ def main():
             D_minus_R_rms=rms(D - R), D_minus_R_max=mx(D - R),
             ratio_rms=rms(D - R) / rms(R), ratio_max=mx(D - R) / mx(R),
             centre_ratio=ctr(D) / ctr(R),
-            two_starts_max_whole_mesh=float(np.max(np.abs(same))),
+            two_starts_max_whole_mesh=float(np.max(np.abs(same))) if both else None,
             D_minus_R_rms_whole_mesh=float(np.sqrt(np.mean((D - R) ** 2))))
-        print(json.dumps(res["compare"], indent=1))
         # profiles along the x axis: the four lines of cells next to y = z = 0
         line = lambda f: f[:, h - 1:h + 1, h - 1:h + 1].mean(axis=(1, 2))  # noqa: E731
+        res["compare"].update(D_minus_R_axis_first_cell=float(line(D - R)[0]),
+                              D_minus_R_axis_last_cell=float(line(D - R)[-1]),
+                              D_minus_R_axis_centre=float(line(D - R)[h]),
+                              box=float(-lo), cells=int(n))
+        print(json.dumps(res["compare"], indent=1))
         fs.use_style()
         fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0))
         fig.subplots_adjust(left=0.10, right=0.985, bottom=0.16, top=0.95, wspace=0.30)
@@ -141,9 +188,10 @@ def main():
         ax[0].plot(xc, 1e3 * line(A), color=cols[2], label=r"mesh solve at rest $A$")
         ax[0].set_xlabel(r"$x/M$ on the axis of motion")
         ax[0].set_ylabel(r"$10^3\,\delta\psi$")
-        ax[0].legend(loc="upper right", fontsize=7)
+        ax[0].legend(loc="center right", fontsize=7)
         ax[1].plot(xc, 1e3 * line(D - R), color=cols[1], label=r"$D - R$")
-        ax[1].plot(xc, 1e3 * line(C), color=cols[3], ls="--", label=r"left for the solve after $R$")
+        if both:
+            ax[1].plot(xc, 1e3 * line(C), color=cols[3], ls="--", label=r"left for the solve after $R$")
         ax[1].plot(xc, 1e3 * line(A), color=cols[2], label=r"$A$")
         ax[1].set_xlabel(r"$x/M$ on the axis of motion")
         ax[1].set_ylabel(r"$10^3\,\delta\psi$")
@@ -151,7 +199,7 @@ def main():
         fs.save(fig, os.path.join(a.out, "fig_idsolve_static"))
     with open(os.path.join(a.out, "idsolve_static.json"), "w") as f:
         json.dump(res, f, indent=1)
-    return 0 if len(sol) == 3 else 1
+    return 0 if "compare" in res else 1
 
 
 if __name__ == "__main__":

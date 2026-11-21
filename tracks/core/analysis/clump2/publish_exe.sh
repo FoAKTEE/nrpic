@@ -33,12 +33,14 @@ chmod a-w "$DEST/athena_gpu" "$DEST/athena_cpu"
 git archive "$tip" python/nrpic problems/ic | tar -x -C "$DEST/generator"
 cp problems/clump/cluster_moving.athinput problems/clump/cluster_binary.athinput \
    problems/tests/clump_table_static.athinput problems/tests/clump_table_binary.athinput \
-   problems/clump/clump_moving.athinput "$DEST/examples/"
+   problems/tests/clump_table_idsolve.athinput problems/clump/clump_moving.athinput \
+   "$DEST/examples/"
 {
   echo "$full"
   echo "Both executables are built from the athenak/src of this commit of branch"
-  echo "core/clump-table (which starts from core/clump-curvature and has main merged on"
-  echo "2026-11-19: release core-v0.3 plus the Gaussian clump curvature of the first pass)."
+  echo "core/clump-table, which has main merged on 2026-11-21: release core-v0.5 plus the"
+  echo "table components with momentum of work package clump2 (three files of athenak/src"
+  echo "differ from main: pgen/nrpic/nrpic_clump_table.hpp, nrpic_cf.cpp, nrpic_bowen_york.hpp)."
   echo "Branch tip at publication: $tip; athenak/src is unchanged between the two."
   echo "generator/ (python/nrpic, problems/ic) and examples/ are those of the tip."
 } > "$DEST/COMMIT"

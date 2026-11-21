@@ -1,7 +1,8 @@
 # Interface proposal: equilibrium clusters that move (table components with a bulk momentum)
 
-Status: PROPOSED by core (branch `core/clump-table`, 2026-11-19; work package clump2, the
-second pass of `moving_clumps.md`). For the orchestrator (acceptance into
+Status: PROPOSED by core (branch `core/clump-table`, 2026-11-19; tests closed and main
+with release core-v0.5 merged on 2026-11-21; work package clump2, the second pass of
+`moving_clumps.md`). For the orchestrator (acceptance into
 `coord/INTERFACES/`) and Track F (object (b): two equilibrium clumps with bulk momenta,
 request `track/F-hills:tracks/F-hills/outbox/20261115T1507Z__to-core__moving-clump-initial-data.md`).
 Evidence: `tracks/core/JOURNAL-clump2.md` (derivation, predictions written before each
@@ -32,8 +33,8 @@ The particles are boosted consistently by the generator (`problems/ic/make_ic.py
 boosted`, `python/nrpic/boosted_cluster.py`), which writes the radial table, the boost
 table, the correction table, the particles and the `<problem>` block. Several clusters
 (and punctures) are superposed with a first-order scaling of each cluster into the
-others' conformal factor. Without the new parameters the generator is bit-identical to
-release core-v0.3 (test R).
+others' conformal factor. Without the new parameters the generator is byte-identical to
+release core-v0.5 (test R5; before the merge of main, to core-v0.3: test R).
 
 Source: `athenak/src/pgen/nrpic/nrpic_clump_table.hpp` (reader, curvature, shift); hooks
 in `nrpic_cf.cpp` and `nrpic_bowen_york.hpp` (section 9). No elliptic solver is involved
@@ -96,13 +97,20 @@ generator is the speed v of the clump: the linear rule is applied with `V = W_v 
 
 **Second order.** `psi = psi_0 + V^2 [y_0(r) + y_2(r) P_2(cos theta)]` from two radial
 equations, `lap dpsi - 2 pi psi_0^4 (rho + 6P) dpsi = -pi psi_0^5 (rho + P) wbar^2 -
-psi_0^-7 Abar^2/8`, written as the `mp1` table. The added mass is `0.984 M V^2/2` for
-y_c = 0.819. The particles do not change with the correction. [VERIFIED: PA6]
+psi_0^-7 Abar^2/8`, written as the `mp1` table. The added mass is `M V^2/2` within 8e-6
+for the models y_c = 0.6 to 0.95: the correction adds the kinetic energy of the bulk
+motion to the ADM mass. The particles do not change with the correction. [VERIFIED: PA6,
+EN] Tables written by the generator before commit baa6f99e (2026-11-19) carried a
+spurious layer at the surface of the cluster (added mass `0.984 M V^2/2`); the card runs
+TC, TE and TF used such tables.
 
 **Comoving shift.** With zero shift the matter starts with the coordinate velocity
 `alpha_0^2 psi_0^-4 w`, 0.474 V at the centre of the y_c = 0.819 cluster. The option
 `comp<c>_boost_shift` sets `beta^i = -(V^i - alpha_0^2 psi_0^-4 w^i)`, which falls off as
-`3 m V/r`.
+`3 m V/r`. The code evolves the shift with the integrated Gamma driver, `d_t beta^i =
+shift_Gamma Gamma~^i - shift_eta beta^i` (`z4c_calcrhs.cpp`), which holds no initial
+shift: on these conformally flat data (`Gamma~^i = 0`) it decays as `exp(-shift_eta t)`.
+[VERIFIED: TC, TF; section 8, item 5]
 
 **Several bodies.** Near cluster c the others add an almost constant `lam_c - 1` to psi.
 The generator writes each cluster in the coordinates scaled by `lam_c^2` (positions
