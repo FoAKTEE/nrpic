@@ -39,8 +39,11 @@ echo "$((900000 + n))"
 FAKE_SQUEUE = """#!/usr/bin/env bash
 exit 0
 """
-FAKE_EXE = """#!/usr/bin/env bash
-# fake AthenaK for scripts/tests/test_submit_chain.py
+FAKE_EXE = """#!/bin/bash
+# fake AthenaK for scripts/tests/test_submit_chain.py. The interpreter is named directly:
+# with "#!/usr/bin/env bash" env would exec bash and the process would be named "bash"
+# (first run of this test, core-20261121-080555-9730e2a), whereas the kernel names a
+# script started directly after the file it executed, as it names a binary.
 echo "$(cat /proc/$$/comm) $(basename "$0")" >> "$FAKE_DIR/comm.log"
 act=$(head -n 1 "$FAKE_DIR/plan"); sed -i 1d "$FAKE_DIR/plan"
 n=$(( $(cat "$FAKE_DIR/cycle" 2>/dev/null || echo 0) + 10 )); echo "$n" > "$FAKE_DIR/cycle"

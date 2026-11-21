@@ -849,3 +849,16 @@ the segments of one chain and different between chains. Refuted by any other sta
 sequence or call count, or by a process named athena. Where I am least sure: that
 /proc/self/comm of a bash script is the name of the hard link it was started through
 (the kernel takes it from the file name given to execve) [JUDGEMENT, tested here].
+
+### Outcome of the chain test, first run: FAILED by my fake, not by the script
+
+Run core-20261121-080555-9730e2a: all six status sequences, all sbatch counts, the final
+reasons and the refusal of `athena_run1` held as predicted (A to E, G, H). The name
+check failed in every scenario: the fake executable recorded the process name `bash`,
+because it began with `#!/usr/bin/env bash`, so `env` executed `bash` and the process
+took the name of that file [VERIFIED: comm.log of each scenario]. This tests the fake,
+not the chain: the name of the file the chain executes is never seen. My judgement in
+the prediction ("the kernel takes it from the file name given to execve") is what the
+second run tests, with `#!/bin/bash` (the kernel executes the linked script itself).
+Prediction for the second run: the same statuses and counts, and the name nrc-<hash>
+in every comm.log line. For AthenaK, which is an ELF binary, there is no interpreter.
