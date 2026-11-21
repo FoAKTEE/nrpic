@@ -1,63 +1,63 @@
 # HANDOFF of A-emd-pbh
 
-Written for a reader with no memory of the last session (lead, wave 2, 2026-11-15).
+Written for a reader with no memory, by the lead of batch 2b (wave 3), 2026-11-21 ~00:40 PST.
 
-State: the first AthenaK runs of the track exist. The expanding ball (data set 2t) expands and
-turns around as the exact solution says (0.07-0.18 per cent at dx = M/4), but neither slicing
-reaches the first horizon (geodesic slicing blows up at t ~ 33 M; the conformal-time lapse sends
-a pulse from the core edge), and that horizon (areal radius 0.161 M) is too small to resolve
-anyway. In the periodic box S2 (mu = 0.03) ran to 250 t_H, S1 (mu = 0.3) went non-finite at
-21.9 t_H. G0 and G1 packages are submitted, not passed (G0: C18 open; G1: C11, C18 open).
-Owner: A-emd-pbh, branch `track/A-emd-pbh`, worktree `wt/A-emd-pbh`.
-Run next: `cd /data/haiyangw/nrpic/wt/A-emd-pbh && git merge --no-edit main && harness/bin/nrpic-ctx inbox && ls /data/haiyangw/nrpic/scratch/core/exe/`
-  (if `core_gauge/READY` exists: rerun SR-1 at dx = M/2 with the new lapse, see "SR rerun"
-  below; otherwise work on items 2-3 of STATUS `next`).
+State in three lines: G0 is signed (2026-11-19). G1 is complete for sign-off: the independent
+gate review recommends PASS WITH RESERVATIONS, its one condition (C20, these owner files) is
+closed, and every helper's analysis reruns bit for bit (`stage/REVIEW-wave3.md`). G2 is under
+way on the spherical ball: BH-1R (relaxed 1+log lapse, one static level of M/16) shows a finder
+horizon from t = 10.875; its analysis, its independent check and the three-mesh series are open.
 
-Files to read first: `STATUS.md`; `stage/REVIEW-wave2.md` (what is confirmed, per package);
-`stage/G0/OPEN.md`, `stage/G1/OPEN.md`; `runs_ball/README.md` and `runs_ball/JOURNAL.md`
-entries 3-6; `periodic_threshold/DESIGN.md` section 7; `scope/SCOPE.md` section 10.9
-(corrections); `RISKS.md`.
+Owner: A-emd-pbh, branch `track/A-emd-pbh`, worktree `/data/haiyangw/nrpic/wt/A-emd-pbh`.
+Run next: `cd /data/haiyangw/nrpic/wt/A-emd-pbh && git merge --no-edit main && git status --short && harness/bin/nrpic-run status | grep -v completed && squeue -u $USER && harness/bin/nrpic-ctx inbox`
+  (then: read the batch-2b reports of runs_ball and conv_ball in
+  `/data/haiyangw/nrpic/scratch/orch/wave3_reports/A-emd-pbh.md`, re-check their finished
+  analyses as in `analysis/review_wave3.py`, and start the packages below that are still open).
 
-Where things are:
-- packages: `runs_ball/` (SR-1/SR-2 decks, prep.py, compare.py, summary.py, figs/),
-  `periodic_threshold/` (DESIGN.md, scripts/, inputs/), `newton/` (SCAN.md sections 7-8),
-  `criteria/` (predict.py with amplitude measures, ltb2609.py), `note/` (main.pdf v0),
-  `expball/`, `gauge/`, `scope/`; each has README.md and JOURNAL.md.
-- lead's scripts: `analysis/review_wave2.py` (independent reader of ball, periodic and
-  Newtonian outputs; `--out DIR`), `analysis/lead_crosscheck.py`, `analysis/normalize_manifests.py`.
-- data: set 2t `scratch/A-emd-pbh/A-emd-pbh-20261115-130609-947c898/`; tracked-particle
-  lattices h = M/2 `...-153719-91b03d1/`, h = M/4 `...-164353-96e301d/`; SR outputs
-  `...-153843-7172b66/sr1`, `...-153845-7172b66/sr2`, `...-155056-ec1b816/sr{1,2}_n128`,
-  `...-164539-0b18e84/sr1_n256_L32`, `...-164541-0b18e84/sr2_n256_L32`; periodic S1
-  `...-160349-9d232d2/run`, S2 `...-155754-8422a4a/run`.
+Files to read first: `STATUS.md`; `stage/REVIEW-wave3.md` (what is confirmed, the finder-tolerance
+finding, the answers to the reviewer); `stage/G1/GATE_REVIEW.md` sections 5-6 (reservations
+carried to G2); `PLAN-wave3.md` (round 1: six packages and their card caps); `RISKS.md` rows
+1, 17, 18, 23, 24; the package journals named below.
 
-SR rerun (when a new lapse is published): register with
-`harness/bin/nrpic-run submit --kind scouting --gate G2 --package tracks/A-emd-pbh/runs_ball
---launcher batch --exe <core exe> --list <list> --wall 00:40:00 --purpose "..."`, list line
-`sr1 <wt>/tracks/A-emd-pbh/runs_ball/sr1.athinput <lapse keys> particles/particle_file=
-<prep>/..._lat38_track.nrp particles/traj_ntrack=1705`; analyse with `compare.py --prep
-<prep> --seg <run>/sr1 --gauge sr1 --dx 0.5 --label ... --out <dir> --figdir <dir>` inside a
-`bash -c "..."` (so that $NRPIC_RUN_DIR expands). Write the prediction into
-`runs_ball/JOURNAL.md` first.
+## Packages and what remains
 
-Decisions pending:
-- orch: decision-0013 reason (proposal), gate review of G0/G1 and a fresh verifier for C18
-  (outbox 20261115T18*Z__to-orch__*).
-- core: eleven requests of 20261115T18*Z (gauge first; AMR for the first horizon; stop on
-  non-finite; user_ref_func; periodic finder; refined-mesh diagnostics; phase-1 generator;
-  refined-level solve; Newtonian follow-up; processor threads; step limit).
-- kb: claim 25 status. B-emd-gw and D-bh-dress were answered (info).
+| Package | State at 2026-11-21 00:40 PST | What remains (restart from) |
+|---|---|---|
+| `g1close/` | done (batch 1) | nothing |
+| G1 verifier, gate review | done | nothing; the reviewer's script is now in `stage/G1/gate_review/` |
+| `runs_ball/` | running in batch 2b beside the lead (registered analysis A-20261121-074923-d396d73 of SR-1L and BH-1 already committed by it) | its journal: entries 11-15 judge predictions S, B, entry 10 (BH-1R), T (window-free turnaround estimator, re-judge R2 for SR-2) and F (fixed box); finish manifests A-20261119-164634-f1fe887 (BH-1R) and A-20261120-223310-a9ce31a (fixed box, all three members rc = 0 to t = 24) |
+| `conv_ball/` | running in batch 2b (DESIGN, predictions, decks, `converge.py`, `analyse.py` committed by it) | `conv_ball/JOURNAL.md` last entry: prep runs of the nested lattices, processor smoke tests, card job 1 (A, B, A-N8, A-N64, A-R1.25, A-L32, B-N8; about 0.2 card-hours), chain for member C (about 1.3 card-hours); executable `scratch/core/exe/core_gauge` for every member. Set `hmean_tol_0 = 1e30` and `<fastflow> diagnostics = true` (needs a core-v0.5 executable; if the series stays on core_gauge, read the finder from the line diagnostics) |
+| `verify_bh/` | cut 2026-11-20 14:34, no registered run | `verify_bh/JOURNAL.md` entry 2: submit c1_exact, c2_initial, c3_horizon bh_smr, c4_lines, c5_shells with `nrpic-run submit --package tracks/A-emd-pbh/verify_bh`, then VERIFIER.md sections 1-3, figures, README, then section 4 (comparison with runs_ball entries 11-12). 0 card-hours, about an hour |
+| `szekeres/` round 1 | cut; its file run A-20261120-223422-8cc4241 closed by the lead (exit 0, mass converged to 2e-10) | `szekeres/JOURNAL.md` entry 9: registered repeat of the eps choice (P16), one card job of 58 min for N = 64, 128, 256 to tau = 40 (P17-P23), the 8-per-cell check (needs `run_cpu_members.py` to accept NAME=DIR members); about 1.0-1.5 card-hours |
+| `periodic_threshold/` round 1 | cut; data run A-20261120-223123-f436c39 closed by the lead (prediction D3 holds); four files uncommitted: `JOURNAL.md` (one-line time fix), `inputs/peak_leak.athinput`, `scripts/ltb_reference.py`, `scripts/ltbref.py` | read the four files, commit them with their package, run the LTB reference (registered), smoke-test the leak deck on processors, write predictions, one card job (cap 2.5 card-hours). Use `hmean_tol_0 = 1e30`, finder diagnostics, `alpha_exc` relative to the mean lapse (core message 20261120T223017Z items 1, 3), and the guard (core-v0.5) |
 
-Traps:
-- `nrpic-run submit` refuses a dirty package: commit first; helpers sharing the worktree pass
-  `--package <their dir>`. In `-- <command>`, a literal '$NRPIC_RUN_DIR' is NOT expanded:
-  wrap the command in `bash -c "... \$NRPIC_RUN_DIR ..."`.
-- Runs registered by hand (`runs_ball/runreg.py`, `periodic_threshold/scripts/register_run.py`,
-  `newton/register.py`, `criteria/runlog.py`) must be closed with their own tool (`nrpic-run
-  finish` refuses them).
-- Newtonian-mode histories start at code time 0 = cosmic time t0 of `ball.json`.
+Card jobs of this owner queued or running at the end of this session: none seen in `squeue`
+(the helpers of runs_ball and conv_ball may have submitted since: check `squeue` and their
+manifests; their outputs land in `scratch/A-emd-pbh/<run id>/`).
+
+## Decisions pending
+
+- orch: sign-off of G1 (outbox 20261121T08*Z__to-orch__g1-sign-off-and-waivers); waiver of
+  A-20261119-164634-f1fe887 and A-20261120-223310-a9ce31a for G1 if runs_ball has not finished
+  them by then.
+- core: re-triage of the 2026-11-15 requests that core-v0.4/v0.5 now serve (gauge, guard, step
+  limit, AMR, periodic finder, region norms); still open: phase-1 periodic generator for
+  mu >= 0.5 (core/id-solver-2), full K_ij and gamma_ij in the dumps (Szekeres eigenvalue test).
+- kb: conformal flatness of the comoving Szekeres slice; its apparent horizon against R = 2M.
+
+## Traps
+
+- `hmean_tol_0 = 100` in every existing deck can stop the finder at its first iteration
+  (RISKS row 23); "no detection" is not "no horizon".
+- Helpers share this worktree: commit path-limited (`git commit -- <paths>`), never `git add -A`;
+  `nrpic-run submit --package <dir>` so that other packages' changes do not block a run.
+- Szekeres scripts write figures into `szekeres/figures/` as well as the run directory: a rerun
+  rewrites tracked PNGs (the lead's re-check redirects `common.FIGDIR`).
+- Card runs on core-v0.3/core_gauge executables run on with non-finite fields and exit 0; read
+  the first non-finite record. core-v0.5 stops them with exit status 3.
+- Hand-registered runs of waves 1-2 (`runs_ball/runreg.py`, `periodic_threshold/scripts/register_run.py`,
+  `newton/register.py`, `criteria/runlog.py`) are closed with their own tools.
+- AthenaK's finder summary: core-v0.5 writes it into the run directory; older executables write
+  it into the working directory (run from the run directory).
 - Periodic background time: t/t_H = ((1 + tau/2)^2/6)^(3/2) for eps_i = 1 (tau = code time).
-- Non-finite runs keep going with exit 0: check the first non-finite cstat record.
-- AthenaK's finder writes `<base>.horizon_summary_0.txt` into the working directory: run from
-  the run directory, never from the worktree root.
 - Kill processes by numeric PID only; never `pkill -f`.

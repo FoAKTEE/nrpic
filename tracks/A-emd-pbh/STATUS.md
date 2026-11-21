@@ -1,35 +1,51 @@
 # STATUS of A-emd-pbh
 
-gate:        G0 and G1 packages submitted for review 2026-11-15 (not passed): G0 all items PASS except C18 (no verifier recomputed the
-             note's ledger); G1 track criteria T1-T3 met (T3 by decision 0013), open: data-flow schematic (C11) and verifier (C18)
-headline:    First full-relativity runs of the expanding ball reproduce the exact turnaround to 0.07-0.18 per cent with core-shell
-             errors converging at order 3-4, but no slicing reaches the first horizon (geodesic slicing blows up at t ~ 33 M, the
-             conformal-time lapse sends a pulse from the core edge), and the periodic collapse S1 goes non-finite at 21.9 t_H.
-last-result: dx = M/4 runs (A-emd-pbh-20261115-164539-0b18e84, -164541-0b18e84; analysis A-20261115-182657-53da696): SR-1 core
-               turnaround -0.0125 M, core |R/R_exact - 1| at tau = 16.894 7.6e-4 (6.2e-3 at M/2); SR-2 +0.031 M, 3.7e-4.
-             Lead's review (stage/REVIEW-wave2.md): every helper analysis reproduces exactly (six reruns) and the lead's own reader
-               agrees (A-20261115-182314-bebd0cf); two conversion errors fixed (periodic: 1.2 and 36 t_H, not 1.5 and 45).
-             Verifier's C1c and C4b confirmed and corrected (SCOPE.md 10.9): a q = 2 ball holds the particle bracket (0.045, 0.05].
-             Newtonian mode: top-hat second order, t_ta +7.2e-4 at 128^3; 14 scan points within 6.3e-4 of the ellipsoid.
-             Periodic: S2 (mu 0.03) 250 t_H no horizon, H_r max > 0.1 from 36 t_H; S1 (mu 0.3) non-finite at 21.9 t_H, UNDECIDED.
-next:        1. Gauge: when core publishes a dust-proper-time or K_ref lapse (scratch/core/exe/core_gauge/), rerun SR-1 at dx = M/2
-                with runs_ball/sr1.athinput and compare.py; until then nothing in the ball reaches a horizon.
-             2. New ball data set "2h" whose first horizon is several M (heavier or wider core) for the G2 horizon-time and
-                horizon-mass test; denser trajectory records near turnaround (traj_dcycle) before quoting a G2 order.
-             3. Close the gate gaps: data-flow schematic (note/scripts/schem_dataflow.py, paperfig.py); a fresh verifier for the
-                ledger, newton/ and criteria/ (asked of orch); note Sec. IV with the wave-2 runs, then ledger.py in stage/G0/VERIFY.
-blockers:    core: a slicing that survives collapse (ball and box); stop on non-finite fields; nrpic_cosmo user_ref_func (AMR
-               crash); periodic generator at the paper's start and for mu >= 0.5; constraint solve and lattice on refined levels.
-             orch: verifier session for C18; ruling on G0/G1 with C18 open.
-needs:       core (outbox 20261115T18*Z): gauge-expanding-ball, amr-for-first-horizon, stop-on-nonfinite,
-               step-limit-coordinate-light-speed, processor-executable-threads, nrpic-cosmo-user-ref-func, periodic-horizon-finder,
-               refined-mesh-diagnostics, phase1-generator-cmc, refined-level-constraint-solve, newton-mode-followup
-             orch: decision-0013-reason (proposal), gate-review-g0-g1, harness-wave2-notes (info)
-             kb: claim-status-s1 (claim 25 to verified)
-offers:      expanding-ball data and exact LTB shells: tracks/A-emd-pbh/expball/ (data set 2t: scratch run A-emd-pbh-20261115-130609-947c898)
-             invariant comparison of AthenaK ball runs (areal radius vs proper time, turnaround, trapping): tracks/A-emd-pbh/runs_ball/
-             independent reader of trajectories/histories: tracks/A-emd-pbh/analysis/review_wave2.py
-             Zel'dovich-deformed ball generator and Newtonian-mode analysis: tracks/A-emd-pbh/newton/ (make_deformed_ball.py, analyze_newton.py)
+gate:        G0 PASSED 2026-11-19 (coord/GATES.md, tag stage/A-emd-pbh/G0-pass-20261119). G1 package complete for sign-off
+             2026-11-21: independent gate review PASS WITH RESERVATIONS (stage/G1/GATE_REVIEW.md), its condition C20 closed by
+             the lead of batch 2b; C11, C18 PASS. G2 in progress (horizon formation of the spherical ball).
+headline:    The baseline of G1 holds and reproduces bit for bit (verifier, close-out, reviewer and Szekeres reruns); in full
+             relativity the expanding ball turns around as the exact solution says, and with the relaxed 1+log lapse and one
+             static level of M/16 (BH-1R) the finder reports a first apparent horizon from t = 10.875 at coordinate radius
+             0.42-0.44 M (geometry probe A-20261120-222355-cc8e0af; the analysis against the exact solution and its independent
+             check are in progress), while no run has yet reached a horizon in the box.
+last-result: Lead re-check (runs A-20261121-075605-351d611, repeat -075933-338a6ff; stage/REVIEW-wave3.md): L1-L9 hold.
+               G1 verifier rerun identical: ledger 39 confirmed / 2 wrong (corrected) / 1 not confirmed (card-hour model);
+               criteria 19/19, Newtonian mode 17/17, ball 12/12. Gate reviewer's checks A-F identical. Wave-1 outputs
+               unchanged since their listing (55 files). Szekeres LTB limit, dipole order, error budget identical; 15/15 tests;
+               N = 32 geodesic slicing non-finite from tau = 26 (own reader).
+             G1 track criteria: T1 constraint orders 2.00/4.00 (flat ball), 3.98/3.94 (smoothed top hat 256->512);
+               T2 criteria 41 of 41 checks with 4 diagnostics (after two bands restated to the plotted window, two failures
+               turned diagnostics, prediction F5 partly refuted; wave 1 was 33 of 37); T3 met by decision 0013, and the
+               Newtonian mode puts the first-collapse time of 9 of the 14 scan points within +2.2e-4 to +6.3e-4 of the
+               isolated ellipsoid (spindle +1.5e-3; 64^3 controls +8.8e-4, +1.5e-3; 3.4e4-particle controls -2.4e-4,
+               -4.6e-4; run A-20261120-222454-d16dbc6).
+             Units: masses, radii, times of the scouting data in M_0 = 1 (total mass 1.0096 M_0).
+             SR-1 (geodesic slicing) breakdown at dx = M / M/2: first non-positive metric determinant t = 30.25 / 32.875,
+               norm(H) > 1e10 at 30.5 / 33.0, first non-finite line output 31.0 / 33.25. SR-2 turnaround error at dx = M/4:
+               +0.031 M with the three-point vertex, +0.009 to +0.025 M with wider fits: estimator-dependent, not judged.
+             Stranded runs closed: Szekeres files A-20261120-223422-8cc4241 (mass converged to 2e-10), periodic P0L data
+               A-20261120-223123-f436c39 (prediction D3 holds: residuals 6e-12, c = 0.088, alpha_min 0.805).
+next:        1. Horizon formation in the ball (G2): runs_ball finishes BH-1R (A-20261119-164634-f1fe887) and the fixed-box
+                job (A-20261120-223310-a9ce31a) against predictions B, S, F, T; verify_bh resumes from its journal entry 2
+                (registered C1-C5, VERIFIER.md); conv_ball runs its three-mesh series with hmean_tol_0 = 1e30 and finder
+                diagnostics (core-v0.5); report the horizon-mass error with its N and dx dependence.
+             2. Szekeres card series (64^3-256^3 to tau = 40, files ready in A-20261120-223422-8cc4241, about 1.2 card-hours)
+                and the periodic P0L run with the relaxed lapse against its LTB reference (periodic_threshold, files stranded).
+             3. Before G2: redraw the architecture schematic against core-v0.5; rerun the wave-1 producers through nrpic-run;
+                constraints of data set 2t in dx with core-v0.5 region norms; SR-2 turnaround with the window-free estimator.
+blockers:    none from core for the ball (lapse_leak, guard, finder status, dt_lightspeed, AMR in nrpic_cosmo now released in
+               core-v0.4/v0.5). Box: a slicing that keeps the Hamiltonian constraint below order one after t = 9 in S1
+               (core message 20261120T223017Z item 2); periodic generator for mu >= 0.5 (core/id-solver-2, not released).
+             orch: sign-off of G1 (two runs_ball manifests may still be open: waiver asked if so).
+needs:       orch: g1-sign-off-and-waivers (outbox 20261121T08*Z)
+             core: open requests of 2026-11-15 served by core-v0.4/v0.5 are to be re-triaged by core (REQUESTS_A2.md); new:
+               none this session
+             kb: Szekeres slice conformal flatness and apparent horizon versus R = 2M (szekeres/README, unchanged)
+offers:      expanding-ball data and exact LTB shells: tracks/A-emd-pbh/expball/ (data sets 2t and 3)
+             invariant comparison of AthenaK ball runs: tracks/A-emd-pbh/runs_ball/ (compare.py, turnaround.py)
+             quasi-spherical Szekeres reference solution, conformal map, NRCOSMO1 files: tracks/A-emd-pbh/szekeres/ (to B)
              EMD criteria with amplitude conversion and the LTB profile of arXiv:2609.14218: tracks/A-emd-pbh/criteria/
-             periodic peak set-up and scouting analysis: tracks/A-emd-pbh/periodic_threshold/
-budget:      1.115 card-hours used in wave 2 (nrpic-run budget: G2 0.95 of 60; 0.17 without gate); lead's checks on processors only
+             periodic peak set-up (P0L spherical peak data, tracked axes): tracks/A-emd-pbh/periodic_threshold/
+             lead's re-check tool (reruns compared value by value): tracks/A-emd-pbh/analysis/review_wave3.py
+budget:      card-hours G2: 1.92 used (0.95 wave 2; jobs 4642 0.45, 4665 0.50, 4748 0.02) of 60; this session 0; no card job of
+               A queued at 2026-11-21 00:30 PST. Processors: this session 4 cores for 2 x 3.5 min.
