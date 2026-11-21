@@ -195,3 +195,14 @@ Predictions (numbers from the KO, dispersion and RK4 symbols, P3.x):
   (third order is <= 4e-10 relative at x10, so that would refute my linear picture).
 Refutation: errors off by more than a factor 3 from P3.1/P3.2/P3.5, or orders outside
 [3, 8], or a TT-Psi4 (spectral) difference above 1e-6 at N >= 32.
+
+## Entry 6 (2026-11-20 18:58 PST): restart after the five-hour cut of 14:35
+
+Second session of this package (fresh context). State found: V1 and V2 complete and
+committed (runs B-20261120-222342-8cda367, B-20261120-222822-e26afae), V3 predictions
+(entry 5) and the V3 scripts committed (d104209e, 04feb69e); the V3 measurement was never
+run: its submit was refused ("5 cores asked, 16 busy in live local runs of B-emd-gw",
+scratch/B-emd-gw/tmp/verifier3/v3_submit.log). Nothing uncommitted in this directory. I
+did not run `git merge main` (the package brief forbids merge in this shared worktree;
+main is ahead only by harness/coord commits). I read the V3 scripts again before running
+them; no change. Next: run v3_measure.py (registered, 5 cores), then v3_summary.py.
