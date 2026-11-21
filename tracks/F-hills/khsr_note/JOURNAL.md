@@ -123,3 +123,15 @@ at 19.8 M from the origin) reaches 90 M after t of about 120 [arithmetic]. Refut
 P1-g health (P1 prediction item 1 of the lead, JOURNAL.md l. 306-308): trackers to 280 M
 without a gap above one step and finite; tree within 1016-1870 MeshBlocks seen so far; card
 time below the lead's predicted 17-20 card-hours (12.58 by sacct already recorded by the lead).
+
+### 21:40Z correction of entry P, before any analysis output was read
+
+I misread the history: H-norm2 is a volume integral; the norm p1/checks.py reports is
+sqrt(H-norm2 / Volume) (nrread.read_hst adds H2 = H-norm2 / Volume). The last row gives
+sqrt(0.296953 / 1.36586e8) = 4.66e-5, i.e. no growth: the t = 112 value is 6.0e-5 and t = 0
+4.7e-5. So the sentence "the constraints grew by four orders of magnitude" is wrong, and P1-e
+was written on that wrong premise. P1-e stays on record as written (it now predicts a rise
+that the end value already makes unlikely); replacement prediction for the part I have not
+seen, P1-e': between t = 112 and 280 the H norm never exceeds the start transient's maximum
+3.2e-4 (t = 1) and never exceeds ten times its t = 112 value; the M norm likewise stays within
+a factor ten of its t = 112 value. Refuted by any such excursion.
