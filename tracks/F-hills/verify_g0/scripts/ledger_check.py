@@ -505,6 +505,14 @@ def main():
     extras["K14_card_memory"] = {"smoke_peak_MiB_at_2700_slots": peak, "card_MiB": 81920,
                                  "MiB_per_slot_all_in": None if peak is None else peak / 2700,
                                  "slots_if_linear_all_in": None if peak is None else 81920 / (peak / 2700)}
+    mj10 = json.load(open(rf("F-hills-20261115-131348-634fb86", "mesh_count_b.json")))
+    mj4 = json.load(open(rf("F-hills-20261115-131933-907e5fe", "mesh_count_b.json")))
+    eq = {}
+    for case, (t, n) in trees.items():
+        mj = mj10 if case.startswith("D205") else mj4
+        tj, nj = np.array(mj["tracks"][case]["t"], float), np.array(mj["tracks"][case]["n"], float)
+        eq[case] = bool(len(tj) == len(t) and np.allclose(tj, t, atol=0.05) and np.array_equal(nj, n))
+    extras["K14_mesh_recount_equals_run_json"] = eq
     print(json.dumps(extras))
 
     # ---- write
