@@ -172,3 +172,13 @@ p3_slicing.png.
   (1 + eps^2): R 17.1-19.1 and Q 1.007-1.036 at 32^3, Q 1.006-1.023 at 64^3, a = 30-60; a = 20:
   Q 1.16 and 1.10, R(eps = 0.3, 32^3) 21.5: all CONFIRMED. P16': D = 0.994, 0.856 (tau = 0.1,
   a = 2.3), 0.275 (a = 12): CONFIRMED.
+
+## Entry 6 (05:40 PST): comparison with the track's review, close
+
+Read after commit 499bd581: stage/G1/REVIEW.md, stage/REVIEW-wave3.md, gauge lines of
+stage/REVIEW-wave2.md. The review left lines 120-125, eps = 0.1/0.3 of 116-117, the second
+round and round 3 unchecked (deferred to "the G2 verifier"); no number here contradicts it.
+Line 101: same finding as verifier3 (0.0088 over all dumps), still owed in ledger.tex. New
+here: the wording of line 125 (initial slice), the second digit of line 197, and independent
+evidence for G_tot (exact pure-gauge test plus lines 116-123). Section 4 of VERIFIER-C18.md.
+Not done: line 124, the residuals of line 199, line 217, wave-1 lines outside the G0 claims.

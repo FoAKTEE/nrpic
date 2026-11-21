@@ -115,7 +115,24 @@ Not checked from round 3: the per-shell TT/non-TT fractions and the box-mode mod
 
 ## 4. Comparison with the track's own review
 
-(Written after sections 1-3 and the journal entries 0-5 were committed; see below.)
+Written after sections 1-3 and journal entries 0-5 were committed (commit 499bd581). Read for it:
+`stage/G1/REVIEW.md`, `stage/REVIEW-wave3.md` (batch 2a), and the gauge lines of
+`stage/REVIEW-wave2.md`. Differences and agreements:
+
+| Item | Track's review | This report | Difference |
+|---|---|---|---|
+| Lines 120-125, eps = 0.1 and 0.3 of 116-117 | REVIEW-wave3 table: "NOT CHECKED, open for the G2 verifier" | recomputed: CONFIRMED except 124 (not recomputed); 125 with a wording note | the review deferred them to G2; CHECKLIST C18 needs them for G1; they are now checked |
+| first_source round 2 (lines 197-217) | REVIEW-wave3: "not reviewed independently by the lead"; the note's second reading "checks reference and bookkeeping, not the method"; "an independent verifier of the second-round legs is G2 work" | own reader, TT, reference and noise prediction: every recomputed number CONFIRMED; 199 and 217 not recomputed | I agree with the review's description of the note's second reading; this report is the independent reading it asked for (definitions shared, section 1) |
+| Gauge code `fslib/gauge.py` | REVIEW-wave2: not rechecked beyond the two-gauge consistency | my G_tot, written from the note's Eq. (9) without the track's code, passes an exact pure-gauge test (residual cubic in the gauge amplitude) and reproduces lines 116-123 to the printed digits | new evidence that G_tot is right at second order |
+| Slicing check P9 (line 125) | REVIEW-wave2: "not rechecked, stays the helper's" | digits CONFIRMED; the smallest rms ratio is the initial slice | new: a wording defect the review did not see |
+| Magnetic-Weyl agreement P6d (line 124) | REVIEW-wave2: not rechecked | not recomputed | none; still open |
+| Line 101 | REVIEW-wave3 accepts verifier3's "0.0088 over all dumps" and owes a v3 change | the same: 0.00821 holds over the 22 double-precision dumps only, 0.00882 over all 217 | agreement; the change is still owed in `ledger.tex` |
+| Lines 118-119 normalization s | REVIEW-wave3: "s undefined" (verifier3) | reproduced with s = s(delta = 0.01, eps = 1) = -3.08e-5, the value of line 85 | consistent; the definition the review asks for is the one used |
+| Round 3 (batch 2b: P12, P13, (1 + eps^2), P16') | no lead review yet (the review predates it) | all recomputed numbers CONFIRMED; P13 rms after crossing 1.38e-2 here against the report's 1.30e-2 | first independent check; one 6 per cent difference of range or interpolation |
+| Line 197 floor | used in the note as "rounding error of the double-precision metric" | the floor's second digit is the diagnostic's own rounding | wording only |
+
+No number of this report contradicts the track's review; the review is silent on most of what
+is checked here because it left these items open.
 
 ## 5. What was not checked
 
