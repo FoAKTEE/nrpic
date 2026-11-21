@@ -42,7 +42,7 @@ tracks/A-emd-pbh/conv_ball ...`; commands in each manifest under `tracks/A-emd-p
 
 ## Runs and results
 
-Outcomes of every prediction: JOURNAL.md (entries 4, 5 so far). Runs of this package:
+Outcomes of every prediction: JOURNAL.md (entries 4, 5, 8 so far). Runs of this package:
 
 | run id | what | state |
 |---|---|---|
@@ -55,7 +55,9 @@ Outcomes of every prediction: JOURNAL.md (entries 4, 5 so far). Runs of this pac
 | A-20261121-080727-e2f9074 | smoke figure: initial psi^4 on the nested line within 5e-13 of exact | completed |
 | A-20261121-075926-d10c2c1 | card job 1 (Slurm 4776): A, B, A-L32, A-R1.25, A-R1.35, A-N8; 0.29 card-hours | completed |
 | A-20261121-085252-f4ed504 | analysis of job 1 (convergence.md, fig_convergence.png) | completed |
-| A-20261121-083336-6a82131 | chain of C (Slurm 4781 and its successors) | see JOURNAL |
+| A-20261121-083336-6a82131 | chain of C (Slurm 4781, then 4786, ...) | running |
+| A-20261121-091934-ac62f5f | card job 3a (Slurm 4784): B-N8, A-N64 | running |
+| A-20261121-100945-3985b90 | interim analysis of C after its first segment (t <= 6.32): turnaround leg | completed |
 
 Results of job 1 (analysis A-20261121-085252-f4ed504; errors against the exact solution of
 each member's own data; DESIGN.md section 4):
@@ -77,12 +79,16 @@ maximum set by slopes of the shell error; R_max converges); the outer boundary a
 32 M gives identical results to 1e-7; at A's mesh the time errors vary with the ball radius by
 more than the mesh step (open: B-R1.25, B-R1.35). The mesh triple needs C.
 
+C after its first segment (t <= 6.32, analysis A-20261121-100945-3985b90): core shell error
+at the turnaround 8.1e-3, 3.1e-3, 1.1e-3 (A, B, C; order about 1.4); turnaround time (cycloid
+fit) -0.0148, -0.0127, -0.0035 M: converges only from B to C (order 1.9).
+
 ## Pending card runs
 
 | run | members | expected cost | state |
 |---|---|---|---|
-| A-20261121-083336-6a82131 (chain) | C (M/64, 4969736 particles) | about 2.3 card-hours, 3 segments | Slurm 4781 |
-| lists/job3a.list (not yet submitted) | B-N8, A-N64 | about 1 card-hour | after C starts |
+| A-20261121-083336-6a82131 (chain) | C (M/64, 4969736 particles) | about 2.1 card-hours, 3 segments | segment 1 done (t = 6.32), segment 2 Slurm 4786 |
+| A-20261121-091934-ac62f5f (batch) | B-N8, A-N64 | about 1 card-hour (A-N64 may be cut near t = 14-15 by the wall) | Slurm 4784 running |
 | lists/job3b.list (not yet submitted) | B-R1.25, B-R1.35, B-L32 | about 0.5 card-hours | after 3a |
 
 Submit: `harness/bin/nrpic-run submit --kind scouting --gate G2 --package
