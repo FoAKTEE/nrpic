@@ -379,3 +379,21 @@ defaults (`scratch/core/tmp/lead_v04/options_v03_v04.json`).
 - Card check: job 4758 queued at 02:59Z behind 4755 (core), 4756 (C), 4757 (E); both
   cards busy until about 03:27Z and 03:36Z (squeue at 03:12Z). Its outcome is recorded
   below when it has run; until then RELEASE-v0.4.md and READY say PENDING.
+
+### Prediction S, written before the run (2026-11-21T03:16Z; processor work while job 4758 waits)
+
+The quick test runs nine example inputs; the READY I published names others that no
+run of the merged executable has started. S: six of them on processors, merged
+executable against the executable of the branch (driver `analysis/release/more_v04.py`):
+boost (`idsolve/gaussian_boost.athinput`, 32 cells: id_vector), spin
+(`clump/clump_spin.athinput`: comp0_s3, initial data), pairh
+(`tests/pair_horizon.athinput`: pair surface, two steps), uneq
+(`puncture/by_unequal.athinput`, one step: shift_eta_profile on a pair), acc
+(`tests/accretion_static.athinput`, 400 steps: removal record, flux spheres, pericentre
+counter), kepler (`tests/newton_point_mass.athinput`, 100 steps: newton_pm_mass).
+Predicted: all twelve runs end with status 0 and every file AthenaK writes is identical
+or differs in class a or b only. Refuted by a file of class other, or by a non-zero
+status of the merged executable where the branch executable ends with 0. If both end
+non-zero for a case, my arguments are at fault and the case says nothing about the
+merge. Not covered by any run of the merged executable even then: waveform_at_new_time,
+lapse_leak on a ball, the restart schedule after a stop, the periodic Newtonian box.
