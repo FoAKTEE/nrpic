@@ -167,3 +167,18 @@ shells, 68532 modes of the hemisphere.
   the memory map of `usr_lib.read_dump`, because the dumps are now cold and a cold memory map
   read them at 3.6 MB/s (harness/RULES.md, "Large dumps"). The quantities and thresholds of
   entry 1 are unchanged.
+
+## Entry 4, 2026-11-21 15:58 UTC: post-hoc check, prediction (written after the figures of run E-20261121-154733-0d1fbda were seen)
+
+`scripts/posthoc_window.py` reads the caches of the analysis run and tests two readings of
+its figures (`fig_usr_mode_errors`, `fig_usr_even`, `fig_usr_shift_Nf`). They are not
+independent hypotheses; they check that the reading is right.
+- P-a (where the second-order part shows): at the last dump, in the bands k < 6 and
+  6 <= k < 12, the even part |E|/|ref| (median about 1e-4) exceeds the odd-part error
+  (floor about 1.1e-5) for most modes. So a single +1 run's error there comes from the
+  second-order part. Above k = 16 the first-order error dominates. Refuted if the fraction
+  of modes with |E| > |O - ref| is below 0.5 in either low band for the baseline, or above
+  0.5 for 16 < k <= 32.
+- P-b (common error): at k < 12 the odd shell-power shift against the baseline is at most
+  0.1 times the baseline's own power error, for every window, because most of the error is
+  common to the windows. Refuted if the ratio exceeds 0.3.
