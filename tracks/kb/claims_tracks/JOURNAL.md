@@ -233,3 +233,30 @@ Queue (label to_verify, judgement or background): 159 at the baseline. After all
 - Fulltext checked: 57 at the restart (39 + 18 from A1/B1) + C 5 + D 9 + F 47 + core 19 + audit
   37 + 183 = 175. Machine-located fulltext: 502 - 38 = 464.
 Refuted if the queue is not 61, fulltext checked is not 175, or any queue claim lacks an event by kb-claims_tracks.
+
+### Outcome AF (runs kb-20261121-213056-0035e82 and, with the legend redrawn, kb-20261121-213126-ee2e15a; counts identical)
+Held exactly:
+- Queue 61: judgement 41, background 1, to_verify 19.
+- Fulltext checked 175; machine-located fulltext 464.
+- Every queue claim carries an event by kb-claims_tracks (read-only query, none missing).
+I read both figures:
+- fig_queue_before_after: the bars agree with the table. In the first drawing the legend sat
+  on the F-hills bars, so I moved it to the empty upper right (counts.py).
+- fig_queue_after: the queue left by track and the fulltext checked/machine split agree with
+  counts.json.
+
+### Outcome Q (the prediction of the restart entry of 2026-11-20, judged over the whole queue)
+FAILED on its own criterion. 98 of the 117 to_verify reached fulltext/checked. I had
+predicted 55-80 and declared the prediction refuted above 95. Refuted: 0 (predicted 2-8).
+Kept to_verify with a reason: 19 (predicted 30-55). All 42 judgements and backgrounds were
+annotated (held).
+Reading [JUDGEMENT]: most "TO VERIFY" items were open only because the track had not read
+the passage, or had read it at a wrong line. Reading the full text settled them. The ones
+that stay open need a paper outside the store, a computation, or a restatement by the track.
+
+### Close (2026-11-21 ~21:35 UTC)
+- The deliverables exist: README (results, requests), JOURNAL, LEDGER.tsv (one row per
+  decision with its run id), AUDIT.md, scripts/, figures/ (baseline, after, before/after).
+- Outbox: replies to D and B, and the KB-G3 summary for orch.
+- Not done: the kb-requests of A (Szekeres) and C (conductivity sources), and the 462
+  machine-located claims that were not drawn. Both are listed in the README for round 2.
