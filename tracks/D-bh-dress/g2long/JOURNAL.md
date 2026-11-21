@@ -5,7 +5,7 @@ bottom. Inputs: `inputs/*.athinput`, built by `tools/make_inputs.py` (its self-c
 V-1B of drift_controls from V-1 exactly). Executable of every card run: release core-v0.6,
 `/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena`. No run sets `lapse_leak`.
 
-## Entry 1 (2026-11-21 12:50 PST, before any run): design, criteria and predictions
+## Entry 1 (2026-11-21 12:28 PST, before any run; committed 53afc1a): design, criteria and predictions
 
 Why. G1 (signed with reservations, coord/GATES.md) left for G2: the null test quoted against
 the matched control (V-1B, floor [-4.8e-5, +2.0e-5] on 100-200 M at M/8) and kept off the
@@ -98,7 +98,7 @@ H2 F_V16(300) <= 5e-5, below the M/8 floor on the same window.
 H3 |D_ES1L16 - D_V1L16| on 100-300 M no larger than |D_ES1L - D_V1L| on the same window.
 H4 cost from S3's block count: (blocks/456) x 2 (half the step) x the M/8 cost per M.
 
-## Entry 2 (2026-11-21 13:05 PST, before any card run): ES-F's table does not reach the new corner
+## Entry 2 (2026-11-21 12:31 PST, before any card run; committed a34cf1f): ES-F's table does not reach the new corner
 
 The smoke S2 log (D-20261121-202936-ebc09f0) prints for esf.tab "table covers the mesh corner
 of ES-1 (+-192 M -> 332.6 M) ... exterior = zero": beyond rbar = 345 M the curvature KL, KT
@@ -110,3 +110,28 @@ byte-identical to those of D-20261119-145022-2208a19, its header lines are ident
 its particle file esf.nrp is byte-identical (cmp). `inputs/esfl.athinput` now reads table and
 particles of that run (tools/make_inputs.py). S2 is repeated on the new input (S2b) with
 the same prediction as S2.
+
+## Entry 3 (2026-11-21 12:33 PST): submissions
+
+All chains through `harness/bin/nrpic-run submit --launcher chain --exe
+/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena` (MAX_SEGMENTS = floor(card-hours cap /
+59 min)); then, by hand, `PROC_NAME=D-<name>` written into each chain's `chain/config.sh`
+before its first segment started (nrpic-run passes no PROC_NAME; the chain re-reads the file
+at every segment and links `chain/athena` to that name).
+
+| Run | Run id | First job | Cap (segments) | State at 12:33 |
+|---|---|---|---|---|
+| R1 V-1L | D-20261121-203124-a34cf1f | 4830 | 3.5 (3) | pending (Priority) |
+| R2 ES-1L | D-20261121-203131-8ee2a49 | 4831 | 4.0 (4) | pending (Priority) |
+| R3 ES-FL | D-20261121-203150-15f2bad | 4833 | 4.0 (4) | held |
+| R4 V-1L16 | D-20261121-203151-37e7b2d | 4834 | 5.0 (5) | held |
+| R5 ES-1L16 | D-20261121-203151-59c54fb | 4835 | 6.0 (6) | held |
+
+Sequencer: `tools/sequencer.sh`, copy started with setsid nohup from
+`/data/haiyangw/nrpic/scratch/D-bh-dress/g2long_seq/` (pid in `pid`, log in `log`, queue R3,
+R4, R5 in `queue`); it releases the next held job when fewer than two D jobs are running or
+pending without a hold. Stop: `touch .../g2long_seq/STOP`. Smoke runs: S1
+D-20261121-202935-53afc1a, S2 D-20261121-202936-ebc09f0 (old table), S3
+D-20261121-202936-992542e, S2b D-20261121-203149-4904e96 (new table); outcomes below when
+they end. Block counts already in the logs: v1l and esfl 456 (S1, S2 held), es1l16 512 (S3
+held: 56 per level on levels 0-7 and 64 on level 8).
