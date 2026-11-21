@@ -490,3 +490,41 @@ Predictions (written before the script exists):
 - D2.4 On M/8, t_D lies between 3e3 and 1e5 M [JUDGEMENT, wide]: a 300 M run then
   randomises 0.3-10 % of the energy spread, enough for the percent-level contraction of the
   M/8 controls. t_D > 1e5 M rules noise heating out as its cause.
+
+## 2026-11-21 14:05 UTC Entry 14: outcome of D2 (noise heating); sharper predictions for (v)
+
+D2: run C-20261121-140356-f933a0e (numbers) and C-20261121-140431-b4786c4 (same numbers,
+figure on a linear axis; `fig_diffusion.png` looked at: left the incoherent variance of
+dE_K against t with the fits, right the mean of dE_K). [VERIFIED, `diffusion.json`]
+
+| | CC1 M/4 | CC1 M/8 | CC2 M/4 | CC2 M/8 |
+|---|---|---|---|---|
+| D over 25-300 M (per M); R^2 | 4.04e-8; 0.989 | 6.47e-8; 0.994 | 3.79e-8; 0.985 | 5.83e-8; 0.995 |
+| D over 25-75 M | 3.17e-8 | 5.34e-8 | 2.85e-8 | 4.63e-8 |
+| var(E_K(0)); t_D = var/D (full fit) | 2.59e-3; 6.4e4 M | 2.59e-3; 4.0e4 M | 2.34e-3; 6.2e4 M | 2.34e-3; 4.0e4 M |
+| mean of dE_K at 200 M; at 300 M | +0.0137; +0.0068 | +0.0014; -0.0014 | +0.0073; +0.0017 | 0.0000; -0.0024 |
+
+- D2.1 PASS: the incoherent variance grows linearly from the first record on (s2/t nearly
+  constant; R^2 0.985-0.995), a random walk of the particle energies.
+- D2.2 FAILED: D(M/8)/D(M/4) = 1.60 (CC1), 1.54 (CC2); 1.68 and 1.62 over 25-75 M, before the
+  pulsation of M/4 is large, so the M/4 value is not inflated by it. The H-norm2 floor is 9.2
+  times higher on M/8, the energy diffusion only 1.6 times: most of the extra constraint noise
+  of the finer cells is at the cell scale and hardly moves the particle energies.
+- D2.3 PASS: CC1/CC2 = 1.11 (M/8), 1.07 (M/4).
+- D2.4 PASS as written: t_D = 4.0e4 M on M/8 (6.2-6.4e4 M on M/4); a 300 M run randomises
+  0.75 % (M/8) and 0.47 % (M/4) of the energy spread.
+
+Reading [JUDGEMENT]: noise heating at N = 1e5 is slow and nearly the same on both meshes.
+If it drove the slow contraction of the M/8 controls, the M/4 controls would carry 0.6 of
+the same drive, hidden under their mesh-made pulsation; the Richardson estimate of entry 12
+points the same way. So the contraction is not something the finer mesh adds by itself; it
+is either relaxation by the particle noise (then it scales as 1/N) or a slow evolution of
+the models in this code. Run (v) at N = 1e4 on M/4 separates them.
+
+Sharper predictions for (v), added before it is submitted (N.1-N.4 of entries 5 and 11 stand):
+- N.5 D(1e4)/D(1e5) on M/4 (`diffusion.py`, same cells) in [5, 15] (energy diffusion of
+  particle noise scales as 1/N). Refuted outside.
+- N.6 If the contraction is noise relaxation, its rate scales with D: the mean of dE_K of run
+  (v) minus that of the N = 1e5 control on M/4 is below -0.005 at 300 M (several times the
+  -0.0014 to -0.0024 of the M/8 runs, whose D is 0.15 of the expected D(1e4)). Within +-0.002
+  means noise relaxation is not the cause of the M/8 contraction.
