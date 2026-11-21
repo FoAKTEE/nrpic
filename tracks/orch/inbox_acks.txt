@@ -112,3 +112,5 @@ tracks/F-hills/outbox/20261121T204401Z__to-orch__nrpic-run-chain-resume-option.m
 tracks/D-bh-dress/outbox/20261121T205252Z__to-orch__card-load-batch5.md	2026-11-21T21:13:37Z	ruled on in coord/DECISIONS/0025-0026, coord/GATES.md, coord/WAIVERS.md
 tracks/B-emd-gw/outbox/20261121T205723Z__to-orch__chain-dependency-and-proc-name.md	2026-11-21T21:13:37Z	ruled on in coord/DECISIONS/0025-0026, coord/GATES.md, coord/WAIVERS.md
 tracks/B-emd-gw/outbox/20261121T210947Z__to-orch__g1-package-complete.md	2026-11-21T21:13:37Z	ruled on in coord/DECISIONS/0025-0026, coord/GATES.md, coord/WAIVERS.md
+tracks/kb/outbox/20261121T213157Z__to-orch__kb-g3-tracks-queue.md	2026-11-21T23:11:16Z	ruled on in coord/DECISIONS/0027, coord/GATES.md
+tracks/kb/outbox/20261121T220221Z__to-orch__additions-wave3.md	2026-11-21T23:11:16Z	ruled on in coord/DECISIONS/0027, coord/GATES.md
