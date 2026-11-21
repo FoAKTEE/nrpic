@@ -18,6 +18,7 @@ Predictions and outcomes: `JOURNAL.md`. Processors only, no card time.
 - `scripts/p1_ic.py`: initial-data files (lines 198, 199) and card-hours (216).
 - `scripts/p2_null_pred.py`: own second-order noise prediction (lines 201-203, 206).
 - `scripts/p3_slicing.py`: line 125 (slicing of the three-wave runs).
+- `scripts/a3_summary.py`: every recomputed number against the printed value (summary figure).
 - `results/*.json`: copies of the run outputs; `figs/*.png`: the figures looked at.
 
 ## How to rerun
@@ -41,4 +42,5 @@ alone. Example:
   the summation of the diagnostic).
 - To the lead: judge C18 on `../VERIFIER-C18.md`; still not independently recomputed: line 124
   (magnetic Weyl), line 199 (initial-data residuals), line 217, and the wave-1 lines outside the
-  G0 claims (26-27, 34-36, 49-63, 70-71). Push track/B-emd-gw (this helper does not push).
+  G0 claims other than 26-27 (34-36, 49-63, 70-71). Push track/B-emd-gw (this helper does not
+  push).

@@ -45,6 +45,13 @@ standard fact; [TO VERIFY] open.
 | B-20261121-131447-6f56217 | P2: own noise prediction, rows 201-203, 206 |
 | B-20261121-132010-bf007b5 | A2: round 3 (P12, P13, (1 + eps^2), P16') |
 | B-20261121-132053-5191d8e | P3: row 125 (slicing of the three-wave runs) |
+| B-20261121-132637-1083d74 | M1e: the three-wave runs at a = 36 and 1000 with the gauge pieces (wave-1 lines 26-27) |
+| B-20261121-132955-cb150b2 | A3: every recomputed number against the printed value (summary figure) |
+
+Summary: 116 numbers recomputed, 103 within 1 per cent of the printed value and 113 within 5
+per cent; the three beyond 5 per cent are the second digit of the rerun floor (line 197) and
+two phases of lines 201-203 compared with my own, simpler prediction
+(`verifier_c18/figs/a3_summary.png`, `results/a3_summary.json`).
 
 Figures (all looked at): `verifier_c18/figs/a1_rows.png` (departures, collapse in a delta, nulls,
 two gauges), `a1_floor_gauge.png` (rerun floor, G_tot/c_+), `p2_null_pred.png`, `a2_round3.png`,
@@ -97,6 +104,16 @@ reproduced only over the double-precision restart dumps (22 per run); over all 2
 single-precision dumps the largest for eps = 1 is 0.00882 (a = 13.0) [VERIFIED]. Line 100 (box-mode
 share 0.963, 0.929, 0.843, 0.737) CONFIRMED.
 
+### Wave-1 lines outside the G0 claims: the earlier three-wave runs (Table I, lines 26-27)
+
+From the restart dumps of `runs/cosmo/dav_c256_n128_t` and `_pcs4bt` (128^3), run
+B-20261121-132637-1083d74:
+
+| Line | Ledger (t; pcs4bt) | Mine (t; pcs4bt) | Verdict |
+|---|---|---|---|
+| 26 rms h^TT at a = 36; last a; rms h^TT there; square of the rms non-TT part there | 1.21e-9, 1e3, 2.49e-9, 1.28e-9; 1.22e-9, 1e3, 4.31e-9, 1.34e-9 | 1.210e-9, 1001, 2.488e-9, 1.282e-9; 1.215e-9, 1001, 4.312e-9, 1.339e-9 | CONFIRMED [VERIFIED] ("square of the rms non-TT part" is literally (rms non-TT)^2 = (3.58e-5)^2) |
+| 27 at a = 1000: rms h^TT; rms of the gauge piece; rms after removal; kinetic over gradient | 2.49e-9, 2.06e-10, 2.5e-9, 0.017; 4.31e-9, 2.23e-10, 4.32e-9, 0.0188 | 2.488e-9, 2.058e-10, 2.496e-9, 0.0170; 4.312e-9, 2.231e-10, 4.315e-9, 0.0188 | CONFIRMED [VERIFIED]; the "gauge piece" of this line is the quadratic piece G (my G_tot gives 2.045e-10 and 2.217e-10) |
+
 ## 3. Verdicts, first_source round 3 (batch-2b report, finished after the earlier verifiers)
 
 | Claim | Report | Mine (A2, B-20261121-132010-bf007b5) | Verdict |
@@ -141,8 +158,9 @@ is checked here because it left these items open.
   recomputed; the cause of the momentum residual is the track's open item.
 - Lines 201-203, 206: checked against my own prediction (growing part only), not against a
   re-implementation of the track's prediction with its decaying parts.
-- Line 217 and the wave-1 rows outside the G0 claims (lines 26-27, 34-36, 49-63, 70-71): not
-  recomputed in this package (the raw pancake and homogeneous-run dumps were not read).
+- Line 217, and the wave-1 rows outside the G0 claims other than 26-27 (lines 34-36, 49-63,
+  70-71): not recomputed in this package (the raw pancake and homogeneous-run dumps were not
+  read).
 - Population, flrw_conv, shear and waves round-1 results (F2, XS): no number of them is in the
   note's ledger yet; not checked.
 
@@ -152,5 +170,6 @@ is checked here because it left these items open.
   the evolved range 3.8e-3 to 0.0408 (a = 12-121); line 101, say that the maximum is over the
   double-precision dumps (over all dumps it is 0.00882 for eps = 1); line 197, quote the floor
   as "~1e-12" (its second digit depends on the summation of the diagnostic).
-- To the lead: C18 can be judged on this report for every line except 124, 199 (residuals
-  recomputed), 217 and the wave-1 rows listed in section 5.
+- To the lead: C18 can be judged on this report for every line it lists; still not
+  independently recomputed: 124, 199 (residuals), 217 and the wave-1 lines 34-36, 49-63, 70-71
+  (section 5). This helper does not push: push track/B-emd-gw.

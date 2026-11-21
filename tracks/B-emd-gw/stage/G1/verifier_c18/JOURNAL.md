@@ -193,3 +193,15 @@ the spatial-gauge piece (2.06e-10, 2.23e-10) is matched by my quadratic piece G 
 10 per cent, and the rms after its removal (2.5e-9, 4.32e-9) to the printed digits; the
 kinetic over gradient energy (0.017, 0.0188) to 5 per cent. "Square of the rms non-TT part"
 (1.28e-9, 1.34e-9) is ambiguous: I report rms_nonTT and its square and judge which one fits.
+
+## Entry 8 (05:31 PST): outcome of M1e (entry 7) and the summary A3
+
+M1e (B-20261121-132637-1083d74): every prediction of entry 7 CONFIRMED. rms h^TT 1.210e-9,
+2.488e-9 (t) and 1.215e-9, 4.312e-9 (pcs4bt); last a = 1001; (rms non-TT)^2 = 1.282e-9, 1.339e-9
+(so the ledger's "square of the rms non-TT part" is literally that square); quadratic gauge
+piece 2.058e-10, 2.231e-10 (G_tot: 2.045e-10, 2.217e-10, so the line uses G); after removal
+2.496e-9, 4.315e-9; kinetic over gradient 0.0170, 0.0188.
+A3 (B-20261121-132955-cb150b2, figs/a3_summary.png looked at): 116 numbers, 103 within 1 per
+cent of the printed value, 113 within 5 per cent; beyond 5 per cent only the second digit of
+line 197 and two phases of lines 201-203 against my simpler prediction. Package closed; not
+done: line 124, the residuals of 199, 217, wave-1 lines 34-36, 49-63, 70-71.
