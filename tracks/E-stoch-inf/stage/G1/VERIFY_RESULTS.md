@@ -1,12 +1,12 @@
 # Re-verification: E-stoch-inf G1
 
-`harness/bin/nrpic-stage verify E-stoch-inf G1` on 2026-11-21T13:18:01Z, clean export of commit `67413b28db8c` in `scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-67413b2-20261121T131636Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify E-stoch-inf G1` on 2026-11-21T13:33:29Z, clean export of commit `9edf53492624` in `scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-9edf534-20261121T133222Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | FAIL | 1 uncommitted paths: commit them first (tracks/E-stoch-inf/stage/REVIEW-wave3.md) |
+| clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 67413b28db8c (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-67413b2-20261121T131636Z/tree |
+| export | PASS | clean export of 9edf53492624 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-9edf534-20261121T133222Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: spec/scope/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
@@ -14,9 +14,9 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 12 figures, each with its script |
 | min-figs | PASS | 3 schematics and 9 data figures (brief 13.4 asks at least 2 and 1 at G1) |
-| runs | FAIL | 2 of 147 runs have problems |
+| runs | FAIL | 1 of 147 runs have problems |
 | run-notes | WARN | 30 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 37 lines |
+| status | PASS | STATUS.md has 42 lines |
 | rerun | PASS | 12 of 12 scripts and commands ran cleanly in the export |
 | compare | PASS | 24 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 24 committed figure files regenerated |
@@ -25,9 +25,6 @@
 
 ```
 {
- "E-20261121-130021-0140e4e": [
-  "status is running: not finished (nrpic-run finish)"
- ],
  "E-20261121-131000-b23055b": [
   "status is submitted: not finished (nrpic-run finish)"
  ]

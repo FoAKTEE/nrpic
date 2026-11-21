@@ -1,14 +1,13 @@
 # Stage report: E-stoch-inf G1
 
-Date: 2026-11-21 · branch `track/E-stoch-inf` at `5aa8bcd4767d` · checklist
+Date: 2026-11-21 · branch `track/E-stoch-inf` at `9edf53492624` · checklist
 `tracks/E-stoch-inf/stage/G1/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
 
 **FAIL**. Tag: `stage/E-stoch-inf/G1-fail-20261121` (created and pushed by the orchestrator after review, decision 0003).
 
-- 6 checklist items not PASS or NA: C6 OPEN, C8 OPEN, C9 OPEN, C13 OPEN, C14 OPEN, C15 OPEN
-- verify reported FAIL: clean, runs
+- verify reported FAIL: runs
 
 ## Package documents (decision 0012)
 
@@ -29,44 +28,44 @@ Date: 2026-11-21 · branch `track/E-stoch-inf` at `5aa8bcd4767d` · checklist
 | C1 | Baseline results obtainable without the NRPIC coupling | linear Mukhanov-Sasaki references of both cases (spec/ref/ms_reference.py; runs E-stoch-inf-20261115-122806-ef0d039, E-20261115-135532-3f958a1, verifier E-20261115-174606-3c67607, rerun identical E-20261119-150346-a513bc8); stochastic delta-N references (langevin/, runs E-stoch-inf-20261115-130137-176cdd6, -130139-176cdd6); the SR ladder itself needs no particle coupling (scalar field and Z4c only): STATUS.md, EVIDENCE.md 1 | PASS |
 | C2 | The analysis pipeline validated on them | analysis/sfa.py synthetic tests T1-T5, 15/15 (E-20261115-171445-36152c4, rerun identical E-20261119-150346-a513bc8); estimators against the code's own history on a plane perturbation (E-20261115-171859-0b34449); ladder reader bitwise equal to core's and R^NR at t = 0 within 7.5e-10 (E-20261115-172935-ddfade0); extraction factor E6 (E-20261115-174214-74becdd); lead's independent extraction on L32p agreeing to three digits (E-20261119-150238-b81e33f) | PASS |
 | C3 | Interface proposals submitted | noise/NOISE_SPEC.md, noise/RNG_REQUIREMENTS.md, codebase/DESIGN_REVIEW.md 9 and 11, spec/SPEC.md 10; outbox 20261115T1410Z to core (initial slice, diagnostics, card build, noise results), answered by core (message scalar2-ready; interface proposal tracks/core/interfaces/scalar_field_2.md on core/scalar-2); outbox of 2026-11-19 (release request, A4 proposal) | PASS |
-| C4 | Baseline data and figures | ladder/results/final, final2 (time-matched pairing), floor, a6, a6_64, l5, seed2, a12 and ladder/fig/ (runs EVIDENCE.md 1 and 7); analysis/fig; g1verify/fig (verifier); stage/G1/fig/fig_lead_check.png; stage/review3/fig (lead of batch 2a) | PASS |
-| C5 | Interface documents | noise/NOISE_SPEC.md and RNG_REQUIREMENTS.md (track); coord/INTERFACES/ scalar field of core-v0.3; core's tracks/core/interfaces/scalar_field_2.md (branch core/scalar-2, written to SPEC 5.3 and 10; not yet released) | PASS |
-| C6 | The power spectrum of the slow-roll case agrees with the analytic result, super-horizon modes freeze by the criterion of arXiv:2606.14853, the constraints converge | spectrum MET and verified (A2: 1.21e-4 at 256^3 for /n/ <= 32, verifier the same; second seed 2.12e-4, 1.208e-4 over typical amplitudes); freezing MET and verified (A3: ratio within 2.4e-6 to 4.6e-6 of full MS, drift 1.4e-4 per e-fold, FLRW-lattice equation -0.052 per e-fold excluded); constraints converge in the sheet's sense, verified (odd part order 5.5-5.96, halving 2.000; even part halving 3.986-4.000, N-independent); but the owner's accepted A4 fails in its strict form in P1's set-up (odd/even up to 745-869 at N = 32-128, 25 at the last time-matched dump of N = 256) and A4' awaits orch's ruling (outbox 20261119T151727Z, repeated 2026-11-21 with the verifier's recommendation). STATUS.md, VERIFIER.md | OPEN |
+| C4 | Baseline data and figures | ladder/results/final, final2 (time-matched pairing), floor, a6, a6_64, l5, seed2, a12 and ladder/fig/ (runs EVIDENCE.md 1 and 7); analysis/fig; g1verify/fig (verifier); stage/G1/fig/fig_lead_check.png; stage/review3/fig (leads of batches 2a and 3); note/figures/fig_sr_*.png (G1 data figures) | PASS |
+| C5 | Interface documents | noise/NOISE_SPEC.md and RNG_REQUIREMENTS.md (track); coord/INTERFACES/ scalar field of core-v0.3; coord/INTERFACES/scalar_field_2.md and scalar_field_3.md (released in core-v0.4 and core-v0.5) | PASS |
+| C6 | The power spectrum of the slow-roll case agrees with the analytic result, super-horizon modes freeze by the criterion of arXiv:2606.14853, the constraints converge | met as ruled by decision 0021 item 1 (A4'): spectrum A2 1.21e-4 at 256^3 (second seed 2.12e-4), verified; freezing A3 within 2.4e-6 to 4.6e-6 of the full MS, FLRW lattice excluded by 1e4-1e5, verified; constraints converge (odd part order 5.5-5.96, halving 1.9989-2.0000; even part halving 3.986-4.000 and N-independent), verified; A4' (d) on the maxima over the entry 1709-1874; the strict A4 FAILS in P1's set-up and stays on record (odd/even 745, 655, 869, 25 at N = 32-256). STATUS.md, VERIFIER.md V2-V5, ../REVIEW-wave3.md | PASS |
 | C7 | Track E. Decision of the feasibility gate, pending the group: continue to G1 and G2 (about two card-hours); the scope of G3 is decided at G2. The lead's choices of `spec/scope/SCOPE.md` section 4 are accepted. (0013) | applied: continue to G1 and G2; SCOPE 4 choices used (Courant 0.25, now justified by A6; level 0; thresholds A1-A7 as written, A4 failure kept on record); downgrade (SCOPE 4 item 5) not triggered: A3 passes, 0.503 card-hours per 256^3 SR realisation against 5 | PASS |
-| C8 | Schematic: Updated architecture | package `note` of wave 3 (cut by the usage limit on 2026-11-20 14:35 PST, not resumed): note/scripts/schem_architecture.py modified and not committed; no committed updated schematic yet | OPEN |
-| C9 | Schematic: Data-flow diagram | package `note` of wave 3 (cut by the usage limit on 2026-11-20 14:35 PST, not resumed): note/scripts/schem_dataflow.py written, not committed, figure not produced in a registered run | OPEN |
+| C8 | Schematic: Updated architecture | note/figures/schem_architecture.png (script note/scripts/schem_architecture.py; four states core-v0.3, core-v0.4/v0.5, track analysis, new or under way), drawn by registered run E-20261121-080840-6112292, reproduced by the lead's rerun E-20261121-130021-0140e4e; looked at by the note helper and by the lead of batch 3 | PASS |
+| C9 | Schematic: Data-flow diagram | note/figures/schem_dataflow.png (script note/scripts/schem_dataflow.py: mode tables -> AthenaK run -> analysis -> ledger and note), run E-20261121-080840-6112292, reproduced by E-20261121-130021-0140e4e; looked at by the lead of batch 3 | PASS |
 | C10 | Data figure: Baseline results | ladder/fig/final/fig_spectrum.png, fig_a2_modes.png, fig_a3_freezing.png; wave 3: ladder/fig/final2/fig_a4_paper.png, fig/a6_64/fig_a6.png, fig/l5/fig_l5.png, fig/seed2/fig_seed2.png; all looked at by the lead (2026-11-19, 2026-11-21) | PASS |
 | C11 | Data figure: Validation figures for the analysis pipeline | analysis/fig/fig_t2_extraction.png, fig_plane_constraint_ratios.png; stage/G1/fig/fig_lead_check.png (script stage/G1/scripts/lead_check.py, run E-20261119-150238-b81e33f); all looked at | PASS |
 | C12 | Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed) | STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md, CHECKLIST.md, VERIFIER.md, REVIEW.md (pointer to ../REVIEW-wave2.md and ../REVIEW-wave3.md), STATUS.md (criteria table); scoping text spec/scope/SCOPE.md | PASS |
-| C13 | Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at | style: ladder, verifier and lead figures use copies of harness/style/figstyle.py, every PNG looked at; the verifier has one script per figure (g1verify/scripts/fig_v1.py ... fig_v7.py); package `note` of wave 3 (cut by the usage limit on 2026-11-20 14:35 PST, not resumed): note/scripts/fig_sr_{modes,freezing,constraints,order}.py written, not committed, not run as a registered run | OPEN |
-| C14 | Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline | package `note` of wave 3 (cut by the usage limit on 2026-11-20 14:35 PST, not resumed): G0 schematics exist; updated architecture, data-flow and timeline scripts modified/new and uncommitted | OPEN |
-| C15 | Working note written with /paper-writing; its manuscript checker passed with --compile | package `note` of wave 3 (cut by the usage limit on 2026-11-20 14:35 PST, not resumed): note/main.tex is the G0 note v0; G1 sections not written; no G1 ledger | OPEN |
-| C16 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | VERIFIER.md (copy of g1verify/VERIFIER.md): fresh-context helper g1verify, own code from the raw dumps, verdicts V1-V7 committed (db88f631) before it read the track's numbers (c43e050c); runs EVIDENCE.md 6; the lead reran its analyses from the registered outputs (../REVIEW-wave3.md). Its 'every number of the Supplemental Material recomputed' part: no G1 ledger exists yet (note package unfinished), so the ledger recomputation is open with C15 | PASS |
-| C17 | Null results and failed runs are on record (manifests and JOURNAL) | failed and stopped runs kept with manifests: E-20261115-172521-e098160, -170651-885fc6e, -171628-1737ebe, -171633-f574079, E-20261119-145853-ef835c2; wave 3: E-20261121-030415-22d518b, -031936-16d6ae5, -034609-f573ddc, -063758-d643396 (lead); refuted predictions on record: ladder P5, entry 6, entries 16, 19-22 (eight in wave 3), g1verify entries 4-6, owner A4 strict (ladder/JOURNAL.md, g1verify/JOURNAL.md, JOURNAL.md); REVIEW-wave3.md section 1 lists them | PASS |
-| C18 | STATUS.md, JOURNAL.md and HANDOFF.md are current | STATUS.md, HANDOFF.md rewritten, JOURNAL.md appended and RISKS.md updated by the lead of batch 2a on 2026-11-21 | PASS |
+| C13 | Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at | one script per G1 data figure from registered outputs: note/scripts/fig_sr_modes.py, fig_sr_freezing.py, fig_sr_constraints.py, fig_sr_order.py (+ fig_background.py redrawn), figstyle copy; registered run E-20261121-080840-6112292 (every figure repeats with pixel rms 0), reproduced by the lead (E-20261121-130021-0140e4e, ../REVIEW-wave3.md B2); every PNG looked at (note helper; lead of batch 3) | PASS |
+| C14 | Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline | schematics with paperfig: updated architecture (C8), data flow (C9) and the redrawn gate timeline note/figures/schem_timeline.png (G0 passed, G1 in progress, G2 USR); run E-20261121-080840-6112292; looked at | PASS |
+| C15 | Working note written with /paper-writing; its manuscript checker passed with --compile | note/main.tex working note v1 (16 pages; Secs. VI-VIII: slow-roll reproduction, constraints with strict A4 failed on record and A4' as ruled, validation/reproducibility/cost), G1 ledger note/tables/ledger_g1.{md,tex}; check_manuscript.py --main main.tex --compile: 0 undefined references or citations, 0 overfull boxes, all pages read (note/JOURNAL.md 08:12 UTC); three \pending{} markers for a4res/usr/window (G2 material) | PASS |
+| C16 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | VERIFIER.md (fresh-context helper g1verify, own code from the raw dumps, V1-V7 committed db88f631 before it read the track's numbers). Ledger part: the G1 ledger (45 rows) compared row by row with the verifier's independent values and the leads' own-code runs (../REVIEW-wave3.md B4): of 40 track rows 27 agree with an independent value, 13 are the track's alone (listed there; reproduced by reruns), core's 3 rows are labelled [TO VERIFY]; no disagreement beyond a stated difference of definition. Reservation: the ledger was checked by the lead of batch 3 (who did not produce it), not by the fresh verifier | PASS |
+| C17 | Null results and failed runs are on record (manifests and JOURNAL) | failed and stopped runs kept with manifests: E-20261115-172521-e098160, -170651-885fc6e, -171628-1737ebe, -171633-f574079, E-20261119-145853-ef835c2; wave 3: E-20261121-030415-22d518b, -031936-16d6ae5, -034609-f573ddc, -063758-d643396 (lead); superseded note runs E-20261121-075717-1849987, -080526-7fbe919; refuted predictions of batch 3: note N8, lead LU2 (dump 4, transcription) and LU3 (late value) (../REVIEW-wave3.md B1, B2); refuted predictions on record: ladder P5, entry 6, entries 16, 19-22 (eight in wave 3), g1verify entries 4-6, owner A4 strict (ladder/JOURNAL.md, g1verify/JOURNAL.md, JOURNAL.md); REVIEW-wave3.md section 1 lists them | PASS |
+| C18 | STATUS.md, JOURNAL.md and HANDOFF.md are current | STATUS.md, HANDOFF.md rewritten, JOURNAL.md appended, RISKS.md updated by the lead of batch 3 on 2026-11-21 | PASS |
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-21T06:57:09Z, clean export of `5aa8bcd4767d`: **FAIL**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-21T13:33:29Z, clean export of `9edf53492624`: **FAIL**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | FAIL | 17 uncommitted paths: commit them first (tracks/E-stoch-inf/note/scripts/common.py, tracks/E-stoch-inf/note/scripts/fig_background.py, tracks/E-stoch-inf/note/scripts/ledger.py, tracks/E-stoch-inf/note/scripts/run_all.py, tracks/E-stoch-inf/note/scripts/schem_architecture.py) |
+| clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 5aa8bcd4767d (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-5aa8bcd-20261121T065649Z/tree |
+| export | PASS | clean export of 9edf53492624 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-9edf534-20261121T133222Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: spec/scope/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
 | note-pdf | PASS | note/main.pdf committed after the last .tex change |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
-| fig-script | PASS | 7 figures, each with its script |
-| min-figs | PASS | 2 schematics and 5 data figures (brief 13.4 asks at least 2 and 1 at G1) |
-| runs | FAIL | 2 of 131 runs have problems |
+| fig-script | PASS | 12 figures, each with its script |
+| min-figs | PASS | 3 schematics and 9 data figures (brief 13.4 asks at least 2 and 1 at G1) |
+| runs | FAIL | 1 of 147 runs have problems |
 | run-notes | WARN | 30 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 37 lines |
-| rerun | PASS | 7 of 7 scripts and commands ran cleanly in the export |
-| compare | PASS | 14 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
-| regenerate | PASS | all 14 committed figure files regenerated |
+| status | PASS | STATUS.md has 42 lines |
+| rerun | PASS | 12 of 12 scripts and commands ran cleanly in the export |
+| compare | PASS | 24 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| regenerate | PASS | all 24 committed figure files regenerated |
 
 ## Figures
 
@@ -77,7 +76,12 @@ Date: 2026-11-21 · branch `track/E-stoch-inf` at `5aa8bcd4767d` · checklist
 | note/figures/fig_deltan.* | note/scripts/fig_deltan.py | data | to be confirmed by the session |
 | note/figures/fig_freezing.* | note/scripts/fig_freezing.py | data | to be confirmed by the session |
 | note/figures/fig_noise.* | note/scripts/fig_noise.py | data | to be confirmed by the session |
+| note/figures/fig_sr_constraints.* | note/scripts/fig_sr_constraints.py | data | to be confirmed by the session |
+| note/figures/fig_sr_freezing.* | note/scripts/fig_sr_freezing.py | data | to be confirmed by the session |
+| note/figures/fig_sr_modes.* | note/scripts/fig_sr_modes.py | data | to be confirmed by the session |
+| note/figures/fig_sr_order.* | note/scripts/fig_sr_order.py | data | to be confirmed by the session |
 | note/figures/schem_architecture.* | note/scripts/schem_architecture.py | schematic | to be confirmed by the session |
+| note/figures/schem_dataflow.* | note/scripts/schem_dataflow.py | schematic | to be confirmed by the session |
 | note/figures/schem_timeline.* | note/scripts/schem_timeline.py | schematic | to be confirmed by the session |
 
 ## Verifier report
@@ -122,36 +126,38 @@ Date: 2026-11-21 · branch `track/E-stoch-inf` at `5aa8bcd4767d` · checklist
 Rewritten by the lead on 2026-11-15 at the G0 package; updated by the lead on 2026-11-19
 (wave 2b) after the slow-roll ladder, the G0 verifier (`stage/G0/VERIFIER.md`) and the review
 `stage/REVIEW-wave2.md`; updated by the lead of batch 2a on 2026-11-21 after the G1 verifier
-(`stage/G1/VERIFIER.md`), the wave-3 ladder items and `stage/REVIEW-wave3.md`. Sources: `spec/scope/SCOPE.md` (sections 3, 4, 4b, 8),
+(`stage/G1/VERIFIER.md`), the wave-3 ladder items and `stage/REVIEW-wave3.md`; updated by the lead of batch 3 on 2026-11-21 after the note and usr packages (`stage/REVIEW-wave3.md` Part B). Sources: `spec/scope/SCOPE.md` (sections 3, 4, 4b, 8),
 `codebase/DESIGN_REVIEW.md`, `langevin/README.md`, `noise/NOISE_SPEC.md`, `ladder/README.md`.
 Labels as in the brief.
 
 | Id | Risk | Likelihood | Effect | Watch | Response |
 |---|---|---|---|---|---|
-| R1 | The SR results of G1 were made with core's tested-branch executable `core/scalar-2` (a58e95b), not a release | low (scalar-2 is in release core-v0.4 since 2026-11-21) | medium | release processor build = scalar-2 word for word on L32p/L32m, all dumps and records (lead, run E-20261121-064707-77ec326) | rerun P256 on the release card build (0.5 card-hours) against E-20261115-172618-f948386; until then the card results are tied to the branch executable |
+| R1 | The SR results of G1 were made with core's tested-branch executable `core/scalar-2` (a58e95b), the USR card runs with `core_scalar-3` 5cc2821, not releases | low (both are in release core-v0.5) | medium | release processor build = scalar-2 word for word on L32p/L32m (run E-20261121-064707-77ec326); core's card check of core-v0.5 on the s3g and usr decks: histories to 6.4e-13, constraint maxima to 4e-3 of themselves (core's answer 20261121T081214Z) | rerun P256 on the release card build `.work/build_gpu_v05` (0.5 card-hours) against E-20261115-172618-f948386 (requested from orch, outbox 20261121T131021Z); new USR runs on the release |
 | R2 | A defect in core's stochastic hook that the tests cannot see | low | high | A6 at 32^3 and 64^3 (orders 3.82-4.10); L5 single kick (wave 3): H second order to 1e-6 in the halving factor, the kick's projector term equal to the one-step reference within 1.2 percent, remaining first-order M the fourth-order time error (A/B 15.5-19.5), no first-order stage-timing defect (runs E-20261121-034645-02a463e, -040015-436a615; lead LW5-LW6) | keep the sign-flip control in every set-up; "L5 never run" is closed |
 | R3 | The papers leave the Courant factor, run lengths, Bunch-Davies form, noise stepping and tolerances open (SPEC 8) and print wrong formulas (SPEC 9) | certain | medium | SPEC 8, 9; kb claims 603-609 | per-mode acceptance needs no published tolerance; E6 (extraction factor 1/4) now tested by run E-20261115-174214-74becdd; the P2 initial-condition equation is "eq. (17)" in our older texts, but the source numbers it 23rd (SPEC 5.3 note) [TO VERIFY against the PDF] |
-| R4 | The freezing criterion fails for a reason other than a defect | low | high (downgrade trigger) | A3 drift after N_k + 4 | SR passed on every rung (drift 1.4e-4 per e-fold against 2.5e-3); USR not yet run |
+| R4 | The freezing criterion fails for a reason other than a defect | low | high (downgrade trigger) | A3 / U-A3 drift after N_k + 4 | SR passed on every rung (drift 1.4e-4 per e-fold against 2.5e-3); USR U-A3 passes at 64^3-256^3 (0.9923-1.0016 single run, 0.99992 odd part; runs E-20261121-084815-63462b8, -101756-6bffd0c) |
 | R5 | Unit conversion G = 1 against Mpl = 100 | low (was medium) | high if wrong | A1 | A1 passes at 1e-11 on every rung (ladder; lead's check run E-20261119-150238-b81e33f) |
 | R6 | Geodesic slicing breaks down where perturbations collapse; USR outliers R ~ 10 (P1:534) | low for the test cases, high for science | medium | X contrast, outliers of R^NR | stop at the published N_f; a gauge study belongs to G2 |
-| R7 | Momentum constraint ~ 1e-2 late in USR (P1:541); first-order truncation part at four cells per wavelength | medium | medium | M/[M] record, odd part of M | A4 fails in its strict form in P1's set-up already in SR (first-order part from ln(N/8) e-folds); proposal A4' (SCOPE 4b) to orch; USR run by the wave-3a usr package |
-| R8 | Window (s, sigma) and gauge dependence (brief 462); sigma = 1 separate-universe Langevin overestimates the variance by 42-45 percent | medium | medium | sensitivity scan L9: package `window` ran its linear reference (E-20261120-222802-bffb812: prediction at N_f window-independent to 1.6e-14) and its card job (4740, E-20261120-222424-0eb754b), not yet analysed | compare NR with the sigma <= 0.01 reference only (A8) |
-| R9 | Tail statistics need many realisations: 1e3 realisations at 256^3 cost about 500 (SR) to 630 (USR) card-hours at the measured 0.50 card-hours per SR realisation | high for G3 | high for S11 item 2 | measured cost (run E-20261115-172618-f948386) | smaller boxes, importance sampling, or the downgrade path; scope of G3 decided at G2 (decision 0013) |
+| R7 | Momentum constraint ~ 1e-2 late in USR (P1:541); first-order truncation part at four cells per wavelength | happened as expected | medium | M/[M] record, odd part of M | reproduced: <abs M/[M]> 2.5e-2 at cN 6.6, 2.1e-3 at N_f (U256); late it is an s-independent floor over a magnitude proportional to the amplitude, not an error of the solution (usr entries 12, 15); strict A4 failed on record in SR, A4' adopted (decision 0021); for USR U-A4' proposed to orch (outbox 20261121T131021Z) |
+| R8 | Window (s, sigma) and gauge dependence (brief 462); sigma = 1 separate-universe Langevin overestimates the variance by 42-45 percent | medium | medium | sensitivity scan L9: package `window` ran its linear reference (E-20261120-222802-bffb812: prediction at N_f window-independent to 1.6e-14) and its card job (4740, E-20261120-222424-0eb754b, manifest closed by the lead in batch 3), not yet analysed | compare NR with the sigma <= 0.01 reference only (A8); analysis requested (outbox 20261121T131021Z) |
+| R9 | Tail statistics need many realisations: 1e3 realisations at 256^3 cost about 500 (SR) to 620 (USR) card-hours | high for G3 | high for S11 item 2 | measured: 0.503 card-hours per SR realisation (E-20261115-172618-f948386), 0.617 per USR realisation with 21 dumps of 2.95 GB (U256, E-20261121-075255-8cf90e7; sacct 37:00; 1.30 s per step, 19.6 GB), about 0.58 without dumps | smaller boxes, importance sampling, or the downgrade path; scope of G3 decided at G2 (decision 0013) |
 | R10 | Competition with the group of the formalism (P1:587 announces the same science) | high | medium | arXiv listings of the authors | target what they leave open: tail statistics against delta-N, hand-over to EMD |
 | R11 | The stochastic formalism itself is debated (brief 264) | medium | affects science, not the reproduction | literature | keep level 0 and level 1 as variants and state the dependence |
 | R12 | Processor build slow (1.2e4-1.35e4 zone-cycles/s serial); cold dumps at 128^3-256^3 read through a memory map at a few MB/s when the disk is busy (lead's rerun E-20261119-145853-ef835c2 stopped) | certain | low | | N = 32 on processors; analyse large dumps right after the card job (page cache) or read them sequentially |
-| R13 | Budget: 10 card-hours to the next gate; G1 used 1.96 (`nrpic-run budget`); the cut packages' two card jobs (4740 window, 4742 usr) ran 0.38 + 0.16 card-hours with manifests still "submitted" (0.90 reserved for G2) | low | medium | `harness/bin/nrpic-run budget` | close those two manifests with `nrpic-run finish` in their packages; Courant 0.25 justified by A6 |
+| R13 | Budget: 10 card-hours per gate; G1 used 1.96, G2 used 1.39 (usr) plus 0.38 (window job 4740) (`nrpic-run budget`, 2026-11-21) | low | medium | `harness/bin/nrpic-run budget` | G2 has about 7.7 left: window analysis needs none; P256 on the release 0.5; usr follow-ups 1.2-1.8 |
 | R14 | Harness: hand-written run manifests broke `nrpic-run budget` | happened, fixed | low | `nrpic-run budget` | statuses normalised; decision 0016 item 3 |
 | R15 | USR ends at the border of diffusion domination (verifier weak point 3): classical drift per e-fold equals H/2pi at N* + 8.3 (ratio 0.98), Delta_R reaches 1 at 64 dk, one H/2pi kick moves the end of USR by about one e-fold; a delta-N end surface at N* + 10 sits just past the stationary inflection point | high for G2/G3 | high for the validity of linear-noise level-0 runs and of the delta-N reference | verifier V2b (run E-20261115-180056-d62ee5a: f_NL 0.011, response near-linear in the 256 box) | state the validity window at G2; do not enlarge the box or move the noise cut later without a level-1 comparison; place the delta-N end surface away from the inflection point |
 | R16 | The double-precision rounding floor of the constraints grows as N^2.5 (6e-13 of <[H]> at 256^3 half an e-fold after N*) and limits what 256^3 shows during the first e-folds | certain | low (still 1e2 below P1's 1e-10) | odd part not scaling with s | the verifier measured three properties of rounding (does not scale with s; equal in odd and even parts; non-scaling parts in the ratio sqrt(17/5) of four independent noises) [VERIFIED, g1verify V5]; size and N^2.5 law [JUDGEMENT]; no run in another precision |
-| R17 | Acceptance criteria reworded after the data (A4', A5', SCOPE 4b) | happened | medium (credibility of the gate) | orchestrator's ruling | the strict A4 failure stays on record; the fresh-context verifier recommends A4' with (d) on maxima and the floor named as the non-scaling part (`stage/G1/VERIFIER.md`); request repeated to orch 2026-11-21 |
+| R17 | Acceptance criteria reworded after the data (A4', A5', SCOPE 4b; for USR U-A2', U-A4') | happened | medium (credibility of the gate) | orchestrator's rulings | A4' adopted by decision 0021 item 1 with the strict A4 failure on record; U-A2' (odd part at 256^3) and U-A4' (floor-corrected halving) proposed to orch (outbox 20261121T131021Z), strict forms failed on record |
 | R18 | The absolute constraint levels are 40-100 times below P1's statements (proper ~1e-10, control ~1e-5, P1:538-541) while the ratio control/proper matches (verifier weak point 7) | open | medium (a definition mismatch would change the A4' magnitude clause (c)) | `stage/G1/VERIFIER.md` 7 | [TO VERIFY]: compare the definition of [H] and of the box statistic in P1 with core's record (`coord/INTERFACES/scalar_field_2.md`); no run needed |
-| R19 | Packages cut by the usage limit leave uncommitted work and finished card jobs without analysis (wave 3: note, a4res, usr, window; usr's pre-registration addendum, entry 10 of `usr/JOURNAL.md`, written 22:35Z before job 4742 started at 22:36:46Z, is still uncommitted) | happened | medium (provenance of predictions; card time spent without result) | `git status`, `nrpic-run status` | the next session of each package commits its own files first, then analyses the finished jobs; leads leave them alone (batch 2a) |
+| R19 | Packages cut by the usage limit leave uncommitted work and finished card jobs without analysis (wave 3: note and usr finished in batch 2b; a4res still has three untracked scripts; window's job ran, not analysed; usr entry 10 was first committed after the job it amends had run) | happened | medium (provenance of predictions; card time spent without result) | `git status`, `nrpic-run status` | the next session of each package commits its own files first; leads leave them alone; entry 10 rescued no verdict (`stage/REVIEW-wave3.md` B1) |
 | R20 | Frontier items from the knowledge base (orch message 20261120T221329Z): hidden higher-derivative spikes of inflection potentials (2606.28005), UV sensitivity of mean-field backreaction to Bunch-Davies UV modes (2610.26669), non-Markovian noise (2602.11652, 2605.00476) | medium | medium for the USR acceptance discussion (G2) | `coord/FRONTIER.md` | check the test potential's derivatives and state the UV dependence in the G2 acceptance text; Markovian noise stays the reproduction's choice (P1) |
+| R21 | The lockstep mode-function record integrates from N* with the run's step and carries RK4's phase error k^5 dt^4/600 into the injected top shells (2.55e-3 at k = 64 dk, 256^3) | certain in P1's set-up | low for U-A2 (k <= 32 dk: below 8e-5), medium for the top-shell spectrum (U-A5 6.7e-3) | usr entry 14.2 (L1: 0.973-1.023 of the law on 2934 shells) | request to core to sub-step the record (outbox 20261121T131020Z); until then quote top-shell numbers with this error |
+| R22 | Late in the 256^3 USR pair the momentum parts are equal and flat at 1.6e-13-1.9e-13 absolute, seven times the 128^3 floor; cause not named | open | low (after USR, below the record's 2e-3) | usr entry 15 | a halving pair at 256^3 (s = +-1/2, about 1.2 card-hours) would tell a floor from a nonlinear part; not needed for G2's linear criteria |
 
 ## Decision requested from the group
 
-G1 of E-stoch-inf is not met, and the package is not complete for the independent gate review of decision 0016 item 4. Met and confirmed by the fresh-context verifier (VERIFIER.md, V1-V7) and by the lead's reruns: the slow-roll power spectrum agrees with the analytic result (A2 1.21e-4 for |n| <= 32 at 256^3 in P1's set-up; a second realisation 2.12e-4), super-horizon modes freeze by the criterion of arXiv:2606.14853 (A3 ratio within 5e-6 of the full MS, drift 1.4e-4 per e-fold), the constraints converge in the track sheet's sense (odd part order 5.5-5.96, halving 2.000; second-order part halving 3.99-4.00 and N-independent); A1, A6 (also at 64^3), A7 (also on the G1 executable), and the single-kick test L5 pass. Not met: the owner's A4 as accepted in decision 0013 fails in its strict form in P1's set-up for two measured reasons; the ruling on A4' is asked of the orchestrator (outbox 20261121T064752Z, with the verifier's recommendation). Missing products: the updated architecture and data-flow schematics, one script per data figure and the G1 sections of the note (package note, cut on 2026-11-20). The SR set-up is in release core-v0.4 since 2026-11-21 and the release processor build reproduces the scouting runs word for word at 32^3 (run E-20261121-064707-77ec326). Asked: the A4' ruling; after the note package, an independent gate review.
+Complete for the independent gate review (lead of batch 3): all 18 items PASS in the owner's judgement; C6 met as ruled by decision 0021 (strict A4 failed on record); verify fails only on runs (the a4res card job 4798 of this batch, pending; not G1 material). The lead does not pass the gate.
 
 ## Notes of the lead on this report (2026-11-19)
 
@@ -190,3 +196,23 @@ G1 of E-stoch-inf is not met, and the package is not complete for the independen
   section 2. `STATUS.md` carries the corrected numbers (P256 odd/even 25 time-matched, not 385;
   A1 maxima 2.0e-12, 8.6e-12, 3.6e-12; control separation 89-179 at its minimum).
 - The figures relied on in wave 3 are listed in `EVIDENCE.md` section 9; all looked at.
+
+## Notes of the lead of batch 3 on this report (2026-11-21)
+
+- The harness verdict FAIL comes from one check only, `runs`: the card job of the `a4res`
+  helper of this batch (Slurm 4798, run E-20261121-131000-b23055b) was pending in the shared
+  queue when `verify` ran; it is G2 material and its package closes it. Every other check
+  passes on 9edf5349: clean, sync, size, package, note and its PDF, style, one script per
+  figure (12), all 12 figure scripts rerun in a clean export and all 24 regenerated files equal
+  to the committed ones.
+- All 18 checklist items are judged PASS (`CHECKLIST.md`; criteria in `STATUS.md`). C6 is met
+  with A4' as ruled by decision 0021 item 1; the strict A4 failure stays on record. C8, C9,
+  C13-C15 are the note's products of batch 2b (run E-20261121-080840-6112292), reproduced by the
+  lead (run E-20261121-130021-0140e4e). C16's ledger part is the lead's row-by-row comparison
+  with the verifier's independent values (`../REVIEW-wave3.md` B4): 27 of 40 track rows agree,
+  13 are the track's alone.
+- Reservations for the independent reviewer: `OPEN.md` (release card build untested on the
+  SR set-up; ledger part of C16 checked by the lead; floor definitions fixed after the data).
+- The package is complete for the independent gate review of decision 0016 item 4; the lead
+  does not pass the gate, and the proposed tag `G1-fail` of the harness reflects only the
+  pending a4res job.
