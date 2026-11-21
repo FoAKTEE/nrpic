@@ -140,7 +140,7 @@ argument in all six.
 - E held: 7 judgements were annotated, unchanged.
 Ledger rows were appended from each run's ledger_rows.tsv.
 
-## 2026-11-21 ~21:55 UTC: decisions F1a, F1b, K1, L1 (written after reading every claim at its source)
+## 2026-11-21 ~21:20 UTC: decisions F1a, F1b, K1, L1 (written after reading every claim at its source)
 
 Read with read_claim.py and sed on the stored sources (terminal only).
 - F (54): 0911.1136 and 1804.02911 (32 Hills reference numbers): every number of F's
@@ -170,3 +170,12 @@ F1 (49) was split into F1a (32) and F1b (17) to keep batches near the 20 the bri
 Refuted by any FAILED line or unresolved locator row. If kb claim verify refuses a claim
 that had no locator before (core 467, 520, 525, 543, 548, 570), my belief that verify_loc
 attaches a first locator was wrong.
+
+### Outcome FK (runs kb-20261121-212452-61968d0 F1a, kb-20261121-212459-e68e5f8 F1b, kb-20261121-212503-d466d18 K1)
+Held in full [VERIFIED, run.log and ledger_rows.tsv of each; read-only query of claim_locators]:
+- F1a: 32 claims became fulltext/checked.
+- F1b: 10 became fulltext/checked, 5 stay to_verify with reasons, 2 judgements were annotated.
+- K1: 19 became fulltext/checked, 4 stay to_verify with reasons, 1 judgement was annotated.
+- No FAILED line. No unresolved locator row on any processed fulltext claim (154 claim ids in
+  the ledger).
+- kb claim verify --locator attached first locators to the six core claims that had none.
