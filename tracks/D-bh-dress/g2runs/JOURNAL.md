@@ -217,3 +217,14 @@ D-20261121-141419-b9f1089 (compare_horizons.py; figure looked at):
   still cost the exterior its mass.
 Tool change before the final analysis: panel (c) of compare_horizons now reaches down to
 1e-17 (the 1e-9 floor hid the pair's difference).
+
+Outcome X1 (06:19 PST; runs D-20261121-125946-fe3840a, 12 cycles on one core each,
+63 min, and D-20261121-141529-2664b51 locating the bytes): every output of the ES-1G input
+is byte-identical between core/gauge b4430da and release core-v0.4 (history, particle
+history, horizon summary and shape, particle snapshot, trajectories, the t = 0 slices,
+tmunu slices) except (a) the two final slices written off schedule, which differ only in
+their `last_time` lines (25 against 0: correction 2 of core-v0.4), and (b) the restart
+files, which differ in `last_time` lines and in 36 bytes right after the header (the nine
+zeroed members of `Mesh::mesh_indcs`: correction 1). HELD: the change of executable is
+neutral on these data on processors; ES-1GB against ES-1G is one change (the faces).
+No "not used" or lapse_leak warning from either executable.
