@@ -542,3 +542,43 @@ Sharper predictions for (v), added before it is submitted (N.1-N.4 of entries 5 
   README "Pending runs", predictions N.1-N.6 (entries 5, 11, 14).
 - Card-hours used by this package: 1.38 ((i) 0.69, (iii) 0.69); (vi) will add about 0.87,
   (v) about 0.3: 2.55 of the 3.0 cap.
+
+## 2026-11-21 16:35 UTC Entry 16 (C-sidm lead, batch 4a): outcome of run (vi)
+
+Run (vi) C-20261121-140023-b0f113e (Slurm 4804, 15:38-16:30 UTC, COMPLETED, exit 0, sacct
+elapsed 52:03 = 0.87 card-hours) continued run (i) from its restart at 300 M to 680 M; closed by
+the lead with `nrpic-run finish`. Analyses: the package's `compare.py --tag cc2_M8A` (run
+C-20261121-163135-57f9296, `fig_cc2_M8A.png` looked at) and the lead's own reader
+(`../stage/review_wave3/rv_batch4a.py --part vi`, run C-20261121-163109-c8fff37,
+`rv_drift_vi.png` looked at; the first attempt C-20261121-163051-16356b2 FAILED on the
+header-less history of a restarted run). Both give the same numbers [VERIFIED]:
+
+| t (M) | 300 | 400 | 500 | 600 | last 40 M (640-680) |
+|---|---|---|---|---|---|
+| alpha_c - alpha_c(0), +-5 M mean | -0.0043 | -0.0118 | -0.0151 | -0.0186 | -0.0216 |
+
+Areal r50 -6.3 percent and mean W +0.0097 at 680 M (they track alpha_c with correlations
+0.996 and -0.997); lowest alpha_min on the grid 0.652; np = 1e5, sum_m identical, 0
+unconverged pushes; H-norm2 7.87e-3 after 300 M (7.94e-3 over 100-300 M); join at 300 M
+within 8.7e-6 in alpha_c. Lead's energy diffusion: D = 7.8e-8 per M over 300-675 M against
+5.9e-8 over 25-300 M; mean change of E_K -0.0103 at 675 M.
+
+Against entry 10:
+- VI.1 HOLDS (exact continuation).
+- VI.2 FAILED: no turn; the decline runs to the end of the segment, monotone in the 40 M
+  mean, and ends below -0.02. Its runaway clause (below -0.03 at the end, steepening) is not
+  met either: the slope is about -0.0075 per 100 M over 300-400 M and -0.0035 per 100 M after
+  400 M, steady, not steepening.
+- VI.3 HOLDS (floor 7.87e-3, within 1.5 times 7.94e-3).
+- VI.4 HOLDS (380 M in 52:03, 8.2 s per M; ended at 680 M).
+The lead's L28 (`../JOURNAL.md`): "no turn" and "no collapse" hold; the end value -0.0216 lies
+outside the predicted [-0.015, -0.004]: L28 FAILED on its interval.
+
+Reading [JUDGEMENT]: on M/8 at N = 1e5 the stable King model CC2 contracts steadily from about
+200 M on, by about 0.02 in the central lapse and 6 percent in r50 in 500 M, with no sign of
+turning. A collisionless equilibrium should be stationary, so this is numerical (an error of
+the finer mesh of the other sign, or relaxation by particle noise) until shown otherwise. Run
+(v) (N = 1e4 on M/4, predictions N.1-N.6) tests the 1/N scaling. Consequence for block A: a
+fate read after 1000 M on M/8 at N = 1e5 is biased toward collapse; fates must be read
+against a control of the same mesh, seed, N and length, and the bias must be measured before
+the bracket is trusted.

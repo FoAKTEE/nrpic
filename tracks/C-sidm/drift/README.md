@@ -10,8 +10,9 @@ excited by the initial data? The answer decides the mesh of block A of
 
 Answer so far: the outward excursion is the mesh. On a mesh with M/8 cells in the centre it
 shrinks to 0.14 (CC1) and 0.10 (CC2) of its M/4 size, for both models [VERIFIED, runs (i),
-(iii)]. What remains on M/8 is a slow contraction after 200-250 M, not yet explained; run (vi)
-(queued) shows whether it turns or runs away, run (v) whether it is particle-noise relaxation.
+(iii)]. What remains on M/8 is a slow contraction after 200-250 M that does not turn: CC2
+reaches -0.022 in alpha_c and -6.3 % in r50 by 680 M at a steady rate (run (vi), entry 16).
+Run (v) (not submitted) tests whether it is particle-noise relaxation.
 
 Predictions and outcomes: `JOURNAL.md` (entries 1-14). Labels: [VERIFIED] computed in the
 registered run named next to it; [JUDGEMENT]; [BACKGROUND]; [TO VERIFY].
@@ -68,18 +69,18 @@ wave-2 runs and of run (i) and `.work/build_gpu_v03/src/athena` have the same sh
 | (i) cc2_kninf_M8 | C-20261120-222533-ce50a86 (analysis C-20261121-075359-26e3b31, lead) | [VERIFIED] largest excursion 0.0018 against 0.0179 (ratio 0.10); no cosine form; contraction after 200 M (alpha_c -0.0041, areal r50 -1.5 % at 300 M); 8.30 s per M. M8.1, M8.3, M8.4 hold, M8.2 failed (entry 8) |
 | (iii) cc1_kninf_M8 | C-20261121-125459-f03c4ba (analysis C-20261121-140057-92742cf; figure C-20261121-140518-9812635) | [VERIFIED] largest excursion 0.0046 against 0.0330 (ratio 0.14); cosine A ratio 0.13; contraction after 250 M (alpha_c -0.0020, areal r50 -0.9 % at 300 M); no collapse (alpha_min >= 0.659); H-norm2 floor 7.9e-3 (9.2 times M/4); 8.22 s per M. M8.1', M8.2'', M8.3', M8.4' hold; M8.2' (contracts faster than CC2) and M8.5' (ripple shared with CC2 on M/8: +0.25, not > 0.5) failed (entry 12) |
 | D2 energy diffusion of all particles | C-20261121-140356-f933a0e (figure C-20261121-140431-b4786c4) | [VERIFIED] incoherent variance of the Killing energy grows linearly (a random walk): D = 4.0e-8 (CC1) and 3.8e-8 per M (CC2) on M/4, 6.5e-8 and 5.8e-8 on M/8, ratio 1.6 (not the 9 of the H-norm2 floor); t_D = var(E_K)/D = 6.2-6.4e4 M (M/4), 4.0e4 M (M/8). D2.1, D2.3, D2.4 hold, D2.2 failed (entry 14) |
-| (vi) cc2_kninf_M8 continued from 300 M | C-20261121-140023-b0f113e (Slurm 4804) | pending in the queue (submitted 14:00 UTC 2026-11-21); predictions VI.1-VI.4, entry 10 |
+| (vi) cc2_kninf_M8 continued from 300 M | C-20261121-140023-b0f113e (Slurm 4804; analyses C-20261121-163135-57f9296 package, C-20261121-163109-c8fff37 lead) | [VERIFIED] to 680 M; no turn: alpha_c - alpha_c(0) = -0.0043, -0.0118, -0.0151, -0.0186 at 300, 400, 500, 600 M, -0.0216 over 640-680 M; areal r50 -6.3 %; steady slope, no runaway; floor unchanged. VI.1, VI.3, VI.4 hold; VI.2 failed (entry 16) |
 | (v) cc2_kninf at N = 1e4, M/4 | none | not submitted (one job of this package at a time; after (vi)); predictions N.1-N.6, entries 5, 11, 14 |
 | (ii), (iv) continuations of the M/4 controls | none | dropped by the C-sidm lead (`../HANDOFF.md`): the M/4 excursion is numerical |
 
 ![four controls](figs/fig_drift_M8.png)
 
-Card-hours of this package: 0.69 (i) + 0.69 (iii) = 1.38 of 3.0 (sacct elapsed); (vi) will take
-about 0.87, (v) about 0.3.
+Card-hours of this package: 0.69 (i) + 0.69 (iii) + 0.87 (vi) = 2.25 of 3.0 (sacct elapsed); (v)
+will take about 0.3.
 
 ## Pending runs
 
-Run (vi) is queued (run C-20261121-140023-b0f113e, Slurm 4804). When it has ended:
+Run (vi) ended and was analysed by the lead on 2026-11-21 (entry 16), with these commands:
 
     cd /data/haiyangw/nrpic/wt/C-sidm && R=/data/haiyangw/nrpic/scratch/C-sidm
     harness/bin/nrpic-run finish C-20261121-140023-b0f113e

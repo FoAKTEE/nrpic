@@ -282,4 +282,30 @@ Wrong: nothing. Cosmetic: the title of my own panel (c) is clipped at the right.
 What the track does: block A of `../threshold_scan/SCAN.md` will not run on M/4 (decided in
 batch 2b; now for both models). Whether it runs on M/8 at N = 1e5 waits for (vi) (does the
 contraction of a stable model turn?) and (v) (does it scale with 1/N?). Run (v) (0.3
-card-hours, within the package's cap) is submitted by the lead when (vi) has ended (section 12).
+card-hours, within the package's cap) is NOT submitted by this lead, whose task names no card
+time; it is the first item of the next batch (section 12).
+
+## 12. Run (vi), ended in this session (drift entry 16)
+
+Slurm 4804 ran 15:38-16:30 UTC (0.87 card-hours) and continued run (i) from 300 to 680 M.
+The lead closed it and analysed it twice: own reader C-20261121-163109-c8fff37 and the
+package's compare.py C-20261121-163135-57f9296. Both give the same numbers. Figures looked
+at: `rv_drift_vi.png`, `fig_cc2_M8A.png`.
+- The continuation is exact: alpha_c joins within 8.7e-6, np and sum_m unchanged, the
+  constraint floor is unchanged (7.87e-3).
+- The contraction of the stable CC2 on M/8 does not turn. alpha_c - alpha_c(0) is -0.0043,
+  -0.0118, -0.0151 and -0.0186 at 300, 400, 500 and 600 M, and -0.0216 over 640-680 M. r50 is
+  -6.3 percent at 680 M. The slope is steady after 400 M, about -0.0035 per 100 M. There is no
+  runaway and no collapse (alpha_min >= 0.652).
+- Predictions VI.1, VI.3 and VI.4 hold. VI.2 (bounded) FAILED. The lead's L28 FAILED on its
+  interval; its "no turn, no collapse" part held.
+
+What the track does [JUDGEMENT]:
+- A collisionless equilibrium should be stationary, so this drift is numerical until shown
+  otherwise.
+- Block A of SCAN.md does not start on M/8 at N = 1e5 until the source is known. First comes
+  run (v) (N = 1e4 on M/4, 0.3 card-hours, predictions N.1-N.6), which tests the 1/N scaling.
+- If the drift scales as 1/N, block A runs at N = 1e6 near the threshold. If it does not,
+  the next leg is a finer mesh (an M/16 control).
+- In either case every fate is read against a control of the same mesh, seed, N and length.
+

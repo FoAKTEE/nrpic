@@ -435,3 +435,12 @@ Predictions (own code in `stage/review_wave3/rv_batch4a.py`, written before it r
   -0.00202; H-norm2 7.86e-3 (M/8), 8.53e-4 (M/4).
 - L27 HOLDS: D with my 800 equal-count (E_K, |x x u|, sign x.u) cells is 0.97-1.01 of the
   package's (25-300 M); D(M/8)/D(M/4) = 1.67 (CC1), 1.54 (CC2).
+
+## 2026-11-21T16:36Z  session C-sidm lead (wave 3, batch 4a)  outcome L28
+
+- L28 FAILED on its interval, held otherwise (runs C-20261121-163109-c8fff37 own reader;
+  C-20261121-163135-57f9296 package's compare.py; first attempt C-20261121-163051-16356b2 FAILED
+  on the header-less history of the restarted run): CC2 on M/8 does not turn by 680 M and does
+  not collapse (alpha_c >= 0.652), but the 40 M mean at the end is -0.0216, below the predicted
+  [-0.015, -0.004]. The helper's VI.2 (bounded) failed as well; VI.1, VI.3, VI.4 hold
+  (drift/JOURNAL.md entry 16).
