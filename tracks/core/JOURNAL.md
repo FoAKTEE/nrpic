@@ -1042,3 +1042,79 @@ Base of every byte comparison: `/data/haiyangw/nrpic/.work/build_cpu_v05/src/ath
   on the refined mesh); two cases of core-v0.5 (`dep`, `cluster` of `card_v05.list`):
   history columns 4 to 12 equal to processors to 1e-10 and the deposit identity below
   1e-13. Refuted by a status other than 0 or a bound exceeded.
+
+### Amendment of prediction C before its run (13:05Z)
+
+Read after the entry above was committed and before the quick test ran:
+`nrpic_idsolve.cpp` 1787 calls `Z4c::ApplyPhysicalBCs`, which after the merge of
+core/z4c-faces also applies the fall-off fill when `ghost_falloff = true`. So with
+`id_residual = code` the record of the solve might differ with the faces options
+(the monitor reads ghost cells); with `stencil` I still expect it identical. C is run
+in both modes. (Written into this journal only now, with the outcomes; the test design
+in `quick_v06.py`, committed as 7cf7db88 before the run, has both modes.)
+
+### Outcomes (2026-11-21T13:45Z)
+
+Merges: a1fffa58 (newton-2), 1419f19a (z4c-faces), 984bde68 (id-solver-2), no conflict.
+Source commit of the candidate: 984bde68c6201c8f100ced3d6a7effbea9cafd80. Builds:
+serial 164 s on 6 jobs, card 1127 s on 3, MPI 479 s on 2, threaded 289 s on 4.
+
+- **R held.** 75 of 75 items identical with release core-v0.5, classes a, b, other
+  empty (run core-20261121-130202-7cf7db8). The compiler effect of the faces header
+  does not come back in the merged source.
+- **Rm held** (75 of 75, core-20261121-132245-c02f6b7). **Ro held**: every run status
+  0, 32 of 75 identical, geo and jeans identical, module histories within 1.2e-15,
+  constraint statistics within 1.4e-10 (east) and 1.9e-12 (c4), below the 1e-9 I set
+  (core-20261121-133243-74c17ff, judged in core-20261121-134007-f8513b0).
+- **H held.** 12 mesh restart files, the nine members zero in each
+  (core-20261121-130813-710b3cc).
+- **Qn held** (28 of 28 files identical with the branch executable). **Qf held** in
+  both parts (5 of 5 with the branch executable; 5 of 5 with release core-v0.5 at the
+  stock values). Same run.
+- **Qi held.** (i) `id_far = robin`: 8, 9, 8 files identical with core-v0.5 (Gaussian at
+  rest, ball, torus); default: psi by 9.7e-9, 3.6e-8, 1.48e-6, W by 2.67e-3, the numbers
+  of the package's M1 (core-20261121-131148-6efd1b8). (ii) 79 of 79 files identical
+  (core-20261121-131250-f8df905).
+- **C held, and the amendment's worry did not materialise**: the record of the solve
+  is byte-identical with and without the faces options in both modes; four runs status
+  0, finite; mean |H| after 8 steps 4.9e-4 without, 3.6e-4 with. Why the fall-off fill
+  does not enter the record in mode code I have not looked up in the source (the call
+  at 1787 may lie after the last residual): no cause is named.
+- **Kc held** (the package's prediction): outer iterations 34, 16, 20, 27, 5 on card
+  and processors, psi within 2.2e-15, W within 2.5e-14, P_ADM_x 5.499999519755e-01 on
+  both (card run core-20261121-125651-edde517, 87 s; judged in
+  core-20261121-133219-2c8f63c).
+- **K6 open**: job 4800 (run core-20261121-132052-f330004) submitted at 13:20Z, the
+  earliest moment the card build existed and a second slot of core was free; seven jobs
+  of other owners are ahead of it. Steps to judge it: `RELEASE-v0.6.md`, section "Card
+  check of `athena_gpu`".
+- Not predicted, closed on the way: the release card build of core-v0.5 (job 4775,
+  prediction G of 07:47Z) held in both parts (core-20261121-125722-91a199a,
+  core-20261121-125743-84f0e42; module histories of the two card runs within 1.2e-15);
+  the faces package's card check k1 (job 4782 had run at 01:40 PST and was never
+  judged): 7.3e-12 from processors in both cases, bound 1e-7
+  (core-20261121-134059-e3ab6f3, status failed by a side effect of the comparison
+  script: it lists the card's log files as missing).
+
+Faults of mine in this session, on record:
+1. `RELEASE-v0.6.md`, `CHANGELOG.md` and the published `COMMIT` first carried forty
+   hexadecimal digits for the source commit that I had written without taking them from
+   git (only the first eight were right). Found when `git rev-parse` was printed beside
+   the first line; corrected in all three files before anything was pushed (the commit
+   after the one that adds the release file). A full hash is copied from `git
+   rev-parse`, never completed by hand.
+2. `hst_pair_v06.py` failed in its first registered run (core-20261121-133938-efeb8b4:
+   the classes of the regression summary are lists) and in its second drew the
+   non-finite history of c5 as a bar (core-20261121-133947-f7d1d50); the third run
+   counts.
+3. The first drawing of `fig_quick_v06.png` had the legend over two bars; drawn again
+   (core-20261121-133153-89d375b).
+4. The amendment of C was written into the journal after the run, not before (above).
+
+Left out of the candidate: core/clump-table (at 13:37Z its tip 099882b3 says "merge
+notes for core's lead in the interface text"; no executables with READY for that state
+are published) and core/oblate (unchanged since 2026-11-20). Both go to the next
+release.
+
+Card time: 0.024 card-hours used (Kc), 0.3 asked (job 4800). Processors: at most six
+cores at a time (builds and runs together).
