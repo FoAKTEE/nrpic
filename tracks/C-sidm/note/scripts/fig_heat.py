@@ -6,10 +6,14 @@ the long and the short mean-free-path end").
     isobaric reference at the first Chapman-Enskog conductivity (f = 1);
 (b) the code minus the reference at the conductivity factor f fitted to each seed;
 (c) conductivity from the decay of the isobaric (entropy) mode against (k lambda)^2: each
-    seed, the seed mean with its standard error, and the extrapolation to k lambda -> 0.
+    seed, the seed mean with its standard error, and the extrapolation to k lambda -> 0;
+(d) the extrapolated conductivity at theta = 0.003, 0.1, 1 from all seeds (processors and
+    card, weights proportional to N) against the relativistic Chapman-Enskog conductivity of
+    hard spheres at first and fourth order (the verifier's run).
 Reads runs t6b (reduced slab sums), t6ban (fitted f, window, collision time), t7an (mode
-fits) and, for the seed counts, the summaries of t7a and t7b (common.RUNS). The reference is
-recomputed with the heat package's module isobaric.py, unchanged.
+fits), for the seed counts the summaries of t7a and t7b, and for (d) c6sum (summary), whose
+values are checked against t7pool (cardcpu.json) and ceref (ce_kappa.json) (common.RUNS).
+The reference of (a, b) is recomputed with the heat package's module isobaric.py, unchanged.
 """
 import json
 import os
@@ -61,11 +65,35 @@ def main():
         rms = float(np.sqrt(np.mean((s["X"][w] - reff[s["seed"]][w]) ** 2)))
         s["rms"], s["f"] = rms, f
 
+    # (d) inputs: the C6 summary, checked against the runs it summarises
+    c6 = cm.load_json("c6sum", "summary_c6.json")
+    pool = cm.load_json("t7pool", "cardcpu.json")["groups"]
+    ce = cm.load_json("ceref", "ce_kappa.json")
+    if c6["inputs"]["ce"] != cm.RUNS["ceref"]:
+        raise SystemExit("summary_c6.json names another C-E reference run")
+    THETAS = (0.003, 0.1, 1.0)
+    meas = []
+    for th in THETAS:
+        v = c6["T7_vs_CE"][f"{th:g}" if th != 1.0 else "1.0"]["pooled_weighted"]
+        x = pool[f"T7_th{th:g}_e0.2"]["extrapolation_weighted"]
+        if v["run"] != cm.RUNS["t7pool"] or v["f0"] != x["f0"] or v["se"] != x["f0_se"]:
+            raise SystemExit(f"summary_c6.json differs from cardcpu.json at theta {th}")
+        meas.append((th, v["f0"], v["se"]))
+    fa = ce["first_approx_exact"]
+    cer = []
+    for r in ce["rel"]:
+        o1, o4 = r["orders"][0], r["orders"][3]
+        ref = c6["ce_reference"][f"{r['theta']:g}" if r["theta"] != 1.0 else "1.0"]
+        if abs(o4["kappa"] / fa - ref["order4"]) > 1e-12 or abs(o1["kappa"] / fa - ref["order1"]) > 1e-12:
+            raise SystemExit(f"summary_c6.json differs from ce_kappa.json at theta {r['theta']}")
+        cer.append((r["theta"], ref["order1"], ref["order1_se"], ref["order4"], ref["order4_se"]))
+
     cz.use_style()
     fig = plt.figure(figsize=(7.0, 2.9))
-    axa = fig.add_axes([0.095, 0.45, 0.36, 0.48])
-    axb = fig.add_axes([0.095, 0.17, 0.36, 0.25])
-    axc = fig.add_axes([0.6, 0.17, 0.37, 0.76])
+    axa = fig.add_axes([0.088, 0.45, 0.29, 0.48])
+    axb = fig.add_axes([0.088, 0.17, 0.29, 0.25])
+    axc = fig.add_axes([0.468, 0.17, 0.225, 0.76])
+    axd = fig.add_axes([0.765, 0.17, 0.225, 0.76])
     cols = {1: cz.PAL["red"], 2: cz.PAL["yellow"]}
     for s in series:
         axa.plot(t / tcoll, s["X"], "o", ms=1.6, color=cols[s["seed"]], label=f"seed {s['seed']}")
@@ -104,9 +132,31 @@ def main():
     axc.axhline(1.0, color="0.4", lw=0.7, ls=":")
     axc.set_xlim(-0.01, max(x2) * 1.12)
     axc.set_ylim(0.96, 1.10)
+    axc.set_yticks([0.97, 1.0, 1.03, 1.06, 1.09])
+    axc.set_yticklabels(["0.97", "1.00", "1.03", "1.06", "1.09"])
     axc.set_xlabel(r"$(k\lambda)^2$")
     axc.set_ylabel(r"conductivity $\kappa/\kappa_1$")
     axc.text(0.04, 0.93, "(c)", transform=axc.transAxes, fontsize=8.5)
+
+    # (d) conductivity against temperature, with the relativistic Chapman-Enskog values
+    th_ce = np.array([c[0] for c in cer])
+    axd.errorbar(th_ce, [c[1] for c in cer], yerr=[c[2] for c in cer], fmt="^", ms=4.0,
+                 mfc="white", mec="0.45", color="0.45", elinewidth=0.8, capsize=0,
+                 label="C-E, first order")
+    axd.errorbar(th_ce, [c[3] for c in cer], yerr=[c[4] for c in cer], fmt="s", ms=4.0,
+                 mfc="white", mec="k", color="k", elinewidth=0.8, capsize=0,
+                 label="C-E, fourth order")
+    axd.errorbar([m[0] for m in meas], [m[1] for m in meas], yerr=[m[2] for m in meas],
+                 fmt="o", ms=4.5, color=cz.PAL["red"], elinewidth=1.0, capsize=0,
+                 label="code, $k\\lambda\\to0$")
+    axd.set_xscale("log")
+    axd.set_xlim(4e-5, 3.0)
+    axd.set_ylim(0.92, 1.12)
+    axd.axhline(1.0, color="0.4", lw=0.7, ls=":")
+    axd.set_xlabel(r"temperature $\theta=T/m$")
+    axd.legend(frameon=False, loc="lower left", fontsize=6.5, handlelength=1.0,
+               borderaxespad=0.2)
+    axd.text(0.04, 0.93, "(d)", transform=axd.transAxes, fontsize=8.5)
 
     cz.save(fig, os.path.join(out, STEM))
     cm.report_checks(STEM)
@@ -122,6 +172,10 @@ def main():
               f"({r['n_seeds']} seeds of {r['n_per_seed']}); number mode {r['f_N'][0]:.3f}")
     print(f"{STEM}: T7 extrapolated {g['f0']:.4f} +- {g['f0_se']:.4f}, pass {g['pass_T7']}; "
           f"processor cases in the two run summaries: {nseed}")
+    for th, f0, se in meas:
+        print(f"{STEM}: (d) theta {th:g}: all seeds, N-weighted {f0:.4f} +- {se:.4f}")
+    for th, o1, o1se, o4, o4se in cer:
+        print(f"{STEM}: (d) C-E theta {th:g}: order 1 {o1:.4f} +- {o1se:.4f}, order 4 {o4:.4f} +- {o4se:.4f}")
 
 
 if __name__ == "__main__":

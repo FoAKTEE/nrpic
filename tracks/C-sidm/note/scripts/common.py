@@ -48,6 +48,7 @@ RUNS = {
     "t10rel": "C-20261115-165902-f9b1c8f",           # T10 reproducibility, release
     "t10c2": "C-20261119-143041-f94e350",            # T10 with coll_energy = particle
     "t345": "C-20261115-170539-28432c3",             # T3-T5 relaxation, release
+    "t9": "C-20261115-170814-8a54b43",               # T9 unequal masses, release
     "kingdef": "C-20261119-141431-a351ac7",          # first-step energy of the King model
     # heat conduction (package heat, wave 3a; processors)
     "t6b": "C-20261119-144535-2c7b6a4",              # T6(b) runs, lambda/L = 0.01
@@ -59,6 +60,17 @@ RUNS = {
     "t7an": "C-20261119-161930-acd257b",             # T7 analysis of both
     "clan": "C-20261119-152845-017d186",             # T7 collisionless check, analysis
     "t8nosub": "C-20261119-151044-a584069",          # T8 part 2: rate without sub-cycling
+    # heat conduction closed on the card (package heat, wave 3)
+    "c6sum": "C-20261121-030328-e3ffc6d",            # C6 summary: T7 at three theta vs C-E
+    "t7pool": "C-20261120-223203-b38a7d7",           # T7 card and processor seeds, N-weighted
+    "ceref": "C-20261120-222423-519f12b",            # relativistic Chapman-Enskog kappa (verifier)
+    "t8card": "C-20261120-223321-3d088d4",           # T8 convergence, card and processors
+    # first decisive and drift runs (wave 3; lead's review, REVIEW-wave3.md sections 2-3)
+    "decis": "C-20261121-075202-1a37fb9",            # collapse times of 15 collisional runs
+    "drift8": "C-20261121-075359-26e3b31",           # CC2 control on M/8 against M/4
+    # growth-rate estimator v2 (package models, wave 3)
+    "growthv": "C-20261120-222716-9d86ebc",          # synthetic signals, published numbers
+    "growthd": "C-20261120-223404-40668db",          # curvature of ln d on the unstable runs
     # models and onsets (wave 2, wave-2b review)
     "onset": "C-20261115-165315-7b473b8",            # fluid onsets of the thermal core
     "kingonset": "C-20261119-151502-cb831a8",        # lead's review run: King-family onsets

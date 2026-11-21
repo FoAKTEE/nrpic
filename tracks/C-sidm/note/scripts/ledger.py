@@ -80,6 +80,14 @@ def g1_rows():
         add("g1box", f"reproducibility ({tag}): runs byte-identical to one MeshBlock; collisions",
             f"{len(ident)} of {sum(1 for v in cmp_.values() if not v.get('skipped')) - 1} "
             f"(other seed differs); {int(d['collisions_total_mb1'])}", key)
+    t345 = cm.load_json("t345", "t345_cpu.json")
+    t9 = cm.load_json("t9", "t9_cpu.json")
+    yn = lambda b: "pass" if b else "FAIL"  # noqa: E731
+    add("g1box", "released operator: relaxation, initial relaxation rate, entropy (four runs "
+        "each); unequal macroparticle masses (eight seeds; Kolmogorov--Smirnov test against "
+        "the temperature of each mass class)",
+        f"{yn(t345['T3_pass'])}, {yn(t345['T4_pass'])}, {yn(t345['T5_pass'])}; {yn(t9['pass'])}",
+        ("t345", "t9"))
     t12 = cm.load_json("t12", "t12_cpu.json")
     tw = list(t12["twins"].values())
     cur = [v for k, v in t12["runs"].items() if "_curved_" in k]
@@ -114,13 +122,41 @@ def g1_rows():
         "$k\\lambda=" + ", ".join(f"{r['k_lambda']:g}" for r in t7["rows"]) + "$ (seeds)",
         "; ".join(f"{r['f_S'][0]:.4f} $\\pm$ {r['f_S'][1]:.4f} ({r['n_seeds']})"
                   for r in t7["rows"]), "t7an")
-    add("g1heat", "the same from the number-density mode alone (biased by sound waves)",
+    add("g1heat", "the same from the number-density mode alone (biased by sound waves; "
+        "fit window of the track's analysis)",
         ", ".join(f"{r['f_N'][0]:.3f}" for r in t7["rows"]), "t7an")
     add("g1heat", "extrapolated to $k\\lambda\\to0$: $\\kappa/\\kappa_1$; pass interval",
         f"{t7['f0']:.4f} $\\pm$ {t7['f0_se']:.4f}; [0.99, 1.06]", "t7an")
     cl = cm.load_json("clan", "T7_collisionless.json")
     add("g1heat", "collisionless mode ($k\\lambda=100$) at $\\theta=0.003, 0.1, 1$: largest $|z|$ "
         "against the ensemble", ", ".join(f"{v['max_abs_z']:.2f}" for v in cl.values()), "clan")
+    # all seeds (processors and card), the relativistic Chapman-Enskog reference, card T8
+    pool = cm.load_json("t7pool", "cardcpu.json")["groups"]
+    c6 = cm.load_json("c6sum", "summary_c6.json")
+    ths = (0.003, 0.1, 1.0)
+    xw = [pool[f"T7_th{t:g}_e0.2"]["extrapolation_weighted"] for t in ths]
+    add("g1heat", "isobaric mode at $\\theta=0.003, 0.1, 1$, all seeds (processors and card, "
+        "weights proportional to $N$), extrapolated: $\\kappa/\\kappa_1$",
+        "; ".join(f"{x['f0']:.4f} $\\pm$ {x['f0_se']:.4f}" for x in xw), "t7pool")
+    ce = c6["ce_reference"]
+    add("g1heat", "relativistic Chapman--Enskog conductivity of hard spheres, fourth order, at "
+        "the same $\\theta$; first order at $\\theta=1$",
+        "; ".join(f"{ce[k]['order4']:.4f} $\\pm$ {ce[k]['order4_se']:.4f}" for k in
+                  ("0.003", "0.1", "1.0")) + f"; {ce['1.0']['order1']:.4f}", ("ceref", "c6sum"))
+    zz = [c6["T7_vs_CE"][k]["pooled_weighted"]["z"] for k in ("0.003", "0.1", "1.0")]
+    add("g1heat", "code minus fourth-order reference, in standard errors of the code (same order)",
+        ", ".join(f"{z:+.2f}" for z in zz), "c6sum")
+    t8 = cm.load_json("t8card", "t8.json")
+    card = [x for x in t8["sets"] if x["n"] == 4000000][0]["params"]
+    nm = {"dt_frac": "step", "pmax": "largest pair probability", "dx_frac": "cell size"}
+    add("g1heat", "convergence on a graphics card (one seed, $4\\times10^6$ particles, "
+        "$\\theta=0.003$, $k\\lambda=0.2$): $f$ at three values of the "
+        + ", ".join(nm[k] for k in ("dt_frac", "pmax", "dx_frac")),
+        "; ".join("/".join(f"{v:.4f}" for v in card[k]["f"]) for k in ("dt_frac", "pmax", "dx_frac")),
+        "t8card")
+    add("g1heat", "relative change of $f$ between the two finest values (same order); criterion",
+        ", ".join(f"{card[k]['finest_change']:+.4f}" for k in ("dt_frac", "pmax", "dx_frac"))
+        + "; below 0.02 in magnitude", "t8card")
     ns = cm.load_json("t8nosub", "t2nosub.json")
     add("g1heat", "rate at a largest pair probability of "
         f"{ns['nosub']['max_P']:.2f} without sub-cycling; with sub-cycling",
@@ -159,6 +195,25 @@ def g1_rows():
     ac = {round(m["y0"], 5): m["alpha_c"] for m in idx["models"] if m["family"] == "king"}
     add("g1models", "central lapse of the cluster-run models CC2 ($y_0=0.314$); CC1 ($y_0=0.33403$)",
         f"{ac[0.314]:.4f}; {ac[0.33403]:.4f}", "models2")
+    # ---- growth-rate fit (package models, wave 3) ----
+    gv = cm.load_json("growthv", "growth_validation_v2.json")
+    g2 = gv["G2"]
+    sig = sorted(g2, key=float)
+    add("g1models", "growth-rate fit on synthetic signals, true rates "
+        + ", ".join(sig) + f" ({g2[sig[0]]['v2']['n']} signals each): mean relative bias; rms "
+        "relative error", "; ".join(f"{g2[k]['v2']['mean_rel_bias']:+.1e}, "
+                                    f"{g2[k]['v2']['rms_rel_err']:.3f}" for k in sig), "growthv")
+    add("g1models", "published outcomes of the earlier monoenergetic runs (horizon times and "
+        "masses, particles left, lapse crossing times, half-swing growth) recovered by the analysis", f"{gv['verdicts']['G1']['n_match']} of "
+        f"{gv['verdicts']['G1']['n']}", "growthv")
+    d2 = cm.load_json("growthd", "diag_v2.json")["D2"]
+    pr = d2["per_run"]
+    ci = d2["common_interval"]
+    add("g1models", "unstable monoenergetic runs ($y_c=0.5$, three samples): local growth rate "
+        "at the start and the end of the analysed interval ($1/M$); rate over the common interval "
+        f"{ci[0]:g}--{ci[1]:g} $M$",
+        "; ".join(f"{v['rate_start']:.3f}/{v['rate_end']:.3f}" for v in pr.values()) + "; "
+        + ", ".join(f"{v['sigma']:.4f}" for v in d2["common"].values()), "growthd")
     # ---- cluster runs ----
     H = {c: cm.read_hist(cm.run_file(k, f"{c}/cc.nrpic.hst")) for c, k in cm.CC_RUN.items()}
     tdrop, t03, rise = {}, {}, {}
@@ -188,6 +243,29 @@ def g1_rows():
     add("g1cluster", "energy injected by the released operator by the 0.01 drop, over the "
         f"binding-energy margin of CC1 and CC2 ({e(on['margin_over_M0'], 1)} $M_0$) (same order)",
         ", ".join(f"{on[k]['injected_over_margin_at_t_dep']:.3f}" for k in order), "ccon")
+    # ---- follow-up runs (wave 3; scouting): seeds, energy convention, a model far from the onsets
+    dc = cm.load_json("decis", "summary.json")["runs"]
+    tc = {k: v["t_c_interp"] for k, v in dc.items()}
+    cell1 = [tc[f"cc1_kn10_cell_s{i}"] for i in (1, 2, 3)]
+    part1 = [tc[f"cc1_kn10_part_s{i}"] for i in (1, 2)]
+    cc2 = [tc[k] for k in ("cc2_kn10_cell_s1", "cc2_kn10_cell_s2", "cc2_kn10_part_s1",
+                           "cc2_kn10_part_s2")]
+    add("g1follow", "CC1 at Kn$_c=10$: collapse time (interpolated first crossing of 0.3 by the smallest lapse) of three seeds, "
+        "released operator; standard deviation; two seeds with the energy at each particle",
+        ", ".join(f"{t:.2f}" for t in cell1) + f"; {np.std(cell1, ddof=1):.2f}; "
+        + ", ".join(f"{t:.2f}" for t in part1) + " ($M$)", "decis")
+    add("g1follow", "CC2 at Kn$_c=10$, two seeds of each operator: range of the collapse time; "
+        "standard deviation", f"{min(cc2):.2f}--{max(cc2):.2f}; {np.std(cc2, ddof=1):.2f} ($M$)",
+        "decis")
+    d3 = (tc["d3_kn1_part_s1"], tc["d3_kn10_part_s1"], dc["d3_kn10_part_s1"]["t_end"])
+    add("g1follow", "King model with $y_0=0.26$: collapse time at Kn$_c=1$; at Kn$_c=10$",
+        f"{d3[0]:.2f} $M$; none by {d3[2]:g} $M$" if d3[1] is None else
+        f"{d3[0]:.2f}; {d3[1]:.2f} ($M$)", "decis")
+    dr = cm.load_json("drift8", "compare_cc2_M8.json")["_ratios"]["cc2_M8/cc2_M4"]
+    add("g1follow", "CC2 control on cells of half the size: outward excursion of the central "
+        "lapse over that on the coarse mesh (cosine amplitude; sine with trend; largest mean "
+        "over $20M$)", f"{dr['A_cos']:.2f}; {dr['A_sin_trend']:.2f}; {dr['max_20M_mean']:.2f}",
+        "drift8")
 
 
 def main():
@@ -476,7 +554,9 @@ def main():
                      "particle's metric",
             "g1heat": "Heat conduction",
             "g1models": "Particle models and onsets",
-            "g1cluster": "First collisional King clusters (scouting, one seed each)"}
+            "g1cluster": "First collisional King clusters (scouting, one seed each)",
+            "g1follow": "Follow-up cluster runs (scouting; reported in full in the next "
+                        "version)"}
     parts = [(("baseline", "models"), "tab:ledger",
               "Numerical ledger of the scoping stage. Every number of this note with the "
               "registered run that produced it."),
@@ -484,7 +564,7 @@ def main():
               "Numerical ledger of the scoping stage, continued."),
              (("g1box", "g1heat"), "tab:ledger3",
               "Numerical ledger of the baseline stage: the collision operator."),
-             (("g1models", "g1cluster"), "tab:ledger4",
+             (("g1models", "g1cluster", "g1follow"), "tab:ledger4",
               "Numerical ledger of the baseline stage: models, onsets and the first "
               "collisional clusters.")]
 
@@ -497,7 +577,7 @@ def main():
         for secs, label, cap in parts:
             f.write(f"\\begin{{table*}}\n\\caption{{{cap}}}\n\\label{{{label}}}\n"
                     "\\begin{ruledtabular}\n\\footnotesize\n"
-                    "\\begin{tabular}{p{0.44\\textwidth}p{0.30\\textwidth}p{0.17\\textwidth}}\n"
+                    "\\begin{tabular}{p{0.41\\textwidth}p{0.27\\textwidth}p{0.23\\textwidth}}\n"
                     "Quantity & Value & Run \\\\\n\\hline\n")
             last = None
             for s_, q, v, k in ROWS:
@@ -528,6 +608,9 @@ def main():
         f.write(f"monoen., $\\epsilon$ max. & $y_c={mm['yc']:.5f}$ & {mm['zc']:.4f} & "
                 f"{mm['Eb_over_M0']:.5f} & {mm['R_over_M']:.2f} \\\\\n")
         f.write("\\end{tabular}\n\\end{ruledtabular}\n\\end{table}\n")
+    with open(os.path.join(out, "runinfo.tex"), "w") as f:
+        # the registered run that made the figures and tables (set by nrpic-run)
+        f.write(os.environ.get("NRPIC_RUN_ID", "(not a registered run)"))
     with open(os.path.join(out, "claims.json"), "w") as f:
         json.dump(CLAIMS, f, indent=1)
     nd = sum(not c["agrees"] for c in CLAIMS)

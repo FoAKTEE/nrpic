@@ -1,10 +1,11 @@
-"""Schematic: stage timeline of C-sidm (note v0).
+"""Schematic: stage timeline of C-sidm (note v0; state updated for note v1, 2026-11-21).
 
 Gates: coord/CHARTER.md 9.2 (G0-G4) and 9.6 (criteria of Track C), decision 0013 (G2
 wording: the collisionless threshold located with three-way convergence and compared with
 the turning-point criterion), decision 0014 (45 card-hours to the next gate).
 Content per gate: stage/G0/REPORT.md sections 4 and 9; state: stage/G0/OPEN.md,
-stage/G1/STATUS.md. Gate positions are evenly spaced; no dates are claimed. No data are read.
+stage/G1/STATUS.md, stage/G1/CHECKLIST.md, OPEN.md and VERIFIER.md, stage/REVIEW-wave3.md
+sections 2-4 (2026-11-21). Gate positions are evenly spaced; no dates are claimed. No data are read.
 """
 import os
 import sys
@@ -17,9 +18,9 @@ W, H = 30.0, 12.0
 GATES = [
     ("G0 scoping", "wave 1", pf.GREEN_DARK,
      "problem, ranges, criteria\nreferences, risks, compute\nnote and schematics"),
-    ("G1 baseline", "wave 2", pf.SLATE,
-     "spherical baseline (met);\ncollision box tests pass\non the code's operator"),
-    ("G2 capability", "wave 3", pf.RED,
+    ("G1 baseline", "waves 2-3", pf.SLATE,
+     "spherical baseline (met);\nbox tests pass on the code's\noperator; heat conduction"),
+    ("G2 capability", "waves 3-4", pf.RED,
      "collisionless threshold,\nthree-way convergence;\ncurved-spacetime budgets"),
     ("G3 science", "waves 4-5", pf.RED,
      "mass fraction against Kn,\nconverged in N and step;\nfluid-limit anchor"),
@@ -45,16 +46,16 @@ def main():
         pf.callout(ax, x - cw / 2 + 0.1, 6.3, cw, 3.6, title, body, bar=col, size=7.0,
                    title_size=8.0, band=0.8)
         pf.line(ax, (x, y0 + 0.35), (x, 6.3), color=pf.GREY_LINE)
-    pf.text(ax, 0.9, 10.9, "now: wave 2; G0 products completed, G1 waits for the box tests",
+    pf.text(ax, 0.9, 10.9, "now: wave 3; G1 results in this note, checked by an independent verifier",
             size=7.5, ha="left", italic=True)
-    ax.add_patch(pf.Polygon([(6.0, 5.75), (6.4, 5.75), (6.2, 5.45)], closed=True,
+    ax.add_patch(pf.Polygon([(7.9, 5.75), (8.3, 5.75), (8.1, 5.45)], closed=True,
                             fc=pf.RED, ec="none", zorder=8))
-    pf.text(ax, 6.2, 6.05, "now", size=7.0, color=pf.RED)
+    pf.text(ax, 8.1, 6.05, "now", size=7.0, color=pf.RED)
     pf.brace(ax, 3.6, 8.8, 3.6, "", below=True)
-    pf.text(ax, 6.2, 2.25, "collision operator in the code;\nthermal-core particle models",
+    pf.text(ax, 6.2, 2.25, "operator in the code, box and\nconduction tests (done)",
             size=7.0, color=pf.ROSE)
     pf.brace(ax, 9.6, 14.8, 3.6, "", below=True)
-    pf.text(ax, 12.2, 2.0, "perturbation recipe; growth-rate\nanalysis checked on earlier runs;\n"
+    pf.text(ax, 12.2, 2.0, "finer mesh for the controls;\nthree seeds near the threshold;\n"
             "card time for the scans", size=7.0, color=pf.ROSE)
     pf.brace(ax, 15.6, 20.8, 3.6, "", below=True)
     pf.text(ax, 18.2, 2.0, "particle number for small Kn;\ncost per collision measured;\n"

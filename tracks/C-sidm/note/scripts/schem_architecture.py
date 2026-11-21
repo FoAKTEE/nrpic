@@ -1,4 +1,4 @@
-"""Schematic: architecture of the S3 calculation, state of gate G1 (note v1, 2026-11-20).
+"""Schematic: architecture of the S3 calculation, state of gate G1 (note v1, 2026-11-21).
 
 Three states per element. Exists: tested, in the released code or in the track's own
 reference and analysis code, each with a registered run. To be ported: exists and is tested
@@ -53,9 +53,9 @@ def main():
         ("excision, apparent-horizon finder", EXISTS),
         ("Monte Carlo collisions, released operator", EXISTS),
         ("box tests T0b-T11 of the released operator", EXISTS),
-        ("pair energy at each particle's metric", PORT),
+        ("pair energy at each particle's metric", EXISTS),
         ("static curved-metric test bed (T12)", EXISTS),
-        ("heat conduction T6-T8 on processors", EXISTS),
+        ("heat conduction T6-T8, processors and card", EXISTS),
         ("collisions on refined meshes", NEW),
         ("ADM energy diagnostic", NEW),
     ])
@@ -66,7 +66,7 @@ def main():
         ("J\u00fcttner fluid onsets, thermal core and King", EXISTS),
         ("cluster histories: lapse, collisions, budgets", EXISTS),
         ("collapse and crossing times", EXISTS),
-        ("growth-rate fit, checked on runs", PORT),
+        ("growth rate over a stated fitting interval", EXISTS),
         ("threshold scan, three-way convergence", NEW),
         ("collapsed mass fraction at the horizon", NEW),
     ])
