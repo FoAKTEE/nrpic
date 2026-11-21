@@ -176,6 +176,8 @@ struct SfDiagOptions {
   bool dump_magnitudes = false;  // dumps: add [H], [M] and M_i in BSSN form
   bool dump_constraints = true;  // dumps: H, M_i, E
   bool dump_noise = true;        // dumps: the stochastic fields
+  bool con_signed = false;       // record: signed means of H, M_i and the spread of H
+                                 // about its mean (scalar_field_diag.cpp)
 };
 
 //----------------------------------------------------------------------------------------
@@ -302,6 +304,7 @@ class ScalarField {
   void ConstraintMagnitudesT();
   void ConstraintMagnitudes();
   void WriteConstraintHistory(Real time, int ncycle, bool header);
+  void ConstraintSignedMeans(Real out[7]);
   bool DumpIsExtended() const;
   void WriteDumpExtended(Real time);
 

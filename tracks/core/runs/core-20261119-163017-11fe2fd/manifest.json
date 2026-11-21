@@ -1,0 +1,25 @@
+{
+ "run_id": "core-20261119-163017-11fe2fd",
+ "owner": "core",
+ "command": [
+  "bash",
+  "/data/haiyangw/nrpic/wt/core-omp/tracks/core/omp/scaling_series.sh",
+  "t64"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-163017-11fe2fd",
+ "commit": "11fe2fd",
+ "source_modified_since_commit": false,
+ "inputs": [],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-163017-11fe2fd",
+ "purpose": "omp strong scaling, phase t64: O3 at 64 threads, punc, cluster, cosmo, newton one after the other, two repeats, places from omp_places.py. Registered by hand: nrpic-run refused (16 cores of core busy in other sessions)",
+ "kind": "scouting",
+ "tag": "omp-t64",
+ "state": "finished",
+ "status": "completed",
+ "registered_by_hand": "nrpic-run refused (cores of owner core busy in other sessions)",
+ "wall_time_s": 370.97,
+ "exit_status": 0,
+ "cores": 64,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T16:30:17Z"
+}
