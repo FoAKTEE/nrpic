@@ -119,3 +119,47 @@ bibliography (optional item of the brief), left for later in this package if tim
 - `kb embed --check --work` afterwards: 0 missing, 0 stale, 0 orphaned.
 Refuted by: a dangling chunk reference, a changed status or label, a claim-check row that differs
 from the remap, a status change, or entry counts other than the dry run's.
+
+## Outcome P3 (runs kb-20261121-213423-d6e666c re-ingest, kb-20261121-213521-2b80ade tags/vectors/resolve, kb-20261121-213832-67fadc6 state and claim check; outputs read)
+
+Held, with two arithmetic slips in my prediction. TeX papers without an entry: 6 (the old styles),
+none ok; ok 684, review 23, pdf 3 unchanged; strict rate = recorded rate = 684/710 = 0.96338 (was
+0.95070). Every citation row of the 20 now has an entry (citations_with_entry = citations). Entries
+64968 -> 65648 (+680: the per-paper counts equal the dry run's; my "+746" was a wrong sum).
+Citation rows 104995 -> 105082 (+87 = 58 rows of gr-qc/0304002 from 55 commands with several keys +
+29 of 2602.00155; my "+84" counted commands, not rows); in corpus 14208 -> 14274. Vectors after
+`kb embed`: 796 chunks and 935 equations embedded, 836 and 935 orphans deleted; `kb embed --check
+--work`: 0 missing, 0 stale, 0 orphaned (43520 chunks, 54502 equations). Tags: 935 equations
+re-tagged.
+
+Claims: flat.tex byte-identical for the two papers with claims (remap reports identical_flat True);
+2403.15126: 16 claims, 15 locator rows moved to the new chunk ids (186 has no row, untouched);
+1201.4794: 5 claims, 5 rows. `kb claim check --id 171..186`: "checked: same 16", and its locator
+rows, chunk ids and quote ranges equal the remap's for all 21 claims (0 differences; the check
+resolves independently through claims_check.Store). Flat ranges equal those before the re-ingest
+for all 21. 0 claims and 0 locator rows point at a missing chunk. Six claims (183, 658-662) changed
+label or status between my baseline (21:20) and the re-ingest (21:34): claim_events show `verify`
+by kb-claims_tracks at 21:30, not by this package; the remap events carry no label or status.
+
+## Entry 3 (2026-11-21 21:45 UTC): provenance of the 24 additions (download records and reports)
+
+From kb-data/meta/arxiv/<key>.json (fetched_utc) and the wave-3a report scratch/orch/wave3a_reports/kb.md
+with the packages' own files on kb/brief-check and track/F-hills (git grep):
+- F-hills, 2026-11-19 14:25: 1312.1289 v3 (EIH equations, tracks/F-hills/eih/README.md:43),
+  1805.07240 v5 (2.5PN Hamiltonian, tracks/F-hills/binary_conv/scripts/refs.py:10).
+- kb brief check s31_32, 14:26: 2602.01830 v2, 2505.00286 v3 (dGREM/TEGR hyperbolicity; s31_32/JOURNAL.md:69).
+- kb brief check s37_38, 15:20-15:23 (open question 20, EdS stability; s37_38/CHECK.md:19-20):
+  2606.16879, 2607.09326, 2306.17774, 2107.00457, 2012.14241, 2604.14911, 2512.19454, 1402.7085,
+  1904.13290, 2402.08544, 2609.14755, 1007.0184 (12).
+- kb brief check s5_s6, 15:37: 2403.03470, 2402.17530 (Burnett without symmetry; report line 602).
+- kb novelty, 15:38-15:42: 2009.08968, 2404.07659, 2406.11417, 2606.26532, 2607.09285, 2508.13294
+  (S5 free streaming and S7 Burnett; novelty/NOVELTY.md:11).
+Metadata present before this package: arXiv API for 5 (2306.17774, 2402.17530, 2403.03470,
+2606.16879, 2607.09326), INSPIRE for 4 (2306.17774, 2606.16879, 2607.09326, 2609.14755).
+
+## Prediction P4 (metadata fetch for the 24, one call, --meta --service both)
+
+The command skips what is stored: arXiv API requests for the 19 without a record (one batch of 19)
+and INSPIRE for the 20 without one (two batches of 10). All 19 arXiv records ok. INSPIRE: most ok;
+a paper of 2026 may have no record yet (status not-found) [JUDGEMENT]. Refuted by an arXiv failure
+or by a fetch of an id that already had a record.
