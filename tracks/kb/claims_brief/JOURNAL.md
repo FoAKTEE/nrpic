@@ -114,3 +114,31 @@ locator resolves, as the plan found 595 of 595 TeX locators in the database); af
 the 112 seeds count fulltext 42, refuted 11, abstract 14, background 6, title_only 0,
 judgement 20, to_verify 19. A second run of `--annotate` writes nothing (idempotent). Refuted
 if any command fails or any count differs.
+
+Outcome of P4 (run kb-20261121-232417-80127f0): 42 "fulltext, checked", 11 "refuted", annotate
+"written 12", and the second annotate "same 12"; seeds now fulltext 42, refuted 11, abstract
+14, background 6, judgement 20, to_verify 19; statuses checked 42, refuted 11, located 11,
+partial 1, unlocated 47; 159 locator rows on the seeds, 159 resolved. Held in every count.
+
+## Step 3: defects of cited papers (DEFECTS table in kbtool/claims_brief.py)
+
+Sources: the 17 rows of coord/BRIEF_ERRATA.md section 5 (r1-r17 in table order; r11-r17 are
+the seven section-5 rows of the brief-check ERRATA_ROWS.md files, checked identical by
+extraction) and three claims the brief-check reports ask for (q1 Burnett conjecture proven
+without symmetry, 2403.03470; q2 lattice horizon masses constant to 0.1 per cent,
+1903.01490:653-657; q3 both seed estimates of 2506.17641 v3). I read every printed locator
+(and the right-value locators labelled fulltext) myself; where a row's evidence is another
+owner's run I cite the run and did not redo it. Rows split where one row holds several
+printed statements: 28 entries, 24 refuted printed statements, 20 superseding right values, 4
+facts without a printed statement to refute (r12 metadata divergence of 1203.6185, q1-q3).
+All papers named are now in the database (ingest3), so no raw-store locator is needed.
+Before writing: claims 603-618 and 679-683 of other writers already hold some of the same
+findings (as judgement or "as printed" fulltext); they are named in `existing`, not changed.
+A rule changed in add_defect: a right value whose locators resolve is 'checked' only when it
+is fulltext, otherwise 'located' (a judgement is not a checked passage); test added.
+
+P5 (prediction before the write): 48 new claims; labels refuted 24, judgement 14, fulltext 8,
+abstract 2; statuses refuted 24, located 15, checked 8, unlocated 1 (r11's INSPIRE value, a
+metadata locator only); every TeX locator part resolves; 20 claims with supersedes set, each
+pointing to the printed claim of its entry; a second run adds nothing. Refuted if any count
+differs or a TeX locator stays unresolved.

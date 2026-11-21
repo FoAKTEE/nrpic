@@ -709,8 +709,10 @@ def add_defect(con, d, store, by):
             return row[0], "same"
         tex, _other = parse_any_locator(loc)
         parts = resolve_parts(con, store, tex)
+        # 'checked' only for a passage read for this claim (fulltext); a judgement or a record-level
+        # claim whose locators resolve is 'located'
         status = ("refuted" if label == "refuted" else
-                  "checked" if parts and all(p[1] for p in parts) else
+                  ("checked" if label == "fulltext" else "located") if parts and all(p[1] for p in parts) else
                   "unresolved" if parts else "unlocated")
         cur = con.execute("INSERT INTO claims(text, kind, paper_id, locator, label, origin, track_tags, verified_by, "
                           "verified_at, supersedes) VALUES (?,?,?,?,?,?,?,?,?,?)",
@@ -758,7 +760,8 @@ def recheck_defects(con, store, by):
         write_locator_rows(con, cid, parts)
         new = status
         if status == "unresolved" and ok:
-            new = "checked"
+            lab = con.execute("SELECT label FROM claims WHERE claim_id=?", (cid,)).fetchone()[0]
+            new = "checked" if lab == "fulltext" else "located"
             con.execute("UPDATE claim_meta SET status=?, checked_by=?, checked_at=? WHERE claim_id=?",
                         (new, by, _cdb.utcnow(), cid))
             _cdb.event(con, cid, by, "check", None, None, status, new, "locators now in the database")
@@ -766,5 +769,240 @@ def recheck_defects(con, store, by):
     return out
 
 
-# ------------------------------------------------------------------ the defects (filled in step 3)
-DEFECTS = []
+# ------------------------------------------------------------------ the defects (step 3)
+# coord/BRIEF_ERRATA.md section 5 has 17 rows (r1 to r17 in the order of the table; r11 to r17
+# are the section-5 rows of the brief-check ERRATA_ROWS.md files on kb/brief-check 476a1763),
+# and the reports of the brief check (scratch/orch/wave3a_reports/kb.md) ask for three more
+# claims (q1 to q3). Texts are our wording. Labels of the right values: fulltext only where the
+# value is printed at the locator and was read by kb-claims_brief; judgement where it was
+# computed (a run, arithmetic) or read from a figure; abstract where it comes from a metadata
+# record (the brief's [VERIFIED] level). `existing` names claims of other writers with the
+# same finding (not changed here).
+_E = "coord/BRIEF_ERRATA.md section 5"
+DEFECTS = [
+    Defect("r1-2108.11967-table1", f"{_E} r1", "2108.11967",
+           "Table 1 of arXiv:2108.11967 prints the compactness C = 1.41053e-2 in the row w(0) = 0.3 and "
+           "p(0) = 1.09378e-3 in the row w(0) = 1.1 of the b = 0.1 block, and C = 4.00960e-4 in the row "
+           "w(0) = 0.05 of the next block.",
+           "2108.11967v2:main.tex:L491; 2108.11967v2:main.tex:L493; 2108.11967v2:main.tex:L516",
+           "run C-sidm-20261115-120722-38ab057; arithmetic on the printed columns by kb-claims_brief",
+           "In the same rows M/R = 3.29993e-2/2.892 = 1.141e-2 (w(0) = 0.3) and 3.87808e-2/9.672 = 4.010e-3 "
+           "(w(0) = 0.05): C is misprinted (a digit transposition and a factor 10); p(0) at w(0) = 1.1 is "
+           "about 1.09e-2 judging by the neighbouring rows.",
+           "2108.11967v2:main.tex:L491; 2108.11967v2:main.tex:L493; 2108.11967v2:main.tex:L516",
+           "judgement", "number", "C-sidm", "309, 610, 611, 612"),
+    Defect("r1-2108.11967-e2phi", f"{_E} r1", "2108.11967",
+           "The metric function of arXiv:2108.11967, e^{2 Phi(r)} as printed at main.tex:197, is the one "
+           "behind its tabulated equilibria.",
+           "2108.11967v2:main.tex:L197",
+           "run C-sidm-20261115-120722-38ab057: the printed e^{2 Phi} is not consistent with the tabulated "
+           "numbers", kind="method", tracks="C-sidm", existing=""),
+    Defect("r2-gr-qc0601112-Zc", f"{_E} r2", "gr-qc/0601112",
+           "arXiv:gr-qc/0601112 defines the central redshift as Z_c = 1/sqrt(alpha(0)) - 1 (ssevnum7.tex:694), "
+           "the definition behind its tables.",
+           "gr-qc/0601112v1:ssevnum7.tex:L694",
+           "run C-sidm-20261115-121626-e99907d",
+           "The tables of arXiv:gr-qc/0601112 are reproduced only with Z_c = 1/alpha(0) - 1.",
+           "gr-qc/0601112v1:ssevnum7.tex:L694", "judgement", "definition", "C-sidm", "257, 328, 614"),
+    Defect("r2-gr-qc0601112-table3", f"{_E} r2", "gr-qc/0601112",
+           "Table 3 of arXiv:gr-qc/0601112 lists Z_c = 0.045 and 0.052 between the rows 0.42 and 0.77.",
+           "gr-qc/0601112v1:ssevnum7.tex:L809-813",
+           "run C-sidm-20261115-121626-e99907d; the first column increases down the table (L809-813)",
+           "The two entries of Table 3 of arXiv:gr-qc/0601112 read Z_c = 0.45 and 0.52.",
+           "gr-qc/0601112v1:ssevnum7.tex:L811-812", "judgement", "number", "C-sidm", "615"),
+    Defect("r3-1101.3097-b-footnote", f"{_E} r3", "1101.3097",
+           "The footnote of arXiv:1101.3097 on the conduction constant says that astro-ph/0110561 used "
+           "b = 25 sqrt(pi)/(32 sqrt 6) = 1.002 and that the value should be 25 pi/32.",
+           "1101.3097v2:sidm1.tex:L411-412",
+           "read at the sources by kb-claims_brief: astro-ph/0110561 prints 25 pi/(32 sqrt 6) = 1.002 "
+           "(SIDMGT_Xiv2.tex:394); 25 sqrt(pi)/(32 sqrt 6) = 0.565, and 25 pi/32 = 2.45 differs from the "
+           "paper's own b = 25 sqrt(pi)/32 = 1.38 (sidm1.tex:410)",
+           "Two values of the conduction constant are in use: b = 25 sqrt(pi)/32 = 1.38 (arXiv:1101.3097, "
+           "arXiv:2601.17117) and b = 25 pi/(32 sqrt 6) = 1.002 (astro-ph/0110561).",
+           "1101.3097v2:sidm1.tex:L410; 2601.17117v2:SIDM_MS.tex:L233; astro-ph/0110561v2:SIDMGT_Xiv2.tex:L393-394",
+           "fulltext", "number", "C-sidm", "317, 320, 616, 618"),
+    Defect("r4-2502.06783-eq17", f"{_E} r4", "2502.06783",
+           "Eq. (17) of arXiv:2502.06783 builds the initial momentum perturbation of the field with the term "
+           "-sqrt(2 eps1) H Mpl Psi_G (main_V2PRD.tex:320), for data in the geodesic gauge the paper uses.",
+           "2502.06783v3:main_V2PRD.tex:L318-321",
+           "run E-stoch-inf-20261115-123146-82d2fd4; tracks/E-stoch-inf/spec/SPEC.md 5.3",
+           "In the geodesic gauge (main_V2PRD.tex:490) the term -sqrt(2 eps1) H Mpl Psi_G vanishes; the "
+           "initial data need -sqrt(2 eps1) Mpl H Psi_B, and with the printed term the linear Hamiltonian "
+           "residual is 4 eps1^2 H^3 a^2 k^-2 dR/dt.",
+           "2502.06783v3:main_V2PRD.tex:L318-321; 2502.06783v3:main_V2PRD.tex:L490",
+           "judgement", "method", "E-stoch-inf", "603"),
+    Defect("r5-2502.06783-draw", f"{_E} r5", "2502.06783",
+           "arXiv:2502.06783 normalises the Gaussian draws of its initial noise by the prefactors printed at "
+           "main_V2PRD.tex:876-884 in front of the inverse real FFT (the first line reduces to dk^(3/2)).",
+           "2502.06783v3:main_V2PRD.tex:L876-884",
+           "run E-stoch-inf-20261115-122934-9ac98d8: the printed prefactor gives (2 pi)^3 too much power",
+           "With the normalisation of the inverse FFT the draw prefactor must be L^(-3/2) (box side L).",
+           "2502.06783v3:main_V2PRD.tex:L876-884", "judgement", "method", "E-stoch-inf", "604"),
+    Defect("r5-2610.32592-draw", f"{_E} r5", "2610.32592",
+           "The appendix of arXiv:2610.32592 normalises the Gaussian draws by (dk/sqrt(2 pi))^(3/2) in front of "
+           "the inverse real FFT (appendix.tex:487-491).",
+           "2610.32592v1:appendix.tex:L487-491",
+           "run E-stoch-inf-20261115-122934-9ac98d8: the printed prefactor gives (2 pi)^(3/2) too much power",
+           "With the normalisation of the inverse FFT the draw prefactor must be L^(-3/2) (box side L).",
+           "2610.32592v1:appendix.tex:L487-491", "judgement", "method", "E-stoch-inf", "605"),
+    Defect("r6-2206.11234-weight", f"{_E} r6", "2206.11234",
+           "The importance-sampling weight of arXiv:2206.11234 carries the sign printed at method.tex:78 and, "
+           "for a constant drift, :151.",
+           "2206.11234v2:method.tex:L78; 2206.11234v2:method.tex:L151",
+           "runs E-stoch-inf-20261115-125312-dafadc4, E-stoch-inf-20261115-125658-e3eaef3: the sign of the "
+           "weight is wrong", kind="method", tracks="E-stoch-inf", existing="606"),
+    Defect("r6-2206.11234-pole", f"{_E} r6", "2206.11234",
+           "The appendix of arXiv:2206.11234 states that the leading pole Lambda_0 = v0/4 holds in general, "
+           "beyond the large phi_UV limit (appendix.tex:168-173).",
+           "2206.11234v2:appendix.tex:L168-173",
+           "runs E-stoch-inf-20261115-125312-dafadc4, E-stoch-inf-20261115-125658-e3eaef3: v0/4 is not the "
+           "leading pole in general", kind="result", tracks="E-stoch-inf", existing="607"),
+    Defect("r7-2512.14649-friedmann", f"{_E} r7", "2512.14649",
+           "arXiv:2512.14649 writes the Friedmann constraint as H^2 = V/(1 - pi^2/(6 Mpl^2)) (PRD_v2.tex:108).",
+           "2512.14649v2:PRD_v2.tex:L108",
+           "read at the source (E-stoch-inf; reread by kb-claims_brief)",
+           "The Friedmann constraint of that model is H^2 = V/[3 Mpl^2 (1 - pi^2/(6 Mpl^2))]: the printed "
+           "denominator lacks the factor 3 Mpl^2.",
+           "2512.14649v2:PRD_v2.tex:L108", "judgement", "definition", "E-stoch-inf", "608"),
+    Defect("r7-2512.14649-usr", f"{_E} r7", "2512.14649",
+           "arXiv:2512.14649 puts the USR phase between N of about 3.5 and 8 and says the field passes a "
+           "shallow maximum of the potential before the slow roll (PRD_v2.tex:534).",
+           "2512.14649v2:PRD_v2.tex:L534",
+           "read at the source by E-stoch-inf (coord/BRIEF_ERRATA.md section 5 r7); not rederived here",
+           "The feature is an exact stationary inflection point at -sqrt(2) v, and the USR interval of the "
+           "text is one e-fold later than the paper's own Fig. 1.",
+           "2512.14649v2:PRD_v2.tex:L534", "judgement", "result", "E-stoch-inf", "609"),
+    Defect("r8-1305.2619-prose", f"{_E} r8", "1305.2619",
+           "arXiv:1305.2619 says the Gondolo-Silk spike is a factor of three below the relativistic one at its "
+           "peak and that the 4Gm variant peaks about 15 per cent above it (SFWpaper.tex:443).",
+           "1305.2619v1:SFWpaper.tex:L443",
+           "run D-bh-dress-20261115-123029-4df1e76 (read off the paper's own Fig. 1)",
+           "From the paper's own Fig. 1 the peak ratio is 2.59 and the excess of the 4Gm variant 9.2 per cent.",
+           "1305.2619v1:SFWpaper.tex:L443", "judgement", "number", "D-bh-dress", "682"),
+    Defect("r8-1305.2619-action", f"{_E} r8", "1305.2619",
+           "The relativistic radial action of arXiv:1305.2619 (its Eq. (3.19), label Ir_rel; also Eq. (4.13)) "
+           "is the canonical one of the Schwarzschild geodesic.",
+           "1305.2619v1:SFWpaper.tex:L413-418",
+           "run D-bh-dress-20261115-123029-4df1e76: the factor 1/(1 - 2Gm/r) of the canonical radial action is "
+           "missing (+5.2 per cent at the spike peak)",
+           "The canonical radial action carries the factor 1/(1 - 2Gm/r) in the integrand; without it the "
+           "spike peak is off by 5.2 per cent.",
+           "1305.2619v1:SFWpaper.tex:L413-418", "judgement", "method", "D-bh-dress", "679, 680"),
+    Defect("r8-1305.2619-fig3", f"{_E} r8", "1305.2619",
+           "Fig. 3 of arXiv:1305.2619 shows the spike for the black-hole mass m = 4e6 M_sun.",
+           "1305.2619v1:SFWpaper.tex:L695-700",
+           "run D-bh-dress-20261115-123029-4df1e76 (a 0.04 dex fit, [JUDGEMENT] of D-bh-dress)",
+           "Fig. 3 of arXiv:1305.2619 corresponds to m = 1e6 M_sun.",
+           "1305.2619v1:SFWpaper.tex:L695-700", "judgement", "number", "D-bh-dress", "681"),
+    Defect("r9-1707.06302-boost", f"{_E} r9", "1707.06302",
+           "arXiv:1707.06302 says the spike peak at spin 0.8 is about 35 per cent above that at 0.5 for the "
+           "Hernquist profile, and about 20 per cent for the constant distribution (kerrdm.tex:929-931).",
+           "1707.06302v2:kerrdm.tex:L929-931",
+           "read from the paper's figures by D-bh-dress (coord/BRIEF_ERRATA.md section 5 r9)",
+           "From the paper's figures the increases are about +45 and +14 per cent.",
+           "1707.06302v2:kerrdm.tex:L929-931", "judgement", "number", "D-bh-dress", "683"),
+    Defect("r10-2611.12831-L729", f"{_E} r10", "2611.12831",
+           "arXiv:2611.12831 says particle communication and removal at block boundaries and at the outer "
+           "boundaries of the domain are described in its section on the numerical implementation "
+           "(main.tex:729, pointing to L673-698).",
+           "2611.12831v1:main.tex:L729",
+           "tracks/core/interfaces/SECTION2_CORRECTIONS.md section 4.2 (core); kb-claims_brief searched "
+           "L673-698 for removal and outer boundaries: only the step order and particle excision are there",
+           kind="method", tracks="core", existing=""),
+    Defect("r11-2604.03628-jref", f"{_E} r11 (s310)", "2604.03628",
+           "The arXiv record of arXiv:2604.03628 gives the journal reference Phys. Rev. D 111, 063518 (2025).",
+           "meta:arxiv-api/2604.03628",
+           "kb-data/meta/arxiv-api/2410.23942.json carries the same reference (it is that of the companion "
+           "paper 2410.23942); kb-data/meta/inspire/2604.03628.json publication_info; s310 CHECK #42",
+           "INSPIRE gives Phys. Rev. D 114 (2026) 6, 063530 for arXiv:2604.03628.",
+           "meta:inspire/2604.03628", "abstract", "result", "E-stoch-inf", ""),
+    Defect("r12-1203.6185-titles", f"{_E} r12 (s311)", "1203.6185",
+           "arXiv:1203.6185 carries two titles and two author orders: on arXiv 'Perturbational treatment of the "
+           "gravitational potential effect on binary black hole evolution' with Cao first (bbbhPRD.tex:8-14); "
+           "the journal record J. Phys. Conf. Ser. 330, 012016 and INSPIRE also carry 'From binary black hole "
+           "simulation to triple black hole simulation' with Bai first. A metadata divergence for the "
+           "citation resolver, not an error of the paper.",
+           "1203.6185v1:bbbhPRD.tex:L8-14; meta:inspire/1203.6185; meta:arxiv-api/1203.6185",
+           "kb-data/meta/inspire/1203.6185.json (titles, authors); kb-data/meta/arxiv-api/1203.6185.json; "
+           "package s311", right_label="abstract", kind="result", tracks="F-hills", existing="", refute=False),
+    Defect("r13-1807.01711-abstract", f"{_E} r13 (s33)", "1807.01711",
+           "The abstract of arXiv:1807.01711 gives the global backreaction energy density as of order 1e-8 of "
+           "the matter energy density (INCAPRD2019.tex:106).",
+           "1807.01711v2:INCAPRD2019.tex:L106",
+           "read at the source by s33 (CHECK #3) and kb-claims_brief: INCAPRD2019.tex:524, :644",
+           "The body of arXiv:1807.01711 gives, globally at z = 0, Omega_Q + Omega_L of about 1e-9 for the "
+           "backreaction and Omega_R of about 1e-8 for the curvature; the abstract's 1e-8 is the curvature "
+           "parameter.",
+           "1807.01711v2:INCAPRD2019.tex:L524; 1807.01711v2:INCAPRD2019.tex:L644", "fulltext", "number",
+           "B-emd-gw", ""),
+    Defect("r14-2512.13673-abstract", f"{_E} r14 (s34_36)", "2512.13673",
+           "The abstract of arXiv:2512.13673 pairs mu_crit of about 0.02 Mpl with r_crit of about 1e-6 "
+           "(main.tex:80).",
+           "2512.13673v1:main.tex:L80",
+           "run kb-20261119-150703-95bba8b; Eq. (r) at main.tex:135 with N* = 60 gives 5.6e-6 (kb-claims_brief "
+           "arithmetic: 16 pi (0.02)^2/60^2 = 5.59e-6)",
+           "The body of arXiv:2512.13673 gives r_crit of about 5.6e-6 for mu_crit of about 0.020 Mpl "
+           "(main.tex:114, :309), as Eq. (r) gives with N* = 60.",
+           "2512.13673v1:main.tex:L114; 2512.13673v1:main.tex:L135; 2512.13673v1:main.tex:L309", "fulltext",
+           "number", "E-stoch-inf", ""),
+    Defect("r14-2512.13673-L276", f"{_E} r14 (s34_36)", "2512.13673",
+           "arXiv:2512.13673 pairs mu_crit of about 0.025 and 0.020 Mpl (in-phase and out-of-phase data, in "
+           "that order) with r_crit of about 5.6e-6 and 8.7e-6 respectively (main.tex:276).",
+           "2512.13673v1:main.tex:L276",
+           "run kb-20261119-150703-95bba8b; kb-claims_brief arithmetic with Eq. (r): 16 pi (0.025)^2/60^2 = "
+           "8.73e-6",
+           "By Eq. (r) of arXiv:2512.13673, mu_crit of about 0.025 Mpl (in-phase) gives r_crit of about 8.7e-6 "
+           "and 0.020 Mpl (out-of-phase) gives 5.6e-6; the caption at main.tex:238 has the right order of the "
+           "two branches.",
+           "2512.13673v1:main.tex:L135; 2512.13673v1:main.tex:L238", "judgement", "number", "E-stoch-inf", ""),
+    Defect("r15-2508.10070-variance", f"{_E} r15 (s35)", "2508.10070",
+           "arXiv:2508.10070 calls sigma_0 and sigma_h the variance of the density contrast, and sigma_h^* the "
+           "quantity that characterises that variance (main.tex:81, :322, :775).",
+           "2508.10070v1:main.tex:L81; 2508.10070v1:main.tex:L322; 2508.10070v1:main.tex:L775",
+           "read at the source by s35 and kb-claims_brief: the definition at main.tex:767; the group's "
+           "2409.00435 main.tex:62",
+           "With the definition sigma_j^2 = integral of d ln k k^(2j) P(k) (main.tex:767), sigma_0 and sigma_h "
+           "are standard deviations, as 2409.00435 (main.tex:62) says of sigma_H; the abstract's beta of about "
+           "A sigma_h^*5 is a fifth power of a standard deviation.",
+           "2508.10070v1:main.tex:L767; 2409.00435v3:main.tex:L62", "fulltext", "definition", "A-emd-pbh", ""),
+    Defect("r16-astro-ph0608642-MH", f"{_E} r16 (s5_s6)", "astro-ph/0608642",
+           "arXiv:astro-ph/0608642 gives the horizon mass as M_H(T) of about 1 M_sun (T/100 MeV)^-2 "
+           "(g_eff/10.75)^(-1/2) (ms.tex:197-198).",
+           "astro-ph/0608642v1:ms.tex:L197-198",
+           "run kb-20261119-154408-2b35ecd (panel b of fig_numbers.png): a factor 15 below M_H = c^3 t/G with "
+           "the radiation-era t(T), 1e4 against 1.5e5 M_sun at 1 MeV",
+           "With t of about 0.738 s (g*/10.75)^(-1/2) (T/1 MeV)^(-2) and M_H = c^3 t/G = 2.03e5 (t/1 s) M_sun "
+           "(arXiv:2002.12778), the horizon mass at 1 MeV is about 1.5e5 M_sun.",
+           "2002.12778v2:CKSY2021.tex:L276-291", "judgement", "number", "", ""),
+    Defect("r17-2607.09326-abstract", f"{_E} r17 (s7_s8)", "2607.09326",
+           "The abstract of arXiv:2607.09326 says that every near-flat initial data set on T^3 with positive "
+           "energy density converges to a flat metric under the Einstein-Euler flow with a polytropic "
+           "equation of state, with no condition on the index (main.tex:96).",
+           "2607.09326v1:main.tex:L96",
+           "read at the source by s7_s8 and kb-claims_brief: main.tex:141, :299-300",
+           "The theorem of arXiv:2607.09326 holds for polytropic index n > 3 (main.tex:141, :300); the authors "
+           "do not expect homogenisation for 0 < n < 3 (main.tex:300).",
+           "2607.09326v1:main.tex:L141; 2607.09326v1:main.tex:L299-300", "fulltext", "result", "", ""),
+    Defect("q1-2403.03470-burnett", "brief-check report (novelty): record Burnett's conjecture proven", "2403.03470",
+           "Huneau and Luk (arXiv:2403.03470, Burnett's conjecture in generalized wave coordinates) prove the "
+           "Burnett conjecture without symmetry assumptions or angular regularity; earlier proofs needed a U(1) "
+           "symmetry (elliptic gauge) or angular regularity (double null gauge).",
+           "2403.03470v1:wavecoordinate.arxiv.240305.tex:L116-125; 2403.03470v1:wavecoordinate.arxiv.240305.tex:L143",
+           "read at the source by the novelty package and kb-claims_brief",
+           right_label="fulltext", kind="result", tracks="", existing="", refute=False),
+    Defect("q2-1903.01490-masses", "brief-check report (novelty): record the lattice horizon masses", "1903.01490",
+           "In the numerical-relativity lattices of spinning black holes of arXiv:1903.01490 the irreducible "
+           "and horizon masses stay constant during the evolution to a relative fluctuation of about 0.1 per "
+           "cent, dominated by numerical uncertainty.",
+           "1903.01490v2:spinning_BH_v2_CT.tex:L653-657",
+           "read at the source by the novelty package and kb-claims_brief",
+           right_label="fulltext", kind="number", tracks="D-bh-dress", existing="", refute=False),
+    Defect("q3-2506.17641-seed", "brief-check report (s37_38): record both seed estimates", "2506.17641",
+           "arXiv:2506.17641 v3 quotes M_GR/M_200 of about 1e-10 to 1e-8 for halos of 1e8 to 1e11 M_sun from "
+           "Gad-Nasr et al. (sidmacc.tex:133) and reports that the full-GR non-equilibrium model gives "
+           "M_GR/M_smfp of about 4e-6, a factor 10 above its own estimate, which it therefore calls "
+           "conservative (sidmacc.tex:145).",
+           "2506.17641v3:sidmacc.tex:L133; 2506.17641v3:sidmacc.tex:L145",
+           "read at the source by s37_38 (CHECK #34) and kb-claims_brief",
+           right_label="fulltext", kind="number", tracks="C-sidm", existing="", refute=False),
+]

@@ -288,3 +288,40 @@ def test_cli_dry_run_and_seed(brief, tmp_path, monkeypatch):
     con = cdb.connect(str(data / "db" / "kb.sqlite"))
     assert con.execute("SELECT count(*) FROM claims").fetchone()[0] == 15            # second run added nothing
     con.close()
+
+
+def test_defect_table_well_formed():
+    """Every defect of the table: unique key, a label the schema allows, TeX locators of the stored
+    form (or meta: records), and a printed statement that is refuted unless it is a fact."""
+    keys = [d.key for d in cb.DEFECTS]
+    assert len(keys) == len(set(keys)) and len(keys) >= 17
+    for d in cb.DEFECTS:
+        assert d.right_label in ("fulltext", "judgement", "abstract", "title_only", "background")
+        for loc in (d.printed_loc, d.right_loc):
+            tex, other = cb.parse_any_locator(loc)
+            assert all(o.startswith("meta:") for o in other), (d.key, other)
+        assert d.refute or not d.right, d.key           # a fact carries no superseding claim
+    # every section-5 row of coord/BRIEF_ERRATA.md (r1 to r17) has at least one entry
+    rows = {d.key.split("-")[0] for d in cb.DEFECTS if d.key.startswith("r")}
+    assert rows == {f"r{i}" for i in range(1, 18)}
+
+
+def test_defect_status_by_label(tmp_path):
+    raw = tmp_path / "raw" / "arxiv"
+    src = raw / "2609.14218" / "v1" / "src"
+    src.mkdir(parents=True)
+    (src / "MDPBH.tex").write_text("\n".join(f"line {i}" for i in range(1, 20)) + "\n")
+    con = _db(tmp_path)
+    con.execute("INSERT INTO papers(paper_id, title, version, main_tex) VALUES ('2609.14218', 't', 'v1', 'MDPBH.tex')")
+    store_ = ck.Store(str(raw), os.path.join(str(tmp_path), "build", "tex"), con)
+    d = cb.Defect(key="t2", row="r", paper_id="2609.14218", printed="p", printed_loc="2609.14218v1:MDPBH.tex:L3",
+                  evidence="run x", right="computed", right_loc="2609.14218v1:MDPBH.tex:L4", right_label="judgement")
+    res = cb.add_defect(con, d, store_, "t")
+    st = dict(con.execute("SELECT claim_id, status FROM claim_meta").fetchall())
+    assert st[res["printed"][0]] == "refuted" and st[res["right"][0]] == "located"     # not 'checked'
+    f = cb.Defect(key="t3", row="r", paper_id="2609.14218", printed="fact", printed_loc="2609.14218v1:MDPBH.tex:L5",
+                  evidence="read", right_label="fulltext", refute=False)
+    r2 = cb.add_defect(con, f, store_, "t")
+    assert r2["right"] is None
+    assert con.execute("SELECT c.label, m.status FROM claims c JOIN claim_meta m USING(claim_id) WHERE claim_id=?",
+                       (r2["printed"][0],)).fetchone() == ("fulltext", "checked")
