@@ -42,8 +42,10 @@ displacement (a - 1) d/k:
   pm.py (spectral) does not have this error, so at n = 32 the mode's error is 5 to 13
   times pm.py's at a <= 5 (predictions P1a and P1b failed; they assumed that the
   lattice error dominates both codes). AthenaK - pm.py falls by 4.0 from n = 32 to 64.
-- Plane symmetry is kept to 1.3e-15 L; the record times of AthenaK and pm.py agree
-  exactly.
+- Plane symmetry is kept to round-off: 1.3e-15 L is this package's plane spread at n = 32
+  before the crossing (P1d, JOURNAL.md line 159); verifier2's measure, the largest spread of
+  x within one sheet, reaches 1.2e-14 L at n = 64 (stage/G1/VERIFIER.md; lead's note of
+  2026-11-20). The record times of AthenaK and pm.py agree exactly.
 
 ### P2 Second-moment history columns on an exact pancake (`figs/pancake_sin_moments.png`)
 

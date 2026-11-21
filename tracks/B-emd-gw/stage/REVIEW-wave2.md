@@ -135,3 +135,12 @@ What the track does with each WRONG or NOT CONFIRMED item:
 | Weakest point 3: relativistic regime | accepted | stop rule of SCOPE.md section 6 stands (delta <= 0.02 until a slicing passes collapse; joint work with Track A) |
 | C5: OPEN item 7 closable at second order | accepted | closed at second order: the verifier's derivation plus the measured size of the spatial-gauge piece (< 1.1 percent of c_+ for a <= 20, first_source P5); slicing piece bounded only (P10) |
 | File name VERIFIER.md, harness expects VERIFIER_REPORT.md | naming | kept as written by the verifier; request to orch to accept the name (outbox) |
+
+## Erratum (lead, 2026-11-20, batch 2a; requested by the note helper of wave 2b, note/README.md Request 5)
+
+- The gauge numbers this review quoted at a = 5 and 20 differ from the analysis files; the files
+  win: raw two-gauge difference 0.121 and 1.468 percent of |s|, after G_tot 0.002 and 0.030
+  percent (note/JOURNAL.md, outcome N8; ledger rows of the spatial gauge).
+- The N3 constants of this review come from the review's own quadrature, not from the helper's
+  history files; the helper's values are those of newton_tests/README.md.
+- The wave-3 review is `REVIEW-wave3.md`.
