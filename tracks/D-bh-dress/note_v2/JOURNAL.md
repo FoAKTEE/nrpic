@@ -99,3 +99,57 @@ checker with --compile and the forbid list of WRITING_GUIDE.md):
 - B4: 22-24 pages.
 Refuted if any script fails, a v1 ledger value changes, or the checker finds a defect I then
 have to fix (I will record what and fix it).
+
+## N3 (2026-11-21T22:02Z): outcome of N1 (Kerr spike, second sampler seed)
+
+Runs: initial data D-20261121-211717-7b6374b (seed 20261121; 12 pilot cells without a hit,
+seed 1 had 13; 0 envelope violations, seed 1 had 1), AthenaK D-20261121-212016-7e090f9 (exit 0,
+2355 s on 6 single-core processes), analysis D-20261121-215955-0fb4ea2 (analyze_kerr.py, same
+reference grid), comparison D-20261121-220011-d0deb0b (compare_seeds.py; figure
+fig_kerr_seeds.png of that run looked at: panel (a) both seeds per range with the two-seed
+mean, panel (b) running means; the seed-2 running means settle by ~5000 M).
+
+| Range (r/M) | seed 1: d, sigma, z | seed 2: d, sigma, z | two-seed mean +- error |
+|---|---|---|---|
+| 0-4 | -4.10, 3.69, -1.11 | -1.06, 3.83, -0.28 | -2.64 +- 2.66 |
+| 4-6 | -1.77, 1.94, -0.91 | -1.04, 1.97, -0.53 | -1.41 +- 1.38 |
+| 6-10 | -1.04, 1.03, -1.01 | -0.04, 1.03, -0.03 | -0.54 +- 0.73 |
+| 10-16 | -0.07, 0.67, -0.11 | +1.41, 0.68, +2.08 | +0.66 +- 0.48 |
+| 16-40 | +0.16, 0.27, +0.59 | -0.07, 0.27, -0.27 | +0.04 +- 0.19 |
+
+(d and sigma in per cent of the expected count; reference grid D-bh-dress-20261115-172646-ed6a510.)
+
+- Main test: Z2 = z(0-4) + z(4-6) + z(6-10) = -0.84 > -1.5: **H0 HELD** (no bias indicated);
+  not strong-bias either. Seed 2's sigma within 4 per cent of seed 1's (predicted within 20):
+  held. The two seeds differ by 0.57, 0.26, 0.69 sigma in the inner ranges. The signs in the
+  inner ranges are again all negative, but small (z -0.28, -0.53, -0.03); the combined
+  two-seed z of the three inner ranges is -1.59 (sum over sqrt 3). So: no evidence of a bias
+  at the 1.5-sigma level; the two-seed means bound a bias in 0-4, 4-6, 6-10 to about
+  -2.6 +- 2.7, -1.4 +- 1.4, -0.5 +- 0.7 per cent. As written beforehand, a single seed decides
+  weakly; this outcome halves seed 1's deficits but does not exclude a 1-per-cent bias.
+- Side predictions: no non-finite record (0): held; chi^2 median 48.4 for 47 dof, inside
+  [0.38, 1.62] dof: held; late/early within 2 sigma in every range (largest |late/early - 1|
+  1.0 per cent in 0-4, sigma 3.8): held. **Refuted**: (i) the outer range 10-16 lies +1.41 per
+  cent above the reference, z = +2.08, just outside the predicted 2 sigma (16-40 holds at
+  -0.27); among ten range-seed values one beyond 2 sigma is expected about one time in three
+  [JUDGEMENT], so I do not read it as a defect, but it is outside what I predicted. (ii) one
+  particle of 48000 went inside r_+ (smallest r 0.400; seed 1: none, smallest 2.288), and with
+  it max |dE/E| is not finite (prediction: < 2e-5); 15 particles went below their predicted
+  pericentre by more than 1e-3 (seed 1: 14), the largest by 3.26 (seed 1: 3.1e-3). The
+  plunging particle is diagnosed in N4 before anything else is concluded from it.
+
+## N4 (2026-11-21T22:04Z): the plunging particle of seed 2, prediction
+
+Script `kerr_seed2/plunger.py` (analysis only): find the particles whose max |dE/E| is not
+finite or above 1e-3 in the seed-2 analysis (kerr_seed2_series.npz), read their radius at all
+201 snapshots, and from the initial invariants (ic_meta.npz: E, Lz, C, rp) compute their
+distance from the capture boundary, (C - C_crit)/C_crit with C_crit from kerr_lib.ccrit at
+their starting radius, and the effect of their post-plunge snapshots on the 0-4 count.
+Prediction: exactly one such particle; its initial C lies within 1e-3 (relative) of C_crit,
+i.e. on the edge of the loss cone, where an energy error of the size seen in seed 1 (|dE/E| up
+to 8e-6 near pericentres of 2.3 M) can carry it across [JUDGEMENT]; it plunges at a pericentre
+passage and is then counted in the 0-4 range at every later snapshot (the analytic metric has
+no excision), which raises seed 2's 0-4 time average by (fraction of snapshots after the
+plunge) / (expected count 137.8), at most +0.73 per cent. Refuted if its C is farther than
+1e-2 from C_crit (then a defect of the sampler or the pusher beyond separatrix sensitivity),
+or if it never sits at r < 4 after the plunge.
