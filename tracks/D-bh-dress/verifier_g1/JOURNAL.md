@@ -236,3 +236,27 @@ Predictions:
   (block estimate), and within 0.5 per cent in 10-16 and 16-40. WRONG if my reference
   differs from the track's by more than 3 per cent in an inner range (then the claimed
   deficit is a property of their reference), or if an inner time average lies above mine.
+
+### Outcome of entry 3 (19:41 PST), run D-20261121-033209-9c0bd44
+
+Figures `v3_constf_a0.5.png`, `v3_constf_a0.8.png`, `v3_hern_a0.0.png`, `v3_hern_a0.5.png`,
+`v3_hern_a0.8.png` looked at. Self-checks: V(r) = R/r^4, I_theta(a=0) = 2 pi (L - |Lz|) to
+1e-9, Hernquist action against a direct quadrature to 2e-9, Newtonian limit of the constant-f
+density 0.995 at r = 2000 (loss cone), local-frame quadrature against the invariant integral
+at the constant-f peaks 1.0005 (a = 0.8) and 0.9990 (a = 0.5), at r = 12 to 5e-5.
+- P3a held: constant f, largest deviation from FdRW's figure 0.85 per cent (a = 0.5) and
+  0.88 per cent (a = 0.8) over the whole digitised range, 0.34 per cent for r >= 5 Gm; peaks
+  +0.15 and +0.14 per cent.
+- P3b held within my WRONG threshold but not within my 1.5 per cent prediction: Hernquist a = 0,
+  1.67 per cent for r >= 5 Gm (2.6 per cent at the inner edge, 4.4 Gm), median -0.56 per cent,
+  peak 2.4256e18 at 7.735 against 2.4391e18 at 7.730 (-0.55 per cent). The residual is flat
+  at -0.5 per cent from 5 to 18 Gm and -1 to -1.7 per cent from 20 to 38 Gm at every spin
+  (also a = 0.5, 0.8): a common offset at large r, digitisation or a halo parameter.
+- P3c held: Hernquist a = 0.8, my peak 3.8999e18 at 5.04 Gm, FdRW 4.0826e18 at 5.07 (-4.5
+  per cent), the track's 3.9217e18 (-0.56 per cent from mine); doubled quadrature at the
+  peak node +5e-4; variant L = sqrt(C) -0.1 per cent. a = 0.5: 2.7768e18 against 2.8136e18
+  (-1.3 per cent). FdRW's a = 0.8 curve has a narrow bump at its maximum (figure), which my
+  curve and the track's do not have.
+- Caveat: at a = 0 my Lz scan found up to 23 disjoint valid intervals at some radius (root
+  classification at near-degenerate roots); the doubled quadrature moved the a = 0 peak by
+  7e-5 only, so the effect on the numbers above is small, but it is a fragility of my code.
