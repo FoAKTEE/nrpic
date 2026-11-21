@@ -361,3 +361,67 @@ Predictions for the second version of job B (the predictions of entry 5 stand fo
   from 100 M inside [-1.5e-4, +1.5e-4] to 150 M (job A's relaxed run should show the
   dip of -3e-4 to -6e-4 by 140 M). Refuted if the radius at 150 M is below 1.15 M or the
   drift leaves [-3e-4, +3e-4].
+
+## Entry 7 (10:15): outcome of job A (V8); the faces at 64 M limit the reduced set-up to 50 to 70 M; job C
+
+Job A: run core-20261121-171151-90f52f4 (Slurm 4812, 09:53 to 10:12 PST). `v8-leak` ran
+to 200 M in 858 s (0.136 s per step: the step time on a card is now measured, 8.7e6
+cell-steps per second with blocks of 16^3); `v8-ctl` was stopped by me at t = 62 M
+(`nrpic-run stop`, status stopped) when it was clear that the faces spoil both runs;
+0.32 card-hours in all. Processor test T4 (run core-20261121-175314-27d9c53):
+`lapse_leak_hole` without a tracker writes the bytes of the first pass, 17 of 17 files.
+Byte regression against release core-v0.6 (run core-20261121-175311-bc4afdd,
+`regress_v04.py`, serial builds): PASS, 75 of 75 items identical in the twelve set-ups.
+
+Analysis core-20261121-181206-ddc687e (`results/v_numbers_jobA.json`, figure
+`figs/v_jobA.png`, looked at after this entry was written; the numbers below are from
+the table the script printed).
+
+Outcome V8-a:
+- The reduced mesh reproduces Track D's runs while the faces are silent [VERIFIED]:
+  relaxed run against V-1GB, mass within 8e-6 and radius to three digits from 50 to
+  70 M (1.001135, 1.216 M at 70 M against 1.001127, 1.216 M); control against V-1B,
+  1.000963, 2.041 M at 50 M against 1.000939, 2.038 M.
+- (a) REFUTED as written: from t = 72 M the relaxed run leaves V-1GB (-2.1e-4 at 74 M,
+  -1.7e-3 at 86 M, lowest -2.9e-3 at 127 M, +6.65e-3 at 199.5 M; radius 0.779 M at
+  199.5 M against 0.875 M). The signal of the outflow faces at 64 M reaches the hole
+  after 71 M, also with the relaxed lapse. My judgement "the near faces do not matter
+  for this run" was wrong: Track D's pair with faces at 192 and 384 M agreed to 188 M
+  because the signal of faces at 192 M needs about 213 M at this speed (0.9), not
+  because the relaxed lapse shields the hole.
+- (b) the control: radius HELD (2.041 M at 50 M); the mass leaves the band at 55 M
+  (0.998851 at 60 M, -2.8e-3 at 62 M): the faces again, arriving after about 53 M at
+  the speed of the plain 1+log lapse (1.2). As foreseen in kind, larger than I wrote.
+- (c) not testable beyond 50 M. Up to 50 M the two runs differ by less than 2e-4 in mass
+  (-1.9e-4 at 15 M, +8e-5 at 50 M) and by 0.65 in radius (1.325 against 2.041 M).
+- On the +x axis at 50 M (finest level): plain 1+log has the lapse above 1 from 5 M
+  outward (1.05 at 5 M, 1.32 at 20 M, largest 1.47 at the face), chi 0.87 to 0.88 at 5
+  to 20 M and an outward shift of 0.44 at 1 M; the relaxed run has the lapse 0.88 at
+  5 M and 1.04 at 20 M, chi 0.68 and 0.58 (falling), shift 0.25. These are Track D's
+  numbers of V-1B and V-1GB (their entry 7).
+
+So at cells of M/8 the late mass drift cannot be had cheaply: it needs 150 to 200 M and
+therefore faces beyond 200 M (Track D's size). What the reduced set-up shows cheaply is
+the cause's first link, the horizon radius. For the last link (fewer cells, larger mass
+error) the cells are made coarser instead of the run longer:
+
+Job C (`card_c.list`), test V4: the same data, finest cells M/4 on +-8 M, faces at
++-128 M (signal at the hole after about 105 M with plain 1+log, 140 M relaxed), 100 M,
+288 MeshBlocks, 1600 steps = 3.6 minutes per run: plain 1+log, first pass, and the
+tracker candidate with r_h = 16 and 32 M. 0.24 card-hours; with A (0.32) and B (0.72
+expected) the item is at 1.28 card-hours.
+
+Prediction V4 (written before submission):
+- (a) `v4-ctl`: radius within 6 per cent of V-1B at 50 and 100 M (2.04, 2.15 M); mass
+  between its largest and smallest value over 40 to 100 M within 3e-3 [JUDGEMENT: 8
+  cells in the radius].
+- (b) `v4-leak`: radius within 6 per cent of V-1GB (1.33 M at 50 M, 1.09 M at 100 M:
+  5.3 falling to 4.3 cells). Mass: its spread over 40 to 100 M at least three times the
+  control's, and it differs from the control by more than 3e-3 at some time in 40 to
+  100 M. Refuted (the shrinking does not turn into a mass error at this level) if the
+  spread is below twice the control's.
+- (c) `v4-hole16`, `v4-hole32` [JUDGEMENT, even odds]: the radius at 100 M is at least
+  1.5 M with r_h = 32 M and at least 1.3 M with r_h = 16 M, and the mass spread over 40
+  to 100 M is below twice the control's for both. If the radius of `v4-hole32` at
+  100 M is within 10 per cent of `v4-leak`, the far zone alone shrinks the hole and
+  the tracker candidate is no correction at any radius that fits inside a bubble.
