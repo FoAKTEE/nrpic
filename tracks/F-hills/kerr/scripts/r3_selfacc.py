@@ -301,7 +301,7 @@ def fig(res, outdir):
     ax1.legend(fontsize=6)
     ax2.axhline(0, **fs.MASK_LINE)
     ax2.set_xlabel(r"$V$ [$c$]")
-    ax2.set_ylabel(r"$a_s/a_{\rm pred}-1$ (o: lead. order, $\square$: orbit form)")
+    ax2.set_ylabel(r"$a_s/a_{\rm pred}-1$ (o: lead. order, squares: orbit form)")
     # q and psi groups
     rq = [r for r in rb if r["group"] in ("q", "q2402", "psi", "phase") and r["ok"]]
     lab = [("q=%.2g, V=%g, %g" % (r["q12"], r["V"], r["a0"] / 0.1)) if r["group"] in ("q", "q2402") else
@@ -333,6 +333,10 @@ def fig(res, outdir):
 
 
 if __name__ == "__main__":
+    if "--figure" in sys.argv:            # figure only, from the JSON of an earlier run
+        i = sys.argv.index("--figure")
+        fig(json.load(open(sys.argv[i + 1])), sys.argv[i + 2])
+        sys.exit(0)
     w = 1
     if "--workers" in sys.argv:
         w = int(sys.argv[sys.argv.index("--workers") + 1])
