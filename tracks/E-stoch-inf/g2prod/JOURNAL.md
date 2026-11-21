@@ -2,7 +2,7 @@
 
 ## entry-1
 
-2026-11-21 12:50 PST, lead of batch 5, written and committed before any run of this package.
+2026-11-21 12:28 PST, lead of batch 5, written and committed before any run of this package.
 
 Purpose. Leave the cards loaded with the G2 production runs of the USR case on the release card
 build core-v0.6 (`/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena`; decision 0023 item 1:
