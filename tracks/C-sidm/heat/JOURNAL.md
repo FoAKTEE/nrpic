@@ -444,3 +444,38 @@ processors (`np.mean` of ragged arrays). No number was produced. Fixed in `an_mo
 (the seed-mean curve and its fit use the largest set of cases that share one snapshot
 grid; the per-seed fits, which carry every statistic, are unchanged); both analyses are
 rerun under new run ids. The failed runs stay on record.
+
+## 2026-11-21 02:58 Wave 3, evening batch (helper heat): state found; one post-hoc check announced
+
+The session of the first burst (entries 22:26 and 22:31) was cut at the usage pause of
+22:33 UTC after its analyses had run and before any outcome was written. Verified now:
+- Runs (a) and (b) of the plan are closed by `nrpic-run finish`: card job A
+  C-20261119-150335-73fd40f finished 22:23:19 after its reduction C-20261120-221630-fd17a2d
+  (ended 22:22:23); card job B C-20261119-150347-e100007 finished 22:28:40 after its
+  reduction C-20261120-222329-3a77ad6 (ended 22:27:58), 155 files checksummed, 5.31 GB left;
+  C-20261119-155433-a287f9c completed (finished 22:15). Every one of the 15 case
+  directories of job B holds reduced.npz, case.json, summary.json and snapshots 00000 and
+  00016 only. Disk freed by the reduction of job B: 15 snapshots of 32 + 72 N bytes per
+  case, 12 cases at 2e6 and 3 at 4e6 = 38.88 GB (the size before was not recorded; job A:
+  47.5 GB, entry 22:26).
+- Every analysis of the 22:26 predictions has run and is registered (completed):
+  P-pf C-20261120-222547-e1c0353 and C-20261120-222846-029c453; T8 processor
+  C-20261120-222620-6ecac07; T8 card C-20261120-222624-cae43d6; T7 eps 0.05
+  C-20261120-222702-e2e02df; T7 pooled C-20261120-223001-eb81eb7 (theta 0.003) and
+  C-20261120-222954-b1a06ed (theta 0.1, 1), the reruns of the two failed runs of entry
+  22:31; P-cc C-20261120-223203-b38a7d7 (supersedes -223108-240574f); P-eps
+  C-20261120-223208-4ca3110; P-T8 changes C-20261120-223321-3d088d4 (supersedes
+  -223214-66e0034). Their JSON and figures were copied into `results/` and `figs/` (byte-
+  identical to the run directories, checked with cmp) but not committed; committed now.
+- Run C-20261120-223424-f6ba00a (`an_compare.py seedpairs`) was registered at 22:34:24 and
+  closed as failed at 22:34:58 without having started (no run.log, no output): the pause.
+
+Post-hoc check S-pairs (announced before it runs; it is post hoc because it was designed
+after the P-cc numbers of C-20261120-223108-240574f were seen, so it cannot carry a verdict
+on its own). With the noise model of `an_compare.py cardcpu` (unit variance s2 of the eight
+theta = 0.003 processor seeds per k lambda, used at every temperature): if the noise model
+holds and the card executable has no bias, (a) the chi^2 of the z_ref of all card seeds is
+about their number n (15 card seeds with z_ref; 95 percent range of chi^2_15: 6.3-27.5)
+and their mean is 0 within 1/sqrt(n) = 0.26; (b) the chi^2 of the z of same-executable
+seed pairs is about the number of pairs. A card bias would show in (a) with one sign and
+not in (b); a noise model that is too small at theta 0.1 and 1 would raise both.
