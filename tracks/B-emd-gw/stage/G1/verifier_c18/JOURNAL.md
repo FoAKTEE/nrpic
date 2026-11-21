@@ -127,7 +127,7 @@ median in 0.85-1.2 for both jitters, extremes within 0.6-1.5 (the ledger's range
 all-mode estimate, 3 <= a <= 20, in 10-17 for jitter 0.3 (ledger 12-14.7). Refuted: a median
 outside 0.7-1.4 or a phase error above 1 rad.
 
-## Entry 4 (05:24 PST): prediction for row 125, before running P3
+## Entry 4 (05:20 PST): prediction for row 125, before running P3
 
 P3 (scripts/p3_slicing.py) on the 2 x 14 restart dumps of runs/cosmo/dav_c256_n128_t and
 _pcs4bt: the largest correlation of d ln alpha with d ln gamma^(1/6) over 1 < a <= 121 is
@@ -135,7 +135,7 @@ _pcs4bt: the largest correlation of d ln alpha with d ln gamma^(1/6) over 1 < a 
 both reproduced to 5 per cent if my a (mean of chi) selects the same dumps. Refuted: a
 correlation above -0.99 or a ratio off by more than 20 per cent.
 
-## Entry 5 (05:30 PST): outcomes of M1a-d, A1, A2, P2, P3 (written before reading any review)
+## Entry 5 (05:24 PST): outcomes of M1a-d, A1, A2, P2, P3 (written before reading any review)
 
 Runs: M1a B-20261121-130345-622e9e4, M1b B-20261121-130410-0ff2a75, M1c B-20261121-131318-6a9bad1,
 M1d B-20261121-131930-79b125f (own per-dump tables, 0 errors); A1 B-20261121-131827-5d48168;
@@ -173,7 +173,7 @@ p3_slicing.png.
   Q 1.16 and 1.10, R(eps = 0.3, 32^3) 21.5: all CONFIRMED. P16': D = 0.994, 0.856 (tau = 0.1,
   a = 2.3), 0.275 (a = 12): CONFIRMED.
 
-## Entry 6 (05:40 PST): comparison with the track's review, close
+## Entry 6 (05:25 PST): comparison with the track's review, close
 
 Read after commit 499bd581: stage/G1/REVIEW.md, stage/REVIEW-wave3.md, gauge lines of
 stage/REVIEW-wave2.md. The review left lines 120-125, eps = 0.1/0.3 of 116-117, the second
@@ -183,7 +183,7 @@ here: the wording of line 125 (initial slice), the second digit of line 197, and
 evidence for G_tot (exact pure-gauge test plus lines 116-123). Section 4 of VERIFIER-C18.md.
 Not done: line 124, the residuals of line 199, line 217, wave-1 lines outside the G0 claims.
 
-## Entry 7 (05:45 PST): wave-1 lines 26-27 (earlier three-wave runs), prediction before M1e
+## Entry 7 (05:26 PST): wave-1 lines 26-27 (earlier three-wave runs), prediction before M1e
 
 M1e: m1_measure --gauge on the restart dumps east.00002 (a = 36) and east.00013 (a = 1000) of
 runs/cosmo/dav_c256_n128_t and _pcs4bt (128^3). Predictions: rms h^TT at a = 36 and 1000 equal
