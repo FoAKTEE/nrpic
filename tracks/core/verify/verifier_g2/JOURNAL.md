@@ -30,3 +30,59 @@ would refute it. Tolerance for "the stated number": agreement to the digits prin
 
 Order of work: V1, V2, V4, V5a (cheap readers), V3, V9, V7a, V8, V6 (fresh runs), V7b,
 V10, V11, V5b-c. What cannot be reached in a few hours is listed as not checked.
+
+## Entry 1, 2026-11-21T21:28Z: outcomes V1-V4, V7a, V8, V9 (registered analyses)
+
+- V1, run core-20261121-212008-6986d13 (own CKS and spherical KS metrics; self-test: the
+  spherical inverse equals inv(J^T g_CKS J) to 4.4e-16). Largest relative errors (E, L_z,
+  Q) at dt = 0.01: midpoint analytic 2.781e-8, 0, 1.254e-7; Boris symmetric analytic
+  9.046e-8, 1.136e-8, 7.825e-7; midpoint lattice 2.162e-6, 5.304e-6, 5.060e-5; Boris
+  Cholesky lattice 2.046e-6, 3.788e-6, 5.289e-5: every claimed number to its four digits;
+  each rounds to the paper's two digits (main.tex 825-833). Initial E, L_z, Q = 0.99738,
+  2.4328, 1.974 as main.tex 811. Order of the final position error against my own DOP853
+  reference: 2.0003/2.0001 (midpoint), 1.9991/1.9998 (Boris symmetric), 1.9989/1.9997
+  (Cholesky), as claimed. Pericentre: root of my radial potential 1.898327 M, my reference
+  integration 1.898327 M at 98.948 M, as claimed. Prediction held. CONFIRMED.
+- V2, run core-20261121-212106-131e909: regression O first horizon 16.3894 M, M_AH
+  1.000352575670864; largest abs(M_AH/M - 1) to 25 M 6.345e-4; deposition identity
+  (|int_E - sum_mW| / sum_mW) at most 9.6e-16. nocap_sc: largest 1.338e-3 (at 54.4 M),
+  1.000093 at 20 M, 0.998762 at 40 M, 0.9986707 at 60 M (claim prints 0.998670, a
+  truncation, not a rounding), all 9328 particles gone at 19.739 M. Prediction held.
+  CONFIRMED. Seen in the figure: after 31 M the 60 M run is outside +-1e-3 and stays at
+  -1.3e-3; "of the order of the paper's <~ 1e-3" is a judgement that I share, but the
+  number is not below 1e-3 after 31 M, and the evidence to 60 M is a pre-program run
+  (`runs/os/nocap_sc`, untracked, not registered).
+- V3, run core-20261121-212244-3f782d9: central lapse (probe at the origin) 0.900:
+  0.8862-0.8919; 0.819: 0.7875-0.8190; both keep 10000 particles to 300 M. 0.605: first
+  horizon 191.0 M, last M_AH 0.99999; 0.500: 104.31 M, last M_AH 1.00005 (run ends at
+  120 M); 0.283: central lapse 0.4054 -> 0.97598 at 270 M (run ends at 270 M), 10000 kept.
+  Wave-2 y_c = 0.72: mean central lapse 200-300 M 0.70789. Every number as claimed.
+  CONFIRMED (fates). Ratios to the paper 191.0/109 = 1.75, 104.3/73 = 1.43 as LADDER says.
+- V4, run core-20261121-212248-a7972d1 (own EdS in the conformal-time lapse: a = (1 +
+  t/2)^2): lapse against a 1.9e-7, mean K 3.8e-7, proper volume 1.1e-6 relative to t = 2
+  (a = 4); identity 2.2e-16; H-norm2 3.696e-10 and the column read as "|Theta|" 1.106e-11
+  as claimed. But the hst column is `Theta-norm2` = sum of vol * Theta^2
+  (`athenak/src/outputs/history.cpp` lines 186 and 229; the file header truncates the name
+  to `Theta-norm`), not |Theta|: the pointwise max |Theta| (cstat) is 2.27e-7 and max |H|
+  1.69e-6. Numbers CONFIRMED; the label "|Theta| 1.1e-11" in CHECKLIST C3 is WRONG.
+- V7a, run core-20261121-212516-0f0a65b: far rms relative force error 1.6092e-2 (N = 32),
+  4.9399e-3 (64), order 1.704: as claimed (EVIDENCE: 1.609e-2, 4.94e-3, 1.70). The number
+  of tracers with r >= 0.5 is 706, not 846 as `interfaces/newtonian_mode.md` 5.2 says (same
+  particle file as the original run, cmp identical; no simple cut gives 846). CONFIRMED;
+  the count in the interface text NOT CONFIRMED.
+- V8, run core-20261121-212611-5973536: theta_eq from the conserved energy equals the
+  summary's to 1e-15; KS p of the end state 0.897, 0.744, 0.447, 0.261 (claimed 0.26 to
+  0.90); pressure estimator within 0.056 standard errors (claimed 0.06); energy sums
+  (fsum) equal first to last in three cases, one unit in the last place in shell_2
+  (-2.0e-16), as claimed; momentum change below 4e-19 of the energy. Per species in the
+  two-temperature runs: z = +-0.56 and +-0.2, KS p 0.13-0.99. CONFIRMED. Note: the run
+  used the branch executable of core-coll (wave 1), not a release build.
+- V9, run core-20261121-212422-b616c6e (own dump reader; at t = 0 the field equals cos(k.x)
+  to 1.6e-15; own stencil symbols): least-squares orders over n = 8..24: 1.9913, 3.9566,
+  5.9181 (claimed 1.991, 3.957, 5.918). My symbols reproduce the code's omega_h to 1e-12.
+  A plain phase fit is biased by the counter-propagating wave (B/A up to 1e-2, the initial
+  momentum is that of the exact omega); with a two-wave fit omega_meas / omega_h - 1 =
+  -1.21e-9 to -1.31e-9 in all twelve runs, which is the RK4 phase error (omega dt)^4/120
+  = 1.31e-9 at dt = 1/512. `interfaces/scalar_field.md` test 1 says -1.2e-8 ... -1.34e-8:
+  ten times too large (the run's own summary.json gives -1.21e-9). Orders CONFIRMED; the
+  frequency-agreement number of the interface text WRONG by a factor 10 (typo-like).
