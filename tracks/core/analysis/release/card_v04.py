@@ -73,8 +73,13 @@ def hst_difference(a, b):
     ok = scale > 0.0
     rel = np.where(ok, d/np.where(ok, scale, 1.0), 0.0)
     j = int(np.argmax(rel))
+    # the same over the columns that are not at rounding level (sums that vanish by
+    # symmetry and constraint norms of exact data differ by order one between devices)
+    big = scale > 1.0e-10
     return {"rows": int(ta.shape[0]), "columns": int(ta.shape[1]),
             "max_rel": float(rel[j]), "column": j + 1,
+            "max_rel_above_1e-10": float(rel[big].max()) if big.any() else 0.0,
+            "columns_above_1e-10": int(big.sum()),
             "equal_columns": int(np.sum(d == 0.0)), "nonfinite_mismatch": mismatch}
 
 
@@ -245,8 +250,8 @@ def figure(out, summ, curves):
     from nrpic import figstyle as fs
     import matplotlib.pyplot as plt
     fs.use_style()
-    fig, ax = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.6))
-    fig.subplots_adjust(left=0.215, right=0.985, bottom=0.14, top=0.92, wspace=0.95)
+    fig, ax = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 4.0))
+    fig.subplots_adjust(left=0.215, right=0.985, bottom=0.25, top=0.93, wspace=0.95)
     red, blue = fs.PAL["red"], fs.PAL["blue"]
     floor = 1.0e-17
 
@@ -260,20 +265,23 @@ def figure(out, summ, curves):
     a.set_yticklabels([k.replace("_", " ") for k in keys], fontsize=8)
     a.tick_params(axis="y", which="minor", left=False, right=False)
     a.set_xlim(floor/3, 1.0)
-    a.set_xlabel("|card - processor| / |processor|", labelpad=2)
+    a.set_xlabel("|card - processor| /\n|processor|", labelpad=2)
     a.set_title("numbers of the quick test", fontsize=10)
 
     a = ax[1]
     hk = [k for k, v in summ["histories"].items() if "max_rel" in v]
     y = np.arange(len(hk))[::-1]
     rel = np.array([max(summ["histories"][k]["max_rel"], floor) for k in hk])
-    a.semilogx(rel, y, "s", color=red)
+    a.semilogx(rel, y, "s", color=red, mfc="none")
+    relb = np.array([max(summ["histories"][k]["max_rel_above_1e-10"], floor) for k in hk])
+    a.semilogx(relb, y, "s", color=red)
     a.axvline(2.2e-16, **fs.GUIDE)
     a.set_yticks(y)
     a.set_yticklabels([k.replace(".hst", "") for k in hk], fontsize=7)
     a.tick_params(axis="y", which="minor", left=False, right=False)
     a.set_xlim(floor/3, 1.0)
-    a.set_xlabel("largest column difference / column maximum", labelpad=2)
+    a.set_xlabel("largest column difference /\ncolumn maximum (open: all columns,\n"
+                 "filled: columns above $10^{-10}$)", labelpad=2, fontsize=8)
     a.set_title("history files", fontsize=10)
 
     a = ax[2]
