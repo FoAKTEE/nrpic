@@ -336,3 +336,22 @@ Both are builds of the merged source (main with release core-v0.5, plus the thre
 of section 9). The processor build is the one of tests M1, R5, TS; the card runs TC, TE
 and TF were made with the card build of the source before the merge (commit cbe1e3ef;
 the three files are the same), and the card build published has its own check M2.
+
+## 11. For core's lead: merging this branch
+
+- The branch holds main as of 2026-11-21 (release core-v0.5). Against main it changes
+  three files of `athenak/src` (section 9), `docs/FORMATS.md` (one section appended at
+  the end: the place where the next release also appends, so expect a conflict there
+  and keep both), `problems/ic/make_ic.py`, and adds `python/nrpic/boosted_cluster.py`
+  and five inputs (`problems/clump/cluster_{moving,binary}.athinput`,
+  `problems/tests/clump_table_{static,binary,idsolve}.athinput`).
+- Changelog entry: six options of `<problem>` for a table component of `nrpic_cf`
+  (`comp<c>_boost_file`, `comp<c>_p1..3` for a table, `comp<c>_corr = table`,
+  `comp<c>_corr_file`, `comp<c>_corr_axis1..3`, `comp<c>_boost_shift`); a new file format
+  (`bst1`); generator model `boosted`. Nothing changes without them (R5).
+- After the merge: `tracks/core/analysis/clump2/run_merged.sh` (through `nrpic-run`,
+  one core, 50 min: M1 against run `core-20261120-222933-0a01a56` and R5 against the
+  release named in the script) and one card run of `card_m2.list` with
+  `compare_two_runs.py` against `core-20261119-145433-8c4083d/v0.3`.
+- Advice that belongs into the release notes for the tracks: section 8, items 5 and 6
+  (shift damping for moving matter; `sum m u_i` is not a conservation monitor).
