@@ -1,37 +1,39 @@
 # STATUS of D-bh-dress
 
-gate:        G0 package complete for the orchestrator's review (stage/G0: every item PASS or NA, VERIFIER.md
-             on the plan; decision 0016 item 4); not passed. G1 NOT met and not complete for review: D-pre-3
-             criterion (ruling at orch), architecture schematic, fresh-context verifier of the G1 material open
-             (stage/G1/STATUS.md, OPEN.md)
-headline:    The Einstein-Straus benchmark runs in AthenaK: at M/8 the wall tracers follow the exact curve to
-             2.2e-3 and the inner tracers cross R = 2M within 6e-3 M of the exact proper times, but the
-             horizon-mass drift is 3.4e-4 (1.4e-4 without dust) over 100-200 M, not the predicted 3e-5, and
-             1+log stops slicing the expanding dust within 30 M; core's lapse_leak (ES-1G) runs since 15:36 UTC.
-last-result: ES-1 / V-1 (D-20261115-172726-60ba4c2, -172730-c6d151b; analysis D-20261119-141839-8686bd7,
-             -142929-bb375ff, -143413-bce5e71, -143444-8a9949c): wall and crossings held; 3e-5 drift, +1.5e-3
-             level, 1+log plateau model failed; ES-1 within 1.49 x V-1's drift (refutation needs 3);
-             late common drift after t ~ 165 M of open cause. Lead's independent recheck Y1-Y6 held
-             (D-20261119-151039-b2ce968). ES-1G pre-flight on processors passed (D-20261119-150329-d1d8f03).
-next:        1. When Slurm 4636 (ES-1G, D-20261119-142633-6f72922; running since 15:36 UTC, about 50 min) is DONE: es_runs/tools/finish_es1g.sh,
-                look at figs/es1g/, judge G1-G7 of es_runs/JOURNAL.md entry 5 as written (G1 on R0 = 40
-                and 48 M, R0 = 48 M reported separately; REVIEW-wave2.md section 6)
-             2. Late-drift controls (after ES-1G): V-1 with the outflow boundary at 384 M (~0.8 card-hours),
-                then V-1 at M/16 near the hole (~1.5); predictions first; then state the ES null-test floor
-             3. G1: redraw the architecture schematic (C9); get the verifier slot and the D-pre-3 ruling
-                from orch; review flux_tools (wave 3a) and the ES-F input before any matter run
-blockers:    orch: ruling on d-pre-3-criterion and a fresh-context verifier for G1 (outbox
-             20261119T152700Z); core: the ES test outcome in core_gauge/READY (outbox 20261119T152701Z);
-             a lapse that slices expanding dust (ES-1G decides whether lapse_leak does)
-needs:       orch: g1-verifier-and-rulings, d-pre-3-criterion, g1-numbers-errata; core:
-             es-outcome-and-gauge-ready, lapse-for-expanding-dust (boundary for the PG exterior),
-             finder-summary-outdir, trajmet-format-doc, newton-selfforce-doc, openmp-cpu-build,
-             spike-mass-refinement, accretion-diagnostics item 3, newtonian-mode-point-mass (card
-             throughput); kb: spike-annotations-run-ids (all in outbox/)
-offers:      Einstein-Straus data with the outer dust edge at 60 M and the matched vacuum control V-1
-             (scratch run D-20261115-170213-d2c2131; generator es_runs/make_data.py, exact references
-             es_runs/results/predictions.json); ES-1 / V-1 outputs as a vacuum-bubble benchmark of the
-             1+log gauge (es_runs/README.md); Kerr spike reference (spike/kerr_lib.py); Newtonian-mode
-             infall references (secondary_infall/nm_shells.py); D-pre-4 floor (puncture_drift/)
-budget:      3.62 card-hours used of 30 to the next gate (2.18 wave 1, 1.44 wave 2); 0.98 reserved (ES-1G);
-             25.40 left (nrpic-run budget, 2026-11-19)
+gate:        G0 PASS (signed 2026-11-20, stage/D-bh-dress/G0-pass-20261120). G1 NOT met and not
+             complete for review: C7 (D-pre-3 profile criterion; ruling d-pre-3-criterion at orch
+             since 2026-11-15) and C16 (working note v1 not compiled) open; C9 (schematic) and C17
+             (fresh verifier, stage/G1/VERIFIER.md) met in wave 3 (stage/G1/STATUS.md, OPEN.md)
+headline:    The late horizon-mass drift of the Einstein-Straus vacuum control was the outer boundary:
+             with the faces at +-384 M (V-1B) the drift stays within 4.8e-5 over 100-200 M at M/8
+             (was -1.37e-4). core's lapse_leak slices the expanding dust on its exact curve (ES-1G,
+             wall within 1.7e-4) but the hole shrinks to 0.78 M and its mass grows by 7e-3 while the
+             exterior mass leaks through the +-192 M faces; that run with the faces moved is next.
+last-result: V-1B D-20261120-222625-63abd72 (0.778 card-hours): drift [-4.8e-5, +2.0e-5], D(199.5 M)
+             = -9.2e-6; ES-1G D-20261119-142633-6f72922 judged (es_runs entry 9: G1, G3-G5, G7 held;
+             G2 failed; G6, J5, K1, K2 refuted); fresh verifier of G1 (verifier_g1, 10 runs): no ledger
+             row WRONG, dress at a/a_i = 2 WRONG as worded (corrected); lead recheck Z1-Z5 held
+             (D-20261121-063617-3f2036f; stage/REVIEW-wave3.md); ES-F construction confirmed by a
+             second agent (D-20261120-222651-3180e07)
+next:        1. Card (two jobs at most): ES-1GB = es_runs/inputs/es1g_dx8 with the root level of
+                drift_controls/inputs/v1b_bnd384 (faces at +-384 M), prediction first (~0.95 card-h);
+                then V-1GB (V-1B with lapse_leak); then ES-F as pre-registered (flux_tools entry 7)
+             2. Processors: secondary_infall's run to a/a_i = 30 (192^3 isolated box, 0.4-0.8 h on six
+                threads) and its analysis with R8; drift_controls' Pb3-Pb4 on V-1B and its README
+             3. Note v1: P11 outcome, compile, check_manuscript --compile, read pages, the verifier's
+                wording corrections (closes C16); then G1 is complete if orch rules on C7
+blockers:    orch: ruling d-pre-3-criterion (third request 2026-11-21); core: a lapse-excision criterion
+             not resting on alpha_exc (R14), the faces option benchmarked on V-1 (R13)
+needs:       orch: d-pre-3-criterion-third, g1-numbers-errata-reminder; core: boundary-benchmark-v1b,
+             es1g-outcome-for-gauge-ready, lapse-excision-criterion, particle-energy-and-crossing-record,
+             finder-summary-outdir, trajmet-format-doc, newton-selfforce-doc, spike-mass-refinement,
+             accretion-diagnostics item 3, newtonian-mode-point-mass (all in outbox/)
+offers:      boundary benchmark of the Painleve-Gullstrand exterior: V-1 (faces +-192 M) against V-1B
+             (+-384 M), inputs es_runs/inputs/v1_dx8.athinput, drift_controls/inputs/v1b_bnd384.athinput,
+             outputs of the two runs; ES-1G as the long lapse_leak test with dust; ES-F data (bubble
+             filled with dust, exact LTB growth law, flux_tools/esf_data.py, data run
+             D-20261119-145022-2208a19); Einstein-Straus data and exact references
+             (es_runs/make_data.py); Kerr spike reference (spike/kerr_lib.py); Newtonian-mode infall
+             references (secondary_infall/nm_shells.py)
+budget:      5.19 card-hours used (G1 4.41, G2 0.78), nothing reserved, 29.22 left toward G2 (30 per
+             gate, decision 0014); no job queued (nrpic-run budget, 2026-11-21)

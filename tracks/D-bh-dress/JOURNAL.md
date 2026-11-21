@@ -324,3 +324,51 @@ registered outputs. File layouts: header of the finder summaries (`# 1:iter 2:ti
   check_esf_construction.png; note figures/schem_architecture.png (G1 item C9: must show
   core's wave-2 capabilities and the ES run chain, no text outside its block); my own
   wave3_check.png.
+
+Outcome of Z1-Z6 (run D-20261121-063617-3f2036f, `wave3_check.json`, `wave3_check.png` looked
+at; a development pass of the same script into scratch/D-bh-dress/tmp/w3dev was not registered
+and gave the same numbers; its only change was the tick labels of panel d).
+- Z1 HELD: M_AH(100 M) - 1 = +1.1410e-3; drift maximum +6.963e-3 at 199.5 M, minimum -4.167e-4
+  at 126 M, range on 100-165 M [-4.17e-4, +9.46e-4]; mean coordinate radius 1.398 M (25 M),
+  0.776 M (199.5 M).
+- Z2 HELD: wall max |R/R_w - 1| = 1.676e-4 over the whole run (tau to 206.4 M); R0 = 6 M: 14 of
+  14 cross, mean error -8.51e-4 M (range -8.62e-4 to -8.43e-4); R0 = 10 M: -4.98e-3 to
+  +0.91e-3 M; R0 = 48 M at t = 200 M: tau 205.320-205.326 M.
+- Z3 Pb1 HELD (my 60 per cent odds were on the right side): V-1B drift from 100 M within
+  [-4.84e-5, +1.97e-5] over 100-199.5 M, D(199.5 M) = -9.2e-6 against V-1's -1.363e-4. Pb2
+  HELD: V-1B and V-1 equal to rounding until ~90 M, apart by 1e-9 at 116 M and 1e-6 at 133 M.
+  Pb5 HELD: 0.7775 card-hours. The late drift of V-1 is the outer boundary. Not by me: Pb3,
+  Pb4 (package drift_controls).
+- Z4 HELD: dress against the kernel shells at a/a_i = 2: +0.55, +1.40, +3.31 per cent (N128c,
+  N64c, N128Lc); at 4: -0.01, +0.15, +0.47; at 8: +0.10; largest for a/a_i >= 3: 0.28, 0.68,
+  1.03 per cent. M_ta within 0.12 per cent at 2 and 4, 0.29 at 8. The verifier's V2 is right.
+- Z5 HELD exactly: 850724 records, 140 tracers, every u_i = 0; dust rest mass and the
+  energy-weighted sum equal `esf.json` bit for bit (2.815600140293471, 2.738654513324783).
+- Z6: all eight figures consistent with the numbers (REVIEW-wave3 sections 1-6); defects:
+  judge_horizon.png top legend over the data (cosmetic, not fixed).
+- Side finding (no prediction of mine): the drift pre-flight's processor re-search at 150 M
+  differs from the card summary by 3.1e-8 relative, so drift_controls' C1 (1e-8) is refuted as
+  written; recorded for the package.
+
+## 2026-11-21T06:45Z  session lead-wave3-batch2a (Opus)  commits 68db5e73..(this entry)  runs D-20261121-063617-3f2036f; closed D-20261120-222515-c2ef5b8, -222550-e472402, -222820-94f20b3, -222625-63abd72
+
+- did: merged main (release core-v0.4); read CLAUDE.md, charter to "Owners", decisions
+  0016-0020, the brief ranges, the wave-3 reports and batch-1 results; found four runs left
+  "running"/"submitted" by the cut burst, all ended with exit 0 (V-1B on the card DONE at
+  16:43 PST), closed them; committed drift_controls' stranded step-1A outputs (byte-identical
+  to D-20261120-222107-cc4937b); rechecked es_runs, verifier_g1 and the finished parts of
+  flux_tools, drift_controls, secondary_infall and note from the artefacts (Z1-Z6, all held);
+  wrote stage/REVIEW-wave3.md; put the verifier's report into stage/G1 (C17 PASS), marked the
+  redrawn schematic (C9 PASS), corrected the D-pre-3 dress wording (verifier V2), stated the
+  Kerr gap and hole mass per V3; C16 reopened (note v1 not compiled); seven outbox messages,
+  eight inbox messages acknowledged; STATUS, HANDOFF, RISKS rewritten.
+- found: the late common horizon drift of V-1 (R13) is the outer boundary: with the faces at
+  +-384 M (V-1B) it is gone, floor 4.8e-5 over 100-200 M at M/8. ES-1G's +7e-3 growth comes
+  with the exterior lost through the faces: the same cause is likely, not tested.
+- evidence: D-20261121-063617-3f2036f (lead), D-20261120-222625-63abd72 (V-1B),
+  D-20261119-142633-6f72922 (ES-1G); `nrpic-run verify` PASS on 17 wave-3 runs.
+- changed my mind about: R13 was ranked "cause unknown, boundary hypothesis failed its probe
+  tests" (wave 2b); the direct control settles it for V-1. The probe tests of wave 2b looked
+  for the wrong signature.
+- open: G1 NOT met (C7 ruling at orch, C16 note); packages flux_tools, drift_controls,
+  secondary_infall, note unfinished (HANDOFF); no card job queued; card-hours 5.19 used.
