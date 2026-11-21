@@ -469,3 +469,90 @@ Predictions (own code in `stage/review_wave3/rv_batch4a.py`, written before it r
   runs: C-20261121-155220-5c0d480 and C-20261121-163051-16356b2 (my scripts).
 - open: run (v); block A; decisive D2; models step 5; T5/T8 second check (G2 verifier); the G1
   review. Card-hours used by this session: 0 (run (vi), 0.87, was the drift package's).
+
+## 2026-11-21T20:25Z  session C-sidm lead (wave 3, batch 5: cards first)  predictions before any submission
+
+Aim of the session (decision 0025 items 3-5): leave the cards loaded with this owner's long
+runs, registered and sequenced. All runs below are collisionless or collisional King
+clusters without a black hole at the start, so the relaxed lapse (`<z4c> lapse_leak`) is not
+used in any of them (item 3). Executable: release core-v0.6 card build
+(`/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena`) except run (v), which forms a pair
+with the N = 1e5 control of wave 2 (C-20261115-171059-4b70228, core-v0.3) and keeps its
+executable so that only N differs. Package of the new runs: `tracks/C-sidm/longruns/`
+(README there has the run table and the sequencer).
+
+Reference quantities, windows and noise model, named now, before any of the runs:
+- alpha_c(t): central lapse of the history (`cc.nrpic.hst`), as in drift; alpha_min(t);
+  areal half-mass radius r50 of the trajectory files (drift `compare.py`).
+- Collapse: alpha_min < 0.3 (SCAN.md), time t_c by linear crossing of the history.
+- Kick signal: Delta(t) = alpha_c,kick(t) - alpha_c,ctrl(t), kicked run minus the unkicked
+  control of the same model, seed, mesh, N and executable; window means over the 100 M
+  windows [0,100], ..., [500,600] M.
+- Noise model: sigma_w = max(sample sd of the window mean of Delta over the three seeds of
+  the threshold model, rms ripple of the control about a 50 M running mean); a signal is a
+  window mean beyond 3 sigma_w. Until the seeds exist, sigma_w = 2.5e-3 [JUDGEMENT: the
+  ripple of N = 1e5 on M/8 is 8e-4 (drift N.2) and the two-model ripple is only weakly
+  shared (drift M8.5', +0.25), so three times the ripple].
+
+R(v) drift run (v): cc2_kninf at N = 1e4 on M/4, 300 M, core-v0.3 (the drift package's
+deck `drift/inputs/cc2_kninf_N1e4.athinput`, list `job_v.list`). Predictions N.1-N.6 of
+`drift/JOURNAL.md` entries 5, 11 and 14 stand unchanged; the decisive ones are N.4 and N.6
+(contraction of the N = 1e4 run against the N = 1e5 control below -0.003 in alpha_c at
+280-300 M and dE_K below -0.005 if noise relaxation; within +-0.003 / +-0.002 if not).
+Criterion for block A: if N.4 and N.6 say noise relaxation, block A at N = 1e5 is read
+only through Delta (control subtracted) and the threshold seeds are repeated at N = 1e6
+later; if not, N = 1e5 stands.
+
+H heat series (conductivity against cell size and step, `heat/README.md` "Open, for G2"):
+theta = 0.003, eps = 0.2, 4e6 particles, transverse 16 x 16 cells; k lambda = 0.2 with two
+new seeds (6, 7) at dx = lambda/8, lambda/4, lambda/2 and dt = 0.05 t_coll at lambda/8
+(8 cases); k lambda = 0.1 with seed 6 at dx = lambda/8, lambda/4, lambda/2 (3 cases).
+Predictions [JUDGEMENT, from heat finding 8: c = 0.115 +- 0.025 per (dx/lambda)^2]:
+H.1 kappa(lambda/2)/kappa(lambda/8) - 1 in [+0.010, +0.050] at k lambda 0.2 (seed mean);
+H.2 zero-cell extrapolation kappa_0/kappa_1 in [0.975, 1.020]; H.3 dt 0.05 against 0.1 at
+lambda/8 changes kappa by less than 1 percent (|z| < 2 with the seed scatter); H.4 the
+k lambda 0.1 slope agrees with the 0.2 slope within 2 sigma. Refuted: H.1 outside the
+interval (no trend or a trend twice that of the card T8), H.3 above 2 percent.
+
+D2 decisive D2 (is the collisional contraction set by the collision cell?): CC2 (y0 = 0.314,
+seed 1 particle file of wave 2) on the M/8 mesh (drift `m8_deck`), Kn = 10,
+`coll_energy = particle`, `coll_cell_factor` f = 1, 2, 4 (collision cells M/8, M/4, M/2;
+mean occupation about 0.3, 2.3, 18 particles at the centre), collision seed 1; f = 2 also
+with collision seed 2; collisionless control cc2_kninf_M8 of the same particle file on the
+same executable; 300 M each. On M/4 with f = 1 (cells M/4) CC2 collapsed at t_c = 206.64 M
+(mean of the particle-mode seeds, decisive README) after 2.89 collisions per particle.
+D2.1 [JUDGEMENT] collisions per particle per M independent of f within 5 percent (the
+operator samples pairs without bias when cells are far below the mean free path); D2.2
+t_c(f = 2) on M/8 within 10 percent of 206.64 M; D2.3 t_c(f = 1) and t_c(f = 4) within 10
+percent of t_c(f = 2), and the f = 2 seed pair within 2 M. Refuted (the contraction is a
+cell artefact) if t_c or the collision rate moves by more than 20 percent between f = 1
+and f = 4. The control: no collapse in 300 M; alpha_c - alpha_c(0) at 280-300 M in
+[-0.010, +0.002] (drift run (i) on v0.3: -0.004 at 300 M).
+
+A block A of the threshold scan (collisionless threshold of the King b = 1 sequence, y_max
+= 0.334032): M/8 mesh, N = 1e5, 600 M, coherent one-percent radial kicks of make_scan.py;
+models y0 = 0.324, 0.334032, 0.344; seeds 1, 2, 3 at 0.334032 and seed 1 at the two others;
+for every (model, seed) the unkicked control and the kicks in and out (15 runs). Predictions
+[JUDGEMENT]:
+A.1 y0 = 0.344 (unstable side): kin collapses (alpha_min < 0.3) before 600 M; kout has
+Delta > +3 sigma_w in the windows 400-600 M and rising (migration outward).
+A.2 y0 = 0.324 (stable side): neither kick collapses; |Delta| of the window means 400-600 M
+below 3 sigma_w or not growing from window to window (bounded oscillation).
+A.3 y0 = 0.334032: no collapse of any of the nine runs before 600 M; the signs of Delta of
+kin (negative) and kout (positive) hold in at least two of the three seeds in the window
+500-600 M; the seed sd of Delta at 500-600 M is below 3e-3.
+A.4 controls: none collapses; alpha_c - alpha_c(0) at 500-600 M in [-0.040, -0.005] for all
+three models (the M/8 contraction of drift run (vi), -0.019 at 600 M for y0 = 0.314,
+larger for the more compact models).
+Refuted: A.1 by no collapse and no falling Delta of 0.344 kin (threshold above 0.344 on this
+mesh, or growth slower than 600 M); A.2 by a collapse of 0.324 kin (threshold below 0.324 or
+the mesh contraction destabilises); A.4 by a control that collapses on its own (then M/8 at
+N = 1e5 is unfit for the scan and the bracket cannot be read from it).
+
+T timing: before the long chains, one batch job of short segments on core-v0.6 (the
+threshold control and the three D2 decks, 20 M and 10 M) measures the step time. Prediction:
+8.2-8.4 s per M for the collisionless M/8 deck (core-v0.3: 8.22-8.30, drift entry 9);
+collisional f = 1 at most 1.5 times that. If the collisionless step is above 12 s per M the
+sequencer is stopped and the chains re-sized (MAX_SEGMENTS 4 holds up to 20 s per M at 600 M).
+Card-hours expected: (v) 0.3, T 0.15, H 0.5, D2 5 x 0.8 = 4, A 15 x 1.4 = 21; about 26 of the
+37.6 left in the allotment of 45 toward G2.
