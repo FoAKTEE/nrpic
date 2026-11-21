@@ -1,0 +1,133 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261121-125449-689b5ec",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "verify_bh C4: finder results, non-finite times and Misner-Sharp trapped points on the x lines of BH-1 (M/4, M/6, M/8) and BH-1R",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "OMP_NUM_THREADS=1 python tracks/A-emd-pbh/verify_bh/scripts/c4_lines.py"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "689b5ec924fcf8f38a32dd0f8b05e1c6417f8974",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/verify_bh"
+    ],
+    "outside_package": {
+      "count": 4,
+      "first": [
+        " M tracks/A-emd-pbh/periodic_threshold/JOURNAL.md",
+        "?? tracks/A-emd-pbh/periodic_threshold/inputs/peak_leak.athinput",
+        "?? tracks/A-emd-pbh/periodic_threshold/scripts/ltb_reference.py",
+        "?? tracks/A-emd-pbh/periodic_threshold/scripts/ltbref.py"
+      ]
+    },
+    "merge_base_main": "973f2dbc2e32338b1ea99d14ee4d03719af9a8c7",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-144419-13d5601/bh_n256/ball.horizon_summary_0.txt",
+      "role": "input",
+      "sha256": "4aa2f6574f13d04f1328286066907f0b852ce352cc9ca132a24bf1d8cf200379",
+      "bytes": 3148,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-144419-13d5601/bh_n192/ball.horizon_summary_0.txt",
+      "role": "input",
+      "sha256": "7bd1ddf69f99b9a656602da43d7e37afdb38b2ddd5dda0bae2a7f13de852d551",
+      "bytes": 3193,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-144419-13d5601/bh_n128/ball.horizon_summary_0.txt",
+      "role": "input",
+      "sha256": "4aa2f6574f13d04f1328286066907f0b852ce352cc9ca132a24bf1d8cf200379",
+      "bytes": 3148,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-144419-13d5601/bh_n256/ball.nrpic.hst",
+      "role": "input",
+      "sha256": "de616c93d367ff32aebbc8e2733478457fe809d55c31cbc5451dee02e666b511",
+      "bytes": 294476,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-164634-f1fe887/bh_smr/ball.horizon_summary_0.txt",
+      "role": "input",
+      "sha256": "cb282dae211d5dab835a356031febc5d9e77d648336ba3d9e2e2e811bfb476bc",
+      "bytes": 10223,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261121-125449-689b5ec",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T12:54:50Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 5.4211,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 0,
+    "runs": 195,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
