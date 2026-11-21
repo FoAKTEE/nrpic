@@ -679,3 +679,24 @@ code's metric at the particles against reference B: 2.4e-5 at most over the 5 re
 lapse (|y| > 7) at cycle 4 is 1.12462 against 1.12483 of the homogeneous solution of the
 relaxed lapse; the central lapse rose from 0.81 to 0.96 in those four cycles. Panels of
 turnaround, horizon and constraint history are empty for four cycles, as they must be.
+
+## 2026-11-21 13:25Z, state at the end of the batch-3 session (card job pending)
+
+Card job 1, run A-20261121-131600-02b5d41, Slurm 4799: PENDING behind six jobs of other
+owners; Slurm's estimated start 2026-11-21 10:57 PST, after this session's window. Nothing
+of it is judged. To close it (next session or the lead):
+1. `harness/bin/nrpic-run finish A-20261121-131600-02b5d41` once `squeue -j 4799` is empty;
+   look at `scratch/A-emd-pbh/A-20261121-131600-02b5d41/batch.list.status` (exit 3 of a
+   member is the guard's designed stop) and the `Terminating` line of each `athena.log`
+   (wall limit -t 25 / 30 min: then a restart file in `rst/` continues it in a job of its own).
+2. `compare_ltb.py --run .../P0L --ref scratch/A-emd-pbh/A-20261121-130103-e007f42` and
+   `analyse_scouting.py --gauge leak --run S1L=.../S1L --run S1=scratch/A-emd-pbh/A-emd-pbh-20261115-160349-9d232d2/run`
+   (the S1 line in the E1 gauge needs a separate call without --gauge leak), both
+   registered (README "How to rerun"); read every figure.
+3. Judge P1-P4 and S1-S3 (entry 13:20Z) here, extend DESIGN 7.1 and the README table.
+Not done in this package: the S1-8ppc run (optional; does not fit beside job 1 in the cap
+of the session's queue position) and the adaptive-refinement job of step 6 (release
+core-v0.5 has adaptive refinement in nrpic_cosmo and its card build passed core's short
+card check, which includes the 32^3 ladder deck of peak_amr; the package keeps one job in
+the queue, so it waits for job 1). Card-hours used by this package in wave 3: 0 (job 1
+asks for 0.97).
