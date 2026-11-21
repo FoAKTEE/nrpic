@@ -161,3 +161,53 @@ centre, it shrinks by at least a factor 2 at dt = 0.002; if it does not shrink, 
 something else (then I say "cause open"). Kernel-on-all must move by less than 0.1 per cent
 (M_ta) with the halved step, else my kernel reference is not converged either. All run
 numbers must reproduce exactly (processor analysis of the same snapshots).
+
+### Outcome of the second V2 run (19:25 PST), run D-20261121-031711-0d79cb3
+
+- Run numbers reproduced exactly (same M_ta, dress, profile ratios as the first run).
+- Step checks: kernel-on-all is converged (dt 0.01 and 0.005 give identical numbers to four
+  digits). The kernel-on-clump deficit GREW with the smaller step (N128c M_ta at a/a_i = 4:
+  2.4575 at dt 0.01, 2.4020 at 0.002), so my guess "fixed step at the centre" is refuted;
+  cause open. That variant (unsoftened dust self-gravity) is not the physics of the run, whose
+  mesh softens the dust as well, and it is dropped as a reference.
+- Against kernel-on-all (converged): largest M_ta deviation for a/a_i >= 1.5: 0.14 (N128c),
+  0.27 (N64c), 0.43 (N128Lc) per cent; dress for a/a_i >= 3: 0.87, 1.05, 1.16 per cent, and at
+  the round values a/a_i = 4 (8): +0.40, +0.11, +0.32 (+0.43) per cent; at a/a_i = 2 +1.6, +2.3,
+  +3.1 per cent. Against point shells (s = 0.25 M) the dress at a/a_i = 2 is within 0.6 per
+  cent. Figure `v2_growth_ratio.png` looked at: early dress (a/a_i < 2.2) scatters by several
+  per cent against either law, later the curves stay within about 1 per cent.
+
+## Entry 3 (2026-11-20 19:35 PST): V3, Kerr spike reference, prediction
+
+Script `v3_kerr.py`: my own density in the equatorial plane from the invariants (E, C, Lz)
+with the current and density of 1707.06302 (kerrdm.tex:396-416), capture by the root
+structure of the radial quartic, Hernquist matching by equal radial actions and L = |Lz| +
+I_theta/(2 pi) (kerrdm.tex:523-553), the Hernquist DF of :864-874 evaluated in delta = 1 -
+eps~; halo M = 1e12 Msun, r_s = 20 kpc (kerrdm.tex:859, 885), hole 4e6 Msun (taken from the
+track's kerr_lib.py:288; the paper's text gives only "M_BH >~ 4e6 Msun", :127, [TO VERIFY]);
+f0 c^3 = 0.3 GeV/cm^3 / (2 pi (100 km/s)^2)^(3/2) (:763). My own pgf digitiser (tick labels
+and grey gridlines).
+
+Development before the registered run (not registered; scratch/D-bh-dress/tmp/vg1/):
+- First version over-counted for a != 0: constant f at a = 0.8, r = 6.6 came out 1.194e8
+  against 1.0585e8 in FdRW's figure. An independent quadrature over the local momentum of
+  the zero-angular-momentum observer (zamo_test.py) disagreed by 14 per cent, the printed
+  Jacobian (kerrdm.tex:347) passed a finite-difference check (jac_test.py, ratio 1.00000000
+  at a = 0 and 0.8), and a scan of validity along C showed equatorial (Q = 0) plunging orbits
+  marked valid: with Q = 0 the quartic has a root at r = 0 and r2, r3 can both lie inside r_+.
+  Fix: require r3 >= r_+. After it, invariants and local-frame quadrature agree to 6e-4
+  (a = 0.8, r = 6.6, 12, 300) and to 8e-4 at a = 0.
+- Smoke values after the fix: Hernquist peak a = 0.8 3.899e18 at r = 5.06 (FdRW 4.083e18),
+  a = 0.5 2.777e18 at 7.1 (FdRW 2.814e18), a = 0 2.425e18 at 7.73 (FdRW 2.439e18); constant f
+  a = 0.8 at 6.6: 1.060e8 (FdRW 1.0585e8). The variant L = sqrt(C) moves the a = 0.8 peak by
+  0.1 per cent only.
+
+Predictions for the registered run (what would make each claim WRONG):
+- P3a constant f, a = 0.5 and 0.8, equator: my curve within 1.5 per cent of FdRW's figure on
+  r >= 5 M (the claim's 0.88 and 0.95 per cent are maxima over the track's nodes). WRONG if
+  my max deviation on the digitised range exceeds 3 per cent away from the inner edge.
+- P3b Hernquist a = 0: within 1.5 per cent of FdRW on r >= 5 M. WRONG above 3 per cent.
+- P3c Hernquist a = 0.8, equator: my peak 4 to 5 per cent below FdRW and within 1 per cent of
+  the track's 3.92e18; if mine were within 1 per cent of FdRW, the track's reference would be
+  WRONG; if mine differed from both by more than 2 per cent, my own code is suspect.
+- Axis (theta = 0) cases: not computed (no claim on the axis will be CONFIRMED by me).
