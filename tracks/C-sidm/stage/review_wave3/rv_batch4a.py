@@ -40,6 +40,22 @@ PKG_D2 = f"{SCR}/C-20261121-140356-f933a0e/diffusion.json"
 PKG_M8 = f"{SCR}/C-20261121-140057-92742cf/compare_cc_M8.json"
 
 
+def read_like(path, names):
+    """A history of a restarted run: the NRPIC history is written without its header line
+    (drift/scripts/controls.py join_hst says so); its columns are those of `names`."""
+    a = np.loadtxt(path, comments="#", ndmin=2)
+    return {n: a[:, i] for i, n in enumerate(names[:a.shape[1]])}
+
+
+def read_any(path, names=None):
+    try:
+        return read_hst(path)
+    except TypeError:
+        if names is None:
+            raise
+        return read_like(path, names)
+
+
 def join(dirs, fname):
     """Histories of a run and its continuations; a later file keeps only records after the
     last time of the earlier ones."""
@@ -48,7 +64,7 @@ def join(dirs, fname):
         p = os.path.join(d, fname)
         if not os.path.exists(p):
             continue
-        h = read_hst(p)
+        h = read_any(p, None if out is None else list(out.keys()))
         if out is None:
             out = h
             continue
@@ -259,7 +275,7 @@ def main():
         h = join(VI, "cc.nrpic.hst")
         z = join(VI, "cc.z4c.user.hst")
         h1 = read_hst(os.path.join(VI[0], "cc.nrpic.hst"))
-        h2 = read_hst(os.path.join(VI[1], "cc.nrpic.hst"))
+        h2 = read_any(os.path.join(VI[1], "cc.nrpic.hst"), list(h1.keys()))
         t, al = h["time"], h["alpha_probe"]
         y = al - al[0]
         m40 = centred_mean(t, y, 40.0)
