@@ -405,3 +405,10 @@ re-implemented from nm_analyze's docstring); no helper code. Script `stage/revie
   their reference and STATUS must name one. Refuted if one of them is a misprint of the same table.
 - Y4: the figures I look at (compare_horizons, slicemass_ES-1GB, slicemass_V-1GB, axis_profiles,
   w3_Q16_late_profiles, w3_P192_energy, my own panel, two note pages) agree with the numbers.
+- Y5 (added 16:05Z, before it runs): the Q16 dust profile at its last snapshot (a/a_i = 15.96), my own
+  binning (0.1-dex bins in lambda = r/r_ta on [0.075, 0.3], rho_b(t) = rho_i (a/a_i)^-3 from setup.json,
+  r_ta from the zero crossing of the mass-weighted mean radial velocity), against the verifier's seedless
+  self-similar m(lambda) (verifier_g1 run D-20261121-031711-0d79cb3, v2_selfsimilar.npz; rho/rho_b =
+  (9 pi^2/16) dm/dlambda^3), lies within 25 per cent in every bin (package: 16 per cent against its
+  seeded solution). Refuted if any bin deviates by more than 25 per cent; a deviation that moves by more
+  than 10 per cent when r_ta moves by 3 per cent is recorded as r_ta-dominated.
