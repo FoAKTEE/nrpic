@@ -1259,7 +1259,7 @@ rise from 1e-13 to 1e-3 in the first step, the exterior from 5e-7 to 1e-4).
      options; the record has 5 lines (cycles 0 to 4).
  (b) held: H2 of the record against the dumps, relative difference at most 9e-9
      (bound 1e-5); the proper volumes to 1.2e-8 (bound 1e-6; r < 7: 1277, 1458, 1661 at
-     t = 0, 1, 2: the ball expands under the sphere of fixed coordinate radius).
+     t = 0, 1, 2: with K < 0 the proper volume inside a fixed coordinate radius grows).
  (c) held: the shell from the record alone, to 4e-9.
 
 | t | H2 inside r < 7 | shell 7 <= r < 13.5 | outside 13.5 |

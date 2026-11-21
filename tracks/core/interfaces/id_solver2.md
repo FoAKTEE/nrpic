@@ -145,11 +145,11 @@ appended after the same row; both kept).
 ## 5. Tests
 
 Predictions and outcomes, failed predictions included: `tracks/core/JOURNAL-idsolve2.md`
-entries 1 to 16. Scripts, numbers, figures: `tracks/core/analysis/idsolve2/` (`test_*.py`,
+entries 1 to 17. Scripts, numbers, figures: `tracks/core/analysis/idsolve2/` (`test_*.py`,
 `regress_*.py`, `check_threads.py`, `*_numbers.json`, `figs/`). Which build ran what:
 rows R0 to K ran the processor build of 76add0c (the branch before the merge with main)
 unless stated; 4266c2d differs from it only in the branch tested by R2 and P5b; the
-published source is the merge 395e17d, tested by rows M0 to T, which tie it to the
+published source is the merge 395e17d, tested by rows M0 to N, which tie it to the
 earlier rows byte for byte on processors (M2, M2b). All numbers [VERIFIED] in the runs
 named.
 
@@ -169,6 +169,7 @@ named.
 | M1 | the merged build with `id_solve` against release core-v0.5 (which holds the first pass): the four example inputs of the first pass at 32 cells | with `id_far = robin`: Gaussian at rest, expanding ball and torus byte-identical in every file (8, 9, 8 files), moving Gaussian the same 17 outer iterations with psi to 6.0e-15 and W to 5.1e-16; with no new option (far field on by default): torus byte-identical; psi changes by 9.7e-9 (Gaussian at rest), 3.6e-8 (ball), 1.5e-6 (moving Gaussian), W of the moving Gaussian by 2.7e-3 of its maximum; same iteration counts and the same monitor after the solve (run core-20261121-080151-4db2e1d, `regress_m1.json`) |
 | M2, M2b | the merged build against the builds before the merge | eight cases replayed (puncture in mode code with and without matter, three static levels, moving Gaussian with the far field, refined Gaussian, refined torus with moving matter, Zel'dovich ball with its evolution, puncture with momentum in a moving shell as written by 4266c2d) write the bytes of their old directories, 79 files; the moving Gaussian at 128 cells (5.9 million particles) likewise, 12 files (runs core-20261121-080135-890689a, core-20261121-081010-968d6d6) |
 | T | threaded processor build (`scripts/build_cpu_omp.sh`) of the merged source, 4 threads, against the serial build | moving Gaussian with the far field, Gaussian on two static levels, puncture with momentum in a moving shell, Zel'dovich ball with its evolution: the same outer iterations (17, 20, 34, 51) and linear steps (33, 81, 80, 137); psi to 2.2e-15 and W to 2.3e-14 of their maxima; far-field lines equal in 13 digits; region means of \|H\| of the ball at t = 2 to 3e-13; one case run twice is byte-identical; 3.6 to 4.5 times faster than the serial `-O2` build (run core-20261121-081048-0c563b2, `check_threads.json`) |
+| N | the region norms of release core-v0.5 (`<particles> region_dcycle`, `region_radius1..4`) on solved data: the Zel'dovich ball at 32 cells with its evolution, spheres of radius 7 and 13.5 | the record `<basename>.region.hst` equals the norms formed from the field dumps to 9e-9 (sqrt(<H^2>) inside 7, in the shell, outside 13.5: 2.9e-13, 6.9e-13, 5.4e-7 after the solve; 4.8e-4, 9.6e-4, 1.1e-4 at t = 2) and the other 14 files of the run are byte-identical to the run without the options (run core-20261121-082710-5866399, `test_n_numbers.json`) |
 | K | card build on one A100 | card build of 76add0c, four cases at 128 cells (vacuum puncture in both modes, moving Gaussian with the far field, solved Zel'dovich ball with its evolution to t = 2): the same outer iterations and linear steps as the processor build; psi to 2e-15, W to 3.5e-13, region means of \|H\| at t = 2 to 2e-10; 7 to 57 s per case, 0.032 card-hours (card run core-20261119-154414-2506b80, analysis core-20261120-220527-e2690ef) |
 
 ## 6. Limits and what a track must know
@@ -178,8 +179,12 @@ named.
 - **Judge data in the matter region, never over the whole mesh.** The outflow faces of
   Z4c dominate whole-mesh norms of |H| and |M| within a few steps whatever the data
   (first pass, test F; here B (g): the face layer has the same mean |H| at t = 2 in all
-  four data sets of one resolution). Use region norms (interior, shell; the script
-  `test_b.py`, `region_stats`, shows how) or the solver's record.
+  four data sets of one resolution). Use region norms or the solver's record. The code
+  writes them itself since release core-v0.5: `<particles> region_dcycle = n` with
+  `region_radius1..4` gives sqrt(<H^2>) and the proper volume inside and outside each
+  sphere in `<basename>.region.hst` (tested on solved data, N); the shell between two
+  spheres is H2^2 = (V_in2 H2_in2^2 - V_in1 H2_in1^2)/(V_in2 - V_in1). The script
+  `test_b.py` (`region_stats`) forms means of |H| and |M| from field dumps.
 - **M_psi of the far-field line is not the ADM mass** of Bowen-York data (their r^-4
   source outside the sphere of the moments is missing; P1) nor of a table of format 2
   (its Painleve-Gullstrand exterior carries the mass in K). P_ADM and J_ADM of the line
