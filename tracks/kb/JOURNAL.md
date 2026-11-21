@@ -706,3 +706,15 @@ above the verifier's display counts; seven E failures below the half line).
 - failed predictions: none this session (L1 held).
 - open: the four cut packages (HANDOFF table); C6b code fix after ingest3; parameter index at
   main; raw source.bin modes.
+
+## 2026-11-21 23:50 UTC, lead batch 9 (kb), session of about forty minutes, no helpers
+
+Predictions written before the runs of this session.
+- D1 (drop of gr-qc/0608095, decision 0024 item 2): the dry run counts papers 1, chunks 43,
+  equations 7, figures 5, bib_entries 4, downloads 1, claims 0, claim_locators 0 (my read-only
+  query at 23:41 UTC); after the drop all of them are 0 and the papers table holds 744. Refuted
+  if any count differs or a claim names the paper (the script then refuses).
+- K1 (claim check on the 21 claims of ingest3's two papers, 171-186 and 658-662): check reaches
+  only the 16 wave-1 seeds 171-186 and reports them 'same' (ingest3 saw 'same 16' after its
+  remap); 658-662 are served rows and are not reached. A 'pinned' count is possible for any of
+  the 16 that a person relocated. Refuted if any of the 16 reports 'changed'.
