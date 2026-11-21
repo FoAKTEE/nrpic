@@ -591,3 +591,20 @@ Reference B for P0L, axis shells (r0, M; tau of turnaround, R = 2M, crunch):
 0.30, 0.032; 28.1, 56.8, 56.8 | 0.60, 0.247; 30.4, 61.1, 61.5 | 0.91, 0.789; 34.6, 68.6,
 69.7 | 1.21, 1.745; 41.0, 80.0, 82.6 | 1.52, 3.145; 50.5, 96.9, 101.7 | 1.83, 4.993; 64.6,
 122.2, 129.8 | 2.15, 7.298; 85.7, 160.8, 172.1 (all shells: `ltb_reference.json`, key B.shells).
+
+## 2026-11-21 13:10Z, K: processor smoke test of the relaxed-lapse deck (written before the run)
+
+`inputs/peak_leak.athinput` (finished this session: release core-v0.5, cfl 1.0 with
+dt_lightspeed 0.25, guard, hmean_tol_0 = 1e30, finder diagnostics, region norms, output
+cadences for a run of ~140 time units) through `scripts/smoke_leak.sh`: P0L (data of
+A-20261120-223123-f436c39, particles_track.nrp, traj_ntrack 317) and S1L (data of
+A-emd-pbh-20261115-155802-9a6596f), 4 cycles each on the processor build of core-v0.5, the
+finder from t = 0 every 2 cycles.
+Prediction: both exit 0 after 4 cycles; the first step is 0.25 dx/c_max with c_max = the
+largest lapse of the data (about 1.0) times sqrt(chi) (about 1): dt about 0.0049, falling
+as the background lapse rises towards 1.27 (dt about 0.0039 by cycle 4, T = 0.05 being
+~10 steps); no guard stop; the finder searches and finds nothing (status file written,
+reason other than an immediate stop by hmean_tol); region.hst written; for S1L the t = 0
+constraint statistics of S1 (H_r max 0.047, A-emd-pbh-20261115-160349-9d232d2) repeat
+(same data, same mesh). Refuted by a non-zero exit, a guard stop, or a first step that is
+not 0.25 dx/c_max.
