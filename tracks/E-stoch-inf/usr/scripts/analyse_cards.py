@@ -229,6 +229,32 @@ def analyse_mesh(names, rundir, cfg, ci, workers, out_dir):
         sh_max = np.array([relN[(modes.shell_of == j) & km].max() if np.any((modes.shell_of == j) & km) else np.nan
                            for j in range(modes.shell_n2.size)])
         fr = np.abs(c[-1])**2 / np.abs(s * cref[-1])**2
+        # U-A5: shell-mean power of the run over that of s x reference (same alpha_n), at N_f
+        cnt = np.bincount(modes.shell_of)
+        shell_ratio = (np.bincount(modes.shell_of, weights=np.abs(c[-1])**2) /
+                       np.bincount(modes.shell_of, weights=np.abs(s * cref[-1])**2)) - 1.0
+        kshell = np.sqrt(modes.shell_n2.astype(float))
+        lo = kshell <= (cfg["kmask"] if cfg["kmask"] is not None else np.inf) + 1e-9
+        ua5 = dict(max_abs_k_le_kmask=float(np.abs(shell_ratio[lo]).max()),
+                   rms_k_le_kmask=float(np.sqrt(np.mean(shell_ratio[lo]**2))),
+                   worst_shell_n2_k_le_kmask=int(modes.shell_n2[lo][np.argmax(np.abs(shell_ratio[lo]))]))
+        if np.any(~lo):
+            ua5.update(max_abs_above=float(np.abs(shell_ratio[~lo]).max()),
+                       rms_above=float(np.sqrt(np.mean(shell_ratio[~lo]**2))),
+                       worst_shell_n2_above=int(modes.shell_n2[~lo][np.argmax(np.abs(shell_ratio[~lo]))]),
+                       max_abs_top_shells_k_gt_56=float(np.abs(shell_ratio[kshell > 56.0]).max())
+                       if np.any(kshell > 56.0) else None)
+        ua5["modes_per_shell_min"] = int(cnt.min())
+        # deviation normalised per mode by its largest reference amplitude over the run (entry 2)
+        dev1 = np.abs(c - s * cref) / (abs(s) * np.abs(cref).max(axis=0)[None, :])
+        dmax_t = np.max(np.where(km, dev1, 0.0), axis=1)
+        drms_t = np.sqrt(np.mean(np.where(km, dev1, 0.0)**2, axis=1) * modes.M / km.sum())
+        above = lambda y, thr: float(cN[np.argmax(y > thr)]) if np.any(y > thr) else None
+        lin_break = dict(dev_max_t=dmax_t.tolist(), dev_rms_t=drms_t.tolist(),
+                         first_cN_dev_max_above_0p02=above(dmax_t, 0.02),
+                         first_cN_dev_rms_above_0p02=above(drms_t, 0.02),
+                         first_cN_dev_max_above_1e_3=above(dmax_t, 1e-3),
+                         first_cN_dev_rms_above_1e_3=above(drms_t, 1e-3))
         rec, rc = record_checks(cons[n], ci, LM)
         lock = []
         for i, p in enumerate(dumps[n][:nd]):
@@ -252,6 +278,7 @@ def analyse_mesh(names, rundir, cfg, ci, workers, out_dir):
                                 rms_t=[float(x) for x in np.sqrt(np.mean(np.where(km, dsh, 0.0)**2, axis=1) * modes.M / km.sum())]),
             U_A2_shell_max_end={int(modes.shell_n2[j]): float(sh_max[j]) for j in range(modes.shell_n2.size)},
             U_A3_power_ratio_k_le_3=dict(min=float(fr[k3].min()), max=float(fr[k3].max())),
+            U_A5_shell_power_ratio_end=ua5, linear_breaks=lin_break,
             lock_max_end=lock[-1] if lock else None, lock_max=max(lock) if lock else None,
             rms_R_end=float(np.sqrt(2.0 * np.sum(np.abs(c[-1])**2))),
             rms_R_ref_end=float(abs(s) * np.sqrt(2.0 * np.sum(np.abs(cref[-1])**2))),
