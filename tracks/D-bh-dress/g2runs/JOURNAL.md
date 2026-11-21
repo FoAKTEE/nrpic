@@ -373,3 +373,35 @@ card-hours of the package; if ES-F needs more than ~1.3 card-hours (a third segm
 is exceeded and it should be stopped with scripts/submit_chain.sh --stop.
 Not done: ES-F analysis (no data); secondary_infall's run beyond a/a_i = 16 (entry 2, cost);
 M/16 nests of ES-1GB and V-1GB (not in this package). Not pushed (helper).
+
+## Entry 10 (2026-11-21 12:36 PST, D-bh-dress lead, batch 5): ES-F outcome
+
+ES-F D-20261121-144631-aa7ce9b (Slurm 4806) reached tlim = 200 M in ONE segment of 48.7 min
+(08:14:19-09:02:59 PST, 6400 cycles; 0.81 card-hours); closed completed by `finish_g2.sh esf`,
+which ran esf_analyse.py (D-20261121-202137-7bc388e) and esf_criteria.py
+(D-20261121-202142-ce0f509) with V-1 as the control. Figures `esf_growth.png`,
+`esf_bracket.png`, `esf_criteria.png` in those run directories, looked at by the lead. Horizon
+masses read by the lead from `esf.horizon_summary_0.txt` (unique times). Judged against the
+pre-registration flux_tools/JOURNAL.md entry 7:
+
+| Item | Prediction | Outcome | Verdict |
+|---|---|---|---|
+| P1 gauge | kappa 1.35 (1.15-1.6); group R0 = 20 M at the horizon at t = 116 M (98-136) | kappa (from inverting M_LTB) 1.47, 1.40, 1.35, 1.32 at t = 50, 100, 150, 199.5 M; group R0 = 20 M first removal t = 113.9 M (tau 156.4) | HELD |
+| P2 M_AH | 1.037 (1.028-1.048), 1.102 (1.081-1.128), 1.175 (1.142-1.216), 1.249 (1.205-1.304) at 50, 100, 150, 200 M | 1.04155, 1.10735, 1.17514, 1.24278 (199.5 M) | HELD |
+| P3 (i) | holds, max violation 0 sigma | one finder sample of 400 outside (t = 0.5 M: M_AH 0.97816, the initial finder dip, where sigma is still 2.8e-5: 449 sigma); every other sample inside | FAILED as worded (one sample in the first 1 M); the G2 refutation (failure over a window longer than the removal lag) is NOT met |
+| P3 (ii) mass | 0 violations | min M_AH - m_disc(R0) = +1.03e-4 over 57722 removals | HELD |
+| P3 (ii) tau | likely FAILS (p ~ 0.6) | 0 removals before tau_H(R0), 0 after tau_0(R0); min tau_rem - tau_H = +0.075 M | prediction FAILED (the criterion holds) |
+| P3 (iii) | holds, bins within 0.6 %, median +0.2 % | 25 bins (tau_rem <= 250 M) all within +-0.25 %, overall median +0.22 %; tracers (second reading, 14 per group, below the 20 per bin) +0.17, +0.23, +0.20 % | HELD |
+| P4 D1 | raw +1.2e-2 (0.8-1.8e-2); control-subtracted +3e-3 (0 to 8e-3) | raw +9.88e-3; control-subtracted +1.47e-3 | HELD |
+| P4 D2, D3, D4 | D2 holds; D3 no violation; D4 min >= -1 M | D2 holds (360 samples); D3 min margin -2.8e-5 (bound -3e-4); D4 min +0.075 M | HELD |
+| P5 removals | first at 5-15 M; n ~ 6.0e4 (4.8-7.3e4); sum m E_K 0.25 (0.20-0.30); >= 95 % reason 3 | first excision t = 7.8 M; 57722; 0.2414; all reason 3 | HELD |
+| P6 technical | finite, np = 850724 - n_excised, no escape, m_inside1 < 0.05 after 20 M | finite; np_end 793002 = 850724 - 57722; 0 escaped; max m_inside1 0.0101 | HELD |
+| P7 cost | 0.79 (0.7-1.1) card-h, one or two segments | 0.81, one segment | HELD |
+
+Reading [JUDGEMENT]: with the dust filling the bubble the horizon grows by 0.25 M in 200 M and
+follows the exact LTB mass of the shell at the horizon to 0.25 per cent of M_AH for shell
+proper times up to 250 M; the growth closes against the removed flux to 1.5e-3 after the
+control's finder history is subtracted. This is the G2 matter criterion of the track sheet
+("mass growth agrees with the integrated particle flux") met at M/8, faces +-192 M, 1+log,
+to 200 M, one run. Open: the faces reach the hole from ~136 M (V-1), so the late part is
+bounded by the boundary; ES-FL (g2long, faces +-768 M, to 500 M) repeats it.
