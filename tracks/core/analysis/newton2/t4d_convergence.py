@@ -37,6 +37,14 @@ SERIES = {"cic_sp": ("linear cloud, spectral", "red", "o"),
           "pcs_sp": ("cubic cloud + comp., spectral", "blue", "^")}
 
 
+def dx_ticks(ax):
+    """Ticks of a logarithmic cell-size axis at the cell sizes of the runs."""
+    from matplotlib.ticker import NullFormatter
+    ax.set_xticks([0.1875, 0.375, 0.75])
+    ax.set_xticklabels(["0.1875", "0.375", "0.75"])
+    ax.xaxis.set_minor_formatter(NullFormatter())
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--prep", required=True)
@@ -124,7 +132,8 @@ def main():
     ax.loglog(xg, 0.0256*(xg/0.75)**2, color="k", lw=1.0, ls=":", label=r"$\propto dx^2$")
     ax.set_xlabel(r"cell size $dx/t_k$", labelpad=-1)
     ax.set_ylabel(r"$|t_{\min}/t_{\times,\rm ODE} - 1|$")
-    ax.legend(loc="upper left", fontsize=6.5)
+    ax.legend(loc="lower right", fontsize=6.5)
+    dx_ticks(ax)
     ax = axs[1]
     lss = {64: "-", 96: "-.", 128: "--", 256: ":"}
     for lab, c in sorted(res["cases"].items(), key=lambda kv: kv[1]["n"]):
@@ -152,7 +161,8 @@ def main():
     ax.loglog(xg, 0.111*(xg/0.75)**2, color="k", lw=1.0, ls=":")
     ax.set_xlabel(r"cell size $dx/t_k$", labelpad=-1)
     ax.set_ylabel(r"max $|R_i - R_{i,\rm ODE}|/R_L$, $t \leq t_\times - 1$")
-    ax.legend(loc="upper left", fontsize=7)
+    ax.legend(loc="lower right", fontsize=7)
+    dx_ticks(ax)
     fs.save(fig, os.path.join(a.out, "t4d_convergence"))
 
 

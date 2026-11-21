@@ -961,3 +961,91 @@ Processor executable built from the merge commit (release core-v0.5 plus this pa
 - T11c, card twins of T1 on the merged card build (chk_mg, chk_fft7, chk_fftsp): within
   1e-9 of the box and 1e-8 in K and W of the processor runs, as for the pre-merge card
   build (measured there: 2e-15 and 7e-13).
+
+### T6c in outcome: with a lattice of the fine cell size there is no kick, on uniform and refined meshes [VERIFIED]
+
+Runs: cases fine_in_uni64, fine_in_uni128, fine_in_smr of card job 2a (run
+core-20261120-221835-4870ae5, pre-merge card build; 47048 particles on a lattice of
+0.03125, 135, 355 and 214 s), analysis core-20261121-075046-7bfe4b9 (`t6c_in.json`,
+figure `t6c_in.png`, looked at: the momentum rises to its plateau in the first 0.07
+time units in all three runs; the y label of the first panel was cut off, margins
+widened in `t6_smr.py` afterwards). Largest over t <= 0.8:
+
+| | uniform 64^3 | uniform 128^3 | 64^3 + one level | T6b (lattice 0.0625), 128^3 |
+|---|---|---|---|---|
+| momentum change \|dP\|/(M v) | 1.08e-5 | 9.56e-6 | 1.03e-5 | 2.12e-3 |
+| centre of mass off uniform motion / R | 5.94e-6 | 7.13e-6 | 7.19e-6 | 1.53e-3 |
+| angular momentum change | 1.11e-5 | 1.557e-5 | 1.563e-5 | 4.52e-3 |
+| energy change, relative | 9.74e-5 | 4.589e-5 | 4.589e-5 | 3.35e-4 |
+
+- (a) uniform 128^3 at most 2e-4: 9.6e-6, held (222 times below T6b); refutation (above
+  1e-3) not met.
+- (b) refined mesh within 10 per cent of the uniform 128^3 mesh: momentum +8.2 per
+  cent, centre of mass +0.8, angular momentum +0.4, energy -0.01 per cent. Held.
+- (c) uniform 64^3 (eight particles per cell) at most 2e-4: 1.08e-5, held.
+- These numbers equal the debugging pass recorded at the pause (no change).
+- So the kick of T6 and T6b is the cold lattice with fewer than one particle per cell
+  and direction, as T6c coarse showed from the other side. With every particle on the
+  fine level, the solve on the refined mesh is the solve on the uniform fine mesh.
+
+### T6c x outcome: a ball across the level boundary; the boundary costs a factor five, not the factor 44 of T6 [VERIFIED]
+
+Runs: cases fine_x_uni64, fine_x_smr of card job 2a (137376 particles on a lattice of
+0.03125, ball of radius 1 centred at (0.3, -0.2, 0.1), refined MeshBlocks |x_i| < 1;
+13304 particles change the level between the first and the last snapshot), analysis
+core-20261121-075106-6968fd7 (`t6c_x.json`, figure `t6c_x.png`, looked at).
+
+| largest over t <= 0.8 | uniform 64^3 | 64^3 + one level | ratio | T6 (lattice 0.0625), refined |
+|---|---|---|---|---|
+| momentum change \|dP\|/(M v) | 1.09e-5 | 5.06e-5 | 4.65 | 1.10e-3 |
+| centre of mass off uniform motion / R | 4.93e-6 | 2.60e-5 | 5.27 | 8.43e-4 |
+| angular momentum change | 3.67e-6 | 9.61e-6 | 2.6 | 1.57e-3 |
+| energy change, relative | 7.98e-5 | 3.58e-4 | 4.5 | 2.90e-4 |
+| V cycles per step (mean, max); largest defect | 19, 26; 5.8e-12 | 18, 25; 4.1e-11 | | |
+
+- Momentum at most 3e-4, centre of mass at most 2.5e-4 R, angular momentum at most
+  5e-4: held (5.1e-5, 2.6e-5, 9.6e-6): 22, 32 and 163 times below T6.
+- "Each within five times the uniform 64^3 run": held for the momentum (4.65) and the
+  angular momentum (2.6), FAILED for the centre of mass (5.27).
+- The clause that would leave refined meshes unverified (above 5e-4 on the refined mesh
+  with the uniform run below 1e-4): not met.
+- Shape (figure): on the refined mesh the momentum does not jump and stay; it grows
+  through the run to 5e-5 at t = 0.7, the centre of mass leaves uniform motion
+  quadratically, and the energy falls steadily to -3.6e-4 (the uniform run: +8e-5,
+  constant after t = 0.05). That is a steady force while mass sits on both sides of the
+  level boundary, and it was not there in T6c in, where all mass is on the fine level.
+  Its origin (the solve at the coarse-fine interface or the deposit there) is not
+  separated by any run [TO VERIFY].
+- Statement for the interface text: on a refined mesh the multigrid solver converges
+  and, with at least one particle per fine cell and direction, conserves momentum to
+  5e-5 M v and energy to 4e-4 over 0.7 free-fall times of a ball that crosses the level
+  boundary, five times the errors of the uniform coarse mesh; a cold lattice coarser
+  than the cells is kicked on any mesh (T6, T6b, T6c coarse).
+
+### T4d at 64^3 outcome (kernels of T2 on the embedded ellipsoid) [VERIFIED]
+
+Runs: case emb64_pcs_fft of card job 2a (3.3 s on a card), with emb_fft of T4b and
+emb_mg of T4c; analysis core-20261121-075319-f61af19 (`t4d_convergence.json`, figure
+`t4d_convergence.png`, looked at: tick labels of the logarithmic axes ran into each
+other and the legend covered a point; corrected in the script, numbers unchanged
+(`cmp` of the JSON files)).
+
+| 64^3, dx = 0.75 t_k | first minimum of the short axis | largest \|axis - ODE\|/R_L (x, y, z) | quadrupole energy against the ODE | Layzer-Irvine drift / max a\|W\| |
+|---|---|---|---|---|
+| linear cloud, spectral (T4b) | +2.56 per cent | 0.111, 0.074, 0.083 | -42 per cent | 8.0e-3 |
+| linear cloud, seven-point multigrid (T4c) | +1.29 per cent | 0.045, 0.041, 0.062 | -32 per cent | 9.2e-3 |
+| cubic cloud with compensation, spline gather, spectral | +0.92 per cent | 0.029, 0.020, 0.047 | -28 per cent | 3.7e-6 |
+
+- Crossing-time error between 0 and +1.0 per cent and below the +1.29 per cent of the
+  linear cloud with the multigrid solver: +0.92 per cent, held. Refutation (above +2
+  per cent): not met.
+- "axes" below 0.045: FAILED by 4 per cent (0.0466, on the long axis; the short and
+  the middle axis are at 0.029 and 0.020, against 0.111 and 0.074 of the linear cloud
+  with the same solver).
+- Not predicted: the Layzer-Irvine drift falls from 8.0e-3 to 3.7e-6. With the cubic
+  cloud and the cubic-spline gather the deposit and the gather kernel are the same
+  function, the case in which the force is the exact gradient of the particle sum W
+  (T7's reading of the two energy columns); the run could have contradicted that and
+  did not. This goes into the answer to Track A.
+- The 96^3 case did not run (deck fault, see the start of this session); it is in the
+  next card job with MeshBlocks of 32^3.
