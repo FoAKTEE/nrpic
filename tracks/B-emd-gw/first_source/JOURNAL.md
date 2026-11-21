@@ -1089,3 +1089,40 @@ grid-scale band |k|L/2pi >= 8 (k h >= pi/2), dumps tau = 0.1 (a = 1.10), a = 2.2
   2 <= a <= 5, 0.48-0.85 for 5 <= a <= 20: within the factor 2 of (L), above the 0.3 of (X).
 - (iii) at 32^3: momentum residual of the tool 0.0, Hamiltonian 8.2e-13 (B-20261121-080035-188411b).
 At a = 20.25: rms TT 5.2e-6, rho_kin/rho_grad 0.065 (quasi-static).
+
+## Outcome of P16' at 64^3 (card run B-20261121-080222-2293fae, Slurm job 4778, 99 s, 0.0275 card-hours; analysis B-20261121-084959-4c72924, spectra B-20261121-084959-ad6bd72 against B-20261119-161734-a3a1366 (jit0p3); comparison B-20261121-085202-b95efda, `p16_compare.png` looked at)
+
+Run: release core-v0.5 card build, 64^3, 2,097,152 particles, 466 cycles to tau = 7.0
+(a = 20.25), rc = 0. Compared with jit0p3 of B-20261119-142833-19edd82 (requests-b card build)
+at tau = 0.1 (a = 1.10), a = 2.27, a = 12.28; grid-scale band |k|L/2pi >= 16.
+- (i) non-TT power at >= 16, no wave over jit0p3: 0.9997, 0.963, 0.311. CONFIRMED at the first
+  two dumps; REFUTED at a = 12 (the wave raises the grid-scale non-TT power of jit0p3 by 3.2;
+  32^3: 1.8).
+- (ii) Decision: D = 0.994, 0.856, 0.275, in 0.25-4 at all three dumps (the last just above the
+  lower edge): (L), not (X) (X predicted <= 0.1). Per-shell P_TT/P_nonTT, no wave over jit0p3,
+  at shells 16, 24, 31: 0.996, 0.969, 0.993 (tau = 0.1); 0.983, 0.939, 0.831 (a = 2.3); 0.60,
+  0.19, 0.61 (a = 12; shell 24 outside the factor 2). The same picture as at 32^3: at a <~ 2
+  the grid-scale TT of the jittered null is the TT of the noise alone, unchanged by the wave
+  to 0.6-14 percent in power and with the same fraction of the non-TT part per shell to 1-17
+  percent; it is the leakage of the noise's scalar field through the flat projector (linear in
+  A, P16(iii)), not a cross term with the wave. By a = 12 the wave has added grid-scale TT
+  (factor 3.6 in power) and grid-scale non-TT (3.2), and the TT/non-TT ratio of jit0p3 is up to
+  5 times that of the noise alone at shell 24 [JUDGEMENT: the wave compresses and modulates the
+  noise it carries; whether the extra TT is leakage of that anisotropic non-TT field or a
+  response is not separated by these runs].
+- (iv) REFUTED in part: box modes of the noise alone over the noise-noise prediction at K1
+  0.45-0.90 (median 0.56), phases -0.59 to -0.24 rad; at K2 0.86-1.11 (median 0.93), phases
+  -0.55 to -0.34 rad (3 <= a <= 20). The noise-noise term of `null_prediction.py` over-predicts
+  K1 by ~1.8 at both meshes (32^3: median 0.51) and its phases are off by ~0.45 rad.
+- (v) CONFIRMED: c(jit0p3) - c(no wave) over the cross-term prediction: 0.90-1.18 (median 1.00)
+  at K1 and 0.73-1.02 (median 0.95) at K2, phases within 0.12 rad (3 <= a <= 20).
+- (vi) rms TT of all modes, no wave over jit0p3: 0.94-1.00 (a <= 2), 0.80-0.93 (2-5), 0.39-0.79
+  (5-20): (L), above the 0.3 of (X).
+- (iii) CONFIRMED (above). Last dump (a = 20.25): rms TT 1.26e-6, rho_kin/rho_grad 0.029.
+Reading for the noise floor [JUDGEMENT]: (1) the grid-scale TT of a jittered particle lattice is
+produced by the lattice noise alone through the flat projector (as P16 had proposed), so Request
+9 (cut |k|L/2pi >= N/4 from TT spectra of noisy lattices) stands and is now tested; (2) the
+box-mode noise of a jittered lattice with a wave is the cross term (predicted to 1-18 percent
+from the initial data) plus the noise-alone term, which the second-order noise-noise formula
+gets only to a factor ~2 (P11(c') at K2 and P16'(iv) refuted for that reason); (3) after the wave
+grows (a ~ 12 at delta = 0.01) the wave and the noise do not separate at the grid scale.
