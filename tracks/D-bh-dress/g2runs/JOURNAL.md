@@ -354,3 +354,22 @@ the run carries Misner-Sharp excesses of ~1e-3 that move through the bubble (a b
 +3e-3 at R ~ 30 M at t = 50 M, near the old wall radius, figure) and a late excess that
 sits at the hole. [JUDGEMENT] So in vacuum, too, the late growth is constraint violation
 in the slice concentrated at the hole, not a finder artefact.
+
+## Entry 9 (07:12 PST): close of this session (helper g2runs, batch 3)
+
+Done: ES-1GB to t = 188 M and V-1GB to 200 M with every prediction judged (entries 5, 6;
+B1 refuted, B2 first part held, B4' (a)(b) held and (c) failed, C1 failed, C2 refuted, C3
+half, C4 held), X1 held, T1 and T2 tool tests, the axis profiles (entry 7) and the slice
+masses (entries 5, 8). Main result: the late horizon growth of ES-1G is not the outer
+boundary (ES-1GB follows ES-1G to 4.2e-9 while keeping the exterior mass); the relaxed
+lapse produces a late growth in vacuum too (V-1GB +1.27e-3), larger with dust, in the
+slice at the hole, while chi of the bubble falls and the horizon shrinks in coordinates.
+Pending (queued at 07:12 PST behind six jobs of other owners; they run by themselves):
+ES-1GB segment 2 (Slurm 4805, t = 188-200 M) and ES-F (Slurm 4806, D-20261121-144631-aa7ce9b).
+When a chain is DONE: `tools/finish_g2.sh es1gb` / `esf`, then judge B1, B3, B5 and P1-P7,
+(i)-(iii), D1-D4 here. Card time: V-1GB 0.781, ES-1GB segment 1 ~0.83 (closed with the run),
+segment 2 ~0.1 and ES-F ~0.8 (0.7-1.1, flux_tools entry 7) expected: ~2.5 of the 3
+card-hours of the package; if ES-F needs more than ~1.3 card-hours (a third segment) the cap
+is exceeded and it should be stopped with scripts/submit_chain.sh --stop.
+Not done: ES-F analysis (no data); secondary_infall's run beyond a/a_i = 16 (entry 2, cost);
+M/16 nests of ES-1GB and V-1GB (not in this package). Not pushed (helper).
