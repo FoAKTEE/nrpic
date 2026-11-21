@@ -62,7 +62,20 @@ F-20261119-145509-fb91531 (V10), F-20261119-145619-8246322 (E3 rerun).
 F-20261115-175639-ce844e5 (N2), F-20261115-180428-fc8172f (N3), F-20261115-180609-abc9f6e (N4).
 The G1 results of the NR runs are not in the note yet.
 
+## Wave 3 (round 1 of 2026-11-20 and the lead of 2026-11-21)
+
+Review: `../REVIEW-wave3.md`; lead's checks L1-L3 in `tracks/F-hills/JOURNAL.md` (2026-11-21).
+
+| package | what | runs |
+|---|---|---|
+| eih (wave 3a, reviewed 2026-11-21) | 1PN (EIH) three-body reference: tests T0-T6, trust ranges T4, scans, P1 predictions, 1PN-consistent states | F-20261119-150514-bb98309 (tests 9/9), F-20261119-143753-d82e9e3 (T4), F-20261119-144537-4db7530, F-20261119-144830-1aaea9d (scans), F-20261119-150214-3bf5bdc, F-20261119-145826-d4da8e1, F-20261119-150217-220950f, F-20261119-145315-2d18c52 (far release), F-20261119-144642-1ca3da1 (P1 from the inputs), F-20261119-145920-d7af935 (1PN-consistent states); failed: F-20261119-143636-aae25fb, -143638-83ce321, -143503-3cd3592 |
+| p1 (cut; intermediate analysis committed by the lead) | P1 chain resumed; analysis to t = 112 M: the binary merged at t = 48.8 M | F-20261119-150017-b45ec5f (chain, running), F-20261120-222808-0e709b6, F-20261120-223001-3ca60fa, F-20261120-223252-ca18a81 |
+| junk_gauge (cut at J4) | E10 analyses of S2g; junk of one member E/m = 7e-5 | F-20261120-222403-b8dc28c, F-20261120-222415-137ada9, F-20261120-222655-4d3bbc2, F-20261120-222808-b65001c, F-20261120-223018-a5c0838, F-20261120-223121-c921d2d, F-20261120-223314-b1b64fa, F-20261120-223333-9fbe615; S2g itself F-20261119-143443-f11ebb9 (card, completed) |
+| note (paused) | G1 schematics and data figures, ledger tables 3-4, G1 text | F-20261120-222908-4ffcfba, F-20261120-222959-156c8be |
+| g2mesh (cut) | MeshBlock trees of P1's set-up at three resolutions; one card batch (3000 slots at m/16 fit) | F-20261120-222426-86392c3, F-20261120-222636-46d03e0, F-20261120-222810-e408386 (card, last case aborted) |
+| lead, 2026-11-21 | L1 P1 merger (own parser), L3 eih tests, T5 and T4 | F-20261121-063449-4dcca98, F-20261121-063520-abab33e, F-20261121-063527-b4453db (first attempt failed by method), F-20261121-063646-d826df4 |
+
 ## Not part of G1 (wave 3a, beside wave 2b)
 
 The 1PN (EIH) three-body reference `eih/` of a wave-3a helper, with its own runs
-(F-20261119-143503-3cd3592 onwards); handed to the next lead, not reviewed here.
+(F-20261119-143503-3cd3592 onwards); handed to the next lead; reviewed on 2026-11-21 (section above).
