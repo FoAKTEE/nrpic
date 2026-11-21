@@ -229,3 +229,12 @@ Predictions [JUDGEMENT], written before 3a and 3b run:
 - fixed-N mesh sequence (A-N64, B-N8, C; 4969736 particles each): |ddet| and |dtrap| fall
   monotonically, order >= 1 between A-N64 and B-N8.
 - B-L32 equals B to 1e-5 M in ddet and dtrap (as A-L32 did).
+
+## 2026-11-21 01:26 PST, entry 7: C running, job 3a submitted
+
+The chain of C (run A-20261121-083336-6a82131) started at 01:19 as Slurm 4781: 1.88 s per cycle
+over its first 160 cycles (4096 cycles to t = 16: about 2.1 card-hours in three segments of
+50 min; the model said 1.14 s, the difference being the particles at 2e-7 s each, entry 6),
+41557 MiB on the card (model 41.4 GiB). Job 3a (run A-20261121-091934-ac62f5f, Slurm 4784:
+B-N8, A-N64) was submitted when C started; job 3b waits until 3a runs (one pending job per
+package).
