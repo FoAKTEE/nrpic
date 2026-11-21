@@ -192,3 +192,21 @@ Rule: "right" means the passage at the stored locator supports the claim as word
 locator" means the statement is in the paper but elsewhere, so it is relocated and then
 checked. "Wrong statement" means the paper says otherwise or does not say it, so it is
 refuted or set back to to_verify with the reason.
+
+### Outcome AU (reading of the 40 drawn in run kb-20261121-212635-c33885e; database writes in batch AU1, and 183 in L1)
+Read each claim at its stored locator in the stored source; details are in AUDIT.md.
+- 37 of 40 are right.
+- 1 has a wrong (incomplete) locator: 102. Its "Gaussian velocities" is at 2507.18312v3 L502,
+  not at L537-538. It was relocated and checked.
+- 0 are wrong statements.
+- 2 are fragments with no statement at all: 85 ("and L550-563") and 620 ("Abstract"). The seeder
+  split note rows at their locators. Their locators resolve, but nothing can be checked, so
+  they were annotated and left at located.
+- Prediction AU held: 37 is inside 36-39 right, 1 inside 1-4 wrong locators, 0 inside 0-1
+  wrong statements.
+- Failed part: my three verdict categories had no place for fragments.
+- Error of mine, found during the audit: while reading 589 (L370-397) I saw that my K1
+  evidence for 525 was wrong on one point. 2611.12831 does print the shift-damping profile
+  eta(x,t) (L388-397). The claim's row is "no item-by-item ablation", so the claim stays
+  supported: no on/off comparison of the profile is reported. I record the correction as an
+  annotation (AU1), and the verdict does not change.

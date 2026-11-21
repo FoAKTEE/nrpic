@@ -9,7 +9,8 @@ python3 -I tracks/kb/claims_tracks/scripts/ledger.py snapshot tracks/kb/claims_t
 /usr/bin/python3 -I kb/bin/kb claim verify 660 --by kb-claims_tracks --evidence '1201.4794v1 ms.tex L1102-1103: Delta E = (m1/m) E2 - (m2/m) E1 with m1/m2 = 3.' || { echo FAILED 660; fail=1; }
 /usr/bin/python3 -I kb/bin/kb claim verify 661 --by kb-claims_tracks --evidence '1201.4794v1 ms.tex L617-618: parabolic runs start at r0 = 15 r_t.' || { echo FAILED 661; fail=1; }
 /usr/bin/python3 -I kb/bin/kb claim verify 662 --by kb-claims_tracks --evidence '1201.4794v1 ms.tex L307-309 (footnote): for prograde orbits with D ~ 0.1 the energy change reaches about 30 in a narrow phase range (citing SKR fig. 7).' || { echo FAILED 662; fail=1; }
+/usr/bin/python3 -I kb/bin/kb claim verify 183 --by kb-claims_tracks --evidence '[audit 2026-11-21, seed 20261121] 2403.15126v1 L1074: Omega_GW proportional to sigma^(7/2), i.e. A_s^(7/4).' || { echo FAILED 183; fail=1; }
 python3 -I tracks/kb/claims_tracks/scripts/annotate.py annotate tracks/kb/claims_tracks/decisions/L1_annot.tsv || { echo FAILED annotate; fail=1; }
-/usr/bin/python3 -I kb/bin/kb claim check --id 658 659 660 661 662 --by kb-claims_tracks || { echo FAILED check; fail=1; }
+/usr/bin/python3 -I kb/bin/kb claim check --id 658 659 660 661 662 183 --by kb-claims_tracks || { echo FAILED check; fail=1; }
 python3 -I tracks/kb/claims_tracks/scripts/ledger.py rows tracks/kb/claims_tracks/decisions/L1.tsv "$NRPIC_RUN_DIR/before.json" "$NRPIC_RUN_ID" > "$NRPIC_RUN_DIR/ledger_rows.tsv" || fail=1
 exit $fail
