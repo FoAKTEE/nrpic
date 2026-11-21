@@ -218,3 +218,18 @@ remap counts 21 claims on the 20 papers. L1 verifies 658-662 (1201.4794) and 183
 186. Expected: 6 fulltext/checked, 186 judgement/unlocated with one annotation, no FAILED line.
 658-662 are `served:` rows, not seed rows (ingest3 journal), so `kb claim check` may report
 them as not seeded without changing them. That is not a failure.
+
+### Outcome L1 (run kb-20261121-213033-484dc64)
+Held: 6 claims became fulltext/checked (658-662, 183) and 186 was annotated, with no FAILED
+line. `kb claim check` reached only 183; it re-checked it with the same result. It did not
+reach 658-662, as predicted, because they are not seed rows.
+
+### Prediction AF (before the registered after-counts)
+Queue (label to_verify, judgement or background): 159 at the baseline. After all batches:
+- 159 - (14 A + 4 B + 5 C + 9 D + 47 F + 19 core) = 61 left in the queue.
+- Of the 61: 41 judgements, 1 background, and 19 to_verify. Every one of the 19 has a
+  recorded reason, and every judgement or background has at least one annotate event by
+  kb-claims_tracks.
+- Fulltext checked: 57 at the restart (39 + 18 from A1/B1) + C 5 + D 9 + F 47 + core 19 + audit
+  37 + 183 = 175. Machine-located fulltext: 502 - 38 = 464.
+Refuted if the queue is not 61, fulltext checked is not 175, or any queue claim lacks an event by kb-claims_tracks.
