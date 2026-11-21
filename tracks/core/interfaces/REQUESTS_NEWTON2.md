@@ -1,7 +1,8 @@
 # The Newtonian mode, second pass: requests of tracks B, A, D and core's deferred items
 
 Work package newton2 of core, branch `core/newton-2` (started from `core/requests-adf`),
-wave 3a, 2026-11-19. Journal with the predictions and outcomes of every test:
+wave 3a, 2026-11-19; closed in batch 2b, 2026-11-21, after the merge of releases
+core-v0.4 and core-v0.5 into the branch. Journal with the predictions and outcomes of every test:
 `tracks/core/JOURNAL-newton2.md`. Scripts: `tracks/core/analysis/newton2/` (`cases.py`
 runs the cases, `t<n>_*.py` judge them), figures `tracks/core/analysis/newton2/figs/`,
 run manifests `tracks/core/runs/`. Interface text of the new options:
@@ -21,8 +22,8 @@ in this package (locator given), [JUDGEMENT], [TO VERIFY].
 | A3 | `newton-mode-and-ball-ic` item 1, deferred in `REQUESTS_ADF.md`: special-relativistic push | DEFERRED again | Not in this package's list; a change of the kick-drift-kick kernel with its own conservation laws. The track's scan quotes 4 to 5 per cent at delta_L = 0.3 |
 | A3 | the same item: snapshots at chosen times | DEFERRED | Output work nobody has asked for again; `snap_dt` exists |
 | D1 | `track/D-bh-dress` `20261115T195036Z__to-core__newton-selfforce-doc.md`: state the self-force of a compact sub-cell object in the note (sections 5.2 and 6); does the relativistic mode share it | ANSWERED: note updated, measured map of the self-force (T8); the relativistic mode is [TO VERIFY] | Section 4. The Newtonian measurement is a property of the deposit and gather kernels, which the relativistic mode shares; a direct relativistic test (a single massive particle off a cell centre with constraint-solved data) was not run in this package |
-| C1 | core, deferred in `REQUESTS_ADF.md` (D5 item 2): multigrid on refined meshes | TESTED (T6), see section 5 | The moving rotating ball across a static level boundary |
-| C2 | the same item: throughput at 256^3 and 384^3 with 2e6 particles on a card | PENDING in the card queue | One card job (run core-20261119-145346-2f89b86, Slurm 4648), section 6 |
+| C1 | core, deferred in `REQUESTS_ADF.md` (D5 item 2): multigrid on refined meshes | TESTED on one static level (T6, T6b, T6c), see section 5 | The solve on the refined mesh is that of the uniform fine mesh where the matter is; a ball across the level boundary conserves momentum to 5e-5 M v, five times the uniform coarse mesh; the kick of the first test was the particle lattice, not the refinement. Open: more than one level, periodic refined meshes, adaptive refinement |
+| C2 | the same item: throughput at 256^3 and 384^3 with 2e6 particles on a card | MEASURED, section 6 | Card job core-20261119-145346-2f89b86 (Slurm 4648) |
 | C3 | core, deferred (A2 of `REQUESTS_ADF.md`): the Zel'dovich ball | done with A2 above | |
 
 ## 2. What was implemented
@@ -148,15 +149,56 @@ clump off a cell centre (the solver of package idsolve can provide them).
 
 ## 5. Multigrid on refined meshes
 
-Test T6 (section 7).
+Tests T6, T6b and T6c (`newtonian_mode.md` 7.6, with the table of all eleven runs). The
+moving, rotating cold ball of the first pass on the isolated 64^3 mesh, on that mesh
+with one static level, and on the uniform 128^3 mesh [VERIFIED]:
+- The solver converges on the refined mesh at every step (18 V cycles per step to
+  rounding, as on the uniform meshes).
+- With all matter on the fine level the refined run is the run of the uniform fine mesh
+  (conservation errors equal to 3 parts in 10^4 in T6b, and within 8 per cent at the
+  1e-5 level in T6c).
+- A ball that crosses the level boundary, sampled with one particle per fine cell and
+  direction: momentum change 5.06e-5 M v, centre of mass 2.60e-5 R, angular momentum
+  9.6e-6, energy 3.58e-4 over 0.7 free-fall times, that is 4.6, 5.3, 2.6 and 4.5 times
+  the uniform coarse mesh. The errors grow steadily while mass lies on both sides of
+  the boundary; whether the solve at the interface or the deposit there causes them was
+  not separated [TO VERIFY].
+- The first test (T6) had shown a momentum kick of 1.1e-3 on the refined mesh, 44 times
+  the uniform value, and my prediction (within ten times) failed. T6b and T6c traced it
+  to the particles, not the mesh: a cold lattice with fewer than one particle per cell
+  and direction is pushed as a whole by the self-forces of its particles (the uniform
+  128^3 mesh shows the same 2.1e-3; the uniform 64^3 mesh with a lattice of two cells
+  1.15e-2; with a lattice of the fine cell size 1e-5 on all three meshes). This is a
+  property of the scheme that every user of a refined mesh, or of a mesh finer than
+  the particle lattice, has to know: `newtonian_mode.md` section 6.
+Open: more than one level; a refined periodic mesh; adaptive refinement in this mode;
+the cubic cloud on a refined mesh; a fixed point mass on a refined mesh.
 
 ## 6. Throughput on a card
 
-One card job holds the checks of the new source on a card and the throughput cases
-(`cases.py card`, list in `scratch/core/core-20261119-145326-d509829/card.list`): run
-core-20261119-145346-2f89b86, Slurm job 4648, submitted 2026-11-19T14:53Z behind fifteen
-queued jobs. Results: section 7 when it has run.
+Card job core-20261119-145346-2f89b86 (Slurm 4648, ten cases, 252 s = 0.07 card-hours;
+judgement core-20261120-220427-5d8547f) [VERIFIED]. 2e6 particles, cloud-in-cell, one
+A100, seconds per step from the cpu time used over 20 cycles:
+
+| mesh | solver | s per step | V cycles per step | peak card memory |
+|---|---|---|---|---|
+| periodic 256^3 | Fourier | 0.143 | - | 7.3 GiB |
+| periodic 256^3 | multigrid, `newton_mg_tol = 1e-6` | 0.135 | 2.9 | 6.7 GiB |
+| isolated 256^3 | multigrid, `newton_mg_tol = 1e-6` | 1.20 | 5.2 | 6.7 GiB |
+| periodic 384^3 | Fourier | 0.436 | - | 22.6 GiB |
+| isolated 384^3 | multigrid, `newton_mg_tol = 1e-6` | 6.00 | 5.6 | 18.2 GiB |
+
+The Fourier solve costs as much as three V cycles and does not depend on the state;
+the periodic multigrid figure is for particles at rest (three cycles from the warm
+start; a collapsing configuration needs 13 to 19 cycles to rounding). The isolated
+mesh is nine (256^3) and fourteen (384^3) times slower than the periodic one; where the
+time goes was not profiled [TO VERIFY] (candidate: the multipole boundary, whose sums
+run on the host). Smaller runs on a card: Track B's pancake at 64^3 with 262144
+particles 13.5 ms per step; the embedded ellipsoid at 64^3 with 268400 particles and the
+cubic cloud 3.3 s for 281 steps.
+Card time of the package: 0.07 (job 4648) + 0.29 (job 4736, T6c and T4d at 64^3) = 0.36
+card-hours, plus the third job (core-20261121-080215-df3af65, asked 25 minutes).
 
 ## 7. Tests of this package and their state
 
-(filled in at the end of the session)
+@@SECTION7@@

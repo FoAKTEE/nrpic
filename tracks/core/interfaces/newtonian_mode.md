@@ -752,6 +752,62 @@ with the reference point in the middle of the box only); groups on an isolated o
 refined mesh other than the patch of 7.9; the species selection is exercised by the
 embedded ellipsoid (7.9) and has no exact reference of its own.
 
+### 7.9 Deformed ball and embedded ellipsoid: tests T4a, T4b, T4c, T4d
+
+Generator (T4a; cases core-20261119-152228-0ad3c0e, figure core-20261119-152928-6be4984)
+[VERIFIED]: `problems/newton/make_ic.py ball --axes S1 S2 S3 --vgrad D1 D2 D3 [--rotate
+SEED]` writes the particles of Track A's `make_deformed_ball.py` for (delta_L, e, p) =
+(0.2, 0.2, 0) at lattice spacing 0.05 (33552 particles), with and without the rotation
+of seed 3: positions, velocities and masses are equal (largest difference 0), the JSON
+carries the same volume radius of the lattice ball (`r_vol` = 1.0004144105705273). The
+two files differ only in the sign bit of zero velocity components. The JSON key
+`semi_axes` is S times `--radius`; the track's `semi_axes_start` is S times `r_vol`.
+`--background X0 X1 NB RHO` adds species 1 at rest on an NB^3 lattice outside the ball.
+
+Embedded ellipsoid (T4b, T4c, T4d) [VERIFIED]: the patch of Track B's benchmark at the
+turnaround of its first axis (species 0, eight particles per cell, 7208 particles at
+64^3; semi-axes 3.37, 4.71, 6.07 t_k) inside background particles at rest (species 1,
+one per cell), periodic box of side 48 t_k with expansion, group 1 = species 0 about
+the middle of the box; input `problems/newton/embedded_ellipsoid.athinput`. Reference:
+the track's ODE (`baseline/scripts/ellipsoid.py`, model A), first crossing of the short
+axis at 24.2525 t_k. Measured: the first minimum of (5 J_xx/M)^(1/2) from columns 38-43
+of the group history; "axes" is the largest |semi-axis - ODE|/R_L up to one t_k before
+the crossing.
+
+| cells, cell size | deposit and gather, solver | first minimum of the short axis | axes (x, y, z) | Layzer-Irvine drift / max a\|W\| |
+|---|---|---|---|---|
+| 64^3, 0.75 t_k | linear cloud, Catmull-Rom; Fourier `spectral` | +2.56 per cent | 0.111, 0.074, 0.083 | 8.0e-3 |
+| 64^3 | linear cloud, Catmull-Rom; multigrid | +1.29 per cent | 0.045, 0.041, 0.062 | 9.2e-3 |
+| 64^3 | cubic cloud with compensation, cubic spline; Fourier `spectral` | +0.92 per cent | 0.029, 0.020, 0.047 | 3.7e-6 |
+
+Runs: T4b core-20261119-162746-a02d334, T4c core-20261119-162455-e05ffa1 (13.6 V cycles
+per step), analysis core-20261120-222425-078bcc0 (figure `t4b_embedded.png`); the third
+row on a card (case emb64_pcs_fft of core-20261120-221835-4870ae5, 3.3 s), analysis
+core-20261121-075319-f61af19 (figure `t4d_convergence.png`). The centroid of the patch
+stays fixed to rounding in all three; the run starts within 3e-3 R_L of the ODE state
+(lattice ball against continuum ellipsoid).
+- At this cell size the short axis spans four and a half cells at the start and fewer
+  than three near the crossing: the run lags the ODE, and the lag is the smoothing of
+  the force by the cloud and the gather. The seven-point operator overestimates the
+  potential at short wavelengths and hides part of that loss; with the linear cloud the
+  spectral symbol is therefore further from the ODE than the multigrid solver, although
+  it is the more accurate operator [JUDGEMENT: no run separates the two terms]. With
+  the cubic cloud, its compensation and the spline gather (the kernels of Track B's
+  pancake, 7.3) the spectral solver is the closest of the three.
+- With `deposit_shape = pcs` and `interp = bspline` the deposit and the gather kernel
+  are the same function, the force is the exact gradient of the particle sum W of
+  column 6, and the Layzer-Irvine constant holds to 3.7e-6 of max a|W| instead of 8e-3
+  (compare 7.4). For an energy budget use these kernels.
+- Predictions that failed: the crossing time of the Fourier run within 2 per cent
+  (2.56); the semi-axes within 3 per cent of R_L (0.047 to 0.111); the two solvers
+  within 0.3 per cent of each other (1.25); "axes" below 0.045 with the cubic cloud
+  (0.047).
+- Convergence with the cell size (96^3, 128^3, 256^3; predictions in the journal, T4d)
+  is in card job core-20261121-080215-df3af65; until it has been judged the lag is
+  measured at one cell size only and its order is [TO VERIFY].
+Not tested: the embedded patch on an isolated mesh; a rotated patch; more than one
+patch.
+
 ### 7.10 Fixed point mass in a secondary infall: test T5
 
 Track D's set-up (dust lattice in the Hubble flow of eps = 0.03 for 3 M <= r < 18.35 M,
