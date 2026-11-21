@@ -1,35 +1,34 @@
 # STATUS of kb
 
-gate:        KB-G1 PASS (signed 2026-11-20, coord/GATES.md). KB-G0 and KB-G2 packages complete for
-             the gate review (all items PASS, each with an independent verifier's VERIFIER.md;
-             request kb-g0-g2-gate-review). KB-G3 in progress (claims packages cut, not resumed).
-headline:    710 papers and 64 repositories ingested; on snapshot kb-20261119-a782f1e an
-             independent verifier confirmed parse success 95.6 % under its own definition (96.3 %
-             on the recorded status) and the right paper in the top ten for 87.5 % of the golden
-             and 91.7 % of its blind held-out questions (hybrid); the lead's recheck held
-last-result: - lead check of verify_g2 from its artefacts (run kb-20261121-125746-a03875b; figure
-               stage/review_wave3/figures/fig_lead_check_vg2.png): retrieval 21/22/21 of 24 and
-               27/28/28 of 32 recounted from raw hits; snapshot counts by own SQL all equal; parse
-               definition re-evaluated 679/710 and 670/710; prediction L1 held in all 8 parts
-             - verifier findings handled (stage/REVIEW-wave3.md): C6b WRONG (no snapshot id on a
-               hit, in kb show or kb cites) recorded, fix after ingest3; two wave-1 manifests with
-               exit 1 corrected to failed; tool-choice reasons named in kb/README.md
-             - claims_tracks batch B1 ledger rows committed (run kb-20261120-223013-5330e45)
-             - upstream watch 2026-11-20 (code_kb): src/z4c changed on two upstream branches,
-               nothing in src/particles; message to core 20261120T222130Z
-next:        1. ingest3: bibliography formats, old-style headings, abstracts, claim chunk remap,
-                re-ingest of 20 papers, the 24 wave-3a sources; then snapshot, QA with the parse
-                rate stated against the bar (removes the thin C3 margin)
-             2. parameter index at main after core-v0.4 and core-v0.5 (`kb ingest repo --this
-                --ref main`, `kb link load/check`, snapshot): stale since 5deee18
-             3. KB-G3: claims_tracks (C1, D1, E1 written, not run; F, core; three kb-requests of
-                A, B, C) and claims_brief (the brief's statements)
-blockers:    the four packages of round 1 other than verify_g2 were cut on 2026-11-20 and need a
-             batch (request kb-cut-packages-schedule)
-needs:       orch: kb-g0-g2-gate-review, kb-cut-packages-schedule; still open: arxiv-licences,
-             additions-groups-and-0608095, brief16-titles-authors; core: paper-code-links (since
-             wave 1)
-offers:      db/current kb-20261119-a782f1e (read-only); `kb search --rerank`, `kb show`, `kb
-             code --kind param --repo local/nrpic` (options as of main 5deee18, before
-             core-v0.4); tracks/kb/verify_g2/heldout.yaml (held-out only, never for tuning)
-budget:      0 card-hours used of 0 allotted; processor runs only (1 core this session)
+gate:        KB-G0, KB-G1, KB-G2 signed (coord/GATES.md; KB-G2 with reservations, those closed
+             since: tracks/kb/stage/KB-G2/OPEN.md). KB-G3 (every queue claim bearing on the tracks'
+             G1 processed): the work is done (claims_tracks, claims_brief); no stage package and
+             no independent verifier yet.
+headline:    744 papers (684 + 60 additions; gr-qc/0608095 dropped, decision 0024 item 2) and 64
+             repositories; db/current = kb-20261121-aa0a2ae. Parse success 719/744 = 96.6 %,
+             strict the same (run kb-20261121-234721-b3aecfe); golden questions hybrid 28/32
+             papers, rerank 28/32 papers and 25/32 locations. 861 claims.
+last-result: - lead batch 9 (this session): additions test at 60/744, suite green; claim check
+               guarded ("pinned" after relocate or verify --locator); C6b done (snapshot id in
+               kb show, kb cites, JSON hits); parse rate vs the 95 % bar in kb qa run; drop of
+               gr-qc/0608095 (run kb-20261121-234427-d6031d4); claim check of ingest3's 16 seeds
+               "same 16" (kb-20261121-234437-8747d17); claim 861 for B; downloads of the 35
+               additions recorded (kb-20261121-235128-dcd72a4); snapshots bbaafe5, aa0a2ae
+             - review of ingest3, claims_tracks, claims_brief, code_kb from own SQL: every count
+               recomputed held (stage/REVIEW-wave3.md, last section)
+             - messages: refutations 766, 767 to F; 742 and the Szekeres answer to A;
+               conductivity sources to C; claim 861 to B; snapshot and drop to orch
+next:        1. KB-G3 stage package (nrpic-stage collect KB-G3) with an independent verifier of the
+                claims work (decision 0016 item 4): sample of claims_tracks and claims_brief
+             2. ingest package: Krasinski-Bolejko (Szekeres horizons), a Szekeres conformal-
+                flatness source, one DSMC cell-size paper, Cercignani-Kremer if on arXiv, the 13
+                papers claims_tracks named for F and D; six old-style reference lists
+             3. re-seed the fragment claims (85, 620, 549 and about 17 of AUDIT.md); the five
+                claimed paper-code links and the M23 symbol after core answers
+blockers:    none
+needs:       orch: KB-G3 verifier package in a batch; close REQUESTS row "kb paper-code-links";
+             still open: arxiv-licences (decision 0024 item 2 answered), brief16-titles-authors.
+             core: tests for links M18-M20, M24, M25 and the M23 symbol (message 20261121T233243Z)
+offers:      db/current kb-20261121-aa0a2ae (read-only); claim 861 (B), locators for A and C in
+             the outbox; `kb show/cites/search --json` now name the snapshot
+budget:      0 card-hours; processor runs only (1-4 cores this session)

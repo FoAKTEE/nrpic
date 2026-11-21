@@ -744,3 +744,19 @@ Predictions written before the runs of this session.
 - V1 (kb verify-downloads, then a second snapshot): downloads rows for all 744 manifest ids plus
   the repositories, ok 743 and problem 1 (the existing one), no record 0; C1 then agrees by the
   report's own rule (recomputed by my SQL). Refuted if any of the 35 is missing or failed.
+- V1 outcome (run kb-20261121-235128-dcd72a4): held for the 60 additions (all download rows ok;
+  C1 agrees by its rule, my SQL); verify-downloads exits 1 on the known gr-qc/9412071 and lists
+  the additions as "extra" of brief section 17 (it does not read arxiv_additions.tsv). Second
+  snapshot kb-20261121-aa0a2ae = db/current (744 papers, 861 claims).
+- Figures: none made this session; the steps were data management (drop, check, snapshot, QA
+  text) and their outcomes are counts. I read ingest3's fig_parse_status.png and claims_brief's
+  fig_seeds_by_section.png before relying on their numbers [JUDGEMENT on the exemption].
+- did: additions test (60/744), guard of claim check, C6b, parse rate in kb qa run, drop of
+  gr-qc/0608095, claim check of ingest3's seeds, two snapshots, claim 861, stale header of the
+  link file, review of the four packages from own SQL (REVIEW-wave3.md), messages to F, A, C, B,
+  orch; ack of orch's release message.
+- found: decision 0027's 745 included the dropped paper; `kb claim add` writes no locator rows;
+  QA C1 disagreed only through missing download rows of the 35 additions.
+- failed predictions: B1 (no locator rows from add). D1, K1, S1, Q1, V1 held (V1 with the exit
+  code of the known PDF paper).
+- open: KB-G3 package and its verifier; ingest of the sources A and C asked for; fragment claims.
