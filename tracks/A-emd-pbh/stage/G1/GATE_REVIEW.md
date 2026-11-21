@@ -20,5 +20,11 @@ rows of note v1 that no fresh verifier recomputed (OPEN.md item 2), plus the C8 
 | E | Newtonian first-collapse band of C8: points with t_1 error in [2.2e-4, 6.3e-4] | 9 of 14 | 9 of 14 | any other count |
 | F | every raw file read | sha256 as recorded | all match | one mismatch |
 
+Failure on record: the first run, A-20261121-064515-aa13c8f, stopped (exit 1) after part A
+because the data-set run A-emd-pbh-20261115-130609-947c898 (wave 1) has no `sha256sums.txt`;
+the script now checks such files against the integrity listing of run
+A-20261120-222620-0304d9d. Part A of that failed run printed H_max = 0.2428, 0.05126,
+0.04007; the predictions above stay as written.
+
 Not recomputed by me: the fifth row (SR-2 largest 2m/R on the axes 0.34; it needs the field
 dumps), the predicted card-hours (a cost model), the four cross-check differences.
