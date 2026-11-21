@@ -1,4 +1,5 @@
 {"exe": ".work/exe/sbc3/athena_cpu",
+ "note": "needs the source and the inputs of commit cb50e22: sbc_damp_gam and sbc_damp_theta were removed afterwards (journal entry 11)",
  "ball": {"M": 0.5, "Rb": 6, "edge": 1.5, "h": 0.5},
  "cases": {
   "ball_full_dg1": {"input": "inputs/ball_ext.athinput", "args": ["z4c/extrap_order=4", "z4c/ghost_falloff=true", "z4c/sbc_variant=nonwave", "z4c/sbc_speed=metric", "z4c/sbc_damp_gam=1.0"]},

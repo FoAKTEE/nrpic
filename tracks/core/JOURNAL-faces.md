@@ -636,7 +636,8 @@ ball_g4nw_met of core-20261119-164338-2dc0ab0; analysis core-20261120-223202-120
   `sbc_damp_gam = 1` reaches t = 16 but with the same growth later: 1.2e-2 at t = 14,
   0.12 at t = 15 and 16, against 5e-3 without damping. The growth starts when the
   constraint violation that the ball sends out reaches the faces (t of 8 to 10, entry 10).
-  lambda dt is 0.06 and 0.25, far inside the RK4 limit: the term itself, not the time
+  lambda dt is 0.25 and 1.0 (the ball's step is 0.25), inside the RK4 limit of 2.78 of a
+  pure damping, and the growth is there at both: the term itself, not its time
   integration, is unstable there. [JUDGEMENT] on the mechanism, not tested: Gt^i_d is a
   second-order difference of ghost cells that are extrapolated from the boundary cell,
   so the term feeds the boundary cell's own metric error back into Gt^i and through the
