@@ -27,7 +27,10 @@
 //! field is coupled).
 //!
 //! <basename>.sf.con.hst (text, every <scalar_field> con_dcycle cycles): see the header
-//! line written by WriteConstraintHistory.
+//! line written by WriteConstraintHistory.  With <scalar_field> con_signed = true seven
+//! columns follow (ConstraintSignedMeans): the signed box means <H>, <M_x>, <M_y>, <M_z>,
+//! and with H' = H - <H> (the part that is not uniform) <|H'|/[H]>, max(|H'|/[H]),
+//! rms(H').  Without the option the record is unchanged.
 //!
 //! Extended dump <basename>.sf.NNNNN.dump (written instead of the layout NRSFDMP1 of
 //! scalar_field_io.cpp when one of dump_metric, dump_magnitudes, dump_constraints,
@@ -88,6 +91,9 @@ void ScalarField::DiagInit(ParameterInput *pin) {
   }
   if (pin->DoesParameterExist("scalar_field", "dump_noise")) {
     dopt.dump_noise = pin->GetBoolean("scalar_field", "dump_noise");
+  }
+  if (pin->DoesParameterExist("scalar_field", "con_signed")) {
+    dopt.con_signed = pin->GetBoolean("scalar_field", "con_signed");
   }
   if (pmy_pack->pz4c->opt.chi_psi_power != -4.0 &&
       (dopt.con_dcycle > 0 || dopt.dump_magnitudes)) {
@@ -290,16 +296,98 @@ void ScalarField::WriteConstraintHistory(Real time, int ncycle, bool header) {
                  "[5]=max(|H|/[H]) [6]=<|H|>/<[H]> [7]=<|M|/[M]> [8]=max(|M|/[M]) "
                  "[9]=<|M|>/<[M]> [10]=<[H]> [11]=<[M]> [12]=<|H|> [13]=<|M|> "
                  "[14]=rms(H) [15]=rms|M| [16]=rms|M_bssn-M_adm| [17]=<phi> [18]=<Pi> "
-                 "[19]=<K> [20]=<alpha>\n");
+                 "[19]=<K> [20]=<alpha>");
+    if (dopt.con_signed) {
+      std::fprintf(fp, " [21]=<H> [22]=<M_x> [23]=<M_y> [24]=<M_z> [25]=<|H-<H>|/[H]> "
+                   "[26]=max(|H-<H>|/[H]) [27]=rms(H-<H>)");
+    }
+    std::fprintf(fp, "\n");
   }
   std::fprintf(fp, "%.17e %d %.17e %.17e %.17e %.17e %.17e %.17e %.17e %.17e %.17e %.17e"
-               " %.17e %.17e %.17e %.17e %.17e %.17e %.17e %.17e\n",
+               " %.17e %.17e %.17e %.17e %.17e %.17e %.17e %.17e",
                time, ncycle, -0.5*std::log(mean[3]), s[0]/vol, rhmax,
                (s[2] > 0.0) ? s[4]/s[2] : 0.0, s[1]/vol, rmmax,
                (s[3] > 0.0) ? s[5]/s[3] : 0.0, s[2]/vol, s[3]/vol, s[4]/vol, s[5]/vol,
                std::sqrt(s[6]/vol), std::sqrt(s[7]/vol), std::sqrt(s[8]/vol),
                mean[0], mean[1], mean[2], mean[4]);
+  if (dopt.con_signed) {
+    Real sg[7];
+    ConstraintSignedMeans(sg);
+    std::fprintf(fp, " %.17e %.17e %.17e %.17e %.17e %.17e %.17e", sg[0], sg[1], sg[2],
+                 sg[3], sg[4], sg[5], sg[6]);
+  }
+  std::fprintf(fp, "\n");
   std::fclose(fp);
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn void ScalarField::ConstraintSignedMeans
+//! \brief signed box means (coordinate-volume weights) of the constraints of the last
+//! evaluation, out[0..3] = <H>, <M_x>, <M_y>, <M_z>, and of the part of H that is not
+//! uniform, H' = H - <H>: out[4] = <|H'|/[H]>, out[5] = max(|H'|/[H]), out[6] = rms(H').
+//! A uniform residual of the background (the time integration of a homogeneous state)
+//! sits in <H> and drops out of H'.  Needs the magnitudes of ConstraintMagnitudes.
+
+void ScalarField::ConstraintSignedMeans(Real out[7]) {
+  auto &indcs = pmy_pack->pmesh->mb_indcs;
+  auto &size = pmy_pack->pmb->mb_size;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int nx1 = indcs.nx1, nx2 = indcs.nx2, nx3 = indcs.nx3;
+  const int nmkji = (pmy_pack->nmb_thispack)*nx3*nx2*nx1;
+  const int nkji = nx3*nx2*nx1;
+  const int nji = nx2*nx1;
+  auto ucon = pmy_pack->pz4c->u_con;
+  auto mag = u_mag;
+  const int icH = z4c::Z4c::I_CON_H, icMx = z4c::Z4c::I_CON_MX;
+
+  // first pass: signed means
+  array_sum::GlobalSum s1;
+  Kokkos::parallel_reduce("sf_con_signed", Kokkos::RangePolicy<>(DevExeSpace(), 0, nmkji),
+  KOKKOS_LAMBDA(const int &idx, array_sum::GlobalSum &lsum) {
+    int m = (idx)/nkji;
+    int k = (idx - m*nkji)/nji;
+    int j = (idx - m*nkji - k*nji)/nx1;
+    int i = (idx - m*nkji - k*nji - j*nx1) + is;
+    k += ks;
+    j += js;
+    const Real vol = size.d_view(m).dx1*size.d_view(m).dx2*size.d_view(m).dx3;
+    array_sum::GlobalSum v;
+    v.the_array[0] = vol;
+    v.the_array[1] = vol*ucon(m,icH,k,j,i);
+    for (int a=0; a<3; ++a) { v.the_array[2+a] = vol*ucon(m,icMx+a,k,j,i); }
+    for (int n=5; n<NREDUCTION_VARIABLES; ++n) { v.the_array[n] = 0.0; }
+    lsum += v;
+  }, Kokkos::Sum<array_sum::GlobalSum>(s1));
+  const Real vtot = s1.the_array[0];
+  const Real hbar = s1.the_array[1]/vtot;
+
+  // second pass: the part of H that is not uniform
+  array_sum::GlobalSum s2;
+  Real rmax = 0.0;
+  Kokkos::parallel_reduce("sf_con_spread", Kokkos::RangePolicy<>(DevExeSpace(), 0, nmkji),
+  KOKKOS_LAMBDA(const int &idx, array_sum::GlobalSum &lsum, Real &lmax) {
+    int m = (idx)/nkji;
+    int k = (idx - m*nkji)/nji;
+    int j = (idx - m*nkji - k*nji)/nx1;
+    int i = (idx - m*nkji - k*nji - j*nx1) + is;
+    k += ks;
+    j += js;
+    const Real vol = size.d_view(m).dx1*size.d_view(m).dx2*size.d_view(m).dx3;
+    const Real hp = ucon(m,icH,k,j,i) - hbar;
+    const Real hmag = mag(m,0,k,j,i);
+    const Real r = (hmag > 0.0) ? fabs(hp)/hmag : 0.0;
+    array_sum::GlobalSum v;
+    v.the_array[0] = vol*r;
+    v.the_array[1] = vol*hp*hp;
+    for (int n=2; n<NREDUCTION_VARIABLES; ++n) { v.the_array[n] = 0.0; }
+    lsum += v;
+    lmax = fmax(lmax, r);
+  }, Kokkos::Sum<array_sum::GlobalSum>(s2), Kokkos::Max<Real>(rmax));
+  out[0] = hbar;
+  for (int a=0; a<3; ++a) { out[1+a] = s1.the_array[2+a]/vtot; }
+  out[4] = s2.the_array[0]/vtot;
+  out[5] = rmax;
+  out[6] = std::sqrt(s2.the_array[1]/vtot);
 }
 
 //----------------------------------------------------------------------------------------

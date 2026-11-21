@@ -6,6 +6,124 @@ decision 0019 item 4). Tags that exist: core-v0.1 = 7daed19 (asymptotically flat
 core-v0.2 = 52c44eb (periodic particles and cosmological gauge; source of main a1c2237),
 core-v0.3 = 609a875 (below).
 
+## core-v0.5 (release candidate, 2026-11-21): four wave-3a source branches
+
+Record: `tracks/core/RELEASE-v0.5.md` (first line: source commit and regression
+verdict; the regression table; the quick tests; the card check). Source commit
+**c3eb42e0** (c3eb42e0bf9b9804e569f7e6dd1603ac805a60eb) of `core/nrpic`: the last commit
+that changes `athenak/`, `python/`, `problems/` or `scripts/` (the merge of core/mpi);
+later commits add records (`tracks/core/`, `docs/FORMATS.md`) only. Executables built from it, with
+READY (every new option with one example input), COMMIT and SHA256SUMS:
+`/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v05/` (`athena_cpu` serial,
+`athena_gpu` one A100, `athena_cpu_omp` threaded, `athena_cpu_mpi` several ranks).
+
+### What is merged (in this order, one merge commit per branch)
+
+| Branch (tip merged) | Merge | Capability | Switch (absent = off) | Interface document |
+|---|---|---|---|---|
+| core/scalar-3 (88544a5b) | 604e9ad8 | entity of a Fourier mode and stream word of the stochastic sources as named functions (`rng::ModeEntity`, `rng::StochasticModeStream`, Python twins `mode_entity`, `stochastic_mode_stream`; the keys are those the noise used before); signed constraint means of the scalar-field record; example of the inflection (ultra-slow-roll) case; linear twin `python/nrpic/sf_lattice.py` | `<scalar_field> con_signed` | `tracks/core/interfaces/scalar_field_3.md`, `rng.md` sections 6 and 6.2 |
+| core/build-openmp (983351aa) | 0d0f5ba5 | threaded processor build (Kokkos OpenMP, `scripts/build_cpu_omp.sh`, `scripts/cpu_run.sh`, `scripts/omp_places.py`); deposit into one private copy of the sources per thread, which repeats bit for bit at a fixed thread count | `<particles> deposit_threads = atomic \| private` | `tracks/core/interfaces/threaded_build.md` |
+| core/cosmo-amr (bb360ef2, source 1548d49c) | e103b3e3 | adaptive refinement in `nrpic_cosmo` with criteria on particles per cell, lapse and chi; coarse clouds sampled on fine leaf cells with their shape; horizon finder and tracker in a periodic box, status of every search; guard that stops a run whose fields are not finite; step limit from the coordinate speed of light; constraint norms inside and outside spheres; exact restarts of adaptive `nrpic_cosmo` runs | `<amr_criterion0> method = user` with `<particles_amr>`; `<particles> deposit_fine_shape`, `region_dcycle`; `<fastflow> diagnostics`; `<z4c> tracker_walk_tol`, `dt_lightspeed`; `<z4c_guard>`; `<problem> shift_x1..3` | `tracks/core/interfaces/cosmo_amr.md`, triage `REQUESTS_A2.md` |
+| core/mpi (f9a2c022, source ca46836a) | c3eb42e0 | the particle module on more than one MPI rank: ownership and hand-over of particles, deposit of clouds across rank boundaries, sums over the ranks, files written by rank 0 in tag order, restart on any rank count | none: `mpirun -np N` with the MPI build | `tracks/core/interfaces/mpi.md` |
+
+Left out, unfinished (for core-v0.6): core/id-solver-2, core/clump-table, core/newton-2,
+core/oblate, core/z4c-faces. No branch that was offered for this release is left out.
+
+Conflicts resolved by hand: `tracks/core/interfaces/rng.md` (scalar-3: the stream
+registry of core-v0.4 kept, row 3 and its table of degrees of freedom taken),
+`particles.hpp` (include list; option structures; members), `CMakeLists.txt`,
+`nrpic.cpp` (`NrpicInit`; constants of `NrpicDepositSources`; the lines after the
+particle loop). Three resolutions that no conflict marker asked for:
+1. the additions of the fine-shape branch of the deposit kernel (cosmo-amr) go through
+   the deposit target of build-openmp (`dep.Add`), so that `deposit_threads = private`
+   holds them;
+2. after the particle loop the private copies are summed into the source array
+   (`thread_dep.End`) before the clouds of other ranks are added to it
+   (`NrpicMpiDepositRemote`);
+3. `NrpicMpiInit` stops a run on more than one rank, with a message, for the options
+   whose sums, records or deposit are those of one rank: `removal_record`,
+   `acc_nsphere`, `peri_count`, `perturb_gamma`, `id_solve`, `region_dcycle`,
+   `deposit_fine_shape` (beside the four of the package: `pusher = newton`,
+   `collisions`, `test_kick`, `curv_dt`).
+
+### Behaviour that changes without an option
+
+1. **Guard.** A run with Z4c whose evolved fields are not finite stops: diagnostic on the
+   terminal and in `<basename>.guard.txt`, every output written once, exit status 3
+   (releases before: the run went on to its limit with status 0). The check runs on the
+   initial data and after every cycle. `<z4c_guard> stop_nonfinite = false` gives the
+   old behaviour. A script that takes a non-zero status for a crash must know status 3.
+2. **Place of two files.** `<basename>.horizon_summary_<n>.txt` (and the finder's
+   verbose, grid and Ylm files) and `<basename>.co_<n>.txt` are opened at their first
+   record, in the run directory of `-d`; the releases before opened them in the
+   directory the executable was started in. Runs started inside their run directory see
+   no change. A run without a single search still leaves its summary file.
+3. **Periodic meshes.** The points of a trial surface of the horizon finder and the
+   position of a tracker are mapped into the box, and `<z4c_amr> method = tracker`
+   measures the distance to the nearest image. Results change only where a surface or a
+   tracker reaches a face of a periodic box (the releases before left such points out
+   of the surface integrals, or lost the tracker).
+4. `nrpic_cosmo` enrols a refinement function: `<amr_criterion0> method = user` works
+   (it called a null pointer before). Restart output of such a run writes
+   `<name>.rst.amr` beside the mesh restart file.
+5. More than one MPI rank no longer stops in `NrpicInit`: the particle module runs, or
+   stops in `NrpicMpiInit` with the name of the option that is not ported.
+None of these changes a byte of the twelve regression set-ups (below).
+
+### Input options (`tracks/core/verify/options_at.py core-v0.4 HEAD`)
+
+25 options added, none removed, no default changed
+(`scratch/core/tmp/lead_v05/options_v04_v05.txt`); the scan does not see names that the
+source builds at run time, added here by reading the source.
+
+- `<scalar_field>` con_signed
+- `<particles>` deposit_threads; deposit_fine_shape; region_dcycle, region_x1..3,
+  region_radius1..4, region_horizon, region_horizon_factor
+- `<particles_amr>` ppc_refine, ppc_derefine, lapse_ratio_1.., chi_ratio_1..,
+  hysteresis, max_level, verbose
+- `<z4c>` dt_lightspeed, tracker_walk_tol
+- `<z4c_guard>` stop_nonfinite (default true), stop_chi_nonpositive, stop_dt_below,
+  stop_no_particles, check_dcycle
+- `<fastflow>` diagnostics
+- `<problem>` (nrpic_cosmo) shift_x1, shift_x2, shift_x3
+
+### Files and formats added (`docs/FORMATS.md`, last section)
+
+`<basename>.region.hst`; `<basename>.guard.txt`; `<basename>.horizon_status_<n>.txt`;
+`rst/<basename>.NNNNN.rst.amr`; `<basename>.mpi.hst`; columns 21 to 27 of
+`<basename>.sf.con.hst`. No existing format changes.
+
+### Build scripts
+
+`scripts/build_cpu_omp.sh <dir>` (threaded; `OMP_OPT=debug` for the flags of the serial
+build); the MPI build has no script of its own:
+`CMAKE_EXTRA="-DAthena_ENABLE_MPI=ON" scripts/build_cpu.sh <dir>` (and `build_gpu.sh`
+for cards), with the Open MPI of the machine (`/home/emost/codes/openmpi`).
+`scripts/cpu_run.sh` starts a threaded run with a placement that does not collide with
+other sessions (`scripts/README.md`, "Threaded processor runs").
+
+### Evidence
+
+Byte regression against core-v0.4 on the twelve set-ups of wave 1: PASS for the serial
+build (run core-20261121-063859-e410ee3) and for the MPI build started without mpirun
+(run core-20261121-065743-1202666). Quick tests of the four branches, the threaded and
+the MPI build, and the card check: `RELEASE-v0.5.md`. The capability tests were run by
+the work packages on the executables of their branches (run ids in each interface
+document, journals `tracks/core/JOURNAL-{scalar3,omp,cosmo-amr,mpi}.md`, READY files
+copied to `scratch/core/exe/core_nrpic_v05/branches/`).
+
+### Known limitations carried into core-v0.5
+
+`tracks/core/stage/G2/OPEN.md` (section of core-v0.5) and the READY of the published
+executables. The most important: on several ranks eleven options stop the run, and the
+horizon finder at marginal resolution gives rank-dependent surfaces (so excision by a
+horizon is not the same on every rank count); `deposit_fine_shape` has no limiter
+(negative leaf-cell energy in sparse regions) and quadratic and cubic clouds are not
+uniform across a level boundary; refinement levels take one global step; the MPI card
+build is not part of the release; MPI with threads, and adaptive refinement under
+threads or on several ranks with `<particles_amr>`, are untested.
+
+
 ## core-v0.4 (release candidate, 2026-11-21): the seven wave-2 source branches
 
 Record: `tracks/core/RELEASE-v0.4.md` (first line: source commit and regression

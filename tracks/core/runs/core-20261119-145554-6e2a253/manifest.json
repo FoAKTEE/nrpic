@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261119-145554-6e2a253",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-mpi/tracks/core/analysis/mpi/mpi_tests.py",
+  "--case",
+  "t1_kerr",
+  "--out",
+  "t1_kerr"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-145554-6e2a253",
+ "commit": "6e2a253",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/tests/mpi_kerr_swarm.athinput",
+   "sha256": "c8414c1fc67a8c226bfba7a78be04320105061b215400567d3c0103f9e934266"
+  },
+  {
+   "path": ".work/build_cpu_mpi/src/athena",
+   "sha256": "f7a7df96342016c9b8d512fbb991a2aca5c51a3ce28288641757cb9cdbdfcdb0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-145554-6e2a253",
+ "purpose": "mpi T1 (t1_kerr): test particles in a fixed metric on the mesh, 1, 2 and 4 ranks compared",
+ "kind": "scouting",
+ "tag": "mpi-t1_kerr",
+ "state": "finished",
+ "wall_time_s": 2.62,
+ "exit_status": 1,
+ "cores": 7,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T14:55:54Z"
+}
