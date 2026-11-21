@@ -1296,3 +1296,58 @@ t = 2 (interior 1.12e-5, shell 2.06e-5, faces 1.31e-4 in entry 11) to 1e-6; wall
 below 30 minutes (serial: 31 minutes for the solve and 58 for the 16 steps). Refuted if
 an iteration count differs by more than one, or a region mean at t = 2 by more than 1
 per cent.
+
+## 2026-11-21, entry 19: outcome of T128; figures of the puncture tests; where the package stands
+
+**T128 held, with room** (run core-20261121-082948-264c21a, threaded build of the merge,
+6 threads, unbound; `check_threads_n128.json`; figure `figs/check_threads_n128`, looked
+at: one case, bars at 1e-15 (psi) and 4e-13 (W), the symbols of the two builds at the
+same heights). The solved Zel'dovich ball at 128 cells with its evolution to t = 2
+against the serial run of the build of 76add0c (run core-20261119-153416-3d26b50):
+
+| | serial (76add0c, `-O2`, asserts) | 6 threads (merge, `-O3`) |
+|---|---|---|
+| outer iterations / linear steps | 41 / 105 | 41 / 105 |
+| max\|H\|, max\|M\| of the monitor after the solve | 2.22e-12, 1.0745e-6 | 2.22e-12, 1.0745e-6 |
+| M_psi of the far-field line | 2.870921477485e-4 | 2.870921477464e-4 |
+| region means of \|H\| at t = 2: interior, shell, faces | 1.1209e-5, 2.0597e-5, 1.3047e-4 | equal to 2e-11, 1e-11, 1e-13 |
+| wall: solve; 16 steps | 31 min; 58 min | 2 min 27 s; 5 min 43 s (file times) |
+
+ psi agrees to 1.1e-15 and W to 3.7e-13 of their maxima (bounds 1e-12 and 1e-9); the
+ whole case took 494 s (bound 30 minutes). The factor 10 to 13 in wall time is threads
+ and compiler flags together (the serial build has asserts and `-O2`): no scaling
+ measurement. With M2 (the serial build of the merge equals the build before it byte
+ for byte at 32 cells) this ties the threaded executable to test B at its finest mesh.
+
+**Figures of the puncture tests** drawn again (run core-20261121-083909-267d8c8, the
+analysis of entry 14 with the corrected script; numbers unchanged but for the run id):
+`figs/test_p_convergence_all` (looked at: the ticks 0.25, 0.5, 1 of the middle panel no
+longer overlap) and `figs/test_p_extra_all` (the legend of the third panel above the
+axes, clear of the reference lines).
+
+**Where the package stands** (for a reader with no memory).
+- Source: branch `core/id-solver-2` = main at release core-v0.5 plus the second pass
+  (`git diff main`: `nrpic_idsolve.cpp`, `nrpic_idfar.hpp`, `multigrid_robin.cpp`, one
+  line each in `multigrid.hpp` and `multigrid_driver.cpp`, six lines removed in
+  `mg_gravity.cpp`, nine lines of `particles.hpp`, two rows of `docs/FORMATS.md`,
+  `problems/idsolve/`). `athenak/src` unchanged since the merge commit 395e17d.
+- Published: `scratch/core/exe/core_id-solver-2/` (`athena_cpu`, `athena_cpu_omp`,
+  `athena_gpu`, COMMIT, SHA256SUMS, READY), built from 395e17d.
+- Interface: `tracks/core/interfaces/id_solver2.md` (section 8: what changes against
+  core-v0.5, for the changelog of the release that takes this branch).
+- Tests of this session, all on processors: M0, M1, M2, M2b, T, N, T128 (entries 15 to
+  19); every prediction held except one clause of M1 (psi of the moving Gaussian
+  changes by 1.5e-6 with the default far field, not 1e-7).
+- **Open**: (1) the card check Kc of the published card build was never submitted (two
+  card jobs of owner core queued at every look: 08:02, 08:10, 08:22, 08:29, 08:39 UTC);
+  staged in `scratch/core/tmp/idsolve2/b2b/card_kc/` (entry 16 has the command). Until
+  it runs, `athena_gpu` of this publication is compiled and untested; K stands for the
+  card build of 76add0c only. (2) Not done in the package at all: a fourth-order L W
+  for the vector part at level boundaries (the stall of test C), a far field on meshes
+  with some periodic faces, MPI, trial metrics that are not conformally flat, adaptive
+  refinement after t = 0, an independent reference for three-puncture data. (3) The
+  default `id_far = multipole` changes results of release core-v0.5 without an option
+  (M1): core's lead decides at the merge whether that default stands (I judge it right:
+  it removes a closure error of 0.9 per cent of W that no resolution removes; `id_far =
+  robin` restores the release's bytes).
+- Card time of the package: 0.032 card-hours (K); none in this session.

@@ -145,7 +145,7 @@ appended after the same row; both kept).
 ## 5. Tests
 
 Predictions and outcomes, failed predictions included: `tracks/core/JOURNAL-idsolve2.md`
-entries 1 to 17. Scripts, numbers, figures: `tracks/core/analysis/idsolve2/` (`test_*.py`,
+entries 1 to 19. Scripts, numbers, figures: `tracks/core/analysis/idsolve2/` (`test_*.py`,
 `regress_*.py`, `check_threads.py`, `*_numbers.json`, `figs/`). Which build ran what:
 rows R0 to K ran the processor build of 76add0c (the branch before the merge with main)
 unless stated; 4266c2d differs from it only in the branch tested by R2 and P5b; the
@@ -168,7 +168,7 @@ named.
 | M0 | the merged build without `id_solve` against release core-v0.5 | all 59 output files of the nine set-ups of R0 byte-identical (run core-20261121-080113-2230974, `regress_r0_v05.json`) |
 | M1 | the merged build with `id_solve` against release core-v0.5 (which holds the first pass): the four example inputs of the first pass at 32 cells | with `id_far = robin`: Gaussian at rest, expanding ball and torus byte-identical in every file (8, 9, 8 files), moving Gaussian the same 17 outer iterations with psi to 6.0e-15 and W to 5.1e-16; with no new option (far field on by default): torus byte-identical; psi changes by 9.7e-9 (Gaussian at rest), 3.6e-8 (ball), 1.5e-6 (moving Gaussian), W of the moving Gaussian by 2.7e-3 of its maximum; same iteration counts and the same monitor after the solve (run core-20261121-080151-4db2e1d, `regress_m1.json`) |
 | M2, M2b | the merged build against the builds before the merge | eight cases replayed (puncture in mode code with and without matter, three static levels, moving Gaussian with the far field, refined Gaussian, refined torus with moving matter, Zel'dovich ball with its evolution, puncture with momentum in a moving shell as written by 4266c2d) write the bytes of their old directories, 79 files; the moving Gaussian at 128 cells (5.9 million particles) likewise, 12 files (runs core-20261121-080135-890689a, core-20261121-081010-968d6d6) |
-| T | threaded processor build (`scripts/build_cpu_omp.sh`) of the merged source, 4 threads, against the serial build | moving Gaussian with the far field, Gaussian on two static levels, puncture with momentum in a moving shell, Zel'dovich ball with its evolution: the same outer iterations (17, 20, 34, 51) and linear steps (33, 81, 80, 137); psi to 2.2e-15 and W to 2.3e-14 of their maxima; far-field lines equal in 13 digits; region means of \|H\| of the ball at t = 2 to 3e-13; one case run twice is byte-identical; 3.6 to 4.5 times faster than the serial `-O2` build (run core-20261121-081048-0c563b2, `check_threads.json`) |
+| T | threaded processor build (`scripts/build_cpu_omp.sh`) of the merged source, 4 threads, against the serial build | moving Gaussian with the far field, Gaussian on two static levels, puncture with momentum in a moving shell, Zel'dovich ball with its evolution: the same outer iterations (17, 20, 34, 51) and linear steps (33, 81, 80, 137); psi to 2.2e-15 and W to 2.3e-14 of their maxima; far-field lines equal in 13 digits; region means of \|H\| of the ball at t = 2 to 3e-13; one case run twice is byte-identical; 3.6 to 4.5 times faster than the serial `-O2` build (run core-20261121-081048-0c563b2, `check_threads.json`). T128, 6 threads, the Zel'dovich ball at 128 cells with its evolution against the serial run of B: 41 outer iterations and 105 linear steps in both, psi to 1.1e-15, W to 3.7e-13, region means of \|H\| at t = 2 to 2e-11; solve 2 min 27 s and 16 steps 5 min 43 s against 31 and 58 minutes (run core-20261121-082948-264c21a, `check_threads_n128.json`) |
 | N | the region norms of release core-v0.5 (`<particles> region_dcycle`, `region_radius1..4`) on solved data: the Zel'dovich ball at 32 cells with its evolution, spheres of radius 7 and 13.5 | the record `<basename>.region.hst` equals the norms formed from the field dumps to 9e-9 (sqrt(<H^2>) inside 7, in the shell, outside 13.5: 2.9e-13, 6.9e-13, 5.4e-7 after the solve; 4.8e-4, 9.6e-4, 1.1e-4 at t = 2) and the other 14 files of the run are byte-identical to the run without the options (run core-20261121-082710-5866399, `test_n_numbers.json`) |
 | K | card build on one A100 | card build of 76add0c, four cases at 128 cells (vacuum puncture in both modes, moving Gaussian with the far field, solved Zel'dovich ball with its evolution to t = 2): the same outer iterations and linear steps as the processor build; psi to 2e-15, W to 3.5e-13, region means of \|H\| at t = 2 to 2e-10; 7 to 57 s per case, 0.032 card-hours (card run core-20261119-154414-2506b80, analysis core-20261120-220527-e2690ef) |
 
@@ -232,16 +232,19 @@ named.
   Newton iteration still converges in about 10 steps (G).
 - **Cost** (processor, one core): moving Gaussian at 64 cells with the far field about
   as the first pass; Zel'dovich ball at 64 cells with both parts in mode code 400 s
-  (44 outer iterations), at 128 cells 31 minutes for the solve (41 outer iterations) and 58 minutes for the 16 steps to t = 2; on one A100 the whole case takes 57 s; CMC peak at 64^3 115 to 150 s on two
-  cores.
+  (44 outer iterations), at 128 cells 31 minutes for the solve (41 outer iterations) and
+  58 minutes for the 16 steps to t = 2; the threaded build with 6 threads 2.5 and 5.7
+  minutes (T128); on one A100 the whole case takes 57 s (K, the card build before the
+  merge); CMC peak at 64^3 115 to 150 s on two cores.
 
 **Not done or not tested**:
 1. MPI: a run with `id_solve` on more than one rank stops in `NrpicMpiInit` with a
    message (release core-v0.5; the solver is not ported). Adaptive refinement beyond the
    level structure at t = 0 (the solve runs once, on the mesh as it is at the start);
    `id_solve` together with `<amr_criterion0> method = user` of core-v0.5 has not been
-   run. Threads: T covers four cases at 4 threads; other thread counts,
-   `deposit_threads = private`, the torus and 128-cell cases are not run with threads.
+   run. Threads: T covers four cases at 4 threads and the ball at 128 cells at 6; other
+   thread counts, `deposit_threads = private`, bound threads and the torus are not run
+   with threads.
 2. A fourth-order L W for the vector part on refined meshes (would lower the stall at
    level boundaries by about (k dx)^2); a far field for meshes with some periodic and
    some open faces (the plain fill is used there).
