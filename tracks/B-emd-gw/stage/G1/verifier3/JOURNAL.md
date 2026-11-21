@@ -286,3 +286,22 @@ Test X (EdS, k = (pi/2)(1,1,0), t = 0..10) [VERIFIED, same runs]:
 - P3.10 (F, last dump): the non-TT part of gt - delta sits mainly at k = 0 (a secular drift
   of the mean conformal metric, round-off or second order), not at +-K. Refuted if more
   than half of its power is at +-K (then a longitudinal first-order part exists).
+
+## Entry 9 (19:14 PST): outcome of the V3 supplement (run B-20261121-030542-b2e3eff)
+
+[VERIFIED, results/v3_extra.json, figs/v3_F_diag_diff.png, figs/v3_X_diag_diff.png]
+- P3.8 holds: max_t |Z_TT - Z_Psi4,sp| / |Z_ex| over |delta_disp| = 0.999 (N16), 0.999 (N32),
+  0.992 (N48), 1.28 (N64, where a round-off floor of 4.7e-10 adds); the curve follows
+  |delta sin(w t)| with zeros at every half period, both polarizations. So the whole
+  difference between the TT and the Psi4 diagnostic of test F is the backward discrete wave
+  that the continuum initial data excite (relative size theta^6/1120, theta = 2 pi / N):
+  3.2e-6, 5.1e-8, 4.5e-9, 8e-10.
+- P3.9 holds: the X difference TT - Weyl (spectral) grows to 1.9-2.4e-8 at t = 10 with the
+  zeros of the mode, and lies at 0.6-0.7 of |calH_num/calH - 1| (3.1-3.6e-8) at late times,
+  the same at every N and at x10.
+- P3.10 holds: 99.9997 % of the non-TT power of gt - delta at t = 2.31 is at k = 0, a
+  uniform traceless shear with equal off-diagonal components 6.58e-11 and diagonal ~2e-13,
+  i.e. proportional to TF(khat khat) for khat = (1,1,1)/sqrt 3, identical at N16 and N64.
+  [JUDGEMENT] the second-order response of the mean metric to the momentum flux of the wave
+  (A^2 w t ~ 2.5e-11); not tested (no F run at a second amplitude). It does not enter the
+  mode coefficients at K.
