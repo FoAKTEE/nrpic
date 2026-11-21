@@ -3,7 +3,10 @@
 branch from its READY, and the combinations that exist only in the merged source.
 
     quick_v05.py --serial ATHENA --omp ATHENA --mpi ATHENA --out DIR [--cores N]
-                 [--groups byte,threads,mpi] [--analyse-only]
+                 [--groups byte,threads,mpi] [--analyse-only --runs OLDDIR]
+
+(--analyse-only --runs OLDDIR evaluates and draws again from the runs of an earlier call,
+without running anything; summary and figure go to DIR.)
 
 Group byte (serial executable of the candidate against the processor executable the
 branch published, every file AthenaK writes compared byte for byte; classes of
@@ -30,6 +33,11 @@ Group mpi (MPI executable, analysis/mpi/mpi_tests.py of the package):
   t3_cluster   self-gravitating cluster with Z4c, 1 and 2 ranks
   stop         problems/tests/mpi_deposit_smr.athinput with deposit_fine_shape on 2
                ranks: must stop with the message of NrpicMpiInit
+  The runs on 1 and on 2 ranks are also compared byte for byte with the runs of the
+  package made with its branch executable (PACKAGE_RUNS): mesh restart files are judged
+  by their data (identical outside the 36 header bytes that release core-v0.4 zeroes)
+  because their parameter dump holds the run directory and lines of the example inputs
+  that the package edited after its runs.
 Writes DIR/summary.json and DIR/fig_quick_v05.{pdf,png}.  Exit status 0 if every run
 ended as expected, no file is of class "other" and every number lies inside its band.
 """
@@ -57,6 +65,10 @@ EXE_DIR = "/data/haiyangw/nrpic/scratch/core/exe"
 PROB = os.path.join(REPO, "problems")
 RANDOM = "/data/haiyangw/nrpic/scratch/core/regress/ic/random.nrp"
 MPIRUN = "/home/emost/codes/openmpi/bin/mpirun"
+PACKAGE_RUNS = {  # runs of package mpi with its branch executable (JOURNAL-mpi.md)
+    "t1_kerr": "/data/haiyangw/nrpic/scratch/core/core-20261119-145615-4c98c59/t1_kerr",
+    "t3_cluster": "/data/haiyangw/nrpic/scratch/core/core-20261119-154814-ca46836/t3_cluster",
+}
 BRANCH_EXE = {"scalar-3": "core_scalar-3/athena_cpu", "cosmo-amr": "core_cosmo-amr/athena_cpu",
               "build-openmp": "core_build-openmp/athena_cpu_serial"}
 
@@ -367,8 +379,14 @@ def group_threads(a, out, summary):
         codes["c_ser0"] = run_deck(a.serial, lambda d: deck_dep(d, None, None).set(
             "particles", deposit_shape="cic"), cic0, 1)
     put("f_fine_shape_changes_field", field_diff(D("f_ser"), cic0), 1.0e-3, None)
-    put("f_fine_shape_changes_integrals", hist_diff(hst("f_ser"), os.path.join(
-        cic0, "dep.nrpic.hst")), 0.0, 1.0e-13)
+    # (columns 9 to 12, the mesh integrals of E and S_i, over sum m W; the probe and the
+    # extrema of E, columns 14, 31, 32, are local and change with the shape)
+    hf, h0 = table(hst("f_ser")), table(os.path.join(cic0, "dep.nrpic.hst"))
+    put("f_fine_shape_changes_integrals",
+        float((np.abs(hf[:, 8:12] - h0[:, 8:12]).max(axis=1)/np.abs(h0[:, 4])).max()),
+        0.0, 1.0e-13)
+    put("f_fine_shape_changes_whole_history", hist_diff(hst("f_ser"), os.path.join(
+        cic0, "dep.nrpic.hst")), None, None)
     notes = grep(os.path.join(D("d_ser"), "athena.log"), ["deposit_threads"]) \
         + grep(os.path.join(D("d_p4a"), "athena.log"), ["private copy"])
     exits = {n: codes[n][0] for n in codes}
@@ -418,7 +436,48 @@ def group_mpi(a, out, summary):
                                    if isinstance(v.get("np2"), dict)] or [0.0])
         res[case] = r
     t1, t3 = res["t1_kerr"], res["t3_cluster"]
+    # against the runs of the package with its branch executable, 1 and 2 ranks
+    pk, pk_ok = {}, True
+    off = 2*4 + 9*8 + 10*4
+    for case, od in PACKAGE_RUNS.items():
+        with open(os.path.join(od, "compare.json")) as f:
+            pc = json.load(f)
+        row = {"package_history_np2": {k: v["np2"]["max_rel"] for k, v in
+                                       pc["histories"].items()
+                                       if isinstance(v.get("np2"), dict)}}
+        for n in ("np1", "np2"):
+            da, db = os.path.join(od, n), os.path.join(top, case, n)
+            fa = [f for f in rg.out_files(da) if f != "run.log"]
+            fb = [f for f in rg.out_files(db) if f != "run.log"]
+            ident, rst_ok, other, lines = [], [], [], set()
+            for f in sorted(set(fa) | set(fb)):
+                if f not in fa or f not in fb:
+                    other.append(f)
+                    continue
+                with open(os.path.join(da, f), "rb") as x, open(os.path.join(db, f), "rb") as y:
+                    xa, yb = x.read(), y.read()
+                if xa == yb:
+                    ident.append(f)
+                    continue
+                ta, ra = rg.split_dump(xa)
+                tb, rb = rg.split_dump(yb)
+                if (f.endswith(".rst") and ta is not None and tb is not None
+                        and len(ra) == len(rb)
+                        and ra[:off] + ra[off+36:] == rb[:off] + rb[off+36:]):
+                    rst_ok.append(f)
+                    sa = set(ln.split(b"#")[0].strip() for ln in ta.split(b"\n"))
+                    sb = set(ln.split(b"#")[0].strip() for ln in tb.split(b"\n"))
+                    lines |= set(x.decode().split("=")[0].strip() for x in sa ^ sb)
+                else:
+                    other.append(f)
+            row[n] = dict(files=len(set(fa) | set(fb)), identical=len(ident),
+                          restart_data_identical=rst_ok, other=other,
+                          dump_parameters_differing=sorted(lines))
+            pk_ok = pk_ok and not other
+        pk[case] = row
+    res["against_package_runs"] = pk
     checks = {
+        "bytes_of_the_package_runs_on_1_and_2_ranks": pk_ok,
         "t1_runs_status_0": t1["exit"] == [0, 0],
         "t1_particle_files_identical": (not [f for f in t1["files_differing"]
                                              if not f.endswith(".prt")]
@@ -427,7 +486,11 @@ def group_mpi(a, out, summary):
         "t3_runs_status_0": t3["exit"] == [0, 0],
         "t3_positions_within_1e-13": (isinstance(t3["snapshot_max_abs"], float)
                                       and t3["snapshot_max_abs"] <= 1.0e-13),
-        "t3_history_within_1e-11": t3["history_max_rel"] <= 1.0e-11,
+        # the number of the READY (5e-13) is that of the history of the module; the
+        # constraint statistics (largest relative constraint, a ratio of differences)
+        # are reported with the package's own value beside them
+        "t3_module_history_within_1e-11": t3["history_worst"].get(
+            "cl.nrpic.hst", {}).get("max_rel", 1.0) <= 1.0e-11,
         "t3_identity_within_1e-14": all(v["max_dE_over_sum_mW"] <= 1.0e-14
                                         for v in (t3["identity"] or {}).values()),
         "t3_packets_sent": bool(t3["mpi"] and t3["mpi"]["deposit_packets"] > 0),
@@ -544,11 +607,14 @@ def main():
     ap.add_argument("--cores", type=int, default=4)
     ap.add_argument("--groups", default="byte,threads,mpi")
     ap.add_argument("--analyse-only", action="store_true")
+    ap.add_argument("--runs", default=None)
     a = ap.parse_args()
-    out = os.path.abspath(a.out)
+    figdir = os.path.abspath(a.out)
+    os.makedirs(figdir, exist_ok=True)
+    out = os.path.abspath(a.runs) if (a.analyse_only and a.runs) else figdir
     os.makedirs(os.path.join(out, "byte"), exist_ok=True)
     os.makedirs(os.path.join(out, "threads"), exist_ok=True)
-    spath = os.path.join(out, "summary.json")
+    spath = os.path.join(figdir, "summary.json")
     summary = {}
     if os.path.exists(spath):
         with open(spath) as f:
@@ -568,11 +634,13 @@ def main():
         ok = group_mpi(a, out, summary) and ok
     summary.setdefault("verdicts", {})
     summary["verdict"] = "PASS" if ok else "FAIL"
+    summary["runs"] = out
     with open(spath, "w") as f:
         json.dump(summary, f, indent=1)
         f.write("\n")
+    summary["runs"] = out
     try:
-        figure(out, summary)
+        figure(figdir, summary)
     except Exception as exc:                  # the numbers stand without the figure
         print("figure failed:", repr(exc))
     print("QUICK", summary["verdict"])
