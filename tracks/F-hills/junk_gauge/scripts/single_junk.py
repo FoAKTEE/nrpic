@@ -10,6 +10,12 @@ Writes single_junk.json and single_junk_curves.npz (read by the figure scripts).
 Usage: single_junk.py <out | - for $NRPIC_RUN_DIR> <run dir> [--M=1.0383] [--radii=30,40,50]
                       [--window=-15,30] [--tag=single]   (P1: --M=1.25 --radii=40,48,70,90
                       --window=-35,50 --tag=P1; outputs <tag>_junk.json, <tag>_junk_curves.npz)
+                      [--ucut=U]  (J4b: the record is cut at u <= U before any integration, so
+                      that later signals cannot enter the window through the FFI kernel; absent:
+                      the whole record, as in J1-J4)
+Also written per radius (FFI 0.2): hf_frac, the share of the window's energy spectrum
+sum_lm |N~_lm(omega)|^2 (news times a window with 4 M cosine ramps inside [u0, u1]) above
+|omega| = 1 (J4b: the members' junk would sit near 3/M).
 """
 import json
 import os
@@ -22,12 +28,13 @@ sys.path.insert(0, HERE)
 import junk_lib as jl  # noqa: E402
 
 U0, U1 = -15.0, 30.0          # junk window in retarded time (J1)
+UCUT = None                   # J4b: record cut at u <= UCUT before integration
 W0S = (0.1, 0.2, 0.3)         # FFI cutoffs; 0.2 central
 TAPER = 4.0
 
 
 def args():
-    global U0, U1
+    global U0, U1, UCUT
     out = sys.argv[1] if sys.argv[1] != "-" else os.environ["NRPIC_RUN_DIR"]
     rd = sys.argv[2]
     M, radii = 1.0383218096698035, (30, 40, 50)    # M_ADM full solution (nr_first E3 reference)
@@ -41,6 +48,8 @@ def args():
             U0, U1 = (float(x) for x in a[9:].split(","))
         elif a.startswith("--tag="):
             tag = a[6:]
+        elif a.startswith("--ucut="):
+            UCUT = float(a[7:])
     return out, rd, M, radii, tag
 
 
@@ -54,6 +63,10 @@ def groups(Nmodes):
 def measure(rd, R, M, sph, u0=U0, u1=U1):
     t, modes = jl.load_modes(rd, R)
     Rs = jl.tortoise(R, M)
+    if UCUT is not None:
+        keep = t - Rs <= UCUT
+        t = t[keep]
+        modes = {k: v[keep] for k, v in modes.items()}
     u = t - Rs
     r = dict(R=R, R_star=Rs, t_end=float(t[-1]), u_end=float(u[-1]), dt=float(np.median(np.diff(t))),
              window_u=[u0, u1], window_t=[u0 + Rs, u1 + Rs], complete=bool(u[-1] >= u1))
@@ -84,6 +97,13 @@ def measure(rd, R, M, sph, u0=U0, u1=U1):
         if w0 == 0.2:
             curves["N20"] = N[(2, 0)]
             curves["N22"] = N[(2, 2)]
+            wwin = np.where((u >= u0) & (u <= u1), 1.0, 0.0)
+            sel_w = (u >= u0) & (u <= u1)
+            if np.sum(sel_w) > 8:
+                wwin[sel_w] = jl.taper(u[sel_w], 4.0)
+                spec = sum(np.abs(np.fft.fft(Nk * wwin)) ** 2 for Nk in N.values())
+                om = 2 * np.pi * np.fft.fftfreq(len(u), r["dt"])
+                e["hf_frac"] = float(np.sum(spec[np.abs(om) > 1.0]) / np.sum(spec))
     Ntd = {k: jl.td_quad(t, z, (u0 + Rs, u1 + Rs), u0 + Rs - 0.25 * (u1 - u0))
            for k, z in modes.items()}
     dE, dP = sph.flux(Ntd)
@@ -107,7 +127,8 @@ def main():
     out, rd, M, radii, tag = args()
     os.makedirs(out, exist_ok=True)
     sph = jl.Sphere()
-    res = {"run_dir": rd, "M": M, "tag": tag, "window_u": [U0, U1], "taper": TAPER, "radii": {}}
+    res = {"run_dir": rd, "M": M, "tag": tag, "window_u": [U0, U1], "taper": TAPER, "ucut": UCUT,
+           "radii": {}}
     allc = {}
     for R in radii:
         r, c = measure(rd, R, M, sph, U0, U1)

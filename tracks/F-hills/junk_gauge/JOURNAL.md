@@ -366,3 +366,57 @@ L_trk over t = 2-20 within a factor 3 of the circular formula there (1.3e-7, J4a
 times that median from t = 25-35 M on, when r12 is 3.5-4.5 M and |x_b| 21-24 M, so u_near there
 is 2-14 M; anything emitted after t = 35 M reaches the spheres at u >= 12 M or later. Refuted if
 L_trk rises threefold before t = 20 or after t = 40.
+
+## 2026-11-21 J4g, outcome (run F-20261121-075309-b6996ce; `p1_geometry.json`, figure `fig_p1_geometry.png` read)
+
+[VERIFIED, `p1_geometry.json`] r12 = 4.952 M at t = 0, 4.29 at 20, 3.36 at 30, 1.84 at 40, 0.80 at
+45; |x_b| = 25.40 (t = 0), 23.25 (20), 22.09 (30), 20.90 (40), 19.76 (48.8); heavy hole 6.35 ->
+5.15 M from the origin. L_trk: median over t = 2-20 1.39e-6, ten times the circular formula there
+(1.31e-7 at t = 0): FAILED (predicted within a factor 3); the figure shows why: L_trk is dominated
+up to t = 12 by the trackers' start-up motion (values up to 10 at t = 0, the filter's edge and the
+gauge transient), so that median is not the binary's emission. L_trk above 3x that median from
+t = 23.55 (r12 = 4.0, |x_b| = 22.8, u_near = 0.7): r12 and |x_b| met, the time FAILED narrowly
+(predicted 25-35) and u_near FAILED narrowly (predicted 2-14); not refuted (between 20 and 40).
+Tenfold at t = 28.7 (u_near = 6.5); from t = 25 on L_trk follows the circular formula at the
+tracked separation (figure), which is tenfold its t = 0 value at r12 = 3.1 (t of about 31).
+Earliest retarded arrival of anything emitted after t_e: 13.5 (t_e = 35), 19.1 (40): met (>= 12).
+
+## 2026-11-21 J4b. Junk window that keeps P1's inspiral out (prediction, before any P1 waveform is integrated)
+
+I have not looked at P1's waveforms or figures; I know of them only the E_rad to t = 112.25 that
+p1 recorded (2.6e-4, 9.9e-5, 5.4e-5, 7.1e-6 M at 40, 48, 70, 90; p1 JOURNAL line 237: the whole
+record, merger included). J4 is run as written (whole record, windows [-35, 50] and [-35, 12])
+beside J4b; J4's prediction items stand and are judged as written.
+Retarded time u = t - R* (M = 1.25), as J4.
+Window: u in [-35, 6] M at all four radii (complete at all: the record reaches u = 153 at 90 M).
+Start -35: the members' junk, emitted at t < 5 M about 25 M from the origin, reaches the near side
+of a sphere at u >= -28 (J4 item 4). End 6: the tracked emission of the inspiral is tenfold its
+early value from t = 28.7 M, which reaches the nearest point of a sphere at u = 6.5 (J4g); the
+merger (t = 48.8, |x_b| = 19.8) at u >= 29. Before u = 6 the window holds the binary's slow
+inspiral from t_e up to about 31 on the near side: my estimate of that part, int w(t_e) L(t_e)
+dt_e with w the share of the sphere reached by u = 6 (isotropic emission) and L the circular
+formula at the tracked separation, is about 5e-6 M before FFI and about 1e-6 M after it (2 Omega
+= 0.09-0.2/M below omega_0 = 0.2) [JUDGEMENT, arithmetic]. The far-side tail of the members' junk
+(u up to about +30 there) is cut off: it is the price of keeping the inspiral out.
+Integration: FFI (omega_0 = 0.2/M central; 0.1, 0.3) on the record cut at u <= 14 (cosine taper
+4 M at both ends, so the end taper lies on [10, 14], after the window), so that the inspiral and
+the merger cannot enter the window through the FFI kernel (its spread is about 1/omega_0 = 5 M
+with slowly decaying side lobes); the time-domain method beside it (not predicted: its quadratic
+is fitted outside the window on a record that holds the inspiral).
+Junk against noise and near zone: (a) the share of the window's energy spectrum above
+omega = 1/M (`hf_frac`); (b) E(R) across the four radii, straight lines E_inf + a/R through all four
+and through 70 and 90 M only.
+Predictions [JUDGEMENT]:
+1. The members' junk does not reach the spheres: hf_frac below 0.01 at 70 and 90 M (their junk
+   has omega of about 3/M, wavelength 2 M = one cell at the spheres, and a source 25 M off the
+   centre needs l of about omega d = 75 > 8 in the extraction).
+2. E (FFI 0.2) at 70 and 90 M between 1e-7 and 1e-5 M, within a factor 2 of each other; at 40 M
+   more than three times that at 90 M (near zone of the members, 15 M from the 40 M sphere).
+3. E_inf (FFI 0.2) from 70 and 90 M between -1e-6 and 1e-5 M; the four-radius line gives an
+   E_inf within 1e-5 M of it. Refuted outside.
+4. FFI 0.1 and 0.3 within a factor 2 of FFI 0.2 at 70 and 90 M.
+5. Momentum: |P_z| below 1e-3 |P| at every radius (z -> -z symmetry of the data); |P| < E.
+6. P1 prediction item 4 (junk between 1e-6 and 1e-4 M through the 40-90 M spheres by t = 150 M):
+   judged on E_inf of item 3; I expect it below 1e-5 M and cannot say whether above 1e-6 M; if it
+   is below 1e-6 M, item 4 fails on the low side for what the spheres can see, and the members'
+   own junk (1.0e-5 to 5.2e-5 M scaled from S2g, J4 item 2) stays unmeasured at P1's resolution.
