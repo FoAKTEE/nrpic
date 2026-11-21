@@ -567,3 +567,20 @@ class-seeds, against the final-energy theta it passes everywhere [JUDGEMENT: the
 should name the reference temperature; with nanbu the energy is conserved only in
 expectation].
 Next: VERDICTS_BLIND.md completed with V5 and committed and pushed before any claim is read.
+
+## Entry 17 (2026-11-21 00:22 PST) Claims read (after the blind verdicts were committed and pushed, 00adbb95); predictions for the claim checks
+
+Read now: stage/G1/CHECKLIST.md, stage/G1/EVIDENCE.md, heat/README.md (results, verdict),
+box_tests/README.md (results), models/README.md (models, results), stage/REVIEW-wave2.md
+sections 1-3 and 6. Most numbers agree with my blind values (VERIFIER.md). Four claims need a
+computation I had not done; predictions before the run (v6_claims.py):
+- T10: 385554 collisions in mb8 of both T10 runs, the same in mb1 and mb64 (counts identical);
+  release snapshots of 8/64 MeshBlocks and restarts byte-identical to 1 MeshBlock.
+- REVIEW-wave2 section 3: "first mass maximum of the King sequence (y0 = 0.0982)". With the
+  King ansatz at fixed amplitude (f = e^{1 - E/E0} - 1) the maximum of M(y0) lies near 0.098
+  if the claim used the same normalisation [no prior of mine; a pure check].
+- T6(b) "literal 0.994, 1.027" with chi(kappa_1, theta = 0.015): my linear values 1.051, 1.086
+  were taken with chi_1 at the final temperature 0.013359 (particle-weighted); converted to
+  0.015 they become 0.994, 1.027 if the difference is only the reference temperature.
+- heat/README quotes my V1a as 1.0988 +- 0.0015 (theta 0.1) and 0.9933 +- 0.0010 (theta 1):
+  my ce_kappa.json order 4 divided by 75 sqrt(pi)/64 should give these.
