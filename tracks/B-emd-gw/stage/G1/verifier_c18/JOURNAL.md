@@ -194,7 +194,7 @@ the spatial-gauge piece (2.06e-10, 2.23e-10) is matched by my quadratic piece G 
 kinetic over gradient energy (0.017, 0.0188) to 5 per cent. "Square of the rms non-TT part"
 (1.28e-9, 1.34e-9) is ambiguous: I report rms_nonTT and its square and judge which one fits.
 
-## Entry 8 (05:31 PST): outcome of M1e (entry 7) and the summary A3
+## Entry 8 (05:30 PST): outcome of M1e (entry 7) and the summary A3
 
 M1e (B-20261121-132637-1083d74): every prediction of entry 7 CONFIRMED. rms h^TT 1.210e-9,
 2.488e-9 (t) and 1.215e-9, 4.312e-9 (pcs4bt); last a = 1001; (rms non-TT)^2 = 1.282e-9, 1.339e-9
