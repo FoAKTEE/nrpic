@@ -274,3 +274,53 @@ Closes the cut-off lead session of wave 2 as well (its outcomes W1-W10 are in
   report: complete for review); G1 FAIL (C7, C9, C17 open; no verifier). A first full G0
   verify on e3d014f was stopped by PID (stale commit) and a full G1 verify on 792b185 was
   stopped by PID after main moved.
+
+## 2026-11-21T06:35Z  session lead-wave3-batch2a (Opus)  predictions of the lead's wave-3 re-checks, written before they run
+
+State found: main merged (release core-v0.4); G0 signed (coord/GATES.md, 2026-11-20); no D
+job in Slurm; four runs left open by the cut burst of 2026-11-20 (point shells
+D-20261120-222515-c2ef5b8, R8 D-20261120-222550-e472402, drift pre-flight
+D-20261120-222820-94f20b3, card run (b) V-1B D-20261120-222625-63abd72: chain DONE (tlim) at
+16:43 PST) all ended with exit 0 and were closed by me with `nrpic-run finish` (V-1B: 0.7775
+card-hours, drift_controls' Pb5 predicted 0.78 +- 10 per cent). Packages finished since the
+wave-2b lead: es_runs (ES-1G closed), verifier_g1 (VERIFIER.md). Cut and still open:
+flux_tools (ES-F not submitted), drift_controls (V-1B not analysed), secondary_infall (runs
+of wave 3 not analysed), note (v1 text and figures, PDF not rebuilt).
+Script `stage/review_wave3/wave3_check.py` (mine; readers copied from my predecessor's
+`stage/review_wave2/es_finish_check.py`, not from the helpers' code); it reads only
+registered outputs. File layouts: header of the finder summaries (`# 1:iter 2:time 3:mass
+... 11:meanradius 12:minradius`), traj.bin 8 doubles and trajmet.bin 17 doubles
+(`athenak/src/particles/nrpic_io.cpp:803-814`, proper time index 12), `docs/FORMATS.md`
+(`.nrp`).
+
+- Z1 ES-1G horizon (D-20261119-142633-6f72922, `es.horizon_summary_0.txt`): M_AH(100 M) - 1
+  = +1.141e-3; drift M(t)/M(100) - 1 over 100-199.5 M reaches +6.96e-3 (minimum -4.17e-4);
+  mean coordinate radius 1.40 M at t = 25 M and 0.78 M at 199.5 M. Refuted by a difference
+  in the third digit.
+- Z2 ES-1G tracers (traj/trajmet): wall tags 56-69, my areal radius r sqrt(B) against
+  (36^1.5 + 1.5 sqrt(2) tau)^(2/3): max |R/R_w - 1| over the whole run at most 1.7e-4
+  (tau to about 206 M); group R0 = 6 M (tags 0-13) crosses R = 2M at tau 14.8261 (exact
+  14.82692, claimed error -8.6e-4 M, I accept +-2e-4 M of that); group R0 = 48 M (tags
+  84-97) proper time at the last record (t = 200 M) 205.3 M +- 0.3 M. Refuted beyond these.
+- Z3 V-1B (D-20261120-222625-63abd72), drift_controls' prediction Pb1 (entry 2): D(199.5 M)
+  from t0 = 100 M above -5e-5. My own odds [JUDGEMENT]: 60 per cent that Pb1 holds, given
+  that ES-1G's exterior mass is lost from the faces inward (es_runs K1) but V-1 has no
+  exterior matter; I expect at least the sign of V-1's late drift (-1.37e-4) to be reduced
+  in size by half. Also Pb2: V-1B and V-1 masses separate by more than 1e-6 between 110 and
+  165 M. This is a first reading for the lead's plan; drift_controls' full judgement
+  (Pb1-Pb5 with compare_runs.py) stays with the package.
+- Z4 verifier V2 (dress at a/a_i = 2): the track's own table (secondary_infall/README.md
+  lines 104-111) gives dress deviations at a/a_i = 2 of +0.5, +1.4, +3.4 per cent for N128c,
+  N64c, N128Lc against the kernel shells, so the "0.1-0.5 per cent" wording is wrong at
+  a/a_i = 2 and holds at 4 and 8; recomputed from `nm_growth_cellcentre.txt` if it carries
+  both columns. Refuted if the table gives below 0.5 per cent for all three.
+- Z5 flux_tools (data run D-20261119-145022-2208a19, `esf.nrp`, `energy_by_tag.npy`):
+  850724 records, 140 with m = 1e-30, all u_i = 0; sum of dust masses 2.815600140293471
+  (`esf.json` lattice_rest_mass) to 1e-12 relative; sum of m (1 - 2M/R0)^(1/2), i.e.
+  m times energy_by_tag, 2.738654513324783 (lattice_misner_sharp) to 1e-12; both 4.1-4.3e-7
+  below the continuum values. Refuted beyond 1e-10.
+- Z6 figures I look at before relying on them: es_runs figs/es1g judge_horizon.png and
+  slicemass_ES-1G.png; verifier_g1's v2_growth_ratio.png and v3_hern_a0.8.png; flux_tools
+  check_esf_construction.png; note figures/schem_architecture.png (G1 item C9: must show
+  core's wave-2 capabilities and the ES run chain, no text outside its block); my own
+  wave3_check.png.
