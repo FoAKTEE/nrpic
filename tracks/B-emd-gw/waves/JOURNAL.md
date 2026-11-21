@@ -561,3 +561,29 @@ EXTRA="particles/dt_expansion=0.001"; it rewrites the same data, compared by che
 the reference data), N = 16, 32, 48, 64 on the card with the reference card executable and
 the reference data (`inputs/card_r1.list`, with F2 at N = 64): card prediction about 8
 minutes, <= 0.2 card-hours.
+
+## 2026-11-21 12:57 Batch 3: state; prediction of the gauge-module check (times UTC)
+
+State found: the round-1 runs ended on 2026-11-20 with rc = 0 and were closed by the lead
+(F2 on processors B-20261120-222849-3b921b7, N = 16, 32, 48: 115, 229, 344 cycles; XS on
+processors B-20261120-222849-e5673dc, N = 16, 32: 3585 cycles each; card job 4745 =
+B-20261120-222841-acfe21d: F2 at N = 64, 458 cycles, and XS at N = 16, 32, 48, 64, 3585
+cycles each, 0.0569 card-hours). None was analysed. The gw_diag gauge module and its tests
+were untracked; committed now (57232954; gw_diag tests 26 pass, 2 skip). binio was already
+committed (5499ec6c).
+Only the step changes in the XS processor runs [VERIFIED]: same script
+(`run_expanding.sh`, unchanged since b8487a00) and executable path (core/requests-b
+athena_cpu, unchanged since 2026-11-15 by its READY) as the reference B-20261119-142021-8f4c441,
+and the regenerated initial data are byte-identical to the reference ones (sha256 of
+N16/ic/fields.bin cbf94836..., N32/ic/fields.bin cf0b6dfd..., particles.nrp 8560ea83...,
+0d367dda..., in both sha256sums.txt). The card XS runs read the reference data files.
+
+**Prediction of check_gauge.py** (adopted gwdiag.gauge against first_source/fslib/gauge.py on
+real dumps: F2 at N = 32, last dump; X at N = 32, last dump of the reference; the
+single-precision 16^3 linear-wave dump of the binio test). The functions are copies, so G
+and G_tot equal first_source's bit for bit, and `corrected` is exactly raw - G_tot.
+Size: the non-TT part of these dumps is <= 4e-7 (F2, symbol model) and 3.1e-5 (X) of waves of
+amplitude <= 2e-6, so xi ~ 1e-12 and G_tot (quadratic in xi plus xi times the TT part) is
+below 1e-6 of the raw strain in rms. Refuted if any equality fails or rms G_tot / rms raw
+exceeds 1e-6 on a double dump (the single dump has the float32 floor and only the equalities
+are predicted there).
