@@ -6,7 +6,8 @@ linear reference of each window; predictions W1-W8 of ../JOURNAL.md entry 1.
                               [--nmax2 N --modefile F --tag T]   (development only)
 
 RUNDIR holds one directory per entry of ../inputs/card_window.list (b_p, b_m, s25_p, ...,
-sr_b_p, ...). Dumps are read one at a time, in order (NRSFDMP2, usr_lib.read_dump).
+sr_b_p, ...). Dumps are read one at a time, in order (NRSFDMP2, card_lib.read_fields: sequential reads,
+no memory map, because the dumps are read cold; harness/RULES.md "Large dumps").
 For every run: R^NR per mode (usr_lib.curvature) at every dump, box means, the constraint
 record. Reference per window: L^-3/2 W R alpha with the continuum Mukhanov-Sasaki mode of
 the run's mode file (usr_lib.Reference; window_lib.QuadReference for slow roll), at the
@@ -24,6 +25,7 @@ import numpy as np
 
 import window_lib as wl
 import usr_lib as ul
+import card_lib as cl     # sequential reader of the usr package (no memory map: cold dumps)
 
 KMAX2_FRAC = 0.5          # U-A2 / A2: modes with k <= k_max/2
 THR_A2 = 0.02
@@ -41,7 +43,7 @@ def read_run(rundir, name, case, modes, out):
     dumps = ul.dump_list(d, base=base)
     t, cyc, cnr, means = [], [], [], []
     for p in dumps:                      # one dump at a time, in order
-        h, f = ul.read_dump(p, ul.CURV_VARS)
+        h, f = cl.read_fields(p, ul.CURV_VARS)
         r, m = ul.curvature(modes, f)
         del f
         t.append(h["time"])

@@ -153,3 +153,17 @@ shells, 68532 modes of the hemisphere.
 - SR 64^3, nmax2 = 256 (214 shells, 8538 modes): last crossing cN 2.805 (b), 3.506 (g05),
   2.103 (g2); the class columns of `shells_sr.csv` refer to the USR landmarks and mean
   nothing for SR.
+
+## Entry 3, 2026-11-21 15:50 UTC: the card job ran; analysis started (batch 4a)
+
+- Job 4740 (run E-20261120-222424-0eb754b) ran 2026-11-20 15:34-15:57 PST, all 16 runs exit 0
+  (`batch.list.status` of the run), 0.384 card-hours (manifest `resources.gpu_hours`), within the
+  cap of 0.5. Each USR 128^3 run took 2 min 13 s (status times; b_p: cpu time 131.5 s,
+  1.36e7 zone-cycles/s, `b_p/athena.log`), each SR 64^3 run about 9 s. The cost prediction of
+  entry 1 (2 to 3 min, refuted above 3.5 min) holds. 21 dumps per USR run (t = 0 to N* + 10
+  every 0.5), 5.6 GB per USR run. The lead closed the manifest in batch 3.
+- Change to the analysis script before its first run on these data (no outcome seen): the
+  dumps are read with the usr package's sequential reader `card_lib.read_fields` instead of
+  the memory map of `usr_lib.read_dump`, because the dumps are now cold and a cold memory map
+  read them at 3.6 MB/s (harness/RULES.md, "Large dumps"). The quantities and thresholds of
+  entry 1 are unchanged.
