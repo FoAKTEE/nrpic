@@ -212,3 +212,32 @@ checksums of every run directory) FAIL only on `clean` (the three untracked file
 package, left as found) and `sync` (main moved during the run; merged at 790c492b); runs (234
 manifests), rerun (11 of 11), compare and regenerate (22 files) PASS. `nrpic-stage report`:
 verdict FAIL, one item not PASS (C18). Pushed.
+
+## 2026-11-21T15:45Z  lead batch 4a (wave 3)  commits 9015cd1f..  runs B-20261121-154933-a79da09, -155017-9aec47a, -155045-343bee1
+
+did: merged main (fd69f5d4: release core-v0.6, rulings 0022); found the worktree clean, no
+run open, no card job of B queued. Wrote predictions L4-L7 (stage/review_wave3/JOURNAL.md,
+9015cd1f) before any run, then reviewed the three packages that finished since batch 2a
+(first_source round 3, waves round 1, verifier_c18) from their artefacts: F2 and XS
+remeasured with verifier3's reader, projector and exact solutions (L4, L5); first_source's
+round-3 analyses rerun from their registered inputs (L6); verifier_c18's summary rerun (L7);
+figures lw4_waves, r2_conv_eps1, r2_p16_nowave_64, a3_summary looked at. Fixed one small
+defect (first_source/README.md P13 now names its window and interpolation). Review in
+stage/REVIEW-wave3.md section "Batch 4a". G1 package: collect, checklist judged (C18 open,
+narrowed), EVIDENCE, OPEN, STATUS, REVIEW, README of stage/G1; verify and report (below).
+Seven inbox messages acknowledged (releases v0.5 and v0.6, core's answers on the Newtonian
+requests, A's Szekeres files, kb's receipt); three outbox posts (orch: c18-remaining-rows,
+next-batch-packages-of-b; core: round-1 findings, info).
+found: all four predictions held. L4: F2 errors equal the waves values to <= 2.9e-4 relative
+(amplitude at N = 64), orders 6.73/6.80/6.73 and 5.51/5.15/4.83 to the third digit. L5: X
+cross errors at dt_expansion = 0.001 to <= 4e-5 relative; time part at N = 64 1.42992e-7 and
+2.57038e-7 with verifier3's own e(0.01). L6: conv_compare and p16_compare byte-identical. L7:
+a3_summary byte-identical (116 numbers, 103 within 1 per cent); line-125 statement in
+p3_slicing.json as written. C18 is met in part: lines 34-36, 49-63, 70-71, 124, 199, 217 were
+never recomputed by an independent agent. Core-v0.6 answers the old G1 items 9 and 10
+(group moments; spectral Poisson symbol).
+evidence: the three runs above; review_wave3/JOURNAL.md 2026-11-21T15:50Z and T15:55Z.
+changed my mind about: C18 scope: I had expected verifier_c18 to close it; its brief left the
+wave-1 pancake and homogeneous rows out, so one more package (or a ruling) is needed.
+open: verifier_c18b or a ruling (orch); note v3; flrw_conv, shear, population (HANDOFF).
+Card-hours this session: 0 (processors only); owner total 2.51 of 40.
