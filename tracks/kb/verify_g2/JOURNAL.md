@@ -330,3 +330,15 @@ Corrected rates under my definition (S, E, B, A'): 684 - 5 = 679/710 = 95.6 % wi
 letters counted as parsed, 670/710 = 94.4 % if they are not; strict A: 658/710 = 92.7 %.
 Prediction (T2) for the registered reruns: lenient_check finds exactly these five more (17
 flagged in all); tally with the nine gaps gives 679, 670 and 658.
+
+## Entry 13 (2026-11-21 08:10 UTC): outcome of T2
+
+Leniency rerun kb-20261121-080834-6c50215: 17 flagged (12 + the 5 review papers), as
+predicted. Tally rerun kb-20261121-080843-98907be with the nine genuine gaps: status ok
+684/710 = 96.3 %; mine (S, E, B, A', gaps corrected) 679/710 = 95.6 %; letters counted as
+failures 670/710 = 94.4 %; strict A 658/710 = 92.7 %. Cross-tab of status against mine: ok and
+pass 663, ok and fail 21 (13 bibliography, 7 equations, hep-ph/9809574 sections... see
+tally.json), review and pass 13, review and fail 10, pdf and pass 3. Sensitivity: one paper of
+mine has fewer than half of its sectioning commands as sections (2209.06775). T2 **confirmed**.
+The bar (674.5 papers) is passed under my definition by 4.5 papers; my verdict on C3 rests on
+the [JUDGEMENT] that a letter with run-in headings has no sections to lose.
