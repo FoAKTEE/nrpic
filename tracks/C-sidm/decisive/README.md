@@ -49,7 +49,7 @@ harness/bin/nrpic-run submit --launcher local --cores 1 --kind scouting --gate G
 |---|---|---|
 | C-20261120-221846-797bdbe | card, D1 job 1: cc2_kn10_part_s1, cc2_kn10_part_s2 (Slurm 4737) | completed; 35.0 min |
 | C-20261121-025633-bb8dac4 | card, D1 job 2: cc1_kn10_part_s1, cc1_kn10_part_s2 (Slurm 4756) | completed; 34.7 min |
-| C-20261121-035737-295e5c3 | card, D3 job 3: d3_kninf, d3_kn1_part_s1 (Slurm 4764) | completed; 35.9 min |
+| C-20261121-035737-295e5c3 | card, D3 job 3: d3_kninf, d3_kn1_part_s1 (Slurm 4764) | completed; 35.6 min |
 | C-20261121-052716-6b64f97 | card, D3 job 4: d3_kn10_part_s1, cc2_kn10_cell_s2 (Slurm 4767) | submitted 05:27 UTC |
 | C-20261120-222427-6b27eea | D3 initial data, checks, K | completed: alpha_c 0.71884, +0.0482 from the Juttner onset (1.44 x the largest control drift); 18/18 checks pass; K = 251.509 |
 | C-20261120-222941-595c263 | analysis test on the wave-2 runs | PASS: reproduces t_c, onsets, collision counts, defect sums |
@@ -59,7 +59,7 @@ harness/bin/nrpic-run submit --launcher local --cores 1 --kind scouting --gate G
 | C-20261121-035741-b3595d4 | analysis of jobs 1, 2 | JOURNAL entry 10 |
 | C-20261121-052720-75f3fff | analysis of jobs 1-3 | JOURNAL entry 11 |
 
-Card time used so far: 1.76 card-hours of allocation (35.0 + 34.7 + 35.9 min); cap 3.0.
+Card time used so far: 1.76 card-hours of allocation (35.0 + 34.7 + 35.6 min); cap 3.0.
 
 ## Results
 
