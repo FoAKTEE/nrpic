@@ -887,7 +887,7 @@ differences, the orders at 4, D_n per Courant factor against |n|, and the parts 
   theta to 1e-3); the time error of R^NR at Courant 0.25 is below 6.2e-4 per mode; L6 of
   DESIGN_REVIEW 8.1 is done at the size it asks.
 
-## Entry 20, 2026-11-21 03:58Z: outcome of item (c), L5 on the card (PL1-PL3 of entry 14); a follow-up test and its prediction
+## Entry 20, 2026-11-21 03:49Z: outcome of item (c), L5 on the card (PL1-PL3 of entry 14); a follow-up test and its prediction
 
 Runs: the eleven L5 runs of card job E-20261121-025643-02526ff (4 s each, exit 0, 33 dumps
 each); analysis E-20261121-034645-02a463e (`card/l5.json`, `card/fig_l5.png`); the first
