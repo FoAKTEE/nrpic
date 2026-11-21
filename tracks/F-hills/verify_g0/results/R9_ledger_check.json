@@ -1,0 +1,1903 @@
+{
+ "rows": [
+  {
+   "i": 0,
+   "table": "tab:ledger1",
+   "group": "Scales",
+   "quantity": "plunge bound $4q^{2/3}$ on $a_b/r_{gb}$, $q=10,100,1000$",
+   "ledger": "18.57, 86.18, 400",
+   "source": "F-hills-20261115-045435-f62d553",
+   "mine": [
+    10.0,
+    100.0,
+    1000.0,
+    18.566355334451114,
+    86.17738760127533,
+    399.9999999999999
+   ],
+   "route": "closed form 4 q^(2/3) (R1)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 1,
+   "table": "tab:ledger1",
+   "group": "Scales",
+   "quantity": "marginally bound radius and angular momentum (parabolic)",
+   "ledger": "4 $M$, 4 $M$",
+   "source": "F-hills-20261115-045435-f62d553",
+   "mine": [
+    4.000025324999999,
+    4.000000000080168
+   ],
+   "route": "max of V^2 = 1 numerically (R1)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 2,
+   "table": "tab:ledger1",
+   "group": "Scales",
+   "quantity": "Peters time at $a_b=30\\,r_{gb}$, $q=10$",
+   "ledger": "6328 $M$",
+   "source": "F-hills-20261115-045435-f62d553",
+   "mine": [
+    30.0,
+    10.0,
+    6328.124999999998
+   ],
+   "route": "closed form (5/256) a^4/(m1 m2 m_b) (R1)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 3,
+   "table": "tab:ledger1",
+   "group": "Restricted Newton",
+   "quantity": "last disrupting $D$, prograde",
+   "ledger": "2.085",
+   "source": "F-hills-20261115-133222-9cb10db",
+   "mine": [
+    2.085
+   ],
+   "route": "largest D with P > 0 in coplanar.npz (main + deep)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 4,
+   "table": "tab:ledger1",
+   "group": "Restricted Newton",
+   "quantity": "deep-limit disruption probability, prograde",
+   "ledger": "0.807",
+   "source": "F-hills-20261115-133222-9cb10db",
+   "mine": [
+    0.8074741408074741
+   ],
+   "route": "P at D = 1e-05 (deep supplement npz)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 5,
+   "table": "tab:ledger1",
+   "group": "Restricted Newton",
+   "quantity": "largest ejection energy, prograde",
+   "ledger": "27.15 at $D=0.1$",
+   "source": "F-hills-20261115-133222-9cb10db",
+   "mine": [
+    27.14573863257421,
+    0.1
+   ],
+   "route": "max |E2| of disrupted samples over D (npz)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 6,
+   "table": "tab:ledger1",
+   "group": "Restricted Newton",
+   "quantity": "failed integrations, prograde",
+   "ledger": "127 of 477000",
+   "source": "F-hills-20261115-133222-9cb10db",
+   "mine": [
+    127.0,
+    477000.0
+   ],
+   "route": "count of ok == False in the combined arrays (deep supplement below D = 1e-3, main run above)",
+   "agree": true,
+   "note": "main run alone: 122"
+  },
+  {
+   "i": 7,
+   "table": "tab:ledger1",
+   "group": "Restricted Newton",
+   "quantity": "last disrupting $D$, retrograde",
+   "ledger": "0.405",
+   "source": "F-hills-20261115-133222-9cb10db",
+   "mine": [
+    0.405
+   ],
+   "route": "largest D with P > 0 in coplanar.npz (main + deep)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 8,
+   "table": "tab:ledger1",
+   "group": "Restricted Newton",
+   "quantity": "deep-limit disruption probability, retrograde",
+   "ledger": "0.801",
+   "source": "F-hills-20261115-133222-9cb10db",
+   "mine": [
+    0.8014018691588785
+   ],
+   "route": "P at D = 1e-05 (deep supplement npz)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 9,
+   "table": "tab:ledger1",
+   "group": "Restricted Newton",
+   "quantity": "largest ejection energy, retrograde",
+   "ledger": "1.838 at $D=10^{-5}$",
+   "source": "F-hills-20261115-133222-9cb10db",
+   "mine": [
+    1.837810369914442,
+    1e-05
+   ],
+   "route": "max |E2| of disrupted samples over D (npz)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 10,
+   "table": "tab:ledger1",
+   "group": "Restricted Newton",
+   "quantity": "failed integrations, retrograde",
+   "ledger": "92 of 477000",
+   "source": "F-hills-20261115-133222-9cb10db",
+   "mine": [
+    92.0,
+    477000.0
+   ],
+   "route": "count of ok == False in the combined arrays (deep supplement below D = 1e-3, main run above)",
+   "agree": true,
+   "note": "main run alone: 82"
+  },
+  {
+   "i": 11,
+   "table": "tab:ledger1",
+   "group": "Restricted Newton",
+   "quantity": "largest disruption probability (prograde)",
+   "ledger": "0.988 at $D=0.16$",
+   "source": "F-hills-20261115-133222-9cb10db",
+   "mine": [
+    0.988,
+    0.16
+   ],
+   "route": "max of P(D) (npz)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 12,
+   "table": "tab:ledger1",
+   "group": "Restricted Newton",
+   "quantity": "printed: last disrupting $D$; largest energy; deep limit; best $D$",
+   "ledger": "2.1/0.44; 27.3/1.8; about 0.8; 0.15",
+   "source": "arXiv:0911.1136 prp.tex:735-738, 846-849, 854",
+   "mine": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "route": "strings found in prp.tex 735-738, 846-849, 854",
+   "agree": true,
+   "note": "For $D < 10^{-1}$, the fraction of disrupted cases saturates at a level of $\\sim 80\\%$. The best chance of disruption is for a binary in prograde orbit, with $D = 0.15$.  | \\item The largest $D$ for which there is disruption is  $D=2.1$ for prograde orbits and $D=0.44$ for retrograde orbits. \\item The maximum energy is  $27.3$ for prograde orbits and $1.8$ for retrograde orbits. | \\item The highest chance for disruption is for prograde orbits with $D=0.15$."
+  },
+  {
+   "i": 13,
+   "table": "tab:ledger1",
+   "group": "Restricted Newton",
+   "quantity": "against the digitised curve: median, largest $|\\Delta P|$, prograde",
+   "ledger": "0.0014, 0.037 at $D=2.07$",
+   "source": "F-hills-20261115-132703-0bfc352",
+   "mine": [
+    0.0014145729112856609,
+    0.037345436878020624,
+    2.0744736128109755
+   ],
+   "route": "my interpolation of P(D) (npz) at the digitised SKR fig. 4 points (track's digitisation, scratch)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 14,
+   "table": "tab:ledger1",
+   "group": "Restricted Newton",
+   "quantity": "retrograde, bound binaries wider than $3.5\\,a_b$ counted as disrupted: largest $|\\Delta P|$ against the digitised curve, last disrupting $D$",
+   "ledger": "0.0088, 0.445",
+   "source": "F-hills-20261115-132942-2f7ad7f",
+   "mine": [
+    0.008768883478153355,
+    0.445
+   ],
+   "route": "coplanar.npz with af > 3.5 counted as disrupted, against the digitised SKR retrograde curve",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 15,
+   "table": "tab:ledger1",
+   "group": "Restricted Newton",
+   "quantity": "against the digitised curve: largest $|\\Delta P|$, retrograde",
+   "ledger": "0.21 at $D=0.418$",
+   "source": "F-hills-20261115-132703-0bfc352",
+   "mine": [
+    0.21011162179908077,
+    0.41801203876188353
+   ],
+   "route": "as the prograde row",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 16,
+   "table": "tab:ledger1",
+   "group": "Restricted Newton",
+   "quantity": "isotropic orientations, $D\\le1$: largest fractional deviation from the published fit, probability and mean energy",
+   "ledger": "0.015, 0.017 (512 orientations $\\times$ 64 phases)",
+   "source": "F-hills-20261115-133200-05ee76a",
+   "mine": [
+    1.0,
+    0.015189640623180178,
+    0.01728128414252783,
+    512.0,
+    64.0
+   ],
+   "route": "general.npz set A against my evaluation of the BKRS polynomials (mnras.tex:372-377, 433-437)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 17,
+   "table": "tab:ledger1",
+   "group": "Restricted Newton",
+   "quantity": "printed: plateau of the isotropic probability; accuracy of the fits for $D\\lesssim1$",
+   "ledger": "about 0.88; one percent",
+   "source": "arXiv:1804.02911 mnras.tex:368, 377, 440",
+   "mine": [
+    1.0,
+    1.0
+   ],
+   "route": "strings at mnras.tex 368, 377, 440",
+   "agree": true,
+   "note": "disruption rate plateaus with $\\sim  88\\%$ (the black solid line). Interestingly  The fractional error $\\Delta P_{dis}/P_{dis}$ is less than $1\\%$ for $D \\la 1$.  The fractional error is less than $1\\%$ for $D \\la 1$, and it is about "
+  },
+  {
+   "i": 18,
+   "table": "tab:ledger1",
+   "group": "Restricted Newton",
+   "quantity": "independent code, nine points: largest $|\\Delta P|$, $|\\Delta E|/E$",
+   "ledger": "0.021, 0.079 (retrograde $D=0.38$)",
+   "source": "F-hills-20261115-145246-090f5dc",
+   "mine": [
+    0.021064243636767815,
+    0.07922653935188828,
+    0.38
+   ],
+   "route": "v4_samples.npz (600 phases per point) against coplanar.npz at the same D",
+   "agree": true,
+   "note": "per point dP ['0.0003', '0.0003', '0.0000', '0.0017', '0.0003', '0.0023', '0.0063', '0.0088', '0.0211'], dE/E ['0.0010', '0.0004', '0.0003', '0.0019', '0.0007', '0.0038', '0.0116', '0.0205', '0.0792']"
+  },
+  {
+   "i": 19,
+   "table": "tab:ledger1",
+   "group": "Restricted Newton",
+   "quantity": "the same at retrograde $D=0.3, 0.38$, wide binaries followed on",
+   "ledger": "0.0013, 0.0035",
+   "source": "F-hills-20261115-145544-a314517",
+   "mine": [
+    0.001333333333333353,
+    0.003528836339240504
+   ],
+   "route": "v4b_summary rows (no sample arrays in that run); my R5 at ret D = 0.3 with wide binaries followed gives P = 0.3720 against the npz 0.3720",
+   "agree": true,
+   "note": "transcription only for D = 0.38; D = 0.3 also by my own integration"
+  },
+  {
+   "i": 20,
+   "table": "tab:ledger1",
+   "group": "Geodesic baseline",
+   "quantity": "encounters of the scan",
+   "ledger": "160000",
+   "source": "F-hills-20261115-142554-c10b371",
+   "mine": [
+    160000.0
+   ],
+   "route": "size of the outcome arrays of s1.npz (F-hills-20261115-130405-ce17dcf)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 21,
+   "table": "tab:ledger1",
+   "group": "Geodesic baseline",
+   "quantity": "retrograde onset of separation in $\\beta$ (geodesic, Newton)",
+   "ledger": "1.9, 2.5",
+   "source": "F-hills-20261115-142554-c10b371",
+   "mine": [
+    1.9000000000000001,
+    2.5000000000000004
+   ],
+   "route": "first beta with retro separated fraction > 0.01 (s1.npz)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 22,
+   "table": "tab:ledger1",
+   "group": "Geodesic baseline",
+   "quantity": "separated fraction at $\\beta=3$ (N pro, N retro, G pro, G retro)",
+   "ledger": "0.98, 0.295, 0.985, 0.51",
+   "source": "F-hills-20261115-142554-c10b371",
+   "mine": [
+    3.0,
+    0.98,
+    0.295,
+    0.985,
+    0.51
+   ],
+   "route": "count fraction of 400 phases (s1.npz)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 23,
+   "table": "tab:ledger1",
+   "group": "Geodesic baseline",
+   "quantity": "separated fraction at $\\beta=10$ (N pro, N retro, G pro, G retro)",
+   "ledger": "0.985, 0.58, 0.993, 0.91",
+   "source": "F-hills-20261115-142554-c10b371",
+   "mine": [
+    10.0,
+    0.985,
+    0.58,
+    0.9925,
+    0.91
+   ],
+   "route": "count fraction of 400 phases (s1.npz)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 24,
+   "table": "tab:ledger1",
+   "group": "Geodesic baseline",
+   "quantity": "against the figure of arXiv:2404.16270: largest $|\\Delta|$ of the fraction",
+   "ledger": "0.0225",
+   "source": "F-hills-20261115-142554-c10b371",
+   "mine": [
+    0.0225
+   ],
+   "route": "my interpolation of the digitised 2404 curves (track's digitisation in scratch; calibration constants of the track, x ticks checked) against s1.npz",
+   "agree": true,
+   "note": "{\"dev\": {\"retro_newton\": 0.005, \"retro_hrna\": 0.0225, \"pro_newton\": 0.016132804232804165, \"pro_hrna\": 0.022226554232804285}, \"curve_values_at_beta_9_95\": {\"retro_newton\": 0.5784650735294117, \"retro_1pn\": 0.8254036485890652, \"retro_hrna\": 0.9072656264172336, \"pro_newton\": 0.9850911463844796, \"pro_1pn\": 0.989375, \"pro_hrna\": 0.9967578108465607}, \"x_ticks_file_units\": [36.286, 58.606, 80.926, 103.246, 125.566, 147.886, 170.206, 192.526, 214.846, 237.166, 259.486]}"
+  },
+  {
+   "i": 25,
+   "table": "tab:ledger1",
+   "group": "Geodesic baseline",
+   "quantity": "the same, mean $v_\\infty$ (relative)",
+   "ledger": "0.0073",
+   "source": "F-hills-20261115-142554-c10b371",
+   "mine": [
+    0.007255141893971917
+   ],
+   "route": "transcription of s1_summary.json checks only (speed curves not recomputed)",
+   "agree": true,
+   "note": "transcription only"
+  },
+  {
+   "i": 26,
+   "table": "tab:ledger1",
+   "group": "Geodesic baseline",
+   "quantity": "largest $a_b/R_{\\rm curv}$ of a bound binary at $\\beta=10$",
+   "ledger": "0.0056",
+   "source": "F-hills-20261115-142554-c10b371",
+   "mine": [
+    10.0,
+    0.00563580432949585
+   ],
+   "route": "max of alpha_max (a/R while the Newtonian pair energy < 0) at beta = 10, HRNA, s1.npz",
+   "agree": true,
+   "note": "the same parameter at any time (alpha_all) reaches 0.199 at beta = 10 (pericentre)"
+  },
+  {
+   "i": 27,
+   "table": "tab:ledger2",
+   "group": "Pericentre scan",
+   "quantity": "$q=10$, $r_p=7$: Newton sep., inside $4M$; geodesic sep., plunge",
+   "ledger": "0.9, 0.62; 0.99, 0.96",
+   "source": "F-hills-20261115-145915-71abf93",
+   "mine": [
+    0.9,
+    0.6222222222222222,
+    0.9888888888888889,
+    0.9555555555555556
+   ],
+   "route": "transcription of v7_summary; independent: my scan R4 (180 phases)",
+   "agree": true,
+   "note": "R4: 0.878, 0.494, 1.000, 0.978; within 3 binomial sigma of v7: False"
+  },
+  {
+   "i": 28,
+   "table": "tab:ledger2",
+   "group": "Pericentre scan",
+   "quantity": "$q=10$, $r_p=8$: the same",
+   "ledger": "0.88, 0.056; 1, 0.94",
+   "source": "F-hills-20261115-145915-71abf93",
+   "mine": [
+    0.8777777777777778,
+    0.05555555555555555,
+    1.0,
+    0.9444444444444444
+   ],
+   "route": "transcription of v7_summary; independent: my scan R4 (180 phases)",
+   "agree": true,
+   "note": "R4: 0.850, 0.011, 1.000, 0.944; within 3 binomial sigma of v7: True"
+  },
+  {
+   "i": 29,
+   "table": "tab:ledger2",
+   "group": "Pericentre scan",
+   "quantity": "$q=10$, $r_p=13$: the same",
+   "ledger": "0.22, 0; 0.98, 0.3",
+   "source": "F-hills-20261115-145915-71abf93",
+   "mine": [
+    0.2222222222222222,
+    0.0,
+    0.9777777777777777,
+    0.3
+   ],
+   "route": "transcription of v7_summary; independent: my scan R4 (180 phases)",
+   "agree": true,
+   "note": "R4: 0.422, 0.000, 0.939, 0.017; within 3 binomial sigma of v7: False"
+  },
+  {
+   "i": 30,
+   "table": "tab:ledger2",
+   "group": "Pericentre scan",
+   "quantity": "$q=4$, $r_p=9.82$: Newton sep., inside $4M$; geodesic sep., plunge",
+   "ledger": "0.84, 0.3; 0.99, 0.94",
+   "source": "F-hills-20261115-145915-71abf93",
+   "mine": [
+    0.8444444444444444,
+    0.3,
+    0.9888888888888889,
+    0.9444444444444444
+   ],
+   "route": "transcription of v7_summary; independent: my scan R4 (180 phases)",
+   "agree": true,
+   "note": "R4: 0.800, 0.189, 0.961, 0.850; within 3 binomial sigma of v7: False"
+  },
+  {
+   "i": 31,
+   "table": "tab:ledger2",
+   "group": "Pericentre scan",
+   "quantity": "$q=4$, $r_p=16$: the same",
+   "ledger": "0.54, 0.011; 0.94, 0.67",
+   "source": "F-hills-20261115-145915-71abf93",
+   "mine": [
+    0.5444444444444444,
+    0.011111111111111112,
+    0.9444444444444444,
+    0.6666666666666666
+   ],
+   "route": "transcription of v7_summary; independent: my scan R4 (180 phases)",
+   "agree": true,
+   "note": "no R4 case"
+  },
+  {
+   "i": 32,
+   "table": "tab:ledger2",
+   "group": "First passages",
+   "quantity": "$q=4$: energy unit $(m_1m_2/a_b)q^{1/3}$",
+   "ledger": "0.004961 $M$",
+   "source": "F-20261115-174648-25514db",
+   "mine": [
+    0.004960628287400623
+   ],
+   "route": "closed form (m1 m2/a_b) q^(1/3) at a_b = nominal (R1)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 33,
+   "table": "tab:ledger2",
+   "group": "First passages",
+   "quantity": "$q=4$, Newton: ejected member, energy (barycentric), its spread after $t=300M$",
+   "ledger": "$m_1$, 1.3119, 0.00015",
+   "source": "F-20261115-174648-25514db",
+   "mine": [
+    1.0,
+    1.311866100701363,
+    0.00015427224428177233
+   ],
+   "route": "N1 curves (passage_curves.npz, last sample, ptp after t = 300) ; R3: m1, 1.31187, 0.00015",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 34,
+   "table": "tab:ledger2",
+   "group": "First passages",
+   "quantity": "$q=4$, Newton: two-body energy of the same member with $M$, range",
+   "ledger": "0.9887 to 1.723",
+   "source": "F-20261115-174648-25514db",
+   "mine": [
+    0.9887208043620307,
+    1.7227343101625916
+   ],
+   "route": "N1 curves (t >= 300); R3: 0.9887 to 1.7227",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 35,
+   "table": "tab:ledger2",
+   "group": "First passages",
+   "quantity": "$q=4$, Newton: captured member, energy, closest approach",
+   "ledger": "$m_2$, -1.627, 5.777 $M$",
+   "source": "F-20261115-174648-25514db",
+   "mine": [
+    2.0,
+    -1.626538865317807,
+    5.777153482248176
+   ],
+   "route": "R3 (own integration); N1 curve min r of the captured member 5.7771",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 36,
+   "table": "tab:ledger2",
+   "group": "First passages",
+   "quantity": "$q=4$, geodesic: ejected member and energy; other member",
+   "ledger": "$m_2$, 0.9703; bound, -0.5, first pericentre 7.262 $M$",
+   "source": "F-20261115-174648-25514db",
+   "mine": [
+    2.0,
+    0.9776734488551924,
+    -0.5016609359653155,
+    7.259190181442954
+   ],
+   "route": "R3 (own HRNA)",
+   "agree": true,
+   "note": "ejected energy drifts with time: 0.9777 at t = 600, 0.9650 at t = 1500 (pair force of the bound member)"
+  },
+  {
+   "i": 37,
+   "table": "tab:ledger2",
+   "group": "First passages",
+   "quantity": "$q=4$, Newton with $M$ fixed: ejected energy, closest approach of the other",
+   "ledger": "1.835, 6.107 $M$",
+   "source": "F-20261115-174648-25514db",
+   "mine": [
+    1.8435007883864283,
+    6.106307849386308
+   ],
+   "route": "R3 (own integration, energy at t = 600)",
+   "agree": true,
+   "note": "N1 evaluates at t_end = 1309"
+  },
+  {
+   "i": 38,
+   "table": "tab:ledger2",
+   "group": "First passages",
+   "quantity": "$q=10$: energy unit $(m_1m_2/a_b)q^{1/3}$",
+   "ledger": "0.001795 $M$",
+   "source": "F-20261115-174648-25514db",
+   "mine": [
+    0.0017953622416932368
+   ],
+   "route": "closed form (m1 m2/a_b) q^(1/3) at a_b = nominal (R1)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 39,
+   "table": "tab:ledger2",
+   "group": "First passages",
+   "quantity": "$q=10$, Newton: ejected member, energy (barycentric), its spread after $t=300M$",
+   "ledger": "$m_1$, 1.6127, 3.2e-05",
+   "source": "F-20261115-174648-25514db",
+   "mine": [
+    1.0,
+    1.6126701825939442,
+    3.227578439091161e-05
+   ],
+   "route": "N1 curves (passage_curves.npz, last sample, ptp after t = 300) ; R3: m1, 1.61267, 3.2e-05",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 40,
+   "table": "tab:ledger2",
+   "group": "First passages",
+   "quantity": "$q=10$, Newton: two-body energy of the same member with $M$, range",
+   "ledger": "1.474 to 1.845",
+   "source": "F-20261115-174648-25514db",
+   "mine": [
+    1.4744970300491862,
+    1.8453367842145478
+   ],
+   "route": "N1 curves (t >= 300); R3: 1.4745 to 1.8453",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 41,
+   "table": "tab:ledger2",
+   "group": "First passages",
+   "quantity": "$q=10$, Newton: captured member, energy, closest approach",
+   "ledger": "$m_2$, -1.845, 5.641 $M$",
+   "source": "F-20261115-174648-25514db",
+   "mine": [
+    2.0,
+    -1.8449540434215184,
+    5.64129182998646
+   ],
+   "route": "R3 (own integration); N1 curve min r of the captured member 5.6412",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 42,
+   "table": "tab:ledger2",
+   "group": "First passages",
+   "quantity": "$q=10$, geodesic: ejected member and energy; other member",
+   "ledger": "$m_2$, 1.159; plunges at $t=97.1M$",
+   "source": "F-20261115-174648-25514db",
+   "mine": [
+    2.0,
+    1.1587966207418687,
+    96.8996547745134
+   ],
+   "route": "R3 (own HRNA; plunge time = crossing of r = 2.5 M, interpolated)",
+   "agree": true,
+   "note": "ledger 97.1 is the first sample inside 2.5 M (N1 first_pericentre_1 = [97.11800191179567, 2.4719236660023887])"
+  },
+  {
+   "i": 43,
+   "table": "tab:ledger2",
+   "group": "First passages",
+   "quantity": "$q=10$, Newton with $M$ fixed: ejected energy, closest approach of the other",
+   "ledger": "1.887, 5.862 $M$",
+   "source": "F-20261115-174648-25514db",
+   "mine": [
+    1.8904671328458227,
+    5.867553030913032
+   ],
+   "route": "R3 (own integration, energy at t = 600)",
+   "agree": true,
+   "note": "N1 evaluates at t_end = 1078"
+  },
+  {
+   "i": 44,
+   "table": "tab:ledger2",
+   "group": "First passages",
+   "quantity": "$q=4$: reproduces the earlier run in every printed digit (ejected energy)",
+   "ledger": "1.31187",
+   "source": "F-20261115-174102-ffa764f",
+   "mine": [
+    1.311866100701412
+   ],
+   "route": "R3; E6 file 1.311866",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 45,
+   "table": "tab:ledger2",
+   "group": "First passages",
+   "quantity": "$q=4$, Newton: displacement of the heavy black hole by the end of the run",
+   "ledger": "13.3 $M$ at $t=280M$",
+   "source": "F-20261115-174102-ffa764f",
+   "mine": [
+    13.2559114141442,
+    280.0
+   ],
+   "route": "R3 at t = 280; E6 file 13.2559",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 46,
+   "table": "tab:ledger2",
+   "group": "First passages",
+   "quantity": "readers on a synthetic three-body run: checks passed",
+   "ledger": "10 of 10",
+   "source": "F-20261115-173821-b2c969a",
+   "mine": [
+    10.0,
+    10.0
+   ],
+   "route": "count of ok in test_nrread_synthetic.json (the test itself not rerun)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 47,
+   "table": "tab:ledger2",
+   "group": "First passages",
+   "quantity": "$q=10$: captured orbit of Newton ($a$, $e$, pericentre)",
+   "ledger": "7.55, 0.247, 5.68 $M$",
+   "source": "F-hills-20261115-145251-090f5dc",
+   "mine": [
+    10.0,
+    7.547486914641227,
+    0.2474221181849884,
+    5.6800717152472116
+   ],
+   "route": "R3 osculating orbit at t = 1500",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 48,
+   "table": "tab:ledger2",
+   "group": "Mesh and cost",
+   "quantity": "$q=10$, $m/8$: MeshBlocks start, largest, mean; card-hours (240 $M$)",
+   "ledger": "1800, 2332, 2006; 38.9 (37-42.3)",
+   "source": "F-hills-20261115-131348-634fb86",
+   "mine": [
+    1800.0,
+    2332.0,
+    2006.08,
+    38.882152284237726,
+    37.057895962790695,
+    42.32897255497295
+   ],
+   "route": "n(t) recounted from 25 athena -m stdout files; dt = cfl h_min, cfl 0.25 (input), h_min 0.00625; rates of the novelty run; card-hours plain mean (trapezoid 38.86)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 49,
+   "table": "tab:ledger2",
+   "group": "Mesh and cost",
+   "quantity": "$q=10$, $m/16$: MeshBlocks start, largest, mean; card-hours (240 $M$)",
+   "ledger": "3690, 4544, 4019; 156 (149-170)",
+   "source": "F-hills-20261115-131348-634fb86",
+   "mine": [
+    3690.0,
+    4544.0,
+    4018.72,
+    155.782903002584,
+    148.47394686511626,
+    169.59272669696213
+   ],
+   "route": "n(t) recounted from 25 athena -m stdout files; dt = cfl h_min, cfl 0.25 (input), h_min 0.003125; rates of the novelty run; card-hours plain mean (trapezoid 156)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 50,
+   "table": "tab:ledger2",
+   "group": "Mesh and cost",
+   "quantity": "$q=10$, $m/16$, small radius: MeshBlocks start, largest, mean; card-hours (240 $M$)",
+   "ledger": "2654, 2934, 2574; 99.4 (94.7-108)",
+   "source": "F-hills-20261115-131348-634fb86",
+   "mine": [
+    2654.0,
+    2934.0,
+    2573.92,
+    99.77622966925065,
+    95.09497086511627,
+    108.62118064952145
+   ],
+   "route": "n(t) recounted from 25 athena -m stdout files; dt = cfl h_min, cfl 0.25 (input), h_min 0.003125; rates of the novelty run; card-hours plain mean (trapezoid 99.42)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 51,
+   "table": "tab:ledger2",
+   "group": "Mesh and cost",
+   "quantity": "$q=4$, $m/8$: MeshBlocks start, largest, mean; card-hours (270 $M$)",
+   "ledger": "1716, 2080, 1744; 15.2 (14.5-16.5)",
+   "source": "F-hills-20261115-131933-907e5fe",
+   "mine": [
+    1716.0,
+    2080.0,
+    1744.0,
+    15.21111476744186,
+    14.497446139534883,
+    16.559547805243447
+   ],
+   "route": "n(t) recounted from 28 athena -m stdout files; dt = cfl h_min, cfl 0.25 (input), h_min 0.015625; rates of the novelty run; card-hours plain mean (trapezoid 15.17)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 52,
+   "table": "tab:ledger2",
+   "group": "Mesh and cost",
+   "quantity": "$q=4$, $m/16$: MeshBlocks start, largest, mean; card-hours (270 $M$)",
+   "ledger": "2514, 2864, 2568; 44.8 (42.7-48.7)",
+   "source": "F-hills-20261115-131933-907e5fe",
+   "mine": [
+    2514.0,
+    2864.0,
+    2568.5,
+    44.80475720203489,
+    42.70262661627907,
+    48.776603827715356
+   ],
+   "route": "n(t) recounted from 28 athena -m stdout files; dt = cfl h_min, cfl 0.25 (input), h_min 0.0078125; rates of the novelty run; card-hours plain mean (trapezoid 44.77)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 53,
+   "table": "tab:ledger2",
+   "group": "Mesh and cost",
+   "quantity": "$q=4$, $m/16$, small radius: MeshBlocks start, largest, mean; card-hours (270 $M$)",
+   "ledger": "2416, 2654, 2348; 40.9 (39-44.6)",
+   "source": "F-hills-20261115-131933-907e5fe",
+   "mine": [
+    2416.0,
+    2654.0,
+    2347.5,
+    40.94964669331396,
+    39.02838854651162,
+    44.57974595505618
+   ],
+   "route": "n(t) recounted from 28 athena -m stdout files; dt = cfl h_min, cfl 0.25 (input), h_min 0.0078125; rates of the novelty run; card-hours plain mean (trapezoid 40.94)",
+   "agree": true,
+   "note": ""
+  },
+  {
+   "i": 54,
+   "table": "tab:ledger2",
+   "group": "Mesh and cost",
+   "quantity": "rate, MeshBlock-cycles per second (median, slow, fast)",
+   "ledger": "2201, 2022, 2310",
+   "source": "F-hills-20261115-131348-634fb86",
+   "mine": [
+    2201.3376739271903,
+    2022.0842014416185,
+    2309.703355868048
+   ],
+   "route": "median, min, max of R_mbcyc_per_s over the novelty run's vacuum logs",
+   "agree": true,
+   "note": "[2022.0842014416185, 2139.7967267979966, 2201.3376739271903, 2233.542131715295, 2309.703355868048]"
+  },
+  {
+   "i": 55,
+   "table": "tab:ledger2",
+   "group": "Mesh and cost",
+   "quantity": "$q=4$ input at the start, release executable: $m/4$, $m/8$, $m/16$",
+   "ledger": "1128, 1716, 2514",
+   "source": "F-20261115-173543-29e87e8",
+   "mine": [
+    4.0,
+    1128.0,
+    1716.0,
+    2514.0
+   ],
+   "route": "recounted from q4_L9..L11/athena_m.log",
+   "agree": true,
+   "note": "counts.txt {9: 1128, 10: 1716, 11: 2514}"
+  },
+  {
+   "i": 56,
+   "table": "tab:ledger2",
+   "group": "Mesh and cost",
+   "quantity": "card memory, MeshBlock slots",
+   "ledger": "about 3000",
+   "source": "multi\\_puncture.md lines 229--230 of coord/INTERFACES",
+   "mine": [
+    3000.0
+   ],
+   "route": "coord/INTERFACES/multi_puncture.md lines 229-230 read",
+   "agree": true,
+   "note": "  three (about 22 MB per block slot plus 2 MB per finder). A card holds a limit of   about 3000."
+  }
+ ],
+ "extras": {
+  "K18_q1e+06": {
+   "k5_same_outcome_as_k40": 0.92,
+   "k10_same_outcome_as_k40": 0.95,
+   "k20_same_outcome_as_k40": 0.98
+  },
+  "K18_q10": {
+   "k5_same_outcome_as_k40": 0.9,
+   "k10_same_outcome_as_k40": 0.97,
+   "k20_same_outcome_as_k40": 0.97
+  },
+  "K8_alpha_hrna": {
+   "beta10_alpha_all_max": 0.19933952382574346,
+   "beta10_alpha_bound_max": 0.00563580432949585,
+   "beta8.5_alpha_all_max": 0.14778326241299644
+  },
+  "K14_card_memory": {
+   "smoke_peak_MiB_at_2700_slots": 70847,
+   "card_MiB": 81920,
+   "MiB_per_slot_all_in": 26.23962962962963,
+   "slots_if_linear_all_in": 3121.9952856154814
+  },
+  "K14_mesh_recount_equals_run_json": {
+   "D205_m8_r1.8": true,
+   "D205_m16_r1.8": true,
+   "D205_m16_r1.2": true,
+   "D256q4_m8_r1.8": true,
+   "D256q4_m16_r1.8": true,
+   "D256q4_m16_r1.2": true
+  }
+ },
+ "inputs_checked": [
+  [
+   "F-20261121-030100-b88c2d3",
+   "closed_forms.json",
+   "sha256 ok"
+  ],
+  [
+   "F-20261121-030138-8d3ca16",
+   "passages.json",
+   "sha256 ok"
+  ],
+  [
+   "F-20261121-030146-34ad97e",
+   "scan.json",
+   "sha256 ok"
+  ],
+  [
+   "F-20261121-031920-5e6425e",
+   "scan.json",
+   "sha256 ok"
+  ],
+  [
+   "F-20261121-031930-a640847",
+   "scan.json",
+   "sha256 ok"
+  ],
+  [
+   "F-20261121-034434-0113a18",
+   "scan.json",
+   "sha256 ok"
+  ],
+  [
+   "F-20261121-030155-1061bcb",
+   "restricted.json",
+   "sha256 ok"
+  ],
+  [
+   "F-20261121-032337-9c6d87a",
+   "s1check.json",
+   "sha256 ok"
+  ],
+  [
+   "F-20261121-032325-f58a391",
+   "s1check.json",
+   "sha256 ok"
+  ],
+  [
+   "F-hills-20261115-130237-cbfaf6b",
+   "coplanar.npz",
+   "sha256 ok"
+  ],
+  [
+   "F-hills-20261115-132156-efddfc0",
+   "coplanar.npz",
+   "sha256 ok"
+  ],
+  [
+   "F-hills-20261115-132703-0bfc352",
+   "skr_digitised.json",
+   "sha256 ok"
+  ],
+  [
+   "F-hills-20261115-130239-cbfaf6b",
+   "general.npz",
+   "sha256 ok"
+  ],
+  [
+   "F-hills-20261115-145246-090f5dc",
+   "v4_samples.npz",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-145246-090f5dc",
+   "v4_summary.json",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-145544-a314517",
+   "v4b_summary.json",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-130405-ce17dcf",
+   "s1.npz",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-142554-c10b371",
+   "digitized/sep_fraction.json",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-142554-c10b371",
+   "s1_summary.json",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-145915-71abf93",
+   "v7_summary.json",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-20261115-174648-25514db",
+   "passage_summary.json",
+   "sha256 ok"
+  ],
+  [
+   "F-20261115-174648-25514db",
+   "passage_curves.npz",
+   "sha256 ok"
+  ],
+  [
+   "F-20261115-174102-ffa764f",
+   "baselines_p1.json",
+   "sha256 ok"
+  ],
+  [
+   "F-20261115-173821-b2c969a",
+   "test_nrread_synthetic.json",
+   "sha256 ok"
+  ],
+  [
+   "F-hills-20261115-045438-f62d553",
+   "results.json",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t+0080.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t-0019.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t+0130.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t+0090.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t+0100.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t+0010.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t-0009.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t-0079.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t-0059.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t+0030.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t+0040.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t-0069.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t+0110.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t+0020.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t+0060.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t-0039.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t+0000.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t-0049.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t+0070.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t+0160.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t+0150.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t+0050.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t-0029.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t+0140.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m8_r1.8_t+0120.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t+0090.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t+0100.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t+0030.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t+0060.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t-0049.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t-0039.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t+0020.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t+0130.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t+0110.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t-0069.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t-0079.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t+0010.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t+0000.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t-0029.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t+0160.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t+0050.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t+0120.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t-0009.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t+0040.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t+0140.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t-0059.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t-0019.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t+0070.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t+0080.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.8_t+0150.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t+0140.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t-0009.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t+0010.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t+0100.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t+0050.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t+0020.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t+0120.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t-0029.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t+0110.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t+0150.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t-0049.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t-0079.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t+0090.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t+0130.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t-0069.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t+0040.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t+0030.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t+0080.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t-0059.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t-0019.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t-0039.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t+0000.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t+0060.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t+0160.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "cases/D205_m16_r1.2_t+0070.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t-0071.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t-0021.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t+0048.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t+0068.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t+0138.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t-0001.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t+0078.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t+0038.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t-0031.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t-0041.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t+0168.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t+0058.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t+0158.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t+0028.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t-0101.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t+0018.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t+0098.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t+0008.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t+0118.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t+0088.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t+0108.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t+0128.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t-0011.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t-0061.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t-0051.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t+0148.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t-0091.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m8_r1.8_t-0081.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t+0158.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t-0081.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t+0068.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t+0168.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t-0031.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t+0078.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t-0091.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t+0058.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t-0101.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t+0128.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t+0118.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t-0001.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t+0018.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t+0038.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t-0011.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t+0028.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t-0051.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t+0008.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t-0021.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t+0048.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t-0071.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t-0041.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t+0108.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t-0061.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t+0098.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t+0138.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t+0088.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.8_t+0148.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t+0038.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t-0051.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t+0138.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t+0168.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t+0008.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t-0001.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t-0071.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t+0018.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t+0128.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t+0078.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t-0041.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t+0048.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t-0061.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t-0081.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t+0068.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t+0118.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t+0058.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t+0088.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t+0028.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t-0011.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t+0158.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t+0148.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t-0031.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t-0101.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t-0091.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t-0021.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t+0098.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "cases/D256q4_m16_r1.2_t+0108.5/stdout.txt",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-20261115-173543-29e87e8",
+   "counts.txt",
+   "sha256 ok"
+  ],
+  [
+   "F-20261115-173543-29e87e8",
+   "q4_L9/athena_m.log",
+   "listed in sha256sums.txt?"
+  ],
+  [
+   "F-20261115-173543-29e87e8",
+   "q4_L10/athena_m.log",
+   "listed in sha256sums.txt?"
+  ],
+  [
+   "F-20261115-173543-29e87e8",
+   "q4_L11/athena_m.log",
+   "listed in sha256sums.txt?"
+  ],
+  [
+   "F-hills-20261115-131801-907e5fe",
+   "p4.npz",
+   "sha256 ok"
+  ],
+  [
+   "F-hills-20261115-131348-634fb86",
+   "mesh_count_b.json",
+   "no sha256 record (wave-1 run)"
+  ],
+  [
+   "F-hills-20261115-131933-907e5fe",
+   "mesh_count_b.json",
+   "no sha256 record (wave-1 run)"
+  ]
+ ],
+ "ledger_sha256": "30c9c414ec1232ce9f108a345c7149f5b4f3ae5beadc478aeea2e6cab82bd2f4"
+}

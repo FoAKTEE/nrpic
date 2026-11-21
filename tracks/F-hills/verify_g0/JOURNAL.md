@@ -208,3 +208,28 @@ my hand-off values or miss by more than 3 sigma. A 12-phase debug trial at r_p =
 - R4c, q = 4, r_p = 9.82: Newton separated 0.800 (track 0.84), inside 4 M 0.189 (0.30, 3.3
   sigma), HRNA hand-off separated 0.961 (0.99), plunge 0.850 (0.94, 4.5 sigma); GR-matched plunge
   0.894. My encounters are again shallower than the track's in every diagnostic.
+
+## Entry 8 (2026-11-21 04:05 UTC): K13 outcome, ledger check, sections 1-3 written
+
+- R4d F-20261121-034434-0113a18 (q = 10, r_p = 12, capped): Newton 0.572 separated (V7 0.59),
+  inside 4 M 0; HRNA hand-off separated 0.944 (0.98), plunge 0.222 against V7's 0.69; GR-matched
+  plunge 0.650. With R4b (r_p = 13: 0.017 hand-off, 0.161 GR-matched, against 0.30), the
+  geodesic reference's plunge fraction at r_p = 12-13 M depends by a factor 3-10 on how the
+  Newtonian start is put into the Schwarzschild model; V7's numbers lie nearer my GR-matched
+  construction. The load-bearing statement "still in 69 percent at 12 M" (SCOPING 4, errata
+  row 1.5) is NOT reproduced by the hand-off construction that SCOPING 6 describes.
+- R10 F-20261121-032150-8309634 (H-u): no case finished in 35 min, stopped (record: failed).
+  H-u NOT TESTED; open.
+- R4e F-20261121-034441-f211f65 (q = 4, r_p = 16, capped): still running at this entry
+  (pending; listed in VERIFIER.md).
+- R9 F-20261121-035817-0aca1c5: ledger tables 1-2, 57 of 57 rows agree with the named runs and
+  sources (routes in VERIFIER.md section 2); recount of the 159 `athena -m` trees equals the
+  runs' JSON. Prediction of entry 2 (all transcriptions agree; a few rows only re-readable)
+  MET: 4 rows transcription only.
+- R11 F-20261121-035825-975e07b: `fig_scan.png` read: V7 lines against my open symbols and
+  GR-matched squares; right panel S1 lines with my beta = 3, 10 points inside 3 sigma.
+
+Failed predictions of this package (kept): entry 1 K13 "GR-matched plunge falls well below 0.94
+at r_p = 8" (0.911: only slightly below); entry 4 H-mu (refuted by R8); entry 1 K12 prediction
+of 5.7-5.8 M MET (5.77). Sections 1-3 of `stage/G0/VERIFIER.md` written now, before reading
+REVIEW.md, SECOND_CHECK.md, REVIEW-wave2.md or the lead's check script.
