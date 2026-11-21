@@ -355,3 +355,11 @@ Predictions, written before either run (refuted where stated):
 - LW6 (L5 step test, 32^3): first-order M at Courant 0.25 over 0.125, common dumps with
   t <= 0.25: 15.5-19.5. Refuted if at most 4 (a ratio near 2 would be a first-order
   stage-timing defect of the hook).
+- LR1 (risk R1 on processors, added 06:47Z before its run; the release core-v0.4 contains
+  core/scalar-2 since 2026-11-21): L32p and L32m of `ladder/inputs/proc32.list` rerun with the
+  release processor executable `.work/build_cpu_v04/src/athena` (`stage/review3/scripts/r1_run.sh`)
+  give dumps equal word for word in all variables, times and cycles to those of
+  E-20261115-172636-ce98836 (core/scalar-2 a58e95b) at every common dump, and identical records;
+  the release may write one more final dump (its correction "final outputs no longer advance
+  last_time"). Refuted by any differing word: then the SR results of G1 depend on the
+  executable, and the size of the difference decides whether the 256^3 rung must be rerun.
