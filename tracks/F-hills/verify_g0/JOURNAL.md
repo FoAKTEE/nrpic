@@ -91,3 +91,16 @@ Plan and how each check can fail (predictions of entry 1 stand; additions):
   summary JSON plus an independent route (my R1-R5) or the paper source. Prediction: all
   transcriptions agree (the ledger is script-generated); at most a few rows whose summary
   number cannot be reached from raw data (digitised third-party curves, the readers' test).
+
+## Entry 3 (2026-11-21 03:10 UTC): K5 by an independent route, prediction
+
+`threebody.py --mode s1` (new): my HRNA at the set-up of 2404.16270 as the paper states it
+(article.tex:300-348; appendix.tex:138-179: members at +-a0/2 with the Newtonian circular
+velocity, CM at (r0, 0) with r0 = 50 r_t on the Schwarzschild parabola E = 1,
+L = (2 rp^2/(rp - 2))^(1/2), rp = r_t/beta, r_t = 101.3 M, M/m_b = 1e6, stop at 150 r_t;
+phases k pi/200). Note at the source: the paper's separation fraction is the length of the
+phase interval holding all separations over pi (article.tex:455-458), not a count; I count.
+Prediction: HRNA separated fraction at beta = 3 (pro, retro) and 10 (pro, retro) within three
+binomial sigma (about 0.03 at p = 0.9, 0.1 at p = 0.5 with 200 phases) of the ledger's
+0.985, 0.51, 0.993, 0.91 (run F-hills-20261115-142554-c10b371). WRONG if outside. A debug
+trial (16 phases, beta = 10) gave 1.0 and 0.875.

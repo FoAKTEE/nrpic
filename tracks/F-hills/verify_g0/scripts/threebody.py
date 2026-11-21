@@ -372,6 +372,64 @@ def scan(q, ab, rp, nphase, rtol, t_after):
     return out
 
 
+# ------------------------------------------------------------------ 2404.16270 set-up (K5)
+def s1_setup(beta, sense, nphase, rtol, k0=50.0, k1=150.0):
+    """HRNA at the set-up of arXiv:2404.16270 (article.tex:300-348, appendix.tex:138-179):
+    M = 1, m1 = m2 = 5e-7 (M = 1e6 m_b), a0 with r_t = 101.3 M, CM released at (r0, 0),
+    r0 = 50 r_t, on the Schwarzschild parabola (E = 1, L = sqrt(2 rp^2/(rp - 2))) with
+    rp = r_t/beta; members at +-a0/2 (cos phi, sin phi) with the Newtonian circular velocity,
+    phi uniform in [0, pi); stop when the CM is beyond 150 r_t outbound. Separated: the
+    Newtonian pair energy (coordinate velocities) is positive at the end, or a member
+    crossed r = 2.5 M."""
+    m = 5e-7
+    mb = 2 * m
+    rt = 101.3
+    a0 = rt * (mb / 1.0) ** (1 / 3)
+    rp = rt / beta
+    r0 = k0 * rt
+    L = np.sqrt(2 * rp ** 2 / (rp - 2))
+    f0 = 1 - 2 / r0
+    xd = -f0 * np.sqrt(max(0.0, 2 / r0 - L * L / r0 ** 2 * f0))
+    yd = f0 * L / r0
+    phis = np.arange(nphase) * np.pi / nphase
+    w = sense * np.sqrt(mb / a0 ** 3)
+    y = np.zeros((nphase, 8))
+    c, s = np.cos(phis), np.sin(phis)
+    y[:, 0], y[:, 1] = r0 + 0.5 * a0 * c, 0.5 * a0 * s
+    y[:, 2], y[:, 3] = r0 - 0.5 * a0 * c, -0.5 * a0 * s
+    y[:, 4], y[:, 5] = xd - 0.5 * a0 * w * s, yd + 0.5 * a0 * w * c
+    y[:, 6], y[:, 7] = xd + 0.5 * a0 * w * s, yd - 0.5 * a0 * w * c
+    alive = np.ones((nphase, 2), bool)
+    rhs = make_hrna_rhs(m, m, alive)
+    peri_passed = np.zeros(nphase, bool)
+
+    def cb(to, yo, tn, yn, idx):
+        ynew = yn.copy()
+        for i in range(2):
+            ro = np.linalg.norm(yo[:, 2 * i:2 * i + 2], axis=1)
+            rn = np.linalg.norm(yn[:, 2 * i:2 * i + 2], axis=1)
+            hit = alive[idx, i] & (rn < R_PLUNGE) & (ro >= R_PLUNGE)
+            if hit.any():
+                alive[idx[hit], i] = False
+                ynew[hit, 4 + 2 * i:6 + 2 * i] = 0.0
+        cmo = 0.5 * (yo[:, 0:2] + yo[:, 2:4])
+        cmn = 0.5 * (yn[:, 0:2] + yn[:, 2:4])
+        rco, rcn = np.linalg.norm(cmo, axis=1), np.linalg.norm(cmn, axis=1)
+        peri_passed[idx] |= rcn > rco
+        stop = peri_passed[idx] & (rcn > k1 * rt)
+        return stop, ynew
+    # the time to reach 150 r_t is below 2 x (4/3)(r/2)^(3/2) for a parabola
+    t_end = 2 * (4 / 3) * ((k1 * rt) / 2) ** 1.5 + 2 * (4 / 3) * (r0 / 2) ** 1.5
+    t, yE, done, nacc = vint.integrate(rhs, y, 0.0, t_end, rtol=rtol, atol=rtol * 1e-4, h0=1.0, callback=cb)
+    plunged = ~alive.all(1)
+    d = yE[:, 2:4] - yE[:, 0:2]
+    E12 = 0.5 * m * m / mb * np.sum((yE[:, 6:8] - yE[:, 4:6]) ** 2, 1) - m * m / np.linalg.norm(d, axis=1)
+    sep = plunged | (E12 > 0)
+    return dict(beta=beta, sense=int(sense), nphase=nphase, rtol=rtol, r0_over_rt=k0, rend_over_rt=k1,
+                rp=rp, a0=a0, separated=float(sep.mean()), plunged=float(plunged.mean()),
+                reached_end=float(done.mean()), steps_max=int(nacc.max()), sep_flags=sep.astype(int).tolist())
+
+
 # ------------------------------------------------------------------ self-tests of the HRNA
 def selftest(out, rtol):
     """(a) geodesics without the pair force conserve E = -u_t and L = u_phi; (b) a circular
@@ -467,7 +525,8 @@ def selftest(out, rtol):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True)
-    ap.add_argument("--mode", choices=("passages", "scan", "selftest"), required=True)
+    ap.add_argument("--mode", choices=("passages", "scan", "selftest", "s1"), required=True)
+    ap.add_argument("--betas", default="3,10")
     ap.add_argument("--rtol", type=float, default=1e-10)
     ap.add_argument("--nphase", type=int, default=180)
     ap.add_argument("--cases", default="10:3:8,10:3:13,4:5:9.82")
@@ -479,6 +538,14 @@ def main():
         passages(a.out, a.rtol)
     elif a.mode == "selftest":
         selftest(a.out, a.rtol)
+    elif a.mode == "s1":
+        rows = []
+        for b in (float(x) for x in a.betas.split(",")):
+            for sense in (1, -1):
+                row = s1_setup(b, sense, a.nphase, a.rtol)
+                rows.append(row)
+                print(json.dumps({k: v for k, v in row.items() if k != "sep_flags"}), flush=True)
+                json.dump(rows, open(os.path.join(a.out, "s1check.json"), "w"), indent=1)
     else:
         rows = []
         for c in a.cases.split(","):
