@@ -938,7 +938,7 @@ restart files, three snapshots byte-identical, the three histories with identica
 records. P16a for east is therefore already known to hold byte for byte; the other five
 configurations (east at four threads private and atomic, newton in all three) are blind.
 
-## 2026-11-20 19:03 Entry 26: outcome of P17 (one thread alone; the isolated Newtonian collapse); prediction P18
+## 2026-11-20 19:01 Entry 26: outcome of P17 (one thread alone; the isolated Newtonian collapse); prediction P18
 
 Run core-20261121-025720-29ecba0 (through nrpic-run, six cores granted; threaded
 executable O3, sha256 8f223f75...; load average 10.9 to 13.7; one run at a time). Seconds
@@ -983,7 +983,7 @@ cycles, two repeats), nothing else of this session running.
     a property of this case (344 MeshBlocks of 16^3 on seven levels) that I cannot yet
     name. Refuted if the ratio is 6.0 or below: then entry 21's reading was right.
 
-## 2026-11-20 19:08 Entry 27: outcomes of P15 at 1, 2, 4, 6 threads and of P16 (restarts under threads)
+## 2026-11-20 19:02 Entry 27: outcomes of P15 at 1, 2, 4, 6 threads and of P16 (restarts under threads)
 
 P15 (run core-20261121-030052-6acdca9, six cores granted; diagnostic executable sha256
 a28e7e64..., patch sha256 466cedce...; figure `tracks/core/omp/figs/mg_cause.png`, looked
