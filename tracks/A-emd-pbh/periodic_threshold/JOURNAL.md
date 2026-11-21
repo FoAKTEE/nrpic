@@ -608,3 +608,64 @@ reason other than an immediate stop by hmean_tol); region.hst written; for S1L t
 constraint statistics of S1 (H_r max 0.047, A-emd-pbh-20261115-160349-9d232d2) repeat
 (same data, same mesh). Refuted by a non-zero exit, a guard stop, or a first step that is
 not 0.25 dx/c_max.
+
+### K outcome (run A-20261121-130655-0e84f0d)
+
+Both runs exit 0 after 4 cycles (40 s set-up each on one core); no guard stop; the finder
+searched at cycles 0 and 2 and stopped after 2 flow iterations with "mean radius
+negative" (reason 4: not found, and not the immediate hmean_tol stop of the old decks);
+`peak.region.hst` written (P0L at t = 0: inside r_m, H2 = 0.107 against 16 pi E2 = 7.51);
+317 tracked particles in `peak.traj.bin`/`trajmet.bin` (5 records). S1L at t = 0 repeats
+S1's constraint statistics (Hr_max 0.0471379 in both; S1 on the card,
+A-emd-pbh-20261115-160349-9d232d2). One part refuted: the first step is 6.68e-3, not
+0.0049: 0.25 dx/c with c = 0.73 on the finest level (central lapse 0.8 and chi there), so
+the light-speed limit acts (dt < cfl dx = 0.0195) but my c_max = 1 was wrong; the mean step
+of the first four cycles is 6.3e-3 (time 0.0253 at cycle 4) as the lapse rises. Warning:
+`max_nmb_per_rank` is not used by a static mesh (harmless). No figure for four cycles; the
+t = 0 lines of both runs enter the figures of the analysis (compare_ltb.py is first run on
+this smoke output).
+
+## 2026-11-21 13:20Z, P and S: card job 1, P0L and S1L (written before submission)
+
+List `lists/job1.list`, release core-v0.5 card executable, wall 00:58:00; P0L to t = 140
+(athena -t 00:25:00), then S1L to t = 220 (-t 00:30:00). Steps: dt rises from 6.7e-3 to
+dx = 0.0195 once c_max < 0.25 (a > ~4, t > ~5): about 7,400 steps for P0L, 11,500 for S1L;
+at S1's 0.16 s per step (A-emd-pbh-20261115-160349-9d232d2) 20 and 31 minutes, so either
+may end on its wall limit with a restart file (then a second job continues it).
+
+P0L, against reference B (R1, A-20261121-130103-e007f42) [JUDGEMENT throughout]:
+- P1 background: alpha at |y| = 8 (alpha_y line) within 1e-2 of exp(6TH) of the R1
+  background for t > 1, 1.02 +- 0.01 at t = 10.
+- P2 shells: areal radius of the tracked shells (R = r sqrt(g_T) from trajmet) against
+  their own proper time: within 3 per cent of B up to turnaround for r0 >= 1.2 (resolved
+  by >= 4 root cells and the two binomial passes of the deposit); inner shells r0 <= 0.6
+  turn around and crunch LATER than B (the deposit smooths the central density over ~2
+  root cells). Turnaround (tau, B): 41.0 (r0 1.21), 50.5 (1.52), 64.6 (1.83), 85.7 (2.15)
+  within 3 per cent for r0 >= 1.2. No particle reaches R = 0 in the code (the lapse
+  collapses and the centre freezes); the 1+log lapse at the centre falls below 0.3 before
+  coordinate time 70.
+- P3 horizon: the finder finds an apparent horizon before t = 140 (coordinate), first at
+  a coordinate time between 80 and 130 with mass between 1 and 5; at first detection the
+  tracked shell whose B mass equals the horizon mass has proper time within 10 per cent of
+  its B trapping time (B: R = 2M at tau = 80.0 for M = 1.75, 96.9 for 3.15, 122.2 for
+  4.99), and the horizon mass at later searches follows M_B of the outermost shell whose
+  proper time has passed its trapping time, within 10 per cent.
+- P4 health: no guard stop before t = 140; region norm H2/E2 inside r_m below 0.05 to
+  t = 50.
+Refuted item by item; a guard stop or no horizon with a healthy run are the two outcomes
+that would most change the plan (the first points at the gauge or the step, the second at
+the finder or the central resolution).
+
+S1L (mu = 0.3, e = 0.2, the S1 data; S1 in the E1 gauge went non-finite at tau = 11.70,
+21.9 t_H = coordinate 212.8 here, and its finder never searched: hmean_tol 100):
+- S1 the relaxed lapse carries the run past 21.9 t_H (coordinate 212.8) without a guard
+  stop, or, if a horizon forms, to it and beyond for at least 10 time units;
+- S2 an apparent horizon is found between 10 and 22 t_H (coordinate 97 to 213); the
+  spherical peak of the same mu in the code traps from about 8 t_H (B), the elliptical one
+  later [JUDGEMENT]; the paper's particle runs expect 13-16 t_H for their data (DESIGN
+  section 7), which differ from ours (R1: the code's spherical data collapse 1.5 times
+  earlier than the paper's profile).
+- S3 central alpha falls below 0.3 before the horizon is found; E_max grows past 1e3 Ebar.
+Refuted by a guard stop before 212.8 without a horizon, or by no horizon to t = 220 in a
+healthy run (then S1 data are below the code's threshold in this gauge, or the finder
+fails: the status file says which).

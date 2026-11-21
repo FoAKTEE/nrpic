@@ -1,0 +1,5 @@
+# periodic_threshold card job 1 (JOURNAL.md, predictions P and S of 2026-11-21): relaxed 1+log lapse in the periodic box.
+# P0L: spherical peak mu = 0.3 (data A-20261120-223123-f436c39), tracked particles 0..316, to t = 140 or 25 min of wall time.
+P0L /data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/periodic_threshold/inputs/peak_leak.athinput -t 00:25:00 problem/id_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261120-223123-f436c39/P0_mu0.3/fields.bin particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261120-223123-f436c39/P0_mu0.3/particles_track.nrp particles/traj_ntrack=317 time/tlim=140.0
+# S1L: the S1 data (mu = 0.3, e = 0.2; A-emd-pbh-20261115-155802-9a6596f), to t = 220 (beyond 21.9 t_H = coordinate 212.8) or 30 min of wall time.
+S1L /data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/periodic_threshold/inputs/peak_leak.athinput -t 00:30:00 problem/id_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/fields.bin particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/particles.nrp time/tlim=220.0
