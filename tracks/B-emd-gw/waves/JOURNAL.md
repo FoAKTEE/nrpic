@@ -732,3 +732,26 @@ readers.read_bin, on the dumps of the gauge check plus the F2 N = 64 card dump (
 of 64^3, double): every variable equal bit for bit to both merged readers on all four files
 and the grids equal; on the float32 file also equal to readers.read_bin; on the double files
 the old reader misreads (it assumes float32). Refuted if any equality fails.
+
+## 2026-11-21 13:05 Outcome of the reader check (run B-20261121-130433-3658490)
+
+Confirmed: on the four dumps (F2 N = 32 and N = 64 card, X N = 32: double, 22 variables, one
+MeshBlock; linear wave 16^3: float32) binio.read_bin equals waves/wlib/measure.read_bin and
+first_source/fslib/binread.read_bin bit for bit in every variable, with equal grids; on the
+float32 file it also equals gw_diag's old readers.read_bin; on the double files the old reader
+stops with OverflowError rather than returning wrong numbers [VERIFIED]. Several MeshBlocks
+and slices are covered by the synthetic files of gw_diag/tests/test_binio.py only.
+
+## 2026-11-21 13:08 Round 1 closed (batch 3 session)
+
+README updated (Results 5-8, criterion paragraph, Open, Requests; verifier3's wordings F5,
+X1, "39 per cent" and the construction of Weyl-6 in items 1 and 2). Tests: waves 5 pass,
+gw_diag 26 pass and 2 skip. Runs of this session, all on processors and closed: gauge check
+B-20261121-125606-e2ebf60, F2 analysis B-20261121-125625-7af3965, XS analyses
+B-20261121-125625-18183ef (card runs) and B-20261121-130242-7781791 (processor runs), split
+B-20261121-130317-4e8107e, reader check B-20261121-130433-3658490. Card time this session:
+none; round 1 in all: 0.0641 card-hours (jobs 4662, 4745) of the 0.3 allowed. No run of this
+package is queued or running. Failed predictions of round 1: F2-4 per dump (Gamma floor at
+the nodes), XS-3 bound at N = 64 (2.76e-10 against <= 2e-10, factor 83 against >= 100),
+XS-4 (the rounding of the plus polarization does not grow with the steps).
+Verdict for the lead [JUDGEMENT]: G1 criterion 1 met with no open sub-item.
