@@ -4,11 +4,14 @@ jittered null with the x wave (jit0p3), same deviates, 64^3.
 
     python3 p16_compare.py nw=<case json> j3=<case json> pred_nw=<null_prediction.json>
                            pred_j3=<null_prediction.json> spec_nw=<null_spectrum.json>
-                           spec_j3=<null_spectrum.json>                (output: $NRPIC_RUN_DIR)
+                           spec_j3=<null_spectrum.json> [kcut=16] [shells=16,24,31]
+                                                                       (output: $NRPIC_RUN_DIR)
 
 case json: analyze_scan.py; null_prediction.json: null_prediction.py on the initial data;
 null_spectrum.json: null_spectrum.py with the dumps named <x>_tau0.1, <x>_a2, <x>_a12
-(x = nw, j3). Writes p16_summary.json and p16_compare.{png,pdf}:
+(x = nw, j3). kcut is the shell number of k h = pi/2 (16 at 64^3, 8 at 32^3) and shells the
+shells where the per-shell ratios are reported (16,24,31 at 64^3; 8,12,15 at 32^3); the
+"16" in the names of the keys below is kcut. Writes p16_summary.json and p16_compare.{png,pdf}:
   (i)   non-TT shell power of h at |k|L/2pi >= 16, nw over j3, per dump;
   (ii)  D = TT shell power of h at |k|L/2pi >= 16, nw over j3, per dump, and the per-shell
         ratio P_TT/P_nonTT of nw over that of j3 at |k|L/2pi = 16, 24, 31;
@@ -30,7 +33,6 @@ from fslib import reference as ref  # noqa: E402
 from nrpic import figstyle as fs  # noqa: E402
 
 DUMPS = ("tau0.1", "a2", "a12")
-SHELLS = (16, 24, 31)
 
 
 def load(path, kind="bin"):
@@ -77,6 +79,8 @@ def pred_series(pred, name, K, part):
 def main():
     od = os.environ.get("NRPIC_RUN_DIR", ".")
     arg = dict(a.split("=", 1) for a in sys.argv[1:])
+    kc = int(arg.get("kcut", "16"))
+    SHELLS = tuple(int(v) for v in arg.get("shells", "16,24,31").split(","))
     nw, j3 = load(arg["nw"]), load(arg["j3"])
     pnw, pj3 = json.load(open(arg["pred_nw"])), json.load(open(arg["pred_j3"]))
     snw, sj3 = json.load(open(arg["spec_nw"])), json.load(open(arg["spec_j3"]))
@@ -90,10 +94,13 @@ def main():
         tn, nn_ = np.array(a["shell_TT"]), np.array(a["shell_nonTT"])
         tj, nj = np.array(b["shell_TT"]), np.array(b["shell_nonTT"])
         r = {"a_nw": snw[f"nw_{d}"]["a"], "a_j3": sj3[f"j3_{d}"]["a"],
-             "nonTT_ge16_nw_over_j3": float(nn_[16:].sum() / nj[16:].sum()),
-             "D_TT_ge16_nw_over_j3": float(tn[16:].sum() / tj[16:].sum()),
-             "TT_lt8_nw_over_j3": float(tn[1:8].sum() / tj[1:8].sum()),
-             "nonTT_lt8_nw_over_j3": float(nn_[1:8].sum() / nj[1:8].sum()),
+             "kcut": kc,
+             "nonTT_ge16_nw_over_j3": float(nn_[kc:].sum() / nj[kc:].sum()),
+             "D_TT_ge16_nw_over_j3": float(tn[kc:].sum() / tj[kc:].sum()),
+             "frac_TT_ge_kcut_nw": float(tn[kc:].sum() / tn[1:].sum()),
+             "frac_TT_ge_kcut_j3": float(tj[kc:].sum() / tj[1:].sum()),
+             "TT_lt8_nw_over_j3": float(tn[1:kc // 2].sum() / tj[1:kc // 2].sum()),
+             "nonTT_lt8_nw_over_j3": float(nn_[1:kc // 2].sum() / nj[1:kc // 2].sum()),
              "frac_TT_ge16_nw": a["frac_TT_ge16"], "frac_TT_ge16_j3": b["frac_TT_ge16"],
              "rms_TT_nw": a["rms_TT"], "rms_TT_j3": b["rms_TT"]}
         for s in SHELLS:
@@ -154,14 +161,14 @@ def main():
     ax[0].set_yscale("log")
     ax[0].set_xlabel("|k| L / 2 pi")
     ax[0].set_ylabel("TT shell power of h")
-    ax[0].axvline(16, color="0.6", lw=0.6)
+    ax[0].axvline(kc, color="0.6", lw=0.6)
     ax[0].legend(fontsize=5)
     ax[1].set_xscale("log")
     ax[1].set_yscale("log")
     ax[1].set_xlabel("|k| L / 2 pi")
     ax[1].set_ylabel("no wave / jit0p3 (per shell)")
     ax[1].axhspan(0.5, 2.0, color="0.92", zorder=0)
-    ax[1].axvline(16, color="0.6", lw=0.6)
+    ax[1].axvline(kc, color="0.6", lw=0.6)
     ax[1].legend(fontsize=5)
     for K, ls in (("K1", "-"), ("K2", ":")):
         sr = box[f"_series_{K}"]

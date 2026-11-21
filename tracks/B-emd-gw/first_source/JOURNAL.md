@@ -1026,3 +1026,19 @@ supported by the advance test where the departure dominates the non-scaling offs
 at delta = 0.0025: Q within 1-4 percent, both meshes); the test does not support it at
 a = 20, where it fails by 10-16 percent, and the 5 percent band was too narrow there. The two
 failed points stay on record.
+
+## P16' at 32^3 as well (added 2026-11-21 00:02 PST, before its initial data were made)
+
+The card job waits behind two others (squeue 23:59 PST), and processors are free, so the same
+discriminating run is also made at 32^3 on one core (release core-v0.5 serial processor
+build; initial data N = 32, otherwise as above), compared with jit0p3 at 32^3 of
+B-20261119-143238-b7961ef (requests-b serial build). Checked by hand, not registered: the
+smoke test of `conv.athinput` on the v0.5 processor build (run B-20261121-075754-ee53848)
+writes double-precision dumps byte-identical (`cmp`) to those of the requests-b smoke test
+B-20261119-142500-72b1213 at cycles 5 and 8 (single-precision files differ, first at byte
+14479, i.e. in the header [JUDGEMENT: the data arrays were not compared separately]). The
+predictions (i)-(vi) of P16' hold unchanged at 32^3 with the grid-scale band at k h >= pi/2,
+i.e. |k|L/2pi >= 8 (kcut 8), and the per-shell ratios at shells 8, 12, 15; the box-mode
+predictions of (iv) come from `null_prediction.py` on the 32^3 data, those of (v) from the
+32^3 prediction of B-20261119-143224-f0e6727. `scripts/p16_compare.py` takes kcut and shells;
+`scripts/run_cpu_r2.sh` takes THREADS and EXTRA (tlim).
