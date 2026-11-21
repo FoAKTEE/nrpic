@@ -583,3 +583,54 @@ either with time (1.29 x CC2's 206.6 M = 267 M) or with collisions per particle 
 4.5 per particle, more than D3 collects in 300 M at Kn = 10); I give 50 percent to a collapse
 before 300 M, and if it comes, after 240 M. A collapse before 240 M, or D100 above 0.040, would
 mean that at Kn = 10 the model's distance from the onset matters even less than at Kn = 1.
+
+## 2026-11-21 06:28 UTC Entry 13: outcome of job 4 (D3 at Kn = 10, CC2 cell seed 2); job 5 submitted
+
+Job 4 (run C-20261121-052716-6b64f97, Slurm 4767) ran 05:48:36-06:23:47 UTC (35.2 min), exit 0
+for the smoke run, d3_kn10_part_s1 (1065 s) and cc2_kn10_cell_s2 (1040 s); closed with
+`nrpic-run finish`. Job 5 (cc1_kn10_cell_s2, cc1_kn10_cell_s3) submitted at 06:24 UTC as run
+C-20261121-062408-49fa14a, Slurm 4770, pending behind two jobs that hold both cards (one of them
+another user's) until about 07:15-07:25 UTC. Analysis C-20261121-062412-7473ef1 (jobs 1-4 and the
+wave-2 runs; figures `fig_d3_contraction.png`, `fig_d1_diff.png`, `fig_d1_lapse.png`,
+`fig_d1_budget.png`, `fig_controls.png` looked at). Numbers [VERIFIED] from its `summary.json`
+unless marked (arithmetic).
+
+d3_kn10_part_s1 (sigma~ = 25.1509): no collapse in 300 M (alpha_min 0.656 at 300 M, alpha_c
+0.719 -> 0.656); D25 / D50 / D100 / D150 = 0.00145 / 0.00783 / 0.0258 / 0.0393; dalpha 0.046 at
+200 M, 0.051 at 250 M, 0.063 at 290-300 M; t(dalpha >= 0.01) = 57.0 M, t(dalpha >= 0.03) = 118 M;
+2.875 collisions per particle in 300 M (CC2 collapsed after 2.88), 0.1719 in the first 25 M;
+first-step sum_P 21.402 (knudsen's initial rate gives 21.46, arithmetic: 0.3 percent); every
+particle kept; summed dH 1.9e-16 of sum M H, +1.2e-21 M per collision, 80 negative steps;
+n_noroot 0, n_balance 3.8e-4, max_dlam 3.4e-3 over the whole run; 3.54 s per M.
+- (D3b) dalpha > 0 from the first tens of M: HOLDS; D100 in 0.015-0.09: HOLDS (0.0258); t(dalpha
+  >= 0.01) in 30-110 M: HOLDS (57 M). Entry 12: D100 0.024 (0.012-0.040): HOLDS; t(0.01) in
+  50-90 M: HOLDS.
+- (D3d) no collapse within 300 M at Kn = 10 (80 percent): HOLDS. Entry 12 gave a collapse 50
+  percent; none came, which favours the scaling of the collapse with collisions per particle
+  (D3 would need about 4.5, it collected 2.9) over the scaling with time (267 M) [JUDGEMENT].
+- (D3e) budget and statistics: dH below 1e-13: HOLDS; n_noroot = 0 and n_balance below 1e-3: HOLD
+  (to 300 M; D3 never got hot); one-signed: FAILED (80 negative steps of rounding); collisions in
+  the first 25 M 0.1719 against 0.172: HOLDS; count z -0.72: HOLDS.
+- The relative contraction of D3 at Kn = 10 is 0.61 of CC2's at 100 M and grows slower after
+  150 M (part of the plateau at 170-250 M is the fall of the control's own excursion after its
+  maximum at 152 M, which dalpha = alpha_c(control) - alpha_c contains) [JUDGEMENT from
+  `fig_d3_contraction.png` and `fig_controls.png`].
+
+cc2_kn10_cell_s2 (release operator, seed 2): t_c 206.5 M record, 206.258 M linear crossing
+(cell s1 206.663; particle mean 206.642); D100 0.04397 (cell s1 0.04264); collisions per particle
+before t_c 2.9178 (cell s1 2.8816); count z -0.50; first-step sum_P 23.76774 with 14 collisions
+(particle s2, same seed: 23.76635 and 14); summed dE_particles to t_c 2.27e-4 of sum M W
+(seed 1: 2.16e-4); with `coll_energy = cell` present the H budget is written as well: summed
+dH_particles 1.58e-4 of sum M H to t_c, +9.1e-10 M per collision (+2.9e-10 M in the first 25 M),
+against 3e-16 and 2e-21 M in particle mode.
+- Entry 8 (D1-cell): t_c within 0.5 M of cell s1 and of the particle mean: HOLDS (0.40 and 0.38
+  M). Cell seed difference of collisions per particle below 0.2 percent: FAILED (1.25 percent):
+  the particle-cell difference of +0.37 percent (entry 7) lies inside the cell seed scatter and
+  is not a mode effect. dE_particles to t_c within a factor 2 of seed 1: HOLDS (2.27e-4).
+- Entry 2 (f), cell part: column 33 positive at 1-2.4e-10 M per collision in the first 25 M:
+  FAILED narrowly (2.9e-10 M); summed dE_particles to t_c 1-4e-4 of sum M W: HOLDS.
+- Entry 2 (a), (e) with both cell seeds (analysis `mode_comparison`): D100 part - cell
+  -9.7e-4 with sigma_pooled 6.7e-4 (z = -1.5; bound 2e-3: HOLDS); t_c part - cell +0.18 M with
+  sigma_pooled 0.22 M (z = 0.8): the defect does not move CC2's collapse (HOLDS). Cell-mode seed
+  scatter of t_c 0.40 M (particle 0.17 M); instantaneous dalpha difference of the two cell seeds
+  rms 9.1e-4 (0-100 M) and 2.4e-3 (100-196 M), as for the particle seeds.
