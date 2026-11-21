@@ -537,8 +537,9 @@ def figure(out, summary):
     from nrpic import figstyle as fs
     import matplotlib.pyplot as plt
     fs.use_style()
-    fig, ax = plt.subplots(1, 3, figsize=(11.0, 3.4))
-    fig.subplots_adjust(left=0.06, right=0.99, bottom=0.30, top=0.90, wspace=0.30)
+    fig, ax = plt.subplots(1, 3, figsize=(12.5, 4.0),
+                           gridspec_kw=dict(width_ratios=[0.8, 1.25, 1.0]))
+    fig.subplots_adjust(left=0.05, right=0.985, bottom=0.24, top=0.86, wspace=0.62)
     # (a) byte comparison per example
     if "byte" in summary:
         names = list(summary["byte"])
@@ -550,10 +551,12 @@ def figure(out, summary):
             ax[0].bar(x, v, bottom=bot, color=col, label=cls, width=0.6)
             bot += v
         ax[0].set_xticks(x)
-        ax[0].set_xticklabels(["%s\n%s" % (n, summary["byte"][n]["branch"]) for n in names],
-                              fontsize=7)
+        ax[0].set_xticklabels(["%s\n%s" % (n, summary["byte"][n]["branch"].replace(
+            "build-", "")) for n in names], fontsize=7, rotation=35, ha="right")
+        ax[0].set_ylim(0, bot.max() + 1.5)
         ax[0].set_ylabel("files against the branch executable")
-        ax[0].legend(frameon=False, fontsize=7, ncol=2)
+        ax[0].legend(frameon=False, fontsize=7, ncol=4, loc="upper center",
+                     columnspacing=0.8, handlelength=1.0)
         ax[0].set_title("(a) one example per branch, bytes", fontsize=9)
     # (b) threads: differences and their bounds
     if "threads" in summary:
@@ -561,38 +564,52 @@ def figure(out, summary):
         keys = [k for k in num if not isinstance(num[k], bool) and band[k][1] is not None
                 and band[k][1] > 0]
         y = np.arange(len(keys))
-        vals = np.array([max(num[k], 1.0e-18) for k in keys])
+        vals = np.array([max(num[k], 1.0e-22) for k in keys])
         ax[1].barh(y, vals, color=fs.SERIES[0], height=0.55)
         for i, k in enumerate(keys):
             ax[1].plot([band[k][1]]*2, [i - 0.4, i + 0.4], color="k", lw=1.2)
         ax[1].set_xscale("log")
-        ax[1].set_xlim(1.0e-18, 1.0e-10)
+        ax[1].set_xlim(1.0e-22, 1.0e-10)
         ax[1].set_yticks(y)
-        ax[1].set_yticklabels([k.replace("_", " ") for k in keys], fontsize=6)
+        ax[1].set_yticklabels([k.replace("_", " ").replace("fine shape changes integrals",
+                                                           "fine against plain: integrals")
+                               for k in keys], fontsize=6.5)
         ax[1].invert_yaxis()
         ax[1].set_xlabel("largest difference / largest number (bar: bound)")
-        ax[1].set_title("(b) threaded build, deposit", fontsize=9)
+        ax[1].set_title("(b) threaded build: d plain, f and g fine-shape deposit",
+                        fontsize=9)
     # (c) two ranks against one
     if "mpi" in summary:
         t1, t3 = summary["mpi"]["t1_kerr"], summary["mpi"]["t3_cluster"]
         idn = max(v["max_dE_over_sum_mW"] for v in t3["identity"].values())
-        items = [("Kerr swarm:\nhistory", t1["history_max_rel"], None),
-                 ("cluster:\npositions", t3["snapshot_max_abs"], 1.0e-13),
-                 ("cluster:\nhistory", t3["history_max_rel"], 1.0e-11),
-                 ("cluster:\nsource dumps", t3["fields_max_rel"], None),
-                 ("cluster:\nidentity", idn, 1.0e-14)]
+        hw = t3["history_worst"]
+        pk = summary["mpi"].get("against_package_runs", {}).get("t3_cluster", {}).get(
+            "package_history_np2", {})
+        items = [("swarm\nhistory", t1["history_max_rel"], None, None),
+                 ("cluster\npositions", t3["snapshot_max_abs"], 1.0e-13, None),
+                 ("cluster\nhistory", hw["cl.nrpic.hst"]["max_rel"], 1.0e-11,
+                  pk.get("cl.nrpic.hst")),
+                 ("cluster\nconstraint\nstatistics", hw["cl.cstat.hst"]["max_rel"], None,
+                  pk.get("cl.cstat.hst")),
+                 ("cluster\nidentity", idn, 1.0e-14, None)]
         x = np.arange(len(items))
-        ax[2].bar(x, [max(float(v), 1.0e-18) if isinstance(v, float) else 1.0
-                      for _, v, _ in items], color=fs.SERIES[0], width=0.55)
-        for i, (_, _, b) in enumerate(items):
+        ax[2].bar(x, [max(float(v), 1.0e-18) for _, v, _, _ in items], color=fs.SERIES[0],
+                  width=0.55, label="merged executable")
+        first = True
+        for i, (_, _, b, q) in enumerate(items):
             if b:
                 ax[2].plot([i - 0.4, i + 0.4], [b, b], color="k", lw=1.2)
+            if q:
+                ax[2].plot([i], [q], "o", ms=5, mfc="none", color=fs.SERIES[1],
+                           label="branch executable (package run)" if first else None)
+                first = False
         ax[2].set_yscale("log")
-        ax[2].set_ylim(1.0e-18, 1.0e-8)
+        ax[2].set_ylim(1.0e-18, 1.0e-6)
         ax[2].set_xticks(x)
-        ax[2].set_xticklabels([n for n, _, _ in items], fontsize=7)
+        ax[2].set_xticklabels([n for n, _, _, _ in items], fontsize=7)
         ax[2].set_ylabel("2 ranks against 1 (bar: bound)")
-        ax[2].set_title("(c) MPI build: %d particle files identical (Kerr swarm)"
+        ax[2].legend(frameon=False, fontsize=7, loc="upper left")
+        ax[2].set_title("(c) MPI build; swarm: %d files identical"
                         % len(t1["files_identical"]), fontsize=9)
     fs.save(fig, os.path.join(out, "fig_quick_v05"))
     plt.close(fig)
