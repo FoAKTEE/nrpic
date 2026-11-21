@@ -1506,3 +1506,19 @@ Card time of the package so far: 0.153 of the one card-hour.
 (uniform spreading) and `lohnerrel` (release executable) give the bytes of T9; ladder,
 chi, ppc and lohner (linear cloud with fine shape) differ: PASS (the cases without the
 option are unchanged).
+
+## 2026-11-21 03:26  prediction of T14b (card check of the card executable of 1548d49)
+
+The card executable changed with the source, so T14 is repeated with it
+(`t14b_card.list`: the decks of T2b's U, S, Sf, A, M, G and T9b's ladder; Sf, A, M and
+ladder use the linear cloud with fine shape, i.e. the changed lines). Prediction, as T14:
+homogeneous cases uniform to 1e-12 in chi and E on the card; alpha_max equal to the
+processor run of T2b to 1e-12 at every record; M: the same MeshBlock count at every
+record and the tracker within 1e-12 of the processor path; ladder: MeshBlock counts
+identical, particle number and rest mass unchanged, identity below 1e-13, Hr_max within
+1e-9 relative of T9b's processor value at all records; G: exit status 3 with its file
+(the cycle is not predicted: T14). Refuted by any departure above these bounds: then the
+integral form does something else on the card (single-precision constant, order of the
+sums) than on the processors.
+Queue at submission: one job of core pending (4758, another package), so one more is
+allowed. Not waited for.
