@@ -288,3 +288,13 @@ shift_Gamma alone does not make cfl_number 1.0 safe. G7 is not run: by Test B' i
 linearly unstable at dt/dx = 1 but grows by only 1.49 per step on the root mesh, so from
 the 1e-10 seed it would need about 46 cycles at dt/dx = 1 (t ~ 19) to show, beyond the
 planned t = 10; a no-growth outcome to t = 10 would not discriminate.
+
+## 2026-11-21 22:29Z, entry 9: why every G case reported exit 2 (a check of scripts/cpu_run.sh, no simulation)
+
+All G cases ended on their time limit with a normal athena log, yet run_uniform.sh printed
+"exit 2" and cpu_run.sh wrote no footer. With ATHENA_EXE=/bin/true (scratch/A-emd-pbh/tmp/
+cpu_run_check, cpu_run_check2) cpu_run.sh prints "awk: fatal: cannot use gawk builtin
+`load' as variable name" and exits 2: the footer's awk takes `-v load=...`. So athena
+returned 0 in the G runs and the 2 is the footer's. In U0 (guard, status 3) the script left
+at `wait` under set -e, which is why that exit status was athena's. Reported to core in the
+draft message (item iii); none of our results depends on it.
