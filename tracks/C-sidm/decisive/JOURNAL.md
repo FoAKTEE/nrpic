@@ -275,7 +275,7 @@ Where this package stands:
   fewer than two C-* jobs are queued (order: d1_job2, d3_job3, d3_job4). Card time so far:
   none used by this package (4737 not started); reserved 0.65.
 
-## 2026-11-21 02:58 UTC Entry 6: resumed (batch of 2026-11-20 evening); D1 job 1 has run; job 2 sized and submitted
+## 2026-11-21 02:56 UTC Entry 6: resumed (batch of 2026-11-20 evening); D1 job 1 has run; job 2 sized and submitted
 
 Pause flag absent (02:54, 02:56 UTC). D1 job 1 (run C-20261120-221846-797bdbe, Slurm 4737) ran
 14:59:06-15:34:07 PST, 35.0 min, exit 0 for the smoke run and both 300 M runs
