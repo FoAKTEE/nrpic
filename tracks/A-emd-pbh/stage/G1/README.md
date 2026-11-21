@@ -105,3 +105,11 @@ JOURNAL.md and HANDOFF.md (C20) and decided C18 (PASS on the verifier's scope; f
 Table IV rows not recomputed by a fresh verifier, OPEN.md item 2).** The remaining `verify`
 failures (`clean`, `runs`) come from other helpers' work in progress in this worktree
 (OPEN.md, last section).
+
+## Lead of batch 2b (2026-11-21)
+
+C20 closed (owner's STATUS.md, JOURNAL.md, HANDOFF.md, RISKS.md rewritten); C18 decided PASS by
+the lead on the gate reviewer's recomputations; every helper's and the reviewer's analysis
+reruns bit for bit (A-20261121-075933-338a6ff; `../REVIEW-wave3.md`). The reviewer's script is
+kept in `gate_review/`. Package regenerated with `nrpic-stage collect`, `verify`, `report`.
+Ready for the orchestrator's sign-off; open items in `OPEN.md`.

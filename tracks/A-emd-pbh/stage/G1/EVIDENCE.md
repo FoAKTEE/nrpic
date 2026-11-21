@@ -35,6 +35,15 @@ the helpers' journals and in `../REVIEW-wave2.md` section 2.
 | Integrity of the wave-1 outputs behind the ledger (VERIFIER.md finding 7): sha256 of the 55 files of the seven run directories without `sha256sums.txt` (A-emd-pbh-20261115-120425-80492f8, -122117-aa1c84d, -130256-a7374a4, -130402-f5566fb, -130609-947c898, -161813-6c820fb, -163358-9b2d048); the eight directories with one verified, 0 mismatches; nothing written into the listed directories | A-20261120-222620-0304d9d | `../../g1close/JOURNAL.md` entry 3; listing `scratch/A-emd-pbh/A-20261120-222620-0304d9d/` |
 | Note v1 (figures, schematics, ledger, parameter table, claims check) | A-20261120-223316-92c27f5, A-20261121-030037-3f015fa (the committed copies) | `note/`, `../../g1close/JOURNAL.md` entries 5-7 |
 
+## Gate review and the lead's re-check (batch 2a and 2b, 2026-11-21)
+
+| What | Runs | Where |
+|---|---|---|
+| Independent gate review: own checks A-F (four Table IV rows, the Newtonian band, checksums); first attempt failed on a wave-1 run without a checksum list (on record) | A-20261121-064537-2bcf310; failed A-20261121-064515-aa13c8f | `GATE_REVIEW.md`; script `gate_review/review_checks.py` (copied from scratch by the lead, sha256 as recorded) |
+| Lead's re-check: the verifier, g1close and reviewer runs and three Szekeres analyses rerun bit for bit; own reading of three raw outputs (predictions L1-L9 first) | A-20261121-075605-351d611 (figure panel empty), A-20261121-075933-338a6ff | `../REVIEW-wave3.md`; `../../analysis/review_wave3.py` |
+| Stranded runs of cut packages closed by the lead (both had ended with exit 0) | A-20261120-223123-f436c39 (periodic P0L data), A-20261120-223422-8cc4241 (Szekeres files) | `../REVIEW-wave3.md` sections 2 (L8, L9) |
+| C20: owner files current | commits 0f5972c4, 657ae07e, bcaed848 | `../../STATUS.md`, `HANDOFF.md`, `JOURNAL.md`, `RISKS.md` |
+
 ## Hand-written manifests of waves 1 and 2 (decision 0016 item 3)
 
 The package relies on these runs, whose manifests were written by hand before 2026-11-19
