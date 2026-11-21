@@ -383,3 +383,41 @@ figures `rv_clusters.png`, `fig_cc2_M8.png`, `rv_heat.png`, `rv_models.png` look
 - open: note G1 sections (C16), VERIFIER.md (C17, verify_g1 working), models step 5, drift
   runs (iii) and (v), decisive D2, T10b for T4, the CE deficit series at G2. Card-hours used
   this session: 0 (round 1 of wave 3 in total 4.13).
+
+## 2026-11-21T15:50Z  session C-sidm lead (wave 3, batch 4a)  predictions before the review runs
+
+State found: worktree clean, merged with main (core-v0.6, rulings 0021, 0022; nothing in them
+for Track C). Packages finished since the lead of batch 2b: verify_g1 (VERIFIER.md, commit
+8329cf06), note v1 (batch 3, commit 2484c878), drift (batch 3, partial: run (vi) Slurm 4804
+RUNNING since about 15:37 UTC, run (v) not submitted). Pause flag absent. This lead spends no
+card time of its own; run (v) of drift (0.3 card-hours, inside the package's cap of 3.0) may be
+submitted when (vi) has ended.
+
+Predictions (own code in `stage/review_wave3/rv_batch4a.py`, written before it runs):
+- L23 (verifier item 1) My own reader of `box.coll.hst` of the T10 runs (release
+  C-20261115-165902-f9b1c8f): total n_coll of mb1, mb8, mb64 = 385554, of seed8 = 385838.
+  Refuted if seed8 has 385554 (then REVIEW-wave2.md:49 was right).
+- L24 (verifier item 2) Rerunning `verify_g1/v5_t9ks.py` from the registered T9 outputs
+  reproduces its JSON numbers to the printed digits: KS p = 1.7e-4 for the light class of seed 3
+  against the temperature of the initial energy, p >= 0.084 against the other two references.
+  Refuted if a number differs.
+- L25 (note) The checker of note/README.md with --compile reports 0 undefined references and
+  citations and the PDF has 16 pages; six ledger rows (decisive t_c 184.02, 185.29, 178.86 M;
+  drift ratios 0.22, 0.25, 0.10; card T8 changes -0.0052, -0.0001, -0.0104; growth-fit bias
+  6.9e-4) equal the JSON of their runs to the printed digits. Refuted by any mismatch.
+- L26 (drift run (iii), own reader of `cc.nrpic.hst`, centred 20 M running mean): largest 20 M
+  mean of alpha_probe - alpha_probe(0) for CC1 on M/8 0.0046 +- 0.0003 at 196 +- 6 M, on M/4
+  0.0330 +- 0.0005; ratio 0.138 +- 0.01; +-5 M mean at 300 M -0.0020 +- 0.0003; H-norm2 mean
+  over 100-300 M 7.9e-3 +- 0.3e-3 (M/8) and 8.5e-4 +- 0.3e-4 (M/4). Refuted outside.
+- L27 (drift D2, own reader of traj.bin/trajmet.bin from docs/FORMATS.md and a different
+  coherent part: 800 cells of 20 x 20 quantiles in E_K(0) and |x x u|(0) times the sign of x.u):
+  D over 25-300 M within 25 percent of the package's (4.04, 6.47, 3.79, 5.83 e-8 per M) for
+  all four controls; D(M/8)/D(M/4) in [1.2, 2.2] for both models. Refuted otherwise; a D of
+  mine well below the package's would mean its 200 cells leave coherent motion in the
+  'incoherent' part.
+- L28 (drift run (vi), if it ends in this session; the helper's VI.1-VI.4 stand as written).
+  Mine [JUDGEMENT, 55 percent, against the helper's VI.2]: the slow contraction of CC2 on M/8
+  does not turn within the segment; the 40 M mean of alpha_c - alpha_c(0) at the segment end
+  (about 650-700 M) lies in [-0.015, -0.004], and alpha_c stays above 0.5 (no collapse).
+  Refuted by a minimum of the 40 M mean before the end followed by a rise of more than 0.002,
+  or by a value outside the interval.
