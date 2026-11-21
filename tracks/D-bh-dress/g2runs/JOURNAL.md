@@ -111,3 +111,54 @@ D-20261121-063617-3f2036f): ES-1G M_AH(100) - 1 = +1.1410e-3, D on 100-165 M
 V-1B D on 100-199.5 M [-4.84e-5, +1.97e-5], D(199.5) = -9.2e-6; V-1B - V-1 first above
 5e-5 after 133 M. A difference in the printed digits refutes the reader (unique-time
 handling or the reference sample).
+
+Outcome T1 (run D-20261121-130316-84a54d4; figure `compare_horizons.png` there, looked at:
+three curves, panel (c) empty as no pair was named): ES-1G M_AH(100) - 1 = +1.14098e-3,
+D on 100-165 M [-4.1722e-4, +9.472e-4], D(199.5) = +6.9713e-3, radius 1.3976 M (25 M) and
+0.7758 M (199.5 M); V-1B [-4.843e-5, +1.975e-5], D(199.5) = -9.214e-6; V-1 D(199.5) =
+-1.3647e-4; 28 tracers removed in each run, none escaped. HELD for every number except
+two of the lead's: D(199.5) +6.963e-3 and the maximum on 100-165 M +9.46e-4 come out here
+as +6.971e-3 and +9.47e-4 (the finder file has one sample per time after t = 0, so the
+difference of 8e-6 is in the lead's reference sample, as its "with my reference sample"
+for V-1 says; es_runs K2 quotes +6.97e-3, as here). Irrelevant for B1 (thresholds 1e-3 and
+3.5e-3). The tool reads correctly. Seen in panel (d): ES-1G's horizon shrinks steadily from
+t ~ 30 M on (1.41 -> 0.78 M), long before any signal from the faces could arrive, while
+V-1 and V-1B grow to 2.2 M; the shrinking is the gauge at the hole.
+
+## Entry 2 (05:15 PST): secondary_infall's run to a/a_i = 30 is not carried here
+
+The run to a/a_i = 30 exists (P192, D-20261121-075559-31835c4, batch 2b) and failed its
+late predictions for a documented set-up reason (edge layer within one cell of the initial
+ball; secondary_infall/README.md lines 415-423). A clean run needs nx ~ 450-500 (same
+lines, [JUDGEMENT] of that package). Cost estimate [JUDGEMENT]: P192 took 0.70 h on six
+threads for 2914 steps at nx = 192 (README line 277); cells x (480/192)^3 = 15.6 and steps
+x 2.5 (dt ~ dx) give ~39 x 0.70 h ~ 27 h on six threads, five times this session's
+window. C7 no longer waits on it: decision 0021 item 2 judges D-pre-3 on growth against
+matched shells from a/a_i = 3 on, which Q16 and N128Lc cover. So nothing is started; the
+open item stays with the secondary_infall package (a refined centre or the threaded build on
+more cores, which needs an allotment beyond six cores).
+
+## Entry 3 (05:25 PST, before any ES-F data): ES-F plan and the criteria evaluator
+
+ES-F is submitted as pre-registered in flux_tools/JOURNAL.md entry 7 (input
+flux_tools/inputs/esf_dx8.athinput unchanged, faces at +-192 M, chain, at most 1.97
+card-hours, tlim 200 M), with one deviation: the executable is the release core-v0.4 card
+build, not `scratch/core/exe/core_requests-adf/athena_gpu`. Reasons: the task of this
+batch names the release executables; the input's own header allows "or the release that
+merges them"; the release merges core/requests-adf and its quick and example tests give the
+branch's bytes on processors (tracks/core/RELEASE-v0.4.md, runs
+core-20261121-025955-bd47414 and -031604-dccccbb, cases tracer, acc, pairh, kepler; the
+acc case differs only in restart header bytes). Card runs with deposition are not
+byte-reproducible anyway. The predictions P1-P7 and criteria (i)-(iii), D1-D4 of entry 7
+stand unchanged. It goes to the cards when one of the two D jobs ends.
+
+`tools/esf_criteria.py` evaluates (iii), D1-D4 and the numbers of P1, P2, P5, P6 exactly
+as entry 7 defines them (esf_analyse.py of flux_tools computes (i) and (ii) and is run
+beside it unchanged). Prediction T2 for its test on the synthetic run of flux_tools
+(D-20261119-150306-d0e692e/synth_exact: tau = 1.4 t, every dust shell removed at
+tau_H + 0.3 (tau_0 - tau_H), M_AH = M + lattice sum over tau_H <= 1.4 t + noise 1e-5),
+with V-1 as control: (iii) holds for the dust with every bin median in [0, +1e-3] (the
+first sample after removal lags by at most 0.5 M of t = 0.7 M of tau at dM/dtau ~ 1e-3);
+D4 minimum > 0 and no value below 0 (removal at 0.3 of the way to the centre); D3 holds;
+P1 kappa_late = 1.40 to 1e-3. On synth_growth_x0.97: bin medians negative, between -0.7 %
+and 0, growing in size with tau. Anything else is a defect of the evaluator.
