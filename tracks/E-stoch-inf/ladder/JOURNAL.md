@@ -938,3 +938,53 @@ at 14 or 28 cells per wavelength); H_even1 equal in A, B, C within 1 percent (th
 second-order violation does not depend on the discretisation). Refuted if A/B for M_first is
 below 4 at the common dumps (then not a fourth-order time error; a ratio near 2 would point to
 (c), a defect of the hook), or if B/C exceeds 4 (then spatial).
+
+## Entry 21, 2026-11-21 04:01Z: outcomes of PL4 (processors against card) and of the step/mesh test of entry 20; item (c) closed
+
+Runs: processor L5 runs E-20261121-031110-041cdf7 (eleven runs at 64^3, 640-660 s each on one
+core, exit 0), their analysis with the comparison E-20261121-035509-790b1dc (`proc/l5.json`,
+`compare/l5_compare.json`, `compare/fig_l5_compare.png`, looked at); the 32^3 runs
+E-20261121-034950-06f01f9 (ten runs, 39-83 s each, exit 0) and the scaling analysis
+E-20261121-040015-436a615 (`l5_scaling.json`, `fig_l5_scaling.png`, looked at). Copies in
+`results/l5/` and `fig/l5/`.
+
+PL4 (entry 18): verdicts identical on both platforms (PL1, PL2 fail and PL3 passes on both, for
+the same reasons, every verdict number equal to 4-7 digits). But REFUTED as written ("every
+quantity within 1e-6 where above 1e-3 of its largest value"): (i) I did not exclude the
+rounding-level quantities of the s = 0 run (record M/[M] of K0, box mean H0: these differ at
+order 1 between the builds, as rounding does) and the dump at t = 0; (ii) the parts that are
+extracted by cancellation differ by more than 1e-6: the first-order parts of H and M by
+1.4e-4-2.3e-4 relative, the continuum-minus-stencil difference by 6.9e-3 at its smallest
+values, the third-order parts by 3e-2 (the odd part of M is about 6e-7 of [M] in fields whose
+rms is 2e-4 of [M], a cancellation of 400). The directly measured quantities agree within 1e-7
+(even part of H) to 1e-10 (odd part of the control, records of the s = 100 runs).
+
+Step/mesh test (prediction of entry 20); A = 32^3 Courant 0.25, B = 32^3 Courant 0.125, C =
+64^3 Courant 0.25 (B and C share dt = 0.0245):
+- CONFIRMED while the kick acts (t <= 0.25; W rises from 1/2 to 0.9): A/B of the first-order
+  part of M is 15.5-19.5 and of H 16.0-24.9 (fourth order in dt), B/C 0.999-1.002 (M) and
+  1.00-1.02 (H) to t = 0.1: the first-order constraint violation of the sourced evolution is
+  the fourth-order time error, not space and not a first-order stage-timing defect of the
+  hook (that would give A/B near 2).
+- CONFIRMED: the second-order part of H is the same in A, B and C within 5e-4 (A/B
+  0.9995-1.0000, B/C 1.0000): it does not depend on the discretisation.
+- REFUTED for t >= 0.3: "A/B = 16 +- 4 and B/C in 0.8-1.5 at every common dump". Once the
+  window has saturated, a spatial part at 32^3 takes over: B/C rises to 7.4 (H) and 15.9 (M)
+  at t = 0.785, and A/B falls to 3.0 (H) and 0.36 (M; the time and space parts of A partly
+  cancel). At 64^3 the first-order part of M keeps falling (7.3e-8 at t = 0.785), at 32^3 it
+  grows (1.2e-6): the 14 cells per wavelength of the shell at 32^3 resolve it much worse than
+  28.6 at 64^3 (B/C still rising at the end, toward the 64 of sixth order).
+
+What item (c) establishes (L5 of DESIGN_REVIEW 8.1, risk R2):
+1. H is of second order in the amplitude: factor 3.99999-4.0000001 between s = 100 and 50 at
+   every dump, the same in A, B and C; the record ratio 3.99-4.02.
+2. The stencil projector removes the kick's own first-order momentum violation exactly: the
+   difference continuum - stencil equals the independent one-step reference within 1.2
+   percent and stays at that size while the kick acts. The first-order M that remains (6e-7 of
+   [M] after one step at 64^3, Courant 0.25) is the fourth-order time error of the evolution
+   (A/B = 15.5), not the hook; "M/[M] at rounding at first order" is true for the kick, not
+   for an evolved run.
+3. The negative control (Pi kick flipped) is first order and 4.4e5 times the proper run's
+   first-order part.
+4. Card and processor executables agree (verdicts identical, direct quantities within 1e-7).
+No defect of the stochastic hook is seen; R2's "L5 never run" is closed.
