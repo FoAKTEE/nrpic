@@ -554,3 +554,16 @@ Prediction for v5_t9ks.py (run after this entry): with theta from the FINAL ener
 class's own theta, every class passes KS p > 1e-3 in all 8 seeds, and the classes agree with
 the final-energy theta within 4 sigma: then the seed-3 failure is the temperature offset of the
 nanbu energy drift, not a departure from the Maxwell-Juttner shape.
+
+## Entry 16 (2026-11-21 00:16 PST) V5b outcome (run C-20261121-081415-b8c9d29); blind verdicts
+
+`figs/v5_t9ks.png`, `results/v5_t9ks.json`. With theta from the final energy every class passes
+KS (p >= 0.084) in all 8 seeds, and with its own theta (p >= 0.089); each class agrees with
+the final-energy theta within |z| <= 1.30. Prediction holds: the seed-3 KS failure at the
+initial-energy theta is the offset caused by the nanbu energy drift (+1.48e-4 in that seed),
+not a departure from the Maxwell-Juttner shape. T9 as written ("both Maxwell-Juttner (KS p >
+1e-3)") does not name the theta; against the theta of the initial energy it fails in 1 of 16
+class-seeds, against the final-energy theta it passes everywhere [JUDGEMENT: the definition
+should name the reference temperature; with nanbu the energy is conserved only in
+expectation].
+Next: VERDICTS_BLIND.md completed with V5 and committed and pushed before any claim is read.

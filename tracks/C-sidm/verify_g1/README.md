@@ -16,9 +16,25 @@ verdicts were committed (`VERDICTS_BLIND.md`). After that: `../stage/G1/VERIFIER
 | `v1_mode.py`, `v1_step.py` | V1: decay rate of the isobaric mode (T7) and fit of the temperature step (T6(b)) from the run outputs |
 | `v2_box.py` | V2: collision rate against the Moller integral (T2) and conservation per step (T1) |
 | `v3_static.py` | V3: collision rate in the static homogeneous metric (T12) |
-| `v4_ev.py` | V4: own spherically symmetric Einstein-Vlasov equilibria (King b = 1, F21 b = 0.1), thresholds |
+| `v4_ev.py` | V4: own static spherically symmetric Einstein-Vlasov equilibria (King b = 1, F21 b = 0.1, k = 0.5 polytrope), E_b maximum, turning points, radial-pulsation onsets (F21 trial function and finite elements; 1 + p/u, Juttner Gamma_1) |
+| `v4_models.py` | V4: the track's model files against my equilibria; energy-matched-temperature onset; particle radial distributions |
+| `v5_box.py`, `v5_t9ks.py` | V5: T10 reproducibility, T1 over 1e4 steps, T3, T4 (own exact rate), T9; T9 KS against three reference temperatures |
 | `figs/` | figures of every item (style `python/nrpic/figstyle.py`) |
 | `results/` | JSON outputs of the registered analysis runs are in `scratch/C-sidm/<run_id>/`; small copies here |
+
+## Registered runs of this package
+
+| Item | Run id | Note |
+|---|---|---|
+| V1a | C-20261120-222423-519f12b | Chapman-Enskog brackets |
+| V1b | C-20261120-223130-6742500 | isotropic mode (of record); C-20261120-222754-14bd23d first evaluation, same numbers |
+| V1c | C-20261120-223133-2f98a0e | temperature step |
+| V2 | C-20261121-074926-5d9ae56 | flat box T1, T2 |
+| V3 | C-20261121-075256-2084cb5 | T12 |
+| V4 | C-20261121-080313-84094f1 | thresholds (C-20261121-080152-b8d0acd failed at its figure, same numbers) |
+| V4b | C-20261121-080720-dbcd7ff | model files (C-20261121-080633-8ee41f7: sample check invalid, sign error of mine) |
+| V5 | C-20261121-081036-0d6117b | T10, T1 long, T3, T4, T9 |
+| V5b | C-20261121-081415-b8c9d29 | T9 KS reference temperatures |
 
 ## How to rerun
 

@@ -113,6 +113,42 @@ with it I reproduce the track's onset to 1e-6. With the Tolman reading the onset
 exact mode with Gamma_1(T_em), which I regard as the right definition; the alternative reading
 must not be quoted without naming the temperature.
 
-## V5 (if completed; see below)
+## V5 Relaxation, reproducibility, long conservation, unequal masses (T1 long, T3, T4, T9, T10)
 
-(to be filled from run C-20261121-081036-0d6117b)
+Runs analysed: C-20261119-143041-f94e350 (T10), C-20261115-170741-248af65 (T1 over 1e4 steps),
+C-20261115-170539-28432c3 (T3, T4), C-20261115-170814-8a54b43 (T9). My runs:
+C-20261121-081036-0d6117b and C-20261121-081415-b8c9d29.
+Own exact initial rate for T4 [JUDGEMENT, own derivation, JOURNAL entry 14]: d(theta1 -
+theta2)/dt = sigma X (n2/c_v(theta1) + n1/c_v(theta2)), X = <v_Mol (W_b - W_a)/2> over MJ1 x MJ2
+by two-dimensional quadrature (checked by Monte Carlo of 4e6 pairs, |z| <= 1.3).
+
+| Quantity | My value | Criterion | Verdict |
+|---|---|---|---|
+| T10 final snapshots, MeshBlocks 1, 8, 64 and restarts at cycles 0, 37, 74 | bit-identical (whole files byte for byte); restart histories identical record by record; seed 8 differs in every momentum; MeshBlock variants: same counts, sums in the history differ in the last bits (summation order) | bit-identical | PASS (MPI ranks not tested: no MPI in that executable) |
+| T345: B run's snapshot at cycle 49 against A's last snapshot (same start) | bit-identical in 4 cases | (extra) | [VERIFIED] |
+| T1 drift of sum M W over 1e4 steps (exactly rounded snapshot sums) | 0.0 in both seeds; momentum sums 2.4e-18; per-step defects <= 8.8e-7 of the bound; n_trunc = 0 | < 1e-11 | PASS |
+| T4 initial slope / my exact rate - 1 (quadratic fit over 0.15 tau_rel) | -0.37 +- 0.49, -1.74 +- 0.60, +0.03 +- 0.39, +0.88 +- 0.27 percent (theta2 = 1e-3 s1, s2; 1 s1, s2) | <= 4 se + 1 percent and <= 5 percent | PASS (4/4) |
+| tau_rel of the generator | equals (theta1 - theta2)/(my rate) to 0.1 percent | | [VERIFIED] |
+| \|v_a - v_b\| instead of v_Mol | 1.265 x the rate at theta2 = 1, 1.0007 at 1e-3 | TESTS T4 states 1.27, 1.0008 | agrees |
+| T3 at 15 tau_rel: KS of \|u\| against MJ(theta_eq); <u^2/W> = 3 theta_eq; populations at theta_eq | KS p 0.084, 0.77, 0.99, 0.92; \|z\| <= 0.007; \|z\| <= 0.78 | p > 1e-3; 4 sigma | PASS (4/4) |
+| T5 entropy | not checked (needs an entropy estimator with its own bias study) | | not checked |
+| T9 classes M and 4M at the same theta at the end | \|z\| <= 1.16 (8 seeds) | 4 sigma | PASS |
+| T9 KS of each class | against MJ at the theta of the initial energy: light class p = 1.7e-4 in seed 3 (all else >= 0.049); against the theta of the final energy: p >= 0.084 everywhere; own theta: p >= 0.089 | p > 1e-3 ("Maxwell-Juttner") | PASS of the shape; FAIL in 1 of 16 if the reference theta is that of the initial energy: the nanbu energy drift of seed 3 (+1.48e-4) shifts theta by the amount seen [JUDGEMENT] |
+| T9 drifts of sum M W and sum M u_i, mean over 8 seeds | energy +5.3e-5 +- 2.2e-5 of the total (z = 2.42; positive in 7 of 8 seeds); momentum z = 0.40, 2.19, 1.08 | zero within 4 se | PASS (energy at 2.4 se: watch) |
+| T9 refusal with coll_weights = equal | stops with "unequal rest masses (smallest and largest ...)" | error naming the masses | PASS |
+
+## Summary of the blind verdicts
+
+- V1 PASS: T7 kappa/kappa_1 = 1.009(4) by the test estimator (1.019(4) with the eps = 0.2
+  nonlinearity removed) in [0.99, 1.06]; T6(b) chi/chi_1 = 1.051, 1.086 (seeds) in [0.95, 1.10].
+  Open: corrected value 2.7 sigma below the relativistic Chapman-Enskog 1.030; runs at eps = 0.2
+  instead of 0.05; T7 at theta 0.1 and 1 not checked.
+- V2 PASS: T2 rate within 9.6e-5 of my Moller integral, T1 per-step defects 1e-7 of the bound.
+- V3 PASS: T12 rate = alpha0 psi0^6 x flat, twin identity exact, pair counting to 4e-13.
+- V4: King E_b maximum y0 = 0.334032 (paper 0.334); F21 b = 0.1 eps maximum Z(0) = 0.5404; fluid
+  onsets: F21's gamma with the exact mode Z(0) = 0.6348 (F21's own trial-function value 0.750 is
+  reproduced but is late); Juttner Gamma_1 at the energy-matched temperature Z(0) = 0.5331 (King
+  y0 = 0.3214), at the Tolman temperature 0.4125 (King 0.0392). The model files agree with my
+  equilibria to 6e-10.
+- V5 PASS except the T9 KS clause read with the initial-energy temperature (1 of 16 fails; passes
+  with the final-energy temperature); T5 not checked.
