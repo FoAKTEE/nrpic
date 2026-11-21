@@ -332,3 +332,27 @@ Predictions (written before the runs; own code in `stage/review_wave3/`):
   (a) the v2 synthetic fits centred on the true rate with the 'first' reference biased high
   by 2-5 percent, (b) concave ln|d| on the three y_c = 0.5 compensated samples. Refuted by a
   different U-test outcome or by figures that contradict the helper's numbers.
+
+## 2026-11-21T08:05Z  session C-sidm lead (wave 3, batch 2b)  outcomes L17-L22
+
+Runs: decisive analysis C-20261121-075202-1a37fb9, own recheck C-20261121-075336-49f92da,
+drift analysis C-20261121-075359-26e3b31, own heat/models recheck C-20261121-075535-b35b8fb;
+figures `rv_clusters.png`, `fig_cc2_M8.png`, `rv_heat.png`, `rv_models.png` looked at.
+- L17 FAILED. CC1 Kn = 10 cell seeds 2, 3: t_c = 185.29 and 178.86 M; s3 lies outside my
+  [182.5, 186.5] M and outside the refutation bound [181, 187] M. The mode effect is not shown
+  (ratio 1.32 < 3), as I predicted, but the difference 2.66 M is above my 1.5 M. Reading: the
+  collapse time of the threshold model scatters by about 3 M from seed to seed (sd of five
+  runs 2.83 M), fifteen times CC2's 0.21 M.
+- L18 HOLDS. My t_c equal the package's to the last digit for all 15 runs; my grid cosine
+  fits give P = 399.25, 355.5, 282.25 M and A = 0.01541, 0.00859, 0.00221 (package 399, 355,
+  282 M; 0.0022).
+- L19 FAILED. R = A(M/8)/A(M/4) of CC2's control is 0.22 (cosine), 0.25 (sine with trend),
+  0.10 (largest 20 M mean), below my [0.4, 1.0]; the M/8 record has no cosine form (my grid
+  fit runs to the edge) and contracts slowly after 200 M (alpha_c -0.0041 at 300 M). The
+  helper's M8.1 holds, M8.2 fails (drift/JOURNAL.md entry 8). The M/4 excursion is numerical.
+- L20 HOLDS (P(0.26) = 282 M in [260, 380] and below 355 M; A = 0.0022 < 0.0086).
+- L21 HOLDS. Rows and extrapolations of T7 equal the package's within 3e-16: 1.02497 +-
+  0.00251, 1.09571 +- 0.00514, 0.99145 +- 0.00350 at theta 0.003, 0.1, 1.
+- L22 HOLDS. v2 medians on synthetic signals within 0.04 percent of the truth; 'first' biased
+  high (+7.5, +6.1, +1.6 percent in the median); ln|d_s| of the three y_c = 0.5 compensated runs
+  concave from the start (local slope 0.07-0.08 falling below 0.01 per M by 100 M).
