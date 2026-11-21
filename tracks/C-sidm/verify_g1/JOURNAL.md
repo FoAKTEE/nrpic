@@ -448,3 +448,33 @@ truncated distribution. Predictions for v4_models.py (run after this entry):
   the exact fundamental mode, about 0.56-0.60 if it used the trial function.
 - Particles of the threshold models: KS distance of the isotropic-radius distribution from my
   enclosed rest mass below 1.36/sqrt(1e5) = 4.3e-3 (stratified samples: expect much less).
+
+## Entry 13 (2026-11-21 00:12 PST) V4 model files: outcome
+
+(Entry 12 was written at 00:06.) Run C-20261121-080633-8ee41f7 completed, but its particle-sample
+check had a sign error in my isotropic-radius integral (KS distance 1.0 in all three samples:
+my bug, the radius grid ran the wrong way); fixed (commit after it) and rerun as
+C-20261121-080720-dbcd7ff, which is the run of record (`figs/v4_models.png`, redrawn
+`figs/v4_ev.png` with the right axis inside the frame, `results/v4_models.json`). Outcomes:
+- 18 King and b = 0.1 model files (both runs): my equilibrium at the file's y0 reproduces E_b,
+  C, Z(0), M (paper units), R/M, M0/M, n_c, rho_c, p_c to <= 6e-10 relative. Prediction (1e-6)
+  holds. The five k = 0.5 polytrope files agree to 2e-5 (E_b) and 5e-6 (others): my 48-point
+  Gauss rule meets the square-root edge (1 - E/E0)^{1/2} of that ansatz and is the less accurate
+  side [JUDGEMENT]; the gr-qc/0601112 shell files were not checked (other ansatz, L0 > 0).
+- k = 0.5 polytrope: E_b maximum y0 = 0.297661 (file 0.297664), zero 0.693022; paper 0.298,
+  0.693 (2009.08163 line 954). Holds.
+- Energy-matched temperature (<E>_MJ(T) = rho/n): T_em(0) = 0.0959 against T_Tolman(0) =
+  0.1456 at the b = 0.1 onset; exact onset Z(0) = 0.533057 (y0 = 0.3755336, J = 400 the same),
+  the file 0.5330561 (y0 0.37553330): agreement 1e-6; the trial function gives 0.5947. So the
+  track's onset is the exact fundamental mode with Gamma_1(T_em). Prediction holds (0.533 for
+  the exact mode). For King the two temperatures differ grossly (T_em(0) = 0.10 against
+  T_Tolman(0) = 1.38; w(0) = 0.27: the distribution is far from thermal); energy-matched
+  exact onset y0 = 0.32143 (Z(0) = 0.4910), K = 1 0.34033.
+  [JUDGEMENT] For a collision-dominated gas the relevant equation of state is that of the
+  Maxwell-Juttner gas the collisions produce at fixed number and energy density, so the
+  energy-matched temperature is the physically appropriate reading of "Gamma_1 of the local
+  temperature"; my Tolman-temperature reading (0.4125; King 0.0392) uses a parameter of the
+  truncated distribution that is not the thermodynamic temperature of its particles.
+- Particle samples of three threshold models (1e5 each): the isotropic-radius distribution
+  equals my enclosed rest-mass fraction to D = 1.0e-5 = 1/N (stratified sampler: exact
+  quantiles); rbar_s mine = file to 1e-12; sum of the particle masses = my M0/M to 6e-13.
