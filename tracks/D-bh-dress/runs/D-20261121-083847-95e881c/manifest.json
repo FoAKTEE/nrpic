@@ -1,0 +1,125 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261121-083847-95e881c",
+  "track": "D-bh-dress",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "D-pre-3 wave 3: analysis of the production run to a/a_i = 30 (D-20261121-075559-31835c4) against its matched shells (kernel, hybrid, Plummer, point) and the self-similar solution; outcome of prediction P",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/D-bh-dress/secondary_infall/nm_analyze.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "--run",
+    "P192:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-075559-31835c4",
+    "--ref",
+    "P192:kernel:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261120-222511-34be8a8/nm_shells_P192_kernel",
+    "--ref",
+    "P192:hybrid:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261120-222758-acc6929/nm_shells_P192_hybrid",
+    "--ref",
+    "P192:plummer:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261120-222513-9849530/nm_shells_P192_plummer",
+    "--ref",
+    "P192:point:/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261120-222515-c2ef5b8/nm_shells_P192_point",
+    "--selfsim",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123813-97afeea/selfsimilar_profile.npz",
+    "--late_at",
+    "4",
+    "8",
+    "16",
+    "30"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "95e881c425545daab7fcc94602d306cb9c731ce7",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/secondary_infall"
+    ],
+    "outside_package": {
+      "count": 3,
+      "first": [
+        "?? tracks/D-bh-dress/drift_controls/tools/compare_runs.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/count_blocks.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/slice_profiles.py"
+      ]
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/D-bh-dress/secondary_infall/nm_analyze.py",
+      "role": "argv",
+      "sha256": "e2ae4e13a3c76aba6c85e409a344d42a8891e86ace2a3dfd1b352c9b21352ebb",
+      "bytes": 36652,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-bh-dress-20261115-123813-97afeea/selfsimilar_profile.npz",
+      "role": "argv",
+      "sha256": "d8b610648ec743f3d69ddc76a8fe5037f0863e2a35e6f7e2ce878b88a5f63bb0",
+      "bytes": 32444,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261121-083847-95e881c",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T08:38:48Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 30.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 4.4119,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 192,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
