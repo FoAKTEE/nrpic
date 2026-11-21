@@ -444,3 +444,28 @@ Predictions (own code in `stage/review_wave3/rv_batch4a.py`, written before it r
   not collapse (alpha_c >= 0.652), but the 40 M mean at the end is -0.0216, below the predicted
   [-0.015, -0.004]. The helper's VI.2 (bounded) failed as well; VI.1, VI.3, VI.4 hold
   (drift/JOURNAL.md entry 16).
+
+## 2026-11-21T16:45Z  session C-sidm lead (wave 3, batch 4a)  commits bf279bd3..(this entry's commit)  runs C-20261121-155049-ecf8893, C-20261121-155116-ba83d16, C-20261121-155226-8ea9e47, C-20261121-163109-c8fff37, C-20261121-163135-57f9296 (failed: C-20261121-155220-5c0d480, C-20261121-163051-16356b2)
+
+- did: merged main (core-v0.6; rulings 0021, 0022, nothing for Track C); predictions L23-L28
+  before any check; own recheck script `stage/review_wave3/rv_batch4a.py` (own readers of the
+  histories and trajectory files, own coherent part for D2) and `rv_note_b4a.py`; reviewed
+  verify_g1, note v1 and drift batch 3 into `stage/REVIEW-wave3.md` sections 9-12; answered
+  every item of VERIFIER.md (REVIEW-wave2 count corrected, `collide/TESTS.md` 2c, heat README,
+  box_tests README, scope/REFERENCES, G0 locator appended); closed run (vi) (Slurm 4804) and
+  analysed it with the package's compare.py and own code (drift entry 16); G1 checklist C9,
+  C14, C16-C19 updated, OPEN, EVIDENCE, REVIEW, STATUS of G1 rewritten, collect, verify (one
+  FAIL: the (vi) manifest was still 'submitted' at the snapshot commit; rerun after finishing
+  it); four inbox messages acknowledged; outbox to orch (next batch; G1 review); STATUS,
+  HANDOFF, RISKS rewritten.
+- found: the verifier's numbers stand; no number of the track recomputed by it or by me is
+  wrong. The CC1 control on M/8 keeps 0.138 of its M/4 excursion (both models: the excursion
+  is the mesh). The package's energy-diffusion rates survive a different coherent part
+  (0.97-1.01). The stable CC2 control on M/8 contracts steadily to 680 M (alpha_c -0.022, r50
+  -6.3 percent), no turn, no runaway.
+- changed my mind about: whether M/8 at N = 1e5 is fit for block A; it is not until the
+  contraction's source is known (run (v) next).
+- failed predictions: L28 (interval); drift VI.2; earlier in batch 3, M8.2', M8.5', D2.2. Failed
+  runs: C-20261121-155220-5c0d480 and C-20261121-163051-16356b2 (my scripts).
+- open: run (v); block A; decisive D2; models step 5; T5/T8 second check (G2 verifier); the G1
+  review. Card-hours used by this session: 0 (run (vi), 0.87, was the drift package's).
