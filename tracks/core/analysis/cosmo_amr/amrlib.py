@@ -94,14 +94,19 @@ def run_many(jobs, cores):
         return [f.result() for f in futs]
 
 
-def read_hst(path):
-    """A history of the particle module (header line '# [1]=name [2]=name ...')."""
+def read_hst(path, like=None):
+    """A history of the particle module (header line '# [1]=name [2]=name ...').  A
+    history continued by a restart in another directory has no header: `like` names a
+    file of the same kind whose header is taken instead."""
     names = None
-    with open(path) as f:
-        for line in f:
-            if line.startswith("# [1]="):
-                names = [w.split("=", 1)[1] for w in line[1:].split()]
-                break
+    for p in (path, like):
+        if p is None or names is not None:
+            continue
+        with open(p) as f:
+            for line in f:
+                if line.startswith("# [1]="):
+                    names = [w.split("=", 1)[1] for w in line[1:].split()]
+                    break
     a = np.loadtxt(path, ndmin=2)
     return collections.OrderedDict((n, a[:, i]) for i, n in enumerate(names))
 

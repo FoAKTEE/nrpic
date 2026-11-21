@@ -33,7 +33,7 @@ def main():
     os.makedirs(a.out, exist_ok=True)
     res = {}
     lg = read_log(os.path.join(a.run, "athena.log"))
-    h = A.read_hst(os.path.join(a.run, "peak.nrpic.hst"))
+    h = A.read_hst(os.path.join(a.run, "peak.nrpic.hst"), like=os.path.join(a.base, "peak.nrpic.hst"))
     hb = A.read_hst(os.path.join(a.base, "peak.nrpic.hst"))
     sane = (np.isfinite(h["alpha_min"]) & (h["alpha_min"] > 0) & (h["np"] > 0)
             & (h["alpha_max"] < 1e6))
