@@ -45,7 +45,9 @@ def at_cycles(key, cycles):
     cols, d = record(key)
     cyc = d[:, cols.index("cycle")].astype(int)
     idx = [int(np.where(cyc == c)[0][0]) for c in cycles]
-    return {n: d[idx, cols.index(n)] for n in ("<[H]>", "<[M]>", "<|H|/[H]>", "<|M|/[M]>", "efolds")}
+    o = {n: d[idx, cols.index(n)] for n in ("<[H]>", "<[M]>", "<|H|/[H]>", "<|M|/[M]>")}
+    o["efolds"] = d[idx, cols.index("efolds=-ln<chi>/2")]
+    return o
 
 
 from ref import CodeBackground, crossing_time  # noqa: E402
