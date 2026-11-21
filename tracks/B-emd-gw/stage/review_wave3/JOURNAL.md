@@ -205,3 +205,11 @@ not the waves package's wlib.
   only.
 - Small defect fixed: first_source/README.md P13 now states the window (80 <= a <= 140) and
   the interpolation behind 1.3e-2 (verifier_c18 got 1.38e-2 with its own interpolation).
+
+## Batch 5 lead (2026-11-21 12:40 PST): check of verifier_c18b, prediction
+
+Before the check: if verifier_c18b is right, the largest Hr_mean over all cstat records with
+22 <= a <= 42 is about 0.0075 (one per cell) and 0.0025 (two per cell), above the printed
+0.00706 and 0.00203, which my own reader must reproduce at the records nearest the five dumps;
+and the record nearest a = 10 sits at a = 9.96 with the printed 1.58e-4 and 3.22e-5. Refuted
+if my maxima over all records equal the printed values (then the verifier misread the window).
