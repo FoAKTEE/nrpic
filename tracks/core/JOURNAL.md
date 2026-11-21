@@ -540,3 +540,53 @@ C  Card (at most one card-hour; one job): the card executable runs one short exa
    deposit_threads deck without private, one mpi example on one rank) with status 0 and
    within 1e-10 of the processor run in the conserved sums. If the queue does not give
    a card in time, the job is named as pending and the release says what did not run.
+
+### Outcomes (2026-11-21)
+
+M  [VERIFIED: `git log --first-parent`] Four merge commits: scalar-3 604e9ad8,
+   build-openmp 0d0f5ba5, cosmo-amr e103b3e3, mpi c3eb42e0 (source commit of the
+   candidate: the last one that changes `athenak/`). Conflicts as predicted in
+   `rng.md` (rows 1, 2 and section 6.1 of core-v0.4 kept, row 3 of scalar-3 taken, its
+   table became section 6.2), `particles.hpp` (three times), `CMakeLists.txt`,
+   `nrpic.cpp` (cosmo-amr and mpi); NOT in `STATUS.md` or `HANDOFF.md` (the branches
+   did not touch them), and build-openmp merged `nrpic.cpp` without a conflict (I had
+   expected one). Three resolutions that no conflict marker asked for, each in its
+   merge commit: the additions of the fine-shape branch go through `dep.Add`;
+   `thread_dep.End` comes before `NrpicMpiDepositRemote`; `NrpicMpiInit` stops a run
+   on several ranks for `removal_record`, `acc_nsphere`, `peri_count`, `perturb_gamma`,
+   `id_solve`, `region_dcycle`, `deposit_fine_shape`.
+   Found by reading the cosmo-amr diff, three things act without an option: the guard
+   (`<z4c_guard> stop_nonfinite`, default true) stops a Z4c run whose fields are not
+   finite, exit status 3; `nrpic_cosmo` enrols a refinement function; the summary file
+   of the horizon finder and the tracker file are opened at the first record, i.e. in
+   the run directory of `-d` and no longer in the directory the executable was started
+   in [VERIFIED: `main.cpp` 359 to 386, `AddCoordinatesAndPhysics` before
+   `ChangeRunDir`]. The release drivers start AthenaK inside the run directory, so they
+   cannot see the third.
+   Serial processor build `.work/build_cpu_v05rc` from the clean tree at c3eb42e0:
+   156 s on six jobs, no error (sha256 b462068a...).
+R  HELD. Run core-20261121-063859-e410ee3 (6 cores, 283 s): the serial candidate against
+   release core-v0.4 (`.work/build_cpu_v04`, sha256 daada48f...), twelve set-ups, 75
+   items, all identical; classes a, b, other empty; every run status 0.
+T14b of package cosmo-amr (card job 4763, finished, not judged by its package): judged
+   here with the package's script, read-only on its outputs, run
+   core-20261121-063923-5ed0a51. Against the prediction of its journal (entry 03:26):
+   homogeneous cases uniform to 2.2e-14 (U, S, A) and 1.1e-13 (M) in E on the card
+   (bound 1e-12); alpha_max equal to the processor runs to 1.8e-15 (bound 1e-12);
+   M: MeshBlock counts equal at every record, tracker within 4.4e-16; ladder: 64 to 120
+   MeshBlocks at cycle 5 on both, 32768 particles and the rest mass unchanged, identity
+   2.2e-16 (bound 1e-13), Hr_max within 9.2e-12 of the processor value (bound 1e-9);
+   G: status 3 with its file, stop at cycle 16 against 18 on processors (not
+   predicted; the script prints FAIL for the cycle, as in T14). HELD. Sf is not judged
+   by the script. Figure `fig_t14_card.png` of that run looked at (three panels: lapse
+   ratio at 1e-16 to 1e-15, the unstable run departing from record 9 on, MeshBlock
+   counts on one line). So the card executable of source 1548d49 (the deposit of the
+   candidate) has run on a card with the processor result. T10g of the same job (the
+   scouting run for Track A) ended with the guard at t = 12.504, cycle 1101, "conformal
+   factor chi not positive" (`s1g/peak.guard.txt`); its judgement against the
+   prediction of entry 03:33 is the package's and Track A's, not done here.
+Read, not judged: run core-20261120-223502-f9a2c02 of package mpi (its `run.log`): on
+   ONE rank a change of the finder's flow constant by 1e-13 changes the search of
+   t = 0.1875 by 4.8e-3 in the smallest radius and the removed particles from 43 to 41,
+   while the three searches before agree to 1.9e-10 or better. This is the outcome its
+   entry 28 (P7g) asked for; the entry is the package's to write.

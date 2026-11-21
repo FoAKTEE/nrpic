@@ -92,11 +92,9 @@ def deck_peak(d):
 def deck_dep(d, threads_mode="private", fine=None):
     """the deposit test with a dump of the sources in double precision; threads_mode
     None: the line deposit_threads is absent; fine: None or the cloud (cic, tsc)."""
-    if not os.path.lexists(os.path.join(d, "random.nrp")):
-        os.symlink(RANDOM, os.path.join(d, "random.nrp"))
     b = A.Inp(os.path.join(PROB, "tests/deposit_threads.athinput"))
     b.set("time", tlim=2.0)
-    b.set("particles", deposit_max_level=1)
+    b.set("particles", deposit_max_level=1, particle_file=RANDOM)
     if threads_mode is None:
         b.drop("particles", "deposit_threads")
     else:
@@ -438,11 +436,8 @@ def group_mpi(a, out, summary):
     d = os.path.join(top, "stop")
     if not a.analyse_only:
         os.makedirs(d, exist_ok=True)
-        if not os.path.lexists(os.path.join(d, "random.nrp")):
-            os.symlink(RANDOM, os.path.join(d, "random.nrp"))
         b = A.Inp(os.path.join(PROB, "tests/mpi_deposit_smr.athinput"))
-        b.set("particles", deposit_fine_shape=True,
-              particle_file=os.path.join(d, "random.nrp"))
+        b.set("particles", deposit_fine_shape=True, particle_file=RANDOM)
         b.set("time", nlim=2)
         deck = b.write(os.path.join(d, "deck.athinput"))
         with open(os.path.join(d, "run.log"), "w") as log:
