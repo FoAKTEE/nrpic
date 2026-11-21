@@ -246,3 +246,23 @@ Predictions of BC-1:
    (2097 blocks, g2mesh model along P1's tracks to 112 M) [arithmetic]. The chain resubmits one
    segment at a time, at the back of the queue each time (FIFO: about 1-3 hours per segment of
    waiting on 2026-11-21), so the wall time is set by the queue, not by the card.
+
+## 2026-11-21 BC-5. Where the package stops in this session (07:45 PST)
+
+Card-hours used: 1.67 (R8 0.8347 and R16n segment 1 0.835, sacct). Queued (FIFO, each behind
+about seven jobs): R16n segment 2 (Slurm 4807; the chain then submits segment 3, MAX_SEGMENTS 3),
+R12 segments 1-2 (Slurm 4809, run F-20261121-153707-1eaa5d4, MAX_SEGMENTS 2). At completion the
+package will have used about 5.0 card-hours (six segments), within its cap of 6. Not run: the
+profile arm of junk_gauge (m/8 with the mass-scaled shift damping), R8 beyond 20.9 M (its merger
+time alone; the stretch estimate of 53 M is a judgement), anything to 100 M (26 card-hours).
+
+Open checks for whoever reads the chains when they land (commands in README, "Analysis"):
+- BC-4 item 2: R16n against EIH to about 23 M; refuted if it departs by more than 0.05 M by 20 M.
+- BC-1 item 2 at 15 M (R16n's Delta s at most half of R8's 0.305 M) and item 3 (three-point
+  order at 7.5, 10 and 15 M with R12).
+- R12 (m/12): its deviation from EIH at 7.5 and 15 M against R8's 0.0615 and 0.2947: below
+  0.2 x R8's (order >= 4 for h = 2/3) supports m/12 for P1b at 30 percent less cost; above
+  0.5 x R8's (order < 1.7) rules it out.
+- Close the runs: `harness/bin/nrpic-run finish F-20261121-130351-04074e1` and
+  `... finish F-20261121-153707-1eaa5d4` when `scripts/submit_chain.sh --status <run dir>` says
+  DONE or FAILED with "MAX_SEGMENTS=... reached".

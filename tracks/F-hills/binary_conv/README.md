@@ -6,10 +6,27 @@ resolution does the binary survive the 100 M that the next passage (P1b) needs? 
 predictions and outcomes: `JOURNAL.md` (BC-0 design and cost, BC-1 prediction, BC-2
 references, later entries the card runs).
 
-## State
+## State (2026-11-21 07:45 PST)
 
-See the last entries of `JOURNAL.md` and the "Results" section below (filled in as the card
-runs land).
+Verdict (JOURNAL BC-4, intermediate): P1's merger is a resolution effect of the m/8 members;
+the next passage P1b should resolve the members with m/16 (`inputs/p1b_R16n.athinput`, chain
+command in BC-4 item 6, NOT submitted; about 30.6 card-hours to 200 M, 43.8 to 280 M). The
+evidence covers 20.9 M at m/8 and 7.7 M at m/16; R16n segments 2-3 and R12 (m/12) are queued
+and decide the open checks listed in BC-5.
+
+## Results (runs F-20261121-130358-6cf186a, F-20261121-130351-04074e1; analysis F-20261121-154046-c99ccb9)
+
+| | P1 (m/8, three holes) | alone, m/8 | alone, m/16 | EIH (canonical) | Newton |
+|---|---|---|---|---|---|
+| separation at 7.5 M | 4.8539 | 4.8863 | 4.9477 | 4.9478 | 4.9430 |
+| separation at 20 M | 4.2855 | 4.3753 | (queued) | 4.9302 | 4.9693 |
+| merger | 48.8 M | about 53 M (stretch estimate) | none expected before 100 M (extrapolated) | 2600-3400 M (2.5PN, Peters) | - |
+| member horizon drift per M | 1.4e-3, 1.7e-3 | 1.0e-3, 1.4e-3 | -7e-5, -5e-7 | - | - |
+| MeshBlock-cycles/s, advance per 50 min | 1963-2242, 14.3-19.2 M (segments 1-6, `p1/README.md`) | 2241, 20.9 M | 2302, 7.7 M | - | - |
+
+Order of the separation error between m/8 and m/16 at 7.5 M: >= 3.3 (deviation from EIH;
+3.96 from Delta s). Figures (read): `figures/fig_orbit_conv_intermediate.png`,
+`figures/fig_horizons_H_intermediate.png`, `figures/fig_refs.png`.
 
 ## Contents
 
@@ -32,9 +49,10 @@ runs land).
 | F-20261121-130405-77ad9f6 | mesh check of the three inputs (processors) | completed |
 | F-20261121-130646-56612a0 | references (processors; first pass F-20261121-130623-1b35829 had an aliased inspiral panel) | completed |
 | F-20261121-131003-75a2b29 | `athena -m` of the P1b candidates | completed |
-| F-20261121-130351-04074e1 | R16n card chain, 3 segments (about 19 M) | see JOURNAL |
-| F-20261121-130358-6cf186a | R8 card chain, 1 segment (about 17 M) | see JOURNAL |
-| (not yet submitted) | R12 card chain, 2 segments (about 16 M): submit when R8's job has ended (two card jobs of the owner at a time) | command below |
+| F-20261121-130351-04074e1 | R16n card chain, 3 segments (about 23 M) | segment 1 done (0-7.74 M, Slurm 4796); segment 2 queued (Slurm 4807), segment 3 follows |
+| F-20261121-130358-6cf186a | R8 card chain, 1 segment | completed (0-20.94 M, Slurm 4797; stray resubmission 4808 cancelled) |
+| F-20261121-153759-af77173, F-20261121-153844-fbc75ac, F-20261121-154046-c99ccb9 | intermediate analysis, three passes (the third is the reference) | completed |
+| F-20261121-153707-1eaa5d4 | R12 card chain, 2 segments (about 16 M), submitted 07:37 PST | queued (Slurm 4809) |
 
 ## How to rerun (from `/data/haiyangw/nrpic/wt/F-hills`)
 
@@ -66,11 +84,11 @@ directory; raise MAX_SEGMENTS only within the card-hours granted):
 Analysis (registered; reads whatever the run directories hold, partial runs included):
 
     harness/bin/nrpic-run submit --kind scouting --gate G1 --cores 1 --package tracks/F-hills/binary_conv \
-        --parent F-20261121-130351-04074e1 --parent F-20261121-130358-6cf186a \
+        --parent F-20261121-130351-04074e1 --parent F-20261121-130358-6cf186a --parent F-20261121-153707-1eaa5d4 \
         --purpose "binary_conv BC-3: analysis" -- python3 tracks/F-hills/binary_conv/scripts/analyze.py \
         --run R8=/data/haiyangw/nrpic/scratch/F-hills/F-20261121-130358-6cf186a \
         --run R16n=/data/haiyangw/nrpic/scratch/F-hills/F-20261121-130351-04074e1 \
-        [--run R12=/data/haiyangw/nrpic/scratch/F-hills/<R12 run id>] \
+        --run R12=/data/haiyangw/nrpic/scratch/F-hills/F-20261121-153707-1eaa5d4 \
         --p1 /data/haiyangw/nrpic/scratch/F-hills/F-20261119-150017-b45ec5f \
         --refs /data/haiyangw/nrpic/scratch/F-hills/F-20261121-130646-56612a0/refs.json \
         --g2model /data/haiyangw/nrpic/scratch/F-hills/F-20261120-222426-86392c3/model.json \
@@ -81,4 +99,16 @@ State of a chain: `scripts/submit_chain.sh --status <run dir>`; close a finished
 
 ## Requests
 
-See the end of `JOURNAL.md` (filled in with the verdict).
+- F-hills lead: decide P1b (input `inputs/p1b_R16n.athinput`, command JOURNAL BC-4 item 6; above
+  eight card-hours, so decision 0014's announcement in STATUS.md comes first). Read the queued
+  chains when they land (R16n segments 2-3, Slurm 4807 and its successor; R12, Slurm 4809) with
+  the analysis command above and judge the checks of JOURNAL BC-5; close both runs with
+  `nrpic-run finish`. A profile arm (junk_gauge's recommendation) was not run: about 0.84
+  card-hours for one m/8 segment, if the gauge of P1b is to be chosen with evidence.
+- core: (1) `scripts/submit_chain.sh` resubmits a chain after its last allowed segment: R8 (run
+  F-20261121-130358-6cf186a, MAX_SEGMENTS = 1) queued job 4808 at the wall-clock stop, which would
+  have failed with "MAX_SEGMENTS reached" only when it started, holding one of the owner's two
+  queue places meanwhile; I cancelled it with `--stop`. Please check the cap before `sbatch`.
+  (2) [TO VERIFY] R8 shows one history sample at t = 0.5 with H-norm2 = 1.83e4 (P1, the same
+  members at m/8 with core-v0.3 on +-256: 5.99 at t = 0.5; R8 back to 10.9 at t = 1): is this a
+  regrid at an output time in core-v0.5, or a real transient?
