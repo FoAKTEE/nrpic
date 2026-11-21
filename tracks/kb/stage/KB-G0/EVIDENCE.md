@@ -15,3 +15,9 @@ Tests: `cd kb && .venv/bin/python -m pytest`: 173 pass (2026-11-15, after the wa
 fixes; `tracks/kb/JOURNAL.md` W1).
 
 Compute: 0 card-hours (allotment 0, decision 0014); at most 8 cores at a time.
+
+Wave 3 (added 2026-11-21): independent verifier, VERIFIER.md (run kb-20261121-080038-306bcdd:
+tools, directories, read-only default in a fake data root, snapshot modes and sha prefixes;
+run kb-20261121-081226-a4025cf: failed-run manifests); the lead's check of the verifier, run
+kb-20261121-125746-a03875b (../REVIEW-wave3.md). Tool-choice reasons: kb/JOURNAL.md lines 24-36,
+205 ff., 231 ff., kb/EMBEDDING.md; named in kb/README.md since 2026-11-21.

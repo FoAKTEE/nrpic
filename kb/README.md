@@ -25,6 +25,21 @@ reports. Predictions and outcomes are in `JOURNAL.md`.
 | `tests/` | 52 tests (pytest); synthetic stores built with the fetch command's own `unpack` |
 | `pyproject.toml`, `requirements-k0.lock` | the tool environment `kb/.venv` (uv venv, Python 3.10.12) and its frozen package list |
 
+## Tool choices and departures from the layout of brief 12.2 (KB-G0; added 2026-11-21)
+
+Reasons, with the evidence, are in `JOURNAL.md` of this directory: "K0 tool choice" (lines
+24-36: standard library and FTS5 of SQLite for the core, so `kb` runs under `python3 -I` with no
+third-party code in the safety path; pylatexenc, bibtexparser, rapidfuzz, tenacity, pyyaml in
+`kb/.venv`), "K2-K3 tool choices" (line 205 ff.: pylatexenc as converter, LaTeXML and pandoc
+absent), "Tool choice for the code index" (line 231 ff.: tree-sitter, because universal-ctags
+is absent and building it from a clone would build downloaded code); the embedding model and
+vector storage in `EMBEDDING.md` ("Why this model") and `kbtool/embed_index.py` (float32
+blobs in the `embeddings` table are the source of truth).
+Departures: `uv.lock` is replaced by the pip-style `requirements-k0/k4/k6.lock`;
+`curated/seed_claims.jsonl` is replaced by `kb claim seed`, which parses the tracks' notes of
+wave 1 into the claims table with checked locators (`kbtool/claims_cli.py`); the brief's own
+labelled statements are not seeded yet (package `claims_brief`, tracks/kb/PLAN-wave3.md).
+
 ## How to rerun
 
 ```bash

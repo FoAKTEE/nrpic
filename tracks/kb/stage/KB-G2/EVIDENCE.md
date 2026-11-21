@@ -44,3 +44,19 @@ is a chunk of the expected paper (paper level) or a chunk whose source lines ove
 lines widened by 5 (answer location). The re-ranking was chosen on these 32 (in-sample); the ten
 held-out questions share passages with five of them. A held-out set by someone who has not seen
 the diagnosis is requested (outbox to orch, heldout-golden-questions).
+
+## Wave 3: independent verifier and the lead's check of it (added 2026-11-21)
+
+| Run | Who | What | Result |
+|---|---|---|---|
+| kb-20261120-222100-50182fe | verifier | seeded stratified draw of 24 held-out papers | 21 groups; heldout.yaml committed 8fb37106 before any search |
+| kb-20261120-222546-ea894c8, kb-20261121-075156-b84a189 | verifier | held-out search (3 modes) and own scoring | paper in top 10: 21/22/21 of 24 (text/hybrid/rerank) |
+| kb-20261121-074940-08426cc, kb-20261121-080557-06d44ba | verifier | golden search and own scoring | 27/28/28 of 32, as the package |
+| kb-20261120-223309-14e4cb6, kb-20261120-223339-b842a8a, kb-20261121-080834-6c50215, kb-20261121-080843-98907be | verifier | own parse scan of 710 papers, 15-paper source check, leniency check, tally | 679/710 = 95.6 % under its definition; 670 (letters failed); 658 (strict) |
+| kb-20261121-080038-306bcdd | verifier | C1 counts, read-only default (fake data root), snapshot modes and sha, locators | C1, C5, C6a confirmed; C6b wrong (partly met) |
+| kb-20261121-080624-467030c | verifier | figures fig_ranks, fig_parse (tracks/kb/verify_g2/figures/) | inspected by verifier and lead |
+| kb-20261121-081226-a4025cf | verifier | C9 manifests, comparison with this package | two wave-1 manifests "finished" with exit 1 (now corrected) |
+| kb-20261121-125746-a03875b | lead | independent check of the verifier (prediction L1, tracks/kb/JOURNAL.md) | all eight parts of L1 held; figure ../review_wave3/figures/fig_lead_check_vg2.png |
+
+The superseded first scan kb-20261120-222948-fcdd5e7 stays on record (it counted uncited .bib
+entries and missed biblatex).

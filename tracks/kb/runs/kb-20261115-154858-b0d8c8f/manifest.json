@@ -41,8 +41,9 @@
  "card_hours": 0,
  "started_utc": "2026-11-15T15:48:58Z",
  "started_unix": 1794757738.4699218,
- "status": "finished",
+ "status": "failed",
  "exit_code": 1,
  "wall_time_s": 27.52,
- "finished_utc": "2026-11-15T15:49:25Z"
+ "finished_utc": "2026-11-15T15:49:25Z",
+ "status_note": "corrected 2026-11-21 by the kb lead (wave 3 batch 3): the hand-written wave-1 manifest said 'finished' although the run exited with code 1; found by the KB-G2 verifier (tracks/kb/stage/KB-G2/VERIFIER.md, C9 addendum; run kb-20261121-081226-a4025cf)"
 }
