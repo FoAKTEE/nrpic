@@ -1,0 +1,121 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261121-131827-5d48168",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "verifier_c18 A1: ledger rows 197, 200, 204, 205, 207-215 (second round) and 116-123 (spatial gauge; 101 as a control) from the own per-dump tables M1a, M1b, with figures",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "env",
+    "OMP_NUM_THREADS=2",
+    "python3",
+    "tracks/B-emd-gw/stage/G1/verifier_c18/scripts/a1_rows.py",
+    "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-130345-622e9e4",
+    "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-130410-0ff2a75"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "5d48168952ae2fc471c0aeeba7ad8d2b3b6a726a",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/stage/G1/verifier_c18"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "973f2dbc2e32338b1ea99d14ee4d03719af9a8c7",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/stage/G1/verifier_c18/scripts/a1_rows.py",
+      "role": "input",
+      "sha256": "bf862ac9154b57478723986c3afdc6cd2b3781068094c68e1fd50454f5adaa66",
+      "bytes": 14779,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/stage/G1/verifier_c18/scripts/vlib.py",
+      "role": "input",
+      "sha256": "51c7c33c0651c784b2e0a40cb42e315672b4aed0ed96dea098f09414ab3f55af",
+      "bytes": 16754,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-130345-622e9e4/sha256sums.txt",
+      "role": "input",
+      "sha256": "4be82b931d9d01bfbd3ce50e1323353132052285430bf38608e2fe2531316800",
+      "bytes": 485,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-130410-0ff2a75/sha256sums.txt",
+      "role": "input",
+      "sha256": "de3ae93fd041cba431a562de051f0ee6307da67dcce17ff4972bc7cc39847720",
+      "bytes": 645,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261121-131827-5d48168",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T13:18:27Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.6912,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 2,
+    "runs": 264,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
