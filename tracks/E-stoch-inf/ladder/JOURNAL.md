@@ -841,3 +841,48 @@ builds differ only in the order of floating-point operations; the first-order pa
 stencil run, itself a difference of nearly equal numbers, may differ more and is excluded).
 Refuted if a verdict of PL1-PL3 differs between the platforms. Cost: about 5-15 min per run on
 one core (Z4c at 64^3 plus 12 modes; the 32^3 rung with 1054 modes ran 2.9 s per step).
+
+## Entry 19, 2026-11-21 03:47Z: outcome of item (b), A6 at 64^3 (predictions PB1-PB4 of entry 13)
+
+Runs: card job E-20261121-025643-02526ff (Slurm 4757, started 03:26Z, 102 s for all 17 runs,
+0.028 card-hours; the six A6 runs T25p ... T06m 4-15 s each, exit 0, ten dumps each at
+t = 20 k pi/128); analysis E-20261121-034414-bfd0285 (processor, one core, 5 s;
+`results/a6_64/a6.json`, `fig/a6_64/fig_a6.png`, looked at: the four panels show the
+differences, the orders at 4, D_n per Courant factor against |n|, and the parts of H).
+
+- PB1 (A6 at 64^3) CONFIRMED, A6 PASS: orders between theta = 0.25/0.125 and 0.125/0.0625 at
+  every dump from t = 0.49 on: R^NR over all modes with W > 1/2 3.98-4.02, top shells
+  (|n|^2 >= 196, in from N = 2.9) 4.02, low shells (|n|^2 <= 64) 3.90-3.99, perturbations of
+  phi 3.99-4.02, chi 4.00-4.01, K 3.82-4.01, box mean of chi 4.03. The box means of phi and K
+  are at rounding (differences 1e-13-5e-13 relative, below the 1e-12 cut; phi's "order" -1.0:
+  the rounding grows with the number of steps), not testable, as at 32^3.
+- PB2 partly REFUTED (marginally): the largest per-mode difference of R^NR between 0.25 and
+  0.125 after the entry is 6.14e-4 (predicted 1e-4 to 6e-4; 32^3: 2.9e-4). Confirmed in the
+  same item: D_n of the top shells at the last dump 3.57e-3 at theta = 0.25 (predicted 3.6e-3
+  +- 10 percent), changing by 4.4 percent at the first halving (predicted 3-25) and 0.32
+  percent at the second (predicted below 2): the top-shell deviation of A2 is spatial, as at
+  32^3. [JUDGEMENT, formed after the data] the factor 2 against 32^3 at the same omega dt =
+  0.39 is the number of radians a top shell oscillates before it crosses, about |n| (16 here,
+  8 at 32^3), over which the same phase error per radian accumulates.
+- PB3 (i) REFUTED: the largest D_n over |n| <= 8 at the last dump changes by 19.5 percent at the
+  first halving (9.43e-5, 7.89e-5, 7.80e-5; predicted less than 10). The time part,
+  9.4e-5 - 7.8e-5 = 1.6e-5, is 14 times smaller than that of the top shells at 32^3 (2.3e-4,
+  entry 11) at the same |n| = 8, as predicted (16); what I missed is that the spatial part at
+  eight cells per wavelength (7.8e-5) is smaller still, so the time part is a fifth of the
+  total, not a tenth. (ii) Partly REFUTED: odd part of H before the late entry,
+  odd(0.25)/odd(0.125) = 1.33, 2.19 at N = 0.49, 0.98 (predicted 1.3-4: confirmed), but
+  odd(0.125)/odd(0.0625) = 0.73, 0.74 (predicted 1.0-1.5): the odd part at the smallest
+  Courant factor is the LARGEST of the three there (1.37 times that at 0.125, about sqrt 2 for
+  twice the steps). [JUDGEMENT] a rounding floor that grows with the number of steps, as the
+  N^2.5 floor of entry 9 (steps proportional to N); not tested further here.
+- PB4 CONFIRMED: during the late entry (N >= 2.4) the odd part of H changes by at most 0.1
+  percent between theta = 0.25 and 0.0625 (1.083e-11 against 1.082e-11 at N = 2.42; equal to
+  four digits after), the odd part of M by at most 2.5 percent from N = 1.94 on; the even part
+  with its mean removed by less than 0.1 percent at every dump. The box mean of the even part
+  after the entry is 1.67e-13, 1.72e-13, 1.74e-13 of <[H]> at theta = 0.25 (predicted 1.7e-13
+  +- 20 percent: H0 depends on dt only), and its differences converge at order 4.05 (ratios
+  16.6 at N = 3.37, 3.84, 4.31).
+- So at 64^3 in the paper's set-up: fourth order in time for every quantity above rounding;
+  the first-order constraint part of A4's failure at late entry is spatial (independent of
+  theta to 1e-3); the time error of R^NR at Courant 0.25 is below 6.2e-4 per mode; L6 of
+  DESIGN_REVIEW 8.1 is done at the size it asks.
