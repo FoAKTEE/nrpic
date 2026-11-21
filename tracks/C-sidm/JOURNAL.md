@@ -556,3 +556,29 @@ collisional f = 1 at most 1.5 times that. If the collisionless step is above 12 
 sequencer is stopped and the chains re-sized (MAX_SEGMENTS 4 holds up to 20 s per M at 600 M).
 Card-hours expected: (v) 0.3, T 0.15, H 0.5, D2 5 x 0.8 = 4, A 15 x 1.4 = 21; about 26 of the
 37.6 left in the allotment of 45 toward G2.
+
+## 2026-11-21T20:35Z  session C-sidm lead (wave 3, batch 5: cards first)  commits 12183c5d..(this entry's commit)  runs C-20261121-202459-12183c5 (card, pending), C-20261121-202552-8f91fb3, C-20261121-202552-883e2c2, C-20261121-203004-c2c14e7 (card, pending), C-20261121-203340-75ea9bc
+
+- did: merged main (decision 0025: G1 of C signed with reservations; cards first); wrote the
+  predictions, criteria, windows and noise model of every run before submission (entry
+  20:25Z); submitted drift run (v) (Slurm 4826, core-v0.3); made the particle files of seeds
+  2 and 3 of the threshold model (C-20261121-202552-8f91fb3) and the heat-series particle
+  files and lists (C-20261121-202552-883e2c2); wrote 15 block A decks (M/8, 600 M, control
+  and kicks, seeds 1-3 at y0 = 0.334032, seed 1 at 0.324 and 0.344), five D2 decks (M/8,
+  Kn = 10, coll_cell_factor 1, 2, 4, and the control) and a timing list; wrote the sequencer
+  `longruns/seq/seq.sh` and its queue (23 items) and started it with setsid nohup (pid in
+  scratch/C-sidm/seq/seq.pid); it submitted the timing job (Slurm 4829); wrote the block A
+  reader `longruns/scripts/blockA_delta.py` and smoke-tested it on two drift M/8 controls
+  relabelled as a pair (C-20261121-203340-75ea9bc, figure read: the control's alpha_c -
+  alpha_c(0) is -0.004 at 300 M as in drift entry 16, ripple rms 7.6e-4 against the 8.0e-4 of
+  N.2; code path only, no block A result); review section 13; outbox to orch
+  (cards-loaded-batch5); STATUS, HANDOFF, RISKS (rows 5, 18-20).
+- changed before submission, recorded here: the sequencer's stop rule for the timing job is
+  "slower than about 18 s per M" (0.45 of the core-v0.3 zone-cycle rate), not the 12 s per M
+  of prediction T, because four 50-min segments hold 600 M up to about 20 s per M; T's
+  predicted interval (8.2-8.4 s per M) is unchanged and is judged when the job ends.
+- found: nothing new in science; the decks and kicks check (review section 13).
+- failed predictions: none judged this session (no run ended). Failed runs: none.
+- open: everything queued; judge R(v), T, H, D2, A as the runs end; G2 stage package; the
+  question to orch on the pause flag. Card-hours used by this session: 0 so far (all jobs
+  pending at 20:35 UTC); expected about 26 over the coming days.

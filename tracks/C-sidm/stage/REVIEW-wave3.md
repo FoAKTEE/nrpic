@@ -309,3 +309,40 @@ What the track does [JUDGEMENT]:
   the next leg is a finer mesh (an M/16 control).
 - In either case every fate is read against a control of the same mesh, seed, N and length.
 
+
+## 13. Batch 5 (2026-11-21, lead session "cards first"): what changed and what this lead checked
+
+No helper package of C-sidm finished after the lead review of batch 4a (sections 9-12): the
+only commits on `track/C-sidm` between that review and this session are the independent G1
+gate review (`stage/G1/GATE_REVIEW.md`, commit 4b0297a9, runs C-20261121-165320-a2e557b and
+C-20261121-165856-01f1503), which orch signed as PASS with reservations (coord/GATES.md,
+decision 0025 item 1). Nothing stranded: `git status` was clean at the start. Packages still
+open: drift (run (v) now submitted), models (step 5 paused since 2026-11-20), threshold_scan
+(block A now queued, blocks B-D not), decisive (D2 now queued).
+
+This session reviewed only what the decisions on the long runs needed:
+- [VERIFIED] The kicks of the new particle files (run C-20261121-202552-8f91fb3, seeds 2 and 3
+  of y0 = 0.334032) match those of seed 1 (run C-20261115-174556-3544e2c): mean radial
+  velocity kin -0.003660 (seed 2), -0.003548 (seed 3) against -0.003657 (seed 1); kout
+  +0.003202, +0.003316 against +0.003206; net momentum below 1e-17 in every file. The
+  binding energy printed by the sampler (Eb = 0.035589, Z_c = 0.51191) is the model's.
+- [VERIFIED] The new decks differ from the decks they derive from only where intended (diff
+  read): `D2_cc2_kninf` equals the drift deck `cc2_kninf_M8` of runs (i)/(vi) except header
+  and name; `D2_cc2_kn10_f<f>_s<s>` adds to it the collision block of `decisive/inputs/
+  cc2_kn10_part_s<s>` with `coll_cell_factor` f; `A8_*` equal the M/8 control with tlim 600
+  and the particle file and table of their model and seed.
+- [BACKGROUND] For D2.1 (rate independent of the collision cell): core's own cluster test at
+  Kn = 3 with cells of 2, 1 and 0.5 M gave 5037, 5219 and 5269 expected collisions
+  (`coord/INTERFACES/collisions.md` line 342): a 4.6 percent rise for an eightfold smaller
+  cell. Static refinement with collisions is supported (same file, lines 80-86); adaptive
+  refinement during a run is not exercised (line 419), so no run of this batch uses it.
+
+How the batch-5 runs answer the reservations of the G1 review (GATE_REVIEW.md, "Reservations
+to carry to G2"):
+| Reservation | What is queued | Remains |
+|---|---|---|
+| 1 conductivity at the percent level | heat_C1 (k lambda 0.2, two new seeds, three dx and dt 0.05) and heat_C2 (k lambda 0.1, three dx) on core-v0.6; H.1-H.4 | V1a (relativistic Chapman-Enskog reference) still needs a second agent |
+| 2 threshold from collapse times or contraction against a control, three seeds | block A: every kicked run has the unkicked control of the same model, seed, mesh, N and executable; three particle seeds at y0 = 0.334032 | if run (v) shows 1/N contraction, the threshold seeds again at N = 1e6 |
+| 3 definitions named before the run | reference quantities, windows (100 M), noise model (sigma_w) and refutations in JOURNAL.md 2026-11-21T20:25Z before submission | — |
+| 4 card tests without a second check | — | a G2 verifier for T8, R6, the cluster runs and their controls once the runs end |
+| 6 M/4 mesh unfit | all new cluster runs on M/8 | M/8 also contracts (drift run (vi)); its cause is what run (v) and the controls of block A measure |

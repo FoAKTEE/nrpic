@@ -1,84 +1,83 @@
 # HANDOFF of C-sidm
 
-For a reader with no memory of the last session. That session was the lead of batch 4a,
-wave 3, on 2026-11-21 from 15:45 to about 17:00 UTC.
+For a reader with no memory of the last session. That session was the lead of batch 5 of
+wave 3 ("cards first", decision 0025), 2026-11-21 from 20:19 to about 20:40 UTC.
 
 State in three lines:
-1. G0 is signed. For G1 every checklist item is met (note v1; VERIFIER.md checked and
-   answered), and the independent review is requested from orch. The lead does not pass a
-   gate.
-2. G2 scouting. The outward drift of the M/4 collisionless controls comes from the mesh.
-3. On M/8 the stable King control CC2 contracts steadily to 680 M (run (vi)), so block A of
-   the threshold scan waits for drift run (v).
+1. G0 and G1 are signed (G1 with reservations, `stage/G1/GATE_REVIEW.md`). G2 is open; no
+   stage/G2 package exists yet.
+2. The cards are loaded: run (v) and a timing job are in Slurm, and 22 more items wait in
+   `longruns/seq/queue.txt` behind a sequencer that keeps two C-sidm card jobs eligible.
+3. Predictions, criteria, windows and the noise model of every queued run are in
+   `JOURNAL.md` entry 2026-11-21T20:25Z (R(v), T, H.1-H.4, D2.1-D2.3, A.1-A.4). Judge each
+   run against them when it ends; failed predictions stay on record.
 
 Owner: C-sidm. Branch: `track/C-sidm`. Worktree: `/data/haiyangw/nrpic/wt/C-sidm`.
-Run next:
-`cd /data/haiyangw/nrpic/wt/C-sidm && git merge --no-edit main && git status --short && harness/bin/nrpic-ctx inbox && squeue -u haiyangw -o '%i %j %T %M' && test -e /data/haiyangw/nrpic/locks/PAUSE && echo PAUSED`
-Then, if a batch gives card time, submit drift run (v). The command is in
-`drift/README.md` "Pending runs" (`--particles 10000`, 0.3 card-hours). Analyse it with
-`compare.py --tag cc2_N` and `diffusion.py` against N.1-N.6 (`drift/JOURNAL.md` entries 5,
-11, 14).
+Start with:
+`cd /data/haiyangw/nrpic/wt/C-sidm && git merge --no-edit main && git status --short && harness/bin/nrpic-ctx inbox && tracks/C-sidm/longruns/seq/seq.sh status && squeue -o '%i %j %T %M' && test -e /data/haiyangw/nrpic/locks/PAUSE && echo PAUSED`
 
-Packages still in progress (none has uncommitted files):
-- drift. Runs (i), (iii) and (vi) are done and judged (entries 8, 12, 16). Run (v) was never
-  submitted. Runs (ii) and (iv) are dropped. Card-hours: 2.25 of the 3.0 cap.
-- models (paused 2026-11-20). Step 5 is left: reading the King runs (alpha_coll minus control,
-  predictions K in `models/JOURNAL.md` entry 9). It is not needed for G1, since C2 is met.
-- decisive: closed. D2 (collision cell size, 2-5 card-hours) has no decks yet.
-- heat, verify_g1 and note v1: closed.
+## The sequencer (read `longruns/README.md` "Operating the sequencer")
 
-Card jobs of this owner: none queued or running at about 16:40 UTC. Run (vi), Slurm 4804,
-ended at 16:30 UTC and was closed and analysed by this session.
+- Script: `tracks/C-sidm/longruns/seq/seq.sh` (`run`, `status`, `stop`). State, log, pid:
+  `/data/haiyangw/nrpic/scratch/C-sidm/seq/` (`state.tsv`, `seq.log`, `seq.pid`, `nohup.out`).
+- See it: `tracks/C-sidm/longruns/seq/seq.sh status`; is it alive: `kill -0 $(cat /data/haiyangw/nrpic/scratch/C-sidm/seq/seq.pid) && echo alive`.
+- Stop it: `tracks/C-sidm/longruns/seq/seq.sh stop` (exits at its next poll, at most 5 min;
+  running card jobs go on). Never kill by pattern; if you must, `kill <pid from seq.pid>`.
+- Restart it (after a stop, a reboot, or a queue edit that you committed):
+  `cd /data/haiyangw/nrpic/wt/C-sidm && setsid nohup tracks/C-sidm/longruns/seq/seq.sh run >> /data/haiyangw/nrpic/scratch/C-sidm/seq/nohup.out 2>&1 < /dev/null &`
+- It submits only while fewer than two items are active and fewer than two `C-*` jobs are in
+  squeue, and nothing while the pause flag exists. So: do not submit card jobs by hand while
+  it runs, or it will wait for yours.
+- It registers each item with `nrpic-run submit --package tracks/C-sidm/longruns`, and
+  `nrpic-run` refuses when the package has uncommitted edits. So commit any edit inside
+  `longruns/` at once. A refused item is retried every 5 min, up to 12 times.
+- It closes ended runs with `nrpic-run finish` and commits the manifests locally. Push them
+  (`git pull --no-rebase --no-edit && git push origin track/C-sidm`).
+- It stops itself after the timing job if the M/8 deck runs slower than about 18 s per M.
+  Then re-size the chains (`--gpu-hours` in queue.txt), commit, and restart it.
+- A chain of a collapsing run can end FAILED by `<z4c_guard>` (exit 3, non-finite after the
+  collapse on the static mesh). That is the expected end. Read t_c from the history.
 
-Files to read first:
-- `STATUS.md`
-- `stage/REVIEW-wave3.md` sections 9-12
-- `stage/G1/OPEN.md` and `CHECKLIST.md`
-- `collide/TESTS.md` section 2c
-- `drift/JOURNAL.md` entry 16
-- `drift/README.md`
-- `threshold_scan/SCAN.md` block A
-- `JOURNAL.md` last three entries
+## Runs and what reads them
 
-Key numbers, with their runs:
-- T7 at theta 0.003: kappa/kappa_1 = 1.019 +- 0.004 (C-20261119-161930-acd257b) and
-  1.0250 +- 0.0025 with the card seeds (C-20261120-223203-b38a7d7).
-- King threshold y0 = 0.334032; Juttner onset 0.32143 (C-20261119-151502-cb831a8).
-- M/8 over M/4 excursion: CC1 0.138, CC2 0.099 (C-20261121-155049-ecf8893).
-- Energy diffusion D: 3.8-4.0e-8 per M on M/4 and 5.8-6.5e-8 on M/8, ratio 1.5-1.7 (same run).
-- CC2 on M/8, alpha_c - alpha_c(0): -0.0043 at 300 M, -0.0118 at 400 M, -0.0151 at 500 M,
-  -0.0186 at 600 M, -0.0216 at 640-680 M; r50 -6.3 percent (C-20261121-163109-c8fff37).
-- Collapse time t_c of CC1 at Kn = 10: sd 3.40 M over three cell seeds
-  (C-20261121-075202-1a37fb9).
+| Item | Run id / Slurm | Reader | Predictions |
+|---|---|---|---|
+| run (v) | C-20261121-202459-12183c5 / 4826 (core-v0.3) | `drift/README.md` "Pending runs": `compare.py --tag cc2_N` with `cc2_N1e5=cc2:/data/haiyangw/nrpic/scratch/C-sidm/C-20261115-171059-4b70228/cc2_kninf cc2_N1e4=cc2:<run dir>/cc2_kninf_N1e4 --ratio cc2_N1e4/cc2_N1e5`, and `diffusion.py` | N.1-N.6 (drift/JOURNAL.md entries 5, 11, 14); criterion R(v) |
+| timing | C-20261121-203004-c2c14e7 / 4829 | zone-cycles/cpu_second in `<run dir>/T_*/athena*.log` (core-v0.3 on M/8: 7.28e6) | T |
+| heat_C1, heat_C2 | queued | `heat/scripts/an_compare.py t8` and `an_mode.py T7` on the batch directories (heat README lines 40-80) | H.1-H.4 |
+| D2 (5 chains) | queued | `decisive/scripts/analyze_decisive.py` (t_c, collisions per particle), against D2ctl | D2.1-D2.3 |
+| block A (15 chains) | queued | `drift/scripts/compare.py`, pairs `A8_<y0>_s<s>_kin` / `_kout` against `_ctrl`; window means of Delta per 100 M; sigma_w from the three seeds at 0.334032 | A.1-A.4 |
 
-Decisions pending:
-- orch: the G1 review (outbox gate-status-batch4a) and the next batch (outbox
-  next-batch-drift-close: run (v), then decisive D2).
-- core: the ADM-energy diagnostic and format findings F1-F3 are deferred; collisions on
-  several ranks are accepted with no date.
-- kb: conductivity and DSMC sources (received; waits for the kb package claims_tracks).
+Every analysis is a registered run: `harness/bin/nrpic-run submit --kind scouting --gate G2 --package tracks/C-sidm/<package> --cores 2 --purpose "..." -- python3 ...`, with a figure that you Read.
 
-Lead decisions of this session:
-- TESTS 2c names the T4 window, the T6(b) temperature (0.015) and the T9 KS temperature
-  (final energy). All three were named after the data, and the strict T9 reading stays failed
-  on record.
-- Block A does not start on M/8 at N = 1e5 before run (v). Every fate is read against a
-  control of the same mesh, seed, N and length.
-- Lead sessions submit no card job unless their task names card-hours.
+## Packages still in progress (none has uncommitted files)
 
-Traps:
+- drift: run (v) pending. Runs (ii) and (iv) are dropped.
+- models: paused since 2026-11-20. Step 5 is left: the King runs, alpha_coll minus the
+  control (predictions K in `models/JOURNAL.md` entry 9).
+- threshold_scan: block A is queued in `longruns/`. Blocks B (convergence), C (adaptive mesh
+  with horizon finder) and D (collisional bracket) are not written for M/8.
+- decisive: D2 is queued in `longruns/`.
+- longruns: as above.
+
+## Decisions of this session
+
+- Block A runs at N = 1e5 on M/8, for 600 M (not 1000 M). Every kicked run has its unkicked
+  control of the same seed, mesh, N and executable. There are three particle seeds at
+  y0 = 0.334032 and one at 0.324 and at 0.344. The restart files every 100 M allow a longer
+  continuation later.
+- Run (v) keeps core-v0.3, so that only N differs from its N = 1e5 partner. Everything else
+  runs on release core-v0.6.
+- D2 varies `coll_cell_factor` (1, 2, 4) on M/8 at Kn = 10 in particle mode.
+
+## Traps
+
 - Commit with explicit paths (`git commit -- <paths>`), never `git add -A`. Wait while
-  `/data/haiyangw/nrpic/.git/worktrees/C-sidm/index.lock` exists.
-- `nrpic-run submit --package <dir>` refuses uncommitted edits inside the package, so
-  commit first.
-- A restarted run writes its `cc.nrpic.hst` without a header line. Use
-  `drift/scripts/controls.py` join_hst, or `rv_batch4a.py` read_any.
-- `nrpic-stage verify C-sidm G1` checksums the large run outputs and runs for 40 minutes or
-  more. Start it in the background. It checks cleanliness at its start on a snapshot of
-  HEAD, so later edits do not affect it.
-- Card runs with deposition are not byte-reproducible. Compare collapse times with a seed
-  scatter, and read collisional effects against a control of the same mesh and seed.
-- A continuation needs the executable that wrote its restart (core-v0.3 card build, sha256
-  f9f2dc12...).
-- Collisions stop on more than one MPI rank. Never kill by pattern. Use at most 6 cores per
-  session.
+  `/data/haiyangw/nrpic/.git/worktrees/C-sidm/index.lock` exists; the sequencer commits too.
+- A restarted run writes its `cc.nrpic.hst` without a header line. Read it with
+  `drift/scripts/controls.py` join_hst.
+- Card runs with deposition are not byte-reproducible. Read effects against a control of the
+  same mesh, seed and executable.
+- Disk: each M/8 run writes about 8-10 GB (restart files of 1.1 GB every 100 M), so the
+  queue writes about 200 GB under `scratch/C-sidm/` (21 TB free at submission).
+- Collisions stop on more than one MPI rank. Never kill by pattern. Use at most 6 cores.
