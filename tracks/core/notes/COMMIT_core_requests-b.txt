@@ -1,0 +1,8 @@
+9c92f68bb106d3f68ed01c3dc6e65d804c6a0a9c
+branch core/requests-b; the tree athenak/ of this commit is the source both executables
+were built from (scripts/build_cpu.sh, scripts/build_gpu.sh in wt/core-bfix, 2026-11-15
+15:33 and 15:37 UTC, after the last source edit at 15:32 UTC); athenak/ is unchanged up to
+the branch tip at the time of publication (60d3be2: git diff 9c92f68 60d3be2 -- athenak/
+is empty). Kokkos 6739bc623081648af9e752b616d9671527922cbf.
+sha256 athena_cpu c32a1389c06e58887cd3c38bb92512d413b91eaa8153baac170ac889f7ceeced
+sha256 athena_gpu 5a35c8f1317ea88386c2e442716177710f456378779003ff572a6b076211b9aa

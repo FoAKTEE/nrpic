@@ -1,0 +1,48 @@
+{
+ "run_id": "core-20261115-204949-6817f49",
+ "owner": "core",
+ "purpose": "G1 G2 on one A100: one collision step in the static conformal metric, cases psi_iso, well_tolman, well_shift, psi_iso_hot, both modes, against the reference with the cell rate",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/run_gradient.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-204949-6817f49",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/f46f159/athena_gpu",
+  "--nproc",
+  "2",
+  "--n",
+  "2000000",
+  "--ref",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-181655-b4b8e33/ref.json",
+  "--ref",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-181657-426b4a8/ref.json",
+  "--ref",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-181700-726905c/ref.json",
+  "--ref",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-181702-c93920b/ref.json",
+  "--cases",
+  "psi_iso,well_tolman,well_shift,psi_iso_hot"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-204949-6817f49",
+ "commit": "6817f4987df7e7ab177a0efc28e4c954d20401a3",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/f46f159/athena_gpu",
+   "sha256": "82a05adae8f653042d08817ecda6dddc0d51c0a8d2c46246b0d58b2fb87ad438"
+  },
+  {
+   "path": "tracks/core/analysis/collisions/run_gradient.py",
+   "sha256": "07710ef0b31597cc3f105fc633cc6e70a462fea6ba98f2cfa1005fbfb3e3e501"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-204949-6817f49",
+ "host": "anta",
+ "start_utc": "2026-11-15T20:49:49Z",
+ "cores": 1,
+ "wall_time_s": 58.15,
+ "exit_status": 0,
+ "card_hours": 0.0162
+}

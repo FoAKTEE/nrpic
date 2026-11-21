@@ -1,0 +1,77 @@
+# Regression of the tracer rule (journal of core, package dfix, test T1): a test particle
+# with m = 0 on the mesh metric must follow a timelike geodesic.
+# Schwarzschild in Cartesian Kerr-Schild coordinates on a static mesh (<adm> block set by
+# nrpic_geodesic), dx = 0.25 M, circular orbit at r = 8 M (areal radius), dt = 0.1 M,
+# 300 M: the set-up of docs/TESTLOG.md, "Mesh path (CPU, 2026-11-13)", whose record is
+# r in [8.0000, 8.0012] M, relative errors 8.4e-7 in E and 5.1e-6 in L_z.
+# Circular orbit: E = (1 - 2M/r)/(1 - 3M/r)^(1/2), L = r [M/(r - 3M)]^(1/2); at (r, 0, 0)
+# the covariant Kerr-Schild components are u_x = 2 M E/(r - 2M), u_y = L/r, u_z = 0.
+# With <particles> zero_mass = null (the rule of releases core-v0.2 and core-v0.3) the
+# same particle is pushed as a photon and leaves the mesh within about 10 M.
+
+<comment>
+problem   = tracer with m = 0 on a static mesh metric, circular orbit in Schwarzschild
+
+<job>
+basename  = trc
+
+<mesh>
+nghost    = 2
+nx1       = 96
+x1min     = -12.0
+x1max     = 12.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 96
+x2min     = -12.0
+x2max     = 12.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 96
+x3min     = -12.0
+x3max     = 12.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 300.0
+ndiag      = 10000
+
+<adm>
+dynamic = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+zero_mass      = tracer
+triad          = symmetric
+bh_mass        = 1.0
+bh_spin        = 0.0
+tolerance      = 2.0e-14
+max_iterations = 200
+dt             = 0.1
+deposit        = false
+hist_dcycle    = 10
+traj_dcycle    = 1
+traj_ntrack    = 1
+nparticles     = 1
+p0_x1          = 8.0
+p0_x2          = 0.0
+p0_x3          = 0.0
+p0_u1          = 0.31622776601683794
+p0_u2          = 0.4472135954999579
+p0_u3          = 0.0
+p0_m           = 0.0
+
+<problem>
+pgen_name = nrpic_geodesic

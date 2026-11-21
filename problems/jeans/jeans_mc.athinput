@@ -1,0 +1,243 @@
+# Two overdensities in a relativistic collisionless cluster with the extrinsic curvature
+# of the moving clumps: the configuration of the first paper's run jeans/n1e4_v19
+# (problems/jeans/jeans.athinput with the command-line overrides of that run written
+# in: domain +-80 M, root cells 2 M, eight levels, finest cells M/64 within 0.2 M of
+# each tracker, removal below a lapse of 0.05 and inside 0.8 of a found horizon, finder
+# flow constants 0.05 and 0.2), plus <problem> comp1_p1..3 and comp2_p1..3: the problem
+# generator adds the Bowen-York curvature smeared with each Gaussian
+# (athenak/src/pgen/nrpic/nrpic_clump_curvature.hpp), which solves the momentum
+# constraint for the clumps' bulk motion; K_ij = 0 violated it at first order in the
+# orbital speed (paper, Appendix B).
+#
+# Particles and table: those of the run, unchanged,
+#   problems/ic/make_ic.py jeans --N 10000 --seed 1 --env-yc 0.907 --clump-curvature
+# (particles.nrp sha256 7270917f..., envelope.tab 7ea9ca27...; --clump-curvature only
+# adds the momenta below to the JSON).  With --clump-momentum-rule gaussian the clump
+# particles carry equal shares of the momentum instead of one velocity (the momentum
+# density the curvature solves for exactly; other particle file, other momenta).
+#
+# Prepared, not run: prediction and what would refute it in tracks/core/JOURNAL-clump.md
+# ("Prediction for the rerun of the two-overdensity case").  The data at t = 0 are
+# tested (test T5 there).  Start as the run was started:
+#   scripts/submit_chain.sh <rundir> problems/jeans/jeans_mc.athinput   (ATHENA_WALL=00:25:00)
+# with particles.nrp and envelope.tab in <rundir>.
+
+<comment>
+problem   = two overdensities inside a cluster, momentum constraint solved for the clumps
+
+<job>
+basename  = jeans
+
+<mesh>
+nghost    = 4
+nx1       = 80
+x1min     = -80.0
+x1max     = 80.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 80
+x2min     = -80.0
+x2max     = 80.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 80
+x3min     = -80.0
+x3max     = 80.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement          = adaptive
+num_levels          = 8
+max_nmb_per_rank    = 2280
+ncycle_check        = 4
+refinement_interval = 8
+
+<amr_criterion0>
+method = user
+
+<z4c_amr>
+method            = tracker
+radius_0_rad      = 30.0
+radius_0_reflevel = 1
+radius_1_rad      = 12.0
+radius_1_reflevel = 2
+radius_2_rad      = 6.0
+radius_2_reflevel = 3
+
+<refined_region1>
+level = 7
+x1min = -3.2
+x1max = -2.8
+x2min = -0.2
+x2max = 0.2
+x3min = -0.2
+x3max = 0.2
+
+<refined_region2>
+level = 7
+x1min = 2.8
+x1max = 3.2
+x2min = -0.2
+x2max = 0.2
+x3min = -0.2
+x3max = 0.2
+
+<refined_region3>
+level = 1
+x1min = -30.0
+x1max = 30.0
+x2min = -30.0
+x2max = 30.0
+x3min = -30.0
+x3max = 30.0
+
+<refined_region4>
+level = 2
+x1min = -12.0
+x1max = 12.0
+x2min = -12.0
+x2max = 12.0
+x3min = -12.0
+x3max = 12.0
+
+<refined_region5>
+level = 3
+x1min = -5.0
+x1max = 5.0
+x2min = -5.0
+x2max = 5.0
+x3min = -5.0
+x3max = 5.0
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 100.0
+ndiag      = 100
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+damp_ch         = 0.0      # parabolic relaxation of the Hamiltonian constraint (length); 0: off
+damp_ch_dx      = 0.0      # part of it proportional to the local cell size
+nco             = 2
+co_0_type       = BH
+co_0_x          = -3.0
+co_0_mass       = 0.12
+co_0_radius     = 0.2
+co_0_reflevel   = 7
+co_1_type       = BH
+co_1_x          = 3.0
+co_1_mass       = 0.12
+co_1_radius     = 0.2
+co_1_reflevel   = 7
+tracker_mode    = walk
+nrad_wave_extraction = 3
+extraction_radius_0  = 16.0
+extraction_radius_1  = 22.0
+extraction_radius_2  = 28.0
+extraction_nlev      = 10
+waveform_dt          = 0.25
+
+<fastflow>
+find_every        = 16
+metric_drvts      = interpolant   # derivative of the metric interpolant; 'stored' is the original, wrong near block faces
+num_horizons      = 3
+npunct            = 2
+ntheta            = 16
+lmax              = 8
+use_puncture_0    = 0
+initial_radius_0  = 0.12
+flow_iterations_0 = 2000
+flow_alpha_beta_const_0 = 0.05
+hmean_tol_0       = 100.0
+mass_tol_0        = 1.0e-7
+start_time_0      = 5.0
+stop_time_0       = 10000.0
+use_puncture_1    = 1
+initial_radius_1  = 0.12
+flow_iterations_1 = 2000
+flow_alpha_beta_const_1 = 0.05
+hmean_tol_1       = 100.0
+mass_tol_1        = 1.0e-7
+start_time_1      = 5.0
+stop_time_1       = 10000.0
+use_puncture_2    = -1
+use_puncture_massweighted_center_2 = true
+wait_until_punc_are_close_2 = true
+merger_distance   = 1.0
+initial_radius_2  = 0.6
+flow_iterations_2 = 2000
+flow_alpha_beta_const_2 = 0.2
+hmean_tol_2       = 100.0
+mass_tol_2        = 1.0e-7
+start_time_2      = 20.0
+stop_time_2       = 10000.0
+verbose           = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-7
+max_iterations = 50
+deposit        = true
+nfilter        = 4
+filter_compensate = true   # cancels the widening of the binomial passes (plain passes soften the self-gravity)
+filter_comp_c  = -1.0          # its coefficient; negative: nfilter/4
+deposit_max_level = 31
+deposit_adaptive  = false  # published rule: cloud at the finest local level (the adaptive cloud level disturbs forming black holes, docs/TESTLOG.md)
+deposit_min_level = 1      # ... and is never coarser than dx = 1 M
+deposit_ppc       = 2.0
+deposit_max_coarsen = 31   # a cloud is at most this many levels coarser than its particle's block
+alpha_exc      = 0.05
+ah_exc_factor  = 0.8
+hist_dcycle    = 1
+snap_dt        = 0.5
+particle_file  = particles.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 3
+comp0_type = table
+comp0_file = envelope.tab
+comp1_type  = gaussian
+comp1_mass  = 0.12
+comp1_sigma = 0.7
+comp1_x1    = -3.0
+comp1_p1    = -2.5331192412806132e-05   # momentum sum m u_i of the particles of clump A
+comp1_p2    = -0.021855624754435855     # (species 1 of particles.nrp, see the header)
+comp1_p3    = -2.3365086345044562e-05
+comp2_type  = gaussian
+comp2_mass  = 0.12
+comp2_sigma = 0.7
+comp2_x1    = 3.0
+comp2_p1    = -2.5331192412806132e-05   # clump B (species 2)
+comp2_p2    = 0.021936558943432015
+comp2_p3    = -2.3365086345044562e-05
+lapse      = isotropic
+
+<output1>
+file_type = hst
+dt        = 0.5
+
+<output2>
+file_type = rst
+dt        = 5.0

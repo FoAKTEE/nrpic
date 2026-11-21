@@ -1,0 +1,105 @@
+{
+ "geo": {
+  "baseline": "core-20261115-154710-9c92f68",
+  "new": "core-20261115-154711-9c92f68",
+  "identical": [
+   "geo.nrpic.hst",
+   "geo.traj.bin"
+  ],
+  "differ": [],
+  "status_baseline": "exit 0, wall 0.0 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-154710-9c92f68",
+  "status_new": "exit 0, wall 0.0 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-154711-9c92f68"
+ },
+ "boris": {
+  "baseline": "core-20261115-154712-9c92f68",
+  "new": "core-20261115-154713-9c92f68",
+  "identical": [
+   "geo.nrpic.hst",
+   "geo.traj.bin"
+  ],
+  "differ": [],
+  "status_baseline": "exit 0, wall 0.1 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-154712-9c92f68",
+  "status_new": "exit 0, wall 0.1 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-154713-9c92f68"
+ },
+ "dep": {
+  "baseline": "core-20261115-154714-9c92f68",
+  "new": "core-20261115-154719-9c92f68",
+  "identical": [
+   "dep.nrpic.hst"
+  ],
+  "differ": [],
+  "status_baseline": "exit 0, wall 4.9 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-154714-9c92f68",
+  "status_new": "exit 0, wall 5.0 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-154719-9c92f68"
+ },
+ "east": {
+  "baseline": "core-20261115-154724-9c92f68",
+  "new": "core-20261115-154733-9c92f68",
+  "identical": [
+   "east.cstat.hst",
+   "east.nrpic.hst",
+   "east.part.00000.bin",
+   "east.part.00001.bin",
+   "east.part.00002.bin",
+   "east.part.00003.bin",
+   "east.part.00004.bin",
+   "east.part.00005.bin",
+   "east.part.00006.bin",
+   "east.traj.bin",
+   "east.trajmet.bin",
+   "east.z4c.user.hst"
+  ],
+  "differ": [],
+  "status_baseline": "exit 0, wall 8.4 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-154724-9c92f68",
+  "status_new": "exit 0, wall 8.6 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-154733-9c92f68"
+ },
+ "os": {
+  "baseline": "core-20261115-154742-9c92f68",
+  "new": "core-20261115-155227-9c92f68",
+  "identical": [
+   "os.nrpic.hst",
+   "os.part.00000.bin",
+   "os.part.00001.bin",
+   "os.part.00002.bin",
+   "os.part.00003.bin",
+   "os.z4c.user.hst",
+   "rst/os.00000.rst.prt",
+   "rst/os.00001.rst.prt",
+   "rst/os.00002.rst.prt",
+   "rst/os.00003.rst.prt",
+   "rst/os.00004.rst.prt"
+  ],
+  "differ": [
+   "rst/os.00000.rst",
+   "rst/os.00001.rst",
+   "rst/os.00002.rst",
+   "rst/os.00003.rst",
+   "rst/os.00004.rst"
+  ],
+  "status_baseline": "exit 0, wall 285.1 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-154742-9c92f68",
+  "status_new": "exit 0, wall 298.5 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-155227-9c92f68"
+ },
+ "jeans": {
+  "baseline": "core-20261115-155728-9c92f68",
+  "new": "core-20261115-155739-9c92f68",
+  "identical": [
+   "bin/JeansWave.grav_phi.00000.bin",
+   "bin/JeansWave.grav_phi.00001.bin",
+   "bin/JeansWave.hydro_w.00000.bin",
+   "bin/JeansWave.hydro_w.00001.bin",
+   "run.log (280 result lines)"
+  ],
+  "differ": [],
+  "status_baseline": "exit 0, wall 9.6 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-155728-9c92f68",
+  "status_new": "exit 0, wall 8.0 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-155739-9c92f68"
+ },
+ "binary": {
+  "baseline": "core-20261115-155748-9c92f68",
+  "new": "core-20261115-155839-9c92f68",
+  "identical": [
+   "run.log (48 result lines)"
+  ],
+  "differ": [],
+  "status_baseline": "exit 0, wall 50.6 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-155748-9c92f68",
+  "status_new": "exit 0, wall 51.1 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-155839-9c92f68"
+ }
+}

@@ -119,14 +119,71 @@ All binary files are written by one rank in native byte order. `<base>` is
 |---|---|
 | `<base>.nrpic.hst` | text, one record every `hist_dcycle` cycles: time, cycle, particle number, sum m, sum m W, sum m u_i (3), mesh integrals of E and S_i times sqrt(gamma) dV before the filter (4), lapse and energy density at the probe (average of the eight cells around `probe_x1..3`), proper time of the normal observer at the probe, minimum lapse on the mesh, number and rest mass of excised particles, number and rest mass of particles that left the mesh, maximum pusher iterations, number of unconverged pushes, number of MeshBlocks, and (since the 27-column version) the mesh integrals of E and S_i after the filter. Restarts append; keep the last record of each time. |
 | `<base>.traj.bin` | float64 records of 8 (time, tag, x^i, u_i) for particles with tag < `traj_ntrack`, every `traj_dcycle` cycles |
-| `<base>.trajmet.bin` | mesh-metric runs: float64 records of 12 (time, tag, alpha, beta^i, gamma_xx, xy, xz, yy, yz, zz) reconstructed at the same particles and times |
+| `<base>.trajmet.bin` | mesh-metric runs: float64 records of 17 at the same particles and times, in this order: time, tag, alpha, beta^x, beta^y, beta^z, gamma_xx, xy, xz, yy, yz, zz reconstructed at the particle, the proper time of the particle (affine parameter of a null particle), and the deposited E, S_x, S_y, S_z interpolated to the particle with the cloud-in-cell weights (zero without deposit) (`nrpic_io.cpp`, `NrpicWriteTrajectories`; the row said 12 values until core-v0.5) |
 | `<base>.part.NNNNN.bin` | snapshot every `snap_dt`: 8 bytes `NRPSNAP1`, float64 time, int64 N, int64 cycle, N records of 7 float64 (x^i, u_i, m), N int32 tags, N int32 species |
 | `<base>.curv.hst` | text, every `curv_dt`: time, maximum of the absolute Kretschmann scalar over cells with lapse above the excision value and its position, maximum energy density and its position, slice file number |
 | `<base>.curv.NNNNN.bin` | `curv_slice = true`: 8 bytes `NRPCURV1`, float64 time, int64 number of records, records of 7 float64 (x, z, dx, I, E, alpha, sqrt(gamma)) for the cells cut by the plane y = `curv_plane_y` (the y of a record is the centre of the cell containing that plane) |
 | `rst/<base>.NNNNN.rst.prt` | particle restart file next to each mesh restart file: 8 bytes `NRPRST02`, int64 N, 7 float64 of module state, 4 int64 of counters, N records of 7 float64, N records of 3 int32 (grid ID, tag, species) |
+| `<base>.removed.bin` | with `<particles> removal_record = true`: 8 bytes `NRPREM01`, int64 20, then one record of 20 float64 per removed particle: time, tag, species, reason (1 left the mesh, 2 lapse below `alpha_exc`, 3 inside a horizon, 4 state not finite), x^i, u_i, rest mass, proper time, alpha, beta^i, W, E = alpha W - beta^i u_i, distance to the centre of the accretion diagnostics, pericentre passages. Reasons 2 to 4: state and metric at the start of the step of the removal; reason 1: state after the push, metric fields zero |
+| `<base>.acc.hst` | with `removal_record`, `acc_nsphere > 0` or `peri_count`: text, columns named in the header (`tracks/core/interfaces/REQUESTS_ADF.md` section 2.3) |
+| `<base>.co_<n>.txt` | AthenaK's puncture tracker n (upstream format): iteration, time, x^i, v^i. The row labelled with cycle n and time t^n holds the position after the step of that cycle, i.e. at t^(n+1) (`WriteTracker` runs before the driver advances cycle and time); the centre written in `<base>.acc.hst` at t^(n+1) equals that row (test T7 of work package dfix, run core-20261115-180101-6d165b4) |
+
+Additions that appear only when the option is on: with `<particles> peri_count = true` a
+snapshot ends with N int32 (pericentre passages of each particle), after the N float64
+of proper time that every snapshot carries; with any accretion diagnostic on, the
+particle restart file ends with a block `NRPACC01` (28 float64, int64 N, N int32).
+
+Rest mass in every particle record: m > 0 a particle with sources; m = 0 a tracer on a
+timelike geodesic without sources (a null particle only with `<particles> zero_mass =
+null`, the rule of releases core-v0.2 and core-v0.3 on the mesh metric); m = -t_e < 0 a
+light ray emitted at t_e.
 
 The Z4c history `<base>.z4c.user.hst` holds volume integrals of the squared constraint
 residuals (divide by its Volume column and take the square root for a norm).
+
+## Mesh binary output in double precision (`file_type = bin`, `double_precision = true`)
+
+Upstream's `bin` output writes every value as a 4-byte float, which cannot hold a metric
+component 1 + h with h of 1e-6. With `<outputN> double_precision = true` the values are
+written as they are stored (8 bytes); nothing else of the format changes:
+
+    text lines   "Athena binary output version=1.1", "  size of preheader=5",
+                 "  time=...", "  cycle=...", "  size of location=8",
+                 "  size of variable=8"   (4 without the option),
+                 "  number of variables=N", "  variables:  name1  name2 ...",
+                 "  header offset=H"
+    H bytes      parameter dump (text)
+    per MeshBlock: 10 int32 (ois oie ojs oje oks oke, lx1 lx2 lx3, level above the root),
+                 6 float64 (x1min x1max x2min x2max x3min x3max), then N arrays of
+                 (oke-oks+1)(oje-ojs+1)(oie-ois+1) values, first index fastest
+
+No ghost cells unless `ghost_zones = true`. Any variable or group: `z4c` (22 fields in
+the order chi, gxx, gxy, gxz, gyy, gyz, gzz, Khat, Axx, Axy, Axz, Ayy, Ayz, Azz, Gamx,
+Gamy, Gamz, Theta, alpha, betax, betay, betaz, names with the prefix `z4c_`), `adm`,
+`tmunu` (Sxx, Sxy, Sxz, Syy, Syz, Szz, E, Sx, Sy, Sz: the sources of the last deposit,
+not multiplied by the volume element, also with `source_density = true`), `con`, `weyl`.
+A file holds the state of the time in its header. The parameter is read only if present:
+without it every `bin` file is byte-identical to before. Reader:
+`python/nrpic/athena_bin.py` (`read_bin`, both precisions; uniform meshes are assembled
+to arrays [k, j, i]); upstream's `athenak/vis/python/bin_convert.py` accepts both sizes.
+Example: `problems/tests/lw_oblique.athinput`.
+
+## Field file of the cosmology generator (`NRCOSMO1`) on a box that is not a cube
+
+`athenak/src/pgen/nrpic/nrpic_cosmo.cpp` (`id = file`) reads 8 bytes `NRCOSMO1`, 3 int64
+(n1, n2, n3) and nine arrays of n1 n2 n3 float64, first index fastest (psi, K, alpha,
+Ahat_xx, xy, xz, yy, yz, zz), for a root mesh of n1 x n2 x n3 cells. The three numbers
+need not be equal: `problems/cosmo/make_waves.py` writes such files for boxes of cubic
+cells that are thin in one direction (at least four cells), with the constraint solve of
+`python/nrpic/torus_id.py`. `id.json` beside the file gives the box lengths with all
+digits (`box`); put them into `<mesh> x1max` ... of the run.
+
+## Restart files
+
+Since branch `core/requests-b` the 36 bytes of the mesh restart file that hold the
+never-set coarse indices of the whole mesh (after the 40 bytes ng, nx1, nx2, nx3, is ...
+ke of `mesh_indcs`) are zero; identical runs give identical restart files
+(`docs/UPSTREAM_DEFECTS.md`, item 3).
 
 ## Newtonian mode of the particle module (`<particles> pusher = newton`)
 
@@ -152,3 +209,24 @@ Interface: `tracks/core/interfaces/id_solver.md`; readers:
 | `<base>.idvector.bin` | `id_vector = true` and `id_dump = true`: 8 bytes `NRIDVEC1`, the header of `<base>.idsolve.bin` (3 int64, 6 float64, int64 number of fields, 15), then 15 fields of n3*n2*n1 float64, first index fastest: W_x, W_y, W_z; the right side s_i of the vector equation (`8 pi psi^6 S_i + (2/3) psi^6 d_i K - d_j Abar_ij(trial)`, 3); its residual in stencil form (3); M_i of the constraint monitor at the last evaluation (3) and at the first (3). Reader: `tracks/core/analysis/idsolve/run_vector.py` (`read_idvector_bin`). |
 | `<base>.idsolve.txt`, second pass (`tracks/core/interfaces/id_solver2.md`) | a second header line `# second pass: id_far = ..., refined mesh = ..., punctures = ..., linear solver = ...` when the far field, a refined mesh, punctures or BiCGStab are in use; with the far field (`id_far = multipole`, the default on a mesh with no periodic face) a last line `# far field: M_psi = ..., P_ADM = (...), J_ADM = (...) about the centre (...)`: M_psi = bare masses of the punctures - (1/2 pi) times the volume integral of the right side of the scalar equation over the sphere of the moments (the mass of the monopole of psi, psi -> 1 + M_psi/2r; it misses whatever source lies outside that sphere, e.g. the r^-4 tail of Bowen-York curvature), P_ADM = (1/8 pi) times the integral of the right side of the vector equation plus the momenta of the punctures, J_ADM from its antisymmetric first moment plus spins and x_c times P_c of the punctures. Readers: `tracks/core/analysis/idsolve2/lib2.py` (`summary`, `far_line`). |
 | `<base>.idsolve.blk.bin` | refined mesh (`id_dump = true`; replaces `.idsolve.bin` and `.idvector.bin`): 8 bytes `NRIDBLK1`, 5 int64 (number of MeshBlocks, nx1, nx2, nx3 of a MeshBlock, number of fields: 7, or 16 with `id_vector`), per MeshBlock int64 level and 6 float64 (x1min, x1max, x2min, x2max, x3min, x3max), then each field as nmb blocks of nx3*nx2*nx1 float64, first index fastest: psi, K, Abar_ij Abar_ij, E, H of the monitor at the last evaluation, the seven-point residual there, H at the first evaluation, and with `id_vector` W_x, W_y, W_z, M_i of the monitor at the last (3) and at the first evaluation (3). Reader: `lib2.py` (`read_blk`, `blk_coords`). |
+
+## Files added by release core-v0.5
+
+Written only with the option or the build named; the files of the releases before keep
+their formats. Interface texts: `tracks/core/interfaces/cosmo_amr.md`, `mpi.md`,
+`scalar_field_3.md`, `threaded_build.md`.
+
+| File | Written when | Content |
+|---|---|---|
+| `<base>.region.hst` | `<particles> region_dcycle > 0` | text, one record every `region_dcycle` cycles: time, cycle; for the whole mesh the proper volume V, the proper-volume means of K and of the lapse, the coordinate-volume mean of the lapse, sqrt(<H^2>), sqrt(<(16 pi E)^2>), <E> (means weighted with sqrt(gamma) dV over the leaf cells); then for every sphere (`region_radius1..4`, and the one of `region_horizon`) its radius and, inside and then outside, V, sqrt(<H^2>), sqrt(<(16 pi E)^2>), <E>, max \|H\|. The header line names the columns (`H2_in_s1`, `E2_out_s1`, ...); reader `tracks/core/analysis/cosmo_amr/amrlib.py` (`read_hst`) |
+| `<base>.guard.txt` | the guard `<z4c_guard>` stops a run (exit status 3) | text: time, cycle and step of the stop, the reason, the last check that passed, MeshBlocks and cells, the number of non-finite values (per variable) and of cells with chi <= 0, the first such cell with its MeshBlock, level, cell size, position and all evolved fields, the particles left, excised and escaped |
+| `<base>.horizon_status_<n>.txt` | `<fastflow> diagnostics = true` | text, one line per search of horizon n: cycle, time, found (0 or 1), reason (0 found, 1 area not finite, 2 mean expansion not finite, 3 mean expansion above `hmean_tol`, 4 mean radius negative, 5 area mass below 1e-10, 6 iteration limit), flow iterations, area, area mass, mean and smallest coordinate radius, mean expansion, smallest \|mean expansion\| reached, surface points outside the mesh, centre x, y, z, and the reason in words after `#` |
+| `rst/<base>.NNNNN.rst.amr` | restart output of `nrpic_cosmo` on an adaptive mesh | 8 bytes `NRPAMR01`, int64 number of MeshBlocks, int64 cycle, int64 pending (1: the regrid of that cycle follows the file), then per MeshBlock in global order five int32: level, lx1, lx2, lx3, cycles since its last change |
+| `<base>.mpi.hst` | a run of the MPI build on more than one rank | text, one record per record of `<base>.nrpic.hst`: time, cycle, particles handed to other ranks and deposit packets sent since the last record, then the particles on each rank |
+| `<base>.sf.con.hst`, columns 21 to 27 | `<scalar_field> con_signed = true` | after the 20 columns of release core-v0.4: the signed box means <H>, <M_x>, <M_y>, <M_z>, and with H' = H - <H>: <\|H'\|/[H]>, max \|H'\|/[H], rms H'; reader `python/nrpic/scalar_field.py` (`read_con_history`) |
+
+Since release core-v0.5 the summary file of the horizon finder
+(`<base>.horizon_summary_<n>.txt`) and the file of the compact-object tracker
+(`<base>.co_<n>.txt`) are opened at their first record and therefore lie in the run
+directory given with `-d`; the releases before opened them in the directory the
+executable was started in.

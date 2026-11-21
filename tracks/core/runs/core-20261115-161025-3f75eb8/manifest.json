@@ -1,0 +1,52 @@
+{
+ "run_id": "core-20261115-161025-3f75eb8",
+ "owner": "core",
+ "registered_by": "tracks/core/analysis/dfix/runreg.py (by hand: nrpic-run submit fails)",
+ "purpose": "T5 common horizon of a pair among three punctures: corrected source against release core-v0.3",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "tracks/core/analysis/dfix/run_cases.py",
+  "tracks/core/analysis/dfix/cases/t5_pair_cpu.list",
+  "--jobs",
+  "2"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-dfix",
+ "commit": "3f75eb849cc039a3b5486280e3a7b544261192b1",
+ "branch": "core/requests-adf",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/dfix/run_cases.py",
+   "sha256": "9b984be0bc3e9f6a504c92531993ef6a1af757923557da7eb570da0355841708"
+  },
+  {
+   "path": "tracks/core/analysis/dfix/cases/t5_pair_cpu.list",
+   "sha256": "bf0fca12a8dc5227f068c1331f410adf2659f8e3bbf231b4ac62afdc4877600e"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "17ee5e28d93016da354ce86e5d869233a21a1f20f67b4cb211527e6b1359022d"
+  },
+  {
+   "path": "problems/tests/pair_horizon.athinput",
+   "sha256": "c263bf3b23475cbab6b46f56a761608833a1cf3b2a7b7a347af67cddb7784388"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+   "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-161025-3f75eb8",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-161025-3f75eb8"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:10:26Z",
+ "cores": 2,
+ "status": "completed",
+ "wall_time_s": 212.27,
+ "exit_status": 0,
+ "end_utc": "2026-11-15T16:13:58Z",
+ "core_hours": 0.1179
+}

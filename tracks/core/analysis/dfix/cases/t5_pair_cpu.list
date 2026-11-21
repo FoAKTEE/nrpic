@@ -1,0 +1,3 @@
+# T5 common horizon of a pair among three punctures: corrected source against release core-v0.3
+new  {repo}/.work/build_cpu/src/athena {repo}/problems/tests/pair_horizon.athinput
+v03  /data/haiyangw/nrpic/.work/build_cpu_v03/src/athena {repo}/problems/tests/pair_horizon.athinput

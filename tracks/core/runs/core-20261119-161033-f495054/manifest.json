@@ -1,0 +1,26 @@
+{
+ "run_id": "core-20261119-161033-f495054",
+ "owner": "core",
+ "command": [
+  "bash",
+  "/data/haiyangw/nrpic/wt/core-omp/tracks/core/omp/mg_probe.sh",
+  "/data/haiyangw/nrpic/wt/core-omp/.work/build_omp/src/athena",
+  "/data/haiyangw/nrpic/wt/core-omp/.work/build_cpu/src/athena"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-161033-f495054",
+ "commit": "f495054",
+ "source_modified_since_commit": false,
+ "inputs": [],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-161033-f495054",
+ "purpose": "omp: gas multigrid V-cycle defects against the thread count for MeshBlocks of 32^3 (2 blocks), 16^3 (16) and 4^3 (1024) on the Jeans deck. Registered by hand: nrpic-run refused (16 cores of core busy in other sessions)",
+ "kind": "scouting",
+ "tag": "omp-mg-probe2",
+ "state": "finished",
+ "status": "completed",
+ "registered_by_hand": "nrpic-run refused (cores of owner core busy in other sessions)",
+ "wall_time_s": 10.86,
+ "exit_status": 0,
+ "cores": 8,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T16:10:33Z"
+}

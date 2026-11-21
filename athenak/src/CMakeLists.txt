@@ -134,11 +134,17 @@ add_executable(
         particles/particles_tasks.cpp
         particles/nrpic.cpp
         particles/nrpic_io.cpp
+        particles/nrpic_mpi.cpp
         particles/nrpic_curvature.cpp
         particles/nrpic_kick.cpp
         particles/nrpic_collide.cpp
+        particles/nrpic_perturb.cpp
         particles/nrpic_newton.cpp
         particles/nrpic_idsolve.cpp
+        particles/nrpic_accretion.cpp
+        particles/nrpic_refine.cpp
+        particles/nrpic_guard.cpp
+        particles/nrpic_region.cpp
         outputs/pdf.cpp
 
         pgen/pgen.cpp
@@ -215,6 +221,8 @@ add_executable(
         scalar_field/scalar_field_rhs.cpp
         scalar_field/scalar_field_noise.cpp
         scalar_field/scalar_field_io.cpp
+        scalar_field/scalar_field_slice.cpp
+        scalar_field/scalar_field_diag.cpp
         z4c/z4c.cpp
         z4c/z4c_adm.cpp
         z4c/z4c_calcrhs.cpp

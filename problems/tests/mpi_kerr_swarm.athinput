@@ -1,0 +1,85 @@
+# Several MPI ranks, test T1 (tracks/core/interfaces/mpi.md): a swarm of test particles
+# around a Kerr black hole whose Kerr-Schild metric is sampled on the mesh (fixed
+# metric).  The particles cross MeshBlock and rank boundaries; some fall below the lapse
+# threshold and are excised, some leave the mesh.  Run on 1, 2 and 4 ranks,
+#   mpirun -np N athena -i mpi_kerr_swarm.athinput
+# the trajectories, snapshots and the particle restart file are identical byte for byte.
+# With particles/deposit=true (test T2) the sources are deposited without back-reaction.
+# The particle file is made by tracks/core/analysis/mpi/mpi_tests.py.
+
+<comment>
+problem   = NRPIC on several ranks, swarm in a Kerr metric on the mesh
+
+<job>
+basename  = swarm
+
+<mesh>
+nghost    = 2
+nx1       = 64
+x1min     = -16.0
+x1max     = 16.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -16.0
+x2max     = 16.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -16.0
+x3max     = 16.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 100.0
+ndiag      = 100
+
+<adm>
+dynamic = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+bh_mass        = 1.0
+bh_spin        = 0.5
+tolerance      = 1.0e-12
+max_iterations = 100
+dt             = 0.25
+deposit        = false
+deposit_shape  = cic
+deposit_comp_c = 0.0
+nfilter        = 1
+filter_compensate = false
+interp         = hermite
+alpha_exc      = 0.6
+hist_dcycle    = 1
+traj_dcycle    = 4
+traj_ntrack    = 64
+snap_dt        = 25.0
+probe_x1       = 6.1
+probe_x2       = 0.2
+probe_x3       = 7.9
+particle_file  = swarm.nrp
+
+<output1>
+file_type = rst
+dt        = 100.0
+
+<output2>
+file_type = bin
+variable  = tmunu
+dt        = 50.0
+
+<problem>
+pgen_name = nrpic_geodesic

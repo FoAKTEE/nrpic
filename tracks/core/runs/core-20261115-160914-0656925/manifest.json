@@ -1,0 +1,41 @@
+{
+ "run_id": "core-20261115-160914-0656925",
+ "owner": "core",
+ "purpose": "G2e: replay of single collision steps by the Python twin, the seven cases of wave 1 and six cases of coll_energy (static conformal metric with shift, Kerr-Schild), processor",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/run_replay.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160914-0656925",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_cpu",
+  "--nproc",
+  "3",
+  "--new"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-160914-0656925",
+ "commit": "0656925f07a9451d8835515c75735bac14702007",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_cpu",
+   "sha256": "c5d0a9879775ae019845922113eab06f5c6662cd0087b7ebd24a81c452a84192"
+  },
+  {
+   "path": "tracks/core/analysis/collisions/run_replay.py",
+   "sha256": "dd29f99393ee5ddd7d49a59488a07701dfcd1244157a1ae7c7cc9f38cf4c6980"
+  },
+  {
+   "path": "python/nrpic/collide.py",
+   "sha256": "e8777de41aadbd2cc1a2330c0aaa0c202c91b812a925588c174ea39edcdd3595"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160914-0656925",
+ "host": "anta",
+ "start_utc": "2026-11-15T16:09:14Z",
+ "cores": 3,
+ "wall_time_s": 504.63,
+ "exit_status": 0,
+ "core_hours": 0.4205
+}
