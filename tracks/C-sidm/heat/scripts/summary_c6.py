@@ -205,8 +205,8 @@ def main():
     ax.set_xlabel(r"$\theta$")
     ax.set_ylabel(r"$\kappa/\kappa_1$ ($k\lambda\to 0$)")
     ax.set_title("T7: measured against relativistic Chapman-Enskog", fontsize=8.5)
-    ax.set_ylim(0.925, 1.125)
-    ax.legend(loc="upper left", fontsize=6.0, ncol=2)
+    ax.set_ylim(0.90, 1.125)
+    ax.legend(loc="lower left", fontsize=5.8, ncol=2)
     # right: theta = 0.003 in detail, with the cell-size correction of T8
     ax2 = fig.add_axes([0.58, 0.16, 0.40, 0.72])
     names = ["processor", "pooled_unweighted", "pooled_weighted"]
