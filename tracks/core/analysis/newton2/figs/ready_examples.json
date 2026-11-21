@@ -1,0 +1,178 @@
+{
+ "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_newton-2/athena_cpu",
+ "nlim": 20,
+ "examples": {
+  "fft_spectral": {
+   "cmd": [
+    "/data/haiyangw/nrpic/scratch/core/exe/core_newton-2/athena_cpu",
+    "-i",
+    "/data/haiyangw/nrpic/wt/core-newton2/problems/newton/periodic_fft.athinput",
+    "particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261121-081316-b153b46/ic/wave32.nrp",
+    "time/nlim=20"
+   ],
+   "exit": 0,
+   "records": 21,
+   "finite": true,
+   "group_records": 21,
+   "group_number": 32768.0,
+   "group_mass": 7.639437268406961,
+   "ok": true,
+   "group_ok": true,
+   "reference": "/data/haiyangw/nrpic/scratch/core/core-20261121-080229-0095e95/fftsp/new",
+   "records_equal_reference": 21
+  },
+  "fft_seven_point": {
+   "cmd": [
+    "/data/haiyangw/nrpic/scratch/core/exe/core_newton-2/athena_cpu",
+    "-i",
+    "/data/haiyangw/nrpic/wt/core-newton2/problems/newton/periodic_fft.athinput",
+    "particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261121-081316-b153b46/ic/wave32.nrp",
+    "particles/newton_fft_symbol=seven_point",
+    "time/nlim=20"
+   ],
+   "exit": 0,
+   "records": 21,
+   "finite": true,
+   "group_records": 21,
+   "group_number": 32768.0,
+   "group_mass": 7.639437268406961,
+   "ok": true,
+   "group_ok": true
+  },
+  "embedded": {
+   "cmd": [
+    "/data/haiyangw/nrpic/scratch/core/exe/core_newton-2/athena_cpu",
+    "-i",
+    "/data/haiyangw/nrpic/wt/core-newton2/problems/newton/embedded_ellipsoid.athinput",
+    "particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261121-081316-b153b46/ic/embedded.nrp",
+    "time/nlim=20"
+   ],
+   "exit": 0,
+   "records": 21,
+   "finite": true,
+   "group_records": 21,
+   "group_number": 7208.0,
+   "group_mass": 0.7500000000000084,
+   "ok": true,
+   "group_ok": true,
+   "patch_ok": true
+  },
+  "smr": {
+   "cmd": [
+    "/data/haiyangw/nrpic/scratch/core/exe/core_newton-2/athena_cpu",
+    "-i",
+    "/data/haiyangw/nrpic/wt/core-newton2/problems/newton/isolated_smr.athinput",
+    "particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261121-081316-b153b46/ic/ball.nrp",
+    "particles/dt=0.002",
+    "time/nlim=20"
+   ],
+   "exit": 0,
+   "records": 21,
+   "finite": true,
+   "ok": true,
+   "zero_columns": [
+    9
+   ],
+   "reference": "/data/haiyangw/nrpic/scratch/core/core-20261120-221835-4870ae5/fine_in_smr",
+   "time_equal": true,
+   "dev_columns_5_18_max": 2.1540135595508996e-13,
+   "dev_columns_5_18": [
+    4.477976996041592e-15,
+    9.911235293684314e-15,
+    1.213378298320348e-14,
+    1.7934733797449984e-14,
+    0.0,
+    8.698848991606827e-15,
+    9.71026736107025e-15,
+    1.3756407739524536e-14,
+    1.7588707628853528e-14,
+    1.9968780196605157e-14,
+    8.440534931965936e-15,
+    1.344267309740718e-13,
+    2.1540135595508996e-13,
+    1.8764593080204604e-13
+   ]
+  }
+ },
+ "generators": [
+  {
+   "cmd": [
+    "/data/haiyangw/nrpic/wt/core-newton2/.venv/bin/python",
+    "/data/haiyangw/nrpic/wt/core-newton2/problems/newton/make_ic.py",
+    "wave",
+    "--out",
+    "/data/haiyangw/nrpic/scratch/core/core-20261121-081316-b153b46/ic/wave32.nrp",
+    "--n",
+    "32"
+   ],
+   "exit": 0
+  },
+  {
+   "cmd": [
+    "/data/haiyangw/nrpic/wt/core-newton2/.venv/bin/python",
+    "/data/haiyangw/nrpic/wt/core-newton2/problems/newton/make_ic.py",
+    "ball",
+    "--out",
+    "/data/haiyangw/nrpic/scratch/core/core-20261121-081316-b153b46/ic/embedded.nrp",
+    "--center",
+    "24",
+    "24",
+    "24",
+    "--radius",
+    "1.5",
+    "--mass",
+    "0.75",
+    "--spacing",
+    "0.125",
+    "--ntracer",
+    "0",
+    "--axes",
+    "2.2477492612322503",
+    "3.1448230030708744",
+    "4.052021707899205",
+    "--vgrad",
+    "-0.15721349249419472",
+    "-0.0944697966506601",
+    "-0.031017934277860017",
+    "--background",
+    "0",
+    "48",
+    "64",
+    "0.000583936065276324"
+   ],
+   "exit": 0
+  },
+  {
+   "cmd": [
+    "/data/haiyangw/nrpic/wt/core-newton2/.venv/bin/python",
+    "/data/haiyangw/nrpic/wt/core-newton2/problems/newton/make_ic.py",
+    "ball",
+    "--out",
+    "/data/haiyangw/nrpic/scratch/core/core-20261121-081316-b153b46/ic/ball.nrp",
+    "--center",
+    "0.05",
+    "-0.05",
+    "0.03",
+    "--radius",
+    "0.7",
+    "--mass",
+    "0.343",
+    "--spacing",
+    "0.03125",
+    "--ntracer",
+    "0",
+    "--velocity",
+    "-0.2",
+    "0.15",
+    "-0.1",
+    "--omega",
+    "0.2",
+    "-0.3",
+    "0.6"
+   ],
+   "exit": 0
+  }
+ ],
+ "exe_sha256": "107fd235e47b6dbdab876b2dbeffb7246c7a7a89f4e6d867b297d1616d3dbab9",
+ "ok": true
+}

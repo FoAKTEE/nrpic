@@ -940,3 +940,59 @@ until a particle is removed differently.
   finder does not amplify rounding there on one rank, and the difference between the
   rank counts is a defect of the code path of several ranks, to be found next (in the
   finder's interpolation and reductions, or in what this package hands it).
+
+## 2026-11-21 lead of core (session core-lead-4): the package's open records closed
+
+The package's session was cut before it wrote these outcomes; the lead writes them from
+the runs, read-only on their outputs.
+
+### Entry 29: outcome of P7g (entry 28), run core-20261120-223502-f9a2c02
+
+The manifest of this run, written by hand in `wt/core-mpi` and left untracked there, is
+copied unchanged into `tracks/core/runs/` of `core/nrpic` (state "finished", exit 0, 139 s
+on 2 cores). Its `run.log` [VERIFIED]:
+- "same" reproduces the reference in all four searches and in the removed numbers (0,
+  38, 38, 38, 38, 41, 41, 43, 43): held.
+- "perturbed" (flow constant 1 + 1e-13) against "same", relative difference of the
+  smallest radius per search: 1.9e-10, 1.9e-10, 1.5e-15, 4.8e-3; of the mass 3.7e-12,
+  3.7e-12, 0, 1.1e-3; removed numbers 41, 41 instead of 43, 43 in the last two cycles.
+  P7g held as written: below 1e-9 in the three earlier searches, above 1e-4 at
+  t = 0.1875. Seen in the same log: the perturbed search of t = 0.1875 reports exactly
+  the mass, smallest radius and rms expansion of the search of t = 0.125 (1.023427458727,
+  0.442973261, 0.184), i.e. the summary repeats the previous surface; that this search
+  did not converge and the finder kept its last surface is my reading [JUDGEMENT, the
+  status file of `<fastflow> diagnostics` was not written in this run].
+- So the finder at four cells per horizon radius turns a 1e-13 change of its own
+  arithmetic on ONE rank into a 5e-3 change of the surface and a different excision;
+  the 8 per cent between rank counts of entry 27 is this sensitivity, not a defect of
+  the hand-over, the packets or the reductions of this package (entry 28's second half,
+  now tested). Interface text `mpi.md` section 9 and the release's OPEN.md say so.
+
+### Entry 30: outcome of the two-card job 4733 (P6a to P6d of entry 9)
+
+Run core-20261120-220612-431e9b8 (Slurm job 4733: 2026-11-20 14:57:48 to 14:59:06 PST,
+78 s on two cards, 0.043 card-hours; executable `wt/core-mpi/.work/build_gpu_mpi/src/athena`,
+sha256 d53b8550..., the file published as `scratch/core/exe/core_mpi/athena_gpu`). The
+manifest stood at "running" (the session was cut while `sbatch --wait` waited); closed
+with `nrpic-run finish` (completed, exit 0). Analysed by run core-20261121-080037-2ee9973
+(`card_analysis.py`, which got `--out` so that it writes outside the closed run
+directory; `card.json`, figure `figs/card_test.png`, looked at: left panel the cluster
+on 1 card twice and on 2 cards at 1e-16 to 4e-15; right panel rate and memory of the
+three vacuum runs) [VERIFIED]:
+- P6a held: all six runs exit 0; in F8b and F16 both cards carry memory (30349 and 30349
+  MiB; 57521 and 57521 MiB).
+- P6b held: cluster on two cards (C2) against one card (C1a): history 2.5e-13, positions
+  1.3e-15 to 3.6e-15; two one-card runs (C1b against C1a): 3.3e-13, 8.9e-16 to 2.7e-15.
+  The two-card run lies inside the scatter of the one-card runs.
+- P6c FAILED in its rate clause, held in its memory clause: F8 (2332 MeshBlocks of 16^3,
+  10 cycles) runs at 1681 MeshBlock-cycles per second on two cards against 2542 on one,
+  0.66 times the one-card rate, not 1.3 to 1.9 times faster; the memory per card is
+  30349 MiB against 58835 MiB (0.52). Cause not examined (ten cycles include the start;
+  two ranks share the four processor cores of the job; the mesh exchange goes between
+  the cards through the CUDA-aware Open MPI). For Track F: two cards hold twice the mesh,
+  they do not run a mesh that fits one card faster.
+- P6d held: F16 (Track F's m/16 mesh, 4502 MeshBlocks) runs on two cards with 57521 MiB
+  per card (below 80 GB), at 2026 MeshBlock-cycles per second, 1.2 times the rate of F8b
+  ("close to F8b" [JUDGEMENT on the word]); 10 cycles in 24 s of wall time.
+Card time of the package: 0.01 (job 4663) + 0.012 (job 4730) + 0.043 (job 4733) =
+0.065 card-hours.

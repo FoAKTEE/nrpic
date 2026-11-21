@@ -1,0 +1,2 @@
+stock /data/haiyangw/nrpic/wt/core-faces/tracks/core/analysis/faces/inputs/punc.athinput time/nlim=4
+full /data/haiyangw/nrpic/wt/core-faces/tracks/core/analysis/faces/inputs/punc_ext.athinput time/nlim=8 z4c/extrap_order=4 z4c/ghost_falloff=true z4c/sbc_variant=nonwave z4c/sbc_speed=metric

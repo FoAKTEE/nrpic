@@ -1,0 +1,18 @@
+{
+ "ex_full": {
+  "files": 5,
+  "missing": [],
+  "compared": 10209,
+  "identical": 10209,
+  "max_abs_diff": 0.0,
+  "different": []
+ },
+ "ex_stock": {
+  "files": 5,
+  "missing": [],
+  "compared": 10209,
+  "identical": 10209,
+  "max_abs_diff": 0.0,
+  "different": []
+ }
+}

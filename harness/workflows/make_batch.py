@@ -18,8 +18,8 @@ def grab(src, name, nxt):
 SRC = grab(core_js, 'SRC', 'CL'); CLERK = grab(core_js, 'CLERK', 'SLOT'); GATE = grab(rounds_js, 'GATE', 'AUX')
 pre = core_js[core_js.index('const ROOT = '):core_js.index('const SRC = ')]
 fn = core_js[core_js.index('const CW = ROOT'):core_js.index('// release candidate v0.4')].replace("phase: v === 'v0.6' ? 'Round' : 'Release ' + v", "phase: 'Core'")
-OWN = {'A-emd-pbh': 'track/A-emd-pbh', 'B-emd-gw': 'track/B-emd-gw', 'C-sidm': 'track/C-sidm', 'D-bh-dress': 'track/D-bh-dress', 'E-stoch-inf': 'track/E-stoch-inf', 'F-hills': 'track/F-hills', 'kb': 'kb/main'}
-READ = {'A-emd-pbh': 'problem S1 335-365; track sheet 708-725; verification suite 834-860', 'B-emd-gw': 'problem S2 366-379; track sheet 727-745; verification suite 834-860', 'C-sidm': 'problem S3 380-393; track sheet 747-764; verification suite 834-860', 'D-bh-dress': 'problem S4 394-405; track sheet 766-783; verification suite 834-860', 'E-stoch-inf': 'problem S11 445-465; track sheet 785-802; verification suite 834-860', 'F-hills': 'problem S12 466-492; track sheet 804-822; verification suite 834-860', 'kb': 'knowledge base 1218-1461'}
+OWN = {'A-emd-pbh': 'track/A-emd-pbh', 'B-emd-gw': 'track/B-emd-gw', 'C-sidm': 'track/C-sidm', 'D-bh-dress': 'track/D-bh-dress', 'E-stoch-inf': 'track/E-stoch-inf', 'F-hills': 'track/F-hills', 'kb': 'kb/main', 'core': 'core/nrpic'}
+READ = {'core': 'verification suite 834-860; stage gates 674-686; core track sheet 688-706', 'A-emd-pbh': 'problem S1 335-365; track sheet 708-725; verification suite 834-860', 'B-emd-gw': 'problem S2 366-379; track sheet 727-745; verification suite 834-860', 'C-sidm': 'problem S3 380-393; track sheet 747-764; verification suite 834-860', 'D-bh-dress': 'problem S4 394-405; track sheet 766-783; verification suite 834-860', 'E-stoch-inf': 'problem S11 445-465; track sheet 785-802; verification suite 834-860', 'F-hills': 'problem S12 466-492; track sheet 804-822; verification suite 834-860', 'kb': 'knowledge base 1218-1461'}
 items = []
 for it in spec['items']:
     it = dict(it)
@@ -65,6 +65,11 @@ async function one(it) {
     const m = await fable(leadCore(NOTE + '\n\n' + it.task), { label: 'core:merge-' + it.version, phase: 'Core', schema: SUMMARY })
     const c = await clerk(it.version)
     return [{ label: 'core:merge-' + it.version, r: brief(m) }, { label: 'core:clerk-' + it.version, r: brief(c) }]
+  }
+  if (it.type === 'core-slot') {
+    const h = { wt: ROOT + '/wt/core-s' + it.slot, branch: 'core/s' + it.slot, journal: 'tracks/core/JOURNAL-' + it.key + '.md', task: 'SOURCE ITEM ' + it.key + ':\n' + it.task }
+    const r = await fable(solo(h, NOTE + '\n\nYour worktree is the spare slot ' + h.wt + ' (branch ' + h.branch + '). First: git merge --no-edit main (it holds the newest release), then rename the branch to core/' + it.key + ' (git branch -m core/' + it.key + ') unless that is already done, and work there. When your tests pass, publish the executables under ' + ROOT + '/scratch/core/exe/core_' + it.key + '/ (athena_gpu, athena_cpu, COMMIT, SHA256SUMS, READY with every new option and one example input, what is tested and what is not), write the interface text under tracks/core/interfaces/, commit and push (git push -u origin core/' + it.key + ').\n\n'), { label: 'core:' + it.key, phase: 'Core', schema: SUMMARY })
+    return [{ label: 'core:' + it.key, r: brief(r) }]
   }
   if (it.type === 'core-task') {
     const p = leadCore(NOTE + '\n\n' + it.task)
