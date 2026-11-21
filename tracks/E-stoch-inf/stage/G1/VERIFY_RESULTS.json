@@ -1,15 +1,15 @@
 {
   "track": "E-stoch-inf",
   "gate": "G1",
-  "commit": "a21869be9358623a0f570a2820a30ce228bb573a",
-  "verified_utc": "2026-11-19T15:47:42Z",
-  "export": "/data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-a21869b-20261119T154710Z",
-  "result": "PASS",
+  "commit": "5aa8bcd4767d35094285087a5739de22622bcdd6",
+  "verified_utc": "2026-11-21T06:57:09Z",
+  "export": "/data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-5aa8bcd-20261121T065649Z",
+  "result": "FAIL",
   "checks": [
     {
       "check": "clean",
-      "status": "PASS",
-      "message": "worktree clean (outside the stage directory being assembled)",
+      "status": "FAIL",
+      "message": "17 uncommitted paths: commit them first (tracks/E-stoch-inf/note/scripts/common.py, tracks/E-stoch-inf/note/scripts/fig_background.py, tracks/E-stoch-inf/note/scripts/ledger.py, tracks/E-stoch-inf/note/scripts/run_all.py, tracks/E-stoch-inf/note/scripts/schem_architecture.py)",
       "detail": null
     },
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of a21869be9358 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-a21869b-20261119T154710Z/tree",
+      "message": "clean export of 5aa8bcd4767d (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-5aa8bcd-20261121T065649Z/tree",
       "detail": null
     },
     {
@@ -39,7 +39,7 @@
     {
       "check": "package",
       "status": "PASS",
-      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: spec/scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016)",
+      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: spec/scope/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md",
       "detail": null
     },
     {
@@ -68,9 +68,16 @@
     },
     {
       "check": "runs",
-      "status": "PASS",
-      "message": "95 run manifests finished (30 hand-written, read as decision 0012 allows)",
-      "detail": null
+      "status": "FAIL",
+      "message": "2 of 131 runs have problems",
+      "detail": {
+        "E-20261120-222424-0eb754b": [
+          "status is submitted: not finished (nrpic-run finish)"
+        ],
+        "E-20261120-222621-ba66218": [
+          "status is submitted: not finished (nrpic-run finish)"
+        ]
+      }
     },
     {
       "check": "run-notes",
@@ -226,7 +233,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 31 lines",
+      "message": "STATUS.md has 37 lines",
       "detail": null
     },
     {

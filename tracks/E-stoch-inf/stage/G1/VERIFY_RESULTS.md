@@ -1,25 +1,38 @@
 # Re-verification: E-stoch-inf G1
 
-`harness/bin/nrpic-stage verify E-stoch-inf G1` on 2026-11-19T15:47:42Z, clean export of commit `a21869be9358` in `scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-a21869b-20261119T154710Z`. Result: **PASS**.
+`harness/bin/nrpic-stage verify E-stoch-inf G1` on 2026-11-21T06:57:09Z, clean export of commit `5aa8bcd4767d` in `scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-5aa8bcd-20261121T065649Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | PASS | worktree clean (outside the stage directory being assembled) |
+| clean | FAIL | 17 uncommitted paths: commit them first (tracks/E-stoch-inf/note/scripts/common.py, tracks/E-stoch-inf/note/scripts/fig_background.py, tracks/E-stoch-inf/note/scripts/ledger.py, tracks/E-stoch-inf/note/scripts/run_all.py, tracks/E-stoch-inf/note/scripts/schem_architecture.py) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of a21869be9358 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-a21869b-20261119T154710Z/tree |
+| export | PASS | clean export of 5aa8bcd4767d (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G1-5aa8bcd-20261121T065649Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
-| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: spec/scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016) |
+| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: spec/scope/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
 | note-pdf | PASS | note/main.pdf committed after the last .tex change |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 7 figures, each with its script |
 | min-figs | PASS | 2 schematics and 5 data figures (brief 13.4 asks at least 2 and 1 at G1) |
-| runs | PASS | 95 run manifests finished (30 hand-written, read as decision 0012 allows) |
+| runs | FAIL | 2 of 131 runs have problems |
 | run-notes | WARN | 30 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 31 lines |
+| status | PASS | STATUS.md has 37 lines |
 | rerun | PASS | 7 of 7 scripts and commands ran cleanly in the export |
 | compare | PASS | 14 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 14 committed figure files regenerated |
+
+## runs
+
+```
+{
+ "E-20261120-222424-0eb754b": [
+  "status is submitted: not finished (nrpic-run finish)"
+ ],
+ "E-20261120-222621-ba66218": [
+  "status is submitted: not finished (nrpic-run finish)"
+ ]
+}
+```
 
 ## run-notes
 
