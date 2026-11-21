@@ -150,3 +150,67 @@ nested levels equals expball's exact slice to 4.8e-13 (largest, inside the matte
 three meshes, which also confirms the line-point reader of compare.py --nest (cells of
 M, 1/2, ..., 1/16 for nest16, levels changing at |x| = 1, 2, 4, 8 M). Not tested by the smoke:
 memory and speed on the card (the processor build reached 7.3e3 zone-cycles per second).
+
+## 2026-11-21 01:05 PST, entry 5: card job 1 ran; outcomes of prediction G for A, B, A-L32, A-R1.25, A-R1.35, A-N8
+
+Card run A-20261121-075926-d10c2c1 (Slurm 4776, 00:33-00:51 PST, 0.29 card-hours, closed):
+all six members exit 0. Analysis run A-20261121-085252-f4ed504 (analyse.py: compare.py per
+member, turnaround.py, converge.py; convergence.md, fig_convergence.png, figs/<member>_*.png
+and fig_turnaround_*.png; looked at: fig_convergence, B_events, B_horizon, A_horizon,
+fig_turnaround_eps). The C chain (A-20261121-083336-6a82131, Slurm 4781) was submitted when job 1
+started and is pending (first in line at 01:01).
+
+| member | first detection t | ddet (M) | dtrap (M) | dta V3 / C (M) | eta | dm1 | dm median | card s | peak GB |
+|---|---|---|---|---|---|---|---|---|---|
+| A (M/16) | 10.875 | +0.193 | -0.093 | -0.037 / -0.015 | 8.1e-3 | +9.3e-3 | +7.4e-3 | 76 | 4.5 |
+| B (M/32) | 10.781 | +0.068 | -0.022 | -0.033 / -0.013 | 3.1e-3 | +4.5e-2 | -2.1e-3 | 537 | 11.4 |
+| A-L32 | 10.875 | +0.193 | -0.093 | -0.037 / -0.015 | 8.1e-3 | +9.3e-3 | +7.4e-3 | 87 | |
+| A-R1.25 | 10.906 | +0.100 | -0.049 | -0.020 / +0.021 | 8.0e-3 | +1.9e-2 | +6.7e-3 | 79 | 4.5 |
+| A-R1.35 | 10.938 | +0.164 | -0.029 | -0.025 / +0.017 | 8.3e-3 | +1.6e-2 | +1.0e-2 | 80 | 4.5 |
+| A-N8 | 10.813 | +0.109 | -0.047 | -0.048 / -0.017 | 4.2e-3 | +8.3e-3 | -1.3e-3 | 185 | 4.6 |
+
+(ddet: particles' proper time at the finder's radius minus the exact tau_AH of that shell, at
+first detection; dtrap: band R_i = 2.603, 60 particles; dm: finder sqrt(A/16 pi) against the
+exact horizon mass of the same slice; DESIGN.md section 4.) The first slice on which a tracked
+particle has reached its own tau_AH is t = 10.447 (A) and 10.584 (B); the finder follows 0.43
+and 0.20 M later.
+
+Outcomes:
+- G1 HOLDS: all reach t = 16 with finite histories; card time within a factor 2 of the model
+  (A 76 s against 58 s, B 537 s against 446 s, A-N8 185 s against 94 s); the memory model is
+  low by 25-45 per cent for these small blocks (A 4.5 GB against 3.1 GiB, B 11.4 against 9.2),
+  so C may need 50-60 GB [JUDGEMENT], still inside a card.
+- G2 HOLDS: a horizon in all six, first at t = 10.78-10.94 (window 10.4-11.6), and in every
+  later search (no miss after the first detection in any member).
+- G3 so far HOLDS: ddet = +0.193 M at A (inside [-0.1, +0.4]), +0.068 M at B, order 1.51; C
+  decides the rest.
+- G4 so far HOLDS: |dtrap| 0.093 (A, bound 0.15) and 0.022 M (B, bound 0.07), order 2.05.
+- G5 REFUTED at A and B: eta = 8.1e-3 (A, bound 6e-3) and 3.1e-3 (B, bound 2e-3), order 1.38
+  (predicted >= 1.5); the mean core turnaround time does not converge from A to B (V3 -0.037 ->
+  -0.033 M, order 0.16; cycloid C -0.0148 -> -0.0127 M, order 0.22), while R_max converges fast
+  (mean relative error 1.8e-3 -> 2e-5 with V3, 1.2e-3 -> -1.5e-4 with C). Reading of the figures
+  (B_events, fig_turnaround_eps) [JUDGEMENT]: the per-particle turnaround times scatter by
+  +-0.05 M with a pattern in R_i; the local shift of the maximum, 8 B^2 eps', is +-0.05 M within
+  2 M of the turnaround; the cycloid fit depends on its window by up to 0.03 M (A-R1.25: C2
+  +0.004, C12 +0.029; turnaround.log). The turnaround of this core (tau_ta = 3.37 M, a flat
+  maximum) is set at A and B by slopes of the shell error of a few 1e-3 per M, not by a
+  secular time shift, so "turnaround time" is defined only to about 0.03 M here; R_max and the
+  shell error at the turnaround converge.
+- G6 mixed: dm median +7.4e-3 (A) and -2.1e-3 (B): magnitude falls by 3.6 (order 1.84) with a
+  change of sign; B's plateau after t = 11.5 is -2e-3 (B_horizon.png), twice the source's
+  fiducial OS level (1e-3, main.tex:945) and of the order of its A1 RMS (2.1e-3, main.tex:1484).
+  dm1 (first detection) does NOT fall (+9.3e-3 -> +4.5e-2): at B's first detection only the
+  tracked particles near R_i = 2.62 have passed their tau_AH, so the exact-slice estimate is
+  0.660 and jumps to 0.688 one search later (B_horizon.png, left panel): the first-detection
+  mass error measures the estimator at the instant of formation, not the code. Mass errors are
+  judged on the median (and the plateau) from here on.
+- G7 L leg HOLDS: A-L32 equals A to 1e-7 M in ddet and dtrap and 4e-6 in dm median (the
+  boundary at 16 M does not reach the horizon before t = 16). N leg at A HOLDS against the
+  mesh difference (spreads: ddet 0.084 < 0.125, dtrap 0.045 < 0.070, dm median 0.0087 <
+  0.0094), but the particle number is not negligible: A-N8 (the lattice of B on A's mesh)
+  removes about two thirds of the A-B difference in ddet and dtrap. R leg REFUTED at A for the
+  time errors: ddet 0.193, 0.100, 0.164 and dtrap -0.093, -0.049, -0.029 for lam = 1, 1.25, 1.35
+  vary by more than half the A-B mesh difference (0.063, 0.035), not monotonically in lam;
+  dm median (7.4e-3, 6.7e-3, 1.0e-2) and eta (8.1e-3, 8.0e-3, 8.3e-3) stay within it. Whether
+  the ball-radius dependence shrinks with the mesh is the question for B-R1.25 (job 3).
+Open: C (mesh triple, fixed-N sequence), job 3 (B-N8, A-N64, B-R1.25, B-L32).
