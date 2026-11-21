@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261115-161720-07ab27e",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-bfix/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-bfix/tracks/core/analysis/bfix/t3_thin_jitter.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-bfix/.work/exe/athena_cpu_w1",
+  "--out",
+  ".",
+  "--from-dir",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160633-7d80187",
+  "--stages",
+  "jcheck,fig"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-161720-07ab27e",
+ "commit": "07ab27e",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-160633-7d80187/results_t3.json",
+   "sha256": "cdcd6463758c0984577e9556ba6c7fdbb9bb3badd4b7bd7783ea72d25717ef12"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-bfix/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-161720-07ab27e",
+ "purpose": "T3c: figure of T3 (core-20261115-160633-7d80187) with the final layout; jitter check restricted to the meaningful pair",
+ "kind": "scouting",
+ "tag": "T3c",
+ "state": "finished",
+ "wall_time_s": 2.61,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T16:17:20Z"
+}

@@ -1,0 +1,51 @@
+{
+ "run_id": "core-20261115-155841-bc78aa8",
+ "owner": "core",
+ "track": "core",
+ "gate": "G2",
+ "purpose": "T6 existing behaviour: scalar-field inputs of wave 1 (flrw, plane, wave, refined mesh, power and Mukhanov-Sasaki sources, restart) with the processor executable of release core-v0.3 and the new one, every output file byte by byte",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/scalar2/t6_regress.py",
+  "--base",
+  "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+  "--new",
+  ".work/exe/athena_cpu_a58e95b",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-155841-bc78aa8",
+  "--workers",
+  "6"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-scalar2",
+ "commit": "bc78aa8ab8191cc7ac2e85e5e3e7c532229b279a",
+ "branch": "core/scalar-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_a58e95b",
+   "sha256": "c69266ec765c8296b005871c6865991f2a5ac59f7ebd2ac3f03d383b57f9439e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+   "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c"
+  },
+  {
+   "path": "tracks/core/analysis/scalar2/t6_regress.py",
+   "sha256": "66f42fe2b4007fc5a28f1a8c3a1f4deaae22ea5dd32b9c33a478a8969550418e"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-155841-bc78aa8",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-155841-bc78aa8"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T15:58:41Z",
+ "cores": 6,
+ "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
+ "status": "failed",
+ "wall_time_s": 352.92,
+ "exit_status": 1,
+ "end_utc": "2026-11-15T16:04:34Z",
+ "core_hours": 0.5882
+}

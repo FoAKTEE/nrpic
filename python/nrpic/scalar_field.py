@@ -28,17 +28,41 @@ def read_history(fname):
     return {n: d[:, i] for i, n in enumerate(names)}
 
 
+CON_HIST_VARS = ["time", "cycle", "efolds", "H_ratio", "H_ratio_max",
+                 "H_ratio_of_means", "M_ratio", "M_ratio_max", "M_ratio_of_means",
+                 "H_mag", "M_mag", "H_l1", "M_l1", "H_rms", "M_rms", "M_bssn_adm", "phi",
+                 "Pi", "K", "alpha"]
+# columns 21 to 27, written with <scalar_field> con_signed = true (branch core/scalar-3):
+# signed means <H>, <M_i>, and of H' = H - <H>: <|H'|/[H]>, max(|H'|/[H]), rms(H')
+CON_HIST_SIGNED = ["H_mean", "Mx_mean", "My_mean", "Mz_mean", "Hp_ratio",
+                   "Hp_ratio_max", "Hp_rms"]
+
+
+def read_con_history(fname):
+    """Columns of <basename>.sf.con.hst (constraints relative to the magnitudes [H], [M]
+    of arXiv:2512.14649; scalar_field_diag.cpp) as a dict of arrays; the columns of
+    con_signed = true when the file has them."""
+    d = np.atleast_2d(np.loadtxt(fname))
+    names = CON_HIST_VARS + (CON_HIST_SIGNED if d.shape[1] > len(CON_HIST_VARS) else [])
+    return {n: d[:, i] for i, n in enumerate(names)}
+
+
 def read_dump(fname):
-    """A dump <basename>.sf.NNNNN.dump.  Returns a dict with time, cycle, the list of
-    MeshBlocks (level, lx, extent, data[var][i, j, k]) and, when all MeshBlocks are on
-    the root level, the fields assembled on the whole mesh, fields[name][i, j, k] with
-    (i, j, k) = (x, y, z); the stochastic fields are named noise0, noise1, ..."""
+    """A dump <basename>.sf.NNNNN.dump (layouts NRSFDMP1 and NRSFDMP2).  Returns a dict
+    with time, cycle, the list of MeshBlocks (level, lx, extent, data[var][i, j, k])
+    and, when all MeshBlocks are on the root level, the fields assembled on the whole
+    mesh, fields[name][i, j, k] with (i, j, k) = (x, y, z); the stochastic fields are
+    named noise0, noise1, ..."""
     with open(fname, "rb") as fp:
-        if fp.read(8) != b"NRSFDMP1":
+        magic = fp.read(8)
+        if magic not in (b"NRSFDMP1", b"NRSFDMP2"):
             raise ValueError(f"{fname}: bad magic")
         nmb, nx1, nx2, nx3, nvar, cycle, nnoise = struct.unpack("<7q", fp.read(56))
         (time,) = struct.unpack("<d", fp.read(8))
-        names = DUMP_VARS + [f"noise{n}" for n in range(nnoise)]
+        if magic == b"NRSFDMP1":
+            names = DUMP_VARS + [f"noise{n}" for n in range(nnoise)]
+        else:     # extended layout (scalar_field_diag.cpp): the names are in the file
+            names = [fp.read(16).rstrip(b"\0").decode() for _ in range(nvar)]
         blocks = []
         for _ in range(nmb):
             lev, lx1, lx2, lx3 = struct.unpack("<4q", fp.read(32))
@@ -110,6 +134,34 @@ def potential(kind, **p):
     raise ValueError(kind)
 
 
+def potential_d2(kind, **p):
+    """V''(phi) of the kinds of potential() (the mass term of linear perturbations)."""
+    if kind == "quadratic":
+        m2 = p["mass"]**2
+        return lambda x: m2 + 0.0*x
+    if kind == "quartic":
+        m2, lam = p.get("mass", 0.0)**2, p["lam"]
+        return lambda x: m2 + 3.0*lam*x*x
+    if kind == "plateau":
+        v0, mu = p["v0"], p["mu"]
+        return lambda x: 2.0*v0*(2.0*np.exp(-2.0*x/mu) - np.exp(-x/mu))/mu**2
+    if kind == "inflection":
+        lam, vv = p["lam"], p["vev"]
+        c, s2 = lam*vv**4/3.0, np.sqrt(2.0)
+
+        def d2v(x):
+            # V = c u/Q^2, u = phi^2 P = 3 phi^4 + 2 sqrt2 v phi^3 + 6 v^2 phi^2,
+            # Q = 3 phi^2 + 2 v^2
+            u = 3.0*x**4 + 2.0*s2*vv*x**3 + 6.0*vv*vv*x*x
+            u1 = 12.0*x**3 + 6.0*s2*vv*x*x + 12.0*vv*vv*x
+            u2 = 36.0*x*x + 12.0*s2*vv*x + 12.0*vv*vv
+            qq = 3.0*x*x + 2.0*vv*vv
+            q1 = 6.0*x
+            return c*(u2/qq**2 - 4.0*u1*q1/qq**3 - 12.0*u/qq**3 + 6.0*u*q1*q1/qq**4)
+        return d2v
+    raise ValueError(kind)
+
+
 # ------------------------------------------------------------- homogeneous background
 def friedmann(v, dv, phi0, pi0, t_eval, gauge="geodesic", rtol=1e-13, atol=1e-15):
     """Homogeneous field and flat universe: d phi/dt = alpha Pi, d Pi/dt = alpha (-3 H Pi
@@ -170,8 +222,10 @@ def diss_rate(kh, h, diss, nghost=4):
 
 
 # ------------------------------------------------------------------- stochastic twin
-STREAM_MODE_FLAG = 1 << 16
-OFFSET = 1 << 20
+# keys of the amplitudes: rng.mode_entity and rng.stochastic_mode_stream (the twin of
+# ModeEntity and StochasticModeStream in athenak/src/utils/rng_mesh.hpp)
+STREAM_MODE_FLAG = rng.STOCHASTIC_MODE_BIT
+OFFSET = rng.MODE_ENTITY_OFFSET
 
 
 def mode_set(nmax2):
@@ -190,10 +244,9 @@ def mode_set(nmax2):
 
 def mode_alpha(seed, dof, epoch, n):
     """alpha_n = (z1 + i z2)/sqrt(2) with the keys of the code."""
-    ent = rng.cell_entity(n[:, 0] + OFFSET, n[:, 1] + OFFSET, n[:, 2] + OFFSET)
-    z1, z2 = rng.normal2(seed=seed, stream=rng.stream(rng.STREAM_STOCHASTIC,
-                                                      STREAM_MODE_FLAG | dof),
-                         entity=ent, step=epoch, draw=0)
+    ent = rng.mode_entity(n[:, 0], n[:, 1], n[:, 2])
+    z1, z2 = rng.normal2(seed=seed, stream=rng.stochastic_mode_stream(dof), entity=ent,
+                         step=epoch, draw=0)
     return (np.asarray(z1) + 1j*np.asarray(z2))/np.sqrt(2.0)
 
 

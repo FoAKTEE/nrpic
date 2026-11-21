@@ -1,0 +1,85 @@
+# Linear gravitational wave with an oblique wave vector in a periodic box.
+# Problem generator z4c_linear_wave (athenak/src/pgen/tests/z4c_linear_wave.cpp, with the
+# polarization tensor corrected, docs/UPSTREAM_DEFECTS.md item 1):
+#   gt_ij = delta_ij + amp e+_ij sin(P) + amp_cross ex_ij sin(P + phase_cross),
+#   At_ij = pi |k| [amp e+_ij cos(P) + amp_cross ex_ij cos(P + phase_cross)],
+#   P = 2 pi (k.x - |k| t),  k = (kx1, kx2, kx3) in cycles per unit length,
+#   e+ = theta theta - phi phi,  ex = theta phi + phi theta in the frame of k
+# (theta-hat, phi-hat: unit vectors of the spherical angles of k, theta from x3, phi from
+# x1). amp_cross = amp with phase_cross = 1.5707963267948966 is a circular wave.
+# <time> tlim is read as a number of periods 1/|k|. At the end the generator writes
+# <basename>-errs.dat: L1 errors of gt_ij against the exact linear solution at the
+# final time.
+# Numerics: the production configuration of the cosmology runs (nghost = 4, RK4,
+# Courant 0.25, Kreiss-Oliger 0.5, damp_kappa1 0.02, conformal-time lapse, zero shift).
+# Outputs: the Z4c variables in double precision without ghost cells (<output1>), the
+# constraints in the history. Tests: tracks/core/analysis/bfix/t1_linear_wave.py.
+
+<comment>
+problem   = z4c linear wave, oblique wave vector
+
+<job>
+basename  = lwo
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = -0.5
+x1max     = 0.5
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = -0.5
+x2max     = 0.5
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = -0.5
+x3max     = 0.5
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 1.0       # periods
+ndiag      = 100
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.3333333333333333
+lapse_advect    = 0.0
+shift_Gamma     = 0.0
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<problem>
+pgen_name   = z4c_linear_wave
+amp         = 1.0e-6
+amp_cross   = 0.0
+phase_cross = 0.0
+kx1         = 1.0
+kx2         = 1.0
+kx3         = 1.0
+
+<output1>
+file_type        = bin
+variable         = z4c
+double_precision = true
+dt               = 1000.0
+
+<output2>
+file_type   = hst
+data_format = %.16e
+dt          = 1000.0

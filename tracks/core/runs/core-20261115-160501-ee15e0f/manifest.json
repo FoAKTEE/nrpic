@@ -1,0 +1,32 @@
+{
+ "run_id": "core-20261115-160501-ee15e0f",
+ "owner": "core",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/verify/ladder2/cluster_fate.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-152843-5728b1d/st_yc0p720",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-152842-5728b1d/st_yc0p700",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-152842-5728b1d/st_yc0p660",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-152843-5728b1d/st_yc0p640",
+  "--earlier"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-160501-ee15e0f",
+ "commit": "ee15e0f",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "tracks/core/verify/ladder2/cluster_fate.py",
+   "sha256": "083175d2255b7bd7fd78da6ac058a64301d94331bda55a523d9414c3419fc1c9"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160501-ee15e0f",
+ "purpose": "verify wave 2: fates of the bisection round 1 (y_c 0.72 0.70 0.66 0.64, M/4) by the fixed rule, departure and migration targets, earlier sequence runs for comparison",
+ "kind": "scouting",
+ "tag": "",
+ "state": "finished",
+ "wall_time_s": 10.8,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T16:05:01Z"
+}

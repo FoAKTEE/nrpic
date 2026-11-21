@@ -1,0 +1,48 @@
+{
+ "run_id": "core-20261115-160353-b4430da",
+ "owner": "core",
+ "package": "gauge",
+ "tag": "g-e2-profile",
+ "purpose": "unequal Bowen-York pair, mass ratio 4, damping profile eta_0 = 2, M_ref = 1 (test E2) (processors, half-width 32, MeshBlocks 8^3)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_cpu_b4430da",
+  "-i",
+  "/data/haiyangw/nrpic/wt/core-gauge/problems/puncture/by_unequal.athinput",
+  "-d",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160353-b4430da",
+  "mesh/nx1=32",
+  "mesh/nx2=32",
+  "mesh/nx3=32",
+  "mesh/x1min=-32.0",
+  "mesh/x1max=32.0",
+  "mesh/x2min=-32.0",
+  "mesh/x2max=32.0",
+  "mesh/x3min=-32.0",
+  "mesh/x3max=32.0",
+  "meshblock/nx1=8",
+  "meshblock/nx2=8",
+  "meshblock/nx3=8",
+  "time/tlim=2.0"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-160353-b4430da",
+ "commit": "b4430da64df8892bb68b2d633959da3faa0255d8",
+ "head_at_run": "765b2be6f520164a16cc869595094c4e7f2534a7",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-gauge/problems/puncture/by_unequal.athinput",
+   "sha256": "80cedb9af6f95efb236171c59c45ca39d777beb27c4593903534428b855ddafb"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_cpu_b4430da",
+   "sha256": "07af4a6ca2daf886f67a804a3b3c631c4879bf6739f431209bff5b56a8919917"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160353-b4430da",
+ "wall_time_s": 12234.9,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-160353"
+}

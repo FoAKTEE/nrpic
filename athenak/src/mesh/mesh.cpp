@@ -353,6 +353,26 @@ Mesh::Mesh(ParameterInput *pin) :
     mb_indcs.ke   = 0;
     mb_indcs.cke  = 0;
   }
+  ZeroUnusedMeshIndcs();
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn void Mesh::ZeroUnusedMeshIndcs()
+//! \brief NRPIC: the coarse-cell indices have no meaning for the Mesh as a whole and are
+//! never set, but mesh_indcs is written to restart files as a whole: without a definite
+//! value restart files of identical runs differ in these 36 bytes
+//! (docs/UPSTREAM_DEFECTS.md, item 3).
+
+void Mesh::ZeroUnusedMeshIndcs() {
+  mesh_indcs.cnx1 = 0;
+  mesh_indcs.cnx2 = 0;
+  mesh_indcs.cnx3 = 0;
+  mesh_indcs.cis = 0;
+  mesh_indcs.cie = 0;
+  mesh_indcs.cjs = 0;
+  mesh_indcs.cje = 0;
+  mesh_indcs.cks = 0;
+  mesh_indcs.cke = 0;
 }
 
 //----------------------------------------------------------------------------------------

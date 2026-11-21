@@ -74,6 +74,19 @@ MGGravityDriver::MGGravityDriver(MeshBlockPack *pmbp, ParameterInput *pin)
       mg_bc = BoundaryFlag::mg_zerograd;
     } else if (mg_bc_str == "multipole") {
       mg_bc = BoundaryFlag::mg_multipole;
+    } else if (mg_bc_str == "robin") {
+      // the solution falls off as 1/r about (robin_x1, robin_x2, robin_x3):
+      // multigrid/multigrid_robin.cpp
+      mg_bc = BoundaryFlag::mg_robin;
+      if (pmy_mesh_->multilevel) {
+        std::cout << "### FATAL ERROR in MGGravityDriver" << std::endl
+                  << "mg_bc = robin is not implemented on a mesh with refinement"
+                  << std::endl;
+        std::exit(EXIT_FAILURE);
+      }
+      robin_o_[0] = pin->GetOrAddReal("gravity", "robin_x1", 0.0);
+      robin_o_[1] = pin->GetOrAddReal("gravity", "robin_x2", 0.0);
+      robin_o_[2] = pin->GetOrAddReal("gravity", "robin_x3", 0.0);
     } else {
       std::cout << "### FATAL ERROR in MGGravityDriver" << std::endl
                 << "Unknown mg_bc type: " << mg_bc_str << std::endl;
@@ -82,6 +95,7 @@ MGGravityDriver::MGGravityDriver(MeshBlockPack *pmbp, ParameterInput *pin)
     for (int f = 0; f < 6; ++f) {
       if (mg_mesh_bcs_[f] != BoundaryFlag::periodic) {
         mg_mesh_bcs_[f] = mg_bc;
+        if (mg_bc == BoundaryFlag::mg_robin) { robin_ = true; }
       }
     }
   }
@@ -206,6 +220,22 @@ void MGGravityDriver::SolveSource(Driver *pdriver, const DvceArray5D<Real> &rho,
   for (int v = 0; v < nvar_; ++v) {
     last_defect += CalculateDefectNorm(MGNormType::l2, v);
   }
+  return;
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn void MGGravityDriver::SolvePoisson(Driver *pdriver, rhs, ns, fac, tol)
+//! \brief solve lap phi = fac rhs(ns) for a right side that is not a mass density (the
+//! initial-data solver of the particle module): SolveSource with the factor fac in the
+//! place of four_pi_G, which is restored afterwards.  The start value is pgrav->phi, the
+//! result is returned there.
+
+void MGGravityDriver::SolvePoisson(Driver *pdriver, const DvceArray5D<Real> &rhs,
+                                   int ns, Real fac, Real tol) {
+  const Real four_pi_G_save = four_pi_G_;
+  four_pi_G_ = fac;
+  SolveSource(pdriver, rhs, ns, tol);
+  four_pi_G_ = four_pi_G_save;
   return;
 }
 

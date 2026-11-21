@@ -21,6 +21,7 @@ from . import rng
 
 __all__ = [
     "gamma_rel_m1", "moller", "sigma_m", "scatter", "triad", "replay", "read_dump",
+    "own_energy", "centre", "scatter_rel", "energy_root", "own_metric_triad", "balance",
     "read_snapshot", "read_history", "mj_mean_w", "mj_theta_from_w", "mj_vmol",
     "mj_entropy", "mj_cdf", "mj_sample", "entropy_estimate", "isotropic",
     "relax_rate_nr",
@@ -101,6 +102,144 @@ def scatter(ua, ub, nhat, g1=None, wa=None, wb=None):
     return uan, ubn
 
 
+# ----------------------------------------------------------------------------------------
+# pair kinematics with the metric at each particle (<particles> coll_energy = particle;
+# nrpic::CollEnergy, CollCentre, CollScatterRel, CollEnergyRoot)
+
+def own_energy(alp, b, g, u):
+    """Kinetic part of the canonical energy per unit rest mass, h = alpha (W - 1) - b.u,
+    and v = dh/du = alpha g u/W - b, for triad momenta u[..., 3] and the metric at the
+    particle in the triad of the cell: lapse alp[...], shift b[..., 3], inverse spatial
+    metric g[..., 3, 3] (nrpic::CollEnergy). Returns (h, v)."""
+    u = np.asarray(u, dtype=np.float64)
+    y = np.einsum("...ij,...j->...i", g, u)
+    x = np.sum(y*u, axis=-1)
+    bu = np.sum(b*u, axis=-1)
+    w = np.sqrt(1.0 + x)
+    alp = np.asarray(alp, dtype=np.float64)
+    v = alp[..., None]*y/w[..., None] - b
+    return alp*x/(1.0 + w) - bu, v
+
+
+def centre(alpc, ma, mb, ua, ub):
+    """Momentum dl that b hands to a before the pair is treated in the cell frame
+    (nrpic::CollCentre). ma, mb: tuples (alp, b, g) of the two particles."""
+    q = 0.5*(ua + ub)
+    _, va = own_energy(*ma, q)
+    _, vb = own_energy(*mb, q)
+    d = va - vb
+    w0 = np.sqrt(1.0 + np.sum(q*q, axis=-1))
+    qd = np.sum(q*d, axis=-1)
+    c = -0.5*w0/alpc
+    return np.asarray(c)[..., None]*(d + q*qd[..., None])
+
+
+def scatter_rel(ua, ub, nhat, g1, wa, wb):
+    """u_a' - P/2 of `scatter` without the cancellation (nrpic::CollScatterRel)."""
+    pt = ua + ub
+    et = wa + wb
+    rs = np.sqrt(4.0 + 2.0*g1)
+    ps = np.sqrt(0.5*g1)
+    ndp = np.sum(nhat*pt, axis=-1)
+    cf = ps*ndp/(rs*(et + rs))
+    return ps[..., None]*nhat + cf[..., None]*pt
+
+
+def energy_root(ma, mb, pt, ca, wv, e0):
+    """New momenta u_a' = ca + lam wv, u_b' = pt - u_a' with the sum of the canonical
+    energies equal to e0 (nrpic::CollEnergyRoot; the same iteration and stopping rules,
+    for arrays of pairs). Returns (uan, ubn, lam, res, ok); the derivative
+    dF/dlam = wv.(v_a' - v_b') at the returned momenta is left in energy_root.df."""
+    pt = np.atleast_2d(np.asarray(pt, dtype=np.float64))
+    ca = np.atleast_2d(np.asarray(ca, dtype=np.float64))
+    wv = np.atleast_2d(np.asarray(wv, dtype=np.float64))
+    e0 = np.atleast_1d(np.asarray(e0, dtype=np.float64))
+    n = len(e0)
+    ma = tuple(np.broadcast_to(np.asarray(v, dtype=np.float64), (n,) + np.shape(v)[-k:])
+               if k else np.broadcast_to(np.asarray(v, dtype=np.float64), (n,))
+               for v, k in zip(ma, (0, 1, 2)))
+    mb = tuple(np.broadcast_to(np.asarray(v, dtype=np.float64), (n,) + np.shape(v)[-k:])
+               if k else np.broadcast_to(np.asarray(v, dtype=np.float64), (n,))
+               for v, k in zip(mb, (0, 1, 2)))
+    cb = pt - ca
+    ha, _ = own_energy(*ma, ca)
+    hb, _ = own_energy(*mb, cb)
+    res = ha + hb - e0
+    ok = res < 0.0
+    lam = np.where(ok, 1.0, 0.0)
+    done = ~ok                       # finished (converged or failed)
+    uan = np.array(ca)
+    ubn = np.array(cb)
+    scale = np.zeros(n)
+    dfe = np.zeros(n)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        for _ in range(40):
+            act = ~done
+            if not act.any():
+                break
+            ua_i = ca + lam[:, None]*wv
+            ub_i = pt - ua_i
+            ea, va = own_energy(*ma, ua_i)
+            eb, vb = own_energy(*mb, ub_i)
+            r_i = ea + eb - e0
+            sc_i = np.abs(ea) + np.abs(eb) + np.abs(e0)
+            uan = np.where(act[:, None], ua_i, uan)
+            ubn = np.where(act[:, None], ub_i, ubn)
+            res = np.where(act, r_i, res)
+            scale = np.where(act, sc_i, scale)
+            df = np.sum(wv*(va - vb), axis=-1)
+            dfe = np.where(act, df, dfe)
+            bad = act & ~(df > 0.0)
+            ok = ok & ~bad
+            done = done | bad
+            act = act & ~bad
+            conv = act & (np.abs(r_i) <= 3.6e-15*sc_i)
+            done = done | conv
+            act = act & ~conv
+            lam_new = lam - r_i/np.where(df > 0.0, df, 1.0)
+            lam = np.where(act, lam_new, lam)
+            bad = act & ~(lam > 0.0)
+            ok = ok & ~bad
+            done = done | bad
+    late = ~done
+    ok = ok & ~(late & ~(np.abs(res) <= 1.0e-12*scale))
+    energy_root.df = dfe
+    return uan, ubn, lam, res, ok
+
+
+def balance(pv, g1, et, lam, df, qa, dv, pvn, g1n, etn, pt):
+    """Ratio R of the reverse to the forward rate of a collision treated with `centre`
+    and `energy_root` (nrpic::CollBalance); the collision takes place with the
+    probability min(1, R)."""
+    ps = np.sqrt(0.5*g1)
+    rs = np.sqrt(4.0 + 2.0*g1)
+    fwd = df*rs/(et*lam*lam*ps*ps*ps)
+    rsn = np.sqrt(4.0 + 2.0*g1n)
+    qp = np.sum(qa*pt, axis=-1)
+    c = qp/(etn*(etn + rsn))
+    y = qa - np.asarray(c)[..., None]*pt
+    rr = np.sqrt(np.sum(y*y, axis=-1))
+    dq = np.sum(dv*qa, axis=-1)
+    rev = dq*rsn/(etn*rr*rr*rr)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        return (pvn*rev)/(pv*fwd)
+
+
+def own_metric_triad(s_mat, alp, beta, ginv):
+    """(alp, b, g) of particles in the triad of a cell with coframe e^(m)_i = S[i, m]:
+    b[m] = S[i, m] beta^i, g[m, n] = S[i, m] S[j, n] gamma^ij. beta[..., 3] and
+    ginv[..., 6] (xx, xy, xz, yy, yz, zz) as dumped by the code."""
+    beta = np.asarray(beta, dtype=np.float64)
+    gv = np.asarray(ginv, dtype=np.float64)
+    gm = np.empty(gv.shape[:-1] + (3, 3))
+    gm[..., 0, 0] = gv[..., 0]; gm[..., 0, 1] = gv[..., 1]; gm[..., 0, 2] = gv[..., 2]
+    gm[..., 1, 0] = gv[..., 1]; gm[..., 1, 1] = gv[..., 3]; gm[..., 1, 2] = gv[..., 4]
+    gm[..., 2, 0] = gv[..., 2]; gm[..., 2, 1] = gv[..., 4]; gm[..., 2, 2] = gv[..., 5]
+    b = beta @ s_mat
+    g = np.einsum("im,...ij,jn->...mn", s_mat, gm, s_mat)
+    return np.asarray(alp, dtype=np.float64), b, g
+
+
 def triad(kind, g):
     """(S, Si) with S S^T = g for a symmetric positive-definite 3x3 matrix g:
     the symmetric square root (kind 0) or the lower Cholesky factor (kind 1), as
@@ -120,20 +259,30 @@ def triad(kind, g):
 def read_dump(path):
     """Replay dump `<basename>.coll_dump.<cycle>.bin` (collisions.md, section 5)."""
     with open(path, "rb") as fp:
-        if fp.read(8) != b"NRPCOLD1":
+        magic = fp.read(8)
+        if magic not in (b"NRPCOLD1", b"NRPCOLD2"):
             raise ValueError("not a collision dump: " + path)
         n, cycle, f = struct.unpack("<3q", fp.read(24))
         dt, sigma, w, pmax = struct.unpack("<4d", fp.read(32))
         model, weights, subcycle, nsub_max = struct.unpack("<4q", fp.read(32))
         seed, = struct.unpack("<Q", fp.read(8))
         tri, = struct.unpack("<q", fp.read(8))
-        r = np.fromfile(fp, dtype="<f8", count=18*n).reshape(n, 18)
+        energy, has_own, nrec = 0, 0, 18
+        if magic == b"NRPCOLD2":
+            energy, has_own = struct.unpack("<2q", fp.read(16))
+            nrec = 28
+        r = np.fromfile(fp, dtype="<f8", count=nrec*n).reshape(n, nrec)
         q = np.fromfile(fp, dtype="<i4", count=7*n).reshape(n, 7)
-    return dict(n=n, cycle=cycle, f=f, dt=dt, sigma=sigma, w=w, pmax=pmax, model=model,
-                weights=weights, subcycle=subcycle, nsub_max=nsub_max, seed=seed,
-                triad=tri, x=r[:, 0:3], u0=r[:, 3:6], u1=r[:, 6:9], m=r[:, 9],
-                alpha=r[:, 10], g=r[:, 11:17], vol=r[:, 17], tag=q[:, 0], level=q[:, 1],
-                cell=q[:, 2:5], nsub=q[:, 5], nupd=q[:, 6])
+    d = dict(n=n, cycle=cycle, f=f, dt=dt, sigma=sigma, w=w, pmax=pmax, model=model,
+             weights=weights, subcycle=subcycle, nsub_max=nsub_max, seed=seed,
+             triad=tri, x=r[:, 0:3], u0=r[:, 3:6], u1=r[:, 6:9], m=r[:, 9],
+             alpha=r[:, 10], g=r[:, 11:17], vol=r[:, 17], tag=q[:, 0], level=q[:, 1],
+             cell=q[:, 2:5], nsub=q[:, 5], nupd=q[:, 6], energy=energy,
+             has_own=has_own)
+    if nrec == 28:
+        # metric at each particle: lapse, shift beta^i, inverse metric gamma^ij
+        d.update(own_alpha=r[:, 18], own_beta=r[:, 19:22], own_ginv=r[:, 22:28])
+    return d
 
 
 def read_snapshot(path):
@@ -155,7 +304,9 @@ HIST_COLUMNS = ["time", "ncycle", "n_part", "n_cells", "n_tested", "sum_P", "n_c
                 "n_updated", "n_trunc", "max_P", "max_nsub", "mean_nsub", "min_N",
                 "mean_N", "max_dx_mfp", "sum_MW", "sum_Mu1", "sum_Mu2", "sum_Mu3", "dE",
                 "dP1", "dP2", "dP3", "abs_dE", "abs_dP", "n_bad_cells", "sum_W",
-                "sum_MW_species0", "sum_M_species0", "sum_MW_particles", "dE_particles"]
+                "sum_MW_species0", "sum_M_species0", "sum_MW_particles", "dE_particles",
+                # with <particles> coll_energy present:
+                "sum_MH_particles", "dH_particles", "n_noroot", "max_dlam", "n_balance"]
 
 
 def read_history(path):
@@ -209,7 +360,9 @@ def replay(d, cycle=None):
     tag = d["tag"].astype(np.int64)
     nsub_of = np.zeros(n, dtype=np.int64)
     nupd = np.zeros(n, dtype=np.int64)
-    info = dict(n_tested=0, sum_p=0.0, n_coll=0, n_upd=0, pairs=[], max_p=0.0)
+    info = dict(n_tested=0, sum_p=0.0, n_coll=0, n_upd=0, pairs=[], max_p=0.0,
+                n_noroot=0, max_dlam=0.0, n_balance=0)
+    pmode = d.get("energy", 0) == 1
     for idx in _cell_groups(d["level"], d["cell"]):
         nc = len(idx)
         p0 = idx[0]
@@ -222,6 +375,13 @@ def replay(d, cycle=None):
         s_mat, si_mat = triad(d["triad"], g)
         fac = (nc - 1)*d["alpha"][p0]*d["dt"]/d["vol"][p0]
         mcell = np.max(m[idx])
+        if pmode:
+            # metric at the particles of this cell in its triad (index: particle)
+            o_alp, o_b, o_g = {}, {}, {}
+            ta, tb, tg = own_metric_triad(s_mat, d["own_alpha"][idx], d["own_beta"][idx],
+                                          d["own_ginv"][idx])
+            for k, pp in enumerate(idx):
+                o_alp[pp], o_b[pp], o_g[pp] = ta[k], tb[k], tg[k]
 
         # sub-steps from the two largest speeds of the cell (or the bound 2)
         vbound = 2.0
@@ -253,7 +413,14 @@ def replay(d, cycle=None):
                     pa, pb = pb, pa
                 ua = u[pa] @ si_mat.T
                 ub = u[pb] @ si_mat.T
-                g1, wa, wb = gamma_rel_m1(ua, ub)
+                if pmode:
+                    oma = (o_alp[pa], o_b[pa], o_g[pa])
+                    omb = (o_alp[pb], o_b[pb], o_g[pb])
+                    dl = centre(d["alpha"][p0], oma, omb, ua, ub)
+                    uat, ubt = ua - dl, ub + dl
+                    g1, wa, wb = gamma_rel_m1(uat, ubt)
+                else:
+                    g1, wa, wb = gamma_rel_m1(ua, ub)
                 mmx = max(m[pa], m[pb])
                 prob = float((wg/nsub)*fac*sigma_m(d["model"], d["sigma"], d["w"], g1)[0]
                              * mmx*moller(g1, wa, wb)[0])
@@ -272,7 +439,28 @@ def replay(d, cycle=None):
                 nh = rng.direction(seed=seed, stream=st_dir, entity=tag[pa], step=step,
                                    draw=s, entity_hi=tag[pb])
                 nh = np.asarray(nh).reshape(3)
-                uan, ubn = scatter(ua, ub, nh, g1, wa, wb)
+                if pmode:
+                    wv = scatter_rel(uat[None, :], ubt[None, :], nh[None, :], g1, wa, wb)
+                    pt = ua + ub
+                    ha0, va0 = own_energy(*oma, ua)
+                    hb0, vb0 = own_energy(*omb, ub)
+                    ca = 0.5*pt + dl
+                    uan, ubn, lam, _, okr = energy_root(oma, omb, pt, ca, wv, ha0 + hb0)
+                    if not okr[0]:
+                        info["n_noroot"] += 1
+                        continue
+                    g1n, wan, wbn = gamma_rel_m1(uan - dl, ubn + dl)
+                    sg = sigma_m(d["model"], d["sigma"], d["w"], g1)
+                    sgn = sigma_m(d["model"], d["sigma"], d["w"], g1n)
+                    rbal = balance(sg*moller(g1, wa, wb), g1, wa + wb, lam,
+                                   energy_root.df, ua - ca, va0 - vb0,
+                                   sgn*moller(g1n, wan, wbn), g1n, wan + wbn, pt)
+                    if not (rbal[0] >= 1.0) and not (float(uu[2]) < rbal[0]):
+                        info["n_balance"] += 1
+                        continue
+                    info["max_dlam"] = max(info["max_dlam"], abs(float(lam[0]) - 1.0))
+                else:
+                    uan, ubn = scatter(ua, ub, nh, g1, wa, wb)
                 upa = upb = True
                 if d["weights"] == 1 and m[pa] != m[pb]:
                     heavy = u_nan < min(m[pa], m[pb])/mmx

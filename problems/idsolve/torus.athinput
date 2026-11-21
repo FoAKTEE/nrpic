@@ -1,0 +1,101 @@
+# Initial-data solver of the code (<particles> id_solve; tracks/core/interfaces/
+# id_solver.md) on the torus: a homogeneous expanding universe (nrpic_cosmo, id = flrw,
+# K = -3 hubble, psi = 1) with the particles of
+#   problems/idsolve/make_ic.py wave --n <nx> --box 2 --hubble 1 --amp 0.1 --out <dir>
+# at rest in the slice (one plane wave of the density).  The solve returns the psi that
+# satisfies the Hamiltonian constraint with the deposited particles and the given K;
+# cosmo/ic/cosmo_id.py solves the same problem with Fourier transforms (reference).
+# The mean of psi is fixed by the integrability condition (the mean of the right side
+# vanishes).  The test changes on the command line: mesh/nx1..3, meshblock/nx1..3,
+# particles/particle_file, particles/id_residual.
+
+<comment>
+problem   = initial-data solve for a plane wave on the torus
+
+<job>
+basename  = torus
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = 0.0
+x1max     = 2.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = 0.0
+x2max     = 2.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = 0.0
+x3max     = 2.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 0
+tlim       = 1.0
+ndiag      = 1
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.3333333333333333   # d_t alpha = -(1/3) alpha^2 K
+lapse_advect    = 0.0
+shift_Gamma     = 0.0
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+excise_chi      = 0.0
+
+<gravity>
+four_pi_G      = 1.0      # required by the module; the solver sets its own factor
+threshold      = 0.0      # required: the solver sets the defect at which V cycles end
+show_defect    = 0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+interp         = hermite
+tolerance      = 1.0e-12
+max_iterations = 50
+deposit        = true
+deposit_shape  = cic
+deposit_comp_c = 0.0
+nfilter        = 0
+filter_compensate = false
+hist_dcycle    = 1
+cstat_dcycle   = 1
+field_constraints = true
+field_time1    = 1.0e30   # the field dump at the start is written whenever a time is set
+particle_file  = wave.nrp
+id_solve       = true     # solve the Hamiltonian constraint for psi at the start
+id_residual    = code     # code: constraint monitor of the code; stencil: seven-point
+id_psi_init    = trial    # start value: trial (problem generator) or one
+id_tol         = 1.0e-10  # largest residual over the largest term of the equation
+id_maxit       = 60
+id_lin_tol     = 1.0e-3   # conjugate gradients: residual over right side
+id_lin_maxit   = 50
+id_mg_tol      = 1.0e-3   # defect over source at which a preconditioner solve ends
+id_dump        = true     # write <basename>.idsolve.bin (psi, K, Abar^2, E, H, ...)
+
+<problem>
+pgen_name  = nrpic_cosmo
+id         = flrw
+hubble     = 1.0
+
+<output1>
+file_type = hst
+dt        = 1.0

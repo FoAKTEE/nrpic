@@ -1,0 +1,232 @@
+# Several MPI ranks on the cards (tracks/core/interfaces/mpi.md, section 7; request of
+# Track F 20261115T1507Z__to-core__two-card-or-larger-blocks.md): the mesh of Track F's
+# Hills passage at mass ratio ten with finest cells m/16 (run
+# F-hills-20261115-131348-634fb86, case D205_m16_r1.8_t+0090.5: 4502 MeshBlocks of 16^3
+# over 12 levels, more than one card holds), here static, with three vacuum punctures at
+# the centres of its refined regions (masses 0.05, 0.05, 0.5: m = 0.05, cells m/16 =
+# 1/320 at level 11).  Ten cycles, for the rate and the memory on two cards:
+#   mpirun -np 2 gpu_bind.sh athena -i mpi_two_card_triple.athinput
+# The m/8 mesh of the same case (2332 MeshBlocks, fits one card) on the command line:
+#   mesh_refinement/num_levels=11 refined_region_punc0/level=10
+#   refined_region_punc1/level=10 refined_region_punc2/level=6
+
+<job>
+basename = tc
+<mesh>
+nghost = 4
+nx1 = 64
+x1min = -204.8
+x1max = 204.8
+ix1_bc = outflow
+ox1_bc = outflow
+nx2 = 64
+x2min = -204.8
+x2max = 204.8
+ix2_bc = outflow
+ox2_bc = outflow
+nx3 = 64
+x3min = -204.8
+x3max = 204.8
+ix3_bc = outflow
+ox3_bc = outflow
+<meshblock>
+nx1 = 16
+nx2 = 16
+nx3 = 16
+<mesh_refinement>
+refinement = static
+num_levels = 12
+max_nmb_per_rank = 4600
+<time>
+evolution = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim = 10
+tlim = 100.0
+ndiag = 1
+<refined_region_punc0>
+level = 11
+x1min = 1.67230914739
+x1max = 1.85230914739
+x2min = 40.060160441
+x2max = 40.240160441
+x3min = -0.09
+x3max = 0.09
+<refined_region_punc1>
+level = 11
+x1min = -0.946362291598
+x1max = -0.766362291598
+x2min = -10.6422451511
+x2max = -10.4622451511
+x3min = -0.09
+x3max = 0.09
+<refined_region_punc2>
+level = 7
+x1min = -1.84529734279
+x1max = 1.75470265721
+x2min = -3.2798957645
+x2max = 0.320104235505
+x3min = -1.8
+x3max = 1.8
+<refined_region_wz0>
+level = 1
+x1min = -102.3998976
+x1max = -0.0001024
+x2min = -102.3998976
+x2max = -0.0001024
+x3min = -102.3998976
+x3max = -0.0001024
+<refined_region_wz1>
+level = 1
+x1min = -102.3998976
+x1max = -0.0001024
+x2min = -102.3998976
+x2max = -0.0001024
+x3min = 0.0001024
+x3max = 102.3998976
+<refined_region_wz2>
+level = 1
+x1min = -102.3998976
+x1max = -0.0001024
+x2min = 0.0001024
+x2max = 102.3998976
+x3min = -102.3998976
+x3max = -0.0001024
+<refined_region_wz3>
+level = 1
+x1min = -102.3998976
+x1max = -0.0001024
+x2min = 0.0001024
+x2max = 102.3998976
+x3min = 0.0001024
+x3max = 102.3998976
+<refined_region_wz4>
+level = 1
+x1min = 0.0001024
+x1max = 102.3998976
+x2min = -102.3998976
+x2max = -0.0001024
+x3min = -102.3998976
+x3max = -0.0001024
+<refined_region_wz5>
+level = 1
+x1min = 0.0001024
+x1max = 102.3998976
+x2min = -102.3998976
+x2max = -0.0001024
+x3min = 0.0001024
+x3max = 102.3998976
+<refined_region_wz6>
+level = 1
+x1min = 0.0001024
+x1max = 102.3998976
+x2min = 0.0001024
+x2max = 102.3998976
+x3min = -102.3998976
+x3max = -0.0001024
+<refined_region_wz7>
+level = 1
+x1min = 0.0001024
+x1max = 102.3998976
+x2min = 0.0001024
+x2max = 102.3998976
+x3min = 0.0001024
+x3max = 102.3998976
+<refined_region_wz8>
+level = 2
+x1min = -51.1999488
+x1max = -5.11999999858e-05
+x2min = -51.1999488
+x2max = -5.11999999858e-05
+x3min = -51.1999488
+x3max = -5.11999999858e-05
+<refined_region_wz9>
+level = 2
+x1min = -51.1999488
+x1max = -5.11999999858e-05
+x2min = -51.1999488
+x2max = -5.11999999858e-05
+x3min = 5.12e-05
+x3max = 51.1999488
+<refined_region_wz10>
+level = 2
+x1min = -51.1999488
+x1max = -5.11999999858e-05
+x2min = 5.12e-05
+x2max = 51.1999488
+x3min = -51.1999488
+x3max = -5.11999999858e-05
+<refined_region_wz11>
+level = 2
+x1min = -51.1999488
+x1max = -5.11999999858e-05
+x2min = 5.12e-05
+x2max = 51.1999488
+x3min = 5.12e-05
+x3max = 51.1999488
+<refined_region_wz12>
+level = 2
+x1min = 5.12e-05
+x1max = 51.1999488
+x2min = -51.1999488
+x2max = -5.11999999858e-05
+x3min = -51.1999488
+x3max = -5.11999999858e-05
+<refined_region_wz13>
+level = 2
+x1min = 5.12e-05
+x1max = 51.1999488
+x2min = -51.1999488
+x2max = -5.11999999858e-05
+x3min = 5.12e-05
+x3max = 51.1999488
+<refined_region_wz14>
+level = 2
+x1min = 5.12e-05
+x1max = 51.1999488
+x2min = 5.12e-05
+x2max = 51.1999488
+x3min = -51.1999488
+x3max = -5.11999999858e-05
+<refined_region_wz15>
+level = 2
+x1min = 5.12e-05
+x1max = 51.1999488
+x2min = 5.12e-05
+x2max = 51.1999488
+x3min = 5.12e-05
+x3max = 51.1999488
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<problem>
+pgen_name       = nrpic_cf
+ncomp           = 3
+comp0_type      = puncture
+comp0_mass      = 0.05
+comp0_x1        = 1.76230914739
+comp0_x2        = 40.150160441
+comp1_type      = puncture
+comp1_mass      = 0.05
+comp1_x1        = -0.856362291598
+comp1_x2        = -10.5522451511
+comp2_type      = puncture
+comp2_mass      = 0.5
+comp2_x1        = -0.04529734279
+comp2_x2        = -1.4798957645
+lapse           = precollapsed
+
+<output1>
+file_type = hst
+dcycle    = 1

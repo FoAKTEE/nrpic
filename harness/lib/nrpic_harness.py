@@ -514,6 +514,34 @@ def is_wave12(date):
     return bool(date) and date < WAVE_2B_START
 
 
+WAIVERS_FILE = "coord/WAIVERS.md"                 # decision 0019 item 6
+_WAIVER_LEAD = re.compile(r"^\s*(?:[-*+]\s+|\d+[.)]\s+|\|\s*)?`?([A-Za-z][A-Za-z0-9-]*-\d{8}-\d{6}-[0-9a-f]{7,40})`?"
+                          r"(?![0-9A-Za-z_-])(.*)$")
+
+
+def parse_waivers(text):
+    """{run id: reason} of the text of coord/WAIVERS.md: one run id per line, at the start of the line
+    (also as a list item or the first cell of a table row, in backticks or not), followed by the reason.
+    Headings, prose, table headers and lines that begin with anything else are ignored."""
+    out = {}
+    for line in (text or "").splitlines():
+        m = _WAIVER_LEAD.match(line)
+        if not m or not parse_run_id(m.group(1)):
+            continue
+        reason = m.group(2).strip().strip("|").strip()
+        reason = re.sub(r"^[-:–—|]+\s*", "", reason).strip().rstrip("|").strip()
+        out.setdefault(m.group(1), reason or "(no reason given)")
+    return out
+
+
+def waivers(root):
+    """{run id: reason} of main's committed coord/WAIVERS.md (decision 0019 item 6), read through
+    git from any worktree of the repository; {} when main has none. A working-tree copy is never
+    read: the orchestrator grants a waiver by committing it on main."""
+    r = run(["git", "-C", root, "show", f"main:{WAIVERS_FILE}"], check=False)
+    return parse_waivers(r.stdout) if r.returncode == 0 else {}
+
+
 def _num(x):
     if isinstance(x, bool) or x is None:
         return None

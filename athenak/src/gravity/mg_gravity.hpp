@@ -65,6 +65,10 @@ class MGGravityDriver : public MultigridDriver {
   // (threshold = 0: V cycles until the defect norm is below tol or stops falling)
   void SolveSource(Driver *pdriver, const DvceArray5D<Real> &rho, int ns,
                    Real tol = 0.0);
+  // solve lap phi = fac rhs(ns) (initial-data solver of the particle module)
+  void SolvePoisson(Driver *pdriver, const DvceArray5D<Real> &rhs, int ns, Real fac,
+                    Real tol = 0.0);
+  Real Threshold() const { return eps_; }   // <gravity> threshold
   Real last_defect = 0.0;   // L2 defect norm after the last SolveSource
   int last_ncycle = 0;      // its number of V cycles (threshold = 0)
   void SetFourPiG(Real four_pi_G);

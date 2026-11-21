@@ -29,6 +29,7 @@
 #include "coordinates/adm.hpp"
 #include "mhd/mhd.hpp"
 #include "z4c/z4c.hpp"
+#include "particles/nrpic_cosmo_ext.hpp"   // nrpic::PeriodicMap
 
 //----------------------------------------------------------------------------------------
 CompactObjectTracker::CompactObjectTracker(Mesh *pmesh, ParameterInput *pin, int n):
@@ -73,9 +74,21 @@ CompactObjectTracker::CompactObjectTracker(Mesh *pmesh, ParameterInput *pin, int
   radius = pin->GetOrAddReal("z4c", "co_" + nstr + "_radius", 0.0);
 
   out_every = pin->GetOrAddInteger("z4c", "co_" + nstr + "_out_every", 1);
+  if (pin->DoesParameterExist("z4c", "tracker_walk_tol")) {
+    walk_tol = pin->GetReal("z4c", "tracker_walk_tol");
+  }
 
+  ofname_ = ofname;
+}
+
+//----------------------------------------------------------------------------------------
+//! opens the tracker file at the first record (or at the end of a run without one), not
+//! in the constructor, which runs before the driver changes to the run directory (-d)
+void CompactObjectTracker::OpenOutput() {
+  if (file_open) return;
+  file_open = true;
   if (0 == global_variable::my_rank) {
-    ofile.open(ofname.c_str());
+    ofile.open(ofname_.c_str());
 
     if (type == BlackHole) {
       ofile << "# Black Hole";
@@ -91,7 +104,7 @@ CompactObjectTracker::CompactObjectTracker(Mesh *pmesh, ParameterInput *pin, int
 }
 
 //----------------------------------------------------------------------------------------
-CompactObjectTracker::~CompactObjectTracker() { }
+CompactObjectTracker::~CompactObjectTracker() { OpenOutput(); }
 
 //----------------------------------------------------------------------------------------
 void CompactObjectTracker::InterpolateVelocity(MeshBlockPack *pmbp) {
@@ -187,6 +200,13 @@ void CompactObjectTracker::EvolveTracker(MeshBlockPack *pmbp) {
           alp.template sync<typename DualArray3D<Real>::host_mirror_space>();
 
           Real alp_min = std::numeric_limits<Real>::max();
+          if (walk_tol >= 0.0) {
+            // stay unless a neighbour is lower by the margin: start from the own cell
+            alp_min = (1.0 - walk_tol)*alp.h_view(1, 1, 1);
+            pos[0] = CellCenterX(ic, indcs.nx1, x1min, x1max);
+            pos[1] = CellCenterX(jc, indcs.nx2, x2min, x2max);
+            pos[2] = CellCenterX(kc, indcs.nx3, x3min, x3max);
+          }
           for (int k = 0; k < 3; ++k) {
             for (int j = 0; j < 3; ++j) {
               for (int i = 0; i < 3; ++i) {
@@ -242,12 +262,29 @@ void CompactObjectTracker::EvolveTracker(MeshBlockPack *pmbp) {
   vel[2] = buf[5] / buf[6];
 #endif // MPI_PARALLEL_ENABLED
 
+  // In a periodic direction the position is mapped back into the mesh, so that the
+  // tracker follows its object across a face of the box (a position inside the mesh is
+  // not changed)
+  if (pmesh->mesh_bcs[BoundaryFace::inner_x1] == BoundaryFlag::periodic) {
+    pos[0] = nrpic::PeriodicMap(pos[0], pmesh->mesh_size.x1min,
+                                pmesh->mesh_size.x1max - pmesh->mesh_size.x1min);
+  }
+  if (pmesh->mesh_bcs[BoundaryFace::inner_x2] == BoundaryFlag::periodic) {
+    pos[1] = nrpic::PeriodicMap(pos[1], pmesh->mesh_size.x2min,
+                                pmesh->mesh_size.x2max - pmesh->mesh_size.x2min);
+  }
+  if (pmesh->mesh_bcs[BoundaryFace::inner_x3] == BoundaryFlag::periodic) {
+    pos[2] = nrpic::PeriodicMap(pos[2], pmesh->mesh_size.x3min,
+                                pmesh->mesh_size.x3max - pmesh->mesh_size.x3min);
+  }
+
   // After the compact object has moved it might have changed ownership
   owns_compact_object = false;
 }
 
 //----------------------------------------------------------------------------------------
 void CompactObjectTracker::WriteTracker() {
+  OpenOutput();
   if (0 == global_variable::my_rank && 0 == pmesh->ncycle % out_every) {
     ofile << pmesh->ncycle << " "
           << pmesh->time << " "

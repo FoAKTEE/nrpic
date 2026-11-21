@@ -1,0 +1,47 @@
+{
+ "run_id": "core-20261115-205317-6817f49",
+ "owner": "core",
+ "purpose": "G4 on one A100: equilibrium in the potential well with streaming and collisions, both modes, two seeds, theta_inf = 0.2",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/run_tolman.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-205317-6817f49",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/f46f159/athena_gpu",
+  "--nproc",
+  "2",
+  "--theta",
+  "0.2",
+  "--ref",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-163914-74b3e87/ref_tolman_0.2.json"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-205317-6817f49",
+ "commit": "6817f4987df7e7ab177a0efc28e4c954d20401a3",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/f46f159/athena_gpu",
+   "sha256": "82a05adae8f653042d08817ecda6dddc0d51c0a8d2c46246b0d58b2fb87ad438"
+  },
+  {
+   "path": "tracks/core/analysis/collisions/run_tolman.py",
+   "sha256": "199a8ea9ce244e064f0cb2523f4116fb02b810ae9f2d704b98449e01ba31bb19"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-163914-74b3e87/ref_tolman_0.2.json",
+   "sha256": "45cb01c69ca5558d90ded8ec97d06c6d60dd1702abdaef98ce296d5a6805bb3b"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-205317-6817f49",
+ "host": "anta",
+ "start_utc": "2026-11-15T20:53:17Z",
+ "end_utc": "2026-11-15T21:39:58Z",
+ "cores": 2,
+ "wall_time_s": 2801,
+ "exit_status": null,
+ "status": "stopped",
+ "card_hours": 0.778,
+ "notes": "Hand-written on 2026-11-19 by the closing session of coll2 (decision 0016 item 3). Started by gpu_job3.sh in Slurm job 4485 with the defaults n = 1e6, steps = 600; the job reached its time limit at 21:39:58Z (sacct: TIMEOUT), so runreg.py never wrote this manifest and run_tolman.py never reached its analysis. Complete: cell_s0 and particle_s0 (600 steps each, 1481 s and 1784 s, sharing the card). Cut: cell_s1 at cycle 528, particle_s1 at cycle 335. Wall time and card-hours from the start in the run id to the cancellation. The outputs are analysed by a later registered run (JOURNAL-coll2.md, 2026-11-19)."
+}

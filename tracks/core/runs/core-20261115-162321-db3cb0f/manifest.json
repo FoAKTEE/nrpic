@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261115-162321-db3cb0f",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-bfix/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-bfix/tracks/core/analysis/bfix/t5_blocks_restart.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-bfix/.work/exe/athena_cpu_w1",
+  "--out",
+  "."
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-162321-db3cb0f",
+ "commit": "db3cb0f",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_w1",
+   "sha256": "c32a1389c06e58887cd3c38bb92512d413b91eaa8153baac170ac889f7ceeced"
+  },
+  {
+   "path": "problems/tests/lw_oblique.athinput",
+   "sha256": "6b001b1ffcb024fa0d6b9b0ad33c80808483c99344499fb1b3774680caeedc3e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-bfix/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-162321-db3cb0f",
+ "purpose": "T5: corrected linear-wave generator on eight MeshBlocks against one, and a circular wave across a restart (P6a, P6b)",
+ "kind": "scouting",
+ "tag": "T5",
+ "state": "finished",
+ "wall_time_s": 33.37,
+ "exit_status": 0,
+ "cores": 3,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T16:23:21Z"
+}

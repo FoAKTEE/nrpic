@@ -1,0 +1,94 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-032250-db52a52",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "analysis of T10c of cosmo-amr (run core-20261121-025527-eb8e6b7): the finder searches of the restart and the restart against the uninterrupted run core-20261120-220816-09f6f79",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python",
+    "tracks/core/analysis/cosmo_amr/t10c_finder.py",
+    "--run",
+    "/data/haiyangw/nrpic/scratch/core/core-20261121-025527-eb8e6b7/s1fnd",
+    "--base",
+    "/data/haiyangw/nrpic/scratch/core/core-20261120-220816-09f6f79/s1amr",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "db52a52e18fa0799355eb3f0fe1c0c6c78da67ab",
+    "branch": "core/cosmo-amr",
+    "dirty": false,
+    "merge_base_main": "44f7d887e2038f9d49e291bf339f7fedc97dddab",
+    "worktree": "wt/core-cosmo-amr"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-cosmo-amr/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/cosmo_amr/t10c_finder.py",
+      "role": "argv",
+      "sha256": "77971fc65b993372ebbc2efd74e95683c9b2de33d1379bb56efadd2e1f2eee96",
+      "bytes": 6906,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 0.368,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-032250-db52a52",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "d7fac07ac41f6f7f65133c044c6ff45f460f68fb711b9db13608d73d65a9d273",
+    "bytes": 1281,
+    "files": 1
+  },
+  "status": "failed",
+  "exit_code": 1,
+  "registered": "2026-11-21T03:22:51Z",
+  "started": "2026-11-21T03:22:51Z",
+  "ended": "2026-11-21T03:22:51Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 5.5999,
+    "gpu_hours_reserved": 0.9,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 6,
+    "runs": 1340,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-21T03:22:51Z"
+}

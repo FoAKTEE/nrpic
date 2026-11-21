@@ -169,6 +169,29 @@ void Particles::NrpicNewtonInit(ParameterInput *pin) {
   nropt.newton_exponent = pin->GetOrAddReal("particles", "newton_exponent", 2.0);
   nropt.newton_cfl      = pin->GetOrAddReal("particles", "newton_cfl", 0.0);
   nropt.newton_mg_tol   = pin->GetOrAddReal("particles", "newton_mg_tol", 0.0);
+  // External gravity at the particles (nrpic_external.hpp).  Parameters that are not in
+  // the input are not added to it (the parameter dump of existing set-ups is unchanged).
+  {
+    auto has = [&](const std::string &key) {
+      return pin->DoesParameterExist("particles", key);
+    };
+    if (has("newton_pm_mass")) { next.pm_mass = pin->GetReal("particles", "newton_pm_mass"); }
+    if (has("newton_pm_x1")) { next.pm_x[0] = pin->GetReal("particles", "newton_pm_x1"); }
+    if (has("newton_pm_x2")) { next.pm_x[1] = pin->GetReal("particles", "newton_pm_x2"); }
+    if (has("newton_pm_x3")) { next.pm_x[2] = pin->GetReal("particles", "newton_pm_x3"); }
+    if (has("newton_pm_soft")) { next.pm_soft = pin->GetReal("particles", "newton_pm_soft"); }
+    if (has("newton_pm_soft_frame")) {
+      const std::string fr = pin->GetString("particles", "newton_pm_soft_frame");
+      if (fr != "comoving" && fr != "physical") {
+        NewtonFatal("<particles> newton_pm_soft_frame must be comoving or physical");
+      }
+      next.pm_soft_physical = (fr == "physical");
+    }
+    if (has("newton_bg_t0")) { next.bg_t0 = pin->GetReal("particles", "newton_bg_t0"); }
+    if (next.pm_soft < 0.0) {
+      NewtonFatal("<particles> newton_pm_soft must not be negative");
+    }
+  }
   if (nropt.newton_expansion == 1) {
     if (!(pm->strictly_periodic)) {
       NewtonFatal("<particles> newton_expansion = power requires a mesh that is periodic "
@@ -178,6 +201,11 @@ void Particles::NrpicNewtonInit(ParameterInput *pin) {
       NewtonFatal("<particles> newton_expansion = power requires newton_hubble > 0 and "
                   "newton_exponent > 0");
     }
+  }
+  if (next.bg_t0 != 0.0 && (!(next.bg_t0 > 0.0) || nropt.newton_expansion != 0)) {
+    NewtonFatal("<particles> newton_bg_t0 must be positive and needs "
+                "newton_expansion = none (the term is the gravity of the background in "
+                "physical coordinates)");
   }
   if (!(nropt.newton_cfl > 0.0) && !(dt_user < 1.0e30)) {
     NewtonFatal("<particles> pusher = newton requires a step: dt, or newton_cfl > 0");
@@ -193,6 +221,40 @@ void Particles::NrpicNewtonInit(ParameterInput *pin) {
     Kokkos::realloc(nw_coarse_phi, nmb, 1, indcs.cnx3 + 2*(indcs.ng),
                     indcs.cnx2 + 2*(indcs.ng), indcs.cnx1 + 2*(indcs.ng));
   }
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn  Real Particles::NrpicNewtonScale
+//! \brief the scale factor a(t) of the Newtonian mode
+
+Real Particles::NrpicNewtonScale(const Real time) {
+  return Background(nropt).A(time);
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn  nrpic::NewtonExternal Particles::NrpicNewtonExternal
+//! \brief the external gravity at the given time: point mass with G = four_pi_G/(4 pi)
+//! of the <gravity> block and its softening length (fixed in the coordinates of the
+//! run, or fixed in physical units, s/a), and the background term 2/(9 (t0 + t)^2)
+
+nrpic::NewtonExternal Particles::NrpicNewtonExternal(const Real time) {
+  nrpic::NewtonExternal ext;
+  if (next.pm_mass != 0.0) {
+    const Real four_pi_g = (pmy_pack->pgrav != nullptr) ? pmy_pack->pgrav->four_pi_G : 0.0;
+    ext.gm = four_pi_g*next.pm_mass/(4.0*M_PI);
+    ext.xc[0] = next.pm_x[0]; ext.xc[1] = next.pm_x[1]; ext.xc[2] = next.pm_x[2];
+    const Real soft = next.pm_soft_physical ? next.pm_soft/Background(nropt).A(time)
+                                            : next.pm_soft;
+    ext.soft2 = soft*soft;
+  }
+  if (next.bg_t0 > 0.0) {
+    ext.kbg = 2.0/(9.0*SQR(next.bg_t0 + time));
+  }
+  for (int d=0; d<3; ++d) {
+    ext.per[d] = nropt.periodic[d];
+    ext.len[d] = nropt.dom_len[d];
+  }
+  return ext;
 }
 
 //----------------------------------------------------------------------------------------
@@ -458,6 +520,10 @@ void Particles::NrpicNewtonKick(const Real dt_kick, const Real time) {
   proto.ncell[1] = indcs.nx2 + 2*indcs.ng;
   proto.ncell[2] = indcs.nx3 + 2*indcs.ng;
 
+  // external gravity (fixed point mass, background) at this time; off: nothing is added
+  const nrpic::NewtonExternal ext = NrpicNewtonExternal(time);
+  const bool ext_on = ext.On();
+
   array_sum::GlobalSum s1, s2;
   Real pmax2 = 0.0, gmax2 = 0.0;
   if (np > 0) {
@@ -477,7 +543,11 @@ void Particles::NrpicNewtonKick(const Real dt_kick, const Real time) {
       met.idx[0] = 1.0/sz(m).dx1; met.idx[1] = 1.0/sz(m).dx2; met.idx[2] = 1.0/sz(m).dx3;
       nrpic::AdmPoint ap;
       met(1, x, ap);
-      const Real g[3] = {-ap.dalp[0], -ap.dalp[1], -ap.dalp[2]};
+      Real g[3] = {-ap.dalp[0], -ap.dalp[1], -ap.dalp[2]};
+      // The potential energy sum counts the mesh potential once per pair (the factor
+      // 1/2 of the history) and the external potential in full: twice here.
+      Real phi_sum = ap.alp;
+      if (ext_on) { phi_sum += 2.0*ext.Add(x, g); }
       u[0] += dt_kick*g[0]; u[1] += dt_kick*g[1]; u[2] += dt_kick*g[2];
       pr(IPVX,p) = u[0]; pr(IPVY,p) = u[1]; pr(IPVZ,p) = u[2];
 
@@ -488,7 +558,7 @@ void Particles::NrpicNewtonKick(const Real dt_kick, const Real time) {
       array_sum::GlobalSum t1, t2;
       t1.the_array[NWS_M] = mp;
       t1.the_array[NWS_P2] = mp*(u[0]*u[0] + u[1]*u[1] + u[2]*u[2]);
-      t1.the_array[NWS_PHI] = mp*ap.alp;
+      t1.the_array[NWS_PHI] = mp*phi_sum;
       t1.the_array[NWS_P]   = mp*u[0];
       t1.the_array[NWS_P+1] = mp*u[1];
       t1.the_array[NWS_P+2] = mp*u[2];
@@ -544,6 +614,8 @@ TaskStatus Particles::NrpicNewtonPush(Driver *pdriver, int stage) {
   const NewtonBackground bg = Background(nropt);
   const Real hdt = 0.5*(pm->dt);
   const Real drift = bg.Drift(pm->time, pm->time + pm->dt);
+  const nrpic::NewtonExternal ext = NrpicNewtonExternal(pm->time);
+  const bool ext_on = ext.On();
 
   nrpic::MeshMetric proto;
   proto.bspline = nropt.interp_bspline;
@@ -565,14 +637,23 @@ TaskStatus Particles::NrpicNewtonPush(Driver *pdriver, int stage) {
     met.idx[0] = 1.0/sz(m).dx1; met.idx[1] = 1.0/sz(m).dx2; met.idx[2] = 1.0/sz(m).dx3;
     nrpic::AdmPoint ap;
     met(1, x, ap);
-    for (int d=0; d<3; ++d) {
-      u[d] -= hdt*ap.dalp[d];
-      x[d] += drift*u[d];
+    if (ext_on) {
+      Real g[3] = {-ap.dalp[0], -ap.dalp[1], -ap.dalp[2]};
+      (void) ext.Add(x, g);
+      for (int d=0; d<3; ++d) {
+        u[d] += hdt*g[d];
+        x[d] += drift*u[d];
+      }
+    } else {
+      for (int d=0; d<3; ++d) {
+        u[d] -= hdt*ap.dalp[d];
+        x[d] += drift*u[d];
+      }
     }
     // a particle whose state is no longer finite is removed with the excised ones
     const Real chk = x[0] + x[1] + x[2] + u[0] + u[1] + u[2];
     if (!(Kokkos::isfinite(chk))) {
-      pi(PGID,p) = -2;
+      pi(PGID,p) = -4;
     } else {
       pr(IPX,p) = x[0]; pr(IPY,p) = x[1]; pr(IPZ,p) = x[2];
       pr(IPVX,p) = u[0]; pr(IPVY,p) = u[1]; pr(IPVZ,p) = u[2];

@@ -1,0 +1,158 @@
+# Bound expanding dust ball followed through its turnaround and collapse to a black
+# hole (test L3 of tracks/core/JOURNAL-gauge.md): the time reverse of Oppenheimer-Snyder
+# collapse started while it expands (python/nrpic/expanding_ball.py, e0 > 0), with the
+# lapse of wave 2 (z4c/lapse_leak; z4c/lapse_leak=0.0 gives plain 1+log).  The deposit
+# rules, the lapse excision and the horizon finder are those of
+# problems/os/os_amr.athinput.  Mesh: static, root cells 2 M, cells M/4 (= lattice
+# spacing) within 8 M, cells M/8 within 4 M; refined_region3/level=5 on the command line
+# adds cells M/16 within 2 M.  (With the adaptive mesh of os_amr.athinput, Loehner
+# indicator and six levels, the first regrid of this problem at t = 0.5 M asked for
+# 1632 MeshBlocks and the run stopped at the limit of 1024: run
+# core-20261115-203207-b4430da.)
+# Initial data: problems/ic/make_ball.py --Rb 5 --e0 0.16 --RE 10 --h 0.25 --out <dir>;
+# give particles/particle_file, problem/comp0_file and particles/traj_ntrack on the
+# command line.  Exact solution: every shell turns around at 1.25 of its initial areal
+# radius at tau = 9.542 M; the surface reaches R = 2M at tau = 25.408 M.
+
+<comment>
+problem   = bound expanding dust ball through its collapse
+
+<job>
+basename  = ball
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -64.0
+x1max     = 64.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -64.0
+x2max     = 64.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -64.0
+x3max     = 64.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement       = static
+
+<refined_region1>
+level = 3
+x1min = -8.0
+x1max = 8.0
+x2min = -8.0
+x2max = 8.0
+x3min = -8.0
+x3max = 8.0
+
+<refined_region2>
+level = 4
+x1min = -4.0
+x1max = 4.0
+x2min = -4.0
+x2max = 4.0
+x3min = -4.0
+x3max = 4.0
+
+# no further level by default (level 4 again); refined_region3/level=5 gives cells M/16
+<refined_region3>
+level = 4
+x1min = -2.0
+x1max = 2.0
+x2min = -2.0
+x2max = 2.0
+x3min = -2.0
+x3max = 2.0
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 45.0
+ndiag      = 20
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_volume    = 0.0
+lapse_advect    = 1.0
+lapse_leak      = 2.0      # 1/T of the relaxation of the excess lapse (0: plain 1+log); T = 0.5 M
+lapse_leak_alpha = 1.0     # reference lapse
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<fastflow>
+find_every        = 16
+metric_drvts      = interpolant
+num_horizons      = 1
+npunct            = 0
+ntheta            = 16
+lmax              = 8
+use_puncture_0    = -1
+center_x_0        = 0.0
+center_y_0        = 0.0
+center_z_0        = 0.0
+initial_radius_0  = 1.0
+flow_iterations_0 = 400
+flow_alpha_beta_const_0 = 1.0
+hmean_tol_0       = 100.0
+mass_tol_0        = 1.0e-5
+start_time_0      = 14.0
+stop_time_0       = 1000.0
+verbose           = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+interp         = hermite
+tolerance      = 1.0e-10
+max_iterations = 50
+deposit        = true
+deposit_shape  = cic
+nfilter        = 1
+filter_compensate = false
+deposit_max_level = 31
+deposit_adaptive  = false  # published rule: cloud at the finest local level
+deposit_min_level = 3      # ... never coarser than the level-3 cell (dx = lattice spacing)
+deposit_ppc       = 1.0
+deposit_max_coarsen = 31
+source_density = false
+source_extrap  = false
+alpha_exc      = 0.1
+hist_dcycle    = 1
+cstat_dcycle   = 4
+traj_dcycle    = 4
+traj_ntrack    = 0
+snap_dt        = 4.0
+particle_file  = ball.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = table
+comp0_file = ball.tab
+lapse      = table
+lapse_comp = 0
+shift      = zero
+
+<output1>
+file_type = hst
+dt        = 0.25

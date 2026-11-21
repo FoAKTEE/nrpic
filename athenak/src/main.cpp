@@ -41,6 +41,7 @@
 #include "driver/driver.hpp"
 #include "utils/utils.hpp"
 #include "pgen/nrpic/nrpic_puncture_setup.hpp"
+#include "particles/nrpic_cosmo_ext.hpp"
 
 // MPI/OpenMP headers
 #if MPI_PARALLEL_ENABLED
@@ -427,5 +428,6 @@ int main(int argc, char *argv[]) {
 #if MPI_PARALLEL_ENABLED
   MPI_Finalize();
 #endif
-  return(0);
+  // zero, or the status of a run stopped by the guard of the NRPIC module
+  return(nrpic::GuardExitStatus());
 }

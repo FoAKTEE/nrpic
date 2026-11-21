@@ -1,0 +1,39 @@
+{
+ "run_id": "core-20261115-205047-6817f49",
+ "owner": "core",
+ "purpose": "G2e on one A100: replay of single collision steps by the Python twin, wave-1 cases and the cases of coll_energy",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/run_replay.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-205047-6817f49",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/f46f159/athena_gpu",
+  "--nproc",
+  "2",
+  "--new",
+  "--n",
+  "6000"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-205047-6817f49",
+ "commit": "6817f4987df7e7ab177a0efc28e4c954d20401a3",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/f46f159/athena_gpu",
+   "sha256": "82a05adae8f653042d08817ecda6dddc0d51c0a8d2c46246b0d58b2fb87ad438"
+  },
+  {
+   "path": "tracks/core/analysis/collisions/run_replay.py",
+   "sha256": "dd29f99393ee5ddd7d49a59488a07701dfcd1244157a1ae7c7cc9f38cf4c6980"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-205047-6817f49",
+ "host": "anta",
+ "start_utc": "2026-11-15T20:50:48Z",
+ "cores": 1,
+ "wall_time_s": 149.37,
+ "exit_status": 0,
+ "card_hours": 0.0415
+}

@@ -1,0 +1,256 @@
+# T10g of the work package cosmo-amr: the scouting run T10b (problems/cosmo_amr/peak_amr.athinput,
+# Track A's S1 data, tlim 16, limit 2000 MeshBlocks) with the four finder surfaces of T10c
+# (searches from t = 10.5) and no restart files; generated from the example input and
+# t10c_finder.athinput (tracks/core/JOURNAL-cosmo-amr.md, entry of T10g).
+<comment>
+problem = single curvature peak in a periodic matter-era box
+
+<job>
+basename = peak
+
+<mesh>
+nghost = 4
+nx1 = 64
+x1min = -10.0
+x1max = 10.0
+ix1_bc = periodic
+ox1_bc = periodic
+nx2 = 64
+x2min = -10.0
+x2max = 10.0
+ix2_bc = periodic
+ox2_bc = periodic
+nx3 = 64
+x3min = -10.0
+x3max = 10.0
+ix3_bc = periodic
+ox3_bc = periodic
+
+<meshblock>
+nx1 = 16
+nx2 = 16
+nx3 = 16
+
+<mesh_refinement>
+refinement = adaptive
+num_levels = 5
+max_nmb_per_rank = 2000
+ncycle_check = 8
+refinement_interval = 16
+
+<amr_criterion0>
+method = user
+
+<z4c_amr>
+method = trivial
+
+<particles_amr>
+ppc_refine = 8.0
+ppc_derefine = 0.5
+lapse_ratio_1 = 0.9
+lapse_ratio_2 = 0.7
+lapse_ratio_3 = 0.55
+lapse_ratio_4 = 0.4
+hysteresis = 0.1
+verbose = true
+
+<z4c_guard>
+stop_nonfinite = true
+stop_chi_nonpositive = true
+
+<time>
+evolution = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim = -1
+tlim = 16.0
+ndiag = 50
+
+<z4c>
+lapse_oplog = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic = 0.3333333333333333
+lapse_volume = 0.0
+lapse_kdriver = 1.0
+lapse_advect = 0.0
+shift_Gamma = 0.0
+shift_alpha2Gamma = 0.0
+shift_eta = 0.0
+shift_advect = 0.0
+diss = 0.5
+chi_div_floor = 1.0e-8
+damp_kappa1 = 0.5
+damp_kappa1_over_alpha = true
+damp_kappa2 = 0.0
+damp_kappa_gam = 0.0
+damp_ch = 0.0
+damp_ch_dx = 0.0
+damp_ch_chipow = 0.0
+excise_chi = 0.0
+dt_lightspeed = 1.0
+
+<fastflow>
+find_every = 16
+metric_drvts = interpolant
+num_horizons = 4
+npunct = 0
+ntheta = 16
+lmax = 8
+verbose = false
+diagnostics = true
+use_puncture_0 = -1
+center_x_0 = 0.0
+center_y_0 = 0.0
+center_z_0 = 0.0
+initial_radius_0 = 2.0
+flow_iterations_0 = 200
+flow_alpha_beta_const_0 = 1.0
+hmean_tol_0 = 1.0e30
+mass_tol_0 = 1.0e-5
+start_time_0 = 10.5
+stop_time_0 = 1000.0
+use_puncture_1 = -1
+center_x_1 = 0.0
+center_y_1 = 0.0
+center_z_1 = 0.0
+initial_radius_1 = 0.8
+flow_iterations_1 = 200
+flow_alpha_beta_const_1 = 1.0
+hmean_tol_1 = 1.0e30
+mass_tol_1 = 1.0e-5
+start_time_1 = 10.5
+stop_time_1 = 1000.0
+use_puncture_2 = -1
+center_x_2 = 0.0
+center_y_2 = -0.59
+center_z_2 = 0.0
+initial_radius_2 = 0.25
+flow_iterations_2 = 200
+flow_alpha_beta_const_2 = 1.0
+hmean_tol_2 = 1.0e30
+mass_tol_2 = 1.0e-5
+start_time_2 = 10.5
+stop_time_2 = 1000.0
+use_puncture_3 = -1
+center_x_3 = 0.0
+center_y_3 = 0.59
+center_z_3 = 0.0
+initial_radius_3 = 0.25
+flow_iterations_3 = 200
+flow_alpha_beta_const_3 = 1.0
+hmean_tol_3 = 1.0e30
+mass_tol_3 = 1.0e-5
+start_time_3 = 10.5
+stop_time_3 = 1000.0
+
+<particles>
+particle_type = nrpic
+pusher = midpoint
+interp = hermite
+dt_expansion = 0.05
+metric = mesh
+tolerance = 1.0e-12
+max_iterations = 50
+deposit = true
+nfilter = 2
+filter_compensate = true
+filter_comp_c = -1.0
+deposit_comp_c = 0.0
+deposit_comp_limit = 0.0
+deposit_comp_c2 = 0.0
+deposit_shape = cic
+deposit_max_level = 31
+deposit_adaptive = true
+deposit_min_level = 0
+deposit_ppc = 2.0
+deposit_max_coarsen = 31
+alpha_exc = 0.3
+ah_exc_factor = -1.0
+hist_dcycle = 1
+cstat_dcycle = 8
+cons_dcycle = 0
+line_dcycle = 0
+traj_dcycle = 0
+traj_ntrack = 0
+snap_dt = 1.0
+probe_x1 = 0.001
+probe_x2 = 0.001
+probe_x3 = 0.001
+nprobe = 0
+lambda = 0.0
+source_density = true
+source_extrap = true
+particle_file = /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/particles.nrp
+deposit_fine_shape = true
+region_dcycle = 16
+region_radius1 = 2.449489742783178
+region_radius2 = 0.6
+region_horizon = 0
+
+<problem>
+pgen_name = nrpic_cosmo
+id = file
+id_file = /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/fields.bin
+hubble = 1.0
+
+<output1>
+file_type = hst
+dt = 0.1
+
+<output2>
+file_type = tab
+variable = z4c
+dt = 0.5
+slice_x2 = 0.001
+slice_x3 = 0.001
+
+<output3>
+file_type = tab
+variable = con
+dt = 0.5
+slice_x2 = 0.001
+slice_x3 = 0.001
+
+<output4>
+file_type = tab
+variable = tmunu_E
+dt = 0.5
+slice_x2 = 0.001
+slice_x3 = 0.001
+
+<output5>
+file_type = tab
+variable = z4c_alpha
+id = alpha_y
+dt = 0.5
+slice_x1 = 0.001
+slice_x3 = 0.001
+
+<output6>
+file_type = tab
+variable = tmunu_E
+id = E_y
+dt = 0.5
+slice_x1 = 0.001
+slice_x3 = 0.001
+
+<output7>
+file_type = rst
+dt = 100.0
+
+<output8>
+file_type = tab
+variable = z4c_alpha
+id = alpha_z
+dt = 0.5
+slice_x1 = 0.001
+slice_x2 = 0.001
+
+<output9>
+file_type = tab
+variable = tmunu_E
+id = E_z
+dt = 0.5
+slice_x1 = 0.001
+slice_x2 = 0.001
+

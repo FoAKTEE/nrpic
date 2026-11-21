@@ -1,0 +1,5 @@
+# Timing job of session dfix-3 (journal, "Card cases still missing"): nrpic-run batch list
+# `<name> <athinput> [athena args]`; every case capped by the athena wall clock (-t).
+t5_pair   problems/tests/pair_horizon.athinput -t 00:06:00
+t7_time   problems/tests/accretion_tracker.athinput time/nlim=9 particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261115-163129-a200caf/run/atr.nrp -t 00:03:00
+mem_time  problems/puncture/by_triple.athinput mesh_refinement/max_nmb_per_rank=2700 time/nlim=4 output2/dt=1.0e6 output3/dt=1.0e6 -t 00:03:00

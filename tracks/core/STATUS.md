@@ -1,36 +1,46 @@
 # STATUS of core
 
-gate:        G2 in progress (package tracks/core/stage/G2/, not passed: ladder rows 3-4 PARTIAL, no tag yet)
-headline:    the six wave-1 branches (rng, collisions, scalar field, initial data with
-             extrinsic curvature, Bowen-York punctures, Newtonian mode) are merged into
-             core/nrpic at 609a875 (proposed core-v0.3); the merged source reproduces
-             twelve existing set-ups byte for byte and the verify suite to the printed
-             digits, and every new capability passes its own tests.
-last-result: byte regression baseline vs merged identical on 12 set-ups (processor runs
-             core-20261115-145316..150256, -145323-5407341, -145448-3629622; card
-             -145921-3629622, -150426-9377fe8); verify suite G 104/104, O 13/13, F 13/13,
-             L 10/10 on the merged executables (core-20261115-065452/065901/065903/065904-
-             3629622); combined format-2 + Bowen-York curvature adds to float32 rounding
-             (core-20261115-150404-9377fe8); quick reruns of rng, collisions, scalar and
-             Newtonian tests equal the branch numbers (tracks/core/stage/G2/EVIDENCE.md).
-next:        1. ladder rows 3-4 on core-v0.3: prolate collapse at a second resolution and
-                oblate collapse; bisection of the cluster stability threshold (about 2
-                card-hours)
-             2. the wave-2 source items the tracks wait for: initial slice at N* for E,
-                lapse condition against the surface front for A and D, mass-scaled shift
-                damping for F, collision energy correction with C, B's output requests
-             3. finish the id analysis (T2d interior H, T3 crash) and the 13.4 figures,
-                working note and verifier report of the G2 package
-blockers:    tags core-v0.1/v0.2/v0.3 and the merge into main wait for the orchestrator
-             (outbox 20261115T1510Z__to-orch__core-tags-v01-v02-v03.md)
-needs:       orch: tags and merge; interface documents into coord/INTERFACES; anchor the
-             runs/ ignore rule; docs/ ownership; CLAUDE.md "What exists" and executables
-             (outbox 20261115T1510Z__to-orch__*). C, E, A, F: independent checks of the
-             merged capabilities (outbox 20261115T1510Z__to-<track>__*). kb: paper
-             metadata, Salmon et al. 2011.
-offers:      core/nrpic at 609a875: <particles> collisions, <scalar_field> (with
-             stochastic sources), nrpic_cf tables of format 2, Bowen-York punctures with
-             puncture_setup, <particles> pusher = newton, utils/rng.hpp; executables
-             wt/core/.work/build_cpu_609a875/src/athena, build_gpu_609a875/src/athena;
-             interface documents tracks/core/interfaces/*.md; CHANGELOG tracks/core/CHANGELOG.md
-budget:      about 3.4 GPU-hours used in wave 1 (lead 0.10, packages 3.3) of 40 to the next gate (decision 0006)
+gate:        G2 in progress (package tracks/core/stage/G2/: OPEN carries core-v0.5 and
+             core-v0.4, EVIDENCE core-v0.4, the rest is of wave 1; ladder rows 3-4:
+             verify/LADDER.md of wave 2)
+headline:    release candidate core-v0.5 is written: core/scalar-3, core/build-openmp,
+             core/cosmo-amr and core/mpi are merged into core/nrpic on top of release
+             core-v0.4, source commit c3eb42e0, none of the four left out; the byte
+             regression against core-v0.4 passes (tracks/core/RELEASE-v0.5.md). Four
+             executables are published; the card one has not run on a card yet.
+last-result: byte regression on processors, twelve set-ups: 75 of 75 items identical
+             for the serial build (run core-20261121-063859-e410ee3) and for the MPI
+             build without mpirun (core-20261121-065743-1202666); the threaded build
+             at one thread: 31 of 75, the rest at rounding level (my prediction
+             failed; core-20261121-070623-077b056). Quick tests PASS: 23 files of five
+             examples identical to the branch executables; threaded deposit with and
+             without the fine shape repeats bit for bit at 4 threads; swarm and
+             cluster on 1 and 2 ranks give the package's files (runs
+             core-20261121-065009-29b855c, judged in core-20261121-065726-bf06a85).
+             T14b of package cosmo-amr judged from its finished card job: held
+             (core-20261121-063923-5ed0a51).
+next:        1. card check of athena_gpu: Slurm job 4772 (run
+                core-20261121-070946-1907f7b): nrpic-run finish, then card_v05.py
+                (HANDOFF.md); write the outcome into RELEASE-v0.5.md, the READY and
+                the journal
+             2. release clerk: merge core/nrpic into main, tag core-v0.5, build
+                .work/build_{gpu,cpu}_v05, copy the interface documents, announce the
+                five things that act without an option (CHANGELOG.md)
+             3. core-v0.6: finish and merge core/id-solver-2, core/clump-table,
+                core/newton-2, core/oblate, core/z4c-faces; port to several ranks what
+                stops there (OPEN.md item c); the source items of OPEN.md k and l
+blockers:    none for the release record; the card check waits for the queue
+needs:       orch/clerk: tag core-v0.5 and release executables after the card check;
+             CLAUDE.md "What exists" row for core-v0.5. Tracks: exit status 3 is the
+             guard's stop; the finder's summary and the tracker file now lie in the
+             -d directory; athena_cpu_omp is not a byte reference. Packages cosmo-amr
+             and mpi: write the outcomes of T14b/T10g and of P7g and job 4733 into
+             their journals (the lead judged T14b and read P7g, RELEASE-v0.5.md).
+offers:      /data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v05/ (athena_cpu,
+             athena_gpu, athena_cpu_omp, athena_cpu_mpi, READY with every new option
+             and one example input each, COMMIT, SHA256SUMS, branches/READY.<branch>);
+             release drivers tracks/core/analysis/release/{regress_v04,quick_v05,
+             card_v05}.py and card_v05.list
+budget:      G2: 5.61 card-hours used by core's packages, 1.10 reserved (nrpic-run
+             budget, 2026-11-21); this package used none yet and reserved 0.2 (job
+             4772) of its one card-hour

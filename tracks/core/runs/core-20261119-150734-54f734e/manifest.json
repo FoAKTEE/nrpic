@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261119-150734-54f734e",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-mpi/tracks/core/analysis/mpi/mpi_tests.py",
+  "--case",
+  "t2p_box_tsc",
+  "--out",
+  "t2p_box_tsc"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-150734-54f734e",
+ "commit": "54f734e",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/tests/mpi_box_periodic.athinput",
+   "sha256": "fb14f926e70f485b2932d23f58e66329aa40aa410886d70108eb1dd5e6fe2b5e"
+  },
+  {
+   "path": ".work/build_cpu_mpi/src/athena",
+   "sha256": "f7a7df96342016c9b8d512fbb991a2aca5c51a3ce28288641757cb9cdbdfcdb0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-150734-54f734e",
+ "purpose": "mpi T2 (t2p_box_tsc): deposit across rank boundaries in a fixed metric, 1, 2 and 4 ranks compared; sources at all particles in double precision",
+ "kind": "scouting",
+ "tag": "mpi-t2p_box_tsc",
+ "state": "finished",
+ "wall_time_s": 38.71,
+ "exit_status": 0,
+ "cores": 7,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T15:07:34Z"
+}

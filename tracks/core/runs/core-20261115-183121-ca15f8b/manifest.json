@@ -1,0 +1,45 @@
+{
+ "run_id": "core-20261115-183121-ca15f8b",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu_vec/src/athena",
+  "-i",
+  "gaussian_boost.athinput",
+  "mesh/nx1=32",
+  "mesh/nx2=32",
+  "mesh/nx3=32",
+  "meshblock/nx1=16",
+  "meshblock/nx2=16",
+  "meshblock/nx3=16",
+  "particles/id_residual=code",
+  "particles/particle_file=gauss_h0p5_u0p1.nrp"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-183121-ca15f8b",
+ "commit": "ca15f8b",
+ "source_modified_since_commit": true,
+ "inputs": [
+  {
+   "path": "problems/idsolve/gaussian_boost.athinput",
+   "sha256": "feffd511f23de35456da4c70cf4e5fa0db12d720326f76dbf0b87d109a6cd204"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/gauss_h0p5_u0p1.nrp",
+   "sha256": "5e3430bf52d29a7535c83ed4f26adf5aa6358c786ad9a748b3ae0eb885e0e6f9"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu_vec/src/athena",
+   "sha256": "9c024a2c60862e0d90de3dc331d5e1b44290d94ca18cb43c0adc8ca2a234c5c1",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-183121-ca15f8b",
+ "purpose": "initial-data solver, tests V1/V2: moving Gaussian with the vector equation, gboost_code_n32",
+ "kind": "scouting",
+ "tag": "idsolve-gboost_code_n32",
+ "state": "finished",
+ "wall_time_s": 11.34,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T18:31:21Z"
+}

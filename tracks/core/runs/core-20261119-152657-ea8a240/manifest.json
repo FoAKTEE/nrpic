@@ -1,0 +1,125 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261119-152657-ea8a240",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "G kdrv: quadratic case at 32^3 with the stochastic sources, lapse_kdriver = 2 on a geodesic mean; processors",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/scalar3/g1_gauge.py",
+    "--exe",
+    ".work/exe/athena_cpu_cea3a49",
+    "--workers",
+    "1",
+    "--only",
+    "kdrv"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "ea8a2401a9858d2e29480d95e0706f2cfb72297d",
+    "branch": "core/scalar-3",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/scalar3"
+    ],
+    "outside_package": {
+      "count": 9,
+      "first": [
+        "?? tracks/core/runs/core-20261119-152210-32898c7/",
+        "?? tracks/core/runs/core-20261119-152211-32898c7/",
+        "?? tracks/core/runs/core-20261119-152212-32898c7/",
+        "?? tracks/core/runs/core-20261119-152213-32898c7/",
+        "?? tracks/core/runs/core-20261119-152214-32898c7/",
+        "?? tracks/core/runs/core-20261119-152221-32898c7/",
+        "?? tracks/core/runs/core-20261119-152227-32898c7/",
+        "?? tracks/core/runs/core-20261119-152241-1754ebc/",
+        "?? tracks/core/runs/core-20261119-152251-845c524/"
+      ]
+    },
+    "merge_base_main": "27b2ced9be0f020a4206d89e3cc982ada5c4367c",
+    "worktree": "wt/core-scalar3"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-scalar3/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": ".work/exe/athena_cpu_cea3a49",
+      "role": "input",
+      "sha256": "c58e84876bdbd56616cd252115d09dc80da7ba6c3d25bdbafa529c7c352301d2",
+      "bytes": 249396704,
+      "tracked": false
+    },
+    {
+      "path": "problems/scalar/sr_stochastic_gauge.athinput",
+      "role": "input",
+      "sha256": "23071ea25c75ecaf4083bbf020fdeaf14fae58bb9964fb9473771eae26226ae1",
+      "bytes": 3474,
+      "tracked": true
+    },
+    {
+      "path": "tracks/core/analysis/scalar3/g1_gauge.py",
+      "role": "argv",
+      "sha256": "0d34019375cfe17f7141b8ebcc1d77b38536340e592188a916c09d39131d4817",
+      "bytes": 2026,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 320.182,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261119-152657-ea8a240",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "63cdc45dd8fa3e27cd77e6bd667ddf242a0401753a5e417df4fac57ab98748ba",
+    "bytes": 69388164,
+    "files": 30
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-19T15:26:58Z",
+  "started": "2026-11-19T15:26:58Z",
+  "ended": "2026-11-19T15:32:19Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.5281,
+    "gpu_hours_reserved": 5.4433,
+    "gpu_hours_without_gate": 5.8613,
+    "cores_busy": 15,
+    "runs": 1046,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-19T15:42:28Z"
+}

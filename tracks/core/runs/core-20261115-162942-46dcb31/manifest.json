@@ -1,0 +1,53 @@
+{
+ "run_id": "core-20261115-162942-46dcb31",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu/src/athena",
+  "-i",
+  "ball.athinput",
+  "mesh/nx1=64",
+  "mesh/nx2=64",
+  "mesh/nx3=64",
+  "meshblock/nx1=32",
+  "meshblock/nx2=32",
+  "meshblock/nx3=32",
+  "time/nlim=8",
+  "time/tlim=100.0",
+  "particles/nfilter=0",
+  "particles/particle_file=tri_h0p5_e0p05.nrp",
+  "problem/comp0_file=ball_h0p5.tab",
+  "particles/id_residual=code"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-162942-46dcb31",
+ "commit": "46dcb31",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/idsolve/ball.athinput",
+   "sha256": "590bb8d2c8fbd479482de6c6b1984a1531972d8fd6ad44bfed932073d709aa01"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/tri_h0p5_e0p05.nrp",
+   "sha256": "0b0640fe66831274f960c00884562657fd63f3923bc329d041e4a5f3f8ca7432"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/ball_h0p5.tab",
+   "sha256": "7a62afec5e80352f83b9736dd0c519c80d8fd3666337d3fbd776c81e2d224669"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu/src/athena",
+   "sha256": "65e3a59ffc0eeb22cee5ae4f81bd8560dc6518fb32562f63abd6771f6e6a814a",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-162942-46dcb31",
+ "purpose": "initial-data solver: evolution of the triaxial ball, solve code",
+ "kind": "scouting",
+ "tag": "idsolve-evo-tri-code",
+ "state": "finished",
+ "wall_time_s": 247.61,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T16:29:42Z"
+}

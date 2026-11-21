@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261119-152553-8f245d7",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-mpi/tracks/core/analysis/mpi/mpi_tests.py",
+  "--case",
+  "t2_kerr_cic",
+  "--out",
+  "t2_kerr_cic"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-152553-8f245d7",
+ "commit": "8f245d7",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/tests/mpi_kerr_swarm.athinput",
+   "sha256": "6b4c7cb1922334815f48423db6e65e07bef875422cfb36e7d931a65cae088e1f"
+  },
+  {
+   "path": ".work/build_cpu_mpi/src/athena",
+   "sha256": "1be068cac77ccfe697037acb4e96bfc11f99d84905b62504e4299edfb0ede153"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-152553-8f245d7",
+ "purpose": "mpi T2 (t2_kerr_cic), rerun with the gather at the tracked particles across ranks",
+ "kind": "scouting",
+ "tag": "mpi-t2_kerr_cic",
+ "state": "finished",
+ "wall_time_s": 102.75,
+ "exit_status": 0,
+ "cores": 7,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T15:25:53Z"
+}

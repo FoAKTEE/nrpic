@@ -1,0 +1,45 @@
+{
+ "run_id": "core-20261115-190648-9ff0184",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/core/tmp/idsolve/exe_a7a32cd/athena_cpu",
+  "-i",
+  "gaussian.athinput",
+  "mesh/nx1=32",
+  "mesh/nx2=32",
+  "mesh/nx3=32",
+  "meshblock/nx1=16",
+  "meshblock/nx2=16",
+  "meshblock/nx3=16",
+  "particles/id_residual=code",
+  "particles/particle_file=gauss_h0p5.nrp"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-190648-9ff0184",
+ "commit": "9ff0184",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/idsolve/gaussian.athinput",
+   "sha256": "20b216065032fd97a7fa4f924c548c2fe6dfb91c5ece25fc9e28734b87af8cd2"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/gauss_h0p5.nrp",
+   "sha256": "fb63b25c87a659fb7cc49c522eb30989325c0460f2c17ca5bac852181bb76f2d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve/exe_a7a32cd/athena_cpu",
+   "sha256": "383bbb5b39eea3de3d02a30a27f250b2d1efc3bd25612c1a8b1d4cf8119559c1",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-190648-9ff0184",
+ "purpose": "initial-data solver, test V7: gauss_code_n32, final executable",
+ "kind": "scouting",
+ "tag": "idsolve-v7-gauss_code_n32-final",
+ "state": "finished",
+ "wall_time_s": 9.78,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T19:06:48Z"
+}

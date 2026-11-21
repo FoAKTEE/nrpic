@@ -1,0 +1,45 @@
+{
+ "run_id": "core-20261115-155053-87e189e",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu/src/athena",
+  "-i",
+  "gaussian.athinput",
+  "mesh/nx1=128",
+  "mesh/nx2=128",
+  "mesh/nx3=128",
+  "meshblock/nx1=32",
+  "meshblock/nx2=32",
+  "meshblock/nx3=32",
+  "particles/id_residual=stencil",
+  "particles/particle_file=gauss_h0p125.nrp"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-155053-87e189e",
+ "commit": "87e189e",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/idsolve/gaussian.athinput",
+   "sha256": "20b216065032fd97a7fa4f924c548c2fe6dfb91c5ece25fc9e28734b87af8cd2"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/gauss_h0p125.nrp",
+   "sha256": "b362f2002d42d07bd905a882a2dfc0dd037ed0a0455dfe13f1a7952c49b357cd"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu/src/athena",
+   "sha256": "65e3a59ffc0eeb22cee5ae4f81bd8560dc6518fb32562f63abd6771f6e6a814a",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-155053-87e189e",
+ "purpose": "initial-data solver, test T1, case gauss_stencil_n128",
+ "kind": "scouting",
+ "tag": "idsolve-gauss_stencil_n128",
+ "state": "finished",
+ "wall_time_s": 252.92,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T15:50:53Z"
+}

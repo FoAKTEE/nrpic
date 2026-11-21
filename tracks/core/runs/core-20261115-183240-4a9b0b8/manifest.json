@@ -1,0 +1,25 @@
+{
+ "run_id": "core-20261115-183240-4a9b0b8",
+ "owner": "core",
+ "package": "gauge",
+ "tag": "ana-punc-g",
+ "purpose": "analysis of tests P and E1 on processors (puncture with and without lapse_leak; shift damping profile on one hole)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-gauge/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-gauge/tracks/core/analysis/gauge/punc_analysis.py",
+  "--prefix",
+  "g"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-183240-4a9b0b8",
+ "commit": "4a9b0b8690bae735a9a2cc6827df1491ada8e2c8",
+ "head_at_run": "4a9b0b8690bae735a9a2cc6827df1491ada8e2c8",
+ "worktree_dirty": true,
+ "inputs": [],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-183240-4a9b0b8",
+ "wall_time_s": 4.0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-183240"
+}

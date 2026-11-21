@@ -1,0 +1,79 @@
+# Test T3 of work package dfix (journal of core): accretion diagnostics on a static
+# Schwarzschild metric in Cartesian Kerr-Schild coordinates (mesh metric, dx = 0.25 M;
+# with particles/metric=kerr_schild on the command line: the analytic metric).
+# Particle file acc_static.nrp, written by tracks/core/analysis/dfix/t3_accretion.py:
+# three shells of dust at rest at r = 6, 8, 11 M (64 particles each, species 0-2) that
+# fall in and are removed at the lapse threshold 0.62 (r = 1.249 M), and two families of
+# bound eccentric orbits (species 3, 4) that cross the sphere r = 10 M and pass their
+# pericentre several times.  Flux spheres at r = 4 and 10 M.
+
+<comment>
+problem   = accretion diagnostics on a static Schwarzschild metric
+
+<job>
+basename  = acc
+
+<mesh>
+nghost    = 2
+nx1       = 144
+x1min     = -18.0
+x1max     = 18.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 144
+x2min     = -18.0
+x2max     = 18.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 144
+x3min     = -18.0
+x3max     = 18.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 48
+nx2       = 48
+nx3       = 48
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 800.0
+ndiag      = 100000
+
+<adm>
+dynamic = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+bh_mass        = 1.0
+bh_spin        = 0.0
+tolerance      = 1.0e-12
+max_iterations = 200
+dt             = 0.05
+deposit        = false
+alpha_exc      = 0.62
+hist_dcycle    = 20
+snap_dt        = 100.0
+particle_file  = acc_static.nrp
+removal_record = true
+acc_nsphere    = 2
+acc_radius1    = 4.0
+acc_radius2    = 10.0
+acc_x1         = 0.0
+acc_x2         = 0.0
+acc_x3         = 0.0
+peri_count     = true
+acc_dcycle     = 20
+
+<problem>
+pgen_name = nrpic_geodesic
+
+<output1>
+file_type = rst
+dt        = 400.0

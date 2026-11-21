@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261120-223058-bec243b",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/tracks/core/analysis/cosmo_amr/t3d_adaptive.py",
+  "--new",
+  "/data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_cpu",
+  "--t2",
+  "/data/haiyangw/nrpic/scratch/core/core-20261119-151654-e01b46e",
+  "--out",
+  ".",
+  "--cores",
+  "2"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261120-223058-bec243b",
+ "commit": "bec243b",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-cosmo-amr/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261120-223058-bec243b",
+ "purpose": "T3d of cosmo-amr: deposit_adaptive with cic, tsc, pcs clouds at a level boundary in the homogeneous universe (T2's D8 deck); manifest written by hand: nrpic-run submit --launcher local refused (cores of core busy)",
+ "kind": "scouting",
+ "tag": "",
+ "state": "finished",
+ "wall_time_s": 79.01,
+ "exit_status": 0,
+ "cores": 2,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-20T22:30:58Z"
+}

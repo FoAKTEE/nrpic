@@ -5,6 +5,19 @@
 //========================================================================================
 //! \file z4c_linear_wave.cpp
 //! \brief z4c linear (gravitational) wave test
+//!
+//! NRPIC changes with respect to the upstream file (docs/UPSTREAM_DEFECTS.md, item 1):
+//!  - the signs of axy and ayz are corrected, so that the polarization tensor is
+//!    transverse for every wave vector (upstream: only for k2 = 0 or k along an axis);
+//!  - optional cross polarization (<problem> amp_cross, phase_cross);
+//!  - the error routine compares with the exact linear solution at the final time,
+//!    not with the initial data (the two agree after a whole number of periods).
+//! Solution, with P = 2 pi (k.x - |k| t), k in cycles per unit length:
+//!   gt_ij = delta_ij + amp e+_ij sin(P) + amp_cross ex_ij sin(P + phase_cross),
+//!   At_ij = pi |k| [amp e+_ij cos(P) + amp_cross ex_ij cos(P + phase_cross)],
+//!   chi = alpha = 1, Khat = Theta = Gamma^i = beta^i = 0,
+//! e+ = theta theta - phi phi, ex = theta phi + phi theta in the frame of k (theta from
+//! x3; theta-hat and phi-hat as for the usual spherical angles of khat).
 
 
 // C/C++ headers
@@ -102,14 +115,43 @@ void ProblemGenerator::Z4cLinearWave(ParameterInput *pin, const bool restart) {
     pin->SetReal("time", "tlim", tlim*lambda);
   }
 
-  // rotated weight for each tensor element
+  // rotated weight for each tensor element: plus polarization in the frame of k,
+  //   e+_ij = theta_i theta_j - phi_i phi_j,
+  // with khat = (sin(theta) sin(phi), sin(theta) cos(phi), cos(theta)) (phi as defined
+  // above is counted from the x2 axis), theta-hat = (cos(theta) sin(phi),
+  // cos(theta) cos(phi), -sin(theta)), phi-hat = (-cos(phi), sin(phi), 0).
+  // NRPIC: upstream has the opposite sign of axy and ayz; that tensor is transverse only
+  // for k2 = 0 or k along an axis (docs/UPSTREAM_DEFECTS.md, item 1).
   Real axx, axy, axz, ayy, ayz, azz;
   axx = -SQR(cos(theta))*cos(2*phi)-SQR(cos(phi))*SQR(sin(theta));
-  axy = -0.25*(3+cos(2*theta))*sin(2*phi);
+  axy = 0.25*(3+cos(2*theta))*sin(2*phi);
   axz = -cos(theta)*sin(theta)*sin(phi);
   ayy = SQR(cos(theta))*cos(2*phi)-SQR(sin(theta))*SQR(sin(phi));
-  ayz = cos(theta)*sin(theta)*cos(phi);
+  ayz = -cos(theta)*sin(theta)*cos(phi);
   azz = SQR(sin(theta));
+
+  // NRPIC: optional cross polarization ex_ij = theta_i phi_j + phi_i theta_j with its own
+  // amplitude and phase offset (radians); amp_cross = amp and phase_cross = pi/2 give a
+  // circularly polarized wave.  Read only if present, so that the parameter dump of
+  // existing inputs does not change.
+  Real ampx = 0.0, phx = 0.0;
+  if (pin->DoesParameterExist("problem", "amp_cross")) {
+    ampx = pin->GetReal("problem", "amp_cross");
+  }
+  if (pin->DoesParameterExist("problem", "phase_cross")) {
+    phx = pin->GetReal("problem", "phase_cross");
+  }
+  Real bxx, bxy, bxz, byy, byz, bzz;
+  bxx = -cos(theta)*sin(2*phi);
+  bxy = -cos(theta)*cos(2*phi);
+  bxz = sin(theta)*cos(phi);
+  byy = cos(theta)*sin(2*phi);
+  byz = -sin(theta)*sin(phi);
+  bzz = 0.0;
+
+  // NRPIC: time of the solution: zero for the initial conditions, the current time when
+  // this function is called for the reference of the error norms
+  Real tsol = (set_initial_conditions)? 0.0 : pmy_mesh_->time;
 
   par_for("pgen_linwave1", DevExeSpace(), 0, (pmbp->nmb_thispack - 1),
       ks, ke, js, je, is, ie, KOKKOS_LAMBDA(int m, int k, int j, int i) {
@@ -127,22 +169,25 @@ void ProblemGenerator::Z4cLinearWave(ParameterInput *pin, const bool restart) {
         Real x1v = CellCenterX(i - is, nx1, x1min, x1max);
         Real x2v = CellCenterX(j - js, nx2, x2min, x2max);
         Real x3v = CellCenterX(k - ks, nx3, x3min, x3max);
-        Real sinkx = sin(2 * M_PI * (kx1 * x1v + kx2 * x2v + kx3 * x3v));
-        Real coskx = knorm * M_PI * cos(2 * M_PI * (kx1 * x1v + kx2 * x2v + kx3 * x3v));
+        Real arg = 2 * M_PI * (kx1 * x1v + kx2 * x2v + kx3 * x3v - knorm * tsol);
+        Real sinkx = sin(arg);
+        Real coskx = knorm * M_PI * cos(arg);
+        Real sinkc = sin(arg + phx);
+        Real coskc = knorm * M_PI * cos(arg + phx);
 
-        u1(m,pz4c->I_Z4C_GXX,k,j,i) = 1 + axx * amp * sinkx;
-        u1(m,pz4c->I_Z4C_GXY,k,j,i) = axy * amp * sinkx;
-        u1(m,pz4c->I_Z4C_GXZ,k,j,i) = axz * amp * sinkx;
-        u1(m,pz4c->I_Z4C_GYY,k,j,i) = 1 + ayy * amp * sinkx;
-        u1(m,pz4c->I_Z4C_GYZ,k,j,i) = ayz * amp * sinkx;
-        u1(m,pz4c->I_Z4C_GZZ,k,j,i) = 1 + azz * amp * sinkx;
+        u1(m,pz4c->I_Z4C_GXX,k,j,i) = 1 + axx * amp * sinkx + bxx * ampx * sinkc;
+        u1(m,pz4c->I_Z4C_GXY,k,j,i) = axy * amp * sinkx + bxy * ampx * sinkc;
+        u1(m,pz4c->I_Z4C_GXZ,k,j,i) = axz * amp * sinkx + bxz * ampx * sinkc;
+        u1(m,pz4c->I_Z4C_GYY,k,j,i) = 1 + ayy * amp * sinkx + byy * ampx * sinkc;
+        u1(m,pz4c->I_Z4C_GYZ,k,j,i) = ayz * amp * sinkx + byz * ampx * sinkc;
+        u1(m,pz4c->I_Z4C_GZZ,k,j,i) = 1 + azz * amp * sinkx + bzz * ampx * sinkc;
 
-        u1(m,pz4c->I_Z4C_AXX,k,j,i) = axx * amp * coskx;
-        u1(m,pz4c->I_Z4C_AXY,k,j,i) = axy * amp * coskx;
-        u1(m,pz4c->I_Z4C_AXZ,k,j,i) = axz * amp * coskx;
-        u1(m,pz4c->I_Z4C_AYY,k,j,i) = ayy * amp * coskx;
-        u1(m,pz4c->I_Z4C_AYZ,k,j,i) = ayz * amp * coskx;
-        u1(m,pz4c->I_Z4C_AZZ,k,j,i) = azz * amp * coskx;
+        u1(m,pz4c->I_Z4C_AXX,k,j,i) = axx * amp * coskx + bxx * ampx * coskc;
+        u1(m,pz4c->I_Z4C_AXY,k,j,i) = axy * amp * coskx + bxy * ampx * coskc;
+        u1(m,pz4c->I_Z4C_AXZ,k,j,i) = axz * amp * coskx + bxz * ampx * coskc;
+        u1(m,pz4c->I_Z4C_AYY,k,j,i) = ayy * amp * coskx + byy * ampx * coskc;
+        u1(m,pz4c->I_Z4C_AYZ,k,j,i) = ayz * amp * coskx + byz * ampx * coskc;
+        u1(m,pz4c->I_Z4C_AZZ,k,j,i) = azz * amp * coskx + bzz * ampx * coskc;
 
         u1(m,pz4c->I_Z4C_ALPHA,k,j,i) = 1;
         u1(m,pz4c->I_Z4C_CHI,k,j,i) = 1;
@@ -161,7 +206,8 @@ void ProblemGenerator::Z4cLinearWave(ParameterInput *pin, const bool restart) {
 //! Computes errors in selected variables
 
 void Z4cLinearWaveErrors(ParameterInput *pin, Mesh *pm) {
-  // calculate reference solution by calling pgen again.
+  // calculate reference solution by calling pgen again (NRPIC: the exact linear solution
+  // at the current time, see tsol in the problem generator).
   set_initial_conditions = false;
   pm->pgen->Z4cLinearWave(pin, false);
 

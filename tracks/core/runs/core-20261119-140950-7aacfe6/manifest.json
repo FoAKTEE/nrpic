@@ -1,0 +1,104 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261119-140950-7aacfe6",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "Check A of coll2-close: the analysis mode of run_cluster.py (--analyse, --ic) applied to the processor cluster run core-20261115-160913-0656925 reproduces its summary.json except wall times",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    ".venv/bin/python tracks/core/analysis/collisions/run_cluster.py \"$NRPIC_RUN_DIR\" --analyse /data/haiyangw/nrpic/scratch/core/core-20261115-160913-0656925 --ic /data/haiyangw/nrpic/scratch/core/core-20261115-160913-0656925/ic --kn 0.03 --skip-null --energy cell,particle --tlim 0.25 --snap-dt 0.125 --exe /data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_cpu > \"$NRPIC_RUN_DIR/run.log\" 2>&1; .venv/bin/python tracks/core/analysis/collisions/cmp_summary.py /data/haiyangw/nrpic/scratch/core/core-20261115-160913-0656925/summary.json \"$NRPIC_RUN_DIR/summary.json\" --ignore wall_s,run_directory,compare_energy_modes | tee \"$NRPIC_RUN_DIR/compare.txt\""
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "7aacfe600007ef917d37da5dd31879b4449c9f0f",
+    "branch": "core/collisions-2",
+    "dirty": false,
+    "merge_base_main": "71acd0c330b65dad3a9cac337c6f78e8a1bacc44",
+    "worktree": "wt/core-coll2"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-coll2/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/collisions/run_cluster.py",
+      "role": "input",
+      "sha256": "507594f3ca8588d8b5da63b728cf107eed2bf3a774ea94108bf99fb86ba1bf64",
+      "bytes": 19608,
+      "tracked": true
+    },
+    {
+      "path": "tracks/core/analysis/collisions/cmp_summary.py",
+      "role": "input",
+      "sha256": "b5dbb6afae4b5a3b16d6e4293e034af9dcad1dc1afd65086335e013ea29bd454",
+      "bytes": 1701,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-160913-0656925/summary.json",
+      "role": "input",
+      "sha256": "230114b91fe4a6533280403f2efe4b2788ec0ca24d9dda103cff2476d6608ab2",
+      "bytes": 4390,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 21.487,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261119-140950-7aacfe6",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "c4d9411aff0c09097c35afa0408e1b52f59f7da4f6f81665a03695140712d248",
+    "bytes": 162165,
+    "files": 6
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-19T14:09:53Z",
+  "started": "2026-11-19T14:09:53Z",
+  "ended": "2026-11-19T14:10:15Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.5281,
+    "gpu_hours_reserved": 0.8333,
+    "gpu_hours_without_gate": 5.8613,
+    "cores_busy": 0,
+    "runs": 947,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-19T14:10:15Z"
+}

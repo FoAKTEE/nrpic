@@ -10,6 +10,12 @@ scattering, Nanbu-Yonemura rule) and must reproduce the "after" state.
 Cases: flat box (analytic metric) with sub-cycling; with coll_cell_factor = 2; with the
 velocity-dependent cross-section; with unequal masses (nanbu); the homogeneous curved
 metric on the mesh with the symmetric and with the Cholesky triad (Boris pusher).
+With --new also the cases of <particles> coll_energy (dump version 2): the static
+conformal metric with a gradient and a shift (problems/tests/coll_box_static.athinput)
+with coll_energy = cell and = particle (sub-cycling; cell factor 2; Cholesky triad with
+the Boris pusher; unequal masses), and the analytic Kerr-Schild metric of a mass 20 at
+distance 173 (shift and a spatial metric that is not conformally flat) with
+coll_energy = particle.
 """
 import argparse
 import json
@@ -19,8 +25,11 @@ import sys
 import numpy as np
 
 import common
+import scbox
 from nrpic import collide
 
+DECK_STATIC = os.path.join(common.REPO, "problems", "tests", "coll_box_static.athinput")
+DECK_KS = os.path.join(common.REPO, "problems", "tests", "coll_box_ks.athinput")
 DECK_CURVED = os.path.join(common.REPO, "problems", "tests", "coll_box_curved.athinput")
 GMAT = np.array([[1.44, 0.3, -0.2], [0.3, 0.81, 0.15], [-0.2, 0.15, 1.21]])
 ALPHA0 = 0.7
@@ -33,6 +42,8 @@ def main():
     ap.add_argument("--exe", default=common.EXE_CPU)
     ap.add_argument("--n", type=int, default=20000)
     ap.add_argument("--nproc", type=int, default=6)
+    ap.add_argument("--new", action="store_true",
+                    help="also the cases of coll_energy (not in the release core-v0.3)")
     args = ap.parse_args()
     out = os.path.abspath(args.out)
     os.makedirs(out, exist_ok=True)
@@ -75,8 +86,44 @@ def main():
                                                 "particles/triad=cholesky",
                                                 "particles/pusher=boris"]),
     }
-    res = common.run_many([(args.exe, deck, os.path.join(out, k), base + ov)
-                           for k, (deck, ov) in cases.items()], args.nproc)
+    # geometry of the box of each case: cells and lengths per direction
+    geom = {k: ((nx, nx, nx), (1.0, 1.0, 1.0)) for k in cases}
+    if args.new:
+        met = scbox.Metric(nx=16, a_alpha=-0.2, a_psi=0.1, a_shift=0.05)
+        lens = [1.0, 0.25, 0.25]
+        ic_st = os.path.join(out, "static.nrp")
+        ic_stu = os.path.join(out, "static_unequal.nrp")
+        scbox.make_particles(ic_st, met, n, 54, 0.3, 1.0, 0.0, lens)
+        scbox.make_particles(ic_stu, met, n, 55, 0.3, 1.0, 0.0, lens, mass_ratio=4.0)
+        sig_st = 0.2/dt/float(collide.mj_vmol(0.3))
+        st = met.problem_block() + [f"particles/coll_sigma={sig_st!r}"]
+        new_cases = {
+            "static_cell": (DECK_STATIC, st + [f"particles/particle_file={ic_st}",
+                                               "particles/coll_energy=cell"]),
+            "static_particle": (DECK_STATIC, st + [f"particles/particle_file={ic_st}",
+                                                   "particles/coll_energy=particle"]),
+            "static_particle_factor2": (DECK_STATIC, st + [
+                f"particles/particle_file={ic_st}", "particles/coll_energy=particle",
+                "particles/coll_cell_factor=2"]),
+            "static_particle_cholesky_boris": (DECK_STATIC, st + [
+                f"particles/particle_file={ic_st}", "particles/coll_energy=particle",
+                "particles/triad=cholesky", "particles/pusher=boris"]),
+            "static_particle_nanbu": (DECK_STATIC, st + [
+                f"particles/particle_file={ic_stu}", "particles/coll_energy=particle",
+                "particles/coll_weights=nanbu"]),
+            "kerr_particle": (DECK_KS, [
+                f"particles/particle_file={ic_flat}", f"particles/coll_sigma={sig!r}"]),
+        }
+        for k in new_cases:
+            geom[k] = ((16, 4, 4), (1.0, 0.25, 0.25)) if k.startswith("static") \
+                else ((nx, nx, nx), (1.0, 1.0, 1.0))
+        cases.update(new_cases)
+    jobs = []
+    for k, (deck, ov) in cases.items():
+        # the static deck brings its own mesh
+        b = [a for a in base if not (deck == DECK_STATIC and a.startswith("mesh"))]
+        jobs.append((args.exe, deck, os.path.join(out, k), b + ov))
+    res = common.run_many(jobs, args.nproc)
     ok = all(r[0] == 0 for r in res)
     summary = {"n": n, "exe": args.exe, "exe_sha256": common.sha256(args.exe),
                "exit": [r[0] for r in res], "cases": {}}
@@ -89,8 +136,9 @@ def main():
         u_twin, info = collide.replay(d)
         f = int(d["f"])
         # cell assignment recomputed from the positions (uniform periodic mesh)
-        xw = (d["x"] - common.BOX_MIN) % common.BOX_LEN
-        cell = np.minimum((xw*nx).astype(np.int64), nx - 1)//f
+        gnx, glen = np.array(geom[name][0]), np.array(geom[name][1])
+        xw = (d["x"] - common.BOX_MIN) % glen
+        cell = np.minimum((xw/glen*gnx).astype(np.int64), gnx - 1)//f
         scale = np.maximum(1.0, np.max(np.abs(d["u0"]), axis=1))
         err = np.max(np.abs(u_twin - d["u1"]), axis=1)/scale
         untouched = d["nupd"] == 0
@@ -108,7 +156,10 @@ def main():
                  untouched_bit_identical=bool(np.array_equal(d["u0"][untouched],
                                                              d["u1"][untouched])),
                  updated_particles=int(np.count_nonzero(~untouched)),
-                 masses_unchanged=True)
+                 masses_unchanged=True, energy_mode=int(d["energy"]))
+        if "n_noroot" in rec:
+            c["n_noroot"] = [info["n_noroot"], int(rec["n_noroot"])]
+            c["max_dlam"] = [info["max_dlam"], float(rec["max_dlam"])]
         c["pass"] = bool(c["cells_agree"] and c["nsub_agree"]
                          and c["updates_per_particle_agree"]
                          and c["n_tested"][0] == c["n_tested"][1]
@@ -116,6 +167,9 @@ def main():
                          and c["n_updated"][0] == c["n_updated"][1]
                          and c["sum_P_rel_diff"] < 1e-11 and c["max_err_u"] < 1e-13
                          and c["untouched_bit_identical"])
+        if "n_noroot" in c:
+            c["pass"] = bool(c["pass"] and c["n_noroot"][0] == c["n_noroot"][1]
+                             and abs(c["max_dlam"][0] - c["max_dlam"][1]) < 1e-9)
         ok = ok and c["pass"]
         summary["cases"][name] = c
         errs[name] = err[~untouched]
@@ -132,13 +186,14 @@ def main():
     bins = np.logspace(-18, -12, 49)
     for col, (name, e) in zip(cols, errs.items()):
         ax.hist(np.maximum(e, 1.2e-18), bins=bins, histtype="step", color=col, lw=1.0,
+                ls="--" if summary["cases"][name]["energy_mode"] == 1 else "-",
                 label=name.replace("_", " "))
     ax.axvline(1e-13, **fs.GUIDE)
     ax.set_xscale("log")
     ax.set_yscale("log")
     ax.set_xlabel(r"$|u'_{\rm twin} - u'_{\rm code}|$ / max(1, $|u|$)")
     ax.set_ylabel("updated particles")
-    ax.legend(fontsize=6, loc="upper left")
+    ax.legend(fontsize=5 if args.new else 6, loc="upper left")
     fig.savefig(os.path.join(out, "fig_replay.png"), dpi=200)
     sys.exit(0 if ok else 1)
 

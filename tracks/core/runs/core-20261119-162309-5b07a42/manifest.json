@@ -1,0 +1,29 @@
+{
+ "run_id": "core-20261119-162309-5b07a42",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-mpi/tracks/core/analysis/mpi/make_figs.py",
+  "/data/haiyangw/nrpic/wt/core-mpi/tracks/core/analysis/mpi/figs"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-162309-5b07a42",
+ "commit": "5b07a42",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-162309-5b07a42",
+ "purpose": "mpi figures of T3 to T5 from their registered runs (rerun after the failed run core-20261119-162300-464fb38, import path)",
+ "kind": "scouting",
+ "tag": "mpi-figs",
+ "state": "finished",
+ "wall_time_s": 27.42,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T16:23:09Z"
+}

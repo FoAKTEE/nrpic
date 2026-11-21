@@ -1,0 +1,5 @@
+# T1 regression on the static mesh metric: release core-v0.3 against the corrected source
+a_v03       /data/haiyangw/nrpic/.work/build_cpu_v03/src/athena {repo}/problems/tests/tracer_mesh_circular.athinput
+b_new       {repo}/.work/build_cpu/src/athena {repo}/problems/tests/tracer_mesh_circular.athinput
+c_new_meps  {repo}/.work/build_cpu/src/athena {repo}/problems/tests/tracer_mesh_circular.athinput particles/p0_m=1e-300
+d_new_null  {repo}/.work/build_cpu/src/athena {repo}/problems/tests/tracer_mesh_circular.athinput particles/zero_mass=null

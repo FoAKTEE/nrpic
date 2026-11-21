@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261120-221207-38f0369",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-mpi/tracks/core/analysis/mpi/mpi_tests.py",
+  "--case",
+  "t7_analytic_boris",
+  "--out",
+  "t7_analytic_boris"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261120-221207-38f0369",
+ "commit": "38f0369",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/kerr/geodesic.athinput",
+   "sha256": "31c6c43cb59447ec212b35fe1c019012d20d8483cda718e33e03cbd2b039ddc0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261120-221207-38f0369",
+ "purpose": "mpi T7 t7_analytic_boris: analytic metric on 1, 2, 4 ranks (journal entry 24 of JOURNAL-mpi.md); registered by hand: nrpic-run refused (15 cores of owner core busy)",
+ "kind": "scouting",
+ "tag": "mpi-t7",
+ "state": "finished",
+ "wall_time_s": 3.05,
+ "exit_status": 0,
+ "cores": 6,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-20T22:12:07Z"
+}

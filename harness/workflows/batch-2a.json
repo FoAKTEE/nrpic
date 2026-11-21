@@ -1,0 +1,33 @@
+{
+ "name": "2a (2026-11-20 night)",
+ "what": "core-v0.5 from the four finished branches with its release clerk; leads of tracks B, D, E, F; independent review of gate G1 of Track A",
+ "items": [
+  {
+   "type": "core-merge",
+   "version": "v0.5",
+   "task": "MERGE of core's finished wave-3a branches into core/nrpic as release candidate core-v0.5. If tracks/core/RELEASE-v0.5.md already exists on core/nrpic with a regression result, verify it in a minute and return 'already complete'. core/nrpic holds release v0.4 (tracks/core/RELEASE-v0.4.md; its regression and quick-test drivers are tracks/core/analysis/release/{regress,quick,more,card}_v04.py: reuse them with v0.4 as the base). Branches to merge: core/build-openmp (threaded processor build; closed), core/scalar-3 (mode entity of the random numbers, ultra-slow-roll case; closed), core/cosmo-amr (refinement, horizon finder and tracker in periodic runs, stop on non-finite fields, step limit; closed, with a corrected deposit option and one card check pending as Slurm job 4763: read its output if it finished), core/mpi (several ranks for the particle module; tested on processors on 1, 2 and 4 ranks, its card build untested). These branches start from the code before v0.4, so each merge meets the wave-2 changes: review each diff against main as a maintainer (git diff main...<branch> -- athenak/src python problems scripts docs), merge one branch per merge commit in an order that keeps conflicts small (mpi and build-openmp both touch the particle module's loops and CMakeLists; cosmo-amr touches the cosmology problem generator and the task list; scalar-3 the scalar field and utils/rng_mesh.hpp), resolving overlaps so that both sides keep their behaviour. Not in this release (unfinished, for v0.6): core/id-solver-2, core/clump-table, core/newton-2, core/oblate, core/z4c-faces. Then: build the card and the processor executable in this worktree, and the threaded and the MPI processor builds with the scripts those branches bring; byte regression on processors against the v0.4 processor executable (/data/haiyangw/nrpic/.work/build_cpu_v04/src/athena) on the regression set-ups, new options absent; the quick test of each merged branch from its READY file on processors (for mpi: one of its tests on 1 and 2 ranks; for build-openmp: one case on 1 and 4 threads), and on a card only what needs one (at most one card-hour); a branch that fails review or breaks the regression is left out with the reason in tracks/core/stage/G2/OPEN.md. Publish /data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v05/ (athena_gpu, athena_cpu, the threaded and MPI processor executables if they build, COMMIT, SHA256SUMS, READY with every new option and one example input each, what is tested and what is not). tracks/core/CHANGELOG.md, section core-v0.5; tracks/core/RELEASE-v0.5.md with the first line exactly 'RELEASE core-v0.5 <full source commit> REGRESSION PASS' or '... REGRESSION FAIL', then the branches merged and left out, the regression table and known defects; commit and push core/nrpic. If the pause flag allows afterwards: one outbox file per track (harness/bin/nrpic-ctx post) answering its open requests to core that releases v0.4 and v0.5 serve (coord/REQUESTS.md on main lists them): done with the option name, deferred, or declined."
+  },
+  {
+   "type": "lead",
+   "owner": "B-emd-gw"
+  },
+  {
+   "type": "lead",
+   "owner": "D-bh-dress"
+  },
+  {
+   "type": "lead",
+   "owner": "E-stoch-inf"
+  },
+  {
+   "type": "lead",
+   "owner": "F-hills",
+   "extra": "Extra for this owner: the independent verifier of gate G0 has reported (stage/G0/VERIFIER.md): for every item it marks WRONG or NOT CONFIRMED, check it at the source and correct the scoping text, the note and the plan, or rebut it with evidence, and record that in the review file; then say whether the G0 package is complete."
+  },
+  {
+   "type": "gate",
+   "owner": "A-emd-pbh",
+   "gate": "G1"
+  }
+ ]
+}

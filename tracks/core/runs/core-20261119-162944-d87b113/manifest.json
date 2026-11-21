@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261119-162944-d87b113",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/tracks/core/analysis/cosmo_amr/t11_restart.py",
+  "--old",
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/.work/build_cpu/src/athena",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/.work/build_cpu_b/src/athena",
+  "--analyse",
+  "/data/haiyangw/nrpic/scratch/core/core-20261119-161309-f797997",
+  "--out",
+  "."
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-162944-d87b113",
+ "commit": "d87b113",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/cosmo_amr/t11_restart.py",
+   "sha256": "765e2eba17f239453b0031c2fcd03f3767f88f6f20af3d881290f1503ba40557"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-cosmo-amr/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-162944-d87b113",
+ "purpose": "analysis of T11b (run core-20261119-161309-f797997) with records at the restart time left out of the pairing; hand-written manifest because nrpic-run refused (16 cores busy in live local runs of core)",
+ "kind": "scouting",
+ "tag": "cosmo-amr-T11b-analysis",
+ "state": "finished",
+ "wall_time_s": 2.76,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T16:29:44Z"
+}

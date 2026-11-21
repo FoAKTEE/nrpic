@@ -1,0 +1,13 @@
+# Work package omp: the scaling cases of tracks/core/omp/scaling.py on one A100, same
+# inputs, same number of cycles as the processor series (each case twice), and the Z4c
+# benchmark of problems/tests. Lines: <name> <athinput> [athena arguments]
+punc_a problems/puncture/horizon_calib.athinput output2/dt=1.0e30 time/nlim=32
+cluster_a problems/st/st_cluster.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/omp/ic/st/st_yc0p819_stratified_N100000_s1.nrp problem/comp0_file=/data/haiyangw/nrpic/scratch/core/omp/ic/st/st_yc0p819_stratified_N100000_s1.tab particles/snap_dt=1.0e30 time/nlim=16
+cosmo_a problems/cosmo/daverio_field.athinput mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 particles/deposit_shape=pcs particles/deposit_comp_c=0.16666666666666666 particles/deposit_comp_c2=0.4666666666666667 particles/interp=bspline particles/dt_expansion=0.01 particles/cons_dcycle=16 particles/particle_file=/data/haiyangw/nrpic/scratch/core/omp/ic/dav64/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/core/omp/ic/dav64/fields.bin time/nlim=16
+newton_a problems/newton/periodic.athinput mesh/nx1=128 mesh/nx2=128 mesh/nx3=128 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 particles/particle_file=/data/haiyangw/nrpic/scratch/core/omp/ic/dnewt/wave80.nrp particles/snap_dt=1.0e30 time/nlim=16
+bench_a problems/tests/z4c_bench.athinput time/nlim=8
+punc_b problems/puncture/horizon_calib.athinput output2/dt=1.0e30 time/nlim=32
+cluster_b problems/st/st_cluster.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/omp/ic/st/st_yc0p819_stratified_N100000_s1.nrp problem/comp0_file=/data/haiyangw/nrpic/scratch/core/omp/ic/st/st_yc0p819_stratified_N100000_s1.tab particles/snap_dt=1.0e30 time/nlim=16
+cosmo_b problems/cosmo/daverio_field.athinput mesh/nx1=64 mesh/nx2=64 mesh/nx3=64 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 particles/deposit_shape=pcs particles/deposit_comp_c=0.16666666666666666 particles/deposit_comp_c2=0.4666666666666667 particles/interp=bspline particles/dt_expansion=0.01 particles/cons_dcycle=16 particles/particle_file=/data/haiyangw/nrpic/scratch/core/omp/ic/dav64/particles.nrp problem/id_file=/data/haiyangw/nrpic/scratch/core/omp/ic/dav64/fields.bin time/nlim=16
+newton_b problems/newton/periodic.athinput mesh/nx1=128 mesh/nx2=128 mesh/nx3=128 meshblock/nx1=32 meshblock/nx2=32 meshblock/nx3=32 particles/particle_file=/data/haiyangw/nrpic/scratch/core/omp/ic/dnewt/wave80.nrp particles/snap_dt=1.0e30 time/nlim=16
+bench_b problems/tests/z4c_bench.athinput time/nlim=8

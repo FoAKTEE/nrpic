@@ -69,6 +69,9 @@ def ltb_radius(R0, tau, m, E=0.0, iters=80):
     """Areal radius at proper time tau of the dust shell that starts at R0 with mass m
     inside and energy E <= 0, on the expanding branch at tau = 0 (arrays broadcast)."""
     R0, tau, m, E = np.broadcast_arrays(*(np.asarray(a, dtype=float) for a in (R0, tau, m, E)))
+    scalar = (R0.ndim == 0)                           # all arguments are numbers
+    if scalar:
+        R0, tau, m, E = (np.atleast_1d(a) for a in (R0, tau, m, E))
     flat = (R0 ** 1.5 + 1.5 * np.sqrt(2.0 * m) * tau)
     out = np.where(flat > 0.0, np.abs(flat), 0.0) ** (2.0 / 3.0)
     bound = E < 0.0
@@ -88,7 +91,7 @@ def ltb_radius(R0, tau, m, E=0.0, iters=80):
         eta = 0.5 * (lo + hi)
         out = out.copy()
         out[bound] = amp * (1.0 - np.cos(eta))
-    return out
+    return out[0] if scalar else out
 
 
 def ltb_turnaround(R0, m, E):

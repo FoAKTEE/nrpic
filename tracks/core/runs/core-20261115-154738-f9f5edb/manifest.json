@@ -1,0 +1,33 @@
+{
+ "run_id": "core-20261115-154738-f9f5edb",
+ "owner": "core",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/verify/figscripts/schem_architecture.py",
+  "--out",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/verify/figs/schem_architecture"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-154738-f9f5edb",
+ "commit": "f9f5edb",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "tracks/core/verify/figscripts/schem_architecture.py",
+   "sha256": "ca2c311c0422bd0a06dde76902d13f20e4f9abc029742e1e0d2d24c82887f638"
+  },
+  {
+   "path": "tracks/core/verify/figscripts/paperfig.py",
+   "sha256": "0c73c7e3ba560d2d3f8200e8f1bca72b83f7a5085c19e639dd00d74e60fc7979"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-154738-f9f5edb",
+ "purpose": "verify wave 2: schematic of core's architecture (exists / wave 1 / to be built) and gate timeline, stage check C13",
+ "kind": "scouting",
+ "tag": "",
+ "state": "finished",
+ "wall_time_s": 1.86,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T15:47:38Z"
+}

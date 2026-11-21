@@ -1,0 +1,100 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261119-140545-b16cd96",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "T8 analysis (P10), rerun after the directory-name fix: byte regression of the Z4c benchmark, oblique-wave amplitude scan N=64,128, z noise of the 256x256x16 box to t=4, circular wave card vs processor",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/bfix/t8_analysis.py",
+    "--base",
+    "/data/haiyangw/nrpic/scratch/core/core-20261115-181436-bd93f3e",
+    "--new",
+    "/data/haiyangw/nrpic/scratch/core/core-20261115-181437-8d252cb",
+    "--t4",
+    "/data/haiyangw/nrpic/scratch/core/core-20261115-170758-f5f58f4",
+    "--t1",
+    "/data/haiyangw/nrpic/scratch/core/core-20261115-154120-9c92f68"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "b16cd9630d2e926e5da7a9472d90fdc61c481062",
+    "branch": "core/requests-b",
+    "dirty": false,
+    "merge_base_main": "71acd0c330b65dad3a9cac337c6f78e8a1bacc44",
+    "worktree": "wt/core-bfix"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-bfix/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/bfix/t8_analysis.py",
+      "role": "argv",
+      "sha256": "8edde1041d2ce7ddb2e83ea923737af9b68d4315443e752df40a19c3abaeebb1",
+      "bytes": 14907,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": 106.838,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261119-140545-b16cd96",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "3775bffb1ab870eacbc600624a593a74a4e42b07d8e22354d702c3b196f4cc54",
+    "bytes": 414959,
+    "files": 8
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-19T14:05:46Z",
+  "started": "2026-11-19T14:05:46Z",
+  "ended": "2026-11-19T14:07:33Z",
+  "parents": [
+    "core-20261115-181436-bd93f3e",
+    "core-20261115-181437-8d252cb",
+    "core-20261119-140406-8707fc4"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.5281,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 4.8605,
+    "cores_busy": 1,
+    "runs": 927,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-19T14:07:33Z"
+}

@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261120-223100-aee54dc",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-mpi/tracks/core/analysis/mpi/finder_sensitivity.py",
+  "--ref",
+  "/data/haiyangw/nrpic/scratch/core/core-20261120-222102-38f0369/t7_ah_exc_dep/np1",
+  "--out",
+  "sens"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261120-223100-aee54dc",
+ "commit": "aee54dc",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/tests/mpi_puncture_exc.athinput",
+   "sha256": "ec237d376fa5781fb079ca2573d61349dc33e6f80b54f83e7a125d0d7345c013"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261120-223100-aee54dc",
+ "purpose": "mpi T7: sensitivity of the horizon finder to rounding on ONE rank (particle file in reversed order), 8 cycles (journal entry 27 of JOURNAL-mpi.md); registered by hand: nrpic-run refuses while 15 cores of owner core are busy",
+ "kind": "scouting",
+ "tag": "mpi-t7",
+ "state": "finished",
+ "wall_time_s": 157.67,
+ "exit_status": 0,
+ "cores": 2,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-20T22:31:00Z"
+}

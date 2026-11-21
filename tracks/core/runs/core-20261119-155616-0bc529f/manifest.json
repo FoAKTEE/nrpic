@@ -1,0 +1,25 @@
+{
+ "run_id": "core-20261119-155616-0bc529f",
+ "owner": "core",
+ "command": [
+  "bash",
+  "-c",
+  "/data/haiyangw/nrpic/wt/core-omp/.venv/bin/python /data/haiyangw/nrpic/wt/core-omp/tracks/core/omp/figs.py kernels --runs /data/haiyangw/nrpic/scratch/core/core-20261119-145516-7a255c8 /data/haiyangw/nrpic/scratch/core/core-20261119-150956-abda48c --out /data/haiyangw/nrpic/wt/core-omp/tracks/core/omp/figs/kernels && /data/haiyangw/nrpic/wt/core-omp/.venv/bin/python /data/haiyangw/nrpic/wt/core-omp/tracks/core/omp/figs.py placement --runs /data/haiyangw/nrpic/scratch/core/core-20261119-150022-d0d8641 --out /data/haiyangw/nrpic/wt/core-omp/tracks/core/omp/figs/placement"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-155616-0bc529f",
+ "commit": "0bc529f",
+ "source_modified_since_commit": false,
+ "inputs": [],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-155616-0bc529f",
+ "purpose": "omp figures: kernel profiles (runs core-20261119-145516-7a255c8, core-20261119-150956-abda48c) and placement experiment (core-20261119-150022-d0d8641)",
+ "kind": "scouting",
+ "tag": "omp-figs-profile",
+ "state": "finished",
+ "status": "completed",
+ "registered_by_hand": "nrpic-run refused (cores of owner core busy in other sessions)",
+ "wall_time_s": 6.75,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T15:56:16Z"
+}

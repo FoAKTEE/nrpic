@@ -1,0 +1,47 @@
+{
+ "run_id": "core-20261115-163855-7be94e4",
+ "owner": "core",
+ "track": "core",
+ "gate": "G2",
+ "purpose": "T5 U9: Track E's validation of U1-U8 on processors (run core-20261115-155122-eb68eaa) with the card run u9 of core-20261115-155404-24c88e3 as --card (test A14), reference as committed by Track E",
+ "kind": "scouting",
+ "command": [
+  "bash",
+  "tracks/core/analysis/scalar2/t5_validate.sh",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-155122-eb68eaa",
+  "/data/haiyangw/nrpic/scratch/core/tmp/scalar2/Etree",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-163855-7be94e4",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-155404-24c88e3/u9"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-scalar2",
+ "commit": "7be94e4f4bd6931eaa2bf16c2480eb9385f366db",
+ "branch": "core/scalar-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/scalar2/t5_validate.sh",
+   "sha256": "051c4a62275ef07d3881ac61189ddb2d87dea99638d498c7363cf3aad9df0708"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/scalar2/Etree/tracks/E-stoch-inf/noise/validate/validate_noise.py",
+   "sha256": "b7f3396a5389cfbf30bb1a9711107f82cf1729c620228b21bd735a66cfc3f7bf"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/scalar2/Etree/tracks/E-stoch-inf/noise/ref/noise_ref.py",
+   "sha256": "e58cd4c652687c7f47bf45f85efa8ed13846df62526708f8d19776295c20cd1e"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-163855-7be94e4",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-163855-7be94e4"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:38:55Z",
+ "cores": 1,
+ "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
+ "status": "failed",
+ "wall_time_s": 15.4,
+ "exit_status": 1,
+ "end_utc": "2026-11-15T16:39:10Z",
+ "core_hours": 0.0043
+}

@@ -1,0 +1,48 @@
+{
+ "run_id": "core-20261119-160823-0e90ab7",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-mpi/tracks/core/analysis/mpi/restart_locate.py",
+  "/data/haiyangw/nrpic/wt/core-mpi/.work/build_cpu/src/athena",
+  "/data/haiyangw/nrpic/scratch/core/core-20261119-154814-ca46836/t3_cluster/cluster.nrp",
+  "/data/haiyangw/nrpic/scratch/core/core-20261119-154814-ca46836/t3_cluster/cluster.tab",
+  "r5"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-160823-0e90ab7",
+ "commit": "0e90ab7",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-154814-ca46836/t3_cluster/cluster.nrp",
+   "sha256": "edbb3cb773b36d1bc4e860c456cec5b0bd149cda000cdc8be23d4e34718f66e4"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-154814-ca46836/t3_cluster/cluster.tab",
+   "sha256": "b76213c913046126f69ee1793a4c8ceedc45416f13608c6f6c1896303e006c3a"
+  },
+  {
+   "path": "problems/tests/mpi_cluster.athinput",
+   "sha256": "a68ccc15b6e88b73361ba00b1c0ca6dfacaf2589ea5010d28c29511cb16ce38b"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "6a491d168bff65ade275b06df6c22b686d42355a80ed70c79cfa1c1164b29891"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-160823-0e90ab7",
+ "purpose": "mpi R5: where the restarted one-rank run of the cluster departs from the uninterrupted one (field dumps at cycle 21, serial build)",
+ "kind": "scouting",
+ "tag": "mpi-r5-locate",
+ "state": "finished",
+ "wall_time_s": 109.22,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T16:08:23Z"
+}

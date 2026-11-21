@@ -1,0 +1,71 @@
+# Homogeneous slow roll (quadratic case of arXiv:2512.14649 in the code units of
+# problems/scalar/sr_stochastic.athinput: H* = 1 at t = 0) under four lapse conditions,
+# test G3 of tracks/core/JOURNAL-scalar3.md (driver g3_homog.py sets the lapse options on
+# the command line).  lapse_leak and lapse_leak_alpha are options of branch core/gauge
+# (athenak/src/z4c/z4c_gauge_ext.hpp); an executable without them ignores the two lines.
+
+<comment>
+problem   = homogeneous slow roll under several lapse conditions
+
+<job>
+basename  = hg
+
+<mesh>
+nghost    = 4
+nx1       = 16
+x1min     = 0.0
+x1max     = 6.283185307179586
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 16
+x2min     = 0.0
+x2max     = 6.283185307179586
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 16
+x3min     = 0.0
+x3max     = 6.283185307179586
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.125        # step 0.0491, that of the 32^3 runs at Courant 0.25
+nlim       = -1
+tlim       = 8.44
+ndiag      = 100
+
+<z4c>
+lapse_oplog      = 0.0
+lapse_harmonicf  = 1.0
+lapse_harmonic   = 0.0
+lapse_advect     = 0.0
+lapse_leak       = 0.0     # core/gauge: rate 1/T of the relaxation of the excess lapse
+lapse_leak_alpha = 1.0     # core/gauge: reference lapse
+shift_Gamma      = 0.0
+shift_eta        = 0.0
+shift_advect     = 0.0
+diss             = 0.0
+damp_kappa1      = 0.0
+damp_kappa2      = 0.0
+excise_chi       = 0.0
+
+<scalar_field>
+couple      = true
+potential   = quadratic
+mass        = 1.82877655899024605e-01
+hist_dcycle = 1
+dump_dcycle = 0
+dump_dt     = -1.0
+
+<problem>
+pgen_name  = scalar_field
+id         = flrw
+phi0       = -2.66679478988261254e+00
+pi0        = 2.97300406808996935e-02

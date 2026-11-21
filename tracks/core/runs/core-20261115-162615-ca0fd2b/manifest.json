@@ -1,0 +1,37 @@
+{
+ "run_id": "core-20261115-162615-ca0fd2b",
+ "owner": "core",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/verify/figscripts/schem_ladder.py",
+  "--out",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/verify/figs/schem_ladder"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-162615-ca0fd2b",
+ "commit": "ca0fd2b",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "tracks/core/verify/figscripts/schem_ladder.py",
+   "sha256": "c0d31b0da9f70dab8ae2179c1ad35c37f559879208c83b6b380146a885304620"
+  },
+  {
+   "path": "tracks/core/verify/figscripts/ladder_status.json",
+   "sha256": "5a339d3bea7d219a3c44357c0d5525bc899ad47ba638edcf719a5c5ca4b1126c"
+  },
+  {
+   "path": "tracks/core/verify/figscripts/paperfig.py",
+   "sha256": "0c73c7e3ba560d2d3f8200e8f1bca72b83f7a5085c19e639dd00d74e60fc7979"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-162615-ca0fd2b",
+ "purpose": "verify wave 2: schematic of the verification ladder with verdicts (stage check C8)",
+ "kind": "scouting",
+ "tag": "",
+ "state": "finished",
+ "wall_time_s": 4.91,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T16:26:15Z"
+}

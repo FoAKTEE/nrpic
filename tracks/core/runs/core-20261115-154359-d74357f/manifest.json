@@ -1,0 +1,31 @@
+{
+ "run_id": "core-20261115-154359-d74357f",
+ "owner": "core",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/verify/oblate/oblate_reference.py"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-154359-d74357f",
+ "commit": "d74357f",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "tracks/core/verify/oblate/oblate_reference.py",
+   "sha256": "d5c336aea8d1a781afb48ed29d2a7eced7bb19693ef2269eb07827bfdc061780"
+  },
+  {
+   "path": "python/nrpic/spheroid.py",
+   "sha256": "f43b1471dbb9225984f8c6ca0e7c6903dd5308529054e0442b76aec877dc82bf"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-154359-d74357f",
+ "purpose": "verify wave 2: reference potential of a homogeneous oblate spheroid for ladder row 3 (closed form against quadrature, Poisson identity, FD Laplacian, continuity, far field, prolate consistency)",
+ "kind": "scouting",
+ "tag": "",
+ "state": "finished",
+ "wall_time_s": 0.38,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T15:43:59Z"
+}

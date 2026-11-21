@@ -18,6 +18,7 @@ parameter list written to restart files):
     coll_cell_factor = 4           # collision cell = 4^3 mesh cells (1, 2 or 4)
     coll_pmax        = 0.1         # largest pair probability per sub-step aimed at
     coll_budget      = true        # optional: energy with the metric at the particles
+    coll_energy      = particle    # in a gravitational field: see below
 
 and `<job> rng_seed = N` (members of an ensemble differ in the seed only). All colliding
 particles must have the same rest mass (`coll_weights = equal`, the default; a run with
@@ -43,11 +44,23 @@ What to watch in a production run:
 - `n_trunc` must stay zero (a pair probability above one); `max_nsub` shows how much
   the cells sub-cycle.
 - The step enters at first order: a rate nu is high by nu^2 dt_c/2, dt_c = dt/n_sub.
-- In a gravitational field the collision steps raise the particle energy slightly (the
-  partners of a pair sit at different depths of the potential): column `dE_particles`
-  with `coll_budget = true`. In the cluster test it was 1.05e-8, 2.3e-9 and 1.1e-9 of
-  the particle energy per collision for collision cells of 2, 1 and 0.5 M (interface
-  text, section 9). It accumulates with the number of collisions.
+- In a gravitational field set `coll_energy = particle`. Without it (the operator of
+  release core-v0.3, `coll_energy = cell`) a pair conserves its energy with the metric
+  of the cell centre only, and the collision steps raise the energy of the particles
+  steadily: in the cluster test by 1.05e-8, 2.3e-9 and 1.1e-9 of the particle energy
+  per collision for collision cells of 2, 1 and 0.5 M, and the energy at infinity
+  (alpha W - beta^i u_i) by 1.2 to 1.8 times as much in the tests (6.5e-5 of its value
+  over 150 M at Knudsen number 3); they also carry heat out of a potential
+  well in equilibrium. With `coll_energy = particle` every pair conserves the sum of
+  u_i and the sum of alpha W - beta^i u_i with the metric at each particle to rounding,
+  and an equilibrium of a static metric stays an equilibrium (interface text, section
+  11); in the cluster evolved by Z4c over 150 M on a card the sum changed by 6.3e-17.
+  The option costs one metric reconstruction per colliding particle and step (in the
+  cluster on a card: 0.219 s per step against 0.218 s with `cell`).
+  Watch `n_noroot` (pairs left unscattered) and `n_balance` (collisions rejected for
+  detailed balance): both should stay small against `n_coll`. The option is read only
+  if present; its presence adds history columns 32 to 36 (`dH_particles`: the change of
+  the canonical energy in the collision step, with `coll_budget = true`).
 
 ## Tests
 
@@ -70,13 +83,56 @@ All drivers are in `tracks/core/analysis/collisions/`; each writes `summary.json
 | `run_repro.py` | MeshBlock divisions, restart, seed | 1 min, 6 cores |
 | `run_unequal.py` | unequal masses | 1.5 min, 5 cores |
 | `run_curved_box.py` | homogeneous curved metric on the mesh | 7 min, 3 cores (20 s on a card) |
-| `run_cluster.py` | relativistic cluster with and without collisions | card: 4.3 min per run |
+| `run_cluster.py` | relativistic cluster with and without collisions; `--energy cell,particle` runs both values of `coll_energy`; `--prepare` writes the initial data, decks and a `batch.list` for `nrpic-run submit --launcher batch`, `--analyse RUNDIR --ic DIR` analyses those runs | card: 4.3 min per run of 150 M |
+| `gradient_ref.py`, `scbox.py` | reference of the pair model in the static metric with a gradient (no file of the code is read) | 10 min per group of cases |
+| `run_gradient.py` | one collision step on frozen particles in that metric, both values of `coll_energy`, against the reference (`--regrade` grades an earlier run against another reference) | 30 min, 6 cores |
+| `make_static_example.py` | particle file of the example deck `coll_box_static.athinput` (Tolman gas) | seconds |
+| `run_tolman.py` | equilibrium in a potential well with streaming and collisions, both values; `--analyse RUNDIR` analyses existing runs, also cut ones | card: 25 to 30 min per run at the default 1e6 particles and 600 steps (2.5 s per step, two runs sharing one card); processor: 15 min at 1e5 particles and 400 steps |
+| `run_static_homog.py` | constant lapse and conformal factor (test T12 of track C); the two values of `coll_energy` coincide | 5 min, 4 cores |
+| `run_perturb.py` | the perturbing force `perturb_gamma` | 2 s |
+| `rerun_wave1.py` | reruns the box tests with a new executable and compares all output files with wave 1 or with the release executable | 20 min |
+| `card_diff.py` | sizes the differences between two card runs that `rerun_wave1.py --card --base` found (counts per step, momenta, positions, history columns) | 1 min |
+| `cmp_summary.py` | compares two `summary.json` files value by value | seconds |
+| `fig_cluster_card.py` | the card cluster runs of both values of `coll_energy` against a release run: lapse, change of sum M H and sum M W in the collision steps, collisions, row-by-row comparison of the collision history | seconds |
+| `fig_close.py` | step time per mode from `athena.log`, and the smoke deck of two card builds compared file by file | seconds |
 
-Card: `sbatch -p preempt --gres=gpu:1 -c 2 -t 00:30:00 $C/gpu_job.sh <A|B|C|D> <card
+Card runs from wave 2b on go through `harness/bin/nrpic-run submit --launcher batch --list
+<file> --exe <card executable>` (decision 0016): AthenaK runs only, the analysis afterwards
+as a local registered run (`run_cluster.py --prepare` / `--analyse`). Measure the step time
+with a short batch first and size the wall limit by it (`run_tolman.py` at its defaults
+takes 50 min of card time for its four runs). Card, wave 2 (`coll_energy`, regression,
+smoke test first): `$C/gpu_job3.sh <parts R, N, C> <card executable> <release card
+executable> <python> [<publish dir>]` (hand-registered sub-runs; job 4485 ran into its
+time limit in `run_tolman.py`; its cluster part was run in wave 2b as a batch of
+`run_cluster.py --prepare`, run core-20261119-143232-4d1e995, 13 min of card time for
+three runs of 150 M). Build card executables from clean after a header change: an
+incremental build that overlapped a change of `particles.hpp` crashed at start
+(`tracks/core/interfaces/collisions.md` section 11.5). Wave 1:
+`sbatch -p preempt --gres=gpu:1 -c 2 -t 00:30:00 $C/gpu_job.sh <A|B|C|D> <card
 executable> <baseline card executable>` from the root of the worktree (two cores: the
 node has four in all).
 
 Decks: `problems/tests/coll_box.athinput` (periodic Minkowski box: `nrpic_geodesic` with
 the analytic Kerr-Schild functor at `bh_mass = 0`), `problems/tests/coll_box_curved.athinput`
 (the same box with `<problem> metric_kind = homogeneous`: constant lapse and constant
-non-diagonal spatial metric on the mesh).
+non-diagonal spatial metric on the mesh), `problems/tests/coll_box_static.athinput`
+(`<problem> metric_kind = static_conformal`: lapse alpha0 (1 + alpha_amp cos phi),
+conformal factor psi0 (1 + psi_amp cos phi), shift beta^x = shift_amp sin phi, periodic
+in the box; all amplitudes zero: a constant lapse and conformal factor),
+`problems/tests/coll_box_ks.athinput` (analytic Kerr-Schild metric of a mass, for the
+kinematics in a metric with shift that is not conformally flat).
+
+## Perturbing an equilibrium (`perturb_gamma`)
+
+`athenak/src/particles/nrpic_perturb.cpp`: during `[perturb_tstart, perturb_tstart +
+perturb_time]` every particle with rest mass feels the radial force
+du_i/dt = perturb_gamma (x - c)^i/|x - c| about the centre `perturb_x1..3` (outwards for
+a positive value). It is the perturbation of the characteristic system of
+arXiv:2009.08163 (`paper.tex` line 848) in the canonical variables of the pushers: the
+flow of the added Hamiltonian -perturb_gamma |x - c|, which conserves the phase-space
+density and hence every Casimir functional; no new initial data are needed. The force
+is applied as two half kicks around the push (second order; the impulse over a run is
+perturb_gamma x perturb_time whatever the step). Choose `perturb_tstart` and
+`perturb_time` as multiples of the step: otherwise the last, partial kick adds an error
+of second order with an irregular coefficient. Absent or zero: no effect at all.
+Example: `problems/tests/perturb_flat.athinput`; test `run_perturb.py`.

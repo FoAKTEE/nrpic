@@ -27,8 +27,8 @@ and named), OPEN (not done).
 |---|---|---|---|
 | 1. Geodesics on a fixed background | order and conserved quantities on fixed Kerr | PASS | G: `core-20261115-032625-45e1779`, 104 of 104 checks |
 | 2. Oppenheimer-Snyder collapse (CORE part) | horizon-mass error of the order of the paper's | PASS at 9328 lattice particles; random samples at 10^4 larger (0.3 to 0.5 percent) | O: `core-20261115-032614-45e1779`, 13 of 13 checks |
-| 3. Oblate and prolate collapse (CORE part) | prolate collapse | PARTIAL: horizon at the paper's time, mass 3 to 5 percent low, one resolution; oblate not done | none (not in the suite this package was asked for; the earlier run took 0.48 card-hours) |
-| 4. Einstein-Vlasov steady states and stability threshold (CORE part) | stability of relativistic clusters | PARTIAL: all five models of the sequence end as in the paper; collapse times 1.4 to 1.75 times later; threshold not located as a number; growing oscillation of the stable model unexplained | none (not in the suite; 0.14 to 1.18 card-hours per earlier run) |
+| 3. Oblate and prolate collapse (CORE part) | prolate collapse | PARTIAL: horizon at the paper's time at two resolutions (32.00 M at M/16, 32.25 M at M/8); mass deficit 3.3 and 4.3 percent, falling with resolution; oblate blocked (needs an oblate component in `nrpic_cf`) | wave 2: `core-20261115-152845-5728b1d` (M/8), comparison `-162509-c691fb8` |
+| 4. Einstein-Vlasov steady states and stability threshold (CORE part) | stability of relativistic clusters | PARTIAL: fates of the five models as in the paper; wave-2 bisection at M/4 (seven members): no collapse; members below the turning point y_c* = 0.6796 migrate to their equal-binding partner, 0.70 and 0.72 stay: threshold between 0.66 and 0.70; 0.69 and 0.67 unresolved; collapse branch needs the finer mesh; growing oscillation unexplained | wave 2: `core-20261115-152842-5728b1d`, `-152843-5728b1d`, `-154726-37450f2`, `-155617-06f844b`, analysis `-170606-1c69507` |
 
 ## Row 1. Geodesics on a fixed background
 
@@ -141,6 +141,30 @@ field content (`docs/TESTLOG.md` lines 1580-1593); only one resolution and one p
 number, so neither the paper's 0.1 M robustness of the formation time nor the source of
 the deficit is tested. Oblate collapse: not done (shared with Track A).
 
+### Row 3, wave 2: second resolution on release core-v0.3 (`verify/JOURNAL.md` 15:30Z, 16:28Z)
+
+Same particles and input as `e09_v8` with one level fewer (finest cells M/8), card
+release executable: run core-20261115-152845-5728b1d (0.344 card-hours); comparison
+core-20261115-162509-c691fb8; figures `figs/prolate_resolution.png`,
+`figs/prolate_mosaic.png` (energy density at y = 0, t = 27.75 M, four nested windows
++-10, 4, 1.5, 0.6 M, both resolutions).
+
+| quantity | M/16 (e09_v8) | M/8 |
+|---|---|---|
+| first apparent horizon | 32.00 M (searches every 0.25 M) | 32.25 M (every 0.5 M) |
+| M_AH: first, largest, at 44.75 M | 0.9291, 0.9666, 0.9489 | 0.9249, 0.9570, 0.9444 |
+| largest Kretschmann scalar 20-31 M | 1203 at 27.75 M, z = -0.66 M | 101 at 26.25 M, z = +0.81 M |
+| largest sqrt(H-norm2) | 6.31 (27.5 M) | 5.43 (32.0 M) |
+
+Verdict: PARTIAL. The horizon forms at the paper's time (32 M, main.tex line 971) at
+both resolutions, within one search interval; the peak curvature grows with resolution
+(an unresolved caustic, as the paper says, line 975); the horizon-mass deficit falls
+with resolution (4.3 to 3.3 per cent at its largest) but two resolutions give no order
+and 3 per cent remains at M/16. Open: a third resolution (M/32 needs more than the 80 GB
+of one card at 10^4 particles, `docs/TESTLOG.md` 1329-1345), a particle-number pair, the
+oblate collapse (source work: README.md, request 2; reference potential
+`oblate/oblate_reference.py`, run core-20261115-154359-d74357f).
+
 ## Row 4. Spherically symmetric Einstein-Vlasov steady states and stability threshold
 
 What it checks: long-time phase-space fidelity; the stability threshold (shared with
@@ -175,6 +199,49 @@ located as a number on the binding-energy curve; the stable y_c = 0.819 model sh
 growing central-lapse oscillation (half swing 0.005 to 0.018 between 100 and 500 M,
 saturating at 0.015-0.022; table tab:outcomes_clusters) whose cause is not determined
 (`docs/TESTLOG.md` lines 897-904).
+
+### Row 4, wave 2: bisection on release core-v0.3 (`verify/JOURNAL.md`, 15:30Z onwards)
+
+Protocol of the earlier sequence (`runs/st/yc0605_v5`: 10^4 stratified particles, seed
+1, one-percent inward kick, equilibrium table, `st_cluster_amr.athinput`) with the mesh
+capped at the initial nest (finest cells M/4, `mesh_refinement/num_levels=7`), to 300 M,
+card release executable `.work/build_gpu_v03`. Turning point of the sequence (first
+maximum of E_b/M_0, `python/nrpic/st_cluster.binding_energy_maximum`, recomputed in run
+core-20261115-152805-47d8f25): y_c* = 0.6796, z_c = 0.4553, E_b/M_0 = 0.036058.
+Analysis run core-20261115-160501-ee15e0f, figure `figs/cluster_threshold.png`.
+
+| y_c | run | horizon | mean central lapse 200-300 M (own alpha_c / partner) | rule of 15:30Z | migration criterion of 16:07Z |
+|---|---|---|---|---|---|
+| 0.72 | core-20261115-152843-5728b1d | none | 0.7079 (0.7207 / 0.6552) | STABLE | no |
+| 0.70 | core-20261115-152842-5728b1d | none | 0.6920 (0.7039 / 0.6708) | STABLE | no |
+| 0.69 | core-20261115-154726-37450f2 | none | 0.6864 (0.6957 / 0.6787) | STABLE | yes (inward) |
+| 0.67 | core-20261115-154726-37450f2 | none | 0.6911 (0.6793 / 0.6951) | STABLE | yes |
+| 0.66 | core-20261115-152842-5728b1d | none | 0.7005 (0.6713 / 0.7034) | STABLE (offset 0.029 of 0.03) | yes |
+| 0.64 | core-20261115-152843-5728b1d | none | 0.7221 (0.6554 / 0.7205) | UNDECIDED | yes |
+| 0.605 control, to 250 M | core-20261115-155617-06f844b | none | 0.7667 over 200-250 M (0.6281 / 0.7519) | UNDECIDED | yes |
+
+Analysis core-20261115-170606-1c69507. Card time 2.0 card-hours for the seven runs.
+
+Verdict of the bisection: PARTIAL.
+- No member between 0.605 and 0.72 collapses within 250-300 M at M/4 and 10^4 particles
+  [VERIFIED]; the prediction that 0.64 collapses is refuted. The control shows why: the
+  same 0.605 data that collapsed (horizon 191 M) on the finer AMR mesh migrate at M/4,
+  so the direction of departure (collapse or migration) depends on the mesh, and the M/4
+  runs do not test the collapse branch.
+- By the rule fixed before the runs (collapse / stay within 0.03 of alpha_c) there is no
+  bracket. By the migration criterion (fixed after round 1, before round 2 was read) the
+  members 0.66, 0.64, 0.605 migrate to within 0.003, 0.002, 0.015 of their equal-binding
+  partner and 0.70, 0.72 stay: threshold between 0.66 and 0.70, which contains the
+  turning point y_c* = 0.6796. Round 2 (0.69, 0.67) is not resolved by either criterion:
+  their partners lie 0.017 away in alpha_c, comparable with the common downward drift of
+  about 0.01 of the members above y_c*.
+- Read after the runs [JUDGEMENT]: the sign of the late offset from the own equilibrium
+  changes between 0.69 (-0.009) and 0.67 (+0.012).
+- Unexplained, in every run: the central-lapse oscillation (period about 50 M) grows to
+  +-0.05 to +-0.08 after 200 M.
+Open: the bisection on the finer mesh (collapse branch; about 0.6 card-hours per run to
+300 M at M/8), more particles, three-way convergence of the threshold (Track C's G2
+criterion).
 
 ## Supporting checks of the C2 steps (earlier, not re-run today)
 

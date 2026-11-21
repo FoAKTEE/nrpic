@@ -22,6 +22,7 @@
 #include "athena_tensor.hpp"
 #include "geodesic-grid/geodesic_grid.hpp"
 #include "geodesic-grid/spherical_grid.hpp"
+#include "z4c/z4c_gauge_ext.hpp"
 
 // forward declarations
 class Coordinates;
@@ -215,6 +216,7 @@ class Z4c {
     int dc_gaussian_center;
   };
   Options opt;
+  GaugeExtOptions gext;   // lapse relaxation and tracker-dependent shift damping
   Real diss;              // Dissipation parameter
 
   // Boundary communication buffers and functions for u
@@ -225,6 +227,10 @@ class Z4c {
 
   // following only used for time-evolving flow
   Real dtnew;
+  // <z4c> dt_lightspeed = f > 0: the step is also limited by f dx / (coordinate speed
+  // of light), evaluated every cycle (z4c_newdt.cpp); 0: off
+  Real dt_lightspeed = 0.0;
+  Real cmax_light = 0.0;   // largest coordinate light speed of the last evaluation
 
   // geodesic grid for wave extr
   std::vector<std::unique_ptr<SphericalGrid>> spherical_grids;
@@ -233,6 +239,12 @@ class Z4c {
   Real waveform_dt;
   Real last_output_time;
   int nrad; // number of radii to perform wave extraction
+  // NRPIC: <z4c> waveform_at_new_time (docs/UPSTREAM_DEFECTS.md, item 2).  The Weyl
+  // scalar and the waveforms are computed at the end of a step, from the state of
+  // time + dt.  Upstream chooses the step and labels the result by the time at its
+  // start; with the option they are chosen and labelled by the time at its end.
+  bool waveform_at_new_time;
+  Real WeylStepTime() const;
 
   // CCE
   Real cce_dump_dt;
@@ -257,6 +269,7 @@ class Z4c {
   TaskStatus ExpRKUpdate(Driver *d, int stage);
   TaskStatus Z4cFloorChi(Driver *pdrive, int stage);
   TaskStatus NewTimeStep(Driver *d, int stage);
+  Real LightSpeedTimeStep();     // min of dx / (coordinate light speed), z4c_newdt.cpp
   TaskStatus ApplyPhysicalBCs(Driver *d, int stage);
   TaskStatus EnforceAlgConstr(Driver *d, int stage);
 

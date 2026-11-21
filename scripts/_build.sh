@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Shared configure+build logic for build_gpu.sh and build_cpu.sh. Not meant to be run
-# directly: usage is  _build.sh <gpu|cpu> [build_dir]
+# Shared configure+build logic for build_gpu.sh, build_cpu.sh and build_cpu_omp.sh. Not
+# meant to be run directly: usage is  _build.sh <gpu|cpu|omp> [build_dir]
 #
 # Environment (all optional):
 #   PROBLEM=<path under athenak/src/pgen, no .cpp>   user pgen (-DPROBLEM); default: the
@@ -13,10 +13,13 @@
 #   RECONFIGURE=1  force re-running cmake even if the build dir is already configured
 #   ATHENAK_SRC  AthenaK source tree to build (default: <repo>/athenak), e.g. a snapshot
 #                made with  git archive HEAD athenak | tar -x -C /some/dir
+#   OMP_OPT=debug  (omp only) compile the threaded build with the flags of the serial
+#                build (-O2 -g, asserts kept) instead of -O3 -DNDEBUG
 set -euo pipefail
 
-kind=${1:?usage: _build.sh <gpu|cpu> [build_dir]}
+kind=${1:?usage: _build.sh <gpu|cpu|omp> [build_dir]}
 shift
+case $kind in gpu|cpu|omp) ;; *) echo "ERROR: unknown build kind '$kind'" >&2; exit 1;; esac
 
 REPO=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 SRC=$(cd "${ATHENAK_SRC:-$REPO/athenak}" && pwd)
@@ -56,7 +59,7 @@ args=(
   -G "Unix Makefiles"
   -DPROBLEM="$PROBLEM"
   -DAthena_ENABLE_MPI=OFF
-  -DAthena_ENABLE_OPENMP=OFF
+  -DAthena_ENABLE_OPENMP=$( [[ $kind == omp ]] && echo ON || echo OFF )
   -DKokkos_ARCH_"$HOST_ARCH"=ON
   -DKokkos_ENABLE_DEBUG=$KDBG
   -DKokkos_ENABLE_DEBUG_BOUNDS_CHECK=$KDBG
@@ -113,6 +116,25 @@ EOF
     -D$FLAGS_VAR="$FLAGS"
   )
   toolchain="nvcc $("$CUDA_HOME/bin/nvcc" --version | sed -n 's/.*release \([0-9.]*\).*/\1/p') (host g++ $(g++ -dumpfullversion))"
+elif [[ $kind == omp ]]; then
+  # Threaded CPU build (Kokkos OpenMP is the default and the host execution space; Serial
+  # is not compiled in, so no kernel can fall back to it silently). Production flags
+  # -O3 -DNDEBUG -g by default; OMP_OPT=debug uses the flags of the serial build.
+  if [[ ${OMP_OPT:-release} == debug ]]; then
+    OMP_FLAGS="-O2 -g"
+  else
+    OMP_FLAGS="-O3 -DNDEBUG -g"
+  fi
+  args+=(
+    -DCMAKE_CXX_COMPILER=g++
+    -DCMAKE_C_COMPILER=gcc
+    -DKokkos_ENABLE_SERIAL=OFF
+    -DKokkos_ENABLE_OPENMP=ON
+    -DKokkos_ENABLE_CUDA=OFF
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo
+    -DCMAKE_CXX_FLAGS_RELWITHDEBINFO="$OMP_FLAGS"
+  )
+  toolchain="g++ $(g++ -dumpfullversion), Kokkos OpenMP ($OMP_FLAGS)"
 else
   # Serial CPU build for debugging: -O2 -g, asserts kept (no -DNDEBUG).
   args+=(

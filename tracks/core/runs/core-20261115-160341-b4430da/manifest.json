@@ -1,0 +1,50 @@
+{
+ "run_id": "core-20261115-160341-b4430da",
+ "owner": "core",
+ "package": "gauge",
+ "tag": "g-p-plain",
+ "purpose": "vacuum puncture at rest, cells m/8, plain 1+log (test P) (processors, half-width 32, MeshBlocks 8^3)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_cpu_b4430da",
+  "-i",
+  "/data/haiyangw/nrpic/wt/core-gauge/problems/puncture/by_eta.athinput",
+  "-d",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160341-b4430da",
+  "mesh/nx1=32",
+  "mesh/nx2=32",
+  "mesh/nx3=32",
+  "mesh/x1min=-32.0",
+  "mesh/x1max=32.0",
+  "mesh/x2min=-32.0",
+  "mesh/x2max=32.0",
+  "mesh/x3min=-32.0",
+  "mesh/x3max=32.0",
+  "meshblock/nx1=8",
+  "meshblock/nx2=8",
+  "meshblock/nx3=8",
+  "mesh_refinement/num_levels=5",
+  "problem/comp0_p1=0.0",
+  "time/tlim=10.0"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-160341-b4430da",
+ "commit": "b4430da64df8892bb68b2d633959da3faa0255d8",
+ "head_at_run": "765b2be6f520164a16cc869595094c4e7f2534a7",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-gauge/problems/puncture/by_eta.athinput",
+   "sha256": "9ef1e80e873e8866c39737f11897eba784ebfc3d622408ea86594c02e939a859"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_cpu_b4430da",
+   "sha256": "07af4a6ca2daf886f67a804a3b3c631c4879bf6739f431209bff5b56a8919917"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160341-b4430da",
+ "wall_time_s": 7238.8,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-160341"
+}

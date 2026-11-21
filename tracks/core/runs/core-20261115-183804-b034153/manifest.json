@@ -1,0 +1,51 @@
+{
+ "run_id": "core-20261115-183804-b034153",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu_vec/src/athena",
+  "-i",
+  "ball_vector.athinput",
+  "mesh/nx1=64",
+  "mesh/nx2=64",
+  "mesh/nx3=64",
+  "meshblock/nx1=32",
+  "meshblock/nx2=32",
+  "meshblock/nx3=32",
+  "particles/id_residual=code",
+  "particles/nfilter=0",
+  "particles/particle_file=tri_h0p5_w2_e0p05.nrp",
+  "problem/comp0_file=ball_h0p5_w2.tab"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-183804-b034153",
+ "commit": "b034153",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve/ball_vector.athinput",
+   "sha256": "cc0f055cbafcd8c7ab4194ecdf625f6b977c316e56e0b00ef980348ad1619d2e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/tri_h0p5_w2_e0p05.nrp",
+   "sha256": "9257e0db2fc256fdb4f3849a7c287486d6c03e5737b69a8b3360599a5f2d35dd"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/ball_h0p5_w2.tab",
+   "sha256": "898611ca4e2ec699e964d561b2a73473b451fdee640bc97e1a31fdd3590fb1f0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu_vec/src/athena",
+   "sha256": "9c024a2c60862e0d90de3dc331d5e1b44290d94ca18cb43c0adc8ca2a234c5c1",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-183804-b034153",
+ "purpose": "initial-data solver, test V3: smooth ball (strained) with the vector equation, mode code, 64 cells",
+ "kind": "scouting",
+ "tag": "idsolve-v3-strained",
+ "state": "finished",
+ "wall_time_s": 77.41,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T18:38:04Z"
+}

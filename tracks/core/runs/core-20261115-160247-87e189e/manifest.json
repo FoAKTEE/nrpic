@@ -1,0 +1,51 @@
+{
+ "run_id": "core-20261115-160247-87e189e",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu/src/athena",
+  "-i",
+  "ball.athinput",
+  "mesh/nx1=32",
+  "mesh/nx2=32",
+  "mesh/nx3=32",
+  "meshblock/nx1=16",
+  "meshblock/nx2=16",
+  "meshblock/nx3=16",
+  "particles/id_residual=stencil",
+  "particles/nfilter=0",
+  "particles/particle_file=ball_h1.nrp",
+  "problem/comp0_file=ball_h1.tab"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-160247-87e189e",
+ "commit": "87e189e",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/idsolve/ball.athinput",
+   "sha256": "590bb8d2c8fbd479482de6c6b1984a1531972d8fd6ad44bfed932073d709aa01"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/ball_h1.nrp",
+   "sha256": "743f1082c6ac9f310c04aa7486c0b16bcbf7a42212adb9c173dd17f5ceec6e31"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/ball_h1.tab",
+   "sha256": "7a62afec5e80352f83b9736dd0c519c80d8fd3666337d3fbd776c81e2d224669"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu/src/athena",
+   "sha256": "65e3a59ffc0eeb22cee5ae4f81bd8560dc6518fb32562f63abd6771f6e6a814a",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160247-87e189e",
+ "purpose": "initial-data solver, test T2, case ball_sharp_stencil_f0_n32",
+ "kind": "scouting",
+ "tag": "idsolve-ball_sharp_stencil_f0_n32",
+ "state": "finished",
+ "wall_time_s": 2.47,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T16:02:47Z"
+}

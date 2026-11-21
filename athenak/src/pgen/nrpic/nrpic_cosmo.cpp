@@ -46,6 +46,7 @@
 #include "coordinates/cell_locations.hpp"
 #include "z4c/z4c.hpp"
 #include "pgen/pgen.hpp"
+#include "particles/nrpic_cosmo_ext.hpp"
 
 namespace {
 
@@ -76,6 +77,10 @@ Real CosmoNoise(const std::uint64_t cell, const std::uint64_t comp,
 //! \brief initial data of an expanding periodic universe for the Z4c evolution
 
 void ProblemGenerator::NrpicCosmology(ParameterInput *pin, const bool restart) {
+  // adaptive refinement (<amr_criterion0> method = user): criteria of <z4c_amr> and of
+  // <particles_amr>, see particles/nrpic_refine.cpp
+  user_ref_func = nrpic::CosmoRefine;
+  nrpic::CosmoRefineInit(pin, pmy_mesh_, restart);
   if (restart) return;
 
   MeshBlockPack *pmbp = pmy_mesh_->pmb_pack;
@@ -90,6 +95,19 @@ void ProblemGenerator::NrpicCosmology(ParameterInput *pin, const bool restart) {
   if (!from_file && id.compare("flrw") != 0) {
     CosmoFatal("<problem> id = '" + id + "' not recognized (flrw or file)");
   }
+  // uniform shift (tests): the homogeneous universe in coordinates that move with the
+  // constant velocity -beta^i; read only if present
+  Real shift[3] = {0.0, 0.0, 0.0};
+  if (pin->DoesParameterExist("problem", "shift_x1")) {
+    shift[0] = pin->GetReal("problem", "shift_x1");
+  }
+  if (pin->DoesParameterExist("problem", "shift_x2")) {
+    shift[1] = pin->GetReal("problem", "shift_x2");
+  }
+  if (pin->DoesParameterExist("problem", "shift_x3")) {
+    shift[2] = pin->GetReal("problem", "shift_x3");
+  }
+  const Real sh0 = shift[0], sh1 = shift[1], sh2 = shift[2];
 
   // mesh as a whole: the file holds one value per cell of the uniform mesh
   const int g1 = pmy_mesh_->mesh_indcs.nx1;
@@ -197,7 +215,7 @@ void ProblemGenerator::NrpicCosmology(ParameterInput *pin, const bool restart) {
     adm.psi4(m,k,j,i) = psi4;
     int v = 0;
     for (int a=0; a<3; ++a) {
-      adm.beta_u(m,a,k,j,i) = 0.0;
+      adm.beta_u(m,a,k,j,i) = (a == 0) ? sh0 : ((a == 1) ? sh1 : sh2);
       for (int b=a; b<3; ++b) {
         const Real dab = (a == b) ? 1.0 : 0.0;
         adm.g_dd(m,a,b,k,j,i) = psi4*dab;

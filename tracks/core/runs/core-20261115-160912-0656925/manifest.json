@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261115-160912-0656925",
+ "owner": "core",
+ "purpose": "G4: equilibrium in the potential well with streaming and collisions, coll_energy = cell and = particle, two seeds, 1e6 particles, 600 steps, processor",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/run_tolman.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160912-0656925",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_cpu",
+  "--nproc",
+  "4"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-160912-0656925",
+ "commit": "0656925f07a9451d8835515c75735bac14702007",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_cpu",
+   "sha256": "c5d0a9879775ae019845922113eab06f5c6662cd0087b7ebd24a81c452a84192"
+  },
+  {
+   "path": "problems/tests/coll_box_static.athinput",
+   "sha256": "e3a5b4233b4ecb6e1ddba2da97465ec13646c35e6ce3652eef91132978f74b80"
+  },
+  {
+   "path": "tracks/core/analysis/collisions/run_tolman.py",
+   "sha256": "cc8bb2033042b43ecac4c0d662359394ab8436f4d447683459221de10cba9053"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160912-0656925",
+ "host": "anta",
+ "start_utc": "2026-11-15T16:09:12Z",
+ "cores": 4,
+ "wall_time_s": 1079.25,
+ "exit_status": 1,
+ "core_hours": 1.1992
+}

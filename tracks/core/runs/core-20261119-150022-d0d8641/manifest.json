@@ -1,0 +1,26 @@
+{
+ "run_id": "core-20261119-150022-d0d8641",
+ "owner": "core",
+ "command": [
+  "bash",
+  "/data/haiyangw/nrpic/wt/core-omp/tracks/core/omp/placement.sh",
+  "punc",
+  "16",
+  "0.125",
+  "2"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-150022-d0d8641",
+ "commit": "d0d8641",
+ "source_modified_since_commit": false,
+ "inputs": [],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-150022-d0d8641",
+ "purpose": "omp P8: placement experiment, puncture case at 16 threads, four placements (none, spread, close, auto), two rounds interleaved. Registered by hand: nrpic-run refuses the cores (owner core at its allotment through other sessions)",
+ "kind": "scouting",
+ "tag": "omp-placement16",
+ "state": "finished",
+ "wall_time_s": 564.07,
+ "exit_status": 0,
+ "cores": 16,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T15:00:22Z"
+}

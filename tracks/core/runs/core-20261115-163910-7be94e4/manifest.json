@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261115-163910-7be94e4",
+ "owner": "core",
+ "track": "core",
+ "gate": "G2",
+ "purpose": "T5 full base case of NOISE_SPEC 9 (64^3 x 300, U1-U8) run on a card (core-20261115-155404-24c88e3): Track E's validations with the reference as committed (first) and with the cancellation-free increment (second, subdirectory patched)",
+ "kind": "scouting",
+ "command": [
+  "bash",
+  "-c",
+  "bash tracks/core/analysis/scalar2/t5_validate.sh /data/haiyangw/nrpic/scratch/core/tmp/scalar2/ufull /data/haiyangw/nrpic/scratch/core/tmp/scalar2/Etree /data/haiyangw/nrpic/scratch/core/core-20261115-163910-7be94e4/committed; bash tracks/core/analysis/scalar2/t5_validate.sh /data/haiyangw/nrpic/scratch/core/tmp/scalar2/ufull /data/haiyangw/nrpic/scratch/core/tmp/scalar2/Etree_patched /data/haiyangw/nrpic/scratch/core/core-20261115-163910-7be94e4/patched"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-scalar2",
+ "commit": "7be94e4f4bd6931eaa2bf16c2480eb9385f366db",
+ "branch": "core/scalar-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/scalar2/t5_validate.sh",
+   "sha256": "051c4a62275ef07d3881ac61189ddb2d87dea99638d498c7363cf3aad9df0708"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/scalar2/Etree_patched/tracks/E-stoch-inf/noise/ref/noise_ref.py",
+   "sha256": "3a97fa633dd1bcdcce43f84a7b85724598858cc537c0d4e9ae52c0673f4e460d"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-163910-7be94e4",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-163910-7be94e4"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:39:10Z",
+ "cores": 1,
+ "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
+ "status": "completed",
+ "wall_time_s": 30.9,
+ "exit_status": 0,
+ "end_utc": "2026-11-15T16:39:41Z",
+ "core_hours": 0.0086
+}

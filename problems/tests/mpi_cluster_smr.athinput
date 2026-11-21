@@ -1,0 +1,106 @@
+# Several MPI ranks, test T5 (tracks/core/interfaces/mpi.md): the cluster of
+# mpi_cluster.athinput on a statically refined mesh.  Root mesh 48^3 on [-24 M, 24 M]^3
+# in 27 MeshBlocks of 16^3; the central MeshBlock is refined once (8 MeshBlocks with
+# dx = M/2), so the cluster (isotropic radius 4.7 M) straddles the refinement boundary
+# and its clouds are deposited across levels and ranks.  16 cycles (t = 2 M).
+#   mpirun -np N athena -i mpi_cluster_smr.athinput
+# Particles and table as for mpi_cluster.athinput.
+
+<comment>
+problem   = NRPIC on several ranks, self-gravitating cluster on a refined mesh
+
+<job>
+basename  = cls
+
+<mesh>
+nghost    = 4
+nx1       = 48
+x1min     = -24.0
+x1max     = 24.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 48
+x2min     = -24.0
+x2max     = 24.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 48
+x3min     = -24.0
+x3max     = 24.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement       = static
+max_nmb_per_rank = 64
+
+<refined_region1>
+level = 1
+x1min = -4.0
+x1max = 4.0
+x2min = -4.0
+x2max = 4.0
+x3min = -4.0
+x3max = 4.0
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 16
+tlim       = 100.0
+ndiag      = 10
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-10
+max_iterations = 50
+deposit        = true
+deposit_shape  = tsc
+nfilter        = 2
+filter_compensate = true
+filter_comp_c  = -1.0
+alpha_exc      = 0.1
+hist_dcycle    = 1
+traj_dcycle    = 2
+traj_ntrack    = 1000000
+cstat_dcycle   = 1
+cons_dcycle    = 1
+line_dcycle    = 5
+snap_dt        = 0.5
+particle_file  = cluster.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = table
+comp0_file = cluster.tab
+lapse      = table
+
+<output1>
+file_type = hst
+dcycle    = 1
+
+<output2>
+file_type = rst
+dcycle    = 8

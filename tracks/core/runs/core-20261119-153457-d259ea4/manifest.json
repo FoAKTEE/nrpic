@@ -1,0 +1,35 @@
+{
+ "run_id": "core-20261119-153457-d259ea4",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-scalar3/.work/exe/athena_cpu_cea3a49",
+  "-i",
+  "jeans_wave.athinput",
+  "time/nlim=20",
+  "gravity/show_defect=2"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-153457-d259ea4",
+ "commit": "d259ea4",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "athenak/inputs/tests/jeans_wave.athinput",
+   "sha256": "79254ca7f475e99fac540972972ee5b2a52fbfe01fbe1ec18338e55bdba1fdf7"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-scalar3/.work/exe/athena_cpu_cea3a49",
+   "sha256": "c58e84876bdbd56616cd252115d09dc80da7ba6c3d25bdbafa529c7c352301d2",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-153457-d259ea4",
+ "purpose": "regression of the relativistic mode, case jeans, executable new",
+ "kind": "scouting",
+ "tag": "regress-jeans-new",
+ "state": "finished",
+ "wall_time_s": 8.25,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T15:34:57Z"
+}

@@ -1,0 +1,54 @@
+{
+ "run_id": "core-20261119-160825-0e90ab7",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-mpi/tracks/core/analysis/mpi/mpi_tests.py",
+  "--restart-of",
+  "/data/haiyangw/nrpic/scratch/core/core-20261119-155306-ee6c92c/t3_cluster_ext",
+  "--pairs",
+  "1:4",
+  "4:1",
+  "2:4",
+  "--rst",
+  "rst/cl.00001.rst",
+  "--out",
+  "t4_ext_cross"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-160825-0e90ab7",
+ "commit": "0e90ab7",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": ".work/build_cpu_mpi/src/athena",
+   "sha256": "45c8d5a477a265d8c4c81c71f079d71cf440422c81c379ffc69223d2074650cd"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-155306-ee6c92c/t3_cluster_ext/np1/rst/cl.00001.rst",
+   "sha256": "af5e32328236d15daed4e20c0324424b49814e7775d857e8e61507504952e58a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-155306-ee6c92c/t3_cluster_ext/np2/rst/cl.00001.rst",
+   "sha256": "5460fb36e3cccb2e71bdf91d245b48173beac4a3cb31a28e208043a057f0ee7a"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-155306-ee6c92c/t3_cluster_ext/np4/rst/cl.00001.rst",
+   "sha256": "99ac346a6c9d92c16693c206cb70e0e7541a8363218800f2acdb917bd6b27692"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-160825-0e90ab7",
+ "purpose": "mpi T4: restart of the cluster with extrapolated sources (run core-20261119-155306-ee6c92c) at cycle 20 on another number of ranks (1:4, 4:1, 2:4)",
+ "kind": "scouting",
+ "tag": "mpi-t4-ext-cross",
+ "state": "finished",
+ "wall_time_s": 102.55,
+ "exit_status": 0,
+ "cores": 9,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T16:08:25Z"
+}

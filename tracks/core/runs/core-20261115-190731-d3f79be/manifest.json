@@ -1,0 +1,45 @@
+{
+ "run_id": "core-20261115-190731-d3f79be",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/core/tmp/idsolve/exe_a7a32cd/athena_cpu",
+  "-i",
+  "gaussian_boost.athinput",
+  "mesh/nx1=32",
+  "mesh/nx2=32",
+  "mesh/nx3=32",
+  "meshblock/nx1=16",
+  "meshblock/nx2=16",
+  "meshblock/nx3=16",
+  "particles/id_residual=stencil",
+  "particles/particle_file=gauss_h0p5_u0p1.nrp"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-190731-d3f79be",
+ "commit": "d3f79be",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/idsolve/gaussian_boost.athinput",
+   "sha256": "feffd511f23de35456da4c70cf4e5fa0db12d720326f76dbf0b87d109a6cd204"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/gauss_h0p5_u0p1.nrp",
+   "sha256": "5e3430bf52d29a7535c83ed4f26adf5aa6358c786ad9a748b3ae0eb885e0e6f9"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve/exe_a7a32cd/athena_cpu",
+   "sha256": "383bbb5b39eea3de3d02a30a27f250b2d1efc3bd25612c1a8b1d4cf8119559c1",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-190731-d3f79be",
+ "purpose": "initial-data solver, test V7: gboost_stencil_n32, final executable",
+ "kind": "scouting",
+ "tag": "idsolve-v7-gboost_stencil_n32-final",
+ "state": "finished",
+ "wall_time_s": 8.84,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T19:07:31Z"
+}

@@ -28,6 +28,7 @@
 #include "z4c/compact_object_tracker.hpp"
 #include "z4c/z4c.hpp"
 #include "particles/particles.hpp"
+#include "particles/nrpic_cosmo_ext.hpp"   // nrpic::CosmoRefineWriteRestart
 #include "scalar_field/scalar_field.hpp"
 #include "radiation/radiation.hpp"
 #include "srcterms/turb_driver.hpp"
@@ -639,6 +640,7 @@ void RestartOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
   // NRPIC particles are stored in a separate file next to the mesh restart file
   if (pm->pmb_pack->ppart != nullptr && pm->pmb_pack->ppart->is_nrpic) {
     pm->pmb_pack->ppart->NrpicWriteRestart(fname + ".prt");
+    nrpic::CosmoRefineWriteRestart(pm, fname + ".amr");   // nrpic_cosmo with AMR only
   }
   // so is the scalar field
   if (pm->pmb_pack->pscalar != nullptr) {

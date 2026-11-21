@@ -1,0 +1,49 @@
+{
+ "run_id": "core-20261115-160245-727e96a",
+ "owner": "core",
+ "registered_by": "tracks/core/analysis/dfix/runreg.py (by hand: nrpic-run submit fails)",
+ "purpose": "T3 accretion diagnostics on static Schwarzschild: mesh metric, mesh metric with a restart, analytic metric; against exact geodesics",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/dfix/t3_accretion.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-dfix/.work/build_cpu/src/athena",
+  "--fig",
+  "tracks/core/analysis/dfix/figs/t3"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-dfix",
+ "commit": "727e96ac5229ae22e0024f4e179dde6436683387",
+ "branch": "core/requests-adf",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "problems/tests/accretion_static.athinput",
+   "sha256": "5570df3c1474d473dd99279d6f947d79cf9458b975e1bfc3260f91eb0b95ef61"
+  },
+  {
+   "path": ".venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49"
+  },
+  {
+   "path": "tracks/core/analysis/dfix/t3_accretion.py",
+   "sha256": "4f649a517e1d8b11221a9dfde3a9c12ac2b348bcc94edae5e901793fad06a965"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "45f399b2509501e3730a87062de5437ff4307492784ddd9a86264fa60beb1c3c"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160245-727e96a",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-160245-727e96a"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:02:46Z",
+ "cores": 3,
+ "status": "completed",
+ "wall_time_s": 81.67,
+ "exit_status": 0,
+ "end_utc": "2026-11-15T16:04:07Z",
+ "core_hours": 0.0681
+}

@@ -1,0 +1,65 @@
+{
+ "run_id": "core-20261115-154603-63ad8eb",
+ "owner": "core",
+ "package": "gauge",
+ "tag": "g-mp-edge2-n064",
+ "purpose": "expanding ball with the old and the new lapse: mp-edge2-n064 (cells 64, half-width 32, lapse mp, ball --Rb 10 --edge 2)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-gauge/.work/build_cpu/src/athena",
+  "-i",
+  "/data/haiyangw/nrpic/wt/core-gauge/problems/ball/ball_leak.athinput",
+  "-d",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-154603-63ad8eb",
+  "mesh/nx1=64",
+  "mesh/nx2=64",
+  "mesh/nx3=64",
+  "mesh/x1min=-32.0",
+  "mesh/x1max=32.0",
+  "mesh/x2min=-32.0",
+  "mesh/x2max=32.0",
+  "mesh/x3min=-32.0",
+  "mesh/x3max=32.0",
+  "meshblock/nx1=32",
+  "meshblock/nx2=32",
+  "meshblock/nx3=32",
+  "time/tlim=10.0",
+  "particles/traj_dcycle=1",
+  "particles/traj_ntrack=2078",
+  "particles/particle_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_edge2_h1.nrp",
+  "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_edge2_h1.tab",
+  "problem/shift=zero",
+  "z4c/lapse_leak=0.0"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-154603-63ad8eb",
+ "commit": "63ad8eb33268a41009f2963c84897f54c85745ed",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-gauge/problems/ball/ball_leak.athinput",
+   "sha256": "d5ea2db65d16e6beaee139890e7595e44f9693f7cf6a09165ddba341bfb82987"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-gauge/.work/build_cpu/src/athena",
+   "sha256": "07af4a6ca2daf886f67a804a3b3c631c4879bf6739f431209bff5b56a8919917"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_edge2_h1.nrp",
+   "sha256": "9c6980fe7ae1245b397c73f97a6336786833a18ccdc76303a949212064f1e427"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_edge2_h1.tab",
+   "sha256": "898611ca4e2ec699e964d561b2a73473b451fdee640bc97e1a31fdd3590fb1f0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/id/ic_ball/t2_edge2_h1.json",
+   "sha256": "47eb0cfbe404ea34a59db57061ab69f51e05b765646207fd7fb96495a5fe8991"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-154603-63ad8eb",
+ "wall_time_s": 859.0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-154603"
+}

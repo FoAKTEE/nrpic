@@ -1,0 +1,35 @@
+{
+ "run_id": "core-20261115-170454-5333b49",
+ "owner": "core",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/verify/ladder2/cluster_fate.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-152843-5728b1d/st_yc0p720",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-152842-5728b1d/st_yc0p700",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-154726-37450f2/st_yc0p690",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-154726-37450f2/st_yc0p670",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-152842-5728b1d/st_yc0p660",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-152843-5728b1d/st_yc0p640",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-155617-06f844b/st_yc0p605",
+  "--earlier"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-170454-5333b49",
+ "commit": "5333b49",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "tracks/core/verify/ladder2/cluster_fate.py",
+   "sha256": "8743105bc1f6c0ad51c59a92efe8879ee4a6ed1cefb72628388cc5b713082038"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-170454-5333b49",
+ "purpose": "verify wave 2: fates of the full bisection (y_c 0.72 0.70 0.69 0.67 0.66 0.64 and the control 0.605, M/4) by the rule of 15:30Z and the migration criterion of 16:07Z; earlier sequence runs for comparison",
+ "kind": "scouting",
+ "tag": "",
+ "state": "finished",
+ "wall_time_s": 14.56,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T17:04:54Z"
+}

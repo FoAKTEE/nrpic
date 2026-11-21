@@ -33,6 +33,7 @@
 #include "z4c.hpp"
 #include "coordinates/cell_locations.hpp"
 #include "utils/inline_interpolator.hpp"
+#include "particles/nrpic_cosmo_ext.hpp"   // nrpic::PeriodicMap
 
 //----------------------------------------------------------------------------------------
 //! \fn FastFlow::FastFlow(MeshBlockPack *pmbp, ParameterInput * pin, int n)
@@ -133,6 +134,30 @@ FastFlow::FastFlow(MeshBlockPack *pmbp, ParameterInput *pin, int n):
                                             "wait_until_punc_are_close_" + n_str, 0);
   use_puncture_massweighted_center = pin->GetOrAddBoolean("fastflow",
                                      "use_puncture_massweighted_center_" + n_str, 0);
+  // Common horizon of one pair among several punctures: with punc_pair_a_<n> and
+  // punc_pair_b_<n> the trigger wait_until_punc_are_close_<n> compares the distance of
+  // these two punctures with merger_distance times the sum of their two masses, and
+  // use_puncture_massweighted_center_<n> takes the centre of mass of the two.  Without
+  // them all punctures count (largest distance, sum of all masses), so that a merger of
+  // two holes is not searched for while a third is far away.  merger_distance_<n>
+  // replaces the common merger_distance for this surface.  The parameters are read only
+  // if present (the parameter dump of existing inputs does not change).
+  if (pin->DoesParameterExist("fastflow", "punc_pair_a_" + n_str) ||
+      pin->DoesParameterExist("fastflow", "punc_pair_b_" + n_str)) {
+    pair_a = pin->GetInteger("fastflow", "punc_pair_a_" + n_str);
+    pair_b = pin->GetInteger("fastflow", "punc_pair_b_" + n_str);
+    if (pair_a < 0 || pair_b < 0 || pair_a >= npunct || pair_b >= npunct ||
+        pair_a == pair_b) {
+      std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__
+                << std::endl << "<fastflow> punc_pair_a_" << n_str << " and punc_pair_b_"
+                << n_str << " must name two different punctures below npunct = "
+                << npunct << std::endl;
+      exit(EXIT_FAILURE);
+    }
+  }
+  if (pin->DoesParameterExist("fastflow", "merger_distance_" + n_str)) {
+    merger_distance = pin->GetReal("fastflow", "merger_distance_" + n_str);
+  }
 
   // Timer
   start_time = pin->GetOrAddReal("fastflow", "start_time_" + n_str,
@@ -243,6 +268,35 @@ FastFlow::FastFlow(MeshBlockPack *pmbp, ParameterInput *pin, int n):
     ioproc = true;
   #endif
 
+  // periodic directions of the mesh (surface points are mapped into it)
+  {
+    Mesh *pm = pmbp->pmesh;
+    periodic[0] = (pm->mesh_bcs[BoundaryFace::inner_x1] == BoundaryFlag::periodic);
+    periodic[1] = (pm->mesh_bcs[BoundaryFace::inner_x2] == BoundaryFlag::periodic);
+    periodic[2] = (pm->mesh_bcs[BoundaryFace::inner_x3] == BoundaryFlag::periodic);
+    dom_min[0] = pm->mesh_size.x1min;
+    dom_min[1] = pm->mesh_size.x2min;
+    dom_min[2] = pm->mesh_size.x3min;
+    dom_len[0] = pm->mesh_size.x1max - pm->mesh_size.x1min;
+    dom_len[1] = pm->mesh_size.x2max - pm->mesh_size.x2min;
+    dom_len[2] = pm->mesh_size.x3max - pm->mesh_size.x3min;
+  }
+  // status file with the reason of a failed search (read only if present)
+  if (pin->DoesParameterExist("fastflow", "diagnostics")) {
+    diagnostics = pin->GetBoolean("fastflow", "diagnostics");
+  }
+  ofname_status = pin->GetString("job", "basename") + ".horizon_status_" + n_str + ".txt";
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn void FastFlow::OpenOutput()
+//! \brief opens the output files of this horizon.  Called at the first search and not
+//! in the constructor: the constructor runs before the driver changes to the run
+//! directory (-d), so the summary file used to land in the directory the executable
+//! was started in.
+void FastFlow::OpenOutput() {
+  if (files_open) return;
+  files_open = true;
   if (ioproc) {
     // Summary file
     bool new_file = true;
@@ -358,7 +412,8 @@ FastFlow::~FastFlow() {
   // Delete Gauss-Legendre grid
   delete gl_grid;
 
-  // Close files
+  // Close files (a run without a single search still leaves its summary file)
+  OpenOutput();
   if (ioproc) {
     fclose(pofile_summary);
     if (verbose) {
@@ -371,9 +426,38 @@ FastFlow::~FastFlow() {
 //! \fn void FastFlow::Write(int iter, Real time)
 //! \brief Output summary and shape file, for each horizon.
 void FastFlow::Write(int iter, Real time) {
+  OpenOutput();
   if (ioproc) {
     if ((time < start_time) || (time > stop_time)) return;
     if (wait_until_punc_are_close && !(PuncAreClose())) return;
+
+    // Status of the search (<fastflow> diagnostics): found or the reason of the failure
+    if (diagnostics) {
+      static const char *reason_text[7] = {"found", "area not finite",
+          "mean expansion not finite", "mean expansion above hmean_tol",
+          "mean radius negative", "area mass below 1e-10 (surface shrank to a point)",
+          "iteration limit reached without convergence of the mass"};
+      const bool new_status = (access(ofname_status.c_str(), F_OK) != 0);
+      FILE *pst = fopen(ofname_status.c_str(), "a");
+      if (pst != NULL) {
+        if (new_status) {
+          fprintf(pst, "# 1:cycle 2:time 3:found 4:reason 5:flow_iterations 6:area "
+                       "7:area_mass 8:meanradius 9:minradius 10:mean_expansion "
+                       "11:min_abs_mean_expansion 12:points_outside_mesh 13:center_x "
+                       "14:center_y 15:center_z  # reason in words\n");
+        }
+        const int rs = (fail_reason >= 0 && fail_reason < 7) ? fail_reason : 6;
+        // the caller passes the Runge-Kutta stage as iter (summary file); the status
+        // file records the cycle of the mesh
+        fprintf(pst, "%d %.15e %d %d %d %.15e %.15e %.15e %.15e %.15e %.15e %d %.15e "
+                     "%.15e %.15e  # %s\n", pmbp->pmesh->ncycle, time, ah_found ? 1 : 0,
+                fail_reason,
+                iter_done, last_area, last_mass, last_meanradius, rr_min, last_hmean,
+                min_abs_hmean, n_outside, center[0], center[1], center[2],
+                reason_text[rs]);
+        fclose(pst);
+      }
+    }
 
     // Summary file
     fprintf(pofile_summary, "%d %g ", iter, time);
@@ -427,6 +511,7 @@ void FastFlow::Write(int iter, Real time) {
 //! \fn void FastFlow::Find(int iter, Real time)
 //! \brief Search for the horizons
 void FastFlow::Find(int iter, Real time) {
+  OpenOutput();
   if ((time < start_time) || (time > stop_time)) return;
   if (wait_until_punc_are_close && !(PuncAreClose())) return;
   if (verbose && ioproc) {
@@ -623,6 +708,11 @@ void FastFlow::MetricInterp() {
   };
 
   const bool from_interp = drvts_from_interp;
+  // periodic directions: the point is mapped into the mesh (a point inside the mesh
+  // keeps its coordinate bit for bit)
+  const bool per0 = periodic[0], per1 = periodic[1], per2 = periodic[2];
+  const Real dmin0 = dom_min[0], dmin1 = dom_min[1], dmin2 = dom_min[2];
+  const Real dlen0 = dom_len[0], dlen1 = dom_len[1], dlen2 = dom_len[2];
   par_for("FastFlow_interpolate", DevExeSpace(), 0, nangles-1,
   KOKKOS_LAMBDA(int p) {
     Real theta = polar_pos.d_view(p,0);
@@ -633,9 +723,9 @@ void FastFlow::MetricInterp() {
     Real x = xc + rr_(p) * Kokkos::sin(theta) * Kokkos::cos(phi);
     Real y = yc + rr_(p) * Kokkos::sin(theta) * Kokkos::sin(phi);
     Real z = zc + rr_(p) * Kokkos::cos(theta);
-    pos[0] = x;
-    pos[1] = y;
-    pos[2] = z;
+    pos[0] = per0 ? nrpic::PeriodicMap(x, dmin0, dlen0) : x;
+    pos[1] = per1 ? nrpic::PeriodicMap(y, dmin1, dlen1) : y;
+    pos[2] = per2 ? nrpic::PeriodicMap(z, dmin2, dlen2) : z;
 
     // Compute interpolation indices and weights (inline).
     auto ind_and_wghts = IndicesAndWeights<NGHOST>(indcs, size, pos, nmb);
@@ -685,6 +775,10 @@ template void FastFlow::MetricInterp<4>();
 //! \brief Fast Flow loop for horizon n.
 void FastFlow::FastFlowLoop() {
   ah_found = false;
+  fail_reason = 6;              // unless the flow ends otherwise: iteration limit
+  iter_done = 0;
+  n_outside = 0;
+  min_abs_hmean = std::numeric_limits<Real>::max();
 
   Real meanradius = a0.h_view(0) / Kokkos::sqrt(4.0*M_PI);
   Real mass = 0;
@@ -737,6 +831,22 @@ void FastFlow::FastFlowLoop() {
 
     meanradius = a0.h_view(0) / Kokkos::sqrt(4.0 * M_PI);
 
+    // record of the search for the status file
+    iter_done = k + 1;
+    last_area = area;
+    last_hmean = hmean;
+    last_meanradius = meanradius;
+    last_mass = (area > 0.0) ? Kokkos::sqrt(area / (16.0 * M_PI)) : 0.0;
+    if (Kokkos::isfinite(hmean) && Kokkos::fabs(hmean) < min_abs_hmean) {
+      min_abs_hmean = Kokkos::fabs(hmean);
+    }
+    if (diagnostics) {
+      n_outside = 0;
+      for (int p = 0; p < nangles; ++p) {
+        if (!havepoint.h_view(p)) { ++n_outside; }
+      }
+    }
+
     // Step 4: Check that we get a finite result.
     if (!(Kokkos::isfinite(area))) {
       if (verbose && ioproc) {
@@ -744,6 +854,7 @@ void FastFlow::FastFlowLoop() {
         fflush(pofile_verbose);
       }
       failed = true;
+      fail_reason = 1;
       break;
     }
 
@@ -753,6 +864,7 @@ void FastFlow::FastFlowLoop() {
         fflush(pofile_verbose);
       }
       failed = true;
+      fail_reason = 2;
       break;
     }
 
@@ -773,6 +885,7 @@ void FastFlow::FastFlowLoop() {
         fflush(pofile_verbose);
       }
       failed = true;
+      fail_reason = 3;
       break;
      }
 
@@ -782,6 +895,7 @@ void FastFlow::FastFlowLoop() {
         fflush(pofile_verbose);
       }
       failed = true;
+      fail_reason = 4;
       break;
     }
 
@@ -792,12 +906,14 @@ void FastFlow::FastFlowLoop() {
         fflush(pofile_verbose);
       }
       failed = true;
+      fail_reason = 5;
       break;
     }
 
     // End flow when mass difference is small
     if (Kokkos::fabs(mass_prev-mass) < mass_tol) {
       ah_found = true;
+      fail_reason = 0;
       break;
     }
 
@@ -1529,6 +1645,15 @@ void FastFlow::ComputeSphericalHarmonics() {
 //! \fn Real FastFlow::PuncMaxDistance()
 //! \brief Max Euclidean distance between punctures.
 Real FastFlow::PuncMaxDistance() {
+  if (pair_a >= 0) {
+    // the pair this surface belongs to
+    Real d2 = 0.0;
+    for (int a = 0; a < 3; ++a) {
+      d2 += SQR(pmbp->pz4c->ptracker[pair_a]->GetPos(a) -
+                pmbp->pz4c->ptracker[pair_b]->GetPos(a));
+    }
+    return Kokkos::sqrt(d2);
+  }
   Real maxdist = 0.0;
   for (int pix = 0; pix < npunct; ++pix) {
     Real xp = pmbp->pz4c->ptracker[pix]->GetPos(0);
@@ -1571,6 +1696,10 @@ Real FastFlow::PuncMaxDistance(const int pix) {
 //! \fn Real FastFlow::PuncSumMasses()
 //! \brief Return sum of puncture's intial masses.
 Real FastFlow::PuncSumMasses() {
+  if (pair_a >= 0) {
+    return pmbp->pz4c->ptracker[pair_a]->GetMass() +
+           pmbp->pz4c->ptracker[pair_b]->GetMass();
+  }
   Real mass = 0.0;
   for (int p = 0; p < npunct; ++p) {
     mass += pmbp->pz4c->ptracker[p]->GetMass();
@@ -1587,6 +1716,7 @@ void FastFlow::PuncWeightedMassCentralPoint(Real *xc, Real *yc, Real *zc) {
   Real sumz = 0.0;
   Real divsum = 0.0; // sum of m_i to later divide by
   for (int p = 0; p < npunct; p++) {
+    if (pair_a >= 0 && p != pair_a && p != pair_b) continue;   // only the pair
     Real x = pmbp->pz4c->ptracker[p]->GetPos(0);
     Real y = pmbp->pz4c->ptracker[p]->GetPos(1);
     Real z = pmbp->pz4c->ptracker[p]->GetPos(2);
@@ -1604,7 +1734,9 @@ void FastFlow::PuncWeightedMassCentralPoint(Real *xc, Real *yc, Real *zc) {
 
 //----------------------------------------------------------------------------------------
 //! \fn bool FastFlow::PuncAreClose()
-//! \brief Check when the maximal distance between all punctures is below threshold.
+//! \brief Check when the maximal distance between all punctures is below threshold;
+//! with punc_pair_a_<n>, punc_pair_b_<n>: the distance between these two, against the
+//! sum of their two masses.
 bool FastFlow::PuncAreClose() {
   Real const mass = PuncSumMasses();
   Real const maxdist = PuncMaxDistance();

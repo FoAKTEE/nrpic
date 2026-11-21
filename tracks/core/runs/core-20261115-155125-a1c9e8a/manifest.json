@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261115-155125-a1c9e8a",
+ "owner": "core",
+ "package": "gauge",
+ "tag": "smoke-eta",
+ "purpose": "input smoke test, one cycle: by_eta.athinput with the damping profile and the lapse relaxation",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-gauge/.work/build_cpu/src/athena",
+  "-i",
+  "/data/haiyangw/nrpic/wt/core-gauge/problems/puncture/by_eta.athinput",
+  "-d",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-155125-a1c9e8a",
+  "time/nlim=1",
+  "mesh_refinement/num_levels=5",
+  "z4c/lapse_leak=1.0",
+  "z4c/shift_eta=20.0",
+  "z4c/shift_eta_profile=true",
+  "z4c/shift_eta_mref=0.1"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-155125-a1c9e8a",
+ "commit": "a1c9e8ad1e997f1efe4ae097e511147596f6e9a3",
+ "worktree_dirty": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-gauge/problems/puncture/by_eta.athinput",
+   "sha256": "9ef1e80e873e8866c39737f11897eba784ebfc3d622408ea86594c02e939a859"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-gauge/.work/build_cpu/src/athena",
+   "sha256": "8ac29c06b37f3f23e7839795addf0ae4f6fa4cb3363bc3ef2ebd282ad7a4e19c"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-155125-a1c9e8a",
+ "wall_time_s": 236.8,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-155125"
+}

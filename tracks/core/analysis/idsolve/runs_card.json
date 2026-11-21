@@ -1,0 +1,22 @@
+{
+ "gauss_code_n64_card": {
+  "args": [
+   "mesh/nx1=64",
+   "mesh/nx2=64",
+   "mesh/nx3=64",
+   "meshblock/nx1=32",
+   "meshblock/nx2=32",
+   "meshblock/nx3=32",
+   "particles/id_residual=code",
+   "particles/particle_file=gauss_h0p25.nrp"
+  ],
+  "dx": 0.5,
+  "exe": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve/exe_87e189e/athena_gpu",
+  "mode": "code",
+  "n": 64,
+  "ng": 4,
+  "run_id": "core-20261115-162952-46dcb31",
+  "status": "exit 0, wall 5.7 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-162952-46dcb31",
+  "test": "t1"
+ }
+}

@@ -1,0 +1,16 @@
+# Card check of release candidate core-v0.4 (prediction C of JOURNAL.md, 2026-11-20 and
+# 2026-11-21): the READY example of every merged branch on one A100, the cases of
+# quick_v04.py with the same arguments.  Particle files: those the processor run
+# core-20261120-222724-75e323c prepared (its directories <case>/new).
+#   harness/bin/nrpic-run submit --launcher batch --list <this file> --exe .work/build_gpu_v04rc/src/athena
+lw16 problems/tests/lw_oblique.athinput mesh/nx1=16 mesh/nx2=16 mesh/nx3=16 meshblock/nx1=16 meshblock/nx2=16 meshblock/nx3=16
+lw32 problems/tests/lw_oblique.athinput
+leak problems/cosmo/flrw_leak.athinput z4c/lapse_leak=5.0 particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261120-222724-75e323c/leak/new/particles.nrp
+eta problems/puncture/by_eta.athinput z4c/shift_eta=20.0 z4c/shift_eta_profile=true z4c/shift_eta_mref=0.1 time/nlim=2
+sr problems/scalar/sr_stochastic.athinput scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/core/problems/scalar/sr_stochastic_modes.txt time/nlim=12
+clump problems/clump/clump_moving.athinput time/nlim=1 problem/comp0_p1=0.060000000000000595 particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261120-222724-75e323c/clump/new/particles.nrp
+clump0 problems/clump/clump_moving.athinput time/nlim=1 problem/comp0_p1=0.0 particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261120-222724-75e323c/clump/new/particles.nrp
+ids problems/idsolve/gaussian.athinput mesh/nx1=32 mesh/nx2=32 mesh/nx3=32 particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261120-222724-75e323c/ids/new/gauss_h0p5.nrp
+tracer problems/tests/tracer_mesh_circular.athinput
+pert problems/tests/perturb_flat.athinput
+coll problems/tests/coll_box_static.athinput particles/coll_sigma=16.0 time/nlim=20 particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261120-222724-75e323c/coll/new/box.nrp

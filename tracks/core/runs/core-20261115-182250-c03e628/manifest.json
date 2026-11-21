@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261115-182250-c03e628",
+ "owner": "core",
+ "purpose": "Rerun of wave 1 with the executable of core/collisions-2 (options absent): P11 null on the processor (two steps); outputs compared with core-20261115-135728-18d4555",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/run_cluster.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-182250-c03e628",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/f46f159/athena_cpu",
+  "--tlim",
+  "0.25",
+  "--kn",
+  "30",
+  "--snap-dt",
+  "0.125"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-182250-c03e628",
+ "commit": "c03e6281659324a3fc76b4183ac7881cf4fc8e62",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/collisions/run_cluster.py",
+   "sha256": "0e7f3662ea3ad904af6854a4109fbe0d69ad3811e1b0f0446c9abc4a7d2a6058"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/f46f159/athena_cpu",
+   "sha256": "adbf1b165e524b0cbdc705695c3a350d184b1212c920dec3d5a04ade06186e8d"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-182250-c03e628",
+ "host": "anta",
+ "start_utc": "2026-11-15T18:22:51Z",
+ "cores": 1,
+ "wall_time_s": 1307.07,
+ "exit_status": 0,
+ "core_hours": 0.3631
+}

@@ -1,0 +1,61 @@
+{
+ "run_id": "core-20261115-183458-b4430da",
+ "owner": "core",
+ "package": "gauge",
+ "tag": "g-es-leak2-coarse",
+ "purpose": "Einstein-Straus data of Track D, dust at cells of 4 M (coarse processor version of test ES), lapse relaxation T = 2 M, t = 10 M",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_cpu_b4430da",
+  "-i",
+  "/data/haiyangw/nrpic/wt/core-gauge/problems/es/es_gauge.athinput",
+  "-d",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-183458-b4430da",
+  "particles/particle_file=/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.nrp",
+  "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.tab",
+  "z4c/lapse_leak=0.5",
+  "time/tlim=10.0",
+  "refined_region1/x1min=-2.0",
+  "refined_region1/x1max=2.0",
+  "refined_region1/x2min=-2.0",
+  "refined_region1/x2max=2.0",
+  "refined_region1/x3min=-2.0",
+  "refined_region1/x3max=2.0"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-183458-b4430da",
+ "commit": "b4430da64df8892bb68b2d633959da3faa0255d8",
+ "head_at_run": "5272956d23509c8a566350c9c699509d7bded683",
+ "worktree_dirty": true,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-gauge/problems/es/es_gauge.athinput",
+   "sha256": "34f866e491db3adaa121feaa652562eaa2617ece773492ecad4db9d3611c5b7e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/exe/athena_cpu_b4430da",
+   "sha256": "07af4a6ca2daf886f67a804a3b3c631c4879bf6739f431209bff5b56a8919917"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.nrp",
+   "sha256": "d54c3914ed4760eb68e101a00530963b8c98c7cea4251ddaf1df74a1c8b52a09"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.tab",
+   "sha256": "9a69386c024713632985f20720a7c82cf3d85334ea20521282553e8581b8faef"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.json",
+   "sha256": "caa33cee58ba443a7c01af401a4d2a90ec5f19402cd2deb2a772393872ddac98"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es_reference.csv",
+   "sha256": "b31915e45b26c53a313273715891c83f74eafb1dbcf8c7a1cd4e11f731741706"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-183458-b4430da",
+ "wall_time_s": 107.0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": -15,
+ "started": "20261115-183458"
+}

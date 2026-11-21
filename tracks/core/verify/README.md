@@ -1,4 +1,100 @@
-# verify: verification ladder, regression suite, release proposal (core, wave 1)
+# verify: verification ladder, regression suite, release proposal, G2 figures (core)
+
+Work package "verify" of owner core. Wave 1 (below the line): C3 of brief section 9.3 as
+a re-verification of what exists, regression suite, tag proposal. Wave 2 (this section):
+ladder rows 3 and 4 on release core-v0.3, the open analysis of the initial data with
+extrinsic curvature (T2d, T3), the figures of the G2 stage check.
+
+## Wave 2 (2026-11-15)
+
+| Path | Content |
+|---|---|
+| `ladder2/make_ics.py` | initial data of the card runs (make_ic.py: prolate e = 0.9, b = 10 M; clusters of the monoenergetic sequence with the one-percent kick and the equilibrium table, protocol of `runs/st/yc0605_v5`), turning point of E_b/M_0, card job lists |
+| `ladder2/cards.py` | card runs registered by hand (`submit`, `finish`): Slurm job through `scripts/gpu_batch.sh` with the release card executable, manifest with inputs and sha256 |
+| `ladder2/cluster_fate.py` | fate of each cluster run by the rule fixed in JOURNAL.md (15:30Z), mass radii, binding-energy curve; figure `figs/cluster_threshold` |
+| `ladder2/prolate_compare.py` | prolate collapse at finest cells M/16 (`runs/prolate/e09_v8`) against M/8 (wave 2): horizon, curvature, constraint; figures `figs/prolate_resolution`, `figs/prolate_mosaic` (slice mosaic with zoom boxes, check C11) |
+| `idcheck/t2d_t3.py` | T2d and T3 of `JOURNAL-id.md` from the runs of `analysis/id`, robust to runs that lost their particles; figures `figs/id_t2d_interior`, `figs/id_t3_bound` |
+| `oblate/oblate_reference.py` | potential of a homogeneous oblate spheroid (closed form, checks), the reference an oblate component of `nrpic_cf` needs; figure `figs/oblate_reference` |
+| `figscripts/convergence3.py` | three-way convergence of the coupled module (particle number, mesh, gauge and boundary) from existing runs; figure `figs/convergence_three_way` (check C9) |
+| `figscripts/schem_ladder.py`, `ladder_status.json` | schematic of the ladder with verdicts (check C8); `figs/schem_ladder` |
+| `figscripts/schem_architecture.py` | architecture (exists / wave 1 / to be built) and gate timeline (check C13); `figs/schem_architecture` |
+| `figscripts/paperfig.py` | copy of `harness/style/paperfig.py` (schematic style) |
+
+### Results (wave 2; details and predictions in JOURNAL.md from "Wave 2" on)
+
+| Item | Run ids | Outcome |
+|---|---|---|
+| Row 3, prolate at a second resolution (finest cells M/8) | card core-20261115-152845-5728b1d (0.344 card-hours); analysis -162509-c691fb8 | horizon 32.25 M (M/16: 32.00 M); largest M_AH 0.957 (M/16: 0.967), deficit falls with resolution, 3 per cent left at M/16; peak curvature 101 vs 1203 (unresolved caustic). PARTIAL |
+| Row 3, oblate collapse | -- | NOT RUN: `nrpic_cf` refuses a > b; reference potential ready (core-20261115-154359-d74357f, all checks pass). BLOCKED on source work |
+| Row 4, bisection round 1 (y_c 0.72, 0.70, 0.66, 0.64; M/4; 300 M) | card -152842-5728b1d (0.593), -152843-5728b1d (0.596); analysis -160501-ee15e0f | no collapse; fixed rule: STABLE, STABLE, STABLE (edge), UNDECIDED, no bracket. Reading after the runs: 0.66 and 0.64 migrate to their equal-binding members, 0.70 and 0.72 stay: threshold between 0.66 and 0.70, turning point 0.6796 inside. PARTIAL; prediction "0.64 collapses" refuted |
+| Row 4, round 2 (y_c 0.69, 0.67) | card -154726-37450f2 (0.594); analysis -170606-1c69507 | both STABLE by the rule; both "migrated" by the 16:07Z criterion (0.69 inward): not resolved; late offsets -0.009 and +0.012 |
+| Row 4, control (y_c 0.605 at M/4, 250 M) | card -155617-06f844b (0.248) | migrates to its equal-binding member (0.767 vs 0.752); the same data collapsed on the finer AMR mesh: the direction of departure depends on the mesh |
+| T2d (interior H of the smooth-edge expanding ball) | analysis core-20261115-153052-b17f40d, -153429-cdc0f54, -153539-9702c09 | CONFIRMED: production deposit 5.5e-6 / 1.2e-5 at t = 8 / 10 M (dx = M/4), 26-39 times below cloud-in-cell; the mesh mean of H is the boundary layer |
+| T3 (bound ball) | same | dx = M/8 run blows up when the lapse front reaches the centre (|H| at the front 0.14, 6.4, 184 -> inf for dx = 1/2, 1/4, 1/8 M; exit status 0 regardless); 1+log front at 3 M with 13x larger core errors; fixed gauge unstable; the t3 crash is avoided in `idcheck/t2d_t3.py` |
+| C9 three-way convergence figure | core-20261115-154736-f9f5edb | `figs/convergence_three_way` from existing runs: ||H|| ~ N^-1/2 (cluster), second order in dx (expanding ball, smooth edge), every gauge converging, boundary effect at 24 M removed by moving the boundary to 48 M |
+| C8, C11, C13 figures | -162615-ca0fd2b, -162509-c691fb8, -154738-f9f5edb | `figs/schem_ladder`, `figs/prolate_mosaic`, `figs/schem_architecture` |
+
+Card time of this package in wave 2: 2.375 card-hours of the 2.5 allowed (sacct elapsed
+of jobs 4432 0.593, 4433 0.596, 4434 0.344, 4447 0.248, 4439 0.594); no run pending.
+Row 4 summary: no collapse at M/4; threshold between 0.66 and 0.70 (migration
+criterion), containing the turning point 0.6796; finer bracketing and the collapse
+branch need the finer mesh.
+
+Not done in this package: the oblate collapse (blocked), a third prolate resolution,
+the verifier report (C15), the working note (C14), and the STAGE package files
+(CHECKLIST, EVIDENCE, OPEN: the lead's).
+
+
+### How to rerun (wave 2)
+
+Hand registration (see Requests, item 1): `tracks/core/tools/run_registered.py` for
+processor runs, `ladder2/cards.py` for card runs. From the worktree:
+
+```
+python3 tracks/core/tools/run_registered.py --purpose "..." -- python3 $PWD/tracks/core/verify/ladder2/make_ics.py --out .
+python3 tracks/core/verify/ladder2/cards.py submit --list <IC run dir>/job_a.list --purpose "..."
+python3 tracks/core/verify/ladder2/cards.py finish <run_id>          # after the job ends
+python3 tracks/core/tools/run_registered.py --purpose "..." -- python3 $PWD/tracks/core/verify/ladder2/cluster_fate.py <run dir>/st_yc0p700 ... --earlier
+python3 tracks/core/tools/run_registered.py --purpose "..." -- python3 $PWD/tracks/core/verify/ladder2/prolate_compare.py --m16 /data/haiyangw/nrpic/runs/prolate/e09_v8 --m8 <run dir>/prolate_m8
+python3 tracks/core/tools/run_registered.py --purpose "..." -- python3 $PWD/tracks/core/verify/idcheck/t2d_t3.py
+python3 tracks/core/tools/run_registered.py --purpose "..." -- python3 $PWD/tracks/core/verify/oblate/oblate_reference.py
+python3 tracks/core/tools/run_registered.py --purpose "..." -- python3 $PWD/tracks/core/verify/figscripts/convergence3.py --out $PWD/tracks/core/verify/figs/convergence_three_way
+python3 tracks/core/verify/figscripts/schem_ladder.py; python3 tracks/core/verify/figscripts/schem_architecture.py
+```
+
+### Requests (wave 2)
+
+To orch:
+1. `harness/bin/nrpic-run submit` stops with `KeyError: 'outputs'` in `is_live`
+   (`harness/bin/nrpic-run` line 163) on the hand-written manifests of wave 1 (they carry
+   `output_directory` and `state`, not `outputs.dir` and `status`), so no core run can be
+   registered through it. Every run of this package is registered by hand
+   (`tracks/core/tools/run_registered.py`, `ladder2/cards.py`). Proposal: skip, or read
+   with `.get`, manifests without the harness schema in `budget_state`.
+
+To core (lead):
+2. Oblate collapse (ladder row 3) needs source work: an oblate `spheroid` component in
+   `athenak/src/pgen/nrpic/nrpic_cf.cpp` (now refused for a > b, line 485) and an oblate
+   sampler in `python/nrpic/spheroid.py`. The potential is in `oblate/oblate_reference.py`
+   (closed form with atan in place of atanh; checked against quadrature to 4e-12, run
+   core-20261115-154359-d74357f); the sampler's closed-form cumulative mass carries over
+   unchanged (psibar is quadratic inside). Then one card run as `e09_v8` with a > b.
+3. Apply the fix of `idcheck/t2d_t3.py` to `tracks/core/analysis/id/test2_evolution.py`
+   (cut tracked records at the first removal; skip dumps without ball particles), or
+   point `--prefix t3` users to the verify script.
+4. Bound ball at dx = M/8 with the conformal-time lapse blows up when the lapse front
+   reaches the centre (largest |H| at the front 0.135, 6.4, 184 -> inf at dx = 1/2,
+   1/4, 1/8 M): add to OPEN.md item 7 (lapse front) that the front steepens without
+   bound with resolution; OPEN.md item 11 (status 0 after NaN) hit again.
+5. STAGE package: the figures for checks C8, C9, C11, C13 are in `figs/`
+   (`schem_ladder`, `convergence_three_way`, `prolate_mosaic`, `schem_architecture`);
+   CHECKLIST.md and EVIDENCE.md are the lead's to update.
+
+
+---
+
+# Wave 1
+
 
 Work package "verify" of owner core: C3 of brief section 9.3 as a re-verification of
 what exists, and the proposal for the tags core-v0.1 and core-v0.2.

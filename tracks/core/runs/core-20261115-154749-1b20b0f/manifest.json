@@ -1,0 +1,49 @@
+{
+ "run_id": "core-20261115-154749-1b20b0f",
+ "owner": "core",
+ "track": "core",
+ "gate": "G2",
+ "purpose": "T1 initial slice at N*: twin, order of the constraints in the amplitude, odd part against the linear predictions (processors, zero steps)",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/scalar2/t1_slice.py",
+  "--exe",
+  ".work/exe/athena_cpu_a58e95b",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-154749-1b20b0f",
+  "--workers",
+  "12"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-scalar2",
+ "commit": "1b20b0f844bcee72768b928ac8785ae2402b72b3",
+ "branch": "core/scalar-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".work/exe/athena_cpu_a58e95b",
+   "sha256": "c69266ec765c8296b005871c6865991f2a5ac59f7ebd2ac3f03d383b57f9439e"
+  },
+  {
+   "path": "problems/scalar/sr_stochastic.athinput",
+   "sha256": "d1ad721d9b2b495b49782ca31a3c18efc24f1eb58c23eeff29d3fc12747efea6"
+  },
+  {
+   "path": "tracks/core/analysis/scalar2/t1_slice.py",
+   "sha256": "3263b17b9bb5019ffc63485c3245c4b2e18c217dd8eeef8e0534258f07db24ef"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-154749-1b20b0f",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-154749-1b20b0f"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T15:47:50Z",
+ "cores": 12,
+ "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
+ "status": "failed",
+ "wall_time_s": 63.23,
+ "exit_status": 1,
+ "end_utc": "2026-11-15T15:48:53Z",
+ "core_hours": 0.2108
+}

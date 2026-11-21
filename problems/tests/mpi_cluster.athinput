@@ -1,0 +1,102 @@
+# Several MPI ranks, tests T3 and T4 (tracks/core/interfaces/mpi.md): a self-gravitating
+# relativistic cluster (Shapiro-Teukolsky, y_c = 0.605, 4000 particles) evolved with Z4c
+# on a uniform mesh of eight MeshBlocks that meet at the centre of the cluster, so that
+# particles, clouds, the probe at the origin and the filter cross rank boundaries all the
+# time.  Every diagnostic of the module is switched on.  A short run (t = 7.5 M) on 1, 2
+# and 4 ranks:
+#   mpirun -np N athena -i mpi_cluster.athinput
+# The particle file and the table are made by
+#   problems/ic/make_ic.py st --yc 0.605 --N 4000 --seed 7 --out <dir>
+# (tracks/core/analysis/mpi/mpi_tests.py does this).  Restart dumps every 20 cycles
+# serve test T4 (restart on the same and on another number of ranks).
+
+<comment>
+problem   = NRPIC on several ranks, self-gravitating cluster on a uniform mesh
+
+<job>
+basename  = cl
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = -12.0
+x1max     = 12.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 32
+x2min     = -12.0
+x2max     = 12.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 32
+x3min     = -12.0
+x3max     = 12.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 40
+tlim       = 100.0
+ndiag      = 10
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-10
+max_iterations = 50
+deposit        = true
+deposit_shape  = tsc
+nfilter        = 2
+filter_compensate = true
+filter_comp_c  = -1.0
+alpha_exc      = 0.1
+hist_dcycle    = 1
+traj_dcycle    = 2
+traj_ntrack    = 1000000
+cstat_dcycle   = 1
+cons_dcycle    = 1
+line_dcycle    = 5
+field_time1    = 3.75
+field_time2    = 7.5
+field_constraints = true
+snap_dt        = 1.875
+source_density = false     # true in the case t3_cluster_ext (with source_extrap)
+source_extrap  = false
+particle_file  = cluster.nrp
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = table
+comp0_file = cluster.tab
+lapse      = table
+
+<output1>
+file_type = hst
+dcycle    = 1
+
+<output2>
+file_type = rst
+dcycle    = 20

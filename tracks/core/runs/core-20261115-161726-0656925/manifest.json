@@ -1,0 +1,38 @@
+{
+ "run_id": "core-20261115-161726-0656925",
+ "owner": "core",
+ "purpose": "Fluid reference assessment: stock TOV star of dyn_grmhd (gamma = 2 polytrope, octant, 32^3 cells of 0.8) with the spacetime evolved by Z4c, to t = 20, processor (does the module run in this tree)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.work/build_cpu_tov/src/athena",
+  "-i",
+  "/data/haiyangw/nrpic/wt/core-coll2/problems/tests/fluid_tov_z4c.athinput",
+  "-d",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-161726-0656925"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-161726-0656925",
+ "commit": "0656925f07a9451d8835515c75735bac14702007",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [
+  "M tracks/core/interfaces/collisions.md",
+  " M tracks/core/interfaces/rng.md",
+  "?? problems/tests/fluid_tov_z4c.athinput"
+ ],
+ "inputs": [
+  {
+   "path": "problems/tests/fluid_tov_z4c.athinput",
+   "sha256": "1529cfaa73b1a6a88e0a62510a727df7f83f19bdc7b162ad32998ad0acd40013"
+  },
+  {
+   "path": ".work/build_cpu_tov/src/athena",
+   "sha256": "be5948d3e6974615b3628cc3ba5951405826b8d3d4469ce831416bd51dcdccd8"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-161726-0656925",
+ "host": "anta",
+ "start_utc": "2026-11-15T16:17:27Z",
+ "cores": 1,
+ "wall_time_s": 173.26,
+ "exit_status": 0,
+ "core_hours": 0.0481
+}

@@ -1,0 +1,3 @@
+# T10: Track A's S1 (mu = 0.3, data of run A-emd-pbh-20261115-155802-9a6596f) with adaptive
+# refinement toward the peak (tracks/core/JOURNAL-cosmo-amr.md, prediction of T10)
+s1amr problems/cosmo_amr/peak_amr.athinput time/tlim=16.0 problem/id_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/fields.bin particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3/particles.nrp fastflow/start_time_0=6.0 fastflow/find_every=64 mesh_refinement/max_nmb_per_rank=2000

@@ -1,0 +1,46 @@
+{
+ "run_id": "core-20261119-161527-4480f58",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/tracks/core/analysis/cosmo_amr/t3_wave.py",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/.work/build_cpu_b/src/athena",
+  "--cores",
+  "4",
+  "--out",
+  "."
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-161527-4480f58",
+ "commit": "4480f58",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/cosmo_amr/t3_wave.py",
+   "sha256": "d404519611684a63c11249eca48d15baf95d0ef2bcfbc7178f2ce5e54a6cca40"
+  },
+  {
+   "path": "tracks/core/analysis/cosmo_amr/amrlib.py",
+   "sha256": "0b0c97e9ca666d8e5f55e3375f289d080df29d0d658702acc54f50eff75b08d1"
+  },
+  {
+   "path": ".work/build_cpu_b/src/athena",
+   "sha256": "745860125ef65bea7fdde0eb9fb9fdaebcfc3c2a3d8d8ca93e6c98ff768a4546"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-cosmo-amr/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-161527-4480f58",
+ "purpose": "T3b of cosmo-amr: linear plane wave (test B of arXiv:1904.07841) with a refined patch, rerun with tables of 17 significant digits (the first run core-20261119-154357-64067cd could not resolve the 1e-7 wave), published processor executable; hand-written manifest because nrpic-run refused (16 cores busy in live local runs of core)",
+ "kind": "scouting",
+ "tag": "cosmo-amr-T3b",
+ "state": "finished",
+ "wall_time_s": 1615.06,
+ "exit_status": 0,
+ "cores": 4,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T16:15:27Z"
+}

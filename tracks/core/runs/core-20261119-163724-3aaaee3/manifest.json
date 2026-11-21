@@ -1,0 +1,24 @@
+{
+ "run_id": "core-20261119-163724-3aaaee3",
+ "owner": "core",
+ "command": [
+  "bash",
+  "/data/haiyangw/nrpic/wt/core-omp/tracks/core/omp/analyse_regress.sh"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-163724-3aaaee3",
+ "commit": "3aaaee3",
+ "source_modified_since_commit": false,
+ "inputs": [],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-163724-3aaaee3",
+ "purpose": "omp: second reading of all regression runs with the measures of the predictions (recompare.py) and the figure of the differences",
+ "kind": "scouting",
+ "tag": "omp-analyse-regress",
+ "state": "finished",
+ "status": "completed",
+ "registered_by_hand": "nrpic-run refused (cores of owner core busy in other sessions)",
+ "wall_time_s": 329.17,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T16:37:24Z"
+}

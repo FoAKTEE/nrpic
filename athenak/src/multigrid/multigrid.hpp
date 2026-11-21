@@ -394,6 +394,12 @@ class MultigridDriver {
 
   TaskStatus PhysicalBoundary(Driver *pdrive, int stag);
 
+  // Robin faces (multigrid_robin.cpp): the solution falls off as 1/r about robin_o_
+  void RobinBoundaryBlocks();
+  void RobinBoundaryRoot();
+  bool IsRobin() const { return robin_; }
+  Real RobinOrigin(int d) const { return robin_o_[d]; }
+
   void AllocateMultipoleCoefficients();
   void CalculateMultipoleCoefficients();
   void ScaleMultipoleCoefficients();
@@ -495,6 +501,10 @@ class MultigridDriver {
   bool autompo_;    // automatically compute center of mass as origin
   bool nodipole_;   // suppress dipole moment (assume origin = center of mass)
   void SyncMultipoleToDevice();
+
+  // Robin boundary conditions (mg_bc = robin)
+  bool robin_ = false;                    // at least one face is a Robin face
+  Real robin_o_[3] = {0.0, 0.0, 0.0};     // centre of the 1/r fall-off
 
   // per-cell octets (Athena++ style)
   std::vector<MGOctet> *octets_;
@@ -674,6 +684,98 @@ inline Real& BufRef(std::vector<Real> &buf, int nc, int v, int k, int j, int i) 
 inline const Real& BufRef(const std::vector<Real> &buf, int nc,
                           int v, int k, int j, int i) {
   return buf[((v*nc + k)*nc + j)*nc + i];
+}
+
+//----------------------------------------------------------------------------------------
+//! \fn void MGRobinFill
+//! \brief ghost cells of block m at its Robin faces, for a field that falls off as 1/r
+//! about the origin of the coordinates passed in: r u has the same value in a ghost cell
+//! and in its mirror cell across the face, u_ghost = u_mirror r_mirror/r_ghost.  This is
+//! d_n(r u) = 0 at the face to second order, and exact for a monopole about the origin
+//! whatever the face.  n1, n2, n3 active cells of sizes d1, d2, d3; (x1, x2, x3) the
+//! lower corner of the active region relative to the origin; face[f] selects the faces
+//! (inner and outer x1, x2, x3).  The directions are done in turn over the full extent
+//! of the other two, so that edges and corners are filled from valid values.  With off
+//! the quantity that falls off is u - off (the conformal factor: off = 1).
+
+template <typename ViewType>
+KOKKOS_INLINE_FUNCTION
+void MGRobinFill(const ViewType &u, const int m, const int nvar, const int ngh,
+                 const int n1, const int n2, const int n3,
+                 const Real x1, const Real x2, const Real x3,
+                 const Real d1, const Real d2, const Real d3, const bool face[6],
+                 const Real off = 0.0) {
+  for (int v = 0; v < nvar; ++v) {
+    if (face[0] || face[1]) {
+      for (int k = 0; k < n3 + 2*ngh; ++k) {
+        const Real z = x3 + (k - ngh + 0.5)*d3;
+        for (int j = 0; j < n2 + 2*ngh; ++j) {
+          const Real y = x2 + (j - ngh + 0.5)*d2;
+          const Real t2 = y*y + z*z;
+          for (int n = 0; n < ngh; ++n) {
+            if (face[0]) {
+              const Real xi = x1 + (n + 0.5)*d1, xg = x1 - (n + 0.5)*d1;
+              const Real rg2 = xg*xg + t2;
+              const Real q = (rg2 > 0.0) ? Kokkos::sqrt((xi*xi + t2)/rg2) : 1.0;
+              u(m,v,k,j,ngh-1-n) = off + q*(u(m,v,k,j,ngh+n) - off);
+            }
+            if (face[1]) {
+              const Real xi = x1 + (n1 - n - 0.5)*d1, xg = x1 + (n1 + n + 0.5)*d1;
+              const Real rg2 = xg*xg + t2;
+              const Real q = (rg2 > 0.0) ? Kokkos::sqrt((xi*xi + t2)/rg2) : 1.0;
+              u(m,v,k,j,ngh+n1+n) = off + q*(u(m,v,k,j,ngh+n1-1-n) - off);
+            }
+          }
+        }
+      }
+    }
+    if (face[2] || face[3]) {
+      for (int k = 0; k < n3 + 2*ngh; ++k) {
+        const Real z = x3 + (k - ngh + 0.5)*d3;
+        for (int i = 0; i < n1 + 2*ngh; ++i) {
+          const Real x = x1 + (i - ngh + 0.5)*d1;
+          const Real t2 = x*x + z*z;
+          for (int n = 0; n < ngh; ++n) {
+            if (face[2]) {
+              const Real yi = x2 + (n + 0.5)*d2, yg = x2 - (n + 0.5)*d2;
+              const Real rg2 = yg*yg + t2;
+              const Real q = (rg2 > 0.0) ? Kokkos::sqrt((yi*yi + t2)/rg2) : 1.0;
+              u(m,v,k,ngh-1-n,i) = off + q*(u(m,v,k,ngh+n,i) - off);
+            }
+            if (face[3]) {
+              const Real yi = x2 + (n2 - n - 0.5)*d2, yg = x2 + (n2 + n + 0.5)*d2;
+              const Real rg2 = yg*yg + t2;
+              const Real q = (rg2 > 0.0) ? Kokkos::sqrt((yi*yi + t2)/rg2) : 1.0;
+              u(m,v,k,ngh+n2+n,i) = off + q*(u(m,v,k,ngh+n2-1-n,i) - off);
+            }
+          }
+        }
+      }
+    }
+    if (face[4] || face[5]) {
+      for (int j = 0; j < n2 + 2*ngh; ++j) {
+        const Real y = x2 + (j - ngh + 0.5)*d2;
+        for (int i = 0; i < n1 + 2*ngh; ++i) {
+          const Real x = x1 + (i - ngh + 0.5)*d1;
+          const Real t2 = x*x + y*y;
+          for (int n = 0; n < ngh; ++n) {
+            if (face[4]) {
+              const Real zi = x3 + (n + 0.5)*d3, zg = x3 - (n + 0.5)*d3;
+              const Real rg2 = zg*zg + t2;
+              const Real q = (rg2 > 0.0) ? Kokkos::sqrt((zi*zi + t2)/rg2) : 1.0;
+              u(m,v,ngh-1-n,j,i) = off + q*(u(m,v,ngh+n,j,i) - off);
+            }
+            if (face[5]) {
+              const Real zi = x3 + (n3 - n - 0.5)*d3, zg = x3 + (n3 + n + 0.5)*d3;
+              const Real rg2 = zg*zg + t2;
+              const Real q = (rg2 > 0.0) ? Kokkos::sqrt((zi*zi + t2)/rg2) : 1.0;
+              u(m,v,ngh+n3+n,j,i) = off + q*(u(m,v,ngh+n3-1-n,j,i) - off);
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 KOKKOS_INLINE_FUNCTION

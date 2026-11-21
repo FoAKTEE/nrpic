@@ -1,0 +1,42 @@
+{
+ "run_id": "core-20261115-164101-25daeed",
+ "owner": "core",
+ "track": "core",
+ "gate": "G2",
+ "purpose": "T2, T3: analysis of the runs of core-20261115-155040-eb68eaa repeated for the figure labels (no AthenaK run; numbers as run core-20261115-161653-e09c0b1)",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/scalar2/t23_evolve.py",
+  "--exe",
+  ".work/exe/athena_cpu_a58e95b",
+  "--analyse-only",
+  "--data",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-155040-eb68eaa",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-164101-25daeed"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-scalar2",
+ "commit": "25daeed6dc78ed2c686210675dae1e6a2f13d079",
+ "branch": "core/scalar-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/scalar2/t23_evolve.py",
+   "sha256": "1e987c0cfcdf1f8f9504a5bacc9246098b0d6145084d0f5835d2921261b340f0"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-164101-25daeed",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-164101-25daeed"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:41:02Z",
+ "cores": 1,
+ "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
+ "status": "completed",
+ "wall_time_s": 59.07,
+ "exit_status": 0,
+ "end_utc": "2026-11-15T16:42:01Z",
+ "core_hours": 0.0164
+}

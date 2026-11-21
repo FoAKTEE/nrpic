@@ -1,0 +1,41 @@
+{
+ "run_id": "core-20261115-160140-819d588",
+ "owner": "core",
+ "purpose": "Reference of the pair model WITHOUT the detailed-balance acceptance (control), hot cases and psi_iso_f4, 4e6 pairs",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/gradient_ref.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160140-819d588/ref.json",
+  "--npair",
+  "4000000",
+  "--no-balance",
+  "--only",
+  "psi_iso_hot,well_tolman_hot,well_tolman_hot_f2"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-160140-819d588",
+ "commit": "819d5884593858da1cccbc29bd81e893bd9f5040",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/collisions/scbox.py",
+   "sha256": "d26efa0ed0ed43fbf24cefa1448696d205ec30b6278720960e6b2eae39f894e8"
+  },
+  {
+   "path": "tracks/core/analysis/collisions/gradient_ref.py",
+   "sha256": "de9f3a2aa314118d93690fba9b89758a8c9fb0fe722a9ba227e61b373cfa0d61"
+  },
+  {
+   "path": "python/nrpic/collide.py",
+   "sha256": "e8777de41aadbd2cc1a2330c0aaa0c202c91b812a925588c174ea39edcdd3595"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160140-819d588",
+ "host": "anta",
+ "start_utc": "2026-11-15T16:01:40Z",
+ "cores": 1,
+ "wall_time_s": 188.91,
+ "exit_status": 0,
+ "core_hours": 0.0525
+}

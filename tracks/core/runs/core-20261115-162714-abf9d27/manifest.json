@@ -1,0 +1,44 @@
+{
+ "run_id": "core-20261115-162714-abf9d27",
+ "owner": "core",
+ "purpose": "G4 (processor version): equilibrium in the potential well with streaming and collisions, coll_energy = cell and = particle, two seeds, 1e5 particles, 400 steps",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/run_tolman.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-162714-abf9d27",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_cpu",
+  "--nproc",
+  "4",
+  "--n",
+  "100000",
+  "--steps",
+  "400"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-162714-abf9d27",
+ "commit": "abf9d2784c4e75044b0e35543fda5f484501d6b9",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_cpu",
+   "sha256": "c5d0a9879775ae019845922113eab06f5c6662cd0087b7ebd24a81c452a84192"
+  },
+  {
+   "path": "problems/tests/coll_box_static.athinput",
+   "sha256": "e3a5b4233b4ecb6e1ddba2da97465ec13646c35e6ce3652eef91132978f74b80"
+  },
+  {
+   "path": "tracks/core/analysis/collisions/run_tolman.py",
+   "sha256": "05bfe02f0367964b157648e626b2b1228857643f503261f90eccdad60ecd317c"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-162714-abf9d27",
+ "host": "anta",
+ "start_utc": "2026-11-15T16:27:15Z",
+ "cores": 4,
+ "wall_time_s": 439.47,
+ "exit_status": 1,
+ "core_hours": 0.4883
+}

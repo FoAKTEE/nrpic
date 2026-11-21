@@ -1,0 +1,95 @@
+# Monte Carlo collisions (tracks/core/interfaces/collisions.md, section 11) in a static
+# conformally flat metric carried by the mesh, with a periodic modulation along x
+# (problem generator nrpic_geodesic, <problem> metric_kind = static_conformal):
+#   alpha = alpha0 (1 + alpha_amp cos phi),  psi = psi0 (1 + psi_amp cos phi),
+#   gamma_ij = psi^4 delta_ij,  beta^x = shift_amp sin phi,
+#   phi = 2 pi [mode_n1 (x - x1min)/L1 + mode_n2 (y - x2min)/L2 + mode_n3 (z - x3min)/L3].
+# With all amplitudes zero: a homogeneous curved metric with lapse alpha0 and conformal
+# factor psi0 (test T12 of track C: collisions per coordinate step and coordinate volume
+# = alpha0 psi0^6 x the flat value at the same proper density and temperature).
+# With amplitudes: a potential well in which alpha W - beta^i u_i of every particle is
+# conserved by the motion; f = F(alpha W) is an exact equilibrium (shift_amp = 0), also
+# with collisions (Tolman: local temperature x alpha = constant).
+# Particle files and drivers: tracks/core/analysis/collisions/scbox.py, run_gradient.py,
+# run_tolman.py, which set the amplitudes, coll_sigma, dt and coll_energy on the command
+# line.
+
+<comment>
+problem   = NRPIC collisions in a periodic box with a static conformally flat metric
+
+<job>
+basename  = box
+rng_seed  = 1
+
+<mesh>
+nghost    = 2
+nx1       = 16
+x1min     = 100.0
+x1max     = 101.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 4
+x2min     = 100.0
+x2max     = 100.25
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 4
+x3min     = 100.0
+x3max     = 100.25
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 4
+nx3       = 4
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 1.0
+ndiag      = 100
+
+<adm>
+dynamic = false
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint       # midpoint | boris
+triad          = symmetric
+metric         = mesh
+interp         = hermite        # hermite | bspline (needs nghost = 4)
+tolerance      = 1.0e-13
+max_iterations = 100
+dt             = 0.01
+deposit        = false
+hist_dcycle    = 10
+snap_dt        = 1.0
+particle_file  = box.nrp
+collisions       = true
+coll_sigma       = 1.0
+coll_sigma_model = constant
+coll_sigma_w     = 1.0
+coll_pmax        = 0.1
+coll_subcycle    = measured
+coll_nsub_max    = 1000
+coll_cell_factor = 1
+coll_weights     = equal
+coll_hist_dcycle = 1
+coll_dump_cycle  = -1
+coll_budget      = true
+coll_energy      = particle     # cell (core-v0.3) | particle (metric at each particle)
+
+<problem>
+pgen_name   = nrpic_geodesic
+metric_kind = static_conformal
+alpha0      = 1.0
+psi0        = 1.0
+alpha_amp   = -0.2
+psi_amp     = 0.1
+shift_amp   = 0.0
+mode_n1     = 1
+mode_n2     = 0
+mode_n3     = 0

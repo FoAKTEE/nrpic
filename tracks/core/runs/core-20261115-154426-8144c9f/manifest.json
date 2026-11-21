@@ -1,0 +1,31 @@
+{
+ "run_id": "core-20261115-154426-8144c9f",
+ "owner": "core",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/verify/oblate/oblate_reference.py"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-154426-8144c9f",
+ "commit": "8144c9f",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "tracks/core/verify/oblate/oblate_reference.py",
+   "sha256": "661ef6ed3d4faba1fe894c83178a0aa7cc60a8972a6860393934cce5c2b93be6"
+  },
+  {
+   "path": "python/nrpic/spheroid.py",
+   "sha256": "f43b1471dbb9225984f8c6ca0e7c6903dd5308529054e0442b76aec877dc82bf"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-154426-8144c9f",
+ "purpose": "verify wave 2: oblate spheroid reference potential, checks and figure (final figure margin)",
+ "kind": "scouting",
+ "tag": "",
+ "state": "finished",
+ "wall_time_s": 1.9,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T15:44:26Z"
+}

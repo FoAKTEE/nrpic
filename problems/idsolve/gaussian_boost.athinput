@@ -1,0 +1,105 @@
+# Initial-data solver of the code with the vector equation (<particles> id_vector;
+# tracks/core/interfaces/id_solver.md, section 10): the Gaussian of gaussian.athinput
+# with every particle moving, u_x = 0.1 (covariant), K = 0 and Abar_ij = 0 in the trial:
+#   problems/idsolve/make_ic.py gaussian --mass 1 --sigma 2 --h <dx/2> --out <dir>
+#   problems/idsolve/make_ic.py boost --in <dir>/gauss_h<..>.nrp --u 0.1 --out <dir>
+# The solve returns psi and W_i with Abar_ij = (L W)_ij for the deposited momentum
+# density; far from the matter W tends to the Bowen-York field of P_x = sum m u_x.
+# Robin faces: psi - 1 and W_i fall off as 1/r about the origin.
+# The test changes on the command line: mesh/nx1..3 (dx = 32/nx), particles/particle_file,
+# particles/id_residual.
+
+<comment>
+problem   = initial-data solve for a moving Gaussian density (vector equation)
+
+<job>
+basename  = gboost
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -16.0
+x1max     = 16.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -16.0
+x2max     = 16.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -16.0
+x3max     = 16.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 0
+tlim       = 1.0
+ndiag      = 1
+
+<z4c>
+lapse_oplog     = 2.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+excise_chi      = 0.0
+
+<gravity>
+four_pi_G      = 1.0      # required by the module; the solver sets its own factor
+threshold      = 0.0      # required: the solver sets the defect at which V cycles end
+mg_bc          = robin    # psi - 1 falls off as 1/r about (robin_x1, robin_x2, robin_x3)
+robin_x1       = 0.0
+robin_x2       = 0.0
+robin_x3       = 0.0
+show_defect    = 0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+interp         = hermite
+tolerance      = 1.0e-10
+max_iterations = 50
+deposit        = true
+deposit_shape  = cic
+deposit_comp_c = 0.0
+nfilter        = 0
+filter_compensate = false
+hist_dcycle    = 1
+cstat_dcycle   = 1
+field_constraints = true
+field_time1    = 1.0e30   # the field dump at the start is written whenever a time is set
+particle_file  = gauss_u0p1.nrp
+id_solve       = true     # solve the Hamiltonian constraint for psi at the start
+id_residual    = code     # code: constraint monitor of the code; stencil: seven-point
+id_psi_init    = one      # start value: trial (problem generator) or one
+id_tol         = 1.0e-10  # largest residual over the largest term of the equation
+id_maxit       = 60
+id_lin_tol     = 1.0e-3   # conjugate gradients: residual over right side
+id_lin_maxit   = 50
+id_mg_tol      = 1.0e-3   # defect over source at which a preconditioner solve ends
+id_dump        = true     # write <basename>.idsolve.bin (psi, K, Abar^2, E, H, ...)
+id_vector      = true     # also solve the momentum constraint for W (Abar = L W)
+
+<problem>
+pgen_name   = nrpic_cf
+ncomp       = 1
+comp0_type  = gaussian
+comp0_mass  = 1.0
+comp0_sigma = 2.0
+lapse       = one
+
+<output1>
+file_type = hst
+dt        = 1.0

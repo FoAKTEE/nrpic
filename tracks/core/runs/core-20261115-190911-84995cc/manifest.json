@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261115-190911-84995cc",
+ "owner": "core",
+ "purpose": "Rerun of wave 1 with the executable of core/collisions-2 (options absent): P5 P6 relaxation and entropy; outputs compared with core-20261115-134036-5684674",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/run_relax.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-190911-84995cc",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/f46f159/athena_cpu",
+  "--nproc",
+  "4"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-190911-84995cc",
+ "commit": "84995ccea78529d6231989795721fe6c9bc97415",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/collisions/run_relax.py",
+   "sha256": "bd0337c98b1d956a25ec97a6b943583c732de37e811545d59a7aae6a782997ea"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/f46f159/athena_cpu",
+   "sha256": "adbf1b165e524b0cbdc705695c3a350d184b1212c920dec3d5a04ade06186e8d"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-190911-84995cc",
+ "host": "anta",
+ "start_utc": "2026-11-15T19:09:12Z",
+ "cores": 4,
+ "wall_time_s": 151.12,
+ "exit_status": 0,
+ "core_hours": 0.1679
+}

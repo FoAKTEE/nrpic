@@ -1,0 +1,42 @@
+{
+ "run_id": "core-20261115-160227-87e189e",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu/src/athena",
+  "-i",
+  "periodic.athinput",
+  "particles/particle_file=newton_wave32.nrp",
+  "meshblock/nx1=16",
+  "meshblock/nx2=16",
+  "meshblock/nx3=16",
+  "time/nlim=10"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-160227-87e189e",
+ "commit": "87e189e",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/newton/periodic.athinput",
+   "sha256": "743ef078d7b0e0e89c0e55dd93152316dcd1993f3c271d793f35a6a456e7c0f8"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/newton_wave32.nrp",
+   "sha256": "bee6f474cd6a57d8be1d01888d3a6d5dd26ef99669ed91af4e0886cdeb57b6fc"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu/src/athena",
+   "sha256": "65e3a59ffc0eeb22cee5ae4f81bd8560dc6518fb32562f63abd6771f6e6a814a",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160227-87e189e",
+ "purpose": "regression of the Newtonian mode, case periodic, executable new",
+ "kind": "scouting",
+ "tag": "regress-newton-periodic-new",
+ "state": "finished",
+ "wall_time_s": 2.22,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T16:02:27Z"
+}

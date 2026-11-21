@@ -1,0 +1,60 @@
+{
+ "run_id": "core-20261119-161316-f797997",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/tracks/core/analysis/cosmo_amr/t13_walk.py",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/.work/build_cpu_b/src/athena",
+  "--rel",
+  "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+  "--cores",
+  "4",
+  "--out",
+  "."
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-161316-f797997",
+ "commit": "f797997",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/cosmo_amr/t13_walk.py",
+   "sha256": "2ab670147cda73fe45dcc452c1ced86f7edf061a917d19501715c29986db6e9e"
+  },
+  {
+   "path": "tracks/core/analysis/cosmo_amr/amrlib.py",
+   "sha256": "0b0c97e9ca666d8e5f55e3375f289d080df29d0d658702acc54f50eff75b08d1"
+  },
+  {
+   "path": "problems/cosmo_amr/flrw_tracker.athinput",
+   "sha256": "1d61852ec16142b320d7331f2811439c5b4695427dbd1191df81ea7209467a91"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154740-69e8f8b/ic_peak0.5/particles.nrp",
+   "sha256": "334f8385401379d063b3f9fd756e0370aa2bc46788e09226dbe3863a5fe2c453"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-154740-69e8f8b/ic_peak0.5/fields.bin",
+   "sha256": "cd3c87a91d98350ae0a7ba83888659fe2b0c0192b4190f96fcbe55654fb11739"
+  },
+  {
+   "path": ".work/build_cpu_b/src/athena",
+   "sha256": "745860125ef65bea7fdde0eb9fb9fdaebcfc3c2a3d8d8ca93e6c98ff768a4546"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-cosmo-amr/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-161316-f797997",
+ "purpose": "T13 of cosmo-amr: compact-object tracker in mode walk with and without tracker_walk_tol (homogeneous universe, this branch and the release; Track A's peak), and the example input flrw_tracker.athinput; hand-written manifest because nrpic-run refused (16 cores busy in live local runs of core)",
+ "kind": "scouting",
+ "tag": "cosmo-amr-T13",
+ "state": "finished",
+ "wall_time_s": 73.76,
+ "exit_status": 0,
+ "cores": 4,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T16:13:16Z"
+}

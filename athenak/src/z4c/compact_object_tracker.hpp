@@ -74,7 +74,15 @@ class CompactObjectTracker {
   Real radius;          // nominal radius of the object (for the AMR driver)
   Real mass;            // mass needed for FastFlow
   Mesh const *pmesh;
+  // <z4c> tracker_walk_tol = eps >= 0 (walk mode): the tracker leaves its cell only for
+  // a neighbour whose lapse is below (1 - eps) times the lapse of that cell; without the
+  // option (-1) the first of equal neighbours wins, and the tracker drifts where the
+  // lapse is uniform
+  Real walk_tol = -1.0;
   int out_every;
+  std::string ofname_;          // tracker file, opened at the first record
+  bool file_open = false;
+  void OpenOutput();
   std::ofstream ofile;
   Real pos[NDIM];
 };

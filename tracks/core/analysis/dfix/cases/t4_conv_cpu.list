@@ -1,0 +1,3 @@
+# T4 follow-up: the two expanding cases with half the step (0.001), same particle files
+expand_h      {repo}/.work/build_cpu/src/athena {repo}/problems/tests/newton_point_mass_periodic.athinput particles/dt=0.001 particles/traj_dcycle=10 particles/hist_dcycle=20 particles/acc_dcycle=20 particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261115-160805-5d1663f/expand/npmp.nrp
+expand_phys_h {repo}/.work/build_cpu/src/athena {repo}/problems/tests/newton_point_mass_periodic.athinput particles/dt=0.001 particles/traj_dcycle=10 particles/hist_dcycle=20 particles/acc_dcycle=20 particles/newton_pm_soft_frame=physical particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261115-160805-5d1663f/expand/npmp.nrp

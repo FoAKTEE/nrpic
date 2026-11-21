@@ -1,0 +1,25 @@
+{
+ "run_id": "core-20261115-175857-3f710a3",
+ "owner": "core",
+ "package": "gauge",
+ "tag": "ana-ball-g",
+ "purpose": "analysis of tests L1 and L2 (ball against the exact solution, lapse against the reference), prefix g",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-gauge/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-gauge/tracks/core/analysis/gauge/ball_analysis.py",
+  "--prefix",
+  "g"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-175857-3f710a3",
+ "commit": "3f710a385d078aca37496687919f7a9d7213655b",
+ "head_at_run": "3f710a385d078aca37496687919f7a9d7213655b",
+ "worktree_dirty": true,
+ "inputs": [],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-175857-3f710a3",
+ "wall_time_s": 36.5,
+ "cores": 1,
+ "card_hours": 0.0,
+ "exit_status": 0,
+ "started": "20261115-175857"
+}

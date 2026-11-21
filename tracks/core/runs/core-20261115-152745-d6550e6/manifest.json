@@ -1,0 +1,49 @@
+{
+ "run_id": "core-20261115-152745-d6550e6",
+ "owner": "core",
+ "command": [
+  "python3",
+  "/data/haiyangw/nrpic/wt/core/tracks/core/verify/ladder2/make_ics.py",
+  "--out",
+  "."
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-152745-d6550e6",
+ "commit": "d6550e6",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "tracks/core/verify/ladder2/make_ics.py",
+   "sha256": "a7ab8e3867777b38553b5f0f2dbbe6ccbc099a763dd0edab81a3c0f27edb5ae5"
+  },
+  {
+   "path": "problems/ic/make_ic.py",
+   "sha256": "62ab7a3f8952faf7defe6ecb58b038dc99d2221f7cb6c05dcf20fb62d158cb92"
+  },
+  {
+   "path": "python/nrpic/st_cluster.py",
+   "sha256": "81dc4c66731cef81c76473e532d6a443ef1a42b9b3a91e90fb68620412db1bd1"
+  },
+  {
+   "path": "python/nrpic/spheroid.py",
+   "sha256": "f43b1471dbb9225984f8c6ca0e7c6903dd5308529054e0442b76aec877dc82bf"
+  },
+  {
+   "path": "problems/st/st_cluster_amr.athinput",
+   "sha256": "761f5d6f442573162a5370710705ff0e5b61c8ffa823d1525f17849ab575e354"
+  },
+  {
+   "path": "problems/prolate/prolate_amr.athinput",
+   "sha256": "e53bacce5805eec600f602a6bbd9b89766ddaa9f46071d2e289ca25feafe1a53"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-152745-d6550e6",
+ "purpose": "verify wave 2: initial data of the prolate M/8 run and of the cluster-threshold bisection round 1 (y_c 0.72 0.70 0.66 0.64; protocol of runs/st/yc0605_v5), turning point of E_b/M_0, card job lists",
+ "kind": "scouting",
+ "tag": "",
+ "state": "finished",
+ "wall_time_s": 4.71,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T15:27:45Z"
+}

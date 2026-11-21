@@ -1,0 +1,114 @@
+# Several MPI ranks with a moving black hole (tracks/core/interfaces/mpi.md, test T7):
+# one Bowen-York puncture with momentum and spin on a three-level adaptive mesh that
+# follows its tracker, apparent-horizon finder (all three from puncture_setup, as in
+# puncture_setup_restart.athinput), and a swarm of light particles around it that are
+# removed inside 0.8 of the smallest coordinate radius of the horizon (ah_exc_factor;
+# the lapse rule is off).  The eight root MeshBlocks around the origin are refined
+# twice, so the hole sits where the MeshBlocks of several ranks meet.  Additional
+# probes 1 and 2.  Particles: tracks/core/analysis/mpi/mpi_tests.py, make_infall.
+#   mpirun -np 4 athena -i mpi_puncture_exc.athinput particles/particle_file=/abs/infall.nrp
+# Test particles only: particles/deposit=false.
+
+<job>
+basename  = px
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = -8.0
+x1max     = 8.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 32
+x2min     = -8.0
+x2max     = 8.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 32
+x3min     = -8.0
+x3max     = 8.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 8
+nx2       = 8
+nx3       = 8
+
+<mesh_refinement>
+refinement          = adaptive
+num_levels          = 3
+max_nmb_per_rank    = 1024
+ncycle_check        = 2
+refinement_interval = 2
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 24
+tlim       = 100.0
+ndiag      = 4
+
+<z4c>
+lapse_oplog     = 2.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+tracker_mode    = ode
+
+<fastflow>
+find_every      = 2
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+tolerance      = 1.0e-10
+max_iterations = 100
+particle_file  = infall.nrp
+deposit        = true
+deposit_shape  = tsc
+nfilter        = 1
+alpha_exc      = -1.0
+ah_exc_factor  = 0.8
+hist_dcycle    = 1
+traj_dcycle    = 2
+traj_ntrack    = 1000000
+snap_dt        = 0.25
+cstat_dcycle   = 4
+probe_x1       = 3.0
+probe_x2       = 0.0
+probe_x3       = 0.0
+nprobe         = 2
+probe1_x1      = 0.0
+probe1_x2      = 1.0
+probe1_x3      = 0.0
+probe2_x1      = -1.03
+probe2_x2      = -0.52
+probe2_x3      = 0.74
+
+<problem>
+pgen_name       = nrpic_cf
+ncomp           = 1
+comp0_type      = puncture
+comp0_mass      = 1.0
+comp0_x1        = 0.1
+comp0_x2        = -0.2
+comp0_x3        = 0.05
+comp0_p1        = 0.3
+comp0_s3        = 0.2
+comp0_corr      = approx
+lapse           = precollapsed
+puncture_setup  = true
+puncture_radius = 1.2
+
+<output1>
+file_type = hst
+dcycle    = 1
+
+<output2>
+file_type = rst
+dcycle    = 16

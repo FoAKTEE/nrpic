@@ -1,0 +1,105 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261120-220634-d26a0b6",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "analysis of T14 of cosmo-amr, script corrected (the first analysis core-20261120-220549-e50fff9 judged the regrid one record early): the card run core-20261119-161748-75c2405 against the processor runs of T2 and T9",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/cosmo_amr/t14_card.py",
+    "--card",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-161748-75c2405",
+    "--t2",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-151654-e01b46e",
+    "--t9",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-154404-64067cd",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "d26a0b6f03a4620ea34d564a6567942979ebdba2",
+    "branch": "core/cosmo-amr",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/cosmo_amr"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "d507d774b948ea44fbf7e5515fccae7c84220ac5",
+    "worktree": "wt/core-cosmo-amr"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-cosmo-amr/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/cosmo_amr/t14_card.py",
+      "role": "argv",
+      "sha256": "cc6dd3fa6bd49b730ad06d7545110104720cc1b82e8ea4ec0a6aa8647dc364a5",
+      "bytes": 10370,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 1.677,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261120-220634-d26a0b6",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "f612b5e50c852ce0095c3cdfbf41a283301c03bc984092f28cfd5f64d7b8244e",
+    "bytes": 167272,
+    "files": 4
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-20T22:06:35Z",
+  "started": "2026-11-20T22:06:35Z",
+  "ended": "2026-11-20T22:06:36Z",
+  "parents": [
+    "core-20261119-161748-75c2405"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 4.0821,
+    "gpu_hours_reserved": 2.73,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 1,
+    "runs": 1241,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-20T22:06:36Z"
+}

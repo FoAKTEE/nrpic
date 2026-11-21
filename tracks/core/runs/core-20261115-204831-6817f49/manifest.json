@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261115-204831-6817f49",
+ "owner": "core",
+ "purpose": "Rerun of wave 1 with the executable of core/collisions-2 (options absent) on one A100: P10 homogeneous curved metric; outputs compared with core-20261115-140259-8742cdf",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/run_curved_box.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-204831-6817f49",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/f46f159/athena_gpu",
+  "--nproc",
+  "2"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-204831-6817f49",
+ "commit": "6817f4987df7e7ab177a0efc28e4c954d20401a3",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/collisions/run_curved_box.py",
+   "sha256": "79fc5c5b33870d00525e833adab6cc8b0e095d4191636914952b4d12f75a789f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/f46f159/athena_gpu",
+   "sha256": "82a05adae8f653042d08817ecda6dddc0d51c0a8d2c46246b0d58b2fb87ad438"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-204831-6817f49",
+ "host": "anta",
+ "start_utc": "2026-11-15T20:48:32Z",
+ "cores": 2,
+ "wall_time_s": 49.4,
+ "exit_status": 0,
+ "card_hours": 0.0137
+}

@@ -1,0 +1,115 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261119-170729-b99adc7",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "G5 analysis: capped conformal-time lapse (cap, core-20261119-160239-0b1b4ae) against geodesic slicing at the same step (geoc, core-20261119-163800-fe87748) and at Courant 0.25 (geo, core-20261119-152244-bc4976d); predictions PG5a-c of JOURNAL-scalar3 entry 8",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/scalar3/g2_gauge_analysis.py",
+    "--data",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-152244-bc4976d",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-160239-0b1b4ae",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-163800-fe87748"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "b99adc7e3605929a0be30737069a06c86f47f04b",
+    "branch": "core/scalar-3",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/scalar3"
+    ],
+    "outside_package": {
+      "count": 15,
+      "first": [
+        "?? tracks/core/outbox/20261119T1700Z__to-E-stoch-inf__scalar3-ready.md",
+        "?? tracks/core/runs/core-20261119-163902-403cd82/",
+        "?? tracks/core/runs/core-20261119-163903-403cd82/",
+        "?? tracks/core/runs/core-20261119-163904-403cd82/",
+        "?? tracks/core/runs/core-20261119-163905-403cd82/",
+        "?? tracks/core/runs/core-20261119-163906-403cd82/",
+        "?? tracks/core/runs/core-20261119-163912-403cd82/",
+        "?? tracks/core/runs/core-20261119-163917-403cd82/",
+        "?? tracks/core/runs/core-20261119-163929-403cd82/",
+        "?? tracks/core/runs/core-20261119-163944-403cd82/",
+        "?? tracks/core/runs/core-20261119-164601-a48c7e0/",
+        "?? tracks/core/runs/core-20261119-165056-a48c7e0/",
+        "?? tracks/core/runs/core-20261119-165104-a48c7e0/",
+        "?? tracks/core/runs/core-20261119-165112-a48c7e0/",
+        "?? tracks/core/runs/core-20261119-165203-a48c7e0/"
+      ]
+    },
+    "merge_base_main": "f51539c6f46a051b8c3c2d86501bcc6dfaa34f93",
+    "worktree": "wt/core-scalar3"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-scalar3/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/scalar3/g2_gauge_analysis.py",
+      "role": "argv",
+      "sha256": "7333f7450dda7d76c918185b06a551fa7b231b6e6423c80f3ee26c60cc234cf3",
+      "bytes": 8026,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 3.792,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261119-170729-b99adc7",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "a7116c34b4800ab23d58e579ea9318cd34fa83448d66bd2ee18e837121b0a0d6",
+    "bytes": 156827,
+    "files": 3
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-19T17:07:30Z",
+  "started": "2026-11-19T17:07:30Z",
+  "ended": "2026-11-19T17:07:34Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 3.0326,
+    "gpu_hours_reserved": 6.34,
+    "gpu_hours_without_gate": 6.8613,
+    "cores_busy": 13,
+    "runs": 1239,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-20T22:01:45Z"
+}

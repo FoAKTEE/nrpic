@@ -1,0 +1,51 @@
+{
+ "run_id": "core-20261115-185657-a7a32cd",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu_vec/src/athena",
+  "-i",
+  "ball_vector_code.athinput",
+  "mesh/nx1=64",
+  "mesh/nx2=64",
+  "mesh/nx3=64",
+  "meshblock/nx1=32",
+  "meshblock/nx2=32",
+  "meshblock/nx3=32",
+  "particles/id_residual=code",
+  "particles/nfilter=0",
+  "particles/particle_file=tri_h0p5_w2_e0p05.nrp",
+  "problem/comp0_file=ball_h0p5_w2.tab"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-185657-a7a32cd",
+ "commit": "a7a32cd",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve/ball_vector_code.athinput",
+   "sha256": "c4f435f1870ab0e993048d84896b36b366a1c042f1a17584000bae3e6bddaa03"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/tri_h0p5_w2_e0p05.nrp",
+   "sha256": "9257e0db2fc256fdb4f3849a7c287486d6c03e5737b69a8b3360599a5f2d35dd"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/ball_h0p5_w2.tab",
+   "sha256": "898611ca4e2ec699e964d561b2a73473b451fdee640bc97e1a31fdd3590fb1f0"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu_vec/src/athena",
+   "sha256": "383bbb5b39eea3de3d02a30a27f250b2d1efc3bd25612c1a8b1d4cf8119559c1",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-185657-a7a32cd",
+ "purpose": "initial-data solver, test V5: smooth ball (strained), vector part with the monitor as residual, 64 cells",
+ "kind": "scouting",
+ "tag": "idsolve-v5-strained",
+ "state": "finished",
+ "wall_time_s": 119.37,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T18:56:57Z"
+}

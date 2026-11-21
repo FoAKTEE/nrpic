@@ -1,0 +1,34 @@
+{
+ "run_id": "core-20261120-222814-0b2b259",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-cosmo-amr/tracks/core/analysis/cosmo_amr/t16_hmean.py",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_cpu",
+  "--data",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-155802-9a6596f/S_mu0.3",
+  "--out",
+  "."
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261120-222814-0b2b259",
+ "commit": "0b2b259",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-cosmo-amr/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261120-222814-0b2b259",
+ "purpose": "T16 of cosmo-amr: finder on Track A's S1 data at t = 0 with hmean_tol 100 and 1e30 (two cycles, uniform mesh); manifest written by hand: nrpic-run submit --launcher local refused (cores of core busy)",
+ "kind": "scouting",
+ "tag": "",
+ "state": "finished",
+ "wall_time_s": 59.06,
+ "exit_status": 0,
+ "cores": 2,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-20T22:28:14Z"
+}

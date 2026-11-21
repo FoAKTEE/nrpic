@@ -1,0 +1,114 @@
+# Homogeneous, flat, matter-dominated universe (as problems/cosmo/flrw.athinput) with the
+# 1+log lapse and the relaxation of its excess of wave 2 (athenak/src/z4c/z4c_gauge_ext.hpp):
+#   d_t alpha = -2 alpha K - lapse_leak alpha max(ln(alpha/lapse_leak_alpha), 0),
+# zero shift. Exact check of the term (tracks/core/JOURNAL-gauge.md, test H): with
+# H(tau) = H_0/(1 + 3 H_0 tau/2) the lapse obeys d ln(alpha)/dt = 6 H - lapse_leak ln(alpha)
+# (alpha > 1), d tau/dt = alpha, and a = (1 + 3 H_0 tau/2)^(2/3); lapse_leak = 0 gives
+# alpha = 1 + 6 ln a. Units G = c = 1, H_0 = 1, box of side 4; particles from
+# cosmo/ic/make_lattice.py (tracks/core/analysis/gauge/flrw_leak.py makes them and runs
+# both cases).
+<comment>
+problem   = homogeneous dust universe
+
+<job>
+basename  = flrwleak
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = 0.0
+x1max     = 4.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = 0.0
+x2max     = 4.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = 0.0
+x3max     = 4.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 2.0
+ndiag      = 20
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0                  # 1+log: d_t alpha = -2 alpha K
+lapse_volume    = 0.0                  # 1/3 (with lapse_harmonic = 0): alpha - gamma^(1/6) constant
+lapse_kdriver   = 0.0                  # driver towards constant mean curvature (strength mu)
+lapse_advect    = 0.0
+lapse_leak      = 20.0                 # 1/T of the relaxation of the excess lapse (0: plain 1+log)
+lapse_leak_alpha = 1.0                 # reference lapse
+shift_Gamma     = 0.0                  # zero shift
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.5
+damp_kappa1     = 0.02
+damp_kappa1_over_alpha = false         # true: damping rate kappa1 per unit of coordinate time
+damp_kappa2     = 0.0
+damp_kappa_gam  = 0.0                  # additional damping of the connection constraint alone
+damp_ch         = 0.0
+damp_ch_dx      = 0.0
+damp_ch_chipow  = 0.0                  # exponent of chi in the relaxation of the Hamiltonian constraint (0: fixed diffusion coefficient in conformal time)
+excise_chi      = 0.0                  # constraint norms over the whole box (chi = 1/a^2 falls)
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+interp         = hermite  # metric at the particles: hermite (Catmull-Rom) or bspline (cubic spline through the nodes)
+dt_expansion   = 0.0     # > 0: step limited to this fraction of the expansion time
+metric         = mesh
+tolerance      = 1.0e-12
+max_iterations = 50
+deposit        = true
+nfilter        = 0
+filter_compensate = false
+filter_comp_c  = -1.0
+deposit_comp_c = 0.0    # > 0: compensation of the cloud on the deposited density (1/12, 1/8, 1/6)
+deposit_comp_limit = 0.0  # > 0: that pass limited where neighbouring cells differ strongly
+deposit_comp_c2 = 0.0     # fourth-order term of that pass (8/45, 37/120, 7/15)
+deposit_shape  = cic     # cloud shape: cic, tsc or pcs (B-spline of degree 1, 2, 3)
+deposit_max_level = 31
+deposit_adaptive  = false
+deposit_min_level = 0
+deposit_ppc       = 2.0
+deposit_max_coarsen = 31
+alpha_exc      = -1.0
+ah_exc_factor  = -1.0
+hist_dcycle    = 1
+snap_dt        = 1.0
+probe_x1       = 2.0
+probe_x2       = 2.0
+probe_x3       = 2.0
+nprobe         = 0
+cstat_dcycle   = 8        # constraint statistics (maximum and mean, absolute and relative)
+cons_dcycle    = 0        # conservation of the deposited matter on the mesh (cycles between records)
+traj_dcycle    = 0       # records of the tracked particles every this many steps
+traj_ntrack    = 0       # particles with tags below this are tracked
+lambda         = 0.0
+source_density = true    # densities converted with the volume element of each stage
+source_extrap  = true    # ... extrapolated to the middle of the step
+particle_file  = particles.nrp
+
+<problem>
+pgen_name  = nrpic_cosmo
+id         = flrw
+hubble     = 1.0
+
+<output1>
+file_type = hst
+dt        = 0.05

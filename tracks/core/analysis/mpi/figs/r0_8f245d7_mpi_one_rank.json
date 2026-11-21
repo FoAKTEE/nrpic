@@ -1,0 +1,81 @@
+{
+ "geo": {
+  "baseline": "core-20261119-154339-a1c8dd6",
+  "new": "core-20261119-154340-a1c8dd6",
+  "identical": [
+   "geo.nrpic.hst",
+   "geo.traj.bin"
+  ],
+  "differ": [],
+  "status_baseline": "exit 0, wall 0.0 s, output /data/haiyangw/nrpic/scratch/core/core-20261119-154339-a1c8dd6",
+  "status_new": "exit 0, wall 1.3 s, output /data/haiyangw/nrpic/scratch/core/core-20261119-154340-a1c8dd6"
+ },
+ "boris": {
+  "baseline": "core-20261119-154345-a1c8dd6",
+  "new": "core-20261119-154346-a1c8dd6",
+  "identical": [
+   "geo.nrpic.hst",
+   "geo.traj.bin"
+  ],
+  "differ": [],
+  "status_baseline": "exit 0, wall 0.1 s, output /data/haiyangw/nrpic/scratch/core/core-20261119-154345-a1c8dd6",
+  "status_new": "exit 0, wall 1.5 s, output /data/haiyangw/nrpic/scratch/core/core-20261119-154346-a1c8dd6"
+ },
+ "dep": {
+  "baseline": "core-20261119-154347-a1c8dd6",
+  "new": "core-20261119-154354-a1c8dd6",
+  "identical": [
+   "dep.nrpic.hst"
+  ],
+  "differ": [],
+  "status_baseline": "exit 0, wall 6.3 s, output /data/haiyangw/nrpic/scratch/core/core-20261119-154347-a1c8dd6",
+  "status_new": "exit 0, wall 6.7 s, output /data/haiyangw/nrpic/scratch/core/core-20261119-154354-a1c8dd6"
+ },
+ "east": {
+  "baseline": "core-20261119-154401-a1c8dd6",
+  "new": "core-20261119-154412-a1c8dd6",
+  "identical": [
+   "east.cstat.hst",
+   "east.nrpic.hst",
+   "east.part.00000.bin",
+   "east.part.00001.bin",
+   "east.part.00002.bin",
+   "east.part.00003.bin",
+   "east.part.00004.bin",
+   "east.part.00005.bin",
+   "east.part.00006.bin",
+   "east.traj.bin",
+   "east.trajmet.bin",
+   "east.z4c.user.hst"
+  ],
+  "differ": [],
+  "status_baseline": "exit 0, wall 10.5 s, output /data/haiyangw/nrpic/scratch/core/core-20261119-154401-a1c8dd6",
+  "status_new": "exit 0, wall 19.0 s, output /data/haiyangw/nrpic/scratch/core/core-20261119-154412-a1c8dd6"
+ },
+ "os": {
+  "baseline": "core-20261119-154432-a1c8dd6",
+  "new": "core-20261119-155349-ee6c92c",
+  "identical": [
+   "os.nrpic.hst",
+   "os.part.00000.bin",
+   "os.part.00001.bin",
+   "os.part.00002.bin",
+   "os.part.00003.bin",
+   "os.z4c.user.hst",
+   "rst/os.00000.rst.prt",
+   "rst/os.00001.rst.prt",
+   "rst/os.00002.rst.prt",
+   "rst/os.00003.rst.prt",
+   "rst/os.00004.rst.prt"
+  ],
+  "differ": [
+   "rst/os.00000.rst",
+   "rst/os.00001.rst",
+   "rst/os.00002.rst",
+   "rst/os.00003.rst",
+   "rst/os.00004.rst"
+  ],
+  "status_baseline": "exit 0, wall 557.3 s, output /data/haiyangw/nrpic/scratch/core/core-20261119-154432-a1c8dd6",
+  "status_new": "exit 0, wall 575.8 s, output /data/haiyangw/nrpic/scratch/core/core-20261119-155349-ee6c92c"
+ }
+}

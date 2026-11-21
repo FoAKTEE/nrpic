@@ -1,0 +1,48 @@
+{
+ "run_id": "core-20261115-162608-113493f",
+ "owner": "core",
+ "registered_by": "tracks/core/analysis/dfix/runreg.py (by hand: nrpic-run submit fails)",
+ "purpose": "T4 follow-up: expanding periodic cases at half the step (0.001), convergence of the distance to the ODE solution and of the drift of C",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "tracks/core/analysis/dfix/run_cases.py",
+  "tracks/core/analysis/dfix/cases/t4_conv_cpu.list",
+  "--jobs",
+  "2"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-dfix",
+ "commit": "113493f45a5047c670603b4d424701729c34e746",
+ "branch": "core/requests-adf",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/dfix/run_cases.py",
+   "sha256": "9b984be0bc3e9f6a504c92531993ef6a1af757923557da7eb570da0355841708"
+  },
+  {
+   "path": "tracks/core/analysis/dfix/cases/t4_conv_cpu.list",
+   "sha256": "441b23006e9835012c3cd089a55b2f6decdf05ef289664b6f9d4de9ca6c06233"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "17ee5e28d93016da354ce86e5d869233a21a1f20f67b4cb211527e6b1359022d"
+  },
+  {
+   "path": "problems/tests/newton_point_mass_periodic.athinput",
+   "sha256": "9c86b7bf11e310ff31244b4b87e3b066f6e762c6659fb85bfdbdaf03dfc9a081"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-162608-113493f",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-162608-113493f"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:26:09Z",
+ "cores": 2,
+ "status": "completed",
+ "wall_time_s": 1225.69,
+ "exit_status": 0,
+ "end_utc": "2026-11-15T16:46:35Z",
+ "core_hours": 0.6809
+}

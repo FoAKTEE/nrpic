@@ -22,6 +22,8 @@
 #include "z4c/driftcontrol/driftcontrol.hpp"
 #include "z4c/tmunu.hpp"
 #include "coordinates/cell_locations.hpp"
+// after tmunu.hpp: the tracker header defines the macro NDIM
+#include "z4c/compact_object_tracker.hpp"
 
 namespace z4c {
 
@@ -763,6 +765,11 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
       }
     }
   });
+
+  // Lapse relaxation and tracker-dependent shift damping (z4c_gauge_ext.hpp), in a
+  // loop of their own; nothing is done unless their parameters are given
+  AddGaugeExt(pmy_pack, pmy_pack->pz4c,
+              MakeGaugeExt(pmy_pack->pz4c->gext, pmy_pack->pz4c->ptracker));
 
   // ===================================================================================
   // Add dissipation for stability

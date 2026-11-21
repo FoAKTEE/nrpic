@@ -1,0 +1,45 @@
+{
+ "run_id": "core-20261115-190710-d3f79be",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/core/tmp/idsolve/exe_a7a32cd/athena_cpu",
+  "-i",
+  "torus.athinput",
+  "mesh/nx1=32",
+  "mesh/nx2=32",
+  "mesh/nx3=32",
+  "meshblock/nx1=16",
+  "meshblock/nx2=16",
+  "meshblock/nx3=16",
+  "particles/id_residual=code",
+  "particles/particle_file=wave_n32_p1.nrp"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-190710-d3f79be",
+ "commit": "d3f79be",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/idsolve/torus.athinput",
+   "sha256": "1eb2bbf28ae706de5be04afa1377c2b2b0e8f3c6fd4c59eee696383d636d87bb"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/wave_n32_p1.nrp",
+   "sha256": "9be5c19eacc1c1d8f559df31b6301a4366ba822ac0c8ddcc862d7e6e21d13d81"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve/exe_a7a32cd/athena_cpu",
+   "sha256": "383bbb5b39eea3de3d02a30a27f250b2d1efc3bd25612c1a8b1d4cf8119559c1",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-190710-d3f79be",
+ "purpose": "initial-data solver, test V7: torus_code_p1_n32, final executable",
+ "kind": "scouting",
+ "tag": "idsolve-v7-torus_code_p1_n32-final",
+ "state": "finished",
+ "wall_time_s": 9.05,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T19:07:10Z"
+}

@@ -1,0 +1,136 @@
+# Test T5 of work package dfix (journal of core): common horizon of one pair among three
+# punctures.  Brill-Lindquist data (no momenta): punctures 0 and 1 of bare mass 0.5 at
+# x = -0.2 and +0.2 (separation 0.4, inside a common horizon), puncture 2 of bare mass
+# 0.5 at x = 12.  Three surfaces, none tied to a single puncture, all waiting for their
+# punctures to be close (merger_distance = 1 in units of the summed masses):
+#   surface 0   pair (0, 1): distance 0.4 < 1.0            searched from the start
+#   surface 1   all punctures (the original rule): largest distance 12.2 > 1.5   waits
+#   surface 2   pair (0, 2): distance 12.2 > 1.0            waits
+# Expected mass of surface 0: the two bare masses raised by the third hole,
+# (0.5 + 0.5)(1 + 0.5/(2 x 12)) = 1.0208, less the small energy outside the common
+# horizon (below one per cent), within the error of the finder at dx = 1/16.
+
+<comment>
+problem   = common horizon of a pair among three punctures
+
+<job>
+basename  = pair
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = -16.0
+x1max     = 16.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 32
+x2min     = -16.0
+x2max     = 16.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 32
+x3min     = -16.0
+x3max     = 16.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement       = static
+max_nmb_per_rank = 512
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 2
+tlim       = 1.0
+ndiag      = 1
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+tracker_mode    = ode
+
+<fastflow>
+find_every        = 1
+metric_drvts      = interpolant
+num_horizons      = 3
+npunct            = 3
+ntheta            = 16
+lmax              = 8
+merger_distance   = 1.0
+verbose           = false
+# surface 0: common horizon of punctures 0 and 1
+use_puncture_0    = -1
+punc_pair_a_0     = 0
+punc_pair_b_0     = 1
+wait_until_punc_are_close_0 = true
+use_puncture_massweighted_center_0 = true
+initial_radius_0  = 1.0
+flow_iterations_0 = 400
+flow_alpha_beta_const_0 = 1.0
+hmean_tol_0       = 100.0
+mass_tol_0        = 1.0e-5
+start_time_0      = 0.0
+stop_time_0       = 1.0e30
+# surface 1: common horizon of all punctures (original rule)
+use_puncture_1    = -1
+wait_until_punc_are_close_1 = true
+use_puncture_massweighted_center_1 = true
+initial_radius_1  = 1.0
+flow_iterations_1 = 400
+flow_alpha_beta_const_1 = 1.0
+hmean_tol_1       = 100.0
+mass_tol_1        = 1.0e-5
+start_time_1      = 0.0
+stop_time_1       = 1.0e30
+# surface 2: common horizon of punctures 0 and 2 (far apart)
+use_puncture_2    = -1
+punc_pair_a_2     = 0
+punc_pair_b_2     = 2
+wait_until_punc_are_close_2 = true
+use_puncture_massweighted_center_2 = true
+initial_radius_2  = 1.0
+flow_iterations_2 = 400
+flow_alpha_beta_const_2 = 1.0
+hmean_tol_2       = 100.0
+mass_tol_2        = 1.0e-5
+start_time_2      = 0.0
+stop_time_2       = 1.0e30
+
+<problem>
+pgen_name       = nrpic_cf
+ncomp           = 3
+comp0_type      = puncture
+comp0_mass      = 0.5
+comp0_x1        = -0.2
+comp1_type      = puncture
+comp1_mass      = 0.5
+comp1_x1        = 0.2
+comp2_type      = puncture
+comp2_mass      = 0.5
+comp2_x1        = 12.0
+comp2_level     = 1
+lapse           = precollapsed
+puncture_setup  = true
+puncture_level  = 4
+puncture_radius = 3.0
+puncture_horizons = false
+
+<output1>
+file_type = hst
+dt        = 1.0

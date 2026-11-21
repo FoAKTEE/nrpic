@@ -1,0 +1,114 @@
+# Initial-data solver of the code (<particles> id_solve; tracks/core/interfaces/
+# id_solver.md) for the expanding dust ball with the extrinsic curvature of its table
+# of format 2 (problems/ball/ball.athinput, problems/ic/make_ball.py):
+#   problems/ic/make_ball.py --Rb 10 --h <dx/2> --tracers '' --sample 0 --out <dir>
+# The exact data have psi = 1; the solve starts from the trial of the table and returns
+# the psi that satisfies the Hamiltonian constraint with the deposited particles and
+# the curvature of the table (K and Abar_ij held fixed).  With the particle file of
+#   problems/idsolve/make_ic.py strain --in <ball>.nrp --e 0.05 --out <dir>
+# the ball is triaxial and the table is not a solution any more: the solve corrects psi.
+# The test changes on the command line: mesh/nx1..3 (dx = 64/nx), meshblock/nx1..3,
+# particles/particle_file, problem/comp0_file, particles/id_residual, particles/nfilter.
+
+<comment>
+problem   = initial-data solve for the expanding dust ball
+
+<job>
+basename  = ball
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -32.0
+x1max     = 32.0
+ix1_bc    = outflow
+ox1_bc    = outflow
+nx2       = 64
+x2min     = -32.0
+x2max     = 32.0
+ix2_bc    = outflow
+ox2_bc    = outflow
+nx3       = 64
+x3min     = -32.0
+x3max     = 32.0
+ix3_bc    = outflow
+ox3_bc    = outflow
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = 0
+tlim       = 1.0
+ndiag      = 1
+
+<z4c>
+lapse_oplog     = 2.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_volume    = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+excise_chi      = 0.0
+
+<gravity>
+four_pi_G      = 1.0      # required by the module; the solver sets its own factor
+threshold      = 0.0      # required: the solver sets the defect at which V cycles end
+mg_bc          = robin    # psi - 1 falls off as 1/r about (robin_x1, robin_x2, robin_x3)
+robin_x1       = 0.0
+robin_x2       = 0.0
+robin_x3       = 0.0
+show_defect    = 0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = mesh
+interp         = hermite
+tolerance      = 1.0e-10
+max_iterations = 50
+deposit        = true
+deposit_shape  = cic
+deposit_comp_c = 0.0
+nfilter        = 1
+filter_compensate = false
+source_density = false    # true (with source_extrap) for an evolution: problems/ball
+source_extrap  = false
+hist_dcycle    = 1
+cstat_dcycle   = 1
+field_constraints = true
+field_time1    = 1.0e30   # the field dump at the start is written whenever a time is set
+particle_file  = ball.nrp
+id_solve       = true     # solve the Hamiltonian constraint for psi at the start
+id_residual    = code     # code: constraint monitor of the code; stencil: seven-point
+id_psi_init    = trial    # start value: trial (problem generator) or one
+id_tol         = 1.0e-10  # largest residual over the largest term of the equation
+id_maxit       = 60
+id_lin_tol     = 1.0e-3   # conjugate gradients: residual over right side
+id_lin_maxit   = 50
+id_mg_tol      = 1.0e-3   # defect over source at which a preconditioner solve ends
+id_dump        = true     # write <basename>.idsolve.bin (psi, K, Abar^2, E, H, ...)
+
+<problem>
+pgen_name  = nrpic_cf
+ncomp      = 1
+comp0_type = table
+comp0_file = ball.tab
+lapse      = table
+lapse_comp = 0
+shift      = zero
+
+<output1>
+file_type = hst
+dt        = 1.0

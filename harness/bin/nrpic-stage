@@ -38,7 +38,9 @@ verify   exports the committed tip (HEAD of the own worktree; for another owner,
          EVIDENCE.md names (this gate's or an earlier one's; the full run id or its
          `-HHMMSS-<commit7>` suffix; a range `X ... Y` is not expanded) count as registered,
          and their failures of the manifest check are waived (decision 0016 item 3: reported
-         under runs-waived, not failed). Writes
+         under runs-waived, not failed). So are the failures of every run that main's committed
+         coord/WAIVERS.md names, one run id at the start of a line followed by the reason
+         (decision 0019 item 6; a working-tree copy is not read). Writes
          VERIFY_RESULTS.json and VERIFY_RESULTS.md into the stage directory (own track) or beside
          the export (another owner's). Exit 1 on any FAIL.
 report   writes tracks/<ID>/stage/G<k>/STAGE_REPORT.md from harness/templates/STAGE_REPORT.md:
@@ -707,26 +709,36 @@ def verify(wt, args):
         ct = H.git(wt.root, "log", "--diff-filter=A", "--format=%ct", sha, "--",
                    f"tracks/{owner}/runs/{rid}/manifest.json", check=False).split()
         hand_dates[rid] = time.strftime("%Y%m%d", time.gmtime(int(ct[-1]))) if ct else None
+    # decision 0019 item 6: the orchestrator's waivers, one run id per line of main's coord/WAIVERS.md
+    granted = H.waivers(wt.root)
+    by_file = {r: {"waived_by": H.WAIVERS_FILE, "reason": granted[r], "problems": run_problems.pop(r)}
+               for r in sorted(run_problems) if r in granted}
     old12 = [r for r in run_problems if r in hand_dates and H.is_wave12(hand_dates[r])]
     listed = evidence_runs(evidence_texts(pkg_root, gate), old12)
     waived = {r: {"listed_in": listed[r], "problems": run_problems.pop(r)} for r in old12 if r in listed}
     unlisted = [r for r in old12 if r not in listed]
+    nwv = len(waived) + len(by_file)
     if not rids:
         res("runs", "PASS", "no registered runs")
     elif run_problems:
         res("runs", "FAIL", f"{len(run_problems)} of {len(rids)} runs have problems"
             + (f"; {len(unlisted)} of them hand-written in waves 1 and 2: list them in stage/{gate}/EVIDENCE.md "
                "and their failures are waived (decision 0016 item 3)" if unlisted else "")
-            + (f"; {len(waived)} waived" if waived else ""), run_problems)
+            + (f"; {nwv} waived" if nwv else ""), run_problems)
     else:
         res("runs", "PASS", f"{len(rids)} run manifests finished"
             + (f" ({nhand} hand-written, read as decision 0012 allows)" if nhand else ", complete")
             + (f"; failures of {len(waived)} hand-written manifests of waves 1 and 2 listed in EVIDENCE.md "
                "waived (decision 0016)" if waived else "")
+            + (f"; failures of {len(by_file)} runs waived by {H.WAIVERS_FILE} (decision 0019)" if by_file else "")
             + ("" if "--no-checksums" in fl else ", output checksums verified where recorded"))
-    if waived:
-        res("runs-waived", "WARN", f"{len(waived)} hand-written manifests of waves 1 and 2 listed in EVIDENCE.md: "
-            "failures of the manifest check waived (decision 0016 item 3)", waived)
+    if waived or by_file:
+        parts = ([f"{len(waived)} hand-written manifests of waves 1 and 2 listed in EVIDENCE.md (decision 0016 "
+                  "item 3)"] if waived else []) + (
+                 [f"{len(by_file)} runs named in main's {H.WAIVERS_FILE} (decision 0019 item 6): "
+                  + "; ".join(f"{r}: {w['reason']}" for r, w in list(by_file.items())[:5])] if by_file else [])
+        res("runs-waived", "WARN", "failures of the manifest check waived: " + "; ".join(parts),
+            {**waived, **by_file})
     if run_notes:
         res("run-notes", "WARN", f"{len(run_notes)} runs read with defaults or not fully re-verifiable "
             "(nrpic-run lint)", dict(list(run_notes.items())[:40]))

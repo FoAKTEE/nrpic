@@ -1,0 +1,39 @@
+{
+ "run_id": "core-20261115-171207-cdd7c88",
+ "owner": "core",
+ "purpose": "P11 with coll_energy on one A100: relativistic cluster y_c = 0.819 at Knudsen number 3, collision cells of 2 M, coll_energy = cell and = particle, 150 M",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/run_cluster.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-171207-cdd7c88",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_gpu",
+  "--kn",
+  "3",
+  "--skip-null",
+  "--energy",
+  "cell,particle"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-171207-cdd7c88",
+ "commit": "cdd7c88303fc2f3651ea524757cc3ddc8ed938c0",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_gpu",
+   "sha256": "87f19ec5e364481b4d6453e3efaa7dd090c03a1f66c6ca3fb3ead3267ff7c09d"
+  },
+  {
+   "path": "tracks/core/analysis/collisions/run_cluster.py",
+   "sha256": "0e7f3662ea3ad904af6854a4109fbe0d69ad3811e1b0f0446c9abc4a7d2a6058"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-171207-cdd7c88",
+ "host": "anta",
+ "start_utc": "2026-11-15T17:12:07Z",
+ "cores": 1,
+ "wall_time_s": 3.32,
+ "exit_status": 1,
+ "card_hours": 0.0009
+}

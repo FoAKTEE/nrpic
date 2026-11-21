@@ -1,0 +1,5 @@
+# T10c alone: T10b (run core-20261120-220816-09f6f79) restarted at t = 10 with a finder that can
+# flow (t10c_finder.athinput: four surfaces, hmean_tol out of the way); the T10e cases of
+# t10c_scout.list run on processors (tracks/core/JOURNAL-cosmo-amr.md, entries of 2026-11-20
+# 22:23 and 22:27)
+s1fnd /data/haiyangw/nrpic/scratch/core/core-20261120-220816-09f6f79/s1amr/rst/peak.00002.rst -i /data/haiyangw/nrpic/wt/core-cosmo-amr/tracks/core/analysis/cosmo_amr/t10c_finder.athinput output7/dt=100.0

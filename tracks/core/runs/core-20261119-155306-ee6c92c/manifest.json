@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261119-155306-ee6c92c",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-mpi/tracks/core/analysis/mpi/mpi_tests.py",
+  "--case",
+  "t3_cluster_ext",
+  "--out",
+  "t3_cluster_ext"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261119-155306-ee6c92c",
+ "commit": "ee6c92c",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/tests/mpi_cluster.athinput",
+   "sha256": "a68ccc15b6e88b73361ba00b1c0ca6dfacaf2589ea5010d28c29511cb16ce38b"
+  },
+  {
+   "path": ".work/build_cpu_mpi/src/athena",
+   "sha256": "45c8d5a477a265d8c4c81c71f079d71cf440422c81c379ffc69223d2074650cd"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261119-155306-ee6c92c",
+ "purpose": "mpi T3 (t3_cluster_ext): self-gravitating cluster with Z4c on a uniform mesh, source_density and source_extrap, 1, 2 and 4 ranks against each other",
+ "kind": "scouting",
+ "tag": "mpi-t3_cluster_ext",
+ "state": "finished",
+ "wall_time_s": 231.05,
+ "exit_status": 0,
+ "cores": 7,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-19T15:53:06Z"
+}

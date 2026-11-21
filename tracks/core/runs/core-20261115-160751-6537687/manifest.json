@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261115-160751-6537687",
+ "owner": "core",
+ "purpose": "Rerun of wave 1 with the executable of core/collisions-2 (options absent): P7 MeshBlock divisions, restart, seed; outputs compared with core-20261115-140950-0f9d0cf",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/run_repro.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160751-6537687",
+  "--exe",
+  "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_cpu",
+  "--nproc",
+  "6"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-160751-6537687",
+ "commit": "653768796a7d97ad128f3f51add3d5e1db6cd882",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/collisions/run_repro.py",
+   "sha256": "a7fa59e89d5d5f57dc28241e4baef540c6b6305d176babdd52496ed7372e5524"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/coll2/exe/819d588/athena_cpu",
+   "sha256": "c5d0a9879775ae019845922113eab06f5c6662cd0087b7ebd24a81c452a84192"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160751-6537687",
+ "host": "anta",
+ "start_utc": "2026-11-15T16:07:52Z",
+ "cores": 6,
+ "wall_time_s": 70.97,
+ "exit_status": 0,
+ "core_hours": 0.1183
+}

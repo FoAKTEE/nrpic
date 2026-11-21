@@ -2190,6 +2190,9 @@ void MultigridDriver::MGRootBoundary() {
     }
   }
 
+  // Robin faces (mg_bc = robin): the chains above leave them untouched
+  if (robin_) RobinBoundaryRoot();
+
   root_flat_buf_stale_ = true;
 }
 
