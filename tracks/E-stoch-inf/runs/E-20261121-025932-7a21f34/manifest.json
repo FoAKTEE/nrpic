@@ -1,0 +1,140 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261121-025932-7a21f34",
+  "track": "E-stoch-inf",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "ladder item (a), second rerun (JOURNAL 16): verdicts with record maxima from the constraint records (independent of the pairing), fig_a4_paper with the time-matched negative-control panel (npz of E-20261115-194633-9e04ed8), comparison figure fixed; pairs of E-20261120-223038-684821a reused",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "set -e; cd tracks/E-stoch-inf/ladder/scripts; export OMP_NUM_THREADS=2; R=\"$NRPIC_RUN_DIR/res\"; mkdir -p \"$R\"; cp /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261120-223038-684821a/res/pair_*.json \"$R\"/; python3 verdicts.py --res \"$R\" ../results/final --rundirs /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261115-172636-ce98836 /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261115-173719-e810503 /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261115-172618-f948386 /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261115-172629-312a82c /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261115-172625-416fec0 --out \"$R/summary.json\"; python3 make_figures.py --res \"$R\" ../results/final /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261115-194633-9e04ed8/res --out \"$NRPIC_RUN_DIR/fig\" --only fig_a4; python3 compare_final2.py --old ../results/final --new \"$R\" --out \"$NRPIC_RUN_DIR/compare\""
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "7a21f3482299e4db9e300cff16963083471b96e4",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/ladder"
+    ],
+    "outside_package": {
+      "count": 17,
+      "first": [
+        " M tracks/E-stoch-inf/note/scripts/common.py",
+        " M tracks/E-stoch-inf/note/scripts/fig_background.py",
+        " M tracks/E-stoch-inf/note/scripts/ledger.py",
+        " M tracks/E-stoch-inf/note/scripts/run_all.py",
+        " M tracks/E-stoch-inf/note/scripts/schem_architecture.py",
+        " M tracks/E-stoch-inf/note/scripts/schem_timeline.py",
+        " M tracks/E-stoch-inf/usr/JOURNAL.md",
+        "?? tracks/E-stoch-inf/a4res/scripts/a4lib.py",
+        "?? tracks/E-stoch-inf/a4res/scripts/make_list.py",
+        "?? tracks/E-stoch-inf/a4res/scripts/twin_predict.py",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_constraints.py",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_freezing.py",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_modes.py",
+        "?? tracks/E-stoch-inf/note/scripts/fig_sr_order.py",
+        "?? tracks/E-stoch-inf/note/scripts/schem_dataflow.py",
+        "?? tracks/E-stoch-inf/usr/scripts/analyse_cards.py",
+        "?? tracks/E-stoch-inf/usr/scripts/card_lib.py"
+      ]
+    },
+    "merge_base_main": "44f7d887e2038f9d49e291bf339f7fedc97dddab",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261120-223038-684821a/res/pair_P256_P256m.json",
+      "role": "input",
+      "sha256": "db0c19a1eb912f18ed6536ae05a0b6bfe1e1e7f0efe7eebee4bff5991c1fa6fa",
+      "bytes": 6533,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261120-223038-684821a/res/pair_Q128p_Q128m.json",
+      "role": "input",
+      "sha256": "0b3c2ded1b4e6d6b0809b1de67bd2306f3da08fe95c78d329e9bc21e6e42da94",
+      "bytes": 6520,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261120-223038-684821a/res/pair_Q64p_Q64m.json",
+      "role": "input",
+      "sha256": "033a20d82209829cd58952a90e33b0295f3b0ab9c0450f93c0424206a1259d88",
+      "bytes": 6508,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261120-223038-684821a/res/pair_Q64ph_Q64mh.json",
+      "role": "input",
+      "sha256": "f12f27ee6d2b0326251471a164131d4993c240c5efeab3da2d6cef2f1e5685f8",
+      "bytes": 5761,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261121-025932-7a21f34",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T02:59:32Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "E-20261120-223038-684821a"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 10.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.4335,
+    "gpu_hours_reserved": 0.25,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 4,
+    "runs": 105,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
