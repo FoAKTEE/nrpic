@@ -36,18 +36,35 @@ def Fr(eta):
     return out
 
 
-def vmol_quad(theta, n=1000):
-    y, w = special.roots_genlaguerre(n, 0.5)
+def _dens(s, theta):
+    """MJ density of s = sqrt((W - 1)/theta), unnormalised: u^2 e^{-y} du/ds,
+    u = sqrt(theta y (2 + theta y)), du/dy = theta W/u, dy/ds = 2 s."""
+    y = s*s
     W = 1 + theta*y
     u = np.sqrt(theta*y*(2 + theta*y))
-    q = np.sqrt(theta*(2 + theta*y))*W                    # u W / sqrt(y)
-    eta = np.arcsinh(u)
-    E1, E2 = np.meshgrid(eta, eta, indexing="ij")
-    U1, U2 = np.meshgrid(u, u, indexing="ij")
-    W1, W2 = np.meshgrid(W, W, indexing="ij")
-    V = (Fr(E1 + E2) - Fr(np.abs(E1 - E2)))/(2*U1*U2*W1*W2)
-    wq = w*q
-    return float(wq @ V @ wq/(wq.sum())**2)
+    return u*W*theta*np.exp(-y)*2*s, u, W
+
+
+def vmol_quad(theta, n=300, m=120, smax=11.0):
+    """Outer Gauss-Legendre in s_1 on [0, smax]; inner integral split at s_2 = s_1 (where
+    the integrand has its |eta_1 - eta_2|^3 kink), Gauss-Legendre on both pieces."""
+    x, w = special.roots_legendre(n)
+    s1 = 0.5*smax*(x + 1)
+    w1 = 0.5*smax*w
+    xm, wm = special.roots_legendre(m)
+    p1, u1, W1 = _dens(s1, theta)
+    eta1 = np.arcsinh(u1)
+    Z = np.sum(w1*p1)
+    tot = 0.0
+    for k in range(n):
+        for a, b in [(0.0, s1[k]), (s1[k], smax)]:
+            s2 = a + 0.5*(b - a)*(xm + 1)
+            w2 = 0.5*(b - a)*wm
+            p2, u2, W2 = _dens(s2, theta)
+            eta2 = np.arcsinh(u2)
+            V = (Fr(eta1[k] + eta2) - Fr(np.abs(eta1[k] - eta2)))/(2*u1[k]*u2*W1[k]*W2)
+            tot += w1[k]*p1[k]*np.sum(w2*p2*V)
+    return float(tot/Z**2)
 
 
 def theta_from_w(wbar):
@@ -202,8 +219,8 @@ def main():
     refchk = []
     for th in [1e-3, 0.01, 0.1, 1.0, 10.0]:
         q1 = vmol_quad(th)
-        q2 = vmol_quad(th, n=700)
-        refchk.append(dict(theta=th, quad=q1, quad_n700=q2, closed=lib.vmol_mean(th),
+        q2 = vmol_quad(th, n=400, m=160)
+        refchk.append(dict(theta=th, quad=q1, quad_finer=q2, closed=lib.vmol_mean(th),
                            rel=q1/lib.vmol_mean(th) - 1, nr_limit=np.sqrt(16*th/np.pi)))
         print("vmol", refchk[-1])
     res = dict(reference=refchk, runs={})
