@@ -48,6 +48,25 @@ that its rho ~ (rbar_s - r)^(1/2) surface behaviour is integrated exactly).
 Note: with K_ij = 0 the momentum constraint D_j K^j_i = 8 pi S_i is not satisfied
 by the moving clumps (S ~ rho W v); the data are exact for the Hamiltonian
 constraint only, as in the paper.
+
+Momentum constraint (work package clump). The problem generator can add, for every
+Gaussian component with <problem> comp<c>_p1..3 (and _s1..3), the Bowen-York curvature
+smeared with the Gaussian (smeared_bowen_york.py), which solves
+d_j Abar_ij = 8 pi Stilde_i for the momentum density Stilde_i = P_i g(x) (plus the
+rigid rotation (S x d)_i g/(2 sigma^2)), Stilde_i = sum_p m_p u_(i,p) delta^3(x - x_p).
+Two rules for the clump particles (`momentum` of JeansModel.sample, `rule` of
+GaussianClumps.sample):
+  'velocity'  the rule above, one orthonormal bulk velocity: Stilde_i = m_c v_i psi^3 g.
+              With P = sum_p m_p u_p the curvature removes the momentum-constraint
+              residual up to the variation of psi^3 across the clump.
+  'gaussian'  every particle carries the momentum m_p u_(i,p) = [P_i + (S x d_p)_i
+              /(2 sigma^2)]/N_c and the energy m_p W_p = (m_c/N_c) psi_tot, hence
+              m_p = sqrt((m_c psi/N_c)^2 - |m_p u_p|^2/psi^4): Stilde_i is the Gaussian
+              exactly and the constraint holds in the continuum. The orthonormal
+              speed is |P + S x d/(2 sigma^2)|/(m_c psi^3), smaller where psi is
+              larger (the Lorentz boost of a static body has the speed V alpha/psi^2
+              on its boosted slice, which also falls towards the centre).
+The Hamiltonian constraint keeps the residual -psi^-12 Abar_ij Abar_ij (second order).
 """
 
 import math
@@ -61,7 +80,8 @@ from scipy.special import erf
 from . import sampling
 from . import st_cluster as stc
 
-__all__ = ["gaussian_u", "gaussian_rho", "split_counts", "JeansModel", "DEFAULTS"]
+__all__ = ["gaussian_u", "gaussian_rho", "split_counts", "JeansModel", "DEFAULTS",
+           "clump_particles", "GaussianClumps"]
 
 DEFAULTS = dict(M_env=0.76, R_env=30.0, m_clump=0.12, sigma=0.70, d=3.0,
                 v=0.133215, split=(3, 1, 1))
@@ -110,6 +130,41 @@ def _gl01(n, panels=1):
     t = (edges[:-1, None] + 0.5 * h[:, None] * (x[None, :] + 1.0)).ravel()
     wt = (0.5 * h[:, None] * w[None, :]).ravel()
     return t, wt
+
+
+def clump_particles(psi, w, d, mass, sigma, P=(0.0, 0.0, 0.0), S=(0.0, 0.0, 0.0),
+                    rule="gaussian"):
+    """Covariant momenta u[N,3] and rest masses m[N] of the particles of one Gaussian
+    clump of conformal mass `mass` with momentum P and spin S.
+
+    psi[N]  total conformal factor at the particles; w[N] their weights (sum 1: 1/N for
+    positions drawn from the Gaussian, g(x_p) h^3 on a lattice); d[N,3] displacements
+    from the clump centre. Every particle carries the energy m W = mass w psi.
+      rule = 'gaussian'  m u_i = w [P_i + (S x d)_i/(2 sigma^2)]: the momentum density
+                         is the Gaussian's (module docstring), sum m u = P exactly.
+      rule = 'velocity'  one orthonormal bulk velocity v = P/(mass sum w psi^3), so that
+                         sum m u = P as well; no spin."""
+    P = np.asarray(P, dtype=float)
+    S = np.asarray(S, dtype=float)
+    eps = mass * w * psi
+    if rule == "gaussian":
+        pi = w[:, None] * (P[None, :] + np.cross(S, d) / (2.0 * sigma * sigma))
+        m2 = eps * eps - np.sum(pi * pi, axis=1) / psi ** 4
+        if np.any(m2 <= 0.0):
+            raise ValueError("clump momentum or spin too large: a particle would move "
+                             "at the speed of light")
+        m = np.sqrt(m2)
+        return pi / m[:, None], m
+    if rule == "velocity":
+        if np.any(S != 0.0):
+            raise ValueError("rule 'velocity' has no spin")
+        v = P / (mass * np.sum(w * psi ** 3))
+        v2 = float(np.sum(v * v))
+        if v2 >= 1.0:
+            raise ValueError("clump speed must be below 1")
+        W = 1.0 / math.sqrt(1.0 - v2)
+        return psi[:, None] ** 2 * (W * v)[None, :], eps / W
+    raise ValueError(f"unknown momentum rule {rule!r}")
 
 
 # ----------------------------------------------------------------------------
@@ -328,9 +383,15 @@ class JeansModel:
 
     # -- particles --------------------------------------------------------------
     def sample(self, N, seed=0, method="stratified", split=DEFAULTS["split"],
-               mirror=True):
+               mirror=True, momentum="velocity"):
         """Particles (x[N,3], u[N,3], m[N], species[N]) of envelope (0), clump A (1)
-        and clump B (2), in this order; counts split_counts(N, split)."""
+        and clump B (2), in this order; counts split_counts(N, split).
+        momentum = 'velocity' (one orthonormal bulk velocity per clump, the rule of
+        the module docstring) or 'gaussian' (same positions and the same total
+        momentum of each clump, every particle carrying an equal share of it:
+        clump_particles)."""
+        if momentum not in ("velocity", "gaussian"):
+            raise ValueError(f"unknown momentum rule {momentum!r}")
         rng = sampling._rng(seed)
         n_env, n_a, n_b = split_counts(N, split)
         if mirror and n_a != n_b:
@@ -349,9 +410,18 @@ class JeansModel:
         else:
             xb = sampling.sample_gaussian_positions(n_b, self.sigma, self.centres[2],
                                                     method, rng)
-        for xc, vel, n in ((xa, self.velocities[0], n_a), (xb, self.velocities[1], n_b)):
+        for k, (xc, vel, n) in enumerate(((xa, self.velocities[0], n_a),
+                                          (xb, self.velocities[1], n_b))):
             pt = self.psi(xc)
             xs.append(xc)
+            if momentum == "gaussian":
+                # total momentum of the velocity rule on these positions
+                P = (self.m_c / n) * np.sum(pt ** 3) * vel
+                uc, mc = clump_particles(pt, np.full(n, 1.0 / n), xc - self.centres[k + 1],
+                                         self.m_c, self.sigma, P)
+                us.append(uc)
+                ms.append(mc)
+                continue
             us.append(pt[:, None] ** 2 * (self.W * vel)[None, :])
             ms.append((self.m_c / n) * pt / self.W)
         sp = np.concatenate([np.full(n, k, dtype=np.int32)
@@ -373,4 +443,135 @@ class JeansModel:
                 J_z=float(np.sum(x[sel, 0] * mu_[:, 1] - x[sel, 1] * mu_[:, 0])),
                 centre_mW=[float(c) for c in (mw[:, None] * x[sel]).sum(0) / mw.sum()],
                 m_min=float(m[sel].min()), m_max=float(m[sel].max()))
+        return out
+
+
+# ----------------------------------------------------------------------------
+# isolated Gaussian clumps with momentum and spin (and punctures)
+# ----------------------------------------------------------------------------
+class GaussianClumps:
+    """Gaussian clumps with momentum and spin, optionally with Brill-Lindquist punctures,
+    on a conformally flat slice: psi = 1 + sum_k u_k + sum_b m_b/(2 r_b), and
+    K_ij = psi^-2 Abar_ij with the smeared Bowen-York curvature of every clump and the
+    Bowen-York curvature of every puncture (the problem generator nrpic_cf with
+    comp<c>_p1..3, comp<c>_s1..3).
+
+    gaussians  list of dicts: mass (conformal), sigma, centre, P, S (default zero)
+    punctures  list of dicts: mass (bare), centre, P, S
+    Particle species = index of the Gaussian; the components of nrpic_cf are the
+    Gaussians in order, then the punctures."""
+
+    def __init__(self, gaussians, punctures=()):
+        def vec(d, key):
+            return np.array(d.get(key, (0.0, 0.0, 0.0)), dtype=float)
+        self.gaussians = [dict(mass=float(g["mass"]), sigma=float(g["sigma"]),
+                               centre=vec(g, "centre"), P=vec(g, "P"), S=vec(g, "S"))
+                          for g in gaussians]
+        self.punctures = [dict(mass=float(b["mass"]), centre=vec(b, "centre"),
+                               P=vec(b, "P"), S=vec(b, "S")) for b in punctures]
+        if not self.gaussians:
+            raise ValueError("at least one Gaussian clump is needed")
+        self.M_adm = (sum(g["mass"] for g in self.gaussians)
+                      + sum(b["mass"] for b in self.punctures))
+
+    def psi(self, x):
+        """psi = 1 + sum of the components' conformal-factor excess at x[..., 3]."""
+        x = np.asarray(x, dtype=float)
+        p = np.ones(x.shape[:-1])
+        for g in self.gaussians:
+            r = np.sqrt(np.sum((x - g["centre"]) ** 2, axis=-1))
+            p = p + gaussian_u(r, g["mass"], g["sigma"])
+        for b in self.punctures:
+            r = np.sqrt(np.sum((x - b["centre"]) ** 2, axis=-1))
+            p = p + 0.5 * b["mass"] / r
+        return p
+
+    def abar(self, x):
+        """Summed conformal curvature Abar_ij[..., 3, 3] at x[..., 3]."""
+        from . import bowen_york as by
+        from . import smeared_bowen_york as sby
+        a = 0.0
+        for g in self.gaussians:
+            a = a + sby.abar(x, g["centre"], g["sigma"], g["P"], g["S"])
+        for b in self.punctures:
+            a = a + by.abar(x, b["centre"], b["P"], b["S"])
+        return a
+
+    def momentum_density(self, x):
+        """Stilde_i[..., 3] of all clumps at x[..., 3]."""
+        from . import smeared_bowen_york as sby
+        return sum(sby.momentum_density(x, g["centre"], g["sigma"], g["P"], g["S"])
+                   for g in self.gaussians)
+
+    def sample(self, N, seed=0, method="stratified", rule="gaussian", lattice_h=None,
+               lattice_rcut=6.0):
+        """Particles (x, u, m, species) of all clumps, N per clump ('stratified', 'mc':
+        equal weights at positions drawn from the Gaussian) or, for method = 'lattice',
+        the points centre + h (i + 1/2) within lattice_rcut sigma of the centre with
+        weights proportional to the Gaussian (noise-free deposit on a mesh whose cells
+        are multiples of h; N is ignored)."""
+        rng = sampling._rng(seed)
+        xs, us, ms, sp = [], [], [], []
+        for k, g in enumerate(self.gaussians):
+            if method == "lattice":
+                if lattice_h is None:
+                    raise ValueError("method 'lattice' needs lattice_h")
+                nh = int(math.ceil(lattice_rcut * g["sigma"] / lattice_h))
+                c = (np.arange(-nh, nh) + 0.5) * lattice_h
+                d = np.stack(np.meshgrid(c, c, c, indexing="ij"), axis=-1).reshape(-1, 3)
+                r2 = np.sum(d * d, axis=1)
+                d = d[r2 <= (lattice_rcut * g["sigma"]) ** 2]
+                w = np.exp(-0.5 * np.sum(d * d, axis=1) / g["sigma"] ** 2)
+                w /= w.sum()
+                xc = g["centre"] + d
+            else:
+                xc = sampling.sample_gaussian_positions(N, g["sigma"], g["centre"],
+                                                        method, rng)
+                d = xc - g["centre"]
+                w = np.full(N, 1.0 / N)
+            u, m = clump_particles(self.psi(xc), w, d, g["mass"], g["sigma"], g["P"],
+                                   g["S"], rule)
+            xs.append(xc)
+            us.append(u)
+            ms.append(m)
+            sp.append(np.full(len(m), k, dtype=np.int32))
+        return (np.concatenate(xs), np.concatenate(us), np.concatenate(ms),
+                np.concatenate(sp))
+
+    def problem_block(self, lapse=None):
+        """<problem> block of nrpic_cf for these data (dict)."""
+        prob = dict(pgen_name="nrpic_cf", ncomp=len(self.gaussians) + len(self.punctures))
+        comps = ([("gaussian", g) for g in self.gaussians]
+                 + [("puncture", b) for b in self.punctures])
+        for c, (kind, o) in enumerate(comps):
+            pre = f"comp{c}_"
+            prob[pre + "type"] = kind
+            prob[pre + "mass"] = o["mass"]
+            if kind == "gaussian":
+                prob[pre + "sigma"] = o["sigma"]
+            for a in range(3):
+                prob[pre + f"x{a + 1}"] = float(o["centre"][a])
+            for a in range(3):
+                prob[pre + f"p{a + 1}"] = float(o["P"][a])
+            for a in range(3):
+                prob[pre + f"s{a + 1}"] = float(o["S"][a])
+        prob["lapse"] = lapse or ("precollapsed" if self.punctures else "isotropic")
+        return prob
+
+    def particle_summary(self, x, u, m, sp):
+        """Per clump: N, sum m, sum m W, sum m u_i (the momentum the curvature must be
+        given), J = sum m (x - centre) x u, largest orthonormal speed."""
+        psi = self.psi(x)
+        q2 = np.sum(u * u, axis=1) / psi ** 4
+        W = np.sqrt(1.0 + q2)
+        out = []
+        for k, g in enumerate(self.gaussians):
+            sel = sp == k
+            mu_ = m[sel, None] * u[sel]
+            out.append(dict(
+                N=int(sel.sum()), sum_m=float(m[sel].sum()),
+                sum_mW=float(np.sum(m[sel] * W[sel])),
+                sum_m_u=[float(c) for c in mu_.sum(0)],
+                J=[float(c) for c in np.cross(x[sel] - g["centre"], mu_).sum(0)],
+                v_max=float(np.sqrt(q2[sel] / (1.0 + q2[sel])).max())))
         return out

@@ -1,0 +1,45 @@
+{
+ "run_id": "core-20261115-205121-692336d",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/scratch/core/tmp/idsolve/exe_a7a32cd/athena_gpu",
+  "-i",
+  "gaussian_boost.athinput",
+  "mesh/nx1=64",
+  "mesh/nx2=64",
+  "mesh/nx3=64",
+  "meshblock/nx1=32",
+  "meshblock/nx2=32",
+  "meshblock/nx3=32",
+  "particles/id_residual=code",
+  "particles/particle_file=gauss_h0p25_u0p1.nrp"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-205121-692336d",
+ "commit": "692336d",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/idsolve/gaussian_boost.athinput",
+   "sha256": "feffd511f23de35456da4c70cf4e5fa0db12d720326f76dbf0b87d109a6cd204"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/gauss_h0p25_u0p1.nrp",
+   "sha256": "6c57bc36f71771968b0c1fca16c010c42642019d24f997d9164bdc17a7fe9c8f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve/exe_a7a32cd/athena_gpu",
+   "sha256": "0d7bdff4d1a4669d4b59e6463ced8ecc022336054bbf473609ad3b0fb299d181",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-205121-692336d",
+ "purpose": "initial-data solver, test V4: vector part, stencil form, on a card (gboost_code_n64)",
+ "kind": "scouting",
+ "tag": "idsolve-v4-gboost_code_n64_card",
+ "state": "finished",
+ "wall_time_s": 26.44,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.01,
+ "started_utc": "2026-11-15T20:51:21Z"
+}

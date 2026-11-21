@@ -1,0 +1,14 @@
+{
+ "T3_spin": {
+  "max_abs_diff_minus_closed_form": 2.2871557980266176e-10,
+  "closed_form_peak": 5.289244410266469e-05,
+  "norm_diff": 0.0003660135721017644,
+  "norm_closed_form": 0.0003660135725459173
+ },
+ "T7_clumps_beside_puncture": {
+  "max_abs_diff_minus_closed_form": 6.72610760828085e-09,
+  "closed_form_peak": 0.0001538895705345789,
+  "cells": 2094976,
+  "note": "cells farther than 1 from the puncture; includes the cross term 2 Abar(clumps):Abar(puncture)"
+ }
+}

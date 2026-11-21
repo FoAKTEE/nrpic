@@ -1,0 +1,77 @@
+# Monte Carlo collisions (tracks/core/interfaces/collisions.md, section 11) with the
+# metric at each particle on the analytic path: the periodic box of coll_box.athinput in
+# the Cartesian Kerr-Schild metric of a mass bh_mass at the origin (the box lies at
+# x = y = z = 100, distance 173): lapse, shift and a spatial metric that is not
+# conformally flat, all with a gradient.  The metric is stationary, so
+# alpha W - beta^i u_i of every particle is conserved by the motion; the box itself is
+# not a physical set-up (the particles are not wrapped on this path and feel the pull of
+# the mass), it serves short tests of the pair kinematics in a general metric.
+# Driver: tracks/core/analysis/collisions/run_replay.py --new.
+
+<comment>
+problem   = NRPIC collisions in a box in the Kerr-Schild metric
+
+<job>
+basename  = box
+rng_seed  = 1
+
+<mesh>
+nghost    = 2
+nx1       = 32
+x1min     = 100.0
+x1max     = 101.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = 100.0
+x2max     = 101.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = 100.0
+x3max     = 101.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 1.0
+ndiag      = 100
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = kerr_schild
+bh_mass        = 20.0
+bh_spin        = 0.0
+tolerance      = 1.0e-13
+max_iterations = 100
+dt             = 0.01
+deposit        = false
+hist_dcycle    = 10
+snap_dt        = 1.0
+particle_file  = box.nrp
+collisions       = true
+coll_sigma       = 1.0          # cross-section per unit mass
+coll_sigma_model = constant     # constant | cutoff
+coll_sigma_w     = 1.0
+coll_pmax        = 0.1
+coll_subcycle    = measured     # measured | conservative
+coll_nsub_max    = 1000
+coll_cell_factor = 1            # 1 | 2 | 4
+coll_weights     = equal        # equal | nanbu
+coll_hist_dcycle = 1
+coll_dump_cycle  = -1
+coll_budget      = true
+coll_energy      = particle     # cell | particle
+
+<problem>
+pgen_name = nrpic_geodesic

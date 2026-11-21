@@ -1,0 +1,53 @@
+{
+ "run_id": "core-20261115-160746-19e3afe",
+ "owner": "core",
+ "registered_by": "tracks/core/analysis/dfix/runreg.py (by hand: nrpic-run submit fails)",
+ "purpose": "T4 external gravity of the Newtonian mode: Kepler orbits, softened circular orbits, background term, expanding periodic box; accretion diagnostics in that mode",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/dfix/t4_newton.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-dfix/.work/build_cpu/src/athena",
+  "--fig",
+  "tracks/core/analysis/dfix/figs/t4"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-dfix",
+ "commit": "19e3afedf4a92a6b58e9da7e370e084beeb54bfa",
+ "branch": "core/requests-adf",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "problems/tests/newton_point_mass.athinput",
+   "sha256": "e984eab6d37b5325a327f990a78bdf1acafb1279a1e15cfe8828a510c5e3e094"
+  },
+  {
+   "path": "problems/tests/newton_point_mass_periodic.athinput",
+   "sha256": "b179c8470e67826f1a71a0982dac25bda892fd19a792aa7f2c9e6bf447ebe288"
+  },
+  {
+   "path": ".venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49"
+  },
+  {
+   "path": "tracks/core/analysis/dfix/t4_newton.py",
+   "sha256": "7b6a2541d1423d6d6db3020b4bc89558e6def84562ba262dd7102388b278bc9f"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "45f399b2509501e3730a87062de5437ff4307492784ddd9a86264fa60beb1c3c"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160746-19e3afe",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-160746-19e3afe"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:07:47Z",
+ "cores": 5,
+ "status": "failed",
+ "wall_time_s": 0.55,
+ "exit_status": 1,
+ "end_utc": "2026-11-15T16:07:47Z",
+ "core_hours": 0.0008
+}

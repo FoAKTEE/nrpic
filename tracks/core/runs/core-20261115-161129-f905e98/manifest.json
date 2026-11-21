@@ -1,0 +1,49 @@
+{
+ "run_id": "core-20261115-161129-f905e98",
+ "owner": "core",
+ "registered_by": "tracks/core/analysis/dfix/runreg.py (by hand: nrpic-run submit fails)",
+ "purpose": "T6 byte regression of existing set-ups: release core-v0.3 against the changed source (7 relativistic and gravity cases, 3 Newtonian-mode cases, static mesh)",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/dfix/t6_regress.py",
+  "--base",
+  "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core-dfix/.work/build_cpu/src/athena"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-dfix",
+ "commit": "f905e983012641b0f86cf9a233402d101a29f11b",
+ "branch": "core/requests-adf",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": ".venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49"
+  },
+  {
+   "path": "tracks/core/analysis/dfix/t6_regress.py",
+   "sha256": "7474cff7fad3a89f986b2be9da3814cfce26a5f3ee2d90b8c0c43668078b909b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+   "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "17ee5e28d93016da354ce86e5d869233a21a1f20f67b4cb211527e6b1359022d"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-161129-f905e98",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-161129-f905e98"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:11:29Z",
+ "cores": 1,
+ "status": "failed",
+ "wall_time_s": 1052.44,
+ "exit_status": 1,
+ "end_utc": "2026-11-15T16:29:02Z",
+ "core_hours": 0.2923
+}

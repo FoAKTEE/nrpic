@@ -1,0 +1,82 @@
+# Perturbing radial force of the particle module (<particles> perturb_gamma,
+# athenak/src/particles/nrpic_perturb.cpp) on the analytic flat path: Cartesian
+# Kerr-Schild metric with bh_mass = 0.  During [perturb_tstart, perturb_tstart +
+# perturb_time] every particle with rest mass feels du_i/dt = perturb_gamma (x - c)^i/|x - c|.
+# Particle 0 starts at rest: it moves radially and ends with u = gamma T_pert x/r exactly,
+# whatever the step.  Particle 1 moves across the radial direction: compared with an
+# independent integration of dx/dt = u/W, du/dt = gamma x/r.
+# Driver: tracks/core/analysis/collisions/run_perturb.py.
+
+<comment>
+problem   = NRPIC perturbing radial force, flat space
+
+<job>
+basename  = pert
+
+<mesh>
+nghost    = 2
+nx1       = 8
+x1min     = 90.0
+x1max     = 130.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 8
+x2min     = 90.0
+x2max     = 130.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 8
+x3min     = 90.0
+x3max     = 130.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 8
+nx2       = 8
+nx3       = 8
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 1.0
+ndiag      = 1000
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+metric         = kerr_schild
+bh_mass        = 0.0
+bh_spin        = 0.0
+tolerance      = 1.0e-15
+max_iterations = 200
+dt             = 0.05
+deposit        = false
+hist_dcycle    = 0
+snap_dt        = 1.0
+nparticles     = 2
+p0_x1          = 103.0
+p0_x2          = 104.0
+p0_x3          = 112.0
+p0_u1          = 0.0
+p0_u2          = 0.0
+p0_u3          = 0.0
+p0_m           = 1.0
+p1_x1          = 101.0
+p1_x2          = 100.5
+p1_x3          = 99.0
+p1_u1          = 0.3
+p1_u2          = -0.8
+p1_u3          = 0.5
+p1_m           = 1.0
+perturb_gamma  = 0.25           # strength of the radial force per unit rest mass
+perturb_time   = 0.37           # duration T_pert
+perturb_tstart = 0.1            # start of the interval
+perturb_x1     = 100.0          # centre of the radial direction
+perturb_x2     = 100.0
+perturb_x3     = 100.0
+
+<problem>
+pgen_name = nrpic_geodesic

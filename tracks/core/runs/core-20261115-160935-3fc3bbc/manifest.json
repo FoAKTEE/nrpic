@@ -1,0 +1,37 @@
+{
+ "run_id": "core-20261115-160935-3fc3bbc",
+ "owner": "core",
+ "purpose": "Test T7 of JOURNAL-clump.md: two moving Gaussian clumps (one rotating) beside a Bowen-York puncture with momentum at t = 0, superposition of the curvatures",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-clump/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-clump/tracks/core/analysis/clump/puncture_clump_check.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160935-3fc3bbc"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-160935-3fc3bbc",
+ "commit": "3fc3bbcfb9ccc1f9b45fc63c1dedc17505529809",
+ "branch": "core/clump-curvature",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "problems/tests/clump_puncture.athinput",
+   "sha256": "f61df6c728ab9ea0455a9b3fb43a479c81adbcd5ab7c283ed703cc379c0ae02e"
+  },
+  {
+   "path": "problems/ic/make_ic.py",
+   "sha256": "dec0d9348b051f3b40a575039677f2ed6498b59b8c4fb6c77b6a8cb745eb6411"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "53c0d32b6b1c5af2a18bdbe2a13edc62930a37a9582629d2baf78ecfa40e20e1"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160935-3fc3bbc",
+ "host": "anta",
+ "start_utc": "2026-11-15T16:09:35Z",
+ "cores": 3,
+ "wall_time_s": 79.72,
+ "exit_status": 0,
+ "core_hours": 0.0664
+}

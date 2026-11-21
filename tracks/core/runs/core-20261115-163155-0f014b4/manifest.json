@@ -1,0 +1,52 @@
+{
+ "run_id": "core-20261115-163155-0f014b4",
+ "owner": "core",
+ "registered_by": "tracks/core/analysis/dfix/runreg.py (by hand: nrpic-run submit fails)",
+ "purpose": "Final executable (source 3f75eb8): T1 regression repeated",
+ "kind": "scouting",
+ "command": [
+  "python3",
+  "tracks/core/analysis/dfix/run_cases.py",
+  "tracks/core/analysis/dfix/cases/t1_regress_cpu.list",
+  "--jobs",
+  "4"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-dfix",
+ "commit": "0f014b451eabb3a04500a3df06f58c3a8554ed95",
+ "branch": "core/requests-adf",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/dfix/run_cases.py",
+   "sha256": "9b984be0bc3e9f6a504c92531993ef6a1af757923557da7eb570da0355841708"
+  },
+  {
+   "path": "tracks/core/analysis/dfix/cases/t1_regress_cpu.list",
+   "sha256": "41b17ff723fc87d0fc3c0078d78a62658f20e57e5b61e0ffd86aea78a14fdfe1"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+   "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c"
+  },
+  {
+   "path": "problems/tests/tracer_mesh_circular.athinput",
+   "sha256": "23bceb210b63109bd4c760f58e98f676aff1572adb88eb5d70c6fa2b0a7e0a22"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "17ee5e28d93016da354ce86e5d869233a21a1f20f67b4cb211527e6b1359022d"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-163155-0f014b4",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-163155-0f014b4"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:31:55Z",
+ "cores": 4,
+ "status": "completed",
+ "wall_time_s": 7.88,
+ "exit_status": 0,
+ "end_utc": "2026-11-15T16:32:03Z",
+ "core_hours": 0.0088
+}

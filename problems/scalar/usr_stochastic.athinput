@@ -1,0 +1,101 @@
+# Stochastic inflation in numerical relativity, inflection (ultra-slow-roll) case of
+# arXiv:2512.14649 (table at PRD_v2.tex:405-420: Higgs-inflection potential with
+# Lambda = 1.86e-6, v = 0.198 Mpl, phi0 = -1.2 Mpl at the Bunch-Davies time, N* - N0 = 3)
+# at N = 32 with k_max/dk = 8: initial slice at N* (pgen scalar_field, id = stochastic)
+# and the stochastic sources (noise = mukhanov_sasaki), both from the same amplitudes.
+# Geodesic slicing, zero shift, no damping, no dissipation.
+# Units: G = c = 1, time unit 1/H* (H*/Mpl = 9.3623187739e-06 enters through the mode
+# file), a* = 1, box L = 2 pi/sigma; potential in code units: lambda = 8 pi Lambda/H*^2,
+# vev = v/sqrt(8 pi).  Background and mode file: python/nrpic/sf_inflation.py, written by
+# tracks/core/analysis/scalar2/make_case.py --case inflection --nmax2 64.
+# Background of the reference (e-folds after N*): eps2 > 3 (ultra slow roll) from 2.53 to
+# 6.55, eps1 falls from 1.3e-2 to 1e-12; H falls to 0.9518 H*, so 10 e-folds end at
+# t = 10.43.  Tests: tracks/core/JOURNAL-scalar3.md; interface: tracks/core/interfaces/
+# scalar_field_3.md.  Run from the directory of this file or give the mode file with an
+# absolute path.
+
+<comment>
+problem   = stochastic inflation, inflection (ultra-slow-roll) case, initial slice at N*
+
+<job>
+basename  = usr
+rng_seed  = 20261115
+
+<mesh>
+nghost    = 4
+nx1       = 32
+x1min     = 0.0
+x1max     = 6.283185307179586
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 32
+x2min     = 0.0
+x2max     = 6.283185307179586
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 32
+x3min     = 0.0
+x3max     = 6.283185307179586
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 32
+nx2       = 32
+nx3       = 32
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 10.5
+ndiag      = 20
+
+<z4c>
+lapse_oplog     = 0.0     # geodesic slicing
+lapse_harmonic  = 0.0
+lapse_kdriver   = 0.0     # driver towards constant mean curvature (vanishes on the mean)
+lapse_advect    = 0.0
+shift_Gamma     = 0.0     # zero shift
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.0
+damp_kappa1     = 0.0
+damp_kappa2     = 0.0
+excise_chi      = 0.0
+
+<scalar_field>
+couple           = true
+potential        = inflection
+lambda           = 5.33317648526339908e+05
+vev              = 3.94952857597418439e-02
+diss             = 0.0
+hist_dcycle      = 1
+con_dcycle       = 1          # record of |H|/[H], |M|/[M]: <basename>.sf.con.hst
+dump_dt          = 0.5
+dump_metric      = true       # dumps with gt_ij and At_ij (layout NRSFDMP2)
+dump_magnitudes  = false      # dumps with [H], [M] and the M_i of the BSSN form
+dump_constraints = true       # dumps with H, M_i, E
+dump_noise       = false      # dumps without the six stochastic fields
+noise            = mukhanov_sasaki
+noise_nmax2      = 64
+noise_sharpness  = 5.0
+noise_sigma      = 1.0        # k_sigma = sigma a H
+noise_level      = 0          # background: 0 Friedmann equations, 1 box means
+noise_projector  = stencil
+noise_kick_pi    = true
+noise_kick_k     = true
+noise_kick_a     = true
+noise_pi_sign    = 1.0        # -1: negative control of the sources
+noise_mode_file  = usr_stochastic_modes.txt
+noise_mode_scale = 1.0        # factor on the mode functions (slice and sources)
+
+<problem>
+pgen_name      = scalar_field
+id             = stochastic
+phi0           = -1.64328188347203308e-01   # background at N*
+pi0            = 3.23658652791241411e-02
+slice_window   = true         # false: R and dR/dtau of the mode file without the window
+slice_k2       = stencil      # k^2 of the Bardeen potential: stencil or continuum
+slice_delta_pi = corrected    # printed: negative control of the slice

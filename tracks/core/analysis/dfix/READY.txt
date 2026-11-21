@@ -1,0 +1,124 @@
+READY of core/requests-adf (work package dfix of core: requests of tracks D, A and F that
+are not gauge). Written 2026-11-15; updated 2026-11-20 (sessions dfix-3 and dfix-4: card
+runs of T5, T7 and the memory at 2700 slots; the executables are unchanged: athenak/ of
+the branch tip equals that of 3f75eb8). Evidence and every number: branch core/requests-adf,
+tracks/core/JOURNAL-dfix.md and tracks/core/interfaces/REQUESTS_ADF.md
+(git show core/requests-adf:<path>). Test scripts and case lists:
+tracks/core/analysis/dfix/; figures: tracks/core/analysis/dfix/figs/.
+
+STATUS
+  athena_cpu  processor executable (scripts/build_cpu.sh): TESTED, tests T1 to T7 below,
+              and the byte regression T6 of eleven existing set-ups against the
+              processor executable of release core-v0.3.
+  athena_gpu  card executable (scripts/build_gpu.sh, CUDA 12.6, one A100): TESTED on a
+              card for T1 (tracer orbit), T3 (accretion diagnostics) and T4 (Kepler,
+              18 of 20 time units): every count equal to the processor run and to the
+              exact references, positions within 1.2e-12 of the processor run (judgement
+              run core-20261115-180353-7d7116d of card run core-20261115-161528-ff00411);
+              and for T5 (pair horizon: masses equal to the processor run to 1e-15, run
+              core-20261119-140644-074f8e3) and T7 (sphere on a moving tracker: counts equal to the
+              processor run, positions within 8.9e-16; card run
+              core-20261119-143036-185800a, judged core-20261120-220150-b6041db).
+              The restart test T2 changes host code only (Driver::Finalize) and ran on
+              processors only.
+Everything not named below behaves as release core-v0.3: output files of existing
+set-ups are byte-identical (T6: geo, boris, dep, east, os, jeans, binary, mesh_static,
+three Newtonian-mode cases) except one text line in the parameter dump of the extra
+output written when a run stops between two scheduled times (the stored last_time is
+no longer advanced: correction 2).
+
+CORRECTIONS (no option needed)
+1. Tracers: a particle with m = 0 follows a timelike geodesic on every metric source.
+   Releases core-v0.2 and core-v0.3 pushed it as a photon on the mesh metric, so tracers
+   left at the coordinate speed of light and a tracer at rest was removed in its first
+   step, on processors and on cards alike (Track D's "card defect": run
+   core-20261115-152835-920d573, card run core-20261115-154030-5ba192a). Light rays are
+   m = -t_e < 0, unchanged. The released rule: <particles> zero_mass = null.
+   Example: problems/tests/tracer_mesh_circular.athinput, and every tracer input of
+   problems/puncture/ (horizon_calib.athinput) unchanged.
+     athena_cpu -i problems/tests/tracer_mesh_circular.athinput -d RUN
+   Tested: T1 (circular orbit at r = 8 M on a static mesh metric for 300 M: r in
+   [7.999998, 8.001151] M, E to 2.6e-7, L_z to 5.1e-6; zero_mass = null byte-identical
+   to the release), on processors and on a card.
+   Not done here: Track D's acceptance run of horizon_calib.athinput for 250 M (about 25
+   minutes of a card); it is Track D's to run with athena_gpu.
+2. Restart: a run stopped at the wall-clock or cycle limit and continued writes every
+   scheduled output (restart dumps and every other kind with a dt schedule).
+   Example: problems/tests/restart_schedule.athinput. Tested: T2 (release loses one dump
+   and one table per stop; corrected loses none; final state bit-identical).
+3. Analytic metrics: <particles> alpha_exc acts there too, and particles flagged for
+   removal are removed and counted in n_excised, m_excised of <basename>.nrpic.hst.
+   Tested: T3 (analytic case).
+
+NEW OPTIONS (each read only if present; off by default)
+4. Accretion diagnostics, <particles>:
+     removal_record = true      <basename>.removed.bin: one record of 20 float64 per
+                                removed particle (time, tag, species, reason, x^i, u_i,
+                                m, tau, alpha, beta^i, W, E = alpha W - beta^i u_i,
+                                distance to the centre, passages; docs/FORMATS.md)
+     acc_nsphere = 2  acc_radius1 = 4.0  acc_radius2 = 10.0
+                                spheres through which crossings are counted
+     acc_x1 = 0.0  acc_x2 = 0.0  acc_x3 = 0.0     fixed centre, or
+     acc_tracker = 0            centre on puncture tracker 0 (moves with the hole)
+     peri_count = true  [peri_rmax = R]
+                                pericentre passages per particle (last block of the
+                                snapshots, field 20 of the removal record, history)
+     acc_dcycle = 20            cadence of <basename>.acc.hst (default hist_dcycle)
+   E is the instantaneous alpha W - beta^i u_i (exact where the spacetime is stationary;
+   in an evolving spacetime use spheres where the gauge has settled). Works in the
+   Newtonian mode too (E = 1 + p^2/(2a^2) + Phi/a).
+   Examples: problems/tests/accretion_static.athinput (fixed centre; particle file from
+   tracks/core/analysis/dfix/t3_accretion.py), problems/tests/accretion_tracker.athinput
+   (moving puncture; particle file from t7_tracker.py).
+   Tested: T3 against exact Schwarzschild geodesics on the mesh and the analytic metric
+   (counts exact, sums of m E to 7e-8, content = in - out - removed to 8e-17, removal in
+   the predicted step, counters exact, continued run byte-identical), on processors and
+   on a card; T4 in the Newtonian mode; T7 on a moving Bowen-York puncture (content
+   identity exact at every record, content equal to the count from the snapshots, centre
+   equal to the tracker), on processors and on a card. Note: the tracker file <basename>.co_<n>.txt labels the
+   position of t^(n+1) with cycle n and t^n (upstream); acc.hst writes it at its own time.
+   Limit: the counter counts noise for orbits without radial motion (circular orbits).
+   Not tested: self-gravitating matter in an evolved spacetime, the Boris pusher.
+5. External gravity in the Newtonian mode (pusher = newton), <particles>:
+     newton_pm_mass = 1.0  newton_pm_x1 = 0.0  newton_pm_x2 = 0.0  newton_pm_x3 = 0.0
+     newton_pm_soft = 0.1  newton_pm_soft_frame = comoving    (or physical: s/a)
+                                fixed point mass, potential -G M/(r^2 + s^2)^(1/2), not
+                                deposited, not moved, nearest image if periodic
+     newton_bg_t0 = 6.77        background acceleration -(2/9) x/(t0 + t)^2
+                                (newton_expansion = none only)
+   Examples: problems/tests/newton_point_mass.athinput (isolated),
+   problems/tests/newton_point_mass_periodic.athinput (expanding periodic box).
+   Tested: T4 (Kepler orbits to 7e-5 with exact pericentre and crossing counts; softened
+   circular orbits to 5e-5; background growing and decaying modes to 3e-7; orbits in the
+   expanding box converge at second order to an independent ODE solution in both
+   softening frames, ratios 4.00 at half the step). The Layzer-Irvine column C is a
+   conservation check only with comoving softening.
+   Not tested: refined meshes, massive self-gravitating matter around the seed.
+6. Common horizon of one pair among several punctures, <fastflow> (surface n):
+     num_horizons = <single-hole surfaces + 1>
+     use_puncture_3 = -1  punc_pair_a_3 = 0  punc_pair_b_3 = 1
+     wait_until_punc_are_close_3 = true  use_puncture_massweighted_center_3 = true
+     [merger_distance_3 = 1.0]  initial_radius_3 = <near the expected radius>
+   Example: problems/tests/pair_horizon.athinput. Tested: T5 on processors and on a card
+   (found for the close pair of three punctures at the first call, mass 1.0199 against
+   1.0208, card equal to processors to 1e-15; the released rule does not search it; the
+   far pair and the all-puncture surface wait). Not tested: a merger during an evolution.
+
+MEMORY of the three-hole mesh (problems/puncture/by_triple.athinput, three finders, 16^3
+MeshBlocks) at max_nmb_per_rank = 2700, measured with athena_gpu: peak 70753 MiB of the 81920 MiB of an A100, allocated at
+the start (run core-20261119-143036-185800a, 32 cycles, 1100 MeshBlocks; predicted 70.9e3
++- 2.0e3). 25.65 MiB per slot between 2400 and 2700 slots: a card holds about 3100 slots
+with three finders [JUDGEMENT, linear in the slots]. The slot limit does not change the
+evolution (history equal to the 2400-slot run in every printed digit).
+
+NOT IN THESE EXECUTABLES (REQUESTS_ADF.md section 1): special-relativistic Newtonian
+push, snapshots at chosen times, Zel'dovich ball in make_ic.py, pair force, puncture on
+a torus, more than one rank (estimate in REQUESTS_ADF.md section 3).
+
+NOT RUN BY THIS PACKAGE (no source involved; the tracks' own measurements): the 16^3
+against 32^3 MeshBlock benchmark on the three-hole mesh (Track F) and the 250 M acceptance
+run of problems/puncture/horizon_calib.athinput (Track D); case lines bench16, bench32,
+t1_accept in tracks/core/analysis/dfix/cases/card_checks.list.
+
+CARD TIME of the package: 0.923 card-hours (0.068 T1 reproduction, 0.838 card checks,
+0.009 timing job, 0.008 card cases of 2026-11-19).
