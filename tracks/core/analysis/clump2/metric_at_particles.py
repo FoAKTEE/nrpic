@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Test D of tracks/core/JOURNAL-clump2.md: the spatial metric at the particles of the
 moving cluster of test TC, from the restart files of the card runs. Each case is
-restarted on a processor without a step (the time limit is already reached), with one
+restarted on a processor without a step (`time/nlim=0` on the command line), with one
 added output block that dumps the Z4c variables; the dump is read with
 athenak/vis/python/bin_convert.py and its values are taken at the particles of the
 snapshot of the same time (cell that holds the particle, finest level).
@@ -73,7 +73,10 @@ def restart(exe, rst, d):
     with open(extra, "w") as f:
         f.write(EXTRA)
     with open(os.path.join(d, "athena.log"), "w") as log:
-        st = subprocess.run([exe, "-r", rst, "-i", extra, "-d", d], cwd=d, stdout=log,
+        # time/nlim=0: no step whatever the time of the file (a file of t = 0 has not
+        # reached the time limit; without this the whole run is evolved)
+        st = subprocess.run([exe, "-r", rst, "-i", extra, "-d", d, "time/nlim=0"], cwd=d,
+                            stdout=log,
                             stderr=subprocess.STDOUT,
                             env=dict(os.environ, OMP_NUM_THREADS="1")).returncode
     if st != 0:
