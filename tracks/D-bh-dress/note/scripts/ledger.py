@@ -460,6 +460,19 @@ def main():
            f"the masses differ by up to 8.6e-9 for t <= 20 M and by more than 1e-9 from t = "
            f"{er['difference']['t_first_split_1e-9']:.1f} M on; entry 8 (es_runs/JOURNAL.md:520) already corrects it")
 
+    # batch 3: the corrected infall wording of stage/G1/STATUS.md and the verifier's profile numbers
+    d2 = [100 * n["vs_kernel"]["dress_rel_at_a2"] for n in (N1, N2, N3)]
+    d3 = [100 * n["dress_maxrel_kernel_from_a3"] for n in (N1, N2, N3)]
+    nclaim(G1, "within 0.5-3.3 per cent at a/a_i = 2", ["0.5", "3.3"], [min(d2), max(d2)], NR,
+           "the note's figure numbers (nm_growth.txt of the analysis run) give 3.43 for the coarsest run; "
+           "the lead's 3.31 comes from the cell-centre table of the infall package; both say 'a few per cent'")
+    claim(G1, "the dress within 1.1 per cent from a/a_i = 3 on", "the dress within 1.1 per cent from a/a_i = 3 on",
+          ", ".join(f"{v:.2f}" for v in d3) + " per cent (largest |dress/matched shells - 1| for a/a_i >= 3)",
+          "agrees" if max(d3) <= 1.1 else "disagrees", NR)
+    nclaim("stage/G1/VERIFIER.md", "25.9 per cent at most", ["25.9"], [v2p["max_abs_dev"]], ["verifier_v2"], scale=100)
+    nclaim("stage/G1/VERIFIER.md", "32.5 and 34.5 per cent if r_ta is moved", ["32.5", "34.5"],
+           [v2p["break_attempts_max_abs_dev"]["r_ta_x0.97"], v2p["break_attempts_max_abs_dev"]["r_ta_x1.03"]], ["verifier_v2"], scale=100)
+
     # ---- write ----
     rows = ["% generated from registered run outputs; do not edit"]
     cur = None
