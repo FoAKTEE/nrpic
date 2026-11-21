@@ -1,0 +1,89 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "kb-20261121-215613-421a104",
+  "track": "kb",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "ingest3 step 7: QA report on the working database after the re-ingest and the 35 additions (hybrid retrieval), then corpus resolution over all papers",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "export OMP_NUM_THREADS=4; K=\"kb/.venv/bin/python -I kb/bin/kb\"; { echo \"## qa\"; $K qa run --hybrid --db /data/haiyangw/nrpic/kb-data/db/kb.sqlite --out \"$NRPIC_RUN_DIR/QA_REPORT.md\" --json \"$NRPIC_RUN_DIR/qa.json\"; echo \"exit $?\"; echo \"## resolve-bib\"; $K resolve-bib; echo \"exit $?\"; } > \"$NRPIC_RUN_DIR/out.txt\" 2>&1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "421a1042e041b8d4b291eef8b50fd93cf3f63eeb",
+    "branch": "kb/main",
+    "dirty": false,
+    "package": [
+      "tracks/kb/ingest3"
+    ],
+    "outside_package": {
+      "count": 1,
+      "first": [
+        " M tracks/kb/code_kb/JOURNAL.md"
+      ]
+    },
+    "merge_base_main": "9d43b229377786cc62ef7bb666b765abfdab30bc",
+    "worktree": "wt/kb"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/kb/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/kb/kb-20261121-215613-421a104",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T21:56:13Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 0.0,
+    "cores_allotted": 8,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 198,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
