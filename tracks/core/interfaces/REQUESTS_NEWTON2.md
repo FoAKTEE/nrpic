@@ -196,8 +196,12 @@ time goes was not profiled [TO VERIFY] (candidate: the multipole boundary, whose
 run on the host). Smaller runs on a card: Track B's pancake at 64^3 with 262144
 particles 13.5 ms per step; the embedded ellipsoid at 64^3 with 268400 particles and the
 cubic cloud 3.3 s for 281 steps.
-Card time of the package: 0.07 (job 4648) + 0.29 (job 4736, T6c and T4d at 64^3) = 0.36
-card-hours, plus the third job (core-20261121-080215-df3af65, asked 25 minutes).
+The embedded ellipsoid on a card (linear cloud, Fourier solver, 561 steps): 16 s at
+128^3 with 2.1e6 particles, 175 s at 256^3 with 1.7e7 particles (0.31 s per step, 8.4
+GiB); the cubic cloud at 128^3 42 s.
+Card time of the package: 0.07 (job 4648) + 0.29 (job 4736, T6c and T4d at 64^3) + 0.08
+(job 4777, card check of the merged build and T4d at 96^3 to 256^3) = 0.44 card-hours
+of the one allowed.
 
 ## 7. Tests of this package and their state
 
@@ -214,7 +218,7 @@ package, commit 67ca9ce1).
 | T3 | group history on the exact pancake, tag range, restart | core-20261119-160919-c6a7279; core-20261120-222422-4ef2e80 | held (parallel-axis shift 3.9e-12, physical columns 7e-16, slab I and dI 340 and 129 times better with the spectral symbol, continued files identical). Failed on the low side: d3I rms 0.26 per cent, predicted 0.5 to 1.5 |
 | T4a | deformed-ball generator against Track A's | core-20261119-152228-0ad3c0e; core-20261119-152928-6be4984 | held: equal in every value |
 | T4b, T4c | embedded ellipsoid at 64^3 against Track B's ODE, Fourier and multigrid | core-20261119-162746-a02d334, core-20261119-162455-e05ffa1; core-20261120-222425-078bcc0 | failed in three of four parts: first minimum of the short axis +2.56 (Fourier) and +1.29 per cent (multigrid) against "within 2"; semi-axes off by up to 0.11 R_L against 0.03; solvers 1.25 per cent apart against 0.3. Not refuted (5 per cent) |
-| T4d | the same with the kernels of T2, and against the cell size | card core-20261120-221835-4870ae5; core-20261121-081511-37acd23 | 64^3 with the cubic cloud: +0.92 per cent, held; "axes below 0.045" failed (0.047). 96^3 did not run (deck fault: MeshBlocks of 48^3). 96^3, 128^3, 256^3: card job core-20261121-080215-df3af65, PENDING |
+| T4d | the same with the kernels of T2, and against the cell size (64^3 to 256^3) | card core-20261120-221835-4870ae5, card core-20261121-080215-df3af65 (merged build); core-20261121-084820-a252870 | crossing-time error of the linear cloud with the spectral symbol 2.56, 1.09, 0.42, -0.14 per cent at 64^3, 96^3, 128^3, 256^3: the lag is a discretisation error. Held: 64^3 cubic cloud (+0.92), 96^3, 128^3 spectral, symbols 0.43 per cent apart. Failed: "axes below 0.045" (0.047), 128^3 seven-point (-0.01 against +0.15 to +0.5), 256^3 (the sign), "axes falls by three per doubling" (the long axis stays 0.06 to 0.07 R_L off the ODE at every fine run: a floor against the reference, not separated) |
 | T5 | Track D's secondary infall onto `newton_pm_mass` | core-20261119-165257-61d4b78; core-20261120-222417-4ca3f76 | held: turnaround mass on the closed form at a/a_i = 2 and within 2.6e-4 at 4, both placements equal; within 0.7 per cent at all 45 snapshots |
 | T6 | multigrid on a refined mesh, ball across the level boundary, lattice 0.0625 | core-20261119-160027-2c0c171; core-20261120-222437-191d56a | converges: held. Conservation within ten times the uniform mesh: failed (44 times in the momentum) |
 | T6b | ball inside the fine region, lattice 0.0625 | core-20261119-165447-0b9cb1e; core-20261120-222429-8971bdb | refined equals uniform 128^3 to 3e-4: held. Momentum below 1e-4: failed (2.1e-3 on both), and the conclusion I had attached to that failure was wrong |
@@ -226,7 +230,8 @@ package, commit 67ca9ce1).
 | card twins | T1 and T3 on a card, pre-merge card build | card core-20261119-145346-2f89b86; core-20261120-220427-5d8547f | held: positions within 1.4e-15 of the box, K and W 7.3e-13, group columns 6e-13 |
 | T11a | merged processor build against release core-v0.5, new options absent, sixteen set-ups | core-20261121-080231-a98a070, core-20261121-080229-0095e95; core-20261121-080954-30dec42 | held: 117 of 117 items identical |
 | T11b | merged processor build against the files of the pre-merge build, Fourier solver and groups | core-20261121-080229-0095e95; core-20261121-080954-30dec42 | 50 result files identical; seven restart files differ in the 36 never-set bytes of the mesh header only (a class my prediction did not name) |
-| T11c | card twins of T1 on the merged card build | card job core-20261121-080215-df3af65 | PENDING (Slurm 4777) |
+| T11c | card twins of T1 on the merged card build | card core-20261121-080215-df3af65 (Slurm 4777); core-20261121-084805-29f8e02 | held: positions within 1.5e-15 of the box, K and W 7.3e-13 |
+@@TWINROW@@
 | T12 | the example lines of READY with the published processor executable | core-20261121-081316-b153b46 | held: all run; the refined-mesh example equals the card run of T6c to 2.2e-13 over 20 steps |
 
 Lines of shared source files touched by this package (for the merge into `core/nrpic`;
@@ -249,7 +254,7 @@ Published: `/data/haiyangw/nrpic/scratch/core/exe/core_newton-2/` (`athena_cpu`,
 with; COMMIT, SHA256SUMS, READY; copies of READY and COMMIT in
 `tracks/core/analysis/newton2/`).
 
-Not done: the judgement of card job core-20261121-080215-df3af65 (T11c, T4d at 96^3,
-128^3, 256^3); the relativistic self-force test of section 4; a separation of the two
+Not done: the relativistic self-force test of section 4; a separation of the two
 candidate terms at a level boundary (section 5); a profile of the isolated solver on a
-card (section 6).
+card (section 6); what the floor of the embedded ellipsoid against Track B's ODE is
+(T4d).

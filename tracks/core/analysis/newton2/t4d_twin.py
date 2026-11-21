@@ -6,7 +6,7 @@ case on a card (merged builds), from the group history of the patch.
 
 DIR: run directories that hold newton.newton.g1.hst (and newton.newton.hst).  Compared
 at every record: columns 38 to 43 (J_ij of the patch in physical coordinates) and
-columns 50 to 55 (d2J/dT2), relative to the largest value of each column over the run;
+columns 50 to 55 (d2J/dT2), relative to the largest component of each tensor over the run;
 K and W of the history; the record of the first minimum of the short axis
 (5 J_xx/M)^(1/2).  Passes within 1e-9 for J (the prediction of the journal), with the
 same record of the minimum.
@@ -56,13 +56,18 @@ def main():
     res = {"proc": a.proc, "card": a.card, "records": [int(len(gp)), int(len(gc))],
            "times_equal": bool(np.array_equal(gp[:m, 0], gc[:m, 0]))}
 
-    def dev(x, y, cols):
+    def dev(x, y, cols, tensor=False):
+        # a tensor is scaled by its largest component: the off-diagonal components of
+        # this patch vanish by symmetry and hold rounding (1e-17) in both runs
         sc = np.abs(y[:, cols]).max(axis=0)
+        if tensor:
+            sc = np.full_like(sc, sc.max())
         d = np.abs(x[:m, cols] - y[:m, cols])/np.where(sc > 0, sc, 1.0)
         return d
 
-    dJ = dev(gp, gc, slice(37, 43))
-    d2J = dev(gp, gc, slice(49, 55))
+    dJ = dev(gp, gc, slice(37, 43), tensor=True)
+    d2J = dev(gp, gc, slice(49, 55), tensor=True)
+    res["J_offdiagonal_largest"] = float(np.abs(gc[:, [38, 39, 41]]).max())
     dKW = dev(hp, hc, slice(4, 6))
     res["J_max"] = float(dJ.max())
     res["d2J_max"] = float(d2J.max())

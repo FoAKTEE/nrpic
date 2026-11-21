@@ -1295,3 +1295,18 @@ crossing at 24.2525 t_k; "axes": largest |semi-axis - ODE|/R_L up to one t_k bef
 - The Layzer-Irvine drift of the linear cloud falls slowly with the cell size (8.0e-3
   to 3.1e-3 over a factor four); with the cubic cloud and the spline gather it is 3e-6
   at both cell sizes.
+
+### T4d at 96^3 on a processor and its card twin: outcome [VERIFIED]
+
+Processor run core-20261121-082059-478b448 (merged build, one core, 1813 s for 420
+cycles and 905968 particles; started 08:21:01Z, not 08:22Z as the heading above says).
+The same case on the card: 4.7 s.
+- First registered comparison core-20261121-085145-9c8963d: verdict "fail" by my own
+  criterion, J within 1e-9 "of the largest value of each column": the deviation was 2.6
+  in that measure. The columns that failed are the off-diagonal components J_xy, J_xz,
+  J_yz, which vanish by the symmetry of the patch and hold rounding in both runs
+  (largest value 7e-17, against 10.8 for J_zz). The prediction as I worded it is
+  ill-posed for a column that is zero by symmetry, and as worded it failed. Read off
+  the same files in a debugging pass: the diagonal components agree to 3.4e-13 in
+  absolute value. The script now scales a tensor by its largest component; the
+  registered rerun follows, and its numbers were seen before it.

@@ -429,8 +429,7 @@ the periodic expanding plane wave with the multigrid and the Fourier solver and 
 group history, each equal to its processor run to rounding through shell crossing
 (7.11); a ball on a mesh with one static level, 20 steps of the processor run equal to
 the card run to 2.2e-13 (7.12). Not run on a card: restart. Card time: first pass 0.19
-card-hours (Slurm jobs 4382 and 4405), second pass 0.36 (jobs 4648 and 4736) and the
-job of 7.12.
+card-hours (Slurm jobs 4382 and 4405), second pass 0.44 (jobs 4648, 4736 and 4777).
 
 **MPI.** One rank. The particle module runs on several ranks since release core-v0.5
 (`interfaces/mpi.md`), but `pusher = newton` stops there with a message
@@ -777,37 +776,66 @@ axis at 24.2525 t_k. Measured: the first minimum of (5 J_xx/M)^(1/2) from column
 of the group history; "axes" is the largest |semi-axis - ODE|/R_L up to one t_k before
 the crossing.
 
-| cells, cell size | deposit and gather, solver | first minimum of the short axis | axes (x, y, z) | Layzer-Irvine drift / max a\|W\| |
-|---|---|---|---|---|
-| 64^3, 0.75 t_k | linear cloud, Catmull-Rom; Fourier `spectral` | +2.56 per cent | 0.111, 0.074, 0.083 | 8.0e-3 |
-| 64^3 | linear cloud, Catmull-Rom; multigrid | +1.29 per cent | 0.045, 0.041, 0.062 | 9.2e-3 |
-| 64^3 | cubic cloud with compensation, cubic spline; Fourier `spectral` | +0.92 per cent | 0.029, 0.020, 0.047 | 3.7e-6 |
+| cells (cell size) | linear cloud, Catmull-Rom; `spectral` | linear cloud; seven-point operator | cubic cloud with compensation, cubic spline; `spectral` |
+|---|---|---|---|
+| 64^3 (0.75 t_k) | +2.56 per cent | +1.29 per cent (multigrid) | +0.92 per cent |
+| 96^3 (0.5 t_k) | +1.09 per cent | | |
+| 128^3 (0.375 t_k) | +0.42 per cent | -0.01 per cent (Fourier, `seven_point`) | -0.11 per cent |
+| 256^3 (0.1875 t_k) | -0.14 per cent | | |
+
+(first minimum of the short axis against the ODE crossing), and
+
+| run | axes (x, y, z) | quadrupole energy to t_x - 1 against the ODE | Layzer-Irvine drift / max a\|W\| |
+|---|---|---|---|
+| linear cloud, spectral, 64^3 | 0.111, 0.074, 0.083 | -42 per cent | 8.0e-3 |
+| linear cloud, multigrid, 64^3 | 0.045, 0.041, 0.062 | -32 per cent | 9.2e-3 |
+| cubic cloud, spectral, 64^3 | 0.029, 0.020, 0.047 | -28 per cent | 3.7e-6 |
+| linear cloud, spectral, 96^3 | 0.043, 0.063, 0.089 | -26 per cent | 6.3e-3 |
+| linear cloud, spectral, 128^3 | 0.0075, 0.043, 0.072 | -13 per cent | 5.2e-3 |
+| linear cloud, seven_point, 128^3 | 0.019, 0.033, 0.066 | -3.2 per cent | 6.1e-3 |
+| cubic cloud, spectral, 128^3 | 0.023, 0.027, 0.062 | -3.9 per cent | 3.0e-6 |
+| linear cloud, spectral, 256^3 | 0.019, 0.034, 0.068 | -3.1 per cent | 3.1e-3 |
 
 Runs: T4b core-20261119-162746-a02d334, T4c core-20261119-162455-e05ffa1 (13.6 V cycles
-per step), analysis core-20261120-222425-078bcc0 (figure `t4b_embedded.png`); the third
-row on a card (case emb64_pcs_fft of core-20261120-221835-4870ae5, 3.3 s), analysis
-core-20261121-075319-f61af19 (figure `t4d_convergence.png`). The centroid of the patch
-stays fixed to rounding in all three; the run starts within 3e-3 R_L of the ODE state
-(lattice ball against continuum ellipsoid).
-- At this cell size the short axis spans four and a half cells at the start and fewer
-  than three near the crossing: the run lags the ODE, and the lag is the smoothing of
-  the force by the cloud and the gather. The seven-point operator overestimates the
-  potential at short wavelengths and hides part of that loss; with the linear cloud the
-  spectral symbol is therefore further from the ODE than the multigrid solver, although
-  it is the more accurate operator [JUDGEMENT: no run separates the two terms]. With
-  the cubic cloud, its compensation and the spline gather (the kernels of Track B's
-  pancake, 7.3) the spectral solver is the closest of the three.
+per step; figure `t4b_embedded.png`, analysis core-20261120-222425-078bcc0); the cubic
+cloud at 64^3 on a card (job core-20261120-221835-4870ae5); 96^3 to 256^3 on a card with
+the merged build (job core-20261121-080215-df3af65: 4.7 s at 96^3, 16 s at 128^3, 42 s
+with the cubic cloud, 175 s at 256^3 with 1.7e7 particles); analysis of all eight
+core-20261121-084820-a252870 (figure `t4d_convergence.png`). The 96^3 case on a
+processor equals its card run (`t4d_twin.png`, 7.12). The centroid of the patch stays
+fixed to rounding; a run starts within 3e-3 R_L of the ODE state (lattice ball against
+continuum ellipsoid).
+- The lag at 64^3 is a discretisation error. There the short axis spans four and a half
+  cells at the start and fewer than three near the crossing; with the linear cloud and
+  the spectral symbol the error of the crossing time falls as 2.56, 1.09, 0.42 per cent
+  (observed orders 2.1 and 3.3) and passes through zero.
+- At 64^3 the seven-point operator, which overestimates the potential at short
+  wavelengths, hides part of the smoothing of the cloud and the gather: the multigrid
+  run is closer to the ODE than the spectral one although its operator is the less
+  accurate [JUDGEMENT: no run separates the two terms]. With the cubic cloud, its
+  compensation and the spline gather (the kernels of Track B's pancake, 7.3) the
+  spectral solver is the closest of the three at 64^3.
+- A floor against the ODE remains. The three finest runs (256^3 linear, 128^3
+  seven-point, 128^3 cubic) end between -0.01 and -0.14 per cent in the crossing time;
+  their short axes agree with each other to 0.005 R_L and lie 0.02 R_L below the ODE
+  before the crossing, their long axes 0.06 to 0.07 R_L off it, whatever the kernel and
+  the symbol. At these cell sizes the runs agree with each other better than with the
+  reference: what is left is a difference between a particle patch in a periodic,
+  responding background and the track's ODE (model A). Which assumption of the ODE it
+  is was not separated [TO VERIFY; Track B's reference].
 - With `deposit_shape = pcs` and `interp = bspline` the deposit and the gather kernel
   are the same function, the force is the exact gradient of the particle sum W of
-  column 6, and the Layzer-Irvine constant holds to 3.7e-6 of max a|W| instead of 8e-3
-  (compare 7.4). For an energy budget use these kernels.
-- Predictions that failed: the crossing time of the Fourier run within 2 per cent
-  (2.56); the semi-axes within 3 per cent of R_L (0.047 to 0.111); the two solvers
-  within 0.3 per cent of each other (1.25); "axes" below 0.045 with the cubic cloud
-  (0.047).
-- Convergence with the cell size (96^3, 128^3, 256^3; predictions in the journal, T4d)
-  is in card job core-20261121-080215-df3af65; until it has been judged the lag is
-  measured at one cell size only and its order is [TO VERIFY].
+  column 6, and the Layzer-Irvine constant holds to 3e-6 of max a|W| at both cell
+  sizes, against 8e-3 to 3e-3 with the linear cloud (compare 7.4). For an energy
+  budget use these kernels.
+- Predictions that failed: at 64^3 the crossing time of the Fourier run within 2 per
+  cent (2.56), the semi-axes within 3 per cent of R_L (0.047 to 0.111), the two solvers
+  within 0.3 per cent of each other (1.25), "axes" below 0.045 with the cubic cloud
+  (0.047); against the cell size the seven-point run at 128^3 (+0.15 to +0.5 predicted,
+  -0.01 measured), the run at 256^3 (+0.08 to +0.3 predicted, -0.14 measured), and "the
+  largest axis error falls by three per doubling" (the long axis stays at 0.07). Held:
+  96^3 (+1.09 in +0.8 to +1.5), 128^3 spectral (+0.42 in +0.4 to +0.9), the two symbols
+  0.43 per cent apart at 128^3.
 Not tested: the embedded patch on an isolated mesh; a rotated patch; more than one
 patch.
 
@@ -883,9 +911,14 @@ built again and checked [VERIFIED; journal sections T11, T12]:
   as the READY file prints them (run core-20261121-081316-b153b46, figure
   `ready_examples.png`); the ball on the refined mesh agrees with its card run (T6c,
   pre-merge card build) to 2.2e-13 in columns 5 to 18 of the history over 20 steps.
-- Not yet judged: the card twins of T1 with the merged card build and the embedded
-  ellipsoid at 96^3, 128^3 and 256^3 (card job core-20261121-080215-df3af65, Slurm
-  4777, queued on 2026-11-21 08:02Z). Until then the merged card executable is
-  untested on a card.
+- The merged card build on a card (job core-20261121-080215-df3af65, Slurm 4777, 299 s;
+  judgement core-20261121-084805-29f8e02): the plane wave of T1 with the multigrid
+  solver and with the Fourier solver and both symbols equals the processor runs to
+  1.5e-15, 2.8e-16 and 4.4e-16 of the box in every position at 13 snapshots through
+  shell crossing, and to 7.3e-13 in K and W of the 602 records; the Fourier run with the
+  seven-point symbol equals the multigrid run on the card to 2.2e-15. The Fourier
+  solver with 601 solves takes 0.9 s of card time for this case, the multigrid solver
+  to rounding 26.6 s.
+@@TWIN@@
 Executables: `/data/haiyangw/nrpic/scratch/core/exe/core_newton-2/` (READY, COMMIT,
 SHA256SUMS; `premerge/` holds the pair the earlier tests ran with).
