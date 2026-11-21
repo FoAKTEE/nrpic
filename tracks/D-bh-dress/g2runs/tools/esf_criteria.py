@@ -181,7 +181,8 @@ def main():
     m_in = acc.get(f"m_inside{a.sphere}")
     out["P6"] = dict(np_min=float(hst["np"].min()), np_end=float(hst["np"][-1]),
                      n_escaped_end=float(hst["n_escaped"][-1]) if "n_escaped" in hst else None,
-                     alpha_min_range=[float(hst["alpha_min"].min()), float(hst["alpha_min"].max())],
+                     alpha_min_range=[float(hst["alpha_min"].min()), float(hst["alpha_min"].max())]
+                     if "alpha_min" in hst else None,
                      m_inside1_max_after_20=float(m_in[acc["time"] >= 20].max()) if m_in is not None and np.any(acc["time"] >= 20) else None,
                      finder_finite=bool(np.all(np.isfinite(Mh))),
                      finder_gaps_gt_1M=int(np.sum(np.diff(th) > 1.0)))
