@@ -746,3 +746,33 @@ Predictions (refuted if outside):
 - L3: at 256^3 the median per-mode error of R^NR at N_f in each shell with k >= 40 dk lies
   between 0.5 and 2 times the lockstep error of that shell (the sources inherit the phase
   error when the window lets them in).
+
+### 14.2 Outcome of the lockstep check (run E-20261121-090057-19571c7, `fig/fig_card_lockstep.png`, looked at)
+
+- L1 holds: at 256^3 the lockstep error of every one of the 2934 shells with k >= 24 dk is
+  0.973 to 1.023 times k^5 dt^4/600 (median 1.003); the top shell 2.55e-3 against 2.54e-3.
+  Below k of about 10 dk the error is the background part, 9.3e-8. [VERIFIED for this run:
+  the lockstep integration from N* carries RK4's accumulated phase error while the shell
+  is inside the horizon.]
+- L2 holds: the top shell exceeds the lowest by 1.06e-5 at 64^3 (range 1.0e-5 to 4e-5) and by
+  7.0e-7 at 128^3 (at most 3e-6); both are about half of k^5 dt^4/600 added to the background
+  part (the two parts add as complex numbers, not as magnitudes). G1b's failure (entry 12:
+  lockstep 1.4 times the Pi error) is this part.
+- L3 holds: the shell median of the per-mode error of R^NR is 0.97 to 1.96 times the
+  lockstep error of the shell for all 2080 shells with k >= 40 dk (median 1.20): the top
+  shells of R^NR inherit the lockstep phase error when the window lets them in. For
+  k <= 35 dk the median per-mode error is flat at about 2.5e-4, above the lockstep part.
+- Consequence [JUDGEMENT]: the error of the top shells of P1's set-up (U-A5 6.7e-3 in power
+  for shell 4096) is the time step of the lockstep record, not the field evolution; it
+  would fall by 16 per halving of the step of the record alone. Request to core below.
+
+### 14.3 Added prediction for U256m (before it runs; job 4783 pending)
+
+The flat 2.5e-4 of the per-mode error for k <= 35 dk at 256^3 is read as the part even in s:
+group 1 had even/odd 2.19e-5 at rms R^NR 0.0674, and a second-order part relative to the
+first grows with the amplitude, so at rms 0.8945 even/odd is 2.19e-5 x 0.8945/0.0674 =
+2.9e-4. Predictions (refuted if outside): even/odd rms over the modes k <= 32 dk at N_f in
+[2.0e-4, 4.0e-4]; the odd part per mode at N_f: median over k <= 32 dk below 1e-4, shell
+median for k >= 40 dk within a factor 2 of the lockstep error of the shell (14.2); U-A2s
+(odd part, k <= 32 dk) max below 2e-2 (passes), with the ten single-run failures of entry
+14 below 2e-3 in the odd part.
