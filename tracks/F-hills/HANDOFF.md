@@ -1,75 +1,77 @@
 # HANDOFF of F-hills
 
-State in three lines (2026-11-19, end of the lead session of wave 2b):
-- G0: package complete except the verifier's report (`stage/G0`, C18 open; SECOND_CHECK.md is a
-  second agent's check of the plan; verifier asked of orch). G1 not met (`stage/G1/STATUS.md`).
-- The first full-GR passage P1 (q = 4, members at m/8) is submitted as a chain: run
-  F-20261119-150017-b45ec5f, Slurm 4650 (pending at 15:00Z; 17-20 card-hours, up to 26 segments).
-- S2g (core's mass-scaled shift damping on a single member) is queued: run
-  F-20261119-143443-f11ebb9, Slurm 4640; its analysis (E10) is not done.
+State in three lines (2026-11-21, end of the lead session of wave 3, batch 2a):
+- G0: package complete for an independent review (verifier's report in, every WRONG item
+  corrected, `stage/REVIEW-wave3.md`); review asked of orch; not signed (`coord/GATES.md`).
+- G1 not met. P1 (run F-20261119-150017-b45ec5f) runs its last segments to t = 280 M, but its binary
+  MERGED at t = 48.8 M before the passage (confirmed by the lead's own parser): RISKS R15.
+- Five round-1 packages were cut on 2026-11-20 (note, p1, junk_gauge, kerr, g2mesh); state below.
 
 Owner F-hills, branch `track/F-hills`, worktree `/data/haiyangw/nrpic/wt/F-hills`. Start every
 session with `cd /data/haiyangw/nrpic/wt/F-hills && git merge --no-edit main`, then
-`harness/bin/nrpic-ctx inbox`.
+`harness/bin/nrpic-ctx inbox`, then `test -e /data/haiyangw/nrpic/locks/PAUSE`.
 
-Run next: harness/bin/nrpic-run status F-20261119-143443-f11ebb9 && harness/bin/nrpic-run status F-20261119-150017-b45ec5f
+Run next: scripts/submit_chain.sh --status /data/haiyangw/nrpic/scratch/F-hills/F-20261119-150017-b45ec5f
 
-## Exact commands
+## Card job running
 
-1. S2g, when Slurm 4640 has ended (`squeue -u $USER`):
-   `harness/bin/nrpic-run finish F-20261119-143443-f11ebb9`, then the two analyses of
-   `tracks/F-hills/nr_first/README.md` section "Pending" (s2g_compare.py and single_analysis.py
-   with S3, S2, S2g; S = scratch/F-hills/F-20261115-173601-2fae2dc, G = scratch/F-hills/
-   F-20261119-143443-f11ebb9). Record E10's outcome against its prediction in
-   `nr_first/JOURNAL.md` (criteria unchanged), read the figures.
-2. P1: `scripts/submit_chain.sh --status /data/haiyangw/nrpic/scratch/F-hills/F-20261119-150017-b45ec5f`
-   (segments, STATUS, events.log). Do not resubmit while a segment is pending or running. If a
-   segment FAILED on the slot limit, resume the same run directory with a higher
-   `mesh_refinement/max_nmb_per_rank` (at most about 3000: 26.2 MiB per slot on an 80 GB card).
-   When the chain is DONE: `harness/bin/nrpic-run finish F-20261119-150017-b45ec5f`, then
-   `harness/bin/nrpic-run submit --kind scouting --gate G1 --package tracks/F-hills/nr_first
-   --cores 1 --parent F-20261119-150017-b45ec5f --purpose "P1 analysis" -- .venv/bin/python
-   tracks/F-hills/nr_first/scripts/p1_analysis.py /data/haiyangw/nrpic/scratch/F-hills/F-20261119-150017-b45ec5f
-   '--out=$NRPIC_RUN_DIR' --baselines=tracks/F-hills/nr_first/results/baselines_p1.json` (without
-   `--out` the script writes into P1's run directory), and compare with the P1 prediction in
-   `JOURNAL.md` (lead, wave 2b). An intermediate analysis on the segments done so far is allowed
-   (same command; the chain keeps writing).
-   Tracker files of earlier segments are in `<rundir>/trk_keep/`; `nrread.read_trackers` joins them.
-3. G1 work that needs no card: the junk energy of P1's spheres once it passes t = 150 M; Kerr row
-   of F-pre-2 (2402.02178); G1 schematics (updated architecture, data flow) and the note's G1
-   section; then `harness/bin/nrpic-stage report F-hills G1`.
+P1's chain: segment 14 = Slurm 4769 (started 2026-11-20 22:24 PST at t = 231.9 M, about 20 M per
+segment; MAX_SEGMENTS 18), so segment 15 (and perhaps 16) follow by themselves; about 1.5
+card-hours left. Read by: package p1 (`p1/scripts/run_all.sh`, `nr_first/scripts/p1_analysis.py`)
+and junk_gauge (J4, the spheres). When `chain/STATUS` says DONE:
+`harness/bin/nrpic-run finish F-20261119-150017-b45ec5f`, then the two analyses in
+`p1/README.md` ("Commands for the next session"). If the chain stops on MAX_SEGMENTS before
+t = 280, resume with the command in `p1/README.md` (MAX_SEGMENTS 20). If a segment dies with exit
+143/137 and no AthenaK message, it was an outside kill: resume the same way (p1 README).
+
+## Packages cut on 2026-11-20 and what each still needs
+
+| package | committed? | what remains |
+|---|---|---|
+| p1 | yes (intermediate analysis committed by the lead, bb68684b) | analysis to t = 280 M; outcomes of the resumed-chain predictions (entry 1) and P1 items 1, 2 (last clause), 3b; the cause of the merger is NOT p1's job: next action 1 below |
+| junk_gauge | yes, to the J4 prediction | E10's outcome into `nr_first/JOURNAL.md` (analyses F-20261120-222403-b8dc28c, -222415-137ada9 exist); J4 measurement at P1's spheres (remember the merger signal after t = 48.8 M); README |
+| kerr | NO: all files uncommitted (JOURNAL entries 0-1 = predictions, `hrna_incl.py`, `tests/t5_rotation.py`, `tests/t6_kerr_single.py`, `scripts/{digitize_2402,paper_2402,figstyle}.py`) | run its tests and the 2402.02178 comparison, record outcomes, commit (digitised third-party curves stay in scratch) |
+| g2mesh | yes, except `scripts/card_analysis.py` | G2M-1b outcome; G2M-2 analysis of card run F-20261120-222810-e408386 (m16_b16_s3000 ran at 78785 MiB; m8_b32_s1150 aborted rc 134); cost table |
+| note | yes (paused, 70257ac0; lead edits c865ba7a) | the lead's corrections list (`note/JOURNAL.md`, lead entry items 1-7) into `scripts/ledger.py`, prediction, registered `run_all.py`, latexmk, `check_manuscript.py --compile`, read every page; README; P1's merger in Sec. V |
+
+## Next actions (most important first)
+
+1. Isolated binary test (decides RISKS R15): the two members of P1 alone (same a_b, momenta,
+   `corr`, gauge `shift_eta = 2`) at m/8 and at m/16, about 60 M, on one card (m/16 fits: 3000
+   slots). Prediction first: if only m/8 merges, resolution; if both, gauge or data. Then decide
+   the next passage (finer members or wider binary; 1PN-consistent start state from eih).
+2. P1 to the end (above); the junk (J4) and E10.
+3. KHSR: one result of 1201.4794 with newton3 (`e_orb`; SCOPING 5, verifier D8).
+4. When 1-3 and the cut packages are done: a fresh verifier of the G1 material (ledger tables
+   3-4, P1, junk, eih), then `nrpic-stage collect/verify/report F-hills G1`.
 
 ## Files to read first
 
-`CLAUDE.md`; decisions 0013, 0014, 0016, 0017; `tracks/F-hills/STATUS.md`;
-`stage/G1/STATUS.md` (criteria, P1); `stage/REVIEW-wave2.md` (what was checked, what is wrong);
-`JOURNAL.md` last entry (V8-V11, the P1 decision and prediction); `nr_first/README.md` and
-`nr_first/JOURNAL.md` E3, E7, E10, E11; `RISKS.md`.
+`CLAUDE.md`; decisions 0013, 0016, 0019, 0020; `STATUS.md`; `stage/REVIEW-wave3.md` (what was
+checked and corrected); `stage/G0/VERIFIER.md` section 3 (defects D1-D10) and
+`stage/G0/SCOPING.md` ([amended: D<n>]); `stage/G1/STATUS.md` and `OPEN.md`; `p1/JOURNAL.md` entry 4;
+`RISKS.md` (R15 first); `JOURNAL.md` last entry.
 
 ## Decisions pending
 
-- orch: a fresh verifier for G0 (or a ruling that SECOND_CHECK.md serves), outbox
-  `20261119T151429Z__to-orch__verifier-g0-g1.md`; P1 was submitted into a non-empty queue
-  (`...__to-orch__p1-submitted.md`).
-- core: tracker files on restart, finder at 4 cells per radius, found flag, mass-scaled damping
-  with three holes (outbox `20261119T1514*__to-core__*`).
-- Gauge of the passages after P1: depends on S2g and core's three-hole answer.
-- The wave-3a package `eih/` (1PN three-body reference, its own runs and a P1 prediction) is
-  handed to the next lead: review it from its artefacts before using its numbers.
+- orch: G0 independent review; waivers for F-20261115-173719-923135a, -181805-f9c3473,
+  -182100-613c9c6; errata row 1.5; chain rule for outside kills (outbox 20261121T*).
+- core: tracker files truncated on restart (reminder); Bowen-York momenta against canonical 1PN
+  momenta (eih's request).
+- Track: whether the next passage uses finer members or a wider binary (after action 1).
 
 ## Traps
 
-- The chain wrapper `nr_first/scripts/athena_keep_trackers.sh` is the only thing that keeps
-  tracker files across segments (AthenaK truncates them on restart).
-- Horizon summaries: a failed search repeats the previous row; use `nrread.read_horizon` (fixed)
-  and read masses only with hrms < 1e-3 (members from t = 0.5 M, heavy hole from about 4 M).
-- `single_P025.athinput` needs `mesh_refinement/max_nmb_per_rank=2400` (1632 blocks after the
-  first regrid: E11).
-- Member energies: against the barycentre of the heavy hole and the captured member (newton3_fix);
-  against M alone they oscillate by +-0.37 units at q = 4.
-- "r_p" of an NR passage depends on the reading of the puncture momenta: P1 9.81 M (Newtonian)
-  against 9.25 M (GR, hole frame); the q = 10 input turns at 5.77 M in GR.
-- Run ids: `F-<UTC>-<commit7>` from nrpic-run; wave-1 ids `F-hills-...` (the novelty helper's in
-  local time). Never kill by pattern; `scancel` or `harness/bin/nrpic-run stop <id>`.
-- Another helper (wave 3a, `eih/`) may commit in this worktree at the same time: commit
-  path-limited (`git commit -- <paths>`).
+- P1's chain runs the real executable under the name `p1-ak03-gpu`
+  (`scratch/F-hills/tmp/p1/exe/`): do not delete it while the chain runs.
+- Tracker files are truncated on restart: only `nr_first/scripts/athena_keep_trackers.sh` keeps
+  them (`<rundir>/trk_keep/`); a later file wins where times overlap.
+- Horizon summaries: a failed search repeats the previous row; masses only with hrms < 1e-3.
+- After t = 48.8 M finders 0 and 1 both follow the remnant (mass about 0.268).
+- The reference percentages near the separation edge (V7) depend on the start construction;
+  quote them only with it (verifier D2). r_p of an NR passage: always with its GR turning point.
+- 1PN start states must be matched far out and integrated in, not at pericentre (lead's failed
+  first attempt, run F-20261121-063527-b4453db).
+- `nrpic-stage verify` fails while the worktree holds kerr's and g2mesh's uncommitted files and
+  while P1 runs; commit path-limited (`git commit -- <paths>`).
+- Never kill by pattern; `scancel`, `scripts/submit_chain.sh --stop <rundir>`, or numeric PIDs.

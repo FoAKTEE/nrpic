@@ -415,3 +415,42 @@ Also: rerun of the verifier's ledger recomputation (run F-20261121-063712-25981e
 identical; row 57 ("about 3000 slots", `multi_puncture.md:229-230`) no longer agrees because
 release core-v0.4 rewrote that paragraph (now lines 235-247, "about 3100"): a stale locator
 of the note's ledger, not an error of the verifier.
+
+### What the session did with the results (2026-11-21, lead)
+
+- G0: every WRONG, PARTLY or NOT DONE item of `stage/G0/VERIFIER.md` checked at the source and
+  answered in `stage/REVIEW-wave3.md`; `SCOPING.md` amended in place (D1 GR turning points, D2 V7
+  construction, D3 G2 sum 131 -> plan of about 100, D4 q = 4, D5 slot limit vs card, D6 plunge
+  bound, D7 alpha at pericentre, D8 KHSR plan); note text corrected (D7, D10) and its ledger
+  corrections listed for the paused note package; novelty locator and attribution fixed (orch's
+  brief-check message); C18 PASS; collect, verify, report. Judged complete for an independent
+  review; asked of orch.
+- p1's uncommitted intermediate analysis committed (finished work; merger confirmed by L1);
+  kerr's and g2mesh's uncommitted files left alone (packages in progress), listed in HANDOFF.
+- g2mesh's card run F-20261120-222810-e408386 finished in nrpic-run (status failed: its last case
+  aborted, rc 134); its m/16 case at 3000 slots ran at 78785 MiB (read from the log).
+- G1 re-judged: not met (T4 not met in substance after the merger; KHSR, Kerr, three-hole junk,
+  note compile, verifier open).
+- Outbox: orch (G0 review, waivers, errata row 1.5, chain rule for outside kills, P1 merger
+  information), core (tracker files reminder, Bowen-York momenta vs 1PN). Six inbox messages
+  acknowledged. STATUS, HANDOFF, RISKS (R15 new) rewritten.
+
+### Session summary (lead, batch 2a)
+
+did: reviewed verify_g0 and eih from their artefacts (own parser, own 1PN integrations, reruns of
+their registered analyses); checked p1's merger from the raw files; corrected the G0 plan after
+the verifier; brought G0 and G1 to the harness; posted 7 messages, acknowledged 6.
+found: P1's binary merged at t = 48.8 M (no reference merges); the verifier's D3-D7 hold exactly
+at the source; eih's T4 and T5 hold to 1e-9; 3000 MeshBlock slots fit one card.
+evidence: runs F-20261121-063449-4dcca98, F-20261121-063504-00f0743, F-20261121-063520-abab33e,
+F-20261121-063527-b4453db, F-20261121-063646-d826df4, F-20261121-063712-25981e0.
+changed my mind about: P1 as the G1 passage (its binary does not survive to the encounter at m/8);
+the 2700-slot limit as a card limit (it was the input's); the G2 compute (did not fit 120 as
+listed).
+open: cause of the merger (isolated binary at m/8 and m/16); P1 to t = 280 M; J4 and E10; kerr;
+KHSR; note compile; G1 verifier.
+failed predictions this session: L1 clause "separation decreasing monotonically before t = 30 M"
+(a 3e-4 M wiggle); L3c first attempt (failed by my method, E_1PN imposed at pericentre). Carried
+from earlier sessions and decided now: P1 item 2 (separation by t = 200 M) REFUTED by the merger.
+card-hours used this session: 0 submitted by the lead; P1's chain ran on (segments 8-14, about
+5.3 card-hours since the last lead session; 10.72 in total by sacct).
