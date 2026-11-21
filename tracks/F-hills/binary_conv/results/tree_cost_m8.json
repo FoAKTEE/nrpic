@@ -1,0 +1,34 @@
+{
+ "input": "/data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/binary_conv/inputs/bin_m8.athinput",
+ "tend": 100.0,
+ "dt_sample": 0.5,
+ "rate_mbcps": 2000.0,
+ "variants": {
+  "input": {
+   "start": 1170,
+   "max": 1632,
+   "min": 1044,
+   "mean": 1262.358208955224,
+   "h_finest": 0.015625,
+   "m_over_h": 8.0,
+   "cycles_per_M": 256.0,
+   "card_hours_to_tend": 4.488384742951907,
+   "M_per_card_hour": 22.27972995341578
+  },
+  "P1_domain_256": {
+   "start": 1296,
+   "max": 1800,
+   "min": 1170,
+   "mean": 1397.55223880597,
+   "h_finest": 0.015625,
+   "m_over_h": 8.0,
+   "cycles_per_M": 256.0,
+   "card_hours_to_tend": 4.969074626865671,
+   "M_per_card_hour": 20.12447135717032
+  }
+ },
+ "newton_sep_min_max": [
+  4.942995870877132,
+  5.279336546020392
+ ]
+}
