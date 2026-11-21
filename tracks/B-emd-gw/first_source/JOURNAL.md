@@ -944,3 +944,85 @@ submission of this session: NOT RUN.
   package's cap of 1.6 would allow after P16' (~0.1). What it would add: the mesh sequence
   32, 64, 128 at a fixed 8 per cell, and the particle effect at 128^3, which the data above
   bound only by extrapolation [JUDGEMENT].
+
+## Outcomes at 32^3: P11 (jittered nulls), P14 (delta = 0.0025) and the (1 + eps^2) advance test
+
+Runs: analysis B-20261121-075255-631c3d9 (`analyze_scan.py`, bin and dbin, 241 dumps per case,
+0 errors) of the processor runs B-20261119-143238-b7961ef (jit0p3, jit0p1),
+B-20261119-144416-5f1ab7a (d0025_e1), B-20261119-153624-224805d (d0025_e0p3); comparison
+B-20261121-075547-32aba8f (`conv_compare.py` with null_prediction.json of
+B-20261119-143224-f0e6727 and the 32^3 wave-2 runs of B-20261115-184650-2d155b6;
+`conv_null.png`, `conv_delta.png` looked at); advance test B-20261121-075616-97f039f
+(`eps2_test.py`, double-precision dumps; `eps2_test.png` looked at).
+
+P11 at 32^3 (prediction (b) of the entry of 14:35 PST):
+- (a) the largest TT mode after the first dump is >= 1.6e-6 (A = 0.3) and 5.5e-7 (A = 0.1),
+  against 4e-17 in the plane-symmetric null at 32^3: CONFIRMED.
+- (b') box modes CONFIRMED at both amplitudes for 3 <= a <= 20: |measured|/|predicted| at K1
+  0.82-0.94 (median 0.89, A = 0.3) and 0.89-0.98 (0.93, A = 0.1); at K2 0.71-0.95 (0.79) and
+  0.81-0.97 (0.89); phase differences -0.24 to +0.02 rad. The noise potential at (0, k, 0) is
+  5.7 times its 64^3 value, and so is the box-mode noise: |c(K1)| of the null at A = 0.3 is
+  0.080-0.093 of the eps = 0.1 signal for 3 <= a <= 20 (64^3: <= 0.015).
+- (c') A-scaling: at K1 |c(0.3)/c(0.1)| = 2.90-3.15 (median 3.05) against 3.19 +- 10 percent
+  (2.87-3.51): CONFIRMED, at the lower edge. At K2 2.93-3.35 (median 3.06) against 3.43 +- 10
+  percent (3.09-3.77): REFUTED (11 percent below; phases within 0.10 rad as predicted). Both
+  box modes scale with the ratio 3.05 of a field nearly linear in A: the noise-noise term,
+  predicted at 0.31 (K1) and 0.41 (K2) of the cross term at A = 0.3, contributes less than
+  predicted. Consistent with that, the modulus ratio of (b') is lower at A = 0.3 (0.79 at K2)
+  than at A = 0.1 (0.89) [JUDGEMENT: the nn term of null_prediction.py is over-estimated at
+  32^3; at 64^3 it was half the cross term and the A = 0.3 moduli were 0.94-1.04].
+- (d) rms TT of all modes 5.3-7.5 (A = 0.3) and 6.0-8.6 (A = 0.1) times the second-order
+  estimate for 3 <= a <= 20 (exceeds it, as predicted; 12-20 at 64^3); its A-ratio 2.90-2.94
+  for 1.5 <= a <= 40 (predicted 2.5-3.5): CONFIRMED; 2.31-2.67 for 80 <= a <= 140.
+- (e) at 32^3 the null at A = 0.3 is 0.080-0.093 of the eps = 0.1 signal for 3 <= a <= 20
+  (predicted 0.07-0.14): CONFIRMED; it stays <= 0.098 to a = 140 (A = 0.1: <= 0.033).
+- Last dumps (a = 140): rms TT 1.9e-5 (A = 0.3) and 8.1e-6 (A = 0.1), rho_kin/rho_grad 0.012
+  and 0.010 (quasi-static, as at 64^3); the plane-symmetric null 2.4e-15.
+
+P14 at 32^3 (read with the criteria of the 64^3 entry; the clean prediction at 32^3 is the
+advance test below): window |dev| <= 0.5 percent to a = 33.2 (eps = 1) and 38.0 (eps = 0.3) at
+delta = 0.0025 against 10.3 and 12.6 at delta = 0.01 (64^3: 33.7, 41.7); double-precision
+max |dev| for 2 <= a <= 9 3.2e-4 and 3.6e-4 against 3.2e-3 and 1.6e-3 at delta = 0.01 (64^3:
+3.2e-4, 3.5e-4); window-mean R at a = 20, 30, 40, 60: 16.8, 18.1, 16.9, 18.9 (eps = 1) and
+13.5, 15.7, 14.3, 20.1 (eps = 0.3); collapse dev(0.0025, 4a)/dev(0.01, a) 1.07-1.30 for
+a = 15-35, but 1.53 (eps = 1) and 1.95 (eps = 0.3) at a = 10, outside the 50 percent of
+P14(c) (at 64^3 all in 1.06-1.47): at a ~ 10 for delta = 0.01 the departure is not yet of
+the (delta a)^2 form on the coarser mesh.
+
+Advance (1 + eps^2) test (prediction (a) of the entry of 14:35 PST), from the double-
+precision dumps (rst at delta = 0.01, dbin at 0.0025; spline in tau; the spline agrees with
+the window mean of the single-precision dumps to 0.2-1.2 percent of dev at delta = 0.01):
+
+| mesh | a | R (eps = 1) | R (eps = 0.3) | Q at delta = 0.0025 | Q at delta = 0.01 |
+|---|---|---|---|---|---|
+| 32^3 | 20 | 18.8 | 21.5 | 1.161 | 1.012 |
+| 32^3 | 30 | 17.1 | 17.6 | 1.036 | 1.007 |
+| 32^3 | 40 | 17.2 | 17.4 | 1.019 | 1.010 |
+| 32^3 | 50 | 17.8 | 17.6 | 1.011 | 1.020 |
+| 32^3 | 60 | 19.1 | 18.3 | 1.007 | 1.054 |
+| 64^3 | 20 | 17.9 | 19.5 | 1.102 | 1.010 |
+| 64^3 | 30 | 16.9 | 17.1 | 1.023 | 1.006 |
+| 64^3 | 40 | 17.1 | 17.2 | 1.014 | 1.009 |
+| 64^3 | 50 | 17.7 | 17.5 | 1.008 | 1.019 |
+| 64^3 | 60 | 18.9 | 18.2 | 1.006 | 1.049 |
+
+- (a1) 1/16: REFUTED as written at 32^3 at one of ten points (eps = 0.3, a = 20: R = 21.5 > 20);
+  the other nine lie in 17.1-19.1; at 64^3 (second reading) all ten lie in 16.9-19.5. The
+  departure scales as (delta a)^2 with a 10-20 percent excess (R ~ 17-19, not 16), the same
+  on both meshes.
+- (a2) (1 + eps^2): REFUTED as written at a = 20 on both meshes (Q = 1.16 at 32^3, 1.10 at
+  64^3); Q lies in 1.007-1.036 (32^3) and 1.006-1.023 (64^3) for a = 30-60 and falls
+  monotonically towards 1 with a on both meshes. At delta = 0.01, Q = 1.006-1.020 for
+  a = 20-50 and 1.05 at a = 60 on both meshes.
+- Beside the failure, as the caveat of the prediction asked: dev(0.0025) at a = 20 is 1.2e-3
+  (eps = 1) and 5.7e-4 (eps = 0.3) at 32^3, and the double-precision dumps at a <= 9 show
+  |dev| up to 3.2e-4 and 3.6e-4 there, a part that does not scale as (delta a)^2. An additive
+  offset of 0.8e-4 in dev(eps = 0.3, a = 20), a quarter of that, turns Q = 1 into Q = 1.16
+  [JUDGEMENT, arithmetic only; the offset itself is not measured at a = 20]. Q at a = 20 being
+  smaller on the finer mesh (1.10) fits a mesh-dependent offset, but the 64^3 value is also
+  outside the band.
+Reading [JUDGEMENT]: the post-hoc (1 + eps^2) form of the departure of note/JOURNAL is
+supported by the advance test where the departure dominates the non-scaling offset (a >= 30
+at delta = 0.0025: Q within 1-4 percent, both meshes); the test does not support it at
+a = 20, where it fails by 10-16 percent, and the 5 percent band was too narrow there. The two
+failed points stay on record.
