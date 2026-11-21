@@ -12,7 +12,8 @@ Verdicts: CONFIRMED = recomputed with my own code and an attempt to break it fai
 NOT CONFIRMED = not checked (reason given); WRONG = with evidence. Qualified verdicts say
 what part holds. Every number carries a run id (mine: `D-20261120-222209-871e07f`,
 `D-20261121-031031-e23da04`, `D-20261121-031711-0d79cb3`, `D-20261121-033209-9c0bd44`,
-`D-20261121-034048-17427b0`, `D-20261121-035106-0c619ee`, `D-20261121-035114-8a3cb38`).
+`D-20261121-034048-17427b0`, `D-20261121-035106-0c619ee`, `D-20261121-040417-8a3c402`,
+`D-20261121-035114-8a3cb38`).
 
 ## Summary
 
@@ -32,7 +33,7 @@ what part holds. Every number carries a run id (mine: `D-20261120-222209-871e07f
 | V3 4 per cent below FdRW at the a = 0.8 equatorial peak | CONFIRMED (-4.5 per cent; mine within 0.6 per cent of the track's reference); [JUDGEMENT] the difference lies in FdRW's curve |
 | V4 late/early density ratio 0.998-1.003 | CONFIRMED (0.997-1.005, each range within 1.4 sigma of 1) |
 | V4 invariants conserved to 1e-5 | CONFIRMED (7.9e-6, 1.7e-9, 9.5e-6) |
-| V4 inner-range time averages 1-4 per cent below the reference, same sign | see V4 below |
+| V4 inner-range time averages 1-4 per cent below the reference, same sign | WRONG in magnitude (15, 7, 2 per cent below my converged reference; already at t = 0); same sign |
 | V5 numerical ledger at 78d470ca | 34 rows recomputed or recounted agree, 2 differ without a defect, 2 not comparable, 8 NOT CONFIRMED (not done); no row WRONG |
 | V6 wave-1 baselines | CONFIRMED through V5 rows (spike peak, GS ratios, D-pre-4 drift) |
 
@@ -166,7 +167,25 @@ Kerr-Schild state with my formulas (geometry from `athenak/src/particles/nrpic_m
   0.998-1.003 uses another split; mine differ from it by up to 0.002).
 - Invariants, maximum over 48000 particles and 20000 M: |dE/E| 7.88e-6, |dLz| 1.66e-9,
   |dQ|/max(Q,1) 9.46e-6; no non-finite snapshot; smallest radius 2.2878 M. CONFIRMED.
-- Inner-range time averages against the reference: V4_REFERENCE_PARAGRAPH
+- Inner-range time averages against the reference: WRONG in magnitude, right in sign. My
+  reference counts (Hernquist DF of the sampler, E < 0.99, number current J^t Sigma^2 sin(theta)
+  integrated over r and theta, normalised to the 48000 particles) are 155.7 (0-4 M), 634.7
+  (4-6), 2501.8 (6-10), 5378.0 (10-16), 22531 (16-40); the track's are 137.8, 601.4, 2472.6,
+  5362.7, 22574. Against mine the time averages lie 15.1, 6.9, 2.2 and 0.4 per cent below and
+  0.3 per cent above (block standard errors 0.6, 0.2, 0.06, 0.05, 0.03 per cent of the mean; a
+  Poisson estimate for the fixed sample of orbits gives 9, 4, 2 per cent in the three inner
+  ranges, so 0-4 and 4-6 are 1.7-2 sigma even on that estimate). My reference is converged
+  (twice the nodes: +0.02 and -0.02 per cent, run D-20261121-035106-0c619ee) and its local
+  density equals the track's own curves (`kerr_curves_ours.npz` of D-bh-dress-20261115-171615-8adbbdd,
+  E < 1) to 0.3-0.6 per cent at r = 2.6-8 M, theta = pi/2 and pi/3. My particle counts equal the
+  track's time averages to 0.02 per cent (same spheroidal radius). So the 11.5, 5.2 and 1.2 per
+  cent by which the track's expected counts are lower come from how they were integrated;
+  taking the range boundaries in the Cartesian radius sqrt(x^2+y^2+z^2) instead of r would
+  remove two thirds of the 0-4 gap but not the 4-6 gap (run D-20261121-040417-8a3c402), so the
+  cause is open. The deficit is present at t = 0 already (17.8, 3.4, 2.0 per cent below mine),
+  so it belongs to the initial sample (or to the track's reference), not to AthenaK's
+  evolution: stationarity and conservation are confirmed above; "1-4 per cent below the
+  reference" is not.
 
 ## V5. The numerical ledger of the note at 78d470ca
 
@@ -222,7 +241,11 @@ No ledger row is WRONG.
    25 per cent".
 3. V3: the 4.5 per cent at the a = 0.8 peak belongs to FdRW's curve [JUDGEMENT]; say so with
    the reasons above; name the source of the hole mass 4e6 Msun.
-4. V4: see the V4 paragraph on the reference counts.
+4. V4: recheck the integration of the expected counts of D-bh-dress-20261115-174954-786ddcc
+   in the inner ranges (my integral of the same local density is 13, 5.5, 1.2 per cent higher
+   in 0-4, 4-6, 6-10 M) and the sampler's coverage of the inner region (13 cells without a
+   pilot hit, ic_summary.json of D-bh-dress-20261115-172335-9e5ccf9); until then state the
+   inner deficit as "present in the initial sample, unchanged by the evolution".
 5. Ledger: say which radius "wall radius against the closed form" compares; mark the
    table-density residuals as upper bounds; describe the self-similar model (seed) so that
    its rows can be checked.

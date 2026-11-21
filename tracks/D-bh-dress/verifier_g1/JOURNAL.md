@@ -351,3 +351,15 @@ with both radii. Prediction: with Cartesian boundaries my expected counts come w
 cent of the track's in every range; the run's counts with the spheroidal r equal the
 track's time averages (they did in V4: 132.17 against 0.959 x 137.79 = 132.1). If the
 Cartesian version does not close the gap, the cause stays open.
+
+### Outcome of entry 7 (20:07 PST), run D-20261121-040417-8a3c402
+
+Prediction FAILED: with Cartesian range boundaries my expected counts become 142.6 (0-4) and
+629.8 (4-6) against the track's 137.8 and 601.4: two thirds of the 0-4 gap close, the 4-6 gap
+does not (figure `v4c_radius.png` looked at). The run's counts with the spheroidal r equal
+the track's time averages (132.165 against 132.144; 590.655 against 590.766): the track counts
+with r. Cause of the track's lower expected counts: open. Verdict on the V4 deficit claim:
+WRONG in magnitude (VERIFIER.md, V4).
+
+Verdicts V1-V5 (and V6 through V5) written into VERIFIER.md and committed before I read any
+review of the track (next entry).
