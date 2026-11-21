@@ -207,3 +207,8 @@ value); G1 readiness (criteria met; the package still lacks C18).
 open: C18 verifier package (request to orch); waves, first_source, flrw_conv, shear round 1
 (HANDOFF); note v3 wordings; `nrpic-stage verify` and `report` for G1 (see the end of this
 entry). Card-hours this session: 0 (processors only); owner total 2.48 of 40.
+verify and report (end of the session): `nrpic-stage verify B-emd-gw G1` (25 minutes,
+checksums of every run directory) FAIL only on `clean` (the three untracked files of the waves
+package, left as found) and `sync` (main moved during the run; merged at 790c492b); runs (234
+manifests), rerun (11 of 11), compare and regenerate (22 files) PASS. `nrpic-stage report`:
+verdict FAIL, one item not PASS (C18). Pushed.
