@@ -326,3 +326,39 @@ chained, with a HANDOFF from which a later session reads them.
 - Runs: A-20261121-202520-3164672, A-20261121-202812-cae4436, A-20261121-203120-eaba95f,
   A-20261121-203156-d094c56 (failed), A-20261121-203211-6d3ce73; card A-20261121-204149-c48bd33,
   A-20261121-204250-0bf45c7 (pending).
+
+## 2026-11-21 15:11-15:30 PST, batch 7 (short lead session, decision 0027 items 2 and 6)
+
+Aim: three things only. (1) Post periodic_diag's request to core; (2) the periodic deck at
+cfl_number 0.5 and the corrected periodic job into the sequencer's queue; (3) HANDOFF.
+
+- Posted `outbox/20261121T231546Z__to-core__periodic-gamma-driver-step.md` (type request; the
+  draft of periodic_diag unchanged, one closing paragraph added). It closes our request
+  periodic-relaxed-lapse-blowup (20261121T204327Z): core need not answer that one.
+- `periodic_threshold/inputs/peak_leak.athinput`: cfl_number 1.0 -> 0.5, header CORRECTION
+  (cause, run ids, margin gt^xx <= 1.9). The only periodic deck of this owner with a Gamma-driver
+  and a step above 0.6: peak_smr, peak_smr4, peak_amr and the Szekeres decks run zero shift at
+  0.25, punc_box16 (nrpic_cf) runs 0.25; the ball decks (threshold_ball, conv_ball) run 0.25 with
+  the Gamma-driver. periodic_diag's diag_uniform decks keep 1.0 on purpose: they are the
+  reproducer of the instability (G0) handed to core; their cases set cfl on the command line.
+- Prediction before queueing: periodic_threshold/JOURNAL.md entry 2026-11-21 23:15Z (Q1 no jump
+  of norm(H) by more than 10x between history records in t in [1.5, 6], H_max < 0.1 to t = 5,
+  level-4 step <= 0.5 dx, no grid-scale pattern in beta^x / alpha lines; Q2 no guard stop
+  before t = 20; Q3 about 0.17 s per step, P0L ~41 min, S1L ~65 min within 2x; then P1-P4, S1-S3
+  of 13:20Z unchanged). Refuted by a job-1-like jump or guard stop at a later time, grid-scale
+  growth on level 4 or at a level boundary; a late failure where gt^xx > 1.9 at the centre
+  refutes the margin, not the remedy. The remedy is tested on the uniform mesh only; this job is
+  its test on the refined mesh. Committed (aa254891) before the lines can be submitted.
+- Queue: lines 14 (P0L, chain, 2.0 card-hours requested = 2 segments) and 15 (S1L, chain, 3.0 =
+  3 segments) of `threshold_ball/queue.txt`, release core-v0.6, --package periodic_threshold,
+  data files checksummed as inputs (same sha256 as job 1). Both members run on the refined mesh to
+  a horizon (P3: expected at coordinate 80-130 < tlim 140; S2: 97-213 < tlim 220), within the
+  allotment (G2: 5.51 used, 3.93 reserved, 50.56 left; the whole queue asks 37.6, model 16.8).
+  Dry runs of both lines through nrpic-run passed (clean package, inputs, 2 and 3 segments).
+- Mistake on record: I first inserted a comment line at line 3 of queue.txt, which shifts the
+  line numbers that done.txt keys on (old line 4 would have been resubmitted as line 5). Removed
+  within a minute, before any submission (both A-jobs were pending, so the sequencer did not act;
+  sequencer.log shows no entry after 12:42:50); the note now sits at the end of the file and says
+  that new lines go at the end only.
+- Not done (task: three things only): no review, no stage package, no RISKS update, no analysis.
+  Inbox: 0 unacknowledged. Card-hours used: 0. Processors: none.
