@@ -251,3 +251,23 @@ Predictions (P3), checks script `scripts/checks_c1_c5_c6.py`:
 - Failed runs on record (manifests): 2 with status failed (kb-20261115-182907-3f69615,
   kb-20261119-143242-737909d); ingest_log of the snapshot records 2 ingest-arxiv failures,
   63 review and 5 skipped rows.
+
+## Entry 9 (2026-11-21 08:03 UTC): the leniency of S and B, counted (step 4c)
+
+`scripts/lenient_check.py` looks, in flat.tex of the 32 papers that pass only because they
+have no sectioning command (23, S) or no `\cite` (9, B), for headings written another way and
+for reference lists without `\cite`. No prediction was written before its first (ad-hoc,
+debugging) run, whose output I saw; the registered run below repeats it and is recorded as an
+unpredicted count, not as a test. Reading the flagged sources (grep, read-only):
+- genuine section gap: hep-ph/9809574 (`{\bf I. Introduction}` ... `{\bf V. Discussion}`,
+  flat.tex:85-437; database 0 sections);
+- genuine bibliography gaps: 1201.4794 (AAS `references` environment with `\reference{}`
+  author-year entries, flat.tex:1022 ff.; database 0 entries), gr-qc/0304002 (`\def\bi{\bibitem}`
+  at flat.tex:22, `thebibliography` at 2983-3189; database 0), astro-ph/9607124 ("References"
+  at flat.tex:421, numbered `\noindent[1]` list; database 0; not flagged by the heuristic);
+- letters with run-in headings ("Introduction.--", `{\it Introduction}`, `\paragraph*`):
+  1306.1562, 1408.2741, 1511.05124, 2006.01172, 2104.12293, 2105.11880, 2302.00655,
+  2311.17644, 2504.15978. [JUDGEMENT] A letter has no numbered sections, so a missing section
+  row is not a parse failure there; the run-in labels are lost, which costs little.
+Corrected rates under my definition: lenient (A') 688 - 4 = 684/710 = 96.3 %; counting the
+nine letters as failures too, 675/710 = 95.07 %; strict (A) 662 - 4 = 658/710 = 92.7 %.
