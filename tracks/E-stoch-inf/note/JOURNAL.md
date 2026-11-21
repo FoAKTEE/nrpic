@@ -240,7 +240,7 @@ to `legend()` explicitly (the style already sets it, so the PNGs are unchanged b
   E-20261121-080526-7fbe919 only `tables/ledger_g1.tex` changes, every PNG and every other
   table is byte-identical. Refuted by any other difference.
 
-## 08:20 UTC: outcome of run E-20261121-080840-6112292 (final) and of the checks
+## 08:12 UTC: outcome of run E-20261121-080840-6112292 (final) and of the checks
 
 - **N12 held.** Completed; against E-20261121-080526-7fbe919 only `tables/ledger_g1.tex`
   differs (all PNGs and every other table byte-identical); every figure repeated with pixel
@@ -262,3 +262,9 @@ verdict numbers exactly (N4); the G1 numbers of `stage/G1/STATUS.md` agree with 
 their printed digits, the ladder README's A1 maxima do not (g22, g23); the note states the
 strict A4 failure on record, A4' as ruled (decision 0021), the post-hoc floor definition and
 core's explanation as awaiting the track's check.
+- Clean-export check (what `nrpic-stage verify` does): `git archive HEAD` of
+  `tracks/E-stoch-inf`, `tracks/core/runs` and `coord/INTERFACES` into
+  `scratch/E-stoch-inf/tmp/export_check/`; there every G1 figure script, the schematics and
+  `fig_background.py` ran alone from `scripts/` (1-29 s each; `fig_sr_freezing.py` is the
+  slowest) and `ledger.py` gave the same 104 claims with 7 differences; the PNGs of the four
+  G1 figures and the data flow are byte-identical to the committed ones.
