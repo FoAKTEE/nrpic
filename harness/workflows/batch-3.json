@@ -1,0 +1,87 @@
+{
+ "name": "3 (2026-11-21, window from 04:50 PST)",
+ "what": "core-v0.6 from the finished branches with its clerk, boosted clumps; verifier and waves of B; notes of C and D; G2 runs of A, C, D, F; leads of E and the knowledge base",
+ "note": "Releases core-v0.4 and core-v0.5 are on main (CLAUDE.md names their capabilities and executables; core's answers to the tracks' requests are in tracks/core/outbox/ on core/nrpic and in the inboxes). The reports of batches 2a and 2b are appended to the report files. Rulings: coord/DECISIONS/0021. The weekly usage window of the account is at 40 per cent with six days to go: write nothing twice, read only what your task needs.",
+ "items": [
+  {
+   "type": "core-merge",
+   "version": "v0.6",
+   "task": "MERGE of core's finished source branches into core/nrpic as release candidate core-v0.6. If tracks/core/RELEASE-v0.6.md already exists on core/nrpic with a regression result, verify it in a minute and return 'already complete'. core/nrpic holds release v0.5 (tracks/core/RELEASE-v0.5.md; drivers tracks/core/analysis/release/). Branches, each of which has merged main with releases v0.4 and v0.5 and published executables with a READY file: core/newton-2 (Newtonian mode, second pass: Fourier Poisson solver, group histories, ball options of the generator; closed, regression against v0.5 identical in 117 of 117 items), core/z4c-faces (outer boundaries of the spacetime solver; closed; read its report first: the byte regression of its earlier session had failed and this session resolved it: check how, and that the new boundary options are off by default), core/id-solver-2 (initial-data solver, second pass: far field, coupled solve, static refinement, punctures; partial: its card check Kc is staged and not run: submit it if a card slot of core is free; note that it changes the default far field of runs with id_solve = true: decide whether that default stands, as its report asks). Also take, if they are closed by then (git log of the branches, READY files): core/clump-table and core/oblate, whose sessions run beside you in this batch; do not wait for them. Steps as for the earlier releases: review each diff against main as a maintainer; merge one branch per merge commit; build the card and the processor executable and the threaded and MPI builds; byte regression on processors against the v0.5 processor executable (/data/haiyangw/nrpic/.work/build_cpu_v05/src/athena) on the regression set-ups with the new options absent; the quick test of each merged branch from its READY file; a card check of the merged card executable on a short list (at most one card-hour); leave out what does not pass, with the reason in tracks/core/stage/G2/OPEN.md. Zero the nine never-set members of the mesh header in restart files if that is a small, safe change (newton-2's request), and say so in the changelog since restart files then differ from older ones in those bytes. Publish /data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v06/ (executables, COMMIT, SHA256SUMS, READY). tracks/core/CHANGELOG.md section core-v0.6; tracks/core/RELEASE-v0.6.md with the first line exactly 'RELEASE core-v0.6 <full source commit> REGRESSION PASS' or '... REGRESSION FAIL'; commit and push core/nrpic."
+  },
+  {
+   "type": "core-src",
+   "key": "clump2"
+  },
+  {
+   "type": "pkg",
+   "owner": "A-emd-pbh",
+   "key": "verify_bh"
+  },
+  {
+   "type": "pkg",
+   "owner": "A-emd-pbh",
+   "key": "periodic_threshold"
+  },
+  {
+   "type": "task",
+   "owner": "B-emd-gw",
+   "key": "stage/G1/verifier_c18",
+   "title": "fresh verifier for G1 item C18",
+   "task": "Independent verification for gate G1 of this owner (checklist item C18), as a fresh reader who trusts nothing: do not read the leads' reviews (stage/REVIEW-*.md), STATUS.md, HANDOFF.md or the journals first. Recompute with your own short code, from the registered raw outputs (manifests under tracks/B-emd-gw/runs/, outputs under scratch/B-emd-gw/), every number of the ledger and of the tables of the working note (tracks/B-emd-gw/note/) that no earlier verifier has recomputed (the earlier verifiers' reports under stage/G0 and stage/G1 say what they covered: read only their coverage lists), and the results of the packages finished since (the report files named above list them). Per item CONFIRMED, NOT CONFIRMED or WRONG with the evidence, in tracks/B-emd-gw/stage/G1/VERIFIER-C18.md; then compare with the track's own review and list the differences. Commit path-limited and push."
+  },
+  {
+   "type": "pkg",
+   "owner": "B-emd-gw",
+   "key": "waves"
+  },
+  {
+   "type": "pkg",
+   "owner": "C-sidm",
+   "key": "note"
+  },
+  {
+   "type": "pkg",
+   "owner": "C-sidm",
+   "key": "drift"
+  },
+  {
+   "type": "task",
+   "owner": "D-bh-dress",
+   "key": "g2runs",
+   "title": "first G2 runs: far boundary with the relaxed lapse, dust-filled bubble",
+   "task": "The next G2 runs of this track, as the lead named them on 2026-11-21 (HANDOFF.md, stage/REVIEW-wave3.md): ES-1GB (the vacuum-bubble data with the relaxed lapse and the outer faces at 384 M; input built from es_runs/inputs/es1g_dx8.athinput plus the root level of drift_controls/inputs/v1b_bnd384.athinput), its vacuum control V-1GB, then ES-F (dust filling the bubble; flux_tools/inputs/esf_dx8.athinput, command in HANDOFF.md). Use the release executables of core-v0.4. Before each run write its prediction and pass criterion in your journal (for ES-1GB: does the horizon growth of ES-1G, +6.96e-3 over 100-200 M, go away when the boundary is far? what would show that it does not come from the boundary?). Submit through harness/bin/nrpic-run (two jobs of the owner at a time), analyse with the existing scripts (es_runs, drift_controls, flux_tools/esf_analyse.py), look at every figure, and report the horizon-mass drift against the control and, for ES-F, the mass growth against the integrated particle flux through the horizon. Also carry secondary_infall's run to a/a_i = 30 on processors if no other session of this batch does (the package secondary_infall runs beside you: read its journal first). At most three card-hours.",
+   "card_hours": 3
+  },
+  {
+   "type": "pkg",
+   "owner": "D-bh-dress",
+   "key": "note"
+  },
+  {
+   "type": "lead",
+   "owner": "E-stoch-inf"
+  },
+  {
+   "type": "pkg",
+   "owner": "E-stoch-inf",
+   "key": "a4res"
+  },
+  {
+   "type": "pkg",
+   "owner": "F-hills",
+   "key": "kerr"
+  },
+  {
+   "type": "task",
+   "owner": "F-hills",
+   "key": "binary_conv",
+   "title": "isolated binary at three member resolutions; input of the next passage",
+   "task": "The first passage run (P1, mass ratio four, members resolved with m/8) did not test the Hills mechanism: its binary merged at t = 48.8 M, before the pericentre (stage/REVIEW-wave3.md; decision 0021 item 7). This package decides the member resolution of the next passage. Read tracks/F-hills/p1 and g2mesh (q = 4 at m/16 fits one card: 3000 slots at 78.8 of 80 GiB), three_punctures/PLAN.md, and coord/INTERFACES/multi_puncture.md with the mass-scaled shift damping of release core-v0.4 (shift_eta_profile; junk_gauge's outcome in nr_first/JOURNAL.md). (1) Prediction first: the inspiral time of the isolated binary of P1 from the post-Newtonian reference (eih) and from the quadrupole formula; what a resolution-driven merger would look like (inspiral time rising steeply with resolution) against a physical one. (2) Runs with the release card executable of core-v0.5: the binary of P1 alone (no third black hole), same separation and momenta, at member resolutions m/8, m/12 and m/16, each to t = 100 M or merger (chains through harness/bin/nrpic-run; at most six card-hours in all; two jobs of the owner at a time; never wait idle: prepare the analysis meanwhile). (3) Analysis: separation and orbital phase against time for the three resolutions and the references; the time to merger or its lower bound; horizon masses; convergence order if any. (4) The verdict: at which resolution the binary survives the 100 M that the passage needs; then the complete input and chain command of the passage P1b at that resolution (do not submit it: the lead decides), with its cost from the measured rates. If the queue does not let the runs finish in your session, leave them running, registered, with the analysis script ready and the exact command to read them.",
+   "card_hours": 6
+  },
+  {
+   "type": "lead",
+   "owner": "kb"
+  }
+ ]
+}
