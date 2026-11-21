@@ -363,3 +363,14 @@ WRONG in magnitude (VERIFIER.md, V4).
 
 Verdicts V1-V5 (and V6 through V5) written into VERIFIER.md and committed before I read any
 review of the track (next entry).
+
+## Entry 8 (20:15 PST, after the verdicts were committed in 102d696b): comparison with the track
+
+Read now: stage/G1/STATUS.md, OPEN.md, stage/REVIEW-wave2.md sections 2-3, the expected-count
+code of spike/analyze_kerr.py and spike/kerr_expected.py. The track's expected counts come from
+a grid of n on 73 ln r x 10 cos theta nodes (run D-bh-dress-20261115-172646-ed6a510),
+integrated with the trapezoid rule. V4d prediction: the trapezoid on that grid reproduces
+137.8 and 601.4; a bicubic integration of the same grid values moves them toward mine by
+less than 3 per cent; if so, the grid values themselves (not the quadrature) are low in the
+inner region, and the cause is in kerr_expected.py's evaluation, not its integration. If the
+bicubic integration closes the gap, the cause is the coarse trapezoid at the inner edge.
