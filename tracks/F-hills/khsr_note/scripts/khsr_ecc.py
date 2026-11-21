@@ -173,13 +173,18 @@ def main():
     points = {}
     npz = {}
     for (s, D, ra), r in sorted(res_d.items(), key=lambda kv: (kv[0][0], kv[0][1], -kv[0][2])):
-        oc = r["outcome"]
+        # samples whose integration failed (integrate_many ok = False: step size underflow
+        # in a near-collision of the members) are left out of every statistic; their number
+        # is n_fail (first run F-20261121-212049-d91381f kept them: outliers in E and dE)
+        ok = np.asarray(r["ok"], dtype=bool)
+        oc = r["outcome"][ok]
         ej1, ej2 = oc == T.EJECT1, oc == T.EJECT2
-        eej = np.concatenate([r["E1"][ej1], r["E2"][ej2]])
+        eej = np.concatenate([r["E1"][ok][ej1], r["E2"][ok][ej2]])
         dis = np.isin(oc, DIS)
         par = res_d[(s, D, np.inf)]
-        par_dis = np.isin(par["outcome"], DIS)
-        pa = parabolic_approx(np.where(par_dis, par["dE"], 0.0), par_dis, ebar(ra))
+        pok = np.asarray(par["ok"], dtype=bool)
+        par_dis = np.isin(par["outcome"][pok], DIS)
+        pa = parabolic_approx(np.where(par_dis, par["dE"][pok], 0.0), par_dis, ebar(ra))
         row = dict(D=D, r_a=str(ra), e_orb=r["e_orb"], E_bar=ebar(ra), E_orb0=r["E_orb0"],
                    P1=float(ej1.mean()), P2=float(ej2.mean()), Pej=float((ej1 | ej2).mean()),
                    Pdis=float(dis.mean()), Pboth_bound=float((oc == T.BOTHBOUND).mean()),
@@ -187,13 +192,13 @@ def main():
                    Psurv=float((oc == T.SURVIVED).mean()), Punsettled=float((oc == T.UNSETTLED).mean()),
                    n1=int(ej1.sum()), n2=int(ej2.sum()),
                    Eej=float(eej.mean()) if eej.size else float("nan"),
-                   mean_abs_dE=float(np.abs(r["dE"][dis]).mean()) if dis.any() else float("nan"),
-                   max_energy_error=float(np.nanmax(np.abs(r["energy_error"]))),
+                   mean_abs_dE=float(np.abs(r["dE"][ok][dis]).mean()) if dis.any() else float("nan"),
+                   max_energy_error=float(np.nanmax(np.abs(r["energy_error"][ok]))),
                    n_fail=int((~r["ok"]).sum()), wall_s=r["wall"],
                    parabolic_from_direct=pa)
         points.setdefault(s, []).append(row)
         tag = f"{s}_D{D}_ra{ra}"
-        for k in ("outcome", "dE", "E1", "E2", "r12min", "energy_error", "inner"):
+        for k in ("outcome", "dE", "E1", "E2", "r12min", "energy_error", "inner", "ok"):
             npz[f"{tag}_{k}"] = r[k]
     summary["direct"] = points
     summary["wall_total_s"] = time.time() - t_start

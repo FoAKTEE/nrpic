@@ -185,3 +185,14 @@ Numbers from `p1_280.json` and `p1_checks.json`, `ledger.json` of these runs; fi
   from -0.0048 (t = 60) to -0.0173 (pericentre) to -0.0052 (280): it is not conserved through
   the passage, so the coordinate velocities cannot say whether the remnant is bound
   [JUDGEMENT].
+
+## 2026-11-21 21:58Z K. first scan (F-20261121-212049-d91381f) and checks (F-20261121-212703-276a88b): defect found
+
+The checks show mean ejection energies of 50.9 and mean |dE| of 13.7-60.8 units at five
+(D, r_a) points, each one with failed integrations (n_fail 1-3 of 512): my script did not
+leave out the samples whose integration stopped (integrate_many ok = False), so their
+unfinished states entered the statistics. K1 and K2 are not affected (closed forms):
+K1 MET (-2.667 rounds to -2.7), K2 MET (12.223 and 17.422 r_t against 12.2 and 17.4).
+Correction: khsr_ecc.py now leaves failed samples out of every statistic (count kept as
+n_fail) and stores ok in the npz. The scan is rerun; the first run stays on record. The
+probabilities of the first run already show the result (K3 judged on the rerun).
