@@ -233,3 +233,17 @@ Failed predictions of this package (kept): entry 1 K13 "GR-matched plunge falls 
 at r_p = 8" (0.911: only slightly below); entry 4 H-mu (refuted by R8); entry 1 K12 prediction
 of 5.7-5.8 M MET (5.77). Sections 1-3 of `stage/G0/VERIFIER.md` written now, before reading
 REVIEW.md, SECOND_CHECK.md, REVIEW-wave2.md or the lead's check script.
+
+## Entry 9 (2026-11-21 04:12 UTC): after reading the lead's script; prediction H-k0
+
+Sections 1-3 committed (fecdec04) and pushed. Read now: SECOND_CHECK.md, REVIEW.md,
+REVIEW-wave2.md, and `stage/G0/checks/lead_checks.py`. The V7 scan (lead_checks.py:486-520)
+releases a fresh circular binary AT 4 r_t: newton3's `scatter(..., k0=4.0)` for full Newton,
+and geodesic_binary's 2404 construction (CM on the Schwarzschild parabola of r_p, binary
+Newtonian-circular) released at 4 r_t for the HRNA. My scan starts the circular binary at 10 r_t
+and integrates Newton to 4 r_t (the start rule of SCOPING 3 for the NR data). Hypothesis H-k0:
+the differences of K13 come from this release radius. Prediction: my scan with `--k0 4`
+(circular binary at 4 r_t) gives V7's Newton numbers at q = 10, r_p = 7, 8, 13 (0.90/0.62,
+0.88/0.056, 0.22/0) within 3 sigma, and my GR-matched HRNA (CM on the parabola, offsets from the
+circular binary) gives V7's plunge fractions (0.96, 0.94, 0.30) within 3 sigma. Refuted if the
+Newton numbers stay at my k0 = 10 values (0.49, 0.011 inside 4 M; 0.42 separated at 13).

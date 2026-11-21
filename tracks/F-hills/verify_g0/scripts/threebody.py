@@ -305,11 +305,11 @@ def start_states(M, m1, m2, ab, rp, phases, k0, mu_conv="total"):
     return y, rt, t_to_peri
 
 
-def scan(q, ab, rp, nphase, rtol, t_after, mu_conv="total", with_u=False, max_steps=None):
+def scan(q, ab, rp, nphase, rtol, t_after, mu_conv="total", with_u=False, max_steps=None, k0=10.0):
     M, m1, m2 = 1.0, 0.5 / q, 0.5 / q
     mb = m1 + m2
     phases = (np.arange(nphase) + 0.5) * np.pi / nphase
-    y, rt, t_to_peri = start_states(M, m1, m2, ab, rp, phases, 10.0, mu_conv)
+    y, rt, t_to_peri = start_states(M, m1, m2, ab, rp, phases, k0, mu_conv)
     rhs = make_newton_rhs([M, m1, m2])
     # 10 r_t -> 4 r_t
     def cb_hand(to, yo, tn, yn, idx):
@@ -389,7 +389,7 @@ def scan(q, ab, rp, nphase, rtol, t_after, mu_conv="total", with_u=False, max_st
         out[lab] = dict(separated=float(np.mean(plunged | (E12h > 0))), plunge=float(np.mean(plunged)),
                         cm_E_median=float(np.median(E0)), cm_L_median=float(np.median(L0)),
                         steps_max=int(nacc.max()), unfinished=int(np.sum(tH < t_end * (1 - 1e-12))))
-    out.update(q=q, a_b=ab, rp=rp, D=rp / rt, nphase=nphase, mu_conv=mu_conv, t_handoff_median=float(np.median(th)),
+    out.update(q=q, a_b=ab, rp=rp, D=rp / rt, nphase=nphase, mu_conv=mu_conv, k0=k0, t_handoff_median=float(np.median(th)),
                t_to_peri_from_10rt=t_to_peri, t_after=t_after, rtol=rtol)
     return out
 
@@ -555,6 +555,7 @@ def main():
     ap.add_argument("--betas", default="3,10")
     ap.add_argument("--mu-conv", choices=("total", "M"), default="total")
     ap.add_argument("--with-u", action="store_true")
+    ap.add_argument("--k0", type=float, default=10.0, help="start radius of the scan in r_t (circular binary there)")
     ap.add_argument("--max-steps", type=int, default=None)
     ap.add_argument("--rtol", type=float, default=1e-10)
     ap.add_argument("--nphase", type=int, default=180)
@@ -579,7 +580,7 @@ def main():
         rows = []
         for c in a.cases.split(","):
             q, ab, rp = (float(s) for s in c.split(":"))
-            row = scan(q, ab, rp, a.nphase, a.rtol, a.t_after, a.mu_conv, a.with_u, a.max_steps)
+            row = scan(q, ab, rp, a.nphase, a.rtol, a.t_after, a.mu_conv, a.with_u, a.max_steps, a.k0)
             rows.append(row)
             print(json.dumps(row), flush=True)
             json.dump(rows, open(os.path.join(a.out, "scan.json"), "w"), indent=1)
