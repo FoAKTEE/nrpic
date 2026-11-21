@@ -1,0 +1,100 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "kb-20261121-080624-467030c",
+  "track": "kb",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "KB-G2 verifier step 7: figures (rank per question, three modes, held-out and golden; parse components by status) and counts from runs kb-20261121-075156-b84a189, kb-20261121-080557-06d44ba, kb-20261120-223309-14e4cb6",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "OMP_NUM_THREADS=1 kb/.venv/bin/python -I tracks/kb/verify_g2/scripts/make_figures.py --heldout /data/haiyangw/nrpic/scratch/kb/kb-20261121-075156-b84a189/score.heldout.json --golden /data/haiyangw/nrpic/scratch/kb/kb-20261121-080557-06d44ba/score.golden.json --scan /data/haiyangw/nrpic/scratch/kb/kb-20261120-223309-14e4cb6/scan.json --out \"$NRPIC_RUN_DIR\" > \"$NRPIC_RUN_DIR/out.txt\" 2>&1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "467030ce44a64696914410d86eba686d5844dabd",
+    "branch": "kb/main",
+    "dirty": false,
+    "package": [
+      "tracks/kb/verify_g2"
+    ],
+    "outside_package": {
+      "count": 12,
+      "first": [
+        " M tracks/kb/claims_tracks/LEDGER.tsv",
+        " M tracks/kb/code_kb/JOURNAL.md",
+        "?? tracks/kb/claims_tracks/decisions/C1.tsv",
+        "?? tracks/kb/claims_tracks/decisions/C1_annot.tsv",
+        "?? tracks/kb/claims_tracks/decisions/D1.tsv",
+        "?? tracks/kb/claims_tracks/decisions/D1_annot.tsv",
+        "?? tracks/kb/claims_tracks/decisions/E1.tsv",
+        "?? tracks/kb/claims_tracks/decisions/E1_annot.tsv",
+        "?? tracks/kb/claims_tracks/scripts/batch_C1.sh",
+        "?? tracks/kb/claims_tracks/scripts/batch_D1.sh",
+        "?? tracks/kb/claims_tracks/scripts/batch_E1.sh",
+        "?? tracks/kb/ingest3/"
+      ]
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/kb"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/kb/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/kb/kb-20261121-080624-467030c",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T08:06:24Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 0.0,
+    "cores_allotted": 8,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 171,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
