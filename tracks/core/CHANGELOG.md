@@ -6,6 +6,112 @@ decision 0019 item 4). Tags that exist: core-v0.1 = 7daed19 (asymptotically flat
 core-v0.2 = 52c44eb (periodic particles and cosmological gauge; source of main a1c2237),
 core-v0.3 = 609a875 (below).
 
+## core-v0.6 (release candidate, 2026-11-21): three source branches of waves 3a and 3
+
+Record: `tracks/core/RELEASE-v0.6.md` (first line: source commit and regression
+verdict; the regression table; the quick tests; the card checks). Source commit
+**984bde68** (984bde6861ac7c2fc04ab3c0bcba58d05a4a3bd9) of `core/nrpic`: the last commit
+that changes `athenak/`, `python/`, `problems/` or `scripts/` (the merge of
+core/id-solver-2); later commits add records (`tracks/core/`) only. Executables built
+from it, with READY (every new option with one example input), COMMIT and SHA256SUMS:
+`/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v06/` (`athena_cpu` serial,
+`athena_gpu` one A100, `athena_cpu_omp` threaded, `athena_cpu_mpi` several ranks).
+
+### What is merged (in this order, one merge commit per branch)
+
+| Branch (tip merged) | Merge | Capability | Switch (absent = off) | Interface document |
+|---|---|---|---|---|
+| core/newton-2 (b7c9fc73) | a1fffa58 | Newtonian mode, second pass: Fourier Poisson solver on a periodic uniform mesh (continuum symbol or the symbol of the seven-point Laplacian; transform written with Kokkos kernels, lengths with the factors 2, 3, 5, 7); second moments of particle groups with their time derivatives in comoving and physical coordinates; options `--axes`, `--vgrad`, `--rotate`, `--background` of the ball of `problems/newton/make_ic.py`; `python/nrpic/newton.py scheme_fields(symbol=)` | `<particles> newton_poisson = fft`, `newton_fft_symbol`, `newton_ngroup` with `newton_group<g>_*` | `tracks/core/interfaces/newtonian_mode.md` (sections 6, 7), triage `REQUESTS_NEWTON2.md` |
+| core/z4c-faces (5d875275, source f6f9a0df) | 1419f19a | outer faces of Z4c: ghost cells by extrapolation of (f - f_inf) r^q; radiative condition of the outermost cells with the part that is not a wave carried from one cell inside; speeds of that condition from the lapse or the metric with shift advection; variants for Theta | `<z4c> ghost_falloff`, `sbc_variant = nonwave`, `sbc_speed`, `sbc_theta` (with the existing `extrap_order = 4`) | `tracks/core/interfaces/z4c_faces.md` |
+| core/id-solver-2 (3087526a, source 395e17d8) | 984bde68 | initial-data solver, second pass: multipole far field under the 1/r fill of the faces; exact Jacobian for moving matter; static refinement (BiCGStab, Robin faces of the multigrid octets); punctures of `nrpic_cf` in the solve (psi = psi_s + u); generators `shift`, `zeldovich`, `shell` of `problems/idsolve/make_ic.py` | within `<particles> id_solve = true`: `id_far`, `id_far_lmax`, `id_far_radius`, `id_lin_solver`, `id_punctures`, `id_puncture_radius` | `tracks/core/interfaces/id_solver2.md` (with `id_solver.md` for what is unchanged) |
+
+Left out, not closed when the candidate was built (2026-11-21T13:00Z): core/clump-table
+(equilibrium clumps with momentum from tables; its session was at work) and core/oblate
+(oblate collapse; its branch does not hold core-v0.5 yet). No branch that was offered
+closed is left out. No conflict in any of the three merges (`CMakeLists.txt`,
+`particles.hpp`, `docs/FORMATS.md` merged by git; checked by reading).
+
+Maintainer's decision at the merge: the default `id_far = multipole` stands (item 1 of
+the next section; reasons in `tracks/core/JOURNAL.md`, entry of 2026-11-21T12:55Z).
+
+### Behaviour that changes without an option
+
+All five only in runs with `<particles> id_solve = true`; a run without it writes the
+bytes of core-v0.5 (regression below; package test M0).
+1. **Far field on by default.** On a mesh with no periodic face the faces of psi and
+   of W are filled with the multipole far field (`id_far = multipole`). Against
+   core-v0.5 at 32 cells psi changes by 9.7e-9 (Gaussian at rest), 3.6e-8 (expanding
+   ball), 1.5e-6 (moving Gaussian) and W of the moving Gaussian by 2.7e-3 of its
+   maximum; the iteration counts do not change (run core-20261121-131148-6efd1b8).
+   `id_far = robin` gives the bytes of core-v0.5 for matter at rest (same run: 8, 9 and
+   8 files identical). A torus is not affected.
+2. With moving matter the Jacobian of the scalar part holds the trace of the deposited
+   stress: psi and W change at rounding (6.0e-15, 5.1e-16), also with `id_far = robin`.
+3. Puncture components of `nrpic_cf` enter the solve (`id_punctures = true` is the
+   default); core-v0.5 solved for the whole psi on the mesh.
+4. A refined mesh no longer stops the solver, and `<gravity> mg_bc = robin` is accepted
+   on a refined mesh.
+5. `<basename>.idsolve.txt` gets a second header line and a far-field line when the
+   far field, a refined mesh, punctures or BiCGStab are in use; on a refined mesh
+   `id_dump` writes `<basename>.idsolve.blk.bin` instead of `.idsolve.bin`.
+
+Not changed in this release, stated because it was asked (package newton2): the nine
+never-set members of the mesh header of restart files (`Mesh::mesh_indcs.cnx1 .. cke`,
+36 bytes) are zero since core-v0.4 (`Mesh::ZeroUnusedMeshIndcs`, also after reading a
+restart header). Restart files of core-v0.4, core-v0.5 and core-v0.6 agree in these
+bytes; files written by core-v0.3 or by a branch executable whose source is older than
+core-v0.4 (the pre-merge build of package newton2) carry noise there. Checked on the
+12 restart files of the release tests (run core-20261121-130813-710b3cc).
+
+### Input options (`tracks/core/verify/options_at.py core-v0.5 HEAD`)
+
+19 options found by the scan, none removed, no default of an existing option changed;
+seven more names are built or tested at run time and added here by reading the source
+(26 in all). Every one is read only if it is present in the input.
+
+- `<particles>` (Newtonian mode) newton_poisson, newton_fft_symbol, newton_ngroup,
+  newton_group<g>_species, _tag_min, _tag_max, _x1, _x2, _x3
+- `<particles>` (with `id_solve = true`) id_far, id_far_lmax, id_far_radius,
+  id_lin_solver, id_punctures, id_puncture_radius
+- `<z4c>` ghost_falloff, ghost_power_metric, ghost_power_curv, sbc_variant,
+  sbc_power_khat, sbc_power_a, sbc_power_gam, sbc_v_khat, sbc_speed, sbc_theta,
+  sbc_power_theta
+
+Two names stop a run if they are set to a non-zero value: `<z4c> sbc_damp_gam`,
+`sbc_damp_theta` (options of the package that were removed before the merge: the damping
+was unstable in the expanding ball; they were never in a release).
+
+### Files and formats added (`docs/FORMATS.md`)
+
+`<basename>.newton.g<g>.hst` (62 columns per group); second header line and far-field
+line of `<basename>.idsolve.txt`; `<basename>.idsolve.blk.bin`. No existing format
+changes.
+
+### Evidence
+
+Byte regression against core-v0.5 on the twelve set-ups of wave 1: PASS for the serial
+build (run core-20261121-130202-7cf7db8, 75 of 75 items identical). Quick tests, the
+regressions of the solver's package repeated with the merged executable, the other
+processor builds and the card checks: `RELEASE-v0.6.md`. The capability tests were run
+by the work packages on the executables of their branches (run ids in each interface
+document; journals `tracks/core/JOURNAL-{newton2,faces,idsolve2}.md`; READY files copied
+to `scratch/core/exe/core_nrpic_v06/branches/`).
+
+### Known limitations carried into core-v0.6
+
+`tracks/core/stage/G2/OPEN.md` (section of core-v0.6) and the READY of the published
+executables. The most important: the faces options still reflect (the ball's interior
+at t = 16 is 8 times below the stock faces and 55 times above a run with distant
+faces), no constraint-absorbing treatment of Theta was found, and r in every formula is
+the distance from the mesh origin; the vector part of the solver stalls at level
+boundaries in mode code; a Bowen-York puncture has an error floor of u set by the
+distance of the faces; the Fourier solver needs one pack on a uniform periodic mesh;
+a cold lattice with fewer than one particle per cell and direction is pushed as a whole
+in the Newtonian mode; none of the three capabilities runs on several ranks (the
+Newtonian mode and `id_solve` stop with a message, the faces options are untested
+there).
+
+
 ## core-v0.5 (release candidate, 2026-11-21): four wave-3a source branches
 
 Record: `tracks/core/RELEASE-v0.5.md` (first line: source commit and regression
