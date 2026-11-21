@@ -211,3 +211,43 @@ Predictions (P3), checks script `scripts/checks_c1_c5_c6.py`:
 - KB-G0 C1: the directories of brief 12.2 exist; the reasons for the tools are NOT expected in
   kb/README.md (the brief asks for them in JOURNAL, which I may not open), so that part will
   likely stay NOT CHECKED.
+
+## Entry 8 (2026-11-21 08:01 UTC): outcome of P3 (run kb-20261121-080038-306bcdd, checks.json)
+
+- C1 **confirmed**: 684 + 26 = 710 expected ids, 710 papers in the snapshot, none missing, none
+  extra, no duplicate id, group and priority equal to the manifests for all 710; every paper
+  has chunks, a raw source.bin (or source.pdf) and, for the 707 TeX papers, a flat.tex. The 684
+  rows of arxiv.tsv and the 63 of github.tsv are each found (by code, not read by me) in the
+  brief line SOURCE.json names, and the brief's sha256 equals SOURCE.json's. Repositories: 64
+  expected (63 + local/nrpic), 64 present, each with a 40-hex commit and files (smallest 46).
+  Observations: 24 of the 64 repositories have a file inventory but no code chunks (no
+  full-text code index; 19 of them have symbols, 5 have none); raw/arxiv holds 736 directories,
+  26 of them not in the snapshot (fetched after it, presumably by this wave's ingest helper;
+  not checked).
+- C5 **confirmed**: all 9 snapshot files have mode 0444 (kb.sqlite 0644, the writer's); the
+  readers' --help says "default db/current, else kb.sqlite" for search, show, eq, cites, code,
+  frontier, export; `open_for_read` (kbtool/db.py:155-161) returns db/current when it exists, and
+  readers open it with `mode=ro` (db.py:36-38). Dynamic: in a fake data root `kb snapshot` wrote
+  kb-20261121-8832bb1.sqlite with mode 0444 and a matching sha prefix; `kb search` without --db
+  found the word that is only in the snapshot (1 hit) and not the word added to kb.sqlite
+  afterwards (0 hits; 1 hit with --db kb.sqlite); the snapshot's bytes were unchanged by the
+  reads.
+- C6: sha part **confirmed**: sha256 of every snapshot starts with the 7 hex digits of its
+  name (all 9, among them a782f1e, and f2fcda5, 621430e, a848a06 named by the wave-1/2 runs);
+  the snapshot's ingest_log holds 8 snapshot rows (b715da3 ... a848a06, 2026-11-15) and, as
+  predicted, not its own; its last row is 2026-11-19T16:16:02Z, inside the run that took it
+  (kb-20261119-161451-e15d1b8, 16:14:51-16:16:18Z): the snapshot was the last step after the
+  re-index. Locators: the text answer of `kb search`, `kb eq` and `kb code` ends with
+  "database .../kb-20261119-a782f1e.sqlite", the JSON of `kb search` has it in info.database;
+  no hit carries it, and `kb show` and `kb cites` do not print it at all. Partly met, as
+  predicted.
+- KB-G0 C1: of the brief 12.2 layout all kb-data directories and files exist; in kb/ two
+  named files are absent: `uv.lock` (the environment is frozen as requirements-k0/k4/k6.lock,
+  README.md:26) and `curated/seed_claims.jsonl`. Reasons for tools: kb/EMBEDDING.md gives them
+  for the embedding model and the fusion constant, pyproject.toml for tree-sitter over
+  universal-ctags; for the rest (pylatexenc, bibtexparser, rapidfuzz, tenacity, sqlite FTS5)
+  nothing in the files I may read. The 736 source.bin files are writable by their owner
+  (0664), i.e. "read-only" raw files are a convention, not a file mode.
+- Failed runs on record (manifests): 2 with status failed (kb-20261115-182907-3f69615,
+  kb-20261119-143242-737909d); ingest_log of the snapshot records 2 ingest-arxiv failures,
+  63 review and 5 skipped rows.
