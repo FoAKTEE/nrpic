@@ -1,0 +1,124 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261121-125606-e2ebf60",
+  "track": "B-emd-gw",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "waves r1 step 4b: adopted gw_diag gauge module against first_source/fslib/gauge.py on real dumps (F2 N32, X N32, single-precision 16^3), prediction JOURNAL 2026-11-21 12:57",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "env",
+    "OMP_NUM_THREADS=1",
+    "python3",
+    "tracks/B-emd-gw/waves/scripts/check_gauge.py",
+    "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-222849-3b921b7/N32/bin/lw120.z4c.00032.bin",
+    "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142021-8f4c441/N32/bin/xw.z4c.00040.bin",
+    "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-113216-0ea0f74/bin/lw3.z4c.00001.bin"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "e2ebf60a350bce939ee9471fbe8c4b2ac7ceb310",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/waves",
+      "tracks/B-emd-gw/gw_diag"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "973f2dbc2e32338b1ea99d14ee4d03719af9a8c7",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/waves/scripts/check_gauge.py",
+      "role": "argv",
+      "sha256": "f149a3e2ffc695ea435c96e998a4ff7e859784c96769527d24469c952b99b69b",
+      "bytes": 2226,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-222849-3b921b7/N32/bin/lw120.z4c.00032.bin",
+      "role": "argv",
+      "sha256": "19159be1a6b0c532a23ea884535b4cfbe4637548f356ca35cef8d30128ccc2f9",
+      "bytes": 5774857,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261119-142021-8f4c441/N32/bin/xw.z4c.00040.bin",
+      "role": "argv",
+      "sha256": "37d06011ced9a79d31a0d4b4597bb66ae4d51510dd5c0fa990ce4e8fc86f4fc5",
+      "bytes": 5780376,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-emd-gw-20261115-113216-0ea0f74/bin/lw3.z4c.00001.bin",
+      "role": "argv",
+      "sha256": "6f996100d84fc3104b1d6c26b35423cee4a39c97a6e4ecadecbb8cb90413af40",
+      "bytes": 369620,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261121-125606-e2ebf60",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T12:56:07Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.6912,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 0,
+    "runs": 252,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
