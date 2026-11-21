@@ -64,8 +64,10 @@ def main():
     ax.tick_params(axis="y", which="minor", left=False, right=False)
     ax.set_xlabel("compared items (output files; result lines of the log for jeans, "
                   "binary)", labelpad=2)
-    ax.set_xlim(0, left.max()*1.02 + 1)
-    ax.legend(loc="lower right")
+    # room on the right for the legend, clear of the longest bars
+    ax.set_xlim(0, left.max()*1.75)
+    ax.set_xticks(np.arange(0, left.max() + 1, 2))
+    ax.legend(loc="center right")
     fs.save(fig, os.path.join(a.out, "fig_regress_v04"))
     rows = ["| Set-up | What | Items | identical | a | b | a+b | other | Verdict |",
             "|---|---|---|---|---|---|---|---|---|"]
