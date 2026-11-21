@@ -1416,3 +1416,41 @@ at 24^3 (the tent itself: h^2 rho''/12 = 0.011 rms at h = 0.25), falling by more
 to 48^3; quadratic cloud: falling by more than 3; first-order form: at least three
 times the integral form at 48^3. Refuted for the new form if its rms does not fall by
 at least 2.5 while its level is above 0.003.
+
+## 2026-11-21 03:23  outcomes of T19c, T0c, T18a, T9b
+
+**T19c, run core-20261121-031446-5b1fdcd** (sixteen particles per root cell along x;
+`t19_summary.json`, figure `fig_t19_smooth`, looked at, kept as `figs/fig_t19c_smooth.png`;
+its labels were cut and are corrected in the script afterwards) [VERIFIED], rms departure
+of the leaf cells from the exact density at 24^3 and 48^3:
+- uniform spreading 0.0413 and 0.0209, factor 1.98: first order (the saw-tooth of the
+  figure): PASS.
+- integral form (NEW2) 0.0061 and 0.0016, factor 3.82: second order, 13 times below the
+  uniform spreading at 48^3: PASS.
+- quadratic cloud with fine shape 0.0105 and 0.0027, factor 3.84: PASS.
+- first-order form of the linear cloud (PUB) 0.0156 and 0.0128, factor 1.22, eight times
+  the integral form at 48^3: it does not converge: PASS (predicted at least three times).
+So the integral form does what the first-order form was meant to do, and the first-order
+form of the linear cloud was wrong for any lattice that is not regular, not only at the
+moment a particle passes a cell centre. T3b did not see it because its fine-shape cases
+use the quadratic cloud; T2 and T5 because their lattices are regular.
+
+**T0c, run core-20261121-031231-75fa120** [VERIFIED]: NEW2 against the release with the
+new options absent: geo, boris, dep, east, os, flrw, punc: exit 0 for both, every output
+file byte-identical (3, 3, 2, 13, 17, 5, 11 files), restart files included: PASS.
+
+**T18a, run core-20261121-032122-0f3369f** (`t18_cmp.py`; no figure: a list of file names)
+[VERIFIED]: of the 22 cases of T1b, 18 give the bytes of T1 in every output file (all
+without fine shape, and the six tsc and pcs cases with it); the four that differ are
+the four cic cases with fine shape: PASS, exactly the predicted split.
+
+**T9b, run core-20261121-031701-cff3117** (`t9_summary.json`) [VERIFIED]: MeshBlock
+histories, particle number, rest mass and identity (at most 3.2e-14) as T9; `ladderc`
+(uniform spreading) and `lohnerrel` (release) print the numbers of T9 digit for digit.
+Largest relative constraint after the regrid with fine shape: **0.0125** (T9, first-order
+form: 0.0116; uniform spreading 0.0072), and 0.0103 at the last record (0.0077; 0.0042).
+The prediction "at most 0.0116" FAILED by 8 per cent. So on the track's data, which are
+built with two filter passes at the root cell size, the integral form is no better at
+the regrid than the first-order form and both are 1.7 times worse than the uniform
+spreading; consistent with the reading of T3b (with the filter the order of the two
+spreadings reverses), not explained beyond it.
