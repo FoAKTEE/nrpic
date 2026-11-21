@@ -638,3 +638,37 @@ kb-20261119-155134-17d6704 (B1), -155310-e600e38 (B2), -155315-b2c7420 (B3), -16
   else this session.
 - open: bibliography parser and claim chunk remap; KB-G2 verifier; held-out golden set; KB-G3
   (the brief's statements as claims; 117 to_verify); upstream watch not run this wave.
+
+## 2026-11-21T12:56Z  session kb lead, wave 3 batch 3 (review of verify_g2; KB-G0, KB-G2 packages)
+
+State found: kb/main 465a1322 + merge of main (8b9b27a2). Of the five packages of round 1
+(PLAN-wave3.md) only `verify_g2` finished (batch 2b); `ingest3`, `claims_tracks`, `claims_brief`
+and `code_kb` were cut at 14:35 PST on 2026-11-20 and not resumed. Uncommitted: claims_tracks
+LEDGER.tsv (14 rows of batch B1, applied as run kb-20261120-223013-5330e45, rows equal to its
+ledger_rows.tsv), claims_tracks decisions/scripts C1, D1, E1 (written, never run), code_kb
+JOURNAL M1 prediction, ingest3 figures/ids/scripts. No PAUSE flag; no kb card job.
+
+### Prediction L1 (before run lead-check of verify_g2; written 12:56Z)
+
+My own script (`tracks/kb/stage/review_wave3/scripts/lead_check_vg2.py`) reads the frozen
+snapshot a782f1e with SQL, the verifier's raw search outputs and three sources, and expects:
+1. Paper in top 10, recounted from the raw hit lists: held-out text/hybrid/rerank 21/22/21 of
+   24, golden 27/28/28 of 32; rank 1 held-out 14/14/14, golden 20/17/19. Refuted by any
+   difference.
+2. Snapshot by SQL: parse_status ok 684, review 23, pdf 3; TeX papers with no bibliography
+   entry 20 (11 of them ok); papers with citation rows but no entry 10; papers without an
+   abstract chunk 25; repositories without code chunks 24 of 64. Refuted by any difference.
+3. The verifier's database columns of scan.json (sections, equations, bibliography entries,
+   citation rows, abstract chunk) equal my SQL counts for all 710 papers; refuted if any
+   paper differs in a way that changes a component verdict.
+4. My re-evaluation of the definition (S, E, B, A') from the scan's source counts and my
+   database counts gives 688 lenient successes, 679 after the nine gaps read at the source,
+   670 with the nine letters failed, 658 strict; refuted if any differs by more than one.
+5. Sources (grep, read-only): 0710.5073 has 28 `\bibitem` in a `references` environment;
+   1201.4794 has an AAS `\reference` list of at least 20 items; gr-qc/0304002 defines
+   `\def\bi{\bibitem}`. Refuted if any is absent.
+6. Held-out commit 8fb37106 precedes the start of run kb-20261120-222546-ea894c8.
+7. C6b: `kb show 2611.12831 --abstract` and `kb cites 2611.12831 --out` on the snapshot print
+   no snapshot id; search hits have no snapshot field. Refuted if an id is printed.
+8. The manifests of kb-20261115-154858-b0d8c8f and kb-20261115-164121-5aca10c carry a status
+   other than failed while their log or exit code says 1.
