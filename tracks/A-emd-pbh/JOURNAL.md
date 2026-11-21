@@ -173,3 +173,48 @@ Helper journals: `scope/JOURNAL.md`, `expball/JOURNAL.md`, `criteria/JOURNAL.md`
   proper time converges cleanly, the parabola estimator of the turnaround time does not).
 - open: a slicing that reaches a horizon (core); C18 verifier and C11 data-flow schematic;
   note Sec. IV with the wave-2 runs; data set 2h.
+
+## 2026-11-21T07:55Z  session lead-batch2b (wave 3)  commits db43e4c0..(see end of entry)  runs (see end of entry)
+
+Lead of A-emd-pbh in batch 2b. No lead session ran between 2026-11-15 and now (the wave-2b
+lead did not return). Packages finished since then: the G1 verifier (wave 2b, run
+A-20261119-142905-c813c01), szekeres (wave 3a, 14 runs), g1close (batch 1), the G1 gate review
+(batch 2a). Cut on 2026-11-20 14:33 PST and not resumed in this batch: verify_bh, szekeres
+round 1, periodic_threshold. Running beside me in this batch (same worktree, own commits):
+runs_ball and conv_ball. State found: tree with four uncommitted periodic_threshold files
+(left alone); no card job of A in `squeue`; two stranded local runs whose processes had ended
+with exit 0 (`.nrpic/result.json`): I closed them with `nrpic-run finish`
+(A-20261120-223123-f436c39 periodic P0L data, A-20261120-223422-8cc4241 Szekeres files).
+
+### Predictions of the lead's re-check (written before any of it ran)
+
+Rerun code checked first: no script, module or reference these reruns call changed since each
+run's commit except two docstrings of `szekeres/szekeres/model.py` (`git diff --stat`).
+
+- L1. G1 verifier, `stage/G1/verifier/run_all.py` rerun into my run directory: all four parts
+  and the schematic exit 0; every number of `ledger.json`, `criteria.json`, `newton.json`,
+  `ball.json` (and the two `*_recomputed.json`) equals the registered run's to 1e-9 relative;
+  tallies 39 confirmed / 1 not confirmed / 2 wrong (ledger), 19/19, 17/17, 12/12. Refuted by
+  any larger difference or another tally.
+- L2. g1close `check_findings.py` rerun: `findings.json` equal to that of
+  A-20261120-222454-d16dbc6; the band holds 9 of 14 Newtonian points. Refuted otherwise.
+- L3. g1close `wave1_sha256.py` rerun: the same 55 files with the same sha256 as
+  A-20261120-222620-0304d9d (nothing changed since). Refuted by any change.
+- L4. Gate reviewer's `review_checks.py` (script in scratch, sha256 4d72c147... as its manifest
+  records) rerun: checks A-F give the values of A-20261121-064537-2bcf310; 10 of 10 raw files
+  match their checksums.
+- L5. Szekeres `run_ltb_limit.py`, `run_dipole_order.py`, `run_error_budget.py` rerun (figure
+  directory redirected so that no tracked figure is rewritten): JSON equal to
+  A-20261119-151501-9cff966, -151501-3e344a4, -153842-a1db5d6 to 1e-9 relative.
+- L6. Szekeres unit tests: 15 pass.
+- L7. Own reading of the raw history `N32/szk.cstat.hst` of A-20261119-152010-94a9461: the first
+  record with a non-finite or sentinel (1.8e308) value lies at tau in (24, 28] (the package's
+  claim "fails between tau = 24 and 28"). Refuted outside that interval.
+- L8. Szekeres file run A-20261120-223422-8cc4241 (which I closed): `prep_ppc1.json` gives a
+  predicted relative E error of the deposit below 1e-14 at every N, and total rest masses at
+  N = 32..256 that agree to 1e-2 and approach each other with N. Refuted otherwise.
+- L9. Periodic P0L data run A-20261120-223123-f436c39 (which I closed) against the helper's
+  prediction D3 (`periodic_threshold/JOURNAL.md`): residual below 1e-10, c in [0.05, 0.2],
+  delta_N max 0.10-0.14, alpha_min 0.78-0.82, no inner solve at the 60-iteration limit. (I read
+  its log while closing it, so this is a check of the helper's prediction, not a prediction of
+  mine.)
