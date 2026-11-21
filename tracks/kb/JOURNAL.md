@@ -730,3 +730,6 @@ Predictions written before the runs of this session.
 - Q1 (kb qa run on the new snapshot): parse rate 720/744 = 96.8 % with status ok (gr-qc/0608095
   was ok, so 719/744 = 96.6 % if it was among the ok papers), strict rate the same (ingest3 found
   no ok paper that cites without entries), bar met. Refuted if below 95 % or strict differs.
+- B1 (B's claim on 2312.12499v2, read by me at main.tex L322-326 and L579-583): `kb claim add`
+  writes one judgement claim (number 861) with two locator rows that both resolve. Refuted if a
+  locator does not resolve or the add is refused.
