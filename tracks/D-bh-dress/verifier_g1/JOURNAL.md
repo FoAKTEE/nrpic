@@ -374,3 +374,22 @@ integrated with the trapezoid rule. V4d prediction: the trapezoid on that grid r
 less than 3 per cent; if so, the grid values themselves (not the quadrature) are low in the
 inner region, and the cause is in kerr_expected.py's evaluation, not its integration. If the
 bicubic integration closes the gap, the cause is the coarse trapezoid at the inner edge.
+
+### Outcome of entry 8 (20:20 PST), run D-20261121-040636-e8d5352, and an error of mine
+
+The trapezoid on the track's grid reproduces 137.79 and 601.42; the bicubic integration of
+the same values gives 136.4 and 601.3: the quadrature is not the cause. A point-by-point
+comparison of my n with the track's grid values (scratch/D-bh-dress/tmp/vg1/gridpts.py, not
+registered) gives ratios 0.995, 0.938, 0.828, 0.626, 0.456 at cos theta = 0, 0.333, 0.556, 0.778,
+0.889 at every r: exactly 0.995 sin(theta). Cause: MY function `Ref.n_over_sin` returned
+(-A J_t - 2ar J_phi) sin/Delta = n per dr dtheta dphi, not n/sin, and V4 integrated it over cos
+theta, so my reference under-weighted high latitudes, where the outer ranges have relatively
+more particles than the inner ones. My V4 reference counts (and V4b, V4c numbers built on
+them) are wrong; V5 part 3 is not affected (a = 0, only cos theta = 0 used). The V4b "local
+agreement" compared my n with the track's curve n at theta = pi/3 and was correct as such.
+This error was found only after reading the track's expected-count code (entry 8), so the
+corrected V4 is no longer fully independent of the track's material; my verdict "WRONG in
+magnitude" (commit 102d696b) is withdrawn. Fixed in v4_kerr_stat.py; V4 rerun next.
+Prediction for the rerun: my expected counts within 1 per cent of the track's in every range
+(the grid ratio is 0.995 sin theta, a constant factor that normalisation removes); then the
+time averages lie about 4, 2, 1 per cent below in 0-4, 4-6, 6-10 and the claim holds.

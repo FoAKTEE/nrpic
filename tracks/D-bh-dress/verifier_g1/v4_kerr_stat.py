@@ -173,7 +173,10 @@ class Ref(K.Spike):
         Jts = -(2 / math.sqrt(D)) * np.sum(W[:, None] * wpsi * EE * fv)
         Jps = (2 / math.sqrt(D)) * np.sum(W[:, None] * wpsi * LL * fv)
         Abig = (r * r + a * a) ** 2 - a * a * D * s * s
-        return float((-Abig * Jts - 2 * a * r * Jps) / D), Emin
+        # (-A J_t - 2 a r J_phi) sin(theta) / Delta = J^t Sigma^2 sin(theta) = n per dr dtheta dphi;
+        # per dr d(cos theta) dphi divide by sin(theta). The first version returned n itself and
+        # integrated it over cos(theta): high latitudes under-weighted (JOURNAL entry 8).
+        return float((-Abig * Jts - 2 * a * r * Jps) / (D * s)), Emin
 
 
 def ref_point(args):
