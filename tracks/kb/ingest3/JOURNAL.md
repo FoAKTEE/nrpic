@@ -89,3 +89,33 @@ used) showed the counts below; the registered run with the committed code is the
 - Status: the 11 ok papers stay ok; nothing becomes review by the new rule (each paper that cites
   now has entries).
 Refuted by: any count above that differs, a cited key without entry, or a seventh zero.
+
+## Outcome P2 (run kb-20261121-213314-f5e7cc2; dry/*.json and out.txt read)
+
+Held, with one count off by one. Entries: 1201.4794 46, 2507.01095 103, gr-qc/0304002 38,
+gr-qc/9703066 18, 2602.00155 28, 0710.5073 28, 1109.2484 104, 1302.5308 87, 1304.7791 38,
+gr-qc/0107076 16, gr-qc/9402041 13, hep-ph/0011159 11, astro-ph/0003278 33, 2403.15126 117. Every
+cited key has an entry in all 14 (cited_with_entry = cited_keys). gr-qc/0304002: 55 commands through
+`\ct`. 2602.00155: 29 `\citeproc` commands for 28 keys (I predicted "28 citations": one key is cited
+twice; the prediction confused keys and commands). Zero entries for exactly the six old-style
+papers. Status: 11 ok, 9 review, as before; the review rule fires for none. Not predicted:
+astro-ph/0003278 has 33 entries but 0 citation commands and 0 sections although its source has
+`\section` and `\cite` (zero_bib.tsv counted 33 cited keys): a structure defect beyond the
+bibliography (optional item of the brief), left for later in this package if time remains.
+
+## Prediction P3 (re-ingest of the 20 with --remap-claims, then tags, vectors, resolve-bib, claim check)
+
+- Bibliography entries per paper as in the dry run (P2); TeX papers without an entry in the whole
+  database: 6 (the old styles), none with status ok. parse_status overall unchanged: ok 684, review
+  23, pdf 3 (the 11 ok stay ok, the 9 review stay review). Strict rate = recorded rate = 0.96338.
+- Bibliography entries +746 in all (the 14 sums: 46+103+38+18+28+28+104+87+38+16+13+11+33+117);
+  citation rows +84 (gr-qc/0304002 55 commands, 2602.00155 29) give new rows; keys of other papers'
+  rows get bib_id now.
+- flat.tex byte-identical for all 20 (tex_files is unchanged), so every remap says identical_flat;
+  the 21 claims keep their locator ranges, their chunk ids move to the new rows, no dangling
+  reference anywhere; statuses and labels unchanged (171-185 located/checked, 186 unlocated, 658-662
+  located). `kb claim check --id 171 ... 186` then reports "same" for all 16 and writes locator rows
+  equal to the remapped ones (an independent resolution through claims_check).
+- `kb embed --check --work` afterwards: 0 missing, 0 stale, 0 orphaned.
+Refuted by: a dangling chunk reference, a changed status or label, a claim-check row that differs
+from the remap, a status change, or entry counts other than the dry run's.
