@@ -6,7 +6,9 @@
 #       breakdown criteria of the three SR-1 runs.
 #   bash tracks/A-emd-pbh/runs_ball/after_wave3.sh box <analysis run id of after_runs3.sh runs3>
 #       closes the fixed-box card run A-20261120-223310-a9ce31a (entry 14), compare.py on its
-#       three runs, turnaround.py on every SR-1L run (fixed box and L = 64).
+#       three runs, turnaround.py on every SR-1L run (fixed box and L = 64), and compare.py again on
+#       the three SR-1L runs of job A-20261119-144419-13d5601 (corrected lapse reference in the gauge
+#       figure, coordinate light speed for prediction S6; JOURNAL entry 17).
 set -euo pipefail
 PART=$1
 A3=$2
@@ -47,5 +49,34 @@ if [ "$PART" = box ]; then
         --out \$O > \$O/summary_box.log 2>&1; \
       mkdir -p \$O/ta; $PY $C/turnaround.py --prep $P2 --out \$O/ta --figdir $C/figs --tag _box \
         --run \$O:sr1lb_n64:1.0:leak --run \$O:sr1lb_n128:0.5:leak --run $S/$A3:sr1l_n256L32:0.25:leak \
-        --run \$O:sr1lb_n128h2:0.5:leak --run $S/$A3:sr1l_n256:0.5:leak --run $S/$A3:sr1l_n128:1.0:leak > \$O/ta/turnaround.log 2>&1"
+        --run \$O:sr1lb_n128h2:0.5:leak --run $S/$A3:sr1l_n256:0.5:leak --run $S/$A3:sr1l_n128:1.0:leak > \$O/ta/turnaround.log 2>&1; \
+      mkdir -p \$O/l64; R3=$S/A-20261119-144419-13d5601; \
+      $PY $C/compare.py --prep $P2 --seg \$R3/sr1l_n256 --gauge leak --leak 8 --dx 0.5 --label sr1l_n256 --out \$O/l64 --figdir $C/figs > \$O/l64/sr1l_n256.log 2>&1; \
+      $PY $C/compare.py --prep $P2 --seg \$R3/sr1l_n128 --gauge leak --leak 8 --dx 1.0 --label sr1l_n128 --out \$O/l64 --figdir $C/figs > \$O/l64/sr1l_n128.log 2>&1; \
+      $PY $C/compare.py --prep $P4 --seg \$R3/sr1l_n256L32 --gauge leak --leak 8 --dx 0.25 --label sr1l_n256L32 --out \$O/l64 --figdir $C/figs > \$O/l64/sr1l_n256L32.log 2>&1"
+fi
+#   bash tracks/A-emd-pbh/runs_ball/after_wave3.sh bh -
+#       excision.py (JOURNAL entry 16, prediction E) on BH-1 at dx = M/2 (processor run
+#       A-20261119-145154-c40f0ce), M/4, M/6, M/8 (card run A-20261119-144419-13d5601) and BH-1R
+#       (A-20261119-164634-f1fe887); breakdown times of the BH-1 runs by criterion (turnaround.py
+#       --breakdown); compare.py on BH-1R again with --line-hmax 1e3 (the top-hat jump on the fine
+#       level gives |H| > 1 on the line at t = 0.25, which cut every line output; entry 17).
+if [ "$PART" = bh ]; then
+  R3=$S/A-20261119-144419-13d5601
+  RS=$S/A-20261119-164634-f1fe887
+  P3=$S/A-20261119-143524-334e553
+  harness/bin/nrpic-run submit --kind scouting --gate G2 --package $C --launcher local --cores 2 --wall 01:00:00 \
+    --parent A-20261119-145154-c40f0ce --parent A-20261119-144419-13d5601 --parent A-20261119-164634-f1fe887 \
+    --parent A-20261121-080558-02c3188 \
+    --purpose "BH-1 and BH-1R: which criterion removed particles (excision.py, runs_ball/JOURNAL.md entry 16, prediction E), breakdown times of BH-1 by criterion, BH-1R line diagnostics with --line-hmax 1e3 and the G2 finder summary (entry 17)" -- \
+    bash -c "export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2; O=\$NRPIC_RUN_DIR; \
+      $PY $C/excision.py --out \$O --figdir $C/figs \
+        --run $S/A-20261119-145154-c40f0ce/bh_n64:bh_n64:$S/A-20261119-145007-38e4cd9/lat17 \
+        --run $R3/bh_n128:bh_n128:$P3/lat34 --run $R3/bh_n192:bh_n192:$P3/lat51 --run $R3/bh_n256:bh_n256:$P3/lat68 \
+        --run $RS/bh_smr:bh_smr:$S/A-20261119-164113-74f0f32/lat136 > \$O/excision.log 2>&1; \
+      mkdir -p \$O/bd; $PY $C/turnaround.py --out \$O/bd \
+        --breakdown $S/A-20261119-145154-c40f0ce/bh_n64:bh_n64 --breakdown $R3/bh_n128:bh_n128 \
+        --breakdown $R3/bh_n192:bh_n192 --breakdown $R3/bh_n256:bh_n256 --breakdown $RS/bh_smr:bh_smr > \$O/bd/breakdown.log 2>&1; \
+      $PY $C/compare.py --prep $S/A-20261119-164113-74f0f32/lat136 --seg $RS/bh_smr --gauge leak --leak 8 --dx 0.125 \
+        --dx-fine 0.0625 --fine-half 4.0 --line-hmax 1e3 --label bh_smr --out \$O --figdir $C/figs > \$O/bh_smr.log 2>&1"
 fi

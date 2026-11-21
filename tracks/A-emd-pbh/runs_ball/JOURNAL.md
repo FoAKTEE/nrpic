@@ -690,3 +690,42 @@ Prediction E [JUDGEMENT]:
 - E2 BH-1 at dx = M/8 and BH-1R: particles are removed only after the first trapped region forms
   (code time > 10.5), by criterion (a), inside the horizon (last recorded coordinate radius of a
   removed tracked particle below the finder's mean radius, where the finder found one).
+
+## 2026-11-21 00:20 PST, entry 17: two defects of compare.py found in the first registered analyses, and what is registered next
+
+Registered so far this session: A-20261121-074923-d396d73 (SR-1L at dx = M, M/2, M/4; BH-1 at
+M/4, M/6, M/8; `after_runs3.sh runs3`, completed) and A-20261121-080558-02c3188 (BH-1R;
+`after_runs3.sh bh_smr`, completed; it also closed the card run A-20261119-164634-f1fe887,
+288 files checksummed). fields.py found no field dumps in BH-1R (the deck writes none; f.log
+"no field dumps"): no z = 0 slices of BH-1R exist.
+
+Defects found while looking at the figures (both are in the analysis, not in the runs):
+1. The top-left panel of `sr1l_*_gauge.png` (data set 2t) drew a(tau_c), the scale factor of the
+   homogeneous core, under the label "reference at tau_c": for 2t exact.json carries no
+   relaxed-lapse reference and the figure fell back to a(tau). The numbers were right (they use
+   the reference computed in main()); only the dashed curve was wrong. Corrected: the figure
+   computes the same reference (relaxed_lapse_reference), and the reference is not extended
+   past the proper time where it saturates (NaN instead of its last value).
+2. compare.py drops every line output from the first one whose largest |H| exceeds 1 (written
+   for the SR-1 blow-up). In BH-1R the top-hat jump of data set 3 at rbar = 2.49 gives
+   |H| = 1.12 on the fine level at t = 0.25 (1.61 at t = 0.5, 0.46 at 1.25; read from
+   tab/ball.con.0000{1,2,5}.tab of A-20261119-164634-f1fe887), so all line diagnostics of BH-1R
+   (Misner-Sharp mass, trapped points, line horizon) were cut after t = 0. New option
+   `--line-hmax` (default 1, unchanged).
+New numbers (keys added, nothing changed): `line_light_speed` (largest alpha/sqrt(g_rr) and
+|beta^r| + alpha/sqrt(g_rr) on the line, for prediction S6) and `finder_g2` (first detection, the
+shell's clock at the horizon minus its exact tau_AH, the mass error at first detection and as
+median over --g2-window = 4 M after it, searches that found the horizon from the first on).
+Debug passes in scratch/A-emd-pbh/tmp/runs_ball/dbg_compare and dbg_exc (NOT results, not cited;
+they showed that the code runs). Honest record: the debug pass of compare.py on BH-1R with
+--line-hmax 1e3 showed me the line horizon of BH-1R before any prediction about it, so no
+prediction is claimed for the line diagnostics of BH-1R; they serve as a cross-check of the
+finder. The debug pass of excision.py on bh_n64 showed its numbers before the registered run;
+prediction E (entry 16) was committed before it (commit 1ad4c81).
+
+Registered next, in this order (scripts committed first): `after_wave3.sh turnaround
+A-20261121-074923-d396d73` (prediction T, entry 13); `after_wave3.sh bh -` (prediction E,
+entry 16; BH-1 breakdown criteria; BH-1R compare.py with --line-hmax 1e3); `after_wave3.sh box
+A-20261121-074923-d396d73` (prediction F, entry 14; it closes the fixed-box card run
+A-20261120-223310-a9ce31a and reruns compare.py on the three SR-1L runs of job 4642 for the
+corrected gauge figure and the light-speed number of S6).

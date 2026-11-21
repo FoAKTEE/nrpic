@@ -135,6 +135,12 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--figdir", default=None)
     ap.add_argument("--base", default="ball")
+    ap.add_argument("--line-hmax", type=float, default=1.0,
+                    help="line outputs from the first one whose largest |H| exceeds this are left out "
+                         "(default 1: the SR-1 blow-up; a run whose initial top-hat jump gives |H| > 1 on a "
+                         "fine level needs a larger value, JOURNAL entry 17)")
+    ap.add_argument("--g2-window", type=float, default=4.0,
+                    help="window after the finder's first detection for the median mass error (M)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     tr = C.load_json(os.path.join(a.prep, "tracked.json"))
@@ -381,10 +387,23 @@ def main():
     # left out of the summaries and figures
     t_bad = None
     for L in lines:
-        if "H" in L and not (np.nanmax(np.abs(L["H"])) < 1.0):
+        if "H" in L and not (np.nanmax(np.abs(L["H"])) < a.line_hmax):
             t_bad = L["t"]
             break
     res["line_first_t_maxH_gt_1"] = t_bad
+    res["line_hmax"] = a.line_hmax
+    # coordinate speed of light along the line (prediction S6 of JOURNAL entry 7): radial
+    # alpha/sqrt(g_rr), and with the radial shift |beta^r| + alpha/sqrt(g_rr)
+    ls_ = []
+    for L in lines:
+        if "alpha" in L and len(L["alpha"]) == len(L["r"]) and (t_bad is None or L["t"] < t_bad):
+            cr = L["alpha"] / np.sqrt(L["grr"])
+            cb = np.abs(L["betax"]) + cr if "betax" in L and len(L["betax"]) == len(cr) else cr
+            ls_.append((L["t"], float(np.nanmax(cr)), float(np.nanmax(cb))))
+    res["line_light_speed"] = {f"max_t_le_{tl:g}": dict(
+        radial=float(max([v[1] for v in ls_ if v[0] <= tl], default=np.nan)),
+        with_shift=float(max([v[2] for v in ls_ if v[0] <= tl], default=np.nan)))
+        for tl in (10.0, 16.0, 20.0, 24.0, 44.0)}
     if t_bad is not None:
         lines = [L for L in lines if L["t"] < t_bad]
     # points with r >= 2 M (the Misner-Sharp mass is a small difference of O(1) terms,
@@ -496,6 +515,34 @@ def main():
             if len(rel):
                 res["finder"][f"m_irr_rel_err_vs_{key}"] = dict(first=float(rel[0]), median=float(np.median(rel)),
                                                                 maxabs=float(np.max(np.abs(rel))), n=int(len(rel)))
+    # gate G2 items (JOURNAL entries 11-12): first detection, the clock of the shell at the
+    # horizon against its exact trapping time, the mass error at first detection and as
+    # median over --g2-window M after it, and whether every later search found the horizon
+    if finder:
+        t0f = finder[0]["t"]
+        win = [f for f in finder if f["t"] <= t0f + a.g2_window + 1e-9 and np.isfinite(f["m_exact_slice"])]
+        rel_w = np.array([f["m_irr"] / f["m_exact_slice"] - 1.0 for f in win])
+        allrows = []
+        for d_ in segs:
+            fsum = os.path.join(d_, f"{a.base}.horizon_summary_0.txt")
+            if os.path.exists(fsum):
+                for line in open(fsum):
+                    if line.strip() and not line.startswith("#"):
+                        v_ = line.split()
+                        allrows.append((float(v_[1]), v_[2].lower() not in ("nan", "-nan", "inf", "-inf")))
+        later = [ok for (tt_, ok) in allrows if tt_ >= t0f - 1e-9]
+        res["finder_g2"] = dict(
+            t_first=t0f, t_last=finder[-1]["t"],
+            tau_at_horizon_minus_tau_ah_shell_first=finder[0]["tau_at_horizon"] - finder[0]["tau_ah_exact_shell_at_r"],
+            m_irr_first=finder[0]["m_irr"], m_exact_slice_first=finder[0]["m_exact_slice"],
+            rel_err_first=(finder[0]["m_irr"] / finder[0]["m_exact_slice"] - 1.0)
+            if np.isfinite(finder[0]["m_exact_slice"]) else None,
+            window=a.g2_window, n_window=int(len(rel_w)),
+            rel_err_median_window=float(np.median(rel_w)) if len(rel_w) else None,
+            rel_err_median_abs_window=float(np.median(np.abs(rel_w))) if len(rel_w) else None,
+            rel_err_maxabs_window=float(np.max(np.abs(rel_w))) if len(rel_w) else None,
+            n_searches_from_first=len(later), n_found_from_first=int(sum(later)),
+            searches_total=len(allrows))
     # the first code time at which a tracked particle has reached the trapping time of its
     # own shell: the first slice of the run that contains a trapped round sphere (exact
     # event, located with the code's own proper times)
@@ -544,6 +591,10 @@ def print_summary(res):
     for k, v in res["finder"].items():
         if k.startswith("m_irr_rel"):
             print(f"  finder {k}: {v}")
+    if "finder_g2" in res:
+        print("  finder G2:", res["finder_g2"])
+    if "line_light_speed" in res:
+        print("  line light speed:", res["line_light_speed"])
 
 
 def figures(a, res, ball, ex, t, tau, R, eps, Ri, grp, groups, sh, tta_num, Rmax_num, tah_num, tc_num,
@@ -752,12 +803,17 @@ def figures(a, res, ball, ex, t, tau, R, eps, Ri, grp, groups, sh, tta_num, Rmax
         ax.plot(hst[:, 0], np.interp(tau_c, ex["central"]["tau"], ex["central"]["a"]), **fs.GUIDE,
                 label=r"$a(\tau_c)$ exact")
     if a.gauge == "leak":
+        # the relaxed-lapse reference of the homogeneous core, computed as in main() when
+        # exact.json does not carry it (data set 2t); before wave 3 batch 2b this panel
+        # plotted a(tau_c) under the label "reference" for 2t (JOURNAL entry 17)
         lr = ex.get("lapse_reference") or {}
-        if lr and abs(lr.get("rate", -1) - a.leak) < 1e-12:
-            ax.plot(lr["t"], lr["alpha"], color="k", lw=1.0, ls=":", label="homogeneous ref. (own $t$)")
-        ax.plot(hst[:, 0], np.interp(tau_c, *(np.array(v) for v in (
-            (lr["tau"], lr["alpha"]) if lr else (ex["central"]["tau"], ex["central"]["a"])))), **fs.GUIDE,
-            label=r"reference at $\tau_c$")
+        if not lr or abs(lr.get("rate", -1) - a.leak) > 1e-12:
+            lt_, ltau_, lal_ = C.relaxed_lapse_reference(np.array(ex["central"]["tau"])[:-1],
+                                                         np.array(ex["central"]["a"])[:-1], a.leak)
+            lr = dict(rate=a.leak, t=lt_.tolist(), tau=ltau_.tolist(), alpha=lal_.tolist())
+        ax.plot(lr["t"], lr["alpha"], color="k", lw=1.0, ls=":", label="homogeneous ref. (own $t$)")
+        ax.plot(hst[:, 0], np.interp(tau_c, np.array(lr["tau"]), np.array(lr["alpha"]), right=np.nan), **fs.GUIDE,
+                label=r"reference at $\tau_c$")
     ax.plot(hst[:, 0], hst[:, 15], color=fs.PAL["blue"], lw=1.0, label=r"$\min\alpha$")
     ax.set_xlabel(r"$t\,/M$")
     ax.set_ylabel("lapse")
