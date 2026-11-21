@@ -2,7 +2,7 @@
 
 Predictions are written before each test; outcomes follow, also when a prediction failed.
 
-## 2026-11-21 21:35Z, entry 0: what is known, candidates, predictions (written before any run)
+## 2026-11-21 21:20Z, entry 0: what is known, candidates, predictions (written before any run)
 
 Known (card job 4799, run A-20261121-131600-02b5d41, deck
 `periodic_threshold/inputs/peak_leak.athinput`, release core-v0.5 card build):
@@ -90,3 +90,56 @@ the deposit is involved).
   cycle equal to the card's to 1e-6 relative before the jump.
 - R1 (cfl_number 0.5, to t = 5.0): no jump; past the card's guard stop at 4.8.
 - R2 (zero shift, cfl_number 1.0, to t = 3.0): no jump.
+
+## 2026-11-21 21:27Z, entry 1: outcome of U0 (run A-20261121-212150-20ffbb6), and what it changes
+
+U0 (uniform 64^3, the card deck's physics, relaxed lapse with lapse_leak 20) stopped on the
+guard at t = 10.76 (cycle 70, exit 3; 4 minutes on 6 threads). H-norm2 (`peak.z4c.user.hst`)
+7.3e-3 at t = 2.50, 8.0e-3 at 2.71, 2.5e-2 at 2.94, 6.1 at 3.18, 50 at 3.42. The jump time
+falls inside my predicted window (2.5-4) and the step there is dt/dx = 0.733-0.746, as
+predicted. But the line outputs (tab 4 to 7, x axis through the peak) refute the mechanism
+I named for it: beta^x and Gam^x stay smooth and odd in x through t = 3.67, while the LAPSE
+goes bad first: alpha_max rises again from t = 1.9 on (1.0766 at t = 1.91, 1.1055 at 2.50,
+where the relaxed lapse should fall monotonically towards exp(6TH)), and at t = 3.18 alpha
+has dips to 0.85 at |x| = 0.78, at 3.67 an irregular pattern 0.62-1.03.
+Reading [JUDGEMENT, to be tested]: on the root mesh the step reaches 0.14 at t = 1.40 and
+0.23 at 3.0, so lapse_leak x dt = 2.9 to 4.7, beyond the RK4 real-axis limit 2.79: the
+relaxation term itself is integrated unstably (the deck header's own rule, leak x dt < 2.7,
+holds on the card's level 4, 20 x 0.0195 = 0.39, but not on a 64^3 root mesh). So U0 does
+not reproduce the card's mechanism; it shows a second one, of coarse meshes only. The
+remaining U cases (U1 to U7) are dropped: all of them carry the same stiff relaxation.
+
+Seen before the registered Test B run (a smoke test of `scripts/vonneumann.py` on a 9^3
+grid of wave vectors, scratch/A-emd-pbh/tmp/vn_test, not evidence): shift threshold 0.685
+at dx = 0.0195 (0.77 without the Kreiss-Oliger term: with it the grid-scale eigenvalues
+leave the narrow tip of the RK4 region near 2.83i); lapse with leak 20 on the root mesh
+unstable from dt/dx = 0.405. Test B's prediction stands as written; the registered run on a
+41^3 grid decides.
+
+## 2026-11-21 21:28Z, entry 2: predictions for the G series (uniform, frozen lapse) and R
+
+G series: `inputs/diag_uniform.athinput` with the lapse frozen (lapse_oplog 0, lapse_advect
+0, lapse_leak 0: d_t alpha = 0 apart from the Kreiss-Oliger term; alpha keeps the data's
+values 0.81-1.0), so that neither the 1+log speed nor the stiff relaxation enters. The step
+is then min(dx, 0.25 dx/(alpha sqrt chi)) and dt_expansion; dt/dx should pass 0.7 near
+t = 2.5. Cases (`scripts/run_uniform.sh`):
+- G0 Gamma-driver as the card deck, cfl 1.0: grid-scale (cell-to-cell alternating) growth of
+  beta^x and Gam^x on the line output, then of H, starting within 3 cycles of the first
+  step with dt/dx above the Test B threshold for dx = 0.3125 (about 0.65), at t between 2
+  and 3.5; guard stop or H-norm2 above 1 before t = 12.
+- G1 as G0 with cfl_number 0.5: no growth to t = 12; H-norm2 at t = 12 within a factor 10
+  of its value at t = 2.
+- G2 as G0 with zero shift: no growth to t = 12 (same criterion).
+- G3 as G0 with the S1 data, G4 as G0 with TSC deposit and no filter: onset within one
+  cycle of G0's (the step history is set by the background, not by the matter).
+Refuted: G0 without growth (then the Gamma-driver at Courant 0.7-1 is stable in this code and
+the card's cause is elsewhere), G1 or G2 with growth, G3/G4 with an onset more than 2
+cycles from G0's.
+
+R series (the card deck itself on processors, `scripts/run_refined.sh`; level 4 has dx =
+0.0195, so lapse_leak x dt <= 0.39 and the stiff relaxation of U0 cannot act):
+- R0 (as job 4799, to t = 2.7): H_max (cstat, every cycle) jumps between t = 2.27 and 2.50;
+  dt per cycle equal to the card's to 1e-4 relative before the jump; grid-scale beta^x on
+  level 4 in the line outputs (every 0.1) by t = 2.4.
+- R2 (zero shift, cfl 1.0, to t = 3.0): no jump; H_max below 0.05 to t = 3.0.
+- R1 (cfl_number 0.5, to t = 3.0), only if the processors allow: no jump.

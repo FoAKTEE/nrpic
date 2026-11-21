@@ -7,6 +7,10 @@
 #   U2  zero shift (shift_Gamma = 0)       U3  lapse_leak = 0 (pure 1+log)
 #   U4  TSC deposit, no filter             U5  the S1 data (mu = 0.3, e = 0.2)
 #   U6  time/cfl_number = 0.65             U7  time/cfl_number = 0.8
+# G cases: the lapse frozen (lapse_oplog 0, lapse_advect 0, lapse_leak 0), JOURNAL entry 2:
+#   G0  Gamma-driver, cfl 1.0              G1  time/cfl_number = 0.5
+#   G2  zero shift                         G3  the S1 data
+#   G4  TSC deposit, no filter
 # A case that stops on the guard (exit 3) or otherwise is recorded and the next one runs.
 set -uo pipefail
 OUT=$1; T=$2; shift 2
@@ -19,6 +23,7 @@ export ATHENA_EXE=$REPO/scratch/core/exe/core_nrpic_v06/athena_cpu_omp
 export THREADS=$T PLACES=auto
 p0=(problem/id_file=$P0/fields.bin particles/particle_file=$P0/particles.nrp)
 s1=(problem/id_file=$S1/fields.bin particles/particle_file=$S1/particles.nrp)
+geo=(z4c/lapse_oplog=0.0 z4c/lapse_advect=0.0 z4c/lapse_leak=0.0)
 for c in "$@"; do
   case $c in
     U0) args=("${p0[@]}") ;;
@@ -30,6 +35,13 @@ for c in "$@"; do
     U5) args=("${s1[@]}") ;;
     U6) args=("${p0[@]}" time/cfl_number=0.65) ;;
     U7) args=("${p0[@]}" time/cfl_number=0.8) ;;
+    G0) args=("${p0[@]}" "${geo[@]}") ;;
+    G1) args=("${p0[@]}" "${geo[@]}" time/cfl_number=0.5) ;;
+    G2) args=("${p0[@]}" "${geo[@]}" z4c/shift_Gamma=0.0 z4c/shift_eta=0.0
+              z4c/shift_advect=0.0) ;;
+    G3) args=("${s1[@]}" "${geo[@]}") ;;
+    G4) args=("${p0[@]}" "${geo[@]}" particles/deposit_shape=tsc particles/nfilter=0
+              particles/filter_compensate=false) ;;
     *) echo "unknown case $c"; continue ;;
   esac
   mkdir -p "$OUT/$c"
