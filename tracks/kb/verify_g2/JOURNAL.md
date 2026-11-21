@@ -108,7 +108,7 @@ else `\bibitem` in flat.tex; `.bib` files are found by basename. Added a lenient
 A' (an abstract in papers.abstract counts). Ad-hoc rerun after the fix: 662/710 (93.2 %),
 lenient 688/710 (96.9 %); the registered rerun follows (entry 5).
 
-## Entry 5 (2026-11-21 07:55 UTC): restart after the usage-limit cut; outcomes of the runs left behind
+## Entry 5 (2026-11-21 07:49 UTC): restart after the usage-limit cut; outcomes of the runs left behind
 
 The session of 2026-11-20 was cut at 22:35 UTC. This session continues from the worktree
 (merged main at b0e1fafb). State found: the held-out search run kb-20261120-222546-ea894c8 had
