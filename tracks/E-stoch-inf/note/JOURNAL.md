@@ -223,3 +223,19 @@ to `legend()` explicitly (the style already sets it, so the PNGs are unchanged b
   against run E-20261121-075717-1849987 only `fig_sr_constraints` and `schem_dataflow` change
   (PNG bytes), every other PNG and every table is byte-identical. Refuted by any other
   difference.
+
+## 08:15 UTC: outcome of run E-20261121-080526-7fbe919; the ledger table did not fit
+
+- **N11 held.** Completed (102 s); against E-20261121-075717-1849987 only the PNGs of
+  `fig_sr_constraints` and `schem_dataflow` changed (PDF and SVG files carry creation stamps
+  and differ in every run); all tables byte-identical; 104 claims, 7 differ; every figure
+  repeated with pixel rms 0. Both changed PNGs looked at.
+- Compiling the note with its outputs (checker with `--compile`: 0 undefined references or
+  citations, 0 overfull boxes) and reading the 15 pages showed that the G1 ledger, one
+  `table*`, was 225 pt too tall: LaTeX reported "Float too large" and the run list at its foot
+  ran off page 15. `ledger.py` now writes it as two tables (criteria A1-A6; A7, analysis, cost,
+  verifier, code project and the run list); a test compile in scratch fits it on two pages.
+  Also `\raggedbottom` (pages 1 and 4 had stretched gaps) and one sentence of Sec. VI C.
+- **N12 (prediction for the third run).** Completes as before (N9, N10); against run
+  E-20261121-080526-7fbe919 only `tables/ledger_g1.tex` changes, every PNG and every other
+  table is byte-identical. Refuted by any other difference.

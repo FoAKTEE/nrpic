@@ -17,6 +17,7 @@
 \newcommand{\pending}[1]{\textcolor{red}{[Pending: #1]}}
 
 \begin{document}
+\raggedbottom
 
 \title{Stochastic inflation in numerical relativity:\\ Specification, feasibility and the slow-roll reproduction (working note v1)}
 
@@ -204,7 +205,7 @@ The box means of the field, its momentum and the trace of the extrinsic curvatur
 
 \subsection{Freezing of super-horizon modes in the code}\label{sec:a3}
 
-Figure~\ref{fig:srfreezing} applies the freezing criterion to the $256^3$ run. Every mode that left the window at least six e-folds before the end keeps its power, from four e-folds after crossing to the end, within a tiny fraction of the tolerance of the ratio that the full Mukhanov--Sasaki solution gives (A3), and its residual drift equals that of the full solution, the slow growth of the slow-roll power, to the precision of the fit. The deformed equation of a lattice on a fixed Friedmann background, evaluated for the same shells, loses power at the rate of the decay law of Sec.~\ref{sec:criteria}, far faster than the code drifts. The code therefore freezes the curvature perturbation, and the lattice without metric perturbations is excluded by a wide margin. The rungs of the convergence ladder give the same result.
+Figure~\ref{fig:srfreezing} applies the freezing criterion to the $256^3$ run. Every mode that left the window at least six e-folds before the end changes its power, from four e-folds after crossing to the end, by the same ratio as the full Mukhanov--Sasaki solution, far inside the tolerance of A3, and its residual drift equals that of the full solution, the slow growth of the slow-roll power, to the precision of the fit. The deformed equation of a lattice on a fixed Friedmann background, evaluated for the same shells, loses power at the rate of the decay law of Sec.~\ref{sec:criteria}, far faster than the code drifts. The code therefore freezes the curvature perturbation, and the lattice without metric perturbations is excluded by a wide margin. The rungs of the convergence ladder give the same result.
 
 \begin{figure*}
 \includegraphics[width=\textwidth]{fig_sr_freezing}
@@ -317,7 +318,7 @@ Extraction of $\mathcal{R}^\mathrm{NR}$ \cite{Launay:2025bd} & the printed facto
 
 \section{Numerical ledger}\label{app:ledger}
 
-Tables~\ref{tab:ledger} and \ref{tab:ledgerG1} list the numbers behind the statements and figures of this note with the registered runs that produced them, Table~\ref{tab:ledger} for the feasibility gate and Table~\ref{tab:ledgerG1} for the slow-roll reproduction. The figures and the tables are made by one registered run of the note's scripts, which check each input against the checksum its run records; a few numbers of the verifier, of a check of the released build and of the code project are read at their lines in the reports that state them. The same run recomputes the numbers printed in the track's documents from the run outputs: they agree to their printed digits, except the assumed overhead of the field and the sources and the cost per realization that follows from it, which the measured throughput replaces (Sec.~\ref{sec:cost}); the last printed digit of the first slow-roll parameter at the start of the USR case, where the two independent integrators differ; and two maxima of the background box means in one summary of the slow-roll runs, which understate the computed values.
+Tables~\ref{tab:ledger}--\ref{tab:ledgerG1b} list the numbers behind the statements and figures of this note with the registered runs that produced them, Table~\ref{tab:ledger} for the feasibility gate and Tables~\ref{tab:ledgerG1} and \ref{tab:ledgerG1b} for the slow-roll reproduction. The figures and the tables are made by one registered run of the note's scripts, which check each input against the checksum its run records; a few numbers of the verifier, of a check of the released build and of the code project are read at their lines in the reports that state them. The same run recomputes the numbers printed in the track's documents from the run outputs: they agree to their printed digits, except the assumed overhead of the field and the sources and the cost per realization that follows from it, which the measured throughput replaces (Sec.~\ref{sec:cost}); the last printed digit of the first slow-roll parameter at the start of the USR case, where the two independent integrators differ; and two maxima of the background box means in one summary of the slow-roll runs, which understate the computed values.
 
 \input{tables/ledger}
 

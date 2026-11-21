@@ -693,17 +693,26 @@ def write_ledger_g1(g, out):
         ("Core: largest noise cutoff at $256^3$ for second-order constraints", f"${g['core.kmax256']:.0f}\\,\\Delta k$",
          "C", "TO VERIFY"),
     ]
+    # two tables: one float of all rows exceeds a page (run E-20261121-080526-7fbe919)
+    k = next(i for i, r in enumerate(rows) if r[0].startswith("A7"))
+    head = ["\\begin{ruledtabular}", "\\footnotesize",
+            "\\begin{tabular}{p{0.56\\textwidth}p{0.27\\textwidth}p{0.08\\textwidth}}",
+            "Quantity & Value & Run \\\\", "\\hline"]
     L = ["\\begin{table*}",
-         "\\caption{\\label{tab:ledgerG1}Numerical ledger of the slow-roll reproduction: each number "
-         "with the registered run that produced it (R1 is listed in Table~\\ref{tab:ledger}).}",
-         "\\begin{ruledtabular}", "\\footnotesize",
-         "\\begin{tabular}{p{0.56\\textwidth}p{0.27\\textwidth}p{0.08\\textwidth}}",
-         "Quantity & Value & Run \\\\", "\\hline"]
-    for a, b, c, _ in rows:
+         "\\caption{\\label{tab:ledgerG1}Numerical ledger of the slow-roll reproduction, criteria A1 to A6: "
+         "each number with the registered run that produced it (runs listed in Table~\\ref{tab:ledgerG1b}, "
+         "R1 in Table~\\ref{tab:ledger}).}"] + head
+    for a, b, c, _ in rows[:k]:
+        L.append(f"{a} & {b} & {c} \\\\")
+    L += ["\\end{tabular}", "\\end{ruledtabular}", "\\end{table*}", "",
+          "\\begin{table*}",
+          "\\caption{\\label{tab:ledgerG1b}Numerical ledger of the slow-roll reproduction, continued: "
+          "reproducibility, analysis, cost, the verifier and the code project; the registered runs of both parts.}"] + head
+    for a, b, c, _ in rows[k:]:
         L.append(f"{a} & {b} & {c} \\\\")
     L += ["\\hline", "\\multicolumn{3}{l}{Registered runs:} \\\\"]
-    for k, r in G1.items():
-        L.append(f"\\multicolumn{{3}}{{l}}{{{lab[k]}\\quad\\texttt{{{r}}}\\quad {G1_WHAT[k]}}} \\\\")
+    for key, r in G1.items():
+        L.append(f"\\multicolumn{{3}}{{l}}{{{lab[key]}\\quad\\texttt{{{r}}}\\quad {G1_WHAT[key]}}} \\\\")
     L.append(f"\\multicolumn{{3}}{{p{{0.93\\textwidth}}}}{{V\\quad the verifier's runs \\texttt{{{VER_RUNS}}}, "
              f"its report and the stage status of the gate}} \\\\")
     L.append(f"\\multicolumn{{3}}{{l}}{{L\\quad the lead's check \\texttt{{{LR1_RUN}}}}} \\\\")
