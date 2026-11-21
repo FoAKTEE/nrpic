@@ -6,7 +6,7 @@ release core-v0.5, the release core-v0.4, and the list written after the wave-1
 integration (2026-11-15, below, with its numbering kept; items that a release changes
 are named in the section of that release).
 
-## State after release core-v0.6 (2026-11-21, batch 4a, session core-lead-6)
+## State after release core-v0.6 (2026-11-21, batch 4a, session core-lead-6; items u, v and the products of item 4 brought up to date in batch 8, session core-lead-8)
 
 **Is G2 met? No.** Criteria of the core sheet (brief 9.3, "G2: all of C3 passed,
 core-v0.1 released") and of every track's G2 (charter 9.2), item by item in
@@ -75,6 +75,35 @@ the ladder schematic, failed runs on record.
   the top shells (k^5 dt^4/600; 2.55e-3 for the top shell at 256^3; Track E, runs
   E-20261121-090057-19571c7, E-20261121-103157-96fee1d) [numbers of Track E]; not
   blocking for E's gate (k <= 32 dk); W25, core-v0.8.
+- u. **Restarts are exact only for periodic set-ups and for the particle state**
+  (fresh verifier, `VERIFIER.md` V6; decision 0027 item 3; added in batch 8). On the
+  release processor executable of core-v0.6 a periodic Z4c run with 4096 particles
+  restarted at cycle 10 of 20 repeats its restart data, trajectories, histories and
+  snapshot byte for byte; an Oppenheimer-Snyder run with Z4c, static refinement and
+  outflow faces restarted at cycle 3 of 6 repeats the particle state exactly and the
+  histories within 5e-13, but 64 per cent of the float64 words of the mesh state in the
+  restart file at cycle 6 differ (median relative 2.8e-13, 99th percentile 1.7e-7)
+  (runs core-20261121-213713-952a0c4, comparison core-20261121-215228-d1f36f4). Core's
+  caveat of core-v0.5 (`interfaces/mpi.md` row 4: the mesh restart path refills the
+  ghost cells on the outer boundary, 1e-9 there, 1e-10 in the history after one step;
+  runs core-20261119-160230-a2f1cf7, -160823-0e90ab7) is the same limit on one rank.
+  Consequence: a chained asymptotically flat run (ladder row 4 on M/8; Track C and D
+  chains) repeats only up to the growth of round-off; statements about it are made on
+  quantities that are stable under round-off, and a convergence series compares runs of
+  the same segmentation where it can (decision 0027 item 3). Which part of the restart
+  path differs (ghost refill at outflow faces, prolongation at level boundaries, or both)
+  is not separated by a run [TO VERIFY]; a fix that refills the ghosts as the running
+  step does is for core-v0.7 (no item number yet; byte test: the os set-up of V6).
+- v. **Step limit with a Gamma-driver shift** (decision 0027 item 2; Track A's request
+  `periodic-gamma-driver-step`, triaged as `REQUESTS_WAVE3.md` W31; added in batch 8):
+  the step limit, `dt_lightspeed` included, counts the speed of light only, and the
+  shift goes unstable at the grid scale above dt/dx = 0.685 (Track A's stability
+  analysis with the code's stencils, RK4 and dissipation 0.5; runs
+  A-20261121-212800-d7f31a4, -212941-9e68be1, -220510-6c46032, -212853-4a52dea; numbers
+  of Track A, not recomputed by core). Rule until then: `cfl_number` at 0.6 or below
+  with a Gamma-driver shift (CLAUDE.md, Machine; `cosmo_amr.md` section 2.4). Item for
+  core-v0.7: the gauge speeds and the stability bound of RK4 with Kreiss-Oliger
+  dissipation in the step limit, as an option, with A's minimal input as its test.
 
 Every other known defect is in the sections below, newest first: core-v0.6 items a to
 o, core-v0.5 items b to m, core-v0.4, and the list of 2026-11-15.

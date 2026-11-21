@@ -1320,3 +1320,28 @@ member, 0.605 control, 0.755 control, 0.680 control.
 
 Faults of mine on record: none known in this session beyond the G6 (ii) bound, which
 did not exclude the normalized constraint columns.
+
+## 2026-11-21T23:16Z, batch 8, session core-lead-8 (no cards, no source change)
+
+Task: (1) corrections after the fresh verifier's report (`stage/G2/VERIFIER.md` section 3),
+C16 marked, OPEN.md items for the restart limit (decision 0027 item 3) and the step rule
+with a Gamma-driver shift (0027 item 2), provenance of the pre-program run directories of
+ladder rows 2 and 4; (2) core's working note for G2 under `tracks/core/note/`. The six
+row-4 chains of batch 5 and their sequencer are not touched (6 core jobs in the queue at
+23:15Z).
+
+Plan and predictions, written before any run of this session:
+- Q1 (inventory of pre-program directories, registered processor run, one core): each of
+  `runs/os/nocap_sc`, `runs/os/nocap_v4`, `runs/prolate/e09_v8`, `runs/st/yc0900_v4`,
+  `yc0819_v4`, `yc0605_v5`, `yc0500_v5`, `yc0283_v5`, `migration_yc0500_v4`,
+  `yc0756_unpert` holds its input file, at least one timestamped copy of the executable
+  that ran (`athena.<stamp>.exe`) and the files the ladder numbers are read from
+  (`*.nrpic.hst`, `*.horizon_summary_0.txt`). Refuted by any of these missing.
+- Q2 (note figures, one registered run of `note/scripts/run_all.py` reading raw outputs):
+  (a) the largest relative errors of E, L_z, Q of the Kerr passage read from the
+  regression-G trajectories equal LADDER row 1 to four digits; (b) the first horizon
+  of `runs/os/nocap_sc` at 16.39 M with M_AH/M 1.0004 and the largest deviation to 60 M
+  1.34e-3, and regression O to 25 M within 6.3e-4; (c) the central lapse of the five
+  cluster models stays (0.900, 0.819), collapses (0.605 by 191 M, 0.500 by 104.3 M) and
+  rises toward one (0.283) as LADDER row 4 says. Refuted by any number differing beyond
+  its printed digits.

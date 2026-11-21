@@ -87,7 +87,7 @@ Evidence.
   `runs/os/nocap_v4` (published lattice rule), `runs/os/adapt_*`, `runs/os/mc_*`.
 - Re-read today (`ladder_numbers.json`): first apparent horizon 16.3894 M, mass
   1.000353; largest |M_AH/M - 1| from formation to 60 M 1.34e-3; 1.000093 at 20 M,
-  0.998762 at 40 M, 0.998670 at 60 M; all 9328 particles removed by 19.74 M.
+  0.998762 at 40 M, 0.9986707 at 60 M (0.998671 rounded; printed 0.998670 until batch 8, `stage/G2/VERIFIER.md` section 3 item 5); all 9328 particles removed by 19.74 M.
 - Regression O today (card release executable, initial data regenerated bitwise
   identical, to 25 M): `core-20261115-032614-45e1779`, 13 of 13 checks; first horizon
   16.3894 M, mass 1.000352575670864 (earlier ...862); central lapse equal to the earlier
@@ -249,7 +249,7 @@ criterion).
 |---|---|---|
 | deposition identity on refined meshes, flat space, 10^4 particles crossing three levels | mesh integrals equal particle sums to 16 printed digits (card), 4e-13 (processor) | `docs/TESTLOG.md` lines 30-36 |
 | deposition identity in the dust collapse | 1.1e-15 throughout (also in regression O) | line 62; regression O |
-| restart, asymptotically flat | positions to 9e-16, momenta 3e-16, history identical | lines 64-70 |
+| restart, asymptotically flat | positions to 9e-16, momenta 3e-16, history identical (particle state); the Z4c mesh state with outflow faces and refinement is not exact on release core-v0.6 (64 per cent of its words differ at round-off after three steps; fresh verifier V6, `stage/G2/OPEN.md` item u) | lines 64-70; runs core-20261121-213713-952a0c4, -215228-d1f36f4 |
 | restart, periodic | every compared quantity identical | `cosmo/TESTLOG.md` lines 847-862 |
 | apparent-horizon finder (vacuum puncture, M/8) | corrected finder 1.0003; slice mass 1.0006 | table tab:outcomes, `docs/TESTLOG.md` lines 191-224, 310-386 |
 | Kretschmann scalar (Brill-Lindquist) | 5e-3, 2e-4, 1e-5 relative in three radial bands | lines 38-42 |
