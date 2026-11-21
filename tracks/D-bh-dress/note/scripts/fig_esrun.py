@@ -7,7 +7,7 @@ particle; each file checked against the run's sha256sums.txt), the data run es2_
 (es/es.json: tracer groups), and the K-at-the-tracer series of the analysis run es_extra
 (es_extra.json). The tracer reading (areal radius from the tangential metric at the
 particle, the particle's own proper time) and the exact Lemaitre-Tolman-Bondi curves are
-those of es_runs/analyse.py and einstein_straus/es_model.py, imported read-only; the
+those of es_runs/analyse.py and of the bubble model module it imports, read-only; the
 homogeneous 1+log model of the plateau lapse is es_runs/make_data.py:plateau_lapse_model.
 Panels: (a) apparent-horizon mass minus M; (b) its drift from t0 = 100 M and the
 difference of the two runs; (c) wall tracers, areal radius over the wall law minus one,

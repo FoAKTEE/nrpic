@@ -5,7 +5,7 @@ nm64c (2.125 M), both to a/a_i = 4, and nm128Lc (2.75 M, larger box) to a/a_i = 
 (nm_growth.txt: turnaround mass and dress against time with the shell references matched
 to the measured mesh kernel; nm_analysis.json: deviations, profiles in 0.1 dex bins), and
 the self-similar profile of run selfsim. The bins are those of
-secondary_infall/nm_analyze.py (line 37, LEDGES = geomspace(0.5, 256, 28)); the run's
+nm_analyze.py of the infall package (line 37, LEDGES = geomspace(0.5, 256, 28)); the run's
 profiles and the references are rho over the background density rho_b(t).
 Panel (a): turnaround mass and dress against a/a_i, runs (markers) and matched shells
 (lines), with the self-similar asymptotes (dashed). Panel (b): run over matched shells minus

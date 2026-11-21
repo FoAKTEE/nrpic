@@ -11,8 +11,8 @@ Sources of the classification: CLAUDE.md (release core-v0.3: format-2 tables, pu
 Newtonian mode), coord/INTERFACES/*.md; scratch/core/exe/core_requests-adf/READY (items 1,
 3, 4, 5: tracer rule, analytic-metric excision, removal record and flux spheres, point
 mass), core_gauge/READY (option 1, lapse_leak), core_build-openmp/READY (threaded processor
-build); the track's packages es_runs, flux_tools, spike, secondary_infall,
-puncture_drift and PLAN-wave3.md (round 1). No data are read. A label that is wider than
+build); the track's packages es_runs, flux_tools, spike, the infall and drift packages,
+and PLAN-wave3.md (round 1). No data are read. A label that is wider than
 its block is reported on stdout ("label wider than its block").
 """
 import os

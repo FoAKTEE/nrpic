@@ -486,7 +486,7 @@ def main():
            r"\label{tab:parameters}",
            r"\begin{ruledtabular}\begin{tabular}{lr}",
            r"\multicolumn{2}{l}{\emph{Black hole in a vacuum bubble}} \\",
-           rf"vacuum, time-symmetric, below $R$ & {s['R0']:g} \\",
+           rf"vacuum, time symmetric, below $R$ & {s['R0']:g} \\",
            rf"innermost dust (wall) $R_{{\rm in}}$ & {s['Rin']:g} \\",
            rf"Sch\"ucking radius $R_w$ & {s['Rw']:g} \\",
            rf"plateau, from--to & {s['Rin'] + 2 * s['w_in']:g}--{s['Rb'] - s['w_out']:g} \\",
@@ -520,8 +520,8 @@ def main():
     root = 2 * float(d1[("<mesh>", "x1max")]) / int(d1[("<mesh>", "nx1")])
     fine = root / 2 ** max(lev)
     par += [r"\multicolumn{2}{l}{\emph{First run and its vacuum control}} \\",
-            rf"wall; Sch\"ucking radius; outer dust edge & {s2['Rin']:g}; {s2['Rw']:g}; {s2['Rout']:g} \\",
-            rf"plateau Hubble rate $HM$; dust mass ($M$) & {tex_num(fnum(s2['H'], 4))}; {s2['M_dust']:.3f} \\",
+            rf"$R_{{\rm in}}$; $R_w$; $R_{{\rm out}}$ & {s2['Rin']:g}; {s2['Rw']:g}; {s2['Rout']:g} \\",
+            rf"$HM$; dust mass ($M$) & {tex_num(fnum(s2['H'], 4))}; {s2['M_dust']:.3f} \\",
             rf"dust particles; tracers & {es2['particles']['n_dust']}; {es2['particles']['n_tracers']} \\",
             rf"root cell; finest cell & {root:g}; $M/{round(1 / fine):d}$ \\",
             rf"outer boundary; duration & {float(d1[('<mesh>', 'x1max')]):g}; {float(d1[('<time>', 'tlim')]):g} \\",
@@ -530,7 +530,7 @@ def main():
     st = {k: C.load_json(k, "setup.json") for k in ("nm128c", "nm64c", "nm128Lc")}
     par += [r"\multicolumn{2}{l}{\emph{Newtonian-mode infall}} \\",
             rf"initial Hubble rate $\epsilon=H_iM$ & {st['nm128c']['eps']:g} \\",
-            rf"seed: particles in a clump of radius & {st['nm128c']['n_clump']}; {st['nm128c']['r_clump']:g} \\",
+            rf"seed clump: particles; radius & {st['nm128c']['n_clump']}; {st['nm128c']['r_clump']:g} \\",
             rf"dust particles & {st['nm128c']['n_dust']}, {st['nm128Lc']['n_dust']} \\",
             rf"cells & {N1['dx']:g}, {N2['dx']:g}, {N3['dx']:g} \\",
             rf"box half-width & {st['nm128c']['L']:g}, {st['nm64c']['L']:g}, {st['nm128Lc']['L']:g} \\",
