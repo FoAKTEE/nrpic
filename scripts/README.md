@@ -91,6 +91,7 @@ messages:
 | `Terminating on time limit` / `... cycle limit` | DONE |
 | `Terminating on wall clock limit` (a restart file was written by Finalize) | resubmit |
 | SIGTERM: preemption, Slurm time-out, `scancel` | resubmit from the newest restart (not after `--stop`) |
+| the executable killed from outside the job: exit 137 or 143, no `Terminating on` line, no signal to the job (another project's `pkill -x athena`) | resubmit from the newest restart, at most `MAX_OUTSIDE_KILLS` (2) times in a row; the count restarts after a segment that ends normally (decision 0021 item 6) |
 | restart read error ("restart file is broken", truncated `.prt`, ...) | rename it `*.rst.bad`, retry with the next-newest |
 | nonzero exit, no termination message, no progress, NaN/Inf in the last history line, a history `Volume` column below half its initial value, `CHECK_CMD` failing | FAILED, no resubmission |
 
@@ -102,12 +103,23 @@ Requirements and behaviour:
   change the binary that reads the chain's restart files. To change the binary or the
   arguments, `--stop`, then run the start command again: it resumes from the newest
   restart. The same command resumes a FAILED chain after a fix.
+- The copy runs as `<rundir>/chain/<PROC_NAME>`, a hard link to `chain/athena`, so the
+  process is not named `athena` and a kill by name (`pkill -x athena`, `pkill athena`,
+  `killall athena`) does not reach it. `PROC_NAME` defaults to `nrc-<8 hex digits of the
+  rundir path>`; a name with `athena` in it is refused. A wrapper script as `ATHENA_EXE`
+  that `exec`s another binary runs under that binary's name (the start prints a
+  warning): a wrapper should exec a copy or link of the binary with a name of its own.
+  Find a chain's process with `pgrep -x nrc-<hash>` (the name is in `chain/config.sh`).
 - State is in `<rundir>/chain/`: `STATUS`, `events.log`, per-segment athena logs
   `segNNN.job<id>.aN.log` (`latest.log`), `slurm-<id>.out`, `config.sh`.
 - Environment at start: `ATHENA_WALL` (default 00:50:00), `SLURM_TIME` (00:59:00),
-  `CPUS` (1), `MAX_SEGMENTS` (100), `JOB_NAME`, `SLURM_EXTRA`, and `CHECK_CMD`
+  `CPUS` (1), `MAX_SEGMENTS` (100), `JOB_NAME`, `PROC_NAME`, `MAX_OUTSIDE_KILLS` (2),
+  `SLURM_EXTRA`, and `CHECK_CMD`
   (a shell command run after each normally ended segment, with `$1` = rundir; a
   nonzero exit marks the chain FAILED).
+- Test without Slurm or AthenaK: `python3 scripts/tests/test_submit_chain.py --out DIR`
+  (fake `sbatch`, a fake executable that kills its own process id; run
+  core-20261121-080619-6a0793f).
 - Z4c NaNs do not show up as `nan` in the history: `HistoryOutput` sums only cells with
   `chi >= excise_chi`, so NaN cells drop out, the norms go to 0, and `Volume` collapses.
   That is why the `Volume` check exists. Use `CHECK_CMD` for anything problem-specific.

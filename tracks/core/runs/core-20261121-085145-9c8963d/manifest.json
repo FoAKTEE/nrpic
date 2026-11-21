@@ -1,0 +1,95 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-085145-9c8963d",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "newton2 T4d twin: the embedded ellipsoid at 96^3 on a processor (merged build) against the same case on a card (merged card build, job 4777), group history of the patch",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    ".venv/bin/python",
+    "tracks/core/analysis/newton2/t4d_twin.py",
+    "--proc",
+    "/data/haiyangw/nrpic/scratch/core/core-20261121-082059-478b448/emb96_fft",
+    "--card",
+    "/data/haiyangw/nrpic/scratch/core/core-20261121-080215-df3af65/emb96_fft"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "9c8963d377910524e1ea6ee6abdbdcfa736ba97c",
+    "branch": "core/newton-2",
+    "dirty": false,
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/core-newton2"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-newton2/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/newton2/t4d_twin.py",
+      "role": "argv",
+      "sha256": "edd2609ddc5cd46ebc2caa7103e3c23e0115ba40a2226f479f5521e0f1f8d3b9",
+      "bytes": 4485,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 1.455,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-085145-9c8963d",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "a3323d88ee80dd41a7c263c950cba50fa1b8a790e8aadc136ae4fe4d155ecb0d",
+    "bytes": 150969,
+    "files": 4
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-21T08:51:46Z",
+  "started": "2026-11-21T08:51:46Z",
+  "ended": "2026-11-21T08:51:48Z",
+  "parents": [
+    "core-20261121-082059-478b448",
+    "core-20261121-080215-df3af65"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 6.1535,
+    "gpu_hours_reserved": 0.35,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 1,
+    "runs": 1413,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-21T08:51:48Z"
+}

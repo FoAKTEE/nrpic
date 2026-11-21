@@ -1,0 +1,23 @@
+{
+ "proc": "/data/haiyangw/nrpic/scratch/core/core-20261121-082059-478b448/emb96_fft",
+ "card": "/data/haiyangw/nrpic/scratch/core/core-20261121-080215-df3af65/emb96_fft",
+ "records": [
+  421,
+  421
+ ],
+ "times_equal": true,
+ "J_offdiagonal_largest": 6.751096407032676e-17,
+ "J_max": 3.1645368063710594e-14,
+ "d2J_max": 6.603400001642721e-14,
+ "K_max": 2.5484986865326904e-13,
+ "W_max": 2.424813677700587e-13,
+ "first_min_record": [
+  397,
+  397
+ ],
+ "first_min_cosmic_time": [
+  14.98986932746821,
+  14.98986932746821
+ ],
+ "pass": true
+}

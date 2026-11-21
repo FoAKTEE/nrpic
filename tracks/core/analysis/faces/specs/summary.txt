@@ -1,0 +1,2 @@
+# summary: mean |H| against time in the interior, the shell and the whole box, stock conditions against the full set (fall-off ghosts, order 4, nonwave, metric speed) and the reference with the faces at 32, for the ball, the vacuum puncture and the boosted puncture
+analyze_summary.py specs/summary.json --out $OUT/results/summary.json --fig $OUT/figs/summary
