@@ -267,3 +267,73 @@ their stated accuracy" for the BKRS fits hides that the scan deviates 1.5-1.7 ti
 Not checked by me: the G3 estimate of about 500 card-hours; the clump-binary cost model (object
 b); the junk-energy analysis of core's runs; the 1PN law and the Kerr comparison of
 geodesic_binary; table 3 of the ledger beyond four rows; the INSPIRE side of the novelty search.
+
+## 4. Comparison with the earlier checks (read after sections 1-3 were committed, fecdec04)
+
+Read now: `stage/G0/SECOND_CHECK.md` (second agent, wave 2), `stage/G0/REVIEW.md` (an index),
+`stage/REVIEW-wave2.md` (lead, wave 2b), and the lead's script `stage/G0/checks/lead_checks.py`
+(V7 only, lines 1-20 and 470-530).
+
+**Where we agree.**
+- Novelty (K1). SECOND_CHECK repeated the search with 31 INSPIRE queries and the complete
+  forward-citation lists of ten papers (2406.11985: 9 citing records, 2505.03934: 8, ...) and
+  found 13 papers outside NOVELTY.md, none a full-NR Hills calculation. My kb-corpus search
+  (R6b) agrees and is weaker on exactly the point SECOND_CHECK covered (citing lists); together
+  the verdict stands with the limits both state (no ADS, no journals outside arXiv, work in
+  progress invisible). My request to kb for `refersto` listings is answered by SECOND_CHECK's
+  records (`kb-data/meta/inspire/query/`), so I withdraw it.
+- GR reading of the q = 10 start state (K12, D1). SECOND_CHECK SC7 (E = 0.99925, L = 4.19 M,
+  turning point 5.77 M, CM inside the capture region with the total mass), the lead's V9a
+  (5.775 M) and my R1 (5.775 M) agree; the q = 4 reading (9.25 M) agrees with V9b. The track's
+  answer (REVIEW-wave2: P1 at q = 4, the q = 10 input rebuilt from a GR parabola before any
+  q = 10 passage, RISKS R14) settles the physics; SCOPING 3 and 6 still read as before, which
+  is the documentation part of D1.
+- The geodesic reference's percentages are not predictions (K13, D2). SECOND_CHECK found the
+  HRNA numbers at q = 10 inflated by the 2404 initial-binary convention (a Newtonian-circular
+  binary in coordinate time starts too wide under HRNA, SC3) and by a spurious self-acceleration
+  of a moving binary (SC0d, SC6); the lead qualified them in G1 and STATUS. My scans reach the
+  same conclusion along another axis (the translation of the Newtonian state into the model:
+  hand-off against GR-matched CM changes the plunge fraction at r_p = 12-13 M by a factor 3-10).
+  Both checks find the qualitative core, a member plunging at r_p = 7-8 M in the geodesic model
+  and none in Newton, robust: SECOND_CHECK by the capture plane (SC4), I by four constructions
+  that all give 0.91-0.98 at r_p = 7-8 M.
+- The wave-2b corrections (REVIEW-wave2 table): the q = 4 m/16 row (2514/2864/2568, 44.8) is the
+  one the ledger carries and my recount confirms; V4b's "nine points" was seven. My R5 shows that
+  the retrograde D = 0.1 difference of V4 disappears when wide pairs are followed (P identical),
+  which closes one of the two points the lead left open.
+- P1 cost 16.9-20.1 card-hours (REVIEW-wave2) and the smoke numbers (1716/1744 MeshBlocks,
+  2057 MeshBlock-cycles/s, 70847 MiB) are the values I used in K14.
+
+**Where I disagree or add.**
+- Construction of the V7 scan. lead_checks.py:486-487 and 520 release a fresh circular binary at
+  4 r_t (newton3 `scatter(k0 = 4.0)`; the HRNA with 2404's data released at 4 r_t), while the
+  start rule of SCOPING 3 and both passage inputs integrate the Newtonian state from 10 r_t.
+  SECOND_CHECK reproduced V7 with V7's own construction ("release at 4 r_t", SC1), so neither
+  check tested V7 against the plan's start rule. I tested it after reading the script (journal entries 9-10): my scan with the circular binary released at 4 r_t (runs F-20261121-040103-6b9074c, F-20261121-040112-d429b4c, 180 phases) gives Newton separated / inside 4 M 0.906/0.617, 0.878/0.033, 0.239/0 at r_p = 7, 8, 13 M (V7: 0.90/0.62, 0.88/0.056, 0.22/0) and, with the CM on the Schwarzschild parabola, HRNA plunge 0.928, 0.911, 0.300 (V7: 0.956, 0.944, 0.300), all within 2 sigma (`figures/fig_scan.png` of run F-20261121-040229-dad1b1b, read). So V7 is right for its construction, and the differences of my section 1 (K13, D2) are the start rule: at r_p = 13 M the Newtonian separated fraction is 0.24 (release at 4 r_t) or 0.42 (state integrated from 10 r_t), the HRNA plunge fraction 0.30, 0.16 or 0.02 (release at 4 r_t; from 10 r_t with the CM on the parabola; from 10 r_t with the hand-off). This sharpens D2: the V7 numbers that the plan quotes (and errata row 1.5) do not describe the encounters the NR data set up; near the separation edge they are properties of the construction. A scan line for G3 must use one start rule for NR and both references, and the r_p = 12-13 M numbers should be re-quoted with it. I keep the verdict of K13 (PARTLY) as written; its "not reproduced" now has its cause.
+- Errata row 1.5 still quotes "94 percent of phases at r_p = 8 M, 69 percent at 12 M" without
+  the qualification the lead applied in G1 and STATUS after SECOND_CHECK R2; and its "needs
+  a_b >= 29.5 r_gb at q = 20" is the D <= 1 condition (D6). The lead's table of wrong statements
+  (REVIEW-wave2) does not list D3 (G2 sum 131-135 against "about 120"), D4 (SCOPING's q = 10 first
+  passage), D5 (2700 slots is the input's limit, not the card's), D7 (the note's "throughout"
+  for alpha) or D8 (KHSR not reproduced).
+- REVIEW-wave2 says "Not confirmed by me: every number of the ledger" and CHECKLIST C18 is open:
+  section 2 closes C18 for ledger tables 1-2 (57 of 57). Table 3, added for G1, remains for the
+  G1 verifier.
+- SECOND_CHECK's flat-space self-acceleration (1.065e-4 at V = 0.28) is consistent with what my
+  self-test shows for a binary at rest (each member's pair force carries its own Gamma^-2, so the
+  model is not Newton even in flat space); I did not rerun the moving-binary test.
+
+**What none of us checked.**
+- The q = 4 scan at r_p = 16 M with my constructions: run F-20261121-034441-f211f65 was still running when this section was committed (pending; it does not change the verdicts).
+- The HRNA self-force at 2404's own parameters and whether it explains the r0 dependence there
+  (SECOND_CHECK R3, still open); a reference that converges in release radius at q = 10 (the
+  wave-3a EIH reference exists but none of the G0 checks used it).
+- Retrograde and inclined encounters at finite q; the q = 4 scan beyond r_p = 9.82 M with any
+  construction other than V7's.
+- KHSR (1201.4794): no result of it reproduced by anyone.
+- The card capacity near 2950 slots (D5); the G3 estimate of about 500 card-hours; the clump
+  binary cost model; the junk-energy analysis of core's runs.
+- Whether the q = 10 input rebuilt from a GR parabola (RISKS R14) gives the intended r_p in the
+  isotropic reading of the code's data (a statement about future work; nothing to check yet).
+
+Runs added with this section: F-20261121-040103-6b9074c and F-20261121-040112-d429b4c (scan released at 4 r_t, H-k0), F-20261121-040229-dad1b1b (figure). Pending: F-20261121-034441-f211f65 (q = 4, r_p = 16, capped).

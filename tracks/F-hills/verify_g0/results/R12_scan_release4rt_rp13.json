@@ -1,0 +1,38 @@
+[
+ {
+  "newton": {
+   "separated": 0.2388888888888889,
+   "wide_bound": 0.016666666666666666,
+   "member_below_4M": 0.0,
+   "steps_max": 3123,
+   "unfinished": 0
+  },
+  "hrna_handoff": {
+   "separated": 0.9444444444444444,
+   "plunge": 0.022222222222222223,
+   "cm_E_median": 1.0103006450837069,
+   "cm_L_median": 5.856041928159906,
+   "steps_max": 13829,
+   "unfinished": 0
+  },
+  "hrna_grmatched": {
+   "separated": 0.9555555555555556,
+   "plunge": 0.3,
+   "cm_E_median": 1.0,
+   "cm_L_median": 5.5432186252458715,
+   "steps_max": 9784,
+   "unfinished": 0
+  },
+  "q": 10.0,
+  "a_b": 3.0,
+  "rp": 13.0,
+  "D": 2.011355161232204,
+  "nphase": 180,
+  "mu_conv": "total",
+  "k0": 4.0,
+  "t_handoff_median": 0.01,
+  "t_to_peri_from_10rt": 83.55626289273516,
+  "t_after": 500.0,
+  "rtol": 1e-10
+ }
+]

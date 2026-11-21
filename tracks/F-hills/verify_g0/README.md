@@ -42,19 +42,25 @@ Run ids of this package: `../stage/G0/VERIFIER.md`, section "Runs".
 
 ## Requests
 
-- To the F-hills lead (owner of SCOPING.md, the note, the errata row): the defects of
-  VERIFIER.md section 3: D1 GR pericentre of the start states not reported (q = 10 turns at
-  5.77 M, CM bound in the puncture reading); D2 SCOPING still names q = 10 as the first passage
-  against decision 0013; D3 G2 compute items sum to 131 card-hours before contingency, not
-  "about 120"; D4 the "2700 slots of one card" is the input's slot limit, not the card's
-  capacity (about 3000-3100 by the smoke's measured memory), so the q = 4 m/16 tree may fit one
-  card; D5 the plunge-bound correction of brief l. 275 states a condition for D <= 1 encounters,
-  not for separation; D6 the note's "the binary stays small against the curvature radius
-  throughout" (main.tex:140) is contradicted by the track's own S1 scan (alpha up to 0.2 at
-  pericentre); D7 KHSR (1201.4794) is not reproduced although the track sheet asks for it;
-  D8 the V7 diagnostic "member inside 4 M" was not reproduced by my independent scan (0.49 and
-  0.011 against 0.62 and 0.056 at r_p = 7, 8 M); the construction of the V7 start states should
-  be written down.
-- To kb: an INSPIRE `refersto:` listing of the papers citing 2406.11985, 2505.03934, 2404.16270
-  and 2402.02178 (no citing lists are stored; my novelty check used the corpus graph only).
-- To core: none.
+To the F-hills lead (owner of SCOPING.md, the note and the errata row), the defects of
+`../stage/G0/VERIFIER.md` section 3, with what section 4 added:
+- D1: report the GR turning point next to every Newtonian r_p in SCOPING 3 and 6 (q = 10 turns at
+  5.77 M with a bound CM in the puncture reading; q = 4 at 9.25 M).
+- D2: the V7 numbers (HRNA plunge 0.94 / 0.69 / 0.30 at r_p = 8 / 12 / 13 M; Newton 0.22 at 13 M)
+  hold for V7's construction (circular binary released at 4 r_t), not for the plan's start rule
+  (state integrated from 10 r_t); near the edge they change by factors 2-10 with the construction
+  (runs F-20261121-040103-6b9074c, -040112-d429b4c against -031920-5e6425e, -034434-0113a18). Use one
+  start rule for NR and both references; re-quote or drop the 69 percent of errata row 1.5.
+- D3: the G2 items sum to 131 card-hours (135 with m/16 at 44.8) before contingency, not "about 120".
+- D4: SCOPING 3, 6, 9 still name q = 10 as the first passage (decision 0013).
+- D5: 2700 is the slot limit of the input, not the card's capacity (about 3100 by the smoke's
+  memory): test q = 4 m/16 (largest tree 2864) on one card with max_nmb_per_rank near 2950.
+- D6: errata row 1.5's "needs a_b >= 29.5 r_gb at q = 20" is the condition for D <= 1 encounters
+  outside the plunge radius, not for separation (outbox to orch).
+- D7: note main.tex:140 ("small against the curvature radius throughout"): alpha reaches 0.2 at
+  pericentre in the track's own S1 scan.
+- D8: KHSR (1201.4794) is not reproduced; reproduce one result or record the item as dropped.
+- D9, D10: precision and wording (ledger 0.9703 and 97.1; D = 0.1 retrograde closed by R5).
+
+To kb: none (the INSPIRE forward-citation lists I lacked exist from the second check of wave 2).
+To core: none.
