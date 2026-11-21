@@ -1,61 +1,42 @@
 # Re-verification: B-emd-gw G1
 
-`harness/bin/nrpic-stage verify B-emd-gw G1` on 2026-11-15T19:30:17Z, clean export of commit `26cbf6b699f5` in `scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-26cbf6b-20261115T192519Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify B-emd-gw G1` on 2026-11-21T07:20:08Z, clean export of commit `1197792fa0da` in `scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-1197792-20261121T064418Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | PASS | worktree clean (outside the stage directory being assembled) |
-| sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 26cbf6b699f5 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-26cbf6b-20261115T192519Z/tree |
+| clean | FAIL | 3 uncommitted paths: commit them first (tracks/B-emd-gw/gw_diag/gwdiag/gauge.py, tracks/B-emd-gw/gw_diag/tests/test_gauge.py, tracks/B-emd-gw/waves/scripts/check_gauge.py) |
+| sync | FAIL | main has commits not merged: run nrpic-ctx sync |
+| export | PASS | clean export of 1197792fa0da (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-1197792-20261121T064418Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
-| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md |
+| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
 | note-pdf | PASS | note/main.pdf committed after the last .tex change |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
-| fig-script | PASS | 6 figures, each with its script |
-| min-figs | PASS | 2 schematics and 4 data figures (brief 13.4 asks at least 2 and 1 at G1) |
-| runs | FAIL | 9 of 132 runs have problems |
-| run-notes | WARN | 70 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
+| fig-script | PASS | 11 figures, each with its script |
+| min-figs | PASS | 3 schematics and 8 data figures (brief 13.4 asks at least 2 and 1 at G1) |
+| runs | PASS | 234 run manifests finished (78 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded |
+| runs-waived | WARN | failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): B-20261115-164157-40b9f6d: outputs moved into the run directory after the run finished; data unchanged |
+| run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | status | PASS | STATUS.md has 34 lines |
-| rerun | PASS | 6 of 6 scripts and commands ran cleanly in the export |
-| compare | PASS | 12 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
-| regenerate | PASS | all 12 committed figure files regenerated |
+| rerun | PASS | 11 of 11 scripts and commands ran cleanly in the export |
+| compare | PASS | 22 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| regenerate | PASS | all 22 committed figure files regenerated |
 
-## runs
+## runs-waived
 
 ```
 {
- "B-20261115-164157-40b9f6d": [
-  "output not in sha256sums.txt: reference.png",
-  "output not in sha256sums.txt: reference.pdf",
-  "output not in sha256sums.txt: reference_g.npz",
-  "output not in sha256sums.txt: sha256sums.moved.txt",
-  "output not in sha256sums.txt: reference.json"
- ],
- "B-emd-gw-20261115-113102-bc5e082": [
-  "fields missing: code, env, input"
- ],
- "B-emd-gw-20261115-113120-bc5e082": [
-  "fields missing: code, env, input"
- ],
- "B-emd-gw-20261115-113148-4e5c33b": [
-  "fields missing: code, env, input"
- ],
- "B-emd-gw-20261115-113151-4e5c33b": [
-  "fields missing: code, env, input"
- ],
- "B-emd-gw-20261115-113246-50c684b": [
-  "fields missing: code, env, input"
- ],
- "B-emd-gw-20261115-113632-2960145": [
-  "fields missing: code, env, input"
- ],
- "B-emd-gw-20261115-115529-58c7f50": [
-  "fields missing: code, env, input"
- ],
- "B-emd-gw-20261115-115752-840e994": [
-  "fields missing: code, env, input"
- ]
+ "B-20261115-164157-40b9f6d": {
+  "waived_by": "coord/WAIVERS.md",
+  "reason": "outputs moved into the run directory after the run finished; data unchanged",
+  "problems": [
+   "output not in sha256sums.txt: reference.png",
+   "output not in sha256sums.txt: reference.pdf",
+   "output not in sha256sums.txt: reference_g.npz",
+   "output not in sha256sums.txt: sha256sums.moved.txt",
+   "output not in sha256sums.txt: reference.json"
+  ]
+ }
 }
 ```
 
@@ -83,6 +64,18 @@
   "no gate",
   "status 'done' read as completed",
   "no scratch/B-emd-gw/B-emd-gw-20261115-112948-b7b431d/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
+ ],
+ "B-emd-gw-20261115-113102-bc5e082": [
+  "hand-written (fields nrpic-run never writes: card_hours, commit, cores, output_dir, package)"
+ ],
+ "B-emd-gw-20261115-113120-bc5e082": [
+  "hand-written (fields nrpic-run never writes: card_hours, commit, cores, output_dir, package)"
+ ],
+ "B-emd-gw-20261115-113148-4e5c33b": [
+  "hand-written (fields nrpic-run never writes: card_hours, commit, cores, output_dir, package)"
+ ],
+ "B-emd-gw-20261115-113151-4e5c33b": [
+  "hand-written (fields nrpic-run never writes: card_hours, commit, cores, output_dir, package)"
  ],
  "B-emd-gw-20261115-113212-0ea0f74": [
   "status 'done' read as completed",
@@ -183,24 +176,18 @@
   "no scratch/B-emd-gw/B-emd-gw-20261115-113231-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
  ],
  "B-emd-gw-20261115-113232-0ea0f74": [
-  "status 'done' read as completed",
-  "output directory read from a field other than outputs.dir",
-  "no gate",
-  "status 'done' read as completed",
-  "no scratch/B-emd-gw/B-emd-gw-20261115-113232-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)"
- ],
- "B-emd-gw-20261115-113236-0ea0f74": [
-  "status 'done' read as completed",
-  "output directory read from a field other than outputs.dir",
-  "no gate",
-  "status 'done' read as completed",
-  "no scratch/B-emd-gw/B-emd-gw-20261115-113236-0ea0f74/sha256sums.txt (hand-written manifest; outputs not re-verifiable)
+  "status 'done' read as co
 ```
 
 ## compare
 
 ```
 [
+ [
+  "note/figures/fig_gauge.png",
+  "PASS",
+  "identical"
+ ],
  [
   "note/figures/fig_waves.png",
   "PASS",
@@ -217,7 +204,32 @@
   "identical"
  ],
  [
+  "note/figures/fig_newton.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_scan.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_scan.png",
+  "PASS",
+  "identical"
+ ],
+ [
   "note/figures/fig_waves.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/schem_dataflow.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/schem_dataflow.svg",
   "PASS",
   "regenerated (vector files carry dates; the PNG preview is compared)"
  ],
@@ -247,12 +259,32 @@
   "identical"
  ],
  [
+  "note/figures/fig_gauge.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
   "note/figures/fig_baseline.png",
   "PASS",
   "identical"
  ],
  [
+  "note/figures/fig_newton.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_r2.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
   "note/figures/fig_source.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_r2.png",
   "PASS",
   "identical"
  ],
