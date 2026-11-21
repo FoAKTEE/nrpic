@@ -86,7 +86,7 @@
     "nodes": 1,
     "gpus": 0,
     "cores": 4,
-    "walltime_s": null,
+    "walltime_s": 1495.62,
     "wall_limit": null,
     "segments_max": null,
     "gpu_hours_requested": 0.0,
@@ -97,15 +97,15 @@
   "outputs": {
     "dir": "scratch/B-emd-gw/B-20261120-223236-e213594",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "d0385c355aedb3deafc8291961c50befdc8ab8b612fe490d1a52adb6c82c83e3",
+    "bytes": 306119,
+    "files": 2
   },
-  "status": "running",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-20T22:32:36Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-20T22:32:36Z",
+  "ended": "2026-11-20T22:57:32Z",
   "parents": [
     "B-20261119-153655-2deca0a"
   ],
@@ -119,5 +119,6 @@
     "cores_busy": 9,
     "runs": 217,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
-  }
+  },
+  "finished": "2026-11-21T06:33:32Z"
 }
