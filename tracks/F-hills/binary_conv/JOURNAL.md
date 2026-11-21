@@ -239,7 +239,10 @@ Predictions of BC-1:
            --purpose "P1b: Hills passage q = 4 as P1 with the members at m/16 (R16n), 200 M" \
            -- tracks/F-hills/binary_conv/inputs/p1b_R16n.athinput time/tlim=200
 
-   (`--gpu-hours 32` gives floor(32/0.983) = 32 segments of 50 min, about 26.7 card-hours and
-   about 32 x 6.3 M; raise it to about 38 for the full 200 M; `time/tlim=280` and about 54 for
-   280 M.) The chain resubmits one segment at a time; a segment advances about 5.3-6.3 M (three
-   holes, 2428-2527 blocks at 2302 MeshBlock-cycles/s).
+   (`--gpu-hours 32` gives floor(32/0.983) = 32 segments of 50 min, about 26.7 card-hours, and
+   reaches 170-205 M; `--gpu-hours 38` for the full 200 M; `time/tlim=280` and about 54 for
+   280 M.) A segment computes 3000 s x 2302 MeshBlock-cycles/s / tree cycles, i.e. 5.4-5.6 M at
+   the model's mean trees (2428-2527 blocks) and about 6.4 M at P1's own trees scaled to R16n
+   (2097 blocks, g2mesh model along P1's tracks to 112 M) [arithmetic]. The chain resubmits one
+   segment at a time, at the back of the queue each time (FIFO: about 1-3 hours per segment of
+   waiting on 2026-11-21), so the wall time is set by the queue, not by the card.
