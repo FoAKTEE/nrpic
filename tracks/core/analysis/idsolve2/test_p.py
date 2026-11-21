@@ -417,7 +417,7 @@ def figure_extra(res, root, tag=""):
     axs[2].set_xticklabels(["1/32", "1/16", "1/8", "1/4", "1/2", "1"])
     axs[2].minorticks_off()
     axs[2].set_ylabel(r"$u$ at the puncture")
-    axs[2].legend(fontsize=4.5)
+    axs[2].legend(fontsize=4.5, ncol=2, loc="lower center", bbox_to_anchor=(0.5, 1.01))
     fig.tight_layout()
     p = os.path.join(root, "test_p_extra" + tag)
     fs.save(fig, p)
@@ -476,6 +476,9 @@ def figure(res, prof, byr, shr, root, tag=""):
             axs[0].loglog(ns, a, mk, label=lab)
             axs[1].loglog(ns, b, mk, label=lab)
             axs[2].loglog(ns, h, mk, label=lab)
+    xs = np.array([0.25, 1.0])
+    axs[1].loglog(xs, 1e-3*xs**2, "k:", lw=0.8, label=r"$\propto\Delta x^2$")
+    # the ticks are set after the last loglog call, which resets them
     for ax, t in zip(axs, ("error of $u$ at the puncture", "max error of $u$, $r_p<r<12$",
                            "monitor $|H|$ after, outside $r_p$")):
         ax.set_xlabel(r"$\Delta x$")
@@ -483,8 +486,6 @@ def figure(res, prof, byr, shr, root, tag=""):
         ax.set_xticks([0.25, 0.5, 1.0])
         ax.set_xticklabels(["0.25", "0.5", "1"])
         ax.minorticks_off()
-    xs = np.array([0.25, 1.0])
-    axs[1].loglog(xs, 1e-3*xs**2, "k:", lw=0.8, label=r"$\propto\Delta x^2$")
     axs[0].legend(fontsize=5)
     axs[1].legend(fontsize=5)
     fig.tight_layout()
