@@ -35,8 +35,11 @@ below]:
   remains.
 - Floor: in the first e-fold of expansion (a <= 2) a start error of the amplitude of about
   1.5e-6 to 2e-6 (|f_* - 1| about 5e-6 there) that does not change from 32 to 64 to 128
-  cells. It depends on the step: halving the step limit 0.002 changes it by 1.5e-6 (P3,
-  entry 10); its order in the step: entry 11 (P4).
+  cells. It is the step error of the start: the step limit 0.002 (the same at every mesh
+  in the first e-fold) puts -1.9e-6 into the amplitude at 32 cells, converging at second
+  order in the step (differences 1.47e-6 and 3.5e-7 for 0.002 -> 0.001 -> 0.0005, P3 and
+  P4, entries 10 and 11), matching the -1.76e-6 floor at 128 cells. At the production step
+  limit 0.01 it would be about 25 times larger, about 5e-5 [JUDGEMENT; not run].
 - The potential estimator (a phi from chi) is the weakest: |f_phi - 1| up to 3.1e-3 (16),
   3.0e-4 (32), 1.7e-4 (64), set by an oscillation of period 2.34 in conformal time (speed
   L/P = 0.577 = 1/sqrt(3), that of the slicing d_t alpha = -(1/3) alpha^2 K
@@ -87,10 +90,14 @@ eps a^-5/2 on a <= 30)
 The provisional row is from run B-20261121-220441-06021c4 on the partial output of J3
 (records to a = 189.5; plateau there over 3 <= a <= 180); the finished J3 replaces it.
 
-Step test (leg B, 32 cells, 1 per cell, to a = 9; analysis run(s) in entry 11):
-`s_n32_p1_dt2` and `s_n32_p1_dt1` = run B-20261121-220450-e011c57 (P3),
-`s_n32_p1_dt05` = P4 (entry 11). Card and processors agree to 7e-8 at the same step;
-0.002 -> 0.001 changes D_*/A a by up to 1.47e-6 in the first e-fold.
+Step test (leg B, 32 cells, 1 per cell, to a = 9; analysis run B-20261121-225745-773ffab):
+
+| case | data run | step limit | eps (fit a <= 8.5) | c1 (f plateau) | largest difference of D_*/A a to the next larger step |
+|---|---|---|---|---|---|
+| b_n32_p1 (J1, card) | B-20261120-222955-c8e16e3 | 0.002 | +5.49e-6 | +5.59e-6 | - |
+| s_n32_p1_dt2 (P3) | B-20261121-220450-e011c57 | 0.002 | +5.54e-6 | +5.58e-6 | 7.0e-8 to the card run |
+| s_n32_p1_dt1 (P3) | B-20261121-220450-e011c57 | 0.001 | +3.87e-6 | +5.75e-6 | 1.47e-6 |
+| s_n32_p1_dt05 (P4) | B-20261121-222813-560158b | 0.0005 | +3.42e-6 | +5.78e-6 | 3.53e-7 (ratio 4.2: second order) |
 
 Figures (PNG and PDF in the analysis run directories; PNG copies in `figs/`):
 `fig_f_lattice` (lattices), `fig_f_noise` (noise runs incl. P2, contrast, Hr), `fig_f_scaling`
@@ -108,7 +115,7 @@ PB1 for the potential estimator, PB2 at 16 cells with the two-term fit, PB3 for 
 the amplitude (1 per cell differs from 8 and 27 by 4.5e-5), P2 "noise part of the alpha
 extrema constant after a = 3" (it triples by a = 300), J3 "|e_D| at 128^3 at most a quarter
 of 64^3's" (provisional: -1.76e-6 against -7.2e-7 at a = 100), P3 "the step is not the
-cause of the early floor".
+cause of the early floor" (P4's prediction, second order in the step, held).
 
 ## Pending
 
@@ -160,7 +167,9 @@ entry 4). No card job was submitted in batch 6. Processor runs P1-P4 at 4-6 thre
 | B-20261121-220428-7367d5e | analysis of F with P2 | completed |
 | B-20261121-220441-06021c4 | analysis of B with the partial J3 (provisional) | completed |
 | B-20261121-220450-e011c57 | P3 (processors): step test 0.002, 0.001 | completed |
-| B-20261121-222718-311b50f | analysis of the step test (P3) | completed |
+| B-20261121-222718-311b50f | analysis of the step test (P3) | completed, superseded |
+| B-20261121-222813-560158b | P4 (processors): step test 0.0005 | completed |
+| B-20261121-225745-773ffab | analysis of the step test (P3, P4) | completed |
 
 ## Contents
 
@@ -187,7 +196,10 @@ entry 4). No card job was submitted in batch 6. Processor runs P1-P4 at 4-6 thre
   package passes its card cap by about 0.2 card-h if J3 completes (section "Card time").
 - To the lead (optional, cards): the start error is best measured where the plateau is small:
   test B at 64^3 to a = 9 with step limits 0.002, 0.001, 0.0005 (three short card runs, about
-  0.1 card-h together), if the order found by P4 at 32 cells is to be confirmed.
+  0.1 card-h together) would confirm at 64 cells the second-order start error found at 32
+  cells (entry 11) and separate the early f floor from the plateau; test B at the production
+  limit 0.01 would measure the start error the science runs carry (predicted about 5e-5 in
+  the amplitude, entry 11).
 - To core (no action needed for criterion (a)): the relative momentum constraint Mr of
   `.cstat.hst` is rounding over rounding on a homogeneous slice (it reads 1.41, about sqrt 2,
   for lattices at rest while |M| is 1e-11; run B-20261121-211951-b735833); a floor in its

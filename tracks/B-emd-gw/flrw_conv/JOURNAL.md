@@ -483,3 +483,45 @@ is 1.47e-6/4 = 3.7e-7, within a factor 2 (ratio of the two differences between 2
 Refuted if the ratio is below 1.5 (the start error does not converge with the step) or above
 12 (fourth order). If it converges, the step-free start error at 32 cells is estimated by
 Richardson extrapolation from the three runs.
+
+## Entry 11 (2026-11-21 15:00 PST): outcome of P4; cause of the amplitude floor
+
+P4 = run B-20261121-222813-560158b (s_n32_p1_dt05, step limit 0.0005, exit 0 at t = 4,
+14:28-14:57). Analysis with P3 and J1: run B-20261121-225745-773ffab (`analyze_step.py`),
+figure `fig_step` looked at (third panel: differences of D_*/A a between step limits).
+[VERIFIED by these runs]
+- Largest difference of D_*/A a: 0.001 - 0.002 = 1.47e-6, 0.0005 - 0.001 = 3.53e-7; ratio
+  4.2. The prediction (second order, ratio between 2 and 8) held. Most of each difference
+  builds up in the first e-fold (1.17e-6 and 0.27e-6 by a = 2), the rest slowly to a = 9.
+- Richardson extrapolation at second order: the step limit 0.002 of the B runs puts
+  -1.9e-6 into D_*/A a at a = 9 (-1.5e-6 by a = 2) relative to the step-free value at 32
+  cells and one per cell. This matches in sign and size the amplitude floor seen at 128
+  cells (-1.76e-6, flat from a = 2, entry 9) and at 64 cells (-7.2e-7 at a = 100 with a mesh
+  part of the other sign). In the first e-fold every mesh runs at the same step (the limit
+  0.002 of the expansion time, below the Courant step until a = 1.7 at 128 cells and
+  a = 26 at 32 cells), so the floor of the amplitude error at 64 and 128 cells is the
+  step error of the start, second order in the step limit. That the start error at 128
+  cells is the same as at 32 is [JUDGEMENT] from sign and size; it was not run at 128.
+- The fitted decaying-mode amplitude moves with the step (eps 5.54e-6, 3.87e-6, 3.42e-6;
+  extrapolated about 3.3e-6), so part of what the three-term fit calls a decaying mode at
+  32 cells is the step and part is not; the rest is not identified [TO VERIFY]. The fit is a
+  weak separator here (the start error is not of the form a^-5/2).
+- The f plateau is not affected by the step (c1 = 5.58e-6, 5.75e-6, 5.78e-6). The early
+  swing of f_* at the limit 0.002 (a dip to 1e-7 at a = 1.1 and 1.7 between values of
+  3.4e-6) disappears at 0.001 and 0.0005; at 32 cells and one per cell the early f error
+  then merges into the plateau (5.6e-6), so the early f floor of 5e-6 at 64 and 128 cells
+  is not separated from the step by these runs.
+- Consequence [JUDGEMENT]: with the production step limit 0.01 (instead of the 0.002 used
+  for leg B) the start error of the amplitude would be about (0.01/0.002)^2 = 25 times
+  larger, about 5e-5: still sub-percent, but larger than the mesh error at 32 cells and
+  above. Test B at the production limit was not run here.
+
+Verdict on criterion (a), final for this package (128^3 pending): met. Scale factor
+sub-percent at every mesh and particle number with and without noise (largest 5.3e-5 at
+noise of 1 percent of a cell, 4.7e-3 at Poisson-like noise), converging in step, mesh and
+particle number as predicted. Growth rate sub-percent everywhere (largest |f - f_ref|
+8.4e-5 at 16 cells, 6.5e-6 at 32, 4.9e-6 at 64 for the density estimators), the plateau
+converging at fourth order in the mesh to 2.6e-8 at 128 cells (provisional), falling with
+particle number at 32 cells until the mesh part remains; the stated floor is the start
+error of the step (about 2e-6 in the amplitude at the step limit 0.002, second order in
+the step), named after P3 and P4, runs in which it could have failed.
