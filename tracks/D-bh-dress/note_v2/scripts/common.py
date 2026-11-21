@@ -63,6 +63,22 @@ RUNS = {
     "es_extra": "D-20261119-142929-bb375ff",  # es_extra.py on both (entry 6)
     # wave 3 batch 3 (note v1 close): the fresh-context verifier's infall run (profile sensitivity)
     "verifier_v2": "D-20261121-031711-0d79cb3",
+    # note v2 (batch 6): runs judged after gate G1
+    "q16": "D-20261121-085652-7e189a2",      # Newtonian mode to a/a_i = 16 (threaded processor build)
+    "q16_ana": "D-20261121-092757-34faefa",  # its analysis against matched shells and self-similar
+    "q16_lost": "D-20261121-092757-3df1172", # particle census of every snapshot
+    "v1b": "D-20261120-222625-63abd72",      # vacuum control with the faces at +-384 M (card)
+    "hor_cmp": "D-20261121-130316-84a54d4",  # compare_horizons.py on ES-1G, V-1B, V-1
+    "lead_y1": "D-20261121-154912-27e91c6",  # lead's check: V-1GB, ES-1GB, ES-1G, V-1B; Q16 points
+    "gate_review": "D-20261121-165428-8440947",  # gate reviewer's own check (V-1B, Q16, D-pre-4)
+    "v1gb": "D-20261121-125909-06f856e",     # V-1B with the relaxed lapse (card)
+    "es1g": "D-20261119-142633-6f72922",     # bubble run with the relaxed lapse, faces +-192 M (card)
+    "esf_data": "D-20261119-145022-2208a19", # ES-F data: dust down to 3 M, labels, exact growth
+    "esf": "D-20261121-144631-aa7ce9b",      # ES-F: dust reaches the hole, card, 1+log, M/8, 200 M
+    "esf_ana": "D-20261121-202137-7bc388e",  # esf_analyse.py (flux bracket, per label)
+    "esf_crit": "D-20261121-202142-ce0f509", # esf_criteria.py ((iii), D1-D4)
+    "kerr2_ic": "D-20261121-211717-7b6374b", # Kerr initial data, second sampler seed
+    "kerr2_run": "D-20261121-212016-7e090f9",  # AthenaK on analytic Kerr-Schild, seed 2, 20000 M
 }
 
 CHECKED = []   # (run_id, relative path, "sha256 ok" | "no sha256sums.txt (wave-1 run)")

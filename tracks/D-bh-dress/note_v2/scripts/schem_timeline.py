@@ -1,12 +1,13 @@
-"""Schematic: stage timeline of Track D (note v1, state of wave 3 batch 3, 2026-11-21).
+"""Schematic: stage timeline of Track D (note v2, state of wave 3 batch 6, 2026-11-21).
 
 Gates and indicative times: coord/CHARTER.md section 9.2 (line 66); track criteria: brief
-sheet 9.7 (line 779) as made concrete in stage/G0/REPORT.md section 3; state: PLAN-wave3.md
-round 1; G0 signed PASS on 2026-11-20 (coord/GATES.md line 11); stage/G1/CHECKLIST.md of
-2026-11-21 (open items C7: the profile criterion of the Newtonian infall, ruling requested
-from orch; C16: this note compiled and checked; C9 and C17 now PASS), stage/G1/STATUS.md, and
-the round's packages (relaxed-lapse run analysed, late-drift controls, matter run). Gate
-positions are evenly spaced; the time labels give the charter's targets. No data are read.
+sheet 9.7 (line 779) as made concrete in stage/G0/REPORT.md section 3. State: G0 signed PASS
+on 2026-11-20 (coord/GATES.md line 11); G1 signed PASS with reservations on 2026-11-21
+(coord/GATES.md line 20; stage/G1/GATE_REVIEW.md section 5); first G2 result ES-F (growth
+against the flux at one resolution, g2runs/JOURNAL.md entry 10); the relaxed lapse kept out
+of the null test (coord/DECISIONS/0022 item 3, 0025 item 3); long runs with the faces at
++-768 M and the M/16 pair on the cards (stage/REVIEW-wave3.md section 12). Gate positions
+are evenly spaced; the time labels give the charter's targets. No data are read.
 """
 import os
 import sys
@@ -20,9 +21,9 @@ GATES = [
     ("G0 scoping", "week 2", pf.GREEN_DARK,
      "passed: questions, null-test\nwording, criteria, cost;\nverified by a fresh agent"),
     ("G1 baseline", "week 8", pf.OLIVE,
-     "met: bubble data, floor, spike\n(Schwarzschild, Kerr), infall\ngrowth, verifier; open: two"),
+     "passed with reservations:\ninfall at one resolution;\n9/4 law not tested"),
     ("G2 capability", "month 4", pf.SLATE,
-     "first bubble run and control\ndone; relaxed lapse ran;\nmatter run, drift controls"),
+     "growth against flux met once\n(M/8, 200 M); null test and\nM/16 pair running"),
     ("G3 science", "month 9", pf.RED,
      "growth law and spike, three-\nway convergence; upper limit\non the coupling exponent"),
     ("G4 paper", "month 12", pf.RED,
@@ -47,17 +48,17 @@ def main():
         pf.callout(ax, x - cw / 2 + 0.1, 6.3, cw, 3.6, title, body, bar=col, size=7.0,
                    title_size=8.0, band=0.8)
         pf.line(ax, (x, y0 + 0.35), (x, 6.3), color=pf.GREY_LINE)
-    pf.text(ax, 0.9, 10.9, "now: G0 passed; G1 open for the infall profile criterion "
-            "and this note; first G2 runs under way", size=7.5, ha="left", italic=True)
-    ax.add_patch(pf.Polygon([(10.2, 5.75), (10.6, 5.75), (10.4, 5.45)], closed=True,
+    pf.text(ax, 0.9, 10.9, "now: G0 and G1 passed (G1 with reservations); first G2 result; "
+            "long runs on the cards", size=7.5, ha="left", italic=True)
+    ax.add_patch(pf.Polygon([(12.0, 5.75), (12.4, 5.75), (12.2, 5.45)], closed=True,
                             fc=pf.RED, ec="none", zorder=8))
-    pf.text(ax, 10.4, 6.05, "now", size=7.0, color=pf.RED)
+    pf.text(ax, 12.2, 6.05, "now", size=7.0, color=pf.RED)
     pf.brace(ax, 3.6, 8.8, 3.6, "", below=True)
-    pf.text(ax, 6.2, 2.25, "ruling on the infall profile\ncriterion; this note checked",
+    pf.text(ax, 6.2, 2.25, "done: infall criterion ruled;\nnote checked by the review",
             size=7.0, color=pf.ROSE)
     pf.brace(ax, 9.6, 14.8, 3.6, "", below=True)
-    pf.text(ax, 12.2, 2.0, "gauge for expanding dust; cause\nof the late drift; dust to the\n"
-            "black hole, growth against flux", size=7.0, color=pf.ROSE)
+    pf.text(ax, 12.2, 2.0, "null test off the relaxed lapse,\nfaces far out, to 500 M; M/16\n"
+            "pair; growth to 500 M; seed 2", size=7.0, color=pf.ROSE)
     pf.brace(ax, 15.6, 20.8, 3.6, "", below=True)
     pf.text(ax, 18.2, 2.0, "convergence at finer cells;\nwarm dust and spin; puncture\n"
             "in a periodic box; card time", size=7.0, color=pf.ROSE)
