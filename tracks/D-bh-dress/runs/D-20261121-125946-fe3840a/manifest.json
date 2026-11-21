@@ -1,0 +1,120 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261121-125946-fe3840a",
+  "track": "D-bh-dress",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "X1: executable change core/gauge -> release core-v0.4 neutral on the ES-1G input (12 cycles, byte comparison); g2runs JOURNAL entry 1",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "tracks/D-bh-dress/g2runs/tools/x1_exe_check.sh",
+    "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/es_runs/inputs/es1g_dx8.athinput",
+    "12"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "fe3840a32903c086ee9decdf15789b439b877854",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/g2runs"
+    ],
+    "outside_package": {
+      "count": 9,
+      "first": [
+        " M tracks/D-bh-dress/note/JOURNAL.md",
+        " M tracks/D-bh-dress/note/main.tex",
+        " M tracks/D-bh-dress/note/scripts/common.py",
+        " M tracks/D-bh-dress/note/scripts/fig_newton.py",
+        " M tracks/D-bh-dress/note/scripts/ledger.py",
+        " M tracks/D-bh-dress/note/scripts/schem_timeline.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/compare_runs.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/count_blocks.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/slice_profiles.py"
+      ]
+    },
+    "merge_base_main": "4f50dadd449682c2669cbe40564981146bdbb81e",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/D-bh-dress/es_runs/inputs/es1g_dx8.athinput",
+      "role": "input",
+      "sha256": "3f0c9a932472134a191308f4449bfcf02db56e322f9b98f88d7a4b36f66079bb",
+      "bytes": 5713,
+      "tracked": true
+    },
+    {
+      "path": "tracks/D-bh-dress/g2runs/tools/x1_exe_check.sh",
+      "role": "argv",
+      "sha256": "559cd33227a7124c7e901d6428caeb0dfa75761294037109ac26f720a19fc8db",
+      "bytes": 1786,
+      "tracked": true
+    },
+    {
+      "path": "tracks/D-bh-dress/es_runs/inputs/es1g_dx8.athinput",
+      "role": "argv",
+      "sha256": "3f0c9a932472134a191308f4449bfcf02db56e322f9b98f88d7a4b36f66079bb",
+      "bytes": 5713,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261121-125946-fe3840a",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T12:59:46Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 30.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.7775,
+    "gpu_hours_reserved": 1.9666,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 220,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
