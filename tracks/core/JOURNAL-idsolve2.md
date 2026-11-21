@@ -1122,3 +1122,7 @@ build, refinement in `nrpic_cosmo`, the region norms). Then the second publicati
  only from a residual that the threaded run does not reach or from a difference
  between two threaded runs of the same thread count (`w1_far_n32` is run twice with
  4 threads: its files must be byte-identical).
+
+ **M2b** (written before its run; the reference of Kc at 128 cells): `w1_far_n128` of
+ run core-20261119-155750-c923762 (build of 76add0c) replayed with the merged build:
+ every file byte-identical, as `w1_far_n32` in M2.
