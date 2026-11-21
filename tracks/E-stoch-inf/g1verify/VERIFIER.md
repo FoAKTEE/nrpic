@@ -43,8 +43,10 @@ reader (C0).
 | E-20261120-223154-d42de1a | pass 1: R^NR per mode and box means from all dumps of P256 (18) and L256p (10), sha256 of each dump checked | completed (closed with `finish` in session 2) |
 | E-20261121-025750-d1b6139 | pass 2: the same for L32p, L64p, L128p, Q64p, Q128p (card) and L64p_proc (processors) | completed |
 | E-20261121-030207-fb6f090 | V1, V2, V3 analysis (records of all 34 runs, my MS full and deformed) | completed |
-| E-20261121-030657-c1afe38 | V4/V5 data: odd/even parts of H and M_i, bands, shell spectra, halving, controls, records | see V4 |
-| (V4/V5 analysis run, below) | | |
+| E-20261121-030657-c1afe38 | V4/V5 data: odd/even parts of H and M_i from the mirrored pairs, wave-vector bands, shell spectra, halved pairs, controls, records (289 dumps hashed) | completed |
+| E-20261121-031936-16d6ae5 | V4/V5 analysis, first attempt | failed (exit 1: my script used a wrong record column name) |
+| E-20261121-031951-82984f8 | V4/V5 analysis: dominance, halving, controls, strict A4 and A4', spatial order, floor | completed |
+| E-20261121-032413-0672bf9 | all figures; V4/V5 addendum (halving with the non-scaling floor, L128/L256 even parts with the floor removed, control maxima) | completed |
 | E-20261121-030412-42dd156 | V6, first version (the even part of H still held its box mean) | completed, superseded |
 | E-20261121-030522-c6907b6 | V6: Richardson orders from the Courant runs | completed |
 | E-20261121-030415-22d518b | V7, first attempt | failed (exit 1: my script read a processor manifest without batch entries) |
@@ -129,3 +131,210 @@ e-folds, `scripts/ref.py`) drifts by -0.0516 to -0.0530 per e-fold (-4 eps1) and
 17 percent below the full MS: the NR data sit 3e4 times closer to the full MS than the
 tolerance is wide, and 1e4-1e5 times closer than to the FLRW-lattice behaviour.
 Figure `fig/fig_v3.png`.
+
+### V4 Constraints: records, odd and even parts, halving, controls — CONFIRMED that the constraints behave as second-order physics plus a converging first-order discretisation error; strict A4 FAILS, A4' PASSES (with (d) read on the maxima)
+
+[VERIFIED, runs E-20261121-030657-c1afe38, E-20261121-031951-82984f8, E-20261121-032413-0672bf9]
+Odd part (C(s) - C(-s))/2 and even part (C(s) + C(-s))/2 of H and M_i from the mirrored
+pairs, at dumps of equal cycle and time; rms over the box, divided by the record's <[H]>
+(<[M]>) of the s = +1 run. "Floor" below = the part that does not scale with s (SCOPE 4b's
+definition): rms(C(s) - 2C(s/2)) for the odd part, rms(C(s) - 4C(s/2)) for the even part,
+measured on the halved pairs; elsewhere the out band |n|^2 > 9 nmax2 of the odd part.
+
+- Record ratios (every cycle): <|H|/[H]> max 5.1e-11 in the paper's set-up at every N
+  (Q64 4.8e-11, Q128 5.0e-11, P256 5.1e-11), 2.6e-12 in the L set-up at N >= 64 (at t = 0:
+  the slice); <|M|/[M]> max 3.8e-4 to 4.0e-4 (paper's set-up), 1.5e-5 to 1.8e-5 (L, N >= 64).
+- Even part (second order), mean removed: 2.85e-12 at t = 0 (the slice), a plateau of
+  ~7e-13 through the entry, the same at every N of a set-up (t = 2: 5.7-6.0e-13 on L32-L256,
+  7.0-7.1e-13 on Q64-P256), decaying after the last crossing. With each run's floor removed in
+  quadrature the even parts of L128 and L256 (same modes) agree within 0.8 percent at every
+  dump (raw: up to 17 percent at t = 0.5, where L256 is floor-dominated).
+- Odd part (first order in s: the discretisation error of the linear solution): in the
+  paper's set-up it exceeds the even part from t = 2.0 (Q64), 3.0 (Q128), 3.5 (P256), i.e.
+  when shells with k dx ~ pi/4 enter (ln(N/8) e-folds after N*), and peaks at 6.0e-11
+  (Q64, t = 3.0) and 5.5e-11 (Q128, t = 4.0): independent of N, because k_max dx = pi/2 at
+  every N. P256's peak is not in the data (P256m ends at t = 4.5; its odd part is 1.7e-11 at
+  t = 4.0 and rising). In the L set-up it falls with N: maximum 5.4e-11 (L32), 1.2e-12 (L64,
+  still above the even part after t = 2), in-band 2e-14 (L128) and 3e-16 (L256), below the
+  even part.
+- Halving (L32, Q64, Q128; where the part exceeds ten times its non-scaling floor): odd part
+  of H 1.9989-2.0000, even part 3.986-4.000; odd part of M 1.9975-2.0000, even part of M
+  3.990-4.000. With the out-band floor instead, Q64 (1.77) and Q128 (odd 1.43, even 3.66)
+  deviate at t <= 2, where the parts are within a few times the rounding: in the paper's
+  set-up the out band is a corner of the cube and holds only about a fifth of the rounding.
+- Negative controls (noise_pi_sign = -1): record <|H|/[H]> max 9.8e-8 to 9.9e-8,
+  <|M|/[M]> 0.21-0.22, i.e. first order. Odd part of the control over that of the proper
+  run: 2e3 to 3.6e6 during the early entry, falling to 122 (NC32, t = 3.0), 89 (NC64,
+  t = 3.5), 179 (NC128, t = 4.0) at the end of the entry; ratio of the two maxima over the
+  run 1874, 1709, 1853.
+- Strict A4 (SCOPE 4 item 4: H/[H] and M/[M] of second order, scaling with s^2 under
+  halving; the control first order): FAILS on the data. The record halving factor
+  F_H = R_H(s)/R_H(s/2) during the entry ranges 0.83-1.99 (L32), 2.0-4.6 (Q64), 2.0-4.1
+  (Q128); F_M 1.0-2.0. Two causes, both measured: the record holds the uniform residual of
+  the time integration (box mean of H, order s^0, 2-3e-12 on L32 and 3-5e-13 on Q64/Q128;
+  order 4.1 in the Courant factor, V6), and the first-order discretisation part that
+  dominates once k dx ~ pi/4 shells enter. The control is first order (passes).
+- A4' (SCOPE 4b, a proposal): (a) even part halving 3.986-4.000 above the floor: PASS;
+  two finest resolutions within 5 percent: PASS in the L set-up (L128/L256 within 0.8
+  percent after the floor is removed; raw within 2.5 percent wherever L256's even part is
+  more than five times its floor); in the paper's set-up the clause is ill-posed after
+  t ~ 3 because Q128 and P256 inject different shells (they agree within 2.6 percent at
+  t = 1.5-3.0 and differ by 50 percent to a factor 10 later). (b) odd part halving
+  1.9989-2.0000 and convergence at 5.5-5.9 (V5): PASS. (c) record <|H|/[H]> <= 5.1e-11
+  (limit 1e-9) and <|M|/[M]> <= 4.0e-4 (limit 1e-3): PASS. (d) control's odd part >= 1e3 x
+  proper: PASS on the maxima over the run (1709-1874), FAIL pointwise at the end of the
+  entry (89-179). (d) as written has no time qualifier; I read it on the maxima and flag it.
+Figure `fig/fig_v4.png`.
+
+### V5 (A5) Spatial order of the odd part; the floor — CONFIRMED
+
+[VERIFIED, runs E-20261121-031951-82984f8, E-20261121-032413-0672bf9] L set-up
+(k_max/dk = 8 at every N), order log2(odd_N/odd_2N) of H at equal times (the finer run
+interpolated in log to the coarser run's dump times):
+- 32 -> 64: 5.54-5.64 for t >= 1.5 (both the whole odd part and its in-band part), 3.8-4.3
+  at t <= 1 (the time error, dt ~ dx, dominates while only low shells are in; V6 measures 4).
+- 64 -> 128: the whole odd part of L128 is floor-dominated except near t = 2.5 (order 5.82
+  there, where it exceeds three times the floor: A5' admits only this point); its in-band
+  part (|n|^2 <= nmax2) converges at 5.2-5.9 for t = 1.5-5.0 and 4.0-4.1 at t <= 1, then
+  reaches its own floor (~2e-17) after t ~ 5.5.
+- 128 -> 256: whole odd part floor-dominated at both N (orders negative); in-band part
+  5.8-5.96 for t >= 2.
+- M: 5.6-5.9 (32 -> 64, 64 -> 128 in the same windows).
+So A5 (order between 4 and 6 before the floor) holds; with A5' ("before the floor" = the
+finer odd part above three times the floor) it holds on 32 -> 64 (t >= 1.0: 4.2-5.6) and at a
+single point of 64 -> 128.
+The floor: the out band of the odd part grows as N^2.45-2.51 between 64, 128 and 256 at
+t <= 3 (L), N^2.42-2.49 (paper's set-up), and falls in time as the expansion (1/a^2:
+6.3e-13 at t = 0.5 to 3.3e-15 at t = 4.0 on L256). Double-precision rounding as its cause is
+supported: (i) it does not scale with s (the out band is the same in the proper and the halved
+pairs within 0.93-1.07); (ii) it is the same in the odd and the even part (within 1 percent);
+(iii) the non-scaling parts of the even and the odd combination stand in the ratio 1.83-1.97 (1.84-1.85 after t = 0.5) =
+sqrt(17/5), which is what four independent noises give (a deterministic s^0 term would
+cancel in the odd part); (iv) its size, ~1.6e-13 of [H] per run at N = 128 and t = 0.5, is
+about 40 machine epsilons of |chi| per second difference times (N/2pi)^2, and N^2 x sqrt(number
+of steps) gives N^2.5; (v) its shell spectrum is flat (white: the rounding of the evaluation
+of H) at late times and rises towards the corner of the cube during the entry. I predicted a
+k^4 rise throughout; that part of the prediction failed. [JUDGEMENT on (iv)-(v); (i)-(iii)
+VERIFIED.] Figure `fig/fig_v5.png`.
+
+### V6 (A6) Temporal order from the Courant runs — CONFIRMED (where resolvable)
+
+[VERIFIED, run E-20261121-030522-c6907b6; first version E-20261121-030412-42dd156]
+T25/T12/T06 (N = 32, L set-up, Courant 0.25/0.125/0.0625, s = +-1, run
+E-20261119-142317-c851f27; the dumps of the three Courant factors fall at the same times
+to 1.3e-14). Richardson order p = log2(|X_0.25 - X_0.125| / |X_0.125 - X_0.0625|), max norm,
+at the 9 dumps t = 0.49-4.42:
+
+| Quantity | order | note |
+|---|---|---|
+| odd parts (first order) of phi, Pi, chi, K, gxx, Axx | 3.93-4.10 | |D2| ~ 1e-6 of the part |
+| odd part of my R^NR, |n|^2 <= 8 | 3.94-4.05 | |
+| odd part of H | 3.85-4.24 for t <= 2.45 | later |D2| reaches 3e-14, the rounding of H at N = 32 |
+| box mean of H (the uniform residual, order s^0) | 4.10 at every dump | 3.1e-11 at Courant 0.25 = 2.6e-12 of [H] |
+| box mean of chi | 4.06 | the e-fold error of V1 |
+| even parts (second order) of the fields and of H without mean | -0.3 to -0.7 | |D1|, |D2| = 2e-14 to 4e-13: rounding (random walk ~ sqrt(steps)); time error not resolvable |
+
+Order 4 +- 0.5 (A6) holds for everything whose time error is above rounding, which is the
+whole first-order solution and the background residual. The second-order part of the
+constraints has no measurable time error at N = 32 (it is below 4e-13 absolute, against
+an even part of ~1e-10). So A6 is confirmed for the first-order dynamics; it is not tested
+(and not testable with these runs) for the second-order part. Figure `fig/fig_v6.png`.
+
+### V7 (A7) Reproducibility; cost — CONFIRMED
+
+[VERIFIED, runs E-20261121-030520-5a23d64, E-20261121-031049-27cdc06, E-20261121-031251-c48670d]
+On the files themselves (my reader, assembled by logical location, uint64 views):
+- Noise unit test (release core-v0.3, 64^3, 300 cycles): card U1, U2, U3 (1, 8, 64
+  MeshBlocks; run E-20261115-170645-3b21217) give 0 differing 64-bit words in all 12
+  variables, the two noise fields included (rms 0.011), at all 4 dumps (1.26e7 words per
+  comparison); the lockstep mode files are byte-identical and the records equal in every
+  column. Restart: processor U4 (E-20261115-170727-d15df12) and card U4
+  (E-20261115-180526-6b68c33), restarted at cycle 150, equal U2 bit for bit at cycles 200
+  and 300 (time bits too), mode files and records equal. sha256 of all 20 dumps read equal to
+  the runs' lists.
+- The G1 executable itself (my run, core/scalar-2 `athena_cpu`, the L32p set-up of
+  `proc32.list`): 8 MeshBlocks of 16^3 against the registered L32p (one MeshBlock): all 22
+  variables bit-identical at t = 0, 0.54, 1.03; restarted from cycle 12: bit-identical to
+  both at t = 1.03; mode files byte-identical. The records differ by box-sum rounding only
+  (at most 1.7e-14 relative, apart from columns that are themselves rounding).
+- Not tested: the rank count (the field runs on one rank; no MPI build in this material).
+- Card against processor is not bit-identical (information, not A7): the noise fields of U2
+  differ at 4e-16 relative, the slow-roll L64p perturbations at 2e-9 to 4e-7 of their
+  maximum.
+
+Cost [VERIFIED from the manifests]: one 256^3 realisation to N - N* = 8.10 (P256, run
+E-20261115-172618-f948386, one A100): 1811 s wall, 0.5031 card-hours
+(`resources.walltime_s`, `resources.gpu_hours`). P256m with L256p (both to 4.39): 1784 s,
+0.4956 card-hours; job C (17 runs, 64^3-256^3): 1504 s, 0.4178 card-hours. Figure
+`fig/fig_v7.png`.
+
+## Summary against the G1 criterion (CHARTER 9.8)
+
+"The power spectrum of the slow-roll case agrees with the analytic result" (V2): CONFIRMED,
+per mode to 1.2e-4 at k <= k_max/2 (threshold 0.02) and as a spectrum to the analytic
+slow-roll power within its own +1.0 to +1.3 percent slow-roll correction. "Super-horizon
+modes freeze by the criterion of arXiv:2606.14853" (V3): CONFIRMED, 3e-6 against 1 percent,
+1e4-1e5 times closer to the full MS than to the FLRW-lattice equation. "The constraints
+converge" (V4, V5): CONFIRMED in the sense that the constraint violation is the
+resolution-independent second-order part plus a first-order discretisation part that
+converges at order 5.5-5.9 (L set-up) down to a rounding floor that grows as N^2.5; NOT in
+the sense of the strict A4 of SCOPE 4, which fails at every N in the paper's set-up. A1, A6,
+A7 (recommended): CONFIRMED (A6 for the first-order solution; A7 on the G1 executable too).
+
+## Weak points a gate reviewer should doubt
+
+1. One realisation per set-up and one seed (20261115). V2 and V3 are free of cosmic variance
+   by construction (per mode, with alpha known), but any statement about a spectrum average
+   rests on one draw.
+2. Scouting executables (core/scalar-2 a58e95b), not a release (decision 0013). The A7 noise
+   unit test that the track cites ran on release core-v0.3, a different executable; my V7c
+   repeats layout and restart on the G1 executable but only on 32^3, one rank, processors,
+   two dumps. The card build of the G1 executable is not checked for layout invariance.
+3. P256's constraint split stops at t = 4.0 (P256m ends at t = 4.5, and its last dump does not
+   match P256's in time). The k_max shell of P256 enters at t = 4.31, so the peak of P256's
+   first-order part and its halving are not measured at 256^3; the claim "it does not fall
+   with N" rests on Q64 and Q128 (and on P256 rising like them up to t = 4).
+4. No halved pair exists at 256^3 or in the L set-up beyond 32^3: the halving factors come from
+   32^3-128^3 only, and the non-scaling floor at 256^3 is extrapolated (N^2.5).
+5. The "floor" is a definition. With the out band as floor (my first choice) A4'(a), (b) fail
+   at Q64/Q128 for t <= 2; with SCOPE 4b's non-scaling part they pass. A reviewer should note
+   that the verdict on A4' depends on this choice, made after the data (by the track, and by
+   me after seeing that the out band holds only a fifth of the rounding in a corner).
+6. A4'(d) passes only on the maxima; pointwise the control/proper ratio falls to 89 at the end
+   of the entry. A4' was formulated after the data were seen (SCOPE 4b says so).
+7. The absolute constraint levels are 40 times (proper: even rms 7e-13, record 2.6e-12 to
+   5e-11) and 100 times (control: 1e-7) below P1's statements (~1e-10, ~1e-5, P1:538-541).
+   The ratio control/proper (~1e5) matches P1. The cause is not established [TO VERIFY: the
+   definition of [H] or of the box statistic in P1 against core's record].
+8. The spatial order of the whole odd part beyond 64 cannot be measured: the floor dominates
+   at 128 and 256 in the L set-up; the order 5.8-5.96 at 128 -> 256 is that of the in-band part
+   (|n|^2 <= nmax2) only, a band I chose.
+9. The R^NR floor of ~2e-6 at L64-L256 is attributed to the second-order part of R^NR by
+   judgement; the m runs carry no gt_ij, so it is not separated by parity.
+10. V6 tests only N = 32 and only to t = 4.42; the second-order part has no resolvable time
+    error there.
+11. V2's reference uses the code's own mode files; I checked them against my Bunch-Davies
+    integration (6e-13 for n64, 1.6e-6 for n256-n4096), so a shared error of the initial
+    mode functions is excluded only to that level.
+
+## For the orchestrator's ruling: strict A4 against A4'
+
+The strict A4 asks that the constraint ratios H/[H] and M/[M] be of second order during the
+entry, i.e. scale with s^2 under halving. On these data that is false at every resolution
+of the paper's set-up and on L32, for two reasons I measured independently of the track:
+the record ratio contains a uniform residual of the time integration that does not depend on
+s (it converges at order 4.1 in the Courant factor, V6, and is 3e-13 to 3e-12 of [H]), and a
+first-order (odd in s) discretisation part that dominates once shells with fewer than about
+eight cells per wavelength enter. That first-order part is not physics: it halves exactly
+(1.9989-2.0000), converges at order 5.5-5.9 in the L set-up, and is independent of N in the
+paper's set-up only because k_max dx = pi/2 is fixed there. The physical second-order part,
+isolated by the mirrored pair, scales by 3.986-4.000 and is resolution-independent (L128 and
+L256 within 0.8 percent after the floor is removed). So the strict A4 tests the wrong
+object, and A4' tests the right one; its clauses (a)-(c) pass with margin. My reservations:
+(d) needs a time qualifier (it fails pointwise at the end of the entry, by a factor ~10),
+the floor of (a)/(b) should be named as the non-scaling part (my out-band floor fails them),
+the "two finest resolutions" clause of (a) is only meaningful in a set-up with the same modes
+at both resolutions (L), and A4' was written after the data were seen. My recommendation
+[JUDGEMENT]: rule A4' in, with (d) read as "the maxima over the entry differ by at least
+1e3" and the floor defined as the non-scaling part, and keep the strict A4 on record as
+failed for the reason above.

@@ -1,0 +1,253 @@
+{
+ "comparisons": [
+  {
+   "pair": "L32p vs mb8",
+   "cycle": 0,
+   "time": 0.0,
+   "nmb": [
+    1,
+    8
+   ],
+   "nvar": 22,
+   "ncells": 32768,
+   "differing": {
+    "phi": 0,
+    "Pi": 0,
+    "chi": 0,
+    "K": 0,
+    "alpha": 0,
+    "H": 0,
+    "Mx": 0,
+    "My": 0,
+    "Mz": 0,
+    "E": 0,
+    "gxx": 0,
+    "gxy": 0,
+    "gxz": 0,
+    "gyy": 0,
+    "gyz": 0,
+    "gzz": 0,
+    "Axx": 0,
+    "Axy": 0,
+    "Axz": 0,
+    "Ayy": 0,
+    "Ayz": 0,
+    "Azz": 0
+   },
+   "identical": true
+  },
+  {
+   "pair": "L32p vs mb8",
+   "cycle": 11,
+   "time": 0.5399612373357456,
+   "nmb": [
+    1,
+    8
+   ],
+   "nvar": 22,
+   "ncells": 32768,
+   "differing": {
+    "phi": 0,
+    "Pi": 0,
+    "chi": 0,
+    "K": 0,
+    "alpha": 0,
+    "H": 0,
+    "Mx": 0,
+    "My": 0,
+    "Mz": 0,
+    "E": 0,
+    "gxx": 0,
+    "gxy": 0,
+    "gxz": 0,
+    "gyy": 0,
+    "gyz": 0,
+    "gzz": 0,
+    "Axx": 0,
+    "Axy": 0,
+    "Axz": 0,
+    "Ayy": 0,
+    "Ayz": 0,
+    "Azz": 0
+   },
+   "identical": true
+  },
+  {
+   "pair": "L32p vs mb8",
+   "cycle": 21,
+   "time": 1.0308350894591514,
+   "nmb": [
+    1,
+    8
+   ],
+   "nvar": 22,
+   "ncells": 32768,
+   "differing": {
+    "phi": 0,
+    "Pi": 0,
+    "chi": 0,
+    "K": 0,
+    "alpha": 0,
+    "H": 0,
+    "Mx": 0,
+    "My": 0,
+    "Mz": 0,
+    "E": 0,
+    "gxx": 0,
+    "gxy": 0,
+    "gxz": 0,
+    "gyy": 0,
+    "gyz": 0,
+    "gzz": 0,
+    "Axx": 0,
+    "Axy": 0,
+    "Axz": 0,
+    "Ayy": 0,
+    "Ayz": 0,
+    "Azz": 0
+   },
+   "identical": true
+  },
+  {
+   "pair": "L32p vs rst8",
+   "cycle": 21,
+   "time": 1.0308350894591514,
+   "nmb": [
+    1,
+    8
+   ],
+   "nvar": 22,
+   "ncells": 32768,
+   "differing": {
+    "phi": 0,
+    "Pi": 0,
+    "chi": 0,
+    "K": 0,
+    "alpha": 0,
+    "H": 0,
+    "Mx": 0,
+    "My": 0,
+    "Mz": 0,
+    "E": 0,
+    "gxx": 0,
+    "gxy": 0,
+    "gxz": 0,
+    "gyy": 0,
+    "gyz": 0,
+    "gzz": 0,
+    "Axx": 0,
+    "Axy": 0,
+    "Axz": 0,
+    "Ayy": 0,
+    "Ayz": 0,
+    "Azz": 0
+   },
+   "identical": true
+  },
+  {
+   "pair": "mb8 vs rst8",
+   "cycle": 21,
+   "time": 1.0308350894591514,
+   "nmb": [
+    8,
+    8
+   ],
+   "nvar": 22,
+   "ncells": 32768,
+   "differing": {
+    "phi": 0,
+    "Pi": 0,
+    "chi": 0,
+    "K": 0,
+    "alpha": 0,
+    "H": 0,
+    "Mx": 0,
+    "My": 0,
+    "Mz": 0,
+    "E": 0,
+    "gxx": 0,
+    "gxy": 0,
+    "gxz": 0,
+    "gyy": 0,
+    "gyz": 0,
+    "gzz": 0,
+    "Axx": 0,
+    "Axy": 0,
+    "Axz": 0,
+    "Ayy": 0,
+    "Ayz": 0,
+    "Azz": 0
+   },
+   "identical": true
+  }
+ ],
+ "modes": {
+  "L32p vs mb8 c0": true,
+  "L32p vs mb8 c11": true,
+  "L32p vs mb8 c21": true,
+  "L32p vs rst8 c21": true,
+  "mb8 vs rst8 c21": true
+ },
+ "records": {
+  "sr.sf.hst L32p vs mb8": {
+   "rows": 25,
+   "all_equal": false,
+   "columns_differing": [
+    "<phi>",
+    "<Pi>",
+    "<K>",
+    "<chi>",
+    "rms(phi-<phi>)",
+    "rms(Pi-<Pi>)",
+    "<E>",
+    "<|H|>",
+    "rms(H)",
+    "rms|M|",
+    "rms(Theta)",
+    "<[H]>"
+   ],
+   "max_reldiff": 4.817734155827362e-13
+  },
+  "sr.sf.hst mb8 vs rst8": {
+   "rows": 13,
+   "all_equal": true,
+   "columns_differing": [],
+   "max_reldiff": 0.0
+  },
+  "sr.sf.con.hst L32p vs mb8": {
+   "rows": 25,
+   "all_equal": false,
+   "columns_differing": [
+    "efolds=-ln<chi>/2",
+    "<|H|/[H]>",
+    "<|H|>/<[H]>",
+    "<|M|/[M]>",
+    "<|M|>/<[M]>",
+    "<[H]>",
+    "<[M]>",
+    "<|H|>",
+    "<|M|>",
+    "rms(H)",
+    "rms|M|",
+    "rms|M_bssn-M_adm|",
+    "<phi>",
+    "<Pi>",
+    "<K>"
+   ],
+   "max_reldiff": 0.00035373187124154904
+  },
+  "sr.sf.con.hst mb8 vs rst8": {
+   "rows": 13,
+   "all_equal": true,
+   "columns_differing": [],
+   "max_reldiff": 0.0
+  }
+ },
+ "sha": {
+  "L32p/sr.sf.00000.dump": true,
+  "L32p/sr.sf.00001.dump": true,
+  "L32p/sr.sf.00002.dump": true
+ },
+ "all_dumps_identical": true,
+ "sha_all_ok": true
+}
