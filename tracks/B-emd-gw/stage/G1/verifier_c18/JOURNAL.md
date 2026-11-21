@@ -134,3 +134,41 @@ _pcs4bt: the largest correlation of d ln alpha with d ln gamma^(1/6) over 1 < a 
 <= -0.99 (ledger -0.999), and the rms ratio spans about 5e-5 to 0.04 (ledger 5.48e-5, 0.0408),
 both reproduced to 5 per cent if my a (mean of chi) selects the same dumps. Refuted: a
 correlation above -0.99 or a ratio off by more than 20 per cent.
+
+## Entry 5 (05:30 PST): outcomes of M1a-d, A1, A2, P2, P3 (written before reading any review)
+
+Runs: M1a B-20261121-130345-622e9e4, M1b B-20261121-130410-0ff2a75, M1c B-20261121-131318-6a9bad1,
+M1d B-20261121-131930-79b125f (own per-dump tables, 0 errors); A1 B-20261121-131827-5d48168;
+A2 B-20261121-132010-bf007b5; P2 B-20261121-131447-6f56217; P3 B-20261121-132053-5191d8e.
+Figures looked at: figs/a1_rows.png, a1_floor_gauge.png, a2_round3.png, p2_null_pred.png,
+p3_slicing.png.
+
+- P1 (rows 200, 204, 205, 209-215, 207, 208) CONFIRMED: every printed digit reproduced.
+- P2 (row 197) CONFIRMED: 9.53e-13 and 4.31e-13 (direct sum), 9.47e-13 and 4.79e-13 (FFT route);
+  ledger 9.5e-13, 4.71e-13. The second digit is not meaningful: the diagnostic's own summation
+  rounding is of the same size (T0b). Single-precision pairs: 2.4e-10 (float32 floor).
+- P3 (row 198) CONFIRMED (entry 2). P4 (row 207) CONFIRMED (shells by rint(|m|); floor or 15.5
+  edges change the third digit only). P5 (row 208) CONFIRMED: 0.0115, 0.00925.
+- P6 CONFIRMED: R = 16.8-19.1 for a = 30-60, both ratios.
+- P7 (rows 116-117) CONFIRMED to the printed digits with linear interpolation in a at a = 40
+  (nearest dump: 0.0162, 0.0183, 0.0393). P8 (rows 120-123) CONFIRMED, after one fix of my own
+  pairing: my first pairing by rounded times found only 38 of 217 pairs at 32^3 and gave
+  0.0168 and 1.88 for the 32^3 medians (wrong); pairing by nearest time (|dt| < 1e-5; the
+  32^3 runs agree to 5e-7) gives 0.0928 and 5.32, as the ledger.
+- Control row 101 (verifier3 covered it): 0.00857 and 0.00821 are reproduced only over the
+  double-precision (rst) dumps; over all 217 single-precision dumps the largest for eps = 1 is
+  0.00882 (a = 13.0). The caption does not say which dumps.
+- Rows 201-203, 206 (own growing-mode prediction, P2): medians 1.08 and 1.04 (K1), 0.944 and
+  0.953 (K2) for jitter 0.3 and 0.1; extremes 0.73-1.37; phases <= 0.36 rad; rms ratio
+  12.0-14.8 (jitter 0.3). Prediction (b), (c) of entry 3 CONFIRMED; (a) CONFIRMED (the code
+  returns -(5/6) phi_x phi_y to 2e-16). The ledger's numbers differ from mine by <= 5 per cent
+  in the ratios and <= 7 per cent in the phases, the size of the decaying-mode parts I left out.
+- Row 125 (P3) CONFIRMED in digits (-0.999, 5.48e-5, 0.0408) but the smallest ratio 5.48e-5 is
+  the initial slice (tau = 0, a = 1 + 6.5e-9, which "1 < a" admits by rounding); over the
+  evolved dumps (a = 12-121) the ratio spans 3.8e-3 to 0.0408.
+- Round 3 (P9): P12 CONFIRMED (7.76e-5, 7.44e-5; 3.35e-5 and 2.51e-4 after crossing; bin floor
+  1.35e-10). P13: <= 40: 1.62e-4 and 1.86e-4 (report 1.6e-4, 1.8e-4); rms for a = 80-140:
+  1.38e-2 (report 1.30e-2, 6 per cent higher; 1.64e-2 for a = 101-140) and 3.39e-2 (exact).
+  (1 + eps^2): R 17.1-19.1 and Q 1.007-1.036 at 32^3, Q 1.006-1.023 at 64^3, a = 30-60; a = 20:
+  Q 1.16 and 1.10, R(eps = 0.3, 32^3) 21.5: all CONFIRMED. P16': D = 0.994, 0.856 (tau = 0.1,
+  a = 2.3), 0.275 (a = 12): CONFIRMED.

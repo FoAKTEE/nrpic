@@ -1,0 +1,110 @@
+{
+ "row198": {
+  "N": [
+   2097152,
+   2097152
+  ],
+  "max_dx": 0.0,
+  "max_du": 0.0,
+  "max_dm_rel": 0.0,
+  "species_equal": true,
+  "fields_n": [
+   [
+    64,
+    64,
+    64
+   ],
+   [
+    64,
+    64,
+    64
+   ]
+  ],
+  "fields_maxabs_diff": {
+   "psi": 0.0,
+   "K": 0.0,
+   "alpha": 0.0,
+   "Axx": 0.0,
+   "Axy": 0.0,
+   "Axz": 0.0,
+   "Ayy": 0.0,
+   "Ayz": 0.0,
+   "Azz": 0.0
+  },
+  "bytes_identical_particles": true,
+  "bytes_identical_fields": true
+ },
+ "row199_idjson": {
+  "jit0p3": {
+   "max_momentum_residual": 0.0007628667399551294,
+   "max_hamiltonian_residual": 3.699018868985604e-11,
+   "max_hamiltonian_term": 1.0406446796128128,
+   "jitter": 0.3,
+   "seed": 7,
+   "N": 2097152,
+   "delta": 0.01,
+   "ratios": [
+    1.0,
+    0.0,
+    0.0
+   ]
+  },
+  "jit0p1": {
+   "max_momentum_residual": 0.00028277865704101623,
+   "max_hamiltonian_residual": 4.496181205126959e-12,
+   "max_hamiltonian_term": 0.866635332964833,
+   "jitter": 0.1,
+   "seed": 7,
+   "N": 2097152,
+   "delta": 0.01,
+   "ratios": [
+    1.0,
+    0.0,
+    0.0
+   ]
+  },
+  "jit0": {
+   "max_momentum_residual": 3.122502256758253e-17,
+   "max_hamiltonian_residual": 4.782285678572862e-12,
+   "max_hamiltonian_term": 0.7782785037646831,
+   "jitter": 0.0,
+   "seed": 7,
+   "N": 2097152,
+   "delta": 0.01,
+   "ratios": [
+    1.0,
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "jitter_check": {
+  "jit0p3": {
+   "max_dx_over_h": 0.0,
+   "max_dy_over_h": 0.29999974276289976,
+   "max_dz_over_h": 0.2999998584950525,
+   "rms_dy_over_h": 0.17319813332478004
+  },
+  "jit0p1": {
+   "max_dx_over_h": 0.0,
+   "max_dy_over_h": 0.09999991425429755,
+   "max_dz_over_h": 0.09999995283168417,
+   "rms_dy_over_h": 0.057732711108260025
+  }
+ },
+ "row216": {
+  "manifest_resources": {
+   "nodes": 1,
+   "gpus": 1,
+   "cores": 1,
+   "walltime_s": 1730.0,
+   "wall_limit": "00:45:00",
+   "segments_max": null,
+   "gpu_hours_requested": 0.75,
+   "gpu_hours": 0.4806,
+   "particles": null
+  },
+  "wall": null,
+  "slurm_log_tail": ""
+ }
+}
