@@ -223,3 +223,56 @@ Predictions:
 - `cell` against `particle` (theta 0.1, seed 1): identical n_tested and n_coll in every step.
 Refuted if any fails; a failure of the 4-sigma clause alone in one of five cases at about
 the 4-sigma level would be reported, not explained away.
+
+## Entry 8 (2026-11-20 23:54 PST) V2 and V3 outcomes
+
+(Entry 7 was written at 23:50, not 23:58.)
+
+V2, run C-20261121-074926-5d9ae56 (`figs/v2_box.png`, `figs/v2_series.png`,
+`results/v2_box.json`), 16 collisional cases per executable and 2 collisionless controls:
+- Reference: my rapidity quadrature equals 4 K3(2 zeta)/(zeta K2^2) to 3e-14 to 5e-14
+  at theta 1e-3, 0.01, 0.1, 1, 10 (finer grid the same to 6e-14). Prediction holds.
+- T2(a): |z| <= 2.10 in all 32 cases (z of sum n_coll against sum sum_P). Holds.
+- T2(b), 0.5 percent clause: |sum_P per step / ((1/2) N rho_0 sigma <v_Mol>(theta_s) dt) - 1|
+  <= 9.6e-5 in all cases. Holds. 4-standard-error clause: with the standard error of the
+  step-to-step scatter (std/sqrt(200), the literal definition) |z| <= 2.92 in all cases:
+  holds. With my stricter batch-mean error (10 batches of 20 steps) two of the 16
+  configurations reach z = +4.21 (theta 1e-3 plain seed 2) and -4.55 (theta 1 sub seed 2),
+  identical in both executables (same pairs). The decomposition locates them in the sample:
+  the tested pairs agree with the sample's own all-pairs Moller mean (2e7 random pairs) within
+  |z| <= 2.26 in all 32 cases, and sum_W (positions) and the tested <v_Mol> (velocities)
+  deviate by a few 1e-5 each, the size the 2a clarification of TESTS.md names. Prediction
+  "the 4-se clause may fail at the 1e-4 level through the finite sample" came true in this
+  stricter form only.
+- T2(c): sum M W of the end snapshot equals that of the start exactly (math.fsum difference
+  0.0 in every case); KS p of |u| at the end against MJ(theta_s) 0.095 ... 0.985. Holds.
+- T1: largest per-step |dE| / sum_MW is 1.1e-7 of the bound 1e-14 sqrt(n_coll + 1), largest
+  |dP_i| 3.6e-8 of it; snapshot sums of M u_i change by <= 5e-19 of sum M W over the run;
+  step-to-step change of the history sums of M u_i <= 5.9e-17; n_trunc = 0; collisions-2 in
+  flat space: n_noroot = n_balance = 0, max_dlam = 0. Holds. The 1e4-step drift clause
+  cannot be tested on these 200-step runs (energy exactly conserved over 200 steps).
+- Both executables tested and collided the same pairs: n_tested and n_coll identical in all
+  200 steps of all 16 cases, sum_P to 8.9e-16. Holds.
+- Controls: momenta of the end snapshot bit-identical to the start, energy change 0. Holds.
+
+V3, run C-20261121-075256-2084cb5 (`figs/v3_static.png`, `results/v3_static.json`):
+- Rate: sum n_coll over 200 steps against my expectation (1/2) N rho_p sigma <v_Mol>
+  alpha0 dt (rho_p = 0.564474 = 1/psi0^6): z = -1.02, +0.27 (theta 0.1, seeds 1, 2),
+  -0.67, -0.61 (theta 1), -1.02 (`cell`); mean sum_P within 9e-5 of the expectation.
+  Collisions per coordinate time and coordinate volume: 28203.7 (theta 0.1 seed 1) against
+  19900.3 of the flat twin per its time and volume: ratio 1.417249 = alpha0 psi0^6. Holds.
+- Pair counting: sum_W of cycle 1 equals my count from the straight-pushed snapshot to
+  2.5e-13 ... 4.1e-13 relative in all nine cases (curved and flat). Holds (prediction 1e-12):
+  the proper volume psi0^6 dV_c and the proper time alpha0 dt enter as derived.
+- Twins: n_tested and n_coll identical in all 200 steps of all four pairs; end momenta
+  u_i/psi0^2 equal the flat ones within 1.4e-14 (theta 0.1) and 2.5e-13 (theta 1), positions
+  within 4.0e-13. Holds.
+- Conservation: per-step |dE| <= 3.6e-7 and |dP| <= 3.2e-8 of the T1 bound; snapshot sums of
+  the covariant M u_i constant to 6.2e-17 of sum M W, sum M W exactly; n_noroot = n_balance =
+  0, max_dlam 5e-14 (theta 1), 0 (theta 0.1). Holds.
+- `cell` against `particle`: identical counts in every step, end momenta within 1.3e-14.
+- Remark: the end snapshot of every case carries cycle 199 in its header while the history
+  has 200 records; the time of the snapshot is the end time, so I take it as the header
+  convention of the snapshot writer, not a missing step [TO VERIFY with core; no influence on
+  any number above, which use the history for counts and the snapshot only for sums that do
+  not change without collisions].
