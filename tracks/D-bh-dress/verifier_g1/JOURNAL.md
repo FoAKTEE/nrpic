@@ -285,3 +285,30 @@ sits 0.5-1.7 per cent below the digitised one, V3), AthenaK Schwarzschild spike:
 |dL/L| maxima within 5 per cent of 1.33e-6 and 1.93e-10, count ratio 4-6 Gm within 1 per cent
 of 0.976. A row is WRONG if my independent value differs from the ledger by more than its
 printed precision plus my stated uncertainty and I can show my value is right.
+
+### Outcome of entry 4 (19:50 PST), run D-20261121-034048-17427b0
+
+- P4a held: late/early 0.9966 (0-4), 1.0054 (4-6), 0.9988 (6-10), 0.9998 (10-16), 1.0003
+  (16-40); block standard errors of the ratio 1.1, 0.39, 0.13, 0.10, 0.06 per cent, so every
+  range is within 1.4 sigma of 1. My halves (snapshots 1-100 and 101-200) differ from the
+  track's split; the claimed 0.998-1.003 range is reproduced to 0.002.
+- P4b held: max over 48000 particles and 20000 M: |dE/E| 7.88e-6, |dLz| 1.66e-9,
+  |dQ|/max(Q,1) 9.46e-6; no non-finite snapshot; smallest r over the run 2.2878 M (r_+ = 1.6).
+- P4c FAILED in the direction that matters: my reference counts are 155.7 (0-4), 634.7
+  (4-6), 2501.8 (6-10), 5378.0 (10-16), 22531 (16-40) against the track's 137.8, 601.4,
+  2472.6, 5362.7, 22574 (+13, +5.5, +1.2, +0.3, -0.2 per cent). Against mine the time averages
+  lie 15.1, 6.9, 2.2, 0.4 per cent below and 0.3 above (block errors 0.6, 0.2, 0.06, 0.05, 0.03
+  per cent of the mean); the t = 0 counts lie 17.8, 3.4, 2.0, 1.3 per cent below. A smoke
+  comparison of my local n (E < 1) with the track's own curves (kerr_curves_ours.npz) at
+  theta = pi/2 and pi/3, r = 3, 4, 6, 10 agrees to 0.3-0.6 per cent, so the difference is in the
+  r-theta integration or in the energy cut, not in the local density.
+
+## Entry 6 (19:55 PST): V4b, convergence of my reference counts, prediction
+
+Script `v4b_refconv.py`: the 0-4 and 4-6 integrals with twice the r and angle nodes, the 0-4
+integral without the cut E < 0.99, and the local comparison with the track's curves at E < 1
+(r = 2.6, 3, 3.5, 5, 8; cos theta = 0, 0.5). Prediction: doubling changes the 0-4 integral by
+less than 3 per cent and the 4-6 integral by less than 1 per cent, so my +13 and +5.5 per cent
+stand; the local ratios stay within 1 per cent. If doubling moves the 0-4 integral toward the
+track's by more than half the gap, my V4 reference was under-resolved and the claim's
+numbers stand.
