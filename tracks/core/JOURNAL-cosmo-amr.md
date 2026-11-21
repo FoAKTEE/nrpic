@@ -1522,3 +1522,26 @@ integral form does something else on the card (single-precision constant, order 
 sums) than on the processors.
 Queue at submission: one job of core pending (4758, another package), so one more is
 allowed. Not waited for.
+
+## 2026-11-21 03:30  outcomes of T2b and T18c; T14b submitted
+
+**T2b, run core-20261121-031920-494ac64** (20 cases; `t2_summary.json` read against T2's;
+its figures are those of T2 redrawn from the same numbers, not looked at again)
+[VERIFIED]: U, S, Sf, P, A, L, D8, D8s: chi uniform to 1.6e-14, E to 4.2e-14, alpha_max
+equal to the uniform run to 3.3e-15, the MeshBlock counts of T2; Sf, P and A (linear
+cloud with fine shape on a lattice at rest) print the numbers of T2 digit for digit. M
+(the lattice drifting through the patch that follows the tracker, fine shape): chi
+uniform to 2.7e-14, E to 9.6e-14 (T2: 2.8e-14, 9.9e-14), tracker within 1.0e-13 of its
+path, crossing at t = 1, 27/41/34 MeshBlocks as before: PASS (prediction 1e-12). G and
+Gchi stop at t = 6.75 with status 3, Goff and Grel run to t = 150 with status 0, Mrel
+dies at the first check (exit -11), the step ratios of C0 to C2n as in T2.
+
+**T18c, run core-20261121-032946-d860245** [VERIFIED]: 18 of the 20 cases of T2b give the
+bytes of T2 in every output file, Sf, P and A included (for particles at rest on the
+cell centres both forms give exactly one half per leaf cell); M differs (tracker file and
+histories, at round-off: the drifting lattice goes through the new arithmetic); U differs
+in `flrw.horizon_status_0.txt` only, whose first column changed from the Runge-Kutta stage
+to the cycle between 901d8b3 and 3c44b74 (T12).
+
+**T14b submitted**: run core-20261121-032510-c83f904, Slurm job 4760 (0.1 card-hours
+asked, six minutes of wall time), behind jobs of tracks C and E and one of core (4758).
