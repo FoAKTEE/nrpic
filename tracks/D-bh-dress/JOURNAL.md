@@ -456,3 +456,26 @@ re-implemented from nm_analyze's docstring); no helper code. Script `stage/revie
   its chain was capped at one segment (MAX_SEGMENTS=1 from its 0.98 card-hour reservation), segment 2 (Slurm
   4805) stopped without running; closed by me at 16:40Z (failed, 0.83 card-hours);
   drift_controls and flux_tools packages open (HANDOFF); G2 null test without lapse_leak next (ES-1B).
+
+## 2026-11-21T20:54Z  session lead-wave3-batch5 (Opus)  commits 7bc64213..(this commit)  runs D-20261121-202137-7bc388e, -202142-ce0f509, -202935-53afc1a, -202936-ebc09f0, -202936-992542e, -203042-82deeec, -203149-4904e96, -203124-a34cf1f, -203131-8ee2a49, -203150-15f2bad, -203151-37e7b2d, -203151-59c54fb, -205226-3cfbc20
+
+- did: merged main (G1 signed with reservations, rulings 0025); closed ES-F (Slurm 4806, one 48.7-min
+  segment, 0.81 card-hours) with g2runs/tools/finish_g2.sh and judged it from the raw outputs (finder
+  file, accretion history, two figures looked at) against flux_tools entry 7 (g2runs entry 10, REVIEW-wave3
+  section 11); designed the long runs toward G2 (package g2long: input builder with a self-check that
+  rebuilds V-1B, criteria N and G and predictions committed before any run, entry 1); four processor smoke
+  tests (all held); found and fixed the ES-F table limit (345 M, exterior = zero) before any card time
+  (entry 2, data run -203042-82deeec); registered five chains on release core-v0.6 (R1 V-1L, R2 ES-1L
+  pending; R3 ES-FL, R4 V-1L16, R5 ES-1L16 held behind a setsid sequencer); Q16-256 (second resolution of
+  Q16) started on six threads with its prediction first; outbox info to orch (card-load-batch5).
+- found: ES-F meets the track sheet's G2 matter criterion at M/8 and faces +-192 M: M_AH follows the exact
+  LTB mass at the horizon to 0.25 per cent (tau <= 250 M) and the removed flux to 1.5e-3 after the
+  control's finder history (raw 9.9e-3). Failed predictions: P3 (i) "holds" fails at one finder sample
+  (t = 0.5 M, 449 sigma with sigma = 2.8e-5 there; the G2 refutation clause is not met); P3 (ii-tau)
+  "likely fails" did not (0 violations, min margin +0.075 M). M/16 at t = 0 brings the finder offset from
+  -7.6e-3 (M/8) to -1.8e-4 (S3).
+- changed my mind about: the plan of batch 4a (ES-1B/V-1B at +-384 M to 200 M): replaced by ES-1L/V-1L at
+  +-768 M to 500 M, which contains the same comparison and avoids the faces until ~540 M.
+- open: all five chains and Q16-256 (HANDOFF); G2 package not started; drift_controls (three untracked
+  tools left as found), flux_tools README, note v2. Card-hours used this session: 0 (ES-F's 0.81 was
+  booked by its own run); caps registered 22.5.
