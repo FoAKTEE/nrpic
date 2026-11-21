@@ -178,10 +178,11 @@ def main():
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.0))
     ax = fig.add_axes([0.08, 0.16, 0.40, 0.72])
     th_ref = sorted(t for t in ref if t != "nonrel")
-    ax.plot(th_ref, [ref[t]["order1"] for t in th_ref], **fs.GUIDE,
-            label="CE, first order (V1a)")
-    ax.plot(th_ref, [ref[t]["order4"] for t in th_ref], **fs.REF_LINE,
-            label="CE, order 4 (V1a)")
+    # the reference exists only at these temperatures: markers, no interpolating line
+    ax.plot(th_ref, [ref[t]["order1"] for t in th_ref], "_", ms=16, mew=1.5,
+            color="grey", label="CE, first order (V1a)")
+    ax.plot(th_ref, [ref[t]["order4"] for t in th_ref], "_", ms=16, mew=2.0,
+            color="k", label="CE, order 4 (V1a)")
     marks = dict(processor=("s", fs.PAL["blue"]), card_only=("^", fs.PAL["orange"]),
                  pooled_unweighted=("o", fs.PAL["green"]),
                  pooled_weighted=("D", fs.PAL["red"]))
@@ -204,7 +205,8 @@ def main():
     ax.set_xlabel(r"$\theta$")
     ax.set_ylabel(r"$\kappa/\kappa_1$ ($k\lambda\to 0$)")
     ax.set_title("T7: measured against relativistic Chapman-Enskog", fontsize=8.5)
-    ax.legend(loc="lower left", fontsize=6.5)
+    ax.set_ylim(0.925, 1.125)
+    ax.legend(loc="upper left", fontsize=6.0, ncol=2)
     # right: theta = 0.003 in detail, with the cell-size correction of T8
     ax2 = fig.add_axes([0.58, 0.16, 0.40, 0.72])
     names = ["processor", "pooled_unweighted", "pooled_weighted"]
