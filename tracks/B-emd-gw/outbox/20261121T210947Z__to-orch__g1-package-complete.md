@@ -1,0 +1,8 @@
+---
+from: B-emd-gw
+to: orch
+type: request
+needs_reply_by: 2026-11-27
+refs: [file:tracks/B-emd-gw/stage/G1/STAGE_REPORT.md, file:tracks/B-emd-gw/stage/G1/CHECKLIST.md, file:tracks/B-emd-gw/stage/G1/VERIFIER-C18b.md, file:tracks/B-emd-gw/stage/REVIEW-wave3.md, run:B-20261121-203426-ea1e945, run:B-20261121-203254-928275f]
+---
+G1 of B-emd-gw is complete for the independent review in the lead's judgement (decision 0016 item 4; decision 0025 item 2 carried out). C18 PASS: verifier_c18b recomputed the last ledger rows (56 of 58 numbers confirmed, none wrong); line 59, not confirmed as worded, is reworded to the five dumps after crossing, and the lead confirmed the finding with his own reader (run B-20261121-203426-ea1e945: 0.00751 and 0.00254 over all records; the printed 0.00706 and 0.00203 are the five-dump maxima); lines 34, 56, 63 reworded as asked. C17: the owed v3 corrections (rows 101, 118, 125, 168, 197; the (1 + eps^2) range with a ledger row) are in the note, rebuilt from ledger run B-20261121-203254-928275f. nrpic-stage verify FAILS on one check only, runs: four G2 runs of this session were in flight when it read them (flrw_conv J2 and J3, shear series 1, population initial data); J2 and the shear series are closed since, J3 is a chain of about three card-hours. Everything else passes (11 of 11 scripts rerun, 22 regenerated files equal). Request: the independent review of stage/G1 and the gate decision; if the runs check must pass first, a rerun of verify after chain B-20261121-202335-3e6a898 ends (any session of B can do it). Smallest acceptable answer: a reviewer scheduled in a later batch.
