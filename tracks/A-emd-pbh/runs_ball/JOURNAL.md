@@ -933,3 +933,87 @@ entry 16; BH-1 breakdown criteria; BH-1R compare.py with --line-hmax 1e3); `afte
 A-20261121-074923-d396d73` (prediction F, entry 14; it closes the fixed-box card run
 A-20261120-223310-a9ce31a and reruns compare.py on the three SR-1L runs of job 4642 for the
 corrected gauge figure and the light-speed number of S6).
+
+## 2026-11-21 00:30 PST, entry 18: outcome of prediction T (turnaround estimators), R2 re-judged, SR-1 breakdown criteria
+
+Run A-20261121-081138-ebe70b4 (`after_wave3.sh turnaround A-20261121-074923-d396d73`, completed;
+`turnaround.json`, `turnaround.log`). Figures `figs/fig_turnaround_{windows,particles,synthetic,
+eps}.png`, each looked at (the x tick labels of the two right panels of `_particles` overlap,
+cosmetic). Mean over the core particles (R_i <= 2.4) of tau_ta - tau_ta(exact), in M; C(W) is the
+cycloid fit on |tau - tau_ta^ex| <= W, C on 0 <= tau <= 2 tau_ta^ex (or the whole record if it
+ends earlier); standard error of the mean of C in brackets:
+
+| run | V3 | P2 / P5 / P8 | S (GCV spline) | C(2) / C(4) / C(6) / C(8) / C(12) | C | Cexp | O |
+|---|---|---|---|---|---|---|---|
+| SR-1 M   | -2.498 | -2.498 / -2.499 / -2.504 | -2.498 | -2.591 / -2.534 / -2.530 / -2.592 / -2.684 | -3.115 (0.017) | -2.238 | -4.312 |
+| SR-1 M/2 | -0.0224 | -0.0224 / -0.0221 / -0.0220 | -0.0225 | -0.0219 / -0.0235 / -0.0227 / -0.0240 / -0.0227 | -0.0555 (0.015) | +0.0432 | -0.0583 |
+| SR-1 M/4 | -0.0125 | -0.0125 / -0.0126 / -0.0129 | -0.0125 | -0.0128 / -0.0135 / -0.0135 / -0.0126 / -0.0076 | +0.0009 (0.0010) | +0.0149 | +0.0037 |
+| SR-2 M   | -0.818 | -0.798 / -0.678 / -0.491 | -0.825 | -3.43 / -0.248 / +0.015 / +0.040 / +0.003 | +0.0078 (0.034) | +0.164 | -0.026 |
+| SR-2 M/2 | +0.0434 | +0.0411 / +0.0336 / +0.0926 | +0.0440 | -0.0007 / +0.0852 / +0.1062 / +0.1154 / +0.1159 | +0.1146 (0.008) | +0.0781 | +0.1066 |
+| SR-2 M/4 | +0.0308 | +0.0246 / +0.0090 / +0.0175 | +0.0348 | +0.0109 / +0.0182 / +0.0199 / +0.0188 / +0.0179 | +0.0178 (0.0023) | +0.0159 | +0.0112 |
+| SR-1L M   | -0.594 | -0.593 / -0.585 / -0.569 | -0.594 | -0.594 / -0.582 / -0.563 / -0.589 / -0.627 | -0.760 (0.006) | -0.456 | -0.863 |
+| SR-1L M/2 | -0.0063 | -0.0061 / -0.0052 / -0.0043 | -0.0063 | -0.0043 / -0.0048 / -0.0044 / -0.0053 / -0.0082 | -0.0099 (0.003) | +0.0017 | -0.0105 |
+| SR-1L M/4 | -0.0049 | -0.0050 / -0.0052 / -0.0054 | -0.0049 | -0.0054 / -0.0057 / -0.0058 / -0.0058 / -0.0059 | -0.0056 (0.0006) | -0.0034 | -0.0024 |
+
+The records of SR-1 M/4, SR-2 M/4 (runs to t = 20) and SR-1L M/4 (t = 24) end 3-11 M after the
+turnaround, so their wide windows are one-sided (open squares in `fig_turnaround_windows.png`).
+
+- T0 HOLDS (synthetic, 8 record phases each): without a wiggle C and O recover the shift to
+  2e-14 M, V3 to 8e-7 M; with a wiggle of 1e-5 R_max and period 3 M the parabola family spreads
+  from 1.08e-2 (P2) to 5.7e-4 M (P8), V3 1.2e-2, while C on the whole range stays within 1.5e-5 M
+  (bounds 2e-3 and 5e-3) (`fig_turnaround_synthetic.png`). The GCV spline S follows the wiggle
+  (1.26e-2): cross-validation chooses almost no smoothing on these noise-free records.
+- T1 REFUTED. SR-1: C(W) is flat for W <= 12 at M/2 (-0.0219 to -0.0240) and for W <= 8 at M/4
+  (-0.0126 to -0.0135), within 0.002 M of V3; but the fit to the whole record moves to -0.0555
+  (M/2) and +0.0009 (M/4). At M/2 the record runs into the growth of the SR-1 instability (core
+  error 2.7e-2 at tau = 30, entry 3); at M/4 the record is one-sided (ends 3 M after turnaround).
+- T2 M/4 part HOLDS, M/2 part REFUTED. SR-2 M/4: C = +0.0178 in [-0.005, +0.02], C(W) within
+  0.0178-0.0199 for W >= 4 M, while P_k spreads from +0.0308 (V3) to +0.0089 (P4): the cycloid fit
+  is window independent here. SR-2 M/2: C = +0.115 (predicted 0 to +0.04), and C(W) rises from
+  0.000 (W = 2) to a plateau of +0.106-0.116 for W >= 6: the secular motion of the M/2 shells,
+  whose error grows from 7.5e-3 at tau = 16.9 to 4.0e-2 at tau = 30 (entry 3), has its best-fit
+  turnaround 0.07 M later than the local maximum.
+- T3 HOLDS: S lies within 0.005 M of V3 in every run (largest difference 0.004 M, SR-2 M/4).
+- T4 HOLDS: SR-1L with C: |dtau| = 0.0099 (M/2, bound 0.03), 0.0056 (M/4, bound 0.02), 0.76 M
+  (M, > 0.3).
+- T5 HOLDS: O agrees with C within 0.0035 M for SR-1 and SR-1L at M/2 and M/4 (largest SR-1L M/4:
+  -0.0024 against -0.0056).
+- Refutation clause met: C(W), the whole record included, varies by more than 0.01 M over
+  W >= 6 M in SR-1 at M/2 (0.033) and M/4 (0.014). "Window independent" is therefore not a
+  property of the estimator alone; it holds where the shell error has no secular trend over the
+  record (SR-1L M/4: all C(W) and C within 0.0006 M; SR-2 M/4 for W >= 4; SR-1 for W <= 8-12).
+
+What the two kinds of estimator measure [JUDGEMENT, from `fig_turnaround_eps.png`]: the local
+estimators (V3, P_k, S) find the maximum of the numerical R(tau), which a slope eps' of the shell
+error moves by 8 B^2 eps' (entry 13); in SR-2 that local shift oscillates by +-0.05 to +-0.2 M
+near the turnaround (right panel; the lapse pulse), in SR-1L it is below 0.02 M. The cycloid fit
+measures the turnaround of the shell's secular motion. Both are free of a tunable window when
+used as defined (S: smoothing by cross-validation; C: the expansion and its mirror,
+0 <= tau <= 2 tau_ta^ex), but they answer different questions, and in a run with gauge wiggles or
+a secular drift their difference is the size of the effect.
+
+R2 re-judged (entry 4: mean |dtau_ta| <= 0.02 M at dx = M/4 for SR-2; entry 6 said FAILS with
+V3 = +0.031; the verifier said undecided): with the local, window-free estimator S it FAILS
+(+0.035); with the secular, window-independent cycloid fit C it HOLDS (+0.0178 +- 0.0023, the
+plateau +0.018 to +0.020 for W >= 4). The margin (0.002 M) equals one standard error and the
+plateau's spread. Verdict: HOLDS for the secular turnaround (the quantity proposed for G2 in
+entry 13), FAILS for the local maximum; the difference, 0.013-0.017 M, is the lapse pulse of the
+conformal-time gauge, not the mesh. The SR-1 part of R2 holds with every estimator except the
+whole-record C (V3, S, C(2..8): -0.0125 to -0.0135).
+
+SR-1 breakdown times, each with its criterion (same raw files as the verifier;
+`turnaround.json` "breakdown"), dx = M/2 / M:
+- first non-positive metric determinant in athena.log: 32.875 / 30.25;
+- largest |H| on the mesh (cstat) above 1: 31.875 / 27.25;
+- largest |H| (cstat) above 1e10: 33.0 / 30.75; L2 norm of H (z4c history) above 1e10: 33.0 / 30.5;
+- first record of cstat with a non-finite column: 33.125 / 31.0 (non-finite or above 1e30:
+  33.125 / 30.75);
+- first non-finite z4c history record, nrpic history record and line output: 33.25 / 31.0;
+  last trajectory record 33.25 / 31.0. The dx = M/4 run (to t = 20) breaks down by no criterion.
+The three versions in the track's documents are: 33.0 / 30.3 (runs_ball README: 33.0 is |H| above
+1e10 at M/2, 30.3 the first non-positive determinant at M rounded, so the README mixes two
+criteria), 33.125 / 30.75 (REVIEW-wave2 B2: the first cstat record that is non-finite or above
+1e30) and 33.1 / 30.8 (STATUS section 4: the same, rounded). They agree with the verifier's list
+and with each other once the criterion is named. Proposed wording for the documents: "first
+non-positive metric determinant at t = 32.875 (dx = M/2) and 30.25 (dx = M); fields non-finite
+from 33.125 and 30.75-31.0".
