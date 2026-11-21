@@ -42,9 +42,12 @@ BC = f"{S}/E-20261121-025643-02526ff"
 L5AB = f"{S}/E-20261121-034950-06f01f9"
 
 
+_DECK0 = LC.deck  # the deck reader of lead_check.py, before deck() is replaced below
+
+
 def params(rundir):
     """Deck values with the overrides of the command line that the code logged."""
-    vals = LC.deck(rundir)
+    vals = _DECK0(rundir)
     log = os.path.join(rundir, "athena.log")
     with open(log) as fp:
         for line in fp:
