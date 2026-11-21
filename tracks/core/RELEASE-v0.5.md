@@ -1,5 +1,9 @@
 RELEASE core-v0.5 c3eb42e0bf9b9804e569f7e6dd1603ac805a60eb REGRESSION PASS
 
+Card check of the candidate's card executable: PASS (run core-20261121-074846-e830785,
+section "Card check"). Release executables against the candidate: section "Release
+builds against the candidate".
+
 # Release candidate core-v0.5: four wave-3a source branches of core on top of core-v0.4
 
 Written by the lead of core on 2026-11-21 (decision 0019 item 4; batch 2a). The commit of
@@ -172,20 +176,39 @@ My bound "history within 1e-11" failed for the constraint statistics as I had wr
 gives the package's values. Figure: `scratch/core/core-20261121-065726-bf06a85/
 fig_quick_v05.png` (looked at; a first version with overlapping labels was redrawn).
 
-## Card check of `athena_gpu`: PENDING (one job in the queue)
+## Card check of `athena_gpu`: PASS
 
-Card run core-20261121-070946-1907f7b (Slurm job 4772, 0.2 card-hours asked, list
+Card run core-20261121-070946-1907f7b (Slurm job 4772, list
 `analysis/release/card_v05.list`: nine cases, the decks of the quick test and the
-cluster of package mpi on one rank) was submitted at 07:09Z behind jobs of other owners
-and had not started when this file was written. Until it is judged, `athena_gpu` of
-this candidate has NOT run on a card. What is known of its source on a card: the card
-executable of core/cosmo-amr (same deposit) passed its check (next section), and the
-card executables of core/scalar-3 and core/build-openmp ran their packages' cases
-(READY of the branches); the merged card executable itself: nothing.
-To close: `harness/bin/nrpic-run finish core-20261121-070946-1907f7b`, then
-`card_v05.py --card <its directory> --cpu
-/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c --out '$NRPIC_RUN_DIR'`
-as a registered local run, against the predictions K1 to K6 of the journal.
+cluster of package mpi on one rank) was submitted at 07:09Z, waited behind jobs of other
+owners and ran on 2026-11-21 from 07:42:27Z to 07:42:40Z (13 s, `sacct -j 4772`; card
+time 0.004 card-hours). Judged after the tag, in run core-20261121-074846-e830785
+(`card_v05.py`, against the processor runs of core-20261121-065009-29b855c), against the
+predictions K1 to K6 written before the job ran (journal, entry of 2026-11-21T06:32Z):
+
+| Check | Measured | Bound | Verdict |
+|---|---|---|---|
+| K1 status of the nine cases | all 0 | 0 | held |
+| K2 particle sums and mesh integrals (history columns 4 to 12) against processors, over sum m W | 2.3e-13 (trk) at worst; peak 1.5e-14, dep 5.3e-14, cluster 4.6e-14 | 1e-10 | held |
+| K3 deposit identity on the card | 9.9e-16 at worst | 1e-13 | held |
+| K4 MeshBlock counts of trk and peak at every record; tracker path of trk | equal; path identical (0.0) over 12 records | equal; 1e-12 | held |
+| K5 source dumps (double precision) of dep, depp, fine, finet over the largest number | 3.1e-14, 3.1e-14, 2.4e-14, 1.8e-14 | 1e-12 | held |
+| K6 `deposit_threads = private` on the card | prints "applies to the OpenMP build only; this executable adds atomically" | the note | held |
+
+Reported, not judged (figure panel b): the histories of the particle module and of the
+scalar field agree with processors to 6.4e-13 of each column; the constraint
+statistics differ more, because some of their columns are ratios of rounding-level
+residuals. In trk (homogeneous universe) the largest momentum constraint is 1.7e-13 at
+most, so its relative form Mr_max (column 15) differs by 0.14 of its value while the
+absolute M_max differs by 1.8e-14 [VERIFIED from the two files]; in s3g and usr the
+pointwise largest |M|/[M] (column 8 of `sf.con.hst`) differs by 1.4e-3 and 4.0e-3 of
+its value while the box means <|M|> differ by 4e-6 of theirs (2.5e-17 absolute)
+[VERIFIED]; that the pointwise maximum picks cells where the scale [M] is small is my
+reading [JUDGEMENT]. peak and cluster: largest constraint column 4.0e-9 and 4.9e-9 of
+its value, the size of the difference between rank counts (8.5e-10, quick test).
+Figure `scratch/core/core-20261121-074846-e830785/fig_card_v05.png` (looked at: every
+bar of panel a below its dashed bound; panel b high only for s3g, usr and trk).
+So the merged card executable gives the processor results on all nine cases.
 
 ## Check of the card executable of core/cosmo-amr (job 4763 of the package)
 
