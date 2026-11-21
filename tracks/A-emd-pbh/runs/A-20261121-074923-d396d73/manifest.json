@@ -1,0 +1,96 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261121-074923-d396d73",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "analysis of SR-1L (2t, relaxed lapse, dx = M, M/2, M/4) and BH-1 (data set 3, dx = M/4, M/6, M/8) against the exact solution; predictions S and B of runs_ball/JOURNAL.md entry 7",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "export OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4; O=$NRPIC_RUN_DIR;     .venv/bin/python tracks/A-emd-pbh/runs_ball/compare.py --prep /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1 --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-144419-13d5601/sr1l_n256 --gauge leak --leak 8 --dx 0.5 --label sr1l_n256 --out $O --figdir tracks/A-emd-pbh/runs_ball/figs > $O/sr1l_n256.log 2>&1;     .venv/bin/python tracks/A-emd-pbh/runs_ball/compare.py --prep /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1 --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-144419-13d5601/sr1l_n128 --gauge leak --leak 8 --dx 1.0 --label sr1l_n128 --out $O --figdir tracks/A-emd-pbh/runs_ball/figs > $O/sr1l_n128.log 2>&1;     .venv/bin/python tracks/A-emd-pbh/runs_ball/compare.py --prep /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-164353-96e301d --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-144419-13d5601/sr1l_n256L32 --gauge leak --leak 8 --dx 0.25 --label sr1l_n256L32 --out $O --figdir tracks/A-emd-pbh/runs_ball/figs > $O/sr1l_n256L32.log 2>&1;     .venv/bin/python tracks/A-emd-pbh/runs_ball/compare.py --prep /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-143524-334e553/lat68 --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-144419-13d5601/bh_n256 --gauge leak --leak 8 --dx 0.125 --label bh_n256 --out $O --figdir tracks/A-emd-pbh/runs_ball/figs > $O/bh_n256.log 2>&1;     .venv/bin/python tracks/A-emd-pbh/runs_ball/compare.py --prep /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-143524-334e553/lat51 --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-144419-13d5601/bh_n192 --gauge leak --leak 8 --dx 0.16666666666666666 --label bh_n192 --out $O --figdir tracks/A-emd-pbh/runs_ball/figs > $O/bh_n192.log 2>&1;     .venv/bin/python tracks/A-emd-pbh/runs_ball/compare.py --prep /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-143524-334e553/lat34 --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-144419-13d5601/bh_n128 --gauge leak --leak 8 --dx 0.25 --label bh_n128 --out $O --figdir tracks/A-emd-pbh/runs_ball/figs > $O/bh_n128.log 2>&1;     .venv/bin/python tracks/A-emd-pbh/runs_ball/fields.py --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-144419-13d5601/sr1l_n256 --label sr1l_n256 --out $O --figdir tracks/A-emd-pbh/runs_ball/figs > $O/f1.log 2>&1;     .venv/bin/python tracks/A-emd-pbh/runs_ball/fields.py --seg /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-144419-13d5601/bh_n256 --label bh_n256 --out $O --figdir tracks/A-emd-pbh/runs_ball/figs --L 16 --half 8 > $O/f2.log 2>&1;     .venv/bin/python tracks/A-emd-pbh/runs_ball/summary3.py --prep2t /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-153719-91b03d1 --prep3 /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261119-143524-334e553       --sr /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-163659-4dbacd0:sr1_n128:1.0:sr1 --sr /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-163659-4dbacd0:sr1_n256:0.5:sr1 --sr /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261115-182657-53da696:sr1_n256L32:0.25:sr1       --sr /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-163659-4dbacd0:sr2_n128:1.0:sr2 --sr /data/haiyangw/nrpic/scratch/A-emd-pbh/A-emd-pbh-20261115-163659-4dbacd0:sr2_n256:0.5:sr2 --sr /data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261115-182657-53da696:sr2_n256L32:0.25:sr2       --sr $O:sr1l_n128:1.0:leak --sr $O:sr1l_n256:0.5:leak --sr $O:sr1l_n256L32:0.25:leak       --bh $O:bh_n128:0.25 --bh $O:bh_n192:0.16666666666666666 --bh $O:bh_n256:0.125       --out $O --figdir tracks/A-emd-pbh/runs_ball/figs > $O/summary3.log 2>&1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "d396d73133386dad1bd00abf3a41d7a5b136e692",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/runs_ball"
+    ],
+    "outside_package": {
+      "count": 4,
+      "first": [
+        " M tracks/A-emd-pbh/periodic_threshold/JOURNAL.md",
+        "?? tracks/A-emd-pbh/periodic_threshold/inputs/peak_leak.athinput",
+        "?? tracks/A-emd-pbh/periodic_threshold/scripts/ltb_reference.py",
+        "?? tracks/A-emd-pbh/periodic_threshold/scripts/ltbref.py"
+      ]
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": "01:00:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261121-074923-d396d73",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T07:49:23Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "A-20261119-144419-13d5601",
+    "A-20261119-143524-334e553",
+    "A-20261119-143309-1cc423f"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 1.3979,
+    "gpu_hours_reserved": 1.0833,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 0,
+    "runs": 169,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
