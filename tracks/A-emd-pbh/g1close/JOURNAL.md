@@ -196,3 +196,42 @@ inputs; PNG rms within the stage tolerance); `schem_dataflow` differs only in th
 box; ledger 53 rows, 71 claims, 2 disagreements (the same two as before); every input checked
 "sha256 ok" either against its run's record or against A-20261120-222620-0304d9d. Refuted by
 a script failure, a changed data figure, or any other disagreement or checksum failure.
+
+## 2026-11-21T02:58Z, entry 5: outcome of the note's run (A-20261120-223316-92c27f5); restart after the cut
+
+The session of entry 4 was cut at 14:35 PST by the five-hour usage limit after it had run
+the note's registered run, copied its outputs into `note/`, compiled the note, run the
+manuscript checker and rendered the pages into `scratch/A-emd-pbh/tmp/g1close/pages/`, but
+before it read the pages or committed. This session (restarted 18:54 PST) continues from
+there; nothing of entries 1-4 is redone.
+
+Outcome of the entry-4 prediction for run A-20261120-223316-92c27f5 (`run_all.py`, commit
+92c27f5, two cores, 11 s, exit 0; `run.log` in its directory):
+- Scripts: 8 of 8 ran cleanly. My count "7 of 7" was wrong (four data figures, three
+  schematics, the ledger); no script failed, so the substance holds.
+- Data figures and the two older schematics: the four `fig_*.png`, `schem_architecture.png`
+  and `schem_timeline.png` are byte-identical to the committed ones; the four `fig_*.pdf`
+  differ in 7-8 bytes (the creation date), the two `.svg` in their date and clip-path ids.
+  Holds.
+- `schem_dataflow.png` differs only in the common.py box ("inputs checked against
+  sha256sums.txt or the integrity listing"); looked at now (Read): legible, no clipped box,
+  the arrows as before. Holds.
+- Ledger 53 rows; claims 71, 2 disagreements, the same two as before (JOURNAL.md:101 the
+  4.3e-15 bound, JOURNAL.md:94 the 0.1 H overshoot). Holds.
+- Every input "sha256 ok", eleven of them against the listing of A-20261120-222620-0304d9d.
+  Holds.
+- Every file of `note/figures/` and `note/tables/` equals the run's copy (cmp).
+
+One more text change before the compile [JUDGEMENT]: Sec. V said the second ball "was
+evolved through trapping"; whether a run reaches trapping is a result that has no registered
+analysis in this note, so the sentence now says the runs went past the exact time of the
+first trapped sphere (run A-20261119-144419-13d5601 to t = 16 against the exact 9.55 of
+data set 3, `runs_ball/README.md` "Wave 2b").
+
+Prediction for the compile and check (P8, made concrete): `latexmk` gives 12 pages, 0
+undefined references or citations, 0 overfull boxes; `check_manuscript.py --compile` with the
+guide's `--forbid` list has candidates only under 5.5 (run ids in the ledger appendix and its
+tables) and 5.8 (scripts the guide's exception names, plus `schem_dataflow.py`, which the
+exception does not yet name); every caption within five typeset lines. Refuted by an
+undefined reference, an overfull box, a 5.5/5.8 hit in the main text or a caption before
+the appendix, or a caption past five lines on the rendered page.
