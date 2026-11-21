@@ -199,7 +199,7 @@ probabilities of the first run already show the result (K3 judged on the rerun).
 
 ## 2026-11-21 21:36Z K. outcome (scan F-20261121-212757-77cdc15, checks and figure F-20261121-213405-6596be1; figure read)
 
-Failed integrations left out: 22 of 23040 (at most 3 of 512 at one point). Every K3 number below
+Failed integrations left out: 26 of 23040 (at most 4 of 512 at one point). Every K3 number below
 from `results/khsr_checks.json`; figure `figures/fig_khsr_ecc.png` read (lines: parabolic
 approximation from the restricted problem; filled circles: three-body integration on the
 elliptic orbit; open squares: parabolic approximation from the parabolic three-body runs at the
@@ -209,8 +209,8 @@ same phases).
 - K3a MET: parabolic ratio primary/secondary 0.979-1.013 at every point (512 phases); ejection
   probability equals P_dis; mean ejection energy equals the phase-averaged |dE| to 0.2 percent.
 - K3b MET: prograde ejection probability at r_a/r_t = 500 within 0.006 of P_dis at D = 0.3-1.5
-  (0.969/0.969 at D = 0.5, 0.918/0.922 at D = 1); at r_a/r_t = 100 it is 0.565, 0.568, 0.571,
-  0.453 of P_dis at D = 0.3, 0.5, 1, 1.5 (predicted 0.40-0.70); primary/secondary 0.083-0.154
+  (0.971/0.971 at D = 0.5, 0.923/0.925 at D = 1); at r_a/r_t = 100 it is 0.565, 0.568, 0.572,
+  0.453 of P_dis at D = 0.3, 0.5, 1, 1.5 (predicted 0.40-0.70); primary/secondary 0.08-0.154
   for D <= 1 and 0 at D = 1.5 (predicted < 0.4); never above 1. The half-way point is not
   reached at r_a/r_t = 100 for D = 0.5-1 (as predicted). Retrograde binaries lose their
   ejections much sooner: at D = 0.3 the ejection probability falls from 0.363 (parabolic) to
@@ -236,3 +236,29 @@ Verdict for G1 T1 / risk R14 [JUDGEMENT]: one KHSR result reproduced with newton
 text), with KHSR's parabolic approximation confirmed by the full three-body integration to
 0.012 in probability except at D = 2. Nothing digitised: comparisons are with KHSR's text and
 closed forms.
+
+## 2026-11-21 21:50Z N. Note close-out: plan and prediction of the figure run
+
+The note belongs to package `note/` (another package's directory), so the close-out is built
+as a working copy in `khsr_note/note/` (main.tex, references.bib, scripts, figures, tables;
+`common.py` finds tracks/F-hills from either place, so the lead can copy the directory back
+unchanged; command in README). Changes: Sec. II pericentres with their GR turning points
+(lead's correction 5); Sec. III A released parts as of core-v0.6 and the architecture
+schematic marked accordingly (correction 7); Sec. III B the post-Newtonian reference reviewed
+(R17); new Sec. IV B "elliptic orbits" with fig_khsr (this package's KHSR scan); Sec. IV C Kerr
+paragraph (package kerr); correction 6; Sec. V A junk and V B single-member junk (stage/G1
+STATUS T3); new Secs. V E "the first passage to its end" (fig_p1_end) and V F "the binary
+alone" (fig_binary, package binary_conv, R19); plan, summary, abstract, introduction; ledger:
+group "Elliptic orbits" and Kerr rows in table 1, corrections 1-4 (a_b/R_curv at any time,
+geodesic q = 4 energy with its drift, q = 10 crossing time 96.9 M, 3100 slots), table 5 (binary
+alone, first passage to its end).
+Prediction for the registered run of `khsr_note/note/scripts/run_all.py`:
+1. Every script exits 0; the three new figures' self-checks hold (separations of the binary
+   runs equal analysis.json to 1e-6 at 7.5, 15, 20 M; P1's closest approach, remnant mass and
+   radiated energies equal p1_280.json).
+2. The PNGs of the nine unchanged figure scripts are byte-identical to the committed note's
+   (`note/figures/`, run F-20261120-222908-4ffcfba), schem_dataflow and schem_timeline too;
+   schem_architecture differs (statuses changed). Refuted if an unchanged figure differs (the
+   environment changed).
+3. ledger.tex differs from the committed one only by the added and corrected rows and the new
+   table 5; `claims.md` unchanged.

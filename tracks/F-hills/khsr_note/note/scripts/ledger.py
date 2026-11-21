@@ -297,6 +297,11 @@ def main():
     e7an = C.load_json("e7an", "p1_analysis.json")
     add(gF, "the same norm at $t=0$ from the card executable (passage input, $m/8$)",
         f"{e7an['H_t0']:.4g}", R["e7an"])
+    add(gF, "junk of the three-black-hole data at the spheres of the first passage: burst; then steady emission per $M$",
+        "0.40--0.63$\\times10^{-6}M$; 5.0--5.4$\\times10^{-8}$",
+        "tracks/F-hills/stage/G1/STATUS.md line 20 (runs F-20261121-075600-4480a13, F-20261121-155457-5f36517)")
+    add(gF, "junk energy of one member, $\\eta m=2$, over its mass", "$7\\times10^{-5}$ ($4\\times10^{-5}$--$2\\times10^{-4}$)",
+        "tracks/F-hills/stage/G1/STATUS.md line 20 (run F-20261120-222808-b65001c)")
     # single member
     e3 = C.load_json("e3", "single_analysis.json")
     e10 = C.load_json("e10a", "s2g_compare.json")
@@ -418,6 +423,72 @@ def main():
     add(gP, "prediction recorded before submission (health, outcome, horizons, radiation)",
         "four items", "tracks/F-hills/JOURNAL.md lines 305--320")
 
+    # ---- the binary alone and the first passage to its end (note v2, G1 close-out)
+    gB = "The binary alone"
+    an = C.load_json("bcan", "analysis.json")
+    res = (("R8", "$m/8$"), ("R12", "$m/12$"), ("R16n", "$m/16$"))
+    add(gB, "runs: the members of the first passage without the heavy black hole, finest cells $m/8$, $m/12$, $m/16$",
+        "three card runs", ", ".join(R[k] for k in ("bc8", "bc12", "bc16")))
+    add(gB, "separation at $t=0$ [$M$]", f"{an['R16n']['s0']:.4f}", R["bcan"])
+    for tt in ("15", "20"):
+        add(gB, f"decrease of the separation by $t={tt}M$: $m/8$, $m/12$, $m/16$ [$M$]",
+            ", ".join(f"{an[k]['ds_at'][tt]:.4f}" for k, _ in res), R["bcan"])
+    add(gB, "the same with the heavy black hole (first passage, $m/8$), $t=15$, $20M$",
+        f"{an['P1']['ds_at']['15']:.4f}, {an['P1']['ds_at']['20']:.4f}", R["bcan"])
+    add(gB, "first post-Newtonian separation at $t=2.5$ and $20M$ (canonical EIH)",
+        f"{an['refs_at']['eih_c']['2.5']:.4f}, {an['refs_at']['eih_c']['20']:.4f}", R["bcan"])
+    add(gB, "three equivalent first post-Newtonian forms of the start state: spread of the separation at $t=7.5$, $20M$",
+        "0.019, 0.158 $M$", "tracks/F-hills/RISKS.md line 9 (run F-20261121-155353-e4d3354)")
+    add(gB, "convergence order from the three resolutions at $t=15$, $20M$; extrapolated decrease",
+        f"{an['convergence']['15']['p3']:.3g}, {an['convergence']['20']['p3']:.3g}; "
+        f"{an['convergence']['15']['ds_continuum']:.4f}, {an['convergence']['20']['ds_continuum']:.4f} $M$", R["bcan"])
+    add(gB, "member horizon masses, fractional change per $M$ ($t=3$--$15M$), $m/16$",
+        f"{an['R16n']['horizons']['0']['frac_growth_per_M']:.2g}, {an['R16n']['horizons']['1']['frac_growth_per_M']:.2g}", R["bcan"])
+    add(gB, "the same at $m/8$",
+        f"{an['R8']['horizons']['0']['frac_growth_per_M']:.2g}, {an['R8']['horizons']['1']['frac_growth_per_M']:.2g}", R["bcan"])
+    add(gB, "$\\langle H^2\\rangle^{1/2}$ at $t=20M$: $m/8$, $m/12$, $m/16$",
+        ", ".join(f"{np.sqrt(an[k]['H2_at']['20']):.2g}" for k, _ in res), R["bcan"])
+    add(gB, "merger time of the shape fitted to the first passage, stretched: $m/8$, $m/12$, $m/16$ [$M$]",
+        ", ".join(f"{an['stretch'][k]['t_merge_estimate']:.0f}" for k, _ in res), R["bcan"])
+    gE = "The first passage to its end"
+    p1e = C.load_json("p1end", "p1_280.json")
+    p1c = C.load_json("p1chk", "p1_checks.json")
+    p1l = C.load_json("p1chk", "ledger.json")
+    bch = p1c["binary_common_horizon"]
+    add(gE, "common horizon of the members: first time, mass; distance from the heavy black hole",
+        f"{bch['0']['t_first_common']:.2f}$M$, {bch['0']['mass']:.4f}; {bch['at_first_common']['dist_from_M']:.1f}$M$", R["p1chk"])
+    ro = p1e["remnant_orbit"]
+    add(gE, "remnant: closest coordinate approach to the heavy black hole (time, distance); distance and its rate at $t=280M$",
+        f"{ro['t_closest']:.1f}$M$, {ro['d_closest']:.2f}$M$; {ro['d_end']:.2f}$M$, {ro['ddt_end']:.3f}", R["p1end"])
+    rc = p1e["recoil"]
+    add(gE, "remnant velocity after the merger minus the members' mean extrapolated to $t=56M$: size, angle",
+        f"{rc['dv_norm']:.3f}, {rc['angle_deg']:.1f}$^\\circ$ (speeds {rc['speed_pre']:.3f}, {rc['speed_post']:.3f})", R["p1end"])
+    H0 = p1e["horizons"]["0"]
+    add(gE, "remnant horizon mass, medians of $t=60$--$100$ and $240$--$280M$; change",
+        f"{H0['mass_60_100']['median']:.4f}, {H0['mass_240_280']['median']:.4f}; {H0['drift_60_100_to_240_280']:.2%}".replace('%', '\\%'), R["p1end"])
+    add(gE, "remnant $|S|/m^2$, medians of $t=60$--$100$, $100$--$140$, $240$--$280M$",
+        f"{H0['chi_60_100']['median']:.3f}, {H0['chi_100_140']['median']:.3f}, {H0['chi_240_280']['median']:.3f}", R["p1end"])
+    H2_ = p1e["horizons"]["2"]
+    add(gE, "heavy black hole: mass at $t=4M$ and median of $240$--$280M$; largest window median of $|S|/M^2$",
+        f"{H2_['mass_first_good']:.5f}, {H2_['mass_240_280']['median']:.5f}; "
+        f"{max(H2_[k]['median'] for k in H2_ if k.startswith('chi_') and isinstance(H2_[k], dict)):.1e}", R["p1end"])
+    add(gE, "largest horizon mass found after $t=50M$: remnant finders; heavy black hole",
+        f"{max(p1e['horizons']['0']['mass_max_after_50'], p1e['horizons']['1']['mass_max_after_50']):.4f}; "
+        f"{H2_['mass_max_after_50']:.4f}", R["p1end"])
+    hn = p1e["history"]["norms"]
+    add(gE, "$\\langle H^2\\rangle^{1/2}$: at $t=1M$ (largest), $112M$, largest over $112$--$280M$, at $280M$",
+        f"{hn['H']['max_all']:.2g}, {hn['H']['at_112']:.2g}, {hn['H']['max_112_280']:.2g}, {hn['H']['end']:.2g}", R["p1end"])
+    rad = p1e["radiation"]
+    add(gE, "radiated energy through $R=40$, $48$, $70$, $90M$ by $t=280M$",
+        ", ".join(f"{rad[k]['E_end']:.2g}" for k in ("40", "48", "70", "90")), R["p1end"])
+    add(gE, "the same by $t=112M$", ", ".join(f"{rad[k]['E_at_112']:.2g}" for k in ("40", "48", "70", "90")), R["p1end"])
+    m_a, m_b, rp_ = H2_["mass_240_280"]["median"], H0["mass_240_280"]["median"], ro["d_closest"]
+    peters = 85 * np.pi / (12 * np.sqrt(2)) * m_a ** 2 * m_b ** 2 * np.sqrt(m_a + m_b) / rp_ ** 3.5
+    add(gE, "quadrupole energy loss of a parabolic encounter of these horizon masses at the closest coordinate distance",
+        f"{peters:.2g} $M$", R["p1end"] + " (arithmetic)")
+    add(gE, "mesh blocks, smallest and largest; card-hours of the run (jobs)",
+        f"{p1c['tree_min']}, {p1c['tree_max']}; {p1l['card_hours_total']:.2f} ({len(p1c['segments'])})", R["p1chk"])
+
     # ---- write ledger.tex: two tables
     def table(groups, label, caption):
         lines = [r"\begin{table*}", r"\caption{" + caption + "}", r"\label{" + label + "}",
@@ -438,7 +509,7 @@ def main():
 
     with open(os.path.join(out, "ledger.tex"), "w") as f:
         f.write("% generated from registered run outputs; do not edit\n")
-        f.write(table({"Scales", "Restricted Newton", "Geodesic baseline"}, "tab:ledger1",
+        f.write(table({"Scales", "Restricted Newton", "Elliptic orbits", "Geodesic baseline"}, "tab:ledger1",
                       "Ledger of the reference solutions. Energies in units of "
                       r"$(Gm_1m_2/a_b)(M/m_b)^{1/3}$; sources are registered runs or the "
                       "file and line of a paper's text.") + "\n\n")
@@ -455,7 +526,11 @@ def main():
                       "Ledger of the runs in full relativity, part two: the first passage at "
                       "mass ratio four (set-up, start state, a short run on one card, cost, and "
                       "the prediction recorded before it started), with the start state of the "
-                      "input at mass ratio ten.") + "\n")
+                      "input at mass ratio ten.") + "\n\n")
+        f.write(table({gB, gE}, "tab:ledger5",
+                      "Ledger of the runs in full relativity, part three: the binary of the first "
+                      "passage alone at three resolutions, and the first passage to its end. "
+                      "Distances and velocities are coordinate values.") + "\n")
 
     # ---- parameters.tex
     par = []
