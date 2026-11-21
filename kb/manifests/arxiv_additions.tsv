@@ -30,7 +30,8 @@ astro-ph/0608642	G18	2	D-bh-dress (kb answer to D, dress-and-coupling-sources)	0
 gr-qc/0305023	G06	2	B-emd-gw (kb answer tracks/kb/outbox/20261115T183741Z__to-B-emd-gw__track-b-sources.md)	0016-6	standard testbeds for NR codes
 gr-qc/0404056	G06	2	core (fetched with gr-qc/9703066 by a core session on 2026-11-15 11:07 UTC, record mtimes)	0016-6	spectral puncture initial data
 gr-qc/0606037	G06	2	core (fetched with gr-qc/9703066 by a core session on 2026-11-15 11:07 UTC, record mtimes)	0016-6	approximate binary-black-hole initial data
-gr-qc/0608095	G06	1	none found (fetched by another session on 2026-11-15 11:17 UTC, kb/JOURNAL.md:92)	0016-6	OFF-TOPIC: laser interferometry, fits no group; G06 is a placeholder; proposed for removal (probably a mistyped id)
+# dropped by decision 0024 item 2 (no track asked for it; removed from the papers table at snapshot of lead batch 9):
+# gr-qc/0608095	G06	1	none found (fetched by another session on 2026-11-15 11:17 UTC, kb/JOURNAL.md:92)	0016-6	OFF-TOPIC: laser interferometry, fits no group; G06 is a placeholder; proposed for removal (probably a mistyped id)
 gr-qc/9703066	G06	2	core (tracks/core/interfaces/multi_puncture.md cites v2 main.tex)	0016-6	Brandt-Bruegmann multiple-black-hole initial data
 # Rows 1007.0184 to 2609.14755 (kb ingest3, 2026-11-21): the 24 sources fetched in wave 3a and not yet in the
 # database. Priority 2 = fetched for a track (F-hills); 1 = fetched by kb's own brief-check packages, no track

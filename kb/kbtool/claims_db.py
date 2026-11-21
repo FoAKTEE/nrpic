@@ -83,6 +83,17 @@ def event(con, cid, by, action, from_label=None, to_label=None, from_status=None
                 (cid, utcnow(), by, action, from_label, to_label, from_status, to_status, evidence))
 
 
+def pinned_locator(con, cid, set_by, seed_loc_text):
+    """True when a person rewrote the claim's locator: a 'relocate' event (kb claim relocate, or
+    kb claim verify --locator), or a person's label with a locator other than the seed's."""
+    if con.execute("SELECT 1 FROM claim_events WHERE claim_id=? AND action='relocate' LIMIT 1", (cid,)).fetchone():
+        return True
+    if set_by != AUTO:
+        cur = con.execute("SELECT locator FROM claims WHERE claim_id=?", (cid,)).fetchone()
+        return bool(cur and cur[0] and cur[0] != (seed_loc_text or None))
+    return False
+
+
 def upsert_seed(con, seed, commit, checked, by, tool):
     """Insert or refresh one seed with its check. checked = (status, detail, [LocResult]).
     Returns (claim_id, 'new' | 'same' | 'changed')."""
@@ -124,6 +135,10 @@ def upsert_seed(con, seed, commit, checked, by, tool):
         cid, old_label, old_status, set_by = row
         con.execute("UPDATE claim_meta SET origin_commit=?, origin_line=?, section=?, checked_by=?, checked_at=? "
                     "WHERE claim_id=?", (commit, seed.origin_line, seed.section, by, now, cid))
+        if pinned_locator(con, cid, set_by, loc_text):
+            # a person set the locator (relocate, or verify --locator): an automatic check or re-seed
+            # leaves the label, the status and the locator rows as that person wrote them
+            return cid, "pinned"
         what = "same"
         if set_by == AUTO:
             label = label_for(seed.label, status)

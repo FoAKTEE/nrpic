@@ -248,6 +248,22 @@ def test_db_seed_verify_refute_and_judgement_rule(store, tmp_path):
     for c in cl:
         cdb.upsert_seed(con, c, "abc1234def", ("unresolved", {}, []), "test", "tool")
     assert con.execute("SELECT label FROM claims WHERE claim_id=?", (tid,)).fetchone()[0] == "fulltext"
+    # guard (lead batch 9): after relocate (or verify --locator) a check leaves the locator rows alone
+    before = con.execute("SELECT * FROM claim_locators WHERE claim_id=? ORDER BY ord", (tid,)).fetchall()
+    cdb.relocate(con, tid, "2609.14218v1:MDPBH.tex:L7-8", st, "kb-helper", "verify")
+    moved = con.execute("SELECT * FROM claim_locators WHERE claim_id=? ORDER BY ord", (tid,)).fetchall()
+    assert moved != before and moved[0][6:8] == (7, 8)
+    tkey = con.execute("SELECT seed_key FROM claim_meta WHERE claim_id=?", (tid,)).fetchone()[0]
+    seed_t = [c for c in cl if c.seed_key() == tkey][0]
+    assert cdb.upsert_seed(con, seed_t, "abc1234def", ck.check_claim(seed_t.text, seed_t.locators, st),
+                           "test", "tool")[1] == "pinned"
+    assert con.execute("SELECT * FROM claim_locators WHERE claim_id=? ORDER BY ord", (tid,)).fetchall() == moved
+    assert con.execute("SELECT locator FROM claims WHERE claim_id=?", (tid,)).fetchone()[0] == \
+        "2609.14218v1:MDPBH.tex:L7-8"
+    others = [cid for cid, _ in ids.values() if cid != tid]
+    n_other = con.execute(f"SELECT count(*) FROM claim_locators WHERE claim_id IN ({','.join('?' * len(others))})",
+                          others).fetchone()[0]
+    assert n_other > 0                      # the other claims are still checked and rewritten as before
     first = min(cid for cid, _ in ids.values())
     assert cdb.refute(con, first, "kb-helper", "counter-example") == ["A"]
     assert con.execute("SELECT label FROM claims WHERE claim_id=?", (first,)).fetchone()[0] == "refuted"

@@ -68,9 +68,13 @@ def test_additions_file_is_valid():
     rows = MM.load_additions()
     base = {r["id"] for r in brief.load_arxiv_manifest(os.path.join(paths.kb_manifest_dir(), "arxiv.tsv"))}
     groups = {f"G{k:02d}" for k in range(1, 22)}
-    assert len(rows) == 26 and MM.check_additions(rows, base, groups) == []
+    # 26 of wave 2b (decision 0024 item 2 accepts them and drops gr-qc/0608095, whose row stays
+    # in the file as a comment) + 35 of wave 3 (decision 0027 item 5): 60 rows read, 744 papers
+    ids = {r["id"] for r in rows}
+    assert len(rows) == 60 and MM.check_additions(rows, base, groups) == []
+    assert "gr-qc/0608095" not in ids
     full = MM.load_full_manifest()
-    assert len(full) == 684 + 26 and len({r["id"] for r in full}) == 710
+    assert len(full) == 684 + 60 and len({r["id"] for r in full}) == 744
 
 
 def test_additions_checks(tmp_path):
