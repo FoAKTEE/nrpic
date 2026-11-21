@@ -276,3 +276,15 @@ sqrt(4 shift_Gamma/3) in coordinate units):
 - G7 (seeded, lapse frozen, shift_Gamma 0.3, cfl 1.0, to t = 10): no growth; H_max within a
   factor 2 of G2's (zero shift) at equal t.
 Refuted by a threshold below 1.0 in B' or growth in G7.
+
+## 2026-11-21 22:28Z, entry 8: Test B' outcome (run A-20261121-222713-efe9eb8); G7 not run
+
+Test B' (shift_Gamma 0.3): the shift threshold is 0.94 at dx = 0.0195 and 0.90 at dx = 0.3125
+(|R| at dt/dx = 1: 1.24 and 1.49); without the Kreiss-Oliger term no instability up to 1.2.
+My prediction "above 1.0" is REFUTED: the KO term (diss 0.5, real part -1.5 dt/dx at the
+grid-scale corner) moves the grid-scale eigenvalues out of the RK4 region well before the
+wave part alone would (the scaling estimate 1.08 holds only without KO). So lowering
+shift_Gamma alone does not make cfl_number 1.0 safe. G7 is not run: by Test B' it is
+linearly unstable at dt/dx = 1 but grows by only 1.49 per step on the root mesh, so from
+the 1e-10 seed it would need about 46 cycles at dt/dx = 1 (t ~ 19) to show, beyond the
+planned t = 10; a no-growth outcome to t = 10 would not discriminate.
