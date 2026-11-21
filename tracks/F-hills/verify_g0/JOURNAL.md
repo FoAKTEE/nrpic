@@ -209,7 +209,7 @@ my hand-off values or miss by more than 3 sigma. A 12-phase debug trial at r_p =
   sigma), HRNA hand-off separated 0.961 (0.99), plunge 0.850 (0.94, 4.5 sigma); GR-matched plunge
   0.894. My encounters are again shallower than the track's in every diagnostic.
 
-## Entry 8 (2026-11-21 04:05 UTC): K13 outcome, ledger check, sections 1-3 written
+## Entry 8 (2026-11-21 03:59 UTC): K13 outcome, ledger check, sections 1-3 written
 
 - R4d F-20261121-034434-0113a18 (q = 10, r_p = 12, capped): Newton 0.572 separated (V7 0.59),
   inside 4 M 0; HRNA hand-off separated 0.944 (0.98), plunge 0.222 against V7's 0.69; GR-matched
@@ -234,7 +234,7 @@ at r_p = 8" (0.911: only slightly below); entry 4 H-mu (refuted by R8); entry 1 
 of 5.7-5.8 M MET (5.77). Sections 1-3 of `stage/G0/VERIFIER.md` written now, before reading
 REVIEW.md, SECOND_CHECK.md, REVIEW-wave2.md or the lead's check script.
 
-## Entry 9 (2026-11-21 04:12 UTC): after reading the lead's script; prediction H-k0
+## Entry 9 (2026-11-21 04:00 UTC): after reading the lead's script; prediction H-k0
 
 Sections 1-3 committed (fecdec04) and pushed. Read now: SECOND_CHECK.md, REVIEW.md,
 REVIEW-wave2.md, and `stage/G0/checks/lead_checks.py`. The V7 scan (lead_checks.py:486-520)
@@ -247,3 +247,16 @@ the differences of K13 come from this release radius. Prediction: my scan with `
 0.88/0.056, 0.22/0) within 3 sigma, and my GR-matched HRNA (CM on the parabola, offsets from the
 circular binary) gives V7's plunge fractions (0.96, 0.94, 0.30) within 3 sigma. Refuted if the
 Newton numbers stay at my k0 = 10 values (0.49, 0.011 inside 4 M; 0.42 separated at 13).
+
+## Entry 10 (2026-11-21 04:03 UTC): H-k0 outcome
+
+R12 F-20261121-040103-6b9074c (r_p = 13) and R12b F-20261121-040112-d429b4c (r_p = 7, 8), my
+scan with the circular binary released at 4 r_t as in V7, 180 phases: Newton separated / inside
+4 M 0.906/0.617, 0.878/0.033, 0.239/0.000 against V7's 0.90/0.62, 0.88/0.056, 0.22/0; HRNA with
+the CM on the Schwarzschild parabola plunges 0.928, 0.911, 0.300 against V7's 0.956, 0.944,
+0.300. All within 3 sigma (largest 2.0 sigma). Prediction H-k0 MET: V7 is reproduced by an
+independent code with V7's construction; my K13 differences come from the start rule (circular
+binary at 10 r_t integrated to 4 r_t, as SCOPING 3 prescribes for the NR data, against a circular
+binary released at 4 r_t in V7). At r_p = 13 M the Newton separated fraction is 0.24 or 0.42 and
+the HRNA plunge fraction 0.30, 0.16 or 0.02 depending on the start: the V7 numbers near the edge
+are properties of the construction, not of the encounter.
