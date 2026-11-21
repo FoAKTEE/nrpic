@@ -1,6 +1,6 @@
 # Stage report: F-hills G1
 
-Date: 2026-11-21 · branch `track/F-hills` at `b28da30ae0c5` · checklist
+Date: 2026-11-21 · branch `track/F-hills` at `1c4fe7fe003c` · checklist
 `tracks/F-hills/stage/G1/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
@@ -50,13 +50,13 @@ Date: 2026-11-21 · branch `track/F-hills` at `b28da30ae0c5` · checklist
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-21T16:22:50Z, clean export of `b28da30ae0c5`: **FAIL**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-21T21:06:22Z, clean export of `1c4fe7fe003c`: **FAIL**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | FAIL | 1 uncommitted paths: commit them first (tracks/F-hills/g2mesh/scripts/card_analysis.py) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of b28da30ae0c5 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-b28da30-20261121T162201Z/tree |
+| export | PASS | clean export of 1c4fe7fe003c (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-1c4fe7f-20261121T210421Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: novelty/scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016) |
@@ -64,12 +64,10 @@ Date: 2026-11-21 · branch `track/F-hills` at `b28da30ae0c5` · checklist
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 12 figures, each with its script |
 | min-figs | PASS | 3 schematics and 9 data figures (brief 13.4 asks at least 2 and 1 at G1) |
-| runs | FAIL | 2 of 234 runs have problems |
+| runs | FAIL | 3 of 238 runs have problems |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | status | PASS | STATUS.md has 40 lines |
-| rerun | PASS | 12 of 12 scripts and commands ran cleanly in the export |
-| compare | PASS | 33 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
-| regenerate | PASS | all 24 committed figure files regenerated |
+| rerun | WARN | re-run skipped (--no-rerun) |
 
 ## Figures
 
@@ -139,8 +137,9 @@ Updated 2026-11-21 by the lead (wave 3, batch 4a). Evidence and run ids: `stage/
 
 | Risk | Likelihood | Effect | Watch | Response |
 |---|---|---|---|---|
-| R15 (highest) members at m/8 do not hold their orbit: P1's binary merged at t = 48.8 M; the binary alone at m/8 decays the same way (binary_conv R8, F-20261121-130358-6cf186a), at m/16 it does not decay over 0-7.7 M (R16n, F-20261121-130351-04074e1); cause = resolution (decision 0022 item 4) | settled at m/8; at m/16 shown only to 7.7 M | every m/8 passage invalid; P1b and the G2 ladder start at m/16 (2514 of 3000 slots at q = 4); finer than m/16 does not fit one card at q = 4 | R16n segments 2-3 (Slurm 4807 ...), R12 (Slurm 4809); rule P1b-D (JOURNAL batch 4a) | P1b only under P1b-D; if m/16 also decays: wider binary or members on two cards (MPI card build, core) |
+| R15 members at m/8 do not hold their orbit: P1's binary merged at t = 48.8 M; the binary alone at m/8 decays the same way (R8, F-20261121-130358-6cf186a); at m/12 and m/16 the binary alone gives the same orbit within 0.002 M to 21 M (F-20261121-202021-3c4321e) | settled: m/8 invalid, m/12 and m/16 converged to 21 M | every m/8 passage invalid | analysis F-20261121-202021-3c4321e | P1b at m/16 and m/12 submitted (lead batch 5, rule P1b-D clause D1) |
 | R17 (new) no sharp 1PN reference for the binary: three 1PN-equivalent references of P1's start state differ by 0.019 M at 7.5 M and 0.158 M at 20 M (members at 0.11-0.33 c; lead run F-20261121-155353-e4d3354) | certain | "follows EIH within x" is not evidence of accuracy below about 0.02-0.16 M; orders from a deviation to one reference are unreliable | - | judge resolution by self-convergence (three resolutions, P1b-D D1); quote any 1PN comparison with all three variants |
+| R19 (new, highest) the converged isolated binary (m/12 = m/16) shrinks: separation 4.952 -> 4.756 M by 20 M (Delta s 0.196 M, departs from EIH by 0.17 M); the stretch fit to P1's shape puts a merger at 93-97 M. Readings: eccentric start state in GR (Newtonian BY momenta; pair near apocentre) or a converged inspiral (coordinate or real) | open; reading E judged 0.6 | if the pair merges before the passage's pericentre, P1b and P1b-m12 do not test the Hills mechanism (about 47 card-hours) | R16n extension F-20261121-203156-03efdd3 (to 120 M; it leads P1b in simulated time): common horizon before 120 M, or s(t) without minimum | stop P1b/P1b-m12 by `scripts/submit_chain.sh --stop <rundir>`; start states from a GR quasi-circular prescription (1PN/2PN momenta, or eccentricity reduction from R16n) |
 | R1 compute: G3 (about 500 card-hours) far above the allotments (50 to G1, 120 toward G2: decisions 0014, 0016); the two cards are shared with other users | certain | scan lines take weeks of queue | queue waits of P1's segments (0-40 min) | q = 4 first (0013); object (b) passages are 3-10 times cheaper; chains keep one segment queued; the corrected G2 plan is about 100 card-hours (SCOPING 9, verifier D3) |
 | R2 q = 4 at m/16 needs 2864 MeshBlocks | was "certain"; now LOW | - | g2mesh card job (run F-20261120-222810-e408386): 3000 slots ran at 78785 MiB of 81920 | the triple fits one card at `max_nmb_per_rank` 2950-3000 (verifier D5; core-v0.4 interface "about 3100"); q = 10 at m/16 (up to 4544) still does not; R16u (3466) does not |
 | R3 a passage stops on the slot limit | low | a segment fails | segment logs | restarts are exact: raise `max_nmb_per_rank` to 3000 |
@@ -160,7 +159,7 @@ Updated 2026-11-21 by the lead (wave 3, batch 4a). Evidence and run ids: `stage/
 
 ## Decision requested from the group
 
-G1 NOT met (lead, batch 4a, 2026-11-21): no complete Hills passage (P1's binary merged at m/8; P1b at m/16 waits for rule P1b-D), KHSR not reproduced, note not compiled, no G1 verifier. Harness FAIL only on g2mesh's uncommitted file (package in progress) and on the two binary_conv chains in flight (R16n, R12); output checksums not rerun (--no-checksums).
+G1 NOT met (lead, batch 5): no complete Hills passage yet; P1b at m/16 (F-20261121-203144-b2cf16b) and at m/12 (F-20261121-203247-961801d, held) are on the cards with the isolated binary's extension (F-20261121-203156-03efdd3) that decides risk R19; KHSR, note compile and the G1 verifier are open. Verify FAILs only on g2mesh's uncommitted file (cut package, left alone) and the three chains in flight. Not offered for review.
 
 ## Lead's notes (wave 2b, 2026-11-19)
 

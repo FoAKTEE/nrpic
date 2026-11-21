@@ -1,12 +1,12 @@
 # Re-verification: F-hills G1
 
-`harness/bin/nrpic-stage verify F-hills G1` on 2026-11-21T16:22:50Z, clean export of commit `b28da30ae0c5` in `scratch/F-hills/tmp/stage-verify/F-hills-G1-b28da30-20261121T162201Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify F-hills G1` on 2026-11-21T21:06:22Z, clean export of commit `1c4fe7fe003c` in `scratch/F-hills/tmp/stage-verify/F-hills-G1-1c4fe7f-20261121T210421Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | FAIL | 1 uncommitted paths: commit them first (tracks/F-hills/g2mesh/scripts/card_analysis.py) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of b28da30ae0c5 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-b28da30-20261121T162201Z/tree |
+| export | PASS | clean export of 1c4fe7fe003c (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-1c4fe7f-20261121T210421Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: novelty/scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016) |
@@ -14,21 +14,22 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 12 figures, each with its script |
 | min-figs | PASS | 3 schematics and 9 data figures (brief 13.4 asks at least 2 and 1 at G1) |
-| runs | FAIL | 2 of 234 runs have problems |
+| runs | FAIL | 3 of 238 runs have problems |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | status | PASS | STATUS.md has 40 lines |
-| rerun | PASS | 12 of 12 scripts and commands ran cleanly in the export |
-| compare | PASS | 33 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
-| regenerate | PASS | all 24 committed figure files regenerated |
+| rerun | WARN | re-run skipped (--no-rerun) |
 
 ## runs
 
 ```
 {
- "F-20261121-130351-04074e1": [
+ "F-20261121-203144-b2cf16b": [
   "status is submitted: not finished (nrpic-run finish)"
  ],
- "F-20261121-153707-1eaa5d4": [
+ "F-20261121-203156-03efdd3": [
+  "status is submitted: not finished (nrpic-run finish)"
+ ],
+ "F-20261121-203247-961801d": [
   "status is submitted: not finished (nrpic-run finish)"
  ]
 }
@@ -154,176 +155,4 @@
   "input tracks/F-hills/newton3/hills3/threebody.py changed since the run (sha256 differs)"
  ],
  "F-hills-2
-```
-
-## compare
-
-```
-[
- [
-  "note/figures/fig_passage.png",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/fig_single.pdf",
-  "PASS",
-  "regenerated (vector files carry dates; the PNG preview is compared)"
- ],
- [
-  "note/figures/fig_passage.pdf",
-  "PASS",
-  "regenerated (vector files carry dates; the PNG preview is compared)"
- ],
- [
-  "note/figures/schem_timeline.png",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/fig_newton.pdf",
-  "PASS",
-  "regenerated (vector files carry dates; the PNG preview is compared)"
- ],
- [
-  "note/figures/fig_cost_numbers.json",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/fig_geodesic.pdf",
-  "PASS",
-  "regenerated (vector files carry dates; the PNG preview is compared)"
- ],
- [
-  "note/figures/fig_constraints.pdf",
-  "PASS",
-  "regenerated (vector files carry dates; the PNG preview is compared)"
- ],
- [
-  "note/figures/fig_rp_scan.png",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/fig_newton_numbers.json",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/fig_single.png",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/schem_dataflow.png",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/fig_geodesic_numbers.json",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/schem_dataflow.svg",
-  "PASS",
-  "regenerated (vector files carry dates; the PNG preview is compared)"
- ],
- [
-  "note/figures/fig_constraints_numbers.json",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/fig_cost.png",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/fig_cost.pdf",
-  "PASS",
-  "regenerated (vector files carry dates; the PNG preview is compared)"
- ],
- [
-  "note/figures/fig_rp_scan.pdf",
-  "PASS",
-  "regenerated (vector files carry dates; the PNG preview is compared)"
- ],
- [
-  "note/figures/fig_passage_numbers.json",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/fig_constraints.png",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/fig_tree.png",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/schem_architecture.svg",
-  "PASS",
-  "regenerated (vector files carry dates; the PNG preview is compared)"
- ],
- [
-  "note/figures/fig_geodesic.png",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/fig_tree.pdf",
-  "PASS",
-  "regenerated (vector files carry dates; the PNG preview is compared)"
- ],
- [
-  "note/figures/fig_smoke.png",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/schem_architecture.png",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/schem_timeline.svg",
-  "PASS",
-  "regenerated (vector files carry dates; the PNG preview is compared)"
- ],
- [
-  "note/figures/fig_smoke.pdf",
-  "PASS",
-  "regenerated (vector files carry dates; the PNG preview is compared)"
- ],
- [
-  "note/figures/fig_smoke_numbers.json",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/fig_tree_numbers.json",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/fig_rp_scan_numbers.json",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/fig_newton.png",
-  "PASS",
-  "identical"
- ],
- [
-  "note/figures/fig_single_numbers.json",
-  "PASS",
-  "identical"
- ]
-]
 ```

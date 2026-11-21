@@ -1,9 +1,9 @@
 {
   "track": "F-hills",
   "gate": "G1",
-  "commit": "b28da30ae0c5387c373c9020edb5a862843933d2",
-  "verified_utc": "2026-11-21T16:22:50Z",
-  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-b28da30-20261121T162201Z",
+  "commit": "1c4fe7fe003cae026b27e188337f9bcbc38246a0",
+  "verified_utc": "2026-11-21T21:06:22Z",
+  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-1c4fe7f-20261121T210421Z",
   "result": "FAIL",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of b28da30ae0c5 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-b28da30-20261121T162201Z/tree",
+      "message": "clean export of 1c4fe7fe003c (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-1c4fe7f-20261121T210421Z/tree",
       "detail": null
     },
     {
@@ -69,12 +69,15 @@
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "2 of 234 runs have problems",
+      "message": "3 of 238 runs have problems",
       "detail": {
-        "F-20261121-130351-04074e1": [
+        "F-20261121-203144-b2cf16b": [
           "status is submitted: not finished (nrpic-run finish)"
         ],
-        "F-20261121-153707-1eaa5d4": [
+        "F-20261121-203156-03efdd3": [
+          "status is submitted: not finished (nrpic-run finish)"
+        ],
+        "F-20261121-203247-961801d": [
           "status is submitted: not finished (nrpic-run finish)"
         ]
       }
@@ -312,186 +315,8 @@
     },
     {
       "check": "rerun",
-      "status": "PASS",
-      "message": "12 of 12 scripts and commands ran cleanly in the export",
-      "detail": null
-    },
-    {
-      "check": "compare",
-      "status": "PASS",
-      "message": "33 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
-      "detail": [
-        [
-          "note/figures/fig_passage.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_single.pdf",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/fig_passage.pdf",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/schem_timeline.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_newton.pdf",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/fig_cost_numbers.json",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_geodesic.pdf",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/fig_constraints.pdf",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/fig_rp_scan.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_newton_numbers.json",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_single.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/schem_dataflow.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_geodesic_numbers.json",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/schem_dataflow.svg",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/fig_constraints_numbers.json",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_cost.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_cost.pdf",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/fig_rp_scan.pdf",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/fig_passage_numbers.json",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_constraints.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_tree.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/schem_architecture.svg",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/fig_geodesic.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_tree.pdf",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/fig_smoke.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/schem_architecture.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/schem_timeline.svg",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/fig_smoke.pdf",
-          "PASS",
-          "regenerated (vector files carry dates; the PNG preview is compared)"
-        ],
-        [
-          "note/figures/fig_smoke_numbers.json",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_tree_numbers.json",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_rp_scan_numbers.json",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_newton.png",
-          "PASS",
-          "identical"
-        ],
-        [
-          "note/figures/fig_single_numbers.json",
-          "PASS",
-          "identical"
-        ]
-      ]
-    },
-    {
-      "check": "regenerate",
-      "status": "PASS",
-      "message": "all 24 committed figure files regenerated",
+      "status": "WARN",
+      "message": "re-run skipped (--no-rerun)",
       "detail": null
     }
   ]
