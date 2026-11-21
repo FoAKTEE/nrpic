@@ -452,3 +452,34 @@ looked at. Not a result of the finished run; numbers on the common range 3 <= a 
   cells the amplitude error is set in the first e-fold of expansion by the decaying-mode
   part (it is flat at -1.76e-6 from a = 2 on at 128 cells) and no longer by the mesh; at 64
   cells a mesh part of the other sign takes it through zero near a = 900.
+
+## Entry 10 (2026-11-21 14:30 PST): outcome of P3 (step test); prediction of P4
+
+P3 = run B-20261121-220450-e011c57 (s_n32_p1_dt2, s_n32_p1_dt1; both exit 0 at t = 4,
+a = 8.8-9.0; 7.5 and 14.5 minutes). Analysis: run B-20261121-222718-311b50f
+(`analyze_step.py`, `inputs/runs_step.json`), figure `fig_step` looked at. [VERIFIED by these
+runs]
+- Card against processors at the same step limit 0.002 (J1's b_n32_p1 against s_n32_p1_dt2):
+  D_*/A a differs by at most 7.0e-8; eps 5.49e-6 against 5.54e-6 (fit on a <= 8.5). The two
+  executables agree; that part of the prediction held.
+- Step limit 0.002 against 0.001: eps 5.54e-6 against 3.87e-6 (30 percent), and D_*/A a
+  differs by up to 1.47e-6 in the first e-fold: at 0.002 it rises to 4.3e-6 at a = 1.15 and
+  dips to 3.4e-6 at a = 1.7, at 0.001 it stays near 3.9e-6; after a = 2 the two curves run
+  parallel, 1.3e-6 apart. The prediction "the step is not the cause" is refuted by its own
+  criterion (eps changed by more than 20 percent): the step limit sets a start error of
+  about 1.5e-6 in the amplitude, the size of the floor seen at 64 and 128 cells (amplitude
+  error flat at -1.76e-6 at 128 cells, entry 9).
+- Design weakness of P3, recorded: at 32 cells and one per cell the plateau of the f error
+  (5.6e-6, c1 of the fit) is as large as the early part, so the early maximum of |f_* - 1|
+  (3.4e-6 and 4.6e-6) does not isolate the start error; the difference of the runs does,
+  because mesh and particles are the same in both.
+
+P4 (`inputs/cpu_p4.list`): the same run with the step limit 0.0005 (about 4400 steps, 33
+minutes at 6 threads), analysed with the P3 pair by `analyze_step.py` (third panel: the
+differences 0.001 - 0.002 and 0.0005 - 0.001 of D_*/A a).
+Prediction [JUDGEMENT]: the start error converges with the step at second order (the
+particle pusher is the implicit midpoint rule), so the largest |difference| 0.0005 - 0.001
+is 1.47e-6/4 = 3.7e-7, within a factor 2 (ratio of the two differences between 2 and 8).
+Refuted if the ratio is below 1.5 (the start error does not converge with the step) or above
+12 (fourth order). If it converges, the step-free start error at 32 cells is estimated by
+Richardson extrapolation from the three runs.

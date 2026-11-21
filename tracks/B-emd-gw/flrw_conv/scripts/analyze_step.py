@@ -24,7 +24,8 @@ import flrwlib as fl  # noqa: E402
 
 CASES = (("b_n32_p1", "card, step limit 0.002"),
          ("s_n32_p1_dt2", "processors, 0.002"),
-         ("s_n32_p1_dt1", "processors, 0.001"))
+         ("s_n32_p1_dt1", "processors, 0.001"),
+         ("s_n32_p1_dt05", "processors, 0.0005"))
 AFIT = 8.5          # common window of the decaying-mode fit (P3 ends at a = 9)
 
 
@@ -42,7 +43,8 @@ def main():
                    "e_star_at": {f"{a0:g}": float(np.interp(np.log(a0), np.log(g["a"]), g["e_star"]))
                                  for a0 in (1.1, 1.5, 2.0, 4.0, 8.0)}}
     # record-by-record differences on common times (P3 pair, and card against processors)
-    pairs = (("s_n32_p1_dt1", "s_n32_p1_dt2"), ("s_n32_p1_dt2", "b_n32_p1"))
+    pairs = (("s_n32_p1_dt1", "s_n32_p1_dt2"), ("s_n32_p1_dt05", "s_n32_p1_dt1"),
+             ("s_n32_p1_dt2", "b_n32_p1"))
     for a_, b_ in pairs:
         if a_ in data and b_ in data:
             ga, gb = data[a_], data[b_]
@@ -50,11 +52,22 @@ def main():
             m = ga["t"] <= tmax
             eb = np.interp(ga["t"][m], gb["t"], gb["e_star"])
             summ[f"diff_{a_}_minus_{b_}"] = float(np.abs(ga["e_star"][m] - eb).max())
+            summ[f"diff_at_end_{a_}_minus_{b_}"] = float(ga["e_star"][m][-1] - eb[-1])
     fl.save_json(summ, os.path.join(out, "flrw_step.json"))
 
     fs.use_style()
-    fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0))
-    fig.subplots_adjust(left=0.1, right=0.99, bottom=0.16, top=0.95, wspace=0.32)
+    fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
+    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.17, top=0.95, wspace=0.42)
+    for (a_, b_), col in zip(pairs[:2], fs.SERIES[2:]):
+        if a_ in data and b_ in data:
+            ga, gb = data[a_], data[b_]
+            m = ga["t"] <= min(ga["t"][-1], gb["t"][-1])
+            eb = np.interp(ga["t"][m], gb["t"], gb["e_star"])
+            axs[2].semilogx(ga["a"][m], (ga["e_star"][m] - eb)*1e6, color=col, lw=1.0,
+                            label=a_.split("_")[-1] + " - " + b_.split("_")[-1])
+    axs[2].set_xlabel(r"$a$")
+    axs[2].set_ylabel(r"difference of $D_\star/A a$ ($10^{-6}$)")
+    axs[2].legend(fontsize=6.5, loc="best")
     for (k, lab), col in zip(CASES, fs.SERIES):
         if k not in data:
             continue
