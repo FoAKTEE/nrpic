@@ -237,7 +237,7 @@ text), with KHSR's parabolic approximation confirmed by the full three-body inte
 0.012 in probability except at D = 2. Nothing digitised: comparisons are with KHSR's text and
 closed forms.
 
-## 2026-11-21 21:50Z N. Note close-out: plan and prediction of the figure run
+## 2026-11-21 21:38Z N. Note close-out: plan and prediction of the figure run
 
 The note belongs to package `note/` (another package's directory), so the close-out is built
 as a working copy in `khsr_note/note/` (main.tex, references.bib, scripts, figures, tables;
@@ -262,3 +262,20 @@ Prediction for the registered run of `khsr_note/note/scripts/run_all.py`:
    environment changed).
 3. ledger.tex differs from the committed one only by the added and corrected rows and the new
    table 5; `claims.md` unchanged.
+
+### 21:47Z N. outcome of the first figure run (F-20261121-213906-f4b2b30) and prediction of the final one
+
+1 MET (all scripts rc 0, self-checks held). 2 MET: nine unchanged data figures plus
+schem_dataflow and schem_timeline byte-identical to `note/figures/`; schem_architecture
+differs as intended. 3 REFUTED in form: ledger.tex differs by 76 lines, more than the added
+rows, because the committed note's ledger.tex is still the three-table version from before
+the split into tab:ledger3/tab:ledger4 (note/JOURNAL.md, 2026-11-20 PAUSED entry: that rerun
+never happened); claims.md unchanged (met).
+Compile (latexmk): "Float too large for page by 130 pt" (ledger table 1 with the new rows) and
+stuck floats; fixed by moving the elliptic-orbit rows to their own table (tab:ledger1b) and a
+\clearpage before Sec. VI. Checker: figure, label and section names with the internal
+abbreviation renamed (fig_khsr -> fig_elliptic), frameon=False in the three new scripts, a
+percent sign out of the ledger, seven negations rewritten, one long decimal.
+Prediction of the final run: every PNG byte-identical to F-20261121-213906-f4b2b30 (fig_elliptic
+identical to fig_khsr: czstyle already draws legends without a frame); ledger.tex differs
+from that run's only by table 1b split off and the remnant-mass change written as a fraction.

@@ -57,7 +57,7 @@ def main():
     ax.set_ylim(3.0, 5.1)
     ax.set_xlabel("$t$ [$M$]", labelpad=-2)
     ax.set_ylabel("member separation [$M$]")
-    ax.legend(loc="lower left", fontsize=8)
+    ax.legend(loc="lower left", fontsize=8, frameon=False)
     h = np.array([1 / 8, 1 / 12, 1 / 16])
     for tt, mk in (("15", "o"), ("20", "s")):
         ds = [an[name]["ds_at"][tt] for name in ("R8", "R12", "R16n")]
@@ -68,7 +68,7 @@ def main():
     bx.set_ylim(0, 0.62)
     bx.set_xlabel("finest cell [member masses]")
     bx.set_ylabel(r"$s(0)-s(t)$ [$M$]")
-    bx.legend(loc="upper left", fontsize=8)
+    bx.legend(loc="upper left", fontsize=8, frameon=False)
     cz.save(fig, os.path.join(out, STEM))
     C.write_numbers(out, STEM, nums)
     C.report_checks(STEM)

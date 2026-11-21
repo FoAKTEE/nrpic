@@ -50,7 +50,7 @@ def main():
     ax.plot([t[k]], [d1[k]], "o", color="k", ms=4)
     ax.set_ylabel("distance from $M$ [$M$]")
     ax.set_ylim(0, 40)
-    ax.legend(loc="upper right", fontsize=8)
+    ax.legend(loc="upper right", fontsize=8, frameon=False)
     ax = axs[1]
     hz = nr.read_horizons(rd)
     for n, col in ((0, cz.PAL["blue"]), (1, cz.PAL["red"])):
@@ -88,7 +88,7 @@ def main():
     ax.set_ylim(1e-7, 1e-2)
     ax.set_xlabel("$t$ [$M$]", labelpad=-2)
     ax.set_ylabel("radiated energy [$M$]")
-    ax.legend(loc="lower right", fontsize=8, ncol=2)
+    ax.legend(loc="lower right", fontsize=8, ncol=2, frameon=False)
     cz.save(fig, os.path.join(out, STEM))
     C.write_numbers(out, STEM, nums)
     C.report_checks(STEM)

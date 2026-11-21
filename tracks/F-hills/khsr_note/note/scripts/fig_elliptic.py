@@ -19,7 +19,7 @@ import common as C  # noqa: E402
 import czstyle as cz  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 
-STEM = "fig_khsr"
+STEM = "fig_elliptic"
 RA = ["inf", "500.0", "200.0", "130.0", "100.0"]
 LAB = {"inf": "parabolic", "500.0": "$r_a/r_t=500$", "200.0": "$200$", "130.0": "$130$", "100.0": "$100$"}
 COL = dict(zip(RA, (cz.PAL["blue"], cz.PAL["red"], cz.PAL["yellow"], cz.PAL["green"], "k")))
@@ -60,10 +60,10 @@ def main():
         axs[1, j].set_xlim(0, 2.2 if s == "pro" else 0.45)
     axs[0, 0].set_ylabel("ejection probability")
     axs[1, 0].set_ylabel("primary / secondary")
-    axs[0, 0].legend(loc="lower left", ncol=2, fontsize=8)
+    axs[0, 0].legend(loc="lower left", ncol=2, fontsize=8, frameon=False)
     axs[0, 1].plot([], [], "o", color="grey", ms=4, label="three-body problem, elliptic orbit")
     axs[0, 1].plot([], [], "-", color="grey", label="parabolic approximation")
-    axs[0, 1].legend(loc="upper right", fontsize=8)
+    axs[0, 1].legend(loc="upper right", fontsize=8, frameon=False)
     cz.save(fig, os.path.join(out, STEM))
     nums["K1"], nums["K2"] = S["K1"], S["K2"]
     C.write_numbers(out, STEM, nums)

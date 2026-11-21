@@ -464,8 +464,8 @@ def main():
     add(gE, "remnant velocity after the merger minus the members' mean extrapolated to $t=56M$: size, angle",
         f"{rc['dv_norm']:.3f}, {rc['angle_deg']:.1f}$^\\circ$ (speeds {rc['speed_pre']:.3f}, {rc['speed_post']:.3f})", R["p1end"])
     H0 = p1e["horizons"]["0"]
-    add(gE, "remnant horizon mass, medians of $t=60$--$100$ and $240$--$280M$; change",
-        f"{H0['mass_60_100']['median']:.4f}, {H0['mass_240_280']['median']:.4f}; {H0['drift_60_100_to_240_280']:.2%}".replace('%', '\\%'), R["p1end"])
+    add(gE, "remnant horizon mass, medians of $t=60$--$100$ and $240$--$280M$; fractional change",
+        f"{H0['mass_60_100']['median']:.4f}, {H0['mass_240_280']['median']:.4f}; {H0['drift_60_100_to_240_280']:.2g}", R["p1end"])
     add(gE, "remnant $|S|/m^2$, medians of $t=60$--$100$, $100$--$140$, $240$--$280M$",
         f"{H0['chi_60_100']['median']:.3f}, {H0['chi_100_140']['median']:.3f}, {H0['chi_240_280']['median']:.3f}", R["p1end"])
     H2_ = p1e["horizons"]["2"]
@@ -509,10 +509,14 @@ def main():
 
     with open(os.path.join(out, "ledger.tex"), "w") as f:
         f.write("% generated from registered run outputs; do not edit\n")
-        f.write(table({"Scales", "Restricted Newton", "Elliptic orbits", "Geodesic baseline"}, "tab:ledger1",
+        f.write(table({"Scales", "Restricted Newton", "Geodesic baseline"}, "tab:ledger1",
                       "Ledger of the reference solutions. Energies in units of "
                       r"$(Gm_1m_2/a_b)(M/m_b)^{1/3}$; sources are registered runs or the "
                       "file and line of a paper's text.") + "\n\n")
+        f.write(table({"Elliptic orbits"}, "tab:ledger1b",
+                      "Ledger of the Newtonian reference on elliptic orbits of the binary's centre of "
+                      "mass, the case of Ref.~\\cite{Kobayashi:2012hills}. Probabilities are over 512 "
+                      "binary phases per point.") + "\n\n")
         f.write(table({"Pericentre scan", "First passages", "Mesh and cost"}, "tab:ledger2",
                       "Ledger of the pericentre scan, the first passages and the cost. "
                       "Fractions are over the sampled binary phases; card-hours are the "
