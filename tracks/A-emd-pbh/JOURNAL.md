@@ -250,3 +250,20 @@ registered outputs, with the figure directory redirected to my run directory:
   every later search converges (no NaN row after it: a persistent horizon, entry 12's claim).
 - L13. Own reading of `bh_n256/ball.horizon_summary_0.txt` (A-20261119-144419-13d5601): every
   search of BH-1 at uniform M/8 returns NaN (entry 11, B2).
+
+### Outcomes L10-L13 (run A-20261121-082814-6fadb30; figure fig_review_runs_ball looked at)
+
+- L10 holds for every value, refuted on structure: the 1 652 numbers of `bh_smr_numbers.json`
+  equal those of A-20261121-080558-02c3188 exactly; the rerun has three keys more
+  (`finder_g2`, `line_hmax`, `line_light_speed`), which compare.py gained in commit ebe70b41
+  after that run. I did not foresee the code change.
+- L11 holds: `excision.json` (2 396 numbers), `bd/turnaround.json` (53), `bh_smr_numbers.json`
+  (2 678) identical to A-20261121-081153-b92c08c. The rerun's exit status 1 is my own fault:
+  I pointed `--figdir` at the output directory, and compare.py's copy of its figures then
+  failed with SameFileError after the JSON files were written.
+- L12 holds: BH-1R's first converged search at t = 10.875 (area mass 0.70106, mean coordinate
+  radius 0.4425 M); all 41 later searches to t = 15.875 converge; the mass falls to 0.686 near
+  t = 11.4 and then grows to 0.708. runs_ball's figure `bh_smr_horizon.png` (looked at) puts
+  the finder mass within 1e-3 of the exact mass on the same slice from t of about 11.7 on, and
+  2e-2 above it at the first detection.
+- L13 holds: all 64 searches of BH-1 at uniform M/8 return NaN.

@@ -15,7 +15,8 @@ brief. Run ids are `nrpic-run` ids; outputs in `scratch/A-emd-pbh/<run id>/`.
 | `szekeres/` round 1 (card series) | wave 3 burst | cut 14:33 PST on 2026-11-20 | state; its stranded run closed and checked (L8) |
 | `periodic_threshold/` round 1 | wave 3 burst | cut | state; its stranded run closed and checked (L9); four uncommitted files left alone |
 | `verify_bh/` (independent check of BH-1R, BH-1) | wave 3 burst | cut, no registered run | state only |
-| `runs_ball/`, `conv_ball/` | batch 2b | running beside this session | not reviewed (state in HANDOFF) |
+| `runs_ball/` | batch 2b | finished during this session (00:29 PST, its entry 20) | yes: section 2b (L10-L13) |
+| `conv_ball/` | batch 2b | running beside this session; card job 1 queued (Slurm 4776) | not reviewed (state in HANDOFF) |
 
 Predictions L1-L9 were committed before any rerun (`../JOURNAL.md`, entry 2026-11-21T07:55Z,
 commit 0f5972c4). Script `../analysis/review_wave3.py`. Runs: A-20261121-075605-351d611 (numbers
@@ -123,6 +124,36 @@ BH-1 may not hold (first-detection mass about 2e-2 above the exact mass of its s
 the claimed 3e-3; first trapped point of BH-1 at t = 11.25 rather than 11.0 depending on the
 stencil; core |eps| at tau = 3.37 about 2.8e-3 and 5.3e-3 against the claimed bounds). They are
 not results until its registered runs C1-C5 exist.
+
+## 2b. runs_ball (batch 2b, finished during this session)
+
+Predictions L10-L13 in `../JOURNAL.md` (written after the helper's entry 20, before my run);
+run A-20261121-082814-6fadb30, script `../analysis/review_wave3_runs_ball.py`, figure
+`fig_review_runs_ball.png` looked at (legend of panel c overlaps the markers; cosmetic).
+
+- Confirmed: the BH-1R analysis (A-20261121-080558-02c3188) and the excision and breakdown
+  analysis (A-20261121-081153-b92c08c) rerun with identical numbers (L10, L11; 1 652, 2 396,
+  53 and 2 678 numbers). From the raw finder files with my own reader: BH-1R has a first
+  apparent horizon at t = 10.875 (area mass 0.701, mean coordinate radius 0.44 M) and every one
+  of the 41 later searches converges to t = 15.875 (L12); BH-1 at uniform M/8 never converges
+  (L13). `bh_smr_horizon.png` (looked at): the finder mass follows the exact mass of the same
+  slice to better than 1e-3 from t of about 11.7 M, after a first detection 2e-2 high; the
+  largest 2m/R on the line passes 1 at t of about 10.9.
+- Not confirmed by me: the exact-mass reference itself (runs_ball's `expball`-based mapping of
+  the slice), the excision verdicts, prediction T's estimators and the fixed-box orders (entries
+  18-19; reproduced only where L11 covers them). The independent check of BH-1R is verify_bh's
+  (cut; its debug notes point at the first-detection mass, which this figure confirms is 2e-2
+  high, so that point of runs_ball's claim stands as "2e-2 at first detection, below 1e-3 after
+  t = 11.7").
+- Wrong: nothing found. Its own failed predictions are on record (B1, B2, B5 refuted; S3
+  second part refuted; R2 for SR-2 holds for the secular turnaround +0.0178 M and fails for the
+  local maximum +0.035 M, entry 18).
+- Defect noted for its next round: runs_ball attributes BH-1's missed detection to the start
+  radius (entry 11, [JUDGEMENT]); core's message points at `hmean_tol` (section 3). Neither is
+  tested; one finder rerun on the BH-1 M/8 data with BH-1R's settings and `hmean_tol_0 = 1e30`
+  decides it (needs a restart file or a rerun of the card job).
+- My own fault, on record: the rerun's exit status 1 came from my redirect of `--figdir` onto
+  the output directory (SameFileError after the JSON files were written).
 
 ## 3. A finding for the packages in progress (not from a helper)
 
