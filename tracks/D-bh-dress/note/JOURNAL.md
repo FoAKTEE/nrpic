@@ -185,3 +185,44 @@ file passed its run's sha256 record (stdout of each run).
   the legend; both changed before registration. Width check: 34 labels, none wider than its
   block. The timeline's "now" marker was moved from midway between G1 and G2 to just after
   G1, because G1 still has two open items.
+
+## 2026-11-21T12:57Z  batch 3: outcome of P11 (run of the cut session), predictions P13-P15
+
+Worktree at c55dc733 (main merged; the cut session of 2026-11-20 left the note package
+clean and committed through c2e0571d; its run of every script, D-20261120-223535-24f7f90,
+closed with exit 0 at 22:36Z, outputs never copied). Inputs of this round: the lead's list in
+`../HANDOFF.md` (row `note`), the verifier's requests (`../stage/G1/VERIFIER.md`, section
+"Requests") and the lead's actions on them (`../stage/REVIEW-wave3.md` section 2).
+
+- P11 holds (judged now on D-20261120-223535-24f7f90 against the committed
+  `tables/ledger.tex` of D-20261119-154336-1480741): all 51 old rows are reproduced character
+  for character (one apparent change is two rows sharing the label "the same read off the
+  published figure"); 40 rows are new. The claims check grew from 36 to 72 statements, 63
+  agree; 13 statements of the old `stage/G1/STATUS.md` are no longer found in the rewritten
+  file (reported, not an error of the outputs).
+
+Changes made before the next registered run, each from a verifier request or the gate state:
+`fig_newton.py` adds the largest |dress/matched shells - 1| from a/a_i = 3 on; `ledger.py`
+rewords "wall radius against the closed form" (it is the wall column R_w(tau) of the
+reference against the wall law), marks the table-density residuals as upper bounds
+(second-order differences), states the self-similar model's parameters, and adds two rows
+(dress against matched shells at a/a_i = 2 and from 3 on; the second agent's profile
+deviation with r_ta moved by -3 and +3 per cent, run D-20261121-031711-0d79cb3, read with
+its sha256); `common.py` names that run; `schem_timeline.py` shows G0 passed (coord/GATES.md
+line 11) and G1 open for the infall profile criterion and this note.
+
+- P13 (rerun of `run_all.py`, registered). Every PNG and PDF except `schem_timeline.*` is byte
+  identical to D-20261120-223535-24f7f90; `fig_newton_numbers.json` differs only by the new
+  field. New rows: dress over matched shells - 1 at a/a_i = 2 is 0.55, 1.40, 3.43 per cent
+  (N128c, N64c, N128Lc; the field `dress_rel_at_a2` already in the numbers); from a/a_i = 3
+  on the largest is below 1.5 per cent in each run (the lead's Z4 on the track's cell-centre
+  table gave 0.28, 0.68, 1.03); the second agent's profile row reads 0.259; 0.325; 0.345.
+  Every old row unchanged except the three reworded labels. Refuted by a changed old value,
+  a changed data figure, or a from-3 maximum above 1.5 per cent.
+- P14 (checker). `check_manuscript.py --main main.tex --compile` with the guide's forbid
+  list: 0 undefined references or citations, 0 overfull boxes; hits of 5.5 and 5.8 only in
+  the ledger appendix, the registration scripts (exception 1 of the guide) and the data key
+  `pass_e0.1_s0.5_a100` (as in P6); negation hits (5.1) are reviewed one by one and kept
+  only where they are content. Refuted by any other hit I cannot remove.
+- P15 (pages). The compiled note has 13 to 16 pages; no caption runs past five lines; the
+  figures appear in the order of first citation.

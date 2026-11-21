@@ -1,11 +1,11 @@
-"""Schematic: stage timeline of Track D (note v1, state of wave 3 round 1, 2026-11-20).
+"""Schematic: stage timeline of Track D (note v1, state of wave 3 batch 3, 2026-11-21).
 
 Gates and indicative times: coord/CHARTER.md section 9.2 (line 66); track criteria: brief
 sheet 9.7 (line 779) as made concrete in stage/G0/REPORT.md section 3; state: PLAN-wave3.md
-round 1 (G0 package complete for review, not signed in coord/GATES.md), stage/G1/CHECKLIST.md
-(open items C7: the profile criterion of the Newtonian infall, ruling requested from orch;
-C9: this architecture schematic; C17: a fresh-context verifier), stage/G1/STATUS.md, and the
-round's packages (relaxed-lapse run analysed, late-drift controls, matter run). Gate
+round 1; G0 signed PASS on 2026-11-20 (coord/GATES.md line 11); stage/G1/CHECKLIST.md of
+2026-11-21 (open items C7: the profile criterion of the Newtonian infall, ruling requested
+from orch; C16: this note compiled and checked; C9 and C17 now PASS), stage/G1/STATUS.md, and
+the round's packages (relaxed-lapse run analysed, late-drift controls, matter run). Gate
 positions are evenly spaced; the time labels give the charter's targets. No data are read.
 """
 import os
@@ -18,9 +18,9 @@ STEM = "schem_timeline"
 W, H = 30.0, 12.0
 GATES = [
     ("G0 scoping", "week 2", pf.GREEN_DARK,
-     "complete; package ready\nfor review: questions, null-\ntest wording, criteria, cost"),
+     "passed: questions, null-test\nwording, criteria, cost;\nverified by a fresh agent"),
     ("G1 baseline", "week 8", pf.OLIVE,
-     "met: bubble data, floor, spike\n(Schwarzschild, Kerr), infall\ngrowth; open: two items"),
+     "met: bubble data, floor, spike\n(Schwarzschild, Kerr), infall\ngrowth, verifier; open: two"),
     ("G2 capability", "month 4", pf.SLATE,
      "first bubble run and control\ndone; relaxed lapse ran;\nmatter run, drift controls"),
     ("G3 science", "month 9", pf.RED,
@@ -47,13 +47,13 @@ def main():
         pf.callout(ax, x - cw / 2 + 0.1, 6.3, cw, 3.6, title, body, bar=col, size=7.0,
                    title_size=8.0, band=0.8)
         pf.line(ax, (x, y0 + 0.35), (x, 6.3), color=pf.GREY_LINE)
-    pf.text(ax, 0.9, 10.9, "now: G0 complete for review; G1 open for the infall profile criterion "
-            "and a fresh verifier; first G2 runs under way", size=7.5, ha="left", italic=True)
+    pf.text(ax, 0.9, 10.9, "now: G0 passed; G1 open for the infall profile criterion "
+            "and this note; first G2 runs under way", size=7.5, ha="left", italic=True)
     ax.add_patch(pf.Polygon([(10.2, 5.75), (10.6, 5.75), (10.4, 5.45)], closed=True,
                             fc=pf.RED, ec="none", zorder=8))
     pf.text(ax, 10.4, 6.05, "now", size=7.0, color=pf.RED)
     pf.brace(ax, 3.6, 8.8, 3.6, "", below=True)
-    pf.text(ax, 6.2, 2.25, "ruling on the infall profile\ncriterion; a fresh verifier",
+    pf.text(ax, 6.2, 2.25, "ruling on the infall profile\ncriterion; this note checked",
             size=7.0, color=pf.ROSE)
     pf.brace(ax, 9.6, 14.8, 3.6, "", below=True)
     pf.text(ax, 12.2, 2.0, "gauge for expanding dust; cause\nof the late drift; dust to the\n"

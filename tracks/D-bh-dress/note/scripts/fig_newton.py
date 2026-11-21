@@ -75,8 +75,10 @@ def main():
         A = ana[lab]
         kern = {f"{aa:g}": dict(mta=float(np.interp(aa, av, mk_ta)), dress=float(np.interp(aa, av, mk_dr)))
                 for aa in (2.0, 4.0, 8.0) if aa <= av[-1] + 1e-6}
+        k3 = (av >= 3.0 - 1e-9) & (mk_dr > 0.02)     # dress against the kernel shells once it has formed
+        dress_from_a3 = float(np.max(np.abs(dr[k3] / mk_dr[k3] - 1))) if k3.any() else None
         nums["runs"][lab] = dict(run=C.RUNS[key], dx=A["dx"], a_end=A["a_end"], growth=A["growth"],
-                                 kernel_shells_at=kern,
+                                 kernel_shells_at=kern, dress_maxrel_kernel_from_a3=dress_from_a3,
                                  vs_kernel=A["vs_kernel"], vs_plummer=A["vs_plummer"],
                                  vs_point=A["vs_point"], dress_over_mta_end=A["dress_over_mta_end"],
                                  mta_over_a_end=A["mta_over_a_end"],

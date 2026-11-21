@@ -61,6 +61,8 @@ RUNS = {
     "v1": "D-20261115-172730-c6d151b",      # its vacuum control
     "es_ana": "D-20261119-141839-8686bd7",  # analyse.py on both (es_runs entry 4)
     "es_extra": "D-20261119-142929-bb375ff",  # es_extra.py on both (entry 6)
+    # wave 3 batch 3 (note v1 close): the fresh-context verifier's infall run (profile sensitivity)
+    "verifier_v2": "D-20261121-031711-0d79cb3",
 }
 
 CHECKED = []   # (run_id, relative path, "sha256 ok" | "no sha256sums.txt (wave-1 run)")

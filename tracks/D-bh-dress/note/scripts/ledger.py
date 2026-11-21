@@ -105,6 +105,8 @@ def main():
     fl = fn["floor"]
     sp = fn["spike"]
     inf = fn["infall"]
+    inf_ss_params = C.load_json("selfsim", "selfsimilar.json")      # model parameters of the seeded run
+    v2p = C.load_json("verifier_v2", "v2_results.json")["runs"]["N128Lc"]["profile_0.1_0.3"]
     p4 = fn["es"]["P4"]
     rd_deta = max(abs(r["d_eta"]) for r in rd["table1"])
     rd_ratio = [r["y_eq_over_y_ta"] for r in rd["table1"]]
@@ -125,11 +127,11 @@ def main():
           (sec, r"AthenaK at $t=0$, region $4<r<30M$, orders of $H$; $M$", f"{creg['transition 4 < r < 30']['H_max'][0]:.2f}; {creg['transition 4 < r < 30']['M_max'][0]:.2f}", ["es_t0"]),
           (sec, r"AthenaK at $t=0$, inner dust edge, orders of $H$; $M$", f"{creg['inner dust edge 34 < r < 46']['H_max'][0]:.2f}; {creg['inner dust edge 34 < r < 46']['M_max'][0]:.2f}", ["es_t0"]),
           (sec, "deposited density minus the exact density (largest)", fnum(erho), ["es_t0"]),
-          (sec, "wall radius against the closed form; mass inside the wall minus $M$", f"{fnum(fn['es']['P3']['max_rel_wall_vs_closed'])}; {fnum(fn['es']['P3']['max_abs_mass_minus_1'])}", ["es_data"]),
+          (sec, r"wall column $R_w(\tau)$ of the reference against the wall law (largest relative); mass inside the wall minus $M$", f"{fnum(fn['es']['P3']['max_rel_wall_vs_closed'])}; {fnum(fn['es']['P3']['max_abs_mass_minus_1'])}", ["es_data"]),
           (sec, r"wall radius at $\tau=50,100,150,200M$ (in $M$)", ", ".join(f"{plan[f'tau={t}']['R_wall']:.2f}" for t in (50, 100, 150, 200)), ["first_run"]),
           (sec, r"scale factor of the plateau at $\tau=200M$; $1+6\ln a$", f"{plan['tau=200']['a_plateau']:.3f}; {plan['tau=200']['alpha_1plog_plateau']:.2f}", ["first_run"]),
           (sec, r"proper time to $R=2M$ from $6,10,20M$: closed form", ", ".join(f"{p4[k]['tau_closed']:.2f}" for k in ("R0=6", "R0=10", "R0=20")), ["es_data"]),
-          (sec, r"density from the table: bubble (largest, in $\rho_0$); plateau (relative)", f"{fnum(fn['es']['P5']['inner_max_abs_rho_over_rho0'])}; {fnum(fn['es']['P5']['plateau_max_rel_dev'])}", ["es_data"]),
+          (sec, r"density from the Hamiltonian constraint on the table, second-order differences (upper bounds): bubble (largest, in $\rho_0$); plateau (relative)", f"{fnum(fn['es']['P5']['inner_max_abs_rho_over_rho0'])}; {fnum(fn['es']['P5']['plateau_max_rel_dev'])}", ["es_data"]),
           (sec, "modelled cost, outer edge $60M$, $200M$: $M/8$; $M/16$ (card-hours)", f"{c60_8:.2f}; {c60_16:.2f}", ["first_run"]),
           (sec, "modelled cost of the data set as generated, $M/16$ (card-hours)", f"{c106_16:.1f}", ["first_run"])]
     sec = "Horizon-mass floor of a vacuum puncture"
@@ -258,6 +260,8 @@ def main():
           (sec, r"$(M_{\rm ta}-M)/(Ma/a_i)$ at $a/a_i=2$; $100$; limit $(4/3\pi)^{2/3}$", f"{lead['0.01']['2']['coef']:.3f}; {lead['0.01']['100']['coef']:.4f}; {lead['coef_limit_(4/(3pi))^(2/3)']:.4f}", ["infall_lead"]),
           (sec, r"turnaround radius at $a/a_i=2$ for $\epsilon=0.003,0.01,0.03,0.1$ ($M$)", ", ".join(f"{scop[e]['r_ta_at_a2']:.1f}" for e in ("0.003", "0.01", "0.03", "0.1")), ["scoping"]),
           (sec, r"black-hole mass, radial dust absorbed, $a/a_i=2,4$; doubling at $a/a_i$", f"{sh['checks']['a2']['mbh']:.3f}, {sh['checks']['a4']['mbh']:.3f}; {sh['mbh_doubling_a']:.2f}", ["shells_ana"]),
+          (sec, r"self-similar model: radial orbits, fixed-point iteration on $m(\lambda)$, orbit to $\tau$ (turnaround times); softening",
+           f"{inf_ss_params['taumax']:.0f}; {fnum(inf_ss_params['soft'], 1)}", ["selfsim"]),
           (sec, r"self-similar: slope of $m(\lambda)$ on $[10^{-4},10^{-3}]$; on $[3\times10^{-3},3\times10^{-2}]$", f"{inf['selfsim']['slope_m_1em4_1em3']:.3f}; {inf['selfsim']['slope_m_3em3_3em2']:.3f}", ["selfsim"]),
           (sec, r"outermost caustic $\lambda_1$; mass inside it ($M_{\rm ta}$)", f"{inf['selfsim']['lambda1']:.4f}; {inf['selfsim']['m_at_lambda1']:.3f}", ["selfsim"]),
           (sec, r"$\lambda^{9/4}\rho/\rho_b$ below $\lambda=10^{-4}$", f"{inf['selfsim']['rho_lam94_innermost']:.2f}", ["selfsim"]),
@@ -284,6 +288,9 @@ def main():
           (sec, r"largest $|M_{\rm ta}/M_{\rm ta}^{\rm shells}-1|$ after $a/a_i=1.5$: mesh kernel; Plummer law",
            ", ".join(fnum(n["vs_kernel"]["mta_max_rel"]) for n in (N1, N2, N3)) + "; " +
            ", ".join(fnum(n["vs_plummer"]["mta_max_rel"]) for n in (N1, N2, N3)), NR),
+          (sec, r"dress over matched shells $-1$, three runs: at $a/a_i=2$; largest from $a/a_i=3$ on",
+           ", ".join(f"{100 * n['vs_kernel']['dress_rel_at_a2']:.2f}" for n in (N1, N2, N3)) + "; " +
+           ", ".join(f"{100 * n['dress_maxrel_kernel_from_a3']:.2f}" for n in (N1, N2, N3)) + " (per cent)", NR),
           (sec, r"dress over $M_{\rm ta}$ at $a/a_i=4$; $8$; self-similar",
            f"{N1['dress_over_mta_end']:.3f}; {N3['dress_over_mta_end']:.3f}; {fn['newton']['selfsim_dress_over_mta']:.3f}", NR),
           (sec, r"$M_{\rm ta}/(Ma/a_i)$ at $a/a_i=4$; $8$; local growth exponent of the dress at $4$; $8$",
@@ -297,6 +304,8 @@ def main():
           (sec, r"run over self-similar density on $0.1\le\lambda\le0.35$: $a/a_i=4$; $8$ (range)",
            f"{min(prof(N1, 4)['selfsim_ratio_0p1_0p35']):.2f}--{max(prof(N1, 4)['selfsim_ratio_0p1_0p35']):.2f}; "
            f"{min(prof(N3, 8)['selfsim_ratio_0p1_0p35']):.2f}--{max(prof(N3, 8)['selfsim_ratio_0p1_0p35']):.2f}", NR + ["selfsim"]),
+          (sec, r"second agent, $a/a_i=8$, $0.1\le\lambda\le0.3$: largest $|$run over self-similar $-1|$; with $r_{\rm ta}$ times $0.97$; $1.03$",
+           f"{v2p['max_abs_dev']:.3f}; {v2p['break_attempts_max_abs_dev']['r_ta_x0.97']:.3f}; {v2p['break_attempts_max_abs_dev']['r_ta_x1.03']:.3f}", ["verifier_v2"]),
           (sec, r"largest offset of the seed clump from its cell centre, in cells",
            ", ".join(fnum(n["clump_com_max_over_dx"]) for n in (N1, N2, N3)), NR)]
 
