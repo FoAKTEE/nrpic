@@ -20,11 +20,13 @@ outcomes: `JOURNAL.md` (entries 1-11; wave 3: entries 12 and later).
 | A4, time-matched pairs (wave 3, item a) | verdicts unchanged (FAIL in the paper's set-up, magnitude PASS) | pairs only at equal recorded times (no interpolation): odd/even of H at most 745 (N = 32), 655 (64), 869 (128), 25 (256, last matched dump N = 3.93; the P256 peak at N = 4.4 has no time-matched partner); halving 3.99-4.00 (even) and 2.00 (odd) after the entry, no spike; record maxima from every cycle to t = 4.6: H 4.7e-11-5.1e-11, M 3.3e-4-4.0e-4 | E-20261120-223038-684821a, E-20261121-025932-7a21f34 (`results/final2/`, `fig/final2/`) |
 | A5 convergence before the floor | PASS with the floor made operational (JOURNAL entry 9) | odd part order 4.2-5.8 (H), 5.6-5.9 (M) on 32 -> 64 -> 128; floor independent of the amplitude, growing as N^2.5 | same |
 | A6 temporal order (N = 32, Courant 0.25, 0.125, 0.0625) | PASS | differences of R^NR and of the perturbations of phi, chi, K and of <chi> fall at order 3.93-4.08; time error of R^NR at Courant 0.25 below 3e-4; the top-shell deviation of A2 and the late-entry first-order constraint part are spatial | runs E-20261119-142317-c851f27, analysis E-20261119-145230-ff0dff2 |
+| A6 at 64^3 in the paper's set-up (wave 3, item b; L6 asks 64^3) | PASS | orders 3.98-4.02 (R^NR, all modes with W > 1/2), 4.02 (top shells), 3.90-3.99 (low shells), 3.82-4.02 (perturbations of phi, chi, K), 4.03 (<chi>); top-shell D_n 3.57e-3, 4.4 percent temporal; late-entry odd part of H independent of theta to 1e-3 (spatial); H0 1.7e-13, order 4.05; largest per-mode time error of R^NR at Courant 0.25: 6.1e-4 | card E-20261121-025643-02526ff, analysis E-20261121-034414-bfd0285 (`results/a6_64/`, `fig/a6_64/`) |
+| L5 single kick, one shell \|n\|^2 = 5 on FLRW, 64^3 (wave 3, item c; risk R2) | PASS for the hook; two sub-predictions refuted | H second order: factor 3.99999-4.0000001 (s = 100/50); stencil projector: continuum - stencil = one-step reference within 1.2 percent; remaining first-order M 6e-7 of [M] after one step is the fourth-order time error (step halved: 15.5-19.5; mesh halved at equal dt: 1.00 while the kick acts); Pi-kick flip: odd part 4.4e5 times the proper first-order part; card = processors (verdicts identical, direct quantities within 1e-7) | card E-20261121-025643-02526ff + E-20261121-034645-02a463e; processors E-20261121-031110-041cdf7 + E-20261121-035509-790b1dc; 32^3 E-20261121-034950-06f01f9 + E-20261121-040015-436a615 (`results/l5/`, `fig/l5/`) |
 | A7 restart (NOISE_SPEC A12) | PASS | U4 bit-identical to U2 on processors and on a card (whole dump files equal) | E-20261119-141654-c2a10d1 |
 | Negative control | PASS | H 4e4-1.5e5 times the proper run, M/[M] 0.20-0.22 | final analysis |
 | Cost | | 1.13-1.30 card-s per step at 256^3; 0.50 card-hours per 8-e-fold realisation | E-20261115-172618-f948386 |
 
-Card time used by the package: 1.42 card-hours (jobs A, B, C) of the two allowed.
+Card time used by the package: 1.42 card-hours (jobs A, B, C) of the two allowed in waves 2-2b; wave 3: 0.028 card-hours (items b, c) so far, of the 1.0 allowed.
 
 ## Contents
 
@@ -36,6 +38,7 @@ Card time used by the package: 1.42 card-hours (jobs A, B, C) of the two allowed
 | `inputs/jobA.list`, `jobB.list`, `jobC.list` | card batches (P256; P256m + L256p; L256m + N = 64, 128 rungs, halving, negative controls) |
 | `inputs/card_bc.list` | wave 3, card job of items (b) and (c): A6 at 64^3 (T25p ... T06m, `sr_a6.athinput` with nmax2 = 256, dumps every 20 x 0.25/theta cycles) and the eleven L5 runs |
 | `inputs/sr_l5.athinput`, `inputs/modes_l5_n5.txt`, `inputs/l5proc.list` | L5 single kick: `id = flrw` background, one kicked shell \|n\|^2 = 5 (zero rows for 1-4), `noise_sigma = sqrt 5`, 64^3, dumps every cycle to cycle 32; the same eleven runs for the processors |
+| `inputs/l5res.list` | L5 step/mesh test: the five stencil runs at 32^3 with Courant 0.25 and 0.125 |
 | `inputs/jobD.list` | item (d): P256 with `<job> rng_seed = 20261120` (second realisation) |
 | `inputs/proc32.list`, `proc64.list` | processor runs (N = 32 rung; N = 64 hedge to t = 4.5) |
 | `scripts/ladder_lib.py` | own NRSFDMP2 reader, mode coefficients on the hemisphere, R^NR extraction, linear reference (background + MS per shell, window), amplitudes from `../noise/ref/philox_ref.py` |
@@ -44,6 +47,7 @@ Card time used by the package: 1.42 card-hours (jobs A, B, C) of the two allowed
 | `scripts/floor_analysis.py` | floor of the odd parts (N^q from 128 -> 256), A5 before the floor, halving, first e-fold of odd > even against ln(N/8), even part with the floor in quadrature |
 | `scripts/a6_analysis.py` | A6: differences between Courant factors at equal times, orders, D_n per Courant factor, constraint parts (`--nmesh --nmax2 --modefile` for 64^3) |
 | `scripts/l5_kick_ref.py`, `scripts/l5_analysis.py`, `scripts/l5_compare.py` | L5: one-step kick reference (rms M/<[M]> per projector), parts in s cell by cell with the first order by Richardson in s and verdicts PL1-PL3, processors against card (PL4) |
+| `scripts/l5_scaling.py` | L5: first-order parts at 32^3 (two Courant factors) against 64^3, ratios at equal times |
 | `scripts/seed2_compare.py` | item (d): second realisation of P256 against the first |
 | `scripts/make_figures.py`, `scripts/figstyle.py` | figures (style copied from `harness/style/figstyle.py`) |
 | `scripts/selftest.py`, `extraction_check.py`, `modefile_check.py` | reader against core's, R^NR at t = 0; the factor of the anisotropic term (SPEC 9 E6); mode files against Track E's MS reference |
@@ -54,6 +58,8 @@ Card time used by the package: 1.42 card-hours (jobs A, B, C) of the two allowed
 | `results/floor/`, `fig/floor/` | floor analysis (E-20261119-142713-32c883a) |
 | `results/a6/`, `fig/a6/` | A6 analysis |
 | `results/a12/` | A12 validations (E-20261119-141654-c2a10d1) |
+| `results/a6_64/`, `fig/a6_64/` | wave 3, item (b): A6 at 64^3 (E-20261121-034414-bfd0285) |
+| `results/l5/`, `fig/l5/` | wave 3, item (c): L5 on the card (`card/l5.json`, `kick_ref.json`, `fig_l5.png`), on the processors (`proc/l5.json`), comparison (`l5_compare.json`, `fig_l5_compare.png`), step/mesh test (`l5_scaling.json`, `fig_l5_scaling.png`) |
 | `results/proc32*/`, `results/P256/`, `fig/proc32*/`, `fig/P256/` | earlier partial analyses (wave 2), kept for the record |
 
 Definitions (R^NR, D_n, Q_n, N_k, odd/even parts): `JOURNAL.md` entry 1.
