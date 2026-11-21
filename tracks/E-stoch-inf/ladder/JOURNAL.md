@@ -744,3 +744,58 @@ Predictions (refuted where stated):
 - PD5 (constraint record): the largest <|H|/[H]> and <|M|/[M]> within 20 percent of seed 1
   (5.1e-11, 4.0e-4), both set by the first-order truncation of the top shells.
 - Cost: 1.2-1.4 card-s per step, 0.45-0.55 card-hours (seed 1: 1811 s, 0.503).
+
+## Entry 16, 2026-11-21 03:00Z (wave 3, second burst): outcome of item (a); amendment and its prediction
+
+State found at 02:55Z: the first burst (cut at about 22:37Z on 2026-11-20) had committed entries
+12-15, the scripts and the lists, run the pairing rerun E-20261120-223038-684821a (exit 0 at
+22:36:24Z, manifest left "running"; closed with `nrpic-run finish` now), and had submitted no
+card job. No merged executable of core exists (`scratch/core/exe/` has no `core_nrpic_v04`/`_v05`,
+no tag core-v0.4), so item (d) stays the second realisation of entry 15. Card job (b)+(c)
+submitted now: E-20261121-025643-02526ff (Slurm 4757, list `inputs/card_bc.list`).
+
+Outcome of E-20261120-223038-684821a against the prediction of entry 12 (outputs in its run
+directory: `res/`, `fig/fig_a4_paper.png`, `compare/compare.json`, `compare/fig_halving_fix.png`,
+both figures looked at):
+- CONFIRMED: P256/P256m, Q128p/Q128m, Q64p/Q64m drop exactly the last dump of the s = +1 run
+  (t = 4.5038, 4.5038, 4.5160 against 4.5000; cycles 734, 367, 184); every remaining row equals
+  `results/final/` bit for bit (largest relative difference 0 in all 13 quantities); the
+  regression pair Q64ph/Q64mh is identical in all 10 rows; the sequential reader equals the
+  memory-map reader of waves 2-2b on every variable of one dump (largest difference 0).
+- CONFIRMED: the halving lists lose exactly their last entry (N32: even 3.862, odd 1.930; N64:
+  16.01, 1.966; N128: 9.02, 1.992), all other entries unchanged, and the middle panel of
+  `fig_a4_paper.png` has no point above 4.1 for the even factor: the spike is gone.
+- CONFIRMED: every pass/fail verdict unchanged (A1; A2 and A3 on all seven rungs; the
+  negative-control numbers identical: 4.03e4, 1.49e5, 1.25e5).
+- REFUTED in part, "every reported maximum unchanged": the maxima of P256 (N = 256) lay AT the
+  dropped dump. max odd/even of H 384.8 -> 25.1 (now at t = 4.0), of M 131.7 -> 5.97, the record
+  maxima over the paired dumps 5.07e-11 -> 1.32e-11 (H) and 2.72e-4 -> 4.04e-5 (M); and for
+  Q128 the M odd/even 426.3 -> 404.7. So entry 9's "385 (P256)" was read at a dump whose two
+  runs stood 0.0038 apart in time; the odd part (6.3e-11) is 385 times the even part there, so
+  the time offset alone (dH_odd/dt x 0.0038/2) can shift the even part by a fraction of itself:
+  that number is not reliable, and no time-matched dump of P256m exists at N = 4.4 to replace it.
+  The A4 verdict does not depend on it: at N = 256 the odd part exceeds the even part at the
+  time-matched dumps N = 3.44 (2.1x) and 3.93 (25x), so A4 still fails in the paper's set-up.
+- Defects of the first rerun found in its figures: the right panel of `fig_a4_paper.png` (negative
+  control) is EMPTY, because the record arrays (`*.npz`) live in the wave-2 analysis directory
+  (scratch/E-stoch-inf/E-20261115-194633-9e04ed8/res), not in `results/final/`; and the left
+  panel of `fig_halving_fix.png` has its y label cut off.
+
+Amendment (scripts changed before the second rerun, commit below):
+- `verdicts.py`: per A4 set also `last_paired_time` and `max_record_con` = the largest
+  <|H|/[H]>, <|M|/[M]> of the constraint records of both runs, every cycle, 0 <= t <= 4.6
+  (columns 4, 7 of `sr.sf.con.hst` in the run directories), which does not depend on which dumps
+  pair. The pair-based `max_record_*` stay, meaning "over the paired dumps".
+- `make_figures.py`: the negative-control panel pairs the records by time (|dt| <= 1e-9) instead
+  of by row index (the control ends at t = 4.5 after a shortened step, its partner does not);
+  the npz directory of the wave-2 analysis is passed as a third `--res`.
+- `compare_final2.py`: linear y axis 0-17 and wider margin in the left panel.
+
+Prediction for the second rerun (processor, 2 cores, no dump read; the pairs of 684821a are
+reused as its inputs). Not blind: the numbers of `max_record_con` were seen in a dry check of
+the amended script on the same inputs (scratch/E-stoch-inf/tmp/ladder_a2, not a result):
+- summary.json equals that of 684821a in every leaf except the added keys; max_record_con H =
+  4.71e-11 (N32), 4.83e-11 (N64), 5.04e-11 (N128), 5.10e-11 (N256, at t = 4.547 in P256), M below
+  4e-4, all within a factor 10 of P1's 1e-10 (A4 magnitude PASS, as in entry 9);
+- the negative-control panel shows the H record ratio between 1e3 and 2e5 for N = 32, 64, 128
+  from the first dump on and no point at t > 4.5. Refuted by an empty panel or a differing leaf.

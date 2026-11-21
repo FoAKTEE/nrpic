@@ -61,6 +61,31 @@ def orders(rows_lo, rows_hi, key, tmin=0.4, tmax=3.6):
                 lo=y_lo[sel].tolist(), hi=y_hi[sel].tolist())
 
 
+def con_record_max(rundirs, names, tmax=4.6):
+    """Largest <|H|/[H]> and <|M|/[M]> (columns 4 and 7 of <run>/sr.sf.con.hst, every
+    cycle) over 0 <= t <= tmax and over the runs `names`, read from the simulation output
+    directories; independent of which dumps pair (wave 3, JOURNAL entry 16). None if a
+    record is missing."""
+    hmax, mmax, tH, tM = 0.0, 0.0, None, None
+    for name in names:
+        f = None
+        for d in rundirs:
+            p = os.path.join(d, name, "sr.sf.con.hst")
+            if os.path.isfile(p):
+                f = p
+                break
+        if f is None:
+            return None
+        c = np.loadtxt(f, ndmin=2)
+        sel = c[:, 0] <= tmax
+        i, j = int(np.argmax(c[sel, 3])), int(np.argmax(c[sel, 6]))
+        if c[sel, 3][i] > hmax:
+            hmax, tH = float(c[sel, 3][i]), float(c[sel, 0][i])
+        if c[sel, 6][j] > mmax:
+            mmax, tM = float(c[sel, 6][j]), float(c[sel, 0][j])
+    return dict(H=hmax, t_H=tH, M=mmax, t_M=tM, runs=list(names), tmax=tmax)
+
+
 def cost(rundirs):
     out = {}
     for d in rundirs:
@@ -146,6 +171,12 @@ def main():
                  max_record_M=max(max(r["ratio_M_p"], r["ratio_M_m"]) for r in rows),
                  first_efold_odd_exceeds_even_H=next((r["efolds"] for r in ent
                                                       if r["H_odd"] > r["H_even"]), None))
+        # max_record_* above: over the paired dumps only; the record of every cycle of
+        # both runs to t = 4.6 does not depend on the pairing (wave 3, JOURNAL entry 16)
+        d["last_paired_time"] = rows[-1]["time"]
+        cr = con_record_max(a.rundirs, p.split("_"))
+        if cr is not None:
+            d["max_record_con"] = cr
         if h is not None and pairs.get(h) is not None:
             # rows of the two pairs at the same recorded time only (wave 3, JOURNAL 12)
             mt = match_times(rows, pairs[h])

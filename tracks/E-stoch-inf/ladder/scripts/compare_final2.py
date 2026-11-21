@@ -94,7 +94,7 @@ def figure(old_s, new_s, olddir, outdir):
     fs.use_style()
     col = {"N32": fs.PAL["yellow"], "N64": fs.PAL["green"], "N128": fs.PAL["blue"]}
     fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0))
-    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.17, top=0.9, wspace=0.25)
+    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.17, top=0.9, wspace=0.22)
     for tag, c in col.items():
         o, n = old_s["A4"].get(tag, {}), new_s["A4"].get(tag, {})
         if "halving_even_H" not in o or "halving_even_H" not in n:
@@ -108,7 +108,7 @@ def figure(old_s, new_s, olddir, outdir):
         axs[1].plot(n["halving_times"], n["halving_odd_H"], "o-", color=c, ms=3)
     axs[0].axhline(4, **fs.GUIDE)
     axs[1].axhline(2, **fs.GUIDE)
-    axs[0].set_yscale("log")
+    axs[0].set_ylim(0, 17)
     axs[0].set_ylabel(r"even part of $\mathcal{H}$: factor $s=1$ / $s=1/2$")
     axs[1].set_ylabel(r"odd part of $\mathcal{H}$: factor $s=1$ / $s=1/2$")
     for ax in axs:

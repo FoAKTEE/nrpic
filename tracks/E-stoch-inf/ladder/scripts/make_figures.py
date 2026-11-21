@@ -336,10 +336,14 @@ def fig_a4(res, out):
         if zp is None or zn is None:
             continue
         cp, cn = zp["con"], zn["con"]
-        mm = min(len(cp), len(cn))
-        axs[2].plot(cn[:mm, 2], cn[:mm, 3] / cp[:mm, 3], "-", color=LCOL[n],
+        # rows of the two records at the same time only (wave 3, JOURNAL entries 12, 16):
+        # the control ends at t = 4.5 after a shortened step, its partner does not
+        ip = np.searchsorted(cp[:, 0], cn[:, 0]).clip(0, len(cp) - 1)
+        ok = np.abs(cp[ip, 0] - cn[:, 0]) <= TOL_T
+        ok[0] = False                      # t = 0: both at rounding
+        axs[2].plot(cn[ok, 2], cn[ok, 3] / cp[ip[ok], 3], "-", color=LCOL[n],
                     label=rf"$\mathcal{{H}}$, $N={n}$")
-        axs[2].plot(cn[:mm, 2], cn[:mm, 6] / cp[:mm, 6], "--", color=LCOL[n],
+        axs[2].plot(cn[ok, 2], cn[ok, 6] / cp[ip[ok], 6], "--", color=LCOL[n],
                     label=rf"$\mathcal{{M}}$, $N={n}$")
     axs[2].set_yscale("log")
     axs[2].set_ylabel("sign-flipped / proper (record)")
