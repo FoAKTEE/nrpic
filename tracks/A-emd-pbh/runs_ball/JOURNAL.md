@@ -661,3 +661,32 @@ Not done (resume in this order, after the flag is gone):
    prediction T, R2 re-judged, breakdown criteria named;
 5. when Slurm 4748 has finished: `after_wave3.sh box <run id of step 1>`, outcome of F;
 6. README (results table, how to rerun, Requests), commit, push.
+
+## 2026-11-20 23:55 PST, entry 16 (wave 3 batch 2b, helper runs_ball): resumed; prediction E (excision criterion), written before the diagnostic ran
+
+Resumed after the pause of entry 15. State found: card job of entry 14 (run
+A-20261120-223310-a9ce31a, Slurm 4748) ran on its own 14:46-14:47 PST, all three lines rc = 0,
+each to t = 24 (athena.log "Terminating on time limit"); manifest still "submitted". No analysis
+of this package had been registered since entry 15. The registered analysis of SR-1L and BH-1
+(`after_runs3.sh runs3`) is run A-20261121-074923-d396d73 (started 23:49 PST).
+
+Question left open by entry 9: which criterion removed 515 particles (rest mass 0.768) from the
+processor run of BH-1 at dx = M/2 although the lapse at the origin never fell below 0.48. The
+executable (core_gauge, source b4430da; `git show b4430da:athenak/src/particles/nrpic.cpp`
+lines 488-531) removes a particle in the push when (a) the lapse interpolated to it is below
+alpha_exc = 0.1, (b) it lies inside ah_exc_factor times the radius of a found horizon (absent
+from bh.athinput and bh_smr.athinput: default -1, off), or (c) its position or momentum is not
+finite after the push; all three write the same flag, and nrpic.hst counts them together
+([17], [18]); [16] alpha_min is the smallest lapse over all cells of the mesh. Diagnostic
+`excision.py` (new): mesh minimum of the lapse around every removal, last recorded lapse and
+momentum of each tracked particle that disappears, and the particles missing between snapshots.
+
+Prediction E [JUDGEMENT]:
+- E1 dx = M/2 (bh_n64, run A-20261119-145154-c40f0ce): the removals happen where the lapse of
+  the mesh is below 0.1 away from the origin (the 2-3 cell checkerboard of entry 9 at the
+  centre), so the mesh minimum alpha_min is below 0.1 in every interval in which particles are
+  removed, and the removed tracked particles have a last recorded lapse below 0.2: criterion (a).
+  Refuted by removals while alpha_min >= 0.1 (then criterion (c), non-finite particle states).
+- E2 BH-1 at dx = M/8 and BH-1R: particles are removed only after the first trapped region forms
+  (code time > 10.5), by criterion (a), inside the horizon (last recorded coordinate radius of a
+  removed tracked particle below the finder's mean radius, where the finder found one).
