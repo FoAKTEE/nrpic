@@ -934,7 +934,7 @@ A-20261121-074923-d396d73` (prediction F, entry 14; it closes the fixed-box card
 A-20261120-223310-a9ce31a and reruns compare.py on the three SR-1L runs of job 4642 for the
 corrected gauge figure and the light-speed number of S6).
 
-## 2026-11-21 00:30 PST, entry 18: outcome of prediction T (turnaround estimators), R2 re-judged, SR-1 breakdown criteria
+## 2026-11-21 00:23 PST, entry 18: outcome of prediction T (turnaround estimators), R2 re-judged, SR-1 breakdown criteria
 
 Run A-20261121-081138-ebe70b4 (`after_wave3.sh turnaround A-20261121-074923-d396d73`, completed;
 `turnaround.json`, `turnaround.log`). Figures `figs/fig_turnaround_{windows,particles,synthetic,
@@ -1017,3 +1017,54 @@ criteria), 33.125 / 30.75 (REVIEW-wave2 B2: the first cstat record that is non-f
 and with each other once the criterion is named. Proposed wording for the documents: "first
 non-positive metric determinant at t = 32.875 (dx = M/2) and 30.25 (dx = M); fields non-finite
 from 33.125 and 30.75-31.0".
+
+## 2026-11-21 00:30 PST, entry 19: outcome of prediction F (SR-1L on a fixed box) and of S6
+
+Card run A-20261120-223310-a9ce31a (Slurm 4748, ran on its own 14:46:13-14:47:44 PST on
+2026-11-20, all three lines rc = 0, each to t = 24 by "Terminating on time limit"; card time
+1.5 min = 0.025 card-hours; closed by `nrpic-run finish` in this session, 1238 files
+checksummed). Analysis A-20261121-081605-f95b10c (`after_wave3.sh box`, completed):
+compare.py on sr1lb_n64 (dx = M), sr1lb_n128 (M/2), sr1lb_n128h2 (M/2, h = M/2 lattice), all on
+[-32, 32]^3; summary3 of the fixed-box set with sr1l_n256L32; turnaround.py on all six SR-1L
+runs (`ta/`); compare.py again on the three SR-1L runs of job 4642 (`l64/`). Figures, each
+looked at: `figs/sr1lb_{n64,n128,n128h2}_{shells,events,misner_sharp,horizon,gauge}.png`,
+`fig_turnaround_{windows,particles,eps}_box.png` (their legends do not tell apart the three
+M/2 runs: the numbers below do), and the corrected `sr1l_{n128,n256,n256L32}_gauge.png` (the
+reference now falls after the turnaround and ends where it saturates).
+
+| run (box, lattice) | core max eps at tau = 16.894 | V3 | C | R_max err (V3) |
+|---|---|---|---|---|
+| sr1lb_n64 (L = 32, h = M/4), dx = M | 1.208e-2 | -0.378 | -0.401 | -1.6e-3 |
+| sr1lb_n128 (L = 32, h = M/4), dx = M/2 | 9.13e-4 | +0.0125 | +0.0140 | +2.1e-4 |
+| sr1l_n256L32 (L = 32, h = M/4), dx = M/4 | 1.52e-4 | -0.0049 | -0.0056 | -3.3e-5 |
+| sr1lb_n128h2 (L = 32, h = M/2), dx = M/2 | 6.40e-4 | -0.0063 | -0.0046 | +1.1e-4 |
+| sr1l_n256 (L = 64, h = M/2), dx = M/2 | 6.40e-4 | -0.0063 | -0.0099 | +1.1e-4 |
+
+- F1 HOLDS: the three runs reach t = 24 with finite fields.
+- F2 HOLDS: at fixed box and lattice the core error falls monotonically, 1.21e-2 -> 9.13e-4 ->
+  1.52e-4; apparent order M/2 -> M/4 2.59 (summary3 `orders`; predicted 2 to 4.5); M -> M/2 3.73.
+- F3 HOLDS: box half-width 32 against 64 at dx = M/2 and h = M/2: core error 6.399e-4 against
+  6.400e-4 (identical to 2e-4 relative), turnaround V3 -0.0063 in both, C -0.0046 against -0.0099
+  (0.005 M, bound 0.01). The box does not reach the core before tau = 16.9.
+- F4 REFUTED: at dx = M/2 the lattice matters. h = M/4 (eight particles per cell) against
+  h = M/2 (one per cell): core error 9.13e-4 against 6.40e-4 (+43 per cent, bound 30), turnaround
+  +0.0125 against -0.0063 (V3) and +0.0140 against -0.0046 (C): 0.019 M apart (bound 0.01). The
+  finer lattice is the worse one at this mesh [JUDGEMENT: a lattice of one particle per cell sits
+  symmetric to the cells and deposits the homogeneous core exactly; eight per cell does not, see
+  `sr1lb_n128_events.png`, the jump of the per-particle turnaround at R_i = 2].
+- F5 HOLDS: |C| falls from 0.0140 (M/2) to 0.0056 (M/4) at fixed box and lattice, 0.401 M at
+  dx = M (> 0.3); the mean R_max error falls at order 2.63 (M/2 -> M/4, bound 1.5).
+- Refutation clause not met. Consequence for wave 2's "apparent order 3.0-4.3 between M/2 and
+  M/4" (entry 6) and S5 (2.08): the box does not matter (F3), the lattice does (F4). The clean
+  three-mesh set at fixed box and lattice (h = M/4, L = 32) gives core-error orders 3.73 and 2.59;
+  the turnaround error changes sign between M/2 (+0.014) and M/4 (-0.006), so its magnitude falls
+  (0.40 -> 0.014 -> 0.006 M) but no order is claimed; a fourth mesh (M/8) would be needed
+  (conv_ball's package).
+- S6 (entry 7) HOLDS: the largest radial coordinate light speed alpha/sqrt(g_rr) on the line for
+  t <= 20 is 1.108 (M, M/2, L = 64) and 1.111 (L = 32 runs), with the radial shift added 1.130 and
+  1.131 (bound 1.5); to t = 44 at most 1.126 (1.143 with the shift) (`line_light_speed`, l64/ and
+  the fixed-box numbers). SR-2 reached 1.85 in lapse alone.
+- Also seen: at L = 32 the outflow boundary injects constraint violation that reaches r ~ 10 M by
+  t = 24 (`sr1lb_*_gauge.png` bottom right; mean |H| 4.9e-4 at t = 24 against 4.2e-5 at L = 64) and
+  the line Misner-Sharp error beyond r = 8 M rises to 7e-2 (`sr1lb_n128_misner_sharp.png`); the
+  core shells are not affected by t = 24.
