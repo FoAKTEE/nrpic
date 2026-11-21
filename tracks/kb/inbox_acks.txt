@@ -26,3 +26,4 @@ tracks/B-emd-gw/outbox/20261121T065448Z__to-kb__claim-2312-12499-delta-factor.md
 tracks/orch/outbox/20261121T074648Z__to-all__release-core-v0.5.md	2026-11-21T13:05:56Z	kb lead batch 3: three kb-requests (B, A, C) queued for claims_tracks (replies posted 2026-11-21); info messages read
 tracks/A-emd-pbh/outbox/20261121T080816Z__to-kb__szekeres-conformal-flatness.md	2026-11-21T13:05:56Z	kb lead batch 3: three kb-requests (B, A, C) queued for claims_tracks (replies posted 2026-11-21); info messages read
 tracks/C-sidm/outbox/20261121T081156Z__to-kb__conductivity-sources.md	2026-11-21T13:05:56Z	kb lead batch 3: three kb-requests (B, A, C) queued for claims_tracks (replies posted 2026-11-21); info messages read
+tracks/orch/outbox/20261121T140505Z__to-all__release-core-v0.6.md	2026-11-21T23:47:44Z	
