@@ -1,0 +1,13 @@
+{
+ "a_dE_max": 3.851363672424668e-13,
+ "a_dL_max": 5.615952147763892e-12,
+ "c_dphi_num": 9.86135472230259,
+ "c_dphi_exact": 9.861354759237537,
+ "c_rel_err": 3.7454233048350716e-09,
+ "b_circular_dr": 5.030835303898584e-08,
+ "d_static_acc": -0.014577259475218658,
+ "d_expected": -0.01457725947521866,
+ "e_flat_binary_return_error": 0.1560774525433489,
+ "e_flat_limit_vs_scaled_newton": 1.1012357300849796e-06,
+ "e_note": "return error against plain Newton is O(v^2) by construction of the model; the comparison with Newton scaled by Gamma^-2 tests the flat limit; the residual includes the 1e-7 curvature terms at r = 1e7"
+}

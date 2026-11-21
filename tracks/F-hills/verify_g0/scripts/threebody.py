@@ -305,7 +305,7 @@ def start_states(M, m1, m2, ab, rp, phases, k0, mu_conv="total"):
     return y, rt, t_to_peri
 
 
-def scan(q, ab, rp, nphase, rtol, t_after, mu_conv="total"):
+def scan(q, ab, rp, nphase, rtol, t_after, mu_conv="total", with_u=False, max_steps=None):
     M, m1, m2 = 1.0, 0.5 / q, 0.5 / q
     mb = m1 + m2
     phases = (np.arange(nphase) + 0.5) * np.pi / nphase
@@ -349,7 +349,21 @@ def scan(q, ab, rp, nphase, rtol, t_after, mu_conv="total"):
     yB = yA.copy()
     yB[:, 4:6] += vcm_g - vcm
     yB[:, 6:8] += vcm_g - vcm
-    for lab, y0 in (("hrna_handoff", yA), ("hrna_grmatched", yB)):
+    cons = [("hrna_handoff", yA), ("hrna_grmatched", yB)]
+    if with_u:
+        # hypothesis H-u: the Newtonian velocities read as u^i = dx^i/dtau of each member
+        # (Schwarzschild coordinates): dx/dt = u/u^t, u^t = ((1 + u^2 + h (n.u)^2)/f)^(1/2)
+        yU = yA.copy()
+        for i in range(2):
+            xi, ui = yA[:, 2 * i:2 * i + 2], yA[:, 4 + 2 * i:6 + 2 * i]
+            ri = np.linalg.norm(xi, axis=1)
+            ni = xi / ri[:, None]
+            fi, hi = 1 - 2 / ri, 2 / (ri - 2)
+            ur = np.sum(ni * ui, 1)
+            ut = np.sqrt((1 + np.sum(ui * ui, 1) + hi * ur * ur) / fi)
+            yU[:, 4 + 2 * i:6 + 2 * i] = ui / ut[:, None]
+        cons.append(("hrna_u", yU))
+    for lab, y0 in cons:
         alive = np.ones((nphase, 2), bool)
         hr_rhs = make_hrna_rhs(m1, m2, alive)
 
@@ -363,14 +377,16 @@ def scan(q, ab, rp, nphase, rtol, t_after, mu_conv="total"):
                     alive[idx[hit], i] = False
                     ynew[hit, 4 + 2 * i:6 + 2 * i] = 0.0
             return np.zeros(len(idx), bool), ynew
-        E0, L0 = hrna_energy(np.stack([xcm], 0)[0], (vcm if lab == "hrna_handoff" else vcm_g))
-        tH, yH, _, nacc = vint.integrate(hr_rhs, y0, th, t_end, rtol=rtol, atol=rtol * 1e-3, h0=1e-2, callback=cb)
+        vc0 = (m1 * y0[:, 4:6] + m2 * y0[:, 6:8]) / mb
+        E0, L0 = hrna_energy(np.stack([xcm], 0)[0], vc0)
+        tH, yH, _, nacc = vint.integrate(hr_rhs, y0, th, t_end, rtol=rtol, atol=rtol * 1e-3, h0=1e-2, callback=cb,
+                                         max_steps=max_steps)
         plunged = ~alive.all(1)
         dd = yH[:, 2:4] - yH[:, 0:2]
         E12h = 0.5 * m1 * m2 / mb * np.sum((yH[:, 6:8] - yH[:, 4:6]) ** 2, 1) - m1 * m2 / np.linalg.norm(dd, axis=1)
         out[lab] = dict(separated=float(np.mean(plunged | (E12h > 0))), plunge=float(np.mean(plunged)),
                         cm_E_median=float(np.median(E0)), cm_L_median=float(np.median(L0)),
-                        steps_max=int(nacc.max()))
+                        steps_max=int(nacc.max()), unfinished=int(np.sum(tH < t_end * (1 - 1e-12))))
     out.update(q=q, a_b=ab, rp=rp, D=rp / rt, nphase=nphase, mu_conv=mu_conv, t_handoff_median=float(np.median(th)),
                t_to_peri_from_10rt=t_to_peri, t_after=t_after, rtol=rtol)
     return out
@@ -532,6 +548,8 @@ def main():
     ap.add_argument("--mode", choices=("passages", "scan", "selftest", "s1"), required=True)
     ap.add_argument("--betas", default="3,10")
     ap.add_argument("--mu-conv", choices=("total", "M"), default="total")
+    ap.add_argument("--with-u", action="store_true")
+    ap.add_argument("--max-steps", type=int, default=None)
     ap.add_argument("--rtol", type=float, default=1e-10)
     ap.add_argument("--nphase", type=int, default=180)
     ap.add_argument("--cases", default="10:3:8,10:3:13,4:5:9.82")
@@ -555,7 +573,7 @@ def main():
         rows = []
         for c in a.cases.split(","):
             q, ab, rp = (float(s) for s in c.split(":"))
-            row = scan(q, ab, rp, a.nphase, a.rtol, a.t_after, a.mu_conv)
+            row = scan(q, ab, rp, a.nphase, a.rtol, a.t_after, a.mu_conv, a.with_u, a.max_steps)
             rows.append(row)
             print(json.dumps(row), flush=True)
             json.dump(rows, open(os.path.join(a.out, "scan.json"), "w"), indent=1)

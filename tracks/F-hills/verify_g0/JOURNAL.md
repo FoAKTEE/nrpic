@@ -171,3 +171,23 @@ within 3 sigma. Refuted if they stay at 0.49 and 0.01, or overshoot beyond 3 sig
   and 0.148 at beta = 8.5 at pericentre (alpha_all); the ledger's 0.0056 is the maximum only
   while the instantaneous pair energy is negative. K14: the card smoke F-20261115-174602-c6879fe
   peaked at 70847 MiB with a slot limit of 2700 (26.2 MiB per slot all-in; 81920 MiB card).
+
+## Entry 6 (2026-11-21 03:25 UTC): r_p = 13 disagreement, hypothesis H-u, prediction
+
+R4b F-20261121-031920-5e6425e (q = 10, r_p = 13, 180 phases): Newton separated 0.422 against
+the track's 0.22 (about 6 sigma), HRNA hand-off separated 0.939 (0.98) and plunge 0.017 against
+0.30; my GR-matched start plunges 0.161. At D = 2.01 the encounter sits on the edge of the
+restricted problem (P falls from 0.31 at D = 2.0 to 0 at 2.09, R5), so small differences of
+construction move the Newton fraction a lot; the HRNA plunge difference is not explained by
+that. Physical estimate [JUDGEMENT]: with the hand-off CM L = 5.86 (E = 1.010) a member loses
+about 13 x 0.09 = 1.2 in L at pericentre, so stays above the plunge value 4: plunges should be
+rare at 13 M, as I find.
+
+Hypothesis H-u: the track's V7 fed the Newtonian velocities to the HRNA as u^i = dx^i/dtau
+(not dx/dt), which lowers the CM's L in the Schwarzschild reading from 5.86 to about 5.3 at
+r_p = 13 and deepens the encounter. New construction `hrna_u` in `threebody.py --with-u`
+(plus a per-trajectory step cap, `--max-steps`, after R4 spent more than 15 minutes on
+r_p = 12). Prediction: with `hrna_u` the HRNA plunge fractions at q = 10, r_p = 8, 12, 13 move
+to the track's 0.94, 0.69, 0.30 within 3 sigma (0.05, 0.10, 0.10). Refuted if they stay near
+my hand-off values or miss by more than 3 sigma. A 12-phase debug trial at r_p = 13 gave plunge
+0.17 (not evidence).

@@ -20,7 +20,7 @@ E = B5 - B4
 
 
 def integrate(rhs, y0, t0, t_end, rtol=1e-10, atol=1e-12, h0=1e-3, callback=None,
-              max_iter=10_000_000, hmax=np.inf):
+              max_iter=10_000_000, hmax=np.inf, max_steps=None):
     """rhs(t, y, idx) -> dy/dt for the rows idx (y has the rows idx only).
     callback(t_old, y_old, t_new, y_new, idx) -> boolean array 'stop' for rows idx, or a
     tuple (stop, y_new_modified) to change the accepted states.
@@ -69,5 +69,7 @@ def integrate(rhs, y0, t0, t_end, rtol=1e-10, atol=1e-12, h0=1e-3, callback=None
                     res, y[a_idx] = res
                 stop = np.asarray(res, bool)
             fin = (t[a_idx] >= tend[a_idx] * (1 - 1e-15)) | stop
+            if max_steps is not None:                 # per-trajectory cap: left unfinished (t < t_end)
+                fin |= nacc[a_idx] >= max_steps
             done[a_idx[fin]] = True
     return t, y, done, nacc
