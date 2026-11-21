@@ -825,7 +825,7 @@ replaced by 25 at the last time-matched dump (N = 3.93), with the warning that t
 N = 4.4 has no time-matched partner; the record maxima come from `max_record_con`. Every
 verdict is unchanged.
 
-## Entry 18, 2026-11-21 03:14Z: L5 also on the processors (hedge against the queue); prediction
+## Entry 18, 2026-11-21 03:11Z: L5 also on the processors (hedge against the queue); prediction
 
 Why: at 03:10Z card job 4757 (items b, c) waits behind four jobs (two cards, one held by
 another user), and items (b) and (d) need the card; L5 needs none (one shell, 12 modes, 64^3,
