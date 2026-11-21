@@ -1,0 +1,40 @@
+{
+ "isolated": {
+  "baseline": "core-20261115-160219-87e189e",
+  "new": "core-20261115-160221-87e189e",
+  "identical": [
+   "newton.newton.hst",
+   "newton.nrpic.hst",
+   "newton.part.00000.bin",
+   "newton.part.00001.bin",
+   "newton.part.00002.bin",
+   "rst/newton.00000.rst",
+   "rst/newton.00000.rst.prt",
+   "rst/newton.00000.rst.prt.nwt",
+   "rst/newton.00001.rst",
+   "rst/newton.00001.rst.prt",
+   "rst/newton.00001.rst.prt.nwt"
+  ],
+  "differ": [],
+  "status_baseline": "exit 0, wall 0.5 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-160219-87e189e",
+  "status_new": "exit 0, wall 0.6 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-160221-87e189e"
+ },
+ "periodic": {
+  "baseline": "core-20261115-160223-87e189e",
+  "new": "core-20261115-160227-87e189e",
+  "identical": [
+   "newton.newton.hst",
+   "newton.nrpic.hst",
+   "newton.part.00000.bin",
+   "rst/newton.00000.rst",
+   "rst/newton.00000.rst.prt",
+   "rst/newton.00000.rst.prt.nwt",
+   "rst/newton.00001.rst",
+   "rst/newton.00001.rst.prt",
+   "rst/newton.00001.rst.prt.nwt"
+  ],
+  "differ": [],
+  "status_baseline": "exit 0, wall 2.0 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-160223-87e189e",
+  "status_new": "exit 0, wall 2.2 s, output /data/haiyangw/nrpic/scratch/core/core-20261115-160227-87e189e"
+ }
+}

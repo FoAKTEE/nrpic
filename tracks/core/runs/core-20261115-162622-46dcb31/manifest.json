@@ -1,0 +1,42 @@
+{
+ "run_id": "core-20261115-162622-46dcb31",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu/src/athena",
+  "-r",
+  "gauss.00001.rst",
+  "time/tlim=100.0"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-162622-46dcb31",
+ "commit": "46dcb31",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-162445-46dcb31/rst/gauss.00001.rst",
+   "sha256": "cab35543dbf2a04efe78c355afa82a90a5183cd7853e12a57013d7776e92516e"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-162445-46dcb31/rst/gauss.00001.rst.prt",
+   "sha256": "0a5f54ac01f92503d3b114848ad18901b829f0ea875c987859ef73d27e64146b"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/idsolve_ic/gauss_h0p5.nrp",
+   "sha256": "fb63b25c87a659fb7cc49c522eb30989325c0460f2c17ca5bac852181bb76f2d"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-idsolve/.work/build_cpu/src/athena",
+   "sha256": "65e3a59ffc0eeb22cee5ae4f81bd8560dc6518fb32562f63abd6771f6e6a814a",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-162622-46dcb31",
+ "purpose": "initial-data solver: continuation of core-20261115-162445-46dcb31 from its restart dump",
+ "kind": "scouting",
+ "tag": "idsolve-evo-gauss-restart",
+ "state": "finished",
+ "wall_time_s": 26.75,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T16:26:22Z"
+}

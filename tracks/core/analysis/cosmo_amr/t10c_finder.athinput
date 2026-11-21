@@ -1,0 +1,59 @@
+# T10c of the work package cosmo-amr: finder options for the restart of T10b at t = 10
+# (tracks/core/JOURNAL-cosmo-amr.md).  Read with -r <file.rst> -i <this file>: the block
+# replaces the finder options stored in the restart file.  hmean_tol is compared with
+# the surface INTEGRAL of the expansion, which in this box is of order 1e3 for a sphere
+# of coordinate radius 2 (proper area 5e4): the value 100 of the first run ended every
+# search at its first iteration.
+<fastflow>
+find_every        = 16
+metric_drvts      = interpolant
+num_horizons      = 4
+npunct            = 0
+ntheta            = 16
+lmax              = 8
+verbose           = false
+diagnostics       = true
+use_puncture_0    = -1
+center_x_0        = 0.0
+center_y_0        = 0.0
+center_z_0        = 0.0
+initial_radius_0  = 2.0
+flow_iterations_0 = 200
+flow_alpha_beta_const_0 = 1.0
+hmean_tol_0       = 1.0e30
+mass_tol_0        = 1.0e-5
+start_time_0      = 0.0
+stop_time_0       = 1000.0
+use_puncture_1    = -1
+center_x_1        = 0.0
+center_y_1        = 0.0
+center_z_1        = 0.0
+initial_radius_1  = 0.8
+flow_iterations_1 = 200
+flow_alpha_beta_const_1 = 1.0
+hmean_tol_1       = 1.0e30
+mass_tol_1        = 1.0e-5
+start_time_1      = 0.0
+stop_time_1       = 1000.0
+use_puncture_2    = -1
+center_x_2        = 0.0
+center_y_2        = -0.59
+center_z_2        = 0.0
+initial_radius_2  = 0.25
+flow_iterations_2 = 200
+flow_alpha_beta_const_2 = 1.0
+hmean_tol_2       = 1.0e30
+mass_tol_2        = 1.0e-5
+start_time_2      = 0.0
+stop_time_2       = 1000.0
+use_puncture_3    = -1
+center_x_3        = 0.0
+center_y_3        = 0.59
+center_z_3        = 0.0
+initial_radius_3  = 0.25
+flow_iterations_3 = 200
+flow_alpha_beta_const_3 = 1.0
+hmean_tol_3       = 1.0e30
+mass_tol_3        = 1.0e-5
+start_time_3      = 0.0
+stop_time_3       = 1000.0

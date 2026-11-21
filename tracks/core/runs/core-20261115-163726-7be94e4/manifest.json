@@ -1,0 +1,39 @@
+{
+ "run_id": "core-20261115-163726-7be94e4",
+ "owner": "core",
+ "track": "core",
+ "gate": "G2",
+ "purpose": "T3d ladder N = 32, 64, 128 and cost: analysis of the card runs of core-20261115-155404-24c88e3 (no AthenaK run)",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/scalar2/t3d_ladder.py",
+  "--card",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-155404-24c88e3",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-163726-7be94e4"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-scalar2",
+ "commit": "7be94e4f4bd6931eaa2bf16c2480eb9385f366db",
+ "branch": "core/scalar-2",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/scalar2/t3d_ladder.py",
+   "sha256": "0445a96573a1f1fe2feb3b9d6637b05110ae368b0eef36356753903c24f8edf6"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-163726-7be94e4",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-163726-7be94e4"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:37:26Z",
+ "cores": 1,
+ "registered_by": "tracks/core/analysis/scalar2/runreg.py (by hand: nrpic-run submit fails with KeyError 'outputs')",
+ "status": "completed",
+ "wall_time_s": 8.13,
+ "exit_status": 0,
+ "end_utc": "2026-11-15T16:37:34Z",
+ "core_hours": 0.0023
+}

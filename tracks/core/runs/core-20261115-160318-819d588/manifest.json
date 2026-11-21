@@ -1,0 +1,31 @@
+{
+ "run_id": "core-20261115-160318-819d588",
+ "owner": "core",
+ "purpose": "Rerun of wave 1 with the executable of core/collisions-2 (options absent): P0 kernels against the track's test vectors; outputs compared with core-20261115-132556-a7dc8ab",
+ "kind": "production",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-coll2/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-coll2/tracks/core/analysis/collisions/run_kernel_test.py",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160318-819d588"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-160318-819d588",
+ "commit": "819d5884593858da1cccbc29bd81e893bd9f5040",
+ "branch": "core/collisions-2",
+ "uncommitted_changes": [
+  "M tracks/core/runs/core-20261115-155758-5a61782/manifest.json",
+  "?? tracks/core/analysis/collisions/rerun_wave1.py"
+ ],
+ "inputs": [
+  {
+   "path": "tracks/core/analysis/collisions/run_kernel_test.py",
+   "sha256": "014bcaeef77c14efc7a8fe587ffc2c8daed52a3958d296b162ab43e3660ca652"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-160318-819d588",
+ "host": "anta",
+ "start_utc": "2026-11-15T16:03:18Z",
+ "cores": 1,
+ "wall_time_s": 18.46,
+ "exit_status": 0,
+ "core_hours": 0.0051
+}

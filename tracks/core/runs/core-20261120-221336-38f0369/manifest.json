@@ -1,0 +1,36 @@
+{
+ "run_id": "core-20261120-221336-38f0369",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-mpi/tracks/core/analysis/mpi/mpi_tests.py",
+  "--case",
+  "t7_ah_exc",
+  "--out",
+  "t7_ah_exc"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261120-221336-38f0369",
+ "commit": "38f0369",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "problems/tests/mpi_puncture_exc.athinput",
+   "sha256": "ec237d376fa5781fb079ca2573d61349dc33e6f80b54f83e7a125d0d7345c013"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-mpi/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261120-221336-38f0369",
+ "purpose": "mpi T7 t7_ah_exc: moving puncture with tracker, adaptive mesh, horizon finder; test particles removed inside 0.8 of the horizon radius; 1, 2, 4 ranks, 24 cycles (journal entry 24 of JOURNAL-mpi.md); registered by hand: nrpic-run refused (15 cores of owner core busy)",
+ "kind": "scouting",
+ "tag": "mpi-t7",
+ "state": "finished",
+ "wall_time_s": 445.05,
+ "exit_status": 0,
+ "cores": 6,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-20T22:13:36Z"
+}

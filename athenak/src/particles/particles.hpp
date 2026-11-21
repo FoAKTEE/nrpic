@@ -20,6 +20,7 @@
 #include "tasklist/task_list.hpp"
 #include "bvals/bvals.hpp"
 #include "particles/nrpic_external.hpp"
+#include "particles/nrpic_threads.hpp"
 
 // forward declarations
 
@@ -121,6 +122,25 @@ struct NrpicOptions {
                                // geodesic that carries no sources; true (null): m = 0
                                // follows a null geodesic on the mesh metric, the rule of
                                // releases core-v0.2 and core-v0.3
+  // ---- refined meshes in periodic runs (package cosmo-amr) ----
+  bool deposit_fine = false;   // <particles> deposit_fine_shape: where the cells of a
+                               // cloud are coarser than the leaf cells, the weight of
+                               // each cloud cell is distributed over its leaf cells to
+                               // first order (weight and slope of the assignment
+                               // function), not as a constant
+};
+
+//----------------------------------------------------------------------------------------
+//! \struct NrpicRegionOptions
+//  \brief options of the constraint norms inside and outside spheres (nrpic_region.cpp)
+
+struct NrpicRegionOptions {
+  int dcycle = 0;                       // <particles> region_dcycle (0: off)
+  Real center[3] = {0.0, 0.0, 0.0};     // region_x1, region_x2, region_x3
+  int nsphere = 0;                      // number of radii region_radius1..4
+  Real radius[4] = {0.0, 0.0, 0.0, 0.0};
+  int horizon = -1;                     // region_horizon: index of a horizon finder
+  Real horizon_factor = 1.0;            // region_horizon_factor
 };
 
 //----------------------------------------------------------------------------------------
@@ -158,6 +178,41 @@ struct NrpicCollideOptions {
   std::uint64_t seed = 0;    // seed of the run (<job> rng_seed)
   int face_maxlev = -1;      // finest level of the tabulated face positions
   bool face_warned = false;  // the warning about MeshBlock edges has been printed
+  int energy = 0;            // <particles> coll_energy: 0 the pair conserves its energy
+                             // with the metric of the cell centre, 1 with the metric at
+                             // each particle (canonical energy alpha W - beta^i u_i)
+  bool ext = false;          // coll_energy is present: history columns 32 to 35
+};
+
+//----------------------------------------------------------------------------------------
+//! \struct NrpicPerturbOptions
+//  \brief radial force on all particles during an interval (nrpic_perturb.cpp)
+
+struct NrpicPerturbOptions {
+  bool on = false;           // <particles> perturb_gamma is present and not zero
+  Real gamma = 0.0;          // du_i/dt += gamma (x^i - c^i)/|x - c|
+  Real tstart = 0.0;         // the force acts for tstart <= t < tstart + duration
+  Real duration = 0.0;
+  Real centre[3] = {0.0, 0.0, 0.0};
+};
+
+//----------------------------------------------------------------------------------------
+//! \struct NrpicIdSolveOptions
+//  \brief options of the initial-data solver (nrpic_idsolve.cpp)
+
+struct NrpicIdSolveOptions {
+  bool on = false;           // <particles> id_solve
+  int residual = 0;          // 0: constraint monitor of the code, 1: seven-point stencil
+  Real tol = 1.0e-10;        // largest residual over the largest term of the equation
+  int maxit = 60;            // outer (Newton) iterations
+  Real lin_tol = 1.0e-3;     // conjugate gradients: residual over right side
+  int lin_maxit = 50;        // conjugate-gradient steps of one linear solve
+  Real mg_tol = 1.0e-3;      // defect over source at which a preconditioner solve ends
+  int psi_init = 0;          // start value: 0 trial conformal factor, 1 psi = 1
+  bool dump = false;         // write <basename>.idsolve.bin
+  bool vector = false;       // also solve the momentum constraint for W (id_vector)
+  int vec_residual = 1;      // vector residual: 1 stencil form, 0 constraint monitor
+  Real vec_tol = 1.0e-10;    // tolerance of the vector part (id_vector_tol)
 };
 
 //----------------------------------------------------------------------------------------
@@ -268,6 +323,7 @@ class Particles {
   DvceArray5D<Real> met0;          // alpha, beta^i, gamma_ij at t^n
   DvceArray5D<Real> met1;          // alpha, beta^i, gamma_ij at t^{n+1}
   DvceArray5D<Real> tm_work;       // work array for the source filter
+  nrpic::ThreadDeposit thread_dep; // deposit target of a threaded build (nrpic_threads.hpp)
   DvceArray5D<Real> tm_prev;       // source densities of the previous deposit
   bool tm_prev_valid = false;      // tm_prev belongs to the current mesh
   DvceArray4D<Real> e_prev;        // sqrt(gamma) E of the previous deposit
@@ -350,6 +406,7 @@ class Particles {
   DvceArray1D<int> coll_cell, coll_list, coll_count, coll_begin;   // cell lists
   DvceArray1D<std::uint64_t> coll_key;                             // pairing words
   DvceArray1D<Real> coll_face;                                     // face positions
+  DvceArray2D<Real> coll_pmet;     // metric at the particles (coll_energy = particle)
   void NrpicCollideInit(ParameterInput *pin);
   TaskStatus NrpicCollide(Driver *pdriver, int stage);
 
@@ -376,6 +433,16 @@ class Particles {
   void NrpicAccWriteRestart(std::FILE *fp);
   void NrpicAccReadRestart(std::FILE *fp, const int np, HostArray2D<int> &ih);
   void NrpicAccWriteSnapshot(std::FILE *fp);
+
+  // radial force during an interval: dynamically accessible perturbation of an
+  // equilibrium (nrpic_perturb.cpp)
+  NrpicPerturbOptions pert;
+  void NrpicPerturbInit(ParameterInput *pin);
+  void NrpicPerturbKick(const Real t0, const Real t1);
+  // constraint norms inside and outside spheres on any mesh (nrpic_region.cpp)
+  NrpicRegionOptions region;
+  void NrpicRegionInit(ParameterInput *pin);
+  void NrpicWriteRegion(Real time, int ncycle, bool header);
 
   // ---- Newtonian mode of the nrpic module (particles/nrpic_newton.cpp) ----
   NrpicExternalOptions next;        // fixed point mass, background acceleration
@@ -450,6 +517,41 @@ class Particles {
   void NrpicNewtonGroupInit(ParameterInput *pin);
   void NrpicNewtonGroupSums(const Real time, const int ncycle);
   void NrpicNewtonGroupWrite(Real time, int ncycle, bool header);
+
+  // ---- initial-data solver (particles/nrpic_idsolve.cpp) ----
+  // Solves the Hamiltonian constraint for the conformal factor on the mesh, with the
+  // sources deposited by this module, before the first deposit of a new run.
+  NrpicIdSolveOptions ids;
+  MeshBoundaryValuesCC *pbval_ids = nullptr;   // ghost cells of psi and of corrections
+  DvceArray5D<Real> ids_coarse;                // unused coarse array of that exchange
+  void NrpicIdSolveInit(ParameterInput *pin);
+  void NrpicSolveInitialData();
+  // ---- more than one MPI rank (particles/nrpic_mpi.cpp, interfaces/mpi.md) ----
+  bool nr_multirank = false;        // the run has more than one rank
+  DvceArray2D<Real> gb_ext;         // extent of every MeshBlock of the mesh (g, 0..5)
+  DvceArray2D<int> gb_lr;           // its logical level and its rank (g, 0..1)
+  int gb_nmb = 0, gb_seq = -1;      // size of that table, mesh update it belongs to
+  DvceArray2D<Real> dep_aux;        // deposit: Lorentz factor and level shift of a cloud
+  DvceArray2D<Real> mpi_save_r;     // arrays of rank 0 while it holds all particles
+  DvceArray2D<int> mpi_save_i;      // for a file write
+  int mpi_save_np = -1;
+  std::int64_t mpi_nmoved = 0;      // particles handed to other ranks and deposit
+  std::int64_t mpi_npacket = 0;     // packets sent by this rank since the last record
+  void NrpicMpiInit(ParameterInput *pin);
+  void NrpicMpiBuildBlockTable();
+  void NrpicMpiUpdateCounts();
+  void NrpicMpiAssignBlocks();
+  void NrpicMpiRemoveFlagged();
+  void NrpicMpiDepositRemote();
+  void NrpicMpiProbe(const Real px, const Real py, const Real pz, Real &sa, Real &se,
+                     Real &sw);
+  bool NrpicMpiGatherBegin();
+  void NrpicMpiGatherEnd();
+  void NrpicMpiGatherRecords(std::vector<double> &buf, const int nrec);
+  void NrpicMpiTrajSources(DvceArray2D<Real> &pmet);
+  void NrpicMpiWriteStepSources(std::FILE *fp);
+  void NrpicMpiShareRestart();
+  void NrpicMpiWriteHistory(Real time, int ncycle, bool header);
 
  private:
   MeshBlockPack* pmy_pack;  // ptr to MeshBlockPack containing this Particles

@@ -1,0 +1,40 @@
+{
+ "run_id": "core-20261115-161610-7d39f51",
+ "owner": "core",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-bfix/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-bfix/tracks/core/analysis/bfix/t3_thin_jitter.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-bfix/.work/exe/athena_cpu_w1",
+  "--out",
+  ".",
+  "--from-dir",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-160633-7d80187",
+  "--stages",
+  "jcheck,fig"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-161610-7d39f51",
+ "commit": "7d39f51",
+ "source_modified_since_commit": false,
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/scratch/core/core-20261115-160633-7d80187/results_t3.json",
+   "sha256": "f183a9fae75827f1e5be40dee235d0badde89f20a9bab2f33318a7160fb5c509"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/wt/core-bfix/.venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+   "role": "executable"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-161610-7d39f51",
+ "purpose": "T3b: analysis of the files of T3 (core-20261115-160633-7d80187): jitter of the same lattice sites in the thin box and in the cube compared modulo the box (P4c; the first version compared without the wrap), figure with corrected layout",
+ "kind": "scouting",
+ "tag": "T3b",
+ "state": "finished",
+ "wall_time_s": 21.34,
+ "exit_status": 0,
+ "cores": 1,
+ "card_hours": 0.0,
+ "started_utc": "2026-11-15T16:16:10Z"
+}

@@ -1,0 +1,130 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-025527-eb8e6b7",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "T10c of cosmo-amr: T10b restarted at t = 10 with four finder surfaces that can flow (hmean_tol 1e30); first restart of an adaptive run on a card",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/core/core-20261121-025527-eb8e6b7/batch.list"
+  ],
+  "cwd": "scratch/core/core-20261121-025527-eb8e6b7",
+  "git": {
+    "sha": "eb8e6b7c5727ac2ce8148a3f28ddc6b88e939636",
+    "branch": "core/cosmo-amr",
+    "dirty": false,
+    "merge_base_main": "44f7d887e2038f9d49e291bf339f7fedc97dddab",
+    "worktree": "wt/core-cosmo-amr"
+  },
+  "code": {
+    "core_tag": "core-v0.3",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cosmo",
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_gpu",
+    "exe_sha256": "500187966c78df67bef40c049809b2bf848b92d3b417e182b56b6be1d8c7c093",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "33c1dbb6673b68919eaa332b0add0b58aeac8be843f2071b9d06e2e0e397a96d",
+    "machine_file_sha256": "0321f40f4caeeb2a36624a9fa9809e60bad31071f366b3517ba23ad45698d2d7",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-cosmo-amr/.venv"
+  },
+  "input": {
+    "file": "/data/haiyangw/nrpic/scratch/core/core-20261120-220816-09f6f79/s1amr/rst/peak.00002.rst",
+    "sha256": "4671bfbd1e682449e93219b780b36113e2cedfe213ea7d29fb534cae6b3960d6",
+    "overrides": {
+      "output7/dt": "100.0"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_cosmo-amr/athena_gpu",
+      "role": "exe",
+      "sha256": "500187966c78df67bef40c049809b2bf848b92d3b417e182b56b6be1d8c7c093",
+      "bytes": 103180672,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/analysis/cosmo_amr/t10c_finder.list",
+      "role": "list",
+      "sha256": "fbdb5ebe451072bb0204203ccf88820cce8ea681897962c74d47a76b2441dbb3",
+      "bytes": 504,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261120-220816-09f6f79/s1amr/rst/peak.00002.rst",
+      "role": "athinput:s1fnd",
+      "sha256": "4671bfbd1e682449e93219b780b36113e2cedfe213ea7d29fb534cae6b3960d6",
+      "bytes": 1245739115,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "s1fnd",
+      "input": "/data/haiyangw/nrpic/scratch/core/core-20261120-220816-09f6f79/s1amr/rst/peak.00002.rst",
+      "args": [
+        "-i",
+        "/data/haiyangw/nrpic/wt/core-cosmo-amr/tracks/core/analysis/cosmo_amr/t10c_finder.athinput",
+        "output7/dt=100.0"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": 264.0,
+    "wall_limit": "00:15:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.25,
+    "gpu_hours": 0.0733,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "core-20261121-025527-eb8e6b7",
+    "job_ids": [
+      "4755"
+    ]
+  },
+  "outputs": {
+    "dir": "scratch/core/core-20261121-025527-eb8e6b7",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "f49d5da511f904b8b6aef8be834e03c9c276d794d7b1750ebaf44d1f858349c5",
+    "bytes": 4261944152,
+    "files": 54
+  },
+  "status": "failed",
+  "exit_code": 3,
+  "registered": "2026-11-21T02:56:00Z",
+  "started": "2026-11-20T19:18:11-08:00",
+  "ended": "2026-11-20T19:22:34-08:00",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 5.5266,
+    "gpu_hours_reserved": 0.7,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 1,
+    "runs": 1313,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-21T03:22:43Z"
+}

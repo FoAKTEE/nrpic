@@ -235,9 +235,16 @@ All measured on one A100, RK4, `nghost = 4`, 16^3 MeshBlocks, finder every 16 cy
 - Memory is allocated for `max_nmb_per_rank`, not for the current count: 46.6 GB for a
   limit of 2048 with one finder, 58.5 GB for 2400 with two, 63.1 GB for 2400 with
   three (22.75, 24.4 and 26.3 MB per block slot with one, two and three finders: each
-  finder adds about 2 MB per slot). A limit of 2700 with three finders is then 71 GB
-  [JUDGEMENT, linear in the slots; measurement pending in work package dfix]; a card
-  (80 GB) holds about 3000 slots with three finders.
+  finder adds about 2 MB per slot). Measured at a limit of 2700 with three finders
+  (work package dfix, card run core-20261119-143036-185800a, peak of `nvidia-smi`
+  sampled every 0.5 s; judged in core-20261120-220150-b6041db): 70753 MiB, reached 2 s
+  after the first sample (70685 MiB from 0.5 s) and unchanged to the end of 32 cycles
+  (the same in the 4-cycle timing run core-20261119-140644-074f8e3); predicted 70.9e3
+  from 26.27 MiB per slot. The history of the constraint norms at t = 0, 0.25, 0.5 equals
+  that of the 2400-slot run in every printed digit: the slot limit does not change the
+  evolution. Between 2400 and 2700 slots the memory rises by 25.6
+  MiB per slot, so about 1.5e3 MiB do not scale with the slots; a card (81920 MiB) then
+  holds about 3100 slots with three finders [JUDGEMENT, linear in the slots].
 - This package used 1.28 of its 3 card-hours (sum over the manifests).
 
 ## 6. With particles

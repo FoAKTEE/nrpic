@@ -74,6 +74,10 @@ void MeshBinaryOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
           + "." + out_params.file_id + number + ".bin";
   }
 
+  // NRPIC: bytes per value of the data (float by default, Real with
+  // <output> double_precision = true)
+  const std::size_t var_size = (out_params.double_precision)? sizeof(Real):sizeof(float);
+
   IOWrapper binfile;
   std::size_t header_offset=0;
   binfile.Open(fname.c_str(), IOWrapper::FileMode::write, single_file_per_rank);
@@ -93,7 +97,7 @@ void MeshBinaryOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
         << "  time=" << pm->time << std::endl
         << "  cycle=" << pm->ncycle << std::endl
         << "  size of location=" << sizeof(Real) << std::endl
-        << "  size of variable=" << sizeof(float) << std::endl
+        << "  size of variable=" << var_size << std::endl
         << "  number of variables=" << outvars.size() << std::endl
         << "  variables:  ";
     for (size_t n=0; n<outvars.size(); n++) {
@@ -138,7 +142,7 @@ void MeshBinaryOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
   // ois, oie, ojs, oje, oks, oke + il1, il2, il3, level +
   // x1min, x1max, x2min, x2max, x3min, x3max + data
   std::size_t data_size = 10*sizeof(int32_t) + 6*sizeof(Real)
-                        + (cells*nout_vars)*sizeof(float);
+                        + (cells*nout_vars)*var_size;
 
   int ns_mbs = pm->gids_eachrank[global_variable::my_rank];
   int nb_mbs = pm->nmb_eachrank[global_variable::my_rank];
@@ -215,6 +219,21 @@ void MeshBinaryOutput::WriteOutputFile(Mesh *pm, ParameterInput *pin) {
     pdata+=sizeof(xv);
 
     // output variables
+    if (out_params.double_precision) {
+      // NRPIC: values as they are stored (Real), same order as below
+      for (int n=0; n<nout_vars; n++) {
+        for (int k=oks; k<=oke; k++) {
+          for (int j=ojs; j<=oje; j++) {
+            for (int i=ois; i<=oie; i++) {
+              Real val = outarray(n,m,k-oks,j-ojs,i-ois);
+              memcpy(pdata,&val,sizeof(Real));
+              pdata+=sizeof(Real);
+            }
+          }
+        }
+      }
+      continue;
+    }
     float tmp_data;
     for (int n=0; n<nout_vars; n++) {
       int cnt=0;

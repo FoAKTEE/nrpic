@@ -1,0 +1,45 @@
+{
+ "run_id": "core-20261115-163141-ee2a188",
+ "owner": "core",
+ "purpose": "Test G of JOURNAL-clump.md: card executable of core/clump-curvature, byte regression without deposit against build_gpu_v03 and the smeared curvature against the processor runs core-20261115-154632-e1a4d0c, core-20261115-154749-e1a4d0c (job 4443)",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-clump/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-clump/tracks/core/analysis/clump/card_check.py",
+  "--base",
+  "/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core-clump/.work/build_gpu/src/athena",
+  "--t1",
+  "core-20261115-154632-e1a4d0c",
+  "--t3",
+  "core-20261115-154749-e1a4d0c",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-163141-ee2a188"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-163141-ee2a188",
+ "commit": "ee2a1885257fdfda11f68042b38432e1183017e9",
+ "branch": "core/clump-curvature",
+ "uncommitted_changes": [],
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena",
+   "sha256": "f9f2dc1273a19e7f78f89bebfd88d9eef6487de5c94aebba77b6fd35dc1be3a1"
+  },
+  {
+   "path": ".work/build_gpu/src/athena",
+   "sha256": "661b5534b162f026b541ced8f52c763f13ce3cf8f1a420e0aba556d0dd236312"
+  },
+  {
+   "path": "problems/tests/clump_static.athinput",
+   "sha256": "804f0677e191694553a81193f67a413ffca52ca4f2d34ea495915e17ff927289"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-163141-ee2a188",
+ "host": "anta",
+ "start_utc": "2026-11-15T16:31:43Z",
+ "cores": 1,
+ "wall_time_s": 20.6,
+ "exit_status": 0,
+ "card_hours": 0.0057
+}
