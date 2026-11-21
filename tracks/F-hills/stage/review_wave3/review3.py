@@ -203,7 +203,10 @@ def swept_gr(rp, r0):
     return 2 * val, L
 
 
-def swept_1pn(L, r0):
+def swept_1pn_at_peri(L, r0):
+    """First attempt (run F-20261121-063527-b4453db): E_1PN = 0 imposed AT PERICENTRE. Wrong
+    definition of the parabola: the truncated equation does not conserve E_1PN beyond 1PN
+    order, and imposing it where M/r = 0.1 leaves a hyperbola at large r. Kept for the record."""
     from scipy.integrate import solve_ivp
     from scipy.optimize import fsolve
     r_n = L * L / 2
@@ -217,6 +220,37 @@ def swept_1pn(L, r0):
     xe = s.y_events[0][0]
     phi = math.atan2(xe[1], xe[0]) % (2 * math.pi)
     return 2 * phi, rp
+
+
+def tm_E_J_general(r, vr, vt):
+    v2 = vr * vr + vt * vt
+    E = 0.5 * v2 - 1 / r + 0.375 * v2 ** 2 + 1.5 * v2 / r + 0.5 / r ** 2
+    J = r * vt * (1 + 0.5 * v2 + 3 / r)
+    return E, J
+
+
+def swept_1pn(L, r0):
+    """E_1PN = 0 and J = L imposed at r0 on the way in (where 1PN terms are 1e-4), integrated
+    through pericentre back to r0; returns the swept angle, the pericentre and E_1PN at the end."""
+    from scipy.integrate import solve_ivp
+    from scipy.optimize import fsolve
+    vt0 = L / r0
+    vr0 = -math.sqrt(max(2 / r0 - vt0 ** 2, 0.0))
+    vr, vt = fsolve(lambda p: list(np.array(tm_E_J_general(r0, p[0], p[1])) - np.array([0.0, L])),
+                    [vr0, vt0], xtol=1e-15)
+    ev = lambda t, y: np.linalg.norm(y[:3]) - r0
+    ev.terminal, ev.direction = True, 1
+    s = solve_ivp(tm_1pn, [0, 1e9], [r0, 0, 0, vr, vt, 0], method="DOP853", rtol=1e-12,
+                  atol=1e-13, events=ev, max_step=r0 / 20)
+    ang = np.unwrap(np.arctan2(s.y[1], s.y[0]))
+    xe = s.y_events[0][0]
+    a_end = ang[-1] + ((math.atan2(xe[1], xe[0]) - ang[-1] + math.pi) % (2 * math.pi) - math.pi)
+    r = np.linalg.norm(s.y[:3], axis=0)
+    rv = xe[:3]
+    vv = s.y_events[0][0][3:]
+    rn = np.linalg.norm(rv)
+    Eend, _ = tm_E_J_general(rn, (rv @ vv) / rn, np.linalg.norm(np.cross(rv, vv)) / rn)
+    return a_end, float(r.min()), float(Eend)
 
 
 def mode_eih(out):
@@ -242,9 +276,12 @@ def mode_eih(out):
         sg, L = swept_gr(rp, r0)
         p = L * L
         sn = 2 * math.acos(p / r0 - 1)
-        se, rp_h = swept_1pn(L, r0)
+        se, rp_h, e_end = swept_1pn(L, r0)
+        sp, rpp = swept_1pn_at_peri(L, r0)
         rows.append({"rp_areal": rp, "L": L, "swept_gr": sg, "swept_newton": sn, "swept_1pn": se,
-                     "rp_1pn_harmonic": rp_h, "err_exc": (se - sn) / (sg - sn) - 1})
+                     "rp_1pn_harmonic": rp_h, "E1pn_end": e_end, "err_exc": (se - sn) / (sg - sn) - 1,
+                     "first_attempt_E0_at_peri": {"swept": sp, "rp": rpp,
+                                                  "err_exc": (sp - sn) / (sg - sn) - 1}})
     res["t4_rows"] = rows
     ref = json.load(open(os.path.join(WT, "tracks/F-hills/eih/results/trust.json")))["rows"]
     refd = {r["rp_areal"]: r for r in ref}
