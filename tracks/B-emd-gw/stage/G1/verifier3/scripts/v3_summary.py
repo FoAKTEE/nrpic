@@ -178,9 +178,7 @@ def time_fig(case, fname, tlabel, period=None):
     fig, axs = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 5.6), sharex=True)
     fig.subplots_adjust(left=0.1, right=0.98, bottom=0.09, top=0.95, hspace=0.08, wspace=0.28)
     for p in (0, 1):
-        for N in sorted(summary[case]):
-            if not isinstance(N, int):
-                continue
+        for N in sorted(k for k in summary[case] if isinstance(k, int)):
             ts = TS[(case, N)]
             tt = ts["t"] / (period or 1.0)
             for dg in DIAGS:
