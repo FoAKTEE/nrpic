@@ -1068,3 +1068,17 @@ reference now falls after the turnaround and ends where it saturates).
   t = 24 (`sr1lb_*_gauge.png` bottom right; mean |H| 4.9e-4 at t = 24 against 4.2e-5 at L = 64) and
   the line Misner-Sharp error beyond r = 8 M rises to 7e-2 (`sr1lb_n128_misner_sharp.png`); the
   core shells are not affected by t = 24.
+
+## 2026-11-21 00:29 PST, entry 20: state at the end of the session
+
+Done and committed: both unattended card runs and the fixed-box run closed (completed); five
+registered analyses, all completed (A-20261121-074923-d396d73, -080558-02c3188, -081153-b92c08c,
+-081138-ebe70b4, -081605-f95b10c); entries 11, 12 (predictions S, B, entry 10, G2 items), 16-19
+(E, T with R2, F, S6); README (results table, how to rerun, requests). No card job was submitted
+in this session; the package's card time in wave 3 is the fixed-box job, 0.024 card-hours.
+Not pushed: the helper rules of this batch say "Do not push"; the lead pushes the branch.
+Open, for the lead or a later round: (1) the `_box` turnaround figures do not label the three
+M/2 runs apart (numbers are in entry 19); (2) BH-1R at a second refined resolution and a larger
+outer box for the convergence of horizon time and mass (conv_ball); (3) the interpolated-lapse
+excision near MeshBlock corners (README Requests, core) is a hypothesis about the cause, not
+tested here; (4) the finder at uniform M/8 with BH-1R's settings was not run.
