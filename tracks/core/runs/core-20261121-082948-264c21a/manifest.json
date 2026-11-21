@@ -1,0 +1,123 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-082948-264c21a",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "T128 of idsolve2 (journal entry 18): the solved Zel'dovich ball at 128 cells with its evolution, threaded processor build of the merge (395e17d) at 6 threads against the serial run of core-20261119-153416-3d26b50",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/idsolve2/check_threads.py",
+    "--exe",
+    "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/exe_395e17d/athena_cpu_omp",
+    "--serial-exe",
+    "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/exe_76add0c/athena_cpu",
+    "--threads",
+    "6",
+    "--tag",
+    "_n128",
+    "--cases",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-153416-3d26b50/zsol_n128"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "264c21ab4bc37cceb6fe7e78b74165f682429579",
+    "branch": "core/id-solver-2",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/idsolve2"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/core-idsolve2"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-idsolve2/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/idsolve2/check_threads.py",
+      "role": "argv",
+      "sha256": "0e2f431ec1d7e6e1044b55bca64f4a10d729f10c6b21ebe66e07acbffb0f5580",
+      "bytes": 6202,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/exe_395e17d/athena_cpu_omp",
+      "role": "argv",
+      "sha256": "eed2ae51f3faf315bc6304f72747122d06c7b0cf8710e75b973cbbefb23261e7",
+      "bytes": 312575504,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/exe_76add0c/athena_cpu",
+      "role": "argv",
+      "sha256": "4b3a63696aacb3c61adc425422dce2c1e7cff01f0048b65e859b72385ef97eef",
+      "bytes": 251066632,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 6,
+    "walltime_s": 531.278,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-082948-264c21a",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "4999781700cbca8fb8f48af35d59be348b1fe99960502a19222619785da5e13e",
+    "bytes": 828230921,
+    "files": 20
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-21T08:29:54Z",
+  "started": "2026-11-21T08:29:54Z",
+  "ended": "2026-11-21T08:38:46Z",
+  "parents": [
+    "core-20261119-153416-3d26b50"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 6.0704,
+    "gpu_hours_reserved": 0.72,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 2,
+    "runs": 1406,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-21T08:38:47Z"
+}
