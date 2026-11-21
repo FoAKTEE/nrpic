@@ -308,3 +308,27 @@ eta 6.2e-3; turnaround V3 -0.040, C -0.015 M; horizon mass median +5.0e-4 (windo
   (main.tex:945) [VERIFIED for these two runs; C decides the third point]. Prediction of entry
   6 ("|ddet|, |dtrap| fall monotonically, order >= 1 between A-N64 and B-N8"): HOLDS for ddet
   (1.05), fails narrowly for dtrap (0.75).
+
+## 2026-11-21 03:56 PST, entry 11: job 3b (B-R1.25, B-R1.35, B-L32): outcomes of the ball-radius and boundary predictions at B
+
+Job 3b (run A-20261121-110017-471b0ae, Slurm 4787, 03:09-03:40, 0.52 card-hours, closed): all
+three exit 0. Analysis A-20261121-115055-4554451 (convergence.md; B-R1.35_horizon.png looked at).
+C's second segment stopped at the wall at 03:49 and its third (Slurm 4789) started at once.
+
+| member | first detection t | ddet (M) | lag | dtrap (M) | turnaround C (M) | eta | mass median |
+|---|---|---|---|---|---|---|---|
+| B | 10.781 | +0.068 | 0.197 | -0.022 | -0.0127 | 3.1e-3 | -2.1e-3 |
+| B-R1.25 | 10.750 | +0.065 | 0.173 | -0.015 | -0.0041 | 3.7e-3 | -1.9e-3 |
+| B-R1.35 | 10.750 | +0.107 | 0.363 | -0.008 | -0.0048 | 5.8e-3 | -1.25e-3 |
+| B-L32 | 10.781 | +0.068 | 0.197 | -0.022 | -0.0127 | 3.1e-3 | -2.1e-3 |
+
+- R leg at B (entry 6: spread of ddet and dtrap at most half that at A, i.e. 0.047 and 0.032 M):
+  HOLDS, narrowly for ddet (0.042; A: 0.093) and clearly for dtrap (0.015; A: 0.064): the
+  ball-radius dependence of the time errors shrinks by 2.2 and 4.3 from A to B. B-R1.35's larger
+  ddet comes with a later finder detection (lag 0.36 against 0.17-0.20): the trapping per
+  particle (dtrap) is closer to exact in the larger balls, not further. The horizon mass is
+  nearly independent of the ball radius (spread 8e-4 against its mesh change of 9.4e-3 from A
+  to B); eta grows with lam (3.1e-3, 3.7e-3, 5.8e-3) [JUDGEMENT: the larger envelope, on the
+  coarser 4-8 M level, perturbs the core before its turnaround].
+- L leg at B (entry 6: B-L32 equals B to 1e-5 M): HOLDS, identical to 1e-11 in every quantity:
+  the outer boundary at 16 M does not reach any measured quantity before t = 16 at either mesh.
