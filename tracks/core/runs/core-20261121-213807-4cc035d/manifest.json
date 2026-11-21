@@ -1,0 +1,128 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-213807-4cc035d",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "verifier_g2 V5b: periodic cosmology on 1, 2, 4 MPI ranks (core-20261119-163641-ddb47b0), positions, sources at particles, deposition identity, own readers",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/verify/verifier_g2/scripts/v5_mpi.py",
+    "/data/haiyangw/nrpic/scratch/core/core-20261119-163641-ddb47b0/t6_cosmo_east",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "4cc035d7c9f5b60e58747b89ba8e4aa166b58850",
+    "branch": "core/nrpic",
+    "dirty": false,
+    "package": [
+      "tracks/core/verify/verifier_g2"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "9d43b229377786cc62ef7bb666b765abfdab30bc",
+    "worktree": "wt/core"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-163641-ddb47b0/t6_cosmo_east/np1/east.nrpic.hst",
+      "role": "input",
+      "sha256": "7d83f202d1b3e3b43e1be7e0b3f03e544148024f24fb4237f14de26bcbcebe06",
+      "bytes": 26709,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-163641-ddb47b0/t6_cosmo_east/np2/east.nrpic.hst",
+      "role": "input",
+      "sha256": "f1fd369f5d843f69272d871e3d2e6989ab3549ffb9d8047f8f619710e0843cac",
+      "bytes": 26751,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-163641-ddb47b0/t6_cosmo_east/np4/east.nrpic.hst",
+      "role": "input",
+      "sha256": "2ea8767de424e7d7185e40bb279fb7948df855993b74998eb525758c83123453",
+      "bytes": 26734,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/core-20261119-163641-ddb47b0/t6_cosmo_east/np1/east.trajmet.bin",
+      "role": "input",
+      "sha256": "ec67b2c618cd10ddd41bc6ed67074863e0884b7dbe9183f2afba54cef0871a7e",
+      "bytes": 11698176,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/core/verify/verifier_g2/scripts/v5_mpi.py",
+      "role": "argv",
+      "sha256": "497a777643fa8a5d61fc20a7a1ff95a08d7e1e06a2a182b8078c05b83133175d",
+      "bytes": 4784,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-213807-4cc035d",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T21:38:09Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 8.1719,
+    "gpu_hours_reserved": 11.9002,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 1,
+    "runs": 1490,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
