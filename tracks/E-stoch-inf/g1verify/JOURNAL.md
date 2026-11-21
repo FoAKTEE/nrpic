@@ -189,3 +189,77 @@ V7 (A7 and cost).
   restart, and the card U4 to the card U2. Card against processor differs at 1e-16 to 1e-13
   relative (not part of A7). Refuted by a single differing element within one platform.
 - P-V7b: one 256^3 realisation (P256 to t = 8.5) costs 0.5-1 card-hour on one A100.
+
+## Entry 4 (2026-11-20 19:12 PST): outcomes V1, V2, V3 (run E-20261121-030207-fb6f090)
+
+Pass 2 (run E-20261121-025750-d1b6139, completed): per-mode R^NR and box means from every dump
+of L32p, L64p, L128p, Q64p, Q128p (18 each) and L64p_proc (10), sha256 of every dump equal
+to the run's list. V1-V3 analysis: run E-20261121-030207-fb6f090 (completed exit 0; its
+submit wrapper had a 110 s timeout by my mistake: I killed the wrapper, pid 490263, by
+number so the run continued; it finished normally at 03:06:20Z).
+
+V1 [VERIFIED]: P-V1 CONFIRMED for phi, Pi, K. Maximum over all record rows of every one of
+the 34 catalogue runs: |<phi>/F - 1| <= 3.2e-12, |<Pi>/F - 1| <= 8.6e-12, |<K>/F - 1| <=
+3.6e-12 (A1 threshold 1e-4); my own dump means agree (<= 7.8e-12). The code's lockstep
+background (record columns phi_b, Pi_b, ln_a) equals my integration to 2.3e-11.
+Sub-prediction FAILED: e-folds -ln<chi>/2 against ln a differ by 5.5e-6 (N = 32), 3.3e-7
+(64), 2.0e-8 (128), 1.3e-9 (256), not within 1e-8 at N <= 64. Cause tested in V6: the box
+mean of chi converges at order 4.06 in the Courant factor, so this is the RK4 error of chi
+~ exp(-2t) at dt = 0.25 dx (my estimate 32 dt^4/120 per unit time, 1.5e-6 at N = 32), not a
+physics error. It does not enter A1 (phi, Pi, K). Also seen: alpha stays uniform but drifts
+from 1 by -2.5e-13 (L32p) and -4.9e-13 (L64p) at t = 8.5, linear in the number of steps
+(rounding); harmless.
+
+V2 [VERIFIED]: P-V2a CONFIRMED. max over k <= k_max/2 of |R^NR/(L^-3/2 W R alpha) - 1| at the
+last dump (t = 8.5, N = 8.10; L256p at t = 4.5): L32p 8.8e-5 (at n = (4,0,0), k dx = pi/4),
+L64p 2.7e-6, L128p 2.5e-6, L256p 1.7e-6, Q64p 9.7e-5, Q128p 9.9e-5, P256 1.21e-4 (at
+(0,32,0), k dx = pi/4; 68532 modes). At the last common dump t ~ 4.5: L32 8.7e-5, L64 2.0e-6,
+L128 1.75e-6, L256 1.74e-6, P256 1.03e-4. All 70 to 165 times below 0.02. Over ALL modes up to
+k_max (k dx = pi/2): max 4.1e-3 (L32), 4.5e-3 (P256), still below 0.02. L32 -> L64 falls by
+44 (order 5.4), then a floor ~2e-6 at L64-L256 (low modes, n = (1,0,-2)): my prediction said
+1e-6 from the second-order part of R^NR [JUDGEMENT, not separated: the m runs have no gt_ij].
+P-V2b CONFIRMED: alpha-normalised shell spectrum / (H^2/(8 pi^2 eps1)) at crossing =
+1.0104-1.0116 for every shell k <= 32 of P256 (my full MS: 1.0104-1.0114; NR/MS at most
+1.6e-4 apart); raw spectrum against MS: pull rms 1.007, max 4.1 over 854 shells (the
+Gamma-distributed shell means of few modes have a long upper tail).
+
+V3 [VERIFIED]: P-V3 CONFIRMED on every t = 8.5 rung (1051 modes with N_f - N_k >= 6, k <=
+7.87): |ratio_NR/ratio_MS - 1| between the first dump past N_k + 4 and N_f at most 2.4e-6
+(L64p, L128p) to 3.2e-6 (P256, Q128p) against the 1 percent threshold; NR drift of ln|R|^2
+-1.4e-4 to -3.3e-5 per e-fold (threshold 2.5e-3), equal to the full MS within 1.7e-6;
+deformed (FLRW-lattice) drift -0.0516 to -0.0530 per e-fold (-4 eps1), deformed/full ratio
+0.826-0.908, i.e. 9-17 percent off, 3e4 times the NR deviation.
+
+## Entry 5 (2026-11-20 19:14 PST): outcomes V6 and V7 (runs E-20261121-030522-c6907b6, -030520-5a23d64)
+
+V6 [VERIFIED] (first version E-20261121-030412-42dd156 had the box mean of H inside the even
+part; the second, c6907b6, adds the even part without mean and the mean): P-V6 CONFIRMED where
+the time error is resolvable. Orders log2(|D1|/|D2|), max norm, at the 9 common dumps
+t = 0.49-4.42: odd parts of phi, Pi, chi, K, gxx, Axx 3.93-4.10; odd R^NR of |n|^2 <= 8
+3.94-4.05; odd H 3.85-4.24 for t <= 2.45, then |D2| reaches 3e-14 (rounding of H at N = 32,
+my estimate 3e-14) and the order is meaningless; <H> (the uniform residual, order s^0) 4.10
+at every dump (3.1e-11 at Courant 0.25, i.e. 2.6e-12 of [H]); <chi> 4.06. Not testable: the
+even parts (second order) of the fields and of H without mean: |D1|, |D2| = 2e-14 to 4e-13,
+order -0.3 to -0.7 (random-walk rounding grows as the square root of the number of steps):
+their time error is below rounding at N = 32. Box means of phi, Pi, K: differences 1e-14 to
+8e-12, orders -1.3 to 3.9, at rounding.
+
+V7 [VERIFIED] (first attempt E-20261121-030415-22d518b failed: exit 1 on a processor manifest
+without batch_entries, a bug of my script; second attempt 5a23d64 completed): P-V7a CONFIRMED.
+Card U1/U2/U3 (1, 8, 64 MeshBlocks): 0 differing 64-bit words in all 12 variables (noise
+fields rms 0.011, not trivially zero) at all 4 dumps; mode files byte-identical; records
+equal in every column. Restart: processor U4 = U2 and card U4 = U2 bit for bit at cycles 200
+and 300, time bits equal, mode files and records equal. sha256 of all 20 dumps read equal to
+the runs' lists. Card against processor (information): U2 noise fields 4e-16 relative; the
+slow-roll L64p perturbations 2e-9 to 4e-7 relative (not bit-identical, as predicted). P-V7b:
+P256 took 1811 s wall, 0.5031 card-hours on one A100 (manifest of E-20261115-172618-f948386:
+resources.walltime_s, gpu_hours); prediction 0.5-1 card-hour CONFIRMED.
+Weak point found: A7 is tested on release core-v0.3 (noise unit test), not on the G1
+executable core/scalar-2 with the slow-roll set-up. Hence P-V7c below.
+
+P-V7c (prediction, before the run): core/scalar-2's processor executable on the L32p set-up
+with 8 MeshBlocks of 16^3 gives dumps bit-identical to the registered L32p (one MeshBlock)
+at t = 0, 0.50, 1.00 in all 17 variables, and a restart from cycle 12 gives the dump at
+t = 1.00 bit-identical to both; the .modes files are byte-identical. The constraint and
+history records may differ in the last bits (box sums over MeshBlocks in another order).
+Refuted by a single differing word in a dump.

@@ -37,7 +37,7 @@ for a in (a1, a2):
 a1.set_xlabel("e-folds N - N*")
 a1.set_ylabel(r"max$_{k\leq k_{max}/2}$ |R$^{NR}$/(W R $\alpha$) - 1|")
 a1.set_ylim(1e-7, 1)
-a1.legend(ncol=2, fontsize=7, loc="lower right")
+a1.legend(ncol=2, fontsize=7, loc="upper right")
 a2.set_xlabel("|n| = k/dk")
 a2.set_ylabel("per shell at the last dump")
 a2.set_ylim(1e-7, 1)

@@ -21,25 +21,25 @@ d = np.load(os.path.join(sys.argv[1], "v123_fig.npz"))
 fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.4))
 a1 = fig.add_axes([0.08, 0.14, 0.40, 0.78])
 a2 = fig.add_axes([0.58, 0.14, 0.40, 0.78])
-for q, ls in zip((1, 2, 7), ("-", "-", "-")):
+for q, mk in zip((1, 2, 7), ("o", "s", "^")):
     key = f"v3_P256_mode{q}"
     if key not in d.files:
         continue
     N, pN, pM, pD, Nk = d[key]
     s = pM[-1]
-    a1.semilogy(N, pN / s, "o", ms=2.5, color=fs.PAL["red"])
+    a1.semilogy(N, pN / s, mk, ms=3, mfc="none", color=fs.PAL["red"], label=f"NR |n| = {q}")
     a1.semilogy(N, pM / s, "--", color=fs.PAL["blue"], lw=1.2)
-    a1.semilogy(N, pD / s, "-", color=fs.PAL["yellow"], lw=1.2)
+    late = N >= Nk[0] + 1.0          # the deformed curve carries no window: shown once W ~ 1
+    a1.semilogy(N[late], pD[late] / s, "-", color=fs.PAL["yellow"], lw=1.2)
     a1.axvline(Nk[0], **fs.MASK_LINE)
-    a1.text(N[-1] + 0.1, pN[-1] / s, f"|n|={q}", fontsize=7, va="center")
-a1.plot([], [], "o", ms=2.5, color=fs.PAL["red"], label="NR (P256)")
 a1.plot([], [], "--", color=fs.PAL["blue"], label="my full MS")
 a1.plot([], [], "-", color=fs.PAL["yellow"], label="deformed MS (FLRW lattice)")
 a1.set_xlabel("e-folds N - N*")
 a1.set_ylabel(r"|R$_n$|$^2$ / full MS at N$_f$")
-a1.set_ylim(1e-3, 3)
+a1.set_ylim(0.5, 1.5)
+a1.set_yscale("linear")
 a1.set_xlim(0, 9.2)
-a1.legend(fontsize=7, loc="lower right")
+a1.legend(fontsize=7, loc="upper right", ncol=2)
 keys = [k for k in ("L32p", "L64p", "L128p", "Q64p", "Q128p", "P256") if f"v3_{k}" in d.files]
 cols = fs.series_colors(len(keys))
 for k, c in zip(keys, cols):
