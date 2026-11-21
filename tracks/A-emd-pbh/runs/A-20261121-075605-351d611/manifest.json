@@ -1,0 +1,164 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261121-075605-351d611",
+  "track": "A-emd-pbh",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "Lead re-check of batch 2b (L1-L9 of JOURNAL entry 2026-11-21T07:55Z): reruns of the G1 verifier, g1close, gate-review checks and three Szekeres analyses from their registered outputs, compared value by value; own reading of the Szekeres N32 history, the Szekeres file preparation and the periodic P0L data run",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python",
+    "tracks/A-emd-pbh/analysis/review_wave3.py"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "351d6116da9e1fd1b1c5c8278e6a60c16625174d",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/analysis"
+    ],
+    "outside_package": {
+      "count": 41,
+      "first": [
+        " M tracks/A-emd-pbh/conv_ball/scripts/common.py",
+        " M tracks/A-emd-pbh/conv_ball/scripts/compare.py",
+        " M tracks/A-emd-pbh/periodic_threshold/JOURNAL.md",
+        "?? tracks/A-emd-pbh/conv_ball/scripts/converge.py",
+        "?? tracks/A-emd-pbh/periodic_threshold/inputs/peak_leak.athinput",
+        "?? tracks/A-emd-pbh/periodic_threshold/scripts/ltb_reference.py",
+        "?? tracks/A-emd-pbh/periodic_threshold/scripts/ltbref.py",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n128_events.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n128_gauge.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n128_horizon.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n128_misner_sharp.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n128_shells.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n192_events.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n192_gauge.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n192_horizon.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n192_misner_sharp.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n192_shells.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n256_events.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n256_fields.png",
+        "?? tracks/A-emd-pbh/runs_ball/figs/bh_n256_gauge.png"
+      ]
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/A-emd-pbh/stage/G1/verifier/run_all.py",
+      "role": "input",
+      "sha256": "6249f0c2ef82c783e37b0ec89b1b4c12ada02d2d1473aa506c3af4da8b96c0d8",
+      "bytes": 1432,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/stage/G1/gate_review/review_checks.py",
+      "role": "input",
+      "sha256": "4d72c147376253343704e474f59c1ffaab0c98f34356d5d7fae7f5c7d1f8eeae",
+      "bytes": 10706,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/g1close/scripts/check_findings.py",
+      "role": "input",
+      "sha256": "ea0cc6eaf48ac8377573e3e1e0aaabde5caf8064250e69c5a18dabca4c13956f",
+      "bytes": 10271,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/g1close/scripts/wave1_sha256.py",
+      "role": "input",
+      "sha256": "92a09161d281c36cc02762208018a23e6e74d0a1dbfd552071ecab48d29c5933",
+      "bytes": 5709,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/szekeres/scripts/run_ltb_limit.py",
+      "role": "input",
+      "sha256": "c005c0d5e5e2468801fdeb313d81583fe85cd5869d68dd5a372f1053375a909d",
+      "bytes": 4774,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/szekeres/scripts/run_dipole_order.py",
+      "role": "input",
+      "sha256": "60c3770ed579729ea7b5576a94a146b8d70c8f85d60fe7b585719815b4a55c79",
+      "bytes": 3459,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/szekeres/scripts/run_error_budget.py",
+      "role": "input",
+      "sha256": "31b8d82008e7a67a9d6826b865e0555d0fefe8ed917fc932daa93d131ca2dec5",
+      "bytes": 6607,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/analysis/review_wave3.py",
+      "role": "argv",
+      "sha256": "48a949140afc3e9242e6d465dd1074bad92a6cef8eaa35ab6a9a7a5e7fa9940a",
+      "bytes": 18040,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261121-075605-351d611",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T07:56:06Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 0,
+    "runs": 174,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
