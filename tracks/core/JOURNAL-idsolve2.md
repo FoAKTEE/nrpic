@@ -1272,3 +1272,27 @@ rise from 1e-13 to 1e-3 in the first step, the exterior from 5e-7 to 1e-4).
  4.2e-4 and 7.6e-4 at t = 2.) So a track gets interior norms of solved data from the
  code itself: `region_dcycle`, `region_radius1..4` in `<particles>`; the shell between
  two spheres follows from their inside values as in (c).
+
+## 2026-11-21, entry 18: second publication; prediction T128
+
+**Published** (08:29 UTC): `/data/haiyangw/nrpic/scratch/core/exe/core_id-solver-2/` with
+`athena_cpu` (sha256 195df980...), `athena_cpu_omp` (eed2ae51...), `athena_gpu`
+(0fb76bdb...), COMMIT, SHA256SUMS (checked with `sha256sum -c`), READY; source the
+merge 395e17d (no change of `athenak/` or `scripts/` up to the publishing commit
+59a60f6). The first publication is kept as `core_id-solver-2.old.1795249743`. A
+temporary directory `.core_id-solver-2.new` of the session of 2026-11-20 lay beside it
+with the two executables of 4266c2d (the publication that was cut off; same checksums
+as `scratch/core/tmp/idsolve2/exe_4266c2d/`): its files were overwritten by this
+publication's and the directory renamed into place.
+
+**T128** (written before its run; `check_threads.py --tag _n128`; the threaded build
+with 6 threads on `zsol_n128`, the solved Zel'dovich ball at 128 cells with its
+evolution to t = 2, against the serial run of the build of 76add0c in run
+core-20261119-153416-3d26b50, which M2 ties to the merged serial build at 32 cells):
+41 outer iterations and 105 linear steps as the serial run; psi to 1e-12 and W to 1e-9
+of their maxima; max|H| and max|M| of the monitor after the solve as the serial run
+within 1 per cent (1e-13 to 2e-12 in the matter; 1.07e-6); the region means of |H| at
+t = 2 (interior 1.12e-5, shell 2.06e-5, faces 1.31e-4 in entry 11) to 1e-6; wall time
+below 30 minutes (serial: 31 minutes for the solve and 58 for the 16 steps). Refuted if
+an iteration count differs by more than one, or a region mean at t = 2 by more than 1
+per cent.

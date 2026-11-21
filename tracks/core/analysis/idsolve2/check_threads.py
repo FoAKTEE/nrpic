@@ -50,13 +50,14 @@ def main():
     ap.add_argument("--cases", nargs="*", default=[])
     ap.add_argument("--twice", default="")
     ap.add_argument("--redraw", default="", help="run directory of an earlier run: draw its "
-                    "figure again from its check_threads.json, no case is run")
+                    "figure again from its check_threads<tag>.json, no case is run")
+    ap.add_argument("--tag", default="", help="suffix of check_threads<tag>.json and the figure")
     a = ap.parse_args()
     root = lib2.run_root()
     if a.redraw:
         import json
-        with open(os.path.join(a.redraw, "check_threads.json")) as f:
-            lib2.publish(figure(json.load(f), root))
+        with open(os.path.join(a.redraw, "check_threads%s.json" % a.tag)) as f:
+            lib2.publish(figure(json.load(f), root, a.tag))
         return 0
     exe = os.path.abspath(a.exe)
     rep = dict(run=lib2.run_id(), exe=exe, serial_exe=a.serial_exe, threads=a.threads,
@@ -88,13 +89,13 @@ def main():
               % (name, a.threads, len(same), differ if differ else "none"), flush=True)
         if rc != 0:
             bad += 1
-    out = os.path.join(root, "check_threads.json")
+    out = os.path.join(root, "check_threads%s.json" % a.tag)
     lib2.save_json(out, rep)
-    lib2.publish([out] + figure(rep, root))
+    lib2.publish([out] + figure(rep, root, a.tag))
     return 1 if bad else 0
 
 
-def figure(rep, root):
+def figure(rep, root, tag=""):
     """Differences of the fields, and the residuals each build reaches."""
     a = argparse.Namespace(threads=rep["threads"])
     fs.use_style()
@@ -129,7 +130,7 @@ def figure(rep, root):
     axs[1].set_title("residuals reached", fontsize=7)
     axs[1].legend(fontsize=5, ncol=2, loc="center", bbox_to_anchor=(0.5, 0.5))
     fig.tight_layout()
-    p = os.path.join(root, "check_threads")
+    p = os.path.join(root, "check_threads" + tag)
     fs.save(fig, p)
     plt.close(fig)
     return [p + ".png", p + ".pdf"]
