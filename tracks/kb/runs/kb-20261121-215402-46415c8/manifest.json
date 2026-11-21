@@ -1,0 +1,89 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "kb-20261121-215402-46415c8",
+  "track": "kb",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "ingest3 step 6: ingest of the 11 frontier additions, then equation tags, vectors, vector check, state (writes kb.sqlite)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "export OMP_NUM_THREADS=4; K='kb/.venv/bin/python -I kb/bin/kb'; { echo '## ingest'; $K ingest arxiv --id 2610.28890 --id 2610.28745 --id 2610.33150 --id 2611.08145 --id 2611.13170 --id 2610.01964 --id 2610.26669 --id 2602.11652 --id 2606.28005 --id 2605.22525 --id 2611.23627  --jobs 4 --remap-claims --out \"$NRPIC_RUN_DIR\"; echo '## eq --apply-tags'; $K eq --apply-tags; echo '## embed'; $K embed --threads 4; echo '## embed --check --work'; $K embed --check --work; echo '## state'; python3 -I tracks/kb/ingest3/scripts/kbstate.py --db /data/haiyangw/nrpic/kb-data/db/kb.sqlite --ids tracks/kb/ingest3/ids/zero20.txt --ids tracks/kb/ingest3/ids/additions24.txt --ids tracks/kb/ingest3/ids/frontier11.txt --out \"$NRPIC_RUN_DIR\" --tag after_frontier; } > \"$NRPIC_RUN_DIR/out.txt\" 2>&1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "46415c8d6765659a54e12fcc240aacb4f3886f1b",
+    "branch": "kb/main",
+    "dirty": false,
+    "package": [
+      "tracks/kb/ingest3"
+    ],
+    "outside_package": {
+      "count": 1,
+      "first": [
+        " M tracks/kb/code_kb/JOURNAL.md"
+      ]
+    },
+    "merge_base_main": "9d43b229377786cc62ef7bb666b765abfdab30bc",
+    "worktree": "wt/kb"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/kb/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/kb/kb-20261121-215402-46415c8",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T21:54:03Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 0.0,
+    "cores_allotted": 8,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 197,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
