@@ -7,6 +7,7 @@
 #   scaling_series.sh t6        6 threads, one case after the other, two repeats
 #   scaling_series.sh t1solo    one thread, cosmo and newton, one run at a time
 #   scaling_series.sh collapse  the isolated Newtonian collapse at one and six threads
+#   scaling_series.sh punc16    the puncture case alone at one thread, then at six (P18)
 #   scaling_series.sh t16       16 threads, one case after the other, two repeats
 #   scaling_series.sh t32|t64   32 or 64 threads, one case after the other, two repeats
 #   scaling_series.sh serial    the serial executable S, the four cases side by side
@@ -55,6 +56,8 @@ case $phase in
     run collapse 1 0.5 1 t1solo; run collapse 6 1.0 2 t6 ;;
   collapse1) run collapse 1 0.5 1 t1solo ;;      # the two halves apart (cores of the
   collapse6) run collapse 6 1.0 2 t6 ;;          # owner may not suffice for six threads)
+  punc16)   # journal entry 26, P18: is the speed-up above six of this case a property of it
+    run punc 1 0.1 1 t1solo; run punc 6 0.125 2 t6 ;;
   t16|t32|t64)
     n=${phase#t}
     run punc "$n" 0.25 2 "$phase"; run cluster "$n" 0.5 2 "$phase"

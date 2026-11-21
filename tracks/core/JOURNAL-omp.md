@@ -937,3 +937,108 @@ configuration (east, one thread): two restart files with identical data, two par
 restart files, three snapshots byte-identical, the three histories with identical text
 records. P16a for east is therefore already known to hold byte for byte; the other five
 configurations (east at four threads private and atomic, newton in all three) are blind.
+
+## 2026-11-20 19:03 Entry 26: outcome of P17 (one thread alone; the isolated Newtonian collapse); prediction P18
+
+Run core-20261121-025720-29ecba0 (through nrpic-run, six cores granted; threaded
+executable O3, sha256 8f223f75...; load average 10.9 to 13.7; one run at a time). Seconds
+per step:
+
+| case | threads | this run | side by side on 2026-11-20 (entry 21) | ratio |
+|---|---|---|---|---|
+| cosmo (2 cycles) | 1 | 48.60 | 49.05 | 1.009 |
+| newton (8 cycles) | 1 | 4.106 | 4.61 | 1.123 |
+| collapse, isolated (8 cycles) | 1 | 2.228 | | |
+| collapse, isolated (16 cycles, two repeats) | 6 | 0.409, 0.417 | | 5.45 times one thread |
+
+- P17a (alone faster than side by side by 5 to 40 per cent): HOLDS for newton (12 per
+  cent), FAILED for cosmo (0.9 per cent, inside the scatter of such runs). The load of the
+  machine was also lower than in the afternoon (11 to 14 against 22 to 56), so even the
+  12 per cent are not cleanly the effect of running alone. The reading of entry 21, that
+  the speed-up of 7.9 of the puncture case at six threads came from one-thread runs held
+  back by their neighbours, is not supported by these two cases; the puncture case itself
+  was not in this test (P18 below).
+- P17b HOLDS: the isolated collapse (128^3, 137 376 particles, multipole boundary; deck and
+  arguments of the card run core-20261115-120028-fee90ca) needs 2.23 s per step at one
+  thread (predicted 1.2 to 2.5) and 0.409 s at six (predicted 0.19 to 0.5): six threads
+  are 1.59 times faster than the 0.65 s per step logged for one A100. The refutation for
+  the advice to Track D (six threads slower than the card) did not occur. One clause of
+  the prediction was wrong: the steps took 10 to 12 V cycles (25 in the first), not the
+  13 I quoted for the card [VERIFIED: column mg_cycles of newton.newton.hst of the three
+  runs]. Not compared: the card with the same number of steps in one job on the same
+  day; the card's 0.65 s is the logged number of 2026-11-15.
+  So the Newtonian mode splits: periodic box, one A100 is 11.9 times six threads (entry
+  21); isolated boundaries, six threads are 1.6 times one A100, because the multipole
+  sums of the boundary run on the host (newtonian_mode.md section 2). Core's package
+  newton2 measured the same pattern on a card at 256^3: isolated 1.20 s per step against
+  0.135 s periodic (report of wave 3, scratch/orch/wave3_reports/core.md, line 203).
+
+P18, written before the run (the puncture case, which showed the speed-up above six):
+`scaling_series.sh punc16` = punc at one thread alone (3 cycles), then at six threads (4
+cycles, two repeats), nothing else of this session running.
+ a. One thread alone: 110 to 132 s per step, i.e. 0 to 17 per cent faster than the 131.9
+    of the side-by-side run (cosmo gained 1, newton 12 per cent).
+ b. Six threads: 15.5 to 18 s per step, and six threads over one thread 6.3 to 8.3: the
+    speed-up stays above six, so running side by side was not its cause and the ratio is
+    a property of this case (344 MeshBlocks of 16^3 on seven levels) that I cannot yet
+    name. Refuted if the ratio is 6.0 or below: then entry 21's reading was right.
+
+## 2026-11-20 19:08 Entry 27: outcomes of P15 at 1, 2, 4, 6 threads and of P16 (restarts under threads)
+
+P15 (run core-20261121-030052-6acdca9, six cores granted; diagnostic executable sha256
+a28e7e64..., patch sha256 466cedce...; figure `tracks/core/omp/figs/mg_cause.png`, looked
+at: left panel, the plain sum, four thread counts and two MeshBlock sizes part after the
+third V cycle and end on floors between 6.6e-11 and 4.3e-9; middle panel, the fixed-order
+sum, the four thread counts lie on one curve per MeshBlock size; right panel, the
+compensated sum, all eight curves are one straight line down to 2.3e-11). Recorded as
+failed (exit 1) for part c alone, as announced in entry 25.
+- a HOLDS at 1, 2 and 4 threads, both MeshBlock sizes: without the variable the
+  diagnostic executable prints the defects of the threaded build digit for digit.
+- b HOLDS at 1, 2, 4 and 6 threads: with the sum of the mean taken in a fixed order every
+  printed defect is the same at the four thread counts (8^3 blocks: ... 6.762232e-09,
+  8.656399e-10, 7.714428e-10; 32^3 blocks: ... 6.719234e-09, 4.120105e-10, 1.247046e-10),
+  and the 20-cycle Jeans case gives five of five files byte-identical between one and
+  four threads (plain sum: two of four differ by 5.1e-12 and the defects differ).
+- c: the bound "below 2e-11" missed as expected (2.303261e-11 in all eight
+  configurations, and 2.303285e-11 or 2.303286e-11 in the second solve); the refutation
+  (above 6e-11) did not occur; the two MeshBlock sizes agree to seven digits.
+Conclusion [VERIFIED for the Jeans deck at 1, 2, 4 and 6 threads and two MeshBlock
+sizes]: the dependence of the gas multigrid on the thread count and on the MeshBlock
+size is the rounding of the plain sum in `Multigrid::CalculateAverage`
+(athenak/src/multigrid/multigrid.cpp, lines 763 to 815); there is no race in the solver.
+A compensated sum in a fixed order also removes the stagnation of the Jeans solve (the
+defect falls by 17.1 per V cycle to the end instead of stalling after the third). Not
+tested: the refined-mesh gas case (binary), the Newtonian mode's own use of the solver
+with the diagnostic executable, more than six threads. The patch stays a diagnostic
+outside the tree (`tracks/core/omp/tools/mg_average_diag.patch`); a change of the tree
+changes results at rounding level and is proposed to core's lead as an option
+(requests).
+
+P16 (run core-20261121-030132-89a7c84, four cores granted; threaded executable O3;
+figure `tracks/core/omp/figs/restart_threads.png`, looked at: five of the six rows have
+every mark on the line "identical", the row "east, 4 threads" (atomic) has its marks
+between 1e-17 and 4e-15, six decades left of the bound 1e-10). Continued run (from the
+restart file written half way) against the uninterrupted run:
+
+| case | threads, deposit | files compared | identical data | largest difference |
+|---|---|---|---|---|
+| east (Z4c, 20 steps, restart after 10) | 1, atomic | 10 | 10 | 0 |
+| east | 4, private | 10 | 10 | 0 |
+| east | 4, atomic | 10 | 1 (the Z4c history) | 4.0e-15 (restart data); snapshots 5.0e-16 |
+| newton (40 steps, restart after 20) | 1, atomic | 7 | 7 | 0 |
+| newton | 4, private | 7 | 7 | 0 |
+| newton | 4, atomic | 7 | 7 | 0 |
+
+"Identical data": particle restart files, the Newtonian state file and the snapshots
+byte for byte; the mesh restart files in every datum of every MeshBlock (their parameter
+dump differs between the two processes and their header holds padding bytes, entry 7);
+the histories in the text of every record of the continued cycles.
+- a HOLDS, byte for byte in the sense above (east was seen before the run, entry 25;
+  newton was blind).
+- b HOLDS: with private copies a continued run at four threads is the uninterrupted
+  run, datum for datum; the restart changes nothing the threads see.
+- c HOLDS: atomic at four threads within 4.0e-15 (bound 1e-10); the Newtonian case is
+  identical even there, as it repeated itself at four threads in entry 9.
+Not tested: restarts at another thread count than the run that wrote the file (the
+state is in the file, so only the grouping of sums changes; not run), restarts of
+refined meshes and of runs with collisions under threads, more than four threads.
