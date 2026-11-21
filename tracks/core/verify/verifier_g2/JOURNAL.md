@@ -86,3 +86,45 @@ V10, V11, V5b-c. What cannot be reached in a few hours is listed as not checked.
   = 1.31e-9 at dt = 1/512. `interfaces/scalar_field.md` test 1 says -1.2e-8 ... -1.34e-8:
   ten times too large (the run's own summary.json gives -1.21e-9). Orders CONFIRMED; the
   frequency-agreement number of the interface text WRONG by a factor 10 (typo-like).
+
+## Entry 2, 2026-11-21T21:50Z: outcomes V5b, V7b, V10a, V10b; V6 attempts
+
+- V5b, run core-20261121-213807-4cc035d (MPI, core-v0.5, case t6_cosmo_east of
+  core-20261119-163641-ddb47b0): deposition identity max |int_E / sum_mW - 1| 9.8e-15,
+  7.4e-15, 3.1e-15 on 1, 2, 4 ranks (claim 1e-14); positions against one rank at most
+  5.3e-15 (2 ranks) and 4.0e-15 (4 ranks) over 13 snapshots (claim 1.6e-14, an upper bound
+  here); E and S_i at the particles 1.21e-14 and 1.26e-14 of the column maxima (claim
+  1.3e-14); metric at the particles 2e-13 absolute, 8e-15 of the column maxima (the
+  driver's "metric DIFFERENT" is a byte statement). Prediction held. CONFIRMED.
+- V7b, run core-20261121-213946-cee79fa (Fourier Poisson solver, core-v0.6, T3 of
+  core-20261119-160919-c6a7279): own Lagrangian lattice from the a = 1 snapshot (snapped
+  to (i + 1/2)/32 within 5.6e-17), own exact slab moment I_xx = c0 + c1 a + c2 a^2 (the
+  history's value at t = 0 equals mine to 3e-16 relative): largest error over 1.2 <= a <=
+  7.5625 relative to max |I_xx - c0|: 9.107e-6 (spectral), 3.094e-3 (seven_point);
+  claimed 9.1e-6, 3.1e-3. Positions at a = 4 against q + a psi: 1.44e-5 (4.5e-4 of the
+  displacement amplitude, spectral), 6.2e-5 (seven_point). CONFIRMED. First pass of my
+  window stopped at a = 7.541 (9.04e-6); the claim's window includes the last record a =
+  7.5625.
+- V10a, run core-20261121-214108-0960a46 (initial-data solver T1, core-v0.4 branch runs;
+  own reader of NRIDSOL1, own continuum psi = 1 + M erf(r/(sqrt2 sigma))/(2r)): first
+  pass gave absolute errors at the centre cells -1.76e-3, -4.80e-4, -1.23e-4 (stencil),
+  -3.72e-3, -1.03e-3, -2.65e-4 (code), five times below the claim; the claim's numbers
+  are the relative error of psi - 1: -9.10e-3, -2.43e-3, -6.17e-4 and -1.92e-2, -5.22e-3,
+  -1.33e-3, all reproduced to three digits; orders 1.91/1.98 (stencil), 1.88/1.97 (code):
+  second order. Monitor after the code solve 1.55e-11, 1.09e-11, 2.59e-11 (the interface
+  says 1.5e-11 to 2.6e-11; the n64 run is 1.1e-11). CONFIRMED; "error of psi - 1" should
+  say "relative error of psi - 1".
+- V10b, run core-20261121-214230-ad24f6b (second pass, core-v0.6, test C of
+  core-20261119-153510-d1eaa30; own NRIDBLK1 reader): monitor after the solve on the two
+  levels of g_smr1 2.44e-12 and 2.02e-11 (claim 2.4e-12 to 2.0e-11); g_smr2 5.9e-13 to
+  1.9e-11. Central error: with my eight-cell measure -5.20e-3 (refined) and -5.22e-3
+  (uniform dx 0.5); the claim's -5.01e-3 and -5.03e-3 are the mean over r < 1 (read in
+  tracks/core/analysis/idsolve2/test_c.py after my first measure differed), which my code
+  reproduces: -5.0136e-3 and -5.0331e-3. Refined equals uniform to 0.4 per cent by
+  either measure. CONFIRMED. g_smr2 (finest dx 0.25 = lattice spacing) gives +2.9e-4, a
+  different regime (one particle per cell), not claimed.
+- V6 first attempt core-20261121-212800-3365cf3: failed by my driver (a block cannot be
+  created on the command line; athena exit 1 at once). Second attempt
+  core-20261121-212817-0f0f28b: the athena runs A completed (east 7 s, os 481 s) but my
+  parser of the cycle in the restart header failed, so B did not run. Third attempt
+  running (header parsed from athenak/src/outputs/restart.cpp lines 219-236).
