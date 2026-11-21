@@ -402,7 +402,7 @@ figures `stage/review3/fig/fig_rerun.png`, `fig_lead3.png` looked at; results co
   175 rows; no extra final dump. So on processors the SR results of G1 do not depend on which
   of the two executables made them; the card build is not tested (next card job).
 
-Session close (07:00Z). Did: reviewed `g1verify` and `ladder` from their artefacts
+Session close (06:58Z). Did: reviewed `g1verify` and `ladder` from their artefacts
 (`stage/REVIEW-wave3.md`): all their analyses rerun bit for bit, the new ladder results
 recomputed with own code, every figure looked at, every helper outcome compared with its
 prediction (git ancestry checked); tested risk R1 on processors (release = branch, word for
