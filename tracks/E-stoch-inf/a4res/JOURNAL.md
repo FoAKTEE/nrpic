@@ -166,3 +166,59 @@ Predictions (each refuted as stated):
 - Q8 record: <|H|/[H]> <= 1e-9 and <|M|/[M]> < 1e-3 at every cycle of every run.
 Cost expected (READY of core_scalar-2): 64^3 runs seconds, 128^3 runs 1-3 min each; job
 under 30 min of one card; dumps 21 MB (64^3) and 168 MB (128^3), about 62 GB in all.
+
+## Entry 4, 2026-11-21 15:20Z: outcome of the card job and its analysis
+
+Card run E-20261121-131000-b23055b (Slurm 4798, `core_scalar-2/athena_gpu`): queued
+13:10Z, ran 15:05-15:16Z (11.2 min of one card, 0.19 card-hours); 24 runs, all exit 0;
+64^3 runs 6-7 s each, 128^3 runs 70-73 s each; 37 dumps per run, 58 GB. Analysis run
+E-20261121-151643-c2c0f5a (`a4_analysis.py` as committed at 94dfa93 before the job ran;
+the rerun named below differs only in a figure margin), read the dumps sequentially from
+the page cache right after the job, 62 s. All 37 dumps matched in every set-up (none
+dropped). Figures looked at: `fig_ratio.png`, `fig_checks.png`, `fig_parts_H.png`.
+
+| set-up | cells | largest odd/even H (t) | M (t) | E_A/E_B (n dumps) | O_A/O_B (n) | odd/twin | strict A4 |
+|---|---|---|---|---|---|---|---|
+| N64q16 | 16.0 | 0.455 (1.77) | 0.314 (2.26) | 3.980-3.999 (22) | none above 10 f_o | 1.004-1.056 | holds |
+| N64q25 | 12.8 | 1.000 (2.01) | 0.795 (2.50) | 3.981-3.999 (37) | 1.993-1.997 (17) | 1.000-1.052 | holds (0.9997) |
+| N64q36 | 10.7 | 2.81 (2.14) | 2.45 (2.77) | 3.981-4.000 (46) | 1.994-2.000 (36) | 1.000-1.049 | fails |
+| N64q64 | 8.0 | 15.5 (2.50) | 13.8 (3.02) | 3.981-4.000 (57) | 1.997-2.000 (47) | 1.000-1.049 | fails |
+| N128q100 | 12.8 | 0.939 (2.76) | 0.858 (3.25) | 3.984-3.999 (13) | none above 10 f_o | 1.002-1.057 | holds |
+| N128q64 | 16.0 | 0.273 (2.50) | 0.240 (3.01) | 3.984-3.997 (9) | none above 10 f_o | 1.043-1.059 | holds |
+
+(n counts H and M dumps together.) Against the predictions of entry 3:
+- Q1 HELD: strict A4 holds at 16 cells (N64q16, N128q64) and fails at 10.7 and 8.
+  At 12.8 cells it holds too, at N = 64 by 3e-4 (largest H ratio 0.9997), at N = 128
+  with 0.939: 12.8 cells is the boundary itself.
+- Q2 HELD: the largest ratio (max of H and M) crosses 1 at 12.80 cells in the N = 64
+  family and at 12.66 in the N = 128 pair (H 12.80 and 12.66, M 12.33 and 12.46). Core's
+  12.7 [C2] is confirmed. Core's scan point at 16 cells (0.25, K = 8) against 0.273
+  measured at K = 8 (N128q64); at 8 cells 14.9 against 15.5 (N64q64). At equal cells the
+  ratio depends on K a little: 0.455 at K = 4 against 0.273 at K = 8 (16 cells).
+- Q3 HELD: measured odd part / CodeTwin within 1.000-1.059 wherever O_A > 3 f_o, all
+  set-ups, H and M. The excess up to 6 percent sits where the floor is a third of the
+  odd part (N128q64).
+- Q4 HELD where testable: E_A/E_B 3.980-4.000 at every qualifying entry dump; O_A/O_B
+  1.993-2.000 in N64q25, N64q36, N64q64. In N64q16, N128q100 and N128q64 no dump has
+  O_B > 10 f_o (the odd part of the half pair peaks at 5.8, 8.2 and 1.9 floors): A4'(b)
+  is untested there by the registered rule. The analysis script prints "A4' fails in b"
+  for these three because it counts an empty set as a failure; that is a defect of the
+  script's wording, not a measured failure (corrected in README, script unchanged so
+  that the registered output stays reproducible).
+- Q5 HELD: measured/predicted largest ratio 0.98-1.02 (H), 0.82-1.90 (M).
+- Q6 FAILED at one dump: E_A(N64q64)/E_A(N128q64) = 0.891 (H), 0.952 (M) at t = 0.147,
+  the first dump after t = 0; every later dump within 0.968-1.031 (H) and 0.968-1.019 (M).
+  Candidate cause, not yet named as the cause: the log-linear interpolation of the 128^3
+  even part from its dumps at t = 0.135 and 0.258 onto t = 0.147 while E falls fast after
+  the initial slice. Post-hoc test (`scripts/post_checks.py`, prediction fixed now): with
+  a three-point quadratic interpolation in t, and at t = 0 where both runs dump at the
+  same time, the ratio lies within 1 +- 0.05. Refuted (interpolation not the cause) if
+  either lies outside.
+- Q7 HELD: odd order between 8 and 16 cells 5.80-5.84 where O_A(128) > 3 f, twin
+  5.89-5.90 (within 0.1). A5 band [4, 6]: held.
+- Q8 HELD: <|H|/[H]> at most 2.6e-12 and <|M|/[M]> at most 1.5e-5 over all cycles of all
+  24 runs (limits 1e-9 and 1e-3), so A4'(c) holds everywhere.
+Measured floor f_o at t = 0.13: 4.1e-13 (64^3) and 2.2e-12 (128^3) in absolute rms of H;
+the ladder's floor model predicted 4.1e-13 and 2.3e-12 (entry 3 run, `prediction.json`).
+A4' (SCOPE 4b, as ruled in decision 0021): (a) holds in all six set-ups; (b) holds in the
+three where testable; (c) holds; (d) not part of this job.

@@ -288,7 +288,7 @@ def figures(res, pred, out):
     plt.close(fig)
     # checks: twin, halving, resolution pair
     fig, ax = plt.subplots(2, 2, figsize=(fs.FULL_WIDTH, 5.4))
-    fig.subplots_adjust(left=0.09, right=0.99, bottom=0.09, top=0.95, wspace=0.28,
+    fig.subplots_adjust(left=0.11, right=0.99, bottom=0.09, top=0.95, wspace=0.3,
                         hspace=0.3)
     for s, c in zip(S, cols):
         for X, mk in (("H", "o"), ("M", "^")):
