@@ -276,3 +276,77 @@ V3, run C-20261121-075256-2084cb5 (`figs/v3_static.png`, `results/v3_static.json
   convention of the snapshot writer, not a missing step [TO VERIFY with core; no influence on
   any number above, which use the history for counts and the snapshot only for sums that do
   not change without collisions].
+
+Correction to entry 8: the snapshot remark is settled: the end snapshot of T12_th0.1_curved_s1
+carries time 6.369635175264278, equal to the time of history record 200 (cycle 200), header
+cycle 199; so the header counts the cycle before the last increment [VERIFIED, own read].
+
+## Entry 9 (2026-11-21 00:02 PST) V4 set-up and predictions, before any computation
+
+Sources read (kb-data/raw, untrusted data, read only):
+- arXiv:2009.08163 v1 `paper.tex`: Schwarzschild-coordinate field equations lines 305-314,
+  sources rho, p, j lines 343-355; King ansatz f0 = (e^{1 - E/E0} - 1)_+ line 635, E = eps e^mu
+  line 615; y = ln E0 - mu and the reduced equation lines 661-673, z_c = e^{y0} - 1 line 685;
+  binding energy E_b = (N - M)/N lines 920-924; Table "First binding energy maximizer and
+  zero": King y_max = 0.334, y_zero = 0.784 (line 953) [VERIFIED read].
+- arXiv:2108.11967 v2 `main.tex` (F21): truncated distribution line 113, w, alpha, b and
+  T(r) = T(R)/(1 - b w) line 118, moments (I integrals) lines 124-138, gamma = 1 + p/u
+  line 174, TOV line 144, pulsation equation lines 202-204, trial function xi = r e^Phi and
+  <gamma>, gamma_cr lines 208-218 and appendix lines 406-461, E_rest line 244, Z(r) line 256;
+  b = 0.1 results: adiabatic criterion at v(0) = 0.566, Z(0) = 0.750 (line 274), w(0) = 4.05
+  (line 276); eps_max = 0.0352 at v(0) = 0.506, Z(0) = 0.548 (line 280); B_max = 8.49e-4 at
+  Z(0) = 0.297 (line 286), E_max = 3.47e-2 at Z(0) = 0.087 (line 286); Table 1 b = 0.1
+  (lines 490-503, a grid in w(0) of step 0.2-0.5; the marginal rows are underlined:
+  w(0) = 0.6 (E), 1.9 (B), 3.2 (eps), 4.05150 (<gamma> = gamma_cr = 1.62117, Z(0) = 0.750107,
+  M = 1.42556e-2, R = 0.368001, rho(0) = 81.7923, p(0) = 8.74006)); their R carries a grid
+  step of 1e-3 (values 0.368001, 0.378001, ...).
+
+Own formulation [JUDGEMENT, own algebra; checked against both papers' definitions]. Static
+spherically symmetric Einstein-Vlasov, Schwarzschild coordinates, G = c = m = 1,
+f = (exp((E0 - E)/T_inf) - 1)_+ with E = eps e^mu the conserved energy and T_inf = b E0. With
+y = ln E0 - mu: local cutoff energy eps_c = e^y (y = 0 at the surface R), local temperature
+T = b e^y (Tolman), and F21's w = (1 - e^{-y})/b (so T = T(R)/(1 - b w) and 1 + eps_c/m =
+e^{y}; for b = 1 this is the King ansatz of 2009.08163 exactly, T_inf = E0). Moments at y:
+n = 4 pi int_1^{eps_c} f eps sqrt(eps^2 - 1) d eps, rho = 4 pi int f eps^2 sqrt(eps^2 - 1),
+p = (4 pi/3) int f (eps^2 - 1)^{3/2}, f = exp((eps_c - eps)/T) - 1. With coefficient 1 these
+equal F21's hat quantities exactly (rho = 4 sqrt2 pi I_rho, p = (8/3) sqrt2 pi I_p with x =
+(eps - 1)/T), so lengths come out in F21's unit zeta and Table 1 can be compared number by
+number. Equations: m' = 4 pi r^2 rho, y' = -(m + 4 pi r^3 p)/(r (r - 2 m)), N' = 4 pi r^2 n
+(1 - 2m/r)^{-1/2}; M = m(R), E_b = (N - M)/N, B = N - M, Z(0) = e^{y0}(1 - 2M/R)^{-1/2} - 1,
+v(0) = sqrt(3 p/rho) at the centre, Phi = (1/2) ln(1 - 2M/R) - y.
+Radial pulsation [Chandrasekhar's equation as printed in F21 lines 202-204, put in
+variational form by me]: omega^2 int e^{3 Lam - Phi} (rho + p) r^2 xi^2 = int e^{3 Phi + Lam}
+(gamma p/r^2) [(r^2 e^{-Phi} xi)']^2 + int e^{Phi + Lam} r^2 [4 p'/r + 8 pi e^{2 Lam} p (rho + p)
+- p'^2/(rho + p)] xi^2 (boundary terms vanish: xi(0) = 0, p(R) = 0); the same as F21
+eq. (integral) after their first integration by parts. Rayleigh-Ritz with xi_k = r e^Phi
+(r/R)^{2k}, k < K: K = 1 is F21's trial function; the lowest eigenvalue of the K x K
+generalised problem is an upper bound of omega_0^2 that decreases with K (converged by K = 6
+expected). Two adiabatic indices: F21's gamma = 1 + p/u (u = rho - n), and the Juttner
+Gamma_1(T) = 1 + 1/c_v(T) of the local temperature T = b e^y (ideal classical gas: p = n T,
+adiabatic n c_v dT = T dn, so (d ln p/d ln n)_s = 1 + 1/c_v; c_v = d<E>/dT of
+Maxwell-Juttner, <E> = K3/K2 - T; limits 5/3 and 4/3).
+
+Predictions:
+- Check of the formulation: at F21's tabulated w(0) (b = 0.1) my M, E_rest, eps, rho(0),
+  p(0), v(0), <gamma>, gamma_cr agree with Table 1 to 4 significant digits, and R and Z(0)
+  to their R grid (about 3e-3 relative). F21's closed-form gamma_cr equals my K = 1 Rayleigh
+  quotient form to 1e-8. Refuted otherwise (then my formulation or their table is wrong and I
+  must find which before using either).
+- V4(a): King (b = 1): first maximum of E_b at y0 = 0.334 +- 0.0010 (published 0.334), and
+  the first zero of E_b at 0.784 +- 0.001.
+- V4(b): King with Juttner Gamma_1: the gas is hot (T >= T(R) = m), Gamma_1 ~ 1.36-1.38, so
+  the fluid onset comes far before the E_b maximum: y0_onset in [0.02, 0.15] (estimate from
+  the homogeneous-sphere gamma_cr = 4/3 + (19/42)(2M/R) [BACKGROUND, from memory]). With
+  F21's gamma = 1 + p/u the onset lies later than with Gamma_1. The exact (K = 6) onset lies
+  at y0 <= the K = 1 onset (upper-bound property).
+- V4(c): F21 b = 0.1 with their gamma: onset w(0) = 4.05 +- 0.03, Z(0) = 0.750 +- 0.005;
+  eps_max 0.0352 +- 0.0002 at Z(0) in [0.50, 0.59]; B max at Z(0) in [0.25, 0.35]; E max at
+  Z(0) in [0.05, 0.15]. With the Juttner Gamma_1 of the local temperature: onset at a smaller
+  Z(0), in [0.35, 0.70] (Gamma_1 falls with T twice as fast as 1 + p/u of a full MJ gas, and
+  the truncation raises 1 + p/u further); exact onset Z(0) <= K = 1 onset, within 3 percent.
+- Afterwards I compare with the model files of runs C-sidm-20261115-120610-b4592be and
+  C-20261115-170742-84990ed. Their file names, seen when listing the directories, carry
+  King y0 = 0.31400 ... 0.35400 including 0.33403, and F21 Z(0) = 0.5000 ... 0.6348
+  including 0.5331, 0.5404, 0.6348; the manifest purpose says "near the E_b maximum and at
+  both fluid onsets". I have not opened the files. My predictions above were formed from the
+  papers; the names are noted here so that the reader can judge.
