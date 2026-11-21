@@ -234,3 +234,34 @@ the decisive and drift analyses, and names the KS reference temperature of T9.
 
 Refuted if a checksum fails, if a G0 or unchanged G1 output changes, or if a number differs
 beyond its printed digits.
+
+### N4 outcome (run C-20261121-130335-d0cfe2e, nrpic-run, completed, 2 cores, 0 card-hours)
+
+- P1 held: 126 inputs, every one "sha256 ok"; the six new inputs among them.
+- P2 held: the four G0 PNGs, claims.json, claims.md, parameters.tex and the PNGs of
+  fig_box_summary, fig_onsets, fig_cluster and schem_dataflow have the same sha256 as in run
+  C-20261120-223007-fe3f39c; fig_heat prints every N3 number unchanged. Only fig_heat,
+  schem_architecture, schem_timeline and ledger.tex changed (the PDFs differ in metadata).
+- P3 held: 1.0250 +- 0.0025, 1.0957 +- 0.0051, 0.9914 +- 0.0035; C-E order 4 1.0296, 1.0988,
+  0.9933, order 1 at theta = 1 0.9407; the script's equality checks against cardcpu.json and
+  ce_kappa.json passed (it would have stopped otherwise).
+- P4 held: T8 card 1.0169/1.0222/1.0203, 1.0221/1.0222/1.0274, 1.0116/1.0222/1.0403, changes
+  -0.0052, -0.0001, -0.0104; CC1 cell seeds 184.02, 185.29, 178.86 M, sd 3.40 M, particle
+  184.93, 185.85 M; CC2 206.26-206.73 M, sd 0.21 M; y0 = 0.26: 100.46 M at Kn_c = 1, none by
+  300 M at Kn_c = 10; M/8 over M/4 0.22, 0.25, 0.10. Three growth-fit rows added after the
+  prediction was written (before the run): synthetic bias -1.6e-5, -6.1e-4, +6.9e-4 (rms
+  0.004-0.007), 18 of 18 published outcomes, local rates 0.075-0.082 falling to 0.023-0.026,
+  common-interval rates 0.0557, 0.0584, 0.0617 per M (runs C-20261120-222716-9d86ebc,
+  -223404-40668db); these agree with `../stage/REVIEW-wave3.md` section 4.
+- P5 held after two corrections found by the checker and by reading the pages: the run-id
+  column of the ledger was too narrow for the long run ids of wave 1 (90 overfull boxes;
+  widths 0.41/0.27/0.23 of the text width fixed it, found in a draft compile before the run);
+  percent signs in a ledger row replaced by relative changes; two negations rewritten; a
+  stray space before ";" and ":" after `\input` removed with `\unskip`; the abstract no
+  longer says the conduction test reaches ultrarelativistic temperatures (it stops at
+  theta = 1). Final checker with --compile: 0 undefined references or citations, one overfull
+  box of 1.1 pt (parameter table, as in G0); the remaining candidates are the guide's
+  exceptions. All 16 pages read; all 11 PNGs looked at (architecture and timeline byte-equal
+  to the drafts that were read).
+
+Draft runs for layout went to `scratch/C-sidm/tmp/note_b3/` (not registered, not used).
