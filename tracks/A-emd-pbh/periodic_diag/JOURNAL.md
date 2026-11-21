@@ -229,3 +229,8 @@ Test A first attempt (run A-20261121-222439-65eebaa) failed in my script: the on
 took the t = 0 line (H_max 0.49, the data's own constraint violation) as the first line
 above ten times the baseline. Fixed (search after t = 1) in `card_onset.py` and the same
 in `analyse_runs.py`; rerun next.
+
+Test A second attempt (run A-20261121-222459-4cb257c) ran, but its per-level split of the
+line outputs found only levels 4 and 0: my equal-spacing test used a tolerance of 1e-6
+while the tab files print x to six digits. Fixed (1e-3 relative) in both analysis scripts;
+the onset and step numbers of that run do not depend on it. Rerun next.

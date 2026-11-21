@@ -53,7 +53,7 @@ def alternating(x, f):
     amp = np.full_like(f, np.nan)
     h = np.full_like(f, np.nan)
     for i in range(1, len(f) - 1):
-        if abs(dx[i - 1] - dx[i]) < 1e-6 * dx[i]:
+        if abs(dx[i - 1] - dx[i]) < 1e-3 * dx[i]:   # x is printed to 6 digits
             amp[i] = abs(f[i - 1] - 2 * f[i] + f[i + 1]) / 4.0
             h[i] = dx[i]
     return amp, h
@@ -130,7 +130,7 @@ def main():
             amp, h = alternating(x, fv)
             per = {}
             for lev, hh in ((4, DX4), (3, 2 * DX4), (2, 4 * DX4), (1, 8 * DX4), (0, 16 * DX4)):
-                s = np.abs(h - hh) < 1e-6
+                s = np.abs(h - hh) < 1e-3 * hh
                 if s.any():
                     per[str(lev)] = {"max_alternating": float(np.nanmax(amp[s])),
                                      "max_abs": float(np.abs(fv[s]).max())}

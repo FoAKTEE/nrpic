@@ -82,7 +82,7 @@ def main():
             row = {"t": tt, "cycle": cy}
             for v in ("z4c_betax", "z4c_Gamx", "z4c_alpha"):
                 amp, h = alternating(x, dd[v][o])
-                s = np.abs(h - dx) < 1e-6 * dx
+                s = np.abs(h - dx) < 1e-3 * dx
                 row[v] = float(np.nanmax(amp[s])) if s.any() else None
             lines.append(row)
             data.setdefault(lab, {}).setdefault("lines", []).append((tt, x, {v: dd[v][o] for v in
