@@ -714,3 +714,108 @@ Plummer, point), the extended script reproduces every numeric leaf of the N128Lc
 wave-2 analysis D-20261115-190541-e27453d to 1e-12 relative (the new bins only extend the
 lists: the first 27 bin edges are equal to 1e-15); the only differences are added keys and
 longer lists. Refuted if any common leaf differs by more than 1e-12.
+
+## 2026-11-21T08:50Z  outcomes: production run P192, R8 (threaded build), regression T
+
+Runs: production D-20261121-075559-31835c4 (completed, exit 0, 2914 steps, 2504 s on six
+threads); its analysis D-20261121-083847-95e881c (`nm_late.txt`, `nm_analysis.json`,
+figures `nm_late_profiles_P192.png`, `nm_late_growth.png`, `nm_growth.png`,
+`nm_profiles.png`, `nm_phase.png`, `nm_selfsim.png`, `nm_clump.png`; the first two and
+`nm_phase.png` looked at so far); R8 check D-20261121-083851-b5b9acc (`nm_threadcheck.png`,
+looked at); regression and R8 analysis D-20261121-083858-c59f5d3 (`jsondiff_N128Lc.txt`,
+`nm_late_profiles_N128Lc.png` and `nm_late_growth.png` looked at). Last snapshot at
+a/a_i = 29.974 (t = 3624.6 M; no snapshot is written at tlim), so "30" below means 29.97 and
+the shells are read at the same a/a_i.
+
+Regression T holds: 617 numeric leaves of the N128Lc entry compared with the wave-2 analysis
+D-20261115-190541-e27453d, largest relative difference 3.4e-14, none above 1e-12; 134 added
+keys, 12 longer lists.
+
+R8 (prediction 22:27Z). 1 holds: particle files identical (sha256 a521544e...). 2 holds:
+first history record K 4.5e-14, W 2.2e-14, W_mesh 0, C 1.0e-13 relative. 3 holds for every
+statistic: M_ta and the dress identical to all printed digits at every snapshot (relative
+difference 0 after a/a_i = 1.5; 4.8159 and 2.1537 M at 8); the profile identical to 1.6e-14
+at a/a_i = 3.97 and within 5.1e-4 at 8.00 (caustic bins identical); clump centres of mass
+apart by 2.5e-14 dx (3.97) and 5.5e-6 dx (8.00); same step count (1763); history over matched
+cycles K within 1.2e-4, W within 2.4e-5 relative. Refuted, the part about the particles: "no
+visible growth". The particle-by-particle difference grows from rounding (1e-15 dx at
+a/a_i = 1.3) slowly to 4e-9 dx (largest, a/a_i = 4.5) and then fast to 1.8 dx (largest),
+4.6e-3 dx (rms), 1.3e-8 dx (median) at a/a_i = 8; 30 % of the dust is more than 1e-6 dx
+apart by a/a_i = 7.5. A few orbits through the softened centre amplify the solver-tolerance
+differences (threaded_build.md section 4: the multigrid iterate depends on the thread
+count) [JUDGEMENT: cause not tested]; the masses and the binned profile do not notice. The
+threaded build is therefore equivalent to the serial release for these statistics, not
+particle by particle.
+
+P192 against prediction P (numbers of nm_analyze.py's counters: M_ta = clump + dust that has
+had v_r < 0 at some snapshot; dress = dust found on the other side of the centre, or moving
+out after such a v_r < 0):
+P1 M_ta: a/a_i = 8: 4.826 against [4.688, 4.813] REFUTED (hybrid +0.8 %); 16: 9.443 against
+   [9.089, 9.304] REFUTED (hybrid +2.0 %); 29.97: 17.024 against [16.72, 17.16] holds (hybrid
+   -0.13 %, kernel +1.5 %; nearer the hybrid: holds). Dress: 8: 2.1608 against [2.093,
+   2.159] REFUTED by 0.1 % (hybrid +1.1 %); 16: 4.935 holds (hybrid +0.6 %); 29.97: 10.199
+   against [9.51, 9.87] REFUTED (hybrid +4.5 %, kernel +6.3 %). Not predicted, and the
+   telling part: the run lies BELOW both shell laws early (M_ta -4.4 % / -7.1 % from hybrid /
+   kernel at a/a_i = 2, -0.7 / -1.5 % at 4), above them in between (+0.6 to +2.0 % at 6-16,
+   +6.1 / +8.0 % at 24) and on the hybrid again at 30; at a/a_i = 1.5 it already counts 0.32 M
+   of dust as turned (both shell laws: none; point-mass shells 0.24 M) and 0.022 M as dress
+   (shells 0). A smooth difference of force law would not change sign twice.
+P2 dress/M_ta: 0.448 (8) holds, 0.523 (16) holds, 0.599 (29.97) REFUTED (band 0.562-0.582;
+   the run is nearer the self-similar 0.625 than the shells). M_ta/(M a/a_i): 0.603 (8)
+   holds, 0.590 (16) REFUTED (band 0.566-0.584), 0.568 (29.97) holds (asymptote 0.565).
+P3 profile against the self-similar solution: 29.97, lambda_min = 0.063, 7 bins: ratios
+   0.985, 0.938, 0.878, 0.818, 0.967, 1.378, 1.288 at lambda = 0.063-0.25; largest deviation
+   0.378, rms 0.200: REFUTED (25 %, 15 %); within 18 % for lambda <= 0.16, the two bins at
+   0.20-0.25 high. 16.03, lambda_min = 0.142, 4 bins: 0.946, 0.891, 0.671, 0.799, largest 0.329,
+   rms 0.202: REFUTED. Against the matched shells on the same range (29.97): largest 0.35,
+   rms 0.16 (hybrid), 0.35 / 0.19 (kernel).
+P4 slope at 29.97: mean local slope -2.41 against -2.44: holds (0.10); least-squares slope
+   -2.27 against -2.53: REFUTED (0.26 > 0.15); largest local difference 1.13: REFUTED (0.7).
+   At 16.03: mean -2.85 against -2.51 REFUTED, least squares -3.03 against -2.69 REFUTED.
+P5 clump holds (centre of mass at most 0.0081 dx from the cell centre, 90 % radius at most
+   0.037 dx); total momentum up to 0.028 M c: REFUTED (1e-2); particles: REFUTED, 16 462 of
+   520 200 particles (0.65 M of 22.41 M) leave the box, from a/a_i = 23.5 on (history mass
+   column: 22.4062 until t = 2390 M, 21.7595 at 3566 M). K + W within 0.11 % of |W(0)|.
+P6 cost holds: 2914 steps (model 3246-3523), 0.70 h.
+The phase plot at 29.97 (`nm_phase.png`) shows run particles at r = 60-200 M with
+v_r = +0.3 to +0.45 c, above the envelope of the kernel shells: some dust has more energy
+than in the shells.
+
+What this leaves open, and the two hypotheses I test next (predictions written before the
+runs):
+H1 [JUDGEMENT] The shells use the kernel measured in wave 2 with the clump at a mesh VERTEX
+   (F1 runs D-20261115-170112-d70352c, -170122-7c4da35: nm_run.py without --shift_cells),
+   where cloud-in-cell spreads the clump over eight cells; the production run has it at a
+   CELL CENTRE, one cell. At dx = 8.9 M all the dust starts within 4 cells, the inner dust
+   (r = 3-9 M) within one, so the near-field kernel decides the early collapse. The
+   exploration of the first snapshots (unregistered look, numbers not quoted as results)
+   showed dust from r_0 = 3.7-7.9 M with v_r < 0 by a/a_i = 1.29, which the vertex kernel
+   (force about zero inside 0.5 dx) cannot produce.
+   Test F-C: the one-step field run of wave 2 (clump + 3000 tracers, nx = 64 and 128, box
+   +-68 M) with --shift_cells 0.5 0.5 0.5, analysed by nm_field.py (made to subtract the
+   shift). Prediction: inside 1.5 dx the cell-centre median kernel f(q) = g_r r^2/M lies
+   above the vertex kernel (at q = 0.5-1 by a factor 1.5 or more); beyond 4 dx both within
+   2 % of 1; the two resolutions overlay in q. Refuted if the two kernels agree within 10 %
+   on q in [0.3, 2].
+   Test S-C: kernel and hybrid shells of the production set-up with the cell-centre kernel.
+   Prediction: they follow the run's early growth better than the vertex-kernel shells:
+   |run/shells - 1| for M_ta at a/a_i = 2 and 3 below 3 % (now 3.4-7.1 %). Refuted if not
+   better than now.
+H2 [JUDGEMENT] The counters are contaminated: a particle with v_r < 0 at one early snapshot
+   (a transient of the coarse near field, not a turnaround) stays "turned" forever, and if it
+   then moves out it is counted as dress. That would explain M_ta and dress that are too
+   high in the middle of the run while the true turnaround radius is correct at the end.
+   Test: two estimators free of the flag history, applied in the same way to the run and to
+   the shells: M_ta(v) = mass inside the radius where the median radial velocity of the
+   single-stream infall region (0.5 to 2 r_ta) crosses zero (no shell crossing outside the
+   outermost caustic, lambda_1 = 0.355, so the mass inside r_ta is exactly M_ta), and the
+   dress(side) = dust found on the other side of the centre at some snapshot (shells: a sign
+   change of r). Prediction: M_ta(v) of the run within 1 % of M_ta(v) of the hybrid shells
+   from a/a_i = 8 on, i.e. no excess at 16 and 24; dress(side) within 2 % of the shells'
+   dress at 16 and 30. Refuted if the excess at 24 (+6 %) survives in M_ta(v).
+D  Lost particles (diagnostic, prediction): they are dust from the outer edge of the lattice
+   (initial radius above r_last = 32.9 M, never turned), leaving through the faces near
+   their centres: the edge shell is bound by only E = -0.0275 (kinetic 0.591, potential
+   -0.618 per unit mass at t = 0), so its apocentre, 815 M by the closed form, moves past the
+   face at 854 M if its early pull is a few per cent weaker than Newtonian, which a ball
+   only 4 cells wide can give. Refuted if most lost mass started inside r_last or was dress.
