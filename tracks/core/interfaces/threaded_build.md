@@ -242,3 +242,26 @@ solver-tolerance (multigrid) level, never byte for byte.
 - AthenaK restart files hold uninitialised padding bytes in their header
   (outputs/restart.cpp 225 to 229): compare restart files on their data
   (`tracks/core/omp/omplib.py`, `_rst_data`), never byte for byte across processes.
+
+## 8. In release candidate core-v0.5 (lead of core, 2026-11-21)
+
+Merged into `core/nrpic` as 0d0f5ba5; the threaded executable of the release is
+`scratch/core/exe/core_nrpic_v05/athena_cpu_omp` (source c3eb42e0, built with
+`scripts/build_cpu_omp.sh`). Added by the merges that followed:
+
+- The fine-shape branch of the deposit kernel (`<particles> deposit_fine_shape` of
+  core/cosmo-amr) adds through the deposit target as the two other branches do. Tested
+  with the refined deposit test (run core-20261121-065009-29b855c, judged in
+  core-20261121-065726-bf06a85): two runs at 4 threads with `private` byte-identical;
+  4 threads against 1: 1.1e-18 (history) and 2.1e-16 (source dump in double precision)
+  of the largest number; atomic at 4 threads 3.6e-16; identity 3.0e-14.
+- With several MPI ranks the private copies are summed before the clouds of other ranks
+  are added. Not run.
+- The threaded build at ONE thread does not give the bits of the serial build: source
+  dump 1.1e-14 of its largest number in the deposit test (the two builds differ in
+  optimisation level). Byte comparisons against a release need the serial executable;
+  the outcome of the twelve regression set-ups with the threaded build at one thread is
+  in `tracks/core/RELEASE-v0.5.md`.
+- The kernels that release core-v0.4 added (accretion diagnostics, initial-data solver,
+  perturbing force, collisions with the metric at each particle) have not been run
+  under threads; they run on cards [JUDGEMENT: no host-only state].

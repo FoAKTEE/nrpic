@@ -287,3 +287,38 @@ vacuum Z4c on several ranks is upstream AthenaK code (the smoke test of journal 
 ran it on two processor ranks). What Track F can do now: run its mesh-count inputs with
 `athena_cpu -m 2` to see the split over two ranks (no allocation), and plan with
 `max_nmb_per_rank` per card; the measured rate and memory follow when the job has run.
+
+## 9. In release candidate core-v0.5 (lead of core, 2026-11-21)
+
+Merged into `core/nrpic` as c3eb42e0 (source ca46836a of this package on top of release
+core-v0.4 and the branches scalar-3, build-openmp, cosmo-amr). What the merge changes
+against sections 3.6 and 6:
+
+- Options that stop a run on more than one rank, with a message (`NrpicMpiInit`): the
+  four of this package (`pusher = newton`, `collisions`, `test_kick`, `curv_dt`) and,
+  added at the merge because their sums, records or deposit are those of one rank,
+  `removal_record`, `acc_nsphere`, `peri_count` (accretion diagnostics of core-v0.4),
+  `perturb_gamma`, `id_solve`, `region_dcycle` and `deposit_fine_shape` (core-v0.5: the
+  kernel of the remote part of a cloud, `nrpic_cloud.hpp`, has no fine-shape branch).
+  Tested: `deposit_fine_shape` on two ranks stops with the message, the same deck runs
+  on one rank (run core-20261121-065009-29b855c, `mpi/stop`).
+- Order in `NrpicDepositSources`: the private copies of `deposit_threads = private`
+  (threaded build) are summed into the source array before `NrpicMpiDepositRemote` adds
+  the clouds of other ranks. MPI together with threads has not been run.
+- Not stopped and not tested on several ranks: tracers (`zero_mass`), clumps with
+  momentum, the lapse and shift options of core-v0.4, the scalar field, `<particles_amr>`
+  (its sums over the mesh are reduced over the ranks in `nrpic_refine.cpp`; the file
+  `<name>.rst.amr` is written by rank 0), the guard (counts of rank 0 in its file).
+- The merged MPI build gives the files of this package's runs: Kerr swarm (T1) and
+  cluster (T3) on 1 and on 2 ranks, every file byte for byte except the mesh restart
+  files, whose data are identical outside the 36 header bytes that core-v0.4 zeroes
+  (runs core-20261121-065009-29b855c and core-20261121-065726-bf06a85 against
+  core-20261119-145615-4c98c59 and core-20261119-154814-ca46836). Started without
+  mpirun it reproduces release core-v0.4 on the twelve regression set-ups (run
+  core-20261121-065743-1202666).
+- The numbers of T3 hold for the history of the module (4.6e-13 between 1 and 2 ranks);
+  the constraint statistics `cstat.hst` differ by 8.5e-10 in the largest relative
+  Hamiltonian constraint (the same value in run core-20261119-154814-ca46836).
+- Published: `scratch/core/exe/core_nrpic_v05/athena_cpu_mpi`. A card build with MPI is
+  not part of the release (the package's build ran two ranks on one card, entry 23 of
+  its journal; its two-card job 4733 is not judged).

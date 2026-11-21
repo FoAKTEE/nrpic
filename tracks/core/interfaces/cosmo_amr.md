@@ -659,3 +659,26 @@ far: 0.153 of the one card-hour (T14 11 s, T10 3 s, T10d 20 s, T10b 244 s, T10c 
 - The crash of the first T10 attempt at start (exit 139) is not explained (section 7).
 - `alpha_exc` is an absolute lapse; in the conformal-time gauge the lapse is of order a
   (section 7). An excision threshold relative to the mean lapse does not exist.
+
+## 9. In release candidate core-v0.5 (lead of core, 2026-11-21)
+
+Merged into `core/nrpic` as e103b3e3 (source 1548d49); executables of the release:
+`scratch/core/exe/core_nrpic_v05/`. Against the sections above:
+
+- T14b (the card job pending in sections 4.6, 7 and 8) ran as Slurm job 4763 and was
+  judged by the lead with `t14_card.py`, run core-20261121-063923-5ed0a51: every bound
+  of the prediction held (homogeneous cases uniform to 1.1e-13, alpha_max equal to the
+  processor runs to 1.8e-15, the tracker within 4.4e-16, the ladder with the same
+  MeshBlock counts, identity 2.2e-16, Hr_max within 9.2e-12; the guard case stopped at
+  cycle 16 against 18, status 3). Sf is not judged by the script. T10g of the same job
+  ended with the guard at t = 12.504 ("conformal factor chi not positive"); it is not
+  judged here.
+- The merged serial executable gives the bytes of this package's executable on
+  `flrw_tracker.athinput` (12 steps) and on the ladder case of T9 (10 steps), run
+  core-20261121-065009-29b855c.
+- `deposit_fine_shape` stops a run on more than one MPI rank (`mpi.md` section 9); with
+  the threaded build its additions go through `deposit_threads` (`threaded_build.md`
+  section 8).
+- Three things act without an option (changelog of core-v0.5): the guard, the place of
+  the finder's and the tracker's files under `-d`, and the mapping of surface points and
+  tracker positions into a periodic box.
