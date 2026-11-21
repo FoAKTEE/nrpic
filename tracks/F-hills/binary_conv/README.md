@@ -103,7 +103,9 @@ State of a chain: `scripts/submit_chain.sh --status <run dir>`; close a finished
   eight card-hours, so decision 0014's announcement in STATUS.md comes first). Read the queued
   chains when they land (R16n segments 2-3, Slurm 4807 and its successor; R12, Slurm 4809) with
   the analysis command above and judge the checks of JOURNAL BC-5; close both runs with
-  `nrpic-run finish`. A profile arm (junk_gauge's recommendation) was not run: about 0.84
+  `nrpic-run finish`. The same stray resubmission will follow the last segment of R16n
+  (segment 3) and of R12 (segment 2): cancel it with `scripts/submit_chain.sh --stop <run dir>`
+  once the last segment has ended (see the core request below). A profile arm (junk_gauge's recommendation) was not run: about 0.84
   card-hours for one m/8 segment, if the gauge of P1b is to be chosen with evidence.
 - core: (1) `scripts/submit_chain.sh` resubmits a chain after its last allowed segment: R8 (run
   F-20261121-130358-6cf186a, MAX_SEGMENTS = 1) queued job 4808 at the wall-clock stop, which would
