@@ -12,6 +12,7 @@ T1  coarse vacuum mesh (problems/es/v1_small.athinput without refinement: 64^3 c
     the files both write.
 T2  homogeneous dust universe (problems/cosmo/flrw_leak.athinput, rate 5): with
     lapse_leak_rho below the density the history equals that of the first pass.
+T4  the ball of T3 with lapse_leak_hole and no tracker: the bytes of the first pass.
 T3  expanding ball L1 at cells of 1 M (problems/ball/ball_leak.athinput, t = 10 M): first
     pass with the release executable and with the new one (same bytes), and restricted
     to the matter, for T = 1 M and 0.5 M; shell errors against the exact solution and
@@ -78,6 +79,8 @@ def cases(new, rel):
         c[f"T3-{tag}"] = (new, b, ball_args() + [f"z4c/lapse_leak={rate}"])
         c[f"T3-{tag}-rho"] = (new, b, ball_args() + [f"z4c/lapse_leak={rate}",
                                                     f"z4c/lapse_leak_rho={RHO_BALL}"])
+    c["T4-first"] = (new, b, ball_args() + ["z4c/lapse_leak=2.0"])
+    c["T4-hole"] = (new, b, ball_args() + ["z4c/lapse_leak=2.0", "z4c/lapse_leak_hole=5.0"])
     return c
 
 
@@ -199,6 +202,12 @@ def main():
         check("T2 homogeneous universe: restricted to matter = first pass",
               max(dev.values()) < 1e-10,
               f"largest relative differences {dev}; lapse at the end {h1['alpha_max'][-1]:.6f}")
+    if "T4" in sel:
+        c = compare(d("T4-first"), d("T4-hole"))
+        check("T4 lapse_leak_hole without a tracker = first pass", not c["different"]
+              and not c["only"] and (c["identical"] or c["payload"]),
+              f"{len(c['identical'])} files identical, {len(c['payload'])} after the dump, "
+              f"different {c['different']}, only {c['only']}")
     if "T3" in sel:
         import idlib                                   # noqa: F401
         import test2_evolution as t2

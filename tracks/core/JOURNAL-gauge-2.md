@@ -275,3 +275,89 @@ Predictions.
   30 M, because the lapse front of plain 1+log forms between 8 and 30 M [JUDGEMENT:
   K_T = -f sqrt(2M/R^3) of the table is largest near R = 20 to 26 M]. If this run also
   stays below 1.5 M, the front is not what sets the size and C4 is wrong in that part.
+
+## Entry 6 (09:50-10:00): outcomes of T1 to T3; the matter weight hurts the surface of a ball; job B revised before it ran
+
+Run core-20261121-172451-79e29b3 (processors, serial executables: this branch
+`.work/build_cpu_g2`, source 90f52f4d, against release `.work/build_cpu_v06`; 15 runs,
+24 minutes on six cores; numbers `tracks/core/analysis/gauge2/results/ptests.json`,
+figure `figs/ptests_ball.png`, looked at: six panels, four curves each, the dashed
+"matter only" curves leave the solid ones in the outer and surface panels from tau = 3 M
+on). An earlier start, core-20261121-172332-7167b70, failed at once on a relative
+executable path of the driver and is on record as failed.
+
+Outcome T1 (coarse vacuum mesh):
+- HELD: restricted to the matter = plain 1+log, every file (6 identical, the 2 mesh
+  slices identical after their parameter dump; none different).
+- HELD in kind, one number failed: the first pass differs from plain 1+log in 5 files;
+  largest lapse 1.548 with plain 1+log and 1.108 with the first pass (I wrote "below
+  1.08"; 1.108 is Track D's 1.109).
+- HELD: `lapse_leak_hole = 1000` with a tracker = plain 1+log with the same tracker
+  (7 + 2 files); a tracker alone changes no shared file. `lapse_leak_onset = 1e-9`
+  equals the kink exactly in the constraint history.
+Outcome T2 (homogeneous universe, rate 5): HELD, relative differences of the lapse and
+of the volume between `lapse_leak_rho = 1e-3` and the first pass exactly 0; lapse at
+the end 1.262437.
+Outcome T3 (L1 at cells 1 M):
+- (a) HELD: first pass, new executable = release core-v0.6, 17 of 17 files identical,
+  for T = 1 M and 0.5 M. The statement of the first pass is untouched.
+- (b) REFUTED for T = 0.5 M, held for T = 1 M:
+
+| run | core | mid | outer | surface | central lapse off homogeneous | largest lapse on the mesh |
+|---|---|---|---|---|---|---|
+| first pass, T = 1 M | 3.08e-3 | 1.26e-3 | 3.34e-3 | 6.71e-3 | 2.8 per cent | 1.245 |
+| matter only, T = 1 M | 3.46e-3 | 2.16e-3 | 6.22e-3 | 7.05e-3 | 2.2 per cent | 1.400 |
+| first pass, T = 0.5 M | 1.67e-3 | 8.2e-4 | 2.78e-3 | 6.05e-3 | 0.2 per cent | 1.127 |
+| matter only, T = 0.5 M | 2.31e-3 | 3.28e-3 | 1.12e-2 | 1.27e-2 | 0.2 per cent | 1.372 |
+
+  Largest ratio to the first pass 1.86 (T = 1 M) and 4.04 (T = 0.5 M, outer and mid
+  shells). The figure shows why [VERIFIED as a profile; reading JUDGEMENT]: outside the
+  ball the lapse of plain 1+log rises to 1.37 to 1.40 by 10 M (peak near r = 24 M, still
+  growing), inside it is held at 1.08 to 1.15, and the whole difference sits across the
+  surface (1.10 to 1.22 within 2 M at r = 10 to 12 M). The centre is not reached (the
+  central lapse is as good as in the first pass, so there is no focusing front), but
+  the shells near the surface move through a steep lapse gradient, more so with the
+  shorter T, and lose a factor 2 to 4. For the outer shells this is worse than plain
+  1+log (3.6e-3 at cells M/2 in the first pass).
+- So the density weight alone is not a correction that "keeps the expanding-matter
+  tests": it trades the hole in vacuum for the surface of the matter. By the same
+  reading the wall of the Einstein-Straus bubble (dust next to vacuum sliced by plain
+  1+log) should lose accuracy with it.
+
+What this changes [JUDGEMENT]. The vacuum next to expanding matter wants the relaxation
+(first pass), the vacuum next to a black hole does not; the density cannot tell the two
+apart, the distance from the hole can. The second candidate of decision 0022, the
+switch-off around a tracked black hole (`lapse_leak_hole`), leaves L1, L2 and L3
+exactly as in the first pass (no tracker: the first-pass statement runs; processor test
+T4 added) and keeps the relaxation at the wall; what is open is whether a hole whose
+neighbourhood is free but whose far zone is still held keeps its size. Job B (Slurm
+4814, run core-20261121-173538-c8c2aec) had not started and was cancelled (status
+stopped); its second version `card_b2.list` tests both candidates on the Einstein-Straus
+data and the tracker candidate on V8 for 150 M. The first pass on the same
+Einstein-Straus mesh is dropped for card time (reference: Track D's ES-1G, run
+D-20261119-142633-6f72922). Expected 43 minutes (0.72 card-hours), wall limit 50
+minutes; with job A at its expected 0.52 the item stays at 1.24 card-hours.
+
+Predictions for the second version of job B (the predictions of entry 5 stand for
+`es-rho` (a), (b), (d), (e), `collapse-rho`, `ball-l1-rho`, `ball-l2-rho`, `v8-rho`,
+`v8-onset`, `v8-hole6`, with these amendments made after T3 and before the run):
+- `es-rho` (c), amended: I now expect the wall tracers to be worse than 5e-4: between
+  1e-3 and 2e-2 at tau = 100 M, by the surface effect of T3. The prediction of entry 5
+  (within 5e-4) stays on record and will be judged as written.
+- `ball-l1-rho`, `ball-l2-rho`, amended: by T3 I expect the outer and surface groups
+  above twice the first pass (L2 with T = 0.5 M: outer above 8.6e-3); entry 5 stays on
+  record.
+- ES-h, `es-hole` (relaxation everywhere except within 16 M of a tracker at the
+  puncture, in full beyond 32 M; the wall is at 33 M in the coordinates):
+  (a) wall tracers within 3e-4 of the exact curve until tau = 100 M and the lapse at
+  the dust tracers within 3 per cent of the homogeneous model (as the first pass: the
+  relaxation acts on both sides of the wall);
+  (b) horizon radius above 1.3 M at 50 M and at 100 M (the first pass: 1.33 M at 50 M,
+  1.09 M at 100 M in vacuum, smaller with dust), and horizon mass varying by less than
+  1.5e-4 over 40 to 100 M [JUDGEMENT, even odds: the far zone is still held and may
+  still stretch the coordinates at the hole]. Refuted, and the tracker candidate not a
+  correction at this radius, if the radius is below 1.2 M at 100 M.
+- V8-h, `v8-hole16` (vacuum, 150 M): radius above 1.3 M at 100 and 150 M; mass drift
+  from 100 M inside [-1.5e-4, +1.5e-4] to 150 M (job A's relaxed run should show the
+  dip of -3e-4 to -6e-4 by 140 M). Refuted if the radius at 150 M is below 1.15 M or the
+  drift leaves [-3e-4, +3e-4].

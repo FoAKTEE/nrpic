@@ -13,8 +13,10 @@ options of the second pass are read only if present, so every variant needs a fi
   inputs/v8_rho.athinput             problems/es/v1_small.athinput + lapse_leak_rho
   inputs/v8_var.athinput             the same + a tracker at the puncture, lapse_leak_hole,
                                      lapse_leak_onset (all three options at zero = off)
-  inputs/ball_rho.athinput           problems/ball/ball_leak.athinput + lapse_leak_rho = 0
-  inputs/collapse_rho.athinput       problems/ball/ball_collapse.athinput + lapse_leak_rho = 0
+  inputs/es_hole.athinput            the same data with lapse_leak_hole and a tracker
+  inputs/ball_rho.athinput           problems/ball/ball_leak.athinput + lapse_leak_rho = 0,
+                                     lapse_leak_hole = 0
+  inputs/collapse_rho.athinput       problems/ball/ball_collapse.athinput + the same
   inputs/flrw_rho.athinput           problems/cosmo/flrw_leak.athinput + lapse_leak_rho = 0
 """
 import os
@@ -38,6 +40,9 @@ def after(line, add):
 
 
 RHO0 = "lapse_leak_rho  = 0.0      # rho_c: relaxation only where the matter density exceeds rho_c/2 (0: everywhere)"
+HOLE0 = "lapse_leak_hole = 0.0      # r_h: relaxation off within r_h of every tracker, in full beyond 2 r_h (0: everywhere)"
+TRACKER = ("co_0_type       = BH       # tracker at the puncture (for lapse_leak_hole)\n"
+           "co_0_x          = 0.0\nco_0_y          = 0.0\nco_0_z          = 0.0")
 FILES = {}
 
 # ---- Einstein-Straus, 100 M
@@ -65,6 +70,20 @@ FILES["problems/es/es_gauge2.athinput"] = build(
     "# z4c/lapse_leak_rho=0.0 on the command line gives the condition of the first pass.\n"
     "# Built by tracks/core/analysis/gauge2/make_inputs.py. Header of the parent follows.\n#\n")
 
+# the same data with the relaxation everywhere except around a tracker at the puncture
+FILES["tracks/core/analysis/gauge2/inputs/es_hole.athinput"] = build(
+    "problems/es/es_gauge.athinput", es[:-4] + [
+        ("tlim       = 30.0", "tlim       = 100.0"),
+        after("lapse_leak_alpha = 1.0     # reference lapse",
+              RHO0 + "\n"
+              "lapse_leak_hole = 16.0     # r_h: relaxation off within r_h of the tracker at the puncture, in full\n"
+              "                           # beyond 2 r_h = 32 M (the bubble wall sits at 33 M in the coordinates)\n"
+              + TRACKER),
+        ("snap_dt        = 10.0", "snap_dt        = 25.0")],
+    "# problems/es/es_gauge2.athinput with the relaxation switched off around a tracker at\n"
+    "# the puncture (lapse_leak_hole) instead of restricted to the matter.\n"
+    "# Built by tracks/core/analysis/gauge2/make_inputs.py. Header of es_gauge follows.\n#\n")
+
 # ---- vacuum test V8
 FILES["tracks/core/analysis/gauge2/inputs/v8_rho.athinput"] = build(
     "problems/es/v1_small.athinput",
@@ -88,13 +107,15 @@ FILES["tracks/core/analysis/gauge2/inputs/v8_var.athinput"] = build(
 # ---- expanding ball, collapse, homogeneous universe
 FILES["tracks/core/analysis/gauge2/inputs/ball_rho.athinput"] = build(
     "problems/ball/ball_leak.athinput",
-    [after("lapse_leak_alpha = 1.0     # reference lapse", RHO0)],
-    "# problems/ball/ball_leak.athinput with the parameter lapse_leak_rho (at zero: off).\n"
+    [after("lapse_leak_alpha = 1.0     # reference lapse", RHO0 + "\n" + HOLE0)],
+    "# problems/ball/ball_leak.athinput with the parameters lapse_leak_rho and\n"
+    "# lapse_leak_hole (at zero: off; there is no tracker in this problem).\n"
     "# Built by tracks/core/analysis/gauge2/make_inputs.py.\n#\n")
 FILES["tracks/core/analysis/gauge2/inputs/collapse_rho.athinput"] = build(
     "problems/ball/ball_collapse.athinput",
-    [after("lapse_leak_alpha = 1.0     # reference lapse", RHO0)],
-    "# problems/ball/ball_collapse.athinput with the parameter lapse_leak_rho (at zero: off).\n"
+    [after("lapse_leak_alpha = 1.0     # reference lapse", RHO0 + "\n" + HOLE0)],
+    "# problems/ball/ball_collapse.athinput with the parameters lapse_leak_rho and\n"
+    "# lapse_leak_hole (at zero: off; there is no tracker in this problem).\n"
     "# Built by tracks/core/analysis/gauge2/make_inputs.py.\n#\n")
 FILES["tracks/core/analysis/gauge2/inputs/flrw_rho.athinput"] = build(
     "problems/cosmo/flrw_leak.athinput",

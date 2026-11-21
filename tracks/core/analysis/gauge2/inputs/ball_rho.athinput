@@ -1,4 +1,5 @@
-# problems/ball/ball_leak.athinput with the parameter lapse_leak_rho (at zero: off).
+# problems/ball/ball_leak.athinput with the parameters lapse_leak_rho and
+# lapse_leak_hole (at zero: off; there is no tracker in this problem).
 # Built by tracks/core/analysis/gauge2/make_inputs.py.
 #
 # Expanding dust ball with the lapse of wave 2: 1+log slicing whose excess over 1 relaxes
@@ -65,6 +66,7 @@ lapse_advect    = 1.0
 lapse_leak      = 2.0      # 1/T of the relaxation of the excess lapse (0: plain 1+log); T = 0.5 M
 lapse_leak_alpha = 1.0     # reference lapse
 lapse_leak_rho  = 0.0      # rho_c: relaxation only where the matter density exceeds rho_c/2 (0: everywhere)
+lapse_leak_hole = 0.0      # r_h: relaxation off within r_h of every tracker, in full beyond 2 r_h (0: everywhere)
 shift_Gamma     = 0.75
 shift_eta       = 2.0
 shift_advect    = 1.0
