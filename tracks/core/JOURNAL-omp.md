@@ -1094,3 +1094,52 @@ cycles, 20.10 and 20.60 s per step (processor share 0.92, 0.93).
 Six threads on 2026-11-20, best of the day (seconds per step; six over one thread; one
 A100 over six threads): punc 15.68 (5.8; 90), cluster 20.10 (5.8; 72), cosmo 8.86 (5.5;
 74), newton periodic 0.929 (4.4; 11.9), collapse isolated 0.409 (5.4; 0.63).
+
+## 2026-11-20 19:24 Entry 30: the package is closed; state for whoever reads this next
+
+Done in this session (entries 25 to 29), all runs through `nrpic-run` with the cores it
+granted, none by hand, no card time:
+- P17 core-20261121-025720-29ecba0, P15 core-20261121-030052-6acdca9 (recorded as failed,
+  exit 1, for the wrongly guessed bound of part c alone; parts a and b hold), P16
+  core-20261121-030132-89a7c84, P18 core-20261121-030310-46d891c, P19
+  core-20261121-031150-04a2d5b, scaling analysis core-20261121-032240-21947be
+  (`figs/scaling.png`, looked at: full lines the loaded day, dashed diamonds one and six
+  threads of 2026-11-20, dotted lines one A100; the isolated collapse at six threads
+  lies below its card line, every other case one to two decades above its own).
+- The four items of entry 24 are closed: (1) interface text sections 2 and 4 to 7 and
+  READY rewritten with the measured results, READY replaced in
+  scratch/core/exe/core_build-openmp/ by `publish.sh --ready` at 19:23 (executables
+  untouched, SHA256SUMS verified, a line added to COMMIT); (2) correction messages to
+  all, to D-bh-dress and to A-emd-pbh (tracks/core/outbox/20261121T032347Z__*); (3) P15
+  at four and six threads, P16, P17 run, and P18, P19 added; (4) figure and table
+  regenerated. `scripts/cpu_run.sh` defaults to six threads; scripts/README.md updated.
+- Source of the tree unchanged since a9c34e7a (2026-11-19): the regression P0 against
+  release core-v0.3 stands. Card time of the whole package: 0.014 of the one card-hour.
+
+Statements withdrawn in this package, for the record: "the card is not faster for the
+Newtonian mode" (entry 11; wrong for periodic boxes, entry 16), "particles in an
+analytic metric: always on processors" (never measured), "one-thread runs side by side
+explain the speed-up above six" as a general statement (entries 21, 28, 29: true for the
+one puncture run, cause unknown, not for the cluster).
+
+Open, none of it started:
+1. Not tested: MPI together with threads; adaptive refinement under threads; restarts
+   of refined meshes, of runs with collisions, or at another thread count than the
+   writing run; the card executable of this branch beyond dep and east; unbound
+   placement at 32 and 64 threads. The 16-, 32- and 64-thread series cannot be measured
+   again on a quiet machine under the six-core limit.
+2. Unmeasured on a card: particles without Z4c (collision boxes, geodesics, deposit
+   tests) and the scalar field without particles; the isolated Newtonian collapse on a
+   card on the same day as the processor run (0.65 s per step is the log of 2026-11-15).
+3. Unknown: what held back the afternoon's one-thread puncture run (131.9 against 90.8
+   s per step).
+4. For core's lead: the merge of this branch (shared files touched: particles.hpp, one
+   include at line 21 and one member at line 230; nrpic.cpp, one call in NrpicInit at
+   line 273 and four places in NrpicDepositSources, lines 687 to 689, 877, 899, 909;
+   parameter_input.cpp line 65, one macro name; scripts/_build.sh, the mode omp); and
+   the proposal of interface text section 7 (an option for a fixed-order, compensated
+   mean in `Multigrid::CalculateAverage`; it changes results at rounding level).
+5. For the orchestrator: CLAUDE.md says "at most 16 at a time per session" under
+   "Machine" and "at most 6 cores per session" under "Pause flag, restarts, load"; and
+   nrpic-run counts the 16 cores per owner while core runs many sessions (it refused in
+   the afternoon, entry 22, and granted every run this evening).
