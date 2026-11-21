@@ -152,7 +152,7 @@ for rid in ("E-20261115-172618-f948386", "E-20261115-172629-312a82c", "E-2026111
     keep = {k: m.get(k) for k in ("status", "exit_code", "launcher", "kind", "resources", "slurm", "started",
                                   "ended", "finished")}
     cost[rid] = {k: v for k, v in keep.items() if v is not None}
-    cost[rid]["entries"] = [e.get("name") for e in m.get("batch_entries", [])]
+    cost[rid]["entries"] = [e.get("name") for e in (m.get("batch_entries") or [])]
     st = os.path.join(SCR, rid, "batch.list.status")
     if os.path.exists(st):
         cost[rid]["batch_status"] = open(st).read()[-3000:]

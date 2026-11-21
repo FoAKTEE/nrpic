@@ -60,6 +60,10 @@ for d in range(nd):
             xm = m[n] - (m[n].mean() if n in FIELDS else 0.0)
             e[f"odd_{n}"] = 0.5 * (xp - xm)
             e[f"even_{n}"] = 0.5 * (xp + xm)
+            if n in CON:                      # the even part without its box mean (the
+                ev = e[f"even_{n}"]           # uniform residual H0 is order s^0)
+                e[f"evenNM_{n}"] = ev - ev.mean()
+                e[f"mean_{n}"] = np.array([ev.mean()])
         for n in ("phi", "Pi", "K", "chi"):
             e[f"mean_{n}"] = np.array([p[n].mean()])
         Rp, _ = rnr.rnr_coefficients(p, nv)
