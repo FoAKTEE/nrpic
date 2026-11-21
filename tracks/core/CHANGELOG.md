@@ -63,6 +63,30 @@ bytes; files written by core-v0.3 or by a branch executable whose source is olde
 core-v0.4 (the pre-merge build of package newton2) carry noise there. Checked on the
 12 restart files of the release tests (run core-20261121-130813-710b3cc).
 
+### Run scripts (`scripts/submit_chain.sh`, commit 9730e2aa, in the source commit)
+
+Not a branch of the merge table: written by the lead of core in batch 2b (decision 0021
+item 6), on `core/nrpic` before the three merges, so it is in core-v0.6 and was not in
+core-v0.5 (`git tag --contains 9730e2aa` names core-v0.6 only).
+1. **A segment killed from outside is resubmitted.** An exit of the executable with
+   status 137 or 143 with no line "Terminating on" in its log and no signal to the job
+   itself counts as an outside kill: the chain submits the segment again from the last
+   restart file, at most `MAX_OUTSIDE_KILLS` times in a row (default 2; the count is
+   reset by a segment that ends at the wall clock or the time limit); the next such kill
+   ends the chain with FAILED "killed from outside N times in a row". Before, any
+   non-zero exit ended the chain (`git show 9730e2aa^:scripts/submit_chain.sh`, line 236).
+2. **The executable runs under a name of its own.** The chain starts `chain/<PROC_NAME>`,
+   a hard link to `chain/athena`; default `nrc-<8 hex digits of the run directory>`, so
+   a kill by process name aimed at another run cannot match it. A `PROC_NAME` that
+   contains "athena" is refused at the start; a chain whose configuration has no
+   `PROC_NAME` (started by an older script) gets the default at its next segment.
+3. Evidence: `scripts/tests/test_submit_chain.py` with a fake `sbatch`, `squeue` and an
+   executable that kills itself; seven scenarios (A to E, G, H), every status sequence,
+   `sbatch` count and process name as predicted (run core-20261121-080619-6a0793f; the
+   first run core-20261121-080555-9730e2a failed by a fault of the fake, journal entry of
+   2026-11-21T07:47Z). Not tested with a real Slurm job or a real AthenaK run. A chain
+   already running keeps the script it was started with (sbatch spools it).
+
 ### Input options (`tracks/core/verify/options_at.py core-v0.5 HEAD`)
 
 19 options found by the scan, none removed, no default of an existing option changed;
