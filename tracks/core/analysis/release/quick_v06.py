@@ -5,7 +5,7 @@ the new options against the release before, the combination the merge creates, a
 never-set bytes of the mesh header of restart files.
 
     quick_v06.py --new ATHENA --base ATHENA_V05 --out DIR [--cores N] [--regress DIR]
-                 [--groups newton,faces,combo,header]
+                 [--groups newton,faces,combo,header] [--redraw OLDDIR]
 
 Group newton (Qn; branch executable core_newton-2/athena_cpu):
   n_sp, n_7p   problems/newton/periodic_fft.athinput, wave of 32^3 particles, tlim = 1,
@@ -170,9 +170,10 @@ def figure(rep, out):
     axs[1].bar(x + 0.2, [max(rep["combo"][c]["cstat_max"] or 1e-18, 1e-18) for c in cn],
                0.4, color=fs.PAL["orange"], label=r"mean $|H|$ of the mesh after 8 steps")
     axs[1].set_yscale("log")
+    axs[1].set_ylim(1e-13, 1e3)
     axs[1].set_xticks(x)
     axs[1].set_xticklabels(cn, fontsize=6)
-    axs[1].legend(fontsize=5, loc="upper left")
+    axs[1].legend(fontsize=5, loc="upper right")
     axs[1].set_title("(b) solved puncture, without (0) and with (1) the faces options",
                      fontsize=7)
     fig.tight_layout()
@@ -189,7 +190,16 @@ def main():
     ap.add_argument("--cores", type=int, default=3)
     ap.add_argument("--regress", default="")
     ap.add_argument("--groups", default="newton,faces,combo,header")
+    ap.add_argument("--redraw", default="", help="run directory of an earlier call: draw "
+                    "its figure again from its summary.json into --out, nothing is run")
     a = ap.parse_args()
+    if a.redraw:
+        with open(os.path.join(a.redraw, "summary.json")) as f:
+            rep = json.load(f)
+        rep["combo"] = {k: v for k, v in rep["combo"].items() if isinstance(v, dict)}
+        os.makedirs(a.out, exist_ok=True)
+        figure(rep, a.out)
+        return 0
     exe = dict(new=os.path.abspath(a.new), base=os.path.abspath(a.base),
                newton=os.path.join(EXE_DIR, "core_newton-2/athena_cpu"),
                faces=os.path.join(EXE_DIR, "core_z4c-faces/athena_cpu"))
