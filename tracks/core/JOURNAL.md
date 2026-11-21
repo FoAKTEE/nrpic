@@ -696,3 +696,15 @@ one-card runs of its build).
   ten: then the back end itself changes the arithmetic at one thread (other inlining
   and contraction in its kernels) and no threaded build is a byte reference. No
   prediction for jeans and binary (the multigrid average).
+- R3 REFUTED in part. Run core-20261121-071842-f5a8b56 (threaded build with -O2 -g,
+  `.work/build_omp_dbg_v05rc`, one thread, 6 cores, against release core-v0.4): 53 of
+  75 items identical. Identical: geo, boris, dep, jeans, binary, c1, c2, c3, c5 (every
+  set-up that does not evolve the spacetime, the two multigrid cases among them, for
+  which I had made no prediction). Not identical: east (10 of 12 files), os (10 of
+  16), c4 (2 of 4), the three with Z4c, at rounding (module histories 8.8e-16,
+  constraint statistics 1.5e-10 in east and 1.8e-12 in c4); in os the first mesh and
+  particle restart files are identical, so the initial data agree and the evolution
+  does not. So the flags account for the particle-only set-ups (they differ with -O3
+  -DNDEBUG and not with -O2) and the OpenMP build for the set-ups with Z4c (they differ
+  with either flags) [VERIFIED by these two runs; which statement of the Z4c kernels is
+  compiled differently was not looked for]. No threaded build is a byte reference.

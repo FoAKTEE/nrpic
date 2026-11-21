@@ -259,9 +259,13 @@ Merged into `core/nrpic` as 0d0f5ba5; the threaded executable of the release is
   are added. Not run.
 - The threaded build at ONE thread does not give the bits of the serial build: source
   dump 1.1e-14 of its largest number in the deposit test (the two builds differ in
-  optimisation level). Byte comparisons against a release need the serial executable;
-  the outcome of the twelve regression set-ups with the threaded build at one thread is
-  in `tracks/core/RELEASE-v0.5.md`.
+  optimisation level). On the twelve regression set-ups at one thread 31 of 75 items
+  are identical to release core-v0.4 and 44 differ at rounding (module histories
+  1.2e-15; run core-20261121-070623-077b056). Built with the flags of the serial build
+  (`OMP_OPT=debug`), 53 of 75 are identical: the nine set-ups without Z4c agree byte
+  for byte, the three with Z4c do not (run core-20261121-071842-f5a8b56). Byte
+  comparisons against a release need the serial executable (or the MPI one started
+  without mpirun); no threaded build is a byte reference.
 - The kernels that release core-v0.4 added (accretion diagnostics, initial-data solver,
   perturbing force, collisions with the metric at each particle) have not been run
   under threads; they run on cards [JUDGEMENT: no host-only state].
