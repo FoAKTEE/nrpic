@@ -137,3 +137,70 @@ Points to settle in the registered runs (seen in the debug outputs, not yet esta
 the first-detection horizon mass of BH-1R against the slice mass; the stencil dependence
 of the first trapped line point of BH-1 M/8 (t = 11.0 or 11.25); the time the BH-1 M/8
 histories turn non-finite; the C5 bounds at tau = 3.37 (BH-1R and M/8).
+
+## 2026-11-21 05:00 PST, entry 3: restart; outcomes of the five registered runs; predictions of the follow-ups
+
+Restart after the pause of entry 2: merged main, scripts unchanged since bccf7d36. Registered
+runs (local, processors, all completed): C1 A-20261121-125359-22858c4, C2
+A-20261121-125427-35117a2, C4 A-20261121-125449-689b5ec, C3 A-20261121-125512-6df0ee3,
+C5 A-20261121-125646-166ae06. Figures looked at: fig_c1_exact, fig_c2_initial,
+fig_c3_horizon_bh_smr, fig_c4_lines, fig_c5_shells (in each run directory).
+
+Outcomes against the predictions of entry 1:
+- P1 (C1) HELD. Turnaround 3.37161, R_max/R_i 1.162312, first trapped sphere at the core edge
+  (inner side of break 1) R_i 2.653061 at tau_AH 9.551092, m 0.6865625, R_AH 1.373125, crunch
+  10.630490; m_AH at tau_AH + 2, 4, 8 = 0.696098, 0.704369, 0.718042; bang time common to
+  2.5e-8 (core) and 6e-10 (shell), equal to the header t_i 3.887269; no shell crossing up to
+  0.999 of the crunch (smallest neighbour separation 1.7e-4 M on 2098 shells x 600 times).
+  Momentum constraint |KL + dv/dR| < 5.5e-6 (KL up to 0.37), Hamiltonian mass against the
+  metric mass 7.2e-7. [VERIFIED, C1 run]
+- P2 (C2) HELD, better than predicted: psi^4 and gamma of the line at t = 0 equal the table
+  (four-point Lagrange rule, line at y = z = dx/2) to 4.7e-13 relative; K to 1.6e-12 of
+  max |K|; the 1e-13 agreement also confirms the line's offset. Total mass from the last row
+  1.00046406; particle masses sum to 1.1459385718 on all four lattices (n = 34, 51, 68, 136),
+  table rest mass 1.1459385723 (rel. -4.3e-10); interior ratio m_p / (rho psi^6 h^3) within
+  5e-7 of 1; history sum_m at t = 0 equals the file sum to 7e-16. Deposited E at t = 0
+  against the table density: within 2e-8 rho_c (BH-1R, M/8), 3.4e-5 (M/4) and 4.6e-4 (M/6,
+  core) away from the jumps. Not predicted: int_E at t = 0 in BH-1R is 1.145039 against
+  sum_m 1.145939 (7.9e-4 low), while the uniform runs agree to 1e-15 [cause TO VERIFY: the
+  refined run's deposit or its integral over two levels].
+- P3 (C3) PARTLY FAILED. Horizon found (41 of 56 searches finite, 9.0-15.875, continuous after
+  the first, gap 0.125): first at t = 10.875, inside 10.5-13 (held). At the first detection the
+  14 particles within 0.0625 of r_h have tau_p - tau_AH(R_i) = +0.024 mean (-0.10 to +0.13);
+  bin medians interpolated to r_h give -0.024. The mass prediction failed: m_irr = 0.701055
+  against m_exact(slice) = 0.687585 (outermost trapped label R_i* = 2.6642): +1.96e-2 at the
+  first detection, +1.25e-2 at 11.0, +3.7e-3 at 11.125, then -3.1e-3, -5.9e-3, -4.2e-3,
+  -1.3e-3 (11.25-11.625) and within 6e-4 from 11.75 to 15.875. Median over the first 4 M
+  (33 finder times) -4.6e-4, largest |err| 1.96e-2. Slice-mass uncertainty: tracked particles
+  against all 1.3e6 particles of the snapshots at t = 12, 14, 16: 1.2e-4, 6e-5, 6e-6 relative;
+  quadratic against linear location of R_i*: up to 1e-3 near the first detection. The
+  Christodoulou mass equals m_irr to 2e-12 (held).
+- P4 (C4) mostly held. No finite mass in any BH-1 summary (M/4, M/6, M/8; searches 8-16). My
+  first trapped line point at M/8 is at t = 11.25, r = 0.4463 (2m/R = 1.007), not 11.0 (at
+  11.0 the largest 2m/R is 0.976); then r = 0.32, 0.21, 0.11. Non-finite: M/8 nrpic.hst and
+  cstat.hst from t = 15.031, z4c.user.hst and the line from 15.25 (claimed "near 15.5").
+  M/6: trapped from 11.5 (r 0.433), non-finite from 14.5; M/4: trapped from 12.0 (r 0.415),
+  non-finite from 14.375. BH-1R line: trapped from 11.0 at r = 0.4086; no non-finite value.
+- P5 (C5) FAILED as stated for the largest error. Core particles at tau = 3.3716: BH-1R
+  max |eps| 2.77e-3 (99th percentile 1.75e-3, median 8e-7), the maximum at R_i = 2.6511, the
+  particle next to the edge; M/8 max 5.3e-3 (p99 3.7e-3); at tau = 9.0 M/8 max 5.7e-2 (p99
+  3.8e-2). Reading error at t = 0: 4e-6 (BH-1R), 1.7e-5 (M/8). Per-particle turnaround in
+  BH-1R: dtau mean -1.2e-3 (std 6.9e-3), R_max mean -5.6e-5. Per-particle trapping (R_p
+  through 2m of its shell) in BH-1R: mean -2.1e-3, std 1.6e-2 over 248 particles.
+
+Predictions of the three follow-ups (scripts c3b_firstdetect.py, c4b_stencil.py,
+c5b_edge.py, written now, nothing run yet):
+- Q3 (finder or field at the first detection?). I expect the field: the code's Misner-Sharp
+  mass m_code(r_h) on the x line at t = 11.0 within 3e-3 of the finder's 0.6966 (I give 0.6),
+  i.e. the excess over the exact 0.688 is in the fields near the core edge (a transient of
+  the jump at the edge as it passes through r_h), not a finder fault. Refuted if m_code(r_h)
+  at 11.0 is within 3e-3 of the exact shell mass while m_irr is 1.2e-2 above it. The areal
+  radius of the particles at r_h equals the finder's sqrt(A/4 pi) within 2e-3 at every finder
+  time of the first 2 M (refuted if off by more than 5e-3).
+- Q4 (stencil). At least one of the variants b, c, d puts the first trapped M/8 point at
+  t = 11.0 (probability 0.5); none puts it before 11.0 or after 11.5. The first time differs
+  between variants by at most one output (0.25).
+- Q5 (edge). The largest core errors come from the particles within one cell of the edge:
+  excluding R1 - R_i < 0.05 drops the BH-1R maximum at tau = 3.37 below 1.5e-3 and the M/8
+  maximum below 2e-3 (probability 0.6); at tau = 9.0 M/8 below 2e-2 after excluding 0.1
+  (0.5).
