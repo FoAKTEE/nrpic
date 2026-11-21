@@ -204,3 +204,35 @@ c5b_edge.py, written now, nothing run yet):
   excluding R1 - R_i < 0.05 drops the BH-1R maximum at tau = 3.37 below 1.5e-3 and the M/8
   maximum below 2e-3 (probability 0.6); at tau = 9.0 M/8 below 2e-2 after excluding 0.1
   (0.5).
+
+## 2026-11-21 05:02 PST, entry 4: outcomes of the follow-ups Q3-Q5
+
+Runs: C3b A-20261121-125921-9c96b3f, C5b A-20261121-125939-80054f8, C4b
+A-20261121-130002-56a4c88 (local, completed). Figures fig_c3b_firstdetect, fig_c5b_edge,
+fig_c4b_stencil looked at.
+
+- Q3 UNDECIDED (finder or field). Area: the finder's sqrt(A/4 pi) equals the areal radius of the
+  metric at the tracked particles at r_h within 8e-4 at the first detection (1.40211 against
+  1.40292 by bin medians, 1.40737 by a local quadratic) and within 5e-4 afterwards: the
+  finder measures the area of the code's sphere correctly (held). Mass: the line's
+  Misner-Sharp mass at r_h at t = 11.0 is 0.69546 (+1.0e-2 over the exact shell mass 0.68851
+  at r_h), the finder 0.69660 (+1.2e-2): agreement within 1.1e-3 as predicted, but at 11.25
+  the line gives +9.9e-3 where the finder gives -3.4e-3, and the line's mass near the edge
+  scatters by 1e-2 to 9e-2 from point to point at t <= 11.25 (the horizon sits on the steep
+  m(r) of the core edge, dm/dr ~ 1-2: an r error of 5e-3 is 1e-2 in m). The line cannot
+  decide between field and finder before t = 11.5; from 12.0 on line, finder and exact agree
+  within 2e-3. Particles at t = 10.875: the tracked particle nearest r_h (r 0.4420, R_i
+  2.6684) has code R 1.4022, exact R(tau_p) 1.4088 and 2m/R_exact = 0.977: the exact solution
+  has this shell not yet trapped, the code's finder puts a marginally trapped sphere through
+  it. Particles at the edge (R_i 2.635-2.661, r 0.38-0.42) have code R above exact R(tau_p) by
+  1 to 7 per cent, where R(tau) of the edge shells is steep (dR/dtau ~ -1 near the crunch of
+  the core at 10.63): small proper-time errors give large R errors there.
+- Q4 HELD. M/8 first trapped point: a (offsets, 2nd order) 11.25 at r 0.4463; b (axis) 11.75 at
+  0.3125; c (4th order) 11.0 at 0.4463 (2m/R 1.0064); d (staggered) 11.25 at 0.3855. One
+  variant gives the claimed 11.0; the spread is 0.75 M (one output more than predicted: b is
+  three outputs late). BH-1R: all four variants 11.0. M/6: 11.25-14.0; M/4: 11.75-14.0.
+- Q5 HALF HELD. BH-1R at tau = 3.37: excluding R1 - R_i < 0.05 the largest |eps| is 9.7e-4
+  (< 1.5e-3, held); < 0.02 excluded 1.9e-3. M/8 at tau = 3.37: 4.1e-3 (d > 0.05), 2.5e-3
+  (d > 0.1), 1.45e-3 (d > 0.2) (prediction failed for d > 0.05). M/8 at tau = 9.0: 2.3e-2
+  (d > 0.05), 2.2e-2 (d > 0.1), 1.5e-2 (d > 0.2) (failed for d > 0.1). M/4 sits at 7e-3 in the
+  whole core at tau = 3.37 (median +3.3e-3), a systematic offset, not an edge effect.
