@@ -286,3 +286,100 @@ for 300 M (3.49 and 3.46 s per M; prediction (h): 3.4-3.7 s per M, holds), smoke
 00:55:00 stay (a third run would need 52 min plus start-up, too close to the limit). Queue at
 02:56 UTC: one job of the user (4754, F), no C-* job; drift's job 4741 completed at 16:30 PST.
 Submitting D1 job 2 (CC1 pair) now; the analysis of job 1 follows while it waits.
+
+## 2026-11-21 03:05 UTC Entry 7: outcome of D1 for CC2 (job 1, particle mode, seeds 1 and 2)
+
+Runs: card run C-20261120-221846-797bdbe (cc2_kn10_part_s1, cc2_kn10_part_s2); analyses
+C-20261121-025642-fb29332 (script as committed in entry 3/4) and C-20261121-025928-94def70
+(script extended before it ran, commit "analysis adds sub-cadence crossing times ...": linear
+crossing time of alpha_min between the 0.25 M records, budget columns up to t_c, the
+instantaneous seed difference of dalpha(t), figure `fig_d1_diff.png`). The extensions were
+made after I had seen the first output, because all three CC2 runs hit alpha_min < 0.3 in the
+same 0.25 M record and the "before excision" budget of seed 2 contained the blow-up steps
+(below). Figures looked at: `fig_d1_lapse.png`, `fig_d1_diff.png`, `fig_d1_budget.png` of
+run C-20261121-025928-94def70. Reference: wave-2 cc2_kn10 (cell, seed 1, release
+executable, run C-20261115-171059-35441e3). Numbers below [VERIFIED] from `summary.json` of
+C-20261121-025928-94def70 unless stated.
+
+| quantity | cell s1 (wave 2) | part s1 | part s2 |
+|---|---|---|---|
+| t_c, record of alpha_min < 0.3 (M) | 206.75 | 206.75 | 206.75 |
+| t_c, linear crossing (M) | 206.663 | 206.556 | 206.728 |
+| alpha_min = 0.5 / 0.4 crossing (M) | 188.48 / 200.18 | 188.06 / 200.07 | 188.53 / 200.32 |
+| D25 / D50 / D100 / D150 | 0.00226 / 0.01184 / 0.04264 / 0.09139 | 0.00236 / 0.01155 / 0.04231 / 0.09057 | 0.00196 / 0.01193 / 0.04235 / 0.09212 |
+| t(dalpha >= 0.01), t(dalpha >= 0.03) (M) | 46.0, 81.75 | 46.5, 82.25 | 45.75, 80.75 |
+| collisions per particle before t_c | 2.8816 | 2.8917 | 2.8931 |
+| count z before t_c | -2.82 | -1.95 | -1.46 |
+| first-step sum_P (n_coll) | 23.69597 (28) | 23.69485 (28) | 23.76635 (14) |
+| first excision (M) | 216.5 | 216.0 | 216.25 |
+| cost (s per M) | 3.45 | 3.48 | 3.45 |
+
+Instantaneous difference of dalpha(t) (`curve_scatter`): part s2 - part s1 rms 6.3e-4 over
+0-100 M and 1.7e-3 over 100-196 M, largest |.| 3.4e-3; part - cell s1: rms 3.3e-4 and 5.2e-4
+(0-100 M), 1.2e-3 and 1.4e-3 (100-196 M); mean over 0-196 M -6.5e-5 and +4.8e-4. The
+differences oscillate on a time scale of about 10 M (figure `fig_d1_diff.png`) and do not
+accumulate: the three alpha_min curves lie on top of each other through 195-211 M.
+
+Against prediction D1 (entry 2):
+- (a) Early contraction unchanged: HOLDS. D100 part mean 0.04233 against cell 0.04264,
+  difference -3.1e-4, below the bound 2e-3. The expected sign (particle contracts more)
+  FAILED as a sign: the difference is negative at 100 M, positive in the 0-196 M mean of
+  part s2 and negative in that of part s1; with the measured curve scatter (rms 0.6-1.7e-3)
+  the sign is not resolved. The analysis' z = -9 of D100 uses the one-draw D100 difference of
+  the two seeds (4.9e-5) as sigma, which the curve scatter shows to be a chance small value
+  [JUDGEMENT]; it is not evidence of a mode effect.
+- (b) Seed scatter of the early drop about 1e-3 (band 2e-4 to 4e-3): FAILED as written for
+  the window mean, |D100(s1) - D100(s2)| = 4.9e-5 (|D50| difference 3.8e-4, |D25| 3.9e-4);
+  the instantaneous seed difference has rms 6.3e-4 over 0-100 M and 1.7e-3 over 100-196 M,
+  inside the band. The window mean of one pair is a single draw of a quantity that
+  oscillates about zero on 10 M; the rms is the usable scatter.
+- (c) Collapse in particle mode before 300 M: HOLDS for CC2 (both seeds).
+- (d) Seed scatter of the collapse time about 4 M (band 1-12 M): FAILED, smaller than the
+  band: |t_c(s1) - t_c(s2)| = 0.17 M from the linear crossing (0 at the record cadence of
+  0.25 M); 0.47 M and 0.25 M at alpha_min = 0.5 and 0.4. My basis (a lapse scatter of 1e-3
+  divided by the early contraction rate) assumed that a lapse offset persists; it does not:
+  the offsets oscillate and average out, and the time of the runaway is set by the
+  collision-averaged heat flow, whose relative noise with about 1.4e5 collisions is small
+  [JUDGEMENT]. Consequence: at N = 1e5 and Kn = 10 one seed gives the collapse time of CC2
+  to about 0.2 M (0.1 percent); later collisional comparisons need no second seed for t_c.
+- (e) Effect of the defect on the late phase: t_c(part) - t_c(cell) = -0.02 M (linear
+  crossing, means of the two seeds against cell s1), inside the predicted -15 to +3 M; the
+  central value -5 M FAILED (no shift). Far below the criterion of a cause (6 M): the energy
+  defect of the release operator is NOT a cause of the collapse of CC2 at Kn = 10, and does
+  not move its time. Pending: cell-mode seed 2 (job 4) for the cell scatter.
+- (f) Budget, particle mode, judged to t_c (the excision record of `cc.nrpic.hst` comes every
+  4 cycles; in seed 2 the two collision steps before the excision record, 216.06 and
+  216.125 M, are those of the blow-up, sum_MH_particles 57 and 200 times its start): summed
+  dH_particles at most 3.1e-16 and 3.2e-16 of sum_MH_particles(0) = 0.87405 to t_c (4.1e-16
+  and 4.3e-16 to the excision): HOLDS (bound 1e-13). Per collision +1.88e-21 and +1.91e-21 M
+  (predicted about 2e-21): HOLDS. "One-signed": FAILED as written: 17 and 20 of the steps
+  before t_c have a negative change, at most -7.3e-21 and -1.7e-20 M against positive steps
+  up to 5e-19 M; the cumulative sum stays positive throughout (smallest 4.5e-20 and
+  1.6e-20 M). n_noroot = 0 to t_c: HOLDS; the first pairs without a root come at 209.0 and
+  209.3 M, after t_c, and 2046 and 2068 by the excision: FAILED for the clause "before the
+  first excision". n_balance at most 1e-3 of the collisions: holds to 150 M (3.6e-4 and
+  3.1e-4 to 100 M, 5.1e-4 and 4.3e-4 to 150 M), FAILED to t_c (2.9e-3 and 3.0e-3) and to the
+  excision (2.6e-2); core's tests reach 2.3e-2 at theta = 0.2-0.3 (interface section 11.5),
+  so the rise as the core heats is the operator's design, not a fault [JUDGEMENT].
+  max_dlam below 0.05: holds to 150 M (1.0e-2 and 5.4e-3), FAILED to t_c (0.197, 0.209) and
+  to the excision (23, 26). sum_MH_particles itself: -0.99 and -1.02 percent at 100 M
+  (-0.0087 M), -20 percent at t_c; the predicted magnitude "up to 1e-2 M by 200 M" FAILED
+  (-0.11 M at 200 M): in the runaway the potential deepens and H = alpha W - beta.u of the
+  particles falls with it; the collision steps' own change stays at 3e-16. Cell part of (f):
+  pending (job 4).
+- (g) Collision statistics: collisions per particle before t_c 2.892 and 2.893 against the
+  scaled wave-2 value 2.88: HOLDS (0.4 percent). |z| = 1.95 and 1.46 < 4: HOLDS. First-step
+  sum_P of part s1 23.69485, 4.7e-5 relative from the wave-2 seed-1 value: HOLDS (bound
+  2e-3); part s2 23.76635, 1.5 pairing sd from 23.692: HOLDS. n_trunc = 0: HOLDS. Not
+  predicted: particle mode collides 0.37 percent more than cell s1 before t_c (2.892 against
+  2.882); one cell seed only, so the cell scatter is not known yet (job 4).
+- (h) Rest mass bit-identical before the first excision: HOLDS (both). Deposit identity
+  2.1e-15 and 4.0e-15 < 1e-14: HOLDS. Cost 3.48 and 3.45 s per M: HOLDS. Card-hours 0.584
+  per job against 0.63: HOLDS.
+
+Not predicted, after the criterion: seed 2 became non-finite at 216.5 M (alpha_min -2.7e8 at
+the record after the first excision, every particle excised by 220 M), seed 1 ran to 300 M
+with 96 percent of the mass excised and alpha_min 0.050; wave-2 cc2_kn10 ran to 300 M, cc1_kn10
+became non-finite at 289.5 M. The phase after the first excision is fragile in both modes
+(RISKS item on excision; core READY: coll_energy with excision untested); D1 measures nothing
+there.
