@@ -164,3 +164,73 @@ the record it reads):
 
 Refuted if any number above differs beyond its printed digits, if a checksum fails, or if a
 G0 output changes.
+
+### N3 outcome (run C-20261120-223007-fe3f39c, nrpic-run, completed; recorded 2026-11-21)
+
+The session that wrote N3 was cut at the usage limit (2026-11-20 22:35 UTC) after the run
+finished and before this entry; the figures and schematics of the run were committed in
+077b849d (byte-identical to the run's outputs). Outcome read from the run's `log.txt` and
+`sha256sums.txt` on 2026-11-21 by the batch-3 helper:
+
+- P1 held: 114 inputs, every one "sha256 ok" (none read without a record); the run exited 0.
+- P2 held: the four G0 PNGs, `claims.json`, `claims.md` and `parameters.tex` have the same
+  sha256 as in run C-20261115-171741-0e0da67; 23 claims, 3 differ (unchanged).
+- P3 held: release and particle T2(b) ratio 0.999906-1.000096, z -2.20 to +2.92; T1 largest
+  over its bound 1.078e-7 and 1.054e-7; release against particle 4.44e-16, tested pairs and
+  collisions equal in every run; T12 twin ratios 1.4172488 (all four), curved analytic ratio
+  0.9999717-1.0000896, |z| <= 2.35.
+- P4 held: f = 1.0287, 1.0630 (late 1.0359, 1.0664), literal 0.9945, 1.0271; T7 rows 1.0232 +-
+  0.0039, 1.0174 +- 0.0047, 1.0414 +- 0.0114; extrapolated 1.0192 +- 0.0038; the recomputed
+  isobaric reference reproduces the analysis's rms residual with relative difference 0.0.
+- P5 held: King maximum 0.334032, Juttner onset 0.32143 (lapse 0.6707), theta = p/n 0.32054,
+  1 + p/u 0.37206; thermal core 0.54041, 0.53306, 0.53170, 0.63482; the tabulated omega^2 of
+  each criterion changes sign in the bracket of its onset.
+- P6 held: 44.25, 46.0, 20.25, 21.25 M; 184.25, 206.75, 72.5, 77.75 M; control rises 0.0334
+  (CC1) and 0.0185 (CC2).
+- P7 not tested: main.tex was not compiled before the cut (66 ledger rows were written).
+- P8 held: both schematics "drawn (no data read)"; paperfig.py unchanged.
+
+## 2026-11-21 Batch 3, package "note" (helper of C-sidm): close G1 C16
+
+Worktree at 1ab89592, no merge of main (plan). Pause flag absent at 12:52 UTC; load 23.
+Found uncommitted from the cut session: G1 sections in `main.tex` (operator, onsets, heat,
+clusters, data-flow appendix), `references.bib` (Gurian and May), `common.py` (run t9),
+`ledger.py` (T3-T5, T9 row; `runinfo.tex`), the timeline schematic. Continued from them.
+New since then and used here (all committed on this branch): the heat package closed
+(card T7 at theta = 0.003, 0.1, 1 and card T8; `heat/README.md`), the models package's v2
+estimator and the lead's ruling on it (`stage/REVIEW-wave3.md` section 4), the first
+decisive and drift analyses (same file, sections 2-3), and the verifier's report
+(`stage/G1/VERIFIER.md`, items 2-4 concern wording the note uses).
+
+### N4 prediction (written before the registered run of `scripts/run_all.py`)
+
+Changes: `fig_heat` gains panel (d), kappa/kappa_1 of the entropy mode extrapolated to
+k lambda -> 0 at theta = 0.003, 0.1, 1 (all seeds, weights proportional to N) against the
+relativistic Chapman-Enskog conductivity; `schem_architecture`: heat conduction on processors
+and cards, pair energy at each particle's metric in the release, growth rate over a stated
+interval; `schem_timeline` updated; `ledger.py` gains rows for card T7/T8, the C-E reference,
+the decisive and drift analyses, and names the KS reference temperature of T9.
+
+- P1 every input matches the sha256 its run recorded; the new inputs are summary_c6.json
+  (C-20261121-030328-e3ffc6d), cardcpu.json (C-20261120-223203-b38a7d7), ce_kappa.json
+  (C-20261120-222423-519f12b), t8.json (C-20261120-223321-3d088d4), summary.json
+  (C-20261121-075202-1a37fb9), compare_cc2_M8.json (C-20261121-075359-26e3b31).
+- P2 the G0 outputs (four PNGs, claims, parameters) and the PNGs of fig_box_summary,
+  fig_onsets, fig_cluster and schem_dataflow are byte-identical to run
+  C-20261120-223007-fe3f39c; every number fig_heat printed in N3 is printed again unchanged.
+- P3 panel (d): N-weighted extrapolations 1.0250 +- 0.0025, 1.0957 +- 0.0051, 0.9914 +-
+  0.0035 at theta = 0.003, 0.1, 1; C-E order 4: 1.0296, 1.0988, 0.9933; order 1 at theta = 1
+  0.9407; the values of summary_c6.json equal those of cardcpu.json and ce_kappa.json to all
+  digits (the script checks it; a difference stops it).
+- P4 ledger rows: card T8 f = 1.0169/1.0222/1.0203 (dt), 1.0221/1.0222/1.0274 (pmax),
+  1.0116/1.0222/1.0403 (dx), finest changes -0.52, -0.006, -1.04 percent; CC1 at Kn = 10,
+  cell mode, seeds 1-3: t_c = 184.02, 185.29, 178.86 M, sd 3.40 M; particle mode 184.93,
+  185.85 M; CC2 at Kn = 10, four runs, sd 0.21 M; y0 = 0.26 collapses at Kn = 1 (100.46 M), not
+  at Kn = 10 within 300 M; CC2 control at M/8 over M/4: 0.22 (cosine amplitude), 0.25,
+  0.10.
+- P5 every number the G1 sections of the text depend on has a ledger row with its run id
+  (read against the compiled tables), and the checker passes with --compile with no finding
+  in the main text outside the exceptions of WRITING_GUIDE.md.
+
+Refuted if a checksum fails, if a G0 or unchanged G1 output changes, or if a number differs
+beyond its printed digits.
