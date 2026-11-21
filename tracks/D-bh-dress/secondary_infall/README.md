@@ -257,3 +257,97 @@ to all enclosed mass) and "hybrid" (kernel for the seed, dust unsoftened outside
 | `nm_analyze.py` | (extended) bins to 2048 M, growth to a/a_i = 30, the "late" comparison per a/a_i, figures `nm_late_profiles_<run>`, `nm_late_growth`, table `nm_late.txt` |
 | `nm_threadcheck.py` | a run against another of the same input: inputs, history, particles by tag, masses, profiles |
 | `nm_jsondiff.py` | regression of the analysis script: two nm_analysis.json compared leaf by leaf |
+| `nm_kernelcmp.py` | measured clump kernels side by side (vertex against cell centre) |
+| `nm_lost.py` | which particles leave the box, against the exact Newtonian apocentres; dust edge against its closed-form orbit |
+| `nm_energy.py` | energy of single-stream, uncrossed dust shells against t = 0 (exactly conserved in spherical Newtonian gravity): the force error each shell has felt |
+| `nm_field.py` | (extended) measures relative to the clump when the configuration is shifted; cell-centre kernel file `kernel_nx<N>_cc.txt` |
+| `kernel_nx64_cc.txt`, `kernel_nx128_cc.txt` | the clump kernel with the clump at a CELL CENTRE (run D-20261121-084407-ffb542d); `kernel_nx*.txt` without `_cc` are the wave-2 kernels, measured at a mesh VERTEX |
+| `figs/w3_*.png` | copies of the wave-3 figures (run ids in the table below) |
+
+### Runs (wave 3)
+
+| What | Run id | Figure |
+|---|---|---|
+| design table | D-20261120-222358-e98ffbd | |
+| timing of the a/a_i = 30 set-up (0.66 s per step, six threads) | D-20261120-222405-ce8922c | |
+| shells of P192, vertex kernel: kernel, hybrid, Plummer, point | D-20261120-222511-34be8a8, -222758-acc6929, -222513-9849530, -222515-c2ef5b8 | |
+| step model (3250-3520 steps) | D-20261121-075022-87d85b7 | `figs/w3_cost.png` |
+| predictions P from the shells | D-20261121-075105-2cff004 | `figs/w3_P192_predict_profiles.png` |
+| P192 production, FAILED at start (MeshBlock 96^3 refused) | D-20261121-075341-6310218 | |
+| **P192 production run to a/a_i = 30** (2914 steps, 0.70 h, six threads) | **D-20261121-075559-31835c4** | |
+| P192 analysis (vertex-kernel shells) | D-20261121-083847-95e881c | |
+| R8: N128Lc rerun on the threaded build (1763 steps, 1609 s, three threads) | D-20261120-222550-e472402 | |
+| R8 against N128Lc | D-20261121-083851-b5b9acc | `figs/w3_R8_threadcheck.png` |
+| extended nm_analyze.py: regression on N128Lc, R8 analysed | D-20261121-083858-c59f5d3 | |
+| cell-centre field runs nx 64, 128; field analysis; kernel comparison | D-20261121-084354-f534489, -084357-8b3a981, -084407-ffb542d, -084434-557b3e9 | `figs/w3_kernel_vertex_cellcentre.png` |
+| shells of P192, cell-centre kernel: kernel_cc, hybrid_cc, kernel_cc64 | D-20261121-084453-961e836, -084454-3f1fa54, -084455-b4c1f70 | |
+| P192 analysis with all shells and the flag-free estimators | D-20261121-084720-b6aaa6e | `figs/w3_P192_late_profiles.png`, `figs/w3_P192_late_growth.png`, `figs/w3_P192_estimators.png`, `figs/w3_P192_phase.png` |
+| lost particles of P192; the same for N128Lc | D-20261121-084720-32f2f10, D-20261121-085120-cbc7ecc | `figs/w3_P192_lost.png` |
+| shell energies of P192 and N128Lc | D-20261121-085254-a303729, -085255-a2f2550 | `figs/w3_P192_energy.png` |
+| Q16 shells (kernel_cc, hybrid_cc, kernel_cc64) and predictions | D-20261121-085559-5551b3e, -085600-c436f4a, -085602-01fbcdf, -085620-70d2fe8 | |
+| **Q16 production run to a/a_i = 16** (edge 6.85 cells out) | **D-20261121-085652-7e189a2** | |
+
+### Results (wave 3)
+
+**Threaded build (R8 against N128Lc, same particle file and deck).** [VERIFIED] Every
+statistic is the same: M_ta and the dress identical to all printed digits at every snapshot
+(4.8159 and 2.1537 M at a/a_i = 8), the binned profile identical to 1.6e-14 at a/a_i = 3.97
+and within 5.1e-4 at 8.00, clump centres of mass apart by 5.5e-6 dx, the same 1763 steps,
+first history record within 1e-13. Individual particles are not reproduced: the
+difference grows from rounding (1e-15 dx) to 1.8 dx (largest; median 1.3e-8 dx) by a/a_i = 8,
+the solver-tolerance differences between thread counts amplified by orbits through the
+softened centre [JUDGEMENT on the amplification]. Cost: 0.91 s per step on three threads
+against about 3 s on one core of the release build.
+
+**Regression of the extended analysis.** [VERIFIED] On N128Lc the extended `nm_analyze.py`
+reproduces all 617 numeric leaves of the wave-2 analysis D-20261115-190541-e27453d to 3.4e-14.
+
+**The reference kernel depends on where the clump sits.** [VERIFIED] With the clump at a cell
+centre (the production set-up since wave 2) the mesh force inside one cell is 2 to 8 times the
+force with the clump at a vertex (f = g_r r^2/GM = 0.50-0.59 against 0.075 at q = r/dx = 0.5;
+overshoot 1.28-1.42 at q = 1); Plummer s_eff = 0.31 dx against 0.61 dx. The wave-2 shells used
+the vertex kernel; that did not matter for N128Lc (ball 8.9 cells), it does at dx = 8.9 M:
+with the cell-centre kernel the shells follow P192 to 0.7-1.2 % in M_ta at a/a_i = 2-4 (vertex
+kernel: 3-7 %).
+
+**P192, the run to a/a_i = 30** (eps = 0.03, nx 192, dx = 8.896 M, R_edge = 36.2 M = 4.1 cells,
+last snapshot a/a_i = 29.97). Run value, in brackets the shells with the cell-centre kernel,
+hybrid_cc / kernel_cc (masses in M; `nm_analysis.json` of D-20261121-084720-b6aaa6e):
+
+| a/a_i | M_ta | dress | dress/M_ta | M_ta/(M a/a_i) |
+|---|---|---|---|---|
+| 4 | 2.589 (2.597 / 2.594) | 0.791 (0.800 / 0.805) | 0.306 | 0.647 |
+| 8 | 4.826 (4.796 / 4.747) | 2.161 (2.154 / 2.154) | 0.448 | 0.603 |
+| 12 | 7.061 (7.021 / 6.887) | 3.541 (3.523 / 3.490) | 0.501 | 0.588 |
+| 16 | 9.443 (9.242 / 9.064) | 4.935 (4.901 / 4.807) | 0.523 | 0.590 |
+| 24 | 14.550 (13.710 / 13.405) | 7.822 (7.684 / 7.514) | 0.538 | 0.606 |
+| 29.97 | 17.024 (17.047 / 16.599) | 10.199 (9.757 / 9.558) | 0.599 | 0.568 |
+
+- Up to a/a_i ~ 12 the run follows the hybrid_cc shells within 0.6 % in M_ta and the dress
+  (1.0 % at 4). From a/a_i ~ 14 on it turns around more mass than every shell law (+6.1 % at
+  24; all shell laws agree among themselves within 2 % there), and by 29.97 it is back on the
+  closed form (17.07 M), while the dress is 4.5 % high [VERIFIED: estimators free of the flag
+  history give the same numbers to 0.3 %].
+- Cause [VERIFIED by the shell energies, run D-20261121-085254-a303729]: during the first
+  expansion (by a/a_i = 1.8, while the ball spans 4-6 cells) the shells in the outer cell of
+  the initial ball changed their energy and kept the change afterwards: r0 = 27-32 M (0.5-1
+  cell inside the edge) became 3-6 % more bound and turn around up to 8 % early; the
+  outermost 0.15 cell (r0 > 33 M) became 14-62 % less bound; deeper shells (r0 < 24 M) changed
+  by 0.1-0.3 %. The sign change lies by chance at r_last(30) = 32.9 M, hence the agreement of
+  M_ta at 30. The over-energetic edge runs out of the box: 16 462 dust particles (0.70 M, all
+  with r0 > 35 M, beyond r_last) leave from a/a_i = 23.6 on; exact gravity keeps every one of
+  them inside (run D-20261121-084720-32f2f10). In N128Lc (ball 8.9 cells) the same groups
+  change by at most 0.2 %. The mechanism inside the cell (deposit and gather of a sharp edge
+  one cell wide, four cells from a cell-centred point mass) is [JUDGEMENT].
+- Profile against the self-similar solution, lambda = r/r_ta in [lambda_min, 0.3],
+  lambda_min = max(4 dx/r_ta, 0.03): at 29.97 (lambda_min = 0.063, 7 bins) ratios 0.98, 0.94,
+  0.88, 0.82, 0.97, 1.38, 1.29 (largest deviation 38 %, rms 20 %); at 16.03 (0.142, 4 bins)
+  0.95, 0.89, 0.67, 0.80 (33 %, rms 20 %). The shells, at the same resolution, stay within
+  16-24 % (rms 11-14 %). The run's excess at lambda = 0.2-0.25 and its dip at 0.23 (16) come
+  from the edge shells above [JUDGEMENT: their orbits are where the deviation is; not
+  separated per bin]. Local slope at 29.97: mean -2.41 against the self-similar -2.44 on the
+  same bins; least-squares slope -2.27 against -2.53.
+- Predictions P: P6 (cost) and parts of P1, P2, P4, P5 hold; the profile (P3), the
+  least-squares slope, the masses at 8 and 16, the dress at 30, the momentum and the
+  particle count fail (JOURNAL 08:43Z).
+

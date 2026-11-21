@@ -820,7 +820,7 @@ D  Lost particles (diagnostic, prediction): they are dust from the outer edge of
    face at 854 M if its early pull is a few per cent weaker than Newtonian, which a ball
    only 4 cells wide can give. Refuted if most lost mass started inside r_last or was dress.
 
-## 2026-11-21T09:00Z  outcomes of F-C, S-C, H2, D; prediction E (energy of the outer shells)
+## 2026-11-21T08:52Z  outcomes of F-C, S-C, H2, D; prediction E (energy of the outer shells)
 
 F-C holds (runs D-20261121-084354-f534489 nx 64, -084357-8b3a981 nx 128, clump at a cell
 centre; field analysis D-20261121-084407-ffb542d; comparison D-20261121-084434-557b3e9,
@@ -871,7 +871,7 @@ in [-0.06, -0.02] (more bound, the M_ta excess at 24 needs about -0.04 with t_ta
 group inside r_last within 1 %. Refuted for H-E ("the M_ta excess is a change of the shells'
 energy") if the groups at r0 = 29-32 M show |dE/|E0|| < 0.01.
 
-## 2026-11-21T09:00Z  outcome E; the cause of the late mismatch; design and prediction Q16 (run to a/a_i = 16)
+## 2026-11-21T08:56Z  outcome E; the cause of the late mismatch; design and prediction Q16 (run to a/a_i = 16)
 
 E (runs D-20261121-085254-a303729 P192, -085255-a2f2550 N128Lc; `nm_energy.png` of P192
 looked at). Shell energies E = v^2/2 - M(<r)/r of single-stream, uncrossed dust against t = 0
