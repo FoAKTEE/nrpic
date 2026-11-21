@@ -49,8 +49,9 @@ standard fact; [TO VERIFY] open.
 | B-20261121-132955-cb150b2 | A3: every recomputed number against the printed value (summary figure) |
 
 Summary: 116 numbers recomputed, 103 within 1 per cent of the printed value and 113 within 5
-per cent; the three beyond 5 per cent are the second digit of the rerun floor (line 197) and
-two phases of lines 201-203 compared with my own, simpler prediction
+per cent; the three beyond 5 per cent are the second digit of the rerun floor (line 197, 8
+per cent), one phase of line 203 against my own, simpler prediction (6 per cent) and the P13
+rms after crossing (6 per cent)
 (`verifier_c18/figs/a3_summary.png`, `results/a3_summary.json`).
 
 Figures (all looked at): `verifier_c18/figs/a1_rows.png` (departures, collapse in a delta, nulls,

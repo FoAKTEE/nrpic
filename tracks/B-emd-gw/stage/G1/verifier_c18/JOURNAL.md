@@ -202,6 +202,7 @@ M1e (B-20261121-132637-1083d74): every prediction of entry 7 CONFIRMED. rms h^TT
 piece 2.058e-10, 2.231e-10 (G_tot: 2.045e-10, 2.217e-10, so the line uses G); after removal
 2.496e-9, 4.315e-9; kinetic over gradient 0.0170, 0.0188.
 A3 (B-20261121-132955-cb150b2, figs/a3_summary.png looked at): 116 numbers, 103 within 1 per
-cent of the printed value, 113 within 5 per cent; beyond 5 per cent only the second digit of
-line 197 and two phases of lines 201-203 against my simpler prediction. Package closed; not
+cent of the printed value, 113 within 5 per cent; beyond 5 per cent: the second digit of
+line 197 (8 per cent), one phase of line 203 against my simpler prediction (6 per cent) and the
+P13 rms after crossing (6 per cent). Package closed; not
 done: line 124, the residuals of 199, 217, wave-1 lines 34-36, 49-63, 70-71.
