@@ -82,3 +82,13 @@ P1 to t = 280 M and its full analysis (outcome, energies, horizons, burst); the 
 extended to the full P1 run; the note's P1 and Kerr sections; a fresh verifier of the G1
 material; the G1 stage package; the G2 plan from `g2mesh` (resolution triple, gauge from E10,
 first clump passage per decision 0013 with C-sidm's models and core's boosted clumps).
+
+## Round 1 outcome (lead, 2026-11-21, batch 2a; for the next planner)
+
+- verify_g0: done; G0 package complete for an independent review (`stage/REVIEW-wave3.md`).
+- p1: cut; intermediate analysis committed; **P1's binary merged at t = 48.8 M** (RISKS R15).
+  The chain finishes by itself (segment 14, Slurm 4769, at t = 232 M on 2026-11-20 22:24 PST).
+- junk_gauge, kerr, g2mesh, note: cut; what each still needs is in `HANDOFF.md`.
+- First package of round 2 [JUDGEMENT]: the isolated binary at m/8 and m/16 (about 60 M, one
+  card, m/16 fits at 3000 slots), because it decides whether any m/8 passage is valid; then the
+  close-out of the cut packages and P1's full analysis; then the G1 verifier.
