@@ -1,0 +1,114 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "F-20261121-130646-56612a0",
+  "track": "F-hills",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "binary_conv BC-2 (figure fix): reference orbits of P1's binary alone to 100 M and the 2.5PN inspiral sampled every 1 M",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/F-hills/binary_conv/scripts/refs.py",
+    "tracks/F-hills/binary_conv/inputs/bin_m8.athinput",
+    "$NRPIC_RUN_DIR",
+    "--tend",
+    "100",
+    "--mass",
+    "0.13,0.137"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "56612a0872f9a00e14a9856d552a6e6ce31d1caf",
+    "branch": "track/F-hills",
+    "dirty": false,
+    "package": [
+      "tracks/F-hills/binary_conv"
+    ],
+    "outside_package": {
+      "count": 4,
+      "first": [
+        " M tracks/F-hills/kerr/hrna_incl.py",
+        "?? tracks/F-hills/g2mesh/scripts/card_analysis.py",
+        "?? tracks/F-hills/kerr/hrna_bks.py",
+        "?? tracks/F-hills/kerr/tests/t7_spin_limit.py"
+      ]
+    },
+    "merge_base_main": "973f2dbc2e32338b1ea99d14ee4d03719af9a8c7",
+    "worktree": "wt/F-hills"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/F-hills/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/F-hills/binary_conv/scripts/refs.py",
+      "role": "argv",
+      "sha256": "ca9e2ef6f6a642a3dbd31a40c3db9c77309967078c5f6243334dafc6a9943ba8",
+      "bytes": 9590,
+      "tracked": true
+    },
+    {
+      "path": "tracks/F-hills/binary_conv/inputs/bin_m8.athinput",
+      "role": "argv",
+      "sha256": "efdeb67a80660f301fd310c9cdedc4d5e865c50f3bf86654afb0bd834e924190",
+      "bytes": 3312,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/F-hills/F-20261121-130646-56612a0",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-21T13:06:46Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "F-20261121-130623-1b35829"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 50.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.8239,
+    "gpu_hours_reserved": 29.5,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 208,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  }
+}
