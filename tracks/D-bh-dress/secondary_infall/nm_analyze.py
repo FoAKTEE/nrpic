@@ -57,6 +57,44 @@ def snaps_of(rundir):
     return sorted(glob.glob(os.path.join(rundir, "infall.part.*.bin")))
 
 
+VBIN = 10.0 ** 0.02          # fine radial bins (0.02 dex) of the M_ta(v) estimator
+
+
+def r_ta_from_velocity(r, vr, nmin=20):
+    """Wave 3: turnaround radius from the instantaneous velocity field, free of the flag
+    history: the median radial velocity of the dust in 0.02-dex radial bins; r_ta is the
+    outermost crossing from v_r < 0 (inside) to v_r > 0 (outside), interpolated linearly in
+    ln r. Outside the outermost caustic (lambda_1 = 0.355) the flow is single-stream and the
+    shells keep their order, so the mass inside this radius is the turnaround mass.
+    Returns None if no bin has a negative median."""
+    ok = np.isfinite(r) & np.isfinite(vr) & (r > 0)
+    r, vr = r[ok], vr[ok]
+    if r.size < nmin:
+        return None
+    lr = np.log(r)
+    nb = int(np.ceil((lr.max() - np.log(0.5)) / np.log(VBIN))) + 1
+    idx = np.clip(((lr - np.log(0.5)) / np.log(VBIN)).astype(int), 0, nb - 1)
+    order = np.argsort(idx, kind="stable")
+    cnt = np.bincount(idx, minlength=nb)
+    starts = np.concatenate([[0], np.cumsum(cnt)[:-1]])
+    vs = vr[order]
+    med = np.full(nb, np.nan)
+    for j in np.where(cnt >= nmin)[0]:
+        med[j] = np.median(vs[starts[j]:starts[j] + cnt[j]])
+    lc = np.log(0.5) + (np.arange(nb) + 0.5) * np.log(VBIN)
+    good = np.where(np.isfinite(med))[0]
+    neg = good[med[good] < 0]
+    if neg.size == 0:
+        return None
+    j = neg[-1]
+    nxt = good[good > j]
+    if nxt.size == 0:
+        return float(np.exp(lc[j]))
+    k = nxt[0]
+    f = med[j] / (med[j] - med[k])
+    return float(np.exp(lc[j] + f * (lc[k] - lc[j])))
+
+
 def analyse_run(rundir, stride=1):
     with open(os.path.join(rundir, "setup.json")) as f:
         p = json.load(f)
@@ -75,6 +113,7 @@ def analyse_run(rundir, stride=1):
     md = M[d0:d1]
     turned = np.zeros(d1 - d0, bool)
     passed = np.zeros(d1 - d0, bool)
+    crossed = np.zeros(d1 - d0, bool)     # wave 3: other side of the centre only
     t_turn = np.full(d1 - d0, np.nan)
     t_pass = np.full(d1 - d0, np.nan)
     rows, profiles, phase = [], [], {}
@@ -105,6 +144,9 @@ def analyse_run(rundir, stride=1):
         a_ai = ((p["t_i"] + t) / p["t_i"]) ** (2.0 / 3.0)
         rho_b = p["rho_i"] * (p["t_i"] / (p["t_i"] + t)) ** 2
         mta = float(mc.sum() + md[turned].sum())
+        crossed |= ad & side
+        r_ta_v = r_ta_from_velocity(r[ad], vr[ad])
+        mta_v = float(mc[ac].sum() + (md[ad & (r < r_ta_v)].sum() if r_ta_v else 0.0))
         rp_ = r[ad & passed]
         wq = md[ad & passed]
         if rp_.size:
@@ -114,6 +156,7 @@ def analyse_run(rundir, stride=1):
         else:
             rsp = {}
         rows.append(dict(t=t, cycle=int(cyc), a=a_ai, mta=mta, dress=float(md[passed].sum()), **rsp,
+                         mta_v=mta_v, r_ta_v=r_ta_v, dress_side=float(md[crossed].sum()),
                          n_alive=int(alive.sum()), com=com.tolist(),
                          clump_rms=float(np.sqrt(np.mean(rcl ** 2))),
                          clump_r90=float(np.percentile(rcl, 90)),
@@ -208,6 +251,11 @@ def main():
                 g_ = dict(a=aa, a_eval=ae, mta=float(np.interp(ae, av, mta)),
                           dress=float(np.interp(ae, av, dr)))
                 g_.update(dress_over_mta=g_["dress"] / g_["mta"], mta_over_a=g_["mta"] / ae)
+                # wave 3: estimators free of the flag history (H2)
+                mv_ = np.array([x["mta_v"] for x in rows])
+                ds_ = np.array([x["dress_side"] for x in rows])
+                g_.update(mta_v=float(np.interp(ae, av, mv_)), dress_side=float(np.interp(ae, av, ds_)))
+                g_.update(dress_side_over_mta_v=g_["dress_side"] / g_["mta_v"], mta_v_over_a=g_["mta_v"] / ae)
                 for law, ref in R["refs"].items():
                     ag = ((p["t_i"] + ref["g_t"]) / p["t_i"]) ** (2.0 / 3.0)
                     if ae <= ag[-1] * (1 + 2e-3):
@@ -216,6 +264,8 @@ def main():
                         g_[f"{law}_mta"], g_[f"{law}_dress"] = rm_, rd_
                         g_[f"{law}_mta_rel"] = g_["mta"] / rm_ - 1
                         g_[f"{law}_dress_rel"] = g_["dress"] / rd_ - 1 if rd_ > 0 else None
+                        g_[f"{law}_mta_v_rel"] = g_["mta_v"] / rm_ - 1
+                        g_[f"{law}_dress_side_rel"] = g_["dress_side"] / rd_ - 1 if rd_ > 0 else None
                 out["growth"].append(g_)
         # local growth exponent of the dress, d ln M_dr / d ln a, over factors of 1.25 in a
         k = dr > 0
@@ -326,6 +376,13 @@ def main():
             ent = dict(a_target=aa, a=float(pr["a"]), t=float(pr["t"]), M_ta=mtak,
                        dress=float(R["rows"][kk]["dress"]), r_ta=float(r_ta), vs_selfsim=cmp_,
                        rho=rho.tolist(), ssr=ssr.tolist(), slope=sl.tolist(), slope_ss=sl_ss.tolist())
+            # the same with r_ta from the flag-free M_ta(v) (H2); r_ta_v_direct is the measured radius
+            mtav = float(R["rows"][kk]["mta_v"])
+            r_ta_v = NL.r_ta_of(mtav, tc)
+            cmp_v, ssr_v, _, sl_ss_v = NL.compare(rc, LEDGES, rho, ss, r_ta_v, R["dx"])
+            ent.update(M_ta_v=mtav, dress_side=float(R["rows"][kk]["dress_side"]), r_ta_v=float(r_ta_v),
+                       r_ta_v_direct=R["rows"][kk]["r_ta_v"], vs_selfsim_v=cmp_v, ssr_v=ssr_v.tolist(),
+                       slope_ss_v=sl_ss_v.tolist())
             for law, ref in R["refs"].items():
                 j = int(np.argmin(np.abs(ref["snap_t"] - pr["t"])))
                 rp = ref_profile(ref, j, rho_b)
@@ -369,7 +426,8 @@ def main():
 
     series = [fs.PAL["red"], fs.PAL["yellow"], fs.PAL["green"], fs.PAL["orange"]]
     cols = {lab: series[i % len(series)] for i, lab in enumerate(order)}
-    lsty = {"kernel": "-", "plummer": "--", "point": ":", "hybrid": "-."}
+    lsty = {"kernel": "-", "plummer": "--", "point": ":", "hybrid": "-.", "kernel_cc": (0, (5, 1)),
+            "hybrid_cc": (0, (3, 1, 1, 1))}
     a_max = max(max(x["a"] for x in runs[lab]["rows"]) for lab in order)
     m_max = max(max(x["mta"] for x in runs[lab]["rows"]) for lab in order)
     a_ticks = [t_ for t_ in (1.5, 2, 3, 4, 6, 8, 12, 16, 24, 30) if t_ <= a_max * 1.05]
@@ -388,7 +446,7 @@ def main():
         axs[0].plot(av, dr, "s", ms=2.5, mfc="none", color=c, label=f"{lab}: dress")
         ti = R["p"]["t_i"]
         for law, ref in R["refs"].items():
-            kw = dict(color=fs.PAL["blue"], ls=lsty[law], lw=1.0)
+            kw = dict(color=fs.PAL["blue"], ls=lsty.get(law, "-"), lw=1.0)
             ag = ((ti + ref["g_t"]) / ti) ** (2.0 / 3.0)
             axs[0].plot(ag, ref["g_mta"], **kw)
             axs[0].plot(ag, ref["g_dress"], **kw)
@@ -402,9 +460,10 @@ def main():
     axs[0].plot(aa, SS_DRESS_FRAC * (1 + C_TA * aa), **fs.GUIDE)
     laws_used = sorted({law for lab in order for law in runs[lab]["refs"]})
     names = {"kernel": "mesh kernel", "plummer": "Plummer $s_{\\rm eff}$", "point": "$s$ = 0.05",
-             "hybrid": "hybrid (kernel seed, dust unsoftened)"}
+             "hybrid": "hybrid (kernel seed, dust unsoftened)",
+             "kernel_cc": "cell-centre kernel", "hybrid_cc": "hybrid, cell-centre kernel"}
     for law in laws_used:
-        axs[0].plot([], [], color=fs.PAL["blue"], lw=1.0, ls=lsty[law], label=f"shells, {names[law]}")
+        axs[0].plot([], [], color=fs.PAL["blue"], lw=1.0, ls=lsty.get(law, "-"), label=f"shells, {names.get(law, law)}")
     axs[0].set_yscale("log")
     axs[0].set_ylim(0.02, max(8.0, 1.5 * m_max))
     axs[0].set_ylabel(r"mass [$M$]")
@@ -440,7 +499,7 @@ def main():
             for law in R["refs"]:
                 rp = np.array(ent[f"ref_{law}"])
                 okr = rp > 0
-                ax.plot(rc[okr], rp[okr], color=c, ls=lsty[law], lw=0.8, alpha=0.8)
+                ax.plot(rc[okr], rp[okr], color=c, ls=lsty.get(law, "-"), lw=0.8, alpha=0.8)
                 if law == "kernel":
                     o2 = ok & okr
                     axr.plot(rc[o2], rho[o2] / rp[o2], "o-", ms=2.5, lw=1.0, color=c)
@@ -567,10 +626,10 @@ def main():
                 lr = rcL / rf["r_ta"]
                 rp, sr = np.array(rf["rho"]), np.array(rf["ssr"])
                 okr = rp > 0
-                ax.plot(lr[okr], rp[okr], color="k", ls=lsty[law], lw=0.9, label=f"shells, {law}")
+                ax.plot(lr[okr], rp[okr], color="k", ls=lsty.get(law, "-"), lw=0.9, label=f"shells, {law}")
                 with np.errstate(invalid="ignore", divide="ignore"):
-                    axr.plot(lr, np.where(okr, rp, np.nan) / sr, color="k", ls=lsty[law], lw=0.8)
-                axl.plot(lr, np.array(rf["slope"]), color="k", ls=lsty[law], lw=0.8)
+                    axr.plot(lr, np.where(okr, rp, np.nan) / sr, color="k", ls=lsty.get(law, "-"), lw=0.8)
+                axl.plot(lr, np.array(rf["slope"]), color="k", ls=lsty.get(law, "-"), lw=0.8)
             ax.plot(lam[ok], rho[ok], "o", ms=3.0, color=fs.PAL["red"], label=f"{lab} (run)")
             with np.errstate(invalid="ignore", divide="ignore"):
                 axr.plot(lam, np.where(ok, rho, np.nan) / ssr, "o-", ms=3.0, lw=1.0, color=fs.PAL["red"])
@@ -606,7 +665,7 @@ def main():
                             gridspec_kw=dict(height_ratios=[1.6, 1]))
     fig.subplots_adjust(left=0.14, right=0.97, bottom=0.08, top=0.98, hspace=0.05)
     lawcol = {"kernel": fs.PAL["blue"], "hybrid": fs.PAL["green"], "point": fs.PAL["orange"],
-              "plummer": fs.PAL["yellow"]}
+              "plummer": fs.PAL["yellow"], "kernel_cc": "#7a3fbf", "hybrid_cc": "#8c564b"}
     mk = ["o", "s", "^", "D"]
     for i, lab in enumerate(order):
         R = runs[lab]
@@ -624,8 +683,8 @@ def main():
             ag = ((ti + ref["g_t"]) / ti) ** (2.0 / 3.0)
             c = lawcol.get(law, "k")
             if i == 0:
-                axs[0].plot(ag, ref["g_mta"] / ag, color=c, ls=lsty[law], lw=1.0, label=f"shells, {law}")
-                axs[0].plot(ag, ref["g_dress"] / ref["g_mta"], color=c, ls=lsty[law], lw=1.0)
+                axs[0].plot(ag, ref["g_mta"] / ag, color=c, ls=lsty.get(law, "-"), lw=1.0, label=f"shells, {law}")
+                axs[0].plot(ag, ref["g_dress"] / ref["g_mta"], color=c, ls=lsty.get(law, "-"), lw=1.0)
             rm = np.interp(av, ag, ref["g_mta"])
             rd = np.interp(av, ag, ref["g_dress"])
             kk = av >= 1.2
@@ -651,6 +710,49 @@ def main():
     axs[1].set_ylabel("run / shells $-$ 1")
     axs[1].legend(fontsize=5.5, loc="lower right", ncol=2)
     fs.save(fig, os.path.join(a.out, "nm_late_growth"))
+    plt.close(fig)
+
+    # ---------- figure 8 (wave 3): flag-based against flag-free estimators, relative to each shell law
+    fig, axs = plt.subplots(2, 1, figsize=(fs.COLUMN_WIDTH * 1.5, 6.0), sharex=True)
+    fig.subplots_adjust(left=0.15, right=0.97, bottom=0.08, top=0.98, hspace=0.05)
+    for i, lab in enumerate(order):
+        R = runs[lab]
+        av = np.array([x["a"] for x in R["rows"]])
+        mta = np.array([x["mta"] for x in R["rows"]])
+        mtv = np.array([x["mta_v"] for x in R["rows"]])
+        dr = np.array([x["dress"] for x in R["rows"]])
+        dsd = np.array([x["dress_side"] for x in R["rows"]])
+        ti = R["p"]["t_i"]
+        st = max(1, len(av) // 80)
+        for law, ref in R["refs"].items():
+            if law in ("plummer",):
+                continue
+            ag = ((ti + ref["g_t"]) / ti) ** (2.0 / 3.0)
+            rm = np.interp(av, ag, ref["g_mta"])
+            rd = np.interp(av, ag, ref["g_dress"])
+            c = lawcol.get(law, "k")
+            kk = av >= 1.2
+            axs[0].plot(av[kk][::st], (mta / rm - 1)[kk][::st], mk[i % 4], ms=2.2, mfc="none", color=c,
+                        label=f"{lab}/{law}: flags" if i == 0 else None)
+            axs[0].plot(av[kk][::st], (mtv / rm - 1)[kk][::st], mk[i % 4], ms=2.2, color=c,
+                        label=f"{lab}/{law}: $v_r$ crossing" if i == 0 else None)
+            kd = kk & (rd > 0.02)
+            axs[1].plot(av[kd][::st], (dr / np.where(rd > 0, rd, np.nan) - 1)[kd][::st], mk[i % 4], ms=2.2,
+                        mfc="none", color=c, label=f"{lab}/{law}: flags" if i == 0 else None)
+            axs[1].plot(av[kd][::st], (dsd / np.where(rd > 0, rd, np.nan) - 1)[kd][::st], mk[i % 4], ms=2.2,
+                        color=c, label=f"{lab}/{law}: other side" if i == 0 else None)
+    for axx, nm_ in zip(axs, ("$M_{\\rm ta}$", "dress")):
+        axx.axhline(0, **fs.GUIDE)
+        axx.axhspan(-0.01, 0.01, color="grey", alpha=0.15)
+        axx.set_ylim(-0.15, 0.15)
+        axx.set_ylabel(f"{nm_}: run / shells $-$ 1")
+        axx.legend(fontsize=5.5, loc="lower right", ncol=2)
+    axs[1].set_xscale("log")
+    axs[1].set_xlim(1.15, max(8.5, 1.06 * a_max))
+    axs[1].set_xticks(a_ticks)
+    axs[1].set_xticklabels([f"{t_:g}" for t_ in a_ticks])
+    axs[1].set_xlabel(r"$a/a_i$", labelpad=-2)
+    fs.save(fig, os.path.join(a.out, "nm_estimators"))
     plt.close(fig)
 
     # ---------- table of the late comparison
@@ -680,6 +782,27 @@ def main():
                 f.write("    ratios run/ss: " + " ".join(f"{l_:.3f}:{r_:.3f}" for l_, r_ in zip(vs["lam"], vs["ratio"]))
                         + "\n    slopes run/ss: " + " ".join(f"{l_:.3f}:{s_:.2f}/{t_:.2f}" for l_, s_, t_ in
                                                            zip(vs["slope_lam"], vs["slope"], vs["slope_ss"])) + "\n")
+                # flag-free estimators (H2): M_ta(v), dress(side), and the profile with r_ta from M_ta(v)
+                vv = ent["vs_selfsim_v"]
+                line2 = (f"    flag-free: M_ta(v) {ent['M_ta_v']:.4f} (r_ta measured {fmt(ent['r_ta_v_direct'])}, "
+                         f"from M_ta(v) {ent['r_ta_v']:.3f}) dress(side) {ent['dress_side']:.4f} "
+                         f"dress(side)/M_ta(v) {ent['dress_side'] / ent['M_ta_v']:.4f} M_ta(v)/(M a/a_i) "
+                         f"{ent['M_ta_v'] / ent['a']:.4f} | vs ss: {vv['lambda_min']:.4f} {vv['n_bins']} "
+                         f"{fmt(vv['max_dev'])} {fmt(vv['rms_dev'])} {fmt(vv.get('fit_slope'))} "
+                         f"({fmt(vv.get('fit_slope_ss'))}) {fmt(vv['slope_mean'])} ({fmt(vv['slope_ss_mean'])}) "
+                         f"{fmt(vv['slope_max_absdiff'])}")
+                for law in runs[lab]["refs"]:
+                    rf = ent[f"ref_{law}"]
+                    j = int(np.argmin(np.abs(runs[lab]["refs"][law]["snap_t"] - ent["t"])))
+                    rd_ = float(np.interp(runs[lab]["refs"][law]["snap_t"][j], runs[lab]["refs"][law]["g_t"],
+                                          runs[lab]["refs"][law]["g_dress"]))
+                    line2 += (f" | {law}: {ent['M_ta_v'] / rf['M_ta'] - 1:+.4f} "
+                              f"{ent['dress_side'] / rd_ - 1 if rd_ > 0 else float('nan'):+.4f}")
+                f.write(line2 + "\n    ratios run/ss (r_ta from M_ta(v)): " +
+                        " ".join(f"{l_:.3f}:{r_:.3f}" for l_, r_ in zip(vv["lam"], vv["ratio"])) +
+                        "\n    slopes run/ss (r_ta from M_ta(v)): " +
+                        " ".join(f"{l_:.3f}:{s_:.2f}/{t_:.2f}" for l_, s_, t_ in
+                                 zip(vv["slope_lam"], vv["slope"], vv["slope_ss"])) + "\n")
     print(json.dumps({k: {kk: vv for kk, vv in v.items() if kk not in ("profiles", "late")}
                       for k, v in summary.items()}, indent=1))
 
