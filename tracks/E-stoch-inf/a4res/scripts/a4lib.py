@@ -2,7 +2,7 @@
 the dump schedule of the code, core's linear twin (extracted from a branch into a run
 directory), the even-part model of the prediction.
 
-Set-ups (JOURNAL entry 2): SR case, input ../../ladder/inputs/sr_base.athinput, one mode
+Set-ups (JOURNAL entry 3): SR case, input ../../ladder/inputs/sr_base.athinput, one mode
 file ../../ladder/inputs/modes_n4096.txt for all, seed 20261115, four members each
 (noise_mode_scale = +1, -1, +1/2, -1/2), tlim = 4.5, dump_dt = 0.125, dump_constraints =
 true, dump_metric = false.  Cells per shortest source wavelength = N/sqrt(nmax2).

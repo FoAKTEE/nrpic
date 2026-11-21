@@ -11,7 +11,7 @@ MF = os.path.join(A.TRACK, "ladder", "inputs", "modes_n4096.txt")
 
 
 def main():
-    print("# a4res: resolution test of the strict A4 (JOURNAL entry 2); SR, one mode file "
+    print("# a4res: resolution test of the strict A4 (JOURNAL entry 3); SR, one mode file "
           "(modes_n4096.txt), seed 20261115, tlim 4.5, dump_dt 0.125, H and M_i dumped")
     for s in A.SETUPS:
         n = s["N"]

@@ -85,3 +85,84 @@ Outcome (`run.log`, `symbols.json`, `fig_symbols.png` of the run, looked at):
   (1.2e-4) because a mode enters the lattice through the window from the code's own
   continuum mode functions (ladder JOURNAL entry 6 [JUDGEMENT], SCOPE 4 A2 as amended);
   this package did not test that further.
+
+## Entry 3, 2026-11-21 13:09Z: predictions for the card job (before it is submitted)
+
+Set-ups (`scripts/a4lib.py`, list `inputs/card.list` from `scripts/make_list.py`): SR,
+input `../ladder/inputs/sr_base.athinput`, one mode file `../ladder/inputs/
+modes_n4096.txt` for all (its rows for |n|^2 <= 256 equal those of `modes_n256.txt`
+bit for bit; those of `modes_n64.txt`, the ladder's L runs, differ by up to 2.7e-5 in
+absolute value: checked in this session), seed 20261115, so every set-up shares one
+family of phases. N64q16, N64q25, N64q36, N64q64 (N = 64, nmax2 = 16, 25, 36, 64: 16,
+12.8, 10.7, 8 cells per shortest source wavelength) and N128q100, N128q64 (N = 128: 12.8
+and 16 cells). Four members each, noise_mode_scale s = +1, -1, +1/2, -1/2 (suffixes p, m,
+ph, mh). All: tlim = 4.5, dump_dt = 0.125 (37 dumps, the same times in all members of a
+set-up), dump_constraints = true, dump_metric = false, Courant 0.25, executable
+`scratch/core/exe/core_scalar-2/athena_gpu` (a58e95b). Rows of the mode file beyond
+noise_nmax2 are skipped (entry 1, source read).
+
+Analysis rules, fixed now (`scripts/a4_analysis.py`, written before the job ends):
+- Pairs A = (p, m), B = (ph, mh); dumps matched by time and cycle (with equal tlim and
+  dump_dt all 37 should match; a dropped dump is a finding). Odd part o = (f+ - f-)/2,
+  even part e = (f+ + f-)/2 with its box mean removed, rms over the cells (M: rms of the
+  vector), absolute units; O_A, E_A, O_B, E_B.
+- Floor per dump, measured: the first-order part cancels in o_A - 2 o_B and the
+  second-order part in e_A - 4 e_B (up to s^3 and s^4 terms, 1e-10 smaller), so
+  f_o = rms(o_A - 2 o_B)/sqrt(5) and f_e = rms(e_A - 4 e_B)/sqrt(17) estimate the part
+  that does not scale with s, if the floors of the two pairs are independent with equal
+  rms [JUDGEMENT]; f = max(f_o, f_e).
+- Entry window: dumps with t > 0 up to one e-fold after the top shell's window reaches
+  W = 0.999 (twin background; t = 3.1-4.1).
+- Strict A4 holds in a set-up iff, for H and for M: (i) O_A < E_A at every entry dump
+  with max(O_A, E_A) > 3 f; (ii) E_A/E_B within 4.00 +- 0.05 at every entry dump with
+  E_B > 10 f_e.
+- A4' (SCOPE 4b): (a) = (ii), and E_A of N64q64 and N128q64 (both K = 8) agree within 5
+  percent where above 3 f; (b) O_A/O_B within 2.00 +- 0.05 where O_B > 10 f_o, and the odd
+  part converges between N64q64 and N128q64 at an order in [4, 6] (A5) where O_A(128) >
+  3 f; (c) record <|H|/[H]> <= 1e-9 and <|M|/[M]> < 1e-3 at every cycle (`sr.sf.con.hst`,
+  columns 3 and 6); (d) the sign-flip control is not part of this job: not tested here.
+- Twin comparison: O_A against core's CodeTwin evolved at the run's own step times
+  (`sr.sf.hst`), where O_A > 3 f_o.
+
+Quantitative prediction (a), run E-20261121-130841-c406130 (twin of core/scalar-3 at
+88544a5, identical to python/nrpic/ on main after the merge of core-v0.5; looked at
+`fig_prediction.png`): the CodeTwin first-order parts per dump are in `prediction.json`.
+Cross-check on the ladder's runs (another mode file, not an anchor): CodeTwin/measured
+odd part of H = 1.000 +- 0.002 at every dump of L32 to t = 7.0, of L64 and Q64 from
+t = 1.5 to 5.0, and 0.94-0.95 for L128 at t = 2.5-3.0 where its floor is a third of the
+odd part; M likewise. Even part: model `a4lib.EvenModel` [JUDGEMENT] from the ladder's
+measured L64 and Q64 pairs, uncertain by a factor 2. Predicted largest odd/even ratio
+in time (H; M) and time of the maximum:
+
+| set-up | cells | H | M | strict A4 predicted |
+|---|---|---|---|---|
+| N64q16 | 16.0 | 0.46 (t 1.89) | 0.17 (t 2.38) | holds |
+| N64q25 | 12.8 | 0.99 (t 2.01) | 0.52 (t 2.63) | undecided (within the factor 2) |
+| N64q36 | 10.7 | 2.8 (t 2.26) | 1.9 (t 2.77) | fails |
+| N64q64 | 8.0 | 15.4 (t 2.50) | 13.8 (t 3.02) | fails |
+| N128q100 | 12.8 | 0.92 (t 2.76) | 1.05 (t 3.25) | undecided |
+| N128q64 | 16.0 | 0.27 (t 2.50) | 0.23 (t 3.01) | holds |
+
+Log-log crossing of 1 in the N = 64 family: 12.8 cells (H), 11.7 (M); N = 128: 12.9 (M).
+Core's scan (nmax2 = 64, N varied): 1.38 at 12, 0.25 at 16, crossing 12.7 [TO VERIFY].
+
+Predictions (each refuted as stated):
+- Q1 strict A4 holds at 16 cells (N64q16, N128q64) and fails at 10.7 and 8 cells
+  (N64q36, N64q64). Refuted by any other verdict in these four.
+- Q2 the largest ratio (max of H and M over the entry window) crosses 1 between 11 and
+  14.5 cells, in the N = 64 family (log-log interpolation) and consistent with the
+  N = 128 pair. Refuted if the crossing lies outside.
+- Q3 the measured odd parts equal the CodeTwin within 10 percent wherever O_A > 3 f_o,
+  every set-up, H and M. Refuted by any such dump outside [0.9, 1.1].
+- Q4 halving: E_A/E_B = 4.00 +- 0.05 and O_A/O_B = 2.00 +- 0.05 at every qualifying dump.
+  Refuted by a qualifying dump outside.
+- Q5 the measured largest ratio lies within a factor 2 of the predicted one in each
+  set-up (tests the even model). Refuted by a set-up outside.
+- Q6 the even parts of N64q64 and N128q64 agree within 5 percent at every dump above
+  3 f (the ladder's L64/L128 pairs: at most 3.5 percent in H, 4.7 percent in M to
+  t = 4.5). Refuted by a deviation above 5 percent.
+- Q7 the odd part converges between 8 and 16 cells at the twin's order (log2 of the
+  twin's ratio, 5.9 at t = 2.6) within 0.3 where above 3 f. Refuted otherwise.
+- Q8 record: <|H|/[H]> <= 1e-9 and <|M|/[M]> < 1e-3 at every cycle of every run.
+Cost expected (READY of core_scalar-2): 64^3 runs seconds, 128^3 runs 1-3 min each; job
+under 30 min of one card; dumps 21 MB (64^3) and 168 MB (128^3), about 62 GB in all.
