@@ -103,6 +103,7 @@ def coef(p):
 
 def main():
     exe, inp, a0b, outdir = sys.argv[1:5]
+    inp = os.path.abspath(inp)  # the runs start in their own directory
     os.makedirs(outdir, exist_ok=True)
     r_b = FACE - 0.5  # boundary cell centre at the face centre, dx = 1 on the root level
     est2 = 8 * coef(2) * M / r_b ** 3
