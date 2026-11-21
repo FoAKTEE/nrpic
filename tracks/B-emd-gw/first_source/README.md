@@ -211,7 +211,9 @@ Established (numbers and run ids in `JOURNAL.md`, sections from "Wave 3, round 1
    crossing 8 against 27 per cell stays at 3.4e-5 (max, 80 <= a <= 140) while 1 per cell
    moves to 2.5e-4. Converged in particle number at 8 per cell to 3e-5 through a = 140.
 2. Mesh (P13): 128^3 (1 per cell) against 64^3 agrees to 1.8e-4 for a <= 40; after shell
-   crossing rms |c(128)/c(64) - 1| = 1.3e-2 against 3.4e-2 for 64^3 against 32^3 (observed
+   crossing rms |c(128)/c(64) - 1| = 1.3e-2 against 3.4e-2 for 64^3 against 32^3 (rms over
+   80 <= a <= 140 at the dump times of the coarser run, finer run by cubic interpolation;
+   lead's addition after verifier_c18, whose own interpolation gave 1.38e-2) (observed
    order ~1.4 [JUDGEMENT, two differences]); the 128^3 result does not depend on 1 or 8 per
    cell at 64^3 (both 1.295e-2). Before a ~ 60 the mesh differences are ~1e-4 of |s| for both
    pairs and do not fall with the mesh.

@@ -178,3 +178,30 @@ not the waves package's wlib.
   the line-125 claim (smallest rms ratio 5.48e-5 is the initial slice; evolved dumps 3.8e-3 to
   0.0408) and the line-101 claim (0.00882 over all dumps for eps = 1) are in its result files.
   Refuted by a differing count or a number not found as stated.
+
+## 2026-11-21T15:55Z lead batch 4a: outcomes of L4-L7
+
+- L4 CONFIRMED (run B-20261121-154933-a79da09, lw4_waves.json, figure lw4_waves.png looked
+  at). F2 last-dump TT errors with verifier3's code against the waves values: amplitude
+  -6.67738e-3, -6.30755e-5, -3.99670e-6, -5.75924e-7 (N = 16-64), relative difference 3.8e-9,
+  1.2e-6, 2.5e-5, 2.9e-4; phase 4.32075e-3 ... 2.92636e-6, relative difference <= 1.7e-9.
+  Orders 6.726/6.804/6.734 (amplitude) and 5.510/5.154/4.826 (phase): the waves orders to the
+  third digit. The cross phase agrees as well (2.92495e-6 at N = 64).
+- L5 CONFIRMED (same run). Cross errors at dt_expansion = 0.001, t = 10, with verifier3's
+  do_X: N = 64 amplitude -3.10353e-9 (waves -3.10340e-9, 4e-5 relative), phase 1.92010e-8
+  (6e-7); N = 16, 32, 48 agree to <= 4e-6. Time part at N = 64 with verifier3's own
+  e(0.01): 1.42992e-7 (amplitude), 2.57038e-7 (phase), the waves values 1.4299e-7, 2.5704e-7.
+- L6 CONFIRMED (run B-20261121-155017-9aec47a, lw6_rerun.json): conv_compare and
+  p16_compare (64^3) rerun from their registered inputs give byte-identical summary JSON
+  (142 and 137 values, none differs). Figures r2_conv_eps1.png and r2_p16_nowave_64.png
+  looked at: they show what the README says (particle differences ~1e-4 to 2e-4 at all a,
+  mesh differences ~1e-4 before a ~ 60 and up to 1e-1 after; TT/non-TT shell ratios near 1
+  above |k| L/2pi ~ 10 at a <= 2.3 and not at a = 12.3).
+- L7 CONFIRMED (run B-20261121-155045-343bee1): a3_summary.json and a3_summary.png
+  byte-identical to run B-20261121-132955-cb150b2; 116 numbers, 103 within 1 per cent, 113
+  within 5 per cent. p3_slicing.json: rms_ratio_min 5.48e-5 at a = 1 + 6.5e-9 (first dump of
+  pcs4bt), the next dump 3.84e-3, rms_ratio_max 0.0408 for a <= 121: the line-125 claim
+  holds as stated. Its figure is not drawn with figstyle (default matplotlib): style defect
+  only.
+- Small defect fixed: first_source/README.md P13 now states the window (80 <= a <= 140) and
+  the interpolation behind 1.3e-2 (verifier_c18 got 1.38e-2 with its own interpolation).

@@ -126,3 +126,85 @@ Not reviewed independently by the lead. The note's second reading (N13-N15, own 
 windows) reproduces the jittered-null, delta = 0.0025 and rerun numbers to 2e-12 relative,
 which checks reference and bookkeeping, not the method; an independent verifier of the
 second-round legs is G2 work.
+
+# Batch 4a (lead of B-emd-gw, 2026-11-21 07:45-, PST)
+
+Scope: the three packages finished since the lead session of batch 2a: `first_source`
+round 3 (batch 2b), `waves` round 1 (batch 3), `stage/G1/verifier_c18` (batch 3). Still in
+progress and not reviewed: `flrw_conv`, `shear`, `population` (HANDOFF.md). Method: the
+helpers' reports were read first, so this is a recheck of the artefacts, not a blind one.
+Predictions L4-L7 were committed (9015cd1f) before the runs; outcomes in
+`review_wave3/JOURNAL.md` (2026-11-21T15:55Z); runs B-20261121-154933-a79da09 (L4, L5, with
+verifier3's reader, TT projector and exact solutions, not the waves code),
+B-20261121-155017-9aec47a (L6), B-20261121-155045-343bee1 (L7). All four predictions held.
+Housekeeping: no stranded file; the worktree was clean at the start; no run was open.
+
+## waves round 1 (F2, XS, x10, gw_diag gauge and reader modules)
+
+Confirmed by the lead (L4, L5; figure `lw4_waves.png` of run -154933-a79da09, looked at):
+- F2 (k = 2 pi (1,2,0)): with verifier3's code the last-dump TT amplitude and phase errors are
+  the waves values to <= 2.9e-4 relative (amplitude at N = 64) and <= 1.7e-9 (phase); orders
+  6.73/6.80/6.73 and 5.51/5.15/4.83 reproduced to the third digit. The comparison with the
+  whole-Z4c symbol model (<= 0.12 per cent) was not redone (the model is waves' own).
+- XS: the cross errors at dt_expansion = 0.001 (N = 16-64) are the waves values to <= 4e-5
+  relative; with verifier3's own e(0.01) the time part at N = 64 is 1.42992e-7 (amplitude) and
+  2.57038e-7 (phase), the waves numbers. XS-1 and XS-2 hold.
+- The x10 outcome (plus excess at N >= 48 is rounding) was confirmed in batch 2a.
+- gw_diag gauge module: equal to first_source's functions bit for bit (run
+  B-20261121-125606-e2ebf60, ratio 1.1e-13 ... 7.2e-8 of G_tot to raw rms are the module's own
+  numbers); tests 26 pass, 2 skip (as reported; not rerun).
+Failed predictions on record (waves/JOURNAL.md): F2-4 per dump (Gamma at +k hits a floor of
+1e-15 to 1e-14 at the nodes), XS-3 bound at N = 64 (2.76e-10 against 2e-10), XS-4 (the plus
+rounding does not grow with the number of steps). Open, not blocking: the small-step
+spectral-Weyl vs TT residual (6e-11, spikes 2.8e-10) is unexplained.
+Verdict: G1 criterion 1 met for F, F2 and X with no open sub-item [lead's judgement, checked].
+
+## first_source round 3 (P11-P14 at 32^3, P12, P13, the (1 + eps^2) test, P16')
+
+Confirmed: the registered analyses rerun from their registered inputs give byte-identical
+summaries (L6: conv_compare 142 values, p16_compare 137, none differs); this checks
+reproducibility, not the method. The method-independent check is verifier_c18's (own code):
+P12 7.76e-5, 7.44e-5, 3.35e-5, 2.51e-4; the (1 + eps^2) numbers; P16' D = 0.994, 0.856, 0.275.
+Figures r2_conv_eps1.png and r2_p16_nowave_64.png looked at: as the README says.
+Not confirmed independently: P16' per-shell fractions, (iv), (v); the 32^3 run without the
+wave; P11 and P14 at 32^3 beyond the (1 + eps^2) numbers (verifier_c18's list).
+Corrected (small): the P13 rms 1.3e-2 now names its window (80 <= a <= 140) and
+interpolation in the README; verifier_c18 got 1.38e-2 with its own interpolation.
+Decision of the helper not to run 128^3 at 8 per cell: accepted, not overruled [JUDGEMENT]:
+after crossing the particle effect (1.4e-4) is a hundredth of the mesh difference (1.3e-2),
+so the run would not change the conclusion; particle convergence at 128^3 is a G2 item.
+Failed predictions on record (first_source/JOURNAL.md): P11(c') K2 A-ratio at 32^3, the
+(1 + eps^2) test at a = 20, P14(c) at a = 10, P16'(i) and (ii) at a = 12, P16'(iv).
+Open (G2): whether the extra grid-scale TT the wave adds by a = 12 is leakage of a
+wave-modulated noise field or a response.
+
+## stage/G1/verifier_c18 (item C18)
+
+Confirmed: its summary reruns byte for byte from its committed results (L7); 116 numbers,
+103 within 1 per cent, 113 within 5 per cent (figure a3_summary.png looked at; not in
+figstyle, a style defect only); its line-125 statement is in p3_slicing.json as written.
+It meets the brief of the package for the rows it took: the second-round table, gauge rows
+116-117 (eps = 0.1, 0.3) and 120-123, line 125, line 101, wave-1 lines 26-27, round 3.
+What the track does with each of its items:
+
+| Item | Verifier's finding | Track's action |
+|---|---|---|
+| Line 125 | CONFIRMED in digits; 5.48e-5 is the initial slice (evolved 3.8e-3 to 0.0408) | note v3 rewords (owed; OPEN item 2) |
+| Line 101 | 0.00857, 0.00821 hold over the 22 double-precision dumps; 0.00882 over all dumps | note v3 (already owed from verifier3) |
+| Line 197 | CONFIRMED at about 1e-12 (second digit is rounding) | note v3 quotes "about 1e-12" |
+| Lines 201-203, 206 | confirmed in substance with a growing-mode-only prediction (5 per cent ratios, 7 per cent phases) | accepted for G1 [JUDGEMENT]; a re-implementation with the decaying parts is not required |
+| P13 rms | 1.38e-2 against 1.30e-2 (window and interpolation not stated) | README fixed (this session) |
+| Line 124 (magnetic Weyl across gauges) | NOT RECOMPUTED | owed: verifier_c18b |
+| Line 199 (residuals of the jittered data) | read from id.json, not recomputed | owed: verifier_c18b |
+| Line 217 (second-reading bookkeeping) | NOT RECOMPUTED | owed: verifier_c18b |
+| Wave-1 lines 34-36, 49-63, 70-71 (junk TT, omega_vir, cost; pancake; homogeneous; quadrature, second-order lapse) | NOT RECOMPUTED (line 34's slope -0.997 was confirmed by the G0 verifier) | owed: verifier_c18b |
+| Round-3 P16' per-shell, (iv), (v); 32^3 without wave; P11, P14 at 32^3 | NOT CHECKED | lead's L6 shows reproducibility only; verifier_c18b takes P16'(v) and the per-shell fractions |
+| Limit of independence: the track's definitions were read | recorded | accepted; reader, projection, reference and gauge piece are its own |
+| Wrote VERIFIER-C18.md outside its directory | the package brief named that path | accepted |
+
+Verdict on C18: met in part. Every row that carries a G1 criterion, the gauge rows and the
+second-round table are now recomputed by an agent that did not produce them (G0 verifier,
+verifier2, verifier3, verifier_c18); not yet recomputed: ledger lines 34-36 (in part), 49-63,
+70-71, 124, 199 (residuals), 217. Owed: one more fresh verifier package (verifier_c18b,
+processors only, artefacts only) or a ruling that these wave-1 scouting rows may be carried
+to G2 (request to orch, this session).
