@@ -1056,3 +1056,34 @@ initial shift, eta = 0.1), `v0_e01` (at rest, eta = 0.1), `v0.3_n4` (4x10^4 part
    slow shift: D stays between 29.0 and 30.8 for 125 M and the phase at 125 M is between
    0.87 and 1.02. If D(125 M) is below 28.8 again, the orbit of the data is eccentric or
    loses angular momentum whatever the gauge: an open defect of the binary data.
+
+## 2026-11-21  session clump2-4 (from 12:50Z; batch 3; session 3 was cut off by the usage limit at about 22:50Z on 2026-11-20)
+
+State found at 12:52Z (from `git log`, `git status`, `sacct`, `ps`, the run directories).
+Worktree clean; main merged now (releases core-v0.4 and core-v0.5; one conflict, in
+`docs/FORMATS.md`: both sides appended a section; both kept, mine last). The pause flag
+is absent. Card time of the package so far: 0.50 card-hours (TC, TE).
+
+- **A slip of session 3, found running: test D never ended.** The run
+  `core-20261120-223538-742c0b7` was still alive after 14 h 17 min. Its first case
+  restarts `v0.3` from the restart file of t = 0 "without a step (the time limit is
+  reached)": at t = 0 the time limit of 50 M is not reached, so the processor executable
+  evolved the whole run (it stood at t = 34.5 M). The smoke test had used a file of
+  t = 50 M only. One core for 14.3 h and 1.4 GB of restart file wasted; no number came
+  of it. Stopped by process id (python 2157396, athena 2157440), the restart file it
+  wrote removed, the run closed as failed (exit -15). The predictions D1 to D4 stand
+  unjudged. Fix: the restart gets `time/nlim=0` on the command line (no step whatever
+  the time of the file); rerun below.
+- FX2 and EN (predictions of 22:25Z and 22:44Z on 2026-11-20): not run. TF: not submitted.
+- The executables of `.work/build_cpu` and `.work/build_gpu` are those of commit cbe1e3ef
+  (sha256 97a749c0..., 3aaeb746...): the source of this package before today's merge of
+  main, the same that ran TC and TE.
+
+Plan of this session, in this order: (1) TF on a card now, with the executable that ran
+TC (a comparison of gauges must not also change the release underneath; its predictions
+were written for that executable); (2) D, FX2, EN on processors; (3) build the merged
+source (main with core-v0.5, plus this package) into `.work/build_{cpu,gpu}_m`,
+regression against release core-v0.5 without the new options and against the pre-merge
+executable with them, a short card check of the merged card executable; (4) interface
+text, publication of the merged executables, records. What does not fit is named as not
+done.
