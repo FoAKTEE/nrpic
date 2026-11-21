@@ -49,7 +49,7 @@ def prepare(row, out):
             "--nxz", row.get("nxz", "4"), "--ppc-y", row.get("ppc_y", "1"), "--out", ic]
     for k in ("fanA", "fanB"):
         if k in row:
-            args += ["--" + k, row[k]]
+            args += ["--" + k + "=" + row[k]]   # "=" form: a negative centre is not an option
     if row.get("fan_abs", "0") == "1":
         args += ["--fan-abs"]
     with open(os.path.join(d, "ic.log"), "w") as lg:

@@ -136,3 +136,10 @@ Predictions, each with what refutes it:
   every case reaches tlim (no guard stop) and the wall time is below 15 minutes per case
   (smoke: 10 s at N_y = 32; cost proportional to N_y^2 at fixed HL).
 - Then: a summary script (Richardson extrapolation per case, figures) and outcomes P4-P12.
+
+## 2026-11-21 12:47 PST: series 1 failed at the initial data; fixed, resubmitted
+
+- Run B-20261121-202503-abdf6f0 FAILED before any AthenaK process started: make_shear_ic.py
+  refused `--fanA -0.1555...,0.5,21` (argparse reads a value that begins with "-" as an
+  option; `M2_n32/ic.log`). My error in run_cases.py, not in the list. Fix: the fan is passed
+  as `--fanA=<value>`. Predictions of the entry above unchanged; series 1 resubmitted as is.
