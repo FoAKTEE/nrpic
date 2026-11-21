@@ -154,7 +154,12 @@ column names the measurement that decides. Sources: `scope/SCOPE.md` section 8,
 
 ## Decision requested from the group
 
-Not requested yet. The lead judges G1 not met: criteria 1 and 2 are met (criterion 1 read three times: waves, verifier3, the lead's third reading), criterion 3 is struck (decision 0013), schematics and note v2 pass; item C18 is open in part (ledger rows not yet recomputed by an independent verifier; stage/G1/OPEN.md item 1). The gate will be requested after the verifier4 package. verify FAIL is on clean (three untracked files of the waves package still in progress, left as found) and sync (main moved during the 25-minute run; merged afterwards); every other check passes, runs included.
+Not requested yet. The lead judges G1 not met: criteria 1 and 2 are met (criterion 1 read
+independently three times and, for F2 and XS, remeasured by the lead with verifier3's code),
+criterion 3 is struck (decision 0013), schematics and note v2 pass; item C18 is open in part
+(ledger lines 34-36, 49-63, 70-71, 124, 199, 217; OPEN.md item 1). `nrpic-stage verify`:
+PASS (0 failed checks) on 5a1c117f. The gate will be requested after verifier_c18b or the
+orchestrator's ruling on those rows.
 
 ## Lead's assessment (batch 4a, 2026-11-21)
 
