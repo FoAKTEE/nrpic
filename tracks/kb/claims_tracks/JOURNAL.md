@@ -139,3 +139,34 @@ argument in all six.
     label is right.
 - E held: 7 judgements were annotated, unchanged.
 Ledger rows were appended from each run's ledger_rows.tsv.
+
+## 2026-11-21 ~21:55 UTC: decisions F1a, F1b, K1, L1 (written after reading every claim at its source)
+
+Read with read_claim.py and sed on the stored sources (terminal only).
+- F (54): 0911.1136 and 1804.02911 (32 Hills reference numbers): every number of F's
+  reference.py matches the printed text. 655 also needs the figure-caption line L649 for the
+  mass ratios. 2404.16270 (686, 688, 635): 635's "alpha about 0.1" is in appendix L8, not at
+  the cited article lines. 2402.02178 (687) is a to-do of the track. Novelty claims 421-452:
+  2406.11985, 2308.07365, 2505.03934, 2505.01495 and 1203.6185 read at their tables and
+  abstracts; 2605.22525, 2609.20338, 2608.22735, 2608.16986, 2610.27775, 2212.10891,
+  1303.1540, 2602.06961 and 2610.20594 are not in the store. 658-662 (1201.4794, which ingest3
+  re-ingests) are read and go into the last batch L1.
+- core (24, all on 2611.12831v1): full-text searches with grep for cosmolog*, FLRW,
+  collision, filter, pass, c_H, Courant/CFL and "other code"; counts of figure and table
+  environments. Repository parts checked where they are cheap: docs/TESTLOG.md L46, L600,
+  L650; deposit.md L100-101; os_amr.athinput L82.
+- No refutation: no read passage contradicts a claim. The nearest case is 635. Its cited
+  lines say alpha reaches 0.2, the appendix says 0.1 in the examples, so the claim holds.
+F1 (49) was split into F1a (32) and F1b (17) to keep batches near the 20 the brief asks for.
+
+### Prediction FK (before runs F1a, F1b, K1)
+- F1a: 32 claims become fulltext/checked, no FAILED line.
+- F1b: 10 claims become fulltext/checked (686, 688, 635, 423, 426, 428, 430, 432, 439, 448).
+  5 stay to_verify with annotate events (687, 447, 449, 450, 452). 2 judgements (421, 425)
+  are annotated.
+- K1: 19 claims become fulltext/checked. 5 stay to_verify: 456, 538, 549, 601 (kept with
+  reasons) and the judgement 559, annotated.
+- Every verify_loc locator resolves (status checked, all locator rows resolved).
+Refuted by any FAILED line or unresolved locator row. If kb claim verify refuses a claim
+that had no locator before (core 467, 520, 525, 543, 548, 570), my belief that verify_loc
+attaches a first locator was wrong.

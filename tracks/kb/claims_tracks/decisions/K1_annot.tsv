@@ -1,0 +1,6 @@
+# annotations of batch K1 (claim_id TAB evidence)
+456	[keep] Stored arXiv metadata (papers table of kb.sqlite): submitted 2026-11-09T18:30:08Z, primary class gr-qc. The cross-lists and the page count are not stored, and the source cannot settle them. The date part holds.
+538	[keep] Header of a list of repository facts about the upstream code (SECTION2_CORRECTIONS.md:92); no paper statement and no content in the claim row itself. Not a literature claim.
+549	[keep] The claim row holds only the header 'Paper [VERIFIED]:' (SECTION2_CORRECTIONS.md:146); its content sits in the following lines, which the seeder did not join. Nothing to check; the seed should join the continuation lines (request to the kb lead).
+601	[keep] A repository statement: docs/TESTLOG.md L600 records that the published lattice rule carries 1.2 per cent too much mass at 1e4 particles. No paper locator is given for the lattice rule; it is not a literature claim.
+559	[evidence] 2611.12831v1 main.tex L1335-1336: two clumps inside the equilibrium cluster get bulk velocities of +-0.133215; the cluster slice is K_ij = 0 (core's reading of L1033-1117), and a full-text search finds no statement that the constraints are re-solved. A nonzero momentum density on a K_ij = 0 slice violates D_j(K^ij - gamma^ij K) = 8 pi S^i [standard].

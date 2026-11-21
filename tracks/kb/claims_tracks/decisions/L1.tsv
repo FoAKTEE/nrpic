@@ -1,0 +1,7 @@
+# claims_tracks batch L1 (last): claims on papers re-ingested by ingest3 (1201.4794: 658-662; 2403.15126: 186). claim_id action locator evidence reason
+658	verify		1201.4794v1 ms.tex L604-605: the energy change of the approximation and the full run differ at the 0.1 per cent level for an exchange.	supported
+659	verify		1201.4794v1 ms.tex L677-679: for (e-1)/D = 0 and 0.1 the disruption chance is about 80 per cent even for D << 1.	supported
+660	verify		1201.4794v1 ms.tex L1102-1103: Delta E = (m1/m) E2 - (m2/m) E1 with m1/m2 = 3.	supported
+661	verify		1201.4794v1 ms.tex L617-618: parabolic runs start at r0 = 15 r_t.	supported
+662	verify		1201.4794v1 ms.tex L307-309 (footnote): for prograde orbits with D ~ 0.1 the energy change reaches about 30 in a narrow phase range (citing SKR fig. 7).	supported
+186	annotate		[evidence] 2403.15126v1 pII_GW_Vir_C2_Arx.tex: GW spectra in the quadrupole approximation (L387, L885); a first peak as in the Zel'dovich picture and a second at higher frequency from violent relaxation (L312-314); omega_peak scales as sigma^(3/2) (L1031). The identity omega_peak ~ 1/t_col was not found printed. In the matter era t = 2/(3H), so 2 pi t_col = (4 pi/3)/H [arithmetic].	judgement: facts partly located
