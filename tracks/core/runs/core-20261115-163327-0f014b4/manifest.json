@@ -1,0 +1,49 @@
+{
+ "run_id": "core-20261115-163327-0f014b4",
+ "owner": "core",
+ "registered_by": "tracks/core/analysis/dfix/runreg.py (by hand: nrpic-run submit fails)",
+ "purpose": "Final executable (source 3f75eb8): T3 repeated",
+ "kind": "scouting",
+ "command": [
+  ".venv/bin/python",
+  "tracks/core/analysis/dfix/t3_accretion.py",
+  "--exe",
+  "/data/haiyangw/nrpic/wt/core-dfix/.work/build_cpu/src/athena"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-dfix",
+ "commit": "0f014b451eabb3a04500a3df06f58c3a8554ed95",
+ "branch": "core/requests-adf",
+ "uncommitted_changes": [
+  "M tracks/core/interfaces/REQUESTS_ADF.md"
+ ],
+ "inputs": [
+  {
+   "path": "problems/tests/accretion_static.athinput",
+   "sha256": "5570df3c1474d473dd99279d6f947d79cf9458b975e1bfc3260f91eb0b95ef61"
+  },
+  {
+   "path": ".venv/bin/python",
+   "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49"
+  },
+  {
+   "path": "tracks/core/analysis/dfix/t3_accretion.py",
+   "sha256": "2d617d526c7b277641db46cfcfc9e5dae78ceb54843c9e1f68a64354bd393b1d"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "17ee5e28d93016da354ce86e5d869233a21a1f20f67b4cb211527e6b1359022d"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-163327-0f014b4",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-163327-0f014b4"
+ },
+ "host": "anta",
+ "start_utc": "2026-11-15T16:33:27Z",
+ "cores": 3,
+ "status": "completed",
+ "wall_time_s": 99.61,
+ "exit_status": 0,
+ "end_utc": "2026-11-15T16:35:07Z",
+ "core_hours": 0.083
+}

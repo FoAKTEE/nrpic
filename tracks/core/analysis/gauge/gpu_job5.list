@@ -1,0 +1,5 @@
+# Card job 5 of the work package "gauge" (wave 2b): the unequal pair of test E2 with
+# wider damping profiles (journal entry 8, last section).
+#   harness/bin/nrpic-run submit --launcher batch --list <this file>
+e2-profile-w4 problems/puncture/by_unequal.athinput z4c/shift_eta_width=4.0 -t 00:05:00
+e2-profile-w8 problems/puncture/by_unequal.athinput z4c/shift_eta_width=8.0 -t 00:05:00

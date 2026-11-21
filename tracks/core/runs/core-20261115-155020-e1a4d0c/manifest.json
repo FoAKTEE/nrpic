@@ -1,0 +1,49 @@
+{
+ "run_id": "core-20261115-155020-e1a4d0c",
+ "owner": "core",
+ "purpose": "Test T5 of JOURNAL-clump.md: the two-overdensity data of the first paper (mesh and particles of jeans/n1e4_v19) at t = 0, momentum-constraint norm and field with and without the smeared Bowen-York curvature; both momentum rules",
+ "kind": "scouting",
+ "command": [
+  "/data/haiyangw/nrpic/wt/core-clump/.venv/bin/python",
+  "/data/haiyangw/nrpic/wt/core-clump/tracks/core/analysis/clump/run_jeans_t0.py",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-155020-e1a4d0c",
+  "--jobs",
+  "2"
+ ],
+ "cwd": "/data/haiyangw/nrpic/scratch/core/core-20261115-155020-e1a4d0c",
+ "commit": "e1a4d0c8f51d7e1332c46bef249532aab4fbbaca",
+ "branch": "core/clump-curvature",
+ "uncommitted_changes": [
+  "?? tracks/core/analysis/clump/static_check.py"
+ ],
+ "inputs": [
+  {
+   "path": "problems/jeans/jeans_mc.athinput",
+   "sha256": "91fb0774183dc470f559824ae0b9e3eabc7b22daff393ddcc72bf2cebe49ea01"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/particles.nrp",
+   "sha256": "7270917fad5381932eb7e3fdb31239d5c565791deadba7c9751f2c6b8973ed9f"
+  },
+  {
+   "path": "/data/haiyangw/nrpic/runs/jeans/n1e4_v19/envelope.tab",
+   "sha256": "7ea9ca275a092d93775fd74e4b798eb24fbedaa507d2b168e2e28f4772392c59"
+  },
+  {
+   "path": "problems/ic/make_ic.py",
+   "sha256": "dec0d9348b051f3b40a575039677f2ed6498b59b8c4fb6c77b6a8cb745eb6411"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "53c0d32b6b1c5af2a18bdbe2a13edc62930a37a9582629d2baf78ecfa40e20e1"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-155020-e1a4d0c",
+ "host": "anta",
+ "start_utc": "2026-11-15T15:50:20Z",
+ "cores": 2,
+ "wall_time_s": 329.56,
+ "exit_status": 0,
+ "core_hours": 0.1831
+}

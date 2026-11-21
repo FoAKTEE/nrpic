@@ -1,0 +1,46 @@
+{
+ "run_id": "core-20261115-154622-e1a4d0c",
+ "owner": "core",
+ "track": "core",
+ "gate": "G2",
+ "kind": "scouting",
+ "purpose": "Test R of JOURNAL-clump (first attempt): old set-ups of nrpic_cf with the release processor executable and this branch's, every output byte compared",
+ "hand_written": "yes: written in session clump-2 (2026-11-15T18:22Z) after the fact; harness/bin/nrpic-run failed in session 1 (KeyError 'outputs') and the session ended before the run was registered by hand",
+ "command": [
+  "python3",
+  "tracks/core/analysis/clump/regress.py",
+  "--base",
+  "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+  "--new",
+  "/data/haiyangw/nrpic/wt/core-clump/.work/build_cpu/src/athena",
+  "--out",
+  "/data/haiyangw/nrpic/scratch/core/core-20261115-154622-e1a4d0c"
+ ],
+ "cwd": "/data/haiyangw/nrpic/wt/core-clump",
+ "commit": "e1a4d0c8f51d7e1332c46bef249532aab4fbbaca",
+ "branch": "core/clump-curvature",
+ "inputs": [
+  {
+   "path": "/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena",
+   "sha256": "d983155bb21befedbd123d54d84fcfc12a875ee0aaa0baa36f5a51261041c25c"
+  },
+  {
+   "path": ".work/build_cpu/src/athena",
+   "sha256": "53c0d32b6b1c5af2a18bdbe2a13edc62930a37a9582629d2baf78ecfa40e20e1"
+  }
+ ],
+ "output_directory": "/data/haiyangw/nrpic/scratch/core/core-20261115-154622-e1a4d0c",
+ "outputs": {
+  "dir": "scratch/core/core-20261115-154622-e1a4d0c"
+ },
+ "start_utc": "2026-11-15T15:46:22Z",
+ "end_utc": "about 2026-11-15T16:40Z (stopped with the session)",
+ "cores": 1,
+ "status": "stopped",
+ "exit_status": null,
+ "result": "regress_cf IDENTICAL (16 files), cf_table_regress IDENTICAL (9), by_static IDENTICAL (5); jeans: base case finished, new case stopped after cycle 0. Not used for a number.",
+ "superseded_by": [
+  "core-20261115-174445-36616db",
+  "core-20261115-174439-7359389"
+ ]
+}

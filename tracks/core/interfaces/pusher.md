@@ -14,11 +14,12 @@ Arrays `prtcl_rdata(n, p)` and `prtcl_idata(n, p)` (`particles.hpp` lines 30-36)
 |---|---|
 | `IPX, IPY, IPZ` | coordinates x^i in the coordinates of the run (Cartesian on the mesh) |
 | `IPVX, IPVY, IPVZ` | covariant spatial components u_i of the four-velocity per unit rest mass |
-| `IPM` (6) | rest mass m > 0; m = 0 a null particle; m = -t_e < 0 a light ray launched at t = t_e |
+| `IPM` (6) | rest mass m > 0; m = 0 a tracer (massive test particle without sources; a null particle only with `zero_mass = null`); m = -t_e < 0 a light ray launched at t = t_e |
 | `IPTAU` (7) | proper time along the worldline (affine parameter for null particles) |
 | `PGID` | global id of the owning MeshBlock; -1 left the mesh, -2 excised (removed in the same step) |
 | `PTAG` | tag = position in the particle file (or inline list); unchanged for the whole run |
 | `PSP` (2) | species, from the particle file |
+| `PPERI` (3) | state of the pericentre counter (2 x passages + 1 while approaching; `peri_count`, REQUESTS_ADF.md section 2.3) |
 
 Particles are never split, merged or given new masses, also through regrids and
 restarts (`NrpicInitializeSources`, called after every regrid from
@@ -71,8 +72,13 @@ proper time (`IPTAU` is not advanced) and does not support null particles: with
 `pusher = boris` every particle is pushed as massive [VERIFIED from `nrpic.cpp` lines
 492-498; not tested].
 
-**Null particles and light rays** (midpoint only; lines 448-481): `m = 0` follows a null
-geodesic (`W = sqrt(gamma^ij u_i u_j)`). `m = -t_e` waits until the step nearest t_e;
+**Tracers, null particles and light rays** (amended by work package dfix, test T1,
+runs core-20261115-154303-da69f6a and -152835-920d573): `m = 0` is a tracer on a
+timelike geodesic for every metric source. Releases core-v0.2 and core-v0.3 pushed it
+as a photon on the mesh metric (`W = sqrt(gamma^ij u_i u_j)`) and as a massive particle
+on the analytic metrics; `<particles> zero_mass = null` (default `tracer`) keeps that
+rule for the mesh metric. Null geodesics are for `m = -t_e < 0` (midpoint pusher, mesh
+metric): the particle waits until the step nearest t_e;
 until then its momentum slots hold a coordinate direction c^i, replaced at launch by
 `k_i = gamma_ij c^j / sqrt(gamma_kl c^k c^l)` (unit frequency for the normal observer).
 
@@ -99,7 +105,7 @@ that dependence (CT "T1: conservation on the mesh, and the interpolation of the 
 
 | Option | Default | Meaning |
 |---|---|---|
-| `alpha_exc` | -1 (off) | before the push, a particle whose lapse interpolated at (t^n, x^n) is below this value is removed and not pushed (paper L678) |
+| `alpha_exc` | -1 (off) | before the push, a particle whose lapse interpolated at (t^n, x^n) is below this value is removed and not pushed (paper L678); since work package dfix also on the analytic metrics (their own lapse), test T3 |
 | `ah_exc_factor` | -1 (off) | particles inside this fraction of the smallest coordinate radius of a found apparent horizon (at most four horizons) are removed; a horizon counts only after a successful search of the current run, and not if its radius exceeds four times the starting radius of the search (lines 399-424) |
 
 Also removed: particles whose state is not finite after the push (lines 523-525), and

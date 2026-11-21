@@ -28,17 +28,35 @@ def read_history(fname):
     return {n: d[:, i] for i, n in enumerate(names)}
 
 
+CON_HIST_VARS = ["time", "cycle", "efolds", "H_ratio", "H_ratio_max",
+                 "H_ratio_of_means", "M_ratio", "M_ratio_max", "M_ratio_of_means",
+                 "H_mag", "M_mag", "H_l1", "M_l1", "H_rms", "M_rms", "M_bssn_adm", "phi",
+                 "Pi", "K", "alpha"]
+
+
+def read_con_history(fname):
+    """Columns of <basename>.sf.con.hst (constraints relative to the magnitudes [H], [M]
+    of arXiv:2512.14649; scalar_field_diag.cpp) as a dict of arrays."""
+    d = np.atleast_2d(np.loadtxt(fname))
+    return {n: d[:, i] for i, n in enumerate(CON_HIST_VARS)}
+
+
 def read_dump(fname):
-    """A dump <basename>.sf.NNNNN.dump.  Returns a dict with time, cycle, the list of
-    MeshBlocks (level, lx, extent, data[var][i, j, k]) and, when all MeshBlocks are on
-    the root level, the fields assembled on the whole mesh, fields[name][i, j, k] with
-    (i, j, k) = (x, y, z); the stochastic fields are named noise0, noise1, ..."""
+    """A dump <basename>.sf.NNNNN.dump (layouts NRSFDMP1 and NRSFDMP2).  Returns a dict
+    with time, cycle, the list of MeshBlocks (level, lx, extent, data[var][i, j, k])
+    and, when all MeshBlocks are on the root level, the fields assembled on the whole
+    mesh, fields[name][i, j, k] with (i, j, k) = (x, y, z); the stochastic fields are
+    named noise0, noise1, ..."""
     with open(fname, "rb") as fp:
-        if fp.read(8) != b"NRSFDMP1":
+        magic = fp.read(8)
+        if magic not in (b"NRSFDMP1", b"NRSFDMP2"):
             raise ValueError(f"{fname}: bad magic")
         nmb, nx1, nx2, nx3, nvar, cycle, nnoise = struct.unpack("<7q", fp.read(56))
         (time,) = struct.unpack("<d", fp.read(8))
-        names = DUMP_VARS + [f"noise{n}" for n in range(nnoise)]
+        if magic == b"NRSFDMP1":
+            names = DUMP_VARS + [f"noise{n}" for n in range(nnoise)]
+        else:     # extended layout (scalar_field_diag.cpp): the names are in the file
+            names = [fp.read(16).rstrip(b"\0").decode() for _ in range(nvar)]
         blocks = []
         for _ in range(nmb):
             lev, lx1, lx2, lx3 = struct.unpack("<4q", fp.read(32))
