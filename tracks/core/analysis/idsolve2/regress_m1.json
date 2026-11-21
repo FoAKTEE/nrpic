@@ -1,0 +1,301 @@
+{
+ "run": "core-20261121-080151-4db2e1d",
+ "base": "/data/haiyangw/nrpic/.work/build_cpu_v05/src/athena",
+ "new": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/exe_395e17d/athena_cpu",
+ "cells": 32,
+ "status": {
+  "gauss_base": {
+   "wall_s": 10.8,
+   "status": "completed"
+  },
+  "gauss_robin": {
+   "wall_s": 10.8,
+   "status": "completed"
+  },
+  "gauss_default": {
+   "wall_s": 10.8,
+   "status": "completed"
+  },
+  "gboost_base": {
+   "wall_s": 12.1,
+   "status": "completed"
+  },
+  "gboost_robin": {
+   "wall_s": 11.9,
+   "status": "completed"
+  },
+  "gboost_default": {
+   "wall_s": 13.0,
+   "status": "completed"
+  },
+  "ball_base": {
+   "wall_s": 9.6,
+   "status": "completed"
+  },
+  "ball_robin": {
+   "wall_s": 9.2,
+   "status": "completed"
+  },
+  "ball_default": {
+   "wall_s": 9.9,
+   "status": "completed"
+  },
+  "torus_base": {
+   "wall_s": 10.4,
+   "status": "completed"
+  },
+  "torus_robin": {
+   "wall_s": 10.1,
+   "status": "completed"
+  },
+  "torus_default": {
+   "wall_s": 10.0,
+   "status": "completed"
+  }
+ },
+ "pairs": {
+  "gauss_robin": {
+   "identical": [
+    "gauss.cstat.hst",
+    "gauss.field.00000.bin",
+    "gauss.idsolve.bin",
+    "gauss.idsolve.txt",
+    "gauss.nrpic.hst",
+    "gauss.z4c.user.hst",
+    "gauss_h0p5.json",
+    "gauss_h0p5.nrp"
+   ],
+   "differ": [],
+   "outer": [
+    17,
+    17
+   ],
+   "H_last": [
+    1.546631e-11,
+    1.546631e-11
+   ],
+   "far": null,
+   "dpsi_max": 0.0,
+   "u_max": 0.1896933612819296
+  },
+  "gauss_default": {
+   "identical": [
+    "gauss_h0p5.json",
+    "gauss_h0p5.nrp"
+   ],
+   "differ": [
+    "gauss.cstat.hst",
+    "gauss.field.00000.bin",
+    "gauss.idsolve.bin",
+    "gauss.idsolve.txt",
+    "gauss.nrpic.hst",
+    "gauss.z4c.user.hst"
+   ],
+   "outer": [
+    17,
+    17
+   ],
+   "H_last": [
+    1.546631e-11,
+    1.545951e-11
+   ],
+   "far": {
+    "M": 1.002542001904,
+    "P": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "J": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "dpsi_max": 9.699959280240478e-09,
+   "u_max": 0.1896933612819296
+  },
+  "gboost_robin": {
+   "identical": [
+    "boost.json",
+    "boost.nrp",
+    "gauss_h0p5.json",
+    "gauss_h0p5.nrp"
+   ],
+   "differ": [
+    "gboost.cstat.hst",
+    "gboost.field.00000.bin",
+    "gboost.idsolve.bin",
+    "gboost.idsolve.txt",
+    "gboost.idvector.bin",
+    "gboost.nrpic.hst",
+    "gboost.z4c.user.hst"
+   ],
+   "outer": [
+    17,
+    17
+   ],
+   "H_last": [
+    1.555342e-11,
+    1.572218e-11
+   ],
+   "far": null,
+   "dpsi_max": 5.995204332975845e-15,
+   "u_max": 0.19038347264285704,
+   "dW_rel_max": 5.141662432635992e-16
+  },
+  "gboost_default": {
+   "identical": [
+    "boost.json",
+    "boost.nrp",
+    "gauss_h0p5.json",
+    "gauss_h0p5.nrp"
+   ],
+   "differ": [
+    "gboost.cstat.hst",
+    "gboost.field.00000.bin",
+    "gboost.idsolve.bin",
+    "gboost.idsolve.txt",
+    "gboost.idvector.bin",
+    "gboost.nrpic.hst",
+    "gboost.z4c.user.hst"
+   ],
+   "outer": [
+    17,
+    17
+   ],
+   "H_last": [
+    1.555342e-11,
+    1.572633e-11
+   ],
+   "far": {
+    "M": 1.007893400561,
+    "P": [
+     0.1141047395755,
+     0.0,
+     0.0
+    ],
+    "J": [
+     0.0,
+     -1.280900286551e-17,
+     -5.872117843886e-18
+    ]
+   },
+   "dpsi_max": 1.4767900242684817e-06,
+   "u_max": 0.19038347264285704,
+   "dW_rel_max": 0.0026708311182121296
+  },
+  "ball_robin": {
+   "identical": [
+    "ball.cstat.hst",
+    "ball.field.00000.bin",
+    "ball.idsolve.bin",
+    "ball.idsolve.txt",
+    "ball.json",
+    "ball.nrp",
+    "ball.nrpic.hst",
+    "ball.tab",
+    "ball.z4c.user.hst"
+   ],
+   "differ": [],
+   "outer": [
+    25,
+    25
+   ],
+   "H_last": [
+    1.264399e-12,
+    1.264399e-12
+   ],
+   "far": null,
+   "dpsi_max": 0.0,
+   "u_max": 0.0004206823349629518
+  },
+  "ball_default": {
+   "identical": [
+    "ball.json",
+    "ball.nrp",
+    "ball.tab"
+   ],
+   "differ": [
+    "ball.cstat.hst",
+    "ball.field.00000.bin",
+    "ball.idsolve.bin",
+    "ball.idsolve.txt",
+    "ball.nrpic.hst",
+    "ball.z4c.user.hst"
+   ],
+   "outer": [
+    25,
+    25
+   ],
+   "H_last": [
+    1.264399e-12,
+    1.266104e-12
+   ],
+   "far": {
+    "M": 0.002111263925204,
+    "P": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "J": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "dpsi_max": 3.581852414669129e-08,
+   "u_max": 0.0004206823349629518
+  },
+  "torus_robin": {
+   "identical": [
+    "torus.cstat.hst",
+    "torus.field.00000.bin",
+    "torus.idsolve.bin",
+    "torus.idsolve.txt",
+    "torus.nrpic.hst",
+    "torus.z4c.user.hst",
+    "wave.json",
+    "wave.nrp"
+   ],
+   "differ": [],
+   "outer": [
+    23,
+    23
+   ],
+   "H_last": [
+    8.175061e-10,
+    8.175061e-10
+   ],
+   "far": null,
+   "dpsi_max": 0.0,
+   "u_max": 0.005444288212340664
+  },
+  "torus_default": {
+   "identical": [
+    "torus.cstat.hst",
+    "torus.field.00000.bin",
+    "torus.idsolve.bin",
+    "torus.idsolve.txt",
+    "torus.nrpic.hst",
+    "torus.z4c.user.hst",
+    "wave.json",
+    "wave.nrp"
+   ],
+   "differ": [],
+   "outer": [
+    23,
+    23
+   ],
+   "H_last": [
+    8.175061e-10,
+    8.175061e-10
+   ],
+   "far": null,
+   "dpsi_max": 0.0,
+   "u_max": 0.005444288212340664
+  }
+ },
+ "failed_cases": []
+}

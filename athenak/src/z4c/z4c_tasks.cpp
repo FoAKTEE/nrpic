@@ -284,6 +284,7 @@ TaskStatus Z4c::Prolongate(Driver *pdrive, int stage) {
     //         reads valid data in coarse ghost zones that sit at a physical boundary.
     if (!(pmy_pack->pmesh->strictly_periodic)) {
       pbval_u->Z4cBCsCoarse(pmy_pack, pbval_u->u_in, coarse_u0);
+      if (sbc.ghost_falloff) GhostFalloff(coarse_u0, true);  // z4c_bcs_falloff.cpp
     }
 
     // Note: FillCoarseInBndryCC is intentionally not called here. For Z4c the
@@ -308,6 +309,7 @@ TaskStatus Z4c::ApplyPhysicalBCs(Driver *pdrive, int stage) {
     //         so that the corner ghost zones between a coarse neighbor and a physical
     //         boundary read valid data.
     pbval_u->Z4cBCs((pmy_pack), (pbval_u->u_in), u0);
+    if (sbc.ghost_falloff) GhostFalloff(u0, false);  // z4c_bcs_falloff.cpp
 
     // user BCs
     if (pmy_pack->pmesh->pgen->user_bcs) {

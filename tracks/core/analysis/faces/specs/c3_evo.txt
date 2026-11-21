@@ -1,0 +1,2 @@
+# c3, residuals: the horizon proxy (faces at 16 M, refined regions inside 4 M) to t = 40, stock against the full set; no reference
+analyze_evo.py --family punc --case punc_sf_e2_h=/data/haiyangw/nrpic/scratch/core/core-20261119-161449-d22d256/punc_sf_e2_h --case punc_full_h=/data/haiyangw/nrpic/scratch/core/core-20261119-162245-b68f4a9/punc_full_h --out $OUT/results/c3_evo.json --fig $OUT/figs/c3_evo

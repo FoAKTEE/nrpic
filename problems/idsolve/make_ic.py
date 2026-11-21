@@ -21,6 +21,12 @@
         particle starts at the kink of the cloud-in-cell weight, and the deposited
         density has a jump of one cell where the displacement changes sign.
 
+    make_ic.py shell --mass 0.5 --r0 6 --width 1 --h 0.25 --out DIR
+        Particles at rest on the lattice (k + 1/2) h with masses Etilde(r) h^3 inside
+        |r - r0| <= ncut width, Etilde = A exp(-(r - r0)^2/(2 width^2)) the density per
+        coordinate volume with integral mass (the matter of a puncture test: a shell
+        about a puncture at the centre, whose regular part u of psi then solves the
+        radial equation lap u = -2 pi Etilde/(psi_s + u); --u sets u_x of every particle).
 Each call writes the particle file and a JSON file with the parameters.
 File formats: docs/FORMATS.md. Units G = c = 1.
 """
@@ -112,24 +118,116 @@ def cmd_boost(a):
     print("wrote %s.nrp: %d particles, sum m u_x = %.12g" % (stem, len(m), a.u*np.sum(m)))
 
 
-def cmd_wave(a):
-    h = a.box/(a.n*a.ppc)
-    c = (np.arange(a.n*a.ppc) + 0.5)*h
-    x, y, z = np.meshgrid(c, c, c, indexing="ij")
-    k = 2.0*np.pi/a.box
-    xd = x - (a.amp/k)*np.sin(k*x)
-    pos = np.stack([xd.ravel() % a.box, y.ravel(), z.ravel()], axis=1)
-    rho = 3.0*a.hubble**2/(8.0*np.pi)
-    m = np.full(len(pos), rho*h**3)
-    stem = a.prefix or ("wave_n%d" % a.n + ("_p%d" % a.ppc if a.ppc > 1 else ""))
+def cmd_shift(a):
+    x, u, m, sp = nio.read_nrp(a.inp)
+    x = np.array(x) + np.array(a.d)[None, :]
+    stem = a.prefix or (os.path.splitext(os.path.basename(a.inp))[0] + "_shift")
     os.makedirs(a.out, exist_ok=True)
-    nio.write_nrp(os.path.join(a.out, stem + ".nrp"), pos, np.zeros_like(pos), m)
-    meta = dict(kind="wave", n=a.n, ppc=a.ppc, box=a.box, hubble=a.hubble, amp=a.amp, k=k,
-                rho_mean=rho, N=int(len(m)), particle_file=stem + ".nrp")
+    nio.write_nrp(os.path.join(a.out, stem + ".nrp"), x, u, m, sp)
+    meta = dict(kind="shift", source=os.path.basename(a.inp), d=list(a.d), N=int(len(m)),
+                sum_m=float(np.sum(m)), sum_mu=[float(v) for v in (m[:, None]*u).sum(axis=0)],
+                particle_file=stem + ".nrp")
     with open(os.path.join(a.out, stem + ".json"), "w") as f:
         json.dump(meta, f, indent=1)
         f.write("\n")
-    print("wrote %s.nrp: %d particles, mean density %.12g" % (stem, len(m), rho))
+    print("wrote %s.nrp: %d particles" % (stem, len(m)))
+
+
+def cmd_zeldovich(a):
+    """Homogeneous Zel'dovich displacement of a ball in its growing mode: the Lagrangian
+    position q goes to x_i = (1 + e_i) q_i and the particle gets the peculiar momentum
+    u_i = H e_i q_i relative to the normal observers of the slice (physical displacement
+    times the Hubble rate: growth factor proportional to the scale factor in a matter era)."""
+    x, u, m, sp = nio.read_nrp(a.inp)
+    q = np.array(x)
+    e = np.array(a.strain if a.strain is not None else [a.e, 0.0, -a.e])
+    x = q*(1.0 + e)[None, :]
+    u = np.array(u) + a.hubble*e[None, :]*q
+    stem = a.prefix or (os.path.splitext(os.path.basename(a.inp))[0]
+                        + ("_z%g" % a.e).replace(".", "p"))
+    os.makedirs(a.out, exist_ok=True)
+    nio.write_nrp(os.path.join(a.out, stem + ".nrp"), x, u, m, sp)
+    meta = dict(kind="zeldovich", source=os.path.basename(a.inp), strain=[float(v) for v in e],
+                hubble=a.hubble, N=int(len(m)), sum_m=float(np.sum(m)),
+                sum_mu=[float(v) for v in (np.array(m)[:, None]*u).sum(axis=0)],
+                particle_file=stem + ".nrp")
+    with open(os.path.join(a.out, stem + ".json"), "w") as f:
+        json.dump(meta, f, indent=1)
+        f.write("\n")
+    print("wrote %s.nrp: %d particles, strain %s, max|u| = %.4g" %
+          (stem, len(m), e, np.abs(u).max()))
+
+
+def cmd_wave(a):
+    """Plane wave on the torus: lattice sites q displaced along x by -(A/k) sin(k q_x).
+    --ppc lattice sites per cell and direction; --nest lo hi: inside the Lagrangian cube
+    [lo, hi)^3 the lattice is twice finer and the masses eight times smaller (for a
+    refined region of the mesh); --velocity: the momentum of the growing mode,
+    u_x = H times the displacement."""
+    h = a.box/(a.n*a.ppc)
+    c = (np.arange(a.n*a.ppc) + 0.5)*h
+    x, y, z = np.meshgrid(c, c, c, indexing="ij")
+    q = np.stack([x.ravel(), y.ravel(), z.ravel()], axis=1)
+    rho = 3.0*a.hubble**2/(8.0*np.pi)
+    m = np.full(len(q), rho*h**3)
+    if a.nest is not None:
+        lo, hi = a.nest
+        inside = np.all((q >= lo) & (q < hi), axis=1)
+        nf = int(round((hi - lo)/(0.5*h)))
+        cf = lo + (np.arange(nf) + 0.5)*0.5*h
+        xf, yf, zf = np.meshgrid(cf, cf, cf, indexing="ij")
+        qf = np.stack([xf.ravel(), yf.ravel(), zf.ravel()], axis=1)
+        q = np.concatenate([q[~inside], qf])
+        m = np.concatenate([m[~inside], np.full(len(qf), rho*h**3/8.0)])
+    k = 2.0*np.pi/a.box
+    disp = -(a.amp/k)*np.sin(k*q[:, 0])
+    pos = np.array(q)
+    pos[:, 0] = (q[:, 0] + disp) % a.box
+    u = np.zeros_like(pos)
+    if a.velocity:
+        u[:, 0] = a.hubble*disp
+    stem = a.prefix or ("wave_n%d" % a.n + ("_p%d" % a.ppc if a.ppc > 1 else ""))
+    os.makedirs(a.out, exist_ok=True)
+    nio.write_nrp(os.path.join(a.out, stem + ".nrp"), pos, u, m)
+    meta = dict(kind="wave", n=a.n, ppc=a.ppc, box=a.box, hubble=a.hubble, amp=a.amp, k=k,
+                rho_mean=rho, N=int(len(m)), particle_file=stem + ".nrp",
+                nest=list(a.nest) if a.nest is not None else None, velocity=bool(a.velocity),
+                sum_m=float(m.sum()), sum_mu_x=float((m*u[:, 0]).sum()))
+    with open(os.path.join(a.out, stem + ".json"), "w") as f:
+        json.dump(meta, f, indent=1)
+        f.write("\n")
+    print("wrote %s.nrp: %d particles, mean density %.12g" % (stem, len(m),
+                                                             m.sum()/a.box**3))
+
+
+def shell_profile(r, mass, r0, width):
+    """Etilde(r) of the shell, normalised to the given mass (radial integral)."""
+    rr = np.linspace(max(r0 - 12.0*width, 0.0), r0 + 12.0*width, 200001)
+    norm = np.trapezoid(4.0*np.pi*rr**2*np.exp(-0.5*((rr - r0)/width)**2), rr)
+    return mass*np.exp(-0.5*((np.asarray(r) - r0)/width)**2)/norm
+
+
+def cmd_shell(a):
+    lo, hi = max(a.r0 - a.ncut*a.width, 0.0), a.r0 + a.ncut*a.width
+    n = int(np.ceil(hi/a.h))
+    c = (np.arange(-n, n) + 0.5)*a.h
+    x, y, z = np.meshgrid(c, c, c, indexing="ij")
+    r = np.sqrt(x*x + y*y + z*z).ravel()
+    keep = (r >= lo) & (r <= hi)
+    pos = np.stack([x.ravel()[keep], y.ravel()[keep], z.ravel()[keep]], axis=1)
+    m = shell_profile(r[keep], a.mass, a.r0, a.width)*a.h**3
+    vel = np.zeros_like(pos)
+    vel[:, 0] = a.u
+    stem = (a.prefix or "shell_h%g" % a.h).replace(".", "p")
+    os.makedirs(a.out, exist_ok=True)
+    nio.write_nrp(os.path.join(a.out, stem + ".nrp"), pos, vel, m)
+    meta = dict(kind="shell", mass=a.mass, r0=a.r0, width=a.width, ncut=a.ncut, h=a.h,
+                u_x=a.u, N=int(len(m)), sum_m=float(m.sum()),
+                sum_mu_x=float(a.u*m.sum()), particle_file=stem + ".nrp")
+    with open(os.path.join(a.out, stem + ".json"), "w") as f:
+        json.dump(meta, f, indent=1)
+        f.write("\n")
+    print("wrote %s.nrp: %d particles, sum m = %.12g" % (stem, len(m), m.sum()))
 
 
 def main(argv=None):
@@ -156,15 +254,43 @@ def main(argv=None):
     b.add_argument("--out", default=".")
     b.add_argument("--prefix", default=None)
     b.set_defaults(func=cmd_boost)
+    sh = sub.add_parser("shift", help="a copy with every position displaced")
+    sh.add_argument("--in", dest="inp", required=True)
+    sh.add_argument("--d", type=float, nargs=3, required=True)
+    sh.add_argument("--out", default=".")
+    sh.add_argument("--prefix", default=None)
+    sh.set_defaults(func=cmd_shift)
+    z = sub.add_parser("zeldovich", help="triaxial Zel'dovich displacement with its momenta")
+    z.add_argument("--in", dest="inp", required=True)
+    z.add_argument("--e", type=float, default=0.05, help="strain (e, 0, -e)")
+    z.add_argument("--strain", type=float, nargs=3, default=None, help="strain per axis")
+    z.add_argument("--hubble", type=float, required=True, help="Hubble rate of the ball")
+    z.add_argument("--out", default=".")
+    z.add_argument("--prefix", default=None)
+    z.set_defaults(func=cmd_zeldovich)
     w = sub.add_parser("wave")
     w.add_argument("--n", type=int, required=True)
     w.add_argument("--box", type=float, default=2.0)
     w.add_argument("--hubble", type=float, default=1.0)
     w.add_argument("--amp", type=float, default=0.1)
     w.add_argument("--ppc", type=int, default=1, help="lattice sites per cell and direction")
+    w.add_argument("--nest", type=float, nargs=2, default=None,
+                   help="Lagrangian cube [lo, hi)^3 with a lattice twice finer")
+    w.add_argument("--velocity", action="store_true",
+                   help="momentum of the growing mode, u_x = H times the displacement")
     w.add_argument("--out", default=".")
     w.add_argument("--prefix", default=None)
     w.set_defaults(func=cmd_wave)
+    sl = sub.add_parser("shell", help="a spherical Gaussian shell of particles")
+    sl.add_argument("--mass", type=float, default=0.5, help="integral of Etilde")
+    sl.add_argument("--r0", type=float, default=6.0)
+    sl.add_argument("--width", type=float, default=1.0)
+    sl.add_argument("--ncut", type=float, default=5.0, help="half-thickness in widths")
+    sl.add_argument("--h", type=float, required=True, help="lattice spacing")
+    sl.add_argument("--u", type=float, default=0.0, help="covariant u_x of every particle")
+    sl.add_argument("--out", default=".")
+    sl.add_argument("--prefix", default=None)
+    sl.set_defaults(func=cmd_shell)
     a = p.parse_args(argv)
     a.func(a)
     return 0

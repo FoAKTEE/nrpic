@@ -1,0 +1,112 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-081236-84b1a29",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "faces t1b: vacuum puncture with a refined region touching the +x outflow face, 8 steps, stock against the full set (no damping), executable of f6f9a0d",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    ".venv/bin/python",
+    "tracks/core/analysis/faces/run_set.py",
+    "tracks/core/analysis/faces/plans/t1b_smrface.json",
+    "--jobs",
+    "2"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "84b1a291a9c5be16717d0404bde24527225f1a0e",
+    "branch": "core/z4c-faces",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/faces"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "9f7f85be88920e6e712b4285d3cd6558b6d1827f",
+    "worktree": "wt/core-faces"
+  },
+  "code": {
+    "core_tag": "core-v0.5",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "fe2d5333e70ee5ad6567152e8950edfb4ee7073f15ceb5a81e06139bca8a75c5",
+    "machine_file_sha256": "ff43e1ea60c663b4f58c82e24e881f01f64f6d134930f4450f711f6fb409e69b",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-faces/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": ".work/exe/sbc5/athena_cpu",
+      "role": "input",
+      "sha256": "25438222e4cc9a5c1117bebf444df421dd87dc5aceec0385cbb88b8d38c7544c",
+      "bytes": 261993416,
+      "tracked": false
+    },
+    {
+      "path": "tracks/core/analysis/faces/run_set.py",
+      "role": "argv",
+      "sha256": "0c301efbe1609ab32d6d6a2a79a758e26d96280db144440586934cef3c653365",
+      "bytes": 4203,
+      "tracked": true
+    },
+    {
+      "path": "tracks/core/analysis/faces/plans/t1b_smrface.json",
+      "role": "argv",
+      "sha256": "c51d04c7a63607f5c58071c01cd75d537c82310ddf9136d8dd0ede0cae0a44ec",
+      "bytes": 796,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": 92.063,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-081236-84b1a29",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "a459054b50fd67161b320e2f771a7c5e86565e75c0998f2c1548e3b2431d4fd9",
+    "bytes": 97366625,
+    "files": 22
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-21T08:12:46Z",
+  "started": "2026-11-21T08:12:46Z",
+  "ended": "2026-11-21T08:14:18Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 6.0704,
+    "gpu_hours_reserved": 0.72,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 7,
+    "runs": 1393,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-21T08:14:18Z"
+}

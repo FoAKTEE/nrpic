@@ -1,0 +1,31 @@
+{
+ "run": "core-20261121-081010-968d6d6",
+ "exe": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/exe_395e17d/athena_cpu",
+ "old_exe": "/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/exe_76add0c/athena_cpu",
+ "cases": {
+  "c923762__w1_far_n128": {
+   "kind": "same",
+   "old": "/data/haiyangw/nrpic/scratch/core/core-20261119-155750-c923762/w1_far_n128",
+   "exit": 0,
+   "wall_s": 723.3,
+   "old_exe_in_log": true,
+   "identical": [
+    "boost.json",
+    "boost.nrp",
+    "gauss_h0p125.json",
+    "gauss_h0p125.nrp",
+    "gboost.cstat.hst",
+    "gboost.field.00000.bin",
+    "gboost.idsolve.bin",
+    "gboost.idsolve.txt",
+    "gboost.idvector.bin",
+    "gboost.nrpic.hst",
+    "gboost.z4c.user.hst",
+    "in.athinput"
+   ],
+   "differ": []
+  }
+ },
+ "changed": {},
+ "all_same_identical": true
+}

@@ -1,0 +1,10 @@
+{"exe": ".work/build_cpu/src/athena",
+ "ball": {"M": 0.5, "Rb": 6, "edge": 1.5, "h": 0.5},
+ "cases": {
+  "ball__new": {"input": "inputs/ball.athinput", "args": ["time/nlim=8"]},
+  "ball__rel": {"input": "inputs/ball.athinput", "args": ["time/nlim=8"], "exe": "../../.work/build_cpu_v03/src/athena"},
+  "punc__new": {"input": "inputs/punc.athinput", "args": ["time/nlim=4"]},
+  "punc__rel": {"input": "inputs/punc.athinput", "args": ["time/nlim=4"], "exe": "../../.work/build_cpu_v03/src/athena"},
+  "boost__new": {"input": "inputs/punc.athinput", "args": ["time/nlim=4", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"]},
+  "boost__rel": {"input": "inputs/punc.athinput", "args": ["time/nlim=4", "problem/comp0_p1=0.3", "problem/comp0_corr=approx"], "exe": "../../.work/build_cpu_v03/src/athena"}
+ }}

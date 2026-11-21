@@ -12,8 +12,8 @@ the periodic box (decisions 0013, 0016 item 5). Triage of the track's requests:
 
 Published executables: `scratch/core/exe/core_cosmo-amr/` (`athena_cpu`, `athena_gpu`,
 `COMMIT`, `SHA256SUMS`, `READY`): source 1548d49 since 2026-11-21; the processor
-executable is tested, the card executable has not run on a card yet (T14b pending,
-section 4.6). The executables of the first publication (source 3c44b74, card-tested in
+executable is tested; the card executable passed its card check (T14b, section 4.6,
+judged by the lead of core on 2026-11-21). The executables of the first publication (source 3c44b74, card-tested in
 T14, with the defect of section 2.2) are kept in the subdirectory `3c44b74/`.
 
 Every new option is read only if it is present in the input; without them the executable
@@ -396,7 +396,7 @@ published on 2026-11-21 03:54 UTC as `scratch/core/exe/core_cosmo-amr/athena_cpu
 | T9b, T18b | T9 with NEW2; bytes against T9 | `-031701-cff3117`, `-032213-1d17e30` | MeshBlock histories, particle number, rest mass, identity (3.2e-14) as T9; largest relative H after the regrid 0.0125 with fine shape (first-order form of T9: 0.0116), 0.0072 with the uniform spreading; the uniform-spreading and the release case byte-identical to T9 |
 | T10f | case a5 of T10e with NEW2 | `core-20261121-030904-1548d49` (analysis `-035043-d2a3257`, figure `fig_t10f_compare`) | no jump: 0.0091, 0.0096, 0.0101 at the three cycles (largest cycle-to-cycle factor of |H| after the regrid 1.19; first-order form 4.6); largest relative H to t = 3.5: 0.036 (first-order form 0.169, uniform spreading 0.039, no refinement 0.020); |H|_2/|16 pi E|_2 inside r = 2.45 at t = 3.5: 0.0117 (0.041, 0.0116, 0.0073) |
 | T10c | the last stretch of the scouting run again, from its restart file at t = 10, with four finder surfaces that can flow; card, published card executable of 3c44b74 | `core-20261121-025527-eb8e6b7` (Slurm job 4755, 264 s; analysis `-032345-839e721`) | section 7 |
-| T14b | card check of the card executable of 1548d49 on the decks of T2b (U, S, Sf, A, M, G) and T9b (ladder) | `core-20261121-033223-e1d596b` (Slurm job 4763, with T10g; the first submission `core-20261121-032510-c83f904`, job 4760, was withdrawn before it started) | **PENDING**: the job had not started when the package was closed (2026-11-21 04:00 UTC; the queue gave 06:15 UTC). Until it is judged the card executable of 1548d49 has not run on a card |
+| T14b | card check of the card executable of 1548d49 on the decks of T2b (U, S, Sf, A, M, G) and T9b (ladder) | `core-20261121-033223-e1d596b` (Slurm job 4763, with T10g; the first submission `core-20261121-032510-c83f904`, job 4760, was withdrawn before it started) | PASS (judged by the lead of core: U, S, A, M, G, ladder in core-20261121-063923-5ed0a51; Sf in core-20261121-075446-4944747, uniform to 2.3e-14, alpha_max to 1.1e-15 of the processor run; section 9) |
 
 ## 5. Predictions that failed (details in the journal)
 
@@ -595,7 +595,8 @@ the finder of this package searches and converges in a periodic adaptive run, ha
 time unit before the fields fail, at the two lapse minima on the y axis and not at the
 centre. They are not evidence of a black hole.
 
-**T10g, the scouting run again with the corrected deposit: PENDING** (run
+**T10g, the scouting run again with the corrected deposit** (outcome at the end of this
+section; run
 core-20261121-033223-e1d596b, Slurm job 4763, 0.2 card-hours asked together with T14b;
 the queue gave 2026-11-21 06:15 UTC as its start when the package was closed). Deck
 `tracks/core/analysis/cosmo_amr/t10g_scout.athinput`: T10b's with the card executable of
@@ -608,6 +609,19 @@ to be compared with the histories of T2b's Sf by hand); `t10_scout.py` and `t10c
 scratch/core/core-20261120-220816-09f6f79/s1amr` for T10g. Card time of the package so
 far: 0.153 of the one card-hour (T14 11 s, T10 3 s, T10d 20 s, T10b 244 s, T10c 264 s).
 
+**T10g outcome** (lead of core, 2026-11-21; journal entry of 08:05; analyses
+core-20261121-075138-9b502d7 and core-20261121-075143-de83e49) [VERIFIED]: the jump of
+T10b at t = 3.06 is absent (largest relative constraint 0.055 at t = 4.9 against 0.26);
+the mesh refines at the times of T10b (levels at 2.21, 7.58, 8.73, 9.58), at most 1464
+MeshBlocks, 77.4 GB of card memory; the finders on the y axis find surfaces from
+t = 11.634 to 12.466 (area mass 0.779 rising to 0.839), the central ones none; the guard
+stops the run at t = 12.504, 0.73 later than T10b, with chi <= 0 in 91 per cent of the
+cells at once; negative leaf-cell E down to 3.6 per cent of E_max (T10b 5.3). Two of five
+predictions failed as written (the end 0.004 past the bound 12.5; the depth of negative
+E above 3 per cent); where the failure began is not readable from the guard's file (the
+first cell in loop order). The surfaces are not evidence of a black hole (the centre
+violates the Hamiltonian constraint at order one from t = 10).
+
 ## 8. Not done, limits, open points
 
 - Refinement levels do not sub-cycle in time (A2-6): one global step.
@@ -616,9 +630,8 @@ far: 0.153 of the one card-hour (T14 11 s, T10 3 s, T10d 20 s, T10b 244 s, T10c 
   The leading inconsistency on refined levels of the track's present data.
 - Negative leaf-cell E with `deposit_fine_shape` in sparse regions (section 2.2); no
   limiter exists.
-- The card executable of source 1548d49 has not run on a card, and the scouting run has
-  not been repeated with the corrected deposit: T14b and T10g, one pending job (section
-  7). T10b's history after t = 2.9 carries the defect of the first-order form.
+- T10b's history after t = 2.9 carries the defect of the first-order form; T10g repeats
+  it with the corrected deposit (section 7).
 - After the first regrid of the S1 run both spreadings leave the largest relative
   constraint at about twice the unrefined run (0.036, 0.039 against 0.020 at t = 3.5,
   T10f); not separated further.
@@ -670,9 +683,9 @@ Merged into `core/nrpic` as e103b3e3 (source 1548d49); executables of the releas
   of the prediction held (homogeneous cases uniform to 1.1e-13, alpha_max equal to the
   processor runs to 1.8e-15, the tracker within 4.4e-16, the ladder with the same
   MeshBlock counts, identity 2.2e-16, Hr_max within 9.2e-12; the guard case stopped at
-  cycle 16 against 18, status 3). Sf is not judged by the script. T10g of the same job
-  ended with the guard at t = 12.504 ("conformal factor chi not positive"); it is not
-  judged here.
+  cycle 16 against 18, status 3). Sf, judged afterwards with the same measures
+  (`t14b_sf.py`, run core-20261121-075446-4944747): every bound held. T10g of the same
+  job: section 7, end.
 - The merged serial executable gives the bytes of this package's executable on
   `flrw_tracker.athinput` (12 steps) and on the ladder case of T9 (10 steps), run
   core-20261121-065009-29b855c.
