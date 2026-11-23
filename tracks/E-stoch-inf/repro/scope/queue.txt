@@ -1,0 +1,14 @@
+# Queue of the repro/scope sequencer (scripts/sequencer.sh, a copy of g2prod/scripts/sequencer.sh with
+# a deck or list per line). One run per line:
+#   <label> <gpu-hours ceiling> <chain|batch> <deck or list> <purpose>|<athena args>
+# Release card build core-v0.6 (.work/build_gpu_v06/src/athena), kind production, gate G2, predictions
+# JOURNAL.md entry 1 (written before the first submission). Lines run in order; at most two card jobs of
+# owner E eligible at a time (the lead's jobs count). Card plan and actual costs: CARD_PLAN.md.
+SMALL 0.5 batch tracks/E-stoch-inf/repro/scope/inputs/small.list Fig. 1 at 64 cells (both cases, k_max = 16 dk) and the convergence rungs N = 32, 64, 128 (k_max/dk = 8, both cases)|
+USF256 1.97 chain tracks/E-stoch-inf/repro/scope/inputs/usr_paper.athinput USR 256^3 as in the paper, seed A, s=+1, level 0, 41 dumps with metric, H, M_i, [H], [M] (Figs. 4, 5, 6b)|
+RSF256 1.97 chain tracks/E-stoch-inf/repro/scope/inputs/sr_paper.athinput SR 256^3 as in the paper, seed A, s=+1, level 0, 35 dumps with metric, H, M_i, [H], [M] (Figs. 2, 3, 6a)|
+UL1 1.97 chain tracks/E-stoch-inf/repro/scope/inputs/usr_paper.athinput USR 256^3 ablation, backreaction level 1 (box means), seed A (Fig. 9)|scalar_field/noise_level=1 scalar_field/dump_constraints=false scalar_field/dump_magnitudes=false scalar_field/dump_dt=0.5218754437032825
+RL1 1.97 chain tracks/E-stoch-inf/repro/scope/inputs/sr_paper.athinput SR 256^3 ablation, backreaction level 1 (box means), seed A (Fig. 9)|scalar_field/noise_level=1 scalar_field/dump_constraints=false scalar_field/dump_magnitudes=false scalar_field/dump_dt=0.5
+RNC256 0.98 chain tracks/E-stoch-inf/repro/scope/inputs/sr_paper.athinput SR 256^3 sign-flip control (noise_pi_sign = -1) to the end of the entry, seed A (P1:541)|scalar_field/noise_pi_sign=-1.0 time/tlim=4.5 scalar_field/dump_metric=false scalar_field/dump_dt=0.5
+CL256U 1.97 chain tracks/E-stoch-inf/repro/scope/inputs/usr_paper.athinput USR 256^3 convergence rung k_max/dk = 8 (nmax2 = 64), seed A (Fig. 8b)|scalar_field/noise_nmax2=64 scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n64.txt scalar_field/dump_metric=false scalar_field/dump_magnitudes=false scalar_field/dump_dt=0.5218754437032825
+CL256S 1.97 chain tracks/E-stoch-inf/repro/scope/inputs/sr_paper.athinput SR 256^3 convergence rung k_max/dk = 8 (nmax2 = 64) to N_f, seed A (Figs. 7, 8a)|scalar_field/noise_nmax2=64 scalar_field/noise_mode_file=/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/inputs/modes_n64.txt scalar_field/dump_constraints=false scalar_field/dump_magnitudes=false scalar_field/dump_dt=0.5
