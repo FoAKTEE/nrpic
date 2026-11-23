@@ -130,3 +130,34 @@ entry 1; nothing is changed here. How each is read (written before the analyses)
   digit for digit. G1 reservation 2 ("no release card build has repeated the 256-cell run")
   is answered: the release card build core-v0.6 repeats it. Figure `fig_g2_p256v6.png` (looked
   at; the top panel plots the zero differences at the 1e-18 floor).
+
+### 2.2 Outcomes U320ap/am and U256bp/bm (analyses E-20261123-020751-0baf597, E-20261123-021730-a421438)
+
+Analysis defects of this session, on record: (i) E-20261123-015650-493cff5 FAILED: with one
+dump only, analyse_cards' constraint part reduced an empty array; the --last mode now keeps the
+dumps at N* and N_f. (ii) E-20261123-014905-2bf3570 (seed B, all 21 dumps) referred the runs to
+seed A's realisation alpha_n (analyse_cards has no seed option): its per-mode numbers (D_n 241,
+U-A3 0.03-46) are INVALID; its seed-independent numbers (records, one-point moments of R^NR,
+even/odd rms) stand. The second pass with --seed 20261116 at N* and N_f is the one judged.
+
+- U320ap/am (seed A, 320^3, 1.47 + 1.48 card-hours, two segments each, no outside kill):
+  odd-part max D_n (k <= 32 dk) at N_f = 5.18e-5. Predicted [2.4e-5, 4.6e-5] (factor 2.4-4.5
+  below 256^3): the band FAILED; the factor against the 256^3 pair is 2.10 (1.087e-4 / 5.18e-5,
+  release seed-A value from 2.3 below; 2.10 against the scouting 1.089e-4). Not refuted by the
+  stated rule (factor in 2.0-4.5) and U-R (i) holds, with little margin. Observation (figure
+  `fig_card_u256_modes.png` of the 320 analysis, looked at): the odd-part shell maximum is flat
+  at about 4.2e-5 for |n| < 30 at 320^3, and the median D_n barely moves (4.19e-5 at 256^3,
+  4.08e-5 at 320^3): a part of the per-mode error that does not fall with N at fixed Courant
+  (both dt and dx shrink) sets the k <= 32 maximum; cause NOT named (no run yet in which a
+  candidate could have failed; the halving pair in 2.3 tests whether it depends on s).
+  Top shell: all modes to 64 dk max 1.55e-3 (256^3: 4.5e-3); lockstep record at N_f 1.0465e-3
+  against the predicted 2.55e-3 x (256/320)^4 = 1.04e-3 +- 10 percent: HELD (RK4 phase error
+  k^5 dt^4/600). Even/odd rms (k <= 32) 2.53322e-4 against 2.53350e-4 at 256^3 (1.1e-4
+  relative; predicted +- 5 percent): HELD. U-A0 6.6e-10 in N, U-A1 4.17e-5, U-A3 single run
+  0.99230-1.00161 (ap) and 0.99823-1.00757 (am), odd pair 0.99992: pass.
+- U256bp/bm (seed B, 0.62 card-hours each): U-A2' max D_n (k <= 32 dk) = 1.087e-4 (predicted
+  <= 2e-4): HELD; all modes 4.51e-3; U-A3 single runs 0.9968-1.0019 (bp), 0.9980-1.0031 (bm),
+  within 2 percent: HELD; one-point rms of R^NR at N_f 0.894109 and 0.894108 against the
+  lattice value 0.89366 (difference 4.5e-4, bar 5e-3): HELD; skewness 0.0042 and -0.0012
+  (|.| < 0.01): HELD. Even/odd rms 2.5348e-4. U-A0 1.6e-9, U-A1 4.17e-5. Figures of both passes
+  looked at (one-point histogram Gaussian over 10 decades; slice).
