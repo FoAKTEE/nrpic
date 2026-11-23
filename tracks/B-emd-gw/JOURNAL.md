@@ -273,3 +273,35 @@ changed my mind about: J3 to a = 51 only: with card time free (0025) the 128^3 l
 a = 1001, which tests PB3 over the whole expansion.
 open: analyse flrw_conv, shear, population runs (HANDOFF); orch's review of G1.
 Card-hours this session: none used yet; queued about 4.5 (J2, J3, two population runs).
+
+## 2026-11-23T01:45Z  lead batch 10a (wave 3, analysis round)  commits f295ab46..  runs B-20261123-015452-18d2956, -015919-dec4392; submitted -014847-f295ab4, -014850-7b7d986, -015905-7a30278
+
+plan: read the card runs queued on 2026-11-21 (J3 of flrw_conv; the population GR run), find
+why no job of B had been submitted since 22:23, add the 128-cell member to flrw_conv and judge
+G2 criterion (a), summarise the shear series against P4-P12, queue follow-ups, start the G2
+package, rerun stage verify for G1.
+predictions written before runs: population R1-R3 (re-solve of the 0.028 data) and the outcome
+of step 1 (population/JOURNAL.md 2026-11-22 17:48); flrw_conv J4a-c (entry 13). The flrw_conv
+128-cell and shear outcomes were judged against predictions written in earlier sessions
+(flrw_conv entries 1, 4, 9; shear 2026-11-20 22:30).
+found: (1) The sequencer was alive but waiting without a log line: pop_s028_gr needed an outer
+change of psi below 1e-7 and the 0.028 data ended the 18 fixed outer iterations at 3.25e-7;
+card entries go in file order, so pop_s014_gr (data converged at 7.3e-8) waited behind it.
+Corrected: pop_s014_gr submitted 17:48 (Slurm 4921), a 36-iteration re-solve of the 0.028
+data running, pop_s028_gr behind it; the sequencer logs 'waiting:' lines now (stopped with
+STOP, file changed, restarted). (2) flrw_conv J3 (2.00 card-h): growth-rate plateau 2.8e-8 at
+128 cells (x10.9 from 64), largest |f - f_ref| 5.0e-6, all in the first e-fold; amplitude
+floor 1.83e-6; G2 criterion (a) met at 16-128 cells. (3) shear series 1: S1, S2, S4 converge
+at order 2.1-3.8 to within 1e-5 of linear; M1 -3.4e-4 and L1 -5.0e-3 inside the paper's
+bounds; P5, P6, P11 met.
+failed: population step 1 "outer change below 1e-9" (3.25e-7 at 0.028, 7.3e-8 at 0.014);
+flrw_conv J3 "|e_D| at 128 at most a quarter of 64" (final); shear P4 Hamiltonian order
+(8.5, 14.3 < 16), P7 order for S3 (non-monotone), P8 sign of M2 (+3.45e-3), P12 convergence
+for S2, S3, S4 (means rise with N_y at HL = 1/16, 1/128); not judged: shear L2 (ray analysis
+NaN) and P10 (guard stop). No new failed run.
+changed my mind about: placing a card entry whose inputs may not converge ahead of others in a
+file-order queue; such entries go last or carry an alternative.
+open: pop_s014_gr, J4, the 0.028 re-solve and pop_s028_gr (HANDOFF); shear L2, f = 1, S3;
+G2 products (stage/G2/OPEN.md).
+Card-hours this session: none run; submitted pop_s014_gr (ceiling 3, expected 0.2-0.6) and J4
+(ceiling 1, expected 0.4). Toward G2 so far 2.68 used.

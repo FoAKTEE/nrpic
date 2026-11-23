@@ -243,3 +243,22 @@ With this and the v3 corrections of verifier3 and verifier_c18 (rows 101, 118, 1
 the (1 + eps^2) sentence with a new ledger row; run B-20261121-202758-544416e), item C18 is
 PASS and nothing owed by the gate remains (stage/G1/OPEN.md).
 
+
+## Batch 10a (2026-11-22, lead): card runs after 2026-11-21
+
+No helper ran in this batch; the lead read the runs itself, from the registered outputs, with
+figures looked at.
+
+- flrw_conv J3 (B-20261121-202335-3e6a898, 128 cells to a = 1000, 2.00 card-h): confirmed from
+  the output with the package's own analysis rerun (B-20261123-015452-18d2956); the 16-64 rows
+  repeat the batch-6 analysis digit for digit. Outcome: G2 criterion (a) met at 16-128 cells;
+  the entry-4 prediction "|e_D| at 128 at most a quarter of 64" fails (1.83e-6 against
+  1.37e-6), floor attributed to the start step from 32-cell runs, J4 queued to test it at 128.
+  Not confirmed: the cause of Hr growing about as N^2 with the mesh.
+- shear series 1 (B-20261121-202830-417af0c): summary written and run by the lead
+  (B-20261123-015919-dec4392). Confirmed: P5, P6, P11, P7 for S1, S2, S4, M1 and L1 inside the
+  paper's bounds. Wrong against prediction: P4 Hamiltonian order (8.5, 14.3), S3 order, M2 sign,
+  P12 convergence at small HL. Not judged: L2 (analysis NaN), P10 (guard stop).
+- population: no GR run had been submitted. Cause found in the queue (silent wait on the 0.028
+  data's outer tolerance, card entries in file order); corrected, pop_s014_gr on the cards.
+  Defect of the sequencer (no log line while an entry waits) corrected in cards/sequencer.py.

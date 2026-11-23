@@ -1,36 +1,34 @@
 # STATUS of B-emd-gw
 
-gate:        G0 PASS (signed 2026-11-19, tag stage/B-emd-gw/G0-pass-20261119). G1 package
-             complete for the independent review in the lead's judgement (batch 5): criteria 1
-             and 2 met, 3 struck (0013), C18 PASS after verifier_c18b, note v3 corrections made;
-             verify FAILs only on four G2 runs in flight (STAGE_REPORT.md, lead's assessment)
-headline:    Both GW diagnostics recover oblique flat waves and a tensor mode of the expanding
-             matter-era box with the errors the code's stencils predict; the first source follows
-             its second-order strain and converges before shell crossing; every ledger number is
-             now recomputed by an agent that did not produce it
-last-result: lead batch 5: verifier_c18b checked from the artefacts (line 59: 0.00751 and
-             0.00254 over all records, the printed values are the five-dump maxima; run
-             B-20261121-203426-ea1e945); ledger rows 34, 56, 59, 63, 101, 118, 125, 168, 197
-             reworded and a (1 + eps^2) row added (ledger run B-20261121-203254-928275f);
-             shear smoke run met (Delta = -6.3e-5 at S1, N_y = 32; B-20261121-202359-d12511c)
-running:     card: flrw_conv J3 = B-20261121-202335-3e6a898 (Slurm 4825 running since 12:44,
-             chain, 128^3 to a = 1001, v0.3 exe). Done: J2 = B-20261121-202304-dc3020e (0.35
-             card-h, exit 0, closed); shear series 1 = -202830-417af0c (closed, 26 of 27 cases
-             ran; the f = 1 lapse leg stopped). processors: population initial data sigma1 =
-             0.028 = B-20261121-202946-ec4a156 (outer iteration 9 at 12:56). The sequencer (pid
-             in scratch/B-emd-gw/sequencer/pid) then submits the population GR chains
-next:        1. analyse flrw_conv J1, P1, J2, J3 against PF1-PF6, PB1-PB5 (G2 criterion a)
-             2. shear: summary script (Richardson per case, figures), outcomes P4-P12; the f = 1
-                lapse leg stopped at t = 0.578 (guard, non-finite Khat): find the cause
-             3. population: read the first full-GR box (predictions G1-G4 of its journal)
-blockers:    none for G1; G2 legs wait on their runs
-needs:       orch: independent review of G1 (outbox 20261121T*__to-orch__g1-package-complete);
-             core: insitu-fourier-modes (accepted as W18, no branch; needed for 256^3 science
-             runs); kb: claim-2312-12499-delta-factor (waits for kb's claims package)
-offers:      gw_diag (TT, rho_K, spectra, helicity, E/B/Psi_4; binio single and double
-             precision; gauge G_tot); waves/wlib (exact oblique flat wave and matter-era tensor
-             mode); first_source tools; cards/sequencer.py (a queue that keeps at most two card
-             jobs of an owner eligible and closes ended runs); all on track/B-emd-gw
-budget:      card-hours 2.51 of 40 before this session; this session 0.35 (J2) so far;
-             queued about 4 more against G2 (J3 2.4-3.1, population 0.2-0.6 each, two
-             amplitudes); announced here, below the 8 card-h note of decision 0014
+gate:        G0 PASS (2026-11-19), G1 PASS with reservations (2026-11-21, tag
+             stage/B-emd-gw/G1-pass-20261121). G2 package started (batch 10a): C4, C7, C12, C19,
+             C20 PASS, C8 NA (0013), the rest OPEN (stage/G2/OPEN.md). G2 not met.
+headline:    The particle FLRW run in full GR reaches the sub-percent level and converges in mesh
+             (16-128 cells) and particle number (1-27 per cell): growth-rate error 5e-6 at most,
+             its plateau 2.8e-8 at 128 cells; floor 2e-6 in the amplitude from the start step
+last-result: batch 10a (lead, 2026-11-22): flrw_conv closed with the 128-cell member
+             (J3 B-20261121-202335-3e6a898, analysis B-20261123-015452-18d2956): G2 criterion (a)
+             met; shear series 1 judged (B-20261123-015919-dec4392): S1-S4 within 1e-5 of linear
+             after extrapolation, M1 and L1 inside the paper's bounds, M2 opposite sign to the
+             prediction, L2 and the f = 1 leg without result; population: the GR run had never
+             been submitted (sequencer waited silently on unconverged 0.028 data, queue in file
+             order); corrected, pop_s014_gr on the cards
+running:     card: pop_s014_gr = B-20261123-014847-f295ab4 (Slurm 4921, chain, v0.6, 128^3 L = 8
+             to a = 143); J4 = B-20261123-015905-7a30278 (Slurm 4922, batch, v0.3, 128-cell step
+             test). processors: re-solve of the 0.028 data = B-20261123-014850-7b7d986 (36 outer
+             iterations, 2 cores, about 75 min). Behind them in the queue: pop_s028_gr. Sequencer
+             pid 2942856 (scratch/B-emd-gw/sequencer/), restarted 17:54 with 'waiting:' log lines.
+             stage verify G1 and G2 in the background (logs scratch/B-emd-gw/tmp/verify_*_20261122.log)
+next:        1. read pop_s014_gr when it ends: predictions G1-G4 (population/JOURNAL.md), halo
+                finder, TT strain from the double dumps, against Newtonian fidL8 and DESIGN.md
+             2. read J4 against J4a-c (flrw_conv entry 13); R1-R3 of the 0.028 re-solve
+             3. shear: L2 fan (NaN arrival), the f = 1 guard stop, S3 at N_y = 256 (processors)
+blockers:    none; G2 needs the population comparison, shear L2, a gauge leg, package products
+needs:       orch: nothing to decide (outbox population-run-on-the-cards, info). core:
+             insitu-fourier-modes (W18, accepted, no branch; needed for 256^3 runs). kb: claim
+             861 recorded (2312.12499 factor 3), used as [TO VERIFY]
+offers:      gw_diag (TT, rho_K, spectra, helicity, E/B/Psi_4; binio; gauge G_tot); waves/wlib;
+             first_source tools; flrw_conv analysis (analyze_f/b/step); shear summary script;
+             cards/sequencer.py (queue with 'waiting:' log lines)
+budget:      card-hours toward G2: 2.68 used (J2 0.35, J3 2.00, rest earlier), 3.95 reserved
+             (pop_s014_gr ceiling 3, J4 1); G1 1.69; allotment 40 (0014)
