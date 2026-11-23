@@ -1,0 +1,102 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261123-021730-a421438",
+  "track": "E-stoch-inf",
+  "gate": "G2",
+  "kind": "production",
+  "purpose": "g2prod analysis u256 seed B, second pass with the seed-B realisation (rng_seed 20261116) at N* and N_f: U-A2', U-A3, one-point rms (U-S); the first pass referred to seed A",
+  "preregistered_in": "tracks/E-stoch-inf/g2prod/JOURNAL.md#entry-1",
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "cd tracks/E-stoch-inf/g2prod/scripts && export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 MPLBACKEND=Agg && python3 analyse_g2.py --group u256 --seed 20261116 --last --map U256=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261122-033244-564627b --map U256m=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261122-071038-d9f933b --ref ../../usr/results --out \"$NRPIC_RUN_DIR\" --workers 2 > \"$NRPIC_RUN_DIR/analysis.log\" 2>&1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "a421438f7a578014fa2f2e300288488625473bc7",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/g2prod"
+    ],
+    "outside_package": {
+      "count": 10,
+      "first": [
+        " M tracks/E-stoch-inf/repro/langevin/fig/fig3_pdfs.png",
+        " M tracks/E-stoch-inf/repro/langevin/fig/fig4_logpdfs.png",
+        " M tracks/E-stoch-inf/repro/langevin/results/langevin.json",
+        " M tracks/E-stoch-inf/repro/langevin/results/simulate_summary.json",
+        "?? tracks/E-stoch-inf/repro/equations/",
+        "?? tracks/E-stoch-inf/repro/langevin/fig/fig1_paths_ito_naive.png",
+        "?? tracks/E-stoch-inf/repro/langevin/fig/fig2_moments_ito_naive.png",
+        "?? tracks/E-stoch-inf/repro/langevin/fig/fig3_pdfs_ito_naive.png",
+        "?? tracks/E-stoch-inf/repro/langevin/fig/fig4_logpdfs_ito_naive.png",
+        "?? tracks/E-stoch-inf/repro/scope/scripts/figstyle.py"
+      ]
+    },
+    "merge_base_main": "b325babd02f13cfbc2ba3c7b685ada23bb0fd13a",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261123-021730-a421438",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-23T02:17:30Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "E-20261122-033244-564627b",
+    "E-20261122-071038-d9f933b",
+    "E-20261123-014905-2bf3570"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 20.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 9.2804,
+    "gpu_hours_reserved": 2.4667,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 3,
+    "runs": 180,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
