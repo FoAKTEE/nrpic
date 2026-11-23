@@ -39,15 +39,25 @@ def main():
         else:
             rest.append(argv[i])
             i += 1
+    last = "--last" in rest
+    if last:          # only the dump at N_f (every U-R clause is stated there); records whole
+        rest.remove("--last")
     out = rest[rest.index("--out") + 1]
     links = os.path.join(out, "links")
     os.makedirs(links, exist_ok=True)
     for m in maps:
         name, d = m.split("=", 1)
         p = os.path.join(links, name)
-        if not os.path.islink(p):
+        if last:
+            os.makedirs(p, exist_ok=True)
+            dl = ac.cl.dump_list(d)
+            keep = [os.path.basename(dl[-1]), os.path.basename(dl[-1])[:-5] + ".modes", "usr.sf.con.hst", "usr.sf.hst"]
+            for f in keep:
+                if os.path.exists(os.path.join(d, f)) and not os.path.islink(os.path.join(p, f)):
+                    os.symlink(os.path.join(os.path.abspath(d), f), os.path.join(p, f))
+        elif not os.path.islink(p):
             os.symlink(os.path.abspath(d), p)
-        print(f"map {name} -> {os.path.realpath(p)}", flush=True)
+        print(f"map {name} -> {os.path.realpath(p)}" + (" (last dump only)" if last else ""), flush=True)
     sys.argv = [sys.argv[0]] + rest + ["--run", links]
     ac.main()
 
