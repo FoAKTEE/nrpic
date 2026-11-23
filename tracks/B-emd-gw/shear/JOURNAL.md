@@ -154,3 +154,59 @@ P10 cannot be judged; cause not established (RISKS R18). Ray analysis failed (an
 for L2_n32, L2_n64, L2_n128: NaN in the transport step of analyze_rays.py (line 182), i.e. no
 arrival time for the wide fan at beta = 0.5, HL = 4; not yet looked into. P4-P9, P11, P12
 wait for the summary script (Richardson per case, figures).
+
+## 2026-11-22 18:06 PST (lead of batch 10a): outcomes P4-P12 of series 1
+
+Summary run B-20261123-015919-dec4392 (`scripts/summarize_series.py` on series 1 =
+B-20261121-202830-417af0c; `results/series1_summary.{json,txt}`, `figs/fig_series.png`
+looked at: |Delta| against N_y with the extrapolated values dashed, the t = 0 momentum
+constraint with an N^-4 guide, the constraint means up to the arrival of the rays).
+Richardson: observed order p from the two differences of cos(theta) over N_y = 32, 64, 128;
+extrapolation with p when 1 <= p <= 6, else with p = 2. [VERIFIED by these runs]
+
+| family | HL | beta | Delta 32 / 64 / 128 | p_obs | Delta extrapolated | error at 128 |
+|---|---|---|---|---|---|---|
+| S1 | 1 | 0.005 | -6.32e-5 / -1.77e-5 / -6.99e-6 | 2.08 | -3.68e-6 | -3.3e-6 |
+| S2 | 1/16 | 0.005 | -5.97e-6 / -9.46e-7 / -2.35e-7 | 2.82 | -1.18e-7 | -1.2e-7 |
+| S3 | 4 | 0.005 | -5.65e-5 / -3.32e-5 / -6.83e-7 | -0.48 (p = 2 used) | +1.02e-5 | -1.1e-5 |
+| S4 | 1/128 | 0.005 | -3.19e-6 / -2.28e-7 / -1.14e-8 | 3.77 | +5.8e-9 | -1.7e-8 |
+| M1 | 1 | 0.05 | -4.07e-4 / -3.58e-4 / -3.47e-4 | 2.12 | -3.43e-4 | -3.4e-6 |
+| M2 | 4 | 0.05 | +3.34e-3 / +3.40e-3 / +3.43e-3 | 1.22 | +3.45e-3 | -2.0e-5 |
+| L1 | 1 | 0.5 | -1.22e-2 / -6.06e-3 / -5.17e-3 | 2.78 | -5.02e-3 | -1.5e-4 |
+| L2 | 4 | 0.5 | no result (ray analysis NaN at every N_y) | | | |
+
+- P4 MET for the momentum constraint, FAILED for the Hamiltonian constraint: Mr_mean at t = 0
+  1.54e-6, 9.25e-8, 5.72e-9 (ratios 16.7, 16.2, the same in every family) and 1.5e-6 <= 1e-4
+  at N_y = 32; Hr_mean at t = 0 falls by 8.5 and 14.3 per doubling (S1 1.60e-11, 1.88e-12,
+  1.31e-13; L1 the same ratios), below the predicted 16; S4 sits at rounding (2e-16).
+- P5 MET: ray k_x, k_z drift at most 8.8e-15 of |k|; tracer u_x, u_z at most 6.6e-12 relative.
+- P6 MET: S1 at N_y = 128, gamma_xy at O within 1.25e-5 of the linear solution (relative to
+  its largest value) until the rays arrive; alpha/a_O - 1 at most 2.9e-11.
+- P7 MET for S1, S2, S4; FAILED in part for S3: every extrapolated Delta lies within +-3e-4
+  (largest 1.0e-5, S3) and every error at 128 below 3e-4 (largest 1.1e-5, S3); the observed
+  order is 2.08, 2.82, 3.77 for S1, S2, S4 (within 1.5-4.5) but not defined for S3 (HL = 4):
+  the differences grow, 2.33e-5 then 3.25e-5, so S3 does not converge monotonically over
+  32-128 and its extrapolation (p = 2 assumed) is not reliable.
+- P8: M1 MET (Delta -3.43e-4, |Delta| <= 1e-3). M2 FAILED in sign: Delta = +3.45e-3, positive
+  (predicted negative, "my guess"); the size < 1e-2 holds; slow convergence (p = 1.22).
+- P9: L1 MET (Delta -5.02e-3, |Delta| <= 1e-2, p = 2.78, error at 128 1.5e-4). L2 NOT JUDGED:
+  the analysis fails at every mesh (NaN arrival time in the transport step,
+  analyze_rays.py:182); cause not looked into.
+- P10 NOT JUDGED: S1_n64_lap1 (f = 1) stopped by the guard at t = 0.578 (entry of 2026-11-21
+  12:58); no cause named.
+- P11 MET: 2 and 4 particles per cell along y give cos(theta) within 1.5e-7 and 1.4e-7 of one
+  per cell (predicted 1e-5).
+- P12 MET in size, FAILED in convergence for S2, S3, S4: up to the arrival of the rays every
+  beta = 0.005 case keeps Hr_mean and Mr_mean below 1e-4 (largest Mr_mean 5.7e-5, S3 at 32);
+  they fall by >= 4 per doubling only for S1 (Mr 7.3, 4.1; Hr 4.0, 4.0). S3 falls more slowly
+  (Mr 5.5, 3.1; Hr 1.9, 4.2); in S2 (HL = 1/16) and S4 (HL = 1/128) both means RISE with N_y
+  (S4: Mr 3.2e-6, 1.1e-5, 5.5e-5; Hr 9.6e-9, 3.3e-8, 1.4e-7), at levels where round-off in
+  second differences could matter [TO VERIFY; no run has tested it].
+
+What the comparison with the paper's codes stands on now: the small-amplitude cases agree with
+linear theory to 1e-5 or better after extrapolation, M1 and L1 lie inside the paper's bounds
+(draft.tex:383); the decisive case L2 (CosmoGRaPH -0.8183, draft.tex:360) has no number yet.
+Next: L2 (why the fan gives no arrival: look at `L2_n64/rays.json` miss values and the
+trajectories), the f = 1 guard stop (processor diagnosis at N_y = 32), S3 at N_y = 256 to
+settle its order. Figure defects: the y label of panel (a) is cut at the top; the legend of
+panel (a) covers part of the S curves.
