@@ -161,3 +161,60 @@ even/odd rms) stand. The second pass with --seed 20261116 at N* and N_f is the o
   lattice value 0.89366 (difference 4.5e-4, bar 5e-3): HELD; skewness 0.0042 and -0.0012
   (|.| < 0.01): HELD. Even/odd rms 2.5348e-4. U-A0 1.6e-9, U-A1 4.17e-5. Figures of both passes
   looked at (one-point histogram Gaussian over 10 decades; slice).
+
+### 2.3 Outcomes seed A (s = +-1, +-1/2), control, SCOPE 4c (analysis E-20261123-014858-8e72d4c, judge E-20261123-024359-5dc3213, check E-20261123-024806-3c0e139)
+
+Figures looked at: fig_g2_ua2, fig_g2_halving, fig_g2_resolution, fig_g2_records, fig_g2_control,
+fig_g2_common_mode (judge run, fig/).
+- U256ap/am HELD in every part: R^NR per mode of the release runs is IDENTICAL to the scouting
+  pair (core_scalar-3) at every dump (max |difference| 0.0); U-A2' 1.0894e-4, all modes 4.506e-3,
+  U-A3 0.99230-1.00161 (ap), one-point rms 0.894520, records <|H'|/[H]> 2.885e-12, <|M|/[M]>
+  0.0252; U-A0 1.6e-9, U-A1 4.2e-5.
+- U256hp/hm: even/odd rms halves (1.2667e-4 against 2.5335e-4/2): HELD. U-A2' at s = 1/2 is
+  1.242e-4 against 1.089e-4 at s = 1 (+14 percent): the prediction "unchanged within 5
+  percent" FAILED. U-A4'(a) as written: H judged at 9 dumps (e_{1/2} > 3f), corrected even
+  factors 3.992-4.042, all within 4.00 +- 0.05; M judged at 11 dumps, 10 within, ONE OUTSIDE:
+  3.925 at cN = 6.52 (end of USR; also in the subset with o_{1/2} > 3f). The prediction "any
+  judged dump outside 3.95-4.05 refutes" is REFUTED, and U-A4'(a) FAILS as written (clause on
+  the maxima: no dump dropped). Raw odd halving 1.99994, even 3.99988 for R at N_f.
+- Finding (the halving pair is the run in which it could have failed): the flat part of the
+  odd-part error at k <= 32 dk (fig_g2_ua2) is a common factor of all modes (mean Re(O/c_ref -
+  1) over k <= 16 dk = -4.107e-5 at s = 1 with scatter 4e-7; -4.138e-5 at 320^3) and scales
+  as s^2: -9.87e-6 at s = 1/2 (ratio 4.16). It appears after cN = 5.5 and is constant after
+  cN = 7.5 (fig_g2_common_mode). It is third order in the amplitude, not discretisation; which
+  third-order term (the evolution or the nonlinear definition of R^NR) is NOT named. It is why
+  U-R (i) gave 2.10 rather than 2.4-4.5: the k <= 32 maximum at 256^3 sits on it.
+- U256nc (control): odd part of H over that of the proper pair, ratio of the maxima over the
+  entry (cN <= ln 32): 1.19e5 (cross reading, decides) and 2.38e5 (single); pointwise 1.2e5 to
+  8.7e5 after N*: HELD (>= 1e3). Its records <|H'|/[H]> 1.28e-7, <|M|/[M]> 0.50 (first order).
+- U-A4'(c) on the nine proper release runs: <|H'|/[H]> max 1.28e-12 to 3.03e-12 (< 1e-9), <|M|/[M]>
+  max 0.0081 (320^3) to 0.0252 (< 0.1): PASS. Read literally over every release run the control
+  fails it by design; it is judged on the proper runs [JUDGEMENT]. The M record does NOT double
+  at s = 1/2 at 256^3 (0.02512 against 0.02519), unlike 128^3 (2.47e-2 -> 4.3e-2).
+- U-R: (i) 2.10 in 2.0-4.5 PASS; (ii) shell power 320 vs 256 at N_f 1.18e-4 (k <= 32 dk, bar
+  1e-3) and 4.6e-3 (to 64 dk, bar 1e-2) PASS (prediction held); (iii) even/odd 3.5e-5 and 1.1e-4
+  relative PASS. U-S PASS (2.2). U-W met by the scan (SCOPE 4c).
+
+Verdict against SCOPE 4c's definition of "the USR case is reproduced": U-A0, U-A1, U-A2', U-A3
+on the release build for seeds A and B PASS; U-R PASS; U-W met; U-A4'(c), U-S, U-A4'(d) PASS;
+U-A4'(a) FAILS at one dump of M (3.925 at cN 6.52). As written, the USR case is NOT reproduced
+in full; the gate decision belongs to orch (outbox of this session).
+
+## entry-3 (predictions for the third amplitude, written before submission; lead of batch 10a, 2026-11-22 19:00 PST)
+
+Runs U256qp/qm (s = +-1/4, seed A, 256^3, deck as U256ap; queue.txt; release card build
+core-v0.6; 0.62 card-hours each expected, ceiling 1.97). They go behind the two card jobs of
+repro/scope (the sequencer keeps at most two E jobs eligible). Why: the one failed dump of
+U-A4'(a) (M, 3.925 at cN 6.52) could be a higher order in s in the even part (e = a s^2 + b s^4,
+which the two-amplitude floor of SCOPE 4c ignores), and the common-mode floor scales as s^2.
+Analysis: analyse_g2.py --group g2q (U256 = hp, U256m = hm, U256h = qp, U256hm = qm), then
+judge_g2.py's halving and floor code on that summary.
+- Q-a: the even factor of M at cN 6.52 from the pairs s = 1/2 and 1/4 (floor from their odd
+  parts) is 3.98 +- 0.015 (a quarter of the deviation -0.075). Refuted if its deviation from 4 is
+  not at most half that of (1, 1/2), i.e. if it is below 3.9625; H stays within 4.00 +- 0.05 at
+  every judged dump.
+- Q-b: the common-mode part of the odd-part error at N_f (k <= 16 dk) is -2.5e-6 +- 0.4e-6
+  (s^2 law from -9.87e-6). Refuted outside [-3.3e-6, -1.7e-6].
+- Q-c: U-A0, U-A1, U-A3 pass; records <|H'|/[H]> < 1e-9 and <|M|/[M]> < 0.1; even/odd rms
+  (k <= 32 dk) 6.33e-5 +- 5 percent.
+A cause of the U-A4'(a) miss is named only if Q-a holds.

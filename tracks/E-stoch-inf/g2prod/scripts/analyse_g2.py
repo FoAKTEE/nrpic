@@ -27,6 +27,9 @@ import analyse_cards as ac  # noqa: E402
 ac.GROUPS["g2a"] = dict(runs={"U256": 1.0, "U256m": -1.0, "U256h": 0.5, "U256hm": -0.5}, nmax2=4096,
                         pairs=[("U256", "U256m"), ("U256h", "U256hm")], halving=[("U256", "U256h")],
                         ladder=[], kmask=32.0, onepoint=True)
+ac.GROUPS["g2q"] = dict(runs={"U256": 0.5, "U256m": -0.5, "U256h": 0.25, "U256hm": -0.25}, nmax2=4096,
+                        pairs=[("U256", "U256m"), ("U256h", "U256hm")], halving=[("U256", "U256h")],
+                        ladder=[], kmask=32.0, onepoint=False)   # map U256/U256m to s=+-1/2, U256h/U256hm to s=+-1/4
 ac.GROUPS["u320"] = dict(runs={"U256": 1.0, "U256m": -1.0}, nmax2=4096, pairs=[("U256", "U256m")],
                          halving=[], ladder=[], kmask=32.0, onepoint=False)
 

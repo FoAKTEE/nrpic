@@ -10,3 +10,5 @@ U320am 2.95 USR seed A s=-1 320^3 (resolution U-R, odd part)|job/rng_seed=202611
 U256hp 1.97 USR seed A s=+1/2 256^3 (halving U-A4')|job/rng_seed=20261115 scalar_field/noise_mode_scale=0.5
 U256hm 1.97 USR seed A s=-1/2 256^3 (halving U-A4')|job/rng_seed=20261115 scalar_field/noise_mode_scale=-0.5
 U256nc 0.98 USR seed A s=+1 256^3 sign-flip control to the end of the entry cN = ln 32 (U-A4'(d))|job/rng_seed=20261115 scalar_field/noise_mode_scale=1.0 scalar_field/noise_pi_sign=-1.0 time/tlim=3.75
+U256qp 1.97 USR seed A s=+1/4 256^3 (third amplitude: is the U-A4'(a) miss of M at cN 6.52 a higher order in s? entry 3)|job/rng_seed=20261115 scalar_field/noise_mode_scale=0.25
+U256qm 1.97 USR seed A s=-1/4 256^3 (third amplitude, mirrored partner; entry 3)|job/rng_seed=20261115 scalar_field/noise_mode_scale=-0.25
