@@ -87,3 +87,26 @@ readers; the outcome goes into entry 2 against these predictions.
   that restarts this deck continues the same run. Cost: A took 2.5 s per step on one core
   (213 steps), B half of it.
 - T, P256v6: queued (Slurm 4827, 4828) at 12:43 PST behind other owners' jobs; nothing run yet.
+
+## entry-2 (analysis of the ladder; lead of batch 10a, 2026-11-22)
+
+### 2.0 Before any analysis ran (17:55 PST)
+
+State: the sequencer exited at 13:49 PST ("queue empty and every run closed"); all eleven card
+runs completed (state.tsv). Nothing of them has been analysed. The predictions are those of
+entry 1; nothing is changed here. How each is read (written before the analyses):
+- T: step time = cpu time / 40 from each athena.log; memory = gpu_mem_peak_MiB of the log.
+- P256v6: `ladder_analysis.py extract` + `judge` as for P256 (seed 20261115), A2 max D_n
+  (k <= k_max/2) against 1.2078e-4; record files sr.sf.hst and sr.sf.con.hst row by row against
+  those of E-20261115-172618-f948386 at equal cycles (max relative difference per column).
+- USR: `g2prod/scripts/analyse_g2.py` (the readers and metrics of `usr/scripts/analyse_cards.py`
+  unchanged, groups of g2prod added): g2a = ap, am, hp, hm (seed A); u256 = bp, bm (seed B);
+  u320 = U320ap, U320am. SCOPE 4c is then judged by `g2prod/scripts/judge_g2.py` from the
+  summaries: the floor f^2 = max(0, (4 o_{1/2}^2 - o_1^2)/3) per dump for H and for M; U-A4'(a)
+  at every dump with e_{1/2} > 3 f, and reported separately on the subset where also
+  o_{1/2} > 3 f (U-A4'(b) wording "(a) judged only there"; both are given, the stricter
+  reading decides) [JUDGEMENT: the two clauses of 4c read differently; neither is dropped].
+- U-A4'(d): the control has no mirrored partner, so its odd part is read two ways, both
+  reported, the smaller ratio decides: (i) (H_nc - H_am)/2 with box mean removed; (ii) H_nc
+  with box mean removed (the control's even part is second order); against the odd part of
+  the proper pair (ap, am), rms per dump, ratio of the maxima over dumps with cN <= ln 32.
