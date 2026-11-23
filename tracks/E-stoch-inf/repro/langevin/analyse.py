@@ -179,6 +179,7 @@ def fig_moments(v, out, name="fig2_moments", title=None):
     ax.set_ylabel("skewness, excess kurtosis")
     ax.legend(loc="upper left", ncol=2)
     if title:
+        fig.subplots_adjust(top=0.88)
         ax.set_title(title, fontsize=10)
     fs.save(fig, os.path.join(out, name))
     plt.close(fig)
