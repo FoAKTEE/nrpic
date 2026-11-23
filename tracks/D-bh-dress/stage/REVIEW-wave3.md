@@ -372,3 +372,36 @@ jump to zero at 345 M. Fixed by re-running the data maker with `--rbar_max 1340`
    secondary_infall/JOURNAL.md (20:36Z).
 5. drift_controls stays open (its three untracked tools are left as found); note v2 waits for
    the long runs.
+
+## 13. Lead session of batch 10a (2026-11-22 17:45 PST on, Opus; decisions 0026, 0027)
+
+No helper packages ran since batch 5; this session read the card runs of batch 5 itself, from
+their registered outputs, against the predictions committed before them (g2long entry 1,
+secondary_infall 20:36Z). Every number below has a registered run; every figure was read.
+
+| Item | Outcome | Evidence |
+|---|---|---|
+| Sequencer of batch 5 | ended normally: released R5 at 11:12, exited 11:14 with its queue empty; nothing stalled | `scratch/D-bh-dress/g2long_seq/log` |
+| R1-R4 | DONE, closed with `nrpic-run finish`; R5 at 225.6 M of 300, job 4920 queued | chain STATUS files |
+| Null test N (track criterion 1) | HOLDS at M/8 to 500 M: 2.28e-4 against 2.51e-4; margin 9 per cent | D-20261123-020550-f9a3482, judge_long.png |
+| Growth G (track criterion 2) | HOLDS: (iii) to tau 650 M within 0.62 per cent, D2 everywhere | D-20261123-020614-7ba5874, esf_criteria.png |
+| Failed predictions | V3 (floor 1.25e-4 > 1e-4), E2 sharp bounds, V3/E3 radii, F2 at 400/500 M, F3 median and D1, F4 reason 3, H1 (sign), H2 (floor not lower at M/16), QR3 per-bin, QR4 slope | g2long entry 5; secondary_infall 02:08Z |
+| Cause named after a check that could fail | the end of horizon excision at 219 M: source guard nrpic.cpp:451-455 and the crossing of 3.2 M by the finder's smallest radius between 219.0 and 219.5 M; its effect on (iii) is a [JUDGEMENT] until ES-FLK | g2long entry 5 F4 |
+| Constraint norms | bounded, but they measure inside the horizon (chi cut) | D-20261123-021027-e3af9b8, constraints_long.png |
+| Q16-256 | QR1, QR2, QR5 hold; D-pre-3 rests on two resolutions | D-20261123-020626-183c254, -020756-e9922e7 |
+
+What I could not confirm: the cause of the vacuum drift step at 240-300 M (both resolutions);
+whether the M/8-M/16 sign change of the finder mass is convergent (needs a third member).
+
+## 14. Lead's decisions of batch 10a
+
+1. Follow-ups (g2long entry 6, predictions before any run): FV4 and FE4 (finest level M/4, the
+   third mesh member of the floor and of the null test), FK = ES-FLK (initial_radius 1.6, horizon
+   excision kept; the run in which the excision cause of the (iii) step can fail), FF4 = ES-FL at
+   M/4. Smoke tests on processors first. Caps 2.0 + 2.0 + 3.0 + 2.0 = 9.0 card-hours, expected
+   4.5; the budget tool shows 10.57 left toward G2 (R5 counted at its ceiling).
+2. Not queued, and why: an M/32 nest that holds the 2.2 M horizon (~13 card-hours per run) waits
+   for the M/4 outcome; ES-FL at 4N (particle-number member) waits for ES-FLK, so that it is
+   built on inputs with the excision kept and with exterior constraint norms.
+3. note_v2 replaces note/ (git mv); G1 stage report: Looked-at column filled from its list.
+4. drift_controls stays open with its three untracked tools left as found (no change since batch 5).

@@ -320,3 +320,15 @@ stay bounded in V-1L, ES-1L, ES-FL (to 500 M), V-1L16 (300 M) and ES-1L16 (as fa
 in none of them does a norm grow by more than a factor 10 between t = 100 M and the end, and
 none jumps by a factor 3 within 10 M [JUDGEMENT; ES-1/V-1 at +-192 M stayed bounded to 200 M].
 Refuted by either. Tool: `tools/constraints_long.py`.
+
+Outcome of entry 8 (18:18 PST; run D-20261123-021027-e3af9b8, constraints_long.png looked at): the
+prediction HOLDS as written: growth between 100 M and the end 1.00-1.03 for the M/8 runs, 3.6 (H)
+and 2.5 (M) for V-1L16, 3.1 and 2.4 for ES-1L16 to 225.6 M; largest rise within 10 M a factor 1.43;
+all finite. But the figure does not show that "constraints behave" outside the hole: the norms
+are volume integrals over the points with chi >= excise_chi = 0.0625 (athenak/src/outputs/
+history.cpp:226-228, default at z4c.cpp:172), so they are dominated by the region just outside
+the chi cut, inside the horizon. Signs of it [JUDGEMENT]: the M/16 norms lie ~100 times below the
+M/8 ones (no resolution law gives that), and ES-FL's norms drop in steps at ~115, 205, 300 and
+385 M while its horizon grows. For G2 item C3 the exterior needs its own norm: `<particles>
+region_*` (release core-v0.5, constraint norms inside and outside spheres) in the next inputs,
+with a sphere outside the horizon; not in the inputs of R1-R5 or of entry 6.
