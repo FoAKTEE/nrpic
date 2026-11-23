@@ -56,7 +56,7 @@ def main():
     if not os.path.isdir(figdir):
         figdir = os.path.join(C.NOTE, "figures")
     fn = {k: json.load(open(os.path.join(figdir, f"fig_{k}_numbers.json")))
-          for k in ("es", "constraints", "floor", "spike", "infall", "kerr", "newton", "esrun")}
+          for k in ("es", "constraints", "floor", "spike", "infall", "kerr", "newton", "esrun", "q16", "esf", "kerr_seeds")}
     es = C.load_json("es_data", "es.json")
     s = es["summary"]
     plan = C.load_json("first_run", "first_run_plan.json")
@@ -310,6 +310,102 @@ def main():
           (sec, r"largest offset of the seed clump from its cell centre, in cells",
            ", ".join(fnum(n["clump_com_max_over_dx"]) for n in (N1, N2, N3)), NR)]
 
+    # ---- note v2 (batch 6): runs judged after gate G1 ----
+    q = fn["q16"]
+    QL = q["late"]
+    QR = ["q16", "q16_ana"]
+    gr = C.load_json("gate_review", "review_checks.json")
+    sec = "Newtonian-mode infall to sixteen times the initial scale factor"
+    E += [(sec, r"cell ($M$); particles at the start; at the end; last $a/a_i$",
+           f"{q['dx']:g}; {q['n_total']}; {q['n_alive_end']}; {q['a_end']:.3f}", QR + ["q16_lost"]),
+          (sec, r"$M_{\rm ta}/M$; dress ($M$) at $a/a_i=3.98,8.00,15.96$",
+           ", ".join(f"{QL[k]['M_ta']:.4f}" for k in ("3.976", "8.001", "15.956")) + "; " +
+           ", ".join(f"{QL[k]['dress']:.4f}" for k in ("3.976", "8.001", "15.956")), QR),
+          (sec, r"$M_{\rm ta}$; dress over matched shells $-1$ at $a/a_i=15.96$: hybrid; kernel (per cent)",
+           f"{100 * QL['15.956']['hybrid_rel'][0]:+.2f}, {100 * QL['15.956']['hybrid_rel'][1]:+.2f}; "
+           f"{100 * QL['15.956']['kernel_rel'][0]:+.2f}, {100 * QL['15.956']['kernel_rel'][1]:+.2f}", QR),
+          (sec, r"largest $|$run over matched shells $-1|$ at any snapshot with $3\le a/a_i\le12$, hybrid: $M_{\rm ta}$; dress (per cent)",
+           f"{100 * q['hybrid_maxrel_a3_12']['M_ta']:.2f}; {100 * q['hybrid_maxrel_a3_12']['dress']:.2f}", QR),
+          (sec, r"dress over $M_{\rm ta}$; $M_{\rm ta}/(Ma/a_i)$ at $a/a_i=15.96$ (self-similar limits in brackets)",
+           f"{QL['15.956']['dress_over_mta']:.3f} ({fn['newton']['selfsim_dress_over_mta']:.3f}); "
+           f"{QL['15.956']['mta_over_a']:.3f} ({fn['newton']['C_TA']:.3f})", QR + ["selfsim"]),
+          (sec, r"run over self-similar density, six bins on $0.075\le\lambda\le0.3$ at $a/a_i=15.96$: range; largest deviation; rms",
+           f"{min(r_[1] for r_ in QL['15.956']['ratios']):.3f}--{max(r_[1] for r_ in QL['15.956']['ratios']):.3f}; "
+           f"{QL['15.956']['max_dev']:.3f}; {QL['15.956']['rms_dev']:.3f}", QR + ["selfsim"]),
+          (sec, r"local density slope on the same bins at $a/a_i=15.96$, mean: run (self-similar); least-squares fit: run (self-similar)",
+           f"{QL['15.956']['mean_local_slope']:.2f} ({QL['15.956']['mean_local_slope_ss']:.2f}); "
+           f"{QL['15.956']['fit_slope']:.2f} ({QL['15.956']['fit_slope_ss']:.2f})", QR + ["selfsim"]),
+          (sec, r"four cells over $r_{\rm ta}$ at $a/a_i=15.96$ (innermost resolved $\lambda$)",
+           f"{q['profile_last']['four_dx_over_rta']:.4f}", QR),
+          (sec, r"gate reviewer, $M_{\rm ta}/M$ at $a/a_i=15.96$: Lagrangian; Eulerian estimator; particle number at the end",
+           f"{gr['P45']['M_ta_lag']:.4f}; {gr['P45']['M_ta_eul']:.4f}; {gr['P45']['n1']}", ["gate_review"])]
+
+    hcmp = C.load_json("hor_cmp", "compare_horizons.json")["runs"]
+    y1 = C.load_json("lead_y1", "batch4a_check.json")
+    yd = y1["horizons"]["drift"]
+    sec = "Vacuum controls of the horizon mass and the relaxed lapse"
+    E += [(sec, r"vacuum control, faces at $\pm192M$: change of $M_{\rm AH}$ from $100M$, range over $100$--$199.5M$",
+           f"{fnum(hcmp['V-1']['drift']['D_100_end'][0])} to {fnum(hcmp['V-1']['drift']['D_100_end'][1])}", ["v1", "hor_cmp"]),
+          (sec, r"vacuum control, faces at $\pm384M$: the same (the floor of the null test at $M/8$)",
+           f"{fnum(hcmp['V-1B']['drift']['D_100_end'][0])} to {fnum(hcmp['V-1B']['drift']['D_100_end'][1])}", ["v1b", "hor_cmp"]),
+          (sec, r"gate reviewer: largest $|M(t)/M(100M)-1|$ of the control with faces at $\pm384M$ on $[100,200]M$; at $t/M$",
+           f"{fnum(gr['P3']['maxabs'])}; {gr['P3']['t_at']:g}", ["v1b", "gate_review"]),
+          (sec, r"the same control with the relaxed lapse: range of the change from $100M$; mean coordinate radius of the horizon at the end, with and without ($M$)",
+           f"{fnum(yd['V-1GB']['D_min'])} to {fnum(yd['V-1GB']['D_max'])}; {yd['V-1GB']['meanr_last']:.3f}, {yd['V-1B']['meanr_last']:.3f}", ["v1gb", "v1b", "lead_y1"]),
+          (sec, r"bubble with dust and the relaxed lapse, faces at $\pm192M$: change of $M_{\rm AH}$ from $100$ to $199.5M$",
+           fnum(yd["ES-1G"]["D_last"]), ["es1g", "lead_y1"]),
+          (sec, r"the same with faces at $\pm384M$: largest difference from the run with faces at $\pm192M$ up to $188M$; change from $100M$ at $188M$",
+           f"{fnum(y1['horizons']['Y1a']['max_le188'])}; {fnum(yd['ES-1GB']['D_at188'])}", ["lead_y1"]),
+          (sec, r"null test with the relaxed lapse: bubble minus vacuum control at $188M$",
+           fnum(y1["horizons"]["Y1d"]["at188"]), ["lead_y1"])]
+
+    ef = fn["esf"]
+    crit = C.load_json("esf_crit", "esf_criteria.json")
+    ER2 = ["esf", "esf_ana", "esf_crit"]
+    sec = "First run with dust that reaches the black hole"
+    E += [(sec, r"$M_{\rm AH}/M$ at $t=0$; $50$; $100$; $150$; $199.5M$",
+           f"{ef['M_AH_0']:.5f}; " + "; ".join(f"{ef['M_AH_at'][k]:.5f}" for k in ("50.0", "100.0", "150.0", "199.5")), ["esf"]),
+          (sec, r"growth $\Delta M_{\rm AH}$; removed energy $F_{\rm rem}=\sum mE_K$; control's finder change $\Delta M_{\rm ctrl}$ (at $199.5M$)",
+           f"{ef['dM_end']:.5f}; {ef['F_rem_end']:.5f}; {ef['dMctrl_end']:.5f}", ["esf", "esf_data", "v1"]),
+          (sec, r"closure $\Delta M_{\rm AH}-F_{\rm rem}$ at the end: raw; control subtracted; largest $|$control subtracted$|$ after $20M$",
+           f"{fnum(ef['closure_raw_end'])}; {fnum(ef['closure_ctrl_end'])}; {fnum(ef['closure_ctrl_max_abs_after20'])}", ["esf", "esf_data", "v1"]),
+          (sec, r"particles removed at the horizon; dust among them; first removal ($t/M$)",
+           f"{ef['n_removed']}; {ef['n_removed_dust']}; {ef['t_first_removal']:.2f}", ["esf"]),
+          (sec, r"$M_{\rm AH}$ at removal over the exact mass $M_{\rm LTB}(\tau)$ $-1$: removals ($\tau\le250M$); bins; bin medians; overall median",
+           f"{ef['iii_n']}; {ef['iii_n_bins']}; {fnum(ef['iii_bin_median_range'][0])} to {fnum(ef['iii_bin_median_range'][1])}; {fnum(ef['iii_overall_median'])}", ER2 + ["esf_data"]),
+          (sec, r"smallest margin of $M_{\rm AH}$ over the lattice mass of the removed label; smallest proper time after horizon crossing at removal ($M$)",
+           f"{fnum(crit['D3']['min_margin'])}; {crit['D4']['min']:.3f}", ER2),
+          (sec, r"card-hours of the run", f"{ef['card_hours']:.2f}", ["esf"])]
+
+    kz = fn["kerr_seeds"]
+    KR = ["kerr_ana", "kerr2_ana", "kerr_seeds"]
+    rk = kz["ranges"]
+    sec = "Kerr spike on the analytic metric, two sampler seeds"
+    E += [(sec, r"time average over expected count $-1$ in $r/M$ = 0--4, 4--6, 6--10: first sample (per cent)",
+           ", ".join(f"{100 * rk[k]['seed1']['d']:+.2f}" for k in ("0-4", "4-6", "6-10")), ["kerr_run", "kerr_ana"]),
+          (sec, r"the same, second sample (per cent)",
+           ", ".join(f"{100 * rk[k]['seed2']['d']:+.2f}" for k in ("0-4", "4-6", "6-10")), ["kerr2_ic", "kerr2_run", "kerr2_ana"]),
+          (sec, r"error of a time average over independent orbit draws, second sample, same ranges (per cent)",
+           ", ".join(f"{100 * rk[k]['seed2']['sig']:.1f}" for k in ("0-4", "4-6", "6-10")), ["kerr2_ana"]),
+          (sec, r"mean of the two samples and its error, same ranges (per cent)",
+           ", ".join(f"{100 * rk[k]['mean_d']:+.1f} $\\pm$ {100 * rk[k]['mean_sig']:.1f}" for k in ("0-4", "4-6", "6-10")), KR),
+          (sec, r"outer ranges 10--16, 16--40: second sample; mean of both (per cent)",
+           ", ".join(f"{100 * rk[k]['seed2']['d']:+.2f}" for k in ("10-16", "16-40")) + "; " +
+           ", ".join(f"{100 * rk[k]['mean_d']:+.2f}" for k in ("10-16", "16-40")), KR),
+          (sec, r"sum of the three inner $z$ values: first sample; second sample (test fixed before the run: no bias if the second exceeds $-1.5$)",
+           f"{kz['test']['Z1_inner_sum']:+.2f}; {kz['test']['Z2_inner_sum']:+.2f}", KR),
+          (sec, r"median $\chi^2$ of the binned counts (degrees of freedom), second sample; smallest $r/M$ reached, first sample",
+           f"{kz['side']['seed2']['chi2_median']:.1f} ({kz['side']['seed2']['dof']}); {kz['side']['seed1']['min_r']:.3f}", ["kerr2_run", "kerr2_ana", "kerr_ana"]),
+          (sec, r"second sample: particles that crossed $r_+$; distance of its initial $C$ from the capture boundary, $(C-C_{\rm crit})/C_{\rm crit}$ (smallest of the sample); plunge between $t/M$",
+           f"{kz['plunger']['n_bad']}; {fnum(kz['plunger']['particle']['dist_rel'])} (rank {kz['plunger']['particle']['rank_of_dist']}); "
+           f"{kz['plunger']['particle']['t_plunge_bracket'][0]:.0f}--{kz['plunger']['particle']['t_plunge_bracket'][1]:.0f}", ["kerr2_ic", "kerr2_run", "kerr_plunger"]),
+          (sec, r"second sample, 0--4: time average over expected $-1$ with; without the plunged particle's later snapshots (per cent)",
+           f"{100 * (kz['plunger']['tavg04_seed2'] - 1):+.2f}; {100 * (kz['plunger']['tavg04_seed2_without_plunged'] - 1):+.2f}", ["kerr2_ana", "kerr_plunger"]),
+          (sec, r"without the plunged particle: sum of the inner $z$ of the second sample; two-seed means in 0--4, 4--6, 6--10 (per cent); combined inner $z$",
+           f"{kz['without_plunged']['Z2_inner_sum']:+.2f}; " +
+           ", ".join(f"{100 * kz['without_plunged']['ranges'][k]['mean_d']:+.1f}" for k in ("0-4", "4-6", "6-10")) +
+           f"; {kz['without_plunged']['two_seed_inner_combined_z']:+.2f}", KR + ["kerr_plunger"])]
+
     # ---- claims of the lead's documents against the files ----
     G1, G0, ST = "stage/G1/STATUS.md", "stage/G0/REPORT.md", "STATUS.md"
     K = []
@@ -496,7 +592,7 @@ def main():
 
     par = [r"% generated from registered run outputs; do not edit",
            r"\begin{table}",
-           r"\caption{Parameters of the black hole in a vacuum bubble as constructed, of the vacuum black hole that sets the floor, of the first run of the bubble and its control, of the Newtonian-mode infall, and of the Kerr spike on the analytic metric. Lengths and times in units of the black-hole mass $M$.}",
+           r"\caption{Parameters of the black hole in a vacuum bubble as constructed, of the vacuum black hole that sets the floor, of the first run of the bubble and its control, of the Newtonian-mode infall, of the run with dust that reaches the black hole, and of the Kerr spike on the analytic metric. Lengths and times in units of the black-hole mass $M$.}",
            r"\label{tab:parameters}",
            r"\begin{ruledtabular}\begin{tabular}{lr}",
            r"\multicolumn{2}{l}{\emph{Black hole in a vacuum bubble}} \\",
@@ -541,14 +637,24 @@ def main():
             rf"outer boundary; duration & {float(d1[('<mesh>', 'x1max')]):g}; {float(d1[('<time>', 'tlim')]):g} \\",
             r"slicing; shift & $1+\log$; Gamma driver \\"]
     # the Newtonian-mode runs (setup.json of each run)
-    st = {k: C.load_json(k, "setup.json") for k in ("nm128c", "nm64c", "nm128Lc")}
+    st = {k: C.load_json(k, "setup.json") for k in ("nm128c", "nm64c", "nm128Lc", "q16")}
+    if len({st[k]["eps"] for k in st}) != 1:
+        raise SystemExit("the Newtonian-mode runs differ in eps")
     par += [r"\multicolumn{2}{l}{\emph{Newtonian-mode infall}} \\",
             rf"initial Hubble rate $\epsilon=H_iM$ & {st['nm128c']['eps']:g} \\",
             rf"seed clump: particles; radius & {st['nm128c']['n_clump']}; {st['nm128c']['r_clump']:g} \\",
             rf"dust particles & {st['nm128c']['n_dust']}, {st['nm128Lc']['n_dust']} \\",
             rf"cells & {N1['dx']:g}, {N2['dx']:g}, {N3['dx']:g} \\",
             rf"box half-width & {st['nm128c']['L']:g}, {st['nm64c']['L']:g}, {st['nm128Lc']['L']:g} \\",
-            rf"last $a/a_i$ & {st['nm128c']['a_end']:g}, {st['nm64c']['a_end']:g}, {st['nm128Lc']['a_end']:g} \\"]
+            rf"last $a/a_i$ & {st['nm128c']['a_end']:g}, {st['nm64c']['a_end']:g}, {st['nm128Lc']['a_end']:g} \\",
+            rf"run to 16: cell; box half-width & {fn['q16']['dx']:g}; {st['q16']['L']:g} \\",
+            rf"run to 16: dust particles & {st['q16']['n_dust']} \\"]
+    ed = C.load_json("esf_data", "esf.json")
+    par += [r"\multicolumn{2}{l}{\emph{Dust reaching the black hole}} \\",
+            rf"dust from; to & {ed['Rin']:g}; {ed['Rout']:g} \\",
+            rf"Hubble rate $HM$; total mass & {ed['H']:.5f}; {ed['Mtot']:.4f} \\",
+            rf"dust particles; tracers & {ed['n_dust']}; {ed['n_tracers']} \\",
+            rf"duration & {crit['t_end_hst']:g} \\"]
     ic = C.load_json("kerr_ic", "ic_summary.json")["args"]
     par += [r"\multicolumn{2}{l}{\emph{Kerr spike on the analytic metric}} \\",
             rf"spin $a$; particles; energy cut & {ic['a']:g}; {ic['n']}; {ic['ecut']:g} \\",

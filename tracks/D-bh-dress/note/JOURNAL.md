@@ -1,273 +1,219 @@
-# JOURNAL of the note package (helper of D-bh-dress, wave 2)
+# note_v2: journal (predictions first, then outcomes)
 
-Append-only. Predictions are written before the scripts that test them run; outcomes after.
-The package makes the working note v0, its figures and schematics, the numerical ledger,
-a check of the lead's documents against the run outputs, and `stage/G0/STAGE_REPORT.md`.
-No simulation is run: every script reads outputs of runs registered in wave 1.
+Helper package of D-bh-dress, batch 6 (2026-11-21 afternoon, processors only, 0 card-hours).
+Two deliverables: (1) the working note v2 (the state after gate G1 plus the first G2 result
+ES-F); (2) a second sampler seed of the Kerr spike stationarity test (gate review G1, section 5
+item 3). The history of note v0/v1 is `../note/JOURNAL.md` (entries P1-P15); this journal
+starts at N1.
 
-## 2026-11-15T16:58Z  predictions, written before any script of this package ran
+## N0 (2026-11-21T21:14Z): setup
 
-Worktree at cbbdfe0 (main merged, up to date). Inputs: the run directories under
-`/data/haiyangw/nrpic/scratch/D-bh-dress/` listed in `scripts/common.py`.
+`git merge --no-edit main` (aa164a54). `note_v2/` is a copy of the committed files of `note/`
+at aa164a54 (every tracked file but JOURNAL.md and README.md), so that v2 lives in this
+package's own directory; the lead decides whether it replaces `note/`. Read: CLAUDE.md,
+CHARTER to "Owners", `stage/G1/GATE_REVIEW.md` in full, `spike/README.md` sections 1-7, the
+verifier's V4 (`verifier_g1/VERIFIER.md` 160-190, `verifier_g1/JOURNAL.md` entries 7-8),
+`spike/sample_kerr.py`, the head of `spike/analyze_kerr.py`, the analysis output of seed 1
+(D-bh-dress-20261115-174954-786ddcc/kerr_main_analysis.json).
 
-- P1 (claims check, `scripts/ledger.py`). Of the numbers that the lead's documents
-  (`stage/G0/REPORT.md`, `stage/G1/STATUS.md`, `STATUS.md`, `HANDOFF.md`) state with a run
-  id, I check about forty against the run outputs. Expected: all agree to the printed
-  digits, with two exceptions I saw while reading the files: (a) "dress 0.625 M_ta" is
-  attributed to run D-bh-dress-20261115-123813-97afeea, whose output prints the mass
-  inside the outermost caustic, m(lambda_1) = 0.654; the 0.625 is `f_passed` = 0.6247 of
-  the analysis run D-bh-dress-20261115-125613-248fdaf; (b) "order 5.8-5.9 in the curvature
-  transition" holds for the box "mid transition" of run D-bh-dress-20261115-043406-4df1e76;
-  over the whole region 4 < r < 30 M the same run gives 5.3 (H) and 4.7 (M). Refuted if
-  more than three further numbers disagree, or if either (a) or (b) turns out to agree.
-- P2 (`scripts/fig_floor.py`, my own code on the raw finder output of runs
-  D-bh-dress-20261115-121313-284ec4f and -121314-284ec4f). The drift of a centred 20 M
-  running mean from 50 to 490 M is +2.95e-4 (M/8) and +3.67e-5 (M/16), as the lead's
-  re-check D-bh-dress-20261115-145546-5259f48. Refuted by a difference in the second digit.
-- P3 (`scripts/fig_es.py`). The wall column of `es_reference.csv` (run
-  D-bh-dress-20261115-043445-b782009) equals the marginally bound closed form
-  R_w(tau) = (36^(3/2) + (3/2) sqrt(2) tau)^(2/3) M to 1e-10 relative, and the column "mass
-  inside the wall" equals 1 to round-off. Refuted otherwise.
-- P4 (`scripts/fig_es.py`). The tracers released at rest at R0 = 6 M and 10 M reach R = 2M
-  at the proper times of the radial cycloid from rest, tau = sqrt(R0^3/2M) (eta + sin eta)/2
-  with cos eta = 2(2M/R0) - 1 ... written as tau(R) = sqrt(R0^3/(2M)) [arccos(sqrt(R/R0)) +
-  sqrt((R/R0)(1 - R/R0))]: 15.0 M and 34.6 M as `first_run_plan.json` says, and the csv
-  crosses 2M within its 0.2 M sampling of these times. Refuted by a difference above 0.2 M.
-- P5 (`scripts/fig_es.py`, density from the table). The Hamiltonian constraint evaluated
-  on the table columns, 16 pi rho = -8 psi^-5 lap(psi) + 4 KL KT + 2 KT^2 with
-  psi = 1 + u + m_p/(2 rbar), gives rho = 0 to 1e-9 rho_0 inside the bubble and in the
-  exterior, and rho = rho_0 = 3.7182e-6 M^-2 on the plateau to 1e-4 relative (second-order
-  differences of a smooth table at drbar = 0.02 M). Refuted by a nonzero density in the
-  vacuum regions above 1e-6 rho_0 or a plateau off by more than 1e-3.
-- P6 (all figure scripts). Every figure renders without a label cut at the figure edge
-  (czstyle overflow check); the manuscript checker reports no hit outside the accepted
-  ledger exception of the guide.
+## N1 (2026-11-21T21:20Z): Kerr spike, second sampler seed: prediction
 
-## 2026-11-15T17:15Z  outcomes of P1-P5 (run D-bh-dress-20261115-171128-38634d6, registered by hand)
+**What is tested.** Seed 1 (IC D-bh-dress-20261115-172335-9e5ccf9, seed 20261116, 48000
+particles, Hernquist-grown DF of FdRW, a = 0.8, E <= 0.99, Kerr-Schild slice; AthenaK run
+-172611-1e40191 on the analytic Cartesian Kerr-Schild metric to 20000 M; analysis
+-174954-786ddcc against the reference grid -172646-ed6a510) has time-averaged counts below the
+reference in the three inner ranges: time average over expected 0.9590, 0.9823, 0.9896 in
+0-4, 4-6, 6-10 Gm (deviations -4.1, -1.8, -1.0 per cent, z = -1.11, -0.91, -1.01 with the
+error of a time average over independent orbit draws, sigma_rel = 3.69, 1.94, 1.03 per cent),
+and 0.9993, 1.0016 in 10-16, 16-40 Gm (z = -0.11, +0.59). Against the fresh verifier's own
+reference (D-20261121-040826-9d5051a) the same deficits read 3.1, 1.8, 0.9 per cent. Question
+of the gate review: a bias of the sampler (or of the evolution) at r < 10 Gm, or noise?
 
-`harness/bin/nrpic-run submit --package tracks/D-bh-dress/note` refused: an untracked
-`es.horizon_summary_0.txt` (another helper's AthenaK output) sits in the worktree root.
-The run was registered with `scripts/handreg.py` (manifest with the refusal, inputs with
-sha256, `sha256sums.txt`). All eight scripts ran cleanly; figures and tables copied into
-`figures/` and `tables/`. Every figure was looked at (PNG read): fig_es, fig_constraints,
-fig_floor, fig_spike, fig_infall, schem_architecture, schem_timeline.
+**Run.** Same sampler, same arguments, only the seed changed: `sample_kerr.py --n 48000
+--nfiles 6 --a 0.8 --ecut 0.99 --slice ks --seed 20261121` (6 files of 8000 instead of 12 of
+4000, to stay within six cores; the files only split the particles, every geodesic is
+independent). Same executable as seed 1 (release core-v0.3 processor build,
+`.work/build_cpu_v03/src/athena`), same input `spike/kerr_geodesic.athinput`, same overrides
+(`time/tlim=20000 particles/snap_dt=100 particles/dt=0.05`), so the seed is the only change.
+Same analysis (`spike/analyze_kerr.py`, reference grid -172646-ed6a510). The comparison of the
+two seeds is a new script `note_v2/kerr_seed2/compare_seeds.py` with a figure.
 
-- P1 holds. 36 statements checked (`tables/claims.md`), 31 agree to the printed digits.
-  (a) confirmed: "dress 0.625 M_ta" is `f_passed` = 0.6247 of run -125613-248fdaf; run
-  -123813-97afeea prints m(lambda_1) = 0.654 (locator to be corrected). (b) confirmed: orders
-  5.88 (H) and 5.76 (M) in the box "mid transition"; 5.29 and 4.69 over 4 < r < 30 M.
-  Three further remarks, none a plain disagreement: the 0.02 per cent against the published
-  SFW figure holds for the peak (1.5e-5 in height, 1.5e-4 in position), the whole curve
-  deviates by up to 2.6e-3; the arrival times 15.0 and 34.6 M of the tracers are the first
-  samples of the 0.2 M reference grid after the crossing, the exact values are 14.83 and
-  34.44 M; the cost of the vacuum control (about 1.2 card-hours) is a judgement with no row
-  in the cost table. Also: REPORT.md:101 cites the simulation run for |dE/E|, |dL/L|, whose
-  values sit in the analysis run -125739-a18d74d.
-- P2 holds: +2.952888e-4 (M/8) and +3.674327e-5 (M/16), equal to the lead's values to all
-  digits. Not an independent method: like the lead, the 20 M mean is taken at its last
-  finite point (489.5 and 489.75 M) for "490 M".
-- P3 holds: wall against the closed form 6.7e-16 relative; mass inside the wall exactly 1.
-- P4 partly refuted. As written (fall from rest) it holds for the 6 M group (closed form
-  14.83 M, first sample below 2M at 15.0 M) and fails for the 10 M group (33.70 M against
-  34.6 M, 0.9 M off). With each group's own energy from `es.json` (E = -0.09997 at 10 M, an
-  outgoing start because K^theta_theta < 0 in the transition) the infall law gives 34.44 M
-  and 244.74 M (20 M group), both within the 0.2 M sampling of the reference. The tracers
-  start with the expansion of the slice, not at rest; my prediction ignored that.
-- P5 refuted in the bubble at the stated threshold, holds elsewhere. Largest |rho| inside
-  0.95 x 36 M is 2.2e-5 rho_0 (at R = 31.3 M), above 1e-6. On every second and fourth table
-  row it is 8.9e-5 and 3.6e-4 rho_0: a factor 4.0 per doubling, the second-order truncation
-  of my own differencing of u, not a property of the data (the offline check of the run
-  -042704-f3da881 uses fourth-order differences). Plateau: rho/rho_0 - 1 at most 1.7e-7;
-  exterior 3.3e-9 rho_0; -K/H = 1 on the plateau.
+**Prediction (H0, no bias: the deficits of seed 1 are the noise of one set of 48000 orbits).**
+For seed 2 the time-average deviations d2 in 0-4, 4-6, 6-10 Gm are independent draws with
+standard deviations close to seed 1's sigma_rel (3.7, 1.9, 1.0 per cent; the sampler's own
+estimate for seed 2 should lie within 20 per cent of these); their signs are not tied to
+seed 1's. Quantitatively: the sum of the three inner z values of seed 2, Z2 = z(0-4) +
+z(4-6) + z(6-10), is N(0, sqrt 3) under H0 and N(-3.0, sqrt 3) under the bias hypothesis H1
+(bias equal to seed 1's deviations). I predict H0 and take Z2 > -1.5 as holding it.
+Refuted (bias indicated) if Z2 <= -1.5; strongly if Z2 <= -3 or if all three inner ranges
+are again below the reference with |z| > 1. This is a weak test and I say so beforehand: the
+two hypotheses are 3.0/sqrt 3 = 1.7 standard deviations apart, so a single seed misclassifies
+either way with probability about 0.19. The two-seed mean deviation has an error of
+sigma/sqrt 2 = 2.6, 1.4, 0.7 per cent; I will quote it as the bound on a bias.
 
-## 2026-11-15T17:25Z  final run, P6, note compiled, stage report
+Side predictions (each refutes the run as a valid repeat if it fails): no non-finite record;
+no particle within r_+ = 1.6 M; max |dE/E| < 2e-5 (seed 1: 7.9e-6); chi^2 of the binned counts
+(dof near 47) has its median within the 3-sigma band [0.38, 1.62] dof (seed 1: 43.8);
+late/early-half ratios within 2 sigma_rel of 1 in every range; the outer two ranges within
+2 sigma of the reference (H0 and H1 agree there).
 
-- Final registered run D-bh-dress-20261115-171627-18706fb (by hand, same refusal):
-  8 of 8 scripts clean; the seven PNGs are byte-identical to those of -171128-38634d6 (the
-  changes between the two runs touch only the ledger layout, the explicit frameon=False, and
-  the deck values, now read from the M/16 input the run's manifest records). Outputs copied
-  to `figures/` and `tables/`.
-- P6 holds for the figures (no label cut at the edge, czstyle check, all eight scripts). The
-  manuscript checker (`--compile`, forbid list of `../WRITING_GUIDE.md`) is clean on 14 of 16
-  checks; the hits of 5.5 (run ids) are in the ledger appendix and of 5.8 in `ledger.py`,
-  `run_all.py`, `handreg.py` (exception 1 of the guide) and one data key `pass_e0.1_s0.5_a100`
-  of a registered output that matches the hardware pattern `A100`. So P6 as written (no hit
-  outside the exception) is refuted only by that data key.
-- `main.pdf`: 10 pages, latexmk without undefined references or overfull boxes; every page
-  read. Figures are numbered in the order of first citation.
-- `stage/G0/STAGE_REPORT.md` written by `harness/bin/nrpic-stage report D-bh-dress G0`
-  (verdict FAIL: CHECKLIST items OPEN, no verify, no verifier report), then sections of my own
-  appended: proposed statuses for C5-C7, C9, C10, C13-C15 with evidence, the five remarks of
-  the claims check, a draft for the decision paragraph. `nrpic-stage verify` not run (it
-  writes into the stage directory, outside this package's paths).
+Cost: seed 1 took 1278 s on 12 single-core processes (4000 particles each); seed 2 with
+8000 per process on 6 cores, about 45 min. No card-hour.
 
-## 2026-11-20T22:18Z  wave 3, round 1: working note v1 (helper `note`), predictions
+## N2 (2026-11-21T21:33Z): note v2 build, predictions
 
-Worktree at 0f6b3be5 (main merged, up to date; git status clean, no stranded files of this
-package). Package brief: `../PLAN-wave3.md`, row `note`. This round adds to the note the
-wave-2 baselines (Kerr spike and its AthenaK stationarity; the Newtonian-mode infall), the
-first full-relativity runs (the bubble run and its vacuum control) and the redrawn
-architecture schematic (G1 item C9). Results that other helpers produce in parallel this
-round (the lapse_leak run, the matter run, the late-drift controls, the late Newtonian-mode
-run, the G1 verifier) are named only as pending work, with no numbers. No simulation is run:
-three new figure scripts read registered outputs, each registered with `nrpic-run submit
---package tracks/D-bh-dress/note`. Predictions, written before any new script ran:
+Text changes made (from stage/G1/GATE_REVIEW.md sections 5-6 and the task): the sentences of
+v1's "Plan and open items" (old main.tex lines 198-200: run to a larger scale factor "belongs
+to the next version", D-pre-3 criterion "open, ruling requested", late drift "open") are
+replaced; the infall section says that the criterion was changed after the first runs by a
+ruling (decision 0021 item 2) and that the power law itself is not tested and why (errata row
+1.7); Q16 is in the text, in a new figure (fig_q16) and in ledger part 7; the matched vacuum
+control with the faces at +-384 M (V-1B) is named as the floor of the null test (floor
+subsection, first-run subsection, ledger part 8); the relaxed-lapse finding (decisions 0022
+item 3, 0025 item 3) has its own subsection and ledger rows (V-1GB, ES-1G, ES-1GB); ES-F is a new
+subsection with fig_esf and ledger part 9; the timeline header and the architecture chain are
+at the post-G1 state. Scripts developed into scratch/D-bh-dress/tmp/note_v2_dev* (not
+registered; development only, nothing from there is committed or cited).
 
-- P7 (`scripts/fig_kerr.py`; reference D-bh-dress-20261115-171615-8adbbdd, stationarity
-  analysis -174954-786ddcc). The script reads the numbers it prints from the run files, so
-  it must reproduce `spike/README.md` items 5 and 6 to the printed digits: constant-f
-  equatorial peaks 0.9271e8 GeV/cm^3 at 7.31 Gm (a = 0.5) and 1.0604e8 at 6.61 Gm (a = 0.8),
-  largest deviation from FdRW fig_rho_a 0.88 % and 0.95 %; Hernquist a = 0.8 peak 3.922e18
-  at 5.06 Gm against FdRW 4.083e18 (ours 4 % below); stationarity chi^2 median 43.8 for
-  47 dof, late/early ratios 0.998, 1.003, 0.999, 1.000, 1.000 in the five ranges. Refuted
-  by any difference in the printed digits (then README or my reading is wrong).
-- P8 (`scripts/fig_newton.py`; runs D-20261115-171503-4262f03, -171505-62940f4,
-  -171507-d1058a9, analysis -190541-e27453d). From `nm_growth.txt` and `nm_analysis.json`:
-  M_ta at a/a_i = 4 is 2.5966 (N128c and N64c) and 4.8159 at a/a_i = 8 (N128Lc); dress
-  0.7975, 0.7966 at 4 and 2.1537 at 8; the largest M_ta deviation from the kernel-matched
-  shells after a/a_i = 1.5 is 0.10, 0.12 and 0.31 %; dress/M_ta 0.307 (a/a_i = 4) and 0.447
-  (8) against the self-similar 0.625. Refuted by a difference in the fourth digit of a mass
-  or the second digit of a deviation.
-- P9 (`scripts/fig_esrun.py`; my own reading of the raw outputs of D-20261115-172726-60ba4c2
-  and -172730-c6d151b through the readers of `es_runs/analyse.py`, data run
-  D-20261115-170213-d2c2131). It reproduces es_runs JOURNAL entry 4 and 6 to three digits:
-  horizon drift from t0 = 100 M, max |.| over 100-200 M 3.40e-4 (ES) and 1.37e-4 (V);
-  over 100-165 M within [-5.0e-5, +9.3e-5] and [-4.2e-5, +2.1e-5]; level M_AH(100 M) - M
-  +9.55e-4 and +9.37e-4; largest |drift(ES) - drift(V)| 2.04e-4 = 1.49 V's floor; wall
-  tracers max |R/R_exact - 1| for tau <= 200 M 2.20e-3 and 1.59e-3; crossings of R = 2M at
-  tau = 14.826 and 34.437 M (exact 14.827, 34.442); the 20 M group of ES at tau = 244.09-244.51
-  M; lapse at the probe x = 46 M 1.292, 1.662, 1.636 at t = 10, 25, 50 M against the
-  homogeneous 1+log model 1.377, 2.096, 3.577 (`plateau_lapse_model`). Refuted by a
-  difference in the third digit (then either my reader or the journal is wrong).
-- P10 (schematics). `schem_architecture.py` and `schem_timeline.py` redrawn render with no
-  text running out of its block (checked by eye on the PNGs, and by a bounding-box test
-  in the scripts that reports any label wider than its block).
-- P11 (ledger). Every old row of `tables/ledger.tex` is reproduced unchanged by the rerun
-  (the inputs are the same registered files); the new rows equal the numbers of P7-P9.
-- P12 (checker). `check_manuscript.py --compile` with the guide's forbid list: 0 undefined
-  references or citations, 0 overfull boxes; hits only in the ledger appendix and the
-  registration scripts (exception 1 of the guide).
+Checks of my own figure scripts against the packages' registered analyses, before the
+registered run (development output, recorded here so the run can refute them):
+- fig_esf.py recomputes from the raw ES-F outputs (finder summary, removed record, energies by
+  tag, V-1 finder summary) D1 raw 9.879e-3 and control-subtracted 1.469e-3, F_rem 0.24137 and
+  the (iii) overall median 2.198e-3: equal to esf_criteria.json / esf_analysis.json to all
+  printed digits. New number of mine: the largest |control-subtracted closure| after 20 M is
+  3.9e-3 (the end value 1.5e-3 is one sample of a band of about 1e-3 around 2e-3).
+- fig_q16.py: largest |run/hybrid_cc - 1| over all snapshots with 3 <= a/a_i <= 12 is 0.43 per
+  cent (M_ta) and 0.91 per cent (dress); the infall README's 0.2-0.6 and 0.5 per cent are at
+  the tabulated epochs 4, 8, 12 only. The note quotes "within half a per cent" (M_ta) and
+  "within one per cent" (dress), which hold for every snapshot.
 
-## 2026-11-20T22:26Z  outcomes of P7-P10 (five registered runs, `nrpic-run submit --package tracks/D-bh-dress/note`)
+Predictions for the registered build (run_all with the 14 scripts; then latexmk; then the
+checker with --compile and the forbid list of WRITING_GUIDE.md):
+- B1: run_all reports every script clean; the regenerated fig_esf_numbers.json and
+  fig_q16_numbers.json equal the development ones (same inputs, same code).
+- B2: ledger.py writes ten ledger parts (1-6 of v1 unchanged in content, 7 Q16, 8 vacuum
+  controls and relaxed lapse, 9 ES-F, 10 Kerr seeds) and the claims check of v1 (76
+  statements, 66 agree) unchanged, because no v1 input changed.
+- B3: the checker reports 0 undefined references, 0 undefined citations, 0 overfull boxes;
+  forbidden-name hits only in the ledger appendix and scripts (exception 1 of the guide).
+- B4: 22-24 pages.
+Refuted if any script fails, a v1 ledger value changes, or the checker finds a defect I then
+have to fix (I will record what and fix it).
 
-Runs (each closed by nrpic-run with exit 0; outputs copied to `figures/`; every PNG looked
-at, byte-identical to the preview I corrected by eye before registering):
-D-20261120-222413-4a67fa2 (`fig_kerr.py`), D-20261120-222422-983f3f6 (`fig_newton.py`),
-D-20261120-222424-d7cd958 (`fig_esrun.py`), D-20261120-222429-026731f
-(`schem_architecture.py`), D-20261120-222430-452c907 (`schem_timeline.py`). Every input
-file passed its run's sha256 record (stdout of each run).
+## N3 (2026-11-21T22:02Z): outcome of N1 (Kerr spike, second sampler seed)
 
-- P7 holds. Constant-f equator peaks 0.9271e8 at 7.31 Gm (a = 0.5) and 1.0604e8 at 6.61 Gm
-  (a = 0.8), largest deviation from FdRW fig_rho_a 8.84e-3 and 9.54e-3; Hernquist a = 0.8
-  peak 3.922e18 at 5.06 Gm against 4.083e18 (ratio 0.961); chi^2 median 43.8 for 47 dof;
-  late/early 0.998, 1.003, 0.999, 1.000, 1.000. The unit factor of the Hernquist curves
-  is recomputed from `spike/kerr_lib.py` (KerrHernquist.Af); the peak on the 44-point grid
-  times it is 3.918e18 against the refined 3.922e18 of the reference, so the factor is the
-  one the reference used. Seen in the figure: our a = 0.8 Hernquist peak lies visibly below
-  the published markers (the open 4 per cent, TO VERIFY in `spike/README.md`).
-- P8 holds. M_ta 2.5966 / 2.5966 at a/a_i = 4 (dx = 1.06, 2.125 M) and 4.8159 at 8; dress
-  0.7975 / 0.7966 and 2.1537; largest M_ta deviation from the kernel shells after a/a_i = 1.5
-  1.04e-3, 1.20e-3, 3.07e-3; dress/M_ta 0.307 and 0.447. The analysis run read exactly the
-  three run directories that `common.py` names (checked by the script). Seen in the figure:
-  the dress deviations are a few per cent at a/a_i < 2, where the dress is small, and the
-  measured profile at a/a_i = 8 follows the self-similar curve only outside lambda ~ 0.06.
-- P9 holds to three digits throughout. Level +9.547e-4 / +9.374e-4; max |drift| from 100 M
-  3.400e-4 / 1.368e-4; 100-165 M [-4.96e-5, +9.35e-5] / [-4.21e-5, +2.11e-5]; largest
-  |drift difference| 2.037e-4 = 1.49 times the control's; wall 2.196e-3 / 1.594e-3 for
-  tau <= 200 M; crossings 14.8262-14.8264 and 34.4366-34.4370 M (exact 14.8269, 34.4423);
-  20 M group of the bubble run 244.09-244.51 M (exact 244.74), not reached by the control;
-  probe lapse 1.292, 1.662, 1.636 against 1.377, 2.096, 3.577. Seen in the figure: the
-  axis and diagonal wall tracers part from tau ~ 130 M on (panel c), the bubble run's
-  horizon mass oscillates more than the control's between 100 and 165 M (panel b), and
-  K at the plateau tracer turns positive between t = 50 and 130 M (panel f).
-- P10 holds after one correction by eye: the first architecture render had the word "hole"
-  without "black" in one block (paper-writing 5.6) and a third of the canvas empty below
-  the legend; both changed before registration. Width check: 34 labels, none wider than its
-  block. The timeline's "now" marker was moved from midway between G1 and G2 to just after
-  G1, because G1 still has two open items.
+Runs: initial data D-20261121-211717-7b6374b (seed 20261121; 12 pilot cells without a hit,
+seed 1 had 13; 0 envelope violations, seed 1 had 1), AthenaK D-20261121-212016-7e090f9 (exit 0,
+2355 s on 6 single-core processes), analysis D-20261121-215955-0fb4ea2 (analyze_kerr.py, same
+reference grid), comparison D-20261121-220011-d0deb0b (compare_seeds.py; figure
+fig_kerr_seeds.png of that run looked at: panel (a) both seeds per range with the two-seed
+mean, panel (b) running means; the seed-2 running means settle by ~5000 M).
 
-## 2026-11-21T12:57Z  batch 3: outcome of P11 (run of the cut session), predictions P13-P15
+| Range (r/M) | seed 1: d, sigma, z | seed 2: d, sigma, z | two-seed mean +- error |
+|---|---|---|---|
+| 0-4 | -4.10, 3.69, -1.11 | -1.06, 3.83, -0.28 | -2.64 +- 2.66 |
+| 4-6 | -1.77, 1.94, -0.91 | -1.04, 1.97, -0.53 | -1.41 +- 1.38 |
+| 6-10 | -1.04, 1.03, -1.01 | -0.04, 1.03, -0.03 | -0.54 +- 0.73 |
+| 10-16 | -0.07, 0.67, -0.11 | +1.41, 0.68, +2.08 | +0.66 +- 0.48 |
+| 16-40 | +0.16, 0.27, +0.59 | -0.07, 0.27, -0.27 | +0.04 +- 0.19 |
 
-Worktree at c55dc733 (main merged; the cut session of 2026-11-20 left the note package
-clean and committed through c2e0571d; its run of every script, D-20261120-223535-24f7f90,
-closed with exit 0 at 22:36Z, outputs never copied). Inputs of this round: the lead's list in
-`../HANDOFF.md` (row `note`), the verifier's requests (`../stage/G1/VERIFIER.md`, section
-"Requests") and the lead's actions on them (`../stage/REVIEW-wave3.md` section 2).
+(d and sigma in per cent of the expected count; reference grid D-bh-dress-20261115-172646-ed6a510.)
 
-- P11 holds (judged now on D-20261120-223535-24f7f90 against the committed
-  `tables/ledger.tex` of D-20261119-154336-1480741): all 51 old rows are reproduced character
-  for character (one apparent change is two rows sharing the label "the same read off the
-  published figure"); 40 rows are new. The claims check grew from 36 to 72 statements, 63
-  agree; 13 statements of the old `stage/G1/STATUS.md` are no longer found in the rewritten
-  file (reported, not an error of the outputs).
+- Main test: Z2 = z(0-4) + z(4-6) + z(6-10) = -0.84 > -1.5: **H0 HELD** (no bias indicated);
+  not strong-bias either. Seed 2's sigma within 4 per cent of seed 1's (predicted within 20):
+  held. The two seeds differ by 0.57, 0.26, 0.69 sigma in the inner ranges. The signs in the
+  inner ranges are again all negative, but small (z -0.28, -0.53, -0.03); the combined
+  two-seed z of the three inner ranges is -1.59 (sum over sqrt 3). So: no evidence of a bias
+  at the 1.5-sigma level; the two-seed means bound a bias in 0-4, 4-6, 6-10 to about
+  -2.6 +- 2.7, -1.4 +- 1.4, -0.5 +- 0.7 per cent. As written beforehand, a single seed decides
+  weakly; this outcome halves seed 1's deficits but does not exclude a 1-per-cent bias.
+- Side predictions: no non-finite record (0): held; chi^2 median 48.4 for 47 dof, inside
+  [0.38, 1.62] dof: held; late/early within 2 sigma in every range (largest |late/early - 1|
+  1.0 per cent in 0-4, sigma 3.8): held. **Refuted**: (i) the outer range 10-16 lies +1.41 per
+  cent above the reference, z = +2.08, just outside the predicted 2 sigma (16-40 holds at
+  -0.27); among ten range-seed values one beyond 2 sigma is expected about one time in three
+  [JUDGEMENT], so I do not read it as a defect, but it is outside what I predicted. (ii) one
+  particle of 48000 went inside r_+ (smallest r 0.400; seed 1: none, smallest 2.288), and with
+  it max |dE/E| is not finite (prediction: < 2e-5); 15 particles went below their predicted
+  pericentre by more than 1e-3 (seed 1: 14), the largest by 3.26 (seed 1: 3.1e-3). The
+  plunging particle is diagnosed in N4 before anything else is concluded from it.
 
-Changes made before the next registered run, each from a verifier request or the gate state:
-`fig_newton.py` adds the largest |dress/matched shells - 1| from a/a_i = 3 on; `ledger.py`
-rewords "wall radius against the closed form" (it is the wall column R_w(tau) of the
-reference against the wall law), marks the table-density residuals as upper bounds
-(second-order differences), states the self-similar model's parameters, and adds two rows
-(dress against matched shells at a/a_i = 2 and from 3 on; the second agent's profile
-deviation with r_ta moved by -3 and +3 per cent, run D-20261121-031711-0d79cb3, read with
-its sha256); `common.py` names that run; `schem_timeline.py` shows G0 passed (coord/GATES.md
-line 11) and G1 open for the infall profile criterion and this note.
+## N4 (2026-11-21T22:04Z): the plunging particle of seed 2, prediction
 
-- P13 (rerun of `run_all.py`, registered). Every PNG and PDF except `schem_timeline.*` is byte
-  identical to D-20261120-223535-24f7f90; `fig_newton_numbers.json` differs only by the new
-  field. New rows: dress over matched shells - 1 at a/a_i = 2 is 0.55, 1.40, 3.43 per cent
-  (N128c, N64c, N128Lc; the field `dress_rel_at_a2` already in the numbers); from a/a_i = 3
-  on the largest is below 1.5 per cent in each run (the lead's Z4 on the track's cell-centre
-  table gave 0.28, 0.68, 1.03); the second agent's profile row reads 0.259; 0.325; 0.345.
-  Every old row unchanged except the three reworded labels. Refuted by a changed old value,
-  a changed data figure, or a from-3 maximum above 1.5 per cent.
-- P14 (checker). `check_manuscript.py --main main.tex --compile` with the guide's forbid
-  list: 0 undefined references or citations, 0 overfull boxes; hits of 5.5 and 5.8 only in
-  the ledger appendix, the registration scripts (exception 1 of the guide) and the data key
-  `pass_e0.1_s0.5_a100` (as in P6); negation hits (5.1) are reviewed one by one and kept
-  only where they are content. Refuted by any other hit I cannot remove.
-- P15 (pages). The compiled note has 13 to 16 pages; no caption runs past five lines; the
-  figures appear in the order of first citation.
+Script `kerr_seed2/plunger.py` (analysis only): find the particles whose max |dE/E| is not
+finite or above 1e-3 in the seed-2 analysis (kerr_seed2_series.npz), read their radius at all
+201 snapshots, and from the initial invariants (ic_meta.npz: E, Lz, C, rp) compute their
+distance from the capture boundary, (C - C_crit)/C_crit with C_crit from kerr_lib.ccrit at
+their starting radius, and the effect of their post-plunge snapshots on the 0-4 count.
+Prediction: exactly one such particle; its initial C lies within 1e-3 (relative) of C_crit,
+i.e. on the edge of the loss cone, where an energy error of the size seen in seed 1 (|dE/E| up
+to 8e-6 near pericentres of 2.3 M) can carry it across [JUDGEMENT]; it plunges at a pericentre
+passage and is then counted in the 0-4 range at every later snapshot (the analytic metric has
+no excision), which raises seed 2's 0-4 time average by (fraction of snapshots after the
+plunge) / (expected count 137.8), at most +0.73 per cent. Refuted if its C is farther than
+1e-2 from C_crit (then a defect of the sampler or the pusher beyond separatrix sensitivity),
+or if it never sits at r < 4 after the plunge.
 
-## 2026-11-21T13:06Z  batch 3: outcomes of P13-P15; note v1 compiled, checked, every page read
+## N4 outcome (2026-11-21T22:05Z): run D-20261121-220137-5123361 (plunger.py; plunger.png looked at)
 
-Registered runs (each `nrpic-run submit --package tracks/D-bh-dress/note`, exit 0, 11 of 11
-scripts clean): D-20261121-130021-e7a9166 (first pass), -130215-83e6c7b (parameter labels,
-script comments), -130347-5b37c59 (Newtonian-mode rows in their own ledger table),
--130510-7e14c5f (four more claims; its figures and tables are the committed ones).
+**Prediction held** on every count. Exactly one particle (index 29068, file kerr_0) has a
+non-conserved energy. Its initial invariants lie (C - C_crit)/C_crit = 7.2e-6 from the capture
+boundary: the closest of all 48000 (rank 0; 74 particles lie within 1e-3, 562 within 1e-2), far
+inside the predicted 1e-3. It starts at r = 20.1 M with predicted pericentre 3.66 M, reaches
+3.64 M at the snapshot before, and is inside r_+ at the snapshot of t = 300 M (plunge between
+200 and 300 M, at its first pericentre passage); afterwards it sits at r = 0.40 M (the analytic
+metric has no excision) for 198 of 201 snapshots and is counted in 0-4 M. It raises seed 2's
+0-4 time average by 0.715 per cent (predicted at most 0.73): 0.9894 with it, 0.9822 without
+its post-plunge snapshots. [JUDGEMENT] The plunge is the separatrix sensitivity of an orbit that
+the sampler drew on the edge of the loss cone (a relative distance of 7e-6 against energy
+errors of order 1e-6 near pericentres of 2-4 M), not a defect of the sampler; seed 1 had no
+particle that close, which would explain why it had none.
 
-- P13 holds. Every PNG of the final run is byte-identical to D-20261120-223535-24f7f90 except
-  `schem_timeline.png` (new gate state, looked at); PDFs and SVGs differ only by their creation
-  date and random clip ids. `fig_newton_numbers.json` differs by the one new field. All 91
-  value-and-run pairs of the old ledger are present unchanged among the 94 rows; parameter
-  values identical (labels shortened). New rows: dress over matched shells - 1 at a/a_i = 2
-  0.55, 1.40, 3.43 per cent; largest from a/a_i = 3 on 0.28, 0.68, 1.03 per cent (equal to the
-  lead's Z4 on the cell-centre table); the second agent's profile deviation 0.259, and 0.325,
-  0.345 with r_ta times 0.97, 1.03; self-similar model tau_max 300, softening 1e-5.
-- Claims check: 76 statements, 66 agree, 10 need a remark. New remark: stage/G1/STATUS.md:22
-  says "0.5-3.3 per cent at a/a_i = 2"; the note's numbers give 3.43 for the coarsest run (the
-  lead's 3.31 is from the infall package's cell-centre table). "Within 1.1 per cent from 3 on"
-  and the verifier's 25.9, 32.5, 34.5 agree. 13 statements of the superseded STATUS.md are no
-  longer found in the rewritten file (unchanged since D-20261120-223535-24f7f90).
-- P14 partly refuted. Final checker (`--compile`, the guide's forbid list): 0 undefined
-  references, 0 undefined citations, 0 overfull boxes; 14 of 16 checks clean, 5.1 negations
-  clean after one rewrite. Remaining hits: 5.5 only in the ledger appendix (94, run ids,
-  exception 1); 5.8 in `ledger.py`, `common.py`, `run_all.py`, `handreg.py` (exception 1) and
-  three data keys of registered outputs (`"ES-1"` in `fig_esrun.py:217`, `pass_e0.1_s0.5_a100`
-  twice in `fig_infall.py`). The "ES-1" key was not predicted. On the way: the first compile had
-  one overfull box (parameter table, 22.6 pt; labels shortened) and project names in comments of
-  three figure scripts (reworded).
-- P15 refuted: 18 pages (predicted 13-16): the ledger grew to six tables of one page each. Also
-  found by reading the pages, and fixed: the Kerr figure was numbered before the Schwarzschild
-  spike figure though cited after it (floats swapped); ledger part 5 ran off the bottom of its
-  page (Newtonian-mode rows moved into part 6); the parameter appendix had no sentence. No
-  caption exceeds five lines. Every page of the final PDF read (pages 1-10 and 17-18 as images
-  after the last layout change; 11-16, unchanged tables and references, checked by text).
+Consequence for N1, re-read with the post-plunge snapshots of that particle removed (a
+correction found after the run; the pre-registered reading above stays the primary one): seed
+2's deviations become -1.78, -1.04, -0.04 per cent in 0-4, 4-6, 6-10; Z2 about -1.0, still above
+-1.5 (H0 holds); but now all three inner ranges lie below the reference in both seeds, and the
+two-seed means are about -3.0 +- 2.7, -1.4 +- 1.4, -0.5 +- 0.7 per cent with a combined inner z
+of about -1.7 (computed exactly by fig_kerr_seeds.py of the note). Reading: no significant
+bias; a deficit of one to two per cent inside 10 M is neither shown nor excluded by two seeds.
+What would decide it without the evolution: a direct test of the sampler at t = 0 with many
+more particles (the expected count in 0-4 M is 138 per 48000), or a third and fourth seed.
 
-Text changes of this round (main.tex): abstract without the doubled spike clause and with the
-three failed predictions named; the first run's level, drift and 1+log model each stated as
-refuted; "agree to rounding error" corrected to "far below the floor" (es_runs JOURNAL entry 8);
-the lapse described as following the model only for the first few M; the dust advancing
-"somewhat faster than coordinate time"; the late drift open, its distant-boundary control named
-as run and being analysed (no numbers); dress wording per the verifier; profile deviation
-sensitive to r_ta; Hernquist gap judged to lie in the published curve, black-hole mass named
-as our choice (FdRW kerrdm.tex:127 quote the Galactic-centre lower bound); plan with the
-pending runs named without numbers; timeline at G0 passed.
+## N2 outcome (2026-11-21T22:10Z): the build of note v2
+
+Registered builds (run_all.py, every one 14 of 14 scripts clean): D-20261121-220354-daadc10
+(first), -220513-c666211 (after the checker's wording points), -220624-879d83e (parameter table
+without the overfull row), **-220728-a41c2f0 (final; its figures/ and tables/ are the committed
+ones)**. The earlier three are superseded intermediate passes and stay on record.
+- B1 HELD: every script clean; fig_esf_numbers.json and fig_q16_numbers.json of the first build
+  equal the development ones byte for byte; the eight v1 *_numbers.json files equal v1's.
+- B2 PARTLY REFUTED: ledger parts 1-6 are byte-identical to v1's ledger.tex, and parts 7-10 are
+  new as planned; the claims check still counts 76 statements, 66 agree, but 15 of its
+  locators are no longer found because the lead rewrote stage/G1/STATUS.md (and other
+  documents) after v1 (values unchanged; the check is of the lead's documents, not of the note
+  text). Not fixed here: the claims check is v1's tool; the lead may retire it or re-anchor it.
+- B3 HELD after two fixes: the first checker pass found 9 negations, one "defect" (5.7), and one
+  overfull box of 1.9 pt in the parameter table (my new rows); rewritten and split, the final
+  pass gives 0 undefined references, 0 undefined citations, 0 overfull boxes; remaining hits:
+  4 negations whose content needs them (the power law not tested, not excluded, rather than
+  the boundary, not -9/4), 126 run ids in the ledger and scripts (exception 1 of the guide), 30
+  project names in scripts only (exception 1). Checker log: scratch/D-bh-dress/tmp/check_v2_final.log
+  (not registered: a check of the source, as in v1).
+- B4 HELD: 22 pages.
+Pages read (all 22, after the last build): the reading found Fig. 7 (the two Kerr seeds) out of
+citation order, ahead of the Schwarzschild and Kerr spike figures; the float was moved after the
+Kerr figure and the order checked again on pages 8-13. Every figure of the note was looked at as
+a PNG this session: fig_es, fig_constraints, fig_floor, fig_esrun, fig_spike, fig_kerr,
+fig_infall, fig_newton (v1 copies, regenerated identically), fig_esf, fig_q16, fig_kerr_seeds,
+schem_architecture, schem_timeline (new or redrawn).
+
+Observation, not tested: in the seed-2 profile figure of the analysis run
+(kerr_seed2_profile.png) the outermost radial bin (about 80-100 M) lies 7-9 per cent below the
+reference in every band at all three times; it lies outside the five ranges of the test.
+Whether seed 1 shows the same (an edge effect of the energy cut or of the reference grid) was
+not checked.
+
+Correction (22:12Z): N4 and the first draft of the note said "the analytic metric has no
+excision". That holds for the executable both seeds used (release core-v0.3, chosen so that
+the seed is the only change); release core-v0.4 added lapse-threshold removal on the analytic
+metrics (tracks/core/interfaces/REQUESTS_ADF.md on main, row D4). The note and README now say so.

@@ -73,16 +73,22 @@ Date: 2026-11-21 · branch `track/D-bh-dress` at `5ce52d25b1f4` · checklist
 
 | File | Script | Kind (data / schematic) | Looked at (PNG read) |
 |---|---|---|---|
-| note/figures/fig_constraints.* | note/scripts/fig_constraints.py | data | to be confirmed by the session |
-| note/figures/fig_es.* | note/scripts/fig_es.py | data | to be confirmed by the session |
-| note/figures/fig_esrun.* | note/scripts/fig_esrun.py | data | to be confirmed by the session |
-| note/figures/fig_floor.* | note/scripts/fig_floor.py | data | to be confirmed by the session |
-| note/figures/fig_infall.* | note/scripts/fig_infall.py | data | to be confirmed by the session |
-| note/figures/fig_kerr.* | note/scripts/fig_kerr.py | data | to be confirmed by the session |
-| note/figures/fig_newton.* | note/scripts/fig_newton.py | data | to be confirmed by the session |
-| note/figures/fig_spike.* | note/scripts/fig_spike.py | data | to be confirmed by the session |
-| note/figures/schem_architecture.* | note/scripts/schem_architecture.py | schematic | to be confirmed by the session |
-| note/figures/schem_timeline.* | note/scripts/schem_timeline.py | schematic | to be confirmed by the session |
+| note/figures/fig_constraints.* | note/scripts/fig_constraints.py | data | yes: package note_v2, 2026-11-21 13:2x-14:0x PST (note/README.md, Requests item 2) |
+| note/figures/fig_es.* | note/scripts/fig_es.py | data | yes: package note_v2, 2026-11-21 13:2x-14:0x PST (note/README.md, Requests item 2) |
+| note/figures/fig_esf.* | note/scripts/fig_esf.py | data | yes: package note_v2, 2026-11-21 13:2x-14:0x PST (note/README.md, Requests item 2) |
+| note/figures/fig_esrun.* | note/scripts/fig_esrun.py | data | yes: package note_v2, 2026-11-21 13:2x-14:0x PST (note/README.md, Requests item 2) |
+| note/figures/fig_floor.* | note/scripts/fig_floor.py | data | yes: package note_v2, 2026-11-21 13:2x-14:0x PST (note/README.md, Requests item 2) |
+| note/figures/fig_infall.* | note/scripts/fig_infall.py | data | yes: package note_v2, 2026-11-21 13:2x-14:0x PST (note/README.md, Requests item 2) |
+| note/figures/fig_kerr.* | note/scripts/fig_kerr.py | data | yes: package note_v2, 2026-11-21 13:2x-14:0x PST (note/README.md, Requests item 2) |
+| note/figures/fig_kerr_seeds.* | note/scripts/fig_kerr_seeds.py | data | yes: package note_v2, 2026-11-21 13:2x-14:0x PST (note/README.md, Requests item 2) |
+| note/figures/fig_newton.* | note/scripts/fig_newton.py | data | yes: package note_v2, 2026-11-21 13:2x-14:0x PST (note/README.md, Requests item 2) |
+| note/figures/fig_q16.* | note/scripts/fig_q16.py | data | yes: package note_v2, 2026-11-21 13:2x-14:0x PST (note/README.md, Requests item 2) |
+| note/figures/fig_spike.* | note/scripts/fig_spike.py | data | yes: package note_v2, 2026-11-21 13:2x-14:0x PST (note/README.md, Requests item 2) |
+| note/figures/schem_architecture.* | note/scripts/schem_architecture.py | schematic | yes: package note_v2, 2026-11-21 13:2x-14:0x PST (note/README.md, Requests item 2) |
+| note/figures/schem_timeline.* | note/scripts/schem_timeline.py | schematic | yes: package note_v2, 2026-11-21 13:2x-14:0x PST (note/README.md, Requests item 2) |
+
+Column filled by the lead on 2026-11-22 (batch 10a) after `git mv note_v2 note`, from the list the
+package note_v2 gives; fig_esf, fig_kerr_seeds and fig_q16 are figures of note v2 that v1 did not have.
 
 ## Verifier report
 

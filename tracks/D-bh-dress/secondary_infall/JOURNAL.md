@@ -1015,7 +1015,7 @@ QR5 energy test: every group inside r_last(16) = 26.4 M within 0.3 % of its init
     (Q16 0.4 %), the layer 26.4-30.5 M within 1.5 % (Q16 up to 2.2 %); no particle lost.
 Cost: 3000-3600 steps, 1.0-2.5 h on six threads.
 
-## 2026-11-22T02:08Z  (D-bh-dress lead, batch 10a) outcome of Q16-256 against QR1-QR5
+## 2026-11-23T02:08Z  (D-bh-dress lead, batch 10a; 18:08 PST on 2026-11-22) outcome of Q16-256 against QR1-QR5
 
 Run D-20261121-205226-3cfbc20 ended 22:17Z on 2026-11-21, exit 0, 5111 s on six threads (inside
 the predicted 1.0-2.5 h); closed with nrpic-run finish in this session. Analyses (registered):

@@ -1,4 +1,4 @@
-"""Schematic: architecture of Track D's calculation (note v1, gate G1 item C9).
+"""Schematic: architecture of Track D's calculation (note v2, after gate G1; G1 item C9).
 
 Three states. Exists = in this repository's AthenaK release core-v0.3 on main, or in the
 track's own reference and analysis code; provided by core = on a tested branch of core with
@@ -12,7 +12,11 @@ Newtonian mode), coord/INTERFACES/*.md; scratch/core/exe/core_requests-adf/READY
 3, 4, 5: tracer rule, analytic-metric excision, removal record and flux spheres, point
 mass), core_gauge/READY (option 1, lapse_leak), core_build-openmp/READY (threaded processor
 build); the track's packages es_runs, flux_tools, spike, the infall and drift packages,
-and PLAN-wave3.md (round 1). No data are read. A label that is wider than
+and PLAN-wave3.md (round 1). Note v2 (batch 6): dust reaching the black hole and the growth
+against the flux exist (ES-F, g2runs/JOURNAL.md entry 10); the relaxed lapse is kept out of
+the null test (coord/DECISIONS/0022 item 3, 0025 item 3); the drift control with the faces
+at +-384 M ran (stage/REVIEW-wave3.md section 3); the long runs are queued (section 12).
+No data are read. A label that is wider than
 its block is reported on stdout ("label wider than its block").
 """
 import os
@@ -73,7 +77,7 @@ def main():
         ("punctures with momentum and spin", EXISTS),
         ("lattice dust; vacuum control table", EXISTS),
         ("tracers of zero mass on timelike orbits", CORE),
-        ("dust reaching the black hole", NEW),
+        ("dust reaching the black hole", EXISTS),
         ("warm dust: velocity dispersion", NEW),
         ("puncture in a periodic dust box", NEW),
     ])
@@ -94,8 +98,8 @@ def main():
         ("self-similar infall, matched shells", EXISTS),
         ("horizon-mass floor of a vacuum puncture", EXISTS),
         ("tracer areal radius and proper time", EXISTS),
-        ("growth against the integrated flux", NEW),
-        ("controls of the late horizon drift", NEW),
+        ("growth against the integrated flux", EXISTS),
+        ("controls of the late horizon drift", EXISTS),
         ("coupling exponent and its upper limit", NEW),
     ])
     ybot = min(y1, y2, y3)
@@ -109,9 +113,9 @@ def main():
             italic=True, ha="left")
     chain = [("bubble data", "done", pf.GREEN_DARK, pf.WHITE, 3.6),
              ("bubble run, vacuum control", "done", pf.GREEN_DARK, pf.WHITE, 5.6),
-             ("relaxed lapse", "ran; analysed now", pf.OLIVE, pf.WHITE, 3.9),
-             ("late-drift controls", "pending", pf.GREY_FILL, pf.INK, 4.4),
-             ("dust to the black hole", "pending", pf.GREY_FILL, pf.INK, 4.6),
+             ("relaxed lapse", "ran; kept out of null test", pf.OLIVE, pf.WHITE, 3.9),
+             ("late-drift controls", "faces done; long runs queued", pf.OLIVE, pf.WHITE, 4.4),
+             ("dust to the black hole", "done once, M/8", pf.GREEN_DARK, pf.WHITE, 4.6),
              ("growth law, null test", "goal", pf.PLUM, pf.WHITE, 4.5)]
     gap = (29.6 - 0.4 - sum(c[4] for c in chain)) / (len(chain) - 1)
     x = 0.4
