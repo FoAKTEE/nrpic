@@ -91,6 +91,15 @@ def cond_ok(c, st):
     return False
 
 
+def note_wait(st, name, why):
+    """Log why an entry waits, once per change of the reason (a silent wait stalled the
+    queue from 2026-11-21 to 2026-11-22: pop_s028_gr's condition never held)."""
+    w = st.setdefault("waiting", {})
+    if w.get(name) != why:
+        w[name] = why
+        log("waiting:", name, "|", why)
+
+
 def owner_card_jobs():
     r = subprocess.run(["squeue", "-h", "-u", os.environ.get("USER", "haiyangw"), "-o", "%j %T"],
                        capture_output=True, text=True)
@@ -130,13 +139,16 @@ def one_pass(st):
             continue
         if e["kind"] == "card" and blocked_card:
             continue
-        if not all(cond_ok(c, st) for c in e.get("needs", [])):
+        failing = [c for c in e.get("needs", []) if not cond_ok(c, st)]
+        if failing:
+            note_wait(st, name, "condition not met: " + json.dumps(failing[0]))
             if e["kind"] == "card":
                 blocked_card = True          # keep the order of the card runs
             continue
         if e["kind"] == "card":
             n = owner_card_jobs()
             if n is None or n >= MAX_ELIGIBLE:
+                note_wait(st, name, f"card slots of the owner taken ({n} of {MAX_ELIGIBLE})")
                 blocked_card = True
                 continue
         argv = [resolve(a, st) for a in e["argv"]]
