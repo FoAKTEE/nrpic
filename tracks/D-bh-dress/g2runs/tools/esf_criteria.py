@@ -61,14 +61,18 @@ def binned_median(tau, y, tau_max=TAU_MAX, width=BIN, nmin=NMIN):
 
 
 def main():
+    global TAU_MAX
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", required=True)
     ap.add_argument("--data", required=True)
     ap.add_argument("--control", required=True)
     ap.add_argument("--base", default="esf")
     ap.add_argument("--sphere", type=int, default=1)
+    ap.add_argument("--tau_max", type=float, default=TAU_MAX,
+                    help="upper end of tau_rem for (iii); 650 for the 500 M runs (g2long entry 1)")
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", "."))
     a = ap.parse_args()
+    TAU_MAX = a.tau_max
     os.makedirs(a.out, exist_ok=True)
     b = os.path.join(a.run, a.base)
     hor = fluxio.read_horizon(b + ".horizon_summary_0.txt")
@@ -107,7 +111,7 @@ def main():
     ratio = M_at / M_LTB(tau) - 1.0
     res3 = {}
     for name, s in (("dust", is_dust & ok & (tau <= TAU_MAX)), ("tracers", is_tr & ok & (tau <= TAU_MAX))):
-        rows = binned_median(tau[s], ratio[s])
+        rows = binned_median(tau[s], ratio[s], tau_max=TAU_MAX)
         cnt = [r for r in rows if r["counted"]]
         res3[name] = dict(n=int(s.sum()), bins=rows, n_bins_counted=len(cnt),
                           max_abs_median=max((abs(r["median"]) for r in cnt), default=None),
@@ -169,7 +173,7 @@ def main():
     late = trem >= trem.max() - 5.0 if trem.size else np.zeros(0, bool)
     out["P1"] = dict(tau_at_horizon_t_end=float(np.median(tau[late & is_dust])) if (late & is_dust).any() else None,
                      kappa_late=float(np.median(tau[late & is_dust] / trem[late & is_dust])) if (late & is_dust).any() else None)
-    out["P2"] = {str(tt): float(np.interp(tt, th, Mh)) for tt in (50.0, 100.0, 150.0, 200.0) if th[-1] >= tt}
+    out["P2"] = {str(tt): float(np.interp(tt, th, Mh)) for tt in (50.0, 100.0, 150.0, 200.0, 300.0, 400.0, 500.0) if th[-1] >= tt - 0.5}
     reasons = rem["reason"]
     dust_all = rem["tag"] >= 140
     out["P5"] = dict(t_first_dust_removal=float(rem["time"][dust_all].min()) if dust_all.any() else None,

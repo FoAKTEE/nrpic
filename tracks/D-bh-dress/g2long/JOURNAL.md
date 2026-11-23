@@ -154,3 +154,151 @@ S3 es1l16 (D-20261121-202936-992542e): 512 MeshBlocks (56 on each of levels 0-7,
    0.99239024) and -1.8e-4 at M/16.
 Cost of R4, R5 from S3 (H4): 512/456 x 2 = 2.25 times the M/8 cost per M: V-1L16 to 300 M
 ~3.0 card-hours (cap 5.0), ES-1L16 ~3.4 (cap 6.0).
+
+## Entry 5 (2026-11-22 17:59 PST, lead of batch 10a): outcomes of R1-R4, of ES-FL, and of R5 to 225.6 M
+
+Chains: R1 V-1L DONE at 500 M (jobs 4830, 4852, 4864; 2.24 card-hours), R2 ES-1L DONE at 500 M
+(4831, 4853, 4865; 2.49), R3 ES-FL DONE at 500 M (4833, 4876, 4887, 4897; 2.60), R4 V-1L16 DONE
+at 300 M (4834, 4877, 4888, 4898; 3.00), R5 ES-1L16 at t = 225.6 M after three segments (4835,
+4906, 4913; 2.51), its fourth segment queued as job 4920. Card time 12.84 h (Slurm elapsed
+times, one card each). The sequencer released R5 at 11:12 and exited at 11:14 with its queue
+empty (scratch/D-bh-dress/g2long_seq/log): it has ended normally, nothing is held.
+Analysis first run into scratch/D-bh-dress/tmp/ by hand; the registered reruns (run ids in
+entry 7) repeat the same commands. Tools: `tools/judge_long.py` (written here, from the
+definitions of entry 1), `../flux_tools/esf_analyse.py`, `../g2runs/tools/esf_criteria.py` with
+a new `--tau_max` option (default 250 as before; 650 here, as entry 1 asks). Figures looked at:
+judge_long.png, esf_criteria.png, esf_growth.png, esf_bracket.png.
+
+R1 V-1L
+- V1 HELD: finite to 500 M, horizon at every 0.5 M sample (largest gap 0.5 M), no tracer escaped
+  (140 -> 98 tracers: 42 fell into the hole, none left the mesh).
+- V2 HELD: |M_V1L - M_V1B| <= 5.0e-8 for t <= 200 M (largest at 186.5 M; below 1e-14 until
+  ~165 M): the executables v0.4 and v0.6 give the same vacuum run.
+- V3 FAILED as predicted (not refuted): F_V(500) = 1.25e-4 (> 1e-4, < 3e-4). D_V1L lies in
+  [-4.8e-5, +1.25e-4]; the maximum comes from a step of about +1.2e-4 between 240 and 300 M
+  (judge_long.png panel b), after which D stays at +1.15e-4 to 495 M; the last sample (499.5 M)
+  drops back to -1e-5. Mean coordinate radius at 500 M 2.18 M, below the predicted 2.2-2.6 M:
+  the radius is stationary (2.197 at 200 M, 2.189 at 400 M), not growing as entry 1 assumed.
+- V4 HELD: 2.24 card-hours (2.0-2.6).
+
+R2 ES-1L
+- E1 HELD: |M_ES1L - M_ES1| <= 8.4e-6 up to 130 M; beyond 130 M ES-1 (faces +-192 M) leaves,
+  5e-4 by 200 M (panel d).
+- E2: criterion N HOLDS (max |D_ES1L - D_V1L| on 100-500 M = 2.28e-4 at 256.5 M, threshold
+  max(2 F_V, 1e-4) = 2.51e-4; nowhere above the refutation level 3.76e-4). The sharper
+  predictions FAILED: <= 1e-4 on 100-300 M (2.28e-4) and <= 2e-4 on 100-500 M. Shape: the ES run
+  has its step of ~+1.8e-4 at 150-160 M, the vacuum run its step at 240-300 M; after 300 M the
+  difference sits at +7.5e-5 +- 1e-5 to 495 M (panel c).
+- E3 FAILED: radius at 500 M 2.36 M (predicted 2.6-3.1); it shrinks slowly, 2.45 at 200 M,
+  2.36 at 500 M (ES-1's 2.56 at 200 M was its faces).
+- E4 HELD: 2.49 card-hours (2.2-2.9).
+- Bound on a coupling M ~ a^k (the [JUDGEMENT] reading of entry 1): the difference never
+  exceeds 2.3e-4 while ln a grows by ~1.1, so |k| below ~2e-4 at this resolution and boundary,
+  if the whole difference were a coupling.
+
+R3 ES-FL
+- F1 HELD: |M_ESFL - M_ESF| <= 6.1e-8 up to 130 M (cards are not bit-reproducible, but here they
+  agree far inside 3e-4); after 130 M ES-F's faces (+-192 M) act: 3.0e-3 at 190.5 M. So the ES-F
+  growth quoted at 200 M carried a face error of up to 3e-3 in M after 130 M.
+- F2 partly FAILED: M_AH(300) = 1.3708 HELD (1.364-1.390); M_AH(400) = 1.4920 FAILED (1.497-
+  1.530) and M_AH(500) = 1.6090 FAILED (1.625-1.665); neither outside the refutation windows
+  ([1.45, 1.58], [1.56, 1.72]). kappa_late = tau/t of the last removals = 1.20 (predicted
+  1.25-1.33): the gauge model of entry 1 overestimated kappa at late times; the exact LTB
+  comparison (G) does not use kappa.
+- F3: criterion G HOLDS. (iii) to tau_rem <= 650 M: 61 bins of 10 M counted, every dust median
+  within +-0.62 per cent (largest 6.2e-3), so within +-1 per cent; D2 holds at all 960 samples
+  after 20 M (margins 3.3e-3 below the upper bound F_rem side, 1.2e-2 below F_sph). The
+  predicted overall median +0.2 per cent (0.1-0.4) FAILED: +0.52 per cent, because the medians
+  step from +0.25 to +0.6 per cent at tau_rem ~ 285 M (esf_criteria.png panel b). D1 closure,
+  control-subtracted, at 499.5 M = +9.4e-3, outside the predicted [0, +8e-3]: FAILED narrowly
+  (raw 1.80e-2). D3 holds (no violation, smallest margin 1.9e-4); D4: 0.23 per cent of the
+  removals precede the LTB horizon crossing, none by more than 0.084 M of proper time.
+- F4 partly FAILED: removed sum of m E_K at 500 M 0.601 (0.60-0.70: HELD), none escaped (HELD),
+  but NOT every removal by reason 3: 84496 of 147840 dust removals are by reason 2 (lapse below
+  alpha_exc = 0.05). Every removal before 218.9 M is reason 3, every one after 224.0 M reason 2
+  (median coordinate radius at removal 1.12 M against 2.04 M). [VERIFIED by source and data]
+  athenak/src/particles/nrpic.cpp:451-455 empties a horizon only while its smallest
+  coordinate radius is below 4 x initial_radius (here 4 x 0.8 = 3.2 M); the finder's smallest
+  radius (summary column 12) passes 3.2 M between t = 219.0 (3.19986 M) and 219.5 M (3.20419 M).
+  The steps at ~220 M in D3 (margin 0.001 -> 0.0065, panel c), in the residual of
+  esf_bracket.png and at tau_rem ~ 285 M in (iii) coincide with that switch: particles are now
+  removed deeper and later in coordinate time, where the finder mass is larger [JUDGEMENT on the
+  mechanism; ESFLK in entry 6 is the run in which it can fail].
+- F5 HELD: horizon found at every sample (no gap above 1 M), mean coordinate radius 5.30 M at
+  499.5 M (predicted 4-5.5 M), out of the M/8 region (+-1.5 M requested, level-7 blocks reach
+  further) without loss.
+- F6 HELD: 2.60 card-hours (2.3-3.0).
+
+R4 V-1L16 (to 300 M) and R5 ES-1L16 (to 225.6 M so far)
+- H1 FAILED: M_V1L16 - 1 on 100-300 M lies in [-3.1e-4, -1.3e-4], not in [3e-5, 4e-4]; the
+  late finder bias changes sign between M/8 (+8.9e-4 to +1.06e-3) and M/16, and falls in
+  magnitude by a factor ~3-7. At t = 0 the offsets are -7.6e-3 (M/8) and -1.8e-4 (M/16)
+  (entry 4). Two resolutions cannot give an order here; a third is queued (entry 6).
+- H2 FAILED: F_V16(300) = 1.34e-4, above 5e-5 and above the M/8 floor on the same window
+  (1.22e-4). The drift of V-1L16 repeats V-1L's step at 240-300 M in time and size (panel b):
+  the floor is not set by the resolution at the horizon [VERIFIED for M/8 against M/16].
+- H3 HOLDS on the window reached (100-225.5 M, partial): max |D_ES1L16 - D_V1L16| = 1.86e-4
+  against 2.09e-4 at M/8; the two differences follow each other within ~3e-5 (panel c), so the
+  null-test difference is not a truncation error at the horizon either. Final judgement when R5
+  reaches 300 M.
+- H4 HELD for R4 (3.00 card-hours against ~3.0); R5 at 2.51 for 225.6 M, on course for ~3.35.
+
+## Entry 6 (2026-11-22 18:05 PST, before any follow-up run): follow-ups, criteria and predictions
+
+Why. (a) G2 asks for convergence in mesh spacing (brief 9.2, scope/SCOPE.md section 5: "at
+three resolutions, converging"), and H1 shows the late finder mass changing sign between M/8
+and M/16: two members cannot give an order. The cheapest third member is the coarser one:
+the finest level M/8 -> M/4 on the same +-1.5 M request (the M/16 nest costs 2.25x M/8, an M/32
+nest that still holds the 2.2 M horizon about 13 card-hours per run). (b) Entry 5 names a
+mechanism for the step in (iii) and D3 at ~220 M (horizon excision ends at 4 x initial_radius);
+a run in which it can fail keeps the excision on. Inputs: `tools/make_followups.py` (one change
+each from v1l, es1l, esfl; cfl_number 0.25, plain 1+log with the Gamma-driver shift, no
+lapse_leak: decisions 0025 item 3 and 0027 item 2).
+
+| Run | Input | tlim | Change | Card-hours (estimate; cap) |
+|---|---|---|---|---|
+| FV4 V-1L4 | inputs/v1l4.athinput | 300 M | finest level M/4 | 0.6 (392/456 blocks x half the steps x V-1L's 0.0045 per M); cap 2.0 |
+| FE4 ES-1L4 | inputs/es1l4.athinput | 300 M | finest level M/4 | 0.65; cap 2.0 |
+| FK ES-FLK | inputs/esflk.athinput | 400 M | initial_radius_0 1.6 | 2.1; cap 3.0 |
+| FF4 ES-FL4 | inputs/esfl4.athinput | 500 M | finest level M/4 | 1.1; cap 2.0 |
+
+Order: FV4 eligible beside R5 (job 4920); FE4, FK, FF4 held and released in this order by
+`tools/sequencer.sh` (at most two D jobs eligible). Expected 4.5 card-hours; caps 9.0.
+
+Smoke tests (processors, release core-v0.6, 2 cycles, one core each), before any card job:
+S4 v1l4 and es1l4 start, MeshBlocks 392 +- 8; the finder at t = 0 either finds a surface with
+   mass in [0.85, 1.0] or reports none (the t = 0 horizon has a coordinate radius of 0.48 M,
+   two M/4 cells) [JUDGEMENT]. S5 esfl4 the same, 850724 particles. S6 esflk starts, 456
+   MeshBlocks, finder at t = 0 equal to ES-F's 0.9915211 within 1e-4 (the flow starts at 1.6 M
+   instead of 0.8 M and should end on the same surface). Refuted, and no card run of that input,
+   if an input fails to start, exits non-zero, or S6's mass differs by more than 1e-3.
+
+Predictions for the card runs:
+FV4 P1 finite to 300 M; horizon at every sample after 20 M.
+    P2 late bias in the convergent regime: with e(h) = e_inf + C h^p fitted to M/8 (+9.4e-4)
+       and M/16 (-2.4e-4), orders p = 2, 3, 4 give e(M/4) = +5.7e-3, +1.0e-2, +2.0e-2, so
+       M_V1L4 - 1 on 100-300 M in [+4e-3, +2.5e-2]. Refuted (M/4 not in the convergent regime,
+       and the three-member order is then not quoted) if below 0 or above 5e-2.
+    P3 the vacuum drift step of V-1L and V-1L16 at 240-300 M appears again within 10 M in time and
+       within a factor 2 in size. Refuted if it is absent.
+    P4 cost 0.45-0.75 card-hours.
+FE4 P5 null test at M/4: max |D_ES1L4 - D_V1L4| on 100-300 M in [1e-4, 4e-4] and within 1e-4 of the
+       M/8 difference at every common sample after 110 M (the difference does not depend on the
+       horizon resolution, entry 5 H3). Refuted if it departs from the M/8 difference by more
+       than 2e-4 over a window longer than 20 M.
+    P6 cost 0.5-0.8.
+FK  P7 equal to ES-FL within 3e-4 in M_AH up to 219 M (before the switch only the first search
+       differs).
+    P8 every dust removal by reason 3 up to 400 M (smallest horizon radius 4.5 M < 6.4 M).
+    P9 the mechanism test: the (iii) medians for tau_rem in 285-500 M stay at +0.25 +- 0.15 per
+       cent (no step to +0.6 per cent) and the D3 margin after 220 M stays below 3e-3. Refuted (the
+       end of horizon excision is not what moves them) if the medians after tau_rem = 285 M are
+       above +0.45 per cent.
+    P10 M_AH(400) within 3e-3 of ES-FL's 1.4920 (the depth of removal inside the horizon does not
+       move the horizon mass); refuted above 5e-3.
+    P11 cost 1.8-2.4.
+FF4 P12 criterion G at M/4: (iii) to tau_rem 650 M with every median within +-1 per cent, D2 holds.
+       Refuted if any counted bin is beyond +-2 per cent (then G is shown at one mesh spacing only).
+    P13 M_AH(t) of ES-FL4 within 1.5 per cent of the growth Delta M of ES-FL at 100, 200, 300, 400,
+       500 M [JUDGEMENT]; the excision switch within 10 M of ES-FL's 219 M.
+    P14 cost 0.9-1.4.
