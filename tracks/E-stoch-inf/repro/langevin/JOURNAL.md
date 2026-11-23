@@ -149,3 +149,43 @@ Ito term; on the tuned converged background):
   (d) tuned converged background: widths 10-15% below the Euler-0.01 background (as for Heun:
       bg_tuned std alpha 0.110 vs 0.126 at 4).
 Refuted if (a) misses by more than 10% at two of the six widths.
+
+## Entry 3 (2026-11-22 18:32 PST): outcomes of entry 2 and of P5-P10 (run E-20261123-021043-d00a314, analyses E-20261123-021647-46097e6 and E-20261123-021843-813759b)
+
+Run 2 repeated run 1 bit for bit for the 16 common variants (same dead counts and moments).
+Figures looked at: fig_background, fig_scheme, fig_step_seed, fig_off6, fig_a3one,
+fig_a3one_moments, fig_linear, fig2_moments_ito_naive, fig3_pdfs_ito_naive (and the four of
+entry 2).
+
+- H-Ito (a) HELD: Ito reading, seeds 1/2/3, widths at N_b = 4, 5, 6 within 0.3-2.5% of all six
+  read-off values (largest: std N at 6, 0.185-0.186 vs 0.190); mean N - N_b at 6 = 0.002-0.003;
+  median kappa3(alpha) on [4.5, 6] = 1.04, 1.13, 1.14.
+- H-Ito (b) HELD at the edge: h = 0.001 moves the N_b = 4 widths up by 4.9% and 6.8%
+  (prediction < 7%); at 5 and 6 within 2.5%.
+- H-Ito (c) HELD: without the Ito term the window-median mean alpha is -0.031 vs -0.004.
+- H-Ito (d) HELD in direction, wider in size: tuned converged background 9-17% narrower
+  (predicted 10-15%).
+- P5 (Ito term, Heun) PARTLY: mean alpha shift -0.032 (predicted 0.01-0.03, a little more),
+  widths change 1-8% at N_b = 4 and 6 (predicted < 10%) but 11% at 5 (spike-inflated base),
+  skewness of N < 0.02 (predicted < 0.2). The mean of N - N_b at 6 drops from 0.085 to 0.033.
+- P6 (noise off at 6) HELD for alpha (median |alpha-1| 1.5e-4 at 8, 2.8e-7 at 10, max 2.0e-6);
+  FAILED narrowly for N as worded: median |D(10) - D(7)| = 1.1e-3 (threshold 1e-3); it is the
+  relaxation of alpha between 7 and ~8.5 ((alpha(7) - 1)/3.1), 0.5% of std N = 0.23. The
+  statement "the e-folds are conserved" holds once alpha has relaxed.
+- P7 (alpha^3 -> 1) HELD: skewness alpha -0.78, -0.96, N -0.26, -0.80 at 5, 6; minimum alpha
+  -1.0 at 6 (paths cross 0 to the alpha = -1 attractor), no path stopped.
+- P8 HELD: SDE step 0.005/0.02 within 1.5% in widths at N_b = 4 and 6, skewness of N within 0.03;
+  Euler-0.005 and converged backgrounds: half the paths stopped by 4.75 and 4.8, 88% and 86% by
+  6; tuned converged background: widths 9-17% below base (predicted within 10%: FAILED in size,
+  the Euler background has a smaller eps1 at a given N, sigma larger by ~10%).
+- P9 HELD: widths across seeds within 0.5% at 4 and 6; median kappa3(alpha) 1.53-1.64;
+  single-time kappa4(alpha) from 4.3 to 3143 at N_b = 5.
+- P10 HELD for alpha, PARTLY for N: N_b = 3 Gaussian (KS vs Gaussian tail p 0.10-0.39, skewness
+  0.055 +- 0.010 and 0.026 +- 0.011); alpha tails at 4-6 exponential (CV 0.97-1.12, KS exp
+  p >= 0.013 in 7 of 8); N tails heavier than Gaussian (KS p < 1e-22) but CV 0.88-0.96, KS against
+  the exponential p 4e-5 to 0.034: between Gaussian and exponential.
+
+Verdicts per figure and statement: README "Results and verdicts". Cause of the
+Ito-vs-Stratonovich preference: not named; only the authors could say which Mathematica
+method ran (the data are consistent with Euler-Maruyama at step 0.01, the same first-order
+step that puts the background on the slope at 3.04). Package closed for this batch.
