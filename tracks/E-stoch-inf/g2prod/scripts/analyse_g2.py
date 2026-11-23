@@ -40,7 +40,7 @@ def main():
             rest.append(argv[i])
             i += 1
     last = "--last" in rest
-    if last:          # only the dump at N_f (every U-R clause is stated there); records whole
+    if last:          # only the dumps at N* and N_f (every U-R clause is stated at N_f); records whole
         rest.remove("--last")
     out = rest[rest.index("--out") + 1]
     links = os.path.join(out, "links")
@@ -51,7 +51,9 @@ def main():
         if last:
             os.makedirs(p, exist_ok=True)
             dl = ac.cl.dump_list(d)
-            keep = [os.path.basename(dl[-1]), os.path.basename(dl[-1])[:-5] + ".modes", "usr.sf.con.hst", "usr.sf.hst"]
+            # the first dump too: analyse_cards needs two dumps (its constraint part skips index 0)
+            keep = [os.path.basename(x) for x in (dl[0], dl[-1])]
+            keep += [k[:-5] + ".modes" for k in keep] + ["usr.sf.con.hst", "usr.sf.hst"]
             for f in keep:
                 if os.path.exists(os.path.join(d, f)) and not os.path.islink(os.path.join(p, f)):
                     os.symlink(os.path.join(os.path.abspath(d), f), os.path.join(p, f))
