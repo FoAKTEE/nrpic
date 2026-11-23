@@ -479,3 +479,26 @@ re-implemented from nm_analyze's docstring); no helper code. Script `stage/revie
 - open: all five chains and Q16-256 (HANDOFF); G2 package not started; drift_controls (three untracked
   tools left as found), flux_tools README, note v2. Card-hours used this session: 0 (ES-F's 0.81 was
   booked by its own run); caps registered 22.5.
+
+## 2026-11-23T02:30Z  session lead-batch10a (Opus)  commits f1f2f92c..(this commit)  runs D-20261123-020550-f9a3482, -020606-fa0046c, -020614-7ba5874, -020626-183c254, -020756-e9922e7, -021027-e3af9b8, -020011-bd47394, -020531-6dbd75c, -020535-dccfd30, -020538-0290d15, -022715-ab5d983, -022725-a553496, -022726-1b133af, -022727-1c17e73
+
+- did: merged main; closed R1-R4 and Q16-256 (nrpic-run finish); judged R1-R4, ES-FL and R5 to 225.6 M
+  against g2long entry 1 from registered analyses (judge_long.py new; esf_criteria.py gets --tau_max) with
+  four figures looked at (g2long entry 5); judged Q16-256 against QR1-QR5 (secondary_infall 02:08Z);
+  constraint norms with prediction first (entry 8); follow-up design and predictions before any run
+  (entry 6), four processor smoke tests (entry 9), four chains registered (FV4 eligible; FK, FE4, FF4
+  held behind a new sequencer); note_v2 moved to note/ (git mv); G1 stage report Looked-at column
+  filled; G2 package started (collect, checklist judged, EVIDENCE, OPEN); request to core
+  ah-excision-growth-guard; kb's claims answer acknowledged.
+- found: N holds at M/8 to 500 M (2.28e-4 vs 2.51e-4); G holds to tau 650 M (0.62 per cent); ES-F's
+  faces at +-192 M had moved its horizon mass by up to 3e-3 after 130 M; the vacuum floor is a step at
+  240-300 M shared by M/8 and M/16; the finder mass changes sign between M/8 and M/16; horizon excision
+  ends at 4 x initial_radius (219 M in ES-FL) [VERIFIED by source and crossing time]; the z4c history
+  norms measure the inside of the horizon. Failed predictions: V3, E2 (sharp bounds), V3/E3 radii, F2
+  (400, 500 M), F3 median and D1, F4 (reason 3), H1, H2, QR3 per-bin, QR4 slope.
+- changed my mind about: the late finder bias at M/8 (+9e-4) being a resolution error that shrinks
+  toward zero: at M/16 it is -2.5e-4, so the series is not yet monotone; and about the floor being set at
+  the horizon: it is not.
+- open: R5 (job 4920), FV4 (4933), FK/FE4/FF4 held (4934-4936); G2 gaps in stage/G2/OPEN.md;
+  drift_controls untracked tools. Card-hours used by this session's own jobs: 0 so far (the batch-5
+  chains read here used 12.84 h); caps registered 9.0.
