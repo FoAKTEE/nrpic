@@ -268,3 +268,43 @@ when they have converged). Predictions: data converge faster than at 0.028 (max|
 at a = 143 resembles the 0.028 box at a = 71.5 and the Newtonian fidL8 box at a_N = 36
 (halo counts within the count noise); G4 with the strain smaller by roughly the square of the
 amplitude ratio at equal stage [JUDGEMENT].
+
+## 2026-11-22 17:55 PST (lead of batch 10a): outcome of step 1; why no GR run went to the cards
+
+Outcome of step 1 (initial data, runs B-20261121-202946-ec4a156 for sigma1 = 0.028 and
+B-20261121-211707-d795743 for sigma1 = 0.014; numbers from `gr_L8_n128/id.json` and
+`make_ic.log` of each):
+- sigma1 = 0.028: outer change of psi 3.25e-7 after the 18 outer iterations of
+  make_field.build (contraction about 0.66 per iteration from outer 8 to 17, still falling,
+  no floor); Hamiltonian residual 2.4e-11; momentum residual 5.6e-6; max|psi_N| 0.0440; wall
+  2665 s. Prediction "outer change below 1e-9" REFUTED; "Hamiltonian residual below 1e-10"
+  HOLDS; "max|psi_N| about 0.044" HOLDS; wall time within 30-90 min HOLDS. By the rule written
+  before the run (change above 1e-7), its GR run was not submitted and the amplitude halved.
+- sigma1 = 0.014: outer change 7.3e-8 (below the sequencer's 1e-7, above the 1e-9 I had
+  expected), Hamiltonian residual 6.1e-12, momentum 6.7e-7, max|psi_N| 0.0220 (prediction
+  "about 0.022" HOLDS; "converges faster" HOLDS: 7.3e-8 against 3.25e-7 after 18 iterations).
+
+Why no card job of this owner since 2026-11-21 22:23 (found from `cards/queue.json`,
+`cards/sequencer.py` and `scratch/B-emd-gw/sequencer/state.json`): the sequencer is alive
+(pid 2548041) and was doing what the queue says. Entry `pop_s028_gr` needs
+outer_last_change_of_psi < 1e-7 and never got it (3.25e-7); card entries are submitted in the
+order of the file, so `pop_s014_gr`, whose data meet every condition, waits behind it for
+ever; a blocked condition writes nothing to the log. Not the allotment (B had about 3.5 of the
+6 card-hours asked left) and not the card queue (no job of B queued).
+
+Correction (this session, before the queue edit): `pop_s014_gr` moves to the front, and a
+re-solve of the sigma1 = 0.028 data with 36 outer iterations (`make_ic.py --outer 36`, new
+option, same seed) goes behind it, with `pop_s028_gr` reading the re-solved data. The
+0.028 data of the first run stay on disk unused.
+
+Predictions for the re-solve, written before it runs [JUDGEMENT]:
+- R1. Outer iterations 0-17 print the same digits as the first run (one thread, same input).
+- R2. The change falls below 1e-7 by outer 21 and to between 1e-11 and 1e-8 at outer 35
+  (contraction 0.6-0.8); Hamiltonian residual below 1e-10 at every outer iteration.
+- R3. Wall time 60-100 min on one thread.
+Refuted if R1 differs (the solve is not repeatable), if the change stalls above 1e-7 (a floor:
+then the sequencer leaves `pop_s028_gr` unsubmitted and the scan continues at 0.014 and
+0.007), or on NaN.
+The GR-run predictions G1-G4 of the entry of 2026-11-21 12:52 stand for both amplitudes, and
+for 0.014 the companion paragraph under them; card time 0.2-0.6 h each (unchanged step count:
+same mesh and cfl_number = 0.25, zero shift, no lapse_leak, decisions 0025 item 3, 0027 item 2).

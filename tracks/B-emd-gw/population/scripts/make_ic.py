@@ -80,6 +80,8 @@ def main():
     ap.add_argument("--gr-nosolve", action="store_true",
                     help="relativistic data of the dictionary without the constraint "
                          "solve (for timing runs only)")
+    ap.add_argument("--outer", type=int, default=18,
+                    help="outer iterations of make_field.build (masses from psi, psi from the masses)")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     t0 = time.time()
@@ -137,7 +139,7 @@ def main():
         cid.SHAPE = "pcs"
         cid.DEP_COMP_C = 1.0/6.0
         cid.DEP_COMP_C2 = 7.0/15.0
-        xg, ug, mg, r, K, alpha, info, _ = mf.build(delta, a.L, 1.0, a.ppc)
+        xg, ug, mg, r, K, alpha, info, _ = mf.build(delta, a.L, 1.0, a.ppc, outer=a.outer)
         write_particles(os.path.join(a.out, "particles.nrp"), xg, ug, mg)
         write_fields(os.path.join(a.out, "fields.bin"), r["psi"], K, alpha, r["A"])
         with open(os.path.join(a.out, "id.json"), "w") as f:
