@@ -1555,3 +1555,15 @@ other four held and released by `verify/row4/sequencer.sh` (stop file and log un
   is in the manifests of the paper's runs. Candidates offered [JUDGEMENT]: M25 and M20 the
   dust-collapse runs, M18 the id_solver tests T1 and T3 (the `code` monitor after the
   solve, 1e-11 to 1e-12), M19 stays claimed, M24 Track A's periodic_diag runs.
+
+### Close of session core-lead-10a (2026-11-23T02:15Z)
+
+Done: six row-4 chains closed and judged (bracket 0.680-0.755 on M/8, run
+core-20261123-020318-e952741); level 2 queued (six chains, 12 card-hours asked, two
+eligible, sequencer pid 3075029); note rebuilt (core-20261123-020543-eb1cd2a, 9 pages,
+checker clean, pages read); stage G2 OPEN/CHECKLIST, verify (FAIL only on the six queued
+chains and on main's two new commits, merged after) and report rerun; cpu_run.sh footer
+fixed with a stub test; answers to A and kb posted, kb's message acknowledged. G2 not met.
+Faults of mine on record: the first journal header of this session carried the date of
+the shell's local time (2026-11-22) with a UTC hour; corrected to 2026-11-23T01:50Z
+before the commit. Not done: inbox messages 1-8, 103 and D's new 11 (task scope).

@@ -96,7 +96,9 @@ core-v0.7).
 - Inbox of core still unacknowledged: messages 1-8 and 103 of `nrpic-ctx inbox` (B round1
   findings; F chain-stray-resubmission, hnorm-transient-r8, hrna-pair-force-slicing,
   wave-extraction-lmax; D lapse-leak-growth-data, newtonian-mode-edges; E
-  a4res-claims-c1-c4; A bh1r-inte-deficit-two-levels). kb's 105 answered and acknowledged.
+  a4res-claims-c1-c4; A bh1r-inte-deficit-two-levels) and a new one from D that arrived
+  at 02:11Z, `ah-excision-growth-guard` (not read in this session). kb's paper-code-links
+  answered and acknowledged.
 - Track A: W31 (i) for core-v0.7; A reports its refined-mesh test at cfl 0.5.
 - Track C: the M/8 bracket bears on its threshold scan (block A on M/8); its drift run (vi)
   beside the 0.755 control (both drift inward).
