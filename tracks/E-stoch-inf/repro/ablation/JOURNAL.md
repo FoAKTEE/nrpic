@@ -46,6 +46,13 @@ processor executable `athena_cpu`, overrides 32^3, nmax2 = 64, nlim = 2, one cor
 `# time 0` with one line per mode of nmax2 = 64 (the number in its header). Refuted by any parse
 error, a fatal message of the noise options, or a missing `.rmodes`.
 
+Outcome X0 (run E-20261123-034420-0fe3c95, `parse_check.txt` in the run directory): PASS. All eight
+decks parse and exit 0 with the branch processor build; each wrote the t = 0 dump and one `.rmodes`
+file whose header says `modes 1054` with 1054 lines (nmax2 = 64); the logs name the path of each
+deck ("R and Pi_R on the mesh (local coefficients, level 2)" for sr256_l2, "(uniform coefficients,
+level 0)" for usr256_l0m), and the l1m record header says `level 1 background 1`. No figure: the check
+is of files and messages, not of numbers.
+
 ## Entry 1 (2026-11-22 19:50 PST): predictions of the card runs, written before any submission
 
 Quantity of Fig. 9: per shell |n| (integer bins of |k|/dk, shells with more than 10 modes, P1:454,

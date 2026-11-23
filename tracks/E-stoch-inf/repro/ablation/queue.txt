@@ -1,0 +1,16 @@
+# Queue of repro/ablation, appended to the repro/scope queue by scripts/sequencer.sh (which replaces the
+# scope sequencer and reads both queues; state in scratch/E-stoch-inf/repro_scope_seq/state.tsv).
+# One run per line:
+#   <label> <gpu-hours ceiling> <chain|batch> <deck or list> <kind> <head|tail> <gate: - | SMOKE> <purpose>|<athena args>
+# head: submitted before the remaining scope lines; tail: after every scope line. SMOKE: only after the
+# registered check of T5SMK (scripts/smoke_check.py) wrote PASS. Branch card executable
+# scratch/core/exe/core_noise-level2/athena_gpu (6ca93cba; decision 0031 item 3), gate G2, predictions
+# JOURNAL.md entry 1. Package cap 5 card-hours (cost guard of the sequencer). Ceilings 1.97 = two chain
+# segments, so a run slower than predicted still finishes; the actual cost is what counts once closed.
+T5SMK 0.5 batch tracks/E-stoch-inf/repro/ablation/inputs/smoke.list scouting head - card smoke T5 of core/noise-level2 at 64^3: levels 0 and 2 of both scenarios (core's T5) and the mesh path of levels 1 (SR) and 0 (USR) with the per-mode writer|
+AL2S 1.97 chain tracks/E-stoch-inf/repro/ablation/inputs/sr256_l2.athinput production tail SMOKE SR 256^3 ablation, backreaction level 2 (local coefficients, mesh R), seed A, 18 dumps (Fig. 9)|
+AL2U 1.97 chain tracks/E-stoch-inf/repro/ablation/inputs/usr256_l2.athinput production tail SMOKE USR 256^3 ablation, backreaction level 2 (local coefficients, mesh R), seed A, 21 dumps (Fig. 9)|
+AL0S 1.97 chain tracks/E-stoch-inf/repro/ablation/inputs/sr256_l0m.athinput production tail SMOKE SR 256^3 ablation, level 0 with the mode equation on the mesh (reference of Fig. 9), seed A|
+AL0U 1.97 chain tracks/E-stoch-inf/repro/ablation/inputs/usr256_l0m.athinput production tail SMOKE USR 256^3 ablation, level 0 with the mode equation on the mesh (reference of Fig. 9), seed A|
+AL1S 1.97 chain tracks/E-stoch-inf/repro/ablation/inputs/sr256_l1m.athinput production tail SMOKE SR 256^3 ablation, level 1 (box means) with the mode equation on the mesh, seed A (Fig. 9)|
+AL1U 1.97 chain tracks/E-stoch-inf/repro/ablation/inputs/usr256_l1m.athinput production tail SMOKE USR 256^3 ablation, level 1 (box means) with the mode equation on the mesh, seed A (Fig. 9)|
