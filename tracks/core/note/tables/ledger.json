@@ -442,279 +442,370 @@
  },
  {
   "n": 64,
+  "quantity": "y_c = 0.605: equilibrium central lapse",
+  "value": "0.6281",
+  "source": "core-20261121-202643-d66c4ee",
+  "verifier": ""
+ },
+ {
+  "n": 65,
+  "quantity": "y_c = 0.605 member: collapse time t_c (M)",
+  "value": "180.5",
+  "source": "core-20261121-204230-3bcb118",
+  "verifier": ""
+ },
+ {
+  "n": 66,
+  "quantity": "y_c = 0.605 member: first apparent horizon (M)",
+  "value": "188",
+  "source": "core-20261121-204230-3bcb118",
+  "verifier": ""
+ },
+ {
+  "n": 67,
+  "quantity": "y_c = 0.605 control: mean central lapse 200-300 M",
+  "value": "0.7303",
+  "source": "core-20261121-204235-0b25077",
+  "verifier": ""
+ },
+ {
+  "n": 68,
+  "quantity": "y_c = 0.680: equilibrium central lapse",
+  "value": "0.6875",
+  "source": "core-20261121-202643-d66c4ee",
+  "verifier": ""
+ },
+ {
+  "n": 69,
+  "quantity": "y_c = 0.680 member: collapse time t_c (M)",
+  "value": "219.5",
+  "source": "core-20261121-204234-d010783",
+  "verifier": ""
+ },
+ {
+  "n": 70,
+  "quantity": "y_c = 0.680 member: first apparent horizon (M)",
+  "value": "225",
+  "source": "core-20261121-204234-d010783",
+  "verifier": ""
+ },
+ {
+  "n": 71,
+  "quantity": "y_c = 0.680 control: collapse time t_c (M)",
+  "value": "251.5",
+  "source": "core-20261121-204239-2be5ac2",
+  "verifier": ""
+ },
+ {
+  "n": 72,
+  "quantity": "y_c = 0.680 control: first apparent horizon (M)",
+  "value": "256",
+  "source": "core-20261121-204239-2be5ac2",
+  "verifier": ""
+ },
+ {
+  "n": 73,
+  "quantity": "y_c = 0.755: equilibrium central lapse",
+  "value": "0.7509",
+  "source": "core-20261121-202643-d66c4ee",
+  "verifier": ""
+ },
+ {
+  "n": 74,
+  "quantity": "y_c = 0.755 member: mean central lapse 200-300 M",
+  "value": "0.7264",
+  "source": "core-20261121-204232-f74c942",
+  "verifier": ""
+ },
+ {
+  "n": 75,
+  "quantity": "y_c = 0.755 control: mean central lapse 200-300 M",
+  "value": "0.7247",
+  "source": "core-20261121-204237-ae00ca2",
+  "verifier": ""
+ },
+ {
+  "n": 76,
+  "quantity": "y_c = 0.755: D = member minus control mean",
+  "value": "0.0016",
+  "source": "core-20261121-204232-f74c942 - core-20261121-204237-ae00ca2",
+  "verifier": ""
+ },
+ {
+  "n": 77,
   "quantity": "Kerr passage, midpoint analytic: largest errors E, L_z, Q",
   "value": "2.8e-8, round-off, 1.3e-7",
   "source": "paper main.tex 824-833",
   "verifier": ""
  },
  {
-  "n": 65,
+  "n": 78,
   "quantity": "Kerr passage, Boris Cholesky lattice: same",
   "value": "2.0e-6, 3.8e-6, 5.3e-5",
   "source": "paper main.tex 824-833",
   "verifier": ""
  },
  {
-  "n": 66,
+  "n": 79,
   "quantity": "Oppenheimer-Snyder: relative horizon-mass error",
   "value": "<~ 1e-3",
   "source": "paper main.tex 945",
   "verifier": ""
  },
  {
-  "n": 67,
+  "n": 80,
   "quantity": "Oppenheimer-Snyder fiducial lattice particles",
   "value": "998592",
   "source": "paper main.tex 917",
   "verifier": ""
  },
  {
-  "n": 68,
+  "n": 81,
   "quantity": "prolate collapse: first apparent horizon (M)",
   "value": "32",
   "source": "paper main.tex 971",
   "verifier": ""
  },
  {
-  "n": 69,
+  "n": 82,
   "quantity": "clusters y_c = 0.605, 0.500: first horizons (M)",
   "value": "109, 73",
   "source": "paper main.tex 1138",
   "verifier": ""
  },
  {
-  "n": 70,
+  "n": 83,
   "quantity": "migration of y_c = 0.5: late mean central lapse",
   "value": "0.833530",
   "source": "paper main.tex 1199",
   "verifier": ""
  },
  {
-  "n": 71,
+  "n": 84,
   "quantity": "turning point of the sequence y_c*",
   "value": "0.6796",
   "source": "core-20261115-152805-47d8f25",
   "verifier": ""
  },
  {
-  "n": 72,
+  "n": 85,
   "quantity": "E_b/M_0 at y_c*",
   "value": "0.036058",
   "source": "core-20261115-152805-47d8f25",
   "verifier": ""
  },
  {
-  "n": 73,
+  "n": 86,
   "quantity": "card time of the seven M/4 bisection runs (card-hours)",
   "value": "2.0",
   "source": "verify/LADDER.md row 4, wave 2",
   "verifier": ""
  },
  {
-  "n": 74,
+  "n": 87,
   "quantity": "homogeneous universe: H-norm2 (proper-volume integral of H^2)",
   "value": "3.7e-10",
   "source": "core-20261115-065903-3629622",
   "verifier": "V4"
  },
  {
-  "n": 75,
+  "n": 88,
   "quantity": "homogeneous universe: Theta-norm2 (proper-volume integral of Theta^2)",
   "value": "1.1e-11",
   "source": "core-20261115-065903-3629622",
   "verifier": "V4"
  },
  {
-  "n": 76,
+  "n": 89,
   "quantity": "homogeneous universe: pointwise max|Theta|, max|H|",
   "value": "2.27e-7, 1.69e-6",
   "source": "core-20261121-212248-a7972d1",
   "verifier": "V4"
  },
  {
-  "n": 77,
+  "n": 90,
   "quantity": "homogeneous universe against Einstein-de Sitter: lapse, mean K, proper volume (relative)",
   "value": "1.9e-7, 3.8e-7, 1.1e-6",
   "source": "core-20261121-212248-a7972d1",
   "verifier": "V4"
  },
  {
-  "n": 78,
+  "n": 91,
   "quantity": "dust collapse: deposition identity (mesh integral against particle sum)",
   "value": "1.0e-15",
   "source": "core-20261115-065901-3629622",
   "verifier": "V5a"
  },
  {
-  "n": 79,
+  "n": 92,
   "quantity": "MPI, periodic cosmology on 2, 4 ranks: particle positions against one rank",
   "value": "1.6e-14",
   "source": "core-20261119-163641-ddb47b0",
   "verifier": "V5b"
  },
  {
-  "n": 80,
+  "n": 93,
   "quantity": "MPI, periodic cosmology on 1, 2, 4 ranks: deposition identity",
   "value": "1e-14",
   "source": "core-20261119-163641-ddb47b0",
   "verifier": "V5b"
  },
  {
-  "n": 81,
+  "n": 94,
   "quantity": "Bowen-York puncture after the solve, card and processor: max|H|",
   "value": "6.4e-12",
   "source": "core-20261121-154700-2de4974",
   "verifier": ""
  },
  {
-  "n": 82,
+  "n": 95,
   "quantity": "periodic Z4c, 4096 particles, restart at cycle 10 of 20: differing bytes",
   "value": "0",
   "source": "core-20261121-213713-952a0c4",
   "verifier": "V6"
  },
  {
-  "n": 83,
+  "n": 96,
   "quantity": "Oppenheimer-Snyder, refinement, outflow faces, restart at cycle 3 of 6: mesh words differing",
   "value": "64 per cent",
   "source": "core-20261121-215228-d1f36f4",
   "verifier": "V6"
  },
  {
-  "n": 84,
+  "n": 97,
   "quantity": "same: median, 99th percentile of the relative difference",
   "value": "2.8e-13, 1.7e-7",
   "source": "core-20261121-215228-d1f36f4",
   "verifier": "V6"
  },
  {
-  "n": 85,
+  "n": 98,
   "quantity": "same: histories within",
   "value": "5e-13",
   "source": "core-20261121-215228-d1f36f4",
   "verifier": "V6"
  },
  {
-  "n": 86,
+  "n": 99,
   "quantity": "v0.3 Newtonian point mass: rms relative force error at N = 32, 64; order",
   "value": "1.61e-2, 4.94e-3; 1.70",
   "source": "core-20261115-150209-3629622",
   "verifier": "V7a"
  },
  {
-  "n": 87,
+  "n": 100,
   "quantity": "same: tracers at r >= 0.5",
   "value": "706",
   "source": "core-20261121-212516-0f0a65b",
   "verifier": "V7a"
  },
  {
-  "n": 88,
+  "n": 101,
   "quantity": "v0.3 collisions, box relaxation: Kolmogorov-Smirnov p of the four end states",
   "value": "0.26 to 0.90",
   "source": "core-20261115-134036-5684674",
   "verifier": "V8"
  },
  {
-  "n": 89,
+  "n": 102,
   "quantity": "v0.3 scalar field test 1a: spatial orders for nghost 2, 3, 4",
   "value": "1.991, 3.957, 5.918",
   "source": "core-20261115-150004-3629622",
   "verifier": "V9"
  },
  {
-  "n": 90,
+  "n": 103,
   "quantity": "same: Omega/omega_h - 1 at dt = 1/512",
   "value": "-1.21e-9 to -1.31e-9",
   "source": "core-20261121-212422-b616c6e",
   "verifier": "V9"
  },
  {
-  "n": 91,
+  "n": 104,
   "quantity": "v0.4 solver T1: relative error of psi - 1 at the centre, code, dx = 1, 0.5, 0.25",
   "value": "-1.92e-2, -5.22e-3, -1.33e-3",
   "source": "core-20261121-214108-0960a46",
   "verifier": "V10a"
  },
  {
-  "n": 92,
+  "n": 105,
   "quantity": "v0.6 solver on static refinement: relative error of psi - 1 over r < 1, refined against uniform",
   "value": "-5.01e-3, -5.03e-3",
   "source": "core-20261119-153510-d1eaa30",
   "verifier": "V10b"
  },
  {
-  "n": 93,
+  "n": 106,
   "quantity": "v0.6 Fourier solver, exact pancake: slab I_xx error, spectral and seven-point",
   "value": "9.1e-6, 3.1e-3",
   "source": "core-20261119-160919-c6a7279",
   "verifier": "V7b"
  },
  {
-  "n": 94,
+  "n": 107,
   "quantity": "v0.6 faces: stock boundary-layer |H| over the stencil estimate",
   "value": "0.79",
   "source": "core-20261119-143938-eded041",
   "verifier": "V11"
  },
  {
-  "n": 95,
+  "n": 108,
   "quantity": "v0.6 faces: reduction of the layer by the fall-off ghosts",
   "value": "12",
   "source": "core-20261121-214547-7a21ed3",
   "verifier": "V11"
  },
  {
-  "n": 96,
+  "n": 109,
   "quantity": "byte regression of v0.6 against v0.5",
   "value": "75 of 75",
   "source": "core-20261121-130202-7cf7db8",
   "verifier": ""
  },
  {
-  "n": 97,
+  "n": 110,
   "quantity": "byte regression of v0.5 against v0.4",
   "value": "PASS",
   "source": "core-20261121-063859-e410ee3",
   "verifier": ""
  },
  {
-  "n": 98,
+  "n": 111,
   "quantity": "byte regression of v0.4 against v0.3",
   "value": "PASS",
   "source": "core-20261120-221607-4985804",
   "verifier": ""
  },
  {
-  "n": 99,
+  "n": 112,
   "quantity": "card check of the merged v0.6 card build: cases",
   "value": "15, PASS",
   "source": "core-20261121-154700-2de4974",
   "verifier": ""
  },
  {
-  "n": 100,
+  "n": 113,
   "quantity": "relaxed lapse, vacuum puncture: horizon-mass band 100-199.5 M with lapse_leak = 0.5",
   "value": "-5.6e-4 to +1.27e-3",
   "source": "D-20261121-125909-06f856e, D-20261121-144657-cf510fc",
   "verifier": ""
  },
  {
-  "n": 101,
+  "n": 114,
   "quantity": "same without the option",
   "value": "-4.8e-5 to +2.0e-5",
   "source": "D-20261121-125909-06f856e, D-20261121-144657-cf510fc",
   "verifier": ""
  },
  {
-  "n": 102,
+  "n": 115,
   "quantity": "Gamma-driver shift: stability bound dt/dx (nghost 4, RK4, dissipation 0.5)",
   "value": "0.685",
   "source": "A-20261121-212800-d7f31a4",
   "verifier": ""
  },
  {
-  "n": 103,
+  "n": 116,
   "quantity": "rule until the step limit counts the gauge speeds: cfl_number at most",
   "value": "0.6",
   "source": "coord/DECISIONS/0027 item 2",
