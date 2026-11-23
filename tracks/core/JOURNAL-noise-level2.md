@@ -68,3 +68,14 @@ T5 card smoke at 64^3, both scenarios, levels 0 and 2: completes, finite; level 
   synthesis share is larger at small N? no: smaller; take +5 to +20).
 T6 guard: Pi0 = 0 at level 2 -> Z = 0 -> R non-finite at the first stage -> spacetime
   non-finite through the kicks -> exit status 3 after cycle 1.
+
+## Entry 2 (2026-11-22 19:08 PST): T5 on processors while the card queue is full, prediction
+
+The card queue holds two eligible core jobs (4923, 4924) and four held ones of the row-4
+bisection: the rule allows no submission now. T5 is done first with the threaded
+processor build of this branch (`.work/build_omp_nl2`), 64^3, nmax2 = 256, 30 cycles of
+each of the four inputs of the card list, 6 threads, one after another.
+Prediction: every run ends with status 0 and finite records; level 2 costs +5 to +20 per
+cent of the wall time of level 0 per cycle (the projection of two fields is about one
+third of the six-field synthesis, plus the R right-hand side). Refuted if a run fails, if
+a record is not finite, or if the ratio is outside 1.0 .. 1.3.
