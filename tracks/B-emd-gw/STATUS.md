@@ -18,7 +18,8 @@ running:     card: pop_s014_gr = B-20261123-014847-f295ab4 (Slurm 4921, chain, v
              test). processors: re-solve of the 0.028 data = B-20261123-014850-7b7d986 (36 outer
              iterations, 2 cores, about 75 min). Behind them in the queue: pop_s028_gr. Sequencer
              pid 2942856 (scratch/B-emd-gw/sequencer/), restarted 17:54 with 'waiting:' log lines.
-             stage verify G1 and G2 in the background (logs scratch/B-emd-gw/tmp/verify_*_20261122.log)
+             stage verify G1 in the background (pid 2996426, log scratch/B-emd-gw/tmp/
+             verify_G1_20261122.log); G2 verify stopped (contention), to rerun
 next:        1. read pop_s014_gr when it ends: predictions G1-G4 (population/JOURNAL.md), halo
                 finder, TT strain from the double dumps, against Newtonian fidL8 and DESIGN.md
              2. read J4 against J4a-c (flrw_conv entry 13); R1-R3 of the 0.028 re-solve
