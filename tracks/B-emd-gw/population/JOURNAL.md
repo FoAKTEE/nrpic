@@ -269,7 +269,7 @@ at a = 143 resembles the 0.028 box at a = 71.5 and the Newtonian fidL8 box at a_
 (halo counts within the count noise); G4 with the strain smaller by roughly the square of the
 amplitude ratio at equal stage [JUDGEMENT].
 
-## 2026-11-22 17:55 PST (lead of batch 10a): outcome of step 1; why no GR run went to the cards
+## 2026-11-22 17:48 PST (lead of batch 10a): outcome of step 1; why no GR run went to the cards
 
 Outcome of step 1 (initial data, runs B-20261121-202946-ec4a156 for sigma1 = 0.028 and
 B-20261121-211707-d795743 for sigma1 = 0.014; numbers from `gr_L8_n128/id.json` and
