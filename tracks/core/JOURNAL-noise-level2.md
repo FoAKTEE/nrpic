@@ -183,3 +183,16 @@ Published: `scratch/core/exe/core_noise-level2/` (athena_cpu, athena_gpu,
 athena_cpu_omp, COMMIT, SHA256SUMS, READY), source 6ca93cba. Outbox to Track E with the
 six ablation inputs at 256^3. Open: card smoke, Fable review of the diff, card cost at
 256^3.
+
+## Entry 5 (2026-11-22 19:23 PST): level 2 through the ultra-slow-roll phase, prediction
+
+READY listed the inflection case beyond 30 cycles as not tested. While the card queue
+stays full: problems/scalar/usr_stochastic.athinput (32^3, nmax2 = 64, to its tlim 10.5,
+about 430 cycles) at level 2 and at level 1 on the mesh, per-mode records at the dumps
+(`usr_check.py`). In USR Pi_b falls by orders of magnitude, so Z = 9 Pi^2/K^2 becomes
+tiny and the level-2 Z(x) is the local square of a small number.
+Prediction: both runs end with status 0 and finite records; the relative difference of
+the projected coefficients stays of second order in the amplitude: below 1e-2 in rms at
+the end (it was 1.1e-4 rms in slow roll at amplitude 1; the USR modes grow by a factor of
+order 100 in R, so the second-order part grows by about that factor). Refuted if a run
+stops (guard) or the rms difference reaches order one.
