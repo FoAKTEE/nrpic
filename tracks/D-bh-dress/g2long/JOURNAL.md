@@ -302,3 +302,13 @@ FF4 P12 criterion G at M/4: (iii) to tau_rem 650 M with every median within +-1 
     P13 M_AH(t) of ES-FL4 within 1.5 per cent of the growth Delta M of ES-FL at 100, 200, 300, 400,
        500 M [JUDGEMENT]; the excision switch within 10 M of ES-FL's 219 M.
     P14 cost 0.9-1.4.
+
+## Entry 7 (2026-11-22 18:09 PST): registered analyses and smoke tests of entry 6
+
+Registered reruns of entry 5 (outputs byte-identical to the hand-run versions, cmp):
+judge_long D-20261123-020550-f9a3482 (judge_long.json, judge_long.png); esf_analyse
+D-20261123-020606-fa0046c (esf_growth.png, esf_bracket.png); esf_criteria --tau_max 650
+D-20261123-020614-7ba5874 (esf_criteria.json, esf_criteria.png). Closed chains: R1-R4 finished
+with nrpic-run finish (manifests committed). Smoke tests of entry 6 started on one core each:
+v1l4 D-20261123-020011-bd47394, es1l4 D-20261123-020531-6dbd75c, esfl4 D-20261123-020535-dccfd30,
+esflk D-20261123-020538-0290d15; outcomes in entry 8.

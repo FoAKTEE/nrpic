@@ -1014,3 +1014,30 @@ QR4 dress/M_ta at 16 = 0.528 +- 0.01; mean local slope -2.55 +- 0.1 (self-simila
 QR5 energy test: every group inside r_last(16) = 26.4 M within 0.3 % of its initial energy
     (Q16 0.4 %), the layer 26.4-30.5 M within 1.5 % (Q16 up to 2.2 %); no particle lost.
 Cost: 3000-3600 steps, 1.0-2.5 h on six threads.
+
+## 2026-11-22T02:08Z  (D-bh-dress lead, batch 10a) outcome of Q16-256 against QR1-QR5
+
+Run D-20261121-205226-3cfbc20 ended 22:17Z on 2026-11-21, exit 0, 5111 s on six threads (inside
+the predicted 1.0-2.5 h); closed with nrpic-run finish in this session. Analyses (registered):
+nm_analyze.py with Q16 and Q256 side by side, late_at 4 8 12 16, D-20261123-020626-183c254;
+nm_energy.py on Q256, D-20261123-020756-e9922e7. Figures looked at: nm_late_profiles_Q256.png,
+nm_energy.png.
+QR1 HELD: M_ta(Q256)/M_ta(Q16) - 1 = -1.9e-4, +4.7e-4, -1.0e-3 at a/a_i = 4, 8, 12 (bound 0.5 %);
+    dress +5.6e-4, +1.6e-3, -1.2e-3 (bound 1 %).
+QR2 HELD: M_ta at 15.96 = 9.2498 M, in [9.23, 9.29] and below Q16's 9.3017; the edge-layer excess
+    over the hybrid_cc shells (9.2298 M) falls from +0.78 % to +0.21 %.
+QR3 PARTLY FAILED: the largest deviation from the self-similar profile on [lambda_min, 0.3] is
+    12.6 % (8 bins from lambda = 0.056; Q16 15.9 % on 6 bins), within 16 %: held. "Each bin within
+    5 % of Q16's ratio" FAILED in three of six matched bins (lambda 0.115: 0.879 vs 0.993; 0.146:
+    0.935 vs 1.043; 0.291: 1.047 vs 0.929); the bin-to-bin scatter of the ratio is ~10 % in both
+    runs, so the 5 % bound was tighter than the shot noise of one snapshot [JUDGEMENT].
+QR4 dress/M_ta at 15.96 = 0.5304 HELD (0.528 +- 0.01); mean local slope -2.438 FAILED narrowly
+    (predicted -2.55 +- 0.1); the self-similar value on the same bins is -2.476, so the finer run
+    lies closer to it than predicted.
+QR5 HELD: groups inside 26.4 M within 0.13 % of their initial energy (bound 0.3 %); the layer
+    26.4-30.5 M at -0.22, -0.92, -1.48 % (bound 1.5 %); 520048 of 520048 particles alive. The
+    group 30.5-31.7 M (outside the prediction) gains +9.1 %, as the edge layer did in Q16.
+What this does to the G1 reservation (margins on one resolution): the masses and the dress agree
+between dx = 4.625 M and 3.469 M to 0.1-0.16 % through a/a_i = 12, and the edge-layer excess at 16
+shrinks with resolution; the profile against the self-similar solution is within 12.6 % at the
+finer spacing. D-pre-3 now rests on two resolutions.
