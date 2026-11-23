@@ -68,7 +68,8 @@ async function one(it) {
   }
   if (it.type === 'core-slot') {
     const h = { wt: ROOT + '/wt/core-s' + it.slot, branch: 'core/s' + it.slot, journal: 'tracks/core/JOURNAL-' + it.key + '.md', task: 'SOURCE ITEM ' + it.key + ':\n' + it.task }
-    const r = await fable(solo(h, NOTE + '\n\nYour worktree is the spare slot ' + h.wt + ' (branch ' + h.branch + '). First: git merge --no-edit main (it holds the newest release), then rename the branch to core/' + it.key + ' (git branch -m core/' + it.key + ') unless that is already done, and work there. When your tests pass, publish the executables under ' + ROOT + '/scratch/core/exe/core_' + it.key + '/ (athena_gpu, athena_cpu, COMMIT, SHA256SUMS, READY with every new option and one example input, what is tested and what is not), write the interface text under tracks/core/interfaces/, commit and push (git push -u origin core/' + it.key + ').\n\n'), { label: 'core:' + it.key, phase: 'Core', schema: SUMMARY })
+    const runS = it.fable === false ? ((p, o) => agent(p, Object.assign({}, OPUS, o))) : fable
+    const r = await runS(solo(h, NOTE + '\n\nYour worktree is the spare slot ' + h.wt + ' (branch ' + h.branch + '). First: git merge --no-edit main (it holds the newest release), then rename the branch to core/' + it.key + ' (git branch -m core/' + it.key + ') unless that is already done, and work there. When your tests pass, publish the executables under ' + ROOT + '/scratch/core/exe/core_' + it.key + '/ (athena_gpu, athena_cpu, COMMIT, SHA256SUMS, READY with every new option and one example input, what is tested and what is not), write the interface text under tracks/core/interfaces/, commit and push (git push -u origin core/' + it.key + ').\n\n'), { label: 'core:' + it.key, phase: 'Core', schema: SUMMARY })
     return [{ label: 'core:' + it.key, r: brief(r) }]
   }
   if (it.type === 'core-task') {
