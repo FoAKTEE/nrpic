@@ -79,7 +79,7 @@ async function one(it) {
   }
   return [{ label: 'unknown item', r: { status: 'skipped' } }]
 }
-const res = await parallel(ITEMS.map(it => () => one(it)))
+const STAGES = " + json.dumps(spec.get('stages')) + "\nlet res = []\nif (STAGES) { for (const st of STAGES) { res = res.concat(await parallel(st.map(i => () => one(ITEMS[i])))) } } else { res = await parallel(ITEMS.map(it => () => one(it))) }
 const out = []
 res.filter(Boolean).forEach(x => x.forEach(y => out.push(y)))
 return out
