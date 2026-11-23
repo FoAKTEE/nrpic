@@ -1,0 +1,92 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261123-024806-3c0e139",
+  "track": "E-stoch-inf",
+  "gate": "G2",
+  "kind": "production",
+  "purpose": "g2prod: common-mode part of the odd-part error (k <= 16 dk) at N_f for s = 1 and s = 1/2 (seed A, 256^3): does the flat floor of fig_g2_ua2 scale with s?",
+  "preregistered_in": "tracks/E-stoch-inf/g2prod/JOURNAL.md#entry-2",
+  "launcher": "local",
+  "command": [
+    "python3",
+    "-c",
+    "\nimport numpy as np, json\nz=np.load('/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261123-014858-8e72d4c/coeffs_N256.npz')\nlo=(z['n']**2).sum(axis=1)<=256\nout={}\nfor tag,(p,m,s) in {'s1':('c_U256','c_U256m',1.0),'s1/2':('c_U256h','c_U256hm',0.5)}.items():\n    q=0.5*(z[p]-z[m])/s/z['cref']-1.0\n    out[tag]=dict(mean_re_Nf=float(q.real[-1,lo].mean()),std_re_Nf=float(q.real[-1,lo].std()),mean_re_t=[float(x) for x in q.real[:,lo].mean(axis=1)])\nout['ratio_Nf']=out['s1']['mean_re_Nf']/out['s1/2']['mean_re_Nf']\nout['ratio_t']=[a/b if b else None for a,b in zip(out['s1']['mean_re_t'],out['s1/2']['mean_re_t'])]\nout['cN']=[float(x) for x in z['cN']]\nprint(json.dumps(out,indent=0))\n"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "3c0e139d2509fdec50b5ac32c70dec3597818b14",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/g2prod"
+    ],
+    "outside_package": {
+      "count": 2,
+      "first": [
+        " M tracks/E-stoch-inf/HANDOFF.md",
+        " M tracks/E-stoch-inf/stage/G2/CHECKLIST.md"
+      ]
+    },
+    "merge_base_main": "b325babd02f13cfbc2ba3c7b685ada23bb0fd13a",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261123-024806-3c0e139",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-23T02:48:06Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "E-20261123-014858-8e72d4c"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 20.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 9.2804,
+    "gpu_hours_reserved": 2.4667,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 185,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
