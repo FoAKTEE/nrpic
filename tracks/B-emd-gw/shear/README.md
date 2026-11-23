@@ -8,6 +8,16 @@ reference with tests (P1, P2 met), initial-data writer with constraint check (P3
 run B-20261120-223409-29c92ec. Not done: the AthenaK runs (smoke run failed on a deck
 parameter, fix in JOURNAL 22:35), analysis, verdict.
 
+## Results of series 1 (batch 10a, 2026-11-22)
+
+Series B-20261121-202830-417af0c (27 cases, release core-v0.6 processor build), summary run
+B-20261123-015919-dec4392 (`scripts/summarize_series.py`; `results/series1_summary.{json,txt}`,
+`figs/fig_series.png`). Extrapolated Delta = cos(theta)/cos(theta_lin) - 1: S1 -3.7e-6, S2
+-1.2e-7, S3 +1.0e-5 (order not defined: non-monotone), S4 +5.8e-9, M1 -3.4e-4, M2 +3.45e-3
+(sign against the prediction), L1 -5.0e-3; L2 without result (ray analysis NaN at every N_y);
+the f = 1 lapse leg stopped at the guard. Outcomes P4-P12: `JOURNAL.md`, entry of 2026-11-22
+18:00. Open: L2, the f = 1 leg, S3 at N_y = 256.
+
 ## Contents
 
 | Path | What |
