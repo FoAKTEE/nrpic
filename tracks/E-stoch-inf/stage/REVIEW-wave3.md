@@ -453,3 +453,25 @@ as a post-hoc statement, not a prediction.
 G0 and G1 are signed and not touched. G2: `stage/G2/CHECKLIST.md` collected this session (20
 items); C7, C8 hold evidence pointers and stay OPEN until g2prod has run; C9 PASS; C4 proposed
 NA (no kinetic matter before the hand-over). No gate is complete for review.
+
+# Part D. Batch 10a (lead of batch 10a, 2026-11-22 evening): the g2prod card runs
+
+No helper package finished in this batch: the eleven card runs of `g2prod` (submitted by the
+lead of batch 5 and its sequencer) were analysed by this lead, so this part is the analysis
+record, not an independent review. The independent check of G2 is still owed (C18, a fresh
+verifier with the artefacts).
+
+What was checked from the artefacts (registered outputs; every figure looked at):
+- Sequencer: ended by itself at 13:49 PST ("queue empty and every run closed"); all eleven runs
+  completed and closed with checksums; card-hours 7.51 in total (T 0.11, P256v6 0.51, six
+  256^3 chains 0.62 each, two 320^3 chains 1.47 and 1.48, control 0.22); no chain was killed
+  from outside; the 320^3 chains ran in two segments (restart exact for periodic set-ups).
+- T and P256v6: `g2prod/JOURNAL.md` 2.1 (analysis E-20261123-015014-b4ecd4e).
+- U320 and seed B: 2.2 (E-20261123-020751-0baf597, E-20261123-021730-a421438).
+- Seed A with the halving pair and the control: 2.3 (E-20261123-014858-8e72d4c and the judge
+  run named there).
+
+Defects found in this session's own analysis code (fixed, on record in g2prod 2.2): a one-dump
+crash of the --last mode (run E-20261123-015650-493cff5, failed) and a seed-B pass referred to
+seed A's realisation (E-20261123-014905-2bf3570: per-mode numbers invalid, superseded by
+E-20261123-021730-a421438). Nothing found wrong in the card runs themselves.
