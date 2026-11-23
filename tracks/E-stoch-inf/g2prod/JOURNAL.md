@@ -110,3 +110,23 @@ entry 1; nothing is changed here. How each is read (written before the analyses)
   reported, the smaller ratio decides: (i) (H_nc - H_am)/2 with box mean removed; (ii) H_nc
   with box mean removed (the control's even part is second order); against the odd part of
   the proper pair (ap, am), rms per dump, ratio of the maxima over dumps with cN <= ln 32.
+
+### 2.1 Outcomes T and P256v6 (analysis E-20261123-015014-b4ecd4e, 1 core, 6 min)
+
+- T HELD on step time, memory band missed at 384^3 (run E-20261121-202929-43dcc9c, 0.111
+  card-hours): 1.374 s per step at 256^3 (predicted 1.30 +- 0.15), 2.522 s at 320^3 (2.4-2.8),
+  4.300 s at 384^3 (4.0-4.8). Peak card memory 19589, 36393, 61077 MiB; the prediction was
+  written in thousands of MiB (the scouting "19.6 GB" is 19589 MiB), so 384^3 at 61.1 lies 1.5
+  percent below its band 62-70: that part of the prediction FAILED (low). Not refuted by the
+  stated rule (256^3 within 0.2 s; 384^3 started and fits one 80 GB card with 20.8 GiB to
+  spare). Cost scales slower than N^3 (zone-cycles per second rise from 1.22e7 to 1.32e7).
+  Figure `fig_g2_timing.png` (looked at).
+- P256v6 HELD, beyond the prediction (run E-20261121-202935-31520bc, 0.509 card-hours): A2 max
+  D_n (k <= k_max/2) = 1.20776e-4 against 1.20776e-4 (relative change 1.8e-10, from the judge
+  scripts' reference arithmetic); max D over all modes 4.4928e-3 both. Every row and column of
+  sr.sf.hst and sr.sf.con.hst (1389 rows each, same cycles) is IDENTICAL to the tested-branch
+  run E-20261115-172618-f948386 (max relative difference 0.0); R^NR per mode at N_f equal to
+  1.4e-16 (division round-off). Byte identity was not predicted; the records are identical
+  digit for digit. G1 reservation 2 ("no release card build has repeated the 256-cell run")
+  is answered: the release card build core-v0.6 repeats it. Figure `fig_g2_p256v6.png` (looked
+  at; the top panel plots the zero differences at the 1e-18 floor).
