@@ -1,0 +1,106 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261123-020550-f9a3482",
+  "track": "D-bh-dress",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "g2long entry 5: judgement of R1 V-1L, R2 ES-1L (500 M), R4 V-1L16 (300 M), R5 ES-1L16 (partial) against entry 1 (V1-V3, E1-E3, N, H1-H3), with V-1B and ES-1 as parents",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/D-bh-dress/g2long/tools/judge_long.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "V-1L=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f:v1l",
+    "ES-1L=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203131-8ee2a49:es1l",
+    "V-1B=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261120-222625-63abd72:v1b",
+    "ES-1=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261115-172726-60ba4c2:es",
+    "V-1L16=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203151-37e7b2d:v1l16",
+    "ES-1L16=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203151-59c54fb:es1l16"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "f9a3482dbe9ad963e4ea9cb58f25d8da6ffdab42",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/g2long"
+    ],
+    "outside_package": {
+      "count": 3,
+      "first": [
+        "?? tracks/D-bh-dress/drift_controls/tools/compare_runs.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/count_blocks.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/slice_profiles.py"
+      ]
+    },
+    "merge_base_main": "3d945c050a8b7d3df20f8fe91dd74caa4d26d25c",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/D-bh-dress/g2long/tools/judge_long.py",
+      "role": "argv",
+      "sha256": "90dbc898a4169de59f7822f772428556c5235c43089aa41c0a14aa993d1485ab",
+      "bytes": 11345,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261123-020550-f9a3482",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-23T02:05:50Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 30.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 10.5289,
+    "gpu_hours_reserved": 10.8167,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 4,
+    "runs": 266,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
