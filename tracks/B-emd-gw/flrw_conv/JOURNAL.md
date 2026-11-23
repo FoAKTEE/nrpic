@@ -525,3 +525,45 @@ converging at fourth order in the mesh to 2.6e-8 at 128 cells (provisional), fal
 particle number at 32 cells until the mesh part remains; the stated floor is the start
 error of the step (about 2e-6 in the amplitude at the step limit 0.002, second order in
 the step), named after P3 and P4, runs in which it could have failed.
+
+## Entry 12 (2026-11-22 17:57 PST, lead of batch 10a): the finished 128^3 member; final verdict
+
+J3 = run B-20261121-202335-3e6a898 ended 2026-11-21 22:21 PST: three segments (Slurm 4825,
+4849, 4861; 50:04 + 50:03 + 19:44 = 2.00 card-h by Slurm accounting, estimate 2.4-3.1), one
+outside kill resubmitted by the chain, 23261 cycles, t = 61.277 (a = 1000.0), exit 0, closed by
+the sequencer. `inputs/runs.json` gains `b_n128_p1`; analysis run B-20261123-015452-18d2956
+(`analyze_b.py` on `inputs/runs.json`, 16 s); figures `fig_b_conv`, `fig_b_error`,
+`fig_b_constraints` looked at; copies in `figs/` and `results/flrw_b.json` (the 16-64 rows are
+the same digits as run B-20261121-211956-b30627b). [VERIFIED by these runs]
+
+Outcomes at 128 cells (1 per cell, a = 1 to 1000; plateau over 3 <= a <= 951):
+- Entry 4, "128^3 passes a = 1001 without the guard or the chain reporting a non-finite field":
+  HOLDS.
+- Entry 4 / PB3, "|e_D| at 128^3 at most a quarter of 64^3's": FAILS (final; the provisional
+  verdict of entry 9 stands). Largest amplitude error 1.83e-6 at 128 against 1.37e-6 at 64;
+  flat at -1.7e-6 from a = 2 to the end. The floor's cause was tested at 32 cells (P3, P4: the
+  step error of the start, second order in the step limit, -1.9e-6 by Richardson); that the
+  same holds at 128 cells is [JUDGEMENT] from sign and size, not run at 128.
+- PB3 plateau: median |f_delta - f_ref| 2.78e-8 (f_* 2.52e-8) against 3.03e-7 at 64: factor
+  10.9 (32 -> 64: 16.2); between second and fourth order, no floor down to 3e-8. HOLDS.
+- PB1: largest |f_delta - f_ref| 5.01e-6, all of it in the first e-fold (early part 4.85e-6);
+  after a = 2 below 1e-4. HOLDS for the density estimators; the potential estimator again
+  above 1e-4 after a = 2 (largest 1.72e-4, the oscillation of period 2.343) as at 32 and 64:
+  FAILS as before, sub-percent.
+- PB2: eps = +2.81e-6 (64: +2.54e-6). HOLDS.
+- PB5: f_delta at a = 1.1, 10, 1000 = 0.888051, 0.986323, 0.999846 against f_ref 0.888050,
+  0.986323, 0.999846. HOLDS.
+- Constraints: largest Hr 6.2e-8 at 128 (3.2e-9, 1.3e-8 at 32, 64): it grows with the mesh by
+  3.3, 4.0, 4.8 per doubling, roughly as N^2, from the first records on; a growth like
+  round-off in second differences would show [TO VERIFY; not tested]. Mean-density error at
+  most 4.0e-9.
+Figure defect noted: in `fig_b_error` the legend of the potential panel covers the 128-cell
+curve's top.
+
+Verdict on G2 criterion (a), final: MET at 16-128 cells. Scale factor sub-percent at every
+mesh and particle number (largest 3.8e-7 for lattices, 5.3e-5 with one-percent noise, 4.7e-3
+with Poisson-like noise; leg F has no 128 member). Growth rate sub-percent at every mesh,
+largest |f - f_ref| 5.0e-6 at 128 cells, its plateau converging between second and fourth
+order to 2.8e-8; in particle number at 32 cells as in entry 7. The stated floor is the start
+error of the step (about 2e-6 in the amplitude at the step limit 0.002), whose cause a run
+could have refuted (P3, P4).

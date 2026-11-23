@@ -7,14 +7,14 @@ the linear growth rate of the particle FLRW run reach the sub-percent level and 
 particle number and mesh"). Design, predictions (entries 1, 4, 7, 8, 10) and outcomes
 (entries 7, 9, 10, 11): `JOURNAL.md`.
 
-State (2026-11-21, batch 6): legs F and B run and judged at 16, 32 and 64 cells and 1, 8,
-27 particles per cell; the optional Poisson-like start (P2) and a step test of the early
-floor (P3, P4) run on processors. The 128^3 row of leg B (J3, chain) is still running and
-was looked at provisionally to a = 190; see "Pending".
+State (2026-11-22, batch 10a): closed. Legs F and B run and judged at 16, 32 and 64 cells
+and 1, 8, 27 particles per cell, leg B also at 128 cells (J3, finished, entry 12); the
+optional Poisson-like start (P2) and a step test of the early floor (P3, P4) run on
+processors.
 
 ## Verdict on criterion (a)
 
-**Met at 16-64 cells, with a stated floor in the first e-fold** [VERIFIED by the runs named
+**Met at 16-128 cells, with a stated floor in the first e-fold** (final, entry 12) [VERIFIED by the runs named
 below]:
 
 - Scale factor (leg F, homogeneous dust from a = 1 to 1000): largest relative error of any
@@ -29,8 +29,9 @@ below]:
   6.5e-6 (32), 4.9e-6 (64), for the density in the code's slicing against the relativistic
   dictionary f_ref = a/(a + 3/k^2) (Main.tex:673; it differs from the Einstein-de Sitter 1
   by 0.12 at a = 1) and for the gauge-invariant contrast delta_* (Main.tex:629, 633) against
-  1. The plateau (a >= 3) converges at fourth order: 6.7e-5, 4.9e-6, 3.0e-7, and 2.6e-8 at
-  128 cells (provisional, a <= 180). With particle number at 32 cells it falls from 4.9e-6
+  1. The plateau (a >= 3) converges at fourth order to 64 cells and by 10.9 from 64 to 128:
+  6.7e-5, 4.9e-6, 3.0e-7, 2.8e-8 (median over 3 <= a <= 951; 128 cells: run
+  B-20261123-015452-18d2956). With particle number at 32 cells it falls from 4.9e-6
   (1 per cell) to 1.2e-6 and 1.5e-6 (8, 27 per cell), where the mesh part of 32 cells
   remains.
 - Floor: in the first e-fold of expansion (a <= 2) a start error of the amplitude of about
@@ -73,7 +74,8 @@ cell scale and the compensated cubic cloud then deposits negative cell densities
 a = 60 for 64 cells and 140 for 32 cells at A2, from the start at A3; entries 7, 9). The
 scale factor is not affected beyond the numbers above.
 
-Leg B (analysis run B-20261121-211956-b30627b; f errors against f_ref = a/(a + 3/k^2) for
+Leg B (analysis run B-20261123-015452-18d2956, which repeats the 16-64 rows of
+B-20261121-211956-b30627b digit for digit; f errors against f_ref = a/(a + 3/k^2) for
 delta and 1 for delta_* and the potential; plateau = median over 3 <= a <= 950; eps = the
 decaying mode relative to the growing mode at a = 1, from ln(D_*/A a) = c0 + c1 ln a +
 eps a^-5/2 on a <= 30)
@@ -85,10 +87,10 @@ eps a^-5/2 on a <= 30)
 | b_n32_p2 | B-20261120-222955-c8e16e3 | 5.33e-06 | 1.20e-06 | 1.20e-06 | 5.09e-06 | 2.10e-04 | 1.06e-05 | +1.4e-06 | 3.4e-09 |
 | b_n32_p3 | B-20261120-222955-c8e16e3 | 5.45e-06 | 1.53e-06 | 1.54e-06 | 5.15e-06 | 2.09e-04 | 1.30e-05 | +1.3e-06 | 3.2e-09 |
 | b_n64_p1 | B-20261121-202304-dc3020e | 4.86e-06 | 3.03e-07 | 3.02e-07 | 4.78e-06 | 1.69e-04 | 1.37e-06 | +2.5e-06 | 1.3e-08 |
-| b_n128_p1 (provisional, a <= 190) | B-20261121-202335-3e6a898 | - | 2.96e-08 | 2.60e-08 | 4.85e-06 | - | 1.83e-06 | +2.8e-06 | - |
+| b_n128_p1 | B-20261121-202335-3e6a898 | 5.01e-06 | 2.78e-08 | 2.52e-08 | 4.85e-06 | 1.72e-04 | 1.83e-06 | +2.8e-06 | 6.2e-08 |
 
-The provisional row is from run B-20261121-220441-06021c4 on the partial output of J3
-(records to a = 189.5; plateau there over 3 <= a <= 180); the finished J3 replaces it.
+The provisional 128 row of run B-20261121-220441-06021c4 (partial output to a = 189.5;
+`*_partial128` figures, `results/flrw_b_partial128.json`) is superseded by this row.
 
 Step test (leg B, 32 cells, 1 per cell, to a = 9; analysis run B-20261121-225745-773ffab):
 
@@ -114,24 +116,17 @@ PB1 for the potential estimator, PB2 at 16 cells with the two-term fit, PB3 for 
 (no floor at 1e-6 in the plateau; the early part has a floor of about 5e-6 in f), PB4 for
 the amplitude (1 per cell differs from 8 and 27 by 4.5e-5), P2 "noise part of the alpha
 extrema constant after a = 3" (it triples by a = 300), J3 "|e_D| at 128^3 at most a quarter
-of 64^3's" (provisional: -1.76e-6 against -7.2e-7 at a = 100), P3 "the step is not the
+of 64^3's" (final: largest 1.83e-6 against 1.37e-6, entry 12), P3 "the step is not the
 cause of the early floor" (P4's prediction, second order in the step, held).
 
 ## Pending
 
-- J3 = run B-20261121-202335-3e6a898, chain of `scripts/submit_chain.sh`: segment 1 (Slurm
-  4825) ran 12:44-13:34 PST to t = 25.5 (a = 189); segment 2 is queued as Slurm 4849
-  (pending at 14:33 PST). Leg B at 128^3, 1 per cell, to a = 1001; about 13,600 steps left at 0.31 s
-  (1.2 card-hours). Predictions: entry 4 (as amended by entry 9: the amplitude error is set
-  by the start, not the mesh, at 64 and 128 cells) and entry 8 (early part about 5e-6 in f).
-  When it has ended: the chain or the lead's sequencer runs `nrpic-run finish`; then add
-  `"b_n128_p1": "B-20261121-202335-3e6a898"` to `inputs/runs.json` and rerun
-  `scripts/analyze_b.py` registered (the reader keeps the last segment of restarted records).
+Nothing. J3 ended 2026-11-21 22:21 PST and was judged in entry 12.
 
 ## Card time
 
-J1 (Slurm 4746) 0.31 card-h, J2 (4824) 0.35 card-h, J3 segment 1 (4825) 0.83 card-h by
-Slurm accounting; J3 needs about 1.2 more. The package reaches about 2.7 card-hours against
+J1 (Slurm 4746) 0.31 card-h, J2 (4824) 0.35 card-h, J3 (4825, 4849, 4861) 2.00 card-h by
+Slurm accounting. The package used 2.66 card-hours against
 the 2.5 of its brief (J3 to a = 1001 was the lead's choice under decision 0025 item 4,
 entry 4). No card job was submitted in batch 6. Processor runs P1-P4 at 4-6 threads.
 
@@ -160,7 +155,8 @@ entry 4). No card job was submitted in batch 6. Processor runs P1-P4 at 4-6 thre
 | B-20261120-222955-c8e16e3 | J1 (card, Slurm 4746): F and B at 32^3 | completed |
 | B-20261120-223006-24448ac | P1 (processors): F and B at 16^3 | completed |
 | B-20261121-202304-dc3020e | J2 (card, Slurm 4824): F and B at 64^3 | completed |
-| B-20261121-202335-3e6a898 | J3 (card chain, Slurm 4825, 4849): B at 128^3 | running |
+| B-20261121-202335-3e6a898 | J3 (card chain, Slurm 4825, 4849, 4861): B at 128^3 | completed |
+| B-20261123-015452-18d2956 | leg B analysis with the finished 128^3 member | completed |
 | B-20261121-211524-e54164d, B-20261121-211626-e2a4df8 | analyses v1 of F and B | completed, superseded |
 | B-20261121-211951-b735833, B-20261121-211956-b30627b | analyses v2 of F and B | completed |
 | B-20261121-212128-67b349a | P2 (processors): Poisson-like start | completed |
