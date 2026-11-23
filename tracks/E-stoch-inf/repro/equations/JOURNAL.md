@@ -89,3 +89,56 @@ Hand derivations made while reading (to be confirmed or refuted by the scripts):
 (e) Map to the code: read `athenak/src/scalar_field/` (read only); expected conventions from
 the header of `scalar_field_noise.cpp`: G = 1 units (eps1 = 4 pi Pi_b^2/H^2), Z4c variables
 (Khat, At_ij with chi), proper time, kicks multiplied by alpha_b.
+
+## Entry 2 (2026-11-22 18:30 PST): outcomes, run E-20261123-022009-a53e7ee
+
+Registered run `E-20261123-022009-a53e7ee` (processors, 1 core, about 5 minutes; commit a53e7ee;
+`scripts/run_all.sh`; outputs in `scratch/E-stoch-inf/E-20261123-022009-a53e7ee/`). Before it,
+unregistered smoke runs into `scratch/E-stoch-inf/tmp/` found two bugs of my scripts (background
+started at N = 0 although the mode needs N < 0; USR background lost phi' below the absolute
+tolerance, fixed by integrating ln|phi'|) and one wrong expectation of a control (b2, below);
+no number of a smoke run is quoted. Figures looked at: `fig/fig_checks_matrix.png`,
+`fig/fig_noise_amp.png`, `fig/fig_langevin_ito.png`.
+
+Prediction by prediction:
+- A1 confirmed: momentum constraint prefactor -2/3 (`a1 momentum: linearised = (1/3) printed`).
+- A2 confirmed: linearised K LHS = P0:231 - Ham_lin.
+- A3 confirmed: with delta_ij the trace is Psi k^2 (1 - a^2)/a^2.
+- A4 confirmed: five families pass; Newtonian delta phi as printed fails, with H it passes;
+  delta N sign as predicted. The Psi line of P0:351-352 read as one sum passes.
+- A5 confirmed (GI relations in every family, Phi_B = Psi_B on MS solutions).
+- A6 confirmed: P1:267 misprint (phidot, not phidot^-1); P1:258 term is k^2/(a^2 H) R>
+  (`b6`; the corrected form was found after the prediction by testing the dimensionally
+  natural candidate, `scratch/E-stoch-inf/tmp/cg2.py`, then added to the registered script).
+- Not predicted, found: P0:911 Hddot = 2 eps1 (1 - eps2/2) H^3 is wrong; Hddot =
+  eps1 (2 eps1 + eps2) H^3 (`a0 Hddot`; ERRATA E7).
+- B1 confirmed in all five families with arbitrary gauge functions; the printed linear K
+  equation gives the same -eps1 S_R.
+- B2 partly refuted: constraint violation at first order confirmed for both controls; my
+  prediction that Psi_B> := Phi_B> leaves residuals that depend on the gauge functions failed
+  (smoke run: the Newtonian residual contains no gauge function, and the registered run shows
+  the Newtonian and synchronous residuals identical). What differs is the family: comoving,
+  flat and uniform N never use Psi_B and give the printed sources. P0:690's "strong gauge
+  dependence" is read in that sense in EQUATIONS.md.
+- B5 (added before the registered run, after entry 1): with the printed sources dH/dt = dM/dt = 0
+  on H = M = 0 in the gauge of the code; flipping S_Pi gives dH/dt = 4 S_R p^2/H, flipping S_K
+  gives dH/dt = -4 S_R p^2/H and dM/dt != 0, flipping S_Kt gives dM/dt != 0 only.
+- B3 confirmed (S_K^BSSN = S_K, S_A = a^-2 S_Kt, 4 pi misprint, momentum-constraint sign).
+- B4 confirmed (Sigma = S_Pi/H, Friedmann line missing 1/(3 M^2)).
+- C1 confirmed with a looser margin than I wrote: SR amplitude/printed = 1.043, 1.034, 1.027,
+  1.025 at sigma = 0.02, 0.05, 0.1, 0.2 (the excess tracks |R|/|R_P0| = 1.044 ... 1.019, i.e.
+  the change of H and eps1 between Hubble and sigma crossing, not O(sigma^2)).
+- C2 confirmed: USR ratio = sigma^2/3 to four digits (1.3333e-4 at sigma = 0.02); dropping R'
+  reproduces the printed value (1.0002 at sigma = 0.02).
+- D1, D2 confirmed; D4 (added) linear drift (eps1 + eps2 - 3) = super-Hubble CPT.
+- D3 confirmed: Monte Carlo drift 0.3075 +- 0.013 (4e5 paths, T = 0.01; 0.306 +- 0.018 at
+  T = 0.005) against 0.32 (alpha^5) and 0.08 (alpha^3).
+- (e) code map: all ten formula checks pass (`code_map/code_map.json`). Two labels of that
+  file cite `noise.cpp:549/550` for w1, w2; the lines are 550/551 (EQUATIONS.md cites the
+  right lines).
+
+The matrix figure classifies 82 checks; all came out as expected at the time of the registered
+run, but the expected-FAIL list of `make_figures.py` was written after the smoke runs, so the
+figure is not a test of the predictions of entry 1: this entry is.
+Open: none of my items; the review of these derivations on Fable (decision 0028 item 4) is for
+the lead to decide.

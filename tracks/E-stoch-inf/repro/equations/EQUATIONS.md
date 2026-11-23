@@ -4,8 +4,9 @@ Package `repro/equations` of Track E (decision 0028). P0 = arXiv:2401.08530 v2
 (`kb-data/raw/arxiv/2401.08530/v2/src/Stochastic_Inflation.tex`), P1 = arXiv:2512.14649 v2
 (`kb-data/raw/arxiv/2512.14649/v2/src/PRD_v2.tex`); `P0:<line>`, `P1:<line>` are lines of
 those files. Code paths are relative to `athenak/src/` at the merge of main into
-`track/E-stoch-inf` on 2026-11-22 (c0ecdd15; release core-v0.6 source). Run ids, figures and
-the keys of the result files are in `README.md`. Misprints: `ERRATA.md` (rows E1-E17).
+`track/E-stoch-inf` on 2026-11-22 (c0ecdd15; release core-v0.6 source). All evidence: registered run
+E-20261123-022009-a53e7ee (`scratch/E-stoch-inf/E-20261123-022009-a53e7ee/`; figures copied to
+`fig/`). Misprints: `ERRATA.md` (rows E1-E17).
 
 Verdicts: CONFIRMED; CONFIRMED WITH A CORRECTION (the correction is an ERRATA row);
 NOT CONFIRMED (what fails, and what the code follows).
@@ -38,7 +39,7 @@ or with the printed source. All checks are exact identities; none is numerical e
 | Item | Statement and locator | Verdict | Evidence |
 |---|---|---|---|
 | b1 | with R -> W R (time derivatives after the product, P0:577, P1:179) and Psi_B> = -eps1 a^2 k^-2 (H Rdot> - S_R) (P0:613, P1:201), the linearised LHS leave exactly S_Pi = sqrt(2 eps1) M S_R (field), S_K = -eps1 S_R, S_Kt_ij = a^2 eps1 (delta_ij/3 - k_i k_j/k^2) S_R (P0:669-671, P1:299, 371-372), and 0 in both constraints (P0:675-681, P1:378-392), in all five gauge families, independent of the gauge functions; the printed linear K equation P0:231 gives the same -eps1 S_R | CONFIRMED (gauge independence shown family by family with arbitrary gauge functions, as P0:684 and P1 section II claim) | `b1 <family>: residuals = printed sources, constraints 0` (5 PASS), `b1 <family>: printed linear K eq ...` (5 PASS) |
-| b2 | negative controls: sign of S_R in Psi_B> flipped; Psi_B> := Phi_B> (the case P0:690 warns about; it is what P0's literal prescription gives for the Newtonian Psi of P0:351) | CONFIRMED: both violate the Hamiltonian and momentum constraints at first order in S_R; with Psi_B> := Phi_B> the residuals also differ between the Newtonian and synchronous families (gauge dependence, P0:690) | `b2 control: ...` |
+| b2 | negative controls: sign of S_R in Psi_B> flipped; Psi_B> := Phi_B> (the case P0:690 warns about; it is what P0's literal prescription gives for the Newtonian Psi of P0:351) | CONFIRMED that both violate the Hamiltonian and momentum constraints at first order in S_R (Ham residual -S_R a^2 p^2 (p^2 - 6 H^2)/(H^2 k^2) for Psi_B> := Phi_B>). The "strong gauge dependence" of P0:690 is a dependence on the family, not on the gauge functions: with Psi_B> := Phi_B> the Newtonian and synchronous residuals are identical to each other and contain no gauge function, but differ from the printed sources that the comoving, flat and uniform-N families give (those families never use Psi_B) | `b2 control: ...` |
 | b5 | the constraints hold under the sourced evolution: in the gauge of the code (Psi = B = 0) the evolution equations with the printed sources give dH/dt = dM/dt = 0 on H = M = 0 at first order; flipping the sign of any one source (S_Pi, S_K or S_Kt) makes dH/dt or dM/dt nonzero at first order | CONFIRMED (see the result file for the residual of each flip) | `b5 constraint propagation ... printed sources`, `b5 negative control: sign of S_<X> flipped` |
 | b6 | P1:241-259: Phi>, chi>, Psi> without a gauge, delta phi> free, and their time derivatives | CONFIRMED WITH A CORRECTION: P1:258 (E9) | `b6 ...` |
 | b3 | BSSN form (P0:972-1031, P1:645-691): S_K^BSSN = S_K because the BSSN K equation differs from the ADM one by the Hamiltonian constraint; S_A = X_b S_Kt = a^-2 S_Kt because the BSSN A_ij LHS is X times the ADM Kt_ij LHS at first order; S_X = S_gt = S_Gt = 0 (definitions, momentum constraint unsourced) | CONFIRMED for the sources; CONFIRMED WITH A CORRECTION for the printed system: 4 pi in an M_Pl^-2 system (E12), sign of the momentum constraint (E13), extra alpha (E17, judgement) | `b3 BSSN K eq [M^-2/2] ...`, `b3 BSSN A_xx/A_yy LHS = X_b * ADM Kt LHS`, `b3 BSSN momentum constraint ...` |

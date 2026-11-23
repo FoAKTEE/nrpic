@@ -38,7 +38,7 @@ one `log.txt` per part. No script reads a downloaded file; the papers are cited 
 
 | Run id | What | Cost |
 |---|---|---|
-| see `JOURNAL.md` entry 2 | all checks (run_all.sh) | 1 core, minutes |
+| E-20261123-022009-a53e7ee | all checks (run_all.sh): 72 entries of check_equations, 10 of check_code_map, Langevin, noise amplitude, figures | 1 core, about 5 min, no card |
 
 ## Results in one paragraph
 
