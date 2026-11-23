@@ -1,0 +1,95 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261123-024359-5dc3213",
+  "track": "E-stoch-inf",
+  "gate": "G2",
+  "kind": "production",
+  "purpose": "g2prod judge: SCOPE 4c as written (U-A0..U-A3, U-A2' both seeds, U-A4'(a)-(d) with the floor, U-R, U-S) from the three analyses, records of every chain, control odd part of H; figures",
+  "preregistered_in": "tracks/E-stoch-inf/g2prod/JOURNAL.md#entry-1",
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "until [ -s /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261123-014858-8e72d4c/summary.json ]; do sleep 10; done; sleep 5; cd tracks/E-stoch-inf/g2prod/scripts && export OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 MPLBACKEND=Agg && python3 judge_g2.py --a /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261123-014858-8e72d4c --b /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261123-021730-a421438 --r /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261123-020751-0baf597 --scout /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-101756-6bffd0c --runs U256ap=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-211214-0377aab U256am=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-214629-da64fb7 U320ap=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261122-023427-0ac3f0b U320am=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261122-110042-ffcb4b3 U256bp=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261122-033244-564627b U256bm=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261122-071038-d9f933b U256hp=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261122-113320-9bbb52b U256hm=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261122-152116-0542096 U256nc=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261122-190341-0419be6 --out \"$NRPIC_RUN_DIR\" > \"$NRPIC_RUN_DIR/judge.log\" 2>&1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "5dc32131fc6391a773425a58838d2eb2e4624a86",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/g2prod"
+    ],
+    "outside_package": {
+      "count": 2,
+      "first": [
+        " M tracks/E-stoch-inf/HANDOFF.md",
+        " M tracks/E-stoch-inf/stage/G2/CHECKLIST.md"
+      ]
+    },
+    "merge_base_main": "b325babd02f13cfbc2ba3c7b685ada23bb0fd13a",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261123-024359-5dc3213",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-23T02:44:00Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "E-20261123-014858-8e72d4c",
+    "E-20261123-021730-a421438",
+    "E-20261123-020751-0baf597",
+    "E-20261122-190341-0419be6"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 20.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 9.2804,
+    "gpu_hours_reserved": 2.4667,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 3,
+    "runs": 184,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
