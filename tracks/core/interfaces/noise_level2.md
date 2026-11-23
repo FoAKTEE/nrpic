@@ -207,3 +207,19 @@ the 1e-4 effect of P1:520. Compare level 2 with levels 0 and 1 on the mesh
 - Cost at 256^3 on a card: estimated in section 7, not measured.
 - Not supported: static refinement, several ranks (the field already refuses ranks),
   the power model.
+- Possible optimisation for the review: at level 2 the projection recomputes
+  V = Pi_R K^2/(9 Pi^2) in every row of the sum over n_x (65 times per cell at 256^3)
+  and reads four arrays for it; a work array of V filled once per stage would halve the
+  memory traffic of the projection. Not done, to keep the change small.
+
+## 11. Lines of shared files touched (for the merge)
+
+`scalar_field.hpp` (new members after `SF_names`, `SfNoiseOptions`, and a block after
+`NoiseWriteState`); `scalar_field.cpp` constructor (`nvar_sf` before the allocation, the
+allocations and `InitializeBuffers`), `InitRecv`, `CopyU` and `ExpRKUpdate` (`nvar =
+nvar_sf`), `CalcRHS_` (one call `NoiseMeshRHS`); `scalar_field_io.cpp` `Startup` (five
+lines after `NoiseSetup`); `scalar_field_noise.cpp` `NoiseInit` (levels and the new
+options), `NoiseSetup` (one call), `NoiseBackground` (`bg_level`), `NoiseModeRHS` (W', W''
+per shell), `NoiseSynthesize` (per-mode branch of the sum over n_z), `NoiseStage`,
+`NoiseFieldsOfState`, `NoiseWriteState` (one call each); `CMakeLists.txt` (one file).
+Everything else is in the new file `scalar_field_noise_mesh.cpp`.
