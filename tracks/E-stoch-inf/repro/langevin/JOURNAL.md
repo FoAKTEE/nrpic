@@ -109,3 +109,43 @@ N = 4, 5, 6 the right tails of alpha and of N - N_b are exponential: the exceeda
 the 90% quantile pass a KS test against an exponential (p > 0.01) and fail against the
 Gaussian tail of the same mean and variance, and the log-survival function has no
 significant curvature. Refuted if the right tail at N = 4 is Gaussian.
+
+## Entry 2 (2026-11-22 18:12 PST): first outcomes (runs E-20261123-020327-e524721, analysis E-20261123-020825-1a01a96) and a new hypothesis
+
+(Analysis run E-20261123-020746-78d0c54 failed on a plotting keyword; fixed in 1a01a96, rerun.)
+Numbers from `results/langevin.json` of the analysis run; figures looked at: fig1_paths,
+fig2_moments, fig3_pdfs, fig4_logpdfs.
+
+- P1 HELD. Euler-0.01 background crosses phi_c at N_b = 3.0435; converged and Euler-0.005
+  never cross (phi -> 9.06402 = analytic stop, 9.0600); USR (eps1 < 1e-2, |eps2-6| < 0.03)
+  from N = 1.06; minimum of |u| at N = 5.41 after the crossing; eps2(4, 5, 6) = 4.07, 0.34, -0.12.
+- P2 FAILED at the 10% level as worded (my hand estimate 6.4e-3 used the converged eps1(2)
+  = 3.69e-5; the Euler background has 3.23e-5), but the linear-theory moment ODE on the same
+  background agrees with the run to 0.2% (std alpha 7.065e-3 vs 7.050e-3) and 0.4% (std D) at
+  N = 3, 0.7% at 3.5; nonlinearity shows at 4 (8%). The run at N = 3 is within 7% of the
+  paper's read-off widths (0.0066, 0.0016).
+- P3 PARTLY HELD. Shapes and signs right; kappa3(N), kappa4(N) peak 0.66, 0.9 near 4.35 and fall
+  to 0.39, 0.29 at 6 (paper read off: 0.6, 0.8 -> 0.3, 0.2). Widths: std alpha 0.126, 0.169,
+  0.144 and std D 0.046, 0.171, 0.217 at N = 4, 5, 6, i.e. 8-20% above the read-off values;
+  kappa3(alpha) ~ 1.5 and kappa4(alpha) ~ 6 with spikes to 400 (paper 1.1 and 3); mean D at 6 =
+  0.085 (paper's 100-path mean ~0.01-0.02 read off, standard error ~0.02).
+- P4 FAILED in part. At h = 0.001 Heun and Euler-Maruyama on the Ito-equivalent agree (std
+  within 0.6%), as predicted; at h = 0.01 Euler-Maruyama is 5-7% narrower at N = 4 (not < 3%).
+  The Ito reading (EM on the printed equation, no conversion) shifts the mean of alpha at 5-6 by
+  -0.05 (I predicted +0.02 to +0.05: right size, wrong sign) and mean D at 6 from 0.085 to 0.003.
+- New observation: the Ito reading `ito_naive` gives std alpha 0.117, 0.137, 0.121 and std D
+  0.0425, 0.150, 0.185 at N = 4, 5, 6, within 4% of every read-off width of the paper, and
+  kappa3(alpha) at 6 = 0.99, mean D at 6 = 0.003.
+
+Hypothesis H-Ito: the paper's figures are an Euler-Maruyama (Ito) solution of the printed
+equations at step 0.01, the background included (that is also what puts the slope at 3.04).
+Predictions for run 2 (seeds 2, 3 of the Ito reading; Ito reading at h = 0.001; without the
+Ito term; on the tuned converged background):
+  (a) seeds 2, 3: std alpha and std D at N = 4, 5, 6 within 5% of the read-off widths
+      (0.117/0.042, 0.133/0.150, 0.121/0.190), mean D at 6 below 0.02, median over
+      N in [4.5, 6] of kappa3(alpha) between 0.9 and 1.3 (base: ~1.5);
+  (b) h = 0.001: within 7% of h = 0.01 in std (the reading, not the step, makes the match);
+  (c) without the Ito term: mean alpha lower still by ~0.03 (base minus no_ito was 0.03);
+  (d) tuned converged background: widths 10-15% below the Euler-0.01 background (as for Heun:
+      bg_tuned std alpha 0.110 vs 0.126 at 4).
+Refuted if (a) misses by more than 10% at two of the six widths.
