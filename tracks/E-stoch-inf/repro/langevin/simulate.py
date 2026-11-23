@@ -42,6 +42,12 @@ VARIANTS = {
     "seed2":       dict(bg="euler01", scheme="heun", h=0.01, seed=2),
     "seed3":       dict(bg="euler01", scheme="heun", h=0.01, seed=3),
     "seed4":       dict(bg="euler01", scheme="heun", h=0.01, seed=4),
+    # Ito reading of the printed equation (Euler-Maruyama, no conversion): entry 2
+    "naive_s2":    dict(bg="euler01", scheme="em_naive", h=0.01, seed=2),
+    "naive_s3":    dict(bg="euler01", scheme="em_naive", h=0.01, seed=3),
+    "naive_h001":  dict(bg="euler01", scheme="em_naive", h=0.001),
+    "naive_noito": dict(bg="euler01", scheme="em_naive", h=0.01, ito_term=False),
+    "naive_tuned": dict(bg="tuned", scheme="em_naive", h=0.01),
 }
 
 

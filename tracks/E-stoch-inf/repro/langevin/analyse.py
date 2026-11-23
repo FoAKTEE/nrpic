@@ -14,6 +14,7 @@ from scipy import stats
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import matplotlib.ticker
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -139,7 +140,7 @@ def fig_background(simdir, out):
     plt.close(fig)
 
 
-def fig_paths(v, out):
+def fig_paths(v, out, name="fig1_paths"):
     N = v["N"]
     fig, ax = plt.subplots(2, 1, figsize=(8, 5.2), sharex=True)
     fig.subplots_adjust(left=0.10, right=0.98, bottom=0.09, top=0.98, hspace=0.06)
@@ -159,7 +160,7 @@ def fig_paths(v, out):
     ax[1].set_ylim(-0.4, 0.6)
     ax[0].set_xlim(2, 6)
     ax[0].legend(loc="upper left", ncol=2)
-    fs.save(fig, os.path.join(out, "fig1_paths"))
+    fs.save(fig, os.path.join(out, name))
     plt.close(fig)
 
 
@@ -183,7 +184,7 @@ def fig_moments(v, out, name="fig2_moments", title=None):
     plt.close(fig)
 
 
-def fig_pdfs(v, out, tails, log=False):
+def fig_pdfs(v, out, tails, log=False, suffix=""):
     fig, ax = plt.subplots(4, 2, figsize=(8, 9.0))
     fig.subplots_adjust(left=0.09, right=0.98, bottom=0.06, top=0.98, hspace=0.38, wspace=0.22)
     for r, t in enumerate(TIMES):
@@ -219,10 +220,11 @@ def fig_pdfs(v, out, tails, log=False):
                 a.set_ylabel("PDF")
                 a.set_ylim(0, None)
             a.set_xlim(lo, hi)
+            a.xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(5))
             a.set_xlabel(lab, labelpad=-1)
             a.text(0.98, 0.88, rf"$\mathcal{{N}}_b={t:g}$", transform=a.transAxes,
                    ha="right", fontsize=8)
-    fs.save(fig, os.path.join(out, "fig4_logpdfs" if log else "fig3_pdfs"))
+    fs.save(fig, os.path.join(out, ("fig4_logpdfs" if log else "fig3_pdfs") + suffix))
     plt.close(fig)
 
 
@@ -361,6 +363,10 @@ def main():
         nl = v["m_nlive"]
         half = np.nonzero(nl < 0.5 * nl[0])[0]
         d["N_half_dead"] = float(v["N"][half[0]]) if len(half) else None
+        w = (v["N"] >= 4.5 - 1e-9) & (v["N"] <= 6.0 + 1e-9)
+        d["median_4.5_6"] = {k: float(np.median(v["m_" + k][w])) for k in
+                             ("skew_a", "kurt_a", "skew_D", "kurt_D", "std_a", "std_D",
+                              "mean_a", "mean_D")}
         res["variants"][vn] = d
     fig_background(simdir, figdir)
     fig_paths(base, figdir)
@@ -388,6 +394,13 @@ def main():
     fig_a3one(base, a3, figdir)
     fig_moments(a3, figdir, "fig_a3one_moments", r"$\alpha^3\to1$ in front of the noise")
     fig_linear(simdir, base, figdir)
+    nv = load(simdir, "ito_naive")
+    ntails = {f"{t:g}": {k: tail_stats(finite(nv[f"{k}_{t:g}"])) for k in "aD"} for t in TIMES}
+    res["tails_ito_naive"] = ntails
+    fig_paths(nv, figdir, "fig1_paths_ito_naive")
+    fig_moments(nv, figdir, "fig2_moments_ito_naive", "Euler-Maruyama on the printed equation (Ito reading)")
+    fig_pdfs(nv, figdir, ntails, suffix="_ito_naive")
+    fig_pdfs(nv, figdir, ntails, log=True, suffix="_ito_naive")
     with open(os.path.join(out, "langevin.json"), "w") as f:
         json.dump(res, f, indent=1)
     if install:
