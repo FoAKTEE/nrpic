@@ -1538,3 +1538,20 @@ other four held and released by `verify/row4/sequencer.sh` (stop file and log un
   file moved to `scratch/core/tmp/lead_b10a/sequencer.stop`; log
   `scratch/core/tmp/lead_b10a/sequencer.log`) releases 4925-4928 in that order. At 02:05Z
   seven jobs of other owners were ahead in the queue. P5-P9 open.
+
+### Answers to the inbox (02:08Z; no AthenaK source change)
+
+- Track A, `periodic-gamma-driver-step` (acknowledged in batch 8): answered in outbox
+  20261123T020802Z. (i) gauge speeds in the step limit stay W31 for core-v0.7; the rule of
+  decision 0027 item 2 holds meanwhile; `LightSpeedTimeStep` counts only the light speed
+  [VERIFIED by reading z4c_newdt.cpp at HEAD]. (ii) accepted, no date (with W24/W30).
+  (iii) done this session (footer test above); W31 row updated in REQUESTS_WAVE3.md.
+- kb, `paper-code-links-tests` (message 105): answered in outbox 20261123T020802Z. Item 3
+  confirmed by reading the source: the paper's identity is `dep_sum` of
+  NrpicDepositSources (nrpic.cpp:1179-1180) written by NrpicWriteHistory
+  (nrpic_io.cpp:289); NrpicWriteConservation returns on refined meshes (nrpic_io.cpp:662,
+  :665). Item 4 confirmed: `<z4c> nco` is read nowhere in athenak/src (only a local
+  variable in restart.cpp:154-306); the deck line stays for now because the deck's sha256
+  is in the manifests of the paper's runs. Candidates offered [JUDGEMENT]: M25 and M20 the
+  dust-collapse runs, M18 the id_solver tests T1 and T3 (the `code` monitor after the
+  solve, 1e-11 to 1e-12), M19 stays claimed, M24 Track A's periodic_diag runs.

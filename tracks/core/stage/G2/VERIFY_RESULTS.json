@@ -1,9 +1,9 @@
 {
   "track": "core",
   "gate": "G2",
-  "commit": "3a775191967243fc5b4e95e0e66c4b232fab384b",
-  "verified_utc": "2026-11-21T23:37:00Z",
-  "export": "/data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-3a77519-20261121T233130Z",
+  "commit": "5e6dc433a688f4dae44790339071761d21839841",
+  "verified_utc": "2026-11-23T02:15:39Z",
+  "export": "/data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-5e6dc43-20261123T020751Z",
   "result": "FAIL",
   "checks": [
     {
@@ -14,14 +14,14 @@
     },
     {
       "check": "sync",
-      "status": "PASS",
-      "message": "main is merged into the branch",
+      "status": "FAIL",
+      "message": "main has commits not merged: run nrpic-ctx sync",
       "detail": null
     },
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 3a7751919672 (HEAD) in /data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-3a77519-20261121T233130Z/tree",
+      "message": "clean export of 5e6dc433a688 (HEAD) in /data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-5e6dc43-20261123T020751Z/tree",
       "detail": null
     },
     {
@@ -57,36 +57,36 @@
     {
       "check": "fig-script",
       "status": "PASS",
-      "message": "4 figures, each with its script",
+      "message": "5 figures, each with its script",
       "detail": null
     },
     {
       "check": "min-figs",
       "status": "WARN",
-      "message": "1 schematics and 3 data figures (brief 13.4 asks at least 1 and 5 at G2)",
+      "message": "1 schematics and 4 data figures (brief 13.4 asks at least 1 and 5 at G2)",
       "detail": null
     },
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "6 of 1439 runs have problems; 9 waived",
+      "message": "6 of 1448 runs have problems; 9 waived",
       "detail": {
-        "core-20261121-204230-3bcb118": [
+        "core-20261123-020450-7e42037": [
           "status is submitted: not finished (nrpic-run finish)"
         ],
-        "core-20261121-204232-f74c942": [
+        "core-20261123-020452-e635a8e": [
           "status is submitted: not finished (nrpic-run finish)"
         ],
-        "core-20261121-204234-d010783": [
+        "core-20261123-020454-8fec6b2": [
           "status is submitted: not finished (nrpic-run finish)"
         ],
-        "core-20261121-204235-0b25077": [
+        "core-20261123-020456-884f550": [
           "status is submitted: not finished (nrpic-run finish)"
         ],
-        "core-20261121-204237-ae00ca2": [
+        "core-20261123-020458-dfc38d7": [
           "status is submitted: not finished (nrpic-run finish)"
         ],
-        "core-20261121-204239-2be5ac2": [
+        "core-20261123-020500-9b192cd": [
           "status is submitted: not finished (nrpic-run finish)"
         ]
       }
