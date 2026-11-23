@@ -1,0 +1,92 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261123-014858-8e72d4c",
+  "track": "E-stoch-inf",
+  "gate": "G2",
+  "kind": "production",
+  "purpose": "g2prod analysis g2a: seed A at s=+1,-1,+1/2,-1/2 (256^3, release v06): U-A0..U-A3, U-A2', constraint parts and halving for U-A4'(a)-(c), one-point; predictions entry 1",
+  "preregistered_in": "tracks/E-stoch-inf/g2prod/JOURNAL.md#entry-1",
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "cd tracks/E-stoch-inf/g2prod/scripts && export OMP_NUM_THREADS=3 OPENBLAS_NUM_THREADS=3 MKL_NUM_THREADS=3 MPLBACKEND=Agg && python3 analyse_g2.py --group g2a --map U256=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-211214-0377aab --map U256m=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-214629-da64fb7 --map U256h=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261122-113320-9bbb52b --map U256hm=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261122-152116-0542096 --ref ../../usr/results --out \"$NRPIC_RUN_DIR\" --workers 3 > \"$NRPIC_RUN_DIR/run.log\" 2>&1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "8e72d4c47765f99b7c40811a73a6826a6aa6ae04",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/g2prod"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "3d945c050a8b7d3df20f8fe91dd74caa4d26d25c",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 3,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261123-014858-8e72d4c",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-23T01:48:58Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "E-20261121-211214-0377aab",
+    "E-20261121-214629-da64fb7",
+    "E-20261122-113320-9bbb52b",
+    "E-20261122-152116-0542096"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 20.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 9.2804,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 167,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
