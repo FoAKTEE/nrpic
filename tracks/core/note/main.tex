@@ -123,7 +123,7 @@ open items. Arrows on the right lead to the six projects that use the code.}
 The brief of the program assigns four tests of its verification suite to the shared
 implementation: geodesics on a fixed background; the Oppenheimer--Snyder collapse with a
 horizon-mass error of the order of the source paper's; prolate collapse; and the
-stability of relativistic clusters. Figures~\ref{fig:geo} to~\ref{fig:clusters} are
+stability of relativistic clusters. Figures~\ref{fig:geo} to~\ref{fig:row4m8} are
 drawn from raw outputs by one registered run, which also writes the ledger of
 Appendix~\ref{app:ledger}.
 
@@ -223,15 +223,6 @@ three models with their controls between $0.680$ and $0.755$, is in the queue. T
 growing oscillation of the central lapse, $\pm0.03$ after $200\,M$ at $y_c=0.755$, is
 still unexplained. The row is partial.
 
-\begin{figure*}
-\includegraphics[width=\textwidth]{figures/fig_row4_m8.pdf}
-\caption{Central lapse of the bisection on cells of $M/8$, first level. Solid lines show
-the members with the one-per-cent inward kick and dashed lines the unkicked controls on
-the same mesh. Dotted lines mark the equilibrium central lapse of each model, the grey
-band the window $200$--$300\,M$ of the rule, and crosses the collapse time (central lapse
-below $0.3$). Right: the runs without collapse on an expanded axis.}
-\label{fig:row4m8}
-\end{figure*}
 
 \begin{figure*}
 \includegraphics[width=\textwidth]{figures/fig_clusters.pdf}
@@ -240,6 +231,16 @@ sequence on the adaptive mesh; crosses mark the first apparent horizon. Right: t
 bisection between the turning point and the collapsing model on a mesh capped at cells of
 $M/4$, labelled by $y_c$; the last member is the unkicked control.}
 \label{fig:clusters}
+\end{figure*}
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{figures/fig_row4_m8.pdf}
+\caption{Central lapse of the bisection on cells of $M/8$, first level. Solid lines show
+the members with the one-per-cent inward kick and dashed lines the unkicked controls on
+the same mesh. Dotted lines mark the equilibrium central lapse of each model, the grey
+band the window $200$--$300\,M$ of the rule, and crosses the collapse time (central lapse
+below $0.3$). Right: the runs without collapse on an expanded axis.}
+\label{fig:row4m8}
 \end{figure*}
 
 \subsection{Constraints, conservation and restarts}
@@ -309,7 +310,7 @@ in particle number, cell size and gauge together.
 
 Every number of this note, with the registered run that produced it or the source line
 it was read from, and the claim of the independent verifier (V1 to V11 of its report)
-where it recomputed the number from raw outputs. Rows of the four data sections were
+where it recomputed the number from raw outputs. Rows of the five data sections were
 written by the run that made the figures (\noterun); the other rows are copied from the
 documents of the stage package with their runs. Runs whose identifier begins with a path
 are older than the program's run registry; their files are inventoried by checksum in

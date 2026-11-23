@@ -34,7 +34,8 @@ batch 8 (2026-11-21, session core-lead-8); predictions and outcomes in
 |---|---|---|
 | core-20261121-231825-135474c | inventory of the pre-program run directories of ladder rows 2-4 (`../verify/preprogram/`) | completed; Q1 held for inputs, executables, logs, histories; failed as written for horizon summaries where no finder ran |
 | core-20261121-232757-f86d965 | figures, schematic, ledger (`scripts/run_all.py`) | completed; Q2 (a)-(c) held; 11 inputs sha256 ok, 31 without a recorded checksum (wave-1 runs whose manifests list no outputs) |
-| core-20261121-232936-d979f1c | the same after the ledger escapes `<` and `>` (read on page 8) | completed; the three numbers files byte-identical to the run before; only two ledger lines differ; **these outputs are in `figures/` and `tables/`** |
+| core-20261121-232936-d979f1c | the same after the ledger escapes `<` and `>` (read on page 8) | completed; the three numbers files byte-identical to the run before; only two ledger lines differ |
+| core-20261123-020543-eb1cd2a | batch 10a: adds `fig_row4_m8.py` (row 4 on cells of M/8, six runs closed and judged by core-20261123-020318-e952741) and 13 ledger rows | completed; 24 inputs sha256 ok (all M/8 inputs among them), 31 without a recorded checksum (unchanged); **these outputs are in `figures/` and `tables/`** |
 
 ## How to rerun
 
