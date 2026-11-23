@@ -1515,3 +1515,26 @@ other four held and released by `verify/row4/sequencer.sh` (stop file and log un
   0.04.
 - P9. Cost: 7.3 to 8.0 s of card time per M, 0.61-0.67 card-hours per run, one segment
   each. Refuted by more than 9 s per M.
+
+### What was queued (02:05Z)
+
+- Initial data: run core-20261123-020409-4fae8fb (`make_row4.py --yc 0.69875 0.7175
+  0.73625`): alpha_c = 0.7029, 0.7186, 0.7346; R/M = 6.828, 7.136, 7.491; turning point
+  unchanged (y_c* = 0.6796, E_b/M_0 = 0.036058). Directory tags are rounded to three
+  digits (yc0p699, yc0p718, yc0p736); the files carry the exact y_c.
+- Six chains with `nrpic-run submit --launcher chain --gpu-hours 2.0 --exe
+  .work/build_gpu_v06/src/athena` (12 card-hours asked at most):
+
+| Model | Run id | First job |
+|---|---|---|
+| 0.7175 member | core-20261123-020450-7e42037 | 4923 (eligible) |
+| 0.7175 control | core-20261123-020452-e635a8e | 4924 (eligible) |
+| 0.69875 member | core-20261123-020454-8fec6b2 | 4925 (held) |
+| 0.69875 control | core-20261123-020456-884f550 | 4926 (held) |
+| 0.73625 member | core-20261123-020458-dfc38d7 | 4927 (held) |
+| 0.73625 control | core-20261123-020500-9b192cd | 4928 (held) |
+
+  Sequencer pid 3075029 (setsid nohup; a copy of `verify/row4/sequencer.sh` with its stop
+  file moved to `scratch/core/tmp/lead_b10a/sequencer.stop`; log
+  `scratch/core/tmp/lead_b10a/sequencer.log`) releases 4925-4928 in that order. At 02:05Z
+  seven jobs of other owners were ahead in the queue. P5-P9 open.
