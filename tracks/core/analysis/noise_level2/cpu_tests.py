@@ -123,6 +123,27 @@ def stencil_n2(n):
     return (sf.d2_symbol(kh, 4).sum(axis=1))*(N/(2.0*np.pi))**2
 
 
+def t2rnr_complex(rundir, n, n2):
+    """R^NR_n per dump (complex) and the window, as t8_rnr.analyse."""
+    rows = []
+    for f in sorted(glob.glob(os.path.join(rundir, "sr.sf.?????.dump"))):
+        d = sf.read_dump(f)
+        fl = d["fields"]
+        head, tab = sf.read_modes(f.replace(".dump", ".modes"))
+        chib = fl["chi"].mean()
+        hub = -fl["K"].mean()/3.0
+        pib = fl["Pi"].mean()
+        psi, _ = sf.analyse(0.5*(fl["chi"]/chib - 1.0), n)
+        nn = n.astype(float)
+        for name, i, j in t8_rnr.SYM:
+            c, _ = sf.analyse(fl[name] - (1.0 if i == j else 0.0), n)
+            psi = psi + 0.25*(1.0 if i == j else 2.0)*nn[:, i]*nn[:, j]*c/n2
+        dphi, _ = sf.analyse(fl["phi"] - fl["phi"].mean(), n)
+        w, _ = t8_rnr.inf.window(n2, L, head["a"], head["H"], head["eps1"])
+        rows.append(dict(rnr=psi + (hub/pib)*dphi, w=w))
+    return rows
+
+
 def analyse(out):
     s = {}
     # ---- T1a: projections at t* against the mode file
@@ -169,7 +190,12 @@ def analyse(out):
         _, rs, _ = shells_at(rd, k, n2)
         rst = ref["R"][k][inv]
         rct = refc["R"][k][invc]
+        # the time-integration error of the code is common to the mesh R and the shells:
+        # the double ratio leaves the spatial operator alone
+        dbl = np.abs((r/rs)/(rst/rct) - 1.0)
         t3.append(dict(time=h["time"],
+                       mesh_vs_shell_le48=float(rel(r, rs)[n2 <= 48].max()),
+                       double_ratio_max=float(dbl.max()),
                        mesh_vs_shell_max=float(rel(r, rs).max()),
                        mesh_vs_shell_cut=float(rel(r, rs)[n2 == NMAX2].max()),
                        mesh_vs_shell_below=float(rel(r, rs)[n2 < NMAX2].max()),
@@ -180,7 +206,9 @@ def analyse(out):
     # per-mode deviation at the last dump (figure)
     h, _, _, r, dr = modes_at(rd, nd - 1)
     _, rs, _ = shells_at(rd, nd - 1, n2)
-    t3fig = dict(q=np.sqrt(n2), dev_shell=rel(r, rs), dev_ref=rel(r, ref["R"][nd-1][inv]),
+    rst, rct = ref["R"][nd-1][inv], refc["R"][nd-1][invc]
+    t3fig = dict(q=np.sqrt(n2), dev_shell=rel(r, rs), dev_ref=rel(r, rst),
+                 dev_dbl=np.abs((r/rs)/(rst/rct) - 1.0), pred=rel(rst, rct),
                  sym=sym, time=h["time"])
     # ---- T2: R^NR per mode against W R alpha (continuum lockstep), levels 0, 2, 1-mesh
     nn, nn2 = sf.mode_set(NMAX2)
@@ -199,6 +227,23 @@ def analyse(out):
                        if (ent & (nn2 == NMAX2)).any() else None,
                        max_dev_all_times=float(max(r["dev"][r["w"] > 0.5].max()
                                                    for r in rows)))
+    # R^NR against W c_R of the run's own mesh field (projected coefficients): the
+    # stencil drops out, what is left is the accuracy of the sources and the slice
+    for lab in ("s2p", "s1p"):
+        devs = []
+        for k, row in enumerate(t2rnr_complex(os.path.join(out, lab), nn, nn2)):
+            _, _, n2r, re_, _ = modes_at(os.path.join(out, lab), k)
+            refm = L**-1.5*row["w"]*re_*al
+            devs.append((row, np.abs(row["rnr"]/refm - 1.0)))
+        row, dv = devs[-1]
+        ent = row["w"] > 0.5
+        t2[lab]["max_dev_le48"] = float(t2rows[lab][-1]["dev"][ent & (nn2 <= 48)].max())
+        t2[lab]["own_mesh_ref_max_dev"] = float(dv[ent].max())
+        t2[lab]["own_mesh_ref_max_dev_all_times"] = float(max(d[r_["w"] > 0.5].max()
+                                                              for r_, d in devs))
+        t2rows[lab + "_own"] = dv
+    last0 = t2rows["s0"][-1]
+    t2["s0"]["max_dev_le48"] = float(last0["dev"][(last0["w"] > 0.5) & (nn2 <= 48)].max())
     s["T2_rnr"] = t2
     # sign split of D = phi_L2 - phi_L1mesh under the sign of the amplitude
     split = []
@@ -251,6 +296,10 @@ def figures(out, s, t3fig, t2rows, nn2):
                color=fs.PAL["blue"], label="mesh R vs shells (continuum $k^2$)")
     a.semilogy(t3fig["q"], np.maximum(t3fig["dev_ref"], 1e-17), ".", ms=3,
                color=fs.PAL["orange"], label="mesh R vs ODE with stencil $k^2$")
+    a.semilogy(t3fig["q"], np.maximum(t3fig["dev_dbl"], 1e-17), "x", ms=3,
+               color=fs.PAL["green"], label="double ratio (time error removed)")
+    a.semilogy(t3fig["q"], np.maximum(t3fig["pred"], 1e-17), "_", ms=5,
+               color="0.3", label="prediction: stencil ODE vs continuum ODE")
     a.set_xlabel("$|n|$")
     a.set_ylabel(r"$|R^{\rm mesh}_n/R^{\rm ref}_n-1|$")
     a.set_title(f"(b) level 0 on the mesh, kicks off, $t={t3fig['time']:.1f}$", fontsize=8)
@@ -281,6 +330,10 @@ def figures(out, s, t3fig, t2rows, nn2):
         sel = last["w"] > 0.5
         a.semilogy(q[sel] + {"s0": -0.08, "s2p": 0.0, "s1p": 0.08}[lab],
                    last["dev"][sel], ".", ms=3, color=cl, label=nm)
+    last = t2rows["s2p"][-1]
+    sel = last["w"] > 0.5
+    a.semilogy(q[sel] + 0.16, t2rows["s2p_own"][sel], "x", ms=3, color=fs.PAL["red"],
+               label="level 2 vs $W c_R$ of its mesh R")
     a.axhline(2e-2, color="0.4", lw=0.8, ls="--")
     a.set_xlabel("$|n|$")
     a.set_ylabel(r"$|R^{\rm NR}_n/(W R\,\alpha_n)-1|$, $W>1/2$")
@@ -316,16 +369,19 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--analyse-only", action="store_true")
+    ap.add_argument("--from", dest="src", help="--analyse-only: the run directory of an "
+                    "earlier call (read only); results go to --out")
     a = ap.parse_args()
     out = os.path.abspath(a.out)
     os.makedirs(out, exist_ok=True)
-    summ = dict(exe=os.path.abspath(a.exe))
+    src = os.path.abspath(a.src) if a.src else out
+    summ = dict(exe=os.path.abspath(a.exe), runs=src)
     if not a.analyse_only:
         summ["exit"], summ["wall_s"] = run_all(os.path.abspath(a.exe), out, a.workers)
     else:
-        old = json.load(open(os.path.join(out, "summary.json")))
+        old = json.load(open(os.path.join(src, "summary.json")))
         summ["exit"], summ["wall_s"] = old.get("exit"), old.get("wall_s")
-    s, t3fig, t2rows, nn2 = analyse(out)
+    s, t3fig, t2rows, nn2 = analyse(src)
     summ.update(s)
     nl2.dump_json(summ, os.path.join(out, "summary.json"))
     figures(out, s, t3fig, t2rows, nn2)
