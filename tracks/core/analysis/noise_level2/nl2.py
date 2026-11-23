@@ -41,10 +41,10 @@ def write_input(src, dst, params):
                 continue
         out.append(ln)
     for blk, d in want.items():
-        for name, val in d.items():
-            if (blk, name) not in done:
-                out.append(f"<{blk}>")
-                out.append(f"{name} = {val}")
+        rest = [(name, val) for name, val in d.items() if (blk, name) not in done]
+        if rest:
+            out.append(f"<{blk}>")
+            out += [f"{name} = {val}" for name, val in rest]
     open(dst, "w").write("\n".join(out) + "\n")
     return dst
 
@@ -82,3 +82,16 @@ def read_rmodes(fname):
     d = np.loadtxt(fname, comments="#")
     n = d[:, :3].astype(int)
     return head, n, d[:, 3].astype(int), d[:, 4] + 1j*d[:, 5], d[:, 6] + 1j*d[:, 7]
+
+
+def dump_json(obj, fname):
+    import json
+
+    def conv(o):
+        if isinstance(o, (np.floating, np.integer)):
+            return o.item()
+        if isinstance(o, np.ndarray):
+            return o.tolist()
+        raise TypeError(type(o))
+    with open(fname, "w") as fp:
+        json.dump(obj, fp, indent=1, default=conv)
