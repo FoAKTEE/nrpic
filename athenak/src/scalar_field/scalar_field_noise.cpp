@@ -160,9 +160,36 @@ void ScalarField::NoiseInit(ParameterInput *pin) {
     nopt.scheme = kNoiseFrozen;
     nopt.sigma = pin->GetOrAddReal("scalar_field", "noise_sigma", 1.0);
     nopt.level = pin->GetOrAddInteger("scalar_field", "noise_level", 0);
-    if (nopt.level != 0 && nopt.level != 1) {
-      NoiseFatal("<scalar_field> noise_level must be 0 (Friedmann background) or 1 (box "
-                 "means); level 2 of arXiv:2512.14649 is not implemented");
+    if (nopt.level < 0 || nopt.level > 2) {
+      NoiseFatal("<scalar_field> noise_level must be 0 (Friedmann background), 1 (box "
+                 "means) or 2 (local coefficients of the mode equation)");
+    }
+    // R and Pi_R on the mesh (scalar_field_noise_mesh.cpp); options read only if present
+    nopt.bg_level = nopt.level;
+    nopt.mesh_r = MeshModeRequested(pin);
+    if (nopt.level == 2) {
+      if (!nopt.mesh_r) {
+        NoiseFatal("<scalar_field> noise_level = 2 needs noise_mode_eq = mesh (the local "
+                   "coefficients act on the mesh field R)");
+      }
+      nopt.bg_level = 1;
+      if (pin->DoesParameterExist("scalar_field", "noise_level2_background")) {
+        const std::string b = pin->GetString("scalar_field", "noise_level2_background");
+        if (b.compare("means") == 0) {
+          nopt.bg_level = 1;
+        } else if (b.compare("friedmann") == 0) {
+          nopt.bg_level = 0;
+        } else {
+          NoiseFatal("<scalar_field> noise_level2_background must be means or friedmann");
+        }
+      }
+    }
+    if (pin->DoesParameterExist("scalar_field", "noise_rmodes_dump")) {
+      nopt.rmodes_dump = pin->GetBoolean("scalar_field", "noise_rmodes_dump");
+    }
+    if (nopt.mesh_r && pm->multilevel) {
+      NoiseFatal("<scalar_field> noise_mode_eq = mesh (and noise_level = 2) needs a "
+                 "uniform mesh");
     }
     const std::string p = pin->GetOrAddString("scalar_field", "noise_projector",
                                               "stencil");
@@ -379,6 +406,7 @@ void ScalarField::NoiseSetup(bool res_flag) {
   Kokkos::realloc(g2_im, nfld, nxval, nx3, nx2);
   Kokkos::realloc(u_noise, nmb, nfld, nx3 + 2*indcs.ng, nx2 + 2*indcs.ng,
                   nx1 + 2*indcs.ng);
+  if (nopt.mesh_r) { NoiseMeshAlloc(); }
 
   // frozen amplitudes
   alpha_valid = false;
@@ -480,7 +508,7 @@ void ScalarField::NoiseBackground(const std::vector<Real> &y, Real bg[8]) {
   const Real p = pmy_pack->pz4c->opt.chi_psi_power;
   Real phib, pib, hub, a;
   Real v, dv;
-  if (nopt.level == 0) {
+  if (nopt.bg_level == 0) {
     phib = y[1];
     pib = y[2];
     a = std::exp(y[3]);
@@ -551,9 +579,20 @@ void ScalarField::NoiseModeRHS(const std::vector<Real> &y, std::vector<Real> &f)
     const Real w2 = 0.5*sech2*(s*d2lnks - 2.0*s*s*std::tanh(x)*dlnks*dlnks);
     hr(n) = norm*(rr*w2 + (2.0*dr + fric*rr)*w1);
     hi(n) = norm*(ri*w2 + (2.0*di + fric*ri)*w1);
+    if (nopt.mesh_r) { h_w1[n] = w1; h_w2[n] = w2; }
   }
   Kokkos::deep_copy(shell_re, hr);
   Kokkos::deep_copy(shell_im, hi);
+  if (nopt.mesh_r) {
+    // the per-mode noise of the mesh path (NoiseMeshCoefficients) uses W', W'' and the
+    // friction coefficient of this stage
+    auto h1 = Kokkos::create_mirror_view(shell_w1);
+    auto h2 = Kokkos::create_mirror_view(shell_w2);
+    for (int n=0; n<nshell; ++n) { h1(n) = h_w1[n]; h2(n) = h_w2[n]; }
+    Kokkos::deep_copy(shell_w1, h1);
+    Kokkos::deep_copy(shell_w2, h2);
+    stage_fric = (3.0 - eps2)*hub;
+  }
   kick_pi_fac = nopt.pi_sign*alp*pib/hub;
   kick_k_fac = -alp*eps1;
   kick_a_fac = alp*eps1;
@@ -612,6 +651,9 @@ void ScalarField::NoiseSynthesize() {
   auto mnz = mode_nz, mshell = mode_shell, fdof = fld_dof;
   auto are = alpha_re, aim = alpha_im, prj = proj;
   auto shr = shell_re, shi = shell_im;
+  // mesh path: the complex coefficient of every mode is given (alpha_n inside it)
+  const bool per_mode = syn_per_mode;
+  auto mcr = mode_cre, mci = mode_cim;
   auto tc = trig_c, ts = trig_s;
   auto g1r = g1_re, g1i = g1_im;
   auto g2r = g2_re, g2i = g2_im;
@@ -625,10 +667,16 @@ void ScalarField::NoiseSynthesize() {
       Real re = 0.0, im = 0.0;
       const int dof = fdof(f);
       for (int q=pstart(p); q<pstart(p+1); ++q) {
-        const int s = mshell(q);
-        const Real ar = are(dof,q), ai = aim(dof,q);
-        const Real cr = (shr(s)*ar - shi(s)*ai)*prj(f,q);
-        const Real ci = (shr(s)*ai + shi(s)*ar)*prj(f,q);
+        Real cr, ci;
+        if (per_mode) {
+          cr = mcr(q)*prj(f,q);
+          ci = mci(q)*prj(f,q);
+        } else {
+          const int s = mshell(q);
+          const Real ar = are(dof,q), ai = aim(dof,q);
+          cr = (shr(s)*ar - shi(s)*ai)*prj(f,q);
+          ci = (shr(s)*ai + shi(s)*ar)*prj(f,q);
+        }
         const Real c = tc(m,2,mnz(q)+nmx,k), sn = ts(m,2,mnz(q)+nmx,k);
         re += cr*c - ci*sn;
         im += cr*sn + ci*c;
@@ -682,7 +730,12 @@ void ScalarField::NoiseStage(Driver *pdriver, int stage) {
     NoiseModeRHS(y0, yrhs);
     // without kicks nothing reads the fields of a stage (the mode functions are still
     // integrated, as the linear reference of a run from the initial slice alone)
-    if (nopt.kick_pi || nopt.kick_k || nopt.kick_a) { NoiseSynthesize(); }
+    if (nopt.kick_pi || nopt.kick_k || nopt.kick_a) {
+      // mesh path: coefficients from the projection of R and n.d R of this stage
+      if (nopt.mesh_r) { NoiseMeshCoefficients(); syn_per_mode = true; }
+      NoiseSynthesize();
+      syn_per_mode = false;
+    }
   }
 }
 
@@ -764,7 +817,9 @@ void ScalarField::NoiseFieldsOfState() {
   if (!noise_ready || nopt.model != kNoiseMS) return;
   std::vector<Real> f(y0.size());
   NoiseModeRHS(y0, f);
+  if (nopt.mesh_r) { NoiseMeshCoefficients(); syn_per_mode = true; }
   NoiseSynthesize();
+  syn_per_mode = false;
 }
 
 //----------------------------------------------------------------------------------------
@@ -797,6 +852,7 @@ void ScalarField::NoiseWriteState(Real time, int number, bool header) {
                  ms ? y0[7+4*n] : 0.0, hr(n), hi(n));
   }
   std::fclose(fp);
+  if (nopt.mesh_r && nopt.rmodes_dump) { NoiseMeshWriteModes(time, number); }
   (void) header;
 }
 

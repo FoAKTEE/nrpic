@@ -156,7 +156,13 @@ struct SfNoiseOptions {
   // Mukhanov-Sasaki model
   Real sigma = 1.0;            // k_sigma = sigma a H
   int level = 0;               // background: 0 Friedmann equations integrated with the
-                               // mode functions, 1 box means of the mesh
+                               // mode functions, 1 box means of the mesh, 2 local
+                               // coefficients of the mode equation (mesh field R)
+  int bg_level = 0;            // background of the window and the kicks: = level for 0
+                               // and 1; level 2: 1 (box means) or 0 (Friedmann)
+  bool mesh_r = false;         // R and Pi_R as mesh fields (scalar_field_noise_mesh.cpp)
+                               // instead of one mode function per shell
+  bool rmodes_dump = false;    // mesh_r: per-mode record of the projections at dumps
   int projector = 0;           // wave number of the trace-free projector: 0 that of the
                                // centred first difference, 1 the continuum one
   bool kick_pi = true, kick_k = true, kick_a = true;
@@ -192,6 +198,11 @@ class ScalarField {
   enum {I_SF_PHI, I_SF_PI, nsf};
   // Names of the variables
   static char const * const SF_names[nsf];
+  // with <scalar_field> noise_mode_eq = mesh (or noise_level = 2) the arrays u0, u1,
+  // u_rhs carry two more components: the curvature perturbation R and its momentum Pi_R
+  // (scalar_field_noise_mesh.cpp); nvar_sf = nsf otherwise
+  enum {I_SF_R = nsf, I_SF_PIR = nsf + 1};
+  int nvar_sf = nsf;
 
   // data
   DvceArray5D<Real> u0;         // solution
@@ -289,6 +300,28 @@ class ScalarField {
   void NoiseUpdate(Driver *d, int stage);
   void NoiseFieldsOfState();
   void NoiseWriteState(Real time, int ncycle, bool header);
+
+  // ---- R and Pi_R on the mesh (scalar_field_noise_mesh.cpp; nopt.mesh_r only)
+  bool syn_per_mode = false;              // NoiseSynthesize: coefficients per mode
+  DvceArray1D<Real> mode_cre, mode_cim;   // (mode) complex coefficient of the noise
+  DvceArray1D<int> mode_pair, pair_xv;    // pair of a mode, row (n_x) of a pair
+  DvceArray1D<Real> shell_w1, shell_w2;   // W', W'' of every shell at this stage
+  std::vector<Real> h_w1, h_w2;           // their host copies (NoiseModeRHS)
+  Real stage_fric = 0.0;                  // (3 - eps2) H of this stage
+  DvceArray2D<Real> prj_re, prj_im;       // (2, mode) projections of R and n.d R
+  DvceArray4D<Real> pr2_re, pr2_im;       // (2, row, k, j) work arrays of the projection
+  DvceArray3D<Real> pr1_re, pr1_im;       // (2, pair, k)
+  bool mesh_warned = false;
+  static bool MeshModeRequested(ParameterInput *pin);
+  void NoiseMeshAlloc();
+  void NoiseMeshInit();
+  void NoiseMeshExchange();
+  void NoiseMeshUniform(Real c[4]);
+  void NoiseMeshCoefficients();
+  void NoiseMeshRHS();
+  template <int NGHOST>
+  void NoiseMeshRHST();
+  void NoiseMeshWriteModes(Real time, int number);
 
   // ---- initial slice of the stochastic-inflation runs (scalar_field_slice.cpp)
   void InitialSlice(ParameterInput *pin, const Real phib0, const Real pib0);
