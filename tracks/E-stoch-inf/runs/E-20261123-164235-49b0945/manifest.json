@@ -1,0 +1,115 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261123-164235-49b0945",
+  "track": "E-stoch-inf",
+  "gate": "G2",
+  "kind": "production",
+  "purpose": "repro/ablation AL0U: USR 256^3 ablation, level 0 with the mode equation on the mesh (reference of Fig. 9), seed A; arXiv:2512.14649 Fig. 9, branch card build core_noise-level2 (6ca93cba, decision 0031 item 3); predictions repro/ablation/JOURNAL.md entry 1",
+  "preregistered_in": "tracks/E-stoch-inf/repro/ablation/JOURNAL.md#entry-1",
+  "launcher": "chain",
+  "command": [
+    "scripts/submit_chain.sh",
+    "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261123-164235-49b0945",
+    "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/repro/ablation/inputs/usr256_l0m.athinput"
+  ],
+  "cwd": "scratch/E-stoch-inf/E-20261123-164235-49b0945",
+  "git": {
+    "sha": "49b0945d28930012c0b62fa889594a633d6a90e7",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/repro/ablation"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "0c79ebc628aa47888ec94f2c90773b148b63085d",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "scalar_field",
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_noise-level2/athena_gpu",
+    "exe_sha256": "468109496c825a40d1b76f0c3af7658c0d403518b25e7d02f99fb3cb1cc8acb9",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": {
+    "file": "tracks/E-stoch-inf/repro/ablation/inputs/usr256_l0m.athinput",
+    "sha256": "31ff4affb99af96625ac7b3ab527d5256328cc6b26203b92cc5d946c4645a852",
+    "overrides": {}
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_noise-level2/athena_gpu",
+      "role": "exe",
+      "sha256": "468109496c825a40d1b76f0c3af7658c0d403518b25e7d02f99fb3cb1cc8acb9",
+      "bytes": 110564064,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/E-stoch-inf/repro/ablation/inputs/usr256_l0m.athinput",
+      "role": "athinput",
+      "sha256": "31ff4affb99af96625ac7b3ab527d5256328cc6b26203b92cc5d946c4645a852",
+      "bytes": 3819,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": 2,
+    "gpu_hours_requested": 1.9667,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "E-20261123-164235-49b0945",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261123-164235-49b0945",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-23T16:42:35Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 30.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 11.3084,
+    "gpu_hours_reserved": 9.8335,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 198,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
+  }
+}
