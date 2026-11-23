@@ -117,3 +117,21 @@ projection +5-15 per cent, core section 7; fewer dumps), USR 0.65-0.75 (U256ap 0
 cycles); smoke about 0.05. Total 3.7-4.3 card-hours, below the package cap of 5. Refuted by a 256^3 run
 above 1.0 card-hours; the sequencer then holds the remaining ablation runs (`scripts/sequencer.sh`,
 cap 5.0 card-hours for this package).
+
+## Entry 2 (2026-11-22 20:00 PST): queued, not yet submitted; one deviation from core's advice
+
+The scope sequencer (pid 3079707) was stopped through its STOP file at 19:52 PST while it slept (it
+had submitted SMALL and USF256, both pending in Slurm; nothing of it was touched) and
+`scripts/sequencer.sh` was started in its place (pid 18169, same state directory). Its selection,
+smoke gate and cost guard were dry-tested on a copy of `state.tsv` (`DRY=1 SEQ_DIR=...`): next
+T5SMK on the live state; RSF256 once T5SMK is in flight; AL2S held while the smoke check is missing,
+free on `pass`, held on `fail`; AL1U held by a cap of 4.0 with used 2.76 + 2 x 0.75 and free with the
+cap of 5.0. At hand-over two E jobs were pending (4929, 4931), so nothing of this package was
+submitted; the sequencer submits T5SMK at the next free slot.
+
+Core's message (`tracks/core/outbox/20261123T031957Z__to-E-stoch-inf__noise-level2-branch-executable.md`
+on branch core/noise-level2) advises leaving `noise_rmodes_dump` off at 256^3 ("549 k lines per
+dump"). Kept on [JUDGEMENT]: about 60 MB per dump against 2.3 GB for the dump, and it gives the
+per-mode difference of the projected coefficients at 256^3 (core's T1c quantity) beside the spectra;
+the smoke batch runs the writer on the card first. Said so in `outbox_draft/core_t5.md`, so core can
+object before the 256^3 runs start (they come after the scope runs).
