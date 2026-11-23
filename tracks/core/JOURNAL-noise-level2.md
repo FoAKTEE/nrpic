@@ -79,3 +79,81 @@ Prediction: every run ends with status 0 and finite records; level 2 costs +5 to
 cent of the wall time of level 0 per cycle (the projection of two fields is about one
 third of the six-field synthesis, plus the R right-hand side). Refuted if a run fails, if
 a record is not finite, or if the ratio is outside 1.0 .. 1.3.
+
+## Entry 3 (2026-11-22 19:10 PST): outcomes of T1, T2, T3, T4, T6 and the restart check
+
+Runs: processor tests core-20261123-025040-384fbdd (15 runs, 32^3, nmax2 = 64, slow-roll
+input, t = 0 .. 3.2 = 3.14 e-folds; exit status 0 for all but the guard run, which ends
+with 3); analysis with the figures core-20261123-030623-7676c1f (`fig_t1t3.png`,
+`fig_t2.png`, looked at; the legend of fig_t1t3 (b) runs off the right edge, the data are
+readable); byte regressions core-20261123-024646-553eefa (scalar field) and
+core-20261123-025738-35c2552 (release driver, twelve set-ups).
+
+T1a (projection at t* = the mode file): max relative deviation 1.14e-14 for R and
+6.9e-15 for dR/dtau, in the homogeneous level-2 run, the perturbed level-2 run and the
+level-0 mesh run. PREDICTION HELD (< 1e-12): the projection is the adjoint of the
+synthesis with the same normalisation.
+
+T1b (homogeneous slice, kicks off, level 2 against level 1 on the mesh): max relative
+difference of the projected coefficients 3.7e-12 at t = 3.2 (rms 3.0e-12), flat after the
+first dump. PREDICTION REFUTED at face value (< 1e-12). Cause, checked in the same run:
+the box means are not the cell values to rounding of one operation but to the rounding
+of a sequential sum of 32768 equal values: in the dumps of h2off, <K> differs from the
+(uniform) cell value by 5.3e-13 to 8.9e-13 relative and <Pi> by 4e-14 to 3.4e-13, so the
+level-1 Z = <Pi>^2/H^2 differs from the local 9 Pi^2/K^2 by about 2e-12. The mesh fields
+are homogeneous to the last bit (spread of Pi exactly 0). Level 2 equals level 1 to the
+rounding of the box mean.
+
+T1c (homogeneous slice, kicks on): max relative difference 9.0e-4 (rms 1.1e-4) at
+amplitude 1 and 9.0e-7 (rms 1.1e-7) at amplitude 1e-3: the ratio is 1.000e-3 to four
+digits at every dump, so the difference is exactly of second order. PREDICTION HELD for
+the order; REFUTED for the size (predicted ~1e-5): the maximum over 1054 modes picks the
+modes with small |alpha_n|, and every mode receives the products of all others through
+delta Z (x) grad^2 R; the rms 1.1e-4 is ten times the guess.
+
+T2 (32^3, kicks on, t = 3.2): R^NR against the continuum linear reference W R alpha:
+level 0 (shells, as released) 2.8e-3 at most (6.8e-4 for |n|^2 <= 48); level 2: 1.2e-2
+for |n|^2 <= 48 (within the 0.02 of A2), 7.2e-2 for the six cut modes (+-8,0,0)...;
+level 1 on the mesh: 1.2e-2 and 7.1e-2. PREDICTION HELD (cut modes 1 to 7 per cent: at the
+top; below the cut within 0.02). Against W c_R of the run's own mesh field (projected
+coefficients) the deviation is 1.0e-4 at most for level 2 and 1.3e-5 for level 1 on the
+mesh (7.5e-5 over all dumps): the pipeline from the mesh R to R^NR is ten to a hundred
+times more accurate than level 0 against its shells, because the mesh R and the mesh
+R^NR see the same Laplacian.
+Sign split: D = phi_L2 - phi_L1mesh, runs with noise_mode_scale = +1 and -1: even part
+rms 3.0e-11, odd part 3.1e-15 at t = 3.2 (ratio 1e-4, every dump between 2e-4 and 1e-4),
+against delta phi rms 5.6e-7. PREDICTION HELD: level 2 adds an even part only, of
+relative size 5e-5 (second order).
+
+T3 (level 0 on the mesh, kicks off): symbol/k^2 at the cut (axis modes |n|^2 = 64) =
+0.98169, a deficit of 1.83 per cent in k^2 (the task text says 2.7 per cent; the
+sixth-order symbol gives 1.83; [TO VERIFY] where 2.7 comes from). Mesh R against the
+shells at t = 3.2: 7.1 per cent for the cut modes, 3.4 per cent below the cut, 1.18 per
+cent for |n|^2 <= 48. PREDICTION REFUTED for |n|^2 <= 48 (predicted < 1e-3): I had
+evaluated the symbol only on the shells 1, 16, 32, 48, 64, whose vectors are axis or
+diagonal multiples of 4; modes such as (6,0,0) (|n|^2 = 36, symbol/k^2 = 0.9963) carry
+0.19 per cent in omega over about 5.7 rad of phase, 1.1 per cent in R. Against a SciPy
+reference with k^2 replaced by the stencil symbol mode by mode: 2.8e-4 (prediction <
+1e-6: REFUTED); the code's own shells against the SciPy continuum reference differ by
+the same 3.0e-4 in the same run, i.e. this is the RK4 time error of the code at
+dt = 0.049 (omega dt up to 0.39), common to shells and mesh. The double ratio
+(R_mesh/R_shell)/(R_stencil-ODE/R_continuum-ODE) removes it: 2.6e-5 at most at t = 3.2,
+against a stencil effect of 7.1e-2. The mesh R and the shells differ by the stencil
+symbol of the Laplacian and by nothing else at the level of 4e-4 of the effect
+(fig_t1t3 (b): the measured points sit on the predicted ones).
+
+T4 byte regression with the option absent: the ten scalar-field cases of wave 1 and the
+three stochastic examples with a restart, against release core-v0.6
+(core-20261123-024646-553eefa): every file identical (restart files with the masked
+header bytes as defined by the driver). The twelve set-ups of the release driver
+(core-20261123-025738-35c2552): 75 of 75 items identical, PASS. PREDICTION HELD.
+
+T6 guard: level 2 on the homogeneous slice with Pi = 0: the warning "1054 noise
+coefficients of the mesh path are not finite at time 0", then "NRPIC guard: the run
+stops at time 4.9e-02, cycle 1", exit status 3. PREDICTION HELD.
+
+Restart: level 2, 20 cycles, restart file at cycle 10, restarted run to cycle 20: the
+dump, the .modes and the .rmodes files of cycle 20 identical byte for byte.
+
+Cost on processors at 32^3 (serial, the runs shared the machine with others): level 0
+163.7 s, level 1 on the mesh 163.8 s, level 2 173.7 s (+6 per cent) for 65 cycles.
