@@ -71,3 +71,14 @@ P7 (USR amplitudes, P1:534-536, USF256 at N_f): one-point rms of R^NR 0.894 with
 usr/results/usr_reference.json); max |R^NR| over the 256^3 cells between 3 and 8 (Gaussian tail of
 1.7e7 correlated cells; P1 says "~10" for the furthest outliers, which our realisation need not reach);
 shell Delta[R] at 64 dk near 1 (reference 1.017). Refuted by an rms outside 0.889-0.899 or a max above 10.
+
+Figure of S0 (run E-20261123-021741-5d89f8f, `fig/fig_smoke.png`, looked at): SR: [H] smooth near
+11.92 with a 1e-5 relative modulation, |H|/[H] about 1e-12 in the mid-plane (a ring where H changes
+sign), records <|H|/[H]> 1-3e-12 and <|M|/[M]> 6e-6-1.6e-5 over the 8 cycles. USR: <|H|/[H]> jumps to
+5e-9 after the first step and reaches 1.6e-8 at cycle 8, and the mid-plane |H|/[H] is uniform to five
+digits (log10 = -7.816): the uniform residual H0 of the time integration of the background at the
+32^3 step (dt = 0.049), known from `usr/README.md` (U-A4 row: "H record = background time residual,
+1.1e-7 of [H] at Courant 0.25" on 32^3); at 256^3 the step is 8 times smaller, H0 about 8^4 = 4096
+times smaller, consistent with the U256 record 2.9e-12 (SCOPE 4c). Not a defect; the S0 verdict stands.
+It means the USR constraint percentiles of Fig. 4 must be read with the box mean of H removed
+(con_signed columns, or H - <H> per dump), as SCOPE 4c already does [JUDGEMENT].
