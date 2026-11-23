@@ -1,0 +1,12 @@
+{
+ "name": "9 (2026-11-21 evening: knowledge base)",
+ "what": "lead session of the knowledge base after its four packages: tests, snapshot, the decisions left to the lead",
+ "note": "Releases core-v0.4 to v0.6 are on main. Rulings: coord/DECISIONS/0024 to 0027. The weekly usage window of the account is at 82 per cent: do only what the task names.",
+ "items": [
+  {
+   "type": "lead",
+   "owner": "kb",
+   "extra": "Extra for this session (the weekly usage window of the account is at 82 per cent: about forty minutes, no helpers). The four packages cut on 2026-11-20 have now all returned (ingest3, claims_tracks, claims_brief, code_kb: their reports are appended to the report file; their README and JOURNAL). Do what they ask of the lead, in this order: (1) kb/tests/test_meta_papers.py::test_additions_file_is_valid brought to the manifest as it is (61 additions, 745 papers; decision 0027 item 5 accepts the groups; gr-qc/0608095 dropped: decision 0024 item 2), the whole test suite green; (2) the guard of kb claim check --id after verify --locator or relocate; kb claim check on the 21 claims of ingest3's twenty papers after the chunk remap; (3) the snapshot (kb snapshot), so that db/current carries the new parser's bibliography, the claims and the index of main; then the snapshot id shown in kb show, kb cites and the JSON hits (item C6b); the parse rate against the 95 per cent bar added to kb qa run, and the rate now; (4) the decisions the packages left to the lead: the 17 corrected but unlabelled brief statements (make them claims only if brief 12.8 allows; otherwise record why not), B's new claim on arXiv:2312.12499, the stale comment of kb/curated/paper_code_links.tsv, the refutations passed to F-hills (claims 766, 767) and A-emd-pbh (claim 742) as outbox messages; (5) the newer requests of A (Szekeres conformal flatness) and C (conductivity sources) answered from the store as far as it holds the papers, otherwise listed for the next package; (6) review in stage/REVIEW-wave3.md from the artefacts, STATUS.md, HANDOFF.md, JOURNAL.md, commit, push."
+  }
+ ]
+}

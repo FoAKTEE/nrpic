@@ -1197,3 +1197,227 @@ runs; job 4810 not finished). The 11th of the first pass, core-20261119-143517-e
 (gauge test E2, job 4641, both cases rc 0, never closed), is closed now with
 `nrpic-run finish`. `nrpic-stage report`: verdict FAIL, eight items FAIL (C1, C2, C6,
 C7, C12, C14, C15, C16); decision requested: keep core at G2 in progress.
+
+## 2026-11-21T20:26Z  session core-lead-7 (batch 5: cards first; no source change)
+
+State at start: main merged (decision 0025). Job 4810 (run core-20261121-154654-d3ec487,
+release card build on the fifteen cases) COMPLETED at 17:21Z in 48 s, fifteen cases rc 0;
+closed with `nrpic-run finish` and judged below against prediction G6 (entry of 15:46Z).
+
+### Outcome G6 (release card build `.work/build_gpu_v06/src/athena`), 20:21Z
+
+- (i) HELD. `card_v06.py` CARD PASS (status, newton, faces, solver held; Newtonian
+  histories within 1.6e-11 of processors, c_cd1 1.9e-10; solver outer iterations 22, 34,
+  20 as on processors), run core-20261121-202028-a32d12c; `card_v05.py` CARD PASS (K1 to
+  K6 held; deposit sums 2.3e-13 at worst, identity 9.9e-16, dumps 3.1e-14), run
+  core-20261121-202041-0b6d418. Not bounded, as for job 4800: g_smr1 `gauss.cstat.hst`
+  column 11 (Hr_max) 2.8e-3 against processors.
+- (ii) PARTLY REFUTED. Against the candidate's card run (job 4800), run
+  core-20261121-202057-a5b2ed6: the vacuum cases f_full (5 of 5 files), s3g (6 of 6) and
+  usr (6 of 6) byte-identical: held. Every module history (`*.nrpic.hst`) within 2.2e-15
+  and every `z4c.user.hst` equal or within 1.7e-29 absolute: held. The bound 1e-12 on
+  every history column is refuted in the constraint-statistics files only: `cstat.hst`
+  column 11 (Hr_max) of g_smr1 1.9e-3 and of cluster 7.6e-10, column 12 (Hr_mean) of
+  p5_mov_n64 1.4e-11, column 15 (Mr_max) of trk 2.0e-2 and of peak 2.1e-10; H_max
+  (column 9) is not among them. These columns are ratios of a residual to the sum of the
+  magnitudes of its terms, taken where both are at rounding level, so they carry the
+  card's non-repeatable atomic deposit at order one [JUDGEMENT; the same class as
+  g_smr1 column 11 in job 4800 and trk column 15 of core-v0.5]. My prediction did not
+  exclude them; it should have. Verdict on the release card build: PASS on the release
+  criteria (both CARD PASS), with that bound of G6 (ii) refuted as written. Figures
+  `fig_card_v06.png`, `fig_card_v05.png`, `fig_card_pair.png` looked at (the pair figure
+  shows the five cstat bars, 1e-11 to 2e-2, and the module bars near 1e-14).
+
+### Ladder row 4 on the M/8 mesh: rule, measured quantity, predictions (20:26Z, before any run)
+
+Why again: on M/4 the mesh pushes clusters outward and stabilises them (Track C's drift
+package, `git show track/C-sidm:tracks/C-sidm/drift/README.md`, requests 1-3), so core's
+M/4 bisection (`verify/LADDER.md` row 4, wave 2) did not test the threshold. Why not a
+growth rate: Track C's G1 gate review (`git show
+track/C-sidm:tracks/C-sidm/stage/G1/GATE_REVIEW.md`, C2) found growth rates on cluster runs
+window-dependent (ln|d| concave) and binds "no constant growth rate" at G2; the measured
+quantity here is therefore the collapse time, or the contraction against a control.
+
+Set-up (all six runs the same except y_c and the kick): wave-2 protocol (10^4 stratified
+particles, seed 1, equilibrium table, `--no-consistent-table`), deck
+`tracks/core/verify/row4/st_m8.athinput`: the release input `problems/st/st_cluster_amr.athinput`
+on a STATIC mesh with the level-6 nest (M/4) inside |x|_inf < 6 M and a level-7 region
+(M/8) inside |x|_inf < 3.9 M (Track C's M/8 region), nothing finer; finder every 32 cycles
+(every 1 M as before); to 300 M; release card executable
+`/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena`; chains with restarts every 20 M.
+- Member: one-percent uniform inward kick (`--vpert 0.01`). Control: the same model, same
+  seed and particle positions, no kick (`--vpert 0`), same mesh, run as long. The control
+  carries what the mesh and the particle noise do by themselves; the kick is the only
+  difference [JUDGEMENT: for these collisionless runs "collisionless control" is read as
+  "the run without the perturbation"].
+- First level of the bisection: ends y_c = 0.605 (collapsed at 191 M on the earlier
+  finer AMR mesh, `runs/st/yc0605_v5`) and 0.755 (0.756 unperturbed stayed 800 M); middle
+  0.680 (turning point of E_b/M_0 at y_c* = 0.6796, run core-20261115-152805-47d8f25).
+
+Measured quantities (script to be written for the analysis, reading `st.nrpic.hst` column
+13, the central lapse at the origin probe, and `st.horizon_summary_0.txt`):
+- t_c: the first time an apparent horizon is found or the central lapse falls below 0.3.
+- D = mean of alpha_c over 200-300 M of the member minus the same mean of its control
+  (when neither collapses by 300 M). Also kept: the mean of each run against its own
+  equilibrium alpha_c, and the coordinate r50 of the particles from the snapshots.
+
+Class of a member (fixed now):
+- COLLAPSE: t_c <= 300 M. CONTRACTS: no collapse and D < -0.02. EXPANDS: no collapse and
+  D > +0.02. STAYS: |D| <= 0.01. UNDECIDED: 0.01 < |D| <= 0.02.
+- If the control collapses and the member does not, the model counts as unstable
+  (the noise alone takes it away) and the member as UNDECIDED in D.
+Side of a model: UNSTABLE if the member or the control collapses, or the member
+CONTRACTS or EXPANDS; STABLE if the member STAYS and its control does not collapse.
+Bracket: y_lo = the largest UNSTABLE y_c, y_hi = the smallest STABLE y_c; valid only if
+y_lo < y_hi and no UNDECIDED member lies between them. Next level: the midpoint of
+(y_lo, y_hi) with its control. An UNDECIDED middle is continued with its control to
+600 M (restarts are exact) before any next level. A non-monotone outcome (a STABLE model
+below an UNSTABLE one) gives no bracket and is recorded as such.
+
+Predictions:
+- P1. 0.605 member COLLAPSES with t_c between 120 and 300 M; its control does not
+  collapse before the member. Refuted by no collapse by 300 M (then M/8 still
+  stabilises at 10^4 particles, or the earlier collapse needed the AMR mesh).
+- P2. 0.755 member STAYS (|D| <= 0.01), no collapse in member or control, and the
+  control's own 200-300 M mean within 0.01 of its equilibrium alpha_c (Track C's M/8
+  controls drifted 0.002-0.004 by 300 M). Refuted by a collapse, |D| > 0.01 or a control
+  drift beyond 0.01.
+- P3. 0.680 member does not collapse by 300 M and is STAYS or UNDECIDED (a growth time
+  near the turning point exceeds 300 M). Refuted by a collapse (threshold above y_c*)
+  or CONTRACTS/EXPANDS beyond 0.02.
+- P4. Cost: 6.4 to 8.3 s of card time per M (Track C's M/8 deck with 10^5 particles:
+  8.2-8.3 s per M), 0.55-0.7 card-hours per run to 300 M, 3.3-4.2 for the six runs;
+  each fits one 50-minute segment. Refuted by more than 10 s per M.
+
+Queue: six chains registered with `nrpic-run submit --launcher chain --gpu-hours 2.0`
+(at most two segments each; 12 card-hours asked at most, about 4 expected); two eligible,
+the other four held at once and released one at a time by
+`tracks/core/verify/row4/sequencer.sh` (setsid nohup, log
+`scratch/core/tmp/lead_b5/sequencer.log`). Order: 0.605 member, 0.755 member, 0.680
+member, 0.605 control, 0.755 control, 0.680 control.
+
+### What ran after the predictions (20:27Z-20:45Z)
+
+- Initial data: run core-20261121-202643-d66c4ee (`make_row4.py`): y_c = 0.605, 0.680,
+  0.755 with alpha_c = 0.6281, 0.6875, 0.7509, R/M = 5.750, 6.558, 7.902; turning point
+  y_c* = 0.6796 (E_b/M_0 = 0.036058), equal to run core-20261115-152805-47d8f25. The
+  0.755 cluster reaches R = 7.9 M, at the outer edge of the M/4 nest (blocks to 8 M);
+  its outermost particles sit in M/2 cells, as in the wave-1 run 0.756 on M/2 [noted,
+  not tested].
+- Deck smoke test on processors (release processor build, 0.680 member, 4 cycles): run
+  core-20261121-202702-c6a4d7d: 456 MeshBlocks, 64 of them at level 7 (M/8), dt = M/32,
+  "Terminating on cycle limit", 10^4 particles kept. Same block count as Track C's M/8
+  deck (456). AthenaK warns that `num_levels` is unused with static refinement.
+- Six chains submitted with `nrpic-run submit --launcher chain --gpu-hours 2.0` (release
+  card executable): run ids and jobs in STATUS.md and HANDOFF.md; jobs 4841-4844 held at
+  once, sequencer pid 2668479 started with setsid nohup. At 20:44Z all six were waiting
+  behind eleven jobs of other owners. P1-P4 open.
+- Code test of `row4_fate.py` on the wave-2 M/4 runs (core-20261121-204433-1c720e0; the
+  pairs exercise the code, they are not member and control): it reads, classifies and
+  draws (figure looked at). It shows that the late central-lapse swings of those runs
+  are larger than the 0.01 band, so a 100 M mean can move by about 0.01; the rule is not
+  changed after seeing this, the caveat goes with the outcome.
+
+Faults of mine on record: none known in this session beyond the G6 (ii) bound, which
+did not exclude the normalized constraint columns.
+
+## 2026-11-21T23:16Z, batch 8, session core-lead-8 (no cards, no source change)
+
+Task: (1) corrections after the fresh verifier's report (`stage/G2/VERIFIER.md` section 3),
+C16 marked, OPEN.md items for the restart limit (decision 0027 item 3) and the step rule
+with a Gamma-driver shift (0027 item 2), provenance of the pre-program run directories of
+ladder rows 2 and 4; (2) core's working note for G2 under `tracks/core/note/`. The six
+row-4 chains of batch 5 and their sequencer are not touched (6 core jobs in the queue at
+23:15Z).
+
+Plan and predictions, written before any run of this session:
+- Q1 (inventory of pre-program directories, registered processor run, one core): each of
+  `runs/os/nocap_sc`, `runs/os/nocap_v4`, `runs/prolate/e09_v8`, `runs/st/yc0900_v4`,
+  `yc0819_v4`, `yc0605_v5`, `yc0500_v5`, `yc0283_v5`, `migration_yc0500_v4`,
+  `yc0756_unpert` holds its input file, at least one timestamped copy of the executable
+  that ran (`athena.<stamp>.exe`) and the files the ladder numbers are read from
+  (`*.nrpic.hst`, `*.horizon_summary_0.txt`). Refuted by any of these missing.
+- Q2 (note figures, one registered run of `note/scripts/run_all.py` reading raw outputs):
+  (a) the largest relative errors of E, L_z, Q of the Kerr passage read from the
+  regression-G trajectories equal LADDER row 1 to four digits; (b) the first horizon
+  of `runs/os/nocap_sc` at 16.39 M with M_AH/M 1.0004 and the largest deviation to 60 M
+  1.34e-3, and regression O to 25 M within 6.3e-4; (c) the central lapse of the five
+  cluster models stays (0.900, 0.819), collapses (0.605 by 191 M, 0.500 by 104.3 M) and
+  rises toward one (0.283) as LADDER row 4 says. Refuted by any number differing beyond
+  its printed digits.
+
+### Q1 outcome (23:18Z-23:25Z): inventory run core-20261121-231825-135474c
+
+Held for inputs, executable copies, logs and both history files in all ten directories
+(two builds: `eea69999...` and `bbb74535...`; chains keep theirs in `chain/`). FAILED as
+written for the horizon summaries: absent in `st/yc0900_v4`, `st/yc0819_v4`,
+`st/migration_yc0500_v4`, `st/yc0756_unpert`, where no finder ran; their ladder numbers
+come from the history files, so nothing the ladder states is without its file. Figure
+`fig_inventory.png` looked at. The directories are named as pre-program in
+`verify/preprogram/README.md` (no manifest written after the fact: the source commit and
+the command lines are not recoverable).
+
+### Working note: story first (paper-writing Sec. 10, steps 1-3), 23:30Z
+
+300-word version. Every science track of the program builds on one implementation of
+the particle-in-cell coupling between collisionless matter and the Z4c evolution inside
+AthenaK. This note says what that implementation is, what each of four releases added,
+and how far it has been verified against the rows of the verification ladder that core
+owns. The base pushes particles along geodesics with an implicit midpoint rule or a
+spacetime Boris rule, deposits their stress-energy with clouds across refinement levels,
+and feeds it to Z4c. On a fixed Kerr black hole both pushers conserve energy, angular
+momentum and the Carter constant to the paper's digits and converge at second order.
+A dust ball collapses to a black hole whose horizon mass agrees with the initial mass at
+the paper's level at formation and drifts slightly beyond it later. A prolate spheroid
+forms its horizon at the paper's time, with a mass deficit that shrinks with
+resolution but does not vanish at two resolutions. The five star clusters of the paper
+meet the paper's fates; the bisection of the stability threshold on a coarse mesh did
+not collapse because that mesh pushes clusters outward, and its repetition on a finer
+mesh is running. Four releases added collisions, scalar fields with stochastic
+sources, Newtonian reference gravity, elliptic initial data, several black holes,
+threads, several ranks, refinement in the periodic box and new outer faces, each tested
+by its package. A fresh verifier recomputed fourteen claims from raw outputs: the numbers
+hold; one general statement (exact restarts) holds only for periodic set-ups and the
+particle state; five texts needed a corrected measure or count. Open for the gate: the
+oblate data, the threshold on the finer mesh, three-way convergence of one coupled
+set-up, and two limits for the next release (the relaxed lapse near a black hole, a step
+limit with the gauge speeds).
+
+Longer version: the outline of `WRITING_GUIDE.md` with one paragraph per subsection
+(written as the main text directly; no separate 1000-word file). Step 4 (reviewer
+subagents) not run: no subagent tool in this session.
+
+### Q2 outcome (23:28Z-23:31Z): runs core-20261121-232757-f86d965, -232936-d979f1c
+
+Held, all three parts. (a) Kerr passage largest relative errors from the raw trajectories
+of regression G equal LADDER row 1 to four digits (2.781e-8, 0, 1.254e-7; 9.046e-8,
+1.136e-8, 7.825e-7; 2.162e-6, 5.304e-6, 5.060e-5; 2.046e-6, 3.788e-6, 5.289e-5);
+orders 2.0001/2.0003, 1.9998/1.9991, 1.9997/1.9989. (b) `runs/os/nocap_sc`: first
+horizon 16.3894 M, M_AH/M 1.000353, largest deviation to 60 M 1.338e-3, all 9328
+particles removed by 19.74 M; regression O: identical first horizon and mass, 6.345e-4
+to 25 M. The deviation first exceeds 1e-3 at 29.11 M and stays above from 30.92 M (the
+verifier's "from 31 M"). (c) the five fates as LADDER row 4 (0.900: 0.8862-0.8919;
+0.819: 0.7875-0.8190; horizons 191.0 M and 104.31 M, M_AH/M 0.99999, 1.0001; 0.283 at
+270 M 0.97598); M/4 bisection means equal the LADDER table to four digits. Inputs: 11
+sha256 checks passed (pre-program files against the inventory), 31 inputs without a
+recorded checksum (wave-1 manifests list no outputs). Figures looked at: fig_geodesic
+(after one layout change: running maxima instead of raw errors), fig_collapse,
+fig_clusters (legends moved off the data), schem_architecture (rescaled to page width;
+legend and tags moved). The second run differs from the first only by the ledger's
+escape of `<` and `>`, seen on page 8. Note compiled (8 pages, all read), checker: 0
+undefined references or citations, 0 overfull boxes.
+
+### Close of session core-lead-8 (23:32Z)
+
+Done: verifier corrections (five texts, C3 label, C16), OPEN.md u and v, W31, the
+pre-program inventory, the working note (C14, C15). No source change, no card job; the
+six row-4 chains and their sequencer untouched (4839 running at 23:30Z).
+Not done: `nrpic-stage verify` on the clean export (C6; the last full verify read run
+outputs for 13 minutes in batch 4a); reviewer subagents of the story-first procedure
+(no subagent tool); inbox messages outside the task (listed in HANDOFF.md).
+Faults of mine on record: the inventory prediction Q1 was written too broadly
+(horizon summaries exist only where a finder ran); the first ledger printed `<` as an
+inverted exclamation mark (OT1 encoding), seen on page 8 and fixed by a second
+registered run; the first architecture schematic was drawn at poster scale (text too
+small at page width) and had overlapping legend labels, both seen on the PNG and fixed
+before the registered run.
