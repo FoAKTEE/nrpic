@@ -1,0 +1,90 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261123-015014-b4ecd4e",
+  "track": "E-stoch-inf",
+  "gate": "G2",
+  "kind": "production",
+  "purpose": "g2prod analysis T and P256v6: timing at 256/320/384^3; SR 256^3 on release v06 against P256 of the tested branch (E-20261115-172618-f948386; G1 reservation 2): A2, records row by row; predictions entry 1",
+  "preregistered_in": "tracks/E-stoch-inf/g2prod/JOURNAL.md#entry-1",
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "set -e; export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 MPLBACKEND=Agg; R=\"$NRPIC_RUN_DIR/res\"; mkdir -p \"$R\"; cd tracks/E-stoch-inf/ladder/scripts; python3 ladder_analysis.py extract /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-202935-31520bc/P256 --nmesh 256 --nmax2 4096 --modefile /data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/inputs/modes_n4096.txt --seed 20261115 --out \"$R/P256v6.npz\" > \"$NRPIC_RUN_DIR/extract.log\" 2>&1; python3 ladder_analysis.py judge \"$R/P256v6.npz\" --out \"$R/P256v6_judge.json\" >> \"$NRPIC_RUN_DIR/extract.log\" 2>&1; cd ../../g2prod/scripts; python3 judge_tp.py --timing /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-202929-43dcc9c --p-new /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261121-202935-31520bc/P256 --p-old /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261115-172618-f948386/P256 --judge-new \"$R/P256v6_judge.json\" --judge-old ../../ladder/results/final/P256_judge.json --npz-new \"$R/P256v6.npz\" --npz-old /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261115-194633-9e04ed8/res/P256.npz --out \"$NRPIC_RUN_DIR\" > \"$NRPIC_RUN_DIR/judge.log\" 2>&1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "b4ecd4e8e8a3f622e58bab02507945353b991990",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/g2prod"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "3d945c050a8b7d3df20f8fe91dd74caa4d26d25c",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261123-015014-b4ecd4e",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-23T01:50:15Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "E-20261121-202929-43dcc9c",
+    "E-20261121-202935-31520bc"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 20.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 9.2804,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 5,
+    "runs": 169,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
