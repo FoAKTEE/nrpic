@@ -567,3 +567,23 @@ largest |f - f_ref| 5.0e-6 at 128 cells, its plateau converging between second a
 order to 2.8e-8; in particle number at 32 cells as in entry 7. The stated floor is the start
 error of the step (about 2e-6 in the amplitude at the step limit 0.002), whose cause a run
 could have refuted (P3, P4).
+
+## Entry 13 (2026-11-22 18:03 PST, lead of batch 10a): J4 queued; prediction
+
+The 128-cell floor is attributed to the start step from runs at 32 cells only (entry 12).
+J4 (`inputs/batch_j4.list`, one card batch job, release core-v0.3 card executable as J1-J3,
+queued in `../cards/queue.json` as `flrw_j4`): leg B at 128 cells to t = 4 (a = 9) with step
+limits 0.002, 0.001 and the production 0.01. At 128 cells the Courant step (about 0.0026,
+entry 11: the limit 0.002 (1 + t/2) meets it at a = 1.7) caps the step, so 0.01 runs at the
+Courant step from the start. Estimate 1500-2300 steps per case at 0.31 s: about 0.4 card-h.
+Predictions [JUDGEMENT], to be read with `scripts/analyze_step.py` on a map like
+`inputs/runs_step.json`:
+- J4a. 0.002 against J3 (same limit, card against card chain): D_*/A a agree within 2e-7 to
+  a = 9.
+- J4b. The largest difference of D_*/A a between 0.001 and 0.002 is 1.0e-6 to 3.0e-6 (32 cells:
+  1.47e-6), built up mostly by a = 2, with the 0.001 run less negative; the 128-cell amplitude
+  error at a = 9 then falls from -1.7e-6 to below 1e-6 in size at 0.001.
+- J4c. 0.01 (Courant from the start) lies 0.5e-6 to 3e-6 below 0.002 (step about 1.3 times
+  larger in the first e-fold, start error about 1.7 times larger at second order).
+Refuted if the 0.001 - 0.002 difference is below 0.5e-6 (then the 128-cell floor is not the
+step and its cause stays open), or if 0.01 differs from 0.002 by more than 1e-5.
