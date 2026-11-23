@@ -25,8 +25,10 @@ paper and converge at second order. A collapsing dust ball forms a black hole wh
 horizon mass matches the initial mass at the paper's level when the horizon forms and
 departs slightly from it later. A prolate spheroid forms its horizon at the paper's
 time, with a mass deficit that shrinks with resolution. The five relativistic star
-clusters of the paper reach the paper's fates, while the bisection of their stability
-threshold on a coarse mesh found no collapse and is being repeated on a finer mesh. A
+clusters of the paper reach the paper's fates. The bisection of their stability
+threshold found no collapse on a coarse mesh; on a mesh twice as fine, with unkicked
+controls, it brackets the threshold between two models just above the turning point of
+the binding energy and well above it, and its next level is running. A
 verifier with no part in the work recomputed a sample of the claims from raw outputs;
 it confirmed the numbers and corrected one general statement about restarts. Two rows
 of the ladder remain partial, and two limits of the gauge are scheduled for the next
@@ -121,7 +123,7 @@ open items. Arrows on the right lead to the six projects that use the code.}
 The brief of the program assigns four tests of its verification suite to the shared
 implementation: geodesics on a fixed background; the Oppenheimer--Snyder collapse with a
 horizon-mass error of the order of the source paper's; prolate collapse; and the
-stability of relativistic clusters. Figures~\ref{fig:geo} to~\ref{fig:clusters} are
+stability of relativistic clusters. Figures~\ref{fig:geo} to~\ref{fig:row4m8} are
 drawn from raw outputs by one registered run, which also writes the ledger of
 Appendix~\ref{app:ledger}.
 
@@ -200,9 +202,27 @@ adaptive mesh migrated on the capped one. A collisionless cluster drifts outward
 coarse mesh, and far less on cells of $M/8$, by the control runs of the
 self-interacting-core project; an outward drift of that size stabilises a model. The
 bisection is therefore repeated on cells of $M/8$, each member beside an unkicked control
-on the same mesh, with the rule for its fate written before the runs; those runs are in
-the queue. The growing oscillation of the central lapse seen in every cluster run is
+on the same mesh, with the rule for its fate written before the runs: a run collapses
+when a horizon appears or the central lapse falls below $0.3$ within $300\,M$; a member
+that does not collapse stays when the mean of its central lapse over $200$--$300\,M$ lies
+within $0.01$ of its control's mean.
+
+On this mesh the collapse branch returns (Fig.~\ref{fig:row4m8}). The kicked model
+$y_c=0.605$ collapses at $t_c=180.5\,M$, while its control moves outward, towards its
+partner of equal binding energy. At $y_c=0.680$, which lies $0.0004$ above the turning
+point, the member collapses at $219.5\,M$ and the control at $251.5\,M$, so the particle
+noise alone suffices. At $y_c=0.755$ neither run collapses, and the two means differ by
+$0.002$. On cells of $M/8$ with $10^4$ particles the threshold is therefore bracketed
+between $y_c=0.680$ and $0.755$, and the turning point lies just below the bracket. That
+a model this close to the turning point collapses from noise within $260\,M$ suggests
+that the threshold of the discretised system lies above $y_c^\ast$, by up to $0.075$.
+The controls drift on this mesh too: both runs at $y_c=0.755$ settle $0.025$ below the
+equilibrium lapse, inward rather than outward, and $0.025$ is more than the $0.01$
+predicted from the self-interacting-core controls. The next level of the bisection,
+three models with their controls between $0.680$ and $0.755$, is in the queue. The
+growing oscillation of the central lapse, $\pm0.03$ after $200\,M$ at $y_c=0.755$, is
 still unexplained. The row is partial.
+
 
 \begin{figure*}
 \includegraphics[width=\textwidth]{figures/fig_clusters.pdf}
@@ -211,6 +231,16 @@ sequence on the adaptive mesh; crosses mark the first apparent horizon. Right: t
 bisection between the turning point and the collapsing model on a mesh capped at cells of
 $M/4$, labelled by $y_c$; the last member is the unkicked control.}
 \label{fig:clusters}
+\end{figure*}
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{figures/fig_row4_m8.pdf}
+\caption{Central lapse of the bisection on cells of $M/8$, first level. Solid lines show
+the members with the one-per-cent inward kick and dashed lines the unkicked controls on
+the same mesh. Dotted lines mark the equilibrium central lapse of each model, the grey
+band the window $200$--$300\,M$ of the rule, and crosses the collapse time (central lapse
+below $0.3$). Right: the runs without collapse on an expanded axis.}
+\label{fig:row4m8}
 \end{figure*}
 
 \subsection{Constraints, conservation and restarts}
@@ -269,7 +299,8 @@ own tests and an interface document. The numbers of the ladder and of a sample o
 release survive an independent recomputation from raw outputs. For the gate the shared
 implementation still needs: the oblate initial data in a release and its collapse, a
 third resolution or a particle-number pair for the prolate collapse, the stability
-threshold bracketed on the finer mesh against controls, and one coupled set-up converged
+threshold narrowed on the finer mesh (it is bracketed there, between $y_c=0.680$ and
+$0.755$, but not yet converged in cell size or particle number), and one coupled set-up converged
 in particle number, cell size and gauge together.
 
 \appendix
@@ -279,7 +310,7 @@ in particle number, cell size and gauge together.
 
 Every number of this note, with the registered run that produced it or the source line
 it was read from, and the claim of the independent verifier (V1 to V11 of its report)
-where it recomputed the number from raw outputs. Rows of the four data sections were
+where it recomputed the number from raw outputs. Rows of the five data sections were
 written by the run that made the figures (\noterun); the other rows are copied from the
 documents of the stage package with their runs. Runs whose identifier begins with a path
 are older than the program's run registry; their files are inventoried by checksum in

@@ -1421,3 +1421,149 @@ inverted exclamation mark (OT1 encoding), seen on page 8 and fixed by a second
 registered run; the first architecture schematic was drawn at poster scale (text too
 small at page width) and had overlapping legend labels, both seen on the PNG and fixed
 before the registered run.
+
+## 2026-11-23T01:50Z (2026-11-22 17:50 PST), batch 10a, session core-lead-10a (analysis round; no AthenaK source change)
+
+Task: close the six row-4 chains (all six DONE at tlim by `submit_chain.sh --status`,
+segments of jobs 4839-4844), classify by the rule of 2026-11-21T20:26Z, queue the next
+level; note, G2 stage, inbox answers to Track A (step limit) and kb (paper-code links).
+
+### Prediction before the footer test of `scripts/cpu_run.sh` (Track A request (iii), 2026-11-23T01:50Z)
+
+Track A (outbox 20261121T231546Z, item iii) reports that the footer's awk call fails with
+`-v load=...` under gawk and that a non-zero exit of athena leaves the script at `wait`
+under `set -e`. Fix: rename the awk variable to `ldavg`; `rc=0; wait "$apid" || rc=$?`.
+Prediction: with ATHENA_EXE=/bin/true the fixed script exits 0 and writes one footer line
+`# exit=0 ...`; with a stub that exits 3 it exits 3 and writes `# exit=3 ...`; the
+unfixed script exits 2 on /bin/true without a footer (reproducing A). Refuted by a
+missing footer or a different exit status in either case.
+
+Outcome (2026-11-23T01:50Z; stubs in `scratch/core/tmp/lead_b10a/footer/`, not a
+registered run: a shell test with /bin/true and a stub, no simulation): the unfixed script
+exits 2 on /bin/true with "awk: fatal: cannot use gawk builtin `load' as variable name"
+and no footer (A's report reproduced); on the exit-3 stub it exits 3 without a footer
+(set -e at `wait`). Fixed script: exit 0 with `# exit=0 ...`, exit 3 with `# exit=3 ...`.
+Prediction holds. (The cpu_share of a zero-second stub is meaningless, as expected.)
+
+### Outcomes of row 4 on M/8, level 1 (2026-11-23T02:05Z): runs closed, fates by the rule of 2026-11-21T20:26Z
+
+All six chains ended in one segment each at tlim = 300 M (jobs 4839-4844, status DONE;
+`nrpic-run finish`, commits e66f7a58..cbee7c2b). Fate analysis: run
+core-20261123-020318-e952741 (`verify/row4/row4_fate.py`, figure `fig_row4_m8.png` looked
+at: normalised central lapse of all six, and member minus control with the 200-300 M
+window); the note's figure (`note/scripts/fig_row4_m8.py`, absolute central lapse with
+the equilibrium values; test render in `scratch/core/tmp/lead_b10a/figtest/`, looked at)
+shows the same.
+
+| y_c | alpha_c eq | member | control | class / side |
+|---|---|---|---|---|
+| 0.605 | 0.6281 | t_c 180.5 M (lapse < 0.3), first AH 188.0 M, M_AH/M 1.009 at the last search | no collapse; mean 200-300 M 0.7303 (+0.102 against its own equilibrium: moves outward, towards its equal-binding partner) | COLLAPSE / UNSTABLE |
+| 0.680 | 0.6875 | t_c 219.5 M, first AH 225.0 M, M_AH/M 1.006 | t_c 251.5 M, first AH 256.0 M, M_AH/M 1.005 | COLLAPSE / UNSTABLE (control collapses too) |
+| 0.755 | 0.7509 | no collapse; mean 0.7264 (-0.0246 against eq) | no collapse; mean 0.7247 (-0.0262) | STAYS, D = +0.0016 / STABLE |
+
+Bracket by the rule: y_lo = 0.680, y_hi = 0.755, valid (no UNDECIDED member between,
+monotone). **The stability threshold on cells of M/8 with 10^4 particles is bracketed
+between y_c = 0.680 and 0.755** [VERIFIED by run core-20261123-020318-e952741, under the
+rule as written]. The turning point y_c* = 0.6796 lies 0.0004 below the bracket.
+Caveat named before the runs: the late swings of the 0.755 pair are about +-0.03 (member
+minus control +0.02 near 285 M, -0.03 at 300 M; panel b), so a 100 M mean can move by
+about 0.01; D = +0.0016 lies 0.008 inside the STAYS border.
+
+Predictions:
+- P1 HOLDS: 0.605 member collapses, t_c = 180.5 M in (120, 300); its control does not
+  collapse at all.
+- P2 PARTLY REFUTED: 0.755 member STAYS (|D| = 0.0016), no collapse in either run; but
+  the control's 200-300 M mean lies 0.026 below its equilibrium, beyond the 0.01
+  predicted from Track C's M/8 King controls (0.002-0.004). The drift is inward (lapse
+  down), the same in member and control, so it is the mesh or the particle noise, not
+  the kick [JUDGEMENT]; its cause is not tested.
+- P3 REFUTED: the 0.680 member collapses (t_c = 219.5 M), and so does its control
+  (251.5 M). On this mesh the model just above the turning point is unstable to the
+  particle noise alone; the threshold of the discretised system lies above y_c*
+  [JUDGEMENT: a model 0.0004 from a marginal point would grow slowly; collapse within
+  260 M from noise points to a threshold noticeably above 0.680, not located yet].
+- P4 HOLDS: 2255-2280 s of card time per run to 300 M (athena "cpu time used", chain
+  logs), 7.5-7.6 s per M, 0.63 card-hours per run, 3.8 card-hours for the six; each run
+  fitted one segment.
+
+### Next level: three models with their controls, predictions before any run (02:05Z)
+
+Design [JUDGEMENT, written now]: the rule names one next point, the midpoint 0.7175.
+Card time is not the scarce resource this week, sessions are (decision 0026 item 6,
+weekly window near its end); so the two points of the level after it, 0.69875 and
+0.73625, run at the same time, each with its control: six chains, the same deck, seed,
+particle number, kick and executable as level 1 (`verify/row4/st_m8.athinput`, release
+card build `.work/build_gpu_v06/src/athena`, 300 M, `--gpu-hours 2.0` each: 12
+card-hours asked at most, about 3.8 expected). Each member is classified by the same
+rule; the bracket after this round is formed from all six models of levels 1 and 2 with
+the same validity test (monotone, no UNDECIDED member inside). Two jobs eligible, the
+other four held and released by `verify/row4/sequencer.sh` (stop file and log under
+`scratch/core/tmp/lead_b10a/`). Order: 0.7175 member, 0.7175 control, 0.69875 member,
+0.69875 control, 0.73625 member, 0.73625 control.
+
+- P5. 0.69875: the member collapses within 300 M, t_c between 200 and 300 M (later than
+  0.680's 219.5 M). Refuted by no collapse of the member (then the threshold lies below
+  0.69875, within 0.019 of the turning point).
+- P6. 0.73625: member STAYS (|D| <= 0.01), neither run collapses. Refuted by a collapse
+  or |D| > 0.01.
+- P7. 0.7175: no prediction of the side (it is the open middle); predicted only that it
+  does not collapse before 0.69875's member if both collapse, and that the outcome is
+  monotone in y_c over the five models 0.680-0.755. Refuted by a non-monotone outcome
+  (a STABLE model below an UNSTABLE one).
+- P8. Controls without collapse drift inward as at 0.755: their 200-300 M mean lies
+  0.01 to 0.04 below their equilibrium alpha_c. Refuted by an upward drift or one beyond
+  0.04.
+- P9. Cost: 7.3 to 8.0 s of card time per M, 0.61-0.67 card-hours per run, one segment
+  each. Refuted by more than 9 s per M.
+
+### What was queued (02:05Z)
+
+- Initial data: run core-20261123-020409-4fae8fb (`make_row4.py --yc 0.69875 0.7175
+  0.73625`): alpha_c = 0.7029, 0.7186, 0.7346; R/M = 6.828, 7.136, 7.491; turning point
+  unchanged (y_c* = 0.6796, E_b/M_0 = 0.036058). Directory tags are rounded to three
+  digits (yc0p699, yc0p718, yc0p736); the files carry the exact y_c.
+- Six chains with `nrpic-run submit --launcher chain --gpu-hours 2.0 --exe
+  .work/build_gpu_v06/src/athena` (12 card-hours asked at most):
+
+| Model | Run id | First job |
+|---|---|---|
+| 0.7175 member | core-20261123-020450-7e42037 | 4923 (eligible) |
+| 0.7175 control | core-20261123-020452-e635a8e | 4924 (eligible) |
+| 0.69875 member | core-20261123-020454-8fec6b2 | 4925 (held) |
+| 0.69875 control | core-20261123-020456-884f550 | 4926 (held) |
+| 0.73625 member | core-20261123-020458-dfc38d7 | 4927 (held) |
+| 0.73625 control | core-20261123-020500-9b192cd | 4928 (held) |
+
+  Sequencer pid 3075029 (setsid nohup; a copy of `verify/row4/sequencer.sh` with its stop
+  file moved to `scratch/core/tmp/lead_b10a/sequencer.stop`; log
+  `scratch/core/tmp/lead_b10a/sequencer.log`) releases 4925-4928 in that order. At 02:05Z
+  seven jobs of other owners were ahead in the queue. P5-P9 open.
+
+### Answers to the inbox (02:08Z; no AthenaK source change)
+
+- Track A, `periodic-gamma-driver-step` (acknowledged in batch 8): answered in outbox
+  20261123T020802Z. (i) gauge speeds in the step limit stay W31 for core-v0.7; the rule of
+  decision 0027 item 2 holds meanwhile; `LightSpeedTimeStep` counts only the light speed
+  [VERIFIED by reading z4c_newdt.cpp at HEAD]. (ii) accepted, no date (with W24/W30).
+  (iii) done this session (footer test above); W31 row updated in REQUESTS_WAVE3.md.
+- kb, `paper-code-links-tests` (message 105): answered in outbox 20261123T020802Z. Item 3
+  confirmed by reading the source: the paper's identity is `dep_sum` of
+  NrpicDepositSources (nrpic.cpp:1179-1180) written by NrpicWriteHistory
+  (nrpic_io.cpp:289); NrpicWriteConservation returns on refined meshes (nrpic_io.cpp:662,
+  :665). Item 4 confirmed: `<z4c> nco` is read nowhere in athenak/src (only a local
+  variable in restart.cpp:154-306); the deck line stays for now because the deck's sha256
+  is in the manifests of the paper's runs. Candidates offered [JUDGEMENT]: M25 and M20 the
+  dust-collapse runs, M18 the id_solver tests T1 and T3 (the `code` monitor after the
+  solve, 1e-11 to 1e-12), M19 stays claimed, M24 Track A's periodic_diag runs.
+
+### Close of session core-lead-10a (2026-11-23T02:15Z)
+
+Done: six row-4 chains closed and judged (bracket 0.680-0.755 on M/8, run
+core-20261123-020318-e952741); level 2 queued (six chains, 12 card-hours asked, two
+eligible, sequencer pid 3075029); note rebuilt (core-20261123-020543-eb1cd2a, 9 pages,
+checker clean, pages read); stage G2 OPEN/CHECKLIST, verify (FAIL only on the six queued
+chains and on main's two new commits, merged after) and report rerun; cpu_run.sh footer
+fixed with a stub test; answers to A and kb posted, kb's message acknowledged. G2 not met.
+Faults of mine on record: the first journal header of this session carried the date of
+the shell's local time (2026-11-22) with a UTC hour; corrected to 2026-11-23T01:50Z
+before the commit. Not done: inbox messages 1-8, 103 and D's new 11 (task scope).
