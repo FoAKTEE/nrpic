@@ -1,0 +1,11 @@
+# repro/ablation, card batch T5SMK (one Slurm job, branch card build core_noise-level2): core's pending
+# test T5 (tracks/core/JOURNAL-noise-level2.md on branch core/noise-level2: card smoke at 64^3, levels 0
+# and 2 of both scenarios, timing; core's four decks unchanged) and two decks of this package that run
+# the mesh path of levels 1 (SR) and 0 (USR) with the per-mode writer. Predictions: JOURNAL.md entry 1,
+# P-T5. Checked by scripts/smoke_check.py, which gates the six 256^3 runs (scripts/sequencer.sh).
+sr64_l0 tracks/E-stoch-inf/repro/ablation/inputs/card/sr64_l0.athinput
+sr64_l2 tracks/E-stoch-inf/repro/ablation/inputs/card/sr64_l2.athinput
+usr64_l0 tracks/E-stoch-inf/repro/ablation/inputs/card/usr64_l0.athinput
+usr64_l2 tracks/E-stoch-inf/repro/ablation/inputs/card/usr64_l2.athinput
+sr64_l1m tracks/E-stoch-inf/repro/ablation/inputs/card/sr64_l1m.athinput
+usr64_l0m tracks/E-stoch-inf/repro/ablation/inputs/card/usr64_l0m.athinput

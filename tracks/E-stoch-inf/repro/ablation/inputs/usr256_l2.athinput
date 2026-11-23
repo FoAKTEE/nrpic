@@ -1,0 +1,111 @@
+# repro/ablation (Track E, 2026-11-22): copy of core's input of the same name (branch core/noise-level2,
+# tracks/core/analysis/noise_level2/inputs/ablation/) with OUTPUT-ONLY changes for Fig. 9 of P1:
+#   dump_dt 0.5218754437032825 (18 dumps SR / 21 USR, the last at N_f, as RL1/UL1 of repro/scope), dump_constraints and
+#   dump_magnitudes false (the record .sf.con.hst stays every cycle), noise_rmodes_dump = true (per-mode
+#   projections of the mesh R next to each dump). The steps do not depend on the dump cadence
+#   (repro/scope JOURNAL entry 0). Everything else as core wrote it (README.md of this directory).
+# Ultra-slow-roll (Higgs inflection) case of arXiv:2512.14649 "as in the paper" (PRD_v2.tex:405-424,
+# set-up 480-519, appendices 697-773), package repro/scope of Track E. Copy of
+# tracks/E-stoch-inf/g2prod/inputs/usr_prod.athinput (the deck of U256ap, run E-20261121-211214-0377aab)
+# with two changes, both output only:
+#   - dumps every tlim/40 (41 dumps, the last at N_f) with the metric, H, M_i, E AND the absolute
+#     magnitudes [H], [M] (dump_magnitudes = true) for the percentile contours of P1 Figs. 4 and 5
+#     (U256ap: tlim/20 without the magnitudes);
+#   - nothing else: restart output every 2.0 time units as in usr_prod (scripts/submit_chain.sh).
+# Units of the code: G = c = 1, time unit 1/H*, a* = 1, box 2 pi/sigma; potential P1:409 with
+# lambda = 8 pi Lambda/H*^2, vev = v/sqrt(8 pi); background at N* = N0 + 3; tlim = code time of
+# N* + 10 e-folds (usr/results/usr_reference.json, run E-20261119-143905-f2bcde3). Geodesic slicing,
+# zero shift, no damping, no dissipation, periodic, sixth-order stencils (nghost = 4), RK4()4[2S] at
+# Courant 0.25, level-0 backreaction. Variants on the command line (repro/scope/queue.txt,
+# inputs/small.list). Audit: repro/scope/SETUP_AUDIT.md.
+
+<comment>
+problem   = stochastic inflection, ultra-slow-roll case, reproduction of arXiv:2512.14649 (Track E repro/scope)
+
+<job>
+basename = usr256_l2
+rng_seed  = 20261115
+
+<mesh>
+nghost    = 4
+nx1       = 256
+x1min     = 0.0
+x1max     = 6.283185307179586
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 256
+x2min     = 0.0
+x2max     = 6.283185307179586
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 256
+x3min     = 0.0
+x3max     = 6.283185307179586
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 256
+nx2       = 256
+nx3       = 256
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 10.437508874065651
+ndiag      = 20
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonic  = 0.0
+lapse_advect    = 0.0
+shift_Gamma     = 0.0
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.0
+damp_kappa1     = 0.0
+damp_kappa2     = 0.0
+excise_chi      = 0.0
+
+<scalar_field>
+couple           = true
+potential        = inflection
+lambda           = 5.33317648526340374e+05
+vev              = 3.94952857597418439e-02
+diss             = 0.0
+hist_dcycle      = 1
+con_dcycle       = 1
+con_signed       = true
+dump_dt          = 0.5218754437032825
+dump_metric      = true
+dump_magnitudes  = false
+dump_constraints = false
+dump_noise       = false
+noise            = mukhanov_sasaki
+noise_nmax2      = 4096
+noise_sharpness  = 5.0
+noise_sigma      = 1.0
+noise_level = 2
+noise_rmodes_dump = true
+noise_projector  = stencil
+noise_kick_pi    = true
+noise_kick_k     = true
+noise_kick_a     = true
+noise_pi_sign    = 1.0
+noise_mode_file  = /data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/usr/inputs/modes_usr_n4096.txt
+noise_mode_scale = 1.0
+
+<problem>
+pgen_name      = scalar_field
+id             = stochastic
+phi0           = -1.64328188347202975e-01
+pi0            = 3.23658652791244811e-02
+slice_window   = true
+slice_k2       = stencil
+slice_delta_pi = corrected
+
+<output1>
+file_type  = rst
+dt         = 2.0
