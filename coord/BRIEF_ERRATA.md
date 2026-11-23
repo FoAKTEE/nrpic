@@ -235,6 +235,9 @@ objects (row 4.6). The other rows are recorded corrections, not yet ruled on.
 
 ## 5. Defects in sources the brief cites (for the knowledge base; not errors of the brief)
 
+The knowledge base holds a claim for each row of this section; the claim ids per row are in
+`tracks/kb/outbox/20261121T233354Z__to-orch__errata-section5-claims.md` on kb/main (decision 0016 item 8).
+
 | Source and locator | Defect | Evidence | Found by, sent to |
 |---|---|---|---|
 | arXiv:2108.11967 `main.tex:491, :493, :516, :197` | Table 1 typos (C = 1.41053e-2 for M/R = 1.141e-2; p(0) = 1.09378e-3, about 1.09e-2 by the neighbouring rows; C = 4.0e-4 for M/R = 4.0e-3); the printed e^{2 Phi} is not consistent with the tabulated numbers | run C-sidm-20261115-120722-38ab057 | C-sidm, kb (`__to-kb__index-locators-typos`) |
