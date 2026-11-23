@@ -13,8 +13,8 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-SCRIPTS = ["fig_geodesic.py", "fig_collapse.py", "fig_clusters.py", "schem_architecture.py",
-           "ledger.py"]
+SCRIPTS = ["fig_geodesic.py", "fig_collapse.py", "fig_clusters.py", "fig_row4_m8.py",
+           "schem_architecture.py", "ledger.py"]
 
 
 def main():

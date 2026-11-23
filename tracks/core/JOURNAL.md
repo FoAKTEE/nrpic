@@ -1421,3 +1421,26 @@ inverted exclamation mark (OT1 encoding), seen on page 8 and fixed by a second
 registered run; the first architecture schematic was drawn at poster scale (text too
 small at page width) and had overlapping legend labels, both seen on the PNG and fixed
 before the registered run.
+
+## 2026-11-23T01:50Z (2026-11-22 17:50 PST), batch 10a, session core-lead-10a (analysis round; no AthenaK source change)
+
+Task: close the six row-4 chains (all six DONE at tlim by `submit_chain.sh --status`,
+segments of jobs 4839-4844), classify by the rule of 2026-11-21T20:26Z, queue the next
+level; note, G2 stage, inbox answers to Track A (step limit) and kb (paper-code links).
+
+### Prediction before the footer test of `scripts/cpu_run.sh` (Track A request (iii), 2026-11-23T01:50Z)
+
+Track A (outbox 20261121T231546Z, item iii) reports that the footer's awk call fails with
+`-v load=...` under gawk and that a non-zero exit of athena leaves the script at `wait`
+under `set -e`. Fix: rename the awk variable to `ldavg`; `rc=0; wait "$apid" || rc=$?`.
+Prediction: with ATHENA_EXE=/bin/true the fixed script exits 0 and writes one footer line
+`# exit=0 ...`; with a stub that exits 3 it exits 3 and writes `# exit=3 ...`; the
+unfixed script exits 2 on /bin/true without a footer (reproducing A). Refuted by a
+missing footer or a different exit status in either case.
+
+Outcome (2026-11-23T01:50Z; stubs in `scratch/core/tmp/lead_b10a/footer/`, not a
+registered run: a shell test with /bin/true and a stub, no simulation): the unfixed script
+exits 2 on /bin/true with "awk: fatal: cannot use gawk builtin `load' as variable name"
+and no footer (A's report reproduced); on the exit-3 stub it exits 3 without a footer
+(set -e at `wait`). Fixed script: exit 0 with `# exit=0 ...`, exit 3 with `# exit=3 ...`.
+Prediction holds. (The cpu_share of a zero-second stub is meaningless, as expected.)
