@@ -14,6 +14,8 @@ finds <run>/<name>/usr.sf.con.hst as for the batch runs. Groups:
        U256 over U256h (SCOPE 4c U-A2', U-A3, U-A4'(a)-(c)); one-point statistics.
   u256 the pair of analyse_cards (seed B: U-S with one-point statistics).
   u320 the pair at 320^3 without one-point statistics (U-R).
+--seed N: reference realisation of rng_seed N (default 20261115, seed A); seed B needs 20261116.
+--last: only the dumps at N* and N_f (the records are read whole).
 """
 import os
 import sys
@@ -39,6 +41,16 @@ def main():
         else:
             rest.append(argv[i])
             i += 1
+    if "--seed" in rest:   # the realisation alpha_n of another rng_seed (seed B = 20261116)
+        j = rest.index("--seed")
+        seed = int(rest[j + 1])
+        del rest[j:j + 2]
+        orig = ac.ul.Modes.alpha
+
+        def alpha(self, seed=seed, dof=0, epoch=0):
+            return orig(self, seed, dof, epoch)
+        ac.ul.Modes.alpha = alpha
+        print(f"seed {seed} for the reference realisation", flush=True)
     last = "--last" in rest
     if last:          # only the dumps at N* and N_f (every U-R clause is stated at N_f); records whole
         rest.remove("--last")
