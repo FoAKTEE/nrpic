@@ -279,7 +279,7 @@ def figures(out, s, t3fig, t2rows, nn2):
     import matplotlib.pyplot as plt
     # T1, T3
     fig, ax = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
-    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.17, top=0.9, wspace=0.34)
+    fig.subplots_adjust(left=0.085, right=0.99, bottom=0.17, top=0.9, wspace=0.38)
     a = ax[0]
     for lab, cl, mk in (("T1b", fs.PAL["blue"], "o"), ("T1c_amp1", fs.PAL["orange"], "s"),
                         ("T1c_amp1e-3", fs.PAL["green"], "^")):
@@ -303,7 +303,8 @@ def figures(out, s, t3fig, t2rows, nn2):
     a.set_xlabel("$|n|$")
     a.set_ylabel(r"$|R^{\rm mesh}_n/R^{\rm ref}_n-1|$")
     a.set_title(f"(b) level 0 on the mesh, kicks off, $t={t3fig['time']:.1f}$", fontsize=8)
-    a.legend(fontsize=6, loc="lower right")
+    a.set_ylim(1e-9, 3.0)
+    a.legend(fontsize=5.5, loc="upper left", ncol=2)
     a = ax[2]
     t = [r["time"] for r in s["T3"]["rows"]]
     a.semilogy(t, [r["mesh_vs_shell_cut"] for r in s["T3"]["rows"]], "o-", ms=3,
@@ -338,7 +339,8 @@ def figures(out, s, t3fig, t2rows, nn2):
     a.set_xlabel("$|n|$")
     a.set_ylabel(r"$|R^{\rm NR}_n/(W R\,\alpha_n)-1|$, $W>1/2$")
     a.set_title(f"(a) $t = {t2rows['s0'][-1]['time']:.1f}$", fontsize=8)
-    a.legend(fontsize=6, loc="lower right")
+    a.set_ylim(1e-8, 3.0)
+    a.legend(fontsize=6, loc="upper left", ncol=2)
     a = ax[1]
     k = [r["dump"] for r in s["T2_split"]]
     a.semilogy(k, [max(r["even_rms"], 1e-30) for r in s["T2_split"]], "o-", ms=3,
