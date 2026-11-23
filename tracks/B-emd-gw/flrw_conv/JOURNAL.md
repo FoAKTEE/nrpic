@@ -526,7 +526,7 @@ particle number at 32 cells until the mesh part remains; the stated floor is the
 error of the step (about 2e-6 in the amplitude at the step limit 0.002, second order in
 the step), named after P3 and P4, runs in which it could have failed.
 
-## Entry 12 (2026-11-22 17:57 PST, lead of batch 10a): the finished 128^3 member; final verdict
+## Entry 12 (2026-11-22 17:56 PST, lead of batch 10a): the finished 128^3 member; final verdict
 
 J3 = run B-20261121-202335-3e6a898 ended 2026-11-21 22:21 PST: three segments (Slurm 4825,
 4849, 4861; 50:04 + 50:03 + 19:44 = 2.00 card-h by Slurm accounting, estimate 2.4-3.1), one
@@ -568,7 +568,7 @@ order to 2.8e-8; in particle number at 32 cells as in entry 7. The stated floor 
 error of the step (about 2e-6 in the amplitude at the step limit 0.002), whose cause a run
 could have refuted (P3, P4).
 
-## Entry 13 (2026-11-22 18:03 PST, lead of batch 10a): J4 queued; prediction
+## Entry 13 (2026-11-22 17:59 PST, lead of batch 10a): J4 queued; prediction
 
 The 128-cell floor is attributed to the start step from runs at 32 cells only (entry 12).
 J4 (`inputs/batch_j4.list`, one card batch job, release core-v0.3 card executable as J1-J3,

@@ -155,7 +155,7 @@ for L2_n32, L2_n64, L2_n128: NaN in the transport step of analyze_rays.py (line 
 arrival time for the wide fan at beta = 0.5, HL = 4; not yet looked into. P4-P9, P11, P12
 wait for the summary script (Richardson per case, figures).
 
-## 2026-11-22 18:06 PST (lead of batch 10a): outcomes P4-P12 of series 1
+## 2026-11-22 18:00 PST (lead of batch 10a): outcomes P4-P12 of series 1
 
 Summary run B-20261123-015919-dec4392 (`scripts/summarize_series.py` on series 1 =
 B-20261121-202830-417af0c; `results/series1_summary.{json,txt}`, `figs/fig_series.png`
