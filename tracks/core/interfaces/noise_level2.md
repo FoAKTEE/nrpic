@@ -165,6 +165,45 @@ at 256^3 against level 0 [TO VERIFY by the card smoke runs at 64^3, section 9].
 - T6 non-finite guard: a background with Pi = 0 at level 2 (Z = 0) must stop with exit
   status 3.
 
-## 9. Results
+## 9. Results (2026-11-22; journal entries 1 to 4)
 
-(filled after the tests)
+Executables: `scratch/core/exe/core_noise-level2/` (source commit 6ca93cba; READY there).
+Runs: tests core-20261123-025040-384fbdd (32^3, nmax2 = 64, slow-roll input, 3.14
+e-folds), analysis and figures core-20261123-030623-7676c1f (`fig_t1t3.png`,
+`fig_t2.png`), byte regressions core-20261123-024646-553eefa and
+core-20261123-025738-35c2552, processor timing core-20261123-030705-6b6a4bd.
+
+| Test | Result | Verdict |
+|---|---|---|
+| T1a projection at t* against the mode file | 1.1e-14 (R), 6.9e-15 (dR/dtau) | as predicted (< 1e-12) |
+| T1b homogeneous, kicks off: level 2 against level 1 on the mesh | 3.7e-12 | predicted < 1e-12; the box mean of 32768 equal values differs from the cell value by up to 8.9e-13 (K) and 3.4e-13 (Pi) in the same run: level 2 = level 1 to the rounding of the box mean |
+| T1c homogeneous, kicks on | 9.0e-4 max (1.1e-4 rms) at amplitude 1, 9.0e-7 (1.1e-7) at 1e-3 | second order exactly (ratio 1.000e-3); size ten times the guess |
+| T2 R^NR against W R alpha (continuum), level 2 | 1.2e-2 for \|n\|^2 <= 48, 7.2e-2 at the cut | below the cut within Track E's 0.02; the cut modes carry the stencil |
+| T2 R^NR against W c_R of the run's own mesh R | 1.0e-4 (level 2), 1.3e-5 (level 1 on the mesh); level 0 against its shells 2.8e-3 | the noise pipeline is exact to second order |
+| T2 sign split of phi_L2 - phi_L1mesh | even part rms 3.0e-11, odd part 3.1e-15 (delta phi rms 5.6e-7) | level 2 adds an even part only |
+| T3 symbol/k^2 at the cut (axis modes \|n\|^2 = 64, sixth order) | 0.98169: 1.83 per cent in k^2 | Track E's 2.7 per cent is the leading term (k dx)^6/560 at k dx = pi/2 (`SETUP_AUDIT.md`:32 of track/E-stoch-inf) |
+| T3 mesh R against the shells, t = 3.2 | 7.1 per cent (cut), 1.18 per cent (\|n\|^2 <= 48) | equal to the stencil ODE against the continuum ODE mode by mode: double ratio 2.6e-5 |
+| T4 byte regression, option absent, against core-v0.6 | scalar-field cases and examples with restart: every file identical; twelve release set-ups: 75 of 75 | no change of behaviour |
+| T6 guard (Pi = 0 at level 2) | warning, guard stop at cycle 1, exit status 3 | as predicted |
+| restart (level 2, cycle 10 to 20) | dump, .modes, .rmodes identical | exact |
+| T5 card smoke at 64^3 | NOT RUN: two core card jobs queued during the session (decision rule) | pending; the list is `analysis/noise_level2/card_t5.list` |
+| T5 on processors (threaded build, 64^3, 30 cycles, 6 threads) | all finite; wall per cycle level 2 / level 0 = 1.027 (SR), 0.992 (USR) | the extra cost is within the scatter of a shared machine (predicted +5 to +20 per cent) |
+
+What the results mean for the ablation of P1 Fig. 9: our released levels 0 and 1 (shells,
+continuum k^2) differ from level 2 at FIRST order by the stencil (up to 7 per cent per
+mode at the cut, 32^3 and 256^3 alike since k_max dx = pi/2 in both), which would swamp
+the 1e-4 effect of P1:520. Compare level 2 with levels 0 and 1 on the mesh
+(`noise_mode_eq = mesh`): those differ from level 2 at second order only (T1c, T2 split).
+
+## 10. Not done, open
+
+- Card smoke T5 on the card (both scenarios, 64^3, levels 0 and 2): not run in this
+  session (queue rule); the card executable is built from the tested source but has not
+  run a single step on a card.
+- Byte equality card against processors is not expected (card runs with sums in another
+  order); the processor projection is deterministic for a fixed decomposition.
+- Review on Fable of the diff (decision 0029 item 2), in particular the choices labelled
+  [JUDGEMENT] in sections 3 and 6.
+- Cost at 256^3 on a card: estimated in section 7, not measured.
+- Not supported: static refinement, several ranks (the field already refuses ranks),
+  the power model.

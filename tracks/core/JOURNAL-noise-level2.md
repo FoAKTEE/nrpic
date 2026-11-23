@@ -157,3 +157,29 @@ dump, the .modes and the .rmodes files of cycle 20 identical byte for byte.
 
 Cost on processors at 32^3 (serial, the runs shared the machine with others): level 0
 163.7 s, level 1 on the mesh 163.8 s, level 2 173.7 s (+6 per cent) for 65 cycles.
+
+## Entry 4 (2026-11-22 19:25 PST): T5 on processors, publication, what is open
+
+T5 on processors (core-20261123-030705-6b6a4bd, threaded build of the branch, 64^3,
+nmax2 = 256, 30 cycles, 6 threads, `fig_timing.png` looked at): all four runs exit 0,
+records finite, rms(phi - <phi>) at t = 0.74 equal between the levels to 2e-6 relative
+(SR 4.81399e-7 / 4.81400e-7). Wall per cycle: SR 5.51 s (level 0), 5.66 s (level 2),
+ratio 1.027; USR 5.46 s, 5.42 s, ratio 0.992. PREDICTION (+5 to +20 per cent, ratio in
+1.0 .. 1.3) REFUTED on the low side: at 64^3 on processors the projection and the R
+right-hand side do not show above the scatter of a shared machine (one USR ratio below
+1). The card cost at 256^3 stays an estimate.
+
+Card smoke T5: not submitted; the queue held two eligible core jobs (4923, 4924) and four
+held ones the whole session (checked 18:50, 19:06, 19:19). Pending: submit
+`tracks/core/analysis/noise_level2/card_t5.list` with
+`harness/bin/nrpic-run submit --launcher batch --list tracks/core/analysis/noise_level2/card_t5.list --exe /data/haiyangw/nrpic/scratch/core/exe/core_noise-level2/athena_gpu --wall 00:30:00 --gpu-hours 0.5 --kind scouting --gate G2 --purpose "noise-level2 T5 card smoke"`
+when core has fewer than two card jobs.
+
+Origin of the 2.7 per cent of the task text: track/E-stoch-inf
+`tracks/E-stoch-inf/repro/scope/SETUP_AUDIT.md`:32 uses the leading term
+(k dx)^6/560 = 2.7e-2 at k dx = pi/2 [VERIFIED by reading]; the full symbol gives 1.83e-2.
+
+Published: `scratch/core/exe/core_noise-level2/` (athena_cpu, athena_gpu,
+athena_cpu_omp, COMMIT, SHA256SUMS, READY), source 6ca93cba. Outbox to Track E with the
+six ablation inputs at 256^3. Open: card smoke, Fable review of the diff, card cost at
+256^3.
