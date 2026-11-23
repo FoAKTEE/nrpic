@@ -1,0 +1,102 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261123-020531-6dbd75c",
+  "track": "D-bh-dress",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "g2long entry 6 smoke test S4-S6 of es1l4: 2 cycles on processors (release core-v0.6), MeshBlocks, particles, finder at t = 0 before any card run",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "/data/haiyangw/nrpic/.work/build_cpu_v06/src/athena",
+    "-i",
+    "tracks/D-bh-dress/g2long/inputs/es1l4.athinput",
+    "-d",
+    "$NRPIC_RUN_DIR",
+    "time/nlim=2"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "6dbd75cbd778209c4bc4cd2ffd64aa2f54b8fd2e",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/g2long"
+    ],
+    "outside_package": {
+      "count": 3,
+      "first": [
+        "?? tracks/D-bh-dress/drift_controls/tools/compare_runs.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/count_blocks.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/slice_profiles.py"
+      ]
+    },
+    "merge_base_main": "3d945c050a8b7d3df20f8fe91dd74caa4d26d25c",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/D-bh-dress/g2long/inputs/es1l4.athinput",
+      "role": "input",
+      "sha256": "f66ff83e867e6da8fba6b6d4de1625f5908dd273b85cf819338c9996fc9f3ebb",
+      "bytes": 5883,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261123-020531-6dbd75c",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-23T02:05:31Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 30.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 10.5289,
+    "gpu_hours_reserved": 10.8167,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 1,
+    "runs": 263,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
