@@ -16,3 +16,7 @@ items are not. In order of what blocks most:
    with initial_radius 1.6 queued as the workaround and as the test of the step in (iii)).
 5. Package items: G2 ladder table (C1), ladder schematic (C9), slice mosaic (C12), note text on
    the long runs (C16), the G2 verifier (C17), a rerun script (C6).
+6. `nrpic-stage verify D-bh-dress G2` was started on commit a54a138 and stopped by the session's own
+   25-minute timeout while it reran the note scripts in the export (no VERIFY_RESULTS written); run it
+   again without a timeout once the drift_controls tools are committed or removed (its "clean" check
+   fails on them).
