@@ -196,3 +196,14 @@ the projected coefficients stays of second order in the amplitude: below 1e-2 in
 the end (it was 1.1e-4 rms in slow roll at amplitude 1; the USR modes grow by a factor of
 order 100 in R, so the second-order part grows by about that factor). Refuted if a run
 stops (guard) or the rms difference reaches order one.
+
+Outcome (run core-20261123-032120-3d5b69f, `fig_usr.png` looked at; the y label of panel
+(b) is cut at the edge, the data are readable): both runs end with status 0 at t = 10.5,
+records finite; the rms of |R_n| of the mesh field falls from 1.8e-5 to 4e-6 by t = 3.5,
+then grows by a factor 5600 through the USR phase to 2.3e-2 at t = 8 and freezes.
+Level 2 against level 1 on the mesh: rms relative difference of the projected
+coefficients 1.9e-3 at the end (max over modes 1.45e-2), up from 1e-4 before the USR
+phase. PREDICTION HELD (rms below 1e-2, no stop). The second-order part grows by about
+ten while R grows by 5600: not the naive scaling; not investigated further.
+Pi_b at the end 2.70e-7 in both (from 3.24e-2 at t*): the local Z falls by 1.4e10 and
+the division Pi_R/Z stays finite.

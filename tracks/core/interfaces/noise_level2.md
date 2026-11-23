@@ -186,6 +186,7 @@ core-20261123-025738-35c2552, processor timing core-20261123-030705-6b6a4bd.
 | T4 byte regression, option absent, against core-v0.6 | scalar-field cases and examples with restart: every file identical; twelve release set-ups: 75 of 75 | no change of behaviour |
 | T6 guard (Pi = 0 at level 2) | warning, guard stop at cycle 1, exit status 3 | as predicted |
 | restart (level 2, cycle 10 to 20) | dump, .modes, .rmodes identical | exact |
+| inflection case through USR (32^3, to t = 10.5) | both levels finite; R grows by 5600; level 2 against level 1 on the mesh 1.9e-3 rms (1.45e-2 max) at the end | run core-20261123-032120-3d5b69f |
 | T5 card smoke at 64^3 | NOT RUN: two core card jobs queued during the session (decision rule) | pending; the list is `analysis/noise_level2/card_t5.list` |
 | T5 on processors (threaded build, 64^3, 30 cycles, 6 threads) | all finite; wall per cycle level 2 / level 0 = 1.027 (SR), 0.992 (USR) | the extra cost is within the scatter of a shared machine (predicted +5 to +20 per cent) |
 
