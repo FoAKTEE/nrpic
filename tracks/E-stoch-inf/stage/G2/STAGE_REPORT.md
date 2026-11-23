@@ -1,14 +1,15 @@
 # Stage report: E-stoch-inf G2
 
-Date: 2026-11-21 · branch `track/E-stoch-inf` at `acdcb8c15bfc` · checklist
+Date: 2026-11-23 · branch `track/E-stoch-inf` at `2bec2f5a7576` · checklist
 `tracks/E-stoch-inf/stage/G2/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
 
-**FAIL**. Tag: `stage/E-stoch-inf/G2-fail-20261121` (created and pushed by the orchestrator after review, decision 0003).
+**FAIL**. Tag: `stage/E-stoch-inf/G2-fail-20261123` (created and pushed by the orchestrator after review, decision 0003).
 
-- 19 checklist items not PASS or NA: C1 OPEN, C2 OPEN, C3 OPEN, C4 OPEN, C5 OPEN, C6 OPEN, C7 OPEN, C8 OPEN, C10 OPEN, C11 OPEN, C12 OPEN, C13 OPEN
-- no VERIFY_RESULTS.json (run nrpic-stage verify)
+- 14 checklist items not PASS or NA: C2 OPEN, C3 FAIL, C5 OPEN, C6 OPEN, C7 FAIL, C10 OPEN, C11 OPEN, C12 OPEN, C13 OPEN, C14 OPEN, C15 OPEN, C16 OPEN
+- verify ran on f8fe199; files changed since: coord/DECISIONS/0029-reproduction-first-stage.md, harness/workflows/batch-R1b.json, harness/workflows/batch-R2.json, harness/workflows/make_batch.py (run verify again)
+- verify reported FAIL: sync, runs
 - no VERIFIER.md (step 7: verifier subagent; decision 0016 item 1, VERIFIER_REPORT.md accepted too)
 
 ## Package documents (decision 0012)
@@ -27,30 +28,47 @@ Date: 2026-11-21 · branch `track/E-stoch-inf` at `acdcb8c15bfc` · checklist
 
 | # | Criterion | Evidence (run id, figure, KB locator) | Result |
 |---|---|---|---|
-| C1 | The code paths used by the track pass their tests of §10 | SR (G1) and USR scouting pass their rows (ladder/, usr/); the release card build core-v0.6 is now being run on both (g2prod: P256v6 E-20261121-202935-31520bc, USR chains); judged when they have run. | OPEN |
-| C2 | Three-way convergence in particle number, mesh spacing, and gauge or boundary | no particles before the hand-over (NA for particle number); mesh: U-R (256 vs 320 at fixed modes, SCOPE 4c), queued in g2prod; gauge: geodesic slicing only (RISKS R6) - to be stated at the package. | OPEN |
-| C3 | Constraints behave | U-A4'(a) halving with the floor of SCOPE 4c at 256^3 (U256hp/hm queued), U-A4'(c) records on every release run, U-A4'(d) control (U256nc queued); scouting: group 1 even factors 3.987-4.001 (E-20261121-080134-a0cc3eb). | OPEN |
-| C4 | A first minimal full-GR kinetic run | Track E has no kinetic matter before the field-to-particle hand-over (S11 subsequent work); proposed NA at G2 [JUDGEMENT], for orch to confirm. | OPEN |
-| C5 | Verification report (decision 0012: STAGE_REPORT.md with EVIDENCE.md and OPEN.md; no REPORT.md) | — | OPEN |
-| C6 | Reproducibility package | — | OPEN |
-| C7 | The USR case is reproduced | criteria fixed in spec/scope/SCOPE.md 4c (commit 43dcc9cc) before production; release runs queued (g2prod/JOURNAL.md entry 1); scouting pair U256/U256m passes U-A2' at 1.09e-4 (E-20261121-101756-6bffd0c). | OPEN |
-| C8 | Sensitivity to window-function parameters and resolution | window: U-W met by the scan (E-20261121-154733-0d1fbda; lead's rerun E-20261121-203008-f104a3e, stage/REVIEW-wave3.md Part C); resolution: U-R pending (U320ap/am in g2prod). | OPEN |
+| C1 | The code paths used by the track pass their tests of §10 | Release card build core-v0.6: SR P256v6 (E-20261121-202935-31520bc) records identical to the tested-branch G1 run, A2 1.2078e-4 (analysis E-20261123-015014-b4ecd4e); USR seed A identical per mode to the scouting pair, U-A0..U-A3 and U-A2' pass on all eight release USR runs (E-20261123-014858-8e72d4c, -021730-a421438, -020751-0baf597; judge E-20261123-024359-5dc3213). g2prod/JOURNAL.md entry 2. | PASS |
+| C2 | Three-way convergence in particle number, mesh spacing, and gauge or boundary | Particle number: NA (no particles before the hand-over). Mesh: U-R 256 vs 320 PASS (factor 2.10 on the odd-part maximum, shell power 1.2e-4, even/odd 1e-4; fig_g2_resolution.png of E-20261123-024359-5dc3213); the k <= 32 maximum sits on an s^2 common-mode part (entry 2.3). Gauge or boundary: periodic box (no boundary); geodesic slicing only, no gauge variant run - asked of orch (outbox 2026-11-23). | OPEN |
+| C3 | Constraints behave | U-A4'(a) as written: H within 4.00 +- 0.05 at all 9 judged dumps; M outside at one of 11 (3.925 at cN 6.52) - FAIL. U-A4'(c) PASS on the nine proper runs (H' <= 3.0e-12, M <= 0.025); U-A4'(d) control ratio 1.19e5 PASS (fig_g2_halving, fig_g2_records, fig_g2_control of E-20261123-024359-5dc3213). Third amplitude s = +-1/4 queued with predictions (g2prod entry 3). | FAIL |
+| C4 | A first minimal full-GR kinetic run | Decision 0026 item 3: does not apply to Track E before the hand-over from field to particles. | NA |
+| C5 | Verification report (decision 0012: STAGE_REPORT.md with EVIDENCE.md and OPEN.md; no REPORT.md) | STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md present; the verification report needs the verifier (C18) and the note sections (C17). | OPEN |
+| C6 | Reproducibility package | Every run registered with manifests and checksums; deck, queue, scripts committed (g2prod/); restart byte-exact (R0). A rerun recipe for a third party (README of g2prod with the analysis commands) not yet written. | OPEN |
+| C7 | The USR case is reproduced | SCOPE 4c definition: U-A0, U-A1, U-A2', U-A3 for seeds A and B, U-R, U-W, U-A4'(c), U-S, U-A4'(d) PASS; U-A4'(a) FAILS at one dump of M (3.925, bar 3.95-4.05). As written the USR case is not reproduced in full; gate decision asked of orch. g2prod/JOURNAL.md 2.3. | FAIL |
+| C8 | Sensitivity to window-function parameters and resolution | Window: U-W met by the scan (E-20261121-154733-0d1fbda, rerun E-20261121-203008-f104a3e). Resolution: U-R PASS (E-20261123-020751-0baf597 with E-20261123-014858-8e72d4c, judge E-20261123-024359-5dc3213). | PASS |
 | C9 | Track E. Decision of the feasibility gate, pending the group: continue to G1 and G2 (about two card-hours); the scope of G3 is decided at G2. The lead's choices of `spec/scope/SCOPE.md` section 4 are accepted. (0013) | G0 decision: continue (coord/GATES.md 2026-11-20); G1 signed 2026-11-21; G2 within the scope of SCOPE section 4 and 4c. | PASS |
-| C10 | Schematic: Verification ladder | — | OPEN |
-| C11 | Data figure: Convergence figures (one each for particle number, mesh, gauge) | — | OPEN |
-| C12 | Data figure: Constraint norms against time | — | OPEN |
-| C13 | Data figure: At least one multi-scale slice mosaic with zoom boxes | — | OPEN |
-| C14 | Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed) | — | OPEN |
-| C15 | Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at | — | OPEN |
-| C16 | Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline | — | OPEN |
-| C17 | Working note written with /paper-writing; its manuscript checker passed with --compile | — | OPEN |
-| C18 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | — | OPEN |
-| C19 | Null results and failed runs are on record (manifests and JOURNAL) | — | OPEN |
-| C20 | STATUS.md, JOURNAL.md and HANDOFF.md are current | — | OPEN |
+| C10 | Schematic: Verification ladder | Not drawn yet. | OPEN |
+| C11 | Data figure: Convergence figures (one each for particle number, mesh, gauge) | Mesh: fig_g2_resolution.png (run E-20261123-024359-5dc3213) exists as an analysis figure; not yet a note figure with its own script under note/scripts; particle number NA; gauge none. | OPEN |
+| C12 | Data figure: Constraint norms against time | fig_g2_records.png (constraint records of every release run against time, E-20261123-024359-5dc3213) exists as an analysis figure; note figure pending. | OPEN |
+| C13 | Data figure: At least one multi-scale slice mosaic with zoom boxes | Not drawn yet. | OPEN |
+| C14 | Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed) | CHECKLIST, EVIDENCE, OPEN, STAGE_REPORT present; scoping text spec/scope/SCOPE.md (section 4c for G2); REVIEW: stage/REVIEW-wave3.md Part D (analysis record; no helper package). | OPEN |
+| C15 | Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at | Analysis figures from registered outputs, all looked at (g2prod entry 2); note figures with one script each pending. | OPEN |
+| C16 | Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline | G1 schematics exist (note/); G2 update not drawn. | OPEN |
+| C17 | Working note written with /paper-writing; its manuscript checker passed with --compile | G2 sections of the working note not written (this session wrote no note text, by its task). | OPEN |
+| C18 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests | No G2 verifier yet; first next action (HANDOFF). | OPEN |
+| C19 | Null results and failed runs are on record (manifests and JOURNAL) | Failed predictions and failed runs on record: g2prod entry 2 (T memory band, U320 band, U-A2' at s = 1/2, U-A4'(a) halving of M; failed analysis E-20261123-015650-493cff5; invalid pass E-20261123-014905-2bf3570). | PASS |
+| C20 | STATUS.md, JOURNAL.md and HANDOFF.md are current | STATUS.md, JOURNAL.md, HANDOFF.md rewritten by the lead of batch 10a (2026-11-22). | PASS |
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-Not run: `harness/bin/nrpic-stage verify E-stoch-inf G2`.
+`nrpic-stage verify` on 2026-11-23T02:54:17Z, clean export of `f8fe19994fae`: **FAIL**. Details: `VERIFY_RESULTS.md`.
+
+| Check | Result | Message |
+|---|---|---|
+| clean | PASS | worktree clean (outside the stage directory being assembled) |
+| sync | FAIL | main has commits not merged: run nrpic-ctx sync |
+| export | PASS | clean export of f8fe19994fae (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G2-f8fe199-20261123T025357Z/tree |
+| size | PASS | no committed file of the track above 5 MB |
+| note | PASS | tracks/<ID>/note/main.tex present |
+| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: spec/scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
+| note-pdf | PASS | note/main.pdf committed after the last .tex change |
+| style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
+| fig-script | PASS | 12 figures, each with its script |
+| min-figs | PASS | 3 schematics and 9 data figures (brief 13.4 asks at least 1 and 5 at G2) |
+| runs | FAIL | 2 of 186 runs have problems |
+| run-notes | WARN | 30 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
+| status | PASS | STATUS.md has 38 lines |
+| rerun | WARN | re-run skipped (--no-rerun) |
 
 ## Figures
 
@@ -89,6 +107,8 @@ MISSING: the verifier subagent has not reported (`stage/G2/VERIFIER.md`, decisio
 - `E-20261121-031936-16d6ae5`: failed (exit 1), g1verify V4/V5 analysis from my constraint pass E-20261121-030657-c1afe38: odd/even parts of H, M over <[H]>, <[M]>, dominance, halving factors above the floor, negative controls, record maxima and halving factors, strict A4 and A4' tests, spatial order L32-L256, floor against N (JOURNAL entry 3, P-V4, P-V5)
 - `E-20261121-034609-f573ddc`: failed (exit 1), ladder item (c): L5 single-kick analysis of the eleven card runs K1p ... N1m of E-20261121-025643-02526ff (parts in s cell by cell, kick reference, verdicts PL1-PL3 of JOURNAL 14)
 - `E-20261121-063758-d643396`: failed (exit 1), lead review wave 3 (batch 2a), checks LW1-LW6 with the lead's own code on the raw dumps: seed 2 of P256 (A1-A3), P256 odd/even of H time-matched and index-paired, record maxima, A6 at 64^3, L5 second order and first-order M, L5 step test at 32^3; predictions in JOURNAL entry 2026-11-21T06:35Z
+- `E-20261123-015650-493cff5`: failed (exit 1), g2prod analysis u320: pair U320ap/U320am at N_f only (every U-R clause is stated at N_f), records whole: U-A0, U-A1, U-A3, U-A2' odd part, even/odd, lockstep; predictions entry 1
+- `E-20261123-020746-78d0c54`: failed (exit 1), repro/langevin: figures, tail fits, bootstrap moments and variant comparison from run E-20261123-020327-e524721
 - `E-stoch-inf-20261115-125316-dafadc4`: failed (exit 1), V2: quadratic inflation m = M_Pl, phi_in = phi_UV = sqrt42 (2206.11234 Fig. 2): Monte Carlo (direct and importance sampling) vs closed-form characteristic function, BDF2 survival solver, moment recursion; pole structure
 - `E-stoch-inf-20261115-131526-629fed8`: failed (exit 1), T-N6 of noise/JOURNAL.md: calibration of the A3 decisions (KS of |w|^2 and arg w, fourth moment) on correct amplitudes, 2000 seeds of the base case; single-decision calibration and family-wise false-alarm rate per validation
 
@@ -98,7 +118,7 @@ MISSING: the verifier subagent has not reported (`stage/G2/VERIFIER.md`, decisio
 Rewritten by the lead on 2026-11-15 at the G0 package; updated by the lead on 2026-11-19
 (wave 2b) after the slow-roll ladder, the G0 verifier (`stage/G0/VERIFIER.md`) and the review
 `stage/REVIEW-wave2.md`; updated by the lead of batch 2a on 2026-11-21 after the G1 verifier
-(`stage/G1/VERIFIER.md`), the wave-3 ladder items and `stage/REVIEW-wave3.md`; updated by the lead of batch 3 on 2026-11-21 after the note and usr packages (`stage/REVIEW-wave3.md` Part B). Sources: `spec/scope/SCOPE.md` (sections 3, 4, 4b, 8),
+(`stage/G1/VERIFIER.md`), the wave-3 ladder items and `stage/REVIEW-wave3.md`; updated by the lead of batch 3 on 2026-11-21 after the note and usr packages (`stage/REVIEW-wave3.md` Part B); updated by the lead of batch 10a on 2026-11-22 after the g2prod ladder (R13, R24, R25-R27). Sources: `spec/scope/SCOPE.md` (sections 3, 4, 4b, 8),
 `codebase/DESIGN_REVIEW.md`, `langevin/README.md`, `noise/NOISE_SPEC.md`, `ladder/README.md`.
 Labels as in the brief.
 
@@ -116,7 +136,7 @@ Labels as in the brief.
 | R10 | Competition with the group of the formalism (P1:587 announces the same science) | high | medium | arXiv listings of the authors | target what they leave open: tail statistics against delta-N, hand-over to EMD |
 | R11 | The stochastic formalism itself is debated (brief 264) | medium | affects science, not the reproduction | literature | keep level 0 and level 1 as variants and state the dependence |
 | R12 | Processor build slow (1.2e4-1.35e4 zone-cycles/s serial); cold dumps at 128^3-256^3 read through a memory map at a few MB/s when the disk is busy (lead's rerun E-20261119-145853-ef835c2 stopped) | certain | low | | N = 32 on processors; analyse large dumps right after the card job (page cache) or read them sequentially |
-| R13 | Budget: 10 card-hours toward G2 (decision 0014 row E); G2 used 1.77 at 2026-11-21 12:23 PST; the g2prod ladder needs about 8.0 at actual cost, and nrpic-run counts a running chain at its ceiling (1.97 or 2.95) | certain | medium (the last three g2prod runs wait for closed runs or a larger allotment) | `harness/bin/nrpic-run budget`; sequencer log `scratch/E-stoch-inf/g2prod_seq/seq.log` | the sequencer retries refused submissions every 15 min; raise to 20 requested of orch (outbox 2026-11-21 batch 5), also for a 384^3 pair (about 6.5) |
+| R13 | Budget: 20 card-hours toward G2 (decision 0026); used 9.28 at 2026-11-22 19:00 PST (g2prod 7.51 at measured cost), 2.47 reserved by repro/scope (decision 0028); the s = +-1/4 pair asks 3.94 at its ceiling | certain | low | `nrpic-run budget` | repro and G2 share the allotment and the two-job limit; the g2prod sequencer counts every E job |
 | R14 | Harness: hand-written run manifests broke `nrpic-run budget` | happened, fixed | low | `nrpic-run budget` | statuses normalised; decision 0016 item 3 |
 | R15 | USR ends at the border of diffusion domination (verifier weak point 3): classical drift per e-fold equals H/2pi at N* + 8.3 (ratio 0.98), Delta_R reaches 1 at 64 dk, one H/2pi kick moves the end of USR by about one e-fold; a delta-N end surface at N* + 10 sits just past the stationary inflection point | high for G2/G3 | high for the validity of linear-noise level-0 runs and of the delta-N reference | verifier V2b (run E-20261115-180056-d62ee5a: f_NL 0.011, response near-linear in the 256 box) | state the validity window at G2; do not enlarge the box or move the noise cut later without a level-1 comparison; place the delta-N end surface away from the inflection point |
 | R16 | The double-precision rounding floor of the constraints grows as N^2.5 (6e-13 of <[H]> at 256^3 half an e-fold after N*) and limits what 256^3 shows during the first e-folds | certain | low (still 1e2 below P1's 1e-10) | odd part not scaling with s | the verifier measured three properties of rounding (does not scale with s; equal in odd and even parts; non-scaling parts in the ratio sqrt(17/5) of four independent noises) [VERIFIED, g1verify V5]; size and N^2.5 law [JUDGEMENT]; no run in another precision |
@@ -127,8 +147,11 @@ Labels as in the brief.
 | R21 | The lockstep mode-function record integrates from N* with the run's step and carries RK4's phase error k^5 dt^4/600 into the injected top shells (2.55e-3 at k = 64 dk, 256^3) | certain in P1's set-up | low for U-A2 (k <= 32 dk: below 8e-5), medium for the top-shell spectrum (U-A5 6.7e-3) | usr entry 14.2 (L1: 0.973-1.023 of the law on 2934 shells) | request to core to sub-step the record (outbox 20261121T131020Z); until then quote top-shell numbers with this error |
 | R22 | Late in the 256^3 USR pair the momentum parts are equal and flat at 1.6e-13-1.9e-13 absolute, seven times the 128^3 floor; cause not named | open | low (after USR, below the record's 2e-3) | usr entry 15 | the halving pair at 256^3 (U256hp/hm, s = +-1/2) is queued in `g2prod` (last but one; waits for the allotment) |
 | R23 | Unattended card runs: the g2prod sequencer (setsid, pid in `scratch/E-stoch-inf/g2prod_seq/pid`) submits through nrpic-run, which refuses a dirty `g2prod/` and commits each manifest on track/E-stoch-inf; a session that edits `g2prod/` without committing blocks it; a chain preempted more often than its segment ceiling ends FAILED | medium | medium (card time idle, not lost) | `seq.log`, `state.tsv`, `scripts/submit_chain.sh --status <rundir>` | keep `g2prod/` committed; a FAILED chain resumes from its newest restart (HANDOFF); restart exactness checked on processors (R0, run E-20261121-202941-da16544) |
-| R24 | 320^3 (and 384^3) never ran: memory and step time are scaled from 256^3 (U320 1.6 card-hours estimated) | medium | low (a chain can be stopped) | timing job E-20261121-202929-43dcc9c (Slurm 4827, 40 steps at 256, 320, 384) | read the timing before U320ap starts (third in the queue); stop the sequencer if 320^3 does not fit |
+| R24 | 320^3 and 384^3 never ran | retired 2026-11-22 | - | timing E-20261121-202929-43dcc9c | 320^3 2.52 s per step, 36.4e3 MiB; 384^3 4.30 s, 61.1e3 MiB (fits one card); U320 pair ran in two segments each |
+| R25 | U-A4'(a) misses at one dump of M (even halving 3.925 at cN 6.52, bar 3.95-4.05): as written the USR case is not reproduced in full (g2prod 2.3) | happened | high for the G2 verdict | g2prod entry 3 (s = +-1/4 pair) | third amplitude tests a higher order in s; ruling asked of orch; no criterion is reworded after the data |
+| R26 | A common factor of all modes in the odd part, -4.1e-5 at s = 1, scaling as s^2, arises after cN 5.5 (third order in the amplitude); it caps what the k <= 32 maximum can show under resolution (U-R factor 2.10) | certain | low for U-A2' (bar 0.02), medium for U-R and for comparisons at 1e-4 | fig_g2_common_mode.png (E-20261123-024359-5dc3213) | name the term only after a run that could fail (s = 1/4 pair, Q-b) |
+| R27 | Several sessions of E share this worktree since decision 0028 (repro/*): a commit without paths could take another session's staged files; the two-job card limit is shared | certain | medium | git status, squeue | path-limited commits only; never touch repro/; HANDOFF names it |
 
 ## Decision requested from the group
 
-not ready: G2 production runs queued (g2prod); criteria fixed in SCOPE 4c
+Not complete for review: U-A4'(a) fails as written at one dump of M (3.925 at cN 6.52; C3, C7 FAIL); no G2 verifier (C18); note G2 sections and figures C10-C13 missing; C2 gauge leg open. Ruling asked of orch (outbox 20261123T025319Z).
