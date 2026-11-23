@@ -197,6 +197,11 @@ def main():
         UR[f"common_mode_{tag}"] = dict(k_le=16, mean_re=float(np.mean(q.real[lo])), mean_im=float(np.mean(q.imag[lo])),
                                         std_re=float(np.std(q.real[lo])), std_im=float(np.std(q.imag[lo])),
                                         median_abs=float(np.median(np.abs(q[lo]))))
+    q_t = 0.5 * (za["c_U256"] - za["c_U256m"]) / za["cref"] - 1.0
+    lo = (za["n"]**2).sum(axis=1) <= 256
+    UR["common_mode_t_256"] = dict(cN=za["cN"].tolist(), mean_re=q_t.real[:, lo].mean(axis=1).tolist(),
+                                   std_re=q_t.real[:, lo].std(axis=1).tolist(),
+                                   median_abs=np.median(np.abs(q_t[:, lo]), axis=1).tolist())
     e256, e320 = pairs["A"]["UA2n_end"], pairs["R320"]["UA2n_end"]
     UR["iii_even_odd_256"], UR["iii_even_odd_320"] = e256, e320
     UR["iii_rel"] = abs(e320 / e256 - 1.0)
@@ -293,6 +298,23 @@ def main():
     ax[1].set_ylabel("factor")
     ax[1].legend(loc="upper right", fontsize=6)
     fs.save(fig, os.path.join(a.out, "fig", "fig_g2_resolution"))
+    plt.close(fig)
+    # observation: common-mode part of the odd-part error (k <= 16 dk) in time, seed A at 256^3
+    ct = UR["common_mode_t_256"]
+    fig, ax = plt.subplots(1, 1, figsize=(fs.COLUMN_WIDTH * 1.6, 3.2))
+    fig.subplots_adjust(left=0.15, right=0.97, top=0.96, bottom=0.15)
+    ax.axvspan(USR[0], USR[1], color=fs.PAL["yellow"], alpha=0.15, lw=0)
+    c_ = np.array(ct["cN"])
+    ax.semilogy(c_[1:], np.abs(np.array(ct["mean_re"]))[1:], "o-", ms=3, color=cols[0], label="|mean Re(O/c_ref - 1)|, k<=16")
+    ax.semilogy(c_[1:], np.array(ct["std_re"])[1:], "s--", ms=3, color=cols[2], label="scatter (std) over the modes")
+    ax.semilogy(c_[1:], np.array(ct["median_abs"])[1:], "x:", ms=4, color=cols[4], label="median |O/c_ref - 1|")
+    for tag, mk, col in (("256", "D", cols[1]), ("320", "^", cols[3])):
+        cm = UR[f"common_mode_{tag}"]
+        ax.semilogy([c_[-1] + (0.1 if tag == "320" else 0.0)], [abs(cm["mean_re"])], mk, ms=5, color=col, label=f"N_f, {tag}^3")
+    ax.set_xlabel(r"$N-N_*$")
+    ax.set_ylabel("odd-part error, seed A")
+    ax.legend(loc="lower right", fontsize=6)
+    fs.save(fig, os.path.join(a.out, "fig", "fig_g2_common_mode"))
     plt.close(fig)
     # U-A4'(c) records
     fig, ax = plt.subplots(2, 1, figsize=(fs.COLUMN_WIDTH * 1.6, 5.6), sharex=True)
