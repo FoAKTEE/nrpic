@@ -1,0 +1,15 @@
+{
+ "name": "R1c (2026-11-22: ablation runs of the reproduction onto the cards)",
+ "what": "Track E: smoke test of the branch executable with level-2 backreaction and the six ablation runs at 256 cells into the sequencer",
+ "note": "Releases core-v0.4 to v0.6 are on main. Rulings: coord/DECISIONS/0028 to 0031. The weekly usage window of the account is at 88 per cent: do only what the task names.",
+ "items": [
+  {
+   "type": "task",
+   "owner": "E-stoch-inf",
+   "key": "repro/ablation",
+   "title": "ablation of the stochastic backreaction: runs onto the cards",
+   "task": "This package belongs to the full reproduction of arXiv:2512.14649 and arXiv:2401.08530 (coord/DECISIONS/0028, 0029, 0031). PACKAGE repro/ablation, a short session (half an hour): get the ablation of the stochastic backreaction onto the cards. Core has written <scalar_field> noise_level = 2 and noise_mode_eq = mesh on branch core/noise-level2 (worktree /data/haiyangw/nrpic/wt/core-s2, read only for you; interface text tracks/core/interfaces/noise_level2.md there; executables and READY under /data/haiyangw/nrpic/scratch/core/exe/core_noise-level2/; the six inputs of the ablation at 256 cells, three levels for each of the two scenarios, under tracks/core/analysis/noise_level2/inputs/ablation/ of that branch; core's outbox message to this track). Its card executable has run no step on a card yet. Do: (1) copy the six inputs into repro/ablation/inputs/ (git show core/noise-level2:<path>), check them against repro/scope/SETUP_AUDIT.md (same set-up as the runs of repro/scope apart from the level and the mode equation) and against the outputs the figure needs (the spectra at the final time; the dumps repro/figs will read: see repro/scope/HANDOFF.md); (2) predictions in repro/ablation/JOURNAL.md before any submission: the relative change of the shell power of the reconstructed R at the final time between level 2 and level 0 on the mesh, and between level 1 and level 0 on the mesh, for both scenarios (the paper states a detectable change of at most about one part in ten thousand on all scales: PRD_v2.tex line 520 and its appendix on stochastic backreaction), what would refute the implementation (a first-order difference), the cost; (3) first a card smoke run of the branch executable at 64 cells for each scenario at level 2 (it is core's pending test T5: report the outcome to core by an outbox message), then the six runs at 256 cells, all appended to the queue of the sequencer of repro/scope (scratch/E-stoch-inf/repro_scope_seq/; restart the sequencer if it has ended) so that they run unattended under the two-job rule; registered with harness/bin/nrpic-run (gate G2, executable /data/haiyangw/nrpic/scratch/core/exe/core_noise-level2/athena_gpu); the allotment of this owner toward G2 is now 30 card-hours (decision 0031); (4) HANDOFF.md of the package for repro/figs: run ids, files, and that level 2 and level 1 are compared with level 0 on the mesh. Do not wait for the runs. Commit path-limited.",
+   "card_hours": 5
+  }
+ ]
+}
