@@ -1444,3 +1444,74 @@ exits 2 on /bin/true with "awk: fatal: cannot use gawk builtin `load' as variabl
 and no footer (A's report reproduced); on the exit-3 stub it exits 3 without a footer
 (set -e at `wait`). Fixed script: exit 0 with `# exit=0 ...`, exit 3 with `# exit=3 ...`.
 Prediction holds. (The cpu_share of a zero-second stub is meaningless, as expected.)
+
+### Outcomes of row 4 on M/8, level 1 (2026-11-23T02:05Z): runs closed, fates by the rule of 2026-11-21T20:26Z
+
+All six chains ended in one segment each at tlim = 300 M (jobs 4839-4844, status DONE;
+`nrpic-run finish`, commits e66f7a58..cbee7c2b). Fate analysis: run
+core-20261123-020318-e952741 (`verify/row4/row4_fate.py`, figure `fig_row4_m8.png` looked
+at: normalised central lapse of all six, and member minus control with the 200-300 M
+window); the note's figure (`note/scripts/fig_row4_m8.py`, absolute central lapse with
+the equilibrium values; test render in `scratch/core/tmp/lead_b10a/figtest/`, looked at)
+shows the same.
+
+| y_c | alpha_c eq | member | control | class / side |
+|---|---|---|---|---|
+| 0.605 | 0.6281 | t_c 180.5 M (lapse < 0.3), first AH 188.0 M, M_AH/M 1.009 at the last search | no collapse; mean 200-300 M 0.7303 (+0.102 against its own equilibrium: moves outward, towards its equal-binding partner) | COLLAPSE / UNSTABLE |
+| 0.680 | 0.6875 | t_c 219.5 M, first AH 225.0 M, M_AH/M 1.006 | t_c 251.5 M, first AH 256.0 M, M_AH/M 1.005 | COLLAPSE / UNSTABLE (control collapses too) |
+| 0.755 | 0.7509 | no collapse; mean 0.7264 (-0.0246 against eq) | no collapse; mean 0.7247 (-0.0262) | STAYS, D = +0.0016 / STABLE |
+
+Bracket by the rule: y_lo = 0.680, y_hi = 0.755, valid (no UNDECIDED member between,
+monotone). **The stability threshold on cells of M/8 with 10^4 particles is bracketed
+between y_c = 0.680 and 0.755** [VERIFIED by run core-20261123-020318-e952741, under the
+rule as written]. The turning point y_c* = 0.6796 lies 0.0004 below the bracket.
+Caveat named before the runs: the late swings of the 0.755 pair are about +-0.03 (member
+minus control +0.02 near 285 M, -0.03 at 300 M; panel b), so a 100 M mean can move by
+about 0.01; D = +0.0016 lies 0.008 inside the STAYS border.
+
+Predictions:
+- P1 HOLDS: 0.605 member collapses, t_c = 180.5 M in (120, 300); its control does not
+  collapse at all.
+- P2 PARTLY REFUTED: 0.755 member STAYS (|D| = 0.0016), no collapse in either run; but
+  the control's 200-300 M mean lies 0.026 below its equilibrium, beyond the 0.01
+  predicted from Track C's M/8 King controls (0.002-0.004). The drift is inward (lapse
+  down), the same in member and control, so it is the mesh or the particle noise, not
+  the kick [JUDGEMENT]; its cause is not tested.
+- P3 REFUTED: the 0.680 member collapses (t_c = 219.5 M), and so does its control
+  (251.5 M). On this mesh the model just above the turning point is unstable to the
+  particle noise alone; the threshold of the discretised system lies above y_c*
+  [JUDGEMENT: a model 0.0004 from a marginal point would grow slowly; collapse within
+  260 M from noise points to a threshold noticeably above 0.680, not located yet].
+- P4 HOLDS: 2255-2280 s of card time per run to 300 M (athena "cpu time used", chain
+  logs), 7.5-7.6 s per M, 0.63 card-hours per run, 3.8 card-hours for the six; each run
+  fitted one segment.
+
+### Next level: three models with their controls, predictions before any run (02:05Z)
+
+Design [JUDGEMENT, written now]: the rule names one next point, the midpoint 0.7175.
+Card time is not the scarce resource this week, sessions are (decision 0026 item 6,
+weekly window near its end); so the two points of the level after it, 0.69875 and
+0.73625, run at the same time, each with its control: six chains, the same deck, seed,
+particle number, kick and executable as level 1 (`verify/row4/st_m8.athinput`, release
+card build `.work/build_gpu_v06/src/athena`, 300 M, `--gpu-hours 2.0` each: 12
+card-hours asked at most, about 3.8 expected). Each member is classified by the same
+rule; the bracket after this round is formed from all six models of levels 1 and 2 with
+the same validity test (monotone, no UNDECIDED member inside). Two jobs eligible, the
+other four held and released by `verify/row4/sequencer.sh` (stop file and log under
+`scratch/core/tmp/lead_b10a/`). Order: 0.7175 member, 0.7175 control, 0.69875 member,
+0.69875 control, 0.73625 member, 0.73625 control.
+
+- P5. 0.69875: the member collapses within 300 M, t_c between 200 and 300 M (later than
+  0.680's 219.5 M). Refuted by no collapse of the member (then the threshold lies below
+  0.69875, within 0.019 of the turning point).
+- P6. 0.73625: member STAYS (|D| <= 0.01), neither run collapses. Refuted by a collapse
+  or |D| > 0.01.
+- P7. 0.7175: no prediction of the side (it is the open middle); predicted only that it
+  does not collapse before 0.69875's member if both collapse, and that the outcome is
+  monotone in y_c over the five models 0.680-0.755. Refuted by a non-monotone outcome
+  (a STABLE model below an UNSTABLE one).
+- P8. Controls without collapse drift inward as at 0.755: their 200-300 M mean lies
+  0.01 to 0.04 below their equilibrium alpha_c. Refuted by an upward drift or one beyond
+  0.04.
+- P9. Cost: 7.3 to 8.0 s of card time per M, 0.61-0.67 card-hours per run, one segment
+  each. Refuted by more than 9 s per M.
