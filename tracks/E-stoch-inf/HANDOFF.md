@@ -19,7 +19,18 @@ closed by `repro/scope`, not by the G2 lead.
 ## Card runs of g2prod: all finished and closed
 
 The sequencer ended by itself at 13:49 PST 2026-11-22 ("queue empty and every run closed";
-`/data/haiyangw/nrpic/scratch/E-stoch-inf/g2prod_seq/seq.log`); nothing to restart. Run ids
+`/data/haiyangw/nrpic/scratch/E-stoch-inf/g2prod_seq/seq.log`). The lead of batch 10a appended
+two labels to `g2prod/queue.txt` (U256qp, U256qm: s = +-1/4, seed A, 256^3; predictions
+`g2prod/JOURNAL.md` entry 3) and restarted it at 18:49 PST (pid in
+`scratch/E-stoch-inf/g2prod_seq/pid`, 3538144). It submits only while fewer than two E card
+jobs are eligible, so it waits for repro's jobs; it closes the runs itself. See / stop / restart:
+`cat .../g2prod_seq/state.tsv; tail .../g2prod_seq/seq.log`; `touch .../g2prod_seq/STOP`;
+`cd /data/haiyangw/nrpic/wt/E-stoch-inf && setsid nohup bash tracks/E-stoch-inf/g2prod/scripts/sequencer.sh > /data/haiyangw/nrpic/scratch/E-stoch-inf/g2prod_seq/nohup.out 2>&1 < /dev/null &`.
+Read them with `analyse_g2.py --group g2q --map U256=<hp dir> --map U256m=<hm dir> --map
+U256h=<qp dir> --map U256hm=<qm dir> --ref ../../usr/results --out ... --workers 3`, then the
+halving/floor part of `judge_g2.py` on that summary (keys as for g2a); judge Q-a..Q-c. The
+manifests will say `preregistered: entry-1` (the sequencer's fixed link); the predictions are
+in entry 3. Finished run ids of g2prod
 (outputs in /data/haiyangw/nrpic/scratch/E-stoch-inf/<run_id>/; dumps usr.sf.000NN.dump,
 records usr.sf.hst, usr.sf.con.hst):
 
