@@ -312,3 +312,11 @@ D-20261123-020614-7ba5874 (esf_criteria.json, esf_criteria.png). Closed chains: 
 with nrpic-run finish (manifests committed). Smoke tests of entry 6 started on one core each:
 v1l4 D-20261123-020011-bd47394, es1l4 D-20261123-020531-6dbd75c, esfl4 D-20261123-020535-dccfd30,
 esflk D-20261123-020538-0290d15; outcomes in entry 8.
+
+## Entry 8 (2026-11-22 18:14 PST, before the analysis runs): constraint norms of the long runs
+
+Prediction (checklist C3/C11 of G2): the volume norms H-norm2 and M-norm2 of `<base>.z4c.user.hst`
+stay bounded in V-1L, ES-1L, ES-FL (to 500 M), V-1L16 (300 M) and ES-1L16 (as far as it has run):
+in none of them does a norm grow by more than a factor 10 between t = 100 M and the end, and
+none jumps by a factor 3 within 10 M [JUDGEMENT; ES-1/V-1 at +-192 M stayed bounded to 200 M].
+Refuted by either. Tool: `tools/constraints_long.py`.
