@@ -190,6 +190,13 @@ def main():
         UR["_rat"] = rat.tolist()
         UR["_k"] = k.tolist()
         # per shell odd-part D maxima at N_f, 256 and 320
+    # an observation, not a criterion: the part of the odd-part error at N_f common to all modes
+    for tag, z in (("256", za), ("320", zr)):
+        q = 0.5 * (z["c_U256"][-1] - z["c_U256m"][-1]) / z["cref"][-1] - 1.0
+        lo = (z["n"]**2).sum(axis=1) <= 256
+        UR[f"common_mode_{tag}"] = dict(k_le=16, mean_re=float(np.mean(q.real[lo])), mean_im=float(np.mean(q.imag[lo])),
+                                        std_re=float(np.std(q.real[lo])), std_im=float(np.std(q.imag[lo])),
+                                        median_abs=float(np.median(np.abs(q[lo]))))
     e256, e320 = pairs["A"]["UA2n_end"], pairs["R320"]["UA2n_end"]
     UR["iii_even_odd_256"], UR["iii_even_odd_320"] = e256, e320
     UR["iii_rel"] = abs(e320 / e256 - 1.0)
