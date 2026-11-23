@@ -202,7 +202,7 @@ def fig_pdfs(v, out, tails, log=False):
                                np.log(np.maximum(h95[ok], 1e-300)),
                                color=fs.PAL["red"], alpha=0.25, lw=0)
                 a.plot(cc[ok], np.log(p[ok]), color=fs.PAL["blue"])
-                a.plot(cc, np.log(g), **fs.GUIDE, lw=1.0)
+                a.plot(cc, np.log(g), color="k", ls="--", lw=1.0)
                 ts = tails[f"{t:g}"][key]
                 xx = np.linspace(ts["x0"], hi, 50)
                 a.plot(xx, np.log(0.1 * ts["rate"]) - ts["rate"] * (xx - ts["x0"]),
@@ -215,7 +215,7 @@ def fig_pdfs(v, out, tails, log=False):
             else:
                 a.fill_between(cc, l95, h95, color=fs.PAL["red"], alpha=0.25, lw=0)
                 a.plot(cc, p, color=fs.PAL["blue"])
-                a.plot(cc, g, **fs.GUIDE, lw=1.0)
+                a.plot(cc, g, color="k", ls="--", lw=1.0)
                 a.set_ylabel("PDF")
                 a.set_ylim(0, None)
             a.set_xlim(lo, hi)
@@ -308,7 +308,7 @@ def fig_linear(simdir, v, out):
     fig, ax = plt.subplots(figsize=(4, 3.0))
     fig.subplots_adjust(left=0.18, right=0.97, bottom=0.16, top=0.96)
     ax.semilogy(v["N"], v["m_std_a"], color=fs.PAL["red"], label=r"std $\alpha$, run")
-    ax.semilogy(L["N"], L["std_a"], **fs.GUIDE, lw=1.0, label="linear theory")
+    ax.semilogy(L["N"], L["std_a"], color="k", ls="--", lw=1.0, label="linear theory")
     ax.semilogy(v["N"], v["m_std_D"], color=fs.PAL["red"], ls=":", label=r"std $\mathcal{N}$, run")
     ax.semilogy(L["N"], L["std_D"], color="k", ls=":", lw=1.0)
     ax.set_xlim(2, 6)
