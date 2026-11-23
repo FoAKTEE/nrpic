@@ -332,3 +332,20 @@ M/8 ones (no resolution law gives that), and ES-FL's norms drop in steps at ~115
 385 M while its horizon grows. For G2 item C3 the exterior needs its own norm: `<particles>
 region_*` (release core-v0.5, constraint norms inside and outside spheres) in the next inputs,
 with a sphere outside the horizon; not in the inputs of R1-R5 or of entry 6.
+
+## Entry 9 (2026-11-22 18:26 PST): smoke tests of entry 6, all held; release order changed
+
+All four ran 2 cycles on one core (release core-v0.6 build_cpu_v06), exit 0, 16-19 min each.
+S4 v1l4 (D-20261123-020011-bd47394): 400 MeshBlocks (392 +- 8: at the edge), 140 particles,
+   finder at t = 0 reports no surface (nan): HELD (allowed outcome).
+S4 es1l4 (D-20261123-020531-6dbd75c): 400 MeshBlocks, 696828 particles, no surface at t = 0: HELD.
+S5 esfl4 (D-20261123-020535-dccfd30): 400 MeshBlocks, 850724 particles, no surface at t = 0: HELD.
+S6 esflk (D-20261123-020538-0290d15): 456 MeshBlocks, 850724 particles, finder at t = 0 =
+   0.99152073 against ES-F's 0.99152110 (3.7e-7, bound 1e-4): HELD; the flow started at 1.6 M
+   ends on the same surface.
+Consequence for the M/4 runs: horizon excision (reason 3) needs a found surface, so until the
+finder finds the trumpet horizon (coordinate radius ~2.2 M, nine M/4 cells) only the lapse rule
+removes dust; P1 (horizon at every sample after 20 M) is the first thing to read in FV4.
+Release order changed from entry 6 before any submission: FV4 eligible now, then FK, FE4, FF4.
+FK does not depend on the M/4 finder; putting FE4 and FF4 last lets the next session read FV4's
+P1 before they start and cancel them if the M/4 finder never finds the horizon.
