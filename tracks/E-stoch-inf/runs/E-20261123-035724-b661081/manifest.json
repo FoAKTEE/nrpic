@@ -1,0 +1,187 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261123-035724-b661081",
+  "track": "E-stoch-inf",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "repro/ablation T5SMK: card smoke T5 of core/noise-level2 at 64^3: levels 0 and 2 of both scenarios (core's T5) and the mesh path of levels 1 (SR) and 0 (USR) with the per-mode writer; arXiv:2512.14649 Fig. 9, branch card build core_noise-level2 (6ca93cba, decision 0031 item 3); predictions repro/ablation/JOURNAL.md entry 1",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261123-035724-b661081/batch.list"
+  ],
+  "cwd": "scratch/E-stoch-inf/E-20261123-035724-b661081",
+  "git": {
+    "sha": "b6610810106683f7076f101724fb4a3b53992d50",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/repro/ablation"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "0c79ebc628aa47888ec94f2c90773b148b63085d",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "scalar_field",
+    "exe": "/data/haiyangw/nrpic/scratch/core/exe/core_noise-level2/athena_gpu",
+    "exe_sha256": "468109496c825a40d1b76f0c3af7658c0d403518b25e7d02f99fb3cb1cc8acb9",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": {
+    "file": "tracks/E-stoch-inf/repro/ablation/inputs/card/sr64_l0.athinput",
+    "sha256": "605eac8616925686dc6ac470f0d858bd5b0102d0c9495351f89555747bcd1dc6",
+    "overrides": {}
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_noise-level2/athena_gpu",
+      "role": "exe",
+      "sha256": "468109496c825a40d1b76f0c3af7658c0d403518b25e7d02f99fb3cb1cc8acb9",
+      "bytes": 110564064,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/E-stoch-inf/repro/ablation/inputs/smoke.list",
+      "role": "list",
+      "sha256": "5fb67a850088baf6da41911c7b3a00218491e156541e58246d9daf95aef1d178",
+      "bytes": 950,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/repro/ablation/inputs/card/sr64_l0.athinput",
+      "role": "athinput:sr64_l0",
+      "sha256": "605eac8616925686dc6ac470f0d858bd5b0102d0c9495351f89555747bcd1dc6",
+      "bytes": 3336,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/repro/ablation/inputs/card/sr64_l2.athinput",
+      "role": "athinput:sr64_l2",
+      "sha256": "9c2b240b8d0e341ab12a6a0a6d2257eda1aa58b24e212468b9668c6ea9bf5c5a",
+      "bytes": 3273,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/repro/ablation/inputs/card/usr64_l0.athinput",
+      "role": "athinput:usr64_l0",
+      "sha256": "491a2092fe8a92acb5ddb9b403cf6e90755944699225403b7c8612697328dd60",
+      "bytes": 3728,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/repro/ablation/inputs/card/usr64_l2.athinput",
+      "role": "athinput:usr64_l2",
+      "sha256": "90d3484eafef7e8f3b5f2932c24856e76e91b6d310ee06cf244f01529a7fbc1c",
+      "bytes": 3665,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/repro/ablation/inputs/card/sr64_l1m.athinput",
+      "role": "athinput:sr64_l1m",
+      "sha256": "5818463f8dce20f87d9237e214a3ce31aacabe0fb436065b06845bade7b9fac6",
+      "bytes": 3693,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/repro/ablation/inputs/card/usr64_l0m.athinput",
+      "role": "athinput:usr64_l0m",
+      "sha256": "2fb14ab48509faa830fc2711fc18170345a9a6e4d6840245e55993219f4e3422",
+      "bytes": 4066,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "sr64_l0",
+      "input": "tracks/E-stoch-inf/repro/ablation/inputs/card/sr64_l0.athinput",
+      "args": []
+    },
+    {
+      "name": "sr64_l2",
+      "input": "tracks/E-stoch-inf/repro/ablation/inputs/card/sr64_l2.athinput",
+      "args": []
+    },
+    {
+      "name": "usr64_l0",
+      "input": "tracks/E-stoch-inf/repro/ablation/inputs/card/usr64_l0.athinput",
+      "args": []
+    },
+    {
+      "name": "usr64_l2",
+      "input": "tracks/E-stoch-inf/repro/ablation/inputs/card/usr64_l2.athinput",
+      "args": []
+    },
+    {
+      "name": "sr64_l1m",
+      "input": "tracks/E-stoch-inf/repro/ablation/inputs/card/sr64_l1m.athinput",
+      "args": []
+    },
+    {
+      "name": "usr64_l0m",
+      "input": "tracks/E-stoch-inf/repro/ablation/inputs/card/usr64_l0m.athinput",
+      "args": []
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:30:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.5,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "E-20261123-035724-b661081",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261123-035724-b661081",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-23T03:57:25Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 30.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 9.2804,
+    "gpu_hours_reserved": 2.4667,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 187,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
+  }
+}
