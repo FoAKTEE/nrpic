@@ -24,3 +24,6 @@ tracks/core/outbox/20261121T081909Z__to-B-emd-gw__newton2-fourier-solver-and-gro
 tracks/core/outbox/20261121T085318Z__to-B-emd-gw__newton2-embedded-ellipsoid-convergence.md	2026-11-21T15:52:12Z	
 tracks/kb/outbox/20261121T130555Z__to-B-emd-gw__re-claim-2312-12499-delta-factor.md	2026-11-21T15:52:12Z	
 tracks/orch/outbox/20261121T140505Z__to-all__release-core-v0.6.md	2026-11-21T15:52:12Z	
+tracks/A-emd-pbh/outbox/20261121T204337Z__to-B-emd-gw__periodic-spherical-test-status.md	2026-11-23T02:01:51Z	
+tracks/kb/outbox/20261121T213157Z__to-B-emd-gw__key-reference-claims-complete.md	2026-11-23T02:01:51Z	
+tracks/kb/outbox/20261121T235027Z__to-B-emd-gw__claim-861-2312-12499.md	2026-11-23T02:01:51Z	
