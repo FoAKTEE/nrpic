@@ -557,3 +557,34 @@ allotment, A4 information). Card-hours used this session: 0 (both jobs still que
 Changed my mind about: the odd halving of U-A4' - with two amplitudes it is 2 by construction
 of the floor, so SCOPE 4c judges only the even halving. Open: everything that the g2prod runs
 will decide; the allotment for the last three labels; the timing before U320ap.
+
+## 2026-11-22 17:45-19:15 PST, lead of batch 10a (analysis round after the card runs)
+
+Read: CLAUDE.md, CHARTER to Owners, HANDOFF, g2prod JOURNAL entry 1, SCOPE 4c, decisions
+0026-0028, brief 674-686 and 785-802. Sequencer: had ended by itself at 13:49 PST, all eleven
+g2prod runs completed and closed (7.51 card-hours). Decision 0028 (merged into this branch by a
+repro session) put three repro sessions into this worktree; I committed path-limited only.
+
+Predictions: those of g2prod entry 1 (written 2026-11-21 before the runs); the reading of each
+written as g2prod entry 2.0 before any analysis ran (17:55 PST); entry 3 (s = +-1/4 pair) before
+its queueing.
+
+Outcomes (details g2prod/JOURNAL.md entry 2): T held on time, memory band at 384^3 missed low;
+P256v6 identical to the tested-branch run (G1 reservation 2 answered); seed A identical per mode
+to the scouting pair; seed B U-S held; U320 predicted band of the factor (2.4-4.5) FAILED at 2.10
+while U-R (bar 2.0-4.5) passes; U-A2' at s = 1/2 +14 percent (prediction "unchanged" FAILED);
+U-A4'(a) FAILED at one dump of M (3.925 at cN 6.52) - prediction refuted, criterion failed as
+written; control held (1.19e5). Finding: the flat odd-part error is a common factor of all
+modes scaling as s^2 (the halving pair was the run in which this could have failed).
+
+My own analysis defects: one-dump crash (E-20261123-015650-493cff5, failed) and seed B read
+with seed A's realisation (E-20261123-014905-2bf3570, per-mode numbers invalid); both fixed in
+analyse_g2.py and rerun.
+
+Did: analyses and judge (6 registered processor runs, at most 6 cores); figures looked at; stage
+G2 checklist judged, EVIDENCE/OPEN rewritten, verify and report; REVIEW-wave3 Part D; outbox to
+orch (ruling on U-A4'(a), C2 gauge leg); queued U256qp/qm in the restarted sequencer (pid
+3538144, waits for repro's two card jobs). Card-hours used this session: 0.
+Changed my mind about: the odd part of a mirrored pair is not first order alone in USR at
+256^3: a third-order common factor (4e-5) is visible, so per-mode resolution tests at 1e-4 need
+smaller s or the s^2 part removed.
