@@ -1,0 +1,207 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261123-015905-7a30278",
+  "track": "B-emd-gw",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "flrw_conv J4: step test of leg B at 128 cells to a = 9, step limits 0.002, 0.001, 0.01 (cause of the 128-cell amplitude floor; predictions J4a-c in flrw_conv/JOURNAL.md entry 13)",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261123-015905-7a30278/batch.list"
+  ],
+  "cwd": "scratch/B-emd-gw/B-20261123-015905-7a30278",
+  "git": {
+    "sha": "7a3027811b6853174f8ad9f973c63459f6dcc38a",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/flrw_conv"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "3d945c050a8b7d3df20f8fe91dd74caa4d26d25c",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cosmo",
+    "exe": "/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena",
+    "exe_sha256": "f9f2dc1273a19e7f78f89bebfd88d9eef6487de5c94aebba77b6fd35dc1be3a1",
+    "cmake_flags": [
+      "-DPROBLEM=built_in_pgens",
+      "-DAthena_ENABLE_MPI=OFF",
+      "-DAthena_ENABLE_OPENMP=OFF",
+      "-DKokkos_ARCH_ICX=ON",
+      "-DKokkos_ENABLE_DEBUG=OFF",
+      "-DKokkos_ENABLE_DEBUG_BOUNDS_CHECK=OFF",
+      "-DCMAKE_CXX_COMPILER=/data/haiyangw/nrpic/.work/build_gpu_v03/nvcc_wrapper_pinned",
+      "-DCUDAToolkit_ROOT=/usr/local/cuda-12.6",
+      "-DKokkos_ENABLE_SERIAL=ON",
+      "-DKokkos_ENABLE_CUDA=ON",
+      "-DKokkos_ARCH_AMPERE80=ON",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG"
+    ],
+    "toolchain": "nvcc 12.6 (host g++ 11.4.0)"
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": {
+    "file": "tracks/B-emd-gw/flrw_conv/inputs/mode_prod.athinput",
+    "sha256": "3e6fe7cec046a098068e4fe1f7e225448a3564da7de3f656833eee2d14b34236",
+    "overrides": {
+      "mesh/nx1": "128",
+      "mesh/nx2": "128",
+      "mesh/nx3": "128",
+      "meshblock/nx1": "64",
+      "meshblock/nx2": "64",
+      "meshblock/nx3": "64",
+      "time/tlim": "4.0",
+      "particles/particle_file": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-222908-8aede2c/b_n128_p1/particles.nrp",
+      "problem/id_file": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-222908-8aede2c/b_n128_p1/fields.bin"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_gpu_v03/src/athena",
+      "role": "exe",
+      "sha256": "f9f2dc1273a19e7f78f89bebfd88d9eef6487de5c94aebba77b6fd35dc1be3a1",
+      "bytes": 102258912,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/B-emd-gw/flrw_conv/inputs/batch_j4.list",
+      "role": "list",
+      "sha256": "d04df334ed7759a4ae24de121ae6eb46925b90c3e290d4971ae33ddd681ae10d",
+      "bytes": 1592,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/flrw_conv/inputs/mode_prod.athinput",
+      "role": "athinput:s_n128_p1_dt2",
+      "sha256": "3e6fe7cec046a098068e4fe1f7e225448a3564da7de3f656833eee2d14b34236",
+      "bytes": 3654,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/flrw_conv/inputs/mode_prod.athinput",
+      "role": "athinput:s_n128_p1_dt1",
+      "sha256": "3e6fe7cec046a098068e4fe1f7e225448a3564da7de3f656833eee2d14b34236",
+      "bytes": 3654,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/flrw_conv/inputs/mode_prod.athinput",
+      "role": "athinput:s_n128_p1_dt10",
+      "sha256": "3e6fe7cec046a098068e4fe1f7e225448a3564da7de3f656833eee2d14b34236",
+      "bytes": 3654,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "s_n128_p1_dt2",
+      "input": "tracks/B-emd-gw/flrw_conv/inputs/mode_prod.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=64",
+        "meshblock/nx2=64",
+        "meshblock/nx3=64",
+        "time/tlim=4.0",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-222908-8aede2c/b_n128_p1/particles.nrp",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-222908-8aede2c/b_n128_p1/fields.bin"
+      ]
+    },
+    {
+      "name": "s_n128_p1_dt1",
+      "input": "tracks/B-emd-gw/flrw_conv/inputs/mode_prod.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=64",
+        "meshblock/nx2=64",
+        "meshblock/nx3=64",
+        "time/tlim=4.0",
+        "particles/dt_expansion=0.001",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-222908-8aede2c/b_n128_p1/particles.nrp",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-222908-8aede2c/b_n128_p1/fields.bin"
+      ]
+    },
+    {
+      "name": "s_n128_p1_dt10",
+      "input": "tracks/B-emd-gw/flrw_conv/inputs/mode_prod.athinput",
+      "args": [
+        "mesh/nx1=128",
+        "mesh/nx2=128",
+        "mesh/nx3=128",
+        "meshblock/nx1=64",
+        "meshblock/nx2=64",
+        "meshblock/nx3=64",
+        "time/tlim=4.0",
+        "particles/dt_expansion=0.01",
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-222908-8aede2c/b_n128_p1/particles.nrp",
+        "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261120-222908-8aede2c/b_n128_p1/fields.bin"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": "00:45:00",
+    "segments_max": null,
+    "gpu_hours_requested": 1.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "B-20261123-015905-7a30278",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261123-015905-7a30278",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-23T01:59:06Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 2.683,
+    "gpu_hours_reserved": 2.95,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 2,
+    "runs": 306,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  }
+}
