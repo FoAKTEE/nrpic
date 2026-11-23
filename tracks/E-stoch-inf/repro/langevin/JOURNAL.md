@@ -179,7 +179,7 @@ entry 2).
   6; tuned converged background: widths 9-17% below base (predicted within 10%: FAILED in size,
   the Euler background has a smaller eps1 at a given N, sigma larger by ~10%).
 - P9 HELD: widths across seeds within 0.5% at 4 and 6; median kappa3(alpha) 1.53-1.64;
-  single-time kappa4(alpha) from 4.3 to 3143 at N_b = 5.
+  single-time kappa4(alpha) from 6.4 to 3143 at N_b = 5 (seeds 2, 3; seed 1: 422).
 - P10 HELD for alpha, PARTLY for N: N_b = 3 Gaussian (KS vs Gaussian tail p 0.10-0.39, skewness
   0.055 +- 0.010 and 0.026 +- 0.011); alpha tails at 4-6 exponential (CV 0.97-1.12, KS exp
   p >= 0.013 in 7 of 8); N tails heavier than Gaussian (KS p < 1e-22) but CV 0.88-0.96, KS against
