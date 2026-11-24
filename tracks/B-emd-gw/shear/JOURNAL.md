@@ -397,3 +397,25 @@ dependence at fixed particles per cell slows: |Delta(256) - Delta(128)| below th
 difference 9.4e-3 (Delta(256) between -0.840 and -0.832). Refuted if the difference is as large
 or larger (then L2 does not converge in the mesh at this amplitude, and the constraint violation
 is the first suspect).
+
+Outcome of series 6 (run B-20261124-140856-911ded9, 27 min on one core; summary
+B-20261124-172643-d1e88c7, `figs/fig_ppc.png` panel (b) looked at) [VERIFIED by these runs]
+(written 2026-11-24 09:30 PST, resumed session of batch 11b; the prediction was committed in
+911ded99 before the run was registered at that commit):
+- Delta(256, 4 per cell) = -0.83915 (quadratic shooting -0.83898). Mesh differences at 4 per cell:
+  64-128 9.4e-3, 128-256 7.9e-3. The prediction HOLDS as written (7.9e-3 < 9.4e-3; -0.8392 inside
+  -0.840 to -0.832), but only just: the ratio 0.84 is an order of about 0.25, and a geometric
+  series with that ratio would put the mesh limit near -0.88 [arithmetic on these three numbers,
+  not a claim]. Each refinement moves Delta away from CosmoGRaPH's -0.8183 (draft.tex:360).
+- At one particle per cell the mesh differences grow (32-64 2.1e-3, 64-128 4.6e-3).
+- Relative constraint means over 1 <= t <= t_A at 4 per cell: Hr 0.146, 0.135, 0.131 and Mr 0.127,
+  0.123, 0.119 at N_y = 64, 128, 256: they barely move with the mesh.
+- Reading [JUDGEMENT]: L2 of this code does not converge in the mesh at practical resolutions;
+  the particle limit at N_y = 64 (about -0.820, next to CosmoGRaPH) is therefore not a converged
+  statement, and the agreement with CosmoGRaPH there may be a coincidence of one mesh. No cause is
+  named: the first suspect stays the stream crossing before the A rays arrive (constraint
+  violation of 10-15 per cent that does not fall with the mesh); the run that could refute it is
+  an amplitude between M2 and L2 at which no stream crosses before t_A, at N_y = 64, 128, 256 with
+  4 per cell (prediction to be written before it is queued). The track reports L2 as
+  "not converged in this code" and uses S1-S4, M1 and L1 (which converge or sit inside the
+  paper's bounds) for the weak-field comparison.
