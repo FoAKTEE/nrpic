@@ -1,0 +1,151 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261124-130629-61fe0b0",
+  "track": "E-stoch-inf",
+  "gate": "G2",
+  "kind": "production",
+  "purpose": "repro/continue RNC256: E-20261123-045030-c20bcb3 (repro/scope) continued from its restart sr.00000.rst to tlim; SR 256^3 sign-flip control (noise_pi_sign = -1) to t = 4.5, seed A (P1:541); same executable (byte copy rc-v06-gpu, sha256 ea473498), deck and overrides; predictions repro/continue/JOURNAL.md entry 1 and those of the original",
+  "preregistered_in": "tracks/E-stoch-inf/repro/continue/JOURNAL.md#entry-1",
+  "launcher": "chain",
+  "command": [
+    "scripts/submit_chain.sh",
+    "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261124-130629-61fe0b0",
+    "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/repro/scope/inputs/sr_paper.athinput",
+    "scalar_field/noise_pi_sign=-1.0",
+    "time/tlim=4.5",
+    "scalar_field/dump_metric=false",
+    "scalar_field/dump_dt=0.5",
+    "nrpic_exe=/data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/continue/exe/rc-v06-gpu",
+    "nrpic_resume=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261123-045030-c20bcb3/rst/sr.00000.rst"
+  ],
+  "cwd": "scratch/E-stoch-inf/E-20261124-130629-61fe0b0",
+  "git": {
+    "sha": "61fe0b0226567b8ee11011d7da2b9e28868bb30b",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/repro/continue"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "bc3e4ca4e48416265d903f76564eaeb6035a2b37",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "scalar_field",
+    "exe": "/data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/repro/continue/scripts/athena_resume.sh",
+    "exe_sha256": "612e8433c4d17b7229d89c71da614c62f1037392365ee6a3193f1eb6f4d03215",
+    "cmake_flags": null,
+    "toolchain": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": {
+    "file": "tracks/E-stoch-inf/repro/scope/inputs/sr_paper.athinput",
+    "sha256": "30b7d2d3b7b7f9a7f02bd2cb62884a714672a4c03f38e0fc747cf1cd40362b88",
+    "overrides": {
+      "scalar_field/noise_pi_sign": "-1.0",
+      "time/tlim": "4.5",
+      "scalar_field/dump_metric": "false",
+      "scalar_field/dump_dt": "0.5"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/continue/exe/rc-v06-gpu",
+      "role": "input",
+      "sha256": "ea473498500f8efc211f5ee9572cd393aad019d035f819f825fe0b79d5114851",
+      "bytes": 109664600,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261123-045030-c20bcb3/rst/sr.00000.rst",
+      "role": "input",
+      "sha256": "86b37934cf98c9e5a3a8ca31db7f32f9fbda6e2d75704477706835b0f9263b35",
+      "bytes": 3238365589,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261123-045030-c20bcb3/rst/sr.00000.rst.sf",
+      "role": "input",
+      "sha256": "30da6fd4b906ff463ac6b84cf6727f9afbda110935a05359352c64fd8c07b653",
+      "bytes": 294505256,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/E-stoch-inf/repro/continue/scripts/athena_resume.sh",
+      "role": "exe",
+      "sha256": "612e8433c4d17b7229d89c71da614c62f1037392365ee6a3193f1eb6f4d03215",
+      "bytes": 2551,
+      "tracked": true
+    },
+    {
+      "path": "tracks/E-stoch-inf/repro/scope/inputs/sr_paper.athinput",
+      "role": "athinput",
+      "sha256": "30b7d2d3b7b7f9a7f02bd2cb62884a714672a4c03f38e0fc747cf1cd40362b88",
+      "bytes": 3154,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": 1,
+    "gpu_hours_requested": 0.9833,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "E-20261124-130629-61fe0b0",
+    "job_ids": []
+  },
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261124-130629-61fe0b0",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "submitted",
+  "exit_code": null,
+  "registered": "2026-11-24T13:06:54Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "E-20261123-045030-c20bcb3"
+  ],
+  "notes": "continuation of E-20261123-045030-c20bcb3 from rst/sr.00000.rst (wrapper scripts/athena_resume.sh: first segment -r that file); read with E-20261123-045030-c20bcb3 as one run (repro/continue/HANDOFF.md)",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 30.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 18.0304,
+    "gpu_hours_reserved": 0.9833,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 6,
+    "runs": 205,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
+  }
+}
