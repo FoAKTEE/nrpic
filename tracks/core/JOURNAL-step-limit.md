@@ -698,3 +698,47 @@ that carry noise in position and momentum):
   row with MAX_SEGMENTS=3 do not fail the chain, and the three counted segments still
   end it; no sbatch call follows the last segment. The six scenarios of the earlier
   test keep their outcomes.
+
+## Entry 11 (15:45): first run of the tests S: the stop works, two predictions of byte identity failed; cause proposed, tests added
+
+Run core-20261124-233904-ae2f120 (serial build with the handler, source ae2f120; four
+cases; its figure was not drawn usefully because the comparison stopped at the first
+differing file class, so the judgement here is from `summary.json` and the files).
+
+- Held in all four cases (S1, S2, S1d, S0): status 143; "Terminating on signal SIGTERM";
+  one restart file more; the run was back at the prompt 0.29, 0.35, 0.30 and 0.08 s
+  after the signal (the cycle in progress and 5 to 10 ms for the restart file); the
+  continuation ends with status 0; the data of the last restart file are identical with
+  the uninterrupted run's (5.77 MB), and so is the `.prt` companion of S2; the second
+  signal of S1d did no harm; with the signal during the set-up (S0) no cycle ran.
+- **PS1, PS2, PS1d, PS0 failed as written** ("every output file byte for byte"):
+  1. `*.z4c.user.hst` differs in every case. The data lines are identical; the file of
+     the continued run has its two header lines twice. [VERIFIED by `diff` of the
+     files without comment lines: empty.]
+  2. `tsq.cons.hst` of S2 (conservation of the deposited matter, a record every fourth
+     cycle) lacks one record, that of t = 1.6875 (cycle 27); the run had stopped with
+     cycle 26 done. All other 19 files of S2 are identical, among them the particle
+     history, the constraint statistics, the trajectories and the snapshot.
+  3. My comparison of the parameter dumps was wrong (line by line; the continued run's
+     dump has one line more, `restart_file`, and other padding): no finding.
+- Proposed causes, not yet shown by a run in which they could fail: (1) the history
+  writer writes its header whenever it opens the file for the first time in a process,
+  also after a restart; (2) the conservation diagnostic keeps the deposits of the
+  cycles before (`cons_old`, `cons_d2`, `cons_valid` in `particles.hpp`), which are not
+  in the restart file, so the record that needs deposits from before the restart is
+  not written. Both would then be properties of every restart, not of the stop on the
+  signal.
+
+Predictions of the second run (cases added to `term_test.py`), written before it:
+
+- R2 (release core-v0.6 executable, no handler; the same deck stopped by `time/nlim=26`
+  and continued): its `tsq.cons.hst` lacks the same single record of t = 1.6875, and its
+  `tsq.z4c.user.hst` has the header twice (and one data line more, the final output of
+  the stopped segment). If the release shows neither, the two differences are mine.
+- S2b (signal one cycle later than a multiple of four allows a loss: the run stops with
+  cycle 28 done): `tsq.cons.hst` is byte-identical, since the next record (cycle 31)
+  needs no deposit from before the restart. If a record is lost here too, cause (2) is
+  wrong or incomplete.
+- S1, S2, S1d, S0 as in the first run; the parameter dumps of the last restart files
+  differ in two entries only: `<job> restart_file` and `file_number` of the restart
+  output.

@@ -8,6 +8,10 @@ S2   problems/tests/term_signal_particles.athinput (particles and Z4c, periodic)
 S1d  S1 with two SIGTERM 0.3 s apart (Slurm sends the signal at the preemption and again
      at the end of the grace time; wrappers forward it as well)
 S0   S1 with the signal sent before the main loop (during the set-up)
+S2b  S2 with the signal two cycles later (the stop then falls on a cycle from which the
+     conservation diagnostic `*.cons.hst` loses no record: journal entry 11)
+R2   S2 with --ref-exe (release core-v0.6, no handler): stopped by time/nlim=26 instead
+     of a signal and continued; shows which differences any restart has had before
 Each case: run A without interruption; run B is started, receives SIGTERM once its log
 shows cycle >= K, must exit with status 143 after writing a restart file, and is
 continued with `-r <newest restart file>` in the same directory.  Then every file of A is
@@ -37,8 +41,10 @@ import time
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
 DECKS = {"S1": "term_signal_periodic.athinput", "S2": "term_signal_particles.athinput",
-         "S1d": "term_signal_periodic.athinput", "S0": "term_signal_periodic.athinput"}
-KSIG = {"S1": 100, "S2": 25, "S1d": 60, "S0": -1}    # cycle at which the signal is sent
+         "S1d": "term_signal_periodic.athinput", "S0": "term_signal_periodic.athinput",
+         "S2b": "term_signal_particles.athinput", "R2": "term_signal_particles.athinput"}
+# cycle at which the signal is sent (the run stops with the next cycle number)
+KSIG = {"S1": 100, "S2": 25, "S1d": 60, "S0": -1, "S2b": 27, "R2": 26}
 
 
 def sha(path):
@@ -81,11 +87,29 @@ def split_rst(path):
     return b[:i].decode(errors="replace").splitlines(), b[i:]
 
 
+def par_dict(lines):
+    """parameter dump -> {(block, key): value}; comments and padding dropped"""
+    d, blk = {}, ""
+    for ln in lines:
+        ln = ln.split("#")[0].strip()
+        if ln.startswith("<"):
+            blk = ln
+        elif "=" in ln:
+            k, v = ln.split("=", 1)
+            d[(blk, k.strip())] = v.strip()
+    return d
+
+
+def data_lines(path):
+    with open(path, "rb") as f:
+        return [ln for ln in f.read().splitlines() if not ln.startswith(b"#")]
+
+
 def prepare(case, out, extra):
     deck = os.path.join(REPO, "problems", "tests", DECKS[case])
     args = ["-i", deck] + extra
     pre = None
-    if case == "S2":
+    if DECKS[case] == "term_signal_particles.athinput":
         ic = os.path.join(out, case, "ic")
         os.makedirs(ic, exist_ok=True)
         if not os.path.exists(os.path.join(ic, "particles.nrp")):
@@ -99,7 +123,8 @@ def prepare(case, out, extra):
 
 
 def run_case(case, exe, out):
-    res = {"case": case, "deck": DECKS[case], "checks": {}}
+    res = {"case": case, "deck": DECKS[case], "checks": {}, "exe": exe}
+    by_nlim = (case == "R2")          # the release executable has no handler
     args, pre = prepare(case, out, [])
     res["particle_file_sha256"] = pre
     da, db = os.path.join(out, case, "A"), os.path.join(out, case, "B")
@@ -111,9 +136,11 @@ def run_case(case, exe, out):
     res["A_cycles"] = last_cycle(os.path.join(da, "athena.log"))
     # B: signal, then continuation
     log1 = os.path.join(db, "athena.seg1.log")
-    p, f = start(exe, args, db, log1)
     k = KSIG[case]
-    if k < 0:
+    p, f = start(exe, args + (["time/nlim=%d" % k] if by_nlim else []), db, log1)
+    if by_nlim:
+        p.wait()
+    elif k < 0:
         time.sleep(0.05)                    # during the set-up
     else:
         while p.poll() is None and last_cycle(log1) < k:
@@ -137,15 +164,17 @@ def run_case(case, exe, out):
     res["B_restart_on_signal"] = os.path.relpath(rst, db) if rst else None
     ck = res["checks"]
     ck["A ended by itself (status 0)"] = (res["A_rc"] == 0)
-    ck["B stopped with status 143"] = (rc1 == 143)
-    ck["B printed 'Terminating on signal SIGTERM'"] = ("Terminating on signal SIGTERM" in txt)
-    ck["B stopped before the end"] = (0 <= res["B_seg1_cycle"] < res["A_cycles"]) or k < 0
-    ck["B wrote a restart file on the signal"] = bool(m) and rst is not None and \
-        os.path.getmtime(rst) >= t_sig - 1.0
+    if not by_nlim:
+        ck["B stopped with status 143"] = (rc1 == 143)
+        ck["B printed 'Terminating on signal SIGTERM'"] = (
+            "Terminating on signal SIGTERM" in txt)
+        ck["B stopped before the end"] = (0 <= res["B_seg1_cycle"] < res["A_cycles"]) or k < 0
+        ck["B wrote a restart file on the signal"] = bool(m) and rst is not None and \
+            os.path.getmtime(rst) >= t_sig - 1.0
     if rst is None:
         return res
     log2 = os.path.join(db, "athena.seg2.log")
-    p, f = start(exe, ["-r", rst], db, log2)
+    p, f = start(exe, ["-r", rst] + (["time/nlim=-1"] if by_nlim else []), db, log2)
     rc2 = p.wait(); f.close()
     res["B_seg2_rc"] = rc2
     ck["B continued to the end (status 0)"] = (rc2 == 0)
@@ -155,17 +184,52 @@ def run_case(case, exe, out):
     fb = sorted(os.path.relpath(os.path.join(r, x), db) for r, _, xs in os.walk(db) for x in xs)
     fa_c = [x for x in fa if not skip.search(x)]
     fb_c = [x for x in fb if not skip.search(x)]
-    diff, nbytes = [], 0
+    diff, nbytes, how = [], 0, {}
     for x in fa_c:
         pa, pb = os.path.join(da, x), os.path.join(db, x)
-        if not os.path.exists(pb) or sha(pa) != sha(pb):
+        if not os.path.exists(pb):
+            diff.append(x); how[x] = "missing in B"
+        elif sha(pa) != sha(pb):
             diff.append(x)
+            if x.endswith(".hst"):
+                la, lb = data_lines(pa), data_lines(pb)
+                with open(pa, "rb") as f:
+                    ca = sum(1 for ln in f if ln.startswith(b"#"))
+                with open(pb, "rb") as f:
+                    cb = sum(1 for ln in f if ln.startswith(b"#"))
+                if la == lb:
+                    how[x] = "data lines identical; header lines %d against %d" % (ca, cb)
+                else:
+                    only_a = [ln.split()[0].decode() for ln in la if ln not in set(lb)]
+                    only_b = [ln.split()[0].decode() for ln in lb if ln not in set(la)]
+                    how[x] = "records only in A at t = %s; only in B at t = %s" % (
+                        only_a[:6], only_b[:6])
+            else:
+                how[x] = "bytes differ"
         nbytes += os.path.getsize(pa)
     res["files_compared"], res["bytes_compared"] = len(fa_c), nbytes
     res["files_differing"] = diff
+    res["how_differing"] = how
     res["files_only_in_B"] = [x for x in fb_c if x not in fa_c]
+    if by_nlim:      # the reference: what a stop and a restart changed before this work
+        return res
     ck["same set of output files"] = (fa_c == fb_c)
-    ck["every output file byte-identical"] = (not diff)
+    # Two differences every restart has had (case R2, journal entry 11): the header of
+    # the mesh history is written again when the file is reopened, and the conservation
+    # diagnostic of the particles loses the record that needs the deposits of the two
+    # cycles before the restart.
+    mesh_hst = [x for x in diff if x.endswith(".hst") and "data lines identical" in how[x]]
+    cons = [x for x in diff if x.endswith(".cons.hst")]
+    ck["every output file byte-identical but mesh history headers and *.cons.hst"] = (
+        sorted(diff) == sorted(set(mesh_hst + cons)))
+    ck["mesh history: data lines identical"] = all(
+        "data lines identical" in how[x] for x in diff if x.endswith(".hst")
+        and not x.endswith(".cons.hst"))
+    if case == "S2b":
+        ck["*.cons.hst byte-identical (stop on a cycle that loses no record)"] = (not cons)
+    elif cons:
+        ck["*.cons.hst: one record lost, none added"] = all(
+            how[x].count("'") == 2 and "only in B at t = []" in how[x] for x in cons)
     ra = sorted(glob.glob(os.path.join(da, "rst", "*.rst")))
     rb = sorted(glob.glob(os.path.join(db, "rst", "*.rst")))
     res["A_rst"], res["B_rst"] = len(ra), len(rb)
@@ -174,10 +238,15 @@ def run_case(case, exe, out):
         (pa, ba), (pb, bb) = split_rst(ra[-1]), split_rst(rb[-1])
         ck["last restart file: data identical"] = (ba == bb)
         res["last_rst_bytes"] = len(ba)
-        dl = [(x, y) for x, y in zip(pa, pb) if x != y]
-        res["last_rst_parameter_lines_differing"] = dl
-        ck["last restart file: parameters differ only in file_number of the rst output"] = (
-            len(pa) == len(pb) and len(dl) <= 1 and all("file_number" in x for x, _ in dl))
+        qa, qb = par_dict(pa), par_dict(pb)
+        dl = sorted("%s %s: %s | %s" % (k[0], k[1], qa.get(k), qb.get(k))
+                    for k in set(qa) | set(qb) if qa.get(k) != qb.get(k))
+        res["last_rst_parameters_differing"] = dl
+        # the continued run carries the name of the file it was started from, and its
+        # restart output has written one file more
+        ck["last restart file: parameters differ only in <job> restart_file and "
+           "file_number of the rst output"] = (len(dl) == 2 and any(
+               "restart_file" in x for x in dl) and any("file_number" in x for x in dl))
         for ext in (".prt", ".amr", ".sf"):
             if os.path.exists(ra[-1] + ext):
                 ck["last restart file: %s identical" % ext] = (
@@ -235,14 +304,15 @@ def figure(out, results):
     import matplotlib.pyplot as plt
     import numpy as np
     fs.use_style()
-    cases = [r for r in results if r["case"] in DECKS and "B_seg2_rc" in r]
+    cases = [r for r in results if r["case"] in DECKS and "B_seg2_rc" in r
+             and r["case"] != "R2"]
     if not cases:
         return
     fig, axs = plt.subplots(2, len(cases), figsize=(3.4*len(cases), 4.6), squeeze=False,
                             sharex="col")
     for j, r in enumerate(cases):
         c = r["case"]
-        base = "tsq" if c == "S2" else "tsp"
+        base = "tsq" if "particles" in r["deck"] else "tsp"
         ha = np.array(read_hst(os.path.join(out, c, "A", base + ".z4c.user.hst")))
         hb = np.array(read_hst(os.path.join(out, c, "B", base + ".z4c.user.hst")))
         col = min(3, ha.shape[1] - 1)
@@ -282,8 +352,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--exe", required=True)
     ap.add_argument("--out", required=True)
-    ap.add_argument("--cases", default="S1,S2,S1d,S0")
+    ap.add_argument("--cases", default="S1,S2,S1d,S0,S2b,R2")
     ap.add_argument("--big", type=int, default=0)
+    ap.add_argument("--ref-exe", default="", help="release executable for case R2")
     a = ap.parse_args()
     exe, out = os.path.abspath(a.exe), os.path.abspath(a.out)
     os.makedirs(out, exist_ok=True)
@@ -292,7 +363,9 @@ def main():
         results.append(run_big(a.big, exe, out))
     else:
         for c in a.cases.split(","):
-            results.append(run_case(c, exe, out))
+            if c == "R2" and not a.ref_exe:
+                continue
+            results.append(run_case(c, os.path.abspath(a.ref_exe) if c == "R2" else exe, out))
     ok = all(all(r["checks"].values()) for r in results)
     summary = {"exe": exe, "exe_sha256": sha(exe), "results": results,
                "verdict": "PASS" if ok else "FAIL"}
