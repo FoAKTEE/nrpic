@@ -438,7 +438,10 @@ def convspec(out, workers):
                         n_at_shell_max_gt10=float(np.sqrt(uq[g10][np.argmax(dsh[g10])])),
                         permode_rel_rms=float(np.sqrt(np.mean(np.abs(rel)**2))),
                         permode_rel_rms_n_le4=float(np.sqrt(np.mean(np.abs(rel[n2 <= 16])**2))),
-                        permode_rel_rms_n_gt4=float(np.sqrt(np.mean(np.abs(rel[n2 > 16])**2))))
+                        permode_rel_rms_n_gt4=float(np.sqrt(np.mean(np.abs(rel[n2 > 16])**2))),
+                        permode_power_rel_rms=float(np.sqrt(np.mean((np.abs(cR)**2/np.abs(lin)**2 - 1)**2))),
+                        permode_power_rel_rms_n_le4=float(np.sqrt(np.mean(
+                            (np.abs(cR[n2 <= 16])**2/np.abs(lin[n2 <= 16])**2 - 1)**2))))
         axs[0].semilogy(np.sqrt(uq), dsh, ls=ls, color=figstyle.SERIES[0], lw=1.0, label=f"{N_}$^3$")
     res["vs_lockstep"] = lock
     # reference-free: per-mode differences between rungs
@@ -500,6 +503,14 @@ def br_stats(A, B):
              frac_shells_above_1em4=float(np.mean(np.abs(d) > 1e-4)),
              frac_gt10_shells_above_1em4=float(np.mean(np.abs(d[g10]) > 1e-4)),
              permode_rel_rms=float(np.sqrt(np.mean(pm**2))))
+    g10h = A["cnt"]/2 > 10      # more than 10 independent (hemisphere) modes
+    o.update(gt10h_rms_k_le_32=float(np.sqrt(np.mean(d[g10h & (k <= 32)]**2))),
+             gt10h_max=float(np.abs(d[g10h]).max()), gt10h_n_at_max=float(k[g10h][np.argmax(np.abs(d[g10h]))]),
+             gt10h_frac_pos=float(np.mean(d[g10h] > 0)), n_gt10h=int(g10h.sum()), n_gt10=int(g10.sum()),
+             gt10h_max_k_le_16=float(np.abs(d[g10h & (k <= 16)]).max()),
+             frac_above_1em4_k_le_32=float(np.mean(np.abs(d[k <= 32]) > 1e-4)),
+             frac_above_1em4_k_gt_32=float(np.mean(np.abs(d[k > 32]) > 1e-4)),
+             max_k_le_32=float(np.abs(d[k <= 32]).max()))
     # |n| above which the running median (bins of width 4 in |n|) exceeds 1e-4
     edges = np.arange(0, 68, 4)
     med = [float(np.median(np.abs(d[(k > lo) & (k <= lo + 4)]))) if ((k > lo) & (k <= lo + 4)).any() else None
