@@ -23,7 +23,14 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import make_decks as MD  # noqa: E402
+import importlib.util  # noqa: E402
+
+# longruns' make_decks registers threshold_scan's module under the name `make_decks` while it
+# loads, so it is loaded here under a name of its own
+_spec = importlib.util.spec_from_file_location("longruns_make_decks", os.path.join(HERE, "make_decks.py"))
+MD = importlib.util.module_from_spec(_spec)
+sys.modules["longruns_make_decks"] = MD
+_spec.loader.exec_module(MD)
 
 D = MD.D
 TAG = "king_y0p33403"
