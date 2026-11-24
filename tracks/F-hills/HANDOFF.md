@@ -61,10 +61,11 @@ a chain that failed for any other reason alone and exits when all three have end
          --purpose "read A2/B2/C2 against A2-1..A2-5, B2, C2" \
          -- python3 tracks/F-hills/stage/review_wave3/b11_cards.py --out '$NRPIC_RUN_DIR'
 
-   b11_cards.py was written for t < 110 M: extend its outputs for the passage (member energies
-   with M: `nr_first/scripts/p1_analysis.py <rundir> --baselines=nr_first/results/baselines_p1.json`
-   on A2's directory reads A2's own part; the energies need A+A2 joined), the outcome (which
-   member is bound, pericentre of the bound one, energy at infinity of the other), horizons near M.
+   and the passage reader (same form, `b11_passage.py`; tested on A and C, run
+   F-20261124-142649-5512ba0): member distances to M, energies against M and the barycentre,
+   E_bin, a provisional fate per member, Newton overlaid. Still to add when A2 has passed the
+   pericentre: the bound member's pericentre and eccentricity, HRNA and EIH overlays, the
+   remnant/horizons near M, the waveform (p1's readers).
 2. When A2 has ended: `harness/bin/nrpic-run finish F-20261124-141118-fbc6419`; judge A2-1..A2-5;
    if the binary has separated, ask for the G1 verifier (stage/G1/OPEN.md item 2 lists the
    material); if A2 stopped short of the separation for lack of card-hours, see orch's answer.

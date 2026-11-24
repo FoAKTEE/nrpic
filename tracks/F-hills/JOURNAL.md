@@ -967,3 +967,4 @@ Newton's (centre of mass 21.2 M from M at 60 M against Newton's 17.0 M), so the 
 pericentre of A2 may come later than the 95-115 M of prediction A2-2, which stands as written.
 Prediction for the registered run: it repeats the scratch numbers exactly (deterministic, same
 inputs). Refuted by any difference.
+L-P outcome (run F-20261124-142649-5512ba0): b11_passage.json identical to the scratch run: MET. Figure fig_b11_passage.png read (distances, E_bc, E_bin; NR to 61.8 M, Newton to 200 M).
