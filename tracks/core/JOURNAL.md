@@ -1717,3 +1717,29 @@ row 4 on M/8 is then reported as "collapse within 300 M bracketed between 0.7175
 does not depend on the window is proposed to orch (the drift rate against cell size and
 particle number). If P12 is refuted (0.73625 holds to 600 M), the 300-M bracket stands as
 an estimate of the threshold with the window doubled.
+
+### What was queued (2026-11-24T13:04Z)
+
+- Initial data: run core-20261124-130236-68d4ee5 (`make_row4.py --yc 0.726875`):
+  alpha_c = 0.7266, E_b/M_0 = 0.035258, R/M = 7.307 (inside the M/4 nest), turning point
+  unchanged (y_c* = 0.6796, E_b/M_0 = 0.036058). Directory tag yc0p727; the files carry
+  the exact y_c.
+- Six chains, `--gpu-hours 1.97` each (two segments; 11.82 card-hours asked):
+
+| Model | Run id | Parent (300-M restart) | First job |
+|---|---|---|---|
+| 0.726875 member, 0-600 M | core-20261124-130310-597d9ca | - | 5154 (eligible) |
+| 0.73625 control, 300-600 M | core-20261124-130321-ed96d4d | core-20261123-020500-9b192cd | 5155 (eligible) |
+| 0.726875 control, 0-600 M | core-20261124-130340-31cf5e8 | - | 5156 (held) |
+| 0.73625 member, 300-600 M | core-20261124-130347-7d6a10d | core-20261123-020458-dfc38d7 | 5157 (held) |
+| 0.755 control, 300-600 M | core-20261124-130356-d9d09bf | core-20261121-204237-ae00ca2 | 5158 (held) |
+| 0.755 member, 300-600 M | core-20261124-130406-09319a0 | core-20261121-204232-f74c942 | 5159 (held) |
+
+  The 600-M runs use the release card executable directly; the continuations use
+  `verify/row4/athena_resume.sh` (same executable, copied as chain/nrcr-<hash>, sha256
+  checked; its restart file and `.prt` are inputs of the manifest with their checksums).
+  Sequencer pid 3904230 (setsid nohup; copy of `verify/row4/sequencer.sh` in
+  `scratch/core/tmp/lead_b11/`, stop file `scratch/core/tmp/lead_b11/sequencer.stop`, log
+  `sequencer.log` there; it now logs every 15 min why the next job waits) releases
+  5156-5159 in that order. At 13:04Z seven jobs of other owners were pending ahead.
+  P10-P15 open.
