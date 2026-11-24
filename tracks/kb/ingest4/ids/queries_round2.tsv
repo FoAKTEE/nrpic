@@ -1,0 +1,8 @@
+# tag<TAB>INSPIRE query (round 2: Track C, after round 1 found 1301.1190 and the DSMC papers of astrophysics)
+C-dn1	t "Derivation of transient relativistic fluid dynamics from the Boltzmann equation"
+C-dn2	abstracts.value:"heat conductivity" and abstracts.value:"Boltzmann" and abstracts.value:"moments" and abstracts.value:"cross section"
+C-dn3	t "heat flow" and t relativistic and t Boltzmann
+C-ds6	abstracts.value:"DSMC" and abstracts.value:"mean free path"
+C-ds7	abstracts.value:"direct simulation Monte Carlo" and abstracts.value:"convergence"
+C-ds8	abstracts.value:"DSMC" and abstracts.value:"thermal conductivity"
+A-cf4	t "quasi-spherical Szekeres" and abstracts.value:"spatial"
