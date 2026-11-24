@@ -39,7 +39,17 @@ def compare(flip, proper):
     N = a[ia, 2]
     rH = a[ia, 3] / b[ib, 3]
     win = (N >= 0.5) & (N <= np.log(64.0))
-    return dict(n_common=int(common.size), t_end_flip=float(a[-1, 0]), N_end_flip=float(a[-1, 2]),
+    # scope P2 (record part): the proper run's maxima during the entry, N <= ln 64, from cycle 1
+    # on, and without the initial transient (N > 0.05)
+    ent = (b[:, 1] >= 1) & (b[:, 2] <= np.log(64.0))
+    ent5 = ent & (b[:, 2] > 0.05)
+    p2 = dict(proper_H_max_entry=float(b[ent, 3].max()), proper_M_max_entry=float(b[ent, 6].max()),
+              proper_H_max_entry_N_gt_005=float(b[ent5, 3].max()),
+              proper_M_max_entry_N_gt_005=float(b[ent5, 6].max()),
+              proper_N_at_H_max=float(b[ent, 2][np.argmax(b[ent, 3])]),
+              proper_N_at_M_max=float(b[ent, 2][np.argmax(b[ent, 6])]),
+              proper_last_cycle=int(b[-1, 1]), proper_N_end=float(b[-1, 2]))
+    return dict(**p2, n_common=int(common.size), t_end_flip=float(a[-1, 0]), N_end_flip=float(a[-1, 2]),
                 H_ratio_min_entry=float(rH[win].min()) if win.any() else None,
                 H_ratio_median_entry=float(np.median(rH[win])) if win.any() else None,
                 M_flip_max=float(a[1:, 6].max()), H_flip_max=float(a[1:, 3].max()),
@@ -52,7 +62,7 @@ def main():
     fs.use_style()
     res = {}
     fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.4), sharey=True)
-    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.14, top=0.9, wspace=0.0)
+    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.14, top=0.8, wspace=0.0)
     for j, (flip, proper, title) in enumerate([("RNC256", "RSF256", "Quadratic potential"),
                                                ("U256nc", "U256ap", "Inflection potential")]):
         try:
@@ -69,7 +79,8 @@ def main():
         ax[j].semilogy(a[1:, 2], a[1:, 6], color=fs.PAL["red"], ls="--", label="flipped")
         ax[j].set_title(title, fontsize=9)
         ax[j].set_xlabel(r"$\langle\mathcal{N}\rangle$")
-    ax[0].legend(loc="lower right", fontsize=7)
+    # legend above the panels: inside it would cover the proper run's late rise (SR, N > 3.3)
+    ax[0].legend(loc="lower center", bbox_to_anchor=(1.0, 1.1), ncol=4, fontsize=7)
     fs.save(fig, os.path.join(out, "fig_signflip"))
     plt.close(fig)
     with open(os.path.join(out, "fig_signflip.json"), "w") as fp:

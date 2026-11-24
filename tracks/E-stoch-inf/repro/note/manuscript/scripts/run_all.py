@@ -2,7 +2,9 @@
 
 Usage: run_all.py OUT
 1. make_figs.py OUT/lattice: the figures of the lattice paper from the registered dump passes
-   and records (the same arguments as the figure run E-20261124-173254-420115f);
+   and records (the same arguments as the figure run E-20261124-213739-9776185, which adds the
+   continued runs: 256^3 rung and SR level 2 at N_f from pass E-20261124-213029-e937f69, joined
+   records of join check E-20261124-212343-7e9c4b2 through runs.py);
 2. analyse.py SIM OUT/langevin: the one-patch figures from simulation E-20261123-021043-d00a314;
 3. schem_pipeline.py: the schematic;
 4. ledger.py OUT: the ledger tables;
@@ -31,6 +33,8 @@ LATTICE_ARGS = [
     "--ablation", S + "E-20261124-133251-42e8aab",
     "--rungs", S + "E-20261124-133251-42e8aab",
     "--ablation75", S + "E-20261124-141807-8352509",
+    "--cl256s", S + "E-20261124-213029-e937f69",
+    "--al2s", S + "E-20261124-213029-e937f69",
 ]
 FIGS = {  # manuscript name: source (without extension)
     "fig_pipeline": "figures_raw/schem_pipeline",

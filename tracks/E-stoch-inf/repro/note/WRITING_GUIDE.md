@@ -68,11 +68,14 @@ from its plateau.
   and 8 dk; sigma = 1; s = 5; the Euler step 0.01 e-folds and its alternatives 0.005,
   0.001; record times N_b = 3, 4, 5, 6; noise window 2 <= N_b < 6; fifty thousand paths;
   "four cells per shortest wavelength", "about thirteen cells" (the threshold of the
-  momentum constraint); "one part in ten thousand" (the second paper's own bound, quoted).
+  momentum constraint); "one part in ten thousand" (the second paper's own bound, quoted); the
+  windows 0.5 <= N <= ln 8 (plateau ratio) and 0.5 <= N <= ln 64 (sign flip); four lattices.
 - Comparison factors stated in words where the argument needs them: "a factor of about
   three to four" (one-point bands), "one to two decades" (constraint levels), "three to five
   decades" (sign flip), "about fifteen times higher" (the spectrum a published width would
-  need), "a factor sixteen per halving" (fourth order in time). Their values are in the ledger.
+  need), "a factor sixteen per halving" (fourth order in time), "less than a factor of three"
+  (spectral departure from 128^3 to 256^3), "within a fifth of one" (plateau ratios), "about five
+  decades" and "about four decades" (median sign-flip jumps). Their values are in the ledger.
 - Everything else (residuals, ratios, moments, widths) is in the ledger appendix.
 
 ## Expert dictionary (Sec. 6)
@@ -121,7 +124,7 @@ hits inside `scripts/` are accepted under exception 1):
 | spectra (SR, USR) | entering modes rise to the Mukhanov-Sasaki spectrum and freeze | 256^3, k_max = 64 dk |
 | one-point contrasts (USR) | entry, double feature of the field, late momentum, R grows and freezes; constraints | 256^3 |
 | K spectra | isotropic and anisotropic extrinsic curvature through the crossings | 256^3 |
-| convergence | spectra converge at close to sixth order (between five and six with the verifier's reference); constraint plateaus | 32^3-128^3, k_max = 8 dk |
+| convergence | spectra converge at close to sixth order up to 128^3 (between five and six with the verifier's reference), then a floor at the longest shells of 256^3; constraint plateaus equal on the three finer lattices | 32^3-256^3, k_max = 8 dk |
 | ablation | level 2 against 0 near one part in ten thousand; level 1 is a scheme difference | 256^3 |
 | sign flip | flipping the momentum source makes the constraints first order | 256^3 |
 | Langevin background | Euler at step 0.01 reaches the slope, the converged background stops on the plateau | Table II |

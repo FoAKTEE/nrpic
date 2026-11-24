@@ -46,19 +46,30 @@ RUNS = {
 
 # continuation runs of package repro/continue (label -> list of run ids), read as the same run:
 # their dumps and record lines come after the original's (one line per cycle, the last written wins)
-CONTINUED = {
-    "RSF256": ["E-20261124-130529-da8c917"],
+CONTINUED = {   # as repro/continue/scripts/conts.json at commit e5581420 (2026-11-24 13:30 PST)
+    "RSF256": ["E-20261124-130529-da8c917", "E-20261124-201031-4c41e7b",
+               "E-20261124-202134-0b1ce0c"],          # its 4th continuation: queue q0034
     "RNC256": ["E-20261124-130629-61fe0b0"],
-    "CL256U": ["E-20261124-130711-a5dec67"],
+    "CL256U": ["E-20261124-130711-a5dec67", "E-20261124-201048-33a3a39"],
     "CL256S": ["E-20261124-130952-4be980b"],
     "AL2S": ["E-20261124-131359-49afe29"],
 }
 for _lab, _ids in CONTINUED.items():
     RUNS[_lab + "c"] = (_ids[-1], "", RUNS[_lab][2])
 
+# joined records of repro/continue (one line per cycle, the last written wins; join check run):
+# label -> run id that holds <label>.sf.con.hst and <label>.sf.hst. RSF256 there ends at cycle 895.
+JOINED = {lab: "E-20261124-212343-7e9c4b2" for lab in CONTINUED}
+
 
 def cont_dirs(label):
     return [os.path.join(SCR, rid) for rid in CONTINUED.get(label, [])]
+
+
+def raw_con_paths(label):
+    """The record of the original and of its continuations, in order (before the join)."""
+    return [con_path(label)] + [os.path.join(d, base(label) + ".sf.con.hst")
+                                for d in cont_dirs(label)]
 
 
 def rundir(label):
@@ -75,9 +86,13 @@ def con_path(label):
 
 
 def con_paths(label):
-    """The record of the run and of its continuations, in order."""
-    return [con_path(label)] + [os.path.join(d, base(label) + ".sf.con.hst")
-                                for d in cont_dirs(label)]
+    """The record of the run: the joined file of repro/continue for a continued run, else the
+    run's own file (read with figlib.read_con_joined either way)."""
+    if label in JOINED:
+        p = os.path.join(SCR, JOINED[label], label + ".sf.con.hst")
+        if os.path.exists(p):
+            return [p]
+    return raw_con_paths(label)
 
 
 def hst_path(label):
@@ -102,11 +117,15 @@ GROUPS["ablation75"] = [(lab, ["--dumps", "15", "--save-modes"]) for lab in ("AL
 GROUPS["rsf256"] = [("RSF256", ["--dumps", "0"]), ("RSF256c", ["--save-modes"])]
 GROUPS["cl256"] = [("CL256Sc", ["--last"])]
 GROUPS["al2s"] = [("AL2Sc", ["--last", "--save-modes"])]
+# bit check only, of what RSF256 has written so far (t = 0, 4.0, 5.0) against P256v6
+GROUPS["rsf256bit"] = []
 BITCHECK = {
     "usr256": [("USF256", 0, "U256ap", 0), ("USF256", 20, "U256ap", 10),
                ("USF256", 40, "U256ap", 20)],
     "rsf256": [("RSF256", 0, "P256v6", 0), ("RSF256c", 16, "P256v6", 8),
                ("RSF256c", 34, "P256v6", 17)],
+    "rsf256bit": [("RSF256", 0, "P256v6", 0), ("RSF256c", 16, "P256v6", 8),
+                  ("RSF256c", 20, "P256v6", 10)],
     "ablation75": [("AL2S", 0, "AL0S", 0)],
     "ablation": [("AL0S", 0, "AL1S", 0), ("AL0S", 0, "P256v6", 0), ("AL0U", 0, "AL1U", 0),
                  ("AL0U", 0, "AL2U", 0), ("AL0U", 0, "U256ap", 0), ("AL0S", 0, "RL1", 0),
