@@ -807,7 +807,7 @@ for the continuations and about 6 for these three; 45 allotted.
 - card-hours: none submitted by hand this session; the sequencer's batch-5 queue used 17.59
   card-hours since 2026-11-21 (closed manifests) plus the running chains.
 
-## 2026-11-24T21:15Z  session C-sidm batch 12 (card runs into the shared queue)  commits fa47d3fb..(this entry's commit)  runs: none new (one closed: C-20261124-120250-9e6a3ba)
+## 2026-11-24T21:08Z  session C-sidm batch 12 (card runs into the shared queue)  commits fa47d3fb..(this entry's commit)  runs: none new (one closed: C-20261124-120250-9e6a3ba)
 
 - did: merged main (decision 0033 and the shared queue); found what the 12:00 PST stop left:
   the sequencer (pid 4068739) gone; A334s3o (C-20261124-120250-9e6a3ba) stopped with the chain
