@@ -147,6 +147,13 @@ def hqs_particles(fn, grid, md):
 
 
 def dump_job(args):
+    try:
+        return _dump_job(args)
+    except Exception as e:                 # a broken dump (the state written at a guard stop)
+        return {"file": os.path.basename(args[0]), "t": -1.0, "a": 0.0, "error": repr(e)}
+
+
+def _dump_job(args):
     path, snap, do_gauge = args
     d = binio.read_bin(path, strip_prefix=True)
     grid = d["grid"]
@@ -242,6 +249,8 @@ def analyse_run(name, d, sigma1, newton, workers, gauge_every):
     order = sorted(range(len(tasks)), key=lambda k: not tasks[k][2])   # heavy jobs first
     with Pool(workers) as pool:
         rows = pool.map(dump_job, [tasks[k] for k in order], chunksize=1)
+    res["dump_errors"] = [r for r in rows if "error" in r]
+    rows = [r for r in rows if "error" not in r]
     rows.sort(key=lambda r: r["t"])
     res["dumps"] = rows
     # comparison with fidL8 at the same stage
@@ -288,8 +297,13 @@ def stop_diagnosis(res, d):
     pos = [float(v) for v in re.search(r"position \(([^)]*)\)", g).group(1).split(",")]
     dumps = sorted(glob.glob(os.path.join(d, "bin", "pop.z4cd.*.bin")))
     out = {"position": pos, "rows": []}
-    for p in dumps[-10:]:
-        dd = binio.read_bin(p, strip_prefix=True)
+    good = []
+    for p in dumps[-11:]:
+        try:
+            good.append((p, binio.read_bin(p, strip_prefix=True)))
+        except Exception as e:
+            out.setdefault("unreadable", []).append([os.path.basename(p), repr(e)])
+    for p, dd in good:
         grid = dd["grid"]
         dx = grid.dx[0]
         i, j, k = (int(np.floor(pos[c]/dx)) for c in range(3))
@@ -304,8 +318,8 @@ def stop_diagnosis(res, d):
                             "K_box_max": float(np.nanmax(trK[sl])),
                             "K_max": float(np.nanmax(np.where(np.isfinite(trK), trK, -np.inf))),
                             "K_max_at": ((kmax_at + 0.5)*dx).tolist(),
-                            "alpha_slice_z": alpha[k].tolist() if p == dumps[-2] else None,
-                            "K_slice_z": trK[k].tolist() if p == dumps[-2] else None,
+                            "alpha_slice_z": alpha[k].tolist() if p == good[-1][0] else None,
+                            "K_slice_z": trK[k].tolist() if p == good[-1][0] else None,
                             "n_nonfinite": int((~np.isfinite(trK)).sum())})
     snaps = sorted(glob.glob(os.path.join(d, "pop.part.*.bin")))
     t, cyc, x, u, m, tag = read_snapshot(snaps[-1])
@@ -511,6 +525,8 @@ def main():
             Z = stop_diagnosis(r, d)
             r["stop"] = Z
         R.append(r)
+        with open(os.path.join(args.out, f"analysis_gr_{name}.json"), "w") as f:
+            json.dump(r, f)                    # each run as soon as it is done
         print(name, "done", flush=True)
     with open(os.path.join(args.out, "analysis_gr.json"), "w") as f:
         json.dump(R, f)
