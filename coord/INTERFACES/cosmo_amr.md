@@ -213,6 +213,11 @@ those of rank 0 [JUDGEMENT; the processor and card builds of this package have n
 evaluated at the end of every step; never above the released `cfl dx`. In the
 conformal-time gauge of the homogeneous universe c = 1 up to the time-integration error
 of the fields (T7: 2.9e-6, so the step is about 1e-6 shorter than without the option).
+Limit (decision 0027 item 2, batch 8): the option counts the speed of light only, not
+the gauge speeds. With a Gamma-driver shift keep `cfl_number` at 0.6 or below: Track A
+finds the shift subsystem unstable at the grid scale above dt/dx = 0.685 (nghost 4, RK4,
+`diss = 0.5`; runs A-20261121-212800-d7f31a4, -212941-9e68be1; numbers of Track A). A
+step limit with the gauge speeds is item W31 of `REQUESTS_WAVE3.md`, for core-v0.7.
 
 ### 2.5 Region norms
 

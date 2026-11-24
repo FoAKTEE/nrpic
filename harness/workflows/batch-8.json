@@ -1,0 +1,23 @@
+{
+ "name": "8 (2026-11-21 evening: no cards)",
+ "what": "the two remaining cut packages of the knowledge base; corrections after the verifier and the working note of core for G2",
+ "note": "Releases core-v0.4 to v0.6 are on main. Rulings: coord/DECISIONS/0025 to 0027. The cards are loaded with every owner's long runs (decision 0026 item 1): submit no card job and touch no queued chain or sequencer; processors only, at most 6 cores. The weekly usage window of the account is at 80 per cent: read only what your task needs.",
+ "items": [
+  {
+   "type": "pkg",
+   "owner": "kb",
+   "key": "claims_brief"
+  },
+  {
+   "type": "pkg",
+   "owner": "kb",
+   "key": "code_kb"
+  },
+  {
+   "type": "core-task",
+   "key": "note_g2",
+   "task": "Two things for core's gate G2, no source change, no card job; do not touch the queued row-4 chains or their sequencer. (1) Corrections after the fresh verifier's report (tracks/core/stage/G2/VERIFIER.md, section 3 and its requests): the five texts whose numbers are mislabelled or whose measure is unstated (CHECKLIST C3: the value printed as |Theta| is a volume norm; scalar_field.md test 1; newtonian_mode.md 5.2; and the others it lists); CHECKLIST C16 marked with the verifier's report; OPEN.md: the limit on restarts (exact for periodic set-ups and the particle state, round-off differences in the mesh state with outflow faces and refinement: coord/DECISIONS/0027 item 3) and the step rule with a Gamma-driver shift (0027 item 2; Track A's request in the inbox) as an item for release v0.7; register or name as pre-program the run directories that carry ladder rows 2 and 4, as the verifier asks. (2) The working note of core for G2 (tracks/core/note/, REVTeX, written with /paper-writing: WRITING_GUIDE.md and NOTATION.md one level above the manuscript; figure style from harness/style/ copied into note/scripts/): what the shared implementation is and what each release core-v0.3 to core-v0.6 added (coord/INTERFACES/, tracks/core/CHANGELOG.md); the verification ladder of the brief (lines 834-860) row by row with the evidence as the stage package and the verifier give it, including what is partial (rows 3 and 4) and the known defects (relaxed lapse: coord/DECISIONS/0025 item 3); the architecture schematic brought up to date (paperfig.py); every number with a ledger row that names a registered run or a source locator; data figures made by registered scripts from raw outputs and looked at; compile; manuscript checker; read the pages. Then STATUS.md and HANDOFF.md; commit; push core/nrpic.",
+   "fable": false
+  }
+ ]
+}

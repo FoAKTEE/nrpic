@@ -103,7 +103,13 @@ that the orchestrator reviews.
 - Two A100 cards, Slurm partition `preempt`, one hour per job, four cores per job. Build:
   `scripts/build_gpu.sh <builddir>`, `scripts/build_cpu.sh <builddir>` (CUDA 12.6). Run a
   list of jobs: `scripts/gpu_batch.sh <list>`; longer than an hour:
-  `scripts/submit_chain.sh` (`--status <rundir>`, `--stop <rundir>`); restarts are exact.
+  `scripts/submit_chain.sh` (`--status <rundir>`, `--stop <rundir>`). Restarts are exact for
+  periodic set-ups and for the particle state; with outflow faces and refinement the mesh
+  state of Z4c differs after a restart at round-off (median 3e-13, up to 1e-7 after a few
+  steps), so a chained asymptotically flat run repeats only up to the growth of round-off.
+- With a Gamma-driver shift keep `cfl_number` at 0.6 or below: the step limit counts the
+  speed of light only, and the shift goes unstable at the grid scale above dt/dx = 0.685
+  (decision 0027).
 - A linked worktree has no Kokkos: `git submodule update --init --reference
   /data/haiyangw/nrpic/athenak/kokkos athenak/kokkos` once before building there. If you
   change no source, do not build: use the executables of the main checkout, read-only,

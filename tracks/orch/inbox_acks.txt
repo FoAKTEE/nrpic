@@ -103,3 +103,19 @@ tracks/F-hills/outbox/20261121T162148Z__to-orch__p1b-waits-for-rule.md	2026-11-2
 tracks/D-bh-dress/outbox/20261121T163226Z__to-orch__g1-complete-for-review.md	2026-11-21T16:52:47Z	ruled on in coord/DECISIONS/0011-0024, coord/GATES.md, coord/WAIVERS.md
 tracks/C-sidm/outbox/20261121T163254Z__to-orch__next-batch-drift-close.md	2026-11-21T16:52:47Z	ruled on in coord/DECISIONS/0011-0024, coord/GATES.md, coord/WAIVERS.md
 tracks/C-sidm/outbox/20261121T164658Z__to-orch__gate-status-batch4a.md	2026-11-21T16:52:47Z	ruled on in coord/DECISIONS/0011-0024, coord/GATES.md, coord/WAIVERS.md
+tracks/C-sidm/outbox/20261121T203114Z__to-orch__cards-loaded-batch5.md	2026-11-21T21:13:37Z	ruled on in coord/DECISIONS/0025-0026, coord/GATES.md, coord/WAIVERS.md
+tracks/E-stoch-inf/outbox/20261121T204305Z__to-orch__g2-criteria-cards-allotment.md	2026-11-21T21:13:37Z	ruled on in coord/DECISIONS/0025-0026, coord/GATES.md, coord/WAIVERS.md
+tracks/core/outbox/20261121T204332Z__to-orch__waiver-ids-decision-0023-item5.md	2026-11-21T21:13:37Z	ruled on in coord/DECISIONS/0025-0026, coord/GATES.md, coord/WAIVERS.md
+tracks/A-emd-pbh/outbox/20261121T204337Z__to-orch__cards-loaded-threshold-scan.md	2026-11-21T21:13:37Z	ruled on in coord/DECISIONS/0025-0026, coord/GATES.md, coord/WAIVERS.md
+tracks/F-hills/outbox/20261121T204354Z__to-orch__p1b-submitted-read-run-b.md	2026-11-21T21:13:37Z	ruled on in coord/DECISIONS/0025-0026, coord/GATES.md, coord/WAIVERS.md
+tracks/F-hills/outbox/20261121T204401Z__to-orch__nrpic-run-chain-resume-option.md	2026-11-21T21:13:37Z	ruled on in coord/DECISIONS/0025-0026, coord/GATES.md, coord/WAIVERS.md
+tracks/D-bh-dress/outbox/20261121T205252Z__to-orch__card-load-batch5.md	2026-11-21T21:13:37Z	ruled on in coord/DECISIONS/0025-0026, coord/GATES.md, coord/WAIVERS.md
+tracks/B-emd-gw/outbox/20261121T205723Z__to-orch__chain-dependency-and-proc-name.md	2026-11-21T21:13:37Z	ruled on in coord/DECISIONS/0025-0026, coord/GATES.md, coord/WAIVERS.md
+tracks/B-emd-gw/outbox/20261121T210947Z__to-orch__g1-package-complete.md	2026-11-21T21:13:37Z	ruled on in coord/DECISIONS/0025-0026, coord/GATES.md, coord/WAIVERS.md
+tracks/kb/outbox/20261121T213157Z__to-orch__kb-g3-tracks-queue.md	2026-11-21T23:11:16Z	ruled on in coord/DECISIONS/0027, coord/GATES.md
+tracks/kb/outbox/20261121T220221Z__to-orch__additions-wave3.md	2026-11-21T23:11:16Z	ruled on in coord/DECISIONS/0027, coord/GATES.md
+tracks/core/outbox/20261121T233031Z__to-orch__g2-verifier-corrections-and-note.md	2026-11-21T23:38:39Z	ruled on in coord/DECISIONS/0027; interface texts copied; errata section 5 points to the claims
+tracks/kb/outbox/20261121T233354Z__to-orch__errata-section5-claims.md	2026-11-21T23:38:39Z	ruled on in coord/DECISIONS/0027; interface texts copied; errata section 5 points to the claims
+tracks/kb/outbox/20261121T235253Z__to-orch__kb-batch9-snapshot-and-0608095.md	2026-11-21T23:54:20Z	noted; KB-G3 verifier and ingest package after the reset of the usage window (coord/digests/batch-10-plan.md)
+tracks/B-emd-gw/outbox/20261123T020159Z__to-orch__population-run-on-the-cards.md	2026-11-23T02:55:49Z	ruled on in coord/DECISIONS/0028-0030
+tracks/E-stoch-inf/outbox/20261123T025319Z__to-orch__g2-usr-ladder-judged.md	2026-11-23T02:55:49Z	ruled on in coord/DECISIONS/0028-0030
