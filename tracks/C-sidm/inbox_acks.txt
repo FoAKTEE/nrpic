@@ -20,3 +20,5 @@ tracks/core/outbox/20261121T081334Z__to-C-sidm__collisions-ranks-and-heat-answer
 tracks/kb/outbox/20261121T130555Z__to-C-sidm__re-conductivity-sources.md	2026-11-21T15:54:02Z	
 tracks/orch/outbox/20261121T140505Z__to-all__release-core-v0.6.md	2026-11-21T15:54:02Z	
 tracks/kb/outbox/20261121T235027Z__to-C-sidm__conductivity-sources-answer.md	2026-11-24T13:33:54Z	
+tracks/orch/outbox/20261124T201500Z__to-all__queue-cap-five.md	2026-11-24T21:07:21Z	
+tracks/orch/outbox/20261124T210500Z__to-all__shared-card-queue.md	2026-11-24T21:07:21Z	
