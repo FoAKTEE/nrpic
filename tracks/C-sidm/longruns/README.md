@@ -39,8 +39,7 @@ and 1e4: runs C-20261124-130731-e1d24de, -130732-a383ef5 (`scripts/make_ic_seeds
 
 The run ids of the batch-11 analyses are in `../stage/G2/EVIDENCE.md`. The heat cases must be
 reduced first (`heat/scripts/run_mode.py reduce <card run> --prep C-20261121-202552-883e2c2`).
-Known limit of `blockA_delta.py`: a window that a run covers only in part still enters the
-seed standard deviation (fix before seeds 2 and 3 are read).
+`blockA_delta.py` drops a window that a run covers only in part (since 2026-11-24, end of batch 11).
 
 ## Runs (executable: release core-v0.6 card build, except run (v))
 

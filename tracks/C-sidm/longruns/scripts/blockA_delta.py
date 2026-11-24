@@ -95,10 +95,13 @@ def running_mean(t, y, width):
 
 
 def window_means(t, y, tmax):
+    """Means over the 100 M windows; a window the record does not cover to within 1 M of its
+    end is None (added 2026-11-24: a run cut inside a window had entered the seed sd)."""
     out = []
     for w0 in np.arange(0.0, tmax, WIN):
         m = (t >= w0) & (t < w0 + WIN) & np.isfinite(y)
-        out.append(float(np.mean(y[m])) if m.sum() > 10 else None)
+        full = len(t) > 0 and t[-1] >= w0 + WIN - 1.0
+        out.append(float(np.mean(y[m])) if (m.sum() > 10 and full) else None)
     return out
 
 
