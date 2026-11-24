@@ -52,7 +52,7 @@ def main():
     fs.use_style()
     res = {}
     fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.4), sharey=True)
-    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.14, top=0.9, wspace=0.0)
+    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.14, top=0.8, wspace=0.0)
     for j, (flip, proper, title) in enumerate([("RNC256", "RSF256", "Quadratic, 256^3"),
                                                ("U256nc", "U256ap", "Inflection, 256^3")]):
         try:
@@ -69,7 +69,8 @@ def main():
         ax[j].semilogy(a[1:, 2], a[1:, 6], color=fs.PAL["red"], ls="--", label="flipped")
         ax[j].set_title(f"{title}: {flip} against {proper}", fontsize=9)
         ax[j].set_xlabel(r"$\langle\mathcal{N}\rangle$")
-    ax[0].legend(loc="lower right", fontsize=7)
+    # legend above the panels: inside it would cover the proper run's late rise (SR, N > 3.3)
+    ax[0].legend(loc="lower center", bbox_to_anchor=(1.0, 1.1), ncol=4, fontsize=7)
     fs.save(fig, os.path.join(out, "fig_signflip"))
     plt.close(fig)
     with open(os.path.join(out, "fig_signflip.json"), "w") as fp:
