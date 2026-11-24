@@ -793,3 +793,7 @@ Predictions, written before the runs:
   event (716, 798, 799, 803, 805-808, 810-812). Four are answered by the store (716, 798, 799 by
   the KB-G1 first answers; 808 in part by ingest4). Prediction: four annotate events, exit 0;
   seven seeds remain without one. Refuted if the script fails or a count differs.
+- C2 outcome (run kb-20261124-233637-3d710a8): held: four annotate events (716, 798, 799, 808);
+  seven brief seeds remain without a processing event (803, 805, 806, 807, 810, 811, 812).
+- C3 (apply_g3c.sh): annotations of 85 (fragment) and 737 (a correction, not a refutation), the
+  verifier's items 1b and 2. Prediction: two events, exit 0.
