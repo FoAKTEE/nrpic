@@ -207,3 +207,40 @@ and looked at.
   (USR): FAILED (band 4-6). From 64 to 128 the entry maxima are equal within 13 per cent in all four
   (the second-order plateau, P1:748). 256 pending (CL256S, CL256U). P6 (b): all decay after the entry
   except USR M, which rises again in the USR phase (as P1's Fig. 8b shows).
+
+## Entry 4 (2026-11-24 06:30 PST): PAUSED (pause flag set at 06:14 PST, five-hour window at 80 per cent)
+
+Stopped at the pause flag (`locks/PAUSE`), nothing new started. State:
+- Closed registered analyses: E-20261124-130628-6790851 (USF256 pass), E-20261124-133251-42e8aab
+  (P256v6, ablation finals, rungs), E-20261124-141807-8352509 (USF256 at the Fig. 6b dumps with the
+  invariant Kt, kt_version 2; AL0S/AL1S/AL2S at t = 7.5; its outcomes are NOT yet looked at or judged:
+  the bit check says AL2S differs from AL0S at t = 0 by 7.2e-10 of the perturbation, the same last-bit
+  pattern as level 1 in entry 3).
+- Not done: the registered figure run (`figures/make_figs.py`) that makes the committed figures; no
+  PNG is in `fig/` yet. The figures were made only as tests in `scratch/E-stoch-inf/tmp/figs_test/`
+  and looked at there; the numbers in entries 2 and 3 and in `RESULTS.md` come from those tests on
+  the registered pass outputs (same scripts at the committed versions), and the figure run will
+  reproduce them.
+- Waiting: the five continuations of repro/continue (RSF256 E-20261124-130529-da8c917, RNC256
+  E-20261124-130629-61fe0b0, CL256U E-20261124-130711-a5dec67, CL256S E-20261124-130952-4be980b,
+  AL2S E-20261124-131359-49afe29) were all PENDING in Slurm at 06:19 PST behind other owners' jobs.
+
+Next, in order, after the pause is lifted:
+1. Figure run on what exists: `harness/bin/nrpic-run submit --kind production --gate G2 --package
+   tracks/E-stoch-inf/repro/figs --preregistered "tracks/E-stoch-inf/repro/figs/JOURNAL.md#entry-1"
+   --cores 2 --purpose "repro/figs: figures from the passes" -- bash -c 'OMP_NUM_THREADS=2 python3
+   tracks/E-stoch-inf/repro/figs/figures/make_figs.py "$NRPIC_RUN_DIR" --usr256
+   /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261124-130628-6790851 --usr256kt
+   /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261124-141807-8352509 --sr256
+   /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261124-133251-42e8aab --ablation
+   /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261124-133251-42e8aab --rungs
+   /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261124-133251-42e8aab --ablation75
+   /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261124-141807-8352509'`; copy the PNGs into `fig/`,
+   look at each, judge F6 (b, c) on the kt_version-2 USR spectra and the SR level 2 at t = 7.5
+   (`fig9_ablation_sr_t75.json`), commit.
+2. When the continuations have ended (repro/continue HANDOFF): passes `rsf256` (then Fig. 2 with
+   the constraint panels, Fig. 3 and 6a from RSF256, bit check RSF256 against P256v6 = scope P1 SR),
+   `cl256` (Fig. 7 at 256), `al2s` (Fig. 9 SR level 2 at N_f, P-A1), and the records of CL256U/S
+   and RNC256 (Fig. 8 at 256, `fig_signflip`, scope P3); then the figure run again with `--rsf256`,
+   `--cl256s`, `--al2s` and `--with256` (make_figs passes it with --cl256s).
+3. RESULTS.md: replace the PENDING rows, add the ledger of the figure run, set STATUS.
