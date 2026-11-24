@@ -247,7 +247,7 @@ def main():
     sep = np.linalg.norm(D["co0_xyz"] - D["co1_xyz"], axis=1)
     l1, = ax.plot(tc, sep, color=cz.PAL["blue"], lw=1.5, label=r"Separation $|\mathbf{x}_0 - \mathbf{x}_1|$")
     ax.set_xlim(0.0, max(36.0, float(tc[-1]) * 1.02))
-    ax.set_ylim(2.0, 6.8)
+    ax.set_ylim(0.0, 6.8)
     ax.set_xlabel(r"Coordinate time $t\,[M]$")
     ax.set_ylabel(r"Binary separation $d_{AB}\,[M]$", color=cz.PAL["blue"])
     ax.tick_params(axis="y", labelcolor=cz.PAL["blue"])

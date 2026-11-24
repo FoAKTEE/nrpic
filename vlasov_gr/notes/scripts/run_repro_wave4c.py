@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Phase 4 Wave 4C: Reproduce Wu & Most / NRPIC M6 Jeans Binary BH Merger at N=10^4 and N=10^5:
+"""Phase 4 Wave 4C: Reproduce Wu & Most / NRPIC M6 Jeans Binary BH Formation at N=10^4 and N=10^5:
   Uses verified `jeans/n1e4_v19` configuration (+-80M domain, 8 levels, finest M/64,
-  tlim=100M, metric_drvts=interpolant, ah_exc_factor=0.8, alpha_exc=0.05, flow_const=0.05,
-  comp1/comp2 Bowen-York clump momenta from consistent IC JSON).
+  tlim=20M focused on binary BH formation at t_AH~10.5M, metric_drvts=interpolant,
+  ah_exc_factor=0.8, alpha_exc=0.05, flow_const=0.05, comp1/comp2 Bowen-York clump momenta).
 
 Compares `stratified + midpoint (plain filter)` vs
 `qmc_antipodal (N=10^4) / qmc_lebedev (Q=14, N=10^5) + vlasov_hybrid (gl4 + quadratic + filter_metric_conservative=true)`.
@@ -98,23 +98,32 @@ def main():
 
         cfg = os.path.join(RUN_BASE, f"{lbl}.athinput")
         rdir = os.path.join(RUN_BASE, lbl)
-        w4b.patch_athinput(
-            tpl, cfg,
-            updates={
-                "job": {"basename": lbl},
-                "time": {"tlim": "100.0", "ndiag": "200"},
-                "fastflow": {
-                    "metric_drvts": "interpolant",
-                    "find_every": "16",
-                    "flow_alpha_beta_const_0": "0.05",
-                    "flow_alpha_beta_const_1": "0.05",
-                },
-                "particles": p_upd,
-                "problem": pblock,
-            },
-            existing_only={"output2": {"dt": "1.0e9"}},
+        existing_done = (
+            os.path.isfile(os.path.join(rdir, f"{lbl}.nrpic.hst"))
+            and os.path.isfile(os.path.join(rdir, f"{lbl}.horizon_summary_0.txt"))
+            and os.path.isfile(os.path.join(rdir, f"{lbl}.horizon_summary_1.txt"))
         )
-        wall_s, comp_s = w4b.run_athena(cfg, rdir, lbl, timeout_s=7200.0)
+        if existing_done and os.environ.get("WAVE4C_OVERWRITE", "0") != "1":
+            print(f"  [M6 {lbl:20s}] Reusing existing completed formation run in {rdir}", flush=True)
+            wall_s, comp_s = np.nan, np.nan
+        else:
+            w4b.patch_athinput(
+                tpl, cfg,
+                updates={
+                    "job": {"basename": lbl},
+                    "time": {"tlim": os.environ.get("WAVE4C_TLIM", "20.0"), "ndiag": "200"},
+                    "fastflow": {
+                        "metric_drvts": "interpolant",
+                        "find_every": "16",
+                        "flow_alpha_beta_const_0": "0.05",
+                        "flow_alpha_beta_const_1": "0.05",
+                    },
+                    "particles": p_upd,
+                    "problem": pblock,
+                },
+                existing_only={"output2": {"dt": "1.0e9"}},
+            )
+            wall_s, comp_s = w4b.run_athena(cfg, rdir, lbl, timeout_s=7200.0)
 
         z4c = s4a.read_col_hst(os.path.join(rdir, f"{lbl}.z4c.user.hst"))
         nrp_h = s4a.read_col_hst(os.path.join(rdir, f"{lbl}.nrpic.hst"))
