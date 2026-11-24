@@ -172,3 +172,30 @@ bar and passing) is open. The rate itself is known from the state after the inge
 kb-20261124-135341-e65f142). Answers to A, C, D, F and the note to orch are posted (commit 2f386306).
 To resume: `harness/bin/nrpic-run finish kb-20261124-141551-a75bc11`, read its QA_REPORT.md, write
 the P8 outcome here and in README.md.
+
+## Entry 6 (2026-11-24 17:25 UTC): resumed; P8 outcome; prediction P11
+
+Resumed after the pause. The QA run kb-20261124-141551-a75bc11 had ended by itself (exit 0 at
+14:23:38 UTC, run.log); closed with `nrpic-run finish` now and its QA_REPORT.md read.
+
+- P8 HELD. Golden questions (32): hybrid paper 28/32 (87.5 %), locator 23/32; rerank 28/32 and
+  25/32; text 27/32 and 21/32: the same as the final QA of ingest3 (kb-20261121-222222-28b1c1b).
+  Parse rate 737 of 762 with status ok, 96.7 %, strict 96.7 %, reported against the 95 % bar:
+  met. Equations exact 40 of 41 (C8). Bibliography 68970 entries (heading: 101, 1 with an id),
+  111311 citation rows, 14968 in the corpus (ingest3: 67865, 109730, 14810).
+- NOT FORESEEN: C1 says "counts do NOT agree". All 762 manifest ids are ingested; the
+  disagreement is that the 18 additions of this package have no row in the `downloads` table
+  ("no record 18"; their ids are the "missing or failed downloads" list). nrpic-fetch-arxiv
+  writes kb-data/raw but not the database; `kb verify-downloads` records the rows and was not run
+  after the fetch. The final QA of ingest3 had the same verdict with "no record 35"; the 35 have
+  rows now, so a later verify-downloads recorded them.
+
+## Prediction P11 (before `kb verify-downloads` and a second QA run)
+
+`kb verify-downloads --report <run dir>` (takes kb-writer.lock itself) exits 1 for the known
+gr-qc/9412071 (PDF only) and nothing else of brief 17; the 18 are listed as extra and get
+download rows. Then `kb qa run --hybrid`: C1 downloads by status ok 761, problem 1, no record 0;
+missing list empty; verdict "counts agree"; everything else in the report the same as in
+kb-20261124-141551-a75bc11 (C3 25 not ok, C7 28/32 hybrid, C8 40/41, C5 counts). Refuted by any
+download row of the 18 with a status other than ok, by a remaining "no record", or by any other
+section changing.
