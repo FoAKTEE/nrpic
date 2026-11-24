@@ -36,12 +36,12 @@ def read_summary(path):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--probes", required=True)
+    ap.add_argument("--probes", required=True, nargs="+")
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", "."))
     ap.add_argument("runs", nargs="+")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
-    P = json.load(open(a.probes))
+    P = [r for f in a.probes for r in json.load(open(f))]
     R = {}
     for s in a.runs:
         name, rest = s.split("=", 1)
@@ -121,6 +121,16 @@ def main():
     if fp5:
         allv = [abs(x) for r in fp5.values() for x in r.values()]
         J["FP5"] = dict(diff=fp5, max_abs=max(allv), holds=bool(max(allv) <= 1e-4))
+    # FP-ext (entry 11): every common dump of V-1L and ES-1L, tight finder
+    he, hv = tight("ES-1L"), tight("V-1L")
+    if he.get(100.0) is not None and hv.get(100.0) is not None:
+        ts = sorted(t for t in set(he) & set(hv) if he[t] is not None and hv[t] is not None and t >= 100.0)
+        ser = {str(t): (he[t] - he[100.0]) - (hv[t] - hv[100.0]) for t in ts}
+        dv = {str(t): hv[t] - hv[100.0] for t in sorted(hv) if hv[t] is not None and t >= 100.0}
+        mx = max(abs(x) for x in ser.values())
+        J["FPX"] = dict(null_tight=ser, D_V_tight=dv, max_abs_null=mx,
+                        i_holds=bool(all(abs(dv[str(t)]) <= 3e-5 for t in (350.0, 400.0, 500.0) if str(t) in dv)),
+                        ii_holds=bool(mx <= 5e-5), ii_refuted=bool(mx > 1e-4))
     with open(os.path.join(a.out, "fp_analyse.json"), "w") as f:
         json.dump(J, f, indent=1)
     print(json.dumps({k: v for k, v in J.items() if k != "table"}, indent=1))
@@ -149,7 +159,11 @@ def figure(outdir, R, T, J):
         x.set_title(f"({'a' if n == 'V-1L' else 'b'}) {n}: finder re-search of the dumps", loc="left", fontsize=9)
     x = ax[1, 0]
     for tag, c in (("M8", fs.PAL["red"]), ("M16", fs.PAL["yellow"])):
-        if "FP5" in J and tag in J["FP5"]["diff"]:
+        if tag == "M8" and "FPX" in J:
+            r = J["FPX"]["null_tight"]
+            x.plot([float(k) for k in r], list(r.values()), "s-", color=c, ms=5, lw=1.0,
+                   label=f"{tag}: tight finder, ES - V (all dumps)")
+        elif "FP5" in J and tag in J["FP5"]["diff"]:
             r = J["FP5"]["diff"][tag]
             x.plot([float(k) for k in r], list(r.values()), "s-", color=c, ms=5, lw=1.0,
                    label=f"{tag}: tight finder, ES - V")
