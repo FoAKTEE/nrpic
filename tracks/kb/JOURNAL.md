@@ -797,3 +797,11 @@ Predictions, written before the runs:
   seven brief seeds remain without a processing event (803, 805, 806, 807, 810, 811, 812).
 - C3 (apply_g3c.sh): annotations of 85 (fragment) and 737 (a correction, not a refutation), the
   verifier's items 1b and 2. Prediction: two events, exit 0.
+- C3 outcome (run kb-20261124-233726-3b6e5b9): held (two annotate events, exit 0).
+- S1 outcome (run kb-20261124-233515-0ed31c7): held. verify-downloads exit 1 only for
+  gr-qc/9412071 (arXiv 684: ok 683, problem 1; extra 81); QA C1 "counts agree"; parse rate
+  737/762 = 96.7 %, strict 96.7 %, bar met; golden hybrid 28/32 papers, 23/32 locations, rerank
+  28/32, 25/32 (as ingest4); snapshot kb-20261124-9872d21 = db/current, 762 papers, 864 claims,
+  28 events of this session inside it. kb/QA_REPORT.md replaced by this run's report.
+- Q2 (figures of this QA, kb/kbtool/qa_figures.py on qa.json): three PNGs; retrieval panel shows
+  28/32 for hybrid and rerank. Refuted if the script fails or the panel differs from the report.

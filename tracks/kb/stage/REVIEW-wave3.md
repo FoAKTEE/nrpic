@@ -156,3 +156,74 @@ Rechecked from the artefacts by own SQL on snapshot kb-20261121-bbaafe5 and the 
   of the 35 additions; `kb verify-downloads` (run kb-20261121-235128-dcd72a4) recorded all 60
   additions ok; exit 1 is the known gr-qc/9412071 (PDF only).
 - Snapshots: kb-20261121-bbaafe5, then kb-20261121-aa0a2ae (db/current: claim 861, downloads).
+
+## kb lead batch 13 (2026-11-24): ingest4 and the KB-G3 verifier
+
+Reviewed from the artefacts (working database kb.sqlite read-only by my own SQL, raw sources,
+INSPIRE records, figures), not from the packages' conclusions. Predictions R1, C1-C3, S1 in
+JOURNAL.md (entry of batch 13) before each step.
+
+### ingest4 (18 additions, six old-style reference lists)
+- Confirmed (own SQL): 762 papers, status ok 737, review 22, pdf 3; each of the 18 ids of
+  `ingest4/ids/additions18.txt` present, status ok, 16-86 bibliography entries, downloads row
+  ok; the six old-style papers carry 11, 16, 16, 10, 27, 21 entries with source `heading`,
+  equal to the package's independent marker count (R1 held). Figure fig_oldstyle.png read:
+  entries sit on the independent count; citation rows 0 for the two author-year papers
+  (astro-ph/9510056, gr-qc/9906015), as the README says.
+- Confirmed by reading the sources: the 13 papers claims_tracks named for D and F are the
+  papers the claims mean (titles, authors and abstracts read for all of them while processing
+  409, 447, 449, 450, 452; INSPIRE records with journal references for 2307.02474,
+  2307.10708, 2306.08199, 1904.03781, 2107.06643, 0707.1350, 1303.1540, 2605.22525).
+- Confirmed: the D message's identifiers: Croker-Weiner 2019 (ApJ 882, 19) = 2107.06643;
+  Faraoni-Jacques 2007 (PRD 76, 063510) = 0707.1350 (INSPIRE records). Not confirmed by me:
+  the A and C additions (1202.5970, 1908.02697, 1611.09781, 1202.4551, 1301.1190, 1304.3941)
+  fit their requests (I checked only that they are ingested ok).
+- Defect (small, the package found it): nrpic-fetch-arxiv writes no download rows, so QA C1
+  disagrees until `kb verify-downloads` runs; it ran in this session's snapshot run.
+- Open, listed: plain-TeX front matter keeps the six at `review`; 0707.4654, 1006.1632 and
+  gr-qc/0608095 on disk and in the downloads table but in no manifest (HANDOFF).
+
+### KB-G3 verifier (tracks/kb/stage/KB-G3/VERIFIER.md): what the track does with each finding
+- 682 WRONG as worded: confirmed at 1305.2619v1 SFWpaper.tex L443 and in D's run
+  D-bh-dress-20261115-145636-5259f48 (reference.json constf: 2.5897, 0.0922). Done: claim 862
+  carries the right text (fulltext, 1 locator row resolved); 682 refuted with the reason "the
+  claim text is wrong, not the paper" (run kb-20261124-233445-89478ae; relocate
+  kb-20261124-233504-c6530a6); D told.
+- 85 fragment: confirmed; annotated "do not cite, re-seed" (run kb-20261124-233726-3b6e5b9);
+  the re-seed of the fragment claims stays a package (HANDOFF).
+- 781, 714, 809, 804 unprocessed brief seeds (NOT CONFIRMED item 1c): confirmed by my own
+  reading. Done: 781 verified (2611.12831v1 main.tex L75, L676: common global time step);
+  714 answered NO by new claim 863 (no "cosmolog" or "periodic" anywhere in main.tex, FLRW
+  only in the OS interior L867, L877; "expanding" only at L1142) and annotated; 809 annotated
+  (INSPIRE: 4 of 8 found and agreeing, 4 not found on 2026-11-19); 804 verified with the eight
+  locators of the checked claims that carry its six parts (720, 741, 732, 778, 370/685, 764).
+  Beyond the sample: 716, 798, 799 annotated from the KB-G1 first answers, 808 in part from
+  ingest4 (run kb-20261124-233637-3d710a8). Seven brief seeds remain without a processing event:
+  803 and 805 bear on G1 of A, B, D, F; 806, 807, 810, 811, 812 are bibliographic or tooling
+  items.
+- 737 NOT CONFIRMED as a refutation: agreed; annotated as a correction (the tool has no
+  un-refute; run kb-20261124-233726-3b6e5b9).
+- Bibliography identifiers (item 3, 4538 of 52725 printed ids not taken): agreed, not fixed
+  here; parser formats listed in HANDOFF (\arXiv{id}{class}, "[HEP-PH 9610477]", bare ids,
+  \eprint{}, DOIs in \url/\href/\doibase).
+- Parse rate (item 5): 714/744 = 95.97 % by the verifier's definition, recorded 96.6 %; after
+  ingest4 recorded 737/762 = 96.7 % (QA of this session, run kb-20261124-233515-0ed31c7).
+  2505.00286's bare \abstract: open (HANDOFF).
+
+### What the six wrong claims of the sample have in common
+682, 85, 781, 714, 809, 804. None was ever read against its own wording after it entered the
+queue: each was "processed" by its pipeline step, not by its text. 682's reader saw the error
+and wrote the right reading into the verify event, but the tool can only upgrade a label, not
+correct a text, so the label endorsed the old wording. 85 was cut by the automatic seeder and
+only machine-located. The four brief seeds had no CHECK.md row, and the brief-check join
+(claims_brief) processed only seeds that had one. [JUDGEMENT] The fix in the process: a verify
+whose evidence contradicts the claim text must become a superseding claim (as done for 862);
+brief seeds are processed by their text, not by their CHECK.md row; machine-located claims
+shorter than a sentence are flagged before they count. These go to the next claims package.
+
+### Claims the new papers serve (409, 447, 449, 450, 452)
+409, 447, 449, 450 verified at the abstract lines of the TeX sources (6, 1, 7, 5 locator rows,
+all resolved); the label says fulltext but the reading is at abstract level (the verifier's
+third weak point; stated in each evidence text). 452 partly right: 2602.06961 is a PN N-body
+paper of the Jena group, 2610.20594 a Peters-equation method that uses the pn-nbody code;
+claim 864 carries the precise text, 452 annotated (its "likely competitors" is F's judgement).
