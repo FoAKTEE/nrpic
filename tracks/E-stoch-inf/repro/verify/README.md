@@ -1,14 +1,15 @@
 # repro/verify: fresh verifier of the reproduction of arXiv:2401.08530 and arXiv:2512.14649
 
-Package of Track E (decision 0028, item 1, "verify"). Verdicts: `VERIFIER.md`. Predictions and
-outcomes: `JOURNAL.md` (entry 1 committed before any computation). No card time was used.
+Package of Track E (decision 0028, item 1, "verify"). Verdicts: `VERIFIER.md` (sections 1-7: first
+pass; section 8: update pass on the five continued runs, 2026-11-24). Predictions and outcomes:
+`JOURNAL.md` (entries 1 and 5 committed before any computation of their pass). No card time was used.
 
 ## Contents
 
 | Path | What |
 |---|---|
 | `VERIFIER.md` | claims checked, how, verdicts (CONFIRMED / NOT CONFIRMED / WRONG), what could not be checked, the three weakest points |
-| `JOURNAL.md` | predictions (entry 1), outcomes (entries 2, 3) |
+| `JOURNAL.md` | predictions (entries 1, 5), outcomes (entries 2, 3, 4, 6) |
 | `scripts/onepatch.py` | P0 one patch: background schemes, Ito and Stratonovich readings (50 000 paths), Ito-lemma Monte Carlo, appendix-D amplitude from my Mukhanov-Sasaki solutions |
 | `scripts/onepatch_seeds.py` | seed spread of the two readings, clipped moments figure |
 | `scripts/lattice.py` | my reader of the NRSFDMP2 dumps (self-test on analytic multi-block fields) and R^NR extraction, constraint statistics |
@@ -17,6 +18,7 @@ outcomes: `JOURNAL.md` (entry 1 committed before any computation). No card time 
 | `scripts/entrywin.py` | window sensitivity of the rungs' entry maxima |
 | `scripts/background.py` | box means of the records against my Friedmann solution; one-point widths |
 | `scripts/errata.py` | sympy rederivation of six misprints (E1, E3, E6, E7, E8, E10) |
+| `scripts/cont.py` | update pass: joins of the continued runs (records, dumps, seams), SR sign flip over its full span, constraint ratios from the dumps against their magnitudes, Fig. 8 records 32-256, Fig. 7 at 256 against the lockstep record and my MS solution plus reference-free rung differences, level 2 against level 0 at N_f (SR, USR) under P1:520's 1e-4 |
 | `scripts/figstyle.py` | copy of `python/nrpic/figstyle.py` |
 
 Outputs (figures, JSON) are in the run directories `scratch/E-stoch-inf/<run_id>/` of the runs
@@ -40,6 +42,17 @@ python3 tracks/E-stoch-inf/repro/verify/scripts/entrywin.py --out "$NRPIC_RUN_DI
 python3 tracks/E-stoch-inf/repro/verify/scripts/background.py --out "$NRPIC_RUN_DIR" --latsr <dir> --latusr <dir>
 ```
 
+Update pass (section 8; about 2 min for the records, 10 min for the dumps on 3 cores):
+
+```
+python3 tracks/E-stoch-inf/repro/verify/scripts/cont.py --only joins signflip convrec --out "$NRPIC_RUN_DIR"
+python3 tracks/E-stoch-inf/repro/verify/scripts/cont.py --only signflip convspec backreact constraints \
+    --workers 3 --out "$NRPIC_RUN_DIR"
+```
+
+When RSF256's fourth continuation (q0034) has ended: add its run id to `RUNS["RSF256"]` in `cont.py`
+and rerun `--only joins signflip constraints`.
+
 Read 256^3 dumps sequentially (the reader seeks per variable); 3 cores and about 2 GB of memory
 per dump.
 
@@ -55,4 +68,14 @@ per dump.
   main open point; a check of P1 Fig. 2 against P1 Fig. 3 by Parseval (my reading: inconsistent
   by that factor) belongs in the note as [JUDGEMENT], or in a question to the authors (the
   group's step; nobody here contacts them).
+- To the lead (update pass, VERIFIER.md section 8): P1:520 is per ten thousand (confirmed); my
+  section-2 per-mille verdict is replaced by 8.5 (SR meets 1e-4; USR exceeds it in 24 per cent of the
+  shells, mostly above abs(n) = 32). Name the window of row 48 (0.5 <= N <= ln 64; over the flipped
+  run's full span the smallest ratio is 2.7e2 at N = 4.39) and the shell count of rows 77, 81, 82
+  (more than 10 independent modes). State the definition behind rows 68-71 (256 member of Fig. 7):
+  against the lockstep record and against my MS solution I get 2.0e-7 (not 3.7e-7), order 2.3-3.5
+  (not 1.48), per-mode 3.3e-7 amplitude or 4.4e-7 power (not 6.7e-7). The floor itself holds and is
+  now shown independent of dx, dt and the linear reference (8.3); the note may use that.
+- To repro/continue (lead): when q0034 (run E-20261124-214913-5956891) ends, rows 56 and the RSF256
+  items of 8.6 can be verified; its join overlaps cycles 653-895 and should be bit-identical.
 - None to core.

@@ -145,3 +145,140 @@ selection in my script):
 - Weakest point 2 therefore narrows: the definitions exist in the scripts, but the ledger and
   (as far as the ledger shows) the note do not state them; rows 49, 68, 70, 71, 83, 94, 101, 109
   remain unexplained by me.
+
+## 8. Update pass: the five continued runs (2026-11-24 14:05-14:35 PST; sections 1-7 unchanged)
+
+Read for this pass, as a fresh reader: the claims (not the verdicts) of `repro/figs/RESULTS.md`
+for Figs. 7, 8, 9 and the sign flip, the ledger rows without a verifier check (42, 48-52, 56,
+68-75, 81-83), the run map `repro/continue/scripts/{runs,conts}.json` and queue entry q0034; the
+section headings of RESULTS.md carry verdict words, which I saw. Predictions: `JOURNAL.md` entry 5
+(committed 6ced7199 before any computation); outcomes: entry 6. Own code: `scripts/cont.py` (with
+`lattice.py`, `compare.py`). Runs (processors only, 0 card-hours): E-20261124-220857-2b8e5dc
+(records), E-20261124-221133-971cd6f (dumps), E-20261124-222329-dfc72d9 (two more definitions);
+failed and kept: E-20261124-220850-3ef0c7f, E-20261124-221028-81db3d8. Figures (looked at):
+`fig_joins.png`, `fig_convrec_256.png`, `fig_signflip_full.png`, `fig_convspec_256.png`,
+`fig_backreaction_Nf.png` in those run directories.
+
+### 8.1 Joins: every continuation joins its original without a jump
+
+| Run | Original / continuations | Evidence | Verdict |
+|---|---|---|---|
+| RNC256 | E-20261123-045030-c20bcb3 / E-20261124-130629-61fe0b0 | 116 common record lines bit-identical (all 27 columns), dump 1 byte-identical; joined 0-734, t = 4.5, N = 4.3876 | CONFIRMED |
+| CL256S | E-20261123-090727-4b6e5a5 / E-20261124-130952-4be980b | 37 common lines (cycles 979-1015) bit-identical; joined 0-1386, N = 8.0989 | CONFIRMED |
+| CL256U | E-20261123-065855-265732a / E-20261124-130711-a5dec67 (cut), E-20261124-201048-33a3a39 | 125 and 157 common lines bit-identical; dumps 8, 9 byte-identical in all three; joined 0-1702, N = 10.000 | CONFIRMED |
+| AL2S | E-20261123-152119-38957ba / E-20261124-131359-49afe29 | no overlap (1227 / 1228); second difference across the seam over the median of its 20 neighbours: 1.00 (efolds, <phi>, <K>), 2.2 (<abs H/[H]>), 0.87 (<abs M/[M]>); constant step | CONFIRMED (no jump at the level of the neighbours) |
+| RSF256 | E-20261123-035925-8439d79 / -130529-da8c917, -201031-4c41e7b, -202134-0b1ce0c, all resumed from the original's sr.00000.rst (t = 0) | 29, 1 and 82 common lines bit-identical; dumps 1, 2 byte-identical; joined 0-895, t = 5.4917, N = 5.3242 of 8.10 | CONFIRMED to cycle 895; the rest PENDING (8.6) |
+
+### 8.2 Sign flip over its full span, and the constraint ratios against their magnitudes
+
+| Claim (ledger row) | My evidence (RNC256 against the joined RSF256 record, 734 cycles, same dt) | Verdict |
+|---|---|---|
+| Flipped run ends at N = 4.39 (52) | 4.3876 (t = 4.5) | CONFIRMED |
+| Largest flipped <abs H/[H]> 9.9e-8 (51) | 9.907e-8 at N = 0.32 | CONFIRMED |
+| Largest flipped <abs M/[M]> 0.22 (50) | 0.2159 at N = 4.18 | CONFIRMED |
+| Median ratio 1.1e5 (49) | 1.055e5 over 0.5 <= N <= ln 64; 1.029e5 over 0.5 <= N <= 4.388 | CONFIRMED |
+| Smallest ratio 1.4e3 "in the window" (48) | 1.386e3 at N = 4.158 = the edge of 0.5 <= N <= ln 64. Over the full span the smallest is 2.66e2, at the flipped run's last line (N = 4.388): from N of about 3.1 the proper run's <abs H/[H]> climbs to its bump (5.10e-11 at N = 4.43) while the flipped one decays (`fig_signflip_full.png`) | CONFIRMED for the stated window; over the full span the control's contrast is 2.7e2, not 1.4e3: the row should name its window |
+| Ratios against absolute magnitudes | <[H]> lies in 10.83-12.00 (flipped), so <abs H>/<[H]> equals <abs H/[H]> to 1e-7 in both runs and the absolute ratio has the same median (1.03e5); flipped <abs H> at most 1.18e-6. For M the two means differ by up to 17 per cent. In all 11 dumps of RNC256 and 24 of RSF256 the record means equal my dump means to 2.9e-15 (abs H/[H], abs M/[M], [H], abs H); my [H] = abs R3 + (2/3)K^2 + At At + abs(16 pi E) equals the dumped Hmag to 4.4e-16 | CONFIRMED (the H field itself remains the code's, section 5) |
+| Proper SR maxima over N <= ln 64: 3.43e-11, 1.18e-4; 2.72e-4 by N = 4.39 | 3.429e-11 and 1.179e-4, both at N = 4.158 (window edge, still rising); 2.68e-4 by N = 4.388 | CONFIRMED (the last within 1.5 per cent) |
+
+The order of magnitude against P1:541 ("~1e-5") is unchanged: 1e-7, a factor 100 below (section 2).
+
+### 8.3 The 256-cell members of the two convergence figures
+
+Fig. 8 (records, run E-20261124-220857-2b8e5dc), time-matched median of finer over coarser for
+0.5 <= N <= ln 8:
+
+| Quantity (row) | 64/32 | 128/64 | 256/128 | Ledger | Verdict |
+|---|---|---|---|---|---|
+| SR <abs H/[H]> (72) | 0.186 | 1.167 | 1.109 | 0.19, 1.17, 1.11 | CONFIRMED |
+| SR <abs M/[M]> (73) | 0.875 | 1.005 | 1.123 | 0.88, 1.00, 1.12 | CONFIRMED |
+| USR <abs M/[M]> (74) | 0.783 | 1.002 | 1.073 | 0.78, 1.00, 1.07 | CONFIRMED |
+| USR <abs H - <H>/[H]> (75) | 0.342 | 0.995 | 1.031 | 0.35, 0.99, 1.03 | CONFIRMED |
+
+The factor per doubling of the plateau is 1 from 64 on (no convergence of the plateau, as claimed).
+USR H with the box mean: entry maxima 9.198e-8, 5.380e-9, 3.247e-10, 1.9856e-11, orders 4.10, 4.05,
+4.03 (row 42: 4.03, CONFIRMED), USF256 1.9731e-11 (CONFIRMED). After the entry at 256: SR H 3.53e-3,
+SR M 1.91e-2, USR H - <H> 5.2e-3 of the entry-end value, USR M rising 2.77e4; at N_f the 256 levels
+lie above 128's in SR M (7.9e-8 against 2.9e-8) and USR H (4.2e-14 against 2.1e-14): CONFIRMED. Not
+among the claims: the late SR <abs H/[H]> does converge (3.1e-12, 1.8e-13, 1.1e-14, 1.1e-15 at N_f,
+factors 17, 16, 10 per doubling).
+
+Fig. 7 (spectra at N_f, runs E-20261124-221133-971cd6f and -222329-dfc72d9; my R^NR of the CL256S
+dump 17 and of the three smaller rungs; shells of more than 10 modes):
+
+| Measure | 32 | 64 | 128 | 256 | Factors per doubling |
+|---|---|---|---|---|---|
+| max abs(Delta_NR/Delta_lin - 1), lin = the code's lockstep record (my reading) | 3.17e-3 | 6.16e-5 | 1.00e-6 | 2.0e-7 | 51, 62, 5.0 |
+| the same, lin = my MS solution | 3.41e-3 | 7.94e-5 | 2.29e-6 | 2.0e-7 | 43, 35, 11.5 |
+| per-mode rms abs(R_NR/R_lin - 1) (lockstep), all / abs(n) <= 4 | 7.1e-4 / 1.6e-5 | 1.4e-5 / 4.8e-7 | 4.0e-7 / 3.73e-7 | 3.3e-7 / 3.73e-7 | |
+| per-mode rms of the power ratio (lockstep), all / abs(n) <= 4 | 1.4e-3 / 3.1e-5 | 2.7e-5 / 8.2e-7 | 6.3e-7 / 5.68e-7 | 4.4e-7 / 5.68e-7 | |
+| reference-free: per-mode rms abs(R_a - R_b)/abs(R_b), pairs 32-64, 64-128, 128-256; all / abs(n) <= 4 | 7.65e-4 / 1.6e-5 | 1.87e-5 / 3.6e-7 | 6.25e-7 / 1.3e-8 | | 41, 30 / 44, 27 |
+
+Verdicts: rows 65-67 (3.2e-3, 6.2e-5, 1.0e-6) CONFIRMED against the lockstep record. Row 68 (256:
+3.7e-7) NOT CONFIRMED: both my references give 2.0e-7 (at abs(n) = sqrt 2, as the claim places the
+maximum); row 69 (order 1.48) NOT CONFIRMED: 2.3 (lockstep) or 3.5 (mine); rows 70-71 (per-mode rms
+7.1e-7, 6.7e-7) NOT CONFIRMED to the digits under either reading (amplitude 4.0e-7, 3.3e-7; power
+6.3e-7, 4.4e-7); the ledger does not state the definition behind its 256 values. The qualitative
+claims are CONFIRMED and sharpened: (i) above abs(n) = 4 the 256 field keeps converging (the
+128-256 difference is 30 times below the 64-128 one); (ii) below abs(n) = 4 the 128 and 256 fields
+agree per mode to 1.3e-8, 30 times below their common departure from linear theory (3.73e-7 in
+amplitude at both), while the lockstep records of 128 and 256 agree to 3.4e-9 (abs(n)^2 <= 6) and
+the lockstep record of 256 agrees with my independent MS integration to 7.7e-8: the floor is a
+property of the resolved field relative to linear theory, independent of dx, dt and of the linear
+reference [VERIFIED]. That it is second order in the amplitude is [TO VERIFY] (the claim's own
+test, a run at half the noise amplitude). My own section-4/7 number for 128 (2.3e-6 against my MS)
+was the 128 field's top-shell lattice error, part of which the code's 128 lockstep record shares
+(it differs from my MS by up to 1.2e-6 there); my prediction that my reference could not go below
+1e-6 failed.
+
+### 8.4 Slow roll, level 2 against level 0 at the final time
+
+AL2S dump 17 (t = 8.5, N = 8.0989) against AL0S dump 17, my R^NR and shell sums (run
+E-20261124-222329-dfc72d9):
+
+| Row | Claim | Mine | Verdict |
+|---|---|---|---|
+| 81 | largest shell 7.93e-5 (lowest shells) | 7.932e-5 at abs(n) = 4.47 over the 3395 shells of more than 10 independent modes; 1.125e-4 at abs(n) = 22.6 if both hemispheres count (a 12-mode shell); 1.405e-4 at abs(n) = 3.46 over all exact abs(n)^2 shells | CONFIRMED with that definition |
+| 82 | rms over abs(n) <= 32: 1.505e-5 | 1.505e-5 (independent modes); 1.557e-5 (both hemispheres); 1.748e-5 (all shells) | CONFIRMED with that definition |
+| 83 | fraction positive 0.50 (49.7 per cent) | 49.66 per cent | CONFIRMED |
+| - | per-mode relative rms 2.2e-4; the same to four digits as at t = 7.5 | 2.23e-4; the shell differences change by 1.2e-4 of their maximum between t = 7.504 and 8.5 | CONFIRMED |
+
+The same definition also settles section 2's USR maximum: 7.03e-4 over shells of more than 10
+independent modes (ledger row 77, 7.0e-4: CONFIRMED with it), 9.15e-4 over all shells.
+
+### 8.5 P1:520 and the backreaction verdict under the right bound
+
+The source line P1:520 reads "a detectable but $\lesssim 1$\textpertenthousand\text{} relative
+change in power spectrum for all scales", with `textcomp` loaded at P1:43: the symbol is per ten
+thousand, 1e-4, not per mille. The note is right; section 2's phrase "All below P1:520's 1 per
+mille" read the wrong symbol (sections 1-7 are left as written; this paragraph replaces that
+verdict). Under 1e-4:
+
+- SR (N_f): every shell of more than 10 independent modes meets the bound (largest 7.9e-5); 3 of
+  3414 sparse shells exceed it, at most 1.4e-4, all at abs(n) <= 32. P1:520 CONFIRMED for SR.
+- USR (N_f): rms over all shells 1.04e-4, at the bound; 24 per cent of the shells exceed it (1.8 per
+  cent for abs(n) <= 32, 32 per cent above), the largest by a factor 9 (9.15e-4; 7.0e-4 with more
+  than 10 independent modes). P1:520's "for all scales" is NOT met by our USR level 2 above
+  abs(n) of about 32. Whether P1's own Fig. 9 shows the same I did not read off in this pass.
+
+### 8.6 Pending (RSF256 beyond cycle 895)
+
+RSF256's fourth continuation is queue entry **q0034** (run E-20261124-214913-5956891, Slurm job
+5215, PENDING when checked at 14:05 PST; it resumes from sr.00002.rst of E-20261124-202134-0b1ce0c
+at cycle 652, so it overlaps cycles 653-895 and its join can be checked bit for bit with
+`cont.py --only joins` after adding its run id to `RUNS["RSF256"]`). PENDING on it: ledger row 56
+(SR per-cell constraint rows of the one-point figure), the constraint panels of P1 Fig. 2, P1 Fig.
+3 from RSF256 itself, and the proper SR constraint record from N = 5.32 to N_f. Not pending: the
+sign-flip control (its proper partner is joined beyond N = 4.39).
+
+### 8.7 The three weakest points after this pass
+
+1. Unchanged: the factor 3.5-4 in the one-point amplitudes and the factor 100 in the flipped
+   H/[H] against P1 (section 6, point 1).
+2. Narrowed again: of the new rows, those that depend on a definition the ledger does not state
+   are 68-71 (the 256 member of Fig. 7: 3.7e-7, order 1.48, per-mode 7.1e-7 and 6.7e-7). Two
+   independent references give 2.0e-7 and order 2.3-3.5; the claim that the convergence stalls at
+   256 at the lowest shells stands, its digits do not. Rows 48 and 81-82 hold only with their
+   window (0.5 <= N <= ln 64) and shell count (independent modes), which they should name.
+3. Resolved for four of five continued runs (joins bit-exact, sign flip to N = 4.39, level 2 at
+   N_f, 256 rungs in both convergence figures); RSF256 remains (8.6).

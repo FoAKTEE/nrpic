@@ -258,3 +258,76 @@ Predictions (written before any of the computations below; outcomes in entry 6):
   "all below P1:520's 1 per mille" was read against the wrong bound: under 1e-4 the USR level 2
   (rms 1.04e-4, largest 9.2e-4) exceeds the bound at the upper shells and the SR level 2 (largest
   7.9e-5 in shells of more than 10 modes) meets it; refuted if the symbol is \textperthousand.
+
+## Entry 6, 2026-11-24 14:30 PST: outcomes of V9-V13
+
+Runs (processors, 0 card-hours): E-20261124-220857-2b8e5dc (records: joins, sign flip, Fig. 8),
+E-20261124-221133-971cd6f (sign flip with the truncated last step interpolated, constraints from 35
+dumps, Fig. 7 at 256, level 2 at N_f), E-20261124-222329-dfc72d9 (the same Fig. 7 and level-2
+numbers with two more definitions: per-mode power ratio, shells of more than 10 independent modes).
+Failed and kept on record: E-20261124-220850-3ef0c7f (a keyword with a minus sign in cont.py),
+E-20261124-221028-81db3d8 (compare.py on a record that starts after the entry; guarded). Figures
+looked at: fig_joins.png, fig_convrec_256.png (220857); fig_signflip_full.png, fig_convspec_256.png,
+fig_backreaction_Nf.png (221133; the last two byte-identical in 222329).
+
+V9 held. Every record line at a common cycle is bit-identical between original and continuation
+(RSF256: 29, 1 and 82 common cycles for its three continuations, all of which resumed from the
+original's sr.00000.rst at t = 0; RNC256 116; CL256U 125 and 157; CL256S 37), duplicated lines inside
+the originals agree exactly, and the dumps at common indices are byte-identical (RSF256 1, 2;
+RNC256 1; CL256U 8, 9 in all three runs). Joined records have no gap: RSF256 0-895 (N = 5.324),
+RNC256 0-734 (N = 4.388), CL256U 0-1702 (N = 10.000), CL256S 0-1386, AL2S 0-1386 (N = 8.0989). AL2S
+has no overlap (original to cycle 1227, continuation from 1228): the second difference across the
+seam over the median of its 20 neighbours is 1.00 (efolds, <phi>, <K>), 2.2 (<|H|/[H]>), 0.87
+(<|M|/[M]>), all below my bound 3.
+
+V10 held in part. Matched by cycle (dt identical; only the flipped run's last step is shortened
+to tlim, its partner interpolated): flipped/proper <|H|/[H]> median 1.055e5 over 0.5 <= N <= ln 64,
+1.029e5 over 0.5 <= N <= 4.388, largest 1.27e5; smallest 1.386e3 at N = 4.158 inside ln 64, but
+2.66e2 at the flipped run's end (N = 4.388) over the full span: the ratio falls from N of about 3.1
+as the proper run's <|H|/[H]> climbs to its bump (5.10e-11 at N = 4.43) and the flipped one decays.
+My "minimum above 1e3" failed over the full span; the refutation bound 1e2 was not reached. Flipped
+maxima: <|H|/[H]> 9.907e-8 (N = 0.32), <|M|/[M]> 0.2159 (N = 4.18), end N = 4.3876: held. Absolute
+magnitudes: <[H]> lies in 10.83-12.00, so <|H|>/<[H]> equals <|H|/[H]> to 1e-7 in both runs and
+the absolute <|H|> ratio has the same median (1.03e5); flipped <|H|> at most 1.18e-6. For M the
+ratio of means differs from the mean of ratios by up to 17 per cent ([M] is not uniform). From the
+dumps (11 of RNC256, 24 of RSF256 including the originals'): record means equal my dump means to
+2.9e-15 or better (|H|/[H], |M|/[M], [H], |H|), my [H] equals the dumped Hmag to 4.4e-16 where At
+is dumped, and Hmag >= (2/3)K^2 + |16 pi E| everywhere: held. Proper SR maxima over N <= ln 64:
+3.429e-11 and 1.179e-4, both at the window's edge N = 4.158 (held); <|M|/[M]> 2.68e-4 by N = 4.388.
+
+V11 (a) held: plateau ratios 64/32, 128/64, 256/128: SR H 0.186, 1.167, 1.109; SR M 0.875, 1.005,
+1.123; USR M 0.783, 1.002, 1.073; USR H - <H> 0.342, 0.995, 1.031. USR H with the box mean, entry
+maxima 9.198e-8, 5.380e-9, 3.247e-10, 1.9856e-11, orders 4.10, 4.05, 4.03; USF256 1.9731e-11.
+Not in the claims and seen in the figure: the late SR <|H|/[H]> converges (3.1e-12, 1.8e-13,
+1.1e-14, 1.1e-15 at N_f, factors 17, 16, 10) while the plateau does not.
+V11 (b) FAILED (in my favour): against my own MS solution the 256 rung gives 2.0e-7 (shells of more
+than 10 modes), not >= 1e-6; my 128 value 2.29e-6 was the 128 field's top-shell lattice error, part
+of which the code's lockstep record at 128 shares (lockstep against my MS: up to 1.2e-6 at 128,
+7.7e-8 at 256). Against the code's lockstep record (my reading of .modes, my alphas): 3.17e-3,
+6.16e-5, 1.00e-6, 2.0e-7. Both references give 2.0e-7 at 256 where the ledger has 3.7e-7, and an
+order 128 -> 256 of 2.3 (lockstep) or 3.5 (mine) where the ledger has 1.48. Per-mode relative rms
+against lockstep: amplitude 4.0e-7 (128), 3.3e-7 (256); power ratio 6.3e-7, 4.4e-7 (ledger 7.1e-7,
+6.7e-7); at |n| <= 4 identical at 128 and 256 (3.73e-7 amplitude, 5.68e-7 power).
+V11 (c) held where the floor lives, failed as written overall. Per-mode rms of R_a - R_b over |R_b|:
+7.65e-4 (32-64), 1.87e-5 (64-128), 6.25e-7 (128-256), factors 41 and 30; at |n| <= 4: 1.6e-5,
+3.6e-7, 1.3e-8. The lockstep records of 128 and 256 agree to 3.4e-9 or better for |n|^2 <= 6. So
+at the floor shells the two lattices agree 30 times below the floor and two independent linear
+references agree to < 8e-8: the floor is a departure of the resolved field from linear theory that
+does not depend on dx, dt or the reference. Overall the 128-256 difference (6.25e-7) is above my
+4e-7 criterion because above |n| = 4 the 128 field still carries its lattice error (6.7e-7).
+
+V12 held with the definition "more than 10 independent modes" (3395 shells): SR level 2 - level 0
+at N_f, rms over |n| <= 32 1.505e-5, largest 7.93e-5 at |n| = 4.47, 49.66 per cent positive,
+per-mode relative rms 2.23e-4; counting both hemispheres (3401 shells) 1.557e-5 and 1.125e-4 (a
+12-mode shell at |n| = 22.6); all exact |n|^2 shells 1.405e-4 at |n| = 3.46. Change from t = 7.504
+to 8.5: 1.2e-4 of the largest difference (frozen). USR at N_f: largest 7.03e-4 (independent-mode
+shells), 9.15e-4 (all shells), rms 1.04e-4.
+
+V13 held. P1:520 reads "$\lesssim 1$\textpertenthousand" with textcomp loaded (P1:43): 1e-4. My
+section-2 phrase "all below P1:520's 1 per mille" used the wrong bound. Under 1e-4: SR meets it in
+every shell of more than 10 independent modes (3 sparse shells of 3414 exceed it, at most 1.4e-4);
+USR does not: 24 per cent of the shells exceed it (1.8 per cent for |n| <= 32, 32 per cent above),
+up to 9 times.
+
+Pending: everything that needs RSF256 beyond cycle 895 (queue q0034, run E-20261124-214913-5956891,
+Slurm job 5215, PENDING at 14:05 PST).
