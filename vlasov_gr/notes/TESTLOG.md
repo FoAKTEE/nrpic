@@ -129,3 +129,34 @@ All reduced diagnostics stored in [`repro_wave4a.npz`](file:///home/schmidt/ssci
   - Analytic `10k`: `midpoint` (`1.78s`, `dE med/p99/max = 8.22e-9/3.31e-8/9.29e-8`, `dQ/K_med = 5.72e-11`) vs `gl4` (`2.10s`, **`5.81e-16/3.52e-15/3.71e-14`**, **`dQ/K_med = 7.22e-17`**); analytic `100k`: `midpoint` (`1.90s`, `dE = 8.47e-9/3.36e-8/7.22e-7`) vs `gl4` (**`2.00s`, `dE = 5.82e-16/3.63e-15/6.65e-13`, `dQ/K_med = 7.23e-17`**).
   - 6-level SMR mesh `10k`: `midpoint (filter_densitized=false)` (`66.85s`, `dE_med=1.11e-7`, `filt(t0/max) = -2.25e-6 / 8.91e-4`) vs `gl4 (filter_densitized=true)` (`75.71s`, `dE_med=1.05e-7`, **`filt_t0 = 0.00e+00`**; SMR boundary crossing still yields `filt_max = 8.64e-4` -> Iteration 3 candidate).
   - 6-level SMR mesh `100k`: `midpoint` (`77.62s`, `dE_med=1.10e-7`, `filt(t0/max) = -2.25e-6 / 5.29e-4`, `|<e^{iphi}>|=0.1623`) vs `gl4` (`91.70s`, `dE_med=1.06e-7`, **`filt_t0 = 0.00e+00`**, `filt_max = 5.03e-4`, `|<e^{iphi}>|=0.1623`).
+
+
+### Verified Phase 4 Wave 4B — M5a–M5c Self-Gravitating Relativistic Collapse & Equilibria at $N = 10^4, 10^5$ (`gb204` B200 GPU, Milestone #5)
+
+All reduced diagnostics stored in [`repro_wave4b.npz`](file:///home/schmidt/ssci-haiyangw/nrpic/vlasov_gr/paper/data/repro_wave4b.npz) (`151 KB`) via [`run_repro_wave4b.py`](file:///home/schmidt/ssci-haiyangw/nrpic/vlasov_gr/notes/scripts/run_repro_wave4b.py) (pre-Iteration-3 baseline with `filter_densitized = true` on `hyb`).
+
+- **M5a Oppenheimer-Snyder $R_0 = 5M$ Collapse (7-level AMR, Z4c + FastFlow)**:
+  - `os_10k_lat_mid` ($N=9{,}328$): `wall = 130.9s` (`129.0s` comp), `rho_err = 4.18e-4`, `t_AH = 16.39M`, `M_AH = 0.99969M`, `t_exc99 = 19.72M`, `||H||_(0/max) = (0.322 / 1.896)`, `filt(t0/max) = (-2.49e-3 / 2.20e-2)`.
+  - `os_10k_lat_hyb` ($N=9{,}328$): `wall = 132.2s` (`130.5s` comp), `rho_err = 3.35e-3`, `t_AH = 16.39M`, `M_AH = 1.00272M`, `t_exc99 = 19.72M`, `||H||_(0/max) = (0.323 / 1.912)`, `filt(t0/max) = (0.00e+00 / 2.38e-2)`.
+  - `os_10k_qmc_hyb` ($N=10{,}000$, unstratified Sobol): `wall = 262.5s` (`260.5s` comp), `rho_err = 6.91e-1`, `t_AH = 16.31M`, `M_AH = 1.00070M`, `t_exc99 = 19.72M`, `||H||_(0/max) = (0.414 / 5.057)`, `filt(t0/max) = (0.00e+00 / 7.24e-3)`.
+  - `os_100k_lat_mid` ($N=102{,}208$): `wall = 152.0s` (`150.2s` comp), `rho_err = 7.60e-2`, `t_AH = 16.20M`, `M_AH = 0.99995M`, `t_exc99 = 19.68M`, `||H||_(0/max) = (0.346 / 1.139)`, `filt(t0/max) = (-2.47e-3 / 1.33e-2)`.
+  - `os_100k_qmc_hyb` ($N=100{,}000$): `wall = 158.1s` (`156.3s` comp), `rho_err = 5.30e-2`, `t_AH = 16.35M`, `M_AH = 1.00307M`, `t_exc99 = 19.68M`, `||H||_(0/max) = (0.347 / 1.536)`, `filt(t0/max) = (0.00e+00 / 4.94e-3)`.
+- **M5b Prolate Spheroid $e = 0.9, b = 10M$ Collapse (7-level AMR, `nfilter = 4, filter_compensate = true`)**:
+  - `prol_10k_mc_mid` ($N=10^4$): `wall = 818.5s` (`814.7s` comp), `|COM0| = 2.18e-17`, `q_asym0 = 6.38e-3`, `t_AH = 32.25M`, `M_AH = 0.94694M`, `t_exc99 = 38.06M`, `||H||_(0/max) = (0.543 / 6.312)`, `filt(t0/max) = (-5.73e-5 / 9.77e-1)`.
+  - `prol_10k_qmc_hyb` ($N=10^4$, `qmc_octant`): `wall = 790.6s` (`786.9s` comp), `|COM0| = 4.44e-19`, `q_asym0 = 0.00e+00`, `t_AH = 32.31M`, `M_AH = 1.02552M`, `t_exc99 = 36.56M`, `||H||_(0/max) = (0.348 / 6.538)`, `filt(t0/max) = (0.00e+00 / 1.26e-3)`.
+  - `prol_100k_mc_mid` ($N=10^5$): `wall = 785.6s` (`782.0s` comp), `|COM0| = 1.15e-16`, `q_asym0 = 2.73e-3`, `t_AH = 32.13M`, `M_AH = 0.97783M`, `t_exc99 = 36.94M`, `||H||_(0/max) = (0.274 / 6.725)`, `filt(t0/max) = (-5.80e-5 / 1.155)`.
+  - `prol_100k_qmc_hyb` ($N=10^5$, `qmc_octant`): `wall = 789.8s` (`786.2s` comp), `|COM0| = 1.91e-19`, `q_asym0 = 0.00e+00`, `t_AH = 32.00M`, `M_AH = 1.02772M`, `t_exc99 = 36.00M`, `||H||_(0/max) = (0.217 / 5.733)`, `filt(t0/max) = (0.00e+00 / 6.00e-4)`.
+- **M5c Shapiro-Teukolsky Relativistic Polytrope Sequence ($N = 10^4$ & $N = 10^5$, 5/7-level AMR)**:
+  - $y_c = 0.900$ (stable, `vp01`, $N=10^4$): `mid` (`201.5s`, `alp = 0.886->0.886`, `r50 = 10.42->10.30`, `|COM| = 3.12e-2->2.64e-2`) vs `hyb` (`205.6s`, `alp = 0.873->0.890`, `r50 = 10.42->10.26`, `|COM| = 5.94e-17->1.40e-3`).
+  - $y_c = 0.819$ (marginal, `vp01`):
+    - $N=10^4$: `mid` (`199.0s`, `alp_min=0.788`, `r50 = 5.88->5.65`, `|COM| = 1.79e-2->6.82e-3`, `filt_t0=-3.95e-5`), `anti` (`205.4s`, `alp_min=0.799`, `r50 = 5.88->5.87`, `|COM| = 9.57e-18->3.66e-14`, `filt_max=1.03e-15`), `hyb` (`204.8s`, `alp_min=0.797`, `r50 = 5.88->6.06`, `|COM| = 1.02e-16->1.13e-3`, `filt_max=1.03e-15`).
+    - $N=10^5$: `mid` (`204.0s`, `alp_min=0.801`, `r50 = 5.88->5.81`, `|COM| = 6.61e-3->4.14e-3`, `||H||_0=0.066`) vs `hyb` (`215.5s`, `alp_min=0.798`, `r50 = 5.88->5.79`, `|COM| = 7.77e-18->1.69e-4`, `||H||_0=0.118`, `filt_max=1.03e-15`).
+  - $y_c = 0.756$ (`dp10`, $N=10^4$ collapse): `mid` (`671.7s`, `t_AH = 147.44M`, `M_AH = 0.9975M`, `filt_max = 4.33e-1`) vs `hyb` (`980.7s`, `t_AH = 113.88M`, `M_AH = 0.9957M`, `filt_max = 2.16e-3`).
+  - $y_c = 0.605$ (`vp01`, $N=10^4$ unstable collapse): `mid` (`1578.8s`, `t_AH = 191.00M`, `M_AH = 0.9988M`, `r50 = 2.84->10.42`, `|COM| = 9.01e-3->4.44`) vs `hyb` (`1616.6s`, `t_AH = 118.44M`, `M_AH = 0.9996M`, `filt_max = 1.46e-3`).
+  - $y_c = 0.500$ (`vp01` collapse):
+    - $N=10^4$: `mid` (`1219.5s`, `t_AH = 104.31M`, `M_AH = 1.0003M`, `filt_max = 1.90e-1`) vs `hyb` (`1050.1s`, `t_AH = 76.06M`, `M_AH = 1.0005M`, `filt_max = 2.22e-3`).
+    - $N=10^5$: `mid` (`1009.1s`, `t_AH = 68.81M`, `M_AH = 1.0018M`, `filt_max = 4.47e-1`) vs `hyb` (`1016.0s`, `t_AH = 70.81M`, `M_AH = 1.0011M`, `filt_max = 7.49e-4`).
+  - $y_c = 0.283$ (`vp01` dispersive outer-branch dispersal):
+    - $N=10^4$: `mid` (`199.8s`, `alp = 0.422->0.984`, `r50 = 1.68->80.69`, `|COM| = 6.04e-3->1.08e-1`, `filt_max=1.73e-2`) vs `hyb` (`207.5s`, `alp = 0.422->0.981`, `r50 = 1.68->77.13`, `|COM| = 1.91e-18->1.78e-13`, `filt_max=3.25e-3`).
+    - $N=10^5$: `mid` (`206.0s`, `alp = 0.422->0.982`, `r50 = 1.68->79.05`, `|COM| = 3.00e-3->5.59e-2`, `filt_max=1.73e-2`) vs `hyb` (`225.8s`, `alp = 0.422->0.981`, `r50 = 1.68->76.91`, `|COM| = 1.11e-17->1.57e-2`, `filt_max=1.97e-3`).
+  - $y_c = 0.500$ (`mig`, $N=10^4$ outward migration): `mid` (`201.8s`, `alp = 0.557->0.889`, `r50 = 2.29->10.68`, `|COM| = 7.49e-3->2.89e-2`) vs `hyb` (`206.5s`, `alp = 0.557->0.898`, `r50 = 2.29->9.78`, `|COM| = 1.86e-18->1.22e-13`).
