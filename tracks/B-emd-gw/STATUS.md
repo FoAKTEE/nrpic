@@ -13,8 +13,9 @@ last-result: batch 11 (lead, 2026-11-24): population GR analysis B-20261124-1319
              (B-20261124-125457-79ce723): the 128-cell floor is the start step (J4a-c hold).
              shear: P10 holds (f = 1 vs 1/3: -8.7e-5, B-20261124-131336-bc61eee); L2 with
              narrow fans -0.828, -0.830, -0.835 at N_y = 32-128 (B-20261124-134209-4584052),
-             near CosmoGRaPH's -0.8183, far from gevolution and GRAMSES, not converging, its
-             field 10-40 per cent off the constraints (B-20261124-135244-17ebf5c); S3
+             near CosmoGRaPH's -0.8183, far from gevolution and GRAMSES; at N_y = 64 it
+             converges in particles to about -0.820 (B-20261124-140808-e6ba5c3), the mesh
+             limit is open (-0.831 at 128), field 10-40 per cent off the constraints; S3
              floor 2-3e-5. Mosaic (C13) B-20261124-133709-85c4be7; ladder (C10) -135151-8e1ac95; TT spectra
              B-20261124-134953-18618df: the excess starts at |k| = 4-5 k_f (R22)
 running:     card: Newtonian reference at 128^3 with the GR runs' particles

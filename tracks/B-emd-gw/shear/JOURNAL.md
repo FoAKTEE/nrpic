@@ -377,3 +377,15 @@ cell along y, and at N_y = 128 with 4. Prediction [JUDGEMENT]: Delta converges i
 number at N_y = 64 (|Delta(8) - Delta(4)| < |Delta(4) - Delta(2)|, and below 3e-3), and at 4 per
 cell N_y = 128 lies within 5e-3 of N_y = 64; the converged value lies within 0.01 of CosmoGRaPH's
 -0.8183. Refuted if Delta(8) - Delta(4) is not smaller than Delta(4) - Delta(2).
+
+Outcome of series 5 (run B-20261124-135951-237e27b; summary B-20261124-140808-e6ba5c3,
+`figs/fig_ppc.png` looked at; the y label is cut at the left edge) [VERIFIED by these runs]:
+- At N_y = 64, Delta = -0.83017, -0.82327, -0.82180, -0.82082 for 1, 2, 4, 8 particles per cell
+  along y: differences 6.9e-3, 1.5e-3, 1.0e-3. Converges in particle number: HOLDS (8 - 4 below
+  4 - 2, and below 3e-3). Linear in 1/n at the two largest n puts the limit near -0.820, 0.002
+  from CosmoGRaPH's -0.8183 [arithmetic on these runs].
+- At 4 per cell N_y = 128 gives -0.83123, 9.4e-3 below N_y = 64: the "within 5e-3" part FAILS. The
+  mesh dependence remains at fixed particles per cell, away from CosmoGRaPH; the constraint means
+  (Hr 0.135-0.15, Mr 0.12-0.15 over 1 <= t <= t_A) move little with either.
+- The converged-value part of the prediction is therefore not judged: the particle limit at
+  N_y = 64 sits beside CosmoGRaPH, the mesh limit is open.

@@ -301,3 +301,8 @@ looked at, against predictions written before the runs (journals named below).
   0.1-0.4 from a = 2.25 on at every N_y; the L2 values are not a converged statement. Schematic
   of the verification ladder (C10) drawn (B-20261124-135151-8e1ac95) and looked at; TT spectra of
   the GR box (B-20261124-134953-18618df): the excess starts at |k| = 4-5 k_f.
+- shear series 4 and 5 (B-20261124-135516-34befaf, -135951-237e27b; summary -140808-e6ba5c3):
+  the step does not move L2 (8e-5); particles along y do (1-8 per cell at N_y = 64: -0.830 to
+  -0.821, converging near -0.820, beside CosmoGRaPH); N_y = 128 at 4 per cell -0.831. Wrong against
+  prediction: series 4's 'Delta moves less than 2.1e-3' with 4 per cell, series 5's 'N_y = 128 within
+  5e-3'.

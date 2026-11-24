@@ -16,7 +16,9 @@ Lacking, in the order the track will close them:
    what the high-k excess of the metric's TT energy after halo formation is.
 2. Shearing dust (arXiv:2003.08014): L2 now has values (-0.828, -0.830, -0.835 at N_y = 32-128,
    near CosmoGRaPH's -0.8183, far from gevolution and GRAMSES) but no convergence: the field
-   carries relative constraint means of 0.1-0.4 from a = 2.25 on at every N_y. S3 has a floor of 2-3e-5 (N_y = 256).
+   carries relative constraint means of 0.1-0.4 from a = 2.25 on at every N_y. At N_y = 64 it
+   converges in particles along y to about -0.820 (1-8 per cell); N_y = 128 at 4 per cell gives
+   -0.831, so the mesh limit is open. S3 has a floor of 2-3e-5 (N_y = 256).
 3. Gauge leg of the three-way convergence: one slicing point (f = 1 at N_y = 64, P10 holds); a
    convergent gauge leg (a second slicing or shift at three meshes) and its figure are missing.
 4. Constraints: Hr of the FLRW run grows about as N^2 with the mesh; the population's mean

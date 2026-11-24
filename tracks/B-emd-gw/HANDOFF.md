@@ -33,10 +33,12 @@ stage/G2/VERIFY_RESULTS.{md,json} and rerun `nrpic-stage report B-emd-gw G2`.
   physics?); figure defects
   (cut y labels of pop_gr_halos, saturated K panel of the mosaic, overlapping right axis label of
   pop_gr_stop).
-- shear: L2 values exist (-0.828, -0.830, -0.835) but do not converge, and the L2 field carries
-  relative constraint means of 0.1-0.4 from a = 2.25 on at every N_y (`figs/fig_l2_observer.png`,
-  R19): a run that locates the violation (smaller step, more particles along y, an amplitude
-  between M2 and L2); S3 floor 2-3e-5 (no action needed at the paper's 3e-4 bound).
+- shear: L2 at one particle per cell: -0.828, -0.830, -0.835 (N_y = 32-128); at N_y = 64 it
+  converges in particles along y to about -0.820 (1-8 per cell, `figs/fig_ppc.png`), beside
+  CosmoGRaPH's -0.8183; N_y = 128 at 4 per cell gives -0.831 (mesh limit open); the field carries
+  relative constraint means of 0.1-0.4 at every mesh and particle number, the step is excluded
+  (series 4). Next: N_y = 256 at 4 per cell (processors, about 30 min), then a cause of the
+  constraint violation (R19). S3 floor 2-3e-5 (no action needed at the paper's 3e-4 bound).
 - flrw_conv: closed (J4 judged).
 - G2 products: gauge leg at three meshes and its figure (C2, C11), G2 note sections (C17),
   fresh verifier (C18), reproducibility list (C6); the ladder schematic (C10) exists
