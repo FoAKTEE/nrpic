@@ -229,6 +229,7 @@ add_executable(
         z4c/z4c_adm.cpp
         z4c/z4c_calcrhs.cpp
         z4c/z4c_newdt.cpp
+        z4c/z4c_newdt_gauge.cpp
         z4c/z4c_tasks.cpp
         z4c/z4c_update.cpp
         z4c/z4c_gauge.cpp

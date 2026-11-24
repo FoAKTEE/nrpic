@@ -119,3 +119,71 @@ evaluated once whether or not the option is given, and a warning is printed when
 - P0e. Flat space, RK4, nghost 4, no dissipation: lapse 0.470, light 0.664, shift
   (mu 0.75) 0.767; with diss 0.5 each about ten per cent lower.
 - P0f. lapse_leak x dt at the grid scale of the root mesh: 2.5 (Track A), homogeneous 2.785.
+
+## Entry 1 (05:45 to 06:05): outcome of T0, correction of the advection term, predictions of T0b
+
+Run core-20261124-130414-c77ee7e (`vonneumann_gauge.py`, commit c77ee7e, 13 minutes on one
+core; `vonneumann_gauge.json`, figures looked at: `fig_vonneumann.png` clear, the reduced
+model's markers sit on the thresholds of the four curves in both panels;
+`fig_reduced.png` left panel clear, right panel has its legend over the data and is drawn
+again in T0b).
+
+- P0a held: the stability polynomials of rk2, rk3, rk4 as the driver applies them differ
+  from the Taylor polynomials by 0.0 (to the last bit of the coefficients).
+- P0b held: Kreiss-Oliger symbol minus sin^(2 ng)(theta/2): 0.0; s2(pi) = 4, 5.3333,
+  6.0444; advective symbol at pi -4, -2.6667, -2.1333 with imaginary part 4e-16.
+- P0c held. Full scan (bisected) / on Track A's grid of 0.0025 / Track A:
+  shift level 4: 0.6829 / 0.685 / 0.685; shift root: 0.6485 / 0.65 / 0.65; shift without
+  dissipation: 0.7699 (level 4), 0.7978 (root) / 0.77, 0.80 / "0.77 to 0.80" (my 0.767 is
+  the value without the damping eta, which raises it); lapse with leak 20: 0.9670 /
+  0.9675 / 0.97 (level 4), 0.4040 / 0.405 / 0.405 (root); light 1.2420 (Track A: stable
+  to the end of its range, 1.2); shift_Gamma 0.3: 0.9397, 0.8978 / 0.94, 0.90. The 6 x 6
+  matrix of the shift gives the same thresholds as the split into pairs (0.6829, 0.6485).
+  In every one of these cases the mode that fails first is the corner (pi, pi, pi).
+  **I agree with Track A's analysis in all its numbers.** Where I add to it: (i) at the
+  corner the shift modes have the transverse speed sqrt(mu gt), so the bound in units of
+  the longitudinal speed sqrt(4 mu/3 gt), which Track A's request names, is 0.767 x
+  sqrt(4/3) = 0.886 dx/v_long without dissipation; the limit must not be written as
+  0.685 dx/v_long with v_long = sqrt(4 mu/3) for other mu (for mu = 0.3 the scan gives
+  0.94, the rule would give 1.08); (ii) the lapse sector in flat space, below.
+- P0d: for zero shift held for the scheme in use (rk4, nghost 4: reduced/full between
+  0.9933 and 1.0000 in 64 cases); partly failed elsewhere: rk4 nghost 3 up to 1.016, nghost
+  2 up to 1.122 (both only at diss 1.0 with a damping of 6/dx), rk3 between 0.959 and
+  1.009 (nghost 4). **Refuted for a background shift**: with |beta| = 0.3 the reduced
+  model allowed steps up to 1.44 times the full scan's, with |beta| = 1 up to 1.56. Cause
+  by construction of the model [VERIFIED in the scan: the first unstable mode is then not
+  the corner]: at the corner the advective stencil only damps; away from it its symbol
+  has an imaginary part (largest 1.950 for nghost 4 at theta = 0.68 pi) that adds to the
+  wave frequency.
+- P0e: held without dissipation (lapse 0.4697, light 0.6642, shift 0.7670); "ten per cent
+  lower with diss 0.5" failed for the lapse: 0.4681 (-0.3 per cent), light 0.6181 (-7),
+  shift 0.6856 (-11). With diss 0.1 all three are higher than without (0.4825, 0.6865,
+  0.7944): a little dissipation helps, more hurts.
+- P0f held: lapse_leak x dt = 2.525 at the grid scale of the root mesh, 2.785 for the mode
+  without structure.
+
+Consequence for every owner [VERIFIED in the model, TO VERIFY in the code by T2]: in flat
+space with 1+log (alpha = chi = 1) the lapse pair moves with sqrt(2) and binds first, at
+dt/dx = 0.47 (rk4, nghost 4, with or without diss 0.5); light at 0.62 to 0.66; the
+Gamma-driver with mu = 0.75 at 0.69 to 0.77. The rule of decision 0027, cfl_number at or
+below 0.6, is therefore right for the expanding box (where the lapse speed
+sqrt(2 alpha chi) is about 0.5) and too weak for asymptotically flat set-ups with 1+log:
+there the bound is 0.47. Of the 100 inputs under `problems/` 67 use 0.25, 31 use 1.0
+(none of those evolves Z4c with a 1+log lapse as far as their names say; the warning at
+start-up will tell), one 0.4, one 0.1 [VERIFIED by grep].
+
+Correction (exploration `scratch/core/tmp/explore_adv.py`, four variants against the full
+scan, not registered: a design choice, tested by T0b): the frequency of the corner mode
+becomes Omega = sqrt(s2max sum_d c_d^2/dx_d^2) + limag sum_d |beta^d|/dx_d with limag the
+largest imaginary part of the advective symbol (2.2018, 1.9510, 1.9501 for nghost 2, 3,
+4); the damping of the corner stays. Kernel and Python twin changed alike.
+
+### Predictions of T0b (the same script with the corrected reduced model), written before it ran
+
+- P0g. rk4, nghost 4: reduced/full at most 1.01 in every case of the survey, shift up to
+  1 included; at least 0.75 (the model may be up to a quarter too careful with a large
+  shift). Refuted: a ratio above 1.01.
+- P0h. rk4 nghost 3: at most 1.03. nghost 2 and rk3: at most 1.2, the excess only with
+  strong damping. Zero-shift numbers unchanged from T0 (the correction acts only on
+  beta).
+- P0i. Track A's cases unchanged (no shift in them).

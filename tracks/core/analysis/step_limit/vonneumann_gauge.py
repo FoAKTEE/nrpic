@@ -30,7 +30,10 @@ Full model: the largest |R(lambda dt)| over the Brillouin zone.  Reduced model (
 Z4c::GaugeTimeStep evaluates in every cell): the eigenvalue pair of the grid-scale corner
 theta = (pi, pi, pi), where the advective stencil is purely damping, and the damping of
 the homogeneous mode, each against the first-exit radius rho(phi) of the stability region
-along its ray.
+along its ray.  Advection: the first version (run core-20261124-130414-c77ee7e) took
+the damping of the corner alone and allowed steps up to 1.56 times too large with a
+shift of order one; --adv corner keeps it for the record.  The adopted version adds the
+largest phase rate of the advective stencil, limag sum_d |b_d|, to the frequency.
 
   python vonneumann_gauge.py --out DIR [--n 41] [--quick]
 """
@@ -230,23 +233,33 @@ def shift_eigs_6x6(th, ng, p):
 # ---------------------------------------------------------------------------------------
 # reduced model: the formulas of Z4c::GaugeTimeStep, in units of dx (cubic cells)
 
+ADV_MODE = "phase"      # "corner": the first version, damping of the corner only
+_CC = {}
+
+
 def corner_consts(ng):
-    s1, s2, ko, adv = symbols(np.array([np.pi]), ng)
-    return float(s2[0]), float(-adv[0].real), float(abs(adv[0].imag))
+    """s2max, the damping aadv of the advective stencil at pi, and the largest imaginary
+    part limag of its symbol (the constants of z4c_newdt_gauge.cpp)."""
+    if ng not in _CC:
+        s1, s2, ko, adv = symbols(np.array([np.pi]), ng)
+        th = np.linspace(0.0, np.pi, 2000001)
+        _CC[ng] = (float(s2[0]), float(-adv[0].real), float(sym(ADV[ng], th).imag.max()))
+    return _CC[ng]
 
 
 def reduced_bound(tab, ng, om2, diss, bsum, d1x, d2x, a1=1.0, a2=1.0):
     """Largest stable dt/dx of a pair: om2 = sum_d (squared speed)_d (the code multiplies
     by s2max), diss, bsum = sum_d |b_d|, d1x, d2x the dampings of the two members times
     dx without advection, a1, a2 their advection factors."""
-    s2max, aadv, _ = corner_consts(ng)
+    s2max, aadv, limag = corner_consts(ng)
     kod = 3.0 * diss
     adv = aadv * bsum
     e1 = d1x + a1 * adv
     e2 = d2x + a2 * adv
     m = kod + 0.5 * (e1 + e2)
     h = 0.5 * (e1 - e2)
-    disc = h * h - s2max * om2
+    om = np.sqrt(s2max * om2) + (limag * bsum if ADV_MODE == "phase" else 0.0)
+    disc = h * h - om * om
     if disc <= 0.0:
         re, im = -m, np.sqrt(-disc)
     else:
@@ -278,9 +291,13 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--n", type=int, default=41)
     ap.add_argument("--quick", action="store_true", help="smaller parameter survey")
+    ap.add_argument("--adv", default="phase", choices=("phase", "corner"))
     args = ap.parse_args()
+    global ADV_MODE
+    ADV_MODE = args.adv
     os.makedirs(args.out, exist_ok=True)
-    res = {"n": args.n}
+    res = {"n": args.n, "adv": args.adv,
+           "corner_consts": {f"ng{ng}": corner_consts(ng) for ng in (2, 3, 4)}}
 
     # ---- (a) closed forms of the symbols and the integrators
     th = np.linspace(0.0, np.pi, 201)
@@ -374,7 +391,7 @@ def main():
     res["flat_space_rk4_ng4"] = flat
 
     # ---- (c) survey: reduced model against the full scan
-    n2 = 17 if args.quick else 25
+    n2 = 13 if args.quick else 17
     grids = {False: theta_grid(n2, (False, False, False)),
              True: theta_grid(n2, (True, True, True))}
     survey = []
@@ -392,7 +409,8 @@ def main():
                        ("light", dict(diss=diss, g=1.0, c2=c2s[1], b=b))):
             if sec == "light" and damp != damps[0]:
                 continue
-            full = first_exit(coefs[integ], full_eigs(sec, thg, ng, p))
+            full = first_exit(coefs[integ], full_eigs(sec, thg, ng, p), rmax=6.0,
+                              step=0.02)
             red = reduced_sector(tabs[integ], ng, sec, p)
             survey.append({"integ": integ, "ng": ng, "sector": sec, "diss": diss,
                            "dampdx": damp, "b": list(b), "c2": p.get("c2", p.get("mu")),
@@ -403,9 +421,19 @@ def main():
     rat = np.array([s["ratio"] for s in survey if s["ratio"] is not None])
     nob = np.array([s["ratio"] for s in survey
                     if s["ratio"] is not None and not any(s["b"])])
+    per = {}
+    for integ, ng in itertools.product(integs, ngs):
+        for zero in (True, False):
+            x = np.array([s["ratio"] for s in survey if s["ratio"] is not None
+                          and s["integ"] == integ and s["ng"] == ng
+                          and (not any(s["b"])) == zero])
+            if x.size:
+                per[f"{integ}_ng{ng}_" + ("zero_shift" if zero else "with_shift")] = \
+                    [int(x.size), float(x.min()), float(x.max())]
     res["survey_summary"] = {
         "cases": len(survey), "ratio_min": float(rat.min()), "ratio_max": float(rat.max()),
         "zero_shift_ratio_min": float(nob.min()), "zero_shift_ratio_max": float(nob.max()),
+        "per_scheme_count_min_max": per,
         "worst": sorted([s for s in survey if s["ratio"] is not None],
                         key=lambda s: -s["ratio"])[:8]}
 
@@ -450,7 +478,7 @@ def main():
     fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.4))
     fig.subplots_adjust(left=0.08, right=0.98, bottom=0.15, top=0.92, wspace=0.22)
     ax = axs[0]
-    xx = np.linspace(-3.4, 0.6, 321)
+    xx = np.linspace(-3.4, 0.0, 273)
     yy = np.linspace(0.0, 3.4, 273)
     X, Y = np.meshgrid(xx, yy)
     for name, col in (("rk4", fs.PAL["blue"]), ("rk3", fs.PAL["orange"])):
@@ -491,7 +519,9 @@ def main():
     ax.set_xscale("log")
     ax.set_xlabel(r"full scan: largest stable $\Delta t/\Delta x$")
     ax.set_ylabel("reduced model / full scan")
-    ax.legend(loc="lower left", fontsize=7, ncol=2)
+    lo, hi = ax.get_ylim()
+    ax.set_ylim(lo, hi + 0.45 * (hi - lo))
+    ax.legend(loc="upper center", fontsize=7, ncol=3)
     fig.savefig(os.path.join(args.out, "fig_reduced.png"), dpi=150)
     plt.close(fig)
 
