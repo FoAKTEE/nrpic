@@ -396,3 +396,79 @@ Predictions [JUDGEMENT], written before the job is queued:
   particles (analyze_gr.py) within 10 per cent at every common snapshot; the radiated box measure
   of the Newtonian 0.014 run at a = 120 equals the fidL8 value at a_N = 30 times 4.014^(-7/2)
   within a factor 2 (P9's sigma^(7/2) at equal stage; 64^3 against 128^3 particles).
+
+## 2026-11-24 05:58 PST (lead of batch 11): outcomes of the full-GR analysis; the 0.028 stop
+
+Analysis run B-20261124-131918-e71996f (`analyze_gr.py`, both GR runs; JSON complete, figure step
+failed on a keyword clash) and its figure/summary run B-20261124-133150-e9ef701 (`--from-json`).
+The first attempt B-20261124-130512-d39dae4 failed on the 0.028 run's last dump (written at the
+guard stop, its blocks do not tile the box); now skipped. Figures `figs/pop_gr_constraints.png`,
+`pop_gr_halos.png`, `pop_gr_gw.png`, `pop_gr_stop.png` looked at; numbers `results/analysis_gr.json`.
+[VERIFIED by these runs]
+
+sigma1 = 0.014 (to a = 143):
+- A1 HOLDS for 5 <= a <= 30, FAILS from a = 36: Omega_qs of the gauge-corrected metric strain over
+  the design's 2.9e-9 a is 1.00 (a = 4.0), 1.09, 1.13, 1.12, 1.11, 1.13 (a = 20.3), 1.21 (25.0),
+  1.37 (30.3), then 1.68 (36.1; raw 2.0) and 3.3 (42.3). The departure starts when the first halo
+  forms (H2). The design's linear near-field estimate is confirmed in full GR to 9-13 per cent for
+  6 <= a <= 20.
+- A2 FAILS in part: the corrected strain and the particles' S^TT/k^2 over |k| <= 8 k_f correlate
+  at 0.961 (a = 6.3) to 0.998 (a = 25-42), 0.978 (64), 0.946 (72), then 0.899 (81), 0.818 (90),
+  0.707 (100); rms ratio (metric/particles) 0.63 (a = 6.3), 0.77 (9.0), 0.83-0.90 (12-42),
+  0.95-1.19 (49-100). Above 0.9 only to a = 72 (predicted to 100), and the rms is outside 30 per
+  cent at a = 6.3 (the strain is still building up from zero, conformally flat start). Its stated
+  refutation (below 0.7 before a = 100) is not reached: 0.707 at a = 100.1.
+- A3: Omega_qs grows by 2640 from a = 30.3 to 132.3 (a by 4.4): HOLDS. The rms of the corrected
+  strain grows by 1.97 (a^(1/2) would give 2.09): FAILS, narrowly. G4 read as the strain rms: fails;
+  as the energy: holds; "near field dominates until a ~ 100": holds to a ~ 80 by the correlation.
+- Not predicted, on record: after the halos form the corrected metric energy leaves the particles'
+  near field far behind (Omega 3.2e-4 against 5.7e-7 at a = 132), while the strain over
+  |k| <= 8 k_f stays within 1.4 of it: the excess sits at high k. The spatial-gauge piece G_tot
+  becomes as large as the raw strain (rms 1.21e-3 against 1.09e-3 at a = 132). Whether the high-k
+  excess is radiation, a gauge remainder or mesh-scale error (Mr_mean reaches 0.20) is not
+  established [TO VERIFY]; no radiated-energy number of the GR box is claimed.
+- H1 HOLDS: halos above 100 fidL8 particle masses, GR (a) against fidL8 (a_N): 3/3 (49.1/12.5),
+  11/14 (64.1/15.0; stage 6 per cent apart), 16/14 (81.1/20.0), 24/25 (100.1/25.2), 29/25
+  (121.1/30.1), all inside 2 sqrt(N) + 2; largest mass +2.8, +13, -5.4, -7.1, -5.6 per cent; the
+  five largest fidL8 halos at a_N = 30.1 have GR counterparts at 0.012-0.071 with masses 0.94-1.05
+  of theirs.
+- H2 HOLDS: no group of 100 particles at a = 30.3, one (M = 0.074) at a = 36.1.
+- G2 (Hr_mean 1.6e-4 at a = 29, 2.85e-2 at a = 141) and G3 (counts inside the band at stages
+  25-33) hold, as recorded in the 05:15 entry and in H1.
+- Companion paragraph: corrected strain rms of 0.028 at a over 0.014 at about 2a: 4.1 (a = 9.0),
+  4.2 (12.3), 3.8 (25.0): the square of the amplitude ratio at equal stage HOLDS.
+
+sigma1 = 0.028 (stopped at a = 30.7):
+- A1-type check: corrected Omega_qs over its design value (2.9e-9 a x 16) 1.03 (a = 4.0), 1.14,
+  1.21, 1.25, 1.36 (16.0), 1.89 (20.3). At equal stage it departs earlier than 0.014 (1.37 at a = 30
+  is stage 7.6; 0.028 reaches 1.36 at stage 4.0).
+- Halos at a = 30.3 (stage 15.1): 6 against fidL8's 14 at 15.0 (inside the band), largest mass
+  0.6565 against 0.6558.
+- Z HOLDS: the stop cell lies 0.088 from the densest cloud-in-cell cell of the box at t = 9.0
+  (rho/rho_bar = 1583 at 128^3) and next to the largest K of the last good dump (K = 0.265 at
+  (0.031, 0.094, 5.281), across the face x = 8|0). K_max of the box: 0.0027 (t = 8.0), 0.012,
+  0.025, 0.057, 0.265 (t = 9.0); the smallest lapse within two cells of the stop cell fell from
+  18.5 (t = 7.5) to 13.5 (t = 9.0) while the box mean is about a = 30. In the 0.014 run at the same
+  stage (a = 50-62) K stays negative everywhere and (K - K_bar)/|K_bar| stays below 0.4.
+  [BACKGROUND] the cosmology extension's large-amplitude run (delta = 0.05) failed in the same way
+  at a = 17.2 (`cosmo/TESTLOG.md` lines 1844-1852: non-finite metric determinant around the
+  overdensity), and in conformal-time slicing a homogeneous collapsing region reaches its crunch
+  in finite coordinate time [JUDGEMENT, arithmetic: alpha = a_local, dt = dtau/a_local, a_local ~
+  (tau_c - tau)^(2/3) makes the integral finite]. No cause is named.
+
+What would tell the candidates apart, and what is queued (card list `inputs/batch_stop028.list`,
+four restarts from the run's restart file at t = 8 to t = 10, the release v0.6 card executable):
+the stop is a property of the continuum slice in the collapsing core (then a smaller step does
+not move it), of the time step (the 0.014 run has sqrt(2) more steps per halo dynamical time at
+equal stage), or of the slicing condition (then a slicing that collapses the lapse faster where
+K > 0 passes). Predictions [JUDGEMENT], written before the job is queued:
+- X0 (same parameters): the stop recurs at t = 9.09 +- 0.05. Refuted if X0 passes t = 9.3 (then the
+  stop depends on round-off, card runs with deposit are not byte-reproducible).
+- X1 (cfl 0.125): stops within 0.1 of X0. Refuted if it passes t = 9.3 (then the step is implicated).
+- X2 (Gamma-driver shift from t = 8): stops within 0.2 of X0 (the shift does not change the slicing).
+  Refuted if it passes t = 9.5.
+- X3 (f = 1, step by the light speed): passes t = 9.3 and reaches t = 10 (in a contracting region
+  this slicing collapses the lapse with the volume); the background lapse grows as a^3 there, so
+  the mean scale factor at t = 10 is about 46 rather than 36 [arithmetic]. Refuted if it stops
+  before t = 9.3.
+- Card time below 0.3 h for the four (130 to 400 steps each at 0.47 s).
