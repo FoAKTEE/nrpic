@@ -727,6 +727,20 @@ void ValenciaC2PSynge(Real D, Real E, const Real P[3],
   for (int i = 0; i < 3; ++i) v[i] = P[i] * inv_DhU0;
 }
 
+//----------------------------------------------------------------------------------------
+// Self-adjoint metric-weighted flux-conservative filter kernels (Iteration 3)
+//----------------------------------------------------------------------------------------
+
+KOKKOS_INLINE_FUNCTION
+Real HarmonicFaceWeight(Real sgL, Real sgR) {
+  return (sgL > 0.0 && sgR > 0.0) ? (2.0 * sgL * sgR) / (sgL + sgR) : 0.0;
+}
+
+KOKKOS_INLINE_FUNCTION
+Real MetricFlux1D(Real kappa, Real dx, Real sgL, Real sgR, Real tL, Real tR) {
+  return kappa * dx * HarmonicFaceWeight(sgL, sgR) * (tR - tL);
+}
+
 }  // namespace vlasov
 }  // namespace nrpic
 

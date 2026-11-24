@@ -45,6 +45,7 @@
 #include "particles/nrpic_cosmo_ext.hpp"
 #include "particles/nrpic_mpi.hpp"
 #include "particles/nrpic_vlasov.hpp"
+#include "particles/vlasov/vlasov_math.hpp"
 // last: this header defines the macro NDIM, which collides with a member of Tmunu
 #include "z4c/fastflow.hpp"
 
@@ -97,6 +98,8 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.filter_compensate = pin->GetOrAddBoolean("particles", "filter_compensate", false);
   nropt.filter_comp_c     = pin->GetOrAddReal("particles", "filter_comp_c", -1.0);
   nropt.filter_densitized = pin->GetOrAddBoolean("particles", "filter_densitized", false);
+  nropt.filter_metric_conservative =
+      pin->GetOrAddBoolean("particles", "filter_metric_conservative", false);
   nropt.deposit_comp_c    = pin->GetOrAddReal("particles", "deposit_comp_c", 0.0);
   nropt.deposit_comp_limit = pin->GetOrAddReal("particles", "deposit_comp_limit", 0.0);
   nropt.deposit_comp_c2    = pin->GetOrAddReal("particles", "deposit_comp_c2", 0.0);
@@ -283,6 +286,15 @@ void Particles::NrpicInit(ParameterInput *pin) {
       int nccells2 = indcs.cnx2 + 2*(indcs.ng);
       int nccells3 = indcs.cnx3 + 2*(indcs.ng);
       Kokkos::realloc(coarse_tm, nmb, Tmunu::N_Tmunu, nccells3, nccells2, nccells1);
+    }
+    if (nropt.filter_metric_conservative) {
+      Kokkos::realloc(sg_work, nmb, ncells3, ncells2, ncells1);
+      Kokkos::realloc(flx_tm.x1f, nmb, Tmunu::N_Tmunu, ncells3, ncells2, ncells1 + 1);
+      Kokkos::realloc(flx_tm.x2f, nmb, Tmunu::N_Tmunu, ncells3, ncells2 + 1, ncells1);
+      Kokkos::realloc(flx_tm.x3f, nmb, Tmunu::N_Tmunu, ncells3 + 1, ncells2, ncells1);
+      Kokkos::deep_copy(DevExeSpace(), flx_tm.x1f, 0.0);
+      Kokkos::deep_copy(DevExeSpace(), flx_tm.x2f, 0.0);
+      Kokkos::deep_copy(DevExeSpace(), flx_tm.x3f, 0.0);
     }
     pbval_tm = new MeshBoundaryValuesCC(pmy_pack, pin, false);
     pbval_tm->InitializeBuffers(Tmunu::N_Tmunu);
@@ -1176,7 +1188,7 @@ void Particles::NrpicDepositSources() {
   dep_sum[0] = se; dep_sum[1] = sx; dep_sum[2] = sy; dep_sum[3] = szz;
   nrpic::MpiSum({&dep_sum[0], &dep_sum[1], &dep_sum[2], &dep_sum[3]});   // several ranks
 
-  if (nropt.filter_densitized) {
+  if (nropt.filter_densitized && !nropt.filter_metric_conservative) {
     tm_is_densitized = true;
     e_prev_valid = true;
     return;
@@ -1420,6 +1432,123 @@ void Particles::NrpicCompensateLimited(const Real c, const Real c2, const Real l
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicFilterPassMetricConservative
+//! \brief self-adjoint metric-weighted flux-conservative filter pass in coordinate-split
+//! flux form with exact AMR coarse-fine refluxing and zero boundary flux
+
+void Particles::NrpicFilterPassMetricConservative(const Real kappa,
+                                                  const bool reverse_dirs) {
+  Mesh *pm = pmy_pack->pmesh;
+  auto &indcs = pm->mb_indcs;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int ie = indcs.ie, je = indcs.je, ke = indcs.ke;
+  const int nmb = pmy_pack->nmb_thispack;
+  const int nmb1 = nmb - 1;
+  const int nv1 = Tmunu::N_Tmunu - 1;
+  const int ncells1 = indcs.nx1 + 2*indcs.ng;
+  const int ncells2 = indcs.nx2 + 2*indcs.ng;
+  const int ncells3 = indcs.nx3 + 2*indcs.ng;
+  if (flx_tm.x1f.extent_int(0) < nmb) {
+    Kokkos::realloc(flx_tm.x1f, nmb, Tmunu::N_Tmunu, ncells3, ncells2, ncells1 + 1);
+    Kokkos::realloc(flx_tm.x2f, nmb, Tmunu::N_Tmunu, ncells3, ncells2 + 1, ncells1);
+    Kokkos::realloc(flx_tm.x3f, nmb, Tmunu::N_Tmunu, ncells3 + 1, ncells2, ncells1);
+    Kokkos::deep_copy(DevExeSpace(), flx_tm.x1f, 0.0);
+    Kokkos::deep_copy(DevExeSpace(), flx_tm.x2f, 0.0);
+    Kokkos::deep_copy(DevExeSpace(), flx_tm.x3f, 0.0);
+  }
+  auto &tmu = pmy_pack->ptmunu->u_tmunu;
+  auto tm = tmu;
+  auto sg = sg_work;
+  auto f1 = flx_tm.x1f;
+  auto f2 = flx_tm.x2f;
+  auto f3 = flx_tm.x3f;
+  auto bcs = pmy_pack->pmb->mb_bcs.d_view;
+  auto sz  = pmy_pack->pmb->mb_size.d_view;
+
+  for (int s=0; s<3; ++s) {
+    const int dir = reverse_dirs ? (2 - s) : s;
+    if (pm->multilevel) {
+      pm->pmr->RestrictCC(tmu, coarse_tm);
+    }
+    (void) pbval_tm->InitRecv(Tmunu::N_Tmunu);
+    (void) pbval_tm->PackAndSendCC(tmu, coarse_tm);
+    (void) pbval_tm->ClearSend();
+    (void) pbval_tm->ClearRecv();
+    (void) pbval_tm->RecvAndUnpackCC(tmu, coarse_tm);
+    if (pm->multilevel) {
+      pbval_tm->FillCoarseInBndryCC(tmu, coarse_tm);
+      pbval_tm->ProlongateCC(tmu, coarse_tm);
+    }
+
+    if (dir == 0) {
+      par_for("nrpic_mcflx_x1", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie+1,
+      KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
+        if ((i == is && bcs(m,BoundaryFace::inner_x1) != BoundaryFlag::block &&
+             bcs(m,BoundaryFace::inner_x1) != BoundaryFlag::periodic) ||
+            (i == ie+1 && bcs(m,BoundaryFace::outer_x1) != BoundaryFlag::block &&
+             bcs(m,BoundaryFace::outer_x1) != BoundaryFlag::periodic)) {
+          f1(m,n,k,j,i) = 0.0;
+        } else {
+          f1(m,n,k,j,i) = nrpic::vlasov::MetricFlux1D(
+              kappa, sz(m).dx1, sg(m,k,j,i-1), sg(m,k,j,i),
+              tm(m,n,k,j,i-1), tm(m,n,k,j,i));
+        }
+      });
+    } else if (dir == 1) {
+      par_for("nrpic_mcflx_x2", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je+1, is, ie,
+      KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
+        if ((j == js && bcs(m,BoundaryFace::inner_x2) != BoundaryFlag::block &&
+             bcs(m,BoundaryFace::inner_x2) != BoundaryFlag::periodic) ||
+            (j == je+1 && bcs(m,BoundaryFace::outer_x2) != BoundaryFlag::block &&
+             bcs(m,BoundaryFace::outer_x2) != BoundaryFlag::periodic)) {
+          f2(m,n,k,j,i) = 0.0;
+        } else {
+          f2(m,n,k,j,i) = nrpic::vlasov::MetricFlux1D(
+              kappa, sz(m).dx2, sg(m,k,j-1,i), sg(m,k,j,i),
+              tm(m,n,k,j-1,i), tm(m,n,k,j,i));
+        }
+      });
+    } else {
+      par_for("nrpic_mcflx_x3", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke+1, js, je, is, ie,
+      KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
+        if ((k == ks && bcs(m,BoundaryFace::inner_x3) != BoundaryFlag::block &&
+             bcs(m,BoundaryFace::inner_x3) != BoundaryFlag::periodic) ||
+            (k == ke+1 && bcs(m,BoundaryFace::outer_x3) != BoundaryFlag::block &&
+             bcs(m,BoundaryFace::outer_x3) != BoundaryFlag::periodic)) {
+          f3(m,n,k,j,i) = 0.0;
+        } else {
+          f3(m,n,k,j,i) = nrpic::vlasov::MetricFlux1D(
+              kappa, sz(m).dx3, sg(m,k-1,j,i), sg(m,k,j,i),
+              tm(m,n,k-1,j,i), tm(m,n,k,j,i));
+        }
+      });
+    }
+
+    if (pm->multilevel) {
+      (void) pbval_tm->InitFluxRecv(Tmunu::N_Tmunu);
+      (void) pbval_tm->PackAndSendFluxCC(flx_tm);
+      (void) pbval_tm->ClearFluxSend();
+      (void) pbval_tm->ClearFluxRecv();
+      (void) pbval_tm->RecvAndUnpackFluxCC(flx_tm);
+    }
+
+    par_for("nrpic_mc_upd", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie,
+    KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
+      const Real sgv = sg(m,k,j,i);
+      if (sgv > 0.0) {
+        const Real df = (dir == 0) ? (f1(m,n,k,j,i+1) - f1(m,n,k,j,i))
+                      : ((dir == 1) ? (f2(m,n,k,j+1,i) - f2(m,n,k,j,i))
+                                    : (f3(m,n,k+1,j,i) - f3(m,n,k,j,i)));
+        const Real dx = (dir == 0) ? sz(m).dx1 : ((dir == 1) ? sz(m).dx2 : sz(m).dx3);
+        tm(m,n,k,j,i) += df / (sgv * dx);
+      } else {
+        tm(m,n,k,j,i) = 0.0;
+      }
+    });
+  }
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn  void Particles::NrpicFilterSources
 //! \brief the source filter: nfilter binomial passes and the optional compensation pass
 //! (see NrpicFilterPass), then the proper-volume integrals of the filtered sources
@@ -1442,22 +1571,54 @@ void Particles::NrpicFilterSources() {
   auto tm = tmu;
 
   const int npass = nropt.nfilter + (nropt.filter_compensate ? 1 : 0);
-  for (int pass=0; pass<npass; ++pass) {
-    // one-dimensional weights (w1, w0, w1) of this pass
-    Real w0 = 0.5, w1 = 0.25;
-    if (pass >= nropt.nfilter) {
-      const Real c = (nropt.filter_comp_c >= 0.0) ? nropt.filter_comp_c
-                                                  : 0.25*static_cast<Real>(nropt.nfilter);
-      w0 = 1.0 + 2.0*c;
-      w1 = -c;
+  if (nropt.filter_metric_conservative) {
+    const int n1 = indcs.nx1 + 2*indcs.ng;
+    const int n2 = indcs.nx2 + 2*indcs.ng;
+    const int n3 = indcs.nx3 + 2*indcs.ng;
+    if (sg_work.extent_int(0) < nmb1 + 1) {
+      Kokkos::realloc(sg_work, nmb1 + 1, n3, n2, n1);
     }
-    NrpicFilterPass(w0, w1);
-  }
+    auto sg = sg_work;
+    auto m1 = met1;
+    const bool is_newt = nropt.newton;
+    par_for("nrpic_sgwork", DevExeSpace(), 0, nmb1, 0, n3-1, 0, n2-1, 0, n1-1,
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+      if (is_newt) {
+        sg(m,k,j,i) = 1.0;
+      } else {
+        const Real det = adm::SpatialDet(m1(m,NRM_GXX,k,j,i), m1(m,NRM_GXY,k,j,i),
+                                         m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
+                                         m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
+        sg(m,k,j,i) = (det > 0.0 && det < 1.0e300) ? sqrt(det) : 0.0;
+      }
+    });
+    for (int pass=0; pass<npass; ++pass) {
+      Real kappa = 0.25;
+      if (pass >= nropt.nfilter) {
+        const Real c = (nropt.filter_comp_c >= 0.0) ? nropt.filter_comp_c
+                                                    : 0.25*static_cast<Real>(nropt.nfilter);
+        kappa = -c;
+      }
+      NrpicFilterPassMetricConservative(kappa, (pass % 2 == 1));
+    }
+  } else {
+    for (int pass=0; pass<npass; ++pass) {
+      // one-dimensional weights (w1, w0, w1) of this pass
+      Real w0 = 0.5, w1 = 0.25;
+      if (pass >= nropt.nfilter) {
+        const Real c = (nropt.filter_comp_c >= 0.0) ? nropt.filter_comp_c
+                                                    : 0.25*static_cast<Real>(nropt.nfilter);
+        w0 = 1.0 + 2.0*c;
+        w1 = -c;
+      }
+      NrpicFilterPass(w0, w1);
+    }
 
-  if (tm_is_densitized) {
-    NrpicNormalizeDensitizedSources(true);
-    tm_is_densitized = false;
-    return;
+    if (tm_is_densitized) {
+      NrpicNormalizeDensitizedSources(true);
+      tm_is_densitized = false;
+      return;
+    }
   }
 
   // proper-volume integrals of the filtered E and S_i.  The filter acts on the sources
@@ -1480,7 +1641,8 @@ void Particles::NrpicFilterSources() {
     const Real det = adm::SpatialDet(m1(m,NRM_GXX,k,j,i), m1(m,NRM_GXY,k,j,i),
                                      m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
                                      m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
-    const Real w = sqrt(det)*sz(m).dx1*sz(m).dx2*sz(m).dx3;
+    const Real sg = (det > 0.0 && det < 1.0e300) ? sqrt(det) : 0.0;
+    const Real w = sg*sz(m).dx1*sz(m).dx2*sz(m).dx3;
     lse += tm(m,Tmunu::I_Tmunu_E,k,j,i)*w;
     lsx += tm(m,Tmunu::I_Tmunu_Sx,k,j,i)*w;
     lsy += tm(m,Tmunu::I_Tmunu_Sy,k,j,i)*w;

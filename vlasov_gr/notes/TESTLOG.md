@@ -160,3 +160,14 @@ All reduced diagnostics stored in [`repro_wave4b.npz`](file:///home/schmidt/ssci
     - $N=10^4$: `mid` (`199.8s`, `alp = 0.422->0.984`, `r50 = 1.68->80.69`, `|COM| = 6.04e-3->1.08e-1`, `filt_max=1.73e-2`) vs `hyb` (`207.5s`, `alp = 0.422->0.981`, `r50 = 1.68->77.13`, `|COM| = 1.91e-18->1.78e-13`, `filt_max=3.25e-3`).
     - $N=10^5$: `mid` (`206.0s`, `alp = 0.422->0.982`, `r50 = 1.68->79.05`, `|COM| = 3.00e-3->5.59e-2`, `filt_max=1.73e-2`) vs `hyb` (`225.8s`, `alp = 0.422->0.981`, `r50 = 1.68->76.91`, `|COM| = 1.11e-17->1.57e-2`, `filt_max=1.97e-3`).
   - $y_c = 0.500$ (`mig`, $N=10^4$ outward migration): `mid` (`201.8s`, `alp = 0.557->0.889`, `r50 = 2.29->10.68`, `|COM| = 7.49e-3->2.89e-2`) vs `hyb` (`206.5s`, `alp = 0.557->0.898`, `r50 = 2.29->9.78`, `|COM| = 1.86e-18->1.22e-13`).
+
+
+### Verified Iteration 3 — Self-Adjoint Metric-Weighted Flux-Conservative AMR Filter (`gb204` B200 GPU, Milestone #6)
+
+Full derivation and summary: [04_iterative_algorithmic_proofs.md](file:///home/schmidt/ssci-haiyangw/nrpic/vlasov_gr/notes/04_iterative_algorithmic_proofs.md), verification data [`iter3_filter_verify.npz`](file:///home/schmidt/ssci-haiyangw/nrpic/vlasov_gr/paper/data/iter3_filter_verify.npz) via [`run_iter3_filter_verify.py`](file:///home/schmidt/ssci-haiyangw/nrpic/vlasov_gr/notes/scripts/run_iter3_filter_verify.py).
+
+- **Standalone Tests 1–10 (`g++` & `nvcc -arch=sm_100`)**: **PASSED** (`Test 10 mcons`: `const_err = 0.00e+00` vs naive `4.80e-01`, `sa = 0.00e+00`, `cons_1d = 2.30e-16`, `amr_const = 0.00e+00`, `amr_cons = 3.77e-16`).
+- **M5a OS $R_0=5M$ (`os_10k_lat`, 7-level dynamic AMR, $t=25M$)**: `plain` (`151.2s`, `rho_err=4.178e-4`, `||H||_max=1.896`, `filt=-2.49e-3/2.20e-2`), `dens` (`150.4s`, `rho_err=3.354e-3`, `||H||_max=1.912`, `filt=0.00e+00/2.38e-2`) vs **`mcons`** (`160.5s`, **`rho_err = 4.183e-4`**, `||H||_max = 1.893`, **`filt(t0/max) = 0.00e+00 / 8.76e-16`**).
+- **M4 6-Level SMR Kerr $a=0.9M$ (`mesh 10k`, $t=200M$)**: `plain` (`76.02s`, `filt=-2.25e-6/8.91e-4`), `dens` (`75.44s`, `filt=0.00e+00/8.64e-4`) vs **`mcons`** (`189.85s`, `|<e^{iphi}>|=0.1577`, **`filt(t0/max) = 0.00e+00 / 9.93e-16`**). *(Full-3D `flx_tm` + `pbval_tm` overhead here directly motivates Iteration 4a boundary-only refluxing + 4d widened-halo filter.)*
+- **M5b Prolate Compensated Pass (`nfilter=4, filter_compensate=true`, 7-level AMR, $t=5M$)**: `mcons` (`59.3s`, `||H||_max = 0.3475`, `filt = 0.00e+00 / 1.01e-15`).
+- **GPU vs OpenMP (4 threads) 10-step OS AMR Determinism**: `max|dx| = 8.882e-16`, `max|du| = 6.453e-16`, `rel|d_int_E_filt| = 4.229e-15`.

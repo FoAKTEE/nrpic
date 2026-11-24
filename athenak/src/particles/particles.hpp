@@ -66,6 +66,7 @@ struct NrpicOptions {
                            // the second moment of the binomial passes (c = nfilter/4)
   Real filter_comp_c;      // c of that pass if >= 0 (default -1: nfilter/4)
   bool filter_densitized = false;  // apply binomial/comp filters on densitized sqrt(gamma)*Tmunu
+  bool filter_metric_conservative = false;  // self-adjoint metric-weighted flux-conservative filter
   bool field_constraints;  // field dumps also hold the constraints, Khat, Theta, lapse
   bool interp_bspline;     // metric at the particles by the cubic spline through the
                            // nodes instead of the Catmull-Rom reconstruction
@@ -337,6 +338,8 @@ class Particles {
   DvceArray5D<Real> met1;          // alpha, beta^i, gamma_ij at t^{n+1}
   DvceArray5D<Real> met_prev, met_prevs; // optional t^{n-1} metric for quadratic time interp
   DvceArray5D<Real> tm_work;       // work array for the source filter
+  DvceArray4D<Real> sg_work;       // sqrt(det(gamma_ij)) cache for metric-conservative filter
+  DvceFaceFld5D<Real> flx_tm;      // face fluxes for metric-conservative filter + AMR refluxing
   bool tm_is_densitized = false;   // true while u_tmunu holds sqrt(gamma)*Tmunu before filter
   nrpic::ThreadDeposit thread_dep; // deposit target of a threaded build (nrpic_threads.hpp)
   DvceArray5D<Real> tm_prev;       // source densities of the previous deposit
@@ -387,6 +390,7 @@ class Particles {
   void NrpicDepositSources();
   void NrpicNormalizeDensitizedSources(bool update_filt_sum);
   void NrpicFilterPass(const Real w0, const Real w1);
+  void NrpicFilterPassMetricConservative(const Real kappa, const bool reverse_dirs);
   void NrpicWriteConservation(Real time, Real dt, bool header, bool write);
   void NrpicCompensateLimited(const Real c, const Real c2, const Real lim);
   void NrpicUpdateTimeStep();

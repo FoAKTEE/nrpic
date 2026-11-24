@@ -618,6 +618,136 @@ void RunSelfTests() {
     std::printf("[TEST9 PROJ] rel_dE=%.3e rel_dP=%.3e\n", dE_proj, dP_proj);
     assert(dE_proj < 1.0e-14 && dP_proj < 1.0e-14);
   }
+
+  // 10. Iteration 3: Self-adjoint metric-weighted flux-conservative filter
+  {
+    // (a) 1D curved metric with >1000x volume-element contrast and singular cell isolation
+    const int nx = 48;
+    const Real dx = 0.25;
+    std::vector<Real> sg(nx), u0(nx), u_cur(nx), v0(nx);
+    for (int i = 0; i < nx; ++i) {
+      const Real x = (i + 0.5 - 0.5 * nx) * dx;
+      const Real psi = 1.0 + 2.5 * exp(-0.5 * x * x);
+      sg[i] = pow(psi, 6.0);
+    }
+    auto apply_mcons_1d = [&](const std::vector<Real> &in, Real kappa,
+                              const std::vector<Real> &sg_in) {
+      const int n = static_cast<int>(in.size());
+      std::vector<Real> flx(n + 1, 0.0), out(n, 0.0);
+      for (int i = 1; i < n; ++i) {
+        flx[i] = MetricFlux1D(kappa, dx, sg_in[i - 1], sg_in[i], in[i - 1], in[i]);
+      }
+      for (int i = 0; i < n; ++i) {
+        out[i] = (sg_in[i] > 0.0) ? (in[i] + (flx[i + 1] - flx[i]) / (sg_in[i] * dx)) : 0.0;
+      }
+      return out;
+    };
+    // Constant preservation T == 1.7
+    std::vector<Real> t_const(nx, 1.7);
+    auto t_const_f = apply_mcons_1d(t_const, 0.25, sg);
+    Real err_const = 0.0, err_naive_dens = 0.0;
+    for (int i = 0; i < nx; ++i) {
+      err_const = fmax(err_const, fabs(t_const_f[i] - 1.7));
+      if (i > 0 && i < nx - 1) {
+        const Real d_f = (0.25 * sg[i - 1] + 0.5 * sg[i] + 0.25 * sg[i + 1]) * 1.7 / sg[i];
+        err_naive_dens = fmax(err_naive_dens, fabs(d_f - 1.7));
+      }
+    }
+    assert(err_const < 1.0e-14);
+    assert(err_naive_dens > 1.0e-2);
+
+    // Conservation, self-adjointness, L^2(sqrt(gamma)) contraction
+    for (int i = 0; i < nx; ++i) {
+      u0[i] = 1.2 + 0.6 * cos(0.7 * i) + ((i == nx / 2) ? 3.5 : 0.0);
+      v0[i] = 0.5 + 0.4 * sin(0.9 * i + 0.3);
+    }
+    auto u1 = apply_mcons_1d(u0, 0.25, sg);
+    auto v1 = apply_mcons_1d(v0, 0.25, sg);
+    Real sum_u0 = 0.0, sum_u1 = 0.0, norm_u0 = 0.0, norm_u1 = 0.0, inner_uv1 = 0.0, inner_u1v = 0.0;
+    for (int i = 0; i < nx; ++i) {
+      const Real w = sg[i] * dx;
+      sum_u0 += w * u0[i];
+      sum_u1 += w * u1[i];
+      norm_u0 += w * u0[i] * u0[i];
+      norm_u1 += w * u1[i] * u1[i];
+      inner_uv1 += w * u0[i] * v1[i];
+      inner_u1v += w * u1[i] * v0[i];
+      assert(u1[i] > 0.0);
+    }
+    const Real rel_cons_1d = fabs(sum_u1 - sum_u0) / sum_u0;
+    const Real rel_sa_1d = fabs(inner_uv1 - inner_u1v) / fmax(fabs(inner_uv1), 1.0);
+    assert(rel_cons_1d < 1.0e-14);
+    assert(rel_sa_1d < 1.0e-14);
+    assert(norm_u1 <= norm_u0 + 1.0e-14);
+
+    // Singular cell isolation + positivity
+    std::vector<Real> sg_sing = sg, u_sing = u0;
+    sg_sing[nx / 2] = 0.0;
+    u_sing[nx / 2] = 0.0;
+    auto u_sing_f = apply_mcons_1d(u_sing, 0.25, sg_sing);
+    Real sum_s0 = 0.0, sum_s1 = 0.0;
+    for (int i = 0; i < nx; ++i) {
+      sum_s0 += sg_sing[i] * dx * u_sing[i];
+      sum_s1 += sg_sing[i] * dx * u_sing_f[i];
+      assert(u_sing_f[i] >= 0.0);
+    }
+    assert(u_sing_f[nx / 2] == 0.0);
+    assert(fabs(sum_s1 - sum_s0) / sum_s0 < 1.0e-14);
+
+    // Flat-space equivalence to (1/4, 1/2, 1/4)
+    std::vector<Real> sg_flat(nx, 2.3);
+    auto u_flat = apply_mcons_1d(u0, 0.25, sg_flat);
+    for (int i = 1; i < nx - 1; ++i) {
+      const Real exact_bin = 0.25 * u0[i - 1] + 0.5 * u0[i] + 0.25 * u0[i + 1];
+      assert(CheckClose(u_flat[i], exact_bin, 1e-14, 1e-14));
+    }
+
+    // (b) 2-level coarse-fine AMR interface with exact fine-to-coarse refluxing
+    // Coarse block C: 8 cells, dxC = 1.0, active x in [0, 8]
+    // Fine block F: 16 cells, dxF = 0.5, active x in [8, 16] (1 ghost cell on left at x=7.75 via linear/const prolong)
+    const int nC = 8, nF = 16;
+    const Real dxC = 1.0, dxF = 0.5;
+    std::vector<Real> sgC(nC + 1), sgF(nF + 1), tC(nC + 1), tF(nF + 1);
+    auto sg_fn = [](Real x) { return 1.0 + 1.5 * exp(-0.05 * (x - 8.0) * (x - 8.0)); };
+    for (int i = 0; i <= nC; ++i) sgC[i] = sg_fn((i + 0.5) * dxC);
+    sgF[0] = sg_fn(8.0 - 0.5 * dxF);
+    for (int i = 1; i <= nF; ++i) sgF[i] = sg_fn(8.0 + (i - 0.5) * dxF);
+    Real max_amr_const_err = 0.0, max_amr_cons_err = 0.0;
+    for (int pass = 0; pass < 2; ++pass) {
+      const Real kappa = (pass == 0) ? 0.25 : -1.0;
+      // Constant preservation
+      std::fill(tC.begin(), tC.end(), 2.5);
+      std::fill(tF.begin(), tF.end(), 2.5);
+      std::vector<Real> flxC(nC + 1, 0.0), flxF(nF + 1, 0.0);
+      for (int i = 1; i <= nC; ++i) flxC[i] = (i == nC) ? 0.0 : MetricFlux1D(kappa, dxC, sgC[i - 1], sgC[i], tC[i - 1], tC[i]);
+      flxF[0] = MetricFlux1D(kappa, dxF, sgF[0], sgF[1], tF[0], tF[1]);
+      for (int i = 1; i < nF; ++i) flxF[i] = MetricFlux1D(kappa, dxF, sgF[i], sgF[i + 1], tF[i], tF[i + 1]);
+      flxC[nC] = flxF[0];  // fine-to-coarse reflux
+      for (int i = 0; i < nC; ++i) max_amr_const_err = fmax(max_amr_const_err, fabs((tC[i] + (flxC[i + 1] - flxC[i]) / (sgC[i] * dxC)) - 2.5));
+      for (int i = 1; i <= nF; ++i) max_amr_const_err = fmax(max_amr_const_err, fabs((tF[i] + (flxF[i] - flxF[i - 1]) / (sgF[i] * dxF)) - 2.5));
+
+      // Non-trivial profile conservation across curved 2-level interface
+      for (int i = 0; i < nC; ++i) tC[i] = 1.0 + 0.3 * sin(0.6 * i);
+      tC[nC] = 0.5 * (tC[nC - 1] + 1.0);
+      for (int i = 1; i <= nF; ++i) tF[i] = 1.0 + 0.25 * cos(0.4 * i);
+      tF[0] = 0.75 * tC[nC - 1] + 0.25 * tF[1];  // prolongated ghost value (even arbitrary value must conserve!)
+      tC[nC] = 0.75 * tF[1] + 0.25 * tC[nC - 1];  // restricted coarse ghost value
+      Real I_before = 0.0, I_after = 0.0;
+      for (int i = 0; i < nC; ++i) I_before += sgC[i] * dxC * tC[i];
+      for (int i = 1; i <= nF; ++i) I_before += sgF[i] * dxF * tF[i];
+      for (int i = 1; i < nC; ++i) flxC[i] = MetricFlux1D(kappa, dxC, sgC[i - 1], sgC[i], tC[i - 1], tC[i]);
+      flxF[0] = MetricFlux1D(kappa, dxF, sgF[0], sgF[1], tF[0], tF[1]);
+      for (int i = 1; i < nF; ++i) flxF[i] = MetricFlux1D(kappa, dxF, sgF[i], sgF[i + 1], tF[i], tF[i + 1]);
+      flxC[nC] = flxF[0];  // exact refluxing
+      for (int i = 0; i < nC; ++i) I_after += sgC[i] * dxC * (tC[i] + (flxC[i + 1] - flxC[i]) / (sgC[i] * dxC));
+      for (int i = 1; i <= nF; ++i) I_after += sgF[i] * dxF * (tF[i] + (flxF[i] - flxF[i - 1]) / (sgF[i] * dxF));
+      max_amr_cons_err = fmax(max_amr_cons_err, fabs(I_after - I_before) / I_before);
+    }
+    assert(max_amr_const_err < 1.0e-14);
+    assert(max_amr_cons_err < 1.0e-14);
+    std::printf("[TEST10 MCONS] const_err=%.2e (naive_dens=%.2e) sa=%.2e cons_1d=%.2e amr_const=%.2e amr_cons=%.2e\n",
+                err_const, err_naive_dens, rel_sa_1d, rel_cons_1d, max_amr_const_err, max_amr_cons_err);
+  }
   std::printf("C++ standalone GR-LBV kernel self-tests PASSED.\n");
 }
 

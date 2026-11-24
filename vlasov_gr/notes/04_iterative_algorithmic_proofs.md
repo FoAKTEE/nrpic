@@ -111,3 +111,38 @@ Given cell invariant 4-momentum $(E_c, \mathbf{P}_c)$ evaluated in the local ADM
 
 \* `nrpic_sig1e4` exceeded `180 s` timeout; projected from 20-step measurement (`wall = 11.048 s`, `comp = 9.942 s` across 20 of 325 steps): **`vlasov_pbgk` achieves a `50.0x` wall-clock (`65.3x` compute) speedup** over subcycled MC collisions while maintaining **$O(1)$ runtime** (`2.67 s` to `3.59 s` from $\sigma/\mu=0$ to $10^4$), exact free streaming at $\sigma=0$, $\le 1.83\times 10^{-14}$ energy conservation across all $\sigma/\mu$, and $< 1.9\%$ Taub double-shock accuracy at $\sigma/\mu = 10^4$.
 - **GPU vs OpenMP (4 threads) Determinism** (5 steps at $\sigma/\mu=15$): `max|dx| = 4.441e-16`, `max|du| = 9.812e-14`.
+
+
+---
+
+## Iteration 3 — Self-Adjoint Metric-Weighted Flux-Conservative AMR Source Filter (`filter_metric_conservative`)
+
+### 3.1 Root Cause of Prior Tradeoff
+- **Plain un-densitized source filtering (`plain`)**: Applies the binomial stencil directly to physical coordinate densities $(E, S_i, S_{ij}) = \mathcal{O}(1)$ in curved spacetime. On uniform central boxes, this preserves constant rest density ($\rho_{\rm err} = 4.18\times 10^{-4}$ in OS $R_0=5M$), **but** violates proper-volume conservation $\int \sqrt{\gamma}\,E\,d^3x$ ($\sim 2.49\times 10^{-3}$ bias at $t=0$, growing to $2.20\times 10^{-2}$ under dynamic AMR).
+- **Pre-$\sqrt{\gamma}$ densitized filtering (`dens`)**: Filters $\sqrt{\gamma}\,E$ at each refinement level and divides back by $\sqrt{\gamma}$. Across curved interiors ($\partial_i\sqrt{\gamma}\ne 0$), dividing the average of $\sqrt{\gamma}\,c$ by local $\sqrt{\gamma}$ bends even a spatially uniform dust density, introducing a central OS curvature bias (`rho_err = 3.35e-3`, $8\times$ worse than `plain`). Moreover, without flux refluxing across AMR coarse-fine interfaces (`FilterPass` uses ghost prolongation without fine-to-coarse flux replacement), conservation drifts by $5.03\times 10^{-4}$ (M4 SMR) to $2.38\times 10^{-2}$ (OS AMR).
+
+### 3.2 Self-Adjoint Discrete Formulation & AMR Refluxing
+In [`vlasov_math.hpp`](file:///home/schmidt/ssci-haiyangw/nrpic/athenak/src/particles/vlasov/vlasov_math.hpp) (`HarmonicFaceWeight`, `MetricFlux1D`) and [`nrpic.cpp`](file:///home/schmidt/ssci-haiyangw/nrpic/athenak/src/particles/nrpic.cpp) (`NrpicFilterPassMetricConservative`), each directional sweep $d \in \{x^1, x^2, x^3\}$ (alternating forward/backward order across odd/even passes) updates the cell-centered source array $u_c$ weighted by $\sigma_c = \sqrt{\gamma_c}$ (or $\sigma_c=1$ in Newtonian runs, zeroed inside invalid/excised $\det\gamma \le 0$ cells) using discrete divergence:
+$$u_c^{\rm new} = u_c + \frac{\mathcal{F}_{c+1/2} - \mathcal{F}_{c-1/2}}{\sigma_c\,\Delta x}, \qquad \mathcal{F}_{c+1/2} = \kappa\,\Delta x\,\sigma_{c+1/2}\,(u_{c+1} - u_c),$$
+where the face conductance is the harmonic mean (zeroed if either neighbor has $\sigma \le 0$ or at non-block non-periodic domain boundaries):
+$$\sigma_{c+1/2} = \frac{2\,\sigma_L\,\sigma_R}{\sigma_L + \sigma_R} \qquad (\sigma_L, \sigma_R > 0).$$
+
+**Proven Mathematical Properties:**
+1. **Exact Flat-Space Equivalence**: When $\sigma_c \equiv \sigma_0 > 0$, $\sigma_{c+1/2} = \sigma_0$, so $\kappa = 1/4$ reduces algebraically to $(1/4, 1/2, 1/4)$ and $\kappa = -c$ reduces to $(-c, 1+2c, -c)$.
+2. **Exact Constant Preservation ($\rho_{\rm const} \to \rho_{\rm const}$)**: If $u_c \equiv C$ everywhere (for arbitrary smooth or discontinuous $\sqrt{\gamma_c} > 0$), then $\mathcal{F}_{c+1/2} = 0$ identically at every cell face and every AMR interface, eliminating the $O(\Delta x^2 \nabla^2\sqrt{\gamma})$ curved-center density bias.
+3. **Self-Adjointness and $L^2(\sigma)$ Contraction**: Under the curved proper-volume inner product $\langle u, v\rangle_\sigma = \sum_c \sigma_c \Delta x\, u_c v_c$, summation by parts yields:
+   $$\langle u, \mathcal{L}v\rangle_\sigma = -\kappa\Delta x \sum_{c+1/2} \sigma_{c+1/2}(u_{c+1}-u_c)(v_{c+1}-v_c) = \langle \mathcal{L}u, v\rangle_\sigma,$$
+   with unconditional $L^2(\sigma)$ energy stability $\langle u, (I+\mathcal{L})u\rangle_\sigma \le \langle u,u\rangle_\sigma$ when $\kappa\,\max_c\frac{\sigma_{c+1/2}+\sigma_{c-1/2}}{\sigma_c} \le \frac{1}{2}$ (note $\sigma_{c+1/2} < 2\min(\sigma_L,\sigma_R)$, which also bounds harmonic face conductances near strong curvature gradients).
+4. **Exact Conservation Across Multi-Level AMR Interfaces**: At every coarse-fine interface, ghost filling precedes face flux computation, and `pbval_tm->PackAndSendFluxCC` / `RecvAndUnpackFluxCC` overwrites the coarse face flux with the sum of fine-child face fluxes so $\sum_c \sigma_c \Delta x_c \Delta u_c = 0$ telescopically across all refinement jumps.
+
+### 3.3 Measured Verification (`Tests 1–10`, `M5a`, `M4`, `M5b`, GPU/OMP)
+- **Standalone Kernel Test 10 ([`vlasov_kernel_test.cpp`](file:///home/schmidt/ssci-haiyangw/nrpic/tests/kernel/vlasov_kernel_test.cpp), verified identically on `g++` and `nvcc -arch=sm_100`)**:
+  - Constant preservation (`err_const = 0.00e+00` vs naive pre-densitized `4.80e-01`), self-adjointness `sa = 0.00e+00`, 1D proper-volume conservation `cons_1d = 2.30e-16`, and curved 2-level coarse-fine AMR constant & conservation tests (both $\kappa=+0.25$ and $\kappa=-1$): `amr_const = 0.00e+00`, `amr_cons = 3.77e-16`.
+- **Full AthenaK Benchmarks ([`run_iter3_filter_verify.py`](file:///home/schmidt/ssci-haiyangw/nrpic/vlasov_gr/notes/scripts/run_iter3_filter_verify.py), [`iter3_filter_verify.npz`](file:///home/schmidt/ssci-haiyangw/nrpic/vlasov_gr/paper/data/iter3_filter_verify.npz), B200 GPU)**:
+  - **M5a Oppenheimer-Snyder $R_0=5M$ (`os_10k_lat`, $N=9{,}328$, 7-level dynamic AMR, $t=25M$)**:
+    - `plain`: `rho_err = 4.178e-4`, `||H||_max = 1.896`, `filt(t0/max) = (-2.49e-3 / 2.20e-2)`.
+    - `dens`: `rho_err = 3.354e-3`, `||H||_max = 1.912`, `filt(t0/max) = (0.00e+00 / 2.38e-2)`.
+    - **`mcons` (Iteration 3)**: **`rho_err = 4.183e-4`** ($8.02\times$ cleaner than `dens`), `||H||_max = 1.893`, **`filt(t0/max) = (0.00e+00 / 8.76e-16)`** (**$2.72\times 10^{13}\times$** tighter proper-volume conservation).
+  - **M4 6-Level SMR Kerr $a=0.9M$ (`mesh 10k`, $t=200M$)**: `plain` `(-2.25e-6 / 8.91e-4)` and `dens` `(0.00e+00 / 8.64e-4)` vs **`mcons` `(0.00e+00 / 9.93e-16)`** (**$8.70\times 10^{11}\times$** reduction; identical cluster order parameter `|<e^{iphi}>| = 0.1577`).
+  - **M5b Prolate $e=0.9$ Compensated Pass (`nfilter=4, filter_compensate=true`, 7-level AMR, $t=5M$)**: `||H||_max = 0.3475`, **`filt(t0/max) = (0.00e+00 / 1.01e-15)`**.
+  - **GPU vs OpenMP (4 threads) 10-step OS AMR Determinism (`mcons`)**: `max|dx| = 8.882e-16`, `max|du| = 6.453e-16`, `rel|d_int_E_filt| = 4.229e-15`.
