@@ -455,6 +455,7 @@ def main():
             for c in sorted(set(cs)):
                 x.axvline(c + 0.5, color="k", lw=1.0, ls=":")
             x.set_xlim(lo, hi)
+        ax2.set_yscale("log")
         ax2.set_ylim(1e-19, 1e-9)
         ax2.axhline(1e-12, color="k", lw=1.0, ls="--")
         ax.set_title(lab, fontsize=10)
