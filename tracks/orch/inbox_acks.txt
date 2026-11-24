@@ -116,3 +116,6 @@ tracks/kb/outbox/20261121T213157Z__to-orch__kb-g3-tracks-queue.md	2026-11-21T23:
 tracks/kb/outbox/20261121T220221Z__to-orch__additions-wave3.md	2026-11-21T23:11:16Z	ruled on in coord/DECISIONS/0027, coord/GATES.md
 tracks/core/outbox/20261121T233031Z__to-orch__g2-verifier-corrections-and-note.md	2026-11-21T23:38:39Z	ruled on in coord/DECISIONS/0027; interface texts copied; errata section 5 points to the claims
 tracks/kb/outbox/20261121T233354Z__to-orch__errata-section5-claims.md	2026-11-21T23:38:39Z	ruled on in coord/DECISIONS/0027; interface texts copied; errata section 5 points to the claims
+tracks/kb/outbox/20261121T235253Z__to-orch__kb-batch9-snapshot-and-0608095.md	2026-11-21T23:54:20Z	noted; KB-G3 verifier and ingest package after the reset of the usage window (coord/digests/batch-10-plan.md)
+tracks/B-emd-gw/outbox/20261123T020159Z__to-orch__population-run-on-the-cards.md	2026-11-23T02:55:49Z	ruled on in coord/DECISIONS/0028-0030
+tracks/E-stoch-inf/outbox/20261123T025319Z__to-orch__g2-usr-ladder-judged.md	2026-11-23T02:55:49Z	ruled on in coord/DECISIONS/0028-0030

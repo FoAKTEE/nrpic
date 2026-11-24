@@ -23,7 +23,7 @@ Status: ACCEPTED · 2026-11-21 · orchestrator (decision 0017)
    ladder; one label is wrong (a volume norm printed as a pointwise maximum) and five
    texts need correction by core's lead. Core's gate G2 stays open (decision 0023 item 5).
 5. Knowledge base: the 35 further additions to the manifest are accepted with the groups
-   assigned (745 papers). The lead takes the snapshot, corrects the test that counts the
+   assigned (744 papers: gr-qc/0608095 is dropped under decision 0024 item 2). The lead takes the snapshot, corrects the test that counts the
    additions, and guards the claim check as the claims package asks.
 6. Usage: the weekly window stands at 80 per cent after batch 6 (eight sessions on Opus,
    two hours, seven per cent). From here: one short session of Track A now (the corrected
