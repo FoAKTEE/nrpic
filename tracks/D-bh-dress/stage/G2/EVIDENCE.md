@@ -15,7 +15,8 @@ no lapse_leak.
 | ES-1L vacuum-bubble null test | `g2long/inputs/es1l.athinput` | D-20261121-203131-8ee2a49 | 500 M | 2.49 |
 | ES-FL dust-filled bubble | `g2long/inputs/esfl.athinput` (data D-20261121-203042-82deeec) | D-20261121-203150-15f2bad | 500 M | 2.60 |
 | V-1L16 vacuum at M/16 | `g2long/inputs/v1l16.athinput` | D-20261121-203151-37e7b2d | 300 M | 3.00 |
-| ES-1L16 null test at M/16 | `g2long/inputs/es1l16.athinput` | D-20261121-203151-59c54fb | 225.6 M of 300 (running, job 4920) | 2.51 so far |
+| ES-1L16 null test at M/16 | `g2long/inputs/es1l16.athinput` | D-20261121-203151-59c54fb | 300 M (done) | 3.33 |
+| V-1L4 vacuum at M/4 (FV4) | `g2long/inputs/v1l4.athinput` | D-20261123-022715-ab5d983 | 300 M (done) | 0.59 |
 | ES-F (first matter run, faces +-192 M) | `g2runs/inputs` | D-20261121-144631-aa7ce9b | 200 M | 0.81 |
 
 ## Analyses
@@ -34,3 +35,23 @@ no lapse_leak.
 |---|---|---|
 | Newtonian secondary infall, second resolution Q16-256 | D-20261121-205226-3cfbc20; analyses D-20261123-020626-183c254, -020756-e9922e7 | `secondary_infall/JOURNAL.md` 2026-11-23T02:08Z |
 | Smoke tests of the follow-ups (M/4 members, excision kept) | D-20261123-020011-bd47394, -020531-6dbd75c, -020535-dccfd30, -020538-0290d15 | `g2long/JOURNAL.md` entry 9 |
+
+## Added in batch 11 and 11b (2026-11-24; g2long entries 10-15)
+
+| What | Tool | Run | Figures |
+|---|---|---|---|
+| R5 (H3, H4), FV4 (P1-P4): long-run judgement with R5 complete | `g2long/tools/judge_long.py` | D-20261124-131138-0b8ffc5 | judge_long.png (L) |
+| Three vacuum meshes, null tests at M/8, M/16 | `g2long/tools/judge_conv.py` | D-20261124-131149-9f0166d | judge_conv.png (L) |
+| Boundary and gauge members | `g2long/tools/boundary_gauge.py` | D-20261124-131657-89cd963 | boundary_gauge.png (L) |
+| Exterior plane constraint norms (XC) | `g2long/tools/xc_plane.py` | D-20261124-134211-c6fce88 | xc_plane.png (L) |
+| Slice mosaic of ES-FL at 500 M | `g2long/tools/slice_mosaic.py` | D-20261124-134644-2389227 | slice_mosaic_esfl_t500.png (L) |
+| Finder re-search of dumps (FP, FP-ext; processors) | `g2long/tools/probe_long.py` | D-20261124-130935-fdca920, D-20261124-140606-286a302 | run logs |
+| FP1-FP5, FP-ext judgement | `g2long/tools/fp_analyse.py` | D-20261124-172410-e8afc73, D-20261124-172508-c847ee4 (figure layout only) | fp_analyse.png (L) |
+| Ladder schematic (C9) | `g2long/tools/schem_ladder.py` | D-20261124-172838-3a30e48 | schem_ladder.png (L) |
+| 4N and N/4 dust data (D1); smoke tests S7, S8 | `flux_tools/esf_data.py`; release processor build | D-20261124-130942-29c5de2, -131050-ed0a535; -131123-05e5bfe, -131125-c928380 | entry 11 |
+
+Card runs registered and not yet ended (release core-v0.6, chains; held by the sequencer
+`scratch/D-bh-dress/g2long_seq3/` or waiting behind another user's priority jobs):
+FK D-20261123-022725-a553496 (N), FE4 D-20261123-022726-1b133af (null test M/4), FF4
+D-20261123-022727-1c17e73 (growth M/4), FN4 D-20261124-134157-b17938b (4N), FNQ
+D-20261124-172725-2f426b6 (N/4), FL16 D-20261124-172745-72472ed (growth M/16).

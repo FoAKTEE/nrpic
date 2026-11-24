@@ -1,6 +1,6 @@
 # Checklist: D-bh-dress G2
 
-Collected by `harness/bin/nrpic-stage collect D-bh-dress G2` on 2026-11-23T02:09:59Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect D-bh-dress G2` on 2026-11-24T17:29:13Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
@@ -9,13 +9,13 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [ ] **C1** The code paths used by the track pass their tests of §10
   - status: OPEN
-  - evidence: The section-10 rows D owns (scope/SCOPE.md section 6) are not yet assembled into a G2 ladder table. Available: Einstein-Straus null test (N, entry 5), dust growth against the exact LTB solution (G, entry 5), Newtonian self-similar infall at two resolutions (Q16, Q16-256 D-20261123-020626-183c254), Kerr spike stationarity (G1). Missing: the table itself and the verifier.
+  - evidence: Ladder table stage/G2/LADDER.md (rows D owns: Einstein-Straus null test N at M/8 and M/16 with the converged-finder re-search FP; self-similar infall Q16/Q16-256; D's growth criterion G) and schematic D-20261124-172838-3a30e48. Open: the M/4 member of the null test (FE4, card) and the G2 verifier (C17).
 - [ ] **C2** Three-way convergence in particle number, mesh spacing, and gauge or boundary
   - status: OPEN
-  - evidence: Mesh spacing: vacuum and null test at M/8 (D-20261121-203124-a34cf1f, -203131-8ee2a49) and M/16 (D-20261121-203151-37e7b2d; -59c54fb running); the finder mass changes sign between them (H1 failed), so the third member M/4 is queued (entry 6: FV4, FE4). Boundary: faces +-192, +-384, +-768 M compared (V2, E1, F1 of entry 5). Gauge: lapse_leak pair of G1 (ES-1GB/V-1GB). Particle number: none yet for the dust run (ES-FL at one particle count). Growth law at one mesh (ES-FL M/8); ES-FL4 queued.
+  - evidence: Mesh: null test at M/8 and M/16 (D-20261121-203124-a34cf1f, -203131-8ee2a49, -203151-37e7b2d, -203151-59c54fb; converged-finder difference 4.5-7.3e-5 at M/8, 2.3-3.7e-5 at M/16, fp_analyse D-20261124-172508-c847ee4), M/4 FE4 queued (job 5153); growth at M/8 (ES-FL), M/4 FF4 at 456 M (job 5152), M/16 FL16 registered held (D-20261124-172745-72472ed). The horizon mass itself has no mesh order (P2, FP4 refuted). Particle number: N = FK (held, 225 M of 400), 4N = FN4 and N/4 = FNQ registered, held (D-20261124-134157-b17938b, -172725-2f426b6). Boundary: faces +-192/384/768 M, gauge: lapse_leak pair of G1 (boundary_gauge D-20261124-131657-89cd963).
 - [ ] **C3** Constraints behave
   - status: OPEN
-  - evidence: Volume norms bounded in all five runs (entry 8, D-20261123-021027-e3af9b8, constraints_long.png L), but they integrate the region inside the horizon beyond the chi cut; an exterior norm (region_*) is not in the inputs yet.
+  - evidence: Volume norms bounded in all long runs (D-20261123-021027-e3af9b8); exterior plane norms on annuli outside 1.2 r_AH bounded to 500 M in eight runs (XC1, xc_plane D-20261124-134211-c6fce88, looked at); with dust the exterior residual is ~100x the vacuum one and falls with more particles per cell. Region (sphere) norms come with FN4/FNQ/FL16 (predictions XN, XQ, L5).
 - [x] **C4** A first minimal full-GR kinetic run
   - status: PASS
   - evidence: ES-F (D-20261121-144631-aa7ce9b) and ES-FL (D-20261121-203150-15f2bad, 850724 particles, 500 M): kinetic matter falling into an evolved puncture in full GR; analyses D-20261123-020606-fa0046c, -020614-7ba5874.
@@ -33,25 +33,25 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [x] **C7** In the vacuum-bubble case the drift of the horizon mass does not exceed the noise floor
   - status: PASS
-  - evidence: Criterion N of g2long entry 1 (fixed before the runs): max |D_ES1L - D_V1L| on 100-500 M = 2.28e-4 against the threshold 2.51e-4 = 2 F_V(500); never above the refutation level 3.76e-4 (judge_long D-20261123-020550-f9a3482, judge_long.png L). At M/16 to 225.6 M the difference follows the M/8 one (H3, partial). Reservation: the margin is 9 per cent, and the floor F_V itself is a resolution-independent step at 240-300 M whose cause is not known.
+  - evidence: Criterion N of g2long entry 1 (fixed before the runs): max |D_ES1L - D_V1L| on 100-500 M = 2.28e-4 against 2.51e-4 = 2 F_V(500) (judge_long D-20261123-020550-f9a3482); M/16 1.99e-4 on 100-300 M (H3, D-20261124-131138-0b8ffc5). Since batch 11b the floor's cause is found: the production finder's stopping rule (FP2, FP3: converged-finder vacuum drift 1.8e-5 at M/8 over 100-500 M, 3.9e-6 at M/16); with the converged finder the bubble-minus-vacuum difference is a step of 4.5-7.3e-5 (M/8) reached by 150 M and flat to 500 M, 2.3-3.7e-5 at M/16 (FP5, FP-ext; D-20261124-172508-c847ee4, fp_analyse.png looked at). Reservation: the M/4 member is pending.
 - [x] **C8** With matter filled in, the mass growth agrees with the integrated particle flux through the horizon
   - status: PASS
-  - evidence: Criterion G of g2long entry 1: (iii) every 10 M bin of tau_rem <= 650 M within +-0.62 per cent of the exact LTB mass (61 bins), D2 at all 960 samples (esf_criteria D-20261123-020614-7ba5874, esf_criteria.png L; esf_bracket.png L). Reservations: one mesh spacing and one particle number; D1 closure +9.4e-3 at 500 M (predicted below 8e-3); the step at tau_rem ~ 285 M follows the end of horizon excision at 219 M (entry 5 F4; ES-FLK queued).
+  - evidence: Criterion G of g2long entry 1: (iii) every 10 M bin of tau_rem <= 650 M within +-0.62 per cent of the exact LTB mass (61 bins), D2 at all 960 samples (esf_criteria D-20261123-020614-7ba5874, esf_criteria.png L; esf_bracket.png L). Reservations: one mesh and one particle number so far (FF4, FL16, FK, FN4, FNQ queued); D1 closure +9.4e-3 at 500 M (predicted below 8e-3); the step at tau_rem ~ 285 M follows the end of horizon excision at 219 M (FK tests the workaround).
 
 ## Minimum figures at G2 (brief 13.4)
 
-- [ ] **C9** Schematic: Verification ladder
-  - status: OPEN
-  - evidence: No verification-ladder schematic for G2 yet.
+- [x] **C9** Schematic: Verification ladder
+  - status: PASS
+  - evidence: Verification-ladder schematic schem_ladder.png, registered D-20261124-172838-3a30e48 (paperfig style, g2long/tools/schem_ladder.py), looked at by the lead on 2026-11-24 09:28 PST; it will be redrawn as the queued runs end.
 - [ ] **C10** Data figure: Convergence figures (one each for particle number, mesh, gauge)
   - status: OPEN
-  - evidence: judge_long.png panel (a)-(c) is a two-resolution mesh figure; particle-number and gauge figures missing.
+  - evidence: Mesh: judge_conv.png (D-20261124-131149-9f0166d, three vacuum meshes) and fp_analyse.png panel (d) (converged finder, three meshes); boundary/gauge: boundary_gauge.png (D-20261124-131657-89cd963). Particle-number figure waits for FK, FN4, FNQ.
 - [ ] **C11** Data figure: Constraint norms against time
   - status: OPEN
-  - evidence: constraints_long.png (D-20261123-021027-e3af9b8) shows the volume norms against time; exterior norms missing (C3).
-- [ ] **C12** Data figure: At least one multi-scale slice mosaic with zoom boxes
-  - status: OPEN
-  - evidence: No slice mosaic of the G2 runs yet.
+  - evidence: constraints_long.png (volume norms, D-20261123-021027-e3af9b8) and xc_plane.png (exterior annuli, D-20261124-134211-c6fce88), both looked at; region-sphere norms against time wait for FN4/FNQ/FL16.
+- [x] **C12** Data figure: At least one multi-scale slice mosaic with zoom boxes
+  - status: PASS
+  - evidence: Slice mosaic with zoom boxes D-20261124-134644-2389227 (g2long/tools/slice_mosaic.py), looked at by the lead of batch 11.
 
 ## Package (brief 13.3, decision 0012; judged by the session)
 
@@ -72,7 +72,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: No G2 verifier yet.
 - [x] **C18** Null results and failed runs are on record (manifests and JOURNAL)
   - status: PASS
-  - evidence: Failed predictions of entry 1 on record in g2long/JOURNAL.md entry 5 (V3, E2 sharper bounds, E3, F2 at 400/500 M, F3 median and D1, F4 reason 3, H1, H2) and of QR3/QR4 in secondary_infall/JOURNAL.md.
+  - evidence: Failed predictions on record in g2long/JOURNAL.md: entry 5 (V3, E2 sharper bounds, E3, F2 at 400/500 M, F3 median and D1, F4 reason 3, H1, H2), entry 11 (P2), entry 12 (XC2 expected factor), entry 14 (FP4 refuted, FP-ext (ii) missed its bound); QR3/QR4 in secondary_infall/JOURNAL.md; cut chains closed as failed and resumed (entry 10).
 - [x] **C19** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: PASS
   - evidence: STATUS.md, JOURNAL.md and HANDOFF.md rewritten at the end of this session.
