@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "nrpic_vlasov_kernels.hpp"
+#include "nrpic_metrics.hpp"
 
 using namespace nrpic;
 using namespace nrpic::vlasov;
@@ -287,6 +288,256 @@ void RunSelfTests() {
     assert(IsSpd3Fast(S_test, 0.0));
     Real S_bad[3][3] = {{0.2, 0.3, 0.0}, {0.3, 0.1, 0.0}, {0.0, 0.0, 0.1}};
     assert(!IsSpd3Fast(S_bad, 0.0));
+  }
+
+  // 6. S^2 SphericalCubatureRule exactness up to l = 7 (Q = 6, 12, 14, 26)
+  {
+    const int q_list[4] = {6, 12, 14, 26};
+    for (int qi = 0; qi < 4; ++qi) {
+      Real dir[26][3], w[26];
+      int n_pts = 0;
+      SphericalCubatureRule(q_list[qi], dir, w, n_pts);
+      assert(n_pts == q_list[qi]);
+      Real sum_w = 0.0, mu1[3] = {0.0, 0.0, 0.0};
+      Real m2[3][3] = {{0}}, m3_xyz = 0.0, m5_x3yz = 0.0;
+      Real m4_x4 = 0.0, m4_x2y2 = 0.0, m6_x6 = 0.0, m6_x4y2 = 0.0, m6_x2y2z2 = 0.0;
+      for (int q = 0; q < n_pts; ++q) {
+        assert(w[q] > 0.0);
+        const Real x = dir[q][0], y = dir[q][1], z = dir[q][2];
+        assert(CheckClose(x*x + y*y + z*z, 1.0, 1e-14, 1e-14));
+        sum_w += w[q];
+        mu1[0] += w[q]*x; mu1[1] += w[q]*y; mu1[2] += w[q]*z;
+        m3_xyz += w[q]*x*y*z;
+        m5_x3yz += w[q]*x*x*x*y*z;
+        m4_x4 += w[q]*x*x*x*x;
+        m4_x2y2 += w[q]*x*x*y*y;
+        m6_x6 += w[q]*x*x*x*x*x*x;
+        m6_x4y2 += w[q]*x*x*x*x*y*y;
+        m6_x2y2z2 += w[q]*x*x*y*y*z*z;
+        for (int a = 0; a < 3; ++a)
+          for (int b = 0; b < 3; ++b)
+            m2[a][b] += w[q] * dir[q][a] * dir[q][b];
+      }
+      assert(CheckClose(sum_w, 1.0, 1e-14, 1e-14));
+      for (int a = 0; a < 3; ++a) {
+        assert(fabs(mu1[a]) < 1e-14);
+        for (int b = 0; b < 3; ++b)
+          assert(CheckClose(m2[a][b], (a == b) ? (1.0/3.0) : 0.0, 1e-14, 1e-14));
+      }
+      assert(fabs(m3_xyz) < 1e-14);
+      assert(fabs(m5_x3yz) < 1e-14);
+      if (q_list[qi] >= 12) {
+        assert(CheckClose(m4_x4, 1.0/5.0, 1e-14, 1e-14));
+        assert(CheckClose(m4_x2y2, 1.0/15.0, 1e-14, 1e-14));
+      }
+      if (q_list[qi] == 26) {
+        assert(CheckClose(m6_x6, 1.0/7.0, 1e-14, 1e-14));
+        assert(CheckClose(m6_x4y2, 1.0/35.0, 1e-14, 1e-14));
+        assert(CheckClose(m6_x2y2z2, 1.0/105.0, 1e-14, 1e-14));
+      }
+    }
+  }
+
+  // 7. PushGL4 vs PushMidpoint on Kerr a=0.9M, e=0.99 passage (exact problems/kerr/geodesic.athinput)
+  {
+    const Real a = 0.9;
+    KerrSchildSph kss{1.0, a};
+    auto eval_ELQ = [&](const Real x[3], const Real u[3], Real &E, Real &Lz, Real &Q) {
+      AdmPoint ap;
+      kss(0, x, ap);
+      Real gi[3][3], uup[3];
+      Inv3Sym(ap.g, gi);
+      const Real W = LorentzFactor(gi, u, uup);
+      E = ap.alp * W - (ap.beta[0]*u[0] + ap.beta[1]*u[1] + ap.beta[2]*u[2]);
+      Lz = u[2];
+      const Real ct = cos(x[1]), st = sin(x[1]);
+      Q = u[1]*u[1] + ct*ct*(a*a*(1.0 - E*E) + Lz*Lz/(st*st));
+    };
+    const Real x0[3] = {20.0, 0.5 * kPi, 0.0};
+    const Real u0[3] = {-0.20131797516752664, 1.4049911031746785, 2.4328};
+    Real E0, Lz0, Q0;
+    eval_ELQ(x0, u0, E0, Lz0, Q0);
+    const Real tend = 230.0;
+    const Real dts[5] = {0.16, 0.08, 0.04, 0.02, 0.01};
+    Real dE_gl4[5], dQ_gl4[5], dE_mid[5], dQ_mid[5];
+    for (int k = 0; k < 5; ++k) {
+      const int nst = static_cast<int>(llround(tend / dts[k]));
+      Real x[3] = {x0[0], x0[1], x0[2]}, u[3] = {u0[0], u0[1], u0[2]}, dtau = 0.0;
+      Real max_dE = 0.0, max_dQ = 0.0;
+      for (int s = 0; s < nst; ++s) {
+        int it = PushGL4(kss, dts[k], 2.0e-14, 200, x, u, 1.0, dtau);
+        assert(it > 0);
+        Real E, Lz, Q;
+        eval_ELQ(x, u, E, Lz, Q);
+        max_dE = fmax(max_dE, fabs(E - E0));
+        max_dQ = fmax(max_dQ, fabs(Q - Q0));
+        assert(fabs(Lz - Lz0) < 1e-12);
+      }
+      dE_gl4[k] = max_dE;
+      dQ_gl4[k] = max_dQ;
+
+      Real xm[3] = {x0[0], x0[1], x0[2]}, um[3] = {u0[0], u0[1], u0[2]}, dm = 0.0;
+      Real max_dEm = 0.0, max_dQm = 0.0;
+      for (int s = 0; s < nst; ++s) {
+        int it = PushMidpoint(kss, dts[k], 2.0e-14, 200, xm, um, 1.0, dm);
+        assert(it > 0);
+        Real E, Lz, Q;
+        eval_ELQ(xm, um, E, Lz, Q);
+        max_dEm = fmax(max_dEm, fabs(E - E0));
+        max_dQm = fmax(max_dQm, fabs(Q - Q0));
+      }
+      dE_mid[k] = max_dEm;
+      dQ_mid[k] = max_dQm;
+    }
+    const Real p_E_gl4 = log(dE_gl4[0] / dE_gl4[3]) / log(dts[0] / dts[3]);
+    const Real p_Q_gl4 = log(dQ_gl4[0] / dQ_gl4[3]) / log(dts[0] / dts[3]);
+    const Real p_E_mid = log(dE_mid[0] / dE_mid[3]) / log(dts[0] / dts[3]);
+    std::printf("[TEST7 KERR e=0.99] p_E_gl4=%.3f p_Q_gl4=%.3f p_E_mid=%.3f | dt=0.01: "
+                "dE_gl4=%.3e vs mid=%.3e, dQ_gl4=%.3e vs mid=%.3e\n",
+                p_E_gl4, p_Q_gl4, p_E_mid, dE_gl4[4], dE_mid[4], dQ_gl4[4], dQ_mid[4]);
+    assert(p_E_gl4 >= 3.95 && p_Q_gl4 >= 3.95);
+    assert(p_E_mid >= 1.95 && p_E_mid <= 2.10);
+    // At dt = 0.01 (index 4), GL4 beats Midpoint by >= 1e6x in E and >= 1e5x in Q
+    assert(dE_mid[4] / fmax(dE_gl4[4], 1e-16) >= 1.0e6);
+    assert(dQ_mid[4] / fmax(dQ_gl4[4], 1e-16) >= 1.0e5);
+  }
+
+  // 8. PushGL4 on time-varying metric: linear BlendAdm2 (p~2) vs 3-level quadratic (p>=2.95)
+  {
+    auto eval_exact_at_t = [](Real t, const Real x[3], AdmPoint &p) {
+      const Real phia = 2.3 * t + 0.4 * x[0] - 0.3 * x[1];
+      const Real phib = 1.9 * t + 0.25 * x[2];
+      const Real phig = 2.7 * t + 0.15 * x[0] + 0.2 * x[1];
+      const Real a2 = 0.22 * cos(phia) + 0.07 * sin(3.7 * t - 0.2 * x[2]);
+      p.alp = 1.0 + a2;
+      p.dalp[0] = -0.22 * 0.4 * sin(phia);
+      p.dalp[1] =  0.22 * 0.3 * sin(phia);
+      p.dalp[2] = -0.07 * 0.2 * cos(3.7 * t - 0.2 * x[2]);
+      p.beta[0] = 0.16 * sin(phib);
+      p.beta[1] = 0.0;
+      p.beta[2] = 0.0;
+      for (int i = 0; i < 3; ++i)
+        for (int j = 0; j < 3; ++j)
+          p.dbeta[i][j] = 0.0;
+      p.dbeta[2][0] = 0.16 * 0.25 * cos(phib);
+      const Real gg = 1.0 + 0.12 * sin(phig);
+      const Real dgg_0 = 0.12 * 0.15 * cos(phig);
+      const Real dgg_1 = 0.12 * 0.20 * cos(phig);
+      for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+          p.g[i][j] = (i == j) ? gg : 0.0;
+          for (int k = 0; k < 3; ++k) p.dg[i][j][k] = 0.0;
+        }
+        p.dg[0][i][i] = dgg_0;
+        p.dg[1][i][i] = dgg_1;
+      }
+    };
+    struct LinMetric {
+      Real t0, t1;
+      decltype(eval_exact_at_t) fn;
+      KOKKOS_INLINE_FUNCTION bool IsStatic() const { return false; }
+      KOKKOS_INLINE_FUNCTION void operator()(int slot, const Real x[3], AdmPoint &p) const {
+        fn((slot == 0) ? t0 : t1, x, p);
+      }
+    };
+    struct QuadMetric {
+      Real tm1, t0, t1, r;
+      bool has_prev;
+      decltype(eval_exact_at_t) fn;
+      KOKKOS_INLINE_FUNCTION bool IsStatic() const { return false; }
+      KOKKOS_INLINE_FUNCTION void operator()(int slot, const Real x[3], AdmPoint &p) const {
+        fn((slot == 0) ? t0 : t1, x, p);
+      }
+      KOKKOS_INLINE_FUNCTION void EvalAtFrac(Real c, const Real x[3], AdmPoint &p) const {
+        AdmPoint pm1, p0, p1;
+        fn(t0, x, p0);
+        fn(t1, x, p1);
+        if (has_prev) {
+          fn(tm1, x, pm1);
+          const Real wm1 = (r * r * c * (c - 1.0)) / (1.0 + r);
+          const Real w0  = (1.0 - c) * (1.0 + r * c);
+          const Real w1  = (c * (1.0 + r * c)) / (1.0 + r);
+          BlendAdm3(wm1, pm1, w0, p0, w1, p1, p);
+        } else {
+          BlendAdm2(1.0 - c, p0, c, p1, p);
+        }
+      }
+    };
+    struct ExactMetric {
+      Real t0, dt;
+      decltype(eval_exact_at_t) fn;
+      KOKKOS_INLINE_FUNCTION bool IsStatic() const { return false; }
+      KOKKOS_INLINE_FUNCTION void operator()(int slot, const Real x[3], AdmPoint &p) const {
+        fn((slot == 0) ? t0 : (t0 + dt), x, p);
+      }
+      KOKKOS_INLINE_FUNCTION void EvalAtFrac(Real c, const Real x[3], AdmPoint &p) const {
+        fn(t0 + c * dt, x, p);
+      }
+    };
+
+    const Real x_init[3] = {0.3, -0.2, 0.1};
+    const Real u_init[3] = {0.5, 0.35, -0.25};
+    // Exact continuous reference (uniform small dt)
+    Real xref[3] = {x_init[0], x_init[1], x_init[2]}, uref[3] = {u_init[0], u_init[1], u_init[2]};
+    const Real Ttot = 1.6;
+    {
+      const int nref = 8000;
+      const Real dtr = Ttot / nref;
+      Real dtau = 0.0;
+      for (int s = 0; s < nref; ++s) {
+        ExactMetric em{s * dtr, dtr, eval_exact_at_t};
+        int it = PushGL4(em, dtr, 2.0e-14, 200, xref, uref, 1.0, dtau);
+        assert(it > 0);
+      }
+    }
+
+    const int nbase[4] = {16, 32, 64, 128};
+    Real err_lin[4], err_quad[4], hs[4];
+    for (int k = 0; k < 4; ++k) {
+      // Non-uniform alternating step sizes with ratio r = 1.27 and 1/1.27
+      const int nsteps = nbase[k];
+      std::vector<Real> dts(nsteps);
+      Real sumt = 0.0;
+      for (int s = 0; s < nsteps; ++s) {
+        dts[s] = (s % 2 == 0) ? 1.0 : 1.27;
+        sumt += dts[s];
+      }
+      for (int s = 0; s < nsteps; ++s) dts[s] *= Ttot / sumt;
+      hs[k] = Ttot / nsteps;
+
+      Real xl[3] = {x_init[0], x_init[1], x_init[2]}, ul[3] = {u_init[0], u_init[1], u_init[2]}, dtl = 0.0;
+      Real xq[3] = {x_init[0], x_init[1], x_init[2]}, uq[3] = {u_init[0], u_init[1], u_init[2]}, dtq = 0.0;
+      Real t = 0.0, tm1 = 0.0, dt_prev = 0.0;
+      for (int s = 0; s < nsteps; ++s) {
+        const Real dt = dts[s];
+        LinMetric lm{t, t + dt, eval_exact_at_t};
+        int itl = PushGL4(lm, dt, 2.0e-14, 200, xl, ul, 1.0, dtl);
+        assert(itl > 0);
+
+        QuadMetric qm{tm1, t, t + dt, (s > 0) ? (dt / dt_prev) : 1.0, (s > 0), eval_exact_at_t};
+        int itq = PushGL4(qm, dt, 2.0e-14, 200, xq, uq, 1.0, dtq);
+        assert(itq > 0);
+
+        tm1 = t;
+        dt_prev = dt;
+        t += dt;
+      }
+      Real el = 0.0, eq = 0.0;
+      for (int d = 0; d < 3; ++d) {
+        el += (xl[d]-xref[d])*(xl[d]-xref[d]) + (ul[d]-uref[d])*(ul[d]-uref[d]);
+        eq += (xq[d]-xref[d])*(xq[d]-xref[d]) + (uq[d]-uref[d])*(uq[d]-uref[d]);
+      }
+      err_lin[k]  = sqrt(el);
+      err_quad[k] = sqrt(eq);
+    }
+    const Real p_lin  = log(err_lin[0]  / err_lin[3])  / log(hs[0] / hs[3]);
+    const Real p_quad = log(err_quad[0] / err_quad[3]) / log(hs[0] / hs[3]);
+    std::printf("[TEST8 TINTERP r=1.27] p_lin=%.3f p_quad=%.3f | h=%.4f: "
+                "err_lin=%.3e err_quad=%.3e\n",
+                p_lin, p_quad, hs[3], err_lin[3], err_quad[3]);
+    assert(p_lin >= 1.90 && p_lin <= 2.15);
+    assert(p_quad >= 2.95);
+    assert(err_lin[3] / err_quad[3] >= 50.0);
   }
   std::printf("C++ standalone GR-LBV kernel self-tests PASSED.\n");
 }

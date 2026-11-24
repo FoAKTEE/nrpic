@@ -89,6 +89,11 @@ DEFAULTS = dict(M_env=0.76, R_env=30.0, m_clump=0.12, sigma=0.70, d=3.0,
 _SQRT2 = math.sqrt(2.0)
 
 
+def _qmc_seed_offset(seed, mult=1):
+    s = int(seed.integers(0, 2**30)) if isinstance(seed, np.random.Generator) else int(seed)
+    return s + mult * 10007
+
+
 # ----------------------------------------------------------------------------
 # Gaussian component
 # ----------------------------------------------------------------------------
@@ -383,9 +388,10 @@ class JeansModel:
 
     # -- particles --------------------------------------------------------------
     def sample(self, N, seed=0, method="stratified", split=DEFAULTS["split"],
-               mirror=True, momentum="velocity"):
+               mirror=True, momentum="velocity", lebedev_q=14):
         """Particles (x[N,3], u[N,3], m[N], species[N]) of envelope (0), clump A (1)
         and clump B (2), in this order; counts split_counts(N, split).
+        method = 'stratified' | 'mc' | 'qmc' | 'qmc_antipodal' | 'qmc_lebedev'.
         momentum = 'velocity' (one orthonormal bulk velocity per clump, the rule of
         the module docstring) or 'gaussian' (same positions and the same total
         momentum of each clump, every particle carrying an equal share of it:
@@ -397,19 +403,26 @@ class JeansModel:
         if mirror and n_a != n_b:
             raise ValueError("mirror=True needs equal clump particle numbers")
         # envelope: the isolated-cluster sampler, then corrected for the clumps
-        x0, u0, _, _ = sampling.sample_st(self.env, n_env, method, rng)
+        env_seed = seed if method.startswith("qmc") else rng
+        x0, u0, m0, _ = sampling.sample_st(self.env, n_env, method, env_seed,
+                                           lebedev_q=lebedev_q)
         r0 = np.sqrt(np.sum(x0 * x0, axis=1))
         pe = self.env.psi(r0)
         q0 = u0 / pe[:, None] ** 2
         pt = self.psi(x0)
-        xs, us, ms = [x0], [pt[:, None] ** 2 * q0], [(self.env.M0 / n_env) * pt / pe]
+        xs, us, ms = [x0], [pt[:, None] ** 2 * q0], [m0 * pt / pe]
         # clumps
-        xa = sampling.sample_gaussian_positions(n_a, self.sigma, self.centres[1], method, rng)
+        clump_method = ("qmc_octant" if method in ("qmc_lebedev", "qmc_octant")
+                        else ("qmc_antipodal" if method == "qmc" else method))
+        clump_seed = (_qmc_seed_offset(seed) if clump_method.startswith("qmc") else rng)
+        xa = sampling.sample_gaussian_positions(n_a, self.sigma, self.centres[1],
+                                                clump_method, clump_seed)
         if mirror:
             xb = xa * np.array([-1.0, -1.0, 1.0])
         else:
+            clump_b_seed = (_qmc_seed_offset(seed, 2) if clump_method.startswith("qmc") else rng)
             xb = sampling.sample_gaussian_positions(n_b, self.sigma, self.centres[2],
-                                                    method, rng)
+                                                    clump_method, clump_b_seed)
         for k, (xc, vel, n) in enumerate(((xa, self.velocities[0], n_a),
                                           (xb, self.velocities[1], n_b))):
             pt = self.psi(xc)

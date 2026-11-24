@@ -85,8 +85,11 @@ def main(argv=None):
     p.add_argument("--N", type=int, default=10000,
                    help="particle count (lattice: target count used to choose n_lat)")
     p.add_argument("--sampler", default=None,
-                   help="os: lattice|mc|stratified (default lattice); "
-                        "st, jeans: stratified|mc (default stratified); prolate: mc")
+                   help="os: lattice|lattice_sc|mc|stratified|qmc_octant|qmc_antipodal; "
+                        "st, jeans: stratified|mc|qmc|qmc_antipodal|qmc_lebedev; "
+                        "prolate: mc|qmc|qmc_octant")
+    p.add_argument("--lebedev-q", type=int, default=14,
+                   help="S^2 Lebedev/icosahedral order (6, 12, 14, 26) for qmc_lebedev")
     p.add_argument("--seed", type=int, default=1)
     p.add_argument("--out", default=".", help="output directory")
     p.add_argument("--prefix", default=None, help="output file stem")
@@ -194,7 +197,8 @@ def main(argv=None):
         sampler = a.sampler or "stratified"
         model = stc.STModel(a.yc)
         x, u, m, sp = sampling.sample_st(model, a.N, sampler, a.seed, a.vpert,
-                                         a.vpert_profile, a.dpert, a.species)
+                                         a.vpert_profile, a.dpert, a.species,
+                                         lebedev_q=a.lebedev_q)
         meta.update(model.summary())
         meta.update(sampler=sampler, vpert=a.vpert, vpert_profile=a.vpert_profile,
                     dpert=a.dpert)
@@ -246,12 +250,15 @@ def main(argv=None):
                            v=a.clump_v)
         mirror = not a.independent_clumps
         if a.clump_momentum_rule in (None, "velocity"):
-            x, u, m, sp = J.sample(a.N, a.seed, sampler, split, mirror)
+            x, u, m, sp = J.sample(a.N, a.seed, sampler, split, mirror,
+                                   lebedev_q=a.lebedev_q)
         else:
             x, u, m, sp = J.sample(a.N, a.seed, sampler, split, mirror,
-                                   momentum=a.clump_momentum_rule)
+                                   momentum=a.clump_momentum_rule,
+                                   lebedev_q=a.lebedev_q)
             meta["clump_momentum_rule"] = a.clump_momentum_rule
-        stem = a.prefix or f"jeans_N{a.N}_s{a.seed}"
+        stem = a.prefix or (f"jeans_{sampler}_N{a.N}_s{a.seed}" if sampler != "stratified"
+                             else f"jeans_N{a.N}_s{a.seed}")
         tabname = stem + ".tab"
         meta.pop("species")
         meta.update(J.summary())
@@ -332,16 +339,20 @@ def main(argv=None):
                                "-psi^-12 Abar_ij Abar_ij, second order in P and S")
 
     else:
+        sampler = a.sampler or "mc"
         sym = not a.no_symmetrize
         N = a.N - a.N % 4 if sym else a.N
         if N != a.N:
             print(f"note: N rounded down to {N} (multiple of 4 for the symmetrization)")
         sph = ProlateSpheroid(a.e, a.b)
         x, u, m, sp = sampling.sample_spheroid(N, seed=a.seed, symmetrize=sym,
-                                               species=a.species, spheroid=sph)
+                                               species=a.species, spheroid=sph,
+                                               method=sampler)
         meta.update(sph.summary())
-        meta.update(sampler="mc", symmetrize=sym)
-        stem = a.prefix or f"prolate_e{_fmt(a.e)}_b{_fmt(a.b)}_N{N}_s{a.seed}"
+        meta.update(sampler=sampler, symmetrize=sym)
+        stem = a.prefix or (f"prolate_{sampler}_e{_fmt(a.e)}_b{_fmt(a.b)}_N{N}_s{a.seed}"
+                             if sampler != "mc"
+                             else f"prolate_e{_fmt(a.e)}_b{_fmt(a.b)}_N{N}_s{a.seed}")
 
     if a.model in ("st", "jeans") and not a.keep_net_momentum:
         ubar = (m[:, None] * u).sum(0) / m.sum()

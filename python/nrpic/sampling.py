@@ -126,7 +126,9 @@ def sample_os(N=None, method="mc", seed=0, R0=5.0, M=1.0, n_lat=None,
     """
     rb0 = osn.isotropic_radius(R0, M)
     Mrest = osn.rest_mass(R0, M)
-    if method == "lattice":
+    if method in ("lattice", "lattice_sc"):
+        if method == "lattice_sc":
+            surface_correction = True
         if n_lat is None:
             if N is None:
                 raise ValueError("lattice sampler needs n_lat or N")
@@ -169,6 +171,9 @@ def sample_os(N=None, method="mc", seed=0, R0=5.0, M=1.0, n_lat=None,
     elif method == "stratified":
         U = stratified_uniforms(N, 3, rng)
         x = osn.Finv(U[:, 0], R0, M)[:, None] * unit_vectors(U[:, 1], U[:, 2])
+    elif method in ("qmc", "qmc_antipodal", "qmc_octant"):
+        from . import qmc_sampling as qmc
+        return qmc.sample_qmc_os(N=N, mode=method, seed=seed, R0=R0, M=M, species=species)
     else:
         raise ValueError(f"unknown OS sampler {method!r}")
     return x, np.zeros((N, 3)), np.full(N, Mrest / N), _species(N, species)
@@ -178,11 +183,12 @@ def sample_os(N=None, method="mc", seed=0, R0=5.0, M=1.0, n_lat=None,
 # monoenergetic cluster
 # ----------------------------------------------------------------------------
 def sample_st(model, N, method="stratified", seed=0, vpert=0.0,
-              vpert_profile="uniform", dpert=0.0, species=0):
-    """Monoenergetic Shapiro-Teukolsky cluster with N equal-mass particles.
+              vpert_profile="uniform", dpert=0.0, species=0, lebedev_q=14):
+    """Monoenergetic Shapiro-Teukolsky cluster with N particles.
 
     model          STModel, or y_c (a float) to build one with M = 1.
-    method         'stratified' (paper lines 1119-1128) or 'mc'.
+    method         'stratified' (paper lines 1119-1128), 'mc', 'qmc'/'qmc_antipodal',
+                   or 'qmc_lebedev'.
     vpert          coherent inward radial velocity perturbation: the orthonormal
                    velocity becomes q - vpert * p(r) * |q_eq(r)| * rhat, i.e. a
                    radial three-velocity shift of -vpert * p(r) times the local
@@ -199,6 +205,11 @@ def sample_st(model, N, method="stratified", seed=0, vpert=0.0,
     """
     if not isinstance(model, STModel):
         model = STModel(float(model))
+    if method in ("qmc", "qmc_antipodal", "qmc_lebedev"):
+        from . import qmc_sampling as qmc
+        return qmc.sample_qmc_st(model, N, seed=seed, mode=method, lebedev_q=lebedev_q,
+                                 vpert=vpert, vpert_profile=vpert_profile,
+                                 dpert=dpert, species=species)
     rng = _rng(seed)
     if method == "stratified":
         U = stratified_uniforms(N, 5, rng)
@@ -249,6 +260,10 @@ def sample_gaussian_positions(N, sigma, centre=(0.0, 0.0, 0.0), method="stratifi
         U = stratified_uniforms(N, 3, rng)
     elif method == "mc":
         U = rng.random((N, 3))
+    elif method in ("qmc", "qmc_antipodal", "qmc_octant"):
+        from . import qmc_sampling as qmc
+        return qmc.sample_qmc_gaussian_positions(
+            N, sigma, centre=centre, seed=seed, octant_sym=(method == "qmc_octant"))
     else:
         raise ValueError(f"unknown Gaussian sampler {method!r}")
     r = gaussian_radius_inv(U[:, 0], sigma)
@@ -259,15 +274,22 @@ def sample_gaussian_positions(N, sigma, centre=(0.0, 0.0, 0.0), method="stratifi
 # prolate spheroid
 # ----------------------------------------------------------------------------
 def sample_spheroid(N, e=0.9, b=10.0, M=1.0, seed=0, symmetrize=True,
-                    species=0, spheroid=None):
+                    species=0, spheroid=None, method="mc"):
     """Cold prolate spheroid at rest with coordinate density proportional to
     psibar inside (x^2+y^2)/a^2 + z^2/b^2 <= 1; m_p = M_rest/N.
 
     With symmetrize (default) N must be a multiple of 4: N/4 base points are
     drawn and completed by (x, y, -z), (-x, -y, z), (-x, -y, -z), so the set is
     invariant under the equatorial reflection and the pi rotation about z.
+    method = 'mc' | 'qmc' | 'qmc_octant'.
     """
     sph = spheroid if spheroid is not None else ProlateSpheroid(e, b, M)
+    if method in ("qmc", "qmc_octant"):
+        from . import qmc_sampling as qmc
+        return qmc.sample_qmc_spheroid(
+            N, e=e, b=b, M=M, seed=seed,
+            octant_sym=(method == "qmc_octant" or (symmetrize and N % 8 == 0)),
+            species=species, spheroid=sph)
     rng = _rng(seed)
     if symmetrize and N % 4:
         raise ValueError("symmetrized spheroid sampling needs N divisible by 4")
