@@ -731,3 +731,46 @@ failed predictions this session: L7's D2 clause (Delta s_16(20) predicted 0.00-0
 0.196); binary_conv BC-4 item 2 (R16n within 0.05 M of EIH by 20 M: 0.174) and its survival
 extrapolation. Met: L7 monotone sequence and Delta s_12(15) range; BC-1 item 2.
 card-hours used this session: 0 run; queued 57.7 (A 25.9 G1, B 10.9 G2, C 20.9 G2).
+
+## 2026-11-24T12:55Z lead, batch 11 (analysis round after the card runs; decisions 0026, 0027, 0030)
+
+State at start (04:51 PST, before any tracker, horizon or history row of A, B, C past what batch 5
+saw was read): main merged (25684939); pause flag absent; one unacknowledged message (kb,
+refutations 766-767). Chains (`scripts/submit_chain.sh --status`, segment logs, sacct):
+- A, P1b m/16 (F-20261121-203144-b2cf16b): chain closed FAILED at "MAX_SEGMENTS=31 reached"
+  after 32 jobs; newest restart `rst/hills.00023.rst` (t = 61.80 M, segment 15, 2026-11-23
+  18:39); segments 9-12 and 16-31 were preempted before writing a restart (another user's
+  partition `priority` jobs, 2026-11-22 19:00 to 2026-11-24 04:40, one every 5-30 min). sacct:
+  11.77 card-hours over 32 jobs.
+- B, isolated m/16 extension (F-20261121-203156-03efdd3): FAILED at "MAX_SEGMENTS=13 reached";
+  newest restart `rst/hills.00034.rst` at t = 107.85 M (tlim 120 not reached); 9.28 card-hours.
+- C, P1b m/12 (F-20261121-203247-961801d): released by the sequencer at 2026-11-23 14:58 when B
+  ended; running (Slurm 5140, segment 21 of 25), newest restart `rst/hills.00006.rst`, last
+  logged time 15.52 M; 4.26 card-hours so far; most segments preempted.
+- Sequencer (pid 2550221): ENDED normally ("B ended (FAILED): released job 4837 of C",
+  2026-11-23 14:58:02); nothing left for it to hold.
+- Cause of the cut [VERIFIED by sacct and the segment logs]: preemption by partition `priority`
+  (Slurm PreemptMode CANCEL, GraceTime 0) while the restart interval is dt = 5 M (about 45 min
+  of wall time at m/16): AthenaK writes no restart on SIGTERM (no signal handler in
+  athenak/src), so every segment shorter than one restart interval is lost.
+
+### Predictions of my checks (written before reading the rows; refuted as stated)
+
+- Q1 (B joined to R16n, isolated m/16, 0 to 107.85 M). Batch 5's predictions stand (reading E,
+  p = 0.6: a minimum of s(t) of 2.5-4.6 M between 40 and 100 M, then a rise; no common horizon
+  before 120 M; masses drift below 1e-4 per M). My own estimate now: reading I (the pair merges)
+  has about even odds, because the converged pair lost 0.196 M in 20 M and the stretch fit put a
+  merger at 93-97 M. Refuted for E: s(t) falls below 1 M (members' horizons touching, mean radius
+  about 0.11 M each... a merger) or falls monotonically below 2.5 M; refuted for I: s(t) has a
+  minimum above 2.5 M and rises by more than 0.1 M after it.
+- Q2 (A to 61.8 M). A1 (no common horizon of the members before 60 M) MET; A2 (A's separation
+  within 0.05 M of R16n to 20 M) MET, A's tidal perturbation by the heavy hole at about 40 M is
+  1e-3 of the binary's binding; A4 (member horizon masses drift below 1e-4 per M; no common
+  horizon of a member with M) MET; A5 (below 2864 MeshBlocks) MET. A3 cannot be judged (t < 122 M).
+  Further: A's s(t) follows B's within 0.1 M to 61.8 M.
+- Q3 (C to its newest time, about 15-20 M). C's separation agrees with A's within 0.02 M, as R12
+  did with R16n (0.002 M), and C's member masses drift as R12's (-5e-5 to -1.4e-4 per M).
+- Q4 (decision). If Q1 shows a merger of the isolated pair at t_m < 122 M (the Newtonian
+  pericentre time of member 2; P1's remnant closest approach 154.6 M), A and C cannot test the
+  passage: they are closed as stopped and a wider or lighter binary is designed. If not, A and C
+  are continued from their newest restart files with a shorter restart interval.
