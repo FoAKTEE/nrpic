@@ -12,7 +12,7 @@ import os
 import numpy as np
 
 RUNG = "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261123-020704-2b99463"
-WINDOWS = {"0..ln8+0.5": (0.0, np.log(8) + 0.5), "0.5..ln8+0.5": (0.5, np.log(8) + 0.5),
+WINDOWS = {"0.05(excl)..ln8": (0.05 + 1e-12, np.log(8)), "0..ln8+0.5": (0.0, np.log(8) + 0.5), "0.5..ln8+0.5": (0.5, np.log(8) + 0.5),
            "1..3": (1.0, 3.0), "0.25..ln8+1": (0.25, np.log(8) + 1.0)}
 
 
