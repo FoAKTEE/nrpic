@@ -1,5 +1,5 @@
 {
- "_comment": "Queue of B-emd-gw read by cards/sequencer.py (decision 0025 item 5). Card entries are submitted in this order, at most two card jobs of the owner eligible at a time. Edit, commit; the sequencer re-reads this file every five minutes. 2026-11-24 (batch 11): Newtonian analysis after the 128^3 Newtonian reference (B-20261124-131438-5d7e049); mesh and particle legs of the 0.014 GR box (predictions I3, M1-M4, Q1-Q2 in population/JOURNAL.md 2026-11-24 06:10). 06:30: gauge leg pop_s014_gr_gd before the particle and mesh legs (predictions GD1-GD3). 2026-11-24 09:30 (batch 11b): the 256^3 leg writes a restart file every 1.0 in t (about 8 min of card time at the rate of the 128^3 run times 16; decision 0032 item 2).",
+ "_comment": "Queue of B-emd-gw read by cards/sequencer.py (decision 0025 item 5). Card entries are submitted in this order, at most two card jobs of the owner eligible at a time. Edit, commit; the sequencer re-reads this file every five minutes. 2026-11-24 (batch 11): Newtonian analysis after the 128^3 Newtonian reference (B-20261124-131438-5d7e049); mesh and particle legs of the 0.014 GR box (predictions I3, M1-M4, Q1-Q2 in population/JOURNAL.md 2026-11-24 06:10). 06:30: gauge leg pop_s014_gr_gd before the particle and mesh legs (predictions GD1-GD3). 2026-11-24 09:30 (batch 11b): the 256^3 leg writes a restart file every 1.0 in t (about 8 min of card time at the rate of the 128^3 run times 16; decision 0032 item 2). 09:29: the Newtonian reference runs on processors (B-20261124-172958-fc4a2cf, -73b0662) instead of the held card job 5167; the analysis entry waits for them.",
  "finish": [
   "B-20261121-202304-dc3020e",
   "B-20261121-202335-3e6a898",
@@ -7,7 +7,9 @@
   "B-20261121-202830-417af0c",
   "B-20261124-131438-5d7e049",
   "B-20261124-133533-cb0bb7d",
-  "B-20261124-133702-4a06a52"
+  "B-20261124-133702-4a06a52",
+  "B-20261124-172958-fc4a2cf",
+  "B-20261124-172958-73b0662"
  ],
  "entries": [
   {
@@ -208,7 +210,10 @@
    "kind": "local",
    "needs": [
     {
-     "result_ok": "B-20261124-131438-5d7e049"
+     "result_ok": "B-20261124-172958-fc4a2cf"
+    },
+    {
+     "result_ok": "B-20261124-172958-73b0662"
     }
    ],
    "argv": [
@@ -221,15 +226,15 @@
     "--package",
     "tracks/B-emd-gw/population",
     "--purpose",
-    "population: analysis of the Newtonian reference at 128^3 with the GR runs' own particles (halos, box GW measure at ng = 64); predictions N1-N4 (JOURNAL 2026-11-24 05:48)",
+    "population: analysis of the Newtonian reference at 128^3 with the GR runs' own particles (halos, box GW measure at ng = 64); predictions N1p (JOURNAL 2026-11-24 09:29), N2-N4 (05:48); processor runs B-20261124-172958-fc4a2cf and -73b0662",
     "--cores",
     "2",
     "--background",
     "--",
     "python3",
     "tracks/B-emd-gw/population/scripts/analyze.py",
-    "--case=newton_s014:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261124-131438-5d7e049/newton_s014:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-211707-d795743/gr_L8_n128/meta.json",
-    "--case=newton_s028:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261124-131438-5d7e049/newton_s028:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261123-014850-7b7d986/gr_L8_n128/meta.json",
+    "--case=newton_s014:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261124-172958-fc4a2cf/newton_s014:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-211707-d795743/gr_L8_n128/meta.json",
+    "--case=newton_s028:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261124-172958-73b0662/newton_s028:/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261123-014850-7b7d986/gr_L8_n128/meta.json",
     "--gw",
     "newton_s014",
     "--ng",
