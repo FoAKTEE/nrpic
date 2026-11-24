@@ -656,7 +656,7 @@ FE3 (sanity) h0 reproduces the run's own mass within 3e-5 at every new dump; the
     by at most 3e-5 between 50 and 100 M at both meshes.
 Cost: 8 one-cycle restarts, ~5.5 min each, two at a time: ~25 min on 4 cores.
 
-## Entry 17 (2026-11-24 09:57 PST): outcome of test FE - the "step" is a dip of the bubble's horizon mass at 100 M
+## Entry 17 (2026-11-24 09:54 PST): outcome of test FE - the "step" is a dip of the bubble's horizon mass at 100 M
 
 Run FE D-20261124-173137-f358715 (8 dumps, exit 0, 22 min on 4 cores; closed by nrpic-run). Judged by
 tools/fe_analyse.py, registered D-20261124-175356-0f40f1a (fe_analyse.png looked at). Prediction: entry 16.

@@ -2,7 +2,7 @@
 """Schematic: the G2 verification ladder of Track D (checklist C9 of stage/G2), state of the
 lead session of batch 11b (2026-11-24, 09:30 PST). Each rung is one test on the code paths D uses, from the
 pusher up to the dust-filled bubble; the pill on the right gives its state with the run ids in
-stage/G2/LADDER.md and g2long/JOURNAL.md entries 5, 11, 12 and 14. No data are read: the numbers in
+stage/G2/LADDER.md and g2long/JOURNAL.md entries 5, 11, 12, 14 and 17. No data are read: the numbers in
 the boxes are copied from those entries.
 
     schem_ladder.py [--out DIR]       writes schem_ladder.png/.svg (paperfig style)
@@ -28,8 +28,8 @@ RUNGS = [
      "converged finder: drift within 1.8e-5 (M/8, to 500 M) and 3.9e-6 (M/16, to 300 M)",
      "cause found", DONE),
     ("Vacuum bubble in expanding dust: null test N",
-     "run's finder: 2.28e-4 (M/8, 500 M), 1.99e-4 (M/16, 300 M); converged finder: a step\n"
-     "of 4.5-7.3e-5 (M/8) and 2.3-3.7e-5 (M/16) by 150 M, then flat to 500 M; M/4 queued",
+     "run's finder: 2.28e-4 (M/8, 500 M), 1.99e-4 (M/16, 300 M); converged finder: <= 7.3e-5\n"
+     "(M/8), <= 5.5e-5 (M/16), a dip of the bubble's mass at 100 M, no trend; M/4 queued",
      "holds, 2 meshes", PART),
     ("Dust filling the bubble: growth against exact dust and flux (G)",
      "M/8 to 500 M: every 10 M bin within 0.62 per cent of exact LTB;\n"

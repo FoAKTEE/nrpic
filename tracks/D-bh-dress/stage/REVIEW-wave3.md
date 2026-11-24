@@ -449,7 +449,8 @@ moved since 06:19.
 | FP4 | REFUTED: converged-finder offset -8.9e-3, +1.18e-3, -1.8e-5 over M/4, M/8, M/16 (sign change) | panel (d) (read) |
 | FP5 | HOLDS: tight null difference <= 6.5e-5 (M/8), <= 3.7e-5 (M/16) | panel (c) (read) |
 | FP-ext | (i) HOLDS; (ii) missed its 5e-5 bound (7.3e-5 at 400 M), not refuted | panel (c) |
-| Not predicted | the bubble-minus-vacuum difference is a step by 150 M, flat to 500 M; half as large at M/16 | entry 14 |
+| Not predicted | read in entry 14 as a step by 150 M, halving at M/16; withdrawn after test FE: a dip of the bubble's mass at 100 M (4.2e-5 M/8, 5.8e-5 M/16) | entries 14, 17 |
+| Test FE (early dumps, predictions entry 16) | FE1, FE2 missed their bounds, not refuted; FE3 holds | D-20261124-173137-f358715, fe_analyse D-20261124-175356-0f40f1a, fe_analyse.png (read) |
 | Figure defect fixed | legend of panel (a) over the data, clipped title of (d): rerun with layout only, JSON byte-identical | commit c847ee4a |
 | Ladder schematic | registered, read | D-20261124-172838-3a30e48 |
 | Slice mosaic | read again (lapse and particle energy, four zooms) | D-20261124-134644-2389227 |
