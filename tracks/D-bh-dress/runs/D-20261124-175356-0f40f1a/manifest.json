@@ -1,0 +1,131 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261124-175356-0f40f1a",
+  "track": "D-bh-dress",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "g2long entry 17: judge test FE (FE1-FE3) with the FP, FP-ext and FE probes",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/D-bh-dress/g2long/tools/fe_analyse.py",
+    "--probes",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-130935-fdca920/fp/probes.json",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-140606-286a302/fpx/probes.json",
+    "--fe",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-173137-f358715/fe/probes.json",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "V-1L=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f:v1l",
+    "ES-1L=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203131-8ee2a49:es1l",
+    "V-1L16=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203151-37e7b2d:v1l16",
+    "ES-1L16=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203151-59c54fb:es1l16"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "0f40f1aabf1d9f6575a2787f27c246f00910f7f1",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/g2long"
+    ],
+    "outside_package": {
+      "count": 1,
+      "first": [
+        " M tracks/D-bh-dress/STATUS.md"
+      ]
+    },
+    "merge_base_main": "96f6e4939997ac69b8b1639361a6fb02c3138080",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/D-bh-dress/g2long/tools/fe_analyse.py",
+      "role": "argv",
+      "sha256": "efdbe56992e9009f49662518c55939864414e45a1db618d3888b2d03ece82a05",
+      "bytes": 6422,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-130935-fdca920/fp/probes.json",
+      "role": "argv",
+      "sha256": "f832f470f3ab25fa9be613b6bc60279b6123e9dd0c7bec389768440a9335fb8c",
+      "bytes": 58830,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-140606-286a302/fpx/probes.json",
+      "role": "argv",
+      "sha256": "56cb2427972c02f370905b6e0d59747b907edc17e88965cc15496f86bf79f703",
+      "bytes": 16749,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-173137-f358715/fe/probes.json",
+      "role": "argv",
+      "sha256": "148486cc9763063d79c473cc53ab0f3575273b847f70f347d4e6d57396384e7d",
+      "bytes": 16856,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261124-175356-0f40f1a",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-24T17:53:56Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 17.4519,
+    "gpu_hours_reserved": 18.6834,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 295,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md"
+  }
+}
