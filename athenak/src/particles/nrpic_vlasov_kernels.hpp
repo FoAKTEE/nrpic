@@ -25,6 +25,126 @@ constexpr Real kEuler = 0.57721566490153286061;
 //----------------------------------------------------------------------------------------
 
 KOKKOS_INLINE_FUNCTION
+bool IsSpd3Fast(const Real A[3][3], Real eps = 0.0) {
+  const Real a00 = A[0][0];
+  if (a00 <= eps) return false;
+  const Real d2 = a00 * A[1][1] - A[0][1] * A[0][1];
+  if (d2 <= eps * eps) return false;
+  const Real det = a00 * (A[1][1] * A[2][2] - A[1][2] * A[1][2])
+                 - A[0][1] * (A[0][1] * A[2][2] - A[1][2] * A[0][2])
+                 + A[0][2] * (A[0][1] * A[1][2] - A[1][1] * A[0][2]);
+  return det > eps * eps * eps;
+}
+
+KOKKOS_INLINE_FUNCTION
+Real HaltonBase(int index, int base) {
+  Real f = 1.0, r = 0.0;
+  int i = index;
+  while (i > 0) {
+    f /= static_cast<Real>(base);
+    r += f * static_cast<Real>(i % base);
+    i /= base;
+  }
+  return r;
+}
+
+KOKKOS_INLINE_FUNCTION
+void HaltonSO3(int idx, Real R[3][3]) {
+  const Real u1 = HaltonBase(idx + 1, 2);
+  const Real u2 = HaltonBase(idx + 1, 3);
+  const Real u3 = HaltonBase(idx + 1, 5);
+  const Real s1 = sqrt(fmax(1.0 - u1, 0.0));
+  const Real s2 = sqrt(fmax(u1, 0.0));
+  const Real a1 = 2.0 * kPi * u2;
+  const Real a2 = 2.0 * kPi * u3;
+  const Real qx = s1 * sin(a1);
+  const Real qy = s1 * cos(a1);
+  const Real qz = s2 * sin(a2);
+  const Real qw = s2 * cos(a2);
+
+  const Real xx = qx * qx, yy = qy * qy, zz = qz * qz;
+  const Real xy = qx * qy, xz = qx * qz, xw = qx * qw;
+  const Real yz = qy * qz, yw = qy * qw, zw = qz * qw;
+  R[0][0] = 1.0 - 2.0 * (yy + zz);
+  R[0][1] = 2.0 * (xy - zw);
+  R[0][2] = 2.0 * (xz + yw);
+  R[1][0] = 2.0 * (xy + zw);
+  R[1][1] = 1.0 - 2.0 * (xx + zz);
+  R[1][2] = 2.0 * (yz - xw);
+  R[2][0] = 2.0 * (xz - yw);
+  R[2][1] = 2.0 * (yz + xw);
+  R[2][2] = 1.0 - 2.0 * (xx + yy);
+}
+
+KOKKOS_INLINE_FUNCTION
+void StroudCubatureRule(int n_q_scp, int basis_kind, Real xi[27][3], Real w[27], int &n_pts) {
+  if (n_q_scp == 8) {
+    n_pts = 8;
+    int q = 0;
+    for (int sx = -1; sx <= 1; sx += 2) {
+      for (int sy = -1; sy <= 1; sy += 2) {
+        for (int sz = -1; sz <= 1; sz += 2) {
+          xi[q][0] = static_cast<Real>(sx);
+          xi[q][1] = static_cast<Real>(sy);
+          xi[q][2] = static_cast<Real>(sz);
+          w[q] = 0.125;
+          ++q;
+        }
+      }
+    }
+    return;
+  }
+  if (n_q_scp == 27) {
+    const Real gl3_xi[3] = {-1.34164078649987384e+00, 0.0, 1.34164078649987384e+00};
+    const Real gl3_w[3]  = {2.77777777777777846e-01, 4.44444444444444420e-01, 2.77777777777777846e-01};
+    const Real gh3_xi[3] = {-1.73205080756887742e+00, 0.0, 1.73205080756887742e+00};
+    const Real gh3_w[3]  = {1.66666666666666602e-01, 6.66666666666666852e-01, 1.66666666666666602e-01};
+    const Real *x1d = (basis_kind == BASIS_GAUSS) ? gh3_xi : gl3_xi;
+    const Real *w1d = (basis_kind == BASIS_GAUSS) ? gh3_w  : gl3_w;
+    n_pts = 27;
+    int q = 0;
+    for (int i = 0; i < 3; ++i) {
+      for (int j = 0; j < 3; ++j) {
+        for (int k = 0; k < 3; ++k) {
+          xi[q][0] = x1d[i]; xi[q][1] = x1d[j]; xi[q][2] = x1d[k];
+          w[q] = w1d[i] * w1d[j] * w1d[k];
+          ++q;
+        }
+      }
+    }
+    return;
+  }
+  // Default: degree-5 Stroud 14-point rule
+  n_pts = 14;
+  const bool is_gauss = (basis_kind == BASIS_GAUSS);
+  const Real a  = is_gauss ? sqrt(2.5) : sqrt(1.9);
+  const Real wa = is_gauss ? (4.0 / 25.0) : (40.0 / 361.0);
+  const Real b  = is_gauss ? sqrt(5.0) : sqrt(19.0 / 11.0);
+  const Real wb = is_gauss ? (1.0 / 200.0) : (121.0 / 2888.0);
+  int q = 0;
+  for (int d = 0; d < 3; ++d) {
+    for (int s = -1; s <= 1; s += 2) {
+      xi[q][0] = (d == 0) ? (s * a) : 0.0;
+      xi[q][1] = (d == 1) ? (s * a) : 0.0;
+      xi[q][2] = (d == 2) ? (s * a) : 0.0;
+      w[q] = wa;
+      ++q;
+    }
+  }
+  for (int sx = -1; sx <= 1; sx += 2) {
+    for (int sy = -1; sy <= 1; sy += 2) {
+      for (int sz = -1; sz <= 1; sz += 2) {
+        xi[q][0] = sx * b;
+        xi[q][1] = sy * b;
+        xi[q][2] = sz * b;
+        w[q] = wb;
+        ++q;
+      }
+    }
+  }
+}
+
+KOKKOS_INLINE_FUNCTION
 Real Dot3(const Real a[3], const Real b[3]) {
   return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];
 }
@@ -293,6 +413,49 @@ Real SliceTopHatI0(Real mu_par, Real s_par, Real m_perp, Real beta_F) {
 }
 
 KOKKOS_INLINE_FUNCTION
+void SliceTopHatI0AndDeriv(Real mu_par, Real s_par, Real m_perp, Real beta_F,
+                           Real &val, Real &dval) {
+  if (beta_F >= 1.0) {
+    val = 0.0;
+    dval = 0.0;
+    return;
+  }
+  const bool has_cut = (beta_F > -1.0);
+  const Real u_star = has_cut ? (beta_F * m_perp / sqrt(1.0 - beta_F*beta_F)) : -1.0e300;
+  const Real scale = (m_perp > fabs(mu_par)) ? m_perp : fabs(mu_par);
+  if (s_par <= 1.0e-14 * scale) {
+    if (has_cut && mu_par <= u_star) {
+      val = 0.0;
+      dval = 0.0;
+      return;
+    }
+    const Real W = sqrt(m_perp*m_perp + mu_par*mu_par);
+    val = mu_par / W - beta_F;
+    dval = -1.0;
+    return;
+  }
+  const Real hw = kSqrt3 * s_par;
+  const Real a_r = mu_par - hw;
+  const Real b_r = mu_par + hw;
+  const Real u_lo = (has_cut && u_star > a_r) ? u_star : a_r;
+  if (u_lo >= b_r) {
+    val = 0.0;
+    dval = 0.0;
+    return;
+  }
+  const Real inv_w = 1.0 / (2.0 * hw);
+  dval = -(b_r - u_lo) * inv_w;
+  if ((b_r - u_lo) < 0.25 * m_perp) {
+    val = Gl61dI0(u_lo, b_r, m_perp, beta_F) * inv_w;
+    return;
+  }
+  const Real m2 = m_perp * m_perp;
+  const Real Wl = sqrt(m2 + u_lo*u_lo);
+  const Real Wr = sqrt(m2 + b_r*b_r);
+  val = ((Wr - beta_F*b_r) - (Wl - beta_F*u_lo)) * inv_w;
+}
+
+KOKKOS_INLINE_FUNCTION
 void OneSidedFluxTetrad(Real D_star, const Real u_bar_tet[3], const Real Sigma_tet[3][3],
                         Real beta_F, int basis_kind, int n_perp,
                         Real &Fm, Real FP[3], Real FPi[3][3], Real &FE) {
@@ -467,8 +630,9 @@ Real BrentRoot(Func &&f, Real a, Real b, Real xtol = 1.0e-12, Real rtol = 1.0e-1
   return b;
 }
 
-struct FaceSidePrecomp {
-  static constexpr int kMaxSlices = MAX_BASIS * 9;
+template <int MaxNb>
+struct FaceSidePrecompT {
+  static constexpr int kMaxSlices = MaxNb * 9;
   int n = 0;
   Real w[kMaxSlices];
   Real mu[kMaxSlices];
@@ -477,15 +641,21 @@ struct FaceSidePrecomp {
   Real w_tot = 0.0;
 };
 
+using FaceSidePrecomp = FaceSidePrecompT<MAX_BASIS>;
+
+template <int MaxNb>
 KOKKOS_INLINE_FUNCTION
 void PrecomputeFaceSide(int Nb, const Real D[], const Real u_tet[][3], const Real Sig_tet[][3][3],
-                        bool reverse_normal, int basis_kind, int n_perp, FaceSidePrecomp &out) {
+                        bool reverse_normal, int basis_kind, int n_perp,
+                        FaceSidePrecompT<MaxNb> &out) {
   out.n = 0;
   out.w_tot = 0.0;
   const Real gl2_xi[2] = {-9.99999999999999889e-01, 9.99999999999999889e-01};
   const Real gl2_w[2]  = {5.0e-01, 5.0e-01};
   const Real gl3_xi[3] = {-1.34164078649987384e+00, 0.0, 1.34164078649987384e+00};
   const Real gl3_w[3]  = {2.77777777777777846e-01, 4.44444444444444420e-01, 2.77777777777777846e-01};
+  const Real gh3_xi[3] = {-1.73205080756887742e+00, 0.0, 1.73205080756887742e+00};
+  const Real gh3_w[3]  = {1.66666666666666602e-01, 6.66666666666666852e-01, 1.66666666666666602e-01};
   const Real sgn = reverse_normal ? -1.0 : 1.0;
 
   for (int al = 0; al < Nb; ++al) {
@@ -517,12 +687,14 @@ void PrecomputeFaceSide(int Nb, const Real D[], const Real u_tet[][3], const Rea
       out.mp[idx] = sqrt(1.0 + u1_0*u1_0 + u2_0*u2_0);
     } else {
       const int n1d = (basis_kind == BASIS_TOPHAT && n_perp != 3) ? 2 : 3;
+      const Real *xi1d = (basis_kind == BASIS_GAUSS) ? gh3_xi : ((n1d == 3) ? gl3_xi : gl2_xi);
+      const Real *w1d  = (basis_kind == BASIS_GAUSS) ? gh3_w  : ((n1d == 3) ? gl3_w  : gl2_w);
       for (int i = 0; i < n1d; ++i) {
-        const Real e0 = (n1d == 3) ? gl3_xi[i] : gl2_xi[i];
-        const Real wi = (n1d == 3) ? gl3_w[i]  : gl2_w[i];
+        const Real e0 = xi1d[i];
+        const Real wi = w1d[i];
         for (int j = 0; j < n1d; ++j) {
-          const Real e1 = (n1d == 3) ? gl3_xi[j] : gl2_xi[j];
-          const Real wj = (n1d == 3) ? gl3_w[j]  : gl2_w[j];
+          const Real e1 = xi1d[j];
+          const Real wj = w1d[j];
           const Real u1 = u1_0 + L_p[0][0]*e0 + L_p[0][1]*e1;
           const Real u2 = u2_0 + L_p[1][0]*e0 + L_p[1][1]*e1;
           const int idx = out.n++;
@@ -536,8 +708,9 @@ void PrecomputeFaceSide(int Nb, const Real D[], const Real u_tet[][3], const Rea
   }
 }
 
+template <int MaxNb>
 KOKKOS_INLINE_FUNCTION
-Real EvalSideI0(const FaceSidePrecomp &s, Real beta_F) {
+Real EvalSideI0(const FaceSidePrecompT<MaxNb> &s, Real beta_F) {
   Real sum = 0.0;
   for (int q = 0; q < s.n; ++q) {
     sum += s.w[q] * SliceTopHatI0(s.mu[q], s.sp[q], s.mp[q], beta_F);
@@ -545,18 +718,38 @@ Real EvalSideI0(const FaceSidePrecomp &s, Real beta_F) {
   return sum;
 }
 
+template <int MaxNb>
 KOKKOS_INLINE_FUNCTION
-Real SolveFaceBetaF(int Na, const Real D_a[], const Real u_a_tet[][3], const Real Sig_a_tet[][3][3],
-                    int Nb, const Real D_b[], const Real u_b_tet[][3], const Real Sig_b_tet[][3][3],
-                    int basis_kind = BASIS_TOPHAT, int n_perp = 3) {
-  FaceSidePrecomp sa, sb;
-  PrecomputeFaceSide(Na, D_a, u_a_tet, Sig_a_tet, false, basis_kind, n_perp, sa);
-  PrecomputeFaceSide(Nb, D_b, u_b_tet, Sig_b_tet, true,  basis_kind, n_perp, sb);
+void EvalSideI0AndDeriv(const FaceSidePrecompT<MaxNb> &s, Real beta_F,
+                        Real &val_out, Real &dval_out) {
+  Real sv = 0.0, sd = 0.0;
+  for (int q = 0; q < s.n; ++q) {
+    Real v, dv;
+    SliceTopHatI0AndDeriv(s.mu[q], s.sp[q], s.mp[q], beta_F, v, dv);
+    sv += s.w[q] * v;
+    sd += s.w[q] * dv;
+  }
+  val_out = sv;
+  dval_out = sd;
+}
+
+template <int MaxNb>
+KOKKOS_INLINE_FUNCTION
+Real SolveFaceBetaFT(int Na, const Real D_a[], const Real u_a_tet[][3], const Real Sig_a_tet[][3][3],
+                     int Nb, const Real D_b[], const Real u_b_tet[][3], const Real Sig_b_tet[][3][3],
+                     int basis_kind = BASIS_TOPHAT, int n_perp = 3) {
+  FaceSidePrecompT<MaxNb> sa, sb;
+  PrecomputeFaceSide<MaxNb>(Na, D_a, u_a_tet, Sig_a_tet, false, basis_kind, n_perp, sa);
+  PrecomputeFaceSide<MaxNb>(Nb, D_b, u_b_tet, Sig_b_tet, true,  basis_kind, n_perp, sb);
   const Real scale_flux = (sa.w_tot > sb.w_tot) ? sa.w_tot : sb.w_tot;
   if (scale_flux <= 0.0) return 0.0;
 
-  auto net_flux = [&](Real bF) -> Real {
-    return EvalSideI0(sa, bF) - EvalSideI0(sb, -bF);
+  auto net_flux_deriv = [&](Real bF, Real &val, Real &dval) {
+    Real va, dva, vb, dvb;
+    EvalSideI0AndDeriv<MaxNb>(sa,  bF, va, dva);
+    EvalSideI0AndDeriv<MaxNb>(sb, -bF, vb, dvb);
+    val  = va - vb;
+    dval = dva + dvb;  // <= 0 since d/db(vb(-b)) = -dvb
   };
 
   Real num = 0.0;
@@ -570,46 +763,91 @@ Real SolveFaceBetaF(int Na, const Real D_a[], const Real u_a_tet[][3], const Rea
   }
   const Real denom_w = sa.w_tot + sb.w_tot;
   Real b0 = num / ((denom_w > 1.0e-300) ? denom_w : 1.0e-300);
-  if (b0 > 0.99) b0 = 0.99;
+  if (b0 >  0.99) b0 =  0.99;
   if (b0 < -0.99) b0 = -0.99;
-
-  if (fabs(net_flux(b0)) <= 1.0e-14 * scale_flux) return b0;
 
   const Real lo_max = -0.999999999;
   const Real hi_max =  0.999999999;
-  const Real dvs[2] = {0.04, 0.25};
-  for (int k = 0; k < 2; ++k) {
-    const Real lo_t = (lo_max > b0 - dvs[k]) ? lo_max : (b0 - dvs[k]);
-    const Real hi_t = (hi_max < b0 + dvs[k]) ? hi_max : (b0 + dvs[k]);
-    const Real fl = net_flux(lo_t);
-    const Real fh = net_flux(hi_t);
-    if (fabs(fl) <= 1.0e-14 * scale_flux) return lo_t;
-    if (fabs(fh) <= 1.0e-14 * scale_flux) return hi_t;
-    if (fl > 0.0 && fh < 0.0) {
-      return BrentRoot(net_flux, lo_t, hi_t, 1.0e-12, 1.0e-12, 120);
+  Real lo = lo_max, hi = hi_max;
+  bool lo_checked = false, hi_checked = false;
+
+  Real rts = b0, f_rts = 0.0, df_rts = 0.0;
+  net_flux_deriv(rts, f_rts, df_rts);
+  if (fabs(f_rts) <= 1.0e-14 * scale_flux) return rts;
+
+  Real prev_abs_f = fabs(f_rts);
+  int stall_cnt = 0;
+  for (int iter = 0; iter < 48; ++iter) {
+    if (f_rts > 0.0) lo = rts;
+    else             hi = rts;
+
+    if (f_rts > 0.0 && df_rts < -1.0e-30 && (rts - f_rts / df_rts) >= hi_max && !hi_checked) {
+      Real fh, dfh;
+      net_flux_deriv(hi_max, fh, dfh);
+      hi_checked = true;
+      if (fh >= 0.0) return hi_max;
+    } else if (f_rts < 0.0 && df_rts < -1.0e-30 && (rts - f_rts / df_rts) <= lo_max && !lo_checked) {
+      Real fl, dfl;
+      net_flux_deriv(lo_max, fl, dfl);
+      lo_checked = true;
+      if (fl <= 0.0) return lo_max;
     }
+
+    bool bisected = false;
+    Real cand = 0.0;
+    if (stall_cnt >= 3 || df_rts >= -1.0e-30) {
+      cand = 0.5 * (lo + hi);
+      bisected = true;
+      stall_cnt = 0;
+    } else {
+      cand = rts - f_rts / df_rts;
+      if (!(cand > lo && cand < hi)) {
+        cand = 0.5 * (lo + hi);
+        bisected = true;
+        stall_cnt = 0;
+      }
+    }
+
+    if ((hi - lo) <= 1.0e-13 || (!bisected && fabs(cand - rts) <= 1.0e-13)) {
+      return cand;
+    }
+    rts = cand;
+    net_flux_deriv(rts, f_rts, df_rts);
+    const Real abs_f = fabs(f_rts);
+    if (abs_f <= 1.0e-14 * scale_flux) return rts;
+    if (abs_f > 0.5 * prev_abs_f) ++stall_cnt;
+    else                          stall_cnt = 0;
+    prev_abs_f = abs_f;
   }
-  const Real flo = net_flux(lo_max);
-  const Real fhi = net_flux(hi_max);
-  if (flo <= 0.0) return lo_max;
-  if (fhi >= 0.0) return hi_max;
-  return BrentRoot(net_flux, lo_max, hi_max, 1.0e-12, 1.0e-12, 120);
+  return rts;
+}
+
+KOKKOS_INLINE_FUNCTION
+Real SolveFaceBetaF(int Na, const Real D_a[], const Real u_a_tet[][3], const Real Sig_a_tet[][3][3],
+                    int Nb, const Real D_b[], const Real u_b_tet[][3], const Real Sig_b_tet[][3][3],
+                    int basis_kind = BASIS_TOPHAT, int n_perp = 3) {
+  const int mx = (Na > Nb) ? Na : Nb;
+  if (mx <= 1) return SolveFaceBetaFT<1>(Na, D_a, u_a_tet, Sig_a_tet, Nb, D_b, u_b_tet, Sig_b_tet, basis_kind, n_perp);
+  if (mx <= 2) return SolveFaceBetaFT<2>(Na, D_a, u_a_tet, Sig_a_tet, Nb, D_b, u_b_tet, Sig_b_tet, basis_kind, n_perp);
+  if (mx <= 4) return SolveFaceBetaFT<4>(Na, D_a, u_a_tet, Sig_a_tet, Nb, D_b, u_b_tet, Sig_b_tet, basis_kind, n_perp);
+  return SolveFaceBetaFT<MAX_BASIS>(Na, D_a, u_a_tet, Sig_a_tet, Nb, D_b, u_b_tet, Sig_b_tet, basis_kind, n_perp);
 }
 
 //----------------------------------------------------------------------------------------
 // Covariant face-rest-frame pairing cost C^eb (Hopkins 2026 Eqs. 26-30)
 //----------------------------------------------------------------------------------------
 
+template <int MaxNb>
 KOKKOS_INLINE_FUNCTION
-void PairingCostMatrix(int Na, const Real Da[], const Real ua_tet[][3], const Real Siga_tet[][3][3],
-                       int Nb, const Real Db[], const Real ub_tet[][3], const Real Sib_tet[][3][3],
-                       Real beta_F, Real C_eb[MAX_BASIS][MAX_BASIS],
-                       Real lam_D = 0.25, Real eps_tau = 0.04, Real eps_eb = 0.01) {
+void PairingCostMatrixT(int Na, const Real Da[], const Real ua_tet[][3], const Real Siga_tet[][3][3],
+                        int Nb, const Real Db[], const Real ub_tet[][3], const Real Sib_tet[][3][3],
+                        Real beta_F, Real C_eb[MaxNb][MaxNb],
+                        Real lam_D = 0.25, Real eps_tau = 0.04, Real eps_eb = 0.01) {
   const bool use_boost = (fabs(beta_F) < 1.0 - 1.0e-12);
   const Real gam_F = use_boost ? (1.0 / sqrt(1.0 - beta_F*beta_F)) : 1.0;
 
-  Real ua_b[MAX_BASIS][3], ub_b[MAX_BASIS][3];
-  Real tra[MAX_BASIS], trb[MAX_BASIS];
+  Real ua_b[MaxNb][3], ub_b[MaxNb][3];
+  Real tra[MaxNb], trb[MaxNb];
   Real Da_tot = 0.0, Db_tot = 0.0;
 
   for (int al = 0; al < Na; ++al) {
@@ -636,7 +874,7 @@ void PairingCostMatrix(int Na, const Real Da[], const Real ua_tet[][3], const Re
   for (int al = 0; al < Na; ++al) {
     const Real ua2 = Dot3(ua_b[al], ua_b[al]);
     Real C_fit = 1.0e300;
-    Real C_row[MAX_BASIS];
+    Real C_row[MaxNb];
     for (int be = 0; be < Nb; ++be) {
       const Real ub2 = Dot3(ub_b[be], ub_b[be]);
       const Real du0 = ua_b[al][0] - ub_b[be][0];
@@ -663,6 +901,15 @@ void PairingCostMatrix(int Na, const Real Da[], const Real ua_tet[][3], const Re
       C_eb[al][be] = C_row[be] * (1.0 - theta / (1.0 + Db[be] / Da_safe));
     }
   }
+}
+
+KOKKOS_INLINE_FUNCTION
+void PairingCostMatrix(int Na, const Real Da[], const Real ua_tet[][3], const Real Siga_tet[][3][3],
+                       int Nb, const Real Db[], const Real ub_tet[][3], const Real Sib_tet[][3][3],
+                       Real beta_F, Real C_eb[MAX_BASIS][MAX_BASIS],
+                       Real lam_D = 0.25, Real eps_tau = 0.04, Real eps_eb = 0.01) {
+  PairingCostMatrixT<MAX_BASIS>(Na, Da, ua_tet, Siga_tet, Nb, Db, ub_tet, Sib_tet,
+                                beta_F, C_eb, lam_D, eps_tau, eps_eb);
 }
 
 //----------------------------------------------------------------------------------------
@@ -720,31 +967,57 @@ void BasisStressEnergy(Real m_alpha, const Real u_bar[3], const Real Sigma[3][3]
     for (int j = 0; j < 3; ++j) S_int[i][j] = 0.0;
   }
   if (m_alpha <= 0.0) return;
-  Real pts[27][3], w[27];
-  int n_pts = 0;
-  BasisCubaturePoints(u_bar, Sigma, n_q, pts, w, n_pts);
-  for (int q = 0; q < n_pts; ++q) {
-    const Real W = sqrt(1.0 + MatVecDot3(pts[q], gi, pts[q]));
-    const Real wm = m_alpha * w[q];
-    E_int += wm * W;
-    const Real wmW = wm / W;
+  const Real tr = Sigma[0][0] + Sigma[1][1] + Sigma[2][2];
+  if (tr <= 1.0e-26) {
+    const Real W = sqrt(1.0 + MatVecDot3(u_bar, gi, u_bar));
+    E_int = m_alpha * W;
+    const Real wmW = m_alpha / W;
     for (int i = 0; i < 3; ++i) {
-      P_int[i] += wm * pts[q][i];
-      for (int j = 0; j < 3; ++j) {
-        S_int[i][j] += wmW * pts[q][i] * pts[q][j];
+      P_int[i] = m_alpha * u_bar[i];
+      for (int j = 0; j < 3; ++j) S_int[i][j] = wmW * u_bar[i] * u_bar[j];
+    }
+    return;
+  }
+  Real L[3][3];
+  Chol3Safe(Sigma, L);
+  const Real gl2_xi[2] = {-9.99999999999999889e-01, 9.99999999999999889e-01};
+  const Real gl2_w[2]  = {5.0e-01, 5.0e-01};
+  const Real gl3_xi[3] = {-1.34164078649987384e+00, 0.0, 1.34164078649987384e+00};
+  const Real gl3_w[3]  = {2.77777777777777846e-01, 4.44444444444444420e-01, 2.77777777777777846e-01};
+  const int n1d = (n_q == 3) ? 3 : 2;
+  for (int i = 0; i < n1d; ++i) {
+    const Real x0 = (n1d == 3) ? gl3_xi[i] : gl2_xi[i];
+    const Real w0 = (n1d == 3) ? gl3_w[i]  : gl2_w[i];
+    for (int j = 0; j < n1d; ++j) {
+      const Real x1 = (n1d == 3) ? gl3_xi[j] : gl2_xi[j];
+      const Real w1 = (n1d == 3) ? gl3_w[j]  : gl2_w[j];
+      for (int k = 0; k < n1d; ++k) {
+        const Real x2 = (n1d == 3) ? gl3_xi[k] : gl2_xi[k];
+        const Real w2 = (n1d == 3) ? gl3_w[k]  : gl2_w[k];
+        const Real pt[3] = {
+          u_bar[0] + L[0][0]*x0 + L[0][1]*x1 + L[0][2]*x2,
+          u_bar[1] + L[1][0]*x0 + L[1][1]*x1 + L[1][2]*x2,
+          u_bar[2] + L[2][0]*x0 + L[2][1]*x1 + L[2][2]*x2
+        };
+        const Real W = sqrt(1.0 + MatVecDot3(pt, gi, pt));
+        const Real wm = m_alpha * w0 * w1 * w2;
+        E_int += wm * W;
+        const Real wmW = wm / W;
+        for (int a = 0; a < 3; ++a) {
+          P_int[a] += wm * pt[a];
+          for (int b = 0; b < 3; ++b) {
+            S_int[a][b] += wmW * pt[a] * pt[b];
+          }
+        }
       }
     }
   }
 }
 
 KOKKOS_INLINE_FUNCTION
-void GeodesicKickPoint(const AdmPoint &adm0, const AdmPoint *adm1, Real dt,
-                       const Real u_in[3], Real u_out[3],
-                       Real tol = 1.0e-12, int maxit = 50) {
-  AdmPoint adm = adm0;
-  if (adm1 != nullptr) AverageAdm(adm, *adm1);
-  Real gi[3][3];
-  Inv3Sym(adm.g, gi);
+void GeodesicKickPointPreinv(const AdmPoint &adm, const Real gi[3][3], Real dt,
+                            const Real u_in[3], Real u_out[3],
+                            Real tol = 1.0e-12, int maxit = 50) {
   Real u1[3] = {u_in[0], u_in[1], u_in[2]};
   for (int it = 0; it < maxit; ++it) {
     const Real ub[3] = {0.5*(u_in[0]+u1[0]), 0.5*(u_in[1]+u1[1]), 0.5*(u_in[2]+u1[2])};
@@ -777,30 +1050,77 @@ void GeodesicKickPoint(const AdmPoint &adm0, const AdmPoint *adm1, Real dt,
 }
 
 KOKKOS_INLINE_FUNCTION
+void GeodesicKickPoint(const AdmPoint &adm0, const AdmPoint *adm1, Real dt,
+                       const Real u_in[3], Real u_out[3],
+                       Real tol = 1.0e-12, int maxit = 50) {
+  AdmPoint adm = adm0;
+  if (adm1 != nullptr) AverageAdm(adm, *adm1);
+  Real gi[3][3];
+  Inv3Sym(adm.g, gi);
+  GeodesicKickPointPreinv(adm, gi, dt, u_in, u_out, tol, maxit);
+}
+
+KOKKOS_INLINE_FUNCTION
 void CubatureGeodesicKick(const Real u_bar[3], const Real Sigma[3][3],
                           const AdmPoint &adm0, const AdmPoint *adm1, Real dt,
                           int n_q, Real u_new[3], Real Sig_new[3][3], Real tol = 1.0e-12) {
-  Real pts[27][3], pts_new[27][3], w[27];
-  int n_pts = 0;
-  BasisCubaturePoints(u_bar, Sigma, n_q, pts, w, n_pts);
-  u_new[0] = u_new[1] = u_new[2] = 0.0;
-  for (int q = 0; q < n_pts; ++q) {
-    GeodesicKickPoint(adm0, adm1, dt, pts[q], pts_new[q], tol);
-    for (int i = 0; i < 3; ++i) u_new[i] += w[q] * pts_new[q][i];
-  }
-  for (int i = 0; i < 3; ++i) {
-    for (int j = 0; j < 3; ++j) Sig_new[i][j] = 0.0;
-  }
-  for (int q = 0; q < n_pts; ++q) {
-    const Real du[3] = {pts_new[q][0] - u_new[0], pts_new[q][1] - u_new[1], pts_new[q][2] - u_new[2]};
+  AdmPoint adm = adm0;
+  if (adm1 != nullptr) AverageAdm(adm, *adm1);
+  Real gi[3][3];
+  Inv3Sym(adm.g, gi);
+
+  const Real tr = Sigma[0][0] + Sigma[1][1] + Sigma[2][2];
+  if (tr <= 1.0e-26) {
+    GeodesicKickPointPreinv(adm, gi, dt, u_bar, u_new, tol);
     for (int i = 0; i < 3; ++i) {
-      for (int j = 0; j < 3; ++j) Sig_new[i][j] += w[q] * du[i] * du[j];
+      for (int j = 0; j < 3; ++j) Sig_new[i][j] = 0.0;
+    }
+    return;
+  }
+
+  Real L[3][3];
+  Chol3Safe(Sigma, L);
+  const Real gl2_xi[2] = {-9.99999999999999889e-01, 9.99999999999999889e-01};
+  const Real gl2_w[2]  = {5.0e-01, 5.0e-01};
+  const Real gl3_xi[3] = {-1.34164078649987384e+00, 0.0, 1.34164078649987384e+00};
+  const Real gl3_w[3]  = {2.77777777777777846e-01, 4.44444444444444420e-01, 2.77777777777777846e-01};
+  const int n1d = (n_q == 3) ? 3 : 2;
+
+  Real u_ref[3];
+  GeodesicKickPointPreinv(adm, gi, dt, u_bar, u_ref, tol);
+
+  Real du_mean[3] = {0.0, 0.0, 0.0};
+  Real M2[3][3] = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
+  for (int i = 0; i < n1d; ++i) {
+    const Real x0 = (n1d == 3) ? gl3_xi[i] : gl2_xi[i];
+    const Real w0 = (n1d == 3) ? gl3_w[i]  : gl2_w[i];
+    for (int j = 0; j < n1d; ++j) {
+      const Real x1 = (n1d == 3) ? gl3_xi[j] : gl2_xi[j];
+      const Real w1 = (n1d == 3) ? gl3_w[j]  : gl2_w[j];
+      for (int k = 0; k < n1d; ++k) {
+        const Real x2 = (n1d == 3) ? gl3_xi[k] : gl2_xi[k];
+        const Real w2 = (n1d == 3) ? gl3_w[k]  : gl2_w[k];
+        const Real wq = w0 * w1 * w2;
+        const Real pt[3] = {
+          u_bar[0] + L[0][0]*x0 + L[0][1]*x1 + L[0][2]*x2,
+          u_bar[1] + L[1][0]*x0 + L[1][1]*x1 + L[1][2]*x2,
+          u_bar[2] + L[2][0]*x0 + L[2][1]*x1 + L[2][2]*x2
+        };
+        Real pt_new[3];
+        GeodesicKickPointPreinv(adm, gi, dt, pt, pt_new, tol);
+        const Real du[3] = {pt_new[0] - u_ref[0], pt_new[1] - u_ref[1], pt_new[2] - u_ref[2]};
+        for (int a = 0; a < 3; ++a) {
+          du_mean[a] += wq * du[a];
+          for (int b = 0; b < 3; ++b) M2[a][b] += wq * du[a] * du[b];
+        }
+      }
     }
   }
-  for (int i = 0; i < 3; ++i) {
-    for (int j = i + 1; j < 3; ++j) {
-      const Real sym = 0.5 * (Sig_new[i][j] + Sig_new[j][i]);
-      Sig_new[i][j] = Sig_new[j][i] = sym;
+  for (int a = 0; a < 3; ++a) u_new[a] = u_ref[a] + du_mean[a];
+  for (int a = 0; a < 3; ++a) {
+    for (int b = a; b < 3; ++b) {
+      const Real val = M2[a][b] - du_mean[a] * du_mean[b];
+      Sig_new[a][b] = Sig_new[b][a] = val;
     }
   }
 }
@@ -879,6 +1199,16 @@ void RealizabilityRepairCell(int Nb, Real m[], Real P[][3], Real Pi[][3][3],
       for (int j = 0; j < 3; ++j) {
         Sig[i][j] = 0.5*(Pi[al][i][j] + Pi[al][j][i])/m[al] - ua[i]*ua[j];
       }
+    }
+    const Real tr_raw = Sig[0][0] + Sig[1][1] + Sig[2][2];
+    if (tr_raw > 0.0) {
+      const Real lam_fast = eps_S * tr_raw / 3.0;
+      const Real A_chk[3][3] = {
+        {Sig[0][0] - lam_fast, Sig[0][1], Sig[0][2]},
+        {Sig[1][0], Sig[1][1] - lam_fast, Sig[1][2]},
+        {Sig[2][0], Sig[2][1], Sig[2][2] - lam_fast}
+      };
+      if (IsSpd3Fast(A_chk, 0.0)) continue;
     }
     Real V[3][3], evals[3];
     SymEig3(Sig, V, evals);
@@ -965,6 +1295,56 @@ void Kve2And3Series(Real z, Real &k2e, Real &k3e) {
 }
 
 KOKKOS_INLINE_FUNCTION
+void Kve2And3(Real z, Real &k2e, Real &k3e) {
+  if (z < 1.0e-8) {
+    const Real ez = exp(z);
+    const Real inv_z2 = 1.0 / (z * z);
+    k2e = 2.0 * ez * inv_z2;
+    k3e = 8.0 * ez * inv_z2 / z;
+    return;
+  }
+  if (z < 2.0) {
+    Kve2And3Series(z, k2e, k3e);
+    return;
+  }
+  const Real sq = sqrt(kPi / (2.0 * z));
+  if (z > 1.0e8) {
+    k2e = sq * (1.0 + 15.0 / (8.0 * z));
+    k3e = sq * (1.0 + 35.0 / (8.0 * z));
+    return;
+  }
+  const Real c2[22] = {
+     1.5369562709347966e+00,  5.5848397424280200e-01,  2.0881208230680700e-02, -5.9855899178500930e-04,
+     4.2825914991535946e-05, -4.4334910407642620e-06,  5.7252787593659550e-07, -8.6199405643664050e-08,
+     1.4567477123573657e-08, -2.6978141135200220e-09,  5.3859570339007880e-10, -1.1455063160652075e-10,
+     2.5724624450808940e-11, -6.0566602238571420e-12,  1.4864170500510971e-12, -3.7927237108512850e-13,
+     1.0048023019687043e-13, -2.7886783791266433e-14,  6.8531039429134660e-15, -1.2818029466126807e-15,
+     1.1354553660939100e-16, -1.7397699442705580e-15
+  };
+  const Real c3[22] = {
+     2.9015710746079240e+00,  2.1887999942085252e+00,  2.9754370790629410e-01,  1.0019217529269042e-02,
+    -2.7411895112389677e-04,  1.9185827578911812e-05, -1.9667333771163213e-06,  2.5315549516276420e-07,
+    -3.8135857239783960e-08,  6.4630000543272360e-09, -1.2019289301208728e-09,  2.4116070756525170e-10,
+    -5.1573856296727170e-11,  1.1650771256845681e-11, -2.7610035470037144e-12,  6.8190907466135860e-13,
+    -1.7445640891496210e-13,  4.5448493453518910e-14, -1.4337016422545770e-14,  4.5569608692568930e-15,
+    -2.0185873175002848e-15, -8.2762080017511670e-16
+  };
+  const Real u = 4.0 / z - 1.0;
+  Real b1_2 = 0.0, b2_2 = 0.0;
+  Real b1_3 = 0.0, b2_3 = 0.0;
+  for (int j = 21; j >= 1; --j) {
+    const Real b0_2 = 2.0 * u * b1_2 - b2_2 + c2[j];
+    b2_2 = b1_2;
+    b1_2 = b0_2;
+    const Real b0_3 = 2.0 * u * b1_3 - b2_3 + c3[j];
+    b2_3 = b1_3;
+    b1_3 = b0_3;
+  }
+  k2e = (u * b1_2 - b2_2 + c2[0]) * sq;
+  k3e = (u * b1_3 - b2_3 + c3[0]) * sq;
+}
+
+KOKKOS_INLINE_FUNCTION
 Real Kve2(Real z) {
   if (z < 1.0e-8) {
     return 2.0 * exp(z) / (z * z);
@@ -1027,12 +1407,12 @@ Real Kve3(Real z) {
 }
 
 KOKKOS_INLINE_FUNCTION
-void SyngeThermo(Real theta, Real &w_mean, Real &h_rel, Real &cs2, Real &gamma_ad) {
+void SyngeThermoDeriv(Real theta, Real &w_mean, Real &h_rel, Real &dh_dth,
+                      Real &cs2, Real &gamma_ad) {
   if (theta <= 0.0) {
-    w_mean = 1.0; h_rel = 1.0; cs2 = 0.0; gamma_ad = 5.0 / 3.0;
+    w_mean = 1.0; h_rel = 1.0; dh_dth = 2.5; cs2 = 0.0; gamma_ad = 5.0 / 3.0;
     return;
   }
-  Real dh_dth = 0.0;
   if (theta <= 0.01) {
     const Real asym[10] = {
       1.0, 2.5, 1.875, -1.875, 1.0546875,
@@ -1045,8 +1425,8 @@ void SyngeThermo(Real theta, Real &w_mean, Real &h_rel, Real &cs2, Real &gamma_a
     w_mean = h_rel - theta;
   } else {
     const Real z = 1.0 / theta;
-    const Real k2 = Kve2(z);
-    const Real k3 = Kve3(z);
+    Real k2, k3;
+    Kve2And3(z, k2, k3);
     h_rel = k3 / k2;
     w_mean = h_rel - theta;
     dh_dth = z * z * (1.0 + 5.0 * theta * h_rel - h_rel * h_rel);
@@ -1059,6 +1439,12 @@ void SyngeThermo(Real theta, Real &w_mean, Real &h_rel, Real &cs2, Real &gamma_a
 }
 
 KOKKOS_INLINE_FUNCTION
+void SyngeThermo(Real theta, Real &w_mean, Real &h_rel, Real &cs2, Real &gamma_ad) {
+  Real dh_dth;
+  SyngeThermoDeriv(theta, w_mean, h_rel, dh_dth, cs2, gamma_ad);
+}
+
+KOKKOS_INLINE_FUNCTION
 Real SafeMjThetaFromW(Real w) {
   if (w <= 1.0 + 1.0e-15) return 0.0;
   if (w <= 1.0 + 1.0e-5) {
@@ -1066,19 +1452,31 @@ Real SafeMjThetaFromW(Real w) {
     return (-1.5 + sqrt(2.25 + 7.5 * dw)) / 3.75;
   }
   if (w >= 1.0e5) return w / 3.0;
-  auto f = [&](Real th) -> Real {
-    Real wm, hr, cs2, ga;
-    SyngeThermo(th, wm, hr, cs2, ga);
-    return wm - w;
-  };
-  Real guess = (w < 2.0) ? ((w - 1.0) / 1.5) : ((w - 1.0) / 3.0);
-  Real lo = guess * 0.25;
-  Real hi = guess * 4.0;
-  if (lo < 1.0e-8) lo = 1.0e-8;
-  if (hi > 1.0e6) hi = 1.0e6;
-  while (f(lo) > 0.0 && lo > 1.0e-12) lo *= 0.25;
-  while (f(hi) < 0.0 && hi < 1.0e6) hi *= 4.0;
-  return BrentRoot(f, lo, hi, 1.0e-14, 1.0e-13, 100);
+
+  Real th = (w < 2.0) ? ((w - 1.0) / 1.5) : ((w - 1.0) / 3.0);
+  if (th < 1.0e-8) th = 1.0e-8;
+  Real lo = 0.0, hi = -1.0;
+  for (int it = 0; it < 32; ++it) {
+    Real wm_t, hr_t, dh_t, cs2_t, ga_t;
+    SyngeThermoDeriv(th, wm_t, hr_t, dh_t, cs2_t, ga_t);
+    const Real f = wm_t - w;
+    if (fabs(f) <= 1.0e-14 * w) break;
+    if (f < 0.0) lo = th;
+    else         hi = th;
+    if (hi < 0.0 && th >= 1.0e8) { th = 1.0e8; break; }
+    const Real df = dh_t - 1.0;
+    Real th_new = (df > 1.0e-30) ? (th - f / df) : -1.0;
+    if (hi > 0.0) {
+      if (!(th_new > lo && th_new < hi)) th_new = 0.5 * (lo + hi);
+    } else {
+      if (th_new <= lo) th_new = (2.0 * th > 1.0e-2) ? (2.0 * th) : 1.0e-2;
+    }
+    if (th_new > 1.0e8) th_new = 1.0e8;
+    const Real diff = fabs(th_new - th);
+    th = th_new;
+    if (diff <= 1.0e-14 * (1.0 + th)) break;
+  }
+  return th;
 }
 
 KOKKOS_INLINE_FUNCTION
@@ -1403,24 +1801,34 @@ void ValenciaC2PSynge(Real D, Real E, const Real P[3],
     return;
   }
 
-  auto eval_E = [&](Real th) -> Real {
-    Real wm_t, hr_t, cs2_t, ga_t;
-    SyngeThermo(th, wm_t, hr_t, cs2_t, ga_t);
+  Real th = (E - E_cold) / (1.5 * D);
+  if (th < 1.0e-8) th = 1.0e-8;
+  Real lo = 0.0, hi = -1.0;
+  for (int it = 0; it < 32; ++it) {
+    Real wm_t, hr_t, dh_t, cs2_t, ga_t;
+    SyngeThermoDeriv(th, wm_t, hr_t, dh_t, cs2_t, ga_t);
     const Real Dh = D * hr_t;
-    const Real u0_t = sqrt(1.0 + P2 / (Dh * Dh));
-    return Dh * u0_t - (D / u0_t) * th;
-  };
-
-  const Real lo = 0.0;
-  Real hi = (E - E_cold) / D;
-  if (hi < 1.0e-2) hi = 1.0e-2;
-  while (eval_E(hi) < E && hi < 1.0e8) hi *= 2.0;
-  if (eval_E(hi) >= E) {
-    auto f = [&](Real th) -> Real { return eval_E(th) - E; };
-    theta = BrentRoot(f, lo, hi, 1.0e-14, 1.0e-14, 80);
-  } else {
-    theta = hi;
+    const Real Dh2 = Dh * Dh;
+    const Real u0_t = sqrt(1.0 + P2 / Dh2);
+    const Real f = Dh * u0_t - (D / u0_t) * th - E;
+    if (fabs(f) <= 1.0e-14 * E) break;
+    if (f < 0.0) lo = th;
+    else         hi = th;
+    if (hi < 0.0 && th >= 1.0e8) { th = 1.0e8; break; }
+    const Real v2 = P2 / (Dh2 + P2);
+    const Real df = (D / u0_t) * ((1.0 - th * v2 / hr_t) * dh_t - 1.0);
+    Real th_new = (df > 1.0e-30) ? (th - f / df) : -1.0;
+    if (hi > 0.0) {
+      if (!(th_new > lo && th_new < hi)) th_new = 0.5 * (lo + hi);
+    } else {
+      if (th_new <= lo) th_new = (2.0 * th > 1.0e-2) ? (2.0 * th) : 1.0e-2;
+    }
+    if (th_new > 1.0e8) th_new = 1.0e8;
+    const Real diff = fabs(th_new - th);
+    th = th_new;
+    if (diff <= 1.0e-14 * (1.0 + th)) break;
   }
+  theta = th;
 
   Real ga_t;
   SyngeThermo(theta, w_m, h_rel, cs2, ga_t);

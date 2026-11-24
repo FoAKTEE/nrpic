@@ -120,15 +120,23 @@ void Inv3GeomReg(const Real E_in[3][3], Real Einv_out[3][3]) {
   const Real tr = A[0][0] + A[1][1] + A[2][2];
   if (tr <= 1.0e-300) return;
 
-  Real V_eig[3][3], evals[3];
-  nrpic::SymEig3(A, V_eig, evals);
-  const Real emin = fmin(evals[0], fmin(evals[1], evals[2]));
-  const Real emax = fmax(evals[0], fmax(evals[1], evals[2]));
-  if (emin <= 1.0e-3 * emax) {
-    const Real reg = 1.0e-2 * tr;
-    A[0][0] += reg;
-    A[1][1] += reg;
-    A[2][2] += reg;
+  const Real eps_tr = 1.0e-3 * tr;
+  const Real A_chk[3][3] = {
+    {A[0][0] - eps_tr, A[0][1], A[0][2]},
+    {A[1][0], A[1][1] - eps_tr, A[1][2]},
+    {A[2][0], A[2][1], A[2][2] - eps_tr}
+  };
+  if (!nrpic::vlasov::IsSpd3Fast(A_chk, 0.0)) {
+    Real V_eig[3][3], evals[3];
+    nrpic::SymEig3(A, V_eig, evals);
+    const Real emin = fmin(evals[0], fmin(evals[1], evals[2]));
+    const Real emax = fmax(evals[0], fmax(evals[1], evals[2]));
+    if (emin <= 1.0e-3 * emax) {
+      const Real reg = 1.0e-2 * tr;
+      A[0][0] += reg;
+      A[1][1] += reg;
+      A[2][2] += reg;
+    }
   }
   nrpic::Inv3Sym(A, Einv_out);
 }
@@ -156,6 +164,16 @@ void GridCellIndices(const Real pos[3], const Real gmin[3], const Real inv_cdx[3
   }
 }
 
+template <class ViewT>
+inline auto ContigPtr(const ViewT &v) -> decltype(v.data()) {
+  if (v.span() == 0) return static_cast<decltype(v.data())>(nullptr);
+  if (!v.span_is_contiguous()) {
+    std::cout << "### FATAL ERROR in " << __FILE__ << ": non-contiguous Vlasov View" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+  return v.data();
+}
+
 KOKKOS_INLINE_FUNCTION
 int BinaryFindSorted(const DvceArray2D<int> &ids, int a, int cnt, int target) {
   int lo = 0, hi = cnt - 1;
@@ -170,6 +188,36 @@ int BinaryFindSorted(const DvceArray2D<int> &ids, int a, int cnt, int target) {
 }
 
 KOKKOS_INLINE_FUNCTION
+int BinaryFindSortedPtr(const int *ids, int a, int N, int cnt, int target) {
+  int lo = 0, hi = cnt - 1;
+  while (lo <= hi) {
+    const int mid = lo + (hi - lo) / 2;
+    const int v = ids[static_cast<size_t>(mid) * N + a];
+    if (v == target) return mid;
+    if (v < target) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return -1;
+}
+
+KOKKOS_INLINE_FUNCTION
+void ComputeCellStencil(Real r_search, const Real inv_cdx[3], const int ng[3],
+                        int lo[3], int hi[3], bool full[3]) {
+  for (int d = 0; d < 3; ++d) {
+    const int rad_d = static_cast<int>(floor(r_search * inv_cdx[d])) + 1;
+    if (2 * rad_d + 1 >= ng[d]) {
+      lo[d] = 0;
+      hi[d] = ng[d] - 1;
+      full[d] = true;
+    } else {
+      lo[d] = -rad_d;
+      hi[d] = rad_d;
+      full[d] = false;
+    }
+  }
+}
+
+KOKKOS_INLINE_FUNCTION
 bool HasNonZeroGrad(const nrpic::AdmPoint &ap) {
   Real m = 0.0;
   for (int d = 0; d < 3; ++d) {
@@ -181,7 +229,20 @@ bool HasNonZeroGrad(const nrpic::AdmPoint &ap) {
       }
     }
   }
-  return m > 1.0e-30;
+  return m > 1.0e-12;
+}
+
+KOKKOS_INLINE_FUNCTION
+bool IsNotMinkowski(const nrpic::AdmPoint &ap) {
+  if (fabs(ap.alp - 1.0) > 1.0e-12) return true;
+  for (int i = 0; i < 3; ++i) {
+    if (fabs(ap.beta[i]) > 1.0e-12) return true;
+    for (int j = 0; j < 3; ++j) {
+      const Real tgt = (i == j) ? 1.0 : 0.0;
+      if (fabs(ap.g[i][j] - tgt) > 1.0e-12) return true;
+    }
+  }
+  return false;
 }
 
 KOKKOS_INLINE_FUNCTION
@@ -194,28 +255,37 @@ Real SymMinEig3(const Real A0[3][3], const Real dA[3][3], Real phi) {
   return fmin(ew[0], fmin(ew[1], ew[2]));
 }
 
+template <int MaxNb>
 KOKKOS_INLINE_FUNCTION
-void ReconstructFaceSide(
-    int cell, int Nb, const Real xf[3], const Real e_up[3][3],
-    const DvceArray2D<Real> &Dv, const DvceArray3D<Real> &uv, const DvceArray3D<Real> &Sv,
-    const DvceArray3D<Real> &gDv, const DvceArray4D<Real> &guv, const DvceArray4D<Real> &gSv,
+void ReconstructFaceSidePtr(
+    int cell, int Nb, int N, const Real xf[3], const Real e_up[3][3],
+    const Real *Dv, const Real *uv, const Real *Sv,
+    const Real *gDv, const Real *guv, const Real *gSv,
     Real D_s[], Real u_t[][3], Real S_t[][3][3]) {
   for (int al = 0; al < Nb; ++al) {
-    Real D_r = Dv(al, cell)
-             + gDv(al, 0, cell)*xf[0] + gDv(al, 1, cell)*xf[1] + gDv(al, 2, cell)*xf[2];
+    const size_t nsz = static_cast<size_t>(N);
+    const size_t d_base = static_cast<size_t>(al) * 3 * nsz;
+    Real D_r = Dv[static_cast<size_t>(al) * nsz + cell]
+             + gDv[d_base + cell] * xf[0]
+             + gDv[d_base + nsz + cell] * xf[1]
+             + gDv[d_base + 2 * nsz + cell] * xf[2];
     if (D_r < 0.0) D_r = 0.0;
     D_s[al] = D_r;
 
     Real u_c[3], S_c6[N_SYM6], S_c[3][3];
     for (int i = 0; i < 3; ++i) {
-      u_c[i] = uv(al, i, cell)
-             + guv(al, i, 0, cell)*xf[0] + guv(al, i, 1, cell)*xf[1]
-             + guv(al, i, 2, cell)*xf[2];
+      const size_t ub = (static_cast<size_t>(al) * 3 + i) * 3 * nsz;
+      u_c[i] = uv[(static_cast<size_t>(al) * 3 + i) * nsz + cell]
+             + guv[ub + cell] * xf[0]
+             + guv[ub + nsz + cell] * xf[1]
+             + guv[ub + 2 * nsz + cell] * xf[2];
     }
     for (int s = 0; s < N_SYM6; ++s) {
-      S_c6[s] = Sv(al, s, cell)
-              + gSv(al, s, 0, cell)*xf[0] + gSv(al, s, 1, cell)*xf[1]
-              + gSv(al, s, 2, cell)*xf[2];
+      const size_t sb = (static_cast<size_t>(al) * N_SYM6 + s) * 3 * nsz;
+      S_c6[s] = Sv[(static_cast<size_t>(al) * N_SYM6 + s) * nsz + cell]
+              + gSv[sb + cell] * xf[0]
+              + gSv[sb + nsz + cell] * xf[1]
+              + gSv[sb + 2 * nsz + cell] * xf[2];
     }
     UnpackSym6(S_c6, S_c);
 
@@ -235,12 +305,12 @@ void ReconstructFaceSide(
 }
 
 KOKKOS_INLINE_FUNCTION
-void AtomicAddTetFlux(
+void AtomicAddTetFluxPtr(
     Real scale, const Real e_dn[3][3],
-    int cell_src, int al_src, int cell_dst, int al_dst,
+    int cell_src, int al_src, int cell_dst, int al_dst, int N,
     Real fm_t, const Real fp_t[3], const Real fpi_t[3][3], Real fe_t,
-    const DvceArray2D<Real> &dm_v, const DvceArray3D<Real> &dP_v,
-    const DvceArray3D<Real> &dPi_v, const DvceArray1D<Real> &dE_v) {
+    Real *dm_v, Real *dP_v, Real *dPi_v, Real *dE_v) {
+  const size_t nsz = static_cast<size_t>(N);
   const Real fm = scale * fm_t;
   const Real fe = scale * fe_t;
   Real fp[3] = {0.0, 0.0, 0.0}, fpi[3][3];
@@ -258,26 +328,96 @@ void AtomicAddTetFlux(
   Real fpi6[N_SYM6];
   PackSym6(fpi, fpi6);
   if (fm != 0.0) {
-    Kokkos::atomic_add(&dm_v(al_src, cell_src), -fm);
-    Kokkos::atomic_add(&dm_v(al_dst, cell_dst),  fm);
+    Kokkos::atomic_add(&dm_v[static_cast<size_t>(al_src) * nsz + cell_src], -fm);
+    Kokkos::atomic_add(&dm_v[static_cast<size_t>(al_dst) * nsz + cell_dst],  fm);
   }
   for (int i = 0; i < 3; ++i) {
     if (fp[i] != 0.0) {
-      Kokkos::atomic_add(&dP_v(al_src, i, cell_src), -fp[i]);
-      Kokkos::atomic_add(&dP_v(al_dst, i, cell_dst),  fp[i]);
+      Kokkos::atomic_add(&dP_v[(static_cast<size_t>(al_src) * 3 + i) * nsz + cell_src], -fp[i]);
+      Kokkos::atomic_add(&dP_v[(static_cast<size_t>(al_dst) * 3 + i) * nsz + cell_dst],  fp[i]);
     }
   }
   for (int s = 0; s < N_SYM6; ++s) {
     if (fpi6[s] != 0.0) {
-      Kokkos::atomic_add(&dPi_v(al_src, s, cell_src), -fpi6[s]);
-      Kokkos::atomic_add(&dPi_v(al_dst, s, cell_dst),  fpi6[s]);
+      Kokkos::atomic_add(&dPi_v[(static_cast<size_t>(al_src) * N_SYM6 + s) * nsz + cell_src], -fpi6[s]);
+      Kokkos::atomic_add(&dPi_v[(static_cast<size_t>(al_dst) * N_SYM6 + s) * nsz + cell_dst],  fpi6[s]);
     }
   }
   if (fe != 0.0) {
-    Kokkos::atomic_add(&dE_v(cell_src), -fe);
-    Kokkos::atomic_add(&dE_v(cell_dst),  fe);
+    Kokkos::atomic_add(&dE_v[cell_src], -fe);
+    Kokkos::atomic_add(&dE_v[cell_dst],  fe);
   }
 }
+
+struct KerrSchildLight {
+  Real mass = 1.0, spin = 0.0;
+
+  KOKKOS_INLINE_FUNCTION
+  void EvalNoDeriv(const Real x[3], Real &alp, Real beta[3], Real g[3][3]) const {
+    const Real a = spin;
+    const Real a2 = a * a;
+    const Real X = x[0], Y = x[1], Z = x[2];
+    const Real b = X * X + Y * Y + Z * Z - a2;
+    const Real r2 = 0.5 * (b + sqrt(b * b + 4.0 * a2 * Z * Z));
+    const Real r = sqrt(r2);
+    const Real r3 = r2 * r;
+    const Real q = r2 * r2 + a2 * Z * Z;
+    const Real H = mass * r3 / q;
+    const Real s = r2 + a2;
+    const Real l[3] = {(r * X + a * Y) / s, (r * Y - a * X) / s, Z / r};
+    const Real f = 1.0 + 2.0 * H;
+    alp = 1.0 / sqrt(f);
+    const Real fac = 2.0 * H / f;
+    for (int i = 0; i < 3; ++i) {
+      beta[i] = fac * l[i];
+      for (int j = 0; j < 3; ++j) {
+        g[i][j] = ((i == j) ? 1.0 : 0.0) + 2.0 * H * l[i] * l[j];
+      }
+    }
+  }
+};
+
+struct VlasovDomain {
+  Real dmin[3];
+  Real dlen[3];
+  bool per[3];
+};
+
+struct VlasovGradPtrs {
+  const int *act, *bnd, *ncnt, *nids, *pcnt, *pids, *ppab;
+  const Real *x, *h, *Einv, *ub, *D, *u, *S;
+  Real *gD, *gu, *gS;
+  Real dlen[3], eps_v;
+  int N, Nb;
+  bool per[3];
+};
+
+struct VlasovFluxPtrs {
+  const int *ea, *eb, *act, *gid, *ncnt, *nids;
+  int *npab;
+  const Real *x, *h, *V, *Einv, *m, *D, *u, *S, *gD, *gu, *gS, *cnv;
+  Real *dm, *dP, *dPi, *dE;
+  Real coll_sigma, noh_kappa;
+  int N, Nb, basis_kind, n_perp, pair_mode;
+  bool analytic_v;
+};
+
+struct VlasovKickPtrs {
+  const int *act, *gid;
+  const Real *x, *m;
+  Real *P, *Pi, *u, *S;
+  Real half_dt, tol;
+  int N, Nb, n_q, slot_mode;
+};
+
+struct VlasovBgkPtrs {
+  const int *act, *gid;
+  const Real *x, *V, *m, *Ec;
+  Real *P, *Pi, *u, *S;
+  Real sigma_over_mu, dt_sub;
+  int N, Nb, n_q, slot_mode;
+  bool track_e;
+};
 
 template <class SizeViewT>
 struct VlasovMetric {
@@ -374,6 +514,7 @@ inline void VlasovFatal(const std::string &msg) {
 struct VlasovReduceStats {
   int n_act = 0;
   Real h_max = 0.0;
+  Real h_sum = 0.0;
   Real xmin = 1.0e300, ymin = 1.0e300, zmin = 1.0e300;
   Real xmax = -1.0e300, ymax = -1.0e300, zmax = -1.0e300;
 };
@@ -402,6 +543,7 @@ void AllocateState(VlasovState &st, int n_elem, int n_basis, int max_ngb) {
   Kokkos::realloc(st.E0,     n_elem);
   Kokkos::realloc(st.E_cons, n_elem);
   Kokkos::realloc(st.dE,     n_elem);
+  Kokkos::realloc(st.cell_noh, 8, (st.opt.coll_sigma > 0.0 && st.opt.noh_kappa > 0.0) ? n_elem : 0);
 
   Kokkos::realloc(st.D,     n_basis, n_elem);
   Kokkos::realloc(st.u_bar, n_basis, 3, n_elem);
@@ -441,6 +583,59 @@ void AllocateState(VlasovState &st, int n_elem, int n_basis, int max_ngb) {
   Kokkos::deep_copy(st.prev_cnt, 0);
   Kokkos::deep_copy(st.ngb_cnt,  0);
   Kokkos::deep_copy(st.is_bnd,   0);
+}
+
+void ResetMfmBuffers(VlasovState &st) {
+  st.n_elem = 0;
+  st.n_edges = 0;
+  st.max_ngb = 0;
+  st.edge_cap = 0;
+  st.grid_cap = 0;
+  st.x = DvceArray2D<Real>();
+  st.x0 = DvceArray2D<Real>();
+  st.v_cell = DvceArray2D<Real>();
+  st.v0_cell = DvceArray2D<Real>();
+  st.u_bulk = DvceArray2D<Real>();
+  st.m = DvceArray2D<Real>();
+  st.m0 = DvceArray2D<Real>();
+  st.dm = DvceArray2D<Real>();
+  st.P = DvceArray3D<Real>();
+  st.P0 = DvceArray3D<Real>();
+  st.dP = DvceArray3D<Real>();
+  st.Pi = DvceArray3D<Real>();
+  st.Pi0 = DvceArray3D<Real>();
+  st.dPi = DvceArray3D<Real>();
+  st.E0 = DvceArray1D<Real>();
+  st.E_cons = DvceArray1D<Real>();
+  st.dE = DvceArray1D<Real>();
+  st.cell_noh = DvceArray2D<Real>();
+  st.D = DvceArray2D<Real>();
+  st.u_bar = DvceArray3D<Real>();
+  st.Sigma = DvceArray3D<Real>();
+  st.h = DvceArray1D<Real>();
+  st.V = DvceArray1D<Real>();
+  st.Einv = DvceArray2D<Real>();
+  st.active = DvceArray1D<int>();
+  st.species = DvceArray1D<int>();
+  st.blk_gid = DvceArray1D<int>();
+  st.is_bnd = DvceArray1D<int>();
+  st.grad_D = DvceArray3D<Real>();
+  st.grad_u = DvceArray4D<Real>();
+  st.grad_S = DvceArray4D<Real>();
+  st.ngb_cnt = DvceArray1D<int>();
+  st.ngb_ids = DvceArray2D<int>();
+  st.new_pab = DvceArray2D<int>();
+  st.prev_cnt = DvceArray1D<int>();
+  st.prev_ids = DvceArray2D<int>();
+  st.prev_pab = DvceArray2D<int>();
+  st.edge_off = DvceArray1D<int>();
+  st.edge_a = DvceArray1D<int>();
+  st.edge_b = DvceArray1D<int>();
+  st.grid_cell_id = DvceArray1D<int>();
+  st.grid_cnt = DvceArray1D<int>();
+  st.grid_off = DvceArray1D<int>();
+  st.grid_cur = DvceArray1D<int>();
+  st.grid_elem = DvceArray1D<int>();
 }
 
 void GrowNeighborCapacity(VlasovState &st, int new_max_ngb) {
@@ -488,7 +683,10 @@ VlasovGridMeta RebuildSpatialGrid(VlasovState &st, const NrpicOptions &nropt,
       gm.glen[d] = span * 1.02;
     }
   }
-  const Real cs = std::max(2.0 * h_scale * rs.h_max, 1.0e-12);
+  const Real h_ref = (rs.n_act > 0 && rs.h_sum > 0.0)
+                     ? (rs.h_sum / static_cast<Real>(rs.n_act))
+                     : rs.h_max;
+  const Real cs = std::max(2.0 * h_scale * h_ref, 1.0e-12);
   for (int d = 0; d < 3; ++d) {
     int n = static_cast<int>(std::floor(gm.glen[d] / cs));
     if (n < 1) n = 1;
@@ -516,7 +714,7 @@ VlasovGridMeta RebuildSpatialGrid(VlasovState &st, const NrpicOptions &nropt,
   auto gcnt = Kokkos::subview(st.grid_cnt, std::make_pair(0, gm.n_cells));
   auto goff = Kokkos::subview(st.grid_off, std::make_pair(0, gm.n_cells));
   auto gcur = Kokkos::subview(st.grid_cur, std::make_pair(0, gm.n_cells));
-  Kokkos::deep_copy(gcnt, 0);
+  Kokkos::deep_copy(DevExeSpace(), gcnt, 0);
 
   const int N = st.n_elem;
   auto xv = st.x;
@@ -535,7 +733,6 @@ VlasovGridMeta RebuildSpatialGrid(VlasovState &st, const NrpicOptions &nropt,
     Kokkos::atomic_inc(&gcnt(cid));
   });
 
-  int tot = 0;
   Kokkos::parallel_scan("vlasov_grid_scan", Kokkos::RangePolicy<DevExeSpace>(0, gm.n_cells),
   KOKKOS_LAMBDA(const int c, int &upd, const bool final) {
     if (final) {
@@ -543,8 +740,7 @@ VlasovGridMeta RebuildSpatialGrid(VlasovState &st, const NrpicOptions &nropt,
       gcur(c) = 0;
     }
     upd += gcnt(c);
-  }, tot);
-  (void)tot;
+  });
 
   par_for("vlasov_grid_fill", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
     const int cid = gcid(a);
@@ -564,23 +760,26 @@ VlasovReduceStats GatherStats(VlasovState &st) {
   auto hv = st.h;
   auto act = st.active;
   int n_act = 0;
-  Real h_max = 0.0;
+  Real h_max = 0.0, h_sum = 0.0;
   Real xmin = 1.0e300, ymin = 1.0e300, zmin = 1.0e300;
   Real xmax = -1.0e300, ymax = -1.0e300, zmax = -1.0e300;
   Kokkos::parallel_reduce("vlasov_stats", Kokkos::RangePolicy<DevExeSpace>(0, N),
-  KOKKOS_LAMBDA(const int a, int &ln, Real &lh, Real &lx0, Real &ly0, Real &lz0,
+  KOKKOS_LAMBDA(const int a, int &ln, Real &lh, Real &lh_s, Real &lx0, Real &ly0, Real &lz0,
                 Real &lx1, Real &ly1, Real &lz1) {
     if (!act(a)) return;
     ln += 1;
-    lh = fmax(lh, hv(a));
+    const Real ha = hv(a);
+    lh = fmax(lh, ha);
+    lh_s += ha;
     lx0 = fmin(lx0, xv(0, a)); lx1 = fmax(lx1, xv(0, a));
     ly0 = fmin(ly0, xv(1, a)); ly1 = fmax(ly1, xv(1, a));
     lz0 = fmin(lz0, xv(2, a)); lz1 = fmax(lz1, xv(2, a));
-  }, Kokkos::Sum<int>(n_act), Kokkos::Max<Real>(h_max),
+  }, Kokkos::Sum<int>(n_act), Kokkos::Max<Real>(h_max), Kokkos::Sum<Real>(h_sum),
      Kokkos::Min<Real>(xmin), Kokkos::Min<Real>(ymin), Kokkos::Min<Real>(zmin),
      Kokkos::Max<Real>(xmax), Kokkos::Max<Real>(ymax), Kokkos::Max<Real>(zmax));
   rs.n_act = n_act;
   rs.h_max = h_max;
+  rs.h_sum = h_sum;
   rs.xmin = xmin; rs.ymin = ymin; rs.zmin = zmin;
   rs.xmax = xmax; rs.ymax = ymax; rs.zmax = zmax;
   return rs;
@@ -644,41 +843,43 @@ int FillNeighborsAndCount(VlasovState &st, const NrpicOptions &nropt,
   auto nids = st.ngb_ids;
   const int cap = st.max_ngb;
 
-  int max_needed = 0;
-  Kokkos::parallel_reduce("vlasov_ngb_list", Kokkos::RangePolicy<DevExeSpace>(0, N),
-  KOKKOS_LAMBDA(const int a, int &lmax) {
-    if (!act(a)) {
-      ncnt(a) = 0;
-      return;
-    }
+  Kokkos::deep_copy(DevExeSpace(), ncnt, 0);
+
+  // Pass 1: Symmetric gather-scatter over per-element stencil r < 2 * h_a
+  par_for("vlasov_ngb_scatter", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
+    if (!act(a)) return;
     const Real xa[3] = {xv(0, a), xv(1, a), xv(2, a)};
     const Real ha = hv(a);
-    int ix[3];
-    GridCellIndices(xa, gm.gmin, gm.inv_cdx, gm.ng, ix);
-    int lo[3], hi[3];
-    for (int d = 0; d < 3; ++d) {
-      if (gm.ng[d] <= 2) {
-        lo[d] = 0;
-        hi[d] = gm.ng[d] - 1;
-      } else {
-        lo[d] = -1;
-        hi[d] = 1;
-      }
-    }
+    const Real r_cut_a = 2.0 * ha;
+    const Real r_cut_a2 = r_cut_a * r_cut_a;
 
-    int cnt = 0;
+    int ix[3], lo[3], hi[3];
+    bool full[3];
+    GridCellIndices(xa, gm.gmin, gm.inv_cdx, gm.ng, ix);
+    ComputeCellStencil(r_cut_a, gm.inv_cdx, gm.ng, lo, hi, full);
+
+    constexpr int kLocNgb = 96;
+    int loc_a[kLocNgb];
+    int n_loc = 0;
+
     for (int dz = lo[2]; dz <= hi[2]; ++dz) {
-      int cz = (gm.ng[2] <= 2) ? dz : (ix[2] + dz);
-      if (per[2]) cz = (cz + gm.ng[2]) % gm.ng[2];
-      else if (cz < 0 || cz >= gm.ng[2]) continue;
+      int cz = full[2] ? dz : (ix[2] + dz);
+      if (!full[2]) {
+        if (per[2]) cz = (cz + gm.ng[2]) % gm.ng[2];
+        else if (cz < 0 || cz >= gm.ng[2]) continue;
+      }
       for (int dy = lo[1]; dy <= hi[1]; ++dy) {
-        int cy = (gm.ng[1] <= 2) ? dy : (ix[1] + dy);
-        if (per[1]) cy = (cy + gm.ng[1]) % gm.ng[1];
-        else if (cy < 0 || cy >= gm.ng[1]) continue;
+        int cy = full[1] ? dy : (ix[1] + dy);
+        if (!full[1]) {
+          if (per[1]) cy = (cy + gm.ng[1]) % gm.ng[1];
+          else if (cy < 0 || cy >= gm.ng[1]) continue;
+        }
         for (int dx_i = lo[0]; dx_i <= hi[0]; ++dx_i) {
-          int cx = (gm.ng[0] <= 2) ? dx_i : (ix[0] + dx_i);
-          if (per[0]) cx = (cx + gm.ng[0]) % gm.ng[0];
-          else if (cx < 0 || cx >= gm.ng[0]) continue;
+          int cx = full[0] ? dx_i : (ix[0] + dx_i);
+          if (!full[0]) {
+            if (per[0]) cx = (cx + gm.ng[0]) % gm.ng[0];
+            else if (cx < 0 || cx >= gm.ng[0]) continue;
+          }
           const int cid = (cz * gm.ng[1] + cy) * gm.ng[0] + cx;
           const int beg = goff(cid);
           const int gc = gcnt(cid);
@@ -688,30 +889,68 @@ int FillNeighborsAndCount(VlasovState &st, const NrpicOptions &nropt,
             const Real xb[3] = {xv(0, b), xv(1, b), xv(2, b)};
             Real dvec[3];
             WrapDiff(dlen, per, xa, xb, dvec);
-            const Real r = sqrt(dvec[0]*dvec[0] + dvec[1]*dvec[1] + dvec[2]*dvec[2]);
-            const Real r_cut = 2.0 * fmax(ha, hv(b));
-            if (r < r_cut) {
-              if (fill_ids && cnt < cap) {
-                nids(cnt, a) = b;
+            const Real r2 = dvec[0]*dvec[0] + dvec[1]*dvec[1] + dvec[2]*dvec[2];
+            if (r2 < r_cut_a2) {
+              if (n_loc < kLocNgb) {
+                loc_a[n_loc++] = b;
+              } else {
+                const int ka = Kokkos::atomic_fetch_add(&ncnt(a), 1);
+                if (fill_ids && ka < cap) nids(ka, a) = b;
               }
-              ++cnt;
+              const Real r_cut_b = 2.0 * hv(b);
+              if (r2 >= r_cut_b * r_cut_b) {
+                const int kb = Kokkos::atomic_fetch_add(&ncnt(b), 1);
+                if (fill_ids && kb < cap) nids(kb, b) = a;
+              }
             }
           }
         }
       }
     }
-    ncnt(a) = cnt;
-    if (cnt > lmax) lmax = cnt;
-    if (fill_ids) {
-      const int n_s = (cnt < cap) ? cnt : cap;
-      for (int i = 1; i < n_s; ++i) {
-        const int key = nids(i, a);
-        int j = i - 1;
-        while (j >= 0 && nids(j, a) > key) {
-          nids(j + 1, a) = nids(j, a);
-          --j;
+    if (n_loc > 0) {
+      const int base = Kokkos::atomic_fetch_add(&ncnt(a), n_loc);
+      if (fill_ids) {
+        for (int k = 0; k < n_loc; ++k) {
+          if (base + k < cap) nids(base + k, a) = loc_a[k];
         }
-        nids(j + 1, a) = key;
+      }
+    }
+  });
+
+  // Pass 2: Reduce max neighbor count and sort ascending (local stack buffer when cnt <= 64)
+  int max_needed = 0;
+  Kokkos::parallel_reduce("vlasov_ngb_sort_max", Kokkos::RangePolicy<DevExeSpace>(0, N),
+  KOKKOS_LAMBDA(const int a, int &lmax) {
+    if (!act(a)) {
+      ncnt(a) = 0;
+      return;
+    }
+    const int cnt = ncnt(a);
+    if (cnt > lmax) lmax = cnt;
+    if (fill_ids && cnt > 1 && cnt <= cap) {
+      if (cnt <= 64) {
+        int loc[64];
+        for (int i = 0; i < cnt; ++i) loc[i] = nids(i, a);
+        for (int i = 1; i < cnt; ++i) {
+          const int key = loc[i];
+          int j = i - 1;
+          while (j >= 0 && loc[j] > key) {
+            loc[j + 1] = loc[j];
+            --j;
+          }
+          loc[j + 1] = key;
+        }
+        for (int i = 0; i < cnt; ++i) nids(i, a) = loc[i];
+      } else {
+        for (int i = 1; i < cnt; ++i) {
+          const int key = nids(i, a);
+          int j = i - 1;
+          while (j >= 0 && nids(j, a) > key) {
+            nids(j + 1, a) = nids(j, a);
+            --j;
+          }
+          nids(j + 1, a) = key;
+        }
       }
     }
   }, Kokkos::Max<int>(max_needed));
@@ -719,7 +958,7 @@ int FillNeighborsAndCount(VlasovState &st, const NrpicOptions &nropt,
 }
 
 void UpdateGeometry(VlasovState &st, const NrpicOptions &nropt, bool build_neighbors,
-                    Real grid_margin = 1.45) {
+                    Real cand_scale = 1.08) {
   const int N = st.n_elem;
   if (N == 0) {
     st.n_edges = 0;
@@ -741,9 +980,9 @@ void UpdateGeometry(VlasovState &st, const NrpicOptions &nropt, bool build_neigh
   const Real cm_tol     = st.opt.bnd_cm_tol;
   const int  min_ngb    = st.opt.bnd_min_ngb;
 
-  // Step 1: Converge h_a^3 * nbar_a = 1, compute V_a, Einv_a, is_bnd_a
+  // Step 1: Build single 1.05x mean-h spatial hash grid, converge h_a^3 * nbar_a = 1, V_a, Einv_a, is_bnd_a
+  VlasovGridMeta gm = RebuildSpatialGrid(st, nropt, rs, 1.05);
   {
-    const VlasovGridMeta gm = RebuildSpatialGrid(st, nropt, rs, grid_margin);
     auto xv = st.x;
     auto hv = st.h;
     auto Vv = st.V;
@@ -761,36 +1000,204 @@ void UpdateGeometry(VlasovState &st, const NrpicOptions &nropt, bool build_neigh
         return;
       }
       const Real xa[3] = {xv(0, a), xv(1, a), xv(2, a)};
-      int ix[3];
+      int ix[3], lo[3], hi[3];
+      bool full[3];
       GridCellIndices(xa, gm.gmin, gm.inv_cdx, gm.ng, ix);
-      int lo[3], hi[3];
-      for (int d = 0; d < 3; ++d) {
-        if (gm.ng[d] <= 2) {
-          lo[d] = 0;
-          hi[d] = gm.ng[d] - 1;
-        } else {
-          lo[d] = -1;
-          hi[d] = 1;
-        }
-      }
 
       Real ha = hv(a);
       if (ha <= 0.0) ha = 1.0;
 
-      for (int it = 0; it < 45; ++it) {
-        Real nbar = 1.0 / (nrpic::vlasov::kPi * ha * ha * ha); // self W(0, ha)
-        for (int dz = lo[2]; dz <= hi[2]; ++dz) {
-          int cz = (gm.ng[2] <= 2) ? dz : (ix[2] + dz);
+      // Single stencil walk caching candidates within r < r_cand_max, then Newton-solve h_a
+      constexpr int kMaxCand = 128;
+      int cand_id[kMaxCand];
+      Real cand_r[kMaxCand];
+      int n_cand = 0;
+      bool overflow = false;
+      const Real r_cand_max = 2.0 * fmax(cand_scale, 1.05) * ha;
+      const Real r_cand_max2 = r_cand_max * r_cand_max;
+      ComputeCellStencil(r_cand_max, gm.inv_cdx, gm.ng, lo, hi, full);
+
+      for (int dz = lo[2]; dz <= hi[2] && !overflow; ++dz) {
+        int cz = full[2] ? dz : (ix[2] + dz);
+        if (!full[2]) {
           if (per[2]) cz = (cz + gm.ng[2]) % gm.ng[2];
           else if (cz < 0 || cz >= gm.ng[2]) continue;
-          for (int dy = lo[1]; dy <= hi[1]; ++dy) {
-            int cy = (gm.ng[1] <= 2) ? dy : (ix[1] + dy);
+        }
+        for (int dy = lo[1]; dy <= hi[1] && !overflow; ++dy) {
+          int cy = full[1] ? dy : (ix[1] + dy);
+          if (!full[1]) {
             if (per[1]) cy = (cy + gm.ng[1]) % gm.ng[1];
             else if (cy < 0 || cy >= gm.ng[1]) continue;
-            for (int dx_i = lo[0]; dx_i <= hi[0]; ++dx_i) {
-              int cx = (gm.ng[0] <= 2) ? dx_i : (ix[0] + dx_i);
+          }
+          for (int dx_i = lo[0]; dx_i <= hi[0] && !overflow; ++dx_i) {
+            int cx = full[0] ? dx_i : (ix[0] + dx_i);
+            if (!full[0]) {
               if (per[0]) cx = (cx + gm.ng[0]) % gm.ng[0];
               else if (cx < 0 || cx >= gm.ng[0]) continue;
+            }
+            const int cid = (cz * gm.ng[1] + cy) * gm.ng[0] + cx;
+            const int beg = goff(cid);
+            const int cnt = gcnt(cid);
+            for (int m = 0; m < cnt; ++m) {
+              const int c = gelm(beg + m);
+              if (c == a) continue;
+              const Real xc[3] = {xv(0, c), xv(1, c), xv(2, c)};
+              Real dvec[3];
+              WrapDiff(dlen, per, xa, xc, dvec);
+              const Real r2 = dvec[0]*dvec[0] + dvec[1]*dvec[1] + dvec[2]*dvec[2];
+              if (r2 < r_cand_max2) {
+                if (n_cand < kMaxCand) {
+                  cand_id[n_cand] = c;
+                  cand_r[n_cand] = sqrt(r2);
+                  ++n_cand;
+                } else {
+                  overflow = true;
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      bool fast_ok = false;
+      if (!overflow && n_cand > 0) {
+        Real h_lo = 1.0e-12;
+        Real h_hi = 0.5 * r_cand_max;
+        for (int it = 0; it < 20; ++it) {
+          Real sum_w = 1.0;
+          Real sum_d = 0.0;
+          for (int k = 0; k < n_cand; ++k) {
+            const Real r = cand_r[k];
+            if (r < 2.0 * ha) {
+              const Real q = r / ha;
+              if (q < 1.0) {
+                const Real q2 = q * q;
+                sum_w += 1.0 - 1.5 * q2 + 0.75 * q2 * q;
+                sum_d += 3.0 * q2 - 2.25 * q2 * q;
+              } else {
+                const Real t = 2.0 - q;
+                sum_w += 0.25 * t * t * t;
+                sum_d += 0.75 * q * t * t;
+              }
+            }
+          }
+          const Real F = sum_w - nrpic::vlasov::kPi;
+          if (fabs(F) <= 1.0e-13 * nrpic::vlasov::kPi) {
+            if (2.0 * ha <= r_cand_max) fast_ok = true;
+            break;
+          }
+          if (F < 0.0) h_lo = fmax(h_lo, ha);
+          else         h_hi = fmin(h_hi, ha);
+          Real h_try = 0.5 * (h_lo + h_hi);
+          if (sum_d > 1.0e-30) {
+            const Real h_nwt = ha - F * ha / sum_d;
+            if (h_nwt > h_lo && h_nwt < h_hi) h_try = h_nwt;
+          }
+          if (h_try > 0.999 * (0.5 * r_cand_max) && F < 0.0) break;
+          if (fabs(h_try - ha) <= 1.0e-14 * ha) {
+            ha = h_try;
+            if (2.0 * ha <= r_cand_max) fast_ok = true;
+            break;
+          }
+          ha = h_try;
+        }
+      }
+
+      if (!fast_ok) {
+        for (int it = 0; it < 45; ++it) {
+          ComputeCellStencil(2.0 * ha, gm.inv_cdx, gm.ng, lo, hi, full);
+          Real nbar = 1.0 / (nrpic::vlasov::kPi * ha * ha * ha);
+          for (int dz = lo[2]; dz <= hi[2]; ++dz) {
+            int cz = full[2] ? dz : (ix[2] + dz);
+            if (!full[2]) {
+              if (per[2]) cz = (cz + gm.ng[2]) % gm.ng[2];
+              else if (cz < 0 || cz >= gm.ng[2]) continue;
+            }
+            for (int dy = lo[1]; dy <= hi[1]; ++dy) {
+              int cy = full[1] ? dy : (ix[1] + dy);
+              if (!full[1]) {
+                if (per[1]) cy = (cy + gm.ng[1]) % gm.ng[1];
+                else if (cy < 0 || cy >= gm.ng[1]) continue;
+              }
+              for (int dx_i = lo[0]; dx_i <= hi[0]; ++dx_i) {
+                int cx = full[0] ? dx_i : (ix[0] + dx_i);
+                if (!full[0]) {
+                  if (per[0]) cx = (cx + gm.ng[0]) % gm.ng[0];
+                  else if (cx < 0 || cx >= gm.ng[0]) continue;
+                }
+                const int cid = (cz * gm.ng[1] + cy) * gm.ng[0] + cx;
+                const int beg = goff(cid);
+                const int cnt = gcnt(cid);
+                for (int m = 0; m < cnt; ++m) {
+                  const int c = gelm(beg + m);
+                  if (c == a) continue;
+                  const Real xc[3] = {xv(0, c), xv(1, c), xv(2, c)};
+                  Real dvec[3];
+                  WrapDiff(dlen, per, xa, xc, dvec);
+                  const Real r = sqrt(dvec[0]*dvec[0] + dvec[1]*dvec[1] + dvec[2]*dvec[2]);
+                  if (r < 2.0 * ha) {
+                    nbar += CubicSpline3D(r, ha);
+                  }
+                }
+              }
+            }
+          }
+          const Real h_new = cbrt(1.0 / fmax(nbar, 1.0e-300));
+          if (fabs(h_new - ha) < 1.0e-14 * ha) {
+            ha = h_new;
+            break;
+          }
+          ha = 0.2 * ha + 0.8 * h_new;
+        }
+      }
+      hv(a) = ha;
+
+      Real nbar = 1.0 / (nrpic::vlasov::kPi * ha * ha * ha);
+      Real E_a[3][3] = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
+      Real dx_cm[3] = {0.0, 0.0, 0.0};
+      int n_ngb_h = 0;
+
+      if (fast_ok) {
+        const Real r_cut = 2.0 * ha;
+        for (int k = 0; k < n_cand; ++k) {
+          const Real r = cand_r[k];
+          if (r < r_cut) {
+            const int c = cand_id[k];
+            const Real xc[3] = {xv(0, c), xv(1, c), xv(2, c)};
+            Real dvec[3];
+            WrapDiff(dlen, per, xa, xc, dvec);
+            ++n_ngb_h;
+            const Real w = CubicSpline3D(r, ha);
+            nbar += w;
+            for (int i = 0; i < 3; ++i) {
+              dx_cm[i] += w * dvec[i];
+              for (int j = 0; j < 3; ++j) {
+                E_a[i][j] += w * dvec[i] * dvec[j];
+              }
+            }
+          }
+        }
+      } else {
+        ComputeCellStencil(2.0 * ha, gm.inv_cdx, gm.ng, lo, hi, full);
+        for (int dz = lo[2]; dz <= hi[2]; ++dz) {
+          int cz = full[2] ? dz : (ix[2] + dz);
+          if (!full[2]) {
+            if (per[2]) cz = (cz + gm.ng[2]) % gm.ng[2];
+            else if (cz < 0 || cz >= gm.ng[2]) continue;
+          }
+          for (int dy = lo[1]; dy <= hi[1]; ++dy) {
+            int cy = full[1] ? dy : (ix[1] + dy);
+            if (!full[1]) {
+              if (per[1]) cy = (cy + gm.ng[1]) % gm.ng[1];
+              else if (cy < 0 || cy >= gm.ng[1]) continue;
+            }
+            for (int dx_i = lo[0]; dx_i <= hi[0]; ++dx_i) {
+              int cx = full[0] ? dx_i : (ix[0] + dx_i);
+              if (!full[0]) {
+                if (per[0]) cx = (cx + gm.ng[0]) % gm.ng[0];
+                else if (cx < 0 || cx >= gm.ng[0]) continue;
+              }
               const int cid = (cz * gm.ng[1] + cy) * gm.ng[0] + cx;
               const int beg = goff(cid);
               const int cnt = gcnt(cid);
@@ -802,56 +1209,14 @@ void UpdateGeometry(VlasovState &st, const NrpicOptions &nropt, bool build_neigh
                 WrapDiff(dlen, per, xa, xc, dvec);
                 const Real r = sqrt(dvec[0]*dvec[0] + dvec[1]*dvec[1] + dvec[2]*dvec[2]);
                 if (r < 2.0 * ha) {
-                  nbar += CubicSpline3D(r, ha);
-                }
-              }
-            }
-          }
-        }
-        const Real h_new = cbrt(1.0 / fmax(nbar, 1.0e-300));
-        if (fabs(h_new - ha) < 1.0e-14 * ha) {
-          ha = h_new;
-          break;
-        }
-        ha = 0.2 * ha + 0.8 * h_new;
-      }
-      hv(a) = ha;
-
-      Real nbar = 1.0 / (nrpic::vlasov::kPi * ha * ha * ha);
-      Real E_a[3][3] = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
-      Real dx_cm[3] = {0.0, 0.0, 0.0};
-      int n_ngb_h = 0;
-
-      for (int dz = lo[2]; dz <= hi[2]; ++dz) {
-        int cz = (gm.ng[2] <= 2) ? dz : (ix[2] + dz);
-        if (per[2]) cz = (cz + gm.ng[2]) % gm.ng[2];
-        else if (cz < 0 || cz >= gm.ng[2]) continue;
-        for (int dy = lo[1]; dy <= hi[1]; ++dy) {
-          int cy = (gm.ng[1] <= 2) ? dy : (ix[1] + dy);
-          if (per[1]) cy = (cy + gm.ng[1]) % gm.ng[1];
-          else if (cy < 0 || cy >= gm.ng[1]) continue;
-          for (int dx_i = lo[0]; dx_i <= hi[0]; ++dx_i) {
-            int cx = (gm.ng[0] <= 2) ? dx_i : (ix[0] + dx_i);
-            if (per[0]) cx = (cx + gm.ng[0]) % gm.ng[0];
-            else if (cx < 0 || cx >= gm.ng[0]) continue;
-            const int cid = (cz * gm.ng[1] + cy) * gm.ng[0] + cx;
-            const int beg = goff(cid);
-            const int cnt = gcnt(cid);
-            for (int m = 0; m < cnt; ++m) {
-              const int c = gelm(beg + m);
-              if (c == a) continue;
-              const Real xc[3] = {xv(0, c), xv(1, c), xv(2, c)};
-              Real dvec[3];
-              WrapDiff(dlen, per, xa, xc, dvec);
-              const Real r = sqrt(dvec[0]*dvec[0] + dvec[1]*dvec[1] + dvec[2]*dvec[2]);
-              if (r < 2.0 * ha) {
-                ++n_ngb_h;
-                const Real w = CubicSpline3D(r, ha);
-                nbar += w;
-                for (int i = 0; i < 3; ++i) {
-                  dx_cm[i] += w * dvec[i];
-                  for (int j = 0; j < 3; ++j) {
-                    E_a[i][j] += w * dvec[i] * dvec[j];
+                  ++n_ngb_h;
+                  const Real w = CubicSpline3D(r, ha);
+                  nbar += w;
+                  for (int i = 0; i < 3; ++i) {
+                    dx_cm[i] += w * dvec[i];
+                    for (int j = 0; j < 3; ++j) {
+                      E_a[i][j] += w * dvec[i] * dvec[j];
+                    }
                   }
                 }
               }
@@ -878,10 +1243,6 @@ void UpdateGeometry(VlasovState &st, const NrpicOptions &nropt, bool build_neigh
   }
 
   if (!build_neighbors) return;
-
-  // Step 2: Rebuild spatial grid with converged h_max and assemble symmetric neighbors & edges
-  rs = GatherStats(st);
-  const VlasovGridMeta gm = RebuildSpatialGrid(st, nropt, rs, 1.05);
 
   int max_needed = FillNeighborsAndCount(st, nropt, gm, true);
   if (max_needed > st.max_ngb) {
@@ -991,82 +1352,115 @@ void ConsToPrim(VlasovState &st) {
   });
 }
 
-void ComputeGradients(VlasovState &st, const NrpicOptions &nropt) {
+template <int MaxNb>
+void ComputeGradientsImpl(VlasovState &st, const NrpicOptions &nropt) {
   const int N = st.n_elem;
   const int Nb = st.n_basis;
   if (N == 0) return;
 
-  const Real dlen[3] = {nropt.dom_len[0], nropt.dom_len[1], nropt.dom_len[2]};
-  const bool per[3]  = {nropt.periodic[0], nropt.periodic[1], nropt.periodic[2]};
-  const Real eps_v   = (st.opt.coll_sigma > 0.0) ? 0.0 : st.opt.lim_eps_v;
-
-  auto act   = st.active;
-  auto bnd   = st.is_bnd;
-  auto xv    = st.x;
-  auto hv    = st.h;
-  auto Ev    = st.Einv;
-  auto mv    = st.m;
-  auto Pv    = st.P;
-  auto ubv   = st.u_bulk;
-  auto Dv    = st.D;
-  auto uv    = st.u_bar;
-  auto Sv    = st.Sigma;
-  auto ncnt  = st.ngb_cnt;
-  auto nids  = st.ngb_ids;
-  auto pcnt  = st.prev_cnt;
-  auto pids  = st.prev_ids;
-  auto ppab  = st.prev_pab;
-  auto gDv   = st.grad_D;
-  auto guv   = st.grad_u;
-  auto gSv   = st.grad_S;
-
-  par_for("vlasov_grad", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
-    if (!act(a)) {
-      for (int i = 0; i < 3; ++i) ubv(i, a) = 0.0;
-      for (int al = 0; al < Nb; ++al) {
-        for (int k = 0; k < 3; ++k) gDv(al, k, a) = 0.0;
-        for (int i = 0; i < 3; ++i) for (int k = 0; k < 3; ++k) guv(al, i, k, a) = 0.0;
-        for (int s = 0; s < N_SYM6; ++s) for (int k = 0; k < 3; ++k) gSv(al, s, k, a) = 0.0;
+  {
+    const int *act = ContigPtr(st.active);
+    const Real *mv = ContigPtr(st.m);
+    const Real *Pv = ContigPtr(st.P);
+    Real *ubv      = ContigPtr(st.u_bulk);
+    Real *gDv      = ContigPtr(st.grad_D);
+    Real *guv      = ContigPtr(st.grad_u);
+    Real *gSv      = ContigPtr(st.grad_S);
+    par_for("vlasov_grad", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
+      const size_t nsz = static_cast<size_t>(N);
+      if (!act[a]) {
+        for (int i = 0; i < 3; ++i) ubv[static_cast<size_t>(i) * nsz + a] = 0.0;
+        for (int al = 0; al < Nb; ++al) {
+          for (int k = 0; k < 3; ++k) gDv[(static_cast<size_t>(al) * 3 + k) * nsz + a] = 0.0;
+          for (int i = 0; i < 3; ++i) {
+            for (int k = 0; k < 3; ++k) guv[((static_cast<size_t>(al) * 3 + i) * 3 + k) * nsz + a] = 0.0;
+          }
+          for (int s = 0; s < N_SYM6; ++s) {
+            for (int k = 0; k < 3; ++k) gSv[((static_cast<size_t>(al) * N_SYM6 + s) * 3 + k) * nsz + a] = 0.0;
+          }
+        }
+        return;
       }
-      return;
-    }
-    Real mt = 0.0, Pt[3] = {0.0, 0.0, 0.0};
-    for (int al = 0; al < Nb; ++al) {
-      mt += mv(al, a);
-      for (int i = 0; i < 3; ++i) Pt[i] += Pv(al, i, a);
-    }
-    const Real mt_s = fmax(mt, 1.0e-300);
-    for (int i = 0; i < 3; ++i) ubv(i, a) = Pt[i] / mt_s;
-  });
+      Real mt = 0.0, Pt[3] = {0.0, 0.0, 0.0};
+      for (int al = 0; al < Nb; ++al) {
+        mt += mv[static_cast<size_t>(al) * nsz + a];
+        for (int i = 0; i < 3; ++i) Pt[i] += Pv[(static_cast<size_t>(al) * 3 + i) * nsz + a];
+      }
+      const Real mt_s = fmax(mt, 1.0e-300);
+      for (int i = 0; i < 3; ++i) ubv[static_cast<size_t>(i) * nsz + a] = Pt[i] / mt_s;
+    });
+  }
+
+  VlasovGradPtrs p;
+  p.act   = ContigPtr(st.active);
+  p.bnd   = ContigPtr(st.is_bnd);
+  p.ncnt  = ContigPtr(st.ngb_cnt);
+  p.nids  = ContigPtr(st.ngb_ids);
+  p.pcnt  = ContigPtr(st.prev_cnt);
+  p.pids  = ContigPtr(st.prev_ids);
+  p.ppab  = ContigPtr(st.prev_pab);
+  p.x     = ContigPtr(st.x);
+  p.h     = ContigPtr(st.h);
+  p.Einv  = ContigPtr(st.Einv);
+  p.ub    = ContigPtr(st.u_bulk);
+  p.D     = ContigPtr(st.D);
+  p.u     = ContigPtr(st.u_bar);
+  p.S     = ContigPtr(st.Sigma);
+  p.gD    = ContigPtr(st.grad_D);
+  p.gu    = ContigPtr(st.grad_u);
+  p.gS    = ContigPtr(st.grad_S);
+  for (int d = 0; d < 3; ++d) {
+    p.dlen[d] = nropt.dom_len[d];
+    p.per[d]  = nropt.periodic[d];
+  }
+  p.eps_v = (st.opt.coll_sigma > 0.0) ? 0.0 : st.opt.lim_eps_v;
+  p.N     = N;
+  p.Nb    = Nb;
 
   par_for("vlasov_mls", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
-    const int cnt = ncnt(a);
-    const bool is_b = (bnd(a) == 1);
-    if (!act(a) || cnt == 0 || (is_b && cnt < 4)) {
-      for (int al = 0; al < Nb; ++al) {
-        for (int k = 0; k < 3; ++k) gDv(al, k, a) = 0.0;
-        for (int i = 0; i < 3; ++i) for (int k = 0; k < 3; ++k) guv(al, i, k, a) = 0.0;
-        for (int s = 0; s < N_SYM6; ++s) for (int k = 0; k < 3; ++k) gSv(al, s, k, a) = 0.0;
+    const size_t nsz = static_cast<size_t>(p.N);
+    const int nb = p.Nb;
+    const int cnt = p.ncnt[a];
+    const bool is_b = (p.bnd[a] == 1);
+    if (!p.act[a] || cnt == 0 || (is_b && cnt < 4)) {
+      for (int al = 0; al < nb; ++al) {
+        for (int k = 0; k < 3; ++k) p.gD[(static_cast<size_t>(al) * 3 + k) * nsz + a] = 0.0;
+        for (int i = 0; i < 3; ++i) {
+          for (int k = 0; k < 3; ++k) p.gu[((static_cast<size_t>(al) * 3 + i) * 3 + k) * nsz + a] = 0.0;
+        }
+        for (int s = 0; s < N_SYM6; ++s) {
+          for (int k = 0; k < 3; ++k) p.gS[((static_cast<size_t>(al) * N_SYM6 + s) * 3 + k) * nsz + a] = 0.0;
+        }
       }
       return;
     }
 
-    const Real xa[3] = {xv(0, a), xv(1, a), xv(2, a)};
-    const Real ha = hv(a);
+    const Real xa[3] = {p.x[a], p.x[nsz + a], p.x[2 * nsz + a]};
+    const Real ha = p.h[a];
     Real Einv_a[3][3], es6[N_SYM6];
-    for (int s = 0; s < N_SYM6; ++s) es6[s] = Ev(s, a);
+    for (int s = 0; s < N_SYM6; ++s) es6[s] = p.Einv[static_cast<size_t>(s) * nsz + a];
     UnpackSym6(es6, Einv_a);
-    const int pc = pcnt(a);
+    const int pc = (MaxNb > 1) ? p.pcnt[a] : 0;
+    constexpr int kKpCache = 96;
+    int kp_cache[(MaxNb > 1) ? kKpCache : 1];
+    if constexpr (MaxNb > 1) {
+      if (pc > 0) {
+        for (int idx_n = 0; idx_n < cnt && idx_n < kKpCache; ++idx_n) {
+          kp_cache[idx_n] = BinaryFindSortedPtr(
+              p.pids, a, p.N, pc, p.nids[static_cast<size_t>(idx_n) * nsz + a]);
+        }
+      }
+    }
 
-    for (int al = 0; al < Nb; ++al) {
+    for (int al = 0; al < nb; ++al) {
       Real dD_raw[3] = {0.0, 0.0, 0.0};
       Real du_raw[3][3] = {{0.0}};
       Real dS_raw[N_SYM6][3] = {{0.0}};
 
-      const Real Da0 = Dv(al, a);
+      const Real Da0 = p.D[static_cast<size_t>(al) * nsz + a];
       Real ua0[3], Sa0[N_SYM6];
-      for (int i = 0; i < 3; ++i) ua0[i] = uv(al, i, a);
-      for (int s = 0; s < N_SYM6; ++s) Sa0[s] = Sv(al, s, a);
+      for (int i = 0; i < 3; ++i) ua0[i] = p.u[(static_cast<size_t>(al) * 3 + i) * nsz + a];
+      for (int s = 0; s < N_SYM6; ++s) Sa0[s] = p.S[(static_cast<size_t>(al) * N_SYM6 + s) * nsz + a];
 
       Real d_min = Da0, d_max = Da0;
       Real u_min[3] = {ua0[0], ua0[1], ua0[2]};
@@ -1075,17 +1469,21 @@ void ComputeGradients(VlasovState &st, const NrpicOptions &nropt) {
       for (int s = 0; s < N_SYM6; ++s) S_min[s] = S_max[s] = Sa0[s];
 
       for (int idx_n = 0; idx_n < cnt; ++idx_n) {
-        const int b = nids(idx_n, a);
+        const int b = p.nids[static_cast<size_t>(idx_n) * nsz + a];
         int be = al;
-        if (pc > 0) {
-          const int kp = BinaryFindSorted(pids, a, pc, b);
-          if (kp >= 0) be = ppab(kp * Nb + al, a);
-          if (be < 0 || be >= Nb) be = al;
+        if constexpr (MaxNb > 1) {
+          if (pc > 0) {
+            const int kp = (idx_n < kKpCache)
+                           ? kp_cache[idx_n]
+                           : BinaryFindSortedPtr(p.pids, a, p.N, pc, b);
+            if (kp >= 0) be = p.ppab[static_cast<size_t>(kp * nb + al) * nsz + a];
+            if (be < 0 || be >= nb) be = al;
+          }
         }
 
-        const Real xb[3] = {xv(0, b), xv(1, b), xv(2, b)};
+        const Real xb[3] = {p.x[b], p.x[nsz + b], p.x[2 * nsz + b]};
         Real dvec[3];
-        WrapDiff(dlen, per, xa, xb, dvec);
+        WrapDiff(p.dlen, p.per, xa, xb, dvec);
         const Real r = sqrt(dvec[0]*dvec[0] + dvec[1]*dvec[1] + dvec[2]*dvec[2]);
         const Real w = CubicSpline3D(r, ha);
 
@@ -1094,21 +1492,21 @@ void ComputeGradients(VlasovState &st, const NrpicOptions &nropt) {
           for (int j = 0; j < 3; ++j) vec[i] += Einv_a[i][j] * dvec[j] * w;
         }
 
-        const Real Db = Dv(be, b);
+        const Real Db = p.D[static_cast<size_t>(be) * nsz + b];
         if (Db < d_min) d_min = Db;
         if (Db > d_max) d_max = Db;
         const Real dD = Db - Da0;
         for (int k = 0; k < 3; ++k) dD_raw[k] += dD * vec[k];
 
         for (int i = 0; i < 3; ++i) {
-          const Real ubc = uv(be, i, b);
+          const Real ubc = p.u[(static_cast<size_t>(be) * 3 + i) * nsz + b];
           if (ubc < u_min[i]) u_min[i] = ubc;
           if (ubc > u_max[i]) u_max[i] = ubc;
           const Real du = ubc - ua0[i];
           for (int k = 0; k < 3; ++k) du_raw[i][k] += du * vec[k];
         }
         for (int s = 0; s < N_SYM6; ++s) {
-          const Real Sbc = Sv(be, s, b);
+          const Real Sbc = p.S[(static_cast<size_t>(be) * N_SYM6 + s) * nsz + b];
           if (Sbc < S_min[s]) S_min[s] = Sbc;
           if (Sbc > S_max[s]) S_max[s] = Sbc;
           const Real dS = Sbc - Sa0[s];
@@ -1116,146 +1514,184 @@ void ComputeGradients(VlasovState &st, const NrpicOptions &nropt) {
         }
       }
 
-      // 1. Scalar Barth-Jespersen limiter for D
-      Real phi_D = 1.0;
-      const Real d_lo = d_min - Da0, d_hi = d_max - Da0;
-      for (int idx_n = 0; idx_n < cnt; ++idx_n) {
-        const int b = nids(idx_n, a);
-        const Real xb[3] = {xv(0, b), xv(1, b), xv(2, b)};
-        Real dvec[3];
-        WrapDiff(dlen, per, xa, xb, dvec);
-        const Real psi = hv(b) / (ha + hv(b));
-        const Real xf[3] = {psi*dvec[0], psi*dvec[1], psi*dvec[2]};
-        const Real dval = nrpic::vlasov::Dot3(dD_raw, xf);
-        if (dval > 1.0e-300)       phi_D = fmin(phi_D, d_hi / dval);
-        else if (dval < -1.0e-300) phi_D = fmin(phi_D, d_lo / dval);
+      Real dS_norm = 0.0;
+      for (int s = 0; s < N_SYM6; ++s) {
+        for (int k = 0; k < 3; ++k) dS_norm += fabs(dS_raw[s][k]);
       }
-      phi_D = fmax(0.0, fmin(1.0, phi_D));
-      for (int k = 0; k < 3; ++k) gDv(al, k, a) = is_b ? 0.0 : (phi_D * dD_raw[k]);
+      Real S0_mat[3][3] = {{0.0}};
+      if (dS_norm > 0.0) UnpackSym6(Sa0, S0_mat);
 
-      // 2. Componentwise velocity-crossing BJ limiter for u_bar
+      // Fused scalar BJ (D), velocity-crossing BJ (u_bar), componentwise BJ + SPD (Sigma) limiter
+      Real phi_D = 1.0;
+      Real phi_v[3] = {1.0, 1.0, 1.0};
+      Real phi_S = 1.0;
+      const Real d_lo = d_min - Da0, d_hi = d_max - Da0;
       const int diag_idx[3] = {SYM_XX, SYM_YY, SYM_ZZ};
-      for (int ic = 0; ic < 3; ++ic) {
-        Real phi_v = 1.0;
-        const Real sig_a = sqrt(fmax(Sa0[diag_idx[ic]], 0.0));
-        const Real u_lo = u_min[ic] - ua0[ic];
-        const Real u_hi = u_max[ic] - ua0[ic];
-        for (int idx_n = 0; idx_n < cnt; ++idx_n) {
-          const int b = nids(idx_n, a);
-          int be = al;
-          if (pc > 0) {
-            const int kp = BinaryFindSorted(pids, a, pc, b);
-            if (kp >= 0) be = ppab(kp * Nb + al, a);
-            if (be < 0 || be >= Nb) be = al;
-          }
-          const Real xb[3] = {xv(0, b), xv(1, b), xv(2, b)};
-          Real dvec[3];
-          WrapDiff(dlen, per, xa, xb, dvec);
-          const Real sig_b = sqrt(fmax(Sv(be, diag_idx[ic], b), 0.0));
-          const Real sc = fmax(fabs(ua0[ic] - ubv(ic, a)),
-                          fmax(sig_a,
-                          fmax(fabs(uv(be, ic, b) - ubv(ic, b)),
-                          fmax(sig_b, 1.0e-12))));
-          const Real dv_full = fabs(nrpic::vlasov::Dot3(du_raw[ic], dvec));
-          if (eps_v <= 0.0 || dv_full >= eps_v * sc) {
-            const Real psi = hv(b) / (ha + hv(b));
-            const Real xf[3] = {psi*dvec[0], psi*dvec[1], psi*dvec[2]};
-            const Real dval = nrpic::vlasov::Dot3(du_raw[ic], xf);
-            if (dval > 1.0e-300)       phi_v = fmin(phi_v, u_hi / dval);
-            else if (dval < -1.0e-300) phi_v = fmin(phi_v, u_lo / dval);
+      const Real sig_a[3] = {
+        sqrt(fmax(Sa0[SYM_XX], 0.0)),
+        sqrt(fmax(Sa0[SYM_YY], 0.0)),
+        sqrt(fmax(Sa0[SYM_ZZ], 0.0))
+      };
+      const Real u_lo[3] = {u_min[0] - ua0[0], u_min[1] - ua0[1], u_min[2] - ua0[2]};
+      const Real u_hi[3] = {u_max[0] - ua0[0], u_max[1] - ua0[1], u_max[2] - ua0[2]};
+      Real s_lo[N_SYM6], s_hi[N_SYM6];
+      for (int s = 0; s < N_SYM6; ++s) {
+        s_lo[s] = S_min[s] - Sa0[s];
+        s_hi[s] = S_max[s] - Sa0[s];
+      }
+
+      for (int idx_n = 0; idx_n < cnt; ++idx_n) {
+        const int b = p.nids[static_cast<size_t>(idx_n) * nsz + a];
+        int be = al;
+        if constexpr (MaxNb > 1) {
+          if (p.eps_v > 0.0 && pc > 0) {
+            const int kp = (idx_n < kKpCache)
+                           ? kp_cache[idx_n]
+                           : BinaryFindSortedPtr(p.pids, a, p.N, pc, b);
+            if (kp >= 0) be = p.ppab[static_cast<size_t>(kp * nb + al) * nsz + a];
+            if (be < 0 || be >= nb) be = al;
           }
         }
-        phi_v = fmax(0.0, fmin(1.0, phi_v));
-        for (int k = 0; k < 3; ++k) guv(al, ic, k, a) = phi_v * du_raw[ic][k];
+        const Real xb[3] = {p.x[b], p.x[nsz + b], p.x[2 * nsz + b]};
+        Real dvec[3];
+        WrapDiff(p.dlen, p.per, xa, xb, dvec);
+        const Real hb = p.h[b];
+        const Real psi = hb / (ha + hb);
+        const Real xf[3] = {psi*dvec[0], psi*dvec[1], psi*dvec[2]};
+
+        if (!is_b) {
+          const Real dval = nrpic::vlasov::Dot3(dD_raw, xf);
+          if (dval > 1.0e-300)       phi_D = fmin(phi_D, d_hi / dval);
+          else if (dval < -1.0e-300) phi_D = fmin(phi_D, d_lo / dval);
+        }
+
+        for (int ic = 0; ic < 3; ++ic) {
+          bool do_lim = (p.eps_v <= 0.0);
+          if (!do_lim) {
+            const Real sig_b = sqrt(fmax(p.S[(static_cast<size_t>(be) * N_SYM6 + diag_idx[ic]) * nsz + b], 0.0));
+            const Real sc = fmax(fabs(ua0[ic] - p.ub[static_cast<size_t>(ic) * nsz + a]),
+                            fmax(sig_a[ic],
+                            fmax(fabs(p.u[(static_cast<size_t>(be) * 3 + ic) * nsz + b] - p.ub[static_cast<size_t>(ic) * nsz + b]),
+                            fmax(sig_b, 1.0e-12))));
+            const Real dv_full = fabs(nrpic::vlasov::Dot3(du_raw[ic], dvec));
+            do_lim = (dv_full >= p.eps_v * sc);
+          }
+          if (do_lim) {
+            const Real dval = nrpic::vlasov::Dot3(du_raw[ic], xf);
+            if (dval > 1.0e-300)       phi_v[ic] = fmin(phi_v[ic], u_hi[ic] / dval);
+            else if (dval < -1.0e-300) phi_v[ic] = fmin(phi_v[ic], u_lo[ic] / dval);
+          }
+        }
+
+        for (int s = 0; s < N_SYM6; ++s) {
+          const Real dval = nrpic::vlasov::Dot3(dS_raw[s], xf);
+          if (dval > 1.0e-300)       phi_S = fmin(phi_S, s_hi[s] / dval);
+          else if (dval < -1.0e-300) phi_S = fmin(phi_S, s_lo[s] / dval);
+        }
+        if (phi_S < 0.0) phi_S = 0.0;
+
+        if (phi_S > 0.0 && dS_norm > 0.0) {
+          Real dS_xf6[N_SYM6];
+          for (int s = 0; s < N_SYM6; ++s) {
+            dS_xf6[s] = dS_raw[s][0]*xf[0] + dS_raw[s][1]*xf[1] + dS_raw[s][2]*xf[2];
+          }
+          Real dS_mat[3][3];
+          UnpackSym6(dS_xf6, dS_mat);
+          Real cand[3][3];
+          for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) cand[i][j] = S0_mat[i][j] + phi_S * dS_mat[i][j];
+          }
+          if (!nrpic::vlasov::IsSpd3Fast(cand, 0.0)) {
+            if (SymMinEig3(S0_mat, dS_mat, phi_S) < 0.0) {
+              Real lo = 0.0, hi = phi_S;
+              for (int it = 0; it < 16; ++it) {
+                const Real mid = 0.5 * (lo + hi);
+                if (SymMinEig3(S0_mat, dS_mat, mid) >= 0.0) lo = mid;
+                else hi = mid;
+              }
+              phi_S = lo;
+            }
+          }
+        }
       }
 
-      // 3. Covariance componentwise BJ + SPD eigenvalue bisection limiter
-      Real phi_S = 1.0;
-      for (int s = 0; s < N_SYM6; ++s) {
-        const Real s_lo = S_min[s] - Sa0[s], s_hi = S_max[s] - Sa0[s];
-        for (int idx_n = 0; idx_n < cnt; ++idx_n) {
-          const int b = nids(idx_n, a);
-          const Real xb[3] = {xv(0, b), xv(1, b), xv(2, b)};
-          Real dvec[3];
-          WrapDiff(dlen, per, xa, xb, dvec);
-          const Real psi = hv(b) / (ha + hv(b));
-          const Real xf[3] = {psi*dvec[0], psi*dvec[1], psi*dvec[2]};
-          const Real dval = nrpic::vlasov::Dot3(dS_raw[s], xf);
-          if (dval > 1.0e-300)       phi_S = fmin(phi_S, s_hi / dval);
-          else if (dval < -1.0e-300) phi_S = fmin(phi_S, s_lo / dval);
+      phi_D = fmax(0.0, fmin(1.0, phi_D));
+      for (int k = 0; k < 3; ++k) {
+        p.gD[(static_cast<size_t>(al) * 3 + k) * nsz + a] = is_b ? 0.0 : (phi_D * dD_raw[k]);
+      }
+      for (int ic = 0; ic < 3; ++ic) {
+        phi_v[ic] = fmax(0.0, fmin(1.0, phi_v[ic]));
+        for (int k = 0; k < 3; ++k) {
+          p.gu[((static_cast<size_t>(al) * 3 + ic) * 3 + k) * nsz + a] = phi_v[ic] * du_raw[ic][k];
         }
       }
       phi_S = fmax(0.0, fmin(1.0, phi_S));
-
-      Real S0_mat[3][3];
-      UnpackSym6(Sa0, S0_mat);
-      for (int idx_n = 0; idx_n < cnt; ++idx_n) {
-        const int b = nids(idx_n, a);
-        const Real xb[3] = {xv(0, b), xv(1, b), xv(2, b)};
-        Real dvec[3];
-        WrapDiff(dlen, per, xa, xb, dvec);
-        const Real psi = hv(b) / (ha + hv(b));
-        const Real xf[3] = {psi*dvec[0], psi*dvec[1], psi*dvec[2]};
-
-        Real dS_xf6[N_SYM6];
-        for (int s = 0; s < N_SYM6; ++s) {
-          dS_xf6[s] = dS_raw[s][0]*xf[0] + dS_raw[s][1]*xf[1] + dS_raw[s][2]*xf[2];
-        }
-        Real dS_mat[3][3];
-        UnpackSym6(dS_xf6, dS_mat);
-
-        if (SymMinEig3(S0_mat, dS_mat, phi_S) < 0.0) {
-          Real lo = 0.0, hi = phi_S;
-          for (int it = 0; it < 16; ++it) {
-            const Real mid = 0.5 * (lo + hi);
-            if (SymMinEig3(S0_mat, dS_mat, mid) >= 0.0) lo = mid;
-            else hi = mid;
-          }
-          phi_S = lo;
-        }
-      }
       for (int s = 0; s < N_SYM6; ++s) {
-        for (int k = 0; k < 3; ++k) gSv(al, s, k, a) = phi_S * dS_raw[s][k];
+        for (int k = 0; k < 3; ++k) {
+          p.gS[((static_cast<size_t>(al) * N_SYM6 + s) * 3 + k) * nsz + a] = phi_S * dS_raw[s][k];
+        }
       }
     }
   });
 }
 
-template <class SizeViewT>
-void ComputeCellVelocities(VlasovState &st, const VlasovMetric<SizeViewT> &met,
-                           int slot_mode) {
+void ComputeGradients(VlasovState &st, const NrpicOptions &nropt) {
+  if (st.n_basis <= 1) ComputeGradientsImpl<1>(st, nropt);
+  else                 ComputeGradientsImpl<nrpic::vlasov::MAX_BASIS>(st, nropt);
+}
+
+inline int ResolveMetricKind(const VlasovState &st, const NrpicOptions &nropt) {
+  if (st.opt.metric_is_minkowski) return 0;
+  if (nropt.metric == NrpicMetric::kerr_schild) return 1;
+  return 2;
+}
+
+template <int MetricKind, class LightOrFullMetT>
+void ComputeCellVelocitiesImpl(VlasovState &st, const LightOrFullMetT &met, int slot_mode) {
   const int N = st.n_elem;
   const int Nb = st.n_basis;
   if (N == 0) return;
-  auto act  = st.active;
-  auto xv   = st.x;
-  auto gids = st.blk_gid;
-  auto mv   = st.m;
-  auto uv   = st.u_bar;
-  auto Sv   = st.Sigma;
-  auto vc   = st.v_cell;
-  const int n_q = st.opt.n_q_dep;
+  const int *act = ContigPtr(st.active);
+  const int *gid = ContigPtr(st.blk_gid);
+  const Real *xv = ContigPtr(st.x);
+  const Real *mv = ContigPtr(st.m);
+  const Real *uv = ContigPtr(st.u_bar);
+  const Real *Sv = ContigPtr(st.Sigma);
+  Real *vc       = ContigPtr(st.v_cell);
+  const int n_q  = st.opt.n_q_dep;
 
   par_for("vlasov_vcell", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
-    if (!act(a)) {
-      vc(0, a) = vc(1, a) = vc(2, a) = 0.0;
+    (void)met; (void)gid; (void)slot_mode;
+    const size_t nsz = static_cast<size_t>(N);
+    if (!act[a]) {
+      vc[a] = vc[nsz + a] = vc[2 * nsz + a] = 0.0;
       return;
     }
-    const Real pos[3] = {xv(0, a), xv(1, a), xv(2, a)};
-    nrpic::AdmPoint adm;
-    met(slot_mode, pos, gids(a), adm);
-    Real gi[3][3];
-    nrpic::Inv3Sym(adm.g, gi);
+    const Real pos[3] = {xv[a], xv[nsz + a], xv[2 * nsz + a]};
+    Real alp = 1.0;
+    Real beta[3] = {0.0, 0.0, 0.0};
+    Real gi[3][3] = {{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
+    if constexpr (MetricKind == 1) {
+      Real g[3][3];
+      met.EvalNoDeriv(pos, alp, beta, g);
+      nrpic::Inv3Sym(g, gi);
+    } else if constexpr (MetricKind == 2) {
+      nrpic::AdmPoint adm;
+      met(slot_mode, pos, gid[a], adm);
+      alp = adm.alp;
+      for (int i = 0; i < 3; ++i) beta[i] = adm.beta[i];
+      nrpic::Inv3Sym(adm.g, gi);
+    }
 
     Real tot_m = 0.0;
     Real vsum[3] = {0.0, 0.0, 0.0};
     for (int al = 0; al < Nb; ++al) {
-      const Real ma = mv(al, a);
+      const Real ma = mv[static_cast<size_t>(al) * nsz + a];
       tot_m += ma;
       if (ma <= 0.0) continue;
       Real ua[3], s6[N_SYM6], Sa[3][3];
-      for (int i = 0; i < 3; ++i) ua[i] = uv(al, i, a);
-      for (int s = 0; s < N_SYM6; ++s) s6[s] = Sv(al, s, a);
+      for (int i = 0; i < 3; ++i) ua[i] = uv[(static_cast<size_t>(al) * 3 + i) * nsz + a];
+      for (int s = 0; s < N_SYM6; ++s) s6[s] = Sv[(static_cast<size_t>(al) * N_SYM6 + s) * nsz + a];
       UnpackSym6(s6, Sa);
 
       Real pts[27][3], w[27];
@@ -1268,100 +1704,226 @@ void ComputeCellVelocities(VlasovState &st, const VlasovMetric<SizeViewT> &met,
         }
         const Real W = sqrt(1.0 + nrpic::vlasov::Dot3(pts[q], uup));
         for (int i = 0; i < 3; ++i) {
-          vsum[i] += ma * w[q] * (adm.alp * uup[i] / W - adm.beta[i]);
+          vsum[i] += ma * w[q] * (alp * uup[i] / W - beta[i]);
         }
       }
     }
     const Real tm_s = fmax(tot_m, 1.0e-300);
-    for (int i = 0; i < 3; ++i) vc(i, a) = vsum[i] / tm_s;
+    for (int i = 0; i < 3; ++i) vc[static_cast<size_t>(i) * nsz + a] = vsum[i] / tm_s;
   });
 }
 
 template <class SizeViewT>
-void ComputeEdgeFluxes(VlasovState &st, const NrpicOptions &nropt,
-                       const VlasovMetric<SizeViewT> &met, int slot_mode) {
+void ComputeCellVelocities(VlasovState &st, const NrpicOptions &nropt,
+                           const VlasovMetric<SizeViewT> &met, int slot_mode) {
+  const int mk = ResolveMetricKind(st, nropt);
+  if (mk == 0)      ComputeCellVelocitiesImpl<0>(st, KerrSchildLight{0.0, 0.0}, slot_mode);
+  else if (mk == 1) ComputeCellVelocitiesImpl<1>(st, KerrSchildLight{met.mass, met.spin}, slot_mode);
+  else              ComputeCellVelocitiesImpl<2>(st, met, slot_mode);
+}
+
+template <int MaxNb, int MetricKind, class LightOrFullMetT>
+void PrecomputeCellNohFluidImpl(VlasovState &st, const LightOrFullMetT &met, int slot_mode) {
+  const int N = st.n_elem;
   const int Nb = st.n_basis;
-  Kokkos::deep_copy(st.dm,  0.0);
-  Kokkos::deep_copy(st.dP,  0.0);
-  Kokkos::deep_copy(st.dPi, 0.0);
-  Kokkos::deep_copy(st.dE,  0.0);
-  if (st.n_edges == 0) return;
+  if (N == 0) return;
+  if (static_cast<int>(st.cell_noh.extent(1)) < N) {
+    Kokkos::realloc(st.cell_noh, 8, N);
+  }
+  const int *act = ContigPtr(st.active);
+  const int *gid = ContigPtr(st.blk_gid);
+  const Real *xv = ContigPtr(st.x);
+  const Real *Dv = ContigPtr(st.D);
+  const Real *uv = ContigPtr(st.u_bar);
+  const Real *Sv = ContigPtr(st.Sigma);
+  Real *cn       = ContigPtr(st.cell_noh);
 
-  const Real dmin[3] = {nropt.dom_min[0], nropt.dom_min[1], nropt.dom_min[2]};
-  const Real dlen[3] = {nropt.dom_len[0], nropt.dom_len[1], nropt.dom_len[2]};
-  const bool per[3]  = {nropt.periodic[0], nropt.periodic[1], nropt.periodic[2]};
+  par_for("vlasov_cell_noh", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
+    (void)met; (void)xv; (void)gid; (void)slot_mode;
+    const size_t nsz = static_cast<size_t>(N);
+    if (!act[a]) {
+      cn[a] = -1.0;
+      return;
+    }
+    Real L_g[3][3]  = {{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
+    Real Li_g[3][3] = {{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
+    if constexpr (MetricKind == 1) {
+      const Real pos[3] = {xv[a], xv[nsz + a], xv[2 * nsz + a]};
+      Real alp_tmp, b_tmp[3], g[3][3];
+      met.EvalNoDeriv(pos, alp_tmp, b_tmp, g);
+      nrpic::Chol3(g, L_g, Li_g);
+    } else if constexpr (MetricKind == 2) {
+      const Real pos[3] = {xv[a], xv[nsz + a], xv[2 * nsz + a]};
+      nrpic::AdmPoint adm;
+      met(slot_mode, pos, gid[a], adm);
+      nrpic::Chol3(adm.g, L_g, Li_g);
+    }
 
-  const int basis_kind  = st.opt.basis_kind;
-  const int n_perp      = st.opt.n_perp;
-  const int pair_mode   = st.opt.pair_mode;
-  const bool analytic_v = st.opt.use_analytic_vf;
-  const Real coll_sigma = st.opt.coll_sigma;
-  const Real noh_kappa  = st.opt.noh_kappa;
+    Real D_arr[MaxNb], u_tet[MaxNb][3], S_tet[MaxNb][3][3];
+    for (int al = 0; al < Nb; ++al) {
+      const Real Da = Dv[static_cast<size_t>(al) * nsz + a];
+      D_arr[al] = Da;
+      Real uc[3], s6[N_SYM6], Sc[3][3];
+      for (int i = 0; i < 3; ++i) {
+        uc[i] = uv[(static_cast<size_t>(al) * 3 + i) * nsz + a];
+      }
+      for (int s = 0; s < N_SYM6; ++s) s6[s] = Sv[(static_cast<size_t>(al) * N_SYM6 + s) * nsz + a];
+      UnpackSym6(s6, Sc);
+      if constexpr (MetricKind == 0) {
+        for (int i = 0; i < 3; ++i) {
+          u_tet[al][i] = uc[i];
+          for (int j = 0; j < 3; ++j) S_tet[al][i][j] = Sc[i][j];
+        }
+      } else {
+        for (int m = 0; m < 3; ++m) {
+          Real us = 0.0;
+          for (int i = 0; i < 3; ++i) us += Li_g[m][i] * uc[i];
+          u_tet[al][m] = us;
+          for (int n = 0; n < 3; ++n) {
+            Real ss = 0.0;
+            for (int i = 0; i < 3; ++i) {
+              for (int j = 0; j < 3; ++j) ss += Li_g[m][i] * Sc[i][j] * Li_g[n][j];
+            }
+            S_tet[al][m][n] = ss;
+          }
+        }
+      }
+    }
+    const nrpic::vlasov::HllcFluidState st_c =
+        nrpic::vlasov::BuildHllcCellFluid(Nb, D_arr, u_tet, S_tet);
+    if (!st_c.valid) {
+      cn[a] = -1.0;
+      return;
+    }
+    cn[0 * nsz + a] = st_c.D;
+    cn[1 * nsz + a] = st_c.rho0;
+    cn[2 * nsz + a] = st_c.p;
+    cn[3 * nsz + a] = st_c.cs2;
+    cn[4 * nsz + a] = st_c.w_m;
+    if constexpr (MetricKind == 0) {
+      cn[5 * nsz + a] = st_c.v[0];
+      cn[6 * nsz + a] = st_c.v[1];
+      cn[7 * nsz + a] = st_c.v[2];
+    } else {
+      for (int i = 0; i < 3; ++i) {
+        cn[(5 + i) * nsz + a] = L_g[i][0] * st_c.v[0]
+                              + L_g[i][1] * st_c.v[1]
+                              + L_g[i][2] * st_c.v[2];
+      }
+    }
+  });
+}
 
-  auto ea_v  = st.edge_a;
-  auto eb_v  = st.edge_b;
-  auto act   = st.active;
-  auto xv    = st.x;
-  auto hv    = st.h;
-  auto Vv    = st.V;
-  auto Ev    = st.Einv;
-  auto gids  = st.blk_gid;
-  auto mv    = st.m;
-  auto Dv    = st.D;
-  auto uv    = st.u_bar;
-  auto Sv    = st.Sigma;
-  auto gDv   = st.grad_D;
-  auto guv   = st.grad_u;
-  auto gSv   = st.grad_S;
-  auto ncnt  = st.ngb_cnt;
-  auto nids  = st.ngb_ids;
-  auto npab  = st.new_pab;
-  auto dm_v  = st.dm;
-  auto dP_v  = st.dP;
-  auto dPi_v = st.dPi;
-  auto dE_v  = st.dE;
-
+template <bool Collisional, int MaxNb, int MetricKind, class LightOrFullMetT>
+void ComputeEdgeFluxesImpl(VlasovState &st, const NrpicOptions &nropt,
+                           const LightOrFullMetT &met, int slot_mode) {
+  const int Nb = st.n_basis;
+  const int N_e = st.n_elem;
   {
-    const int N_e = st.n_elem;
-    par_for("vlasov_init_pab", DevExeSpace(), 0, N_e - 1, KOKKOS_LAMBDA(const int a) {
-      const int cnt = ncnt(a);
-      for (int k = 0; k < cnt; ++k) {
-        for (int al = 0; al < Nb; ++al) npab(k * Nb + al, a) = al;
+    Real *dm_v  = ContigPtr(st.dm);
+    Real *dP_v  = ContigPtr(st.dP);
+    Real *dPi_v = ContigPtr(st.dPi);
+    Real *dE_v  = ContigPtr(st.dE);
+    const int *ncnt = (MaxNb > 1) ? ContigPtr(st.ngb_cnt) : nullptr;
+    int *npab       = (MaxNb > 1) ? ContigPtr(st.new_pab) : nullptr;
+    par_for("vlasov_zero_pab", DevExeSpace(), 0, N_e - 1, KOKKOS_LAMBDA(const int a) {
+      (void)ncnt; (void)npab;
+      const size_t nsz = static_cast<size_t>(N_e);
+      dE_v[a] = 0.0;
+      for (int al = 0; al < Nb; ++al) {
+        dm_v[static_cast<size_t>(al) * nsz + a] = 0.0;
+        for (int i = 0; i < 3; ++i) dP_v[(static_cast<size_t>(al) * 3 + i) * nsz + a] = 0.0;
+        for (int s = 0; s < N_SYM6; ++s) dPi_v[(static_cast<size_t>(al) * N_SYM6 + s) * nsz + a] = 0.0;
+      }
+      if constexpr (MaxNb > 1) {
+        const int cnt = ncnt[a];
+        for (int k = 0; k < cnt; ++k) {
+          for (int al = 0; al < Nb; ++al) npab[static_cast<size_t>(k * Nb + al) * nsz + a] = al;
+        }
       }
     });
   }
+  if (st.n_edges == 0) return;
+
+  if (Collisional && st.opt.noh_kappa > 0.0) {
+    PrecomputeCellNohFluidImpl<MaxNb, MetricKind>(st, met, slot_mode);
+  }
+
+  VlasovDomain dom;
+  for (int d = 0; d < 3; ++d) {
+    dom.dmin[d] = nropt.dom_min[d];
+    dom.dlen[d] = nropt.dom_len[d];
+    dom.per[d]  = nropt.periodic[d];
+  }
+
+  VlasovFluxPtrs p;
+  p.ea         = ContigPtr(st.edge_a);
+  p.eb         = ContigPtr(st.edge_b);
+  p.act        = ContigPtr(st.active);
+  p.gid        = (MetricKind == 2) ? ContigPtr(st.blk_gid) : nullptr;
+  p.ncnt       = (MaxNb > 1) ? ContigPtr(st.ngb_cnt) : nullptr;
+  p.nids       = (MaxNb > 1) ? ContigPtr(st.ngb_ids) : nullptr;
+  p.npab       = (MaxNb > 1) ? ContigPtr(st.new_pab) : nullptr;
+  p.x          = ContigPtr(st.x);
+  p.h          = ContigPtr(st.h);
+  p.V          = ContigPtr(st.V);
+  p.Einv       = ContigPtr(st.Einv);
+  p.m          = Collisional ? ContigPtr(st.m) : nullptr;
+  p.D          = ContigPtr(st.D);
+  p.u          = ContigPtr(st.u_bar);
+  p.S          = ContigPtr(st.Sigma);
+  p.gD         = ContigPtr(st.grad_D);
+  p.gu         = ContigPtr(st.grad_u);
+  p.gS         = ContigPtr(st.grad_S);
+  p.cnv        = (Collisional && st.opt.noh_kappa > 0.0) ? ContigPtr(st.cell_noh) : nullptr;
+  p.dm         = ContigPtr(st.dm);
+  p.dP         = ContigPtr(st.dP);
+  p.dPi        = ContigPtr(st.dPi);
+  p.dE         = ContigPtr(st.dE);
+  p.coll_sigma = st.opt.coll_sigma;
+  p.noh_kappa  = st.opt.noh_kappa;
+  p.N          = N_e;
+  p.Nb         = Nb;
+  p.basis_kind = st.opt.basis_kind;
+  p.n_perp     = st.opt.n_perp;
+  p.pair_mode  = st.opt.pair_mode;
+  p.analytic_v = st.opt.use_analytic_vf;
 
   par_for("vlasov_flux", DevExeSpace(), 0, st.n_edges - 1, KOKKOS_LAMBDA(const int e) {
-    const int a = ea_v(e);
-    const int b = eb_v(e);
-    if (!act(a) || !act(b)) return;
+    (void)met; (void)dom; (void)slot_mode;
+    const size_t nsz = static_cast<size_t>(p.N);
+    const int nb = p.Nb;
+    const int a = p.ea[e];
+    const int b = p.eb[e];
+    if (!p.act[a] || !p.act[b]) return;
 
-    const Real xa[3] = {xv(0, a), xv(1, a), xv(2, a)};
-    const Real xb[3] = {xv(0, b), xv(1, b), xv(2, b)};
+    const Real xa[3] = {p.x[a], p.x[nsz + a], p.x[2 * nsz + a]};
+    const Real xb[3] = {p.x[b], p.x[nsz + b], p.x[2 * nsz + b]};
     Real dx_ba[3];
-    WrapDiff(dlen, per, xa, xb, dx_ba);
+    WrapDiff(dom.dlen, dom.per, xa, xb, dx_ba);
     const Real r_ab = sqrt(dx_ba[0]*dx_ba[0] + dx_ba[1]*dx_ba[1] + dx_ba[2]*dx_ba[2]);
-    const Real ha = hv(a), hb = hv(b);
+    const Real ha = p.h[a], hb = p.h[b];
     if (r_ab >= 2.0 * fmax(ha, hb)) return;
 
     const Real Wa = CubicSpline3D(r_ab, ha);
     const Real Wb = CubicSpline3D(r_ab, hb);
     Real Eia[3][3], Eib[3][3], s6a[N_SYM6], s6b[N_SYM6];
     for (int s = 0; s < N_SYM6; ++s) {
-      s6a[s] = Ev(s, a);
-      s6b[s] = Ev(s, b);
+      s6a[s] = p.Einv[static_cast<size_t>(s) * nsz + a];
+      s6b[s] = p.Einv[static_cast<size_t>(s) * nsz + b];
     }
     UnpackSym6(s6a, Eia);
     UnpackSym6(s6b, Eib);
 
     Real A_cov[3] = {0.0, 0.0, 0.0};
+    const Real Va = p.V[a], Vb = p.V[b];
     for (int i = 0; i < 3; ++i) {
       Real va = 0.0, vb = 0.0;
       for (int j = 0; j < 3; ++j) {
         va += Eia[i][j] * dx_ba[j];
         vb += Eib[i][j] * dx_ba[j];
       }
-      A_cov[i] = Vv(a) * va * Wa + Vv(b) * vb * Wb;
+      A_cov[i] = Va * va * Wa + Vb * vb * Wb;
     }
 
     const Real psi = hb / (ha + hb);
@@ -1369,40 +1931,54 @@ void ComputeEdgeFluxes(VlasovState &st, const NrpicOptions &nropt,
     const Real xf_b[3] = {(psi - 1.0) * dx_ba[0], (psi - 1.0) * dx_ba[1], (psi - 1.0) * dx_ba[2]};
 
     Real x_f[3] = {xa[0] + xf_a[0], xa[1] + xf_a[1], xa[2] + xf_a[2]};
-    WrapPos(dmin, dlen, per, x_f);
+    WrapPos(dom.dmin, dom.dlen, dom.per, x_f);
 
-    nrpic::AdmPoint adm_f;
-    met(slot_mode, x_f, gids(a), adm_f);
+    Real alp_f = 1.0;
+    Real g_f[3][3] = {{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
+    if constexpr (MetricKind == 1) {
+      Real b_tmp[3];
+      met.EvalNoDeriv(x_f, alp_f, b_tmp, g_f);
+    } else if constexpr (MetricKind == 2) {
+      nrpic::AdmPoint adm_f;
+      met(slot_mode, x_f, p.gid[a], adm_f);
+      alp_f = adm_f.alp;
+      for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j) g_f[i][j] = adm_f.g[i][j];
+    }
+
     Real normA = 0.0, e_up[3][3], e_dn[3][3];
-    if (!nrpic::vlasov::FaceTriad(adm_f.g, A_cov, normA, e_up, e_dn) || normA <= 1.0e-30) {
+    if (!nrpic::vlasov::FaceTriad(g_f, A_cov, normA, e_up, e_dn) || normA <= 1.0e-30) {
       return;
     }
 
-    Real Da[nrpic::vlasov::MAX_BASIS], Db[nrpic::vlasov::MAX_BASIS];
-    Real ua_t[nrpic::vlasov::MAX_BASIS][3], ub_t[nrpic::vlasov::MAX_BASIS][3];
-    Real Sa_t[nrpic::vlasov::MAX_BASIS][3][3], Sb_t[nrpic::vlasov::MAX_BASIS][3][3];
+    Real Da[MaxNb], Db[MaxNb];
+    Real ua_t[MaxNb][3], ub_t[MaxNb][3];
+    Real Sa_t[MaxNb][3][3], Sb_t[MaxNb][3][3];
 
-    ReconstructFaceSide(a, Nb, xf_a, e_up, Dv, uv, Sv, gDv, guv, gSv, Da, ua_t, Sa_t);
-    ReconstructFaceSide(b, Nb, xf_b, e_up, Dv, uv, Sv, gDv, guv, gSv, Db, ub_t, Sb_t);
+    ReconstructFaceSidePtr<MaxNb>(a, nb, p.N, xf_a, e_up, p.D, p.u, p.S, p.gD, p.gu, p.gS, Da, ua_t, Sa_t);
+    ReconstructFaceSidePtr<MaxNb>(b, nb, p.N, xf_b, e_up, p.D, p.u, p.S, p.gD, p.gu, p.gS, Db, ub_t, Sb_t);
 
-    // Collisionality blend weight w_c = exp(-dx_prop / lambda_mfp)
     Real wc = 1.0;
-    if (coll_sigma > 0.0) {
+    if constexpr (Collisional) {
       Real D_sum = 0.0;
-      for (int al = 0; al < Nb; ++al) D_sum += Da[al] + Db[al];
+      for (int al = 0; al < nb; ++al) D_sum += Da[al] + Db[al];
       const Real D_mean = 0.5 * D_sum;
-      const Real detg = adm::SpatialDet(adm_f.g[0][0], adm_f.g[0][1], adm_f.g[0][2],
-                                        adm_f.g[1][1], adm_f.g[1][2], adm_f.g[2][2]);
+      Real detg = 1.0;
+      Real dx_prop2 = dx_ba[0]*dx_ba[0] + dx_ba[1]*dx_ba[1] + dx_ba[2]*dx_ba[2];
+      if constexpr (MetricKind != 0) {
+        detg = adm::SpatialDet(g_f[0][0], g_f[0][1], g_f[0][2],
+                               g_f[1][1], g_f[1][2], g_f[2][2]);
+        dx_prop2 = nrpic::vlasov::MatVecDot3(dx_ba, g_f, dx_ba);
+      }
       const Real sqrt_g = sqrt(fmax(detg, 1.0e-30));
-      const Real dx_prop = sqrt(fmax(nrpic::vlasov::MatVecDot3(dx_ba, adm_f.g, dx_ba), 0.0));
-      wc = exp(-dx_prop * (D_mean / sqrt_g) * coll_sigma);
+      const Real dx_prop = sqrt(fmax(dx_prop2, 0.0));
+      wc = exp(-dx_prop * (D_mean / sqrt_g) * p.coll_sigma);
     }
 
     Real beta_F = 0.0;
-    if (analytic_v) {
+    if (p.analytic_v) {
       const Real g_eye[3][3] = {{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
       Real Ea_tot = 0.0, Pa0 = 0.0;
-      for (int al = 0; al < Nb; ++al) {
+      for (int al = 0; al < nb; ++al) {
         Real e1, p1[3], s1[3][3];
         nrpic::vlasov::BasisStressEnergy(Da[al], ua_t[al], Sa_t[al], g_eye, 3, e1, p1, s1);
         Ea_tot += e1; Pa0 += p1[0];
@@ -1411,123 +1987,131 @@ void ComputeEdgeFluxes(VlasovState &st, const NrpicOptions &nropt,
       }
       beta_F = Pa0 / fmax(Ea_tot, 1.0e-300);
     } else if (wc > 1.0e-6) {
-      beta_F = nrpic::vlasov::SolveFaceBetaF(Nb, Da, ua_t, Sa_t, Nb, Db, ub_t, Sb_t,
-                                             basis_kind, n_perp);
+      beta_F = nrpic::vlasov::SolveFaceBetaFT<MaxNb>(nb, Da, ua_t, Sa_t, nb, Db, ub_t, Sb_t,
+                                                     p.basis_kind, p.n_perp);
     }
 
-    int p_ab[nrpic::vlasov::MAX_BASIS], p_ba[nrpic::vlasov::MAX_BASIS];
-    for (int al = 0; al < Nb; ++al) { p_ab[al] = al; p_ba[al] = al; }
-    if (wc > 1.0e-6) {
-      Real C_ab[nrpic::vlasov::MAX_BASIS][nrpic::vlasov::MAX_BASIS];
-      Real C_ba[nrpic::vlasov::MAX_BASIS][nrpic::vlasov::MAX_BASIS];
-      if (pair_mode == VLASOV_PAIR_EB) {
-        nrpic::vlasov::PairingCostMatrix(Nb, Da, ua_t, Sa_t, Nb, Db, ub_t, Sb_t, beta_F, C_ab);
-        nrpic::vlasov::PairingCostMatrix(Nb, Db, ub_t, Sb_t, Nb, Da, ua_t, Sa_t, beta_F, C_ba);
-      } else {
-        for (int al = 0; al < Nb; ++al) {
-          for (int be = 0; be < Nb; ++be) {
-            Real d2 = 0.0;
-            for (int i = 0; i < 3; ++i) {
-              const Real du = ua_t[al][i] - ub_t[be][i];
-              d2 += du * du;
+    int p_ab[MaxNb], p_ba[MaxNb];
+    for (int al = 0; al < nb; ++al) { p_ab[al] = al; p_ba[al] = al; }
+    if constexpr (MaxNb > 1) {
+      if (wc > 1.0e-6) {
+        Real C_ab[MaxNb][MaxNb];
+        Real C_ba[MaxNb][MaxNb];
+        if (p.pair_mode == VLASOV_PAIR_EB) {
+          nrpic::vlasov::PairingCostMatrixT<MaxNb>(nb, Da, ua_t, Sa_t, nb, Db, ub_t, Sb_t, beta_F, C_ab);
+          nrpic::vlasov::PairingCostMatrixT<MaxNb>(nb, Db, ub_t, Sb_t, nb, Da, ua_t, Sa_t, beta_F, C_ba);
+        } else {
+          for (int al = 0; al < nb; ++al) {
+            for (int be = 0; be < nb; ++be) {
+              Real d2 = 0.0;
+              for (int i = 0; i < 3; ++i) {
+                const Real du = ua_t[al][i] - ub_t[be][i];
+                d2 += du * du;
+              }
+              C_ab[al][be] = d2;
+              C_ba[be][al] = d2;
             }
-            C_ab[al][be] = d2;
-            C_ba[be][al] = d2;
           }
         }
-      }
-      for (int al = 0; al < Nb; ++al) {
-        int best = 0;
-        for (int be = 1; be < Nb; ++be) if (C_ab[al][be] < C_ab[al][best]) best = be;
-        p_ab[al] = best;
-      }
-      for (int be = 0; be < Nb; ++be) {
-        int best = 0;
-        for (int al = 1; al < Nb; ++al) if (C_ba[be][al] < C_ba[be][best]) best = al;
-        p_ba[be] = best;
-      }
-    }
-
-    const int kab = BinaryFindSorted(nids, a, ncnt(a), b);
-    const int kba = BinaryFindSorted(nids, b, ncnt(b), a);
-    if (kab >= 0) {
-      for (int al = 0; al < Nb; ++al) npab(kab * Nb + al, a) = p_ab[al];
-    }
-    if (kba >= 0) {
-      for (int be = 0; be < Nb; ++be) npab(kba * Nb + be, b) = p_ba[be];
-    }
-
-    const Real fac = adm_f.alp * normA;
-
-    // Collisional HLLC blend component (1 - wc)
-    if (wc < 1.0 - 1.0e-14) {
-      Real FD_c = 0.0, FP_c[3] = {0.0, 0.0, 0.0}, FPi_c[3][3], FE_c = 0.0;
-      nrpic::vlasov::RelHllcFluxTetrad(Nb, Da, ua_t, Sa_t, Nb, Db, ub_t, Sb_t,
-                                       beta_F, true, FD_c, FP_c, FPi_c, FE_c);
-      Real FE_cond = 0.0;
-      if (noh_kappa > 0.0) {
-        const Real xf_zero[3] = {0.0, 0.0, 0.0};
-        Real Da_c[nrpic::vlasov::MAX_BASIS], Db_c[nrpic::vlasov::MAX_BASIS];
-        Real ua_ct[nrpic::vlasov::MAX_BASIS][3], ub_ct[nrpic::vlasov::MAX_BASIS][3];
-        Real Sa_ct[nrpic::vlasov::MAX_BASIS][3][3], Sb_ct[nrpic::vlasov::MAX_BASIS][3][3];
-        ReconstructFaceSide(a, Nb, xf_zero, e_up, Dv, uv, Sv, gDv, guv, gSv, Da_c, ua_ct, Sa_ct);
-        ReconstructFaceSide(b, Nb, xf_zero, e_up, Dv, uv, Sv, gDv, guv, gSv, Db_c, ub_ct, Sb_ct);
-        const nrpic::vlasov::HllcFluidState Lc =
-            nrpic::vlasov::BuildHllcCellFluid(Nb, Da_c, ua_ct, Sa_ct);
-        const nrpic::vlasov::HllcFluidState Rc =
-            nrpic::vlasov::BuildHllcCellFluid(Nb, Db_c, ub_ct, Sb_ct);
-        FE_cond = nrpic::vlasov::NohThermalConductFlux(Lc, Rc, noh_kappa);
-      }
-      const Real omw_fac = (1.0 - wc) * fac;
-      const Real fm_tot  = omw_fac * FD_c;
-      const Real fe_tot  = omw_fac * (FE_c + FE_cond);
-      Real fp[3] = {0.0, 0.0, 0.0}, fpi[3][3];
-      for (int i = 0; i < 3; ++i) {
-        for (int m = 0; m < 3; ++m) fp[i] += e_dn[m][i] * FP_c[m];
-        fp[i] *= omw_fac;
-        for (int j = 0; j < 3; ++j) {
-          Real s = 0.0;
-          for (int m = 0; m < 3; ++m) {
-            for (int n = 0; n < 3; ++n) s += e_dn[m][i] * FPi_c[m][n] * e_dn[n][j];
-          }
-          fpi[i][j] = omw_fac * s;
+        for (int al = 0; al < nb; ++al) {
+          int best = 0;
+          for (int be = 1; be < nb; ++be) if (C_ab[al][be] < C_ab[al][best]) best = be;
+          p_ab[al] = best;
+        }
+        for (int be = 0; be < nb; ++be) {
+          int best = 0;
+          for (int al = 1; al < nb; ++al) if (C_ba[be][al] < C_ba[be][best]) best = al;
+          p_ba[be] = best;
         }
       }
-      Real fpi6[N_SYM6];
-      PackSym6(fpi, fpi6);
-      Real ma_tot = 0.0, mb_tot = 0.0;
-      for (int al = 0; al < Nb; ++al) { ma_tot += mv(al, a); mb_tot += mv(al, b); }
-      ma_tot = fmax(ma_tot, 1.0e-300);
-      mb_tot = fmax(mb_tot, 1.0e-300);
 
-      Kokkos::atomic_add(&dE_v(a), -fe_tot);
-      Kokkos::atomic_add(&dE_v(b),  fe_tot);
-      for (int al = 0; al < Nb; ++al) {
-        const Real wa = mv(al, a) / ma_tot;
-        Kokkos::atomic_add(&dm_v(al, a), -wa * fm_tot);
-        for (int i = 0; i < 3; ++i) Kokkos::atomic_add(&dP_v(al, i, a), -wa * fp[i]);
-        for (int s = 0; s < N_SYM6; ++s) Kokkos::atomic_add(&dPi_v(al, s, a), -wa * fpi6[s]);
+      const int kab = BinaryFindSortedPtr(p.nids, a, p.N, p.ncnt[a], b);
+      const int kba = BinaryFindSortedPtr(p.nids, b, p.N, p.ncnt[b], a);
+      if (kab >= 0) {
+        for (int al = 0; al < nb; ++al) p.npab[static_cast<size_t>(kab * nb + al) * nsz + a] = p_ab[al];
       }
-      for (int be = 0; be < Nb; ++be) {
-        const Real wb = mv(be, b) / mb_tot;
-        Kokkos::atomic_add(&dm_v(be, b), wb * fm_tot);
-        for (int i = 0; i < 3; ++i) Kokkos::atomic_add(&dP_v(be, i, b), wb * fp[i]);
-        for (int s = 0; s < N_SYM6; ++s) Kokkos::atomic_add(&dPi_v(be, s, b), wb * fpi6[s]);
+      if (kba >= 0) {
+        for (int be = 0; be < nb; ++be) p.npab[static_cast<size_t>(kba * nb + be) * nsz + b] = p_ba[be];
       }
     }
 
-    // Collisionless one-sided fluxes weighted by wc
+    const Real fac = alp_f * normA;
+
+    if constexpr (Collisional) {
+      if (wc < 1.0 - 1.0e-14) {
+        Real FD_c = 0.0, FP_c[3] = {0.0, 0.0, 0.0}, FPi_c[3][3], FE_c = 0.0;
+        nrpic::vlasov::RelHllcFluxTetrad(nb, Da, ua_t, Sa_t, nb, Db, ub_t, Sb_t,
+                                         beta_F, true, FD_c, FP_c, FPi_c, FE_c);
+        Real FE_cond = 0.0;
+        if (p.noh_kappa > 0.0) {
+          nrpic::vlasov::HllcFluidState Lc, Rc;
+          Lc.valid = (p.cnv[a] > 0.0);
+          if (Lc.valid) {
+            Lc.D = p.cnv[0 * nsz + a]; Lc.rho0 = p.cnv[1 * nsz + a]; Lc.p = p.cnv[2 * nsz + a];
+            Lc.cs2 = p.cnv[3 * nsz + a]; Lc.w_m = p.cnv[4 * nsz + a];
+            Lc.v[0] = e_up[0][0]*p.cnv[5 * nsz + a] + e_up[0][1]*p.cnv[6 * nsz + a] + e_up[0][2]*p.cnv[7 * nsz + a];
+          }
+          Rc.valid = (p.cnv[b] > 0.0);
+          if (Rc.valid) {
+            Rc.D = p.cnv[0 * nsz + b]; Rc.rho0 = p.cnv[1 * nsz + b]; Rc.p = p.cnv[2 * nsz + b];
+            Rc.cs2 = p.cnv[3 * nsz + b]; Rc.w_m = p.cnv[4 * nsz + b];
+            Rc.v[0] = e_up[0][0]*p.cnv[5 * nsz + b] + e_up[0][1]*p.cnv[6 * nsz + b] + e_up[0][2]*p.cnv[7 * nsz + b];
+          }
+          FE_cond = nrpic::vlasov::NohThermalConductFlux(Lc, Rc, p.noh_kappa);
+        }
+        const Real omw_fac = (1.0 - wc) * fac;
+        const Real fm_tot  = omw_fac * FD_c;
+        const Real fe_tot  = omw_fac * (FE_c + FE_cond);
+        Real fp[3] = {0.0, 0.0, 0.0}, fpi[3][3];
+        for (int i = 0; i < 3; ++i) {
+          for (int m = 0; m < 3; ++m) fp[i] += e_dn[m][i] * FP_c[m];
+          fp[i] *= omw_fac;
+          for (int j = 0; j < 3; ++j) {
+            Real s = 0.0;
+            for (int m = 0; m < 3; ++m) {
+              for (int n = 0; n < 3; ++n) s += e_dn[m][i] * FPi_c[m][n] * e_dn[n][j];
+            }
+            fpi[i][j] = omw_fac * s;
+          }
+        }
+        Real fpi6[N_SYM6];
+        PackSym6(fpi, fpi6);
+        Real ma_tot = 0.0, mb_tot = 0.0;
+        for (int al = 0; al < nb; ++al) {
+          ma_tot += p.m[static_cast<size_t>(al) * nsz + a];
+          mb_tot += p.m[static_cast<size_t>(al) * nsz + b];
+        }
+        ma_tot = fmax(ma_tot, 1.0e-300);
+        mb_tot = fmax(mb_tot, 1.0e-300);
+
+        Kokkos::atomic_add(&p.dE[a], -fe_tot);
+        Kokkos::atomic_add(&p.dE[b],  fe_tot);
+        for (int al = 0; al < nb; ++al) {
+          const Real wa = p.m[static_cast<size_t>(al) * nsz + a] / ma_tot;
+          if (fm_tot != 0.0) Kokkos::atomic_add(&p.dm[static_cast<size_t>(al) * nsz + a], -wa * fm_tot);
+          for (int i = 0; i < 3; ++i) Kokkos::atomic_add(&p.dP[(static_cast<size_t>(al) * 3 + i) * nsz + a], -wa * fp[i]);
+          for (int s = 0; s < N_SYM6; ++s) Kokkos::atomic_add(&p.dPi[(static_cast<size_t>(al) * N_SYM6 + s) * nsz + a], -wa * fpi6[s]);
+        }
+        for (int be = 0; be < nb; ++be) {
+          const Real wb = p.m[static_cast<size_t>(be) * nsz + b] / mb_tot;
+          if (fm_tot != 0.0) Kokkos::atomic_add(&p.dm[static_cast<size_t>(be) * nsz + b], wb * fm_tot);
+          for (int i = 0; i < 3; ++i) Kokkos::atomic_add(&p.dP[(static_cast<size_t>(be) * 3 + i) * nsz + b], wb * fp[i]);
+          for (int s = 0; s < N_SYM6; ++s) Kokkos::atomic_add(&p.dPi[(static_cast<size_t>(be) * N_SYM6 + s) * nsz + b], wb * fpi6[s]);
+        }
+      }
+    }
+
     if (wc > 1.0e-6) {
       const Real wc_fac = wc * fac;
-      for (int al = 0; al < Nb; ++al) {
+      for (int al = 0; al < nb; ++al) {
         if (Da[al] <= 0.0) continue;
         Real fm, fp[3], fpi[3][3], fe;
         nrpic::vlasov::OneSidedFluxTetrad(Da[al], ua_t[al], Sa_t[al], beta_F,
-                                          basis_kind, n_perp, fm, fp, fpi, fe);
-        AtomicAddTetFlux(wc_fac, e_dn, a, al, b, p_ab[al], fm, fp, fpi, fe,
-                         dm_v, dP_v, dPi_v, dE_v);
+                                          p.basis_kind, p.n_perp, fm, fp, fpi, fe);
+        AtomicAddTetFluxPtr(wc_fac, e_dn, a, al, b, p_ab[al], p.N, fm, fp, fpi, fe,
+                            p.dm, p.dP, p.dPi, p.dE);
       }
-      for (int be = 0; be < Nb; ++be) {
+      for (int be = 0; be < nb; ++be) {
         if (Db[be] <= 0.0) continue;
         const Real ub_rev[3] = {-ub_t[be][0], ub_t[be][1], ub_t[be][2]};
         const Real Sb_rev[3][3] = {
@@ -1537,125 +2121,190 @@ void ComputeEdgeFluxes(VlasovState &st, const NrpicOptions &nropt,
         };
         Real fm, fp_rev[3], fpi_rev[3][3], fe;
         nrpic::vlasov::OneSidedFluxTetrad(Db[be], ub_rev, Sb_rev, -beta_F,
-                                          basis_kind, n_perp, fm, fp_rev, fpi_rev, fe);
+                                          p.basis_kind, p.n_perp, fm, fp_rev, fpi_rev, fe);
         const Real fp_t[3] = {-fp_rev[0], fp_rev[1], fp_rev[2]};
         const Real fpi_t[3][3] = {
           { fpi_rev[0][0], -fpi_rev[0][1], -fpi_rev[0][2]},
           {-fpi_rev[1][0],  fpi_rev[1][1],  fpi_rev[1][2]},
           {-fpi_rev[2][0],  fpi_rev[2][1],  fpi_rev[2][2]}
         };
-        AtomicAddTetFlux(wc_fac, e_dn, b, be, a, p_ba[be], fm, fp_t, fpi_t, fe,
-                         dm_v, dP_v, dPi_v, dE_v);
+        AtomicAddTetFluxPtr(wc_fac, e_dn, b, be, a, p_ba[be], p.N, fm, fp_t, fpi_t, fe,
+                            p.dm, p.dP, p.dPi, p.dE);
       }
     }
   });
 
-  // Swap current neighbor->pair table into prev_* for subsequent gradient pass
-  Kokkos::deep_copy(st.prev_cnt, st.ngb_cnt);
-  Kokkos::deep_copy(st.prev_ids, st.ngb_ids);
-  std::swap(st.new_pab, st.prev_pab);
+  if constexpr (MaxNb > 1) {
+    // Swap current neighbor->pair table into prev_* zero-copy
+    std::swap(st.prev_cnt, st.ngb_cnt);
+    std::swap(st.prev_ids, st.ngb_ids);
+    std::swap(st.new_pab, st.prev_pab);
+  }
+}
+
+template <bool Collisional, int MaxNb, class SizeViewT>
+void ComputeEdgeFluxesDispatchMetric(VlasovState &st, const NrpicOptions &nropt,
+                                     const VlasovMetric<SizeViewT> &met, int slot_mode) {
+  const int mk = ResolveMetricKind(st, nropt);
+  if (mk == 0) {
+    ComputeEdgeFluxesImpl<Collisional, MaxNb, 0>(st, nropt, KerrSchildLight{0.0, 0.0}, slot_mode);
+  } else if (mk == 1) {
+    ComputeEdgeFluxesImpl<Collisional, MaxNb, 1>(st, nropt, KerrSchildLight{met.mass, met.spin}, slot_mode);
+  } else {
+    ComputeEdgeFluxesImpl<Collisional, MaxNb, 2>(st, nropt, met, slot_mode);
+  }
 }
 
 template <class SizeViewT>
-void ApplyGeodesicHalfKick(VlasovState &st, const NrpicOptions &nropt,
-                           const VlasovMetric<SizeViewT> &met, Real half_dt,
-                           int slot_mode) {
-  const int N  = st.n_elem;
+void ComputeEdgeFluxes(VlasovState &st, const NrpicOptions &nropt,
+                       const VlasovMetric<SizeViewT> &met, int slot_mode) {
   const int Nb = st.n_basis;
-  if (N == 0 || fabs(half_dt) <= 0.0) return;
+  if (st.opt.coll_sigma > 0.0) {
+    if (Nb <= 1)      ComputeEdgeFluxesDispatchMetric<true, 1>(st, nropt, met, slot_mode);
+    else if (Nb <= 2) ComputeEdgeFluxesDispatchMetric<true, 2>(st, nropt, met, slot_mode);
+    else if (Nb <= 4) ComputeEdgeFluxesDispatchMetric<true, 4>(st, nropt, met, slot_mode);
+    else              ComputeEdgeFluxesDispatchMetric<true, nrpic::vlasov::MAX_BASIS>(st, nropt, met, slot_mode);
+  } else {
+    if (Nb <= 1)      ComputeEdgeFluxesDispatchMetric<false, 1>(st, nropt, met, slot_mode);
+    else if (Nb <= 2) ComputeEdgeFluxesDispatchMetric<false, 2>(st, nropt, met, slot_mode);
+    else if (Nb <= 4) ComputeEdgeFluxesDispatchMetric<false, 4>(st, nropt, met, slot_mode);
+    else              ComputeEdgeFluxesDispatchMetric<false, nrpic::vlasov::MAX_BASIS>(st, nropt, met, slot_mode);
+  }
+}
 
-  auto act  = st.active;
-  auto xv   = st.x;
-  auto gids = st.blk_gid;
-  auto mv   = st.m;
-  auto Pv   = st.P;
-  auto Piv  = st.Pi;
-  auto uv   = st.u_bar;
-  auto Sv   = st.Sigma;
-  const int n_q = st.opt.n_q_kick;
-  const Real tol = nropt.tol;
+template <int MetricKind, class KickMetT>
+void ApplyGeodesicHalfKickImpl(VlasovState &st, const NrpicOptions &nropt,
+                               const KickMetT &met, Real half_dt, int slot_mode) {
+  VlasovKickPtrs p;
+  p.act       = ContigPtr(st.active);
+  p.gid       = (MetricKind == 2) ? ContigPtr(st.blk_gid) : nullptr;
+  p.x         = ContigPtr(st.x);
+  p.m         = ContigPtr(st.m);
+  p.P         = ContigPtr(st.P);
+  p.Pi        = ContigPtr(st.Pi);
+  p.u         = ContigPtr(st.u_bar);
+  p.S         = ContigPtr(st.Sigma);
+  p.half_dt   = half_dt;
+  p.tol       = nropt.tol;
+  p.N         = st.n_elem;
+  p.Nb        = st.n_basis;
+  p.n_q       = st.opt.n_q_kick;
+  p.slot_mode = slot_mode;
 
-  par_for("vlasov_geokick", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
-    if (!act(a)) return;
-    const Real pos[3] = {xv(0, a), xv(1, a), xv(2, a)};
+  par_for("vlasov_geokick", DevExeSpace(), 0, p.N - 1, KOKKOS_LAMBDA(const int a) {
+    (void)met;
+    if (!p.act[a]) return;
+    const size_t nsz = static_cast<size_t>(p.N);
+    const Real pos[3] = {p.x[a], p.x[nsz + a], p.x[2 * nsz + a]};
     nrpic::AdmPoint adm;
-    met(slot_mode, pos, gids(a), adm);
+    if constexpr (MetricKind == 1) {
+      met(0, pos, adm);
+    } else {
+      met(p.slot_mode, pos, p.gid[a], adm);
+    }
     if (!HasNonZeroGrad(adm)) return;
 
-    for (int al = 0; al < Nb; ++al) {
-      const Real ma = mv(al, a);
+    for (int al = 0; al < p.Nb; ++al) {
+      const Real ma = p.m[static_cast<size_t>(al) * nsz + a];
       Real u0[3], s6[N_SYM6], S0[3][3], u_new[3], S_new[3][3];
-      for (int i = 0; i < 3; ++i) u0[i] = uv(al, i, a);
-      for (int s = 0; s < N_SYM6; ++s) s6[s] = Sv(al, s, a);
+      for (int i = 0; i < 3; ++i) u0[i] = p.u[(static_cast<size_t>(al) * 3 + i) * nsz + a];
+      for (int s = 0; s < N_SYM6; ++s) s6[s] = p.S[(static_cast<size_t>(al) * N_SYM6 + s) * nsz + a];
       UnpackSym6(s6, S0);
 
-      nrpic::vlasov::CubatureGeodesicKick(u0, S0, adm, nullptr, half_dt, n_q, u_new, S_new, tol);
+      nrpic::vlasov::CubatureGeodesicKick(u0, S0, adm, nullptr, p.half_dt, p.n_q, u_new, S_new, p.tol);
 
       Real s_new6[N_SYM6], pi_new[3][3], pi6[N_SYM6];
       PackSym6(S_new, s_new6);
       for (int i = 0; i < 3; ++i) {
-        uv(al, i, a) = u_new[i];
-        Pv(al, i, a) = ma * u_new[i];
+        p.u[(static_cast<size_t>(al) * 3 + i) * nsz + a] = u_new[i];
+        p.P[(static_cast<size_t>(al) * 3 + i) * nsz + a] = ma * u_new[i];
         for (int j = 0; j < 3; ++j) {
           pi_new[i][j] = ma * (S_new[i][j] + u_new[i] * u_new[j]);
         }
       }
       PackSym6(pi_new, pi6);
       for (int s = 0; s < N_SYM6; ++s) {
-        Sv(al, s, a) = s_new6[s];
-        Piv(al, s, a) = pi6[s];
+        p.S[(static_cast<size_t>(al) * N_SYM6 + s) * nsz + a] = s_new6[s];
+        p.Pi[(static_cast<size_t>(al) * N_SYM6 + s) * nsz + a] = pi6[s];
       }
     }
   });
 }
 
 template <class SizeViewT>
-void ApplyBgkRelaxation(VlasovState &st, const VlasovMetric<SizeViewT> &met,
-                        Real dt_sub, int slot_mode) {
-  const int N  = st.n_elem;
-  const int Nb = st.n_basis;
-  const Real sigma_over_mu = st.opt.coll_sigma;
-  if (N == 0 || sigma_over_mu <= 0.0 || dt_sub <= 0.0) return;
+void ApplyGeodesicHalfKick(VlasovState &st, const NrpicOptions &nropt,
+                           const VlasovMetric<SizeViewT> &met, Real half_dt,
+                           int slot_mode) {
+  if (st.opt.metric_grad_zero) return;
+  if (st.n_elem == 0 || fabs(half_dt) <= 0.0) return;
+  if (nropt.metric == NrpicMetric::kerr_schild) {
+    ApplyGeodesicHalfKickImpl<1>(st, nropt, nrpic::KerrSchildCart{met.mass, met.spin}, half_dt, slot_mode);
+  } else {
+    ApplyGeodesicHalfKickImpl<2>(st, nropt, met, half_dt, slot_mode);
+  }
+}
 
-  auto act  = st.active;
-  auto xv   = st.x;
-  auto gids = st.blk_gid;
-  auto Vv   = st.V;
-  auto mv   = st.m;
-  auto Pv   = st.P;
-  auto Piv  = st.Pi;
-  auto uv   = st.u_bar;
-  auto Sv   = st.Sigma;
-  auto Ecv  = st.E_cons;
-  const int n_q = st.opt.n_q_dep;
-  const bool track_e = st.opt.bgk_track_e;
+template <int MetricKind, class LightOrFullMetT>
+void ApplyBgkRelaxationImpl(VlasovState &st, const LightOrFullMetT &met,
+                            Real dt_sub, int slot_mode) {
+  VlasovBgkPtrs p;
+  p.act           = ContigPtr(st.active);
+  p.gid           = (MetricKind == 2) ? ContigPtr(st.blk_gid) : nullptr;
+  p.x             = ContigPtr(st.x);
+  p.V             = ContigPtr(st.V);
+  p.m             = ContigPtr(st.m);
+  p.Ec            = ContigPtr(st.E_cons);
+  p.P             = ContigPtr(st.P);
+  p.Pi            = ContigPtr(st.Pi);
+  p.u             = ContigPtr(st.u_bar);
+  p.S             = ContigPtr(st.Sigma);
+  p.sigma_over_mu = st.opt.coll_sigma;
+  p.dt_sub        = dt_sub;
+  p.N             = st.n_elem;
+  p.Nb            = st.n_basis;
+  p.n_q           = st.opt.n_q_dep;
+  p.slot_mode     = slot_mode;
+  p.track_e       = st.opt.bgk_track_e;
 
-  par_for("vlasov_bgk", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
-    if (!act(a)) return;
-    const Real pos[3] = {xv(0, a), xv(1, a), xv(2, a)};
+  par_for("vlasov_bgk", DevExeSpace(), 0, p.N - 1, KOKKOS_LAMBDA(const int a) {
+    (void)met;
+    if (!p.act[a]) return;
+    const size_t nsz = static_cast<size_t>(p.N);
     nrpic::AdmPoint adm;
-    met(slot_mode, pos, gids(a), adm);
+    if constexpr (MetricKind == 0) {
+      adm.alp = 1.0;
+      for (int i = 0; i < 3; ++i) {
+        adm.beta[i] = 0.0;
+        for (int j = 0; j < 3; ++j) adm.g[i][j] = (i == j) ? 1.0 : 0.0;
+      }
+    } else if constexpr (MetricKind == 1) {
+      const Real pos[3] = {p.x[a], p.x[nsz + a], p.x[2 * nsz + a]};
+      met.EvalNoDeriv(pos, adm.alp, adm.beta, adm.g);
+    } else {
+      const Real pos[3] = {p.x[a], p.x[nsz + a], p.x[2 * nsz + a]};
+      met(p.slot_mode, pos, p.gid[a], adm);
+    }
 
     Real ml[nrpic::vlasov::MAX_BASIS];
     Real ul[nrpic::vlasov::MAX_BASIS][3], u_out[nrpic::vlasov::MAX_BASIS][3];
     Real Sl[nrpic::vlasov::MAX_BASIS][3][3], S_out[nrpic::vlasov::MAX_BASIS][3][3];
-    for (int al = 0; al < Nb; ++al) {
-      ml[al] = mv(al, a);
-      for (int i = 0; i < 3; ++i) ul[al][i] = uv(al, i, a);
+    for (int al = 0; al < p.Nb; ++al) {
+      ml[al] = p.m[static_cast<size_t>(al) * nsz + a];
+      for (int i = 0; i < 3; ++i) ul[al][i] = p.u[(static_cast<size_t>(al) * 3 + i) * nsz + a];
       Real s6[N_SYM6];
-      for (int s = 0; s < N_SYM6; ++s) s6[s] = Sv(al, s, a);
+      for (int s = 0; s < N_SYM6; ++s) s6[s] = p.S[(static_cast<size_t>(al) * N_SYM6 + s) * nsz + a];
       UnpackSym6(s6, Sl[al]);
     }
 
-    const Real E_ov = Ecv(a);
-    nrpic::vlasov::MjBgkRelaxCell(Nb, ml, ul, Sl, Vv(a), adm, sigma_over_mu, dt_sub, n_q,
-                                  u_out, S_out, track_e ? &E_ov : nullptr);
+    const Real E_ov = p.Ec[a];
+    nrpic::vlasov::MjBgkRelaxCell(p.Nb, ml, ul, Sl, p.V[a], adm, p.sigma_over_mu, p.dt_sub, p.n_q,
+                                  u_out, S_out, p.track_e ? &E_ov : nullptr);
 
-    for (int al = 0; al < Nb; ++al) {
+    for (int al = 0; al < p.Nb; ++al) {
       Real pi_m[3][3], pi6[N_SYM6], sig6[N_SYM6];
       for (int i = 0; i < 3; ++i) {
-        uv(al, i, a) = u_out[al][i];
-        Pv(al, i, a) = ml[al] * u_out[al][i];
+        p.u[(static_cast<size_t>(al) * 3 + i) * nsz + a] = u_out[al][i];
+        p.P[(static_cast<size_t>(al) * 3 + i) * nsz + a] = ml[al] * u_out[al][i];
         for (int j = 0; j < 3; ++j) {
           pi_m[i][j] = ml[al] * (S_out[al][i][j] + u_out[al][i] * u_out[al][j]);
         }
@@ -1663,11 +2312,21 @@ void ApplyBgkRelaxation(VlasovState &st, const VlasovMetric<SizeViewT> &met,
       PackSym6(S_out[al], sig6);
       PackSym6(pi_m, pi6);
       for (int s = 0; s < N_SYM6; ++s) {
-        Sv(al, s, a)  = sig6[s];
-        Piv(al, s, a) = pi6[s];
+        p.S[(static_cast<size_t>(al) * N_SYM6 + s) * nsz + a]  = sig6[s];
+        p.Pi[(static_cast<size_t>(al) * N_SYM6 + s) * nsz + a] = pi6[s];
       }
     }
   });
+}
+
+template <class SizeViewT>
+void ApplyBgkRelaxation(VlasovState &st, const NrpicOptions &nropt,
+                        const VlasovMetric<SizeViewT> &met, Real dt_sub, int slot_mode) {
+  if (st.n_elem == 0 || st.opt.coll_sigma <= 0.0 || dt_sub <= 0.0) return;
+  const int mk = ResolveMetricKind(st, nropt);
+  if (mk == 0)      ApplyBgkRelaxationImpl<0>(st, KerrSchildLight{0.0, 0.0}, dt_sub, slot_mode);
+  else if (mk == 1) ApplyBgkRelaxationImpl<1>(st, KerrSchildLight{met.mass, met.spin}, dt_sub, slot_mode);
+  else              ApplyBgkRelaxationImpl<2>(st, met, dt_sub, slot_mode);
 }
 
 template <class SizeViewT>
@@ -1692,93 +2351,140 @@ void UpdateBlockGIDs(VlasovState &st, const NrpicOptions &nropt, const SizeViewT
   });
 }
 
-template <class SizeViewT>
-void ComputeEnergyArray(VlasovState &st, const VlasovMetric<SizeViewT> &met,
-                        int slot_mode, DvceArray1D<Real> &E_out) {
+template <int MetricKind, class LightOrFullMetT>
+void ComputeEnergyArrayImpl(VlasovState &st, const LightOrFullMetT &met,
+                            int slot_mode, DvceArray1D<Real> &E_out) {
   const int N = st.n_elem;
   const int Nb = st.n_basis;
   if (N == 0) return;
-  auto act  = st.active;
-  auto xv   = st.x;
-  auto gids = st.blk_gid;
-  auto mv   = st.m;
-  auto uv   = st.u_bar;
-  auto Sv   = st.Sigma;
-  const int n_q = st.opt.n_q_dep;
+  const int *act = ContigPtr(st.active);
+  const int *gid = (MetricKind == 2) ? ContigPtr(st.blk_gid) : nullptr;
+  const Real *xv = (MetricKind != 0) ? ContigPtr(st.x) : nullptr;
+  const Real *mv = ContigPtr(st.m);
+  const Real *uv = ContigPtr(st.u_bar);
+  const Real *Sv = ContigPtr(st.Sigma);
+  Real *eo       = ContigPtr(E_out);
+  const int n_q  = st.opt.n_q_dep;
 
   par_for("vlasov_e_cell", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
-    if (!act(a)) { E_out(a) = 0.0; return; }
-    const Real pos[3] = {xv(0, a), xv(1, a), xv(2, a)};
-    nrpic::AdmPoint adm;
-    met(slot_mode, pos, gids(a), adm);
-    Real gi[3][3];
-    nrpic::Inv3Sym(adm.g, gi);
+    (void)met; (void)xv; (void)gid; (void)slot_mode;
+    if (!act[a]) { eo[a] = 0.0; return; }
+    const size_t nsz = static_cast<size_t>(N);
+    Real gi[3][3] = {{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
+    if constexpr (MetricKind == 1) {
+      const Real pos[3] = {xv[a], xv[nsz + a], xv[2 * nsz + a]};
+      Real alp_tmp, b_tmp[3], g[3][3];
+      met.EvalNoDeriv(pos, alp_tmp, b_tmp, g);
+      nrpic::Inv3Sym(g, gi);
+    } else if constexpr (MetricKind == 2) {
+      const Real pos[3] = {xv[a], xv[nsz + a], xv[2 * nsz + a]};
+      nrpic::AdmPoint adm;
+      met(slot_mode, pos, gid[a], adm);
+      nrpic::Inv3Sym(adm.g, gi);
+    }
     Real Et = 0.0;
     for (int al = 0; al < Nb; ++al) {
-      if (mv(al, a) <= 0.0) continue;
+      const Real ma = mv[static_cast<size_t>(al) * nsz + a];
+      if (ma <= 0.0) continue;
       Real ua[3], s6[N_SYM6], Sa[3][3], ea, pa[3], sa[3][3];
-      for (int i = 0; i < 3; ++i) ua[i] = uv(al, i, a);
-      for (int s = 0; s < N_SYM6; ++s) s6[s] = Sv(al, s, a);
+      for (int i = 0; i < 3; ++i) ua[i] = uv[(static_cast<size_t>(al) * 3 + i) * nsz + a];
+      for (int s = 0; s < N_SYM6; ++s) s6[s] = Sv[(static_cast<size_t>(al) * N_SYM6 + s) * nsz + a];
       UnpackSym6(s6, Sa);
-      nrpic::vlasov::BasisStressEnergy(mv(al, a), ua, Sa, gi, n_q, ea, pa, sa);
+      nrpic::vlasov::BasisStressEnergy(ma, ua, Sa, gi, n_q, ea, pa, sa);
       Et += ea;
     }
-    E_out(a) = Et;
+    eo[a] = Et;
   });
 }
 
 template <class SizeViewT>
-Real ComputeMinCflTime(VlasovState &st, const VlasovMetric<SizeViewT> &met,
-                       int slot_mode, Real &max_sig_out) {
+void ComputeEnergyArray(VlasovState &st, const NrpicOptions &nropt,
+                        const VlasovMetric<SizeViewT> &met, int slot_mode,
+                        DvceArray1D<Real> &E_out) {
+  const int mk = ResolveMetricKind(st, nropt);
+  if (mk == 0)      ComputeEnergyArrayImpl<0>(st, KerrSchildLight{0.0, 0.0}, slot_mode, E_out);
+  else if (mk == 1) ComputeEnergyArrayImpl<1>(st, KerrSchildLight{met.mass, met.spin}, slot_mode, E_out);
+  else              ComputeEnergyArrayImpl<2>(st, met, slot_mode, E_out);
+}
+
+template <int MetricKind, class LightOrFullMetT>
+Real ComputeMinCflTimeImpl(VlasovState &st, const LightOrFullMetT &met,
+                           int slot_mode, Real &max_sig_out) {
   const int N = st.n_elem;
   const int Nb = st.n_basis;
   if (N == 0) {
     max_sig_out = 0.0;
     return 1.0e300;
   }
-  auto act  = st.active;
-  auto xv   = st.x;
-  auto hv   = st.h;
-  auto gids = st.blk_gid;
-  auto mv   = st.m;
-  auto uv   = st.u_bar;
-  auto Sv   = st.Sigma;
+  const int *act = ContigPtr(st.active);
+  const int *gid = (MetricKind == 2) ? ContigPtr(st.blk_gid) : nullptr;
+  const Real *xv = (MetricKind != 0) ? ContigPtr(st.x) : nullptr;
+  const Real *hv = ContigPtr(st.h);
+  const Real *mv = ContigPtr(st.m);
+  const Real *uv = ContigPtr(st.u_bar);
+  const Real *Sv = ContigPtr(st.Sigma);
 
   Real min_dt = 1.0e300;
   Real max_s  = 0.0;
   Kokkos::parallel_reduce("vlasov_cfl", Kokkos::RangePolicy<DevExeSpace>(0, N),
   KOKKOS_LAMBDA(const int a, Real &ldt, Real &lsig) {
-    if (!act(a)) return;
-    const Real pos[3] = {xv(0, a), xv(1, a), xv(2, a)};
-    nrpic::AdmPoint adm;
-    met(slot_mode, pos, gids(a), adm);
-    Real gi[3][3];
-    nrpic::Inv3Sym(adm.g, gi);
-    const Real beta_mag = sqrt(nrpic::vlasov::MatVecDot3(adm.beta, adm.g, adm.beta));
+    (void)met; (void)xv; (void)gid; (void)slot_mode;
+    if (!act[a]) return;
+    const size_t nsz = static_cast<size_t>(N);
+    Real alp = 1.0;
+    Real beta[3] = {0.0, 0.0, 0.0};
+    Real g[3][3] = {{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
+    Real gi[3][3] = {{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
+    if constexpr (MetricKind == 1) {
+      const Real pos[3] = {xv[a], xv[nsz + a], xv[2 * nsz + a]};
+      met.EvalNoDeriv(pos, alp, beta, g);
+      nrpic::Inv3Sym(g, gi);
+    } else if constexpr (MetricKind == 2) {
+      const Real pos[3] = {xv[a], xv[nsz + a], xv[2 * nsz + a]};
+      nrpic::AdmPoint adm;
+      met(slot_mode, pos, gid[a], adm);
+      alp = adm.alp;
+      for (int i = 0; i < 3; ++i) {
+        beta[i] = adm.beta[i];
+        for (int j = 0; j < 3; ++j) g[i][j] = adm.g[i][j];
+      }
+      nrpic::Inv3Sym(g, gi);
+    }
+    const Real beta_mag = (MetricKind == 0) ? 0.0 : sqrt(nrpic::vlasov::MatVecDot3(beta, g, beta));
     Real sig_a = 1.0e-12;
     for (int al = 0; al < Nb; ++al) {
-      if (mv(al, a) <= 0.0) continue;
+      if (mv[static_cast<size_t>(al) * nsz + a] <= 0.0) continue;
       Real ua[3], s6[N_SYM6], Sa[3][3];
-      for (int i = 0; i < 3; ++i) ua[i] = uv(al, i, a);
-      for (int s = 0; s < N_SYM6; ++s) s6[s] = Sv(al, s, a);
+      for (int i = 0; i < 3; ++i) ua[i] = uv[(static_cast<size_t>(al) * 3 + i) * nsz + a];
+      for (int s = 0; s < N_SYM6; ++s) s6[s] = Sv[(static_cast<size_t>(al) * N_SYM6 + s) * nsz + a];
       UnpackSym6(s6, Sa);
       const Real u2 = nrpic::vlasov::MatVecDot3(ua, gi, ua);
       const Real W2 = 1.0 + u2;
-      const Real v_mag = adm.alp * sqrt(u2 / W2) + beta_mag;
+      const Real v_mag = alp * sqrt(u2 / W2) + beta_mag;
       Real tr_gi_S = 0.0;
       for (int i = 0; i < 3; ++i) {
         for (int j = 0; j < 3; ++j) tr_gi_S += gi[i][j] * Sa[i][j];
       }
-      const Real cs_eff = adm.alp * sqrt(fmin(fmax(tr_gi_S, 0.0) / W2, 1.0));
-      const Real s_al = fmin(v_mag + cs_eff, 2.0 * fmax(adm.alp, 1.0) + beta_mag);
+      const Real cs_eff = alp * sqrt(fmin(fmax(tr_gi_S, 0.0) / W2, 1.0));
+      const Real s_al = fmin(v_mag + cs_eff, 2.0 * fmax(alp, 1.0) + beta_mag);
       if (s_al > sig_a) sig_a = s_al;
     }
-    const Real ha = fmax(hv(a), 1.0e-12);
+    const Real ha = fmax(hv[a], 1.0e-12);
     ldt  = fmin(ldt, ha / sig_a);
     lsig = fmax(lsig, sig_a);
   }, Kokkos::Min<Real>(min_dt), Kokkos::Max<Real>(max_s));
   max_sig_out = max_s;
   return min_dt;
+}
+
+template <class SizeViewT>
+Real ComputeMinCflTime(VlasovState &st, const NrpicOptions &nropt,
+                       const VlasovMetric<SizeViewT> &met, int slot_mode,
+                       Real &max_sig_out) {
+  const int mk = ResolveMetricKind(st, nropt);
+  if (mk == 0)      return ComputeMinCflTimeImpl<0>(st, KerrSchildLight{0.0, 0.0}, slot_mode, max_sig_out);
+  else if (mk == 1) return ComputeMinCflTimeImpl<1>(st, KerrSchildLight{met.mass, met.spin}, slot_mode, max_sig_out);
+  else              return ComputeMinCflTimeImpl<2>(st, met, slot_mode, max_sig_out);
 }
 
 template <class SizeViewT>
@@ -1822,45 +2528,63 @@ void ApplyMfmStep(VlasovState &st, const NrpicOptions &nropt,
   const bool per[3]  = {nropt.periodic[0], nropt.periodic[1], nropt.periodic[2]};
 
   // Snapshot x0, m0, P0, Pi0
-  Kokkos::deep_copy(st.x0,  st.x);
-  Kokkos::deep_copy(st.m0,  st.m);
-  Kokkos::deep_copy(st.P0,  st.P);
-  Kokkos::deep_copy(st.Pi0, st.Pi);
+  Kokkos::deep_copy(DevExeSpace(), st.x0,  st.x);
+  Kokkos::deep_copy(DevExeSpace(), st.m0,  st.m);
+  Kokkos::deep_copy(DevExeSpace(), st.P0,  st.P);
+  Kokkos::deep_copy(DevExeSpace(), st.Pi0, st.Pi);
   if (st.opt.coll_sigma > 0.0 && st.opt.bgk_track_e) {
-    ComputeEnergyArray(st, met, slot_mode, st.E0);
+    ComputeEnergyArray(st, nropt, met, slot_mode, st.E0);
   }
 
   // Stage 1
   ComputeGradients(st, nropt);
-  ComputeCellVelocities(st, met, slot_mode);
+  ComputeCellVelocities(st, nropt, met, slot_mode);
   ComputeEdgeFluxes(st, nropt, met, slot_mode);
-  Kokkos::deep_copy(st.v0_cell, st.v_cell);
+  Kokkos::deep_copy(DevExeSpace(), st.v0_cell, st.v_cell);
 
-  {
-    auto act  = st.active;
-    auto x0v  = st.x0, xv = st.x, v0v = st.v0_cell;
-    auto m0v  = st.m0, mv = st.m, dmv = st.dm;
-    auto P0v  = st.P0, Pv = st.P, dPv = st.dP;
-    auto Pi0v = st.Pi0, Piv = st.Pi, dPiv = st.dPi;
-    par_for("vlasov_rk2_s1", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
-      if (!act(a)) return;
-      Real pos[3] = {x0v(0, a) + dt_sub*v0v(0, a),
-                     x0v(1, a) + dt_sub*v0v(1, a),
-                     x0v(2, a) + dt_sub*v0v(2, a)};
-      WrapPos(dmin, dlen, per, pos);
-      for (int i = 0; i < 3; ++i) xv(i, a) = pos[i];
-      for (int al = 0; al < Nb; ++al) {
-        mv(al, a) = m0v(al, a) + dt_sub * dmv(al, a);
-        for (int i = 0; i < 3; ++i) Pv(al, i, a) = P0v(al, i, a) + dt_sub * dPv(al, i, a);
-        for (int s = 0; s < N_SYM6; ++s) Piv(al, s, a) = Pi0v(al, s, a) + dt_sub * dPiv(al, s, a);
+  const int  *act  = ContigPtr(st.active);
+  const Real *x0v  = ContigPtr(st.x0);
+  Real       *xv   = ContigPtr(st.x);
+  const Real *v0v  = ContigPtr(st.v0_cell);
+  const Real *v1v  = ContigPtr(st.v_cell);
+  const Real *m0v  = ContigPtr(st.m0);
+  Real       *mv   = ContigPtr(st.m);
+  const Real *dmv  = ContigPtr(st.dm);
+  const Real *P0v  = ContigPtr(st.P0);
+  Real       *Pv   = ContigPtr(st.P);
+  const Real *dPv  = ContigPtr(st.dP);
+  const Real *Pi0v = ContigPtr(st.Pi0);
+  Real       *Piv  = ContigPtr(st.Pi);
+  const Real *dPiv = ContigPtr(st.dPi);
+
+  par_for("vlasov_rk2_s1", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
+    if (!act[a]) return;
+    const size_t nsz = static_cast<size_t>(N);
+    Real pos[3] = {x0v[a] + dt_sub * v0v[a],
+                   x0v[nsz + a] + dt_sub * v0v[nsz + a],
+                   x0v[2 * nsz + a] + dt_sub * v0v[2 * nsz + a]};
+    WrapPos(dmin, dlen, per, pos);
+    for (int i = 0; i < 3; ++i) xv[static_cast<size_t>(i) * nsz + a] = pos[i];
+    for (int al = 0; al < Nb; ++al) {
+      const size_t idx_m = static_cast<size_t>(al) * nsz + a;
+      mv[idx_m] = m0v[idx_m] + dt_sub * dmv[idx_m];
+      for (int i = 0; i < 3; ++i) {
+        const size_t idx_p = (static_cast<size_t>(al) * 3 + i) * nsz + a;
+        Pv[idx_p] = P0v[idx_p] + dt_sub * dPv[idx_p];
       }
-    });
-    if (st.opt.coll_sigma > 0.0 && st.opt.bgk_track_e) {
-      auto E0v = st.E0, Ecv = st.E_cons, dEv = st.dE;
-      par_for("vlasov_rk2_s1_e", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
-        if (act(a)) Ecv(a) = E0v(a) + dt_sub * dEv(a);
-      });
+      for (int s = 0; s < N_SYM6; ++s) {
+        const size_t idx_pi = (static_cast<size_t>(al) * N_SYM6 + s) * nsz + a;
+        Piv[idx_pi] = Pi0v[idx_pi] + dt_sub * dPiv[idx_pi];
+      }
     }
+  });
+  if (st.opt.coll_sigma > 0.0 && st.opt.bgk_track_e) {
+    const Real *E0v = ContigPtr(st.E0);
+    const Real *dEv = ContigPtr(st.dE);
+    Real *Ecv       = ContigPtr(st.E_cons);
+    par_for("vlasov_rk2_s1_e", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
+      if (act[a]) Ecv[a] = E0v[a] + dt_sub * dEv[a];
+    });
   }
   UpdateBlockGIDs(st, nropt, met.sz, met.nmb, met.gids);
   UpdateGeometry(st, nropt, true);
@@ -1868,45 +2592,44 @@ void ApplyMfmStep(VlasovState &st, const NrpicOptions &nropt,
 
   // Stage 2 (SSP-RK2: u^{n+1} = 0.5*u0 + 0.5*(u^{(1)} + dt*R(u^{(1)})))
   ComputeGradients(st, nropt);
-  ComputeCellVelocities(st, met, slot_mode);
+  ComputeCellVelocities(st, nropt, met, slot_mode);
   ComputeEdgeFluxes(st, nropt, met, slot_mode);
 
-  {
-    auto act  = st.active;
-    auto x0v  = st.x0, xv = st.x, v0v = st.v0_cell, v1v = st.v_cell;
-    auto m0v  = st.m0, mv = st.m, dmv = st.dm;
-    auto P0v  = st.P0, Pv = st.P, dPv = st.dP;
-    auto Pi0v = st.Pi0, Piv = st.Pi, dPiv = st.dPi;
-    par_for("vlasov_rk2_s2", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
-      if (!act(a)) return;
-      Real pos[3] = {x0v(0, a) + 0.5*dt_sub*(v0v(0, a) + v1v(0, a)),
-                     x0v(1, a) + 0.5*dt_sub*(v0v(1, a) + v1v(1, a)),
-                     x0v(2, a) + 0.5*dt_sub*(v0v(2, a) + v1v(2, a))};
-      WrapPos(dmin, dlen, per, pos);
-      for (int i = 0; i < 3; ++i) xv(i, a) = pos[i];
-      for (int al = 0; al < Nb; ++al) {
-        mv(al, a) = 0.5 * (m0v(al, a) + mv(al, a) + dt_sub * dmv(al, a));
-        for (int i = 0; i < 3; ++i) {
-          Pv(al, i, a) = 0.5 * (P0v(al, i, a) + Pv(al, i, a) + dt_sub * dPv(al, i, a));
-        }
-        for (int s = 0; s < N_SYM6; ++s) {
-          Piv(al, s, a) = 0.5 * (Pi0v(al, s, a) + Piv(al, s, a) + dt_sub * dPiv(al, s, a));
-        }
+  par_for("vlasov_rk2_s2", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
+    if (!act[a]) return;
+    const size_t nsz = static_cast<size_t>(N);
+    Real pos[3] = {x0v[a] + 0.5 * dt_sub * (v0v[a] + v1v[a]),
+                   x0v[nsz + a] + 0.5 * dt_sub * (v0v[nsz + a] + v1v[nsz + a]),
+                   x0v[2 * nsz + a] + 0.5 * dt_sub * (v0v[2 * nsz + a] + v1v[2 * nsz + a])};
+    WrapPos(dmin, dlen, per, pos);
+    for (int i = 0; i < 3; ++i) xv[static_cast<size_t>(i) * nsz + a] = pos[i];
+    for (int al = 0; al < Nb; ++al) {
+      const size_t idx_m = static_cast<size_t>(al) * nsz + a;
+      mv[idx_m] = 0.5 * (m0v[idx_m] + mv[idx_m] + dt_sub * dmv[idx_m]);
+      for (int i = 0; i < 3; ++i) {
+        const size_t idx_p = (static_cast<size_t>(al) * 3 + i) * nsz + a;
+        Pv[idx_p] = 0.5 * (P0v[idx_p] + Pv[idx_p] + dt_sub * dPv[idx_p]);
       }
-    });
-    if (st.opt.coll_sigma > 0.0 && st.opt.bgk_track_e) {
-      auto E0v = st.E0, Ecv = st.E_cons, dEv = st.dE;
-      par_for("vlasov_rk2_s2_e", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
-        if (act(a)) Ecv(a) = 0.5 * (E0v(a) + Ecv(a) + dt_sub * dEv(a));
-      });
+      for (int s = 0; s < N_SYM6; ++s) {
+        const size_t idx_pi = (static_cast<size_t>(al) * N_SYM6 + s) * nsz + a;
+        Piv[idx_pi] = 0.5 * (Pi0v[idx_pi] + Piv[idx_pi] + dt_sub * dPiv[idx_pi]);
+      }
     }
+  });
+  if (st.opt.coll_sigma > 0.0 && st.opt.bgk_track_e) {
+    const Real *E0v = ContigPtr(st.E0);
+    const Real *dEv = ContigPtr(st.dE);
+    Real *Ecv       = ContigPtr(st.E_cons);
+    par_for("vlasov_rk2_s2_e", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
+      if (act[a]) Ecv[a] = 0.5 * (E0v[a] + Ecv[a] + dt_sub * dEv[a]);
+    });
   }
   UpdateBlockGIDs(st, nropt, met.sz, met.nmb, met.gids);
   UpdateGeometry(st, nropt, true);
   ConsToPrim(st);
 
   if (st.opt.coll_sigma > 0.0) {
-    ApplyBgkRelaxation(st, met, dt_sub, slot_mode);
+    ApplyBgkRelaxation(st, nropt, met, dt_sub, slot_mode);
     ConsToPrim(st);
   }
 }
@@ -1918,11 +2641,26 @@ void ApplyMfmStep(VlasovState &st, const NrpicOptions &nropt,
 //----------------------------------------------------------------------------------------
 
 void Particles::NrpicVlasovInit(ParameterInput *pin) {
-  if (nr_multirank) {
-    nrpic_vlasov_detail::VlasovFatal("GR-LBV pusher=vlasov_mfm currently requires a single MPI rank");
-  }
   if (vlv == nullptr) vlv = new VlasovState();
   VlasovOptions &opt = vlv->opt;
+
+  const std::string ppush = pin->GetOrAddString("particles", "pusher", "vlasov_mfm");
+  const std::string def_mode = (ppush == "vlasov_hybrid") ? "hybrid" : "mfm";
+  const std::string mode_s = pin->GetOrAddString("particles", "vlasov_mode", def_mode);
+  if (mode_s == "mfm") {
+    opt.solver_mode = VLASOV_MODE_MFM;
+  } else if (mode_s == "hybrid") {
+    opt.solver_mode = VLASOV_MODE_HYBRID;
+  } else if (mode_s == "scp") {
+    opt.solver_mode = VLASOV_MODE_SCP;
+  } else {
+    nrpic_vlasov_detail::VlasovFatal("unknown <particles> vlasov_mode = " + mode_s);
+  }
+  opt.scp_n_q = pin->GetOrAddInteger("particles", "vlasov_scp_q", 14);
+  if (opt.scp_n_q != 8 && opt.scp_n_q != 14 && opt.scp_n_q != 27) {
+    nrpic_vlasov_detail::VlasovFatal("<particles> vlasov_scp_q must be 8, 14, or 27");
+  }
+  opt.scp_rotate = pin->GetOrAddBoolean("particles", "vlasov_scp_rotate", true);
 
   const std::string basis_s = pin->GetOrAddString("particles", "vlasov_basis", "tophat");
   if (basis_s == "tophat") {
@@ -1959,17 +2697,22 @@ void Particles::NrpicVlasovInit(ParameterInput *pin) {
   opt.noh_kappa       = pin->GetOrAddReal("particles", "vlasov_noh_kappa", 0.5);
   opt.kerr_r_exc      = pin->GetOrAddReal("particles", "vlasov_kerr_r_exc", 0.0);
 
+  opt.packet_mode = (opt.solver_mode == VLASOV_MODE_SCP) ||
+                    (opt.solver_mode == VLASOV_MODE_HYBRID && opt.coll_sigma <= 0.0);
+  if (nr_multirank && !opt.packet_mode) {
+    nrpic_vlasov_detail::VlasovFatal("GR-LBV MFM mode currently requires a single MPI rank");
+  }
+
   if (global_variable::my_rank == 0) {
-    std::cout << "NRPIC Vlasov (GR-LBV): basis=" << basis_s
+    std::cout << "NRPIC Vlasov (GR-LBV): mode=" << mode_s
+              << (opt.packet_mode ? " [SCP-packet]" : " [AP-MFM]")
+              << ", basis=" << basis_s
               << ", pair=" << pmode
-              << ", n_perp=" << opt.n_perp
-              << ", n_q_kick=" << opt.n_q_kick
-              << ", cfl=" << opt.cfl
-              << ", fixed_substeps=" << opt.fixed_substeps
+              << ", scp_q=" << opt.scp_n_q
+              << ", scp_rotate=" << (opt.scp_rotate ? "true" : "false")
               << ", coll_sigma=" << opt.coll_sigma
               << ", noh_kappa=" << opt.noh_kappa
               << ", kerr_r_exc=" << opt.kerr_r_exc
-              << ", bnd_detect=" << (opt.bnd_detect ? "true" : "false")
               << std::endl;
   }
 }
@@ -2029,6 +2772,8 @@ void Particles::NrpicVlasovLoadFile(const std::string &fname) {
   auto hm  = Kokkos::create_mirror_view(vlv->m);
   auto hP  = Kokkos::create_mirror_view(vlv->P);
   auto hPi = Kokkos::create_mirror_view(vlv->Pi);
+  auto hu  = Kokkos::create_mirror_view(vlv->u_bar);
+  auto hS  = Kokkos::create_mirror_view(vlv->Sigma);
   auto hsp = Kokkos::create_mirror_view(vlv->species);
   auto hac = Kokkos::create_mirror_view(vlv->active);
   auto hbg = Kokkos::create_mirror_view(vlv->blk_gid);
@@ -2045,8 +2790,14 @@ void Particles::NrpicVlasovLoadFile(const std::string &fname) {
       hm(al, a) = ma;
       Real ua[3] = {u_raw[3*idx + 0], u_raw[3*idx + 1], u_raw[3*idx + 2]};
       Real sa6[6];
-      for (int s = 0; s < 6; ++s) sa6[s] = s_raw[6*idx + s];
-      for (int i = 0; i < 3; ++i) hP(al, i, a) = ma * ua[i];
+      for (int s = 0; s < 6; ++s) {
+        sa6[s] = s_raw[6*idx + s];
+        hS(al, s, a) = sa6[s];
+      }
+      for (int i = 0; i < 3; ++i) {
+        hu(al, i, a) = ua[i];
+        hP(al, i, a) = ma * ua[i];
+      }
       hPi(al, SYM_XX, a) = ma * (sa6[SYM_XX] + ua[0]*ua[0]);
       hPi(al, SYM_XY, a) = ma * (sa6[SYM_XY] + ua[0]*ua[1]);
       hPi(al, SYM_XZ, a) = ma * (sa6[SYM_XZ] + ua[0]*ua[2]);
@@ -2060,6 +2811,8 @@ void Particles::NrpicVlasovLoadFile(const std::string &fname) {
   Kokkos::deep_copy(vlv->m,       hm);
   Kokkos::deep_copy(vlv->P,       hP);
   Kokkos::deep_copy(vlv->Pi,      hPi);
+  Kokkos::deep_copy(vlv->u_bar,   hu);
+  Kokkos::deep_copy(vlv->Sigma,   hS);
   Kokkos::deep_copy(vlv->species, hsp);
   Kokkos::deep_copy(vlv->active,  hac);
   Kokkos::deep_copy(vlv->blk_gid, hbg);
@@ -2077,6 +2830,126 @@ void Particles::NrpicVlasovLoadFile(const std::string &fname) {
 
 void Particles::NrpicVlasovInitializeOnMesh() {
   if (vlv == nullptr) return;
+
+  if (vlv->opt.packet_mode) {
+    if (vlv->initialized) {
+      if (nropt.metric == NrpicMetric::mesh) {
+        NrpicAssignBlocks();
+        NrpicRemoveFlagged();
+      }
+      return;
+    }
+    if (nprtcl_thispack > 0 && vlv->n_elem == 0) {
+      if (nropt.metric == NrpicMetric::mesh) {
+        NrpicAssignBlocks();
+        NrpicRemoveFlagged();
+      }
+      vlv->initialized = true;
+      return;
+    }
+    const int N  = vlv->n_elem;
+    const int Nb = vlv->n_basis;
+    if (N == 0) {
+      vlv->initialized = true;
+      return;
+    }
+    auto hx  = Kokkos::create_mirror_view_and_copy(HostMemSpace(), vlv->x);
+    auto hm  = Kokkos::create_mirror_view_and_copy(HostMemSpace(), vlv->m);
+    auto hu  = Kokkos::create_mirror_view_and_copy(HostMemSpace(), vlv->u_bar);
+    auto hS  = Kokkos::create_mirror_view_and_copy(HostMemSpace(), vlv->Sigma);
+    auto hsp = Kokkos::create_mirror_view_and_copy(HostMemSpace(), vlv->species);
+
+    Real xi_rule[27][3], w_rule[27];
+    int n_pts_warm = 0;
+    nrpic::vlasov::StroudCubatureRule(vlv->opt.scp_n_q, vlv->opt.basis_kind,
+                                       xi_rule, w_rule, n_pts_warm);
+
+    int n_pkt = 0;
+    for (int a = 0; a < N; ++a) {
+      for (int al = 0; al < Nb; ++al) {
+        if (hm(al, a) <= 0.0) continue;
+        const Real trS = hS(al, SYM_XX, a) + hS(al, SYM_YY, a) + hS(al, SYM_ZZ, a);
+        n_pkt += (trS <= 1.0e-26) ? 1 : n_pts_warm;
+      }
+    }
+
+    SetNumberOfParticles(n_pkt);
+    HostArray2D<Real> rh("rh", nrdata, n_pkt);
+    HostArray2D<int>  ih("ih", nidata, n_pkt);
+    const int gids = pmy_pack->gids;
+    const bool do_rot = vlv->opt.scp_rotate;
+
+    int p = 0;
+    for (int a = 0; a < N; ++a) {
+      const Real xa[3] = {hx(0, a), hx(1, a), hx(2, a)};
+      for (int al = 0; al < Nb; ++al) {
+        const Real ma = hm(al, a);
+        if (ma <= 0.0) continue;
+        const Real u_c[3] = {hu(al, 0, a), hu(al, 1, a), hu(al, 2, a)};
+        const Real s6[6] = {
+          hS(al, SYM_XX, a), hS(al, SYM_XY, a), hS(al, SYM_XZ, a),
+          hS(al, SYM_YY, a), hS(al, SYM_YZ, a), hS(al, SYM_ZZ, a)
+        };
+        const Real trS = s6[0] + s6[3] + s6[5];
+        const int sp_val = (Nb > 1) ? al : hsp(a);
+        if (trS <= 1.0e-26) {
+          rh(IPX, p) = xa[0]; rh(IPY, p) = xa[1]; rh(IPZ, p) = xa[2];
+          rh(IPVX, p) = u_c[0]; rh(IPVY, p) = u_c[1]; rh(IPVZ, p) = u_c[2];
+          rh(IPM, p) = ma;
+          rh(IPTAU, p) = 0.0;
+          ih(PGID, p) = gids;
+          ih(PTAG, p) = p;
+          ih(PSP, p) = sp_val;
+          ih(PPERI, p) = 0;
+          ++p;
+        } else {
+          Real Sig[3][3], L[3][3];
+          nrpic_vlasov_detail::UnpackSym6(s6, Sig);
+          nrpic::vlasov::Chol3Safe(Sig, L);
+          Real R[3][3];
+          if (do_rot) {
+            nrpic::vlasov::HaltonSO3(a * Nb + al, R);
+          } else {
+            for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j) R[i][j] = (i == j) ? 1.0 : 0.0;
+          }
+          Real LR[3][3];
+          for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+              LR[i][j] = L[i][0]*R[0][j] + L[i][1]*R[1][j] + L[i][2]*R[2][j];
+            }
+          }
+          for (int q = 0; q < n_pts_warm; ++q) {
+            rh(IPX, p) = xa[0]; rh(IPY, p) = xa[1]; rh(IPZ, p) = xa[2];
+            rh(IPVX, p) = u_c[0] + LR[0][0]*xi_rule[q][0] + LR[0][1]*xi_rule[q][1] + LR[0][2]*xi_rule[q][2];
+            rh(IPVY, p) = u_c[1] + LR[1][0]*xi_rule[q][0] + LR[1][1]*xi_rule[q][1] + LR[1][2]*xi_rule[q][2];
+            rh(IPVZ, p) = u_c[2] + LR[2][0]*xi_rule[q][0] + LR[2][1]*xi_rule[q][1] + LR[2][2]*xi_rule[q][2];
+            rh(IPM, p) = ma * w_rule[q];
+            rh(IPTAU, p) = 0.0;
+            ih(PGID, p) = gids;
+            ih(PTAG, p) = p;
+            ih(PSP, p) = sp_val;
+            ih(PPERI, p) = 0;
+            ++p;
+          }
+        }
+      }
+    }
+    Kokkos::deep_copy(prtcl_rdata, rh);
+    Kokkos::deep_copy(prtcl_idata, ih);
+    nrpic_vlasov_detail::ResetMfmBuffers(*vlv);
+    if (nropt.metric == NrpicMetric::mesh) {
+      NrpicAssignBlocks();
+      NrpicRemoveFlagged();
+    }
+    vlv->initialized = true;
+    if (global_variable::my_rank == 0) {
+      std::cout << "NRPIC Vlasov SCP: expanded " << N << " elements (Nb=" << Nb
+                << ") into " << n_pkt << " symplectic packets (q=" << vlv->opt.scp_n_q
+                << ", rotate=" << (do_rot ? "true" : "false") << ")" << std::endl;
+    }
+    return;
+  }
+
   if (!vlv->restart_real.empty()) {
     const int N  = vlv->restart_meta[0];
     const int Nb = vlv->restart_meta[1];
@@ -2130,6 +3003,29 @@ void Particles::NrpicVlasovInitializeOnMesh() {
   nrpic_vlasov_detail::UpdateGeometry(*vlv, nropt, false, 1.8);
   nrpic_vlasov_detail::UpdateGeometry(*vlv, nropt, true,  1.2);
   nrpic_vlasov_detail::ConsToPrim(*vlv);
+
+  // Detect static zero-grad / Minkowski mesh once at startup
+  vlv->opt.metric_grad_zero = false;
+  vlv->opt.metric_is_minkowski = false;
+  if (metric_is_static && nropt.metric == NrpicMetric::mesh && pmy_pack->pz4c == nullptr) {
+    auto met = nrpic_vlasov_detail::BuildMetricHelper(this, pmy_pack, sz);
+    auto act = vlv->active;
+    auto xv  = vlv->x;
+    auto gv  = vlv->blk_gid;
+    int has_grad = 0;
+    int non_mink = 0;
+    Kokkos::parallel_reduce("vlasov_flat_chk", Kokkos::RangePolicy<DevExeSpace>(0, vlv->n_elem),
+    KOKKOS_LAMBDA(const int a, int &lhas, int &lmink) {
+      if (!act(a)) return;
+      const Real pos[3] = {xv(0, a), xv(1, a), xv(2, a)};
+      nrpic::AdmPoint ap;
+      met(0, pos, gv(a), ap);
+      if (nrpic_vlasov_detail::HasNonZeroGrad(ap)) lhas += 1;
+      if (nrpic_vlasov_detail::IsNotMinkowski(ap)) lmink += 1;
+    }, Kokkos::Sum<int>(has_grad), Kokkos::Sum<int>(non_mink));
+    vlv->opt.metric_grad_zero = (has_grad == 0);
+    vlv->opt.metric_is_minkowski = (has_grad == 0 && non_mink == 0);
+  }
   vlv->initialized = true;
 }
 
@@ -2149,7 +3045,7 @@ void Particles::NrpicVlasovPush() {
 
   const bool static_met = metric_is_static || (nropt.metric != NrpicMetric::mesh);
   auto compute_nsub = [&](Real &max_sig_out) -> int {
-    const Real dt_cfl_unit = nrpic_vlasov_detail::ComputeMinCflTime(*vlv, met, 2, max_sig_out);
+    const Real dt_cfl_unit = nrpic_vlasov_detail::ComputeMinCflTime(*vlv, nropt, met, 2, max_sig_out);
     vlv->opt.max_sig_last = max_sig_out;
     int ns = 1;
     if (vlv->opt.fixed_substeps > 0) {
@@ -2508,6 +3404,58 @@ void Particles::NrpicVlasovDepositLoop(const DvceArray5D<Real> &tm, Real &sum_mw
 void Particles::NrpicVlasovWriteHistory(Real time, int ncycle, bool header) {
   if (vlv == nullptr || global_variable::my_rank != 0) return;
 
+  if (vlv->opt.packet_mode) {
+    const int np = nprtcl_thispack;
+    auto sz  = pmy_pack->pmb->mb_size.d_view;
+    auto met = nrpic_vlasov_detail::BuildMetricHelper(this, pmy_pack, sz);
+    auto pr  = prtcl_rdata;
+    auto pi  = prtcl_idata;
+
+    array_sum::GlobalSum s_acc;
+    Real a_min = 1.0e300;
+    if (np > 0) {
+      Kokkos::parallel_reduce("vlasov_pkt_hist", Kokkos::RangePolicy<DevExeSpace>(0, np),
+      KOKKOS_LAMBDA(const int p, array_sum::GlobalSum &ls, Real &lamin) {
+        const Real mp = pr(IPM, p);
+        if (mp <= 0.0) return;
+        const Real pos[3] = {pr(IPX, p), pr(IPY, p), pr(IPZ, p)};
+        const Real u[3]   = {pr(IPVX, p), pr(IPVY, p), pr(IPVZ, p)};
+        nrpic::AdmPoint ap;
+        met(1, pos, pi(PGID, p), ap);
+        lamin = fmin(lamin, ap.alp);
+        Real gi[3][3], uup[3];
+        nrpic::Inv3Sym(ap.g, gi);
+        const Real W = nrpic::LorentzFactor(gi, u, uup);
+        ls.the_array[0] += mp;
+        ls.the_array[1] += mp * W;
+        ls.the_array[2] += mp * u[0];
+        ls.the_array[3] += mp * u[1];
+        ls.the_array[4] += mp * u[2];
+      }, Kokkos::Sum<array_sum::GlobalSum>(s_acc), Kokkos::Min<Real>(a_min));
+    } else {
+      a_min = 0.0;
+    }
+    const std::string fname = nr_basename + ".vlasov.hst";
+    std::FILE *fp = std::fopen(fname.c_str(), header ? "w" : "a");
+    if (fp == nullptr) nrpic_vlasov_detail::VlasovFatal("cannot open " + fname);
+    if (header) {
+      std::fprintf(fp, "# [0]=time [1]=ncycle [2]=n_active [3]=m_tot [4]=E_tot "
+                       "[5]=P_x [6]=P_y [7]=P_z [8]=m_trSigma [9]=h_min [10]=h_max "
+                       "[11]=alpha_min [12]=substeps [13]=max_sig [14]=n_excised [15]=m_excised\n");
+    }
+    std::fprintf(fp, "%.15e %d %d %.15e %.15e %.15e %.15e %.15e %.15e %.15e %.15e %.15e %d %.15e %d %.15e\n",
+                 time, ncycle, np, s_acc.the_array[0], s_acc.the_array[1],
+                 s_acc.the_array[2], s_acc.the_array[3], s_acc.the_array[4],
+                 0.0, 0.0, 0.0, a_min, 1, 0.0,
+                 n_excised + n_escaped, mass_excised + mass_escaped);
+    std::fclose(fp);
+    sum_m     = s_acc.the_array[0];
+    sum_mu[0] = s_acc.the_array[2];
+    sum_mu[1] = s_acc.the_array[3];
+    sum_mu[2] = s_acc.the_array[4];
+    return;
+  }
+
   const int N   = vlv->n_elem;
   const int Nb  = vlv->n_basis;
   const int n_q = vlv->opt.n_q_dep;
@@ -2605,6 +3553,41 @@ void Particles::NrpicVlasovWriteSnapshot(Real time) {
   std::FILE *fp = std::fopen(fname.c_str(), "wb");
   if (fp == nullptr) nrpic_vlasov_detail::VlasovFatal("cannot open " + fname);
 
+  if (vlv->opt.packet_mode) {
+    const int np = nprtcl_thispack;
+    const char magic[9] = "GRLBV001";
+    std::int64_t n64 = np;
+    std::int64_t nb64 = 1;
+    double t64 = time;
+    std::fwrite(magic, 1, 8, fp);
+    std::fwrite(&n64, sizeof(std::int64_t), 1, fp);
+    std::fwrite(&nb64, sizeof(std::int64_t), 1, fp);
+    std::fwrite(&t64, sizeof(double), 1, fp);
+    if (np > 0) {
+      auto rh = Kokkos::create_mirror_view_and_copy(HostMemSpace(), prtcl_rdata);
+      auto ih = Kokkos::create_mirror_view_and_copy(HostMemSpace(), prtcl_idata);
+      std::vector<double> x_out(3 * static_cast<size_t>(np));
+      std::vector<std::int32_t> sp_out(static_cast<size_t>(np));
+      std::vector<double> m_out(static_cast<size_t>(np));
+      std::vector<double> u_out(3 * static_cast<size_t>(np));
+      std::vector<double> s_out(6 * static_cast<size_t>(np), 0.0);
+      for (int p = 0; p < np; ++p) {
+        x_out[3*p + 0] = rh(IPX, p);  x_out[3*p + 1] = rh(IPY, p);  x_out[3*p + 2] = rh(IPZ, p);
+        u_out[3*p + 0] = rh(IPVX, p); u_out[3*p + 1] = rh(IPVY, p); u_out[3*p + 2] = rh(IPVZ, p);
+        m_out[p] = rh(IPM, p);
+        sp_out[p] = ih(PSP, p);
+      }
+      std::fwrite(x_out.data(), sizeof(double), x_out.size(), fp);
+      std::fwrite(sp_out.data(), sizeof(std::int32_t), sp_out.size(), fp);
+      std::fwrite(m_out.data(), sizeof(double), m_out.size(), fp);
+      std::fwrite(u_out.data(), sizeof(double), u_out.size(), fp);
+      std::fwrite(s_out.data(), sizeof(double), s_out.size(), fp);
+    }
+    std::fclose(fp);
+    snap_number++;
+    return;
+  }
+
   const int N  = vlv->n_elem;
   const int Nb = vlv->n_basis;
 
@@ -2667,9 +3650,13 @@ void Particles::NrpicVlasovWriteRestart(const std::string &fname) {
   if (fp == nullptr) nrpic_vlasov_detail::VlasovFatal("cannot open " + fname);
 
   const char magic[9] = "NRPVLV01";
-  const std::int64_t meta[2] = {vlv->n_elem, vlv->n_basis};
+  const std::int64_t meta[2] = {vlv->opt.packet_mode ? -1 : vlv->n_elem, vlv->n_basis};
   std::fwrite(magic, 1, 8, fp);
   std::fwrite(meta, sizeof(std::int64_t), 2, fp);
+  if (vlv->opt.packet_mode) {
+    std::fclose(fp);
+    return;
+  }
 
   const int N  = vlv->n_elem;
   const int Nb = vlv->n_basis;
@@ -2717,6 +3704,10 @@ void Particles::NrpicVlasovReadRestart(const std::string &fname) {
   }
   const int N  = static_cast<int>(meta[0]);
   const int Nb = static_cast<int>(meta[1]);
+  if (N < 0) {
+    std::fclose(fp);
+    return;
+  }
   vlv->restart_meta = {N, Nb};
   const size_t nreal = static_cast<size_t>(N) * (4 + 10 * Nb);
   vlv->restart_real.resize(nreal);

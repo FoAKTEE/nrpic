@@ -69,7 +69,8 @@ Particles::Particles(MeshBlockPack *ppack, ParameterInput *pin) :
       pusher = ParticlesPusher::nrpic_boris;
     } else if (is_nrpic && ppush.compare("newton") == 0) {
       pusher = ParticlesPusher::nrpic_newton;
-    } else if (is_nrpic && ppush.compare("vlasov_mfm") == 0) {
+    } else if (is_nrpic && (ppush.compare("vlasov_mfm") == 0 ||
+                            ppush.compare("vlasov_hybrid") == 0)) {
       pusher = ParticlesPusher::nrpic_vlasov;
     } else {
       std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__

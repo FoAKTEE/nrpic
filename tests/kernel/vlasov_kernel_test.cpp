@@ -243,6 +243,51 @@ void RunSelfTests() {
     assert(fabs(FD_s) < 1e-15 && fabs(FE_s) < 1e-15 && fabs(FP_s[1]) < 1e-15 && fabs(FP_s[2]) < 1e-15);
     assert(fabs(FPi_s[0][0]) < 1e-12);
   }
+
+  // 5. Stroud degree-5 14-point & 8-point cubature moments + HaltonSO3 + IsSpd3Fast
+  {
+    Real xi[27][3], w[27];
+    int n_pts = 0;
+    for (int bkind = 0; bkind <= 1; ++bkind) {
+      StroudCubatureRule(14, bkind, xi, w, n_pts);
+      assert(n_pts == 14);
+      Real m0 = 0.0, m1[3] = {0,0,0}, m2[3][3] = {{0}}, m3 = 0.0, m4_diag = 0.0, m4_off = 0.0;
+      for (int q = 0; q < n_pts; ++q) {
+        assert(w[q] > 0.0);
+        m0 += w[q];
+        m3 += w[q] * xi[q][0] * xi[q][1] * xi[q][2];
+        m4_diag += w[q] * xi[q][0] * xi[q][0] * xi[q][0] * xi[q][0];
+        m4_off  += w[q] * xi[q][0] * xi[q][0] * xi[q][1] * xi[q][1];
+        for (int i = 0; i < 3; ++i) {
+          m1[i] += w[q] * xi[q][i];
+          for (int j = 0; j < 3; ++j) m2[i][j] += w[q] * xi[q][i] * xi[q][j];
+        }
+      }
+      assert(CheckClose(m0, 1.0, 1e-14, 1e-14));
+      for (int i = 0; i < 3; ++i) assert(fabs(m1[i]) < 1e-14);
+      for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j) {
+        assert(CheckClose(m2[i][j], (i == j) ? 1.0 : 0.0, 1e-14, 1e-14));
+      }
+      assert(fabs(m3) < 1e-14);
+      const Real target_m4d = (bkind == BASIS_GAUSS) ? 3.0 : 1.8;
+      assert(CheckClose(m4_diag, target_m4d, 1e-14, 1e-14));
+      assert(CheckClose(m4_off, 1.0, 1e-14, 1e-14));
+    }
+    Real R[3][3];
+    HaltonSO3(17, R);
+    for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j) {
+      Real dot = R[0][i]*R[0][j] + R[1][i]*R[1][j] + R[2][i]*R[2][j];
+      assert(CheckClose(dot, (i == j) ? 1.0 : 0.0, 1e-14, 1e-14));
+    }
+    const Real detR = R[0][0]*(R[1][1]*R[2][2]-R[1][2]*R[2][1])
+                    - R[0][1]*(R[1][0]*R[2][2]-R[1][2]*R[2][0])
+                    + R[0][2]*(R[1][0]*R[2][1]-R[1][1]*R[2][0]);
+    assert(CheckClose(detR, 1.0, 1e-14, 1e-14));
+    Real S_test[3][3] = {{0.2, 0.05, -0.02}, {0.05, 0.15, 0.03}, {-0.02, 0.03, 0.12}};
+    assert(IsSpd3Fast(S_test, 0.0));
+    Real S_bad[3][3] = {{0.2, 0.3, 0.0}, {0.3, 0.1, 0.0}, {0.0, 0.0, 0.1}};
+    assert(!IsSpd3Fast(S_bad, 0.0));
+  }
   std::printf("C++ standalone GR-LBV kernel self-tests PASSED.\n");
 }
 

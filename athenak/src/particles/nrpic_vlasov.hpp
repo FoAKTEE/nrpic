@@ -21,6 +21,12 @@ enum VlasovPairMode {
   VLASOV_PAIR_VONLY = 1
 };
 
+enum VlasovSolverMode {
+  VLASOV_MODE_MFM = 0,
+  VLASOV_MODE_HYBRID = 1,
+  VLASOV_MODE_SCP = 2
+};
+
 // Indices of symmetric 3x3 tensor packed into 6 components: (0,0),(0,1),(0,2),(1,1),(1,2),(2,2)
 enum VlasovSym6 {
   SYM_XX = 0,
@@ -33,6 +39,12 @@ enum VlasovSym6 {
 };
 
 struct VlasovOptions {
+  int solver_mode = VLASOV_MODE_MFM;
+  bool packet_mode = false;
+  int scp_n_q = 14;
+  bool scp_rotate = true;
+  bool metric_grad_zero = false;
+  bool metric_is_minkowski = false;
   int basis_kind = nrpic::vlasov::BASIS_TOPHAT;
   int n_perp = 3;
   int n_q_kick = 3;
@@ -83,10 +95,11 @@ struct VlasovState {
   DvceArray3D<Real> Pi0;      // (Nb, 6, N)
   DvceArray3D<Real> dPi;      // (Nb, 6, N)
 
-  // Energy tracking for flat-space collisional HLLC+BGK
+  // Energy tracking & hoisted Noh conduction state for collisional HLLC+BGK
   DvceArray1D<Real> E0;       // (N)
   DvceArray1D<Real> E_cons;   // (N)
   DvceArray1D<Real> dE;       // (N)
+  DvceArray2D<Real> cell_noh; // (8, N) precomputed cell HLLC state for Noh conduction
 
   // Primitive basis variables
   DvceArray2D<Real> D;        // (Nb, N)

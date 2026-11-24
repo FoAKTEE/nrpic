@@ -1,0 +1,30 @@
+\section{Relativistic kinetic system in 3+1 form}\label{sec:system}
+
+Consider massive particles of rest mass $\mu_p$ moving along timelike trajectories on the future mass shell $g^{\mu\nu} u_\mu u_\nu = -1$, where $u_\mu$ denotes covariant four-velocity per unit rest mass. Under a three-plus-one Arnowitt-Deser-Misner foliation \cite{Arnowitt:1962hi} of slices $\Sigma_t$ with lapse $\alpha$, shift $\beta^i$, induced spatial metric $\gamma_{ij}$, inverse $\gamma^{ij}$, and determinant $\gamma = \det(\gamma_{ij})$, the spacetime line element is
+\begin{equation}
+\dd s^2 = -\alpha^2\,\dd t^2 + \gamma_{ij}(\dd x^i + \beta^i\,\dd t)(\dd x^j + \beta^j\,\dd t).
+\end{equation}
+Normal observers pierce $\Sigma_t$ orthogonally along $n_\mu = (-\alpha,0,0,0)$ and $n^\mu = (\alpha^{-1}, -\alpha^{-1}\beta^i)$, measuring the Lorentz factor
+\begin{equation}
+W = -n^\mu u_\mu = \sqrt{1 + \gamma^{ij} u_i u_j},
+\end{equation}
+and the raised spatial components $u^i = \gamma^{ij} u_j$. The single-particle Hamiltonian in canonical Darboux coordinates $(x^i, u_i)$ equals the coordinate energy $-u_0 = \alpha W - \beta^i u_i$. Hamilton's equations therefore give the normal-observer characteristic equations,
+\begin{align}\label{eq:characteristics}
+\frac{\dd x^i}{\dd t} &= \frac{\alpha \gamma^{ij} u_j}{W} - \beta^i, \nonumber\\
+\frac{\dd u_i}{\dd t} &= -W \partial_i \alpha + u_j \partial_i \beta^j + \frac{\alpha}{2W} u^l u^m \partial_i \gamma_{lm}.
+\end{align}
+
+On the mass shell the Lorentz-invariant momentum volume element is $\dd\Pi_u = \dd^3 u / (\sqrt{\gamma}\,W)$, while the proper spatial volume on $\Sigma_t$ is $\sqrt{\gamma}\,\dd^3 x$. Their product equals the flat coordinate measure $\dd^3 x\,\dd^3 u$. Defining the Darboux rest-mass phase-space density $f(t, \bm{x}, \bm{u}) \equiv \sqrt{\gamma}\,W\,\mathcal{F}$ from the scalar distribution function $\mathcal{F}$ absorbs every geometric volume factor. Because the normal-observer characteristic equations are Hamiltonian, their phase-space divergence vanishes identically, yielding the Darboux Vlasov law
+\begin{equation}\label{eq:darboux_vlasov}
+\frac{\partial f}{\partial t} + \frac{\partial}{\partial x^i}\!\left(\frac{\dd x^i}{\dd t} f\right) + \frac{\partial}{\partial u_i}\!\left(\frac{\dd u_i}{\dd t} f\right) = \left(\frac{\partial f}{\partial t}\right)_{\rm coll}.
+\end{equation}
+Unconstrained covariant momenta $\bm{u} \in \mathbb{R}^3$ keep particle three-velocities strictly subluminal without artificial velocity-space barriers, and coordinate derivatives vanish globally when the slice is flat Minkowski space.
+
+Normal observers project the stress-energy tensor $T^{\mu\nu}$ into coordinate-densitized energy, momentum, and spatial stress fields via moments of $f$:
+\begin{equation}\label{eq:adm_sources}
+\sqrt{\gamma}\begin{pmatrix} E \\ S_i \\ S_{ij} \end{pmatrix} = \int_{\mathbb{R}^3} \begin{pmatrix} W \\ u_i \\ u_i u_j / W \end{pmatrix} f(t,\bm{x},\bm{u})\,\dd^3 u.
+\end{equation}
+Dividing these integrals by $\sqrt{\gamma}$ supplies the matter sources to Einstein's equations evolved in the constraint-damped Z4c formulation \cite{Bona:2003fj,Hilditch:2012fp,Gundlach:2005eh} under moving-puncture gauge \cite{Bona:1994dr,Campanelli:2005dd,Alcubierre:2002kk}.
+
+When interparticle scattering with reduced cross section $\sigma/\mu_p$ is active, local relaxation drives $\mathcal{F}$ toward the relativistic Maxwell-J{\"u}ttner equilibrium at dimensionless temperature $\theta \equiv k_B T / \mu_p$, characterized by specific enthalpy $h_{\rm rel}(\theta) = K_3(1/\theta)/K_2(1/\theta)$ and mean Lorentz factor $\bar{W}_{\rm com}(\theta) = h_{\rm rel}(\theta) - \theta$ in the Synge gas equation of state \cite{Synge:1957,Israel:1963}. In the collisionless limit $\sigma/\mu_p = 0$, the Darboux Vlasov law reduces to exact phase-space conservation along geodesics.
+

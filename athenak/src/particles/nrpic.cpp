@@ -44,6 +44,7 @@
 #include "particles/nrpic_mesh.hpp"
 #include "particles/nrpic_cosmo_ext.hpp"
 #include "particles/nrpic_mpi.hpp"
+#include "particles/nrpic_vlasov.hpp"
 // last: this header defines the macro NDIM, which collides with a member of Tmunu
 #include "z4c/fastflow.hpp"
 
@@ -413,7 +414,8 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
     NrpicFillMetric(met1);
     if (nropt.interp_bspline) { NrpicSharpenMetric(met1, met1s); }
   }
-  if (pusher == ParticlesPusher::nrpic_vlasov) {
+  if (pusher == ParticlesPusher::nrpic_vlasov &&
+      !(vlv != nullptr && vlv->opt.packet_mode)) {
     NrpicVlasovPush();
     NrpicAccAfterPush();
     return TaskStatus::complete;
@@ -440,6 +442,12 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   const Real bh_mass = nropt.mass, bh_spin = nropt.spin, lat_dx = nropt.lattice_dx;
   const Real alpha_exc = nropt.alpha_exc;
   const bool zm_null = nropt.zero_mass_null;
+  const Real r_plus_bh = bh_mass + sqrt(fmax(bh_mass*bh_mass - bh_spin*bh_spin, 0.0));
+  const Real vlasov_r_exc_bl =
+      (pusher == ParticlesPusher::nrpic_vlasov && vlv != nullptr && vlv->opt.kerr_r_exc > 0.0 &&
+       (msrc == NrpicMetric::kerr_schild || msrc == NrpicMetric::lattice ||
+        msrc == NrpicMetric::kerr_schild_sph || msrc == NrpicMetric::boyer_lindquist))
+      ? (vlv->opt.kerr_r_exc * r_plus_bh) : 0.0;
 
   // apparent-horizon excision: particles inside ah_exc_factor times the minimum
   // coordinate radius of a found horizon are removed
@@ -600,6 +608,21 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
       it = -it;
     }
     lmxit = (it > lmxit) ? it : lmxit;
+    if (!excise && vlasov_r_exc_bl > 0.0) {
+      Real r_bl = 1.0e300;
+      if (msrc == NrpicMetric::kerr_schild || msrc == NrpicMetric::lattice) {
+        const Real a2 = bh_spin * bh_spin;
+        const Real b = x[0]*x[0] + x[1]*x[1] + x[2]*x[2] - a2;
+        const Real r2 = 0.5 * (b + sqrt(b*b + 4.0*a2*x[2]*x[2]));
+        r_bl = sqrt(fmax(r2, 0.0));
+      } else {
+        r_bl = x[0];
+      }
+      if (r_bl < vlasov_r_exc_bl) {
+        code = -3;
+        excise = true;
+      }
+    }
     // a particle whose state is no longer finite is removed with the excised ones
     Real chk = x[0] + x[1] + x[2] + u[0] + u[1] + u[2];
     if (!(Kokkos::isfinite(chk))) {
@@ -715,7 +738,8 @@ void Particles::NrpicRemoveFlagged() {
 //! \brief removes excised and escaped particles and updates the MeshBlock of the others
 
 TaskStatus Particles::NrpicExcise(Driver *pdriver, int stage) {
-  if (pusher == ParticlesPusher::nrpic_vlasov) {
+  if (pusher == ParticlesPusher::nrpic_vlasov &&
+      !(vlv != nullptr && vlv->opt.packet_mode)) {
     NrpicVlasovExcise();
     return TaskStatus::complete;
   }
@@ -1128,7 +1152,8 @@ void Particles::NrpicDepositSources() {
     sum_mw = smw;
   }
   thread_dep.End(dep);
-  if (pusher == ParticlesPusher::nrpic_vlasov) {
+  if (pusher == ParticlesPusher::nrpic_vlasov &&
+      !(vlv != nullptr && vlv->opt.packet_mode)) {
     NrpicVlasovDepositLoop(tm, sum_mw);
   }
   if (nr_multirank) { NrpicMpiDepositRemote(); }     // several ranks: clouds across them

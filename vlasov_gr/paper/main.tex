@@ -1,0 +1,36 @@
+\documentclass[aps,prd,twocolumn,10pt,superscriptaddress,nofootinbib,longbibliography,floatfix]{revtex4-2}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\graphicspath{{figures/}}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\aexc}{\alpha_{\rm exc}}
+\newcommand{\Ham}{\mathcal{H}}
+\newcommand{\Mom}{\mathcal{M}}
+\newcommand{\Egeo}{\mathcal{E}_{\rm geo}}
+
+\begin{document}
+
+\IfFileExists{sections/title.tex}{\input{sections/title}}{}
+
+\IfFileExists{sections/introduction.tex}{\input{sections/introduction}}{}
+\IfFileExists{sections/system.tex}{\input{sections/system}}{}
+\IfFileExists{sections/method.tex}{\input{sections/method}}{}
+\IfFileExists{sections/results_regimes.tex}{\input{sections/results_regimes}}{}
+\IfFileExists{sections/results_kerr.tex}{\input{sections/results_kerr}}{}
+\IfFileExists{sections/results_collapse.tex}{\input{sections/results_collapse}}{}
+\IfFileExists{sections/conclusions.tex}{\input{sections/conclusions}}{}
+
+\appendix
+\IfFileExists{sections/appendix_parameters.tex}{\input{sections/appendix_parameters}}{}
+
+\bibliography{references}
+
+\end{document}
+
