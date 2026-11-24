@@ -361,6 +361,291 @@ def entry_title(e):
     return None
 
 
+# ------------------------------------------------------------------ old-style lists under a heading
+# Package ingest4 (wave 3 batch 11): papers of the 1990s written in plain TeX or early LaTeX put
+# their references under a heading ("References", centred or bold) with no environment: an
+# enumerate list of \item, paragraphs that start with [n], or paragraphs started by a macro of
+# the paper (A&A's \ref, a \refh or \i\Key with a hanging indent). They cite with [n], with a
+# macro that wraps its argument in brackets (\r{\Key,...}, \Key defined as a number), or by author
+# and year. Used only when no other source gives an entry.
+HEAD_WORDS_RE = re.compile(r"(?:references?|reference\s+list|bibliography|literature(?:\s+cited)?)[.:]?", re.I)
+STOP_HEAD_RE = re.compile(r"(?:figures?|tables?)(?:\s+(?:and\s+tables?\s+)?captions?)?|captions?(?:\s+(?:to|of)"
+                          r"(?:\s+the)?\s+(?:figures?|tables?))?|figure\s+legends?|appendix(?:\s+\w+)?|"
+                          r"footnotes?|notes", re.I)
+_DIM_RE = re.compile(r"[-+]?(?:\d+\.?\d*|\.\d+)\s*(?:true)?(?:cm|mm|pt|in|em|ex|bp|pc|sp)(?![A-Za-z])")
+_ENV_CMD_RE = re.compile(r"\\(?:begin|end)\s*\{[^{}]*\}")
+_CS_RE = re.compile(r"\\[A-Za-z@]+\*?|\\.")
+_LIST_ENVS = ("enumerate", "itemize", "description")
+_LIST_END_RE = re.compile(r"\\end\s*\{(?:" + "|".join(_LIST_ENVS) + r")\}")
+_REGION_END_RE = re.compile(r"\\end\s*\{document\}|\\bye(?![A-Za-z@])|^[ \t]*\\end(?![A-Za-z@{])|"
+                            r"\\endref(?![A-Za-z@])|\\begin\s*\{(?:figure|table)\*?\}", re.M)
+_BRACKET_LINE_RE = re.compile(r"^[ \t]*(?:\\(?:noindent|par|indent|item|next)(?![A-Za-z@])\s*)*\[(\d{1,3})\]", re.M)
+_ITEM_RE = re.compile(r"\\item(?![A-Za-z@])")
+_LINE_CS_RE = re.compile(r"^[ \t]*\\([A-Za-z@]+)(?![A-Za-z@])", re.M)
+# paragraph-starting macros of reference lists in plain-TeX journal styles, accepted without a
+# definition in the source (A&A's \ref is defined in aa.cmm, often not shipped)
+KNOWN_PAR_MACROS = {"ref", "refh", "rf", "refer", "refa", "rfr", "bibi"}
+# a macro defined in the paper starts a paragraph when its body sets one of these
+_PAR_BODY_RE = re.compile(r"\\(?:par|hang|hangindent|hangafter|noindent|indent|item|everypar)(?![A-Za-z@])")
+_NOT_ENTRY_MACROS = {"noindent", "par", "item", "indent", "vskip", "smallskip", "medskip", "bigskip", "hfill",
+                     "hfil", "vfill", "vfil", "eject", "end", "begin", "centerline", "line", "leftline",
+                     "bf", "it", "rm", "sl", "sc", "tt", "em", "frenchspacing", "hangindent", "hang",
+                     "parindent", "goodbreak", "newpage", "clearpage", "break", "filbreak", "penalty",
+                     "bigbreak", "medbreak", "smallbreak", "nobreak", "next", "endref", "begref", "relax",
+                     "baselineskip", "parskip", "def", "let", "font", "small", "footnotesize", "large",
+                     "Large", "normalsize", "noindent", "vspace", "hspace", "newline", "obeylines"}
+
+
+def heading_text(line):
+    """The words of a line once control words, environment commands, braces and dimensions
+    are dropped: `{\\Large \\noindent \\bf References}` -> 'References'."""
+    s = _ENV_CMD_RE.sub(" ", line)
+    s = _DIM_RE.sub(" ", s)
+    s = _CS_RE.sub(" ", s)
+    s = re.sub(r"[{}\[\]$&=~]", " ", s)
+    return " ".join(s.split())
+
+
+def _lines(text, lo, hi):
+    for m in re.finditer(r"[^\n]*", text[lo:hi]):
+        if m.start() == m.end() and m.start() > 0 and text[lo + m.start() - 1:lo + m.start()] != "\n":
+            continue
+        yield lo + m.start(), lo + m.end(), m.group(0)
+
+
+def _clean_raw(raw):
+    """Entry text without the spacing and separator commands around it and without an unmatched
+    closing brace of a group that wrapped the whole list."""
+    raw = raw.strip()
+    prev = None
+    while raw != prev:
+        prev = raw
+        raw = re.sub(r"(?:\s*\\(?:par|noindent|next|smallskip|medskip|bigskip|vskip\s*\S+|goodbreak|endref|"
+                     r"vfill|vfil|eject|newpage|item|bigbreak|medbreak|smallbreak|filbreak|break|hfill|hfil)(?![A-Za-z@]))+\s*$", "", raw).strip()
+        if raw.endswith("}") and raw.count("}") > raw.count("{"):
+            raw = raw[:-1].strip()
+    return raw
+
+
+def _number_of(arg, macros):
+    """A citation key written as digits or as a macro whose body is digits (\\def\\Guth{1})."""
+    a = (arg or "").strip()
+    if re.fullmatch(r"\d{1,3}", a):
+        return a
+    m = re.fullmatch(r"\\([A-Za-z@]+)", a)
+    if m and macros and m.group(1) in macros:
+        spec = macros[m.group(1)]
+        if not spec.get("nargs") and re.fullmatch(r"\s*\d{1,3}\s*", spec.get("body", "")):
+            return spec["body"].strip()
+    return None
+
+
+def heading_reference_list(flat, struct=None, macros=None):
+    """An old-style reference list: the last line of the body whose words are a 'References'
+    heading starts it; it ends at \\end{document}, \\bye, a plain \\end, \\endref, a figure or
+    table environment, or a line whose words are a caption or appendix heading. Entries, in this
+    order of preference: \\item (keys 1, 2, ... or the [label]); lines that start with [n]
+    (key n); paragraphs started by one macro used at least 3 times at the start of a line, either
+    defined in the paper with a hanging indent or \\par, or a known journal macro (\\ref, \\refh):
+    a one-argument macro takes its argument as key (a macro whose body is a number gives that
+    number), a macro without argument gives '#<n>'. Returns None or dict(start, end, heading_at,
+    heading, style, entries)."""
+    macros = macros if macros is not None else M.collect(flat)
+    lo = (struct or {}).get("body_start") or 0
+    hi = (struct or {}).get("body_end") or len(flat)
+    head = None
+    for a, b, line in _lines(flat, lo, hi):
+        t = heading_text(line)
+        if t and HEAD_WORDS_RE.fullmatch(t) and len(line.strip()) < 120:
+            head = (a, b, t)
+    if head is None:
+        return None
+    start = head[1]
+    end = hi
+    m = _REGION_END_RE.search(flat, start, hi)
+    if m:
+        end = m.start()
+    for a, b, line in _lines(flat, start, end):
+        t = heading_text(line)
+        if t and len(t.split()) <= 5 and STOP_HEAD_RE.fullmatch(t) and not _BRACKET_LINE_RE.match(line):
+            end = a
+            break
+    region = flat[start:end]
+    entries, style = [], None
+    items = list(_ITEM_RE.finditer(region))
+    if len(items) >= 2:
+        style = "item"
+        for k, mi in enumerate(items):
+            nxt = items[k + 1].start() if k + 1 < len(items) else len(region)
+            if k + 1 == len(items):
+                me = _LIST_END_RE.search(region, mi.end())
+                if me:
+                    nxt = me.start()
+            i = mi.end()
+            g, j = M.read_group(region, i, "[", "]")
+            label = None
+            if g is not None:
+                label, i = g, j
+            key = re.sub(r"[^\d]", "", label) if label and re.fullmatch(r"\W*\d{1,3}\W*", label) else str(k + 1)
+            raw = _clean_raw(region[i:nxt])
+            if raw:
+                entries.append({"cite_key": key, "raw": raw, "label": label, "item": "heading-item"})
+        end = start + (items[-1].end() + (len(entries[-1]["raw"]) if entries else 0))
+        me = _LIST_END_RE.search(region, items[-1].end())
+        if me:
+            end = start + me.end()
+    if not entries:
+        marks = list(_BRACKET_LINE_RE.finditer(region))
+        if len(marks) >= 2:
+            style = "bracket"
+            for k, mb in enumerate(marks):
+                nxt = marks[k + 1].start() if k + 1 < len(marks) else len(region)
+                raw = _clean_raw(region[mb.end():nxt])
+                if raw:
+                    entries.append({"cite_key": mb.group(1), "raw": raw, "label": f"[{mb.group(1)}]",
+                                    "item": "heading-bracket"})
+    if not entries:
+        counts = {}
+        for mc in _LINE_CS_RE.finditer(region):
+            name = mc.group(1)
+            if name in _NOT_ENTRY_MACROS:
+                continue
+            spec = macros.get(name)
+            if spec is not None:
+                ok = spec.get("nargs", 0) <= 1 and bool(_PAR_BODY_RE.search(spec.get("body", "")))
+            else:
+                ok = name in KNOWN_PAR_MACROS and region[mc.end():mc.end() + 1] != "{"
+            if ok:
+                counts[name] = counts.get(name, 0) + 1
+        best = max(counts.items(), key=lambda x: (x[1], x[0]))[0] if counts else None
+        if best and counts[best] >= 3:
+            style = "macro:\\" + best
+            nargs = (macros.get(best) or {}).get("nargs", 0) or 0
+            pat = re.compile(r"^[ \t]*\\" + re.escape(best) + r"(?![A-Za-z@])", re.M)
+            marks = list(pat.finditer(region))
+            for k, mm in enumerate(marks):
+                nxt = marks[k + 1].start() if k + 1 < len(marks) else len(region)
+                i, key, label = mm.end(), None, None
+                if nargs == 1:
+                    arg, j = M.read_arg(region, i)
+                    if arg is not None:
+                        label = arg.strip()
+                        key = _number_of(label, macros) or label
+                        i = j
+                raw = _clean_raw(region[i:nxt])
+                if raw:
+                    entries.append({"cite_key": key or f"#{len(entries) + 1}", "raw": raw, "label": label,
+                                    "item": "heading-macro"})
+    if not entries:
+        return None
+    return {"start": start, "end": end, "heading_at": head[0], "heading": head[2], "style": style,
+            "entries": entries}
+
+
+_BRACKET_CITE_RE = re.compile(r"\[\s*(\d{1,3}(?:\s*(?:,|--?|–|—)\s*\d{1,3})*)\s*\]")
+
+
+def _expand_numbers(items, macros, valid):
+    """'1,3--5' (or macros standing for numbers) -> ['1', '3', '4', '5'], or None when any part
+    is not a key of the list."""
+    out = []
+    for part in re.split(r"\s*,\s*", items.strip()):
+        if not part:
+            continue
+        rng = re.split(r"\s*(?:--?|–|—)\s*", part)
+        nums = [_number_of(x, macros) for x in rng]
+        if any(n is None for n in nums) or len(nums) > 2:
+            return None
+        if len(nums) == 2:
+            a, b = int(nums[0]), int(nums[1])
+            if not 0 < a <= b or b - a > 50:
+                return None
+            nums = [str(n) for n in range(a, b + 1)]
+        out += nums
+    if not out or any(n not in valid for n in out):
+        return None
+    return out
+
+
+def _math_mask(flat, lo, hi, struct):
+    """Intervals of display math (from the structure) and of inline $..$ and \\(..\\) in [lo, hi)."""
+    spans = [(s["start"], s["end"]) for s in (struct or {}).get("math_spans", [])]
+    text = flat[lo:hi]
+    k, n = 0, len(text)
+    while k < n:
+        c = text[k]
+        if c == "\\":
+            if text.startswith("\\(", k):
+                e = text.find("\\)", k + 2)
+                if e > 0:
+                    spans.append((lo + k, lo + e + 2))
+                    k = e + 2
+                    continue
+            k += 2
+            continue
+        if c == "$":
+            dbl = text.startswith("$$", k)
+            e = text.find("$$" if dbl else "$", k + (2 if dbl else 1))
+            if e < 0:
+                break
+            spans.append((lo + k, lo + e + (2 if dbl else 1)))
+            k = e + (2 if dbl else 1)
+            continue
+        k += 1
+    return sorted(spans)
+
+
+def numeric_citations(flat, struct, macros, keys, hi):
+    """Citations of an old-style list in the text before it: [n], [n,m], [n--m] outside math and
+    not the optional argument of a command; a one-argument macro whose body only wraps #1 in
+    brackets or a superscript (\\def\\r#1{[#1]}) with numbers or number macros as argument.
+    Every number must be a key of the list. Returns cite records like tex_structure.extract's."""
+    valid = set(keys)
+    lo = (struct or {}).get("body_start") or 0
+    mask = _math_mask(flat, lo, hi, struct)
+    secs = [(s["start"], k) for k, s in enumerate((struct or {}).get("sections", []))]
+
+    def inside(p):
+        for a, b in mask:
+            if a <= p < b:
+                return True
+            if a > p:
+                break
+        return False
+
+    def section_at(p):
+        cur = None
+        for s0, k in secs:
+            if s0 <= p:
+                cur = k
+        return cur
+
+    out = []
+    for m in _BRACKET_CITE_RE.finditer(flat, lo, hi):
+        if inside(m.start()) or re.search(r"\\[A-Za-z@]+\*?\s*$|\\\\\s*$", flat[max(lo, m.start() - 40):m.start()]):
+            continue
+        nums = _expand_numbers(m.group(1), macros, valid)
+        if nums:
+            out.append({"cmd": "bracket", "keys": nums, "start": m.start(), "end": m.end(),
+                        "section": section_at(m.start()), "nocite": False, "old_style": True})
+    wraps = [name for name, spec in (macros or {}).items() if spec.get("nargs") == 1 and "#1" in spec.get("body", "")
+             and re.fullmatch(r"[\s\[\]{}^$]*", spec["body"].replace("#1", "")) and re.search(r"[\[^]", spec["body"])]
+    if wraps:
+        pat = re.compile(r"\\(" + "|".join(re.escape(w) for w in sorted(wraps, key=len, reverse=True)) + r")(?![A-Za-z@])")
+        for m in pat.finditer(flat, lo, hi):
+            if S._is_definition(flat, m.start()):
+                continue
+            arg, j = M.read_arg(flat, m.end())
+            if arg is None:
+                continue
+            nums = _expand_numbers(arg, macros, valid)
+            if nums:
+                out.append({"cmd": m.group(1), "keys": nums, "start": m.start(), "end": j,
+                            "section": section_at(m.start()), "nocite": False, "old_style": True})
+    out.sort(key=lambda c: c["start"])
+    return out
+
+
 # ------------------------------------------------------------------ choice of source
 def _cited_keys(struct):
     return {k for c in struct.get("cites", []) if not c.get("nocite") for k in c["keys"] if k != "*"}
@@ -468,6 +753,19 @@ def bibliography(root, main_rel, flat, struct, macros=None, reached=None):
             entries, source, used, unreached = ents, "thebibliography", [f], f
             notes.append(f"reference list taken from {f}, a file the main file does not reach "
                          f"(the paper cites and has no other entry)")
+    heading, old_cites = None, []
+    if not entries:
+        hl = heading_reference_list(flat, struct, macros if macros is not None else M.collect(flat))
+        if hl:
+            entries, source = hl["entries"], "heading"
+            heading = {k: hl[k] for k in ("start", "end", "heading_at", "heading", "style")}
+            notes.append(f"old-style reference list under the heading '{hl['heading']}' "
+                         f"({hl['style']}, {len(entries)} entries)")
+            old_cites = numeric_citations(flat, struct, macros if macros is not None else M.collect(flat),
+                                          [e["cite_key"] for e in entries], hl["heading_at"])
+            if old_cites:
+                notes.append(f"{len(old_cites)} citations by number ([n] or a bracket macro)")
+                cited = cited | {k for c in old_cites for k in c["keys"]}
     for e in entries:
         if source == "bib":
             arx, doi, eprint = bib_entry_ids(e)
@@ -477,4 +775,5 @@ def bibliography(root, main_rel, flat, struct, macros=None, reached=None):
         e.update({"arxiv": arx, "doi": doi, "eprint": eprint, "n_arxiv_ids": n_ids, "title": entry_title(e)})
     keys = {e["cite_key"] for e in entries}
     return {"source": source, "files": used, "entries": entries, "notes": notes, "cited_keys": len(cited),
-            "cited_with_entry": len(cited & keys), "unreached_file": unreached}
+            "cited_with_entry": len(cited & keys), "unreached_file": unreached, "heading_list": heading,
+            "old_cites": old_cites}

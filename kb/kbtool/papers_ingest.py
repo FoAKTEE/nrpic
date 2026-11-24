@@ -100,8 +100,16 @@ def parse_tex(src_root):
 
     body_start, body_end = st["body_start"], st["body_end"]
     bib_at = st["bibliography_at"] if st["bibliography_at"] is not None else body_end
+    # K3 first: an old-style list under a heading (no environment) is not body text, and its
+    # citations by number join those of \cite (bib_parse.heading_reference_list, ingest4)
+    bib = B.bibliography(src_root, mainf["main"], flat, st, macros=macros, reached=fl["files"])
+    hlist = bib.get("heading_list")
+    if bib.get("old_cites"):
+        st["cites"] = sorted(st["cites"] + bib["old_cites"], key=lambda c: c["start"])
     excluded = [(f["start"], f["end"]) for f in st["figures"]]
     excluded += [(f["start"], f["end"]) for f in st["footnotes"]]
+    if hlist:
+        excluded.append((hlist["heading_at"], hlist["end"]))
     if st["abstract"]:
         excluded.append((st["abstract"]["start"], st["abstract"]["end"]))
     excluded += front_matter_spans(flat, body_start, bib_at)
@@ -221,10 +229,9 @@ def parse_tex(src_root):
         "bibliography_files": st["bibliography_files"], "bibliography_at": st["bibliography_at"],
         "appendix_at": st["appendix_at"],
     }
-    bib = B.bibliography(src_root, mainf["main"], flat, st, macros=macros, reached=fl["files"])
     doc["bib"] = {"source": bib["source"], "files": bib["files"], "notes": bib["notes"],
                   "cited_keys": bib["cited_keys"], "cited_with_entry": bib["cited_with_entry"],
-                  "unreached_file": bib["unreached_file"],
+                  "unreached_file": bib["unreached_file"], "heading_list": hlist,
                   "entries": [{k: e.get(k) for k in ("cite_key", "raw", "arxiv", "doi", "eprint", "n_arxiv_ids",
                                                       "title")} for e in bib["entries"]]}
     doc["parse_seconds"] = round(time.time() - t0, 3)
@@ -299,6 +306,7 @@ def write_paper(con, pid, chk, doc, flat_sha, status):
                   "bib_cited_keys": doc["bib"].get("cited_keys"),
                   "bib_cited_with_entry": doc["bib"].get("cited_with_entry"),
                   "bib_unreached_file": doc["bib"].get("unreached_file"),
+                  "bib_heading_list": doc["bib"].get("heading_list"),
                   "review_reasons": doc.get("review_reasons", []),
                   "parse_seconds": doc.get("parse_seconds"), "error": doc.get("error")}
     con.execute("INSERT INTO papers(paper_id, title, authors_json, abstract, grp, priority, version, source_kind, "
