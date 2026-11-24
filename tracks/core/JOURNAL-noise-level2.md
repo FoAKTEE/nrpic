@@ -313,3 +313,56 @@ Prediction R0 (the fifteen runs of `cpu_tests.py` with
 every dump, .modes, .rmodes, .hst and restart-compared file is byte for byte that of the
 recorded run (a processor run repeats), hence the same numbers in summary.json. Refuted
 by any differing file.
+
+## Entry 7 (2026-11-24 05:15 PST): two source changes of the review, predictions R1 to R4
+
+Source (both in `scalar_field_noise_mesh.cpp`, two members in `scalar_field.hpp`, one
+block of `NoiseInit`):
+(a) Level 2: V = Pi_R K^2/(9 Pi^2) is formed once per call of `NoiseMeshCoefficients`
+    in a work array `prj_v` (one double per active cell; 134 MB at 256^3) and the first
+    sum reads it. The expression and the order of every sum are unchanged.
+(b) `<scalar_field> noise_level2_laplacian = metric | covariant | flat`, read only if
+    present and only at level 2; default metric = the kernel as it was. covariant adds
+    -Gt^k d_k R + 2 gt^ij d_i ln psi d_j R (the Laplacian of the field in
+    `scalar_field_rhs.cpp`), flat takes psi^-4 (d_xx + d_yy + d_zz) R. A sensitivity
+    option: it exists to measure what the reading of P1:317 changes.
+
+Predictions, written before the new executable has run a step (processors, 32^3,
+nmax2 = 64, slow-roll input; the executable is `.work/build_cpu_nl2/src/athena`, sha256
+31a88cb3..):
+
+R1 (identity): the fifteen runs of `cpu_tests.py` with the new executable give, file by
+file, the bytes of R0 (dumps, .modes, .rmodes, .hst): change (a) keeps every operation
+and its order on processors, and change (b) is not selected. Refuted by one differing
+file; then the published executables are NOT equivalent to the reviewed source and the
+cause has to be found before anything else.
+
+R2 (reading of the Laplacian; `review_tests.py`, perturbed slice, kicks on, t = 3.2):
+measured on the projected coefficients c_R(n) as rms over the 1054 modes of
+|c^(1)/c^(2) - 1|. (i) covariant against metric and flat against metric are of second
+order: at amplitude 1e-2 the relative difference is 1e-2 of that at amplitude 1 (within
+a factor 2), as is level 2 against level 1 on the mesh. (ii) Both are between 1e-3 and
+1e-1 of the level-2 effect (level 2 against level 1 on the mesh): the metric and K carry
+perturbations of order eps1 R (eps1 = 4 pi Pi^2/H^2 = 1.1e-2 at N*), Z carries
+2 delta Pi/Pi of order R (entry 6 item 3). Refuted if a reading changes c_R at first
+order (ratio of the two amplitudes near 1), or if either difference exceeds 0.3 of the
+level-2 effect (then the level-2 curve of the ablation depends on the reading and the
+note must say by how much), or if it is below 1e-4 of it (then the estimate by eps1 is
+wrong).
+
+R3 (background of the window and kicks at level 2): Friedmann against means changes c_R
+by about what level 1 on the mesh differs from level 0 on the mesh (ratio between 0.1
+and 10), and both are below 1e-2 of the level-2 effect: the box means leave the
+Friedmann solution at second order in the coefficient (and by the time-integration error
+of the mesh background), the local coefficients at first. Refuted if Friedmann against
+means exceeds 0.1 of the level-2 effect.
+
+R4 (a lapse that is not 1; homogeneous slice, kicks off, <z4c> lapse_harmonic = 1/3,
+i.e. alpha = a, conformal time to 0.85, alpha grows to about 6): (i) level 2 equals level
+1 on the mesh to the rounding of the box means, max over modes below 1e-9 for R and for
+n.d R at every dump (T1b gave 3.7e-12 with alpha = 1); (ii) the mesh R against the shells
+(which integrate in proper time, d tau = alpha dt) shows the stencil and nothing else: at
+equal ln a the deviation is that of the geodesic run within a factor 2 (cut modes and
+|n|^2 <= 48), and it stays below 0.1; (iii) the same for n.d R = Pi_R/Z against dR/dtau
+of the shells. Refuted by a deviation of order one (a lapse factor in the wrong place in
+the mesh path grows with alpha), or by level 2 differing from level 1 above 1e-9.

@@ -183,6 +183,21 @@ void ScalarField::NoiseInit(ParameterInput *pin) {
           NoiseFatal("<scalar_field> noise_level2_background must be means or friedmann");
         }
       }
+      // reading of d_i d^i R of arXiv:2512.14649 eq. (ReqISTORIZ1) with local coefficients
+      // (scalar_field_noise_mesh.cpp); the readings differ at the order of level 2 itself
+      if (pin->DoesParameterExist("scalar_field", "noise_level2_laplacian")) {
+        const std::string b = pin->GetString("scalar_field", "noise_level2_laplacian");
+        if (b.compare("metric") == 0) {
+          nopt.lap_kind = 0;
+        } else if (b.compare("covariant") == 0) {
+          nopt.lap_kind = 1;
+        } else if (b.compare("flat") == 0) {
+          nopt.lap_kind = 2;
+        } else {
+          NoiseFatal("<scalar_field> noise_level2_laplacian must be metric, covariant or "
+                     "flat");
+        }
+      }
     }
     if (pin->DoesParameterExist("scalar_field", "noise_rmodes_dump")) {
       nopt.rmodes_dump = pin->GetBoolean("scalar_field", "noise_rmodes_dump");

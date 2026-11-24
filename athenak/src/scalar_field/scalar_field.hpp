@@ -163,6 +163,8 @@ struct SfNoiseOptions {
   bool mesh_r = false;         // R and Pi_R as mesh fields (scalar_field_noise_mesh.cpp)
                                // instead of one mode function per shell
   bool rmodes_dump = false;    // mesh_r: per-mode record of the projections at dumps
+  int lap_kind = 0;            // level 2, reading of d_i d^i R: 0 psi^-4 gt^ij d_i d_j R
+                               // (default), 1 D^i D_i R, 2 psi^-4 delta^ij d_i d_j R
   int projector = 0;           // wave number of the trace-free projector: 0 that of the
                                // centred first difference, 1 the continuum one
   bool kick_pi = true, kick_k = true, kick_a = true;
@@ -311,6 +313,7 @@ class ScalarField {
   DvceArray2D<Real> prj_re, prj_im;       // (2, mode) projections of R and n.d R
   DvceArray4D<Real> pr2_re, pr2_im;       // (2, row, k, j) work arrays of the projection
   DvceArray3D<Real> pr1_re, pr1_im;       // (2, pair, k)
+  DvceArray4D<Real> prj_v;                // (m, k, j, i) level 2: V = Pi_R/Z of the stage
   bool mesh_warned = false;
   static bool MeshModeRequested(ParameterInput *pin);
   void NoiseMeshAlloc();

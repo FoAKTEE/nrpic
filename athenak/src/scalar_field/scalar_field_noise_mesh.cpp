@@ -16,7 +16,13 @@
 //!   d_t R    = beta^i d_i R    + alpha Pi_R/Z
 //!   d_t Pi_R = beta^i d_i Pi_R + alpha (K Pi_R + Z psi^-4 gt^ij d_i d_j R)
 //! with the field's stencils and dissipation.  Coefficients (P1:783-788):
-//!   level 2: local alpha, beta, K = Khat + 2 Theta, Pi, psi^-4 gt^ij;
+//!   level 2: local alpha, beta, K = Khat + 2 Theta, Pi, psi^-4 gt^ij.  The paper prints
+//!   d_i d^i R with partial derivatives and names phi_b, K_b, alpha_b, beta_b (P1:323)
+//!   and X_b (P1:487) as promoted to local values: psi^-4 gt^ij d_i d_j R is the default
+//!   (the principal part of D^i D_i R, the light cone of the evolved metric);
+//!   noise_level2_laplacian = covariant takes D^i D_i R, flat psi^-4 delta^ij d_i d_j R.
+//!   The three differ at the order of level 2 itself (a metric perturbation times a
+//!   derivative of R); Z uses Pi = n.d phi, the proper-time derivative of P1:237, 485;
 //!   level 0, 1 with noise_mode_eq = mesh: the uniform background of the level (alpha_b,
 //!   K_b = -3 H, Z_b = Pi_b^2/H^2, a^-2 delta^ij, no shift).
 //! At every stage the stage's R and V = n.d R = Pi_R/Z are projected onto the mode set,
@@ -98,6 +104,9 @@ void ScalarField::NoiseMeshAlloc() {
   Kokkos::realloc(pr2_im, 2, nxval, nx3, nx2);
   Kokkos::realloc(pr1_re, 2, npair, nx3);
   Kokkos::realloc(pr1_im, 2, npair, nx3);
+  if (nopt.level == 2) {
+    Kokkos::realloc(prj_v, pmy_pack->nmb_thispack, nx3, nx2, indcs.nx1);
+  }
   auto hps = Kokkos::create_mirror_view(pair_start);
   auto hxs = Kokkos::create_mirror_view(xval_start);
   Kokkos::deep_copy(hps, pair_start);
@@ -255,6 +264,18 @@ void ScalarField::NoiseMeshCoefficients() {
   Kokkos::deep_copy(prj_re, 0.0);
   Kokkos::deep_copy(prj_im, 0.0);
 
+  // level 2: V = n.d R = Pi_R/Z of every cell, formed once per call (the first sum below
+  // reads every cell once per row n_x)
+  auto pv = prj_v;
+  if (local) {
+    par_for("sf_prj_v", DevExeSpace(), 0, nmb-1, 0, nx3-1, 0, nx2-1, 0, nx1-1,
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+      const Real pi = u0_(m,ipi,k+ks,j+js,i+is);
+      const Real kk = z0(m,ikh,k+ks,j+js,i+is) + 2.0*z0(m,ith,k+ks,j+js,i+is);
+      pv(m,k,j,i) = u0_(m,ipr,k+ks,j+js,i+is)*kk*kk/(9.0*pi*pi);
+    });
+  }
+
   for (int mb=0; mb<nmb; ++mb) {
     const int m = mb;
     // sum over i: rows (field f, n_x, k, j); field 1 is V = Pi_R/Z of the cell
@@ -267,9 +288,7 @@ void ScalarField::NoiseMeshCoefficients() {
         if (f == 0) {
           v = u0_(m,ir,k+ks,j+js,i+is);
         } else if (local) {
-          const Real pi = u0_(m,ipi,k+ks,j+js,i+is);
-          const Real kk = z0(m,ikh,k+ks,j+js,i+is) + 2.0*z0(m,ith,k+ks,j+js,i+is);
-          v = u0_(m,ipr,k+ks,j+js,i+is)*kk*kk/(9.0*pi*pi);
+          v = pv(m,k,j,i);
         } else {
           v = u0_(m,ipr,k+ks,j+js,i+is)*izb;
         }
@@ -367,6 +386,7 @@ void ScalarField::NoiseMeshRHST() {
   const int ir = I_SF_R, ipr = I_SF_PIR, ipi = I_SF_PI;
 
   const bool local = (nopt.level == 2);
+  const int lapk = nopt.lap_kind;
   Real c[4] = {0.0, 0.0, 0.0, 0.0};
   if (!local) { NoiseMeshUniform(c); }
   const Real ab = c[0], kb = c[1], zb = c[2], ia2 = c[3];
@@ -405,6 +425,45 @@ void ScalarField::NoiseMeshRHST() {
       }
       const Real chi_guarded = (z4c.chi(m,k,j,i) > chi_div_floor)
                                ? z4c.chi(m,k,j,i) : chi_div_floor;
+      if (lapk == 2) {
+        // only the conformal factor local: psi^-4 delta^ij d_i d_j R
+        lap = ddr_dd(0,0) + ddr_dd(1,1) + ddr_dd(2,2);
+      } else if (lapk == 1) {
+        // psi^4 D^i D_i R = gt^ij d_i d_j R - Gt^k d_k R + 2 gt^ij d_i ln psi d_j R, with
+        // Gt^k from the conformal metric, as for the field (scalar_field_rhs.cpp)
+        AthenaPointTensor<Real, TensorSymm::NONE, 3, 1> dr_d;      // R 1st drvts
+        AthenaPointTensor<Real, TensorSymm::NONE, 3, 1> dchi_d;    // chi 1st drvts
+        AthenaPointTensor<Real, TensorSymm::NONE, 3, 1> Gamma_u;   // Gamma from the metric
+        AthenaPointTensor<Real, TensorSymm::SYM2, 3, 3> dg_ddd;    // metric 1st drvts
+        AthenaPointTensor<Real, TensorSymm::SYM2, 3, 3> Gamma_ddd; // Christoffel 1st kind
+        for (int a=0; a<3; ++a) {
+          dr_d(a)   = Dx<NGHOST>(a, idx, tr,      m,k,j,i);
+          dchi_d(a) = Dx<NGHOST>(a, idx, z4c.chi, m,k,j,i);
+        }
+        for (int a=0; a<3; ++a)
+        for (int b=a; b<3; ++b)
+        for (int d=0; d<3; ++d) {
+          dg_ddd(d,a,b) = Dx<NGHOST>(d, idx, z4c.g_dd, m,a,b,k,j,i);
+        }
+        for (int d=0; d<3; ++d)
+        for (int a=0; a<3; ++a)
+        for (int b=a; b<3; ++b) {
+          Gamma_ddd(d,a,b) = 0.5*(dg_ddd(a,b,d) + dg_ddd(b,a,d) - dg_ddd(d,a,b));
+        }
+        Gamma_u.ZeroClear();
+        for (int a=0; a<3; ++a)
+        for (int b=0; b<3; ++b)
+        for (int d=0; d<3; ++d)
+        for (int e=0; e<3; ++e) {
+          Gamma_u(a) += g_uu(b,d)*g_uu(a,e)*Gamma_ddd(e,b,d);
+        }
+        for (int a=0; a<3; ++a) {
+          lap -= Gamma_u(a)*dr_d(a);
+          for (int b=0; b<3; ++b) {
+            lap += g_uu(a,b)*2.0*dchi_d(a)/(chi_guarded*chi_psi_power)*dr_d(b);
+          }
+        }
+      }
       const Real oopsi4 = pow(chi_guarded, -4./chi_psi_power);
       const Real kk = z4c.vKhat(m,k,j,i) + 2.*z4c.vTheta(m,k,j,i);
       const Real alpha = z4c.alpha(m,k,j,i);
