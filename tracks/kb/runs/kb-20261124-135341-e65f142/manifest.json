@@ -1,0 +1,87 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "kb-20261124-135341-e65f142",
+  "track": "kb",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "ingest4: ingest the 18 additions and re-ingest the six old-style papers with --remap-claims; equation tags, vectors, vector check, claim check of 778; state after",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "export OMP_NUM_THREADS=4; DB=/data/haiyangw/nrpic/kb-data/db/kb.sqlite; { kb/.venv/bin/python -I kb/bin/kb ingest arxiv --id 2609.20338 --id 2608.22735 --id 2608.16986 --id 2610.27775 --id 2212.10891 --id 1303.1540 --id 2602.06961 --id 2610.20594 --id 2307.02474 --id 2307.10708 --id 2306.08199 --id 1904.03781 --id 1202.5970 --id 1908.02697 --id 1611.09781 --id 1202.4551 --id 1301.1190 --id 1304.3941 --id astro-ph/0306304 --id astro-ph/9306009 --id astro-ph/9510056 --id astro-ph/9607124 --id gr-qc/9604001 --id gr-qc/9906015  --jobs 4 --remap-claims --out \"$NRPIC_RUN_DIR/ingest\"; echo \"exit ingest $?\"; kb/.venv/bin/python -I kb/bin/kb eq --apply-tags; echo \"exit eq $?\"; kb/.venv/bin/python -I kb/bin/kb embed --threads 4; echo \"exit embed $?\"; kb/.venv/bin/python -I kb/bin/kb embed --check --work; echo \"exit check $?\"; kb/.venv/bin/python -I kb/bin/kb claim check --id 778; echo \"exit claim $?\"; python3 -I tracks/kb/ingest3/scripts/kbstate.py --db $DB --ids tracks/kb/ingest4/ids/oldstyle6.txt --ids tracks/kb/ingest4/ids/additions18.txt --out \"$NRPIC_RUN_DIR/after\" --tag after; echo \"exit state $?\"; } > \"$NRPIC_RUN_DIR/out.txt\" 2>&1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "e65f142f84cc3b625b7a893a38053598616a1a28",
+    "branch": "kb/main",
+    "dirty": false,
+    "package": [
+      "tracks/kb/ingest4"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "bc180c266e1af2b7a50d072fa17f9f0ddc283047",
+    "worktree": "wt/kb"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/kb/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/kb/kb-20261124-135341-e65f142",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-24T13:53:41Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 0.0,
+    "cores_allotted": 8,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 240,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
+  }
+}
