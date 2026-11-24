@@ -49,6 +49,12 @@ def compare(flip, proper):
               proper_N_at_H_max=float(b[ent, 2][np.argmax(b[ent, 3])]),
               proper_N_at_M_max=float(b[ent, 2][np.argmax(b[ent, 6])]),
               proper_last_cycle=int(b[-1, 1]), proper_N_end=float(b[-1, 2]))
+    # and over the whole proper run (from cycle 1 to its last record; RSF256 joined to t = 8.5)
+    allc = b[:, 1] >= 1
+    p2.update(proper_H_max_run=float(b[allc, 3].max()), proper_M_max_run=float(b[allc, 6].max()),
+              proper_N_at_H_max_run=float(b[allc, 2][np.argmax(b[allc, 3])]),
+              proper_N_at_M_max_run=float(b[allc, 2][np.argmax(b[allc, 6])]),
+              proper_H_end=float(b[-1, 3]), proper_M_end=float(b[-1, 6]))
     return dict(**p2, n_common=int(common.size), t_end_flip=float(a[-1, 0]), N_end_flip=float(a[-1, 2]),
                 H_ratio_min_entry=float(rH[win].min()) if win.any() else None,
                 H_ratio_median_entry=float(np.median(rH[win])) if win.any() else None,

@@ -97,6 +97,21 @@ def main():
     axes[0].legend(fontsize=5, loc="best")
     fs.save(fig, os.path.join(out, "fig_joins"))
     plt.close(fig)
+    # scope P1, record part (journal entry 14): the joined RSF256 record against P256v6's own record
+    # (same deck and steps, dumps differ only in output), in their common columns, every cycle
+    a = fl.read_con_joined(rr.con_paths("RSF256"))
+    b = fl.read_con_joined([rr.con_path("P256v6")])
+    nc = min(a.shape[1], b.shape[1])
+    common, ia, ib = np.intersect1d(a[:, 1].astype(np.int64), b[:, 1].astype(np.int64),
+                                    return_indices=True)
+    eq = np.all(a[ia, :nc] == b[ib, :nc], axis=1)
+    res["P1_records_RSF256_P256v6"] = dict(
+        n_rsf256=int(a.shape[0]), n_p256v6=int(b.shape[0]), n_common=int(common.size),
+        common_columns=int(nc), lines_identical=int(eq.sum()),
+        max_rel_diff=float(np.max(np.abs(a[ia, :nc] - b[ib, :nc])
+                                  / np.maximum(np.abs(b[ib, :nc]), 1e-300))),
+        first_differing_cycle=(int(common[~eq][0]) if (~eq).any() else None))
+    print("P1 records", res["P1_records_RSF256_P256v6"])
     with open(os.path.join(out, "joins.json"), "w") as fp:
         json.dump(res, fp, indent=1)
     for lab, r in res.items():
