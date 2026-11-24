@@ -1,13 +1,13 @@
 {
  "RNC256": {
-  "n_common": 83,
-  "t_end_flip": 0.7117670855789362,
-  "N_end_flip": 0.7089536414456633,
-  "H_ratio_min_entry": 72889.15774665927,
-  "H_ratio_median_entry": 72889.15774665927,
-  "M_flip_max": 0.16137914756667351,
+  "n_common": 735,
+  "t_end_flip": 4.5,
+  "N_end_flip": 4.3875547616371895,
+  "H_ratio_min_entry": 1386.1474513050061,
+  "H_ratio_median_entry": 105528.21914724036,
+  "M_flip_max": 0.21592411226178837,
   "H_flip_max": 9.906535060954351e-08,
-  "M_proper_max_common": 1.8198838548306212e-05
+  "M_proper_max_common": 0.00027191593328426407
  },
  "U256nc": {
   "n_common": 613,

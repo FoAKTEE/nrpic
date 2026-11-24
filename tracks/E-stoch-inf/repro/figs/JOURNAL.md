@@ -426,3 +426,65 @@ Predictions (refuted by the stated miss):
   1e-12.
 Not judged here (need RSF256 to t = 8.5, q0034): Fig. 2 constraint panels, Figs. 3 and 6a from
 RSF256, scope P2's per-cell part for SR, S14 SR per cell.
+
+## Entry 11 (2026-11-24 13:40 PST): outcomes of entry 10 (pass E-20261124-213029-e937f69, figure runs E-20261124-213400-37465c2 and E-20261124-213532-3f00681)
+
+Pass 213029-e937f69 (CL256S dump 17, AL2S dump 17 with c_NR, bit check of RSF256; 3 min on 6 cores).
+Figure run 213400-37465c2, then 213532-3f00681 after moving the Fig. 7 legend (every json byte-equal
+between the two; Figs. 1-6 jsons and PNGs byte-equal to those of 173254-420115f already in `fig/`;
+`fig9_ablation_sr_t75.json` differs only in the record count of AL2S, now 1387 cycles instead of
+1228). The PNGs and jsons of 213532-3f00681 are in `fig/`. Looked at: `fig_joins`, `fig7_specconv`,
+`fig8_convergence`, `fig9_ablation`, `fig_signflip` (and the test versions before).
+- J: PASS. `read_con_joined` over the raw pieces equals the joined records of 212343-7e9c4b2 at every
+  cycle and column for all five labels; every continuation's own lines equal the joined record where
+  they overlap (CL256U's first continuation a5dec67, superseded by 33a3a39, included); junction steps
+  over the mean of the neighbouring steps: CL256U (cycle 652, both continuations) 1.000 / 0.999 /
+  0.997 (N, H, M), CL256S (978) 1.000 / 0.882 / 1.334, AL2S (1227) 1.000 / 1.000 / 1.000; RSF256 and
+  RNC256 restart at cycle 0 (no junction to judge; overlaps identical) [`fig/joins.json`]. The
+  continuation package's own check (J1-J4) agrees.
+- F7 at 256: FAILED as written. Max over the 44 shells 3.72e-7 (band 1e-8 to 1.5e-7); median 6.3e-8;
+  the sequence 3.17e-3, 6.16e-5, 1.04e-6, 3.72e-7 is monotone and the 256 value is below scope P6(c)'s
+  1e-5 (P6(c) PASS). The order 128 -> 256 is 1.5 (max and median alike), not 6. Read off the figure:
+  below k of about 4.5e-3 (|n| <= 4) the 128 and 256 curves lie on each other at 1e-7 to 4e-7 and the
+  maximum of both is at the second shell; above it 256 falls below 128 by up to 30 at the top shells.
+  The per-mode relative rms is 7.1e-7 at 128 and 6.7e-7 at 256: a floor that does not change with
+  the lattice (dx and dt both halve), so it is neither the stencils nor the time step. Its cause is
+  not established [TO VERIFY]; the second order of the field (relative size R times a small
+  coefficient, R about 1e-5 for these 8 shells) is a candidate that a run at half the noise amplitude
+  would test (the floor would halve), no run made. Against P1 Fig. 7 (read): P1's 256 curve spans
+  about 1e-7 to 3e-6; ours 5e-9 to 3.7e-7.
+- F8 at 256: FAILED as written for three of four. Entry maxima 256 over 128: SR <|H|/[H]> 1.203, SR
+  <|M|/[M]> 1.470, USR <|M|/[M]> 1.303 (band [0.87, 1.15]); USR <|H-<H>|/[H]> 1.130 (inside). Scope
+  P6(a)'s literal bar [0.5, 2]: PASS for all four. Cause, checked with a quantity that could have
+  disagreed: the three maxima sit at the first record after the window's lower cut N = 0.05 (N =
+  0.055 at 256, 0.061 at 128), on the decaying initial transient, so the smaller step of 256 samples it
+  earlier and higher; the plateau itself, as the median over N in [0.5, ln 8] of the time-matched
+  ratio (computed in the same run, `orders_time_matched`), gives 256/128 = 1.11 (SR H), 1.12 (SR M),
+  1.07 (USR M), 1.03 (USR H - <H>): the second-order plateau holds within 12 per cent. USR <|H|/[H]>
+  (column 3, the background residual): order 128 -> 256 4.03 (band 3.8-4.3) and entry maximum
+  1.986e-11 against USF256's 1.973e-11 (0.6 per cent): PASS. (b) PASS: after the entry SR H, SR M,
+  USR H, USR H - <H> fall (end over entry end 3.5e-3, 1.9e-2, 2.1e-3, 5.2e-3 at 256); USR M rises
+  again (2.8e4).
+- Correction of entry 3 (and RESULTS Fig. 8, S19), found with the same locations: the "orders of the
+  entry maximum 32 -> 64" (4.15 SR H, 3.25 SR M, 3.45 USR M, 4.42/4.42 H - <H>) compare the 32 rung's
+  maximum at the window's upper edge (N = 2.04-2.07, on its truncation hump) with the 64 rung's
+  initial transient (N = 0.074): they are not convergence orders. The time-matched medians over [0.5,
+  ln 8] are 2.43 (SR H), 0.19 (SR M), 0.35 (USR M), 1.22 / 1.51 (SR / USR H - <H>) from 32 to 64 and
+  within 0.22 of 0 from 64 on. Only USR column 3 (the background residual, maximum at N = 2.07 at
+  every N) gives a clean order: 4.10, 4.05, 4.03. So scope P6(a)'s "order between 4 and 6 from 32 to
+  64" is not supported for the noise part by any clean measure.
+- S16 / scope P3: PASS. RNC256 to t = 4.5 (N = 4.39, 735 common cycles with the joined RSF256): the
+  ratio of <|H|/[H]> flipped over proper is at least 1386 (median 1.06e5) over N in [0.5, ln 64], the
+  minimum where the proper run's H rises with the last crossings (N near 4.1); max <|M|/[M]> 0.216; max
+  <|H|/[H]> 9.9e-8 [`fig/fig_signflip.json`].
+- P-A1 at N_f: PASS. AL2S against AL0S at t = 8.5: r20 rms over |n| <= 32 1.5054e-5, max 7.9316e-5 (at
+  |n| <= 16), 49.66 per cent positive, top over bottom median 0.512: equal to the t = 7.5 values to
+  four or more digits (frozen after the last injection); inside every P-A1 bar and P1:520's 1e-4;
+  per-mode relative rms 2.2e-4. Records within 5.4e-4 at all 1387 cycles (P-A3 iii). The r10 part of
+  P-A1 stays FAILED (entry 3: 6.6e-7 against 1e-8).
+- Scope P1, SR part so far: PASS. RSF256 against P256v6 at t = 0, 4.0006 and 5.0008 (cycles 0, 652 and
+  815): bit-identical in all 17 common variables [`bitcheck_rsf256bit.json` of 213029-e937f69]. The
+  dump at t = 8.5 waits for q0034.
+Still open (q0034, the fourth continuation of RSF256, not yet dispatched at 13:27 PST): Fig. 2
+constraint panels, Figs. 3 and 6a from RSF256, the per-cell SR part of scope P2 and S14, the bit check
+at t = 8.5.

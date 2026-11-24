@@ -38,8 +38,8 @@
  "rl1_vs_released_sr": "pending: RL1, P256v6",
  "ul1_vs_released_usr": "pending: UL1, U256ap",
  "rec_l2_l0m_sr": {
-  "n_cycles": 1228,
-  "last_cycle_a": 1227,
+  "n_cycles": 1387,
+  "last_cycle_a": 1386,
   "last_cycle_b": 1386,
   "H_ratio_min": 0.999467547680456,
   "H_ratio_max": 1.0003823555845774,
