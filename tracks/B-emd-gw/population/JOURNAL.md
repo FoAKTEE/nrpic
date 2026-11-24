@@ -504,3 +504,12 @@ Predictions [JUDGEMENT], written before anything is queued:
 - Q2. Halo counts and largest masses as in M2, the masses within 5 per cent.
 - Card time: 8 per cell 0.3-0.8 card-h; 256^3 2.5-4 card-h (DESIGN.md section 7: 2.9 by the
   rate model).
+
+## 2026-11-24 06:25 PST (lead of batch 11): shell spectra of the GR box's TT energy; prediction
+
+`scripts/fig_gr_spectra.py` plots the per-shell Omega_qs of the corrected metric strain and of the
+particles' S^TT/k^2 (both already in `results/analysis_gr.json`) at a = 9, 25, 49, 81, 121.
+Prediction [JUDGEMENT]: at a >= 81 the excess (ratio metric/particles above 3) begins above
+|k| = 16 k_f, and more than half of the corrected Omega_qs sits above shell 16 (the mesh-scale
+half of the spectrum, Nyquist at 64 k_f). Refuted if the ratio exceeds 3 at |k| <= 8 k_f, or if
+less than half of Omega sits above shell 16 at a = 121.
