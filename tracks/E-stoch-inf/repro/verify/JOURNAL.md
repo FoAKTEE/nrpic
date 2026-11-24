@@ -331,3 +331,16 @@ up to 9 times.
 
 Pending: everything that needs RSF256 beyond cycle 895 (queue q0034, run E-20261124-214913-5956891,
 Slurm job 5215, PENDING at 14:05 PST).
+
+## Entry 7, 2026-11-24 14:30 PST: RSF256 ended while I wrote section 8; prediction for its join
+
+At 14:27 PST queue entry q0034 shows "done": run E-20261124-214913-5956891 (Slurm job 5215) ran
+14:06-14:23 PST and stopped at tlim (t = 8.5, cycle 1386), resumed from sr.00002.rst of
+E-20261124-202134-0b1ce0c (cycle 652), with dumps 17-34. Prediction before looking at its outputs:
+the record lines of cycles 653-895 and dumps 17-21 are bit-identical to those of the third
+continuation (same binary, no particles), the joined record runs 0-1386 without a gap and ends at
+N = 8.0989 like the other SR runs at tlim; every dump of the fourth continuation gives record means
+equal to my dump means to 1e-14 and my [H] equal to Hmag to 1e-15; the sign-flip numbers of entry 6
+do not change (the flipped span ends at N = 4.39, inside the third continuation). Refuted by any
+common line or dump that differs. Row 56 carries no value in the ledger yet (PENDING), so there is
+no number of it to check; I record the proper SR constraint record to N_f instead.
