@@ -203,3 +203,58 @@ time limit to 2026-11-25 05:09 PST). The sequencer `scripts/autocontinue.sh` (pi
 join check without using the account (decision 0026 item 2). Open: J1-J4 and the original
 runs' predictions are unjudged until the continuations have run and a session reads the join
 check (HANDOFF.md, "See, stop, run next").
+
+## Entry 9 (2026-11-24 13:20 PST, second session): state found; the sequencer's runs closed; predictions
+
+State [VERIFIED from `scratch/E-stoch-inf/repro_continue_seq/{state.tsv,seq.log}`, the chain
+directories and the manifests]: the sequencer (pid 493587) is gone (stopped by the orchestrator at
+13:15 PST, decision 0034 item 1); before it stopped it had closed every continuation it started,
+so `nrpic-run` holds no open run of this package. Per continuation (chain events, card-hours
+measured by `nrpic-run finish`):
+
+| Label | Run | Started from | Segment 1 | Status | Card-h |
+|---|---|---|---|---|---|
+| RSF256 | E-20261124-130529-da8c917 | orig sr.00000.rst (t 0, cycle 0) | 11:29-11:30 PST, SIGTERM; records 1-29; resubmitted job 5190 refused (MAX_SEGMENTS = 1) | failed | 0.0164 |
+| RNC256 | E-20261124-130629-61fe0b0 | orig sr.00000.rst | 11:39-11:55, tlim 4.5 at cycle 734 | completed | 0.2703 |
+| CL256U | E-20261124-130711-a5dec67 | orig usr.00002.rst (t 4.000622, cycle 652) | 11:57-12:00, SIGTERM; records 653-809, dumps 00008-00009; job 5194 refused | failed | 0.0547 |
+| CL256S | E-20261124-130952-4be980b | orig sr.00003.rst (t 6.000933, cycle 978) | 12:03-12:11, tlim 8.5 at cycle 1386 | completed | 0.1397 |
+| AL2S | E-20261124-131359-49afe29 | orig sr256_l2.00004.rst (t 7.528778, cycle 1227) | 12:03-12:10, tlim 8.5 at cycle 1386 | completed | 0.1203 |
+| RSF256 | E-20261124-201031-4c41e7b | orig sr.00000.rst (it wrote no restart before) | 12:11, SIGTERM after 5 s; record 1; job 5199 refused | failed | 0.0019 |
+| CL256U | E-20261124-201048-33a3a39 | orig usr.00002.rst (a5dec67 wrote none) | 12:17-12:37, tlim 10.4375 at cycle 1702 | completed | 0.335 |
+| RSF256 | E-20261124-202134-0b1ce0c | orig sr.00000.rst | 12:37-12:58, SIGTERM at cycle ~895 (t 5.49); restarts sr.00001 (t 2.0), sr.00002 (t 4.000622, cycle 652); dumps 00001-00021; job 5205 refused | failed | 0.3464 |
+
+1.28 card-hours used in all. Every cut is a SIGTERM from outside followed by the chain's own
+resubmission, which the cap of one segment then refused; no segment log has a non-zero exit of
+AthenaK, a guard stop or a restart-read error. The three cut runs that a later run continues
+(da8c917, a5dec67, 4c41e7b) and 0b1ce0c, whose continuation is queued (entry 10), are re-closed
+as `stopped` (`nrpic-run finish --status stopped`), as a run cut by its segment cap and continued
+by a later run is closed. `scripts/conts.json` now holds the lists of `state.tsv`.
+
+The newest restart of RSF256 (header read in this session; the registered join check of entry
+11 records it again): `E-20261124-202134-0b1ce0c/rst/sr.00002.rst`, t = 4.000621894805812,
+cycle 652, dt = 6.135923151542565e-03, size equal to header + data, sidecar NRSFRST1 (1, 2, 264,
+264, 264) with dump counter 17 (next 4.25); its sha256 e12bea69... is the line of 0b1ce0c's
+`sha256sums.txt`.
+
+Predictions, written before the join check runs and before the fourth continuation of RSF256
+exists (refuted as stated in entry 1, J1 as amended in entry 3):
+
+K1 (the four finished labels and the parts of RSF256 that exist). RNC256, CL256S, AL2S: J1-J4
+true as in entry 1. CL256U, two continuations that both start from the original's usr.00002.rst:
+J1 true for both (first record cycle 653 at t_rst + dt), the second ends "Terminating on time
+limit"; J2 every cycle recorded by two or three of original (653-777), a5dec67 (653-809) and
+33a3a39 (653-1702) identical in both record files; J3 ratio <= 3 at 652/653; J4 dumps 00008 and
+00009 byte-identical in all three directories, joined dumps 00000-00020 without a gap; joined
+records cycles 0-1702 without a gap. RSF256 so far (original blocks 0-82 and 0-63; da8c917 1-29;
+4c41e7b 1; 0b1ce0c 1-895, all from the original's sr.00000.rst): J1 start and dt true for all
+three, no time-limit end yet (pending, not a refutation); J2 every common cycle identical; J4
+first dump of 0b1ce0c is 00001 at t = 0.25 and 00001, 00002 are byte-identical with the
+original's; joined records 0-895 and dumps 00000-00021 without a gap.
+
+K2 (the fourth continuation of RSF256, from 0b1ce0c's sr.00002.rst; judged when it has run).
+First record cycle 653 at t = 4.000622 + dt; cycles 653-895 identical with 0b1ce0c's in both
+record files; J3 ratio <= 3 at 652/653; first dump 00017 at t = 4.25, dumps 00017-00021
+byte-identical with 0b1ce0c's; it ends "Terminating on time limit" at t = 8.5, cycle 1386, so the
+joined RSF256 runs from cycle 0 to 1386 and dumps 00000-00034 without a gap. Wall time 16-22 min
+in one segment (734 cycles at the 1.39 s per cycle of 0b1ce0c, 880 cycles in 1227 s, with its
+metric dumps), unless preempted again.
