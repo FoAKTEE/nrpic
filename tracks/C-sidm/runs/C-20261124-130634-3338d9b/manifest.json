@@ -78,7 +78,7 @@
     "nodes": 1,
     "gpus": 0,
     "cores": 1,
-    "walltime_s": null,
+    "walltime_s": 4.08,
     "wall_limit": null,
     "segments_max": null,
     "gpu_hours_requested": 0.0,
@@ -89,15 +89,15 @@
   "outputs": {
     "dir": "scratch/C-sidm/C-20261124-130634-3338d9b",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "5e6d1939ebcbd86860e803cf9bde1b3b4cdcb17b09db35f5383d4b54394de68c",
+    "bytes": 139232,
+    "files": 3
   },
-  "status": "running",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-24T13:06:34Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-24T13:06:34Z",
+  "ended": "2026-11-24T13:06:38Z",
   "parents": [
     "C-20261121-214601-40dc927",
     "C-20261122-012719-b14e654",
@@ -125,5 +125,6 @@
     "cores_busy": 6,
     "runs": 224,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
-  }
+  },
+  "finished": "2026-11-24T13:06:38Z"
 }
