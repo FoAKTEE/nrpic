@@ -353,3 +353,16 @@ compare): its PNGs are the ones copied to `fig/`. All new PNGs looked at (Figs. 
   injected shells with Q below K is 0.716 at N = 5.29, so the ranges read 0.23-0.64 for N = 3.3-5.0 and
   0.72-1.0 for N = 5.3-6.3 (not "3.3-5.3" and "5.53-6.28" as entry 6 wrote). RESULTS.md uses the
   corrected ranges.
+
+## Entry 9 (2026-11-24 09:42 PST): where the package stands
+
+Done in this session: figure runs E-20261124-172426-4780cbc, E-20261124-173117-51c289f,
+E-20261124-173254-420115f (the last is in `fig/`), pass E-20261124-172949-8b2255b; run
+E-20261124-141807-8352509 judged (R3: SR level 2 at t = 7.5 within P1:520's 1e-4; R4 last-bit slice
+pattern); `RESULTS.md` with verdicts as they stand. No card time used.
+Open, for a later pass once repro/continue's five runs have ended (Slurm 5160, 5161, 5165, 5166, 5168
+were PENDING behind another user's job at 09:25 PST): write predictions for the remaining rows (entry 1
+F2-F9 stand; add the SR level-2 N_f bar of P-A1), then entry 4 step 2 (passes `rsf256`, `cl256`,
+`al2s`; figure run with `--usr256kt` twice as in 173254-420115f plus `--rsf256`, `--cl256s`,
+`--al2s`), copy into `fig/`, look at each PNG, replace the PENDING rows of `RESULTS.md` (section 5
+lists which run completes which row).

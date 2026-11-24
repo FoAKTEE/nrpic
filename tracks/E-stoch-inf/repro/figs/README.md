@@ -11,8 +11,11 @@ locator stand in the text of `RESULTS.md`).
 - `JOURNAL.md`: predictions (entry 1, written before any analysis) and outcomes.
 - `CARD_COSTS.md`: actual card costs of the fifteen reproduction runs (the second table of
   `../scope/CARD_PLAN.md`).
-- `fig/`: the figures (PNG; the PDFs stay in the run directories), copied from the registered
-  figure run named in `RESULTS.md` (not made yet: paused 2026-11-24 06:30 PST, JOURNAL entry 4).
+- `fig/`: the figures (PNG; the PDFs stay in the run directory) and their numbers (json), copied
+  unchanged from the registered figure run E-20261124-173254-420115f
+  (`scratch/E-stoch-inf/E-20261124-173254-420115f/`, `sha256sums.txt` there). Figures that need a
+  continued run of repro/continue are made from what has ended and say so (PENDING in `RESULTS.md`,
+  section 5 names the run that completes each).
 - `figures/`: the scripts.
 
 ## Scripts
@@ -44,9 +47,21 @@ P=tracks/E-stoch-inf/repro/figs
 harness/bin/nrpic-run submit --kind production --gate G2 --package $P \
   --preregistered "$P/JOURNAL.md#entry-1" --cores 6 --background --purpose "..." \
   -- bash -c 'OMP_NUM_THREADS=2 python3 tracks/E-stoch-inf/repro/figs/figures/runs.py usr256 "$NRPIC_RUN_DIR" --workers 3 --fft-workers 2'
-# then the figures from those pass directories
-harness/bin/nrpic-run submit ... --cores 1 -- bash -c 'python3 tracks/E-stoch-inf/repro/figs/figures/make_figs.py "$NRPIC_RUN_DIR" --usr256 <pass dir> --sr256 <pass dir> --ablation <pass dir> --rungs <pass dir> [--rsf256 <pass dir>] [--cl256s <pass dir>] [--al2s <pass dir>]'
+# then the figures from those pass directories (the committed figures: run E-20261124-173254-420115f,
+# with S=/data/haiyangw/nrpic/scratch/E-stoch-inf; about 1 min on 2 cores)
+harness/bin/nrpic-run submit --kind production --gate G2 --package $P --cores 2 --purpose "..." \
+  -- bash -c "OMP_NUM_THREADS=2 python3 $P/figures/make_figs.py \"\$NRPIC_RUN_DIR\" \
+     --usr256 $S/E-20261124-130628-6790851 --usr256kt $S/E-20261124-141807-8352509 \
+     --usr256kt $S/E-20261124-172949-8b2255b --sr256 $S/E-20261124-133251-42e8aab \
+     --ablation $S/E-20261124-133251-42e8aab --rungs $S/E-20261124-133251-42e8aab \
+     --ablation75 $S/E-20261124-141807-8352509 [--rsf256 <pass>] [--cl256s <pass>] [--al2s <pass>]"
+# then copy the PNGs and jsons of the run into fig/ and look at each
 ```
+
+Groups of `figures/runs.py` and their registered passes: `usr256` E-20261124-130628-6790851,
+`sr256v6` + `ablation` + `rungs` E-20261124-133251-42e8aab, `usr256kt` + `ablation75`
+E-20261124-141807-8352509, `usr256kt8` E-20261124-172949-8b2255b; `rsf256`, `cl256`, `al2s` wait for
+the continuations of repro/continue (`RESULTS.md` section 5).
 
 The run ids used for the committed figures are in `RESULTS.md` (ledger).
 
