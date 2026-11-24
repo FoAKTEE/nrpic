@@ -33,7 +33,9 @@ the homogeneous mode, each against the first-exit radius rho(phi) of the stabili
 along its ray.  Advection: the first version (run core-20261124-130414-c77ee7e) took
 the damping of the corner alone and allowed steps up to 1.56 times too large with a
 shift of order one; --adv corner keeps it for the record.  The adopted version adds the
-largest phase rate of the advective stencil, limag sum_d |b_d|, to the frequency.
+largest phase rate of the advective stencil, limag sum_d |b_d|, to the imaginary part of
+both eigenvalues (the second version, run core-20261124-132639-eb9be13, added it to
+Omega under the root and lost it for an overdamped pair: up to 1.33 times too large).
 
   python vonneumann_gauge.py --out DIR [--n 41] [--quick]
 """
@@ -258,12 +260,12 @@ def reduced_bound(tab, ng, om2, diss, bsum, d1x, d2x, a1=1.0, a2=1.0):
     e2 = d2x + a2 * adv
     m = kod + 0.5 * (e1 + e2)
     h = 0.5 * (e1 - e2)
-    om = np.sqrt(s2max * om2) + (limag * bsum if ADV_MODE == "phase" else 0.0)
-    disc = h * h - om * om
+    oma = limag * bsum if ADV_MODE == "phase" else 0.0
+    disc = h * h - s2max * om2
     if disc <= 0.0:
-        re, im = -m, np.sqrt(-disc)
+        re, im = -m, np.sqrt(-disc) + oma
     else:
-        re, im = -(m + np.sqrt(disc)), 0.0
+        re, im = -(m + np.sqrt(disc)), oma
     mod = np.hypot(re, im)
     r = rho_lookup(tab, re, im) / mod if mod > 0.0 else np.inf
     dh = max(d1x, d2x)                      # homogeneous mode

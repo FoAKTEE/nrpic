@@ -187,3 +187,39 @@ largest imaginary part of the advective symbol (2.2018, 1.9510, 1.9501 for nghos
   strong damping. Zero-shift numbers unchanged from T0 (the correction acts only on
   beta).
 - P0i. Track A's cases unchanged (no shift in them).
+
+## Entry 2 (06:05 to 06:35 by the first clock reading; by `date` 05:20 to 05:35): outcome of T0b, second correction, T0c
+
+Times of entries 0 and 1 were estimated, not read: `date` gave 05:17 when T0 ended and
+05:31 when T0b had ended; entry 0 covers 04:51 to about 05:02, entry 1 about 05:17 to 05:20.
+
+Run core-20261124-132639-eb9be13 (commit eb9be13, 1536 survey cases, 4 minutes).
+
+- P0i held: Track A's cases unchanged to the digits printed.
+- P0h: the zero-shift numbers are unchanged (held). The bounds with a shift failed with P0g.
+- **P0g refuted**: rk4, nghost 4 with a shift: reduced/full between 0.797 and 1.328; nghost
+  3 up to 1.389, nghost 2 up to 1.349, rk3 up to 1.28. The five worst cases all have a
+  damping of 6/dx (a relaxation rate of the size of lapse_leak = 20 on the 64-cell root
+  mesh) and |beta| = 1: the pair is then overdamped (real eigenvalues), and the second
+  version, which added the phase rate of the advection to Omega under the root, lost it
+  there. [VERIFIED by recomputing the reduced bound for all 1536 saved full scans with the
+  phase rate added to the imaginary part of both eigenvalues instead: script
+  `scratch/core/tmp/explore_E.py`, not registered.]
+
+Adopted (third version): lambda = -(D + (e1 + e2)/2) +- sqrt(((e1 - e2)/2)^2 - Omega^2)
++ i limag sum_d |beta^d|/dx_d, the phase rate of the advective stencil on both
+eigenvalues, the damping of the corner in e1 and e2 as before. This is the structure of
+the true symbol when both members are advected alike (the symbol of the advection adds
+to both eigenvalues); the simplification is that its damping is taken at the corner and
+its phase rate at its maximum.
+
+### T0c (the same script, third version): what the recomputation already gave, to be repeated as a registered run with figures
+
+Not a blind prediction: the numbers below come from the recomputation named above, on
+the same survey. T0c is their registered record. rk4, nghost 4: zero shift 0.993 to
+1.000; with a shift 0.818 to 1.099, and at most 0.98 whenever the damping is 1.5/dx or
+less (the excess up to 1.10 only with a damping of 6/dx and |beta| >= 0.3); rk4 nghost
+3 up to 1.19, nghost 2 up to 1.31 (shift sector, damping 6/dx, |beta| = 1), rk3 up to
+1.25. Refuted if the registered run gives other numbers. Consequence for the option's
+text: the fraction 0.9 covers rk4 with nghost 4 in the whole survey; for nghost 2 or 3
+or rk3 with strong damping and a shift of order one a fraction of 0.75 is needed.

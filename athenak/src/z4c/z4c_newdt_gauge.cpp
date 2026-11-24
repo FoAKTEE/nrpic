@@ -13,7 +13,7 @@
 //!   d_t beta^i = mu Gam^i - eta beta^i,   d_t Gam^i = gt^jk d_j d_k beta^i + ...
 //! propagates with sqrt(mu gt^dd) (transverse) and sqrt(4 mu/3 gt^dd) (longitudinal) in
 //! coordinates, mu = shift_Gamma + alpha^2 shift_alpha2Gamma, and the lapse
-//!   d_t alpha = -f alpha Khat - (relaxation),   d_t Khat = -chi gt^ij d_i d_j alpha + ...
+//!   d_t alpha = -f alpha Khat - (relaxation),   d_t Khat = -chi gt^ij d_i d_j alpha
 //! with sqrt(f alpha chi gt^dd), sqrt(2 alpha chi gt^dd) for 1+log.  In an expanding box
 //! the speed of light alpha sqrt(chi gt^dd) falls below both.
 //!
@@ -28,12 +28,13 @@
 //! or lapse relaxation, and the advective derivative, whose symbol at pi is real and
 //! negative).  At the corner the mixed derivatives vanish, so the three shift modes have
 //! the transverse speed there.  The advective derivative also turns the phase, most at
-//! theta near 0.68 pi; that largest rate, limag sum_d |beta^d|/dx_d, is added to Omega
-//! (with the damping of the corner alone the bound was up to 1.56 times too large for
-//! a shift of order one).  The step is stable when lambda dt lies inside the
-//! stability region of the Runge-Kutta scheme; the radius of the region along the ray of
-//! lambda comes from a table made once.  The mode without spatial structure adds the
-//! bound (radius on the real axis)/(damping rate): lapse_leak dt <= 2.785 for rk4.
+//! theta near 0.68 pi; that largest rate, limag sum_d |beta^d|/dx_d, is added to the
+//! imaginary part of lambda (with the damping of the corner alone the bound was up to
+//! 1.56 times too large for a shift of order one).  The step is stable when lambda dt
+//! lies inside the stability region of the Runge-Kutta scheme; the radius of the region
+//! along the ray of lambda comes from a table made once.  The mode without spatial
+//! structure adds the bound (radius on the real axis)/(damping rate):
+//! lapse_leak dt <= 2.785 for rk4.
 //!
 //! Derivation, the scan of the whole Brillouin zone this was checked against, tests and
 //! run ids: tracks/core/interfaces/step_limit.md, tracks/core/JOURNAL-step-limit.md,
@@ -128,23 +129,23 @@ Real StabRadius(const StabTable &tab, const Real re, const Real im) {
   return fmin(tab.rho[i], tab.rho[i+1]);
 }
 
-//! largest stable step of a pair of fields: om the frequency Omega of the corner mode
-//! (wave part plus the phase rate of the advective derivative), dko the Kreiss-Oliger
-//! rate, e1 and e2 the damping rates of the two members at the corner, dh the damping
-//! rate of the mode without spatial structure
+//! largest stable step of a pair of fields: om2 the squared frequency Omega^2 of the
+//! corner mode, oma the largest phase rate of the advective derivative, dko the
+//! Kreiss-Oliger rate, e1 and e2 the damping rates of the two members at the corner, dh
+//! the damping rate of the mode without spatial structure
 KOKKOS_INLINE_FUNCTION
-Real PairBound(const StabTable &tab, const Real om, const Real dko, const Real e1,
-               const Real e2, const Real dh) {
+Real PairBound(const StabTable &tab, const Real om2, const Real oma, const Real dko,
+               const Real e1, const Real e2, const Real dh) {
   const Real m = dko + 0.5*(e1 + e2);
   const Real h = 0.5*(e1 - e2);
-  const Real disc = h*h - om*om;
+  const Real disc = h*h - om2;
   Real re, im;
   if (disc <= 0.0) {
     re = -m;
-    im = sqrt(-disc);
+    im = sqrt(-disc) + oma;
   } else {
     re = -(m + sqrt(disc));
-    im = 0.0;
+    im = oma;
   }
   const Real mod = sqrt(re*re + im*im);
   Real dt = static_cast<Real>(std::numeric_limits<float>::max());
@@ -255,8 +256,7 @@ Real Z4c::GaugeTimeStep(Driver *pdriver, Real bound[3], const bool leak_everywhe
           CellCenterX(k - ks, n3, mbsize.d_view(m).x3min, mbsize.d_view(m).x3max));
     }
     const Real mu = fabs(mu0 + mu2*alp*alp);
-    min_s = fmin(min_s, PairBound(tab, sqrt(s2max*mu*q) + oma, dko, eta + sadv*adv,
-                                  adv, eta));
+    min_s = fmin(min_s, PairBound(tab, s2max*mu*q, oma, dko, eta + sadv*adv, adv, eta));
 
     // lapse and Khat
     const Real f = f0 + fh*alp + ((fv != 0.0) ? fv/sqrt(chi) : 0.0);
@@ -265,12 +265,11 @@ Real Z4c::GaugeTimeStep(Driver *pdriver, Real bound[3], const bool leak_everywhe
       const Real ex = log(fmax(alp, 1.0e-30)) - log0;
       if (ex >= 0.0 || leak_everywhere) { delta = leak*(1.0 + fmax(ex, 0.0)); }
     }
-    min_l = fmin(min_l, PairBound(tab, sqrt(s2max*fabs(f*alp)*chig*q) + oma, dko,
+    min_l = fmin(min_l, PairBound(tab, s2max*fabs(f*alp)*chig*q, oma, dko,
                                   delta + ladv*adv, adv, delta));
 
     // a pair with the speed of light
-    min_c = fmin(min_c, PairBound(tab, sqrt(s2max*alp*alp*chig*q) + oma, dko, adv, adv,
-                                  0.0));
+    min_c = fmin(min_c, PairBound(tab, s2max*alp*alp*chig*q, oma, dko, adv, adv, 0.0));
   }, Kokkos::Min<Real>(dts), Kokkos::Min<Real>(dtl), Kokkos::Min<Real>(dtc));
 
   bound[0] = dts; bound[1] = dtl; bound[2] = dtc;
