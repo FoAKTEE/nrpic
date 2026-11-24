@@ -400,7 +400,7 @@ is the first suspect).
 
 Outcome of series 6 (run B-20261124-140856-911ded9, 27 min on one core; summary
 B-20261124-172643-d1e88c7, `figs/fig_ppc.png` panel (b) looked at) [VERIFIED by these runs]
-(written 2026-11-24 09:30 PST, resumed session of batch 11b; the prediction was committed in
+(written 2026-11-24 09:27 PST, resumed session of batch 11b; the prediction was committed in
 911ded99 before the run was registered at that commit):
 - Delta(256, 4 per cell) = -0.83915 (quadratic shooting -0.83898). Mesh differences at 4 per cell:
   64-128 9.4e-3, 128-256 7.9e-3. The prediction HOLDS as written (7.9e-3 < 9.4e-3; -0.8392 inside
