@@ -24,6 +24,7 @@
 #include "particles/nrpic_mesh.hpp"
 #include "particles/vlasov/vlasov_flux_kernels.hpp"
 #include "particles/vlasov/vlasov_pushers.hpp"
+#include "particles/vlasov/vlasov_pbgk_kernels.hpp"
 
 namespace particles {
 
@@ -88,6 +89,8 @@ struct VlasovOptions {
   int bnd_min_ngb = 12;
   Real noh_kappa = 0.5;       // harmonic-cs Noh/Price thermal conduction coeff in HLLC
   Real kerr_r_exc = 0.0;      // >0: excise elements with r_BL < kerr_r_exc * r_+ in analytic Kerr
+  bool pbgk_on = false;       // conservative relativistic Cell-BGK for SCP/hybrid packets
+  int pbgk_cell_factor = 1;   // 1, 2, or 4 mesh cells per Cell-BGK collision cell
   int substeps_last = 0;
   Real max_sig_last = 0.0;
 };
@@ -168,6 +171,17 @@ struct VlasovState {
   DvceArray1D<int> grid_off;      // (grid_cap)
   DvceArray1D<int> grid_cur;      // (grid_cap)
   DvceArray1D<int> grid_elem;     // (N)
+
+  // Conservative Cell-BGK bucketing & workspace buffers
+  std::uint64_t pbgk_seed = 0;
+  int pbgk_face_maxlev = -1;
+  bool pbgk_face_warned = false;
+  DvceArray1D<int> pbgk_cell;     // (np)
+  DvceArray1D<int> pbgk_list;     // (np)
+  DvceArray1D<int> pbgk_count;    // (ncell + 1)
+  DvceArray1D<int> pbgk_begin;    // (ncell + 1)
+  DvceArray1D<Real> pbgk_face;    // global face table across refinement levels
+  DvceArray2D<Real> pbgk_q;       // (np, 3) workspace triad momenta during cell projection
 
   // Restart staging buffers
   std::vector<double> restart_real;
@@ -845,6 +859,9 @@ void ExciseMfmState(Particles *pthis, MeshBlockPack *ppack);
 // Host functions implemented in vlasov_scp.cpp
 void InitializeScpOnMesh(Particles *pthis, MeshBlockPack *ppack);
 void PushScpPackets(Particles *pthis, MeshBlockPack *ppack);
+
+// Host functions implemented in vlasov_pbgk.cpp
+void CollideScpPbgk(Particles *pthis, MeshBlockPack *ppack);
 
 }  // namespace nrpic_vlasov_detail
 }  // namespace particles

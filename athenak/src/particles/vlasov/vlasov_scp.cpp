@@ -341,3 +341,4 @@ void PushScpPackets(Particles *pthis, MeshBlockPack *ppack) {
 
 }  // namespace nrpic_vlasov_detail
 }  // namespace particles
+

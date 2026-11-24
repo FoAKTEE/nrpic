@@ -100,3 +100,14 @@ Full engineering report: [03_hybrid_scp_ap_speed_accuracy.md](file:///home/schmi
   - **Suite 2 Kerr $a=0.9M$ ($t=30M$, vs `MC 100k` truth)**: `s2_hyb_n18_q14` ($43{,}568$ packets) runs in **`1.55 s` wall (`0.27 s` comp; `42.6x` wall / `244x` comp speedup vs baseline MFM)** with `|dE/E0| = 3.04e-8`, `|dLz/Lz0| = 1.28e-13`, `R_hist = 0.0846` (vs `MC 10k` `0.2236`, `Opt MFM` `0.3616`, Truth `0.0809`), `L1_hist = 0.0418` (vs `MC 10k` `0.0695`), `cm_err = 3.56e-3` (vs `MC 10k` `1.33e-2`).
   - **Suite 3 OS Collapse**: `s3_hyb_n26` (`138.41 s` wall / `137.19 s` comp) matches `s3_nrp_n26` (`136.59 s` / `135.39 s`) and `s3_opt_n26` (`151.77 s` / `150.31 s`) identically at `t_AH = 16.3894`, `M_AH = 0.99969`, `t_exc99 = 19.7108`.
   - **Strong Scaling (`50` cycles)**: `Hybrid SCP-AP` scales from `7,728` (`0.006 s`) to `200,592` packets (`0.012 s`), achieving **`68.8x`** lower compute time at `N_lat = 30` than `Opt MFM` (`0.825 s` for `14,328` elements).
+
+
+### Verified Iteration 2 — Conservative Relativistic Cell-BGK Crossover (`gb204` B200 GPU, Milestone #3)
+
+- Implemented `vlasov_pbgk_kernels.hpp` (`LorentzBoostMom`, unified Gamma-mixture `SampleMaxwellJuttner`, scalar Newton+bisection `ProjectCellFourMomentumT`) and `vlasov_pbgk.cpp` (`CollideScpPbgk`) wired as `vlv_coll` in `Particles::AssembleTasks`.
+- Kernel self-tests (`vlasov_kernel_test.cpp`, Tests 1–9) **PASSED**: Test 9 `SampleMaxwellJuttner` moments across $\Theta \in \{10^{-4}, 0.1, 1, 5\}$ agree within $\le 5.5\times 10^{-3}$; unequal-weight `ProjectCellFourMomentumT` yields `rel_dE = 2.347e-16`, `rel_dP = 6.062e-17`.
+- **Suite 1D Optical-Depth Crossover (`run_pbgk_crossover.py`, `pbgk_crossover.npz`, `u_0 = \pm 0.60`, `sig_v = 0.03`)**:
+  - `vlasov_pbgk` (`256x4x4`, `49,152` $S^2$ packets, `cell_factor = 2`): `dM/M = 0.00`, `dE/E <= 1.83e-14` across ALL $\sigma/\mu \in \{0, 2, 15, 10^4\}$, near-constant wall time (`2.670s, 2.659s, 2.870s, 3.589s`), and Taub double-shock jump errors `1.87%` ($D_2$) and `1.68%` ($e_2$) at $\sigma/\mu = 10^4$ vs exact warm Rankine-Hugoniot (`D2_w = 4.0754, e2_w = 4.7588`).
+  - `nrpic` Monte Carlo collisions (`sig = 1e4`): timed out $> 180\text{ s}$ (projected `179.5 s` wall / `161.6 s` compute from 20-step measurement `11.048 s / 9.942 s`), giving `vlasov_pbgk` **`50.0x` wall (`65.3x` compute) speedup** at $\sigma/\mu = 10^4$.
+  - `vlasov_mfm`: `dE/E = 1.08e-3` ($\sigma=0$) and `6.19e-3` ($\sigma=15$), whereas `vlasov_pbgk` holds `<= 1.83e-14` across every optical depth.
+  - GPU vs OpenMP (`4` threads) determinism at $\sigma/\mu = 15$: `max|dx| = 4.441e-16`, `max|du| = 9.812e-14`.

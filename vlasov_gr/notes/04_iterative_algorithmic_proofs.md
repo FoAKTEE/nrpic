@@ -58,3 +58,56 @@ This working note documents each iterative algorithmic improvement built on top 
 - **Measured verification** (Oppenheimer-Snyder $R_0=5M$ Z4c+AMR, `s3_grlbv_n20` to $t=4M$ on B200 GPU):
   - `filter_densitized = false`: `(int_E_filtered - int_E)/int_E = -2.459e-03` at $t=0$ and `-7.432e-04` at $t=4M$.
   - `filter_densitized = true`: `(int_E_filtered - int_E)/int_E = +0.000e+00` at $t=0$ and `+0.000e+00` at $t=4M$ (exact machine conservation).
+
+
+---
+
+## Iteration 2 — Asymptotic-Preserving Conservative Relativistic Cell-BGK Operator (`vlasov_pbgk`)
+
+### 2.1 Motivation & Regime Complementarity
+At intermediate and large collisionality ($\sigma/\mu \gg 1$), pure Monte Carlo binary pairing (`nrpic` collisions) requires subcycling with $\mathcal{O}(\tau_{\rm coll})$ cost per step ($\tau_{\rm coll} = n_{\rm com}\sigma v_{\rm M\o l}\Delta\tau$), becoming $50\times$ slower than collisionless integration at $\sigma/\mu = 10^4$, while low-basis fluid MFM (`vlasov_mfm`, $N_b = 2$) cannot represent multi-stream crossing in the collisionless limit ($\sigma/\mu = 0$) and loses conservation ($\Delta E/E_0 \sim 6\times 10^{-3}$) in transitional relaxation ($\sigma/\mu = 15$). Iteration 2 equips the GPU-fast Lagrangian packet ensemble (`vlasov_hybrid`) with an asymptotic-preserving, exactly 4-momentum-conserving relativistic Cell-BGK collision operator ([`vlasov_pbgk_kernels.hpp`](file:///home/schmidt/ssci-haiyangw/nrpic/athenak/src/particles/vlasov/vlasov_pbgk_kernels.hpp), [`vlasov_pbgk.cpp`](file:///home/schmidt/ssci-haiyangw/nrpic/athenak/src/particles/vlasov/vlasov_pbgk.cpp)).
+
+### 2.2 Global Gamma-Mixture Rejection Proof (`SampleMaxwellJuttner`)
+Let $x = W - 1 \ge 0$ be the dimensionless kinetic energy in the cell center-of-momentum frame with dimensionless temperature $\Theta = k_B T / m c^2 > 0$. The isotropic Maxwell-J\"uttner marginal distribution is proportional to
+$$f(x) = x^{1/2}(1+x)\sqrt{2+x}\,e^{-x/\Theta}.$$
+We construct the global polynomial-exponential majorant
+$$h(x) = \left(\sqrt{2}\,x^{1/2} + 2\,x^{3/2} + x^2\right)e^{-x/\Theta}.$$
+**Proof of global domination**: Setting $t = \sqrt{x} \ge 0$, direct expansion of the squared radial prefactors yields
+$$\left(\sqrt{2} + 2t^2 + t^3\right)^2 - (1+t^2)^2(2+t^2) = (4\sqrt{2} - 5)\,t^2 + 2\sqrt{2}\,t^3 + 4\,t^5 > 0 \qquad \forall\, t > 0,$$
+since $4\sqrt{2} - 5 \approx 0.65685 > 0$. Thus $h(x) \ge f(x)$ **identically for all $x \ge 0$ and all $\Theta > 0$** (nonrelativistic $\Theta \ll 1$ through ultra-relativistic $\Theta \gg 1$) using exact $\mathrm{Gamma}(3/2,\Theta)$, $\mathrm{Gamma}(5/2,\Theta)$, and $\mathrm{Gamma}(3,\Theta)$ mixture weights $1 : \frac{3}{\sqrt{2}}\Theta : \sqrt{\frac{8}{\pi}}\Theta^{3/2}$, driven deterministically across CPU OpenMP and NVIDIA B200 GPU by `utils/rng.hpp` Philox-4x32 keys.
+
+### 2.3 Exact Per-Cell 4-Momentum Projection (`ProjectCellFourMomentumT`)
+Given cell invariant 4-momentum $(E_c, \mathbf{P}_c)$ evaluated in the local ADM triad and $M_{\rm inv} = \sqrt{E_c^2 - |\mathbf{P}_c|^2}$, colliding packets interact with the asymptotic-preserving exponential relaxation probability $p_{\rm coll} = 1 - e^{-\tau_{\rm coll}}$ ($\tau_{\rm coll} = M_c \sigma_0 v_{\rm M\o l} \alpha \Delta t / (V_c U_0^2)$). Any finite sample of $n$ unequal-weight packets $(m_p, \mathbf{q}_p)$ after stochastic Maxwell-J\"uttner draws exhibits $O(N_c^{-1/2})$ momentum and energy fluctuation. `ProjectCellFourMomentumT` enforces **exact** cell conservation in $O(n)$ memory and work:
+1. Boost post-draw orthonormal-frame momenta $\mathbf{q}_p$ into their own COM frame $(\sum_p m_p \mathbf{q}_p^* = \mathbf{0})$ and remove roundoff COM residual ($\mathbf{q}_p^* \leftarrow \mathbf{q}_p^* - \mathbf{P}_{\rm com}/M_c$).
+2. Rescale $\mathbf{q}_p^* \leftarrow s\,\mathbf{q}_p^*$ where $s > 0$ is the unique root of the strictly increasing convex scalar equation
+   $$F(s) = \sum_{p=1}^{n} m_p \sqrt{1 + s^2 |\mathbf{q}_p^*|^2} = M_{\rm inv}$$
+   ($F(0) = M_c < M_{\rm inv}$, $F'(s) > 0$ for any non-cold cell), solved to $|F(s) - M_{\rm inv}| \le 10^{-15} M_{\rm inv}$ via safeguarded Newton-Raphson + bisection.
+3. Boost $s\,\mathbf{q}_p^*$ back into the Eulerian triad frame by $U_{\rm cm}^\mu = (E_c, \mathbf{P}_c)/M_{\rm inv}$ (`LorentzBoostMom`), guaranteeing $E_{\rm after} = E_c$ and $\mathbf{P}_{\rm after} = \mathbf{P}_c$ to machine precision for arbitrary unequal particle weights.
+
+### 2.4 Measured Verification
+- **Kernel Self-Tests ([`vlasov_kernel_test.cpp`](file:///home/schmidt/ssci-haiyangw/nrpic/tests/kernel/vlasov_kernel_test.cpp) Test 9, $40{,}000$ draws per $\Theta$)**:
+  - $\Theta = 10^{-4}$: $\langle W\rangle = 1.000150$ ($\mathrm{rel} = 5.29\times 10^{-8}$), $\langle q^2/W\rangle = 0.000300$ ($3\Theta$, $\mathrm{rel} = 3.53\times 10^{-4}$).
+  - $\Theta = 0.1$: $\langle W\rangle = 1.166131$ ($\mathrm{rel} = 7.35\times 10^{-4}$), $\langle q^2/W\rangle = 0.298649$ ($\mathrm{rel} = 4.50\times 10^{-3}$).
+  - $\Theta = 1.0$: $\langle W\rangle = 3.355416$ ($\mathrm{rel} = 4.46\times 10^{-3}$), $\langle q^2/W\rangle = 2.983524$ ($\mathrm{rel} = 5.49\times 10^{-3}$).
+  - $\Theta = 5.0$: $\langle W\rangle = 15.028034$ ($\mathrm{rel} = 4.53\times 10^{-3}$), $\langle q^2/W\rangle = 14.931012$ ($\mathrm{rel} = 4.60\times 10^{-3}$).
+  - Unequal-mass `ProjectCellFourMomentumT` ($n = 32$): `rel_dE = 2.347e-16`, `rel_dP = 6.062e-17`.
+- **Suite 1D Optical-Depth Crossover ([`run_pbgk_crossover.py`](file:///home/schmidt/ssci-haiyangw/nrpic/vlasov_gr/notes/scripts/run_pbgk_crossover.py), B200 GPU, `nx1=256`, $t=0.65$, $49{,}152$ $S^2$ packets for P-BGK/NRPIC vs $128\times 4\times 4$ for AP-MFM)**:
+  Exact warm beam inflow Rankine-Hugoniot jump (`sig_v=0.03`, $u_0 = \pm 0.60$): $D_2^{\rm warm} = 4.075414$, $e_2^{\rm warm} = 4.758756$, $\theta_2 = 0.100376$, $V_s = 0.167061$ (cold inflow reference: $D_2^{\rm cold} = 4.100558$, $e_2^{\rm cold} = 4.782032$).
+
+| Method | $\sigma/\mu$ | Wall [s] | Comp [s] | $\max\|\Delta M/M_0\|$ | $\max\|\Delta E/E_0\|$ | $D_2$ | Warm $D_2$ err | $e_2$ | Warm $e_2$ err |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `vlasov_pbgk` | $0$ | `2.670` | `1.366` | `0.00e+00` | `0.00e+00` | `2.0004` | — | `2.3349` | — |
+| `vlasov_pbgk` | $2$ | `2.659` | `1.556` | `0.00e+00` | `3.61e-15` | `2.5888` | — | `3.0065` | — |
+| `vlasov_pbgk` | $15$ | `2.870` | `1.758` | `0.00e+00` | `1.10e-14` | `3.8678` | `5.09%` | `4.5293` | `4.82%` |
+| `vlasov_pbgk` | $10^4$ | `3.589` | `2.476` | `0.00e+00` | `1.83e-14` | `3.9991` | `1.87%` | `4.6787` | `1.68%` |
+| `vlasov_mfm` | $0$ | `3.759` | `2.686` | `4.44e-16` | `1.08e-03` | `2.0000` | — | `2.3345` | — |
+| `vlasov_mfm` | $2$ | `4.506` | `3.389` | `0.00e+00` | `1.74e-09` | `2.9792` | — | `3.4412` | — |
+| `vlasov_mfm` | $15$ | `4.862` | `3.736` | `4.44e-16` | `6.19e-03` | `3.6406` | `10.67%` | `4.3141` | `9.34%` |
+| `vlasov_mfm` | $10^4$ | `3.320` | `2.268` | `0.00e+00` | `3.97e-12` | `4.0677` | `0.19%` | `4.7493` | `0.20%` |
+| `nrpic` (MC) | $0$ | `2.056` | `1.017` | `0.00e+00` | `0.00e+00` | `2.0004` | — | `2.3349` | — |
+| `nrpic` (MC) | $2$ | `2.566` | `1.534` | `0.00e+00` | `1.90e-16` | `2.4399` | — | `2.8459` | — |
+| `nrpic` (MC) | $15$ | `3.217` | `2.190` | `0.00e+00` | `1.90e-16` | `3.7072` | `9.03%` | `4.3200` | `9.22%` |
+| `nrpic` (MC) | $10^4$ | `179.5`* | `161.6`* | — | — | — | — | — | — |
+
+\* `nrpic_sig1e4` exceeded `180 s` timeout; projected from 20-step measurement (`wall = 11.048 s`, `comp = 9.942 s` across 20 of 325 steps): **`vlasov_pbgk` achieves a `50.0x` wall-clock (`65.3x` compute) speedup** over subcycled MC collisions while maintaining **$O(1)$ runtime** (`2.67 s` to `3.59 s` from $\sigma/\mu=0$ to $10^4$), exact free streaming at $\sigma=0$, $\le 1.83\times 10^{-14}$ energy conservation across all $\sigma/\mu$, and $< 1.9\%$ Taub double-shock accuracy at $\sigma/\mu = 10^4$.
+- **GPU vs OpenMP (4 threads) Determinism** (5 steps at $\sigma/\mu=15$): `max|dx| = 4.441e-16`, `max|du| = 9.812e-14`.

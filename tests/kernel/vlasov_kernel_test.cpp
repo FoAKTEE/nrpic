@@ -539,6 +539,85 @@ void RunSelfTests() {
     assert(p_quad >= 2.95);
     assert(err_lin[3] / err_quad[3] >= 50.0);
   }
+
+  // 9. Cell-BGK SampleMaxwellJuttner moments + ProjectCellFourMomentumT (<1e-14 on unequal m)
+  {
+    const Real thetas[4] = {1.0e-4, 0.1, 1.0, 5.0};
+    for (int ti = 0; ti < 4; ++ti) {
+      const Real th = thetas[ti];
+      Real wm_ex = 0.0, hr_ex = 0.0, cs2_ex = 0.0, ga_ex = 0.0;
+      SyngeThermo(th, wm_ex, hr_ex, cs2_ex, ga_ex);
+      const Real e2_ex = 3.0 * th * hr_ex + (wm_ex * wm_ex - 1.0) - (wm_ex - 1.0) * 0.0;
+      // Exact E[<W^2>]: in MJ, <u^2 / W> = 3 * Theta * w_m => wait: let's check <W> and <|q|^2/W> = 3*Theta!
+      const int n_draw = 40000;
+      Real sum_w = 0.0, sum_q2_w = 0.0, sum_q[3] = {0.0, 0.0, 0.0};
+      for (int p = 0; p < n_draw; ++p) {
+        rng::Key key{12345ULL, rng::Stream(rng::kStreamTests, 1), static_cast<std::uint64_t>(p),
+                     static_cast<std::uint64_t>(ti), 0ULL};
+        Real q[3];
+        SampleMaxwellJuttner(th, key, 1ULL, q);
+        const Real q2 = q[0]*q[0] + q[1]*q[1] + q[2]*q[2];
+        const Real W = sqrt(1.0 + q2);
+        sum_w += W;
+        sum_q2_w += q2 / W;
+        sum_q[0] += q[0]; sum_q[1] += q[1]; sum_q[2] += q[2];
+      }
+      const Real mean_w = sum_w / n_draw;
+      const Real mean_q2w = sum_q2_w / n_draw;
+      const Real rel_w = fabs(mean_w - wm_ex) / wm_ex;
+      const Real rel_p = fabs(mean_q2w - 3.0 * th) / (3.0 * th);
+      std::printf("[TEST9 MJ theta=%.4g] <W>=%.6f (exact=%.6f, rel=%.2e) <q^2/W>=%.6f (3Th=%.6f, rel=%.2e)\n",
+                  th, mean_w, wm_ex, rel_w, mean_q2w, 3.0 * th, rel_p);
+      assert(rel_w < 1.5e-2);
+      assert(rel_p < 1.5e-2);
+      for (int i = 0; i < 3; ++i) assert(fabs(sum_q[i] / n_draw) < 0.025 * sqrt(3.0 * th * hr_ex + 1e-12));
+    }
+
+    // Unequal-mass ProjectCellFourMomentumT exact conservation test
+    const int n_p = 32;
+    std::vector<Real> m_vec(n_p);
+    std::vector<Real> q_buf(3 * n_p);
+    Real M_c = 0.0, E_c = 0.0, P_c[3] = {0.0, 0.0, 0.0};
+    for (int p = 0; p < n_p; ++p) {
+      m_vec[p] = 0.5 + 0.1 * (p % 7);
+      const Real sign = (p % 2 == 0) ? 1.0 : -1.0;
+      const Real q0[3] = {sign * (1.4 + 0.05 * p), 0.3 * cos(0.7 * p), -0.2 * sin(0.4 * p)};
+      q_buf[3*p+0] = q0[0]; q_buf[3*p+1] = q0[1]; q_buf[3*p+2] = q0[2];
+      M_c += m_vec[p];
+      E_c += m_vec[p] * sqrt(1.0 + q0[0]*q0[0] + q0[1]*q0[1] + q0[2]*q0[2]);
+      P_c[0] += m_vec[p]*q0[0]; P_c[1] += m_vec[p]*q0[1]; P_c[2] += m_vec[p]*q0[2];
+    }
+    const Real M_inv = sqrt(E_c*E_c - (P_c[0]*P_c[0] + P_c[1]*P_c[1] + P_c[2]*P_c[2]));
+    const Real th_c = SafeMjThetaFromW(M_inv / M_c);
+    const Real U0_c = E_c / M_inv;
+    const Real U_c[3] = {P_c[0]/M_inv, P_c[1]/M_inv, P_c[2]/M_inv};
+    for (int p = 0; p < n_p; ++p) {
+      rng::Key key{999ULL, rng::Stream(rng::kStreamTests, 2), static_cast<std::uint64_t>(p), 0ULL, 0ULL};
+      Real qc[3], qt[3];
+      SampleMaxwellJuttner(th_c, key, 1ULL, qc);
+      LorentzBoostMom(U0_c, U_c, qc, qt);
+      q_buf[3*p+0] = qt[0]; q_buf[3*p+1] = qt[1]; q_buf[3*p+2] = qt[2];
+    }
+    const bool ok_proj = ProjectCellFourMomentumT(
+        n_p,
+        [&](int p) { return m_vec[p]; },
+        [&](int p, Real q[3]) { q[0]=q_buf[3*p+0]; q[1]=q_buf[3*p+1]; q[2]=q_buf[3*p+2]; },
+        [&](int p, const Real q[3]) { q_buf[3*p+0]=q[0]; q_buf[3*p+1]=q[1]; q_buf[3*p+2]=q[2]; },
+        M_c, E_c, P_c);
+    assert(ok_proj);
+    Real E_after = 0.0, P_after[3] = {0.0, 0.0, 0.0};
+    for (int p = 0; p < n_p; ++p) {
+      const Real *q = &q_buf[3*p];
+      E_after += m_vec[p] * sqrt(1.0 + q[0]*q[0] + q[1]*q[1] + q[2]*q[2]);
+      P_after[0] += m_vec[p]*q[0]; P_after[1] += m_vec[p]*q[1]; P_after[2] += m_vec[p]*q[2];
+    }
+    const Real dE_proj = fabs(E_after - E_c) / E_c;
+    const Real dP_proj = sqrt((P_after[0]-P_c[0])*(P_after[0]-P_c[0])
+                            + (P_after[1]-P_c[1])*(P_after[1]-P_c[1])
+                            + (P_after[2]-P_c[2])*(P_after[2]-P_c[2])) / E_c;
+    std::printf("[TEST9 PROJ] rel_dE=%.3e rel_dP=%.3e\n", dE_proj, dP_proj);
+    assert(dE_proj < 1.0e-14 && dP_proj < 1.0e-14);
+  }
   std::printf("C++ standalone GR-LBV kernel self-tests PASSED.\n");
 }
 

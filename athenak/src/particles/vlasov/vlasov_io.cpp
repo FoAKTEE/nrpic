@@ -23,6 +23,7 @@
 #include "particles/particles.hpp"
 #include "particles/nrpic_kernels.hpp"
 #include "particles/vlasov/vlasov_types.hpp"
+#include "utils/rng.hpp"
 
 namespace particles {
 
@@ -123,9 +124,17 @@ void Particles::NrpicVlasovInit(ParameterInput *pin) {
   opt.bnd_min_ngb     = pin->GetOrAddInteger("particles", "vlasov_bnd_min_ngb", 12);
   opt.noh_kappa       = pin->GetOrAddReal("particles", "vlasov_noh_kappa", 0.5);
   opt.kerr_r_exc      = pin->GetOrAddReal("particles", "vlasov_kerr_r_exc", 0.0);
+  opt.pbgk_on         = pin->GetOrAddBoolean("particles", "vlasov_pbgk", false);
+  opt.pbgk_cell_factor = pin->GetOrAddInteger("particles", "vlasov_pbgk_cell_factor", 1);
+  if (opt.pbgk_cell_factor != 1 && opt.pbgk_cell_factor != 2 && opt.pbgk_cell_factor != 4) {
+    nrpic_vlasov_detail::VlasovFatal("<particles> vlasov_pbgk_cell_factor must be 1, 2, or 4");
+  }
+  vlv->pbgk_seed = rng::RunSeed(pin);
+  vlv_pbgk_on    = opt.pbgk_on;
 
   opt.packet_mode = (opt.solver_mode == VLASOV_MODE_SCP) ||
-                    (opt.solver_mode == VLASOV_MODE_HYBRID && opt.coll_sigma <= 0.0);
+                    (opt.solver_mode == VLASOV_MODE_HYBRID &&
+                     (opt.coll_sigma <= 0.0 || opt.pbgk_on));
   if (nr_multirank && !opt.packet_mode) {
     nrpic_vlasov_detail::VlasovFatal("GR-LBV MFM mode currently requires a single MPI rank");
   }

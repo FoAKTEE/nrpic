@@ -41,7 +41,10 @@ void Particles::AssembleTasks(std::map<std::string, std::shared_ptr<TaskList>> t
       id.push       = id.vlv_step;
       id.excise     = id.vlv_excise;
       TaskID before_deposit = id.vlv_excise;
-      if (coll.on) {
+      if (vlv_pbgk_on) {
+        id.vlv_coll = tl["after_timeintegrator"]->AddTask(&Particles::NrpicVlasovCollideTask, this, id.vlv_excise);
+        before_deposit = id.vlv_coll;
+      } else if (coll.on) {
         id.collide = tl["after_timeintegrator"]->AddTask(&Particles::NrpicCollide, this, id.vlv_excise);
         before_deposit = id.collide;
       }

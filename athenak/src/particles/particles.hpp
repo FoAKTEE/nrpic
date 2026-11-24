@@ -276,6 +276,7 @@ struct ParticlesTaskIDs {
   TaskID vlv_metric;
   TaskID vlv_step;
   TaskID vlv_excise;
+  TaskID vlv_coll;
 };
 
 namespace particles {
@@ -497,6 +498,7 @@ class Particles {
 
   // ---- GR-LBV direct Vlasov solver (<particles> pusher = vlasov_mfm/vlasov_hybrid; particles/vlasov/) ----
   struct VlasovState *vlv = nullptr;
+  bool vlv_pbgk_on = false;
   void NrpicVlasovInit(ParameterInput *pin);
   void NrpicVlasovFree();
   void NrpicVlasovLoadFile(const std::string &fname);
@@ -512,6 +514,7 @@ class Particles {
   TaskStatus NrpicVlasovSyncMetric(Driver *pdriver, int stage);
   TaskStatus NrpicVlasovAdvanceTask(Driver *pdriver, int stage);
   TaskStatus NrpicVlasovExciseTask(Driver *pdriver, int stage);
+  TaskStatus NrpicVlasovCollideTask(Driver *pdriver, int stage);
 
   // ---- Fourier Poisson solver of the Newtonian mode (particles/nrpic_newton_fft.cpp):
   // <particles> newton_poisson = fft on a uniform mesh that is periodic in all directions

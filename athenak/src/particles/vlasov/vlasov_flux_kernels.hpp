@@ -1400,3 +1400,4 @@ void RelHllcFluxTetrad(int Na, const Real D_L[], const Real u_L_tet[][3], const 
 }  // namespace nrpic
 
 #endif  // PARTICLES_VLASOV_VLASOV_FLUX_KERNELS_HPP_
+

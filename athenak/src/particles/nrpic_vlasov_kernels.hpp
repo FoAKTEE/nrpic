@@ -9,5 +9,6 @@
 #include "vlasov/vlasov_math.hpp"
 #include "vlasov/vlasov_flux_kernels.hpp"
 #include "vlasov/vlasov_pushers.hpp"
+#include "vlasov/vlasov_pbgk_kernels.hpp"
 
 #endif  // PARTICLES_NRPIC_VLASOV_KERNELS_HPP_

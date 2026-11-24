@@ -308,3 +308,4 @@ int PushGL4(const MetricT &met, const Real dt, const Real tol, const int maxit,
 }  // namespace nrpic
 
 #endif  // PARTICLES_VLASOV_VLASOV_PUSHERS_HPP_
+

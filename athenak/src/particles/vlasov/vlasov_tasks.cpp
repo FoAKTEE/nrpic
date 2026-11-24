@@ -62,4 +62,9 @@ TaskStatus Particles::NrpicVlasovExciseTask(Driver *pdriver, int stage) {
   return TaskStatus::complete;
 }
 
+TaskStatus Particles::NrpicVlasovCollideTask(Driver *pdriver, int stage) {
+  nrpic_vlasov_detail::CollideScpPbgk(this, pmy_pack);
+  return TaskStatus::complete;
+}
+
 }  // namespace particles

@@ -177,3 +177,4 @@ void Particles::NrpicVlasovDepositLoop(const DvceArray5D<Real> &tm, Real &sum_mw
 }
 
 }  // namespace particles
+
