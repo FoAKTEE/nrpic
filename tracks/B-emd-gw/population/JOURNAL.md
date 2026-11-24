@@ -548,3 +548,18 @@ the same JSON (run B-20261124-135404-ca06d42; looked at, labels no longer cut). 
 full colour range of K (B-20261124-135412-ab31dae) washes the plane out, so the package keeps the
 first drawing (B-20261124-133709-85c4be7, 99.5 per cent range, saturated in the core) and the
 script returns to that range.
+
+## 2026-11-24 09:32 PST (resumed lead session, batch 11b): Newtonian reference moved to processors; prediction
+
+The cards are held by another user's priority job until about the morning of 2026-11-25
+(decision 0032 item 2), so card job 5167 (B-20261124-131438-5d7e049) would wait about a day. The
+Newtonian reference needs no card: the release core-v0.6 processor build
+(`.work/build_cpu_v06/src/athena`, one thread; the Fourier solver is not tested with the threaded
+build, READY of core_nrpic_v06) runs the same deck `inputs/pop_newton128.athinput` with the same
+particle files, one registered local run per amplitude (`newton_s014`, `newton_s028`), one core
+each. When both have started cleanly, card job 5167 is stopped and the sequencer's analysis entry
+points at the two processor runs. Nothing else changes; N2-N4 (05:48 entry) stand as written.
+
+Prediction [JUDGEMENT], before the runs: N1p. Both reach t = 21.916 (a = 143) with exit 0; each
+takes 0.5 to 3 hours on one core (about 1400 steps; a 128^3 Fourier solve and 2.1e6 particles
+per step at 1-6 s) plus 351 snapshots of 126 MB. Refuted by a non-zero exit or more than 5 hours.
