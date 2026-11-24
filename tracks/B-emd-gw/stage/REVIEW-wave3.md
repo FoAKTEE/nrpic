@@ -262,3 +262,26 @@ figures looked at.
 - population: no GR run had been submitted. Cause found in the queue (silent wait on the 0.028
   data's outer tolerance, card entries in file order); corrected, pop_s014_gr on the cards.
   Defect of the sequencer (no log line while an entry waits) corrected in cards/sequencer.py.
+
+## Batch 11 (2026-11-24, lead): runs read after batch 10a
+
+No helper ran in this batch; the lead read every run from its registered outputs, with figures
+looked at, against predictions written before the runs (journals named below).
+
+- Sequencer: ended by itself on 2026-11-23 06:55 ("queue empty and every run closed"), after
+  closing pop_s014_gr, the 0.028 re-solve, J4 and pop_s028_gr. It did not stall; it had nothing
+  left. Restarted in this session with the new queue (below).
+- flrw_conv J4 (B-20261123-015905-7a30278; analysis B-20261124-125457-79ce723, `analyze_step.py
+  --set n128`, figure `flrw_conv/figs/fig_step128.png`): J4a, J4b, J4c hold. Confirmed: the
+  amplitude floor at 128 cells is the start error of the step (0.001 - 0.002 = 1.19e-6, second
+  order, 0.29 of the 0.002 error at 0.001), now tested at 128 cells and not only by analogy with
+  32. Not confirmed: nothing. Figure defect: one tick label on the log axis of panel 3.
+- population, re-solve of the 0.028 data (B-20261123-014850-7b7d986): R1, R2, R3 hold (first 18
+  outer iterations identical; 9.1e-10 at outer 33; 67 min).
+- shear, P10 (B-20261124-131336-bc61eee on a copy of series 1's S1_n64_lap1): holds, -8.7e-5
+  against the 1e-4 bar; the f = 1 run carries the larger error (six times the f = 1/3 error at
+  that mesh). Not confirmed: the k_x, k_z drift of 3.6e-3 over the stored track (it includes the
+  blow-up after t = 0.54; not restricted).
+- shear, L2: the cause of "no number" found from series 1's outputs (A rays had not reached x = L
+  by tlim = 6; the four-ray window was built from two crossings). Fixed in `analyze_rays.py`;
+  series 2 reruns L2 with tlim = 10.
