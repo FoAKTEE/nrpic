@@ -389,3 +389,11 @@ Outcome of series 5 (run B-20261124-135951-237e27b; summary B-20261124-140808-e6
   (Hr 0.135-0.15, Mr 0.12-0.15 over 1 <= t <= t_A) move little with either.
 - The converged-value part of the prediction is therefore not judged: the particle limit at
   N_y = 64 sits beside CosmoGRaPH, the mesh limit is open.
+
+## 2026-11-24 07:35 PST (lead of batch 11): series 6, the mesh leg at 4 particles per cell; prediction
+
+`inputs/series6.txt`: L2 at N_y = 256 with 4 per cell along y. Prediction [JUDGEMENT]: the mesh
+dependence at fixed particles per cell slows: |Delta(256) - Delta(128)| below the 64-128
+difference 9.4e-3 (Delta(256) between -0.840 and -0.832). Refuted if the difference is as large
+or larger (then L2 does not converge in the mesh at this amplitude, and the constraint violation
+is the first suspect).

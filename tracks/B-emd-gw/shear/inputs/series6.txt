@@ -1,0 +1,4 @@
+# shear series 6 (lead of batch 11, 2026-11-24): L2 at N_y = 256 with 4 particles per cell along y
+# (mesh leg at fixed particles per cell after series 5). Fans of series 3. Release core-v0.6
+# processor executable. Prediction: JOURNAL.md, entry of 2026-11-24 07:35.
+L2p_n256_ppc4 0.5 4.0 256 tfac=2.5 fan_abs=1 fanA=-0.92,0.04,41 fanB=0.200,0.01,21 ppc_y=4
