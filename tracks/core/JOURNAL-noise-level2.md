@@ -392,7 +392,7 @@ local right-hand side of R adds the mixed derivatives and the inverse metric; th
 projection now reads two fields as at level 0). Refuted above 1.3: then the recomputed V
 was not the cost.
 
-## Entry 9 (2026-11-24 05:38 PST): card queue; predictions R6 (threads) and R7 (how far Z is from zero)
+## Entry 9 (2026-11-24 05:35 PST): card queue; predictions R6 (threads) and R7 (how far Z is from zero)
 
 Card job R5 not submitted: core has two eligible card jobs queued (5154, 5155, the
 row-4 bisection of the other core session) and four held ones; the rule allows no third
