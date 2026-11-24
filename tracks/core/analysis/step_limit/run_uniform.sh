@@ -7,6 +7,7 @@
 #   G0g  the same with z4c/dt_gauge = 0.9
 #   U0   relaxed 1+log lapse (lapse_leak 20) and Gamma-driver (Track A's U0: stiff relaxation)
 #   U0g  the same with z4c/dt_gauge = 0.9
+#   U0w  U0 for one step (the warnings at start-up)
 # Cases run one after the other; a case that stops on the guard (exit 3) is recorded and
 # the next one runs.
 set -uo pipefail
@@ -25,6 +26,7 @@ for c in "$@"; do
     G0g) args=("${p0[@]}" "${geo[@]}" z4c/dt_gauge=0.9) ;;
     U0)  args=("${p0[@]}") ;;
     U0g) args=("${p0[@]}" z4c/dt_gauge=0.9) ;;
+    U0w) args=("${p0[@]}" time/nlim=1) ;;
     *) echo "unknown case $c"; continue ;;
   esac
   mkdir -p "$OUT/$c"
