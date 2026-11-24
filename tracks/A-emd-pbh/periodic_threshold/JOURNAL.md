@@ -890,3 +890,12 @@ convergence of the mass"):
 So on four levels the finder cannot settle on a horizon of ~4 cells, from any start radius. No
 request to core yet: D3 (six levels, ~15 cells across the horizon) is the run in which a finder
 failure could not be blamed on resolution.
+
+### D0 outcome (run A-20261124-133457-9264c61, closed)
+
+Exit 0 after 4 cycles on the release v0.6 processor build (one core, ~2 min per cycle with a
+search every 2 cycles); 400 MeshBlocks (56 per level 0-5, 64 on level 6), no guard stop; the
+finder searched (3 status rows). The first step is 8.93e-4, not 1.7e-3 as predicted (D0 refuted
+in that number: the light-speed limit on level 6 binds with c ~ 1.4, a factor 1.9 smaller step
+while c > 0.5; the late step is the cfl cap 0.5 dx6 = 2.44e-3 as assumed in D5). The deck goes to
+the cards (queue_b11 line 1).
