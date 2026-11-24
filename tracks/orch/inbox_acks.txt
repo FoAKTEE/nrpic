@@ -126,3 +126,5 @@ tracks/B-emd-gw/outbox/20261124T134242Z__to-orch__batch11-population-gr-results.
 tracks/B-emd-gw/outbox/20261124T134243Z__to-orch__stage-verify-incremental-checksums.md	2026-11-24T17:22:59Z	ruled on in coord/DECISIONS/0032
 tracks/F-hills/outbox/20261124T135319Z__to-orch__cards-read-continuations-allotment.md	2026-11-24T17:22:59Z	ruled on in coord/DECISIONS/0032
 tracks/kb/outbox/20261124T141719Z__to-orch__additions-ingest4.md	2026-11-24T17:22:59Z	ruled on in coord/DECISIONS/0032
+tracks/D-bh-dress/outbox/20261124T173313Z__to-orch__b11b-allotment-used.md	2026-11-24T21:12:30Z	ruled on in coord/DECISIONS/0033-0034
+tracks/D-bh-dress/outbox/20261124T180749Z__to-orch__g1-review-run-input-changed.md	2026-11-24T21:12:30Z	ruled on in coord/DECISIONS/0033-0034
