@@ -81,22 +81,21 @@ def main():
     fig, axs = plt.subplots(1, 2, figsize=(FS.FULL_WIDTH, 3.0))
     ax = axs[0]
     xs = np.arange(2)
-    bottom = np.zeros(2)
-    for k, s in enumerate(stats):
-        v = np.array([ob["parse_status"].get(s, 0), oa["parse_status"].get(s, 0)])
-        if v.sum() == 0:
-            continue
-        ax.bar(xs, v, 0.5, bottom=bottom, color=FS.SERIES[k], label=s)
-        for j in range(2):
-            if v[j]:
-                ax.text(xs[j], bottom[j] + v[j] / 2, str(v[j]), ha="center", va="center", fontsize=7,
-                        color="white" if s == "ok" else "k")
-        bottom += v
-    ax.set_xticks(xs)
-    ax.set_xticklabels([f"before\n({ob['papers']} papers)", f"after\n({oa['papers']} papers)"])
+    shown = [s for s in stats if ob["parse_status"].get(s, 0) or oa["parse_status"].get(s, 0)]
+    xg = np.arange(len(shown))
+    w2 = 0.38
+    for j, (tag, o, col) in enumerate((("before", ob, "grey"), ("after", oa, FS.PAL["blue"]))):
+        v = np.array([o["parse_status"].get(s, 0) for s in shown])
+        ax.bar(xg + (j - 0.5) * w2, v, w2, color=col, label=f"{tag} ({o['papers']} papers)")
+        for k in range(len(shown)):
+            ax.text(xg[k] + (j - 0.5) * w2, v[k] * 1.15, str(v[k]), ha="center", va="bottom", fontsize=7)
+    ax.set_yscale("log")
+    ax.set_ylim(1, 3000)
+    ax.set_xticks(xg)
+    ax.set_xticklabels(shown)
     ax.set_ylabel("papers")
     ax.set_title("(a) parse status", loc="left")
-    ax.legend(frameon=False, fontsize=7, loc="lower right")
+    ax.legend(frameon=False, fontsize=7, loc="upper right")
     ax = axs[1]
     rb, ra = 100 * ob["rate_recorded_ok"], 100 * oa["rate_recorded_ok"]
     ax.plot(xs, [rb, ra], marker="o", color=FS.PAL["blue"], label="recorded (status ok)")
