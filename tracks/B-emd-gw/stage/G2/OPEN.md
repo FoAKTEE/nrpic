@@ -21,7 +21,7 @@ Lacking, in the order the track will close them:
    convergent gauge leg (a second slicing or shift at three meshes) and its figure are missing.
 4. Constraints: Hr of the FLRW run grows about as N^2 with the mesh; the population's mean
    constraint violations grow after halo formation (Hr_mean 2.85e-2, Mr_mean 0.20 at a = 141).
-5. Package products: verification-ladder schematic (C10), gauge convergence figure (C11), G2
+5. Package products (the verification-ladder schematic C10 exists since batch 11): gauge convergence figure (C11), G2
    sections of the working note with the checker (C17), a fresh verifier (C18), a reproducibility
    list (C6), schematics (C16); one script per figure where analyze_b.py and analyze_f.py draw
    several (C15).

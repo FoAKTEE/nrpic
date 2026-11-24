@@ -1,13 +1,13 @@
 # Stage report: B-emd-gw G2
 
-Date: 2026-11-24 · branch `track/B-emd-gw` at `ecfaaaf4e709` · checklist
+Date: 2026-11-24 · branch `track/B-emd-gw` at `06e02af796b8` · checklist
 `tracks/B-emd-gw/stage/G2/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
 
 **FAIL**. Tag: `stage/B-emd-gw/G2-fail-20261124` (created and pushed by the orchestrator after review, decision 0003).
 
-- 13 checklist items not PASS or NA: C1 OPEN, C2 OPEN, C3 OPEN, C5 OPEN, C6 OPEN, C9 OPEN, C10 OPEN, C11 OPEN, C14 OPEN, C15 OPEN, C16 OPEN, C17 OPEN
+- 12 checklist items not PASS or NA: C1 OPEN, C2 OPEN, C3 OPEN, C5 OPEN, C6 OPEN, C9 OPEN, C11 OPEN, C14 OPEN, C15 OPEN, C16 OPEN, C17 OPEN, C18 OPEN
 - no VERIFY_RESULTS.json (run nrpic-stage verify)
 - no VERIFIER.md (step 7: verifier subagent; decision 0016 item 1, VERIFIER_REPORT.md accepted too)
 
@@ -36,7 +36,7 @@ Date: 2026-11-24 · branch `track/B-emd-gw` at `ecfaaaf4e709` · checklist
 | C7 | The scale-factor error and the linear growth rate of the particle FLRW run reach the sub-percent level and converge in particle number and mesh | Met at 16-128 cells: flrw_conv/README.md "Verdict", JOURNAL entries 7, 9-12; runs above; figures fig_b_conv, fig_b_error, fig_f_lattice, fig_f_noise, fig_f_scaling (looked at). | PASS |
 | C8 | Agreement with gevolution in the weak-field regime | Replaced by C9 (decision 0013: gevolution is not run; the multi-code row is the shearing-dust comparison and full GR against the Newtonian mode). | NA |
 | C9 | Track B. The stand-in-matter item is struck (particles do it directly). The multi-code row is covered by the shearing-dust comparison of arXiv:2003.08014 and by full relativity against the Newtonian mode of the code; the N-body baseline runs in that mode. Item 3 of `coord/notes/derivations_to_check.md` is amended as Track B found. (0013) | Shearing dust (arXiv:2003.08014): S1-S4, M1, L1 judged (S within 1e-5 of linear, M1 and L1 inside the paper's bounds, M2 sign against the prediction); P10 holds; L2, the case that separates the codes: Delta = -0.828, -0.830, -0.835 at N_y = 32, 64, 128 (series 3, B-20261124-134209-4584052, figure shear/figs/fig_series2.png), 0.010-0.017 below CosmoGRaPH's -0.8183 and 0.15-0.2 below gevolution (-0.619) and GRAMSES (-0.68), but not converging in N_y (shear journal 2026-11-24 06:50). Full GR against the Newtonian mode: the GR box at sigma1 = 0.014 has the halo counts and masses of the Newtonian fidL8 box at equal stage (H1: counts inside 2 sqrt(N) + 2 at a = 49-121, largest mass within -7 to +13 per cent, the five largest matched within 0.07) and the design's near-field strain to 9-13 per cent for 6 <= a <= 20 (A1), population/JOURNAL.md 2026-11-24 05:58. The same-particle Newtonian reference at 128^3 is queued (B-20261124-131438-5d7e049, predictions N1-N4). | OPEN |
-| C10 | Schematic: Verification ladder | No verification-ladder schematic yet. | OPEN |
+| C10 | Schematic: Verification ladder | note/figures/schem_ladder.png (note/scripts/schem_ladder.py, run B-20261124-135151-8e1ac95; first drawing B-20261124-135136-563bd0a had overlapping legend labels): eight rungs from analytic waves to the population legs, each with its reference and state as of 2026-11-24; looked at. | PASS |
 | C11 | Data figure: Convergence figures (one each for particle number, mesh, gauge) | Mesh and particle number: flrw_conv/figs/fig_b_conv.png, fig_f_scaling.png; step: flrw_conv/figs/fig_step128.png; gauge: a single slicing point (shear rays.png of B-20261124-131336-bc61eee); no gauge convergence figure. | OPEN |
 | C12 | Data figure: Constraint norms against time | flrw_conv/figs/fig_b_constraints.png (largest Hr against a, 16-128 cells), fig_f_constraints.png; shear/figs/fig_series.png (means up to arrival). | PASS |
 | C13 | Data figure: At least one multi-scale slice mosaic with zoom boxes | population/figs/pop_gr_mosaic.png (run B-20261124-133709-85c4be7): the GR box at a = 132, particle density over the box with zooms L/4 and L/16 around the largest halo (zoom boxes drawn), and the lapse, K and flat TT strain on the same plane; looked at. Defect: the colour range of the K panel saturates in the halo core. | PASS |
@@ -66,6 +66,7 @@ Not run: `harness/bin/nrpic-stage verify B-emd-gw G2`.
 | note/figures/fig_waves.* | note/scripts/fig_waves.py | data | to be confirmed by the session |
 | note/figures/schem_architecture.* | note/scripts/schem_architecture.py | schematic | to be confirmed by the session |
 | note/figures/schem_dataflow.* | note/scripts/schem_dataflow.py | schematic | to be confirmed by the session |
+| note/figures/schem_ladder.* | note/scripts/schem_ladder.py | schematic | to be confirmed by the session |
 | note/figures/schem_timeline.* | note/scripts/schem_timeline.py | schematic | to be confirmed by the session |
 
 ## Verifier report

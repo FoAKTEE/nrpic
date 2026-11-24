@@ -46,9 +46,9 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 ## Minimum figures at G2 (brief 13.4)
 
-- [ ] **C10** Schematic: Verification ladder
-  - status: OPEN
-  - evidence: No verification-ladder schematic yet.
+- [x] **C10** Schematic: Verification ladder
+  - status: PASS
+  - evidence: note/figures/schem_ladder.png (note/scripts/schem_ladder.py, run B-20261124-135151-8e1ac95; first drawing B-20261124-135136-563bd0a had overlapping legend labels): eight rungs from analytic waves to the population legs, each with its reference and state as of 2026-11-24; looked at.
 - [ ] **C11** Data figure: Convergence figures (one each for particle number, mesh, gauge)
   - status: OPEN
   - evidence: Mesh and particle number: flrw_conv/figs/fig_b_conv.png, fig_f_scaling.png; step: flrw_conv/figs/fig_step128.png; gauge: a single slicing point (shear rays.png of B-20261124-131336-bc61eee); no gauge convergence figure.
