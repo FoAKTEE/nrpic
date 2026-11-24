@@ -504,3 +504,37 @@ least five times the band |n| < 8; (b) level 2 against level 1: between 2e-4 and
 (second order, more modes than at 32^3); (c) so level 1 against level 0 is between 0.05
 and 2 of level 2 against level 1: not negligible. Refuted if (a) is below 1e-5 (then the
 32^3 finding does not carry to the production runs).
+
+## Entry 11 (2026-11-24 05:50 PST): outcomes R7, R8; prediction R10 (byte regression against core-v0.6)
+
+R8 (run core-20261124-134414-1db640d, six runs, exit 0; `fig_level01.png` looked at:
+three points per time on the line of slope 4): level 1 against level 0 on the mesh,
+homogeneous slice, kicks off: rms over the modes 5.00e-5, 2.95e-6, 1.80e-7 at t = 0.49
+and 5.29e-5, 3.32e-6, 2.08e-7 at t = 0.98 for the Courant numbers 0.25, 0.125, 0.0625:
+factors 16.9, 16.4 and 16.0, 15.9 per halving. PREDICTION HELD (12 to 20): the
+difference is of fourth order in the step. Named cause, now after a run in which it
+could have failed: level 1 and level 0 on the mesh are two fourth-order integrations of
+the same background (the mesh's chi and K against the lockstep's ln a and the Friedmann
+constraint); what an ablation "level 1 against level 0" shows at a fixed Courant number
+is first of all the difference of their truncation errors, zeroth order in the
+perturbation, 5e-5 in the mode coefficients at Courant 0.25 at 32^3 (7e-5 at the cut,
+7e-6 for |n|^2 <= 16).
+
+R7 (run core-20261124-133522-10f8c7a, Track E's level-2 runs at 256^3, read-only;
+`fig_pi_range.png` looked at: the legend lies over the last points of the lower curves,
+the data are readable): AL2S (16 dumps to t = 7.5): max over the cells of
+|Pi/<Pi> - 1| = 8.9e-5 (at t*, rms 3.6e-5), falling below 1e-6 after the last mode has
+entered; rms of K/<K> - 1 about 2e-7 throughout, eps1 times the Pi figure. AL2U (21
+dumps to t = 10.44): 6.4e-2 at the end (rms 1.2e-2), rising through the
+ultra-slow-roll phase; K to 1e-12. PREDICTIONS HELD (below 1e-3; between 1e-3 and 0.3,
+Pi/<Pi> never below 0.5: the smallest value is 0.936). The local Z stays within 13 per
+cent of its mean in the inflection run and within 2e-4 in slow roll: level 2 ran far
+from the zero of Pi in both. The same numbers say what level 2 is made of: the local
+Pi, the local K being smaller by eps1 (slow roll) or negligible (inflection).
+
+Prediction R10 (the two byte regressions of entry 3 with the executable of 746869ef
+against release core-v0.6, `.work/build_cpu_v06` of the main checkout): the ten
+scalar-field cases and the three stochastic examples with a restart: every file
+identical; the twelve set-ups of the release driver: 75 of 75. Refuted by any
+difference (the review added one member to the options and one branch to the kernel of
+the mesh fields, neither reached without the options).
