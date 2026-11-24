@@ -9,12 +9,15 @@ Flat space with white noise of 1e-10 in a periodic box of 16^3 cells
   L  1+log lapse alone binds: zero shift
   C  light alone: zero shift, lapse frozen
   K  relaxation of the lapse: zero shift, 1+log with lapse_leak = 32
+  H  harmonic slicing (d_t alpha = -alpha^2 Khat), zero shift: lapse and light alike
   D  the deck as it is (1+log and Gamma-driver with shift_Gamma = 0.75) at cfl_number 1.0
 
 For each group the bound b (in cells) is taken from the reduced model of
 vonneumann_gauge.py; the code then runs 300 steps at cfl_number = 0.93 b ("m"),
 1.07 b ("p") and at 1.07 b with dt_gauge = 0.9 ("g"); D runs at 1.0 without and with
-dt_gauge.  T1: the bounds the code prints at start-up against the reduced model.
+dt_gauge.  Groups C and H also run at 0.75 b ("q") and 0.5 b ("h"): added after C_m of
+the first call went unstable (journal entry 5).  T1: the bounds the code prints at
+start-up against the reduced model.
 
   python run_flat.py --exe ATHENA --out DIR [--workers 5] [--nlim 300]
 """
@@ -46,8 +49,11 @@ GROUPS = {
     "C": (NOSHIFT + NOLAPSE, dict(mu=0.0, eta=0.0, f=0.0, leak=0.0)),
     "K": (NOSHIFT + ["z4c/lapse_leak=32.0", "z4c/lapse_leak_alpha=1.0"],
           dict(mu=0.0, eta=0.0, f=2.0, leak=32.0)),
+    "H": (NOSHIFT + ["z4c/lapse_oplog=0.0", "z4c/lapse_harmonic=1.0"],
+          dict(mu=0.0, eta=0.0, f=1.0, leak=0.0)),
     "D": ([], dict(mu=0.75, eta=2.0, f=2.0, leak=0.0)),
 }
+EXTRA = {"C": {"q": 0.75, "h": 0.5}, "H": {"q": 0.75, "h": 0.5}}
 
 
 def model_bounds(tab, par, diss=0.5, ng=4):
@@ -118,6 +124,9 @@ def main():
         cases[g + "_m"] = ov + ["time/cfl_number=%.6f" % (0.93 * b), "z4c/dt_gauge=0.0"]
         cases[g + "_p"] = ov + ["time/cfl_number=%.6f" % (1.07 * b), "z4c/dt_gauge=0.0"]
         cases[g + "_g"] = ov + ["time/cfl_number=%.6f" % (1.07 * b), "z4c/dt_gauge=0.9"]
+        for v, fac in EXTRA.get(g, {}).items():
+            cases[g + "_" + v] = ov + ["time/cfl_number=%.6f" % (fac * b),
+                                       "z4c/dt_gauge=0.0"]
     with cf.ThreadPoolExecutor(max_workers=args.workers) as ex:
         futs = [ex.submit(run_case, args.exe, args.out, n, a, args.nlim)
                 for n, a in cases.items()]
@@ -127,7 +136,8 @@ def main():
     for n in cases:
         d = os.path.join(args.out, n)
         rc, wall = done[n]
-        h = read_hst(os.path.join(d, "flat.z4c.user.hst"))
+        hp = os.path.join(d, "flat.z4c.user.hst")
+        h = read_hst(hp) if os.path.exists(hp) else np.zeros((0, 11))
         fin = np.all(np.isfinite(h[:, 2:10]), axis=1) if h.size else np.array([])
         hf = h[fin] if h.size else h
         c0 = hf[0, 2] if hf.size else float("nan")
@@ -156,6 +166,8 @@ def main():
             ver[g] = {"m_stable": not res["cases"][g + "_m"]["unstable"],
                       "p_unstable": res["cases"][g + "_p"]["unstable"],
                       "g_stable": not res["cases"][g + "_g"]["unstable"]}
+            for v in EXTRA.get(g, {}):
+                ver[g][v + "_stable"] = not res["cases"][g + "_" + v]["unstable"]
         pb = (res["cases"][g + "_g"]["printed_bounds_cells"]
               or res["cases"][g + "_p"]["printed_bounds_cells"])
         if pb:
@@ -174,13 +186,16 @@ def main():
     import figstyle as fs
     fs.use_style()
     names = list(GROUPS)
-    fig, axs = plt.subplots(1, len(names), figsize=(fs.FULL_WIDTH * 1.5, 3.0), sharey=True)
-    fig.subplots_adjust(left=0.06, right=0.99, bottom=0.17, top=0.86, wspace=0.07)
-    col = {"m": fs.PAL["blue"], "p": fs.PAL["red"], "g": fs.PAL["green"]}
-    title = {"S": "Gamma-driver", "L": "1+log lapse", "C": "light",
-             "K": "lapse relaxation", "D": "deck, cfl 1.0"}
+    fig, axs = plt.subplots(2, 3, figsize=(fs.FULL_WIDTH * 1.25, 6.0), sharey=True)
+    fig.subplots_adjust(left=0.07, right=0.99, bottom=0.08, top=0.94, wspace=0.07,
+                        hspace=0.32)
+    axs = axs.ravel()
+    col = {"m": fs.PAL["blue"], "p": fs.PAL["red"], "g": fs.PAL["green"],
+           "q": fs.PAL["orange"], "h": "k"}
+    title = {"S": "Gamma-driver", "L": "1+log lapse", "C": "frozen lapse",
+             "K": "lapse relaxation", "H": "harmonic lapse", "D": "deck, cfl 1.0"}
     for ax, g in zip(axs, names):
-        for v in ("m", "p", "g"):
+        for v in ("h", "q", "m", "p", "g"):
             n = g + "_" + v
             if n not in cases:
                 continue
@@ -190,6 +205,7 @@ def main():
             y = np.where(np.isfinite(h[:, 2]) & (h[:, 2] > 0), h[:, 2], np.nan)
             c = res["cases"][n]
             lab = {"m": "0.93 b", "p": "1.07 b" if g != "D" else "no limit",
+                   "q": "0.75 b", "h": "0.5 b",
                    "g": ("1.07 b, " if g != "D" else "") + "dt_gauge 0.9"}[v]
             ax.plot(np.arange(len(y)), np.sqrt(y), color=col[v],
                     label=lab + r" ($\Delta t/\Delta x$ %.3f)" % c["dt_max_over_dx"])
@@ -199,7 +215,8 @@ def main():
         ax.set_title("%s: b = %.3f (%s)" % (title[g], plan[g]["bound"],
                                            plan[g]["binding"]), fontsize=9)
         ax.legend(loc="upper left", fontsize=6.5)
-    axs[0].set_ylabel(r"norm of the constraint monitor $\sqrt{C^2}$")
+    for ax in axs[::3]:
+        ax.set_ylabel(r"norm of the constraint monitor $\sqrt{C^2}$")
     fig.savefig(os.path.join(args.out, "fig_flat.png"), dpi=150)
     print(json.dumps({"plan": plan, "verdicts": ver}, indent=1))
     for n, c in res["cases"].items():

@@ -351,3 +351,42 @@ the command line only parameters the input declares, and Track A's decks do not 
 `dt_gauge` (exit 1 of AthenaK after 0.1 s; nrpic-run recorded the wrapper's exit 0). No
 result. The two copies of Track A's decks in `analysis/step_limit/inputs/` now declare
 `dt_gauge = 0.0` (off); their first line says so.
+
+## Entry 5 (05:52): the first call of T1/T2 stopped in its analysis; what its cases showed; cases added
+
+Run core-20261124-134052-fd8eb46 (commit fd8eb46) ran nine cases and stopped: the deck did
+not declare `lapse_leak`, so the K cases did not start, and the driver then missed their
+history files. The deck now declares `lapse_leak = 0.0` and `lapse_leak_alpha`; the
+driver tolerates a missing history. The nine cases that ran are on record in that run's
+directory, and I have read their logs, so what follows for S, L, C and D is no longer a
+blind test (the complete registered rerun is the record):
+
+- S: m stable (0.470 cells), p stopped by the guard at cycle 58, g stable. P2-S held.
+- L: m stable (0.435 cells), p stopped by the guard at cycle 65 (0.501 cells), g stable.
+  P2-L held: 1+log in flat space fails just above 0.47 cells.
+- D: at cfl 1.0 without the option the guard stops the run at cycle 9, after the warning
+  (lapse, bounds 0.647, 0.468, 0.617 cells); with dt_gauge = 0.9 it runs 300 steps at
+  0.421 cells and the constraint monitor falls. P2-D held.
+- **C: P2-C failed.** With zero shift and the lapse frozen the run at 0.93 b (0.5735
+  cells) is stopped by the guard at cycle 149, the one at 1.07 b at cycle 32, and the one
+  with dt_gauge = 0.9 (0.555 cells) runs 300 steps but its squared constraint monitor
+  ends 14 times above its start (2.9e-13 against 2.0e-14) where S, L, D fall to 4e-18.
+  So with a frozen lapse the code is unstable below the bound of the light pair of my
+  model. I do not know the cause. Two readings, to be told apart by runs: (a) a step-size
+  threshold of the metric sector that lies 10 to 15 per cent below the scalar-wave
+  model's (then smaller steps are stable); (b) growth that is not a step-size effect (a
+  constant lapse with zero shift is not a gauge in which the system need be well
+  behaved; then smaller steps do not help). Either way the group does not test the
+  light pair as I intended.
+
+Cases added, with predictions written before they run:
+
+- C_q (0.75 b = 0.462 cells) and C_h (0.5 b = 0.308 cells), frozen lapse, zero shift.
+  Reading (a) predicts both stable (monitor falling as in S, L); reading (b) predicts
+  growth in both. I lean to (a), three to two.
+- Group H: harmonic slicing (`lapse_oplog = 0`, `lapse_harmonic = 1`: d_t alpha =
+  -alpha^2 Khat), zero shift. Lapse pair and light pair then have the same speed 1 and
+  the same bound b = 0.617 cells. P2-H: m stable (0.573 cells), p unstable, g stable;
+  also q and h stable. This is the test of the light bound in a gauge with a dynamical
+  lapse. If H_m is unstable, the light bound of the kernel is too high and must be
+  lowered before the option is published.

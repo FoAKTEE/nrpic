@@ -51,6 +51,8 @@ lapse_oplog     = 2.0        # 1+log: d_t alpha = -2 alpha Khat
 lapse_harmonicf = 1.0
 lapse_harmonic  = 0.0
 lapse_advect    = 1.0
+lapse_leak      = 0.0        # relaxation of the excess lapse, off (test K sets it)
+lapse_leak_alpha = 1.0
 shift_Gamma     = 0.75       # Gamma-driver
 shift_eta       = 2.0
 shift_advect    = 1.0
