@@ -498,3 +498,13 @@ sign-flip json of entry 11 already showed the proper run's largest <|M|/[M]> ove
 common with RNC256 (N <= 4.39) as 2.72e-4, below the M band; the H part I have not seen as a number
 (Fig. `fig_signflip` shows it near 5e-11 at N = 4.4, read). `fig_signflip.py` now writes the maxima
 (from cycle 1, and without the initial transient N <= 0.05); a sixth figure run makes them.
+
+Outcome (figure run E-20261124-213739-9776185; every json and PNG byte-equal to 213532-3f00681 except
+`fig_signflip.json`, which gains the new keys; its outputs are now in `fig/`):
+- Scope P2, RSF256 record: H PASS, M FAILED as written. Max <|H|/[H]> over N <= ln 64 = 3.43e-11 (band
+  3e-11 to 1e-10); max <|M|/[M]> = 1.18e-4 (band 3e-4 to 5e-4). Both maxima sit at the upper edge of
+  the window (N = 4.158), where the last shells cross and both still rise: by N = 4.39 <|M|/[M]> is
+  2.72e-4 (entry 11). The window ln 64 cuts the rise; the ladder values the band came from (P256,
+  3.3e-4 to 4.0e-4) were taken over a window I have not checked [TO VERIFY in ladder/README A4 row].
+  The maximum over the whole run needs RSF256 to t = 8.5 (q0034). Without the initial transient (N >
+  0.05) the maxima are the same numbers.

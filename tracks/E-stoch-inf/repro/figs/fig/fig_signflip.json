@@ -1,5 +1,13 @@
 {
  "RNC256": {
+  "proper_H_max_entry": 3.4294921086159083e-11,
+  "proper_M_max_entry": 0.00011792953990382614,
+  "proper_H_max_entry_N_gt_005": 3.4294921086159083e-11,
+  "proper_M_max_entry_N_gt_005": 0.00011792953990382614,
+  "proper_N_at_H_max": 4.15763799681624,
+  "proper_N_at_M_max": 4.15763799681624,
+  "proper_last_cycle": 895,
+  "proper_N_end": 5.324191918094716,
   "n_common": 735,
   "t_end_flip": 4.5,
   "N_end_flip": 4.3875547616371895,
@@ -10,6 +18,14 @@
   "M_proper_max_common": 0.00027191593328426407
  },
  "U256nc": {
+  "proper_H_max_entry": 2.2716048782898894e-11,
+  "proper_M_max_entry": 0.000498089944072027,
+  "proper_H_max_entry_N_gt_005": 2.2716048782898894e-11,
+  "proper_M_max_entry_N_gt_005": 0.000498089944072027,
+  "proper_N_at_H_max": 2.2893395002001276,
+  "proper_N_at_M_max": 4.1536119650027965,
+  "proper_last_cycle": 1702,
+  "proper_N_end": 9.999999998393733,
   "n_common": 613,
   "t_end_flip": 3.75,
   "N_end_flip": 3.634733063563641,
