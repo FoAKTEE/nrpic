@@ -346,3 +346,36 @@ to carry to G2"):
 | 3 definitions named before the run | reference quantities, windows (100 M), noise model (sigma_w) and refutations in JOURNAL.md 2026-11-21T20:25Z before submission | — |
 | 4 card tests without a second check | — | a G2 verifier for T8, R6, the cluster runs and their controls once the runs end |
 | 6 M/4 mesh unfit | all new cluster runs on M/8 | M/8 also contracts (drift run (vi)); its cause is what run (v) and the controls of block A measure |
+
+## 14. Batch 11 (2026-11-24, analysis round after the card runs): what the lead checked
+
+No helper package ran for C-sidm between batch 5 and this session: every commit on
+`track/C-sidm` since 1274fb36 is a manifest commit of the sequencer (`C(run): register|finish`).
+`git status` was clean; nothing stranded. The runs read here are the batch-5 queue (predictions
+JOURNAL.md 2026-11-21T20:25Z); the analysis scripts are this session's own, so the second check
+asked of the lead is a reader that shares no code with them (run C-20261124-132113-52c2abe,
+`longruns/scripts/xcheck_b11.py`, figure read) plus the figures of every analysis.
+
+| Item | Runs (analysis) | Recheck | Verdict of the lead |
+|---|---|---|---|
+| Cause of the ten FAILED chains | chain event logs; `sacct -a` | every log ends "STATUS FAILED (MAX_SEGMENTS=4 reached)" (D2f2s2: 2) after 4-8 SIGTERMs; jobs of another user in partition `priority` start at each SIGTERM time (e.g. 5162 at 05:09:12, our two segments cancelled at 05:09:11) | [VERIFIED] preemption, not physics; continued in place from the newest restart (JOURNAL 12:59Z) |
+| Restart cadence of the continuation | C-20261123-032324-938ecbd, -20261124-120250-9e6a3ba | `output2` block of the new restart files: dt = 10, last_time = 10 and 110 | [VERIFIED] the command-line override acts on a restart |
+| R(v), drift run (v) | C-20261124-130021-5c9c207, -130222-6a4924d | N.1 9.95, N.2 3.22, N.5 11.07 read from the JSON; N.4/N.6 recomputed from `diffusion.json` (mean_dE difference -0.00182, -0.00438, -0.00507 at 250, 275, 300 M) | N.1, N.2, N.4, N.5, N.6 hold by their letter, N.3 failed; N.4/N.6 carry a phase confound (JOURNAL 13:12Z) |
+| T | C-20261124-131129-e93be29 (first attempt C-20261124-131113-b196c0e divided by t = 0: my bug, rerun) | log values read by hand: cpu 165.89 s for 20 M | [VERIFIED] 8.29 s per M |
+| H.1-H.4 | C-20261124-131012-f920f45 (first attempt -130951-36beb5c failed, my bug) | per-case f_S printed; f0 arithmetic by hand | [VERIFIED] all four hold; H.4 by 1.85 sigma |
+| D2 | C-20261124-130442-0819c88 (first attempt -130433-e84cb43 failed, my bug); xcheck | t_c at the record 164.25, 163.5, 166.0 M against interpolated 164.01, 163.41, 165.97 | [VERIFIED] D2.1, D2.3 hold, D2.2 failed; budget dH to 3.2e-16 of sum MH |
+| Block A | C-20261124-130506-2ddce1f, -130634-3338d9b; xcheck | t_c at the record 535.0, 294.5, 449.0, 549.5, 230.0 M against 534.81, 294.47, 448.96, 549.26, 229.79; alpha_c changes at 400 M identical | [VERIFIED] two controls collapse; A.3, A.4 failed |
+
+Found while checking, not yet explained [TO VERIFY]: the count test of the collision rate
+before t_c, z = (n_coll - sum P)/sqrt(sum P), is -0.61 and +0.20 for f = 1 and 2 but -3.39 for
+f = 4 (`d2.json`, count_z_before_tc), with n_noroot 509, 957, 1969 and n_balance 1.4, 2.0, 2.6
+per cent of the collisions. Whether the n_balance events must be added back (decisive README
+line 178) and whether the f = 4 deficit is the largest cells' pair sampling is a G2 verifier
+item; it does not touch D2.1 (rates from n_coll within 2.1 per cent).
+
+Defects of the noise model of block A (written before the runs) found here: the ripple and the
+seed standard deviation are taken over windows that contain a collapse, so sigma_w is the size
+of the collapse (0.07). The reader now takes the ripple before a time given on the command
+line (`--ripple-tmax`, post hoc, labelled); partial windows (a run cut inside a window) still
+enter the seed standard deviation, which inflates it; to be fixed before the seeds 2 and 3
+are read (HANDOFF).
