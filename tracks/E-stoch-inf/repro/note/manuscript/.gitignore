@@ -1,0 +1,14 @@
+# whitelist: only the paper's inputs and the rendered note
+*
+!.gitignore
+!main.tex
+!references.bib
+!main.pdf
+!figures/
+!figures/*.pdf
+!figures/*.png
+!tables/
+!tables/*.tex
+!tables/*.csv
+!scripts/
+!scripts/*.py
