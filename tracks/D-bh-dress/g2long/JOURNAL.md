@@ -486,7 +486,7 @@ boundary_gauge D-20261124-131657-89cd963 (boundary_gauge.png looked at).
 R5 (entry 1):
 - H3 HOLDS (final): max |D_ES1L16 - D_V1L16| on 100-300 M = 1.99e-4 (at 243.0 M) against 2.28e-4 at
   M/8 on the same window; the two differences follow each other (judge_long.png panel c).
-- H4 HELD: 3.35 card-hours by Slurm elapsed (four segments), against ~3.4 from S3.
+- H4 HELD: 3.33 card-hours by Slurm elapsed (four segments: 50:05, 50:07, 50:06, 49:29), against ~3.4 from S3.
 FV4 (entry 6):
 - P1 HOLDS: finite to 299 M (last sample; tlim 300), horizon at every 1 M sample (the finder runs
   every 16 cycles, 1 M at M/4), already at t = 0 on the card (0.9538; the processor smoke S4 found none).
@@ -518,3 +518,31 @@ D-20261124-130935-fdca920). Prediction: (i) V-1L tight |M(t) - M(100)| <= 3e-5 a
 (ii) the tight null-test difference |D_ES - D_V| <= 5e-5 at every dump 100-500 M [JUDGEMENT: the
 production-finder difference of 2.3e-4 is mostly the plateau switching of the two runs at different
 times]. Refuted if (ii) exceeds 1e-4 at any dump.
+
+## Entry 12 (2026-11-24 05:50 PST): outcome of test XC; prediction XN for FN4 before it runs
+
+Run D-20261124-134211-c6fce88 (tools/xc_plane.py, 3.6 min on one core; xc_plane.png looked at). Plane
+L2 norms on z = 0 of H and |M| (from con_M = g_ab M^a M^b) on A1 = [1.2 r_AH, 6 M], A2 = [6, 30 M],
+A3 = [30, 100 M], every con slice (25 M) of V-1L4, V-1L, V-1L16, ES-1L, ES-1L16, ES-FL, ES-FL4 (to 475 M)
+and ES-FLK (to 225 M).
+- XC1 HOLDS: in every run and annulus the last slice is below its 100 M value times 1.6 (largest:
+  ES-FL A2 H 1.59, M 2.16; the vacuum and bubble runs fall to 0.04-1.35 of it), and no norm rises by
+  more than a factor 6.5 between two slices after 100 M (V-1L A1: 2.8e-6 at 100 M to 1.85e-5 at 125 M;
+  the near-hole annulus carries passing pulses of 3-7 times its running level). ES-FL's A1 annulus is
+  empty from 475 M on (1.2 r_AH > 6 M), so its growth there is quoted to 450 M.
+- XC2 HOLDS as written, narrowly: the mean of ||H||_A1 over 100-300 M is 7.30e-6 at M/16 against
+  7.66e-6 at M/8 (M/4: 1.25e-5). The expected fall by a factor 1.3-3 FAILED (factor 1.05): beyond
+  +-3 M the M/8 and M/16 meshes are the same, and A1 reaches to 6 M, so the exterior residual near
+  the hole is set by the shared coarser levels, not by the finest one [JUDGEMENT on the cause; no run
+  here could fail on it].
+- Not predicted, read off the figure: with dust the exterior H residual is about 1e-3 on A1 and 1e-4
+  on A2 (ES-FL, ES-FLK), a hundred times the dust-free runs, and four times LOWER at M/4 (ES-FL4: 2.5e-4
+  on A1) than at M/8: the residual in the dust behaves like particle sampling noise of the deposit
+  (more particles per cell on the coarser mesh), not like truncation error [JUDGEMENT]. The dust-free
+  bubble (ES-1L) has 2-4 times the vacuum residual in A2/A3, where its dust wall and shell lie.
+
+Prediction XN (FN4, 4N particles; before it runs, job 5170 held): if the dust residual is sampling
+noise of the deposit, ||H|| of the z = 0 plane on A1 and A2 at 100 and 200 M in ES-FLK4N is 0.5 times
+ES-FLK's (N^-1/2; between 0.35 and 0.7) [JUDGEMENT]; refuted (not particle noise) if the ratio is
+0.9 or more at both times. The same with the region norms H2_out of the 6 and 12 M spheres
+(esflk4n.region.hst) against xc_plane's A1/A2 of ES-FLK as a cross-check of the two norms (no bound).
