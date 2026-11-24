@@ -31,6 +31,7 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--cores", type=int, default=3)
     a = ap.parse_args()
+    a.exe = os.path.abspath(a.exe)
     out = os.path.abspath(a.out)
     os.makedirs(out, exist_ok=True)
     ic2 = os.path.join(out, "ic")

@@ -341,3 +341,7 @@ no card job. Consequences:
 - The card job stays prepared and unsubmitted: `analysis/step_limit/card_refined.list`
   (R0, R0g, R1 of the refined deck). Command in the README of the package and in READY.
 - P5a on a card is not measured.
+
+Run core-20261124-134017-8c4e50c (first call of T1/T2) failed before any AthenaK run:
+the driver changed directory and then looked for the executable by its relative path.
+No result. The three drivers now make the path absolute.

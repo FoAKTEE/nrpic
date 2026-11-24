@@ -99,6 +99,8 @@ def main():
     ap.add_argument("--workers", type=int, default=5)
     ap.add_argument("--nlim", type=int, default=300)
     args = ap.parse_args()
+    args.exe = os.path.abspath(args.exe)
+    args.out = os.path.abspath(args.out)
     os.makedirs(args.out, exist_ok=True)
     tab = vg.rho_table(vg.stab_poly("rk4"))
 
