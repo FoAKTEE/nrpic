@@ -1,7 +1,7 @@
 # HANDOFF of B-emd-gw
 
 Written for a reader with no memory of the last session (resumed lead session of batch 11b,
-wave 3, 2026-11-24 09:23-09:50 PST, after the first session of the item was stopped by the
+wave 3, 2026-11-24 09:23-09:40 PST, after the first session of the item was stopped by the
 pause flag at about 07:20). Rewritten at the end of every session.
 
 State in three lines: G0 and G1 are signed (coord/GATES.md); G2 is not met (stage/G2/OPEN.md).

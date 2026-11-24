@@ -336,7 +336,7 @@ transport non-convergence; G1 verify running; G2 verify not run (HANDOFF).
 Card-hours this session: none run in it; read 0.74 (J4 0.45, pop_s014_gr 0.19, pop_s028_gr
 0.10); queued 1.1 (ceilings), 7 more behind the sequencer. Toward G2 so far 3.42 used.
 
-## 2026-11-24T17:23Z-17:50Z  resumed lead session of batch 11b (wave 3)  commits 9c77192a..(this)  runs B-20261124-140856-911ded9 (closed), -172623-03699f5, -172643-d1e88c7, -172958-fc4a2cf, -172958-73b0662, -131438-5d7e049 (cancelled), -173547-11afdaf (sequencer)
+## 2026-11-24T17:23Z-17:40Z  resumed lead session of batch 11b (wave 3)  commits 9c77192a..(this)  runs B-20261124-140856-911ded9 (closed), -172623-03699f5, -172643-d1e88c7, -172958-fc4a2cf, -172958-73b0662, -131438-5d7e049 (cancelled), -173547-11afdaf (sequencer)
 
 plan: continue from what the cut session left (pause flag from about 07:20): close shear series 6
 and judge it, commit the stage verify results, read anything new, keep the work moving while the
