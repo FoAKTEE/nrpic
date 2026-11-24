@@ -1785,3 +1785,20 @@ line in their logs.
   depends on the factor is id_solver T1 in mode `code`: psi converges at second order to
   the continuum solution with the right matter term (-1.92e-2, -5.22e-3, -1.33e-3 at
   dx = 1, 0.5, 0.25). Fault of mine on record: the argument of batch 10a was wrong.
+
+### Close of session core-lead-11 (2026-11-24T14:20Z): PAUSED
+
+The pause flag `locks/PAUSE` was found at 14:19Z; nothing new was started after it.
+Done: six level-2 chains closed and judged (collapse within 300 M bracketed between
+y_c = 0.7175 and 0.73625, run core-20261124-130055-9fc9901; the surviving pairs drift
+inward steadily, so the bracket may be set by the window); level 3 queued with
+predictions P10-P15 (six chains, 11.82 card-hours asked, jobs 5154/5155 eligible,
+5156-5159 held, sequencer pid 3904230); T5 of core/noise-level2 recorded (PASS on the
+card, Track E's check); note rebuilt (core-20261124-133602-3e31713, 10 pages); stage G2
+collect, verify (rerun PASS for the first time; runs FAIL only on the open chains), report;
+outbox to A (W31 in work) and kb (M18 correction). Where I stopped: nothing half-done;
+the next session reads level 3 with the commands in HANDOFF.md. G2 not met.
+Faults of mine on record: the argument for M18 of batch 10a (corrected); the overwritten
+note/.gitignore (restored); two wait loops of mine matched their own command line with
+`pgrep -f` and never ended (stopped by their task ids, no process killed by pattern).
+Not done (task scope): inbox messages 1-10.

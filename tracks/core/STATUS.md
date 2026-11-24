@@ -37,6 +37,9 @@ needs:       orch: interface corrections into coord/INTERFACES (outbox 20261121T
 offers:      tracks/core/note/ (row 4 on M/8 with levels 1+2 and the drift); outbox
              20261124T130733Z to A (W31 in work this batch) and 20261124T130734Z to kb
              (M18 verified by id_solver T1 in mode code: correction of core's answer)
-budget:      G2 card-hours used 16.4 after this session's closures (40 to the gate,
-             decisions 0026/0031); 11.82 asked for level 3; processors: three
-             single-core analysis runs of minutes
+budget:      G2 card-hours: used 15.74, reserved 11.90 (the six level-3 chains at their
+             ceiling), left 12.36 of 40 (nrpic-run budget, 2026-11-24T14:19Z);
+             processors: four single-core analysis runs of minutes
+paused:      the pause flag appeared at 2026-11-24T14:19Z; session closed at once
+             (records committed and pushed); the sequencer may still release the
+             held card jobs (decision 0026 item 2)
