@@ -101,7 +101,7 @@ def read_lockstep(path):
         for line in f:
             if not line.startswith("#"):
                 break
-            for k, v in re.findall(r"(\w+) ([-+0-9.eE]+)", line):
+            for k, v in re.findall(r"(\w+) ([-+]?\d+\.?\d*(?:[eE][-+]?\d+)?)", line):
                 hdr.setdefault(k, float(v))
     rows = np.loadtxt(path, comments="#")
     return hdr, rows[:, 0].astype(np.int64), rows[:, 1] + 1j*rows[:, 2]
@@ -184,6 +184,7 @@ def main():
         x = sharp*np.log(ks/np.sqrt(n2))
         W = 0.5*(1 + np.tanh(x))
         lin = L**-1.5*W*bg["R"][sidx, i]*alpha
+        lin = np.where(np.abs(lin) > 0, lin, np.nan)
         cR = npz[i]["c_R"]
         cRnoE = npz[i]["c_RnoE"]
         cAlt = -npz[i]["c_Phichi"] - npz[i]["c_PhiE"] + (r["H"]/r["Pi_b"])*npz[i]["c_dphi"]
