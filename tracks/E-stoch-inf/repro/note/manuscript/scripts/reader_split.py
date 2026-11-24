@@ -122,7 +122,7 @@ def main():
     for ax, N in zip(axes, (128, 256)):
         k = np.sqrt(np.array(res["shell_n2"][N], float))
         for v in "ABCD":
-            ax.semilogy(k, curves[(N, v)][1], color=col[v], lw=1.2, label=lab[v])
+            ax.semilogy(k, curves[(N, v)], color=col[v], lw=1.2, label=lab[v])
         ax.set_xlabel(r"$|n|$")
         ax.set_title(f"$N = {N}$", fontsize=10)
     axes[0].set_ylabel(r"rms over a shell of $|\mathcal{R}^{\rm NR}_n/\mathcal{R}^{\rm lin}_n - 1|$")
