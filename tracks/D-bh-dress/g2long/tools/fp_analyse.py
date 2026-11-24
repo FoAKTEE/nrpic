@@ -155,7 +155,10 @@ def figure(outdir, R, T, J):
                    ms=5, ls="none", label=lab)
         x.set_xlabel(r"$t/M$")
         x.set_ylabel(r"$M_{\rm AH}/M-1$")
-        x.legend(fontsize=6.5, frameon=False, loc="best")
+        lo, hi = x.get_ylim()
+        if n == "V-1L":          # room below the data for the legend
+            x.set_ylim(lo - 0.55 * (hi - lo), hi)
+        x.legend(fontsize=6.5, frameon=False, loc="lower right" if n == "V-1L" else "upper left")
         x.set_title(f"({'a' if n == 'V-1L' else 'b'}) {n}: finder re-search of the dumps", loc="left", fontsize=9)
     x = ax[1, 0]
     for tag, c in (("M8", fs.PAL["red"]), ("M16", fs.PAL["yellow"])):
@@ -207,7 +210,7 @@ def figure(outdir, R, T, J):
     x.set_xlabel(r"$h/M$ (finest level)")
     x.set_ylabel(r"$|M_{\rm AH}/M-1|$ at 200 M (filled $>0$, open $<0$)")
     x.legend(fontsize=6.5, frameon=False)
-    x.set_title("(d) offset against mesh spacing, finder converged", loc="left", fontsize=9)
+    x.set_title("(d) offset at 200 M against $h$", loc="left", fontsize=9)
     fs.save(fig, os.path.join(outdir, "fp_analyse"))
     plt.close(fig)
 
