@@ -44,7 +44,8 @@ def main():
         logs = sorted(glob.glob(os.path.join(c, "athena.*.log")))
         txt = open(logs[-1]).read() if logs else ""
         cpu = re.search(r"cpu time used\s*=\s*([0-9.eE+-]+)", txt)
-        tt = [float(t) for _, t in LINE.findall(txt)]
+        tt = [float(t) for _, t in LINE.findall(txt)] + [float(t) for t in re.findall(r"^time=([0-9.eE+-]+) cycle=", txt, re.M)]
+        tt = [max(tt)] if tt else []
         zc = re.search(r"zone-cycles/cpu_second\s*=\s*([0-9.eE+-]+)", txt)
         if cpu and tt:
             res["timing"][os.path.basename(c)] = dict(s_per_M=float(cpu.group(1)) / max(tt[-1], 1e-30),
