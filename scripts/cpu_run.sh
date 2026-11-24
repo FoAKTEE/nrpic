@@ -78,7 +78,9 @@ t0=$(date +%s.%N)
 "$EXE" "$inflag" "$input" -d "$rundir" "$@" >> "$log" 2>&1 &
 apid=$!
 while :; do
-  wait "$apid"; rc=$?
+  # `|| rc=$?`: under set -e a bare `wait` with a non-zero status (the guard's 3) would
+  # leave the script here without the footer
+  rc=0; wait "$apid" || rc=$?
   if (( rc > 128 )) && kill -0 "$apid" 2>/dev/null; then continue; fi
   break
 done
@@ -86,8 +88,8 @@ t1=$(date +%s.%N)
 # processor time of the children of this shell (athena): user + system, in seconds
 cpu=$(awk '{print ($16 + $17)/100}' /proc/$$/stat)   # cutime + cstime, 100 ticks per second
 awk -v t0="$t0" -v t1="$t1" -v cpu="$cpu" -v n="$THREADS" -v rc="$rc" -v end="$(date -Is)" \
-    -v load="$(cut -d' ' -f1-3 /proc/loadavg)" 'BEGIN {
+    -v ldavg="$(cut -d' ' -f1-3 /proc/loadavg)" 'BEGIN {
       w = t1 - t0;
       printf "# exit=%d end=%s wall_s=%.1f cpu_s=%.1f cpu_share=%.2f load=%s\n",
-             rc, end, w, cpu, (w > 0 ? cpu/(w*n) : 0), load }' >> "$log"
+             rc, end, w, cpu, (w > 0 ? cpu/(w*n) : 0), ldavg }' >> "$log"
 exit $rc

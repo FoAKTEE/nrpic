@@ -10,7 +10,9 @@ Sources of numbers. "Paper" is Wu & Most, arXiv:2611.12831, read in
 `refs/arxiv_2611.12831/src/main.tex` (untracked, line numbers given). "Earlier" numbers
 come from `docs/TESTLOG.md` (line numbers), the tables
 `paper/sections/tables/tab_outcomes.tex` and `tab_setups.tex`, and the run directories
-under `/data/haiyangw/nrpic/runs/` (untracked). The self-gravitating numbers below were
+under `/data/haiyangw/nrpic/runs/` (untracked; pre-program directories without a manifest,
+named and inventoried with sha256 in `preprogram/README.md`, run
+core-20261121-231825-135474c). The self-gravitating numbers below were
 re-read from the run files by `ladder_measure.py` (analysis run
 `core-20261115-032826-45e1779`, output `scratch/core/core-20261115-032826-45e1779/
 ladder_numbers.json`, figure `figs/ladder_overview_core-20261115-032826-45e1779.png`,
@@ -28,7 +30,7 @@ and named), OPEN (not done).
 | 1. Geodesics on a fixed background | order and conserved quantities on fixed Kerr | PASS | G: `core-20261115-032625-45e1779`, 104 of 104 checks |
 | 2. Oppenheimer-Snyder collapse (CORE part) | horizon-mass error of the order of the paper's | PASS at 9328 lattice particles; random samples at 10^4 larger (0.3 to 0.5 percent) | O: `core-20261115-032614-45e1779`, 13 of 13 checks |
 | 3. Oblate and prolate collapse (CORE part) | prolate collapse | PARTIAL: horizon at the paper's time at two resolutions (32.00 M at M/16, 32.25 M at M/8); mass deficit 3.3 and 4.3 percent, falling with resolution; oblate blocked (needs an oblate component in `nrpic_cf`) | wave 2: `core-20261115-152845-5728b1d` (M/8), comparison `-162509-c691fb8` |
-| 4. Einstein-Vlasov steady states and stability threshold (CORE part) | stability of relativistic clusters | PARTIAL: fates of the five models as in the paper; wave-2 bisection at M/4 (seven members): no collapse; members below the turning point y_c* = 0.6796 migrate to their equal-binding partner, 0.70 and 0.72 stay: threshold between 0.66 and 0.70; 0.69 and 0.67 unresolved; collapse branch needs the finer mesh; growing oscillation unexplained | wave 2: `core-20261115-152842-5728b1d`, `-152843-5728b1d`, `-154726-37450f2`, `-155617-06f844b`, analysis `-170606-1c69507` |
+| 4. Einstein-Vlasov steady states and stability threshold (CORE part) | stability of relativistic clusters | PARTIAL: fates of the five models as in the paper; wave-2 bisection at M/4 gave no bracket (mesh pushes clusters outward); on M/8 against unkicked controls (batch 5, judged 2026-11-23): threshold BRACKETED between y_c = 0.680 (member and control collapse) and 0.755 (stays, D = +0.0016), turning point 0.6796 just below; level 2 (0.69875, 0.7175, 0.73625 with controls) queued; not converged in cell size or particle number; growing oscillation unexplained | M/8: fates `core-20261123-020318-e952741`, runs `core-20261121-204230-3bcb118` to `-204239-2be5ac2`; wave 2: `core-20261115-152842-5728b1d`, `-152843-5728b1d`, `-154726-37450f2`, `-155617-06f844b`, analysis `-170606-1c69507` |
 
 ## Row 1. Geodesics on a fixed background
 
@@ -87,7 +89,7 @@ Evidence.
   `runs/os/nocap_v4` (published lattice rule), `runs/os/adapt_*`, `runs/os/mc_*`.
 - Re-read today (`ladder_numbers.json`): first apparent horizon 16.3894 M, mass
   1.000353; largest |M_AH/M - 1| from formation to 60 M 1.34e-3; 1.000093 at 20 M,
-  0.998762 at 40 M, 0.998670 at 60 M; all 9328 particles removed by 19.74 M.
+  0.998762 at 40 M, 0.9986707 at 60 M (0.998671 rounded; printed 0.998670 until batch 8, `stage/G2/VERIFIER.md` section 3 item 5); all 9328 particles removed by 19.74 M.
 - Regression O today (card release executable, initial data regenerated bitwise
   identical, to 25 M): `core-20261115-032614-45e1779`, 13 of 13 checks; first horizon
   16.3894 M, mass 1.000352575670864 (earlier ...862); central lapse equal to the earlier
@@ -243,13 +245,48 @@ Open: the bisection on the finer mesh (collapse branch; about 0.6 card-hours per
 300 M at M/8), more particles, three-way convergence of the threshold (Track C's G2
 criterion).
 
+### Row 4, batch 5 / batch 10a: bisection on cells of M/8 against unkicked controls (release core-v0.6)
+
+Rule, measured quantities and predictions P1-P4 written before the runs
+(`tracks/core/JOURNAL.md`, entry 2026-11-21T20:26Z); package `verify/row4/` (deck
+`st_m8.athinput`: the release cluster input on a static mesh, M/4 nest inside
+|x|_inf < 6 M, M/8 inside 3.9 M; 10^4 stratified particles, seed 1, equilibrium table;
+member with the one-per-cent inward kick, control without; to 300 M; card release
+executable `.work/build_gpu_v06/src/athena`). Initial data core-20261121-202643-d66c4ee.
+Fates: run core-20261123-020318-e952741 (`row4_fate.py`, figure `fig_row4_m8.png`; note
+figure `note/figures/fig_row4_m8.pdf`).
+
+| y_c | alpha_c eq | member (run) | control (run) | class / side |
+|---|---|---|---|---|
+| 0.605 | 0.6281 | t_c 180.5 M, AH 188.0 M (core-20261121-204230-3bcb118) | no collapse, mean 200-300 M 0.7303 (+0.102: outward) (core-20261121-204235-0b25077) | COLLAPSE / UNSTABLE |
+| 0.680 | 0.6875 | t_c 219.5 M, AH 225.0 M (core-20261121-204234-d010783) | t_c 251.5 M, AH 256.0 M (core-20261121-204239-2be5ac2) | COLLAPSE / UNSTABLE |
+| 0.755 | 0.7509 | mean 0.7264 (core-20261121-204232-f74c942) | mean 0.7247 (core-20261121-204237-ae00ca2) | STAYS, D = +0.0016 / STABLE |
+
+Verdict of level 1: the threshold on M/8 with 10^4 particles is BRACKETED between
+y_c = 0.680 and 0.755 by the rule fixed before the runs (valid: monotone, no UNDECIDED
+member inside) [VERIFIED by core-20261123-020318-e952741]. The turning point
+y_c* = 0.6796 lies 0.0004 below the bracket; the model at 0.680 collapses from the
+particle noise alone (its control), so the threshold of the discretised system lies above
+y_c* [JUDGEMENT]. P1 and P4 hold, P2 is refuted in part (the 0.755 control's mean lies
+0.026 below its equilibrium, beyond the 0.01 predicted; member and control drift alike,
+inward), P3 is refuted (0.680 collapses). Card time 2255-2280 s per run (7.5-7.6 s per M,
+0.63 card-hours), 3.8 card-hours for the six. The late swings of the 0.755 pair are about
++-0.03, so a 100 M mean can move by about 0.01; D lies 0.008 inside the STAYS border.
+
+Level 2 (queued 2026-11-23T02:05Z, predictions P5-P9 in the journal entry of that time):
+the midpoint 0.7175 and both points of the level after it, 0.69875 and 0.73625, each
+with its control; initial data core-20261123-020409-4fae8fb; chains
+core-20261123-020450-7e42037 (0.7175 member), -020452-e635a8e (control), -020454-8fec6b2
+(0.69875 member), -020456-884f550 (control), -020458-dfc38d7 (0.73625 member),
+-020500-9b192cd (control); 12 card-hours asked, about 3.8 expected.
+
 ## Supporting checks of the C2 steps (earlier, not re-run today)
 
 | Step | Number | Source |
 |---|---|---|
 | deposition identity on refined meshes, flat space, 10^4 particles crossing three levels | mesh integrals equal particle sums to 16 printed digits (card), 4e-13 (processor) | `docs/TESTLOG.md` lines 30-36 |
 | deposition identity in the dust collapse | 1.1e-15 throughout (also in regression O) | line 62; regression O |
-| restart, asymptotically flat | positions to 9e-16, momenta 3e-16, history identical | lines 64-70 |
+| restart, asymptotically flat | positions to 9e-16, momenta 3e-16, history identical (particle state); the Z4c mesh state with outflow faces and refinement is not exact on release core-v0.6 (64 per cent of its words differ at round-off after three steps; fresh verifier V6, `stage/G2/OPEN.md` item u) | lines 64-70; runs core-20261121-213713-952a0c4, -215228-d1f36f4 |
 | restart, periodic | every compared quantity identical | `cosmo/TESTLOG.md` lines 847-862 |
 | apparent-horizon finder (vacuum puncture, M/8) | corrected finder 1.0003; slice mass 1.0006 | table tab:outcomes, `docs/TESTLOG.md` lines 191-224, 310-386 |
 | Kretschmann scalar (Brill-Lindquist) | 5e-3, 2e-4, 1e-5 relative in three radial bands | lines 38-42 |
