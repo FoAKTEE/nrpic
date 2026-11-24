@@ -1,7 +1,7 @@
 # HANDOFF of B-emd-gw
 
 Written for a reader with no memory of the last session (lead session of batch 11, wave 3,
-2026-11-24 04:51-06:00 PST). Rewritten at the end of every session.
+2026-11-24 04:51-06:40 PST). Rewritten at the end of every session.
 
 State in three lines: G0 and G1 are signed (coord/GATES.md); G2 is not met (stage/G2/OPEN.md).
 The first full-GR population run is read: it matches the Newtonian population and the design's
@@ -30,9 +30,8 @@ stage/G2/VERIFY_RESULTS.{md,json} and rerun `nrpic-stage report B-emd-gw G2`.
 - population: X0-X3 decide what stops the 0.028 core (R21); N2-N4; the gauge, particle and mesh
   legs (R22: the high-k TT energy after halo formation starts at |k| = 4-5 k_f and is 1e3 times
   the particles' near field per shell near 30-40 k_f, `figs/pop_gr_spectra.png`; gauge, mesh or
-  physics?); figure defects
-  (cut y labels of pop_gr_halos, saturated K panel of the mosaic, overlapping right axis label of
-  pop_gr_stop).
+  physics?); the mosaic's K panel saturates in the halo core (kept: the full range washes the
+  plane out); DESIGN.md section 11 says what the GR runs change in the design.
 - shear: L2 at one particle per cell: -0.828, -0.830, -0.835 (N_y = 32-128); at N_y = 64 it
   converges in particles along y to about -0.820 (1-8 per cell, `figs/fig_ppc.png`), beside
   CosmoGRaPH's -0.8183; N_y = 128 at 4 per cell gives -0.831 (mesh limit open); the field carries
