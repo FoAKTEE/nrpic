@@ -27,10 +27,10 @@ read them joined (b11_cards.py does it). Predictions: JOURNAL.md, batch 11, "Q4 
 
 Parents (closed as stopped in nrpic-run; cut by preemption and their segment caps): A
 F-20261121-203144-b2cf16b (to 61.8 M), C F-20261121-203247-961801d (to 22.3 M). B
-F-20261121-203156-03efdd3 (to 107.85 M): its `nrpic-run finish --status stopped` was started in
-the background at 06:20 PST and commits its manifest itself; if `harness/bin/nrpic-run status
-F-20261121-203156-03efdd3` still says submitted, run `harness/bin/nrpic-run finish
-F-20261121-203156-03efdd3 --status stopped` (checksums 103 GB: about an hour on a busy disk).
+F-20261121-203156-03efdd3 (to 107.85 M) is NOT closed yet: its finish was stopped by the pause
+flag at 06:27 PST (nothing written). First thing next session: `harness/bin/nrpic-run finish
+F-20261121-203156-03efdd3 --status stopped` (checksums 110 GB: about an hour on a busy disk; it
+commits the manifest at the end; G2's budget counts B at its 12.78 ceiling until then).
 
 See the chains: `squeue -u $USER -o "%i %j %T %r"`; `scripts/submit_chain.sh --status <rundir>`.
 

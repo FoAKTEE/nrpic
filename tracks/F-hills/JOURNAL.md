@@ -968,3 +968,14 @@ pericentre of A2 may come later than the 95-115 M of prediction A2-2, which stan
 Prediction for the registered run: it repeats the scratch numbers exactly (deterministic, same
 inputs). Refuted by any difference.
 L-P outcome (run F-20261124-142649-5512ba0): b11_passage.json identical to the scratch run: MET. Figure fig_b11_passage.png read (distances, E_bc, E_bin; NR to 61.8 M, Newton to 200 M).
+
+### Paused (2026-11-24 06:27 PST): where this session stopped
+
+The pause flag /data/haiyangw/nrpic/locks/PAUSE appeared at about 06:26 PST. Started nothing new
+after it. Stopped my background `nrpic-run finish F-20261121-203156-03efdd3 --status stopped`
+(B, 103 GB, about 40 GB checksummed; nothing written: B's manifest stays "submitted", no
+sha256sums.txt). Left running: the card chains A2 (Slurm 5172), B2 (5171), C2 (5173, held) and
+the sequencer seq_b11.sh (pid 604718; decision 0026 item 2: a sequencer may submit card jobs
+while the flag exists). Not done in this session: B's finish (HANDOFF command), the cosmetic
+legend fix of fig_elliptic.py (note v3). Everything else of the batch-11 task is committed and
+pushed.
