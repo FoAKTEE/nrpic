@@ -500,3 +500,58 @@ What Track A's deck was doing, with the corrected bound: the level-4 step of car
 and 20 per cent on the root mesh; the rule of decision 0027 (0.6) keeps 9 and 4 per
 cent in the expanding box, and none in flat space with 1+log (0.47) or with a frozen or
 harmonic lapse (0.55).
+
+## Entry 8 (06:35): outcome of T1/T2 and of T6a; Track A's message; the K group
+
+**T1/T2**, run core-20261124-140144-47691db (commit 476fe0c, serial build, 27 cases,
+`flat_summary.json`; figure `fig_flat.png` looked at: six panels, in five of them the
+curves at 0.93 b, 0.97 b and with dt_gauge fall together and the curves at 1.03 b and
+1.07 b rise by more than ten decades; the left axis label is clipped at its top).
+
+- P1' held: the bounds of the start-up line minus the reduced model are at most 2.4e-6
+  cells in all six groups (six digits are printed).
+- P2' held in S, L, C, H, D; failed in K:
+
+| Group (binding pair) | b (cells) | 0.93 b | 0.97 b | 1.03 b | 1.07 b | 1.07 b, dt_gauge 0.9 |
+|---|---|---|---|---|---|---|
+| S Gamma-driver 1.5, lapse frozen (shift) | 0.4873 | stable | stable | guard, 194 records | guard, 88 | stable at 0.439 |
+| L 1+log, zero shift (lapse) | 0.4679 | stable | stable | guard, 151 | guard, 66 | stable at 0.421 |
+| C lapse frozen, zero shift (chi and Theta) | 0.5510 | stable | stable | guard, 211 | guard, 86 | stable at 0.496 |
+| H harmonic lapse, zero shift (chi and Theta) | 0.5510 | stable | stable | grows 4e18 in C^2, saturates | guard, 84 | stable at 0.496 |
+| K 1+log with lapse_leak 32 (relaxation) | 0.2785 | stable | stable | **stable** | **stable** | stable |
+| D the deck, cfl 1.0 | 0.4679 | | | | guard after 10 records (no limit) | stable at 0.421 |
+
+  "Stable" in S, L, H, K, D: the squared monitor never exceeds its first value and ends
+  near 4e-18. In C (frozen lapse) the monitor rises to 12 to 13 times its start within
+  the first records and stays there at all three stable step sizes alike: a plateau, not
+  growth (this is what I read as marginal growth in entry 6; the bracket, not that
+  reading, is the evidence for the bound).
+  The three discriminating cases behaved as the corrected model says and against the old
+  one: S at 0.502 cells (old bound 0.505) is unstable; C and H at 0.568 (old bound 0.617)
+  are unstable. **The bounds of the shift, the 1+log lapse and the pair of conformal
+  factor and Theta are bracketed by the code to 3 per cent.**
+- Warnings: printed in every p and b case and in D without the option, in no m or a
+  case; the relaxation line in K_p and K_b. As predicted.
+- **K failed as a test, and why** [VERIFIED from the step history of K_g and the logs]:
+  with dt_gauge the step is 0.2507 cells for the first 18 records (lapse bound 0.2785
+  with the relaxation counted where alpha >= alpha_ref) and then returns to cfl x dx =
+  0.298: after that no cell has its lapse at or above the reference, the relaxation is
+  off, and nothing is stiff. In flat space the 1+log lapse settles at or below
+  `lapse_leak_alpha`, so the group cannot test the relaxation bound. The test of that
+  bound is the relaxed lapse in an expanding box, where the lapse stays above its
+  reference: Track A's U0 (its runs: jump at t = 3.18, guard stop) against U0g (T3).
+
+**T6a**, run core-20261124-140705-57ba7ce: `REGRESSION PASS`, twelve set-ups, 75 of 75
+items byte-identical with release core-v0.6 (`.work/build_cpu_v06`), no item of class a,
+b or other; no line of the step limit in any of the twelve logs of the new executable
+(their cfl_number is 0.25 where Z4c runs). P6a held. The executable is the serial build
+of source commit 476fe0c, the one to be published.
+
+**Track A's message** `20261124T133506Z__to-core__refined-mesh-cfl05-result.md` (read
+06:33): its refined deck at cfl_number 0.5 ran to t = 140 without a guard stop (P0L, run
+A-20261122-235305-4ea0aa5, 14596 steps, 0.189 card-seconds per step; level-4 step at
+most 0.5000 cells; H_max 0.018, 0.011, 0.0078 at t = 2, 3, 5; gt^xx <= 1.042). That is the
+"R1" of my card list, done by Track A with the release executable; I use it as the
+reference for R0g. Decks of the other tracks with cfl_number >= 0.5 on their branch
+tips: 13 (D 4, B 4, C 5), none with a `<z4c>` block [VERIFIED by `git grep`]; Track A's
+ball decks run 0.25. So Track A's periodic deck was the only one above a bound.
