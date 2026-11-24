@@ -474,3 +474,47 @@ FL16 L1 finite to 300 M; horizon at every sample.
     L3 mesh order of the growth: with DeltaM(t) = M_AH(t) - M_AH(20 M), |DeltaM_16 - DeltaM_8| <
        |DeltaM_8 - DeltaM_4| at 100, 200 and 300 M [JUDGEMENT, p ~ 0.6]; refuted if larger at all three.
     L4 cost 3.0-4.0.
+
+## Entry 11 (2026-11-24 05:45 PST, lead of batch 11): outcomes of R5, FV4, D1, S7, S8; prediction for FP-ext
+
+Closed with `nrpic-run finish`: R5 ES-1L16 D-20261121-203151-59c54fb (DONE at 300 M; 129 files),
+FV4 V-1L4 D-20261123-022715-ab5d983 (DONE at 300 M; 104 files). Registered analyses: judge_long
+rerun with R5 complete D-20261124-131138-0b8ffc5 (judge_long.png looked at), judge_conv
+D-20261124-131149-9f0166d (judge_conv.png looked at; byte-identical to the trial of entry 10),
+boundary_gauge D-20261124-131657-89cd963 (boundary_gauge.png looked at).
+
+R5 (entry 1):
+- H3 HOLDS (final): max |D_ES1L16 - D_V1L16| on 100-300 M = 1.99e-4 (at 243.0 M) against 2.28e-4 at
+  M/8 on the same window; the two differences follow each other (judge_long.png panel c).
+- H4 HELD: 3.35 card-hours by Slurm elapsed (four segments), against ~3.4 from S3.
+FV4 (entry 6):
+- P1 HOLDS: finite to 299 M (last sample; tlim 300), horizon at every 1 M sample (the finder runs
+  every 16 cycles, 1 M at M/4), already at t = 0 on the card (0.9538; the processor smoke S4 found none).
+- P2 REFUTED: M_V1L4 - 1 on 100-300 M lies in [-9.86e-3, -7.89e-3], below 0 (predicted +4e-3 to
+  +2.5e-2). Over M/4, M/8, M/16 the late offsets change sign twice (q = -7.3 at 100 M, -8.4 at 200 M,
+  -9.0 at 300 M); at t = 0 they converge (q = 5.2, order 2.4). So the production-finder offset has no
+  mesh order after the gauge transient; no three-member order is quoted from it.
+- P3 HOLDS on the measure written into tools/judge_conv.py before FE4 ran but after V-1L4 was seen
+  (a description, not a blind test): after removing its secular decline (-8.9e-6 per M on 150-240 M)
+  M/4 shows the same plateau switching from 226 M, size +1.25e-4 against +9.2e-5 at M/8 (ratio 1.36).
+- P4 HOLDS: 0.59 card-hours (one segment of 35.4 min; predicted 0.45-0.75).
+Data and smoke tests (entry 10):
+- D1 HOLDS: 4N data D-20261124-130942-29c5de2 has 3402632 dust particles (4.0004 N), N/4 data
+  D-20261124-131050-ed0a535 212872 (0.2503 N); lattice rest masses within -1.9e-7 and -5.3e-6 of the
+  continuum (N: -4.3e-7); both esf.tab byte-identical to the N data's (cmp).
+- S7 HOLDS (D-20261124-131123-05e5bfe): 456 MeshBlocks, 3402772 particles, finder 0.99152073 at t = 0
+  (S6: 0.99152073), region.hst written with finite columns, exit 0 in 21 min on one core.
+- S8 HOLDS (D-20261124-131125-c928380): the same with 213012 particles, 19 min.
+Card runs: FN4 registered as D-20261124-134157-b17938b (cap 4.0, job 5170, held; PROC_NAME D-esflk4n
+and MAX_SEGMENTS 7 set in chain/config.sh before its first segment: preemptions consume segments),
+queued behind FK in scratch/D-bh-dress/g2long_seq3/. FNQ and FL16 are NOT registered: the G2
+allotment has 4.29 card-hours left (nrpic-run budget, 05:17) and FN4 takes 4.0; request to orch
+outbox/20261124T134216Z__to-orch__g2-card-allotment.md.
+
+Prediction for FP-ext (before it runs): the tight finder (h1, A16) on the remaining dumps of V-1L
+(350, 400, 500 M) and ES-1L (150, 350, 400, 450, 500 M). Seen before writing this: FP's tight V-1L
+masses at 100-450 M lie within 1.8e-5 of each other and V-1L16's within 7e-6 (run log of
+D-20261124-130935-fdca920). Prediction: (i) V-1L tight |M(t) - M(100)| <= 3e-5 at 350, 400, 500 M;
+(ii) the tight null-test difference |D_ES - D_V| <= 5e-5 at every dump 100-500 M [JUDGEMENT: the
+production-finder difference of 2.3e-4 is mostly the plateau switching of the two runs at different
+times]. Refuted if (ii) exceeds 1e-4 at any dump.
