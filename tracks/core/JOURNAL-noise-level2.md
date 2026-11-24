@@ -208,7 +208,7 @@ ten while R grows by 5600: not the naive scaling; not investigated further.
 Pi_b at the end 2.70e-7 in both (from 3.24e-2 at t*): the local Z falls by 1.4e10 and
 the division Pi_R/Z stays finite.
 
-## Entry 6 (2026-11-24 05:05 PST): review of the diff on Fable (decision 0029 item 2), state and plan
+## Entry 6 (2026-11-24 05:02 PST): review of the diff on Fable (decision 0029 item 2), state and plan
 
 Session on Fable, batch R2. Worktree merged with main (bc3e4ca4; merge d9f489db); the
 source of the branch is that of 6ca93cba (`git diff 6ca93cba HEAD -- athenak/` empty; the
@@ -314,7 +314,7 @@ every dump, .modes, .rmodes, .hst and restart-compared file is byte for byte tha
 recorded run (a processor run repeats), hence the same numbers in summary.json. Refuted
 by any differing file.
 
-## Entry 7 (2026-11-24 05:15 PST): two source changes of the review, predictions R1 to R4
+## Entry 7 (2026-11-24 05:12 PST): two source changes of the review, predictions R1 to R4
 
 Source (both in `scalar_field_noise_mesh.cpp`, two members in `scalar_field.hpp`, one
 block of `NoiseInit`):
@@ -367,7 +367,7 @@ equal ln a the deviation is that of the geodesic run within a factor 2 (cut mode
 of the shells. Refuted by a deviation of order one (a lapse factor in the wrong place in
 the mesh path grows with alpha), or by level 2 differing from level 1 above 1e-9.
 
-## Entry 8 (2026-11-24 05:22 PST): outcome of R0; prediction of the card job R5
+## Entry 8 (2026-11-24 05:20 PST): outcome of R0; prediction of the card job R5
 
 R0 (run core-20261124-130250-0a4a7cb, comparison core-20261124-131414-c50780b): all
 fifteen runs exit as recorded (guard 3, the others 0); 366 files (every dump, .modes,
