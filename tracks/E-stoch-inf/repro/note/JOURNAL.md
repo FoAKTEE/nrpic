@@ -494,3 +494,27 @@ its caption and the join and pass named there, so the per-row source shortens to
 Prediction for R10 (same commit plus this change): lattice jsons, PNGs and langevin as R9; 133
 rows in 11 tables, the same check counts and values; after the compile every ledger table ends with
 its bottom rule on its page; page count 25 or 26. Refuted by any table off its page or any changed value.
+
+## Entry 18 (2026-11-24 15:31 PST): outcome of R10; final state of the last pass
+
+R10 = E-20261124-232241-08e1705 (registered, production, two cores, commit 08e1705, about a minute).
+Prediction of entry 17, item by item:
+- held: lattice jsons (16) byte-equal to repro/figs/fig, langevin equal; all 19 PNGs byte-equal to
+  R9's (so the committed `fig_contrast_sr.pdf` from R9 stands; the other 18 PDFs stay from R6 and R2).
+- held: 133 rows in 11 tables, checks 80 yes, 17 differs, 2 beyond reach, 11 quote, 14 rerun only,
+  7 run joined, 2 none; every value as in R9 (csv compared row by row: only the source strings of
+  the per-cell rows and the label of the USR per-cell row changed). Tables copied, sha256 found in
+  R10's `sha256sums.txt`.
+- held: compile clean (no undefined references or citations, no overfull boxes), 26 pages; every
+  ledger table ends with its bottom rule on its page (Tables V-XV on pages 16-26; Table VIII, the
+  constraints, on 19 and the new Table IX, per-cell constraints, on 20).
+Checker with the forbid list: the accepted hits only (5.1 one, the verdict label "not reproduced",
+line 47; 7.6 one, "no defect", exception 2; 7.5 and 7.7 only in `tables/ledger.tex` and `scripts/`;
+9.3 only in `scripts/`).
+Pages read at 75 dpi: in the R9 build 1, 6-15 (every page with changed text, the verdict table on
+15) and 16-24; in the R10 build every page that differs from the R9 build: 12 and 16-26. Pages 2-5
+are byte-identical renders to the committed R8 build. No pending marker is left in the text (the
+`\pending` macro stays defined, unused).
+State: the two rows that waited for RSF256 are filled; nothing of this note waits for a run.
+The check joined RSF256 and compared its records with the dump means (VERIFIER 8.6) but has not
+recomputed the per-cell percentiles: the seven "run joined" rows of Table IX.
