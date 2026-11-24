@@ -127,5 +127,16 @@
     "cores_busy": 5,
     "runs": 285,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
-  }
+  },
+  "continuations": [
+    {
+      "at": "2026-11-24T15:45:34-0800",
+      "job_id": "5232",
+      "from_restart": null,
+      "segments_used_before": 0,
+      "max_segments": 7,
+      "via": "harness/bin/nrpic-queue --cmd tracks/D-bh-dress/g2long/tools/continue_chain.sh",
+      "reason": "continued in place after its waiting job was cancelled under the queue cap (decision 0033)"
+    }
+  ]
 }
