@@ -3,10 +3,13 @@
 and 0.001 (processors P3 to a = 9). Tests whether the early floor of f_* - 1 (JOURNAL entry
 7, PB3) is set by the step.
 
-    python3 analyze_step.py <runs.json> [<outdir>]     (default outdir $NRPIC_RUN_DIR)
+    python3 analyze_step.py <runs.json> [<outdir>] [--set n32|n128]   (default outdir $NRPIC_RUN_DIR)
 
-runs.json maps case names to '<run id>/<name>'; the cases read here are b_n32_p1 (J1),
-s_n32_p1_dt2 and s_n32_p1_dt1 (P3). Writes <outdir>/flrw_step.json and fig_step (PDF, PNG).
+runs.json maps case names to '<run id>/<name>'; the cases read with the default set n32 are
+b_n32_p1 (J1), s_n32_p1_dt2, s_n32_p1_dt1 (P3) and s_n32_p1_dt05 (P4). The set n128 (added in
+batch 11 for J4, entry 14) reads b_n128_p1 (J3, card chain, limit 0.002), s_n128_p1_dt2,
+s_n128_p1_dt1 and s_n128_p1_dt10 (J4, limits 0.002, 0.001, 0.01). Writes
+<outdir>/flrw_step.json and fig_step (PDF, PNG); the n32 output is unchanged by the option.
 """
 import json
 import os
@@ -22,16 +25,33 @@ sys.path.insert(0, HERE)
 import figstyle as fs  # noqa: E402
 import flrwlib as fl  # noqa: E402
 
-CASES = (("b_n32_p1", "card, step limit 0.002"),
-         ("s_n32_p1_dt2", "processors, 0.002"),
-         ("s_n32_p1_dt1", "processors, 0.001"),
-         ("s_n32_p1_dt05", "processors, 0.0005"))
+SETS = {
+    "n32": {"cases": (("b_n32_p1", "card, step limit 0.002"),
+                      ("s_n32_p1_dt2", "processors, 0.002"),
+                      ("s_n32_p1_dt1", "processors, 0.001"),
+                      ("s_n32_p1_dt05", "processors, 0.0005")),
+            "pairs": (("s_n32_p1_dt1", "s_n32_p1_dt2"), ("s_n32_p1_dt05", "s_n32_p1_dt1"),
+                      ("s_n32_p1_dt2", "b_n32_p1"))},
+    "n128": {"cases": (("b_n128_p1", "card chain J3, 0.002"),
+                       ("s_n128_p1_dt2", "card J4, 0.002"),
+                       ("s_n128_p1_dt1", "card J4, 0.001"),
+                       ("s_n128_p1_dt10", "card J4, 0.01")),
+             "pairs": (("s_n128_p1_dt1", "s_n128_p1_dt2"), ("s_n128_p1_dt10", "s_n128_p1_dt2"),
+                       ("s_n128_p1_dt2", "b_n128_p1"))},
+}
 AFIT = 8.5          # common window of the decaying-mode fit (P3 ends at a = 9)
 
 
 def main():
-    runs = json.load(open(sys.argv[1]))
-    out = sys.argv[2] if len(sys.argv) > 2 else os.environ["NRPIC_RUN_DIR"]
+    args = list(sys.argv[1:])
+    cset = "n32"
+    if "--set" in args:
+        i = args.index("--set")
+        cset = args[i + 1]
+        del args[i:i + 2]
+    CASES, pairs = SETS[cset]["cases"], SETS[cset]["pairs"]
+    runs = json.load(open(args[0]))
+    out = args[1] if len(args) > 1 else os.environ["NRPIC_RUN_DIR"]
     os.makedirs(out, exist_ok=True)
     data = {k: fl.growth(fl.rundir(runs[k])) for k, _ in CASES if k in runs}
     summ = {}
@@ -42,9 +62,7 @@ def main():
                    "df_star_early_max": float(np.abs(g["df_star"][early]).max()),
                    "e_star_at": {f"{a0:g}": float(np.interp(np.log(a0), np.log(g["a"]), g["e_star"]))
                                  for a0 in (1.1, 1.5, 2.0, 4.0, 8.0)}}
-    # record-by-record differences on common times (P3 pair, and card against processors)
-    pairs = (("s_n32_p1_dt1", "s_n32_p1_dt2"), ("s_n32_p1_dt05", "s_n32_p1_dt1"),
-             ("s_n32_p1_dt2", "b_n32_p1"))
+    # record-by-record differences on common times (step pairs, and the same limit twice)
     for a_, b_ in pairs:
         if a_ in data and b_ in data:
             ga, gb = data[a_], data[b_]
