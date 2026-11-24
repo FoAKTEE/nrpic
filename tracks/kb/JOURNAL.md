@@ -783,3 +783,13 @@ Predictions, written before the runs:
   annotated. The three `kb claim relocate` calls failed: the command requires `--by` (my
   script omitted it), so 862-864 had no locator rows. Fixed in apply_g3.sh; the three relocates
   are rerun by relocate_new.sh. Prediction C1b: three relocates exit 0 and every row resolves.
+- C1b outcome (run kb-20261124-233504-c6530a6): held: 862, 863, 864 have 1, 3, 3 locator rows,
+  all resolved; the table of the 13 claims is in after.tsv of the run.
+- R1 outcome (own SQL on kb.sqlite, read-only): held: 762 papers (ok 737, review 22, pdf 3); the
+  18 additions all ok with a downloads row ok; the six old-style papers carry 11, 16, 16, 10,
+  27, 21 entries from source `heading`. Figures read: ingest4 fig_oldstyle.png (entries on the
+  independent count; citation rows 0 for the two author-year papers), verifier fig_sample.png.
+- C2 (before apply_g3b.sh): of the 32 to_verify claims, 11 brief seeds carry no processing
+  event (716, 798, 799, 803, 805-808, 810-812). Four are answered by the store (716, 798, 799 by
+  the KB-G1 first answers; 808 in part by ingest4). Prediction: four annotate events, exit 0;
+  seven seeds remain without one. Refuted if the script fails or a count differs.
