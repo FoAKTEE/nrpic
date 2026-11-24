@@ -133,7 +133,7 @@ def main():
                                             for a, b in zip(ns[:-1], ns[1:])))
         ax.set_xlabel(r"comoving wave number $k$ [$M_{\rm Pl}=100$]")
         ax.set_ylabel(r"$|1-\Delta[\mathcal{R}^{\rm NR}]/\Delta[\mathcal{R}]|$")
-        ax.legend(loc="lower right", fontsize=8)
+        ax.legend(loc="upper left", fontsize=8)   # lower right covers the 128/256 top shells
         fs.save(fig, os.path.join(args.out, "fig7_specconv"))
         plt.close(fig)
     with open(os.path.join(args.out, "fig7_fig8.json"), "w") as fp:
