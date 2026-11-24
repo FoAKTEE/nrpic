@@ -52,6 +52,7 @@ LOG=$S/seq.log
 EXE=/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena
 SLOTS=${SLOTS:-2}
 POLL=${POLL:-300}
+SEG_FLOOR=${SEG_FLOOR:-20}
 PAUSE=/data/haiyangw/nrpic/locks/PAUSE
 GITDIR=/data/haiyangw/nrpic/.git/worktrees/C-sidm
 mkdir -p "$S"
@@ -212,6 +213,19 @@ submit_item() {
       sed "s/^PROC_NAME=.*/PROC_NAME=$pn/" "$C/config.sh" > "$tmp" && mv "$tmp" "$C/config.sh"
       ln -f "$C/athena" "$C/$pn" 2>/dev/null || cp -p "$C/athena" "$C/$pn"
       log "  $item: PROC_NAME $pn"
+    fi
+  fi
+  if [[ $la == chain && -f $SCR/$run/chain/config.sh ]]; then
+    # batch 11: a preempted segment counts as a segment; with a restart every 10 M it wastes
+    # under two minutes, so the segment cap (gpu-hours / 59 min) is raised to SEG_FLOOR. The
+    # card time used is what sacct reports at finish; the reservation of the harness stays
+    # at the gpu-hours of the queue line (README "Operating the sequencer").
+    local C2=$SCR/$run/chain mx tmp2
+    mx=$(sed -n 's/^MAX_SEGMENTS=//p' "$C2/config.sh")
+    if [[ -n $mx ]] && (( mx < SEG_FLOOR )); then
+      tmp2=$(mktemp "$C2/.config.XXXXXX")
+      sed "s/^MAX_SEGMENTS=.*/MAX_SEGMENTS=$SEG_FLOOR/" "$C2/config.sh" > "$tmp2" && mv "$tmp2" "$C2/config.sh"
+      log "  $item: MAX_SEGMENTS $mx -> $SEG_FLOOR"
     fi
   fi
   return 0

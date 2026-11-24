@@ -726,7 +726,7 @@ C-20261124-130634-3338d9b; fig_blockA.png read):
   No cause is named: the N = 1e6 and M/16 runs below are the ones in which each reading can
   fail.
 
-## 2026-11-24T13:16Z  session C-sidm lead (batch 11)  follow-up runs: predictions before submission
+## 2026-11-24T13:14Z  session C-sidm lead (batch 11)  follow-up runs: predictions before submission
 
 Why these runs: block A failed A.3 and A.4 because the controls of the threshold model and of
 y0 = 0.344 collapse on their own on M/8 at N = 1e5 (534.8 and 549.3 M), and D2 failed D2.2
