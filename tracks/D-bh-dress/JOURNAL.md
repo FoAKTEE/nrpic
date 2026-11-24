@@ -502,3 +502,21 @@ re-implemented from nm_analyze's docstring); no helper code. Script `stage/revie
 - open: R5 (job 4920), FV4 (4933), FK/FE4/FF4 held (4934-4936); G2 gaps in stage/G2/OPEN.md;
   drift_controls untracked tools. Card-hours used by this session's own jobs: 0 so far (the batch-5
   chains read here used 12.84 h); caps registered 9.0.
+
+## 2026-11-24T12:51Z-14:20Z  session lead batch 11 (Opus)  commits fdca9208..(this)  PAUSED at 06:18 PST
+
+did: merged main; found the batch-10a sequencer ended normally; closed R5 (ES-1L16, 300 M) and FV4 (V-1L4,
+  300 M); resumed the three chains cut by preemptions from their newest restart (FF4 from 456 M, FE4 from
+  t = 0, FK from 200 M; segment caps raised); new sequencer g2long_seq3 (FK, then FN4). Analyses (registered):
+  judge_long with R5 (H3 holds at M/16), judge_conv (P1 holds, P2 refuted, P3 holds as description, P4 holds),
+  XC exterior constraint norms (XC1 holds, XC2 narrowly), boundary/gauge figure, slice mosaic. Data at 4N and
+  N/4 (D1 holds), smoke tests S7-S9 hold; FN4 (4N, 400 M) registered and held; FNQ and FL16 wait for card
+  allotment (request to orch). Started the finder test FP and FP-ext (processors), still running at the pause.
+  Committed the three drift_controls tools as work in progress (decision 0030 item 1). G2 ladder table
+  (stage/G2/LADDER.md), new tools (probe_long, fp_analyse, xc_plane, slice_mosaic, boundary_gauge,
+  schem_ladder, make_followups2), fluxio.drop_overlaps for preempted segments.
+found: the vacuum excursions at 230-300 M (the "floor" of N) are plateaus of the finder's stopping rule
+  (mass_tol 1e-5, warm start): the tight finder moves by <= 1.8e-5 (M/8) on the same dumps [from the FP log;
+  registered judgement pending]. Exterior constraints bounded; in the dust they look like particle noise.
+changed my mind about: the attribution of the D-pre-4 and g2long excursions to the outer boundary (R4).
+open: judge FP/FP-ext; FE4, FF4, FK, FN4 on the cards; FNQ/FL16 allotment; note v3; G2 verifier.

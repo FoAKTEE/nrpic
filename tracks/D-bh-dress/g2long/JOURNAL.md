@@ -546,3 +546,24 @@ noise of the deposit, ||H|| of the z = 0 plane on A1 and A2 at 100 and 200 M in 
 ES-FLK's (N^-1/2; between 0.35 and 0.7) [JUDGEMENT]; refuted (not particle noise) if the ratio is
 0.9 or more at both times. The same with the region norms H2_out of the 6 and 12 M spheres
 (esflk4n.region.hst) against xc_plane's A1/A2 of ES-FLK as a cross-check of the two norms (no bound).
+
+## Entry 13 (2026-11-24 06:19 PST): PAUSED here (pause flag); FP and FP-ext still running, not yet judged
+
+The pause flag appeared at 06:18 PST; nothing new was started after it. Running at that moment, left to
+finish on their own (processors; registered): FP D-20261124-130935-fdca920 (24 of 28 probes done, the
+last A32 ones running) and FP-ext D-20261124-140606-286a302 (2 of 8). Neither is closed with
+`nrpic-run finish` and neither is judged yet: the next session runs `tools/fp_analyse.py --probes
+$S/D-20261124-130935-fdca920/fp/probes.json $S/D-20261124-140606-286a302/fpx/probes.json --out
+'$NRPIC_RUN_DIR' V-1L=... V-1L16=... V-1L4=... ES-1L=... ES-1L16=...` (registered), looks at
+fp_analyse.png, and writes the outcomes of FP1-FP5 and FP-ext (i), (ii) here.
+What the run log of FP already shows (raw finder output, not a judgement): the tight finder (h1, A16)
+gives V-1L 1.0009973, 1.0009794, 1.0009934, 1.0009933, 1.0009851, 1.0009910 at 100, 150, 200, 250,
+300, 450 M (largest |M - M(100)| 1.8e-5) where the run's own finder jumps by 1.2e-4; V-1L16
+0.9997965-0.9997994 at 100-300 M; V-1L4 falls from 0.9921716 (100 M) to 0.9900715 (300 M); ES-1L
+1.0010193, 1.0010603, 1.0010806, 1.0010687 at 100, 200, 250, 300 M; ES-1L16 0.9997697 (100 M), 0.9997940
+(200 M). The production rule from outside (h2) lands on the low plateau and from the stored radius (h0)
+reproduces the run to 3e-6. If fp_analyse confirms these, FP2 and FP3 hold (C1 not refuted), and FP-ext
+(ii) fails its 5e-5 bound at M/8 (6.5e-5 at 250 M) without being refuted (< 1e-4).
+Also open: the ladder schematic (tools/schem_ladder.py, trial in scratch/D-bh-dress/tmp/ladder, looked
+at) is not yet a registered run; the draft request to core on the finder's stopping rule is in
+scratch/D-bh-dress/tmp/outbox/finder.md (post it after FP is judged).

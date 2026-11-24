@@ -405,3 +405,30 @@ whether the M/8-M/16 sign change of the finder mass is convergent (needs a third
    built on inputs with the excision kept and with exterior constraint norms.
 3. note_v2 replaces note/ (git mv); G1 stage report: Looked-at column filled from its list.
 4. drift_controls stays open with its three untracked tools left as found (no change since batch 5).
+
+## 15. Lead session of batch 11 (2026-11-24 04:51-06:19 PST, Opus; paused by the flag)
+
+No helper packages ran since batch 10a; this session read the card runs queued then, from their
+registered outputs, against the predictions committed before them (g2long entries 1, 6), and ran the
+processor tests of entry 10. Every figure named here was read.
+
+| Item | Outcome | Evidence |
+|---|---|---|
+| Sequencer g2long_seq2 | ended normally 2026-11-23 08:23 (all released); new g2long_seq3 for FK, FN4 | `$S/g2long_seq2/log`, `$S/g2long_seq3/` |
+| R5 ES-1L16 | DONE at 300 M; H3 HOLDS (1.99e-4 against 2.28e-4) | D-20261124-131138-0b8ffc5, judge_long.png |
+| FV4 V-1L4 | DONE; P1, P3 (description), P4 hold; P2 REFUTED (offset -8e-3, no mesh order) | D-20261124-131149-9f0166d, judge_conv.png |
+| FK, FE4, FF4 | cut by preemptions, closed FAILED by their caps; resumed from the newest restart, pending | chain events.log |
+| Exterior constraints (XC) | bounded in every long run; near-hole level set by the shared coarse levels; dust residual looks like particle noise | D-20261124-134211-c6fce88, xc_plane.png |
+| Finder test (FP, FP-ext) | running at the pause; the run log points to the finder's stopping rule as the cause of the vacuum plateaus | D-20261124-130935-fdca920, -140606-286a302; entry 13 |
+| Removal records of preempted segments | duplicated after a resumption (FF4: 12582); fluxio.drop_overlaps removes them | commit fdca9208 |
+
+What I could not confirm: FP and FP-ext (not judged at the pause); FE4, FF4, FK, FN4 (on the cards).
+
+## 16. Lead's decisions of batch 11
+
+1. Resume cut chains from their newest restart (task text, 2026-11-24) rather than repeat them; raise
+   MAX_SEGMENTS in chain/config.sh because preemptions consume segments.
+2. Queue the particle-number member 4N (FN4) now; N/4 (FNQ) and the M/16 growth member (FL16) wait for card
+   allotment (request to orch): G2 had 4.29 card-hours left.
+3. Treat the production finder's plateaus as the finder's until FP is judged; quote N both ways.
+4. drift_controls tools committed as work in progress (decision 0030 item 1).

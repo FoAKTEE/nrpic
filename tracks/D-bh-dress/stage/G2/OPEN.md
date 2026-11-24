@@ -1,22 +1,19 @@
-# What G2 of D-bh-dress still lacks (2026-11-22, batch 10a)
+# What G2 of D-bh-dress still lacks (2026-11-24, batch 11, paused)
 
-The two track criteria are met once each (checklist C7, C8: the vacuum-bubble drift does not
-exceed the floor; the growth follows the flux and the exact dust solution); the gate's general
-items are not. In order of what blocks most:
+The two track criteria are met (checklist C7, C8: the vacuum-bubble drift does not exceed the floor,
+at M/8 and M/16; the growth follows the flux and the exact dust solution at M/8). In order of what
+blocks most:
 
-1. Three-way convergence (C2, C10). Mesh: M/4 members queued (FV4, FE4, FF4 of g2long entry 6);
-   M/16 null test finishing (job 4920). Particle number: no ES-FL at N/4 or 4N yet (scope asks
-   capture rate and spike unchanged between N and 4N). Gauge or boundary: faces compared, gauge
-   pair from G1; one figure each still to draw.
-2. Constraints outside the hole (C3, C11): the history norms skip chi < 0.0625 and measure the
-   inside; the next inputs carry `<particles> region_*` with a sphere outside the horizon.
-3. The vacuum floor: a step of +1.2e-4 at 240-300 M in V-1L and V-1L16 alike (not set at the
-   horizon); its cause is unknown, and it sets the threshold of N (margin 9 per cent).
-4. Horizon excision ends at 4 x initial_radius (core request ah-excision-growth-guard; ES-FLK
-   with initial_radius 1.6 queued as the workaround and as the test of the step in (iii)).
-5. Package items: G2 ladder table (C1), ladder schematic (C9), slice mosaic (C12), note text on
-   the long runs (C16), the G2 verifier (C17), a rerun script (C6).
-6. `nrpic-stage verify D-bh-dress G2` was started on commit a54a138 and stopped by the session's own
-   25-minute timeout while it reran the note scripts in the export (no VERIFY_RESULTS written); run it
-   again without a timeout once the drift_controls tools are committed or removed (its "clean" check
-   fails on them).
+1. Three-way convergence (C2, C10). Mesh: null test at M/8 and M/16, M/4 (FE4) on the cards; growth at
+   M/8, M/4 (FF4) on the cards, M/16 (FL16) waits for card allotment. Particle number: N (FK, on the
+   cards), 4N (FN4, held behind FK), N/4 (FNQ) waits for allotment. Boundary and gauge: figure
+   boundary_gauge.png (D-20261124-131657-89cd963). The production finder's offset has no mesh order
+   (P2 refuted); orders only from the converged finder (FP4, pending).
+2. The finder test FP / FP-ext (running at the pause): judge with fp_analyse.py (g2long entry 13).
+3. Constraints outside the hole (C3, C11): plane norms bounded (XC, D-20261124-134211-c6fce88); volume
+   region norms come with FN4.
+4. Horizon excision ends at 4 x initial_radius (core request ah-excision-growth-guard; FK tests the
+   workaround).
+5. Package items: ladder table written (LADDER.md); ladder schematic drawn (tools/schem_ladder.py, not yet a
+   registered run); slice mosaic done (D-20261124-134644-2389227); note text on the long runs (C16); the
+   G2 verifier (C17); a rerun script (C6); `nrpic-stage verify D-bh-dress G2` without a timeout.
