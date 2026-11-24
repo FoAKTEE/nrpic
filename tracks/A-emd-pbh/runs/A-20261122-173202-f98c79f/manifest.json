@@ -142,7 +142,7 @@
   "parents": [
     "A-20261121-202812-cae4436"
   ],
-  "notes": "",
+  "notes": "2026-11-24T21:57:20Z continued in place by queue entry q0012: job 5216, from ball.00020.rst, segments used 16, MAX_SEGMENTS 21, same exe/deck/args (threshold_ball/scripts/continue_chain.sh)",
   "budget_at_submit": {
     "gpu_hours_allotted": 60.0,
     "cores_allotted": 16,
