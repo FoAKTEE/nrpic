@@ -1,20 +1,20 @@
 # Re-verification: core G2
 
-`harness/bin/nrpic-stage verify core G2` on 2026-11-21T23:37:00Z, clean export of commit `3a7751919672` in `scratch/core/tmp/stage-verify/core-G2-3a77519-20261121T233130Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify core G2` on 2026-11-23T02:15:39Z, clean export of commit `5e6dc433a688` in `scratch/core/tmp/stage-verify/core-G2-5e6dc43-20261123T020751Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
-| sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 3a7751919672 (HEAD) in /data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-3a77519-20261121T233130Z/tree |
+| sync | FAIL | main has commits not merged: run nrpic-ctx sync |
+| export | PASS | clean export of 5e6dc433a688 (HEAD) in /data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-5e6dc43-20261123T020751Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); verifier's report VERIFIER.md |
 | note-pdf | PASS | note/main.pdf committed after the last .tex change |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (paperfig.py, figstyle.py) |
-| fig-script | PASS | 4 figures, each with its script |
-| min-figs | WARN | 1 schematics and 3 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | FAIL | 6 of 1439 runs have problems; 9 waived |
+| fig-script | PASS | 5 figures, each with its script |
+| min-figs | WARN | 1 schematics and 4 data figures (brief 13.4 asks at least 1 and 5 at G2) |
+| runs | FAIL | 6 of 1448 runs have problems; 9 waived |
 | runs-waived | WARN | failures of the manifest check waived: 9 runs named in main's coord/WAIVERS.md (decision 0019 item 6): core-20261120-220538-eafed07: records scratch/core/exe/core_cosmo-amr/athena_gpu, published again after the run; outputs unaffected (decision 0023 item 5); core-20261120-220816-09f6f79: records scratch/core/exe/core_cosmo-amr/athena_gpu, published again after the run; outputs unaffected (decision 0023 item 5); core-20261121-025527-eb8e6b7: records scratch/core/exe/core_cosmo-amr/athena_gpu, published again after the run; outputs unaffected (decision 0023 item 5); core-20261121-030438-e52cdb3: records scratch/core/exe/core_cosmo-amr/athena_cpu, published again after the run; outputs unaffected (decision 0023 item 5); core-20261121-031145-ffc12b3: records scratch/core/exe/core_cosmo-amr/athena_cpu, published again after the run; outputs unaffected (decision 0023 item 5) |
 | run-notes | WARN | 1147 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | status | PASS | STATUS.md has 37 lines |
@@ -24,22 +24,22 @@
 
 ```
 {
- "core-20261121-204230-3bcb118": [
+ "core-20261123-020450-7e42037": [
   "status is submitted: not finished (nrpic-run finish)"
  ],
- "core-20261121-204232-f74c942": [
+ "core-20261123-020452-e635a8e": [
   "status is submitted: not finished (nrpic-run finish)"
  ],
- "core-20261121-204234-d010783": [
+ "core-20261123-020454-8fec6b2": [
   "status is submitted: not finished (nrpic-run finish)"
  ],
- "core-20261121-204235-0b25077": [
+ "core-20261123-020456-884f550": [
   "status is submitted: not finished (nrpic-run finish)"
  ],
- "core-20261121-204237-ae00ca2": [
+ "core-20261123-020458-dfc38d7": [
   "status is submitted: not finished (nrpic-run finish)"
  ],
- "core-20261121-204239-2be5ac2": [
+ "core-20261123-020500-9b192cd": [
   "status is submitted: not finished (nrpic-run finish)"
  ]
 }
