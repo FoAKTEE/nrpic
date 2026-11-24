@@ -805,3 +805,15 @@ Predictions, written before the runs:
   28 events of this session inside it. kb/QA_REPORT.md replaced by this run's report.
 - Q2 (figures of this QA, kb/kbtool/qa_figures.py on qa.json): three PNGs; retrieval panel shows
   28/32 for hybrid and rerank. Refuted if the script fails or the panel differs from the report.
+- Q2 outcome (run kb-20261124-234330-7f49a10): held: three PNGs (copied to lead_b13/figures);
+  I read fig_qa_retrieval.png (legend 27/32, 28/32, 28/32 papers; 21/32, 23/32, 25/32
+  locations, as the report) and fig_qa_claims.png (D shows the one refuted claim 682).
+- did: review of ingest4 (own SQL; R1); the verifier's KB-G3 findings acted on (682 -> 862, 781,
+  804 verified, 714 -> 863, 809, 85, 737, 716, 798, 799, 808 annotated); 409, 447, 449, 450
+  verified at abstract lines, 452 -> 864; snapshot kb-20261124-9872d21 with verify-downloads and
+  QA; KB-G3 stage package (collect, SCOPE, EVIDENCE, OPEN, REVIEW, checklist, verify, report);
+  messages to A, C, D, F, orch; acks of core and orch.
+- found: the six wrong claims share one cause (processed by pipeline step, not by text); the tool
+  has no supersede action; seven brief seeds had no event, two of them (803, 805) bear on G1.
+- failed predictions: C1 in part (relocate without --by). R1, C1b, C2, C3, S1, Q2 held.
+- gate: KB-G3 not complete (C1 FAIL on 803, 805; fresh verifier owed). 0 card-hours.
