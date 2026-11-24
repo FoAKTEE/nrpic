@@ -505,7 +505,7 @@ least five times the band |n| < 8; (b) level 2 against level 1: between 2e-4 and
 and 2 of level 2 against level 1: not negligible. Refuted if (a) is below 1e-5 (then the
 32^3 finding does not carry to the production runs).
 
-## Entry 11 (2026-11-24 05:50 PST): outcomes R7, R8; prediction R10 (byte regression against core-v0.6)
+## Entry 11 (2026-11-24 05:49 PST): outcomes R7, R8; prediction R10 (byte regression against core-v0.6)
 
 R8 (run core-20261124-134414-1db640d, six runs, exit 0; `fig_level01.png` looked at:
 three points per time on the line of slope 4): level 1 against level 0 on the mesh,
@@ -539,7 +539,7 @@ identical; the twelve set-ups of the release driver: 75 of 75. Refuted by any
 difference (the review added one member to the options and one branch to the kernel of
 the mesh fields, neither reached without the options).
 
-## Entry 12 (2026-11-24 05:57 PST): outcome R9; a level 0 that takes the step of the mesh; predictions R9b, R11
+## Entry 12 (2026-11-24 05:54 PST): outcome R9; a level 0 that takes the step of the mesh; predictions R9b, R11
 
 R9 (run core-20261124-134904-30f2df3, the per-mode records of AL0S, AL1S, AL2S at
 256^3, dumps at t = 1.0, 3.0, 5.0, 7.5; `fig_ablation_modes.png` looked at after R9b):
