@@ -128,3 +128,12 @@ kb-20261124-132848-81e6285 (baseline state `before/`, dry-run parse of all 762 m
   entries; 1611.09781 has no numbered sections but scores 0.849).
 - P6 (status part) HELD: the six stay review (scores unchanged; the quality score has no
   bibliography term).
+
+## Prediction P10 (before the ingest that writes the database)
+
+`kb ingest arxiv` of the 18 additions and the six old-style papers with `--remap-claims`, then
+`kb eq --apply-tags`, `kb embed`, `kb embed --check --work`: 762 papers, ok 737, review 22, pdf 3
+(recorded rate 737/762 = 96.7 %); the six get 101 entries in all and citation rows only for the four
+numeric papers, every row with a bib_id and a chunk; claim 778 (two locator rows on
+astro-ph/0306304) is remapped and `kb claim check --id 778` reports it unchanged; 0 dangling chunk
+references; the vector check 0 missing, 0 stale, 0 orphaned. Refuted by any of these failing.
