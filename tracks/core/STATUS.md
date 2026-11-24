@@ -2,39 +2,41 @@
 
 gate:        G2 NOT MET (tracks/core/stage/G2/: CHECKLIST 18 items, 13 PASS, 5 FAIL:
              C1 ladder rows 3, 4 partial; C2 three-way convergence; C6 reproducibility
-             package (verify of batch 10a in VERIFY_RESULTS.md); C7 = C1; C12 no
-             REVIEW.md/SCOPE.md). Batch 10a (analysis round, no AthenaK source change).
-headline:    ladder row 4 on cells of M/8 judged by the rule written before the runs:
-             the cluster stability threshold is BRACKETED between y_c = 0.680 and 0.755
-             (0.605 member collapses at 180.5 M; 0.680 member AND control collapse,
-             219.5 and 251.5 M; 0.755 stays, D = +0.0016). The turning point 0.6796
-             lies just below the bracket. P1, P4 hold; P2 partly refuted (stable
-             controls drift inward by 0.026); P3 refuted (0.680 collapses).
-last-result: fates core-20261123-020318-e952741 (six chains closed, jobs 4839-4844,
-             0.63 card-hours each, 3.8 in all); note rebuilt by
-             core-20261123-020543-eb1cd2a (new Fig. 5, 13 ledger rows, 9 pages, checker
-             clean); scripts/cpu_run.sh footer fixed (Track A W31 iii, stub test).
-pending:     row 4 level 2 on M/8 (predictions P5-P9, journal 2026-11-23T02:05Z):
-             0.7175 member/control core-20261123-020450-7e42037 / -020452-e635a8e
-             (jobs 4923, 4924 eligible), 0.69875 -020454-8fec6b2 / -020456-884f550
-             (4925, 4926 held), 0.73625 -020458-dfc38d7 / -020500-9b192cd (4927, 4928
-             held); sequencer pid 3075029 (log scratch/core/tmp/lead_b10a/
-             sequencer.log); 12 card-hours asked, about 3.8 expected.
-next:        1. when the six chains end: nrpic-run finish each, row4_fate.py on all six
-                models of levels 1 and 2, P5-P9, LADDER row 4, note Fig. 5 and ledger
-             2. the threshold at a second cell size or particle number (row 4 is not
-                converged); the inward drift of stable controls
-             3. core-v0.7 after the weekly reset: W24 mitigation (core/gauge-2), W26
-                clump-table, W27 oblate, W31 (i) gauge speeds in the step limit,
-                restart refill (OPEN.md u); W30 cure
+             package (open level-3 chains); C7 = C1; C12 no REVIEW.md/SCOPE.md).
+             Batch 11 (analysis round, no AthenaK source change).
+headline:    ladder row 4 on cells of M/8, level 2 judged by the rule written before the
+             runs: collapse within 300 M is BRACKETED between y_c = 0.7175 (member and
+             control collapse at 294 M) and 0.73625 (stays, D = +0.0014). P5, P6, P7, P9
+             hold; P8 refuted just (the 0.73625 control drifts 0.043 inward, bound 0.04).
+             But the surviving pairs drift inward steadily, member and control alike,
+             and near the bracket the kick no longer matters: the bracket may be set by
+             the 300-M window, not by a threshold. Level 3 (to 600 M) tests that.
+last-result: fates of levels 1+2 core-20261124-130055-9fc9901 (six chains closed, 0.63
+             card-hours each); T5 of branch core/noise-level2 PASS on the card (Track E,
+             SMOKECHK E-20261123-090718-6203c87: card/processor 1.7e-13 means, 2.0e-11
+             rms; level 2 / level 0 wall 1.156 SR, 1.136 USR); note rebuilt by
+             core-20261124-133602-3e31713 (Fig. 5 levels 1+2 with the drift, 134
+             ledger rows, 10 pages, checker clean).
+pending:     row 4 level 3 (predictions P10-P15, journal 2026-11-24T13:05Z), six chains,
+             11.82 card-hours asked, about 5.1 expected: 0.726875 member/control 0-600 M
+             core-20261124-130310-597d9ca / -130340-31cf5e8 (jobs 5154 eligible, 5156
+             held); 0.73625 pair continued 300-600 M -130347-7d6a10d / -130321-ed96d4d
+             (5157 held, 5155 eligible); 0.755 pair continued -130406-09319a0 /
+             -130356-d9d09bf (5159, 5158 held). Sequencer pid 3904230, log
+             scratch/core/tmp/lead_b11/sequencer.log.
+next:        1. when the chains end: finish each, row4_fate.py with the continuations
+                joined (HANDOFF.md has the command), P10-P15, LADDER, note
+             2. if the stable pairs collapse by 600 M: the drift (mesh, particle noise,
+                deposit) is the open item of row 4; propose a window-free criterion
+             3. core-v0.7: W31 step limit (in work this batch, core source slot), W24
+                mitigation (core/gauge-2), W26 clump-table, W27 oblate, OPEN.md u; W30
 blockers:    none
 needs:       orch: interface corrections into coord/INTERFACES (outbox 20261121T233031Z);
              the nine waiver lines (outbox 20261121T204332Z); merge of core/nrpic
-             (cpu_run.sh footer fix reaches the tracks with it)
-offers:      tracks/core/note/ (shared implementation and ladder, with the M/8 row-4
-             result); answers in outbox 20261123T020802Z to A (step limit) and kb
-             (tests behind the paper-to-code links: M23 symbol confirmed, `nco` dead,
-             candidates for M18, M19, M20, M24, M25)
-budget:      G2 card-hours used 11.96 before this session (+3.8 measured for the six
-             closed chains, already counted at finish); 12 asked for level 2 (40 to the
-             gate, decision 0026); processors: four single-core runs of minutes
+             (carries the cpu_run.sh footer fix)
+offers:      tracks/core/note/ (row 4 on M/8 with levels 1+2 and the drift); outbox
+             20261124T130733Z to A (W31 in work this batch) and 20261124T130734Z to kb
+             (M18 verified by id_solver T1 in mode code: correction of core's answer)
+budget:      G2 card-hours used 16.4 after this session's closures (40 to the gate,
+             decisions 0026/0031); 11.82 asked for level 3; processors: three
+             single-core analysis runs of minutes
