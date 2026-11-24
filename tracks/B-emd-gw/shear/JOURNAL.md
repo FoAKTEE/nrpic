@@ -287,3 +287,36 @@ Predictions for series 3 [JUDGEMENT], before it runs:
 - P9''b: Delta converges in N_y (|Delta(64) - Delta(128)| < |Delta(32) - Delta(64)|).
 - P9 (unchanged from 2026-11-20): Delta within max(3 x own error, 0.01) of CosmoGRaPH's -0.8183
   (draft.tex:360) and away from -0.619 and -0.68. Refuted if the extrapolated Delta lies outside.
+
+## 2026-11-24 06:50 PST (lead of batch 11): outcomes of series 2 (S3 at 256) and series 3 (L2)
+
+Runs: series 2 B-20261124-133702-4a06a52 (closed, completed), series 3 B-20261124-134209-4584052
+(closed, completed; 22, 67-ish, 263 s), summary B-20261124-134720-c753aff (`series2_summary.py
+--l2 <series 3>:L2f`; `results/series2_3.json`, `figs/fig_series2.png` looked at). [VERIFIED by
+these runs]
+
+L2 (beta = 0.5, HL = 4), narrow fans (series 3):
+- P9''a HOLDS: every root inside its fan (s_A = -0.9255, -0.9230, -0.9235; s_B = 0.1997, 0.2011,
+  0.2015), all 41 A and 21 B rays cross, and the cubic and quadratic shootings agree to 2.0e-4,
+  2.6e-4, 7.5e-4 in Delta.
+- Delta = -0.8281, -0.8302, -0.8348 at N_y = 32, 64, 128 (cos theta = 0.0866, 0.0855, 0.0832
+  against the linear 0.5037).
+- P9''b FAILS: the differences grow (2.1e-3, then 4.6e-3; observed order -1.2), so there is no
+  extrapolation (the p = 2 value, -0.836, is only a placeholder of the script).
+- P9 FAILS by its letter: distance to CosmoGRaPH's -0.8183 is 0.0098, 0.0119, 0.0165 (only the
+  coarsest mesh inside 0.01) and grows with N_y. The value lies 0.2 below gevolution (-0.619) and
+  0.15 below GRAMSES (-0.68): it sides with CosmoGRaPH, the fully relativistic code of the
+  comparison, at the 1-2 per cent level.
+- Not predicted, on record: the parallel transport of the B covector along the observer from
+  t_B = 3.08 to t_A = 6.5 moves Delta by -0.0044, -0.0132, -0.0265 at N_y = 32, 64, 128 (Delta
+  without it: -0.8237, -0.8169, -0.8083), i.e. the non-convergence sits in the observer's metric
+  history between the two arrivals; whether stream crossing near O (P9 of 2026-11-20: crossing
+  at a = 9 to 16) or the transport integration causes it is not tested [TO VERIFY]. Series 2's
+  coarse fan (no reliable number) is superseded.
+S3 (beta = 0.005, HL = 4) over N_y = 32-256:
+- Delta = -5.65e-5, -3.32e-5, -6.8e-7, +2.01e-5; differences 2.33e-5, 3.25e-5, 2.08e-5.
+  P7' HOLDS by its letter (|Delta(256) - Delta(128)| = 2.08e-5 below 3.25e-5; |Delta(256)| below
+  3e-4) but S3 does not converge: the differences stay at 2-3e-5, a floor of that size, two
+  orders below the paper's 3e-4 bound (draft.tex:348).
+Figure defects: overlapping tick labels on the N_y axis of the S3 panel; the L2 panel's
+extrapolated star rests on a forced order.
