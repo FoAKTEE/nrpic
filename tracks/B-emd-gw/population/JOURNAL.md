@@ -308,3 +308,65 @@ then the sequencer leaves `pop_s028_gr` unsubmitted and the scan continues at 0.
 The GR-run predictions G1-G4 of the entry of 2026-11-21 12:52 stand for both amplitudes, and
 for 0.014 the companion paragraph under them; card time 0.2-0.6 h each (unchanged step count:
 same mesh and cfl_number = 0.25, zero shift, no lapse_leak, decisions 0025 item 3, 0027 item 2).
+
+## 2026-11-24 05:15 PST (lead of batch 11): outcomes known before any analysis; predictions for it
+
+Runs read (closed by the sequencer, which then found its queue empty and exited on 2026-11-23
+06:55): pop_s014_gr = B-20261123-014847-f295ab4 (Slurm 4921, one segment, 11:12, DONE at
+t = 21.916, a = 143.0, cycle 1421); pop_s028_ic2 = B-20261123-014850-7b7d986 (processors);
+pop_s028_gr = B-20261123-035002-bcc82bd (Slurm 4941 preempted after 3:10 and resubmitted by the
+chain as 4961, which restarted from rst t = 4 and stopped after 2:57 with exit status 3).
+
+Outcomes read from logs and history files (no analysis code yet):
+- Re-solve R1 HOLDS (outer iterations 0-17 print the same digits as the first run: `diff` of
+  the 18 lines empty). R2 HOLDS: change 7.03e-8 at outer 21; the solve reached its 1e-9
+  tolerance at outer 33 (9.1e-10) and stopped there; Hamiltonian residual at most 5.2e-11.
+  R3 HOLDS: 4005 s (67 min). max|psi_N| 0.0440 as before.
+- G1 for sigma1 = 0.014 HOLDS for the end point (a = 143 without a guard stop); its cost
+  prediction 0.2-0.6 card-h FAILS on the low side (0.19 card-h by Slurm accounting).
+- G1 for sigma1 = 0.028 FAILS: the guard stopped the run at t = 9.086 (a = 30.7, cycle 599):
+  11 non-finite values in one cell (MeshBlock 5, cell (63, 0, 19), position (7.969, 0.031,
+  5.219), next to the periodic faces x = 8 and y = 0), with chi = -20.4 and alpha = -230 there,
+  6036 particles excised (lapse and horizon excision are off in the deck: alpha_exc = -1,
+  ah_exc_factor = -1). `pop.cstat.hst`: K_max turned positive at a = 24.9 and rose to +0.198 at
+  a = 30.1; alpha_min fell from 18.5 (a = 22.5) to 14.0 (a = 30.1) while alpha_max = a;
+  Hr_max reached 1.6 at a = 19 and stays at 1.7. In the 0.014 run K_max stays negative to the end
+  (-9.2e-4 at a = 140.7), and alpha_min/alpha_max is 0.80 at a = 61.8, the same stage by the
+  sigma1 a scaling. No cause is named here.
+- G2 for 0.014: Hr_mean 1.6e-4 at a = 28.8 (below 1e-2) and 2.85e-2 at a = 140.7 (below 5e-2):
+  HOLDS, growing monotonically (1.2e-4 at a = 26, 2.0e-3 at a = 51, 1.8e-2 at a = 97) but slower
+  at the end. For 0.028 Hr_mean 4.75e-3 at a = 30.1: the first half HOLDS. Not predicted, on
+  record: the mean relative momentum violation Mr_mean grows to 0.20 at a = 143 (0.014) and
+  0.053 at a = 30 (0.028).
+- The history files of the 0.028 run hold the rows of the preempted segment twice (restart at
+  t = 4): any reader keeps the last row of each time.
+- Seen during a timing test of the reader (t = 10, a = 36, 0.014): flat TT strain of the
+  conformal metric, rms over the box 1.81e-4 raw, gauge piece G_tot 2.5e-5, corrected 1.81e-4.
+
+Predictions for the analysis `scripts/analyze_gr.py` (written before it runs) [JUDGEMENT]:
+- A1 (design, near field). The near-field energy of the metric's TT strain,
+  Omega_qs = (a/(32 pi rho_c)) sum_k k^2 |h^TT_k|^2 (the measure of analyze.py applied to the
+  metric), follows the design's linear value scaled to this box, 1.18e-8 a x 2^6 x
+  (0.014/0.0562)^4 = 2.9e-9 a, within a factor 1.5 for 5 <= a <= 40 (junk below 10 per cent of it
+  after a = 5, DESIGN.md 5(d)), on the corrected and the raw strain alike. Refuted outside.
+- A2 (near-field dominance, G4 made quantitative). Mode by mode over |k| <= 8 k_f, the metric's
+  corrected TT strain and the weak-field quasi-static strain S^TT/k^2 computed from the GR run's
+  own particles (S = 16 pi rho_c v v/a + 4 dPhi_N dPhi_N, analyze.py) correlate with
+  coefficient above 0.9 for 5 <= a <= 100, and their rms agree within 30 per cent. Refuted if
+  the coefficient falls below 0.7 before a = 100.
+- A3 (G4 growth). The rms of the corrected TT strain grows at least as fast as a^1/2 (the
+  strain itself, h ~ Phi^2 is constant in linear theory, rising once halos form) and
+  Omega_qs at least as fast as a over 30 <= a <= 143. [G4's "rms grows at least as fast as a"
+  read as the energy measure, which is what DESIGN.md section 6 tabulates.]
+- H1 (halos, G3). With a common mass limit (100 particles of the Newtonian fidL8 run = 800 of
+  this run), the count of FoF halos at a matches fidL8 at a_N = a x 0.014/0.0562 within
+  2 sqrt(N) + 2 for a = 49, 64, 81, 100, 121, and the largest mass within 25 per cent
+  (resolution: 32 against 64 cells gave -24 to +12 per cent, P5); the five largest fidL8
+  halos at a_N = 30 have a GR counterpart within 0.25 (two fidL8 spacings) at a = 121.
+- H2. The first FoF group of 100 or more particles of this run appears at 25 <= a <= 45
+  (first halo at a = 36 by the scaling with a mass limit eight times higher; here earlier).
+- Z (the 0.028 stop, a diagnosis from the run's own dumps, no cause named): the NaN cell lies
+  within 0.5 of the densest particle concentration of the last snapshot (a halo at the
+  corner of the box), and the largest K of the last dumps sits there. Refuted if the stop
+  occurs away from every halo (then a boundary or block-face defect becomes the first
+  candidate to test).

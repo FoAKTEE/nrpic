@@ -587,3 +587,28 @@ Predictions [JUDGEMENT], to be read with `scripts/analyze_step.py` on a map like
   larger in the first e-fold, start error about 1.7 times larger at second order).
 Refuted if the 0.001 - 0.002 difference is below 0.5e-6 (then the 128-cell floor is not the
 step and its cause stays open), or if 0.01 differs from 0.002 by more than 1e-5.
+
+## Entry 14 (2026-11-24 05:00 PST, lead of batch 11): outcome of J4 (step test at 128 cells)
+
+J4 = run B-20261123-015905-7a30278 (Slurm 4922, one batch job, release core-v0.3 card
+executable; three cases to t = 4, all exit 0; 19:56, 20:07, 20:15 PST on 2026-11-22). Analysis:
+run B-20261124-125457-79ce723 (`analyze_step.py --set n128` on `inputs/runs_step128.json`, the
+option added this session; the 32-cell set is unchanged), figure `figs/fig_step128.png` looked
+at, numbers `results/flrw_step128.json`. [VERIFIED by these runs]
+- J4a (0.002 against J3, card against card chain): largest |difference| of D_*/A a 1.65e-7 to
+  a = 9 (1.26e-7 at the end); predicted within 2e-7. HOLDS.
+- J4b: largest |difference| 0.001 - 0.002 = 1.19e-6 (predicted 1.0e-6 to 3.0e-6), 1.1e-6 of it
+  reached by a = 2, the 0.001 run less negative (amplitude error at a = 9: -0.48e-6 against
+  -1.65e-6 at 0.002, below 1e-6 in size). HOLDS on every part.
+- J4c: 0.01 (Courant step from the start) lies 0.97e-6 below 0.002 at a = 9 (predicted 0.5e-6
+  to 3e-6 below; refuted above 1e-5). HOLDS. Its start error is 1.58 times that of 0.002
+  (amplitude -2.61e-6; predicted about 1.7).
+- The refutation criterion (0.001 - 0.002 below 0.5e-6) was not met, so the 128-cell floor of
+  the amplitude error is the start error of the step at 128 cells too, tested now at 128 cells
+  and not only by sign and size from 32 cells (entry 12 is superseded on this point). Second
+  order: the error at 0.001 is 0.29 of that at 0.002 (0.25 expected); Richardson at second order
+  puts the step-free amplitude error at 128 cells near -1e-7 at a = 9 [arithmetic on these runs].
+- The early |f_* - 1| maximum follows the step too (4.8e-6, 1.3e-6, 7.9e-6 at 0.002, 0.001,
+  0.01): the first-e-fold growth-rate error of 5e-6 named in entry 12 is the step as well.
+Figure defect: the third panel has a tick label at a = 1 only (log axis from 1 to 9).
+Card time 0.45 h by Slurm accounting (27:05; estimate 0.4).
