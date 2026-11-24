@@ -228,3 +228,15 @@ compare_tb), the location of the largest |H| for 0.5 <= t <= 6 lies within one l
 refinement boundary in most outputs (b), not at the jumps (a). Refuted if most peaks sit within
 0.1 M of the jump radii instead. The analysis cannot refute both; a peak elsewhere (e.g. the
 centre) names neither.
+
+### Entry 9 outcome (run A-20261124-134637-bd0d6eb, fig_hpeak.png looked at): K3 REFUTED, neither candidate
+
+Of 23 line outputs per member in t 0.5-6, the largest |H| sits within 1.5 local cells of a
+refinement boundary in 0-3 and within 0.1 M of a density jump in 0-3 (B-d0.42: 0 and 0; A-d0.42: 3
+and 3; B-d1.00: 2 and 1; C-R1.25: 1 and 2). Before t ~ 2 the peak lies between the core edge and
+the matter edge (x 1.8-3.9, in the compensating shell), from t ~ 2.5 at the centre (x < 1.6). The
+|H| profile is broad and noisy (1e-2 to 1e-1 over x < 5 at t ~ 2, ~1e-2 at t ~ 5) rather than
+spiked at any radius. So the early floor is not localized at the refinement boundaries nor at the
+jumps; its cause is not named. Next test that can name one: the floor's dependence on the time
+step at fixed mesh and particles (cfl 0.25 against 0.125) and on the source options
+(source_extrap off), one short card batch each to t = 6.
