@@ -1,0 +1,110 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "C-20261124-132113-52c2abe",
+  "track": "C-sidm",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "lead recheck: collapse times of D2 and block A with a reader independent of the package readers; lead batch 11",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/C-sidm/longruns/scripts/xcheck_b11.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "D2ctl=C-20261122-103854-4670b59",
+    "D2f1=C-20261122-144455-6e0992e",
+    "D2f2=C-20261122-141414-399ad97",
+    "D2f4=C-20261122-181011-60baef9",
+    "A334c=C-20261121-214601-40dc927",
+    "A334i=C-20261122-012719-b14e654",
+    "A334o=C-20261122-065807-b302875",
+    "A344c=C-20261122-213602-729aeed",
+    "A344i=C-20261122-220118-ab099ac",
+    "A344o=C-20261123-025228-6ecb543",
+    "A324i=C-20261123-221955-a773578",
+    "A324o=C-20261123-222003-02195a0"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "52c2abe7b05747dce432822e2bccc0bfa9012ca0",
+    "branch": "track/C-sidm",
+    "dirty": false,
+    "package": [
+      "tracks/C-sidm/longruns"
+    ],
+    "outside_package": {
+      "count": 1,
+      "first": [
+        "?? tracks/C-sidm/stage/G2/"
+      ]
+    },
+    "merge_base_main": "bc180c266e1af2b7a50d072fa17f9f0ddc283047",
+    "worktree": "wt/C-sidm"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/C-sidm/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/C-sidm/longruns/scripts/xcheck_b11.py",
+      "role": "argv",
+      "sha256": "ca77785cc122c6d547f0e0d0f3402a8c230aa7f6acf33739bdc7b1b041b0f80c",
+      "bytes": 3038,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/C-sidm/C-20261124-132113-52c2abe",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-24T13:21:14Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 45.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 24.997,
+    "gpu_hours_reserved": 3.9333,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 234,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
+  }
+}
