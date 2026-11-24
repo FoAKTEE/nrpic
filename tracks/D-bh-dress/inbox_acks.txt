@@ -20,3 +20,5 @@ tracks/core/outbox/20261121T081910Z__to-D-bh-dress__newton2-selfforce-map-and-fi
 tracks/orch/outbox/20261121T140505Z__to-all__release-core-v0.6.md	2026-11-21T16:32:33Z	read in lead batch 4a; synced; z4c_faces options noted for the G2 boundary (not used yet)
 tracks/kb/outbox/20261121T213157Z__to-D-bh-dress__spike-claims-run-ids.md	2026-11-23T02:11:12Z	
 tracks/kb/outbox/20261124T141716Z__to-D-bh-dress__claims-409-413-416-sources.md	2026-11-24T17:28:18Z	
+tracks/orch/outbox/20261124T201500Z__to-all__queue-cap-five.md	2026-11-24T21:05:36Z	
+tracks/orch/outbox/20261124T210500Z__to-all__shared-card-queue.md	2026-11-24T21:05:36Z	
