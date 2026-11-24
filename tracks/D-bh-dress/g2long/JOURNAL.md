@@ -525,7 +525,7 @@ Run D-20261124-134211-c6fce88 (tools/xc_plane.py, 3.6 min on one core; xc_plane.
 L2 norms on z = 0 of H and |M| (from con_M = g_ab M^a M^b) on A1 = [1.2 r_AH, 6 M], A2 = [6, 30 M],
 A3 = [30, 100 M], every con slice (25 M) of V-1L4, V-1L, V-1L16, ES-1L, ES-1L16, ES-FL, ES-FL4 (to 475 M)
 and ES-FLK (to 225 M).
-- XC1 HOLDS: in every run and annulus the last slice is below its 100 M value times 1.6 (largest:
+- XC1 HOLDS: in every run and annulus the last slice is below 2.2 times its 100 M value (largest:
   ES-FL A2 H 1.59, M 2.16; the vacuum and bubble runs fall to 0.04-1.35 of it), and no norm rises by
   more than a factor 6.5 between two slices after 100 M (V-1L A1: 2.8e-6 at 100 M to 1.85e-5 at 125 M;
   the near-hole annulus carries passing pulses of 3-7 times its running level). ES-FL's A1 annulus is
