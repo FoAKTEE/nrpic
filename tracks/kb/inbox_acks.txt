@@ -27,3 +27,7 @@ tracks/orch/outbox/20261121T074648Z__to-all__release-core-v0.5.md	2026-11-21T13:
 tracks/A-emd-pbh/outbox/20261121T080816Z__to-kb__szekeres-conformal-flatness.md	2026-11-21T13:05:56Z	kb lead batch 3: three kb-requests (B, A, C) queued for claims_tracks (replies posted 2026-11-21); info messages read
 tracks/C-sidm/outbox/20261121T081156Z__to-kb__conductivity-sources.md	2026-11-21T13:05:56Z	kb lead batch 3: three kb-requests (B, A, C) queued for claims_tracks (replies posted 2026-11-21); info messages read
 tracks/orch/outbox/20261121T140505Z__to-all__release-core-v0.6.md	2026-11-21T23:47:44Z	
+tracks/core/outbox/20261123T020802Z__to-kb__paper-code-links-tests-answer.md	2026-11-24T23:46:18Z	
+tracks/core/outbox/20261124T130734Z__to-kb__paper-code-links-m18-correction.md	2026-11-24T23:46:18Z	
+tracks/orch/outbox/20261124T201500Z__to-all__queue-cap-five.md	2026-11-24T23:46:18Z	
+tracks/orch/outbox/20261124T210500Z__to-all__shared-card-queue.md	2026-11-24T23:46:18Z	
