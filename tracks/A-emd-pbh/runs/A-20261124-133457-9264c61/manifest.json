@@ -1,0 +1,113 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261124-133457-9264c61",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "periodic_threshold D0: processor smoke test of peak_leak6 (six static levels) on P0L, 4 cycles, release v0.6 processor build",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "tracks/A-emd-pbh/periodic_threshold/scripts/smoke_leak6.sh",
+    "$NRPIC_RUN_DIR",
+    "4"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "9264c61e3867e65ce9a8d6f47b707e3064d21fa1",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/periodic_threshold"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "bc180c266e1af2b7a50d072fa17f9f0ddc283047",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261120-223123-f436c39/P0_mu0.3/fields.bin",
+      "role": "input",
+      "sha256": "7752b9c2ef31a0939e4942a66117285241b5a812946e7284e3299ae80990272f",
+      "bytes": 18874400,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/A-emd-pbh/periodic_threshold/inputs/peak_leak6.athinput",
+      "role": "input",
+      "sha256": "d1725013542d23f0c4b39c6cc4bf2aaa923d8af2104ef2ae09c0c6bf0d54dd72",
+      "bytes": 10170,
+      "tracked": true
+    },
+    {
+      "path": "tracks/A-emd-pbh/periodic_threshold/scripts/smoke_leak6.sh",
+      "role": "argv",
+      "sha256": "3b138103965a388701ec19b2a71455b031e934c6f29a6c1f9afca5aabebec866",
+      "bytes": 978,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261124-133457-9264c61",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-24T13:34:57Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "A-20261120-223123-f436c39"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 8.915,
+    "gpu_hours_reserved": 25.5667,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 5,
+    "runs": 249,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
+  }
+}
