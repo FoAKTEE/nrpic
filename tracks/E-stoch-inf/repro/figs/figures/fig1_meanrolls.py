@@ -99,9 +99,11 @@ def main():
             ins.tick_params(labelsize=7)
             ins.yaxis.get_offset_text().set_fontsize(7)
     from matplotlib.ticker import MaxNLocator
-    for i in (1, 2):
+    for i in (0, 1, 2):
         for j in (0, 1):
-            ax[i, j].yaxis.set_major_locator(MaxNLocator(nbins=6, prune="upper"))
+            # no tick labels at the joins of the stacked panels
+            prune = {0: "lower", 1: "both", 2: "upper"}[i]
+            ax[i, j].yaxis.set_major_locator(MaxNLocator(nbins=6, prune=prune))
     ax[0, 0].set_ylabel(r"$V(\phi_b)$  [$M_{\rm Pl}=100$]")
     ax[1, 0].set_ylabel(r"$\varepsilon_1$")
     ax[2, 0].set_ylabel(r"$\varepsilon_2$")

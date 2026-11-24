@@ -95,6 +95,8 @@ GROUPS = {
 }
 # USF256 again at the dumps of Fig. 6b (and N = 4.5) with the invariant Kt spectrum (kt_version 2)
 GROUPS["usr256kt"] = [("USF256", ["--dumps", "0,3,5,8,11,14,18,22,40"])]
+# and at N = 8.01 (dump 32), next to P1's last Fig. 6b curve at <N> = 7.95 (journal entry 7)
+GROUPS["usr256kt8"] = [("USF256", ["--dumps", "32"])]
 # SR ablation at t = 7.5 (dump 15), the last dump the cut AL2S wrote (it reached t = 7.53)
 GROUPS["ablation75"] = [(lab, ["--dumps", "15", "--save-modes"]) for lab in ("AL0S", "AL1S", "AL2S")]
 GROUPS["rsf256"] = [("RSF256", ["--dumps", "0"]), ("RSF256c", ["--save-modes"])]

@@ -95,7 +95,11 @@ def main():
                      fontsize=10)
         ax.set_xlim(0, max(d[-1, 2] for d in recs.values()))
     for n in (32, 64, 128, 256):
-        axes[0].plot([], [], color="k", ls=LS[n], label=f"N = {n}")
+        axes[0].plot([], [], color="k", ls=LS[n],
+                     label=f"N = {n}" + ("" if n < 256 or args.with256 else " (pending)"))
+    # no shared tick label at the join of the two panels
+    from matplotlib.ticker import MaxNLocator
+    axes[1].xaxis.set_major_locator(MaxNLocator(nbins=6, prune="lower"))
     axes[0].plot([], [], color=fs.PAL["blue"], label=r"$\langle|\mathcal{H}|/[\mathcal{H}]\rangle$")
     axes[0].plot([], [], color=fs.PAL["red"], label=r"$\langle|\mathcal{M}|/[\mathcal{M}]\rangle$")
     axes[0].legend(loc="upper right", fontsize=7, ncol=2)

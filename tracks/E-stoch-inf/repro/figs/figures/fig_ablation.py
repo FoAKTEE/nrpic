@@ -107,8 +107,16 @@ def main():
             res[key] = f"unavailable: {e}"
     # t = 0 controls (P-A3 (i)) come from bitcheck.py
     fs.use_style()
-    fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.6), sharey=True)
-    fig.subplots_adjust(left=0.09, right=0.99, bottom=0.14, top=0.9, wspace=0.0)
+    controls = any(isinstance(res[k], dict) for k in
+                   ("shells_vs_mesh_sr", "shells_vs_mesh_usr", "rl1_vs_released_sr",
+                    "ul1_vs_released_usr"))
+    if controls:
+        fig, ax = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.6), sharey=True)
+        fig.subplots_adjust(left=0.09, right=0.99, bottom=0.14, top=0.9, wspace=0.0)
+    else:  # no control in the inputs (e.g. the t = 7.5 comparison): one panel only
+        fig, a0 = plt.subplots(1, 1, figsize=(fs.COLUMN_WIDTH + 1.6, 3.6))
+        fig.subplots_adjust(left=0.16, right=0.97, bottom=0.14, top=0.86)
+        ax = [a0]
     style = {"r20_sr": (fs.PAL["red"], "level 2 - 0, quadratic"),
              "r20_usr": (fs.PAL["orange"], "level 2 - 0, inflection"),
              "r10_sr": (fs.PAL["blue"], "level 1 - 0, quadratic"),
@@ -127,11 +135,12 @@ def main():
               "rl1_vs_released_sr": (fs.PAL["blue"], "RL1 / released level 0, quad."),
               "ul1_vs_released_usr": (fs.PAL["green"], "UL1 / released level 0, infl.")}
     for key, (c, lab) in style2.items():
-        if isinstance(res[key], dict):
+        if controls and isinstance(res[key], dict):
             case = "sr" if key.endswith("sr") else "usr"
             k = fl.k_p1(np.sqrt(np.array(res[key]["n2"], float)), case)
             ax[1].loglog(k, np.abs(res[key]["r"]), color=c, lw=0.6, label=lab)
-    ax[1].set_title("Controls: shells against mesh; scope level 1", fontsize=9)
+    if controls:
+        ax[1].set_title("Controls: shells against mesh; scope level 1", fontsize=9)
     for a in ax:
         a.set_xlabel(r"comoving wave number $k$ [$M_{\rm Pl}=100$]")
         a.legend(loc="lower right", fontsize=6.5)

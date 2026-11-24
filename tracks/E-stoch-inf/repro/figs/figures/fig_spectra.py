@@ -174,7 +174,11 @@ def main():
         for a in axes:
             a.set_ylim(max(lo, 1e-45), None)
     if args.title:
-        fig.suptitle(args.title, fontsize=10)
+        if args.kind == "R":  # one panel: the run in the panel title, no suptitle over it
+            axes[0].set_title(f"{args.title}: " + keys[0][1], fontsize=10)
+        else:  # room above the three panel titles
+            fig.subplots_adjust(top=0.84)
+            fig.suptitle(args.title, fontsize=10, y=0.985)
     fs.save(fig, os.path.join(args.out, args.name))
     plt.close(fig)
 
@@ -232,6 +236,24 @@ def main():
             res["Q_below_K_frac_by_dump"] = [
                 float(np.mean(z["specQ_mean"][inj] < z["specK_mean"][inj])) for z in allrows]
             res["efolds_all"] = Ns.tolist()
+            # at each plotted dump (P1's layout): medians over the injected shells of Delta[Kt],
+            # Delta[Kt]/Delta[K] and Delta[Q]/Delta[K] (P1:570-572); Kt only from passes with the
+            # invariant (kt_version 2) or, in slow roll, version 1 times <chi>^2
+            res["plotted_medians"] = []
+            for i in sel:
+                z = np.load(rows[i]["path"])
+                injz = (z["shell_count"] > MINCOUNT) & (z["shell_n2"] <= 4096)
+                rec = dict(N=rows[i]["N"], kt_version=int(z["kt_version"]) if "kt_version"
+                           in z.files else 1)
+                kk = z["specK_mean"][injz]
+                rec["K_p1"] = float(np.median(kk) * scale)
+                rec["Q_over_K"] = float(np.median(z["specQ_mean"][injz] / kk))
+                if rec["kt_version"] == 2 or args.case == "sr":
+                    kt = z["specKt_mean"][injz] * (1.0 if rec["kt_version"] == 2
+                                                    else float(z["mean_chi"]) ** 2)
+                    rec["Kt_p1"] = float(np.median(kt) * scale)
+                    rec["Kt_over_K"] = float(np.median(kt / kk))
+                res["plotted_medians"].append(rec)
     with open(os.path.join(args.out, args.name + ".json"), "w") as fp:
         json.dump(res, fp, indent=1)
 

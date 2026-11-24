@@ -29,7 +29,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("out")
     ap.add_argument("--usr256")
-    ap.add_argument("--usr256kt", help="pass of group usr256kt (Fig. 6b with the invariant Kt)")
+    ap.add_argument("--usr256kt", action="append", default=[],
+                    help="passes of groups usr256kt, usr256kt8 (Fig. 6b with the invariant Kt)")
     ap.add_argument("--sr256", help="pass with P256v6 (all dumps)")
     ap.add_argument("--rsf256", action="append", default=[],
                     help="passes with RSF256 and its continuation (labels RSF256, RSF256c)")
@@ -53,9 +54,16 @@ def main():
              "--title", "Inflection, USF256, box mean of H removed"])
         run([F("fig_spectra.py"), "--pass", p, "--case", "usr", "--kind", "R", "--name",
              "fig5_usr_spec", "--out", out, "--title", "Inflection, USF256"])
-        pk = sub(a.usr256kt, "USF256") if a.usr256kt else p
-        run([F("fig_spectra.py"), "--pass", pk, "--case", "usr", "--kind", "K", "--name",
-             "fig6b_usr_Kspec", "--out", out, "--title", "Inflection, USF256"])
+        # Fig. 6b: the kt_version-2 passes first (they win at common dumps, and every plotted dump
+        # is one of theirs), then the 41-dump pass for the measures over all dumps (K and Q are
+        # the same in both versions); one target at 8.0 beside P1's last curve (<N> = 7.95)
+        pk = []
+        for r in a.usr256kt:
+            pk += ["--pass", sub(r, "USF256")]
+        run([F("fig_spectra.py")] + pk + ["--pass", p, "--case", "usr", "--kind", "K", "--name",
+                                          "fig6b_usr_Kspec", "--out", out,
+                                          "--targets", "0,0.7,1.4,2.1,2.8,3.5,5.5,8.0",
+                                          "--title", "Inflection, USF256"])
     sr_passes = []
     for r in a.rsf256:
         for lab in ("RSF256", "RSF256c"):
