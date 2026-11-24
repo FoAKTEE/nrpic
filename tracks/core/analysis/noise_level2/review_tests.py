@@ -129,6 +129,7 @@ def analyse(out):
     ent = w > 0.5
     fig9 = {}
     for name, a, b in (("L2/L0m", "s2m", "s0m"), ("L1m/L0m", "s1m", "s0m"),
+                       ("L2/L1m", "s2m", "s1m"),
                        ("cov/metric", "s2c", "s2m"), ("flat/metric", "s2f", "s2m"),
                        ("friedmann/means", "s2w", "s2m")):
         d = pw[a][1]/pw[b][1] - 1.0
@@ -191,8 +192,8 @@ def figures(out, s):
     a.set_xlabel("$t$ (1/H$_*$)")
     a.set_ylabel(r"rms$_n$ $|c_R^{(1)}/c_R^{(2)}-1|$")
     a.set_title("(a) projected coefficients", fontsize=8)
-    a.set_ylim(1e-13, 1e-1)
-    a.legend(fontsize=5.5, loc="upper left")
+    a.set_ylim(1e-14, 1e-2)
+    a.legend(fontsize=5.5, loc="lower right")
     a = ax[1]
     for key, cl, mk, nm in sty[:3]:
         r1 = s["coef"][key][1:]
@@ -211,6 +212,8 @@ def figures(out, s):
     q = np.sqrt(np.array(sp["shells"], float))
     ent = np.array(sp["entered"])
     for key, cl, mk, nm in (("L2/L0m", fs.PAL["orange"], "o", "level 2 / level 0"),
+                            ("L2/L1m", fs.PAL["purple"] if "purple" in fs.PAL else "m",
+                             "d", "level 2 / level 1"),
                             ("L1m/L0m", "0.4", "x", "level 1 / level 0"),
                             ("cov/metric", fs.PAL["blue"], "s", r"$D^iD_i$ / default"),
                             ("flat/metric", fs.PAL["green"], "^", r"$\delta^{ij}$ / default"),
@@ -220,8 +223,8 @@ def figures(out, s):
     a.set_xlabel("$|n|$")
     a.set_ylabel(r"$|\Delta P/P|$ of $R^{\rm NR}$ per shell")
     a.set_title("(c) shell power at $t=3.2$, $32^3$", fontsize=8)
-    a.set_ylim(1e-14, 1e-1)
-    a.legend(fontsize=5.5, loc="lower right", ncol=2)
+    a.set_ylim(1e-11, 1e2)
+    a.legend(fontsize=5.5, loc="upper left", ncol=2)
     fig.savefig(os.path.join(out, "fig_readings.png"), dpi=200)
     plt.close(fig)
 
@@ -243,16 +246,16 @@ def figures(out, s):
     a.legend(fontsize=6, loc="lower right")
     a = ax[1]
     rows = r4["l2_vs_l1"][1:]
-    a.semilogy([r["time"] for r in rows], [max(r["max"], 1e-18) for r in rows], "o-",
-               ms=3, color=fs.PAL["orange"], label="$R$")
-    a.semilogy([r["time"] for r in rows], [max(r["rms_dR"], 1e-18) for r in rows], "s-",
-               ms=3, color=fs.PAL["blue"], label=r"$n\cdot\partial R$ (rms)")
+    a.plot([r["time"] for r in rows], [r["max"]/1e-12 for r in rows], "o-",
+           ms=3, color=fs.PAL["orange"], label="$R$ (max)")
+    a.plot([r["time"] for r in rows], [r["rms_dR"]/1e-12 for r in rows], "s-",
+           ms=3, color=fs.PAL["blue"], label=r"$n\cdot\partial R$ (rms)")
     a2 = a.twinx()
     a2.plot([r["time"] for r in r4["c1"]], [r["alpha"] for r in r4["c1"]], "-",
             color="0.5", lw=0.8)
     a2.set_ylabel(r"$\langle\alpha\rangle$ (grey)")
     a.set_xlabel("conformal time $t$ (1/H$_*$)")
-    a.set_ylabel(r"$|c^{L2}/c^{L1}-1|$")
+    a.set_ylabel(r"$|c^{L2}/c^{L1}-1|$ ($10^{-12}$)")
     a.set_title(r"(b) level 2 against level 1, lapse $=a$", fontsize=8)
     a.legend(fontsize=6, loc="upper left")
     fig.subplots_adjust(right=0.93)

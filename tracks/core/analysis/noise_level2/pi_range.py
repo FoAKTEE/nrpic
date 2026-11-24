@@ -48,11 +48,12 @@ def read_two(fname):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True)
-    ap.add_argument("runs", nargs="+")
+    ap.add_argument("--replot", help="pi_range.json of an earlier call: figure only")
+    ap.add_argument("runs", nargs="*")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
-    res = {}
-    for item in a.runs:
+    res = json.load(open(a.replot)) if a.replot else {}
+    for item in ([] if a.replot else a.runs):
         name, rd = item.split("=", 1)
         rows = []
         for f in sorted(glob.glob(os.path.join(rd, "*.sf.?????.dump"))):
@@ -91,10 +92,11 @@ def main():
         a_.semilogy(t, [max(q["k_rms_rel"], 1e-18) for q in r["dumps"]], "^-", ms=3,
                     color=fs.PAL["green"], label=r"rms of $K/\langle K\rangle-1$")
         a_.axhline(1.0, color="0.4", lw=0.8, ls="--")
+        a_.set_ylim(1e-13, 1e3)
         a_.set_xlabel("$t$ (1/H$_*$)")
         a_.set_ylabel("relative to the box mean")
         a_.set_title(name, fontsize=8)
-        a_.legend(fontsize=6, loc="lower right")
+        a_.legend(fontsize=6, loc="upper left", ncol=3)
     fig.savefig(os.path.join(a.out, "fig_pi_range.png"), dpi=200)
 
 
