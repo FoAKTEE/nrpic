@@ -115,7 +115,7 @@
   "started": null,
   "ended": null,
   "parents": [],
-  "notes": "",
+  "notes": "2026-11-24T21:15Z (batch 12): job 5154 ran 37:45 to t = 287.5 M and was preempted; its resubmission 5182 was cancelled unstarted by orch at 12:00 PST under the queue cap (decision 0033). Continued IN PLACE from its own rst/st.00014.rst (t = 280 M) through the shared queue (label row4-l3-0p726875-member-cont) with tracks/core/verify/row4/continue_chain.sh: the same start command, executable, JOB_NAME, PROC_NAME and MAX_SEGMENTS 2 (one segment left); every job id is in chain/events.log, the continuation in chain/continuations.log (JOURNAL 2026-11-24T21:05Z).",
   "budget_at_submit": {
     "gpu_hours_allotted": 40.0,
     "cores_allotted": 16,

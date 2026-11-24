@@ -1802,3 +1802,68 @@ Faults of mine on record: the argument for M18 of batch 10a (corrected); the ove
 note/.gitignore (restored); two wait loops of mine matched their own command line with
 `pgrep -f` and never ended (stopped by their task ids, no process killed by pattern).
 Not done (task scope): inbox messages 1-10.
+
+## 2026-11-24T21:05Z (2026-11-24 13:05 PST), batch 12, session core-lead-12 (card runs into the shared queue; no AthenaK source change, no analysis)
+
+Task: hand core's waiting card runs to the shared queue (decision 0033 items 1-7;
+harness/RULES.md, section "Shared card queue"; orch outbox 20261124T201500Z and
+20261124T210500Z). Sequencer pid 3904230 was stopped by orch at 12:00 PST (20:00Z); its log
+`scratch/core/tmp/lead_b11/sequencer.log` ends at 19:49Z with 5156-5159 still held.
+
+State of the six level-3 chains of row 4 on M/8 (sacct from 2026-11-24T04:00 PST;
+`submit_chain.sh --status`):
+
+| Run id | Model | What happened | Own restart |
+|---|---|---|---|
+| core-20261124-130310-597d9ca | 0.726875 member, 0-600 M | job 5154 ran 37:45 (10:39-11:17 PST) to t = 287.5 M, PREEMPTED; resubmission 5182 CANCELLED at 11:57 PST | rst/st.00014.rst (t = 280 M) |
+| core-20261124-130321-ed96d4d | 0.73625 control, 300-600 M | job 5155 ran 57 s (300 -> 306.5 M), PREEMPTED; resubmission 5189 CANCELLED | none |
+| core-20261124-130340-31cf5e8 | 0.726875 control, 0-600 M | job 5156 held, CANCELLED, never ran | none |
+| core-20261124-130347-7d6a10d | 0.73625 member, 300-600 M | job 5157 held, CANCELLED | none |
+| core-20261124-130356-d9d09bf | 0.755 control, 300-600 M | job 5158 held, CANCELLED | none |
+| core-20261124-130406-09319a0 | 0.755 member, 300-600 M | job 5159 held, CANCELLED | none |
+
+Decisions [JUDGEMENT]:
+- 597d9ca had computed 37 min and holds its own restart at 280 M: it is CONTINUED IN PLACE
+  (not closed), through the queue with `--cmd` and a new wrapper
+  `verify/row4/continue_chain.sh` (one `submit_chain.sh` start on its own directory, the
+  chain's registered settings, MAX_SEGMENTS = the registered 2; segment 1 is used, so one
+  more segment of 50 min; 320 M left at 7.55 s/M of segment 1 is about 40 min).
+- ed96d4d computed 6.5 M and wrote no restart file of its own; continuing it in place would
+  start again from the parent's 300-M restart and append a second copy of 300-306.5 M to
+  its history files. It is closed as stopped and run again as a new registered run with
+  the same arguments, which starts from that same newest restart (the parent's
+  rst/st.00015.rst). Its 26 history rows stay on record in its directory.
+- The four held runs never ran: closed as stopped (`nrpic-run finish --status stopped`,
+  commits dc9e210f..a58b5692) and queued again with the arguments they were registered with
+  (`--launcher chain --gpu-hours 1.97 --exe ...`; the continuations `--exe
+  tracks/core/verify/row4/athena_resume.sh` with the parent and its restart files as
+  `--input`).
+- Priority 2: the G2 stage package of core waits for these six (OPEN.md item 2; CHECKLIST
+  C1, C7). No `--after`: the six are independent, and the order of adding is the plan's
+  order (0.726875 member, 0.73625 control, 0.726875 control, 0.73625 member, 0.755 control,
+  0.755 member). Predictions P10-P15 (entry 2026-11-24T13:05Z) stand unchanged; their run
+  ids change for the five new runs (HANDOFF.md maps queue entries to models).
+
+### Dry-run test of continue_chain.sh (prediction, 21:10Z; a shell test, no job, not a registered run)
+
+Prediction: (a) `DRY=1 continue_chain.sh core-20261124-130310-597d9ca` prints one
+`submit_chain.sh` line on that run directory with the deck
+`tracks/core/verify/row4/st_m8.athinput`, the three overrides of its manifest, ATHENA_EXE =
+the release card build of core-v0.6, JOB_NAME = the run id, PROC_NAME = nrc-f97a0e86,
+MAX_SEGMENTS = 2, names rst/st.00014.rst as the restart it resumes from and one segment
+left, and submits nothing (squeue unchanged). (b) Without DRY and without the dispatcher's
+marker it refuses with a non-zero exit. (c) On ed96d4d it refuses (finished manifest, no
+own restart). Refuted by any submission, by a different argument list, or by (b) or (c)
+going through.
+
+Outcome (21:14Z): (a) as predicted: one line, `env ATHENA_EXE=/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena
+JOB_NAME=core-20261124-130310-597d9ca MAX_SEGMENTS=2 PROC_NAME=nrc-f97a0e86 ATHENA_WALL=00:50:00
+SLURM_TIME=00:59:00 CPUS=1 PARTITION=preempt MAX_OUTSIDE_KILLS=2 SLURM_EXTRA= CHECK_CMD=
+scripts/submit_chain.sh <rundir> .../verify/row4/st_m8.athinput` with the three overrides of
+the manifest; "resumes in place from .../rst/st.00014.rst (1 of 2 segments used, 1 left)";
+exit 0; squeue of the account the same before and after (5206-5209, none of core); no
+`continuations.log` written, events.log unchanged. (b) exit 3, "refused: not called by the
+dispatcher". (c) exit 1, "manifest status is 'stopped'". Held. A first version failed
+(a) and (b) with "squeue did not answer": `squeue -j 5182` exits non-zero for a job Slurm
+no longer lists; the wrapper now reads the account's whole queue and matches the job id and
+the job name. Fixed before any entry was queued.
