@@ -1,0 +1,7 @@
+# Review of core/noise-level2 on the card (journal entry 8): the two level-2 decks of T5
+# for the byte comparison with Track E's smoke runs of 6ca93cba, and the cost of a cycle
+# at 256^3, level 2 against level 0 on the mesh (60 cycles each, no dumps)
+sr64_l2 tracks/core/analysis/noise_level2/inputs/card/sr64_l2.athinput
+usr64_l2 tracks/core/analysis/noise_level2/inputs/card/usr64_l2.athinput
+sr256_l2_time tracks/core/analysis/noise_level2/inputs/card/sr256_l2_time.athinput
+sr256_l0m_time tracks/core/analysis/noise_level2/inputs/card/sr256_l0m_time.athinput

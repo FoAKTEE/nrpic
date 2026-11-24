@@ -366,3 +366,28 @@ equal ln a the deviation is that of the geodesic run within a factor 2 (cut mode
 |n|^2 <= 48), and it stays below 0.1; (iii) the same for n.d R = Pi_R/Z against dR/dtau
 of the shells. Refuted by a deviation of order one (a lapse factor in the wrong place in
 the mesh path grows with alpha), or by level 2 differing from level 1 above 1e-9.
+
+## Entry 8 (2026-11-24 05:22 PST): outcome of R0; prediction of the card job R5
+
+R0 (run core-20261124-130250-0a4a7cb, comparison core-20261124-131414-c50780b): all
+fifteen runs exit as recorded (guard 3, the others 0); 366 files (every dump, .modes,
+.rmodes, .hst of the fourteen run directories) are byte for byte those of
+core-20261123-025040-384fbdd; summary.json has the numbers of entry 3 (T1a 1.14e-14 /
+6.9e-15, T2 level 2 against its own mesh field 1.0e-4, 7.5e-5 over all dumps).
+PREDICTION HELD: the tests of the branch repeat.
+
+R5, card (list `analysis/noise_level2/card_review.list`, the card executable of 746869ef,
+sha256 of `.work/build_gpu_nl2/src/athena` in the manifest; at most 0.33 card-hours):
+(i) `sr64_l2` and `usr64_l2`, the two level-2 decks of T5, against Track E's smoke runs of
+the executable of 6ca93cba (E-20261123-035724-b661081): the history records agree to
+1e-10 relative in the box means and 1e-7 in the rms of the perturbations at every cycle,
+and I expect every file identical (no kernel of these runs has an order that depends on
+the run; the new kernel forms the same V). Refuted by a difference above 1e-7: then the
+two executables are not equivalent on the card and Track E's level-2 runs would have to
+be judged again.
+(ii) 256^3, 60 cycles without dumps, the slow-roll deck of the ablation: level 2 against
+level 0 on the mesh. With 6ca93cba the ratio of the throughputs was 1.127e7/6.91e6 =
+1.63 (AL0S, AL2S of Track E). Prediction: at most 1.18 with the new executable (the
+local right-hand side of R adds the mixed derivatives and the inverse metric; the
+projection now reads two fields as at level 0). Refuted above 1.3: then the recomputed V
+was not the cost.
