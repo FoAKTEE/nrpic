@@ -23,8 +23,14 @@ is more specific than the principles, it governs the note.
    line locators appear in the ledger appendix and in the parameter appendix and nowhere
    else. The main text and the captions follow 4.1. The scripts in `manuscript/scripts/`
    name the runs and labels they read; the checker's 7.5 and 7.7 hits there are accepted
-   under this exception.
-2. The evidence labels of the program ([VERIFIED], [JUDGEMENT], [TO VERIFY]) stay out of
+   under this exception, and so are the hits in the ledger appendix (`tables/ledger.tex`), whose
+   source column names records of the program by path.
+2. Decision 0031 item 3: the note says which code each run used. The lattice runs used the
+   release of the code, the comparison of the backreaction levels a reviewed development
+   version; the checker's 7.6 hits on "version" and "defect" in Sec. III I and in the appendix
+   on the parameters are accepted under this rule. Commit hashes stay out (they are in the
+   ledger's run records only through the run ids).
+3. The evidence labels of the program ([VERIFIED], [JUDGEMENT], [TO VERIFY]) stay out of
    the typeset text; the main text says in words what was measured, what is our reading,
    and what is open. The labels live in the package journal and in `notes/`.
 
@@ -64,16 +70,17 @@ from its plateau.
   "four cells per shortest wavelength", "about thirteen cells" (the threshold of the
   momentum constraint); "one part in ten thousand" (the second paper's own bound, quoted).
 - Comparison factors stated in words where the argument needs them: "a factor of about
-  three to four" (one-point bands), "one to two decades" (constraint levels). Their values
-  are in the ledger.
+  three to four" (one-point bands), "one to two decades" (constraint levels), "three to five
+  decades" (sign flip), "about fifteen times higher" (the spectrum a published width would
+  need), "a factor sixteen per halving" (fourth order in time). Their values are in the ledger.
 - Everything else (residuals, ratios, moments, widths) is in the ledger appendix.
 
 ## Expert dictionary (Sec. 6)
 
 | Use | Instead of | Field |
 |---|---|---|
-| ultra-slow roll (USR) | USR phase (as a noun alone), constant roll | inflation |
-| comoving curvature perturbation | zeta, curvature (alone) | cosmology |
+| ultra-slow roll (USR) | constant roll | inflation |
+| comoving curvature perturbation | zeta | cosmology |
 | freezing | conservation | cosmology |
 | coarse-graining window | cutoff filter | stochastic inflation |
 | stochastic sources | noise terms (for the lattice) | this note |

@@ -126,7 +126,7 @@ def main():
             case = "sr" if key.endswith("sr") else "usr"
             k = fl.k_p1(np.sqrt(np.array(res[key]["n2"], float)), case)
             ax[0].loglog(k, np.abs(res[key]["r"]), color=c, lw=0.6, label=lab)
-        else:
+        elif isinstance(res[key], str) and "AL2S" in res[key]:  # only the cut SR level-2 run waits
             ax[0].plot([], [], color=c, lw=0.6, label=lab + " (pending)")
     ax[0].set_title("Levels 1 and 2 against level 0, noise on the mesh", fontsize=9)
     ax[0].set_ylabel("relative difference of the power")

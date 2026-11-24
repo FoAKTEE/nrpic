@@ -1,0 +1,448 @@
+\documentclass[aps,prd,twocolumn,10pt,superscriptaddress,nofootinbib,longbibliography,floatfix]{revtex4-2}
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\graphicspath{{figures/}}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\Mpl}{M_\mathrm{Pl}}
+\newcommand{\Ham}{\mathcal{H}}
+\newcommand{\Mom}{\mathcal{M}}
+\newcommand{\Pone}{Paper~I}
+\newcommand{\Ptwo}{Paper~II}
+\newcommand{\pending}[1]{\textcolor{red}{[Pending: #1]}}
+
+\begin{document}
+\raggedbottom
+
+\title{Stochastic inflation in general relativity, on a lattice and in one patch:\\ A reproduction of two papers (working note)}
+
+\author{Track E of the numerical-relativity particle-in-cell cosmology program}
+
+\date{Working note, state of 24 November 2026}
+
+\begin{abstract}
+Stochastic inflation adds the quantum noise of modes that cross a coarse-graining scale to the evolution of long-wavelength fields. Launay, Rigopoulos and Shellard wrote this noise as sources for every Einstein equation, integrated a one-patch Langevin system for the lapse and the local number of e-folds, and evolved the sources on a numerical-relativity lattice for a slow-roll and an ultra-slow-roll potential. We reproduce both papers in their own set-up: the lattice part with an independent numerical-relativity code, the one-patch part with a reference integrator. Computer algebra confirms that the sources are independent of the gauge and leave the constraints unsourced at linear order. On the lattice, the background, the spectra of the curvature perturbation and of the extrinsic curvature, the freezing of super-Hubble modes, the order of the constraint violation and the convergence with resolution agree with the published runs and with linear theory. The spread of the fields over the lattice is three to four times narrower in our runs than in the published figures, in both scenarios, while the published spectra agree with ours, and the spectra fix the spread. The published bound on the stochastic backreaction holds at large scales and fails at the shortest scales of ultra-slow roll, as the published figure itself shows. The one-patch figures follow only from a background integrated with a coarse Euler step, which carries the field off a plateau where the converged background stops, and from the It\^o reading of the printed equation. The It\^o correction carries the fifth power of the lapse, and the ultra-slow-roll noise amplitude is smaller than printed. The runs on the largest lattice that complete the convergence study are pending.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+Primordial black holes form where the comoving curvature perturbation of inflation is large enough for a region to collapse after it re-enters the Hubble radius, so their abundance depends on the far tail of its distribution. Stochastic inflation describes how that tail grows. Modes that cross a coarse-graining scale, a fixed fraction of the Hubble radius, feed a classical noise into the long-wavelength fields \cite{Starobinsky:1986}. The usual form evolves every coarse-grained patch as a homogeneous universe, which drops gradients and the anisotropic part of the expansion.
+
+Launay, Rigopoulos and Shellard removed that restriction. In the first paper (\Pone{} \cite{Launay:2024sigr}) they wrote the noise as sources for every equation of general relativity in its 3+1 form, built from the comoving curvature perturbation and the time derivatives of the window, and tested the result on a one-patch Langevin system for the lapse and the local number of e-folds in the uniform-field gauge. In the second (\Ptwo{} \cite{Launay:2025sinr}) they derived the sources without fixing a gauge, cast them in the BSSN form of numerical relativity, and evolved them on a lattice for a slow-roll (SR) and an ultra-slow-roll (USR) potential, starting from the initial data of Ref.~\cite{Launay:2025bd}.
+
+A reproduction tests what the two papers print: equations, set-up, figures and quantitative statements. Neither the authors' code nor their random numbers are public, so the comparison is statistical, against the linear (Mukhanov--Sasaki) solution of each realization, and against the numbers the papers print. Values read off the published figures enter only as single comparison values, with the figure named, in the ledger at the end of the note. Figure~\ref{fig:pipeline} shows the two reproductions side by side. The work was carried out by large-language-model agents under human direction, who wrote the specification, ran the simulations, checked the equations and wrote this note.
+
+This note reports three results:
+(i) the equations of both papers hold under computer algebra; the misprints we found do not enter a code (Sec.~\ref{sec:equations});
+(ii) on the lattice, every observable that linear theory fixes is reproduced, the one-point spread of the fields is not, and the constraint levels and the bound on the backreaction follow from it and from the published figures (Sec.~\ref{sec:lattice});
+(iii) in one patch, the published figures require a background integrated with a coarse Euler step and the It\^o reading of the printed equation, whose It\^o term and ultra-slow-roll amplitude differ from the printed forms (Sec.~\ref{sec:onepatch}).
+Section~\ref{sec:discussion} sorts the findings into reproduced, reproduced in part, not reproduced and pending.
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{fig_pipeline}
+\caption{The two reproductions. Top: the lattice of \Ptwo{}, from the initial data at the start of the run to the comparison with linear theory. Bottom: the one-patch system of \Pone{}. Middle: the computer-algebra check of the equations, which both lanes use. Colors mark inputs, evolution, analysis and comparison.}
+\label{fig:pipeline}
+\end{figure*}
+
+\section{Stochastic sources in general relativity}\label{sec:equations}
+
+A coarse-graining window splits every field into a long-wavelength part, which the simulation evolves, and a short-wavelength part, which linear theory describes. Both papers use a smooth window in Fourier space,
+\begin{equation}
+W_k(t) = \tfrac{1}{2}\left\{1 + \tanh\left[s \ln\left(k_\sigma/k\right)\right]\right\}, \qquad k_\sigma = \sigma a H,
+\label{eq:window}
+\end{equation}
+where $a$ is the scale factor, $H$ the Hubble rate, $\sigma$ the window scale in units of the Hubble scale and $s$ the steepness. As $aH$ grows, each mode slides from the short part into the long part, and the long part receives a kick.
+
+The kick follows from linear theory. The mode function $\mathcal{R}_k$ of the comoving curvature perturbation obeys the Mukhanov--Sasaki equation \cite{Sasaki:1986,Mukhanov:1988}
+\begin{equation}
+\ddot{\mathcal{R}}_k + (3-\epsilon_2) H \dot{\mathcal{R}}_k + \frac{k^2}{a^2} \mathcal{R}_k = 0,
+\label{eq:ms}
+\end{equation}
+with $\epsilon_1 = -\dd\ln H/\dd\mathcal{N}$, $\epsilon_2 = -\dd\ln\epsilon_1/\dd\mathcal{N}$ (the sign of both papers, so $\epsilon_2 = 6$ in USR) and $\mathcal{N}$ the number of e-folds. Applying the same operator to the windowed mode $W_k \mathcal{R}_k$ and using the Mukhanov--Sasaki equation leaves only the terms with derivatives of the window,
+\begin{equation}
+S_{\mathcal{R},k} = \mathcal{R}_k \ddot W_k + \left[2\dot{\mathcal{R}}_k + (3-\epsilon_2) H \mathcal{R}_k\right] \dot W_k .
+\label{eq:sr}
+\end{equation}
+The coarse-grained curvature perturbation therefore obeys the Mukhanov--Sasaki equation with the source $S_\mathcal{R}$, the sum of $S_{\mathcal{R},k}$ over the modes, each weighted by a complex Gaussian random number drawn once. The papers carry this source into the field momentum $\Pi$, the trace $K$ of the extrinsic curvature and its trace-free part $\tilde A_{ij}$:
+\begin{equation}
+\begin{aligned}
+S_\Pi &= \sqrt{2\epsilon_1}\,\Mpl S_\mathcal{R}, \qquad S_K = -\epsilon_1 S_\mathcal{R}, \\
+S_{\tilde A_{ij}} &= \epsilon_1\left(\frac{\delta_{ij}}{3} - \frac{k_i k_j}{k^2}\right) S_\mathcal{R},
+\end{aligned}
+\label{eq:sources}
+\end{equation}
+with no source in the metric, in the other evolved variables or in the constraints. We call these the stochastic sources.
+
+We linearized the nonlinear 3+1 equations about a flat Friedmann background for one plane wave and substituted five gauge families of \Pone{}, each with arbitrary gauge functions. In every family the residuals equal the stochastic sources, and the linearized Hamiltonian and momentum constraints receive no source. Flipping the sign of any one source makes the time derivative of a constraint nonzero at first order. This property turns the constraints into a test of the noise on the lattice: a correct source keeps the Hamiltonian violation at second order in the noise, a wrong sign raises it to first order.
+
+The coefficients $\epsilon_1$, $\epsilon_2$, $H$ and $a$ of the sources belong to a background. \Ptwo{} offers three choices: the Friedmann background (level 0 of the backreaction), the box means of the lattice (level 1), and the local fields in each cell (level 2). Level 2 is its production setting.
+
+The checks also found seventeen misprints in the two papers (Table~\ref{tab:errata} in Appendix~\ref{app:errata}): a misplaced prefactor in the linear momentum constraint, a delta that should be the metric in the trace-free equation, missing factors in the Friedmann line of the usual stochastic equations, a factor $4\pi$ in a system written with $\Mpl$, and the two findings about the one-patch system of Sec.~\ref{sec:onepatch}. None of them enters the lattice code.
+
+\section{The lattice reproduction}\label{sec:lattice}
+
+\subsection{Two scenarios and our set-up}\label{sec:setup}
+
+In the SR scenario the inflaton rolls down a quadratic potential. Every mode enters the window, rises to a nearly scale-invariant spectrum and freezes once it is far outside the Hubble radius. In the USR scenario the potential has an inflection point: the field decelerates on a nearly flat stretch, $\epsilon_1$ falls by many decades, and the curvature perturbation of modes already outside the Hubble radius grows until the field leaves the plateau. The spectrum then rises steeply toward small scales.
+
+\Ptwo{} evolves the BSSN equations \cite{Shibata:1995,Baumgarte:1998} with geodesic slicing in a periodic box one window wavelength across at the start, with a noise cut-off at a quarter of the Nyquist wave number, $\sigma = 1$, $s = 5$, sixth-order finite differences, the classical fourth-order Runge--Kutta method and no dissipation. We use AthenaK \cite{Stone:2024athenak} with its Z4c module \cite{Bernuzzi:2010,Zhu:2024utz}, extended with an inflaton and the stochastic sources, the same scenarios and the same lattice parameters (Table~\ref{tab:params}). Five differences remain (Table~\ref{tab:setup}). (a) Z4c with its damping off evolves the constraint variable $\Theta$, so our solution differs from a BSSN one by terms proportional to the constraints, at second order in the noise. (b) Our main runs use level 0 of the backreaction; levels 1 and 2 enter in Sec.~\ref{sec:backreaction}. (c) We advance the mode functions of the noise per lattice shell with the continuum wave number; \Ptwo{} evolves the curvature perturbation in real space with the lattice gradients, whose sixth-order symbol differs from $k^2$ at the cut-off. (d) The highest SR shells start from the Bunch--Davies vacuum later than in \Ptwo{}, an amplitude correction that scales as $(aH/k)^2$. (e) Our level-0 background integrates the Friedmann equation; the mesh evolves $K$ and the conformal factor instead. Each difference acts at second order in the noise or at the shortest scales.
+
+\subsection{Numerical methods}\label{sec:methods}
+
+AthenaK evolves Z4c and the scalar field with sixth-order centered differences and the low-storage fourth-order Runge--Kutta method of Ketcheson \cite{Ketcheson:2010}, with the step set by a Courant factor. The stochastic sources are evaluated at every Runge--Kutta stage from mode functions that advance in lockstep with the fields, with the same stage coefficients; for frozen random amplitudes the sources are smooth in time and the scheme keeps fourth order. The random amplitudes come from counter-based keys of the wave vector, so a realization repeats bit for bit, and differs from that of \Ptwo{}. The initial slice at the start of the run carries the coarse-grained curvature perturbation and its time derivative, converted into metric and field with the geodesic-gauge data of Ref.~\cite{Launay:2025bd}, with the corrected field momentum of Appendix~\ref{app:errata}.
+
+The analysis reconstructs the curvature perturbation of the lattice as in \Ptwo{},
+\begin{equation}
+\mathcal{R}^\mathrm{NR} = \Phi - \frac{\langle K\rangle}{3\langle \Pi\rangle}\left(\phi - \langle\phi\rangle\right),
+\label{eq:rnr}
+\end{equation}
+where $\Phi$ is the curvature potential from the conformal factor and the metric, $\phi$ the field, and angle brackets denote box means. Spectra are the dimensionless power $\Delta = k^3|\mathcal{R}_k|^2/(2\pi^2)$ per lattice shell, kept for shells with more than ten modes. The constraints enter as $|\Ham|/[\Ham]$ and $|\Mom|/[\Mom]$, where $[\Ham]$ and $[\Mom]$ add the magnitudes of the terms of each constraint.
+
+\subsection{Background}\label{sec:background}
+
+The box means follow the Friedmann solution (Fig.~\ref{fig:background}). In SR the potential, $\epsilon_1$ and $\epsilon_2$ agree to rounding; in USR to the error of the time integration. The USR phase, where $\epsilon_2$ exceeds three, starts and ends where \Ptwo{}'s first figure shows it. Its text places the start about one e-fold later than its own figure; we follow the figure. \Ptwo{} gives the e-fold spans only approximately, so our runs end at slightly different e-folds than its curves (Appendix~\ref{app:params}).
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{fig_background}
+\caption{The background of both scenarios. Rows: potential, $\epsilon_1$ and $\epsilon_2$ against the mean number of e-folds. Thick blue: Friedmann solution; thin red: box means of a $64^3$ lattice run. The inset magnifies the minimum of $\epsilon_1$ after the plateau.}
+\label{fig:background}
+\end{figure}
+
+\subsection{Spectra of the curvature perturbation}\label{sec:spectra}
+
+As the window passes a mode, its power on the lattice rises from the vacuum spectrum to the Mukhanov--Sasaki spectrum and stops changing (Figs.~\ref{fig:specsr} and \ref{fig:specusr}). In SR the final spectrum is flat; in USR it rises with $k$ to order unity at the cut-off, the level \Ptwo{} reports. At the end of the run every shell agrees with the linear power of the same realization; the remaining departure grows toward the cut-off, where difference (c) and, in USR, the second order at order-unity power act. Above the cut-off the USR spectrum shows a second-order shelf, as in \Ptwo{}'s figure. The published spectra and ours agree in level at every time we can compare.
+
+\begin{figure*}
+\includegraphics[width=0.85\textwidth]{fig_spec_sr}
+\caption{Spectrum of the curvature perturbation on the $256^3$ SR lattice from the start to the end of the run (solid), with the Mukhanov--Sasaki expectation (dashed). Bands: range of the power within each shell. Colors run from early (blue) to late (red) mean e-folds.}
+\label{fig:specsr}
+\end{figure*}
+
+\begin{figure*}
+\includegraphics[width=0.85\textwidth]{fig_spec_usr}
+\caption{As Fig.~\ref{fig:specsr} for the USR lattice. The late spectra rise toward the cut-off; above it a shelf of second order in the noise appears.}
+\label{fig:specusr}
+\end{figure*}
+
+\subsection{One-point statistics: the amplitude factor}\label{sec:onepoint}
+
+The spread of the fields over the lattice cells follows the physics of the entry (Fig.~\ref{fig:contrasts}). In SR the contrasts of $\phi$, $K$ and $\mathcal{R}^\mathrm{NR}$ widen while the modes enter, over the span \Ptwo{} quotes, and freeze; the momentum contrast collapses after the last crossing. In USR the field contrast shows \Ptwo{}'s double feature: it grows, decays while the plateau damps the field velocity, and grows again. The $K$ contrast decays without a second growth, the momentum contrast becomes large at late times, and $\mathcal{R}^\mathrm{NR}$ grows through the USR phase and freezes.
+
+The widths of these bands differ. In both scenarios the published bands are three to four times wider than ours, for every field, while the published spectra agree with ours. For a Gaussian field the one-point variance is fixed by the spectrum,
+\begin{equation}
+\langle \mathcal{R}^2\rangle = \int \Delta(k)\, \dd \ln k ,
+\label{eq:variance}
+\end{equation}
+and our bands obey this relation for the realization's own spectrum. A published width of the USR curvature perturbation would need a spectrum about fifteen times higher at the cut-off than the published spectrum shows. The factor therefore sits in the normalization of the published real-space draw or in its plotting, which \Ptwo{} does not state, and none of the five set-up differences changes a linear amplitude by a factor of three. We call it the amplitude factor. It also explains the published statement that the furthest outliers of the USR curvature perturbation reach order ten: ours stay several times lower, as the amplitude factor predicts.
+
+\begin{figure*}
+\centering
+\includegraphics[width=0.34\textwidth]{fig_contrast_sr}\hspace{0.05\textwidth}
+\includegraphics[width=0.34\textwidth]{fig_contrast_usr}
+\caption{Spread of the fields over the cells of the $256^3$ lattices, SR (left) and USR (right). Rows: contrasts of field, momentum and $K$, the curvature perturbation, and the constraint ratios; shades: central 68, 95, 99 and 100 per cent. The SR constraint rows wait for a continued run.}
+\label{fig:contrasts}
+\end{figure*}
+
+\subsection{Anisotropic extrinsic curvature}\label{sec:shear}
+
+The trace-free extrinsic curvature carries the anisotropic expansion that the separate-universe picture drops (Fig.~\ref{fig:kspec}). In SR the power of $K$ freezes after the crossings; the trace-free part $\tilde K_{ij}$ is comparable with $K$ during the crossings and then decays, and its invariant $Q = (3\tilde K_{ij}\tilde K^{ij}/2)^{1/2}$ falls below $K$ on every shell. In USR $K$ decays as well and the anisotropic and isotropic parts stay comparable through the plateau, as \Ptwo{} states. After the plateau the hierarchy returns: $Q$ drops below $K$ again on almost every shell. This happens after the last time \Ptwo{} shows, so its statement that the hierarchy is absent in USR holds over the span of its figure, and the hierarchy returns later.
+
+\begin{figure*}
+\includegraphics[width=0.85\textwidth]{fig_kspec_sr}\\
+\includegraphics[width=0.85\textwidth]{fig_kspec_usr}
+\caption{Spectra of $K$ (left), of the trace-free $\tilde K_{ij}$ (middle) and of $Q$ (right) in units of \Ptwo{}, SR (top) and USR (bottom), from early (blue) to late (red) mean e-folds. Bands: range within each shell.}
+\label{fig:kspec}
+\end{figure*}
+
+\subsection{Convergence and constraints}\label{sec:constraints}
+
+With the cut-off fixed at eight lattice spacings in wave number, the final spectra converge to the linear spectrum at the sixth order of the stencils (Fig.~\ref{fig:specconv}). \Ptwo{}'s curves for the two coarser lattices lie where ours do; at the next lattice ours are lower and keep the sixth order where the published convergence slows, which the stencil in \Ptwo{}'s real-space reference explains. The largest lattice of the series is \pending{continued run}.
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{fig_specconv}
+\caption{Relative departure of the final SR spectrum from the linear spectrum of the same realization, per shell, for three lattices with the cut-off at eight lattice spacings in wave number. The largest lattice is pending.}
+\label{fig:specconv}
+\end{figure}
+
+The constraints show the order of the noise (Fig.~\ref{fig:constraints}). Each kick violates the Hamiltonian constraint at second order, so $\langle|\Ham|/[\Ham]\rangle$ forms a plateau during the entry that does not depend on the resolution once the stencils resolve the modes, and decays once inflation has stretched the modes. Our SR plateau lies between one and two decades below the plateau of \Ptwo{}'s figure, and lower still against the order its text states. The square of the amplitude factor accounts for about one decade, since the violation is quadratic in the amplitude, and the formulation (difference a) can change the level by a factor of order one. In USR our box mean of the Hamiltonian constraint carries a uniform residual of the background step, which converges at fourth order in the time step; with the box mean removed, our curves have the published shape.
+
+\begin{figure*}
+\includegraphics[width=0.85\textwidth]{fig_constraints}
+\caption{Constraint ratios against mean e-folds for three lattices with the cut-off at eight spacings: Hamiltonian (blue), momentum (red); thin lines with the box mean of the Hamiltonian constraint removed. Gray line: last crossing at the coarsest lattice. The largest lattice is pending.}
+\label{fig:constraints}
+\end{figure*}
+
+The momentum-constraint magnitude $[\Mom]$ is itself of first order, so a second-order violation gives a ratio of first order. In \Ptwo{}'s set-up the shortest modes enter with four cells per wavelength, and the stencils then add a first-order part to the momentum constraint at the last crossings. \Ptwo{} notes this momentary rise and cures it with a lower cut-off. Our runs show it in the same place, and a scan of the cut-off shows that the first-order part disappears above about thirteen cells per shortest wavelength.
+
+Flipping the sign of the momentum source makes both constraints first order (Fig.~\ref{fig:signflip}), as \Ptwo{} reports: the Hamiltonian ratio jumps by three to five decades and the momentum ratio rises to a sizable fraction of one. The SR run with the flipped sign covers less than one e-fold; its continuation is \pending{continued run}.
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{fig_signflip}
+\caption{Constraint ratios of the proper runs (solid) and of runs with the sign of the momentum source flipped (dashed), SR (left) and USR (right), on $256^3$ lattices.}
+\label{fig:signflip}
+\end{figure}
+
+\subsection{Stochastic backreaction}\label{sec:backreaction}
+
+\Ptwo{} states that level 2 changes the power by a detectable amount below one part in ten thousand on all scales. To compare levels without difference (c), a development version of the code evolves the noise on the mesh with the lattice gradients at all three levels; a review of its source found no defect in what the runs computed (Appendix~\ref{app:verdicts}). In USR, level 2 against level 0 scatters about zero near one part in ten thousand and rises toward the cut-off, where it exceeds the stated bound (Fig.~\ref{fig:ablation}). \Ptwo{}'s own figure shows the same rise, so its text and its figure disagree and ours follows the figure. In SR the comparison at the last common time of the runs stays within the bound and falls toward the cut-off (Fig.~\ref{fig:ablationsr}); the end of the run is \pending{continued run}.
+
+Level 1 against level 0 gives a smooth, one-signed difference that grows with $k$, larger than \Ptwo{}'s SR level-1 curve. The review traced it to the two integrations of one background: the level-0 background integrates the Friedmann equation, the mesh evolves $K$ and the conformal factor, and their difference falls by a factor sixteen per halving of the step. The curve therefore measures two fourth-order time integrations of one background, and level 2 against level 0 equals the level-2 effect to a small fraction of itself. The controls of Fig.~\ref{fig:ablation} show why the levels are compared on the mesh: the noise on shells and on the mesh differ at the top shells by the stencil symbol, far above the level-2 effect.
+
+\begin{figure*}
+\includegraphics[width=0.85\textwidth]{fig_ablation}
+\caption{Relative change of the final power per shell. Left: levels 2 and 1 against level 0, noise on the mesh, SR and USR. Right: controls, noise per shell against noise on the mesh at level 0, and level 1 against level 0 with the noise per shell. The SR level-2 curve at the end of the run is pending.}
+\label{fig:ablation}
+\end{figure*}
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{fig_ablation_sr}
+\caption{As the left panel of Fig.~\ref{fig:ablation} for SR at the last time common to the three levels, after every mode has frozen.}
+\label{fig:ablationsr}
+\end{figure}
+
+\section{The one-patch reproduction}\label{sec:onepatch}
+
+\subsection{The Langevin pair}\label{sec:langevin}
+
+Without gradients, one coarse-grained patch in the uniform-field gauge carries two variables: its lapse $\alpha$ and its number of e-folds $\mathcal{N}$, both measured against the background e-folds $\mathcal{N}_b$. The Hamiltonian constraint of the patch and its field equation give \Pone{}'s Langevin pair,
+\begin{align}
+\frac{\partial\mathcal{N}}{\partial\mathcal{N}_b} &= \sqrt{1 + (\alpha^2-1)\left(1-\tfrac{1}{3}\epsilon_1\right)}, \label{eq:lv1}\\
+\frac{\partial\alpha}{\partial\mathcal{N}_b} &= 3\alpha\left(\frac{\partial\mathcal{N}}{\partial\mathcal{N}_b} - 1\right) + \alpha^3\langle S^2\rangle \nonumber\\
+&\quad + \left(-3+\epsilon_1+\tfrac{1}{2}\epsilon_2\right)\alpha(\alpha^2-1) + \alpha^3 S , \label{eq:lv2}
+\end{align}
+where $S$ is the noise per e-fold, with the printed amplitude $\langle S^2\rangle^{1/2} = 3H/(2\pi\sqrt{2\epsilon_1}\,\Mpl)$ on the background. The potential is a plateau that joins a cubic slope; the field enters the plateau fast, decelerates in USR, and the noise acts while it crosses the junction (Table~\ref{tab:params}). We integrate the pair with a reference integrator outside the lattice code, in the Stratonovich reading (Heun) and in the It\^o reading (Euler--Maruyama) \cite{Kloeden:1992}, with \Pone{}'s step and number of paths.
+
+\subsection{The background and its step}\label{sec:step}
+
+On a flat plateau the field velocity in e-folds, $\phi' = \dd\phi/\dd\mathcal{N}$, obeys $\phi'' = -(3 - \phi'^2/2)\,\phi'$ in units $\Mpl = 1$, so the velocity decays and the field travels a finite distance. Integrating once gives the plateau stop,
+\begin{equation}
+\phi_\mathrm{stop} = \phi_* - \frac{1}{\sqrt6}\ln\frac{\sqrt6 + |\phi'_*|}{\sqrt6 - |\phi'_*|},
+\label{eq:stop}
+\end{equation}
+for a field that enters at $\phi_*$ with velocity $\phi'_*$. With \Pone{}'s initial data the plateau stop lies above the junction: the converged background never reaches the slope (Fig.~\ref{fig:lvbackground}). There $\epsilon_1$ keeps falling, the noise amplitude grows as $e^{3\mathcal{N}_b}$, and half the paths blow up before the noise switches off. Forward Euler at \Pone{}'s step of a hundredth of an e-fold overshoots the plateau stop and crosses the junction at the e-fold \Pone{} quotes; Euler at half that step stops short again. \Pone{}'s footnote says that its tuning depends on the step. The published figures are therefore those of the Euler background, and we use it below.
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{fig_lv_background}
+\caption{Background of the one-patch system for four integrations: forward Euler at \Pone{}'s step (red) and at half of it (yellow), the converged solution (blue), and a converged solution with the initial velocity tuned to cross (green). Panels: field above the junction, $\epsilon_1$, $\epsilon_2$, noise amplitude. Gray: noise on.}
+\label{fig:lvbackground}
+\end{figure}
+
+\subsection{Which stochastic reading}\label{sec:reading}
+
+An equation with a noise that multiplies a function of the variable can be read in two ways. The It\^o reading evaluates that function at the start of each step; the Stratonovich reading at its middle. The two differ by a drift equal to half the noise coefficient times its derivative, which here is of the order of the noise variance. \Pone{} names Mathematica's Stratonovich evolver.
+
+On the Euler background, Euler--Maruyama on the printed drift (the It\^o reading) at \Pone{}'s step reproduces the published paths, widths, skewness, kurtosis, distributions and tails (Figs.~\ref{fig:lvpaths}--\ref{fig:lvpdfs}). The convergent Stratonovich solution, on which Heun and Euler--Maruyama on the equivalent It\^o drift agree, is wider at late times, more skewed in the lapse, and drifts in $\mathcal{N}-\mathcal{N}_b$ (Fig.~\ref{fig:lvscheme}). The step of the stochastic integrator alone changes little; the reading decides. At the earliest record time the solution follows the linear covariance of the same background. The data thus point to an Euler-type It\^o integration of the printed drift, against the reading the text names. Only the authors can say which scheme Mathematica applied.
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{fig_lv_paths}
+\caption{One hundred paths of the lapse (top) and of the e-folds (bottom) relative to the background, It\^o reading at \Pone{}'s step on the Euler background. Red: mean of the paths shown; black dashed: mean of all paths.}
+\label{fig:lvpaths}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{fig_lv_scheme}
+\caption{Width (top) and skewness (bottom) of the lapse (left) and of the e-folds (right) for six integrations. Yellow: the It\^o reading at \Pone{}'s step; the others are Stratonovich solutions at two steps and the Stratonovich run without the It\^o term.}
+\label{fig:lvscheme}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{fig_lv_pdfs}
+\caption{Distributions of the lapse (left) and of the e-folds (right) at four background e-folds, It\^o reading. Blue: kernel estimate with its bootstrap band (light red); dashed: Gaussian of the same mean and width.}
+\label{fig:lvpdfs}
+\end{figure}
+
+\subsection{The It\^o term and the ultra-slow-roll amplitude}\label{sec:ito}
+
+\Pone{} derives the drift $\alpha^3\langle S^2\rangle$ in the lapse equation with It\^o's lemma. In cosmic time the field equation evolves $Z = \dot\phi_b/\alpha$ with the noise $\alpha S_\Pi$, and the lapse is $\alpha = f(Z) = \dot\phi_b/Z$. It\^o's lemma adds half the second derivative times the noise variance,
+\begin{equation}
+\frac{1}{2} f''(Z)\,\alpha^2\langle S_\Pi^2\rangle = \frac{\alpha^3}{\dot\phi_b^2}\,\alpha^2\langle S_\Pi^2\rangle = \frac{\alpha^5}{\dot\phi_b^2}\langle S_\Pi^2\rangle ,
+\label{eq:itoterm}
+\end{equation}
+the fifth power of the lapse. The printed third power belongs to a noise $S_\Pi$ without the factor $\alpha$, whose noise term in the lapse equation would carry $\alpha^2$. A Monte Carlo integration of the $Z$ equation confirms the fifth power. The term is small: switching it off moves the widths far less than the choice of reading does.
+
+\Pone{}'s appendix gives the noise amplitude for both SR and USR. Its integration by parts leaves, at the crossing $k = \sigma a H$, the combination $\mathcal{R}' + (3 - \epsilon_1 - \epsilon_2)\mathcal{R}$, with primes for e-fold derivatives. In USR $\epsilon_1$ falls as $a^{-6}$, so $\mathcal{R}' = 3\mathcal{R}$ at leading order and the combination cancels with $\epsilon_2 = 6$. The next order leaves the amplitude smaller than printed by the factor $\sigma^2/3$. The printed value follows only if $\mathcal{R}'$ is dropped. In SR the printed amplitude holds closely for small $\sigma$. The published figures use the printed amplitude, and so does our reproduction of them.
+
+\subsection{The other statements of the text}\label{sec:statements}
+
+Switching the noise off returns the lapse to one and freezes the e-folds, as \Pone{} states. Setting the factor $\alpha^3$ of the noise to one gives left-skewed distributions, as stated, and paths that cross zero lapse. The distribution of the lapse develops an exponential tail after the plateau; that of the e-folds is much heavier than Gaussian and lies between a Gaussian and an exponential tail. Appendix~\ref{app:verdicts} lists each statement with its verdict.
+
+\section{Discussion}\label{sec:discussion}
+
+Everything that linear theory fixes is reproduced on the lattice: the background, the spectra and their freezing, the anisotropic extrinsic curvature through the crossings, the convergence of the spectra, and the order of the constraint violation together with its first-order rise under a flipped source. These quantities test the stochastic sources themselves, and they hold in an independent code with a different formulation, time integrator and random realization.
+
+The departures cluster where a choice enters that the papers do not state. On the lattice it is the normalization of the one-point statistics: the amplitude factor separates the published bands from the published spectra, and through its square it accounts for most of the gap in the constraint levels. In one patch it is the background step and the stochastic reading. Two further departures are statements of a text that its own figure contradicts: the start of USR in \Ptwo{} and its bound on the backreaction at the shortest scales.
+
+Appendix~\ref{app:verdicts} gives the verdicts. Reproduced: the background, both spectra, the anisotropic curvature, the convergence of the spectra up to the lattices that have run, the constraint plateaus, the sign flip in USR, and the four figures of \Pone{} in the It\^o reading. Reproduced in part: the one-point figures (shape and timing yes, amplitude no), the constraint levels, the bound on the backreaction, the absent hierarchy of the USR shear (true until shortly after the plateau). Not reproduced: the order-ten outliers of the USR curvature perturbation, which follow from the amplitude factor. Pending: the largest lattice of both convergence figures, the SR level-2 curve at the end of the run, the SR constraint panels of the one-point figure, the SR sign flip over a longer span, and an independent check of the one-patch findings.
+
+\section{Summary}\label{sec:summary}
+
+Four rules come out of the reproduction.
+\begin{enumerate}
+\item An independent numerical-relativity code reproduces the stochastic sources of general relativity to the stencil error of the lattice, because the sources follow from linear theory and keep the constraints unsourced.
+\item A one-point spread must match its spectrum. For a Gaussian field the variance is the integral of the power over the logarithm of the wave number, and the published lattice figures miss it by a factor of three to four.
+\item The constraints count the order of the noise: a correct source leaves a second-order violation, a wrong sign a first-order one.
+\item A plateau stops a field that is integrated exactly. The published one-patch figures need the coarse Euler step that carries the field over the junction, and the It\^o reading of the printed equation.
+\end{enumerate}
+
+Open questions remain physical ones. How does level 2 of the backreaction change the tails of the curvature perturbation, where it acts at second order and the one-point statistics are non-Gaussian? Does the one-patch system, integrated on a background that does reach the slope, keep the exponential tails of the lapse? And how many realizations does a tail statistic in full general relativity need?
+
+\begin{acknowledgments}
+The authors of the two reproduced papers made their sources public on the arXiv.
+\end{acknowledgments}
+
+\appendix
+
+\section{Misprints}\label{app:errata}
+
+Table~\ref{tab:errata} lists the misprints found by the computer-algebra checks, with the corrected form. None of them changes a run of either paper that we can see; the code follows the corrected forms.
+
+\begin{table*}
+\caption{Misprints of \Pone{} and \Ptwo{}, with the corrected form and the check that shows each. The field momentum of the initial slice of Ref.~\cite{Launay:2025bd} needs the same kind of correction and is used corrected.}
+\label{tab:errata}
+\footnotesize
+\begin{tabular}{p{0.04\textwidth}p{0.3\textwidth}p{0.6\textwidth}}
+\toprule
+& Where & Correct form and check \\
+\midrule
+1 & linear momentum constraint, both papers & prefactor $-2/3$ (linearization of the nonlinear constraint) \\
+2 & linear $K$ equation, \Pone{} & equals the linearized equation up to the linear Hamiltonian constraint; same source \\
+3 & nonlinear trace-free equation, both & trace term with $\gamma_{ij}$ in place of $\delta_{ij}$ (else not trace-free for $a \ne 1$) \\
+4, 5 & Newtonian gauge, \Pone{} & factor $H$ in $\delta\phi$; one sum for $\Psi$ \\
+6 & uniform-$\mathcal{N}$ gauge, \Pone{} & sign of $\delta\mathcal{N}$ from its definition \\
+7 & appendix A of \Pone{} & $\ddot H = \epsilon_1(2\epsilon_1+\epsilon_2)H^3$ \\
+8 & background relation, \Ptwo{} & $V' = (-3+\epsilon_1+\epsilon_2/2)H\dot\phi_b$ \\
+9 & time derivative of the coarse-grained metric potential, \Ptwo{} & $k^2a^{-2}H^{-1}\mathcal{R}$ (dimension) \\
+10 & Friedmann line of the usual stochastic equations, both & $H^2 = V/\{3\Mpl^2[1-\pi^2/(6\Mpl^2)]\}$ \\
+11 & noise per e-fold, \Pone{} & $\Sigma = H^{-1}\mathcal{F}^{-1}\{S_\Pi\}$ \\
+12 & BSSN $K$ equation, both & $-\tfrac{1}{2}\Mpl^{-2}\alpha(\rho+S)$ in a system with $\Mpl$ \\
+13 & BSSN momentum constraint, both & sign of the geometric part \\
+14 & It\^o term, \Pone{} & $\alpha^5$ (Sec.~\ref{sec:ito}) \\
+15 & USR noise amplitude, \Pone{} & smaller by $\sigma^2/3$ (Sec.~\ref{sec:ito}) \\
+16 & names of lapse and shift, \Ptwo{} & swapped \\
+17 & BSSN trace-free equation, both & one factor $\alpha$ too many in the matter term (our reading) \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\section{Scenarios and parameters}\label{app:params}
+
+Table~\ref{tab:params} lists the physical and simulation parameters of both reproductions, as the papers print them and as we set them. Lattice runs use the release version of the code; the comparison of the backreaction levels uses a reviewed development version that adds level 2 and the noise on the mesh.
+
+\begin{table*}
+\caption{Parameters. Lattice scenarios of \Ptwo{} and the one-patch scenario of \Pone{}. Units: $\Mpl = 100$ in \Ptwo{}, $\Mpl = 1$ in \Pone{}; our lattice runs use $G = c = 1$, which changes no dimensionless output.}
+\label{tab:params}
+\footnotesize
+\begin{tabular}{p{0.24\textwidth}p{0.34\textwidth}p{0.34\textwidth}}
+\toprule
+Item & As printed & Ours \\
+\midrule
+SR potential & $V = m^2\phi^2/2$; $\epsilon_1 = 0.01$, $\epsilon_2 = -0.02$, $H_0 = 10^{-5}\Mpl$ at the Bunch--Davies start & same; $m$ and $\phi_0$ derived by two integrators \\
+USR potential & inflection potential of \Ptwo{} Table I; $\Lambda = 1.86\times10^{-6}$, $v = 0.198\,\Mpl$, $\phi_0 = -1.2\,\Mpl$ & same, coded potential equal to the printed one to rounding \\
+E-folds, start to run, run to end & about 5 and 8 (SR), about 3 and 10 (USR) & 5 and 8.10 (SR), 3 and 10 (USR) \\
+Lattice & $256^3$; $64^3$ for the background; $32^3$ to $256^3$ for convergence & same \\
+Box, window & one window wavelength at the start; $\sigma = 1$, $s = 5$ & same \\
+Noise cut-off & a quarter of the Nyquist number ($64\,\Delta k$ at $256^3$); $8\,\Delta k$ for convergence & same \\
+Gauge, formulation & geodesic slicing; BSSN, damping off; periodic; no dissipation & geodesic slicing; Z4c, damping off; periodic; no dissipation \\
+Stencils, time integrator & sixth order; classical RK4; Courant factor not stated & sixth order; low-storage RK4; Courant factor 0.25 \\
+Backreaction & level 2 & level 0 (main runs); levels 0, 1, 2 with the noise on the mesh (Sec.~\ref{sec:backreaction}) \\
+Random draw & Gaussian, drawn once & Gaussian, drawn once from keyed counters; two seeds \\
+\midrule
+One-patch potential & $V_0$ above $\phi_c = 9.056$, $V_0(3x^2-2x^3)$ below, $x = \phi/\phi_c$ & same \\
+One-patch initial data & $\phi_* = 10$, $\phi'_* = -2.0001$, $H_* = 10^{-5}$ & same; $V_0$ from the Friedmann constraint \\
+Noise, paths, step & on for $2 \le \mathcal{N}_b < 6$; fifty thousand paths; step 0.01 e-folds; start $\alpha = 1$, $\mathcal{N} = \mathcal{N}_b$ & same; also steps 0.005, 0.02, 0.001 and four seeds \\
+Readings & Stratonovich (named) & Stratonovich (Heun), It\^o (Euler--Maruyama on the printed drift), It\^o equivalent of the Stratonovich reading \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\section{The set-up item by item}\label{app:setup}
+
+Table~\ref{tab:setup} compares our lattice set-up with \Ptwo{}'s, item by item, and says what each remaining difference can change.
+
+\begin{table*}
+\caption{Set-up of the lattice runs against \Ptwo{}. Verdict: same; equivalent (with the reason); different (with what it can change). The five differences (a)--(e) are those of Sec.~\ref{sec:setup}.}
+\label{tab:setup}
+\footnotesize
+\begin{tabular}{p{0.2\textwidth}p{0.3\textwidth}p{0.44\textwidth}}
+\toprule
+Item & \Ptwo{} & Ours and verdict \\
+\midrule
+Potentials, parameters & Table I of \Ptwo{} & same \\
+Initial conditions & Bunch--Davies modes evolved to the start of the run & equivalent in USR; (d) different for the highest SR shells, which start later; amplitude correction of order $(aH/k)^2$ \\
+E-fold spans & approximate & equivalent: integers chosen, reproduce the background figure \\
+Box, modes, window, cut-off & as Table~\ref{tab:params} & same \\
+Gauge, boundaries, dissipation & geodesic, periodic, none & same \\
+Formulation & BSSN, damping off & (a) different: Z4c, damping off; solutions differ by terms proportional to the constraints, second order in the noise; constraint levels can change by factors of order one \\
+Stencils & sixth order & same \\
+Time integrator & classical RK4 & equivalent: low-storage RK4, fourth order measured with the sources on \\
+Step & not stated & Courant factor 0.25; time error far below the reproduced quantities \\
+Units & $\Mpl = 100$ & equivalent: dimensionless outputs unchanged \\
+Backreaction & level 2 & (b) different: level 0; tested in Sec.~\ref{sec:backreaction} \\
+Mode equation of the noise & real space with lattice gradients & (c) different: per shell with the continuum $k$; top shells differ by the stencil symbol \\
+Level-0 background & not stated & (e) different: Friedmann lockstep; the mesh evolves $K$ and the conformal factor \\
+Initial slice & coarse-grained data of Ref.~\cite{Launay:2025bd} & equivalent: same linear data, corrected field momentum \\
+Sources per step & step integral or stage values (both described) & equivalent: stage values, fourth order for frozen amplitudes \\
+Sources & $S_\Pi$, $S_K$, $S_{\tilde A_{ij}}$ & same for $\Pi$ and $K$; equivalent for $\tilde A_{ij}$ (projector with the stencil wave number) \\
+Extraction of $\mathcal{R}^\mathrm{NR}$ & from conformal factor, metric and field & same at linear order \\
+Constraint magnitudes & sums of term magnitudes & same for $[\Ham]$; equivalent for $[\Mom]$ \\
+Spectra & shells with more than ten modes & same \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\section{Verdicts}\label{app:verdicts}
+
+Table~\ref{tab:verdicts} gives the verdict on each figure and on the quantitative statements of both papers that we tested, with the independent check where there is one. The numbers behind each verdict are in the ledger (Appendix~\ref{app:ledger}).
+
+\begin{table*}
+\caption{Verdicts on the figures and statements of both papers. Reproduced, in part, not reproduced, or pending (the continued run that completes it is named in the ledger). Check: an independent review of the artefacts by an agent that did not produce them.}
+\label{tab:verdicts}
+\footnotesize
+\begin{tabular}{p{0.3\textwidth}p{0.42\textwidth}p{0.22\textwidth}}
+\toprule
+Item & Verdict & Check \\
+\midrule
+\Ptwo{} Fig.~1, background & reproduced (Fig.~\ref{fig:background}) & pending \\
+\Ptwo{} Figs.~2 and 4, one-point statistics & in part: shape and timing yes; bands narrower by the amplitude factor; SR constraint rows \pending{continued run} & pending \\
+\Ptwo{} Figs.~3 and 5, spectra & reproduced (Figs.~\ref{fig:specsr}, \ref{fig:specusr}) & pending \\
+\Ptwo{} Fig.~6, $K$ and shear spectra & reproduced; absent USR hierarchy in part (returns after the plateau) & pending \\
+\Ptwo{} Fig.~7, spectral convergence & in part: three lattices reproduced; largest \pending{continued run} & pending \\
+\Ptwo{} Fig.~8, constraint convergence & in part: plateaus and decay; levels lower; largest lattice \pending{continued run} & pending \\
+\Ptwo{} Fig.~9, backreaction & in part: USR level 2 as the figure; SR at the end \pending{continued run}; level 1 is a scheme difference & review of the code: runs stand \\
+\Ptwo{}: start of USR & reproduced as the figure shows it; the text is about one e-fold late & pending \\
+\Ptwo{}: power up to order unity, agreement with linear theory & reproduced & pending \\
+\Ptwo{}: outliers of order ten & not reproduced (amplitude factor) & pending \\
+\Ptwo{}: Hamiltonian violation at the next order & in part: second order and damped; level one to two decades lower & pending \\
+\Ptwo{}: flipped sign gives first order & in part: USR reproduced; SR \pending{continued run} & pending \\
+\Ptwo{}: momentum constraint at the last crossing & reproduced: first-order part below about thirteen cells per wavelength & pending \\
+\Ptwo{}: backreaction below one part in ten thousand & in part: holds at large scales, fails at the USR top shells & review of the code: runs stand \\
+\midrule
+\Pone{} Fig.~1, paths & reproduced in the It\^o reading on the Euler background & pending \\
+\Pone{} Fig.~2, skewness and kurtosis & reproduced in the It\^o reading; in part in the Stratonovich reading & pending \\
+\Pone{} Figs.~3 and 4, distributions & reproduced in the It\^o reading & pending \\
+\Pone{}: slope reached near the quoted e-fold & reproduced only with Euler at the printed step & pending \\
+\Pone{}: Stratonovich evolver & not matched: the figures follow the It\^o reading & pending \\
+\Pone{}: It\^o term $\alpha^3\langle S^2\rangle$ & corrected: $\alpha^5$ (computer algebra and Monte Carlo) & pending \\
+\Pone{}: amplitude valid in SR and USR & SR to a few per cent; USR smaller by $\sigma^2/3$ & pending \\
+\Pone{}: noise off, $\alpha^3$ set to one, exponential tails & reproduced; tails of the e-folds in part & pending \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\section{Ledger}\label{app:ledger}
+
+Tables~\ref{tab:ledgerlatticebackground}--\ref{tab:ledgeronepatch} list every number behind the text with its source: a registered run of the program, a committed line of its records (for values read off the published figures and for the code review), or a line of a paper's source. A script builds them from the outputs of one registered run and stops if a quoted line has moved.
+
+\input{tables/ledger}
+
+\bibliography{references}
+
+\end{document}

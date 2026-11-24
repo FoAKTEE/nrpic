@@ -44,3 +44,25 @@ Predictions for the registered run_all (R1):
   printed there. Refuted if one does not (the ledger script stops and names it).
 - P4. Wall time below five minutes on two cores (the figure run took 36 s, the Langevin
   analysis about 2 min).
+
+## Entry 2 (2026-11-24 09:52): outcome of R1 (run_all E-20261124-174752-f387f2a)
+
+Registered run E-20261124-174752-f387f2a (production, two cores, 113 s; commit f387f2a).
+- P1 held: all twelve lattice jsons equal those of figure run E-20261124-173254-420115f byte for
+  byte (`checks.json`).
+- P2 held: `langevin.json` equals the committed one of analysis E-20261123-021843-813759b (key
+  `simdir` aside).
+- P3 held in the form the script tests it: every quoted line stands where the ledger says
+  (the script would have stopped), and the recomputed numbers are those of P1 and P2, so the
+  values printed in RESULTS.md and the Langevin README are the ledger's to their digits.
+- P4 held: 113 s.
+Figures looked at (Read of each PNG in the run directory): pipeline schematic, background,
+SR and USR spectra, SR and USR contrasts (the SR constraint panels are empty: the dumps of that
+run carry no per-cell constraints; they wait for the continued run E-20261124-130529-da8c917),
+K spectra (SR, USR; the legend of the USR panel overlaps two curves near the bottom left, kept),
+spectral convergence (32-128 only; 256 pending), constraint convergence, sign flip, ablation and
+its SR panel at N = 7.19, one-patch background (legend over the converged curve, kept), scheme
+comparison, paths, PDFs. Not used in the manuscript: the step-and-seed figure and the log PDFs
+(their statements are cited from the one-patch package with locators).
+Copied `figures/` (one format per figure) and `tables/` into the manuscript; sha256 of every
+copied file checked against the run's `sha256sums.txt` (all OK).

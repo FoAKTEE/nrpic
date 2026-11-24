@@ -73,12 +73,12 @@ ROWS = [
     # --- lattice: spectra
     ("Lattice spectra", "SR: largest |NR/linear - 1| over all shells at N_f (256^3)", "j", ("fig3_sr_spec_P256v6.json", "last.max_abs_r_lin"), "{:.1e}"),
     ("Lattice spectra", "SR: the same for k <= k_max/2", "j", ("fig3_sr_spec_P256v6.json", "last.max_abs_r_lin_half"), "{:.1e}"),
-    ("Lattice spectra", "SR: fraction of shells with NR/MS within 3/sqrt(modes)", "j", ("fig3_sr_spec_P256v6.json", "last.frac_within_env"), "{:.4f}"),
-    ("Lattice spectra", "SR: power above k_max over Delta_MS(k_max)", "j", ("fig3_sr_spec_P256v6.json", "last.max_above_kmax_over_ms_cut"), "{:.1e}"),
+    ("Lattice spectra", "SR: fraction of shells within 3/sqrt(modes) of the Mukhanov-Sasaki solution", "j", ("fig3_sr_spec_P256v6.json", "last.frac_within_env"), "{:.4f}"),
+    ("Lattice spectra", "SR: power above k_max over the Mukhanov-Sasaki power at k_max", "j", ("fig3_sr_spec_P256v6.json", "last.max_above_kmax_over_ms_cut"), "{:.1e}"),
     ("Lattice spectra", "USR: largest |NR/linear - 1| over all shells at N_f", "j", ("fig5_usr_spec.json", "last.max_abs_r_lin"), "{:.1e}"),
     ("Lattice spectra", "USR: the same for k <= k_max/2", "j", ("fig5_usr_spec.json", "last.max_abs_r_lin_half"), "{:.1e}"),
-    ("Lattice spectra", "USR: fraction of shells with NR/MS within 3/sqrt(modes)", "j", ("fig5_usr_spec.json", "last.frac_within_env"), "{:.4f}"),
-    ("Lattice spectra", "USR: power above k_max over Delta_MS(k_max)", "j", ("fig5_usr_spec.json", "last.max_above_kmax_over_ms_cut"), "{:.1e}"),
+    ("Lattice spectra", "USR: fraction of shells within 3/sqrt(modes) of the Mukhanov-Sasaki solution", "j", ("fig5_usr_spec.json", "last.frac_within_env"), "{:.4f}"),
+    ("Lattice spectra", "USR: power above k_max over the Mukhanov-Sasaki power at k_max", "j", ("fig5_usr_spec.json", "last.max_above_kmax_over_ms_cut"), "{:.1e}"),
     ("Lattice spectra", "Paper II: USR power reaches", "p", ("II", 536, r"$\Delta[{\cal R}]\sim 0.1-1$"), None),
     # --- lattice: one-point statistics and constraints
     ("One-point statistics", "SR: half-width (68 per cent) of R^NR at N_f", "j", ("fig2_sr_contrast_P256v6.json", "final.pct_R.half68"), "{:.3e}"),
@@ -110,6 +110,8 @@ ROWS = [
     ("Constraints", "Sign flipped, SR: largest <|M|/[M]>", "j", ("fig_signflip.json", "RNC256.M_flip_max"), "{:.2f}"),
     ("Constraints", "Sign flipped, USR: median ratio of <|H|/[H]>", "j", ("fig_signflip.json", "U256nc.H_ratio_median_entry"), "{:.1e}"),
     ("Constraints", "Sign flipped, USR: largest <|M|/[M]>", "j", ("fig_signflip.json", "U256nc.M_flip_max"), "{:.2f}"),
+    ("Constraints", "SR per-cell constraint rows of the one-point figure", "pending", ("E-20261124-130529-da8c917",), None),
+    ("Constraints", "SR sign flip beyond the first e-fold", "pending", ("E-20261124-130629-61fe0b0",), None),
     ("Constraints", "Paper II: a flipped sign gives", "p", ("II", 541, r"${\cal H}/[{\cal H}]\sim 10^{-5}$ and  ${\cal M}/[{\cal M}]\sim 1$"), None),
     # --- extrinsic curvature
     ("Extrinsic curvature", "SR: Delta[K] at N_f over N = 5.3 (median over shells)", "j", ("fig6a_sr_Kspec_P256v6.json", "K_last_over_N55.median"), "{:.3f}"),
@@ -125,7 +127,7 @@ ROWS = [
     ("Convergence", "the same, 128^3", "j", ("fig7_fig8.json", "specconv.128.max"), "{:.1e}"),
     ("Convergence", "SR: order of the entry maximum of H, 32 to 64", "j", ("fig7_fig8.json", "sr.H.orders.32-64"), "{:.2f}"),
     ("Convergence", "SR: order of the entry maximum of M, 32 to 64", "j", ("fig7_fig8.json", "sr.M.orders.32-64"), "{:.2f}"),
-    ("Convergence", "256^3 rungs", "pending", ("E-20261124-130952-4be980b, E-20261124-130711-a5dec67",), None),
+    ("Convergence", "256^3 rungs (SR spectra; SR and USR constraints)", "pending", ("E-20261124-130952-4be980b, E-20261124-130711-a5dec67",), None),
     # --- backreaction
     ("Backreaction", "USR level 2 against 0: rms over the shells at N_f", "j", ("fig9_ablation.json", "r20_usr.rms"), "{:.1e}"),
     ("Backreaction", "USR level 2 against 0: largest shell", "j", ("fig9_ablation.json", "r20_usr.max"), "{:.1e}"),
