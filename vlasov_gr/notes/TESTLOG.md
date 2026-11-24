@@ -111,3 +111,21 @@ Full engineering report: [03_hybrid_scp_ap_speed_accuracy.md](file:///home/schmi
   - `nrpic` Monte Carlo collisions (`sig = 1e4`): timed out $> 180\text{ s}$ (projected `179.5 s` wall / `161.6 s` compute from 20-step measurement `11.048 s / 9.942 s`), giving `vlasov_pbgk` **`50.0x` wall (`65.3x` compute) speedup** at $\sigma/\mu = 10^4$.
   - `vlasov_mfm`: `dE/E = 1.08e-3` ($\sigma=0$) and `6.19e-3` ($\sigma=15$), whereas `vlasov_pbgk` holds `<= 1.83e-14` across every optical depth.
   - GPU vs OpenMP (`4` threads) determinism at $\sigma/\mu = 15$: `max|dx| = 4.441e-16`, `max|du| = 9.812e-14`.
+
+
+### Verified Phase 4 Wave 4A — M1–M4 NRPIC Benchmarks at $N = 10^4, 10^5$ (`gb204` B200 GPU, Milestone #4)
+
+All reduced diagnostics stored in [`repro_wave4a.npz`](file:///home/schmidt/ssci-haiyangw/nrpic/vlasov_gr/paper/data/repro_wave4a.npz) via [`run_repro_wave4a.py`](file:///home/schmidt/ssci-haiyangw/nrpic/vlasov_gr/notes/scripts/run_repro_wave4a.py).
+
+- **M1–M2 (`e = 0.99` Kerr $a=0.9M$, $t=230M, \Delta t=0.01M$; `geodesic_mesh` $dx=0.25M, t=600M, \Delta t=0.005M$)**:
+  - `ks` (`kerr_schild_sph`): `midpoint` (`7.73s`): $\max|\Delta E/E_0|=2.781\times 10^{-8}$, $\max|\Delta Q/Q_0|=1.254\times 10^{-7}$, `pos_err = 4.487e-4`; `vlasov_hybrid + gl4` (`8.40s`): $\max|\Delta E/E_0|=3.451\times 10^{-15}$, $\max|\Delta Q/Q_0|=5.770\times 10^{-14}$, `pos_err = 2.609e-11` (**$8.06\times 10^6\times$ better $E$, $1.72\times 10^7\times$ better position**).
+  - `cks` (`kerr_schild`): `midpoint` (`7.85s`): `dE=6.154e-7`, `dQ=1.226e-6`, `pos_err=1.728e-2`; `vlasov_hybrid + gl4` (`6.90s`): `dE=1.014e-13`, `dQ=3.011e-13`, `pos_err=2.529e-9` (**$6.07\times 10^6\times$ better $E$, $6.83\times 10^6\times$ better position**, faster GPU runtime).
+  - `lattice` (`dx=0.025M`): `midpoint` (`11.23s`): `dE=1.983e-6`, `dLz=5.220e-6`, `dQ=4.758e-5`, `pos_err=1.594e-2`; `vlasov_hybrid + gl4` (`12.79s`): `dE=9.791e-7`, `dLz=4.112e-6`, `dQ=4.815e-5`, `pos_err=6.778e-5` (**$235\times$** better position).
+  - `geodesic_mesh` (`600M`): `midpoint` (`18.63s`, `dE=7.122e-7`, `dLz=7.595e-6`, `dQ=5.775e-5`) and `gl4` (`23.17s`, `7.131e-7 / 7.601e-6 / 5.773e-5`) match at the 3rd-order Hermite mesh floor. Also identified I/O optimization: `traj_dcycle=1` vs `25` cut $20M$ geodesic runtime from `13.016s` to `0.941s` ($13.8\times$ wall speedup).
+- **M3 (Dynamic Z4c Puncture Tracers & Binary Head-On Merger, `metric_drvts = interpolant`)**:
+  - `tracers_single` (`250M`): `midpoint` (`484.87s`) and `gl4` (`492.40s`) both yield `M_AH = 1.00147`, `||H||_max = 1.006`, circular $|dL/L| = [1.09\times 10^{-4}, 2.37\times 10^{-4}, 3.87\times 10^{-4}, 2.31\times 10^{-4}]$, plunge excision $t=(126.25, 54.12)M$, `max|dx|` between solvers $\le 8.30\times 10^{-4}M$.
+  - `tracers_headon` (`100M`): `midpoint` (`945.58s`) and `gl4` (`968.30s`) both form common horizon at $t = 49.5M$ with $M_{\rm AH} = 1.00210$, `||H||_max = 1.632`, reflection `|x_tag2| <= 4.19e-14`, axisymmetry $|dL_x| \le 9.79\times 10^{-4}$, trajectory agreement `max|dx| <= 2.4e-6`.
+- **M4 (6-Level SMR Kerr $a=0.9M$ Bound Clusters at $N=10^4$ & $N=10^5$, $t=200M$, $100\%$ survival)**:
+  - Analytic `10k`: `midpoint` (`1.78s`, `dE med/p99/max = 8.22e-9/3.31e-8/9.29e-8`, `dQ/K_med = 5.72e-11`) vs `gl4` (`2.10s`, **`5.81e-16/3.52e-15/3.71e-14`**, **`dQ/K_med = 7.22e-17`**); analytic `100k`: `midpoint` (`1.90s`, `dE = 8.47e-9/3.36e-8/7.22e-7`) vs `gl4` (**`2.00s`, `dE = 5.82e-16/3.63e-15/6.65e-13`, `dQ/K_med = 7.23e-17`**).
+  - 6-level SMR mesh `10k`: `midpoint (filter_densitized=false)` (`66.85s`, `dE_med=1.11e-7`, `filt(t0/max) = -2.25e-6 / 8.91e-4`) vs `gl4 (filter_densitized=true)` (`75.71s`, `dE_med=1.05e-7`, **`filt_t0 = 0.00e+00`**; SMR boundary crossing still yields `filt_max = 8.64e-4` -> Iteration 3 candidate).
+  - 6-level SMR mesh `100k`: `midpoint` (`77.62s`, `dE_med=1.10e-7`, `filt(t0/max) = -2.25e-6 / 5.29e-4`, `|<e^{iphi}>|=0.1623`) vs `gl4` (`91.70s`, `dE_med=1.06e-7`, **`filt_t0 = 0.00e+00`**, `filt_max = 5.03e-4`, `|<e^{iphi}>|=0.1623`).
