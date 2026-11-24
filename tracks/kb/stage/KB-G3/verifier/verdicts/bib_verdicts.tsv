@@ -1,0 +1,21 @@
+paper_id	db_entries	my_cited_keys	drawn	entry_present	same_reference	printed_id_resolved	printed_id_missed	no_id_printed	note (my reading of the drawn entries; identifier columns from bib_tally.py, every MISSED and DOI row read by hand)
+0710.5073	28	28	10	10	10	3	0	7	arXiv ids resolved; journal-only entries left without a target (no INSPIRE lookup in the store), consistent with brief 12.5
+1109.2484	104	101	10	10	10	7	0	3	2012arXiv1204.1083B: my extraction ran into \end{references}; database row is the right entry
+1302.5308	87	87	10	10	10	6	0	4	backsig and nobackreac print 4 ids each; the row keeps one target (schema has one target per entry)
+1304.7791	38	38	10	10	10	4	0	6	voidsben: the source prints MNRAS volume 1392 (sic); database row equals the source
+gr-qc/0107076	16	16	10	10	10	3	0	7	TypeI prints two ids, one kept
+gr-qc/9402041	13	13	10	10	10	0	0	10	no ids printed (1994 list)
+hep-ph/0011159	11	11	10	10	10	0	8	2	MISSED: 8 entries print the id as "[HEP-PH 9610477]" (capitals, space); none resolved (KT2, KT1, KRT2, KTgw, KKLT, KRT astro-ph/9703119, KLS, TKKL)
+astro-ph/0003278	33	33	10	10	10	6	0	4
+1201.4794	46	0 (AASTeX, no \cite; keys #1..#46)	10	10	10	0	0	10	keys #k drawn from my own count of \reference; each row equals the k-th \reference
+gr-qc/0304002	38	38 (via \ct)	10	10	10	0	0	10	alias \ct = \cite and \bi = \bibitem found from the definitions (L40-41)
+gr-qc/9703066	18	18	10	10	10	0	0	10	\bib[1]{\bibitem{#1}} alias; journal names are macros in the source (empty in the row text)
+2507.01095	103	103	10	10	10	0	0	10	\harvarditem entries from main.bbl; Lobo:2020hcz: my extraction ran into the next \harvarditem; database row is right
+2602.00155	28	28	10	10	10	2 (DOI printed, arXiv target by title)	5	3	MISSED: DOIs inside \url{https://doi.org/...} not taken (OGRePy, ExaGRyPE, distorted-motsfinder, BiGONLight, SymPy); ET2012 -> 1111.3344 and EBWeyl -> 2211.08133 found by title in the corpus (right papers)
+2403.15126	117 (110 keys)	100	10	10	10	2	8	0	MISSED: ids inside the \arXiv{id}{class} macro not taken (8 of 10 drawn); the two resolved ones came by fuzzy title match to papers in the corpus
+gr-qc/9906015	0	0	-	-	-	-	-	-	reference list present: "References" + \ref paragraphs (24 year tokens after the heading); 0 entries is a parser gap
+astro-ph/9510056	0	0	-	-	-	-	-	-	"References" + \ref paragraphs (17 year tokens)
+astro-ph/0306304	0	0	-	-	-	-	-	-	"References" + enumerate/\item (21)
+astro-ph/9306009	0	0	-	-	-	-	-	-	"References" + \i macro paragraphs (18)
+astro-ph/9607124	0	0	-	-	-	-	-	-	numbered \noindent[n] list (the heading search caught "references therein" inside it)
+gr-qc/9604001	0	0	-	-	-	-	-	-	"References" + \noindent [n] paragraphs (29)

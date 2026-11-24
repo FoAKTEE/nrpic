@@ -160,3 +160,49 @@ held for (iii) only: (vi) has 0 failures once my extractor bug was fixed.
   and 2505.00286 uses a bare `\abstract` that the parser missed. Counting a metadata
   abstract where the source has none would give 718/744 = 96.5 %; the defined value stays
   95.97 %.
+
+## Entry 4 (2026-11-24 05:27 PST): outcomes of items 2, 3, 4; one more fix of my own tool
+
+Item 2 (verdicts/refutations.tsv). The 11 refuted brief seeds: 10 CONFIRMED (5 outright,
+5 qualified: one misfiled id in a long list (766, 767, 802), "partly" (782), or the paper's
+own abstract prints the refuted number (738)); 1 NOT CONFIRMED as a refutation: 737, whose
+sentence is true at the source and only incomplete (2606.02712: z0 compatible with zero AND
+with the void value). P2a held (>= 9). For the brief statements I read only the seed lines
+the claims carry and the quotations of the corrected CHECK.md rows (kb/brief-check 476a1763),
+then the sources myself; I did not read other brief lines.
+The 24 refuted printed statements: 19 CONFIRMED by my own reading or derivation (TOV sign,
+lapse vs redshift, canonical radial action, Girsanov sign, Friedmann factor, inverse-FFT
+algebra, arithmetic), 5 NOT CHECKED (829, 832, 834, 838, 840: they rest on a track's
+computation or on reading a figure). The 20 superseding claims: 12 confirmed, 2 partly,
+6 not checked. P2b held (19/19 of the checkable; 5 not checked, predicted 5-9).
+Side finding: the CHECK.md note of s31_32 row 9 calls gevolution's B_i equation elliptic;
+1604.06065 L486 says parabolic (the row's verdict stands).
+
+Item 3. Draw in run kb-20261124-130442-e69c2e8 (`bib/`). P3a held (14 papers with entries,
+6 without). P3b held: 140 of 140 drawn keys have an entry and every entry is the same
+reference as the source (five low similarity scores were my own extraction running into the
+next entry or \end{references}). P3c FAILED: of the 54 drawn entries that print an
+identifier, 33 are resolved (31 equal, 2 DOI printed but the right arXiv paper found by title)
+and 21 are missed: hep-ph/0011159 writes "[HEP-PH 9610477]" (8 of 10), 2403.15126 uses an
+\arXiv{id}{class} macro (8 of 10), 2602.00155 prints DOIs in \url{https://doi.org/...} (5).
+None of the drawn targets is wrong. I had predicted >= 95 % resolved; it is 61 %.
+P3d held: all six papers without entries have a reference list in the source.
+Fix of my own tool after its smoke test (bib_tally.py, snapshot-wide count): my new-style id
+pattern caught "2966.2006" inside MNRAS DOIs (10.1111/j.1365-2966...) and my DOI comparison
+did not strip "https://doi.org/" from stored targets; both made false MISSED/WRONG rows. Now
+ids need a valid YYMM and no leading "-", DOIs are compared without URL prefixes and by prefix.
+The drawn-key verdicts did not change (31/21/2); the snapshot-wide MISSED fell from 4784 to
+4538 and WRONG from 85 to 2. A seeded sample of 20 snapshot-wide MISSED rows (in the run) is
+20 of 20 genuine misses (DOIs in \href{http://dx.doi.org/...}, \doibase; ids as bare
+numbers, \arXiv{}, \eprint{gr-qc/1503.07204}).
+
+Item 4 (verdicts/code_verdicts.tsv). Draw in run kb-20261124-130442-e69c2e8 (`code/`):
+10 of 10 params rows CONFIRMED at 47ab19ab (block, name, type, line, default; one default is
+an expression, one a discarded read). 10 of 10 links CONFIRMED: the symbol exists at the
+stated lines and does what the paper lines say (7 verified, 3 claimed: M18, M19, M25 match in
+content but have no test, so "claimed" is the right status). P4a and P4b held.
+
+Runs: `nrpic-run submit` of the arithmetic and bibliography tally was refused at 05:20 because
+another kb helper (ingest4) has uncommitted changes in kb/kbtool and an untracked test in
+kb/tests; the shared code must be clean. I ran both scripts as smoke tests in scratch/kb/tmp
+and will register them once the tree is clean.
