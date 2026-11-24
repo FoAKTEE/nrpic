@@ -306,3 +306,38 @@ looked at, against predictions written before the runs (journals named below).
   -0.821, converging near -0.820, beside CosmoGRaPH); N_y = 128 at 4 per cell -0.831. Wrong against
   prediction: series 4's 'Delta moves less than 2.1e-3' with 4 per cell, series 5's 'N_y = 128 within
   5e-3'.
+
+## Batch 11b (2026-11-24 09:23-, resumed lead session): what ran after the cut of 07:20
+
+No helper ran. The session before was stopped by the pause flag (sequencer log: flag present
+from 07:20 to 09:20) with shear series 6 ended but not closed and the two stage verify results
+uncommitted.
+
+- stage verify G1 (`stage/G1/VERIFY_RESULTS.md`, 14:57Z, export of 2116dce): PASS, 0 failed
+  checks, 11 of 11 scripts rerun, 22 regenerated files equal. Committed. G1 is signed already
+  (coord/GATES.md); this is the formal rerun after the chains ended.
+- stage verify G2 (same time): FAIL on one check only, 'runs': four runs open (card jobs 5167 and
+  5169 held by the priority partition; the two initial-data solves still running). Everything
+  else PASS. Not a defect of the package; rerun when those runs are closed.
+- shear series 6 (B-20261124-140856-911ded9; closed by me with `nrpic-run finish`, exit 0, 27
+  min on one core): reran the summary from the registered rays.json files of series 3-6
+  (B-20261124-172623-03699f5, then -172643-d1e88c7 after a colour fix; `fig_ppc.png` looked at,
+  both panels). Confirmed: Delta(256, 4 per cell) = -0.83915; mesh differences 9.4e-3 and 7.9e-3.
+  The prediction (committed in 911ded99, before the run) holds as written but only just; the
+  ratio 0.84 means no useful mesh convergence, away from CosmoGRaPH. SPEC section 7 item 5 ("within
+  max(3 x own numerical error, 0.01) of -0.8183") is formally met if the own error is the last
+  difference (0.0209 < 0.0237), but that error estimate is not reliable at order 0.25: judged not
+  informative, L2 reported as not converged in this code.
+- Defect found and fixed: `fig_ppc` drew the CosmoGRaPH line in the colour of a data series
+  (fixed: grey). Defect noted, not fixed: the shear journal headings of 07:00-07:35 carry clock
+  times about 1.5 h later than the registrations of the runs they predict (06:08 PST for series 6);
+  the order (prediction committed before registration) is established by git, not by the headings.
+- Initial-data solves for the particle and mesh legs (B-20261124-135029-3fe13f6,
+  -135030-b54972f): running since 05:50, at outer iterations 16 and 13 after 3.6 h (13-16 min per
+  outer iteration; the change of psi falls exactly as in the 128^3 one-per-cell solve). Not judged
+  yet; the time part of I3 (256^3 in 3-8 h) will likely fail (about 9 h expected from the rate).
+- Changed in the queue: the 256^3 GR leg writes restart files every 1.0 in t (decision 0032 item 2);
+  the Newtonian reference moved from the held card job 5167 to two processor runs
+  (B-20261124-172958-fc4a2cf, -73b0662, prediction N1p in population/JOURNAL 09:29).
+- Newtonian reference on processors: 33 s per step on one core (about 13 h per run); the time part
+  of N1p fails; card job 5167 cancelled before it ran (manifest 'failed, exit 1': it never started).

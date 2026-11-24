@@ -563,3 +563,12 @@ points at the two processor runs. Nothing else changes; N2-N4 (05:48 entry) stan
 Prediction [JUDGEMENT], before the runs: N1p. Both reach t = 21.916 (a = 143) with exit 0; each
 takes 0.5 to 3 hours on one core (about 1400 steps; a 128^3 Fourier solve and 2.1e6 particles
 per step at 1-6 s) plus 351 snapshots of 126 MB. Refuted by a non-zero exit or more than 5 hours.
+
+09:37 (same session): both processor runs started cleanly (2097152 particles read, snapshots
+00000-00002 written). Measured rate: one snapshot (four steps) every 132 s, 33 s per step on one
+core, so about 13 h per run for 1400 steps: the time part of N1p ("0.5 to 3 hours", refuted above
+5 hours) will FAIL; the cause of the slow step (the Fourier solve on one core of the -O2 -g
+reference build, or the particles) is not tested. Kept anyway: the cards are held until about the
+morning of 2026-11-25 and the result arrives before that. Card job 5167 was cancelled before it
+started (`nrpic-run stop`, then `finish`, which records it as failed with exit 1: it never ran);
+its slot goes to the gauge leg pop_s014_gr_gd through the sequencer.
