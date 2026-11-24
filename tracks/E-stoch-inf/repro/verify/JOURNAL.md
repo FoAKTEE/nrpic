@@ -91,3 +91,48 @@ eps2 = -0.028 +- 0.002 (P1:534).
 V8 (errata sample, six of E1-E17 other than E14, E15 which V3, V4 cover): each of the six
 chosen misprints is confirmed by my own sympy derivation. A refutation is a derivation
 in which the printed form holds.
+
+## Entry 2, 2026-11-24 10:25 PST: outcomes of V1-V4 (runs E-20261124-181218-1e5f85e, E-20261124-181431-d45be89)
+
+Own code `scripts/onepatch.py`, `scripts/onepatch_seeds.py`; figures looked at:
+`fig_p0_background.png`, `fig_p0_moments.png` (first version: unreadable, the Stratonovich
+reading has rare explosive paths whose spikes fill the panels), `fig_p0_moments_clipped.png`
+(second run), `fig_p0_ito_mc.png`, `fig_p0_noise_amp.png`.
+
+V1 held. DOP853 (rtol 1e-12) stops on the plateau at phi = 9.0640187, equal to my analytic
+9.0640187 to 1e-14; RK4 0.01 9.064019, Heun 0.01 9.06393, Euler 0.001 9.06321, Euler 0.005
+9.05997: all on the plateau (phi_c = 9.056). Forward Euler 0.01 crosses phi_c at
+N = 3.0435 (P0:842 "~3.04") and ends at 9.05580. On the Euler-0.01 background eps1 = 3.2e-5,
+eps2 = 5.99994 at N = 2 (P0:842 "eps1 << 1, eps2 ~ 6 from 2 e-folds").
+
+V2 held, firmly. Six seeds x 50 000 paths (mean +- sd over seeds), Ito reading of the printed
+SDE: std(alpha - 1) at N_b = 4, 5, 6: 0.1168 +- 0.0006, 0.1321 +- 0.0008, 0.1210 +- 0.0004
+against my read-off 0.117, 0.133, 0.122; std(N - N_b): 0.0425, 0.1494, 0.1851 against 0.042,
+0.150, 0.188. Stratonovich reading: std(alpha - 1) 0.1263, (N_b = 5: 0.36 +- 0.44, dominated by
+a few exploding paths; 68 per cent half-width 0.142 against Ito 0.122), 0.1450; std(N - N_b)
+0.0461, 0.1704, 0.2169, i.e. +8, +14, +15 per cent above the read-off where Ito is within
+2 per cent. Median skewness of alpha over N_b in [4.5, 6]: Ito 1.116 +- 0.012 (P0 Fig. 2 about
+1.1), Stratonovich 1.562 +- 0.026. Mean of N - N_b at N_b = 6: Ito 0.0026 +- 0.0008,
+Stratonovich 0.084 +- 0.001 (P0 Fig. 1 red curve about 0.015 +- 0.019 over its 100 paths:
+Stratonovich 3.6 standard errors away). Variants (one seed): alpha^5 Ito term: widths +4 per
+cent at N_b = 6, skewness 1.31; alpha^3 -> 1 multiplier: skewness of alpha -0.74 at N_b = 6
+(left-skewed, as P0:875 says); Langevin step 0.001 on the same background: std(alpha - 1)
+0.1233 at N_b = 4 (step dependence 5 per cent); on the converged (plateau) background 80 per
+cent of the paths are lost (alpha <= 0, > 1e3 or not finite) by N_b = 6, half by 5.38.
+Deviation from what I expected: none in direction; the Ito skewness is 1.116, not the 1.04 the
+ledger prints (see V-ledger below).
+
+V3 held. Monte Carlo of alpha = c/Z, dZ = alpha s dW (s/c = 0.1, 4e6 paths, control variate):
+drift 0.32039 +- 0.00023 (alpha0 = 2, horizon 0.001; alpha^5 s^2/c^2 = 0.32, alpha^3 = 0.08)
+and 0.075987 +- 0.000054 (alpha0 = 1.5; alpha^5: 0.075938, alpha^3: 0.03375). The printed
+alpha^3 is excluded by more than 1000 standard errors; alpha^5 agrees within 1.7 and 0.9.
+Derivation (by hand, in VERIFIER.md): f(Z) = phidot/Z, f'' = 2 alpha^3/phidot^2,
+(dZ)^2 = alpha^2 S_Pi^2 dt, so (1/2) f'' (dZ)^2 = alpha^5 S_Pi^2/phidot^2.
+
+V4: USR held exactly, SR prediction failed as worded. Exact USR (V constant): amplitude over
+the printed one 8.333e-4, 3.3333e-3, 1.3333e-2, 8.3332e-2 at sigma = 0.05, 0.1, 0.2, 0.5,
+i.e. sigma^2/3 to 5 digits. SR (quadratic, eps1 = 0.0124, eps2 = -0.0247 at the evaluation
+time): 1.079, 1.063, 1.051, 1.066 at the same sigma; at eps1 = 0.0244: 1.156, 1.123, 1.094,
+1.088. I predicted "within 5 per cent"; the excess is the slow-roll drift of H/sqrt(eps1)
+between Hubble crossing and k = sigma a H (|R|/A = 1.069 at sigma = 0.1, eps1 = 0.0124), an
+O(eps ln(1/sigma)) correction, not an error of the printed SR formula at leading order.
