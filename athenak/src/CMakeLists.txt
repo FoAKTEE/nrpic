@@ -212,6 +212,7 @@ add_executable(
         utils/tr_table.cpp
         utils/cart_grid.cpp
         utils/watchdog.cpp
+        utils/term_signal.cpp
         utils/spherical_surface.cpp
 
 

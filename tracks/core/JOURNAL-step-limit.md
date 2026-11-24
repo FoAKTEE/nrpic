@@ -600,3 +600,101 @@ Cores: R0g on 3 threads, G0 and G0g one after the other on 1, U0 and U0g on 1 (6
 session; the first session's 14 to 21 s per cycle were measured at a load of 25 to 33).
 The card job (R0, R0g, R1 of `card_refined.list`, the smoke run of the card build) goes
 into the shared queue; its results are not waited for.
+
+## Entry 10 (15:35 to 16:00): second item, preempted runs: what was read, the design, predictions
+
+While T3 and T4 run on five cores (runs core-20261124-233029-c745838 R0g,
+core-20261124-233050-ae129ee G0 and G0g, core-20261124-233103-faf1f5b U0 and U0g; R0g
+makes a cycle in 30 s on 3 threads, so it ends about two and a half hours after its
+start), the second item of the task (decision 0032 item 2). The card job is in the shared
+queue as q0036 (label step-limit-card), behind the entries of priority 2.
+
+### Read [VERIFIED by reading]
+
+- `scontrol show config`: `KillWait = 30 sec`, `PreemptMode = CANCEL`, `PreemptType =
+  preempt/partition_prio`, `OverTimeLimit = 0`; `scontrol show partition preempt`:
+  `GraceTime=0`, `PreemptMode=CANCEL`, `MaxTime=01:00:00`. So a preempted or cancelled
+  job gets SIGCONT and SIGTERM at once and SIGKILL after KillWait: **30 s** between the
+  two [the 30 s is the configured value; that Slurm waits KillWait after the SIGTERM of
+  a preemption with zero grace time is its documented behaviour, BACKGROUND, not timed
+  here: a timing needs a job in the queue of five].
+- `driver/driver.cpp`: the main loop ends on the time limit, the cycle limit, the guard
+  and the wall-clock limit of `-t`; `Driver::Finalize` then writes every output once
+  (the schedule of an output that is off its time is left where it was, package dfix)
+  and `main` returns 0 or the guard's 3. No signal handler anywhere in `athenak/src`:
+  SIGTERM kills the process at once (status 143), nothing is written.
+- `scripts/submit_chain.sh`: the job script traps TERM, forwards it to `_athena_job.sh`
+  (which forwards it to the executable), leaves its wait at once ("do not wait for the
+  SIGKILL"), resubmits and exits; the segment counter is raised at the start of every
+  job and the job fails when it exceeds MAX_SEGMENTS, so every preempted attempt counts,
+  and the job after the last allowed segment is submitted only to fail (the stray
+  resubmission). When the batch script exits, Slurm ends the job, so the executable
+  would not get its 30 s.
+- `scripts/tests/test_submit_chain.py`: the fake-kill test of the earlier chain work.
+
+### Design [JUDGEMENT]
+
+(a) AthenaK, new file `utils/term_signal.{hpp,cpp}`: a handler for SIGTERM that only
+sets a flag and notes the time (it stays installed: the signal comes more than once);
+`Driver::Execute` asks for the flag as the last condition of its loop (one reduction
+over the ranks under MPI), so the cycle in progress is completed, with its scheduled
+outputs, mesh refinement and new step, exactly as at a wall-clock stop;
+`Driver::Finalize` then writes the restart outputs and no other (the grace is short),
+with the schedule left where it was, prints "Terminating on signal SIGTERM" with the
+seconds the writing took and the seconds since the signal, and `main` returns 143, the
+status a killed run had before, so that no wrapper takes the run for complete. No
+option: without a signal nothing changes (byte regression); with a signal the old
+behaviour was the loss of the segment. A run that reaches its time or cycle limit in
+the cycle in which the signal arrives ends as it would have (all outputs, status 0).
+Hooks: `main.cpp` 3 places (include, `Install()` after `Kokkos::initialize`, return),
+`driver.cpp` 5 places (include, loop condition, skip of the other outputs and of the
+problem's final function, message), `CMakeLists.txt` one line.
+
+(b) `submit_chain.sh`: on TERM the job resubmits at once (as now, while it still can),
+then waits for the executable to end (new), and notes whether the restart file was
+written; an attempt ended by TERM, or by a kill from outside, does not count against
+MAX_SEGMENTS (counter `chain/uncounted`); a chain that has used its segments ends with
+STATUS FAILED "MAX_SEGMENTS reached" in the job of its last segment, without the extra
+job; a cap on attempts cut in a row without a new restart file (MAX_CUT_IN_A_ROW,
+default 20) keeps a chain from being resubmitted for ever.
+
+### Predictions, written before any of these tests ran
+
+Tests S (script `analysis/preempt/term_test.py`, serial processor build of this branch
+with the handler; decks `problems/tests/term_signal_periodic.athinput`, flat space with
+noise, 1+log and Gamma-driver, 240 steps, and `term_signal_particles.athinput`, the
+matter universe of `problems/cosmo/flrw.athinput` on 16^3 cells with 4096 particles
+that carry noise in position and momentum):
+
+- PS1 (S1, no matter; signal at cycle 100 of 240). The run exits with status 143 less
+  than 2 s after the signal, its log ends with "Terminating on signal SIGTERM", one
+  restart file more than scheduled exists. Continued from that file it ends with status
+  0, and every output file (history, constraint statistics, tables) equals the
+  uninterrupted run's byte for byte; the last restart files agree in their data, and
+  their parameter dumps differ in one line, `file_number` of the restart output.
+  Refuted by any differing byte elsewhere: then the stop is not at a state the restart
+  reproduces, or it moved a schedule.
+- PS2 (S2, particles; signal at cycle 25 of about 80). The same, including the particle
+  history, trajectories, snapshot and the `.prt` companion of the last restart file.
+  Less sure than PS1 (four to one): the particle diagnostics written every cycle
+  (`*.nrpic.hst`, trajectories) are appended across the restart, and I have not checked
+  that every one of them resumes without a repeated or missing record after a stop that
+  is not on an output time.
+- PS1d (two SIGTERM 0.3 s apart, signal at cycle 60): as PS1; the second signal does
+  not kill the run while it writes.
+- PS0 (signal during the set-up): no cycle is run, the restart file of t = 0 is written
+  a second time under the next number, status 143; the continuation equals the
+  uninterrupted run.
+- PS3 (256^3 cells of Z4c, serial build, signal during the set-up): the restart file
+  has 22 x 264^3 x 8 bytes = 3.2 GB and is written in 3 to 15 s on this file system
+  (200 MB/s to 1 GB/s): inside the 30 s with a margin of 2 to 10. With particles (the
+  `.prt` companion) and from a card (copy to the host) it takes longer; whether a
+  256-cell production run fits is then judged from the rate measured.
+- PS4. Byte regression against release core-v0.6, twelve set-ups: 75 of 75 identical
+  (no signal is sent; the handler only exists).
+- PC (chain script, fake-kill test extended): scenarios with a job that receives TERM
+  while its executable runs: the executable gets the forwarded signal and ends by
+  itself before the job script exits; the chain is QUEUED again; ten such attempts in a
+  row with MAX_SEGMENTS=3 do not fail the chain, and the three counted segments still
+  end it; no sbatch call follows the last segment. The six scenarios of the earlier
+  test keep their outcomes.
