@@ -555,3 +555,48 @@ most 0.5000 cells; H_max 0.018, 0.011, 0.0078 at t = 2, 3, 5; gt^xx <= 1.042). T
 reference for R0g. Decks of the other tracks with cfl_number >= 0.5 on their branch
 tips: 13 (D 4, B 4, C 5), none with a `<z4c>` block [VERIFIED by `git grep`]; Track A's
 ball decks run 0.25. So Track A's periodic deck was the only one above a bound.
+
+## Entry 9 (15:28 to 15:45, second session, batch 13): state found, predictions of T3 and T4 restated for the corrected kernel
+
+The first session ended at the usage limit at 06:34. Found: branch `core/step-limit`,
+worktree clean but for the staged end of run core-20261124-143230-8e3ac3d (committed);
+`main` merged (queue cap of decision 0033, shared card queue). The source under
+`athenak/`, `scripts/`, `problems/` is unchanged since commit 476fe0c, from which the
+three builds `.work/build_{cpu,omp,gpu}_sl` were made (sha256 be2a1a7b..., 4cea2bbb...,
+4b336bbe...). Three runs died with the session and give no result:
+core-20261124-140133-476fe0c (T4 R0g on processors, 85 cycles to t = 0.505, only the
+restart file of t = 0), core-20261124-142735-0dbdf83 (T3 G0, 19 cycles to t = 1.97),
+core-20261124-143230-8e3ac3d (T3 U0w ran its one step; U0g killed at once). Done and on
+record: T0 to T0d, T1/T2, T6a (entries 1 to 8). Open: T3, T4, T5, T6b, the card run, the
+tests section of the interface text, READY, the message to Track A; then the second item.
+
+Seen already in the logs of the dead runs (so not blind): the start-up lines of the
+uniform deck. G0: warning for the Gamma-driver shift, bounds 0.624 (shift), 1.857
+(lapse, frozen), 0.549 (light) cells of 0.3125, "cfl_number at or below 0.562". U0w: the
+same for the lapse (bound 0.384 cells) and the relaxation line (6.25 against 2.40).
+
+Predictions of entry 3 restated with the corrected bounds, before the runs:
+
+- P3a'. G0 (lapse frozen, no dt_gauge): the step reaches one cell; the cell-to-cell
+  alternation of beta^x on the line grows by more than 1e4; onset between t = 7 and 9
+  (Track A: 8.1). Unchanged but for the bound in the warning (0.624, seen).
+- P3b'. G0g (dt_gauge = 0.9): the step stops near 0.9 x 0.624 = 0.562 cells (it follows
+  gt^dd, so a few per cent of drift is allowed); no onset to t = 12; the alternation of
+  beta^x stays below 1e-6. Refuted by an onset or a growing alternation.
+- P3c'. U0 (relaxed lapse, no dt_gauge): jump near t = 3.2 and a guard stop before t = 12
+  (Track A: 3.18 and 10.76).
+- P3d'. U0g (dt_gauge = 0.9): the lapse pair with the relaxation sets the step, 0.9 x
+  0.384 = 0.35 cells at the start and less once the lapse stands above its reference;
+  runs to t = 12 without guard stop and without the jump. Two to one, as before.
+- P4b'. R0g (refined deck, cfl_number 1.0, dt_gauge = 0.9, processors, to t = 3.0): the
+  level-4 step never exceeds 0.9 x 0.656 = 0.590 cells (start-up line of the dead run:
+  shift 0.656, lapse 0.563, light 0.695 cells, so the lapse holds the step first, at
+  0.507 cells, and the shift later); the message "set by dt_gauge" appears before
+  t = 1.8; no jump: H_max at t = 2 and 3 within a factor 3 of Track A's run at cfl 0.5
+  (0.018 and 0.011), where job 4799 jumped by more than a hundred between t = 2.3 and
+  2.7. Refuted by a jump or a guard stop.
+
+Cores: R0g on 3 threads, G0 and G0g one after the other on 1, U0 and U0g on 1 (6 per
+session; the first session's 14 to 21 s per cycle were measured at a load of 25 to 33).
+The card job (R0, R0g, R1 of `card_refined.list`, the smoke run of the card build) goes
+into the shared queue; its results are not waited for.
