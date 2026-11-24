@@ -1754,3 +1754,34 @@ present the arguments unchanged except `nrpic_resume=` removed; it copies the bi
 (`scratch/core/tmp/lead_b11/wraptest/`): exactly that, both cases; `chain/nrcr-12bf4aa7`
 written. Held. The first card segments of the four continuations will show the same
 line in their logs.
+
+### Note, stage, answers (2026-11-24T13:30Z-14:10Z)
+
+- Working note rebuilt by run core-20261124-133602-3e31713 (`run_all.py`): Fig. 5 now shows
+  levels 1+2 in units of the equilibrium lapse (one colour per model from a sequential map;
+  crosses at the collapse times) and, in panel (b), the two models without collapse with
+  50-M window means (the drift); 20 new ledger rows (134 in all); 37 inputs sha256 ok, 31
+  without a recorded checksum (wave-1, unchanged). Section III D rewritten: the bracket
+  of collapse within 300 M, then why it may be set by the window, and what level 3 tests;
+  abstract and summary follow; the abstract carries no mathematics now (checker item
+  2.5). Compiled (10 pages), checker clean on references, citations and overfull boxes;
+  pages 1, 4, 5, 7-9 read. A LaTeX error on the first preview (a caret in two ledger
+  descriptions) was fixed before the registered run.
+- The note scripts now default their output to `note/` when called without OUTDIR: the
+  stage verify calls them without arguments, and in batch 10a it was run with
+  `--no-rerun`, so the rerun check had never passed (four IndexErrors in this session's
+  first verify). Fault of mine on record: writing the new `note/.gitignore` with printf
+  replaced the existing one (LaTeX patterns); restored in the next commit.
+- Stage G2: OPEN.md item 2 (level 2, the drift, level 3) and item 4 (open chains),
+  CHECKLIST C1 and C7; collect (18 items kept), verify, report.
+- Outbox 20261124T130733Z to Track A: W31 (gauge speeds in the step limit, warnings for
+  the bound and for lapse_leak x dt) is written this batch by core's source slot
+  "step-limit" with A's reproducing inputs as its tests; that slot posts the executable
+  itself; rule cfl <= 0.6 meanwhile. Outbox 20261124T130734Z to kb: correction of core's
+  answer of 2026-11-23 on link M18. The monitor after the solve cannot test the factor of
+  the matter term, because in mode `code` the solver drives the very residual the monitor
+  reads (F = -(psi^5/8) H, nrpic_idsolve.cpp:994-996, H from ADMConstraints with
+  `-16*M_PI*tmunu.E` at z4c_adm.cpp:486) [VERIFIED by reading the source]. The test that
+  depends on the factor is id_solver T1 in mode `code`: psi converges at second order to
+  the continuum solution with the right matter term (-1.92e-2, -5.22e-3, -1.33e-3 at
+  dx = 1, 0.5, 0.25). Fault of mine on record: the argument of batch 10a was wrong.
