@@ -159,3 +159,13 @@ Prediction D held: a segment that starts again from the t = 0 restart file repea
 segment's records bit for bit on the card, including the level-2 branch build (AL2S). Figure
 `fig_dup.png` looked at: the two segments' curves of the record <|H|/[H]> lie on each other.
 [VERIFIED: run E-20261124-134642-a9271b9]
+
+## Entry 6 (2026-11-24 06:08 PST): waiting for the cards
+
+`fig_progress` replotted from the JSON of E-20261124-131957-94811a9 with the legend above the
+axes (run E-20261124-135717-a625611, looked at; no number changed). At 06:07 PST all five
+continuations are still pending: both cards are allocated (`scontrol show node anta`:
+AllocTRES gres/gpu=2) with no job of this account running since about 05:00, i.e. another
+user's jobs hold them, and jobs of A, B and F of this account (5149, 5167, 5169, 5171) are
+pending beside ours. The poll (`scratch/E-stoch-inf/tmp/continue/poll.sh`, log `poll.log`
+beside it) runs every five minutes until 07:35 PST.
