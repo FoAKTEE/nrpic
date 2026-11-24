@@ -352,3 +352,28 @@ the run gives, while its existence does not.
 Then: ledger.py (check column of the 16 rows, rows 65-67 and 77 to yes, labels of 48 and 81-82 name
 window and shell count, the convergence note names the reader), main.tex (Table IV check column,
 Secs. III and V, abstract), registered run_all (R8), checker, compile, pages, README.
+
+## Entry 13 (2026-11-24 14:44 PST): outcome of R8a, the reader split
+
+R8a = E-20261124-224228-8e20938 (registered, two cores, commit 8e20938); a first attempt,
+E-20261124-224156-28cbf07, failed in the figure (an index into the shell array) after writing
+its json; kept on record. Outcome, prediction by prediction:
+- P1 held: reader A gives per-mode rms 7.111e-7 (128) and 6.709e-7 (256), largest shell over more
+  than ten independent modes 1.0384e-6 (|n|^2 = 58) and 3.7245e-7 (|n|^2 = 6), the ledger's values.
+- P2 held: reader D gives 3.9993e-7 and 3.2979e-7 (check 3.998e-7, 3.298e-7), and over shells
+  counted in both hemispheres 9.9998e-7 (|n|^2 = 58) and 2.0032e-7 at |n|^2 = 2 (check 1.0000e-6,
+  2.0032e-7 at |n| = sqrt 2). The readers differ in nothing else.
+- P3 held, and the split is total: the logarithm alone (C) carries all of it, the lapse factor
+  nothing (<alpha> - 1 = -1.0e-12 and -2.0e-12; B - A 9e-13 and 1.8e-12 rms over |c_lin|). The rms of
+  C - A over |c_lin| is 4.1450e-7 at 128 and 4.1449e-7 at 256: the change of reader is a
+  second-order term of the field, the same on both lattices.
+- P4 held: 1 - W = 0 for every injected mode at N_f.
+With our shells and the check's reader the 256^3 maximum is 1.73e-7 (|n|^2 = 6) and the order
+128 -> 256 is 2.53 (a factor 5.8); with our reader 1.48 (2.8). Figure `fig_reader_split.png`
+(looked at): rms per shell of the departure, readers A and B on one curve, C and D on the other;
+up to |n| of about 5.5 the curves of 128 and 256 coincide for each reader, the ln-chi curve lies
+a factor of about two below over all shells, and above |n| = 6 only 128 keeps its lattice error.
+Judgement [JUDGEMENT]: the floor has the size of the second-order terms of the field (a change of
+the reader at second order moves it by a factor of two on both lattices, identically); that it
+scales with the square of the amplitude stays [TO VERIFY] (a run at half the noise amplitude). The
+note keeps its reader for the ledger values and adds the check's reader as rows from R8a.
