@@ -123,3 +123,20 @@ first record of the continuation's `.sf.con.hst` has cycle c_rst + 1 and time t_
 time = t_rst + (cycle - c_rst) dt to the printed seven digits; every printed dt equals the
 restart's dt to seven digits; the last segment ends "Terminating on time limit". Refuted as
 before. `scripts/join_check.py` checks this form.
+
+## Entry 4 (2026-11-24 05:47 PST): the join check passes its self-test
+
+Prediction (written with the script, 05:40): on a completed run split at one of its own restart
+files, `join_check.py` reports J1-J4 true and its joined records equal the run's own.
+Run E-20261124-133152-214f0af (`scripts/join_selftest.sh`, scouting, processors, 14 min):
+AL0S (E-20261123-153347-18e7c21) cut at sr256_l0m.00003.rst (t = 6.000933, cycle 978) into a
+fake original (records to cycle 1015, dumps 00000-00012) and a fake continuation (records from
+979 without header, dumps 00012-00017, progress lines from cycle 980). Outcome: J1 true (first
+progress line cycle 980, t = 6.013205; first record cycle 979 at t_rst + dt exactly), J2 true
+(37 of 37 overlapping lines identical in both record files), J3 true (junction ratio 1 in both),
+J4 true (dump 00012 and its .modes byte-identical, numbers 0-17 without a gap); the joined
+`.sf.hst` and `.sf.con.hst` equal the completed run's records (1387 cycles, headers equal).
+Prediction held. Figure `fig_join.png` of that run looked at: the continuation's curve lies on
+the original's over the overlap; the difference panel sits at its floor of 1e-18 for all 37
+lines. This tests the bookkeeping of the script, not the restart: both halves are one run.
+[VERIFIED: run E-20261124-133152-214f0af]
