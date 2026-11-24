@@ -102,8 +102,12 @@ def main():
     for i in (0, 1, 2):
         for j in (0, 1):
             # no tick labels at the joins of the stacked panels
-            prune = {0: "lower", 1: "both", 2: "upper"}[i]
-            ax[i, j].yaxis.set_major_locator(MaxNLocator(nbins=6, prune=prune))
+            ax[i, j].yaxis.set_major_locator(MaxNLocator(nbins=6))
+            lo, hi = ax[i, j].get_ylim()
+            keep = [t for t in ax[i, j].get_yticks()
+                    if lo + 0.05 * (hi - lo) <= t <= hi - 0.05 * (hi - lo)]
+            ax[i, j].set_yticks(keep)
+            ax[i, j].set_ylim(lo, hi)
     ax[0, 0].set_ylabel(r"$V(\phi_b)$  [$M_{\rm Pl}=100$]")
     ax[1, 0].set_ylabel(r"$\varepsilon_1$")
     ax[2, 0].set_ylabel(r"$\varepsilon_2$")
