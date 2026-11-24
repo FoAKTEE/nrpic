@@ -725,3 +725,55 @@ C-20261124-130634-3338d9b; fig_blockA.png read):
   secular contraction of the scheme (or of the particle noise) decides the fate within 600 M.
   No cause is named: the N = 1e6 and M/16 runs below are the ones in which each reading can
   fail.
+
+## 2026-11-24T13:16Z  session C-sidm lead (batch 11)  follow-up runs: predictions before submission
+
+Why these runs: block A failed A.3 and A.4 because the controls of the threshold model and of
+y0 = 0.344 collapse on their own on M/8 at N = 1e5 (534.8 and 549.3 M), and D2 failed D2.2
+because the collisional collapse comes 21 per cent earlier on M/8 than on M/4. Run (v) says,
+by its written rule, that the control drift is particle-noise relaxation (D scales as 1/N,
+N.5), but only on M/4 and with a phase confound (entry 13:12Z). Two readings remain for the
+M/8 control collapse, and a run exists in which each can fail:
+- relaxation: the drift is set by the particle noise (rate about 1/N);
+- scheme: the drift is set by the discretisation on this mesh, independent of N.
+Decks: tracks/C-sidm/longruns/inputs/{A8N_y0p33403_N1e6_s1_ctrl, A8N_y0p33403_N1e4_s1_ctrl,
+D2M16_cc2_kn10_f4_s1}.athinput (make_decks_b11.py, run C-20261124-131231-74f067d; particle
+files C-20261124-130731-e1d24de, N = 1e6, and -130732-a383ef5, N = 1e4, stratified seed 1);
+release core-v0.6 card build; restart every 10 M; no lapse_leak (no black hole at the start);
+cfl_number 0.25 with the Gamma-driver shift (decision 0027 item 2: at most 0.6).
+
+N-series, reference the N = 1e5 control A8_y0p33403_s1_ctrl (C-20261121-214601-40dc927):
+t_c = 534.8 M; alpha_c - alpha_c(0) = -0.0024 at 300 M, -0.0188 at 400 M.
+- NS.1 [JUDGEMENT, 60 per cent] relaxation: the N = 1e6 control does not collapse by 600 M,
+  and its alpha_c change at 400 M (20 M mean) is above -0.005.
+- NS.2 scheme: t_c(N = 1e6) in [455, 615] M (534.8 +- 15 per cent).
+- Decision: N = 1e6 decides between them. Between the two (no collapse but contraction at
+  400 M below -0.005, or a collapse after 615 M within 600 M impossible) is reported as
+  partial N dependence. If NS.1: the threshold reading needs N >= 1e6 (or collapse times only,
+  against controls of the same N), and the seeds at N = 1e5 measure the noise of the drift;
+  if NS.2: more particles do not help, the next test is the mesh (M/16 control) and the
+  gauge or boundary leg, and core is asked about a secular error of the scheme.
+- NS.3 N = 1e4 control: relaxation predicts a collapse before 300 M; scheme predicts
+  [455, 615] M. A weak test: a 1e4 sample deviates from the model in its radial balance by
+  about 1/sqrt(N), comparable to the one-per-cent kicks (the 1e5 kick-in collapsed at 294 M),
+  so an early collapse alone does not name relaxation.
+- Cost: N = 1e6 at most 1.5 times the N = 1e5 step (12.5 s per M; refuted above 16), about
+  2 card-hours for 600 M; N = 1e4 at most 1.4 card-hours.
+
+M/16 member of D2 (CC2, Kn = 10, coll_energy = particle, collision seed 1, coll_cell_factor 4,
+so collision cells of M/4 as in the M/4 runs, f = 1, and the M/8 run f = 2; 220 M):
+mesh series of t_c with collision cells of M/4: 206.64 M (M/4, mean of the particle-mode
+seeds), 163.41 M (M/8, f = 2, seed 1).
+- M16.1 [JUDGEMENT] t_c(M/16) in [140, 170] M (second order from M/8 would give 152.6, first
+  order 141.8; most of the M/4 -> M/8 shift is the outward push of the M/4 mesh, drift entry
+  12). Refuted above 170 M (the M/8 value is not in the asymptotic range) or below 140 M (no
+  convergence: the collapse time keeps falling as the mesh is refined).
+- M16.2 collisions per particle per M over 0-100 M within 5 per cent of 8.86e-3 (M/8, f = 2).
+- Step time at most 3 times the M/8 deck (25 s per M), about 1.5 card-hours.
+
+Queue order (seq.sh, two slots): the running A324s1c+ and A334s3o, then A344s1o+, A324s1o+,
+N6c (N = 1e6), M16, A334s2c+, A334s3c+, N4c (N = 1e4), D2f2s2+, A334s2i+, A334s2o+,
+A334s3i+. New chains get MAX_SEGMENTS 20 (SEG_FLOOR of seq.sh) because a preemption uses a
+segment; the harness reserves only the gpu-hours of the queue line (2.5, 2.0, 1.5).
+Card-hours: G2 used 25.00 by the closed manifests at 13:00Z (nrpic-run budget), about 11 more
+for the continuations and about 6 for these three; 45 allotted.
