@@ -463,3 +463,34 @@ Predictions for R9 (what would refute each):
   Refuted by any other value or by ledger.py stopping on a verifier string.
 - P4: compile clean, no `\pending` left in the text (the macro may stay defined); page count 25 or
   26; every ledger table ends on its page.
+
+## Entry 17 (2026-11-24 15:22 PST): outcome of R9; the constraints table ran off its page; prediction for R10
+
+R9 = E-20261124-231835-dba3192 (registered, production, two cores, commit dba3192, about a minute).
+- P1 held: every lattice json of repro/figs/fig byte-equal to this run's (16 files, not the 17 I
+  wrote: miscounted beforehand), langevin equal (`checks.json`).
+- P2 held: of the 19 manuscript PNGs only `fig_contrast_sr.png` differs from R8's; looked at: six
+  rows, no title, the constraint rows as repro/figs' figure (one layout remark: the top tick label
+  of the |H|/[H] row touches the bottom of the R^NR row, as in the USR figure; no number depends on it).
+- P3 held: 133 rows in 10 tables; checks 80 yes, 17 differs, 2 beyond reach, 11 quote, 14 rerun
+  only, 7 run joined, 2 none; every predicted value as printed (1.78e-10 at N = 4.39, 3.63e-10,
+  6.48e-14, 2.7e+03, 3.38e-12 and 4.50e-12, 1.84e-03 at N = 4.86, 4.47e-02, 4.1e-15 and 3.8e-15,
+  5.10e-11 at N = 4.43). Tables copied, sha256 found in R9's `sha256sums.txt`.
+- P4 failed in part: compile clean (no undefined references, citations or overfull boxes), 25
+  pages, no `\pending` used; but Table VIII (constraints, now 21 rows with five-line sources) runs
+  off page 19 below the |M|/[M] rows: no bottom rule. The checker does not see it (README).
+Text changed before the compile (paper-writing pass on each sentence): abstract last sentence
+(the SR per-cell violation reaches the published level at the last crossings and then decays);
+intro "pending" -> "open"; contrasts caption last sentence; one paragraph of Sec. III G (per-cell
+tail: more than a decade below the stated order on the entry plateau, at it at the last crossings,
+more than three decades lower at the end); discussion "Pending" sentence removed; Table IV caption
+and the rows "Figs. 2 and 4" and "Hamiltonian violation"; ledger appendix text ("run joined").
+Checker with the forbid list: 5.1 one (the verdict label "not reproduced", line 47), 7.6 one ("no
+defect", exception 2), 7.5/7.7 only in `tables/ledger.tex` and `scripts/`, 9.3 only in `scripts/`.
+
+Fix: the per-cell rows (the nine new SR rows and the USR per-cell row) go into their own section
+"Per-cell constraints" (a table of its own after the constraints table), with the definitions in
+its caption and the join and pass named there, so the per-row source shortens to the run and pass.
+Prediction for R10 (same commit plus this change): lattice jsons, PNGs and langevin as R9; 133
+rows in 11 tables, the same check counts and values; after the compile every ledger table ends with
+its bottom rule on its page; page count 25 or 26. Refuted by any table off its page or any changed value.

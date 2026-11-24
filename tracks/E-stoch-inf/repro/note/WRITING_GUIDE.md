@@ -75,7 +75,8 @@ from its plateau.
   decades" (sign flip), "about fifteen times higher" (the spectrum a published width would
   need), "a factor sixteen per halving" (fourth order in time), "less than a factor of three"
   (spectral departure from 128^3 to 256^3), "within a fifth of one" (plateau ratios), "about five
-  decades" and "about four decades" (median sign-flip jumps). Their values are in the ledger.
+  decades" and "about four decades" (median sign-flip jumps), "more than a decade", "more than three
+  decades" and "a few times lower" (per-cell tails of the Hamiltonian ratio against the stated order). Their values are in the ledger.
 - Everything else (residuals, ratios, moments, widths) is in the ledger appendix.
 
 ## Expert dictionary (Sec. 6)
