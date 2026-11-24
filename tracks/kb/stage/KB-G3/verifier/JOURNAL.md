@@ -206,3 +206,23 @@ Runs: `nrpic-run submit` of the arithmetic and bibliography tally was refused at
 another kb helper (ingest4) has uncommitted changes in kb/kbtool and an untracked test in
 kb/tests; the shared code must be clean. I ran both scripts as smoke tests in scratch/kb/tmp
 and will register them once the tree is clean.
+
+## Entry 5 (2026-11-24 05:31 PST): registered tallies, figures, report
+
+- The tree was clean again at 05:28 (ingest4 committed). Runs: kb-20261124-132849-3ebad97
+  (arith_checks.json, bib_summary.json, bib_verdicts_auto.tsv, whole_missed_sample.tsv) and
+  kb-20261124-132859-5f1a7f3 (tally.json, four figures). Their numbers equal the smoke tests:
+  60-claim sample 54/60 = 90 % (CP 79.5-96.2 %), weighted population estimate 93.8 %
+  (s.e. 3.5 %); printed identifiers resolved 33/54 (CP 46.9-74.1 %); snapshot-wide 4538 of
+  52725 identifier-bearing entries without a target; parse 714/744.
+- Arithmetic (run kb-20261124-132849-3ebad97): 2108.11967 row 0.3 printed/true C = 1.2362, row
+  0.05 = 0.1000, the other rows 1.0000; b: 25 sqrt(pi)/(32 sqrt 6) = 0.5653, 25 pi/(32 sqrt 6)
+  = 1.0020, 25 pi/32 = 2.4544, 25 sqrt(pi)/32 = 1.3847; r_crit(0.020) = 5.585e-6, r_crit(0.025)
+  = 8.727e-6; M_H(100 MeV) = 14.98 M_sun, M_H(1 MeV) = 1.498e5 M_sun; FFT lines differ by
+  (2 pi)^(3/4) = 3.969; claim 425: bound 10.08 and 17.31, a_b 9.899 and 9.901, q 3.999 and 9.005.
+- Figures looked at (Read): fig_sample (rates and intervals as in the table; dashed line the
+  weighted estimate), fig_refutations (counts equal refutations.tsv), fig_bib (per-paper bars
+  equal bib_verdicts.tsv; snapshot bar 71 % equal, 7 % missed, 22 % none printed),
+  fig_parse (failing papers sit on or near the diagonals except the no-abstract ones, which
+  fail a criterion the scatter does not show; gr-qc/0404056 below the 0.7 line in equations).
+- VERIFIER.md written at tracks/kb/stage/KB-G3/VERIFIER.md.

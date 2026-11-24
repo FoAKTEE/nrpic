@@ -33,8 +33,8 @@ report is `../VERIFIER.md`. No card time.
 |---|---|
 | kb-20261124-130442-e69c2e8 | draws of items 1, 3, 4 (sample/, bib/, code/) |
 | kb-20261124-130450-578a535 | item 5 parse rate (parse_papers.tsv, parse_summary.json) |
-| see JOURNAL entry 5 | arithmetic checks and bibliography tally (items 2, 3) |
-| see JOURNAL entry 5 | tally and figures |
+| kb-20261124-132849-3ebad97 | arithmetic checks and bibliography tally (items 2, 3; whole_missed_sample.tsv) |
+| kb-20261124-132859-5f1a7f3 | tally.json and the four figures (copied into figures/) |
 
 ## How to rerun
 

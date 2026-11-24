@@ -28,7 +28,7 @@ number below is recomputed by my scripts or read by me at the source.
 | 5 | parse rate by my own definition | 714/744 = 95.97 % (recorded "ok" 719/744 = 96.64 %) | CONFIRMED above the 95 % bar, by a margin of 7 papers |
 
 Runs: draws kb-20261124-130442-e69c2e8; parse rate kb-20261124-130450-578a535; arithmetic and
-bibliography tally <RUN_BIB>; tally and figures <RUN_TALLY>. Figures (looked at):
+bibliography tally kb-20261124-132849-3ebad97; tally and figures kb-20261124-132859-5f1a7f3. Figures (looked at):
 `verifier/figures/fig_sample.png`, `fig_refutations.png`, `fig_bib.png`, `fig_parse.png`.
 
 ## 1. Stratified sample of 60 claims
@@ -73,7 +73,7 @@ Findings:
 ## 2. Claims that refute a statement of the brief or of a cited paper
 
 All 35 refuted claims and the 20 claims that supersede them; each rederived from the source
-(`verifier/verdicts/refutations.tsv`, arithmetic in <RUN_BIB> `arith_checks.json`).
+(`verifier/verdicts/refutations.tsv`, arithmetic in kb-20261124-132849-3ebad97 `arith_checks.json`).
 No claim in 1-700 is labelled refuted (claims_tracks refuted none; my sample found none it
 should have refuted except 682's wording).
 
@@ -115,7 +115,7 @@ Ten cited keys per paper from my own reading of the raw source (aliases \ct, \bi
   2 carry the right arXiv paper found by title, **21 carry nothing**: hep-ph/0011159 prints
   "[HEP-PH 9610477]" (8 of 10 drawn), 2403.15126 uses \arXiv{id}{class} (8 of 10),
   2602.00155 prints DOIs in \url{https://doi.org/...} (5 of 10). No drawn target is wrong.
-- Over the whole snapshot by the same test (<RUN_BIB>): 67861 entries; 52725 print an
+- Over the whole snapshot by the same test (kb-20261124-132849-3ebad97): 67861 entries; 52725 print an
   identifier; 4538 of them (8.6 %) carry no target, 2 a different one. A seeded sample of
   20 of the 4538 is 20/20 genuine (DOIs in \href{http://dx.doi.org/...}, \doibase; ids as
   bare numbers, \arXiv{}, \eprint{}). Largest: 2610.32592 (518), 2504.01669 (255),
@@ -178,7 +178,7 @@ test, before the registered run (JOURNAL entry 2).
    2611.12831), 809 (INSPIRE records for 4 of 8), 804 (pointers to 370, 854/855).
 3. Teach the bibliography parser \arXiv{id}{class}, "[HEP-PH 9610477]" (capitals, space),
    bare trailing ids, \eprint{}, and DOIs inside \url/\href/\doibase; then re-resolve. The
-   seeded list is in <RUN_BIB> `whole_missed_sample.tsv`.
+   seeded list is in kb-20261124-132849-3ebad97 `whole_missed_sample.tsv`.
 4. Give 2505.00286 its abstract chunk (bare \abstract) and decide whether a metadata abstract
    should count where the source has none (4 papers).
 5. Relabel 737 as a correction (true but incomplete), or add to its claim text what is missing.
