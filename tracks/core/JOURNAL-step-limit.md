@@ -455,3 +455,48 @@ reports its thresholds beside the code's.
   old 0.617: these three cases would be stable if the old model were right. Least sure:
   K (one-sided relaxation) and the 0.97 b cases (3 per cent below a bound that the
   reduced model places 0 to 0.5 per cent below the full scan's).
+
+## Entry 7 (06:10): outcome of T0c and T0d
+
+T0c, run core-20261124-133245-4c89e4f (third version of the advection, still Track A's
+model of the shift and a scalar wave for light): the registered numbers are those of the
+recomputation (rk4, nghost 4: zero shift 0.9933 to 1.0000; with a shift 0.818 to 1.099,
+at most 0.980 for dampings up to 1.5/dx). Figures looked at: `fig_reduced.png` readable
+with the legend above the points.
+
+T0d, run core-20261124-140153-9024b06 (commit 476fe0c; second derivatives as the code
+takes them; 1536 survey cases; figures looked at: `fig_vonneumann.png`, the four markers
+of the reduced model sit on the thresholds in both panels; `fig_reduced.png`, the corner
+eigenvalues at threshold lie on the boundary of the RK4 region and the survey points of
+all schemes lie between 0.82 and 1.26).
+
+P0j held:
+
+| Case (mu 0.75, eta 2, diss 0.5, alpha 1.06, chi 0.12; rk4, nghost 4) | code's stencils: scan / reduced | Track A's model (my scan) | Track A |
+|---|---|---|---|
+| shift, level 4 (dx 0.0195) | 0.6580 / 0.6557 | 0.6829 | 0.685 |
+| shift, root (dx 0.3125) | 0.6252 / 0.6243 | 0.6485 | 0.65 |
+| shift without dissipation, level 4 / root | 0.7303 / 0.7560 | 0.7699 / 0.7978 | 0.77 to 0.80 |
+| shift, shift_Gamma 0.3, level 4 / root | 0.9053 / 0.8647 | 0.9397 / 0.8978 | 0.94 / 0.90 |
+| lapse with lapse_leak 20, level 4 / root | 0.9670 / 0.4040 | the same | 0.97 / 0.405 |
+| conformal factor and Theta, level 4 | 1.1290 / 1.1277 | 1.2420 (scalar wave) | stable to 1.2 |
+
+Flat space (alpha = chi = 1), cells, scan (reduced), diss 0 / 0.1 / 0.5: lapse 1+log 0.4697 /
+0.4825 / 0.4681 (0.4679); conformal factor and Theta 0.5752 / 0.5931 / 0.5537 (0.5510);
+Gamma-driver 0.75: 0.7276 / 0.7531 / 0.6604 (0.6568); Gamma-driver 1.0: 0.6301 / 0.6507 /
+0.5942 (0.5917). The mode that fails first is the corner in every case. The 6 x 6 matrix
+with the corrected diagonal equals the split (0.6580, 0.6252). lapse_leak x dt: 2.525 at
+the grid scale of the root mesh, 2.785 without structure (unchanged).
+
+Reduced/full over the survey: rk4 nghost 4: zero shift 0.9933 to 1.0000, with a shift
+0.818 to 1.068 (at most 0.972 for dampings up to 1.5/dx); rk4 nghost 3: 0.993 to 1.003
+and up to 1.14 with a shift; rk4 nghost 2: up to 1.115 and 1.26; rk3: zero shift 0.959 to
+1.000 (nghost 4, 3), 1.094 (nghost 2), with a shift up to 1.17. My "at most 1.10" for
+rk4, nghost 4 held (1.068).
+
+What Track A's deck was doing, with the corrected bound: the level-4 step of card job
+4799 passed 0.658 cells earlier than the 0.685 of its analysis (its own figure puts
+0.685 at t = 1.70); its remedy cfl_number 0.5 keeps 24 per cent of margin on level 4
+and 20 per cent on the root mesh; the rule of decision 0027 (0.6) keeps 9 and 4 per
+cent in the expanding box, and none in flat space with 1+log (0.47) or with a frozen or
+harmonic lapse (0.55).
