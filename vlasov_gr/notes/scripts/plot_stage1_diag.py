@@ -11,28 +11,21 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "python"))
+CZ_DIR = Path.home() / ".gemini" / "config" / "skills" / "cz-figure-style" / "resources"
+if not CZ_DIR.exists():
+    CZ_DIR = Path("/home/schmidt/ssci-haiyangw/.gemini/config/skills/cz-figure-style/resources")
+sys.path.insert(0, str(CZ_DIR))
 
+import czstyle as cz
 from nrpic import vlasov_gr as vg
 
 
-def _setup_style():
-    plt.rcParams.update({
-        "font.size": 9,
-        "axes.labelsize": 10,
-        "axes.titlesize": 10,
-        "legend.fontsize": 8,
-        "xtick.direction": "in",
-        "ytick.direction": "in",
-        "axes.linewidth": 0.9,
-        "figure.dpi": 200,
-    })
-
-
 def main():
-    _setup_style()
-    fig, axes = plt.subplots(2, 2, figsize=(9.2, 6.8), constrained_layout=True)
+    cz.use_style()
+    fig, axes = plt.subplots(2, 2, figsize=(8.0, 6.0))
+    fig.subplots_adjust(left=0.105, right=0.97, bottom=0.095, top=0.935, wspace=0.29, hspace=0.36)
 
-    # (a) Relativistic boosted two-stream invariants
+    # Top left: Relativistic boosted two-stream invariants
     ax = axes[0, 0]
     N, L = 32, 1.0
     x = (np.arange(N) + 0.5) * (L / N)
@@ -54,16 +47,17 @@ def main():
         dM.append(max(abs(M1 - M0) / M0, 1e-16))
         dP.append(max(float(np.linalg.norm(P1 - P0) / np.linalg.norm(P0)), 1e-16))
         dE.append(max(abs(E1 - E0) / E0, 1e-16))
-    ax.semilogy(ts, dM, label=r"$|\Delta M| / M_0$", lw=1.6)
-    ax.semilogy(ts, dP, "--", label=r"$|\Delta P_x| / |P_0|$", lw=1.5)
-    ax.semilogy(ts, dE, ":", label=r"$|\Delta E| / E_0$", lw=1.8)
+    ax.semilogy(ts, dM, color=cz.PAL["blue"], ls="-", label=r"$|\Delta M| / M_0$")
+    ax.semilogy(ts, dP, color=cz.PAL["red"], ls="--", label=r"$|\Delta P_x| / |P_0|$")
+    ax.semilogy(ts, dE, color=cz.PAL["green"], ls=":", label=r"$|\Delta E| / E_0$")
     ax.set_ylim(1e-17, 1e-10)
+    cz.no_minor_labels(ax, "y")
     ax.set_xlabel(r"Time $t$")
     ax.set_ylabel("Relative conservation error")
-    ax.set_title(r"(a) Boosted two-stream ($\beta_0 = 0.5$, $u_0 = \pm 1.2$)")
-    ax.legend(frameon=False, loc="best")
+    ax.set_title(r"Boosted two-stream ($\beta_0 = 0.5, u_0 = \pm 1.2$)", fontsize=11)
+    ax.legend(loc="upper right", fontsize=9)
 
-    # (b) 2nd-order relativistic density-wave convergence
+    # Top right: 2nd-order relativistic density-wave convergence
     ax = axes[0, 1]
     Ns = np.array([16, 32, 64])
     errs = []
@@ -83,15 +77,20 @@ def main():
         exact_p = 0.5 * (1.0 + 0.2 * np.cos(2.0 * math.pi * (s.x - v_w * t_end) / L))
         errs.append(float(np.mean(np.abs(s.D[:, 0] - exact_p))))
     errs = np.array(errs)
-    ax.loglog(Ns, errs, "o-", lw=1.7, label="GR-LBV Top-Hat")
+    ax.loglog(Ns, errs, "o-", color=cz.PAL["red"], ms=4.5, label="GR-LBV Top-Hat")
     ref_2 = errs[0] * (Ns[0] / Ns) ** 2
-    ax.loglog(Ns, ref_2, "k--", lw=1.1, label=r"$\propto N^{-2}$")
+    ax.loglog(Ns, ref_2, label=r"$\propto N_x^{-2}$", **cz.GUIDE)
+    ax.set_xticks([16, 32, 64])
+    ax.set_xticklabels(["16", "32", "64"])
+    cz.no_minor_labels(ax, "x")
+    ax.tick_params(axis="x", which="minor", bottom=False, top=False)
+    cz.no_minor_labels(ax, "y")
     ax.set_xlabel(r"Element count $N_x$")
     ax.set_ylabel(r"$L_1$ density error")
-    ax.set_title(r"(b) Relativistic density-wave convergence ($u_x = \pm 1$)")
-    ax.legend(frameon=False, loc="best")
+    ax.set_title(r"Density-wave convergence ($u_x = \pm 1$)", fontsize=11)
+    ax.legend(loc="upper right", fontsize=9)
 
-    # (c) Empty-basis cold stream injection (C^eb vs v_only)
+    # Bottom left: Empty-basis cold stream injection (C^eb vs v_only)
     ax = axes[1, 0]
     N_e, Nb = 48, 4
     xe = (np.arange(N_e) + 0.5) * (L / N_e)
@@ -110,22 +109,21 @@ def main():
         vg.step_1d_mfm(st_eb, t_c / 60, pairing_mode="eb")
         vg.step_1d_mfm(st_vo, t_c / 60, pairing_mode="v_only")
     v_fast = 3.0 / math.sqrt(1.0 + 9.0)
-    # Compare total fast-beam mass propagated past x = 0.65 into untouched slots
     D_fast_eb = np.where(st_eb.u_bar[:, :, 0] > 2.2, st_eb.D, 0.0).sum(axis=1)
     D_fast_vo = np.where(st_vo.u_bar[:, :, 0] > 2.2, st_vo.D, 0.0).sum(axis=1)
     x_shift = (xe + v_fast * t_c) % L
     idx_s = np.argsort(x_shift)
-    ax.plot(x_shift[idx_s], np.where(inj, pi, 0.0)[idx_s], "k--", lw=1.2, label="Exact shifted pulse")
-    ax.plot(st_eb.x, D_fast_eb, "o-", ms=3, lw=1.4, label=r"$C^{\rm eb}$ empty-basis")
-    ax.plot(st_vo.x, D_fast_vo, "s:", ms=3, lw=1.4, label=r"Velocity-only")
+    ax.plot(x_shift[idx_s], np.where(inj, pi, 0.0)[idx_s], label="Exact shifted pulse", **cz.GUIDE)
+    ax.plot(st_eb.x, D_fast_eb, "o-", color=cz.PAL["red"], ms=3.0, label=r"$C^{\rm eb}$ empty-basis")
+    ax.plot(st_vo.x, D_fast_vo, "s:", color=cz.PAL["blue"], ms=2.8, label="Velocity-only")
     ax.set_xlim(0.45, 0.95)
-    ax.set_ylim(-0.02, 0.56)
+    ax.set_ylim(-0.02, 0.62)
     ax.set_xlabel(r"Position $x$")
-    ax.set_ylabel(r"Fast-stream density $D(u_x > 2.2)$")
-    ax.set_title(r"(c) Empty-basis fast beam injection ($u_x = +3$, $t = 0.24$)")
-    ax.legend(frameon=False, loc="upper left")
+    ax.set_ylabel(r"Fast-stream density $D\,(u_x > 2.2)$")
+    ax.set_title(r"Empty-basis injection ($u_x = +3, t = 0.24$)", fontsize=11)
+    ax.legend(loc="upper left", fontsize=8.5)
 
-    # (d) Colliding streams: collisionless vs collisional Taub double shock
+    # Bottom right: Colliding streams: collisionless vs collisional Taub double shock
     ax = axes[1, 1]
     Nc = 64
     xc = (np.arange(Nc) + 0.5) * (L / Nc)
@@ -148,21 +146,21 @@ def main():
     x_grid = np.linspace(0.25, 0.75, 400)
     D_ex_hy = np.where(np.abs(x_grid - 0.5) < Vs * t_end_c, ex["D2"], 1.0)
     D_ex_cl = np.where(np.abs(x_grid - 0.5) < ex["v0"] * t_end_c, 2.0, 1.0)
-    ax.plot(x_grid, D_ex_hy, "k-", lw=1.1, label=r"Exact Taub/Synge ($D_2=4.14$)")
-    ax.plot(x_grid, D_ex_cl, "k--", lw=1.0, label="Exact collisionless")
-    ax.plot(st_hy.x, np.sum(st_hy.D, axis=1), "o-", ms=2.8, lw=1.3, label=r"$\sigma/\mu = 500$ (hydro)")
-    ax.plot(st_cl.x, np.sum(st_cl.D, axis=1), "s-", ms=2.5, lw=1.2, label=r"$\sigma/\mu = 0$ (Vlasov)")
+    ax.plot(x_grid, D_ex_hy, color="k", ls="-", lw=1.2, label=r"Exact Taub ($D_2 = 4.14$)")
+    ax.plot(x_grid, D_ex_cl, color="k", ls="--", lw=1.2, label="Exact collisionless")
+    ax.plot(st_hy.x, np.sum(st_hy.D, axis=1), "o-", color=cz.PAL["red"], ms=2.8, label=r"$\sigma/\mu = 500$ (hydro)")
+    ax.plot(st_cl.x, np.sum(st_cl.D, axis=1), "s-", color=cz.PAL["blue"], ms=2.5, label=r"$\sigma/\mu = 0$ (Vlasov)")
     ax.set_xlim(0.25, 0.75)
-    ax.set_ylim(0.75, 4.9)
+    ax.set_ylim(0.75, 5.55)
     ax.set_xlabel(r"Position $x$")
     ax.set_ylabel(r"Total coordinate density $D$")
-    ax.set_title(r"(d) Colliding cold streams ($u_0 = \pm 1$, $t = 0.15$)")
-    ax.legend(frameon=False, loc="upper right", fontsize=7.5)
+    ax.set_title(r"Colliding cold streams ($u_0 = \pm 1, t = 0.15$)", fontsize=11)
+    ax.legend(ncol=2, loc="upper center", fontsize=7.6, columnspacing=0.9)
 
     out_dir = ROOT / "vlasov_gr" / "notes" / "figs"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_png = out_dir / "diag_stage1_python_1d.png"
-    fig.savefig(out_png)
+    fig.savefig(out_png, dpi=300)
     print(f"Saved {out_png}")
 
 

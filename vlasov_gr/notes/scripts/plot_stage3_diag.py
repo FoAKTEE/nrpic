@@ -16,6 +16,11 @@ import numpy as np
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 sys.path.insert(0, os.path.join(REPO, "python"))
+_CZ_DIR = os.path.expanduser("~/.gemini/config/skills/cz-figure-style/resources")
+if not os.path.exists(_CZ_DIR):
+    _CZ_DIR = "/home/schmidt/ssci-haiyangw/.gemini/config/skills/cz-figure-style/resources"
+sys.path.insert(0, _CZ_DIR)
+import czstyle as cz  # noqa: E402
 from nrpic import vlasov_gr as vg  # noqa: E402
 
 SCRATCH = os.environ.get(
@@ -294,77 +299,73 @@ def main():
     assert geo_hst_ncycle < 0 or geo_hst_ncycle >= 2000, f"Unexpected hst ncycle={geo_hst_ncycle}"
     assert geo_push_unconv is None or geo_push_unconv == 0, f"Geodesic push_unconverged={geo_push_unconv}"
 
-    # Plot 4-panel Stage 3 diagnostic figure
-    plt.rcParams.update({
-        "font.size": 10,
-        "axes.labelsize": 10.5,
-        "axes.titlesize": 10.5,
-        "xtick.direction": "in",
-        "ytick.direction": "in",
-        "xtick.top": True,
-        "ytick.right": True,
-    })
-    fig, axes = plt.subplots(2, 2, figsize=(10.5, 7.6), constrained_layout=True)
+    # Plot 4-panel Stage 3 diagnostic figure in Cyclic Zoom style
+    cz.use_style()
+    fig, axes = plt.subplots(2, 2, figsize=(8.0, 6.0))
+    fig.subplots_adjust(left=0.105, right=0.97, bottom=0.095, top=0.935, wspace=0.29, hspace=0.36)
 
-    # Panel (a): GPU vs Python element-wise errors
+    # Top left: GPU vs Python element-wise errors
     ax = axes[0, 0]
     elem_idx = np.arange(len(st_py.x))
-    ax.semilogy(elem_idx, np.max(err_gpu_py["x"], axis=1) + 1e-17, "o-", ms=3, lw=1.0, label=r"$x^i$")
-    ax.semilogy(elem_idx, np.max(err_gpu_py["m"], axis=1) + 1e-17, "s-", ms=3, lw=1.0, label=r"$m_\alpha$")
-    ax.semilogy(elem_idx, np.max(err_gpu_py["u"], axis=(1, 2)) + 1e-17, "^-", ms=3, lw=1.0, label=r"$\bar{u}_{\alpha i}$")
-    ax.semilogy(elem_idx, np.max(err_gpu_py["S"], axis=(1, 2, 3)) + 1e-17, "d-", ms=3, lw=1.0, label=r"$\Sigma_{\alpha ij}$")
-    ax.axhline(1e-11, color="k", ls="--", lw=0.9, label="threshold")
-    ax.set_xlabel("Element index a")
+    ax.semilogy(elem_idx, np.max(err_gpu_py["x"], axis=1) + 1e-17, "o-", color=cz.PAL["blue"], ms=2.6, lw=1.2, label=r"$x^i$")
+    ax.semilogy(elem_idx, np.max(err_gpu_py["m"], axis=1) + 1e-17, "s-", color=cz.PAL["orange"], ms=2.6, lw=1.2, label=r"$m_\alpha$")
+    ax.semilogy(elem_idx, np.max(err_gpu_py["u"], axis=(1, 2)) + 1e-17, "^-", color=cz.PAL["green"], ms=2.6, lw=1.2, label=r"$\bar{u}_{\alpha i}$")
+    ax.semilogy(elem_idx, np.max(err_gpu_py["S"], axis=(1, 2, 3)) + 1e-17, "d-", color=cz.PAL["red"], ms=2.6, lw=1.2, label=r"$\Sigma_{\alpha ij}$")
+    ax.axhline(1e-11, color="k", ls="--", lw=1.0, label="Threshold")
+    ax.set_xlabel(r"Element index $a$")
     ax.set_ylabel("Max abs error (GPU vs Python)")
-    ax.set_ylim(1e-17, 1e-10)
-    ax.legend(frameon=False, ncol=2, loc="upper right", fontsize=8.5)
-    ax.set_title("(a) AthenaK B200 GPU vs Python 3D parity")
+    ax.set_ylim(1e-17, 1e-8)
+    cz.no_minor_labels(ax, "y")
+    ax.legend(ncol=2, loc="upper right", fontsize=8.0)
+    ax.set_title("B200 GPU vs Python 3D parity", fontsize=11)
 
-    # Panel (b): OpenMP CPU vs GPU parity errors + OMP determinism
+    # Top right: OpenMP CPU vs GPU parity errors + OMP determinism
     ax = axes[0, 1]
-    ax.semilogy(elem_idx, np.max(err_cpu_gpu["x"], axis=1) + 1e-17, "o-", ms=3, lw=1.0, label=r"$x^i$ (CPU vs GPU)")
-    ax.semilogy(elem_idx, np.max(err_cpu_gpu["m"], axis=1) + 1e-17, "s-", ms=3, lw=1.0, label=r"$m_\alpha$ (CPU vs GPU)")
-    ax.semilogy(elem_idx, np.max(err_cpu_gpu["u"], axis=(1, 2)) + 1e-17, "^-", ms=3, lw=1.0, label=r"$\bar{u}_{\alpha i}$ (CPU vs GPU)")
-    ax.semilogy(elem_idx, np.max(err_cpu_gpu["S"], axis=(1, 2, 3)) + 1e-17, "d-", ms=3, lw=1.0, label=r"$\Sigma_{\alpha ij}$ (CPU vs GPU)")
+    ax.semilogy(elem_idx, np.max(err_cpu_gpu["x"], axis=1) + 1e-17, "o-", color=cz.PAL["blue"], ms=2.6, lw=1.2, label=r"$x^i$ (CPU vs GPU)")
+    ax.semilogy(elem_idx, np.max(err_cpu_gpu["m"], axis=1) + 1e-17, "s-", color=cz.PAL["orange"], ms=2.6, lw=1.2, label=r"$m_\alpha$ (CPU vs GPU)")
+    ax.semilogy(elem_idx, np.max(err_cpu_gpu["u"], axis=(1, 2)) + 1e-17, "^-", color=cz.PAL["green"], ms=2.6, lw=1.2, label=r"$\bar{u}_{\alpha i}$ (CPU vs GPU)")
+    ax.semilogy(elem_idx, np.max(err_cpu_gpu["S"], axis=(1, 2, 3)) + 1e-17, "d-", color=cz.PAL["red"], ms=2.6, lw=1.2, label=r"$\Sigma_{\alpha ij}$ (CPU vs GPU)")
     omp_det_elem = np.maximum.reduce([
         np.max(err_omp_det["x"], axis=1),
         np.max(err_omp_det["m"], axis=1),
         np.max(err_omp_det["u"], axis=(1, 2)),
         np.max(err_omp_det["S"], axis=(1, 2, 3)),
     ])
-    ax.semilogy(elem_idx, omp_det_elem + 1e-17, "k:", lw=1.2, label="OMP4a vs 4b (max)")
-    ax.axhline(1e-12, color="k", ls="--", lw=0.9, label="threshold")
-    ax.set_xlabel("Element index a")
+    ax.semilogy(elem_idx, omp_det_elem + 1e-17, color="k", ls=":", lw=1.2, label="OMP 4a vs 4b")
+    ax.axhline(1e-12, color="k", ls="--", lw=1.0, label="Threshold")
+    ax.set_xlabel(r"Element index $a$")
     ax.set_ylabel("Max abs diff")
-    ax.set_ylim(1e-17, 1e-10)
-    ax.legend(frameon=False, ncol=2, loc="upper right", fontsize=8.0)
-    ax.set_title("(b) OpenMP CPU vs GPU parity & determinism")
+    ax.set_ylim(1e-17, 1e-8)
+    cz.no_minor_labels(ax, "y")
+    ax.legend(ncol=2, loc="upper right", fontsize=7.4, columnspacing=0.8)
+    ax.set_title("OpenMP CPU vs GPU parity", fontsize=11)
 
-    # Panel (c): Conservation history
+    # Bottom left: Conservation history
     ax = axes[1, 0]
-    ax.semilogy(t_gpu, np.maximum(dm_gpu, 1e-17), "o-", ms=4, lw=1.3, label=r"$|\Delta M / M_0|$ (GPU)")
-    ax.semilogy(t_gpu, np.maximum(dp_gpu, 1e-17), "s-", ms=4, lw=1.3, label=r"$|\Delta P|$ (GPU)")
-    ax.semilogy(t_gpu, np.maximum(de_gpu, 1e-17), "^-", ms=4, lw=1.3, label=r"$|\Delta E / E_0|$ (GPU)")
-    ax.semilogy(py_times, np.maximum(de_py, 1e-17), "k--", lw=1.1, label=r"$|\Delta E / E_0|$ (Python)")
-    ax.set_xlabel("Coordinate time t")
+    ax.semilogy(t_gpu, np.maximum(dm_gpu, 1e-17), "o-", color=cz.PAL["blue"], ms=4.0, lw=1.5, label=r"$|\Delta M / M_0|$ (GPU)")
+    ax.semilogy(t_gpu, np.maximum(dp_gpu, 1e-17), "s-", color=cz.PAL["orange"], ms=4.0, lw=1.5, label=r"$|\Delta P|$ (GPU)")
+    ax.semilogy(t_gpu, np.maximum(de_gpu, 1e-17), "^-", color=cz.PAL["red"], ms=4.0, lw=1.5, label=r"$|\Delta E / E_0|$ (GPU)")
+    ax.semilogy(py_times, np.maximum(de_py, 1e-17), color="k", ls="--", lw=1.2, label=r"$|\Delta E / E_0|$ (Python)")
+    ax.set_xlabel(r"Coordinate time $t$")
     ax.set_ylabel("Relative conservation residual")
     ax.set_ylim(1e-17, 1e-3)
-    ax.legend(frameon=False, loc="best", fontsize=8.5)
-    ax.set_title("(c) Mass, momentum, and energy evolution")
+    cz.no_minor_labels(ax, "y")
+    ax.legend(loc="center right", fontsize=8.2)
+    ax.set_title("Mass, momentum & energy evolution", fontsize=11)
 
-    # Panel (d): Final phase-space comparison (x_1 vs u_1 for both basis streams)
+    # Bottom right: Final phase-space comparison (x_1 vs u_1 for both basis streams)
     ax = axes[1, 1]
-    for al, mk, col in [(0, "o", "#1f77b4"), (1, "s", "#d62728")]:
+    for al, mk, col in [(0, "o", cz.PAL["blue"]), (1, "s", cz.PAL["red"])]:
         ax.plot(st_py.x[:, 0], st_py.u_bar[:, al, 0], mk, mfc="none", mec=col, ms=5.0, lw=1.0,
                 label=f"Python stream {al}")
         ax.plot(sn_gpu["x"][:, 0], sn_gpu["u_bar"][:, al, 0], ".", color=col, ms=3.2,
                 label=f"GPU stream {al}")
     ax.set_xlabel(r"$x$")
     ax.set_ylabel(r"$\bar{u}_x$")
-    ax.legend(frameon=False, ncol=2, loc="center right", fontsize=8.5)
-    ax.set_title(r"(d) Final phase space at $t = 0.10$")
+    ax.legend(ncol=2, loc="center", fontsize=8.5)
+    ax.set_title(r"Final phase space ($t = 0.10$)", fontsize=11)
 
-    fig.savefig(FIG_OUT, dpi=220)
+    fig.savefig(FIG_OUT, dpi=300)
     print(f"Saved diagnostic figure: {FIG_OUT}")
     print("STAGE 3 VERIFICATION PASSED")
 

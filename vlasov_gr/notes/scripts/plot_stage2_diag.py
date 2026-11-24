@@ -14,7 +14,12 @@ from scipy import special
 ROOT = Path(__file__).resolve().parents[3]
 SCRATCH_BIN = Path("/weka/scratch/schmidt/ssci-anima/ssci-haiyangw/nrpic_grlbv/vlasov_kernel_test")
 sys.path.insert(0, str(ROOT / "python"))
+CZ_DIR = Path.home() / ".gemini" / "config" / "skills" / "cz-figure-style" / "resources"
+if not CZ_DIR.exists():
+    CZ_DIR = Path("/home/schmidt/ssci-haiyangw/.gemini/config/skills/cz-figure-style/resources")
+sys.path.insert(0, str(CZ_DIR))
 
+import czstyle as cz
 from nrpic import collide as _coll
 from nrpic import kerr as _kerr
 from nrpic import vlasov_gr as vg
@@ -225,53 +230,64 @@ def main():
     print(f"  BGK  max abs err  : {max(err_bgk):.3e}")
     print(f"  HLLC max abs err  : {max(err_hllc):.3e}")
 
-    # Plot 2x2 parity diagnostic figure
-    plt.rcParams.update({"font.size": 9, "xtick.direction": "in", "ytick.direction": "in", "figure.dpi": 200})
-    fig, axes = plt.subplots(2, 2, figsize=(9.2, 6.4), constrained_layout=True)
+    # Plot 2x2 parity diagnostic figure in Cyclic Zoom style
+    cz.use_style()
+    fig, axes = plt.subplots(2, 2, figsize=(8.0, 6.0))
+    fig.subplots_adjust(left=0.105, right=0.97, bottom=0.095, top=0.935, wspace=0.29, hspace=0.36)
 
     ax = axes[0, 0]
-    ax.loglog(thetas, np.maximum(err_kve2, 1e-16), label=r"$K_2(z)e^z$", lw=1.4)
-    ax.loglog(thetas, np.maximum(err_kve3, 1e-16), "--", label=r"$K_3(z)e^z$", lw=1.4)
-    ax.loglog(thetas, np.maximum(err_cs2, 1e-16), ":", label=r"$c_s^2(\theta)$", lw=1.6)
-    ax.loglog(thetas, np.maximum(err_vmol, 1e-16), "-.", label=r"$\langle v_{\rm Mol}\rangle$", lw=1.3)
-    ax.set_ylim(1e-17, 1e-11)
-    ax.set_xlabel(r"Dimensionless temperature $\theta = k_B T / m$")
+    ax.loglog(thetas, np.maximum(err_kve2, 1e-16), color=cz.PAL["blue"], ls="-", label=r"$K_2(z)e^z$")
+    ax.loglog(thetas, np.maximum(err_kve3, 1e-16), color=cz.PAL["red"], ls="--", label=r"$K_3(z)e^z$")
+    ax.loglog(thetas, np.maximum(err_cs2, 1e-16), color=cz.PAL["green"], ls=":", label=r"$c_s^2(\theta)$")
+    ax.loglog(thetas, np.maximum(err_vmol, 1e-16), color=cz.PAL["orange"], ls="-.", label=r"$\langle v_{\rm Mol}\rangle$")
+    ax.set_ylim(1e-17, 1e-10)
+    cz.no_minor_labels(ax, "y")
+    cz.no_minor_labels(ax, "x")
+    ax.set_xlabel(r"Temperature $\theta = k_{\rm B} T / m$")
     ax.set_ylabel("C++ vs Python relative error")
-    ax.set_title("(a) Relativistic Synge & Bessel thermodynamics")
-    ax.legend(frameon=False, loc="upper left", ncol=2, fontsize=8)
+    ax.set_title("Synge & Bessel thermodynamics", fontsize=11)
+    ax.legend(loc="upper right", ncol=2, fontsize=8.5)
 
     ax = axes[0, 1]
-    ax.semilogy(betaFs, np.maximum(err_flux, 1e-16), "o-", ms=3, lw=1.3, label="Curved-metric Top-Hat flux")
+    ax.semilogy(betaFs, np.maximum(err_flux, 1e-16), "o-", color=cz.PAL["red"], ms=3.2, label="Curved-metric Top-Hat")
     ax.set_ylim(1e-17, 1e-12)
-    ax.set_xlabel(r"Normal-observer face velocity $\beta_F$")
+    cz.no_minor_labels(ax, "y")
+    ax.set_xlabel(r"Face velocity $\beta_{\rm F}$")
     ax.set_ylabel("Max relative flux error")
-    ax.set_title("(b) Exact 1D-sliced + 2D-cubature flux parity")
-    ax.legend(frameon=False, loc="best")
+    ax.set_title("1D-sliced + 2D-cubature flux parity", fontsize=11)
+    ax.legend(loc="upper right", fontsize=9)
 
     ax = axes[1, 0]
     radii = [3.0, 5.0, 8.0, 12.0, 20.0]
-    ax.semilogy(radii, np.maximum(err_kick_u, 1e-16), "o-", lw=1.4, label=r"$|\Delta \bar{u}|$")
-    ax.semilogy(radii, np.maximum(err_kick_S, 1e-16), "s--", lw=1.4, label=r"$|\Delta \Sigma|$")
-    ax.semilogy(radii, np.maximum(err_se, 1e-16), "^:", lw=1.5, label=r"$(E, P_i, S_{ij})$")
+    ax.semilogy(radii, np.maximum(err_kick_u, 1e-16), "o-", color=cz.PAL["red"], ms=4.0, label=r"$|\Delta \bar{u}|$")
+    ax.semilogy(radii, np.maximum(err_kick_S, 1e-16), "s--", color=cz.PAL["blue"], ms=3.8, label=r"$|\Delta \Sigma|$")
+    ax.semilogy(radii, np.maximum(err_se, 1e-16), "^:", color=cz.PAL["green"], ms=4.2, label=r"$(E, P_i, S_{ij})$")
     ax.set_ylim(1e-17, 1e-11)
-    ax.set_xlabel(r"Kerr-Schild radius $r / M$ ($a = 0.9M$)")
+    cz.no_minor_labels(ax, "y")
+    ax.set_xlabel(r"Kerr-Schild radius $r\,[M]$ ($a = 0.9M$)")
     ax.set_ylabel("C++ vs Python error")
-    ax.set_title("(c) Kerr cubature geodesic kick & stress-energy")
-    ax.legend(frameon=False, loc="best")
+    ax.set_title("Kerr cubature kick & stress-energy", fontsize=11)
+    ax.legend(loc="upper right", ncol=2, fontsize=8.5)
 
     ax = axes[1, 1]
-    cats = [r"$\beta_F$ Brent", r"$C^{\rm eb}$", "MJ BGK", "Rel. HLLC"]
+    cats = [r"$\beta_{\rm F}$ Brent", r"$C^{\rm eb}$", "MJ BGK", "Rel. HLLC"]
     vals = [max(err_betaf), max(err_pair), max(err_bgk), max(err_hllc)]
-    ax.bar(cats, np.maximum(vals, 1e-16), color=["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"], alpha=0.85)
+    ax.bar(cats, np.maximum(vals, 1e-16),
+           color=[cz.PAL["blue"], cz.PAL["orange"], cz.PAL["green"], cz.PAL["red"]],
+           alpha=0.85, edgecolor="k", lw=0.8, width=0.55)
     ax.set_yscale("log")
     ax.set_ylim(1e-17, 1e-10)
+    ax.tick_params(axis="x", which="minor", bottom=False, top=False)
+    ax.tick_params(axis="x", labelsize=9.2)
+    cz.no_minor_labels(ax, "y")
+    ax.set_xlabel("Kernel family")
     ax.set_ylabel("Max error across test suite")
-    ax.set_title("(d) Root-finder, pairing, BGK, and HLLC parity")
+    ax.set_title("Root-finder, pairing, BGK & HLLC parity", fontsize=10.5)
 
     out_dir = ROOT / "vlasov_gr" / "notes" / "figs"
     out_dir.mkdir(parents=True, exist_ok=True)
     out_png = out_dir / "diag_stage2_kernel_parity.png"
-    fig.savefig(out_png)
+    fig.savefig(out_png, dpi=300)
     print(f"Saved {out_png}")
 
 

@@ -360,7 +360,49 @@ def test_1d_mfm_empty_slot_and_collisional_taub():
     ex_taub = vg.exact_taub_double_shock(u0=1.0, rho0=1.0)
     cen_hy = np.abs(st_hydro.x - 0.5) < 0.03
     D_cen_hy = float(np.mean(np.sum(st_hydro.D[cen_hy], axis=1)))
-    assert abs(D_cen_hy - ex_taub["D2"]) / ex_taub["D2"] < 0.10
+    D_min_hy = float(np.min(np.sum(st_hydro.D[np.abs(st_hydro.x - 0.5) < 0.025], axis=1)))
+    assert abs(D_cen_hy - ex_taub["D2"]) / ex_taub["D2"] < 0.05
+    assert D_min_hy > 0.94 * ex_taub["D2"]
+
+    # Intermediate collisionality sigma/mu = 15 preserves exact cell mass (Bug 2 regression)
+    st_mid = vg.init_mfm_1d(xc, Dc, uc, Sigc, L)
+    m_mid0 = np.sum(st_mid.m, axis=1).copy()
+    t_mid = 0.0
+    while t_mid < t_end_c - 1e-14:
+        dt_step = min(t_end_c - t_mid, 0.0025, 0.25 * float(np.min(st_mid.V)))
+        vg.step_1d_mfm(st_mid, dt_step, sigma_over_mu=15.0)
+        t_mid += dt_step
+    assert np.max(np.abs(np.sum(st_mid.m, axis=1) / m_mid0 - 1.0)) < 1e-12
+
+
+def test_valencia_c2p_and_noh_stationary_contact():
+    """Verify exact Valencia Synge C2P round-trip and zero Noh flux on stationary contacts."""
+    D_ref, th_ref = 2.4, 0.25
+    w_ref, h_ref, _, _ = vg.synge_thermo(th_ref)
+    v_ref = np.array([math.sqrt(1.0 - 1.0 / 2.25) * 0.8, 0.25, -0.1])
+    U0_ref = 1.0 / math.sqrt(1.0 - float(np.dot(v_ref, v_ref)))
+    rho0_ref = D_ref / U0_ref
+    p_ref = rho0_ref * th_ref
+    E_ref = D_ref * h_ref * U0_ref - p_ref
+    P_ref = D_ref * h_ref * U0_ref * v_ref
+    th_o, h_o, _, w_o, U0_o, rho0_o, p_o, v_o = vg.valencia_c2p_synge(D_ref, E_ref, P_ref)
+    assert abs(th_o - th_ref) < 1e-13
+    assert abs(U0_o - U0_ref) < 1e-13
+    assert abs(p_o - p_ref) < 1e-13
+    assert np.linalg.norm(v_o - v_ref) < 1e-13
+
+    # Cold limit theta = 0
+    th_c, h_c, cs2_c, w_c, U0_c, _, p_c, v_c = vg.valencia_c2p_synge(
+        D_ref, math.sqrt(D_ref ** 2 + float(np.dot(P_ref, P_ref))), P_ref
+    )
+    assert th_c == 0.0 and h_c == 1.0 and cs2_c == 0.0 and p_c == 0.0
+
+    # Stationary pressure-balanced contact discontinuity has zero Noh conduction
+    wm_l, _, cs2_l, _ = vg.synge_thermo(0.5 / 3.0)
+    wm_r, _, cs2_r, _ = vg.synge_thermo(0.5 / 1.0)
+    Lc = dict(D=3.0, rho0=3.0, p=0.5, v=np.zeros(3), cs2=cs2_l, w_m=wm_l)
+    Rc = dict(D=1.0, rho0=1.0, p=0.5, v=np.zeros(3), cs2=cs2_r, w_m=wm_r)
+    assert abs(vg.noh_thermal_conduct_flux(Lc, Rc, 0.5)) < 1e-15
 
 
 def test_3d_mfm_twostream_and_ic_builders():

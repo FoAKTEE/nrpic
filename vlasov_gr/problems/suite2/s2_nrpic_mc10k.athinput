@@ -1,0 +1,71 @@
+# Suite 2: Kerr a=0.9M Cartesian Kerr-Schild warm sheared cloud
+<comment>
+problem = s2_nrpic_mc10k
+
+<job>
+basename = s2_nrpic_mc10k
+
+<mesh>
+nghost   = 2
+nx1      = 16
+x1min    = -18.0
+x1max    = 18.0
+ix1_bc   = outflow
+ox1_bc   = outflow
+nx2      = 16
+x2min    = -18.0
+x2max    = 18.0
+ix2_bc   = outflow
+ox2_bc   = outflow
+nx3      = 16
+x3min    = -18.0
+x3max    = 18.0
+ix3_bc   = outflow
+ox3_bc   = outflow
+
+<meshblock>
+nx1 = 16
+nx2 = 16
+nx3 = 16
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 30.000000000000
+ndiag      = 200
+
+<adm>
+dynamic = false
+
+<particles>
+particle_type      = nrpic
+pusher             = midpoint
+metric             = kerr_schild
+bh_mass            = 1.0
+bh_spin            = 0.9
+deposit            = false
+tolerance          = 1.0e-12
+max_iterations     = 200
+dt                 = 0.050000000000
+alpha_exc          = 0.0
+vlasov_kerr_r_exc  = 0.98
+vlasov_basis       = tophat
+vlasov_nperp       = 3
+vlasov_nq_kick     = 3
+vlasov_nq_dep      = 3
+vlasov_pair_mode   = covariant
+vlasov_analytic_vf = false
+vlasov_substeps    = 0
+vlasov_cfl         = 0.3
+vlasov_bnd_detect  = true
+particle_file      = /weka/scratch/schmidt/ssci-anima/ssci-haiyangw/nrpic_grlbv/runs/stage4a/suite2/ic_kerr_mc10k.nrp
+hist_dcycle        = 20
+snap_dt            = 5.000000000000
+
+<problem>
+pgen_name   = nrpic_geodesic
+metric_kind = kerr_schild
+bh_mass     = 1.0
+bh_spin     = 0.9

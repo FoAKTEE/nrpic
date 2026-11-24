@@ -1146,136 +1146,72 @@ void MjBgkRelaxCell(int Nb, const Real m_vec[], const Real u_bar[][3], const Rea
   const Real eta = 1.0 - exp(-nu_a * dtau_a);
   if (eta <= 0.0) return;
 
-  Real u_com_mean[MAX_BASIS][3], Sig_com[MAX_BASIS][3][3];
-  for (int al = 0; al < Nb; ++al) {
-    for (int i = 0; i < 3; ++i) {
-      u_com_mean[al][i] = 0.0;
-      for (int j = 0; j < 3; ++j) Sig_com[al][i][j] = 0.0;
-    }
-    if (m_vec[al] <= 0.0) continue;
-    Real pts[27][3], pts_com[27][3], w[27];
-    int n_pts = 0;
-    BasisCubaturePoints(u_bar[al], Sigma[al], n_q, pts, w, n_pts);
-    for (int q = 0; q < n_pts; ++q) {
-      Real ptet[3] = {0.0, 0.0, 0.0};
-      for (int m = 0; m < 3; ++m) {
-        for (int i = 0; i < 3; ++i) ptet[m] += Li_g[m][i] * pts[q][i];
-      }
-      const Real W = sqrt(1.0 + Dot3(ptet, ptet));
-      const Real fac = Dot3(ptet, U_cm) / (U0 + 1.0) - W;
-      for (int m = 0; m < 3; ++m) {
-        pts_com[q][m] = ptet[m] + fac * U_cm[m];
-        u_com_mean[al][m] += w[q] * pts_com[q][m];
-      }
-    }
-    for (int q = 0; q < n_pts; ++q) {
-      for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
-          Sig_com[al][i][j] += w[q] * (pts_com[q][i] - u_com_mean[al][i]) * (pts_com[q][j] - u_com_mean[al][j]);
-        }
-      }
-    }
-  }
-
+  // Evaluate local Maxwell-Juttner equilibrium moments ONCE in coordinate frame
+  // from one COM isotropic equilibrium cubature (exact identity at eta -> 0).
   const Real sig_eq2_0 = theta * h_rel;
-  Real u_com_new[MAX_BASIS][3], Sig_com_new[MAX_BASIS][3][3];
-  for (int al = 0; al < Nb; ++al) {
-    for (int i = 0; i < 3; ++i) u_com_new[al][i] = (1.0 - eta) * u_com_mean[al][i];
-  }
+  const Real u_zero[3] = {0.0, 0.0, 0.0};
 
-  auto eval_com_energy = [&](Real scale_s, Real S_list[MAX_BASIS][3][3]) -> Real {
-    Real Et = 0.0;
-    for (int al = 0; al < Nb; ++al) {
-      if (m_vec[al] <= 0.0) {
-        for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j) S_list[al][i][j] = 0.0;
-        continue;
-      }
-      for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
-          const Real s_ij = (1.0 - eta) * 0.5 * (Sig_com[al][i][j] + Sig_com[al][j][i])
-                          + eta * (1.0 - eta) * u_com_mean[al][i] * u_com_mean[al][j]
-                          + ((i == j) ? (eta * scale_s * sig_eq2_0) : 0.0);
-          S_list[al][i][j] = s_ij;
-        }
-      }
-      Real pts_c[27][3], w[27];
-      int n_pts = 0;
-      BasisCubaturePoints(u_com_new[al], S_list[al], n_q, pts_c, w, n_pts);
-      for (int q = 0; q < n_pts; ++q) {
-        const Real Wc = sqrt(1.0 + Dot3(pts_c[q], pts_c[q]));
-        Et += m_vec[al] * w[q] * Wc;
-      }
+  auto eval_eq_com_w = [&](Real scale_s) -> Real {
+    const Real v = scale_s * sig_eq2_0;
+    const Real S_eq_c[3][3] = {{v, 0.0, 0.0}, {0.0, v, 0.0}, {0.0, 0.0, v}};
+    Real pts_c[27][3], w[27];
+    int n_pts = 0;
+    BasisCubaturePoints(u_zero, S_eq_c, n_q, pts_c, w, n_pts);
+    Real Wt = 0.0;
+    for (int q = 0; q < n_pts; ++q) {
+      Wt += w[q] * sqrt(1.0 + Dot3(pts_c[q], pts_c[q]));
     }
-    return Et;
+    return Wt;
   };
 
-  Real S_zero[MAX_BASIS][3][3];
-  const Real E_min_com = eval_com_energy(0.0, S_zero);
-  if (M_inv <= E_min_com) {
-    if (E_min_com > m_tot * (1.0 + 1.0e-14)) {
-      auto eval_sc = [&](Real c, Real u_sc[MAX_BASIS][3], Real S_sc[MAX_BASIS][3][3]) -> Real {
-        Real Etc = 0.0;
-        const Real c2 = c * c;
-        for (int al = 0; al < Nb; ++al) {
-          if (m_vec[al] <= 0.0) {
-            for (int i = 0; i < 3; ++i) {
-              u_sc[al][i] = 0.0;
-              for (int j = 0; j < 3; ++j) S_sc[al][i][j] = 0.0;
-            }
-            continue;
-          }
-          for (int i = 0; i < 3; ++i) {
-            u_sc[al][i] = c * u_com_new[al][i];
-            for (int j = 0; j < 3; ++j) S_sc[al][i][j] = c2 * S_zero[al][i][j];
-          }
-          Real pts_c[27][3], w[27];
-          int n_pts = 0;
-          BasisCubaturePoints(u_sc[al], S_sc[al], n_q, pts_c, w, n_pts);
-          for (int q = 0; q < n_pts; ++q) {
-            Etc += m_vec[al] * w[q] * sqrt(1.0 + Dot3(pts_c[q], pts_c[q]));
-          }
-        }
-        return Etc;
-      };
-      auto f_sc = [&](Real c) -> Real {
-        Real ut[MAX_BASIS][3], st[MAX_BASIS][3][3];
-        return eval_sc(c, ut, st) - M_inv;
-      };
-      const Real c_opt = BrentRoot(f_sc, 0.0, 1.0, 1.0e-14, 1.0e-14, 80);
-      Real ut[MAX_BASIS][3];
-      eval_sc(c_opt, ut, Sig_com_new);
-      for (int al = 0; al < Nb; ++al) {
-        for (int i = 0; i < 3; ++i) u_com_new[al][i] = ut[al][i];
-      }
+  Real s_com = 1.0;
+  const Real w_eq1 = eval_eq_com_w(1.0);
+  if (fabs(w_eq1 - w_com) > 1.0e-14 * w_com) {
+    Real lo_s = 0.0, hi_s = 2.5;
+    while (eval_eq_com_w(hi_s) < w_com && hi_s < 1.0e6) hi_s *= 4.0;
+    if (eval_eq_com_w(hi_s) >= w_com) {
+      auto f_eq = [&](Real s) -> Real { return eval_eq_com_w(s) - w_com; };
+      s_com = BrentRoot(f_eq, lo_s, hi_s, 1.0e-14, 1.0e-14, 80);
     } else {
-      for (int al = 0; al < Nb; ++al) {
-        for (int i = 0; i < 3; ++i) {
-          u_com_new[al][i] = 0.0;
-          for (int j = 0; j < 3; ++j) Sig_com_new[al][i][j] = 0.0;
-        }
-      }
+      s_com = hi_s;
     }
-  } else {
-    Real S_tmp[MAX_BASIS][3][3];
-    const Real Et1 = eval_com_energy(1.0, S_tmp);
-    Real scale_opt = 1.0;
-    if (fabs(Et1 - M_inv) > 1.0e-14 * M_inv) {
-      Real lo_s = 0.0, hi_s = 2.5;
-      while (eval_com_energy(hi_s, S_tmp) < M_inv && hi_s < 1.0e6) hi_s *= 4.0;
-      if (eval_com_energy(hi_s, S_tmp) >= M_inv) {
-        auto f_s = [&](Real s) -> Real {
-          Real st[MAX_BASIS][3][3];
-          return eval_com_energy(s, st) - M_inv;
-        };
-        scale_opt = BrentRoot(f_s, lo_s, hi_s, 1.0e-14, 1.0e-14, 80);
-      } else {
-        scale_opt = hi_s;
-      }
-    }
-    eval_com_energy(scale_opt, Sig_com_new);
   }
 
-  // Boost back to coordinate frame (pts_cov = pts_tet * L_g)
+  const Real veq = s_com * sig_eq2_0;
+  const Real S_eq_com[3][3] = {{veq, 0.0, 0.0}, {0.0, veq, 0.0}, {0.0, 0.0, veq}};
+  Real pts_eq_c[27][3], pts_eq_cov[27][3], w_eq[27];
+  int n_eq_pts = 0;
+  BasisCubaturePoints(u_zero, S_eq_com, n_q, pts_eq_c, w_eq, n_eq_pts);
+
+  Real u_eq[3] = {0.0, 0.0, 0.0};
+  for (int q = 0; q < n_eq_pts; ++q) {
+    const Real Wc = sqrt(1.0 + Dot3(pts_eq_c[q], pts_eq_c[q]));
+    const Real fac = Dot3(pts_eq_c[q], U_cm) / (U0 + 1.0) + Wc;
+    Real ptet[3];
+    for (int m = 0; m < 3; ++m) ptet[m] = pts_eq_c[q][m] + fac * U_cm[m];
+    for (int i = 0; i < 3; ++i) {
+      Real pc = 0.0;
+      for (int m = 0; m < 3; ++m) pc += L_g[i][m] * ptet[m];
+      pts_eq_cov[q][i] = pc;
+      u_eq[i] += w_eq[q] * pc;
+    }
+  }
+  Real Sig_eq[3][3] = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
+  for (int q = 0; q < n_eq_pts; ++q) {
+    for (int i = 0; i < 3; ++i) {
+      for (int j = 0; j < 3; ++j) {
+        Sig_eq[i][j] += w_eq[q] * (pts_eq_cov[q][i] - u_eq[i]) * (pts_eq_cov[q][j] - u_eq[j]);
+      }
+    }
+  }
+  for (int i = 0; i < 3; ++i) {
+    for (int j = i + 1; j < 3; ++j) {
+      const Real sym = 0.5 * (Sig_eq[i][j] + Sig_eq[j][i]);
+      Sig_eq[i][j] = Sig_eq[j][i] = sym;
+    }
+  }
+
+  // Convex lab-frame moment relaxation (identity at eta -> 0, exact MJ at eta -> 1)
   for (int al = 0; al < Nb; ++al) {
     if (m_vec[al] <= 0.0) {
       for (int i = 0; i < 3; ++i) {
@@ -1284,28 +1220,16 @@ void MjBgkRelaxCell(int Nb, const Real m_vec[], const Real u_bar[][3], const Rea
       }
       continue;
     }
-    Real pts_c[27][3], pts_cov[27][3], w[27];
-    int n_pts = 0;
-    BasisCubaturePoints(u_com_new[al], Sig_com_new[al], n_q, pts_c, w, n_pts);
-    u_out[al][0] = u_out[al][1] = u_out[al][2] = 0.0;
-    for (int q = 0; q < n_pts; ++q) {
-      const Real Wc = sqrt(1.0 + Dot3(pts_c[q], pts_c[q]));
-      const Real fac = Dot3(pts_c[q], U_cm) / (U0 + 1.0) + Wc;
-      Real ptet[3];
-      for (int m = 0; m < 3; ++m) ptet[m] = pts_c[q][m] + fac * U_cm[m];
-      for (int i = 0; i < 3; ++i) {
-        Real pc = 0.0;
-        for (int m = 0; m < 3; ++m) pc += ptet[m] * L_g[m][i];
-        pts_cov[q][i] = pc;
-        u_out[al][i] += w[q] * pc;
-      }
+    Real du[3];
+    for (int i = 0; i < 3; ++i) {
+      u_out[al][i] = (1.0 - eta) * u_bar[al][i] + eta * u_eq[i];
+      du[i] = u_bar[al][i] - u_eq[i];
     }
-    for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j) Sig_out[al][i][j] = 0.0;
-    for (int q = 0; q < n_pts; ++q) {
-      for (int i = 0; i < 3; ++i) {
-        for (int j = 0; j < 3; ++j) {
-          Sig_out[al][i][j] += w[q] * (pts_cov[q][i] - u_out[al][i]) * (pts_cov[q][j] - u_out[al][j]);
-        }
+    for (int i = 0; i < 3; ++i) {
+      for (int j = 0; j < 3; ++j) {
+        Sig_out[al][i][j] = (1.0 - eta) * Sigma[al][i][j]
+                          + eta * Sig_eq[i][j]
+                          + eta * (1.0 - eta) * du[i] * du[j];
       }
     }
     for (int i = 0; i < 3; ++i) {
@@ -1316,40 +1240,137 @@ void MjBgkRelaxCell(int Nb, const Real m_vec[], const Real u_bar[][3], const Rea
     }
   }
 
-  // Exact lab-frame P and E locking
+  // Exact lab-frame P and E locking without amplifying per-slot trace covariances
+  Real u_eq_mom[3] = {P_cov_tot[0] / m_tot, P_cov_tot[1] / m_tot, P_cov_tot[2] / m_tot};
   Real P_cur[3] = {0.0, 0.0, 0.0};
   for (int al = 0; al < Nb; ++al) {
-    for (int i = 0; i < 3; ++i) P_cur[i] += m_vec[al] * u_out[al][i];
+    if (m_vec[al] > 0.0) {
+      for (int i = 0; i < 3; ++i) P_cur[i] += m_vec[al] * u_out[al][i];
+    }
   }
   for (int al = 0; al < Nb; ++al) {
-    for (int i = 0; i < 3; ++i) u_out[al][i] -= (P_cur[i] - P_cov_tot[i]) / m_tot;
+    if (m_vec[al] > 0.0) {
+      for (int i = 0; i < 3; ++i) u_out[al][i] -= (P_cur[i] - P_cov_tot[i]) / m_tot;
+    }
   }
 
-  auto lab_energy = [&](Real scale_lab) -> Real {
+  auto eval_zero_energy = [&](const Real u_arr[][3]) -> Real {
+    Real Ez = 0.0;
+    for (int al = 0; al < Nb; ++al) {
+      if (m_vec[al] <= 0.0) continue;
+      Real u2 = 0.0;
+      for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) u2 += u_arr[al][i] * gi[i][j] * u_arr[al][j];
+      }
+      Ez += m_vec[al] * sqrt(1.0 + u2);
+    }
+    return Ez;
+  };
+
+  auto lab_energy_cur = [&]() -> Real {
     Real Es = 0.0;
     for (int al = 0; al < Nb; ++al) {
       if (m_vec[al] <= 0.0) continue;
-      Real S_sc[3][3];
-      for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j) S_sc[i][j] = scale_lab * Sig_out[al][i][j];
       Real ea, pa[3], sa[3][3];
-      BasisStressEnergy(m_vec[al], u_out[al], S_sc, gi, n_q, ea, pa, sa);
+      BasisStressEnergy(m_vec[al], u_out[al], Sig_out[al], gi, n_q, ea, pa, sa);
       Es += ea;
     }
     return Es;
   };
 
-  const Real E_min_lab = lab_energy(0.0);
-  const Real E_target = (E_tot > E_min_lab) ? E_tot : E_min_lab;
-  const Real E_cur = lab_energy(1.0);
+  const Real E_zero = eval_zero_energy(u_out);
+  const Real E_cur  = lab_energy_cur();
+  const Real E_target = E_tot;
   if (fabs(E_cur - E_target) > 1.0e-14 * E_target) {
-    Real lo_l = 0.25, hi_l = 2.0;
-    while (lab_energy(lo_l) > E_target && lo_l > 1.0e-12) lo_l *= 0.25;
-    while (lab_energy(hi_l) < E_target && hi_l < 1.0e6)  hi_l *= 4.0;
-    if (lab_energy(lo_l) <= E_target && E_target <= lab_energy(hi_l)) {
-      auto f_l = [&](Real s) -> Real { return lab_energy(s) - E_target; };
-      const Real s_lab = BrentRoot(f_l, lo_l, hi_l, 1.0e-14, 1.0e-14, 80);
+    if (E_target < E_zero) {
+      auto eval_blend = [&](Real lam) -> Real {
+        Real Ez = 0.0;
+        for (int al = 0; al < Nb; ++al) {
+          if (m_vec[al] <= 0.0) continue;
+          Real ut[3] = {
+            (1.0 - lam) * u_out[al][0] + lam * u_eq_mom[0],
+            (1.0 - lam) * u_out[al][1] + lam * u_eq_mom[1],
+            (1.0 - lam) * u_out[al][2] + lam * u_eq_mom[2]
+          };
+          Real u2 = 0.0;
+          for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) u2 += ut[i] * gi[i][j] * ut[j];
+          }
+          Ez += m_vec[al] * sqrt(1.0 + u2);
+        }
+        return Ez;
+      };
+      const Real E_blend1 = eval_blend(1.0);
+      Real lam_opt = 1.0;
+      if (E_blend1 <= E_target && E_target <= E_zero) {
+        auto f_b = [&](Real l) -> Real { return eval_blend(l) - E_target; };
+        lam_opt = BrentRoot(f_b, 0.0, 1.0, 1.0e-14, 1.0e-14, 80);
+      }
       for (int al = 0; al < Nb; ++al) {
-        for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j) Sig_out[al][i][j] *= s_lab;
+        if (m_vec[al] <= 0.0) continue;
+        for (int i = 0; i < 3; ++i) {
+          u_out[al][i] = (1.0 - lam_opt) * u_out[al][i] + lam_opt * u_eq_mom[i];
+          for (int j = 0; j < 3; ++j) Sig_out[al][i][j] = 0.0;
+        }
+      }
+    } else if (E_target < E_cur) {
+      auto eval_shrink = [&](Real s) -> Real {
+        Real Es = 0.0;
+        for (int al = 0; al < Nb; ++al) {
+          if (m_vec[al] <= 0.0) continue;
+          Real S_sc[3][3];
+          for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j) S_sc[i][j] = s * Sig_out[al][i][j];
+          Real ea, pa[3], sa[3][3];
+          BasisStressEnergy(m_vec[al], u_out[al], S_sc, gi, n_q, ea, pa, sa);
+          Es += ea;
+        }
+        return Es;
+      };
+      if (E_zero <= E_target && E_target <= E_cur) {
+        auto f_s = [&](Real s) -> Real { return eval_shrink(s) - E_target; };
+        const Real s_opt = BrentRoot(f_s, 0.0, 1.0, 1.0e-14, 1.0e-14, 80);
+        for (int al = 0; al < Nb; ++al) {
+          for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j) Sig_out[al][i][j] *= s_opt;
+        }
+      } else {
+        for (int al = 0; al < Nb; ++al) {
+          for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j) Sig_out[al][i][j] = 0.0;
+        }
+      }
+    } else {
+      const Real tr_eq = Sig_eq[0][0] + Sig_eq[1][1] + Sig_eq[2][2];
+      Real S_add[3][3];
+      for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+          S_add[i][j] = (tr_eq > 1.0e-30) ? Sig_eq[i][j] : adm.g[i][j];
+        }
+      }
+      auto eval_add = [&](Real delta) -> Real {
+        Real Es = 0.0;
+        for (int al = 0; al < Nb; ++al) {
+          if (m_vec[al] <= 0.0) continue;
+          Real S_ad[3][3];
+          for (int i = 0; i < 3; ++i) for (int j = 0; j < 3; ++j) S_ad[i][j] = Sig_out[al][i][j] + delta * S_add[i][j];
+          Real ea, pa[3], sa[3][3];
+          BasisStressEnergy(m_vec[al], u_out[al], S_ad, gi, n_q, ea, pa, sa);
+          Es += ea;
+        }
+        return Es;
+      };
+      Real lo_d = 0.0, hi_d = 1.0;
+      while (eval_add(hi_d) < E_target && hi_d < 1.0e12) hi_d *= 4.0;
+      if (eval_add(lo_d) <= E_target && E_target <= eval_add(hi_d)) {
+        auto f_d = [&](Real d) -> Real { return eval_add(d) - E_target; };
+        const Real d_opt = BrentRoot(f_d, lo_d, hi_d, 1.0e-14, 1.0e-14, 80);
+        for (int al = 0; al < Nb; ++al) {
+          if (m_vec[al] <= 0.0) continue;
+          for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+              Sig_out[al][i][j] = 0.5 * ((Sig_out[al][i][j] + d_opt * S_add[i][j])
+                                       + (Sig_out[al][j][i] + d_opt * S_add[j][i]));
+            }
+          }
+        }
       }
     }
   }
@@ -1357,9 +1378,59 @@ void MjBgkRelaxCell(int Nb, const Real m_vec[], const Real u_bar[][3], const Rea
 
 struct HllcFluidState {
   Real D = 0.0, E = 0.0, P[3] = {0.0, 0.0, 0.0}, v[3] = {0.0, 0.0, 0.0};
-  Real U0 = 1.0, h = 1.0, cs2 = 0.0, p = 0.0;
+  Real U0 = 1.0, h = 1.0, cs2 = 0.0, p = 0.0, rho0 = 0.0, theta = 0.0, w_m = 1.0;
   bool valid = false;
 };
+
+KOKKOS_INLINE_FUNCTION
+void ValenciaC2PSynge(Real D, Real E, const Real P[3],
+                      Real &theta, Real &h_rel, Real &cs2, Real &w_m,
+                      Real &U0, Real &rho0, Real &p, Real v[3]) {
+  if (D <= 1.0e-300) {
+    theta = 0.0; h_rel = 1.0; cs2 = 0.0; w_m = 1.0;
+    U0 = 1.0; rho0 = 0.0; p = 0.0;
+    v[0] = v[1] = v[2] = 0.0;
+    return;
+  }
+  const Real P2 = Dot3(P, P);
+  const Real E_cold = sqrt(D * D + P2);
+  if (E <= E_cold * (1.0 + 1.0e-14)) {
+    theta = 0.0; h_rel = 1.0; cs2 = 0.0; w_m = 1.0; p = 0.0;
+    U0 = E_cold / D;
+    rho0 = D / U0;
+    const Real invE = (E_cold > 1.0e-300) ? (1.0 / E_cold) : 0.0;
+    for (int i = 0; i < 3; ++i) v[i] = P[i] * invE;
+    return;
+  }
+
+  auto eval_E = [&](Real th) -> Real {
+    Real wm_t, hr_t, cs2_t, ga_t;
+    SyngeThermo(th, wm_t, hr_t, cs2_t, ga_t);
+    const Real Dh = D * hr_t;
+    const Real u0_t = sqrt(1.0 + P2 / (Dh * Dh));
+    return Dh * u0_t - (D / u0_t) * th;
+  };
+
+  const Real lo = 0.0;
+  Real hi = (E - E_cold) / D;
+  if (hi < 1.0e-2) hi = 1.0e-2;
+  while (eval_E(hi) < E && hi < 1.0e8) hi *= 2.0;
+  if (eval_E(hi) >= E) {
+    auto f = [&](Real th) -> Real { return eval_E(th) - E; };
+    theta = BrentRoot(f, lo, hi, 1.0e-14, 1.0e-14, 80);
+  } else {
+    theta = hi;
+  }
+
+  Real ga_t;
+  SyngeThermo(theta, w_m, h_rel, cs2, ga_t);
+  const Real Dh = D * h_rel;
+  U0 = sqrt(1.0 + P2 / (Dh * Dh));
+  rho0 = D / U0;
+  p = rho0 * theta;
+  const Real inv_DhU0 = 1.0 / (Dh * U0);
+  for (int i = 0; i < 3; ++i) v[i] = P[i] * inv_DhU0;
+}
 
 KOKKOS_INLINE_FUNCTION
 HllcFluidState BuildHllcCellFluid(int Nb, const Real D_vec[], const Real u_tet[][3], const Real Sig_tet[][3][3]) {
@@ -1377,20 +1448,9 @@ HllcFluidState BuildHllcCellFluid(int Nb, const Real D_vec[], const Real u_tet[]
       for (int i = 0; i < 3; ++i) P[i] += pa[i];
     }
   }
-  const Real P2 = Dot3(P, P);
-  const Real dE2 = (E*E - P2 > D_tot*D_tot) ? (E*E - P2) : (D_tot*D_tot);
-  const Real Minv = sqrt(dE2);
-  const Real U0 = E / Minv;
-  const Real w_com = Minv / D_tot;
-  Real th = 0.0, h_rel = 1.0, cs2 = 0.0;
-  if (w_com > 1.0 + 1.0e-12) {
-    th = SafeMjThetaFromW(w_com);
-    Real wm_t, ga_t;
-    SyngeThermo(th, wm_t, h_rel, cs2, ga_t);
-  }
   st.D = D_tot; st.E = E;
-  for (int i = 0; i < 3; ++i) { st.P[i] = P[i]; st.v[i] = P[i] / E; }
-  st.U0 = U0; st.h = h_rel; st.cs2 = cs2; st.p = (D_tot / U0) * th;
+  for (int i = 0; i < 3; ++i) st.P[i] = P[i];
+  ValenciaC2PSynge(D_tot, E, P, st.theta, st.h, st.cs2, st.w_m, st.U0, st.rho0, st.p, st.v);
   st.valid = true;
   return st;
 }
@@ -1406,6 +1466,54 @@ void HllcCharSpeeds(const HllcFluidState &st, Real &lam_m, Real &lam_p) {
   const Real num1 = vx * (1.0 - cs2);
   lam_m = (num1 - disc) / s2;
   lam_p = (num1 + disc) / s2;
+}
+
+KOKKOS_INLINE_FUNCTION
+void HllcStarFPiAle(Real D_s, Real E_s, const Real P_s[3], Real beta_use,
+                    Real FPi_out[3][3]) {
+  for (int i = 0; i < 3; ++i) {
+    for (int j = 0; j < 3; ++j) FPi_out[i][j] = 0.0;
+  }
+  if (D_s <= 1.0e-300 || E_s <= 1.0e-300) return;
+
+  Real th_s, h_s, cs2_s, wm_s, U0_s, n_s, p_s, v_s[3];
+  ValenciaC2PSynge(D_s, E_s, P_s, th_s, h_s, cs2_s, wm_s, U0_s, n_s, p_s, v_s);
+  Real v_s2 = Dot3(v_s, v_s);
+  if (v_s2 >= 1.0 - 1.0e-12) {
+    const Real sc = sqrt((1.0 - 1.0e-12) / v_s2);
+    for (int i = 0; i < 3; ++i) v_s[i] *= sc;
+    v_s2 = 1.0 - 1.0e-12;
+    U0_s = 1.0 / sqrt(1.0 - v_s2);
+    n_s = D_s / U0_s;
+  }
+  const Real U_s[3] = {U0_s * v_s[0], U0_s * v_s[1], U0_s * v_s[2]};
+  const Real b3 = n_s * th_s * h_s;
+  const Real a3 = n_s * (1.0 + 6.0 * th_s * h_s);
+  for (int i = 0; i < 3; ++i) {
+    for (int j = 0; j < 3; ++j) {
+      const Real M0 = (a3 * U0_s) * U_s[i] * U_s[j] + ((i == j) ? (b3 * U0_s) : 0.0);
+      const Real del_ij = (i == j) ? 1.0 : 0.0;
+      const Real del_xi = (i == 0) ? 1.0 : 0.0;
+      const Real del_xj = (j == 0) ? 1.0 : 0.0;
+      const Real M1 = (a3 * U_s[0]) * U_s[i] * U_s[j]
+                    + b3 * (U_s[0]*del_ij + U_s[i]*del_xj + del_xi*U_s[j]);
+      FPi_out[i][j] = M1 - beta_use * M0;
+    }
+  }
+}
+
+KOKKOS_INLINE_FUNCTION
+Real NohThermalConductFlux(const HllcFluidState &Lc, const HllcFluidState &Rc, Real kappa) {
+  if (kappa <= 0.0 || !Lc.valid || !Rc.valid) return 0.0;
+  const Real csL = sqrt((Lc.cs2 > 0.0) ? Lc.cs2 : 0.0);
+  const Real csR = sqrt((Rc.cs2 > 0.0) ? Rc.cs2 : 0.0);
+  const Real cs_harm = 2.0 * csL * csR / (csL + csR + 1.0e-30);
+  if (cs_harm <= 0.0) return 0.0;
+  const Real rho_bar = 0.5 * (Lc.rho0 + Rc.rho0) + 1.0e-30;
+  const Real dv_comp = (Lc.v[0] > Rc.v[0]) ? (Lc.v[0] - Rc.v[0]) : 0.0;
+  const Real v_price = sqrt(fabs(Lc.p - Rc.p) / rho_bar) + dv_comp;
+  const Real v_sig = (cs_harm < v_price) ? cs_harm : v_price;
+  return kappa * 0.5 * (Lc.D + Rc.D) * v_sig * (Lc.w_m - Rc.w_m);
 }
 
 KOKKOS_INLINE_FUNCTION
@@ -1464,6 +1572,20 @@ void RelHllcFluxTetrad(int Na, const Real D_L[], const Real u_L_tet[][3], const 
   Real D_s = 0.0, E_s = 0.0, P_s[3] = {0.0, 0.0, 0.0};
   Real FD_s = 0.0, FP_s[3] = {0.0, 0.0, 0.0}, FE_s = 0.0;
   if (dS <= 1.0e-12 * (1.0 + fabs(S_L) + fabs(S_R))) {
+    if (use_contact_beta_F) {
+      FD_ale = 0.5 * (FD_L + FD_R) - beta_use * 0.5 * (L.D + R.D);
+      FE_ale = 0.5 * (FE_L + FE_R) - beta_use * 0.5 * (L.E + R.E);
+      for (int i = 0; i < 3; ++i) {
+        FP_ale[i] = 0.5 * (FP_L[i] + FP_R[i]) - beta_use * 0.5 * (L.P[i] + R.P[i]);
+      }
+      Real FPi_L[3][3], FPi_R[3][3];
+      HllcStarFPiAle(L.D, L.E, L.P, beta_use, FPi_L);
+      HllcStarFPiAle(R.D, R.E, R.P, beta_use, FPi_R);
+      for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) FPi_ale[i][j] = 0.5 * (FPi_L[i][j] + FPi_R[i][j]);
+      }
+      return;
+    }
     const Real S_mid = 0.5 * (S_L + S_R);
     if (beta_use <= S_mid) {
       D_s = L.D; E_s = L.E; FD_s = FD_L; FE_s = FE_L;
@@ -1496,12 +1618,52 @@ void RelHllcFluxTetrad(int Na, const Real D_L[], const Real u_L_tet[][3], const 
     if (S_star < S_L) S_star = S_L;
     if (S_star > S_R) S_star = S_R;
 
+    const Real p_s = (F_hll_Px - S_star * F_hll_E > 0.0) ? (F_hll_Px - S_star * F_hll_E) : 0.0;
+    const Real dS_safe = (dS > 1.0) ? dS : 1.0;
+
+    if (use_contact_beta_F) {
+      const Real denom_L = S_L - S_star;
+      const Real denom_R = S_R - S_star;
+      FD_ale = 0.0;
+      FP_ale[0] = p_s; FP_ale[1] = 0.0; FP_ale[2] = 0.0;
+      FE_ale = p_s * S_star;
+      if (fabs(denom_L) <= 1.0e-12 * dS_safe || fabs(denom_R) <= 1.0e-12 * dS_safe) {
+        const Real D_h = (S_R*R.D - S_L*L.D + FD_L - FD_R) / dS;
+        Real P_h[3];
+        for (int i = 0; i < 3; ++i) {
+          P_h[i] = (S_R*R.P[i] - S_L*L.P[i] + FP_L[i] - FP_R[i]) / dS;
+        }
+        HllcStarFPiAle(D_h, U_hll_E, P_h, S_star, FPi_ale);
+      } else {
+        const Real vxL = L.v[0], vxR = R.v[0];
+        const Real D_Ls = L.D * (S_L - vxL) / denom_L;
+        const Real E_Ls = (L.E * (S_L - vxL) - L.p * vxL + p_s * S_star) / denom_L;
+        const Real P_Ls[3] = {
+          (L.P[0] * (S_L - vxL) - L.p + p_s) / denom_L,
+          L.P[1] * (S_L - vxL) / denom_L,
+          L.P[2] * (S_L - vxL) / denom_L
+        };
+        const Real D_Rs = R.D * (S_R - vxR) / denom_R;
+        const Real E_Rs = (R.E * (S_R - vxR) - R.p * vxR + p_s * S_star) / denom_R;
+        const Real P_Rs[3] = {
+          (R.P[0] * (S_R - vxR) - R.p + p_s) / denom_R,
+          R.P[1] * (S_R - vxR) / denom_R,
+          R.P[2] * (S_R - vxR) / denom_R
+        };
+        Real FPi_L[3][3], FPi_R[3][3];
+        HllcStarFPiAle(D_Ls, E_Ls, P_Ls, S_star, FPi_L);
+        HllcStarFPiAle(D_Rs, E_Rs, P_Rs, S_star, FPi_R);
+        for (int i = 0; i < 3; ++i) {
+          for (int j = 0; j < 3; ++j) FPi_ale[i][j] = 0.5 * (FPi_L[i][j] + FPi_R[i][j]);
+        }
+      }
+      return;
+    }
+
     const HllcFluidState &st = (beta_use <= S_star) ? L : R;
     const Real S_K = (beta_use <= S_star) ? S_L : S_R;
     const Real vxK = st.v[0];
-    const Real p_s = (F_hll_Px - S_star * F_hll_E > 0.0) ? (F_hll_Px - S_star * F_hll_E) : 0.0;
     const Real denom = S_K - S_star;
-    const Real dS_safe = (dS > 1.0) ? dS : 1.0;
     if (fabs(denom) <= 1.0e-12 * dS_safe) {
       D_s = (S_R*R.D - S_L*L.D + FD_L - FD_R) / dS;
       E_s = U_hll_E;
@@ -1527,39 +1689,7 @@ void RelHllcFluxTetrad(int Na, const Real D_L[], const Real u_L_tet[][3], const 
   FD_ale = FD_s - beta_use * D_s;
   FE_ale = FE_s - beta_use * E_s;
   for (int i = 0; i < 3; ++i) FP_ale[i] = FP_s[i] - beta_use * P_s[i];
-  if (D_s <= 1.0e-300 || E_s <= 1.0e-300) return;
-
-  Real v_s[3] = {P_s[0] / E_s, P_s[1] / E_s, P_s[2] / E_s};
-  Real v_s2 = Dot3(v_s, v_s);
-  if (v_s2 >= 1.0 - 1.0e-12) {
-    const Real sc = sqrt((1.0 - 1.0e-12) / v_s2);
-    for (int i = 0; i < 3; ++i) v_s[i] *= sc;
-    v_s2 = 1.0 - 1.0e-12;
-  }
-  const Real U0_s = 1.0 / sqrt(1.0 - v_s2);
-  const Real U_s[3] = {U0_s*v_s[0], U0_s*v_s[1], U0_s*v_s[2]};
-  const Real M_inv_s = E_s / U0_s;
-  const Real n_s = D_s / U0_s;
-  const Real w_s = M_inv_s / D_s;
-  Real th_s = 0.0, h_s = 1.0;
-  if (w_s > 1.0 + 1.0e-12) {
-    th_s = SafeMjThetaFromW(w_s);
-    Real wm_t, cs2_t, ga_t;
-    SyngeThermo(th_s, wm_t, h_s, cs2_t, ga_t);
-  }
-  const Real b3 = n_s * th_s * h_s;
-  const Real a3 = n_s * (1.0 + 6.0 * th_s * h_s);
-  for (int i = 0; i < 3; ++i) {
-    for (int j = 0; j < 3; ++j) {
-      const Real M0 = (a3 * U0_s) * U_s[i] * U_s[j] + ((i == j) ? (b3 * U0_s) : 0.0);
-      const Real del_ij = (i == j) ? 1.0 : 0.0;
-      const Real del_xi = (i == 0) ? 1.0 : 0.0;
-      const Real del_xj = (j == 0) ? 1.0 : 0.0;
-      const Real M1 = (a3 * U_s[0]) * U_s[i] * U_s[j]
-                    + b3 * (U_s[0]*del_ij + U_s[i]*del_xj + del_xi*U_s[j]);
-      FPi_ale[i][j] = M1 - beta_use * M0;
-    }
-  }
+  HllcStarFPiAle(D_s, E_s, P_s, beta_use, FPi_ale);
 }
 
 }  // namespace vlasov

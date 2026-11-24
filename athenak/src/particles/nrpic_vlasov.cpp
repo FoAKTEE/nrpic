@@ -998,7 +998,7 @@ void ComputeGradients(VlasovState &st, const NrpicOptions &nropt) {
 
   const Real dlen[3] = {nropt.dom_len[0], nropt.dom_len[1], nropt.dom_len[2]};
   const bool per[3]  = {nropt.periodic[0], nropt.periodic[1], nropt.periodic[2]};
-  const Real eps_v   = st.opt.lim_eps_v;
+  const Real eps_v   = (st.opt.coll_sigma > 0.0) ? 0.0 : st.opt.lim_eps_v;
 
   auto act   = st.active;
   auto bnd   = st.is_bnd;
@@ -1041,7 +1041,8 @@ void ComputeGradients(VlasovState &st, const NrpicOptions &nropt) {
 
   par_for("vlasov_mls", DevExeSpace(), 0, N - 1, KOKKOS_LAMBDA(const int a) {
     const int cnt = ncnt(a);
-    if (!act(a) || bnd(a) == 1 || cnt == 0) {
+    const bool is_b = (bnd(a) == 1);
+    if (!act(a) || cnt == 0 || (is_b && cnt < 4)) {
       for (int al = 0; al < Nb; ++al) {
         for (int k = 0; k < 3; ++k) gDv(al, k, a) = 0.0;
         for (int i = 0; i < 3; ++i) for (int k = 0; k < 3; ++k) guv(al, i, k, a) = 0.0;
@@ -1130,7 +1131,7 @@ void ComputeGradients(VlasovState &st, const NrpicOptions &nropt) {
         else if (dval < -1.0e-300) phi_D = fmin(phi_D, d_lo / dval);
       }
       phi_D = fmax(0.0, fmin(1.0, phi_D));
-      for (int k = 0; k < 3; ++k) gDv(al, k, a) = phi_D * dD_raw[k];
+      for (int k = 0; k < 3; ++k) gDv(al, k, a) = is_b ? 0.0 : (phi_D * dD_raw[k]);
 
       // 2. Componentwise velocity-crossing BJ limiter for u_bar
       const int diag_idx[3] = {SYM_XX, SYM_YY, SYM_ZZ};
@@ -1156,7 +1157,7 @@ void ComputeGradients(VlasovState &st, const NrpicOptions &nropt) {
                           fmax(fabs(uv(be, ic, b) - ubv(ic, b)),
                           fmax(sig_b, 1.0e-12))));
           const Real dv_full = fabs(nrpic::vlasov::Dot3(du_raw[ic], dvec));
-          if (dv_full >= eps_v * sc) {
+          if (eps_v <= 0.0 || dv_full >= eps_v * sc) {
             const Real psi = hv(b) / (ha + hv(b));
             const Real xf[3] = {psi*dvec[0], psi*dvec[1], psi*dvec[2]};
             const Real dval = nrpic::vlasov::Dot3(du_raw[ic], xf);
@@ -1295,6 +1296,7 @@ void ComputeEdgeFluxes(VlasovState &st, const NrpicOptions &nropt,
   const int pair_mode   = st.opt.pair_mode;
   const bool analytic_v = st.opt.use_analytic_vf;
   const Real coll_sigma = st.opt.coll_sigma;
+  const Real noh_kappa  = st.opt.noh_kappa;
 
   auto ea_v  = st.edge_a;
   auto eb_v  = st.edge_b;
@@ -1461,10 +1463,24 @@ void ComputeEdgeFluxes(VlasovState &st, const NrpicOptions &nropt,
     if (wc < 1.0 - 1.0e-14) {
       Real FD_c = 0.0, FP_c[3] = {0.0, 0.0, 0.0}, FPi_c[3][3], FE_c = 0.0;
       nrpic::vlasov::RelHllcFluxTetrad(Nb, Da, ua_t, Sa_t, Nb, Db, ub_t, Sb_t,
-                                       beta_F, (wc < 0.5), FD_c, FP_c, FPi_c, FE_c);
+                                       beta_F, true, FD_c, FP_c, FPi_c, FE_c);
+      Real FE_cond = 0.0;
+      if (noh_kappa > 0.0) {
+        const Real xf_zero[3] = {0.0, 0.0, 0.0};
+        Real Da_c[nrpic::vlasov::MAX_BASIS], Db_c[nrpic::vlasov::MAX_BASIS];
+        Real ua_ct[nrpic::vlasov::MAX_BASIS][3], ub_ct[nrpic::vlasov::MAX_BASIS][3];
+        Real Sa_ct[nrpic::vlasov::MAX_BASIS][3][3], Sb_ct[nrpic::vlasov::MAX_BASIS][3][3];
+        ReconstructFaceSide(a, Nb, xf_zero, e_up, Dv, uv, Sv, gDv, guv, gSv, Da_c, ua_ct, Sa_ct);
+        ReconstructFaceSide(b, Nb, xf_zero, e_up, Dv, uv, Sv, gDv, guv, gSv, Db_c, ub_ct, Sb_ct);
+        const nrpic::vlasov::HllcFluidState Lc =
+            nrpic::vlasov::BuildHllcCellFluid(Nb, Da_c, ua_ct, Sa_ct);
+        const nrpic::vlasov::HllcFluidState Rc =
+            nrpic::vlasov::BuildHllcCellFluid(Nb, Db_c, ub_ct, Sb_ct);
+        FE_cond = nrpic::vlasov::NohThermalConductFlux(Lc, Rc, noh_kappa);
+      }
       const Real omw_fac = (1.0 - wc) * fac;
       const Real fm_tot  = omw_fac * FD_c;
-      const Real fe_tot  = omw_fac * FE_c;
+      const Real fe_tot  = omw_fac * (FE_c + FE_cond);
       Real fp[3] = {0.0, 0.0, 0.0}, fpi[3][3];
       for (int i = 0; i < 3; ++i) {
         for (int m = 0; m < 3; ++m) fp[i] += e_dn[m][i] * FP_c[m];
@@ -1940,6 +1956,8 @@ void Particles::NrpicVlasovInit(ParameterInput *pin) {
   opt.bnd_detect      = pin->GetOrAddBoolean("particles", "vlasov_bnd_detect", !all_per);
   opt.bnd_cm_tol      = pin->GetOrAddReal("particles", "vlasov_bnd_cm_tol", 0.35);
   opt.bnd_min_ngb     = pin->GetOrAddInteger("particles", "vlasov_bnd_min_ngb", 12);
+  opt.noh_kappa       = pin->GetOrAddReal("particles", "vlasov_noh_kappa", 0.5);
+  opt.kerr_r_exc      = pin->GetOrAddReal("particles", "vlasov_kerr_r_exc", 0.0);
 
   if (global_variable::my_rank == 0) {
     std::cout << "NRPIC Vlasov (GR-LBV): basis=" << basis_s
@@ -1949,6 +1967,8 @@ void Particles::NrpicVlasovInit(ParameterInput *pin) {
               << ", cfl=" << opt.cfl
               << ", fixed_substeps=" << opt.fixed_substeps
               << ", coll_sigma=" << opt.coll_sigma
+              << ", noh_kappa=" << opt.noh_kappa
+              << ", kerr_r_exc=" << opt.kerr_r_exc
               << ", bnd_detect=" << (opt.bnd_detect ? "true" : "false")
               << std::endl;
   }
@@ -2124,34 +2144,52 @@ void Particles::NrpicVlasovPush() {
   if (dt <= 0.0) return;
 
   auto sz  = pmy_pack->pmb->mb_size.d_view;
+  nrpic_vlasov_detail::UpdateBlockGIDs(*vlv, nropt, sz, pmy_pack->nmb_thispack, pmy_pack->gids);
   auto met = nrpic_vlasov_detail::BuildMetricHelper(this, pmy_pack, sz);
 
-  // Step 1: Strang half-kick (dt/2) at fixed positions using metric at t^n (slot 0)
-  nrpic_vlasov_detail::ApplyGeodesicHalfKick(*vlv, nropt, met, 0.5 * dt, 0);
+  const bool static_met = metric_is_static || (nropt.metric != NrpicMetric::mesh);
+  auto compute_nsub = [&](Real &max_sig_out) -> int {
+    const Real dt_cfl_unit = nrpic_vlasov_detail::ComputeMinCflTime(*vlv, met, 2, max_sig_out);
+    vlv->opt.max_sig_last = max_sig_out;
+    int ns = 1;
+    if (vlv->opt.fixed_substeps > 0) {
+      ns = vlv->opt.fixed_substeps;
+    } else {
+      const Real target = std::max(vlv->opt.cfl * dt_cfl_unit, 1.0e-30);
+      ns = static_cast<int>(std::ceil(dt / target));
+      if (ns < 1) ns = 1;
+      if (ns > vlv->opt.max_substeps) ns = vlv->opt.max_substeps;
+    }
+    vlv->opt.substeps_last = ns;
+    return ns;
+  };
 
-  // Step 2: Determine CFL subcycling count using midpoint metric (slot 2)
-  Real max_sig = 0.0;
-  const Real dt_cfl_unit = nrpic_vlasov_detail::ComputeMinCflTime(*vlv, met, 2, max_sig);
-  vlv->opt.max_sig_last = max_sig;
-
-  int n_sub = 1;
-  if (vlv->opt.fixed_substeps > 0) {
-    n_sub = vlv->opt.fixed_substeps;
+  if (static_met) {
+    // Subcycled Strang kick-drift-kick on static / analytic spacetimes
+    Real max_sig = 0.0;
+    const int n_sub = compute_nsub(max_sig);
+    const Real dt_sub = dt / static_cast<Real>(n_sub);
+    for (int isub = 0; isub < n_sub; ++isub) {
+      nrpic_vlasov_detail::ApplyGeodesicHalfKick(*vlv, nropt, met, 0.5 * dt_sub, 2);
+      nrpic_vlasov_detail::ApplyMfmStep(*vlv, nropt, met, dt_sub, 2);
+      nrpic_vlasov_detail::ApplyGeodesicHalfKick(*vlv, nropt, met, 0.5 * dt_sub, 2);
+    }
   } else {
-    const Real target = std::max(vlv->opt.cfl * dt_cfl_unit, 1.0e-30);
-    n_sub = static_cast<int>(std::ceil(dt / target));
-    if (n_sub < 1) n_sub = 1;
-    if (n_sub > vlv->opt.max_substeps) n_sub = vlv->opt.max_substeps;
-  }
-  vlv->opt.substeps_last = n_sub;
-  const Real dt_sub = dt / static_cast<Real>(n_sub);
+    // Step 1: Strang half-kick (dt/2) at fixed positions using metric at t^n (slot 0)
+    nrpic_vlasov_detail::ApplyGeodesicHalfKick(*vlv, nropt, met, 0.5 * dt, 0);
 
-  for (int isub = 0; isub < n_sub; ++isub) {
-    nrpic_vlasov_detail::ApplyMfmStep(*vlv, nropt, met, dt_sub, 2);
-  }
+    // Step 2: Determine CFL subcycling count using midpoint metric (slot 2)
+    Real max_sig = 0.0;
+    const int n_sub = compute_nsub(max_sig);
+    const Real dt_sub = dt / static_cast<Real>(n_sub);
 
-  // Step 3: Strang half-kick (dt/2) at final positions using metric at t^{n+1} (slot 1)
-  nrpic_vlasov_detail::ApplyGeodesicHalfKick(*vlv, nropt, met, 0.5 * dt, 1);
+    for (int isub = 0; isub < n_sub; ++isub) {
+      nrpic_vlasov_detail::ApplyMfmStep(*vlv, nropt, met, dt_sub, 2);
+    }
+
+    // Step 3: Strang half-kick (dt/2) at final positions using metric at t^{n+1} (slot 1)
+    nrpic_vlasov_detail::ApplyGeodesicHalfKick(*vlv, nropt, met, 0.5 * dt, 1);
+  }
   nrpic_vlasov_detail::ConsToPrim(*vlv);
 }
 
@@ -2172,6 +2210,15 @@ void Particles::NrpicVlasovExcise() {
   const Real alpha_exc   = nropt.alpha_exc;
   const int gids         = pmy_pack->gids;
   const int nmb          = pmy_pack->nmb_thispack;
+  const bool is_kerr_cks = (nropt.metric == NrpicMetric::kerr_schild ||
+                            nropt.metric == NrpicMetric::lattice);
+  const bool is_kerr_sph = (nropt.metric == NrpicMetric::kerr_schild_sph ||
+                            nropt.metric == NrpicMetric::boyer_lindquist);
+  const Real bh_M        = nropt.mass;
+  const Real bh_a        = nropt.spin;
+  const Real r_plus      = bh_M + sqrt(fmax(bh_M * bh_M - bh_a * bh_a, 0.0));
+  const Real r_exc_bl    = (vlv->opt.kerr_r_exc > 0.0 && (is_kerr_cks || is_kerr_sph))
+                           ? (vlv->opt.kerr_r_exc * r_plus) : 0.0;
 
   int nah = 0;
   Real ahc[4][3], ahr2[4];
@@ -2249,6 +2296,21 @@ void Particles::NrpicVlasovExcise() {
         if (dx*dx + dy*dy + dz*dz < ahr2[h_i]) {
           do_exc = true;
         }
+      }
+    }
+
+    if (!do_esc && !do_exc && r_exc_bl > 0.0) {
+      Real r_bl = 1.0e300;
+      if (is_kerr_cks) {
+        const Real a2 = bh_a * bh_a;
+        const Real b  = pos[0]*pos[0] + pos[1]*pos[1] + pos[2]*pos[2] - a2;
+        const Real r2 = 0.5 * (b + sqrt(b*b + 4.0*a2*pos[2]*pos[2]));
+        r_bl = sqrt(fmax(r2, 0.0));
+      } else if (is_kerr_sph) {
+        r_bl = pos[0];
+      }
+      if (r_bl < r_exc_bl) {
+        do_exc = true;
       }
     }
 
@@ -2332,11 +2394,9 @@ void Particles::NrpicVlasovDepositLoop(const DvceArray5D<Real> &tm, Real &sum_mw
     Real xp[3] = {xv(0, a), xv(1, a), xv(2, a)};
     nrpic_vlasov_detail::WrapPos(cg.dmin, cg.dlen, cg.per, xp);
 
-    int mo = gidv(a) - gids;
-    if (mo < 0 || mo >= nmb) {
-      mo = nrpic::FindBlock(sz, nmb, 0, xp[0], xp[1], xp[2]);
-    }
+    int mo = nrpic::FindBlock(sz, nmb, gidv(a) - gids, xp[0], xp[1], xp[2]);
     if (mo < 0) return;
+    gidv(a) = mo + gids;
 
     nrpic::AdmPoint ap;
     met(1, xp, mo + gids, ap);

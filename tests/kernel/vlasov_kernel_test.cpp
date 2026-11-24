@@ -205,6 +205,44 @@ void RunSelfTests() {
     assert(fabs(th_rec - th) <= 1e-13 * wm + 1e-15);
     assert(cs2 >= 0.0 && cs2 <= 1.0 / 3.0 + 1e-15);
   }
+
+  // 4. Exact Valencia Synge C2P + symmetric HLLC contact + stationary contact Noh zero
+  {
+    const Real D_ref = 2.4, th_ref = 0.25;
+    Real wm_r, hr_r, cs2_r, ga_r;
+    SyngeThermo(th_ref, wm_r, hr_r, cs2_r, ga_r);
+    const Real v_ref[3] = {sqrt(1.0 - 1.0 / (1.5 * 1.5)) * 0.8, 0.25, -0.1};
+    const Real v2_r = Dot3(v_ref, v_ref);
+    const Real U0_r = 1.0 / sqrt(1.0 - v2_r);
+    const Real rho0_r = D_ref / U0_r;
+    const Real p_ref = rho0_r * th_ref;
+    const Real DhU0 = D_ref * hr_r * U0_r;
+    const Real E_ref = DhU0 - p_ref;
+    const Real P_ref[3] = {DhU0 * v_ref[0], DhU0 * v_ref[1], DhU0 * v_ref[2]};
+    Real th_o, h_o, cs2_o, wm_o, U0_o, rho0_o, p_o, v_o[3];
+    ValenciaC2PSynge(D_ref, E_ref, P_ref, th_o, h_o, cs2_o, wm_o, U0_o, rho0_o, p_o, v_o);
+    assert(CheckClose(th_o, th_ref, 1e-13, 1e-14));
+    assert(CheckClose(U0_o, U0_r, 1e-13, 1e-14));
+    assert(CheckClose(p_o, p_ref, 1e-13, 1e-14));
+    for (int i = 0; i < 3; ++i) assert(CheckClose(v_o[i], v_ref[i], 1e-13, 1e-14));
+
+    // Stationary contact (equal p and v=0, unequal density): zero Noh flux and zero HLLC mass flux
+    HllcFluidState Lc, Rc;
+    Lc.D = 3.0; Lc.p = 0.5; Lc.U0 = 1.0; Lc.rho0 = 3.0; Lc.theta = 0.5 / 3.0;
+    SyngeThermo(Lc.theta, Lc.w_m, Lc.h, Lc.cs2, ga_r); Lc.valid = true;
+    Rc.D = 1.0; Rc.p = 0.5; Rc.U0 = 1.0; Rc.rho0 = 1.0; Rc.theta = 0.5;
+    SyngeThermo(Rc.theta, Rc.w_m, Rc.h, Rc.cs2, ga_r); Rc.valid = true;
+    assert(fabs(NohThermalConductFlux(Lc, Rc, 0.5)) < 1e-15);
+
+    const Real DL[1] = {1.0}, DR[1] = {1.0};
+    const Real uL[1][3] = {{1.0, 0.0, 0.0}}, uR[1][3] = {{-1.0, 0.0, 0.0}};
+    const Real SL[1][3][3] = {{{1e-8,0,0},{0,1e-8,0},{0,0,1e-8}}};
+    const Real SR[1][3][3] = {{{1e-8,0,0},{0,1e-8,0},{0,0,1e-8}}};
+    Real FD_s, FP_s[3], FPi_s[3][3], FE_s;
+    RelHllcFluxTetrad(1, DL, uL, SL, 1, DR, uR, SR, 0.0, true, FD_s, FP_s, FPi_s, FE_s);
+    assert(fabs(FD_s) < 1e-15 && fabs(FE_s) < 1e-15 && fabs(FP_s[1]) < 1e-15 && fabs(FP_s[2]) < 1e-15);
+    assert(fabs(FPi_s[0][0]) < 1e-12);
+  }
   std::printf("C++ standalone GR-LBV kernel self-tests PASSED.\n");
 }
 

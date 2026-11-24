@@ -1018,125 +1018,237 @@ def mj_bgk_relax_cell(
     if eta <= 0.0:
         return u_bar.copy(), Sigma.copy()
 
-    # Boost every basis's cubature points to COM frame and evaluate COM moments
-    u_com_mean = np.zeros_like(u_bar)
-    Sig_com = np.zeros_like(Sigma)
-    for al in range(len(m_vec)):
-        if m_vec[al] <= 0.0:
-            continue
-        pts, w = basis_cubature_points(u_bar[al], Sigma[al], n_q=n_q)
-        pts_tet = pts @ Li_g.T
-        W = np.sqrt(1.0 + np.sum(pts_tet * pts_tet, axis=1))
-        udotU = pts_tet @ U_cm
-        fac = udotU / (U0 + 1.0) - W
-        pts_com = pts_tet + fac[:, None] * U_cm[None, :]
-        um = w @ pts_com
-        du = pts_com - um[None, :]
-        u_com_mean[al] = um
-        Sig_com[al] = np.einsum("q,qi,qj->ij", w, du, du)
-
+    # Evaluate local Maxwell-Juttner equilibrium moments ONCE in coordinate frame
+    # from one COM isotropic equilibrium cubature (exact identity at eta -> 0).
     sig_eq2_0 = theta * h_rel
-    u_com_new = (1.0 - eta) * u_com_mean
+    u_zero = np.zeros(3)
 
-    def eval_com_energy(scale_s: float):
-        Et = 0.0
-        S_list = np.empty_like(Sig_com)
-        for al in range(len(m_vec)):
-            if m_vec[al] <= 0.0:
-                S_list[al] = 0.0
-                continue
-            S_al = (
-                (1.0 - eta) * Sig_com[al]
-                + eta * (scale_s * sig_eq2_0) * np.eye(3)
-                + eta * (1.0 - eta) * np.outer(u_com_mean[al], u_com_mean[al])
-            )
-            S_list[al] = 0.5 * (S_al + S_al.T)
-            pts_c, w = basis_cubature_points(u_com_new[al], S_list[al], n_q=n_q)
-            W_c = np.sqrt(1.0 + np.sum(pts_c * pts_c, axis=1))
-            Et += m_vec[al] * float(np.dot(w, W_c))
-        return Et, S_list
+    def eval_eq_com_w(scale_s: float) -> float:
+        S_eq_c = (scale_s * sig_eq2_0) * np.eye(3)
+        pts_c, w = basis_cubature_points(u_zero, S_eq_c, n_q=n_q)
+        return float(np.dot(w, np.sqrt(1.0 + np.sum(pts_c * pts_c, axis=1))))
 
-    # Solve E_com(scale_s) == M_inv cleanly without failing when E_min_com > M_inv
-    E_min_com, S_list_zero = eval_com_energy(0.0)
-    if M_inv <= E_min_com:
-        def eval_scaled(c: float):
-            Et_c = 0.0
-            S_sc = np.zeros_like(Sig_com)
-            u_sc = c * u_com_new
-            c2 = c * c
-            for al in range(len(m_vec)):
-                if m_vec[al] <= 0.0:
-                    continue
-                S_sc[al] = c2 * S_list_zero[al]
-                pts_c, w = basis_cubature_points(u_sc[al], S_sc[al], n_q=n_q)
-                W_c = np.sqrt(1.0 + np.sum(pts_c * pts_c, axis=1))
-                Et_c += m_vec[al] * float(np.dot(w, W_c))
-            return Et_c, u_sc, S_sc
-
-        if E_min_com > m_tot * (1.0 + 1e-14):
-            c_opt = float(optimize.brentq(lambda c: eval_scaled(c)[0] - M_inv,
-                                          0.0, 1.0, xtol=1e-14, rtol=1e-14, maxiter=50))
-            _, u_com_new, Sig_com_new = eval_scaled(c_opt)
+    s_com = 1.0
+    w_eq1 = eval_eq_com_w(1.0)
+    if abs(w_eq1 - w_com) > 1e-14 * w_com:
+        lo_s, hi_s = 0.0, 2.5
+        while eval_eq_com_w(hi_s) < w_com and hi_s < 1e6:
+            hi_s *= 4.0
+        if eval_eq_com_w(hi_s) >= w_com:
+            s_com = float(optimize.brentq(
+                lambda s: eval_eq_com_w(s) - w_com,
+                lo_s, hi_s, xtol=1e-14, rtol=1e-14, maxiter=80,
+            ))
         else:
-            u_com_new = np.zeros_like(u_com_new)
-            Sig_com_new = np.zeros_like(Sig_com)
-    else:
-        Et1, _ = eval_com_energy(1.0)
-        if abs(Et1 - M_inv) > 1e-14 * M_inv:
-            lo_s, hi_s = 0.0, 2.5
-            while eval_com_energy(hi_s)[0] < M_inv and hi_s < 1e6:
-                hi_s *= 4.0
-            if eval_com_energy(hi_s)[0] >= M_inv:
-                scale_opt = float(optimize.brentq(lambda s: eval_com_energy(s)[0] - M_inv,
-                                                  lo_s, hi_s, xtol=1e-14, rtol=1e-14, maxiter=50))
-                _, Sig_com_new = eval_com_energy(scale_opt)
-            else:
-                _, Sig_com_new = eval_com_energy(hi_s)
-        else:
-            _, Sig_com_new = eval_com_energy(1.0)
+            s_com = hi_s
 
-    # Boost back to coordinate basis via inverse Lorentz boost (-U_cm -> +U_cm)
+    veq = s_com * sig_eq2_0
+    pts_eq_c, w_eq = basis_cubature_points(u_zero, veq * np.eye(3), n_q=n_q)
+    Wc = np.sqrt(1.0 + np.sum(pts_eq_c * pts_eq_c, axis=1))
+    fac = (pts_eq_c @ U_cm) / (U0 + 1.0) + Wc
+    pts_eq_tet = pts_eq_c + fac[:, None] * U_cm[None, :]
+    pts_eq_cov = pts_eq_tet @ L_g.T
+    u_eq = w_eq @ pts_eq_cov
+    du_eq = pts_eq_cov - u_eq[None, :]
+    Sig_eq = np.einsum("q,qi,qj->ij", w_eq, du_eq, du_eq)
+    Sig_eq = 0.5 * (Sig_eq + Sig_eq.T)
+
+    # Convex lab-frame moment relaxation (identity at eta -> 0, exact MJ at eta -> 1)
     u_out = np.zeros_like(u_bar)
     Sig_out = np.zeros_like(Sigma)
     for al in range(len(m_vec)):
         if m_vec[al] <= 0.0:
             continue
-        pts_c, w = basis_cubature_points(u_com_new[al], Sig_com_new[al], n_q=n_q)
-        Wc = np.sqrt(1.0 + np.sum(pts_c * pts_c, axis=1))
-        udotU = pts_c @ U_cm
-        fac = udotU / (U0 + 1.0) + Wc
-        pts_tet = pts_c + fac[:, None] * U_cm[None, :]
-        pts_cov = pts_tet @ L_g
-        u_out[al] = w @ pts_cov
-        du = pts_cov - u_out[al][None, :]
-        cov = np.einsum("q,qi,qj->ij", w, du, du)
-        Sig_out[al] = 0.5 * (cov + cov.T)
+        u_out[al] = (1.0 - eta) * u_bar[al] + eta * u_eq
+        du = u_bar[al] - u_eq
+        S = (
+            (1.0 - eta) * Sigma[al]
+            + eta * Sig_eq
+            + eta * (1.0 - eta) * np.outer(du, du)
+        )
+        Sig_out[al] = 0.5 * (S + S.T)
 
-    # Lock exact lab-frame total momentum P_cov_tot and total lab-frame energy E_tot
-    # under finite-cubature re-sampling via mean shift + SPD dispersion scaling
+    # Exact lab-frame P and E locking across all three energy regimes
+    u_eq_mom = P_cov_tot / m_tot
     P_cur = np.sum(m_vec[:, None] * u_out, axis=0)
-    u_out = u_out - ((P_cur - P_cov_tot) / m_tot)[None, :]
+    for al in range(len(m_vec)):
+        if m_vec[al] > 0.0:
+            u_out[al] -= (P_cur - P_cov_tot) / m_tot
 
-    def lab_energy(scale_lab: float) -> float:
+    def eval_zero_energy(u_arr: np.ndarray) -> float:
+        Ez = 0.0
+        for al in range(len(m_vec)):
+            if m_vec[al] > 0.0:
+                u2 = float(u_arr[al] @ gi @ u_arr[al])
+                Ez += m_vec[al] * math.sqrt(1.0 + u2)
+        return Ez
+
+    def lab_energy_cur() -> float:
         return sum(
-            basis_stress_energy(m_vec[al], u_out[al], scale_lab * Sig_out[al], gi, n_q=n_q)[0]
+            basis_stress_energy(m_vec[al], u_out[al], Sig_out[al], gi, n_q=n_q)[0]
             for al in range(len(m_vec)) if m_vec[al] > 0.0
         )
 
-    E_min_lab = lab_energy(0.0)
-    E_target = max(float(E_tot), E_min_lab)
-    E_cur = lab_energy(1.0)
+    E_zero = eval_zero_energy(u_out)
+    E_cur = lab_energy_cur()
+    E_target = float(E_tot)
     if abs(E_cur - E_target) > 1e-14 * E_target:
-        lo_l, hi_l = 0.25, 2.0
-        while lab_energy(lo_l) > E_target and lo_l > 1e-12:
-            lo_l *= 0.25
-        while lab_energy(hi_l) < E_target and hi_l < 1e6:
-            hi_l *= 4.0
-        if lab_energy(lo_l) <= E_target <= lab_energy(hi_l):
-            s_lab = float(optimize.brentq(lambda s: lab_energy(s) - E_target,
-                                          lo_l, hi_l, xtol=1e-14, rtol=1e-14, maxiter=50))
-            Sig_out = s_lab * Sig_out
+        if E_target < E_zero:
+            def eval_blend(lam: float) -> float:
+                u_b = (1.0 - lam) * u_out + lam * u_eq_mom[None, :]
+                return eval_zero_energy(u_b)
+
+            E_blend1 = eval_blend(1.0)
+            lam_opt = 1.0
+            if E_blend1 <= E_target <= E_zero:
+                lam_opt = float(optimize.brentq(
+                    lambda l: eval_blend(l) - E_target,
+                    0.0, 1.0, xtol=1e-14, rtol=1e-14, maxiter=80,
+                ))
+            for al in range(len(m_vec)):
+                if m_vec[al] > 0.0:
+                    u_out[al] = (1.0 - lam_opt) * u_out[al] + lam_opt * u_eq_mom
+                    Sig_out[al] = 0.0
+        elif E_target < E_cur:
+            def eval_shrink(s: float) -> float:
+                return sum(
+                    basis_stress_energy(m_vec[al], u_out[al], s * Sig_out[al], gi, n_q=n_q)[0]
+                    for al in range(len(m_vec)) if m_vec[al] > 0.0
+                )
+
+            if E_zero <= E_target <= E_cur:
+                s_opt = float(optimize.brentq(
+                    lambda s: eval_shrink(s) - E_target,
+                    0.0, 1.0, xtol=1e-14, rtol=1e-14, maxiter=80,
+                ))
+                Sig_out = s_opt * Sig_out
+            else:
+                Sig_out[:] = 0.0
+        else:
+            tr_eq = float(np.trace(Sig_eq))
+            S_add = Sig_eq if tr_eq > 1e-30 else adm.g
+
+            def eval_add(delta: float) -> float:
+                return sum(
+                    basis_stress_energy(m_vec[al], u_out[al], Sig_out[al] + delta * S_add, gi, n_q=n_q)[0]
+                    for al in range(len(m_vec)) if m_vec[al] > 0.0
+                )
+
+            lo_d, hi_d = 0.0, 1.0
+            while eval_add(hi_d) < E_target and hi_d < 1e12:
+                hi_d *= 4.0
+            if eval_add(lo_d) <= E_target <= eval_add(hi_d):
+                d_opt = float(optimize.brentq(
+                    lambda d: eval_add(d) - E_target,
+                    lo_d, hi_d, xtol=1e-14, rtol=1e-14, maxiter=80,
+                ))
+                for al in range(len(m_vec)):
+                    if m_vec[al] > 0.0:
+                        cand = Sig_out[al] + d_opt * S_add
+                        Sig_out[al] = 0.5 * (cand + cand.T)
     return u_out, Sig_out
+
+
+def valencia_c2p_synge(D: float, E: float, P: np.ndarray):
+    """Exact conserved-to-primitive inversion for Synge/Maxwell-Juttner gas in an orthonormal triad.
+
+    Solves E(theta) = D h(theta) U^0(theta) - (D / U^0(theta)) theta = E
+    with U^0(theta) = sqrt(1 + |P|^2 / (D h(theta))^2).
+    Returns (theta, h_rel, cs2, w_m, U0, rho0, p, v).
+    """
+    D = float(D)
+    E = float(E)
+    P = np.asarray(P, dtype=np.float64)
+    if D <= 1e-300:
+        return 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, np.zeros(3)
+    P2 = float(np.dot(P, P))
+    E_cold = math.sqrt(D * D + P2)
+    if E <= E_cold * (1.0 + 1e-14):
+        U0 = E_cold / D
+        rho0 = D / U0
+        v = P / max(E_cold, 1e-300)
+        return 0.0, 1.0, 0.0, 1.0, U0, rho0, 0.0, v
+
+    def eval_E(th: float) -> float:
+        _, hr_t, _, _ = synge_thermo(th)
+        Dh = D * hr_t
+        u0_t = math.sqrt(1.0 + P2 / (Dh * Dh))
+        return Dh * u0_t - (D / u0_t) * th
+
+    lo = 0.0
+    hi = max((E - E_cold) / D, 1e-2)
+    while eval_E(hi) < E and hi < 1e8:
+        hi *= 2.0
+    if eval_E(hi) >= E:
+        theta = float(optimize.brentq(lambda th: eval_E(th) - E, lo, hi,
+                                      xtol=1e-14, rtol=1e-14, maxiter=80))
+    else:
+        theta = hi
+
+    w_m, h_rel, cs2, _ = synge_thermo(theta)
+    Dh = D * h_rel
+    U0 = math.sqrt(1.0 + P2 / (Dh * Dh))
+    rho0 = D / U0
+    p = rho0 * theta
+    v = P / (Dh * U0)
+    return theta, h_rel, cs2, w_m, U0, rho0, p, v
+
+
+def _build_hllc_cell_fluid(D_vec, u_tet, Sig_tet):
+    """Build single-fluid HLLC cell state via exact Valencia Synge C2P."""
+    D_tot = float(np.sum(D_vec))
+    if D_tot <= 0.0:
+        return None
+    E = 0.0
+    P = np.zeros(3)
+    g_eye = np.eye(3)
+    for al in range(len(D_vec)):
+        if D_vec[al] > 0.0:
+            ea, pa, _ = basis_stress_energy(D_vec[al], u_tet[al], Sig_tet[al], g_eye)
+            E += ea
+            P += pa
+    theta, h_rel, cs2, w_m, U0, rho0, p_fl, v = valencia_c2p_synge(D_tot, E, P)
+    return dict(D=D_tot, E=E, P=P, v=v, U0=U0, h=h_rel, cs2=cs2,
+                p=p_fl, rho0=rho0, theta=theta, w_m=w_m)
+
+
+def _hllc_star_fpi_ale(D_s: float, E_s: float, P_s: np.ndarray, beta_use: float) -> np.ndarray:
+    """Evaluate covariant third-moment tensor flux M^1_{ij} - beta_use M^0_{ij} using exact Valencia C2P."""
+    if D_s <= 1e-300 or E_s <= 1e-300:
+        return np.zeros((3, 3))
+    th_s, h_s, _, _, U0_s, n_s, _, v_s = valencia_c2p_synge(D_s, E_s, P_s)
+    v_s2 = float(np.dot(v_s, v_s))
+    if v_s2 >= 1.0 - 1e-12:
+        v_s = v_s * math.sqrt((1.0 - 1e-12) / v_s2)
+        v_s2 = 1.0 - 1e-12
+        U0_s = 1.0 / math.sqrt(1.0 - v_s2)
+        n_s = D_s / U0_s
+    U_s = U0_s * v_s
+    b3 = n_s * th_s * h_s
+    a3 = n_s * (1.0 + 6.0 * th_s * h_s)
+    M0_ij = (a3 * U0_s) * np.outer(U_s, U_s) + (b3 * U0_s) * np.eye(3)
+    e1 = np.array([1.0, 0.0, 0.0])
+    M1_ij = (
+        (a3 * U_s[0]) * np.outer(U_s, U_s)
+        + b3 * (U_s[0] * np.eye(3) + np.outer(U_s, e1) + np.outer(e1, U_s))
+    )
+    return M1_ij - beta_use * M0_ij
+
+
+def noh_thermal_conduct_flux(Lc: dict | None, Rc: dict | None, kappa: float) -> float:
+    """Conservative, shock-localized harmonic-cs Noh/Price thermal conduction flux in HLLC channel."""
+    if kappa <= 0.0 or Lc is None or Rc is None:
+        return 0.0
+    csL = math.sqrt(max(Lc["cs2"], 0.0))
+    csR = math.sqrt(max(Rc["cs2"], 0.0))
+    cs_harm = 2.0 * csL * csR / (csL + csR + 1e-30)
+    if cs_harm <= 0.0:
+        return 0.0
+    rho_bar = 0.5 * (Lc["rho0"] + Rc["rho0"]) + 1e-30
+    dv_comp = max(float(Lc["v"][0] - Rc["v"][0]), 0.0)
+    v_price = math.sqrt(abs(Lc["p"] - Rc["p"]) / rho_bar) + dv_comp
+    v_sig = min(cs_harm, v_price)
+    return kappa * 0.5 * (Lc["D"] + Rc["D"]) * v_sig * (Lc["w_m"] - Rc["w_m"])
 
 
 def rel_hllc_flux_tetrad(
@@ -1152,33 +1264,8 @@ def rel_hllc_flux_tetrad(
     covariant third-moment Maxwell-Juttner tensor M^1_{ij} - beta_F M^0_{ij} in the
     HLLC star state.
     """
-    def cell_fluid(D_vec, u_tet, Sig_tet):
-        D_tot = float(np.sum(D_vec))
-        if D_tot <= 0.0:
-            return None
-        E = 0.0
-        P = np.zeros(3)
-        for al in range(len(D_vec)):
-            if D_vec[al] > 0.0:
-                ea, pa, _ = basis_stress_energy(D_vec[al], u_tet[al], Sig_tet[al], np.eye(3))
-                E += ea
-                P += pa
-        P2 = float(np.dot(P, P))
-        Minv = math.sqrt(max(E * E - P2, D_tot * D_tot))
-        U0 = E / Minv
-        v = P / E
-        w_com = Minv / D_tot
-        if w_com <= 1.0 + 1e-12:
-            theta, h_rel, cs2 = 0.0, 1.0, 0.0
-        else:
-            theta = safe_mj_theta_from_w(w_com)
-            _, h_rel, cs2, _ = synge_thermo(theta)
-        rho0 = D_tot / U0
-        p_fl = rho0 * theta
-        return dict(D=D_tot, E=E, P=P, v=v, U0=U0, h=h_rel, cs2=cs2, p=p_fl, rho0=rho0, theta=theta)
-
-    L = cell_fluid(D_L, u_L_tet, Sig_L_tet)
-    R = cell_fluid(D_R, u_R_tet, Sig_R_tet)
+    L = _build_hllc_cell_fluid(D_L, u_L_tet, Sig_L_tet)
+    R = _build_hllc_cell_fluid(D_R, u_R_tet, Sig_R_tet)
     if L is None or R is None:
         return 0.0, np.zeros(3), np.zeros((3, 3)), 0.0
 
@@ -1230,6 +1317,13 @@ def rel_hllc_flux_tetrad(
             beta_use = max(S_L, min(S_R, s_st))
 
     if dS <= 1e-12 * (1.0 + abs(S_L) + abs(S_R)):
+        if use_contact_beta_F:
+            FD_ale = 0.5 * (FD_L + FD_R) - beta_use * 0.5 * (L["D"] + R["D"])
+            FP_ale = 0.5 * (FP_L + FP_R) - beta_use * 0.5 * (L["P"] + R["P"])
+            FE_ale = 0.5 * (FE_L + FE_R) - beta_use * 0.5 * (L["E"] + R["E"])
+            FPi_ale = 0.5 * (_hllc_star_fpi_ale(L["D"], L["E"], L["P"], beta_use)
+                             + _hllc_star_fpi_ale(R["D"], R["E"], R["P"], beta_use))
+            return FD_ale, FP_ale, FPi_ale, FE_ale
         S_mid = 0.5 * (S_L + S_R)
         st_pick = L if beta_use <= S_mid else R
         D_s, P_s, E_s = st_pick["D"], st_pick["P"], st_pick["E"]
@@ -1256,12 +1350,45 @@ def rel_hllc_flux_tetrad(
             S_star = (-b_q - math.sqrt(disc)) / (2.0 * a_q)
         S_star = max(S_L, min(S_R, S_star))
 
+        p_s = max(F_hll_Px - S_star * F_hll_E, 0.0)
+        dS_safe = max(dS, 1.0)
+        if use_contact_beta_F:
+            denom_L = S_L - S_star
+            denom_R = S_R - S_star
+            FD_ale = 0.0
+            FP_ale = np.array([p_s, 0.0, 0.0])
+            FE_ale = p_s * S_star
+            if abs(denom_L) <= 1e-12 * dS_safe or abs(denom_R) <= 1e-12 * dS_safe:
+                D_h = (S_R * R["D"] - S_L * L["D"] + FD_L - FD_R) / dS
+                P_h = (S_R * R["P"] - S_L * L["P"] + FP_L - FP_R) / dS
+                FPi_ale = _hllc_star_fpi_ale(D_h, U_hll_E, P_h, S_star)
+            else:
+                vxL, vxR = float(L["v"][0]), float(R["v"][0])
+                D_Ls = L["D"] * (S_L - vxL) / denom_L
+                E_Ls = (L["E"] * (S_L - vxL) - L["p"] * vxL + p_s * S_star) / denom_L
+                P_Ls = np.array([
+                    (L["P"][0] * (S_L - vxL) - L["p"] + p_s) / denom_L,
+                    L["P"][1] * (S_L - vxL) / denom_L,
+                    L["P"][2] * (S_L - vxL) / denom_L,
+                ])
+                D_Rs = R["D"] * (S_R - vxR) / denom_R
+                E_Rs = (R["E"] * (S_R - vxR) - R["p"] * vxR + p_s * S_star) / denom_R
+                P_Rs = np.array([
+                    (R["P"][0] * (S_R - vxR) - R["p"] + p_s) / denom_R,
+                    R["P"][1] * (S_R - vxR) / denom_R,
+                    R["P"][2] * (S_R - vxR) / denom_R,
+                ])
+                FPi_ale = 0.5 * (
+                    _hllc_star_fpi_ale(D_Ls, E_Ls, P_Ls, S_star)
+                    + _hllc_star_fpi_ale(D_Rs, E_Rs, P_Rs, S_star)
+                )
+            return FD_ale, FP_ale, FPi_ale, FE_ale
+
         st = L if beta_use <= S_star else R
         S_K = S_L if beta_use <= S_star else S_R
         vxK = float(st["v"][0])
-        p_s = max(F_hll_Px - S_star * F_hll_E, 0.0)
         denom = S_K - S_star
-        if abs(denom) <= 1e-12 * max(dS, 1.0):
+        if abs(denom) <= 1e-12 * dS_safe:
             D_s = (S_R * R["D"] - S_L * L["D"] + FD_L - FD_R) / dS
             E_s = U_hll_E
             P_s = (S_R * R["P"] - S_L * L["P"] + FP_L - FP_R) / dS
@@ -1280,34 +1407,7 @@ def rel_hllc_flux_tetrad(
             FP_s[0] += p_s
             FE_s = (E_s + p_s) * S_star
 
-    if D_s <= 1e-300 or E_s <= 1e-300:
-        return FD_s - beta_use * D_s, FP_s - beta_use * P_s, np.zeros((3, 3)), FE_s - beta_use * E_s
-
-    # Covariant Maxwell-Juttner third moment M^0_{ij} and M^1_{ij} in the star state
-    v_s = P_s / E_s
-    v_s2 = float(np.dot(v_s, v_s))
-    if v_s2 >= 1.0 - 1e-12:
-        v_s = v_s * math.sqrt((1.0 - 1e-12) / v_s2)
-        v_s2 = 1.0 - 1e-12
-    U0_s = 1.0 / math.sqrt(1.0 - v_s2)
-    U_s = U0_s * v_s
-    M_inv_s = E_s / U0_s
-    n_s = D_s / U0_s
-    w_s = M_inv_s / D_s
-    if w_s <= 1.0 + 1e-12:
-        th_s, h_s = 0.0, 1.0
-    else:
-        th_s = safe_mj_theta_from_w(w_s)
-        _, h_s, _, _ = synge_thermo(th_s)
-    b3 = n_s * th_s * h_s
-    a3 = n_s * (1.0 + 6.0 * th_s * h_s)
-    M0_ij = (a3 * U0_s) * np.outer(U_s, U_s) + (b3 * U0_s) * np.eye(3)
-    e1 = np.array([1.0, 0.0, 0.0])
-    M1_ij = (
-        (a3 * U_s[0]) * np.outer(U_s, U_s)
-        + b3 * (U_s[0] * np.eye(3) + np.outer(U_s, e1) + np.outer(e1, U_s))
-    )
-    FPi_ale = M1_ij - beta_use * M0_ij
+    FPi_ale = _hllc_star_fpi_ale(D_s, E_s, P_s, beta_use)
     return FD_s - beta_use * D_s, FP_s - beta_use * P_s, FPi_ale, FE_s - beta_use * E_s
 
 
@@ -1449,7 +1549,7 @@ def _cons_to_prim_1d(st: MFM1DState):
     st.Sigma = 0.5 * (st.Sigma + np.swapaxes(st.Sigma, -1, -2))
 
 
-def _compute_1d_gradients(st: MFM1DState):
+def _compute_1d_gradients(st: MFM1DState, lim_eps_v: float = 0.1):
     """Exact 1D MFM MLS gradients with matching + BJ + velocity-crossing + SPD limiters."""
     N, Nb = st.m.shape
     gD = np.zeros((N, Nb))
@@ -1488,32 +1588,32 @@ def _compute_1d_gradients(st: MFM1DState):
             phi_D = 1.0
             for dx_f, val_n in ((xf_p, st.D[al_p, bp]), (xf_m, st.D[al_m, bm])):
                 dval = dD_raw * dx_f
-                if dval > 0.0:
+                if dval > 1e-300:
                     dmax = max(st.D[a, al], val_n) - st.D[a, al]
-                    phi_D = min(phi_D, dmax / dval if dval > 1e-300 else 1.0)
-                elif dval < 0.0:
+                    phi_D = min(phi_D, dmax / dval)
+                elif dval < -1e-300:
                     dmin = min(st.D[a, al], val_n) - st.D[a, al]
-                    phi_D = min(phi_D, dmin / dval if dval < -1e-300 else 1.0)
+                    phi_D = min(phi_D, dmin / dval)
             gD[a, al] = max(0.0, min(1.0, phi_D)) * dD_raw
 
-            # Velocity gradient + Hopkins velocity-crossing limiter (eps_v = 0.1)
+            # Velocity gradient + Hopkins velocity-crossing limiter (unconditional if lim_eps_v <= 0)
             for k in range(3):
                 du_raw = invE * ((st.u_bar[al_p, bp, k] - st.u_bar[a, al, k]) * dx_p * wp
                                  + (st.u_bar[al_m, bm, k] - st.u_bar[a, al, k]) * dx_m * wm)
                 phi_v = 1.0
+                sig_a = math.sqrt(max(st.Sigma[a, al, k, k], 0.0))
                 for dx_b, dx_f, val_n, ub_n, sig_n in (
                     (dx_p, xf_p, st.u_bar[al_p, bp, k], up_bulk[k], math.sqrt(max(st.Sigma[al_p, bp, k, k], 0.0))),
                     (dx_m, xf_m, st.u_bar[al_m, bm, k], um_bulk[k], math.sqrt(max(st.Sigma[al_m, bm, k, k], 0.0))),
                 ):
-                    sig_a = math.sqrt(max(st.Sigma[a, al, k, k], 0.0))
                     scale = max(abs(st.u_bar[a, al, k] - ua_bulk[k]), sig_a,
                                 abs(val_n - ub_n), sig_n, 1e-12)
-                    if abs(du_raw * dx_b) >= 0.1 * scale:
+                    if lim_eps_v <= 0.0 or abs(du_raw * dx_b) >= lim_eps_v * scale:
                         dval = du_raw * dx_f
-                        if dval > 0.0:
+                        if dval > 1e-300:
                             dmax = max(st.u_bar[a, al, k], val_n) - st.u_bar[a, al, k]
                             phi_v = min(phi_v, dmax / dval)
-                        elif dval < 0.0:
+                        elif dval < -1e-300:
                             dmin = min(st.u_bar[a, al, k], val_n) - st.u_bar[a, al, k]
                             phi_v = min(phi_v, dmin / dval)
                 gu[a, al, k] = max(0.0, min(1.0, phi_v)) * du_raw
@@ -1552,10 +1652,11 @@ def _compute_1d_gradients(st: MFM1DState):
 
 def _compute_1d_rhs(st: MFM1DState, basis_kind: int = BASIS_TOPHAT,
                     use_analytic_vF: bool = False, sigma_over_mu: float = 0.0,
-                    pairing_mode: str = "eb", n_perp: int = 3):
+                    pairing_mode: str = "eb", n_perp: int = 3,
+                    noh_kappa: float = 0.5):
     """Compute pairwise 1D MFM fluxes (and face velocity + pairing updates)."""
     N, Nb = st.m.shape
-    _compute_1d_gradients(st)
+    _compute_1d_gradients(st, lim_eps_v=(0.0 if sigma_over_mu > 0.0 else 0.1))
 
     dm = np.zeros_like(st.m)
     dP = np.zeros_like(st.P)
@@ -1652,13 +1753,18 @@ def _compute_1d_rhs(st: MFM1DState, basis_kind: int = BASIS_TOPHAT,
         if wc < 1.0 - 1e-14:
             FD_c, FP_c, FPi_c, FE_c = rel_hllc_flux_tetrad(
                 Da, ua, Sa, st.m[a], Db, ub, Sb, st.m[b], beta_F,
-                use_contact_beta_F=(wc < 0.5),
+                use_contact_beta_F=True,
             )
+            FE_cond = 0.0
+            if noh_kappa > 0.0:
+                Lc = _build_hllc_cell_fluid(st.D[a], st.u_bar[a], st.Sigma[a])
+                Rc = _build_hllc_cell_fluid(st.D[b], st.u_bar[b], st.Sigma[b])
+                FE_cond = noh_thermal_conduct_flux(Lc, Rc, noh_kappa)
             ma_tot = max(float(np.sum(st.m[a])), 1e-300)
             mb_tot = max(float(np.sum(st.m[b])), 1e-300)
             omw = 1.0 - wc
-            dE[a] -= omw * FE_c
-            dE[b] += omw * FE_c
+            dE[a] -= omw * (FE_c + FE_cond)
+            dE[b] += omw * (FE_c + FE_cond)
             for al in range(Nb):
                 fa = st.m[a, al] / ma_tot
                 dm[a, al] -= omw * fa * FD_c
@@ -1711,6 +1817,7 @@ def step_1d_mfm(
     sigma_over_mu: float = 0.0,
     pairing_mode: str = "eb",
     n_perp: int = 3,
+    noh_kappa: float = 0.5,
 ):
     """Advance 1D MFM state by dt using SSP-RK2 + operator-split relativistic BGK."""
     x0 = st.x.copy()
@@ -1725,6 +1832,7 @@ def step_1d_mfm(
     v0, dm0, dP0, dPi0, dE0, _, max_f_res = _compute_1d_rhs(
         st, basis_kind=basis_kind, use_analytic_vF=use_analytic_vF,
         sigma_over_mu=sigma_over_mu, pairing_mode=pairing_mode, n_perp=n_perp,
+        noh_kappa=noh_kappa,
     )
     st.x = (x0 + dt * v0) % st.L
     st.m = m0 + dt * dm0
@@ -1737,6 +1845,7 @@ def step_1d_mfm(
     v1, dm1, dP1, dPi1, dE1, max_sig, _ = _compute_1d_rhs(
         st, basis_kind=basis_kind, use_analytic_vF=use_analytic_vF,
         sigma_over_mu=sigma_over_mu, pairing_mode=pairing_mode, n_perp=n_perp,
+        noh_kappa=noh_kappa,
     )
     st.x = (x0 + 0.5 * dt * (v0 + v1)) % st.L
     st.m = m0 + 0.5 * dt * (dm0 + dm1)

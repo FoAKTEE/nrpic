@@ -1,0 +1,73 @@
+# Suite 1: 3D flat periodic GR-LBV configuration
+<comment>
+problem = s1d_sig0
+
+<job>
+basename = s1d_sig0
+
+<mesh>
+nghost   = 2
+nx1      = 16
+x1min    = 0.0
+x1max    = 1
+ix1_bc   = periodic
+ox1_bc   = periodic
+nx2      = 4
+x2min    = 0.0
+x2max    = 0.0520833333333333
+ix2_bc   = periodic
+ox2_bc   = periodic
+nx3      = 4
+x3min    = 0.0
+x3max    = 0.0520833333333333
+ix3_bc   = periodic
+ox3_bc   = periodic
+
+<meshblock>
+nx1 = 16
+nx2 = 4
+nx3 = 4
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 0.550000000000
+ndiag      = 200
+
+<adm>
+dynamic = false
+
+<particles>
+particle_type      = nrpic
+pusher             = vlasov_mfm
+metric             = mesh
+deposit            = false
+particle_file      = /weka/scratch/schmidt/ssci-anima/ssci-haiyangw/nrpic_grlbv/runs/stage4a/suite1/ic_1d_taub.grlbv
+vlasov_basis       = tophat
+vlasov_nperp       = 3
+vlasov_nq_kick     = 3
+vlasov_nq_dep      = 3
+vlasov_pair_mode   = covariant
+vlasov_analytic_vf = false
+vlasov_substeps    = 0
+vlasov_cfl         = 0.3
+vlasov_max_substeps = 128
+vlasov_coll_sigma  = 0
+vlasov_bnd_detect  = false
+tolerance          = 1.0e-12
+dt                 = 0.002000000000
+hist_dcycle        = 2
+snap_dt            = 0.550000000000
+
+<problem>
+pgen_name   = nrpic_geodesic
+metric_kind = homogeneous
+alpha0      = 1.0
+gxx = 1.0
+gxy = 0.0
+gxz = 0.0
+gyy = 1.0
+gyz = 0.0
+gzz = 1.0

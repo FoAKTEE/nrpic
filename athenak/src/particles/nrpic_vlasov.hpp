@@ -48,6 +48,8 @@ struct VlasovOptions {
   bool bnd_detect = false;    // detect & zero gradients on vacuum-boundary elements
   Real bnd_cm_tol = 0.35;
   int bnd_min_ngb = 12;
+  Real noh_kappa = 0.5;       // harmonic-cs Noh/Price thermal conduction coeff in HLLC
+  Real kerr_r_exc = 0.0;      // >0: excise elements with r_BL < kerr_r_exc * r_+ in analytic Kerr
   int substeps_last = 0;
   Real max_sig_last = 0.0;
 };
