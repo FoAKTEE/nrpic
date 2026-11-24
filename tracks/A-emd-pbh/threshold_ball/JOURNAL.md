@@ -204,3 +204,14 @@ top-hat data's density jumps at R1 and R2 (data set 3 has unsmoothed edges; a ju
 constraint residual that refinement does not remove), with the momentum constraint at t = 0
 GROWING with the mesh (order -0.8) as a jump would. The test that can refute it: the same member
 with smoothed edges (prep_bh.py --edge-w) on two meshes. Not run this session.
+
+## Entry 8, 2026-11-24 13:55Z: prediction T7 (C-d0.40, the late member on mesh C), before the run
+
+Where the finite-duration threshold lies on each mesh, from tau_det interpolated linearly in delta_c
+to 45 (entry 4 numbers): exact 0.4103; mesh B 0.4103 (43.686 at 0.42, 46.402 at 0.40); mesh A
+0.4083 from the first detections of the guard-stopped members (43.442, 46.103). Mesh C has only
+0.42 (running). Needs: the nestC lattice of delta_c = 0.40 (data run on processors, prep_scan.py
+--only dc0p4C) and a C chain to t = 54 (about 9 card-hours; queue_b11 line 2).
+T7: C-d0.40 forms no horizon before particle proper time 45 and a persistent one with tau_det =
+46.415 +- 0.1 (B: -0.013); with C-d0.42 the interpolated threshold on C is 0.4103 +- 0.0005.
+Refuted by a detection with proper time below 45, or tau_det outside the band.

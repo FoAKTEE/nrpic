@@ -850,3 +850,27 @@ r < 0.08. The Misner-Sharp mass of the slice near the centre is below M_B of the
 before t ~ 130 (at t = 100, m ~ 1.4 at R ~ 4), which is why particle shells read R < 2 M_B while
 the slice is not yet trapped; whether that deficit is the slice's or the line's (innermost points,
 1-4 cells) is [TO VERIFY].
+
+## 2026-11-24 13:40Z, D: P0L on six static levels (peak_leak6), written before the processor smoke test and the card job
+
+Why: P0L's horizon sits at coordinate r ~ 0.075 under 4 cells of level 4 (F1), and the finder
+does not converge there (F2 so far). peak_leak6.athinput adds levels 5 (|x| < 0.3125, dx 0.00977)
+and 6 (|x| < 0.15625, dx 0.00488), finder from t = 100 at initial radius 0.15, restart dt 10;
+same data, particles, gauge, cfl_number 0.5 (every level at most 0.5 dx, decision 0027).
+Queue: scratch/A-emd-pbh/sequencer_b11/ (queue file periodic_threshold/queue_b11.txt, line 1),
+behind the two continued chains. Predictions [JUDGEMENT throughout]:
+- D0 smoke (processors, 4 cycles, release v0.6 build): exit 0, 400 leaf MeshBlocks, first step
+  0.25 dx6 / c (about 1.7e-3), no guard stop.
+- D1 health: no guard stop to t = 140; the L2 norm of H changes by at most x10 between records
+  in t 1.5-6 (Q1a repeated on six levels).
+- D2 slice: trapped points on the x line (2m/R > 1 with K_T > 0) appear before t = 125 (on four
+  levels: t = 132), and the outermost marginally trapped sphere's m at t = 140 lies within 10 per
+  cent of the four-level value 5.0. Refuted by first trapping at t >= 130 again (then the late
+  trapping is the slicing, not the central resolution).
+- D3 finder: a horizon is found before t = 140, persistent from its first detection, with m_irr
+  within 5 per cent of the line value at the same time. Refuted by no detection while D2 shows a
+  trapped sphere resolved by >= 10 cells of level 6 (then the finder itself fails on this slice).
+- D4 shells: turnaround of r0 = 1.21 within 3 per cent of B (four levels: 4.9) and of r0 = 0.91
+  within 6 per cent (8.6). Refuted if neither improves (then the inner error is the particles').
+- D5 cost: 0.22-0.35 card-seconds per step, about 57,000 steps to t = 140 (4-5.5 card-hours,
+  5-7 segments).
