@@ -407,3 +407,8 @@ initial radius alone, the horizon sits under four cells.
 Mistakes of my own, no damage: a constraint-ratio range first written as 1.6-3.8 (it is 1.6-5.9),
 corrected before use; a `git commit -am` that could have swept a manifest of the finish loop (it
 did not; later commits path-limited).
+
+Stopped at 06:19 PST on the pause flag (five-hour window at 80 per cent): nothing new started.
+Still running by itself: processor run A-20261124-132016-ecf12c3 (G3, ~20 min left), its manifest
+open. Not started: K4 (threshold_ball entry 10, command written there). Card jobs 5149, 5150 PENDING;
+sequencer_b11 (pid 207327) waits for them, then submits P0L6 and C-d0.40.

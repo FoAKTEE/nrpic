@@ -20,7 +20,8 @@ cards:       A-20261122-173202-f98c79f C-d0.42 continued in place (Slurm 5150, P
                t = 50 -> 220, read by job2_q.py and analyse_scouting.py (S1-S3).
              queued behind them (sequencer scratch/A-emd-pbh/sequencer_b11/, queue periodic_threshold/queue_b11.txt):
                line 1 P0L on six levels (peak_leak6, D0-D5, 7 card-h asked), line 2 C-d0.40 (T7, 14 asked).
-processors:  A-20261124-132016-ecf12c3 G1-G3 (A-mesh guard stop from the t = 44 restart; threshold_ball entry 5), running.
+processors:  A-20261124-132016-ecf12c3 G1-G3: G1 repeats the card stop exactly, G2 stops 0.5 M later elsewhere; G3 running
+             at the pause (06:19). K4 (entry 10) not started: paused.
 next:        1. Read C-d0.42 and S1L when they end (HANDOFF commands); judge T4 (mesh C) and S1-S3; then P0L6 (D1-D5).
              2. Constraint floor (C3): smoothed-edge top hat on two meshes (prep_bh.py --edge-w), predictions first.
              3. G2 package items: verifier of conv_ball + threshold_ball numbers, ladder schematic, slice mosaic, note G2

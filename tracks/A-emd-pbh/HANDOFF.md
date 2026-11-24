@@ -1,6 +1,6 @@
 # HANDOFF of A-emd-pbh
 
-Written for a reader with no memory, by the lead of batch 11 (wave 3), 2026-11-24 ~07:00 PST.
+Written for a reader with no memory, by the lead of batch 11 (wave 3), 2026-11-24 06:20 PST (stopped on the pause flag).
 
 State in three lines: G0 and G1 are signed (coord/GATES.md). G2 has an interim package (stage/G2:
 9 PASS, 10 OPEN, 1 FAIL) that is NOT ready for review: the threshold scan of the expanding ball
@@ -49,7 +49,7 @@ normally on 2026-11-23 10:40 after its 15 lines.
   (alpha_exc 0.3) see threshold_ball entry 5 outcome (written at the end of the session if they
   finished; otherwise read `scratch/A-emd-pbh/A-20261124-132016-ecf12c3/run.log` and `G2/`, `G3/`,
   then `nrpic-run finish`).
-- K4 (entry 10): see the end of threshold_ball/JOURNAL.md for its run id and outcome.
+- K4 (entry 10): NOT started (pause flag at 06:18 PST); the start command is at the end of threshold_ball/JOURNAL.md.
 
 ## Packages and what remains
 

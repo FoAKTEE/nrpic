@@ -263,3 +263,18 @@ entry-4 numbers): mesh B 0.41033, exact 0.41026 (difference 7e-5); mesh A 0.4082
 detections of the guard-stopped members, difference -2.0e-3). Card time of the eleven closed scan
 runs and P0L (manifests at finish): 7.32 card-hours in all (B members 0.25-0.83 each, C-R1.25 2.02,
 A batch 0.16, P0L 0.77).
+
+### Entry 5, partial outcome (run A-20261124-132016-ecf12c3, still running when the pause flag was found at 06:18 PST)
+
+- G1 HOLDS: the processor restart from t = 44 stops at the guard at exactly t = 47.921875, cycle 3067,
+  first non-finite cell MeshBlock 31 (level 4) at (-0.4375, -0.4375, -1.4375), as on the card: the
+  blow-up is deterministic in the fields, not card round-off [VERIFIED].
+- G2 (lapse_leak = 0 from t = 44): stops at the guard too, but 0.5 M later (t = 48.42, cycle 3099) and
+  first at another place (MeshBlock 79, level 5, (0.031, -0.219, -0.219), near the centre). The
+  relaxation is not the cause of the blow-up; it moves it [JUDGEMENT]. My "stops like G1" holds
+  for the stop, not for time and place.
+- G3 (alpha_exc 0.3): running (t = 45.9 at 06:19); read `G3/athena.log` and `G3/ball.guard.txt`, then
+  `harness/bin/nrpic-run finish A-20261124-132016-ecf12c3`.
+Entry 10 (K4) was NOT started: the pause flag appeared first. Start it with
+`harness/bin/nrpic-run submit --kind scouting --gate G2 --package tracks/A-emd-pbh/threshold_ball --launcher local --cores 6 --parent A-20261121-075356-1ad4c81 --purpose "threshold_ball K4 (entry 10)" -- bash tracks/A-emd-pbh/threshold_ball/scripts/k4_floor.sh '$NRPIC_RUN_DIR'`
+then k4_compare.py on its directory (registered).

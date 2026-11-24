@@ -4,8 +4,8 @@ G2 is not met and the package is not ready for review. Checklist: 9 PASS, 10 OPE
 
 1. **Constraints behave (C3, FAIL).** The constraint norms of the expanding ball do not converge
    before t ~ 6 in mesh spacing (K refuted) or in particle number (K2 refuted); the momentum
-   constraint of the t = 0 data grows with the mesh. Next: the same member with smoothed edges of
-   the top hat on two meshes (prep_bh.py --edge-w), which can refute the candidate (density jumps).
+   constraint of the t = 0 data grows with the mesh. The floor is not localized at refinement boundaries
+   or density jumps (K3 refuted). Next: K4 (time step, source extrapolation; threshold_ball entry 10).
    Also a ruling of orch on the 0.1 bound of SCOPE section 3 (requests).
 2. **Code paths of section 10 (C1).** Szekeres not run (round 1 cut); the periodic LTB case P0L
    forms no horizon in the finder (the slice traps at r ~ 0.075, under four finest cells): six-level
