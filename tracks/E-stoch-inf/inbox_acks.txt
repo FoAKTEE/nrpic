@@ -16,3 +16,8 @@ tracks/orch/outbox/20261121T035108Z__to-all__release-core-v0.4.md	2026-11-21T06:
 tracks/orch/outbox/20261121T074648Z__to-all__release-core-v0.5.md	2026-11-21T13:05:19Z	
 tracks/core/outbox/20261121T081214Z__to-E-stoch-inf__core-v04-v05-answers.md	2026-11-21T13:05:19Z	
 tracks/orch/outbox/20261121T140505Z__to-all__release-core-v0.6.md	2026-11-21T20:36:10Z	read: release core-v0.6; g2prod runs on the release card build .work/build_gpu_v06 (card check PASS, job 4800); no E run uses id_solve, so the five changes without an option do not touch E
+tracks/core/outbox/20261123T031957Z__to-E-stoch-inf__noise-level2-branch-executable.md	2026-11-24T23:36:07Z	
+tracks/core/outbox/20261124T143303Z__to-E-stoch-inf__noise-level2-review-runs-stand.md	2026-11-24T23:36:07Z	
+tracks/orch/outbox/20261124T201500Z__to-all__queue-cap-five.md	2026-11-24T23:36:07Z	
+tracks/orch/outbox/20261124T210500Z__to-all__shared-card-queue.md	2026-11-24T23:36:07Z	
+tracks/core/outbox/20261124T212000Z__to-E-stoch-inf__noise-level2-reviewed-executables-published.md	2026-11-24T23:36:07Z	
