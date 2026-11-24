@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import paperfig as pf  # noqa: E402
 
 STEM = "schem_ladder"
-W, H = 27.0, 17.6
+W, H = 29.0, 17.6
 PASS, PART, OPEN = pf.GREEN_DARK, pf.OLIVE, pf.GREY_LINE
 # bottom to top: (test, reference, state, note)
 RUNGS = [
@@ -30,7 +30,7 @@ RUNGS = [
     ("Shearing dust, large amplitude", "three other codes", PART,
      "beside the relativistic code, not converged"),
     ("Population: full GR against Newtonian", "same field, rescaled", PART,
-     "halos and near field agree; a stop at twice the amplitude"),
+     "halos, near field agree; stop at 2x amplitude"),
     ("Population: mesh, particle and gauge legs", "the run above", OPEN,
      "queued"),
 ]
@@ -43,7 +43,7 @@ def main():
             out = sys.argv[i + 1]
     os.makedirs(out, exist_ok=True)
     fig, ax = pf.canvas(W, H, scale=0.24)
-    x0, w = 1.2, 23.6
+    x0, w = 1.2, 25.4
     rh, gap = 1.35, 0.32
     y = 1.1
     # rails of the ladder
@@ -61,9 +61,11 @@ def main():
     pf.text(ax, x0 + 13.0, y + 0.35, "reference", size=8.0, bold=True)
     pf.text(ax, x0 + 19.5, y + 0.35, "state", size=8.0, bold=True)
     # legend of the three states
-    pf.legend_box(ax, x0 + 0.2, y + 1.0, 15.0, 1.0,
-                  [("block:" + PASS, "passed"), ("block:" + PART, "partly, or not converged"),
-                   ("block:" + OPEN, "open")], size=7)
+    pf.legend_box(ax, x0 + 0.2, y + 1.0, 19.0, 1.0, [], size=7)
+    for xx, lab, c in ((x0 + 0.8, "passed", PASS), (x0 + 5.0, "partly, or not converged", PART),
+                       (x0 + 13.6, "open", OPEN)):
+        pf.block(ax, xx, y + 1.22, 0.9, 0.56, "", fill=c, radius=0.1)
+        pf.text(ax, xx + 1.2, y + 1.5, lab, size=7.0, bold=True, ha="left")
     pf.arrow(ax, (x0 + w + 1.3, 1.1), (x0 + w + 1.3, y - 0.3), lw=1.2, head=9)
     pf.text(ax, x0 + w + 1.75, (1.1 + y) / 2, "closer to the science runs", size=7.0, rot=90,
             italic=True)
