@@ -366,3 +366,63 @@ F2-F9 stand; add the SR level-2 N_f bar of P-A1), then entry 4 step 2 (passes `r
 `al2s`; figure run with `--usr256kt` twice as in 173254-420115f plus `--rsf256`, `--cl256s`,
 `--al2s`), copy into `fig/`, look at each PNG, replace the PENDING rows of `RESULTS.md` (section 5
 lists which run completes which row).
+
+## Entry 10 (2026-11-24 13:35 PST): update pass after the continued runs; predictions, written before any of it runs
+
+State (batch R3). Package repro/continue (its `HANDOFF.md`, 13:30 PST) closed four of the five
+continued runs at their tlim: RNC256 (+ E-20261124-130629-61fe0b0, to t = 4.5, cycle 734), CL256U
+(+ E-20261124-130711-a5dec67, stopped, + E-20261124-201048-33a3a39, both from the original's
+`usr.00002.rst`; to t = 10.4375, cycle 1702), CL256S (+ E-20261124-130952-4be980b, to 8.5, cycle 1386),
+AL2S (+ E-20261124-131359-49afe29, to 8.5, cycle 1386). Its join check E-20261124-212343-7e9c4b2
+(`join_check.json`: J1, J2, J3, J4 and `records_gapless` true for all four, `complete` true; I looked
+at its `fig_join.png`: the four junctions are smooth in <|H|/[H]>, every overlapping record line is
+identical) wrote the joined records `<label>.sf.{hst,con.hst}` and `<label>.dumps.tsv`. RSF256 is
+joined to cycle 895 (t = 5.49) only; its fourth continuation waits in the shared card queue as
+**q0034** (label `rsf256-cont`, priority 0; not dispatched at 13:27 PST, five jobs of the account in
+Slurm). Nothing in this entry waits for it.
+
+Plan: (i) `figures/runs.py` reads the records of the five labels from the joined files of
+E-20261124-212343-7e9c4b2 and lists the continuations as in `repro/continue/scripts/conts.json`;
+(ii) one registered pass: groups `cl256` (CL256S last dump), `al2s` (AL2S last dump with the mode
+coefficients) and `rsf256bit` (bit check of what RSF256 has written against P256v6, no dump pass);
+(iii) a registered figure run with `--cl256s`, `--al2s` and a junction check of my own reader
+(`figures/joins.py`); (iv) RESULTS.md.
+
+Predictions (refuted by the stated miss):
+- J (joins, my reader): `figlib.read_con_joined` over the raw pieces (original, then each
+  continuation of `conts.json` in order) equals the joined record of E-20261124-212343-7e9c4b2 at every
+  cycle and column (zero difference) for all five labels. At each junction with c_rst > 0 (CL256U
+  cycle 652 twice, CL256S 978, AL2S 1227) the step of N, <|H|/[H]> and <|M|/[M]> from the last record
+  before the restart to the first after it is within a factor 3 of the mean of the two neighbouring
+  steps. Junctions at cycle 0 (RSF256, RNC256) are the run's own first step and are not judged by the
+  ratio.
+- F7 at 256 (scope P6(c), my F1-entry F7): max over the 44 injected shells of |1 - Delta_NR/Delta_lin|
+  at N_f (CL256S, t = 8.5) lies between 1e-8 and 1.5e-7 (order 2.8 to 6.7 from 128's 1.04e-6; the
+  sixth-order stencils gave 5.7 and 5.9 below 128, a floor of the second order (SR f_NL ~ eps) may
+  stop it near 1e-8); the sequence 32 -> 256 is monotone; below 1e-5 at 256. Refuted by a
+  non-monotone sequence or a value outside the band.
+- F8 at 256 (scope P6(a), (b)): the entry maximum (N <= ln 8) of the 256 records over the 128 ones
+  lies in [0.87, 1.15] for SR <|H|/[H]>, SR <|M|/[M]>, USR <|M|/[M]> and USR <|H - <H>|/[H]> (column
+  24) (the second-order plateau, 64 -> 128 within 13 per cent); scope P6(a)'s literal bar is [0.5, 2].
+  USR <|H|/[H]> (column 3), which carries the background residual H0 of the step, falls 128 -> 256 at
+  an order between 3.8 and 4.3 and its entry maximum equals that of USF256 (1.97e-11, same steps,
+  `E-20261123-021204-2f573ec/usr.sf.con.hst`) within 10 per cent. (b): all decay after the entry,
+  except USR <|M|/[M]>, which rises again in the USR phase (end over entry end > 1e2, as at 64 and
+  128). Refuted by any ratio outside its band (outside [0.5, 2]: P6(a) itself refuted).
+- S16 / scope P3 (RNC256 to t = 4.5 against the joined RSF256 records, cycles 0-734): the ratio of
+  <|H|/[H]> flipped over proper is at least 1e3 at every common cycle with N in [0.5, ln 64]; the
+  largest <|M|/[M]> of the flipped run lies in [0.16, 0.3] (0.161 by N = 0.71, entry 3; ladder
+  NC64/NC128 0.20-0.22). Refuted by a ratio below 1e3, or M/[M] below 0.1 or above 0.3 (P3's band).
+- P-A1 at N_f (AL2S dump 17 against AL0S dump 17, t = 8.5): r20 is frozen after the last injection
+  (N = 4.16): rms over |n| <= 32, max over all shells and the fraction of positive shells equal their
+  t = 7.5 values (1.505e-5, 7.93e-5, 0.497; run E-20261124-173254-420115f) within 5 per cent (2
+  points for the fraction); hence P-A1's r20 part holds at N_f (rms in [1e-7, 1e-4], max <= 2e-4, 30-70
+  per cent positive, maximum at |n| <= 16, top-decile over bottom-half median below 1) and so does
+  P1:520 (max |r20| <= 1e-4 at every shell). P-A3 (iii) to the end: records of AL2S within a factor 2
+  (in fact within 1e-3) of AL0S at all 1387 cycles. Refuted by any of these outside.
+- Scope P1, SR part, as far as RSF256 has run: the dumps of RSF256 at t = 0 (original), 4.0 and 5.0
+  (continuation E-20261124-202134-0b1ce0c, dumps 16, 20) are bit-identical to those of P256v6 at the
+  same times (dumps 0, 8, 10) in every common variable. Refuted by any relative difference above
+  1e-12.
+Not judged here (need RSF256 to t = 8.5, q0034): Fig. 2 constraint panels, Figs. 3 and 6a from
+RSF256, scope P2's per-cell part for SR, S14 SR per cell.
