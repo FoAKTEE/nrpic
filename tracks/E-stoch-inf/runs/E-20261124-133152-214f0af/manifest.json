@@ -1,0 +1,98 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261124-133152-214f0af",
+  "track": "E-stoch-inf",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "repro/continue self-test of join_check.py: completed run AL0S (E-20261123-153347-18e7c21) split at its restart 00003 (cycle 978) into a fake original and continuation; J1-J4 must pass and the joined records must equal the run's own",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "tracks/E-stoch-inf/repro/continue/scripts/join_selftest.sh",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "214f0af42d28669ed3bdfd96c1675d23e68e283c",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/repro/continue"
+    ],
+    "outside_package": {
+      "count": 2,
+      "first": [
+        " M tracks/E-stoch-inf/repro/figs/figures/fig_contrasts.py",
+        " M tracks/E-stoch-inf/repro/figs/figures/make_figs.py"
+      ]
+    },
+    "merge_base_main": "bc3e4ca4e48416265d903f76564eaeb6035a2b37",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/E-stoch-inf/repro/continue/scripts/join_selftest.sh",
+      "role": "argv",
+      "sha256": "8c73fdbd7b730dfc69a199da03f3de90c2ad0166a8b9464c28399573ea92e531",
+      "bytes": 3451,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261124-133152-214f0af",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-24T13:31:54Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 30.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 18.0304,
+    "gpu_hours_reserved": 4.9165,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 6,
+    "runs": 210,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
+  }
+}
