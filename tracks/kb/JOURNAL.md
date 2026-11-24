@@ -760,3 +760,20 @@ Predictions written before the runs of this session.
 - failed predictions: B1 (no locator rows from add). D1, K1, S1, Q1, V1 held (V1 with the exit
   code of the known PDF paper).
 - open: KB-G3 package and its verifier; ingest of the sources A and C asked for; fragment claims.
+
+## 2026-11-24 kb lead batch 13 (from 23:27 UTC): ingest4 review, claims of the KB-G3 verifier, snapshot, KB-G3 package
+
+Predictions, written before the runs:
+- R1 (review of ingest4 from my own SQL on kb.sqlite): 762 papers (ok 737, review 22, pdf 3);
+  the 18 ids of ids/additions18.txt all present with status ok; the six old-style papers have
+  bib source `heading` and 11, 16, 16, 10, 27, 21 entries (the package's independent count).
+  Refuted if any count differs.
+- C1 (claims batch, tracks/kb/lead_b13/scripts/apply_g3.sh): every command exits 0; three
+  claims are added (862 for 682, 863 for 714, 864 for 452; 861 -> 864 claims); afterwards 682
+  is refuted; 781, 804, 409, 447, 449, 450 are fulltext/checked with every locator row
+  resolved; 714, 809, 452 stay to_verify with an annotate event that states the answer. Refuted
+  if a command fails, a locator row does not resolve, or the counts differ.
+- S1 (verify-downloads, QA, snapshot): verify-downloads exits 1 only for gr-qc/9412071;
+  QA C1 "counts agree"; parse rate 737/762 = 96.7 % (bar 95 %); golden hybrid 28/32 papers as in
+  ingest4; the snapshot moves db/current to a new file and `kb status` on it shows 762 papers and
+  864 claims. Refuted if C1 disagrees, the rate or the golden count changes, or the counts differ.
