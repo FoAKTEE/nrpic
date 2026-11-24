@@ -1,0 +1,1317 @@
+#!/usr/bin/python3 -I
+"""One machine-wide queue of card submissions for all owners (decision 0033: at most five jobs of the
+account in the Slurm queue, pending, held and running together, over all owners).
+
+One route: card runs are submitted only by `nrpic-queue add`; `nrpic-run submit` with a card launcher
+(batch, chain) is for the dispatcher, which marks the commands it runs (NRPIC_QUEUE_DISPATCH=<id>:<token>,
+inherited by a --cmd wrapper that calls nrpic-run inside). Called directly, nrpic-run refuses and prints the
+`nrpic-queue add` line to use instead; `nrpic-run submit --dry-run` stays open to everyone.
+
+    harness/bin/nrpic-queue [-C <wt>] add --label L [--after LABEL] [--priority N] [--note TEXT] [--no-check]
+                                          -- <the arguments of `nrpic-run submit`>
+    harness/bin/nrpic-queue [-C <wt>] add --label L [--after LABEL] [--priority N] [--note TEXT] --cmd 'LINE'
+    harness/bin/nrpic-queue list [--all] [--owner ID]
+    harness/bin/nrpic-queue show ID
+    harness/bin/nrpic-queue status
+    harness/bin/nrpic-queue [-C <wt>] remove ID       a waiting entry (an owner its own entries, orch any)
+    harness/bin/nrpic-queue [-C <wt>] retry ID        a failed entry back to waiting (same rule)
+    harness/bin/nrpic-queue [-C <wt>] mark-done ID    a submitted or failed entry of which no job is queued
+    harness/bin/nrpic-queue -C /data/haiyangw/nrpic run [--poll S] [--cmd-timeout S]   the dispatcher (orch)
+    harness/bin/nrpic-queue -C /data/haiyangw/nrpic stop [--wait S]                     (orch)
+    harness/bin/nrpic-queue -C /data/haiyangw/nrpic clear-alert                         (orch)
+
+Start the dispatcher once (orchestrator; from any directory; it outlives the session):
+
+    mkdir -p /data/haiyangw/nrpic/locks/queue && setsid nohup /usr/bin/python3 -I \\
+      /data/haiyangw/nrpic/harness/bin/nrpic-queue -C /data/haiyangw/nrpic run \\
+      >> /data/haiyangw/nrpic/locks/queue/nohup.out 2>&1 < /dev/null &
+
+Stop it: `harness/bin/nrpic-queue -C /data/haiyangw/nrpic stop` (writes locks/queue/STOP; the dispatcher
+ends at its next look, within a second unless an entry's command is running, and removes the file; queued
+card jobs are left alone). The pause flag locks/PAUSE does not stop it: a card run uses none of the
+account's usage (decision 0026 item 2); its presence is logged.
+
+Who and where. The worktree acted on is -C <wt>, else the one the current directory lies in (any copy of
+this command may be called; the state belongs to the machine). `add` records that worktree's owner, its
+root and its branch; from a data root of the main checkout (scratch/, locks/, ...) or from outside a
+worktree it refuses unless -C names one. remove, retry and mark-done act on entries of the worktree's
+owner; the orchestrator (the main checkout) on any. run, stop and clear-alert are the orchestrator's.
+
+Entries. Either the arguments of an `nrpic-run submit` call after `--` (a leading `submit` or
+`harness/bin/nrpic-run submit` is dropped; the launcher must be batch or chain; `nrpic-run submit
+--dry-run` checks them at once unless --no-check), or with --cmd any command line that submits at most
+one job, run with bash in the worktree root (a wrapper that continues a cut chain from its restart file).
+--after LABEL: wait until that entry of the same owner (the last one added with that label) is done,
+that is until none of its jobs is in squeue; an entry after one that failed or was removed stays blocked
+until that one is retried or this one removed. --priority N: 0 first (default 5; the orchestrator uses 0
+for runs a user request waits for, 2 for runs a gate package waits for). Labels are 1 to 48 of
+[A-Za-z0-9._-], unique per owner among entries not done or removed.
+
+States. waiting -> submitting (the dispatcher runs its command) -> submitted (the command exited 0; the
+run id and Slurm job id it printed are kept, and the job's name: nrpic-run names a job after its run id,
+and a chain resubmits itself under that name) -> done (no job of that name or id in squeue at two looks
+in a row). failed: the command exited non-zero for another reason than those below (the first line of its
+stderr is shown by `list`, all of it by `show`), timed out (--cmd-timeout, default 900 s), or was running
+when the dispatcher ended. removed: by remove.
+Waits, not failures (the entry stays waiting, `list` and `show` say "waits: <reason> since <time>"): nrpic-run
+refused for the queue cap ("queue cap: ...": a job came in between the two counts, e.g. a chain's next
+segment); nrpic-run refused because the worktree is not clean (tried again every fifth look until it is
+clean); the worktree is in the middle of a merge, rebase, cherry-pick or revert (passed over until it ends).
+
+The dispatcher, at each look (every POLL seconds, default 120): marks submitted entries done; then, while
+the account has fewer than QUEUE_CAP jobs in squeue (harness/lib/nrpic_harness.py, the count nrpic-run
+uses) and an entry may be dispatched, takes the next one: the lowest priority number; within it, the owner
+served longest ago (round robin, no owner starves); within the owner, the order of adding. It holds the
+machine's submit lock (locks/queue/submit.lock) from the count immediately before the submission, through
+the entry's command, to the count after it: if the account's jobs rose by more than one (new job ids, not
+counting a chain's next segment, which carries the name of a job listed before) that is a violation of the
+one route: it stops submitting, logs ALERT and writes locks/queue/ALERT until the orchestrator runs
+clear-alert. It never finishes runs: the owner closes them (`nrpic-run finish <run_id>`) as before.
+
+State (untracked): /data/haiyangw/nrpic/locks/queue/ -- entries/<id>.json (one per entry), out/<id>.<n>.log
+(output of each dispatch), queue.log (every change), queue.lock (one flock for every change), submit.lock
+(held during a dispatch; nrpic-run checks it), dispatcher.lock (held by the running dispatcher),
+dispatcher.pid, dispatcher.json (last look), STOP, ALERT, nohup.out. A restart of `run` resumes from these
+files.
+"""
+import calendar
+import fcntl
+import json
+import os
+import re
+import secrets
+import signal
+import socket
+import subprocess
+import sys
+import time
+import traceback
+from contextlib import contextmanager
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "lib"))
+import nrpic_harness as H  # noqa: E402
+
+SCHEMA = "nrpic-queue-entry/1"
+OPEN_STATES = ("waiting", "submitting", "submitted", "failed")     # a label is unique among these, per owner
+POLL = 120.0
+CMD_TIMEOUT = 900.0        # nrpic-run waits up to five minutes for another writer's index.lock
+DONE_AFTER = 2             # looks in a row without a job of the entry in squeue
+DATA_ROOTS = ("scratch", "kb-data", "cache", "locks", "wt", "runs", ".work")   # as nrpic-ctx
+LABEL_RX = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,47}")
+ID_RX = re.compile(r"q\d{4,}")
+RID = r"[A-Za-z][A-Za-z0-9-]*?-\d{8}-\d{6}-[0-9a-f]{7,40}"
+CAP_REFUSAL_RX = re.compile(r"nrpic-run: queue cap:")
+DIRTY_REFUSAL_RX = re.compile(r"nrpic-run: (?:the worktree is not clean|not clean where the run's code lives)")
+WAIT_CAP = "the queue cap (nrpic-run counted five: a job came in between)"
+WAIT_DIRTY = "worktree not clean"
+DIRTY_RETRY_LOOKS = 5      # a worktree found not clean is tried again at every fifth look
+JOB_RX = re.compile(r"(?:Submitted batch job|submitted job|as Slurm job|: job) (\d+)\b")
+START_LINE = ("mkdir -p /data/haiyangw/nrpic/locks/queue && setsid nohup /usr/bin/python3 -I "
+              "/data/haiyangw/nrpic/harness/bin/nrpic-queue -C /data/haiyangw/nrpic run "
+              ">> /data/haiyangw/nrpic/locks/queue/nohup.out 2>&1 < /dev/null &")
+TAIL = 4000
+
+
+def tool_home():
+    return H.Worktree(os.path.dirname(os.path.realpath(__file__))).home
+
+
+def resolve_worktree(path, home):
+    """The worktree holding `path` if it is one of `home`'s and `path` does not lie in a data root of the
+    main checkout (scratch/, locks/, ...), else None."""
+    try:
+        wt = H.Worktree(path)
+    except (H.HarnessError, OSError):
+        return None
+    if wt.home != home:
+        return None
+    if wt.is_main:
+        rel = os.path.relpath(os.path.realpath(path), wt.home)
+        if rel.split(os.sep)[0] in DATA_ROOTS:
+            return None
+    return wt
+
+
+def cwd_worktree(home):
+    try:
+        return resolve_worktree(os.getcwd(), home)
+    except OSError:
+        return None
+
+
+def acting_worktree(c_opt, strict=True):
+    """-C <wt>, else the worktree of the current directory; it must belong to the repository of this
+    command. strict: refuse a data root of the main checkout or a directory outside a worktree; otherwise
+    fall back to the command's own worktree (read-only commands)."""
+    home = tool_home()
+    if c_opt:
+        wt = resolve_worktree(c_opt, home)
+        if wt is None:
+            raise H.HarnessError(f"-C {c_opt}: not a worktree of {home} (or it lies in a data root of the main checkout)")
+        return wt
+    wt = cwd_worktree(home)
+    if wt is None:
+        if strict:
+            raise H.HarnessError(f"the current directory is not inside a worktree of {home} (or lies in a data root "
+                                 "of the main checkout): run this from your worktree, or pass -C <worktree>")
+        wt = H.Worktree(os.path.dirname(os.path.realpath(__file__)))
+    return wt
+
+
+def epoch(ts):
+    try:
+        return calendar.timegm(time.strptime(ts, "%Y-%m-%dT%H:%M:%SZ"))
+    except (TypeError, ValueError):
+        return None
+
+
+def age(ts, now=None):
+    t = epoch(ts)
+    if t is None:
+        return "-"
+    s = max(0, int((now or time.time()) - t))
+    if s >= 86400:
+        return f"{s // 86400}d{(s % 86400) // 3600:02d}h"
+    if s >= 3600:
+        return f"{s // 3600}h{(s % 3600) // 60:02d}m"
+    return f"{s // 60}m{s % 60:02d}s"
+
+
+def event(e, what):
+    e.setdefault("history", []).append({"ts": H.utcnow(), "event": what})
+    del e["history"][:-40]
+
+
+def pid_alive(pid):
+    """The process exists and is not a zombie."""
+    try:
+        os.kill(int(pid), 0)
+    except (OSError, ValueError, TypeError):
+        return False
+    try:
+        return open(f"/proc/{int(pid)}/stat").read().rsplit(")", 1)[1].split()[0] != "Z"
+    except (OSError, IndexError):
+        return True
+
+
+def valid_entry(e, eid):
+    """An entry file has every field the dispatcher reads (one edited by hand might not: it is skipped and
+    reported, so that it cannot stop the queue)."""
+    if not isinstance(e, dict) or e.get("id") != eid:
+        return False
+    strs = ("owner", "label", "state", "worktree", "kind")
+    if not all(isinstance(e.get(k), str) and e[k] for k in strs):
+        return False
+    if not all(isinstance(e.get(k), int) and not isinstance(e.get(k), bool) for k in ("priority", "seq")):
+        return False
+    if e["kind"] == "submit":
+        return isinstance(e.get("argv"), list) and all(isinstance(a, str) for a in e["argv"])
+    return e["kind"] == "cmd" and isinstance(e.get("cmd"), str)
+
+
+def worktree_busy(path):
+    """Why the dispatcher should not run a command in this worktree now (a merge, rebase, cherry-pick or
+    revert in progress: nrpic-run would find it unclean), or None. index.lock is not a reason: nrpic-run
+    waits for it."""
+    r = H.run(["git", "-C", path, "rev-parse", "--absolute-git-dir"], check=False)
+    if r.returncode != 0:
+        return None                       # the command itself then fails and says why
+    gd = r.stdout.strip()
+    for f, what in (("MERGE_HEAD", "a merge"), ("rebase-merge", "a rebase"), ("rebase-apply", "a rebase"),
+                    ("CHERRY_PICK_HEAD", "a cherry-pick"), ("REVERT_HEAD", "a revert")):
+        if os.path.exists(os.path.join(gd, f)):
+            return f"worktree in the middle of {what}"
+    return None
+
+
+def set_wait(x, what, detail=None, tried=False):
+    """Record in entry x why it waits (list, show and status show it). `since` stays while the reason stays;
+    tried: the entry's command ran and was refused for this reason. Returns True when x changed."""
+    w = dict(x.get("wait") or {})
+    if w.get("what") != what:
+        w = {"what": what, "since": H.utcnow(), "tries": 0}
+        event(x, f"waits: {what}")
+    elif not tried and (detail is None or w.get("detail") == detail):
+        return False
+    if detail is not None:
+        w["detail"] = detail
+    if tried:
+        w["tries"] = w.get("tries", 0) + 1
+        w["last_try"] = H.utcnow()
+    x["wait"] = w
+    return True
+
+
+def wait_text(e):
+    w = e.get("wait") or {}
+    if not w.get("what"):
+        return ""
+    return f"waits: {w['what']} since {w.get('since')}" + (f" ({w['tries']} tries)" if w.get("tries") else "")
+
+
+def first_line(*texts):
+    """The first line of the first text that has one, skipping nrpic-run's notes (`nrpic-run: note: ...`)."""
+    for t in texts:
+        for ln in (t or "").splitlines():
+            s = ln.strip()
+            if s and not s.startswith("nrpic-run: note:"):
+                return s[:400]
+    return ""
+
+
+# ------------------------------------------------------------------ the state directory
+
+class Queue:
+    def __init__(self, home):
+        self.home = home
+        self.dir = H.queue_dir(home)
+        self.edir = os.path.join(self.dir, "entries")
+        self.odir = os.path.join(self.dir, "out")
+        self.bad = []
+
+    def ensure(self):
+        for d in (self.dir, self.edir, self.odir):
+            os.makedirs(d, exist_ok=True)
+        return self
+
+    def path(self, name):
+        return os.path.join(self.dir, name)
+
+    @contextmanager
+    def lock(self):
+        self.ensure()
+        with open(self.path("queue.lock"), "a") as f:
+            fcntl.flock(f, fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(f, fcntl.LOCK_UN)
+
+    def entry_path(self, eid):
+        return os.path.join(self.edir, eid + ".json")
+
+    def load(self, eid):
+        if not ID_RX.fullmatch(eid or ""):
+            raise H.HarnessError(f"{eid!r} is not an entry id (q0001, ...)")
+        p = self.entry_path(eid)
+        if not os.path.isfile(p):
+            raise H.HarnessError(f"no entry {eid} in {self.edir}")
+        return H.read_json(p)
+
+    def entries(self):
+        """Every entry, in the order of adding. A file that cannot be read is listed in .bad and skipped."""
+        out, self.bad = [], []
+        if not os.path.isdir(self.edir):
+            return out
+        for fn in sorted(os.listdir(self.edir)):
+            m = re.fullmatch(r"(q\d{4,})\.json", fn)
+            if not m:
+                continue
+            try:
+                e = H.read_json(os.path.join(self.edir, fn))
+            except (OSError, ValueError) as ex:
+                self.bad.append((fn, repr(ex)))
+                continue
+            if valid_entry(e, m.group(1)):
+                out.append(e)
+            else:
+                self.bad.append((fn, "not an entry of this queue (fields missing or of the wrong type)"))
+        out.sort(key=lambda e: (e.get("seq", 0), e["id"]))
+        return out
+
+    def save(self, e):
+        e["updated"] = H.utcnow()
+        H.write_json(self.entry_path(e["id"]), e)
+
+    def change(self, eid, fn):
+        """fn(entry) under the lock, on the entry as it is on disk; saved unless fn returns False.
+        Returns the entry as saved, or None when fn declined."""
+        with self.lock():
+            e = self.load(eid)
+            if fn(e) is False:
+                return None
+            self.save(e)
+            return e
+
+    def new_id(self):
+        """The next entry id (call under the lock)."""
+        p = self.path("next_id")
+        try:
+            n = int(open(p).read().strip())
+        except (OSError, ValueError):
+            n = 1
+        while os.path.exists(self.entry_path(f"q{n:04d}")):
+            n += 1
+        with open(p + ".tmp", "w") as f:
+            f.write(f"{n + 1}\n")
+        os.replace(p + ".tmp", p)
+        return f"q{n:04d}", n
+
+    def next_dispatch_no(self):
+        return max([e.get("dispatch_no") or 0 for e in self.entries()] + [0]) + 1
+
+    def log(self, msg, loud=False):
+        self.ensure()
+        line = f"{H.utcnow()} {msg}\n"
+        with open(self.path("queue.log"), "a") as f:
+            f.write(line)
+        if loud:
+            sys.stderr.write(line)
+            sys.stderr.flush()
+
+    def dispatcher(self):
+        """{alive, pid, started, last_look, poll, state} of the dispatcher."""
+        info = {}
+        try:
+            info = H.read_json(self.path("dispatcher.json"))
+        except (OSError, ValueError):
+            pass
+        pid = None
+        try:
+            pid = int(open(self.path("dispatcher.pid")).read().strip())
+        except (OSError, ValueError):
+            pass
+        alive = False
+        if pid and pid_alive(pid) and info.get("host", socket.gethostname()) == socket.gethostname():
+            try:
+                cmdline = open(f"/proc/{pid}/cmdline", "rb").read().replace(b"\0", b" ").decode(errors="replace")
+            except OSError:
+                cmdline = ""
+            alive = "nrpic-queue" in cmdline and " run" in cmdline
+        info.update(pid=pid, alive=alive)
+        return info
+
+
+# ------------------------------------------------------------------ order and done
+
+def blocked_reason(e, by_id):
+    """None when a waiting entry may be dispatched now (as far as --after goes), else why it waits."""
+    aid = e.get("after_id")
+    if not aid:
+        return None
+    a = by_id.get(aid)
+    if a is None:
+        return f"after {e.get('after')}: entry {aid} is missing"
+    if a["state"] == "done":
+        return None
+    if a["state"] in ("failed", "removed"):
+        return f"after {a['label']} ({aid}), which {a['state'] == 'failed' and 'failed' or 'was removed'}: " \
+               f"retry it, or remove {e['id']}"
+    return f"after {a['label']} ({aid}, {a['state']})"
+
+
+def dispatch_order(entries):
+    """The waiting entries that may be dispatched now, in the order the dispatcher takes them: lowest
+    priority number first; within a priority the owner served longest ago (never served first; then the
+    earliest added); within an owner the order of adding. Serving an entry counts for its owner."""
+    by_id = {e["id"]: e for e in entries}
+    served = {}
+    for e in entries:
+        n = e.get("dispatch_no")
+        if isinstance(n, int):
+            served[e["owner"]] = max(served.get(e["owner"], 0), n)
+    nxt = max(served.values(), default=0) + 1
+    pool = [e for e in entries if e["state"] == "waiting" and blocked_reason(e, by_id) is None]
+    out = []
+    while pool:
+        p = min(e["priority"] for e in pool)
+        heads = {}
+        for e in pool:
+            if e["priority"] == p and e["owner"] not in heads:
+                heads[e["owner"]] = e
+        pick = min(heads.values(), key=lambda x: (served.get(x["owner"], 0), x["seq"]))
+        out.append(pick)
+        pool.remove(pick)
+        served[pick["owner"]] = nxt
+        nxt += 1
+    return out
+
+
+def job_live(e, jobs):
+    names = {j["name"] for j in jobs if j["name"]}
+    ids = {j["id"] for j in jobs}
+    return bool(e.get("job_name") and e["job_name"] in names) or any(str(j) in ids for j in e.get("job_ids") or [])
+
+
+def chain_status(home, e):
+    if not e.get("run_id"):
+        return None
+    p = os.path.join(home, "scratch", e["owner"], e["run_id"], "chain", "STATUS")
+    try:
+        return open(p).read().strip() or None
+    except OSError:
+        return None
+
+
+def track_done(Q, jobs):
+    """Submitted entries none of whose jobs (by name, then by id) is in squeue at DONE_AFTER looks in a
+    row become done. Returns the entries marked done."""
+    done = []
+    for e in Q.entries():
+        if e["state"] != "submitted":
+            continue
+        live = job_live(e, jobs)
+
+        def upd(x, live=live):
+            if x["state"] != "submitted":
+                return False
+            if live:
+                if x.get("absent_looks"):
+                    x["absent_looks"] = 0
+                    return True
+                return False
+            x["absent_looks"] = x.get("absent_looks", 0) + 1
+            if x["absent_looks"] < DONE_AFTER:
+                return True
+            x["state"] = "done"
+            x["ended"] = H.utcnow()
+            cs = chain_status(Q.home, x)
+            if cs:
+                x["chain_status"] = cs
+            how = (f"job name {x['job_name']}" if x.get("job_name") else
+                   f"job id {', '.join(x['job_ids'])}" if x.get("job_ids") else "no job of it was ever identified")
+            if cs in ("QUEUED", "RUNNING"):
+                how += f"; its chain/STATUS still says {cs} (its job ended without the chain closing it)"
+            event(x, f"done: not in squeue at {DONE_AFTER} looks in a row ({how})")
+            return True
+        x = Q.change(e["id"], upd)
+        if x is not None and x["state"] == "done":
+            done.append(x)
+            Q.log(f"done {x['id']} {x['owner']}/{x['label']}: {x['history'][-1]['event']}")
+    return done
+
+
+# ------------------------------------------------------------------ a dispatch
+
+def command_of(e):
+    if e["kind"] == "submit":
+        return [sys.executable, "-I", os.path.join(e["worktree"], "harness", "bin", "nrpic-run"), "submit"] + \
+            list(e["argv"])
+    return ["/bin/bash", "-c", e["cmd"]]
+
+
+def describe(e):
+    if e["kind"] == "submit":
+        return "nrpic-run submit " + " ".join(e["argv"])
+    return e["cmd"]
+
+
+def parse_output(text):
+    """(run id or None, [job ids]) printed by nrpic-run, scripts/submit_chain.sh, gpu_batch.sh or sbatch."""
+    run_id = None
+    m = re.search(rf"\b(?:submitted|registered) ({RID})\b", text)
+    if m:
+        run_id = m.group(1)
+    if run_id is None:
+        m = re.search(r"chain started in (\S+): job \d+", text)
+        if m and re.fullmatch(RID, os.path.basename(m.group(1).rstrip("/"))):
+            run_id = os.path.basename(m.group(1).rstrip("/"))
+    found = JOB_RX.findall(text) or [ln.strip() for ln in text.splitlines() if re.fullmatch(r"\s*\d+\s*", ln)]
+    jobs = []
+    for j in found:                       # a line of digits alone (sbatch --parsable) only when nothing else says
+        if j not in jobs:
+            jobs.append(j)
+    return run_id, jobs
+
+
+def fresh_jobs(before, after):
+    """(fresh, successors): jobs in `after` whose id was not in `before`; a successor carries the name of a
+    job listed before (a chain's next segment), a fresh one does not."""
+    bids = {j["id"] for j in before}
+    bnames = {j["name"] for j in before if j["name"]}
+    new = [j for j in after if j["id"] not in bids]
+    return [j for j in new if j["name"] not in bnames], [j for j in new if j["name"] in bnames]
+
+
+def tail(s, n=TAIL):
+    s = (s or "").strip()
+    return s if len(s) <= n else "..." + s[-n:]
+
+
+class Dispatcher:
+    def __init__(self, wt, poll, cmd_timeout):
+        self.wt = wt
+        self.Q = Queue(wt.home).ensure()
+        self.env = H.build_env(wt)
+        self.poll = poll
+        self.cmd_timeout = cmd_timeout
+        self.term = False
+        self.why = None                 # the last reason logged for not submitting
+        self.pause_seen = False
+        self.bad_seen = set()
+        self.started = H.utcnow()
+
+    # -- small things
+    def say(self, key, msg):
+        """Log why nothing is submitted, once per change of the reason."""
+        if self.why != key:
+            self.why = key
+            self.Q.log(msg)
+
+    def stopping(self):
+        return self.term or os.path.exists(self.Q.path("STOP"))
+
+    def on_term(self, signum, frame):
+        self.term = True
+
+    def heartbeat(self, state="running"):
+        H.write_json(self.Q.path("dispatcher.json"),
+                     {"pid": os.getpid(), "host": socket.gethostname(), "started": self.started,
+                      "last_look": H.utcnow(), "poll": self.poll, "cap": H.QUEUE_CAP, "state": state})
+
+    def note_pause(self):
+        p = os.path.exists(os.path.join(self.Q.home, "locks", "PAUSE"))
+        if p != self.pause_seen:
+            self.pause_seen = p
+            self.Q.log("the pause flag locks/PAUSE exists: card submissions go on (decision 0026 item 2)" if p
+                       else "the pause flag locks/PAUSE is gone")
+
+    def sleep(self):
+        end = time.time() + self.poll
+        while not self.stopping():
+            left = end - time.time()
+            if left <= 0:
+                return
+            time.sleep(min(1.0, left))
+
+    # -- the loop
+    def run(self):
+        lockf = open(self.Q.path("dispatcher.lock"), "a")
+        try:
+            fcntl.flock(lockf, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError:
+            d = self.Q.dispatcher()
+            raise H.HarnessError(f"a dispatcher is already running (pid {d.get('pid')}, last look "
+                                 f"{d.get('last_look')}); stop it first: nrpic-queue -C {self.wt.home} stop")
+        stop = self.Q.path("STOP")
+        try:
+            os.chdir(self.wt.home)               # never hold a working directory inside a worktree
+            if os.path.exists(stop):
+                os.remove(stop)
+                self.Q.log("removed a STOP file left from before (no dispatcher was running)")
+            with open(self.Q.path("dispatcher.pid"), "w") as f:
+                f.write(f"{os.getpid()}\n")
+            signal.signal(signal.SIGTERM, self.on_term)
+            signal.signal(signal.SIGINT, self.on_term)
+            signal.signal(signal.SIGHUP, signal.SIG_IGN)
+            self.heartbeat()
+            self.Q.log(f"dispatcher start: pid {os.getpid()} on {socket.gethostname()}, a look every {self.poll:g} s, "
+                       f"cap {H.QUEUE_CAP} jobs of the account (decision 0033), state {self.Q.dir}")
+            self.recover()
+            while not self.stopping():
+                try:
+                    self.look()
+                except Exception as ex:          # the dispatcher outlives a transient error; it is logged
+                    self.Q.log(f"error at a look (the dispatcher goes on): {type(ex).__name__}: {ex}", loud=True)
+                    traceback.print_exc()
+                self.heartbeat()
+                self.sleep()
+        finally:
+            how = "STOP file" if os.path.exists(stop) else "signal" if self.term else "error"
+            self.Q.log(f"dispatcher exit ({how}): pid {os.getpid()}")
+            try:
+                if open(self.Q.path("dispatcher.pid")).read().strip() == str(os.getpid()):
+                    os.remove(self.Q.path("dispatcher.pid"))
+            except OSError:
+                pass
+            if os.path.exists(stop):
+                os.remove(stop)
+            self.heartbeat("stopped")
+            fcntl.flock(lockf, fcntl.LOCK_UN)
+            lockf.close()
+        return 0
+
+    def recover(self):
+        """An entry left in `submitting` ran its command while the dispatcher ended: it may or may not have
+        submitted a job, so it is not run again on its own."""
+        for e in self.Q.entries():
+            if e["state"] != "submitting":
+                continue
+
+            def upd(x):
+                if x["state"] != "submitting":
+                    return False
+                x["state"] = "failed"
+                x["error"] = (f"the dispatcher ended while this entry's command ran (from {x.get('dispatch_started')});"
+                              " it may or may not have submitted a job: look at squeue and `nrpic-run status` in "
+                              f"{x['worktree']}, then `nrpic-queue retry {x['id']}` (nothing was submitted) or "
+                              f"`nrpic-queue mark-done {x['id']}` (its job has ended)")
+                x["error_line"] = "the dispatcher ended while its command ran (it may have submitted a job)"
+                x.pop("dispatch_token", None)
+                x["dispatch_no"] = self.Q.next_dispatch_no()
+                event(x, "failed at restart: was submitting")
+                return True
+            if self.Q.change(e["id"], upd):
+                self.Q.log(f"FAILED {e['id']} {e['owner']}/{e['label']}: was submitting when the dispatcher ended",
+                           loud=True)
+
+    def look(self):
+        jobs = H.queue_jobs(self.env)
+        if jobs is not None:
+            track_done(self.Q, jobs)
+        self.note_pause()
+        while not self.stopping():
+            if os.path.exists(self.Q.path("ALERT")):
+                self.say("alert", "ALERT present (locks/queue/ALERT): nothing is submitted until the orchestrator "
+                                  "runs `nrpic-queue clear-alert`")
+                return
+            jobs = H.queue_jobs(self.env)
+            if jobs is None:
+                self.say("squeue", "squeue did not answer: nothing is submitted at this look")
+                return
+            ents = self.Q.entries()
+            for fn, why in self.Q.bad:
+                if fn not in self.bad_seen:
+                    self.bad_seen.add(fn)
+                    self.Q.log(f"WARNING: skipped {os.path.join(self.Q.edir, fn)}: {why}", loud=True)
+            order = dispatch_order(ents)
+            free, held = self.ready(order)
+            if order and not free:
+                self.say("held:" + "; ".join(held), f"{len(order)} {'entry waits' if len(order) == 1 else 'entries wait'}"
+                                                    f" for their worktrees: {'; '.join(held)}")
+                return
+            order = free
+            if not order:
+                nw = sum(e["state"] == "waiting" for e in ents)
+                self.say(f"idle{nw}", ("nothing waits" if nw == 0 else f"{nw} waiting, all blocked by --after")
+                         + f"; {len(jobs)} of {H.QUEUE_CAP} jobs of the account queued")
+                return
+            if len(jobs) >= H.QUEUE_CAP:
+                self.say("cap", f"{len(jobs)} of {H.QUEUE_CAP} jobs of the account queued: {len(order)} "
+                                f"{'entry waits' if len(order) == 1 else 'entries wait'} "
+                                f"(next {order[0]['id']} {order[0]['owner']}/{order[0]['label']})")
+                return
+            e = self.claim(order[0])
+            if e is None:
+                continue                         # removed meanwhile
+            with self.submit_lock():             # from the count before, through the command, to the count after
+                before = H.queue_jobs(self.env)  # counted again immediately before the submission
+                if before is None or len(before) >= H.QUEUE_CAP:
+                    self.unclaim(e)
+                    self.say("cap", f"{'squeue did not answer' if before is None else f'{len(before)} of {H.QUEUE_CAP} jobs queued'}"
+                                    f" at the count before {e['id']}: back to waiting")
+                    return
+                self.why = None
+                res = self.dispatch(e, before)
+            if res != "go-on":
+                return
+
+    def ready(self, order):
+        """(the entries of `order` whose worktree may take a command now, the reasons the others wait). A
+        worktree in the middle of a merge or rebase holds its entries back (recorded as their wait, cleared when
+        it is over); an entry whose worktree nrpic-run found not clean is tried again every DIRTY_RETRY_LOOKS."""
+        free, held, busy, now = [], [], {}, time.time()
+        for cand in order:
+            wt = cand["worktree"]
+            if wt not in busy:
+                busy[wt] = worktree_busy(wt)
+            w = cand.get("wait") or {}
+            if busy[wt]:
+                self.Q.change(cand["id"], lambda x, b=busy[wt]: x["state"] == "waiting" and set_wait(x, b))
+                held.append(f"{cand['id']}: {busy[wt]}")
+                continue
+            if str(w.get("what", "")).startswith("worktree in the middle of"):
+                self.Q.change(cand["id"], lambda x: x["state"] == "waiting" and bool(x.pop("wait", None)))
+            if w.get("what") == WAIT_DIRTY and (epoch(w.get("last_try")) or 0) > now - DIRTY_RETRY_LOOKS * self.poll:
+                held.append(f"{cand['id']}: {WAIT_DIRTY} (tried again at a later look)")
+                continue
+            free.append(cand)
+        return free, held
+
+    @contextmanager
+    def submit_lock(self):
+        with open(H.queue_submit_lock(self.Q.home), "a") as f:
+            fcntl.flock(f, fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(f, fcntl.LOCK_UN)
+
+    def claim(self, e):
+        def upd(x):
+            if x["state"] != "waiting":
+                return False
+            x["state"] = "submitting"
+            x["attempts"] = x.get("attempts", 0) + 1
+            x["dispatch_started"] = H.utcnow()
+            x["dispatch_token"] = secrets.token_hex(12)   # nrpic-run checks it against the marker
+            event(x, f"dispatch attempt {x['attempts']}")
+            return True
+        return self.Q.change(e["id"], upd)
+
+    def unclaim(self, e):
+        def upd(x):
+            if x["state"] != "submitting":
+                return False
+            x["state"] = "waiting"
+            x["attempts"] = max(0, x.get("attempts", 1) - 1)
+            x.pop("dispatch_token", None)
+            event(x, "back to waiting: the queue was full at the count before the submission")
+            return True
+        self.Q.change(e["id"], upd)
+
+    def execute(self, e):
+        wt = H.Worktree(e["worktree"])
+        if wt.owner != e["owner"]:
+            raise H.HarnessError(f"{e['worktree']} is now on branch {wt.branch} (owner {wt.owner}), not {e['owner']}'s")
+        # the marker of the one route (decision 0033): nrpic-run lets a card submission through only with it,
+        # and still applies the cap; a --cmd wrapper that calls nrpic-run inside inherits it
+        env = H.build_env(wt, extra={H.QUEUE_DISPATCH_VAR: f"{e['id']}:{e['dispatch_token']}"})
+        argv = command_of(e)
+        t0 = time.time()
+        p = subprocess.Popen(argv, cwd=wt.root, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE, text=True, start_new_session=True)
+        timed_out = False
+        try:
+            out, err = p.communicate(timeout=self.cmd_timeout)
+        except subprocess.TimeoutExpired:
+            timed_out = True
+            for sig, wait in ((signal.SIGTERM, 60), (signal.SIGKILL, None)):
+                try:
+                    os.killpg(p.pid, sig)
+                except OSError:
+                    pass
+                try:
+                    out, err = p.communicate(timeout=wait)
+                    break
+                except subprocess.TimeoutExpired:
+                    continue
+        rc = p.returncode
+        logp = os.path.join(self.Q.odir, f"{e['id']}.{e.get('attempts', 1)}.log")
+        with open(logp, "w") as f:
+            f.write(f"# {e['id']} {e['owner']}/{e['label']} attempt {e.get('attempts', 1)} at {e.get('dispatch_started')}\n"
+                    f"# cwd {wt.root}\n# argv {json.dumps(argv)}\n# exit {rc}{' (timed out)' if timed_out else ''} "
+                    f"after {time.time() - t0:.1f} s\n--- stdout\n{out}\n--- stderr\n{err}\n")
+        return rc, out or "", err or "", timed_out, logp
+
+    def dispatch(self, e, before):
+        """Run one claimed entry's command (the caller holds the submit lock); record the outcome; check the
+        rise of the count. Returns "go-on" when the dispatcher may go on at this look, else ends the look."""
+        eid = e["id"]
+        try:
+            rc, out, err, timed_out, logp = self.execute(e)
+        except Exception as ex:
+            msg = f"could not run the command: {type(ex).__name__}: {ex}"
+            self.fail(e, msg, None, None, msg)
+            return "go-on"
+        after = H.queue_jobs(self.env)
+        text = out + "\n" + err
+        outcome = "go-on"
+        refusal = None if rc == 0 or timed_out else (
+            WAIT_CAP if CAP_REFUSAL_RX.search(text) else WAIT_DIRTY if DIRTY_REFUSAL_RX.search(text) else None)
+        if refusal:
+            m = (CAP_REFUSAL_RX if refusal == WAIT_CAP else DIRTY_REFUSAL_RX).search(text)
+            detail = "\n".join(text[m.start():].splitlines()[:8])
+
+            def upd(x):
+                x["state"] = "waiting"
+                x.pop("dispatch_token", None)
+                x["refusals"] = x.get("refusals", 0) + 1
+                x["last_refusal"] = tail(detail, 1200)
+                set_wait(x, refusal, tail(detail, 1200), tried=True)
+                event(x, f"refused by nrpic-run ({refusal}): back to waiting")
+                return True
+            x = self.Q.change(eid, upd)
+            if refusal == WAIT_CAP or (x and x["wait"]["tries"] == 1):
+                self.Q.log(f"refused {eid} {e['owner']}/{e['label']} by nrpic-run ({refusal}): back to waiting"
+                           + ("" if refusal == WAIT_CAP else f", tried again every {DIRTY_RETRY_LOOKS}th look")
+                           + f" ({logp})")
+            outcome = "refused" if refusal == WAIT_CAP else "go-on"
+        elif rc == 0 and not timed_out:
+            run_id, jids = parse_output(text)
+            by_id = {j["id"]: j for j in after or []}
+            name = next((by_id[j]["name"] for j in jids if j in by_id and by_id[j]["name"]), None)
+            if name is None and run_id:
+                name = run_id                     # nrpic-run's JOB_NAME
+            fresh = fresh_jobs(before, after)[0] if after is not None else []
+            if name is None and len(fresh) == 1:  # the one new job, when nothing printed names a queued job
+                name = fresh[0]["name"]
+                jids = jids + [fresh[0]["id"]] if fresh[0]["id"] not in jids else jids
+
+            def upd(x):
+                x["state"] = "submitted"
+                x["submitted"] = H.utcnow()
+                x.pop("dispatch_token", None)
+                x.pop("wait", None)
+                x["run_id"], x["job_ids"], x["job_name"] = run_id, jids, name
+                x["absent_looks"] = 0
+                x["dispatch_no"] = self.Q.next_dispatch_no()
+                x["stdout_tail"] = tail(out, 1500)
+                x["output_log"] = logp
+                event(x, f"submitted: run {run_id or '-'}, job {', '.join(jids) or '-'}, job name {name or '-'}")
+                return True
+            x = self.Q.change(eid, upd)
+            self.Q.log(f"submitted {eid} {e['owner']}/{e['label']} (p{e['priority']}): run {run_id or '-'}, "
+                       f"job {', '.join(jids) or '-'}, name {name or '-'}; "
+                       f"{len(after) if after is not None else '?'} of {H.QUEUE_CAP} jobs queued")
+            if not name and not jids:
+                self.Q.log(f"note: {eid}: its command exited 0 but no job of it was identified; it will be marked "
+                           f"done at the next looks ({logp})")
+            e = x or e
+        else:
+            why = (f"timed out after {self.cmd_timeout:g} s and was killed; it may have submitted a job"
+                   if timed_out else f"exit status {rc}")
+            self.fail(e, f"{why}: {tail(err or out, 2000)}", rc, logp, first_line(err, out) or why)
+        # the rise of the account's count: at most one job per entry (decision 0033)
+        if after is None:
+            self.Q.log(f"WARNING: squeue did not answer after {eid}: the rise of the count was not checked; nothing "
+                       "more is submitted at this look", loud=True)
+            return "stop"
+        fresh, succ = fresh_jobs(before, after)
+        if len(fresh) > 1:
+            self.alert(e, before, after, fresh, succ, text)
+            return "stop"
+        if len(after) > H.QUEUE_CAP:
+            self.Q.log(f"WARNING: {len(after)} jobs of the account are queued, above the cap of {H.QUEUE_CAP} "
+                       f"(new since the count before {eid}: {[j['id'] + ' ' + j['name'] for j in fresh + succ]}; a "
+                       "chain hands over to its next segment with both listed for seconds)", loud=True)
+        return outcome
+
+    def fail(self, e, error, rc, logp, line=None):
+        def upd(x):
+            x["state"] = "failed"
+            x["error"] = error
+            x["error_line"] = line or first_line(error)      # the first line of its stderr, shown by list
+            x["exit_code"] = rc
+            x.pop("dispatch_token", None)
+            x.pop("wait", None)
+            x["output_log"] = logp
+            x["dispatch_no"] = self.Q.next_dispatch_no()
+            event(x, f"failed: {error[:200]}")
+            return True
+        self.Q.change(e["id"], upd)
+        self.Q.log(f"FAILED {e['id']} {e['owner']}/{e['label']}: {error[:300]} ({logp or 'no output log'})", loud=True)
+
+    def alert(self, e, before, after, fresh, succ, text):
+        _, printed = parse_output(text)
+        rec = {"ts": H.utcnow(), "entry": e["id"], "owner": e["owner"], "label": e["label"], "command": describe(e),
+               "count_before": len(before), "count_after": len(after),
+               "new_jobs": [dict(j, printed_by_the_command=j["id"] in printed) for j in fresh],
+               "chain_successors": succ,
+               "what_to_do": "one route (decision 0033): every card job goes through the dispatcher, so a rise of "
+                             "more than one around a dispatch that is not a chain's next segment is a violation. "
+                             "Look at squeue, cancel what should not run (scancel <id>), find where each new job "
+                             "came from (printed_by_the_command), fix or remove the entry, then: "
+                             "nrpic-queue -C <main checkout> clear-alert"}
+        H.write_json(self.Q.path("ALERT"), rec)
+        self.Q.log(f"ALERT: the account's jobs rose by {len(fresh)} (more than one) around {e['id']} "
+                   f"{e['owner']}/{e['label']}: {len(before)} before, {len(after)} after; new: "
+                   f"{', '.join(j['id'] + ' ' + j['name'] for j in fresh)}. Nothing more is submitted until "
+                   "`nrpic-queue clear-alert` (locks/queue/ALERT)", loud=True)
+
+
+# ------------------------------------------------------------------ commands
+
+def need_orch(wt, what):
+    if wt.owner != "orch" or not wt.is_main:
+        raise H.HarnessError(f"`{what}` is the orchestrator's: run it from the main checkout or with -C {wt.home}")
+
+
+def may_change(wt, e):
+    who = wt.require_owner()
+    if who != e["owner"] and who != "orch":
+        raise H.HarnessError(f"{e['id']} belongs to {e['owner']}: an owner changes only its own entries (the "
+                             "orchestrator any)")
+    return who
+
+
+def normalize_submit(rest):
+    a = list(rest)
+    if a and os.path.basename(a[0]) == "nrpic-run":
+        a = a[1:]
+    if a and a[0] == "submit":
+        a = a[1:]
+    if not a or not a[0].startswith("--"):
+        raise H.HarnessError("after -- give the arguments of `nrpic-run submit` (options first, e.g. "
+                             "-- --kind scouting --gate G2 --purpose '...' --launcher chain --gpu-hours 4 -- deck.athinput)")
+    opts = a[:a.index("--")] if "--" in a else a
+    launcher = "local"
+    for i, x in enumerate(opts):
+        if x == "--launcher" and i + 1 < len(opts):
+            launcher = opts[i + 1]
+        elif x.startswith("--launcher="):
+            launcher = x.split("=", 1)[1]
+        elif x in ("--dry-run", "--background", "--wait") or x.startswith("--wait="):
+            raise H.HarnessError(f"{x}: not for a queued submission")
+    if launcher not in ("batch", "chain"):
+        raise H.HarnessError(f"the queue is for card runs (nrpic-run submit --launcher batch|chain); launcher "
+                             f"{launcher!r}: run it with nrpic-run directly")
+    return a
+
+
+def dry_run(wt, argv):
+    k = argv.index("--") if "--" in argv else len(argv)
+    cmd = [sys.executable, "-I", os.path.join(wt.root, "harness", "bin", "nrpic-run"), "submit"] + \
+        argv[:k] + ["--dry-run"] + argv[k:]
+    r = subprocess.run(cmd, cwd=wt.root, env=H.build_env(wt), capture_output=True, text=True, timeout=900)
+    if r.returncode != 0:
+        raise H.HarnessError("`nrpic-run submit --dry-run` refused these arguments, so nothing was queued:\n"
+                             + tail(r.stderr or r.stdout, 2000) + "\n(--no-check queues them unchecked)")
+
+
+def cmd_add(wt, args):
+    owner = wt.require_owner()
+    rest = None
+    if "--" in args:
+        k = args.index("--")
+        args, rest = args[:k], args[k + 1:]
+    o = {"label": None, "after": None, "priority": "5", "note": "", "cmd": None}
+    check = True
+    i = 0
+    while i < len(args):
+        a = args[i]
+        if a == "--no-check":
+            check = False
+            i += 1
+            continue
+        key, val = (a.split("=", 1) + [None])[:2] if a.startswith("--") and "=" in a else (a, None)
+        if key in ("--label", "--after", "--priority", "--note", "--cmd"):
+            if val is None:
+                if i + 1 >= len(args):
+                    raise H.HarnessError(f"{key} needs a value")
+                val = args[i + 1]
+                i += 1
+            o[key[2:]] = val
+            i += 1
+            continue
+        raise H.HarnessError(f"unknown option {a!r} of add (the arguments of nrpic-run submit go after --)")
+    label = o["label"]
+    if not label or not LABEL_RX.fullmatch(label):
+        raise H.HarnessError("--label L is required: 1 to 48 of [A-Za-z0-9._-]")
+    try:
+        prio = int(o["priority"])
+    except ValueError:
+        prio = -1
+    if prio < 0:
+        raise H.HarnessError("--priority N: an integer, 0 first (default 5)")
+    if (o["cmd"] is None) == (not rest):
+        raise H.HarnessError("give either `-- <arguments of nrpic-run submit>` or `--cmd 'LINE'`, one of the two")
+    if rest:
+        argv = normalize_submit(rest)
+        if check:
+            dry_run(wt, argv)
+        kind, cmd = "submit", None
+    else:
+        cmd, argv, kind = o["cmd"], None, "cmd"
+        if not cmd.strip():
+            raise H.HarnessError("--cmd: empty command line")
+        r = subprocess.run(["/bin/bash", "-n", "-c", cmd], capture_output=True, text=True, env=H.boot_env())
+        if r.returncode != 0:
+            raise H.HarnessError(f"--cmd: bash does not parse it: {r.stderr.strip()}")
+    cw = cwd_worktree(wt.home)
+    by = cw.owner if cw is not None and cw.owner else None
+    Q = Queue(wt.home)
+    with Q.lock():
+        ents = Q.entries()
+        if any(e["owner"] == owner and e["label"] == label and e["state"] in OPEN_STATES for e in ents):
+            raise H.HarnessError(f"{owner} already has an entry labelled {label!r} that is not done or removed")
+        after_id = None
+        if o["after"]:
+            c = [e for e in ents if e["owner"] == owner and e["label"] == o["after"] and e["state"] != "removed"]
+            if not c:
+                raise H.HarnessError(f"--after {o['after']}: no entry of {owner} with that label")
+            after_id = c[-1]["id"]
+        eid, seq = Q.new_id()
+        e = {"schema": SCHEMA, "id": eid, "seq": seq, "owner": owner, "worktree": wt.root, "branch": wt.branch,
+             "label": label, "kind": kind, "argv": argv, "cmd": cmd, "after": o["after"], "after_id": after_id,
+             "priority": prio, "note": o["note"], "state": "waiting", "added": H.utcnow(),
+             "added_by": by or owner, "attempts": 0, "checked": bool(kind == "submit" and check)}
+        event(e, f"added by {by or owner}")
+        Q.save(e)
+        Q.log(f"added {eid} {owner}/{label} p{prio}" + (f" after {o['after']} ({after_id})" if after_id else "")
+              + f": {describe(e)[:300]}")
+    d = Q.dispatcher()
+    print(f"{eid} added: {owner}/{label}, priority {prio}" + (f", after {o['after']} ({after_id})" if after_id else "")
+          + ("" if d["alive"] else "; NOTE: no dispatcher is running (nrpic-queue status)"))
+    return 0
+
+
+def cmd_remove(wt, args):
+    if len(args) != 1:
+        raise H.HarnessError("usage: nrpic-queue remove ID")
+    Q = Queue(wt.home)
+    e = Q.load(args[0])
+    who = may_change(wt, e)
+
+    def upd(x):
+        if x["state"] != "waiting":
+            raise H.HarnessError(f"{x['id']} is {x['state']}: only a waiting entry is removed")
+        x["state"] = "removed"
+        event(x, f"removed by {who}")
+        return True
+    Q.change(e["id"], upd)
+    Q.log(f"removed {e['id']} {e['owner']}/{e['label']} by {who}")
+    print(f"removed {e['id']} ({e['owner']}/{e['label']})")
+    return 0
+
+
+def cmd_retry(wt, args):
+    if len(args) != 1:
+        raise H.HarnessError("usage: nrpic-queue retry ID")
+    Q = Queue(wt.home)
+    e = Q.load(args[0])
+    who = may_change(wt, e)
+
+    def upd(x):
+        if x["state"] != "failed":
+            raise H.HarnessError(f"{x['id']} is {x['state']}: only a failed entry is retried")
+        x["state"] = "waiting"
+        x["last_error"] = x.pop("error", None)
+        event(x, f"back to waiting by {who} (retry)")
+        return True
+    Q.change(e["id"], upd)
+    Q.log(f"retry {e['id']} {e['owner']}/{e['label']} by {who}")
+    print(f"{e['id']} ({e['owner']}/{e['label']}) is waiting again")
+    return 0
+
+
+def cmd_mark_done(wt, args):
+    if len(args) != 1:
+        raise H.HarnessError("usage: nrpic-queue mark-done ID")
+    Q = Queue(wt.home)
+    e = Q.load(args[0])
+    who = may_change(wt, e)
+    if e["state"] not in ("submitted", "failed"):
+        raise H.HarnessError(f"{e['id']} is {e['state']}: only a submitted or failed entry is marked done")
+    jobs = H.queue_jobs(H.build_env(wt))
+    if jobs is None:
+        raise H.HarnessError("squeue did not answer: cannot tell whether a job of the entry is queued")
+    if job_live(e, jobs):
+        raise H.HarnessError(f"a job of {e['id']} is still in squeue (name {e.get('job_name')}, ids {e.get('job_ids')})")
+
+    def upd(x):
+        if x["state"] not in ("submitted", "failed"):
+            return False
+        x["state"] = "done"
+        x["ended"] = H.utcnow()
+        event(x, f"marked done by {who} (no job of it in squeue)")
+        return True
+    Q.change(e["id"], upd)
+    Q.log(f"mark-done {e['id']} {e['owner']}/{e['label']} by {who}")
+    print(f"{e['id']} ({e['owner']}/{e['label']}) is done")
+    return 0
+
+
+def runjob(e):
+    if e.get("run_id"):
+        return e["run_id"] + (f" (job {e['job_ids'][0]})" if e.get("job_ids") else "")
+    if e.get("job_ids"):
+        return "job " + ", ".join(e["job_ids"]) + (f" ({e['job_name']})" if e.get("job_name") else "")
+    return "-"
+
+
+def note_of(e, by_id):
+    """The last column of `list`: run and job; why a waiting entry waits; the first line of a failure."""
+    if e["state"] == "waiting":
+        b = blocked_reason(e, by_id)
+        return ("waits: " + b) if b else (wait_text(e) or "-")
+    if e["state"] == "failed":
+        return "failed: " + (e.get("error_line") or first_line(e.get("error")) or "?")[:160]
+    return runjob(e)
+
+
+def cmd_list(wt, args):
+    show_all = "--all" in args
+    only = None
+    if "--owner" in args:
+        k = args.index("--owner")
+        only = H.owner_from_short(args[k + 1]) if k + 1 < len(args) else None
+        if only is None:
+            raise H.HarnessError("--owner ID: an owner id (A, A-emd-pbh, core, kb, orch, ...)")
+    Q = Queue(wt.home)
+    ents = Q.entries()
+    by_id = {e["id"]: e for e in ents}
+    now = time.time()
+    rows = []
+    for e in ents:
+        if only and e["owner"] != only:
+            continue
+        if not show_all and e["state"] in ("done", "removed") and now - (epoch(e.get("updated")) or 0) > 86400:
+            continue
+        st = e["state"] + ("*" if e["state"] == "waiting" and blocked_reason(e, by_id) else "")
+        rows.append(f"{e['id']:6s} {e['owner']:11s} {e['label'][:24]:24s} {st:10s} {e['priority']:>4d} "
+                    f"{(e.get('after') or '-')[:16]:16s} {age(e.get('added'), now):>7s}  {note_of(e, by_id)}")
+    print(f"{'id':6s} {'owner':11s} {'label':24s} {'state':10s} {'prio':>4s} {'after':16s} {'age':>7s}  "
+          "run / job, or why it waits or failed")
+    for r in rows:
+        print(r)
+    print("(* waits for its --after entry; done and removed entries of the last 24 h shown, --all for every one)"
+          if not show_all else "(* waits for its --after entry)")
+    for fn, why in Q.bad:
+        print(f"UNREADABLE {os.path.join(Q.edir, fn)}: {why}", file=sys.stderr)
+    return 0
+
+
+def cmd_show(wt, args):
+    if len(args) != 1:
+        raise H.HarnessError("usage: nrpic-queue show ID")
+    Q = Queue(wt.home)
+    e = Q.load(args[0])
+    print(json.dumps(e, indent=2))
+    if e.get("state") == "waiting":
+        why = blocked_reason(e, {x["id"]: x for x in Q.entries()})
+        w = e.get("wait") or {}
+        if why:
+            print(f"\nwaits: {why}")
+        elif w.get("what"):
+            print(f"\n{wait_text(e)}" + (f"; last tried {w['last_try']}" if w.get("last_try") else "")
+                  + (f"\n{w['detail']}" if w.get("detail") else ""))
+        else:
+            print("\nwaits: for a free place in the queue (nrpic-queue status)")
+    if e.get("state") == "failed":
+        print(f"\nfailed: {e.get('error_line') or first_line(e.get('error'))}   (fix, commit, then: "
+              f"harness/bin/nrpic-queue retry {e['id']})")
+    if e.get("run_id"):
+        print(f"\nquery: harness/bin/nrpic-run status {e['run_id']}   close when its jobs have ended: "
+              f"harness/bin/nrpic-run finish {e['run_id']}   (in {e['worktree']})")
+    lg = e.get("output_log")
+    if lg and os.path.isfile(lg):
+        lines = open(lg, errors="replace").read().splitlines()
+        print(f"\noutput of the last dispatch ({lg}, last 30 lines):")
+        print("\n".join(lines[-30:]))
+    return 0
+
+
+def cmd_status(wt, args):
+    Q = Queue(wt.home)
+    env = H.build_env(wt)
+    jobs = H.queue_jobs(env)
+    ents = Q.entries()
+    by_name = {e["job_name"]: e for e in ents if e.get("job_name") and e["state"] in ("submitted", "done")}
+    if jobs is None:
+        print("Slurm queue: squeue did not answer")
+    else:
+        print(f"Slurm queue: {len(jobs)} of {H.QUEUE_CAP} jobs of the account (decision 0033)")
+        for j in jobs:
+            e = by_name.get(j["name"])
+            print(f"  {j['id']:>8s} {j['state']:11s} {j['name'][:40]:40s} "
+                  + (f"{e['id']} {e['owner']}/{e['label']}" if e else "(not from the queue)"))
+    d = Q.dispatcher()
+    if d["alive"]:
+        print(f"dispatcher: running, pid {d['pid']}, since {d.get('started')}, last look {age(d.get('last_look'))} ago, "
+              f"a look every {d.get('poll', POLL):g} s")
+    else:
+        print(f"dispatcher: NOT running (last state {d.get('state', 'never started')}, last look "
+              f"{d.get('last_look', '-')}). Start (orchestrator): {START_LINE}")
+    if os.path.exists(Q.path("ALERT")):
+        try:
+            a = H.read_json(Q.path("ALERT"))
+            print(f"ALERT since {a.get('ts')}: {a.get('count_before')} -> {a.get('count_after')} jobs around "
+                  f"{a.get('entry')} {a.get('owner')}/{a.get('label')}; nothing is submitted until clear-alert "
+                  f"({Q.path('ALERT')})")
+        except (OSError, ValueError):
+            print(f"ALERT: {Q.path('ALERT')} exists; nothing is submitted until clear-alert")
+    if os.path.exists(Q.path("STOP")):
+        print(f"STOP: {Q.path('STOP')} exists (the dispatcher ends at its next look)")
+    counts = {}
+    for e in ents:
+        counts[e["state"]] = counts.get(e["state"], 0) + 1
+    by_id = {e["id"]: e for e in ents}
+    blocked = [e for e in ents if e["state"] == "waiting" and blocked_reason(e, by_id)]
+    print("entries: " + (", ".join(f"{n} {s}" for s, n in sorted(counts.items())) or "none")
+          + (f" ({len(blocked)} of the waiting ones blocked by --after)" if blocked else ""))
+    order = dispatch_order(ents)
+    if order:
+        print("next, in order:")
+        for k, e in enumerate(order[:12], 1):
+            print(f"  {k:2d}. {e['id']} {e['owner']:11s} {e['label'][:30]:30s} p{e['priority']}"
+                  + (f"  ({wait_text(e)})" if e.get("wait") else ""))
+        if len(order) > 12:
+            print(f"  ... and {len(order) - 12} more")
+    for e in blocked:
+        print(f"  blocked: {e['id']} {e['owner']}/{e['label']}: {blocked_reason(e, by_id)}")
+    for e in ents:
+        if e["state"] == "failed":
+            print(f"  failed: {e['id']} {e['owner']}/{e['label']}: "
+                  f"{(e.get('error_line') or first_line(e.get('error')))[:160]}")
+    return 0
+
+
+def cmd_run(wt, args):
+    need_orch(wt, "run")
+    poll, cmd_timeout = POLL, CMD_TIMEOUT
+    i = 0
+    while i < len(args):
+        if args[i] in ("--poll", "--cmd-timeout") and i + 1 < len(args):
+            v = float(args[i + 1])
+            if v <= 0:
+                raise H.HarnessError(f"{args[i]} must be positive")
+            if args[i] == "--poll":
+                poll = v
+            else:
+                cmd_timeout = v
+            i += 2
+            continue
+        raise H.HarnessError(f"unknown option {args[i]!r} of run (--poll S, --cmd-timeout S)")
+    return Dispatcher(wt, poll, cmd_timeout).run()
+
+
+def cmd_stop(wt, args):
+    need_orch(wt, "stop")
+    try:
+        wait = float(args[args.index("--wait") + 1]) if "--wait" in args else 60.0
+    except (IndexError, ValueError):
+        raise H.HarnessError("usage: nrpic-queue stop [--wait SECONDS]")
+    Q = Queue(wt.home).ensure()
+    d = Q.dispatcher()
+    if not d["alive"]:
+        print("no dispatcher is running; nothing to stop")
+        return 0
+    with open(Q.path("STOP"), "w") as f:
+        f.write(f"stop asked {H.utcnow()}\n")
+    Q.log(f"STOP written (dispatcher pid {d['pid']})")
+    t_end = time.time() + wait
+    while time.time() < t_end and pid_alive(d["pid"]):
+        time.sleep(0.5)
+    if pid_alive(d["pid"]):
+        print(f"STOP written; the dispatcher (pid {d['pid']}) has not ended within {wait:g} s (an entry's command "
+              "may be running); it ends after it")
+        return 1
+    print(f"the dispatcher (pid {d['pid']}) has ended; queued card jobs are left as they are")
+    return 0
+
+
+def cmd_clear_alert(wt, args):
+    need_orch(wt, "clear-alert")
+    Q = Queue(wt.home).ensure()
+    p = Q.path("ALERT")
+    if not os.path.exists(p):
+        print("no ALERT")
+        return 0
+    dst = Q.path(f"ALERT.cleared-{time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())}")
+    os.replace(p, dst)
+    Q.log(f"ALERT cleared by the orchestrator (kept as {os.path.basename(dst)}): submissions resume")
+    print(f"ALERT cleared (kept as {dst}); the dispatcher submits again at its next look")
+    return 0
+
+
+COMMANDS = {"add": (cmd_add, True), "remove": (cmd_remove, True), "retry": (cmd_retry, True),
+            "mark-done": (cmd_mark_done, True), "list": (cmd_list, False), "show": (cmd_show, False),
+            "status": (cmd_status, False), "run": (cmd_run, True), "stop": (cmd_stop, True),
+            "clear-alert": (cmd_clear_alert, True)}
+
+
+def main(argv):
+    try:
+        c_opt, rest = H.strip_options_prefix(argv)
+        if not rest or rest[0] in ("-h", "--help", "help"):
+            print(__doc__)
+            return 0 if rest else 2
+        sub, args = rest[0], rest[1:]
+        opts = args[:args.index("--")] if "--" in args else args
+        if "-h" in opts or "--help" in opts:
+            print(__doc__)
+            return 0
+        if sub not in COMMANDS:
+            print(__doc__)
+            return 2
+        fn, strict = COMMANDS[sub]
+        wt = acting_worktree(c_opt, strict=strict)
+        return fn(wt, args) or 0
+    except H.HarnessError as e:
+        print(f"nrpic-queue: {e}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
