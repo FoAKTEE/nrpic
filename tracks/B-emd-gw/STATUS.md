@@ -23,8 +23,8 @@ running:     card: Newtonian reference at 128^3 with the GR runs' particles
              Newtonian analysis when 5167 ends; IC solves at 128^3 x 8 per cell and 256^3
              (processors), the Gamma-driver gauge leg (GD1-GD3), then the particle and mesh
              legs (I3, M1-M4, Q1-Q2).
-             stage verify G1 in the background (pid 3758206, log
-             scratch/B-emd-gw/tmp/verify_G1_20261124.log; results uncommitted when it ends)
+             stage verify G1 and G2 in the background (pids 3758206, 254140; logs
+             scratch/B-emd-gw/tmp/verify_G{1,2}_20261124.log; results uncommitted when they end)
 next:        1. read X0-X3 (population/JOURNAL 05:58): which of slice, step, slicing stops the
                 0.028 core; then the remedy run or a request to core
              2. Newtonian reference: compare_newton.py (N2-N4), the halo-by-halo GR-Newton

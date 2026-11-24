@@ -21,8 +21,9 @@ Files to read first: `STATUS.md`; `stage/G2/OPEN.md`; `population/JOURNAL.md` (e
 | sequencer pid 168802 | queue: pop_newton128_an (after 5167), pop_s014_ic_p8 and pop_s014_ic256 (initial data on processors, started after shear series 2 ended), pop_s014_gr_gd (card chain, Gamma-driver gauge leg, no input to wait for: submitted when a slot frees), pop_s014_gr_p8 and pop_s014_gr256 (card chains when the data converge and a slot is free) | `scratch/B-emd-gw/sequencer/` | GD1-GD3 (JOURNAL 06:30), I3, M1-M4, Q1-Q2 (06:10); `analyze_gr.py --run gd:<dir>:0.014 --run p8:<dir>:0.014 --run n256:<dir>:0.014`, then `fig_gr_spectra.py` against the base run |
 | pid 3758206 | `nrpic-stage verify B-emd-gw G1` (formal rerun after the chains ended) | log `scratch/B-emd-gw/tmp/verify_G1_20261124.log` | writes stage/G1/VERIFY_RESULTS.{md,json} (uncommitted): commit them; expect PASS on 'runs' |
 
-`nrpic-stage verify B-emd-gw G2` was not run this session (the G1 verify had been hashing for an
-hour); run it in the background, then `nrpic-stage report B-emd-gw G2`.
+`nrpic-stage verify B-emd-gw G2` started 05:50 (pid 254140, log
+`scratch/B-emd-gw/tmp/verify_G2_20261124.log`), beside the G1 verify; when it ends commit
+stage/G2/VERIFY_RESULTS.{md,json} and rerun `nrpic-stage report B-emd-gw G2`.
 
 ## Packages (what remains)
 
