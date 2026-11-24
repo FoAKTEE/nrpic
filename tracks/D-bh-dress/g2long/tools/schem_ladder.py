@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Schematic: the G2 verification ladder of Track D (checklist C9 of stage/G2), state of the
-lead session of batch 11 (2026-11-24). Each rung is one test on the code paths D uses, from the
+lead session of batch 11b (2026-11-24, 09:30 PST). Each rung is one test on the code paths D uses, from the
 pusher up to the dust-filled bubble; the pill on the right gives its state with the run ids in
-stage/G2/LADDER.md and g2long/JOURNAL.md entries 5, 11 and 12. No data are read: the numbers in
+stage/G2/LADDER.md and g2long/JOURNAL.md entries 5, 11, 12 and 14. No data are read: the numbers in
 the boxes are copied from those entries.
 
     schem_ladder.py [--out DIR]       writes schem_ladder.png/.svg (paperfig style)
@@ -24,23 +24,24 @@ RUNGS = [
      "geodesics in Kerr to the published digits; Kerr spike a = 0.8 stationary in AthenaK",
      "passed", DONE),
     ("Vacuum puncture: horizon-mass floor (M/4, M/8, M/16, faces +-768 M)",
-     "production finder: plateaus 1.3e-4 apart at 230-300 M at every mesh;\n"
-     "converged finder (test FP): drift within 1.8e-5 (M/8) and 7e-6 (M/16) to 450 M",
+     "production finder: plateaus 1.3e-4 apart from 230 M on, the finder's stopping rule (FP2, FP3);\n"
+     "converged finder: drift within 1.8e-5 (M/8, to 500 M) and 3.9e-6 (M/16, to 300 M)",
      "cause found", DONE),
     ("Vacuum bubble in expanding dust: null test N",
-     "M/8 to 500 M: 2.28e-4 against 2.51e-4; M/16 to 300 M: 1.99e-4 (H3);\n"
-     "M/4 (FE4) running; converged-finder difference: test FP-ext",
+     "run's finder: 2.28e-4 (M/8, 500 M), 1.99e-4 (M/16, 300 M); converged finder: a step\n"
+     "of 4.5-7.3e-5 (M/8) and 2.3-3.7e-5 (M/16) by 150 M, then flat to 500 M; M/4 queued",
      "holds, 2 meshes", PART),
     ("Dust filling the bubble: growth against exact dust and flux (G)",
      "M/8 to 500 M: every 10 M bin within 0.62 per cent of exact LTB;\n"
-     "M/4 (FF4) at 456 M; M/16 (FL16) waits for card allotment",
+     "M/4 (FF4) at 456 M, queued; M/16 (FL16) registered, held behind the sequencer",
      "holds, 1 mesh", PART),
     ("Particle number and relaxation (N/4, N, 4N)",
-     "N = ES-FLK (FK, running); 4N = FN4 queued; N/4 = FNQ waits for allotment",
+     "N = ES-FLK (FK, at 225 M, held); 4N = FN4 and N/4 = FNQ registered, held",
      "queued", OPEN),
     ("Constraints outside the horizon",
-     "plane norms of H and M on annuli outside 1.2 r_AH (test XC);\nregion norms in FN4",
-     "see entry 12", PART),
+     "plane norms of H and M outside 1.2 r_AH bounded to 500 M (XC1);\n"
+     "with dust 100 times the vacuum residual, lower with more particles per cell",
+     "bounded", PART),
 ]
 
 
