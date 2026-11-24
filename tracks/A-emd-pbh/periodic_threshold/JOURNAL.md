@@ -769,3 +769,29 @@ arguments, MAX_SEGMENTS raised to 9, restart cadence lowered to dt = 10 by `outp
 the command line (output cadence only; the physics and the step are unchanged). The predictions
 Q1-Q3 (entry 23:15Z) and S1-S3 (entry 13:20Z) stand unchanged; Q1 and Q2 are judged now from the
 history to t = 66 (later records of repeated times win), S1-S3 when the chain reaches 220.
+
+## 2026-11-24 13:25Z, F: why P0L's finder found nothing (written before the runs; lead of batch 11)
+
+Facts from job 2 (compare_ltb A-20261124-130142-9a2d6a2, job2_q A-20261124-130507-10510ac): P0L ran
+to t = 140 without a guard stop; 160 searches, none found (60 "mean radius negative" for t <
+78, then 100 "iteration limit reached without convergence of the mass", every one stuck at a
+round sphere of coordinate radius 0.45 with area mass about 13 and mean expansion +350). Yet the
+code's own shells fall through R = 2 M_B: r0 = 1.21 (M_B 1.74) at code proper time 84.8, r0 =
+1.52 (M_B 3.14) at 99.6, from coordinate time ~87 and ~119 on. If the Misner-Sharp mass of a
+shell equals M_B (no shell crossing), the slice holds trapped spheres from t ~ 87.
+
+F1 (slice side, analysis only): the Misner-Sharp compactness 2m/R along the x line, from the
+z4c line outputs (physical g = gt/chi, K_ij = (At_ij + gt_ij K/3)/chi, K = Khat + 2 Theta)
+with conv_ball's misner_sharp_line, shows trapped points (2m/R > 1) on every line output after
+coordinate time 90, and the outermost marginally trapped sphere's m is within 10 per cent of
+M_B of the outermost shell past R = 2 M_B (1.74 at t ~ 100, 3.14 at t ~ 120-140). Refuted by
+no trapped point on the line to t = 140 (then the slice avoids the trapped region and P3's
+failure is the slicing, not the finder).
+F2 (finder side, processors): the release finder restarted from P0L's restart files (t = 100,
+peak.00002.rst; t = 140, peak.00003.rst) on the v0.6 threaded processor build, two cycles with a
+search every cycle and initial radius 0.15, 0.3, 1.0 or 2.0 (deck value 0.6), converges to a
+surface with irreducible mass within 10 per cent of the F1 line mass from at least one start
+radius at t = 140. Refuted if no start radius converges while F1 shows a trapped sphere: then
+the finder fails on this slice (strongly stretched centre, chi ~ 1e-5) and core is asked. A
+restart of a card file that the processor build cannot read is recorded as such (no
+judgement of F2).
