@@ -83,3 +83,20 @@ dispatched; one self-review in the role of a first-year graduate student is in t
 Prediction for R2 (run_all at commit 679f9a0): every lattice json and langevin.json equal to R1
 byte for byte (the change is a legend label and ledger wording); the ledger gains two rows (109
 in 8 tables); only `fig_ablation_sr` changes among the figures. Refuted if any json differs.
+
+## Entry 4 (2026-11-24 10:08): outcome of R2, final state
+
+R2 = E-20261124-180038-4d4651a (registered, production, two cores). Prediction of entry 3 held:
+every lattice json and langevin.json byte-equal (`checks.json`), ledger 109 rows in 8 tables.
+Figures and tables copied from R2 (sha256 of each copied file found in the run's
+`sha256sums.txt`). The PDFs differ from R1 only in their metadata (first differing byte near the
+end of each file), so every committed PDF changed; request to core in README (deterministic
+PDF metadata). Recompiled: 19 pages, no undefined references, no overfull boxes; checker as
+listed in README (remaining hits accepted under the guide's exceptions). Pages 9 (ablation
+legend now marks only the SR level-2 curve pending) and 16 (ledger with the two new PENDING
+rows) read again; the other pages are unchanged in content from entry 3.
+Voice pass (skill 10.2) done by reading the text for throat-clearing, participial tails, noun
+stacks, flat cadence and contrastive negation; the checker's 5.3, 5.6, 5.7 and 1.3 are clean,
+the two 5.1 hits are the verdict label "not reproduced".
+Not done: parallel reviewer subagents (no tool in this session); the "Check" column waits for
+repro/verify; five rows PENDING on the continuations of repro/continue.

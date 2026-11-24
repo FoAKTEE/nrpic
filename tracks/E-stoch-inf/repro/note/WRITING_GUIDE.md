@@ -46,7 +46,7 @@ is more specific than the principles, it governs the note.
 
 | Level | Axis it splits along | Headings |
 |---|---|---|
-| Section | the steps of the argument | Introduction; Stochastic sources in general relativity (what both papers do); The lattice reproduction (second paper); The one-patch reproduction (first paper); The equations and their misprints; Discussion; Summary; appendices: set-up and parameters, ledger |
+| Section | the steps of the argument | Introduction; Stochastic sources in general relativity (what both papers do, the computer-algebra checks); The lattice reproduction (second paper); The one-patch reproduction (first paper); Discussion; Summary; appendices in the order of first citation: misprints, scenarios and parameters, set-up item by item, verdicts, ledger |
 | Subsection of the lattice section | the observable | set-up and its differences; background; spectra; one-point statistics and constraints; anisotropic extrinsic curvature; convergence; backreaction; numerical methods precede the first result |
 | Subsection of the one-patch section | the question that fixes the answer | the system; the background and its step; stochastic interpretation; the statements of the text |
 

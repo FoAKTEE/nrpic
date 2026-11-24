@@ -1,103 +1,105 @@
 section,quantity,value,source
-Lattice background,SR: largest |V/V_F - 1| of the box means (64^3),9.8e-13,this run (E-20261124-174752-f387f2a) from records of E-20261123-020704-2b99463
-Lattice background,SR: largest |eps1/eps1_F - 1|,6.3e-12,this run (E-20261124-174752-f387f2a) from records of E-20261123-020704-2b99463
-Lattice background,SR: largest |eps2 - eps2_F|,2.2e-11,this run (E-20261124-174752-f387f2a) from records of E-20261123-020704-2b99463
-Lattice background,SR: e-folds N_f - N_* of the run,8.099,this run (E-20261124-174752-f387f2a) from records of E-20261123-020704-2b99463
-Lattice background,USR: largest |V/V_F - 1|,1.1e-09,this run (E-20261124-174752-f387f2a) from records of E-20261123-020704-2b99463
-Lattice background,USR: largest |eps1/eps1_F - 1|,4.6e-05,this run (E-20261124-174752-f387f2a) from records of E-20261123-020704-2b99463
-Lattice background,USR: largest |eps2 - eps2_F|,4.4e-05,this run (E-20261124-174752-f387f2a) from records of E-20261123-020704-2b99463
-Lattice background,USR: eps2 = 3 crossed upward at N,2.523,this run (E-20261124-174752-f387f2a) from records of E-20261123-020704-2b99463
-Lattice background,USR: eps2 = 3 crossed downward at N,6.550,this run (E-20261124-174752-f387f2a) from records of E-20261123-020704-2b99463
-Lattice background,USR: eps1 at N_f,1.01e-12,this run (E-20261124-174752-f387f2a) from records of E-20261123-020704-2b99463
-Lattice background,USR: eps2 at N_f,-0.0276,this run (E-20261124-174752-f387f2a) from records of E-20261123-020704-2b99463
+Lattice background,SR: largest |V/V_F - 1| of the box means (64^3),9.8e-13,this run (E-20261124-180038-4d4651a) from records of E-20261123-020704-2b99463
+Lattice background,SR: largest |eps1/eps1_F - 1|,6.3e-12,this run (E-20261124-180038-4d4651a) from records of E-20261123-020704-2b99463
+Lattice background,SR: largest |eps2 - eps2_F|,2.2e-11,this run (E-20261124-180038-4d4651a) from records of E-20261123-020704-2b99463
+Lattice background,SR: e-folds N_f - N_* of the run,8.099,this run (E-20261124-180038-4d4651a) from records of E-20261123-020704-2b99463
+Lattice background,USR: largest |V/V_F - 1|,1.1e-09,this run (E-20261124-180038-4d4651a) from records of E-20261123-020704-2b99463
+Lattice background,USR: largest |eps1/eps1_F - 1|,4.6e-05,this run (E-20261124-180038-4d4651a) from records of E-20261123-020704-2b99463
+Lattice background,USR: largest |eps2 - eps2_F|,4.4e-05,this run (E-20261124-180038-4d4651a) from records of E-20261123-020704-2b99463
+Lattice background,USR: eps2 = 3 crossed upward at N,2.523,this run (E-20261124-180038-4d4651a) from records of E-20261123-020704-2b99463
+Lattice background,USR: eps2 = 3 crossed downward at N,6.550,this run (E-20261124-180038-4d4651a) from records of E-20261123-020704-2b99463
+Lattice background,USR: eps1 at N_f,1.01e-12,this run (E-20261124-180038-4d4651a) from records of E-20261123-020704-2b99463
+Lattice background,USR: eps2 at N_f,-0.0276,this run (E-20261124-180038-4d4651a) from records of E-20261123-020704-2b99463
 Lattice background,Paper II: USR from N ~ 3.5,printed: From $\mathcal{N} \sim 3.5$ USR starts,"Paper II, source line 534"
 Lattice background,"Paper II: (eps1, eps2) after the plateau","printed: \left(0,-2.8 \times  10^{-2}\right)","Paper II, source line 534"
-Lattice spectra,SR: largest |NR/linear - 1| over all shells at N_f (256^3),5.2e-03,"this run (E-20261124-174752-f387f2a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
-Lattice spectra,SR: the same for k <= k_max/2,1.0e-04,"this run (E-20261124-174752-f387f2a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
-Lattice spectra,SR: fraction of shells with NR/MS within 3/sqrt(modes),0.9965,"this run (E-20261124-174752-f387f2a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
-Lattice spectra,SR: power above k_max over Delta_MS(k_max),8.7e-14,"this run (E-20261124-174752-f387f2a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
-Lattice spectra,USR: largest |NR/linear - 1| over all shells at N_f,5.0e-03,"this run (E-20261124-174752-f387f2a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
-Lattice spectra,USR: the same for k <= k_max/2,3.6e-04,"this run (E-20261124-174752-f387f2a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
-Lattice spectra,USR: fraction of shells with NR/MS within 3/sqrt(modes),0.9965,"this run (E-20261124-174752-f387f2a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
-Lattice spectra,USR: power above k_max over Delta_MS(k_max),1.3e-07,"this run (E-20261124-174752-f387f2a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
+Lattice spectra,SR: largest |NR/linear - 1| over all shells at N_f (256^3),5.2e-03,"this run (E-20261124-180038-4d4651a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
+Lattice spectra,SR: the same for k <= k_max/2,1.0e-04,"this run (E-20261124-180038-4d4651a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
+Lattice spectra,SR: fraction of shells within 3/sqrt(modes) of the Mukhanov-Sasaki solution,0.9965,"this run (E-20261124-180038-4d4651a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
+Lattice spectra,SR: power above k_max over the Mukhanov-Sasaki power at k_max,8.7e-14,"this run (E-20261124-180038-4d4651a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
+Lattice spectra,USR: largest |NR/linear - 1| over all shells at N_f,5.0e-03,"this run (E-20261124-180038-4d4651a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
+Lattice spectra,USR: the same for k <= k_max/2,3.6e-04,"this run (E-20261124-180038-4d4651a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
+Lattice spectra,USR: fraction of shells within 3/sqrt(modes) of the Mukhanov-Sasaki solution,0.9965,"this run (E-20261124-180038-4d4651a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
+Lattice spectra,USR: power above k_max over the Mukhanov-Sasaki power at k_max,1.3e-07,"this run (E-20261124-180038-4d4651a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
 Lattice spectra,Paper II: USR power reaches,printed: $\Delta[{\cal R}]\sim 0.1-1$,"Paper II, source line 536"
-One-point statistics,SR: half-width (68 per cent) of R^NR at N_f,2.281e-05,"this run (E-20261124-174752-f387f2a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
-One-point statistics,SR: rms of R^NR at N_f,2.278e-05,"this run (E-20261124-174752-f387f2a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
-One-point statistics,SR: N at which dphi/phi_b reaches 95 per cent of its final width,3.91,"this run (E-20261124-174752-f387f2a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
-One-point statistics,SR: the same for R^NR,3.44,"this run (E-20261124-174752-f387f2a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
-One-point statistics,USR: half-width (68 per cent) of R^NR at N_f,0.890,"this run (E-20261124-174752-f387f2a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
-One-point statistics,USR: rms of R^NR at N_f,0.8945,"this run (E-20261124-174752-f387f2a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
-One-point statistics,USR: largest |R^NR| over the cells at N_f,4.57,"this run (E-20261124-174752-f387f2a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
-One-point statistics,USR: half-width of dPi/Pi_b at N_f,1.24e-02,"this run (E-20261124-174752-f387f2a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
+One-point statistics,SR: half-width (68 per cent) of R^NR at N_f,2.281e-05,"this run (E-20261124-180038-4d4651a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
+One-point statistics,SR: rms of R^NR at N_f,2.278e-05,"this run (E-20261124-180038-4d4651a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
+One-point statistics,SR: N at which dphi/phi_b reaches 95 per cent of its final width,3.91,"this run (E-20261124-180038-4d4651a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
+One-point statistics,SR: the same for R^NR,3.44,"this run (E-20261124-180038-4d4651a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
+One-point statistics,USR: half-width (68 per cent) of R^NR at N_f,0.890,"this run (E-20261124-180038-4d4651a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
+One-point statistics,USR: rms of R^NR at N_f,0.8945,"this run (E-20261124-180038-4d4651a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
+One-point statistics,USR: largest |R^NR| over the cells at N_f,4.57,"this run (E-20261124-180038-4d4651a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
+One-point statistics,USR: half-width of dPi/Pi_b at N_f,1.24e-02,"this run (E-20261124-180038-4d4651a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
 One-point statistics,"Paper II, Fig. 2 read off (SR bands)",about 1.0e-6,tracks/E-stoch-inf/repro/figs/RESULTS.md:69
 One-point statistics,"SR amplitude factor, Paper II over ours",factor of about,tracks/E-stoch-inf/repro/figs/RESULTS.md:68
 One-point statistics,"USR amplitude factor, Paper II over ours",by a factor 2.3 to 4,tracks/E-stoch-inf/repro/figs/RESULTS.md:102
 One-point statistics,"Paper II, Fig. 4 read off: 100 per cent band of R^NR",about 18,tracks/E-stoch-inf/repro/figs/RESULTS.md:105
 One-point statistics,Paper II: furthest outliers of R^NR,printed: values of $\sim 10$ for the furthest outliers,"Paper II, source line 534"
-Constraints,"SR: entry maximum of <|H|/[H]>, 64^3",1.8e-12,"this run (E-20261124-174752-f387f2a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
-Constraints,"SR: entry maximum of <|H|/[H]>, 128^3",2.0e-12,"this run (E-20261124-174752-f387f2a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
-Constraints,"SR: entry maximum of <|M|/[M]>, 128^3",1.2e-05,"this run (E-20261124-174752-f387f2a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
-Constraints,"USR: entry maximum of <|H|/[H]>, box mean removed, 128^3",2.2e-12,"this run (E-20261124-174752-f387f2a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
-Constraints,"USR: entry maximum of <|H|/[H]> with the box mean, 128^3",3.2e-10,"this run (E-20261124-174752-f387f2a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
-Constraints,"USR: order of that maximum, 64 to 128",4.05,"this run (E-20261124-174752-f387f2a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
-Constraints,USR: largest 99th percentile of |H|/[H] over the cells (256^3),2.4e-11,"this run (E-20261124-174752-f387f2a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
+Constraints,"SR: entry maximum of <|H|/[H]>, 64^3",1.8e-12,"this run (E-20261124-180038-4d4651a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
+Constraints,"SR: entry maximum of <|H|/[H]>, 128^3",2.0e-12,"this run (E-20261124-180038-4d4651a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
+Constraints,"SR: entry maximum of <|M|/[M]>, 128^3",1.2e-05,"this run (E-20261124-180038-4d4651a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
+Constraints,"USR: entry maximum of <|H|/[H]>, box mean removed, 128^3",2.2e-12,"this run (E-20261124-180038-4d4651a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
+Constraints,"USR: entry maximum of <|H|/[H]> with the box mean, 128^3",3.2e-10,"this run (E-20261124-180038-4d4651a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
+Constraints,"USR: order of that maximum, 64 to 128",4.05,"this run (E-20261124-180038-4d4651a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
+Constraints,USR: largest 99th percentile of |H|/[H] over the cells (256^3),2.4e-11,"this run (E-20261124-180038-4d4651a) from run E-20261123-021204-2f573ec, pass E-20261124-130628-6790851"
 Constraints,USR: largest record mean of |M|/[M] (256^3),2.519e-2,tracks/E-stoch-inf/repro/figs/RESULTS.md:265
 Constraints,Paper II: Hamiltonian violation,printed: ($\sim 10^{-10}$),"Paper II, source line 539"
 Constraints,"Paper II, Fig. 8a read off: SR plateau of <|H|/[H]>",about 2e-11,tracks/E-stoch-inf/repro/figs/RESULTS.md:180
 Constraints,Momentum constraint second order from (cells per shortest wavelength),at least 12.8 cells,tracks/E-stoch-inf/a4res/README.md:85
-Constraints,"Sign flipped, SR: ratio of <|H|/[H]> to the proper run",7.3e+04,"this run (E-20261124-174752-f387f2a) from records of E-20261123-045030-c20bcb3, -035925-8439d79, E-20261122-190341-0419be6, E-20261121-211214-0377aab"
-Constraints,"Sign flipped, SR: largest <|M|/[M]>",0.16,"this run (E-20261124-174752-f387f2a) from records of E-20261123-045030-c20bcb3, -035925-8439d79, E-20261122-190341-0419be6, E-20261121-211214-0377aab"
-Constraints,"Sign flipped, USR: median ratio of <|H|/[H]>",8.0e+03,"this run (E-20261124-174752-f387f2a) from records of E-20261123-045030-c20bcb3, -035925-8439d79, E-20261122-190341-0419be6, E-20261121-211214-0377aab"
-Constraints,"Sign flipped, USR: largest <|M|/[M]>",0.50,"this run (E-20261124-174752-f387f2a) from records of E-20261123-045030-c20bcb3, -035925-8439d79, E-20261122-190341-0419be6, E-20261121-211214-0377aab"
+Constraints,"Sign flipped, SR: ratio of <|H|/[H]> to the proper run",7.3e+04,"this run (E-20261124-180038-4d4651a) from records of E-20261123-045030-c20bcb3, -035925-8439d79, E-20261122-190341-0419be6, E-20261121-211214-0377aab"
+Constraints,"Sign flipped, SR: largest <|M|/[M]>",0.16,"this run (E-20261124-180038-4d4651a) from records of E-20261123-045030-c20bcb3, -035925-8439d79, E-20261122-190341-0419be6, E-20261121-211214-0377aab"
+Constraints,"Sign flipped, USR: median ratio of <|H|/[H]>",8.0e+03,"this run (E-20261124-180038-4d4651a) from records of E-20261123-045030-c20bcb3, -035925-8439d79, E-20261122-190341-0419be6, E-20261121-211214-0377aab"
+Constraints,"Sign flipped, USR: largest <|M|/[M]>",0.50,"this run (E-20261124-180038-4d4651a) from records of E-20261123-045030-c20bcb3, -035925-8439d79, E-20261122-190341-0419be6, E-20261121-211214-0377aab"
+Constraints,SR per-cell constraint rows of the one-point figure,PENDING,continued run E-20261124-130529-da8c917
+Constraints,SR sign flip beyond the first e-fold,PENDING,continued run E-20261124-130629-61fe0b0
 Constraints,Paper II: a flipped sign gives,printed: ${\cal H}/[{\cal H}]\sim 10^{-5}$ and  ${\cal M}/[{\cal M}]\sim 1$,"Paper II, source line 541"
-Extrinsic curvature,SR: Delta[K] at N_f over N = 5.3 (median over shells),0.998,"this run (E-20261124-174752-f387f2a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
-Extrinsic curvature,SR: Delta[Kt] at N_f over N = 4.4 (median),2.8e-05,"this run (E-20261124-174752-f387f2a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
-Extrinsic curvature,SR: Q/K at N_f (median),1.5e-09,"this run (E-20261124-174752-f387f2a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
-Extrinsic curvature,USR: Delta[K] at N_f over its maximum (median),1.4e-09,"this run (E-20261124-174752-f387f2a) from run E-20261123-021204-2f573ec, passes E-20261124-130628-6790851, E-20261124-141807-8352509, E-20261124-172949-8b2255b"
-Extrinsic curvature,USR: Q/K at N_f (median),9.4e-07,"this run (E-20261124-174752-f387f2a) from run E-20261123-021204-2f573ec, passes E-20261124-130628-6790851, E-20261124-141807-8352509, E-20261124-172949-8b2255b"
+Extrinsic curvature,SR: Delta[K] at N_f over N = 5.3 (median over shells),0.998,"this run (E-20261124-180038-4d4651a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
+Extrinsic curvature,SR: Delta[Kt] at N_f over N = 4.4 (median),2.8e-05,"this run (E-20261124-180038-4d4651a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
+Extrinsic curvature,SR: Q/K at N_f (median),1.5e-09,"this run (E-20261124-180038-4d4651a) from run E-20261121-202935-31520bc, pass E-20261124-133251-42e8aab"
+Extrinsic curvature,USR: Delta[K] at N_f over its maximum (median),1.4e-09,"this run (E-20261124-180038-4d4651a) from run E-20261123-021204-2f573ec, passes E-20261124-130628-6790851, E-20261124-141807-8352509, E-20261124-172949-8b2255b"
+Extrinsic curvature,USR: Q/K at N_f (median),9.4e-07,"this run (E-20261124-180038-4d4651a) from run E-20261123-021204-2f573ec, passes E-20261124-130628-6790851, E-20261124-141807-8352509, E-20261124-172949-8b2255b"
 Extrinsic curvature,"USR: shells with Q below K, N = 0.26-3.05",below 0.2 for 0.26 <= N <= 3.05,tracks/E-stoch-inf/repro/figs/RESULTS.md:152
 Extrinsic curvature,USR: shells with Q below K from N = 7.27,0.98-1.0 from N = 7.27 to N_f,tracks/E-stoch-inf/repro/figs/RESULTS.md:153
-Convergence,"SR spectra: largest |1 - Delta_NR/Delta_lin|, 32^3",3.2e-03,"this run (E-20261124-174752-f387f2a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
-Convergence,"the same, 64^3",6.2e-05,"this run (E-20261124-174752-f387f2a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
-Convergence,"the same, 128^3",1.0e-06,"this run (E-20261124-174752-f387f2a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
-Convergence,"SR: order of the entry maximum of H, 32 to 64",4.15,"this run (E-20261124-174752-f387f2a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
-Convergence,"SR: order of the entry maximum of M, 32 to 64",3.25,"this run (E-20261124-174752-f387f2a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
-Convergence,256^3 rungs,PENDING,"continued run E-20261124-130952-4be980b, E-20261124-130711-a5dec67"
-Backreaction,USR level 2 against 0: rms over the shells at N_f,1.0e-04,"this run (E-20261124-174752-f387f2a) from runs E-20261123-153347-18e7c21, -183822-4abbcae, -164235-49b0945, -192948-348e2e5, -153146-d965002, pass E-20261124-133251-42e8aab"
-Backreaction,USR level 2 against 0: largest shell,7.0e-04,"this run (E-20261124-174752-f387f2a) from runs E-20261123-153347-18e7c21, -183822-4abbcae, -164235-49b0945, -192948-348e2e5, -153146-d965002, pass E-20261124-133251-42e8aab"
-Backreaction,USR level 2 against 0: fraction of shells positive,0.52,"this run (E-20261124-174752-f387f2a) from runs E-20261123-153347-18e7c21, -183822-4abbcae, -164235-49b0945, -192948-348e2e5, -153146-d965002, pass E-20261124-133251-42e8aab"
-Backreaction,SR level 2 against 0 at N = 7.19: largest shell,7.9e-05,"this run (E-20261124-174752-f387f2a) from runs E-20261123-153347-18e7c21, -183822-4abbcae, -152119-38957ba, pass E-20261124-141807-8352509"
-Backreaction,SR level 2 against 0 at N = 7.19: rms for |n| <= 32,1.5e-05,"this run (E-20261124-174752-f387f2a) from runs E-20261123-153347-18e7c21, -183822-4abbcae, -152119-38957ba, pass E-20261124-141807-8352509"
+Convergence,"SR spectra: largest |1 - Delta_NR/Delta_lin|, 32^3",3.2e-03,"this run (E-20261124-180038-4d4651a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
+Convergence,"the same, 64^3",6.2e-05,"this run (E-20261124-180038-4d4651a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
+Convergence,"the same, 128^3",1.0e-06,"this run (E-20261124-180038-4d4651a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
+Convergence,"SR: order of the entry maximum of H, 32 to 64",4.15,"this run (E-20261124-180038-4d4651a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
+Convergence,"SR: order of the entry maximum of M, 32 to 64",3.25,"this run (E-20261124-180038-4d4651a) from runs E-20261123-020704-2b99463 (records), pass E-20261124-133251-42e8aab"
+Convergence,256^3 rungs (SR spectra; SR and USR constraints),PENDING,"continued run E-20261124-130952-4be980b, E-20261124-130711-a5dec67"
+Backreaction,USR level 2 against 0: rms over the shells at N_f,1.0e-04,"this run (E-20261124-180038-4d4651a) from runs E-20261123-153347-18e7c21, -183822-4abbcae, -164235-49b0945, -192948-348e2e5, -153146-d965002, pass E-20261124-133251-42e8aab"
+Backreaction,USR level 2 against 0: largest shell,7.0e-04,"this run (E-20261124-180038-4d4651a) from runs E-20261123-153347-18e7c21, -183822-4abbcae, -164235-49b0945, -192948-348e2e5, -153146-d965002, pass E-20261124-133251-42e8aab"
+Backreaction,USR level 2 against 0: fraction of shells positive,0.52,"this run (E-20261124-180038-4d4651a) from runs E-20261123-153347-18e7c21, -183822-4abbcae, -164235-49b0945, -192948-348e2e5, -153146-d965002, pass E-20261124-133251-42e8aab"
+Backreaction,SR level 2 against 0 at N = 7.19: largest shell,7.9e-05,"this run (E-20261124-180038-4d4651a) from runs E-20261123-153347-18e7c21, -183822-4abbcae, -152119-38957ba, pass E-20261124-141807-8352509"
+Backreaction,SR level 2 against 0 at N = 7.19: rms for |n| <= 32,1.5e-05,"this run (E-20261124-180038-4d4651a) from runs E-20261123-153347-18e7c21, -183822-4abbcae, -152119-38957ba, pass E-20261124-141807-8352509"
 Backreaction,SR level 2 against 0 at N_f,PENDING,continued run E-20261124-131359-49afe29
-Backreaction,SR level 1 against 0: largest shell,6.6e-07,"this run (E-20261124-174752-f387f2a) from runs E-20261123-153347-18e7c21, -183822-4abbcae, -164235-49b0945, -192948-348e2e5, -153146-d965002, pass E-20261124-133251-42e8aab"
-Backreaction,USR level 1 against 0: largest shell,7.0e-07,"this run (E-20261124-174752-f387f2a) from runs E-20261123-153347-18e7c21, -183822-4abbcae, -164235-49b0945, -192948-348e2e5, -153146-d965002, pass E-20261124-133251-42e8aab"
-Backreaction,"level 0, noise on shells against on the mesh: largest SR shell",1.3e-02,"this run (E-20261124-174752-f387f2a) from runs E-20261123-153347-18e7c21, -183822-4abbcae, -164235-49b0945, -192948-348e2e5, -153146-d965002, pass E-20261124-133251-42e8aab"
+Backreaction,SR level 1 against 0: largest shell,6.6e-07,"this run (E-20261124-180038-4d4651a) from runs E-20261123-153347-18e7c21, -183822-4abbcae, -164235-49b0945, -192948-348e2e5, -153146-d965002, pass E-20261124-133251-42e8aab"
+Backreaction,USR level 1 against 0: largest shell,7.0e-07,"this run (E-20261124-180038-4d4651a) from runs E-20261123-153347-18e7c21, -183822-4abbcae, -164235-49b0945, -192948-348e2e5, -153146-d965002, pass E-20261124-133251-42e8aab"
+Backreaction,"level 0, noise on shells against on the mesh: largest SR shell",1.3e-02,"this run (E-20261124-180038-4d4651a) from runs E-20261123-153347-18e7c21, -183822-4abbcae, -164235-49b0945, -192948-348e2e5, -153146-d965002, pass E-20261124-133251-42e8aab"
 Backreaction,Paper II: bound on level 2 against 0,printed: $\lesssim  1$\textpertenthousand,"Paper II, source line 520"
 Backreaction,Review: level 1 against 0 falls per halving of the step by,falls by 16 per halving of the,tracks/core/outbox/20261124T143303Z__to-E-stoch-inf__noise-level2-review-runs-stand.md (branch core/noise-level2):41
 Backreaction,Review: level 2 against 0 equals the level-2 curve to,the level-2 curve to 1 per cent,tracks/core/outbox/20261124T143303Z__to-E-stoch-inf__noise-level2-review-runs-stand.md (branch core/noise-level2):43
-One patch,Euler 0.01 background crosses the junction at N_b,3.0435,this run (E-20261124-174752-f387f2a) from simulation E-20261123-021043-d00a314
-One patch,converged background: field at N_b = 12 (the plateau stop),9.06402,this run (E-20261124-174752-f387f2a) from simulation E-20261123-021043-d00a314
+One patch,Euler 0.01 background crosses the junction at N_b,3.0435,this run (E-20261124-180038-4d4651a) from simulation E-20261123-021043-d00a314
+One patch,converged background: field at N_b = 12 (the plateau stop),9.06402,this run (E-20261124-180038-4d4651a) from simulation E-20261123-021043-d00a314
 One patch,junction phi_c of the potential,phi_c = 9.056,tracks/E-stoch-inf/repro/langevin/README.md:50
-One patch,Euler 0.005 background: field at N_b = 12,9.05997,this run (E-20261124-174752-f387f2a) from simulation E-20261123-021043-d00a314
-One patch,converged background: half the paths lost by N_b,4.80,this run (E-20261124-174752-f387f2a) from simulation E-20261123-021043-d00a314
+One patch,Euler 0.005 background: field at N_b = 12,9.05997,this run (E-20261124-180038-4d4651a) from simulation E-20261123-021043-d00a314
+One patch,converged background: half the paths lost by N_b,4.80,this run (E-20261124-180038-4d4651a) from simulation E-20261123-021043-d00a314
 One patch,Paper I: slope reached at,printed: $\simeq 3.04$ efolds,"Paper I, source line 842"
 One patch,Paper I: step of the scheme,printed: $0.01$-efolds steps,"Paper I, source line 842"
 One patch,Paper I: evolver named,printed: Stratonovich evolver,"Paper I, source line 836"
-One patch,"Ito reading, width of alpha at N_b = 4",0.1168,this run (E-20261124-174752-f387f2a) from simulation E-20261123-021043-d00a314
-One patch,"Ito reading, width of alpha at N_b = 6",0.1207,this run (E-20261124-174752-f387f2a) from simulation E-20261123-021043-d00a314
-One patch,"Ito reading, width of N - N_b at N_b = 6",0.1853,this run (E-20261124-174752-f387f2a) from simulation E-20261123-021043-d00a314
-One patch,"Stratonovich reading, width of alpha at N_b = 6",0.1443,this run (E-20261124-174752-f387f2a) from simulation E-20261123-021043-d00a314
-One patch,"Stratonovich reading, width of N - N_b at N_b = 6",0.2171,this run (E-20261124-174752-f387f2a) from simulation E-20261123-021043-d00a314
+One patch,"Ito reading, width of alpha at N_b = 4",0.1168,this run (E-20261124-180038-4d4651a) from simulation E-20261123-021043-d00a314
+One patch,"Ito reading, width of alpha at N_b = 6",0.1207,this run (E-20261124-180038-4d4651a) from simulation E-20261123-021043-d00a314
+One patch,"Ito reading, width of N - N_b at N_b = 6",0.1853,this run (E-20261124-180038-4d4651a) from simulation E-20261123-021043-d00a314
+One patch,"Stratonovich reading, width of alpha at N_b = 6",0.1443,this run (E-20261124-180038-4d4651a) from simulation E-20261123-021043-d00a314
+One patch,"Stratonovich reading, width of N - N_b at N_b = 6",0.2171,this run (E-20261124-180038-4d4651a) from simulation E-20261123-021043-d00a314
 One patch,"Paper I, figures read off: widths of alpha at 4, 5, 6","0.117, 0.133, 0.121",tracks/E-stoch-inf/repro/langevin/README.md:77
 One patch,"Paper I, figures read off: widths of N - N_b at 4, 5, 6",0.190,tracks/E-stoch-inf/repro/langevin/README.md:78
-One patch,"Ito reading, median skewness of alpha, N_b in [4.5, 6]",1.04,this run (E-20261124-174752-f387f2a) from simulation E-20261123-021043-d00a314
-One patch,"Stratonovich reading, the same",1.59,this run (E-20261124-174752-f387f2a) from simulation E-20261123-021043-d00a314
+One patch,"Ito reading, median skewness of alpha, N_b in [4.5, 6]",1.04,this run (E-20261124-180038-4d4651a) from simulation E-20261123-021043-d00a314
+One patch,"Stratonovich reading, the same",1.59,this run (E-20261124-180038-4d4651a) from simulation E-20261123-021043-d00a314
 One patch,"Paper I, figures read off: skewness of alpha",kappa3(alpha) ~ 1.1,tracks/E-stoch-inf/repro/langevin/README.md:78
-One patch,"Stratonovich reading, mean of N - N_b at N_b = 6",0.085,this run (E-20261124-174752-f387f2a) from simulation E-20261123-021043-d00a314
-One patch,"Ito reading, mean of N - N_b at N_b = 6",0.0034,this run (E-20261124-174752-f387f2a) from simulation E-20261123-021043-d00a314
-One patch,"Ito reading at step 0.001, width of alpha at N_b = 4",0.1225,this run (E-20261124-174752-f387f2a) from simulation E-20261123-021043-d00a314
-One patch,"linear check at N_b = 3: width of alpha, run over linear theory",1.0021,this run (E-20261124-174752-f387f2a) from simulation E-20261123-021043-d00a314
-One patch,alpha^3 set to 1: skewness of alpha at N_b = 6,-0.96,this run (E-20261124-174752-f387f2a) from simulation E-20261123-021043-d00a314
+One patch,"Stratonovich reading, mean of N - N_b at N_b = 6",0.085,this run (E-20261124-180038-4d4651a) from simulation E-20261123-021043-d00a314
+One patch,"Ito reading, mean of N - N_b at N_b = 6",0.0034,this run (E-20261124-180038-4d4651a) from simulation E-20261123-021043-d00a314
+One patch,"Ito reading at step 0.001, width of alpha at N_b = 4",0.1225,this run (E-20261124-180038-4d4651a) from simulation E-20261123-021043-d00a314
+One patch,"linear check at N_b = 3: width of alpha, run over linear theory",1.0021,this run (E-20261124-180038-4d4651a) from simulation E-20261123-021043-d00a314
+One patch,alpha^3 set to 1: skewness of alpha at N_b = 6,-0.96,this run (E-20261124-180038-4d4651a) from simulation E-20261123-021043-d00a314
 One patch,Ito term: drift measured by Monte Carlo,0.3075,run E-20261123-022009-a53e7ee
 One patch,Ito term: standard error of that drift,0.0128,run E-20261123-022009-a53e7ee
 One patch,Ito term: alpha^5 prediction,0.3200,run E-20261123-022009-a53e7ee
