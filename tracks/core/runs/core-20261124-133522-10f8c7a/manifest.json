@@ -1,0 +1,98 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261124-133522-10f8c7a",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "noise-level2 review R7: range of Pi and of Z = 9 Pi^2/K^2 over the cells in Track E's level-2 runs AL2S and AL2U at 256^3 (read-only), journal entry 9",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/noise_level2/pi_range.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "AL2S=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261123-152119-38957ba",
+    "AL2U=/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261123-153146-d965002"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "10f8c7a2180d40704174c06fd1e376ec731d9298",
+    "branch": "core/noise-level2",
+    "dirty": false,
+    "package": [
+      "tracks/core/analysis/noise_level2"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "bc3e4ca4e48416265d903f76564eaeb6035a2b37",
+    "worktree": "wt/core-s2"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-s2/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/noise_level2/pi_range.py",
+      "role": "argv",
+      "sha256": "732303d4b2b285e461878ba4e6c4af15ecf54daec481d733208588cdf3fd0ef5",
+      "bytes": 4213,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261124-133522-10f8c7a",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-24T13:35:23Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 15.109,
+    "gpu_hours_reserved": 13.8669,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 6,
+    "runs": 1535,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
+  }
+}
