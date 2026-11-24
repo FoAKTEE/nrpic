@@ -472,3 +472,35 @@ K > 0 passes). Predictions [JUDGEMENT], written before the job is queued:
   the mean scale factor at t = 10 is about 46 rather than 36 [arithmetic]. Refuted if it stops
   before t = 9.3.
 - Card time below 0.3 h for the four (130 to 400 steps each at 0.47 s).
+
+## 2026-11-24 06:10 PST (lead of batch 11): mesh and particle legs of the GR box; predictions
+
+The 0.014 box is the first population run in full GR; G2 item C2 asks for convergence in mesh and
+particle number of what the track uses, and the late-time growth of the metric's high-k TT energy
+and of the constraint means (05:58 entry) needs a run in which a numerical origin could show.
+Queued through `../cards/queue.json` (sequencer): initial data at 128^3 with 8 particles per cell
+(`--ppc 2`) and at 256^3 with one per cell (both `--outer 36`, same seed and modes), then their GR
+chains with the release v0.6 card executable, deck `inputs/pop_gr_run.athinput` (cfl 0.25, zero
+shift, no lapse_leak), the 256^3 chain with Z4c dumps every 0.5. Then the analysis with
+`analyze_gr.py` against the 128^3, one-per-cell run B-20261123-014847-f295ab4 (base). Also queued:
+`analyze.py` on the Newtonian reference when its card job ends (N1-N4 of the 05:48 entry).
+
+Predictions [JUDGEMENT], written before anything is queued:
+- I3. Both initial-data solves reach an outer change below 1e-7 with a Hamiltonian residual below
+  1e-9 (the 128^3 solve reached 7.3e-8 in 18 outer iterations); the 256^3 solve takes 3 to 8 hours
+  on one thread.
+- M1 (256^3). The run reaches a = 143 without a guard stop. Refuted by a stop; then it is compared
+  with the 0.028 stop (same halo, stage, K_max history).
+- M2. Halo counts above 100 masses of the 128^3 particles (800 of the 256^3 particles) equal the
+  base's within 2 sqrt(N) + 2 at a = 64-132, the largest mass within 10 per cent.
+- M3. The corrected TT strain over |k| <= 8 k_f stays within 5 per cent of the base's rms to
+  a = 50 and within 20 per cent to a = 132; the high-k excess of Omega_qs after a = 50 changes by
+  more than a factor 2 with the mesh (a mesh-scale numerical origin). Refuted for the second part
+  if Omega_qs at a = 132 agrees with the base within 30 per cent.
+- M4. Hr_mean at a = 141 is at least two times smaller than the base's 2.85e-2.
+- Q1 (8 per cell). The run reaches a = 143; Mr_mean at a = 141 is at least two times smaller than
+  the base's 0.20 (particle noise feeds the momentum constraint) and the high-k excess of
+  Omega_qs after a = 50 is at least two times smaller. Refuted if either ratio is below 2.
+- Q2. Halo counts and largest masses as in M2, the masses within 5 per cent.
+- Card time: 8 per cell 0.3-0.8 card-h; 256^3 2.5-4 card-h (DESIGN.md section 7: 2.9 by the
+  rate model).
