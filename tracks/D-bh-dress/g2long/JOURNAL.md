@@ -614,7 +614,7 @@ measurement and the step as a separate item; (3) new D inputs set `mass_tol_0 = 
 (4) the claim "noise floor 1.2e-4 at M/8" leaves the note: the floor is 1.8e-5 (tight finder, V-1L,
 100-500 M) and the production finder's plateau gap of 1.3e-4 is quoted as the finder's.
 
-## Entry 15 (2026-11-24 09:40 PST, before FNQ and FL16 are registered): allotment, restart cadence, two more predictions
+## Entry 15 (2026-11-24 09:27 PST, before FNQ and FL16 are registered): allotment, restart cadence, two more predictions
 
 Decision 0032 item 3 raised D's allotment by 10 card-hours for runs already designed; `nrpic-run budget`
 (09:30) leaves 11.73 card-hours for G2 with FK, FE4, FF4, FN4 reserved. FNQ ES-FLKQ (cap 3.0) and FL16
