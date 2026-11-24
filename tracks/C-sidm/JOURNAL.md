@@ -806,3 +806,26 @@ for the continuations and about 6 for these three; 45 allotted.
   decides the next scan; a G2 verifier; card-hours (asked).
 - card-hours: none submitted by hand this session; the sequencer's batch-5 queue used 17.59
   card-hours since 2026-11-21 (closed manifests) plus the running chains.
+
+## 2026-11-24T21:15Z  session C-sidm batch 12 (card runs into the shared queue)  commits fa47d3fb..(this entry's commit)  runs: none new (one closed: C-20261124-120250-9e6a3ba)
+
+- did: merged main (decision 0033 and the shared queue); found what the 12:00 PST stop left:
+  the sequencer (pid 4068739) gone; A334s3o (C-20261124-120250-9e6a3ba) stopped with the chain
+  helper after 2 min of segment 6 (job 5164, sacct CANCELLED; newest restart cc.00003.rst,
+  history to 124 M); A324s1c+ (C-20261123-032324-938ecbd) left running as job 5206; the other
+  eleven sequencer items had never reached Slurm, so no other C job was cancelled. Closed
+  A334s3o as stopped (`nrpic-run finish --status stopped`) and added a resume line for it to
+  queue.txt (cap 24 kept). Wrote `longruns/seq/qitem.sh` (one item of queue.txt -> one job:
+  a new chain through nrpic-run submit with the sequencer's process name and segment floor 20,
+  or an in-place resume through submit_chain.sh with a committed `continuations` entry;
+  refuses outside the dispatcher; `close <run_id>`), dry-ran all twelve items (all pass,
+  refusal outside the dispatcher checked), retired `seq.sh run`, and queued twelve entries:
+  q0016 N6c, q0017 M16, q0018 N4c at priority 2 (stage/G2/OPEN.md items 1-2 wait for them),
+  q0019-q0027 the nine continuations at priority 5 in the batch-11 order, no --after.
+- found: nothing about the physics (no analysis in this session).
+- changed my mind about: nothing; the order now puts N6c, M16, N4c ahead of A344s1o+ and
+  A324s1o+ (priority rule of 0033 item 6), which the batch-11 order had first.
+- failed predictions: none tested. Failed runs: none.
+- open: all twelve entries waiting (HANDOFF.md table); A324s1c+ in Slurm; closing each run when
+  its entry is done (`qitem.sh close <run_id>`).
+- card-hours: none used by this session.

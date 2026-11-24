@@ -16,10 +16,9 @@ last-result: batch-11 analyses (JOURNAL 2026-11-24T13:12Z; figures read):
                N.4, N.6 hold by the letter (phase confound on record)
              - T C-20261124-131129-e93be29: 8.29 s per M (holds)
              - lead recheck with an independent reader C-20261124-132113-52c2abe: all t_c agree
-runs:        sequencer pid in scratch/C-sidm/seq/seq.pid (restarted 13:19Z; submits through the
-             pause flag; resumes cut chains); running/pending: A324s1c+ (C-20261123-032324-
-             938ecbd), A334s3o (C-20261124-120250-9e6a3ba); queued: A344s1o+, A324s1o+, N6c, M16,
-             A334s2c+, A334s3c+, N4c, D2f2s2+, A334s2i+, A334s2o+, A334s3i+ (HANDOFF.md table)
+runs:        card plan (batch 12): sequencer retired; 12 runs in the shared queue (q0016-q0018 N6c,
+             M16, N4c at priority 2; q0019-q0027 nine in-place continuations at 5; HANDOFF.md
+             table); A324s1c+ (C-20261123-032324-938ecbd) runs in Slurm 5206 outside the queue
 next:        1. N6c (control of y0 = 0.334032 at N = 1e6 on M/8): NS.1 relaxation against NS.2
                 scheme decides the threshold scan (seeds at N = 1e6, or M/16 + gauge leg + core)
              2. M16 (D2 on M/16) against M16.1-M16.2: mesh convergence of the collisional t_c
@@ -33,9 +32,9 @@ needs:       orch: +15 card-hours toward G2 after N6c (outbox 20261124T133351Z);
              later (stage/G2/OPEN.md lists what it must cover)
 offers:      collision tests and references: collide/; conductivity series and reader:
              longruns/scripts/heat_series.py; D2 and block A readers, independent t_c reader
-             (longruns/scripts/); resumable two-slot sequencer with preemption handling:
-             longruns/seq/seq.sh; N = 1e6 King threshold particle file (C-20261124-130731-e1d24de)
-budget:      G2 allotment 45 card-hours: 25.0 used by closed manifests (nrpic-run budget, 13:00Z)
-             plus A334s3o and the in-place continuations (counted when they close); expected
-             about 17 more for the queue (11 continuations, 6 follow-ups). This session: no card
-             time of its own beyond what the sequencer runs; processors: 14 short runs (1-4 cores)
+             (longruns/scripts/); queue wrapper that resumes cut chains in place:
+             longruns/seq/qitem.sh; N = 1e6 King threshold particle file (C-20261124-130731-e1d24de)
+budget:      G2 allotment 60 card-hours (nrpic-run budget, 21:10Z, through decision 0032): 25.71
+             used by closed manifests, plus the in-place continuations (counted when they close); expected
+             about 17 more for the queue (9 continuations + A324s1c+, 6 follow-ups) [JUDGEMENT].
+             Batch 12: no card time; A334s3o closed as stopped (orch stopped it at 12:00 PST)
