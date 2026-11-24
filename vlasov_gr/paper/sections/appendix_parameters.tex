@@ -1,0 +1,41 @@
+\appendix
+
+\section{Stroud cubature nodes and run configurations}\label{app:params}
+
+Each populated velocity basis $(a,\alpha)$ with positive rest mass $m_{a,\alpha} > 0$ expands into $Q_{\rm SCP}$ deterministic characteristic packets via Eq.~(\ref{eq:scp_map}) using the lower triangular Cholesky factor $\bm{L}_{a,\alpha}$ of the local velocity covariance $\Sigma_{a,\alpha}$ and a deterministic rotation $\bm{R}_{a,\alpha} \in \mathrm{SO}(3)$ mapped from the base-$2,3,5$ Halton triplet $(h_2, h_3, h_5)$ through Shoemake's uniform unit quaternion
+\begin{multline}\label{eq:shoemake_q}
+\bm{q} = \big(\sqrt{1-h_2}\sin 2\pi h_3,\;\sqrt{1-h_2}\cos 2\pi h_3,\\
+\sqrt{h_2}\sin 2\pi h_5,\;\sqrt{h_2}\cos 2\pi h_5\big).
+\end{multline}
+Cold elements with $\mathrm{Tr}\,\Sigma_{a,\alpha} = 0$ collapse automatically to $Q_{\rm SCP} = 1$ packet ($\bm{\xi}_1 = \bm{0}$, $w_1 = 1$). Warm bases employ the fifth-degree fourteen-point symmetric Stroud rule \cite{Stroud:1971} summarized in Table~\ref{tab:stroud14}, or optional $Q_{\rm SCP} \in \{8, 27\}$ product lattices matching unit covariance up to third or fifth order.
+
+\begin{table}[ht]
+\caption{\label{tab:stroud14}%
+Fifth-degree fourteen-point symmetric Stroud cubature parameters for unit-covariance uniform top-hat ($[-\sqrt{3},\sqrt{3}]^3$) and Gaussian ($\mathcal{N}(\bm{0},\bm{I}_3)$) velocity bases.}
+\begin{ruledtabular}
+\begin{tabular}{lcccc}
+Basis & $a$ & $w_a$ & $b$ & $w_b$ \\
+\colrule
+Top-hat & $\sqrt{19/10}$ & $40/361$ & $\sqrt{19/11}$ & $121/2888$ \\
+Gaussian & $\sqrt{5/2}$ & $4/25$ & $\sqrt{5}$ & $1/200$ \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+All finite-volume runs use cubic-spline smoothing length closure $h_a^3 \bar{n}_a = 1$, CFL factor $\nu_{\rm CFL} = 0.3$, velocity-crossing slope threshold $\epsilon_v = 0.1$ (disabled under continuum colliding shocks), and harmonic sound-speed thermal conduction coefficient $\kappa_{\rm Noh} = 0.5$ \cite{Noh:1987}. Table~\ref{tab:configs} lists domain sizes, meshblock dimensions, time steps, and element counts for the primary physical testbeds.
+
+\begin{table*}[t]
+\caption{\label{tab:configs}%
+Configuration parameters for special-relativistic colliding beams, Kerr ($a = 0.9M$) tidal cloud, and three-plus-one Oppenheimer-Snyder collapse ($R_0 = 5M$, seven-level adaptive grid).}
+\begin{ruledtabular}
+\begin{tabular}{lccccc}
+Testbed & Domain & Mesh & $\Delta t$ & Final $t$ & Initial $N$ \\
+\colrule
+Warm wave & $[0,1]^3$ & $8^3$ & $0.001$ & $0.08$ & $8^3\text{--}24^3$ \\
+Two-stream & $[0,1]^3$ & $8^3$ & $0.005$ & $0.40$ & $10^3$ \\
+Colliding beams & $[0,1]\times[0,1/19.2]^2$ & $16\times 4^2$ & $0.002$ & $0.55$ & $2400$ \\
+Kerr cloud & $[-18,18]^3\,M^3$ & $16^3$ & $0.05\,M$ & $30.0\,M$ & $552\text{--}14328$ \\
+Collapse & $[-155.04,155.04]^3\,M^3$ & $64^3$ base & $0.25\,\Delta x$ & $25.0\,M$ & $9328$ \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}

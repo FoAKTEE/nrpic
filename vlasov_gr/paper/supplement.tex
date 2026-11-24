@@ -1,0 +1,98 @@
+\documentclass[twocolumn,prd,aps,superscriptaddress,nofootinbib,floatfix]{revtex4-2}
+
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\begin{document}
+
+\title{Supplemental Material: Hybrid Symplectic-Cubature and Asymptotic-Preserving Moving-Finite-Volume Solver for General-Relativistic Kinetic Theory}
+
+\author{Author list to be set}
+\noaffiliation
+
+\date{\today}
+
+\maketitle
+
+\section{Benchmark metrics for colliding beams and Kerr tidal disruption}
+
+Table~\ref{tab:supp_sr} compiles full quantitative convergence, energy conservation, normalized profile error, and runtime ratios for the three-dimensional flat-spacetime tests across both the continuum moving-finite-volume (MFM) solver \cite{Hopkins:2026lbv} and the hybrid symplectic-cubature / asymptotic-preserving (SCP-AP) branch \cite{Stroud:1971,Wu:2026nrpic}. All normalized compute times $T_{\rm comp}/T_{15}$ divide by the $2400$-element $\sigma/\mu_p = 15$ continuum time. For collisionless colliding beams ($\sigma/\mu_p = 0$), automatic expansion into $33600$ deterministic cubature packets eliminates counter-streaming density oscillations, holds total normal-observer energy invariant to machine precision, and reduces relative $L_1$ error against the $512$-node exact characteristic solution by nearly fivefold compared to purely continuum MFM while executing at lower compute cost.
+
+\begin{table*}[t]
+\caption{\label{tab:supp_sr}%
+Special-relativistic colliding-beam benchmark summary at $t = 0.55$ on $2400$ initial two-basis elements ($N_{\rm eff} = 33600$ packets in collisionless SCP mode). Relative $L_1$ error at $\sigma/\mu_p = 0$ is evaluated against a $512$-node exact characteristic solution; Taub plateau error at $\sigma/\mu_p = 10^4$ measures $|\langle D \rangle_{\rm plat} - D_2|/D_2$ ($D_2 = 4.1006$). Compute ratios $T_{\rm comp}/T_{15}$ normalize against the refined $\sigma/\mu_p = 15$ MFM device compute time ($2.366\,\mathrm{s}$, accelerated from $19.38\,\mathrm{s}$ pre-optimization wall runtime).}
+\begin{ruledtabular}
+\begin{tabular}{lccccccc}
+Branch & $\sigma / \mu_p$ & $N_{\rm eff}$ & Wall [s] & Compute [s] & $T_{\rm comp}/T_{15}$ & $|\Delta E/E_0|$ & Accuracy metric \\
+\colrule
+MFM (pre-opt.) & $15$ & $2400$ & $19.38$ & --- & --- & $2.3\times 10^{-10}$ & Central dip eliminated \\
+MFM (refined) & $0$ & $2400$ & $3.018$ & $1.724$ & $0.73$ & $3.09\times 10^{-5}$ & $L_1 = 0.2878$ (vs exact) \\
+MFM (refined) & $2$ & $2400$ & $3.108$ & $2.055$ & $0.87$ & $2.12\times 10^{-4}$ & Kinetic-fluid transition \\
+MFM (refined) & $15$ & $2400$ & $3.519$ & $2.366$ & $1.00$ & $2.48\times 10^{-10}$ & Smooth collisional plateau \\
+MFM (refined) & $10^4$ & $2400$ & $2.678$ & $1.530$ & $0.65$ & $6.04\times 10^{-13}$ & $|\Delta D/D_2| = 0.0096$ \\
+SCP-AP & $0$ & $33600$ & $2.238$ & $1.185$ & $0.50$ & $0.00$ & $L_1 = 0.0615$ (vs exact) \\
+SCP-AP & $2$ & $2400$ & $2.839$ & $1.793$ & $0.76$ & $2.35\times 10^{-10}$ & AP-MFM parity \\
+SCP-AP & $15$ & $2400$ & $3.392$ & $2.335$ & $0.99$ & $2.45\times 10^{-10}$ & AP-MFM parity \\
+SCP-AP & $10^4$ & $2400$ & $2.615$ & $1.561$ & $0.66$ & $5.80\times 10^{-13}$ & $|\Delta D/D_2| = 0.0117$ \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+
+Table~\ref{tab:supp_kerr} presents the full matrix of Kerr ($a = 0.9M$) warm tidal-cloud simulations through $t = 30M$, including baseline MFM, refined continuum MFM across three lattice resolutions, Monte Carlo PIC runs ($10^4$ and $10^5$ truth), Halton-$SO(3)$ rotation vs unrotated SCP ablations, and horizon-excision behavior at $r_{\rm BL} < 0.98 r_+$. Normalized azimuthal density errors $L_1$ and $L_2$ are computed on $24$ uniform bins across $\Delta\phi \in [-0.20, 0.20]$ relative to the $10^5$-particle ground truth, accompanied by second-difference roughness $R_{\rm hist}$ and center-of-mass position error $\|\Delta \bm{x}_{\rm cm}\|_2$. Activating horizon excision at $r_{\rm BL} = 0.98 r_+$ holds $|\Delta E_\infty / E_0| \le 3.04 \times 10^{-8}$ and $|\Delta L_z / L_{z0}| \le 9.88 \times 10^{-14}$ through $t = 25M$; only between $t = 25M$ and $30M$ do eight innermost tail packets cross below $0.98 r_+$ ($\Delta M / M_0 = 1.08 \times 10^{-4}$).
+
+\begin{table*}[t]
+\caption{\label{tab:supp_kerr}%
+Kerr ($a = 0.9M$) warm tidal cloud at $t = 30M$. All $L_1$, $L_2$, and $\bm{x}_{\rm cm}$ errors reference the $10^5$-particle Monte Carlo ensemble; $T_{\rm base}/T_{\rm comp}$ divides the pre-optimization $18^3$ baseline ($65.99\,\mathrm{s}$) by the tabulated device compute time.}
+\scriptsize
+\setlength{\tabcolsep}{3.0pt}
+\begin{ruledtabular}
+\begin{tabular}{lcccccccccc}
+Configuration & $N_{\rm init}$ & Wall [s] & Comp.\ [s] & $T_{\rm base}/T_{\rm comp}$ & $\max|\Delta E_\infty/E_0|$ & $\max|\Delta L_z/L_{z0}|$ & $R_{\rm hist}$ & $L_1^{\rm hist}$ & $L_2^{\rm hist}$ & $\|\Delta \bm{x}_{\rm cm}\|_2$ \\
+\colrule
+Base MFM ($18^3$) & $3112$ & $65.99$ & --- & $1.0\times$ & $5.82\times 10^{-5}$ & $1.56\times 10^{-4}$ & $0.36$ & $0.116$ & --- & $1.1\times 10^{-2}$ \\
+Ref.\ MFM ($10^3$) & $552$ & $2.96$ & $1.92$ & $34.4\times$ & $5.26\times 10^{-5}$ & $2.25\times 10^{-4}$ & $0.5504$ & $0.2010$ & $0.3867$ & $2.53\times 10^{-2}$ \\
+Ref.\ MFM ($14^3$) & $1472$ & $4.35$ & $3.29$ & $20.1\times$ & $5.47\times 10^{-5}$ & $2.00\times 10^{-4}$ & $0.6057$ & $0.1931$ & $0.4137$ & $1.65\times 10^{-2}$ \\
+Ref.\ MFM ($18^3$) & $3112$ & $5.62$ & $4.57$ & $14.4\times$ & $5.82\times 10^{-5}$ & $1.56\times 10^{-4}$ & $0.3616$ & $0.1158$ & $0.2619$ & $1.11\times 10^{-2}$ \\
+MC PIC ($10^4$) & $10000$ & $1.31$ & $0.13$ & $508\times$ & $3.42\times 10^{-8}$ & $1.34\times 10^{-13}$ & $0.2236$ & $0.0695$ & $0.1402$ & $1.33\times 10^{-2}$ \\
+MC Truth ($10^5$) & $100000$ & $1.29$ & $0.24$ & $275\times$ & $3.28\times 10^{-8}$ & $1.31\times 10^{-13}$ & $0.0809$ & $0.0000$ & $0.0000$ & $0.00$ \\
+SCP-AP ($10^3, 14$) & $7728$ & $1.55$ & $0.28$ & $236\times$ & $3.03\times 10^{-8}$ & $1.36\times 10^{-13}$ & $0.2941$ & $0.0927$ & $0.1771$ & $1.07\times 10^{-3}$ \\
+SCP-AP ($14^3, 14$) & $20608$ & $1.30$ & $0.27$ & $244\times$ & $3.04\times 10^{-8}$ & $1.34\times 10^{-13}$ & $0.1498$ & $0.0548$ & $0.1012$ & $3.07\times 10^{-3}$ \\
+SCP-AP ($18^3, 8$) & $24896$ & $1.51$ & $0.32$ & $206\times$ & $4.19\times 10^{-8}$ & $1.40\times 10^{-13}$ & $0.1331$ & $0.0450$ & $0.0935$ & $9.52\times 10^{-3}$ \\
+SCP-AP ($18^3, 14$) & $43568$ & $1.55$ & $0.27$ & $244\times$ & $3.04\times 10^{-8}$ & $1.28\times 10^{-13}$ & $0.0846$ & $0.0418$ & $0.0844$ & $3.56\times 10^{-3}$ \\
+SCP-AP (unrot.) & $43568$ & $1.52$ & $0.25$ & $264\times$ & $4.23\times 10^{-8}$ & $1.32\times 10^{-13}$ & $0.0551$ & $0.0316$ & $0.0608$ & $3.19\times 10^{-3}$ \\
+SCP-AP ($0.98\,r_+$) & $43568$ & $1.45$ & $0.23$ & $287\times$ & $6.87\times 10^{-6}$ & $3.70\times 10^{-5}$ & $0.0846$ & $0.0418$ & $0.0844$ & $4.22\times 10^{-3}$ \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+
+\section{Dynamical collapse, strong scaling, and device profiling}
+
+Table~\ref{tab:supp_os_scale} summarizes the Oppenheimer-Snyder dynamical collapse test ($R_0 = 5M$, seven-level adaptive grid, $t = 0$ to $25M$) alongside strong scaling over fifty fixed Kerr integration cycles up to $N_{\rm eff} = 200592$. Device trace profiling confirms that replacing nested Brent iterations with safeguarded analytical Newton solves, caching basis pair indices outside inner gradient loops, batching local neighbor gather counts into single atomic updates, and eliminating large device view captures moved every continuum flux, gradient, relaxation, and geometry kernel out of device constant-memory parameter staging into local launch paths without altering physical parity ($|\Delta \bm{x}|, |\Delta m|, |\Delta \bar{\bm{u}}|, |\Delta \Sigma| \le 2.0 \times 10^{-15}$ on unit verification tests).
+
+\begin{table*}[t]
+\caption{\label{tab:supp_os_scale}%
+Oppenheimer-Snyder collapse metrics ($N = 9328$, $t \in [0, 25M]$) and fifty-cycle Kerr strong scaling across five lattice resolutions ($N_{\rm lat} \in \{10, 14, 18, 24, 30\}$).}
+\begin{ruledtabular}
+\begin{tabular}{lcccccc}
+Collapse run & Wall [s] & Compute [s] & $t_{\rm AH}\,[M]$ & $M_{\rm AH}\,[M]$ & $t_{\rm exc}\,[M]$ & $\max\|\mathcal{H}\|_2$ \\
+\colrule
+Refined MFM & $151.77$ & $150.31$ & $16.3894$ & $0.99969$ & $19.7014$ & $3.5718$ \\
+SCP-AP (cold $Q=1$) & $138.41$ & $137.19$ & $16.3894$ & $0.99969$ & $19.7108$ & $3.5945$ \\
+Monte Carlo PIC & $136.59$ & $135.39$ & $16.3894$ & $0.99969$ & $19.7108$ & $3.5945$ \\
+\colrule
+Scaling lattice $N_{\rm lat}$ & $N_{\rm MFM}$ & $T_{\rm MFM,50}$ [s] & $N_{\rm SCP}$ ($Q=14$) & $T_{\rm SCP,50}$ [s] & $T_{\rm MC,50}$ [s] & $T_{\rm MFM}/T_{\rm SCP}$ \\
+\colrule
+$10$ & $552$ & $0.098$ & $7728$ & $0.006$ & $0.007$ & $16.3\times$ \\
+$14$ & $1472$ & $0.205$ & $20608$ & $0.006$ & $0.007$ & $34.2\times$ \\
+$18$ & $3112$ & $0.330$ & $43568$ & $0.006$ & $0.008$ & $55.0\times$ \\
+$24$ & $7208$ & $0.422$ & $100912$ & $0.008$ & $0.009$ & $52.8\times$ \\
+$30$ & $14328$ & $0.825$ & $200592$ & $0.012$ & $0.013$ & $68.8\times$ \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+
+\bibliographystyle{apsrev4-2}
+\bibliography{references}
+
+\end{document}

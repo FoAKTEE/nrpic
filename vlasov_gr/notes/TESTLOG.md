@@ -83,3 +83,20 @@ Full root-cause debugging of Stage 1 Panel (d) and Stage 4a Panels (b, d) is doc
   - **Suite 3** (Full-GR OS collapse $R_0=5M$, Z4c + AMR + FastFlow):
     - `s3_grlbv_n20` (`cpu = 183.83 s`): `t_AH = 16.35M`, `M_AH_fin = 0.9942M`, `t_exc99 = 19.71M`, `||H||_max = 4.464`, `||M||_max = 1.948`.
     - `s3_grlbv_n26` (`cpu = 198.58 s`): `t_AH = 16.39M`, `M_AH_fin = 0.9997M`, `t_exc99 = 19.70M`, `||H||_max = 1.857`, `||M||_max = 0.834` (matching `s3_nrpic_n26` `cpu = 135.86 s`, `M_AH_fin = 0.9997M`, `||H||_max = 1.896`, `||M||_max = 0.878`).
+
+
+### Verified Tier-1 GPU Optimization & Hybrid `SCP-AP` Results (`gb204` B200 GPU)
+
+Full engineering report: [03_hybrid_scp_ap_speed_accuracy.md](file:///home/schmidt/ssci-haiyangw/nrpic/vlasov_gr/notes/03_hybrid_scp_ap_speed_accuracy.md) and summary diagnostic [diag_hybrid_speed_accuracy.png](file:///home/schmidt/ssci-haiyangw/nrpic/vlasov_gr/notes/figs/diag_hybrid_speed_accuracy.png).
+
+- **Parity & Unit Verification (post-Step-1 fixes)**:
+  - Standalone `vlasov_kernel_test.cpp` (`g++` + `nvcc -arch=sm_100`), Stage 2 kernel parity (`<= 3.22e-12`), Stage 3 AthenaK GPU/OMP/Python parity (`dx <= 1.110e-16, du <= 1.998e-15, dS <= 8.604e-16`), `pytest -v tests/test_vlasov_gr.py` **10/10 passed in 183.60 s**.
+  - Back-to-back B200 determinism & parity on `s1d_sig15`: `row1_dh = 3.419e-15` vs Stage 4a baseline; `nsys` confirms 100% of kernels run on `MetricKind = 0` (flat Minkowski via `KerrSchildLight{0.0, 0.0}`) and `cuda_parallel_launch_local_memory` with `0` geodesic kick calls.
+- **Tier-1 Opt MFM Speedups**:
+  - `s2_grlbv_n18` ($N=3112, t=30M$): `65.99 s -> 5.62 s` wall (`4.57 s` compute) = **`11.7x` wall speedup**, `dx = 7.122e-7, dm = 3.250e-15` vs Stage 4a.
+  - `s1d_sig15` ($N=2400, N_b=2, 462$ substeps): `19.38 s -> 3.52 s` wall (`2.37 s` compute) = **`5.5x` wall speedup**.
+- **Hybrid `vlasov_hybrid` (`SCP-AP`) Benchmark Suite**:
+  - **Suite 1D `sig=0`**: `s1d_hybrid_sig0` ($33{,}600$ SCP packets) `wall = 2.238 s` (`1.185 s` comp), `dM = 0.00`, `dE = 0.00`, relative $L_1$ vs 512-node exact = **`0.0615`** (`4.7x` better than `Opt MFM` `0.2878`); `sig = 2, 15, 1e4` auto-dispatch to Opt AP-MFM (`D_plat = 4.0528` vs Taub `4.1006`).
+  - **Suite 2 Kerr $a=0.9M$ ($t=30M$, vs `MC 100k` truth)**: `s2_hyb_n18_q14` ($43{,}568$ packets) runs in **`1.55 s` wall (`0.27 s` comp; `42.6x` wall / `244x` comp speedup vs baseline MFM)** with `|dE/E0| = 3.04e-8`, `|dLz/Lz0| = 1.28e-13`, `R_hist = 0.0846` (vs `MC 10k` `0.2236`, `Opt MFM` `0.3616`, Truth `0.0809`), `L1_hist = 0.0418` (vs `MC 10k` `0.0695`), `cm_err = 3.56e-3` (vs `MC 10k` `1.33e-2`).
+  - **Suite 3 OS Collapse**: `s3_hyb_n26` (`138.41 s` wall / `137.19 s` comp) matches `s3_nrp_n26` (`136.59 s` / `135.39 s`) and `s3_opt_n26` (`151.77 s` / `150.31 s`) identically at `t_AH = 16.3894`, `M_AH = 0.99969`, `t_exc99 = 19.7108`.
+  - **Strong Scaling (`50` cycles)**: `Hybrid SCP-AP` scales from `7,728` (`0.006 s`) to `200,592` packets (`0.012 s`), achieving **`68.8x`** lower compute time at `N_lat = 30` than `Opt MFM` (`0.825 s` for `14,328` elements).
