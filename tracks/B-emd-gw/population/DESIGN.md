@@ -316,3 +316,24 @@ equal stage, per amplitude, against the convergence error of the legs.
 - The factor 3 between the delta-R relations (section 2).
 - The Newtonian runs at 128 and 256 cells (halo compactness and the high-k signal are set
   by the 64-cell mesh here).
+
+## 11. State after the first full-GR runs (batch 11, 2026-11-24)
+
+What the first GR runs change in this design (JOURNAL.md, entries of 2026-11-24; runs named
+there):
+- The box and resolution hold for sigma1 = 0.014: the 128^3 GR run reaches a = 143 in 0.19
+  card-h (section 7's model: 0.18), its halos follow the Newtonian population at equal stage, and
+  its TT strain follows the near-field estimate of section 5(b) to 9-13 per cent for
+  6 <= a <= 20 [VERIFIED by runs B-20261124-131918-e71996f, -133150-e9ef701].
+- The amplitude scan of section 8 is capped: sigma1 = 0.028 stops at a = 30.7 (stage 15) in the
+  core of the box's largest halo (K runs away), so 0.056 is out of reach in this slicing until
+  the stop is understood (restarts X0-X3 queued; risk R21). [VERIFIED for 0.028; JUDGEMENT for
+  0.056.]
+- The radiated signal of the box cannot yet be read from the metric: after halo formation the
+  corrected TT energy exceeds the particles' near field by up to 1e3 per shell above |k| = 4-5 k_f
+  (run B-20261124-134953-18618df), most likely coordinate motion of the zero-shift slice
+  [JUDGEMENT]; the gauge, particle and mesh legs queued by the sequencer decide it (R22). Until
+  then the science quantity of section 8 is the near-field strain over |k| <= 8 k_f, and the
+  radiated part is taken from the particles (analyze.py's box measure) in both GR and Newton.
+- The 256^3 run of section 8 is queued as the mesh leg at sigma1 = 0.014 (about 3 card-h by the
+  model); its dumps every 0.5 in t (44 x 2.95 GB) replace the in-situ Fourier output for now.
