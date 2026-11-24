@@ -384,7 +384,7 @@ to level 1 to rounding"; (iv) AL2S ended at cycle 1227 of 1386 because of the co
 in section 7; Track E continued it from its restart file with the same executable
 (E-20261124-131359-49afe29, registered completed; its outcome is Track E's).
 
-Verdict for release v0.7 (state 2026-11-24 13:25 PST, after the closing session of batch
+Verdict for release v0.7 (state 2026-11-24 13:20 PST, after the closing session of batch
 R3): fit, on two conditions that remain. (1) The card job R5 has run and passed: the
 reviewed card executable has not yet run a step on a card (queue entry q0035). (2) At
 the merge the options enter the changelog and `coord/INTERFACES/` (this file), with the

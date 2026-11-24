@@ -738,7 +738,7 @@ Predictions, written before the comparisons run:
   the shared queue; with the account at five jobs and 33 entries waiting (13:13 PST) I do
   not expect it to run in this session.
 
-## Entry 17 (2026-11-24 13:27 PST): outcomes of the closing session; R5 queued
+## Entry 17 (2026-11-24 13:20 PST): outcomes of the closing session; R5 queued
 
 R1f (runs core-20261124-143147-2ff64b9 against R0 core-20261124-130250-0a4a7cb,
 comparison core-20261124-211517-b90ce89): 366 of 366 files identical over the fifteen
