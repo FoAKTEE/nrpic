@@ -4,8 +4,9 @@
     python3 ppc_summary.py NAME:CASEDIR [NAME:CASEDIR ...] [--out DIR]   (default $NRPIC_RUN_DIR)
 
 Each CASEDIR holds a rays.json of analyze_rays.py. Writes ppc_summary.json (Delta, the quadratic
-shooting, ppc_y, N_y, constraint means over 1 <= t <= t_A) and fig_ppc (Delta against 1/ppc_y per
-N_y, with the three codes of draft.tex:360).
+shooting, ppc_y, N_y, constraint means over 1 <= t <= t_A) and fig_ppc: (a) Delta against 1/ppc_y
+per N_y, (b) Delta against 1/N_y per ppc_y (the mesh leg; series 6 adds N_y = 256 at 4 per cell),
+both with CosmoGRaPH's value of draft.tex:360.
 """
 import json
 import os
@@ -47,19 +48,33 @@ def main():
         print(f"{r['name']}: N_y {r['ny']}, ppc_y {r['ppc_y']}: Delta {r['Delta']:.5f} "
               f"(quad {r['Delta_quad']:.5f}); Hr {r['Hr_mean_1_tA']:.3f}, Mr {r['Mr_mean_1_tA']:.3f}")
     fs.use_style()
-    fig, ax = plt.subplots(figsize=(fs.FULL_WIDTH*0.5, 2.9))
-    fig.subplots_adjust(left=0.2, right=0.97, bottom=0.17, top=0.95)
+    fig, (ax, bx) = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 2.9))
+    fig.subplots_adjust(left=0.11, right=0.98, bottom=0.17, top=0.93, wspace=0.32)
     for ny, col in zip(sorted({r["ny"] for r in rows}), fs.SERIES):
         rr = sorted([r for r in rows if r["ny"] == ny], key=lambda r: r["ppc_y"])
         ax.plot([1.0/r["ppc_y"] for r in rr], [r["Delta"] for r in rr], "o-", color=col, lw=1.0,
                 label=r"$N_y = %d$" % ny)
-    for (k, v), col in zip(CODES.items(), fs.SERIES[2:]):
-        if v > -0.75:
+    for ppc, col in zip(sorted({r["ppc_y"] for r in rows}), fs.SERIES):
+        rr = sorted([r for r in rows if r["ppc_y"] == ppc], key=lambda r: r["ny"])
+        if len(rr) < 2:
             continue
-        ax.axhline(v, color=col, ls="--", lw=0.9, label=k + " (draft.tex:360)")
+        bx.plot([1.0/r["ny"] for r in rr], [r["Delta"] for r in rr], "s-", color=col, lw=1.0,
+                label=r"$n_{\rm ppc,y} = %d$" % ppc)
+        for r in rr:
+            bx.annotate("%d" % r["ny"], (1.0/r["ny"], r["Delta"]), textcoords="offset points",
+                        xytext=(3, 3), fontsize=6)
+    for a_ in (ax, bx):
+        for (k, v), col in zip(CODES.items(), fs.SERIES[2:]):
+            if v > -0.75:
+                continue
+            a_.axhline(v, color=col, ls="--", lw=0.9, label=k + " (draft.tex:360)")
+        a_.set_ylabel(r"$\Delta$ of L2")
+        a_.legend(fontsize=6.5, loc="best")
     ax.set_xlabel(r"$1/n_{\rm ppc,y}$")
-    ax.set_ylabel(r"$\Delta$ of L2")
-    ax.legend(fontsize=6.5, loc="best")
+    bx.set_xlabel(r"$1/N_y$")
+    bx.set_xlim(left=0.0)
+    ax.set_title("(a) particles along $y$", fontsize=8)
+    bx.set_title("(b) mesh at fixed particles per cell", fontsize=8)
     fs.save(fig, os.path.join(out, "fig_ppc"))
     plt.close(fig)
 
