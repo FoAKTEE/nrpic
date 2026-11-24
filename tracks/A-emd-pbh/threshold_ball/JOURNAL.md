@@ -125,8 +125,8 @@ m_irr/m_exact(slice) - 1.
 - T6 PARTLY REFUTED: all eight B members ended at tlim without a guard stop; cost 0.30-0.33 s per
   cycle on mesh B (band 0.25-0.40, holds); C-R1.25 1.87 s (model 2.25). Refuted: (i) both A members
   stopped at the guard; (ii) the constraint ratio ||H||/||16 pi E|| over the mesh line outside
-  the finder's radius is 0.12-0.21 at t = 0 and 0.3-3 during every run (largest 1.6-3.8 per
-  member), never below 0.1 (panel d). The criterion of SCOPE section 3 was set without a
+  the finder's radius is 0.11-0.21 at t = 0 and 0.3-3 during every run (largest 1.6-5.9 per
+  member; threshold_series.json), never below 0.1 (panel d). The criterion of SCOPE section 3 was set without a
   measurement; the data's own t = 0 value already exceeds it (deposit noise of PCS clouds without
   filter against the table metric [JUDGEMENT]). Kept as written; the G2 package asks orch to rule.
 
