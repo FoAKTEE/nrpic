@@ -9,6 +9,7 @@
 # RST=<file name> picks another restart of the original than the one in runs.json, and
 # FROM=<run id> continues from that run's directory instead of the original's (a second
 # continuation after a preemption: FROM=<first continuation>, RST=<its newest restart>).
+# RESUME=<full path of a .rst file> overrides both (the run it lies in is then the extra parent).
 # DRY=1 passes --dry-run (prints the manifest, registers and starts nothing).
 #
 #   tracks/E-stoch-inf/repro/continue/scripts/submit_continue.sh LABEL [LABEL...]
@@ -30,6 +31,9 @@ EOF
   IFS=$'\x1f' read -r -a extra <<< "${f[7]}"
   src=${FROM:-$orig}
   rstp=$SCR/$src/rst/$rst
+  if [[ -n ${RESUME:-} ]]; then
+    rstp=$RESUME; rst=$(basename "$RESUME"); src=$(basename "$(dirname "$(dirname "$RESUME")")")
+  fi
   [[ -r $rstp && -r $rstp.sf ]] || { echo "missing $rstp or its .sf" >&2; exit 1; }
   got=$(sha256sum "$exe" | cut -d' ' -f1)
   [[ $got == "$sha" ]] || { echo "$exe: sha256 $got, expected $sha" >&2; exit 1; }
