@@ -29,7 +29,7 @@ def main():
     S = {n: series(os.path.join(a.run, n)) for n in ("K4-ref", "K4-dt", "K4-src")}
     S["card A"] = series(CARD_A)
     res = {}
-    for tt in (1.0, 2.0, 3.0, 4.0, 5.0, 6.0):
+    for tt in (1.0, 2.0, 3.0, 4.0, 5.0):
         ref = np.interp(tt, S["K4-ref"][0], S["K4-ref"][1])
         res[str(tt)] = {n: float(np.interp(tt, s[0], s[1]) / ref) for n, s in S.items()}
         res[str(tt)]["H_ref"] = float(ref)
@@ -46,7 +46,7 @@ def main():
     fig.subplots_adjust(left=0.09, right=0.99, bottom=0.16, top=0.9, wspace=0.3)
     cs = {"K4-ref": "k", "K4-dt": fs.PAL["red"], "K4-src": fs.PAL["blue"], "card A": fs.PAL["yellow"]}
     for n, s in S.items():
-        sel = s[0] <= 6.0
+        sel = s[0] <= 5.0
         axs[0].semilogy(s[0][sel], s[1][sel], color=cs[n], label=n)
         axs[1].semilogy(s[0][sel], s[2][sel], color=cs[n], label=n)
     for ax, lab in ((axs[0], r"$\|H\|_2$"), (axs[1], r"$\|M\|_2$")):
