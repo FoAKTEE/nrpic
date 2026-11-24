@@ -655,3 +655,35 @@ FE2 (M/16) S(150) lies between 2.0e-5 and 5.1e-5 (0.3 to 0.75 of the M/8 value 6
 FE3 (sanity) h0 reproduces the run's own mass within 3e-5 at every new dump; the vacuum tight mass moves
     by at most 3e-5 between 50 and 100 M at both meshes.
 Cost: 8 one-cycle restarts, ~5.5 min each, two at a time: ~25 min on 4 cores.
+
+## Entry 17 (2026-11-24 09:57 PST): outcome of test FE - the "step" is a dip of the bubble's horizon mass at 100 M
+
+Run FE D-20261124-173137-f358715 (8 dumps, exit 0, 22 min on 4 cores; closed by nrpic-run). Judged by
+tools/fe_analyse.py, registered D-20261124-175356-0f40f1a (fe_analyse.png looked at). Prediction: entry 16.
+(The dumps es1l16.00004/.00005 and v1l16.00004/.00005 turned out to be 150 M and a wall-time restart;
+the ES-1L16 wall-time dump and the V-1L16 one at 166.66 M do not pair, so M/16 has 50, 100, 150, 200,
+250, 300 M.)
+
+- FE1 FAILED its bound, NOT refuted: S(50) = +3.47e-5 at M/8 (bound 2e-5, refutation 4e-5).
+- FE2 FAILED its bound, NOT refuted: S(150) = +5.45e-5 at M/16 (window 2.0-5.1e-5, refutation 6.8e-5);
+  the M/16-to-M/8 ratio at 150 M is 0.81, not 0.3-0.75.
+- FE3 HOLDS: h0 reproduces every run's mass within 5.9e-6 at the new dumps; vacuum tight mass moves by
+  6.9e-6 (M/8) and 1.6e-6 (M/16) between 50 and 100 M.
+
+What the figure shows (panel b): the vacuum horizon masses are flat to within 2.5e-5 from 50 to 500 M
+at both meshes; the BUBBLE's horizon mass has a dip at 100 M, 4.2e-5 (M/8) and 5.8e-5 (M/16) below its
+50 M value, and is back by 150 M. Referenced to 50 M instead of 100 M, the bubble-minus-vacuum
+difference over 150-500 M lies in [+1.0, +3.8]e-5 at M/8 and [-3.3, -0.2]e-5 at M/16, with no trend in
+time. So the "step by 150 M, half as large at M/16" of entry 14 (a reading, not a prediction) is
+withdrawn: it was the reference time falling into the dip. The dip does not shrink from M/8 to M/16
+[VERIFIED on these dumps]; the meshes differ only inside +-3 M, so the dip may come from the shared
+coarser levels (a gauge pulse from the bubble wall reaching the hole) [JUDGEMENT; no run here could
+fail on it - FE4 at M/4, whose finest level is coarser, can: a dip of the same size there would point
+to the coarse levels, a larger one to the finest].
+In the exact solution the bubble interior is Schwarzschild (Birkhoff) and a spherical marginally trapped
+surface sits at r = 2M on every spherical slice, so any dip or band is numerical [BACKGROUND].
+
+For G2 (criterion C7): with the converged finder, |D_ES - D_V| <= 7.3e-5 at M/8 over 100-500 M and
+<= 5.5e-5 at M/16 over 100-300 M (reference 100 M, as criterion N); <= 3.8e-5 and <= 3.3e-5 with the
+reference at 50 M. Both are below the production-finder floor and show no growth with the expansion.
+Next for this item: the tight re-search of FE4's dumps (M/4) when it ends, with S(t) at three meshes.
