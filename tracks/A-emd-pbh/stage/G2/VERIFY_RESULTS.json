@@ -1,0 +1,358 @@
+{
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "commit": "cc5fce090969fa1158e2ada62bfd99990b2b20c6",
+  "verified_utc": "2026-11-24T13:50:54Z",
+  "export": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-cc5fce0-20261124T134835Z",
+  "result": "FAIL",
+  "checks": [
+    {
+      "check": "clean",
+      "status": "PASS",
+      "message": "worktree clean (outside the stage directory being assembled)",
+      "detail": null
+    },
+    {
+      "check": "sync",
+      "status": "PASS",
+      "message": "main is merged into the branch",
+      "detail": null
+    },
+    {
+      "check": "export",
+      "status": "PASS",
+      "message": "clean export of cc5fce090969 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-cc5fce0-20261124T134835Z/tree",
+      "detail": null
+    },
+    {
+      "check": "size",
+      "status": "PASS",
+      "message": "no committed file of the track above 5 MB",
+      "detail": null
+    },
+    {
+      "check": "note",
+      "status": "PASS",
+      "message": "tracks/<ID>/note/main.tex present",
+      "detail": null
+    },
+    {
+      "check": "package",
+      "status": "PASS",
+      "message": "EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016)",
+      "detail": null
+    },
+    {
+      "check": "note-pdf",
+      "status": "PASS",
+      "message": "note/main.pdf committed after the last .tex change",
+      "detail": null
+    },
+    {
+      "check": "style",
+      "status": "PASS",
+      "message": "2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py)",
+      "detail": null
+    },
+    {
+      "check": "fig-script",
+      "status": "PASS",
+      "message": "7 figures, each with its script",
+      "detail": null
+    },
+    {
+      "check": "min-figs",
+      "status": "WARN",
+      "message": "3 schematics and 4 data figures (brief 13.4 asks at least 1 and 5 at G2)",
+      "detail": null
+    },
+    {
+      "check": "runs",
+      "status": "FAIL",
+      "message": "5 of 251 runs have problems; 1 waived",
+      "detail": {
+        "A-20261122-132959-dfba903": [
+          "status is submitted: not finished (nrpic-run finish)"
+        ],
+        "A-20261122-141100-f00cfc2": [
+          "status is submitted: not finished (nrpic-run finish)"
+        ],
+        "A-20261122-173202-f98c79f": [
+          "status is submitted: not finished (nrpic-run finish)"
+        ],
+        "A-20261123-025907-97bab8d": [
+          "status is submitted: not finished (nrpic-run finish)"
+        ],
+        "A-20261124-132016-ecf12c3": [
+          "status is running: not finished (nrpic-run finish)"
+        ]
+      }
+    },
+    {
+      "check": "runs-waived",
+      "status": "WARN",
+      "message": "failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): A-20261121-064515-aa13c8f: the gate reviewer's failed first attempt; its scratch script was edited for the rerun A-20261121-064537-2bcf310",
+      "detail": {
+        "A-20261121-064515-aa13c8f": {
+          "waived_by": "coord/WAIVERS.md",
+          "reason": "the gate reviewer's failed first attempt; its scratch script was edited for the rerun A-20261121-064537-2bcf310",
+          "problems": [
+            "input /data/haiyangw/nrpic/scratch/A-emd-pbh/gate_review_G1/review_checks.py changed since the run (sha256 differs)"
+          ]
+        }
+      }
+    },
+    {
+      "check": "run-notes",
+      "status": "WARN",
+      "message": "45 runs read with defaults or not fully re-verifiable (nrpic-run lint)",
+      "detail": {
+        "A-emd-pbh-20261115-112500-61acbec": [
+          "input tracks/A-emd-pbh/scope/scope_calc.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-112505-61acbec": [
+          "input tracks/A-emd-pbh/scope/scope_calc.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-113108-9832afd": [
+          "input tracks/A-emd-pbh/newton/scan_refs.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-113223-5581665": [
+          "input tracks/A-emd-pbh/criteria/emd_criteria.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/criteria/check_criteria.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-113244-8e0363b": [
+          "input tracks/A-emd-pbh/criteria/emd_criteria.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/criteria/check_criteria.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-113446-024989f": [
+          "input tracks/A-emd-pbh/criteria/emd_criteria.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/criteria/check_criteria.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-113608-374a41a": [
+          "input tracks/A-emd-pbh/gauge/scripts/vonneumann.py changed since the run (sha256 differs)",
+          "input athenak/src/z4c/z4c_calcrhs.cpp changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-113755-cac3c4b": [
+          "input athenak/src/z4c/z4c_calcrhs.cpp changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-113807-43300e5": [
+          "input tracks/A-emd-pbh/gauge/scripts/bh2_onset.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-113807-e02c969": [
+          "input tracks/A-emd-pbh/newton/compare_snapshots.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-114638-35ca5e4": [
+          "input tracks/A-emd-pbh/criteria/emd_criteria.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/criteria/predict.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/criteria/scan_disagreement.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-115120-2eb3117": [
+          "input tracks/A-emd-pbh/criteria/emd_criteria.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/criteria/check_criteria.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-115122-2eb3117": [
+          "input tracks/A-emd-pbh/criteria/emd_criteria.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/criteria/predict.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/criteria/scan_disagreement.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-115232-bee5b2e": [
+          "input tracks/A-emd-pbh/criteria/emd_criteria.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/criteria/predict.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/criteria/scan_disagreement.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-120425-80492f8": [
+          "input tracks/A-emd-pbh/criteria/emd_criteria.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/criteria/predict.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-125932-574c747": [
+          "status 'failed (exit 1)' read as failed",
+          "status 'failed (exit 1)' read as failed"
+        ],
+        "A-emd-pbh-20261115-125932-779f753": [
+          "status 'failed (exit 1)' read as failed",
+          "status 'failed (exit 1)' read as failed"
+        ],
+        "A-emd-pbh-20261115-130256-a7374a4": [
+          "input tracks/A-emd-pbh/criteria/emd_criteria.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/criteria/check_criteria.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-153409-dc27b98": [
+          "no gate"
+        ],
+        "A-emd-pbh-20261115-153415-dc27b98": [
+          "no gate"
+        ],
+        "A-emd-pbh-20261115-153424-dc27b98": [
+          "no gate"
+        ],
+        "A-emd-pbh-20261115-153437-dc27b98": [
+          "no gate"
+        ],
+        "A-emd-pbh-20261115-153719-91b03d1": [
+          "input tracks/A-emd-pbh/runs_ball/prep.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-154250-527a6d1": [
+          "input /data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/periodic_threshold/inputs/peak_smr.athinput changed since the run (sha256 differs)",
+          "input /data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/periodic_threshold/inputs/peak_amr.athinput changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-154740-69e8f8b": [
+          "input /data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/periodic_threshold/inputs/peak_smr.athinput changed since the run (sha256 differs)",
+          "input /data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/periodic_threshold/inputs/peak_amr.athinput changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-161253-b8c1dc9": [
+          "no gate",
+          "input tracks/A-emd-pbh/newton/analyze_newton.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-161309-9d3703a": [
+          "no gate",
+          "input tracks/A-emd-pbh/newton/analyze_newton.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-161537-aa788d9": [
+          "no gate",
+          "input tracks/A-emd-pbh/newton/analyze_newton.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-161542-36e461d": [
+          "input tracks/A-emd-pbh/criteria/emd_criteria.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/criteria/check_criteria.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-161543-36e461d": [
+          "input tracks/A-emd-pbh/criteria/check_criteria2.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/criteria/predict.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/criteria/emd_criteria.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-161813-6c820fb": [
+          "input tracks/A-emd-pbh/criteria/emd_criteria.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/criteria/check_criteria.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-161829-dba94f6": [
+          "input /data/haiyangw/nrpic/wt/A-emd-pbh/tracks/A-emd-pbh/periodic_threshold/inputs/peak_smr4.athinput changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-162133-208f933": [
+          "input tracks/A-emd-pbh/runs_ball/compare.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/runs_ball/fields.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/runs_ball/common.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-162237-a614467": [
+          "input tracks/A-emd-pbh/runs_ball/compare.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/runs_ball/common.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-162303-80396e4": [
+          "input tracks/A-emd-pbh/criteria/emd_criteria.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-162306-80396e4": [
+          "input tracks/A-emd-pbh/criteria/emd_criteria.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-162359-d32d331": [
+          "input tracks/A-emd-pbh/runs_ball/compare.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/runs_ball/common.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-162524-d32d331": [
+          "input tracks/A-emd-pbh/criteria/emd_criteria.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-162554-d32d331": [
+          "no gate",
+          "input tracks/A-emd-pbh/newton/analyze_newton.py changed since the run (sha256 differs)"
+        ],
+        "A-emd-pbh-20261115-163141-73eb185": [
+          "input tracks/A-emd-pbh/runs_ball/compare.py changed since the run (sha256 differs)",
+          "input tracks/A-emd-pbh/runs_ball/common.py changed since the run (sha256 differs)"
+        ]
+      }
+    },
+    {
+      "check": "status",
+      "status": "PASS",
+      "message": "STATUS.md has 37 lines",
+      "detail": null
+    },
+    {
+      "check": "rerun",
+      "status": "PASS",
+      "message": "7 of 7 scripts and commands ran cleanly in the export",
+      "detail": null
+    },
+    {
+      "check": "compare",
+      "status": "PASS",
+      "message": "14 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
+      "detail": [
+        [
+          "note/figures/fig_landscape.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_criteria.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/schem_timeline.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/fig_constraints.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_ball_exact.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/schem_dataflow.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/schem_dataflow.svg",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_landscape.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/fig_constraints.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/fig_ball_exact.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/fig_criteria.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/schem_architecture.svg",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/schem_architecture.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/schem_timeline.svg",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ]
+      ]
+    },
+    {
+      "check": "regenerate",
+      "status": "PASS",
+      "message": "all 14 committed figure files regenerated",
+      "detail": null
+    }
+  ]
+}

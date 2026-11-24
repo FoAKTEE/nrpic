@@ -1,6 +1,6 @@
 # Stage report: A-emd-pbh G2
 
-Date: 2026-11-24 · branch `track/A-emd-pbh` at `b92bdbd9df2c` · checklist
+Date: 2026-11-24 · branch `track/A-emd-pbh` at `087364028a36` · checklist
 `tracks/A-emd-pbh/stage/G2/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
@@ -8,14 +8,15 @@ Date: 2026-11-24 · branch `track/A-emd-pbh` at `b92bdbd9df2c` · checklist
 **FAIL**. Tag: `stage/A-emd-pbh/G2-fail-20261124` (created and pushed by the orchestrator after review, decision 0003).
 
 - 11 checklist items not PASS or NA: C1 OPEN, C3 FAIL, C5 OPEN, C6 OPEN, C10 OPEN, C11 OPEN, C13 OPEN, C14 OPEN, C16 OPEN, C17 OPEN, C18 OPEN
-- no VERIFY_RESULTS.json (run nrpic-stage verify)
+- verify ran on cc5fce0; files changed since: tracks/A-emd-pbh/JOURNAL.md, tracks/A-emd-pbh/runs/A-20261122-132959-dfba903/manifest.json, tracks/A-emd-pbh/runs/A-20261122-141100-f00cfc2/manifest.json, tracks/A-emd-pbh/runs/A-20261124-140131-48c636c/manifest.json, tracks/A-emd-pbh/threshold_ball/JOURNAL.md, tracks/A-emd-pbh/threshold_ball/README.md (run verify again)
+- verify reported FAIL: runs
 - no VERIFIER.md (step 7: verifier subagent; decision 0016 item 1, VERIFIER_REPORT.md accepted too)
 
 ## Package documents (decision 0012)
 
 | Document | State |
 |---|---|
-| `stage/G2/STAGE_REPORT.md` | written by this command |
+| `stage/G2/STAGE_REPORT.md` | present |
 | `stage/G2/EVIDENCE.md` | present |
 | `stage/G2/OPEN.md` | present |
 | `stage/G2/CHECKLIST.md` | present |
@@ -50,7 +51,27 @@ Date: 2026-11-24 · branch `track/A-emd-pbh` at `b92bdbd9df2c` · checklist
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-Not run: `harness/bin/nrpic-stage verify A-emd-pbh G2`.
+`nrpic-stage verify` on 2026-11-24T13:50:54Z, clean export of `cc5fce090969`: **FAIL**. Details: `VERIFY_RESULTS.md`.
+
+| Check | Result | Message |
+|---|---|---|
+| clean | PASS | worktree clean (outside the stage directory being assembled) |
+| sync | PASS | main is merged into the branch |
+| export | PASS | clean export of cc5fce090969 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-cc5fce0-20261124T134835Z/tree |
+| size | PASS | no committed file of the track above 5 MB |
+| note | PASS | tracks/<ID>/note/main.tex present |
+| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
+| note-pdf | PASS | note/main.pdf committed after the last .tex change |
+| style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
+| fig-script | PASS | 7 figures, each with its script |
+| min-figs | WARN | 3 schematics and 4 data figures (brief 13.4 asks at least 1 and 5 at G2) |
+| runs | FAIL | 5 of 251 runs have problems; 1 waived |
+| runs-waived | WARN | failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): A-20261121-064515-aa13c8f: the gate reviewer's failed first attempt; its scratch script was edited for the rerun A-20261121-064537-2bcf310 |
+| run-notes | WARN | 45 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
+| status | PASS | STATUS.md has 37 lines |
+| rerun | PASS | 7 of 7 scripts and commands ran cleanly in the export |
+| compare | PASS | 14 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| regenerate | PASS | all 14 committed figure files regenerated |
 
 ## Figures
 
@@ -100,7 +121,7 @@ MISSING: the verifier subagent has not reported (`stage/G2/VERIFIER.md`, decisio
 ## Open risks
 
 
-State 2026-11-21 (lead, batch 2b of wave 3; first written 2026-11-15). Likelihood and effect:
+State 2026-11-24 (lead, batch 11; rows 27-28 updated, 31-35 new; first written 2026-11-15). Likelihood and effect:
 H high, M medium, L low [JUDGEMENT]. Sources: `scope/SCOPE.md` sections 8 and 10.9,
 `gauge/GAUGE.md`, `stage/REVIEW-wave2.md`, `stage/REVIEW-wave3.md`, `stage/G1/GATE_REVIEW.md`,
 core's messages of 2026-11-20/21, the helpers' journals. "Realized" means a run showed it;
@@ -134,10 +155,11 @@ core's messages of 2026-11-20/21, the helpers' journals. "Realized" means a run 
 | 24 | A horizon in a state that violates the constraints: S1 has relative Hamiltonian constraint of order one near the centre from t = 9 (core, run core-20261120-220816-09f6f79); finder surfaces at t = 11.3-11.7 there are not evidence of a black hole | H in the box | H for the threshold line | constraint norms inside and outside spheres (core-v0.5 region norms) | a finder detection counts only with region norms below a stated bound at that time |
 | 25 | Cell-scale modulation of the deposit for stretched or compressed lattices with linear clouds: 7 per cent rms at one particle per cell (core run core-20261121-031145-ffc12b3), 1.7 per cent at four per cell | M | M in the box (noise near threshold) | | four or more particles per cell along each direction, or quadratic clouds, in the periodic set-up |
 | 26 | Process: sessions cut by the usage limit leave stranded files and open manifests; two helpers share the worktree with the lead | realized (2026-11-19, 2026-11-20) | L-M: gate checks fail on `clean` and `runs` | git status, `nrpic-run status` | leads close stranded runs whose processes ended (`nrpic-run finish`), list unfinished packages in HANDOFF; commits path-limited |
-| 27 | Periodic relaxed-lapse deck blows up early: norm(H) jumps ~1e4 at t = 2.5 in both P0L and S1L, guard stop at 4.8 and 15.1 (A-20261121-131600-02b5d41, read in A-20261121-203120-eaba95f) | realized | H for the periodic threshold line (G3) | jump time common to both members | request to core periodic-relaxed-lapse-blowup; no periodic card run until answered |
-| 28 | Finite-duration threshold in the ball depends on the time measure: the coordinate time of first detection lags the shell's proper time by 1-2 M, i.e. ~0.01 in delta_c near 0.41 | certain | M: bracket placement | ddet against tau_AH | threshold_ball judges the bracket in the invariant measure (DESIGN.md section 1); t_end = 45 sits 1.3-1.4 M from both bracket members |
+| 27 | Periodic relaxed-lapse deck blows up early (job 1, cfl 1.0: norm(H) x1e4 at t = 2.5, guard stops at 4.8 and 15.1) | resolved: cfl_number 0.5 runs P0L to 140 and S1L past 66 without a jump (A-20261124-130507-10510ac); core's gauge-speed step limit in work | was H | | keep cfl_number <= 0.6 with a Gamma-driver (decision 0027) |
+| 28 | Finite-duration threshold in the ball depends on the time measure: the coordinate time of first detection lags the shell's proper time by 1-2 M, i.e. ~0.01 in delta_c near 0.41 | certain | M: bracket placement | ddet against tau_AH | threshold_ball judges the bracket in the invariant measure (DESIGN.md section 1); t_end = 45 sits 1.3-1.4 M from both bracket members | Batch 11: in the invariant measure the code's bracket on mesh B equals the exact one, (0.40, 0.42], interpolated threshold 0.4103 both (A-20261124-131120-5c974ce). |
 | 29 | Unattended sequencer commits run manifests on track/A-emd-pbh while later sessions work in the worktree (index lock, dirty package refusals) | M | L-M: a queue line skipped after five refusals | scratch/A-emd-pbh/sequencer_threshold/sequencer.log, done.txt | sessions commit threshold_ball changes promptly; skipped lines are resubmitted by hand (HANDOFF) |
 | 30 | Disk: a C-mesh chain writes 5.1 GB per restart (rst + prt) every 4 M plus one per segment: about 0.1 TB for C-d0.42 to t = 51 | M | L | du of the run directory | delete superseded restart files after the run is finished and verified (keep the last) |
+| 31 | Finder fails on the periodic collapse: the gauge draws P0L's trapped region into coordinate r < 0.08 (horizon R ~ 10 at r ~ 0.075, under 4 cells of level 4); no search converges from any start radius (F2, A-20261124-131232-e7b58f8) | realized | H for the periodic threshold line (G3) | F1/F2 line analysis | six static levels (peak_leak6, queue_b11 line 1, D0-D5); adaptive refinement on chi; request to core only if D3 fails with the horizon resolved |
 
 ## Decision requested from the group
 
