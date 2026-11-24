@@ -52,11 +52,11 @@ def main():
     fs.use_style()
     labs = [l for l in res if res[l]["sf.con.hst"]["duplicates"]]
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 3.0))
-    w = 0.86 / len(labs)
+    w = 0.84 / len(labs)
     for i, lab in enumerate(labs):
         r = runs[lab]
         _, bo = read_blocks(os.path.join(SCRATCH, r["orig"], f"{r['base']}.sf.con.hst"))
-        ax = fig.add_axes([0.09 + i * w, 0.16, w - 0.06, 0.72])
+        ax = fig.add_axes([0.12 + i * w, 0.16, w - 0.07, 0.72])
         for k, (b, col, ls) in enumerate(zip(bo, (fs.PAL["blue"], fs.PAL["red"]), ("-", "--"))):
             cyc = np.array(sorted(b))
             ax.plot(cyc, [vals(b[c])[3] for c in cyc], color=col, ls=ls,
@@ -65,6 +65,7 @@ def main():
         ax.set_title(f"{lab}: {d['identical']} of {d['n']} identical", fontsize=9)
         ax.set_xlim(0, max(max(b) for b in bo[:1]) * 1.15)
         ax.set_yscale("log")
+        fs.no_minor_labels(ax, "y")
         ax.set_xlabel("cycle", labelpad=-1)
         if i == 0:
             ax.set_ylabel(r"record $\langle|H|/[H]\rangle$")
