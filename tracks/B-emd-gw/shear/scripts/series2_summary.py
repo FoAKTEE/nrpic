@@ -6,6 +6,9 @@ N_y = 32, 64, 128 (series 1) and 256 (series 2). Predictions P9', P7': JOURNAL.m
 2026-11-24 05:35.
 
     python3 series2_summary.py <series 1 run dir> <series 2 run dir> [<out dir>]
+                               [--l2 <run dir>:<case prefix>]   (default <series 2>:L2)
+
+With --l2 the L2 family is read from another run (series 3: --l2 <dir>:L2f).
 
 Writes series2.json and fig_series2 (PDF, PNG).
 """
@@ -36,11 +39,18 @@ def rays(d, name):
 
 
 def main():
-    s1, s2 = sys.argv[1], sys.argv[2]
-    out = sys.argv[3] if len(sys.argv) > 3 else os.environ["NRPIC_RUN_DIR"]
-    res = {"L2": {}, "S3": {}}
+    args = list(sys.argv[1:])
+    l2dir, l2pre = None, "L2"
+    if "--l2" in args:
+        i = args.index("--l2")
+        l2dir, l2pre = args[i + 1].rsplit(":", 1)
+        del args[i:i + 2]
+    s1, s2 = args[0], args[1]
+    out = args[2] if len(args) > 2 else os.environ["NRPIC_RUN_DIR"]
+    l2dir = l2dir or s2
+    res = {"L2": {"dir": l2dir, "prefix": l2pre}, "S3": {}}
     for n in (32, 64, 128):
-        r = rays(s2, f"L2_n{n}")
+        r = rays(l2dir, f"{l2pre}_n{n}")
         res["L2"][str(n)] = None if r is None else {
             "Delta": r.get("Delta"), "Delta_quad": r.get("Delta_quad"), "cos": r.get("cos"),
             "t_A": r.get("t_A"), "t_B": r.get("t_B"), "a_end": r.get("a_end"),
