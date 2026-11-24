@@ -191,3 +191,16 @@ K2: at fixed mesh, ||H||_2 and ||M||_2 at t = 1-6 fall with the particle number 
 N^(-1/2) (a factor 2-3.5 per factor 8) [JUDGEMENT: deposit noise]. Refuted if the factor per x8 is
 below 1.5 at t = 2 and 4 on both meshes (then the noise is not the particles' and the constraint
 floor has another cause).
+
+### Entry 7 outcome (run A-20261124-132342-d5dc06e, fig_constraint_conv.png panel d looked at): K2 REFUTED
+
+At fixed mesh the norms do not fall with the particle number before t ~ 6: the factor per x8
+particles is 1.01-1.06 at t = 1, 1.02-1.10 at t = 2, 1.03-1.20 at t = 4 (A x1->x8, A x8->x64, B
+x1->x8, for H and M), 1.08-1.38 at t = 6; only at t = 8 does it reach 2.2-3.3 (x1->x8; x8->x64
+still 1.1). So the early constraint floor (t ~ 1-6) is neither mesh truncation (entry 6) nor
+particle noise: it is fixed in physical space and does not fall with either resolution
+[VERIFIED for these three meshes and three particle numbers]. Candidate, not tested: the
+top-hat data's density jumps at R1 and R2 (data set 3 has unsmoothed edges; a jump gives a
+constraint residual that refinement does not remove), with the momentum constraint at t = 0
+GROWING with the mesh (order -0.8) as a jump would. The test that can refute it: the same member
+with smoothed edges (prep_bh.py --edge-w) on two meshes. Not run this session.
