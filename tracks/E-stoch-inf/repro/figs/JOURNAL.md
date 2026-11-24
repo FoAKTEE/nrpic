@@ -508,3 +508,18 @@ Outcome (figure run E-20261124-213739-9776185; every json and PNG byte-equal to 
   3.3e-4 to 4.0e-4) were taken over a window I have not checked [TO VERIFY in ladder/README A4 row].
   The maximum over the whole run needs RSF256 to t = 8.5 (q0034). Without the initial transient (N >
   0.05) the maxima are the same numbers.
+
+## Entry 13 (2026-11-24 13:55 PST): where the package stands after the update pass
+
+Predictions that waited, judged (repro/scope JOURNAL entry 1; repro/ablation JOURNAL entry 1):
+scope P1 SR PASS as far as RSF256 has run (t = 0, 4.0, 5.0; t = 8.5 waits); P2 SR record H PASS, M
+FAILED as written (window edge, entry 12), per cell waits; P3 PASS; P6 (a) literal bar PASS for
+256/128, but no clean order 4-6 from 32 to 64 except the USR background residual (entry 11
+correction), (b) PASS, (c) PASS (monotone, 3.7e-7 at 256); ablation P-A1 r20 PASS at N_f (r10 part
+FAILED, entry 3), P-A3 (iii) PASS to the end. My own entry-10 bands: J, P3, P-A1, scope P1 PASS; F7
+and three of four F8 bands FAILED (causes in entry 11: a floor at the lowest shells, cause open; the
+initial transient in the entry maximum).
+Done: pass E-20261124-213029-e937f69; figure runs E-20261124-213400-37465c2, -213532-3f00681,
+-213739-9776185 (the last in `fig/`); RESULTS.md with PENDING only on the RSF256 rows (Fig. 2
+constraint panels, Figs. 3 and 6a from RSF256 itself, P1 at t = 8.5, P2 and S14 per cell for SR),
+each naming queue entry q0034; its section 5 gives the steps. No card time used.
