@@ -16,6 +16,13 @@ RUN: a run directory (scratch/C-sidm/<run_id>) or a run id; its deck name A8_<y0
 is read from chain/input.athinput or from the *.athinput in the directory. A restarted chain
 appends to one history; rows whose time does not exceed the last kept time are replaced by
 the later segment. Writes DIR/blockA.json and DIR/fig_blockA.png.
+
+--ripple-tmax T (added 2026-11-24, after the data, [JUDGEMENT]): the ripple of a control is
+taken over t < T only. The noise model was named before the runs on the assumption that no
+control collapses; two controls collapsed (t_c 535 and 549 M), and a ripple over the whole
+record measures the collapse, not the noise (sigma_w 0.07 in run C-20261124-130506-2ddce1f).
+Without the option the reader behaves as before. Also printed: alpha_c - alpha_c(0), 20 M
+means centred on 100, 200, 300, 400, 500 M, per run.
 """
 import argparse
 import glob
@@ -98,6 +105,7 @@ def window_means(t, y, tmax):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR"))
+    ap.add_argument("--ripple-tmax", type=float, default=None)
     ap.add_argument("runs", nargs="+")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
@@ -117,16 +125,23 @@ def main():
         res["runs"][f"{y}_s{s}_{k}"] = dict(dir=v["dir"], t_end=float(H["time"][-1]),
                                            t_c=crossing(H["time"], H["alpha_min"]),
                                            alpha_c0=float(H["alpha_probe"][0]))
+        for tw in (100.0, 200.0, 300.0, 400.0, 500.0):
+            m = (H["time"] >= tw - 10.0) & (H["time"] <= tw + 10.0)
+            res["runs"][f"{y}_s{s}_{k}"][f"dalpha_c_{int(tw)}"] = (
+                float(np.mean(H["alpha_probe"][m] - H["alpha_probe"][0])) if m.sum() > 10 else None)
     ripple = {}
     for (y, s, k), v in runs.items():
         if k != "ctrl":
             continue
         H = v["hist"]
         t, ac = H["time"], H["alpha_probe"]
-        ripple[(y, s)] = float(np.nanstd(ac - running_mean(t, ac, 50.0)))
+        rm = np.ones(len(t), bool) if a.ripple_tmax is None else (t < a.ripple_tmax)
+        ripple[(y, s)] = float(np.nanstd((ac - running_mean(t, ac, 50.0))[rm])) if rm.sum() > 400 else None
+        if ripple[(y, s)] is None:
+            del ripple[(y, s)]
         m = (t >= 500.0) & (t < 600.0)
         res["runs"][f"{y}_s{s}_ctrl"]["contraction_500_600"] = float(np.mean(ac[m] - ac[0])) if m.sum() > 10 else None
-        res["runs"][f"{y}_s{s}_ctrl"]["ripple_rms_50M"] = ripple[(y, s)]
+        res["runs"][f"{y}_s{s}_ctrl"]["ripple_rms_50M"] = ripple.get((y, s))
         for kk in ("kin", "kout"):
             if (y, s, kk) not in runs:
                 continue
@@ -151,14 +166,15 @@ def main():
     sigma = max([x for x in (rip, max(sds) if sds else None) if x is not None] or [SIGMA_DEFAULT])
     if not sds:
         sigma = max(sigma, SIGMA_DEFAULT)
-    res["noise"].update(ripple_max=rip, sigma_w=sigma, rule="max(seed sd, ripple); 2.5e-3 floor until two seeds")
+    res["noise"].update(ripple_max=rip, sigma_w=sigma, ripple_tmax=a.ripple_tmax,
+                        rule="max(seed sd, ripple); 2.5e-3 floor until two seeds")
     for p, v in res["pairs"].items():
         v["beyond_3sigma"] = [None if w is None else bool(abs(w) > 3 * sigma) for w in v["windows"]]
     with open(os.path.join(a.out, "blockA.json"), "w") as f:
         json.dump(res, f, indent=1)
     print(json.dumps(res["noise"], indent=1))
     for n, v in res["runs"].items():
-        print(n, "t_end %.1f" % v["t_end"], "t_c", v["t_c"], {k: v[k] for k in v if k.startswith(("contr", "ripple"))})
+        print(n, "t_end %.1f" % v["t_end"], "t_c", v["t_c"], {k: v[k] for k in v if k.startswith(("contr", "ripple", "dalpha"))})
     for n, v in res["pairs"].items():
         print(n, ["%+.4f" % w if w is not None else "-" for w in v["windows"]])
 
