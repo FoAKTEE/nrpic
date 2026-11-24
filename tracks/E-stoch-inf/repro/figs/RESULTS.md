@@ -67,10 +67,10 @@ the pass; t = 5.0008 in E-20261124-213029-e937f69) and the records identical at 
 20 common columns (`fig/joins.json`) [VERIFIED; scope P1 for SR PASS]. So the field-panel numbers
 below hold for both; at the 18 shared times the percentiles are equal. Constraint panels (RSF256):
 the per-cell means equal the record within 4.1e-15 (H) and 3.8e-15 (M) at all 35 dumps (F2 (a));
-|H|/[H] sits on a plateau (68 per cent band near 1e-13 to 1e-12, 99.5th percentile 3.4e-12 to 6e-12)
+|H|/[H] sits on a plateau (68 per cent band 6.4e-14 to 1.3e-12, 99.5th percentile 3.4e-12 to 6e-12)
 from N = 0.75 to 3.2, rises with the last crossings to its maximum at N = 4.39 (99.5th percentile
 1.78e-10, max over cells 3.6e-10), and decays exponentially to 6.5e-14 (99.5th) at N_f; |M|/[M] has a
-plateau near 1e-6 to 2e-5 (68 per cent), a maximum after the entry (99.5th percentile 1.84e-3 at N =
+plateau (68 per cent band 1.2e-6 to 1.3e-5 over the same span), a maximum after the entry (99.5th percentile 1.84e-3 at N =
 4.86, max over cells 4.5e-2 at 5.10) and decays to a 68 per cent band of 1.2e-6 to 3.9e-6 at N_f
 [VERIFIED, `fig/fig2_sr_contrast.json`]. P1:539 "H/[H] at the next order (~1e-10), then damped": the
 per-cell level of ours reaches 1e-10 at the end of the entry and is damped by 2.7e3 to N_f (S14).
@@ -345,6 +345,14 @@ at t = 0, 4.0, 8.5); figure run E-20261124-230839-0e1e13a (`--rsf256` added); ou
 `fig/`, the new figures looked at (JOURNAL entry 15).
 
 ## 6. Requests
+
+- repro/continue: append `E-20261124-214913-5956891` to `"RSF256"` in `scripts/conts.json` (it ended at
+  tlim; closed as completed) and record K2; this package's join check E-20261124-225720-444aecc, run with
+  that package's `join_check.py` on `conts_rsf256.json`, found every check true (JOURNAL entry 15).
+- repro/note: the RSF256 rows that the note marked pending are complete: Fig. 2 constraint panels
+  (`fig/fig2_sr_contrast.png`), Figs. 3 and 6a from RSF256, scope P1 SR at t = 8.5 (bit-identical,
+  records identical), P2 (whole-run maxima 5.10e-11 and 3.99e-4; per cell 99.5th percentile at most
+  1.78e-10), S14 SR per cell (sections 2, 3; figure run E-20261124-230839-0e1e13a).
 
 - Lead of E (card time, if the floor matters for the note): the floor of Fig. 7 at 256 (per-mode
   relative rms 6.7e-7, the same as at 128) would be tested by CL256S at half the noise amplitude
