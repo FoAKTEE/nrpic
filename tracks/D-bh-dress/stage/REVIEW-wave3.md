@@ -432,3 +432,38 @@ What I could not confirm: FP and FP-ext (not judged at the pause); FE4, FF4, FK,
    allotment (request to orch): G2 had 4.29 card-hours left.
 3. Treat the production finder's plateaus as the finder's until FP is judged; quote N both ways.
 4. drift_controls tools committed as work in progress (decision 0030 item 1).
+
+## 17. Lead session of batch 11b (2026-11-24 09:23 PST on, Opus; resumed after the pause; decision 0032)
+
+No helper packages. This session closed the two processor runs left running at the pause and judged
+them from their registered outputs against the predictions of g2long entries 10 and 11 (written before
+the runs; the raw log had been seen at the pause, so FP2, FP3 and FP-ext (ii) are confirmations, not
+blind tests). The cards are held by another user's priority jobs (decision 0032 item 2): no card run
+moved since 06:19.
+
+| Item | Outcome | Evidence |
+|---|---|---|
+| FP, FP-ext closed | completed, exit 0 (84 and 24 probes) | D-20261124-130935-fdca920, -140606-286a302 |
+| FP1 | HOLDS: h0 reproduces every run's mass within 3.6e-6 at 29 dumps | fp_analyse.json, D-20261124-172508-c847ee4 |
+| FP2, FP3 (cause C1) | HOLD: converged-finder vacuum drift 1.8e-5 (M/8, 100-500 M), 3.9e-6 (M/16); the 1.2e-4 plateaus are the finder's | fp_analyse.png panels (a), (b) (read) |
+| FP4 | REFUTED: converged-finder offset -8.9e-3, +1.18e-3, -1.8e-5 over M/4, M/8, M/16 (sign change) | panel (d) (read) |
+| FP5 | HOLDS: tight null difference <= 6.5e-5 (M/8), <= 3.7e-5 (M/16) | panel (c) (read) |
+| FP-ext | (i) HOLDS; (ii) missed its 5e-5 bound (7.3e-5 at 400 M), not refuted | panel (c) |
+| Not predicted | the bubble-minus-vacuum difference is a step by 150 M, flat to 500 M; half as large at M/16 | entry 14 |
+| Figure defect fixed | legend of panel (a) over the data, clipped title of (d): rerun with layout only, JSON byte-identical | commit c847ee4a |
+| Ladder schematic | registered, read | D-20261124-172838-3a30e48 |
+| Slice mosaic | read again (lapse and particle energy, four zooms) | D-20261124-134644-2389227 |
+
+What I could not confirm: anything on the cards (FK, FE4, FF4, FN4 and the newly registered FNQ, FL16).
+What is wrong and stays on record: FP4 (no mesh order of the offset), FP-ext (ii) bound.
+
+## 18. Lead's decisions of batch 11b
+
+1. Register FNQ and FL16 under decision 0032 item 3 (caps 3.0 and 5.0; G2 had 11.73 card-hours left),
+   held behind FK and FN4 in the running sequencer.
+2. Restart cadence of decision 0032 item 2 through the chains' EXTRA_ARGS (output2/dt = 25 M for FK, FN4,
+   FNQ; 12.5 M for FL16), keeping the registered inputs as smoke-tested; FE4 and FF4 (M/4, ~6 min per 50 M)
+   unchanged.
+3. Measure the null test and its floor with the converged finder on dumps (processors), and keep the
+   production finder in the card inputs for comparability with their parents.
+4. Post the finder's stopping rule to core as an interface-text request, with an optional source item.
