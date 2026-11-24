@@ -370,3 +370,29 @@ Predictions for the analysis `scripts/analyze_gr.py` (written before it runs) [J
   corner of the box), and the largest K of the last dumps sits there. Refuted if the stop
   occurs away from every halo (then a boundary or block-face defect becomes the first
   candidate to test).
+
+## 2026-11-24 05:48 PST (lead of batch 11): Newtonian reference at the same resolution; predictions
+
+The comparison of H1 maps a 128^3 GR box onto the 64^3 Newtonian fidL8 box by two scalings
+(box and amplitude); a reference with the GR runs' own Newtonian particles removes both. Card
+batch `inputs/batch_newton128.list`: deck `inputs/pop_newton128.athinput` (release core-v0.6 card
+build, Fourier Poisson solver, spectral symbol, step 1/64, snapshots every 1/16), particles
+`particles_newton.nrp` of the GR initial-data runs (same delta0 and modes as the GR runs),
+sigma1 = 0.014 and 0.028, L = 8, 128^3, one per cell, to a = 143. Analysis afterwards with
+`analyze.py` (halos, box GW measure at ng = 64) and a halo-by-halo comparison with the GR runs.
+
+Predictions [JUDGEMENT], written before the job is queued:
+- N1. Both cases reach t = 21.916 with exit 0; the job uses below 0.5 card-h (about 1400 Fourier
+  steps of 0.05-0.1 s with 2.1e6 particles, newtonian_mode.md 7.11, plus 351 snapshots of 126 MB).
+- N2 (GR against Newton, same particles and mesh, sigma1 = 0.014). FoF halo counts (>= 100
+  particles) at a = 49, 64, 81, 100, 121 equal within 2 sqrt(N) + 2; the ten largest Newtonian
+  halos at a = 121 have a GR halo within 0.1 (1.6 cells), with |M_GR/M_N - 1| below 5 per cent
+  in the median (relativistic corrections of order Phi ~ 0.01 at this amplitude, plus the
+  different force: Z4c fourth-order differences against the spectral Poisson solve). Refuted if
+  the median exceeds 10 per cent or a count differs by more than the band.
+- N3 (amplitude scaling at 128^3). Newtonian 0.028 at a against Newtonian 0.014 at 2a: halo
+  counts within 2 sqrt(N) + 2, largest mass within 5 per cent, for a = 25 to 71.
+- N4 (signal). The quasi-static measure Omega_qs of the Newtonian particles equals that of the GR
+  particles (analyze_gr.py) within 10 per cent at every common snapshot; the radiated box measure
+  of the Newtonian 0.014 run at a = 120 equals the fidL8 value at a_N = 30 times 4.014^(-7/2)
+  within a factor 2 (P9's sigma^(7/2) at equal stage; 64^3 against 128^3 particles).

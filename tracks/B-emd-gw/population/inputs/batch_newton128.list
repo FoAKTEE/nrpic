@@ -1,0 +1,6 @@
+# population: Newtonian reference of the full-GR runs at the same resolution (batch 11). One card
+# batch job, release core-v0.6 card executable, deck pop_newton128.athinput (Fourier Poisson,
+# spectral symbol), the Newtonian particles written beside the relativistic data of each GR run
+# (same delta0, same modes), L = 8, 128^3, one particle per cell, to a = 143.
+newton_s014 tracks/B-emd-gw/population/inputs/pop_newton128.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-211707-d795743/gr_L8_n128/particles_newton.nrp
+newton_s028 tracks/B-emd-gw/population/inputs/pop_newton128.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261123-014850-7b7d986/gr_L8_n128/particles_newton.nrp

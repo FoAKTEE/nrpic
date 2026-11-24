@@ -245,3 +245,20 @@ Predictions (before the runs and the analysis) [JUDGEMENT]:
   |Delta(256)| below 3e-4. Refuted if the difference grows again (then S3 does not converge in
   N_y at this HL and the cause is to be looked for in the rays' step or the observer transport).
 - Wall time: L2_n128 below 8 minutes, S3_n256 below 30 minutes (series 1: 149 s and 144 s at 128).
+
+## 2026-11-24 05:45 PST (lead of batch 11): outcome of P10 (f = 1 against f = 1/3)
+
+Run B-20261124-131336-bc61eee (`analyze_rays.py --plot` on a copy of series 1's S1_n64_lap1 in
+its own directory; `rays.png` looked at: both fans bracket the root, gamma_xy at O on the linear
+curve, constraint means at 1e-9 (H) and 1e-6 (M) until t = 0.54). [VERIFIED by this run]
+- Rays arrive at t_A = 0.46913, t_B = 0.46912 in the f = 1 slicing (a = 2.2500 there; the f = 1/3
+  run has them at t = 1.0000, a = 2.2500): the background estimate t = 0.469 of the entry above
+  holds.
+- P10 HOLDS: cos(theta) = 1.431017e-3 (f = 1) against 1.431142e-3 (f = 1/3), relative difference
+  -8.7e-5, inside the 1e-4 of the prediction. Delta = -1.050e-4 (f = 1) and -1.77e-5 (f = 1/3) at
+  N_y = 64; the difference is six times the f = 1/3 run's error at that mesh (1.4e-5 against its
+  extrapolation), so the f = 1 run carries the larger error; it has no convergence series.
+- Not predicted, on record: k_x, k_z of the rays drift by 3.6e-3 of |k| over the whole stored
+  track (6e-15 with f = 1/3); the track runs into the last steps before the guard stop, where the
+  fields blow up, and the drift was not restricted to t < 0.54 [TO VERIFY before quoting it].
+- The guard stop at t = 0.578 keeps no cause (R18); it does not touch the observable.
