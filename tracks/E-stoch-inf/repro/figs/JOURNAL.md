@@ -198,8 +198,8 @@ and looked at.
   (USR) at |n| >= 56, below 1e-5 for |n| <= 16, rising with k (top over bottom 46 and 211).
 - P-A3 (iii): PASS. Records <|H|/[H]> and <|M|/[M]> of levels 1 and 2 within 5e-4 of level 0 on the
   mesh at every common cycle (SR to cycle 1227, USR all 1702).
-- Scope P4: SR FAILED (|RL1/P256v6 - 1| up to 6.6e-7, bar 1e-6 per shell... met: 6.6e-7 < 1e-6;
-  PASS); USR PASS (UL1/U256ap up to 8.0e-7 < 1e-4).
+- Scope P4: PASS. SR |Delta_RL1/Delta_P256v6 - 1| at most 6.6e-7 (bar 1e-6 at every shell); USR
+  |Delta_UL1/Delta_U256ap - 1| at most 8.0e-7 (bar 1e-4 for k <= k_max/2).
 - F7 / P6 (c) so far: max over the 44 shells |Delta_NR/Delta_lin - 1| at N_f = 3.2e-3 (32), 6.2e-5
   (64), 1.0e-6 (128), monotone (orders 5.7 and 5.9, the sixth-order stencils); 256 pending (CL256S).
 - F8 / P6 (a) so far: entry maximum of <|H|/[H]>, order 32 -> 64: 4.15 (SR), 4.10 (USR, the
