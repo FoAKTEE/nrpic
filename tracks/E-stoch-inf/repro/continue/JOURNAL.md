@@ -312,3 +312,44 @@ byte-identical, with its `.modes` (RSF256 00001, 00002 original/cont3; RNC256 00
 00008, 00009 for the three pairs of original, a5dec67, 33a3a39); the next restart of RSF256
 passes every test with the sha256 of 0b1ce0c's `sha256sums.txt`. Refuted by any byte difference
 or a failed restart test.
+
+## Entry 12 (2026-11-24 13:26 PST): outcome of K1; the four finished labels join their originals
+
+Runs E-20261124-212120-9678639 (`join_check.py --next RSF256=<0b1ce0c sr.00002.rst>`, processors,
+114 s) and E-20261124-212343-7e9c4b2 (the same after a change of the figure only: an empty
+difference panel keeps its log axis); their `join_check.json` are equal up to the run directory
+name and their joined record files and dump lists byte-identical. Numbers from
+E-20261124-212343-7e9c4b2:
+
+| Label | Continuations | J1 start / dt | Ends at tlim | J2 identical / compared lines | J3 max ratio (literal) | J4 first dump / common dumps byte-identical | Joined records, dumps |
+|---|---|---|---|---|---|---|---|
+| RNC256 | 61fe0b0 | true / true | yes, t 4.5, cycle 734 | 232 / 232 | 12.8 (refuted at cycle 0; same as the original's own step: pass as amended) | 00001 at t 0.5031 = counter 1 / 00001 yes | 0-734, 00000-00009 |
+| CL256U | a5dec67, 33a3a39 | true / true (both) | yes (33a3a39), t 10.4375, cycle 1702 | 814 / 814 | 1.0 | 00008 at t 4.1786 = counter 8 for both / 00008, 00009 for the three pairs yes, with .modes | 0-1702, 00000-00020 |
+| CL256S | 4be980b | true / true | yes, t 8.5, cycle 1386 | 74 / 74 | 1.02 | 00013 at t 6.5041 = counter 13 / none common | 0-1386, 00000-00017 |
+| AL2S | 49afe29 | true / true | yes, t 8.5, cycle 1386 | none to compare (the original stopped at its restart cycle) | 1.0 | 00016 at t 8.0012 = counter 16 / none common | 0-1386, 00000-00017 |
+| RSF256 (parts) | da8c917, 4c41e7b, 0b1ce0c | true / true (all three) | NO: last part cut at cycle 895 (pending q0034) | 472 / 472 | 13.7 (refuted at cycle 0; same as the earlier run's own step: pass as amended) | 00001 at t 0.2516 = counter 1 (0b1ce0c; the other two wrote none) / 00001, 00002 original vs 0b1ce0c yes, with .modes | 0-895, 00000-00021 |
+
+Largest relative difference over every compared line: 0 (all identical as printed, 17 digits).
+No joined file has a gap. The restart q0034 will start from passes every test: t =
+4.000621894805812, cycle 652, size equal to header + data, no holes, finite tail, sidecar
+NRSFRST1 (1, 2, 264, 264, 264) with counter 17 (next 4.25), sha256 of both files equal to
+0b1ce0c's `sha256sums.txt`.
+
+Outcome: K1 held for RNC256, CL256U, CL256S and AL2S as J1-J4 with J3 read as amended in entry 11;
+the literal J3 of entry 1 is refuted at the two cycle-0 junctions (RNC256, RSF256), where the
+change is the run's own first step (column 16, rms |M_bssn - M_adm|, 1.45e-14 on the initial
+slice) and is identical in the original. For RSF256 everything that exists joins (J1 start, J2,
+J3 as amended, J4) and the joined run reaches cycle 895, t = 5.49; J1's end, K2 and the rest of
+the run wait for q0034. A continuation that restarts from the t = 0 file repeats the original
+bit for bit on the card (as prediction D of entry 5 found inside the originals), and one that
+restarts from a later file continues it without a step in any record column.
+[VERIFIED: run E-20261124-212343-7e9c4b2]
+
+Figure `fig_join.png` of E-20261124-212343-7e9c4b2 looked at: per label the record <|H|/[H]>
+of the original (solid) and of each continuation (dashed) around the junction lie on each
+other; the difference panel sits at its floor of 1e-18 for every overlapping line (RSF256 112,
+RNC256 116, CL256U 282, CL256S 37 cycles of `.sf.con.hst`; AL2S none). The first figure (run
+E-20261124-212120-9678639) had a linear axis on the empty AL2S panel, which hid no data.
+
+Card time of this package: 1.28 card-hours used by the eight continuations (entry 9); 2.95
+asked by q0034 (about 0.35 expected), which has not run yet.
