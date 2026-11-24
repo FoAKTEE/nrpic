@@ -283,9 +283,10 @@ Real Z4c::GaugeTimeStep(Driver *pdriver, Real bound[3], const bool leak_everywhe
 //! f times the stability bound of GaugeTimeStep; dtnew is multiplied by cfl_number in
 //! Mesh::NewTimeStep, so the bound is divided by it here.  At the first call the bound
 //! is evaluated in any case: with the option a line states it; without it a warning is
-//! printed when cfl_number x dx_min, the largest step the other limits allow, exceeds
-//! it, and when lapse_leak times that step is beyond the bound of the relaxed lapse.
-//! Nothing else is done without the option.
+//! printed when the largest step the other limits allow (cfl_number x dx_min; for light
+//! the present step if dt_lightspeed is set) exceeds it, and when lapse_leak times that
+//! step is beyond the bound of the relaxed lapse.  Nothing else is done without the
+//! option.
 
 void Z4c::GaugeStepLimit(Driver *pdriver, const Real dx_min) {
   const bool first = ((dt_gauge_state & 1) == 0);
@@ -335,10 +336,6 @@ void Z4c::GaugeStepLimit(Driver *pdriver, const Real dx_min) {
   MPI_Allreduce(MPI_IN_PLACE, v, 6, MPI_ATHENA_REAL, MPI_MIN, MPI_COMM_WORLD);
 #endif
   if (global_variable::my_rank != 0) { return; }
-  int s = 0;
-  if (v[1] < v[s]) { s = 1; }
-  if (v[2] < v[s]) { s = 2; }
-  const Real bound = v[s];
   const Real step_now = cfl*v[5];   // what Z4c allows at the first step
   const Real step_cap = cfl*v[4];   // what it may grow to: cfl_number x dx_min
   if (dt_gauge > 0.0) {
@@ -353,25 +350,37 @@ void Z4c::GaugeStepLimit(Driver *pdriver, const Real dx_min) {
       std::cout << "### WARNING (Z4c step limit): dt_gauge = " << dt_gauge
                 << " is above 1, the step may exceed the stability bound" << std::endl;
     }
-  } else if (step_cap > bound) {
+    return;
+  }
+  // Without the option: the largest step each sector can meet.  dt_lightspeed holds the
+  // step at a fixed fraction of dx/c, so for light it is the present limit; the gauge
+  // sectors can meet cfl_number x dx_min once the speed of light has fallen.
+  const Real cap[3] = {step_cap, step_cap, (dt_lightspeed > 0.0) ? step_now : step_cap};
+  int s = 0;
+  Real cfl_ok = big;
+  for (int n = 0; n < 3; ++n) {
+    if (cap[n]*v[s] > cap[s]*v[n]) { s = n; }
+    if (cap[n] == step_cap) { cfl_ok = std::min(cfl_ok, 0.9*v[n]/v[4]); }
+  }
+  if (cap[s] > v[s]) {
     std::cout << "### WARNING (Z4c step limit): cfl_number x (smallest cell) = "
-              << step_cap << " exceeds the stability bound " << bound << " of "
-              << pdriver->integrator << " for the sector " << kSector[s] << " ("
-              << bound/v[4] << " cells; " << kSector[0] << " " << v[0]/v[4] << ", "
-              << kSector[1] << " " << v[1]/v[4] << ", " << kSector[2] << " "
-              << v[2]/v[4] << "). ";
-    if (step_now > bound) {
+              << step_cap << " exceeds the stability bound " << v[s] << " of "
+              << pdriver->integrator << " for the sector " << kSector[s]
+              << " (bounds in cells of " << v[4] << ": " << kSector[0] << " "
+              << v[0]/v[4] << ", " << kSector[1] << " " << v[1]/v[4] << ", "
+              << kSector[2] << " " << v[2]/v[4] << "). ";
+    if (step_now > v[s]) {
       std::cout << "The first step " << step_now << " is already above it: growth at "
                 << "the grid scale is expected. ";
     } else {
-      std::cout << "The first step is " << step_now << "; the step may pass the bound "
+      std::cout << "The first step is " << step_now << "; the step can pass the bound "
                 << "when the other limits (dt_lightspeed, particles) release it. ";
     }
-    std::cout << "Set <z4c> dt_gauge = 0.9, or cfl_number at or below "
-              << 0.9*bound/v[4] << "." << std::endl;
+    std::cout << "Set <z4c> dt_gauge = 0.9, or cfl_number at or below " << cfl_ok << "."
+              << std::endl;
   }
   // the relaxation of the lapse alone
-  if (gext.lapse_leak > 0.0 && !(dt_gauge > 0.0) && step_cap > v[3]) {
+  if (gext.lapse_leak > 0.0 && gext.lapse_leak*step_cap > 1.0 && step_cap > v[3]) {
     std::cout << "### WARNING (Z4c step limit): lapse_leak x cfl_number x (smallest "
               << "cell) = " << gext.lapse_leak*step_cap << " is beyond the bound "
               << gext.lapse_leak*v[3] << " of the relaxed lapse (lapse_leak x step <= "

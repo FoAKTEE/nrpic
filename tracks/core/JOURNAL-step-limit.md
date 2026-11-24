@@ -223,3 +223,103 @@ less (the excess up to 1.10 only with a damping of 6/dx and |beta| >= 0.3); rk4 
 1.25. Refuted if the registered run gives other numbers. Consequence for the option's
 text: the fraction 0.9 covers rk4 with nghost 4 in the whole survey; for nghost 2 or 3
 or rk3 with strong damping and a shift of order one a fraction of 0.75 is needed.
+
+## Entry 3 (05:35 to 05:55): tests T1 to T6, written before any of them ran
+
+What ran before this entry besides T0, T0b: one unregistered smoke of the deck
+`problems/tests/z4c_step_limit.athinput` (40 steps, `scratch/core/tmp/sl_try1`) to see
+that `nrpic_cosmo` starts without a `<particles>` block and that the option is read. It
+printed the bounds 0.647066, 0.467928, 0.616644 cells (shift, lapse, light); T1 below is
+the registered comparison.
+
+Change to the warning before the tests: the step each sector can meet differs. With
+`dt_lightspeed` the step stays a fixed fraction of dx/c, so light is judged at the present
+step; the gauge sectors at cfl_number x (smallest cell). Otherwise Track A's deck (light
+bound 0.617 cells at the start, where c = 1, step 0.25 cells) would be warned about light.
+The relaxation line is printed when lapse_leak x that step exceeds 1 and the step exceeds
+the bound of the lapse pair with the relaxation counted in every cell.
+
+Executables: this branch, `.work/build_cpu_sl` (serial), `.work/build_omp_sl` (threaded),
+`.work/build_gpu_sl` (card), built from the commit that holds this entry.
+
+### T1: the kernel against its Python twin
+
+Flat space, dx = 0.3125, diss 0.5, rk4, nghost 4, five gauge settings (groups S, L, C, K, D
+of `analysis/step_limit/run_flat.py`). Prediction P1: the three bounds of the start-up
+line agree with `reduced_sector` to the six digits printed (1e-5 cells). Refuted: a larger
+difference in any group.
+
+### T2: the bound bracketed by runs of the code (could fail)
+
+Same deck, noise 1e-10, 300 steps, one sector binding per group, bound b from the model:
+cfl_number 0.93 b ("m"), 1.07 b ("p"), 1.07 b with dt_gauge = 0.9 ("g"). "Unstable": the
+squared constraint monitor of the history grows by more than 1e6 over its first value,
+or a field stops being finite (guard, exit 3).
+
+- P2-S (Gamma-driver, shift_Gamma 1.5, lapse frozen): m stable, p unstable, g stable.
+- P2-L (1+log, zero shift; b = 0.468): m stable, p unstable, g stable. This is the test of
+  the statement that 1+log in flat space binds at 0.47, below the rule 0.6.
+- P2-C (light alone, zero shift, lapse frozen; b = 0.617): m stable, p unstable, g stable.
+  Less sure than S and L (four to one): the model treats the metric sector as one scalar
+  wave [TO VERIFY].
+- P2-K (lapse_leak 32, zero shift; b = 0.2785 from the mode without structure,
+  lapse_leak x dt = 2.785): m stable, p unstable, g stable. Three to one: the relaxation
+  acts on one side only (alpha above its reference), the model is its linearization.
+- P2-D (the deck, 1+log and Gamma-driver 0.75, cfl 1.0): unstable without dt_gauge, with
+  the warning at start-up naming the lapse; stable with dt_gauge = 0.9 at a step of
+  0.9 x 0.468 = 0.421 cells.
+- Warnings: printed in every p case and in D without the option, in no m case; the
+  relaxation line in K_p.
+
+What would refute the bound: an m case unstable (a sector fails below the model's bound:
+couplings left out, or the metric sector is not a scalar wave), or a g case unstable.
+A p case that stays stable would mean the bound is careful or the growth too slow for
+300 steps; I would then repeat at 1.2 b before saying which.
+
+### T3: Track A's uniform-mesh reproducer (64^3, dx = 0.3125, cfl_number 1.0, dt_lightspeed 0.25), threaded build, 6 threads
+
+- P3a. G0 (lapse frozen, no dt_gauge) reproduces Track A's G0: warning at start-up naming
+  the Gamma-driver shift with a bound of 0.647 cells; the step reaches one cell; the
+  cell-to-cell alternation of beta^x on the line grows by more than 1e4 and the onset
+  (Track A's definition) falls between t = 7 and 9 (Track A: 8.1).
+- P3b. G0g (the same with dt_gauge = 0.9): the step stops at 0.9 x 0.647 = 0.582 cells;
+  no onset to t = 12; the alternation of beta^x stays below 1e-6. Refuted by an onset or a
+  growing alternation.
+- P3c. U0 (relaxed lapse, leak 20, no dt_gauge) reproduces Track A's U0: both warnings at
+  start-up (lapse bound 0.404 cells; lapse_leak x step 6.25 against 2.52); jump near
+  t = 3.2 and a guard stop before t = 12 (Track A: 3.18 and 10.76).
+- P3d. U0g (with dt_gauge = 0.9): the lapse pair sets the step, about 0.9 x 0.33 = 0.30
+  cells once the lapse stands above its reference (relaxation rate 20 (1 + ln alpha));
+  runs to t = 12 without guard stop and without the jump at 3.2. Two to one: the
+  relaxation is one-sided and the root mesh is coarse for T = 0.05.
+
+### T4: Track A's refined periodic deck through the time of its failure (one card job)
+
+List `analysis/step_limit/card_refined.list`, P0L data, cfl_number 1.0.
+- P4a. R0 (no dt_gauge, to t = 3.2) repeats card job 4799: level-4 step above 0.685 cells
+  from t = 1.7, H_max jumps by more than a hundred between t = 2.3 and 2.7.
+- P4b. R0g (dt_gauge = 0.9, to t = 6): the message "set by dt_gauge, sector Gamma-driver
+  shift" at t between 1.5 and 1.8; the step stays at 0.9 x 0.682 = 0.614 cells; no jump:
+  H_max at t = 2.5 to 3.0 within a factor 3 of R1's, and the run reaches t = 6 (job 4799
+  stopped at 4.8). Refuted by a jump or a guard stop.
+- P4c. R1 (cfl 0.5, to t = 6) smooth; steps to t = 6: R0g needs 0.6 to 0.75 of R1's.
+- Card time: under ten minutes for the three (0.17 s per step in job 4799).
+
+### T5: cost
+
+- P5a. Evaluating the bound every cycle costs less than 2 per cent of a cycle on
+  processors (flat box 32^3, cfl 0.25, 40 steps, limit not binding, serial build; three
+  repetitions each way) and less than 5 per cent on a card (flat box 128^3, 100 steps).
+- P5b. The smaller step: from T3 and T4, steps to the same time with dt_gauge = 0.9
+  against cfl_number 1.0 (unstable) and 0.5 (the remedy in use).
+
+### T6: bytes
+
+- P6a. Byte regression against release core-v0.6 (`analysis/release/regress_v04.py`,
+  twelve set-ups, option absent): 75 of 75 items identical. Risk named in RELEASE-v0.6.md:
+  a change to `z4c.hpp` can change the compilation of `z4c_calcrhs.cpp`; here three data
+  members and two declarations were added, no function body.
+- P6b. `survey_default.py`: the set-ups of the regression that evolve Z4c (I expect east,
+  os, c4), run with dt_gauge = 1.0: histories byte-identical with the runs without it,
+  the limit never sets the step (their cfl_number is 0.25, every bound above 0.4 cells),
+  no warning without the option.
