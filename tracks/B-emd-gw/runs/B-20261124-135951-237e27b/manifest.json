@@ -1,0 +1,116 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261124-135951-237e27b",
+  "track": "B-emd-gw",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "shear series 5: L2 with 2 and 8 particles per cell along y at N_y = 64, and 4 at N_y = 128 (particle-number convergence of L2; prediction JOURNAL 2026-11-24 07:20)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/B-emd-gw/shear/scripts/run_cases.py",
+    "--list",
+    "tracks/B-emd-gw/shear/inputs/series5.txt",
+    "--npar",
+    "2",
+    "--exe",
+    "/data/haiyangw/nrpic/.work/build_cpu_v06/src/athena",
+    "--analyze"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "237e27b5dc481ddbd846ee41b2ee39de450bbb65",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/shear"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "bc180c266e1af2b7a50d072fa17f9f0ddc283047",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/shear/scripts/run_cases.py",
+      "role": "argv",
+      "sha256": "1b1183fa2f3abaa06327922b5c189a447e2462ef161d095232b6695c2ae2a7e5",
+      "bytes": 5690,
+      "tracked": true
+    },
+    {
+      "path": "tracks/B-emd-gw/shear/inputs/series5.txt",
+      "role": "argv",
+      "sha256": "f94530e466e99f9fc6dbc8477a7d4e09dcb8e11f78f0df32fba4913e2da61079",
+      "bytes": 529,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/.work/build_cpu_v06/src/athena",
+      "role": "argv",
+      "sha256": "91fc59b3920e3c9b2b308fda904bd1abe4c28426c26383c36854f2307e1a704c",
+      "bytes": 266226624,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261124-135951-237e27b",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-24T13:59:52Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 3.423,
+    "gpu_hours_reserved": 1.1,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 2,
+    "runs": 329,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
+  }
+}
