@@ -12,6 +12,10 @@ surviving pairs drift inward steadily (so the bracket may be set by the 300-M wi
 queued level 3 to test that, rebuilt the working note, recorded T5 of branch
 core/noise-level2 (PASS on the card, run by Track E), and posted a follow-up to Track A
 (step limit in work) and a correction to kb (link M18).
+The session closed at the pause flag (`locks/PAUSE`, found 2026-11-24T14:19Z): nothing is
+half-done. Stage verify of this batch: rerun, compare and regenerate PASS for the first
+time (the note scripts now default their output to note/); runs FAIL only on the six open
+level-3 chains.
 Owner: core, branch `core/nrpic`, worktree `/data/haiyangw/nrpic/wt/core`.
 
 ## What G2 still lacks (plain statement)
