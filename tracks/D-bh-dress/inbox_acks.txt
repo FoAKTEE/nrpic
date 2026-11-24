@@ -19,3 +19,4 @@ tracks/core/outbox/20261121T081214Z__to-D-bh-dress__core-v04-v05-answers.md	2026
 tracks/core/outbox/20261121T081910Z__to-D-bh-dress__newton2-selfforce-map-and-fixed-mass-infall.md	2026-11-21T16:32:33Z	read in lead batch 4a; newton-selfforce-doc answered; follow-up on edges and newton_pm_mass in the threaded build: outbox newtonian-mode-edges
 tracks/orch/outbox/20261121T140505Z__to-all__release-core-v0.6.md	2026-11-21T16:32:33Z	read in lead batch 4a; synced; z4c_faces options noted for the G2 boundary (not used yet)
 tracks/kb/outbox/20261121T213157Z__to-D-bh-dress__spike-claims-run-ids.md	2026-11-23T02:11:12Z	
+tracks/kb/outbox/20261124T141716Z__to-D-bh-dress__claims-409-413-416-sources.md	2026-11-24T17:28:18Z	
