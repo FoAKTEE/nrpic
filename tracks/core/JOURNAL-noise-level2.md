@@ -538,3 +538,63 @@ scalar-field cases and the three stochastic examples with a restart: every file
 identical; the twelve set-ups of the release driver: 75 of 75. Refuted by any
 difference (the review added one member to the options and one branch to the kernel of
 the mesh fields, neither reached without the options).
+
+## Entry 12 (2026-11-24 05:57 PST): outcome R9; a level 0 that takes the step of the mesh; predictions R9b, R11
+
+R9 (run core-20261124-134904-30f2df3, the per-mode records of AL0S, AL1S, AL2S at
+256^3, dumps at t = 1.0, 3.0, 5.0, 7.5; `fig_ablation_modes.png` looked at after R9b):
+(a) level 1 against level 0: rms over 548958 modes 6.7e-6 at t = 1.0 and 7.0e-6 from
+t = 3.0 on, frozen; bands of |n| (0-8, 8-16, 16-32, 32-48, 48-65): 1.3e-8, 1.1e-7,
+9.3e-7, 3.5e-6, 8.9e-6. PREDICTION REFUTED in size (1e-4 to 2e-3 predicted; and it is
+below the 1e-5 at which I said the finding would not carry): I had scaled the 32^3
+value up by the longer stay below the horizon and forgot that H dt is eight times
+smaller at 256^3; the difference lives in the background's stage values and falls with
+H dt at a fixed omega dt. HELD in shape: 680 between the lowest and the highest band.
+(b) level 2 against level 1: 1.5e-4 at t = 1.0, 2.2e-4 from t = 3.0 on, flat in |n|
+(1.6e-4 to 2.7e-4 by band). HELD (2e-4 to 5e-3). (c) ratio (a)/(b) = 0.032, below the
+0.05 to 2 I gave. Per mode, then, the production runs are dominated by level 2 against
+level 1. But P1 Fig. 9 shows shell POWER: the level-2 differences have a random sign
+from mode to mode and average down within a shell of thousands of modes, the level-1
+against level-0 difference has one sign in a shell. That is R9b.
+
+Decision (source): `<scalar_field> noise_background_eq = constraint | evolved`, read
+only if present, default constraint = the released lockstep (phi_b, Pi_b, ln a, H from
+the Friedmann constraint). evolved adds chi_b and K_b to the lockstep data (two values at
+the end of the vector) and integrates the homogeneous universe as the mesh does:
+d_t Pi_b = alpha (K_b Pi_b - V'), d_t chi_b = -(p/6) alpha chi_b K_b,
+d_t K_b = alpha (K_b^2/3 + 4 pi (2 Pi_b^2 - 2 V)); H = -K_b/3 and a = chi_b^(2/p), the
+arithmetic of level 1 on the box means. Reasons: (i) the option `noise_mode_eq = mesh`
+exists so that the ablation compares "runs that differ by the coefficients only"
+(design note section 2), and with the constraint form level 0 and level 1 differ by
+their time integration before any backreaction; (ii) P1 reads (phi_b, Pi_b, K_b, X_b) as
+the background (P1:485) and evolves level 0 "with the same ... numerical scheme"
+(P1:785): the paper's level 0 is, by its own words, the evolved form. [JUDGEMENT on the
+reading of P1:785; VERIFIED that P1:485 lists K_b and X_b.] Changed lines: `NoiseInit`
+(option, length of the lockstep vector), `NoiseSetup` (two initial values; the scaling
+of the mode functions stops at the last mode value, which is where the vector ended),
+`NoiseBackground` and `NoiseModeRHS` (a branch each, the old statements unchanged in
+the other), `NoiseWriteState` (one header line with the option), `InitialSlice` (two
+initial values). Syntax-checked; not yet built (the processor executable is in use by
+R10).
+
+Prediction R9b (`ablation_modes.py` with the shell power P(|n|^2) = mean over the shell
+of |c_R|^2, same three runs, dumps 6 and 15): level 1 / level 0 is a smooth curve of one
+sign rising to about 2 x 8.9e-6 = 1.8e-5 in the last band (twice the coefficient
+difference); level 2 / level 1 scatters about zero with an rms over the shells well
+below 2 x 2.2e-4 (averaged over the modes of a shell: between 3e-6 and 1e-4 in the last
+band, where a shell has about a thousand modes); so in the last band the two are within
+a factor 10 of each other: the level-2 curve of the figure against level 0 is not clean
+of the time-integration difference at high k. Refuted if level 1 / level 0 is below a
+tenth of level 2 / level 1 in every band.
+
+Prediction R11 (`level0_evolved.py`, 32^3, the executable with the option):
+(a) homogeneous slice, kicks off: level 0 on the mesh with the evolved background
+against level 1 on the mesh: rms over the modes below 1e-9 at every dump (the mesh's K
+carries Theta, i.e. the truncation of the Hamiltonian constraint, of order 1e-12), where
+the constraint form gives 5e-5; the lockstep chi_b, K_b equal the box means to 1e-10.
+(b) perturbed slice, kicks on: the same pair differs by the backreaction on the means,
+second order in the COEFFICIENT: below 1e-6 at amplitude 1, and at amplitude 0.1 a
+hundredth of that (within a factor 3; the rounding of the box means, about 1e-11, is
+the floor). (c) a run with the option restarted at cycle 10 gives the bytes of the
+uninterrupted run at cycle 20. Refuted if (a) exceeds 1e-9 (then the lockstep does not
+take the mesh's step), or if (b) does not fall with the amplitude.

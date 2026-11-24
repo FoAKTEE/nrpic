@@ -163,6 +163,9 @@ struct SfNoiseOptions {
   bool mesh_r = false;         // R and Pi_R as mesh fields (scalar_field_noise_mesh.cpp)
                                // instead of one mode function per shell
   bool rmodes_dump = false;    // mesh_r: per-mode record of the projections at dumps
+  bool bg_evolved = false;     // lockstep background: false phi_b, Pi_b, ln a with H from
+                               // the Friedmann constraint; true also chi_b and K_b by the
+                               // equations of the mesh (two more lockstep data, at the end)
   int lap_kind = 0;            // level 2, reading of d_i d^i R: 0 psi^-4 gt^ij d_i d_j R
                                // (default), 1 D^i D_i R, 2 psi^-4 delta^ij d_i d_j R
   int projector = 0;           // wave number of the trace-free projector: 0 that of the

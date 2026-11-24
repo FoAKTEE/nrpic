@@ -58,7 +58,12 @@
 //!                   of the mesh (projector = stencil) or n itself (continuum).  The
 //!                   background (phi_b, Pi_b, a, H) is that of the Friedmann equations
 //!                   integrated with the mode functions (level 0) or the box means of
-//!                   the mesh (level 1); alpha_b is the box mean of the lapse.
+//!                   the mesh (level 1); alpha_b is the box mean of the lapse.  The
+//!                   Friedmann background is (phi_b, Pi_b, ln a) with H from the
+//!                   constraint, or with noise_background_eq = evolved the variables
+//!                   and equations of the mesh for a homogeneous universe, (phi_b, Pi_b,
+//!                   chi_b, K_b): then level 0 and level 1 take the same step on a
+//!                   homogeneous mesh (they differ at fourth order in dt otherwise).
 //! The mode functions and the background are integrated on the host with the same
 //! low-storage Runge-Kutta update as the fields, stage by stage, so that every stage
 //! evaluates its sources with data of its own time.
@@ -201,6 +206,15 @@ void ScalarField::NoiseInit(ParameterInput *pin) {
     }
     if (pin->DoesParameterExist("scalar_field", "noise_rmodes_dump")) {
       nopt.rmodes_dump = pin->GetBoolean("scalar_field", "noise_rmodes_dump");
+    }
+    // equations of the lockstep background (the background of level 0)
+    if (pin->DoesParameterExist("scalar_field", "noise_background_eq")) {
+      const std::string b = pin->GetString("scalar_field", "noise_background_eq");
+      if (b.compare("evolved") == 0) {
+        nopt.bg_evolved = true;
+      } else if (b.compare("constraint") != 0) {
+        NoiseFatal("<scalar_field> noise_background_eq must be constraint or evolved");
+      }
     }
     if (nopt.mesh_r && pm->multilevel) {
       NoiseFatal("<scalar_field> noise_mode_eq = mesh (and noise_level = 2) needs a "
@@ -363,7 +377,7 @@ void ScalarField::NoiseInit(ParameterInput *pin) {
   }
 
   // lockstep data: time, background, mode functions
-  const int ny = 4 + ((nopt.model == kNoiseMS) ? 4*nshell : 0);
+  const int ny = 4 + ((nopt.model == kNoiseMS) ? 4*nshell : 0) + (nopt.bg_evolved ? 2 : 0);
   y0.assign(ny, 0.0);
   y1.assign(ny, 0.0);
   yrhs.assign(ny, 0.0);
@@ -441,6 +455,10 @@ void ScalarField::NoiseSetup(bool res_flag) {
     y0[1] = mean[0];
     y0[2] = mean[1];
     y0[3] = std::log(mean[3])*2.0/pmy_pack->pz4c->opt.chi_psi_power;   // ln a
+    if (nopt.bg_evolved) {
+      y0[4+4*nshell] = mean[3];   // chi_b
+      y0[5+4*nshell] = mean[2];   // K_b
+    }
     if (nopt.model == kNoiseMS) {
       // mode functions at the start: text file with the rows
       //   |n|^2  Re R  Im R  Re dR/dtau  Im dR/dtau
@@ -471,7 +489,7 @@ void ScalarField::NoiseSetup(bool res_flag) {
         }
       }
       if (mode_scale != 1.0) {
-        for (int n=4; n<ny; ++n) { y0[n] *= mode_scale; }
+        for (int n=4; n<4+4*nshell; ++n) { y0[n] *= mode_scale; }
       }
     }
   }
@@ -523,7 +541,14 @@ void ScalarField::NoiseBackground(const std::vector<Real> &y, Real bg[8]) {
   const Real p = pmy_pack->pz4c->opt.chi_psi_power;
   Real phib, pib, hub, a;
   Real v, dv;
-  if (nopt.bg_level == 0) {
+  if (nopt.bg_level == 0 && nopt.bg_evolved) {
+    // chi_b and K_b of the lockstep, used as level 1 uses the box means
+    phib = y[1];
+    pib = y[2];
+    hub = -y[5+4*nshell]/3.0;
+    a = std::pow(y[4+4*nshell], 2.0/p);
+    SfPotentialEval(pot, pot_tab.h_view, phib, v, dv);
+  } else if (nopt.bg_level == 0) {
     phib = y[1];
     pib = y[2];
     a = std::exp(y[3]);
@@ -560,7 +585,21 @@ void ScalarField::NoiseModeRHS(const std::vector<Real> &y, std::vector<Real> &f)
   const Real alp = bg[0], pib = bg[2], hub = bg[3], a = bg[4];
   const Real eps1 = bg[5], eps2 = bg[6], dv = bg[7];
   // Friedmann background (integrated also with level 1, as a diagnostic)
-  {
+  if (nopt.bg_evolved) {
+    // a homogeneous universe in the variables and with the equations of the mesh
+    // (scalar_field_rhs.cpp, z4c_calcrhs.cpp with gt_ij = delta_ij, At_ij = 0):
+    //   d_t Pi = alpha (K Pi - V'),   d_t chi = -(p/6) alpha chi K,
+    //   d_t K  = alpha (K^2/3 + 4 pi (E + S)),   E + S = 2 Pi^2 - 2 V
+    Real v, dvb;
+    SfPotentialEval(pot, pot_tab.h_view, y[1], v, dvb);
+    const int ib = 4 + 4*nshell;
+    const Real chib = y[ib], kb = y[ib+1];
+    f[1] = alp*y[2];
+    f[2] = alp*(kb*y[2] - dvb);
+    f[3] = -alp*kb/3.0;       // ln a, kept as a record
+    f[ib] = -(1.0/6.0)*pmy_pack->pz4c->opt.chi_psi_power*chib*alp*kb;
+    f[ib+1] = alp*((1.0/3.0)*kb*kb + 4.0*M_PI*(2.0*y[2]*y[2] - 2.0*v));
+  } else {
     Real v, dvb;
     SfPotentialEval(pot, pot_tab.h_view, y[1], v, dvb);
     const Real hb = std::sqrt((8.0*M_PI/3.0)*(0.5*y[2]*y[2] + v));
@@ -851,6 +890,9 @@ void ScalarField::NoiseWriteState(Real time, int number, bool header) {
   std::fprintf(fp, "# time %.17e  lockstep time %.17e  alpha epoch %llu\n", time, y0[0],
                static_cast<unsigned long long>(alpha_epoch));
   std::fprintf(fp, "# phi_b %.17e  Pi_b %.17e  ln_a %.17e\n", y0[1], y0[2], y0[3]);
+  if (nopt.bg_evolved) {
+    std::fprintf(fp, "# chi_b %.17e  K_b %.17e\n", y0[4+4*nshell], y0[5+4*nshell]);
+  }
   std::fprintf(fp, "# H %.17e  a %.17e  eps1 %.17e  eps2 %.17e\n", stage_hub, stage_a,
                stage_eps1, stage_eps2);
   std::fprintf(fp, "# kick factors: Pi %.17e  Khat %.17e  At %.17e\n", kick_pi_fac,
