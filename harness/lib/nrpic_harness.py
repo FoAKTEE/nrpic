@@ -325,6 +325,94 @@ def build_env(wt, threads=1, extra=None):
     return env
 
 
+# ------------------------------------------------------------------ the account's Slurm queue (decision 0033)
+
+# Guardrail set by the user on 2026-11-24 (decision 0033): at most this many jobs of the account may be
+# in the Slurm queue at once, pending, held and running ones together, over all owners. No option and
+# no environment variable lifts it. nrpic-run (submit) and nrpic-queue (the dispatcher) read it here.
+QUEUE_CAP = 5
+
+
+def queue_jobs(env=None):
+    """The jobs of this account in the Slurm queue (every state squeue lists: pending, held, running,
+    completing, ...) as a list of {"id", "name", "state"}, or None if squeue fails or does not answer
+    within 60 s. env: the environment the tool uses for its Slurm commands (build_env), so that the count
+    and the submission ask the same Slurm. One line of squeue is one job (as nrpic-run counted before)."""
+    e = env if env is not None else os.environ
+    user = e.get("USER") or e.get("LOGNAME") or os.environ.get("USER") or ""
+    try:
+        r = subprocess.run(["squeue", "-h", "-u", user, "-o", "%i|%j|%T"], capture_output=True, text=True,
+                           timeout=60, env=env)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if r.returncode != 0:
+        return None
+    jobs = []
+    for line in r.stdout.splitlines():
+        if not line.strip():
+            continue
+        parts = [p.strip() for p in (line.split("|") if "|" in line else line.split())] + ["", "", ""]
+        jobs.append({"id": parts[0], "name": parts[1], "state": parts[2]})
+    return jobs
+
+
+def queue_count(env=None):
+    """Number of jobs of this account in the Slurm queue (queue_jobs), or None if squeue fails."""
+    jobs = queue_jobs(env)
+    return None if jobs is None else len(jobs)
+
+
+# One route for card runs (decision 0033): only the dispatcher of the shared queue (harness/bin/nrpic-queue
+# run) submits them. For each entry's command it sets QUEUE_DISPATCH_VAR=<entry id>:<token> (a wrapper given
+# with --cmd inherits it), keeps the entry in state `submitting` with that token, and holds the submit lock
+# while the command runs. nrpic-run reads the variable (the one variable of the caller it reads, and it never
+# passes it on: a job's environment is built from files) to let a card submission through. The marker gates
+# the route only; it does not lift the cap, which nrpic-run checks for every card submission as before.
+QUEUE_DISPATCH_VAR = "NRPIC_QUEUE_DISPATCH"
+
+
+def queue_dir(home):
+    """The state directory of the shared card queue (untracked)."""
+    return os.path.join(home, "locks", "queue")
+
+
+def queue_submit_lock(home):
+    """Held by the dispatcher around the count, the entry's command and the count after it."""
+    return os.path.join(queue_dir(home), "submit.lock")
+
+
+def queue_dispatch_problem(wt, environ=None):
+    """None when this process runs inside a dispatch of the shared queue for an entry of this worktree, else
+    why not: no marker; a marker that names no entry, or an entry that is not being dispatched with that
+    token, or one of another owner or worktree; or no dispatch in progress (the submit lock is free)."""
+    import fcntl
+    env = os.environ if environ is None else environ
+    mark = env.get(QUEUE_DISPATCH_VAR, "")
+    if not mark:
+        return "this call does not come from the dispatcher"
+    eid, _, tok = mark.partition(":")
+    if not re.fullmatch(r"q\d{4,}", eid) or not tok:
+        return f"{QUEUE_DISPATCH_VAR}={mark!r} is not a dispatch marker"
+    try:
+        e = read_json(os.path.join(queue_dir(wt.home), "entries", eid + ".json"))
+    except (OSError, ValueError):
+        return f"{QUEUE_DISPATCH_VAR} names entry {eid}, which does not exist"
+    if not isinstance(e, dict) or e.get("state") != "submitting" or e.get("dispatch_token") != tok:
+        return f"entry {eid} is not being dispatched with this marker"
+    if e.get("owner") != wt.owner or os.path.realpath(str(e.get("worktree", ""))) != wt.root:
+        return f"entry {eid} belongs to {e.get('owner')} in {e.get('worktree')}, not to {wt.root}"
+    try:
+        with open(queue_submit_lock(wt.home), "a") as f:
+            try:
+                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except OSError:
+                return None                   # held by the dispatcher: a dispatch is in progress
+            fcntl.flock(f, fcntl.LOCK_UN)
+    except OSError as ex:
+        return f"cannot open the submit lock: {ex}"
+    return "no dispatch is in progress (the dispatcher's submit lock is free)"
+
+
 # ------------------------------------------------------------------ budgets (decisions 0006, 0014)
 
 BUDGET_FILE = "coord/DECISIONS/0006-compute-budget.md"
