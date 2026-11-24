@@ -191,3 +191,15 @@ never continues a run that failed for another reason (it marks it broken); when 
 settled it runs the registered join check on the finished labels and exits (deadline
 2026-11-26 06:00 PST; stop: `touch .../repro_continue_seq/STOP`). It judges nothing: the join
 check's outcome and figure wait for a session.
+
+## Entry 8 (2026-11-24 06:14 PST): paused; where this session stopped
+
+The pause flag `locks/PAUSE` appeared at 06:14 PST; this session starts nothing new and stops
+here. State: the five continuations (E-20261124-130529-da8c917, -130629-61fe0b0,
+-130711-a5dec67, -130952-4be980b, -131359-49afe29; jobs 5160, 5161, 5165, 5166, 5168) are still
+pending, none has run (both cards held by another user's job 5162 on the priority partition,
+time limit to 2026-11-25 05:09 PST). The sequencer `scripts/autocontinue.sh` (pid 493587,
+`scratch/E-stoch-inf/repro_continue_seq/`) keeps going: it submits card jobs and runs the local
+join check without using the account (decision 0026 item 2). Open: J1-J4 and the original
+runs' predictions are unjudged until the continuations have run and a session reads the join
+check (HANDOFF.md, "See, stop, run next").
