@@ -221,3 +221,19 @@ Twelve card runs queued behind a sequencer; at 12:43 PST two were submitted
 Gates: G0 and G1 are signed (coord/GATES.md); nothing to redo in stage/G0 and stage/G1. G2 is
 not ready for review: the threshold scan and C-R1.25 are on the cards, the second-agent check of
 conv_ball's G2 reading is owed, the architecture schematic still names core-v0.3.
+
+## 7. Batch 11 (2026-11-24, lead; analysis round of the card runs, decisions 0026, 0027, 0030)
+
+No helper package finished since batch 7; what ran were the sequencer's twelve card runs (queue
+lines 3-15) and nothing else. The lead closed them, wrote the analysis scripts, ran every analysis
+registered from the run outputs, looked at every figure and judged against predictions written
+before the runs. Per package:
+
+| Package | Confirmed (with run) | Not confirmed | Wrong / refuted | What the track does |
+|---|---|---|---|---|
+| threshold_ball | T1-T3 hold (A-20261124-131120-5c974ce): persistent horizons on mesh B for delta_c >= 0.35; ddet <= 0.14 M; the code's finite-duration bracket (0.40, 0.42] at t_end = 45 equals the exact one, the interpolated threshold 0.4103 equals the exact 0.4103 on mesh B; slice-or-finder answered (the excess at first detection is in the slice) | mesh C at threshold (C-d0.42 still running; C-d0.40 not run); the A-mesh guard stop's cause | T4's reason (A finds the horizon, then stops at the guard), T5 at its 0.02 bound (ball-radius effect on C 0.024 M), T6 (A guard stops; line constraint ratio 0.11-0.21 at t = 0, 0.3-3 later, bound 0.1) | C-d0.42 continued in place; C-d0.40 queued (T7); processor test G1-G3 of the guard stop running; orch asked to rule on the constraint bound |
+| periodic_threshold | the cfl 0.5 remedy on the refined mesh (Q1a, Q1c, Q1d, Q2, Q3; A-20261124-130507-10510ac); P1 (far lapse to 2.2e-5); spherical symmetry kept to 1e-12 | S1-S3 (S1L at t = 66 of 220, continued); F2 (finder restarts) partly read | Q1b (data's own H_max 0.49 at t = 0), P2 in part, P3 (no horizon found), P4 in part, F1 (slice traps only from t = 132, at r ~ 0.075, under four finest cells) | outcome posted to core; six-level rerun peak_leak6 queued with predictions D0-D5 |
+| conv_ball / G2 | constraint norms on three meshes and three particle numbers (A-20261124-132249-2e6b5f2, -132342-d5dc06e) | | K and K2 refuted: the early constraint floor falls with neither mesh nor particle number | C3 marked FAIL in stage/G2; smoothed-edge test proposed |
+
+Own mistakes of this session, no damage: a first table of the journal gave the constraint-ratio
+range as 1.6-3.8 (it is 1.6-5.9; corrected from threshold_series.json before the entry was used).
