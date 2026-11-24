@@ -191,3 +191,14 @@ committed): the SR R^NR 68 per cent band of P1 Fig. 2 ends at about +-0.8e-4 and
 +-1.0e-6, against our 2.28e-5 and 2.9e-7 (factor about 3.5); P1 Fig. 3 shows the final SR
 spectrum at about 1e-10, the level of ours; USR Fig. 4: 68 per cent band +-3.5, full band +-18,
 against our 0.89 and 4.57 (factor about 4); P1:534 prints "~10" for the furthest outliers.
+
+## Entry 4, 2026-11-24 10:45 PST: post-verdict check of definitions
+
+After committing VERIFIER.md (02d8175a) I read the window and bin definitions in the note's
+scripts (not their results) and applied them with my readers (run E-20261124-184028-36a685d;
+the first attempt E-20261124-184003-71eb0a8 failed: empty shell selection at early dumps, fixed
+in compare.py). With the window 0.05 < N <= ln 8 my reader gives the ledger's entry maxima and
+orders (1.78e-12, 2.00e-12, 1.23e-5, 4.15, 3.25, 2.25e-12, 3.25e-10, 4.05); with shells of more
+than 10 modes the spectral maxima come within a factor 2.3 (SR 4.5e-3 vs 5.2e-3, |n| <= 32
+1.1e-4 vs 1.0e-4; USR 3.5e-4 vs 3.6e-4). VERIFIER.md section 7 records this; sections 1-6 are
+unchanged.

@@ -125,3 +125,23 @@ From raw outputs with my own code, beyond sections 1-2 (my value in brackets):
    reproduction's integrator matter at the 10 % level for third moments. The lattice side lacks
    the five continued runs (SR sign flip covers only 0.39 e-folds; SR level 2 stops at N = 7.19;
    no 256^3 rungs).
+
+## 7. After the verdicts (added once sections 1-6 were committed, 02d8175a)
+
+Only then I read, in the note's scripts, the definitions behind the numbers I could not
+confirm (`fig_conv.py`: entry window 0.05 < N <= ln 8; `fig_spectra.py`: shells with more than
+10 modes, "linear" = the dump pass's injected power). Applied with MY readers (run
+E-20261124-184028-36a685d; a first attempt E-20261124-184003-71eb0a8 failed on an empty shell
+selection in my script):
+
+- Entry maxima: SR 64^3 1.78e-12, 128^3 2.00e-12, M 128^3 1.23e-5, orders H 4.15 and M 3.25
+  (32 -> 64); USR 128^3 box mean removed 2.25e-12, with the box mean 3.25e-10, order 4.05: rows
+  36-41, 64, 65 are reproduced by my reader with their window. These rows move to CONFIRMED,
+  with the window stated.
+- Spectra, shells with more than 10 modes: SR 4.5e-3 (ledger 5.2e-3), |n| <= 32 1.1e-4
+  (1.0e-4); USR 4.4e-3 (5.0e-3), 3.5e-4 (3.6e-4); rungs 3.4e-3, 7.9e-5, 2.3e-6 (3.2e-3, 6.2e-5,
+  1.0e-6). Rows 15 and 19 CONFIRMED; rows 14, 18, 61-63 agree within a factor 2.3, the rest being
+  the difference between my continuous-time Mukhanov-Sasaki reference and the code's own record.
+- Weakest point 2 therefore narrows: the definitions exist in the scripts, but the ledger and
+  (as far as the ledger shows) the note do not state them; rows 49, 68, 70, 71, 83, 94, 101, 109
+  remain unexplained by me.
