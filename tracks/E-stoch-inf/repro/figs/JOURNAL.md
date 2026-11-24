@@ -271,3 +271,58 @@ Predictions (refuted by the stated miss):
 - R4 (bit check AL2S against AL0S at t = 0, `bitcheck_ablation75.json`): NOT a prediction: I read
   the first part of the json (phi to Azz) before writing this entry. Recorded under entry 6 as an
   observation only.
+
+## Entry 6 (2026-11-24 09:35 PST): outcomes of the figure run E-20261124-172426-4780cbc (entry 5)
+
+Run E-20261124-172426-4780cbc (`make_figs.py` on the passes 130628-6790851, 133251-42e8aab,
+141807-8352509; 50 s on 2 cores). Every PNG was looked at.
+- R1: PASS. Each json of the run equals the json of the test outputs (`scratch/E-stoch-inf/tmp/figs_test/`)
+  in every number (ten of eleven files: zero differences, compared key by key); the eleventh,
+  `fig6b_usr_Kspec`, differs as it must (it reads the kt_version-2 pass with 9 dumps instead of the
+  version-1 pass with 41). So every number of entries 2-3 now stands on this registered run.
+- R2, second part: PASS. Median of Q/K at N_f (USR) = 9.428e-7, identical to all digits to entry 3's
+  value: the spectrum of sqrt(3 Kt Kt/2) was already the invariant in version 1 (only the Kt panel
+  summed covariant components). First part: FAILED as written. Our version-2 Delta[Kt] at N_f = 10.0
+  is near 3e-35 over the injected shells (Fig. 6b middle panel, read off our own figure), about 3e3
+  below P1's last curve (about 1e-31.5 at <N> = 7.95, P1 Fig. 6b, read), not within two decades. The
+  times differ (10.0 against 7.95) and Kt decays after the USR phase; at the nearest common time (ours
+  5.53, P1's 5.43) ours is about 3e-28 and P1's about 1e-27 (both read), a factor 3-10, the size of the
+  amplitude factor of Fig. 4 squared (about 16). Version 1's 1e-17 is gone. A like-for-like value
+  needs a dump near N = 8.0 (entry 7).
+- R3: PASS in every part. SR at t = 7.504 (N = 7.19): r20 rms over |n| <= 32 = 1.5e-5 (band 1e-7 to
+  1e-4), max over all shells 7.9e-5 (<= 2e-4), 49.7 per cent of shells positive, largest at the lowest
+  shells (max for |n| <= 16 is the global max; top over bottom median 0.51, no rise toward the cut);
+  r10 max 6.575e-7 and rms 3.461e-7 against 6.553e-7 and 3.460e-7 at N_f (0.3 per cent). P-A1's r20
+  part is met at t = 7.5 and is consistent with P1:520 (max |r20| <= 1e-4 at every shell). Records of
+  AL2S against AL0S within 5.4e-4 at the 1228 common cycles. Looked at against P1 Fig. 9 (read): P1's
+  red curve sits at about 5e-5 at k_min and falls to 1e-6..1e-5 at the top shells; ours (t = 7.5)
+  starts at 3e-5 and falls likewise. N_f stays PENDING (E-20261124-131359-49afe29).
+- R4 (observation, not a prediction): AL2S against AL0S at t = 0 differ in phi (36 cells), Pi (8140),
+  chi (178), K (41) by at most 4.4e-16 absolute (7.2e-10 of the perturbation range); alpha, gt_ij,
+  At_ij identical. The same last-bit pattern as levels 1 and 2 in entry 3.
+- Correction of entry 3 (USR hierarchy, F6 c), from the 41-dump series that this run reproduces
+  (`scratch/E-stoch-inf/tmp/figs_test/usr/fig6b.json`, identical inputs): the fraction of injected
+  shells with Q below K is below 0.2 for N <= 3.05, 0.23-0.64 for N = 3.3-5.3, 0.91-1.0 for N =
+  5.53-6.28, 0.34-0.68 for N = 6.52-7.02, and 0.98-1.0 from N = 7.27 to N_f. Entry 3's "0 to 0.64 for
+  N = 0.8-6.5" was wrong for N = 5.5-6.3; RESULTS.md is corrected. The registered run of entry 7 makes
+  this series again inside a registered figure run.
+- Cosmetic defects seen in the PNGs (no number affected): the suptitle overlaps the panel title in
+  Figs. 3, 5, 6; tick labels collide at panel joins (Fig. 1 left column, Fig. 8 x axis); the legend of
+  Fig. 8 lists N = 256 without a curve; `fig9_ablation_sr_t75` has an empty right panel.
+
+## Entry 7 (2026-11-24 09:40 PST): predictions for the pass at N = 8.0 and the second figure run
+
+Plan: a registered pass `usr256kt8` over USF256 dump 32 (N = 8.01, kt_version 2), then a second figure
+run that (i) draws Fig. 6b from the kt_version-2 dumps with targets that include 8.0 (P1's last curve
+is at 7.95) while the measures over all dumps read the 41-dump pass too (K and Q are the same in both
+versions; every plotted row is version 2); (ii) records the median over injected shells of
+Delta[Kt]/Delta[K] and of Delta[Q]/Delta[K] at each plotted dump, both scenarios; (iii) fixes the
+cosmetic defects of entry 6.
+- R5 (USR, N = 8.01): Delta[Kt] over the injected shells has its median within a factor 30 of P1's
+  last curve read at 1e-31.5 (the amplitude factor squared, 16, and reading); the median of
+  Delta[Kt]/Delta[K] at N = 8.01 is between 1e-2 and 1e2 (P1:570, "all terms in K_ij are of similar
+  magnitude" in USR). Refuted by either outside.
+- R6 (SR, last dump): median Delta[Kt]/Delta[K] below 1e-3 (Kt fell to 2.8e-5 of its crossing value
+  while K froze, entry 3); P1:570 "negligible in the quadratic case". Refuted above 1e-3.
+- R7: every number of the first figure run that does not involve the new dump is unchanged (Figs. 1-5,
+  7-9 jsons identical; Fig. 6b measures over all dumps equal the 41-dump test values).
