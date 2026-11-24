@@ -488,3 +488,13 @@ between the two; Figs. 1-6 jsons and PNGs byte-equal to those of 173254-420115f 
 Still open (q0034, the fourth continuation of RSF256, not yet dispatched at 13:27 PST): Fig. 2
 constraint panels, Figs. 3 and 6a from RSF256, the per-cell SR part of scope P2 and S14, the bit check
 at t = 8.5.
+
+## Entry 12 (2026-11-24 13:45 PST): scope P2, record part of RSF256, from the joined record (cycles 0-895)
+
+The joined RSF256 record reaches cycle 895 (N = 5.3), past the end of the entry (ln 64 = 4.16), so
+the record part of scope P2 (scope JOURNAL entry 1, written 2026-11-22 before any run) can be judged
+now: max <|H|/[H]> over N <= ln 64 in [3e-11, 1e-10], max <|M|/[M]> in [3e-4, 5e-4]. Not blind: the
+sign-flip json of entry 11 already showed the proper run's largest <|M|/[M]> over the 735 cycles in
+common with RNC256 (N <= 4.39) as 2.72e-4, below the M band; the H part I have not seen as a number
+(Fig. `fig_signflip` shows it near 5e-11 at N = 4.4, read). `fig_signflip.py` now writes the maxima
+(from cycle 1, and without the initial transient N <= 0.05); a sixth figure run makes them.

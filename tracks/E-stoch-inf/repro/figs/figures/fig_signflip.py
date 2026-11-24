@@ -39,7 +39,17 @@ def compare(flip, proper):
     N = a[ia, 2]
     rH = a[ia, 3] / b[ib, 3]
     win = (N >= 0.5) & (N <= np.log(64.0))
-    return dict(n_common=int(common.size), t_end_flip=float(a[-1, 0]), N_end_flip=float(a[-1, 2]),
+    # scope P2 (record part): the proper run's maxima during the entry, N <= ln 64, from cycle 1
+    # on, and without the initial transient (N > 0.05)
+    ent = (b[:, 1] >= 1) & (b[:, 2] <= np.log(64.0))
+    ent5 = ent & (b[:, 2] > 0.05)
+    p2 = dict(proper_H_max_entry=float(b[ent, 3].max()), proper_M_max_entry=float(b[ent, 6].max()),
+              proper_H_max_entry_N_gt_005=float(b[ent5, 3].max()),
+              proper_M_max_entry_N_gt_005=float(b[ent5, 6].max()),
+              proper_N_at_H_max=float(b[ent, 2][np.argmax(b[ent, 3])]),
+              proper_N_at_M_max=float(b[ent, 2][np.argmax(b[ent, 6])]),
+              proper_last_cycle=int(b[-1, 1]), proper_N_end=float(b[-1, 2]))
+    return dict(**p2, n_common=int(common.size), t_end_flip=float(a[-1, 0]), N_end_flip=float(a[-1, 2]),
                 H_ratio_min_entry=float(rH[win].min()) if win.any() else None,
                 H_ratio_median_entry=float(np.median(rH[win])) if win.any() else None,
                 M_flip_max=float(a[1:, 6].max()), H_flip_max=float(a[1:, 3].max()),
