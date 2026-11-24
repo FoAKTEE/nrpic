@@ -379,3 +379,6 @@ of the collapse (0.07). The reader now takes the ripple before a time given on t
 line (`--ripple-tmax`, post hoc, labelled); partial windows (a run cut inside a window) still
 enter the seed standard deviation, which inflates it; to be fixed before the seeds 2 and 3
 are read (HANDOFF).
+
+Later in the same session: `blockA_delta.py` drops a window that a run covers only in part
+(complete windows only enter the seed standard deviation); not rerun on the interim data.

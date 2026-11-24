@@ -777,3 +777,32 @@ A334s3i+. New chains get MAX_SEGMENTS 20 (SEG_FLOOR of seq.sh) because a preempt
 segment; the harness reserves only the gpu-hours of the queue line (2.5, 2.0, 1.5).
 Card-hours: G2 used 25.00 by the closed manifests at 13:00Z (nrpic-run budget), about 11 more
 for the continuations and about 6 for these three; 45 allotted.
+
+## 2026-11-24T13:36Z  session C-sidm lead (batch 11, analysis round)  commits e1913da9..(this entry's commit)  runs C-20261124-130021-5c9c207, -130222-6a4924d, -130338-43b5ffa, -130338-c4ac85e, -130442-0819c88, -130506-2ddce1f, -130634-3338d9b, -130731-e1d24de, -130732-a383ef5, -131012-f920f45, -131129-e93be29, -131231-74f067d, -131249-b06c218, -132113-52c2abe (failed, own bugs, rerun: -130433-e84cb43, -130951-36beb5c, -131113-b196c0e, -131221-49d5fcc)
+
+- did: merged main; found the batch-5 queue run through, with ten chains cut by preemption
+  (cause verified from event logs and sacct); continued them in place from their newest
+  restarts with a restart every 10 M (resume rule written first, entry 12:59Z); changed the
+  sequencer (submits through the pause flag, logs why it waits, resume items, segment floor
+  20) and restarted it (pid 4068739); judged R(v), T, H, D2 and block A (entry 13:12Z) with
+  registered analyses and figures read; rechecked every collapse time with a reader of its
+  own; made the N = 1e6 and 1e4 particle files and three follow-up decks, smoke-tested them
+  on processors, wrote their predictions (entry 13:14Z) and queued them; opened stage/G2
+  (checklist judged, evidence, what the gate lacks, what a G2 verifier must cover); review
+  section 14; outbox to orch (card-hours, segment cap) and core (control drift, SIGTERM
+  restart); acknowledged kb's conductivity-sources answer.
+- found: the controls of the threshold model and of y0 = 0.344 collapse on their own on M/8
+  at N = 1e5 (534.8, 549.3 M); the collisional collapse time does not depend on the collision
+  cell (2 per cent between cells M/8 and M/2) but moves 21 per cent from M/4 to M/8; the
+  conductivity is 1.020 +- 0.004 of the first Chapman-Enskog value at zero cell size and
+  k lambda; the energy diffusion of the particles scales as 1/N.
+- changed my mind about: block A at N = 1e5 on M/8 as the threshold scan (it cannot be, by
+  its own refutation rule); the noise model of block A as written (it does not survive a
+  collapse inside a window; ripple now taken before 400 M, labelled post hoc).
+- failed predictions: N.3, D2.2, A.1 (kout part), A.3, A.4. Failed runs: four analysis runs of
+  my own scripts (listed in the header), each rerun; ten card chains cut by preemption (not
+  failures of the physics; continued).
+- open: the continuations and follow-ups in the queue (HANDOFF.md table); the N6c verdict
+  decides the next scan; a G2 verifier; card-hours (asked).
+- card-hours: none submitted by hand this session; the sequencer's batch-5 queue used 17.59
+  card-hours since 2026-11-21 (closed manifests) plus the running chains.
