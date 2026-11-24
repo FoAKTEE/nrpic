@@ -19,15 +19,27 @@
 //!
 //! What is evaluated in every cell is not a speed but the largest stable step of the
 //! scheme for each of three pairs of fields with frozen coefficients (shift and Gam,
-//! lapse and Khat, and a pair that moves with the speed of light): the eigenvalues of
-//! the pair for the Fourier mode at the corner of the Brillouin zone, (pi, pi, pi),
+//! lapse and Khat, and the conformal factor with Theta, the fastest pair of the rest):
+//! the eigenvalues of the pair for the Fourier mode at the corner of the Brillouin zone,
+//! (pi, pi, pi),
 //!   lambda = -(D + (e1 + e2)/2) +- sqrt(((e1 - e2)/2)^2 - Omega^2),
 //!   Omega^2 = s2max sum_d (squared speed along d) / dx_d^2,
 //! with s2max the symbol of the centred second derivative at pi, D the Kreiss-Oliger
 //! term diss sum_d 1/dx_d, and e1, e2 the damping of the two members (shift damping eta
 //! or lapse relaxation, and the advective derivative, whose symbol at pi is real and
-//! negative).  At the corner the mixed derivatives vanish, so the three shift modes have
-//! the transverse speed there.  The advective derivative also turns the phase, most at
+//! negative).  The code takes a second derivative d_a d_a with the stencil Dxx and a
+//! mixed one d_a d_b with the product of two first derivatives, which vanishes at the
+//! corner.  Two consequences, both found by runs (journal entries 5 and 6):
+//! - shift: of the term (1/3) gt^ij d_j d_k beta^k only the part j = k = i survives at
+//!   the corner, so Omega^2 = mu s2max (sum_d gt^dd/dx_d^2 + (1/3) gt^ii/dx_i^2): the
+//!   squared speed of the corner mode is (10/9) mu gt, between the transverse mu gt and
+//!   the longitudinal (4/3) mu gt;
+//! - conformal factor and Theta: d_t Theta = alpha (sum_d Dxx chi) + (alpha chi/2) d_k
+//!   Gam^k and d_t chi = (4/3) chi alpha Theta give the speed of light in the continuum,
+//!   where the term in Gam takes away a quarter of the first; at the corner it vanishes
+//!   and Omega^2 = (4/3) alpha^2 chi s2max sum_d gt^dd/dx_d^2.  The pair of the metric
+//!   and At has alpha^2 chi there and is covered.
+//! The advective derivative also turns the phase, most at
 //! theta near 0.68 pi; that largest rate, limag sum_d |beta^d|/dx_d, is added to the
 //! imaginary part of lambda (with the damping of the corner alone the bound was up to
 //! 1.56 times too large for a shift of order one).  The step is stable when lambda dt
@@ -161,7 +173,8 @@ const char *const kSector[3] = {"Gamma-driver shift", "lapse", "light"};
 //----------------------------------------------------------------------------------------
 //! \fn Real Z4c::GaugeTimeStep(Driver *pdriver, Real bound[3], bool leak_everywhere)
 //! \brief smallest value over the cells of the largest stable step of the three pairs
-//! (bound[0] shift, bound[1] lapse, bound[2] light) for the integrator of the driver;
+//! (bound[0] shift, bound[1] lapse, bound[2] conformal factor and Theta, called light in
+//! the messages) for the integrator of the driver;
 //! returns the smallest of the three.  With leak_everywhere the relaxation of the lapse
 //! counts in every cell, also where the lapse is below its reference (for the warning at
 //! start-up).  Cells whose conformal factor is not positive, or whose fields are not
@@ -196,6 +209,8 @@ Real Z4c::GaugeTimeStep(Driver *pdriver, Real bound[3], const bool leak_everywhe
   if (indcs.ng == 2) { s2max = 4.0; aadv = 4.0; limag = 2.2018347375203207; }
   if (indcs.ng == 3) { s2max = 16.0/3.0; aadv = 8.0/3.0; limag = 1.9509966804685472; }
   const Real kdiss = fabs(opt.diss);
+  // squared speed of the fastest non-gauge pair at the corner over that of light
+  const Real clight = (opt.use_z4c) ? 4.0/3.0 : 1.0;
   // shift
   const Real mu0 = opt.shift_ggamma, mu2 = opt.shift_alpha2ggamma;
   const Real eta0 = fabs(opt.shift_eta), sadv = fabs(opt.shift_advect);
@@ -238,9 +253,11 @@ Real Z4c::GaugeTimeStep(Driver *pdriver, Real bound[3], const bool leak_everywhe
     const Real uyz = fabs((gxy*gxz - gxx*gyz)/det);
     const Real idx1 = 1.0/mbsize.d_view(m).dx1, idx2 = 1.0/mbsize.d_view(m).dx2;
     const Real idx3 = 1.0/mbsize.d_view(m).dx3;
-    const Real q = (uxx + uxy + uxz)*idx1*idx1 + (uyy + uxy + uyz)*idx2*idx2
-                   + (uzz + uxz + uyz)*idx3*idx3;
+    const Real q1 = (uxx + uxy + uxz)*idx1*idx1, q2 = (uyy + uxy + uyz)*idx2*idx2;
+    const Real q3 = (uzz + uxz + uyz)*idx3*idx3;
+    const Real q = q1 + q2 + q3;
     if (!(q > 0.0) || !(Kokkos::isfinite(q))) return;
+    const Real qmax = fmax(q1, fmax(q2, q3));
     const Real dko = kdiss*(idx1 + idx2 + idx3);
     const Real bsum = fabs(bx)*idx1 + fabs(by)*idx2 + fabs(bz)*idx3;
     const Real adv = aadv*bsum;              // damping of the corner mode by advection
@@ -256,7 +273,8 @@ Real Z4c::GaugeTimeStep(Driver *pdriver, Real bound[3], const bool leak_everywhe
           CellCenterX(k - ks, n3, mbsize.d_view(m).x3min, mbsize.d_view(m).x3max));
     }
     const Real mu = fabs(mu0 + mu2*alp*alp);
-    min_s = fmin(min_s, PairBound(tab, s2max*mu*q, oma, dko, eta + sadv*adv, adv, eta));
+    min_s = fmin(min_s, PairBound(tab, s2max*mu*(q + qmax/3.0), oma, dko,
+                                  eta + sadv*adv, adv, eta));
 
     // lapse and Khat
     const Real f = f0 + fh*alp + ((fv != 0.0) ? fv/sqrt(chi) : 0.0);
@@ -268,8 +286,9 @@ Real Z4c::GaugeTimeStep(Driver *pdriver, Real bound[3], const bool leak_everywhe
     min_l = fmin(min_l, PairBound(tab, s2max*fabs(f*alp)*chig*q, oma, dko,
                                   delta + ladv*adv, adv, delta));
 
-    // a pair with the speed of light
-    min_c = fmin(min_c, PairBound(tab, s2max*alp*alp*chig*q, oma, dko, adv, adv, 0.0));
+    // conformal factor and Theta (the metric and At without Theta)
+    min_c = fmin(min_c, PairBound(tab, s2max*clight*alp*alp*chig*q, oma, dko, adv, adv,
+                                  0.0));
   }, Kokkos::Min<Real>(dts), Kokkos::Min<Real>(dtl), Kokkos::Min<Real>(dtc));
 
   bound[0] = dts; bound[1] = dtl; bound[2] = dtc;

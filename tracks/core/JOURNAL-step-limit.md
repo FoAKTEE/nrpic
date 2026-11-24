@@ -390,3 +390,68 @@ Cases added, with predictions written before they run:
   also q and h stable. This is the test of the light bound in a gauge with a dynamical
   lapse. If H_m is unstable, the light bound of the kernel is too high and must be
   lowered before the option is published.
+
+## Entry 6 (05:55 to 06:02): the cause of the failed P2-C; Track A's model and mine corrected; runs stopped
+
+While the complete T1/T2 was running I worked out the corner mode of the pair of the
+conformal factor and Theta from the right-hand side, to see whether reading (a) of entry
+5 has a mechanism. It has, and the same mechanism changes the shift.
+
+**How the code takes second derivatives [VERIFIED, `z4c_calcrhs.cpp` 334-362].** d_a d_a is
+the stencil `Dxx` (symbol -s2/dx^2); only d_a d_b with a != b is `Dxy`, the product of two
+first derivatives (symbol -s1_a s1_b/dx^2), which vanishes at the corner theta = pi.
+
+- **Conformal factor and Theta.** d_t Theta = (alpha/2) R + ..., R = 2 sum_d Dxx chi + chi
+  d_k Gam^k + ...; d_t chi = (2/3) chi alpha (Khat + 2 Theta); d_t Gam^k = -(2/3) alpha
+  d_k (2 Khat + Theta) + .... So d_t^2 Theta = alpha^2 chi [(4/3) sum_d Dxx - (1/3)
+  sum_k Dx_k Dx_k] Theta: the speed of light in the continuum, but at the corner the
+  second term is zero and omega^2 = (4/3) alpha^2 chi s2max sum_d 1/dx_d^2. The pair is
+  there whatever the lapse condition is. With diss 0.5 in flat space the scan gives
+  0.5537 cells (reduced 0.5510) instead of the 0.6166 of a scalar wave. This fits the
+  three C cases of the aborted run without a free number: 0.555 cells (C_g) marginal
+  with slow growth, 0.5735 stopped at cycle 149, 0.660 at cycle 32.
+- **Shift.** In (1/3) gt^ij d_j d_k beta^k the terms with j = k are `Dxx`
+  (`ddbeta_ddu(a,a,c)`, line 348). At the corner d_t Gam^i = -gt s2max (3 + 1/3)
+  beta^i/dx^2: the squared speed of the corner mode is (10/9) mu gt, not mu gt. Track
+  A's matrix (its `vonneumann.py`, `shift_eigs`) takes the product of first derivatives
+  for all j, k, and so did mine, which I had built on its structure: **my statement of
+  entry 1, "I agree with Track A's analysis in all its numbers", stands for its model
+  and not for the code.** With the code's stencils (exploration, the corrected script,
+  to be registered as T0d): shift 0.6580 cells on level 4 (Track A: 0.685), 0.6252 on
+  the 64-cell root (0.65), 0.7276 without dissipation and damping, which is the corner
+  estimate 2 sqrt(2)/sqrt(mu (3 + 1/3) s2max) that Track A wrote in its journal before
+  its scan and then dropped. The 6 x 6 matrix with the corrected diagonal gives the
+  same numbers as the split (0.6580, 0.6252).
+- The lapse pair has no such term (sum_d Dxx alpha only): unchanged.
+
+Not yet shown by a run of the code for the shift: the cases S of the aborted run (0.470
+stable, 0.540 unstable) agree with both models (old bound 0.505, new 0.487). The complete
+T2 below brackets each bound at 3 per cent, which tells them apart.
+
+Runs stopped by me at 05:55 because they used the kernel with the two wrong pairs:
+core-20261124-134427-7d49d39 (T4 R0g, 28 cycles, bounds at start 0.682, 0.563, 0.770
+cells), core-20261124-134447-65c29bc (T6a, five of twelve set-ups run, no comparison
+made), core-20261124-135223-d55b3d8 (T1/T2, three cases). No result is taken from them.
+
+Kernel and Python twin changed alike: shift Omega^2 = mu s2max (sum_d G_d/dx_d^2 + (1/3)
+max_d G_d/dx_d^2); third pair (4/3) alpha^2 chi (alpha^2 chi with `use_z4c = false`).
+`vonneumann_gauge.py` keeps Track A's model as `--graddiv product --light scalar` and
+reports its thresholds beside the code's.
+
+### Predictions of T0d and of the complete T1/T2, written before they run
+
+- P0j (T0d). Track A's thresholds are reproduced by its model (column "A-model") to its
+  grid step, as in T0; with the code's stencils the shift is 0.658 (level 4), 0.625
+  (root); the third pair 0.554 in flat space with diss 0.5 and 1.13 on level 4 of the card
+  deck. Reduced/full for rk4, nghost 4: zero shift 0.99 to 1.00 as before, with a shift
+  at most 1.10 (the same structure; I have not recomputed the survey).
+- P1'. The three bounds of the start-up line agree with the reduced model to 1e-5 cells
+  in all six groups.
+- P2'. Bounds b in cells: S 0.4873 (shift), L 0.4679 (lapse), C 0.5510 and H 0.5510
+  (conformal factor and Theta; the lapse pair of H is at 0.617), K 0.2785 (relaxation),
+  D 0.4679. In every group: 0.93 b and 0.97 b stable, 1.03 b and 1.07 b unstable, 1.07 b
+  with dt_gauge = 0.9 stable; D unstable at cfl 1.0 without the option, stable with it.
+  S at 1.03 b = 0.502 is below the old bound 0.505 and C, H at 1.03 b = 0.568 below the
+  old 0.617: these three cases would be stable if the old model were right. Least sure:
+  K (one-sided relaxation) and the 0.97 b cases (3 per cent below a bound that the
+  reduced model places 0 to 0.5 per cent below the full scan's).

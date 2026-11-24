@@ -20,11 +20,20 @@ shift b (z4c_calcrhs.cpp 587-596, 629, 658, 696-738; z4c_gauge_ext.hpp):
   shift  d_t beta^i = mu Gam^i - eta beta^i + sa b.d beta^i
          d_t Gam^i  = g d_j d_j beta^i + (g/3) d_i d_k beta^k + b.d Gam^i
          mu = shift_Gamma + alpha^2 shift_alpha2Gamma, sa = shift_advect
+         In the code d_i d_i is the stencil Dxx, also inside d_i d_k beta^k
+         (z4c_calcrhs.cpp 346-352); only i != k is a product of first derivatives.
+         --graddiv product reproduces Track A's model, which took the product for all
+         (and the first three runs of this script).
   lapse  d_t alpha  = -f alpha0 Khat - delta alpha + la b.d alpha
          d_t Khat   = -chi0 g d_j d_j alpha + b.d Khat
          f alpha0 = 2 alpha0 for 1+log; delta = lapse_leak (1 + ln(alpha0/alpha_ref))
          where the lapse exceeds its reference; la = lapse_advect
-  light  a pair with squared speed alpha0^2 chi0 g, both members advected
+  light  the fastest pair of the rest: conformal factor and Theta,
+         d_t Theta = alpha0 d_j d_j chi + (alpha0 chi0/2) d_k Gam^k,
+         d_t chi = (4/3) chi0 alpha0 Theta, d_t Gam^k = -(2/3) alpha0 d_k Theta:
+         omega^2 = alpha0^2 chi0 g ((4/3) S2 - (1/3) |s1|^2), light in the continuum,
+         (4/3) alpha0^2 chi0 g S2 at the corner.  --light scalar: a scalar wave with
+         the speed of light (the first three runs of this script).
 
 Full model: the largest |R(lambda dt)| over the Brillouin zone.  Reduced model (what
 Z4c::GaugeTimeStep evaluates in every cell): the eigenvalue pair of the grid-scale corner
@@ -202,16 +211,27 @@ def full_eigs(sector, th, ng, p):
     if sector == "shift":
         a = -kod - p["etadx"] + p.get("sa", 1.0) * advc
         d = -kod + advc
-        lon = pair_eigs(a, d, p["mu"] * (S2 + p["g"] * (s1 ** 2).sum(axis=1) / 3.0))
-        tra = pair_eigs(a, d, p["mu"] * S2)
-        return np.concatenate([lon, tra], axis=-1)
+        if GRADDIV == "product":
+            lon = pair_eigs(a, d, p["mu"] * (S2 + p["g"] * (s1 ** 2).sum(axis=1) / 3.0))
+            tra = pair_eigs(a, d, p["mu"] * S2)
+            return np.concatenate([lon, tra], axis=-1)
+        # -L = g (S2 1 + (1/3) (diag(s2 - s1^2) + s1 s1^T)): its three eigenvalues
+        eye = np.eye(3)
+        M = (S2[:, None, None] * eye[None] + (p["g"] / 3.0) * (
+            (s2 - s1 ** 2)[:, :, None] * eye[None] + s1[:, :, None] * s1[:, None, :]))
+        ell = np.linalg.eigvalsh(M)
+        return np.concatenate([pair_eigs(a, d, p["mu"] * ell[:, k]) for k in range(3)],
+                              axis=-1)
     if sector == "lapse":
         a = -kod - p["deltadx"] + p.get("la", 1.0) * advc
         d = -kod + advc
-        return pair_eigs(a, d, p["c2"] * S2 / p["g"] * p["g"])
+        return pair_eigs(a, d, p["c2"] * S2)
     if sector == "light":
         a = -kod + advc
-        return pair_eigs(a, a, p["c2"] * S2 / p["g"] * p["g"])
+        if LIGHT == "scalar":
+            return pair_eigs(a, a, p["c2"] * S2)
+        return pair_eigs(a, a, p["c2"] * ((4.0 / 3.0) * S2
+                                          - p["g"] * (s1 ** 2).sum(axis=1) / 3.0))
     raise ValueError(sector)
 
 
@@ -227,6 +247,8 @@ def shift_eigs_6x6(th, ng, p):
                    + (1.0 / 3.0) * s1[:, :, None] * s1[:, None, :])
     M[:, :3, :3] = -(kod[:, None, None] + p["etadx"]) * eye[None]
     M[:, :3, 3:] = p["mu"] * eye[None]
+    if GRADDIV != "product":
+        L = L - p["g"] / 3.0 * (s2 - s1 ** 2)[:, :, None] * eye[None]
     M[:, 3:, :3] = L
     M[:, 3:, 3:] = -kod[:, None, None] * eye[None]
     return np.linalg.eigvals(M)
@@ -236,6 +258,8 @@ def shift_eigs_6x6(th, ng, p):
 # reduced model: the formulas of Z4c::GaugeTimeStep, in units of dx (cubic cells)
 
 ADV_MODE = "phase"      # "corner": the first version, damping of the corner only
+GRADDIV = "code"        # "product": Track A's model of the term d_i d_k beta^k
+LIGHT = "theta"         # "scalar": a scalar wave with the speed of light
 _CC = {}
 
 
@@ -278,12 +302,14 @@ def reduced_sector(tab, ng, sector, p):
     b = np.asarray(p.get("b", (0.0, 0.0, 0.0)))
     bsum = float(np.abs(b).sum())
     if sector == "shift":
-        return reduced_bound(tab, ng, 3.0 * p["mu"] * p["g"], p["diss"], bsum,
+        fac = 3.0 if GRADDIV == "product" else 3.0 + 1.0 / 3.0
+        return reduced_bound(tab, ng, fac * p["mu"] * p["g"], p["diss"], bsum,
                              p["etadx"], 0.0, p.get("sa", 1.0), 1.0)
     if sector == "lapse":
         return reduced_bound(tab, ng, 3.0 * p["c2"], p["diss"], bsum, p["deltadx"], 0.0,
                              p.get("la", 1.0), 1.0)
-    return reduced_bound(tab, ng, 3.0 * p["c2"], p["diss"], bsum, 0.0, 0.0)
+    fac = 3.0 if LIGHT == "scalar" else 4.0
+    return reduced_bound(tab, ng, fac * p["c2"], p["diss"], bsum, 0.0, 0.0)
 
 
 # ---------------------------------------------------------------------------------------
@@ -294,11 +320,15 @@ def main():
     ap.add_argument("--n", type=int, default=41)
     ap.add_argument("--quick", action="store_true", help="smaller parameter survey")
     ap.add_argument("--adv", default="phase", choices=("phase", "corner"))
+    ap.add_argument("--graddiv", default="code", choices=("code", "product"))
+    ap.add_argument("--light", default="theta", choices=("theta", "scalar"))
     args = ap.parse_args()
-    global ADV_MODE
+    global ADV_MODE, GRADDIV, LIGHT
     ADV_MODE = args.adv
+    GRADDIV = args.graddiv
+    LIGHT = args.light
     os.makedirs(args.out, exist_ok=True)
-    res = {"n": args.n, "adv": args.adv,
+    res = {"n": args.n, "adv": args.adv, "graddiv": args.graddiv, "light": args.light,
            "corner_consts": {f"ng{ng}": corner_consts(ng) for ng in (2, 3, 4)}}
 
     # ---- (a) closed forms of the symbols and the integrators
@@ -360,6 +390,12 @@ def main():
             out[key] = {"full": full, "reduced": red,
                         "grid_0.0025": float(rs[bad[0]]) if bad.size else None,
                         "track_A": a_claims.get(label, {}).get(key)}
+            # the same with Track A's model of the shift (product of first derivatives
+            # for every term of d_i d_k beta^k) and with light as a scalar wave
+            keep = (GRADDIV, LIGHT)
+            GRADDIV, LIGHT = "product", "scalar"
+            out[key]["full_trackA_model"] = first_exit(rk4, full_eigs(sec, th0, 4, p))
+            GRADDIV, LIGHT = keep
             if key in ("shift", "shift_nodiss") and label in ("card_level4",
                                                              "uniform_root"):
                 e6 = shift_eigs_6x6(th0, 4, p)
@@ -389,6 +425,10 @@ def main():
                 ("light", "light", dict(diss=diss, g=1.0, c2=1.0))):
             row[key] = {"full": first_exit(rk4, full_eigs(sec, th0, 4, p)),
                         "reduced": reduced_sector(tabs["rk4"], 4, sec, p)}
+            keep = (GRADDIV, LIGHT)
+            GRADDIV, LIGHT = "product", "scalar"
+            row[key]["full_trackA_model"] = first_exit(rk4, full_eigs(sec, th0, 4, p))
+            GRADDIV, LIGHT = keep
         flat[f"diss{diss}"] = row
     res["flat_space_rk4_ng4"] = flat
 
@@ -455,7 +495,7 @@ def main():
     cols = {"shift": fs.PAL["red"], "shift_nodiss": fs.PAL["orange"],
             "lapse": fs.PAL["blue"], "light": fs.PAL["green"]}
     labs = {"shift": "Gamma-driver shift", "shift_nodiss": "shift, no dissipation",
-            "lapse": "1+log lapse with relaxation", "light": "light"}
+            "lapse": "1+log lapse with relaxation", "light": r"$\chi$ and $\Theta$ (light)"}
     for ax, name in zip(axs, ("card_level4", "uniform_root")):
         for key in ("shift", "shift_nodiss", "lapse", "light"):
             ax.plot(rs, curves[(name, key)], color=cols[key], label=labs[key],
@@ -533,7 +573,8 @@ def main():
         for key in ("shift", "shift_nodiss", "lapse", "light"):
             o = out[key]
             print(f"{label:14s} {key:13s} full {o['full']:.4f} reduced {o['reduced']:.4f}"
-                  f" grid {o['grid_0.0025']} A {o['track_A']}"
+                  f" grid {o['grid_0.0025']} A-model {o['full_trackA_model']:.4f}"
+                  f" A {o['track_A']}"
                   f" at {o['first_unstable_theta_over_pi']}"
                   + (f" 6x6 {o['full_6x6']:.4f}" if "full_6x6" in o else ""))
     print("leak_root", res["leak_root"])

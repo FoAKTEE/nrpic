@@ -7,17 +7,17 @@ Flat space with white noise of 1e-10 in a periodic box of 16^3 cells
 
   S  Gamma-driver alone binds: lapse frozen, shift_Gamma = 1.5
   L  1+log lapse alone binds: zero shift
-  C  light alone: zero shift, lapse frozen
+  C  lapse frozen, zero shift: conformal factor and Theta bind ("light" of the kernel)
   K  relaxation of the lapse: zero shift, 1+log with lapse_leak = 32
-  H  harmonic slicing (d_t alpha = -alpha^2 Khat), zero shift: lapse and light alike
+  H  harmonic slicing (d_t alpha = -alpha^2 Khat), zero shift: the lapse pair has the
+     speed of light, conformal factor and Theta bind
   D  the deck as it is (1+log and Gamma-driver with shift_Gamma = 0.75) at cfl_number 1.0
 
 For each group the bound b (in cells) is taken from the reduced model of
 vonneumann_gauge.py; the code then runs 300 steps at cfl_number = 0.93 b ("m"),
-1.07 b ("p") and at 1.07 b with dt_gauge = 0.9 ("g"); D runs at 1.0 without and with
-dt_gauge.  Groups C and H also run at 0.75 b ("q") and 0.5 b ("h"): added after C_m of
-the first call went unstable (journal entry 5).  T1: the bounds the code prints at
-start-up against the reduced model.
+0.97 b ("a"), 1.03 b ("b"), 1.07 b ("p") and at 1.07 b with dt_gauge = 0.9 ("g"); D
+runs at 1.0 without and with dt_gauge.  T1: the bounds the code prints at start-up
+against the reduced model.
 
   python run_flat.py --exe ATHENA --out DIR [--workers 5] [--nlim 300]
 """
@@ -53,7 +53,7 @@ GROUPS = {
           dict(mu=0.0, eta=0.0, f=1.0, leak=0.0)),
     "D": ([], dict(mu=0.75, eta=2.0, f=2.0, leak=0.0)),
 }
-EXTRA = {"C": {"q": 0.75, "h": 0.5}, "H": {"q": 0.75, "h": 0.5}}
+EXTRA = {g: {"a": 0.97, "b": 1.03} for g in ("S", "L", "C", "K", "H")}
 
 
 def model_bounds(tab, par, diss=0.5, ng=4):
@@ -164,10 +164,10 @@ def main():
                       "g_stable": not res["cases"]["D_g"]["unstable"]}
         else:
             ver[g] = {"m_stable": not res["cases"][g + "_m"]["unstable"],
+                      "a_stable": not res["cases"][g + "_a"]["unstable"],
+                      "b_unstable": res["cases"][g + "_b"]["unstable"],
                       "p_unstable": res["cases"][g + "_p"]["unstable"],
                       "g_stable": not res["cases"][g + "_g"]["unstable"]}
-            for v in EXTRA.get(g, {}):
-                ver[g][v + "_stable"] = not res["cases"][g + "_" + v]["unstable"]
         pb = (res["cases"][g + "_g"]["printed_bounds_cells"]
               or res["cases"][g + "_p"]["printed_bounds_cells"])
         if pb:
@@ -191,11 +191,11 @@ def main():
                         hspace=0.32)
     axs = axs.ravel()
     col = {"m": fs.PAL["blue"], "p": fs.PAL["red"], "g": fs.PAL["green"],
-           "q": fs.PAL["orange"], "h": "k"}
+           "a": "k", "b": fs.PAL["orange"]}
     title = {"S": "Gamma-driver", "L": "1+log lapse", "C": "frozen lapse",
              "K": "lapse relaxation", "H": "harmonic lapse", "D": "deck, cfl 1.0"}
     for ax, g in zip(axs, names):
-        for v in ("h", "q", "m", "p", "g"):
+        for v in ("m", "a", "b", "p", "g"):
             n = g + "_" + v
             if n not in cases:
                 continue
@@ -205,7 +205,7 @@ def main():
             y = np.where(np.isfinite(h[:, 2]) & (h[:, 2] > 0), h[:, 2], np.nan)
             c = res["cases"][n]
             lab = {"m": "0.93 b", "p": "1.07 b" if g != "D" else "no limit",
-                   "q": "0.75 b", "h": "0.5 b",
+                   "a": "0.97 b", "b": "1.03 b",
                    "g": ("1.07 b, " if g != "D" else "") + "dt_gauge 0.9"}[v]
             ax.plot(np.arange(len(y)), np.sqrt(y), color=col[v],
                     label=lab + r" ($\Delta t/\Delta x$ %.3f)" % c["dt_max_over_dx"])
