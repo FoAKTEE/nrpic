@@ -234,9 +234,24 @@ centre) names neither.
 Of 23 line outputs per member in t 0.5-6, the largest |H| sits within 1.5 local cells of a
 refinement boundary in 0-3 and within 0.1 M of a density jump in 0-3 (B-d0.42: 0 and 0; A-d0.42: 3
 and 3; B-d1.00: 2 and 1; C-R1.25: 1 and 2). Before t ~ 2 the peak lies between the core edge and
-the matter edge (x 1.8-3.9, in the compensating shell), from t ~ 2.5 at the centre (x < 1.6). The
+the matter edge (x 1.5-3.9, mostly in the compensating shell), from t ~ 2.5 at the centre (x < 1.6). The
 |H| profile is broad and noisy (1e-2 to 1e-1 over x < 5 at t ~ 2, ~1e-2 at t ~ 5) rather than
 spiked at any radius. So the early floor is not localized at the refinement boundaries nor at the
 jumps; its cause is not named. Next test that can name one: the floor's dependence on the time
 step at fixed mesh and particles (cfl 0.25 against 0.125) and on the source options
 (source_extrap off), one short card batch each to t = 6.
+
+## Entry 10, 2026-11-24 14:00Z: prediction K4 (time step and source extrapolation), before the runs
+
+Member A of conv_ball (data set 3, delta_c = 1.5, nest16_L16, one particle per finest cell),
+release v0.6 processor build, t = 0 -> 6, three runs: K4-ref (deck as is, cfl 0.25), K4-dt
+(cfl_number 0.125), K4-src (particles/source_extrap = false). Mesh refinement A->B->C halves the
+step with the cell and left the floor unchanged (entry 6), so [JUDGEMENT]:
+- K4a: K4-dt's ||H||_2 at t = 2, 3, 4, 5 within 10 per cent of K4-ref (the step alone is not the
+  floor). Refuted by a change above 10 per cent.
+- K4b: K4-src's within 10 per cent of K4-ref as well. Refuted by a change above 10 per cent (then
+  the extrapolated source is implicated).
+- K4c: K4-ref repeats conv_ball's card member A (A-20261121-075926-d10c2c1/A, core_gauge
+  build) to within 5 per cent in ||H||_2 at t = 2-5 (different build and card vs processor).
+If K4a and K4b hold, the floor is independent of mesh, particle number, step and source timing,
+which points at the initial data or the gauge, the next two candidates.
