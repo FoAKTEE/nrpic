@@ -1,0 +1,90 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261124-225826-0bf3842",
+  "track": "E-stoch-inf",
+  "gate": "G2",
+  "kind": "production",
+  "purpose": "repro/figs last pass: group rsf256 (RSF256 dump 0 from the original, 1-16 from its third continuation 0b1ce0c, 17-34 from the fourth 5956891 with mode coefficients) and bit checks against P256v6 at t = 0, 4.0, 8.5 (scope P1 SR at the end); Fig. 2 constraint panels, Figs. 3 and 6a from RSF256, scope P2 and S14 per cell (entry 14)",
+  "preregistered_in": "tracks/E-stoch-inf/repro/figs/JOURNAL.md#entry-14",
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "export OMP_NUM_THREADS=2; python3 tracks/E-stoch-inf/repro/figs/figures/runs.py rsf256 \"$NRPIC_RUN_DIR\" --workers 3 --fft-workers 2"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "0bf384294cb490dbb741f6872531387bb9630dc0",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/repro/figs"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "5b6ad1224ebe194da6ccff740b5586aa4f31e742",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 6,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261124-225826-0bf3842",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-24T22:58:26Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "E-20261124-214913-5956891",
+    "E-20261124-225720-444aecc"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 30.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 19.6023,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 264,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md"
+  }
+}
