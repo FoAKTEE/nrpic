@@ -927,3 +927,29 @@ ellipse e = 0.9 (a = 10) E = 1.82, r0 = 12.22; hyperbola e = 1.1, H = 1.5635, r0
   ended for good, then releases it; continues A2, B2, C2 in place when their segment cap cuts them
   while their sacct card time is below 19.5, 5.0, 24.0 card-hours. A dry pass on A, B, C (old
   chains) and on the new table logged the expected actions (scratch/F-hills/tmp/seqdry).
+
+### Session summary (lead, batch 11)
+
+did: read the three card chains of batch 5 with my own reader (F-20261124-130009-33bef4d) and
+judged them against the predictions written before them; tested two candidate explanations of the
+passage's departure from the binary alone with Newtonian references (F-20261124-132934-375a163);
+reran khsr_note's checks (F-20261124-133112-db7d6b8) and rederived K1, K2 by hand; carried note v2
+into note/; closed A and C as stopped (B's finish running); registered A2, B2, C2 from the newest
+restart files with short restart intervals and started a sequencer that holds C2 and continues a
+cut chain within its card-hours; G1 package collected, verified (fails only on runs in flight),
+reported; two requests (core: restart on SIGTERM; orch: allotment, chain cap) and one ack.
+found: the isolated m/16 binary is eccentric and does not merge (minimum 3.12 M at 73.9 M; R19
+retired); P1b's members are unmerged at 61.8 M (s = 2.74 M) and closer than the binary alone by
+0.53 M at 60 M; C (m/12) = A (m/16) within 0.0023 M to 22 M; the chains were cut by another user's
+preemptions because AthenaK writes no restart on SIGTERM and the restart interval was 5 M.
+evidence: runs above; finishes of F-20261121-203144-b2cf16b, F-20261121-203247-961801d.
+changed my mind about: the converged pair spiralling in (it does not: the decay of the first 20 M
+was the first quarter of an eccentric orbit); the passage's binary following the isolated one
+(it departs by 10-16 percent by 60 M).
+open: A2 to the separation (G1), B2, C2; the cause of A - B; the G1 verifier; note v3; g2mesh.
+failed predictions this session: Q1's even odds for a merger (no merger); Q2's clause "A within
+0.1 M of B to 61.8 M" (-0.53 M); Q3 in part (C's masses drift up to 1.7e-4 per M) and A4 for C;
+N1m's "N1em(60) in -0.15 to -0.6" (+0.004) and "N1emt within a factor two at 20-60 M" (fails at 20
+and 30 M). Met: batch 5's reading E for B, A1, A2, A4 (A), A5, C's agreement with A, N1, L-K.
+card-hours used this session: 0 run; registered 48.5 (A2 19.5 G1, B2 5 G2, C2 24 G2); measured use
+of the batch-5 chains A 11.77, B 9.28, C 4.26 (sacct).

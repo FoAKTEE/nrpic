@@ -8,5 +8,8 @@ The lead's rechecks of the helpers, from their artefacts:
 - wave 3 (eih of wave 3a; the parts of p1, junk_gauge, g2mesh and note that were finished when
   round 1 was cut): `../REVIEW-wave3.md` and `../../JOURNAL.md`, lead session of 2026-11-21 (L1-L3);
 - wave 3, batches 2b and 3 (junk_gauge, binary_conv, kerr): `../REVIEW-wave3.md` (second part)
-  and `../../JOURNAL.md`, lead session of 2026-11-21T15:55Z (L4-L6).
+  and `../../JOURNAL.md`, lead session of 2026-11-21T15:55Z (L4-L6);
+- wave 3, batch 5 (binary_conv's chains, rule P1b-D): `../REVIEW-wave3.md` (batch 5 section);
+- wave 3, batch 11 (khsr_note; the card chains A, B, C; N1/N1m; L-K): `../REVIEW-wave3.md`
+  (batch 11 section) and `../../JOURNAL.md`, lead session of 2026-11-24T12:55Z (Q1-Q4, N1, L-K).
 The second agent's check of the plan is `SECOND_CHECK.md` (wave 2); no verifier of the G1 material yet.

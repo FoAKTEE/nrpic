@@ -1,96 +1,109 @@
 # HANDOFF of F-hills
 
-State in three lines (2026-11-21 13:00 PST, end of the lead session of batch 5):
-- G0 signed (coord/GATES.md). G1 NOT met: no complete Hills passage yet, KHSR, note compile, G1
-  verifier (stage/G1/STATUS.md, OPEN.md).
-- Rule P1b-D held (clause D1): the binary alone at m/12 and m/16 gives the same orbit; P1b at
-  m/16 (A) and the isolated binary's extension (B) are on the cards, P1b at m/12 (C) waits behind B.
-- Open risk R19: the converged isolated pair shrinks by 0.2 M in 20 M; B shows whether it merges
-  (then A and C cannot test the passage and must be stopped) or turns around (eccentric start).
+State in three lines (2026-11-24 06:30 PST, end of the lead session of batch 11):
+- G0 signed. G1 NOT met: the complete vacuum passage (C8) and the G1 verifier (C18) are missing
+  (stage/G1/STATUS.md, OPEN.md, STAGE_REPORT.md). Everything else of G1 passes.
+- The isolated m/16 binary does not merge (turns at 3.12 M at 73.9 M); P1b at m/16 reached 61.8 M
+  unmerged and was cut by preemptions; it continues as A2 (G1) with C2 (m/12, G2) and B2 (G2).
+- A sequencer (pid 604718) keeps C2 held until B2 ends and continues a cut chain in place within
+  its registered card-hours.
 
 Owner F-hills, branch `track/F-hills`, worktree `/data/haiyangw/nrpic/wt/F-hills`. Start every
 session with `cd /data/haiyangw/nrpic/wt/F-hills && git merge --no-edit main`, then
 `harness/bin/nrpic-ctx inbox`, then `test -e /data/haiyangw/nrpic/locks/PAUSE`.
 
-## Card jobs of this owner (submitted 2026-11-21 12:31-12:33 PST)
+## Card jobs of this owner (registered 2026-11-24 05:54-06:19 PST)
 
-| | run id | what | segments | first job |
+| | run id | what | gate, ceiling | first job |
 |---|---|---|---|---|
-| A | F-20261121-203144-b2cf16b | P1b: passage q = 4 as P1, members m/16, tlim 200 (G1) | 31 (25.9 card-h) | 4832 |
-| B | F-20261121-203156-03efdd3 | R16n extension: binary alone, m/16, from R16n restart 7 (t = 23.34 M) to 120 M (G2) | 13 (10.9 card-h) | 4836 |
-| C | F-20261121-203247-961801d | P1b at m/12, tlim 200 (G2), HELD until B ends | 25 (20.9 card-h) | 4837 (held) |
+| A2 | F-20261124-141118-fbc6419 | P1b m/16 from A's restart 23 (t = 61.80 M) to tlim 200; restart every 1 M | G1, 19.5 card-h (19 segments) | 5172 |
+| B2 | F-20261124-135408-1e6db58 | binary alone m/16 from B's restart 34 (107.85 M) to tlim 140; restart every 1 M | G2, 5 (5 segments) | 5171 |
+| C2 | F-20261124-141842-d5263e9 | P1b m/12 from C's restart 6 (20.0 M) to tlim 200; restart every 1.5 M; HELD until B2 ends | G2, 24 (24 segments) | 5173 (held) |
 
-All three run the byte copy of release core-v0.5's card build
-(`scratch/F-hills/tmp/binary_conv/exe/bc-ak05-gpu`: do not delete it) behind a wrapper that keeps
-tracker files across restarts in `<rundir>/trk_keep/` (A, C: `athena_keep_trackers_bc.sh`; B:
-`athena_resume_bc.sh`, whose first segment ran `-r .../F-20261121-130351-04074e1/rst/hills.00007.rst`,
-so B's run directory starts at t = 23.34 M: join it to R16n's directory when reading).
-No lapse_leak in any of them (constant shift_eta = 2, as P1).
+All: `binary_conv/scripts/athena_resume_bc.sh` -> `scratch/F-hills/tmp/binary_conv/exe/bc-ak05-gpu`
+(byte copy of release core-v0.5's card build; do not delete it), cfl_number 0.25, constant
+shift_eta = 2, no lapse_leak. Each continuation's directory starts where its parent stopped:
+read them joined (b11_cards.py does it). Predictions: JOURNAL.md, batch 11, "Q4 decision".
 
-See them:
+Parents (closed as stopped in nrpic-run; cut by preemption and their segment caps): A
+F-20261121-203144-b2cf16b (to 61.8 M), C F-20261121-203247-961801d (to 22.3 M). B
+F-20261121-203156-03efdd3 (to 107.85 M): its `nrpic-run finish --status stopped` was started in
+the background at 06:20 PST and commits its manifest itself; if `harness/bin/nrpic-run status
+F-20261121-203156-03efdd3` still says submitted, run `harness/bin/nrpic-run finish
+F-20261121-203156-03efdd3 --status stopped` (checksums 103 GB: about an hour on a busy disk).
 
-    squeue -u $USER -o "%i %j %T %r"
-    scripts/submit_chain.sh --status /data/haiyangw/nrpic/scratch/F-hills/<run id>
-    harness/bin/nrpic-run status <run id>
+See the chains: `squeue -u $USER -o "%i %j %T %r"`; `scripts/submit_chain.sh --status <rundir>`.
 
-Sequencer (keeps C held while B runs, releases it when B's chain/STATUS is DONE, FAILED or
-STOPPED, then exits; writes only its log): started with setsid nohup at 12:32 PST.
+## Sequencer `binary_conv/scripts/seq_b11.sh` (started 06:18:51 PST, setsid nohup)
 
-    cat /data/haiyangw/nrpic/scratch/F-hills/seq/seq.pid; ps -p <pid>
-    tail /data/haiyangw/nrpic/scratch/F-hills/seq/seq.log
-    stop it without releasing C:  touch /data/haiyangw/nrpic/scratch/F-hills/seq/STOP
-    release C by hand:            scontrol release <job id of C>   (squeue -u $USER -n F-20261121-203247-961801d)
-    restart it (if the machine rebooted and B still runs):
-      setsid nohup /data/haiyangw/nrpic/scratch/F-hills/seq/seq_release.sh \
-        /data/haiyangw/nrpic/scratch/F-hills/F-20261121-203156-03efdd3 F-20261121-203247-961801d \
-        >> /data/haiyangw/nrpic/scratch/F-hills/seq/seq.log 2>&1 < /dev/null &
+    cat /data/haiyangw/nrpic/scratch/F-hills/seq/seq_b11.pid; ps -p <pid>
+    tail /data/haiyangw/nrpic/scratch/F-hills/seq/seq_b11.log
+    table: /data/haiyangw/nrpic/scratch/F-hills/seq/b11.table (name rundir ceiling after deck)
+    stop it: touch /data/haiyangw/nrpic/scratch/F-hills/seq/STOP   (exits within 5 min)
+    dry pass: SEQ_DRY=1 tracks/F-hills/binary_conv/scripts/seq_b11.sh <a tmp dir> <table>
+    restart it (machine rebooted, chains not all ended): rm -f .../seq/STOP; setsid nohup \
+      /data/haiyangw/nrpic/wt/F-hills/tracks/F-hills/binary_conv/scripts/seq_b11.sh \
+      /data/haiyangw/nrpic/scratch/F-hills/seq /data/haiyangw/nrpic/scratch/F-hills/seq/b11.table \
+      >> /data/haiyangw/nrpic/scratch/F-hills/seq/seq_b11.log 2>&1 < /dev/null &
 
-Stop a chain: `scripts/submit_chain.sh --stop <rundir>` (never by pattern). Close a finished one:
-`harness/bin/nrpic-run finish <run id>` (checksums every file: minutes per 30 GB).
+It holds C2 while B2 has not ended for good, then releases it; when a chain ends "FAILED,
+MAX_SEGMENTS reached" (preempted jobs count as segments) and its sacct card time is below its
+ceiling, it reruns `scripts/submit_chain.sh` on the same run directory with MAX_SEGMENTS raised
+(in-place continuation of the registered run; orch asked to object if not acceptable). It leaves
+a chain that failed for any other reason alone and exits when all three have ended.
 
-## Reading the runs (predictions and the stop criterion: JOURNAL.md, batch 5, runs A-C)
+## Exact commands for the next session
 
-1. B first, when it has passed about 70 M (six segments): registered analysis with
-   `binary_conv/scripts/analyze.py` (README "Analysis"). analyze.py reads one directory per
-   run: either add a join of R16n (`F-20261121-130351-04074e1`, 0-23.34 M) and B, or pass B as
-   its own run and compare from 23.34 M. Question: does s(t) reach a minimum and rise (reading E,
-   eccentric start) or fall to a common horizon (reading I)?
-2. If B shows a common horizon of the isolated pair before P1b's pericentre: stop A and C
-   (`--stop`), record it, and plan start states from a GR quasi-circular prescription.
-3. A and C, when they end: P1's reader `nr_first/scripts/p1_analysis.py <rundir>
-   --baselines=nr_first/results/baselines_p1.json` and the predictions A1-A5, C.
+1. Read the passage (registered, 1 core, minutes):
+
+       harness/bin/nrpic-run submit --kind scouting --gate G1 --cores 1 --package tracks/F-hills/stage \
+         --parent F-20261124-141118-fbc6419 --parent F-20261124-135408-1e6db58 --parent F-20261124-141842-d5263e9 \
+         --purpose "read A2/B2/C2 against A2-1..A2-5, B2, C2" \
+         -- python3 tracks/F-hills/stage/review_wave3/b11_cards.py --out '$NRPIC_RUN_DIR'
+
+   b11_cards.py was written for t < 110 M: extend its outputs for the passage (member energies
+   with M: `nr_first/scripts/p1_analysis.py <rundir> --baselines=nr_first/results/baselines_p1.json`
+   on A2's directory reads A2's own part; the energies need A+A2 joined), the outcome (which
+   member is bound, pericentre of the bound one, energy at infinity of the other), horizons near M.
+2. When A2 has ended: `harness/bin/nrpic-run finish F-20261124-141118-fbc6419`; judge A2-1..A2-5;
+   if the binary has separated, ask for the G1 verifier (stage/G1/OPEN.md item 2 lists the
+   material); if A2 stopped short of the separation for lack of card-hours, see orch's answer.
+3. When B2 has ended: the apocentre against 4.65-4.90 M (Peters, JOURNAL batch 11).
+4. Disk: A2 writes a 5.8 GB restart per M (about 800 GB to 200 M), C2 5.3 GB per 1.5 M. When a
+   chain has ended, keep every fifth restart file and the newest (delete by literal path, never
+   through a shell variable), or ask orch.
 
 ## Packages and their state
 
 | package | state | what remains |
 |---|---|---|
-| binary_conv | runs A-C in flight; reviewed (REVIEW-wave3, batch 5) | README "Results" row for 20 M at m/16 (now 4.756 M); read B, A, C |
-| junk_gauge | closed, reviewed | T3 to be remeasured at P1b's spheres |
-| kerr | closed, reviewed | Fermi-frame tidal reference for L_z > 0; Fig. afin; geodesic_binary S4 in 'bks'; numba in requirements |
-| p1 | chain DONE, finished | analysis to t = 280 M (`p1/README.md`); no longer decides G1 |
-| note | paused | corrections list (`note/JOURNAL.md`), registered `run_all.py`, compile, checker, pages |
-| g2mesh | cut; `scripts/card_analysis.py` UNCOMMITTED (left alone, not mine to commit) | G2M-1b outcome; G2M-2 analysis of F-20261120-222810-e408386; cost table |
-| KHSR | not started | one result of 1201.4794 with newton3 (`e_orb`; SCOPING 5) |
+| binary_conv | runs A2, B2, C2 in flight (lead-run); scripts seq_b11.sh, athena_resume_bc.sh | README "Results" row for m/16 at 20 M and the B result (3.12 M minimum) |
+| khsr_note | closed, reviewed (batch 11); its note moved to note/ | second-agent check of K3 and the P1-280 numbers (G1 verifier) |
+| note | v2 in note/ (24 pages, compiles, checker clean but accepted items) | v3 with the passage; legend of fig_elliptic; floats after Sec. VI; reviewer step |
+| g2mesh | cut 2026-11-20; `scripts/card_analysis.py` committed as WIP, untested | G2M-1b outcome; G2M-2/3 analysis of card batch F-20261120-222810-e408386 |
+| junk_gauge, kerr, eih, p1, nr_first | closed | T3 junk at P1b's spheres (A2 waveforms); kerr small items (HANDOFF of batch 5 list) |
 
 ## Files to read first
 
-`CLAUDE.md`; decisions 0022-0025; `STATUS.md`; `JOURNAL.md` last entry (batch 5: P1b-D outcome,
-predictions of A-C); `RISKS.md` (R19, R15, R17); `stage/REVIEW-wave3.md` (batch 5 section);
-`stage/G1/STATUS.md`, `OPEN.md`.
+`CLAUDE.md`; decisions 0026, 0027, 0030; `STATUS.md`; `JOURNAL.md` last entry (batch 11: state,
+Q1-Q4, N1, N1m, L-K, the follow-up predictions); `RISKS.md` (R20, R21); `stage/REVIEW-wave3.md`
+(batch 11 section); `stage/G1/OPEN.md`.
 
 ## Decisions pending
 
-- orch: an analysis session this week to read B and apply the stop criterion (outbox
-  20261121T204354Z); harness chain restart option (20261121T204401Z).
-- core: stray resubmission after a chain's last segment (seen again, jobs 4820 and 4822 ended at
-  once); H-norm2 transient at t = 0.5 in R8; HRNA pair-force spec; wave extraction beyond l = 8.
+- orch: allotment for A2's tail (G1 has 1.1 card-hours left); in-place continuation by the
+  sequencer; chain cap by card time (outbox 20261124T135319Z__to-orch__cards-read-continuations-allotment).
+- core: restart on SIGTERM (outbox 20261124T135319Z__to-core__restart-on-sigterm); older: stray
+  resubmission after a chain's last segment (seen again: A's job 5135), H-norm2 transient in R8,
+  HRNA pair-force spec, wave extraction beyond l = 8.
 
 ## Traps
 
-- `nrpic-stage verify` fails while g2mesh's file is uncommitted and while chains run; with
-  checksums it reads P1's 165 GB (over ten minutes).
-- B's directory starts at t = 23.34 M; its tracker and horizon files hold only that part.
-- Horizon summaries: a failed search repeats the previous row.
-- 1PN references of the binary are not sharp (R17); do not judge the orbit by one of them.
-- nrpic-run passes no variable of the caller to a chain: PROC_NAME, SLURM_EXTRA cannot be set.
+- A preempted job counts as a chain segment; a night of preemptions ends a chain at its cap.
+- A2, B2, C2 directories start at 61.8, 107.85 and 20.0 M; their tracker files hold only that part.
+- Horizon summaries: a failed search repeats the previous row; a sawtooth band of up to 4e-3 in
+  m_AH remains after nrread's filter (fig_b11_health); fit slopes, do not read single rows.
+- nrpic-run finish of a 100+ GB run takes about an hour on a busy disk; its commit lands at the
+  end: do not commit by hand at that moment.
+- 1PN references of the binary are not sharp (R17).
 - Never kill by pattern; `scancel`, `scripts/submit_chain.sh --stop <rundir>`, numeric PIDs.
