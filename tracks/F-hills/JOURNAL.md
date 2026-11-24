@@ -774,3 +774,88 @@ refutations 766-767). Chains (`scripts/submit_chain.sh --status`, segment logs, 
   pericentre time of member 2; P1's remnant closest approach 154.6 M), A and C cannot test the
   passage: they are closed as stopped and a wider or lighter binary is designed. If not, A and C
   are continued from their newest restart files with a shorter restart interval.
+
+### Outcomes of Q1-Q3 (registered analysis F-20261124-130009-33bef4d; figures fig_b11_binary.png, fig_b11_health.png read)
+
+- Q1, isolated m/16 to 107.85 M: s(t) falls from 4.952 M to a minimum of 3.120 M at t = 73.9 M and
+  rises to 4.585 M at 107.85 M (s = 3.977 at 40, 3.151 at 70, 3.712 at 90, 4.278 at 100); the
+  orbital phase rate peaks at 0.090 rad/M at the minimum; one orbit of phase (6.47 rad) by 107.85
+  M; no common horizon (both finders find their member at every search, 0 failed of 3452); largest
+  step of s between rows 1.3e-4 M; member masses drift -1.0e-5 to -5.5e-5 per M; rms H 4.2e-5 to
+  6.0e-5, flat. Reading E (eccentric start near apocentre) HOLDS: batch 5's prediction (minimum of
+  2.5-4.6 M between 40 and 100 M, then a rise; masses below 1e-4 per M) MET, "no common horizon
+  before 120 M" met to 107.85 M only (the chain was cut). My own Q1 estimate (reading I at even
+  odds) is REFUTED: the pair does not spiral in; the batch-5 stretch fit (merger at 93-97 M) is
+  refuted by the run; risk R19 is retired in its form "the converged pair merges before the
+  pericentre". Rough eccentricity from the turning points (4.95, 3.12 M): e = 0.23 [JUDGEMENT:
+  coordinate separation in the moving-puncture gauge; the rise after the minimum is faster than
+  the fall before it, so the coordinate orbit is not a Kepler ellipse].
+- R12 against the m/16 isolated run over the common window (0-21 M): within 0.0021 M (as batch 5).
+- Q2, P1b m/16 (A) to 61.86 M: A1 MET (no common horizon of the members; s = 2.74 M at 61.86 M,
+  still falling at about 0.05 M per M). A2 MET at the edge: A departs from the isolated m/16 run by
+  0.027 M at 10 M and 0.042 M at 20 M (bound 0.05). A4 MET in its first clause for A (member
+  horizon masses -5.1e-5 to +3.0e-6 per M in the windows 3-15, 15-40, 40-62 M; heavy hole -6.1e-6
+  to +9.1e-6 per M), and no member near M (closest member at 19.98 M). A5 MET (2374-2584
+  MeshBlocks, peak card memory 78787 MiB of 81920). A3 not judged (t < 122 M). My added clause "A
+  follows B within 0.1 M to 61.8 M" REFUTED: A - B = -0.07 at 30, -0.10 at 40, -0.27 at 50,
+  -0.53 at 60 M (largest -0.58 M): the binary closes faster while its centre of mass approaches M
+  (r_cm 28.7 M at 20, 25.1 at 40, 21.2 at 60). Cause not named yet: a check in which it can fail
+  follows (N1 below).
+- Q3, P1b m/12 (C) to 22.30 M (live tracker of the running segment): C within 0.0023 M of A at
+  every time (MET, bound 0.02 M). C's member masses drift -1.2e-4 to -1.7e-4 per M (windows 3-15,
+  15-22 M): my Q3 range (-5e-5 to -1.4e-4, R12's) is exceeded by one member in one window
+  (REFUTED in part), and A4's bound 1e-4 per M, which C was predicted to share, FAILS for C. rms H
+  of C 5.1e-5 to 5.5e-5 (A 1.3e-5 to 2.6e-5; B 4.2e-5 to 6.0e-5: the volume norms differ with the
+  domain, so only the trend is compared).
+- Horizon finders: a band of failed-looking rows remains after the reader's filter (sawtooth of
+  up to 4e-3 in m_AH in fig_b11_health); the drifts above are least-squares slopes through it
+  [JUDGEMENT: a finder that alternates between two surfaces; not a mass change].
+
+### Q4 decision and the follow-up runs (written before any of them is submitted)
+
+The isolated pair does not merge before the pericentre (Q1), so A and C CAN test the passage: they
+are continued, not stopped. Both chains were cut by preemption (state at start), not by physics.
+Remedy: the continuations write restart files every 1.0 M (A2, B2) or 1.5 M (C2) instead of 5 M
+(command-line `output4/dt`; restart time of the newest files 61.80, 107.85, 20.0 M), so that a
+preempted segment loses at most about 10 minutes. Each continuation is a new registered run that
+starts from the newest restart file of the cut run (`binary_conv/scripts/athena_resume_bc.sh`,
+same byte copy of release core-v0.5's card build `bc-ak05-gpu`, same deck, cfl_number 0.25,
+constant shift_eta = 2, no lapse_leak: decisions 0025 item 3 and 0027 item 2 are met). A
+sequencer (`binary_conv/scripts/seq_b11.sh`) keeps at most two jobs eligible (A2 and B2 first,
+C2 held until B2 ends) and continues a chain that the segment cap cut while its measured card
+time (sacct) stays below the card-hours registered for it.
+
+- A2: P1b m/16 from A's restart 23 (t = 61.80 M) to tlim 200, gate G1, 19.5 card-hours (all of
+  G1's 19.8 left after A's 11.77). Predictions: (A2-1) the binary passes a minimum separation of
+  2.0-2.7 M at t = 63-75 M (B's minimum 3.12 M at 73.9 M; A is 0.53 M closer at 60 M and still
+  closing) and the members do not merge (s > 1 M throughout); (A2-2) the centre of mass of the
+  pair passes its closest approach to M at t = 95-115 M and r = 8-11 M (Newton 9.81 M at 104.35 M;
+  GR turning point 9.25 M, lead V9); (A2-3) by t = 170 M the binary is separated: one member at more
+  than 30 M from M with a positive two-body energy with M, the other bound to M with a pericentre
+  of 4-8 M; which member leaves I do not predict (Newton: m1; HRNA: m2; the GR binary is eccentric
+  and its phase differs from both baselines); (A2-4) no common horizon of a member with M; (A2-5)
+  member horizon masses drift below 1e-4 per M outside the encounter, the heavy hole's mass changes
+  by less than 1e-3 to 200 M, below 2864 MeshBlocks and inside the card's memory, rms H below 1e-4.
+  Refuted as stated in each item; a merger of the members before 115 M refutes A2-1 and A2-3.
+- B2: the isolated m/16 binary from B's restart 34 (t = 107.85 M) to tlim 140, gate G2, 5
+  card-hours. Prediction: s(t) reaches a maximum (the next apocentre) of 4.65-4.90 M at t = 115-140
+  M, below the first one (4.955 M at 5.1 M) by 0.05-0.30 M [JUDGEMENT: Peters' decay of the
+  quasi-Keplerian orbit, a about 4.0 M, e about 0.23, m1 = m2 = 0.127: da/dt about -1.2e-3, so
+  about -0.16 M in a semi-major axis per orbit, plus a numerical part of unknown sign]; no common
+  horizon; masses drift below 1e-4 per M. Refuted: no maximum before 140 M, an apocentre above
+  4.95 M (no decay) or below 4.6 M.
+- C2: P1b m/12 from C's restart 6 (t = 20.0 M) to tlim 200, gate G2, 24 card-hours, held until
+  B2 ends. Prediction as for A2 (A2-1 to A2-4), and against A: separations within 0.05 M up to
+  the centre of mass's closest approach (0.0023 M to 22 M so far), the same member ejected, the
+  ejected member's energy at infinity within 10 percent. Its member masses drift up to 2e-4 per M
+  (it already exceeds 1e-4). Refuted: a different member ejected, energies apart by more than 25
+  percent, separations apart by more than 0.1 M before 100 M.
+
+### N1, a reference for A - B (prediction before the run)
+
+Newtonian three-body problem from the start state of the P1 deck (positions, momenta, bare masses;
+`stage/G0/checks/lead_checks.py newton_full`) against the same members without M: the difference
+of the separations Delta_N(t) = s_3body - s_2body. Prediction: Delta_N(60) between -0.15 and
+-0.8 M, i.e. the departure of A from B is tidal at Newtonian order in size and sign. Refuted:
+|Delta_N(60)| < 0.1 M or a positive sign; then the departure of A from B is not the Newtonian tide
+(a relativistic tidal or a gauge effect would be the candidates, to be tested, not named).
