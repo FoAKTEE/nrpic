@@ -1567,3 +1567,153 @@ fixed with a stub test; answers to A and kb posted, kb's message acknowledged. G
 Faults of mine on record: the first journal header of this session carried the date of
 the shell's local time (2026-11-22) with a UTC hour; corrected to 2026-11-23T01:50Z
 before the commit. Not done: inbox messages 1-8, 103 and D's new 11 (task scope).
+
+## 2026-11-24T12:51Z (2026-11-24 04:51 PST), batch 11, session core-lead-11 (analysis round; no AthenaK source change)
+
+Task: close the six level-2 chains of row 4 on M/8 (all DONE at tlim 300 M in one segment
+each, jobs 4923-4928, by `submit_chain.sh --status`), classify by the rule of
+2026-11-21T20:26Z, say whether the threshold is bracketed, queue the next level
+(release card executable of core-v0.6, at most twelve card-hours, two jobs eligible);
+note, G2 stage, answers to Track A (step limit) and kb (paper-code links), and the
+outcome of T5 of branch core/noise-level2 (Track E's card smoke). Sequencer of batch 10a
+(pid 3075029): released 4925-4928 by 06:08Z on 2026-11-23 and exited at 06:09Z ("all
+jobs released"); nothing of core was queued at the start of this session.
+
+### Outcomes of row 4 on M/8, level 2 (2026-11-24T13:01Z): fates by the rule of 2026-11-21T20:26Z
+
+Six chains closed (`nrpic-run finish`, one segment each). Fates of all six models of
+levels 1 and 2: run core-20261124-130055-9fc9901 (`verify/row4/row4_fate.py`, as of commit
+9fc99012: same rule; it now colours by y_c and joins continuations; figure
+`fig_row4_m8.png` looked at: panel (a) shows member and control of every model falling
+together from 0.680 to 0.7175, the collapse later the larger y_c, and the 0.73625 and
+0.755 pairs dipping to 0.86-0.93 of their equilibrium lapse near 270 M and coming back;
+panel (b) shows member minus control inside +-0.035 for 0.7175, 0.73625 and 0.755).
+
+| y_c | alpha_c eq | member | control | class / side |
+|---|---|---|---|---|
+| 0.605 | 0.6281 | t_c 180.5 M | no collapse (moves outward) | COLLAPSE / UNSTABLE (level 1) |
+| 0.680 | 0.6875 | t_c 219.5 M | t_c 251.5 M | COLLAPSE / UNSTABLE (level 1) |
+| 0.69875 | 0.7029 | t_c 244.25 M (lapse < 0.3), first AH 252.0 M | t_c 259.75 M, first AH 264.0 M | COLLAPSE / UNSTABLE |
+| 0.7175 | 0.7186 | t_c 294.25 M (lapse < 0.3; no AH by 300 M) | t_c 293.5 M (lapse < 0.3; no AH by 300 M) | COLLAPSE / UNSTABLE |
+| 0.73625 | 0.7346 | no collapse; mean 200-300 M 0.6930 (-0.0416 against eq) | no collapse; mean 0.6916 (-0.0430) | STAYS, D = +0.0014 / STABLE |
+| 0.755 | 0.7509 | no collapse; mean 0.7264 | no collapse; mean 0.7247 | STAYS, D = +0.0016 / STABLE (level 1) |
+
+Bracket by the rule: y_lo = 0.7175, y_hi = 0.73625, valid (monotone, no UNDECIDED
+member inside); next midpoint 0.726875. **On cells of M/8 with 10^4 particles the
+threshold of collapse within 300 M is bracketed between y_c = 0.7175 and 0.73625**
+[VERIFIED by run core-20261124-130055-9fc9901, under the rule as written]. The turning
+point y_c* = 0.6796 lies 0.038 below the bracket.
+
+Predictions of 2026-11-23T02:05Z:
+- P5 HOLDS: the 0.69875 member collapses at 244.25 M, inside (200, 300) and later than
+  0.680's 219.5 M.
+- P6 HOLDS: the 0.73625 member STAYS (|D| = 0.0014), neither run collapses.
+- P7 HOLDS: the 0.7175 member collapses (294.25 M) after the 0.69875 member (244.25 M);
+  the five models 0.680-0.755 are monotone (UNSTABLE 0.680, 0.69875, 0.7175; STABLE
+  0.73625, 0.755).
+- P8 REFUTED (just): the only control without collapse at level 2, 0.73625, has its
+  200-300 M mean 0.0430 below its equilibrium, beyond the bound 0.04 written; the drift is
+  inward as predicted. With 0.755 (0.026) the drift grows towards the bracket.
+- P9 HOLDS: 2258-2280 s of card time per run to 300 M (athena "cpu time used" of the
+  chain logs), 7.53-7.60 s per M, 0.63 card-hours per run, 3.8 for the six; one segment
+  each.
+
+What else the runs show (read from the same histories; supplement of the fate run,
+`windows_50M` in its `row4_fate.json`):
+- Near the bracket the kick no longer matters: at 0.7175 member and control collapse
+  0.75 M apart; at 0.69875 15.5 M apart, at 0.680 32 M apart. The controls' collapse
+  times rise with y_c (251.5, 259.75, 293.5 M).
+- The stable pairs drift inward steadily, member and control alike. Means of
+  alpha_c / alpha_c^eq over 50-M windows from 0 to 300 M: 0.73625 member 0.9997, 0.9968,
+  0.9855, 0.9696, 0.9532, 0.9333 (control 1.0039, 1.0054, 0.9911, 0.9685, 0.9485, 0.9343);
+  0.755 member 1.0000, 0.9966, 0.9899, 0.9821, 0.9711, 0.9638 (control 1.0033, 1.0029,
+  0.9922, 0.9769, 0.9663, 0.9640). The 0.7175 pair stood at 0.95 over 175-200 M and at
+  0.91-0.93 over 200-250 M before it ran away; the 0.73625 pair stands at 0.933 over
+  250-300 M.
+- So the bracket of the rule may be set by the 300-M window rather than by a stability
+  threshold: a model that drifts inward at a steady rate reaches the runaway later the
+  larger its y_c [JUDGEMENT; not tested yet: no run longer than 300 M exists on this
+  mesh]. Level 3 is designed to test exactly this (below).
+
+### T5 of branch core/noise-level2: card smoke run by Track E (read 2026-11-24T12:56Z)
+
+Track E ran core's pending card smoke T5 of `<scalar_field> noise_level = 2` through its
+sequencer (decision 0031 item 3): batch T5SMK, run E-20261123-035724-b661081, branch card
+executable `scratch/core/exe/core_noise-level2/athena_gpu` (source 6ca93cba), six 64^3
+decks (core's four of `card_t5.list` byte for byte, plus sr64_l1m and usr64_l0m with
+`noise_rmodes_dump`); check SMOKECHK, run E-20261123-090718-6203c87 (`verdict.json`,
+`smoke_check.png` in its directory; the figure looked at: card/processor differences of
+rms and means against cycle, the six rms(phi - <phi>) curves on top of each other, wall
+per cycle). Verdict PASS:
+- all six exit 0 and reach tlim (SR t = 8.44 in 344 cycles, USR 10.5 in 428), records
+  finite, dumps 9 of 9 and 22 of 22, `.rmodes` 9 and 22 where asked;
+- card against core's processor run core-20261123-030705-6b6a4bd over cycles 0-30: box
+  means within 1.7e-13 relative, rms(phi - <phi>) and rms(Pi - <Pi>) within 2.0e-11
+  (E's bands 1e-12 and 1e-7 held);
+- wall per cycle, level 2 over level 0: SR 1.156, USR 1.136. Core's T5 prediction
+  (JOURNAL-noise-level2.md on the branch, entry 1: completes, finite; level 2 costs +5
+  to +20 per cent at 64^3) HOLDS on the card; on processors it had been refuted on the
+  low side (1.027, 0.992, entry 4).
+- E's preview at the end of the 64^3 runs: SR level 2 against level 1 on the mesh 1.5e-6
+  relative (E's bar 1e-4), USR level 2 against level 0 on the mesh -6.4e-6 (bar 1e-2).
+After it E ran the six 256^3 ablation runs with the branch executable: five completed;
+AL2S (E-20261123-152119-38957ba) was cut at t = 7.53 of 8.5 by its segment cap after a
+preemption (every segment exit 0, the third segment refused by MAX_SEGMENTS = 2; chain
+`events.log`), not by a fault of the executable; E's package repro/continue continues it.
+T5 is closed. Still open on that branch: the Fable review of its diff (running beside this
+session in worktree wt/core-s2; not touched), and the card cost at 256^3 (E's runs carry
+it).
+
+### Level 3 of row 4 on M/8: design and predictions (2026-11-24T13:05Z, before any run)
+
+Design [JUDGEMENT, written now]. The rule names one next point, the midpoint 0.726875,
+with its control. The question the level-2 runs raise is whether the "STABLE" side holds
+beyond the window of the rule. Level 3 therefore runs:
+- A. 0.726875 member and control from t = 0 to 600 M (tlim 600; the same deck, seed,
+  particle number, kick and executable as levels 1 and 2). Classified by the rule exactly
+  as written (it reads t <= 300 M only); 300-600 M is a supplement.
+- B. The 0.73625 member and control continued from their 300-M restart files
+  (`rst/st.00015.rst` of core-20261123-020458-dfc38d7 and -020500-9b192cd) to 600 M, in new
+  run directories, with the same release card executable (wrapper
+  `verify/row4/athena_resume.sh`: the first segment starts with `-r <restart>`).
+- C. The 0.755 member and control continued the same way (core-20261121-204232-f74c942,
+  -204237-ae00ca2) to 600 M.
+Each chain `--gpu-hours 1.97` (two segments of 59 min): 11.82 card-hours asked, about 5.1
+expected (P15). Two eligible, four held, released by `verify/row4/sequencer.sh` (stop file
+and log under `scratch/core/tmp/lead_b11/`). Order: 0.726875 member, 0.73625 control
+continued, 0.726875 control, 0.73625 member continued, 0.755 control continued, 0.755
+member continued. The fates of all models are then read with the same script, the
+continuations joined to their first parts (`<dir>+<continuation dir>`).
+
+Predictions:
+- P10. 0.726875 by the rule: neither run collapses by 300 M (the controls' collapse times
+  rose 33.75 M over the last 0.01875 in y_c, so at least about 16 M more over 0.009375:
+  310 M or later); |D| <= 0.01, the member STAYS, the model is STABLE, and the bracket
+  becomes (0.7175, 0.726875). Refuted by a collapse of either run at or before 300 M.
+- P11. 0.726875 beyond 300 M: member and control both collapse between 300 and 420 M,
+  within 30 M of each other. Refuted by no collapse by 600 M, by a collapse after 420 M,
+  or by collapse times more than 30 M apart.
+- P12. 0.73625 continued: member and control both collapse between 320 and 500 M (their
+  250-300 M level, 0.933 of the equilibrium lapse, is where 0.7175 stood about 50-75 M
+  before its runaway; the drift has not slowed). Refuted by no collapse by 600 M (the
+  drift stops and 0.73625 is stable over twice the window), or by a collapse before 320 M.
+- P13. 0.755 continued: no collapse before 450 M, and the drift goes on: the 400-450 M
+  mean of alpha_c / alpha_c^eq lies at least 0.01 below the 250-300 M mean (0.9638
+  member, 0.9640 control) in both runs. Whether it collapses by 600 M is not predicted.
+  Refuted by a collapse before 450 M, or by a 400-450 M mean less than 0.01 below the
+  250-300 M mean in either run.
+- P14. The continuations join their first parts without a jump: the central lapse of the
+  continuation's first record at or after 300 M differs from the first part's record at
+  300 M by less than the largest change between consecutive records over 280-300 M of
+  the first part. Refuted by a larger jump (a restart that does not carry the state).
+- P15. Cost: 7.5 to 7.7 s of card time per M: the two 600-M runs 1.25-1.3 card-hours in
+  two segments each, the four continuations 0.63-0.65 in one segment each, 5.0-5.3 in
+  all. Refuted by more than 9 s per M.
+
+What the outcomes would mean (written now): if P11 and P12 hold, the 300-M bisection
+measures how long a model resists a common inward drift, not a stability threshold;
+row 4 on M/8 is then reported as "collapse within 300 M bracketed between 0.7175 and
+0.726875 (or 0.73625)", the drift becomes the open item of the row, and a criterion that
+does not depend on the window is proposed to orch (the drift rate against cell size and
+particle number). If P12 is refuted (0.73625 holds to 600 M), the 300-M bracket stands as
+an estimate of the threshold with the window doubled.
