@@ -68,3 +68,44 @@ run):
   by gaining entries).
 - P8 (QA): golden questions with the hybrid mode stay at 28 of 32 (paper) within one; the
   recorded parse rate is reported against the 95 % bar and passes it.
+
+## Entry 2 (2026-11-24 13:35 UTC): identification, fetch, reading (P1-P4 outcomes)
+
+Runs: kb-20261124-125553-f0a7a10 (metadata of the 12: INSPIRE ok for 12, arXiv API failed with
+HTTP 503 after the tool's back-off; recorded in meta.txt, retried in the next run),
+kb-20261124-130108-5d1c671 (17 INSPIRE queries, 43 hits), kb-20261124-130410-9673ce1 (7 more
+queries, 7 hits), kb-20261124-130450-5e22375 (sources and metadata of 18 ids: all 18 sources and
+both records ok), kb-20261124-131019-d622860 (meta_table.tsv), kb-20261124-130510-20ce0df
+(R-count of the six old-style lists).
+
+- P1 HELD: arXiv records for 12 of 12, each title fits the claim's subject (meta_table.tsv; e.g.
+  1904.03781 is Croker et al. 2019 "Implications of symmetry and pressure in Friedmann cosmology II",
+  the "Croker-Weiner 2019" of claim 409); all 12 come as TeX (one .tex file each, 2212.10891 two).
+- P2 HELD (both parts). Krasinski and Bolejko 2012 is arXiv:1202.5970 (PRD 85, 124016), hit A-kb1.
+  Conformal flatness stated in words: 1908.02697v3 RB_SzekeresGeometry2.tex L65 ("Its constant-t
+  hypersurfaces are conformally flat", citing Berger, Eardley and Olson, PRD 16, 3086 (1977), L1588)
+  and 1611.09781v2 main.tex L71-72 (Cotton-York tensor of the t = const hypersurfaces vanishes,
+  "which implies their conformal flatness", citing Krasinski's 1997 book). Berger-Eardley-Olson
+  1977 has an INSPIRE record without e-print (hit A-cf2 rank 5): predates arXiv, recorded, not
+  fetched.
+- P3 HELD as stated (none of the three named DSMC papers has an arXiv e-print that INSPIRE knows;
+  Hadjiconstantinou gives 0 hits, Alexander-Garcia gives only their 1995 PRL "A consistent
+  Boltzmann algorithm", no e-print). The probable outcome (no arXiv paper with the cell-size form)
+  also came true: Weinberg 2014 (1304.3941, hit C-ds1 and C-ds6) states only the tuning rule
+  (cell of order the mean free path, L553-569) and an effective mean free path max{l/2, lambda}
+  with numerical diffusion for l >> lambda (L836-848), not the dependence on dx/lambda.
+- P4 HELD for the relativistic part: 1202.4551v1 main.tex L1424-1452 (Table diff_massless3,
+  particle-diffusion coefficient of a classical gas with constant cross section, ultrarelativistic:
+  3/(16 sigma), 21/(128 sigma), 0.1605/sigma, 0.1596/sigma at 14, 23, 32, 41 moments) and
+  1301.1190v1 HeatCondRelSys.tex L614-667, L758-760 (heat conductivity of the massless hard-sphere
+  gas: 2/sigma_22 at 14 moments, 2.5536/sigma_22 resummed, 2.44/sigma_22 Chapman-Enskog of de Groot,
+  2.59 +- 0.07 from BAMPS). The non-relativistic Sonine table was not found (INSPIRE indexes no
+  kinetic-theory journals of that kind; predicted 0.4).
+
+## Prediction P9 (before the dev copy reaches the worktree)
+
+The dev parser (scratch/kb/ingest4/dev) gives, on the six papers: 11, 16, 16, 10, 27, 21 entries
+(equal to R-count kb-20261124-130510-20ce0df, which counts 27 for gr-qc/9604001 whose list has no
+[18]); citations by number for 0306304, 9306009, 9607124, 9604001 and none for 9510056, 9906015;
+every cited number has an entry. The kb suite (all tests plus the 9 new ones) passes; refuted by
+any failure.
