@@ -422,3 +422,85 @@ case: larger, because Pi_b falls by 1e5 while the perturbations grow, between 1e
 if Pi/<Pi> falls below 0.5 in a cell of AL2U: then level 2 runs close to the singular
 point of its equation in that run and the reproduction has to say so beside the
 level-2 curve.
+
+## Entry 10 (2026-11-24 05:44 PST): outcomes R1 to R4; a finding on level 1 against level 0; predictions R8, R9
+
+R1 (runs core-20261124-131622-50359df, comparison core-20261124-133348-9d8c01f): the
+fifteen runs of the executable of 746869ef give the bytes of R0, 366 of 366 files, and
+the same summary. PREDICTION HELD: forming V once per stage changes no bit on
+processors, and the option that is not selected changes nothing.
+
+R2, R3, R4 (run core-20261124-133135-2cbebd5, thirteen runs, all exit 0;
+`fig_readings.png`, `fig_lapse.png` looked at: in fig_readings (a) and (c) the legends
+lie over part of the curves, in fig_lapse (b) the y label touches the tick labels; the
+data are readable; redrawn with the next analysis).
+
+R2. Level-2 effect (level 2 against level 1 on the mesh, rms over 1054 modes of
+|c^(1)/c^(2) - 1| at t = 3.2): 1.447e-4. Covariant against metric: 2.85e-7 = 2.0e-3 of
+it; flat against metric: 3.93e-7 = 2.7e-3 of it (largest ratio over the dumps the same).
+At amplitude 1e-2 the three relative differences are 1.0000e-2, 1.0002e-2 and 1.0000e-2
+of their values at amplitude 1: second order, all three. Shell power of R^NR at t = 3.2
+(the quantity of P1 Fig. 9, here 32^3): covariant/metric 1.4e-7 at most, flat/metric
+3.0e-7 at most, against 1.5e-4 for level 2 / level 0 on the mesh. PREDICTION HELD (band
+1e-3 to 1e-1 of the level-2 effect; the result sits at the low end, 0.2 eps1 rather than
+eps1). The reading of the Laplacian changes the level-2 effect by a quarter of a per
+cent in slow roll; level 2 is the local Pi^2 in Z.
+
+R3. Friedmann against means for the window and kicks of level 2: 2.34e-8 = 1.6e-4 of
+the level-2 effect. PREDICTION HELD (below 0.1, and below the 1e-2 I gave for both).
+REFUTED in its other half: level 1 on the mesh against level 0 on the mesh is 5.67e-5,
+0.39 of the level-2 effect and 2400 times the Friedmann-against-means number; I had
+predicted the two alike and both below 1e-2 of the level-2 effect.
+
+Finding behind the failed half (checked on files that exist, before any new run): the
+difference between level 1 and level 0 on the mesh does not come from the perturbations.
+(i) It is 5.06e-5 at the first dump (t = 0.44) and stays (4.7e-5 to 6.1e-5), largest at
+the cut (rms 7.9e-5 for |n|^2 > 48, 5.4e-6 for |n|^2 <= 16). (ii) R0's `h1off` (level 1,
+homogeneous slice, kicks off) against R0's `m0off` (level 0 on the mesh, perturbed
+slice, kicks off) gives the same 5.06e-5, 4.72e-5, ..., 5.67e-5 dump by dump as `s1m`
+against `s0m` with the kicks on; level 0 on the mesh with and without kicks agrees to
+4e-17. So it is of ZEROTH order in the amplitude. (iii) In the history of `s0m` the box
+means and the Friedmann lockstep agree to 3e-12 in Pi and H at every cycle, and the
+scale factor <chi>^(-1/2) of the mesh falls behind exp(ln a) of the lockstep linearly in
+time, -3.2e-7 at t = 0.39, -2.4e-6 at t = 3.2: the Runge-Kutta error of the exponential
+chi (per step (2 H dt)^5/120 = 7.6e-8 in chi, 65 steps). The coefficients at the END of
+a step therefore differ by too little to give 5e-5 at t = 0.44. What differs is the
+integration: at level 1 the coefficients of a stage are the stage values of mesh
+variables (chi, K as the mesh integrates them), at level 0 the stage values of the
+lockstep (ln a, and H from the Friedmann constraint): two fourth-order integrations of
+one continuum system, whose truncation errors differ, most for the modes with
+omega dt = 0.39 at the cut (the time error of R itself is 2.8e-4 there, entry 3).
+[JUDGEMENT until R8 has run.]
+Why it matters: k_max dx = pi/2 and the Courant number fix omega_max dt = 0.39 at every
+N, so this difference does not shrink at 256^3; the level-1 curve of the ablation (and
+with it the part of "level 2 against level 0" that is not "level 2 against level 1") may
+be a property of the time integration, not a backreaction. P1's level 0 is the same
+construction ("evolved separately with the same initial conditions and numerical
+scheme", P1:785).
+
+R4 (conformal-time lapse, alpha from 1 to 6.4): (i) level 2 against level 1 on the mesh:
+8.0e-12 at most for R, 5.8e-12 rms for n.d R, at every dump below 1e-11. (ii) mesh R
+against the shells at equal ln a, lapse = a against geodesic slicing: cut modes
+6.71e-2 against 6.71e-2 at ln a = 1.85, 5.12e-2 / 5.11e-2 at 1.01, 2.99e-2 / 2.91e-2 at
+0.42; |n|^2 <= 48: 1.03e-2 / 1.03e-2, 7.07e-3 / 7.09e-3, 5.16e-3 / 5.10e-3; the first
+point (ln a = 0.10) 5.3e-3 against an interpolated 8.4e-3. (iii) n.d R against dR/dtau
+of the shells: 6.5e-2 (cut) and 8.5e-3 at ln a = 1.85 against 6.7e-2 and 8.8e-3 at 1.98
+with geodesic slicing. PREDICTION HELD on all three: the lapse stands where it should in
+the uniform and in the local path for a lapse that depends on time; a lapse that varies
+in space, and a shift, remain untested.
+
+Prediction R8 (`level01_dt.py`: homogeneous slice, kicks off, level 1 and level 0 on the
+mesh, Courant numbers 0.25, 0.125, 0.0625, the per-mode record after 10 and 20 cycles of
+the coarsest step, t = 0.49 and 0.98): the rms difference of c_R between the two levels
+is 5e-5 at Courant 0.25 (as found) and falls by a factor between 12 and 20 per halving
+of the step: fourth order. Refuted by a factor below 8: then something of lower order
+differs between the two paths and that is a defect to find.
+
+Prediction R9 (`ablation_modes.py`, read-only on the per-mode records of Track E's
+slow-roll runs AL0S, AL1S, AL2S at 256^3, dumps 2, 6, 10, 15): (a) level 1 against
+level 0: rms over the modes between 1e-4 and 2e-3 at the late dumps (the 32^3 value times
+the longer stay below the horizon, about 8), rising with |n|: the band 48 <= |n| < 65 at
+least five times the band |n| < 8; (b) level 2 against level 1: between 2e-4 and 5e-3
+(second order, more modes than at 32^3); (c) so level 1 against level 0 is between 0.05
+and 2 of level 2 against level 1: not negligible. Refuted if (a) is below 1e-5 (then the
+32^3 finding does not carry to the production runs).
