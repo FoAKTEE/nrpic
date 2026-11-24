@@ -124,9 +124,9 @@ time = t_rst + (cycle - c_rst) dt to the printed seven digits; every printed dt 
 restart's dt to seven digits; the last segment ends "Terminating on time limit". Refuted as
 before. `scripts/join_check.py` checks this form.
 
-## Entry 4 (2026-11-24 05:47 PST): the join check passes its self-test
+## Entry 4 (2026-11-24 05:45 PST): the join check passes its self-test
 
-Prediction (written with the script, 05:40): on a completed run split at one of its own restart
+Prediction (written into the script before its run, 05:31): on a completed run split at one of its own restart
 files, `join_check.py` reports J1-J4 true and its joined records equal the run's own.
 Run E-20261124-133152-214f0af (`scripts/join_selftest.sh`, scouting, processors, 14 min):
 AL0S (E-20261123-153347-18e7c21) cut at sr256_l0m.00003.rst (t = 6.000933, cycle 978) into a
@@ -141,7 +141,7 @@ the original's over the overlap; the difference panel sits at its floor of 1e-18
 lines. This tests the bookkeeping of the script, not the restart: both halves are one run.
 [VERIFIED: run E-20261124-133152-214f0af]
 
-## Entry 5 (2026-11-24 05:52 PST): prediction for the cycles the originals recorded twice
+## Entry 5 (2026-11-24 05:46 PST): prediction for the cycles the originals recorded twice
 
 While the five jobs wait: three originals recorded some cycles twice, because a segment resumed
 from the t = 0 restart after the segment before had run on (RSF256 cycles 1-~67, CL256S 1-84,
