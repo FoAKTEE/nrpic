@@ -32,6 +32,23 @@ void Particles::AssembleTasks(std::map<std::string, std::shared_ptr<TaskList>> t
   // and the particles are advanced, excised, reassigned to MeshBlocks and deposited
   // once the spacetime has reached t^{n+1}.
   if (is_nrpic) {
+    if (pusher == ParticlesPusher::nrpic_vlasov) {
+      id.vlv_prep   = tl["before_timeintegrator"]->AddTask(&Particles::NrpicVlasovPrepareStep, this, none);
+      id.vlv_metric = tl["after_timeintegrator"]->AddTask(&Particles::NrpicVlasovSyncMetric, this, none);
+      id.vlv_step   = tl["after_timeintegrator"]->AddTask(&Particles::NrpicVlasovAdvanceTask, this, id.vlv_metric);
+      id.vlv_excise = tl["after_timeintegrator"]->AddTask(&Particles::NrpicVlasovExciseTask, this, id.vlv_step);
+      id.savemet    = id.vlv_prep;
+      id.push       = id.vlv_step;
+      id.excise     = id.vlv_excise;
+      TaskID before_deposit = id.vlv_excise;
+      if (coll.on) {
+        id.collide = tl["after_timeintegrator"]->AddTask(&Particles::NrpicCollide, this, id.vlv_excise);
+        before_deposit = id.collide;
+      }
+      id.deposit = tl["after_timeintegrator"]->AddTask(&Particles::NrpicDeposit, this, before_deposit);
+      id.diag    = tl["after_timeintegrator"]->AddTask(&Particles::NrpicDiagnostics, this, id.deposit);
+      return;
+    }
     id.savemet = tl["before_timeintegrator"]->AddTask(&Particles::NrpicSaveMetric, this,
                                                       none);
     id.push    = tl["after_timeintegrator"]->AddTask(&Particles::NrpicPush, this, none);

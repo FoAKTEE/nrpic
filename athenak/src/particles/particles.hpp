@@ -65,6 +65,7 @@ struct NrpicOptions {
   bool filter_compensate;  // follow them by one pass (-c, 1+2c, -c)^3 that cancels
                            // the second moment of the binomial passes (c = nfilter/4)
   Real filter_comp_c;      // c of that pass if >= 0 (default -1: nfilter/4)
+  bool filter_densitized = false;  // apply binomial/comp filters on densitized sqrt(gamma)*Tmunu
   bool field_constraints;  // field dumps also hold the constraints, Khat, Theta, lapse
   bool interp_bspline;     // metric at the particles by the cubic spline through the
                            // nodes instead of the Catmull-Rom reconstruction
@@ -271,6 +272,10 @@ struct ParticlesTaskIDs {
   TaskID recvp;
   TaskID csend;
   TaskID crecv;
+  TaskID vlv_prep;
+  TaskID vlv_metric;
+  TaskID vlv_step;
+  TaskID vlv_excise;
 };
 
 namespace particles {
@@ -329,7 +334,9 @@ class Particles {
   std::vector<Real> nr_inline;     // particles listed in the input file (7 per particle)
   DvceArray5D<Real> met0;          // alpha, beta^i, gamma_ij at t^n
   DvceArray5D<Real> met1;          // alpha, beta^i, gamma_ij at t^{n+1}
+  DvceArray5D<Real> met_prev, met_prevs; // optional t^{n-1} metric for quadratic time interp
   DvceArray5D<Real> tm_work;       // work array for the source filter
+  bool tm_is_densitized = false;   // true while u_tmunu holds sqrt(gamma)*Tmunu before filter
   nrpic::ThreadDeposit thread_dep; // deposit target of a threaded build (nrpic_threads.hpp)
   DvceArray5D<Real> tm_prev;       // source densities of the previous deposit
   bool tm_prev_valid = false;      // tm_prev belongs to the current mesh
@@ -377,6 +384,7 @@ class Particles {
   void NrpicAssignBlocks();
   void NrpicRemoveFlagged();
   void NrpicDepositSources();
+  void NrpicNormalizeDensitizedSources(bool update_filt_sum);
   void NrpicFilterPass(const Real w0, const Real w1);
   void NrpicWriteConservation(Real time, Real dt, bool header, bool write);
   void NrpicCompensateLimited(const Real c, const Real c2, const Real lim);
@@ -487,7 +495,7 @@ class Particles {
   void NrpicNewtonWriteRestart(const std::string &fname);
   void NrpicNewtonReadRestart(const std::string &fname);
 
-  // ---- GR-LBV direct Vlasov solver (<particles> pusher = vlasov_mfm; nrpic_vlasov.cpp) ----
+  // ---- GR-LBV direct Vlasov solver (<particles> pusher = vlasov_mfm/vlasov_hybrid; particles/vlasov/) ----
   struct VlasovState *vlv = nullptr;
   void NrpicVlasovInit(ParameterInput *pin);
   void NrpicVlasovFree();
@@ -500,6 +508,10 @@ class Particles {
   void NrpicVlasovWriteSnapshot(Real time);
   void NrpicVlasovWriteRestart(const std::string &fname);
   void NrpicVlasovReadRestart(const std::string &fname);
+  TaskStatus NrpicVlasovPrepareStep(Driver *pdriver, int stage);
+  TaskStatus NrpicVlasovSyncMetric(Driver *pdriver, int stage);
+  TaskStatus NrpicVlasovAdvanceTask(Driver *pdriver, int stage);
+  TaskStatus NrpicVlasovExciseTask(Driver *pdriver, int stage);
 
   // ---- Fourier Poisson solver of the Newtonian mode (particles/nrpic_newton_fft.cpp):
   // <particles> newton_poisson = fft on a uniform mesh that is periodic in all directions

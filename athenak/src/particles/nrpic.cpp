@@ -96,6 +96,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.nfilter    = pin->GetOrAddInteger("particles", "nfilter", 1);
   nropt.filter_compensate = pin->GetOrAddBoolean("particles", "filter_compensate", false);
   nropt.filter_comp_c     = pin->GetOrAddReal("particles", "filter_comp_c", -1.0);
+  nropt.filter_densitized = pin->GetOrAddBoolean("particles", "filter_densitized", false);
   nropt.deposit_comp_c    = pin->GetOrAddReal("particles", "deposit_comp_c", 0.0);
   nropt.deposit_comp_limit = pin->GetOrAddReal("particles", "deposit_comp_limit", 0.0);
   nropt.deposit_comp_c2    = pin->GetOrAddReal("particles", "deposit_comp_c2", 0.0);
@@ -414,12 +415,6 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
     NrpicFillMetric(met1);
     if (nropt.interp_bspline) { NrpicSharpenMetric(met1, met1s); }
   }
-  if (pusher == ParticlesPusher::nrpic_vlasov &&
-      !(vlv != nullptr && vlv->opt.packet_mode)) {
-    NrpicVlasovPush();
-    NrpicAccAfterPush();
-    return TaskStatus::complete;
-  }
   push_maxit = 0;
   push_unconverged = 0;
   const int np = nprtcl_thispack;
@@ -442,12 +437,6 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   const Real bh_mass = nropt.mass, bh_spin = nropt.spin, lat_dx = nropt.lattice_dx;
   const Real alpha_exc = nropt.alpha_exc;
   const bool zm_null = nropt.zero_mass_null;
-  const Real r_plus_bh = bh_mass + sqrt(fmax(bh_mass*bh_mass - bh_spin*bh_spin, 0.0));
-  const Real vlasov_r_exc_bl =
-      (pusher == ParticlesPusher::nrpic_vlasov && vlv != nullptr && vlv->opt.kerr_r_exc > 0.0 &&
-       (msrc == NrpicMetric::kerr_schild || msrc == NrpicMetric::lattice ||
-        msrc == NrpicMetric::kerr_schild_sph || msrc == NrpicMetric::boyer_lindquist))
-      ? (vlv->opt.kerr_r_exc * r_plus_bh) : 0.0;
 
   // apparent-horizon excision: particles inside ah_exc_factor times the minimum
   // coordinate radius of a found horizon are removed
@@ -608,21 +597,6 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
       it = -it;
     }
     lmxit = (it > lmxit) ? it : lmxit;
-    if (!excise && vlasov_r_exc_bl > 0.0) {
-      Real r_bl = 1.0e300;
-      if (msrc == NrpicMetric::kerr_schild || msrc == NrpicMetric::lattice) {
-        const Real a2 = bh_spin * bh_spin;
-        const Real b = x[0]*x[0] + x[1]*x[1] + x[2]*x[2] - a2;
-        const Real r2 = 0.5 * (b + sqrt(b*b + 4.0*a2*x[2]*x[2]));
-        r_bl = sqrt(fmax(r2, 0.0));
-      } else {
-        r_bl = x[0];
-      }
-      if (r_bl < vlasov_r_exc_bl) {
-        code = -3;
-        excise = true;
-      }
-    }
     // a particle whose state is no longer finite is removed with the excised ones
     Real chk = x[0] + x[1] + x[2] + u[0] + u[1] + u[2];
     if (!(Kokkos::isfinite(chk))) {
@@ -738,11 +712,6 @@ void Particles::NrpicRemoveFlagged() {
 //! \brief removes excised and escaped particles and updates the MeshBlock of the others
 
 TaskStatus Particles::NrpicExcise(Driver *pdriver, int stage) {
-  if (pusher == ParticlesPusher::nrpic_vlasov &&
-      !(vlv != nullptr && vlv->opt.packet_mode)) {
-    NrpicVlasovExcise();
-    return TaskStatus::complete;
-  }
   acc_after_push = true;
   if (nropt.metric == NrpicMetric::mesh) {
     NrpicAssignBlocks();
@@ -801,16 +770,22 @@ void Particles::NrpicDepositSources() {
   auto ep = e_prev;
   if (have_prev) {
     auto mm = met1;
+    const bool already_dens = tm_is_densitized;
     const int nb1 = pmy_pack->nmb_thispack - 1;
     par_for("nrpic_eprev", DevExeSpace(), 0, nb1, indcs.ks, indcs.ke, indcs.js, indcs.je,
             indcs.is, indcs.ie,
     KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
-      const Real det = adm::SpatialDet(mm(m,NRM_GXX,k,j,i), mm(m,NRM_GXY,k,j,i),
-                                       mm(m,NRM_GXZ,k,j,i), mm(m,NRM_GYY,k,j,i),
-                                       mm(m,NRM_GYZ,k,j,i), mm(m,NRM_GZZ,k,j,i));
-      ep(m,k,j,i) = tm(m,Tmunu::I_Tmunu_E,k,j,i)*sqrt(det);
+      if (already_dens) {
+        ep(m,k,j,i) = tm(m,Tmunu::I_Tmunu_E,k,j,i);
+      } else {
+        const Real det = adm::SpatialDet(mm(m,NRM_GXX,k,j,i), mm(m,NRM_GXY,k,j,i),
+                                         mm(m,NRM_GXZ,k,j,i), mm(m,NRM_GYY,k,j,i),
+                                         mm(m,NRM_GYZ,k,j,i), mm(m,NRM_GZZ,k,j,i));
+        ep(m,k,j,i) = tm(m,Tmunu::I_Tmunu_E,k,j,i)*sqrt(det);
+      }
     });
   }
+  tm_is_densitized = false;
   Kokkos::deep_copy(DevExeSpace(), tm, 0.0);
   sum_mw = 0.0;
   for (int n=0; n<4; ++n) { dep_sum[n] = 0.0; }
@@ -1177,8 +1152,47 @@ void Particles::NrpicDepositSources() {
     }
   }
 
-  // divide by sqrt(gamma) at the receiving cell; accumulate the proper-volume integrals
-  // of E and S_i, which equal the particle sums of m W and m u_i
+  // divide by sqrt(gamma) at the receiving cell (deferred until after NrpicFilterSources when
+  // filter_densitized is true); accumulate the proper-volume integrals of E and S_i.
+  const int n1 = indcs.nx1, n2 = indcs.nx2, n3 = indcs.nx3;
+  const int ncell = nmb*n3*n2*n1;
+  Real se = 0.0, sx = 0.0, sy = 0.0, szz = 0.0;
+  Kokkos::parallel_reduce("nrpic_depsum", Kokkos::RangePolicy<DevExeSpace>(0, ncell),
+  KOKKOS_LAMBDA(const int idx, Real &lse, Real &lsx, Real &lsy, Real &lsz) {
+    int m = idx/(n3*n2*n1);
+    int rem = idx - m*(n3*n2*n1);
+    int k = rem/(n2*n1);
+    rem -= k*(n2*n1);
+    int j = rem/n1;
+    int i = rem - j*n1;
+    k += ks; j += js; i += is;
+    const Real vol = sz(m).dx1*sz(m).dx2*sz(m).dx3;
+    lse += tm(m,Tmunu::I_Tmunu_E,k,j,i)*vol;
+    lsx += tm(m,Tmunu::I_Tmunu_Sx,k,j,i)*vol;
+    lsy += tm(m,Tmunu::I_Tmunu_Sy,k,j,i)*vol;
+    lsz += tm(m,Tmunu::I_Tmunu_Sz,k,j,i)*vol;
+  }, Kokkos::Sum<Real>(se), Kokkos::Sum<Real>(sx), Kokkos::Sum<Real>(sy),
+     Kokkos::Sum<Real>(szz));
+  dep_sum[0] = se; dep_sum[1] = sx; dep_sum[2] = sy; dep_sum[3] = szz;
+  nrpic::MpiSum({&dep_sum[0], &dep_sum[1], &dep_sum[2], &dep_sum[3]});   // several ranks
+
+  if (nropt.filter_densitized) {
+    tm_is_densitized = true;
+    e_prev_valid = true;
+    return;
+  }
+  NrpicNormalizeDensitizedSources(false);
+  e_prev_valid = true;
+}
+
+void Particles::NrpicNormalizeDensitizedSources(bool update_filt_sum) {
+  Mesh *pm = pmy_pack->pmesh;
+  auto &indcs = pm->mb_indcs;
+  auto tm = pmy_pack->ptmunu->u_tmunu;
+  auto sz = pmy_pack->pmb->mb_size.d_view;
+  auto m1 = met1;
+  const int nmb = pmy_pack->nmb_thispack;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
   const int n1 = indcs.nx1, n2 = indcs.nx2, n3 = indcs.nx3;
   const int ncell = nmb*n3*n2*n1;
   Real se = 0.0, sx = 0.0, sy = 0.0, szz = 0.0;
@@ -1192,11 +1206,6 @@ void Particles::NrpicDepositSources() {
     int j = rem/n1;
     int i = rem - j*n1;
     k += ks; j += js; i += is;
-    const Real vol = sz(m).dx1*sz(m).dx2*sz(m).dx3;
-    lse += tm(m,Tmunu::I_Tmunu_E,k,j,i)*vol;
-    lsx += tm(m,Tmunu::I_Tmunu_Sx,k,j,i)*vol;
-    lsy += tm(m,Tmunu::I_Tmunu_Sy,k,j,i)*vol;
-    lsz += tm(m,Tmunu::I_Tmunu_Sz,k,j,i)*vol;
     const Real det = adm::SpatialDet(m1(m,NRM_GXX,k,j,i), m1(m,NRM_GXY,k,j,i),
                                      m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
                                      m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
@@ -1209,13 +1218,23 @@ void Particles::NrpicDepositSources() {
     const bool ok = (det > 0.0) && (det < 1.0e300);
     const Real isg = ok ? 1.0/sqrt(det) : 0.0;
     if (!ok) { lnbad += 1; }
+    if (ok && update_filt_sum) {
+      const Real vol = sz(m).dx1*sz(m).dx2*sz(m).dx3;
+      lse += tm(m,Tmunu::I_Tmunu_E,k,j,i)*vol;
+      lsx += tm(m,Tmunu::I_Tmunu_Sx,k,j,i)*vol;
+      lsy += tm(m,Tmunu::I_Tmunu_Sy,k,j,i)*vol;
+      lsz += tm(m,Tmunu::I_Tmunu_Sz,k,j,i)*vol;
+    }
     for (int n=0; n<Tmunu::N_Tmunu; ++n) {
       tm(m,n,k,j,i) *= isg;
     }
   }, Kokkos::Sum<Real>(se), Kokkos::Sum<Real>(sx), Kokkos::Sum<Real>(sy),
      Kokkos::Sum<Real>(szz), Kokkos::Sum<int>(nbad));
-  dep_sum[0] = se; dep_sum[1] = sx; dep_sum[2] = sy; dep_sum[3] = szz;
-  nrpic::MpiSum({&dep_sum[0], &dep_sum[1], &dep_sum[2], &dep_sum[3]});   // several ranks
+  if (update_filt_sum) {
+    dep_sum_filt[0] = se; dep_sum_filt[1] = sx; dep_sum_filt[2] = sy; dep_sum_filt[3] = szz;
+    nrpic::MpiSum({&dep_sum_filt[0], &dep_sum_filt[1], &dep_sum_filt[2],
+                   &dep_sum_filt[3]});                                    // several ranks
+  }
   if (nbad > 0) {
     n_bad_det_total += nbad;
     if (n_bad_det_reports < 50) {
@@ -1259,7 +1278,6 @@ void Particles::NrpicDepositSources() {
                 << " to " << dhi << std::endl;
     }
   }
-  e_prev_valid = true;
 }
 
 //----------------------------------------------------------------------------------------
@@ -1408,7 +1426,12 @@ void Particles::NrpicCompensateLimited(const Real c, const Real c2, const Real l
 
 void Particles::NrpicFilterSources() {
   if (nropt.nfilter <= 0 && !(nropt.filter_compensate && nropt.filter_comp_c > 0.0)) {
-    for (int n=0; n<4; ++n) { dep_sum_filt[n] = dep_sum[n]; }
+    if (tm_is_densitized) {
+      NrpicNormalizeDensitizedSources(true);
+      tm_is_densitized = false;
+    } else {
+      for (int n=0; n<4; ++n) { dep_sum_filt[n] = dep_sum[n]; }
+    }
     return;
   }
   Mesh *pm = pmy_pack->pmesh;
@@ -1429,6 +1452,12 @@ void Particles::NrpicFilterSources() {
       w1 = -c;
     }
     NrpicFilterPass(w0, w1);
+  }
+
+  if (tm_is_densitized) {
+    NrpicNormalizeDensitizedSources(true);
+    tm_is_densitized = false;
+    return;
   }
 
   // proper-volume integrals of the filtered E and S_i.  The filter acts on the sources
