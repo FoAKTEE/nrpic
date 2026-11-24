@@ -873,3 +873,38 @@ problem from the eccentric start of N1e with member masses times mu (N1em): Delt
 -0.15 and -0.6 M, negative from the start; with the tide added (N1emt) within a factor two of
 NR's A - B at 20-60 M. Refuted: |N1em(60)| < 0.1 M or positive; then the initial-data mass offset
 is not the leading cause.
+
+### Outcomes of N1 and N1m (run F-20261124-132934-375a163; fig_b11_n1_tide.png read)
+
+mu (A's member horizon masses over B's at t = 0) = 1.01495. Delta at 10/20/30/40/50/60 M:
+- NR (A - B): -0.027, -0.042, -0.070, -0.104, -0.270, -0.528 M.
+- N1 (tide, deck start, Newton circular binary e = 0.033): +0.017, +0.075, +0.155, +0.192, +0.107,
+  -0.175 M. N1e (tide, eccentric start, first pericentre 3.12 M, scale 0.866 of the relative
+  velocity, e = 0.227): +0.016, +0.077, +0.164, +0.171, -0.064, -0.322 M.
+- N1em (members' masses times mu, no M): -0.019, -0.078, -0.173, -0.261, -0.197, +0.004 M.
+- N1emt (both): -0.003, -0.001, -0.009, -0.106, -0.311, -0.283 M.
+Prediction N1 (Delta_N(60) between -0.15 and -0.8 M, negative) MET for both starts, but the
+Newtonian tide is POSITIVE at 10-40 M where NR's A - B is negative, so the tide at Newtonian
+order does not reproduce the history. Prediction N1m: "negative from the start" MET (N1em <0 to
+50 M), "N1em(60) between -0.15 and -0.6" REFUTED (+0.004: the eccentric Newtonian orbit has
+already turned), "N1emt within a factor two of NR at 20-60 M" REFUTED at 20 and 30 M (-0.001
+and -0.009 against -0.042 and -0.070), met at 40-60 M (factor 1.0, 0.87, 0.54). Reading
+[JUDGEMENT]: the departure of A from B is of the size of the two Newtonian effects together
+(tide plus the members' heavier horizon masses in M's conformal factor) at 40-60 M; the early
+part (-0.03 to -0.07 M at 10-30 M) is not explained by either; the Newtonian clock does not match
+the NR coordinate clock (the NR pair's minimum is at 73.9 M, the Newtonian eccentric one at 50 M),
+so a time-by-time comparison is weak. No cause is named. What the runs do establish: A - B is not
+a resolution effect to 22 M (C at m/12 = A at m/16 within 0.0023 M, F-20261124-130009-33bef4d).
+
+### L-K, the lead's rerun of khsr_note's check (prediction before the run)
+
+`khsr_note/scripts/fig_khsr.py` on the registered scan F-20261121-212757-77cdc15 reproduces the
+committed `khsr_note/results/khsr_checks.json` in every number (deterministic script, same
+input). Refuted: any value different beyond 1e-12 relative.
+L-K outcome (run F-20261124-133112-db7d6b8): 1268 values of khsr_checks.json, 0 differences: MET.
+The figure `fig_khsr_ecc.png` (read): prograde ejection probability falls from about 0.98 to
+0.53-0.55 between r_a/r_t = 500 and 100 at D <= 0.5, the primary/secondary preference falls to
+0.08-0.15 at 100, the mean ejection energy falls with r_a/r_t; as ms.tex:756-769 states. K1 and K2
+rederived by hand (STATUS T1): E_bar = -(m^2/(m1 m2)) (M/m)^(1/3) / (2 r_a/r_t) = -2.667 for
+r_a the semi-major axis; times to pericentre from r0 at r_p = r_t: parabola from 15 r_t 29.98;
+ellipse e = 0.9 (a = 10) E = 1.82, r0 = 12.22; hyperbola e = 1.1, H = 1.5635, r0 = 17.40.
