@@ -542,3 +542,9 @@ It is also the gauge leg of G2 item C2 for the population box. Predictions [JUDG
   a = 100; above 16 k_f the corrected Omega_qs at a = 121 at least ten times smaller than the
   zero-shift run's 2.3e-4 (the excess is coordinate motion). Refuted if it agrees within a factor
   3 there (then the excess is not a spatial-gauge effect: mesh or physics, for the legs to decide).
+
+Figures redrawn (06:55): `pop_gr_halos`, `pop_gr_stop` with shorter labels and wider spacing from
+the same JSON (run B-20261124-135404-ca06d42; looked at, labels no longer cut). The mosaic with the
+full colour range of K (B-20261124-135412-ab31dae) washes the plane out, so the package keeps the
+first drawing (B-20261124-133709-85c4be7, 99.5 per cent range, saturated in the core) and the
+script returns to that range.
