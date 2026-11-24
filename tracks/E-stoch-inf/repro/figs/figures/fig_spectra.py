@@ -110,7 +110,8 @@ def main():
     rows = load(args.passes)
     sel = pick(rows, [float(x) for x in args.targets.split(",")])
     fs.use_style()
-    cmap = plt.get_cmap("coolwarm")
+    cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
+        "time", ["#1f2a7a", "#3b75c4", "#4aa3a0", "#b8a640", "#e57b2a", "#c4222b"])
     cols = [cmap(x) for x in np.linspace(0.0, 1.0, len(sel))]
     res = dict(case=args.case, kind=args.kind, dumps=[rows[i]["path"] for i in sel],
                efolds=[rows[i]["N"] for i in sel])
@@ -219,7 +220,7 @@ def main():
             q_over_k = zl["specQ_mean"][inj] / zl["specK_mean"][inj]
             res["Q_over_K_last"] = dict(median=float(np.median(q_over_k)),
                                         max=float(q_over_k.max()), min=float(q_over_k.min()),
-                                        frac_below_1e-2=float(np.mean(q_over_k < 1e-2)))
+                                        frac_below_1em2=float(np.mean(q_over_k < 1e-2)))
             # at every dump: fraction of injected shells where Q is below K
             res["Q_below_K_frac_by_dump"] = [
                 float(np.mean(z["specQ_mean"][inj] < z["specK_mean"][inj])) for z in allrows]

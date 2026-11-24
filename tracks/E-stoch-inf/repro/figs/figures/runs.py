@@ -46,7 +46,13 @@ RUNS = {
 
 # continuation runs of package repro/continue (label -> list of run ids), read as the same run:
 # their dumps and record lines come after the original's (one line per cycle, the last written wins)
-CONTINUED = {}
+CONTINUED = {
+    "RSF256": ["E-20261124-130529-da8c917"],
+    "RNC256": ["E-20261124-130629-61fe0b0"],
+    "CL256U": ["E-20261124-130711-a5dec67"],
+}
+for _lab, _ids in CONTINUED.items():
+    RUNS[_lab + "c"] = (_ids[-1], "", RUNS[_lab][2])
 
 
 def cont_dirs(label):
@@ -79,16 +85,20 @@ def hst_path(label):
 # analysis groups: list of (label, dumppass options)
 GROUPS = {
     "usr256": [("USF256", [])],
-    "sr256v6": [("P256v6", [])],
+    "sr256v6": [("P256v6", ["--save-modes"])],
     "ablation": [(lab, ["--dumps", "0,17", "--save-modes"]) for lab in ("AL0S", "AL1S", "RL1")]
     + [(lab, ["--dumps", "0,20", "--save-modes"])
        for lab in ("AL0U", "AL1U", "AL2U", "UL1", "U256ap")],
-    "p256final": [("P256v6", ["--dumps", "17", "--save-modes"])],
     "rungs": [(lab, []) for lab in ("C32S", "C64S", "C128S", "C32U", "C64U", "C128U")],
 }
+GROUPS["rsf256"] = [("RSF256", ["--dumps", "0"]), ("RSF256c", ["--save-modes"])]
+GROUPS["cl256"] = [("CL256S", ["--dumps", "0"]), ("CL256Sc", ["--last"])]
+GROUPS["al2s"] = [("AL2Sc", ["--last", "--save-modes"])]
 BITCHECK = {
     "usr256": [("USF256", 0, "U256ap", 0), ("USF256", 20, "U256ap", 10),
                ("USF256", 40, "U256ap", 20)],
+    "rsf256": [("RSF256", 0, "P256v6", 0), ("RSF256c", 16, "P256v6", 8),
+               ("RSF256c", 34, "P256v6", 17)],
     "ablation": [("AL0S", 0, "AL1S", 0), ("AL0S", 0, "P256v6", 0), ("AL0U", 0, "AL1U", 0),
                  ("AL0U", 0, "AL2U", 0), ("AL0U", 0, "U256ap", 0), ("AL0S", 0, "RL1", 0),
                  ("AL0U", 0, "UL1", 0)],

@@ -82,9 +82,13 @@ def main():
         sel = np.array(have)
         P = np.array([r[key] for r in rows if key in r])
         x = N[sel]
+        ex = 0
+        if scale == "lin":
+            ex = int(np.floor(np.log10(np.max(np.abs(P[:, [0, 8]])))))
+        Pp = P / 10.0 ** ex
         for (lo, hi, name), a in zip(BANDS, SHADES):
             col = 1.0 - a * (1.0 - purple)
-            ylo, yhi = P[:, lo], P[:, hi]
+            ylo, yhi = Pp[:, lo], Pp[:, hi]
             if scale == "log":
                 ylo = np.maximum(ylo, 1e-30)
             ax[i].fill_between(x, ylo, yhi, color=col, lw=0, label=f"{name} per cent")
@@ -95,10 +99,9 @@ def main():
             else:
                 ax[i].set_ylim(max(1e-18, P[:, 1].min() / 3), P[:, 8].max() * 3)
         else:
-            m = np.max(np.abs(P[:, [0, 8]]))
+            m = np.max(np.abs(Pp[:, [0, 8]]))
             ax[i].set_ylim(-1.25 * m, 1.25 * m)
-            ax[i].ticklabel_format(axis="y", style="sci", scilimits=(-2, 2))
-        ax[i].set_ylabel(lab)
+        ax[i].set_ylabel(lab + (rf"  [$10^{{{ex}}}$]" if ex else ""))
         res[key] = dict(N=x.tolist(), p16=P[:, 3].tolist(), p84=P[:, 5].tolist(),
                         p0=P[:, 0].tolist(), p100=P[:, 8].tolist(), p995=P[:, 7].tolist(),
                         p99_upper=P[:, 7].tolist())
