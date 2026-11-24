@@ -1743,3 +1743,14 @@ an estimate of the threshold with the window doubled.
   `sequencer.log` there; it now logs every 15 min why the next job waits) releases
   5156-5159 in that order. At 13:04Z seven jobs of other owners were pending ahead.
   P10-P15 open.
+
+### Stub test of the resume wrapper (2026-11-24T13:09Z; not a registered run: a shell test with /bin/echo, no simulation)
+
+Prediction: a copy of `verify/row4/athena_resume.sh` with REAL=/bin/echo (and its sha256)
+prints, in a run directory without `rst/*.rst`, `-r <restart> -d ... -t ... time/tlim=600`
+(the `-i <deck>` pair replaced, `nrpic_resume=` removed), and with an own restart file
+present the arguments unchanged except `nrpic_resume=` removed; it copies the binary to
+`chain/nrcr-<hash>`. Refuted by any other argument list. Outcome
+(`scratch/core/tmp/lead_b11/wraptest/`): exactly that, both cases; `chain/nrcr-12bf4aa7`
+written. Held. The first card segments of the four continuations will show the same
+line in their logs.
