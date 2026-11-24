@@ -136,5 +136,16 @@
     "cores_busy": 0,
     "runs": 273,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
-  }
+  },
+  "continuations": [
+    {
+      "at": "2026-11-24T13:07:12-0800",
+      "job_id": "5210",
+      "from_restart": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022725-a553496/rst/esflk.00005.rst",
+      "segments_used_before": 5,
+      "max_segments": 12,
+      "via": "harness/bin/nrpic-queue --cmd tracks/D-bh-dress/g2long/tools/continue_chain.sh",
+      "reason": "continued in place after its waiting job was cancelled under the queue cap (decision 0033)"
+    }
+  ]
 }
