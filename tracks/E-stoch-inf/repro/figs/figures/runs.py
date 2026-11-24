@@ -95,6 +95,8 @@ GROUPS = {
 }
 # USF256 again at the dumps of Fig. 6b (and N = 4.5) with the invariant Kt spectrum (kt_version 2)
 GROUPS["usr256kt"] = [("USF256", ["--dumps", "0,3,5,8,11,14,18,22,40"])]
+# SR ablation at t = 7.5 (dump 15), the last dump the cut AL2S wrote (it reached t = 7.53)
+GROUPS["ablation75"] = [(lab, ["--dumps", "15", "--save-modes"]) for lab in ("AL0S", "AL1S", "AL2S")]
 GROUPS["rsf256"] = [("RSF256", ["--dumps", "0"]), ("RSF256c", ["--save-modes"])]
 GROUPS["cl256"] = [("CL256Sc", ["--last"])]
 GROUPS["al2s"] = [("AL2Sc", ["--last", "--save-modes"])]
@@ -103,6 +105,7 @@ BITCHECK = {
                ("USF256", 40, "U256ap", 20)],
     "rsf256": [("RSF256", 0, "P256v6", 0), ("RSF256c", 16, "P256v6", 8),
                ("RSF256c", 34, "P256v6", 17)],
+    "ablation75": [("AL2S", 0, "AL0S", 0)],
     "ablation": [("AL0S", 0, "AL1S", 0), ("AL0S", 0, "P256v6", 0), ("AL0U", 0, "AL1U", 0),
                  ("AL0U", 0, "AL2U", 0), ("AL0U", 0, "U256ap", 0), ("AL0S", 0, "RL1", 0),
                  ("AL0U", 0, "UL1", 0)],

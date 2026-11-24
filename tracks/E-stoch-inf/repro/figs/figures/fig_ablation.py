@@ -83,6 +83,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True)
     ap.add_argument("--npz", action="append", required=True)
+    ap.add_argument("--name", default="fig9_ablation")
+    ap.add_argument("--title", default="")
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
     D = dict(item.split("=") for item in args.npz)
@@ -134,9 +136,11 @@ def main():
         a.set_xlabel(r"comoving wave number $k$ [$M_{\rm Pl}=100$]")
         a.legend(loc="lower right", fontsize=6.5)
         a.set_ylim(1e-12, 1e-1)
-    fs.save(fig, os.path.join(args.out, "fig9_ablation"))
+    if args.title:
+        fig.suptitle(args.title, fontsize=9)
+    fs.save(fig, os.path.join(args.out, args.name))
     plt.close(fig)
-    with open(os.path.join(args.out, "fig9.json"), "w") as fp:
+    with open(os.path.join(args.out, args.name + ".json"), "w") as fp:
         json.dump({k: ({kk: vv for kk, vv in v.items() if kk not in ("n2", "r")}
                        if isinstance(v, dict) else v) for k, v in res.items()}, fp, indent=1)
     print(json.dumps({k: ({kk: vv for kk, vv in v.items() if kk not in ("n2", "r")}

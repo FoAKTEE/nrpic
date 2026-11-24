@@ -37,6 +37,7 @@ def main():
     ap.add_argument("--rungs")
     ap.add_argument("--cl256s", action="append", default=[])
     ap.add_argument("--al2s", action="append", default=[])
+    ap.add_argument("--ablation75", help="pass of group ablation75 (SR levels at t = 7.5)")
     a = ap.parse_args()
     out = a.out
     os.makedirs(out, exist_ok=True)
@@ -99,6 +100,11 @@ def main():
             if sub(r, "AL2Sc"):
                 npz += ["--npz", f"AL2S={sub(r, 'AL2Sc')}"]
         run([F("fig_ablation.py"), "--out", out] + npz)
+    if a.ablation75:
+        npz = [f"--npz={lab}={sub(a.ablation75, lab)}" for lab in ("AL0S", "AL1S", "AL2S")
+               if sub(a.ablation75, lab)]
+        run([F("fig_ablation.py"), "--out", out, "--name", "fig9_ablation_sr_t75",
+             "--title", "Quadratic at t = 7.5 (N = 7.2): AL2S was cut at t = 7.53"] + npz)
 
 
 if __name__ == "__main__":
