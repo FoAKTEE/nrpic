@@ -88,6 +88,8 @@ const out = []
 res.filter(Boolean).forEach(x => x.forEach(y => out.push(y)))
 return out
 ''')
+CAPNOTE = "QUEUE CAP, set by the user (coord/DECISIONS/0033; it may not yet be in the CLAUDE.md your session was given): at most FIVE jobs of this account may be in the Slurm queue at once, pending, held and running together, over all owners. Card runs reach Slurm by one route only, the shared queue: run git merge --no-edit main first, then from your worktree harness/bin/nrpic-queue add --label <label> [--after <label>] [--priority N] -- <the arguments you would give nrpic-run submit> (or --cmd '<one command that submits at most one job>' for a wrapper that continues a cut chain from its restart file); harness/bin/nrpic-queue list, status, show <id>. A dispatcher submits the next waiting run when fewer than five jobs are queued; priority 2 for a run a gate package waits for, 5 otherwise. nrpic-run submit with a card launcher is refused outside the dispatcher; never use sbatch or the scripts directly, never jobs held behind one another, and start no sequencer. Do not wait for queued runs: name them in HANDOFF.md with their queue ids (harness/RULES.md, section 'Shared card queue'). "
+body = body.replace('const NOTE = "', 'const NOTE = "' + json.dumps(CAPNOTE)[1:-1], 1)
 body = body.replace('__STAGES__', json.dumps(spec.get('stages')))
 open(sys.argv[2], 'w').write(meta + pre + body)
 print(len(items), 'items ->', sys.argv[2], len(meta + pre + body), 'bytes')
