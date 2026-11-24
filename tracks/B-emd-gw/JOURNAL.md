@@ -364,3 +364,28 @@ on the cards, the particle and mesh chains behind them; the cause of L2's mesh d
 amplitude without stream crossing before t_A, not yet designed); G2 products C2, C11, C17, C18, C6.
 Card-hours this session: none run; 5167 cancelled (0); queued 2.5 (ceilings: 5169 0.5, 5176 2).
 Toward G2 so far 3.42 used. Request posted to core: Fourier solver with the threaded build.
+
+## 2026-11-24T21:00Z-21:15Z  session of batch 12 (wave 3): waiting card runs to the shared queue  commits 9b3bc2be..(this)  runs B-20261124-133533-cb0bb7d (stopped), -173547-11afdaf (stopped), -135030-b54972f (closed), -210431-6bf48af, -210432-6c4d005 (queue)
+
+plan: one aim (decision 0033, the orchestrator's messages of 2026-11-24 20:15Z and 21:05Z): close
+the runs cancelled while waiting at 12:00 PST, hand every card run that should still run to the
+shared queue `harness/bin/nrpic-queue`, no analysis.
+predictions written before runs: none new; the runs keep their predictions (population/JOURNAL
+2026-11-24 05:58 X0-X3, 06:10 I3 Q1-Q2 M1-M4, 06:30 GD1-GD3).
+found: (1) sacct from 11:30: two jobs of this owner cancelled at 11:57:29 before they started,
+5169 (B-20261124-133533-cb0bb7d, X0-X3) and 5176 (B-20261124-173547-11afdaf, gauge leg); neither
+had computed (no output beyond the launch files), so both were closed as stopped and added again
+as new runs, not continued in place. (2) The sequencer (pid 168802) is gone; its queue still held
+the particle and mesh legs, whose initial data had both finished: B-20261124-135029-3fe13f6
+(closed by the sequencer at 11:21) and B-20261124-135030-b54972f (ended 11:56 with exit 0, 21986
+s, outer change 8.4e-10, Hamiltonian residual 3.2e-11; closed by hand now as completed). Both meet
+the sequencer's conditions (outer change below 1e-7, residual below 1e-9). (3) Queue: q0004 gauge
+leg, q0005 X0-X3 (dispatched at once as Slurm 5208 and 5209, pending on priority), q0006 particle
+leg after q0005, q0007 mesh leg after q0004; priority 2 (G2 items 1, 3, C2). The --after pairs
+keep at most two jobs of this owner in Slurm. cards/queue.json marked retired.
+failed: none in this session.
+open: the two Newtonian processor runs (end about 22:30 PST) must be closed by hand and the
+analysis pop_newton128_an submitted by hand (the sequencer is retired); I3 not yet judged; no
+--cmd wrapper exists for continuing a cut chain (write one when a chain is cut).
+Card-hours this session: none run; in the shared queue 9.5 (ceilings 2, 0.5, 2, 5). Toward G2 so
+far 3.42 used.
