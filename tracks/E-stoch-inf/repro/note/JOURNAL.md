@@ -377,3 +377,29 @@ Judgement [JUDGEMENT]: the floor has the size of the second-order terms of the f
 the reader at second order moves it by a factor of two on both lattices, identically); that it
 scales with the square of the amplitude stays [TO VERIFY] (a run at half the noise amplitude). The
 note keeps its reader for the ledger values and adds the check's reader as rows from R8a.
+
+## Entry 14 (2026-11-24 14:52 PST): corrections applied; prediction for R8
+
+Applied (commit 4a413e32): ledger.py fills the check column of the 16 rows of the continued runs
+from VERIFIER.md section 8 (42, 48-52 [177-181, 201], 72-75 [194-197], 81-83 [242-244] yes; 68-71
+differs, with the check's ln-chi values [212, 214, 220]; 56 stays pending, named with q0034 and
+"ended"); rows 65-67 [212] and 77 [248] move from differs to yes (section 8 confirms them with the
+code's lockstep record and with independent-mode shells); rows 48, 81, 82 name window and shells;
+four rows from R8a (256^3 maximum and its order read with ln chi, per-mode rms read with ln chi,
+the change of reader); the spectra, curvature, convergence and backreaction notes say "independent
+modes" and the convergence note names the reading of chi. main.tex: abstract, Sec. II definitions
+(reading of chi; independent modes), Sec. III convergence (2.8 vs 5.8; floor of the size of the
+second-order terms, [JUDGEMENT] from R8a; the square-of-amplitude test open), sign flip (narrows to
+2-3 decades after the entry, the check's count), backreaction (SR below the bound on our shells, at
+it on all), Sec. V (second pass of the check; seventeen rows differ), summary item 1, Table IV
+check column, the contrasts caption and the two pending markers (q0034 ended, panels not made).
+
+Prediction for R8 (registered run_all at the commit of this entry):
+- P1. 13 lattice jsons byte-equal to repro/figs/fig, langevin.json equal (`checks.json`): the
+  figure scripts did not change. Refuted by any false.
+- P2. All 19 PNGs byte-equal to R7's (E-20261124-215650-1de1ba5). Refuted if one differs.
+- P3. Ledger: 125 rows in 10 tables; checks 78 yes, 17 differs, 2 beyond reach, 11 quote, 14 rerun
+  only, 3 none (tested beforehand on a copy of R7's jsons, scratch/E-stoch-inf/tmp, a layout test,
+  not registered). Refuted by another count or a stop of the script.
+- P4. Compile without undefined references or overfull boxes, 24 or 25 pages; every ledger table
+  ends with its bottom rule on its page (the convergence table grows by four rows: the risk).
