@@ -30,3 +30,14 @@ jobs (including running ones) at once")
    `harness/tests/test_nrpic_run.py` is part of that work.
 6. Order while the cap binds: the runs of the reproduction first, then runs that a gate
    package waits for, then the rest in turn over the owners.
+7. Added 2026-11-24 13:00 PST: the shared queue exists (`harness/bin/nrpic-queue`; rules
+   in `harness/RULES.md`, section "Shared card queue"; 64 checks of its own and 85 of the
+   run tool pass, rerun by the orchestrator). Items 3 and 5 are made stricter by it: card
+   runs reach Slurm by one route only. An owner adds a run to the queue; one dispatcher
+   (started by the orchestrator, state under `locks/queue/`) counts the account's jobs
+   under a lock immediately before every submission, submits one, counts again, and
+   halts with an alert if the count rose by more than one. `nrpic-run submit` with a card
+   launcher is refused unless the dispatcher called it, and applies the cap in any case.
+   The marker that opens the route prevents mistakes, not malice. No second agent has
+   reviewed the tool's code yet; the orchestrator read its submission routine.
+

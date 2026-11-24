@@ -31,6 +31,13 @@ Launchers (one registered run each):
   chain   one AthenaK run longer than an hour: wraps scripts/submit_chain.sh.
               nrpic-run submit --launcher chain --gpu-hours 6 ... -- problems/x.athinput time/tlim=200
           The chain is capped at floor(gpu-hours / 59 min) segments, at least one (MAX_SEGMENTS).
+  Card runs are submitted only by `nrpic-queue add` (decision 0033, one route): `nrpic-run submit` with
+  launcher batch or chain is for the dispatcher of the shared queue, which marks its calls
+  (NRPIC_QUEUE_DISPATCH, the one variable of the caller nrpic-run reads; never passed on). Called directly
+  it is refused, nothing registered, and the message gives the line to queue it instead:
+              harness/bin/nrpic-queue add --label L -- --kind scouting --gate G2 --purpose "..." --launcher chain ...
+  --dry-run stays open to everyone. The marker gates the route only: the cap of five jobs of the account
+  in the Slurm queue (harness/lib/nrpic_harness.py QUEUE_CAP) is checked for every card submission.
 
 What submit does, in order (under one lock per owner, locks/nrpic-run.<ID>.lock): refuses a dirty
 worktree (untracked files count); refuses a local `python ...` command when the worktree has no
@@ -75,6 +82,7 @@ import json
 import math
 import os
 import re
+import shlex
 import signal
 import subprocess
 import sys
@@ -90,25 +98,26 @@ ACTIVE = ("registered", "running", "submitted")
 CARD_LAUNCHERS = ("batch", "chain")
 # Guardrail set by the user on 2026-11-24 (decision 0033): at most this many jobs of the account may be
 # in the Slurm queue at once, pending, held and running ones together, over all owners. No option and
-# no environment variable lifts it.
-QUEUE_CAP = 5
+# no environment variable lifts it. One definition for nrpic-run and nrpic-queue: harness/lib/nrpic_harness.py.
+QUEUE_CAP = H.QUEUE_CAP
+queue_count = H.queue_count
 
 
-def queue_count(env=None):
-    """Jobs of this account in the Slurm queue (every state squeue lists), or None if squeue fails.
-    env: the environment the tool uses for its Slurm commands (H.build_env), so that the count and the
-    submission ask the same Slurm."""
-    import subprocess
-    e = env if env is not None else os.environ
-    user = e.get("USER") or e.get("LOGNAME") or os.environ.get("USER") or ""
-    try:
-        r = subprocess.run(["squeue", "-h", "-u", user, "-o", "%i"], capture_output=True, text=True, timeout=60,
-                           env=env)
-    except (OSError, subprocess.SubprocessError):
-        return None
-    if r.returncode != 0:
-        return None
-    return len([l for l in r.stdout.splitlines() if l.strip()])
+def check_route(wt, args):
+    """One route for card runs (decision 0033): a batch or chain submission goes through only when the
+    dispatcher of the shared queue (harness/bin/nrpic-queue run) runs it and has marked the call
+    (H.QUEUE_DISPATCH_VAR, see H.queue_dispatch_problem). The marker gates the route; it does NOT lift the
+    cap: check_queue_cap applies to every card submission after this check, with or without the marker.
+    --dry-run returns before this check and stays open to everyone."""
+    why = H.queue_dispatch_problem(wt)
+    if why is None:
+        return
+    raise H.HarnessError(
+        "card runs are submitted only by the shared queue (decision 0033: one route, so that the cap of "
+        f"{QUEUE_CAP} jobs holds); `nrpic-run submit` with launcher batch or chain is for its dispatcher ({why}). "
+        "Nothing was submitted or registered. Queue the run instead, from this worktree:\n"
+        f"  harness/bin/nrpic-queue add --label <label> -- {shlex.join(args)}\n"
+        "(`nrpic-run submit --dry-run ...` stays open to everyone; harness/bin/nrpic-queue --help)")
 
 
 def check_queue_cap(env=None):
@@ -781,8 +790,9 @@ def submit(wt, args):
         print("(dry run: nothing written, nothing started)")
         return 0
 
-    if card:                           # decision 0033: the cap on queued jobs, checked before anything is written
-        check_queue_cap(env)
+    if card:                           # decision 0033, checked before anything is written: one route (the
+        check_route(wt, args)          # dispatcher's marker), then the cap on queued jobs, which the marker
+        check_queue_cap(env)           # does not lift
     mpath = manifest_path(wt, run_id)
     os.makedirs(os.path.dirname(mpath))
     os.makedirs(os.path.join(outdir, ".nrpic"))

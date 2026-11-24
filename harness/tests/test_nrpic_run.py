@@ -8,10 +8,16 @@ output detected; a literal '$NRPIC_RUN_DIR' argument replaced by nrpic-run; dirt
 cores above 16); production refused without a plan and before the previous gate's pass tag; the
 caller's environment ignored; a background run; batch and chain launchers through the repository's
 scripts/gpu_batch.sh and scripts/submit_chain.sh with a fake Slurm and a fake athena; GPU-hours
-counted across runs; another owner's runs not counted; the wrong worktree's copy refused.
+counted across runs; another owner's runs not counted; the wrong worktree's copy refused; decision 0033:
+one route (a card submission without the dispatcher's marker, with a forged one, with another owner's,
+or with no dispatch in progress is refused and registers nothing; the message gives the `nrpic-queue add`
+line; --dry-run stays open) and the cap with the marker (five live fake jobs: refused, nothing
+registered; four: accepted; squeue failing: refused). Card submissions of the other sections run inside
+rc_fixture.fake_dispatch, as the dispatcher would run them.
 """
 import json
 import os
+import shlex
 import sys
 import time
 
@@ -206,8 +212,10 @@ def main():
     bdeck = "tracks/A-emd-pbh/inputs/b.athinput"
     F.commit_file(A, bdeck, "<problem>\npgen_name = fake_batch\n")
     F.commit_file(A, "tracks/A-emd-pbh/inputs/batch.txt", f"lo {bdeck} time/nlim=5\nhi {bdeck} time/nlim=9\n")
-    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "batch of two",
-                    "--launcher", "batch", "--list", "tracks/A-emd-pbh/inputs/batch.txt", "--wall", "00:10:00"])
+    with F.fake_dispatch(fx["repo"], A, "A-emd-pbh") as denv:     # card runs: only inside a dispatch (0033)
+        r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "batch of two",
+                        "--launcher", "batch", "--list", "tracks/A-emd-pbh/inputs/batch.txt", "--wall", "00:10:00"],
+                    env=denv)
     brid = run_id_from(r.stdout)
     c.ok(r.returncode == 0 and brid and "Slurm job" in r.stdout, "batch submitted through gpu_batch.sh", r.stdout + r.stderr)
     bod = os.path.join(fx["repo"], "scratch", "A-emd-pbh", brid)
@@ -225,8 +233,9 @@ def main():
     c.ok(run_cmd(A, ["verify", brid]).returncode == 0, "batch outputs re-verified")
 
     # 8. chain launcher: scripts/submit_chain.sh under the fake Slurm (two segments)
-    r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "chain of two segments",
-                    "--launcher", "chain", "--gpu-hours", "2", "--", adeck, "time/tlim=1"])
+    with F.fake_dispatch(fx["repo"], A, "A-emd-pbh") as denv:
+        r = run_cmd(A, ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "chain of two segments",
+                        "--launcher", "chain", "--gpu-hours", "2", "--", adeck, "time/tlim=1"], env=denv)
     crid = run_id_from(r.stdout)
     c.ok(r.returncode == 0 and crid, "chain submitted through submit_chain.sh", r.stdout + r.stderr)
     cod = os.path.join(fx["repo"], "scratch", "A-emd-pbh", crid)
@@ -273,7 +282,103 @@ def main():
     orch_runs(c, fx, A)
     # 12. --wait: a local run waits for the owner's cores instead of being refused (C's lead-core-share)
     wait_runs(c, fx, A)
+    # 13. the cap on queued jobs (decision 0033)
+    queue_cap(c, fx, A)
     return c.done()
+
+
+HOLD = r'''#!/bin/bash
+# fake card job of the cap test: runs until the test writes @REL@/<name> (at most ten minutes)
+for ((i = 0; i < 3000; i++)); do [[ -e "@REL@/$1" ]] && exit 0; sleep 0.2; done
+'''
+
+
+def queue_cap(c, fx, A):
+    """Decision 0033. One route: a card submission without the dispatcher's marker is refused and registers
+    nothing (also with a forged marker, or with no dispatch in progress), and the message gives the
+    `nrpic-queue add` line; with the marker, the cap still holds: five live jobs of the account (held by the
+    test) refuse it, four accept it, a failing squeue refuses it. The fake jobs and their release files live
+    outside the worktree, which stays clean."""
+    rel = os.path.join(fx["root"], "release-cap")
+    os.makedirs(rel, exist_ok=True)
+    hold = os.path.join(fx["root"], "hold-cap.sh")
+    F.write_exe(hold, HOLD.replace("@REL@", rel))
+    env = F.H.build_env(F.H.Worktree(A))
+    names = [f"cap{i}" for i in range(5)]
+    sq = os.path.join(fx["fakebin"], "squeue")
+    orig = open(sq).read()
+    runs = os.path.join(A, "tracks", "A-emd-pbh", "runs")
+    scr = os.path.join(fx["repo"], "scratch", "A-emd-pbh")
+
+    def snap():
+        return (sorted(os.listdir(runs)), sorted(os.listdir(scr)), F.sh(["git", "-C", A, "rev-parse", "HEAD"]).stdout,
+                F.sh(["git", "-C", A, "status", "--porcelain"]).stdout)
+    args = ["submit", "--kind", "scouting", "--gate", "G3", "--purpose", "one job too many", "--launcher", "batch",
+            "--list", "tracks/A-emd-pbh/inputs/batch.txt", "--wall", "00:10:00"]
+    want = "  harness/bin/nrpic-queue add --label <label> -- " + shlex.join(args[1:])
+    try:
+        for n in names:
+            F.sh(["sbatch", "-J", n, hold, n], env=env)
+        c.ok(wait_until(lambda: F.H.queue_count(env) == 5, 30), "queue cap: five live fake jobs of the account",
+             str(F.H.queue_count(env)))
+        before = snap()
+        r = run_cmd(A, args)
+        c.ok(r.returncode == 1 and "card runs are submitted only by the shared queue" in r.stderr
+             and want in r.stderr.splitlines() and snap() == before,
+             "one route: a direct card submission (no dispatcher's marker) is refused, registers nothing (no "
+             "manifest, no output directory, no commit), and the message gives the exact `nrpic-queue add` line",
+             r.stdout + r.stderr)
+        with F.fake_dispatch(fx["repo"], A, "A-emd-pbh") as denv:
+            before = snap()
+            r = run_cmd(A, args, env=denv)
+        c.ok(r.returncode == 1 and "queue cap: 5 jobs of this account are queued or running" in r.stderr
+             and "decision 0033" in r.stderr and snap() == before,
+             "queue cap: with the marker and five jobs queued the card submission is refused (the marker does not "
+             "lift the cap); nothing registered", r.stdout + r.stderr)
+        open(os.path.join(rel, names[0]), "w").close()
+        c.ok(wait_until(lambda: F.H.queue_count(env) == 4, 30), "queue cap: one job ended, four left")
+        before = snap()
+        r = run_cmd(A, args)
+        c.ok(r.returncode == 1 and "card runs are submitted only by the shared queue" in r.stderr and snap() == before,
+             "one route: with four jobs queued a direct card submission is still refused", r.stderr)
+        with F.fake_dispatch(fx["repo"], A, "A-emd-pbh", token="0" * 24) as denv:
+            r = run_cmd(A, args, env=denv)
+        c.ok(r.returncode == 1 and "not being dispatched with this marker" in r.stderr and snap() == before,
+             "one route: a forged marker (another token) is refused; nothing registered", r.stderr)
+        with F.fake_dispatch(fx["repo"], A, "A-emd-pbh", hold_lock=False) as denv:
+            r = run_cmd(A, args, env=denv)
+        c.ok(r.returncode == 1 and "no dispatch is in progress" in r.stderr and snap() == before,
+             "one route: a marker while no dispatch is in progress (the submit lock free) is refused", r.stderr)
+        with F.fake_dispatch(fx["repo"], fx["wt"]["B-emd-gw"], "B-emd-gw") as denv:
+            r = run_cmd(A, args, env=denv)
+        c.ok(r.returncode == 1 and "belongs to B-emd-gw" in r.stderr and snap() == before,
+             "one route: the marker of another owner's entry is refused", r.stderr)
+        r = run_cmd(A, args[:1] + ["--dry-run"] + args[1:])
+        c.ok(r.returncode == 0 and "dry run" in r.stdout, "one route: --dry-run of a card run stays open without a marker",
+             r.stderr)
+        with F.fake_dispatch(fx["repo"], A, "A-emd-pbh") as denv:
+            r = run_cmd(A, args, env=denv)
+        rid = run_id_from(r.stdout)
+        c.ok(r.returncode == 0 and rid and "Slurm job" in r.stdout
+             and os.path.isfile(os.path.join(runs, rid, "manifest.json")),
+             "queue cap: with the marker and four jobs queued the card submission is accepted", r.stdout + r.stderr)
+        lj = os.path.join(scr, rid or "none", ".nrpic", "launch.json")
+        c.ok(os.path.isfile(lj) and F.H.QUEUE_DISPATCH_VAR not in open(lj).read(),
+             "one route: the marker is not passed on into the job's settings", lj)
+        if rid:
+            wait_until(lambda: run_cmd(A, ["finish", rid]).returncode == 0, 120, 1.0)
+        open(sq, "w").write("#!/bin/bash\necho 'squeue: error: Unable to contact slurm controller' >&2\nexit 1\n")
+        before = snap()
+        with F.fake_dispatch(fx["repo"], A, "A-emd-pbh") as denv:
+            r = run_cmd(A, args, env=denv)
+        c.ok(r.returncode == 1 and "squeue did not answer" in r.stderr and snap() == before,
+             "queue cap: with the marker, when squeue fails the card submission is refused; nothing registered",
+             r.stdout + r.stderr)
+    finally:
+        open(sq, "w").write(orig)
+        for n in names:
+            open(os.path.join(rel, n), "w").close()
+        wait_until(lambda: F.H.queue_count(env) == 0, 60)
 
 
 def wait_runs(c, fx, A):

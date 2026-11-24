@@ -130,13 +130,18 @@ that the orchestrator reviews.
   system-wide.
 - QUEUE CAP (set by the user on 2026-11-24, decision 0033): at most FIVE jobs of this
   account may be in the Slurm queue at once, pending, held and running ones together,
-  over all owners. Before any submission run `squeue -u $USER -h | wc -l`; at five,
-  submit nothing and say which runs wait. Submit only through `harness/bin/nrpic-run`
-  (it refuses at five; `git merge main` first so that your copy has the check), never by
-  `sbatch`, `scripts/gpu_batch.sh` or `scripts/submit_chain.sh` directly, never many jobs
-  held behind one another, and start no sequencer of your own: runs that wait are
-  written into your HANDOFF.md (and into the shared queue `harness/bin/nrpic-queue` once
-  it exists). A chain keeps one job in the queue and resubmits its next segment itself.
+  over all owners. Card runs reach Slurm by ONE route, the shared queue: after `git merge
+  main`, from your worktree, `harness/bin/nrpic-queue add --label <label> [--after
+  <label>] [--priority N] -- <the arguments you would give nrpic-run submit>` (or `--cmd
+  '<one command that submits at most one job>'` for a wrapper that continues a cut chain);
+  then `nrpic-queue list`, `status`, `show <id>`, `remove <id>`, `retry <id>`. One
+  dispatcher, started by the orchestrator, submits the next waiting run when fewer than
+  five jobs are queued, by priority and in turn over the owners (0 a request of the user,
+  2 a run a gate package waits for, 5 the rest). `nrpic-run submit` with a card launcher
+  is refused outside the dispatcher. Never `sbatch`, `scripts/gpu_batch.sh` or
+  `scripts/submit_chain.sh` directly, never jobs held behind one another, and no
+  sequencers of your own. A chain keeps one job in the queue and resubmits its next
+  segment itself. Details: `harness/RULES.md`, section "Shared card queue".
 - The cards are shared with other users of the machine (`squeue` shows their jobs), and a
   partition of higher priority can take both cards for hours and cancel our jobs: a job
   may wait long. Never wait idle for one: work on what needs no card and say in your
