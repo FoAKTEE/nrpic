@@ -362,3 +362,48 @@ cfl_number 0.5 and the corrected periodic job into the sequencer's queue; (3) HA
   that new lines go at the end only.
 - Not done (task: three things only): no review, no stage package, no RISKS update, no analysis.
   Inbox: 0 unacknowledged. Card-hours used: 0. Processors: none.
+
+## 2026-11-24 04:51-07:30 PST, batch 11 (lead; analysis round of the card runs, decisions 0026, 0027, 0030)
+
+First analysis session of this owner since the cards were loaded (decision 0030 item 5 put A's
+round after the reset; A had no session in batch 10a). Commits a123ee24 (merge of main) to the
+end of this session; runs listed below. Pause flag absent at every check.
+
+Did:
+- State: the batch-5 sequencer had submitted all 13 lines and ended normally (2026-11-23 10:40).
+  Eleven runs had ended (ten DONE at tlim; the A-mesh batch exit 3 at the guard); two were cut by
+  the preemptions of 2026-11-23 and closed FAILED with MAX_SEGMENTS reached: C-d0.42 at t = 42 of
+  51, S1L at 66 of 220. Both continued in place from their newest restart (same run ids, notes in
+  the package journals first), Slurm 5150 and 5149, PENDING. All other runs closed with
+  nrpic-run finish (7.32 card-hours recorded for the eleven plus P0L).
+- Periodic job 2 judged (periodic_threshold journal 2026-11-24): the cfl 0.5 remedy holds on the
+  refined mesh (Q1a, c, d, Q2, Q3; A-20261124-130507-10510ac); P0L ran to 140 but no horizon was
+  found (P3 refuted); F1 (A-20261124-131430-d1a2ee6): the slice traps only from t = 132, at
+  coordinate r 0.075 under four finest cells; F2 (A-20261124-131232-e7b58f8): the finder converges
+  from no start radius. Posted to core (refined-mesh-cfl05-result). Follow-up P0L6 on six levels
+  queued with D0-D5 (D0 smoke A-20261124-133457-9264c61 passed).
+- Threshold scan judged (threshold_ball entries 3-10): analysis A-20261124-131120-5c974ce. T1-T3
+  hold; the code's finite-duration threshold on mesh B is 0.41033 against the exact 0.41026
+  (A-20261124-140131-48c636c). T4 holds only through guard stops on mesh A; T5 and T6 partly
+  refuted. The first-detection mass excess is in the slice, not the finder (verify_bh's open
+  point closed). Follow-up C-d0.40 queued (T7; nestC data A-20261124-133456-2d00507).
+- Constraint floor (G2 item C3): K (A-20261124-132249-2e6b5f2), K2 (-132342-d5dc06e) and K3
+  (-134637-bd0d6eb) refuted: the early constraint norms fall with neither mesh nor particle
+  number and are not localized at refinement boundaries or density jumps. K4 (step and source
+  extrapolation) runs on processors at the end of the session.
+- A-mesh guard stop: G1 (processor restart from t = 44) repeats the card stop exactly; G2 (no
+  lapse_leak) stops 0.5 M later at another cell; G3 see threshold_ball entry 5 outcome.
+- Stage: interim G2 package (collect, checklist judged: 9 PASS, 10 OPEN, 1 FAIL; EVIDENCE, OPEN,
+  report; verify: all checks pass except open runs). REVIEW-wave3 section 7. RISKS rows 27-28
+  updated, 31-35 new. Sequencer now logs why it waits (decision 0030 item 4); sequencer_b11 started.
+- Outbox: core refined-mesh-cfl05-result (info); orch constraint-bound-ruling (request). Inbox:
+  three messages acknowledged (kb refutation and Szekeres locators; core's two answers).
+
+Changed my mind about: (1) mesh A at threshold: I predicted it could not hold a horizon; it finds
+it and then the run dies at the guard; (2) the constraint floor: I expected mesh truncation or
+particle noise; it is neither, and not localized; (3) the periodic finder: the failure is not the
+initial radius alone, the horizon sits under four cells.
+
+Mistakes of my own, no damage: a constraint-ratio range first written as 1.6-3.8 (it is 1.6-5.9),
+corrected before use; a `git commit -am` that could have swept a manifest of the finish loop (it
+did not; later commits path-limited).
