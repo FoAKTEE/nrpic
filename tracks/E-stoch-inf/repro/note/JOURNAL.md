@@ -216,3 +216,39 @@ One disagreement with the verifier kept and sent back as a request (README): P1:
 `\textpertenthousand` is per ten thousand, not per mille as VERIFIER.md section 2 reads it.
 Not done: no continued run has ended (all five PENDING in the queue at 11:02); the ablation
 figure is unchanged.
+
+## Entry 9 (2026-11-24 13:47 PST): update pass after the continued runs; plan and predictions
+
+Input: repro/figs at bd9356bc (RESULTS.md and `fig/` from figure run E-20261124-213739-9776185,
+which adds `--cl256s` and `--al2s` from pass E-20261124-213029-e937f69 to the arguments of the
+earlier figure runs). Four of the five continued runs have ended (CL256S, CL256U, AL2S, RNC256);
+RSF256 waits as queue entry q0034 (state "waiting" at 13:43 PST, `nrpic-queue show q0034`), not
+waited for.
+
+Plan: (1) bring the script copies up to date with repro/figs/figures (runs.py and joins.py as
+they are; make_figs.py, fig_signflip.py, fig_conv.py with the new functions and the note's neutral
+titles kept; fig_ablation.py and figlib.py unchanged, their differences are titles, the
+"(pending)" rule and the path depth); (2) `run_all.py`: add `--cl256s` and `--al2s`; (3)
+`ledger.py`: PENDING rows of the 256^3 rungs, of the SR sign flip and of SR level 2 at N_f become
+value rows (check "none": the verifier saw none of these records); the withdrawn "orders of the
+entry maximum 32 -> 64" (repro/figs JOURNAL entry 11, RESULTS Fig. 8 "Correction") are replaced by
+the time-matched plateau ratios; the quotes of RESULTS.md move to their new lines; the SR per-cell
+constraint row stays PENDING with RSF256 and q0034 named; (4) text, captions, Table IV, README.
+
+Predictions for R6 (registered run_all after the commit of these edits):
+- P1. Every json of repro/figs/fig (13, joins.json included) byte-equal to this run's
+  `lattice/` (the note's scripts differ from repro/figs only in titles and labels, which no json
+  carries); langevin.json equal. Refuted by any `false` in `checks.json`.
+- P2. PNGs: fig_specconv, fig_constraints, fig_ablation, fig_signflip differ from R5's (new
+  256^3 curves, SR level 2 at N_f, SR flipped run to N = 4.39, legend positions); the other 15
+  byte-equal to R5's (fig_ablation_sr included: its json changes only in a record count, which the
+  figure does not plot). Refuted if one of the 15 differs or one of the four does not.
+- P3. Ledger: 121 rows in 10 tables (113; minus 2 withdrawn orders, minus 3 PENDING rows; plus
+  256^3 maximum, its order 128 -> 256, two per-mode rms, four plateau-ratio rows, the USR
+  background order 128 -> 256, SR median sign-flip ratio, three SR level-2 rows at N_f: 13 new);
+  checks 61 yes, 15 differs, 2 beyond reach, 11 quote, 14 rerun only, 18 none (two yes rows
+  withdrawn; two yes rows and one differs row whose values now come from the longer SR flipped
+  record set to none; 13 new rows; one PENDING; one row added after the check). Refuted by
+  another count or a stop of the script.
+- P4. Compile without undefined references or overfull boxes; 23 or 24 pages; every ledger table
+  ends on its page. Refuted otherwise (read the pages).
