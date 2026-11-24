@@ -199,3 +199,20 @@ missing list empty; verdict "counts agree"; everything else in the report the sa
 kb-20261124-141551-a75bc11 (C3 25 not ok, C7 28/32 hybrid, C8 40/41, C5 counts). Refuted by any
 download row of the 18 with a status other than ok, by a remaining "no record", or by any other
 section changing.
+
+## Entry 7 (2026-11-24 17:31 UTC): P11 outcome; prediction P12
+
+Run kb-20261124-172443-40d2ae1 (`kb verify-downloads`, then `kb qa run --hybrid`; 4 cores, 7 min).
+
+- P11 HELD. verify-downloads: brief 17 ok 683, problem 1 (gr-qc/9412071, "not an e-print"),
+  exit 1 as known; extra 81 (the 78 additions and three more ids on disk that are in neither
+  list; not examined here). QA: C1 downloads ok 761, problem 1; missing none; "Verdict: counts
+  agree". `diff` of the two QA_REPORT.md files: only the time stamp, the C1 lines and the run
+  time differ (C2 to C10 identical).
+
+## Prediction P12 (before the QA figures)
+
+`kb/kbtool/qa_figures.py` on that qa.json draws fig_qa_retrieval (hybrid paper rank within 10
+for 28 of 32 questions, q12, q13, q11 and q24 the misses), fig_qa_eqcount (all points on the
+line of equality but 1502.02011 at -2) and fig_qa_claims (861 claims, nine owners). Refuted by
+a figure that shows other counts.
