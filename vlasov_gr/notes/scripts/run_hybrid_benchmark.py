@@ -843,6 +843,24 @@ def main():
     benchmark_suite3(out)
     benchmark_scaling(out)
 
+    alias_map = {
+        "s1d_xb_cent": "beam_xb_cent",
+        "s1d_exact_colless_D_bin": "beam_exact_colless_D_bin",
+        "s1d_mfm_sig0_D_bin": "beam_mfm_sig0_D_bin",
+        "s1d_hybrid_sig0_D_bin": "beam_hybrid_sig0_D_bin",
+        "s1d_hybrid_sig2_xs": "beam_hybrid_sig2_xs",
+        "s1d_hybrid_sig2_Ds": "beam_hybrid_sig2_Ds",
+        "s1d_hybrid_sig15_xs": "beam_hybrid_sig15_xs",
+        "s1d_hybrid_sig15_Ds": "beam_hybrid_sig15_Ds",
+        "s1d_hybrid_sig1e4_xs": "beam_hybrid_sig1e4_xs",
+        "s1d_hybrid_sig1e4_Ds": "beam_hybrid_sig1e4_Ds",
+        "s1d_taub_Vs": "beam_taub_Vs",
+        "s1d_taub_D2": "beam_taub_D2",
+    }
+    for src_k, dst_k in alias_map.items():
+        if src_k in out:
+            out[dst_k] = out[src_k]
+
     np.savez(OUT_NPZ, **out)
     print(f"\nSaved complete hybrid benchmark data to: {OUT_NPZ}", flush=True)
 
