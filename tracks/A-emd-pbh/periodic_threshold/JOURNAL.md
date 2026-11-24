@@ -795,3 +795,58 @@ radius at t = 140. Refuted if no start radius converges while F1 shows a trapped
 the finder fails on this slice (strongly stretched centre, chi ~ 1e-5) and core is asked. A
 restart of a card file that the processor build cannot read is recorded as such (no
 judgement of F2).
+
+## 2026-11-24 13:30Z, outcome of card job 2: Q1-Q3, P1-P4, F1 (lead of batch 11)
+
+Runs: P0L = A-20261122-235305-4ea0aa5 (closed: completed, tlim 140, one segment, 14596
+cycles); S1L = A-20261123-025907-97bab8d (to t = 66.33 so far, continued, see entry 13:00Z).
+Analyses: job2_q A-20261124-130507-10510ac (fig_job2_q.png), compare_ltb
+A-20261124-130142-9a2d6a2 (fig_compare_ltb_P0L.png), line_trapped A-20261124-131430-d1a2ee6
+(fig_line_trapped.png); every figure looked at.
+
+Q1 (the remedy on the refined mesh):
+- (a) HOLDS: L2 norm of H changes by at most a factor 1.24 (P0L) and 1.29 (S1L) between
+  consecutive records in t in [1.5, 6] (job 1: four orders at t = 2.506); cstat H_max by 1.30
+  and 1.13.
+- (b) REFUTED as worded, holds where it was aimed: H_max is above 0.1 only in the first
+  ~0.3 time units (the data's own H_max is 0.487 at t = 0 for P0L, 0.496 for S1L, relaxing); in
+  the window of job 1's jump it is 0.018 at t = 2, 0.016 at 2.4 (the zero-shift processor run R2
+  had 0.0145 at 2.37), 0.011 at 3, 0.0078 at 5. My bound did not account for the t = 0 value of
+  the refined-mesh data.
+- (c) HOLDS: largest level-4 step 0.5000 dx (cfl_number 0.5 caps it from t ~ 3.5; before that
+  the light-speed limit, 0.13-0.5).
+- (d) HOLDS: odd-even amplitude of beta^x on level 4 at most 2.7e-5 of max|beta^x| at t = 2-10;
+  the largest odd-even ratio on any level and line is 1e-2 (beta^x, level 0, t = 4: the second
+  difference of a smooth profile at the root spacing, not an alternating mode); beta^x lines
+  smooth (panel e). gt^xx on the x line at most 1.042.
+Q2 HOLDS: no guard stop; P0L reached 140, S1L 66.3 before its preemptions.
+Q3 HOLDS: 0.189 s per step (P0L, cpu time over cycles), 0.166-0.175 (S1L); 14596 steps for P0L
+(predicted 14,300).
+The remedy (cfl_number 0.5 with the Gamma-driver) is confirmed on the refined mesh with the
+relaxed lapse evolving, through t = 140 [VERIFIED, two members]. Posted to core (outbox).
+
+P0L against the exact reference B (entry 13:20Z):
+- P1 HOLDS: far lapse at |y| > 7 within 2.2e-5 of the homogeneous relaxed lapse for t > 1.
+- P2 PARTLY REFUTED: turnaround within 3 per cent of B for r0 >= 1.52 (2.9, 1.8, 1.7, 2.8 per cent)
+  but 4.9 per cent at r0 = 1.21 (R within 3.5 per cent); inner shells later than B as predicted
+  (r0 0.30-0.91: 9-27 per cent); all 14 directions identical to 1e-12 (spherical symmetry kept).
+  The central lapse falls below 0.3 at t = 91, not before 70 (refuted).
+- P3 REFUTED: no horizon found in 160 searches (60 "mean radius negative" before t = 78, then
+  100 "iteration limit without convergence", each stalled at coordinate radius 0.45 with area
+  mass ~13 and mean expansion +350). The code's tracked shells fall through R = 2 M_B from
+  coordinate ~87 (r0 = 0.30-1.21) and ~119 (r0 = 1.52), proper times 6-33 per cent after B.
+- P4 PARTLY REFUTED: no guard stop to t = 140 (holds); region norm ||H||/||16 pi E|| inside r_m
+  0.168 by t = 50 (bound 0.05; a rise from ~0.05 to 0.17 between t = 46 and 50, at the same time
+  as the jump of H_r max to ~1.5 in both members).
+
+F1 (written 13:25Z) PARTLY REFUTED: the slice holds trapped spheres on the x line only from
+t = 132 (not after 90): 2m/R reaches 0.75 at t = 100, 0.93 at 120, 1.02 at 132-140; the outermost
+marginally trapped sphere sits at coordinate r = 0.072-0.076 (3.7-3.9 cells of level 4) with
+R = 9.5-10.0 and m = 4.45-5.01, against M_B 3.14 of the outermost code shell past R = 2 M_B (not
+within 10 per cent: 1.4-1.6 times larger, close to M_B 4.99 of r0 = 1.83). The areal radius at
+r = 0.45 is 26.0 at t = 140, so the finder's stalled sphere (area mass ~13) is a round sphere far
+outside the horizon: the gauge has drawn the collapsing region with R up to ~10 inside coordinate
+r < 0.08. The Misner-Sharp mass of the slice near the centre is below M_B of the shells there
+before t ~ 130 (at t = 100, m ~ 1.4 at R ~ 4), which is why particle shells read R < 2 M_B while
+the slice is not yet trapped; whether that deficit is the slice's or the line's (innermost points,
+1-4 cells) is [TO VERIFY].
