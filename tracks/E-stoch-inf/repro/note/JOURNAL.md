@@ -428,3 +428,38 @@ changed text and every ledger table that changed). Not read in this pass: 2, 9, 
 State of RSF256: ended 14:23 PST (q0034, run E-20261124-214913-5956891), joined bit-exactly by the
 check (run E-20261124-222800-49ab461); repro/figs has not yet run `runs.py rsf256` or a figure run
 with `--rsf256`, so the SR constraint panels and the SR per-cell row stay pending.
+
+## Entry 16 (2026-11-24 15:20 PST): last pass, RSF256 rows; plan and predictions (written before R9 runs)
+
+Input: repro/figs has made the RSF256 outputs (join check E-20261124-225720-444aecc, pass
+E-20261124-225826-0bf3842, figure run E-20261124-230839-0e1e13a; its RESULTS.md section 5 and
+request to this package). Plan: copy the functional changes of repro/figs/figures (`runs.py`,
+`joins.py`, `fig_signflip.py`, `make_figs.py`; the note's neutral titles kept) into
+`manuscript/scripts/`; add `--rsf256 <pass 0bf3842>` to `LATTICE_ARGS`; take the SR one-point
+figure from `fig2_sr_contrast` (RSF256, all six panels) in place of the P256v6 field-only version;
+in `ledger.py` replace the PENDING row by value rows from this run's `fig2_sr_contrast.json` and
+`fig_signflip.json` (check "run joined": the check joined RSF256 and compared its records with the
+dump means, VERIFIER.md 8.6, but did not recompute the percentiles), and correct the label of the
+USR per-cell row (its json key `pct_H_p99_max` holds the 99.5th percentile, index 7 of figlib.QUANT,
+not the 99th); then the two `\pending` markers, the caption of the contrasts figure, the abstract,
+the discussion and the ledger appendix text. Registered run R9 = run_all.
+
+Definitions of the new numbers: per cell = percentiles of |H|/[H] (|M|/[M]) over the 256^3 cells
+of one dump, [H] the sum of the magnitudes of the terms of H; 35 dumps of the SR run, t = 0 to 8.5;
+"entry plateau" = the dumps with 0.75 <= N <= 3.2 (after the initial transient, before the rise of
+the last crossings); record mean = <|H|/[H]> of the code's record.
+
+Predictions for R9 (what would refute each):
+- P1: checks.json: every lattice json of repro/figs/fig (now 17 with fig2_sr_contrast,
+  fig3_sr_spec, fig6a_sr_Kspec) byte-equal to this run's; langevin equal. Refuted by any false.
+- P2: of the 19 manuscript PNGs only fig_contrast_sr differs from R8's (new source); all others
+  byte-equal (fig_signflip.py gains json keys only). Refuted by any other differing PNG.
+- P3: ledger 133 rows in 10 tables (125 - 1 + 9); checks 80 yes, 17 differs, 2 beyond reach, 11
+  quote, 14 rerun only, 7 run joined, 2 none. Values: largest 99.5th percentile of |H|/[H] 1.78e-10
+  at N = 4.39; max over cells 3.63e-10; at N_f 6.48e-14; fall 2.7e3; entry plateau 3.38e-12 to
+  4.50e-12; |M|/[M] 99.5th percentile 1.84e-3 at N = 4.86; record mean maximum 5.10e-11 at N =
+  4.43; dump means against the record 4.1e-15 (H), 3.8e-15 (M) (values read beforehand from the
+  committed `repro/figs/fig/fig2_sr_contrast.json` and `fig_signflip.json`, so not blind).
+  Refuted by any other value or by ledger.py stopping on a verifier string.
+- P4: compile clean, no `\pending` left in the text (the macro may stay defined); page count 25 or
+  26; every ledger table ends on its page.
