@@ -170,3 +170,24 @@ B to C, at an order between 0.5 and 2 (the metric error falls at second order, t
 per cell does not fall at fixed particles per cell); ||M||_2 likewise; the threshold members'
 ||H||_2 stays within a factor 3 of conv_ball B at equal mesh until their horizons form. Refuted by
 a norm that grows from A to C at any t <= 8, or by an order below 0.3 at t = 8.
+
+### Entry 6 outcome (run A-20261124-132249-2e6b5f2, fig_constraint_conv.png looked at): K REFUTED
+
+||H||_2 does not fall with the mesh before t ~ 6: orders A->B, B->C are -0.09/-0.24 at t = 1,
+-0.18/-0.13 at t = 2, -0.08/+0.01 at t = 4 (the norm grows slightly from A to C: refuted as written);
+it falls only late, 0.47/0.46 at t = 8 and 0.04/0.76 at t = 10. ||M||_2 at t = 0 GROWS with the mesh
+(12.5, 21.4, 39.1: order -0.8), then falls weakly (1.0/0.58 at t = 8). cstat mean |H| is flat to
+t ~ 5 (2.05e-2 on all three at t = 2) and falls at order 0.35-0.5 from t = 8. The threshold
+members' norms stay bounded (0.06-0.2) until their collapse, then jump at the horizon (interior
+included). Reading [JUDGEMENT, to be tested]: at one particle per finest cell on every mesh, the
+constraint norms are set by the deposit noise per cell, which does not fall with the mesh; the
+truncation part shows only late. The test that can refute it is the particle-number leg at fixed
+mesh (entry 7).
+
+## Entry 7, 2026-11-24 13:50Z: prediction K2 (particle-number leg of the constraint norms, before the analysis)
+
+conv_ball has A with 1, 8 and 64 times the particles (A, A-N8, A-N64) and B with 1 and 8 (B, B-N8).
+K2: at fixed mesh, ||H||_2 and ||M||_2 at t = 1-6 fall with the particle number roughly as
+N^(-1/2) (a factor 2-3.5 per factor 8) [JUDGEMENT: deposit noise]. Refuted if the factor per x8 is
+below 1.5 at t = 2 and 4 on both meshes (then the noise is not the particles' and the constraint
+floor has another cause).
