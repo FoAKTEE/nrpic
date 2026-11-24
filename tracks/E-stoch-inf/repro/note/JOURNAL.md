@@ -100,3 +100,58 @@ stacks, flat cadence and contrastive negation; the checker's 5.3, 5.6, 5.7 and 1
 the two 5.1 hits are the verdict label "not reproduced".
 Not done: parallel reviewer subagents (no tool in this session); the "Check" column waits for
 repro/verify; five rows PENDING on the continuations of repro/continue.
+
+## Entry 5 (2026-11-24 10:55): correction pass after the verifier; plan and predictions
+
+Input: `repro/verify/VERIFIER.md` (commit 0de2198a, sections 1-7). No continuation of
+repro/continue has run (all five still PENDING in the queue at 10:50, squeue); the ablation figure
+stays as it is (no level-2 SR run at N_f exists), so its PENDING row stays.
+
+Corrections the verifier calls for, and what I do with each:
+- C1 (sec. 4, "ledger defects"): rows 32, 77, 78 carry cut text. Fix in `ledger.py`: a quote row
+  may carry a display value; the needle still has to stand on its line. Values: SR factor
+  "about 3.5" (RESULTS.md:68, the line that starts with "3.5:"), "16", "1 per cent".
+- C2 (weakest point 2, sec. 7): the definitions behind about fifteen rows are only in the
+  scripts. State them in the ledger quantities and in Sec. III B: shells with more than 10 modes;
+  "linear" = the realisation's linear power from the code's lockstep mode functions with the same
+  random amplitudes; 68 per cent band = central (16th to 84th percentile); entry window
+  0.05 < N <= ln 8; sign-flip window 0.5 <= N <= ln 64; N95 on the dump cadence; a one-patch path
+  is lost once |alpha| >= 50 or non-finite.
+- C3: a "Check" column in every ledger table, filled from VERIFIER.md by line (ledger.py checks
+  that the verifier's string stands on that line, as for quotes): yes / differs (with the
+  verifier's value) / out of reach / quote / rerun only / pending.
+- C4 (sec. 2 row "Sign-flip control"): the absolute flipped H/[H] is about 1e-7, a hundred times
+  below P1:541's "~1e-5". New ledger rows from the existing json keys `H_flip_max`; text and
+  verdict: first-order rise reproduced, level not.
+- C5 (sec. 1, last row; ledger 109): the SR amplitude ratio depends on eps1 at the crossing (ours
+  1.027 at eps1 = 0.0052, verifier 1.063 at 0.0124 and 1.123 at 0.0244). New ledger row: our eps1
+  at the crossing (noise_amp.json SR.rows.2.eps1); text no longer says "holds closely".
+- C6 (weakest point 3; rows 94, 101, 83): third moments differ between two implementations of
+  the same equations (Ito skewness 1.04 against 1.116 +- 0.012; alpha^3 -> 1: -0.96 against
+  -0.74) and the half-loss time (4.80 against 5.37). Text: widths to 1-2 per cent, skewness to
+  about ten per cent; the published figure (about 1.1) lies nearer the verifier's value.
+- C7 (sec. 2 "Convergence"; rows 61-63): with the verifier's linear reference the rungs fall by
+  43 and 34 per doubling, ours by 52 and 62: text says "between fifth and sixth order", not
+  "at the sixth order".
+- C8 (rows 68, 70): maxima depend on the shell selection; with every |n|^2 shell the verifier
+  finds 9.2e-4 (USR) and 1.4e-4 (SR at N = 7.19). Under P1:520 (\textpertenthousand of textcomp =
+  per ten thousand, 1e-4) the SR comparison is then at the bound, not below it. Text softened.
+  [The verifier wrote "P1:520's 1 per mille"; the printed sign is per ten thousand: checked in the
+  source line 520 and its `\usepackage{textcomp}` (line 43). The note's reading stands.]
+- C9 (sec. 1, row 35; sec. 6 point 1): the published "~10" outliers against the published Fig. 4
+  full band (about 18): one clause in Sec. III E.
+- C10: say in the note which claims the second agent confirmed: abstract, introduction, Sec.
+  III B (paragraph on the check), the "Check" column of Table IV (verdicts) and of the ledger,
+  the errata caption (items 1, 3, 6, 7, 8, 10, 14, 15 rederived independently).
+
+Predictions for R3 (run_all after these edits; no figure script changes):
+- P1. Every lattice json and langevin.json byte-equal to R2 (E-20261124-180038-4d4651a), as in
+  R1 and R2. Refuted if any differs (`checks.json`).
+- P2. Every PNG under `figures/` byte-equal to R2's (the PNGs of R1 and R2 were byte-equal
+  except the one changed figure). Then the committed PDFs (from R2) stay and only `tables/` is
+  copied. Refuted if a PNG differs.
+- P3. Ledger: 112 rows in 8 tables (109 + two flipped-H levels + SR eps1 at the crossing); every
+  check needle found on its VERIFIER.md line (else the script stops). Refuted by another count
+  or a stop.
+- P4. Compile: no undefined references, no overfull boxes; the ledger tables with a fourth
+  column may move pages (expect 19-21 pages).
