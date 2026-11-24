@@ -158,7 +158,7 @@ def joins(out):
         R0 = rec(f"{S}/{orig}/{base}.sf.con.hst")
         ax.semilogy(R0[:, 2], R0[:, 3], color=figstyle.SERIES[0], lw=3, alpha=0.4, label="original H")
         ax.semilogy(R0[:, 2], R0[:, 6], color=figstyle.SERIES[1], lw=3, alpha=0.4, label="original M")
-        for c, ls in zip(conts, ("-", "--", ":")):
+        for c, ls in zip(conts, ("-", "--", ":", "-.")):
             Rc = rec(f"{S}/{c}/{base}.sf.con.hst")
             ax.semilogy(Rc[:, 2], Rc[:, 3], color=figstyle.SERIES[0], lw=0.8, ls=ls)
             ax.semilogy(Rc[:, 2], Rc[:, 6], color=figstyle.SERIES[1], lw=0.8, ls=ls)
