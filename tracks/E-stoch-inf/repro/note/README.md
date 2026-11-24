@@ -1,26 +1,98 @@
 # repro/note: working note on the reproduction of arXiv:2401.08530 and arXiv:2512.14649
 
 Package of Track E (decision 0028, batch R2b). The working note on the reproduction of both
-papers, written with the paper-writing skill: `manuscript/main.pdf` (19 pages, REVTeX, PRD
-style). Predictions and outcomes: `JOURNAL.md`. State: 2026-11-24 10:05 PST.
+papers, written with the paper-writing skill: `manuscript/main.pdf` (23 pages, REVTeX, PRD
+style). Predictions and outcomes: `JOURNAL.md` (entries 1-4 first draft, 5-8 correction pass
+after the verifier). State: 2026-11-24 11:05 PST, after the correction pass.
+
+Paper I = arXiv:2401.08530 (one patch), Paper II = arXiv:2512.14649 (lattice). Independent
+check = package repro/verify, `tracks/E-stoch-inf/repro/verify/VERIFIER.md` (commit 0de2198a),
+an agent that produced none of the runs and was given the raw outputs and the claims, not the
+conclusions.
+
+## What the note claims
+
+1. Equations: computer algebra confirms that the stochastic sources are gauge independent and
+   leave the constraints unsourced at linear order; 17 misprints, none of which enters a code
+   (8 of them rederived by the independent check: items 1, 3, 6, 7, 8, 10, 14, 15).
+2. Lattice (Paper II): everything linear theory fixes is reproduced with an independent code
+   (AthenaK Z4c with the stochastic sources): background, spectra and freezing, extrinsic
+   curvature through the crossings, spectral convergence (close to sixth order: factors 52 and 62
+   per doubling; 43 and 34 with the verifier's own linear reference), second-order constraint
+   plateaus and the first-order rise under a flipped source.
+3. The one-point bands of Paper II are 3.5 (SR) to 4 (USR) times wider than ours while its
+   spectra agree with ours; for a Gaussian field the spectrum fixes the band, so the factor lies in
+   the published real-space normalisation or plotting (the "amplitude factor"; cause open). The
+   independent check found the same factor from its own reading of the published figures.
+4. Constraint levels are one to two decades below Paper II's (most of it the square of the
+   amplitude factor); the flipped-sign level is about 1e-7, a hundred times below the printed
+   1e-5, while the jump flipped/proper is within a decade of the published one.
+5. Backreaction: Paper II's bound (per ten thousand, P1:520 `\textpertenthousand`) holds at
+   large scales, fails at the USR top shells (as Paper II's own figure shows), and the SR
+   comparison at N = 7.19 sits at the bound (below it on shells with more than ten modes,
+   1.4 times above with every shell). Level 1 against 0 is a difference of two time integrations
+   of one background (core's review: runs stand).
+6. One patch (Paper I): the published figures follow from a background integrated by forward
+   Euler at 0.01 e-folds (the converged background stops on the plateau, closed form) and from the
+   Ito reading of the printed equation; widths to 1-2 per cent, skewness to about ten per cent
+   (1.04 ours, 1.12 independent, about 1.1 published). The Ito term carries alpha^5, not alpha^3;
+   the USR noise amplitude is smaller than printed by sigma^2/3; the SR ratio exceeds one by
+   about 5 eps1 at the crossing.
+
+## Verdicts per figure and statement (Table IV of the note)
+
+| Item | Verdict | Independent check | Pending run |
+|---|---|---|---|
+| II Fig. 1, background | reproduced | confirmed (two eps2 maxima beyond its reach) | |
+| II Figs. 2, 4, one-point statistics | in part (shape, timing yes; amplitude no) | confirmed, factor 3.5 / 4, cause open | SR constraint rows: E-20261124-130529-da8c917 |
+| II Figs. 3, 5, spectra | reproduced | confirmed; maxima 10-15 % apart (reference) | |
+| II Fig. 6, K and shear spectra | reproduced; absent USR hierarchy in part | not redone | |
+| II Fig. 7, spectral convergence | in part (three lattices; order 5-6) | convergence confirmed; rungs within 2.3 | 256^3 rung: E-20261124-130952-4be980b |
+| II Fig. 8, constraint convergence | in part (plateaus, decay; levels lower) | records, entry maxima confirmed; field not recomputed | 256^3 rungs: E-20261124-130952-4be980b, E-20261124-130711-a5dec67 |
+| II Fig. 9, backreaction | in part (USR as the figure; level 1 = scheme difference) | review of the code: runs stand; values confirmed | SR level 2 at N_f: E-20261124-131359-49afe29 |
+| II: start of USR | reproduced as the figure shows it (text one e-fold late) | confirmed | |
+| II: power to order unity, linear agreement | reproduced | confirmed | |
+| II: outliers of order ten | not reproduced (amplitude factor) | confirmed; II's own figure reaches about 18 | |
+| II: Hamiltonian violation at next order | in part (second order; level 1-2 decades lower) | records confirmed | |
+| II: flipped sign gives first order | in part (USR first order; level 100x lower than printed) | confirmed, including the level | SR beyond 0.71 e-folds: E-20261124-130629-61fe0b0 |
+| II: momentum constraint at last crossing | reproduced (second order above about 13 cells) | not redone | |
+| II: backreaction below 1e-4 | in part (large scales yes; USR top shells no; SR at the bound) | values confirmed | SR at N_f: E-20261124-131359-49afe29 |
+| I Fig. 1, paths | reproduced (Ito, Euler background) | confirmed | |
+| I Fig. 2, skewness, kurtosis | reproduced (skewness to about 10 %) | widths confirmed; skewness 1.12 vs 1.04 | |
+| I Figs. 3, 4, distributions | reproduced (Ito) | confirmed | |
+| I: slope reached near 3.04 | reproduced only with Euler at 0.01 | confirmed (closed-form plateau stop) | |
+| I: Stratonovich evolver | not matched (figures follow Ito) | confirmed (Stratonovich widths 15-19 % off) | |
+| I: Ito term alpha^3 | corrected to alpha^5 | confirmed (derivation, Monte Carlo) | |
+| I: amplitude valid in SR and USR | USR smaller by sigma^2/3; SR 1 + about 5 eps1 | USR confirmed; SR 1.06, 1.12 on its backgrounds | |
+| I: noise off, alpha^3 -> 1, tails | reproduced; e-fold tails in part | left skew confirmed (one seed); tails not redone | |
+
+Ledger: 113 rows in 10 tables, each with the verifier's verdict and the line of VERIFIER.md
+(65 yes, 16 differs, 2 beyond reach, 11 quote, 14 rerun only, 5 none: 4 pending, 1 row added
+after the check); `ledger.py` stops if a verifier string is not on its line.
 
 ## What is in this directory
 
 | Path | Content |
 |---|---|
-| `WRITING_GUIDE.md`, `NOTATION.md` | the per-paper layer of the skill (one level above the manuscript): journal, readers, outline, allowed numbers, expert dictionary, project names, the exceptions of the program (ledger with run ids; which code each run used) |
-| `notes/2026-11-24-story.md` | skill 10.1: the story, the 300-word and the 1000-word versions, and the self-review that replaced the parallel reviewers |
-| `manuscript/main.tex`, `references.bib`, `main.pdf` | the note: I introduction; II stochastic sources (computer-algebra checks); III lattice reproduction of 2512.14649 (set-up and five differences, methods, background, spectra, one-point statistics and the amplitude factor, shear, convergence and constraints, sign flip, momentum constraint at the cut, backreaction with core's review); IV one-patch reproduction of 2401.08530 (Langevin pair, background step and the plateau stop, Ito against Stratonovich reading, Ito term alpha^5, USR amplitude sigma^2/3, other statements); V discussion; VI summary; appendices A misprints (17), B parameters, C set-up item by item, D verdicts per figure and statement with the independent check, E ledger (109 rows) |
-| `manuscript/figures/` | 19 figures, all from registered run E-20261124-180038-4d4651a (sha256 checked against its `sha256sums.txt`); one schematic (`fig_pipeline.png`, harness/style/paperfig.py) |
-| `manuscript/tables/ledger.tex`, `ledger.csv` | the ledger, built by `scripts/ledger.py` in the same run |
-| `manuscript/scripts/` | copies of `repro/figs/figures/*.py` and `repro/langevin/{lsde,analyse}.py` (titles and legends without run labels; `figlib.py` path one level deeper; `fig_ablation.py` marks only the cut SR level-2 run pending), `schem_pipeline.py`, `ledger.py`, `run_all.py`, `figstyle.py` (= python/nrpic/figstyle.py), `paperfig.py` (= harness/style/paperfig.py) |
+| `WRITING_GUIDE.md`, `NOTATION.md` | per-paper layer of the skill: readers, outline, numbers, dictionary, project names (the forbid list), exceptions (ledger with run ids; which code each run used) |
+| `notes/2026-11-24-story.md` | skill 10.1: story, 300- and 1000-word versions, self-review in place of parallel reviewers |
+| `manuscript/main.tex`, `references.bib`, `main.pdf` | the note (I intro; II sources; III lattice; IV one patch; V discussion; VI summary; App. A misprints, B parameters, C set-up, D verdicts with check column, E ledger in 10 tables) |
+| `manuscript/figures/` | 19 figures; PDFs from run E-20261124-180038-4d4651a (R2); runs R3-R5 reproduce every PNG byte for byte, so the PDFs were not replaced (their metadata alone would change) |
+| `manuscript/tables/ledger.tex`, `ledger.csv`, `ledger_checks.json` | the ledger with the check column, from run E-20261124-190054-08f916a (R5), sha256 checked against its `sha256sums.txt` |
+| `manuscript/scripts/` | figure scripts (copies of repro/figs and repro/langevin), `ledger.py` (rows, section definitions, verifier checks), `run_all.py`, `schem_pipeline.py`, `figstyle.py`, `paperfig.py` |
 
 ## Registered runs of this package
 
 | Run | What |
 |---|---|
-| E-20261124-174752-f387f2a | run_all 1 (113 s, two cores): every lattice json byte-equal to figure run E-20261124-173254-420115f, langevin.json equal to analysis E-20261123-021843-813759b (`checks.json`); superseded by run 2 for the copied files |
-| **E-20261124-180038-4d4651a** | run_all 2: same jsons (byte-equal again); ablation legend fix; ledger with every PENDING row naming its continuation; the committed `figures/` and `tables/` come from it |
+| E-20261124-174752-f387f2a | R1: first run_all (jsons byte-equal to figure run E-20261124-173254-420115f) |
+| E-20261124-180038-4d4651a | R2: ablation legend, PENDING rows; source of the committed figure PDFs |
+| E-20261124-185556-df39d1c | R3: correction pass, ledger with check column (8 tables; two ran off their pages) |
+| E-20261124-185912-45510c2 | R4: ledger split into 10 tables |
+| **E-20261124-190054-08f916a** | R5: last section renamed (guide dictionary); source of the committed tables |
+
+All five: production, two cores, about one minute each, 0 card-hours; every lattice json and
+langevin.json byte-equal across R1-R5 (`checks.json` of each).
 
 ## How to rerun and rebuild
 
@@ -31,57 +103,51 @@ harness/bin/nrpic-run submit --kind production --gate G2 --preregistered "tracks
   --purpose "..." --package tracks/E-stoch-inf/repro/note --cores 2 -- \
   bash -c 'OMP_NUM_THREADS=2 python3 tracks/E-stoch-inf/repro/note/manuscript/scripts/run_all.py "$NRPIC_RUN_DIR"'
 R=/data/haiyangw/nrpic/scratch/E-stoch-inf/<run id>
-cp $R/figures/fig_*.pdf $R/figures/fig_pipeline.png tracks/E-stoch-inf/repro/note/manuscript/figures/   # only the names already in figures/
 cp $R/tables/* tracks/E-stoch-inf/repro/note/manuscript/tables/
+# figures: copy a PDF only if its PNG differs from the committed run's PNG (cmp figures/*.png)
 cd tracks/E-stoch-inf/repro/note/manuscript
-python3 /home/haiyangw/.claude/skills/paper-writing/scripts/check_manuscript.py --main main.tex --compile
+python3 /home/haiyangw/.claude/skills/paper-writing/scripts/check_manuscript.py --main main.tex --compile \
+  --forbid 'nrpic-run|nrpic-stage|REPRO_MAP|SETUP_AUDIT|RESULTS\.md|P256v6|USF256|RSF256|CL256|AL[012][SU]|M64[SU]|repro/|scratch/|athena_gpu'
 ```
 
-`--compile` runs `latexmk -pdf` and rebuilds `main.pdf`. The run reads the dump passes and
-records named in `run_all.py` (`LATTICE_ARGS`), the Langevin simulation E-20261123-021043-d00a314
-and the equation checks E-20261123-022009-a53e7ee (checksum-checked); `ledger.py` stops if a quoted
-line of RESULTS.md, the Langevin README, a4res/README.md or core's review message (branch
-core/noise-level2) has moved.
-
+The checker does not see a float taller than its page: read every rendered page (pdftoppm -r 75).
 When the continuations of repro/continue have ended: run the passes of repro/figs (RESULTS.md
-section 5: `runs.py rsf256`, `cl256`, `al2s`), add their run directories to `LATTICE_ARGS` in
-`run_all.py` (`--rsf256`, `--cl256s`, `--al2s`), add ledger rows for the new numbers in
-`ledger.py` (the PENDING rows name what each completes), rerun, and replace the five
-`\pending{...}` markers of `main.tex`.
+section 5), add their run directories to `LATTICE_ARGS` in `run_all.py`, replace the PENDING rows
+of `ledger.py` by value rows (the verifier column "none" until a check exists), rerun, and replace
+the `\pending{...}` markers of `main.tex` (eight, all named in the table above).
 
-## Checker (skill Sec. 8), last run on the committed text
+## Checker and pages, last run on the committed text
 
-Clean: 3.4, 3.5, 4.1, 4.3 (both), 1.3, 5.3, 5.6, 5.7, 2.5, 7.5 hardware and file names, Sec. 6
-(both), 9.1; compile: no undefined references or citations, no overfull boxes. Remaining hits,
-accepted: 5.1 (two: the verdict label "not reproduced"); 7.5 commit-hash pattern and 7.7 project
-names (run ids and paths in the ledger appendix and in `scripts/`, guide exception 1); 7.6 (one:
-"no defect" about the reviewed code, guide exception 2); 9.3 (legend calls in the scripts:
-`figstyle.py` sets `legend.frameon = False` for every legend). Every page of the PDF was read
-(75 dpi renders; JOURNAL entries 3 and 4).
+Compile: 23 pages, no undefined references or citations, no overfull boxes. Checker with the
+forbid list: remaining hits accepted under the guide: 5.1 (two: the verdict label "not
+reproduced"), 7.6 (one: "no defect" about the reviewed code, exception 2), 7.5 and 7.7 only in
+`tables/ledger.tex` and `scripts/` (exception 1), 9.3 in `scripts/` (`figstyle.py` turns frames
+off). Every page read at 75 dpi (JOURNAL entries 6-8): pages 1-11 pixel-identical to the R3
+build read in full, pages 12-23 read on the R5 build.
 
-## What is not done
+## What is still open
 
-- PENDING in the note, each with the continuation that completes it (ledger rows): 256^3 rungs of
-  the convergence figures (E-20261124-130952-4be980b, E-20261124-130711-a5dec67), the SR level-2
-  curve at the end of the run (E-20261124-131359-49afe29), the SR constraint rows of the
-  one-point figure (E-20261124-130529-da8c917), the SR sign flip beyond the first e-fold
-  (E-20261124-130629-61fe0b0). Not waited for (cards held by another user's job).
-- The "Check" column of the verdict table: only the backreaction rows carry an independent check
-  (core's review of branch core/noise-level2 on Fable, "runs stand"). The fresh verifier of this
-  batch (package repro/verify) had produced nothing when the note was written; the correction
-  pass fills the column.
-- Skill 10.1 step 4: no parallel reviewer subagents (this session has no tool to start them);
-  one self-review in their role (story notes).
+- PENDING (five continued runs of repro/continue, queued behind another user's job, not waited
+  for): see the last column of the verdict table. The ablation figure is unchanged: the SR
+  level-2 run at N_f does not exist yet (E-20261124-131359-49afe29).
+- Not redone by the independent check: extrinsic-curvature spectra, momentum constraint against
+  cells per wavelength, the gauge families, nine of the 17 misprints, the constraint field from
+  the metric with an independent stencil, the tails of the one-patch distributions.
+- Not resolved: the cause of the amplitude factor (only the authors' normalisation of the
+  real-space draw can settle it); the 7 per cent difference of the Ito skewness between two
+  implementations of the same equations (1.04 against 1.116 +- 0.012); the half-loss time on the
+  converged background (4.80 ours, 5.36-5.38 independent, different loss criteria).
+- Skill 10.1 step 4 (parallel reviewers) was not run: no subagent tool in these sessions.
 
 ## Requests
 
-- repro/verify (fresh verifier): check from the artefacts (a) the plateau stop and the
-  Euler-0.01 background, (b) that the one-patch figures follow the Ito reading at step 0.01,
-  (c) the alpha^5 Ito term, (d) the USR amplitude factor sigma^2/3, (e) the amplitude factor of
-  the one-point bands (a judgement from reading the published figures), (f) the level-1 reading
-  of the ablation figure; their verdicts go into the "Check" column of Table IV.
-- Lead of E: when the continuations end, the update described under "How to rerun"; SETUP_AUDIT
-  item 4 still says N* + 8.04 for SR, the note uses 8.10 (request of repro/figs).
+- repro/verify: VERIFIER.md section 2 ("All below P1:520's 1 per mille") reads
+  `\textpertenthousand` as per mille; with textcomp (P1 source line 43) it is per ten thousand,
+  1e-4. Under that reading your USR top-shell value (9.2e-4) and your SR value at N = 7.19
+  (1.4e-4) exceed the bound; the note uses this reading. Please confirm or contest. Also your
+  "overlap only N < 0.39" for the SR flipped run: our records give common records to N = 0.71
+  (ledger, sign-flip table); please say which records you read.
+- Lead of E: when the continuations end, the update under "How to rerun"; SETUP_AUDIT item 4 still
+  says N* + 8.04 for SR, the note uses 8.10 (request of repro/figs, unchanged).
 - core (minor, python/nrpic/figstyle.py): save PDFs without a creation date (or honour
-  SOURCE_DATE_EPOCH), so a rerun of the figure scripts gives byte-identical PDFs; every rerun now
-  changes all committed PDFs by their metadata only.
+  SOURCE_DATE_EPOCH), so reruns give byte-identical PDFs (unchanged request).

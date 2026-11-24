@@ -162,7 +162,7 @@ Predictions for R3 (run_all after these edits; no figure script changes):
   of the script in scratch/E-stoch-inf/tmp/ledgertest) gives 113 rows; checks: 65 yes, 16
   differs, 2 beyond reach, 11 quote, 14 rerun only, 5 none (4 pending, 1 new row).
 
-## Entry 6 (2026-11-24 11:10): outcome of R3; a page overflow found on the pages; prediction for R4
+## Entry 6 (2026-11-24 10:58): outcome of R3; a page overflow found on the pages; prediction for R4
 
 R3 = E-20261124-185556-df39d1c (registered, production, two cores, 65 s, commit df39d1c).
 - P1 held: twelve lattice jsons and langevin.json byte-equal to R2 (`checks.json`).
@@ -184,7 +184,7 @@ ledger 113 rows in 10 tables with the same check counts; after the compile every
 ends with its bottom rule on the page (read pages 15 to the end). Refuted if a json, PNG or count
 differs or a table is still cut.
 
-## Entry 7 (2026-11-24 11:16): outcome of R4; prediction for R5
+## Entry 7 (2026-11-24 11:00): outcome of R4; prediction for R5
 
 R4 = E-20261124-185912-45510c2 (registered, production, two cores). Prediction of entry 6 held:
 jsons and langevin.json byte-equal (`checks.json`), all 19 PNGs byte-equal to R3, 113 rows in 10
@@ -194,3 +194,25 @@ terms" is a term of the guide's dictionary (Sec. 6, prefer "stochastic sources")
 section "One-patch drift and noise amplitude".
 Prediction for R5 (run_all at the commit of the rename): identical to R4 except the caption and
 label of the last ledger table; checker without the Sec. 6 hit; 23 pages. Refuted otherwise.
+
+## Entry 8 (2026-11-24 11:05): outcome of R5; final state of the correction pass
+
+R5 = E-20261124-190054-08f916a (registered, production, two cores). Prediction of entry 7 held:
+jsons and langevin.json byte-equal, 19 PNGs byte-equal to R4, the ledger differs from R4 only in
+the caption and label of its last table (diff with run ids masked); checker without the Sec. 6
+hit; 23 pages, no undefined references, no overfull boxes. Tables copied from R5 (sha256 found
+in its `sha256sums.txt`); figure PDFs stay from R2 (PNGs byte-equal R2 to R5).
+Pages: 1-11 of the final build are pixel-identical to the R3 build that I read in full; 12-23
+read on the final build. Every ledger table ends with its bottom rule on its page.
+Corrections C1-C10 of entry 5 are applied: C1 rows 32, 77, 78 carry "about 3.5", "16",
+"1 per cent"; C2 definitions in Sec. III B and in each ledger caption; C3 check column (65 yes,
+16 differs, 2 beyond reach, 11 quote, 14 rerun only, 5 none); C4 flipped level 9.9e-8 (SR),
+1.3e-7 (USR) against the printed 1e-5, in text and verdicts; C5 SR amplitude with eps1 = 5.2e-3
+at the crossing; C6 widths 1-2 per cent, skewness about 10 per cent, loss criterion stated; C7
+convergence "close to sixth order", factors 52 and 62 against 43 and 34; C8 SR backreaction "at
+the bound"; C9 II's Fig. 4 reaches about 18 against its text's ten; C10 abstract, introduction,
+Sec. III B, discussion, errata caption, Table IV check column.
+One disagreement with the verifier kept and sent back as a request (README): P1:520's
+`\textpertenthousand` is per ten thousand, not per mille as VERIFIER.md section 2 reads it.
+Not done: no continued run has ended (all five PENDING in the queue at 11:02); the ablation
+figure is unchanged.
