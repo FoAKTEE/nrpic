@@ -549,7 +549,7 @@ full colour range of K (B-20261124-135412-ab31dae) washes the plane out, so the 
 first drawing (B-20261124-133709-85c4be7, 99.5 per cent range, saturated in the core) and the
 script returns to that range.
 
-## 2026-11-24 09:32 PST (resumed lead session, batch 11b): Newtonian reference moved to processors; prediction
+## 2026-11-24 09:29 PST (resumed lead session, batch 11b): Newtonian reference moved to processors; prediction
 
 The cards are held by another user's priority job until about the morning of 2026-11-25
 (decision 0032 item 2), so card job 5167 (B-20261124-131438-5d7e049) would wait about a day. The
