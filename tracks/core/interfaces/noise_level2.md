@@ -1,11 +1,12 @@
 # Stochastic backreaction of level 2: the curvature perturbation as a mesh field
 
-Owner: core, branch `core/noise-level2` (decision 0029 item 2). Written on Opus because the
-weekly window does not hold a Fable session; it enters a release only after a review of
-the diff on Fable. Request: Track E, `repro/scope/outbox_draft/core_noise_level2.md`
-(branch `track/E-stoch-inf`). Paper: P1 = arXiv:2512.14649 v2,
-`kb-data/raw/arxiv/2512.14649/v2/src/PRD_v2.tex`, lines `P1:<n>`. Journal of the tests:
-`tracks/core/JOURNAL-noise-level2.md`. Results: section 9 (filled after the tests).
+Owner: core, branch `core/noise-level2` (decision 0029 item 2). Written on Opus on
+2026-11-22; reviewed on Fable on 2026-11-24 (decision 0031 item 4): section 12 has the
+verdicts, what the review changed, and the verdict for release v0.7. Request: Track E,
+`repro/scope/outbox_draft/core_noise_level2.md` (branch `track/E-stoch-inf`). Paper:
+P1 = arXiv:2512.14649 v2, `kb-data/raw/arxiv/2512.14649/v2/src/PRD_v2.tex`, lines
+`P1:<n>`. Journal of the tests: `tracks/core/JOURNAL-noise-level2.md` (entries 0 to 5
+the implementation, 6 to 14 the review). Results: sections 9 and 12.
 
 ## 1. What P1 does and what the code did before
 
@@ -29,20 +30,27 @@ level 2 is impossible (local coefficients need a field), and the mode equation u
 continuum k^2 where P1's real-space field sees the stencil of the Laplacian (Track E,
 `SETUP_AUDIT.md` item (c)).
 
-## 2. The option
+## 2. The options
 
     <scalar_field>
     noise_level   = 2                 # 0, 1 as before; 2 = local coefficients (new)
     noise_mode_eq = mesh              # shells (default for 0, 1) | mesh (default and only
                                       # choice for 2); read only if present
     noise_level2_background = means   # means (default) | friedmann; read only if present
+    noise_level2_laplacian  = metric  # metric (default) | covariant | flat; level 2, read
+                                      # only if present (review; section 3)
+    noise_background_eq = constraint  # constraint (default) | evolved; read only if
+                                      # present (review; section 6a)
     noise_rmodes_dump = false         # per-mode record next to each dump; only if present
 
 `noise_mode_eq = mesh` with level 0 or 1 is P1's own form of those levels (the mesh field
-with the uniform coefficients of the level); with it, the ablation of P1 Fig. 9 compares
-runs that differ by the coefficients only. Without these lines nothing changes: the
-number of evolved variables, the task list, every kernel and every output stay as in
-core-v0.6 (byte regression, section 8).
+with the uniform coefficients of the level). With `noise_background_eq = evolved` beside
+it, level 0 takes the same time step as level 1 on a homogeneous mesh, and an ablation of
+P1 Fig. 9 compares runs that differ by the coefficients only; with the default
+(constraint) level 0 and level 1 differ at fourth order in the time step before any
+backreaction (section 12, finding F1). Without these lines nothing changes: the number of
+evolved variables, the task list, every kernel and every output stay as in core-v0.6
+(byte regression, sections 9 and 12).
 
 ## 3. The two mesh fields and their equations
 
@@ -53,9 +61,14 @@ the code's variables 9 phidot_b^2/K_b^2 is
 
     Z = 9 Pi^2/K^2  ( = Pi^2/H^2 = eps1/(4 pi) ),
 
-and Pi_R = Z n.d R. [JUDGEMENT] For alpha = 1, beta = 0 this is P1's form term by term; for
+and Pi_R = Z n.d R. For alpha = 1, beta = 0 this is P1's form term by term; for
 another lapse it is the normal-observer form, the same choice the code made at levels 0
-and 1 (the background proper time runs at alpha_b). The shift sign of P1's BSSN appendix
+and 1 (the background proper time runs at alpha_b). [VERIFIED in the review as the right
+reading: P1:237 sets alpha_b = 1 where phidot_b is defined, P1:485 lists Pi_b as the
+background input, and with a uniform lapse alpha_b(t) the printed system is eq. (Req) in
+proper time only if phidot_b = dphi_b/dtau; read as d_0 phi_b it would add the friction
+2 dln alpha_b/dtau at zeroth order. With alpha = 1, beta = 0, the gauge of P1 and of every
+run of Track E, the two readings are the same number in every cell.] The shift sign of P1's BSSN appendix
 is opposite to its ADM one (Track E `EQUATIONS.md` conventions); in the code's sign the
 equations are
 
@@ -65,14 +78,27 @@ equations are
 with the stencils of the field: sixth-order centred differences at nghost = 4 (`Dxx`,
 `Dxy`), the advective stencil `Lx` along the shift, and the field's Kreiss-Oliger term
 (`<scalar_field> diss`). d_i d^i of P1 is read as gamma^ij d_i d_j R = psi^-4 gt^ij d_i d_j R
-(partial derivatives, no Christoffel term: P1 prints partial derivatives; the difference
-from D_i D^i R is of second order) [JUDGEMENT].
+(partial derivatives, no Christoffel term) [JUDGEMENT, kept by the review]. Three readings
+exist: `flat`, psi^-4 delta^ij d_i d_j R (only the quantities P1 names as promoted: phi_b,
+K_b, alpha_b, beta_b at P1:323, X_b at P1:487); `metric`, the default; `covariant`,
+D^i D_i R. At the order P1 derives (first; P1:496, 790) the three are one equation. They
+differ by a first-order metric perturbation times a derivative of R, which is the order of
+level 2 itself, where P1 gives a heuristic (P1:323) and no derivation: "of second order"
+is true of the difference and of all of level 2, and decides nothing. What decides the
+default: P1 prints partial derivatives in this equation and covariant ones in the field
+equation on the same page (P1:224, 291-292), so `covariant` is not the print; `metric`
+and `covariant` share the principal part, the light cone of the evolved metric, where
+`flat` has the cone of the conformally flat metric. What the others change is measured
+(`noise_level2_laplacian`, section 12, R2): 0.20 per cent (covariant) and 0.27 per cent
+(flat) of the level-2 effect in the slow-roll case, because the metric and K carry
+perturbations of order eps1 R while Z = 9 Pi^2/K^2 carries 2 delta Pi/Pi of order R: level
+2 is, in practice, the local Pi^2.
 
 Coefficients:
 
 | level | alpha | K | Z | psi^-4 gt^ij | shift |
 |---|---|---|---|---|---|
-| 0, mesh | box mean of the lapse | -3 H of the Friedmann lockstep | Pi_b^2/H^2 of the lockstep | a^-2 delta^ij, a of the lockstep | none |
+| 0, mesh | box mean of the lapse | -3 H of the lockstep (H from the Friedmann constraint; `evolved`: K_b itself) | Pi_b^2/H^2 of the lockstep | a^-2 delta^ij, a of the lockstep (exp(ln a); `evolved`: chi_b^(2/p)) | none |
 | 1, mesh | box mean | <K> | <Pi>^2/H^2, H = -<K>/3 | a^-2 delta^ij, a = <chi>^(2/p) | none |
 | 2 | local | local Khat + 2 Theta | local 9 Pi^2/K^2 | local | local |
 
@@ -108,7 +134,8 @@ At each stage, of the stage's state:
 
 with the same tables cos, sin of 2 pi n (g + 1/2)/N as the synthesis, as three
 one-dimensional sums in the opposite order (over n_x for every row, over n_y for every
-pair (n_x, n_y), over n_z for every mode), MeshBlock by MeshBlock, each mode accumulated
+pair (n_x, n_y), over n_z for every mode; at level 2 V is formed once per call in a work
+array of one value per cell, review), MeshBlock by MeshBlock, each mode accumulated
 by one thread in a fixed order (repeatable bit for bit at a fixed decomposition, on the
 card as on processors). For a field synthesized from coefficients c_m of the mode set
 (2 n_max < N) the projection returns c_n exactly (discrete orthogonality), so at t* the
@@ -126,11 +153,44 @@ mode n (the amplitude alpha_n is already inside c_R, c_V). Kick factors, project
 the draw: unchanged. Window, its derivatives, H, eps1, eps2 of the kicks: uniform, from the
 background (they multiply Fourier coefficients).
 
-Which background the window uses at level 2 P1 does not state (Track E request item 2;
-[TO VERIFY] from P1's text only). Choice: the box means (as level 1), so that level 2 is
-level 1 plus the local coefficients of the mode equation, and a homogeneous slice gives
-level 1 to rounding [JUDGEMENT]; `noise_level2_background = friedmann` takes the
-Friedmann lockstep instead (level 0 plus local coefficients).
+Which background the window uses at level 2 P1 does not state (Track E request item 2):
+P1:783 defines the levels for "the coefficients appearing in" the mode equation and for
+nothing else. Choice: the box means (as level 1), so that level 2 is level 1 plus the
+local coefficients of the mode equation, and a homogeneous slice gives level 1 to rounding
+[JUDGEMENT, kept by the review]; `noise_level2_background = friedmann` takes the Friedmann
+lockstep instead. Measured (section 12, R3): the choice changes the projected coefficients
+by 2.3e-8, 1.6e-4 of the level-2 effect.
+
+A third choice, not named before the review: the kick factors alpha_b Pi_b/H and
+alpha_b eps1 multiply the real-space fields I_R and T_ij and could be local at level 2
+(the window and the friction term multiply Fourier coefficients and cannot). They are
+uniform, from the background of the window [JUDGEMENT]: P1's levels do not cover them.
+Local factors would add (delta Pi/Pi) I_R, of the order of the level-2 effect; not
+implemented.
+
+## 6a. The lockstep background and `noise_background_eq` (review)
+
+The background of level 0 (and the record of the Friedmann background in every history
+file) is the lockstep data (t, phi_b, Pi_b, ln a) with H from the Friedmann constraint,
+H^2 = (8 pi/3)(Pi_b^2/2 + V): `constraint`, the released form. `evolved` adds chi_b and K_b
+(two values at the end of the lockstep vector, after the mode functions) and integrates the
+homogeneous universe in the variables and with the equations of the mesh,
+
+    d_t phi_b = alpha Pi_b,                 d_t Pi_b = alpha (K_b Pi_b - V'),
+    d_t chi_b = -(p/6) alpha chi_b K_b,     d_t K_b = alpha (K_b^2/3 + 4 pi (2 Pi_b^2 - 2 V)),
+
+with H = -K_b/3 and a = chi_b^(2/p), the arithmetic of level 1 on the box means (p =
+chi_psi_power; ln a is still integrated, as a record). Initial values: the box means, or
+with `id = stochastic` chi_b = 1 and K_b = -sqrt(24 pi (Pi_b^2/2 + V)), the problem
+generator's own expression. The `.modes` record gets one more header line (chi_b, K_b);
+the restart file holds the two values with the lockstep data. Why: with `constraint`,
+level 0 and level 1 are two fourth-order integrations of one background and differ by
+their truncation errors (5.7e-5 in the mode coefficients at 32^3 and Courant 0.25,
+falling by 16 per halving of the step; 7.0e-6 at 256^3), which is what a comparison
+"level 1 against level 0" then shows; with `evolved` they agree to 8e-12 on a homogeneous
+mesh (section 12, F1, R8, R11). P1 reads (phi_b, Pi_b, K_b, X_b) as its background
+(P1:485) and evolves level 0 "with the same initial conditions and numerical scheme"
+(P1:785): `evolved` is the reading of that sentence [JUDGEMENT].
 
 The per-shell mode functions of the lockstep record are still integrated (continuum k^2):
 they are the linear reference written into every `.modes` file, and the comparison of the
@@ -142,12 +202,22 @@ projected coefficients with them is test T3.
 |---|---|
 | R, Pi_R in u0, u1, u_rhs (264^3 cells with ghosts) | 6 x 147 MB = 0.88 GB |
 | projection work arrays (2 fields: rows 2 x 65 x 256^2, pairs 2 x 6.4 k x 256, modes 2 x 549 k; complex) | 0.21 GB |
+| V = Pi_R/Z of the stage, level 2 only (256^3 cells; review) | 0.13 GB |
 | boundary buffers | +2 of the field's variables |
 
-Operations per stage: the projection costs about one third of the six-field synthesis
-(the sum over n_x dominates: 2 fields instead of 6); the right-hand side of R and Pi_R is
-small against the Z4c right-hand side. Expected: +5 to +10 per cent of the time of a step
-at 256^3 against level 0 [TO VERIFY by the card smoke runs at 64^3, section 9].
+Measured on one A100 at 256^3 with the executable of 6ca93cba (Track E's ablation runs,
+throughput of the whole run with its dumps, from the chain logs): level 0 with the shells
+1.27e7 zone-cycles/s (P256v6, E-20261121-202935-31520bc: 0.509 card-hours for 1386
+cycles), level 0 on the mesh 1.127e7 (AL0S), level 1 on the mesh 1.123e7 (AL1S), level 2
+6.91e6 (AL2S): the mesh path costs 13 per cent of a cycle and level 2 a further 63 per
+cent, not the 5 to 10 per cent this section estimated. Cause by reading: the first sum
+of the projection recomputed V = Pi_R K^2/(9 Pi^2) for each of the 65 rows from four
+arrays (1.1e9 divisions and 35 GB of reads per stage against 16.8e6 and 0.5 GB when V is
+formed once). The review forms V once per stage; the outputs are the same bytes on
+processors (R1). The cost on the card with that change is NOT measured: the card job of
+the review (`analysis/noise_level2/card_review.list`: 60 cycles at 256^3, level 2 and
+level 0 on the mesh; prediction: ratio at most 1.18, was 1.63) waits for the queue.
+On processors the difference never showed (64^3, six threads: 1.03 and 0.99).
 
 ## 8. Tests (predictions in the journal before they run)
 
@@ -164,8 +234,17 @@ at 256^3 against level 0 [TO VERIFY by the card smoke runs at 64^3, section 9].
 - T5 card smoke runs at 64^3, slow-roll and inflection inputs, levels 0 and 2, timing.
 - T6 non-finite guard: a background with Pi = 0 at level 2 (Z = 0) must stop with exit
   status 3.
+- Review (journal entries 6 to 14; scripts in `analysis/noise_level2/`): R0 the tests
+  above again (`cpu_tests.py`, `bytecmp.py`); R1 the reviewed source against 6ca93cba,
+  byte for byte; R2 readings of the Laplacian, R3 background of the window, R4 a lapse
+  that is not 1 (`review_tests.py`); R5 card (`card_review.list`, `card_review.py`); R6
+  threaded build before and after (`omp_identity.py`); R7 distance of the local Z from
+  zero in Track E's level-2 runs (`pi_range.py`); R8 level 1 against level 0 on the mesh
+  against the time step (`level01_dt.py`); R9 Track E's per-mode records at 256^3
+  (`ablation_modes.py`); R10 byte regression against core-v0.6; R11 the evolved
+  background (`level0_evolved.py`); the example input (`example_check.py`).
 
-## 9. Results (2026-11-22; journal entries 1 to 4)
+## 9. Results of the implementation (2026-11-22; journal entries 1 to 5; repeated in the review, section 12)
 
 Executables: `scratch/core/exe/core_noise-level2/` (source commit 6ca93cba; READY there).
 Runs: tests core-20261123-025040-384fbdd (32^3, nmax2 = 64, slow-roll input, 3.14
@@ -187,7 +266,7 @@ core-20261123-025738-35c2552, processor timing core-20261123-030705-6b6a4bd.
 | T6 guard (Pi = 0 at level 2) | warning, guard stop at cycle 1, exit status 3 | as predicted |
 | restart (level 2, cycle 10 to 20) | dump, .modes, .rmodes identical | exact |
 | inflection case through USR (32^3, to t = 10.5) | both levels finite; R grows by 5600; level 2 against level 1 on the mesh 1.9e-3 rms (1.45e-2 max) at the end | run core-20261123-032120-3d5b69f |
-| T5 card smoke at 64^3 | NOT RUN: two core card jobs queued during the session (decision rule) | pending; the list is `analysis/noise_level2/card_t5.list` |
+| T5 card smoke at 64^3 | run by Track E as T5SMK with 6ca93cba (E-20261123-035724-b661081, check E-20261123-090718-6203c87): PASS; wall per cycle level 2 / level 0 = 1.16 (slow roll), 1.14 (inflection) | passed; at 256^3 the ratio is 1.63 against level 0 on the mesh (section 7) |
 | T5 on processors (threaded build, 64^3, 30 cycles, 6 threads) | all finite; wall per cycle level 2 / level 0 = 1.027 (SR), 0.992 (USR) | the extra cost is within the scatter of a shared machine (predicted +5 to +20 per cent) |
 
 What the results mean for the ablation of P1 Fig. 9: our released levels 0 and 1 (shells,
@@ -196,31 +275,114 @@ mode at the cut, 32^3 and 256^3 alike since k_max dx = pi/2 in both), which woul
 the 1e-4 effect of P1:520. Compare level 2 with levels 0 and 1 on the mesh
 (`noise_mode_eq = mesh`): those differ from level 2 at second order only (T1c, T2 split).
 
-## 10. Not done, open
+## 10. Not done, open (state after the review)
 
-- Card smoke T5 on the card (both scenarios, 64^3, levels 0 and 2): not run in this
-  session (queue rule); the card executable is built from the tested source but has not
-  run a single step on a card.
-- Byte equality card against processors is not expected (card runs with sums in another
-  order); the processor projection is deterministic for a fixed decomposition.
-- Review on Fable of the diff (decision 0029 item 2), in particular the choices labelled
-  [JUDGEMENT] in sections 3 and 6.
-- Cost at 256^3 on a card: estimated in section 7, not measured.
+- The card executable of the reviewed source has not run on a card: job R5 (64^3 level-2
+  decks against Track E's smoke runs of 6ca93cba, byte for byte; cost of a cycle at
+  256^3) waits because core has two card jobs queued. The card executable of 6ca93cba
+  passed Track E's smoke check and made the six ablation runs.
+- Level 2 with a shift, and with a lapse that varies in space: not tested (the kernel
+  uses the advective stencil of the field, which is tested with a uniform shift; a lapse
+  that depends on time is tested, R4).
+- The guard stops a level-2 run with a zero of Pi only through the kicks; with every
+  kick off the mesh R is a passive record and a non-finite value is reported at the next
+  dump, not stopped. (<z4c_guard> tests the spacetime fields only.)
+- Kick factors local at level 2: not implemented (section 6).
 - Not supported: static refinement, several ranks (the field already refuses ranks),
   the power model.
-- Possible optimisation for the review: at level 2 the projection recomputes
-  V = Pi_R K^2/(9 Pi^2) in every row of the sum over n_x (65 times per cell at 256^3)
-  and reads four arrays for it; a work array of V filled once per stage would halve the
-  memory traffic of the projection. Not done, to keep the change small.
+- The projection reads every cell once per row n_x (65 at 256^3) for both fields at
+  every level; one pass over the cells with the rows in an inner loop would cut the
+  memory traffic further. Not done: the mesh path costs 13 per cent of a cycle at 256^3.
 
 ## 11. Lines of shared files touched (for the merge)
 
-`scalar_field.hpp` (new members after `SF_names`, `SfNoiseOptions`, and a block after
-`NoiseWriteState`); `scalar_field.cpp` constructor (`nvar_sf` before the allocation, the
-allocations and `InitializeBuffers`), `InitRecv`, `CopyU` and `ExpRKUpdate` (`nvar =
-nvar_sf`), `CalcRHS_` (one call `NoiseMeshRHS`); `scalar_field_io.cpp` `Startup` (five
-lines after `NoiseSetup`); `scalar_field_noise.cpp` `NoiseInit` (levels and the new
-options), `NoiseSetup` (one call), `NoiseBackground` (`bg_level`), `NoiseModeRHS` (W', W''
-per shell), `NoiseSynthesize` (per-mode branch of the sum over n_z), `NoiseStage`,
-`NoiseFieldsOfState`, `NoiseWriteState` (one call each); `CMakeLists.txt` (one file).
-Everything else is in the new file `scalar_field_noise_mesh.cpp`.
+`scalar_field.hpp` (new members after `SF_names`, in `SfNoiseOptions` (`bg_level`,
+`mesh_r`, `rmodes_dump`, `bg_evolved`, `lap_kind`), and a block after `NoiseWriteState`);
+`scalar_field.cpp` constructor (`nvar_sf` before the allocation, the allocations and
+`InitializeBuffers`), `InitRecv`, `CopyU` and `ExpRKUpdate` (`nvar = nvar_sf`), `CalcRHS_`
+(one call `NoiseMeshRHS`); `scalar_field_io.cpp` `Startup` (five lines after
+`NoiseSetup`); `scalar_field_noise.cpp` `NoiseInit` (levels, the new options, the length
+of the lockstep vector), `NoiseSetup` (one call; two initial values; the upper bound of
+the loop that scales the mode functions), `NoiseBackground` (`bg_level`; a branch for the
+evolved background), `NoiseModeRHS` (W', W'' per shell; a branch for the evolved
+background), `NoiseSynthesize` (per-mode branch of the sum over n_z), `NoiseStage`,
+`NoiseFieldsOfState`, `NoiseWriteState` (one call each; one header line with the evolved
+background); `scalar_field_slice.cpp` `InitialSlice` (seven lines after `y0[3] = 0.0`);
+`CMakeLists.txt` (one file). Everything else is in the new file
+`scalar_field_noise_mesh.cpp`. New input: `problems/scalar/sr_stochastic_l2.athinput`.
+
+## 12. Review on Fable (2026-11-24; journal entries 6 to 14)
+
+First line of the report: RESULTS UNCHANGED: the six ablation runs made with 6ca93cba
+stand. No defect was found in what those runs computed; the reviewed source gives the
+bytes of 6ca93cba on the fifteen processor tests (R1). What the review changes is cost,
+two options, and how two of the three curves of the ablation are to be read (F1).
+
+Verdicts, item by item (V = verified by derivation or by reading the source, T = tested):
+
+| Item | Verdict |
+|---|---|
+| Well-posed form of the equation of R and its momentum | V. With Z = 9 phidot_b^2/K_b^2 = 2 eps1 Mpl^2 (P1:171), P1:316-317 at alpha_b = 1, beta = 0 is d(Z dR/dt)/dt = -3 H Z dR/dt + Z a^-2 lap R, i.e. eq. (Req) of P1:183 with Z'/Z = -eps2 H. The code's pair is that system with the code's sign of the shift: a wave equation on the light cone of the local metric, Z outside the derivative as printed |
+| Local coefficients of level 2 | V, T. Local alpha, beta, K = Khat + 2 Theta, Pi, psi^-4 gt^ij, in the right-hand side and in V = Pi_R/Z of the projection; on a homogeneous slice level 2 is level 1 to the rounding of the box means (3.7e-12 with alpha = 1, 8e-12 with alpha = a) |
+| phidot_b read as Pi | V: the right reading (section 3). The other reading changes nothing at alpha = 1, beta = 0 and is wrong at zeroth order for any other lapse |
+| Laplacian read as psi^-4 gt^ij d_i d_j R | Judgement kept (section 3). T: covariant changes the level-2 effect by 2.0e-3 of itself, flat by 2.7e-3 (R2); all three second order |
+| Background of the window at level 2 | Judgement kept. T: Friedmann against means changes the coefficients by 1.6e-4 of the level-2 effect (R3) |
+| Kick factors at level 2 | Third judgement, named (section 6); uniform |
+| Projection = adjoint of the synthesis | V, T (1.1e-14 at t*) |
+| Stage coefficients of the low-storage RK4 | V: R, Pi_R are components of u0, u1, u_rhs and take `CopyU`, `ExpRKUpdate` with the field; the lockstep data use the same gam0, gam1, beta, delta; the projection of a stage reads the state of that stage before the spacetime is advanced |
+| Restart | V, T (byte-identical; also with the evolved background). A restart file without the mesh fields is refused by the extent check |
+| Ghost exchange, boundaries | V: the variable count comes from the array; the sources need periodic faces; `NoiseMeshExchange` is the driver's sequence |
+| Non-finite guard | V, T with a kick on (exit status 3 after the cycle). Gap with every kick off (section 10). Track E's level-2 runs stay far from Pi = 0: largest abs(Pi/<Pi> - 1) over the cells 8.9e-5 (slow roll) and 6.4e-2 (inflection, at the end) (R7) |
+| Card: captures, races, copies | V by reading: no kernel captures `this`; one writer per (field, mode); host mirrors copied. The card executable of 6ca93cba passed Track E's smoke check; that of the reviewed source has not run (R5 pending) |
+| Cost | DEFECT, fixed: level 2 cost +63 per cent of a cycle at 256^3 (section 7); V is now formed once per stage. Same bytes on processors (R1); card timing pending |
+| A lapse that is not 1 | T (R4): alpha = a to 6.4, mesh against shells at equal ln a as with geodesic slicing (6.71e-2 / 6.71e-2 at the cut, 1.03e-2 / 1.03e-2 below) |
+
+Finding F1: level 1 against level 0 is a difference of two time integrations. With the
+released lockstep (H from the Friedmann constraint, a from ln a) level 0 on the mesh and
+level 1 on the mesh differ by 5.7e-5 in the mode coefficients at 32^3 (7.9e-5 at the
+cut), the same with and without perturbations and kicks (zeroth order), and the
+difference falls by 16.9, 16.4, 16.0, 15.9 per halving of the step (R8): the truncation
+errors of two fourth-order schemes for one background. At 256^3 (Track E's runs, R9) it
+is 7.0e-6 in the coefficients (1.3e-8 for |n| < 8 rising to 8.9e-6 for |n| >= 48), almost
+all of it phase: in the shell power of the mesh R it is 3.5e-7 rms, one sign, where
+level 2 against level 1 scatters about zero with 3.4e-5 rms over the shells (2.3e-5 to
+5.8e-5 by band; per mode 2.2e-4). So in Track E's figure the level-2 curve is the local
+backreaction and is not touched; the level-1 curve is the time-integration difference,
+not a backreaction. With `noise_background_eq = evolved` level 0 equals level 1 to 8e-12
+on a homogeneous mesh, and to 7e-12 with the perturbations and kicks of the slow-roll
+case (R11): the backreaction on the box means is below the rounding of the means there.
+
+Review tests (processors, 32^3, nmax2 = 64 unless said; run ids in the journal):
+
+| Test | Result | Verdict |
+|---|---|---|
+| R0 the fifteen runs of section 8 again, executable of 6ca93cba | 366 of 366 files identical to the recorded run | the tests repeat |
+| R1 reviewed source (V once, options not selected) against R0 | 366 of 366 files identical | as predicted |
+| R2 Laplacian: covariant, flat against metric | 2.85e-7, 3.93e-7 in the coefficients; level-2 effect 1.447e-4; amplitude 1e-2: ratios 1.0002e-2, 1.0000e-2 | as predicted (1e-3 to 1e-1 of the effect), at the low end |
+| R3 window at level 2: Friedmann against means | 2.34e-8 | as predicted (below 1e-2 of the effect); the comparison with "level 1 against level 0" failed and led to F1 |
+| R4 lapse = a, homogeneous slice, kicks off | level 2 against level 1: 8.0e-12; mesh against shells as with geodesic slicing at equal ln a | as predicted |
+| R6 threaded build, old against new, level 2, 64^3 | R6_RESULT | R6_VERDICT |
+| R7 abs(Pi/<Pi> - 1) in AL2S, AL2U (256^3) | 8.9e-5, 6.4e-2 at most | as predicted |
+| R8 level 1 against level 0 on the mesh, Courant 0.25, 0.125, 0.0625 | 5.3e-5, 3.3e-6, 2.1e-7 at t = 0.98 | fourth order, as predicted |
+| R9 the same pair in Track E's runs at 256^3 | 7.0e-6 per mode, 3.5e-7 in shell power | size predictions failed twice (journal entries 12, 13); the finding holds, smaller |
+| R10 byte regression against core-v0.6, options absent | R10_RESULT | R10_VERDICT |
+| R11 evolved background: level 0 against level 1 | 7.6e-12 homogeneous, 6.5e-12 perturbed with kicks; restart identical | as predicted for (a), (c); (b) on the rounding floor |
+| Final source against 6ca93cba on the fifteen runs | R1F_RESULT | R1F_VERDICT |
+| Example `problems/scalar/sr_stochastic_l2.athinput` | EX_RESULT | EX_VERDICT |
+| R5 card: identity at 64^3, cost at 256^3 | NOT RUN (queue rule) | pending |
+
+What Track E's six runs show, and what could be added: (i) level 2 against level 1 on
+the mesh is the local backreaction, clean; (ii) level 2 against level 0 on the mesh is
+the same curve to 1 per cent in shell power at 256^3; (iii) level 1 against level 0 on
+the mesh is F1; a level-1 curve that shows a backreaction needs level 0 with
+`noise_background_eq = evolved` (two more runs, AL0S and AL0U with that line, about 0.6
+and 0.75 card-hours at the cost of the old runs); in slow roll the prediction is "equal
+to level 1 to rounding"; (iv) AL2S ended at cycle 1227 of 1386 because of the cost found
+in section 7; it can be continued from its restart file with either executable.
+
+Verdict for release v0.7: fit, on two conditions. (1) The card job R5 has run and
+passed (the reviewed card executable is otherwise untested on a card). (2) At the merge
+the options enter the changelog and `coord/INTERFACES/` (this file), with the limits of
+section 10. Nothing else is open in the source: byte regression against core-v0.6 with
+the options absent passes on processors; the six source files touch shared code only at
+the lines of section 11.

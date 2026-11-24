@@ -599,7 +599,7 @@ the floor). (c) a run with the option restarted at cycle 10 gives the bytes of t
 uninterrupted run at cycle 20. Refuted if (a) exceeds 1e-9 (then the lockstep does not
 take the mesh's step), or if (b) does not fall with the amplitude.
 
-## Entry 13 (2026-11-24 06:22 PST): outcomes R9b, R10 (source 746869ef), R11
+## Entry 13 (2026-11-24 06:21 PST): outcomes R9b, R10 (source 746869ef), R11
 
 R10 with the executable of 746869ef (runs core-20261124-134935-c86b2a4 and
 core-20261124-134937-cb4bb65): the three stochastic examples 16 of 16 files each, the
@@ -622,7 +622,7 @@ scatters about zero, 2.3e-5 in the last band. For the figure of the reproduction
 256^3 the level-2 curve is not touched by the time-integration difference; the level-1
 curve IS that difference (4e-7, smooth, one sign).
 
-R11 (run core-20261124-141250-48042a3, executable of 0b3e... see manifest, ten runs,
+R11 (run core-20261124-141250-48042a3, executable of the source of 64f150ec, sha256 0222e5f0.., ten runs,
 exit 0; `fig_level0_evolved.png` looked at):
 (a) homogeneous slice, kicks off: level 0 on the mesh with noise_background_eq = evolved
 against level 1 on the mesh: rms over the modes 7.6e-12 at t = 3.2 (largest 1.1e-11;
@@ -637,3 +637,22 @@ evolved background level 1 and level 0 are the same run to rounding, and all tha
 "level 1 against level 0" showed with the constraint form (5.7e-5) was the difference
 of the two time integrations.
 (c) restart at cycle 10: dump, .modes and .rmodes of cycle 20 identical.
+
+## Entry 14 (2026-11-24 06:24 PST): final source 64f150ec: predictions of the closing runs
+
+The source is that of commit 64f150ec (`git diff 64f150ec HEAD -- athenak/` empty):
+6ca93cba plus V once per stage, `noise_level2_laplacian`, `noise_background_eq`.
+Executables: `.work/build_cpu_nl2/src/athena` sha256 0222e5f0.., `.work/build_gpu_nl2`
+d7069a4e.., the threaded one building.
+
+Predictions (all "nothing changes where the new options are absent"):
+R10f byte regression against core-v0.6 (runs core-20261124-142019-4e1c3a5 and
+core-20261124-142032-79291d0, submitted before this entry was written; no output read
+yet beyond the first three cases of the driver): every file identical, the driver PASS.
+R1f the fifteen runs of `cpu_tests.py` with the final executable: the bytes of R0
+(366 files), i.e. of 6ca93cba. Refuted by one differing file.
+R6 `omp_identity.py`: the threaded executable of the final source against the published
+threaded executable of 6ca93cba, level 2 at 64^3, three threads: every file identical.
+Example: `problems/scalar/sr_stochastic_l2.athinput` runs and gives the bytes of
+`sr_stochastic.athinput` with `noise_level = 2` (the options it names are the
+defaults).
