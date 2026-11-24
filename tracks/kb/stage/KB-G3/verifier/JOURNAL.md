@@ -18,7 +18,7 @@
   S4 judgement or background 83. Not sampled: refuted 35 (item 2 takes all of them),
   abstract 16 (open brief seeds and two record-level defect claims).
 
-## Entry 1 (2026-11-24 05:05 PST): design and predictions, written before any draw or check
+## Entry 1 (2026-11-24 04:55 PST): design and predictions, written before any draw or check
 
 ### Item 1: stratified sample of 60 claims
 
@@ -101,7 +101,7 @@ parsed.
 - P5: own rate between 93 % and 97 % of 744; refuted outside. Most failures from (iii)
   and (vi).
 
-## Entry 2 (2026-11-24 05:40 PST): scripts written, smoke tests, one bug of my extractor fixed
+## Entry 2 (2026-11-24 05:04 PST): scripts written, smoke tests, one bug of my extractor fixed
 
 - Scripts: `vcommon.py` (snapshot access, my own flattening of the raw TeX), `draw_sample.py`
   (item 1), `draw_bib.py` (item 3), `draw_code.py` (item 4), `parse_rate.py` (item 5),
@@ -119,3 +119,44 @@ parsed.
 - The smoke test showed my rate before that fix (91.1 %); the registered run below is the
   result. Criterion (iii) (no abstract chunk) failed for 25 papers in the smoke test,
   including 5 recorded "ok" (2109.01398, 2211.13659, 2501.13046, 2505.00286, gr-qc/0201056).
+  (Times of entries 1 and 2 corrected to the commit times 04:55 and 05:04; I had written
+  05:05 and 05:40 by estimate.)
+
+## Entry 3 (2026-11-24 05:15 PST): outcomes of item 1 (sample) and item 5 (parse rate)
+
+Item 1. Draw: run kb-20261124-130442-e69c2e8 (`sample/sample.tsv`, `allocation.json`). Every
+claim read at its locator rows in the raw source with `show_claim.py` and, where the stored
+line was cut, the full line; verdicts in `verdicts/sample_verdicts.tsv` (one row per claim,
+with the lines that decide it).
+- P1a S1 fulltext/checked: 17 of 18 SUPPORTED. Held (predicted 16-18). The one: 682 (D,
+  1305.2619 L443) attaches the "15 per cent" to the Gondolo-Silk distribution, which the
+  paper says of the 4Gm variant; its second sentence ("read from Fig. 1") is contradicted by
+  the kb's own verify event. Label fulltext/checked on a misworded text.
+- P1b S2 fulltext/located by machine: 17 of 18 SUPPORTED, 1 NO STATEMENT (85, "and
+  L550-563", a fragment the kb's audit already named). Held (predicted 14-17).
+- P1c S3 to_verify: 8 of 12 processing OK. FAILED on the range (predicted 9-12), at the
+  refutation bar (refuted below 8). The four NOT OK are all brief seeds with no
+  processing at all whose answer is in the store: 781 (2611.12831 L75, one global time
+  step), 714 (no "cosmolog" in 2611.12831), 809 (INSPIRE records stored for 4 of the 8 ids),
+  804 (umbrella item, parts located in other claims). The five track to_verify claims and
+  the two non-literature seeds are right to stay open, with reasons I could confirm.
+  What I underestimated: claims_brief left 30 seeds untouched, and I had assumed the
+  untouched ones were the unsettleable ones.
+- P1d S4 judgement/background: 12 of 12 OK. Held. Every annotation I followed to its lines
+  says what it claims (425: a_b = 9.9 is derived, d/M over the binary mass, not printed).
+- P1e overall 54 of 60. Held (predicted 50-58).
+- Observation, not counted: three S1 claims (448, 753, 765) are labelled fulltext on a
+  title or abstract line inside the TeX source.
+
+Item 5. Run kb-20261124-130450-578a535: 714 of 744 parsed by my definition = 95.97 %
+(recorded "ok" 719 = 96.64 %). Failures: (iii) no abstract chunk 25, (i) PDF only 3,
+(iv) sections 1 (2209.06775: 12 rows for my 36 \section/\subsection), (v) equations 1
+(gr-qc/0404056: 54 rows for my 96 displays; its body chunks hold 2921 of my 7154 words).
+Recorded ok but failing mine: 7; recorded review but passing mine: 2 (0710.0879,
+astro-ph/9607124). P5 held (93-97 %); its second half ("most failures from (iii) and (vi)")
+held for (iii) only: (vi) has 0 failures once my extractor bug was fixed.
+- Of the 5 "ok" papers failing (iii), 4 have no abstract environment in the source at all
+  (2109.01398, 2211.13659, 2501.13046, gr-qc/0201056; the abstract exists only as metadata),
+  and 2505.00286 uses a bare `\abstract` that the parser missed. Counting a metadata
+  abstract where the source has none would give 718/744 = 96.5 %; the defined value stays
+  95.97 %.

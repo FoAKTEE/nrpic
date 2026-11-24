@@ -1,0 +1,61 @@
+k	claim_id	stratum	track	reading	processing	correct	note
+1	53	S1	A-emd-pbh	SUPPORTED	NA	1	2610.23218 main.tex L440: "overall we are still Ricci-dominated at very small r/L"
+2	2	S1	A-emd-pbh	SUPPORTED	NA	1	MDPBH.tex L509-547: K=-3H, psi, gamma-tilde, A-tilde, lapse in closed form; CMC slice and E, J from the constraints at L545-546
+3	11	S1	A-emd-pbh	SUPPORTED	NA	1	MDPBH.tex L458 "The initial profile of alpha is set as", equation at L460 (terse claim)
+4	198	S1	B-emd-gw	SUPPORTED	NA	1	2605.04487 main_v3.tex L2512: numerical spectra substantially larger than the Zel'dovich ones
+5	696	S1	C-sidm	SUPPORTED	NA	1	astro-ph/0111176 L290-291: collapsing core 1e-8 to 1e-6 of the halo mass
+6	682	S1	D-bh-dress	NOT SUPPORTED	NA	0	1305.2619 L443: "factor of three" is right, but the 15 per cent belongs to the 4Gm variant of the GS formula, not to the GS distribution as the claim says; and the claim says D read 9.2 %/2.59 off Fig. 1, which the kb's own verify event contradicts (computed in a run). Label fulltext/checked endorses a misworded text
+7	408	S1	D-bh-dress	SUPPORTED	NA	1	2306.11588 L86 k ~ -1 (Lei et al., JWST); the three ids occur in main.bbl (Parnovsky L147-150); none of the three is in the papers table
+8	659	S1	F-hills	SUPPORTED	NA	1	1201.4794 ms.tex L677-679: about 80 per cent for (e-1)/D = 0 and 0.1 in the deep limit
+9	448	S1	F-hills	SUPPORTED	NA	1	1203.6185 abstract L39-42: quote present. Supporting passage is the abstract (label fulltext)
+10	676	S1	F-hills	SUPPORTED	NA	1	1804.02911 L623-624: D_max ~2.1, 2.8, 3.2, 3.2
+11	656	S1	F-hills	SUPPORTED	NA	1	0911.1136 prp.tex L763-764: 3000 equally spaced phases in [0, pi] per D
+12	753	S1	brief	SUPPORTED	NA	1	2506.21779 L108 (the abstract inside the TeX): U(1)-symmetric small localized Einstein-massless-Vlasov solutions approximated by high-frequency vacuum. Label fulltext rests on the abstract
+13	765	S1	brief	SUPPORTED	NA	1	ten \title lines match the ids; a title-level statement (brief: titles VERIFIED) now labelled fulltext
+14	736	S1	brief	SUPPORTED	NA	1	2503.14738 L275 (w0-wa preferred 2.8-4.2 sigma); 2601.20633 L180 "might not be enough ... similar order of magnitude"; 2606.05479 not located (the "besides" clause)
+15	500	S1	core	SUPPORTED	NA	1	2611.12831 table L1016-1031 N = 2e6, y_c 0.900/0.819 t_BH N/A; L1142 y_c = 0.819 at 300 M
+16	453	S1	core	SUPPORTED	NA	1	2611.12831 L21-25
+17	490	S1	core	SUPPORTED	NA	1	2611.12831 L1426-1428 and L1484: A1-A3, five seeds, 2.061e-3, 9.362e-4, 7.347e-4
+18	849	S1	kb	SUPPORTED	NA	1	2512.13673 L309: mu_crit <~ 0.02 Mpl, r_crit >~ 5.6e-6; 16 pi 0.02^2/60^2 = 5.585e-6 (my arithmetic). L114 carries no number (superfluous locator)
+19	144	S2	A-emd-pbh	SUPPORTED	NA	1	2605.04487 L2281: by t/t_k ~ 45.024 about 99 per cent of the GW energy emitted
+20	97	S2	A-emd-pbh	SUPPORTED	NA	1	2507.18312 L399, L405, abstract L87: zeta_rms^(1/10) for a realistic abundance (claim text is the tail of a split row)
+21	10	S2	A-emd-pbh	SUPPORTED	NA	1	2609.14218 L452-457: slicing condition, C = 5, alpha_b at the box corner
+22	118	S2	A-emd-pbh	SUPPORTED	NA	1	2109.04896 L143: periodic box, large enough that the outgoing mode does not reach the boundary
+23	85	S2	A-emd-pbh	NO STATEMENT	NA	0	claim text is "and L550-563", a fragment split from a note row (the kb's own audit says so); nothing to support
+24	175	S2	B-emd-gw	SUPPORTED	NA	1	2403.15126 L879-883: tensor equation, conformal Newtonian gauge, TT source
+25	221	S2	B-emd-gw	SUPPORTED	NA	1	2207.03125 L186-196: four integrability conditions; constant K gives no net momentum
+26	267	S2	C-sidm	SUPPORTED	NA	1	2105.05556 L152: Ipser: collisionless clusters stable if the fluid model is stable (quoted as the paper reports it)
+27	325	S2	C-sidm	SUPPORTED	NA	1	2009.08163 L1190-1193: quote present
+28	251	S2	C-sidm	SUPPORTED	NA	1	2601.17117 L514: "incorporate these baryonic physics and central accretion dynamics in our future work"
+29	297	S2	C-sidm	SUPPORTED	NA	1	1101.3097 L1485-1491: Kn >= 1, b = 0.25, more than five times below Chapman-Enskog, further calibration
+30	377	S2	D-bh-dress	SUPPORTED	NA	1	2608.13206 table L480-483: F = 2.958 ... 3.613
+31	396	S2	D-bh-dress	SUPPORTED	NA	1	2308.07374 L213-221: separation of scales, r_* = (m/rho_FLRW)^(1/3)
+32	443	S2	F-hills	SUPPORTED	NA	1	2404.16270 L209: marginally bound orbit 4 r_g for a Schwarzschild BH
+33	486	S2	core	SUPPORTED	NA	1	2611.12831 L917: n_lat = 124, N_p = 998,592, sum m_p = 1.155 M
+34	587	S2	core	SUPPORTED	NA	1	2611.12831 L706-725: q = alpha chi^(-7/4), eps 0.01, delta 1e-99, 0.2/0.02
+35	491	S2	core	SUPPORTED	NA	1	2611.12831 L1485: quote present
+36	554	S2	core	SUPPORTED	NA	1	2611.12831 L1033-1117: areal -> isotropic map, beta = 0, K_ij = 0, alpha = sqrt((1-2M/R) y)
+37	9	S3	A-emd-pbh	NA	OK	1	kept to_verify; my own search of MDPBH.tex for boundary/periodic/reflect finds exactly the lines the annotation names (L440-441, L483, L1394): no boundary condition stated
+38	413	S3	D-bh-dress	NA	OK	1	kept: Einstein-Straus 1945 predates arXiv; 1302.5308 L124 is the Swiss-cheese construction, as the annotation says
+39	414	S3	D-bh-dress	NA	OK	1	kept (repository statement); git: 408df57, c9aa6d2, 1311b8e are ancestors of main (tags core-v0.3+), so the annotation's "(not on main) outdated" is right
+40	416	S3	D-bh-dress	NA	OK	1	kept; scratch/D-bh-dress/D-bh-dress-20261115-120304-795eee9/scoping_table.txt has slope_rho_at_a1000 = -2.25033; 1985 original not on arXiv
+41	687	S3	F-hills	NA	OK	1	kept: a to-do of F; 2402.02178 L516, L602, L624-626 as the annotation says
+42	781	S3	brief	NA	NOT OK	0	unprocessed (seed only) but settled by the store: 2611.12831 main.tex L75 "Particles and fields share a common global time step"
+43	810	S3	brief	NA	OK	1	not a literature statement (Claude Code mechanisms); the store cannot settle it; open is right (no annotation)
+44	804	S3	brief	NA	NOT OK	0	umbrella to-do of six background items; unprocessed, although parts are in the store (the r^-9/4 profile at claim 370's locators, horizon mass at decoupling in claims 854/855); no pointer recorded
+45	714	S3	brief	NA	NOT OK	0	unprocessed but settled by the store: 2611.12831 main.tex has 0 hits for cosmolog/periodic; FLRW occurs only as the OS interior (L867, L877)
+46	812	S3	brief	NA	OK	1	to-do on the repository manifest; nothing in the store to check it against; open is right
+47	809	S3	brief	NA	NOT OK	0	unprocessed; the store answers half of it: papers.inspire_recid present for 0909.0749, gr-qc/0012059, astro-ph/9607124, 2510.11611; absent for 2409.16053, 1609.03053, 1612.06734, 1709.00267
+48	538	S3	core	NA	OK	1	kept: header fragment of a list, annotation says so
+49	20	S4	A-emd-pbh	SUPPORTED	OK	1	annotation evidence checked: L1065-1066 lattice without gaps, L1132 "reduced to 1/80"; no particle count printed
+50	217	S4	B-emd-gw	NA	OK	1	annotation evidence checked: 1704.04307 L47-48; cosmo/TESTLOG.md L65-68 (1.9e-7, 1.1e-6)
+51	618	S4	C-sidm	SUPPORTED	OK	1	astro-ph/0110561 L394 b = 25 pi/(32 sqrt 6) = 1.002; 25 sqrt(pi)/32 = 1.385 (my arithmetic)
+52	681	S4	D-bh-dress	SUPPORTED	OK	1	L696-702 caption carries no BH mass; L808 assumes m = 4e6 M_sun; the 1e6 reading stays D's judgement
+53	609	S4	E-stoch-inf	SUPPORTED	OK	1	2512.14649 L534: USR from N ~ 3.5 to ~ 8 as the annotation says
+54	425	S4	F-hills	SUPPORTED	OK	1	4 q^(2/3) = 10.08 (q=4), 17.3 (q=9); a_b = 9.9 is d/M = 1.979 (0.989) of massratio_table.tex L21 over the binary mass 0.2 (0.1): derived, not printed; L686-688 prompt disruption inside ~30 M
+55	772	S4	brief	NA	OK	1	generic background, no single source to locate; seeded, open
+56	769	S4	brief	NA	OK	1	judgement seed annotated with 4 CONFIRMED brief-check rows (titles); label unchanged as 12.8 requires
+57	792	S4	brief	NA	OK	1	background seed annotated with 2 CONFIRMED rows; label unchanged
+58	559	S4	core	NA	OK	1	annotation evidence checked: 2611.12831 L1336 v = -+0.133215 on the K_ij = 0 cluster slice
+59	823	S4	kb	SUPPORTED	OK	1	L320 prints -sqrt(2 eps1) H Mpl Psi_G; L490 geodesic gauge Psi_G = B_G = 0, so the term vanishes; the residual formula rests on run E-stoch-inf-20261115-123146-82d2fd4 (not redone)
+60	827	S4	kb	SUPPORTED	OK	1	appendix.tex L489-490 prints the (dk/sqrt(2 pi))^(3/2) prefactor; the L^(-3/2) value: item 2
