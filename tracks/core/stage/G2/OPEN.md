@@ -6,7 +6,7 @@ release core-v0.5, the release core-v0.4, and the list written after the wave-1
 integration (2026-11-15, below, with its numbering kept; items that a release changes
 are named in the section of that release).
 
-## State after release core-v0.6 (2026-11-21, batch 4a, session core-lead-6; items u, v and the products of item 4 brought up to date in batch 8, session core-lead-8; item 2 and item 4 in batch 10a, 2026-11-23, session core-lead-10a)
+## State after release core-v0.6 (2026-11-21, batch 4a, session core-lead-6; items u, v and the products of item 4 brought up to date in batch 8, session core-lead-8; item 2 and item 4 in batch 10a, 2026-11-23, session core-lead-10a, and in batch 11, 2026-11-24, session core-lead-11)
 
 **Is G2 met? No.** Criteria of the core sheet (brief 9.3, "G2: all of C3 passed,
 core-v0.1 released") and of every track's G2 (charter 9.2), item by item in
@@ -18,22 +18,26 @@ core-v0.1 released") and of every track's G2 (charter 9.2), item by item in
    oblate component in any release; the component and first collapse runs exist on the
    unmerged branch core/oblate (`REQUESTS_WAVE3.md` W27), so the row has no released
    evidence.
-2. Ladder row 4 (cluster stability threshold) is PARTIAL, closer than before. The
-   fates of the five models agree with the paper. The M/4 bisection of wave 2 gave no
-   bracket (the M/4 mesh pushes clusters outward, Track C's drift package). Batch 10a
-   judged the repeat on cells of M/8 against unkicked controls, by the rule written
-   before the runs (JOURNAL 2026-11-21T20:26Z): 0.605 member collapses (t_c 180.5 M),
-   0.680 member and control both collapse (219.5 M, 251.5 M), 0.755 stays (D = +0.0016);
-   **the threshold on M/8 with 10^4 particles is bracketed between y_c = 0.680 and
-   0.755** (fates run core-20261123-020318-e952741; `verify/LADDER.md` row 4). What is
-   still missing for the row: (a) the bracket narrowed: level 2 (0.69875, 0.7175,
-   0.73625, each with its control; chains core-20261123-020450-7e42037 to
-   -020500-9b192cd, 12 card-hours asked, predictions P5-P9 in the journal) is queued;
-   (b) the threshold at a second cell size or particle number (it is not converged; the
-   discrete threshold lies above the turning point 0.6796, since the 0.680 control
-   collapses from noise); (c) the inward drift of the stable controls (0.026 at 0.755,
-   more than the 0.01 predicted) and the growing central-lapse oscillation (+-0.03 after
-   200 M) are not explained.
+2. Ladder row 4 (cluster stability threshold) is PARTIAL. The fates of the five models
+   agree with the paper. The M/4 bisection of wave 2 gave no bracket (the M/4 mesh pushes
+   clusters outward, Track C's drift package). On cells of M/8 against unkicked controls,
+   by the rule written before the runs (JOURNAL 2026-11-21T20:26Z): level 1 (batch 10a,
+   run core-20261123-020318-e952741) bracketed between 0.680 and 0.755; level 2 (batch 11,
+   fates of all six models core-20261124-130055-9fc9901): 0.69875 member and control
+   collapse (244.25 M, 259.75 M), 0.7175 both collapse (294.25 M, 293.5 M), 0.73625 stays
+   (D = +0.0014). **Collapse within 300 M on M/8 with 10^4 particles is bracketed between
+   y_c = 0.7175 and 0.73625** (`verify/LADDER.md` row 4). What is still missing for the
+   row: (a) whether the bracket is a stability threshold or the 300-M window: the
+   surviving pairs drift inward steadily, member and control alike (50-M means of
+   alpha_c/alpha_c^eq fall to 0.933 at 0.73625 and 0.964 at 0.755 by 250-300 M), and near
+   the bracket the kick no longer matters; level 3 tests it (0.726875 member and control
+   to 600 M; the 0.73625 and 0.755 pairs continued from their 300-M restarts to 600 M;
+   chains core-20261124-130310-597d9ca to -130406-09319a0, 11.82 card-hours asked,
+   predictions P10-P15 in the journal entry 2026-11-24T13:05Z); if they collapse, the
+   cause of the drift (mesh, particle noise, deposit) becomes the item, and the criterion
+   of the row has to be one that does not depend on the window; (b) the threshold, or the
+   drift rate, at a second cell size or particle number (nothing is converged); (c) the
+   growing central-lapse oscillation of the surviving pairs is not explained.
 3. Three-way convergence (C2): each direction is shown on a different set-up
    (`verify/figs/convergence_three_way.png`: H-norm of the cluster against N, the
    expanding ball against the cell size, gauges and boundary on the ball); no single
@@ -43,8 +47,9 @@ core-v0.1 released") and of every track's G2 (charter 9.2), item by item in
    checker (`note/`, C15); the fresh-context verifier's report is in (`VERIFIER.md`,
    C16, a sample of fourteen claims; its five text defects are corrected); the
    architecture schematic is redrawn for core-v0.6 (C14). The six row-4 chains of batch 5
-   are closed (batch 10a), so the run check of the clean-export verify (C6) no longer
-   fails on them; the six level-2 chains queued in batch 10a are open runs again; also open: the ladder rows 2 and 4 rest in part on pre-program directories, now named and
+   are closed (batch 10a), and so are the six level-2 chains (batch 11); the six level-3
+   chains queued in batch 11 are open runs, which the run check of the clean-export
+   verify (C6) counts until they are closed; also open: the ladder rows 2 and 4 rest in part on pre-program directories, now named and
    inventoried by sha256 (`verify/preprogram/README.md`) but without manifests.
 
 What is met: rows 1 and 2 PASS (geodesics, Oppenheimer-Snyder; `verify/LADDER.md`),

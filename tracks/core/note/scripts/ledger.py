@@ -99,6 +99,26 @@ FIG = [
         ("m8.0.755.control.mean_alpha_200_300", "y_c = 0.755 control: mean central lapse 200-300 M", 4),
         ("m8.0.755.D", "y_c = 0.755: D = member minus control mean", 2),
     ]),
+    ("Row 4 on cells of M/8, level 2 (same rule; fates run core-20261124-130055-9fc9901)", [
+        ("m8.0.69875.alpha_eq", "y_c = 0.69875: equilibrium central lapse", 4),
+        ("m8.0.69875.member.t_c", "y_c = 0.69875 member: collapse time t_c (M)", 5),
+        ("m8.0.69875.member.t_first_ah", "y_c = 0.69875 member: first apparent horizon (M)", 4),
+        ("m8.0.69875.control.t_c", "y_c = 0.69875 control: collapse time t_c (M)", 5),
+        ("m8.0.69875.control.t_first_ah", "y_c = 0.69875 control: first apparent horizon (M)", 4),
+        ("m8.0.7175.alpha_eq", "y_c = 0.7175: equilibrium central lapse", 4),
+        ("m8.0.7175.member.t_c", "y_c = 0.7175 member: collapse time t_c (M; lapse below 0.3)", 5),
+        ("m8.0.7175.control.t_c", "y_c = 0.7175 control: collapse time t_c (M; lapse below 0.3)", 4),
+        ("m8.0.7175.member.mean_norm_200_250", "y_c = 0.7175 member: mean alpha_c/alpha_c^eq over 200-250 M", 3),
+        ("m8.0.7175.control.mean_norm_200_250", "y_c = 0.7175 control: same", 3),
+        ("m8.0.73625.alpha_eq", "y_c = 0.73625: equilibrium central lapse", 4),
+        ("m8.0.73625.member.mean_alpha_200_300", "y_c = 0.73625 member: mean central lapse 200-300 M", 4),
+        ("m8.0.73625.control.mean_alpha_200_300", "y_c = 0.73625 control: mean central lapse 200-300 M", 4),
+        ("m8.0.73625.D", "y_c = 0.73625: D = member minus control mean", 2),
+        ("m8.0.73625.member.mean_norm_250_300", "y_c = 0.73625 member: mean alpha_c/alpha_c^eq over 250-300 M", 3),
+        ("m8.0.73625.control.mean_norm_250_300", "y_c = 0.73625 control: same", 3),
+        ("m8.0.755.member.mean_norm_250_300", "y_c = 0.755 member: mean alpha_c/alpha_c^eq over 250-300 M", 3),
+        ("m8.0.755.control.mean_norm_250_300", "y_c = 0.755 control: same", 3),
+    ]),
 ]
 
 P = "paper main.tex"   # refs/arxiv_2611.12831/src/main.tex (untracked), line numbers
