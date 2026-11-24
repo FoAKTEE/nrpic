@@ -1,6 +1,6 @@
 # Stage report: D-bh-dress G2
 
-Date: 2026-11-24 · branch `track/D-bh-dress` at `a85685ac04a4` · checklist
+Date: 2026-11-24 · branch `track/D-bh-dress` at `72ebe935535b` · checklist
 `tracks/D-bh-dress/stage/G2/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
@@ -8,7 +8,7 @@ Date: 2026-11-24 · branch `track/D-bh-dress` at `a85685ac04a4` · checklist
 **FAIL**. Tag: `stage/D-bh-dress/G2-fail-20261124` (created and pushed by the orchestrator after review, decision 0003).
 
 - 12 checklist items not PASS or NA: C1 OPEN, C2 OPEN, C3 OPEN, C5 OPEN, C6 OPEN, C10 OPEN, C11 OPEN, C13 OPEN, C14 OPEN, C15 OPEN, C16 OPEN, C17 OPEN
-- no VERIFY_RESULTS.json (run nrpic-stage verify)
+- verify reported FAIL: runs
 - no VERIFIER.md (step 7: verifier subagent; decision 0016 item 1, VERIFIER_REPORT.md accepted too)
 
 ## Package documents (decision 0012)
@@ -33,9 +33,9 @@ Date: 2026-11-24 · branch `track/D-bh-dress` at `a85685ac04a4` · checklist
 | C4 | A first minimal full-GR kinetic run | ES-F (D-20261121-144631-aa7ce9b) and ES-FL (D-20261121-203150-15f2bad, 850724 particles, 500 M): kinetic matter falling into an evolved puncture in full GR; analyses D-20261123-020606-fa0046c, -020614-7ba5874. | PASS |
 | C5 | Verification report (decision 0012: STAGE_REPORT.md with EVIDENCE.md and OPEN.md; no REPORT.md) | STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md and OPEN.md written in this session; the package is not complete (C1-C3, C9-C12, C16, C17 open). | OPEN |
 | C6 | Reproducibility package | Every run registered with manifests and inputs (g2long/inputs, tools); no consolidated rerun script for G2 yet. | OPEN |
-| C7 | In the vacuum-bubble case the drift of the horizon mass does not exceed the noise floor | Criterion N of g2long entry 1 (fixed before the runs): max /D_ES1L - D_V1L/ on 100-500 M = 2.28e-4 against 2.51e-4 = 2 F_V(500) (judge_long D-20261123-020550-f9a3482); M/16 1.99e-4 on 100-300 M (H3, D-20261124-131138-0b8ffc5). Since batch 11b the floor's cause is found: the production finder's stopping rule (FP2, FP3: converged-finder vacuum drift 1.8e-5 at M/8 over 100-500 M, 3.9e-6 at M/16); with the converged finder the bubble-minus-vacuum difference is a step of 4.5-7.3e-5 (M/8) reached by 150 M and flat to 500 M, 2.3-3.7e-5 at M/16 (FP5, FP-ext; D-20261124-172508-c847ee4, fp_analyse.png looked at). Reservation: the M/4 member is pending. | PASS |
+| C7 | In the vacuum-bubble case the drift of the horizon mass does not exceed the noise floor | Criterion N of g2long entry 1 (fixed before the runs): max /D_ES1L - D_V1L/ on 100-500 M = 2.28e-4 against 2.51e-4 = 2 F_V(500) (judge_long D-20261123-020550-f9a3482); M/16 1.99e-4 on 100-300 M (H3, D-20261124-131138-0b8ffc5). Since batch 11b the floor's cause is found: the production finder's stopping rule (FP2, FP3: converged-finder vacuum drift 1.8e-5 at M/8 over 100-500 M, 3.9e-6 at M/16); with the converged finder the bubble-minus-vacuum difference is at most 7.3e-5 (M/8, 100-500 M) and 5.5e-5 (M/16, 100-300 M), without a trend in time; the bubble's horizon mass dips by 4-6e-5 at 100 M at both meshes (FP5, FP-ext, FE; D-20261124-172508-c847ee4, D-20261124-175356-0f40f1a; fp_analyse.png and fe_analyse.png looked at). Reservation: the M/4 member is pending. | PASS |
 | C8 | With matter filled in, the mass growth agrees with the integrated particle flux through the horizon | Criterion G of g2long entry 1: (iii) every 10 M bin of tau_rem <= 650 M within +-0.62 per cent of the exact LTB mass (61 bins), D2 at all 960 samples (esf_criteria D-20261123-020614-7ba5874, esf_criteria.png L; esf_bracket.png L). Reservations: one mesh and one particle number so far (FF4, FL16, FK, FN4, FNQ queued); D1 closure +9.4e-3 at 500 M (predicted below 8e-3); the step at tau_rem ~ 285 M follows the end of horizon excision at 219 M (FK tests the workaround). | PASS |
-| C9 | Schematic: Verification ladder | Verification-ladder schematic schem_ladder.png, registered D-20261124-172838-3a30e48 (paperfig style, g2long/tools/schem_ladder.py), looked at by the lead on 2026-11-24 09:28 PST; it will be redrawn as the queued runs end. | PASS |
+| C9 | Schematic: Verification ladder | Verification-ladder schematic schem_ladder.png, registered D-20261124-172838-3a30e48 and, redrawn after test FE, D-20261124-175505-a1053fa (paperfig style, g2long/tools/schem_ladder.py), both looked at by the lead on 2026-11-24; it will be redrawn as the queued runs end. | PASS |
 | C10 | Data figure: Convergence figures (one each for particle number, mesh, gauge) | Mesh: judge_conv.png (D-20261124-131149-9f0166d, three vacuum meshes) and fp_analyse.png panel (d) (converged finder, three meshes); boundary/gauge: boundary_gauge.png (D-20261124-131657-89cd963). Particle-number figure waits for FK, FN4, FNQ. | OPEN |
 | C11 | Data figure: Constraint norms against time | constraints_long.png (volume norms, D-20261123-021027-e3af9b8) and xc_plane.png (exterior annuli, D-20261124-134211-c6fce88), both looked at; region-sphere norms against time wait for FN4/FNQ/FL16. | OPEN |
 | C12 | Data figure: At least one multi-scale slice mosaic with zoom boxes | Slice mosaic with zoom boxes D-20261124-134644-2389227 (g2long/tools/slice_mosaic.py), looked at by the lead of batch 11. | PASS |
@@ -49,7 +49,26 @@ Date: 2026-11-24 · branch `track/D-bh-dress` at `a85685ac04a4` · checklist
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-Not run: `harness/bin/nrpic-stage verify D-bh-dress G2`.
+`nrpic-stage verify` on 2026-11-24T18:07:00Z, clean export of `72ebe935535b`: **FAIL**. Details: `VERIFY_RESULTS.md`.
+
+| Check | Result | Message |
+|---|---|---|
+| clean | PASS | worktree clean (outside the stage directory being assembled) |
+| sync | PASS | main is merged into the branch |
+| export | PASS | clean export of 72ebe935535b (HEAD) in /data/haiyangw/nrpic/scratch/D-bh-dress/tmp/stage-verify/D-bh-dress-G2-72ebe93-20261124T180528Z/tree |
+| size | PASS | no committed file of the track above 5 MB |
+| note | PASS | tracks/<ID>/note/main.tex present |
+| package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
+| note-pdf | PASS | note/main.pdf committed after the last .tex change |
+| style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
+| fig-script | PASS | 13 figures, each with its script |
+| min-figs | PASS | 2 schematics and 11 data figures (brief 13.4 asks at least 1 and 5 at G2) |
+| runs | FAIL | 7 of 297 runs have problems |
+| run-notes | WARN | 99 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
+| status | PASS | STATUS.md has 38 lines |
+| rerun | PASS | 13 of 13 scripts and commands ran cleanly in the export |
+| compare | PASS | 37 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| regenerate | PASS | all 26 committed figure files regenerated |
 
 ## Figures
 
@@ -94,7 +113,7 @@ Updated in the lead session of batch 11 (2026-11-24). Closed risks are kept at t
 | Risk | Likelihood | Effect | Watch | Response |
 |---|---|---|---|---|
 | R2 No lapse slices a puncture inside expanding dust and keeps its horizon mass under lapse_leak (late growth, decision 0025 item 3: mitigation in v0.7, cure later). 1+log leaves the dust off its exact curve (ES-1) but keeps the hole | certain for lapse_leak | the null test runs with 1+log only | core's cure after the usage reset | all G2 runs plain 1+log (g2long); lapse_leak runs wait for the cure |
-| R3 Floor of the null test. The production finder (mass_tol 1e-5, warm start) reports plateaus 1.3e-4 apart; re-searched with mass_tol 1e-9 the vacuum mass moves by at most 1.8e-5 (M/8) and 4e-6 (M/16) over 100-450 M (test FP, g2long entry 13). The floor of N as defined in entry 1 (production finder) stays 1.25e-4 | certain (measured) | N's margin (9 per cent) is the finder's; a stronger null test needs the converged finder | FP-ext (all dumps), a dense series needs runs with mass_tol 1e-8 | quote both: N with the production finder, and the tight-finder difference at the dumps; new null-test inputs set mass_tol_0 = 1e-8; core request finder-stopping-rule |
+| R3 Floor of the null test. The production finder (mass_tol 1e-5, warm start) reports plateaus 1.3e-4 apart; this is its stopping rule (FP2, FP3 hold, g2long entry 14, D-20261124-172508-c847ee4): with mass_tol 1e-9 the vacuum mass moves by at most 1.8e-5 (M/8, 100-500 M) and 3.9e-6 (M/16). The floor of N as defined in entry 1 (production finder) stays 1.25e-4 | certain (measured) | N's margin (9 per cent) is the finder's; the converged-finder null difference is <= 7.3e-5 (M/8), <= 5.5e-5 (M/16), no trend; the bubble's mass dips by 4-6e-5 at 100 M at both meshes (FE, entry 17) | FE4 dumps (M/4): does the dip depend on the finest level? | quote both; G2 judged on the converged finder at the dumps; new null-test inputs set mass_tol_0 = 1e-8; core request finder-stopping-rule posted 2026-11-24 |
 | R13 Late horizon drift. In vacuum with 1+log it was the outer boundary (V-1 -1.37e-4 after 165 M; gone at +-384 M, V-1B). Under lapse_leak it is not the boundary: ES-1GB (+-384 M) equals ES-1G (+-192 M) to 4.2e-9 up to 188 M; the batch-2a reading is withdrawn. ES-1's (-3.4e-4, 1+log, dust) is untested with far faces | low for vacuum 1+log; certain for lapse_leak (R2) | a gauge or boundary effect read as coupling or accretion | ES-1B | every 200 M run with the faces at +-384 M (400 MeshBlocks, 0.78 card-hours at M/8 in vacuum); far faces protect the exterior mass (ES-1GB: Misner-Sharp mass 2.741 kept on R = 119-223 M) |
 | R14 Lapse excision idle: the mesh minimum of the lapse is above alpha_exc = 0.05 near t = 6 and 15 M (1+log) and from t = 108 M on under lapse_leak (0.069 at 200 M) | certain | matter near the hole kept only by ah_exc_factor | alpha_min (history column 16) in every matter run | keep ah_exc_factor = 0.8 with the finder on; request to core (outbox lapse-excision-criterion) |
 | R4 D-pre-4's excursions (9.3e-5 at 220-255 M, 1.5e-4 at 300-340 M, same at M/8 and M/16) were attributed to the boundary; the same pattern with faces at +-768 M and its removal by the tight finder (FP) make the finder the likely cause [JUDGEMENT: D-pre-4's own dumps not re-searched] | medium | the G0/G1 wording of the floor | none | re-search D-pre-4 dumps with probe_long.py before the note cites the boundary reading again |
@@ -108,9 +127,9 @@ Updated in the lead session of batch 11 (2026-11-24). Closed risks are kept at t
 | R19 Set-up data that do not cover a larger mesh (ES-F table to 345 M, exterior = zero, found by smoke S2) | was certain, fixed for ES-FL | constraint jump inside the domain | smoke runs before every new mesh; the table header line | data maker `--rbar_max`; HANDOFF trap 14 |
 | R20 Horizon excision ends when the horizon's smallest radius passes 4 x initial_radius (nrpic.cpp:451-455): in ES-FL at 219 M; afterwards removal by the lapse rule, deeper and later, leaving steps in (iii), D3 and the closure | certain for growing holes | growth criteria biased by the removal time (+0.35 per cent in (iii)) | removal reasons in removed.bin | initial_radius_0 = 1.6 (ES-FLK, entry 6); core request ah-excision-growth-guard |
 | R21 Exterior constraints: the z4c history norms skip chi < 0.0625; the z = 0 plane norms outside 1.2 r_AH (test XC) are bounded in every long run, but in the dust they sit near 1e-3 (A1) and fall on the coarser mesh (particle sampling noise of the deposit, [JUDGEMENT]) | certain | 'constraints behave' rests on a plane, not a volume; dust residual set by particle number | region norms in FN4 (prediction XN) | volume region norms in every new input (make_followups2.py) |
-| R22 The production-finder offset changes sign over M/4 (-8e-3), M/8 (+9.5e-4), M/16 (-2.5e-4): no mesh order (P2 refuted); with the converged finder see FP4 (entry 13) | certain | no convergence statement for M_AH from the production finder | FP4 | quote mesh orders only from the converged finder |
-| R23 Card allotment: 4.29 card-hours left toward G2 before FN4; FNQ (N/4) and FL16 (M/16 growth) wait | certain | particle-number and growth mesh members late | nrpic-run budget | orch request g2-card-allotment (2026-11-24) |
-| R24 Preemptions (another user's priority jobs, 2026-11-23 and 11-24) cut chains: each consumes a segment, and a segment killed without its own restart rewrites the removal record after the resumption (FF4: 12582 duplicate records) | certain while the cards are shared | chains closed as FAILED; flux sums double-counted | chain events.log; time going backwards in removed.bin | resume from the newest restart; MAX_SEGMENTS raised in chain/config.sh; fluxio.drop_overlaps in esf_analyse/esf_criteria |
+| R22 The horizon-mass offset has no mesh order: production finder -8e-3, +9.5e-4, -2.5e-4 (P2 refuted); converged finder (A32) -8.9e-3, +1.18e-3, -1.8e-5 over M/4, M/8, M/16 (FP4 refuted). The finder's angular truncation A16-A32 is a constant -1.8e-4 on every mesh | certain | no convergence statement for M_AH itself | three-mesh differences (null test, growth) | quote convergence only of differences; the A16 offset cancels in them |
+| R23 Card allotment: raised by 10 card-hours (decision 0032 item 3); FNQ and FL16 registered (caps 3.0, 5.0); 3.86 card-hours left toward G2 with six runs reserved | low now | none while the caps hold | nrpic-run budget | no further G2 card runs without an allotment request |
+| R24 Preemptions (another user's priority jobs, 2026-11-23 and 11-24, held until about the morning of 2026-11-25) cut chains: each consumes a segment, AthenaK writes no restart on the signal, and a segment killed without its own restart rewrites the removal record after the resumption (FF4: 12582 duplicate records) | certain while the cards are shared | chains closed as FAILED; flux sums double-counted; card time lost back to the last restart | chain events.log; time going backwards in removed.bin | resume from the newest restart; MAX_SEGMENTS raised; restart every 25 M (FK, FN4, FNQ) and 12.5 M (FL16) through EXTRA_ARGS (decision 0032 item 2); fluxio.drop_overlaps in esf_analyse/esf_criteria |
 
 Closed:
 - R17 (ES-F's faces at +-192 M and executable): ES-F met every criterion except one early finder sample (g2runs entry 10); ES-FL repeats it at +-768 M.
@@ -124,4 +143,4 @@ Closed:
 
 ## Decision requested from the group
 
-not ready: three-way convergence (C2, C10) and exterior region norms (C3, C11) wait for six card runs held behind another user's priority jobs; note text (C16), G2 verifier (C17) and rerun script (C6) open; the two track criteria hold at the meshes run (C7 with the finder floor explained by test FP, C8)
+not ready: three-way convergence (C2, C10) and exterior region norms (C3, C11) wait for six card runs held behind another user's priority jobs; note text (C16), G2 verifier (C17) and rerun script (C6) open; verify FAIL only on the six unfinished card runs and one G1 gate-review run whose scratch input changed (D-20261121-165420-5d1c245); the two track criteria hold at the meshes run (C7 with the finder floor explained by FP and FE, C8)

@@ -27,4 +27,8 @@ trend in time; the bubble's horizon mass dips by 4-6e-5 at 100 M at both meshes 
    workaround). Finder stopping rule: request finder-stopping-rule to core (2026-11-24).
 5. Package items: ladder table (LADDER.md) and ladder schematic (D-20261124-175505-a1053fa, after FE) current;
    slice mosaic done (D-20261124-134644-2389227); note text on the long runs and on FP (C16); the G2
-   verifier, fresh context (C17); a rerun script (C6); `nrpic-stage verify D-bh-dress G2` without a timeout.
+   verifier, fresh context (C17); a rerun script (C6). `nrpic-stage verify D-bh-dress G2 --no-checksums`
+   (2026-11-24 10:07) passes every check but `runs`: the six card runs still open, and the G1 gate
+   reviewer's run D-20261121-165420-5d1c245 whose scratch input (tmp/gate_review_G1/review_checks.py) changed
+   after it ran (orch to say whether to mark it superseded). The full verify with checksums of the restart
+   files ran more than 35 min and was stopped; run it detached when the card runs have ended.
