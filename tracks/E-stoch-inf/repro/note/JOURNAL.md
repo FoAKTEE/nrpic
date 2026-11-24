@@ -378,7 +378,7 @@ the reader at second order moves it by a factor of two on both lattices, identic
 scales with the square of the amplitude stays [TO VERIFY] (a run at half the noise amplitude). The
 note keeps its reader for the ledger values and adds the check's reader as rows from R8a.
 
-## Entry 14 (2026-11-24 14:52 PST): corrections applied; prediction for R8
+## Entry 14 (2026-11-24 14:46 PST): corrections applied; prediction for R8
 
 Applied (commit 4a413e32): ledger.py fills the check column of the 16 rows of the continued runs
 from VERIFIER.md section 8 (42, 48-52 [177-181, 201], 72-75 [194-197], 81-83 [242-244] yes; 68-71
@@ -403,3 +403,28 @@ Prediction for R8 (registered run_all at the commit of this entry):
   not registered). Refuted by another count or a stop of the script.
 - P4. Compile without undefined references or overfull boxes, 24 or 25 pages; every ledger table
   ends with its bottom rule on its page (the convergence table grows by four rows: the risk).
+
+## Entry 15 (2026-11-24 14:49 PST): outcome of R8; final state of the correction pass
+
+R8 = E-20261124-224631-730b585 (registered, production, two cores, commit 730b585). Prediction of
+entry 14, item by item:
+- P1 held: all 13 lattice jsons byte-equal to repro/figs/fig, langevin.json equal (`checks.json`).
+- P2 held: all 19 PNGs byte-equal to R7's, so the committed figure PDFs stay (R6 and R2 sources).
+- P3 held: 125 rows in 10 tables; checks 78 yes, 17 differs, 2 beyond reach, 11 quote, 14 rerun
+  only, 3 none (the pending SR per-cell row, the eps1 row added after the first check, the change
+  of reader from R8a). Tables copied from R8, sha256 found in its `sha256sums.txt`.
+- P4 held in its alternative: compile clean (no undefined references or citations, no overfull
+  boxes), 25 pages; every ledger table ends with its bottom rule on its page (pages 17, 19-25 read;
+  the convergence table XI fills page 22 to about four fifths).
+Checker with the guide's forbid list: the accepted hits only (5.1 two verdict labels "not
+reproduced", lines 47 and 410; 7.6 one, "no defect" about the reviewed code, exception 2; 7.5 and
+7.7 only in `tables/ledger.tex` and `scripts/`, exception 1; 9.3 only in `scripts/`). A third 5.1
+hit ("not yet analysed" in a pending marker) was rewritten ("analysis to come"). After the R8
+compile one sentence of Sec. III A gained the reading of chi as a cause of differences; the
+recompile changed page 3 only (pixel comparison of all 25 pages at 75 dpi), read again.
+Pages read at 75 dpi: 1, 3, 4, 5, 6, 7, 8, 11, 15, 17, 19, 20, 21, 22, 23, 24, 25 (every page with
+changed text and every ledger table that changed). Not read in this pass: 2, 9, 10, 12, 13, 14, 16,
+18 (text and tables unchanged; their position may have moved by the extra page at 22).
+State of RSF256: ended 14:23 PST (q0034, run E-20261124-214913-5956891), joined bit-exactly by the
+check (run E-20261124-222800-49ab461); repro/figs has not yet run `runs.py rsf256` or a figure run
+with `--rsf256`, so the SR constraint panels and the SR per-cell row stay pending.
