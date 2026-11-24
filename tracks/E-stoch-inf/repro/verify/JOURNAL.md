@@ -136,3 +136,58 @@ time): 1.079, 1.063, 1.051, 1.066 at the same sigma; at eps1 = 0.0244: 1.156, 1.
 1.088. I predicted "within 5 per cent"; the excess is the slow-roll drift of H/sqrt(eps1)
 between Hubble crossing and k = sigma a H (|R|/A = 1.069 at sigma = 0.1, eps1 = 0.0124), an
 O(eps ln(1/sigma)) correction, not an error of the printed SR formula at leading order.
+
+## Entry 3, 2026-11-24 10:40 PST: outcomes of V5-V8 and of the ledger rerun
+
+Runs: lattice reader E-20261124-182136-518eee2 (SR, 18 dumps), E-20261124-182151-93742a3
+(USR, 24 of 41 dumps); comparison E-20261124-182829-775329c (SR), E-20261124-183037-f2a8ebf
+(USR); records/rungs/backreaction E-20261124-183222-02ff27c; background and one-point
+E-20261124-183347-e15a95f; entry windows E-20261124-183618-c71832c; errata
+E-20261124-182402-a2f56bb; rerun of the note's run_all.py E-20261124-183303-303e6c3. The first
+two lattice runs (E-20261124-181756-14fc721, E-20261124-181817-059b3d5) were stopped by me
+before use: I had taken Phi with the sign of a (1 + 2 psi) metric; P0:178 uses (1 - 2 Phi).
+All figures named below were looked at.
+
+V5 (spectra, per mode) held. R^NR = Phi + (H/Pi_b) dphi with Phi = (1/2) dln chi +
+(1/4) khat khat : dgt (my derivation from P0:178) equals my linear solution
+L^-3/2 W R_q alpha_n per mode at N_f: SR median relative deviation 1.7e-7 (|n| <= 8),
+2.8e-5 (|n| <= 32), 9.1e-4 (all 548 958 modes), max 4.5e-3; USR 2.7e-4, 2.6e-4, 1.1e-3,
+single modes up to 0.25 (nonlinear mode coupling at rms R = 0.89). Without the E term the
+SR deviation is 5.3e-3 and with the opposite sign of Phi 0.11: the data fix both. Shell power
+over the linear power of the same realisation: largest 6.7e-3 (SR) and 6.7e-3 (USR), 1.6e-4 and
+5.9e-4 for |n| <= 32; within 3/sqrt(M) of the ensemble Mukhanov-Sasaki power: 99.65 per cent of
+the 3414 shells in both cases. The code's lockstep mode functions (.modes) agree with mine to
+median 4.5e-4, max 2.5e-3 (top shell), 7.7e-8 for |n| <= 8. Prediction V5(a) "every mode within
+2e-2" failed for USR single modes (0.25); held for SR and for all medians.
+V5(c) freezing: SR shell power at N = 6.27 differs from N_f by 0.4 per cent in the top band
+(my bound 1e-3 failed there), by 3e-5 for |n| <= 4; it relaxes as e^(-2.5 N) and is within
+1e-4 of N_f for all bands from N = 7.2. USR: all bands within 1e-4 between the last two dumps.
+
+V6 held for the records, partly failed for the paper's printed magnitudes. My [H] equals the
+dumped Hmag to 3.3e-16; record columns <|H|>, <[H]>, <|H|/[H]> and <|M|/[M]> equal my dump
+statistics to 5e-15 at every dump. <|H|/[H]> largest 5.1e-11 (SR, N = 4.43), 2.3e-11 (USR,
+N = 2.29); box-mean removed (USR) 2.9e-12; <|M|/[M]> largest 4.0e-4 (SR) and 2.519e-2 (USR).
+P1:539 prints "~1e-10": same order. Sign flip: <|H|/[H]> rises by a median 6.0e4 (SR, first
+0.39 e-folds only) and 1.0e4 (USR); flipped <|M|/[M]> reaches 0.16 and 0.50. P1:541 prints
+"H/[H] ~ 1e-5" for a flip: ours is 1e-7, a factor 100 lower (first order in both).
+
+V7: backreaction held (USR level 2 against 0: rms 1.04e-4, largest shell 9.2e-4, 52 per cent
+positive; SR at N = 7.19: largest 1.4e-4; level 1 against 0: 6.6e-7 SR, 7.0e-7 USR; all
+below P1:520's 1 per mille). Convergence: SR spectra 8.0e-3, 1.9e-4, 4.6e-6 at 32, 64, 128
+(factors 43 and 41 per doubling, my prediction of about 64 roughly held); H entry maximum order
+32 -> 64: 4.17 with the window [0, ln 8 + 0.5] but 5.53 when N < 0.5 is excluded; USR H order
+64 -> 128: 4.06 in every window. Slow roll at N_f held: USR eps1 1.008e-12, eps2 -0.0276
+(P1:534 prints -2.8e-2); SR eps1 0.01353, eps2 -0.0269. Background: 64^3 box means against my
+Friedmann solution 9.8e-13 (SR V), 1.1e-9 (USR V), 4.6e-5 (USR eps1); eps2 = 3 crossed at
+N = 2.523 and 6.550.
+
+V8 held: all six misprints (E1, E3, E6, E7, E8, E10) confirmed by my sympy derivation.
+
+Ledger rerun: run_all.py of the note, rerun unchanged, gives 109 rows with values identical
+to the committed ledger.csv (only the run id in the source column differs).
+
+Paper figures (P1 Figs. 2, 3, 4 rendered from the source PDFs into scratch, looked at, not
+committed): the SR R^NR 68 per cent band of P1 Fig. 2 ends at about +-0.8e-4 and dphi/phi_b at
++-1.0e-6, against our 2.28e-5 and 2.9e-7 (factor about 3.5); P1 Fig. 3 shows the final SR
+spectrum at about 1e-10, the level of ours; USR Fig. 4: 68 per cent band +-3.5, full band +-18,
+against our 0.89 and 4.57 (factor about 4); P1:534 prints "~10" for the furthest outliers.
