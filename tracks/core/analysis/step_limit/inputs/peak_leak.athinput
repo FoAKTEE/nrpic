@@ -1,4 +1,4 @@
-# COPY for core's package step-limit of track/A-emd-pbh:tracks/A-emd-pbh/periodic_threshold/inputs/peak_leak.athinput at commit 8d206e20 (Track A's refined periodic deck, there with cfl_number = 0.5; unchanged below this line; the runs of the package give time/cfl_number on the command line)
+# COPY for core's package step-limit of track/A-emd-pbh:tracks/A-emd-pbh/periodic_threshold/inputs/peak_leak.athinput at commit 8d206e20 (Track A's refined periodic deck, there with cfl_number = 0.5; one line added in <z4c>: dt_gauge = 0.0, off, so that the cases can give the option on the command line; otherwise unchanged below this line; the runs of the package give time/cfl_number on the command line)
 # The periodic peak of peak_smr4.athinput (same mesh: root 64^3 over [-10, 10]^3, four
 # static levels, finest k dx = 0.0195 inside |x| < 0.625; same deposit, constraint damping
 # and outputs) with the gauge changed to the relaxed 1+log lapse of core's gauge package
@@ -133,6 +133,7 @@ lapse_advect    = 1.0
 lapse_leak      = 20.0                 # 1/T of the relaxation of the excess lapse; T = 0.05
 lapse_leak_alpha = 1.0                 # reference lapse
 dt_lightspeed   = 0.25                 # dt <= cfl 0.25 dx / c_max (header)
+dt_gauge        = 0.0                  # added by core's package step-limit: 0 = off (tracks/core/interfaces/step_limit.md)
 shift_Gamma     = 0.75                 # Gamma-driver (core's ball_leak, es_gauge)
 shift_alpha2Gamma = 0.0
 shift_eta       = 2.0

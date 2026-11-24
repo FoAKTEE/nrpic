@@ -345,3 +345,9 @@ no card job. Consequences:
 Run core-20261124-134017-8c4e50c (first call of T1/T2) failed before any AthenaK run:
 the driver changed directory and then looked for the executable by its relative path.
 No result. The three drivers now make the path absolute.
+
+Run core-20261124-134349-3543b27 (first call of T4, R0g) did not start: AthenaK accepts on
+the command line only parameters the input declares, and Track A's decks do not declare
+`dt_gauge` (exit 1 of AthenaK after 0.1 s; nrpic-run recorded the wrapper's exit 0). No
+result. The two copies of Track A's decks in `analysis/step_limit/inputs/` now declare
+`dt_gauge = 0.0` (off); their first line says so.
