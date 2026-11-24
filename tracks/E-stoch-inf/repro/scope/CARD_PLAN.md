@@ -37,11 +37,20 @@ manifest under `resources`).
 
 | Label | Actual (card-h) | Wall (s) | Status |
 |---|---|---|---|
-| SMALL | | | pending |
-| USF256 | | | pending |
-| RSF256 | | | queued in the sequencer |
-| UL1 | | | queued |
-| RL1 | | | queued |
-| RNC256 | | | queued |
-| CL256U | | | queued |
-| CL256S | | | queued |
+| SMALL | 0.0808 | 291 | completed (E-20261123-020704-2b99463) |
+| USF256 | 0.6628 | 2385 | completed (E-20261123-021204-2f573ec) |
+| RSF256 | 0.0644 + 0.6519 continued | - | original cut at t = 0.387 (E-20261123-035925-8439d79); continuations da8c917 0.0164, 4c41e7b 0.0019, 0b1ce0c 0.3464, 5956891 0.2872 (tlim reached, q0034) |
+| UL1 | 0.6350 | 2212 | completed (E-20261123-040126-2d0323c) |
+| RL1 | 0.5233 | 1811 | completed (E-20261123-040327-ccae634) |
+| RNC256 | 0.0442 + 0.2703 continued | - | original cut at t = 0.712 (E-20261123-045030-c20bcb3); continuation 61fe0b0 completed |
+| CL256U | 0.2478 + 0.3897 continued | - | original cut at t = 4.77 (E-20261123-065855-265732a); continuations a5dec67 0.0547, 33a3a39 0.3350 completed |
+| CL256S | 0.3522 + 0.1397 continued | - | original cut at t = 6.23 (E-20261123-090727-4b6e5a5); continuation 4be980b completed |
+| **scope total** | **2.611 originals + 1.452 continuations = 4.063** | | estimate 3.95; cap 8 met |
+
+Filled by the lead of E (batch 13, 2026-11-24) from the manifests (`resources.gpu_hours`, written by
+`nrpic-run finish`); the originals' rows and walls are `../figs/CARD_COSTS.md`, the continuations
+those of package `repro/continue` (`../continue/scripts/conts.json`). The continuation of AL2S
+(E-20261124-131359-49afe29, 0.1203) belongs to `repro/ablation` (its original 1.0397; ablation
+total 4.811 + 0.1203 = 4.931). Reproduction card time over all packages: 4.063 + 4.931 = 8.99
+card-hours [VERIFIED: sums of the manifests named here]. The excess over the estimate is the
+preemption of 2026-11-23 (segments done twice, `../figs/CARD_COSTS.md` notes).

@@ -353,3 +353,15 @@ E-20261124-212120-9678639) had a linear axis on the empty AL2S panel, which hid 
 
 Card time of this package: 1.28 card-hours used by the eight continuations (entry 9); 2.95
 asked by q0034 (about 0.35 expected), which has not run yet.
+
+## Entry 13 (2026-11-24 15:45 PST, lead of E, batch 13): the fourth continuation of RSF256 recorded
+
+`scripts/conts.json` now lists E-20261124-214913-5956891 (q0034, job 5215, completed at tlim t = 8.5,
+cycle 1386, 0.2872 card-hours) as the fourth continuation of RSF256. K2 is taken from the join check
+that repro/figs ran with this package's `join_check.py` on the same list (E-20261124-225720-444aecc,
+`conts_rsf256.json`): J1, J2 (958 of 958 overlapping lines identical, largest relative difference 0),
+J4, gapless records true; J3 literal false only at the cycle-0 junction, as amended in entry 11
+(largest ratio 13.7, the run's own first step); joined record cycles 0-1386, dumps 00000-00034, last
+ln a = 8.0989 (read by the lead from the joined `RSF256.sf.hst`, column 21). K2 HELD. Card time of this
+package: 1.572 card-hours for nine continuations (manifests: 1.452 for the eight of repro/scope's runs,
+0.120 for AL2S of repro/ablation), consistent with entry 12's 1.28 for the first eight plus 0.29.
