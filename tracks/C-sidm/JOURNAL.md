@@ -622,3 +622,106 @@ its newest restart file, never repeat it):
 - card-hours: 17.59 used by the batch-5 queue so far (sum of the closed manifests) plus about
   0.6 for A334s3o; remaining work about 3850 M, about 9 card-hours at 8.3 s per M plus the
   preemption overhead; 45 - 7.41 - 17.59 = 20.0 left of the G2 allotment before it.
+
+## 2026-11-24T13:15Z  session C-sidm lead (batch 11)  outcomes of R(v), T, H, D2 and block A (interim), judged against entry 2026-11-21T20:25Z
+
+Every number below comes from a registered analysis run of this session; the figures were
+read before the judgement.
+
+R(v), drift run (v) (C-20261121-202459-12183c5, N = 1e4 on M/4, against the N = 1e5 control
+C-20261115-171059-4b70228; analyses C-20261124-130021-5c9c207 compare.py, -130222-6a4924d
+diffusion.py; figures fig_cc2_N.png, fig_diffusion.png read):
+- N.1 H-norm2(0) ratio 9.95 (and 9.97 over 100-300 M): in [5, 20]. HOLDS.
+- N.2 ripple ratio 3.22: in [2, 5]. HOLDS.
+- N.3 amplitude ratio 1.51 (cosine fit; 1.44 sine with trend, 1.51 maximum of the 20 M
+  mean): in neither interval ([0.75, 1.33] mesh-set, about 3 noise response). FAILED. The
+  period part holds (310 M against 355 M, 13 per cent shorter, within 20).
+- N.4 alpha_c(1e4) - alpha_c(1e5): about -0.009 at 300 +- 5 M (-0.0049 against +0.0041),
+  below -0.003, with sum mW/sum m rising relative to the control (+0.0025 against -0.0016 at
+  300 M). HOLDS by its letter (noise-relaxation branch). The caveat written with it applies in
+  a form it did not foresee: the difference is not monotonic; the N = 1e4 run pulsates with a
+  1.5 times larger amplitude and a 13 per cent shorter period (it is above the control until
+  about 230 M), so the 280-300 M window reads phase as well as trend [JUDGEMENT].
+- N.5 D(1e4)/D(1e5) = 11.07 (25-300 M) and 11.41 (25-75 M): in [5, 15]. HOLDS: the energy
+  diffusion of the particles scales as 1/N.
+- N.6 mean dE_K of (v) minus that of the control at 300 M = -0.00507: below -0.005. HOLDS,
+  by 1.4 per cent of the bar; at 275 M it was -0.0044 and at 250 M -0.0018, i.e. the same
+  phase effect as N.4.
+- Criterion R(v) (entry 20:25Z): N.4 and N.6 say noise relaxation, so block A at N = 1e5 is
+  read only through Delta against its control, and the threshold seeds are to be repeated at
+  N = 1e6. Recorded as decided by the rule; the reservation (phase, one seed, M/4 not M/8) is
+  carried, and the N = 1e6 control on M/8 queued below tests the reading where it matters.
+
+T, timing (C-20261121-203004-c2c14e7; analysis C-20261124-131129-e93be29, fig_step_time.png
+read): collisionless M/8 deck 8.29 s per M: in [8.2, 8.4]. HOLDS. Collisional f = 1, 2, 4:
+8.55, 8.53, 8.57 s per M, ratio 1.03 at most 1.5. HOLDS. Production segments of eight chains:
+medians 7.7-8.3 s per M.
+
+H, conductivity series (heat_C1 C-20261121-210524-36a658e, heat_C2 C-20261122-183030-2f3a471;
+reductions C-20261124-130338-43b5ffa, -130338-c4ac85e; analysis C-20261124-131012-f920f45,
+fig_heat_series.png read; noise of one case sqrt(s2/N) from the T7 seeds of
+C-20261120-223001-eb81eb7, 0.0031 at N = 4e6):
+- H.1 f(lambda/2)/f(lambda/8) - 1 at k lambda 0.2, seed mean: +0.0196 +- 0.0042: in
+  [+0.010, +0.050]. HOLDS.
+- H.2 f0 of f = f0 + c (dx/lambda)^2 at k lambda 0.2: 1.0149 +- 0.0026, c = 0.101 +- 0.017
+  (chi^2 6.3 for one degree of freedom: seed 7 at lambda/4 lies 2.6 sd low): in
+  [0.975, 1.020]. HOLDS.
+- H.3 dt 0.05 against 0.1 at lambda/8: +0.45 +- 0.42 per cent (z 1.07; seeds +0.63 and
+  +0.27): below 1 per cent and |z| < 2. HOLDS.
+- H.4 c at k lambda 0.1: 0.055 +- 0.017 against 0.101 +- 0.017 at 0.2: z = -1.85, within 2
+  sigma. HOLDS (narrowly).
+- Consequence [JUDGEMENT, arithmetic on the two f0]: extrapolated to zero cell and to
+  k lambda -> 0 in (k lambda)^2, kappa/kappa_1 = (4 x 1.0187 - 1.0149)/3 = 1.020 +- 0.004,
+  equal to the G1 value 1.0208 +- 0.0034 (unweighted processor seeds). The cell term is
+  quadratic, about +2 per cent at dx = lambda/2. G1 reservation 1 (conductivity not settled
+  at the per-cent level) is answered by this series.
+
+D2, collision-cell size (D2ctl C-20261122-103854-4670b59, f1s1 -144455-6e0992e, f2s1
+-141414-399ad97, f4s1 -181011-60baef9, f2s2 -20261124-035054-c06503f cut at 116.5 M;
+analysis C-20261124-130442-0819c88, fig_d2.png read; one failed analysis run of my own
+script, C-20261124-130433-e84cb43, tuple unpacking, rerun):
+- t_c (alpha_min = 0.3): f = 1 164.01 M, f = 2 163.41 M, f = 4 165.97 M; collisions per
+  particle before t_c 2.23, 2.21, 2.19; collision rate per particle 0-100 M 8.85e-3,
+  8.86e-3, 8.68e-3 per M.
+- D2.1 rate independent of f within 5 per cent: f1/f2 0.999, f4/f2 0.979. HOLDS.
+- D2.2 t_c(f = 2) on M/8 within 10 per cent of 206.64 M (M/4): 163.41 M, 21 per cent
+  earlier. FAILED. The collisional collapse time depends on the mesh between M/4 and M/8.
+- D2.3 t_c(f = 1), t_c(f = 4) within 10 per cent of t_c(f = 2): 0.4 and 1.6 per cent. HOLDS.
+  The seed pair at f = 2 is open (seed 2 cut at 116.5 M; D100 0.0504 against 0.0536).
+- Refutation rule (t_c or rate moving by more than 20 per cent between f = 1 and f = 4):
+  not met (1.2 and 2.0 per cent). The collisional collapse of CC2 at Kn = 10 is not an
+  artefact of the collision cell between cells of M/8 and M/2.
+- Control: no collapse in 300 M (alpha_min >= 0.671), alpha_c - alpha_c(0) at 280-300 M =
+  -0.0049: in [-0.010, +0.002]. HOLDS.
+
+A, block A, interim (all 15 runs; ten were cut by preemption and are being continued;
+analyses C-20261124-130506-2ddce1f and, with the ripple taken before 400 M,
+C-20261124-130634-3338d9b; fig_blockA.png read):
+- Controls collapse on their own: y0 = 0.334032 seed 1 at t_c = 534.8 M (alpha_c change
+  +0.0024, +0.0044, -0.0024, -0.0188, -0.093 at 100-500 M), y0 = 0.344 at 549.3 M (+0.0031,
+  +0.0073, +0.0045, -0.0076, -0.060). The y0 = 0.324 control is being continued from t = 0.
+- Kicked runs, seed 1: y0 = 0.334032 kin t_c = 294.5 M, kout t_c = 449.0 M (the outward kick
+  first expands, +0.016 at 100 M, then contracts and collapses 86 M before its control);
+  y0 = 0.344 kin t_c = 229.8 M, kout not collapsed at 420.5 M (alpha_c -0.046 at 400 M and
+  falling; being continued); y0 = 0.324 kin no collapse to 600 M (alpha_c between -0.007 and
+  -0.028), kout -0.054 at 400 M and falling (cut at 407.8 M; being continued).
+- A.4 (controls do not collapse; contraction at 500-600 M in [-0.040, -0.005]): FAILED (two of
+  the three controls collapse before 600 M). By the refutation written with it, M/8 at
+  N = 1e5 over 600 M is unfit for the scan, and the bracket cannot be read from block A.
+- A.3 (no collapse of the nine threshold runs before 600 M): FAILED (seed-1 control, kin and
+  kout all collapse). Seeds 2 and 3 are being continued.
+- A.1 (y0 = 0.344: kin collapses before 600 M; kout has Delta > +3 sigma_w and rising in
+  400-600 M): kin part HOLDS (229.8 M); kout part FAILED on the windows that exist (Delta
+  +0.0089, +0.0183, +0.0076, -0.0167, -0.0463: falling and negative from 300 M).
+- A.2 (y0 = 0.324: neither kick collapses; |Delta| 400-600 M bounded): kin part HOLDS so far
+  (no collapse to 600 M); kout and Delta wait for the control and kout continuations.
+- Noise model: the rule named before the runs (sigma_w = max(seed sd, ripple)) gives 0.07
+  over the whole record because two controls and the seed-1 kin collapse inside windows; with
+  the ripple before 400 M (post hoc, labelled in the reader) the ripple is 8e-4 and the seed
+  sd of the pre-collapse windows 1.3e-4 (0-100 M) and 4.7e-3 (100-200 M, kin, two seeds).
+- What block A does show [JUDGEMENT]: on this mesh and N the inward kick advances the collapse
+  by 240 M at y0 = 0.334032 and by 320 M at 0.344, i.e. more for the more compact model, as an
+  instability with a shorter growth time would; but the control collapse means that the
+  secular contraction of the scheme (or of the particle noise) decides the fate within 600 M.
+  No cause is named: the N = 1e6 and M/16 runs below are the ones in which each reading can
+  fail.
