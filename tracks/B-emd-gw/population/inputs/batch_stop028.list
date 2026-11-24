@@ -1,0 +1,9 @@
+# population: the stop of pop_s028_gr at t = 9.086 (a = 30.7), three restarts from its restart
+# file at t = 8 (rst/pop.00004.rst of run B-20261123-035002-bcc82bd) to t = 10 (a = 36), release
+# core-v0.6 card executable (the run's own). X0 the same parameters (does the stop recur from
+# the restart?), X1 half the step (cfl 0.125), X2 a Gamma-driver shift from t = 8 (0.75, eta 1,
+# advection of shift and lapse as first_source's second-gauge run; cfl 0.25 <= 0.6, decision
+# 0027 item 2). Predictions: JOURNAL.md, entry of 2026-11-24.
+x0_ctrl /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261123-035002-bcc82bd/rst/pop.00004.rst time/tlim=10.0
+x1_cfl125 /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261123-035002-bcc82bd/rst/pop.00004.rst time/tlim=10.0 time/cfl_number=0.125
+x2_gd /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261123-035002-bcc82bd/rst/pop.00004.rst time/tlim=10.0 z4c/shift_Gamma=0.75 z4c/shift_eta=1.0 z4c/shift_advect=1.0 z4c/lapse_advect=1.0
