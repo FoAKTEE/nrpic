@@ -567,3 +567,49 @@ reproduces the run to 3e-6. If fp_analyse confirms these, FP2 and FP3 hold (C1 n
 Also open: the ladder schematic (tools/schem_ladder.py, trial in scratch/D-bh-dress/tmp/ladder, looked
 at) is not yet a registered run; the draft request to core on the finder's stopping rule is in
 scratch/D-bh-dress/tmp/outbox/finder.md (post it after FP is judged).
+
+## Entry 14 (2026-11-24 09:35 PST, lead of batch 11b, resumed after the pause): outcomes of FP and FP-ext
+
+Closed with `nrpic-run finish`: FP D-20261124-130935-fdca920 (84 probes; exit 0, 79 min) and FP-ext
+D-20261124-140606-286a302 (24 probes; exit 0, 39 min). Judged by `tools/fp_analyse.py`, registered
+D-20261124-172410-e8afc73 and, with only the figure layout changed (legend, title), D-20261124-172508-c847ee4
+(fp_analyse.json byte-identical; fp_analyse.png of the second run looked at). Predictions: entry 10 (FP1-FP5),
+entry 11 (FP-ext). The raw log had been seen at the pause (entry 13), so the judgement of FP2, FP3 and FP-ext (ii)
+is a confirmation from the registered analysis, not blind.
+
+- FP1 HOLDS: h0 (production rule from the dump's radius) reproduces the run's own mass within 3.6e-6 at
+  all 29 dumps (largest at ES-1L16 300 M); h1 and h2 find a surface at every dump.
+- FP2 HOLDS, C1 NOT REFUTED: V-1L tight |M_h1(t) - M_h1(100)| <= 1.80e-5 at 150-450 M (largest at 150 M),
+  M_h1(250) - M_h1(200) = -3.4e-8 (refutation needed >= 8e-5), while the run's own D is +1.20e-4 at 250 M,
+  +8.6e-5 at 300 M and +1.21e-4 at 450 M. The plateaus of the vacuum mass are surfaces the production
+  stopping rule accepts: from outside (h2, from 2 M) it lands on the low plateau (0.000915-0.000933),
+  from the stored radius on whichever the run was on; the tight finder sits between them (0.00098-0.00100).
+  So the 1.2e-4 "floor" of the vacuum null test at M/8 is the finder's, not the slice's. [VERIFIED for
+  V-1L and V-1L16 on the dumps named; the cause is named after a run in which it could have failed]
+- FP3 HOLDS: V-1L16 tight |M_h1(t) - M_h1(100)| <= 3.9e-6 at 200, 250, 300 M (run's own D: +1.34e-4 at 250 M).
+- FP4 REFUTED (failed prediction): the converged-finder offsets e = M_h1(A32) - 1 at 200 M are -8.91e-3
+  (M/4), +1.18e-3 (M/8), -1.77e-5 (M/16): a sign change, q = -8.4. Their size falls by 7.6 and by 67, so
+  the horizon mass does converge toward 1 with the mesh, but not as one power of h (M/4 is outside the
+  asymptotic range, or two error terms of opposite sign cancel near M/16) [JUDGEMENT]; no order is quoted.
+  Found on the way: the finder's angular truncation A16 - A32 is -1.80e-4, -1.85e-4, -1.85e-4 at M/4,
+  M/8, M/16, the same on all three meshes; at M/16 it is ten times the mesh offset. It is a constant
+  and cancels in every difference the null test takes.
+- FP5 HOLDS: tight-finder null test |D_ES - D_V| <= 6.5e-5 at 200-300 M at M/8 and <= 3.7e-5 at M/16
+  (bound 1e-4), against 2.3e-4 (M/8) and 2.0e-4 (M/16) with the runs' own finder.
+- FP-ext (i) HOLDS: V-1L tight |M(t) - M(100)| = 2.9e-6, 1.22e-5, 8.5e-6 at 350, 400, 500 M (bound 3e-5).
+- FP-ext (ii) FAILED its 5e-5 bound, NOT refuted (< 1e-4): the M/8 tight null difference is 6.8e-5 at
+  150 M and then flat, 4.5e-5 to 7.3e-5 at every dump to 500 M (largest 400 M).
+
+Not predicted, read off panel (c): the tight-finder null difference is not a drift but a step between 100
+and 150 M that then stays constant to 500 M within +-1.4e-5 (no trend with the expansion), and the step is
+about half as large at M/16 (2.3-3.7e-5) as at M/8 (4.5-6.5e-5) [JUDGEMENT: a resolution-dependent step of
+the bubble's transient, near first order; two meshes only, no order is claimed]. This is the form the G2
+criterion N ("drift of the horizon mass in the vacuum bubble does not exceed the noise floor") should be
+judged in: with a converged finder the vacuum floor at M/8 is 1.8e-5 over 100-500 M, the bubble's
+difference 7.3e-5 is a one-time step, not a growth with a/a_i.
+
+Consequences: (1) request to core on the stopping rule, posted from scratch/D-bh-dress/tmp/outbox/finder.md
+with these numbers; (2) G2 criterion N is restated in stage/G2/OPEN.md with the tight finder as the
+measurement and the step as a separate item; (3) new D inputs set `mass_tol_0 = 1e-8` (HANDOFF item 4);
+(4) the claim "noise floor 1.2e-4 at M/8" leaves the note: the floor is 1.8e-5 (tight finder, V-1L,
+100-500 M) and the production finder's plateau gap of 1.3e-4 is quoted as the finder's.
