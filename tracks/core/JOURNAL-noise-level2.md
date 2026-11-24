@@ -737,3 +737,60 @@ Predictions, written before the comparisons run:
   cost of a cycle (old executable 1.63), refuted above 1.3. Queued at priority 2 through
   the shared queue; with the account at five jobs and 33 entries waiting (13:13 PST) I do
   not expect it to run in this session.
+
+## Entry 17 (2026-11-24 13:27 PST): outcomes of the closing session; R5 queued
+
+R1f (runs core-20261124-143147-2ff64b9 against R0 core-20261124-130250-0a4a7cb,
+comparison core-20261124-211517-b90ce89): 366 of 366 files identical over the fifteen
+cases, none missing. PREDICTION HELD: the final source 64f150ec gives the processor bytes
+of 6ca93cba on the branch tests. The figures of R1f (`fig_t1t3.png`, `fig_t2.png`) looked
+at: they show the numbers of entry 3; in fig_t1t3 (b) the legend at the upper right runs
+past the panel edge ("double ratio (time e...", "prediction: stencil ...") and covers no
+data. Cosmetic, not redrawn.
+
+R6 (run core-20261124-211548-60896c5, threaded executable of 64f150ec against the copy of
+the threaded executable of 6ca93cba in `scratch/core/exe/core_noise-level2_6ca93cba/`,
+sr64_l2 and usr64_l2, 64^3, nmax2 = 256, three threads each, 12 cycles, both exit 0):
+11 of 11 files identical in each case (dumps, .modes, .rmodes, .hst at cycles 0, 6, 12).
+PREDICTION HELD. (No figure: a byte identity has nothing to plot.)
+
+Figures of entry 15 item 5: the redrawn `fig_readings.png` and `fig_lapse.png` of run
+core-20261124-142629-8516adb looked at; legends now lie off the data in (a) and (b) of
+both; in fig_readings (c) the last legend entry touches the right edge of the panel.
+Numbers as in entry 10, with one correction read from its `review.json`: R4 level 2
+against level 1 is 8.1e-12 at most for R (8.0e-12 at the end, t = 0.85) and the rms of
+n.d R is 6.6e-12 at most (t = 0.54), 5.8e-12 at the end; entry 10's "5.8e-12" was the
+last dump, not the largest. Both below the 1e-11 of the prediction; verdict unchanged.
+`fig_pi_range.png` redrawn from the json of R7 (run core-20261124-211620-c6e5735, numbers
+unchanged: 8.9e-5 and 6.4e-2): legend above the data, looked at.
+
+Publication (2026-11-24 13:18 PST). The set of 6ca93cba was copied first to
+`scratch/core/exe/core_noise-level2_6ca93cba/` (sha256sum -c passes; a note on top of its
+READY names the nine Track E manifests that reference the set by path or checksum:
+X0, T5SMK, AL0S, AL0U, AL1S, AL1U, AL2S and its continuation, AL2U). Then the three
+executables of 64f150ec replaced those of `scratch/core/exe/core_noise-level2/` by
+renaming full copies, with new COMMIT, SHA256SUMS (0222e5f0.., d7069a4e.., 31210622..)
+and READY (options, examples, TESTED with run ids, NOT TESTED). sha256sum -c passes in
+both directories. PREDICTION HELD. The task named "Track E's fifteen runs"; I found nine
+registered runs (chains counted once); the difference may be chain segments.
+[TO VERIFY by Track E.]
+
+R5 (card): added to the shared queue at 13:19 PST as q0035 (label nl2-review-R5, priority
+2) with the published `core_noise-level2/athena_gpu`, `--wall 00:20:00 --gpu-hours 0.33`,
+`--package tracks/core/analysis/noise_level2`; dry run of the arguments passed. Six core
+entries and about twenty of other owners were waiting ahead of it with the account at its
+cap of five jobs, so it is not expected within this session. Predictions: entry 8 as
+restated in entry 16. When the dispatcher has run it (`harness/bin/nrpic-queue show
+q0035` names the run id), close and read it with
+`harness/bin/nrpic-run finish <run id>` and
+`harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1
+--package tracks/core/analysis/noise_level2 --purpose "R5 analysis" -- python3
+tracks/core/analysis/noise_level2/card_review.py --run
+/data/haiyangw/nrpic/scratch/core/<run id> --smoke
+/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261123-035724-b661081 --out
+'$NRPIC_RUN_DIR'`, then look at `fig_card.png` and judge (i) and (ii) of entry 8.
+
+Not done in this session (no source change was allowed): the inflection case with
+`noise_background_eq = evolved` (entry 15 item 6); level 2 with a shift or a lapse that
+varies in space. Verdict for release v0.7 (interface text section 12): fit once R5 has
+passed; the merge adds the options to the changelog and `coord/INTERFACES/`.
