@@ -138,3 +138,24 @@ first detection of the threshold members and settle within 1 per cent within abo
 slice_or_finder). So the first-detection excess is carried by the slice, not added by the finder
 [VERIFIED for the B members, line outputs every 0.25 M; the line time is up to 0.25 M after the
 finder's]. On mesh A the finder drifts 4-5 per cent below the line's mass after first detection.
+
+## Entry 5, 2026-11-24 13:35Z: predictions G1-G3 for the A-mesh guard stop (processors, before the runs)
+
+A-d0.42 (mesh A, M/16) stopped at the guard at t = 47.92, 2.3 M after its first detection
+(entry 4). Its restart file at t = 44 (`A-d0.42/rst/ball.00011.rst`, 248 MB, 344 MeshBlocks of
+8^3 cells) lets the processor build repeat the last 4 M cheaply (threaded release v0.6, 4
+threads, tlim 48.5). Three runs from that restart:
+- G1 repeat, deck as on the card: the guard stops the run at t = 47.9 +- 0.2 with non-finite
+  Khat/A_ij in whole MeshBlocks [JUDGEMENT: the blow-up grows from the fields, not from card
+  round-off]. Refuted by a run that reaches 48.5, or stops more than 0.2 away.
+- G2 `z4c/lapse_leak = 0` from t = 44 (decision 0025 item 3 forbids the relaxation around an
+  existing black hole; here it acts through and after horizon formation): if the relaxation
+  term is the cause, G2 reaches 48.5. I expect it NOT to be the cause (lapse_leak x dt = 0.125,
+  far below the bound 2.5 of periodic_diag U8/U9), so G2 stops like G1 [JUDGEMENT].
+- G3 `particles/alpha_exc = 0.3` (particles excised earlier, before the lapse collapses
+  steeply): if the abrupt excision near the horizon on the coarse mesh is the cause, G3 reaches
+  48.5. I expect G3 to stop like G1 as well; the jump of excisions in the guard step (1,784
+  particles) looks like a consequence of the non-finite lapse, not its cause [JUDGEMENT].
+If all three stop at ~47.9, no named candidate is the cause and the line outputs of G1 (tab every
+0.25) locate the growth; if G1 does not repeat, the card failure was not deterministic and the
+A members are rerun on the card.
