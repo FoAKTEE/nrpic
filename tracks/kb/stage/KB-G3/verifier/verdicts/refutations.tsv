@@ -32,7 +32,7 @@ claim_id	group	refutes	verdict	how_rederived
 832	defect	2512.14649 L534	NOT CHECKED	printed wording (USR 3.5 to 8, "very shallow maximum") read as stated; the exact inflection point and the one-e-fold shift against Fig. 1 need the potential and the figure
 833	superseding	-	NOT CHECKED	as 832
 834	defect	1305.2619 L443	NOT CHECKED	printed "factor of three" and "15 per cent" (of the 4Gm variant) read as stated; the true 2.59 and 9.2 per cent are D's recomputation from the paper's distribution (run D-bh-dress-20261115-145636-5259f48), not redone
-835	superseding	-	NOT CHECKED	as 834
+835	superseding	-	NOT CHECKED	as 834; provenance only: scratch/D-bh-dress/D-bh-dress-20261115-145636-5259f48/reference_table.txt holds ratio_peak_rel_over_gs8 = 2.5897 and excess_peak_gs4_over_rel = 0.0922 (not recomputed)
 836	defect	1305.2619 L413-418	CONFIRMED	L414 I_r = oint dr sqrt(E^2 - (1-2Gm/r)(1+L^2/r^2)); the canonical p_r of the Schwarzschild geodesic is that root divided by (1 - 2Gm/r) (my derivation)
 837	superseding	-	PARTLY CHECKED	the missing factor confirmed; the 5.2 per cent effect on the peak not rederived
 838	defect	1305.2619 L695-700	NOT CHECKED	caption carries no mass; the 1e6 M_sun reading is D's 0.04 dex fit
