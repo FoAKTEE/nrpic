@@ -1,6 +1,6 @@
 # Checklist: F-hills G1
 
-Collected by `harness/bin/nrpic-stage collect F-hills G1` on 2026-11-21T16:21:55Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect F-hills G1` on 2026-11-24T14:20:05Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.

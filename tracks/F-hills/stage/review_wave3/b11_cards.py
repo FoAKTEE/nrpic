@@ -11,6 +11,7 @@ Runs (directories under scratch/F-hills/):
   A     F-20261121-203144-b2cf16b  passage P1b, m/16 (comp0 = m1, comp1 = m2, comp2 = M)
   C     F-20261121-203247-961801d  passage P1b, m/12
   P1    F-20261119-150017-b45ec5f  passage P1, m/8 (merged at 48.8 M)
+  A2, B2, C2  the continuations of A, B, C registered in batch 11 (joined to them when present)
 Readers: tracks/F-hills/nr_first/scripts/nrread.py (trackers joined across restarts, failed
 horizon searches removed, history with the last row of each time).
 
@@ -46,7 +47,19 @@ RUNS = {
     "A": f"{S}/F-20261121-203144-b2cf16b",
     "C": f"{S}/F-20261121-203247-961801d",
     "P1": f"{S}/F-20261119-150017-b45ec5f",
+    # continuations registered in batch 11 (each starts from the newest restart of the run
+    # before it; joined when their directories exist)
+    "A2": f"{S}/F-20261124-141118-fbc6419",
+    "B2": f"{S}/F-20261124-135408-1e6db58",
+    "C2": f"{S}/F-20261124-141842-d5263e9",
 }
+# a name stands for the join of these run directories, earliest first
+CHAIN = {"B": ["R16n", "B", "B2"], "A": ["A", "A2"], "C": ["C", "C2"]}
+
+
+def parts(name):
+    return [p for p in CHAIN.get(name, [name])
+            if os.path.isdir(RUNS[p]) and glob.glob(os.path.join(RUNS[p], "*.z4c.user.hst"))]
 
 
 def join_tracker(first, second):
@@ -59,10 +72,11 @@ def join_tracker(first, second):
 
 
 def trackers(name):
-    tr = nr.read_trackers(RUNS[name])
-    if name == "B":
-        tr0 = nr.read_trackers(RUNS["R16n"])
-        tr = {n: join_tracker(tr0[n], tr[n]) for n in tr}
+    ps = parts(name)
+    tr = nr.read_trackers(RUNS[ps[0]])
+    for p in ps[1:]:
+        nxt = nr.read_trackers(RUNS[p])
+        tr = {n: join_tracker(tr[n], nxt[n]) if n in nxt else tr[n] for n in tr}
     return tr
 
 
@@ -84,13 +98,17 @@ def dist(tr, i, j):
 
 
 def horizons(name):
-    h = nr.read_horizons(RUNS[name])
-    if name == "B":
-        h0 = nr.read_horizons(RUNS["R16n"])
+    ps = parts(name)
+    h = nr.read_horizons(RUNS[ps[0]])
+    for p in ps[1:]:
+        nxt = nr.read_horizons(RUNS[p])
         out = {}
         for n in h:
-            a, nf = h[n]
-            b, nf0 = h0[n]
+            b, nf0 = h[n]
+            if n not in nxt:
+                out[n] = (b, nf0)
+                continue
+            a, nf = nxt[n]
             k = b["t"] < (a["t"][0] if len(a["t"]) else np.inf)
             out[n] = ({c: np.concatenate([b[c][k], a[c]]) for c in a}, nf + nf0)
         h = out
@@ -98,19 +116,20 @@ def horizons(name):
 
 
 def hst(name):
-    f = glob.glob(os.path.join(RUNS[name], "*.z4c.user.hst"))
-    d = nr.read_hst(f[0])
-    if name == "B":
-        d0 = hst("R16n")
-        k = d0["time"] < d["time"][0]
-        d = {c: np.concatenate([d0[c][k], d[c]]) for c in d if c in d0}
+    ps = parts(name)
+    d = nr.read_hst(glob.glob(os.path.join(RUNS[ps[0]], "*.z4c.user.hst"))[0])
+    for p in ps[1:]:
+        nxt = nr.read_hst(glob.glob(os.path.join(RUNS[p], "*.z4c.user.hst"))[0])
+        k = d["time"] < nxt["time"][0]
+        d = {c: np.concatenate([d[c][k], nxt[c]]) for c in nxt if c in d}
     return d
 
 
 def mesh_ledger(name):
     """MeshBlocks at the end of each segment and the peak card memory (segment logs)."""
     nmb, peak = [], []
-    for log in sorted(glob.glob(os.path.join(RUNS[name], "chain", "seg*.log"))):
+    logs = [lg for p in parts(name) for lg in sorted(glob.glob(os.path.join(RUNS[p], "chain", "seg*.log")))]
+    for log in logs:
         txt = open(log, errors="replace").read()
         nmb += [int(x) for x in re.findall(r"Current number of MeshBlocks = (\d+)", txt)]
         peak += [int(x) for x in re.findall(r"gpu_mem_peak_MiB=(\d+)", txt)]
@@ -269,7 +288,9 @@ def main():
         tt, ss, pp, _ = OR[k]
         w = np.gradient(pp, tt)
         n = max(1, int(round(2.0 / np.median(np.diff(tt)))))
-        axs[2].plot(tt, np.convolve(w, np.ones(n) / n, mode="same"), color=col[k], label=lab[k])
+        ws = np.convolve(w, np.ones(n) / n, mode="same")
+        ok = (tt >= tt[0] + 1.0) & (tt <= tt[-1] - 1.0)     # the smoothing window is 2 M
+        axs[2].plot(tt[ok], ws[ok], color=col[k], label=lab[k])
     axs[2].set_ylabel(r"$d\phi/dt$ [rad/$M$]")
     axs[2].set_xlabel(r"$t$ [$M$]")
     for ax in axs:
