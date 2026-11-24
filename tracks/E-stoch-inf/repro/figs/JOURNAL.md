@@ -523,3 +523,46 @@ Done: pass E-20261124-213029-e937f69; figure runs E-20261124-213400-37465c2, -21
 -213739-9776185 (the last in `fig/`); RESULTS.md with PENDING only on the RSF256 rows (Fig. 2
 constraint panels, Figs. 3 and 6a from RSF256 itself, P1 at t = 8.5, P2 and S14 per cell for SR),
 each naming queue entry q0034; its section 5 gives the steps. No card time used.
+
+## Entry 14 (2026-11-24 14:58 PST): the last pass (RSF256 to t = 8.5); predictions, written before any of it runs
+
+State (batch R4). Queue entry q0034 ran as E-20261124-214913-5956891 (job 5215, one segment,
+14:06-14:23 PST, "Terminating on time limit" at t = 8.5, cycle 1386; dumps 00017-00034); I closed it
+with `nrpic-run finish` (completed, commit e93cf790). repro/continue has not yet appended it to its
+`conts.json` (I may not edit that package; noted in `HANDOFF.md` here), so this package keeps its own
+copy `conts_rsf256.json` (its `conts.json` with the fourth continuation appended) and reruns that
+package's `join_check.py --conts conts_rsf256.json --labels RSF256` as a registered run of its own.
+Dumps of RSF256 by directory: 00000 original (also 00001, 00002, superseded), 00001-00016 the third
+continuation 0b1ce0c (00001-00021), 00017-00034 the fourth 5956891 (by the join rule the latest wins).
+Not blind: before writing this I read P256v6's own record (E-20261121-202935-31520bc/P256/sr.sf.con.hst,
+same first 20 columns): max <|H|/[H]> 5.1046e-11 at N = 4.432, max <|M|/[M]> 3.9937e-4 at N = 4.763,
+and the verifier's section 8 (RSF256 joined 0-1386, its own join).
+
+Predictions (refuted by the stated miss):
+- K2' (my join check): `join_check.json` for RSF256 has J1, J2, J3, J4, `records_gapless` and
+  `complete` true; first record of 5956891 is cycle 653; its cycles 653-895 equal 0b1ce0c's as
+  printed; dumps 00017-00021 byte-identical between the two; joined record 0-1386, dumps 00000-00034.
+- P1 (scope), SR at the end: RSF256 dump 34 (t = 8.5) is bit-identical to P256v6 dump 17 in all 17
+  common variables, and dump 16 to P256v6 dump 8 (again, now read from the joined set). Records: the
+  joined RSF256 record equals P256v6's in the 20 common columns at every one of the 1387 cycles, as
+  printed. Refuted by any relative difference above 1e-12 (dumps) or any differing line (records).
+- P2 (scope), record maximum over the whole run: equal to P256v6's (by the line above): <|H|/[H]>
+  5.10e-11 (inside [3e-11, 1e-10]), <|M|/[M]> 3.99e-4 (inside [3e-4, 5e-4]), both after the window
+  N <= ln 64 that P2 named; the window part stays as judged in entry 12 (H PASS, M FAILED as written).
+- P2 (scope) per cell and my F2 (e) SR: the 99th percentile of |H|/[H] over the lattice stays below
+  1e-9 at all 35 dumps; I expect its maximum between 1e-10 and 5e-10 near N = 4.4 (a few times the
+  mean, which peaks at 5.1e-11) and below 1e-12 at N_f (record mean 1.84e-14 there).
+- F2 (a) SR: per-cell means of |H|/[H] and |M|/[M] equal the record columns 4 and 7 at the same cycle
+  within 1e-6 relative at all 35 dumps (USR gave 2.6e-15).
+- F2 field panels from RSF256: at the 18 times shared with P256v6 every percentile equals P256v6's
+  exactly (bit-identical dumps); the final 68 per cent half-widths are P256v6's (2.88e-7 delta
+  phi/phi_b, 2.281e-5 R^NR); with dumps every 0.25 in t instead of 0.5, N95 of delta phi/phi_b lies
+  in (3.6, 3.91] and of R^NR in (3.1, 3.44].
+- Figs. 3 and 6a from RSF256: the N_f measures of `fig3_sr_spec.json` equal those of
+  `fig3_sr_spec_P256v6.json` exactly (NR over linear 1.0e-4 for k <= k_max/2, 5.2e-3 at every shell;
+  99.6 per cent within 3/sqrt(count)); Delta[K] identical; Delta[Kt] now the invariant (kt_version 2)
+  from RSF256's own At_ij, so Kt/K medians equal P256v6's version-1-times-<chi>^2 values within 1e-3
+  relative (second order in delta chi/chi ~ 1e-4) and Q/K identical.
+- S14 SR per cell (P1:539, "H/[H] at the next order (~1e-10), then damped"): the 99th percentile of
+  |H|/[H] is of order 1e-10 during the entry (between 3e-11 and 5e-10) and falls by more than 1e2 from
+  its maximum to N_f. Refuted by a maximum outside [3e-11, 1e-9] or a fall below 1e2.
