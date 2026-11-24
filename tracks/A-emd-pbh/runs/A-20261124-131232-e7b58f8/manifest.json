@@ -1,0 +1,122 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261124-131232-e7b58f8",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "periodic_threshold F2: the release finder restarted from P0L's card restart files (t = 100, 140) on the threaded processor build, initial radius 0.15-2.0, search every cycle; does a MOTS exist that the deck's search (radius 0.6) missed (JOURNAL 2026-11-24 13:25Z)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "tracks/A-emd-pbh/periodic_threshold/scripts/finder_restart.sh",
+    "$NRPIC_RUN_DIR",
+    "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261122-235305-4ea0aa5"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "e7b58f81a4e621e2e4b12056d86087c2d8e75a4b",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/periodic_threshold"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "bc180c266e1af2b7a50d072fa17f9f0ddc283047",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261122-235305-4ea0aa5/rst/peak.00003.rst",
+      "role": "input",
+      "sha256": "eb4813ca4a51ecb5bad4deb20b395c38171c1c62242ac90b6d3a3dd531e6ca88",
+      "bytes": 700736628,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261122-235305-4ea0aa5/rst/peak.00002.rst",
+      "role": "input",
+      "sha256": "c2cd4cc4021241ff4b2785c0c93bf8b2cd78371b5b48371b86dfbc1d23152429",
+      "bytes": 700736628,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v06/athena_cpu_omp",
+      "role": "input",
+      "sha256": "564e0232d7a93e7f324e1b364c027b8a88738863fe5cf901bee84f901ac51642",
+      "bytes": 317888952,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/A-emd-pbh/periodic_threshold/scripts/finder_restart.sh",
+      "role": "argv",
+      "sha256": "b34c17c32b11211c6dd5ceb20cde01eda4900f2088f27ee051ecb540cfedc543",
+      "bytes": 1198,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261124-131232-e7b58f8",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-24T13:13:01Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "A-20261122-235305-4ea0aa5"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 6.8648,
+    "gpu_hours_reserved": 33.1201,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 4,
+    "runs": 243,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
+  }
+}
