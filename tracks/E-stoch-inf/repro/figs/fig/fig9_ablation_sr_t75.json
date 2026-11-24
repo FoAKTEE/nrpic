@@ -1,0 +1,80 @@
+{
+ "r20_sr": {
+  "rms": 1.0617220407233409e-05,
+  "max": 7.931642688685514e-05,
+  "frac_pos": 0.49661266568483065,
+  "rms_n_le_32": 1.5054115434713351e-05,
+  "max_n_ge_56": 3.291250935077983e-05,
+  "max_n_le_16": 7.931642688685514e-05,
+  "max_n_le_32": 7.931642688685514e-05,
+  "time": 7.504234014336478,
+  "N": 7.191561467318431,
+  "frac_pos_big": null,
+  "n_big": 0,
+  "top_over_bottom_median": 0.5122930873637613,
+  "mode_rel_rms": 0.00022291048698279788,
+  "mode_rel_max": 0.05211894826246339
+ },
+ "r10_sr": {
+  "rms": 3.460639117747282e-07,
+  "max": 6.574726360009109e-07,
+  "frac_pos": 0.09926362297496318,
+  "rms_n_le_32": 2.0693409646831025e-07,
+  "max_n_ge_56": 6.134857938322469e-07,
+  "max_n_le_16": 1.1661445920019275e-07,
+  "max_n_le_32": 4.0494847519667587e-07,
+  "time": 7.504234014336478,
+  "N": 7.191561467318432,
+  "frac_pos_big": null,
+  "n_big": 0,
+  "top_over_bottom_median": 1.1186592210708244,
+  "mode_rel_rms": 7.035337800398783e-06,
+  "mode_rel_max": 3.639187564784872e-05
+ },
+ "r20_usr": "pending: AL2U, AL0U",
+ "r10_usr": "pending: AL1U, AL0U",
+ "shells_vs_mesh_sr": "pending: P256v6",
+ "shells_vs_mesh_usr": "pending: U256ap, AL0U",
+ "rl1_vs_released_sr": "pending: RL1, P256v6",
+ "ul1_vs_released_usr": "pending: UL1, U256ap",
+ "rec_l2_l0m_sr": {
+  "n_cycles": 1228,
+  "last_cycle_a": 1227,
+  "last_cycle_b": 1386,
+  "H_ratio_min": 0.999467547680456,
+  "H_ratio_max": 1.0003823555845774,
+  "M_ratio_min": 0.99952069615889,
+  "M_ratio_max": 1.0004163917432183,
+  "within_factor2": true
+ },
+ "rec_l2_l0m_usr": {
+  "n_cycles": 1703,
+  "last_cycle_a": 1702,
+  "last_cycle_b": 1702,
+  "H_ratio_min": 0.999934199098829,
+  "H_ratio_max": 1.0001054711918709,
+  "M_ratio_min": 0.9996847012266199,
+  "M_ratio_max": 1.0003940725391336,
+  "within_factor2": true
+ },
+ "rec_l1_l0m_sr": {
+  "n_cycles": 1387,
+  "last_cycle_a": 1386,
+  "last_cycle_b": 1386,
+  "H_ratio_min": 0.9994639590003687,
+  "H_ratio_max": 1.0004246429054433,
+  "M_ratio_min": 0.9995233102723672,
+  "M_ratio_max": 1.0003018043197254,
+  "within_factor2": true
+ },
+ "rec_l1_l0m_usr": {
+  "n_cycles": 1703,
+  "last_cycle_a": 1702,
+  "last_cycle_b": 1702,
+  "H_ratio_min": 0.9999526043564646,
+  "H_ratio_max": 1.0000572928011047,
+  "M_ratio_min": 0.9997961042128337,
+  "M_ratio_max": 1.0003765315341036,
+  "within_factor2": true
+ }
+}

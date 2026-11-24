@@ -326,3 +326,26 @@ cosmetic defects of entry 6.
   while K froze, entry 3); P1:570 "negligible in the quadratic case". Refuted above 1e-3.
 - R7: every number of the first figure run that does not involve the new dump is unchanged (Figs. 1-5,
   7-9 jsons identical; Fig. 6b measures over all dumps equal the 41-dump test values).
+
+## Entry 8 (2026-11-24 09:45 PST): outcomes of entry 7 (pass E-20261124-172949-8b2255b, figure runs E-20261124-173117-51c289f and E-20261124-173254-420115f)
+
+Pass of USF256 dump 32 (t = 8.351, N = 8.014; 57 s). Figure run 173117 with Fig. 6b at N = 8.01 and the
+new medians; figure run 173254 after the Fig. 1 tick fix, every json identical to 173117 (byte
+compare): its PNGs are the ones copied to `fig/`. All new PNGs looked at (Figs. 1, 3, 6a, 6b, 8,
+9 at t = 7.5).
+- R5: PASS. USR at N = 8.01, medians over the injected shells: Delta[Kt] = 6.5e-32 in P1's units
+  (P1's curve at <N> = 7.95 read near 3e-32: a factor 2), Delta[Kt]/Delta[K] = 1.6e-2 (inside 1e-2 to
+  1e2, near its lower edge), Delta[Q]/Delta[K] = 4.2e-3. The series of Kt/K in USR: 0.46 (N = 0.78),
+  0.73, 1.10, 1.13, 1.17 (3.55), 3.3 (5.53), 1.6e-2 (8.01), 3.6e-6 (10.0). So Kt is comparable with K
+  or above it through the USR phase and falls below it after the USR phase ends (N about 7.5).
+- R6: PASS. SR medians of Kt/K: 0.39 (N = 0.50), 0.70, 1.10, 1.33, 1.41 (3.44), 1.1e-4 (5.34), 4.4e-8
+  (8.10).
+- R7: PASS. All jsons of 173117 except Figs. 6a/6b equal those of 172426 byte for byte; Fig. 6a gains
+  only the new key; Fig. 6b's measures over all dumps equal the 41-dump values (K_last_over_max median
+  1.41e-9, Q_over_K_last, Q_below_K_frac_by_dump, K_last_over_N55 identical); Kt_last_over_N45 =
+  5.6e-11 (version 2; version 1 rescaled gave another value and is not used for USR).
+- Not a reading of P1 beyond the curves named: the factor of about 3.5 in the one-point bands of Fig. 2
+  (SR: delta phi/phi_b 68 per cent half-width at N_f ours 2.88e-7, P1 Fig. 2 read about 1.0e-6; R^NR
+  2.28e-5 against about 0.8e-4; delta Pi/Pi_b before the entry 1.5e-5 against about 0.6e-4) is the same
+  as in USR (Fig. 4, factors 2.3 to 4), while the spectra (Figs. 3, 5) agree in level. Recorded for
+  RESULTS; no cause named (P1 does not state the normalisation of its real-space draw).
