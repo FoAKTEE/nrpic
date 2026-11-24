@@ -347,3 +347,13 @@ Outcome (run B-20261124-135244-17ebf5c, `figs/fig_l2_observer.png` looked at) [V
   converged statement of this code. No cause of the violation is named; a run that could show it
   (a smaller step, more particles per cell along y, or a lower amplitude between M2 and L2) is the
   next step.
+
+## 2026-11-24 07:10 PST (lead of batch 11): series 4, where L2's constraint violation comes from; prediction
+
+Series 4 (`inputs/series4.txt`): L2 at N_y = 64 with series 3's fans, (a) half the step (cfl
+0.125, dt_expansion 0.005), (b) four particles per cell along y. Prediction [JUDGEMENT]: neither
+lowers the relative constraint means over 1 <= t <= t_A by more than 30 per cent against series
+3's L2f_n64 (Hr_mean at t_A 0.237, Mr_mean 0.175), and Delta moves by less than the 32-64
+difference of series 3 (2.1e-3): the violation comes from the dust itself (streams crossing at
+the grid scale), not from the step or the particle sampling. Refuted if either halves the means
+(then that is the cause to pursue).

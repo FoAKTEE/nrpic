@@ -1,0 +1,6 @@
+# shear series 4 (lead of batch 11, 2026-11-24): where L2's constraint violation comes from. L2 at
+# N_y = 64 with the narrow fans of series 3, (a) half the step (cfl 0.125, dt_expansion 0.005),
+# (b) four particles per cell along y. Release core-v0.6 processor executable. Prediction:
+# JOURNAL.md, entry of 2026-11-24 07:10.
+L2s_n64_dt 0.5 4.0 64 tfac=2.5 fan_abs=1 fanA=-0.92,0.04,41 fanB=0.200,0.01,21 cfl=0.125 dtexp=0.005
+L2s_n64_ppc4 0.5 4.0 64 tfac=2.5 fan_abs=1 fanA=-0.92,0.04,41 fanB=0.200,0.01,21 ppc_y=4
