@@ -123,11 +123,11 @@
     "bytes": 83179203881,
     "files": 61
   },
-  "status": "failed",
+  "status": "stopped",
   "exit_code": 1,
   "registered": "2026-11-24T20:21:40Z",
   "started": "2026-11-24T20:21:40Z",
-  "ended": "2026-11-24T21:12:18Z",
+  "ended": "2026-11-24T21:20:37Z",
   "parents": [
     "E-20261123-035925-8439d79"
   ],
@@ -142,5 +142,5 @@
     "runs": 243,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md"
   },
-  "finished": "2026-11-24T21:12:18Z"
+  "finished": "2026-11-24T21:20:37Z"
 }
