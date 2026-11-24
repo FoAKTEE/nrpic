@@ -1,0 +1,57 @@
+{
+ "name": "R3 (reproduction: update pass after the five continued runs)",
+ "what": "Track E: figures, note and verifier brought up to date with the continued runs; core: the open steps of the level-2 review closed",
+ "note": "Releases core-v0.4 to v0.6 are on main. Rulings: coord/DECISIONS/0028 to 0032. The usage window of this account is small (decision 0032 item 1): read what the task needs; no helpers.",
+ "stages": [
+  [
+   0,
+   4
+  ],
+  [
+   1
+  ],
+  [
+   2
+  ],
+  [
+   3
+  ]
+ ],
+ "items": [
+  {
+   "type": "task",
+   "owner": "E-stoch-inf",
+   "key": "repro/figs",
+   "title": "figures brought up to date with the continued runs",
+   "task": "This package belongs to the full reproduction of two papers that the user asked for on 2026-11-22 (coord/DECISIONS/0028): arXiv:2512.14649, 'Stochastic Inflation in Numerical Relativity' (source /data/haiyangw/nrpic/kb-data/raw/arxiv/2512.14649/v2/src/PRD_v2.tex, 791 lines) and arXiv:2401.08530, 'Stochastic Inflation in General Relativity' (source /data/haiyangw/nrpic/kb-data/raw/arxiv/2401.08530/v2/src/Stochastic_Inflation.tex, 1079 lines); the companion on initial conditions, arXiv:2502.06783, is in the store too (kb-data/raw/arxiv/2502.06783/). The sources are read-only and never copied into git; their figures are never committed, and nothing read off a figure is committed as a data file (single comparison values with their locator may stand in text). The authors' code is not public and their random realisations are their own: agreement is statistical, against the linear solution, and against the numbers the papers print. This track has already reproduced both scenarios of the first paper against the linear solution (ladder/, usr/, g2prod/, window/, a4res/, spec/scope/SCOPE.md, note/): build on that and do not redo it. A lead session of this owner may be working in the worktree beside you: commit path-limited, only your package directory and your run manifests. PACKAGE repro/figs, update pass: the five continuation runs of package repro/continue have ended (its HANDOFF.md and scratch/E-stoch-inf/repro_continue_seq/state.tsv; its join check). Close what its sequencer left open, confirm the join of each continuation with its original (the first record after the restart against the last before it), then do the steps your JOURNAL.md entry 9 lists: the constraint panels of the slow-roll one-point figure and the slow-roll figures from the run with dumps, the sign-flip run to its end, the 256-cell members of both convergence figures, the slow-roll level-2 ablation at the final time; judge the predictions that waited (repro/scope entry 1, repro/ablation entry 1); registered figure run; every figure looked at; RESULTS.md with no PENDING row left, or the reason for each that remains."
+  },
+  {
+   "type": "task",
+   "owner": "E-stoch-inf",
+   "key": "repro/note",
+   "title": "working note brought up to date",
+   "task": "This package belongs to the full reproduction of two papers that the user asked for on 2026-11-22 (coord/DECISIONS/0028): arXiv:2512.14649, 'Stochastic Inflation in Numerical Relativity' (source /data/haiyangw/nrpic/kb-data/raw/arxiv/2512.14649/v2/src/PRD_v2.tex, 791 lines) and arXiv:2401.08530, 'Stochastic Inflation in General Relativity' (source /data/haiyangw/nrpic/kb-data/raw/arxiv/2401.08530/v2/src/Stochastic_Inflation.tex, 1079 lines); the companion on initial conditions, arXiv:2502.06783, is in the store too (kb-data/raw/arxiv/2502.06783/). The sources are read-only and never copied into git; their figures are never committed, and nothing read off a figure is committed as a data file (single comparison values with their locator may stand in text). The authors' code is not public and their random realisations are their own: agreement is statistical, against the linear solution, and against the numbers the papers print. This track has already reproduced both scenarios of the first paper against the linear solution (ladder/, usr/, g2prod/, window/, a4res/, spec/scope/SCOPE.md, note/): build on that and do not redo it. A lead session of this owner may be working in the worktree beside you: commit path-limited, only your package directory and your run manifests. PACKAGE repro/note, update pass: the five continued runs have ended and package repro/figs has brought its figures and RESULTS.md up to date. Bring the note up to date as its README.md says under 'How to rerun' (the passes of repro/figs, the PENDING rows of ledger.py, the pending markers in the text and captions, the verdict table), with the paper-writing skill (/home/haiyangw/.claude/skills/paper-writing/SKILL.md; load it with the Skill tool if listed) on every sentence you change; state the definition behind each new number; registered run_all; checker with the guide's forbid list; compile; read every page that changed. README.md: the final verdict table."
+  },
+  {
+   "type": "task",
+   "owner": "E-stoch-inf",
+   "key": "repro/verify",
+   "title": "verifier: the rows that were pending",
+   "task": "This package belongs to the full reproduction of two papers that the user asked for on 2026-11-22 (coord/DECISIONS/0028): arXiv:2512.14649, 'Stochastic Inflation in Numerical Relativity' (source /data/haiyangw/nrpic/kb-data/raw/arxiv/2512.14649/v2/src/PRD_v2.tex, 791 lines) and arXiv:2401.08530, 'Stochastic Inflation in General Relativity' (source /data/haiyangw/nrpic/kb-data/raw/arxiv/2401.08530/v2/src/Stochastic_Inflation.tex, 1079 lines); the companion on initial conditions, arXiv:2502.06783, is in the store too (kb-data/raw/arxiv/2502.06783/). The sources are read-only and never copied into git; their figures are never committed, and nothing read off a figure is committed as a data file (single comparison values with their locator may stand in text). The authors' code is not public and their random realisations are their own: agreement is statistical, against the linear solution, and against the numbers the papers print. This track has already reproduced both scenarios of the first paper against the linear solution (ladder/, usr/, g2prod/, window/, a4res/, spec/scope/SCOPE.md, note/): build on that and do not redo it. A lead session of this owner may be working in the worktree beside you: commit path-limited, only your package directory and your run manifests. PACKAGE repro/verify, update pass (you are a fresh reader again: take only the list of new claims from repro/figs/RESULTS.md and the note's ledger rows that were pending, not their verdicts): from the raw outputs of the five continued runs, with your own code, recompute the slow-roll constraint ratios against their absolute magnitudes, the sign-flip control over its full span, the 256-cell members of the two convergence figures (the factor per doubling against the smaller lattices), and the slow-roll level-2 against level-0 difference at the final time; check that each continuation joins its original without a jump. Also settle the open point between you and the note: the source of arXiv:2512.14649 at line 520 uses the textcomp symbol for 'per ten thousand' (1e-4), not per mille: confirm or contest, and restate your backreaction verdict under the right bound. Append section 8 to VERIFIER.md (sections 1 to 7 unchanged); registered runs; predictions first."
+  },
+  {
+   "type": "task",
+   "owner": "E-stoch-inf",
+   "key": "repro/note",
+   "title": "working note: final correction pass",
+   "task": "This package belongs to the full reproduction of two papers that the user asked for on 2026-11-22 (coord/DECISIONS/0028): arXiv:2512.14649, 'Stochastic Inflation in Numerical Relativity' (source /data/haiyangw/nrpic/kb-data/raw/arxiv/2512.14649/v2/src/PRD_v2.tex, 791 lines) and arXiv:2401.08530, 'Stochastic Inflation in General Relativity' (source /data/haiyangw/nrpic/kb-data/raw/arxiv/2401.08530/v2/src/Stochastic_Inflation.tex, 1079 lines); the companion on initial conditions, arXiv:2502.06783, is in the store too (kb-data/raw/arxiv/2502.06783/). The sources are read-only and never copied into git; their figures are never committed, and nothing read off a figure is committed as a data file (single comparison values with their locator may stand in text). The authors' code is not public and their random realisations are their own: agreement is statistical, against the linear solution, and against the numbers the papers print. This track has already reproduced both scenarios of the first paper against the linear solution (ladder/, usr/, g2prod/, window/, a4res/, spec/scope/SCOPE.md, note/): build on that and do not redo it. A lead session of this owner may be working in the worktree beside you: commit path-limited, only your package directory and your run manifests. PACKAGE repro/note, final correction pass: apply what section 8 of tracks/E-stoch-inf/repro/verify/VERIFIER.md calls for, fill the Check column of the rows that were pending, rerun the registered run_all, the checker, compile, read the changed pages, and write the final state into README.md."
+  },
+  {
+   "type": "task",
+   "owner": "core",
+   "key": "verify/noise_level2_close",
+   "title": "open steps of the level-2 review closed",
+   "task": "Close the open steps of the review of branch core/noise-level2 (worktree /data/haiyangw/nrpic/wt/core-s2; the review on Fable found the results unchanged: its report and tracks/core/JOURNAL-noise-level2.md entry 15 list the exact next commands): no source change in this session. (1) Close the registered run core-20261124-143147-2ff64b9 (final source against 6ca93cba on the fifteen processor tests) and judge it. (2) Publish the reviewed executables of the final source (built under wt/core-s2/.work/build_{cpu,gpu,omp}_nl2/) to /data/haiyangw/nrpic/scratch/core/exe/core_noise-level2/ with new COMMIT, SHA256SUMS and READY (keep the set of 6ca93cba beside it under a name that says so: Track E's fifteen runs used it). (3) The card run R5 of the reviewed card executable (cost of level 2 against level 0 on the mesh at 256 cells; at most half a card-hour; predictions are in the journal), submitted and judged if the queue lets it finish within the session, otherwise left registered with the command that reads it. (4) Interface text and journal brought up to date; one outbox message to Track E and one to orch (fit for release v0.7 or the conditions that remain); commit; push core/noise-level2. Work in that worktree only."
+  }
+ ]
+}
