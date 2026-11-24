@@ -25,6 +25,6 @@ trend in time; the bubble's horizon mass dips by 4-6e-5 at 100 M at both meshes 
    region norms come with FN4, FNQ, FL16 (predictions XN, XQ, L5).
 4. Horizon excision ends at 4 x initial_radius (core request ah-excision-growth-guard; FK tests the
    workaround). Finder stopping rule: request finder-stopping-rule to core (2026-11-24).
-5. Package items: ladder table (LADDER.md) and ladder schematic (D-20261124-172838-3a30e48) current;
+5. Package items: ladder table (LADDER.md) and ladder schematic (D-20261124-175505-a1053fa, after FE) current;
    slice mosaic done (D-20261124-134644-2389227); note text on the long runs and on FP (C16); the G2
    verifier, fresh context (C17); a rerun script (C6); `nrpic-stage verify D-bh-dress G2` without a timeout.

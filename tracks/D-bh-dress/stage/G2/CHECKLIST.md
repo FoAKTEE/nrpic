@@ -42,7 +42,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [x] **C9** Schematic: Verification ladder
   - status: PASS
-  - evidence: Verification-ladder schematic schem_ladder.png, registered D-20261124-172838-3a30e48 (paperfig style, g2long/tools/schem_ladder.py), looked at by the lead on 2026-11-24 09:28 PST; it will be redrawn as the queued runs end.
+  - evidence: Verification-ladder schematic schem_ladder.png, registered D-20261124-172838-3a30e48 and, redrawn after test FE, D-20261124-175505-a1053fa (paperfig style, g2long/tools/schem_ladder.py), both looked at by the lead on 2026-11-24; it will be redrawn as the queued runs end.
 - [ ] **C10** Data figure: Convergence figures (one each for particle number, mesh, gauge)
   - status: OPEN
   - evidence: Mesh: judge_conv.png (D-20261124-131149-9f0166d, three vacuum meshes) and fp_analyse.png panel (d) (converged finder, three meshes); boundary/gauge: boundary_gauge.png (D-20261124-131657-89cd963). Particle-number figure waits for FK, FN4, FNQ.

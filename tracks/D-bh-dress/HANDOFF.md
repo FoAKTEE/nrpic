@@ -56,7 +56,9 @@ FK, FN4, FNQ, FL16 (FE4 and FF4 are already eligible).
   D-20261124-172410-e8afc73 and D-20261124-172508-c847ee4 (layout only) in g2long entry 14.
 - Ladder schematic D-20261124-172838-3a30e48 (stage/G2 C9).
 - FE D-20261124-173137-f358715 (tight finder on the 50 M dumps of V-1L, ES-1L and the 50-200 M dumps of
-  V-1L16, ES-1L16; predictions FE1-FE3 in entry 16): see entry 17 for its outcome and the fe_analyse run.
+  V-1L16, ES-1L16) judged by fe_analyse D-20261124-175356-0f40f1a (entry 17): FE1, FE2 missed their bounds
+  (not refuted), FE3 holds; the bubble's horizon mass dips by 4-6e-5 at 100 M at both meshes.
+- Ladder schematic redrawn after FE: D-20261124-175505-a1053fa.
 - `nrpic-stage verify D-bh-dress G2` ran without a timeout (log `$S/tmp/stage_verify_g2_b11b.log`).
 
 ## G2: what the next sessions add (stage/G2/OPEN.md)

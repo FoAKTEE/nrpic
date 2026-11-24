@@ -47,7 +47,8 @@ no lapse_leak.
 | Slice mosaic of ES-FL at 500 M | `g2long/tools/slice_mosaic.py` | D-20261124-134644-2389227 | slice_mosaic_esfl_t500.png (L) |
 | Finder re-search of dumps (FP, FP-ext; processors) | `g2long/tools/probe_long.py` | D-20261124-130935-fdca920, D-20261124-140606-286a302 | run logs |
 | FP1-FP5, FP-ext judgement | `g2long/tools/fp_analyse.py` | D-20261124-172410-e8afc73, D-20261124-172508-c847ee4 (figure layout only) | fp_analyse.png (L) |
-| Ladder schematic (C9) | `g2long/tools/schem_ladder.py` | D-20261124-172838-3a30e48 | schem_ladder.png (L) |
+| Ladder schematic (C9) | `g2long/tools/schem_ladder.py` | D-20261124-172838-3a30e48, D-20261124-175505-a1053fa (after FE) | schem_ladder.png (L) |
+| Early-dump finder re-search (FE) and its judgement | `g2long/tools/probe_long.py`, `g2long/tools/fe_analyse.py` | D-20261124-173137-f358715, D-20261124-175356-0f40f1a | fe_analyse.png (L) |
 | 4N and N/4 dust data (D1); smoke tests S7, S8 | `flux_tools/esf_data.py`; release processor build | D-20261124-130942-29c5de2, -131050-ed0a535; -131123-05e5bfe, -131125-c928380 | entry 11 |
 
 Card runs registered and not yet ended (release core-v0.6, chains; held by the sequencer
