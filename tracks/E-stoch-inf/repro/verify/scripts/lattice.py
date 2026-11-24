@@ -3,13 +3,16 @@
 coord/INTERFACES/scalar_field_2.md section 4) and my own extraction of R^NR (P1:522-526).
 
 Per dump: box means; Fourier coefficients (cell-centre convention, x1min = 0) of
-  psi_chi = -(1/2) delta ln chi              (trace part from the determinant, exact)
-  psi_E   = -(1/4) khat_i khat_j delta gt_ij  (removes the (1/3) Laplacian of E that the
-                                               determinant carries: gamma_ij = a^2[(1+2 psi)
-                                               delta_ij + 2 d_i d_j E])
+  Phi_chi = +(1/2) delta ln chi             (from the determinant, exact)
+  Phi_E   = +(1/4) khat_i khat_j delta gt_ij (removes the -(1/3) Laplacian of E that the
+                                              determinant carries; SVT metric of P0:178-181,
+                                              gamma_ij = a^2[(1 - 2 Phi) delta_ij + 2 E_,ij],
+                                              so chi = a^-2 (1 + 2 Phi - (2/3) Lap E) and
+                                              khat khat : delta gt = -(4/3) k^2 E)
   dphi    = phi - <phi>
 for the hemisphere modes with |n|^2 <= nmax2, and the shell power of
-  R = psi_chi + psi_E + (H/Pi_b) dphi,  H = -<K>/3, Pi_b = <Pi>
+  R = Phi_chi + Phi_E + (H/Pi_b) dphi,  H = -<K>/3, Pi_b = <Pi>   (P0:273, P1:524)
+(gauge invariant: under t -> t + xi, Phi -> Phi + H xi and dphi -> dphi - Pi xi)
 for every |n|^2 up to the Nyquist corner. Constraint statistics from the dumped H, M_i and,
 where present, the dumped magnitudes; my own [H] = |R3| + (2/3)K^2 + |At_ij At_ij| + |16 pi E|
 with R3 recovered from the dumped H (definition of [H] at P1:740).
@@ -213,25 +216,27 @@ def analyse_dump(path, nmax2, workers=4):
             g = g - 1.0
         kk += m*ka*kb/k2*sfft.rfftn(g, workers=workers)
         del g
-    Fpsichi = -0.5*Fchi
-    FpsiE = -0.25*kk
-    FR = Fpsichi + FpsiE + (H/Pib)*Fphi
-    FRnoE = Fpsichi + (H/Pib)*Fphi
+    FPhichi = 0.5*Fchi
+    FPhiE = 0.25*kk
+    FR = FPhichi + FPhiE + (H/Pib)*Fphi
+    FRnoE = FPhichi + (H/Pib)*Fphi
     res["n"] = n
     res["c_R"] = coeffs(FR, n, N)
     res["c_RnoE"] = coeffs(FRnoE, n, N)
     res["c_dphi"] = coeffs(Fphi, n, N)
-    res["c_psichi"] = coeffs(Fpsichi, n, N)
-    res["c_psiE"] = coeffs(FpsiE, n, N)
+    res["c_Phichi"] = coeffs(FPhichi, n, N)
+    res["c_PhiE"] = coeffs(FPhiE, n, N)
     s, c = shell_power(FR, N)
     res["shell_sum_R"], res["shell_cnt"] = s, c
+    s2, _ = shell_power(FRnoE, N)
+    res["shell_sum_RnoE"] = s2
     # one-point statistics of R in real space
     R = sfft.irfftn(FR, s=(N, N, N), workers=workers)
     res["R_rms"] = float(np.sqrt((R**2).mean()))
     q = np.percentile(R, [0.5, 2.5, 15.865, 50, 84.135, 97.5, 99.5])
     res["R_pct"] = q
     res["R_maxabs"] = float(np.abs(R).max())
-    del R, FR, FRnoE, Fpsichi, FpsiE, kk, Fchi, Fphi
+    del R, FR, FRnoE, FPhichi, FPhiE, kk, Fchi, Fphi
     # constraints
     cw = [q for q in ("H", "Mx", "My", "Mz", "E", "Hmag", "Mmag", "Axx", "Axy", "Axz", "Ayy",
                       "Ayz", "Azz") if q in names]
