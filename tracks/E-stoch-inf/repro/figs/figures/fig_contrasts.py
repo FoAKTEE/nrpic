@@ -56,6 +56,8 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--hzero", action="store_true")
     ap.add_argument("--title", default="")
+    ap.add_argument("--con", default=None,
+                    help="runs.py label whose record is compared with the per-cell means (F2 (a))")
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
     rows = load(args.passes)
@@ -138,6 +140,19 @@ def main():
     for key in ("avg_H", "avg_M", "avg_H0"):
         res[key] = [float(r[key]) for r in rows if key in r]
     res["cycles"] = [int(r["cycle"]) for r in rows]
+    if args.con:
+        import runs as rr
+        c = fl.read_con_joined(rr.con_paths(args.con))
+        bycyc = {int(x[1]): x for x in c}
+        dH, dM, n = [], [], 0
+        for r in rows:
+            if "avg_H" in r and int(r["cycle"]) in bycyc:
+                x = bycyc[int(r["cycle"])]
+                dH.append(abs(float(r["avg_H"]) / x[3] - 1.0))
+                dM.append(abs(float(r["avg_M"]) / x[6] - 1.0))
+                n += 1
+        res["reader_check"] = dict(n=n, max_rel_H=max(dH) if dH else None,
+                                   max_rel_M=max(dM) if dM else None)
     with open(os.path.join(args.out, args.name + ".json"), "w") as fp:
         json.dump(res, fp, indent=1)
 

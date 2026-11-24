@@ -44,7 +44,7 @@ def main():
     if a.usr256:
         p = sub(a.usr256, "USF256")
         run([F("fig_contrasts.py"), "--pass", p, "--case", "usr", "--name", "fig4_usr_contrast",
-             "--out", out, "--title", "Inflection, USF256 (256^3)"])
+             "--out", out, "--title", "Inflection, USF256 (256^3)", "--con", "USF256"])
         run([F("fig_contrasts.py"), "--pass", p, "--case", "usr", "--name",
              "fig4_usr_contrast_hzero", "--out", out, "--hzero",
              "--title", "Inflection, USF256, box mean of H removed"])
@@ -70,7 +70,8 @@ def main():
         for p in sr_passes:
             args += ["--pass", p]
         run([F("fig_contrasts.py")] + args + ["--case", "sr", "--name", "fig2_sr_contrast",
-                                              "--out", out, "--title", "Quadratic, RSF256 (256^3)"])
+                                              "--out", out, "--title", "Quadratic, RSF256 (256^3)",
+                                              "--con", "RSF256"])
         run([F("fig_spectra.py")] + args + ["--case", "sr", "--kind", "R", "--name", "fig3_sr_spec",
                                             "--out", out, "--title", "Quadratic, RSF256"])
         run([F("fig_spectra.py")] + args + ["--case", "sr", "--kind", "K", "--name",
