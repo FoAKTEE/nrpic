@@ -113,14 +113,19 @@ def one_dump(path, args, shells_cache={}):
         out["specK_mean"], out["specK_min"], out["specK_max"] = spec(FK)
         del FK
         if all(a in f for a in A_VARS):
+            # Kt_ij(k) Kt^ij(k)*: Kt_ij = At_ij/chi (P1:676, A_ij = X Kt_ij) with the index raised
+            # by the physical metric gamma^ij = chi gt^ij, so Kt_ij Kt^ij = At_ij At^ij (conformal
+            # raise); in Fourier space at linear order sum_ij |At_ij(k)|^2. (Version 1 of this
+            # script summed |(At_ij/chi)(k)|^2, i.e. the covariant components, too large by about
+            # <chi>^-2 = a^4.)
             pKt = np.zeros(F.shape)
-            ichi = 1.0 / f["chi"]
             for name, i, j, w in APAIRS:
-                Fa = rf(f[name] * ichi)
+                Fa = rf(f[name])
                 Fa[0, 0, 0] = 0.0
                 pKt += w * (Fa.real ** 2 + Fa.imag ** 2)
             out["specKt_mean"], out["specKt_min"], out["specKt_max"] = sh.bin(fac * pKt)
-            del pKt, ichi
+            out["kt_version"] = 2
+            del pKt
             # Kt_ij Kt^ij = At_ij At^ij with the conformal inverse metric (det gt = 1)
             g = {n: f[n] for n, _, _, _ in GPAIRS}
             gi = dict(xx=g["gyy"] * g["gzz"] - g["gyz"] ** 2,

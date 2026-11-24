@@ -91,6 +91,8 @@ GROUPS = {
        for lab in ("AL0U", "AL1U", "AL2U", "UL1", "U256ap")],
     "rungs": [(lab, []) for lab in ("C32S", "C64S", "C128S", "C32U", "C64U", "C128U")],
 }
+# USF256 again at the dumps of Fig. 6b (and N = 4.5) with the invariant Kt spectrum (kt_version 2)
+GROUPS["usr256kt"] = [("USF256", ["--dumps", "0,3,5,8,11,14,18,22,40"])]
 GROUPS["rsf256"] = [("RSF256", ["--dumps", "0"]), ("RSF256c", ["--save-modes"])]
 GROUPS["cl256"] = [("CL256S", ["--dumps", "0"]), ("CL256Sc", ["--last"])]
 GROUPS["al2s"] = [("AL2Sc", ["--last", "--save-modes"])]

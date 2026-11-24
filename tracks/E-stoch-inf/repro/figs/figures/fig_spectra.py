@@ -136,9 +136,14 @@ def main():
         for a, (key, lab) in zip(axes, keys):
             if key + "_mean" not in z.files:
                 continue
-            m = z[key + "_mean"][good] * scale
-            lo = z[key + "_min"][good] * scale
-            hi = z[key + "_max"][good] * scale
+            sc = scale
+            if key == "specKt" and "kt_version" not in z.files:
+                # pass made with version 1 (covariant At_ij/chi): times <chi>^2, exact to
+                # second order where delta chi/chi is small (slow roll); not used for USR
+                sc = scale * float(z["mean_chi"]) ** 2
+            m = z[key + "_mean"][good] * sc
+            lo = z[key + "_min"][good] * sc
+            hi = z[key + "_max"][good] * sc
             a.fill_between(k, np.maximum(lo, 1e-60), hi, color=c, alpha=0.12, lw=0,
                            rasterized=True)
             a.plot(k, m, color=c, lw=0.7, rasterized=True,
@@ -212,7 +217,9 @@ def main():
         res["K_last_over_max"] = dict(median=float(np.median(K[-1] / K.max(axis=0))),
                                       max=float(np.max(K[-1] / K.max(axis=0))))
         if "specKt_mean" in zl.files:
-            Kt = np.array([z["specKt_mean"][good] for z in allrows])
+            Kt = np.array([z["specKt_mean"][good] * (1.0 if "kt_version" in z.files
+                                                       else float(z["mean_chi"]) ** 2)
+                           for z in allrows])
             i45 = int(np.argmin(np.abs(Ns - 4.5)))
             res["Kt_last_over_N45"] = dict(median=float(np.median(Kt[-1] / Kt[i45])),
                                            max=float(np.max(Kt[-1] / Kt[i45])), N45=float(Ns[i45]))

@@ -29,6 +29,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("out")
     ap.add_argument("--usr256")
+    ap.add_argument("--usr256kt", help="pass of group usr256kt (Fig. 6b with the invariant Kt)")
     ap.add_argument("--sr256", help="pass with P256v6 (all dumps)")
     ap.add_argument("--rsf256", action="append", default=[],
                     help="passes with RSF256 and its continuation (labels RSF256, RSF256c)")
@@ -50,7 +51,8 @@ def main():
              "--title", "Inflection, USF256, box mean of H removed"])
         run([F("fig_spectra.py"), "--pass", p, "--case", "usr", "--kind", "R", "--name",
              "fig5_usr_spec", "--out", out, "--title", "Inflection, USF256"])
-        run([F("fig_spectra.py"), "--pass", p, "--case", "usr", "--kind", "K", "--name",
+        pk = sub(a.usr256kt, "USF256") if a.usr256kt else p
+        run([F("fig_spectra.py"), "--pass", pk, "--case", "usr", "--kind", "K", "--name",
              "fig6b_usr_Kspec", "--out", out, "--title", "Inflection, USF256"])
     sr_passes = []
     for r in a.rsf256:
