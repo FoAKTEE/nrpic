@@ -31,7 +31,9 @@ under `scratch/B-emd-gw/<run id>/`). Judgements in the package journals named pe
 | B-20261121-202830-417af0c | series 1: 27 cases (closed as failed: S1_n64_lap1 guard stop) | processors |
 | B-20261123-015919-dec4392 | summary of series 1, outcomes P4-P12 | analysis |
 | B-20261124-131336-bc61eee | P10: rays of the f = 1 run of series 1 (copied), against f = 1/3: -8.7e-5 | analysis |
-| B-20261124-133702-4a06a52 | series 2: L2 with tlim = 10 at N_y = 32, 64, 128; S3 at N_y = 256 (running at the end of batch 11) | processors |
+| B-20261124-133702-4a06a52 | series 2: L2 with tlim = 10 at N_y = 32, 64, 128 (fan too coarse: no reliable number); S3 at N_y = 256 | processors |
+| B-20261124-134209-4584052 | series 3: L2 with narrow fans at N_y = 32, 64, 128 | processors |
+| B-20261124-134720-c753aff | summary of series 2 and 3 (`series2_summary.py`), figure fig_series2 | analysis |
 
 ## Full GR against the Newtonian mode: population box (`population/`, JOURNAL)
 
@@ -52,7 +54,7 @@ under `scratch/B-emd-gw/<run id>/`). Judgements in the package journals named pe
 ## Figures looked at in batch 11
 
 `flrw_conv/figs/fig_step128.png`; `population/figs/pop_gr_constraints.png`, `pop_gr_halos.png`,
-`pop_gr_gw.png`, `pop_gr_stop.png`, `pop_gr_mosaic.png`; the rays figure of B-20261124-131336-bc61eee.
+`pop_gr_gw.png`, `pop_gr_stop.png`, `pop_gr_mosaic.png`; the rays figure of B-20261124-131336-bc61eee; `shear/figs/fig_series2.png`.
 
 ## Figures looked at in batch 10a
 

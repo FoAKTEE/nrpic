@@ -285,3 +285,15 @@ looked at, against predictions written before the runs (journals named below).
 - shear, L2: the cause of "no number" found from series 1's outputs (A rays had not reached x = L
   by tlim = 6; the four-ray window was built from two crossings). Fixed in `analyze_rays.py`;
   series 2 reruns L2 with tlim = 10.
+- population, full GR (B-20261123-014847-f295ab4, -035002-bcc82bd; analysis -131918-e71996f,
+  -133150-e9ef701; mosaic -133709-85c4be7): confirmed against fidL8 and the design (H1, H2, A1 to
+  a = 30, Z); wrong against prediction: A1 from a = 36, A2 above 0.9 only to a = 72, the strain-rms
+  half of A3, G1's cost (0.19 below 0.2), G1 for 0.028 (stop at a = 30.7). Not confirmed: what the
+  high-k TT energy after halo formation is. Two analysis attempts failed on my own script (a
+  dump written at the guard stop; a keyword clash in the figure step), both on record.
+- shear series 2 and 3 (B-20261124-133702-4a06a52, -134209-4584052, summary -134720-c753aff):
+  L2 = -0.828, -0.830, -0.835, near CosmoGRaPH and not converging (P9''b, P9 fail); S3 floor
+  2-3e-5. The series-2 fan was too coarse (my design error, recorded).
+- Follow-ups queued (predictions first): Newtonian reference at 128^3 (Slurm 5167), restarts
+  X0-X3 of the 0.028 run (Slurm 5169), and through the sequencer the Newtonian analysis and the
+  particle and mesh legs of the 0.014 GR box.

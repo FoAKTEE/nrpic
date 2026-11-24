@@ -14,8 +14,9 @@ Lacking, in the order the track will close them:
    statement. The 0.028 run stops at a = 30.7 in the densest core; restarts X0-X3 are queued
    (B-20261124-133533-cb0bb7d) to tell slice, step and slicing condition apart. Not established:
    what the high-k excess of the metric's TT energy after halo formation is.
-2. Shearing dust (arXiv:2003.08014): L2 rerun with tlim = 10 (series 2, running); S3's order over
-   32-256 (same run).
+2. Shearing dust (arXiv:2003.08014): L2 now has values (-0.828, -0.830, -0.835 at N_y = 32-128,
+   near CosmoGRaPH's -0.8183, far from gevolution and GRAMSES) but no convergence: the transport
+   along the observer between the arrivals grows with N_y. S3 has a floor of 2-3e-5 (N_y = 256).
 3. Gauge leg of the three-way convergence: one slicing point (f = 1 at N_y = 64, P10 holds); a
    convergent gauge leg (a second slicing or shift at three meshes) and its figure are missing.
 4. Constraints: Hr of the FLRW run grows about as N^2 with the mesh; the population's mean
