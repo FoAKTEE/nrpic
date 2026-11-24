@@ -161,3 +161,25 @@ Predictions for R3 (run_all after these edits; no figure script changes):
   stated with its end. A dry run of the new `ledger.py` on the outputs of R2 (unregistered, a test
   of the script in scratch/E-stoch-inf/tmp/ledgertest) gives 113 rows; checks: 65 yes, 16
   differs, 2 beyond reach, 11 quote, 14 rerun only, 5 none (4 pending, 1 new row).
+
+## Entry 6 (2026-11-24 11:10): outcome of R3; a page overflow found on the pages; prediction for R4
+
+R3 = E-20261124-185556-df39d1c (registered, production, two cores, 65 s, commit df39d1c).
+- P1 held: twelve lattice jsons and langevin.json byte-equal to R2 (`checks.json`).
+- P2 held: all 19 PNGs under `figures/` byte-equal to R2's; the committed PDFs (from R2) stay.
+- P3 held as amended: 113 rows in 8 tables; checks 65 yes, 16 differs, 2 beyond reach, 11 quote,
+  14 rerun only, 5 none; every verifier string found on its line.
+- P4 held in part: compile clean (no undefined references or citations, no overfull hbox), 21
+  pages. Checker (forbid list of the guide): only the accepted hits (5.1 verdict labels, 7.6 "no
+  defect", 7.5/7.7 in the ledger tables and scripts, 9.3 in scripts); I removed two new 5.1 hits
+  ("rather than") and four 4.3 hits (long decimals) from the new text.
+- Found on reading every page (75 dpi): two ledger tables run off the bottom of their page, which
+  neither the compile log nor the checker reports (a float taller than the page, no overfull hbox):
+  constraints (page 18: the last two rows and the rule missing) and one patch (page 21: the last
+  two rows missing). The fourth column made the rows taller. Fix: two more sections in
+  `ledger.py` (sign flip; noise terms of the one-patch system); the main text's range reference
+  now ends at the new last table.
+Prediction for R4 (run_all at the commit of this fix): jsons and PNGs byte-equal to R3 as before;
+ledger 113 rows in 10 tables with the same check counts; after the compile every ledger table
+ends with its bottom rule on the page (read pages 15 to the end). Refuted if a json, PNG or count
+differs or a table is still cut.

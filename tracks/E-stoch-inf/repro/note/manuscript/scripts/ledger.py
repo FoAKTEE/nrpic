@@ -68,13 +68,17 @@ SECNOTE = {
                              "(0.9945 standard deviations for a Gaussian). N at 95 per cent: the first dump at which the half-width "
                              "reaches 95 per cent of its final value."),
     "Constraints": ("Entry maximum: largest record value of the mean ratio for $0.05 < N \\le \\ln 8$ (the entry at "
-                    "$k_\\mathrm{max} = 8\\,\\Delta k$); order: $\\log_2$ of the ratio between neighbouring lattices. Sign flip: "
-                    "ratio of the flipped to the proper run at common record times with $0.5 \\le N \\le \\ln 64$."),
+                    "$k_\\mathrm{max} = 8\\,\\Delta k$); order: $\\log_2$ of the ratio between neighbouring lattices."),
+    "Sign flip": ("Runs with the sign of the momentum source flipped, $256^3$. Ratio: flipped over proper run at common "
+                  "record times with $0.5 \\le N \\le \\ln 64$."),
     "Extrinsic curvature": "Medians over the shells with more than ten modes.",
     "Convergence": ("Final dump of each lattice with $k_\\mathrm{max} = 8\\,\\Delta k$; shells and linear power as in the "
                     "spectra table; entry maximum and order as in the constraints table."),
     "Backreaction": ("Relative change of the final power per shell with more than ten modes, same random amplitudes, "
                      "noise on the mesh unless stated."),
+    "Noise terms of the one-patch system": ("The drift of the lapse measured by Monte Carlo against the two forms of the "
+                                     "It\\^o term, and the noise amplitude of the appendix of Paper I over the printed one at the "
+                                     "crossing $k = \\sigma a H$."),
     "One patch": ("Widths and skewness over the live paths; a path is lost once $|\\alpha|$ reaches 50 or is not finite. "
                   "Median skewness: over the record times $4.5 \\le N_b \\le 6$."),
 }
@@ -143,16 +147,16 @@ ROWS = [
     ("Constraints", "Paper II: Hamiltonian violation", "p", ("II", 539, r"($\sim 10^{-10}$)"), None, QP),
     ("Constraints", "Paper II, Fig. 8a read off: SR plateau of <|H|/[H]>", "q", (RES, 180, "about 2e-11"), None, V("rerun", 97, "45, 46")),
     ("Constraints", "Momentum constraint second order from (cells per shortest wavelength)", "q", ("tracks/E-stoch-inf/a4res/README.md", 85, "at least 12.8 cells"), None, V("rerun", 97, "45, 46")),
-    ("Constraints", "Sign flipped, SR: ratio of <|H|/[H]> to the proper run (smallest in the window)", "j", ("fig_signflip.json", "RNC256.H_ratio_min_entry"), "{:.1e}", V("yes", 81, "47 (7.4e4 max)", "7.4e4 (largest)")),
-    ("Constraints", "Sign flipped, SR: largest <|M|/[M]>", "j", ("fig_signflip.json", "RNC256.M_flip_max"), "{:.2f}", V("yes", 81, "48 (0.16)")),
-    ("Constraints", "Sign flipped, SR: largest <|H|/[H]>", "j", ("fig_signflip.json", "RNC256.H_flip_max"), "{:.1e}", V("yes", 54, "Absolute flipped H/[H] about 1e-7", "about 1e-7")),
-    ("Constraints", "Sign flipped, SR: N at the end of the flipped run", "j", ("fig_signflip.json", "RNC256.N_end_flip"), "{:.2f}", V("diff", 54, "overlap only N < 0.39", "common records to 0.39")),
-    ("Constraints", "Sign flipped, USR: median ratio of <|H|/[H]>", "j", ("fig_signflip.json", "U256nc.H_ratio_median_entry"), "{:.1e}", V("diff", 87, "49 (1.0e4)", "1.0e4")),
-    ("Constraints", "Sign flipped, USR: largest <|M|/[M]>", "j", ("fig_signflip.json", "U256nc.M_flip_max"), "{:.2f}", V("yes", 81, "50 (0.50)")),
-    ("Constraints", "Sign flipped, USR: largest <|H|/[H]>", "j", ("fig_signflip.json", "U256nc.H_flip_max"), "{:.1e}", V("yes", 54, "Absolute flipped H/[H] about 1e-7", "about 1e-7")),
+    ("Sign flip", "Sign flipped, SR: ratio of <|H|/[H]> to the proper run (smallest in the window)", "j", ("fig_signflip.json", "RNC256.H_ratio_min_entry"), "{:.1e}", V("yes", 81, "47 (7.4e4 max)", "7.4e4 (largest)")),
+    ("Sign flip", "Sign flipped, SR: largest <|M|/[M]>", "j", ("fig_signflip.json", "RNC256.M_flip_max"), "{:.2f}", V("yes", 81, "48 (0.16)")),
+    ("Sign flip", "Sign flipped, SR: largest <|H|/[H]>", "j", ("fig_signflip.json", "RNC256.H_flip_max"), "{:.1e}", V("yes", 54, "Absolute flipped H/[H] about 1e-7", "about 1e-7")),
+    ("Sign flip", "Sign flipped, SR: N at the end of the flipped run", "j", ("fig_signflip.json", "RNC256.N_end_flip"), "{:.2f}", V("diff", 54, "overlap only N < 0.39", "common records to 0.39")),
+    ("Sign flip", "Sign flipped, USR: median ratio of <|H|/[H]>", "j", ("fig_signflip.json", "U256nc.H_ratio_median_entry"), "{:.1e}", V("diff", 87, "49 (1.0e4)", "1.0e4")),
+    ("Sign flip", "Sign flipped, USR: largest <|M|/[M]>", "j", ("fig_signflip.json", "U256nc.M_flip_max"), "{:.2f}", V("yes", 81, "50 (0.50)")),
+    ("Sign flip", "Sign flipped, USR: largest <|H|/[H]>", "j", ("fig_signflip.json", "U256nc.H_flip_max"), "{:.1e}", V("yes", 54, "Absolute flipped H/[H] about 1e-7", "about 1e-7")),
     ("Constraints", "SR per-cell constraint rows of the one-point figure", "pending", ("E-20261124-130529-da8c917",), None, NONE),
-    ("Constraints", "SR sign flip beyond the first e-fold", "pending", ("E-20261124-130629-61fe0b0",), None, NONE),
-    ("Constraints", "Paper II: a flipped sign gives", "p", ("II", 541, r"${\cal H}/[{\cal H}]\sim 10^{-5}$ and  ${\cal M}/[{\cal M}]\sim 1$"), None, QP),
+    ("Sign flip", "SR sign flip beyond the first e-fold", "pending", ("E-20261124-130629-61fe0b0",), None, NONE),
+    ("Sign flip", "Paper II: a flipped sign gives", "p", ("II", 541, r"${\cal H}/[{\cal H}]\sim 10^{-5}$ and  ${\cal M}/[{\cal M}]\sim 1$"), None, QP),
     # --- extrinsic curvature
     ("Extrinsic curvature", "SR: Delta[K] at N_f over N = 5.3 (median over shells)", "j", ("fig6a_sr_Kspec_P256v6.json", "K_last_over_N55.median"), "{:.3f}", V("rerun", 97, "54-60")),
     ("Extrinsic curvature", "SR: Delta[Kt] at N_f over N = 4.4 (median)", "j", ("fig6a_sr_Kspec_P256v6.json", "Kt_last_over_N45.median"), "{:.1e}", V("rerun", 97, "54-60")),
@@ -205,15 +209,15 @@ ROWS = [
     ("One patch", "Ito reading at step 0.001, width of alpha at N_b = 4", "l", ("variants.naive_h001.at.4.std_a",), "{:.4f}", V("yes", 82, "95-99")),
     ("One patch", "linear check at N_b = 3: width of alpha, run over linear theory", "l", ("linear.3.run_std_a", "/", "linear.3.lin_std_a"), "{:.4f}", V("rerun", 97, "77, 78, 100")),
     ("One patch", "alpha^3 set to 1: skewness of alpha at N_b = 6", "l", ("variants.a3one.at.6.skew_a",), "{:.2f}", V("diff", 89, "101 (alpha^3 -> 1 skewness -0.74, one seed, vs -0.96)", "-0.74 (one seed)")),
-    ("One patch", "Ito term: drift measured by Monte Carlo", "e", ("langevin/langevin.json", "mc.measured_drift"), "{:.4f}", V("yes", 43, "drift 0.32039 +- 0.00023 at alpha0 = 2", "0.32039 +- 0.00023")),
-    ("One patch", "Ito term: standard error of that drift", "e", ("langevin/langevin.json", "mc.measured_drift_sem"), "{:.4f}", V("yes", 82, "102-105")),
-    ("One patch", "Ito term: alpha^5 prediction", "e", ("langevin/langevin.json", "mc.pred_alpha5"), "{:.4f}", V("yes", 82, "102-105")),
-    ("One patch", "Ito term: alpha^3 prediction (as printed)", "e", ("langevin/langevin.json", "mc.pred_alpha3_P0"), "{:.4f}", V("yes", 82, "102-105")),
-    ("One patch", "Paper I: Ito term as printed", "p", ("I", 817, r"\frac{\alpha^3}{\dot{\phi_b}^2}"), None, Q0),
-    ("One patch", "USR noise amplitude over printed, sigma = 0.1", "e", ("noise_amp/noise_amp.json", "USR.rows.2.amp_ibp_over_printed"), "{:.2e}", V("yes", 44, "3.3333e-3", "3.3333e-3")),
-    ("One patch", "the same, sigma = 0.5", "e", ("noise_amp/noise_amp.json", "USR.rows.4.amp_ibp_over_printed"), "{:.2e}", V("yes", 44, "8.3332e-2", "8.3332e-2")),
-    ("One patch", "SR noise amplitude over printed, sigma = 0.1", "e", ("noise_amp/noise_amp.json", "SR.rows.2.amp_ibp_over_printed"), "{:.3f}", V("diff", 44, "1.063 at sigma = 0.1 with eps1 = 0.0124, 1.123 with eps1 = 0.0244", "1.063 (eps1 = 0.0124), 1.123 (eps1 = 0.0244)")),
-    ("One patch", "SR: eps1 of our background at that crossing", "e", ("noise_amp/noise_amp.json", "SR.rows.2.eps1"), "{:.1e}", NONE),
+    ("Noise terms of the one-patch system", "Ito term: drift measured by Monte Carlo", "e", ("langevin/langevin.json", "mc.measured_drift"), "{:.4f}", V("yes", 43, "drift 0.32039 +- 0.00023 at alpha0 = 2", "0.32039 +- 0.00023")),
+    ("Noise terms of the one-patch system", "Ito term: standard error of that drift", "e", ("langevin/langevin.json", "mc.measured_drift_sem"), "{:.4f}", V("yes", 82, "102-105")),
+    ("Noise terms of the one-patch system", "Ito term: alpha^5 prediction", "e", ("langevin/langevin.json", "mc.pred_alpha5"), "{:.4f}", V("yes", 82, "102-105")),
+    ("Noise terms of the one-patch system", "Ito term: alpha^3 prediction (as printed)", "e", ("langevin/langevin.json", "mc.pred_alpha3_P0"), "{:.4f}", V("yes", 82, "102-105")),
+    ("Noise terms of the one-patch system", "Paper I: Ito term as printed", "p", ("I", 817, r"\frac{\alpha^3}{\dot{\phi_b}^2}"), None, Q0),
+    ("Noise terms of the one-patch system", "USR noise amplitude over printed, sigma = 0.1", "e", ("noise_amp/noise_amp.json", "USR.rows.2.amp_ibp_over_printed"), "{:.2e}", V("yes", 44, "3.3333e-3", "3.3333e-3")),
+    ("Noise terms of the one-patch system", "the same, sigma = 0.5", "e", ("noise_amp/noise_amp.json", "USR.rows.4.amp_ibp_over_printed"), "{:.2e}", V("yes", 44, "8.3332e-2", "8.3332e-2")),
+    ("Noise terms of the one-patch system", "SR noise amplitude over printed, sigma = 0.1", "e", ("noise_amp/noise_amp.json", "SR.rows.2.amp_ibp_over_printed"), "{:.3f}", V("diff", 44, "1.063 at sigma = 0.1 with eps1 = 0.0124, 1.123 with eps1 = 0.0244", "1.063 (eps1 = 0.0124), 1.123 (eps1 = 0.0244)")),
+    ("Noise terms of the one-patch system", "SR: eps1 of our background at that crossing", "e", ("noise_amp/noise_amp.json", "SR.rows.2.eps1"), "{:.1e}", NONE),
 ]
 
 
