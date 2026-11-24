@@ -150,3 +150,12 @@ line of those cycles is identical in `.sf.hst` and `.sf.con.hst` (same binary, s
 the restart at t = 0 holds the state the first segment started from). Refuted by any differing
 line; differences up to 1e-12 relative would be reduction order on the card, larger ones a
 restart that is not exact. Script `scripts/dup_check.py`.
+
+Outcome D (runs E-20261124-134613-d730016, and with its figure E-20261124-134642-a9271b9; the
+middle run E-20261124-134629-70fb85a has the same numbers and a figure with clipped labels):
+every twice-recorded cycle is identical as printed, in both record files: RSF256 63 of 63
+(cycles 1-63), CL256S 84 of 84 (1-84), AL2S 303 of 303 (1-303); largest relative difference 0.
+Prediction D held: a segment that starts again from the t = 0 restart file repeats the first
+segment's records bit for bit on the card, including the level-2 branch build (AL2S). Figure
+`fig_dup.png` looked at: the two segments' curves of the record <|H|/[H]> lie on each other.
+[VERIFIED: run E-20261124-134642-a9271b9]
