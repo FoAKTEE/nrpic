@@ -308,3 +308,47 @@ Pages 1-14 pixel-identical to the R6 build, which I read in full (entry 10).
 State of RSF256: queue entry q0034 was dispatched while this pass ran, as run
 E-20261124-214913-5956891 (Slurm job 5215, "submitted" at 13:58 PST); not waited for. Its rows
 stay pending (Fig. 5 SR constraint rows, S14 SR per cell; ledger row and Table IV name it).
+
+## Entry 12 (2026-11-24 14:41 PST): final correction pass after VERIFIER.md section 8; plan and predictions
+
+Input: VERIFIER.md section 8 (commits f1bac41b, f738e127; lines 149-289). It checked the 16 rows
+from the continued runs. Verdicts: joins bit-exact for all five runs, RSF256 included (q0034 ended
+14:23 PST, joined by run E-20261124-222800-49ab461); rows 42, 49-52, 72-75 CONFIRMED; 48 CONFIRMED
+for its window 0.5 <= N <= ln 64 (full span: 2.66e2 at the flipped run's last line); 65-67 now
+CONFIRMED against the code's lockstep record (line 218); 77 and 81-83 CONFIRMED with shells of more
+than ten independent modes; P1:520 is per ten thousand (8.5, our reading); USR level 2 fails it
+above |n| of about 32; rows 68-71 (256^3 member of Fig. 7: 3.7e-7, order 1.48, per-mode rms 7.1e-7
+and 6.7e-7) NOT CONFIRMED to the digits: the check finds 2.0e-7 (at |n| = sqrt 2), order 2.3-3.5,
+per-mode 4.0e-7 and 3.3e-7, while it confirms the floor itself (independent of dx, dt and the
+linear reference). Row 56 (SR per-cell rows) stays pending: RSF256 has ended, but the figure
+package has not yet made its outputs (repro/figs RESULTS.md section 5).
+
+What I found before any run, from the committed npz files and the check's cont.json (looked at, no
+new number derived): the note's 256 maximum falls on |n|^2 = 6 (12 independent modes, 3.72e-7);
+the check counts both hemispheres, so its selection includes |n|^2 = 2 (6 independent modes), and
+its value on |n|^2 = 6 must lie below 2.0e-7. The two readers of R^NR differ in two places: the
+note takes c[chi]/(2<chi>) and H_b = -<K>/(3<alpha>), the check c[ln chi]/2 and H = -<K>/3. At
+32^3 and 64^3 their per-mode rms agree to 4 digits; at 128^3 and 256^3 the note's exceeds the
+check's by about 6e-7 in quadrature at both.
+
+Test R8a (registered analysis, `scripts/reader_split.py`, 2 cores, 0 card-hours): the four readers
+A (note), B (note with H = -<K>/3), C (note with ln chi), D (both, the check's) on dump 17 of C128S
+and CL256S, against one linear reference.
+- P1. A reproduces the ledger: per-mode rms 7.11e-7 (128), 6.71e-7 (256); largest shell over
+  more than ten independent modes 1.04e-6 (128), 3.72e-7 (256). Refuted if any differs in the
+  third digit (my reimplementation would then differ from dumppass.py).
+- P2. D reproduces the check: per-mode rms 4.00e-7 (128), 3.30e-7 (256); largest shell over shells
+  of more than ten modes in both hemispheres 1.00e-6 (128) and 2.00e-7 at |n|^2 = 2 (256). Refuted
+  beyond 2 per cent (the readers would then differ in a third place: modes, alphas or the phase).
+- P3. The difference A - D is the same at both lattices (rms of |c_D - c_A|/|c_lin| within 20 per
+  cent at 128 and 256): a property of the reader, not of the lattice. One of B or C alone carries at
+  least 80 per cent of it; I do not predict which (the lapse factor needs <alpha> - 1 of order 1e-6,
+  the logarithm a second-order term of that size). Refuted if neither alone does.
+- P4. 1 - W is below 1e-12 for every injected mode at N_f (the window plays no part).
+If P1-P3 hold, rows 68-71 keep the note's values with the reader named, the check column gives the
+check's values ("differs"), and the text says the floor's level depends on the reader at the factor
+the run gives, while its existence does not.
+
+Then: ledger.py (check column of the 16 rows, rows 65-67 and 77 to yes, labels of 48 and 81-82 name
+window and shell count, the convergence note names the reader), main.tex (Table IV check column,
+Secs. III and V, abstract), registered run_all (R8), checker, compile, pages, README.
