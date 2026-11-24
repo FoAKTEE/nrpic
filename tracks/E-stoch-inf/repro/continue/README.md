@@ -18,7 +18,11 @@ as one run) and `JOURNAL.md` (state found, predictions J1-J5, outcomes).
 | `scripts/athena_resume.sh` | executable wrapper for the chain: first segment `-r <original restart>` in place of `-i <deck>`, then the chain's own restarts; execs the byte copy named in `nrpic_exe=` |
 | `scripts/submit_continue.sh` | registers and submits one continuation per label through `harness/bin/nrpic-run submit --launcher chain` |
 | `scripts/check_restart.py` | where each original stopped; header, size, sidecar and checksum of its newest restart file; figure `fig_progress` |
-| `scripts/join_check.py` | after the continuations: start, overlap and junction of the records and dumps (J1-J4); figure `fig_join` |
+| `scripts/join_check.py` | after the continuations: start, overlap and junction of the records and dumps (J1-J4); joined record files and dump lists; figure `fig_join` |
+| `scripts/join_selftest.sh` | self-test of `join_check.py` on a completed run split at one of its restarts |
+| `scripts/dup_check.py` | the originals' twice-recorded cycles compared line by line (prediction D); figure `fig_dup` |
+| `scripts/autocontinue.sh` | sequencer that outlives the session: closes the continuations, continues a cut one from its newest restart (5 card-hour cap, three per label), runs the join check at the end |
+| `scripts/conts.json` | continuation run ids per label as submitted by this session (the sequencer's own list: `scratch/E-stoch-inf/repro_continue_seq/state.tsv`) |
 | `scripts/figstyle.py` | copy of `python/nrpic/figstyle.py` |
 
 ## How to rerun

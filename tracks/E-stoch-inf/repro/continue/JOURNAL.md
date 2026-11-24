@@ -169,3 +169,25 @@ AllocTRES gres/gpu=2) with no job of this account running since about 05:00, i.e
 user's jobs hold them, and jobs of A, B and F of this account (5149, 5167, 5169, 5171) are
 pending beside ours. The poll (`scratch/E-stoch-inf/tmp/continue/poll.sh`, log `poll.log`
 beside it) runs every five minutes until 07:35 PST.
+
+## Entry 7 (2026-11-24 06:10 PST): the cards are held for up to a day; a sequencer takes over
+
+`squeue -a` and `scontrol show job 5162`: both cards are held by another user's job on the
+priority partition (QOS priority, 2 cards, started 05:09 PST, time limit one day, so it may
+hold them until 2026-11-25 05:09 PST). Our preempt jobs cannot start before it ends, and when
+they do, another job of that partition can preempt them again (the cause of the cuts of
+2026-11-23). With one segment per continuation, a preemption leaves a chain FAILED (MAX_SEGMENTS
+= 1) and someone has to continue it again, possibly long after this session.
+
+So `scripts/autocontinue.sh` (dry-tested twice: with all five queued it does nothing; on a fake
+state with two cut originals it would close them and continue RSF256 from sr.00000.rst and AL2S
+from sr256_l2.00004.rst) runs from 06:09 PST as pid 493587, state in
+`scratch/E-stoch-inf/repro_continue_seq/`. Every five minutes it closes a continuation that ended
+(`nrpic-run finish`); continues a cut one from its newest restart file (or the file it started
+from, if it wrote none) through `submit_continue.sh` with the same wrapper, executable, deck and
+overrides, at most three continuations per label, and only while the package's card time
+(closed runs at measured card-hours, open ones at their request) stays within 5 card-hours;
+never continues a run that failed for another reason (it marks it broken); when all five are
+settled it runs the registered join check on the finished labels and exits (deadline
+2026-11-26 06:00 PST; stop: `touch .../repro_continue_seq/STOP`). It judges nothing: the join
+check's outcome and figure wait for a session.
