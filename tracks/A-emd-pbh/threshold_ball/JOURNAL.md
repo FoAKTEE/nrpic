@@ -159,3 +159,14 @@ threads, tlim 48.5). Three runs from that restart:
 If all three stop at ~47.9, no named candidate is the cause and the line outputs of G1 (tab every
 0.25) locate the growth; if G1 does not repeat, the card failure was not deterministic and the
 A members are rerun on the card.
+
+## Entry 6, 2026-11-24 13:45Z: prediction K for the constraint norms on three meshes (before the analysis)
+
+G2 items C3 (constraints behave) and C12 (constraint norms against time) have no evidence yet.
+`scripts/constraint_conv.py` reads the volume L2 norms of H and M (z4c history) and the cstat
+mean |H| of conv_ball's A, B, C (delta_c = 1.5; one particle per finest cell on every mesh) and of
+the threshold pair. Prediction K [JUDGEMENT]: before the horizon (t <= 10) ||H||_2 falls from A to
+B to C, at an order between 0.5 and 2 (the metric error falls at second order, the deposit noise
+per cell does not fall at fixed particles per cell); ||M||_2 likewise; the threshold members'
+||H||_2 stays within a factor 3 of conv_ball B at equal mesh until their horizons form. Refuted by
+a norm that grows from A to C at any t <= 8, or by an order below 0.3 at t = 8.
