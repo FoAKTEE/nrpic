@@ -349,3 +349,128 @@ removes dust; P1 (horizon at every sample after 20 M) is the first thing to read
 Release order changed from entry 6 before any submission: FV4 eligible now, then FK, FE4, FF4.
 FK does not depend on the M/4 finder; putting FE4 and FF4 last lets the next session read FV4's
 P1 before they start and cancel them if the M/4 finder never finds the horizon.
+
+## Entry 10 (2026-11-24 05:10 PST, lead of batch 11, before the runs named here): state, tests FP and XC, new card runs
+
+State at 04:51 PST. Sequencer g2long_seq2 ended normally on 2026-11-23 08:23 (every job released).
+R5 ES-1L16 DONE at 300 M (job 4920, 20:07 on 11-22); FV4 V-1L4 DONE at 300 M (job 4933, one segment of
+35.4 min). The other three were cut by preemptions (another user's priority jobs, 11-23) and closed
+as "FAILED (MAX_SEGMENTS reached)" though only cut: FK ES-FLK at 225.5 M (newest restart 200 M,
+segment counter 4), FE4 ES-1L4 at 28 M (restart only at t = 0), FF4 ES-FL4 at 456.1 M (restart at
+456.1 M). All three resumed from their newest restart with the same input and executable
+(`submit_chain.sh <rundir> <input>`, PROC_NAME kept): FF4 job 5142, FE4 job 5143 (both preempted
+again at 05:00:43 and resubmitted as 5152, 5153), FK job 5144 held behind a new sequencer
+(scratch/D-bh-dress/g2long_seq3/). Segment caps raised in chain/config.sh to 10, 10, 12 because each
+preemption consumes a segment; card time is what the segments run, not the cap.
+
+Looked at before writing what follows (so not blind): the finder masses of FV4 against V-1L and
+V-1L16 (a quick print and a trial of tools/judge_conv.py into scratch/D-bh-dress/tmp/jc/, figure
+looked at), and a trial of tools/xc_plane.py on V-1L4 and V-1L only (scratch/D-bh-dress/tmp/xc/; its
+momentum norm was wrong, fixed since). Outcomes of P1-P4 and H3 follow in entry 11 from registered
+runs; the predictions are those of entries 1 and 6.
+
+What the quick look showed, for the record: (a) at M/4 the late finder offset is -7.9e-3 to -9.9e-3
+(P2 predicted +4e-3 to +2.5e-2: refuted as written, below 0); the offsets at 100-300 M change sign
+twice over M/4, M/8, M/16 (-8.8e-3, +9.5e-4, -2.6e-4), while at t = 0 they converge (q = 5.2, order
+2.4). (b) The excursions of the vacuum mass at 230-300 M are not a single step: the mass switches
+between plateaus about 1.3e-4 apart (240-244.5 M low, 247.5-252.5 M high, 256-261 M low, ...), at the
+same times and with the same size at M/8 and M/16, and, on top of a secular decline, at M/4. The
+finder's residual (summary column 9, the area mean of the squared expansion, fastflow.cpp:825 with
+the integrand at :1504) sits
+at 6-8e-9 on each plateau and drops to 1e-11 to 1e-10 while the mass moves between plateaus. The
+finder stops as soon as two successive flow iterations change the mass by less than mass_tol = 1e-5
+(fastflow.cpp:914), starting from the previous surface.
+
+### Test FP: is the vacuum excursion the finder's or the slice's? (processors, no card)
+
+Named cause C1: the finder's stopping rule (|Delta M| < 1e-5 between iterations, warm start,
+ntheta 16, lmax 8) reports a surface whose expansion residual is ~1e-4 (column 9 ~ 7e-9), and the
+plateaus are such surfaces; the slice's horizon mass does not move by 1e-4.
+Run: tools/probe_long.py (wrapper of puncture_drift/tools/probe_finder.py) with the threaded release
+processor build (scratch/core/exe/core_nrpic_v06/athena_cpu_omp), one cycle from each dump, horizons
+h0 (production stopping, from the dump's radius), h1 (mass_tol 1e-9, 4000 iterations, from 1 M),
+h2 (production stopping, from 2 M). Dumps (restart files, times exact): V-1L 100, 150, 200, 250, 300,
+450 M; V-1L16 100, 200, 250, 300 M; V-1L4 100, 200, 250, 300 M; ES-1L 100, 200, 250, 300 M; ES-1L16 100,
+200, 250, 300 M; grid A16 for all, A32 (ntheta 32, lmax 16) in addition for V-1L4, V-1L, V-1L16 at 200
+and 250 M.
+FP1 (sanity) h0 reproduces the run's own mass at the dump time within 3e-5 (it starts from the stored
+    mean radius, not from the run's full surface) and h1, h2 find a surface at every dump.
+FP2 (C1) V-1L, tight h1: |M_h1(t) - M_h1(100 M)| <= 3e-5 at 150, 200, 250, 300, 450 M, while the run's
+    own D is +1.2e-4 at 250, 300 and 450 M. C1 is REFUTED if M_h1(250) - M_h1(200) >= 8e-5 (the slice's
+    horizon moves with the plateau); then the excursion is in the slice. [JUDGEMENT, p ~ 0.65: a
+    surface with expansion residual ~1e-4 at r ~ 2.2 M misplaces the radius by ~1e-4 r, which is the
+    size of the plateau gap]
+FP3 the same for V-1L16 (|M_h1(t) - M_h1(100)| <= 3e-5 at 200, 250, 300 M; refuted as FP2).
+FP4 with the finder converged (h1 on A32) the offsets e(h) = M - 1 at 200 M are monotone over M/4,
+    M/8, M/16 and give an order p in [1.5, 4.5] [JUDGEMENT, p ~ 0.4]. Refuted (no mesh order even with
+    the finder converged) if they change sign or q = (e4 - e8)/(e8 - e16) < 1.
+FP5 null test with the tight finder: |(M_h1,ES(t) - M_h1,ES(100)) - (M_h1,V(t) - M_h1,V(100))| <= 1e-4 at
+    200, 250, 300 M, at M/8 and M/16 (the run's own difference reaches 2.3e-4 at M/8).
+Cost: 28 one-cycle restarts, 2 threads each, three at a time (6 cores); ~1-1.5 h wall [JUDGEMENT].
+
+### Test XC: constraint norms outside the horizon from the z = 0 slices (processors)
+
+Tool tools/xc_plane.py: plane L2 norms of H and |M| (con_M = g_ab M^a M^b) on the annuli A1 = [1.2
+r_AH, 6 M], A2 = [6, 30 M], A3 = [30, 100 M] of every con slice (every 25 M). Runs: V-1L4, V-1L, V-1L16,
+ES-1L, ES-1L16, ES-FL, FF4 (to 456 M), FK (to 225 M); the others when they end.
+XC1 bounded: in every run and annulus the norm at the last slice is below 10 times its value at 100 M,
+    and no norm rises by more than a factor 10 between consecutive slices after 100 M. Refuted by
+    either. (Not blind for V-1L4 and V-1L, whose H norms were looked at: largest rise there 6.5.)
+XC2 near the hole, vacuum: the mean of ||H||_A1 over the slices of 100-300 M falls from M/8 to M/16
+    (V-1L16 below V-1L) [JUDGEMENT; beyond +-3 to +-6 M the two meshes are identical, so the fall is
+    expected to be modest, a factor 1.3-3]. Refuted if the M/16 mean is not below the M/8 mean.
+    (M/4 against M/8 was seen in the trial: 1.3e-5 against 8e-6, not blind.)
+
+### New card runs (inputs by tools/make_followups2.py; release core-v0.6 card executable)
+
+Why: the scope's relaxation control (SCOPE.md section 5, G2: "capture rate and spike profile
+unchanged between N and 4N") and the G2 general item "three-way convergence in particle number"
+have no run; the growth comparison G has two meshes (FF4 M/4 pending, ES-FL M/8), not three; the
+exterior constraint norms (stage/G2/OPEN.md item 2) have only the z = 0 plane. Every new input carries
+`<particles> region_*` (region_dcycle 160; spheres of radius 6, 12, 30, 60 M and one of 1.2 times the
+finder's mean radius). Step and gauge of the parents (cfl_number 0.25, plain 1+log with the
+Gamma-driver shift, no lapse_leak: decisions 0025 item 3, 0027 item 2).
+
+| Run | Input | Parent, change | tlim | Card-hours (estimate; cap) |
+|---|---|---|---|---|
+| FN4 ES-FLK4N | inputs/esflk4n.athinput | esflk; dust lattice h_p = 4^(-1/3) M (4N) | 400 M | 2.8; cap 4.5 |
+| FNQ ES-FLKQ | inputs/esflkq.athinput | esflk; h_p = 4^(1/3) M (N/4) | 400 M | 1.9; cap 3.0 |
+| FL16 ES-FL16 | inputs/esfl16.athinput | esfl; a level M/16 on +-3 M (as es1l16) | 300 M | 3.5; cap 5.0 |
+
+Order: behind FK in the sequencer (FK, FN4, FNQ, FL16; at most two D jobs eligible). Expected 8.2
+card-hours, caps 12.5 (announced in STATUS.md, decision 0014). The N member of the particle sequence
+is FK (esflk, 850724 particles); the mesh members of the growth sequence are FF4 (M/4), ES-FL (M/8)
+and FL16 (M/16), all with initial_radius 0.8.
+
+Data (flux_tools/esf_data.py --rbar_max 1340 with --hp 0.62996 and --hp 1.5874; processors, seconds):
+D1 the dust particle count is 4 and 1/4 times the N data's (850584 dust particles) within 3 per cent;
+   the total dust rest mass equals the N data's within 1e-3 relative; esf.tab is byte-identical to
+   the N data's (the table does not depend on h_p). Refuted, and no input built on it, if the table
+   differs or the mass differs by more than 1 per cent.
+Smoke tests (release core-v0.6 processor build build_cpu_v06, 2 cycles, one core each, with
+`particles/region_dcycle=1` on the command line so that the region file is written):
+S7 esflk4n starts, 456 MeshBlocks, 140 + 4N dust particles as written by D1, finder at t = 0 equal to
+   S6's 0.99152073 within 1e-6 (the finder sees the metric, which the lattice does not change at t = 0);
+   region.hst written with finite columns.
+S8 esflkq the same with N/4.
+S9 esfl16 starts, 512 MeshBlocks (as es1l16), 850724 particles, finder at t = 0 finite in [0.98, 1.0]
+   and nearer to 1 than ES-FL's M/8 value 0.99152 [JUDGEMENT]; region.hst written.
+Refuted, and no card run of that input, if an input fails to start, exits non-zero, or a count or the
+S7/S8 finder value is outside.
+
+Predictions for the card runs (judged when they end; FK is the N member):
+FN4 N1 criterion G holds: (iii) every 10 M bin of tau_rem reached within +-1 per cent of the exact LTB
+       mass, D2 holds after 20 M (esf_criteria.py with --data of the 4N data run, control V-1L).
+    N2 relaxation control: the removed sum of m E_K at 100, 200, 300, 400 M within 1 per cent (relative)
+       of FK's [JUDGEMENT: the lattice samples the same continuum; capture is set by the metric];
+       refuted above 3 per cent at any of them.
+    N3 M_AH(t) within 2e-3 of FK at 100-400 M, and |M_4N - M_N| <= |M_N - M_N/4| at three of the four
+       times (convergent ordering in particle number) [JUDGEMENT, p ~ 0.6].
+    N4 cost 2.3-3.4 card-hours.
+FNQ Q1 criterion G holds with every bin within +-2 per cent; Q2 removed m E_K within 3 per cent of FK's
+       at 100-400 M; Q3 cost 1.6-2.3.
+FL16 L1 finite to 300 M; horizon at every sample.
+    L2 criterion G holds on the tau_rem reached (every bin within +-1 per cent, D2 holds).
+    L3 mesh order of the growth: with DeltaM(t) = M_AH(t) - M_AH(20 M), |DeltaM_16 - DeltaM_8| <
+       |DeltaM_8 - DeltaM_4| at 100, 200 and 300 M [JUDGEMENT, p ~ 0.6]; refuted if larger at all three.
+    L4 cost 3.0-4.0.

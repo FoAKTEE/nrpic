@@ -6,6 +6,7 @@ snapshots, particle files, horizon finder). Every reader checks the magic bytes 
 record length and raises on a mismatch, so a layout change cannot be read silently.
 
     read_removed(path)          <base>.removed.bin   -> dict of arrays (20 named fields)
+    drop_overlaps(rem, times)   remove records of a preempted segment that its successor rewrote
     read_hst(path)              <base>.nrpic.hst, <base>.acc.hst (any "[k]=name" header)
     read_horizon(path)          <base>.horizon_summary_N.txt (finder, "k:name" header)
     read_traj(path, metpath)    <base>.traj.bin (+ .trajmet.bin) -> per-tag time series
@@ -46,6 +47,51 @@ def read_removed(path):
         out[k] = np.rint(out[k]).astype(np.int64)
     out["n"] = a.shape[0]
     return out
+
+
+def drop_overlaps(rem, rst_times):
+    """Remove the records that a segment killed from outside (SIGTERM: preemption) wrote after
+    the restart its successor started from (batch 11, g2long JOURNAL entry 11).
+
+    The removal record is appended in time order within a segment. A chain segment killed
+    without its own restart dump is resumed from the newest restart t_r, so the records of the
+    killed segment with time > t_r are written again (or differently: card runs are not bit
+    for bit reproducible) by the successor. Each place where the record time goes backwards
+    marks such a resumption; t_r is the largest restart time <= the first record after the
+    drop (`rst_times`: the times of the run's restart files, e.g. from slicemass.rst_open).
+    Records of the earlier part with time > t_r are dropped. No-op if the time never
+    decreases. Returns (rem, info) with info = list of (t_r, number dropped)."""
+    t = rem["time"]
+    back = np.nonzero(np.diff(t) < 0.0)[0]
+    if back.size == 0:
+        return rem, []
+    rt = np.sort(np.asarray(rst_times, dtype=float))
+    keep = np.ones(t.size, bool)
+    info = []
+    for i in back:
+        t_first = t[i + 1]
+        cand = rt[rt <= t_first + 1e-9]
+        if cand.size == 0:
+            raise ValueError(f"no restart time <= {t_first} for the resumption after record {i}")
+        t_r = float(cand[-1])
+        drop = np.zeros(t.size, bool)
+        drop[: i + 1] = t[: i + 1] > t_r + 1e-12
+        info.append((t_r, int(np.count_nonzero(drop & keep))))
+        keep &= ~drop
+    out = {k: (v[keep] if isinstance(v, np.ndarray) and v.shape[:1] == t.shape else v)
+           for k, v in rem.items()}
+    out["n"] = int(np.count_nonzero(keep))
+    return out, info
+
+
+def restart_times(rst_dir):
+    """Times of the restart files <rst_dir>/*.rst (header of AthenaK restart files)."""
+    import glob
+    import os
+    import sys
+    sys.path.insert(0, "/data/haiyangw/nrpic/wt/D-bh-dress/analysis/diag")
+    from slicemass import rst_open  # restart header reader of this repository
+    return [rst_open(f, strict=True)["time"] for f in sorted(glob.glob(os.path.join(rst_dir, "*.rst")))]
 
 
 _HST_NAME = re.compile(r"\[(\d+)\]=(\S+)")

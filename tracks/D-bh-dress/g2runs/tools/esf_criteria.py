@@ -77,6 +77,9 @@ def main():
     b = os.path.join(a.run, a.base)
     hor = fluxio.read_horizon(b + ".horizon_summary_0.txt")
     rem = fluxio.read_removed(b + ".removed.bin")
+    if np.any(np.diff(rem["time"]) < 0.0):   # a preempted segment: drop what its successor rewrote
+        rem, overlap_info = fluxio.drop_overlaps(rem, fluxio.restart_times(os.path.join(a.run, "rst")))
+        print("removal record: dropped records of preempted segments (t_r, n):", overlap_info)
     acc = fluxio.read_hst(b + ".acc.hst")
     hst = fluxio.read_hst(b + ".nrpic.hst")
     ctrl = fluxio.read_horizon(a.control)
