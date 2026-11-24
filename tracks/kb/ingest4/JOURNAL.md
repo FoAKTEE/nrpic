@@ -109,3 +109,22 @@ The dev parser (scratch/kb/ingest4/dev) gives, on the six papers: 11, 16, 16, 10
 [18]); citations by number for 0306304, 9306009, 9607124, 9604001 and none for 9510056, 9906015;
 every cited number has an entry. The kb suite (all tests plus the 9 new ones) passes; refuted by
 any failure.
+
+## Entry 3 (2026-11-24 13:55 UTC): dry run over every paper; tests (P5, P6 part, P7, P9 outcomes)
+
+Runs: kb-20261124-132834-12dc42b (whole kb suite on commit 33bbd4e2: exit 0, one expected xfail),
+kb-20261124-132848-81e6285 (baseline state `before/`, dry-run parse of all 762 manifest papers
+`dry/`, comparison with the database rows `compare/`).
+
+- P9 HELD: entries 11, 16, 16, 10, 27, 21 for 0306304, 9306009, 9510056, 9607124, 9604001,
+  9906015, each equal to R-count (kb-20261124-130510-20ce0df); cited keys 11, 16, 0, 10, 27, 0, each
+  with an entry (the four numeric papers cite every entry of their list; the two author-year papers
+  have no citation by number). The suite passes.
+- P7 HELD: of the 744 papers in the database, 9 differ in the dry run: the six (entries 0 -> n,
+  chunks down by 0 to 2 because the list is no longer body text) and the three PDF-only papers
+  (2201.03458, astro-ph/9407016, gr-qc/9412071), which `kb ingest arxiv` does not handle (the same
+  artefact of the comparison that ingest3 recorded); no TeX paper outside the six changes.
+- P5 HELD in the dry run: the 18 additions parse with status ok (scores 0.85 to 1.0; every one has
+  entries; 1611.09781 has no numbered sections but scores 0.849).
+- P6 (status part) HELD: the six stay review (scores unchanged; the quality score has no
+  bibliography term).
