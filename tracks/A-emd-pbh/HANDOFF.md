@@ -1,6 +1,7 @@
 # HANDOFF of A-emd-pbh
 
-Written for a reader with no memory, by the lead of batch 11 (wave 3), 2026-11-24 06:20 PST (stopped on the pause flag).
+Written for a reader with no memory, by the lead of batch 11 (wave 3), 2026-11-24 06:20 PST (stopped on the pause flag);
+card section rewritten by the session of batch 12, 2026-11-24 13:30 PST (card runs handed to the shared queue).
 
 State in three lines: G0 and G1 are signed (coord/GATES.md). G2 has an interim package (stage/G2:
 9 PASS, 10 OPEN, 1 FAIL) that is NOT ready for review: the threshold scan of the expanding ball
@@ -8,39 +9,52 @@ holds (code bracket = exact bracket), but the constraint norms do not converge b
 FAIL, cause not named) and the periodic box's horizon is not found (finder fails on four levels).
 
 Owner: A-emd-pbh, branch `track/A-emd-pbh`, worktree `/data/haiyangw/nrpic/wt/A-emd-pbh`.
-Run first: `cd /data/haiyangw/nrpic/wt/A-emd-pbh && git merge --no-edit main && git status --short && squeue -u $USER -o "%.8i %.28j %.8T %.10M" | grep " A-" ; tail -5 /data/haiyangw/nrpic/scratch/A-emd-pbh/sequencer_b11/sequencer.log; cat /data/haiyangw/nrpic/scratch/A-emd-pbh/sequencer_b11/done.txt; harness/bin/nrpic-run status | grep -v completed | grep "A-2026112[1-9]"; harness/bin/nrpic-ctx inbox`
+Run first: `cd /data/haiyangw/nrpic/wt/A-emd-pbh && git merge --no-edit main && git status --short && squeue -u $USER -o "%.8i %.28j %.8T %.10M" | grep " A-" ; harness/bin/nrpic-queue list --owner A-emd-pbh; harness/bin/nrpic-run status | grep -v completed | grep "A-2026112[1-9]"; harness/bin/nrpic-ctx inbox`
 
 Files to read first: `STATUS.md`; `threshold_ball/JOURNAL.md` entries 3-10; `periodic_threshold/JOURNAL.md`
 entries of 2026-11-24 (13:00Z to D0); `stage/G2/OPEN.md` and `CHECKLIST.md`; `stage/REVIEW-wave3.md`
 section 7; `RISKS.md` rows 27-35.
 
-## Card runs and what reads them
+## Card runs and what reads them (shared queue since batch 12, 2026-11-24 13:30 PST)
 
-| run id (Slurm) | what | state at 07:00 PST | read by |
-|---|---|---|---|
-| A-20261122-173202-f98c79f (5150) | C-d0.42, mesh C (M/64), continued in place from t = 40 to 51 (MAX_SEGMENTS 21, rst dt 2) | PENDING | `threshold_ball/scripts/analyse.py --member C-d0.42` (T4 mesh-C half; add `--member B-d0.42` for the pair) |
-| A-20261123-025907-97bab8d (5149) | periodic S1L, continued in place from t = 50 to 220 (MAX_SEGMENTS 9, rst dt 10) | PENDING, Slurm estimate 2026-11-25 05:09 | `periodic_threshold/scripts/job2_q.py` (Q1-Q3 again) and `analyse_scouting.py --gauge leak --run S1L=<dir>` (S1-S3, entry 2026-11-21 13:20Z) |
-| queue_b11 line 1 | P0L6: P0L on six static levels (`inputs/peak_leak6.athinput`), chain 7 card-h | waits in the sequencer | compare_ltb.py, job2_q.py, line_trapped.py; predictions D1-D5 |
-| queue_b11 line 2 | C-d0.40, mesh C, data run A-20261124-133456-2d00507 (dc0p4C), chain 14 card-h | waits in the sequencer | analyse.py: needs a MEMBERS line `"C-d0.40": (<run dir>, "32:64", "dc0p4", "nestC", 54.0)` whose prep is `A-20261124-133456-2d00507/dc0p4C/nestC` (DATA differs: add a data-dir field) ; prediction T7 |
+On 2026-11-24 12:00 PST the orchestrator stopped this owner's sequencer (pid 207327) and cancelled
+the two pending segments 5177 (S1L) and 5178 (C-d0.42) under the user's cap of five queued jobs
+(decision 0033). Both chains had computed (segments 5149, 5150 ran 09:43-10:33 PST to their
+wall-clock stop), so neither run was closed as stopped: both are continued IN PLACE by the queue.
+The two sequencer lines were never submitted (done.txt empty), so they have no run id yet: the
+dispatcher registers them when it submits them (manifest committed on this branch: push it).
+Every card run now goes through `harness/bin/nrpic-queue` only (RULES.md "Shared card queue"):
+no sequencer, no sbatch, no scripts/submit_chain.sh by hand. Look: `harness/bin/nrpic-queue list
+--owner A-emd-pbh`, `show <id>` (names the run id once submitted).
 
-Both continued chains are the SAME registered runs (no new manifest): close each with `harness/bin/nrpic-run
-finish <run id>` once `scripts/submit_chain.sh --status /data/haiyangw/nrpic/scratch/A-emd-pbh/<run id>`
-says DONE (finish counts every Slurm job in chain/events.log). If a chain again closes FAILED with
-MAX_SEGMENTS reached before tlim (preemption), continue it in place with the same command as in the
-journals (entry 3 of threshold_ball, 2026-11-24 13:00Z of periodic_threshold): `ATHENA_EXE=/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena JOB_NAME=<run id> MAX_SEGMENTS=<higher> scripts/submit_chain.sh <rundir> <deck> <same args as chain/config.sh EXTRA_ARGS>`.
+| queue id | label | prio | run | what | read by |
+|---|---|---|---|---|---|
+| q0012 | a-cd042-cont | 2 | A-20261122-173202-f98c79f | C-d0.42, mesh C (M/64), continued from rst/ball.00020.rst (t = 45.96 of 51), MAX_SEGMENTS 21 (16 used) | `threshold_ball/scripts/analyse.py --member C-d0.42` (T4 mesh-C half; `--member B-d0.42` for the pair); G2 OPEN item 3 |
+| q0013 | a-p0l6 | 2 | new at dispatch | P0L on six static levels (`periodic_threshold/inputs/peak_leak6.athinput`, to t = 140), chain, 7 card-h asked; queue_b11 line 1 | compare_ltb.py, job2_q.py, line_trapped.py; predictions D1-D5 (periodic_threshold JOURNAL 2026-11-24 13:40Z); G2 OPEN item 2 |
+| q0014 | a-cd040 | 2 | new at dispatch | C-d0.40, mesh C, data A-20261124-133456-2d00507 (dc0p4C), to t = 54, chain, 14 card-h asked; queue_b11 line 2 | analyse.py: needs a MEMBERS line `"C-d0.40": (<run dir>, "32:64", "dc0p4", "nestC", 54.0)` whose prep is `A-20261124-133456-2d00507/dc0p4C/nestC` (DATA differs: add a data-dir field); prediction T7 (threshold_ball entry 8); G2 OPEN item 3 |
+| q0015 | a-s1l-cont | 5 | A-20261123-025907-97bab8d | periodic S1L, continued from rst/peak.00016.rst (t = 198.7 of 220), MAX_SEGMENTS 9 (5 used) | `periodic_threshold/scripts/job2_q.py` (Q1-Q3 again) and `analyse_scouting.py --gauge leak --run S1L=<dir>` (S1-S3, entry 2026-11-21 13:20Z) |
 
-## The sequencer
+Priorities: 2 for the runs that items 2 and 3 of `stage/G2/OPEN.md` wait for; 5 for S1L (S1-S3 are
+not a G2 item). No `--after`: none of the four needs another's output.
 
-`threshold_ball/scripts/sequencer.sh` (now logs "waiting: ..." when it waits, decision 0030 item 4),
-started 05:45:30 PST with setsid nohup, pid in `scratch/A-emd-pbh/sequencer_b11/sequencer.pid` (207327),
-queue `tracks/A-emd-pbh/periodic_threshold/queue_b11.txt`. It submits the next line when fewer than
-two Slurm jobs named `A-*` are queued or running. The old sequencer (sequencer_threshold) ended
-normally on 2026-11-23 10:40 after its 15 lines.
-- See it: `ps -p $(cat /data/haiyangw/nrpic/scratch/A-emd-pbh/sequencer_b11/sequencer.pid)`.
-- Stop: `touch /data/haiyangw/nrpic/scratch/A-emd-pbh/sequencer_b11/STOP` (or kill the numeric pid).
-- Restart (skips lines in done.txt): `cd /data/haiyangw/nrpic/wt/A-emd-pbh && rm -f /data/haiyangw/nrpic/scratch/A-emd-pbh/sequencer_b11/STOP && setsid nohup tracks/A-emd-pbh/threshold_ball/scripts/sequencer.sh tracks/A-emd-pbh/periodic_threshold/queue_b11.txt /data/haiyangw/nrpic/scratch/A-emd-pbh/sequencer_b11 >> /data/haiyangw/nrpic/scratch/A-emd-pbh/sequencer_b11/nohup.out 2>&1 < /dev/null &`
-- TRAP: done.txt keys on line numbers; add lines at the END only. A line is refused while its
-  `--package` has uncommitted changes (5 tries, then skipped).
+Continuations: `threshold_ball/scripts/continue_chain.sh <run_id> <MAX_SEGMENTS> [--dry-run]` (written
+this session; dry runs of both printed the expected command; it refuses outside the dispatcher, with
+a job of the chain in squeue, a DONE chain, a changed deck or executable, or no segment left). It
+resumes the SAME registered run (same exe, deck, arguments, JOB_NAME = run id, PROC_NAME), submits one
+job, appends a line to the manifest's "notes" and commits that path (so pull before you push). If a
+chain again closes FAILED with MAX_SEGMENTS reached before tlim (preemption), queue it again:
+`harness/bin/nrpic-queue add --label <label>-2 --priority 2 --cmd
+'tracks/A-emd-pbh/threshold_ball/scripts/continue_chain.sh <run_id> <higher MAX_SEGMENTS>'`.
+Close each run with `harness/bin/nrpic-run finish <run id>` once `scripts/submit_chain.sh --status
+/data/haiyangw/nrpic/scratch/A-emd-pbh/<run id>` says DONE (finish counts every Slurm job in
+chain/events.log, the continued segments included).
+
+## The old sequencer (stopped; do not restart)
+
+`threshold_ball/scripts/sequencer.sh` with queue `periodic_threshold/queue_b11.txt` and state
+`scratch/A-emd-pbh/sequencer_b11/` was stopped by the orchestrator on 2026-11-24 12:00 PST; both of its
+lines are now queue entries q0013 and q0014. Sequencers are forbidden (decision 0033); the script
+and queue file stay as a record.
 
 ## Processor runs of this session
 
@@ -48,7 +62,8 @@ normally on 2026-11-23 10:40 after its 15 lines.
   stop exactly (t = 47.921875, cycle 3067, same first cell) [VERIFIED]; G2 (lapse_leak 0) and G3
   (alpha_exc 0.3) see threshold_ball entry 5 outcome (written at the end of the session if they
   finished; otherwise read `scratch/A-emd-pbh/A-20261124-132016-ecf12c3/run.log` and `G2/`, `G3/`,
-  then `nrpic-run finish`).
+  then `nrpic-run finish`). Batch 12 saw: run.log ends "exit=0 end=2026-11-24T14:31:16Z" (06:31 PST),
+  but the run tool still lists it as "running?": judge G2/G3 against entry 5, then finish it.
 - K4 (entry 10): NOT started (pause flag at 06:18 PST); the start command is at the end of threshold_ball/JOURNAL.md.
 
 ## Packages and what remains

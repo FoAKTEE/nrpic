@@ -412,3 +412,27 @@ Stopped at 06:19 PST on the pause flag (five-hour window at 80 per cent): nothin
 Still running by itself: processor run A-20261124-132016-ecf12c3 (G3, ~20 min left), its manifest
 open. Not started: K4 (threshold_ball entry 10, command written there). Card jobs 5149, 5150 PENDING;
 sequencer_b11 (pid 207327) waits for them, then submits P0L6 and C-d0.40.
+
+## 2026-11-24 13:30 PST, batch 12 (short session): card runs handed to the shared queue
+
+Aim, one only: decision 0033 (cap of five queued jobs of the account) and the shared queue
+`harness/bin/nrpic-queue`. No analysis, no review, no stage package. Merged main first.
+
+Found (sacct from 11:30, chain events, sequencer state): the orchestrator's cancellation at 11:57 PST
+hit two pending segments of this owner, 5177 (S1L, A-20261123-025907-97bab8d) and 5178 (C-d0.42,
+A-20261122-173202-f98c79f). Both chains had computed in segments 5149/5150 (09:43-10:33 PST, wall-clock
+stops at t = 198.7 of 220 and t = 45.96 of 51; newest restarts peak.00016.rst and ball.00020.rst).
+So neither run was closed as stopped: both are continued in place. The sequencer (pid 207327) is gone;
+its done.txt is empty, so queue_b11 lines 1 (P0L6) and 2 (C-d0.40) were never submitted or registered.
+
+Done: `threshold_ball/scripts/continue_chain.sh <run_id> <MAX_SEGMENTS> [--dry-run]` (one job, same run,
+exe cmp-checked, deck checked against chain/input.athinput, refuses outside the dispatcher; records the
+continuation in the manifest notes and commits that path). Dry runs on both chains printed the
+expected submit_chain.sh lines; the refusals outside the dispatcher and with no segment left fired;
+the notes writer was tried on a scratch copy of a manifest (other fields unchanged, bytes reproduced).
+Queue entries: q0012 a-cd042-cont (p2), q0013 a-p0l6 (p2), q0014 a-cd040 (p2), q0015 a-s1l-cont (p5);
+p2 for the runs that stage/G2/OPEN.md items 2 and 3 wait for. No --after (no dependency). The
+predictions written before these runs stand unchanged (threshold_ball entries 1 and 8: T4, T7;
+periodic_threshold 2026-11-21 13:20Z: S1-S3; 2026-11-24 13:40Z: D1-D5).
+Not done (outside this session's aim): judging and closing processor run A-20261124-132016-ecf12c3
+(ended exit 0 at 06:31 PST); K4.

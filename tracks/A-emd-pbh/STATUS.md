@@ -15,13 +15,10 @@ last-result: batch 11 (2026-11-24): threshold scan judged, A-20261124-131120-5c9
              periodic job 2: P0L to t = 140 (A-20261122-235305-4ea0aa5); remedy Q1a/c/d, Q2, Q3 hold (A-20261124-130507-
                10510ac); P3 refuted (no horizon found); F1: slice traps from t = 132 at r 0.075 (A-20261124-131430-d1a2ee6);
                F2: finder converges from no start radius (A-20261124-131232-e7b58f8). Posted to core.
-cards:       A-20261122-173202-f98c79f C-d0.42 continued in place (Slurm 5150, PENDING), t = 40 -> 51, read by threshold_ball
-               analyse.py (T4 mesh C); A-20261123-025907-97bab8d S1L continued (Slurm 5149, PENDING, est. start 11-25 05:09),
-               t = 50 -> 220, read by job2_q.py and analyse_scouting.py (S1-S3).
-             queued behind them (sequencer scratch/A-emd-pbh/sequencer_b11/, queue periodic_threshold/queue_b11.txt):
-               line 1 P0L on six levels (peak_leak6, D0-D5, 7 card-h asked), line 2 C-d0.40 (T7, 14 asked).
-processors:  A-20261124-132016-ecf12c3 G1-G3: G1 repeats the card stop exactly, G2 stops 0.5 M later elsewhere; G3 running
-             at the pause (06:19). K4 (entry 10) not started: paused.
+cards:       all in the shared queue (decision 0033; batch 12): q0012 C-d0.42 cont. (p2), q0013 P0L6 (p2), q0014 C-d0.40 (p2),
+               q0015 S1L cont. (p5); no sequencer of this owner runs (HANDOFF, "Card runs and what reads them").
+processors:  A-20261124-132016-ecf12c3 G1-G3: G1 repeats the card stop exactly, G2 stops 0.5 M later elsewhere; G3 ended
+             (run.log exit 0, 06:31 PST), not yet judged or closed. K4 (entry 10) not started.
 next:        1. Read C-d0.42 and S1L when they end (HANDOFF commands); judge T4 (mesh C) and S1-S3; then P0L6 (D1-D5).
              2. Constraint floor (C3): smoothed-edge top hat on two meshes (prep_bh.py --edge-w), predictions first.
              3. G2 package items: verifier of conv_ball + threshold_ball numbers, ladder schematic, slice mosaic, note G2
