@@ -80,7 +80,7 @@
     "bytes": 371875,
     "files": 62
   },
-  "status": "failed",
+  "status": "stopped",
   "exit_code": -15,
   "registered": "2026-11-24T13:52:25Z",
   "started": "2026-11-24T13:52:26Z",
@@ -97,5 +97,5 @@
     "runs": 1546,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
   },
-  "finished": "2026-11-24T13:54:49Z"
+  "finished": "2026-11-24T13:57:15Z"
 }
