@@ -1,4 +1,4 @@
-# What G2 of B-emd-gw still lacks (batch 11, 2026-11-24)
+# What G2 of B-emd-gw still lacks (batch 11, 2026-11-24; series 6 added in batch 11b)
 
 Met: criterion (a) (FLRW particle run sub-percent and converging in mesh 16-128 and particle
 number 1-27 per cell; the start-step floor now tested at 128 cells, J4), a first full-GR kinetic
@@ -17,8 +17,12 @@ Lacking, in the order the track will close them:
 2. Shearing dust (arXiv:2003.08014): L2 now has values (-0.828, -0.830, -0.835 at N_y = 32-128,
    near CosmoGRaPH's -0.8183, far from gevolution and GRAMSES) but no convergence: the field
    carries relative constraint means of 0.1-0.4 from a = 2.25 on at every N_y. At N_y = 64 it
-   converges in particles along y to about -0.820 (1-8 per cell); N_y = 128 at 4 per cell gives
-   -0.831, so the mesh limit is open. S3 has a floor of 2-3e-5 (N_y = 256).
+   converges in particles along y to about -0.820 (1-8 per cell); at 4 per cell the mesh gives
+   -0.822, -0.831, -0.839 at N_y = 64, 128, 256 (differences 9.4e-3, 7.9e-3: order about 0.25,
+   away from CosmoGRaPH; series 6, B-20261124-140856-911ded9, summary -172643-d1e88c7). L2 is not
+   converged in this code; the weak-field comparison rests on S1-S4, M1, L1. A run that could name
+   the cause (an amplitude without stream crossing before t_A at three meshes) is not yet queued.
+   S3 has a floor of 2-3e-5 (N_y = 256).
 3. Gauge leg of the three-way convergence: one slicing point (f = 1 at N_y = 64, P10 holds); a
    convergent gauge leg (a second slicing or shift at three meshes) and its figure are missing.
 4. Constraints: Hr of the FLRW run grows about as N^2 with the mesh; the population's mean
