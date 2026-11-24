@@ -92,7 +92,7 @@ def main():
         for s in sorted({r["seed"] for r in rows if abs(r["kl"] - kl) < 1e-9}):
             q = [(dx, sel(kl, 0.1, dx, s)) for dx in dxs]
             if all(v for _, v in q) and len(q) >= 3:
-                per_seed[s] = fitline([dx for dx, _ in q], [v[0]["f_S"] for _, v in q], v[0]["sd"])
+                per_seed[s] = fitline([dx for dx, _ in q], [v[0]["f_S"] for _, v in q], q[0][1][0]["sd"])
         o = dict(points=[dict(dx=p[0], f=p[1], sd=p[2], n_seeds=p[3]) for p in pts], fit=fit, fit_per_seed=per_seed)
         f2, f8 = mean_f(kl, 0.1, 0.5), mean_f(kl, 0.1, 0.125)
         if f2[0] and f8[0]:
