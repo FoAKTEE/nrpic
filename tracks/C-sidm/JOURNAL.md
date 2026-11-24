@@ -623,7 +623,7 @@ its newest restart file, never repeat it):
   0.6 for A334s3o; remaining work about 3850 M, about 9 card-hours at 8.3 s per M plus the
   preemption overhead; 45 - 7.41 - 17.59 = 20.0 left of the G2 allotment before it.
 
-## 2026-11-24T13:15Z  session C-sidm lead (batch 11)  outcomes of R(v), T, H, D2 and block A (interim), judged against entry 2026-11-21T20:25Z
+## 2026-11-24T13:12Z  session C-sidm lead (batch 11)  outcomes of R(v), T, H, D2 and block A (interim), judged against entry 2026-11-21T20:25Z
 
 Every number below comes from a registered analysis run of this session; the figures were
 read before the judgement.
