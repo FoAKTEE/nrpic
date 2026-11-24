@@ -437,7 +437,7 @@ def figures(R, newton, od):
         axs[0].loglog([x["a"] for x in Q], [x["Omega_qs_part"] for x in Q], color=col, marker="x",
                       ms=3.5, ls="none", label="particles, $S^{TT}/k^2$")
         aa = np.geomspace(1, 150, 50)
-        axs[0].loglog(aa, DESIGN_QS*(r["sigma1"]/SIG_FID)**4*aa, color=col, **{**fs.GUIDE, "lw": 0.7})
+        axs[0].loglog(aa, DESIGN_QS*(r["sigma1"]/SIG_FID)**4*aa, **{**fs.GUIDE, "lw": 0.7, "color": col})
         axs[1].loglog(a, [x["rms_raw"] for x in D], color=col, lw=1.0)
         axs[1].loglog(ag, [x["rms_cor"] for x in G], color=col, marker="o", ms=2.5, ls="none")
         axs[1].loglog(ag, [x["rms_G"] for x in G], color=col, marker="^", ms=2.5, ls="none")
@@ -514,10 +514,16 @@ def main():
     ap.add_argument("--gauge-every", type=int, default=1,
                     help="gauge-corrected strain every n snapshot times")
     ap.add_argument("--out", default=os.environ.get("NRPIC_RUN_DIR", "."))
+    ap.add_argument("--from-json", default=None,
+                    help="analysis_gr.json of an earlier run: figures and summary only")
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
     newton = json.load(open(args.newton))[0] if args.newton else None
     R, Z = [], None
+    if args.from_json:
+        R = json.load(open(args.from_json))
+        Z = next((r["stop"] for r in R if r.get("stop")), None)
+        args.run = []
     for spec in args.run:
         name, d, s = spec.split(":")
         r = analyse_run(name, d, float(s), newton, args.workers, args.gauge_every)
@@ -528,8 +534,9 @@ def main():
         with open(os.path.join(args.out, f"analysis_gr_{name}.json"), "w") as f:
             json.dump(r, f)                    # each run as soon as it is done
         print(name, "done", flush=True)
-    with open(os.path.join(args.out, "analysis_gr.json"), "w") as f:
-        json.dump(R, f)
+    if not args.from_json:
+        with open(os.path.join(args.out, "analysis_gr.json"), "w") as f:
+            json.dump(R, f)
     figures(R, newton, args.out)
     figure_stop(Z, args.out)
     # summary lines

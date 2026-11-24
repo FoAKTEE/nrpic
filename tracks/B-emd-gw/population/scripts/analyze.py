@@ -360,8 +360,8 @@ def quad_energy(t, Qc, win=7):
     return P, E
 
 
-def analyze_case(name, d, gw, ng, nhalo_q, out, design=None):
-    meta = json.load(open(os.path.join(d, "meta.json")))
+def analyze_case(name, d, gw, ng, nhalo_q, out, design=None, meta_path=None):
+    meta = json.load(open(meta_path or os.path.join(d, "meta.json")))
     L, n, ppc = meta["L"]*LSCALE, meta["n"], meta["ppc"]
     spacing = L/(n*ppc)
     files = snapshots(d)
@@ -382,7 +382,8 @@ def analyze_case(name, d, gw, ng, nhalo_q, out, design=None):
             times.append(np.frombuffer(f.read(8), "<f8")[0])
     times = np.array(times)
     avals = scale(times)
-    targets = [5, 7.5, 10, 12.5, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100]
+    targets = [5, 7.5, 10, 12.5, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100,
+               110, 121, 132, 143]          # the last four only in runs that reach them
     cats = []
     for at in targets:
         if at > avals[-1]*1.0001:
@@ -585,7 +586,9 @@ def figures(results, od, gwname):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--case", action="append", required=True, help="NAME:DIR")
+    ap.add_argument("--case", action="append", required=True,
+                    help="NAME:DIR or NAME:DIR:META (meta.json of the initial data, when the "
+                         "run directory has none, as in a card batch)")
     ap.add_argument("--gw", default=None, help="case name for the GW analysis")
     ap.add_argument("--ng", type=int, default=64)
     ap.add_argument("--nhalo-q", type=int, default=5)
@@ -602,9 +605,11 @@ def main():
     results = []
     dz = json.load(open(a.design)) if a.design else None
     for c in a.case:
-        name, d = c.split(":", 1)
+        parts = c.split(":")
+        name, d = parts[0], parts[1]
+        mp = parts[2] if len(parts) > 2 else None
         print("case", name, flush=True)
-        results.append(analyze_case(name, d, name == a.gw, a.ng, a.nhalo_q, od, dz))
+        results.append(analyze_case(name, d, name == a.gw, a.ng, a.nhalo_q, od, dz, mp))
     if a.design:
         for r in results:
             if r["name"] == a.gw:
