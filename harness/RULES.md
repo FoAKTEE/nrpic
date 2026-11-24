@@ -138,6 +138,9 @@ status [<run_id>] · finish <run_id> · verify <run_id> · budget · stop <run_i
   six per session). When the owner's live local runs leave fewer free (another helper's long runs),
   `--wait SECONDS` waits for them instead of refusing (looks every 30 s, a line every 5 min, at most
   SECONDS; then the usual refusal), e.g. a lead's check behind a helper's production-like runs.
+- Queue cap (decision 0033, set by the user): `submit` refuses a card run when five jobs of the
+  account are in the Slurm queue (pending, held and running, all owners together) or when `squeue`
+  does not answer. Nothing lifts it. Submit only through this tool; start no sequencers.
 - Budget: the GPU-hour allotment of decision 0006 as amended by 0014 on main, per gate, summed
   over all branches of the owner; card-hours of hand-written manifests (`card_hours`) count
   toward their gate. A request above eight card-hours is noted (0014: announce it in STATUS.md).

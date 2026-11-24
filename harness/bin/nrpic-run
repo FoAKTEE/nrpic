@@ -88,6 +88,38 @@ ATHENAK_UPSTREAM = "c5a0d7f"          # decision 0001: the vendored AthenaK is u
 FINAL = ("completed", "failed", "stopped")
 ACTIVE = ("registered", "running", "submitted")
 CARD_LAUNCHERS = ("batch", "chain")
+# Guardrail set by the user on 2026-11-24 (decision 0033): at most this many jobs of the account may be
+# in the Slurm queue at once, pending, held and running ones together, over all owners. No option and
+# no environment variable lifts it.
+QUEUE_CAP = 5
+
+
+def queue_count(env=None):
+    """Jobs of this account in the Slurm queue (every state squeue lists), or None if squeue fails.
+    env: the environment the tool uses for its Slurm commands (H.build_env), so that the count and the
+    submission ask the same Slurm."""
+    import subprocess
+    e = env if env is not None else os.environ
+    user = e.get("USER") or e.get("LOGNAME") or os.environ.get("USER") or ""
+    try:
+        r = subprocess.run(["squeue", "-h", "-u", user, "-o", "%i"], capture_output=True, text=True, timeout=60,
+                           env=env)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if r.returncode != 0:
+        return None
+    return len([l for l in r.stdout.splitlines() if l.strip()])
+
+
+def check_queue_cap(env=None):
+    n = queue_count(env)
+    if n is None:
+        raise H.HarnessError("queue cap: squeue did not answer, so the number of queued jobs is unknown; "
+                             "nothing was submitted (decision 0033)")
+    if n >= QUEUE_CAP:
+        raise H.HarnessError(f"queue cap: {n} jobs of this account are queued or running and at most {QUEUE_CAP} "
+                             "are allowed at once, over all owners (decision 0033, set by the user). Nothing was "
+                             "submitted. Try again when a job has ended; do not submit by another route.")
 STANDARD_STATUS = ("registered", "submitted", "running", "completed", "failed", "stopped")
 
 
@@ -749,6 +781,8 @@ def submit(wt, args):
         print("(dry run: nothing written, nothing started)")
         return 0
 
+    if card:                           # decision 0033: the cap on queued jobs, checked before anything is written
+        check_queue_cap(env)
     mpath = manifest_path(wt, run_id)
     os.makedirs(os.path.dirname(mpath))
     os.makedirs(os.path.join(outdir, ".nrpic"))

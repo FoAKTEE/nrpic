@@ -128,11 +128,20 @@ that the orchestrator reviews.
 - Python packages that are missing (for example REBOUND) go into a virtual environment
   of your worktree made with `uv venv` and `uv pip install`; nothing is installed
   system-wide.
-- The cards are shared with other users of the machine (`squeue` shows their jobs), so a
-  job may wait an hour or more. Keep at most two card jobs per owner queued or running,
-  never submit many jobs at once, and never wait idle for one: work on what needs no
-  card and say in your report which runs are pending. Chains resubmit one segment at a
-  time, which shares the queue fairly.
+- QUEUE CAP (set by the user on 2026-11-24, decision 0033): at most FIVE jobs of this
+  account may be in the Slurm queue at once, pending, held and running ones together,
+  over all owners. Before any submission run `squeue -u $USER -h | wc -l`; at five,
+  submit nothing and say which runs wait. Submit only through `harness/bin/nrpic-run`
+  (it refuses at five; `git merge main` first so that your copy has the check), never by
+  `sbatch`, `scripts/gpu_batch.sh` or `scripts/submit_chain.sh` directly, never many jobs
+  held behind one another, and start no sequencer of your own: runs that wait are
+  written into your HANDOFF.md (and into the shared queue `harness/bin/nrpic-queue` once
+  it exists). A chain keeps one job in the queue and resubmits its next segment itself.
+- The cards are shared with other users of the machine (`squeue` shows their jobs), and a
+  partition of higher priority can take both cards for hours and cancel our jobs: a job
+  may wait long. Never wait idle for one: work on what needs no card and say in your
+  report which runs are pending. Long runs write a restart file at least every ten
+  minutes of wall time.
 - 144 cores are shared by all sessions: at most 16 at a time per session; set
   `OMP_NUM_THREADS` and thread counts of numerical libraries explicitly.
 - Never `pkill -f`, `killall` or `kill $(pgrep -f ...)`: the pattern matches your own
