@@ -220,8 +220,10 @@ def main():
             d["frac_within_3_over_sqrtM_of_MS"] = float(np.mean(np.abs(z_ms) <= 3))
             for lab, cmin in (("cnt_gt10_both", 2*mcount > 10), ("cnt_gt10_hemi", mcount > 10)):
                 s10 = cmin[full_entered]
-                d[f"shell_max_abs_NR_over_lin_m1_{lab}"] = float(np.abs(rr[s10]).max())
-                d[f"shell_max_abs_NR_over_lin_m1_kle32_{lab}"] = float(np.abs(rr[s10 & half]).max())
+                if s10.any():
+                    d[f"shell_max_abs_NR_over_lin_m1_{lab}"] = float(np.abs(rr[s10]).max())
+                if (s10 & half).any():
+                    d[f"shell_max_abs_NR_over_lin_m1_kle32_{lab}"] = float(np.abs(rr[s10 & half]).max())
             d["n_shells"] = int(full_entered.sum())
         # power beyond the injected band, relative to the MS power at the top shell
         top = uq.max()
