@@ -140,3 +140,13 @@ Prediction held. Figure `fig_join.png` of that run looked at: the continuation's
 the original's over the overlap; the difference panel sits at its floor of 1e-18 for all 37
 lines. This tests the bookkeeping of the script, not the restart: both halves are one run.
 [VERIFIED: run E-20261124-133152-214f0af]
+
+## Entry 5 (2026-11-24 05:52 PST): prediction for the cycles the originals recorded twice
+
+While the five jobs wait: three originals recorded some cycles twice, because a segment resumed
+from the t = 0 restart after the segment before had run on (RSF256 cycles 1-~67, CL256S 1-84,
+AL2S 1-303; entry 0). Prediction D (the premise of J2, tested on data that exist now): every
+line of those cycles is identical in `.sf.hst` and `.sf.con.hst` (same binary, same card model,
+the restart at t = 0 holds the state the first segment started from). Refuted by any differing
+line; differences up to 1e-12 relative would be reduction order on the card, larger ones a
+restart that is not exact. Script `scripts/dup_check.py`.
