@@ -133,6 +133,42 @@ def main():
         dEb = [abs(r["Emean_dis"] / r["Emean_dis_ref"] - 1) for r in v4b["rows"]]
         add("Restricted Newton", "the same at retrograde $D=0.3, 0.38$, wide binaries followed on",
             f"{g(max(dPb), 2)}, {g(max(dEb), 2)}", R["v4b"])
+    # ---- elliptic centre-of-mass orbits, Ref. KHSR (arXiv:1201.4794), note v2
+    kh = C.load_json("khsr", "khsr_ecc.json")
+    gK = "Elliptic orbits"
+    add(gK, "set-up: $M/m_b$, $m_1/m_2$, phases per point; $r_a/r_t$",
+        f"$10^6$, 3, {kh['n_phase_direct']}; 500, 200, 130, 100", R["khsr"])
+    add(gK, "orbital energy at $r_a/r_t=100$ (closed form; printed)", f"{kh['K1']['E_bar_coefficient_at_ra100']:.4g}; $-2.7$",
+        R["khsr"] + "; arXiv:1201.4794 ms.tex:746--749")
+    add(gK, "start radii with the parabola's time to pericentre from $15r_t$, $D=1$, $e=0.9$, $1.1$ (printed)",
+        f"{kh['K2']['r0_e0.9']:.4g}, {kh['K2']['r0_e1.1']:.4g} $r_t$ (12.2, 17.4)", R["khsr"] + "; ms.tex:624--626")
+    dpro = {(r["D"], r["r_a"]): r for r in kh["direct"]["pro"]}
+    dret = {(r["D"], r["r_a"]): r for r in kh["direct"]["ret"]}
+    for D_ in (0.5, 1.0):
+        add(gK, f"prograde, $D={g(D_)}$: ejection probability, parabolic and $r_a/r_t=500,200,130,100$",
+            ", ".join(f"{dpro[(D_, ra)]['Pej']:.3f}" for ra in ("inf", "500.0", "200.0", "130.0", "100.0")), R["khsr"])
+    add(gK, "prograde, $r_a/r_t=100$: ejections of the primary over the secondary, $D=0.3, 0.5, 1$",
+        ", ".join(f"{dpro[(D_, '100.0')]['P1'] / dpro[(D_, '100.0')]['P2']:.3f}" for D_ in (0.3, 0.5, 1.0)), R["khsr"])
+    add(gK, "retrograde, $D=0.3$: disruption; ejection, parabolic and $r_a/r_t=500$",
+        f"{dret[(0.3, 'inf')]['Pdis']:.3f}; {dret[(0.3, 'inf')]['Pej']:.3f}, {dret[(0.3, '500.0')]['Pej']:.3f}", R["khsr"])
+    worst = (0.0, None)
+    for sense in ("pro", "ret"):
+        lines_ = kh["lines"][sense]
+        for r in kh["direct"][sense]:
+            if r["Pdis"] <= 0.1:
+                continue
+            L_ = [x for x in lines_[r["r_a"]] if abs(x["D"] - r["D"]) < 1e-9][0]
+            dd = abs(r["Pej"] - L_["Pej"])
+            if dd > worst[0]:
+                worst = (dd, (sense, r["D"], r["r_a"]))
+    nf = sum(r["n_fail"] for sense in ("pro", "ret") for r in kh["direct"][sense])
+    ntot = kh["n_phase_direct"] * sum(len(kh["direct"][sense]) for sense in ("pro", "ret"))
+    add(gK, "parabolic approximation against the three-body integration: largest $|\\Delta P|$ where $P_{\\rm dis}>0.1$",
+        f"{worst[0]:.3f} ({'prograde' if worst[1][0] == 'pro' else 'retrograde'}, $D={g(worst[1][1])}$, "
+        f"$r_a/r_t={worst[1][2].replace('.0', '')}$)", R["khsr"])
+    add(gK, "three-body integrations left out (step-size failure)", f"{nf} of {ntot}", R["khsr"])
+    add(gK, "printed: the ejection probability falls near $r_a/r_t\\sim400$; the secondary is preferred at small $r_a$",
+        "statement", "arXiv:1201.4794 ms.tex:762--769")
     # ---- geodesic baseline
     ch = s1["checks"]
     add("Geodesic baseline", "encounters of the scan", str(ch["runs_total"]), R["s1_an"])
@@ -150,6 +186,20 @@ def main():
               not k.endswith("onset")), 2), R["s1_an"])
     add("Geodesic baseline", r"largest $a_b/R_{\rm curv}$ of a bound binary at $\beta=10$",
         g(max(ch["alpha_bound_max_beta10"].values()), 2), R["s1_an"])
+    add("Geodesic baseline", r"the same at any time of the encounter, prograde, $\beta=10$",
+        "0.199", "tracks/F-hills/note/JOURNAL.md lines 300--302 (run F-20261121-063504-00f0743)")
+    kz = C.load_json("kerr", "kerr_2402_summary.json")
+    av = kz["A_vs_paper"]
+    cnt = {k: (sum(r["within_one_of_med"] for r in (v["rows"] if isinstance(v, dict) else v)),
+               len(v["rows"] if isinstance(v, dict) else v)) for k, v in av.items()}
+    add("Geodesic baseline", "Kerr, inclined binaries (arXiv:2402.02178): survival boundary within one "
+        "step of $\pi/6$, of the pericentres: $s=0$; $s=0.9$, $L_z<0$, $L_z=0$, $L_z>0$",
+        f"{cnt['s0'][0]}/{cnt['s0'][1]}; {cnt['neg'][0]}/{cnt['neg'][1]}, {cnt['zero'][0]}/{cnt['zero'][1]}, "
+        f"{cnt['pos'][0]}/{cnt['pos'][1]} ({kz['n']} encounters)", R["kerr"])
+    B_ = kz["B"]
+    add("Geodesic baseline", "Kerr, $r_p=10$: survival fraction of retrograde and prograde binaries, model; paper",
+        f"{B_['surv_hrna_retro']:.3g}, {B_['surv_hrna_pro']:.2g}; {B_['surv_paper_retro']:.3g}, "
+        f"{B_['surv_paper_pro']:.2g}", R["kerr"] + "; arXiv:2402.02178 main.tex:524--562")
     fb = C.load_json("flat", "flat_binary.json")["summary"]
     add("Geodesic baseline", "binary moving through flat space ($q=10$ members, $a_b=%g$, speed %g): "
         "sideways acceleration in the model; Newtonian law" % (fb["a0"], fb["V"]),
@@ -182,11 +232,16 @@ def main():
         add("First passages", f"${lab}$, Newton: captured member, energy, closest approach",
             f"$m_{nw['captured']}$, {g(nw['E_cap_M_u'], 4)}, {g(nw['rmin_cap'], 4)} $M$", R["n1"])
         ej = 2 if hr["E2_u"] > hr["E1_u"] else 1
+        vp_ = C.load_json("verpass", "passages.json")[key]["hrna"]
         add("First passages", f"${lab}$, geodesic: ejected member and energy; other member",
-            f"$m_{ej}$, {g(max(hr['E1_u'], hr['E2_u']), 4)}; " +
-            ("plunges at $t=" + g(hr["first_pericentre_1"][0], 3) + "M$" if hr["plunged"] else
-             f"bound, {g(min(hr['E1_u'], hr['E2_u']), 4)}, first pericentre "
-             f"{g(hr['first_pericentre_1'][1], 4)} $M$"), R["n1"])
+            f"$m_{ej}$, {g(max(hr['E1_u'], hr['E2_u']), 3)}; " +
+            ("crosses $2.5M$ at $t=" + f"{vp_['plunge_t'][0]:.1f}" + "M$ (first sample inside: "
+             + g(hr["first_pericentre_1"][0], 3) + "$M$)" if hr["plunged"] else
+             f"bound, {g(min(hr['E1_u'], hr['E2_u']), 3)}, first pericentre "
+             f"{g(hr['first_pericentre_1'][1], 4)} $M$"), R["n1"] + ", " + R["verpass"])
+        if not hr["plunged"]:
+            add("First passages", f"${lab}$, geodesic: ejected member's energy at $t=600M$ and $1500M$",
+                f"{vp_['E2_u_t600']:.4g}, {vp_['E2_u_end']:.4g}", R["verpass"])
         add("First passages", f"${lab}$, Newton with $M$ fixed: ejected energy, closest approach of the other",
             f"{g(max(nf['E1_u'], nf['E2_u']), 4)}, {g(min(nf['rmin_1'], nf['rmin_2']), 4)} $M$", R["n1"])
     add("First passages", "$q=4$: reproduces the earlier run in every printed digit (ejected energy)",
@@ -215,8 +270,8 @@ def main():
         f"{g(m10['rate_MB_cycles_per_s']['fast'])}", R["mesh10"])
     add("Mesh and cost", "$q=4$ input at the start, release executable: $m/4$, $m/8$, $m/16$",
         f"{e1[9]}, {e1[10]}, {e1[11]}", R["e1"])
-    add("Mesh and cost", "card memory, MeshBlock slots", "about 3000",
-        "multi\\_puncture.md lines 229--230 of coord/INTERFACES")
+    add("Mesh and cost", "card memory, MeshBlock slots with three horizon finders", "about 3100",
+        "multi\\_puncture.md lines 235--247 of coord/INTERFACES")
 
     # ---- full relativity (note v1, gate G1)
     import fig_smoke as FS  # log and input readers of the smoke figure
@@ -242,6 +297,11 @@ def main():
     e7an = C.load_json("e7an", "p1_analysis.json")
     add(gF, "the same norm at $t=0$ from the card executable (passage input, $m/8$)",
         f"{e7an['H_t0']:.4g}", R["e7an"])
+    add(gF, "junk of the three-black-hole data at the spheres of the first passage: burst; then steady emission per $M$",
+        "0.40--0.63$\\times10^{-6}M$; 5.0--5.4$\\times10^{-8}$",
+        "tracks/F-hills/stage/G1/STATUS.md line 20 (runs F-20261121-075600-4480a13, F-20261121-155457-5f36517)")
+    add(gF, "junk energy of one member, $\\eta m=2$, over its mass", "$7\\times10^{-5}$ ($4\\times10^{-5}$--$2\\times10^{-4}$)",
+        "tracks/F-hills/stage/G1/STATUS.md line 20 (run F-20261120-222808-b65001c)")
     # single member
     e3 = C.load_json("e3", "single_analysis.json")
     e10 = C.load_json("e10a", "s2g_compare.json")
@@ -363,6 +423,72 @@ def main():
     add(gP, "prediction recorded before submission (health, outcome, horizons, radiation)",
         "four items", "tracks/F-hills/JOURNAL.md lines 305--320")
 
+    # ---- the binary alone and the first passage to its end (note v2, G1 close-out)
+    gB = "The binary alone"
+    an = C.load_json("bcan", "analysis.json")
+    res = (("R8", "$m/8$"), ("R12", "$m/12$"), ("R16n", "$m/16$"))
+    add(gB, "runs: the members of the first passage without the heavy black hole, finest cells $m/8$, $m/12$, $m/16$",
+        "three card runs", ", ".join(R[k] for k in ("bc8", "bc12", "bc16")))
+    add(gB, "separation at $t=0$ [$M$]", f"{an['R16n']['s0']:.4f}", R["bcan"])
+    for tt in ("15", "20"):
+        add(gB, f"decrease of the separation by $t={tt}M$: $m/8$, $m/12$, $m/16$ [$M$]",
+            ", ".join(f"{an[k]['ds_at'][tt]:.4f}" for k, _ in res), R["bcan"])
+    add(gB, "the same with the heavy black hole (first passage, $m/8$), $t=15$, $20M$",
+        f"{an['P1']['ds_at']['15']:.4f}, {an['P1']['ds_at']['20']:.4f}", R["bcan"])
+    add(gB, "first post-Newtonian separation at $t=2.5$ and $20M$ (canonical EIH)",
+        f"{an['refs_at']['eih_c']['2.5']:.4f}, {an['refs_at']['eih_c']['20']:.4f}", R["bcan"])
+    add(gB, "three equivalent first post-Newtonian forms of the start state: spread of the separation at $t=7.5$, $20M$",
+        "0.019, 0.158 $M$", "tracks/F-hills/RISKS.md line 9 (run F-20261121-155353-e4d3354)")
+    add(gB, "convergence order from the three resolutions at $t=15$, $20M$; extrapolated decrease",
+        f"{an['convergence']['15']['p3']:.3g}, {an['convergence']['20']['p3']:.3g}; "
+        f"{an['convergence']['15']['ds_continuum']:.4f}, {an['convergence']['20']['ds_continuum']:.4f} $M$", R["bcan"])
+    add(gB, "member horizon masses, fractional change per $M$ ($t=3$--$15M$), $m/16$",
+        f"{an['R16n']['horizons']['0']['frac_growth_per_M']:.2g}, {an['R16n']['horizons']['1']['frac_growth_per_M']:.2g}", R["bcan"])
+    add(gB, "the same at $m/8$",
+        f"{an['R8']['horizons']['0']['frac_growth_per_M']:.2g}, {an['R8']['horizons']['1']['frac_growth_per_M']:.2g}", R["bcan"])
+    add(gB, "$\\langle H^2\\rangle^{1/2}$ at $t=20M$: $m/8$, $m/12$, $m/16$",
+        ", ".join(f"{np.sqrt(an[k]['H2_at']['20']):.2g}" for k, _ in res), R["bcan"])
+    add(gB, "merger time of the shape fitted to the first passage, stretched: $m/8$, $m/12$, $m/16$ [$M$]",
+        ", ".join(f"{an['stretch'][k]['t_merge_estimate']:.0f}" for k, _ in res), R["bcan"])
+    gE = "The first passage to its end"
+    p1e = C.load_json("p1end", "p1_280.json")
+    p1c = C.load_json("p1chk", "p1_checks.json")
+    p1l = C.load_json("p1chk", "ledger.json")
+    bch = p1c["binary_common_horizon"]
+    add(gE, "common horizon of the members: first time, mass; distance from the heavy black hole",
+        f"{bch['0']['t_first_common']:.2f}$M$, {bch['0']['mass']:.4f}; {bch['at_first_common']['dist_from_M']:.1f}$M$", R["p1chk"])
+    ro = p1e["remnant_orbit"]
+    add(gE, "remnant: closest coordinate approach to the heavy black hole (time, distance); distance and its rate at $t=280M$",
+        f"{ro['t_closest']:.1f}$M$, {ro['d_closest']:.2f}$M$; {ro['d_end']:.2f}$M$, {ro['ddt_end']:.3f}", R["p1end"])
+    rc = p1e["recoil"]
+    add(gE, "remnant velocity after the merger minus the members' mean extrapolated to $t=56M$: size, angle",
+        f"{rc['dv_norm']:.3f}, {rc['angle_deg']:.1f}$^\\circ$ (speeds {rc['speed_pre']:.3f}, {rc['speed_post']:.3f})", R["p1end"])
+    H0 = p1e["horizons"]["0"]
+    add(gE, "remnant horizon mass, medians of $t=60$--$100$ and $240$--$280M$; fractional change",
+        f"{H0['mass_60_100']['median']:.4f}, {H0['mass_240_280']['median']:.4f}; {H0['drift_60_100_to_240_280']:.2g}", R["p1end"])
+    add(gE, "remnant $|S|/m^2$, medians of $t=60$--$100$, $100$--$140$, $240$--$280M$",
+        f"{H0['chi_60_100']['median']:.3f}, {H0['chi_100_140']['median']:.3f}, {H0['chi_240_280']['median']:.3f}", R["p1end"])
+    H2_ = p1e["horizons"]["2"]
+    add(gE, "heavy black hole: mass at $t=4M$ and median of $240$--$280M$; largest window median of $|S|/M^2$",
+        f"{H2_['mass_first_good']:.5f}, {H2_['mass_240_280']['median']:.5f}; "
+        f"{max(H2_[k]['median'] for k in H2_ if k.startswith('chi_') and isinstance(H2_[k], dict)):.1e}", R["p1end"])
+    add(gE, "largest horizon mass found after $t=50M$: remnant finders; heavy black hole",
+        f"{max(p1e['horizons']['0']['mass_max_after_50'], p1e['horizons']['1']['mass_max_after_50']):.4f}; "
+        f"{H2_['mass_max_after_50']:.4f}", R["p1end"])
+    hn = p1e["history"]["norms"]
+    add(gE, "$\\langle H^2\\rangle^{1/2}$: at $t=1M$ (largest), $112M$, largest over $112$--$280M$, at $280M$",
+        f"{hn['H']['max_all']:.2g}, {hn['H']['at_112']:.2g}, {hn['H']['max_112_280']:.2g}, {hn['H']['end']:.2g}", R["p1end"])
+    rad = p1e["radiation"]
+    add(gE, "radiated energy through $R=40$, $48$, $70$, $90M$ by $t=280M$",
+        ", ".join(f"{rad[k]['E_end']:.2g}" for k in ("40", "48", "70", "90")), R["p1end"])
+    add(gE, "the same by $t=112M$", ", ".join(f"{rad[k]['E_at_112']:.2g}" for k in ("40", "48", "70", "90")), R["p1end"])
+    m_a, m_b, rp_ = H2_["mass_240_280"]["median"], H0["mass_240_280"]["median"], ro["d_closest"]
+    peters = 85 * np.pi / (12 * np.sqrt(2)) * m_a ** 2 * m_b ** 2 * np.sqrt(m_a + m_b) / rp_ ** 3.5
+    add(gE, "quadrupole energy loss of a parabolic encounter of these horizon masses at the closest coordinate distance",
+        f"{peters:.2g} $M$", R["p1end"] + " (arithmetic)")
+    add(gE, "mesh blocks, smallest and largest; card-hours of the run (jobs)",
+        f"{p1c['tree_min']}, {p1c['tree_max']}; {p1l['card_hours_total']:.2f} ({len(p1c['segments'])})", R["p1chk"])
+
     # ---- write ledger.tex: two tables
     def table(groups, label, caption):
         lines = [r"\begin{table*}", r"\caption{" + caption + "}", r"\label{" + label + "}",
@@ -387,6 +513,10 @@ def main():
                       "Ledger of the reference solutions. Energies in units of "
                       r"$(Gm_1m_2/a_b)(M/m_b)^{1/3}$; sources are registered runs or the "
                       "file and line of a paper's text.") + "\n\n")
+        f.write(table({"Elliptic orbits"}, "tab:ledger1b",
+                      "Ledger of the Newtonian reference on elliptic orbits of the binary's centre of "
+                      "mass, the case of Ref.~\\cite{Kobayashi:2012hills}. Probabilities are over 512 "
+                      "binary phases per point.") + "\n\n")
         f.write(table({"Pericentre scan", "First passages", "Mesh and cost"}, "tab:ledger2",
                       "Ledger of the pericentre scan, the first passages and the cost. "
                       "Fractions are over the sampled binary phases; card-hours are the "
@@ -400,7 +530,11 @@ def main():
                       "Ledger of the runs in full relativity, part two: the first passage at "
                       "mass ratio four (set-up, start state, a short run on one card, cost, and "
                       "the prediction recorded before it started), with the start state of the "
-                      "input at mass ratio ten.") + "\n")
+                      "input at mass ratio ten.") + "\n\n")
+        f.write(table({gB, gE}, "tab:ledger5",
+                      "Ledger of the runs in full relativity, part three: the binary of the first "
+                      "passage alone at three resolutions, and the first passage to its end. "
+                      "Distances and velocities are coordinate values.") + "\n")
 
     # ---- parameters.tex
     par = []

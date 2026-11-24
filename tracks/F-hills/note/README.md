@@ -8,6 +8,19 @@ the manuscript): `../WRITING_GUIDE.md`, `../NOTATION.md`. The package also wrote
 `../stage/G0/STAGE_REPORT.md` (from `nrpic-stage report`) and `../stage/G0/CHECKLIST.md`
 (from `nrpic-stage collect`, items filled where this package has the evidence).
 
+## Version 2 (G1 close-out, 2026-11-21; carried over by the lead on 2026-11-24)
+
+The G1 close-out of the note was written in package `khsr_note` (it could not write `note/`) and
+copied here by the lead in batch 11 (`main.tex`, `main.pdf`, `references.bib`, `scripts/`,
+`figures/`, `tables/`; the copy in `khsr_note/note/` is removed). Version 2: 24 pages; new
+sections on elliptic orbits (KHSR, arXiv:1201.4794), P1 to its end at 280 M and the binary alone
+(binary_conv), the Kerr paragraph, the release state as of core-v0.6. Figure and ledger run of
+v2: **F-20261121-214141-256f945** (`scripts/run_all.py`; its prediction and outcome in
+`../khsr_note/JOURNAL.md`). New scripts: `fig_elliptic.py`, `fig_binary.py`, `fig_p1_end.py`.
+Open for v3: the passage P1b (runs A, A2, C2 of the lead's batch 11), the duplicated line legend
+in the right panel of `fig_elliptic.py`, floats placed away from their text after Sec. VI, the
+reviewer step of the paper-writing procedure.
+
 ## What is here
 
 | Path | Content |

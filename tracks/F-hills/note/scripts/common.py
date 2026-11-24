@@ -15,7 +15,19 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 NOTE = os.path.dirname(HERE)
-TRACK = os.path.dirname(NOTE)                       # tracks/F-hills
+
+
+def _track_dir(p):
+    """tracks/F-hills above this file: the note works from tracks/F-hills/note/ and from a
+    working copy one level deeper (tracks/F-hills/<package>/note/, wave 3 batch 6)."""
+    while p != os.path.dirname(p):
+        if os.path.basename(p) == "F-hills" and os.path.basename(os.path.dirname(p)) == "tracks":
+            return p
+        p = os.path.dirname(p)
+    raise SystemExit("not inside tracks/F-hills")
+
+
+TRACK = _track_dir(NOTE)                            # tracks/F-hills
 WT = os.path.dirname(os.path.dirname(TRACK))        # worktree root
 SCRATCH = os.environ.get("NRPIC_F_SCRATCH", "/data/haiyangw/nrpic/scratch/F-hills")
 
@@ -53,6 +65,17 @@ RUNS = {
     "v9": "F-20261119-145449-245e984",                # lead V9: GR reading of the start states
     "newton3_pass": "F-20261115-180351-b8eb386",      # newton3_fix: passages with corrected energies
     "flat": "F-20261115-175620-df20ffe",              # second check SC0d: binary moving in flat space
+    # wave 3 batch 6 additions (note v2, gate G1 close-out; package khsr_note)
+    "khsr": "F-20261121-212757-77cdc15",              # khsr_note K: KHSR elliptic orbits, newton3 driver
+    "bcan": "F-20261121-202021-3c4321e",              # binary_conv: analysis of the binary alone, m/8, m/12, m/16
+    "bc8": "F-20261121-130358-6cf186a",               # binary_conv R8: the binary alone at m/8 (card)
+    "bc12": "F-20261121-153707-1eaa5d4",              # binary_conv R12: the binary alone at m/12 (card)
+    "bc16": "F-20261121-130351-04074e1",              # binary_conv R16n: the binary alone at m/16 (card)
+    "p1": "F-20261119-150017-b45ec5f",                # the first passage P1 (card chain, 16 jobs, to 280 M)
+    "p1end": "F-20261121-212441-1911b7d",             # khsr_note: P1 after the merger to 280 M (p1_280.json)
+    "p1chk": "F-20261121-212240-c43f35f",             # khsr_note: package p1's readers on P1 to 280 M
+    "kerr": "F-20261121-132817-eacfe46",              # kerr: analysis of the 2402.02178 scan
+    "verpass": "F-20261121-030138-8d3ca16",           # G0 verifier: passages in the references, late times
 }
 
 # readers of the code's output (package nr_first, read only)

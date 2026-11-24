@@ -859,3 +859,17 @@ of the separations Delta_N(t) = s_3body - s_2body. Prediction: Delta_N(60) betwe
 -0.8 M, i.e. the departure of A from B is tidal at Newtonian order in size and sign. Refuted:
 |Delta_N(60)| < 0.1 M or a positive sign; then the departure of A from B is not the Newtonian tide
 (a relativistic tidal or a gauge effect would be the candidates, to be tested, not named).
+
+### N1m, a second candidate for A - B (prediction before the registered run)
+
+A test integration of N1 (scratch, not registered; values not used) showed the Newtonian tide
+positive at 10-40 M and negative only after about 55 M, while NR's A - B is negative from the
+start (-0.027 M at 10 M). Second candidate, from the analysis F-20261124-130009-33bef4d: the
+members' horizon masses in A are larger than in B by a factor mu of about 1.015 (0.1295 against
+0.1275 at t = 0) at the same bare masses and momenta, because the members sit in the conformal
+factor of M (1 + M/2r of about 1.018 at r = 27 M); a binary with heavier members and the same
+momenta is more bound and starts nearer its apocentre. Prediction for the Newtonian two-body
+problem from the eccentric start of N1e with member masses times mu (N1em): Delta(60) between
+-0.15 and -0.6 M, negative from the start; with the tide added (N1emt) within a factor two of
+NR's A - B at 20-60 M. Refuted: |N1em(60)| < 0.1 M or positive; then the initial-data mass offset
+is not the leading cause.

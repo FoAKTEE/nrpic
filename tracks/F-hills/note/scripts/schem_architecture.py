@@ -1,4 +1,13 @@
-"""Schematic: architecture of the F-hills calculation as of release core-v0.3 (note v1, G1).
+"""Schematic: architecture of the F-hills calculation as of release core-v0.6 (note v2, G1 close-out).
+
+Note v2 (wave 3 batch 6): released in core-v0.4 to v0.6 and so marked "exists": the
+constraint solve inside the code (`<particles> id_solve`, punctures in the solve in v0.6), clumps
+with momentum (`comp<c>_p1..3`), the mass-scaled shift damping (`<z4c> shift_eta_profile`),
+the common horizon of one pair (`<fastflow> punc_pair_a_<n>`), the chain's resubmission after
+a kill from outside (scripts/submit_chain.sh, v0.6); the track's readers of the junk energy
+(junk_gauge) and the inclined Kerr baseline (kerr) exist; the post-Newtonian model was reviewed
+(RISKS R17: no unique form at the members' speeds). Two cards stay "to be ported" (MPI build of
+v0.5 not tested on two cards by the track). Note v1 text follows.
 
 States. Exists: in release core-v0.3 (the AthenaK executables named in CLAUDE.md) or in the
 track's own reference and analysis code, tested in registered runs. Ported: exists and is
@@ -56,8 +65,8 @@ def main():
         ("closed-form correction of the data", EXISTS),
         ("Newtonian state from ten tidal radii", EXISTS),
         ("passage input at mass ratio four", EXISTS),
-        ("constraint solve inside the code", PORT),
-        ("clumps with momentum (object b)", PORT),
+        ("constraint solve inside the code", EXISTS),
+        ("clumps with momentum (object b)", EXISTS),
         ("start state from a relativistic parabola", NEW),
         ("dressed black holes (object c)", NEW),
     ])
@@ -68,10 +77,10 @@ def main():
         ("waves on four extraction spheres", EXISTS),
         ("chain of segments with restart files", EXISTS),
         ("wrapper that keeps the tracker files", PORT),
-        ("shift damping scaled by the mass", PORT),
-        ("common horizon of one pair", PORT),
+        ("shift damping scaled by the mass", EXISTS),
+        ("common horizon of one pair", EXISTS),
         ("two cards for the finest resolution", PORT),
-        ("resubmission after a preemption", NEW),
+        ("resubmission after a kill from outside", EXISTS),
         ("found flag of a horizon search", NEW),
     ])
     column(ax, xs[2], "Readers", "the code's output, outside the code", [
@@ -81,17 +90,17 @@ def main():
         ("wave modes and radiated energy", EXISTS),
         ("member energies, barycentric split", EXISTS),
         ("restart trees against the rule model", EXISTS),
-        ("junk energy of three black holes", NEW),
+        ("junk energy of three black holes", EXISTS),
     ])
     column(ax, xs[3], "Reference models", "the same start state, outside the code", [
         ("restricted and full Newtonian problem", EXISTS),
         ("geodesic baseline, Schwarzschild", EXISTS),
         ("geodesic baseline, equatorial Kerr", EXISTS),
         ("first post-Newtonian three bodies", EXISTS),
-        ("geodesic baseline, inclined Kerr", NEW),
+        ("geodesic baseline, inclined Kerr", EXISTS),
         ("stripping and heating of clumps", NEW),
     ])
-    pf.text(ax, xs[3] + CW / 2, TOP - 2.25 - 6 * ROWS + 0.05, "the post-Newtonian model awaits its review",
+    pf.text(ax, xs[3] + CW / 2, TOP - 2.25 - 6 * ROWS + 0.05, "no unique post-Newtonian form at these speeds",
             size=6.6, italic=True)
     for k in range(3):
         x0 = xs[k] + CW
