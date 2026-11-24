@@ -123,17 +123,20 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--labels", default=None)
     ap.add_argument("--no-bytes", action="store_true")
+    ap.add_argument("--scratch", default=SCRATCH, help="parent of the run directories (tests)")
+    ap.add_argument("--runs", default=os.path.join(HERE, "runs.json"))
+    ap.add_argument("--conts", default=os.path.join(HERE, "conts.json"))
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
-    runs = json.load(open(os.path.join(HERE, "runs.json")))
-    conts = json.load(open(os.path.join(HERE, "conts.json")))
+    runs = json.load(open(a.runs))
+    conts = json.load(open(a.conts))
     labels = a.labels.split(",") if a.labels else [l for l in runs if conts.get(l)]
     res = {}
     plotdata = {}
     for lab in labels:
         r = runs[lab]
-        O = os.path.join(SCRATCH, r["orig"])
-        Cs = [os.path.join(SCRATCH, c) for c in conts[lab]]
+        O = os.path.join(a.scratch, r["orig"])
+        Cs = [os.path.join(a.scratch, c) for c in conts[lab]]
         e = {"orig": r["orig"], "conts": conts[lab], "segments": []}
         # restart each continuation started from: the newest of the run before it
         srcs = [O] + Cs[:-1]
@@ -145,7 +148,9 @@ def main():
             rsts.append(parse_rst(rp))
         r0 = rsts[0]
         e["restart"] = {k: r0[k] for k in ("path", "time", "ncycle", "dt", "tlim")}
-        # J1
+        # J1 (as amended in journal entry 3): AthenaK prints a progress line only every
+        # ndiag cycles and with 7 digits, so the log is checked to its printed precision
+        # and the exact start from the first record (cycle c_rst + 1 at t_rst + dt)
         j1 = []
         for C, rh in zip(Cs, rsts):
             logs = seg_logs(C)
@@ -156,12 +161,25 @@ def main():
                 allrows += rows
                 term, final = t or term, fi or final
             dts = sorted({d for _, _, d in allrows})
-            j1.append({"run": os.path.basename(C), "first": first[0] if first else None,
+            f0 = first[0] if first else None
+            log_ok = bool(f0 and rh["ncycle"] <= f0[0] < rh["ncycle"] + 100 and
+                          abs(f0[1] - (rh["time"] + (f0[0] - rh["ncycle"]) * rh["dt"]))
+                          <= 5e-7 * max(1.0, abs(f0[1])))
+            recp = os.path.join(C, f"{r['base']}.sf.con.hst")
+            rec0 = None
+            if os.path.exists(recp):
+                for line in open(recp):
+                    if not line.startswith("#") and line.strip():
+                        rec0 = (float(line.split()[0]), int(line.split()[1]))
+                        break
+            rec_ok = bool(rec0 and rec0[1] == rh["ncycle"] + 1
+                          and abs(rec0[0] - (rh["time"] + rh["dt"])) <= 1e-15 * abs(rec0[0]))
+            j1.append({"run": os.path.basename(C), "first_log_line": f0, "first_record": rec0,
                        "rst_cycle": rh["ncycle"], "rst_time": rh["time"], "rst_dt": rh["dt"],
-                       "start_ok": bool(first and first[0][0] == rh["ncycle"]
-                                        and abs(first[0][1] - rh["time"]) <= 1e-12 * max(1, rh["time"])),
+                       "log_start_ok": log_ok, "record_start_ok": rec_ok,
+                       "start_ok": log_ok and rec_ok,
                        "dt_values": dts,
-                       "dt_ok": all(abs(d - rh["dt"]) <= 1e-12 * rh["dt"] for d in dts),
+                       "dt_ok": bool(dts) and all(abs(d - rh["dt"]) <= 5e-7 * rh["dt"] for d in dts),
                        "logs": [os.path.basename(x) for x in logs], "termination": term,
                        "final": final})
         e["J1"] = j1
@@ -285,7 +303,7 @@ def main():
             and it.get("rmodes_identical", True) for it in e["J4"]["common"]))
             and not e["J4"]["joined_gaps"])
         res[lab] = e
-        print(f"{lab}: J1 {e['J1_pass']} (start {j1[0]['first']}, rst cycle {j1[0]['rst_cycle']}, "
+        print(f"{lab}: J1 {e['J1_pass']} (log {j1[0]['first_log_line']}, record {j1[0]['first_record']}, rst cycle {j1[0]['rst_cycle']}, "
               f"dt {j1[0]['dt_values']}, {j1[-1]['termination']}); J2 {e['J2_pass']} "
               f"(max rel {e['J2_max_rel']:.3g}; overlaps "
               + ", ".join(f"{k}:{[(o['n'], o['identical']) for o in v['overlap']]}"

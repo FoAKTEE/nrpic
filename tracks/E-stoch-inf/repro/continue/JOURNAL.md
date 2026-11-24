@@ -103,3 +103,23 @@ The cards were not free at submission: `scontrol show node anta` gave AllocTRES 
 no job of this account running (another user's jobs), and twelve jobs of other owners of this
 account pending ahead or beside ours (A, B, C, D, core). The five wait in the queue; nothing has
 run. The registered pass of `check_restart.py` (with checksums) runs on processors meanwhile.
+
+## Entry 3 (2026-11-24 05:35 PST): restart check registered; J1 amended before any continuation ran
+
+Run E-20261124-131957-94811a9 (`check_restart.py --sha`, processors, 9.5 min): all five newest
+restart files and sidecars intact by every test of entry 0, and their sha256 (recomputed) equal
+the originals' `sha256sums.txt`; the mid-plane of the last MeshBlock is finite with chi in
+(0, 1] (RSF256/RNC256 at t = 0: 0.999998-1.0000007; CL256U 4.3222e-4; CL256S 9.1482e-6; AL2S
+5.4193e-7, i.e. e^(-2N) after 3.9, 5.8 and 7.2 e-folds) and alpha = 1 to 2e-12 (geodesic
+slicing). Figure `fig_progress.png` of that run (looked at): the bars of entry 0; the legend
+overlaps one tlim label, which hides no data. [VERIFIED: run E-20261124-131957-94811a9]
+
+Amendment of J1, written while all five jobs are still pending (05:31 PST, `squeue`), so before
+any outcome: AthenaK prints a progress line only when the cycle is a multiple of its ndiag and
+with seven digits (`athenak/src/driver/driver.cpp`, OutputCycleDiagnostics), so "the first log
+line shows cycle = c_rst" could only hold for RSF256 and RNC256 (c_rst = 0). J1 now reads: the
+first record of the continuation's `.sf.con.hst` has cycle c_rst + 1 and time t_rst + dt
+(17 digits, relative 1e-15); the first progress line has c_rst <= cycle < c_rst + 100 and
+time = t_rst + (cycle - c_rst) dt to the printed seven digits; every printed dt equals the
+restart's dt to seven digits; the last segment ends "Terminating on time limit". Refuted as
+before. `scripts/join_check.py` checks this form.
