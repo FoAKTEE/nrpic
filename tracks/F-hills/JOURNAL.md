@@ -979,3 +979,24 @@ the sequencer seq_b11.sh (pid 604718; decision 0026 item 2: a sequencer may subm
 while the flag exists). Not done in this session: B's finish (HANDOFF command), the cosmetic
 legend fix of fig_elliptic.py (note v3). Everything else of the batch-11 task is committed and
 pushed.
+
+## 2026-11-24 Batch 12 (lead, short): card runs handed to the shared queue (decision 0033)
+
+State found: on 2026-11-24 12:00 PST orch stopped the sequencer seq_b11.sh (pid 604718; `ps -p`
+shows it gone) and cancelled our three waiting jobs: B2 5171, A2 5172, C2 5173 (held); sacct shows
+all three CANCELLED with Start None, so none had computed and none is to be continued in place.
+Done:
+- Closed the three registrations as stopped (`nrpic-run finish <id> --status stopped`, 0
+  card-hours each): F-20261124-141118-fbc6419 (A2), F-20261124-135408-1e6db58 (B2),
+  F-20261124-141842-d5263e9 (C2).
+- Added them again to the shared queue with the same nrpic-run arguments (dry run first; `--notes`
+  names the run each replaces): q0001 F-A2 priority 2 (G1 C8 waits for it), q0002 F-B2 priority 5,
+  q0003 F-C2 priority 5 `--after F-B2` (the hold of the batch-11 plan). The dispatcher submitted
+  q0001 at 13:04 PST: A2 is now F-20261124-210400-902c650, Slurm 5207, RUNNING. q0002 and q0003
+  wait (the account's five places were filled by B, C, D and our A2).
+- No wrapper was written: no chain of ours had computed when it was cut. A chain that its segment
+  cap cuts from now on needs a `--cmd` wrapper (HANDOFF).
+- Not done (outside this session's aim): B's finish (F-20261121-203156-03efdd3, an hour of
+  checksums); updating the run ids in b11_cards.py (the new B2 and C2 ids exist only at dispatch).
+Predictions: those of batch 11 ("Q4 decision": A2-1 to A2-5, B2, C2) stand unchanged for the
+requeued runs; nothing was run or judged in this session. Card-hours used: 0.
