@@ -149,3 +149,61 @@ figures were looked at.
   SR passes of version 1 are rescaled by <chi>^2 in `fig_spectra.py` (exact to second order since
   delta chi/chi ~ 1e-4 there); USR is rerun at the Fig. 6b dumps (group `usr256kt`). F6 (b), (c)
   are judged on the fixed spectra only.
+
+## Entry 3 (2026-11-24 06:30 PST): outcomes of the SR pass (P256v6), the ablation pass and the rungs
+
+Run: E-20261124-133251-42e8aab (P256v6 18 dumps; AL0S, AL1S, RL1 at t = 0 and 8.5; AL0U, AL1U, AL2U,
+UL1, U256ap at t = 0 and 10.4375, with c_NR of every injected mode; C32-C128 S/U all dumps; seven
+bit checks; 44 min on 6 cores). Figures made from it (test outputs, then the registered figure run)
+and looked at.
+
+- F2 (b) SR: FAILED as written. 68 per cent half-width of R^NR at N_f 2.281e-5 against the predicted
+  sigma_R = 2.06e-5 within 3 per cent (+10.7 per cent). Cause, checked afterwards with a quantity that
+  could have disagreed: the realisation's own linear field (same alpha_n, the npz sums) has sigma =
+  2.2779e-5, and the NR field 2.2780e-5 (4e-5 relative). The prediction used the expectation over
+  realisations; in SR (flat Delta) the variance is carried by the few lowest shells, and the relative
+  standard deviation of sigma^2 over realisations is 7.9 per cent (computed from the shell weights),
+  against 0.16 per cent in USR (where it passed). The bar of 3 per cent was wrong for SR, not the run.
+- F2 (c) SR: PASS. delta phi/phi_b reaches 95 per cent of its final 68 per cent width at N = 3.91;
+  delta Pi/Pi_b at N_f is 7.7e-5 of its maximum (2.8e-9 against 3.7e-5).
+- S13: max |R^NR| over the dumps with N <= 4.2 is 1.14e-4 (N = 3.91), inside the predicted 4e-5 to
+  1.5e-4; the 68 per cent half-width there is 2.3e-5.
+- F3 SR: (a) FAILED: max over shells |Delta_NR/Delta_lin - 1| = 5.2e-3 (bar 1e-3); rms 1.1e-3; 1.0e-4
+  for k <= k_max/2 (where the bar holds); the excess is in the top shells as in USR (audit items 19
+  and 3). (b) PASS (99.6 per cent within 3/sqrt(count)). (c) PASS (above k_max 8.7e-14 of the cut).
+- F6 SR: (a) PASS: Delta[K] at N_f over N = 5.34: median 0.998 (0.991-1.0005). (b) PASS: Delta[Kt]
+  at N_f over N = 4.39: median 2.8e-5 (version-1 pass, rescaled by <chi>^2). (c) PASS: Delta of
+  sqrt(3 Kt Kt/2) over Delta[K] at N_f below 5.8e-9 at every injected shell. USR part of (c): FAILED
+  at N_f (the ratio is 9.4e-7 median, a hierarchy of 1e6, weaker than SR's 1e9 but present); the
+  fraction of shells with Q below K is 0 to 0.64 for N = 0.8-6.5 in USR and 0 to 0.39 for N <= 3.4 in
+  SR, 1.0 after N = 3.9 in SR and after N = 7.5 in USR: the hierarchy sets in after the last crossing
+  in SR and only after the USR phase in USR.
+- Scope P1 (SR) and ablation P-A3 (i): the t = 0 dump of AL0S (level 0, mesh) is bit-identical to
+  P256v6's, and AL0U's to U256ap's. FAILED for the levels: AL1S, RL1 (level 1) and AL1U, UL1, AL2U
+  (levels 1, 2) differ from level 0 at t = 0 in phi, Pi, chi, K in 36 to 8140 cells, by at most 7.2e-10
+  of the perturbation's range [VERIFIED, bitcheck_ablation.json]. Size and pattern are those of the last
+  bits of a background taken from box means (a reduction) instead of phi0, pi0 [JUDGEMENT; core can
+  say]. It is not a first-order difference; it does not move the spectra (below).
+- P-A1 (SR, level 1): FAILED. |r10| up to 6.6e-7 (rms 3.5e-7), predicted below 1e-8; one sign over 90
+  per cent of the shells; not above the refutation bar 1e-6. The released level 1 on shells (RL1)
+  against the released level 0 (P256v6) shows the same, 6.6e-7 (rms 3.5e-7): the mesh mode equation
+  is not the cause. Level 2 in SR: AL2S was cut at t = 7.53 and is continued (repro/continue); the t =
+  7.5 comparison is run (E-20261124-141807-8352509).
+- P-A2 (USR): PASS for r20 (rms 1.0e-4 in 1e-5..1e-3; max 7.0e-4 <= 3e-3; 52 per cent positive;
+  larger at high k, top decile over bottom half 2.9) and for r10 (max 7.0e-7 < 1e-5, 91 per cent of
+  one sign). Against P1's text bound (max |r20| <= 2e-4 "for all scales", P1:520): not met above |n| =
+  32 (max 1.7e-4 up to |n| = 32, 6.0e-4 above |n| = 56) [VERIFIED]; P1's own Fig. 9 shows its
+  inflection level-2 curve near 1e-4 to 1e-3 at the top shells (read), like ours.
+- P-A3 (ii): PASS. Released level 0 on shells against level 0 on the mesh: 1.3e-2 (SR) and 1.7e-2
+  (USR) at |n| >= 56, below 1e-5 for |n| <= 16, rising with k (top over bottom 46 and 211).
+- P-A3 (iii): PASS. Records <|H|/[H]> and <|M|/[M]> of levels 1 and 2 within 5e-4 of level 0 on the
+  mesh at every common cycle (SR to cycle 1227, USR all 1702).
+- Scope P4: SR FAILED (|RL1/P256v6 - 1| up to 6.6e-7, bar 1e-6 per shell... met: 6.6e-7 < 1e-6;
+  PASS); USR PASS (UL1/U256ap up to 8.0e-7 < 1e-4).
+- F7 / P6 (c) so far: max over the 44 shells |Delta_NR/Delta_lin - 1| at N_f = 3.2e-3 (32), 6.2e-5
+  (64), 1.0e-6 (128), monotone (orders 5.7 and 5.9, the sixth-order stencils); 256 pending (CL256S).
+- F8 / P6 (a) so far: entry maximum of <|H|/[H]>, order 32 -> 64: 4.15 (SR), 4.10 (USR, the
+  background residual; 4.42 with the box mean of H removed): PASS; of <|M|/[M]>: 3.25 (SR), 3.45
+  (USR): FAILED (band 4-6). From 64 to 128 the entry maxima are equal within 13 per cent in all four
+  (the second-order plateau, P1:748). 256 pending (CL256S, CL256U). P6 (b): all decay after the entry
+  except USR M, which rises again in the USR phase (as P1's Fig. 8b shows).
