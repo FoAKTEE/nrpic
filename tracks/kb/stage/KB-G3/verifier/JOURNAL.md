@@ -100,3 +100,22 @@ cites, at least 80 % of my distinct cited keys have an entry. PDF-only papers co
 parsed.
 - P5: own rate between 93 % and 97 % of 744; refuted outside. Most failures from (iii)
   and (vi).
+
+## Entry 2 (2026-11-24 05:40 PST): scripts written, smoke tests, one bug of my extractor fixed
+
+- Scripts: `vcommon.py` (snapshot access, my own flattening of the raw TeX), `draw_sample.py`
+  (item 1), `draw_bib.py` (item 3), `draw_code.py` (item 4), `parse_rate.py` (item 5),
+  `show_claim.py` (terminal reader). Smoke tests wrote only to `scratch/kb/tmp/` (not
+  registered, not used for any verdict).
+- Bug found in the smoke test of `parse_rate.py`, in my own code: my cited-key extractor
+  counted `\citeauthoryear{Authors}{year}` inside `\bibitem[...]` of MNRAS/AAS reference
+  lists as citations (author strings such as "Bernuzzi and Hilditch" became "keys"), which
+  made 36 papers fail criterion (vi) spuriously. Fix: keys are read only from the text
+  before `\begin{thebibliography}` / `\begin{references}`, and `\citeauthoryear`,
+  `\citename` are not citation commands. After the fix the 36 have 100 % of my keys with an
+  entry. The definition of entry 1 is unchanged; the fix makes the extractor do what the
+  definition says. Side effect noted: citations in an appendix placed after the reference
+  list are not counted (rare).
+- The smoke test showed my rate before that fix (91.1 %); the registered run below is the
+  result. Criterion (iii) (no abstract chunk) failed for 25 papers in the smoke test,
+  including 5 recorded "ok" (2109.01398, 2211.13659, 2501.13046, 2505.00286, gr-qc/0201056).
