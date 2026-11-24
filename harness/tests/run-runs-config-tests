@@ -1,5 +1,5 @@
 #!/bin/bash
-# Runs the self-tests of nrpic-run, nrpic-env, nrpic-stage, the vendored figure libraries, the
+# Runs the self-tests of nrpic-run, nrpic-queue (fake Slurm), nrpic-env, nrpic-stage, the vendored figure libraries, the
 # proposed hooks, the proposed Claude Code configuration, nrpic-fetch-arxiv (loopback server only),
 # the pre-commit hook and its dry run over a history, nrpic-usage (recorded streams, simulated clock). Each builds its own scratch repository under
 # <main checkout>/scratch/harness/ and never touches live branches or worktrees. The full output of each test is kept in
@@ -14,7 +14,7 @@ logs=$home/scratch/harness/logs
 mkdir -p "$logs"
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
 fail=0
-for t in test_nrpic_env.py test_nrpic_run.py test_style.py test_nrpic_stage.py test_hooks.py test_claude_config.py \
+for t in test_nrpic_env.py test_nrpic_run.py test_nrpic_queue.py test_style.py test_nrpic_stage.py test_hooks.py test_claude_config.py \
          test_fetch_arxiv.py test_precommit.py test_precommit_dryrun.py test_nrpic_usage.py; do
   args=()
   [[ $t == test_nrpic_run.py && ${1:-} == --full ]] && args=(--full)
