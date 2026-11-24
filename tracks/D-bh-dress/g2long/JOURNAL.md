@@ -519,7 +519,7 @@ D-20261124-130935-fdca920). Prediction: (i) V-1L tight |M(t) - M(100)| <= 3e-5 a
 production-finder difference of 2.3e-4 is mostly the plateau switching of the two runs at different
 times]. Refuted if (ii) exceeds 1e-4 at any dump.
 
-## Entry 12 (2026-11-24 05:50 PST): outcome of test XC; prediction XN for FN4 before it runs
+## Entry 12 (2026-11-24 05:46 PST): outcome of test XC; prediction XN for FN4 before it runs
 
 Run D-20261124-134211-c6fce88 (tools/xc_plane.py, 3.6 min on one core; xc_plane.png looked at). Plane
 L2 norms on z = 0 of H and |M| (from con_M = g_ab M^a M^b) on A1 = [1.2 r_AH, 6 M], A2 = [6, 30 M],
