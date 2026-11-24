@@ -703,3 +703,37 @@ Not done (in the order to do them; nothing below was started):
 Posted with this entry: the message to Track E (outbox), which says that its six runs
 stand, how the three curves are to be read, and that the reviewed executables are not
 yet published.
+
+## Entry 16 (2026-11-24 13:20 PST): closing session (batch R3); state and predictions
+
+No source change in this session (task of batch R3). State found: worktree clean at
+8c0e157e; main merged (49230392); `git diff 64f150ec HEAD -- athenak/ scripts/` is still
+empty after the merge, so the builds of entry 14 are the final source: sha256 of
+`.work/build_cpu_nl2/src/athena` 0222e5f0.., `.work/build_gpu_nl2` d7069a4e..,
+`.work/build_omp_nl2` 31210622.. (checked at 13:14). R1f (core-20261124-143147-2ff64b9)
+had exited 0 at 06:41 PST; closed now with `nrpic-run finish` (416 files checksummed).
+The pause flag is absent (13:12).
+
+Predictions, written before the comparisons run:
+- R1f against R0 (`bytecmp.py`): 366 of 366 files identical (entry 14). Refuted by one
+  differing or missing file; then the final source changes the processor bytes of the
+  branch tests and the verdicts of section 12 of the interface text would need a cause.
+- R6 (`omp_identity.py`, threaded executable of 64f150ec against the published threaded
+  executable of 6ca93cba, 64^3, three threads each): every file identical (entries 9, 14).
+  Refuted by a differing file; then the old executable is run twice to see whether it
+  repeats itself.
+- Publication: the reviewed set goes to `scratch/core/exe/core_noise-level2/` (the
+  directory Track E reads), the set of 6ca93cba is copied first to
+  `scratch/core/exe/core_noise-level2_6ca93cba/` with its COMMIT, SHA256SUMS and READY;
+  files are replaced by renaming a full copy (a new inode, so a process that runs an old
+  file keeps it). Prediction: `sha256sum -c` passes in both directories and the reviewed
+  checksums are those above.
+- R5 (card, entry 8): now with the published card executable of 64f150ec instead of the
+  build of 746869ef. The later commit added `noise_background_eq`, which the four decks
+  of `card_review.list` do not set, so the predictions of entry 8 carry over unchanged:
+  (i) sr64_l2 and usr64_l2 identical to Track E's smoke runs of 6ca93cba
+  (E-20261123-035724-b661081), at least the history to 1e-10 relative in the means and
+  1e-7 in the rms; (ii) level 2 over level 0 on the mesh at 256^3 at most 1.18 in the
+  cost of a cycle (old executable 1.63), refuted above 1.3. Queued at priority 2 through
+  the shared queue; with the account at five jobs and 33 entries waiting (13:13 PST) I do
+  not expect it to run in this session.
