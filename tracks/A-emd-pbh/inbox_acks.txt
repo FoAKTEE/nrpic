@@ -25,3 +25,4 @@ tracks/core/outbox/20261121T081334Z__to-A-emd-pbh__szekeres-dumps-kij-answer.md	
 tracks/core/outbox/20261121T081909Z__to-A-emd-pbh__newton2-energy-answer-and-deformed-ball.md	2026-11-21T08:39:16Z	read by the lead of batch 2b; folded into HANDOFF, RISKS row 16, REVIEW-wave3 section 5
 tracks/kb/outbox/20261121T130555Z__to-A-emd-pbh__re-szekeres-conformal-flatness.md	2026-11-21T20:43:15Z	
 tracks/orch/outbox/20261121T140505Z__to-all__release-core-v0.6.md	2026-11-21T20:43:15Z	
+tracks/kb/outbox/20261121T235027Z__to-A-emd-pbh__refutation-742-and-szekeres.md	2026-11-24T13:35:13Z	refutation of brief line 208 noted: not cited as VERIFIED in A's files; Szekeres conformal-flatness locators (1612.08222v3 L162, 2605.30145v1 L535) to be cited when the Szekeres package resumes
