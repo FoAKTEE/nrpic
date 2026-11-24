@@ -320,3 +320,14 @@ S3 (beta = 0.005, HL = 4) over N_y = 32-256:
   orders below the paper's 3e-4 bound (draft.tex:348).
 Figure defects: overlapping tick labels on the N_y axis of the S3 panel; the L2 panel's
 extrapolated star rests on a forced order.
+
+## 2026-11-24 07:00 PST (lead of batch 11): where L2 stops converging; prediction
+
+Seen in series 3's rays.json while summarising: up to the A arrival the constraint means of L2 at
+N_y = 64 reach Hr_mean 0.38 and Mr_mean 0.32 (`cstat_max_to_arrival`). `scripts/l2_observer.py`
+tabulates, per N_y, the constraint means at t_B and t_A, the observer's metric at O at both
+times, and their differences between meshes. Prediction [JUDGEMENT]: the constraint means at t_A
+exceed 0.1 at every N_y and do not fall with N_y (the dust crosses streams before the A rays
+arrive, P9 of 2026-11-20), and h_xy at O at t_A differs between meshes by more than at t_B, the
+mesh difference growing 32-64 to 64-128 like Delta does. Refuted if the means at t_A fall by two
+or more per doubling (then the non-convergence is not in the field at O).
