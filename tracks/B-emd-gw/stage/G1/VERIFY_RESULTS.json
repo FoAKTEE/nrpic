@@ -1,10 +1,10 @@
 {
   "track": "B-emd-gw",
   "gate": "G1",
-  "commit": "907e78daf0401a63e25b682b0120c31cebf0cf5b",
-  "verified_utc": "2026-11-21T21:09:01Z",
-  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-907e78d-20261121T203333Z",
-  "result": "FAIL",
+  "commit": "960ba447af6cd999ae84ca6444c700a104316d1c",
+  "verified_utc": "2026-11-24T14:43:54Z",
+  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-960ba44-20261124T125408Z",
+  "result": "PASS",
   "checks": [
     {
       "check": "clean",
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 907e78daf040 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-907e78d-20261121T203333Z/tree",
+      "message": "clean export of 960ba447af6c (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-960ba44-20261124T125408Z/tree",
       "detail": null
     },
     {
@@ -68,24 +68,9 @@
     },
     {
       "check": "runs",
-      "status": "FAIL",
-      "message": "4 of 288 runs have problems; 1 waived",
-      "detail": {
-        "B-20261121-202304-dc3020e": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ],
-        "B-20261121-202335-3e6a898": [
-          "status is submitted: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-202335-3e6a898/sha256sums.txt"
-        ],
-        "B-20261121-202830-417af0c": [
-          "status is running: not finished (nrpic-run finish)"
-        ],
-        "B-20261121-202946-ec4a156": [
-          "status is running: not finished (nrpic-run finish)",
-          "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-202946-ec4a156/sha256sums.txt"
-        ]
-      }
+      "status": "PASS",
+      "message": "309 run manifests finished (78 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded",
+      "detail": null
     },
     {
       "check": "runs-waived",
@@ -371,7 +356,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 33 lines",
+      "message": "STATUS.md has 35 lines",
       "detail": null
     },
     {

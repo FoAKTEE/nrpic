@@ -1,12 +1,12 @@
 # Re-verification: B-emd-gw G1
 
-`harness/bin/nrpic-stage verify B-emd-gw G1` on 2026-11-21T21:09:01Z, clean export of commit `907e78daf040` in `scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-907e78d-20261121T203333Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify B-emd-gw G1` on 2026-11-24T14:43:54Z, clean export of commit `960ba447af6c` in `scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-960ba44-20261124T125408Z`. Result: **PASS**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 907e78daf040 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-907e78d-20261121T203333Z/tree |
+| export | PASS | clean export of 960ba447af6c (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G1-960ba44-20261124T125408Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
@@ -14,34 +14,13 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 11 figures, each with its script |
 | min-figs | PASS | 3 schematics and 8 data figures (brief 13.4 asks at least 2 and 1 at G1) |
-| runs | FAIL | 4 of 288 runs have problems; 1 waived |
+| runs | PASS | 309 run manifests finished (78 hand-written, read as decision 0012 allows); failures of 1 runs waived by coord/WAIVERS.md (decision 0019), output checksums verified where recorded |
 | runs-waived | WARN | failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): B-20261115-164157-40b9f6d: outputs moved into the run directory after the run finished; data unchanged |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 33 lines |
+| status | PASS | STATUS.md has 35 lines |
 | rerun | PASS | 11 of 11 scripts and commands ran cleanly in the export |
 | compare | PASS | 22 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 22 committed figure files regenerated |
-
-## runs
-
-```
-{
- "B-20261121-202304-dc3020e": [
-  "status is submitted: not finished (nrpic-run finish)"
- ],
- "B-20261121-202335-3e6a898": [
-  "status is submitted: not finished (nrpic-run finish)",
-  "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-202335-3e6a898/sha256sums.txt"
- ],
- "B-20261121-202830-417af0c": [
-  "status is running: not finished (nrpic-run finish)"
- ],
- "B-20261121-202946-ec4a156": [
-  "status is running: not finished (nrpic-run finish)",
-  "missing /data/haiyangw/nrpic/scratch/B-emd-gw/B-20261121-202946-ec4a156/sha256sums.txt"
- ]
-}
-```
 
 ## runs-waived
 
