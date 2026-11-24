@@ -1,5 +1,5 @@
 {
- "_comment": "Queue of B-emd-gw read by cards/sequencer.py (decision 0025 item 5). Card entries are submitted in this order, at most two card jobs of the owner eligible at a time. Edit, commit; the sequencer re-reads this file every five minutes. 2026-11-24 (batch 11): Newtonian analysis after the 128^3 Newtonian reference (B-20261124-131438-5d7e049); mesh and particle legs of the 0.014 GR box (predictions I3, M1-M4, Q1-Q2 in population/JOURNAL.md 2026-11-24 06:10). 06:30: gauge leg pop_s014_gr_gd before the particle and mesh legs (predictions GD1-GD3).",
+ "_comment": "Queue of B-emd-gw read by cards/sequencer.py (decision 0025 item 5). Card entries are submitted in this order, at most two card jobs of the owner eligible at a time. Edit, commit; the sequencer re-reads this file every five minutes. 2026-11-24 (batch 11): Newtonian analysis after the 128^3 Newtonian reference (B-20261124-131438-5d7e049); mesh and particle legs of the 0.014 GR box (predictions I3, M1-M4, Q1-Q2 in population/JOURNAL.md 2026-11-24 06:10). 06:30: gauge leg pop_s014_gr_gd before the particle and mesh legs (predictions GD1-GD3). 2026-11-24 09:30 (batch 11b): the 256^3 leg writes a restart file every 1.0 in t (about 8 min of card time at the rate of the 128^3 run times 16; decision 0032 item 2).",
  "finish": [
   "B-20261121-202304-dc3020e",
   "B-20261121-202335-3e6a898",
@@ -447,6 +447,7 @@
     "mesh/x2max=8.0",
     "mesh/x3max=8.0",
     "output2/dt=0.5",
+    "output3/dt=1.0",
     "particles/particle_file=/data/haiyangw/nrpic/scratch/B-emd-gw/@pop_s014_ic256/gr_L8_n256/particles.nrp",
     "problem/id_file=/data/haiyangw/nrpic/scratch/B-emd-gw/@pop_s014_ic256/gr_L8_n256/fields.bin"
    ]
