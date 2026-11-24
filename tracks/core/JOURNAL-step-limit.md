@@ -323,3 +323,21 @@ List `analysis/step_limit/card_refined.list`, P0L data, cfl_number 1.0.
   os, c4), run with dt_gauge = 1.0: histories byte-identical with the runs without it,
   the limit never sets the step (their cfl_number is 0.25, every bound above 0.4 cells),
   no warning without the option.
+
+## Entry 4 (05:40): the card queue, and T4 moved to processors
+
+`squeue` at 05:36: twenty jobs of this account pending on the two cards, six of them of
+owner core (5154, 5155 by priority, 5156 to 5159 held: the bisection chains of the lead
+session). Two core jobs are queued, so by the rule of the task and of CLAUDE.md I submit
+no card job. Consequences:
+
+- T4 runs on processors with the threaded build: `analysis/step_limit/run_refined.sh`,
+  case R0g (cfl_number 1.0, dt_gauge = 0.9) to t = 3.0, 4 threads, about 310 cycles at
+  about 20 s. The control without the option is Track A's card job 4799 itself (run
+  A-20261121-131600-02b5d41, release core-v0.5, the same deck and data; read from
+  `scratch/A-emd-pbh/`) and its processor run R2 with zero shift; a control R0 with this
+  branch's executable (1.5 hours more) is not run. Predictions P4a and P4c, which need
+  R0 and R1 of this branch, wait for the card job; P4b is judged to t = 3.0 instead of 6.
+- The card job stays prepared and unsubmitted: `analysis/step_limit/card_refined.list`
+  (R0, R0g, R1 of the refined deck). Command in the README of the package and in READY.
+- P5a on a card is not measured.
