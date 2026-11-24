@@ -50,6 +50,8 @@ CONTINUED = {
     "RSF256": ["E-20261124-130529-da8c917"],
     "RNC256": ["E-20261124-130629-61fe0b0"],
     "CL256U": ["E-20261124-130711-a5dec67"],
+    "CL256S": ["E-20261124-130952-4be980b"],
+    "AL2S": ["E-20261124-131359-49afe29"],
 }
 for _lab, _ids in CONTINUED.items():
     RUNS[_lab + "c"] = (_ids[-1], "", RUNS[_lab][2])
@@ -94,7 +96,7 @@ GROUPS = {
 # USF256 again at the dumps of Fig. 6b (and N = 4.5) with the invariant Kt spectrum (kt_version 2)
 GROUPS["usr256kt"] = [("USF256", ["--dumps", "0,3,5,8,11,14,18,22,40"])]
 GROUPS["rsf256"] = [("RSF256", ["--dumps", "0"]), ("RSF256c", ["--save-modes"])]
-GROUPS["cl256"] = [("CL256S", ["--dumps", "0"]), ("CL256Sc", ["--last"])]
+GROUPS["cl256"] = [("CL256Sc", ["--last"])]
 GROUPS["al2s"] = [("AL2Sc", ["--last", "--save-modes"])]
 BITCHECK = {
     "usr256": [("USF256", 0, "U256ap", 0), ("USF256", 20, "U256ap", 10),

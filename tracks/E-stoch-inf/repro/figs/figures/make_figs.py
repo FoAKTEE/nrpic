@@ -42,6 +42,7 @@ def main():
     os.makedirs(out, exist_ok=True)
     F = lambda n: os.path.join(HERE, n)  # noqa: E731
     run([F("fig1_meanrolls.py"), out])
+    run([F("fig_signflip.py"), out])
     if a.usr256:
         p = sub(a.usr256, "USF256")
         run([F("fig_contrasts.py"), "--pass", p, "--case", "usr", "--name", "fig4_usr_contrast",

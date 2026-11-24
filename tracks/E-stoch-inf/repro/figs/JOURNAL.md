@@ -107,3 +107,45 @@ Map rows answered here (`../scope/REPRO_MAP.md` section 3): S4 (c), S7-S9 (F1, (
 S12 (F5), S13 (max |R^NR| over the dumps with N <= 4.2 in SR: between 4e-5 and 1.5e-4, i.e. the 100
 per cent band of a 2e-5 field; P1 "~1e-5" read as the typical amplitude), S14 ((e) and P2), S16 (P3,
 RNC256 when continued), S18 ((e)), S21-S22 (F7, F8), S24-S26 (F6).
+
+## Entry 2 (2026-11-24 05:45 PST): outcomes of Fig. 1 and of the USR pass (Figs. 4, 5, 6b)
+
+Runs: USR dump pass E-20261124-130628-6790851 (41 dumps of USF256 E-20261123-021204-2f573ec, 26 min
+on 6 cores, bit check against U256ap inside it). Fig. 1 numbers from `figures/fig1_meanrolls.py`
+(a test of the script on the M64 records outside a registered run; the registered figure run that
+makes the committed figures is named in `RESULTS.md`, and these numbers are taken from it). The
+figures were looked at.
+
+- F1 / scope P5: PASS. SR: max |V/V_F - 1| = 9.8e-13, |eps1/eps1_F - 1| = 6.3e-12, |eps2 - eps2_F| =
+  2.2e-11 over 348 record lines; USR: 1.1e-9, 4.6e-5, 4.4e-5 over 427 lines; eps2(N_f) = -0.02760.
+  Landmarks (S8): eps2 = 3 crossed at N = 2.5234 and 6.5503 (own Friedmann 2.5234, 6.5503; reference
+  2.52, 6.55); S9: eps1 minimum 9.716e-13 at N = 8.335 (reference 9.716e-13 at 8.331). The SR record
+  ends at N = 8.099 (Friedmann 8.0989), not N* + 8.04 as `../scope/SETUP_AUDIT.md` item 4 and the
+  scope deck header say: tlim = 8.5 is 8.10 e-folds [VERIFIED here; a correction for the lead].
+- Scope P1 (USR half): PASS. USF256 against U256ap at t = 0, 5.2217, 10.4375: bit-identical in all
+  17 common variables (`bitcheck_usr256.json`).
+- F2 (a): PASS. Per-cell means of |H|/[H] and |M|/[M] equal the record columns at the 41 dump
+  cycles within 2.6e-15 relative.
+- F2 (b) USR: PASS. 68 per cent half-width of R^NR at N_f 0.8897 against sigma_R = 0.894 (0.5 per
+  cent); 100/68 ratio 5.13. Scope P7: PASS (rms 0.8945 in 0.889-0.899; max |R^NR| 4.568 in 3-8).
+- F2 (d) USR: PASS. delta K/K_b: 68 per cent half-width 4.2e-7 at N = 1.55, 8.9e-13 at N_f (falls by
+  5e5); delta Pi/Pi_b at N_f 1.24e-2 (> 1e-2, barely); R^NR grows from 2e-3 (N = 4.5) to 0.85 (N =
+  7.5), and from N = 9 to N_f its 68 per cent width changes by 0.05 per cent.
+- F2 (e) USR: PASS for the 99th percentile of |H|/[H] (2.4e-11 at most, bar 1e-9) and for max
+  |M|/[M] reaching order 1 (0.64). FAILED in part: the late 68 per cent band of |M|/[M] spans 8.4e-4
+  to 3.2e-3, its lower edge below the predicted 1e-3 (centre about 1.6e-3, P1:541 "around 1e-2").
+  The uniform residual H0 of the background step (scope entry 0) dominates |H|/[H] at N = 2-3 and
+  after N = 7 (a flat 3e-14 floor): the figure is also made with the box mean of H removed
+  (`fig4_usr_contrast_hzero`), where the band falls to 1e-15 at N_f as in P1's figure.
+- F3/F5 USR (a) PASS: max over 3395 shells of |Delta_NR/Delta_lin - 1| = 5.0e-3 (rms 1.0e-3; 3.6e-4
+  for k <= k_max/2; rising above |n| = 50 to the 3e-3 level, the top-shell mode-equation difference
+  of audit item 19); (b) PASS: 99.6 per cent of shells within 3/sqrt(count) of Delta_MS; (c) PASS:
+  above k_max the NR power is 1.3e-7 of Delta_MS(k_max) at most.
+- F6 (a) USR PASS: Delta[K] falls by 1e9 (median over shells) from its maximum to N_f.
+- A defect of my own script, found by looking at Fig. 6b against P1's: version 1 of `dumppass.py`
+  binned sum_ij |(At_ij/chi)(k)|^2, the covariant components, which grow as a^4 relative to the
+  invariant Kt_ij Kt^ij = At_ij At^ij (indices raised with gamma^ij = chi gt^ij); our late USR
+  "Kt" sat near 1e-17 where P1's is near 1e-31. Fixed (`kt_version` 2, commit c3eb42e0);
+  SR passes of version 1 are rescaled by <chi>^2 in `fig_spectra.py` (exact to second order since
+  delta chi/chi ~ 1e-4 there); USR is rerun at the Fig. 6b dumps (group `usr256kt`). F6 (b), (c)
+  are judged on the fixed spectra only.
