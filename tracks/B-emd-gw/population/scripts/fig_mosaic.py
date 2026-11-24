@@ -111,7 +111,7 @@ def main():
     for p, (f2, lab, cm) in enumerate(panels):
         ax = axs[1, p]
         if cm == "RdBu_r":
-            v = float(np.percentile(np.abs(f2), 99.5))
+            v = float(np.abs(f2).max())                 # whole range: the halo cores show
             im = ax.imshow(f2, origin="lower", extent=ext, cmap=cm, vmin=-v, vmax=v)
         else:
             im = ax.imshow(f2, origin="lower", extent=ext, cmap=cm)

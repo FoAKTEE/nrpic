@@ -409,15 +409,17 @@ def figures(R, newton, od):
                 axs[2].semilogx(row["stage"], mt["M_GR"]/mt["M_N"], color=col, marker="o", ms=2.5,
                                 ls="none", alpha=0.8)
     axs[0].set_xlabel(r"stage $a\,\sigma_1/0.0562$")
-    axs[0].set_ylabel(r"halos with $M \geq 100\,m_{\rm N}$ (dotted: $\geq 100$ own particles)")
+    axs[0].set_ylabel(r"halos, $M \geq 100\,m_{\rm N}$")
     axs[0].legend(fontsize=6, loc="upper left")
+    axs[0].text(0.97, 0.04, r"dotted: $\geq 100$ own particles", transform=axs[0].transAxes,
+                ha="right", fontsize=6)
     axs[0].set_xlim(0, 40)
     axs[1].set_xlabel(r"stage $a\,\sigma_1/0.0562$")
     axs[1].set_ylabel("largest halo mass")
     axs[1].set_xlim(0, 40)
     axs[2].axhline(1.0, **fs.GUIDE)
     axs[2].set_xlabel(r"stage $a\,\sigma_1/0.0562$")
-    axs[2].set_ylabel(r"$M_{\rm GR}/M_{\rm N}$, five largest Newtonian halos")
+    axs[2].set_ylabel(r"$M_{\rm GR}/M_{\rm N}$ (5 largest)")
     fs.save(fig, os.path.join(od, "pop_gr_halos"))
     plt.close(fig)
 
@@ -477,7 +479,7 @@ def figure_stop(Z, od):
     fs.use_style()
     import matplotlib.pyplot as plt
     fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 2.9))
-    fig.subplots_adjust(left=0.07, right=0.97, bottom=0.16, top=0.90, wspace=0.42)
+    fig.subplots_adjust(left=0.07, right=0.97, bottom=0.16, top=0.90, wspace=0.62)
     rows = [r for r in Z["rows"]]
     t = [r["t"] for r in rows]
     axs[0].plot(t, [r["alpha"] for r in rows], "o-", ms=2.5, lw=1.0, label=r"$\alpha$")
@@ -487,7 +489,7 @@ def figure_stop(Z, od):
     axs[0].legend(fontsize=6.5)
     ax2 = axs[0].twinx()
     ax2.plot(t, [r["K"] for r in rows], "^:", ms=2.5, lw=0.8, color=fs.SERIES[2])
-    ax2.set_ylabel(r"$K$ at the stop cell", color=fs.SERIES[2])
+    ax2.set_ylabel(r"$K$ at the stop cell", color=fs.SERIES[2], labelpad=1)
     last = [r for r in rows if r["alpha_slice_z"] is not None][0]
     al = np.array(last["alpha_slice_z"])
     im = axs[1].imshow(al, origin="lower", extent=(0, L, 0, L), cmap="viridis")
@@ -495,7 +497,7 @@ def figure_stop(Z, od):
     axs[1].plot(Z["position"][0], Z["position"][1], "r+", ms=8)
     axs[1].set_title(r"$\alpha$ at $t = %.2f$, plane of the stop cell" % last["t"], fontsize=7)
     axs[1].set_xlabel(r"$x$")
-    axs[1].set_ylabel(r"$y$")
+    axs[1].set_ylabel(r"$y$", labelpad=1)
     rho = np.array(Z["rho_slice_z"])
     im = axs[2].imshow(np.log10(np.maximum(rho, 1e-2)), origin="lower", extent=(0, L, 0, L), cmap="magma")
     fig.colorbar(im, ax=axs[2], fraction=0.046, label=r"$\log_{10}\rho/\bar\rho$")
