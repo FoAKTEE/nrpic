@@ -86,3 +86,20 @@ AL2S 6-8 min (159 cycles at 2.3 s); about 1.4 card-hours in all. Card time asked
 0.983 card-hours each, 4.92 in all, within the package's 5. A preemption makes the chain refuse
 its next segment (MAX_SEGMENTS = 1); the run is then closed and continued once more from its new
 newest restart, which this package does while it has card time asked left.
+
+## Entry 2 (2026-11-24 05:20 PST): submitted; restart checksums match the originals' records
+
+`scripts/submit_continue.sh RSF256 RNC256 CL256U CL256S AL2S` (05:05-05:19 PST) registered and
+submitted the five continuations, all five at once under decision 0031 item 5:
+RSF256 E-20261124-130529-da8c917 (job 5160), RNC256 E-20261124-130629-61fe0b0 (5161), CL256U
+E-20261124-130711-a5dec67 (5165), CL256S E-20261124-130952-4be980b (5166), AL2S
+E-20261124-131359-49afe29 (5168). A dry run of CL256S printed the manifest first (nothing
+registered). Each manifest lists the byte copy of the executable, the restart file and its
+sidecar as inputs with sha256; for all ten files the sha256 equals the line of the original's
+`sha256sums.txt` (written by `nrpic-run finish` of the original on 2026-11-23), so the files
+are those the originals wrote and closed [VERIFIED: manifests against sha256sums.txt].
+
+The cards were not free at submission: `scontrol show node anta` gave AllocTRES gres/gpu=2 with
+no job of this account running (another user's jobs), and twelve jobs of other owners of this
+account pending ahead or beside ours (A, B, C, D, core). The five wait in the queue; nothing has
+run. The registered pass of `check_restart.py` (with checksums) runs on processors meanwhile.
