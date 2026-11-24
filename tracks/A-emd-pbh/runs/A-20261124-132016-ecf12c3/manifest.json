@@ -1,0 +1,113 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261124-132016-ecf12c3",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "threshold_ball G1-G3 (entry 5): the A-mesh guard stop of A-d0.42 repeated on processors from its t = 44 restart; as is, without lapse_leak, with earlier particle excision",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "tracks/A-emd-pbh/threshold_ball/scripts/a_guard_restart.sh",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "ecf12c3f33a0771cca17426be330a10c4cae02d2",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/threshold_ball"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "bc180c266e1af2b7a50d072fa17f9f0ddc283047",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-235851-d2200d7/A-d0.42/rst/ball.00011.rst",
+      "role": "input",
+      "sha256": "f49d9cb03ee67898ab0c899115ce9666cec05f57b78b341aee11544b936812f7",
+      "bytes": 248017632,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v06/athena_cpu_omp",
+      "role": "input",
+      "sha256": "564e0232d7a93e7f324e1b364c027b8a88738863fe5cf901bee84f901ac51642",
+      "bytes": 317888952,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/A-emd-pbh/threshold_ball/scripts/a_guard_restart.sh",
+      "role": "argv",
+      "sha256": "f7ff6621fd7bac85016dfcaf2c5e56f50459a8b719ea1abe031fadfc2cd719d2",
+      "bytes": 891,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261124-132016-ecf12c3",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-24T13:20:19Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "A-20261121-235851-d2200d7"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 7.4856,
+    "gpu_hours_reserved": 31.1534,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 2,
+    "runs": 245,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
+  }
+}
