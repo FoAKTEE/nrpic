@@ -1,0 +1,109 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "kb-20261124-130442-e69c2e8",
+  "track": "kb",
+  "gate": "G3",
+  "kind": "scouting",
+  "purpose": "KB-G3 verifier items 1, 3, 4: seeded draws (60 claims stratified, 10 cited keys per paper of ingest3 twenty, 10 params and 10 paper-code links) on snapshot kb-20261121-aa0a2ae",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "python3 -I tracks/kb/stage/KB-G3/verifier/scripts/draw_sample.py --seed 20261124 --out \"$NRPIC_RUN_DIR/sample\" > \"$NRPIC_RUN_DIR/sample.log\" && python3 -I tracks/kb/stage/KB-G3/verifier/scripts/draw_bib.py --seed 20261124 --ids tracks/kb/ingest3/ids/zero20.txt --out \"$NRPIC_RUN_DIR/bib\" && python3 -I tracks/kb/stage/KB-G3/verifier/scripts/draw_code.py --seed 20261124 --links kb/curated/paper_code_links.tsv --out \"$NRPIC_RUN_DIR/code\""
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "e69c2e8d072575777fa39a77a59c6ed3218eacdc",
+    "branch": "kb/main",
+    "dirty": false,
+    "package": [
+      "tracks/kb/stage/KB-G3/verifier"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "bc180c266e1af2b7a50d072fa17f9f0ddc283047",
+    "worktree": "wt/kb"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/kb/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/kb/stage/KB-G3/verifier/SEED",
+      "role": "input",
+      "sha256": "c7ad42e9f15e4a117b17a25467f022516bde10028b6aff6a8328f8a2f03c9080",
+      "bytes": 9,
+      "tracked": true
+    },
+    {
+      "path": "kb/curated/paper_code_links.tsv",
+      "role": "input",
+      "sha256": "06ae5f8a76e37cf13b6b3ccccf5a599bfb6eafffef82fb3e2c8db27c0d40d862",
+      "bytes": 20989,
+      "tracked": true
+    },
+    {
+      "path": "tracks/kb/ingest3/ids/zero20.txt",
+      "role": "input",
+      "sha256": "75ccfec5d938a58345a5292497db32b561a7da01d4d78f1b3dd5bb02fddf162d",
+      "bytes": 267,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/kb/kb-20261124-130442-e69c2e8",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-24T13:04:42Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 0.0,
+    "cores_allotted": 8,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 230,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
+  }
+}
