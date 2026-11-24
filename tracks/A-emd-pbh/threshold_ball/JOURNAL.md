@@ -255,3 +255,11 @@ step with the cell and left the floor unchanged (entry 6), so [JUDGEMENT]:
   build) to within 5 per cent in ||H||_2 at t = 2-5 (different build and card vs processor).
 If K4a and K4b hold, the floor is independent of mesh, particle number, step and source timing,
 which points at the initial data or the gauge, the next two candidates.
+
+### Note to entry 4 (run A-20261124-140131-48c636c, fig_threshold_interp.png looked at)
+
+The threshold on each mesh by linear interpolation of tau_det to 45 (no prediction; arithmetic on
+entry-4 numbers): mesh B 0.41033, exact 0.41026 (difference 7e-5); mesh A 0.40829 (from first
+detections of the guard-stopped members, difference -2.0e-3). Card time of the eleven closed scan
+runs and P0L (manifests at finish): 7.32 card-hours in all (B members 0.25-0.83 each, C-R1.25 2.02,
+A batch 0.16, P0L 0.77).
