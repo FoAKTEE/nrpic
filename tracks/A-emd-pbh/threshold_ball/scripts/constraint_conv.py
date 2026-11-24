@@ -25,6 +25,13 @@ RUNS = {
     "B (M/32)": S + "/A-20261121-075926-d10c2c1/B",
     "C (M/64)": S + "/A-20261121-083336-6a82131",
 }
+NLEG = {       # entry 7 (K2): particle-number leg at fixed mesh
+    "A x1": S + "/A-20261121-075926-d10c2c1/A",
+    "A x8": S + "/A-20261121-075926-d10c2c1/A-N8",
+    "A x64": S + "/A-20261121-091934-ac62f5f/A-N64",
+    "B x1": S + "/A-20261121-075926-d10c2c1/B",
+    "B x8": S + "/A-20261121-091934-ac62f5f/B-N8",
+}
 THR = {
     "B-d0.42": S + "/A-20261121-204149-c48bd33",
     "A-d0.42": S + "/A-20261121-235851-d2200d7/A-d0.42",
@@ -63,6 +70,7 @@ def main():
     os.makedirs(a.out, exist_ok=True)
     D = {k: series(v) for k, v in RUNS.items()}
     T = {k: series(v) for k, v in THR.items()}
+    NL = {k: series(v) for k, v in NLEG.items()}
     res = {"times": {}, "orders": {}}
     keys = list(RUNS)
     for tt in (0.0, 1.0, 2.0, 4.0, 6.0, 8.0, 10.0):
@@ -75,6 +83,17 @@ def main():
         for q in ("H", "M", "Hmean"):
             v = [row[k][q] for k in keys]
             res["orders"].setdefault(q, {})[str(tt)] = [float(np.log2(v[0] / v[1])), float(np.log2(v[1] / v[2]))]
+    # K2: factor per x8 particles at fixed mesh
+    res["nleg"] = {}
+    for tt in (1.0, 2.0, 4.0, 6.0, 8.0):
+        r = {}
+        for lo, hi in (("A x1", "A x8"), ("A x8", "A x64"), ("B x1", "B x8")):
+            for q in ("H", "M"):
+                v0 = float(np.interp(tt, NL[lo]["t"], NL[lo][q]))
+                v1 = float(np.interp(tt, NL[hi]["t"], NL[hi][q]))
+                r[f"{q} {lo}->{hi}"] = v0 / v1
+        res["nleg"][str(tt)] = r
+        print("K2 t=%g" % tt, {k: round(v, 2) for k, v in r.items()})
     json.dump(res, open(os.path.join(a.out, "constraint_conv.json"), "w"), indent=1)
     for q in ("H", "M", "Hmean"):
         print(q, {t: [round(x, 2) for x in o] for t, o in res["orders"][q].items()})
@@ -87,8 +106,8 @@ def main():
     sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(HERE)), "periodic_threshold", "scripts"))
     import figstyle as fs
     fs.use_style()
-    fig, axs = plt.subplots(1, 3, figsize=(fs.FULL_WIDTH, 3.0))
-    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.16, top=0.88, wspace=0.35)
+    fig, axs = plt.subplots(1, 4, figsize=(fs.FULL_WIDTH * 1.3, 3.0))
+    fig.subplots_adjust(left=0.06, right=0.99, bottom=0.16, top=0.88, wspace=0.35)
     cs = [fs.PAL["blue"], fs.PAL["red"], fs.PAL["yellow"]]
     for i, k in enumerate(keys):
         d = D[k]
@@ -108,6 +127,15 @@ def main():
     axs[2].set_ylabel(r"$\|H\|_2$")
     axs[2].set_title("(c) threshold members", fontsize=8)
     axs[2].legend(fontsize=7)
+    cs3 = {"A x1": (fs.PAL["blue"], "-"), "A x8": (fs.PAL["blue"], "--"), "A x64": (fs.PAL["blue"], ":"),
+           "B x1": (fs.PAL["red"], "-"), "B x8": (fs.PAL["red"], "--")}
+    for k, d in NL.items():
+        sel = d["t"] <= 10.5
+        axs[3].semilogy(d["t"][sel], d["H"][sel], color=cs3[k][0], ls=cs3[k][1], label=k)
+    axs[3].set_xlabel("t (M)")
+    axs[3].set_ylabel(r"$\|H\|_2$")
+    axs[3].set_title("(d) particle number at fixed mesh", fontsize=8)
+    axs[3].legend(fontsize=7)
     fig.savefig(os.path.join(a.out, "fig_constraint_conv.png"), dpi=150)
 
 
