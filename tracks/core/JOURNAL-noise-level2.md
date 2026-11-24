@@ -391,3 +391,34 @@ level 0 on the mesh. With 6ca93cba the ratio of the throughputs was 1.127e7/6.91
 local right-hand side of R adds the mixed derivatives and the inverse metric; the
 projection now reads two fields as at level 0). Refuted above 1.3: then the recomputed V
 was not the cost.
+
+## Entry 9 (2026-11-24 05:38 PST): card queue; predictions R6 (threads) and R7 (how far Z is from zero)
+
+Card job R5 not submitted: core has two eligible card jobs queued (5154, 5155, the
+row-4 bisection of the other core session) and four held ones; the rule allows no third
+(squeue 05:21 and 05:36). The list, the decks and the analysis are committed
+(`card_review.list`, `card_review.py`); the command is in the handoff of this entry's
+close. Until it has run, the card executable of the review has not run a step on a card.
+
+One run killed by my own mistake: core-20261124-133150-a891a9d (the byte comparison of
+R1 under a 110 s limit of the shell, which the comparison of 2 x 1.2 GB exceeds while
+five runs use the disk); repeated without the limit as core-20261124-133348-9d8c01f.
+
+R6 (`omp_identity.py`): the threaded executable of the review against the published
+threaded executable of 6ca93cba, the two level-2 decks of T5 at 64^3 (nmax2 = 256), 12
+cycles, three threads each, side by side, dumps and the per-mode record at cycles 0, 6,
+12. Prediction: every file identical (the new kernel is a plain parallel loop over the
+cells; the sums of the projection keep their order; a threaded run repeats at a fixed
+thread count). Refuted by a differing file; then the old executable is run twice to see
+whether it repeats itself.
+
+R7 (`pi_range.py`, read-only on Track E's level-2 runs AL2S E-20261123-152119-38957ba
+and AL2U E-20261123-153146-d965002, 256^3): the local Z = 9 Pi^2/K^2 divides Pi_R in
+every cell; the run is meaningful only while Pi keeps its sign and |delta Pi| << |Pi|.
+Prediction: slow roll: max over the cells of |Pi/<Pi> - 1| below 1e-3 at every dump
+(perturbations of order 1e-5 times a few sigma times the window factor); inflection
+case: larger, because Pi_b falls by 1e5 while the perturbations grow, between 1e-3 and
+0.3, and Pi never comes within a factor 2 of zero (min of Pi/<Pi> above 0.5). Refuted
+if Pi/<Pi> falls below 0.5 in a cell of AL2U: then level 2 runs close to the singular
+point of its equation in that run and the reproduction has to say so beside the
+level-2 curve.
