@@ -296,8 +296,9 @@ def main():
             out["record_N_of_max_H_boxmean_removed"] = float(R[np.argmax(R[:, 24]), 2])
         # entry maximum: largest <|H|/[H]> before the last mode has entered (N < ln kmax + 1)
         ent = R[:, 2] < np.log(64.0) + 1.0
-        out["record_entry_max_mean_absH_over_Hmag"] = float(R[ent, 3].max())
-        out["record_entry_max_mean_absM_over_Mmag"] = float(R[ent, 6].max())
+        if ent.any():   # a continuation's record may start after the entry (update pass)
+            out["record_entry_max_mean_absH_over_Hmag"] = float(R[ent, 3].max())
+            out["record_entry_max_mean_absM_over_Mmag"] = float(R[ent, 6].max())
         # slow roll from the record at the end: eps1 = 4 pi Pi^2/H^2, H = -K/3
         Hr = -R[:, 18]/3
         e1r = 4*np.pi*R[:, 17]**2/Hr**2

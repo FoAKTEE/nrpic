@@ -188,7 +188,14 @@ def signflip(out):
     rows = [(r, cp[int(r[1])]) for r in F if int(r[1]) in cp and int(r[1]) > 0]
     f = np.array([a for a, b in rows])
     p = np.array([b for a, b in rows])
-    res = dict(n_matched=len(rows), max_time_mismatch=float(np.max(np.abs(f[:, 0] - p[:, 0]))),
+    tmis = float(np.max(np.abs(f[:, 0] - p[:, 0])))
+    # the flipped run's last step is shortened to reach tlim: there interpolate the proper run in t
+    bad = np.abs(f[:, 0] - p[:, 0]) > 1e-12
+    for col in range(3, P.shape[1]):
+        if np.all(P[:, col] > 0):
+            p[bad, col] = np.exp(np.interp(f[bad, 0], P[:, 0], np.log(P[:, col])))
+    p[bad, 0] = f[bad, 0]
+    res = dict(n_matched=len(rows), max_time_mismatch=tmis, n_lines_interpolated=int(bad.sum()),
                flipped_end_N=float(F[-1, 2]), flipped_end_t=float(F[-1, 0]),
                proper_joined_end_N=float(P[-1, 2]))
     ratio = f[:, 3]/p[:, 3]
