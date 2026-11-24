@@ -202,3 +202,59 @@ orders (1.78e-12, 2.00e-12, 1.23e-5, 4.15, 3.25, 2.25e-12, 3.25e-10, 4.05); with
 than 10 modes the spectral maxima come within a factor 2.3 (SR 4.5e-3 vs 5.2e-3, |n| <= 32
 1.1e-4 vs 1.0e-4; USR 3.5e-4 vs 3.6e-4). VERIFIER.md section 7 records this; sections 1-6 are
 unchanged.
+
+## Entry 5, 2026-11-24 14:10 PST: update pass (the five continued runs), predictions before any computation
+
+Read for this pass: the claims (not the verdicts) of `repro/figs/RESULTS.md` for Figs. 7, 8, 9 and
+the sign flip, the ledger rows that carry no verifier check (42, 48-52, 56, 68-75, 81-83), the run
+map `repro/continue/scripts/{runs,conts}.json` (where the raw outputs are), the sequencer state and
+queue entry q0034. State at 14:05 PST: RNC256 (E-20261124-130629-61fe0b0), CL256S
+(E-20261124-130952-4be980b), CL256U (E-20261124-130711-a5dec67 cut, E-20261124-201048-33a3a39 done),
+AL2S (E-20261124-131359-49afe29) ended; RSF256 has three continuations, all resumed from the
+original's sr.00000.rst (t = 0): E-20261124-130529-da8c917 (to cycle 29), -201031-4c41e7b (1 line),
+-202134-0b1ce0c (to cycle 895, t = 5.49, 21 dumps with metric and magnitudes); its fourth
+continuation is q0034, run E-20261124-214913-5956891, Slurm job 5215, PENDING. I do not wait for it.
+
+Predictions (written before any of the computations below; outcomes in entry 6):
+
+- V9 joins. All continuations run the same binary (sha256 ea4734.. for the release card build,
+  4681094.. for the level-2 branch) from a restart file of their original and the problem has no
+  particles, so I expect the record lines at common cycles to be bit-identical (largest relative
+  difference over all 27 columns 0, at worst <= 1e-14), and the dumps at common indices identical
+  in their data. Across a seam with no overlap (AL2S: the original ends at cycle 1227, the
+  continuation starts at 1228) the first difference of each smooth column (efolds, <phi>, <K>,
+  <|H|/[H]>, <|M|/[M]>) lies within 3 times the median of its 10 neighbours. Refuted by any
+  common-cycle difference above 1e-12 relative, or a seam step above 3 times its neighbours.
+- V10 sign flip, SR, full span (RNC256 against the joined RSF256 record, matched by cycle).
+  Ratio flipped/proper of <|H|/[H]> over 0.5 <= N <= 4.39: median between 5e4 and 2e5, minimum
+  above 1e3 (refuted if below 1e2 anywhere); flipped <|H|/[H]> largest within 10 per cent of
+  9.9e-8, flipped <|M|/[M]> largest within 10 per cent of 0.22; the flipped run ends at
+  N = 4.388. Absolute magnitudes: in every dump of RNC256 (9) and RSF256 (21) my
+  [H] = |R3| + (2/3)K^2 + |At At| + |16 pi E| (RSF256; RNC256 has no At, so only the dumped Hmag)
+  equals the dumped Hmag to 1e-12 and my <|H|/[H]>, <|M|/[M]> equal the record lines of the same
+  cycle to 1e-12; the ratio of means <|H|>/<[H]> differs from the mean of ratios <|H|/[H]> by
+  less than 5 per cent, since [H] is nearly uniform (dominated by (2/3)K^2 and 16 pi E). Proper
+  SR maxima over N <= ln 64: <|H|/[H]> 3.43e-11 and <|M|/[M]> 1.18e-4 within 2 per cent.
+- V11 convergence, 256^3 members.
+  (a) Fig. 8 records, time-matched median of finer/coarser over 0.5 <= N <= ln 8 from 128 to 256:
+  within 0.03 of 1.11 (SR H), 1.12 (SR M), 1.07 (USR M), 1.03 (USR H - <H>); the USR H entry
+  maximum with the box mean at 256 within 1 per cent of 1.986e-11 and its order 128 -> 256 within
+  0.05 of 4.03.
+  (b) Fig. 7 spectra at N_f against my own continuous-time Mukhanov-Sasaki reference: my 256
+  value (shells with more than 10 modes) does not fall below about 1e-6, because my reference
+  already gave 2.3e-6 at 128 where the ledger has 1.0e-6; I therefore expect NOT to confirm 3.7e-7
+  with my reference.
+  (c) Reference-free test of the floor: per-mode differences of R^NR between the rungs at N_f
+  (same seed, same 548 injected modes |n|^2 <= 64). If the floor near 7e-7 is resolution-free (a
+  property of the field, as the claim's candidate "second order" says), then the rms relative
+  difference R_128 - R_256 lies well below 7e-7 (I expect below 2e-7), while R_64 - R_128 is
+  larger by about 2^4 or more. Refuted if |R_128 - R_256| is comparable to the floor (>= 4e-7).
+- V12 SR level 2 against level 0 at N_f (AL2S dump 17 against AL0S dump 17, my R^NR extraction
+  and shell sums). Shells with more than 10 modes: rms over |n| <= 32 within 5 per cent of 1.505e-5,
+  largest within 5 per cent of 7.93e-5, fraction positive 0.50 +- 0.03; per exact |n|^2 (all
+  shells) the largest near my 1.4e-4 of N = 7.19; the difference changes by less than 1 per cent
+  between dumps 15 (t = 7.5) and 17 (t = 8.5).
+- V13 P1:520. I expect the source to use \textpertenthousand (1e-4), so that my section-2 verdict
+  "all below P1:520's 1 per mille" was read against the wrong bound: under 1e-4 the USR level 2
+  (rms 1.04e-4, largest 9.2e-4) exceeds the bound at the upper shells and the SR level 2 (largest
+  7.9e-5 in shells of more than 10 modes) meets it; refuted if the symbol is \textperthousand.
