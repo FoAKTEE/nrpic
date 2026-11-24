@@ -50,8 +50,8 @@ python3 tracks/E-stoch-inf/repro/verify/scripts/cont.py --only signflip convspec
     --workers 3 --out "$NRPIC_RUN_DIR"
 ```
 
-When RSF256's fourth continuation (q0034) has ended: add its run id to `RUNS["RSF256"]` in `cont.py`
-and rerun `--only joins signflip constraints`.
+RSF256's fourth continuation (q0034, E-20261124-214913-5956891) is already in `RUNS["RSF256"]`
+(it ended during the pass; `--only joins signflip constraints`, run E-20261124-222800-49ab461).
 
 Read 256^3 dumps sequentially (the reader seeks per variable); 3 cores and about 2 GB of memory
 per dump.
@@ -76,6 +76,8 @@ per dump.
   against the lockstep record and against my MS solution I get 2.0e-7 (not 3.7e-7), order 2.3-3.5
   (not 1.48), per-mode 3.3e-7 amplitude or 4.4e-7 power (not 6.7e-7). The floor itself holds and is
   now shown independent of dx, dt and the linear reference (8.3); the note may use that.
-- To repro/continue (lead): when q0034 (run E-20261124-214913-5956891) ends, rows 56 and the RSF256
-  items of 8.6 can be verified; its join overlaps cycles 653-895 and should be bit-identical.
+- To the lead (repro/figs, repro/note): RSF256 ended at 14:23 PST (q0034, run
+  E-20261124-214913-5956891) and joins bit-exactly (VERIFIER.md 8.1, 8.6). Row 56 and the constraint
+  panels of P1 Fig. 2 have no values yet; once the figs package fills them, a later verifier pass
+  can check them against the dumps 17-34 (my reader handles them).
 - None to core.

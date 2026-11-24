@@ -344,3 +344,15 @@ equal to my dump means to 1e-14 and my [H] equal to Hmag to 1e-15; the sign-flip
 do not change (the flipped span ends at N = 4.39, inside the third continuation). Refuted by any
 common line or dump that differs. Row 56 carries no value in the ledger yet (PENDING), so there is
 no number of it to check; I record the proper SR constraint record to N_f instead.
+
+## Entry 8, 2026-11-24 14:40 PST: outcome of entry 7
+
+Held. Run E-20261124-222800-49ab461: the fourth continuation shares 243 record lines (cycles
+653-895) with the third, all bit-identical, and dumps 17-21 are byte-identical between them; the
+joined RSF256 record runs 0-1386 without a gap to t = 8.5, N = 8.0989. In its 18 dumps and the
+original's 3, record means equal my dump means to 4.1e-15 and my [H] equals Hmag to 4.4e-16. The
+proper SR record: largest <|H|/[H]> 5.10e-11 (N = 4.43), <|M|/[M]> 3.99e-4 (N = 4.76); at N_f
+1.84e-14 and 2.67e-6. Sign-flip numbers unchanged. The joins figure of that run dropped the fourth
+continuation (a zip over three line styles); fixed and redrawn in E-20261124-223320-f00255a, looked
+at: the fourth continuation lies on the third from N = 3.9 and continues smoothly to N_f.
+VERIFIER.md section 8 (8.1, 8.6, 8.7) amended accordingly; sections 1-7 unchanged.

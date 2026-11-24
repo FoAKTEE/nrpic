@@ -146,7 +146,7 @@ selection in my script):
   (as far as the ledger shows) the note do not state them; rows 49, 68, 70, 71, 83, 94, 101, 109
   remain unexplained by me.
 
-## 8. Update pass: the five continued runs (2026-11-24 14:05-14:35 PST; sections 1-7 unchanged)
+## 8. Update pass: the five continued runs (2026-11-24 14:05-14:40 PST; sections 1-7 unchanged)
 
 Read for this pass, as a fresh reader: the claims (not the verdicts) of `repro/figs/RESULTS.md`
 for Figs. 7, 8, 9 and the sign flip, the ledger rows without a verifier check (42, 48-52, 56,
@@ -154,7 +154,8 @@ for Figs. 7, 8, 9 and the sign flip, the ledger rows without a verifier check (4
 section headings of RESULTS.md carry verdict words, which I saw. Predictions: `JOURNAL.md` entry 5
 (committed 6ced7199 before any computation); outcomes: entry 6. Own code: `scripts/cont.py` (with
 `lattice.py`, `compare.py`). Runs (processors only, 0 card-hours): E-20261124-220857-2b8e5dc
-(records), E-20261124-221133-971cd6f (dumps), E-20261124-222329-dfc72d9 (two more definitions);
+(records), E-20261124-221133-971cd6f (dumps), E-20261124-222329-dfc72d9 (two more definitions),
+E-20261124-222800-49ab461 and E-20261124-223320-f00255a (RSF256's fourth continuation, 8.6);
 failed and kept: E-20261124-220850-3ef0c7f, E-20261124-221028-81db3d8. Figures (looked at):
 `fig_joins.png`, `fig_convrec_256.png`, `fig_signflip_full.png`, `fig_convspec_256.png`,
 `fig_backreaction_Nf.png` in those run directories.
@@ -167,7 +168,7 @@ failed and kept: E-20261124-220850-3ef0c7f, E-20261124-221028-81db3d8. Figures (
 | CL256S | E-20261123-090727-4b6e5a5 / E-20261124-130952-4be980b | 37 common lines (cycles 979-1015) bit-identical; joined 0-1386, N = 8.0989 | CONFIRMED |
 | CL256U | E-20261123-065855-265732a / E-20261124-130711-a5dec67 (cut), E-20261124-201048-33a3a39 | 125 and 157 common lines bit-identical; dumps 8, 9 byte-identical in all three; joined 0-1702, N = 10.000 | CONFIRMED |
 | AL2S | E-20261123-152119-38957ba / E-20261124-131359-49afe29 | no overlap (1227 / 1228); second difference across the seam over the median of its 20 neighbours: 1.00 (efolds, <phi>, <K>), 2.2 (<abs H/[H]>), 0.87 (<abs M/[M]>); constant step | CONFIRMED (no jump at the level of the neighbours) |
-| RSF256 | E-20261123-035925-8439d79 / -130529-da8c917, -201031-4c41e7b, -202134-0b1ce0c, all resumed from the original's sr.00000.rst (t = 0) | 29, 1 and 82 common lines bit-identical; dumps 1, 2 byte-identical; joined 0-895, t = 5.4917, N = 5.3242 of 8.10 | CONFIRMED to cycle 895; the rest PENDING (8.6) |
+| RSF256 | E-20261123-035925-8439d79 / -130529-da8c917, -201031-4c41e7b, -202134-0b1ce0c (all three resumed from the original's sr.00000.rst, t = 0), -214913-5956891 (q0034, from the third's sr.00002.rst, cycle 652; ended 14:23 PST at tlim) | 29, 1, 82 and 243 common lines bit-identical; dumps 1, 2 (original) and 17-21 (third against fourth) byte-identical; joined 0-1386, t = 8.5, N = 8.0989 (run E-20261124-222800-49ab461; figure from E-20261124-223320-f00255a) | CONFIRMED |
 
 ### 8.2 Sign flip over its full span, and the constraint ratios against their magnitudes
 
@@ -261,15 +262,18 @@ verdict). Under 1e-4:
   than 10 independent modes). P1:520's "for all scales" is NOT met by our USR level 2 above
   abs(n) of about 32. Whether P1's own Fig. 9 shows the same I did not read off in this pass.
 
-### 8.6 Pending (RSF256 beyond cycle 895)
+### 8.6 RSF256 (queue entry q0034): ended during this pass
 
-RSF256's fourth continuation is queue entry **q0034** (run E-20261124-214913-5956891, Slurm job
-5215, PENDING when checked at 14:05 PST; it resumes from sr.00002.rst of E-20261124-202134-0b1ce0c
-at cycle 652, so it overlaps cycles 653-895 and its join can be checked bit for bit with
-`cont.py --only joins` after adding its run id to `RUNS["RSF256"]`). PENDING on it: ledger row 56
-(SR per-cell constraint rows of the one-point figure), the constraint panels of P1 Fig. 2, P1 Fig.
-3 from RSF256 itself, and the proper SR constraint record from N = 5.32 to N_f. Not pending: the
-sign-flip control (its proper partner is joined beyond N = 4.39).
+When I began (14:05 PST) RSF256's fourth continuation, queue entry **q0034** (run
+E-20261124-214913-5956891, Slurm job 5215), was PENDING; it ran 14:06-14:23 PST to tlim. With a
+prediction written first (`JOURNAL.md` entry 7) I joined it (8.1: bit-identical over 243 lines and
+5 dumps) and checked its 18 dumps (17-34) plus the original's 3: record means equal my dump means to
+4.1e-15, my [H] equals Hmag to 4.4e-16 (run E-20261124-222800-49ab461). The proper SR record to
+N_f: largest <abs H/[H]> 5.10e-11 (N = 4.43) and <abs M/[M]> 3.99e-4 (N = 4.76), at N_f 1.84e-14 and
+2.67e-6; the sign-flip numbers of 8.2 are unchanged. Still open for me, because the claims do not
+exist yet: ledger row 56 (SR per-cell constraint rows of the one-point figure) carries no value
+("PENDING"), and the constraint panels of P1 Fig. 2 and P1 Fig. 3 from RSF256 itself are outputs the
+figs package has still to make; there is nothing of them to check today.
 
 ### 8.7 The three weakest points after this pass
 
@@ -280,5 +284,6 @@ sign-flip control (its proper partner is joined beyond N = 4.39).
    independent references give 2.0e-7 and order 2.3-3.5; the claim that the convergence stalls at
    256 at the lowest shells stands, its digits do not. Rows 48 and 81-82 hold only with their
    window (0.5 <= N <= ln 64) and shell count (independent modes), which they should name.
-3. Resolved for four of five continued runs (joins bit-exact, sign flip to N = 4.39, level 2 at
-   N_f, 256 rungs in both convergence figures); RSF256 remains (8.6).
+3. Resolved: all five continued runs join bit-exactly (RSF256 included, 8.6); sign flip to
+   N = 4.39, level 2 at N_f, 256 rungs in both convergence figures. What remains is on the
+   reproduction's side: the RSF256 rows (56, Fig. 2 constraint panels) have no values yet.
