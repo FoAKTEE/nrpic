@@ -7,7 +7,8 @@ case, at most --npar at a time (serial processor executable by default).
 A list line: name beta HL ny [key=value ...], keys
   ppc_y (1), nxz (4), lapse (lapse_harmonic, 0.3333333333333333), cfl (0.25),
   tfac (tlim = tfac * L, 1.5), fanA, fanB ("centre,halfwidth,n", relative half width
-  unless fan_abs=1), dtexp (dt_expansion, 0.01).
+  unless fan_abs=1), dtexp (dt_expansion, 0.01); any key "x:<block>/<name>" is passed to
+  AthenaK as <block>/<name>=<value> (batch 11: x:z4c/dt_lightspeed=1.0).
 Output: $NRPIC_RUN_DIR/<name>/ (ic/ with the data, the AthenaK files, athena.log,
 time.log); $NRPIC_RUN_DIR/runs.json with the wall times. With --analyze each case is
 analysed after its run (analyze_rays.py), and the results go to <name>/rays.json.
@@ -72,6 +73,7 @@ def prepare(row, out):
            f"particles/traj_ntrack={meta['traj_ntrack']}",
            f"particles/particle_file={os.path.join(ic, 'particles.nrp')}",
            f"problem/id_file={os.path.join(ic, 'fields.bin')}"]
+    cmd += [f"{k[2:]}={v}" for k, v in row.items() if k.startswith("x:")]
     shutil.copy(DECK, d)
     with open(os.path.join(d, "case.json"), "w") as f:
         json.dump({"row": row, "athena_args": cmd, "tlim": tlim}, f, indent=1)

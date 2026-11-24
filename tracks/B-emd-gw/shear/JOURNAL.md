@@ -210,3 +210,38 @@ Next: L2 (why the fan gives no arrival: look at `L2_n64/rays.json` miss values a
 trajectories), the f = 1 guard stop (processor diagnosis at N_y = 32), S3 at N_y = 256 to
 settle its order. Figure defects: the y label of panel (a) is cut at the top; the legend of
 panel (a) covers part of the S curves.
+
+## 2026-11-24 05:35 PST (lead of batch 11): why L2 gave no number; f = 1 run read as it is; predictions
+
+Found by reading series 1's outputs (no new run): in L2 (beta = 0.5, HL = 4) the A rays (towards
++x) had not reached x = L by tlim = 6: at t = 6 they stood at x = 0.6 to 3.7 and |y| up to 7.9;
+2 of 61 crossed (59 None in `crossing`), and `shoot` then built its window of four rays from two,
+whose duplicated abscissae gave NaN in the Lagrange weights, hence NaN arrival times and the
+error in `transport` (analyze_rays.py:182). The B rays all crossed at t = 3.07-3.10. Fix in
+`analyze_rays.py` (batch 11): s, miss and the crossings are filtered together and fewer than four
+crossings give "ok": false with the reason, instead of NaN; cases with every ray crossing give the
+same numbers as before (same arrays). The cure for L2 is a later end: series 2
+(`inputs/series2.txt`) runs L2 with tfac = 2.5 (tlim = 10). `run_cases.py` gains keys
+"x:<block>/<name>" passed to AthenaK.
+
+The f = 1 run S1_n64_lap1 (series 1): its guard stop came at t = 0.578, after the rays arrive in
+that slicing (the f = 1/3 run has them at conformal t = 1.0, a = 2.25; with f = 1 the same events
+lie near t = 0.47 if the background lapse grows as a^3 [arithmetic on the background equations,
+not checked against the run]); its constraint norms stay at 1e-15 to t = 0.54 and grow by about
+seven per step only in the last eight steps; the step followed the expansion limit
+(dt = 0.01 a^(-3/2) from t = 0.42). So P10 can be judged on the trajectories it wrote before the
+stop: the analysis is run on that directory as it is. The stop itself (RISKS R18) keeps no named
+cause.
+
+Predictions (before the runs and the analysis) [JUDGEMENT]:
+- P10 (restated, unchanged): the f = 1 run gives cos(theta) equal to S1_n64 (f = 1/3) within
+  1e-4 relative. Refuted above 1e-4; not judged if fewer than four rays of a fan crossed
+  before t = 0.578.
+- P9' (L2 with tlim = 10): every case reaches tlim; at least eight A rays and all B rays cross;
+  Delta within max(3 x own error, 0.01) of CosmoGRaPH's -0.8183 (draft.tex:360) and away from
+  -0.619 and -0.68 (gevolution, GRAMSES). Refuted if Delta at the finest mesh or extrapolated lies
+  outside that band, or if the three meshes do not converge (differences not falling).
+- P7' (S3 at N_y = 256): |Delta(256) - Delta(128)| below |Delta(128) - Delta(64)| = 3.25e-5 and
+  |Delta(256)| below 3e-4. Refuted if the difference grows again (then S3 does not converge in
+  N_y at this HL and the cause is to be looked for in the rays' step or the observer transport).
+- Wall time: L2_n128 below 8 minutes, S3_n256 below 30 minutes (series 1: 149 s and 144 s at 128).

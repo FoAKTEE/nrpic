@@ -1,0 +1,8 @@
+# shear series 2 (lead of batch 11, 2026-11-24): L2 again with a later end (tfac 2.5, tlim = 10;
+# in series 1 the A rays of L2 had not reached x = L by tlim = 6, two of 61 crossed), and S3 at
+# N_y = 256 to settle its order. Release core-v0.6 processor executable. Predictions:
+# JOURNAL.md, entry of 2026-11-24.
+L2_n32 0.5 4.0 32 tfac=2.5 fanA=-1.5555555555555556,1.5,61 fanB=0.13331647093136045,1.5,61
+L2_n64 0.5 4.0 64 tfac=2.5 fanA=-1.5555555555555556,1.5,61 fanB=0.13331647093136045,1.5,61
+L2_n128 0.5 4.0 128 tfac=2.5 fanA=-1.5555555555555556,1.5,61 fanB=0.13331647093136045,1.5,61
+S3_n256 0.005 4.0 256

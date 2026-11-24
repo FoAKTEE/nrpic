@@ -120,10 +120,15 @@ def shoot(fan, cross, axis_t):
     the root, from the cubic through the four rays around the sign change, and the same
     from the quadratic through three (as an interpolation error estimate)."""
     s = np.array(fan)
-    miss = np.array([c["x"][axis_t] if c is not None else np.nan for c in cross])
-    ok = np.isfinite(miss)
-    s, miss = s[ok], miss[ok]
-    cr = [c for c in cross if c is not None]
+    # rays that crossed, with a finite crossing (s, miss and cr filtered together; batch 11:
+    # L2 at tlim = 6 had two crossings of 61 and the window of four rays below was undefined)
+    keep = [j for j, c in enumerate(cross) if c is not None and np.all(np.isfinite(c["x"]))]
+    if len(keep) < 4:
+        return {"ok": False, "reason": f"{len(keep)} of {len(cross)} rays crossed, four needed",
+                "s": s[keep].tolist(), "miss": [cross[j]["x"][axis_t] for j in keep]}
+    cr = [cross[j] for j in keep]
+    s = s[keep]
+    miss = np.array([c["x"][axis_t] for c in cr])
     order = np.argsort(s)
     s, miss = s[order], miss[order]
     cr = [cr[i] for i in order]
