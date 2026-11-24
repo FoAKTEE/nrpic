@@ -513,3 +513,32 @@ Prediction [JUDGEMENT]: at a >= 81 the excess (ratio metric/particles above 3) b
 |k| = 16 k_f, and more than half of the corrected Omega_qs sits above shell 16 (the mesh-scale
 half of the spectrum, Nyquist at 64 k_f). Refuted if the ratio exceeds 3 at |k| <= 8 k_f, or if
 less than half of Omega sits above shell 16 at a = 121.
+
+Outcome (run B-20261124-134953-18618df, `figs/pop_gr_spectra.png` looked at) [VERIFIED by it]:
+- REFUTED in its first part: at a = 81 and 121 the per-shell ratio metric/particles passes 3 at
+  |k| = 5 and 4 k_f (12 at a = 49), not above 16; it rises to about 1e3 near 30-40 k_f. HOLDS in
+  its second part: 82 and 87 per cent of the corrected Omega_qs lie above shell 16 at a = 81 and
+  121 (60 per cent at a = 49, none at a <= 25).
+- At a = 9 and 25 the metric follows the particles to |k| = 10-30 k_f; above that the particles'
+  spectrum flattens (shot noise of one particle per cell in the cloud-in-cell estimate) while the
+  metric falls by orders of magnitude: the early rms ratio 0.63 (A2) is the particles' noise, not
+  the metric.
+- [JUDGEMENT, not tested] the excess after halo formation, 1e3-1e4 times any Newtonian box
+  measure scaled to this amplitude, is more likely the coordinates of the zero-shift slice
+  following the normal observers into the halos (a gauge effect beyond the second-order G_tot)
+  than radiation. A run in which it could fail: the same box with a Gamma-driver shift (queued
+  below).
+
+## 2026-11-24 06:30 PST (lead of batch 11): gauge leg of the GR box; prediction
+
+`pop_s014_gr_gd` (sequencer, card chain, release v0.6): the 0.014 box from the same initial data
+to a = 143 with the Gamma-driver shift of first_source's second-gauge run (shift_Gamma 0.75,
+shift_eta 1, shift and lapse advection 1; cfl 0.25 <= 0.6, decision 0027 item 2), same slicing.
+It is also the gauge leg of G2 item C2 for the population box. Predictions [JUDGEMENT]:
+- GD1: reaches a = 143 without a guard stop; card time 0.2-0.5 h.
+- GD2: halo counts and largest masses as in the zero-shift run (counts within 2 sqrt(N) + 2, the
+  largest mass within 5 per cent at a = 64-132): the shift changes coordinates, not physics.
+- GD3: the corrected TT strain over |k| <= 8 k_f within 20 per cent of the zero-shift run's to
+  a = 100; above 16 k_f the corrected Omega_qs at a = 121 at least ten times smaller than the
+  zero-shift run's 2.3e-4 (the excess is coordinate motion). Refuted if it agrees within a factor
+  3 there (then the excess is not a spatial-gauge effect: mesh or physics, for the legs to decide).
