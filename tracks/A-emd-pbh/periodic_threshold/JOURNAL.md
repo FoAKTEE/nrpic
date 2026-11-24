@@ -874,3 +874,19 @@ behind the two continued chains. Predictions [JUDGEMENT throughout]:
   within 6 per cent (8.6). Refuted if neither improves (then the inner error is the particles').
 - D5 cost: 0.22-0.35 card-seconds per step, about 57,000 steps to t = 140 (4-5.5 card-hours,
   5-7 segments).
+
+### F2 outcome (run A-20261124-131232-e7b58f8, closed): REFUTED, the finder does not converge on P0L's slice
+
+The processor build read the card restart files (setup complete in every member). Two or three
+searches per member, 1000 flow iterations each, none converged ("iteration limit reached without
+convergence of the mass"):
+- t = 140, start radius 0.15: stalls at mean radius 0.083 with area mass 5.23 and mean expansion
+  +3.06; start 0.3: r 0.099, m 5.63, +23; start 1.0: r 0.657, m 17.0, +534; start 2.0: r 1.69,
+  m 34.9, +1569. The line's marginally trapped sphere is at r 0.0758, m 5.01 (F1): the search
+  from 0.15 ends 9 per cent outside it in radius and 4.4 per cent above it in mass, still with
+  positive expansion.
+- t = 100, start 0.3: "mean radius negative" (the flow shrinks to the centre: no trapped sphere,
+  as F1 found on the line at t = 100); start 1.0: stalls at r 0.417, m 9.79.
+So on four levels the finder cannot settle on a horizon of ~4 cells, from any start radius. No
+request to core yet: D3 (six levels, ~15 cells across the horizon) is the run in which a finder
+failure could not be blamed on resolution.
