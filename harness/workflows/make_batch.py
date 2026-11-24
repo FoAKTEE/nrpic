@@ -88,6 +88,7 @@ const out = []
 res.filter(Boolean).forEach(x => x.forEach(y => out.push(y)))
 return out
 ''')
+body = body.replace('const NOTE = "', 'const NOTE = "' + 'QUEUE CAP, set by the user (coord/DECISIONS/0033; it may not yet be in the CLAUDE.md your session was given): at most FIVE jobs of this account may be in the Slurm queue at once, pending, held and running together, over all owners. Run git merge --no-edit main first (your copy of harness/bin/nrpic-run then refuses beyond the cap); before any submission count squeue -u $USER -h | wc -l and at five submit nothing; submit only through harness/bin/nrpic-run, never by sbatch or the scripts directly, never jobs held behind one another; start no sequencer; runs that must wait are listed in HANDOFF.md with the exact command that submits each. '.replace('\\', '\\\\').replace('"', '\\"'), 1)
 body = body.replace('__STAGES__', json.dumps(spec.get('stages')))
 open(sys.argv[2], 'w').write(meta + pre + body)
 print(len(items), 'items ->', sys.argv[2], len(meta + pre + body), 'bytes')
