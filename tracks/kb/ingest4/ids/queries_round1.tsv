@@ -1,0 +1,18 @@
+# tag<TAB>INSPIRE query (round 1: Track A Szekeres, Track C conductivity and DSMC)
+A-kb1	a Krasinski and a Bolejko and t Szekeres
+A-ah1	t Szekeres and t apparent horizon
+A-cf1	t Szekeres and t conformally flat
+A-cf2	abstracts.value:"Szekeres" and abstracts.value:"conformally flat"
+A-cf3	fulltext:"conformally flat" and t Szekeres
+A-geo	t Szekeres and t geometry
+C-rc1	t relativistic and t "heat conductivity"
+C-rc2	t relativistic and t "thermal conductivity" and t gas
+C-rc3	abstracts.value:"hard spheres" and abstracts.value:"thermal conductivity" and abstracts.value:"relativistic"
+C-rc4	abstracts.value:"transport coefficients" and abstracts.value:"14-moment" and abstracts.value:"heat"
+C-so1	abstracts.value:"Sonine" and abstracts.value:"thermal conductivity"
+C-ck1	a Cercignani and a Kremer
+C-ds1	t "direct simulation Monte Carlo"
+C-ds2	abstracts.value:"DSMC" and abstracts.value:"cell size"
+C-ds3	abstracts.value:"direct simulation Monte Carlo" and abstracts.value:"time step"
+C-ds4	a Hadjiconstantinou
+C-ds5	a Alexander, F.J. and a Garcia, A.L.
