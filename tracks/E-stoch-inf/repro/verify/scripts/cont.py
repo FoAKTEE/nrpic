@@ -490,8 +490,8 @@ def br_stats(A, B):
              gt10_n_at_max=float(k[g10][np.argmax(np.abs(d[g10]))]),
              gt10_frac_pos=float(np.mean(d[g10] > 0)),
              gt10_rms_k_le_32=float(np.sqrt(np.mean(d[g10 & (k <= 32)]**2))),
-             frac_shells_above_1e-4=float(np.mean(np.abs(d) > 1e-4)),
-             frac_gt10_shells_above_1e-4=float(np.mean(np.abs(d[g10]) > 1e-4)),
+             frac_shells_above_1em4=float(np.mean(np.abs(d) > 1e-4)),
+             frac_gt10_shells_above_1em4=float(np.mean(np.abs(d[g10]) > 1e-4)),
              permode_rel_rms=float(np.sqrt(np.mean(pm**2))))
     # |n| above which the running median (bins of width 4 in |n|) exceeds 1e-4
     edges = np.arange(0, 68, 4)
