@@ -495,7 +495,7 @@ Prediction for R10 (same commit plus this change): lattice jsons, PNGs and lange
 rows in 11 tables, the same check counts and values; after the compile every ledger table ends with
 its bottom rule on its page; page count 25 or 26. Refuted by any table off its page or any changed value.
 
-## Entry 18 (2026-11-24 15:31 PST): outcome of R10; final state of the last pass
+## Entry 18 (2026-11-24 15:24 PST): outcome of R10; final state of the last pass
 
 R10 = E-20261124-232241-08e1705 (registered, production, two cores, commit 08e1705, about a minute).
 Prediction of entry 17, item by item:
