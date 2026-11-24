@@ -639,14 +639,14 @@ XQ (FNQ, N/4): ||H|| of the z = 0 plane (tools/xc_plane.py) on A1 and A2 at 100 
 L5 (FL16, M/16): ||H||_A1 at 100 and 200 M is at least ES-FL's (fewer particles per cell on the finest
    level, so more deposit noise) [JUDGEMENT, p ~ 0.6]; refuted if it is below 0.8 times ES-FL's at both.
 
-## Entry 16 (2026-11-24 09:36 PST, before the run): test FE (early dumps) - where does the null-test step happen?
+## Entry 16 (2026-11-24 09:31 PST, before the run): test FE (early dumps) - where does the null-test step happen?
 
 Entry 14 found that, with the converged finder, the bubble-minus-vacuum difference is a step between 100
 and 150 M (6.8e-5 at M/8) that then stays flat to 500 M. Test FE re-searches the earlier and intermediate
 dumps with the same tool and settings as FP (tools/probe_long.py, A16, h0/h1/h2, release processor build
 athena_cpu_omp, 2 threads, 2 at a time): V-1L and ES-1L dump 00001 (50 M); V-1L16 and ES-1L16 dumps 00001,
 00004, 00005 (50 M and the two dumps between 100 and 200 M, one of which is 150 M; the other is a
-wall-time restart). Judged by a new tool/fe_analyse.py together with the FP and FP-ext probes.
+wall-time restart). Judged by a new tools/fe_analyse.py together with the FP and FP-ext probes.
 With S(t) = (M_ES(t) - M_V(t)) - (M_ES(100) - M_V(100)) from the tight finder (h1):
 FE1 (M/8) the step is confined to 100-150 M: |S(50)| <= 2e-5 [JUDGEMENT, p ~ 0.5]; refuted (the
     difference also moves before 100 M) if |S(50)| >= 4e-5.
