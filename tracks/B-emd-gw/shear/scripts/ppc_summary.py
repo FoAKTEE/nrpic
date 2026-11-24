@@ -64,10 +64,10 @@ def main():
             bx.annotate("%d" % r["ny"], (1.0/r["ny"], r["Delta"]), textcoords="offset points",
                         xytext=(3, 3), fontsize=6)
     for a_ in (ax, bx):
-        for (k, v), col in zip(CODES.items(), fs.SERIES[2:]):
+        for k, v in CODES.items():
             if v > -0.75:
                 continue
-            a_.axhline(v, color=col, ls="--", lw=0.9, label=k + " (draft.tex:360)")
+            a_.axhline(v, color="0.35", ls="--", lw=0.9, label=k + " (draft.tex:360)")
         a_.set_ylabel(r"$\Delta$ of L2")
         a_.legend(fontsize=6.5, loc="best")
     ax.set_xlabel(r"$1/n_{\rm ppc,y}$")
