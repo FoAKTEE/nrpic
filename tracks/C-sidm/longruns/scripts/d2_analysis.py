@@ -78,7 +78,7 @@ def main():
     res = dict(reference_M4=REF_M4, runs={})
     ser = {}
     for lab, d in dirs.items():
-        out = AD.analyse(lab, d, None if lab == "ctrl" else ctrl)
+        out, _ = AD.analyse(lab, d, None if lab == "ctrl" else ctrl)
         h = read_dedup(os.path.join(d, "cc.nrpic.hst"))
         out["alpha_min_min"] = float(np.nanmin(h["alpha_min"]))
         out["t_alpha_min_min"] = float(h["time"][int(np.nanargmin(h["alpha_min"]))])
