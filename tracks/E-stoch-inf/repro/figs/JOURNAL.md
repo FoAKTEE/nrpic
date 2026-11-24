@@ -244,3 +244,30 @@ Next, in order, after the pause is lifted:
    and RNC256 (Fig. 8 at 256, `fig_signflip`, scope P3); then the figure run again with `--rsf256`,
    `--cl256s`, `--al2s` and `--with256` (make_figs passes it with --cl256s).
 3. RESULTS.md: replace the PENDING rows, add the ledger of the figure run, set STATUS.
+
+## Entry 5 (2026-11-24 09:30 PST): resumed after the pause; predictions of the figure run, written before it runs
+
+Resumed in batch R2b. The pause flag is absent; the five continuations of repro/continue are still
+held by another user's job (both cards) until about the morning of 2026-11-25 and are not waited for.
+The review of branch core/noise-level2 on Fable says "RESULTS UNCHANGED: the six ablation runs made with
+6ca93cba stand" (coord/DECISIONS/0032 item 4), so the AL runs and the passes on them stand as they are.
+
+Predictions (refuted by the stated miss):
+- R1 (figure run = test runs): the registered figure run `make_figs.py` on the three closed passes
+  (130628-6790851, 133251-42e8aab, 141807-8352509) gives the numbers of entries 2 and 3 to every printed
+  digit (same scripts at the same commit, same inputs, deterministic numpy). Refuted by any differing
+  digit of a number quoted in entries 2-3 or in RESULTS.md.
+- R2 (Fig. 6b with the invariant Kt, kt_version 2, USF256): Delta[Kt] at late times sits near P1's level
+  (P1 Fig. 6b, read: about 1e-31) within two decades, not near the 1e-17 of version 1; the USR ratio Q/K
+  of sqrt(3 Kt Kt/2) to K at N_f has a median within a factor 3 of entry 3's 9.4e-7 [the version-1
+  values for USR were rescaled by <chi>^2, which is not exact when R ~ 1; a larger miss means entry 3's
+  USR number must be replaced]. Refuted by either.
+- R3 (SR ablation at t = 7.5, N = 7.2; AL0S, AL1S, AL2S dump 15, all injected modes frozen by N = 4.2,
+  entry 3 F2 c): P-A1 of repro/ablation applied at this time: r20 = Delta_L2/Delta_L0 - 1 per shell has
+  rms over |n| <= 32 between 1e-7 and 1e-4, max over all shells <= 2e-4, 30-70 per cent of shells
+  positive, no rise toward the cut; r10 equals its N_f value from entry 3 within 10 per cent (6.6e-7
+  max, rms 3.5e-7; frozen modes and a level-1 shift set at the entry). Refuted by any of these; the
+  r20 part is judged at t = 7.5 only and N_f stays PENDING (AL2S continuation E-20261124-131359-49afe29).
+- R4 (bit check AL2S against AL0S at t = 0, `bitcheck_ablation75.json`): NOT a prediction: I read
+  the first part of the json (phi to Azz) before writing this entry. Recorded under entry 6 as an
+  observation only.
