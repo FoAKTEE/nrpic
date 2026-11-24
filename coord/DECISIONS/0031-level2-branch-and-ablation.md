@@ -23,3 +23,10 @@ To the next gate: E 30. The other allotments stand.
    stated exception, and the note says which executable each run used).
 4. The review of the branch's diff on Fable, before any release, stays as decision 0029
    item 2 says.
+5. Exception to the queue rule (decision 0025 item 5), for the reproduction only: Track
+   E's sequencer keeps up to six card jobs in the queue until the runs of the
+   reproduction have ended (restarted by the orchestrator on 2026-11-22 19:57 PST with
+   `MAXJ=6`; state in `scratch/E-stoch-inf/repro_scope_seq/`). With two eligible jobs
+   per round behind six other owners the sixteen runs would have taken about two days.
+   No other user's job was queued when this was done; the rule of two returns when that
+   queue is empty.
