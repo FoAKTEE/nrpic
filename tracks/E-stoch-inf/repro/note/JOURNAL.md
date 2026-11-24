@@ -101,7 +101,7 @@ the two 5.1 hits are the verdict label "not reproduced".
 Not done: parallel reviewer subagents (no tool in this session); the "Check" column waits for
 repro/verify; five rows PENDING on the continuations of repro/continue.
 
-## Entry 5 (2026-11-24 10:55): correction pass after the verifier; plan and predictions
+## Entry 5 (2026-11-24 10:51): correction pass after the verifier; plan and predictions
 
 Input: `repro/verify/VERIFIER.md` (commit 0de2198a, sections 1-7). No continuation of
 repro/continue has run (all five still PENDING in the queue at 10:50, squeue); the ablation figure
@@ -155,3 +155,9 @@ Predictions for R3 (run_all after these edits; no figure script changes):
   or a stop.
 - P4. Compile: no undefined references, no overfull boxes; the ledger tables with a fourth
   column may move pages (expect 19-21 pages).
+- P3 amended before the run (10:53): 113 rows, not 112: one more row, the e-fold at which the SR
+  flipped run ends (json key `RNC256.N_end_flip`; the verifier reads common records only to
+  N = 0.39, VERIFIER.md:54, while our window holds a record at N >= 0.5), so the sign-flip window is
+  stated with its end. A dry run of the new `ledger.py` on the outputs of R2 (unregistered, a test
+  of the script in scratch/E-stoch-inf/tmp/ledgertest) gives 113 rows; checks: 65 yes, 16
+  differs, 2 beyond reach, 11 quote, 14 rerun only, 5 none (4 pending, 1 new row).

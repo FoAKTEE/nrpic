@@ -12,7 +12,9 @@ Reads
   used for values read off the papers' figures by the figure packages and for numbers of core's
   review; the script stops if the string does not stand on that line;
 - the papers' printed statements (source file of the arXiv version 2, line, exact string), read
-  as text from the read-only store.
+  as text from the read-only store;
+- the report of the independent verifier (repro/verify/VERIFIER.md): for each row its verdict,
+  the line of the report and a string that must stand on that line (the script stops otherwise).
 Writes OUT/tables/ledger.tex (one table per section, for the appendix) and OUT/tables/ledger.csv.
 """
 import csv
@@ -52,127 +54,166 @@ ORIGIN = {
 }
 CORE_MSG = "git:core/noise-level2:tracks/core/outbox/20261124T143303Z__to-E-stoch-inf__noise-level2-review-runs-stand.md"
 
-# (section, quantity, kind, args, format)
+VERIFIER = "tracks/E-stoch-inf/repro/verify/VERIFIER.md"
+RES = "tracks/E-stoch-inf/repro/figs/RESULTS.md"
+LVR = "tracks/E-stoch-inf/repro/langevin/README.md"
+
+# Definitions behind the rows of each section (verifier, weakest point 2): printed under each table.
+SECNOTE = {
+    "Lattice background": "Maxima over all record times of the $64^3$ runs; F: the Friedmann (level-0) background of the same run.",
+    "Lattice spectra": ("Shells: lattice shells $|n|^2$ with more than ten modes. Linear: the power of the realization's own "
+                        "random amplitudes with the code's mode functions at the same time. Mukhanov-Sasaki: the ensemble power, "
+                        "with the envelope $3/\\sqrt{\\mathrm{modes}}$."),
+    "One-point statistics": ("Half-width (68 per cent): half the distance between the 16th and 84th percentiles over the cells "
+                             "(0.9945 standard deviations for a Gaussian). N at 95 per cent: the first dump at which the half-width "
+                             "reaches 95 per cent of its final value."),
+    "Constraints": ("Entry maximum: largest record value of the mean ratio for $0.05 < N \\le \\ln 8$ (the entry at "
+                    "$k_\\mathrm{max} = 8\\,\\Delta k$); order: $\\log_2$ of the ratio between neighbouring lattices. Sign flip: "
+                    "ratio of the flipped to the proper run at common record times with $0.5 \\le N \\le \\ln 64$."),
+    "Extrinsic curvature": "Medians over the shells with more than ten modes.",
+    "Convergence": ("Final dump of each lattice with $k_\\mathrm{max} = 8\\,\\Delta k$; shells and linear power as in the "
+                    "spectra table; entry maximum and order as in the constraints table."),
+    "Backreaction": ("Relative change of the final power per shell with more than ten modes, same random amplitudes, "
+                     "noise on the mesh unless stated."),
+    "One patch": ("Widths and skewness over the live paths; a path is lost once $|\\alpha|$ reaches 50 or is not finite. "
+                  "Median skewness: over the record times $4.5 \\le N_b \\le 6$."),
+}
+
+# Check of the independent verifier: (code, line of VERIFIER.md, string on that line, value shown)
+# codes: yes, diff (its value differs beyond the printed digits), reach (its method cannot reach the digits),
+#        quote (printed string checked), rerun (rerun of these scripts only), none
+def V(code, line=None, needle=None, shown=""):
+    return (code, line, needle, shown)
+
+QP = V("quote", 91, "12, 13, 22, 35, 44, 53, 76")
+Q0 = V("quote", 92, "84-86, 106 (P0:817-842): CONFIRMED")
+NONE = V("none")
+
+# (section, quantity, kind, args, format, check)
 # kinds: j = lattice json of this run; l = langevin.json of this run; e = equation-check run;
-#        q = quote of a committed line (path, line, string); p = printed in a paper (paper, line, string)
+#        q = quote of a committed line (path, line, string[, value shown]); p = printed in a paper (paper, line, string)
 ROWS = [
     # --- lattice: background
-    ("Lattice background", "SR: largest |V/V_F - 1| of the box means (64^3)", "j", ("fig1.json", "sr.max_rel_V"), "{:.1e}"),
-    ("Lattice background", "SR: largest |eps1/eps1_F - 1|", "j", ("fig1.json", "sr.max_rel_eps1"), "{:.1e}"),
-    ("Lattice background", "SR: largest |eps2 - eps2_F|", "j", ("fig1.json", "sr.max_abs_eps2"), "{:.1e}"),
-    ("Lattice background", "SR: e-folds N_f - N_* of the run", "j", ("fig1.json", "sr.N_end"), "{:.3f}"),
-    ("Lattice background", "USR: largest |V/V_F - 1|", "j", ("fig1.json", "usr.max_rel_V"), "{:.1e}"),
-    ("Lattice background", "USR: largest |eps1/eps1_F - 1|", "j", ("fig1.json", "usr.max_rel_eps1"), "{:.1e}"),
-    ("Lattice background", "USR: largest |eps2 - eps2_F|", "j", ("fig1.json", "usr.max_abs_eps2"), "{:.1e}"),
-    ("Lattice background", "USR: eps2 = 3 crossed upward at N", "j", ("fig1.json", "usr.eps2_eq3.0"), "{:.3f}"),
-    ("Lattice background", "USR: eps2 = 3 crossed downward at N", "j", ("fig1.json", "usr.eps2_eq3.1"), "{:.3f}"),
-    ("Lattice background", "USR: eps1 at N_f", "j", ("fig1.json", "usr.eps1_end"), "{:.2e}"),
-    ("Lattice background", "USR: eps2 at N_f", "j", ("fig1.json", "usr.eps2_end"), "{:.4f}"),
-    ("Lattice background", "Paper II: USR from N ~ 3.5", "p", ("II", 534, r"From $\mathcal{N} \sim 3.5$ USR starts"), None),
-    ("Lattice background", "Paper II: (eps1, eps2) after the plateau", "p", ("II", 534, r"\left(0,-2.8 \times  10^{-2}\right)"), None),
+    ("Lattice background", "SR: largest |V/V_F - 1| of the box means (64^3)", "j", ("fig1.json", "sr.max_rel_V"), "{:.1e}", V("yes", 77, "rows 1 (9.8e-13)")),
+    ("Lattice background", "SR: largest |eps1/eps1_F - 1|", "j", ("fig1.json", "sr.max_rel_eps1"), "{:.1e}", V("yes", 77, "2 (6.4e-12)", "6.4e-12")),
+    ("Lattice background", "SR: largest |eps2 - eps2_F|", "j", ("fig1.json", "sr.max_abs_eps2"), "{:.1e}", V("reach", 83, "3 and 7 (eps2 differences")),
+    ("Lattice background", "SR: e-folds N_f - N_* of the run", "j", ("fig1.json", "sr.N_end"), "{:.3f}", V("yes", 77, "4 (8.0989)")),
+    ("Lattice background", "USR: largest |V/V_F - 1|", "j", ("fig1.json", "usr.max_rel_V"), "{:.1e}", V("yes", 77, "5 (1.12e-9)")),
+    ("Lattice background", "USR: largest |eps1/eps1_F - 1|", "j", ("fig1.json", "usr.max_rel_eps1"), "{:.1e}", V("yes", 77, "6 (4.63e-5)")),
+    ("Lattice background", "USR: largest |eps2 - eps2_F|", "j", ("fig1.json", "usr.max_abs_eps2"), "{:.1e}", V("reach", 83, "3 and 7 (eps2 differences")),
+    ("Lattice background", "USR: eps2 = 3 crossed upward at N", "j", ("fig1.json", "usr.eps2_eq3.0"), "{:.3f}", V("yes", 77, "8 (2.523)")),
+    ("Lattice background", "USR: eps2 = 3 crossed downward at N", "j", ("fig1.json", "usr.eps2_eq3.1"), "{:.3f}", V("yes", 78, "9 (6.550)")),
+    ("Lattice background", "USR: eps1 at N_f", "j", ("fig1.json", "usr.eps1_end"), "{:.2e}", V("yes", 78, "10 (1.008e-12)")),
+    ("Lattice background", "USR: eps2 at N_f", "j", ("fig1.json", "usr.eps2_end"), "{:.4f}", V("yes", 78, "11 (-0.02762)")),
+    ("Lattice background", "Paper II: USR from N ~ 3.5", "p", ("II", 534, r"From $\mathcal{N} \sim 3.5$ USR starts"), None, QP),
+    ("Lattice background", "Paper II: (eps1, eps2) after the plateau", "p", ("II", 534, r"\left(0,-2.8 \times  10^{-2}\right)"), None, QP),
     # --- lattice: spectra
-    ("Lattice spectra", "SR: largest |NR/linear - 1| over all shells at N_f (256^3)", "j", ("fig3_sr_spec_P256v6.json", "last.max_abs_r_lin"), "{:.1e}"),
-    ("Lattice spectra", "SR: the same for k <= k_max/2", "j", ("fig3_sr_spec_P256v6.json", "last.max_abs_r_lin_half"), "{:.1e}"),
-    ("Lattice spectra", "SR: fraction of shells within 3/sqrt(modes) of the Mukhanov-Sasaki solution", "j", ("fig3_sr_spec_P256v6.json", "last.frac_within_env"), "{:.4f}"),
-    ("Lattice spectra", "SR: power above k_max over the Mukhanov-Sasaki power at k_max", "j", ("fig3_sr_spec_P256v6.json", "last.max_above_kmax_over_ms_cut"), "{:.1e}"),
-    ("Lattice spectra", "USR: largest |NR/linear - 1| over all shells at N_f", "j", ("fig5_usr_spec.json", "last.max_abs_r_lin"), "{:.1e}"),
-    ("Lattice spectra", "USR: the same for k <= k_max/2", "j", ("fig5_usr_spec.json", "last.max_abs_r_lin_half"), "{:.1e}"),
-    ("Lattice spectra", "USR: fraction of shells within 3/sqrt(modes) of the Mukhanov-Sasaki solution", "j", ("fig5_usr_spec.json", "last.frac_within_env"), "{:.4f}"),
-    ("Lattice spectra", "USR: power above k_max over the Mukhanov-Sasaki power at k_max", "j", ("fig5_usr_spec.json", "last.max_above_kmax_over_ms_cut"), "{:.1e}"),
-    ("Lattice spectra", "Paper II: USR power reaches", "p", ("II", 536, r"$\Delta[{\cal R}]\sim 0.1-1$"), None),
-    # --- lattice: one-point statistics and constraints
-    ("One-point statistics", "SR: half-width (68 per cent) of R^NR at N_f", "j", ("fig2_sr_contrast_P256v6.json", "final.pct_R.half68"), "{:.3e}"),
-    ("One-point statistics", "SR: rms of R^NR at N_f", "j", ("fig2_sr_contrast_P256v6.json", "rms_R_final"), "{:.3e}"),
-    ("One-point statistics", "SR: N at which dphi/phi_b reaches 95 per cent of its final width", "j", ("fig2_sr_contrast_P256v6.json", "pct_dphi_N95"), "{:.2f}"),
-    ("One-point statistics", "SR: the same for R^NR", "j", ("fig2_sr_contrast_P256v6.json", "pct_R_N95"), "{:.2f}"),
-    ("One-point statistics", "USR: half-width (68 per cent) of R^NR at N_f", "j", ("fig4_usr_contrast.json", "final.pct_R.half68"), "{:.3f}"),
-    ("One-point statistics", "USR: rms of R^NR at N_f", "j", ("fig4_usr_contrast.json", "rms_R_final"), "{:.4f}"),
-    ("One-point statistics", "USR: largest |R^NR| over the cells at N_f", "j", ("fig4_usr_contrast.json", "final.pct_R.max"), "{:.2f}"),
-    ("One-point statistics", "USR: half-width of dPi/Pi_b at N_f", "j", ("fig4_usr_contrast.json", "final.pct_dPi.half68"), "{:.2e}"),
-    ("One-point statistics", "Paper II, Fig. 2 read off (SR bands)", "q", ("tracks/E-stoch-inf/repro/figs/RESULTS.md", 69, "about 1.0e-6"), None),
-    ("One-point statistics", "SR amplitude factor, Paper II over ours", "q", ("tracks/E-stoch-inf/repro/figs/RESULTS.md", 68, "factor of about"), None),
-    ("One-point statistics", "USR amplitude factor, Paper II over ours", "q", ("tracks/E-stoch-inf/repro/figs/RESULTS.md", 102, "by a factor 2.3 to 4"), None),
-    ("One-point statistics", "Paper II, Fig. 4 read off: 100 per cent band of R^NR", "q", ("tracks/E-stoch-inf/repro/figs/RESULTS.md", 105, "about 18"), None),
-    ("One-point statistics", "Paper II: furthest outliers of R^NR", "p", ("II", 534, r"values of $\sim 10$ for the furthest outliers"), None),
+    ("Lattice spectra", "SR: largest |NR/linear - 1| over the shells at N_f (256^3)", "j", ("fig3_sr_spec_P256v6.json", "last.max_abs_r_lin"), "{:.1e}", V("diff", 141, "SR 4.5e-3 (ledger 5.2e-3)", "4.5e-3")),
+    ("Lattice spectra", "SR: the same for k <= k_max/2", "j", ("fig3_sr_spec_P256v6.json", "last.max_abs_r_lin_half"), "{:.1e}", V("yes", 143, "Rows 15 and 19 CONFIRMED", "1.1e-4")),
+    ("Lattice spectra", "SR: fraction of shells within 3/sqrt(modes) of the Mukhanov-Sasaki power", "j", ("fig3_sr_spec_P256v6.json", "last.frac_within_env"), "{:.4f}", V("yes", 78, "16 and 20 (0.9965)")),
+    ("Lattice spectra", "SR: power above k_max over the Mukhanov-Sasaki power at k_max", "j", ("fig3_sr_spec_P256v6.json", "last.max_above_kmax_over_ms_cut"), "{:.1e}", V("diff", 51, "SR 1.1e-14 (8.7e-14)", "1.1e-14")),
+    ("Lattice spectra", "USR: largest |NR/linear - 1| over the shells at N_f", "j", ("fig5_usr_spec.json", "last.max_abs_r_lin"), "{:.1e}", V("diff", 142, "USR 4.4e-3 (5.0e-3)", "4.4e-3")),
+    ("Lattice spectra", "USR: the same for k <= k_max/2", "j", ("fig5_usr_spec.json", "last.max_abs_r_lin_half"), "{:.1e}", V("yes", 143, "Rows 15 and 19 CONFIRMED", "3.5e-4")),
+    ("Lattice spectra", "USR: fraction of shells within 3/sqrt(modes) of the Mukhanov-Sasaki power", "j", ("fig5_usr_spec.json", "last.frac_within_env"), "{:.4f}", V("yes", 78, "16 and 20 (0.9965)")),
+    ("Lattice spectra", "USR: power above k_max over the Mukhanov-Sasaki power at k_max", "j", ("fig5_usr_spec.json", "last.max_above_kmax_over_ms_cut"), "{:.1e}", V("yes", 78, "21 (1.2e-7)", "1.2e-7")),
+    ("Lattice spectra", "Paper II: USR power reaches", "p", ("II", 536, r"$\Delta[{\cal R}]\sim 0.1-1$"), None, QP),
+    # --- lattice: one-point statistics
+    ("One-point statistics", "SR: half-width (68 per cent) of R^NR at N_f", "j", ("fig2_sr_contrast_P256v6.json", "final.pct_R.half68"), "{:.3e}", V("yes", 79, "x 0.9945 for a central 68 % band = 2.281e-5")),
+    ("One-point statistics", "SR: rms of R^NR at N_f", "j", ("fig2_sr_contrast_P256v6.json", "rms_R_final"), "{:.3e}", V("yes", 79, "24 (2.2780e-5)")),
+    ("One-point statistics", "SR: N at which dphi/phi_b reaches 95 per cent of its final half-width", "j", ("fig2_sr_contrast_P256v6.json", "pct_dphi_N95"), "{:.2f}", V("yes", 79, "25 (3.89, dump", "3.89")),
+    ("One-point statistics", "SR: the same for R^NR", "j", ("fig2_sr_contrast_P256v6.json", "pct_R_N95"), "{:.2f}", V("diff", 84, "26 (3.28 vs 3.44", "3.28")),
+    ("One-point statistics", "USR: half-width (68 per cent) of R^NR at N_f", "j", ("fig4_usr_contrast.json", "final.pct_R.half68"), "{:.3f}", V("yes", 80, "27 (0.8947, 0.8898 as a 68 % band)", "0.8898")),
+    ("One-point statistics", "USR: rms of R^NR at N_f", "j", ("fig4_usr_contrast.json", "rms_R_final"), "{:.4f}", V("yes", 80, "28 (0.8945)")),
+    ("One-point statistics", "USR: largest |R^NR| over the cells at N_f", "j", ("fig4_usr_contrast.json", "final.pct_R.max"), "{:.2f}", V("yes", 80, "29 (4.568)", "4.568")),
+    ("One-point statistics", "USR: half-width of dPi/Pi_b at N_f", "j", ("fig4_usr_contrast.json", "final.pct_dPi.half68"), "{:.2e}", V("rerun", 96, "Rerun only (not from raw outputs): 30")),
+    ("One-point statistics", "Paper II, Fig. 2 read off (SR bands of dphi/phi_b)", "q", (RES, 69, "about 1.0e-6"), None, V("yes", 80, "31 and 34", "own read-off")),
+    ("One-point statistics", "SR amplitude factor, Paper II over ours", "q", (RES, 69, "3.5: P1's 68 per cent bands", "about 3.5"), None, V("yes", 58, "my value is about 3.5", "about 3.5")),
+    ("One-point statistics", "USR amplitude factor, Paper II over ours", "q", (RES, 102, "by a factor 2.3 to 4"), None, V("yes", 58, "CONFIRMED at its upper end", "upper end")),
+    ("One-point statistics", "Paper II, Fig. 4 read off: 100 per cent band of R^NR", "q", (RES, 105, "about 18"), None, V("yes", 80, "31 and 34", "own read-off")),
+    ("One-point statistics", "Paper II: furthest outliers of R^NR", "p", ("II", 534, r"values of $\sim 10$ for the furthest outliers"), None, V("quote", 93, "from P1's own Fig. 4 (full band about +-18)", "its Fig. 4: about 18")),
     # --- constraints
-    ("Constraints", "SR: entry maximum of <|H|/[H]>, 64^3", "j", ("fig7_fig8.json", "sr.H.entry_max.64"), "{:.1e}"),
-    ("Constraints", "SR: entry maximum of <|H|/[H]>, 128^3", "j", ("fig7_fig8.json", "sr.H.entry_max.128"), "{:.1e}"),
-    ("Constraints", "SR: entry maximum of <|M|/[M]>, 128^3", "j", ("fig7_fig8.json", "sr.M.entry_max.128"), "{:.1e}"),
-    ("Constraints", "USR: entry maximum of <|H|/[H]>, box mean removed, 128^3", "j", ("fig7_fig8.json", "usr.H0.entry_max.128"), "{:.1e}"),
-    ("Constraints", "USR: entry maximum of <|H|/[H]> with the box mean, 128^3", "j", ("fig7_fig8.json", "usr.H.entry_max.128"), "{:.1e}"),
-    ("Constraints", "USR: order of that maximum, 64 to 128", "j", ("fig7_fig8.json", "usr.H.orders.64-128"), "{:.2f}"),
-    ("Constraints", "USR: largest 99th percentile of |H|/[H] over the cells (256^3)", "j", ("fig4_usr_contrast.json", "pct_H_p99_max"), "{:.1e}"),
-    ("Constraints", "USR: largest record mean of |M|/[M] (256^3)", "q", ("tracks/E-stoch-inf/repro/figs/RESULTS.md", 265, "2.519e-2"), None),
-    ("Constraints", "Paper II: Hamiltonian violation", "p", ("II", 539, r"($\sim 10^{-10}$)"), None),
-    ("Constraints", "Paper II, Fig. 8a read off: SR plateau of <|H|/[H]>", "q", ("tracks/E-stoch-inf/repro/figs/RESULTS.md", 180, "about 2e-11"), None),
-    ("Constraints", "Momentum constraint second order from (cells per shortest wavelength)", "q", ("tracks/E-stoch-inf/a4res/README.md", 85, "at least 12.8 cells"), None),
-    ("Constraints", "Sign flipped, SR: ratio of <|H|/[H]> to the proper run", "j", ("fig_signflip.json", "RNC256.H_ratio_min_entry"), "{:.1e}"),
-    ("Constraints", "Sign flipped, SR: largest <|M|/[M]>", "j", ("fig_signflip.json", "RNC256.M_flip_max"), "{:.2f}"),
-    ("Constraints", "Sign flipped, USR: median ratio of <|H|/[H]>", "j", ("fig_signflip.json", "U256nc.H_ratio_median_entry"), "{:.1e}"),
-    ("Constraints", "Sign flipped, USR: largest <|M|/[M]>", "j", ("fig_signflip.json", "U256nc.M_flip_max"), "{:.2f}"),
-    ("Constraints", "SR per-cell constraint rows of the one-point figure", "pending", ("E-20261124-130529-da8c917",), None),
-    ("Constraints", "SR sign flip beyond the first e-fold", "pending", ("E-20261124-130629-61fe0b0",), None),
-    ("Constraints", "Paper II: a flipped sign gives", "p", ("II", 541, r"${\cal H}/[{\cal H}]\sim 10^{-5}$ and  ${\cal M}/[{\cal M}]\sim 1$"), None),
+    ("Constraints", "SR: entry maximum of <|H|/[H]>, 64^3", "j", ("fig7_fig8.json", "sr.H.entry_max.64"), "{:.1e}", V("yes", 137, "SR 64^3 1.78e-12", "1.78e-12")),
+    ("Constraints", "SR: entry maximum of <|H|/[H]>, 128^3", "j", ("fig7_fig8.json", "sr.H.entry_max.128"), "{:.1e}", V("yes", 137, "128^3 2.00e-12", "2.00e-12")),
+    ("Constraints", "SR: entry maximum of <|M|/[M]>, 128^3", "j", ("fig7_fig8.json", "sr.M.entry_max.128"), "{:.1e}", V("yes", 137, "M 128^3 1.23e-5", "1.23e-5")),
+    ("Constraints", "USR: entry maximum of <|H|/[H]>, box mean removed, 128^3", "j", ("fig7_fig8.json", "usr.H0.entry_max.128"), "{:.1e}", V("yes", 138, "USR 128^3 box mean removed 2.25e-12", "2.25e-12")),
+    ("Constraints", "USR: entry maximum of <|H|/[H]> with the box mean, 128^3", "j", ("fig7_fig8.json", "usr.H.entry_max.128"), "{:.1e}", V("yes", 138, "with the box mean 3.25e-10", "3.25e-10")),
+    ("Constraints", "USR: order of that maximum, 64 to 128", "j", ("fig7_fig8.json", "usr.H.orders.64-128"), "{:.2f}", V("yes", 81, "41 (4.06)", "4.06")),
+    ("Constraints", "USR: largest 99th percentile of |H|/[H] over the cells (256^3)", "j", ("fig4_usr_contrast.json", "pct_H_p99_max"), "{:.1e}", V("rerun", 96, "42 (my subset of dumps gives 1.98e-11")),
+    ("Constraints", "USR: largest record mean of |M|/[M] (256^3)", "q", (RES, 265, "2.519e-2"), None, V("yes", 81, "43 (2.519e-2)")),
+    ("Constraints", "Paper II: Hamiltonian violation", "p", ("II", 539, r"($\sim 10^{-10}$)"), None, QP),
+    ("Constraints", "Paper II, Fig. 8a read off: SR plateau of <|H|/[H]>", "q", (RES, 180, "about 2e-11"), None, V("rerun", 97, "45, 46")),
+    ("Constraints", "Momentum constraint second order from (cells per shortest wavelength)", "q", ("tracks/E-stoch-inf/a4res/README.md", 85, "at least 12.8 cells"), None, V("rerun", 97, "45, 46")),
+    ("Constraints", "Sign flipped, SR: ratio of <|H|/[H]> to the proper run (smallest in the window)", "j", ("fig_signflip.json", "RNC256.H_ratio_min_entry"), "{:.1e}", V("yes", 81, "47 (7.4e4 max)", "7.4e4 (largest)")),
+    ("Constraints", "Sign flipped, SR: largest <|M|/[M]>", "j", ("fig_signflip.json", "RNC256.M_flip_max"), "{:.2f}", V("yes", 81, "48 (0.16)")),
+    ("Constraints", "Sign flipped, SR: largest <|H|/[H]>", "j", ("fig_signflip.json", "RNC256.H_flip_max"), "{:.1e}", V("yes", 54, "Absolute flipped H/[H] about 1e-7", "about 1e-7")),
+    ("Constraints", "Sign flipped, SR: N at the end of the flipped run", "j", ("fig_signflip.json", "RNC256.N_end_flip"), "{:.2f}", V("diff", 54, "overlap only N < 0.39", "common records to 0.39")),
+    ("Constraints", "Sign flipped, USR: median ratio of <|H|/[H]>", "j", ("fig_signflip.json", "U256nc.H_ratio_median_entry"), "{:.1e}", V("diff", 87, "49 (1.0e4)", "1.0e4")),
+    ("Constraints", "Sign flipped, USR: largest <|M|/[M]>", "j", ("fig_signflip.json", "U256nc.M_flip_max"), "{:.2f}", V("yes", 81, "50 (0.50)")),
+    ("Constraints", "Sign flipped, USR: largest <|H|/[H]>", "j", ("fig_signflip.json", "U256nc.H_flip_max"), "{:.1e}", V("yes", 54, "Absolute flipped H/[H] about 1e-7", "about 1e-7")),
+    ("Constraints", "SR per-cell constraint rows of the one-point figure", "pending", ("E-20261124-130529-da8c917",), None, NONE),
+    ("Constraints", "SR sign flip beyond the first e-fold", "pending", ("E-20261124-130629-61fe0b0",), None, NONE),
+    ("Constraints", "Paper II: a flipped sign gives", "p", ("II", 541, r"${\cal H}/[{\cal H}]\sim 10^{-5}$ and  ${\cal M}/[{\cal M}]\sim 1$"), None, QP),
     # --- extrinsic curvature
-    ("Extrinsic curvature", "SR: Delta[K] at N_f over N = 5.3 (median over shells)", "j", ("fig6a_sr_Kspec_P256v6.json", "K_last_over_N55.median"), "{:.3f}"),
-    ("Extrinsic curvature", "SR: Delta[Kt] at N_f over N = 4.4 (median)", "j", ("fig6a_sr_Kspec_P256v6.json", "Kt_last_over_N45.median"), "{:.1e}"),
-    ("Extrinsic curvature", "SR: Q/K at N_f (median)", "j", ("fig6a_sr_Kspec_P256v6.json", "Q_over_K_last.median"), "{:.1e}"),
-    ("Extrinsic curvature", "USR: Delta[K] at N_f over its maximum (median)", "j", ("fig6b_usr_Kspec.json", "K_last_over_max.median"), "{:.1e}"),
-    ("Extrinsic curvature", "USR: Q/K at N_f (median)", "j", ("fig6b_usr_Kspec.json", "Q_over_K_last.median"), "{:.1e}"),
-    ("Extrinsic curvature", "USR: shells with Q below K, N = 0.26-3.05", "q", ("tracks/E-stoch-inf/repro/figs/RESULTS.md", 152, "below 0.2 for 0.26 <= N <= 3.05"), None),
-    ("Extrinsic curvature", "USR: shells with Q below K from N = 7.27", "q", ("tracks/E-stoch-inf/repro/figs/RESULTS.md", 153, "0.98-1.0 from N = 7.27 to N_f"), None),
+    ("Extrinsic curvature", "SR: Delta[K] at N_f over N = 5.3 (median over shells)", "j", ("fig6a_sr_Kspec_P256v6.json", "K_last_over_N55.median"), "{:.3f}", V("rerun", 97, "54-60")),
+    ("Extrinsic curvature", "SR: Delta[Kt] at N_f over N = 4.4 (median)", "j", ("fig6a_sr_Kspec_P256v6.json", "Kt_last_over_N45.median"), "{:.1e}", V("rerun", 97, "54-60")),
+    ("Extrinsic curvature", "SR: Q/K at N_f (median)", "j", ("fig6a_sr_Kspec_P256v6.json", "Q_over_K_last.median"), "{:.1e}", V("rerun", 97, "54-60")),
+    ("Extrinsic curvature", "USR: Delta[K] at N_f over its maximum (median)", "j", ("fig6b_usr_Kspec.json", "K_last_over_max.median"), "{:.1e}", V("rerun", 97, "54-60")),
+    ("Extrinsic curvature", "USR: Q/K at N_f (median)", "j", ("fig6b_usr_Kspec.json", "Q_over_K_last.median"), "{:.1e}", V("rerun", 97, "54-60")),
+    ("Extrinsic curvature", "USR: shells with Q below K, N = 0.26-3.05", "q", (RES, 152, "below 0.2 for 0.26 <= N <= 3.05"), None, V("rerun", 97, "54-60")),
+    ("Extrinsic curvature", "USR: shells with Q below K from N = 7.27", "q", (RES, 153, "0.98-1.0 from N = 7.27 to N_f"), None, V("rerun", 97, "54-60")),
     # --- convergence
-    ("Convergence", "SR spectra: largest |1 - Delta_NR/Delta_lin|, 32^3", "j", ("fig7_fig8.json", "specconv.32.max"), "{:.1e}"),
-    ("Convergence", "the same, 64^3", "j", ("fig7_fig8.json", "specconv.64.max"), "{:.1e}"),
-    ("Convergence", "the same, 128^3", "j", ("fig7_fig8.json", "specconv.128.max"), "{:.1e}"),
-    ("Convergence", "SR: order of the entry maximum of H, 32 to 64", "j", ("fig7_fig8.json", "sr.H.orders.32-64"), "{:.2f}"),
-    ("Convergence", "SR: order of the entry maximum of M, 32 to 64", "j", ("fig7_fig8.json", "sr.M.orders.32-64"), "{:.2f}"),
-    ("Convergence", "256^3 rungs (SR spectra; SR and USR constraints)", "pending", ("E-20261124-130952-4be980b, E-20261124-130711-a5dec67",), None),
+    ("Convergence", "SR spectra: largest |1 - Delta_NR/Delta_lin|, 32^3", "j", ("fig7_fig8.json", "specconv.32.max"), "{:.1e}", V("diff", 142, "rungs 3.4e-3, 7.9e-5, 2.3e-6", "3.4e-3")),
+    ("Convergence", "the same, 64^3", "j", ("fig7_fig8.json", "specconv.64.max"), "{:.1e}", V("diff", 142, "rungs 3.4e-3, 7.9e-5, 2.3e-6", "7.9e-5")),
+    ("Convergence", "the same, 128^3", "j", ("fig7_fig8.json", "specconv.128.max"), "{:.1e}", V("diff", 142, "rungs 3.4e-3, 7.9e-5, 2.3e-6", "2.3e-6")),
+    ("Convergence", "SR: order of the entry maximum of H, 32 to 64", "j", ("fig7_fig8.json", "sr.H.orders.32-64"), "{:.2f}", V("yes", 137, "orders H 4.15 and M 3.25", "4.15")),
+    ("Convergence", "SR: order of the entry maximum of M, 32 to 64", "j", ("fig7_fig8.json", "sr.M.orders.32-64"), "{:.2f}", V("yes", 137, "orders H 4.15 and M 3.25", "3.25")),
+    ("Convergence", "256^3 rungs (SR spectra; SR and USR constraints)", "pending", ("E-20261124-130952-4be980b, E-20261124-130711-a5dec67",), None, NONE),
     # --- backreaction
-    ("Backreaction", "USR level 2 against 0: rms over the shells at N_f", "j", ("fig9_ablation.json", "r20_usr.rms"), "{:.1e}"),
-    ("Backreaction", "USR level 2 against 0: largest shell", "j", ("fig9_ablation.json", "r20_usr.max"), "{:.1e}"),
-    ("Backreaction", "USR level 2 against 0: fraction of shells positive", "j", ("fig9_ablation.json", "r20_usr.frac_pos"), "{:.2f}"),
-    ("Backreaction", "SR level 2 against 0 at N = 7.19: largest shell", "j", ("fig9_ablation_sr_t75.json", "r20_sr.max"), "{:.1e}"),
-    ("Backreaction", "SR level 2 against 0 at N = 7.19: rms for |n| <= 32", "j", ("fig9_ablation_sr_t75.json", "r20_sr.rms_n_le_32"), "{:.1e}"),
-    ("Backreaction", "SR level 2 against 0 at N_f", "pending", ("E-20261124-131359-49afe29",), None),
-    ("Backreaction", "SR level 1 against 0: largest shell", "j", ("fig9_ablation.json", "r10_sr.max"), "{:.1e}"),
-    ("Backreaction", "USR level 1 against 0: largest shell", "j", ("fig9_ablation.json", "r10_usr.max"), "{:.1e}"),
-    ("Backreaction", "level 0, noise on shells against on the mesh: largest SR shell", "j", ("fig9_ablation.json", "shells_vs_mesh_sr.max"), "{:.1e}"),
-    ("Backreaction", "Paper II: bound on level 2 against 0", "p", ("II", 520, r"$\lesssim  1$\textpertenthousand"), None),
-    ("Backreaction", "Review: level 1 against 0 falls per halving of the step by", "q", (CORE_MSG, 41, "falls by 16 per halving of the"), None),
-    ("Backreaction", "Review: level 2 against 0 equals the level-2 curve to", "q", (CORE_MSG, 43, "the level-2 curve to 1 per cent"), None),
+    ("Backreaction", "USR level 2 against 0: rms over the shells at N_f", "j", ("fig9_ablation.json", "r20_usr.rms"), "{:.1e}", V("yes", 81, "67 (1.04e-4)", "1.04e-4")),
+    ("Backreaction", "USR level 2 against 0: largest shell", "j", ("fig9_ablation.json", "r20_usr.max"), "{:.1e}", V("diff", 87, "68 (9.2e-4)", "9.2e-4 (all shells)")),
+    ("Backreaction", "USR level 2 against 0: fraction of shells positive", "j", ("fig9_ablation.json", "r20_usr.frac_pos"), "{:.2f}", V("yes", 82, "69 (0.52)")),
+    ("Backreaction", "SR level 2 against 0 at N = 7.19: largest shell", "j", ("fig9_ablation_sr_t75.json", "r20_sr.max"), "{:.1e}", V("diff", 87, "70 (1.4e-4)", "1.4e-4 (all shells)")),
+    ("Backreaction", "SR level 2 against 0 at N = 7.19: rms for |n| <= 32", "j", ("fig9_ablation_sr_t75.json", "r20_sr.rms_n_le_32"), "{:.1e}", V("diff", 88, "71 (1.75e-5)", "1.75e-5")),
+    ("Backreaction", "SR level 2 against 0 at N_f", "pending", ("E-20261124-131359-49afe29",), None, NONE),
+    ("Backreaction", "SR level 1 against 0: largest shell", "j", ("fig9_ablation.json", "r10_sr.max"), "{:.1e}", V("yes", 82, "73 (6.6e-7)")),
+    ("Backreaction", "USR level 1 against 0: largest shell", "j", ("fig9_ablation.json", "r10_usr.max"), "{:.1e}", V("yes", 82, "74 (7.0e-7)")),
+    ("Backreaction", "level 0, noise on shells against on the mesh: largest SR shell", "j", ("fig9_ablation.json", "shells_vs_mesh_sr.max"), "{:.1e}", V("yes", 82, "75 (1.33e-2)", "1.33e-2")),
+    ("Backreaction", "Paper II: bound on level 2 against 0", "p", ("II", 520, r"$\lesssim  1$\textpertenthousand"), None, QP),
+    ("Backreaction", "Review: level 1 against 0 falls per halving of the step by a factor", "q", (CORE_MSG, 41, "falls by 16 per halving of the", "16"), None, V("rerun", 97, "77, 78, 100")),
+    ("Backreaction", "Review: level 2 against 0 equals the level-2 curve to", "q", (CORE_MSG, 43, "the level-2 curve to 1 per cent", "1 per cent"), None, V("rerun", 97, "77, 78, 100")),
     # --- one patch
-    ("One patch", "Euler 0.01 background crosses the junction at N_b", "l", ("backgrounds.euler01.N_cross_phi_c",), "{:.4f}"),
-    ("One patch", "converged background: field at N_b = 12 (the plateau stop)", "l", ("backgrounds.exact.phi_at_12",), "{:.5f}"),
-    ("One patch", "junction phi_c of the potential", "q", ("tracks/E-stoch-inf/repro/langevin/README.md", 50, "phi_c = 9.056"), None),
-    ("One patch", "Euler 0.005 background: field at N_b = 12", "l", ("backgrounds.euler005.phi_at_12",), "{:.5f}"),
-    ("One patch", "converged background: half the paths lost by N_b", "l", ("variants.bg_exact.N_half_dead",), "{:.2f}"),
-    ("One patch", "Paper I: slope reached at", "p", ("I", 842, r"$\simeq 3.04$ efolds"), None),
-    ("One patch", "Paper I: step of the scheme", "p", ("I", 842, r"$0.01$-efolds steps"), None),
-    ("One patch", "Paper I: evolver named", "p", ("I", 836, "Stratonovich evolver"), None),
-    ("One patch", "Ito reading, width of alpha at N_b = 4", "l", ("variants.ito_naive.at.4.std_a",), "{:.4f}"),
-    ("One patch", "Ito reading, width of alpha at N_b = 6", "l", ("variants.ito_naive.at.6.std_a",), "{:.4f}"),
-    ("One patch", "Ito reading, width of N - N_b at N_b = 6", "l", ("variants.ito_naive.at.6.std_D",), "{:.4f}"),
-    ("One patch", "Stratonovich reading, width of alpha at N_b = 6", "l", ("variants.base.at.6.std_a",), "{:.4f}"),
-    ("One patch", "Stratonovich reading, width of N - N_b at N_b = 6", "l", ("variants.base.at.6.std_D",), "{:.4f}"),
-    ("One patch", "Paper I, figures read off: widths of alpha at 4, 5, 6", "q", ("tracks/E-stoch-inf/repro/langevin/README.md", 77, "0.117, 0.133, 0.121"), None),
-    ("One patch", "Paper I, figures read off: widths of N - N_b at 4, 5, 6", "q", ("tracks/E-stoch-inf/repro/langevin/README.md", 78, "0.190"), None),
-    ("One patch", "Ito reading, median skewness of alpha, N_b in [4.5, 6]", "l", ("variants.ito_naive.median_4.5_6.skew_a",), "{:.2f}"),
-    ("One patch", "Stratonovich reading, the same", "l", ("variants.base.median_4.5_6.skew_a",), "{:.2f}"),
-    ("One patch", "Paper I, figures read off: skewness of alpha", "q", ("tracks/E-stoch-inf/repro/langevin/README.md", 78, "kappa3(alpha) ~ 1.1"), None),
-    ("One patch", "Stratonovich reading, mean of N - N_b at N_b = 6", "l", ("variants.base.at.6.mean_D",), "{:.3f}"),
-    ("One patch", "Ito reading, mean of N - N_b at N_b = 6", "l", ("variants.ito_naive.at.6.mean_D",), "{:.4f}"),
-    ("One patch", "Ito reading at step 0.001, width of alpha at N_b = 4", "l", ("variants.naive_h001.at.4.std_a",), "{:.4f}"),
-    ("One patch", "linear check at N_b = 3: width of alpha, run over linear theory", "l", ("linear.3.run_std_a", "/", "linear.3.lin_std_a"), "{:.4f}"),
-    ("One patch", "alpha^3 set to 1: skewness of alpha at N_b = 6", "l", ("variants.a3one.at.6.skew_a",), "{:.2f}"),
-    ("One patch", "Ito term: drift measured by Monte Carlo", "e", ("langevin/langevin.json", "mc.measured_drift"), "{:.4f}"),
-    ("One patch", "Ito term: standard error of that drift", "e", ("langevin/langevin.json", "mc.measured_drift_sem"), "{:.4f}"),
-    ("One patch", "Ito term: alpha^5 prediction", "e", ("langevin/langevin.json", "mc.pred_alpha5"), "{:.4f}"),
-    ("One patch", "Ito term: alpha^3 prediction (as printed)", "e", ("langevin/langevin.json", "mc.pred_alpha3_P0"), "{:.4f}"),
-    ("One patch", "Paper I: Ito term as printed", "p", ("I", 817, r"\frac{\alpha^3}{\dot{\phi_b}^2}"), None),
-    ("One patch", "USR noise amplitude over printed, sigma = 0.1", "e", ("noise_amp/noise_amp.json", "USR.rows.2.amp_ibp_over_printed"), "{:.2e}"),
-    ("One patch", "the same, sigma = 0.5", "e", ("noise_amp/noise_amp.json", "USR.rows.4.amp_ibp_over_printed"), "{:.2e}"),
-    ("One patch", "SR noise amplitude over printed, sigma = 0.1", "e", ("noise_amp/noise_amp.json", "SR.rows.2.amp_ibp_over_printed"), "{:.3f}"),
+    ("One patch", "Euler 0.01 background crosses the junction at N_b", "l", ("backgrounds.euler01.N_cross_phi_c",), "{:.4f}", V("yes", 41, "Euler 0.01 crosses at 3.04353", "3.04353")),
+    ("One patch", "converged background: field at N_b = 12 (the plateau stop)", "l", ("backgrounds.exact.phi_at_12",), "{:.5f}", V("yes", 40, "DOP853 rtol 1e-12: 9.0640187", "9.0640187")),
+    ("One patch", "junction phi_c of the potential", "q", (LVR, 50, "phi_c = 9.056"), None, V("yes", 82, "79-82")),
+    ("One patch", "Euler 0.005 background: field at N_b = 12", "l", ("backgrounds.euler005.phi_at_12",), "{:.5f}", V("yes", 40, "Euler 0.005: 9.05997")),
+    ("One patch", "converged background: half the paths lost by N_b", "l", ("variants.bg_exact.N_half_dead",), "{:.2f}", V("diff", 88, "83 (paths half lost at 5.36-5.38 vs 4.80)", "5.36-5.38")),
+    ("One patch", "Paper I: slope reached at", "p", ("I", 842, r"$\simeq 3.04$ efolds"), None, Q0),
+    ("One patch", "Paper I: step of the scheme", "p", ("I", 842, r"$0.01$-efolds steps"), None, Q0),
+    ("One patch", "Paper I: evolver named", "p", ("I", 836, "Stratonovich evolver"), None, Q0),
+    ("One patch", "Ito reading, width of alpha at N_b = 4", "l", ("variants.ito_naive.at.4.std_a",), "{:.4f}", V("yes", 42, "Ito 0.1168, 0.1321, 0.1210", "0.1168")),
+    ("One patch", "Ito reading, width of alpha at N_b = 6", "l", ("variants.ito_naive.at.6.std_a",), "{:.4f}", V("yes", 42, "Ito 0.1168, 0.1321, 0.1210", "0.1210")),
+    ("One patch", "Ito reading, width of N - N_b at N_b = 6", "l", ("variants.ito_naive.at.6.std_D",), "{:.4f}", V("yes", 42, "Ito 0.0425, 0.1494, 0.1851", "0.1851")),
+    ("One patch", "Stratonovich reading, width of alpha at N_b = 6", "l", ("variants.base.at.6.std_a",), "{:.4f}", V("yes", 42, "0.1450 (+19 % at 6)", "0.1450")),
+    ("One patch", "Stratonovich reading, width of N - N_b at N_b = 6", "l", ("variants.base.at.6.std_D",), "{:.4f}", V("yes", 42, "0.2169", "0.2169")),
+    ("One patch", "Paper I, figures read off: widths of alpha at 4, 5, 6", "q", (LVR, 77, "0.117, 0.133, 0.121"), None, V("yes", 42, "0.117, 0.133, 0.122", "0.117, 0.133, 0.122")),
+    ("One patch", "Paper I, figures read off: width of N - N_b at 6", "q", (LVR, 78, "0.190"), None, V("yes", 42, "0.042, 0.150, 0.188", "0.188")),
+    ("One patch", "Ito reading, median skewness of alpha, N_b in [4.5, 6]", "l", ("variants.ito_naive.median_4.5_6.skew_a",), "{:.2f}", V("diff", 42, "Ito 1.116 +- 0.012", "1.116 +- 0.012")),
+    ("One patch", "Stratonovich reading, the same", "l", ("variants.base.median_4.5_6.skew_a",), "{:.2f}", V("yes", 42, "Stratonovich 1.562 +- 0.026", "1.562 +- 0.026")),
+    ("One patch", "Paper I, figures read off: skewness of alpha", "q", (LVR, 78, "kappa3(alpha) ~ 1.1"), None, V("yes", 42, "P0 Fig. 2 about 1.1", "about 1.1")),
+    ("One patch", "Stratonovich reading, mean of N - N_b at N_b = 6", "l", ("variants.base.at.6.mean_D",), "{:.3f}", V("yes", 42, "Stratonovich 0.084", "0.084")),
+    ("One patch", "Ito reading, mean of N - N_b at N_b = 6", "l", ("variants.ito_naive.at.6.mean_D",), "{:.4f}", V("yes", 42, "Mean N - N_b at 6: Ito 0.003", "0.003")),
+    ("One patch", "Ito reading at step 0.001, width of alpha at N_b = 4", "l", ("variants.naive_h001.at.4.std_a",), "{:.4f}", V("yes", 82, "95-99")),
+    ("One patch", "linear check at N_b = 3: width of alpha, run over linear theory", "l", ("linear.3.run_std_a", "/", "linear.3.lin_std_a"), "{:.4f}", V("rerun", 97, "77, 78, 100")),
+    ("One patch", "alpha^3 set to 1: skewness of alpha at N_b = 6", "l", ("variants.a3one.at.6.skew_a",), "{:.2f}", V("diff", 89, "101 (alpha^3 -> 1 skewness -0.74, one seed, vs -0.96)", "-0.74 (one seed)")),
+    ("One patch", "Ito term: drift measured by Monte Carlo", "e", ("langevin/langevin.json", "mc.measured_drift"), "{:.4f}", V("yes", 43, "drift 0.32039 +- 0.00023 at alpha0 = 2", "0.32039 +- 0.00023")),
+    ("One patch", "Ito term: standard error of that drift", "e", ("langevin/langevin.json", "mc.measured_drift_sem"), "{:.4f}", V("yes", 82, "102-105")),
+    ("One patch", "Ito term: alpha^5 prediction", "e", ("langevin/langevin.json", "mc.pred_alpha5"), "{:.4f}", V("yes", 82, "102-105")),
+    ("One patch", "Ito term: alpha^3 prediction (as printed)", "e", ("langevin/langevin.json", "mc.pred_alpha3_P0"), "{:.4f}", V("yes", 82, "102-105")),
+    ("One patch", "Paper I: Ito term as printed", "p", ("I", 817, r"\frac{\alpha^3}{\dot{\phi_b}^2}"), None, Q0),
+    ("One patch", "USR noise amplitude over printed, sigma = 0.1", "e", ("noise_amp/noise_amp.json", "USR.rows.2.amp_ibp_over_printed"), "{:.2e}", V("yes", 44, "3.3333e-3", "3.3333e-3")),
+    ("One patch", "the same, sigma = 0.5", "e", ("noise_amp/noise_amp.json", "USR.rows.4.amp_ibp_over_printed"), "{:.2e}", V("yes", 44, "8.3332e-2", "8.3332e-2")),
+    ("One patch", "SR noise amplitude over printed, sigma = 0.1", "e", ("noise_amp/noise_amp.json", "SR.rows.2.amp_ibp_over_printed"), "{:.3f}", V("diff", 44, "1.063 at sigma = 0.1 with eps1 = 0.0124, 1.123 with eps1 = 0.0244", "1.063 (eps1 = 0.0124), 1.123 (eps1 = 0.0244)")),
+    ("One patch", "SR: eps1 of our background at that crossing", "e", ("noise_amp/noise_amp.json", "SR.rows.2.eps1"), "{:.1e}", NONE),
 ]
 
 
@@ -235,6 +276,34 @@ def printed(s):
     return "``" + s + "''"
 
 
+CHECK_WORD = {"yes": "yes", "diff": "differs", "reach": "beyond reach", "quote": "quote",
+              "rerun": "rerun only", "none": "none"}
+
+
+def read_line(path, line):
+    """A committed line of the repository, or of a branch for paths given as git:<ref>:<path>."""
+    if path.startswith("git:"):
+        ref, gpath = path[4:].split(":", 1)
+        body = subprocess.run(["git", "-C", REPO, "show", f"{ref}:{gpath}"], check=True,
+                              capture_output=True, text=True).stdout
+        path = f"{gpath} (branch {ref})"
+    else:
+        body = open(os.path.join(REPO, path)).read()
+    return path, body.split("\n")[line - 1]
+
+
+def check_text(ck):
+    """The check column: the verifier's verdict, its value where it gives one, and the line of its report."""
+    code, line, needle, shown = ck
+    if code == "none":
+        return "none", ""
+    _, text = read_line(VERIFIER, line)
+    if needle not in text:
+        sys.exit(f"verifier string not on its line: {VERIFIER}:{line}: {needle!r}")
+    word = CHECK_WORD[code]
+    return word, (f"{word}: {shown}" if shown else word) + f" [{line}]"
+
+
 def main():
     out = sys.argv[1]
     run_id = os.path.basename(os.path.normpath(out))
@@ -243,7 +312,7 @@ def main():
     sha_ok(EQDIR, "langevin/langevin.json")
     sha_ok(EQDIR, "noise_amp/noise_amp.json")
     rows = []
-    for sec, qty, kind, args, fmt in ROWS:
+    for sec, qty, kind, args, fmt, ck in ROWS:
         if kind == "j":
             fn, path = args
             p = os.path.join(out, "lattice", fn)
@@ -265,18 +334,11 @@ def main():
             val = fmt.format(get_dotted(d, args[1]))
             src = f"run {EQRUN}"
         elif kind == "q":
-            path, line, s = args
-            if path.startswith("git:"):
-                ref, gpath = path[4:].split(":", 1)
-                body = subprocess.run(["git", "-C", REPO, "show", f"{ref}:{gpath}"], check=True,
-                                      capture_output=True, text=True).stdout
-                path = f"{gpath} (branch {ref})"
-            else:
-                body = open(os.path.join(REPO, path)).read()
-            text = body.split("\n")[line - 1]
+            path, line, s = args[:3]
+            path, text = read_line(path, line)
             if s not in text:
                 sys.exit(f"quote not on its line: {path}:{line}: {s!r}")
-            val = s
+            val = args[3] if len(args) > 3 else s
             src = f"{path}:{line}"
         elif kind == "p":
             pap, line, s = args
@@ -288,10 +350,11 @@ def main():
         elif kind == "pending":
             val = "PENDING"
             src = "continued run " + args[0]
-        rows.append((sec, qty, val, src))
+        code, ctext = check_text(ck)
+        rows.append((sec, qty, val, src, code, ctext))
     with open(os.path.join(out, "tables", "ledger.csv"), "w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["section", "quantity", "value", "source"])
+        w.writerow(["section", "quantity", "value", "source", "check", "check_detail"])
         w.writerows(rows)
     # LaTeX: one table per section; values in \texttt where they are printed strings
     secs = []
@@ -301,10 +364,12 @@ def main():
     lines = []
     for k, sec in enumerate(secs):
         lab = "ledger" + "".join(c for c in sec.lower() if c.isalpha())
-        lines += [r"\begin{table*}", r"\caption{Ledger, " + sec.lower() + r". Each value with its source: "
-                  r"a registered run, a committed line of the program's records, or a line of a paper's source.}",
-                  r"\label{tab:" + lab + "}", r"\footnotesize", r"\begin{tabular}{p{0.36\textwidth}p{0.2\textwidth}p{0.38\textwidth}}",
-                  r"\toprule", r"Quantity & Value & Source \\", r"\midrule"]
+        lines += [r"\begin{table*}", r"\caption{Ledger, " + sec.lower() + ". " + SECNOTE[sec]
+                  + r" Each value with its source (a registered run, a committed line of the program's"
+                  r" records, or a line of a paper's source) and the independent check (Appendix~\ref{app:ledger}).}",
+                  r"\label{tab:" + lab + "}", r"\footnotesize",
+                  r"\begin{tabular}{p{0.29\textwidth}p{0.14\textwidth}p{0.17\textwidth}p{0.29\textwidth}}",
+                  r"\toprule", r"Quantity & Value & Check & Source \\", r"\midrule"]
         for r in rows:
             if r[0] != sec:
                 continue
@@ -316,12 +381,16 @@ def main():
                 v = r"\pending{continued run}"
             else:
                 v = tex_escape(v)
+            c = tex_escape(r[5]) if r[5] else "---"
             s = tex_escape(r[3])
-            lines.append(f"{q} & {v} & {s} \\\\")
+            lines.append(f"{q} & {v} & {c} & {s} \\\\")
         lines += [r"\bottomrule", r"\end{tabular}", r"\end{table*}", ""]
     with open(os.path.join(out, "tables", "ledger.tex"), "w") as f:
         f.write("\n".join(lines))
-    print(f"ledger: {len(rows)} rows in {len(secs)} tables")
+    counts = {w: sum(1 for r in rows if r[4] == w) for w in CHECK_WORD.values()}
+    with open(os.path.join(out, "tables", "ledger_checks.json"), "w") as f:
+        json.dump(counts, f, indent=1)
+    print(f"ledger: {len(rows)} rows in {len(secs)} tables; checks {counts}")
 
 
 if __name__ == "__main__":

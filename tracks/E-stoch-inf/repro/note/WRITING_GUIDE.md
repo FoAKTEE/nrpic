@@ -121,7 +121,7 @@ hits inside `scripts/` are accepted under exception 1):
 | spectra (SR, USR) | entering modes rise to the Mukhanov-Sasaki spectrum and freeze | 256^3, k_max = 64 dk |
 | one-point contrasts (USR) | entry, double feature of the field, late momentum, R grows and freezes; constraints | 256^3 |
 | K spectra | isotropic and anisotropic extrinsic curvature through the crossings | 256^3 |
-| convergence | spectra converge at sixth order; constraint plateaus | 32^3-128^3, k_max = 8 dk |
+| convergence | spectra converge at close to sixth order (between five and six with the verifier's reference); constraint plateaus | 32^3-128^3, k_max = 8 dk |
 | ablation | level 2 against 0 near one part in ten thousand; level 1 is a scheme difference | 256^3 |
 | sign flip | flipping the momentum source makes the constraints first order | 256^3 |
 | Langevin background | Euler at step 0.01 reaches the slope, the converged background stops on the plateau | Table II |
