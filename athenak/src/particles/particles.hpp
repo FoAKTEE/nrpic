@@ -26,7 +26,7 @@
 
 // constants that enumerate ParticlesPusher options
 enum class ParticlesPusher {drift, leap_frog, lagrangian_tracer, lagrangian_mc,
-                            nrpic_midpoint, nrpic_boris, nrpic_newton};
+                            nrpic_midpoint, nrpic_boris, nrpic_newton, nrpic_vlasov};
 
 // constants that enumerate ParticleTypes
 enum class ParticleType {cosmic_ray, nrpic};
@@ -486,6 +486,20 @@ class Particles {
   void NrpicNewtonWriteHistory(Real time, int ncycle, bool header);
   void NrpicNewtonWriteRestart(const std::string &fname);
   void NrpicNewtonReadRestart(const std::string &fname);
+
+  // ---- GR-LBV direct Vlasov solver (<particles> pusher = vlasov_mfm; nrpic_vlasov.cpp) ----
+  struct VlasovState *vlv = nullptr;
+  void NrpicVlasovInit(ParameterInput *pin);
+  void NrpicVlasovFree();
+  void NrpicVlasovLoadFile(const std::string &fname);
+  void NrpicVlasovInitializeOnMesh();
+  void NrpicVlasovPush();
+  void NrpicVlasovExcise();
+  void NrpicVlasovDepositLoop(const DvceArray5D<Real> &tm, Real &sum_mw_out);
+  void NrpicVlasovWriteHistory(Real time, int ncycle, bool header);
+  void NrpicVlasovWriteSnapshot(Real time);
+  void NrpicVlasovWriteRestart(const std::string &fname);
+  void NrpicVlasovReadRestart(const std::string &fname);
 
   // ---- Fourier Poisson solver of the Newtonian mode (particles/nrpic_newton_fft.cpp):
   // <particles> newton_poisson = fft on a uniform mesh that is periodic in all directions

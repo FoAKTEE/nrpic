@@ -142,6 +142,7 @@ add_executable(
         particles/nrpic_newton.cpp
         particles/nrpic_newton_fft.cpp
         particles/nrpic_newton_groups.cpp
+        particles/nrpic_vlasov.cpp
         particles/nrpic_idsolve.cpp
         particles/nrpic_accretion.cpp
         particles/nrpic_refine.cpp

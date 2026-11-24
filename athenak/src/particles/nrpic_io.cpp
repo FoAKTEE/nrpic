@@ -1007,6 +1007,10 @@ void Particles::NrpicWriteTrajectories(Real time, bool truncate) {
 //!   (proper time of each particle; affine parameter of a null particle)
 
 void Particles::NrpicWriteSnapshot(Real time) {
+  if (pusher == ParticlesPusher::nrpic_vlasov) {
+    NrpicVlasovWriteSnapshot(time);
+    return;
+  }
   // several ranks: rank 0 writes, holding all particles in tag order meanwhile
   if (!NrpicMpiGatherBegin()) { snap_number++; return; }
   char number[16];
@@ -1103,6 +1107,10 @@ void Particles::NrpicLoadParticleFile(const std::string &fname) {
 void Particles::NrpicCreateParticles() {
   // several ranks: rank 0 reads; the first ownership pass distributes the particles
   if (nr_multirank && global_variable::my_rank != 0) return;
+  if (pusher == ParticlesPusher::nrpic_vlasov) {
+    NrpicVlasovLoadFile(nr_particle_file);
+    return;
+  }
   if (!nr_particle_file.empty()) {
     NrpicLoadParticleFile(nr_particle_file);
     return;
@@ -1207,6 +1215,7 @@ void Particles::NrpicWriteRestart(const std::string &fname) {
   std::fclose(fp);
   NrpicMpiGatherEnd();
   if (nropt.newton) { NrpicNewtonWriteRestart(fname + ".nwt"); }
+  if (pusher == ParticlesPusher::nrpic_vlasov) { NrpicVlasovWriteRestart(fname + ".vlv"); }
 }
 
 //----------------------------------------------------------------------------------------
@@ -1309,6 +1318,7 @@ void Particles::NrpicReadRestart(const std::string &fname) {
   }
   if (nr_multirank) { NrpicMpiShareRestart(); }      // several ranks
   if (nropt.newton) { NrpicNewtonReadRestart(fname + ".nwt"); }
+  if (pusher == ParticlesPusher::nrpic_vlasov) { NrpicVlasovReadRestart(fname + ".vlv"); }
 }
 
 //----------------------------------------------------------------------------------------
@@ -1365,6 +1375,9 @@ void Particles::NrpicStartup(bool res_flag) {
   if (nropt.hist_dcycle > 0) {
     NrpicWriteHistory(pm->time, pm->ncycle, true);
     if (nropt.newton) { NrpicNewtonWriteHistory(pm->time, pm->ncycle, true); }
+    if (pusher == ParticlesPusher::nrpic_vlasov) {
+      NrpicVlasovWriteHistory(pm->time, pm->ncycle, true);
+    }
   }
   NrpicAccWriteHistory(pm->time, pm->ncycle, true);
   if (nropt.traj_dcycle > 0 && nropt.traj_ntrack > 0) {
@@ -1407,6 +1420,9 @@ TaskStatus Particles::NrpicDiagnostics(Driver *pdriver, int stage) {
   if (nropt.hist_dcycle > 0 && (ncyc % nropt.hist_dcycle == 0)) {
     NrpicWriteHistory(tnew, ncyc, false);
     if (nropt.newton) { NrpicNewtonWriteHistory(tnew, ncyc, false); }
+    if (pusher == ParticlesPusher::nrpic_vlasov) {
+      NrpicVlasovWriteHistory(tnew, ncyc, false);
+    }
   }
   {
     const int dc = (acc.dcycle > 0) ? acc.dcycle : nropt.hist_dcycle;

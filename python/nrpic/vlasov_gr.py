@@ -171,7 +171,11 @@ def face_triad(g: np.ndarray, A_cov: np.ndarray):
         raise ValueError("Zero face area covector")
     e1 = A_up / normA
     # Pick coordinate axis least aligned with e1 (largest Euclidean residual)
-    k0 = int(np.argmin(np.abs(e1)))
+    k0 = 0
+    if abs(e1[1]) + 1e-10 < abs(e1[0]):
+        k0 = 1
+    if abs(e1[2]) + 1e-10 < abs(e1[k0]):
+        k0 = 2
     v = np.zeros(3, dtype=np.float64)
     v[k0] = 1.0
     proj = float(v @ g @ e1)
@@ -2175,7 +2179,7 @@ def _update_3d_geometry(st: MFM3DState):
     for a in range(N):
         h = float(st.h[a])
         ra = r_all[a]
-        for _ in range(15):
+        for _ in range(45):
             q = ra / h
             w = np.where(
                 q < 1.0,
@@ -2184,10 +2188,10 @@ def _update_3d_geometry(st: MFM3DState):
             ) / (math.pi * h * h * h)
             nbar = float(np.sum(w))
             h_new = (1.0 / max(nbar, 1e-300)) ** (1.0 / 3.0)
-            if abs(h_new - h) < 1e-13 * h:
+            if abs(h_new - h) < 1e-14 * h:
                 h = h_new
                 break
-            h = 0.5 * (h + h_new)
+            h = 0.2 * h + 0.8 * h_new
         st.h[a] = h
         q = ra / h
         w = np.where(

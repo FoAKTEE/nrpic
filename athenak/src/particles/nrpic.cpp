@@ -297,6 +297,7 @@ void Particles::NrpicInit(ParameterInput *pin) {
   NrpicPerturbInit(pin);    // radial force during an interval (nrpic_perturb.cpp)
   if (nropt.newton) { NrpicNewtonInit(pin); }
   NrpicIdSolveInit(pin);    // initial-data solver
+  if (pusher == ParticlesPusher::nrpic_vlasov) { NrpicVlasovInit(pin); }
 }
 
 //----------------------------------------------------------------------------------------
@@ -411,6 +412,11 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   if (mesh_metric && !metric_is_static) {
     NrpicFillMetric(met1);
     if (nropt.interp_bspline) { NrpicSharpenMetric(met1, met1s); }
+  }
+  if (pusher == ParticlesPusher::nrpic_vlasov) {
+    NrpicVlasovPush();
+    NrpicAccAfterPush();
+    return TaskStatus::complete;
   }
   push_maxit = 0;
   push_unconverged = 0;
@@ -709,6 +715,10 @@ void Particles::NrpicRemoveFlagged() {
 //! \brief removes excised and escaped particles and updates the MeshBlock of the others
 
 TaskStatus Particles::NrpicExcise(Driver *pdriver, int stage) {
+  if (pusher == ParticlesPusher::nrpic_vlasov) {
+    NrpicVlasovExcise();
+    return TaskStatus::complete;
+  }
   acc_after_push = true;
   if (nropt.metric == NrpicMetric::mesh) {
     NrpicAssignBlocks();
@@ -1118,6 +1128,9 @@ void Particles::NrpicDepositSources() {
     sum_mw = smw;
   }
   thread_dep.End(dep);
+  if (pusher == ParticlesPusher::nrpic_vlasov) {
+    NrpicVlasovDepositLoop(tm, sum_mw);
+  }
   if (nr_multirank) { NrpicMpiDepositRemote(); }     // several ranks: clouds across them
 
   // Compensation of the cloud (deposit_comp_c = c > 0): one pass (-c, 1+2c, -c)^3 over
@@ -1601,7 +1614,10 @@ TaskStatus Particles::NrpicDeposit(Driver *pdriver, int stage) {
 
 void Particles::NrpicInitializeSources() {
   if (nr_multirank) { NrpicMpiUpdateCounts(); }      // several ranks: particle numbers
-  if (nropt.metric != NrpicMetric::mesh) return;
+  if (nropt.metric != NrpicMetric::mesh) {
+    if (pusher == ParticlesPusher::nrpic_vlasov) { NrpicVlasovInitializeOnMesh(); }
+    return;
+  }
   if (nropt.newton) {
     NrpicNewtonInitialize();
     return;
@@ -1612,8 +1628,12 @@ void Particles::NrpicInitializeSources() {
   }
   NrpicFillMetric(met1);
   if (nropt.interp_bspline) { NrpicSharpenMetric(met1, met1s); }
-  NrpicAssignBlocks();
-  NrpicRemoveFlagged();
+  if (pusher == ParticlesPusher::nrpic_vlasov) {
+    NrpicVlasovInitializeOnMesh();
+  } else {
+    NrpicAssignBlocks();
+    NrpicRemoveFlagged();
+  }
   if (nropt.deposit) {
     // the mesh may have changed: the sources of the previous deposit are not usable.
     // Two deposits give the adaptive level cap a density estimate on the new mesh.

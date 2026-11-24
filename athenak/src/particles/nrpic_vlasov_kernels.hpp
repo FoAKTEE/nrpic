@@ -116,8 +116,8 @@ bool FaceTriad(const Real g[3][3], const Real A_cov[3],
   Real e1[3] = {A_up[0] / normA, A_up[1] / normA, A_up[2] / normA};
 
   int k0 = 0;
-  if (fabs(e1[1]) < fabs(e1[k0])) k0 = 1;
-  if (fabs(e1[2]) < fabs(e1[k0])) k0 = 2;
+  if (fabs(e1[1]) + 1.0e-10 < fabs(e1[k0])) k0 = 1;
+  if (fabs(e1[2]) + 1.0e-10 < fabs(e1[k0])) k0 = 2;
   Real v[3] = {0.0, 0.0, 0.0};
   v[k0] = 1.0;
   const Real proj = MatVecDot3(v, g, e1);
