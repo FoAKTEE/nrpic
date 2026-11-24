@@ -262,3 +262,28 @@ curve, constraint means at 1e-9 (H) and 1e-6 (M) until t = 0.54). [VERIFIED by t
   track (6e-15 with f = 1/3); the track runs into the last steps before the guard stop, where the
   fields blow up, and the drift was not restricted to t < 0.54 [TO VERIFY before quoting it].
 - The guard stop at t = 0.578 keeps no cause (R18); it does not touch the observable.
+
+## 2026-11-24 06:20 PST (lead of batch 11): L2 of series 2 read; series 3 predicted
+
+Series 2 = run B-20261124-133702-4a06a52 (L2 cases ended; S3_n256 still running when this was
+written). Read from `L2_n*/rays.json` (the summary script runs when S3 ends):
+- Every L2 case reached tlim = 10 (wall 22, 67, 267 s); 13, 14, 14 of 61 A rays and all 61 B rays
+  crossed (P9' part "at least eight A rays": HOLDS). Roots: s_A = -0.920, -0.919, -0.922 and
+  s_B = 0.1997, 0.2011, 0.2015 at N_y = 32, 64, 128; arrival t_A = 6.55-6.56, t_B = 3.08-3.09
+  (a about 9.9 at the end).
+- Delta (cubic shooting) -0.179, -0.159, -0.322; Delta (quadratic) -0.717, -0.672, -0.732. The two
+  interpolations of the same fan differ by 0.4-0.5: the A fan (spacing 0.078 in s) moves the miss
+  by 1 to 2.3 per ray, and t and k interpolated across four or three rays at the root disagree
+  (t_A 6.545 against 6.710 at N_y = 64). P9' NOT JUDGED: series 2 gives no reliable number.
+  Design error, recorded: the fan was widened for the root (series 1) but not refined for the
+  interpolation.
+- Series 3 (`inputs/series3.txt`): the same cases with absolute fans about the roots, A -0.92 +-
+  0.04 with 41 rays (spacing 0.002), B 0.200 +- 0.01 with 21 rays (spacing 0.001).
+
+Predictions for series 3 [JUDGEMENT], before it runs:
+- P9''a: at every N_y the A and B roots lie inside the fans, and the cubic and quadratic
+  shootings give Delta within 1e-3 of each other. Refuted otherwise (then the miss function is
+  not smooth at that scale, e.g. several images).
+- P9''b: Delta converges in N_y (|Delta(64) - Delta(128)| < |Delta(32) - Delta(64)|).
+- P9 (unchanged from 2026-11-20): Delta within max(3 x own error, 0.01) of CosmoGRaPH's -0.8183
+  (draft.tex:360) and away from -0.619 and -0.68. Refuted if the extrapolated Delta lies outside.
