@@ -207,3 +207,109 @@ phase. PREDICTION HELD (rms below 1e-2, no stop). The second-order part grows by
 ten while R grows by 5600: not the naive scaling; not investigated further.
 Pi_b at the end 2.70e-7 in both (from 3.24e-2 at t*): the local Z falls by 1.4e10 and
 the division Pi_R/Z stays finite.
+
+## Entry 6 (2026-11-24 05:05 PST): review of the diff on Fable (decision 0029 item 2), state and plan
+
+Session on Fable, batch R2. Worktree merged with main (bc3e4ca4; merge d9f489db); the
+source of the branch is that of 6ca93cba (`git diff 6ca93cba HEAD -- athenak/` empty; the
+published executables equal the builds of the worktree, sha256 108e8065.. cpu, 46810949..
+card). Read: the diff of the six source files against main, the whole of
+`scalar_field_noise.cpp`, `scalar_field.cpp`, `scalar_field_rhs.cpp`, `scalar_field_io.cpp`,
+`scalar_field_slice.cpp`, `particles/nrpic_guard.cpp`, `bvals/bvals_cc.cpp` (variable
+count), P1:164-196, 220-323, 474-524, 697-711, 776-790, the design note and entries 0-5.
+
+State of Track E's runs with 6ca93cba (read-only, `scratch/E-stoch-inf/repro_scope_seq/
+state.tsv` and the chain logs): card smoke T5SMK passed (E-20261123-090718-6203c87,
+level 2 / level 0 wall per cycle 1.16 SR and 1.14 USR at 64^3); five of the six 256^3
+runs ended at tlim; AL2S (slow roll, level 2, E-20261123-152119-38957ba) stopped at cycle
+1227 of 1386 with MAX_SEGMENTS = 2 after a preempted first segment. Throughput on the
+card at 256^3, from the chain logs: level 0 on the mesh 1.127e7 zone-cycles/s (AL0S),
+level 1 on the mesh 1.123e7 (AL1S), level 2 6.91e6 (AL2S): level 2 costs +63 per cent of
+a cycle against level 0 on the mesh, not the +5 to +10 per cent of the design note
+(section 7), and that is why AL2S did not fit two segments.
+
+Review by reading and derivation (verdicts; tests follow):
+1. Well-posed form [VERIFIED by derivation]. With Z = 9 phidot_b^2/K_b^2 = phidot_b^2/H^2
+   = 2 eps1 Mpl^2 (P1:171) and alpha_b = 1, beta = 0, P1:316-317 is Pi_R = Z dR/dt,
+   d(Z dR/dt)/dt = -3 H Z dR/dt + Z a^-2 lap R, i.e. R'' + (3 H + Z'/Z) R' + (k/a)^2 R = 0
+   with Z'/Z = eps1'/eps1 = -eps2 H in the convention of P1:171: eq. (Req), P1:183. The
+   code's pair (d_t R = beta.dR + alpha Pi_R/Z, d_t Pi_R = beta.dPi_R + alpha (K Pi_R +
+   Z psi^-4 gt^ij d_i d_j R)) is that system with the code's sign of the shift. Second
+   order in space, first in time, principal part d_t^2 R = alpha^2 gamma^ij d_i d_j R:
+   a wave equation on the light cone of the local metric for Z > 0. Z stays outside the
+   derivative, as printed.
+2. Reading of phidot_b as Pi [VERIFIED as the right one]. (i) P1:237 sets alpha_b = 1 in
+   the perturbation theory, so phidot_b is the proper-time derivative of the background;
+   (ii) P1:485 lists the background input of the authors' code as (phi_b, Pi_b, K_b, X_b):
+   the momentum, not a coordinate-time derivative; (iii) with a uniform lapse alpha_b(t)
+   the printed system reduces to eq. (Req) in proper time only with phidot_b = dphi_b/dtau:
+   with phidot_b = d_0 phi_b = alpha_b Pi_b it becomes d/dtau(alpha_b^2 Z dR/dtau) = ...,
+   an extra friction 2 dln alpha_b/dtau at ZEROTH order. In the gauge of the paper and of
+   every run of Track E (alpha = 1, beta = 0, all gauge coefficients zero) the two readings
+   are the same number in every cell. The other reading would change nothing there and
+   would be wrong elsewhere.
+3. Laplacian [JUDGEMENT stands; the claim "of second order" in the design note is true
+   but is not an argument, level 2 as a whole is of second order]. Three readings:
+   F = psi^-4 delta^ij d_i d_j R (only X_b promoted, the list of P1:323 and P1:487),
+   M = psi^-4 gt^ij d_i d_j R (implemented), C = D^i D_i R. At the order the paper derives
+   (first: P1:496, 790) all three are the same equation; they differ by (first-order
+   metric perturbation) x (derivatives of R), the order of the level-2 effect itself, for
+   which the paper gives a heuristic (P1:323) and no derivation. The print has partial
+   derivatives where the field equation on the same page has covariant ones (P1:224,
+   291-292): C is not what is printed. M and C share the principal part (the light cone of
+   the evolved metric); F has the cone of the conformally flat metric. M is kept as the
+   default. What the others change is measured below (R2), with a prediction: on the
+   slice and through the kicks delta K/K, delta chi/chi and gt_ij - delta_ij are all of
+   order eps1 R (`scalar_field_slice.cpp`: delta K = 3 eps1 H (A - Psi), Psi = -eps1 H a^2
+   B/k^2; kick of At_ij proportional to eps1), while delta Pi/Pi = B/H - ... is of order
+   (W'/H) R up to 2.5 R at the crossing of the window: level 2 is, in slow roll, the
+   local Pi^2 in Z, and the reading of the Laplacian matters at relative order eps1.
+4. Window and kicks at level 2 [JUDGEMENT stands]. P1:783 defines the levels for "the
+   coefficients appearing in" the mode equation only. The window multiplies Fourier
+   coefficients and must be uniform; the kick factors Pi_b/H and eps1 multiply the
+   real-space fields and could be local: uniform is a third judgement, which the design
+   note does not name (its "(they multiply Fourier coefficients)" holds for W and the
+   friction term only). Means against Friedmann differ at second order in the
+   COEFFICIENT (a box mean of a linear perturbation is zero), one order beyond the
+   level-2 effect: prediction R3 below.
+5. Projection = adjoint of the synthesis [VERIFIED by derivation]: for 2 n_max < N the
+   sums N^-3 sum_x e^(i(k_m -+ k_n).x) over the half-shifted lattice are delta_mn and 0
+   for two modes of one hemisphere; the three one-dimensional sums carry e^(-i theta)
+   in each direction; one writer per mode, MeshBlocks in sequence.
+6. Stage coefficients [VERIFIED by reading]: R and Pi_R are components of u0, u1, u_rhs:
+   `CopyU` (deep copy at stage 1, += delta u0 after), `ExpRKUpdate` (gam0, gam1, beta dt)
+   over nvar_sf; the lockstep data use the same three numbers (`NoiseCopy`,
+   `NoiseUpdate`); the projection of a stage reads the u0 of that stage, after the ghost
+   exchange of the previous one, and before Z4c's update (SF_CalcRHS -> SF_Kick ->
+   Z4c_ExplRK).
+7. Restart [VERIFIED by reading]: u0 whole with its extents (a restart file of a run
+   without the mesh fields is refused by the extent check), y0; `NoiseSetup(true)`
+   allocates the work arrays; `NoiseMeshInit` is skipped.
+8. Ghost cells [VERIFIED by reading]: `PackAndSendCC` takes the variable count from the
+   array; `InitRecv(nvar_sf)`; the sources need periodic faces (fatal otherwise), so no
+   physical boundary routine sees components 2, 3; `NoiseMeshExchange` is the sequence of
+   the driver. Static refinement is refused.
+9. Guard: with a kick on, a zero of Pi in one cell makes every coefficient non-finite in
+   the same stage and <z4c_guard> stops the run after the cycle (T6). With all kicks off
+   the projection is not called in the stages and nothing stops the run: the warning
+   comes at the next dump only. The guard tests the spacetime fields only (also for phi,
+   Pi with `couple = false`): a limit of the guard, not of this branch; recorded.
+10. Card [by reading: no defect found]: every kernel captures local copies of the views
+    and local scalars, none captures `this`; the accumulation over MeshBlocks is a host
+    loop with one writer per (field, mode); host mirrors are filled and copied for W',
+    W''; `mode_cre/cim` are captured unallocated when the option is off and never read.
+11. Cost: DEFECT (performance). `sf_prj_x` recomputes V = Pi_R K^2/(9 Pi^2) for each of
+    the n_x rows (65 at 256^3) from four arrays, with a division: 1.1e9 divisions and
+    35 GB of reads per stage at 256^3 against 16.8e6 and 0.5 GB if V is formed once.
+
+Plan: R0 the branch's tests again with the published executable; then V once per stage
+in a work array (bit-identical by construction: R1), the option that selects the reading
+of the Laplacian (R2), the background of the window (R3), a run with a lapse that is not
+1 (R4: no test of the branch has alpha != 1), byte regression against core-v0.6, card
+timing at 256^3.
+
+Prediction R0 (the fifteen runs of `cpu_tests.py` with
+`scratch/core/exe/core_noise-level2/athena_cpu`, as run core-20261123-025040-384fbdd):
+every dump, .modes, .rmodes, .hst and restart-compared file is byte for byte that of the
+recorded run (a processor run repeats), hence the same numbers in summary.json. Refuted
+by any differing file.
