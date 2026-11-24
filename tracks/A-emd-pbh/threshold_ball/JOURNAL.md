@@ -215,3 +215,16 @@ to 45 (entry 4 numbers): exact 0.4103; mesh B 0.4103 (43.686 at 0.42, 46.402 at 
 T7: C-d0.40 forms no horizon before particle proper time 45 and a persistent one with tau_det =
 46.415 +- 0.1 (B: -0.013); with C-d0.42 the interpolated threshold on C is 0.4103 +- 0.0005.
 Refuted by a detection with proper time below 45, or tau_det outside the band.
+
+## Entry 9, 2026-11-24 13:50Z: prediction K3 (where the early constraint floor sits), before the analysis
+
+Entries 6-7 leave two candidates for the floor that falls with neither mesh nor particle number:
+(a) the density jumps of the compensated top hat (core edge at rbar ~ 2.65, compensation edge
+~ 3.88, matter edge 4.25 M); (b) the static refinement boundaries, fixed in physical space on every
+mesh of the series (|x| = 1, 2, 4, 8, 16 M). conv_ball's C had its largest line |H| at t = 0 at
+r = 1.016 (C_numbers.json of A-20261121-120257-a2eb839), next to the finest level's boundary.
+K3 [JUDGEMENT]: on the x line of B-d0.42, A-d0.42, B-d1.00 and C-R1.25 (every line kept by
+compare_tb), the location of the largest |H| for 0.5 <= t <= 6 lies within one local cell of a
+refinement boundary in most outputs (b), not at the jumps (a). Refuted if most peaks sit within
+0.1 M of the jump radii instead. The analysis cannot refute both; a peak elsewhere (e.g. the
+centre) names neither.
