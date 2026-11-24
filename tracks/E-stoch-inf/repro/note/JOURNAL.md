@@ -183,3 +183,14 @@ Prediction for R4 (run_all at the commit of this fix): jsons and PNGs byte-equal
 ledger 113 rows in 10 tables with the same check counts; after the compile every ledger table
 ends with its bottom rule on the page (read pages 15 to the end). Refuted if a json, PNG or count
 differs or a table is still cut.
+
+## Entry 7 (2026-11-24 11:16): outcome of R4; prediction for R5
+
+R4 = E-20261124-185912-45510c2 (registered, production, two cores). Prediction of entry 6 held:
+jsons and langevin.json byte-equal (`checks.json`), all 19 PNGs byte-equal to R3, 113 rows in 10
+tables with the same check counts; compiled to 23 pages, and every ledger table now ends with its
+bottom rule on its page (pages 18, 19, 22, 23 read). One new checker hit: the section name "noise
+terms" is a term of the guide's dictionary (Sec. 6, prefer "stochastic sources"). Renamed the
+section "One-patch drift and noise amplitude".
+Prediction for R5 (run_all at the commit of the rename): identical to R4 except the caption and
+label of the last ledger table; checker without the Sec. 6 hit; 23 pages. Refuted otherwise.

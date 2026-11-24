@@ -76,7 +76,7 @@ SECNOTE = {
                     "spectra table; entry maximum and order as in the constraints table."),
     "Backreaction": ("Relative change of the final power per shell with more than ten modes, same random amplitudes, "
                      "noise on the mesh unless stated."),
-    "Noise terms of the one-patch system": ("The drift of the lapse measured by Monte Carlo against the two forms of the "
+    "One-patch drift and noise amplitude": ("The drift of the lapse measured by Monte Carlo against the two forms of the "
                                      "It\\^o term, and the noise amplitude of the appendix of Paper I over the printed one at the "
                                      "crossing $k = \\sigma a H$."),
     "One patch": ("Widths and skewness over the live paths; a path is lost once $|\\alpha|$ reaches 50 or is not finite. "
@@ -209,15 +209,15 @@ ROWS = [
     ("One patch", "Ito reading at step 0.001, width of alpha at N_b = 4", "l", ("variants.naive_h001.at.4.std_a",), "{:.4f}", V("yes", 82, "95-99")),
     ("One patch", "linear check at N_b = 3: width of alpha, run over linear theory", "l", ("linear.3.run_std_a", "/", "linear.3.lin_std_a"), "{:.4f}", V("rerun", 97, "77, 78, 100")),
     ("One patch", "alpha^3 set to 1: skewness of alpha at N_b = 6", "l", ("variants.a3one.at.6.skew_a",), "{:.2f}", V("diff", 89, "101 (alpha^3 -> 1 skewness -0.74, one seed, vs -0.96)", "-0.74 (one seed)")),
-    ("Noise terms of the one-patch system", "Ito term: drift measured by Monte Carlo", "e", ("langevin/langevin.json", "mc.measured_drift"), "{:.4f}", V("yes", 43, "drift 0.32039 +- 0.00023 at alpha0 = 2", "0.32039 +- 0.00023")),
-    ("Noise terms of the one-patch system", "Ito term: standard error of that drift", "e", ("langevin/langevin.json", "mc.measured_drift_sem"), "{:.4f}", V("yes", 82, "102-105")),
-    ("Noise terms of the one-patch system", "Ito term: alpha^5 prediction", "e", ("langevin/langevin.json", "mc.pred_alpha5"), "{:.4f}", V("yes", 82, "102-105")),
-    ("Noise terms of the one-patch system", "Ito term: alpha^3 prediction (as printed)", "e", ("langevin/langevin.json", "mc.pred_alpha3_P0"), "{:.4f}", V("yes", 82, "102-105")),
-    ("Noise terms of the one-patch system", "Paper I: Ito term as printed", "p", ("I", 817, r"\frac{\alpha^3}{\dot{\phi_b}^2}"), None, Q0),
-    ("Noise terms of the one-patch system", "USR noise amplitude over printed, sigma = 0.1", "e", ("noise_amp/noise_amp.json", "USR.rows.2.amp_ibp_over_printed"), "{:.2e}", V("yes", 44, "3.3333e-3", "3.3333e-3")),
-    ("Noise terms of the one-patch system", "the same, sigma = 0.5", "e", ("noise_amp/noise_amp.json", "USR.rows.4.amp_ibp_over_printed"), "{:.2e}", V("yes", 44, "8.3332e-2", "8.3332e-2")),
-    ("Noise terms of the one-patch system", "SR noise amplitude over printed, sigma = 0.1", "e", ("noise_amp/noise_amp.json", "SR.rows.2.amp_ibp_over_printed"), "{:.3f}", V("diff", 44, "1.063 at sigma = 0.1 with eps1 = 0.0124, 1.123 with eps1 = 0.0244", "1.063 (eps1 = 0.0124), 1.123 (eps1 = 0.0244)")),
-    ("Noise terms of the one-patch system", "SR: eps1 of our background at that crossing", "e", ("noise_amp/noise_amp.json", "SR.rows.2.eps1"), "{:.1e}", NONE),
+    ("One-patch drift and noise amplitude", "Ito term: drift measured by Monte Carlo", "e", ("langevin/langevin.json", "mc.measured_drift"), "{:.4f}", V("yes", 43, "drift 0.32039 +- 0.00023 at alpha0 = 2", "0.32039 +- 0.00023")),
+    ("One-patch drift and noise amplitude", "Ito term: standard error of that drift", "e", ("langevin/langevin.json", "mc.measured_drift_sem"), "{:.4f}", V("yes", 82, "102-105")),
+    ("One-patch drift and noise amplitude", "Ito term: alpha^5 prediction", "e", ("langevin/langevin.json", "mc.pred_alpha5"), "{:.4f}", V("yes", 82, "102-105")),
+    ("One-patch drift and noise amplitude", "Ito term: alpha^3 prediction (as printed)", "e", ("langevin/langevin.json", "mc.pred_alpha3_P0"), "{:.4f}", V("yes", 82, "102-105")),
+    ("One-patch drift and noise amplitude", "Paper I: Ito term as printed", "p", ("I", 817, r"\frac{\alpha^3}{\dot{\phi_b}^2}"), None, Q0),
+    ("One-patch drift and noise amplitude", "USR noise amplitude over printed, sigma = 0.1", "e", ("noise_amp/noise_amp.json", "USR.rows.2.amp_ibp_over_printed"), "{:.2e}", V("yes", 44, "3.3333e-3", "3.3333e-3")),
+    ("One-patch drift and noise amplitude", "the same, sigma = 0.5", "e", ("noise_amp/noise_amp.json", "USR.rows.4.amp_ibp_over_printed"), "{:.2e}", V("yes", 44, "8.3332e-2", "8.3332e-2")),
+    ("One-patch drift and noise amplitude", "SR noise amplitude over printed, sigma = 0.1", "e", ("noise_amp/noise_amp.json", "SR.rows.2.amp_ibp_over_printed"), "{:.3f}", V("diff", 44, "1.063 at sigma = 0.1 with eps1 = 0.0124, 1.123 with eps1 = 0.0244", "1.063 (eps1 = 0.0124), 1.123 (eps1 = 0.0244)")),
+    ("One-patch drift and noise amplitude", "SR: eps1 of our background at that crossing", "e", ("noise_amp/noise_amp.json", "SR.rows.2.eps1"), "{:.1e}", NONE),
 ]
 
 
