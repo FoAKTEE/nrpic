@@ -14,6 +14,7 @@ R = c[chi]/(2<chi>) + (1/4) khat_i khat_j c[gt_ij] + (H_b/Pi_b) c[phi], H_b = -<
 
 Usage: dumppass.py --run DIR --base sr --label P256v6 --out OUTDIR [--dumps 0,17 | --every 2]
        [--seed 20261115] [--scale 1.0] [--workers 3] [--fft-workers 2] [--no-spectra]
+       [--save-modes]
 """
 import argparse
 import json
@@ -175,6 +176,9 @@ def one_dump(path, args, shells_cache={}):
             out["inj_pnr"] = np.bincount(sn, weights=np.abs(c_nr) ** 2, minlength=nsh)
             out["inj_plin"] = np.bincount(sn, weights=np.abs(c_lin) ** 2, minlength=nsh)
             out["inj_pdiff"] = np.bincount(sn, weights=np.abs(c_nr - c_lin) ** 2, minlength=nsh)
+            if args.save_modes:
+                out["inj_c_nr"] = c_nr.astype(np.complex128)
+                out["inj_mode_n2"] = modes.n2
             out["inj_W"] = fl.window(np.sqrt(modes.shell_n2.astype(float)), md["a"], md["H"])
             # MS expectation per shell (unwindowed, P1's dashed line), Delta = k^3 |R_k|^2/(2 pi^2)
             out["ms_n2"] = md["n2"]
@@ -217,6 +221,8 @@ def main():
     ap.add_argument("--fft-workers", type=int, default=2)
     ap.add_argument("--no-spectra", action="store_true")
     ap.add_argument("--redo", action="store_true")
+    ap.add_argument("--save-modes", action="store_true",
+                    help="keep c_NR of every injected mode (ablation: per-mode differences)")
     args = ap.parse_args()
     files = fl.dump_files(args.run, args.base)
     if not files:

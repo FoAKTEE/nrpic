@@ -134,6 +134,20 @@ def read_con(path):
     return np.atleast_2d(np.loadtxt(path))
 
 
+def read_con_joined(paths):
+    """Records of one run, possibly in several files (an original and its continuation) and with
+    the lines a chain segment rewrote after a restart: one line per cycle (column 1), the line
+    written last wins, sorted by cycle."""
+    blocks = [read_con(p) for p in paths if os.path.exists(p)]
+    d = np.concatenate(blocks, axis=0)
+    cyc = d[:, 1].astype(np.int64)
+    # last occurrence of each cycle
+    rev = np.unique(cyc[::-1], return_index=True)[1]
+    keep = d.shape[0] - 1 - rev
+    out = d[np.sort(keep)]
+    return out[np.argsort(out[:, 1], kind="stable")]
+
+
 # --------------------------------------------------------------------------- lattice bins
 class Shells:
     """Shells |n|^2 = const of the rfft half lattice of an N^3 box, hemisphere only (each

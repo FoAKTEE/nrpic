@@ -44,8 +44,13 @@ RUNS = {
     "AL2U": ("E-20261123-153146-d965002", "", "usr256_l2"),
 }
 
-# continuation run ids of package repro/continue (label -> run id), read as the same run
+# continuation runs of package repro/continue (label -> list of run ids), read as the same run:
+# their dumps and record lines come after the original's (one line per cycle, the last written wins)
 CONTINUED = {}
+
+
+def cont_dirs(label):
+    return [os.path.join(SCR, rid) for rid in CONTINUED.get(label, [])]
 
 
 def rundir(label):
@@ -61,6 +66,12 @@ def con_path(label):
     return os.path.join(rundir(label), base(label) + ".sf.con.hst")
 
 
+def con_paths(label):
+    """The record of the run and of its continuations, in order."""
+    return [con_path(label)] + [os.path.join(d, base(label) + ".sf.con.hst")
+                                for d in cont_dirs(label)]
+
+
 def hst_path(label):
     return os.path.join(rundir(label), base(label) + ".sf.hst")
 
@@ -69,8 +80,10 @@ def hst_path(label):
 GROUPS = {
     "usr256": [("USF256", [])],
     "sr256v6": [("P256v6", [])],
-    "ablation": [(lab, ["--dumps", "0,17"]) for lab in ("AL0S", "AL1S", "RL1")]
-    + [(lab, ["--dumps", "0,20"]) for lab in ("AL0U", "AL1U", "AL2U", "UL1", "U256ap")],
+    "ablation": [(lab, ["--dumps", "0,17", "--save-modes"]) for lab in ("AL0S", "AL1S", "RL1")]
+    + [(lab, ["--dumps", "0,20", "--save-modes"])
+       for lab in ("AL0U", "AL1U", "AL2U", "UL1", "U256ap")],
+    "p256final": [("P256v6", ["--dumps", "17", "--save-modes"])],
     "rungs": [(lab, []) for lab in ("C32S", "C64S", "C128S", "C32U", "C64U", "C128U")],
 }
 BITCHECK = {
