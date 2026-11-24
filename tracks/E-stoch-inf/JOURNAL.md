@@ -588,3 +588,27 @@ orch (ruling on U-A4'(a), C2 gauge leg); queued U256qp/qm in the restarted seque
 Changed my mind about: the odd part of a mirrored pair is not first order alone in USR at
 256^3: a third-order common factor (4e-5) is visible, so per-mode resolution tests at 1e-4 need
 smaller s or the s^2 part removed.
+
+## 2026-11-24 15:27-16:15 PST, lead of batch 13 (after the reproduction)
+
+Read: CLAUDE.md, CHARTER to Owners, HANDOFF (of batch 10a), coord/digests/reproduction-state.md,
+decision 0030 item 2 (Track E ruling), repro/note README (verdicts, requests), repro/verify README
+(requests), repro/figs RESULTS/HANDOFF/CARD_COSTS, repro/continue HANDOFF/journal, g2prod entry 3.
+
+Did: pushed the reproduction's commits; closed what its packages left to the lead (commit 51b52c00):
+conts.json with the fourth RSF256 continuation (K2 held; read from join_check.json of
+E-20261124-225720-444aecc), SETUP_AUDIT item 4 corrected to N* + 8.10 (ln a 8.0989 at t = 8.5 in the
+joined record, column 21; the audit's 8.04 was wrong), CARD_PLAN.md actual costs (reproduction 8.99
+card-hours from the manifests), RESULTS.md S14 (99.5th: QUANT index 7). Review: stage/REVIEW-wave3.md
+Part E. Package `floor` (new): predictions F1-F5 written and committed (bb70b5fe) before the two runs
+were queued as q0037 FL128h and q0038 FL256h (priority 2, release card build, noise_mode_scale = 0.5).
+The quarter pair U256qp/qm had run (2026-11-23) but was never read: analysis E-20261124-233223-51b52c0
+started on 3 cores (predictions: g2prod entry 3, written 2026-11-22 before submission). Stage G2:
+collect, checklist (C2 PASS by ruling 0030; C12 PASS; C3/C7 FAIL on record), OPEN.md rewritten with
+the lacks and the review question, verify, report. Outbox: orch (G2 after the reproduction), core
+(figstyle). Inbox: five messages acknowledged (core level-2 branch, review, executables; orch queue).
+
+Predictions written this session: floor F1-F5 (before submission). No outcome yet.
+Card-hours used this session: 0 (1.25 asked at the ceilings of q0037/q0038).
+Changed my mind about: the HANDOFF of batch 10a said the quarter pair waited in the sequencer; it had
+run and the sequencer had closed it on 2026-11-23 20:06 PST, unread for 20 hours.

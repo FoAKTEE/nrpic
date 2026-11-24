@@ -11,5 +11,5 @@ run. Reading: `../repro/figs/figures/dumppass.py ... --last --scale 0.5 --save-m
 
 | Label | s = 1 counterpart | Queue | Run | Card-h |
 |---|---|---|---|---|
-| FL128h | C128S (E-20261123-020704-2b99463, pass E-20261124-133251-42e8aab) | see HANDOFF.md of E | pending | - |
-| FL256h | CL256S (E-20261123-090727-4b6e5a5 + E-20261124-130952-4be980b, pass E-20261124-213029-e937f69) | see HANDOFF.md of E | pending | - |
+| FL128h | C128S (E-20261123-020704-2b99463, pass E-20261124-133251-42e8aab) | q0037 | pending | - |
+| FL256h | CL256S (E-20261123-090727-4b6e5a5 + E-20261124-130952-4be980b, pass E-20261124-213029-e937f69) | q0038 | pending | - |

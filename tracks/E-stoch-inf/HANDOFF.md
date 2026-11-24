@@ -1,86 +1,79 @@
 # HANDOFF of E-stoch-inf
 
 State in three lines: Track E (stochastic inflation in NR, S11) passed G0 (2026-11-20) and G1
-(2026-11-21, with reservations; coord/GATES.md). The G2 production ladder on the release card
-build has run and is judged (`g2prod/JOURNAL.md` entry 2); the G2 package still lacks the items
-listed in `stage/G2/OPEN.md` (verifier, note sections, figures C10-C13, gauge leg of C2).
+(2026-11-21, with reservations; coord/GATES.md). The reproduction of arXiv:2512.14649 and
+arXiv:2401.08530 is complete (note `repro/note/manuscript/main.pdf`); G2 is open, its lacks are
+`stage/G2/OPEN.md` (quarter-pair reading, G2 verifier, G2 note sections, four figures).
 
-Run next: cd /data/haiyangw/nrpic/wt/E-stoch-inf && git merge --no-edit main && git status --short && harness/bin/nrpic-ctx inbox --show
+Run next: cd /data/haiyangw/nrpic/wt/E-stoch-inf && git merge --no-edit main && git status --short && harness/bin/nrpic-ctx inbox --show && harness/bin/nrpic-queue list --owner E-stoch-inf
 
-## Other sessions in this worktree (decision 0028, started 2026-11-22)
+## Runs in flight (lead of batch 13, 2026-11-24)
 
-Packages `repro/scope`, `repro/langevin`, `repro/equations` (reproduction of arXiv:2512.14649
-and arXiv:2401.08530 with a working note) run in their own sessions in this worktree and
-commit on this branch. Commit path-limited only (`git commit -m ... -- <paths>`), never
-`git add -A`, never touch `repro/`. Their card jobs (Slurm 4929, 4931 at 18:20 PST, runs
-E-20261123-020704-2b99463 and E-20261123-021204-2f573ec) count as E's two card jobs: read and
-closed by `repro/scope`, not by the G2 lead.
+| What | Id | Where its output appears | Read by |
+|---|---|---|---|
+| FL128h, SR 128^3 at s = 1/2 (card) | queue q0037 (run id when dispatched: `nrpic-queue show q0037`) | scratch/E-stoch-inf/<run_id>/ (sr.sf.000NN.dump, .modes) | floor/JOURNAL.md entry 1, F1-F5 |
+| FL256h, SR 256^3 at s = 1/2 (card) | queue q0038 | same | same |
+| quarter-pair analysis (processors, 3 cores) | E-20261124-233223-51b52c0 | scratch/E-stoch-inf/E-20261124-233223-51b52c0/ (run.log, summary JSON, fig/) | g2prod/JOURNAL.md entry 3 (Q-a..Q-c) |
 
-## Card runs of g2prod: all finished and closed
+Card runs are closed with `harness/bin/nrpic-run finish <run_id>` (the queue does not finish them;
+it commits the manifest). If the analysis E-20261124-233223-51b52c0 is not closed (`nrpic-run
+status` or its manifest), check `run.log`: if it ended, `nrpic-run finish` it; if it was killed at the
+end of the batch-13 session, close it as failed and rerun the same command (its manifest
+`command`), about 25 min on 3 cores.
 
-The sequencer ended by itself at 13:49 PST 2026-11-22 ("queue empty and every run closed";
-`/data/haiyangw/nrpic/scratch/E-stoch-inf/g2prod_seq/seq.log`). The lead of batch 10a appended
-two labels to `g2prod/queue.txt` (U256qp, U256qm: s = +-1/4, seed A, 256^3; predictions
-`g2prod/JOURNAL.md` entry 3) and restarted it at 18:49 PST (pid in
-`scratch/E-stoch-inf/g2prod_seq/pid`, 3538144). It submits only while fewer than two E card
-jobs are eligible, so it waits for repro's jobs; it closes the runs itself. See / stop / restart:
-`cat .../g2prod_seq/state.tsv; tail .../g2prod_seq/seq.log`; `touch .../g2prod_seq/STOP`;
-`cd /data/haiyangw/nrpic/wt/E-stoch-inf && setsid nohup bash tracks/E-stoch-inf/g2prod/scripts/sequencer.sh > /data/haiyangw/nrpic/scratch/E-stoch-inf/g2prod_seq/nohup.out 2>&1 < /dev/null &`.
-Read them with `analyse_g2.py --group g2q --map U256=<hp dir> --map U256m=<hm dir> --map
-U256h=<qp dir> --map U256hm=<qm dir> --ref ../../usr/results --out ... --workers 3`, then the
-halving/floor part of `judge_g2.py` on that summary (keys as for g2a); judge Q-a..Q-c. The
-manifests will say `preregistered: entry-1` (the sequencer's fixed link); the predictions are
-in entry 3. Finished run ids of g2prod
-(outputs in /data/haiyangw/nrpic/scratch/E-stoch-inf/<run_id>/; dumps usr.sf.000NN.dump,
-records usr.sf.hst, usr.sf.con.hst):
+Reading the quarter pair: the analysis writes the group summary of analyse_cards (group g2q: U256 =
+s 1/2 hp, U256m = hm, U256h = s 1/4 qp, U256hm = qm). Then the halving/floor part of
+`g2prod/scripts/judge_g2.py` on that summary (keys as for g2a, see entry 2.3) and judge Q-a (even
+factor of M at cN 6.52 from s = 1/2 and 1/4: 3.98 +- 0.015, refuted below 3.9625; H within
+4.00 +- 0.05), Q-b (common mode at N_f -2.5e-6 +- 0.4e-6), Q-c (U-A0, A1, A3; records; even/odd rms
+6.33e-5 +- 5 percent). Write g2prod/JOURNAL.md entry 4 with figures looked at; update
+stage/G2/CHECKLIST.md C3, C7; nrpic-stage report.
 
-| Label | Run | Card-h |
-|---|---|---|
-| T (timing) | E-20261121-202929-43dcc9c | 0.11 |
-| P256v6 (SR 256^3) | E-20261121-202935-31520bc | 0.51 |
-| U256ap / am (seed A, s = +-1) | E-20261121-211214-0377aab / E-20261121-214629-da64fb7 | 0.62 / 0.62 |
-| U320ap / am | E-20261122-023427-0ac3f0b / E-20261122-110042-ffcb4b3 | 1.47 / 1.48 |
-| U256bp / bm (seed B) | E-20261122-033244-564627b / E-20261122-071038-d9f933b | 0.62 / 0.62 |
-| U256hp / hm (s = +-1/2) | E-20261122-113320-9bbb52b / E-20261122-152116-0542096 | 0.62 / 0.62 |
-| U256nc (sign-flip control to t = 3.75) | E-20261122-190341-0419be6 | 0.22 |
+Reading the floor runs: `repro/figs/figures/dumppass.py --run <dir> --base sr --label FL128h --out
+<run dir> --last --scale 0.5 --save-modes` (and FL256h), the s = 1 counterparts again with `--last
+--save-modes` (C128S in E-20261123-020704-2b99463 under C128S/, CL256S's last dump in
+E-20261124-130952-4be980b), statistics over the shells n^2 = 2-12 as in floor/JOURNAL.md entry 1;
+one figure per shell statistic; outcome into floor/JOURNAL.md entry 2 and repro/figs RESULTS.md
+Fig. 7 (TO VERIFY item).
 
-Analyses (processors, registered, package g2prod): T + P256v6 E-20261123-015014-b4ecd4e; seed A
-group (ap, am, hp, hm; all 21 dumps) E-20261123-014858-8e72d4c; seed B E-20261123-021730-a421438
-(the earlier E-20261123-014905-2bf3570 used the wrong realisation: per-mode numbers invalid);
-U320 E-20261123-020751-0baf597 (E-20261123-015650-493cff5 failed); SCOPE 4c judge: see
-`g2prod/JOURNAL.md` 2.3. Scripts: `g2prod/scripts/analyse_g2.py` (wraps usr/scripts/
-analyse_cards.py; --seed, --last), `judge_g2.py` (SCOPE 4c), `judge_tp.py` (T, P256v6).
+## Finished in batch 13
+
+Reproduction leftovers (commit 51b52c00): conts.json, continue journal entry 13, SETUP_AUDIT item 4
+(N* + 8.10), CARD_PLAN.md actual costs (8.99 card-hours over the reproduction), RESULTS.md S14.
+Review: stage/REVIEW-wave3.md Part E. Stage G2: collect, checklist, OPEN, verify, report. Outbox:
+orch (G2 after the reproduction: verifier session, where the note sections go), core (figstyle).
 
 ## Files to read first
 
-`STATUS.md`; `g2prod/JOURNAL.md` entries 1 and 2; `spec/scope/SCOPE.md` 4c; `stage/G2/OPEN.md`,
-`stage/G2/CHECKLIST.md`, `stage/G2/STAGE_REPORT.md`; `stage/REVIEW-wave3.md` Part D; `RISKS.md`
-(R13, R17, R21, R24, R25).
+STATUS.md; stage/G2/OPEN.md; g2prod/JOURNAL.md entries 2.3 and 3; floor/JOURNAL.md entry 1;
+coord/DECISIONS/0030 item 2 (Track E ruling); repro/note/README.md (verdict table); RISKS.md (R25,
+R26, R28, R29).
 
 ## Next, in order
 
-1. G2 verifier (C18): a fresh-context agent given the g2prod run directories, SCOPE 4c and
-   entry 1 (not the conclusions of entry 2), recomputing every SCOPE 4c number with its own
-   reader. One session, processors only.
-2. Working-note G2 sections and figures C10-C13 (verification-ladder schematic, convergence
-   figure, constraint norms against time, slice mosaic with zoom boxes), one script per
-   figure; the repro/note package of decision 0028 may carry them - coordinate through the
-   plan, do not write into repro/.
-3. C2 gauge leg: geodesic slicing only (RISKS R6). Either a ruling that a gauge variant is not
-   required for the USR reproduction at G2, or a design (lapse option for the scalar-field
-   set-up) - asked of orch in this session's outbox.
+1. Quarter pair: Q-a..Q-c (above), then the G2 package to independent review is possible with the
+   U-A4'(a) failure on record once items 2 and 3 exist (ruling 0030 item 2; OPEN.md).
+2. G2 verifier (C18): a fresh-context agent given the g2prod run directories, SCOPE 4c and entry 1
+   and 3 (not the conclusions of entries 2 and 4), recomputing every SCOPE 4c number with its own
+   reader. Processors only.
+3. G2 note sections (C17) and figures C10 (verification-ladder schematic), C13 (slice mosaic with
+   zoom boxes), USR resolution figure (C11), architecture/timeline update (C16): where, per orch's
+   answer to outbox 20261124T234057Z.
 
 ## Traps
 
-- `nrpic-stage verify` fails on `runs` while card jobs of E are submitted (repro's jobs count).
+- Card runs only through `harness/bin/nrpic-queue add` (decision 0033: five jobs for the account);
+  no own sequencers; give `--package` so edits elsewhere in the worktree do not hold the entry.
+- `nrpic-run submit --launcher local` waits in the foreground; a tool call that times out keeps it
+  in the background of the session, and it ends with the session: long analyses need a session
+  that stays, or a detached start.
 - Pair dumps only at equal recorded times (|dt| <= 1e-9). Cold 256^3 dumps: read sequentially;
-  four 256^3 runs take about 45 min on 3 cores (disk-bound, about 100 MB/s per reader).
+  four 256^3 runs take 25-60 min on 3 cores (disk-bound).
 - analyse_cards.py has no seed option: for seed B use `analyse_g2.py --seed 20261116`.
-- The odd halving is 2 by construction of the floor (two amplitudes): only the even halving is a
-  test (SCOPE 4c, U-A4'(b)).
+- The odd halving is 2 by construction of the floor (two amplitudes): only the even halving tests.
+- `noise_mode_scale` scales the mode file (slice and sources); the dump pass needs `--scale` equal to
+  it, or the linear reference is off by s.
 - Large figure PDFs stay in run directories; commit PNGs. `nrpic-run finish` and `nrpic-ctx
   post/ack` commit by themselves (path-limited).
-- `$NRPIC_RUN_DIR` in a command: inside `bash -c '...'`; do not redirect into run.log (the
-  wrapper writes it).
 - Never read the brief whole; line ranges: S11 445-465, track sheet 785-802, gates 674-686,
-  verification suite 834-860, context protocol 957-1004, M11 544-547.
+  verification suite 834-860, context protocol 957-1004.

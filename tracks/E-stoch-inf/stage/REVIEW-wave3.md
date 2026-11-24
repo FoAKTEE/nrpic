@@ -475,3 +475,46 @@ Defects found in this session's own analysis code (fixed, on record in g2prod 2.
 crash of the --last mode (run E-20261123-015650-493cff5, failed) and a seed-B pass referred to
 seed A's realisation (E-20261123-014905-2bf3570: per-mode numbers invalid, superseded by
 E-20261123-021730-a421438). Nothing found wrong in the card runs themselves.
+
+# Part E. Batch 13 (lead of batch 13, 2026-11-24 afternoon): what the reproduction left to the lead
+
+The reproduction of arXiv:2512.14649 and arXiv:2401.08530 (decision 0028; packages repro/scope,
+langevin, equations, ablation, continue, figs, note, verify) is complete
+(`coord/digests/reproduction-state.md`); its fresh verifier is repro/verify (two passes,
+`repro/verify/VERIFIER.md`). This part records what the lead checked from the artefacts, not from
+the packages' conclusions, before closing the items they left to the lead.
+
+## E1. Checked by the lead
+
+- RSF256 fourth continuation E-20261124-214913-5956891 (q0034, job 5215): manifest `completed`,
+  0.2872 card-hours; the join check E-20261124-225720-444aecc (repro/figs, with repro/continue's
+  `join_check.py`) read from its `join_check.json`: every boolean true except the literal J3 at the
+  cycle-0 junctions and `cont_has_header` (continuations write no header, by design), J2 958 of 958
+  lines identical (largest relative difference 0), joined record 0-1386, dumps 00000-00034.
+  CONFIRMED; recorded in `repro/continue/scripts/conts.json` and its journal entry 13 (K2 held).
+- SR span: the joined `RSF256.sf.hst` column 21 (ln a) is 0 at t = 0 and 8.0989 at t = 8.5. The
+  audit's "N* + 8.04" was WRONG; corrected to 8.10 in `repro/scope/SETUP_AUDIT.md` item 4 (the deck
+  header comment `sr_paper.athinput` line 11 still says 8.04: a comment, left as is, listed here).
+- S14 wording: `fig_contrasts.py` stores column 7 of `figlib.QUANT` = 99.5 under the key
+  `pct_H_p99_max`; the USR row of RESULTS.md S14 now says 99.5th. CONFIRMED and fixed.
+- Card costs: summed from the manifests (`resources.gpu_hours`) into `repro/scope/CARD_PLAN.md`:
+  scope 2.611 + continuations 1.452 = 4.063; ablation 4.811 + 0.120 (AL2S continuation) = 4.931;
+  reproduction 8.99 card-hours. The continue journal's "1.28 for the first eight" plus 0.29 agrees.
+- Floor of the spectral convergence: recomputed from the dump-pass files (C128S of
+  E-20261124-133251-42e8aab, CL256Sc of E-20261124-213029-e937f69): median abs(1 - P_NR/P_lin) over
+  the shells n^2 = 2-12 is 1.48e-7 and 1.55e-7, amplitude statistic 3.78e-7 at both, the signs of the
+  ten shells identical (++----+--+); the stencil part at n^2 >= 49 is 6.0e-7 at 128 and 3.6e-8 at
+  256. CONFIRMED (RESULTS.md Fig. 7); the test at half amplitude is queued (package `floor`, F1-F5).
+- Ablation draft `repro/ablation/outbox_draft/core_t5.md`: not posted; superseded, core judged T5 of
+  `core/noise-level2` PASS on the card itself (commit 68d4ee56 on core's branch) and its review on
+  Fable found the six ablation runs unchanged (inbox, acknowledged).
+
+## E2. Not checked by the lead in this session
+
+The 133 ledger rows of the note (the fresh verifier's verdicts stand, with the rows it did not
+recompute listed in the digest); the 26 pages were not reread.
+
+## E3. Stage package G2 after this review
+
+`stage/G2/CHECKLIST.md` updated (C2 PASS by ruling 0030 item 2; C12 PASS; C3, C7 FAIL on record;
+C5, C6, C10, C11, C13-C18 OPEN). Lacks, and whether it can go to review: `stage/G2/OPEN.md`.
