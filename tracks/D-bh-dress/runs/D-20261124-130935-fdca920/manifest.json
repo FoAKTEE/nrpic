@@ -1,0 +1,97 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261124-130935-fdca920",
+  "track": "D-bh-dress",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "g2long entry 10 test FP: finder re-search (production, tight, from outside) of the restart dumps of V-1L, V-1L16, V-1L4, ES-1L, ES-1L16 at 100-450 M on the threaded release processor build; is the vacuum excursion at 230-300 M the finder's (C1) or the slice's",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "OMP_NUM_THREADS=2 python3 tracks/D-bh-dress/g2long/tools/probe_long.py /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00002.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00003.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00005.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00006.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00007.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00011.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203151-37e7b2d/rst/v1l16.00003.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203151-37e7b2d/rst/v1l16.00006.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203151-37e7b2d/rst/v1l16.00007.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203151-37e7b2d/rst/v1l16.00009.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022715-ab5d983/rst/v1l4.00002.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022715-ab5d983/rst/v1l4.00004.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022715-ab5d983/rst/v1l4.00005.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022715-ab5d983/rst/v1l4.00006.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203131-8ee2a49/rst/es1l.00002.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203131-8ee2a49/rst/es1l.00005.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203131-8ee2a49/rst/es1l.00006.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203131-8ee2a49/rst/es1l.00007.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203151-59c54fb/rst/es1l16.00003.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203151-59c54fb/rst/es1l16.00006.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203151-59c54fb/rst/es1l16.00008.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203151-59c54fb/rst/es1l16.00009.rst --out \"$NRPIC_RUN_DIR\" --tag fp --variants A16 --threads 2 --jobs 2 --exe /data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v06/athena_cpu_omp && OMP_NUM_THREADS=2 python3 tracks/D-bh-dress/g2long/tools/probe_long.py /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022715-ab5d983/rst/v1l4.00004.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022715-ab5d983/rst/v1l4.00005.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00005.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00006.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203151-37e7b2d/rst/v1l16.00006.rst /data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203151-37e7b2d/rst/v1l16.00007.rst --out \"$NRPIC_RUN_DIR\" --tag fp --variants A32 --threads 2 --jobs 2 --exe /data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v06/athena_cpu_omp"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "fdca9208c33c1e5bd6fb8de397fe46b096e0d254",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "package": [
+      "tracks/D-bh-dress/g2long"
+    ],
+    "outside_package": {
+      "count": 3,
+      "first": [
+        "?? tracks/D-bh-dress/drift_controls/tools/compare_runs.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/count_blocks.py",
+        "?? tracks/D-bh-dress/drift_controls/tools/slice_profiles.py"
+      ]
+    },
+    "merge_base_main": "bc180c266e1af2b7a50d072fa17f9f0ddc283047",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261124-130935-fdca920",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-24T13:09:35Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "D-20261121-203124-a34cf1f",
+    "D-20261121-203151-37e7b2d",
+    "D-20261123-022715-ab5d983",
+    "D-20261121-203131-8ee2a49",
+    "D-20261121-203151-59c54fb"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 30.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 13.5314,
+    "gpu_hours_reserved": 14.7501,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 276,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md"
+  }
+}
