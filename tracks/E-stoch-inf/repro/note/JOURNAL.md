@@ -252,3 +252,36 @@ Predictions for R6 (registered run_all after the commit of these edits):
   another count or a stop of the script.
 - P4. Compile without undefined references or overfull boxes; 23 or 24 pages; every ledger table
   ends on its page. Refuted otherwise (read the pages).
+
+## Entry 10 (2026-11-24 14:20 PST): outcome of R6; three ledger tables off their pages; prediction for R7
+
+R6 = E-20261124-215017-cb16c27 (registered, production, two cores, commit cb16c27).
+- P1 held: all 13 jsons of repro/figs/fig byte-equal to R6's `lattice/` (joins.json included);
+  langevin.json equal (`checks.json`).
+- P2 held: fig_specconv, fig_constraints, fig_ablation, fig_signflip differ from R5; the other 15
+  PNGs byte-equal (fig_ablation_sr included). Looked at all four: Fig. 7 has the 256^3 curve on
+  the 128^3 curve at the longest shells and below it at the shortest; Fig. 8 has four lattices,
+  the plateaus of 64-256 on each other during the entry, and late in the runs the finer lattices
+  end higher in SR M and in both USR curves with the box mean kept (Paper II source line 750
+  says the same of its runs; the text now says so); the sign-flip figure has the SR flipped run
+  to N = 4.39 with the smallest gap at N = 4.1-4.4; Fig. 10 has the SR level-2 curve at N_f.
+  Copied the four PDFs (sha256 in R6's sha256sums.txt).
+- P3 held: 121 rows in 10 tables; checks 61 yes, 15 differs, 2 beyond reach, 11 quote, 14
+  rerun only, 18 none.
+- P4 failed in part: compile clean (no undefined references or citations, no overfull boxes),
+  24 pages, checker only the accepted hits (5.1 two verdict labels, 7.6 one, 7.5/7.7 in scripts
+  and ledger tables, 9.3 in scripts). On the pages (75 dpi, all 24 read): tables VIII
+  (constraints), XI (convergence) and XII (backreaction) run off the bottom of their pages. The
+  new long source strings (the 256^3 runs and the SR level-2 continuation in every row of the
+  json) made each row four to eight lines tall.
+Fix: row-level origins in `ledger.py` (rows on 32^3-128^3 keep their short source; rows with
+256^3 data name "the 256^3 runs of the caption", whose run ids now stand once in the captions of
+the constraints and convergence tables; SR level 2 at N_f names its two runs and the pass). A
+test of the script on the figure package's jsons (scratch/E-stoch-inf/tmp/ledgertest9, not
+registered, a test of the layout) compiled to 23 pages with every table on its page; a first
+version of the caption wrote 256^3 outside math, which LaTeX set as math to the end of the
+caption (seen on the page, fixed with $256^3$).
+Prediction for R7 (registered run_all at the commit of this fix): jsons, langevin.json and all
+19 PNGs byte-equal to R6; ledger 121 rows, same check counts, values equal to R6's
+(ledger.csv differs only in the source column); compile 23 pages, every ledger table ends with
+its bottom rule on its page. Refuted otherwise.

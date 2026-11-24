@@ -47,13 +47,13 @@ ORIGIN = {
     "fig6a_sr_Kspec_P256v6.json": f"run E-20261121-202935-31520bc, pass {PASS_SR}",
     "fig6b_usr_Kspec.json": (f"run E-20261123-021204-2f573ec, passes {PASS_USR}, "
                              "E-20261124-141807-8352509, E-20261124-172949-8b2255b"),
-    "fig7_fig8.json": (f"runs E-20261123-020704-2b99463 (records), pass {PASS_SR}; 256^3: runs "
-                       "E-20261123-090727-4b6e5a5 and E-20261123-065855-265732a with their continuations "
-                       f"(joined records of {JOIN}), pass {PASS_CONT}"),
+    "fig7_fig8.json": f"runs E-20261123-020704-2b99463 (records), pass {PASS_SR}",
+    "fig7_fig8.json@256": "the 256^3 runs of the caption",
+    "fig7_fig8.json@all": "runs E-20261123-020704-2b99463 (records) and the 256^3 runs of the caption",
     "fig9_ablation.json": ("runs E-20261123-153347-18e7c21, -183822-4abbcae, -164235-49b0945, "
-                           f"-192948-348e2e5, -153146-d965002, pass {PASS_SR}; SR level 2: run "
-                           "E-20261123-152119-38957ba with continuation E-20261124-131359-49afe29, "
-                           f"pass {PASS_CONT}"),
+                           f"-192948-348e2e5, -153146-d965002, pass {PASS_SR}"),
+    "fig9_ablation.json@al2s": ("runs E-20261123-153347-18e7c21, -152119-38957ba (continued in "
+                                f"E-20261124-131359-49afe29), pass {PASS_CONT}"),
     "fig9_ablation_sr_t75.json": ("runs E-20261123-153347-18e7c21, -183822-4abbcae, "
                                   "-152119-38957ba, pass E-20261124-141807-8352509"),
     "fig_signflip.json": ("records of E-20261123-045030-c20bcb3, -035925-8439d79, "
@@ -78,7 +78,9 @@ SECNOTE = {
     "Constraints": ("Entry maximum: largest record value of the mean ratio for $0.05 < N \\le \\ln 8$ (the entry at "
                     "$k_\\mathrm{max} = 8\\,\\Delta k$); on the $64^3$ to $256^3$ lattices it falls on the first record of "
                     "that window, the decaying initial transient. Order: $\\log_2$ of the ratio of the entry maxima of "
-                    "neighbouring lattices, a convergence order only for the background residual of the USR box mean."),
+                    "neighbouring lattices, a convergence order only for the background residual of the USR box mean."
+                    " The $256^3$ runs: E-20261123-090727-4b6e5a5 (SR) and E-20261123-065855-265732a (USR) with their "
+                    "continuations, joined records of E-20261124-212343-7e9c4b2, pass E-20261124-213029-e937f69."),
     "Sign flip": ("Runs with the sign of the momentum source flipped, $256^3$. Ratio: flipped over proper run at common "
                   "record times with $0.5 \\le N \\le \\ln 64$, the entry of every mode; SR from the joined records "
                   "of both continued runs."),
@@ -88,7 +90,9 @@ SECNOTE = {
                     "Per-mode rms: root mean square over the modes inside the window ($W_k > 1/2$) of "
                     "$|\\mathcal{R}_k^\\mathrm{NR} - \\mathcal{R}_k^\\mathrm{lin}|/|\\mathcal{R}_k^\\mathrm{lin}|$. Plateau "
                     "ratio: median over $0.5 \\le N \\le \\ln 8$ of the ratio of the record means of a constraint at "
-                    "matched times, finer lattice over coarser, for 64/32, 128/64 and 256/128."),
+                    "matched times, finer lattice over coarser, for 64/32, 128/64 and 256/128."
+                    " The $256^3$ runs: E-20261123-090727-4b6e5a5 (SR) and E-20261123-065855-265732a (USR) with their "
+                    "continuations, joined records of E-20261124-212343-7e9c4b2, pass E-20261124-213029-e937f69."),
     "Backreaction": ("Relative change of the final power per shell with more than ten modes, same random amplitudes, "
                      "noise on the mesh unless stated; SR at $N = 7.19$, after the last crossing, and at $N_f$."),
     "One-patch drift and noise amplitude": ("The drift of the lapse measured by Monte Carlo against the two forms of the "
@@ -157,7 +161,7 @@ ROWS = [
     ("Constraints", "USR: entry maximum of <|H|/[H]>, box mean removed, 128^3", "j", ("fig7_fig8.json", "usr.H0.entry_max.128"), "{:.1e}", V("yes", 138, "USR 128^3 box mean removed 2.25e-12", "2.25e-12")),
     ("Constraints", "USR: entry maximum of <|H|/[H]> with the box mean, 128^3", "j", ("fig7_fig8.json", "usr.H.entry_max.128"), "{:.1e}", V("yes", 138, "with the box mean 3.25e-10", "3.25e-10")),
     ("Constraints", "USR: order of that maximum, 64 to 128", "j", ("fig7_fig8.json", "usr.H.orders.64-128"), "{:.2f}", V("yes", 81, "41 (4.06)", "4.06")),
-    ("Constraints", "USR: the same, 128 to 256", "j", ("fig7_fig8.json", "usr.H.orders.128-256"), "{:.2f}", NONE),
+    ("Constraints", "USR: the same, 128 to 256", "j", ("fig7_fig8.json", "usr.H.orders.128-256", {"origin": "@all"}), "{:.2f}", NONE),
     ("Constraints", "USR: largest 99th percentile of |H|/[H] over the cells (256^3)", "j", ("fig4_usr_contrast.json", "pct_H_p99_max"), "{:.1e}", V("rerun", 96, "42 (my subset of dumps gives 1.98e-11")),
     ("Constraints", "USR: largest record mean of |M|/[M] (256^3)", "q", (RES, 301, "2.519e-2"), None, V("yes", 81, "43 (2.519e-2)")),
     ("Constraints", "Paper II: Hamiltonian violation", "p", ("II", 539, r"($\sim 10^{-10}$)"), None, QP),
@@ -185,23 +189,23 @@ ROWS = [
     ("Convergence", "SR spectra: largest |1 - Delta_NR/Delta_lin|, 32^3", "j", ("fig7_fig8.json", "specconv.32.max"), "{:.1e}", V("diff", 142, "rungs 3.4e-3, 7.9e-5, 2.3e-6", "3.4e-3")),
     ("Convergence", "the same, 64^3", "j", ("fig7_fig8.json", "specconv.64.max"), "{:.1e}", V("diff", 142, "rungs 3.4e-3, 7.9e-5, 2.3e-6", "7.9e-5")),
     ("Convergence", "the same, 128^3", "j", ("fig7_fig8.json", "specconv.128.max"), "{:.1e}", V("diff", 142, "rungs 3.4e-3, 7.9e-5, 2.3e-6", "2.3e-6")),
-    ("Convergence", "the same, 256^3", "j", ("fig7_fig8.json", "specconv.256.max"), "{:.1e}", NONE),
-    ("Convergence", "order of that departure, 128 to 256", "j", ("fig7_fig8.json", "specconv.128.max", "log2/", "specconv.256.max"), "{:.2f}", NONE),
+    ("Convergence", "the same, 256^3", "j", ("fig7_fig8.json", "specconv.256.max", {"origin": "@256"}), "{:.1e}", NONE),
+    ("Convergence", "order of that departure, 128 to 256", "j", ("fig7_fig8.json", "specconv.128.max", "log2/", "specconv.256.max", {"origin": "@all"}), "{:.2f}", NONE),
     ("Convergence", "SR spectra: per-mode rms, 128^3", "j", ("fig7_fig8.json", "specconv.128.per_mode_rel_rms"), "{:.1e}", NONE),
-    ("Convergence", "the same, 256^3", "j", ("fig7_fig8.json", "specconv.256.per_mode_rel_rms"), "{:.1e}", NONE),
-    ("Convergence", "SR <|H|/[H]>: plateau ratios 64/32, 128/64, 256/128", "j", ("fig7_fig8.json", ["sr.H.orders_time_matched.32-64", "sr.H.orders_time_matched.64-128", "sr.H.orders_time_matched.128-256"], "pow2neg"), "{:.2f}", NONE),
-    ("Convergence", "SR <|M|/[M]>: the same", "j", ("fig7_fig8.json", ["sr.M.orders_time_matched.32-64", "sr.M.orders_time_matched.64-128", "sr.M.orders_time_matched.128-256"], "pow2neg"), "{:.2f}", NONE),
-    ("Convergence", "USR <|M|/[M]>: the same", "j", ("fig7_fig8.json", ["usr.M.orders_time_matched.32-64", "usr.M.orders_time_matched.64-128", "usr.M.orders_time_matched.128-256"], "pow2neg"), "{:.2f}", NONE),
-    ("Convergence", "USR <|H|/[H]>, box mean removed: the same", "j", ("fig7_fig8.json", ["usr.H0.orders_time_matched.32-64", "usr.H0.orders_time_matched.64-128", "usr.H0.orders_time_matched.128-256"], "pow2neg"), "{:.2f}", NONE),
+    ("Convergence", "the same, 256^3", "j", ("fig7_fig8.json", "specconv.256.per_mode_rel_rms", {"origin": "@256"}), "{:.1e}", NONE),
+    ("Convergence", "SR <|H|/[H]>: plateau ratios 64/32, 128/64, 256/128", "j", ("fig7_fig8.json", ["sr.H.orders_time_matched.32-64", "sr.H.orders_time_matched.64-128", "sr.H.orders_time_matched.128-256"], "pow2neg", {"origin": "@all"}), "{:.2f}", NONE),
+    ("Convergence", "SR <|M|/[M]>: the same", "j", ("fig7_fig8.json", ["sr.M.orders_time_matched.32-64", "sr.M.orders_time_matched.64-128", "sr.M.orders_time_matched.128-256"], "pow2neg", {"origin": "@all"}), "{:.2f}", NONE),
+    ("Convergence", "USR <|M|/[M]>: the same", "j", ("fig7_fig8.json", ["usr.M.orders_time_matched.32-64", "usr.M.orders_time_matched.64-128", "usr.M.orders_time_matched.128-256"], "pow2neg", {"origin": "@all"}), "{:.2f}", NONE),
+    ("Convergence", "USR <|H|/[H]>, box mean removed: the same", "j", ("fig7_fig8.json", ["usr.H0.orders_time_matched.32-64", "usr.H0.orders_time_matched.64-128", "usr.H0.orders_time_matched.128-256"], "pow2neg", {"origin": "@all"}), "{:.2f}", NONE),
     # --- backreaction
     ("Backreaction", "USR level 2 against 0: rms over the shells at N_f", "j", ("fig9_ablation.json", "r20_usr.rms"), "{:.1e}", V("yes", 81, "67 (1.04e-4)", "1.04e-4")),
     ("Backreaction", "USR level 2 against 0: largest shell", "j", ("fig9_ablation.json", "r20_usr.max"), "{:.1e}", V("diff", 87, "68 (9.2e-4)", "9.2e-4 (all shells)")),
     ("Backreaction", "USR level 2 against 0: fraction of shells positive", "j", ("fig9_ablation.json", "r20_usr.frac_pos"), "{:.2f}", V("yes", 82, "69 (0.52)")),
     ("Backreaction", "SR level 2 against 0 at N = 7.19: largest shell", "j", ("fig9_ablation_sr_t75.json", "r20_sr.max"), "{:.2e}", V("diff", 87, "70 (1.4e-4)", "1.4e-4 (all shells)")),
     ("Backreaction", "SR level 2 against 0 at N = 7.19: rms for |n| <= 32", "j", ("fig9_ablation_sr_t75.json", "r20_sr.rms_n_le_32"), "{:.3e}", V("diff", 88, "71 (1.75e-5)", "1.75e-5")),
-    ("Backreaction", "SR level 2 against 0 at N_f: largest shell", "j", ("fig9_ablation.json", "r20_sr.max"), "{:.2e}", NONE),
-    ("Backreaction", "SR level 2 against 0 at N_f: rms for |n| <= 32", "j", ("fig9_ablation.json", "r20_sr.rms_n_le_32"), "{:.3e}", NONE),
-    ("Backreaction", "SR level 2 against 0 at N_f: fraction of shells positive", "j", ("fig9_ablation.json", "r20_sr.frac_pos"), "{:.2f}", NONE),
+    ("Backreaction", "SR level 2 against 0 at N_f: largest shell", "j", ("fig9_ablation.json", "r20_sr.max", {"origin": "@al2s"}), "{:.2e}", NONE),
+    ("Backreaction", "SR level 2 against 0 at N_f: rms for |n| <= 32", "j", ("fig9_ablation.json", "r20_sr.rms_n_le_32", {"origin": "@al2s"}), "{:.3e}", NONE),
+    ("Backreaction", "SR level 2 against 0 at N_f: fraction of shells positive", "j", ("fig9_ablation.json", "r20_sr.frac_pos", {"origin": "@al2s"}), "{:.2f}", NONE),
     ("Backreaction", "SR level 1 against 0: largest shell", "j", ("fig9_ablation.json", "r10_sr.max"), "{:.1e}", V("yes", 82, "73 (6.6e-7)")),
     ("Backreaction", "USR level 1 against 0: largest shell", "j", ("fig9_ablation.json", "r10_usr.max"), "{:.1e}", V("yes", 82, "74 (7.0e-7)")),
     ("Backreaction", "level 0, noise on shells against on the mesh: largest SR shell", "j", ("fig9_ablation.json", "shells_vs_mesh_sr.max"), "{:.1e}", V("yes", 82, "75 (1.33e-2)", "1.33e-2")),
@@ -341,6 +345,9 @@ def main():
     rows = []
     for sec, qty, kind, args, fmt, ck in ROWS:
         if kind == "j":
+            opts = args[-1] if isinstance(args[-1], dict) else {}
+            if opts:
+                args = args[:-1]
             fn, path = args[:2]
             p = os.path.join(out, "lattice", fn)
             d = cache.setdefault(p, json.load(open(p)))
@@ -350,7 +357,7 @@ def main():
                 val = ", ".join(fmt.format(2.0 ** -get_dotted(d, q)) for q in path)
             else:
                 val = fmt.format(get_dotted(d, path))
-            src = f"this run ({run_id}) from {ORIGIN[fn]}"
+            src = f"this run ({run_id}) from {ORIGIN[fn + opts.get('origin', '')]}"
         elif kind == "l":
             p = os.path.join(out, "langevin", "langevin.json")
             d = cache.setdefault(p, json.load(open(p)))
