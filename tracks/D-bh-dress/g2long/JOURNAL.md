@@ -568,7 +568,7 @@ Also open: the ladder schematic (tools/schem_ladder.py, trial in scratch/D-bh-dr
 at) is not yet a registered run; the draft request to core on the finder's stopping rule is in
 scratch/D-bh-dress/tmp/outbox/finder.md (post it after FP is judged).
 
-## Entry 14 (2026-11-24 09:35 PST, lead of batch 11b, resumed after the pause): outcomes of FP and FP-ext
+## Entry 14 (2026-11-24 09:25 PST, lead of batch 11b, resumed after the pause): outcomes of FP and FP-ext
 
 Closed with `nrpic-run finish`: FP D-20261124-130935-fdca920 (84 probes; exit 0, 79 min) and FP-ext
 D-20261124-140606-286a302 (24 probes; exit 0, 39 min). Judged by `tools/fp_analyse.py`, registered
@@ -613,3 +613,28 @@ with these numbers; (2) G2 criterion N is restated in stage/G2/OPEN.md with the 
 measurement and the step as a separate item; (3) new D inputs set `mass_tol_0 = 1e-8` (HANDOFF item 4);
 (4) the claim "noise floor 1.2e-4 at M/8" leaves the note: the floor is 1.8e-5 (tight finder, V-1L,
 100-500 M) and the production finder's plateau gap of 1.3e-4 is quoted as the finder's.
+
+## Entry 15 (2026-11-24 09:40 PST, before FNQ and FL16 are registered): allotment, restart cadence, two more predictions
+
+Decision 0032 item 3 raised D's allotment by 10 card-hours for runs already designed; `nrpic-run budget`
+(09:30) leaves 11.73 card-hours for G2 with FK, FE4, FF4, FN4 reserved. FNQ ES-FLKQ (cap 3.0) and FL16
+ES-FL16 (cap 5.0) of entry 10 are registered now (inputs and smoke tests S8, S9 unchanged), held at once
+and queued behind FN4 in the sequencer g2long_seq3 (alive, pid 3757609; it reads the queue at every check).
+Their predictions are those of entry 10 (Q1-Q3, L1-L4); nothing about them has been seen since.
+
+Restart cadence (decision 0032 item 2, "a restart file at least every ten minutes of wall time"): the
+inputs write one every 50 M, which is 14-35 min of card time. Set on the command line through the chain's
+EXTRA_ARGS (chain/config.sh, applied to every segment; the registered inputs stay as smoke-tested):
+`output2/dt=25` for FN4 (~143 M per card-hour, 10.5 min) and FNQ (~210 M/h, 7 min), `output2/dt=12.5`
+for FL16 (~86 M/h, 8.7 min). FN4's first segment has not run (job 5170 held), so its outputs are not
+mixed. Disk: about 16, 16 and 24 restart files of 2.6-3 GB (~150 GB; /data has 17 TB free). The denser
+dumps also serve as re-search points for the tight finder (entry 14), at no card cost.
+Finder: the inputs keep the production finder (mass_tol 1e-5) so that the runs compare with their
+parents FK, ES-FL and FF4; the null-test and floor measurements are made by re-searching dumps (FP).
+
+New predictions (before any of the three runs):
+XQ (FNQ, N/4): ||H|| of the z = 0 plane (tools/xc_plane.py) on A1 and A2 at 100 and 200 M is 2 times
+   ES-FLK's (N^-1/2; between 1.4 and 2.9) [JUDGEMENT, the companion of XN]; refuted (not particle noise)
+   if the ratio is 1.1 or less at both times.
+L5 (FL16, M/16): ||H||_A1 at 100 and 200 M is at least ES-FL's (fewer particles per cell on the finest
+   level, so more deposit noise) [JUDGEMENT, p ~ 0.6]; refuted if it is below 0.8 times ES-FL's at both.
