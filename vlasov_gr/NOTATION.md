@@ -21,11 +21,14 @@ Follows the conventions of the host NRPIC paper where shared (units $G = c = 1$,
 | $A_{ab,i}$, $\hat{n}_i$, $\beta_F$ | `\beta_F` | effective face area covector, unit face normal, and normal-observer face speed | Sec. III.A |
 | $\bm{L}_{a,\alpha}$, $\bm{R}_{a,\alpha}$, $\bm{\xi}_q$, $w_q$ | | Cholesky factor $\bm{L}\bm{L}^T = \Sigma$, Halton $\mathrm{SO}(3)$ frame, Stroud cubature nodes and weights | Sec. III.B |
 | $\theta$, $h_{\rm rel}$, $\Gamma_{\rm ad}$, $K_n$ | `\theta`, `h_{\rm rel}`, `\Gamma_{\rm ad}` | dimensionless kinetic temperature $k_B T/\mu_p$, specific enthalpy $K_3/K_2$, Synge adiabatic index, Bessel function | Sec. III.C |
-| $\sigma/\mu_p$, $\nu_a$, $w_c$ | | reduced hard-sphere cross section, Maxwell-J{\"u}ttner collision rate, asymptotic Knudsen blend factor | Sec. III.C |
+| $\sigma/\mu_p$, $\nu_a$, $w_c$ | | reduced hard-sphere cross section, Maxwell-J{\"u}ttner collision rate, asymptotic Knudsen blend factor | Sec. III.A |
+| $(c_r, a_{sr}, b_s)$, $w_{-1,0,1}$ | | two-stage Gauss-Legendre symplectic IRK tableau and non-uniform three-level quadratic Lagrange time weights | Sec. III.B |
+| $\bm{q}_p^*$, $s$, $M_{\rm inv}$ | | comoving post-collision momenta, convex projection rescaling factor, cell invariant mass | Sec. III.D |
+| $F_{c+1/2}$, $\sigma_{c+1/2}$ | | directional metric-weighted filter flux and harmonic face conductance $2\sqrt{\gamma}_c\sqrt{\gamma}_{c+1}/(\sqrt{\gamma}_c+\sqrt{\gamma}_{c+1})$ | Sec. III.E |
 | $\mathcal{H}$, $\mathcal{M}$ | `\Ham`, `\Mom` | $L_2$ norms of the Hamiltonian and momentum constraints | Sec. VI |
-| $M_{\rm AH}$ | `M_{\rm AH}` | apparent-horizon irreducible mass | Sec. VI |
-| $M$, $a$, $\Egeo$, $L_z$ | `M`, `a`, `\Egeo`, `L_z` | black hole mass, spin length, geodesic energy $-u_t$, axial angular momentum | Sec. V |
-| $R_0$, $\tau$, $\rho_0$ | `R_0`, `\tau` | initial collapse radius, central proper time, proper rest-mass density | Sec. VI |
+| $M_{\rm AH}$, $a_{\rm AH}$, $I$ | `M_{\rm AH}` | apparent-horizon irreducible mass, dimensionless spin $S/M^2$, Kretschmann scalar | Sec. VI |
+| $M$, $a$, $\Egeo$, $L_z$, $Q$ | `M`, `a`, `\Egeo`, `L_z` | black hole mass, spin length, geodesic energy $-u_t$, axial angular momentum, Carter constant | Sec. II |
+| $R_0$, $y_c$, $\tau$, $\rho_0$ | `R_0`, `\tau` | initial collapse radius, cluster central redshift parameter, central proper time, proper rest-mass density | Sec. VI |
 
 ## Named results
 

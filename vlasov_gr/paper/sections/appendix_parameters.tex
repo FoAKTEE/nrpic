@@ -1,13 +1,13 @@
 \appendix
 
-\section{Stroud cubature nodes and run configurations}\label{app:params}
+\section{Cubature parameters and testbed configurations}\label{app:params}
 
-Each populated velocity basis $(a,\alpha)$ with positive rest mass $m_{a,\alpha} > 0$ expands into $Q_{\rm SCP}$ deterministic characteristic packets via Eq.~(\ref{eq:scp_map}) using the lower triangular Cholesky factor $\bm{L}_{a,\alpha}$ of the local velocity covariance $\Sigma_{a,\alpha}$ and a deterministic rotation $\bm{R}_{a,\alpha} \in \mathrm{SO}(3)$ mapped from the base-$2,3,5$ Halton triplet $(h_2, h_3, h_5)$ through Shoemake's uniform unit quaternion
+Each populated velocity basis $(a,\alpha)$ with positive rest mass $m_{a,\alpha} > 0$ expands into $Q_{\rm SCP}$ deterministic characteristic packets via the cubature packet expansion using the lower triangular Cholesky factor $\bm{L}_{a,\alpha}$ of the local velocity covariance $\Sigma_{a,\alpha}$ and an orthogonal rotation $\bm{R}_{a,\alpha} \in \mathrm{SO}(3)$ mapped from the base-$2,3,5$ Halton triplet $(h_2, h_3, h_5)$ through Shoemake's uniform unit quaternion
 \begin{multline}\label{eq:shoemake_q}
 \bm{q} = \big(\sqrt{1-h_2}\sin 2\pi h_3,\;\sqrt{1-h_2}\cos 2\pi h_3,\\
 \sqrt{h_2}\sin 2\pi h_5,\;\sqrt{h_2}\cos 2\pi h_5\big).
 \end{multline}
-Cold elements with $\mathrm{Tr}\,\Sigma_{a,\alpha} = 0$ collapse automatically to $Q_{\rm SCP} = 1$ packet ($\bm{\xi}_1 = \bm{0}$, $w_1 = 1$). Warm bases employ the fifth-degree fourteen-point symmetric Stroud rule \cite{Stroud:1971} summarized in Table~\ref{tab:stroud14}, or optional $Q_{\rm SCP} \in \{8, 27\}$ product lattices matching unit covariance up to third or fifth order.
+Cold elements with $\mathrm{Tr}\,\Sigma_{a,\alpha} = 0$ collapse automatically to $Q_{\rm SCP} = 1$ packet ($\bm{\xi}_1 = \bm{0}$, $w_1 = 1$). Warm bases employ the fifth-degree fourteen-point symmetric Stroud rule \cite{Stroud:1971} summarized in Table~\ref{tab:stroud14}, $S^2$ spherical shells ($Q \in \{6, 12, 14, 26\}$) normalized by $\sqrt{3}$, or optional $Q_{\rm SCP} \in \{8, 27\}$ product lattices matching unit covariance up to third or fifth order.
 
 \begin{table}[ht]
 \caption{\label{tab:stroud14}%
@@ -22,20 +22,24 @@ Gaussian & $\sqrt{5/2}$ & $4/25$ & $\sqrt{5}$ & $1/200$ \\
 \end{ruledtabular}
 \end{table}
 
-All finite-volume runs use cubic-spline smoothing length closure $h_a^3 \bar{n}_a = 1$, CFL factor $\nu_{\rm CFL} = 0.3$, velocity-crossing slope threshold $\epsilon_v = 0.1$ (disabled under continuum colliding shocks), and harmonic sound-speed thermal conduction coefficient $\kappa_{\rm Noh} = 0.5$ \cite{Noh:1987}. Table~\ref{tab:configs} lists domain sizes, meshblock dimensions, time steps, and element counts for the primary physical testbeds.
+All continuum MFM runs use cubic-spline smoothing length closure $h_a^3 \bar{n}_a = 1$, CFL factor $\nu_{\rm CFL} = 0.3$, velocity-crossing slope threshold $\epsilon_v = 0.1$ (disabled under colliding shocks), and harmonic sound-speed thermal conduction coefficient $\kappa_{\rm Noh} = 0.5$ \cite{Noh:1987}. Table~\ref{tab:configs} lists domain extents, mesh parameters, time steps, and particle counts across all relativistic and full-GR testbeds.
 
 \begin{table*}[t]
 \caption{\label{tab:configs}%
-Configuration parameters for special-relativistic colliding beams, Kerr ($a = 0.9M$) tidal cloud, and three-plus-one Oppenheimer-Snyder collapse ($R_0 = 5M$, seven-level adaptive grid).}
+Configuration parameters for flat-space regimes, Kerr orbits and clusters, dynamic Z4c mergers, and full-GR collapse runs (cluster central redshifts $y_c \in \{0.900, 0.819, 0.756, 0.605, 0.500, 0.283\}$).}
 \begin{ruledtabular}
 \begin{tabular}{lccccc}
-Testbed & Domain & Mesh & $\Delta t$ & Final $t$ & Initial $N$ \\
+Testbed & Domain & Mesh & $\Delta t$ & Final $t$ & $N$ \\
 \colrule
 Warm wave & $[0,1]^3$ & $8^3$ & $0.001$ & $0.08$ & $8^3\text{--}24^3$ \\
 Two-stream & $[0,1]^3$ & $8^3$ & $0.005$ & $0.40$ & $10^3$ \\
-Colliding beams & $[0,1]\times[0,1/19.2]^2$ & $16\times 4^2$ & $0.002$ & $0.55$ & $2400$ \\
-Kerr cloud & $[-18,18]^3\,M^3$ & $16^3$ & $0.05\,M$ & $30.0\,M$ & $552\text{--}14328$ \\
-Collapse & $[-155.04,155.04]^3\,M^3$ & $64^3$ base & $0.25\,\Delta x$ & $25.0\,M$ & $9328$ \\
+Colliding beams (MFM / BGK) & $[0,1]\times[0,1/19.2]^2$ & $16\times 4^2$ / $256\times 4^2$ & $0.002$ & $0.55\text{--}0.65$ & $2400$ / $49152$ \\
+Kerr cloud ($a=0.9M$) & $[-18,18]^3\,M^3$ & $16^3$ & $0.05\,M$ & $30\,M$ & $552\text{--}14328$ \\
+Kerr $e=0.99$ \& cluster & $[-64,64]^3\,M^3$ & $6$-lvl SMR & $0.01\text{--}0.05\,M$ & $200\text{--}600\,M$ & $1$ / $10^4\text{--}10^5$ \\
+Dynamic puncture (head-on) & $[-64,64]^3\,M^3$ & AMR Z4c & $0.25\,\Delta x$ & $100\text{--}250\,M$ & $6$ tracers \\
+Oppenheimer-Snyder ($R_0=5M$) & $[-155,155]^3\,M^3$ & $7$-lvl AMR & $0.25\,\Delta x$ & $25\,M$ & $9328\text{--}10^5$ \\
+Prolate spindle ($e=0.9$) & $[-128,128]^3\,M^3$ & $7$-lvl AMR ($M/16$) & $0.25\,\Delta x$ & $45\,M$ & $10^4\text{--}10^5$ \\
+Shapiro-Teukolsky clusters & $[-160,160]^3\,M^3$ & $7$-lvl AMR & $0.25\,\Delta x$ & $150\text{--}300\,M$ & $10^4\text{--}10^5$ \\
 \end{tabular}
 \end{ruledtabular}
 \end{table*}

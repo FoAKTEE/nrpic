@@ -90,5 +90,11 @@ Internal development names, cluster names, and code identifiers that never appea
 | Figure | What the reader should see | Defining parameters |
 |---|---|---|
 | `fig_sr_regimes` | Second-order MFM convergence in 1D and smooth shock transition across four decades of collisionality to the Taub relativistic fluid limit | $\sigma / \mu_p \in \{0, 2, 15, 10^4\}$ |
+| `fig_pbgk_crossover` | Conservative Cell-BGK recovers free streaming and Taub shocks across four decades of optical depth at $O(1)$ step cost ($50\times$ faster than MC) | $\sigma / \mu_p \in \{0, 2, 15, 10^4\}$ |
 | `fig_kerr_pareto_arc` | Hybrid cubature packets populate the dominant cost-accuracy corner and match a hundred-thousand-particle Monte Carlo reference with lower azimuthal roughness | Kerr $a = 0.9 M$, $t = 30 M$ |
+| `fig_gl4_kerr_clusters` | Fourth-order Gauss-Legendre integration cuts $e=0.99$ energy drift by $7\times 10^6\times$, achieves $O(\Delta t^3)$ time interpolation, and exposes the $O(\Delta x^3)$ Hermite floor | Kerr $a = 0.9 M$, $e = 0.99$ |
+| `fig_physics_kerr_cluster_orbits` | Equatorial Kerr zoom orbit, Z4c head-on binary merger punctures/tracers, and $10^5$-particle $6$-level SMR phase-mixing ring + CDFs | Kerr $a = 0.9 M$, $t = 200\text{--}230\,M$ |
 | `fig_os_and_scaling` | Cold cubature-packet collapse matches Z4c metric, horizon mass, and constraint evolution while eliminating neighbor-search quadratic growth at large element counts | $R_0 = 5 M$, $a = 0.9 M$ |
+| `fig_selfgrav_collapse_st` | Densitized filtering, octant QMC, axisymmetric prolate $I_{\max}$ spike reduction, and Shapiro-Teukolsky momentum conservation | $R_0 = 5 M$, $e = 0.9$, $y_c \in [0.5, 0.9]$ |
+| `fig_physics_prolate_spindle` | Meridional Kretschmann curvature slices, core contours, axial $|I|$ peaks, apparent horizon cross section, and $M_{\rm AH}(t)$ in prolate collapse | $e = 0.9$, $b = 10 M$, $N = 10^5$ |
+| `fig_physics_st_phase_space` | Radial $(r, u_r)$ phase-space portraits, lapse bifurcation, $20\times$ spurious BH spin suppression, and $|\mathbf{P}|/M_0 \le 2\times 10^{-14}$ across $300M$ | $y_c \in \{0.900, 0.819, 0.756, 0.605\}$ |
