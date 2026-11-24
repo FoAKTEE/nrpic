@@ -14,32 +14,30 @@ Verdicts: REPRODUCED (the statement or figure agrees by the stated measure), IN 
 part agrees, a stated part does not), NOT REPRODUCED, PENDING (a run it needs has not ended; the run id
 that completes it is named).
 
-STATUS (2026-11-24 13:50 PST, update pass of batch R3): four of the five continued runs of package
-repro/continue have ended at their tlim and are in the figures (RNC256, CL256U, CL256S, AL2S; joins
-confirmed twice, JOURNAL entry 11). The committed figures in `fig/` and every number below come from
-the registered figure run E-20261124-213739-9776185 (its jsons and PNGs equal those of
-E-20261124-213532-3f00681 byte for byte except `fig_signflip.json`, which adds the scope-P2 maxima;
-Figs. 1-6 equal those of the earlier figure run E-20261124-173254-420115f byte for byte; JOURNAL
-entries 11, 12). One run is still out: RSF256 (SR 256^3 with metric dumps) is joined to cycle 895 (t =
-5.49 of 8.5) and its fourth continuation waits in the shared card queue as **q0034**
-(`harness/bin/nrpic-queue show q0034`; not dispatched at 13:27 PST). The rows PENDING below need it,
-and only it (section 5).
+STATUS (2026-11-24 15:15 PST, last pass of batch R4): all five continued runs of package
+repro/continue have ended at their tlim and are in the figures. RSF256 (SR 256^3 with metric dumps)
+ended at t = 8.5 in its fourth continuation E-20261124-214913-5956891 (shared-queue entry q0034); this
+package joined it (E-20261124-225720-444aecc), passed its 35 dumps (E-20261124-225826-0bf3842) and made
+the figures from it (E-20261124-230839-0e1e13a; JOURNAL entries 14, 15). The committed figures in
+`fig/` and every number below come from that figure run; its outputs equal those of
+E-20261124-213739-9776185 byte for byte except the new RSF256 files, `fig_joins.png`, `joins.json` and
+`fig_signflip.json`. No row is PENDING.
 
 ## 1. Verdict per figure
 
 | Fig. (P1 label) | Ours (`fig/`) | Runs | Verdict |
 |---|---|---|---|
 | 1 `fig:MeanRolls` | `fig1_meanrolls.png`, `fig1_residuals.png` | M64S, M64U (SMALL E-20261123-020704-2b99463) | REPRODUCED |
-| 2 `fig:quad_contrast` | `fig2_sr_contrast_P256v6.png` | P256v6 E-20261121-202935-31520bc (field panels); RSF256 + continuations (constraint panels) | IN PART (field panels); constraint panels PENDING (RSF256, queue q0034) |
-| 3 `fig:quad_spec` | `fig3_sr_spec_P256v6.png`, `..._ratio.png` | P256v6 (RSF256 repeats its deck and steps; bit-identical to t = 5.0) | REPRODUCED (the figure from RSF256 itself PENDING, queue q0034) |
+| 2 `fig:quad_contrast` | `fig2_sr_contrast.png` (RSF256, all six panels); `fig2_sr_contrast_P256v6.png` (field panels) | RSF256 E-20261123-035925-8439d79 + four continuations (joined E-20261124-225720-444aecc); P256v6 E-20261121-202935-31520bc | IN PART (shape, timing and constraint levels as P1; field amplitudes a factor 3.5 below P1's bands) |
+| 3 `fig:quad_spec` | `fig3_sr_spec.png`, `fig3_sr_spec_ratio.png` (RSF256); `fig3_sr_spec_P256v6*.png` | RSF256 (bit-identical to P256v6 at t = 0, 4.0, 8.5) | REPRODUCED |
 | 4 `fig:usr_contrast` | `fig4_usr_contrast.png`, `fig4_usr_contrast_hzero.png` | USF256 E-20261123-021204-2f573ec | IN PART |
 | 5 `fig:usr_spec` | `fig5_usr_spec.png`, `..._ratio.png` | USF256 | REPRODUCED |
-| 6 `fig:specAK` | `fig6a_sr_Kspec_P256v6.png`, `fig6b_usr_Kspec.png` | P256v6; USF256 | REPRODUCED (figure); statement S26 IN PART |
+| 6 `fig:specAK` | `fig6a_sr_Kspec.png` (RSF256), `fig6a_sr_Kspec_P256v6.png`, `fig6b_usr_Kspec.png` | RSF256 (P256v6); USF256 | REPRODUCED (figure); statement S26 IN PART |
 | 7 `fig:specConvergence` | `fig7_specconv.png` | C32S, C64S, C128S (SMALL); CL256S + continuation E-20261124-130952-4be980b | REPRODUCED (monotone convergence 32-256; a floor near 1e-7 at the lowest shells, cause open) |
 | 8 `fig:Convergence` | `fig8_convergence.png` | C32-C128 S/U (SMALL); CL256S/U + continuations | IN PART (plateau, decay, USR rise and convergence 32-256 as P1; levels below P1's) |
 | 9 `fig:ablationback` | `fig9_ablation.png`, `fig9_ablation_sr_t75.png` | AL0S, AL1S, AL2S (+ continuation E-20261124-131359-49afe29), AL0U, AL1U, AL2U; RL1, UL1, P256v6, U256ap | IN PART (level 2 as P1's figure in both scenarios; USR top shells above P1:520's bound; SR level 1 above P1's) |
-| (P1:541, no figure) | `fig_signflip.png` | RNC256 + continuation E-20261124-130629-61fe0b0 against RSF256 (joined to cycle 895); U256nc E-20261122-190341-0419be6 | IN PART (first order in both scenarios; our H/[H] about 1e2 below P1's "~1e-5") |
-| (joins) | `fig_joins.png` | the five continued runs | the joined records equal our reader's, every junction smooth (JOURNAL entry 11, J) |
+| (P1:541, no figure) | `fig_signflip.png` | RNC256 + continuation E-20261124-130629-61fe0b0 against RSF256 (joined to cycle 1386); U256nc E-20261122-190341-0419be6 | IN PART (first order in both scenarios; our H/[H] about 1e2 below P1's "~1e-5") |
+| (joins) | `fig_joins.png` | the five continued runs | the joined records equal our reader's, every junction smooth (JOURNAL entries 11, 15); RSF256's record equals P256v6's at all 1387 cycles |
 
 ## 2. Per figure: what agrees, by which measure, what differs and why
 
@@ -59,36 +57,50 @@ Our SR runs end at N = 8.099 (tlim = 8.5), P1's axis at about 7.65 (P1 Fig. 1a, 
 of A3, A11, A18, A19 enters the background at these bars (level 2 against 0 changes the box means at
 second order [JUDGEMENT]).
 
-### Fig. 2 (SR contrasts, 256^3): IN PART (field panels); constraint panels PENDING (q0034)
+### Fig. 2 (SR contrasts, 256^3): IN PART (shape, timing, constraint levels; field amplitudes a factor 3.5 below)
 
-Ours from P256v6 (release build, the deck and steps of RSF256 with 18 dumps; the dumps of RSF256 and
-P256v6 at t = 0, 4.0006 and 5.0008 are bit-identical in all 17 common variables [VERIFIED,
-`bitcheck_rsf256bit.json` of E-20261124-213029-e937f69], scope P1 for SR as far as RSF256 has run).
-P256v6's dumps carry no constraint fields, so the two lower panels say so; they come from RSF256 when
-its fourth continuation (queue q0034) has ended: then `runs.py rsf256` and `make_figs.py --rsf256`
-(section 5). Agrees (shape and timing,
+Ours: `fig2_sr_contrast.png` from RSF256 itself (35 dumps, t = 0 to 8.5, all six panels; original and
+four continuations, joined in E-20261124-225720-444aecc, pass E-20261124-225826-0bf3842), beside
+`fig2_sr_contrast_P256v6.png` (18 dumps, field panels only). RSF256 and P256v6 are one computation:
+dumps at t = 0, 4.0006 and 8.5 bit-identical in all 17 common variables (`bitcheck_rsf256.json` of
+the pass; t = 5.0008 in E-20261124-213029-e937f69) and the records identical at all 1387 cycles in the
+20 common columns (`fig/joins.json`) [VERIFIED; scope P1 for SR PASS]. So the field-panel numbers
+below hold for both; at the 18 shared times the percentiles are equal. Constraint panels (RSF256):
+the per-cell means equal the record within 4.1e-15 (H) and 3.8e-15 (M) at all 35 dumps (F2 (a));
+|H|/[H] sits on a plateau (68 per cent band near 1e-13 to 1e-12, 99.5th percentile 3.4e-12 to 6e-12)
+from N = 0.75 to 3.2, rises with the last crossings to its maximum at N = 4.39 (99.5th percentile
+1.78e-10, max over cells 3.6e-10), and decays exponentially to 6.5e-14 (99.5th) at N_f; |M|/[M] has a
+plateau near 1e-6 to 2e-5 (68 per cent), a maximum after the entry (99.5th percentile 1.84e-3 at N =
+4.86, max over cells 4.5e-2 at 5.10) and decays to a 68 per cent band of 1.2e-6 to 3.9e-6 at N_f
+[VERIFIED, `fig/fig2_sr_contrast.json`]. P1:539 "H/[H] at the next order (~1e-10), then damped": the
+per-cell level of ours reaches 1e-10 at the end of the entry and is damped by 2.7e3 to N_f (S14).
+Agrees (shape and timing,
 P1:522): delta phi/phi_b, delta K/K_b and R^NR widen during the entry and freeze; delta phi/phi_b
 reaches 95 per cent of its final 68 per cent width at N = 3.91, R^NR at 3.44 (P1 "3.5-4");
 delta Pi/Pi_b stays near 1.5e-5 (68 per cent half-width; 3.7e-5 at N = 0) from N = 1 to 3.9 and
 collapses at the last crossings, to 7.7e-5 of its maximum at N_f, as in P1's figure; the 100/68 band ratio at N_f is 4.97
 (delta phi), 5.0 (R^NR), Gaussian for 1.7e7 correlated cells; R^NR one-point 68 per cent half-width
 2.281e-5 equals the realisation's linear sigma 2.278e-5 (the NR field itself 2.2780e-5) [VERIFIED,
-`fig/fig2_sr_contrast_P256v6.json`, JOURNAL entry 3]. Differs, the amplitudes by a factor of about
+`fig/fig2_sr_contrast_P256v6.json`, JOURNAL entry 3; the same N95 and final widths from RSF256's 35
+dumps, `fig/fig2_sr_contrast.json`, entry 15]. Differs, the amplitudes by a factor of about
 3.5: P1's 68 per cent bands read off P1 Fig. 2 are about 1.0e-6 (delta phi/phi_b and delta K/K_b at
 N_f; ours 2.88e-7, 2.86e-7), 0.6e-4 (delta Pi/Pi_b before the entry; ours 1.5e-5) and 0.8e-4 (R^NR;
 ours 2.28e-5). The same factor appears in USR (Fig. 4), while P1's spectra (Fig. 3, 5) agree with ours
 in level: see Fig. 4 for why this is not in the shared physics. None of A3, A11, A18, A19 can make a
 factor 3.5 in a linear amplitude.
 
-### Fig. 3 (SR spectra, 256^3): REPRODUCED (from P256v6; RSF256 repeats its steps bit for bit to t = 5.0)
+### Fig. 3 (SR spectra, 256^3): REPRODUCED
 
+Ours: `fig3_sr_spec.png` and `fig3_sr_spec_ratio.png` from RSF256 (35 dumps; the curves at the dumps
+nearest P1-like targets, N = 0, 0.75, 1.49, 1.98, 2.71, 3.44, 5.57, 8.10), beside the P256v6 versions.
+Every measure at N_f below is the same in both (bit-identical dumps; JOURNAL entry 15).
 Agrees: Delta[R^NR] from N = 0 to N_f in P1's layout; the entering modes rise to the flat Delta =
 1.0e-10 and freeze; at N = 0 the NR spectrum starts near 3e-17 at k_min as P1's does (P1 Fig. 3, read:
 about 1e-17 to 1e-16); the MS expectation (dashed) is the vacuum k^2 rise at early times and the flat
 1e-10 at the end. Measures at N_f (3395 shells): NR over the realisation's linear power within 1.0e-4
 for k <= k_max/2 and within 5.2e-3 at every shell (rms 1.1e-3, the top shells); NR over MS within
 3/sqrt(count) at 99.6 per cent of the shells; above k_max 8.7e-14 of Delta_MS(k_max) [VERIFIED,
-`fig/fig3_sr_spec_P256v6.json`]. Differs: the top-shell departure (1e-3 to 5e-3 above |n| of about
+`fig/fig3_sr_spec.json` (RSF256) = `fig/fig3_sr_spec_P256v6.json`]. Differs: the top-shell departure (1e-3 to 5e-3 above |n| of about
 50) is A19 (continuum k^2 in our noise R against the stencil in the NR field) with A3 (our shells above
 nmax2 = 64 start from Bunch-Davies at k/aH = 100, an amplitude correction of order 1e-4); P1's
 real-space R^MS has the stencil in it, so P1's top shells need not show it. P1's last time is
@@ -145,7 +157,11 @@ as near as our dumps allow (USR: 0, 0.78, 1.29, 2.05, 2.80, 3.55, 5.53, 8.01, 10
 from the kt_version-2 passes E-20261124-141807-8352509 and E-20261124-172949-8b2255b (N = 8.01), SR
 from the first version times <chi>^2 (exact to second order where delta chi/chi ~ 1e-4; JOURNAL entry
 2 for the defect of version 1). Q = sqrt(3 Kt Kt/2) was the invariant in both versions (identical
-values, entry 6).
+values, entry 6). SR from RSF256 itself (`fig6a_sr_Kspec.png`, 35 dumps, Kt version 2 from its own
+At_ij): Delta[K] and Q identical to P256v6's at the common dumps; the Kt/K medians within 1.9e-7
+relative of the version-1-times-<chi>^2 values (so that correction was exact to the digits quoted);
+Q below K at every injected shell from N = 4.15 (0.999 at 3.91, 0.63 at 3.68, 0.39 at 3.44) [VERIFIED,
+`fig/fig6a_sr_Kspec.json`, JOURNAL entry 15].
 Agrees, SR: Delta[K] reaches the flat 1e-19 (P1 Fig. 6a, read: the same level) and freezes (N_f over
 N = 5.34: 0.998 median); Delta[Kt] peaks at the crossing and decays (N_f over N = 4.39: 2.8e-5); median
 over injected shells of Kt/K: 0.39 (N = 0.5), 1.1-1.4 (N = 2-3.4), 1.1e-4 (5.34), 4.4e-8 (8.10); Q
@@ -255,7 +271,12 @@ decades above the proper runs; M/[M] of order 0.2-0.5). Our H/[H] is lower than 
 1e2, consistent with the amplitude factor (Fig. 4) only in part [JUDGEMENT]. The same json carries the
 proper SR run's record maxima over N <= ln 64 (scope P2): <|H|/[H]> 3.43e-11 (band 3e-11 to 1e-10,
 PASS), <|M|/[M]> 1.18e-4 (band 3e-4 to 5e-4, FAILED as written: both maxima are at the window's edge,
-N = 4.158, still rising; 2.72e-4 by N = 4.39; JOURNAL entry 12).
+N = 4.158, still rising; 2.72e-4 by N = 4.39; JOURNAL entry 12). Over the whole joined RSF256 record
+(cycles 1-1386): <|H|/[H]> 5.10e-11 at N = 4.432 and <|M|/[M]> 3.99e-4 at N = 4.763, both inside P2's
+bands, 0.3 and 0.6 e-folds after the window that P2 named; 1.84e-14 and 2.67e-6 at N_f [VERIFIED,
+`fig/fig_signflip.json`, keys `proper_*_run`; JOURNAL entry 15]. Per cell (scope P2): the 99.5th
+percentile of |H|/[H] (an upper bound on the 99th) is at most 1.78e-10 over the 35 dumps of RSF256,
+below P2's 1e-9 (PASS; `fig/fig2_sr_contrast.json`).
 
 ## 3. Statements of the map (analysis rows, and the run rows that feed the figures)
 
@@ -269,8 +290,8 @@ N = 4.158, still rising; 2.72e-4 by N = 4.39; JOURNAL entry 12).
 | S10 | 534 | R^NR ~ 10 for the furthest outliers | max \|R^NR\| = 4.57 at N_f (USF256, 1.7e7 cells; 5.1 times the 68 per cent width, Gaussian) | NOT REPRODUCED in our realisation and normalisation (Fig. 4, factor about 4) |
 | S11 | 534 | delta Pi/Pi_b relatively large at late times (inflection), unlike quadratic | 1.24e-2 (USR, N_f) against 2.8e-9 (SR, N_f) | REPRODUCED |
 | S12 | 536 | Delta[R] up to ~0.1-1; excellent agreement with the linear spectrum at complete overlap | Delta(k_max) = 1.0 (MS 1.016); NR/linear within 5e-3 at every shell, 3.6e-4 for k <= k_max/2 | REPRODUCED |
-| S13 | 539 | noise in R of maximum amplitude ~1e-5 in its entry phase | SR: 68 per cent half-width of R^NR 1.6e-5 to 2.3e-5 during the entry, max over cells 1.1e-4 (P256v6) | REPRODUCED (reading "~1e-5" as the typical amplitude) |
-| S14 | 539 | H/[H] at the next order (~1e-10) in both scenarios, then damped | USR: per-cell 99th percentile <= 2.4e-11, box mean with H0 removed <= 2.9e-12 (record), decays to 1e-15; SR: record entry plateau 5e-13 (C64S, C128S); SR per cell at 256^3 pending | IN PART: second order and damped, yes; our level 10-100 below P1's ~1e-10 (amplitude, A11); SR per cell PENDING (RSF256, queue q0034) |
+| S13 | 539 | noise in R of maximum amplitude ~1e-5 in its entry phase | SR: 68 per cent half-width of R^NR 1.6e-5 to 2.3e-5 during the entry, max over cells 1.1e-4 (P256v6), 1.17e-4 over RSF256's 35 dumps with N <= 4.2 | REPRODUCED (reading "~1e-5" as the typical amplitude) |
+| S14 | 539 | H/[H] at the next order (~1e-10) in both scenarios, then damped | SR (RSF256, 35 dumps): per-cell 99.5th percentile 3.4e-12 to 6e-12 during the entry (N = 0.75-3.2), 1.78e-10 at its maximum (N = 4.39, max over cells 3.6e-10), 6.5e-14 at N_f (damped by 2.7e3); record mean at most 5.1e-11. USR: per-cell 99th percentile <= 2.4e-11, box mean with H0 removed <= 2.9e-12 (record), decays to 1e-15 | SR REPRODUCED (second order, ~1e-10 per cell at the end of the entry, then damped); USR IN PART (second order and damped; level a factor 4 below P1's ~1e-10, cf. the amplitude factor of Fig. 4 and A11) |
 | S16 | 541 | flipping any sign of the noise gives first order: H/[H] ~1e-5, M/[M] ~1 | USR (U256nc, Pi sign): H ratio over the proper run >= 1.9e3, M/[M] up to 0.50; SR (RNC256 to t = 4.5, N = 4.39): ratio >= 1.39e3 (median 1.06e5), M/[M] up to 0.216 | IN PART (first order shown in both; H/[H] 1e2 below P1's) |
 | S18 | 541 | inflection: \|M\|/[M] later around 1e-2 | late 68 per cent band 8.4e-4 to 3.2e-3, record mean 2.5e-2 at its maximum (N = 6.6) | REPRODUCED within the amplitude factor (Fig. 4) |
 | S19 | 543, 746-752 | positive convergence of constraints and spectra (no orders printed) | spectra: orders 5.7 (32 -> 64), 5.9 (64 -> 128), 1.5 (128 -> 256, a floor near 1e-7 at the lowest shells); constraints during the entry, time-matched: 32 -> 64 decreasing (log2 0.2-2.4), equal within 17 per cent from 64 to 256 (second-order plateau); the background residual of USR at order 4.0-4.1 | REPRODUCED (32-256) |
@@ -294,7 +315,11 @@ N = 4.158, still rising; 2.72e-4 by N = 4.39; JOURNAL entry 12).
 | E-20261124-213029-e937f69 | CL256S dump 17; AL2S dump 17 with c_NR; bit check of RSF256 against P256v6 at t = 0, 4.0, 5.0 | Fig. 7 at 256, Fig. 9 SR level 2 at N_f (P-A1), scope P1 (SR so far) |
 | E-20261124-213400-37465c2 | figure run 4 (continued runs; `joins.py`) | J, F7, F8, P3, P-A1 (JOURNAL entry 11) |
 | E-20261124-213532-3f00681 | figure run 5 (Fig. 7 legend); jsons byte-equal to run 4 | as run 4 |
-| E-20261124-213739-9776185 | figure run 6 (scope-P2 maxima in `fig_signflip.json`); all else byte-equal to run 5 | every PNG and json in `fig/` |
+| E-20261124-213739-9776185 | figure run 6 (scope-P2 maxima in `fig_signflip.json`); all else byte-equal to run 5 | figures before the last pass |
+| E-20261124-225720-444aecc | join check of RSF256 with its fourth continuation E-20261124-214913-5956891 (repro/continue's `join_check.py`, this package's `conts_rsf256.json`) | K2' (J1-J4, joined record 0-1386, dumps 0-34); the RSF256 record of every figure |
+| E-20261124-225826-0bf3842 | dump pass, group `rsf256` (35 dumps: 0 original, 1-16 0b1ce0c, 17-34 5956891 with c_NR); bit checks against P256v6 at t = 0, 4.0, 8.5 | Figs. 2 (all panels), 3, 6a from RSF256; scope P1 SR at t = 8.5, P2 per cell, S14 |
+| E-20261124-230810-9ae014e | figure run 7: FAILED (exit 1, `joins.py` print of the new P1 entry), kept | none |
+| E-20261124-230839-0e1e13a | figure run 8: as run 6 plus `--rsf256`; byte-equal to run 6 except the RSF256 files, `fig_joins.png`, `joins.json`, `fig_signflip.json` | every PNG and json in `fig/` |
 
 Scripts: `figures/` at the commit in each manifest; `figures/make_figs.py` makes every figure from the
 pass directories. Fig. 1, Fig. 8 and the sign-flip figure read the records directly (no pass).
@@ -304,24 +329,20 @@ runs are read from the joined files of the join check E-20261124-212343-7e9c4b2 
 repro/continue; `figures/runs.py` JOINED); `figures/joins.py` checks them against our own join of the
 pieces in every figure run.
 
-## 5. What completes the PENDING rows
+## 5. How the RSF256 rows were completed (batch R4)
 
-Only RSF256 is still out. It is joined to cycle 895 (t = 5.49) from its original
-E-20261123-035925-8439d79 and three continuations (E-20261124-130529-da8c917, -201031-4c41e7b,
--202134-0b1ce0c); its fourth continuation is queue entry **q0034** (label `rsf256-cont`, priority 0,
-from 0b1ce0c's `rst/sr.00002.rst`). It completes: Fig. 2 constraint panels; Figs. 3 and 6a from RSF256
-itself; scope P1 (SR) at t = 8.5 (bit check against P256v6 dump 17); scope P2 per cell for SR and the
-record maximum over the whole run; S14 SR per cell.
-
-Steps once q0034 has ended (repro/continue/HANDOFF.md, "RSF256: queue entry q0034"): (1)
-repro/continue finishes the run, appends it to `conts.json` and reruns its join check (a new run id);
-(2) here: append the run id to `CONTINUED["RSF256"]` and set `JOINED["RSF256"]` to the new join run in
-`figures/runs.py`; (3) registered pass `runs.py rsf256` (RSF256 dump 0 and every dump of the last
-continuation, the dumps 00000-00034 are spread over the original and four continuations: read the
-joined `RSF256.dumps.tsv` and add a group per directory if `RSF256c` alone does not hold 1-34; bit
-checks at t = 4.0 and 8.5 are in the group); (4) figure run as E-20261124-213739-9776185 plus
-`--rsf256 <pass>`; copy into `fig/`, look at Figs. 2, 3, 6a, judge entry 1 F2 (e) for SR and scope P2
-per cell, replace the PENDING rows.
+RSF256's fourth continuation (queue q0034) ran as E-20261124-214913-5956891 (job 5215, one segment,
+14:06-14:23 PST, ended at tlim t = 8.5, cycle 1386, dumps 00017-00034) and was closed with
+`nrpic-run finish` (completed). Package repro/continue had not yet appended it to its `conts.json`;
+this package may not edit that package, so it keeps `conts_rsf256.json` (that file plus the new id)
+and ran repro/continue's `join_check.py --conts conts_rsf256.json --labels RSF256` as its own registered
+run E-20261124-225720-444aecc (all checks true; `HANDOFF.md` asks repro/continue to append the id).
+Then: `figures/runs.py` lists the fourth continuation in `CONTINUED["RSF256"]`, sets
+`JOINED["RSF256"]` to that join run and reads dump 0 from the original (`RSF256`), dumps 1-16 from the
+third continuation 0b1ce0c (`RSF256b`) and 17-34 from the fourth (`RSF256c`), as the joined
+`RSF256.dumps.tsv` names them; registered pass E-20261124-225826-0bf3842 (`runs.py rsf256`, bit checks
+at t = 0, 4.0, 8.5); figure run E-20261124-230839-0e1e13a (`--rsf256` added); outputs copied into
+`fig/`, the new figures looked at (JOURNAL entry 15).
 
 ## 6. Requests
 
