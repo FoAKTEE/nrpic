@@ -598,3 +598,42 @@ hundredth of that (within a factor 3; the rounding of the box means, about 1e-11
 the floor). (c) a run with the option restarted at cycle 10 gives the bytes of the
 uninterrupted run at cycle 20. Refuted if (a) exceeds 1e-9 (then the lockstep does not
 take the mesh's step), or if (b) does not fall with the amplitude.
+
+## Entry 13 (2026-11-24 06:22 PST): outcomes R9b, R10 (source 746869ef), R11
+
+R10 with the executable of 746869ef (runs core-20261124-134935-c86b2a4 and
+core-20261124-134937-cb4bb65): the three stochastic examples 16 of 16 files each, the
+restart cases identical (restart files with the masked header bytes of the driver), the
+ten wave-1 cases passed; the release driver: twelve set-ups, every item identical,
+REGRESSION PASS. PREDICTION HELD. (Repeated below for the final source.)
+
+R9b (run core-20261124-135441-64f150e; `fig_ablation_power.png` and
+`fig_ablation_modes.png` looked at: level 1 / level 0 is a smooth line that oscillates
+with |n| under a cloud of level-2 points; the blue level 2 / level 0 points lie under
+the orange ones): shell power of the mesh R at 256^3, t = 7.5. Level 1 / level 0: rms
+over the shells 3.5e-7, largest 6.5e-7, one sign in every band (band means -1.1e-8,
+-6.3e-8, -2.2e-7, -3.9e-7, -2.2e-7). Level 2 / level 1: rms 3.4e-5, largest 7.3e-4,
+band rms 5.8e-5, 5.3e-5, 4.8e-5, 3.1e-5, 2.3e-5, band means between -4e-6 and +4e-6.
+PREDICTION REFUTED: I expected level 1 / level 0 to reach 1.8e-5 (twice the coefficient
+difference) and to be within a factor 10 of level 2 / level 1 at high k; it is 4e-7,
+sixty times below. The coefficient difference of 8.9e-6 is almost all phase: the mode
+function is shifted in time, its modulus changes by 2e-7. HELD: level 2 / level 1
+scatters about zero, 2.3e-5 in the last band. For the figure of the reproduction: at
+256^3 the level-2 curve is not touched by the time-integration difference; the level-1
+curve IS that difference (4e-7, smooth, one sign).
+
+R11 (run core-20261124-141250-48042a3, executable of 0b3e... see manifest, ten runs,
+exit 0; `fig_level0_evolved.png` looked at):
+(a) homogeneous slice, kicks off: level 0 on the mesh with noise_background_eq = evolved
+against level 1 on the mesh: rms over the modes 7.6e-12 at t = 3.2 (largest 1.1e-11;
+n.d R 8.7e-12), every dump below 1e-11; the constraint form: 5.67e-5. Lockstep against
+box means at t = 3.2: chi -4.9e-12, K -1.9e-12, Pi -1.0e-12 (the constraint form left
+the scale factor 2.4e-6 behind). PREDICTION HELD (below 1e-9, means within 1e-10).
+(b) perturbed slice, kicks on: 6.5e-12 at amplitude 1 and 4.2e-12 at amplitude 0.1
+(ratio 0.45 to 0.64 over the dumps). HELD that it is below 1e-6; REFUTED that it falls
+by a hundred with the amplitude: both sit on the rounding of the box means. The
+backreaction on the means is below 1e-11 in this slow-roll case at 32^3: with the
+evolved background level 1 and level 0 are the same run to rounding, and all that
+"level 1 against level 0" showed with the constraint form (5.7e-5) was the difference
+of the two time integrations.
+(c) restart at cycle 10: dump, .modes and .rmodes of cycle 20 identical.
