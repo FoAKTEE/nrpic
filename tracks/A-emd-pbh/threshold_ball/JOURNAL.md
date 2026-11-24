@@ -56,3 +56,16 @@ line 3 -> B-d0.42, run A-20261121-204149-c48bd33, Slurm 4838 (chain, MAX_SEGMENT
 executable confirmed in chain/config.sh); line 4 -> B-d0.40, run A-20261121-204250-0bf45c7,
 Slurm 4845. Both PENDING behind other owners' jobs at 12:44. The rest of the queue (lines 5-13)
 waits for the sequencer. Outcomes go into entry 3 onward; how to read them: HANDOFF.md of the owner.
+
+## Entry 3, 2026-11-24 13:00Z (lead of batch 11): state of the scan; continuation of C-d0.42
+
+All twelve queue lines (3-13) were submitted by the sequencer, which ended normally on
+2026-11-23 10:40 PST ("queue finished; exit"). Chains DONE at tlim: lines 3, 4, 6-12. Line 5
+(A-d0.42 and A-d0.40, batch A-20261121-235851-d2200d7): both members exit 3 (guard stop), read
+in entry 4. Line 13, C-d0.42 = A-20261122-173202-f98c79f: cut by preemptions (nine SIGTERMs on
+2026-11-23; segments 12-14 each restarted from t = 40 and were killed before t = 42), closed as
+FAILED with MAX_SEGMENTS = 14 reached, at t = 41.99 of 51; newest restart `rst/ball.00017.rst`
+(t = 40). No guard stop or non-finite field in any segment log. Continued in place, not repeated:
+same run directory, executable (cmp-identical to the v0.6 card build), deck and arguments,
+MAX_SEGMENTS 21, restart cadence dt 4 -> 2 by `output2/dt=2.0` (cadence only). Prediction T4
+for mesh C stands as written in entry 1.

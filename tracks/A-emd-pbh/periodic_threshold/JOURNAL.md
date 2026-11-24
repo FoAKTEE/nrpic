@@ -754,3 +754,18 @@ periodic_diag README (shift speed above 1 where the conformal metric stretches),
 for the expansion phase; the line outputs of gt (z4c tab) say which. A cost above a factor 2 is
 not a refutation of the physics: the chain then stops before tlim and is resumed
 (`scripts/submit_chain.sh <rundir> <deck> <same args>`).
+
+## 2026-11-24 13:00Z, state of card job 2 and continuation of S1L (lead of batch 11)
+
+P0L = A-20261122-235305-4ea0aa5 (Slurm 4916) ended at tlim 140 in its first segment (14596
+cycles, 46 min: chain status DONE). S1L = A-20261123-025907-97bab8d was cut, not failed: its
+three segments went to preemptions of 2026-11-23 (segment 1 reached t = 10.1 and was killed
+before its first restart after t = 0; segment 2 made no step; segment 3 restarted from t = 0 and
+reached t = 66.25, cycle 7050, before SIGTERM; restart dt 50, so the newest restart is
+`rst/peak.00001.rst` at t = 50), and the chain closed as FAILED (MAX_SEGMENTS = 3 reached). No
+guard stop and no non-finite field in any segment log. Continued in place, not repeated: same run
+directory, same executable (cmp-identical to the release v0.6 card build), same deck and
+arguments, MAX_SEGMENTS raised to 9, restart cadence lowered to dt = 10 by `output7/dt=10.0` on
+the command line (output cadence only; the physics and the step are unchanged). The predictions
+Q1-Q3 (entry 23:15Z) and S1-S3 (entry 13:20Z) stand unchanged; Q1 and Q2 are judged now from the
+history to t = 66 (later records of repeated times win), S1-S3 when the chain reaches 220.
