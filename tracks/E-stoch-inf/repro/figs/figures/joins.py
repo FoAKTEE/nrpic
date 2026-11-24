@@ -115,6 +115,8 @@ def main():
     with open(os.path.join(out, "joins.json"), "w") as fp:
         json.dump(res, fp, indent=1)
     for lab, r in res.items():
+        if lab not in rr.CONTINUED:
+            continue
         print(lab, "reader_equal", r["reader_equal"], "junctions_pass", r["junctions_pass"],
               "overlap_identical", r["overlap_identical"],
               [(c["c_rst"], {k: round(v, 3) for k, v in c.items() if k.startswith("step_ratio")})
