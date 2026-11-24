@@ -10,7 +10,11 @@ make_repo(name) builds, under <main checkout>/scratch/harness/<name>-<UTC>-<pid>
 The machine file of the scratch repository puts fakebin/ first on PATH and points NRPIC_GPU_EXE at
 the fake athena. Nothing here touches the live branches or worktrees.
 """
+import contextlib
+import fcntl
+import json
 import os
+import secrets
 import shutil
 import subprocess
 import sys
@@ -256,6 +260,33 @@ def commit_file(wt, rel, text, msg="add test file"):
     sh(["git", "-C", wt, "add", "--", rel])
     sh(["git", "-C", wt, "commit", "-q", "-m", msg, "--", rel])
     return p
+
+
+@contextlib.contextmanager
+def fake_dispatch(repo, wt, owner, eid="q9001", hold_lock=True, token=None):
+    """What the dispatcher of harness/bin/nrpic-queue provides around an entry's command (decision 0033, one
+    route): the entry in state `submitting` with a token, the submit lock held, and the marker
+    NRPIC_QUEUE_DISPATCH=<id>:<token>. Yields the environment for the call (boot_env plus the marker).
+    token: the marker's token (another than the entry's forges a marker); hold_lock=False: no dispatch in
+    progress."""
+    qd = H.queue_dir(repo)
+    os.makedirs(os.path.join(qd, "entries"), exist_ok=True)
+    tok = secrets.token_hex(12)
+    p = os.path.join(qd, "entries", eid + ".json")
+    with open(p, "w") as f:
+        json.dump({"schema": "nrpic-queue-entry/1", "id": eid, "seq": int(eid[1:]), "owner": owner,
+                   "worktree": os.path.realpath(wt), "label": "fixture", "kind": "cmd", "cmd": "true",
+                   "priority": 5, "state": "submitting", "dispatch_token": tok}, f)
+    lf = open(H.queue_submit_lock(repo), "a")
+    if hold_lock:
+        fcntl.flock(lf, fcntl.LOCK_EX)
+    try:
+        yield dict(H.boot_env(), **{H.QUEUE_DISPATCH_VAR: f"{eid}:{token or tok}"})
+    finally:
+        if hold_lock:
+            fcntl.flock(lf, fcntl.LOCK_UN)
+        lf.close()
+        os.remove(p)
 
 
 class Checks:
