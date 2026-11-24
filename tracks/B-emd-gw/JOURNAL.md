@@ -305,3 +305,33 @@ open: pop_s014_gr, J4, the 0.028 re-solve and pop_s028_gr (HANDOFF); shear L2, f
 G2 products (stage/G2/OPEN.md).
 Card-hours this session: none run; submitted pop_s014_gr (ceiling 3, expected 0.2-0.6) and J4
 (ceiling 1, expected 0.4). Toward G2 so far 2.68 used.
+
+## 2026-11-24T12:51Z-14:00Z  session lead of batch 11 (wave 3)  commits 960ba447..(this)  runs B-20261124-125457-79ce723, -130512-d39dae4, -131336-bc61eee, -131438-5d7e049, -131918-e71996f, -133150-e9ef701, -133533-cb0bb7d, -133702-4a06a52, -133709-85c4be7, -134209-4584052, -134720-c753aff
+
+plan: the analysis round after the card runs of 2026-11-22: close and judge them against the
+predictions written before them, find out whether the sequencer is alive, queue the follow-ups,
+the G2 package, the formal G1 verify.
+found: (1) the sequencer ended by itself on 2026-11-23 06:55 with its queue empty (not stalled);
+all four runs were closed: pop_s014_gr completed to a = 143 (0.19 card-h), the 0.028 re-solve
+converged (R1-R3 hold), J4 completed, pop_s028_gr stopped at the guard at a = 30.7 (after a
+preemption and a correct resubmission from the t = 4 restart). (2) population, full GR against
+Newton and the design (analysis -131918-e71996f, figures -133150-e9ef701): halo counts and
+largest masses equal fidL8's at equal stage (H1), first halo between a = 30 and 36 (H2), the
+metric's TT near-field energy within 9-13 per cent of the design's 2.9e-9 a for 6 <= a <= 20 and
+correlated above 0.94 with the particles' near field over |k| <= 8 k_f to a = 72; the 0.028 stop
+sits in the core of the box's largest halo, where K runs away (Z). (3) J4: the 128-cell floor is
+the start step. (4) shear: P10 holds; L2 had no number first because its rays had not arrived by
+tlim = 6, then because the fan was too coarse; with narrow fans L2 = -0.828, -0.830, -0.835,
+beside CosmoGRaPH's -0.8183, far from gevolution and GRAMSES, but not converging.
+failed: population G1 cost (0.19 below 0.2) and G1 for 0.028 (guard stop); A1 from a = 36; A2
+in part (correlation below 0.9 from a = 81, rms ratio 0.63 at a = 6.3); A3 for the strain rms
+(x1.97 against x2.09); shear P9'' b (no convergence) and P9 (0.010-0.017 from CosmoGRaPH,
+growing); series 2's L2 design (coarse fan). Runs failed: pop_s028_gr (guard), analyses
+-130512-d39dae4 (guard-stop dump) and -131918-e71996f (figure step; its JSON is complete).
+changed my mind about: reading the GR box's TT energy as a signal after halo formation: the
+excess is at high k, G_tot is as large as the raw strain, and only |k| <= 8 k_f tracks the near
+field; no radiated-energy number from the GR box until the legs show what the excess is.
+open: X0-X3 and the Newtonian reference on the cards; the legs through the sequencer; the L2
+transport non-convergence; G1 verify running; G2 verify not run (HANDOFF).
+Card-hours this session: none run in it; read 0.74 (J4 0.45, pop_s014_gr 0.19, pop_s028_gr
+0.10); queued 1.1 (ceilings), 7 more behind the sequencer. Toward G2 so far 3.42 used.

@@ -1,35 +1,42 @@
 # STATUS of B-emd-gw
 
 gate:        G0 PASS (2026-11-19), G1 PASS with reservations (2026-11-21, tag
-             stage/B-emd-gw/G1-pass-20261121). G2 package started (batch 10a): C4, C7, C12, C19,
-             C20 PASS, C8 NA (0013), the rest OPEN (stage/G2/OPEN.md). G2 not met.
-headline:    The particle FLRW run in full GR reaches the sub-percent level and converges in mesh
-             (16-128 cells) and particle number (1-27 per cell): growth-rate error 5e-6 at most,
-             its plateau 2.8e-8 at 128 cells; floor 2e-6 in the amplitude from the start step
-last-result: batch 10a (lead, 2026-11-22): flrw_conv closed with the 128-cell member
-             (J3 B-20261121-202335-3e6a898, analysis B-20261123-015452-18d2956): G2 criterion (a)
-             met; shear series 1 judged (B-20261123-015919-dec4392): S1-S4 within 1e-5 of linear
-             after extrapolation, M1 and L1 inside the paper's bounds, M2 opposite sign to the
-             prediction, L2 and the f = 1 leg without result; population: the GR run had never
-             been submitted (sequencer waited silently on unconverged 0.028 data, queue in file
-             order); corrected, pop_s014_gr on the cards
-running:     card: pop_s014_gr = B-20261123-014847-f295ab4 (Slurm 4921, chain, v0.6, 128^3 L = 8
-             to a = 143); J4 = B-20261123-015905-7a30278 (Slurm 4922, batch, v0.3, 128-cell step
-             test). processors: re-solve of the 0.028 data = B-20261123-014850-7b7d986 (36 outer
-             iterations, 2 cores, about 75 min). Behind them in the queue: pop_s028_gr. Sequencer
-             pid 2942856 (scratch/B-emd-gw/sequencer/), restarted 17:54 with 'waiting:' log lines.
-             stage verify G1 in the background (pid 2996426, log scratch/B-emd-gw/tmp/
-             verify_G1_20261122.log); G2 verify stopped (contention), to rerun
-next:        1. read pop_s014_gr when it ends: predictions G1-G4 (population/JOURNAL.md), halo
-                finder, TT strain from the double dumps, against Newtonian fidL8 and DESIGN.md
-             2. read J4 against J4a-c (flrw_conv entry 13); R1-R3 of the 0.028 re-solve
-             3. shear: L2 fan (NaN arrival), the f = 1 guard stop, S3 at N_y = 256 (processors)
-blockers:    none; G2 needs the population comparison, shear L2, a gauge leg, package products
-needs:       orch: nothing to decide (outbox population-run-on-the-cards, info). core:
-             insitu-fourier-modes (W18, accepted, no branch; needed for 256^3 runs). kb: claim
-             861 recorded (2312.12499 factor 3), used as [TO VERIFY]
-offers:      gw_diag (TT, rho_K, spectra, helicity, E/B/Psi_4; binio; gauge G_tot); waves/wlib;
-             first_source tools; flrw_conv analysis (analyze_f/b/step); shear summary script;
-             cards/sequencer.py (queue with 'waiting:' log lines)
-budget:      card-hours toward G2: 2.68 used (J2 0.35, J3 2.00, rest earlier), 3.95 reserved
-             (pop_s014_gr ceiling 3, J4 1); G1 1.69; allotment 40 (0014)
+             stage/B-emd-gw/G1-pass-20261121). G2 package updated (batch 11): C4, C7, C12, C13,
+             C19, C20 PASS, C8 NA (0013), the rest OPEN (stage/G2/OPEN.md). G2 not met.
+headline:    The first population run in full GR (sigma1 = 0.014, 128^3, L = 8, to a = 143) has
+             the halo counts and masses of the Newtonian population at the same stage and the
+             design's near-field TT strain to 9-13 per cent for 6 <= a <= 20; at twice the
+             amplitude the run stops at a = 30.7 in the core of the largest halo
+last-result: batch 11 (lead, 2026-11-24): population GR analysis B-20261124-131918-e71996f and
+             -133150-e9ef701: H1, H2, A1 (to a = 30), Z hold; A1 fails from a = 36, A2 in part,
+             A3 for the strain rms; 0.028 stop in the densest core (K runaway). flrw_conv J4
+             (B-20261124-125457-79ce723): the 128-cell floor is the start step (J4a-c hold).
+             shear: P10 holds (f = 1 vs 1/3: -8.7e-5, B-20261124-131336-bc61eee); L2 with
+             narrow fans -0.828, -0.830, -0.835 at N_y = 32-128 (B-20261124-134209-4584052),
+             near CosmoGRaPH's -0.8183, far from gevolution and GRAMSES, not converging; S3
+             floor 2-3e-5. Slice mosaic (C13) B-20261124-133709-85c4be7
+running:     card: Newtonian reference at 128^3 with the GR runs' particles
+             B-20261124-131438-5d7e049 (Slurm 5167, N1-N4); restarts X0-X3 of the 0.028 run
+             B-20261124-133533-cb0bb7d (Slurm 5169). Sequencer pid 168802 (restarted 05:40):
+             Newtonian analysis when 5167 ends; IC solves at 128^3 x 8 per cell and 256^3
+             (processors), then their GR chains (particle and mesh legs, I3, M1-M4, Q1-Q2).
+             stage verify G1 in the background (pid 3758206, log
+             scratch/B-emd-gw/tmp/verify_G1_20261124.log; results uncommitted when it ends)
+next:        1. read X0-X3 (population/JOURNAL 05:58): which of slice, step, slicing stops the
+                0.028 core; then the remedy run or a request to core
+             2. Newtonian reference: compare_newton.py (N2-N4), the halo-by-halo GR-Newton
+                statement; then the particle and mesh legs (the high-k TT excess, R22)
+             3. L2 non-convergence: the observer transport between arrivals (R19); gauge leg
+                with three meshes; G2 products (C10, C11, C17, C18)
+blockers:    none; G2 needs a converged L2 or an explained floor, a gauge leg, the legs of the
+             population box, the 0.028 stop understood, package products
+needs:       orch: stage verify with incremental checksums (outbox 20261124T134243Z, request);
+             info posted (20261124T134242Z). core: insitu-fourier-modes (W18, accepted, no
+             branch; needed for 256^3 GW cadence). kb: claim 861 used as [TO VERIFY]
+offers:      gw_diag (TT, rho_K, spectra, helicity, E/B/Psi_4; binio; gauge G_tot);
+             population/scripts/analyze_gr.py (GR box: constraints, halos vs Newton, metric TT vs
+             particle near field), fig_mosaic.py, compare_newton.py; flrw_conv analysis
+             (analyze_step --set n128); shear series2_summary.py; cards/sequencer.py
+budget:      card-hours toward G2: 3.42 used (J2 0.35, J3 2.00, J4 0.45, pop_s014_gr 0.19,
+             pop_s028_gr 0.10, earlier 0.33); queued 1.1 (ceilings 0.6 and 0.5), behind them by
+             the sequencer 7 (ceilings 2 and 5); G1 1.69; allotment 40 (0014)
