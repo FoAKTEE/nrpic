@@ -21,10 +21,17 @@ echo $$ > "$STATE/sequencer.pid"
 log() { echo "$(date '+%F %T') $*" >> "$STATE/sequencer.log"; }
 log "start pid $$ queue $QUEUE"
 declare -A tries
+lastwait=""
 while true; do
   if [ -e "$STATE/STOP" ]; then log "STOP file found; exit"; rm -f "$STATE/sequencer.pid"; exit 0; fi
   n=$(squeue -h -u "$USER" -o '%j' 2>/dev/null | grep -c '^A-')
+  if [ "$n" -ge "$MAXJOBS" ]; then
+    # decision 0030 item 4: say why the queue waits (once per change of the reason)
+    w="waiting: $n A-jobs queued or running (limit $MAXJOBS)"
+    if [ "$w" != "$lastwait" ]; then log "$w"; lastwait=$w; fi
+  fi
   if [ "$n" -lt "$MAXJOBS" ]; then
+    lastwait=""
     lineno=0; next=""
     while IFS= read -r line || [ -n "$line" ]; do
       lineno=$((lineno + 1))
