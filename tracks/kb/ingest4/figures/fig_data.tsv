@@ -1,0 +1,9 @@
+paper	entries_before	entries_after	independent_count	citations_after	citations_with_entry_after	chunks_before	chunks_after
+astro-ph/0306304	0	11	11	13	13	17	15
+astro-ph/9306009	0	16	16	20	20	35	34
+astro-ph/9510056	0	16	16	0	0	44	44
+astro-ph/9607124	0	10	10	13	13	16	15
+gr-qc/9604001	0	27	27	41	41	66	64
+gr-qc/9906015	0	21	21	0	0	38	37
+# overall before: {"ok": 719, "pdf": 3, "review": 22} rate 0.9664
+# overall after: {"ok": 737, "pdf": 3, "review": 22} rate 0.96719

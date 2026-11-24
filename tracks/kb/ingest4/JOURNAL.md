@@ -137,3 +137,27 @@ kb-20261124-132848-81e6285 (baseline state `before/`, dry-run parse of all 762 m
 numeric papers, every row with a bib_id and a chunk; claim 778 (two locator rows on
 astro-ph/0306304) is remapped and `kb claim check --id 778` reports it unchanged; 0 dangling chunk
 references; the vector check 0 missing, 0 stale, 0 orphaned. Refuted by any of these failing.
+
+## Entry 4 (2026-11-24 14:20 UTC): the database ingest (P10 outcome), figures
+
+Run kb-20261124-135341-e65f142 (ingest of the 18 and re-ingest of the six with --remap-claims,
+equation tags, vectors, vector check, claim check of 778, state `after/`); figures
+kb-20261124-141600-4556f93 (first version: stacked status bars with overlapping labels and a legend
+without its "ok" patch, redrawn) and kb-20261124-141642-9110c13 (final; both PNGs looked at; copies
+in figures/).
+
+- P10 HELD except one part. 762 papers: ok 737, review 22, pdf 3; recorded rate 96.72 % (strict the
+  same; ok or pdf 97.11 %), up from 96.64 % on 744. The six: 101 entries (11, 16, 16, 10, 27, 21),
+  citation rows 13, 20, 0, 13, 41, 0, every row with an entry; chunks 15, 34, 44, 15, 64, 37
+  (before 17, 35, 44, 16, 66, 38). The 18: all ok, all with entries and citation rows. Vectors:
+  1100 chunks and 1403 equations embedded, 216 and 315 orphans deleted; check 0 missing, 0 stale,
+  0 orphaned for both. 0 dangling chunk references among the 1044 claim locator rows; zero-entry
+  TeX papers 0 (6 before).
+- FAILED part: `kb claim check --id 778` printed an empty "checked:" list, so the command did not
+  check the claim at all (it is a brief seed whose rows were written by relocate; the HANDOFF trap
+  "pinned" applies, and served/brief rows are not reached by that command). Checked instead from the
+  rows: the two locator rows of 778 on astro-ph/0306304 (main.tex L328-329 and L31) kept their flat
+  ranges 11614-11715 and 472-544 (flat.tex byte-identical, remap report), and their new chunk ids
+  191527 and 191522 belong to astro-ph/0306304 and cover those ranges (read-only query of
+  kb.sqlite after the run; the flat text there is the neutrino f_nu sentence and the free-streaming
+  sentence of the abstract).
