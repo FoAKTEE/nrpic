@@ -253,7 +253,7 @@ Predictions for R6 (registered run_all after the commit of these edits):
 - P4. Compile without undefined references or overfull boxes; 23 or 24 pages; every ledger table
   ends on its page. Refuted otherwise (read the pages).
 
-## Entry 10 (2026-11-24 14:20 PST): outcome of R6; three ledger tables off their pages; prediction for R7
+## Entry 10 (2026-11-24 13:56 PST; heading first written with 14:20, a wrong time): outcome of R6; three ledger tables off their pages; prediction for R7
 
 R6 = E-20261124-215017-cb16c27 (registered, production, two cores, commit cb16c27).
 - P1 held: all 13 jsons of repro/figs/fig byte-equal to R6's `lattice/` (joins.json included);
@@ -285,3 +285,26 @@ Prediction for R7 (registered run_all at the commit of this fix): jsons, langevi
 19 PNGs byte-equal to R6; ledger 121 rows, same check counts, values equal to R6's
 (ledger.csv differs only in the source column); compile 23 pages, every ledger table ends with
 its bottom rule on its page. Refuted otherwise.
+
+## Entry 11 (2026-11-24 14:00 PST): outcome of R7; final state of the update pass
+
+R7 = E-20261124-215650-1de1ba5 (registered, production, two cores, 83 s, commit 1de1ba5).
+Prediction of entry 10, item by item:
+- held: 13 jsons byte-equal to repro/figs/fig, langevin.json equal (`checks.json`); all 19 PNGs
+  byte-equal to R6 (so the four PDFs copied from R6 stay); ledger 121 rows, checks 61 yes,
+  15 differs, 2 beyond reach, 11 quote, 14 rerun only, 18 none; every value and check equal to
+  R6's, only the source column differs (ledger.csv compared row by row).
+- held: every ledger table ends with its bottom rule on its page (pages 15-23 read at 75 dpi;
+  page 24 pixel-identical to the R6 build's, read there). Tables copied from R7 (sha256 found in
+  its `sha256sums.txt`).
+- failed: 24 pages, not 23. The layout test of entry 10 ran with the label "ledgertest9" in
+  place of a run id, which is shorter and saved a line per row; with the real id the one-patch
+  table moves to page 23 and the drift table to page 24. No table is cut.
+Compile clean (no undefined references or citations, no overfull boxes); checker with the
+guide's forbid list: the accepted hits only (5.1 two verdict labels "not reproduced"; 7.6 one,
+"no defect" about the reviewed code, guide exception 2; 7.5 and 7.7 only in `tables/ledger.tex`
+and `scripts/`, exception 1; 9.3 only in `scripts/`, frames off through `figstyle.py`).
+Pages 1-14 pixel-identical to the R6 build, which I read in full (entry 10).
+State of RSF256: queue entry q0034 was dispatched while this pass ran, as run
+E-20261124-214913-5956891 (Slurm job 5215, "submitted" at 13:58 PST); not waited for. Its rows
+stay pending (Fig. 5 SR constraint rows, S14 SR per cell; ledger row and Table IV name it).
