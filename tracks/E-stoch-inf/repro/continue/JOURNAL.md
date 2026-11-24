@@ -258,3 +258,57 @@ byte-identical with 0b1ce0c's; it ends "Terminating on time limit" at t = 8.5, c
 joined RSF256 runs from cycle 0 to 1386 and dumps 00000-00034 without a gap. Wall time 16-22 min
 in one segment (734 cycles at the 1.39 s per cycle of 0b1ce0c, 880 cycles in 1227 s, with its
 metric dumps), unless preempted again.
+
+## Entry 10 (2026-11-24 13:17 PST): the fourth continuation of RSF256 is in the shared queue
+
+Queue entry **q0034**, label `rsf256-cont`, priority 0 (the reproduction of decision 0028 waits for
+it), added from this worktree with `harness/bin/nrpic-queue add --label rsf256-cont --priority 0
+-- <arguments of nrpic-run submit>` (no sequencer and no direct submission: decisions 0033,
+0034). The arguments are those `scripts/submit_continue.sh` builds (a dry run with `DRY=1
+GPU_HOURS=3 RESUME=<file> submit_continue.sh RSF256` printed the manifest first: 3 segments,
+2.95 card-hours asked, parents E-20261123-035925-8439d79 and E-20261124-202134-0b1ce0c), with
+the restart `E-20261124-202134-0b1ce0c/rst/sr.00002.rst` and its sidecar as inputs and
+`nrpic_resume=` pointing at it; same wrapper, byte copy `rc-v06-gpu` (sha256 ea473498...,
+recomputed 13:16 PST), deck `repro/scope/inputs/sr_paper.athinput`, no overrides;
+`--preregistered JOURNAL.md#entry-9` (prediction K2). Three segments instead of one: the chain
+resubmits itself after a SIGTERM, and with a cap of one segment each of the last three cuts
+ended the run (entry 9); with three it survives two more preemptions, each losing at most 2.0 of
+code time (about 8 min). Expected use about 0.35 card-hours. `nrpic-queue show q0034` checked
+(state waiting, `checked: true`, first in the order of `status`); the account had five jobs in
+Slurm at 13:17 PST, so it is dispatched when one of them ends. When the dispatcher has
+submitted it, `nrpic-queue show q0034` names the run id.
+
+## Entry 11 (2026-11-24 13:21 PST): the join check generalised to several continuations; J3 at cycle 0
+
+`scripts/join_check.py` compared the original only with the FIRST continuation of a label (J2,
+J4) and required every continuation to end at tlim (J1); with eight continuations for five
+labels it is rewritten so that every check runs per continuation k against everything that ran
+before it (the original's blocks, then continuations 0..k-1): J1 start per continuation
+(record cycle c_k + 1 at t_k + dt; the log line where one exists), `complete` when the last ends
+at tlim; J2 every block of k against every earlier block; J3 at the junction of k with the
+lineage up to c_k; J4 first dump number against the counter in the sidecar of k's restart (and
+its time within [next dump time, next + dt]), byte comparison of every dump number that k and an
+earlier run both hold (16 MiB reads); `--next LABEL=PATH` checks the restart a queued
+continuation starts from (header, size, sidecar, sha256 against the writer's `sha256sums.txt`).
+
+A development pass of the rewritten script (13:19 PST, unregistered, without byte comparisons,
+output in `scratch/E-stoch-inf/tmp/continue2/dev/`; no number of it is used as a result) showed
+the literal J3 of entry 1 REFUTED for the two labels whose continuations start at cycle 0:
+RSF256 and RNC256, column 16 of `.sf.con.hst` (rms |M_bssn - M_adm|), ratio 13.7 and 12.8. At
+cycle 0 there are no records before the junction, so the reference is the ten changes after it,
+and column 16 is 1.45e-14 on the initial slice (the two momentum constraints coincide there) and
+jumps on the first step: the change 0 -> 1 is the run's own first step, which the original made
+too. Entry 1 did not foresee that a junction at cycle 0 has no records before it; the literal
+outcome stays on record. Amendment, written after that pass and therefore not a prediction
+that could have failed in it: each junction is also measured on the earlier run's own step
+across the same cycle (the latest earlier block that recorded c_k + 1, with as many lines after
+c_k as the continuation has), and a junction passes if its ratio is <= 3 OR its ratio vector is
+identical to the earlier run's at the same cycle (then the change belongs to the run, not to
+the join). The registered run records both (`J3_literal_pass`, `J3_pass`).
+
+Prediction for the registered run (made before it; the byte comparisons have not run in any
+pass): K1 of entry 9 with J3 read as amended; every dump that two runs of a label both hold is
+byte-identical, with its `.modes` (RSF256 00001, 00002 original/cont3; RNC256 00001; CL256U
+00008, 00009 for the three pairs of original, a5dec67, 33a3a39); the next restart of RSF256
+passes every test with the sha256 of 0b1ce0c's `sha256sums.txt`. Refuted by any byte difference
+or a failed restart test.
