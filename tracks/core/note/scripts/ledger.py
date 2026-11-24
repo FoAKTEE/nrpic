@@ -84,6 +84,21 @@ FIG = [
         ("bis.0.64.mean_alpha_200_300", "y_c = 0.64: same", 4),
         ("bis.0.605.mean_alpha_200_250", "control y_c = 0.605: mean central lapse 200-250 M", 4),
     ]),
+    ("Row 4 on cells of M/8, level 1 (member kicked, control unkicked; rule of JOURNAL 2026-11-21T20:26Z)", [
+        ("m8.0.605.alpha_eq", "y_c = 0.605: equilibrium central lapse", 4),
+        ("m8.0.605.member.t_c", "y_c = 0.605 member: collapse time t_c (M)", 4),
+        ("m8.0.605.member.t_first_ah", "y_c = 0.605 member: first apparent horizon (M)", 4),
+        ("m8.0.605.control.mean_alpha_200_300", "y_c = 0.605 control: mean central lapse 200-300 M", 4),
+        ("m8.0.680.alpha_eq", "y_c = 0.680: equilibrium central lapse", 4),
+        ("m8.0.680.member.t_c", "y_c = 0.680 member: collapse time t_c (M)", 4),
+        ("m8.0.680.member.t_first_ah", "y_c = 0.680 member: first apparent horizon (M)", 4),
+        ("m8.0.680.control.t_c", "y_c = 0.680 control: collapse time t_c (M)", 4),
+        ("m8.0.680.control.t_first_ah", "y_c = 0.680 control: first apparent horizon (M)", 4),
+        ("m8.0.755.alpha_eq", "y_c = 0.755: equilibrium central lapse", 4),
+        ("m8.0.755.member.mean_alpha_200_300", "y_c = 0.755 member: mean central lapse 200-300 M", 4),
+        ("m8.0.755.control.mean_alpha_200_300", "y_c = 0.755 control: mean central lapse 200-300 M", 4),
+        ("m8.0.755.D", "y_c = 0.755: D = member minus control mean", 2),
+    ]),
 ]
 
 P = "paper main.tex"   # refs/arxiv_2611.12831/src/main.tex (untracked), line numbers
