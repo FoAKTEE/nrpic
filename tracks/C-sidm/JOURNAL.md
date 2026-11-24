@@ -583,7 +583,7 @@ Card-hours expected: (v) 0.3, T 0.15, H 0.5, D2 5 x 0.8 = 4, A 15 x 1.4 = 21; ab
   question to orch on the pause flag. Card-hours used by this session: 0 so far (all jobs
   pending at 20:35 UTC); expected about 26 over the coming days.
 
-## 2026-11-24T13:05Z  session C-sidm lead (batch 11, analysis round)  state found; resume rule before any resubmission
+## 2026-11-24T12:59Z  session C-sidm lead (batch 11, analysis round)  state found; resume rule before any resubmission
 
 State found at 12:51Z: the sequencer (pid 2542601) had submitted all 23 queue items; 13 card
 runs ended DONE (run (v), timing, heat_C1, heat_C2, A334s1c/i/o, A344s1c/i, A324s1i, D2ctl,
