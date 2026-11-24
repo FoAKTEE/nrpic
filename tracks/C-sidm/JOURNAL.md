@@ -582,3 +582,43 @@ Card-hours expected: (v) 0.3, T 0.15, H 0.5, D2 5 x 0.8 = 4, A 15 x 1.4 = 21; ab
 - open: everything queued; judge R(v), T, H, D2, A as the runs end; G2 stage package; the
   question to orch on the pause flag. Card-hours used by this session: 0 so far (all jobs
   pending at 20:35 UTC); expected about 26 over the coming days.
+
+## 2026-11-24T13:05Z  session C-sidm lead (batch 11, analysis round)  state found; resume rule before any resubmission
+
+State found at 12:51Z: the sequencer (pid 2542601) had submitted all 23 queue items; 13 card
+runs ended DONE (run (v), timing, heat_C1, heat_C2, A334s1c/i/o, A344s1c/i, A324s1i, D2ctl,
+D2f1s1, D2f2s1, D2f4s1), ten chains closed FAILED with "MAX_SEGMENTS reached" and one
+(A334s3o) was on its last allowed segment. Cause of the ten failures, from the chain event
+logs and `sacct -a`: from 2026-11-23 about 13:00 PST another user submitted short jobs to
+the higher-priority partition `priority` every 5-20 min (still at 04:54 PST today);
+`PreemptMode = CANCEL` and AthenaK writes no restart on SIGTERM, so each preemption threw
+away the work since the last restart (every 100 M, about 14 min of card time) and used one of
+the 4 (or 2) segments. None of the ten failed by the physics or by the guard: each event log
+ends "STATUS FAILED (MAX_SEGMENTS=4 reached)" (D2f2s2: 2). t_end of the cut runs: A344s1o
+420.5, A324s1c 19.5, A324s1o 407.8, D2f2s2 116.5, A334s2c 249, A334s2i 245, A334s2o 190,
+A334s3c 0.25, A334s3i 103.8, A334s3o 101.3 M.
+
+Rule for the continuation, fixed now, before any resubmission (task: continue a cut run from
+its newest restart file, never repeat it):
+- each cut chain is continued in place (same run directory, same executable, same deck, same
+  process name, JOB_NAME = its run id) from its newest restart file (last_time read from the
+  file: 0, 400, 400, 100, 200, 200, 100, 100, 0 M for the nine above, in that order), with
+  `output2/dt=10` on the command line so that a restart is written every 10 M (about 80 s of
+  card time; disk about 1.1 GB per restart, 18 TB free) and with 12-20 more segments allowed;
+  the manifest gets a `continuations` entry and is re-closed with `nrpic-run finish --status`
+  when the chain ends. A334s3o (pending job 5147, which would have failed at once on its
+  segment cap) had its chain/config.sh edited at 12:55Z: MAX_SEGMENTS 4 -> 24 and
+  EXTRA_ARGS output2/dt=10 (original kept in scratch/C-sidm/tmp/config.A334s3o.orig).
+- the restart cadence changes no physics; restarts are exact for the particle state and the
+  mesh state differs at round-off with outflow faces and refinement (decision 0027 item 3), so
+  a continued run is read like any card run with deposition: against its control, never byte
+  for byte. The history reader (blockA_delta.py read_hist) keeps the later segment where a
+  restart rewrote times already written.
+- the predictions of the continued runs are those written before the first submission
+  (entry 2026-11-21T20:25Z: A.1-A.4, D2.1-D2.3); nothing in them is changed.
+- the sequencer is changed (decision 0026 item 2): it submits while the pause flag exists and
+  logs that it does; it logs why the next item waits whenever the reason changes (decision
+  0030 item 4); it knows `resume` items (queue.txt, batch-11 block).
+- card-hours: 17.59 used by the batch-5 queue so far (sum of the closed manifests) plus about
+  0.6 for A334s3o; remaining work about 3850 M, about 9 card-hours at 8.3 s per M plus the
+  preemption overhead; 45 - 7.41 - 17.59 = 20.0 left of the G2 allotment before it.

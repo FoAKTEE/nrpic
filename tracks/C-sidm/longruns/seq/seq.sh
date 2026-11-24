@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Sequencer of the C-sidm long card runs (batch 5; decision 0025 item 5).
+# Sequencer of the C-sidm long card runs (batch 5; decision 0025 item 5; changed in batch 11).
 #
 #   tracks/C-sidm/longruns/seq/seq.sh run       the loop (start it with setsid nohup, below)
 #   tracks/C-sidm/longruns/seq/seq.sh status    state of every item, the queue position
@@ -12,15 +12,26 @@
 #
 # What it does, every POLL seconds (300):
 #  1. STOP file in the state directory -> exit.
-#  2. Every submitted item whose card work has ended (chain: chain/STATUS is DONE, FAILED or
-#     STOPPED and its job is gone from squeue; batch: its job is gone from squeue) is closed
-#     with `harness/bin/nrpic-run finish <run_id>` (checksums, manifest commit).
+#  2. Every submitted item whose card work has ended (chain or resume: chain/STATUS is DONE,
+#     FAILED or STOPPED and its job is gone from squeue; batch: its job is gone from squeue)
+#     is closed with `harness/bin/nrpic-run finish <run_id>` (checksums, manifest commit); a
+#     resume item is closed with `--status` set from the chain's STATUS, because its manifest
+#     was already final before the resume.
 #  3. While fewer than SLOTS (2) items are active AND fewer than SLOTS jobs named C-* are in
-#     squeue (any state; jobs a session submitted by hand count too), and the pause flag
-#     /data/haiyangw/nrpic/locks/PAUSE does not exist, the next item of queue.txt is submitted
-#     with `harness/bin/nrpic-run submit` (registered, --package tracks/C-sidm/longruns,
-#     executable of release core-v0.6). A chain gets the process name of the queue (written
-#     into its chain/config.sh before its first segment starts).
+#     squeue (any state; jobs a session submitted by hand count too), the next item of
+#     queue.txt is submitted. The pause flag /data/haiyangw/nrpic/locks/PAUSE does NOT stop
+#     submissions (decision 0026 item 2: a card run uses none of the account's usage); its
+#     presence is logged. Why the next item waits is logged whenever the reason changes
+#     (decision 0030 item 4).
+#     - batch / chain items: `harness/bin/nrpic-run submit` (registered, --package
+#       tracks/C-sidm/longruns, executable of release core-v0.6). A chain gets the process
+#       name of the queue (written into its chain/config.sh before its first segment starts).
+#     - resume items (batch 11): continue a registered chain that ended FAILED or STOPPED
+#       because it ran out of segments (preemption), in place, from its newest restart file:
+#       `scripts/submit_chain.sh <its run dir> <its deck> [athena arg]` with MAX_SEGMENTS =
+#       its segment count + the number in the queue line, JOB_NAME = its run id, the same
+#       executable and process name. The manifest gets a `continuations` entry (committed).
+#       The run is never repeated from t = 0.
 #  4. After the item `timing` is closed, its log is read: if the collisionless M/8 deck ran
 #     slower than 0.45 of the zone-cycle rate of core-v0.3 (7.28e6 zone-cycles/s, run (vi);
 #     i.e. above about 18 s per M, where four segments of 50 min no longer hold 600 M) the
@@ -68,7 +79,7 @@ wait_git() {
 
 is_active() {  # run_id launcher jobid
   local run=$1 la=$2 jid=$3 st
-  if [[ $la == chain ]]; then
+  if [[ $la == chain || $la == resume ]]; then
     st=$(cat "$SCR/$run/chain/STATUS" 2>/dev/null || echo NONE)
     jid=$(cat "$SCR/$run/chain/jobid" 2>/dev/null || echo "$jid")
     case $st in DONE|FAILED|STOPPED) job_in_queue "$jid" && return 0; return 1 ;; *) return 0 ;; esac
@@ -77,12 +88,18 @@ is_active() {  # run_id launcher jobid
 }
 
 close_finished() {
-  local item run la jid st tries
+  local item run la jid st tries fargs cst
   while IFS=$'\t' read -r item run la jid st tries; do
     [[ $st == SUBMITTED ]] || continue
     is_active "$run" "$la" "$jid" && continue
     wait_git || { log "close $item: git busy, later"; continue; }
-    if (cd "$WT" && harness/bin/nrpic-run finish "$run") >> "$LOG" 2>&1; then
+    fargs=()
+    if [[ $la == resume ]]; then
+      cst=$(cat "$SCR/$run/chain/STATUS" 2>/dev/null || echo NONE)
+      case $cst in DONE) fargs=(--status completed) ;; STOPPED) fargs=(--status stopped) ;;
+                   *) fargs=(--status failed) ;; esac
+    fi
+    if (cd "$WT" && harness/bin/nrpic-run finish "$run" "${fargs[@]}") >> "$LOG" 2>&1; then
       state_set "$item" "$run" "$la" "$jid" CLOSED "$tries"; log "closed $item ($run)"
       [[ $item == timing ]] && check_timing "$run"
     else
@@ -113,13 +130,70 @@ next_item() {  # first queue line not yet submitted, closed or abandoned
   return 1
 }
 
+refuse() {  # item launcher tries message: count a refused submission
+  local item=$1 la=$2 tries=$(( $3 + 1 ))
+  if (( tries >= 12 )); then state_set "$item" - "$la" - SUBMIT_FAILED "$tries"; log "submit $item: abandoned after $tries tries ($4)"
+  else state_set "$item" - "$la" - RETRY "$tries"; log "submit $item: refused (try $tries): $4"; fi
+  return 1
+}
+
+note_continuation() {  # run_id max_segments from_restart xarg item: entry in the manifest
+  local mf=$WT/tracks/C-sidm/runs/$1/manifest.json
+  python3 -I - "$mf" "$1" "$2" "$3" "$4" "$5" <<'PY' || return 1
+import json, sys, datetime
+mf, run, mx, rst, xarg, item = sys.argv[1:7]
+m = json.load(open(mf))
+c = m.setdefault("continuations", [])
+c.append({"at": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+          "by": "tracks/C-sidm/longruns/seq/seq.sh (queue item %s)" % item,
+          "kind": "in-place resume of a chain cut by preemption (out of segments)",
+          "status_before": m.get("status"), "from_restart": rst,
+          "max_segments": int(mx), "extra_athena_args": [] if xarg == "-" else [xarg],
+          "predictions": "tracks/C-sidm/JOURNAL.md 2026-11-21T20:25Z; resume rule 2026-11-24 entry"})
+json.dump(m, open(mf, "w"), indent=2)
+open(mf, "a").write("\n")
+PY
+  (cd "$WT" && git commit -q -m "C(run): continue $1 in place from its newest restart (seq.sh $5)" \
+     -m "Chain cut by preemption (out of segments); resumed with MAX_SEGMENTS $2${4:+, athena arg $4}." \
+     -- "tracks/C-sidm/runs/$1/manifest.json") >> "$LOG" 2>&1
+}
+
+resume_item() {
+  local line=$1 item la add run pn deck xarg purpose tries R C st seg max rst out jid mst
+  read -r item la add run pn deck xarg purpose <<< "$line"
+  tries=$(state_get "$item" | cut -f6); tries=${tries:-0}
+  R=$SCR/$run; C=$R/chain
+  st=$(cat "$C/STATUS" 2>/dev/null || echo NONE)
+  case $st in FAILED|STOPPED) ;;
+    *) state_set "$item" "$run" resume - SUBMIT_FAILED "$tries"
+       log "resume $item: chain $run is $st, not FAILED or STOPPED -> skipped"; return 1 ;; esac
+  job_in_queue "$(cat "$C/jobid" 2>/dev/null)" && { refuse "$item" resume "$tries" "a job of $run is still in squeue"; return 1; }
+  mst=$(python3 -I -c 'import json,sys; print(json.load(open(sys.argv[1])).get("status"))' \
+        "$WT/tracks/C-sidm/runs/$run/manifest.json" 2>/dev/null)
+  [[ $mst == failed || $mst == stopped ]] || { refuse "$item" resume "$tries" "manifest of $run is '$mst', not closed"; return 1; }
+  wait_git || { log "resume $item: git busy, later"; return 1; }
+  seg=$(cat "$C/segment" 2>/dev/null || echo 0)
+  max=$((seg + add))
+  rst=$(find "$R/rst" -maxdepth 1 -name '*.rst' -printf '%T@ %p\n' 2>/dev/null | sort -k1,1gr | head -1 | cut -d' ' -f2-)
+  note_continuation "$run" "$max" "${rst:-none}" "$xarg" "$item" || { refuse "$item" resume "$tries" "manifest note failed"; return 1; }
+  local xa=(); [[ $xarg != - ]] && xa=("$xarg")
+  out=$(cd "$WT" && ATHENA_EXE=$EXE MAX_SEGMENTS=$max JOB_NAME=$run PROC_NAME=$pn \
+        scripts/submit_chain.sh "$R" "$WT/$deck" "${xa[@]}" 2>&1); echo "$out" >> "$LOG"
+  jid=$(grep -oE 'chain started in .*: job [0-9]+' <<< "$out" | grep -oE '[0-9]+$')
+  [[ -n $jid ]] || { refuse "$item" resume "$tries" "submit_chain.sh did not start"; return 1; }
+  state_set "$item" "$run" resume "$jid" SUBMITTED "$tries"
+  log "resumed $item: $run from ${rst##*/} (segments $seg -> at most $max${xarg:+, $xarg}; Slurm $jid)"
+  return 0
+}
+
 submit_item() {
   local line=$1 item la gh np pn deck purpose out run jid tries
   read -r item la gh np pn deck purpose <<< "$line"
+  [[ $la == resume ]] && { resume_item "$line"; return $?; }
   tries=$(state_get "$item" | cut -f6); tries=${tries:-0}
   wait_git || { log "submit $item: git busy, later"; return 1; }
   local args=(submit --kind scouting --gate G2 --package "$PKG" --exe "$EXE" --particles "$np"
-              --gpu-hours "$gh" --purpose "longruns $item: $purpose (seq.sh; JOURNAL.md 2026-11-21T20:25Z)")
+              --gpu-hours "$gh" --purpose "longruns $item: $purpose (seq.sh; JOURNAL.md)")
   if [[ $la == batch ]]; then
     args+=(--launcher batch --list "$deck" --wall 00:55:00)
   else
@@ -128,12 +202,7 @@ submit_item() {
   out=$(cd "$WT" && harness/bin/nrpic-run "${args[@]}" 2>&1); echo "$out" >> "$LOG"
   run=$(grep -oE 'submitted (C-[0-9]{8}-[0-9]{6}-[0-9a-f]{7}) as Slurm job [0-9]+' <<< "$out" | awk '{print $2}')
   jid=$(grep -oE 'as Slurm job [0-9]+' <<< "$out" | awk '{print $4}')
-  if [[ -z $run || -z $jid ]]; then
-    tries=$((tries + 1))
-    if (( tries >= 12 )); then state_set "$item" - "$la" - SUBMIT_FAILED "$tries"; log "submit $item: abandoned after $tries tries"
-    else state_set "$item" - "$la" - RETRY "$tries"; log "submit $item: refused (try $tries)"; fi
-    return 1
-  fi
+  if [[ -z $run || -z $jid ]]; then refuse "$item" "$la" "$tries" "nrpic-run refused"; return 1; fi
   state_set "$item" "$run" "$la" "$jid" SUBMITTED "$tries"
   log "submitted $item as $run (Slurm $jid)"
   if [[ $la == chain && $pn != - ]]; then   # process name of this owner, before segment 1 runs
@@ -171,18 +240,30 @@ if [[ -e $S/seq.pid ]] && kill -0 "$(cat "$S/seq.pid")" 2>/dev/null; then
 fi
 echo $$ > "$S/seq.pid"
 rm -f "$S/STOP"
-log "loop start pid $$ slots $SLOTS poll $POLL"
+log "loop start pid $$ slots $SLOTS poll $POLL (submits through the pause flag: decision 0026 item 2)"
+last_wait=
+last_pause=
 while true; do
   if [[ -e $S/STOP ]]; then log "STOP: exit"; rm -f "$S/seq.pid"; exit 0; fi
   close_finished
   [[ -e $S/STOP ]] && continue
+  if [[ -e $PAUSE ]]; then
+    [[ $last_pause == yes ]] || log "pause flag present: submissions go on (decision 0026 item 2)"
+    last_pause=yes
+  else
+    last_pause=
+  fi
   while (( $(active_count) < SLOTS )) && (( $(c_jobs_in_queue) < SLOTS )); do
-    [[ -e $PAUSE ]] && { log "pause flag: no new submission"; break; }
     line=$(next_item) || break
     submit_item "$line" || break
+    last_wait=
     sleep 5
   done
-  if ! next_item > /dev/null && (( $(active_count) == 0 )); then
+  if line=$(next_item); then
+    why="next ${line%% *}: $(active_count) item(s) active, $(c_jobs_in_queue) C-* job(s) in squeue (slots $SLOTS)"
+    [[ $why == "$last_wait" ]] || log "waiting: $why"
+    last_wait=$why
+  elif (( $(active_count) == 0 )); then
     log "queue done: exit"; rm -f "$S/seq.pid"; exit 0
   fi
   sleep "$POLL"

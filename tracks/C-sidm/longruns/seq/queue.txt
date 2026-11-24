@@ -25,3 +25,21 @@ A334s2o   chain 4    100000  csidm-A334s2o tracks/C-sidm/longruns/inputs/A8_y0p3
 A334s3c   chain 4    100000  csidm-A334s3c tracks/C-sidm/longruns/inputs/A8_y0p33403_s3_ctrl.athinput A: block A M/8, y0 0.334032 seed 3, control, 600 M
 A334s3i   chain 4    100000  csidm-A334s3i tracks/C-sidm/longruns/inputs/A8_y0p33403_s3_kin.athinput  A: block A M/8, y0 0.334032 seed 3, kick in, 600 M
 A334s3o   chain 4    100000  csidm-A334s3o tracks/C-sidm/longruns/inputs/A8_y0p33403_s3_kout.athinput A: block A M/8, y0 0.334032 seed 3, kick out, 600 M
+# --- batch 11 (2026-11-24): in-place continuations of the chains cut by preemption ---------
+# Another user's jobs in the higher-priority partition preempted the C-sidm segments from
+# 2026-11-23 afternoon on (PreemptMode CANCEL: AthenaK writes no restart on SIGTERM), so ten
+# chains used up their segments and closed FAILED with t_end between 0.25 and 420 M. They are
+# continued in place from their newest restart file, never repeated from t = 0, with a
+# restart every 10 M (athena arg output2/dt=10) so that a preemption loses at most about 80 s.
+# Format: <item> resume <segments to add> <run_id> <proc-name> <deck> <athena arg|-> <purpose...>
+# Order: the stable-side control first (no A324 Delta without it), the unstable-side kick
+# out, the A324 kick out, the D2 seed pair, then seeds 2 and 3 at the threshold.
+A324s1c+  resume 20 C-20261123-032324-938ecbd csidm-A324s1c tracks/C-sidm/longruns/inputs/A8_y0p32400_s1_ctrl.athinput output2/dt=10 A: continue A324s1c from its newest restart to 600 M
+A344s1o+  resume 12 C-20261123-025228-6ecb543 csidm-A344s1o tracks/C-sidm/longruns/inputs/A8_y0p34400_s1_kout.athinput output2/dt=10 A: continue A344s1o from its newest restart to 600 M
+A324s1o+  resume 12 C-20261123-222003-02195a0 csidm-A324s1o tracks/C-sidm/longruns/inputs/A8_y0p32400_s1_kout.athinput output2/dt=10 A: continue A324s1o from its newest restart to 600 M
+D2f2s2+   resume 12 C-20261124-035054-c06503f csidm-D2f2s2  tracks/C-sidm/longruns/inputs/D2_cc2_kn10_f2_s2.athinput output2/dt=10 D2: continue D2f2s2 from its newest restart to 300 M
+A334s2c+  resume 16 C-20261124-053105-2fcc8af csidm-A334s2c tracks/C-sidm/longruns/inputs/A8_y0p33403_s2_ctrl.athinput output2/dt=10 A: continue A334s2c from its newest restart to 600 M
+A334s2i+  resume 16 C-20261124-061134-ab6cc0a csidm-A334s2i tracks/C-sidm/longruns/inputs/A8_y0p33403_s2_kin.athinput output2/dt=10 A: continue A334s2i from its newest restart to 600 M
+A334s2o+  resume 16 C-20261124-075153-72499e7 csidm-A334s2o tracks/C-sidm/longruns/inputs/A8_y0p33403_s2_kout.athinput output2/dt=10 A: continue A334s2o from its newest restart to 600 M
+A334s3i+  resume 20 C-20261124-091733-b92f4e5 csidm-A334s3i tracks/C-sidm/longruns/inputs/A8_y0p33403_s3_kin.athinput output2/dt=10 A: continue A334s3i from its newest restart to 600 M
+A334s3c+  resume 20 C-20261124-082221-7f03a8e csidm-A334s3c tracks/C-sidm/longruns/inputs/A8_y0p33403_s3_ctrl.athinput output2/dt=10 A: continue A334s3c from its newest restart to 600 M
