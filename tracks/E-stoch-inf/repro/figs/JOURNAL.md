@@ -245,7 +245,7 @@ Next, in order, after the pause is lifted:
    `--cl256s`, `--al2s` and `--with256` (make_figs passes it with --cl256s).
 3. RESULTS.md: replace the PENDING rows, add the ledger of the figure run, set STATUS.
 
-## Entry 5 (2026-11-24 09:30 PST): resumed after the pause; predictions of the figure run, written before it runs
+## Entry 5 (2026-11-24 09:24 PST): resumed after the pause; predictions of the figure run, written before it runs
 
 Resumed in batch R2b. The pause flag is absent; the five continuations of repro/continue are still
 held by another user's job (both cards) until about the morning of 2026-11-25 and are not waited for.
@@ -272,7 +272,7 @@ Predictions (refuted by the stated miss):
   the first part of the json (phi to Azz) before writing this entry. Recorded under entry 6 as an
   observation only.
 
-## Entry 6 (2026-11-24 09:35 PST): outcomes of the figure run E-20261124-172426-4780cbc (entry 5)
+## Entry 6 (2026-11-24 09:27 PST): outcomes of the figure run E-20261124-172426-4780cbc (entry 5)
 
 Run E-20261124-172426-4780cbc (`make_figs.py` on the passes 130628-6790851, 133251-42e8aab,
 141807-8352509; 50 s on 2 cores). Every PNG was looked at.
@@ -310,7 +310,7 @@ Run E-20261124-172426-4780cbc (`make_figs.py` on the passes 130628-6790851, 1332
   Figs. 3, 5, 6; tick labels collide at panel joins (Fig. 1 left column, Fig. 8 x axis); the legend of
   Fig. 8 lists N = 256 without a curve; `fig9_ablation_sr_t75` has an empty right panel.
 
-## Entry 7 (2026-11-24 09:40 PST): predictions for the pass at N = 8.0 and the second figure run
+## Entry 7 (2026-11-24 09:28 PST): predictions for the pass at N = 8.0 and the second figure run
 
 Plan: a registered pass `usr256kt8` over USF256 dump 32 (N = 8.01, kt_version 2), then a second figure
 run that (i) draws Fig. 6b from the kt_version-2 dumps with targets that include 8.0 (P1's last curve
@@ -327,7 +327,7 @@ cosmetic defects of entry 6.
 - R7: every number of the first figure run that does not involve the new dump is unchanged (Figs. 1-5,
   7-9 jsons identical; Fig. 6b measures over all dumps equal the 41-dump test values).
 
-## Entry 8 (2026-11-24 09:45 PST): outcomes of entry 7 (pass E-20261124-172949-8b2255b, figure runs E-20261124-173117-51c289f and E-20261124-173254-420115f)
+## Entry 8 (2026-11-24 09:33 PST): outcomes of entry 7 (pass E-20261124-172949-8b2255b, figure runs E-20261124-173117-51c289f and E-20261124-173254-420115f)
 
 Pass of USF256 dump 32 (t = 8.351, N = 8.014; 57 s). Figure run 173117 with Fig. 6b at N = 8.01 and the
 new medians; figure run 173254 after the Fig. 1 tick fix, every json identical to 173117 (byte
@@ -349,3 +349,7 @@ compare): its PNGs are the ones copied to `fig/`. All new PNGs looked at (Figs. 
   2.28e-5 against about 0.8e-4; delta Pi/Pi_b before the entry 1.5e-5 against about 0.6e-4) is the same
   as in USR (Fig. 4, factors 2.3 to 4), while the spectra (Figs. 3, 5) agree in level. Recorded for
   RESULTS; no cause named (P1 does not state the normalisation of its real-space draw).
+- Addendum to entry 6 (found while writing RESULTS.md, from the same 41-dump series): the fraction of
+  injected shells with Q below K is 0.716 at N = 5.29, so the ranges read 0.23-0.64 for N = 3.3-5.0 and
+  0.72-1.0 for N = 5.3-6.3 (not "3.3-5.3" and "5.53-6.28" as entry 6 wrote). RESULTS.md uses the
+  corrected ranges.
