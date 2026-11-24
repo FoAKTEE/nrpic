@@ -429,7 +429,7 @@ State of RSF256: ended 14:23 PST (q0034, run E-20261124-214913-5956891), joined 
 check (run E-20261124-222800-49ab461); repro/figs has not yet run `runs.py rsf256` or a figure run
 with `--rsf256`, so the SR constraint panels and the SR per-cell row stay pending.
 
-## Entry 16 (2026-11-24 15:20 PST): last pass, RSF256 rows; plan and predictions (written before R9 runs)
+## Entry 16 (2026-11-24 15:17 PST): last pass, RSF256 rows; plan and predictions (written before R9 runs)
 
 Input: repro/figs has made the RSF256 outputs (join check E-20261124-225720-444aecc, pass
 E-20261124-225826-0bf3842, figure run E-20261124-230839-0e1e13a; its RESULTS.md section 5 and

@@ -33,7 +33,7 @@ def main():
                     help="passes of groups usr256kt, usr256kt8 (Fig. 6b with the invariant Kt)")
     ap.add_argument("--sr256", help="pass with P256v6 (all dumps)")
     ap.add_argument("--rsf256", action="append", default=[],
-                    help="passes with RSF256 and its continuation (labels RSF256, RSF256c)")
+                    help="passes with RSF256 and its continuations (labels RSF256, RSF256b, RSF256c)")
     ap.add_argument("--ablation")
     ap.add_argument("--rungs")
     ap.add_argument("--cl256s", action="append", default=[])
@@ -67,7 +67,7 @@ def main():
                                           "--title", "Inflection potential"])
     sr_passes = []
     for r in a.rsf256:
-        for lab in ("RSF256", "RSF256c"):
+        for lab in ("RSF256", "RSF256b", "RSF256c"):
             if sub(r, lab):
                 sr_passes.append(sub(r, lab))
     if a.sr256 and sub(a.sr256, "P256v6"):

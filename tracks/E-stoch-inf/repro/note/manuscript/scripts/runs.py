@@ -46,9 +46,10 @@ RUNS = {
 
 # continuation runs of package repro/continue (label -> list of run ids), read as the same run:
 # their dumps and record lines come after the original's (one line per cycle, the last written wins)
-CONTINUED = {   # as repro/continue/scripts/conts.json at commit e5581420 (2026-11-24 13:30 PST)
+CONTINUED = {   # as repro/continue/scripts/conts.json at commit e5581420 (2026-11-24 13:30 PST),
+    # plus RSF256's 4th continuation (queue q0034, ended at tlim 14:23 PST), as ../conts_rsf256.json
     "RSF256": ["E-20261124-130529-da8c917", "E-20261124-201031-4c41e7b",
-               "E-20261124-202134-0b1ce0c"],          # its 4th continuation: queue q0034
+               "E-20261124-202134-0b1ce0c", "E-20261124-214913-5956891"],
     "RNC256": ["E-20261124-130629-61fe0b0"],
     "CL256U": ["E-20261124-130711-a5dec67", "E-20261124-201048-33a3a39"],
     "CL256S": ["E-20261124-130952-4be980b"],
@@ -56,10 +57,14 @@ CONTINUED = {   # as repro/continue/scripts/conts.json at commit e5581420 (2026-
 }
 for _lab, _ids in CONTINUED.items():
     RUNS[_lab + "c"] = (_ids[-1], "", RUNS[_lab][2])
+# RSF256's dumps 00001-00016 are read from its third continuation (00017-00034 from the fourth)
+RUNS["RSF256b"] = ("E-20261124-202134-0b1ce0c", "", "sr")
 
 # joined records of repro/continue (one line per cycle, the last written wins; join check run):
 # label -> run id that holds <label>.sf.con.hst and <label>.sf.hst. RSF256 there ends at cycle 895.
 JOINED = {lab: "E-20261124-212343-7e9c4b2" for lab in CONTINUED}
+# RSF256 to cycle 1386: this package's join check (repro/continue's join_check.py with ../conts_rsf256.json)
+JOINED["RSF256"] = "E-20261124-225720-444aecc"
 
 
 def cont_dirs(label):
@@ -114,7 +119,9 @@ GROUPS["usr256kt"] = [("USF256", ["--dumps", "0,3,5,8,11,14,18,22,40"])]
 GROUPS["usr256kt8"] = [("USF256", ["--dumps", "32"])]
 # SR ablation at t = 7.5 (dump 15), the last dump the cut AL2S wrote (it reached t = 7.53)
 GROUPS["ablation75"] = [(lab, ["--dumps", "15", "--save-modes"]) for lab in ("AL0S", "AL1S", "AL2S")]
-GROUPS["rsf256"] = [("RSF256", ["--dumps", "0"]), ("RSF256c", ["--save-modes"])]
+GROUPS["rsf256"] = [("RSF256", ["--dumps", "0"]),
+                    ("RSF256b", ["--dumps", ",".join(str(i) for i in range(1, 17))]),
+                    ("RSF256c", ["--save-modes"])]
 GROUPS["cl256"] = [("CL256Sc", ["--last"])]
 GROUPS["al2s"] = [("AL2Sc", ["--last", "--save-modes"])]
 # bit check only, of what RSF256 has written so far (t = 0, 4.0, 5.0) against P256v6
@@ -122,10 +129,11 @@ GROUPS["rsf256bit"] = []
 BITCHECK = {
     "usr256": [("USF256", 0, "U256ap", 0), ("USF256", 20, "U256ap", 10),
                ("USF256", 40, "U256ap", 20)],
-    "rsf256": [("RSF256", 0, "P256v6", 0), ("RSF256c", 16, "P256v6", 8),
+    "rsf256": [("RSF256", 0, "P256v6", 0), ("RSF256b", 16, "P256v6", 8),
                ("RSF256c", 34, "P256v6", 17)],
-    "rsf256bit": [("RSF256", 0, "P256v6", 0), ("RSF256c", 16, "P256v6", 8),
-                  ("RSF256c", 20, "P256v6", 10)],
+    # (run E-20261124-213029-e937f69, when RSF256c named the third continuation 0b1ce0c)
+    "rsf256bit": [("RSF256", 0, "P256v6", 0), ("RSF256b", 16, "P256v6", 8),
+                  ("RSF256b", 20, "P256v6", 10)],
     "ablation75": [("AL2S", 0, "AL0S", 0)],
     "ablation": [("AL0S", 0, "AL1S", 0), ("AL0S", 0, "P256v6", 0), ("AL0U", 0, "AL1U", 0),
                  ("AL0U", 0, "AL2U", 0), ("AL0U", 0, "U256ap", 0), ("AL0S", 0, "RL1", 0),

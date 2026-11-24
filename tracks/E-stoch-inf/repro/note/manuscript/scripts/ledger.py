@@ -58,9 +58,13 @@ ORIGIN = {
                                 f"E-20261124-131359-49afe29), pass {PASS_CONT}"),
     "fig9_ablation_sr_t75.json": ("runs E-20261123-153347-18e7c21, -183822-4abbcae, "
                                   "-152119-38957ba, pass E-20261124-141807-8352509"),
+    "fig2_sr_contrast.json": ("run E-20261123-035925-8439d79 with its continuations (joined in "
+                              "E-20261124-225720-444aecc), pass E-20261124-225826-0bf3842"),
     "fig_signflip.json": ("records of E-20261123-045030-c20bcb3, -035925-8439d79, "
                           "E-20261122-190341-0419be6, E-20261121-211214-0377aab; the first two joined "
                           f"with their continuations in {JOIN}"),
+    "fig_signflip.json@rsf256": ("record of E-20261123-035925-8439d79 to N_f, joined with its continuations "
+                                 "in E-20261124-225720-444aecc"),
 }
 CORE_MSG = "git:core/noise-level2:tracks/core/outbox/20261124T143303Z__to-E-stoch-inf__noise-level2-review-runs-stand.md"
 
@@ -82,7 +86,12 @@ SECNOTE = {
                     "that window, the decaying initial transient. Order: $\\log_2$ of the ratio of the entry maxima of "
                     "neighbouring lattices, a convergence order only for the background residual of the USR box mean."
                     " The $256^3$ runs: E-20261123-090727-4b6e5a5 (SR) and E-20261123-065855-265732a (USR) with their "
-                    "continuations, joined records of E-20261124-212343-7e9c4b2, pass E-20261124-213029-e937f69."),
+                    "continuations, joined records of E-20261124-212343-7e9c4b2, pass E-20261124-213029-e937f69."
+                    " Per cell: percentiles over the $256^3$ cells of one dump of $|\\Ham|/[\\Ham]$ (or $|\\Mom|/[\\Mom]$), "
+                    "$[\\Ham]$ and $[\\Mom]$ the sums of the magnitudes of the terms; SR: the 35 dumps of the "
+                    "one-point run from $N = 0$ to $N_f$; entry plateau: its dumps with $0.75 \\le N \\le 3.2$, after "
+                    "the initial transient and before the rise of the last crossings. Record mean: "
+                    "$\\langle|\\Ham|/[\\Ham]\\rangle$ of the code's record at every cycle."),
     "Sign flip": ("Runs with the sign of the momentum source flipped, $256^3$. Ratio: flipped over proper run at common "
                   "record times with $0.5 \\le N \\le \\ln 64$, the entry of every mode; SR from the joined records "
                   "of both continued runs."),
@@ -115,10 +124,14 @@ def V(code, line=None, needle=None, shown=""):
 QP = V("quote", 91, "12, 13, 22, 35, 44, 53, 76")
 Q0 = V("quote", 92, "84-86, 106 (P0:817-842): CONFIRMED")
 NONE = V("none")
+# the check joined the SR one-point run to N_f and compared its records with the dump means (VERIFIER 8.6),
+# but did not recompute the per-cell percentiles
+JOINED = V("joined", 269, "I joined it (8.1: bit-identical over 243 lines", "values not recomputed")
 
 # (section, quantity, kind, args, format, check)
 # kinds: j = lattice json of this run; l = langevin.json of this run; e = equation-check run;
-#        r = reader split run R8A;
+#        r = reader split run R8A; jd = a value derived from a lattice json of this run (a function
+#        of the json that returns the printed string);
 #        q = quote of a committed line (path, line, string[, value shown]); p = printed in a paper (paper, line, string)
 ROWS = [
     # --- lattice: background
@@ -154,10 +167,10 @@ ROWS = [
     ("One-point statistics", "USR: rms of R^NR at N_f", "j", ("fig4_usr_contrast.json", "rms_R_final"), "{:.4f}", V("yes", 80, "28 (0.8945)")),
     ("One-point statistics", "USR: largest |R^NR| over the cells at N_f", "j", ("fig4_usr_contrast.json", "final.pct_R.max"), "{:.2f}", V("yes", 80, "29 (4.568)", "4.568")),
     ("One-point statistics", "USR: half-width of dPi/Pi_b at N_f", "j", ("fig4_usr_contrast.json", "final.pct_dPi.half68"), "{:.2e}", V("rerun", 96, "Rerun only (not from raw outputs): 30")),
-    ("One-point statistics", "Paper II, Fig. 2 read off (SR bands of dphi/phi_b)", "q", (RES, 77, "about 1.0e-6"), None, V("yes", 80, "31 and 34", "own read-off")),
-    ("One-point statistics", "SR amplitude factor, Paper II over ours", "q", (RES, 77, "3.5: P1's 68 per cent bands", "about 3.5"), None, V("yes", 58, "my value is about 3.5", "about 3.5")),
-    ("One-point statistics", "USR amplitude factor, Paper II over ours", "q", (RES, 110, "by a factor 2.3 to 4"), None, V("yes", 58, "CONFIRMED at its upper end", "upper end")),
-    ("One-point statistics", "Paper II, Fig. 4 read off: 100 per cent band of R^NR", "q", (RES, 113, "about 18"), None, V("yes", 80, "31 and 34", "own read-off")),
+    ("One-point statistics", "Paper II, Fig. 2 read off (SR bands of dphi/phi_b)", "q", (RES, 86, "about 1.0e-6"), None, V("yes", 80, "31 and 34", "own read-off")),
+    ("One-point statistics", "SR amplitude factor, Paper II over ours", "q", (RES, 86, "3.5: P1's 68 per cent bands", "about 3.5"), None, V("yes", 58, "my value is about 3.5", "about 3.5")),
+    ("One-point statistics", "USR amplitude factor, Paper II over ours", "q", (RES, 122, "by a factor 2.3 to 4"), None, V("yes", 58, "CONFIRMED at its upper end", "upper end")),
+    ("One-point statistics", "Paper II, Fig. 4 read off: 100 per cent band of R^NR", "q", (RES, 125, "about 18"), None, V("yes", 80, "31 and 34", "own read-off")),
     ("One-point statistics", "Paper II: furthest outliers of R^NR", "p", ("II", 534, r"values of $\sim 10$ for the furthest outliers"), None, V("quote", 93, "from P1's own Fig. 4 (full band about +-18)", "its Fig. 4: about 18")),
     # --- constraints
     ("Constraints", "SR: entry maximum of <|H|/[H]>, 64^3", "j", ("fig7_fig8.json", "sr.H.entry_max.64"), "{:.1e}", V("yes", 137, "SR 64^3 1.78e-12", "1.78e-12")),
@@ -167,10 +180,10 @@ ROWS = [
     ("Constraints", "USR: entry maximum of <|H|/[H]> with the box mean, 128^3", "j", ("fig7_fig8.json", "usr.H.entry_max.128"), "{:.1e}", V("yes", 138, "with the box mean 3.25e-10", "3.25e-10")),
     ("Constraints", "USR: order of that maximum, 64 to 128", "j", ("fig7_fig8.json", "usr.H.orders.64-128"), "{:.2f}", V("yes", 81, "41 (4.06)", "4.06")),
     ("Constraints", "USR: the same, 128 to 256", "j", ("fig7_fig8.json", "usr.H.orders.128-256", {"origin": "@all"}), "{:.2f}", V("yes", 201, "4.03 (row 42: 4.03, CONFIRMED)")),
-    ("Constraints", "USR: largest 99th percentile of |H|/[H] over the cells (256^3)", "j", ("fig4_usr_contrast.json", "pct_H_p99_max"), "{:.1e}", V("rerun", 96, "42 (my subset of dumps gives 1.98e-11")),
-    ("Constraints", "USR: largest record mean of |M|/[M] (256^3)", "q", (RES, 301, "2.519e-2"), None, V("yes", 81, "43 (2.519e-2)")),
+    ("Constraints", "USR: largest 99.5th percentile of |H|/[H] over the cells (256^3)", "j", ("fig4_usr_contrast.json", "pct_H_p99_max"), "{:.1e}", V("rerun", 96, "42 (my subset of dumps gives 1.98e-11")),
+    ("Constraints", "USR: largest record mean of |M|/[M] (256^3)", "q", (RES, 326, "2.519e-2"), None, V("yes", 81, "43 (2.519e-2)")),
     ("Constraints", "Paper II: Hamiltonian violation", "p", ("II", 539, r"($\sim 10^{-10}$)"), None, QP),
-    ("Constraints", "Paper II, Fig. 8a read off: SR plateau of <|H|/[H]>", "q", (RES, 203, "about 2e-11"), None, V("rerun", 97, "45, 46")),
+    ("Constraints", "Paper II, Fig. 8a read off: SR plateau of <|H|/[H]>", "q", (RES, 219, "about 2e-11"), None, V("rerun", 97, "45, 46")),
     ("Constraints", "Momentum constraint second order from (cells per shortest wavelength)", "q", ("tracks/E-stoch-inf/a4res/README.md", 85, "at least 12.8 cells"), None, V("rerun", 97, "45, 46")),
     ("Sign flip", "Sign flipped, SR: ratio of <|H|/[H]> to the proper run, smallest for 0.5 <= N <= ln 64", "j", ("fig_signflip.json", "RNC256.H_ratio_min_entry"), "{:.1e}", V("yes", 181, "| 1.386e3 at N = 4.158", "1.386e3; over the whole flipped run 2.66e2")),
     ("Sign flip", "Sign flipped, SR: median ratio of <|H|/[H]>", "j", ("fig_signflip.json", "RNC256.H_ratio_median_entry"), "{:.1e}", V("yes", 180, "| 1.055e5 over 0.5 <= N <= ln 64", "1.055e5")),
@@ -180,7 +193,15 @@ ROWS = [
     ("Sign flip", "Sign flipped, USR: median ratio of <|H|/[H]>", "j", ("fig_signflip.json", "U256nc.H_ratio_median_entry"), "{:.1e}", V("diff", 87, "49 (1.0e4)", "1.0e4")),
     ("Sign flip", "Sign flipped, USR: largest <|M|/[M]>", "j", ("fig_signflip.json", "U256nc.M_flip_max"), "{:.2f}", V("yes", 81, "50 (0.50)")),
     ("Sign flip", "Sign flipped, USR: largest <|H|/[H]>", "j", ("fig_signflip.json", "U256nc.H_flip_max"), "{:.1e}", V("yes", 54, "Absolute flipped H/[H] about 1e-7", "about 1e-7")),
-    ("Constraints", "SR per-cell constraint rows of the one-point figure", "pending", ("of E-20261123-035925-8439d79, ended at N_f in its fourth continuation (queue entry q0034, run E-20261124-214913-5956891); its panels wait for the figure pass",), None, NONE),
+    ("Constraints", "SR, per cell (256^3): 99.5th percentile of |H|/[H] on the entry plateau, lowest and highest", "jd", ("fig2_sr_contrast.json", lambda d: ", ".join("{:.2e}".format(f(win(d, "pct_H", "p995", 0.75, 3.2))) for f in (min, max))), None, JOINED),
+    ("Constraints", "SR, per cell: largest 99.5th percentile of |H|/[H] over the dumps, and its N", "jd", ("fig2_sr_contrast.json", lambda d: "{:.2e} at N = {:.2f}".format(*argmax(d, "pct_H", "p995"))), None, JOINED),
+    ("Constraints", "SR, per cell: largest |H|/[H] over the cells and dumps", "j", ("fig2_sr_contrast.json", "pct_H_max_max"), "{:.2e}", JOINED),
+    ("Constraints", "SR, per cell: 99.5th percentile of |H|/[H] at N_f", "jd", ("fig2_sr_contrast.json", lambda d: "{:.2e}".format(d["pct_H"]["p995"][-1])), None, JOINED),
+    ("Constraints", "SR, per cell: fall of that percentile from its largest value to N_f", "jd", ("fig2_sr_contrast.json", lambda d: "{:.1e}".format(max(d["pct_H"]["p995"]) / d["pct_H"]["p995"][-1])), None, JOINED),
+    ("Constraints", "SR, per cell: largest 99.5th percentile of |M|/[M] over the dumps, and its N", "jd", ("fig2_sr_contrast.json", lambda d: "{:.2e} at N = {:.2f}".format(*argmax(d, "pct_M", "p995"))), None, JOINED),
+    ("Constraints", "SR, per cell: largest |M|/[M] over the cells and dumps", "j", ("fig2_sr_contrast.json", "pct_M_max_max"), "{:.2e}", JOINED),
+    ("Constraints", "SR: dump means of |H|/[H] and |M|/[M] against the record, largest relative difference", "jd", ("fig2_sr_contrast.json", lambda d: "{:.1e}, {:.1e}".format(d["reader_check"]["max_rel_H"], d["reader_check"]["max_rel_M"])), None, V("yes", 271, "4.1e-15, my [H] equals Hmag", "4.1e-15 (H)")),
+    ("Constraints", "SR: largest record mean of |H|/[H] over the whole run, and its N", "jd", ("fig_signflip.json", lambda d: "{:.2e} at N = {:.2f}".format(d["RNC256"]["proper_H_max_run"], d["RNC256"]["proper_N_at_H_max_run"]), {"origin": "@rsf256"}), None, V("yes", 272, "largest <abs H/[H]> 5.10e-11 (N = 4.43)", "5.10e-11 at N = 4.43")),
     ("Sign flip", "Paper II: a flipped sign gives", "p", ("II", 541, r"${\cal H}/[{\cal H}]\sim 10^{-5}$ and  ${\cal M}/[{\cal M}]\sim 1$"), None, QP),
     # --- extrinsic curvature
     ("Extrinsic curvature", "SR: Delta[K] at N_f over N = 5.3 (median over shells)", "j", ("fig6a_sr_Kspec_P256v6.json", "K_last_over_N55.median"), "{:.3f}", V("rerun", 97, "54-60")),
@@ -188,8 +209,8 @@ ROWS = [
     ("Extrinsic curvature", "SR: Q/K at N_f (median)", "j", ("fig6a_sr_Kspec_P256v6.json", "Q_over_K_last.median"), "{:.1e}", V("rerun", 97, "54-60")),
     ("Extrinsic curvature", "USR: Delta[K] at N_f over its maximum (median)", "j", ("fig6b_usr_Kspec.json", "K_last_over_max.median"), "{:.1e}", V("rerun", 97, "54-60")),
     ("Extrinsic curvature", "USR: Q/K at N_f (median)", "j", ("fig6b_usr_Kspec.json", "Q_over_K_last.median"), "{:.1e}", V("rerun", 97, "54-60")),
-    ("Extrinsic curvature", "USR: shells with Q below K, N = 0.26-3.05", "q", (RES, 160, "below 0.2 for 0.26 <= N <= 3.05"), None, V("rerun", 97, "54-60")),
-    ("Extrinsic curvature", "USR: shells with Q below K from N = 7.27", "q", (RES, 161, "0.98-1.0 from N = 7.27 to N_f"), None, V("rerun", 97, "54-60")),
+    ("Extrinsic curvature", "USR: shells with Q below K, N = 0.26-3.05", "q", (RES, 176, "below 0.2 for 0.26 <= N <= 3.05"), None, V("rerun", 97, "54-60")),
+    ("Extrinsic curvature", "USR: shells with Q below K from N = 7.27", "q", (RES, 177, "0.98-1.0 from N = 7.27 to N_f"), None, V("rerun", 97, "54-60")),
     # --- convergence
     ("Convergence", "SR spectra: largest |1 - Delta_NR/Delta_lin|, 32^3", "j", ("fig7_fig8.json", "specconv.32.max"), "{:.1e}", V("yes", 212, "| 3.17e-3 | 6.16e-5 | 1.00e-6 | 2.0e-7 |", "3.17e-3 against the code's record")),
     ("Convergence", "the same, 64^3", "j", ("fig7_fig8.json", "specconv.64.max"), "{:.1e}", V("yes", 212, "| 3.17e-3 | 6.16e-5 | 1.00e-6 | 2.0e-7 |", "6.16e-5 against the code's record")),
@@ -257,6 +278,18 @@ ROWS = [
 ]
 
 
+def win(d, key, q, lo, hi):
+    """Values of percentile q of panel key at the dumps with lo <= N <= hi."""
+    return [v for n, v in zip(d[key]["N"], d[key][q]) if lo <= n <= hi]
+
+
+def argmax(d, key, q):
+    """Largest value of percentile q of panel key over the dumps, and the N of that dump."""
+    v = d[key][q]
+    i = max(range(len(v)), key=v.__getitem__)
+    return v[i], d[key]["N"][i]
+
+
 def get(d, path):
     for k in path.split("."):
         if isinstance(d, list):
@@ -317,7 +350,7 @@ def printed(s):
 
 
 CHECK_WORD = {"yes": "yes", "diff": "differs", "reach": "beyond reach", "quote": "quote",
-              "rerun": "rerun only", "none": "none"}
+              "rerun": "rerun only", "joined": "run joined", "none": "none"}
 
 
 def read_line(path, line):
@@ -367,6 +400,13 @@ def main():
                 val = ", ".join(fmt.format(2.0 ** -get_dotted(d, q)) for q in path)
             else:
                 val = fmt.format(get_dotted(d, path))
+            src = f"this run ({run_id}) from {ORIGIN[fn + opts.get('origin', '')]}"
+        elif kind == "jd":
+            opts = args[-1] if isinstance(args[-1], dict) else {}
+            fn, func = args[:2]
+            p = os.path.join(out, "lattice", fn)
+            d = cache.setdefault(p, json.load(open(p)))
+            val = func(d)
             src = f"this run ({run_id}) from {ORIGIN[fn + opts.get('origin', '')]}"
         elif kind == "l":
             p = os.path.join(out, "langevin", "langevin.json")
