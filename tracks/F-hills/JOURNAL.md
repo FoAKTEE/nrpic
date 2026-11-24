@@ -953,3 +953,17 @@ N1m's "N1em(60) in -0.15 to -0.6" (+0.004) and "N1emt within a factor two at 20-
 and 30 M). Met: batch 5's reading E for B, A1, A2, A4 (A), A5, C's agreement with A, N1, L-K.
 card-hours used this session: 0 run; registered 48.5 (A2 19.5 G1, B2 5 G2, C2 24 G2); measured use
 of the batch-5 chains A 11.77, B 9.28, C 4.26 (sacct).
+
+### L-P, a passage reader for the next session (`stage/review_wave3/b11_passage.py`)
+
+Written for reading A2 and C2 (member distances to M, energies against M and the barycentre,
+binding energy, provisional fate), joined over A + A2 and C + C2, with the full Newtonian
+three-body problem of the same deck overlaid. NOT a test of a physics prediction: I ran it once
+in scratch (tmp/passage_smoke) to debug it and saw its numbers before writing anything here. What
+I saw [JUDGEMENT, not a confirmed prediction]: NR's E_bin is -0.52 units at 10-20 M against
+Newton's -0.31 (more bound: the members' 1.5 percent heavier horizon masses and the gauge-slowed
+trackers of R6 both act that way); NR's members approach M more slowly in coordinate time than
+Newton's (centre of mass 21.2 M from M at 60 M against Newton's 17.0 M), so the centre-of-mass
+pericentre of A2 may come later than the 95-115 M of prediction A2-2, which stands as written.
+Prediction for the registered run: it repeats the scratch numbers exactly (deterministic, same
+inputs). Refuted by any difference.
