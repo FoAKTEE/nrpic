@@ -203,7 +203,7 @@ than 10 modes the spectral maxima come within a factor 2.3 (SR 4.5e-3 vs 5.2e-3,
 1.1e-4 vs 1.0e-4; USR 3.5e-4 vs 3.6e-4). VERIFIER.md section 7 records this; sections 1-6 are
 unchanged.
 
-## Entry 5, 2026-11-24 14:10 PST: update pass (the five continued runs), predictions before any computation
+## Entry 5, 2026-11-24 14:05 PST: update pass (the five continued runs), predictions before any computation
 
 Read for this pass: the claims (not the verdicts) of `repro/figs/RESULTS.md` for Figs. 7, 8, 9 and
 the sign flip, the ledger rows that carry no verifier check (42, 48-52, 56, 68-75, 81-83), the run
