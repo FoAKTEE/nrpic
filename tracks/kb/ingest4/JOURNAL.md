@@ -161,3 +161,14 @@ in figures/).
   191527 and 191522 belong to astro-ph/0306304 and cover those ranges (read-only query of
   kb.sqlite after the run; the flat text there is the neutrino f_nu sentence and the free-streaming
   sentence of the abstract).
+
+## Entry 5 (2026-11-24 14:18 UTC): paused
+
+The PAUSE flag appeared (five-hour window at 80 per cent, locks/PAUSE) at 14:17 UTC. Started nothing
+new after it. Where I stopped: the QA run kb-20261124-141551-a75bc11 (`kb qa run --hybrid`, 4 cores,
+registered at 14:15 UTC) was still running; it is a processor run and may end by itself. Not read,
+not finished: prediction P8 (golden questions 28 of 32 within one; parse rate reported against the
+bar and passing) is open. The rate itself is known from the state after the ingest (96.72 %,
+kb-20261124-135341-e65f142). Answers to A, C, D, F and the note to orch are posted (commit 2f386306).
+To resume: `harness/bin/nrpic-run finish kb-20261124-141551-a75bc11`, read its QA_REPORT.md, write
+the P8 outcome here and in README.md.
