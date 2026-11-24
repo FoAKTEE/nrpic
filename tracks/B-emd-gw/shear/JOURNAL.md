@@ -331,3 +331,19 @@ exceed 0.1 at every N_y and do not fall with N_y (the dust crosses streams befor
 arrive, P9 of 2026-11-20), and h_xy at O at t_A differs between meshes by more than at t_B, the
 mesh difference growing 32-64 to 64-128 like Delta does. Refuted if the means at t_A fall by two
 or more per doubling (then the non-convergence is not in the field at O).
+
+Outcome (run B-20261124-135244-17ebf5c, `figs/fig_l2_observer.png` looked at) [VERIFIED by it]:
+- HOLDS in its first part: at t_A the relative constraint means are Hr 0.40, 0.24, 0.25 and Mr 0.26,
+  0.18, 0.15 at N_y = 32, 64, 128, above 0.1 everywhere and not falling by two per doubling (Hr
+  rises from 64 to 128). They climb to 0.05-0.3 already by t = 1 (a = 2.25) at every mesh and stay
+  there: L2's field carries a 10-40 per cent constraint violation over the whole interval between
+  the arrivals.
+- Second part mixed: h_xy at O at t_A differs by 0.042 (32-64) then 0.106 (64-128), growing as
+  Delta does; at t_B the differences are 0.072 and 0.066, so the field at O is not better
+  converged at t_B than at t_A for 32-64. h_xy at O shows kinks at t = 3.1, 5.4 and 8.2 (streams
+  crossing at or near O [JUDGEMENT from the shape]).
+- What this says about R19: the L2 values (-0.828 to -0.835) are taken in a field whose
+  constraints are violated at 10-40 per cent and do not converge with N_y; the number is not a
+  converged statement of this code. No cause of the violation is named; a run that could show it
+  (a smaller step, more particles per cell along y, or a lower amplitude between M2 and L2) is the
+  next step.
