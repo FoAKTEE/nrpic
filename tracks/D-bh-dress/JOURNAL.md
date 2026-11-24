@@ -520,3 +520,23 @@ found: the vacuum excursions at 230-300 M (the "floor" of N) are plateaus of the
   registered judgement pending]. Exterior constraints bounded; in the dust they look like particle noise.
 changed my mind about: the attribution of the D-pre-4 and g2long excursions to the outer boundary (R4).
 open: judge FP/FP-ext; FE4, FF4, FK, FN4 on the cards; FNQ/FL16 allotment; note v3; G2 verifier.
+
+## 2026-11-24T17:23Z-18:20Z  session lead batch 11b (Opus, resumed after the pause)  commits 16309595..(this)  runs D-20261124-172410-e8afc73, -172508-c847ee4, -172725-2f426b6, -172745-72472ed, -172838-3a30e48, -173137-f358715, -175356-0f40f1a, -175505-a1053fa
+
+did: merged main (decision 0032); closed FP and FP-ext (finished after the pause) and judged them with
+  fp_analyse (figure layout fixed, rerun byte-identical in numbers); posted finder-stopping-rule to core;
+  registered FNQ (N/4) and FL16 (M/16 growth) under the raised allotment, held behind FK and FN4 in the
+  running sequencer; restart cadence of decision 0032 through the chains' EXTRA_ARGS (FK, FN4, FNQ 25 M;
+  FL16 12.5 M); test FE (predictions first, entry 16) on the early dumps; ladder schematic registered and
+  redrawn; G2 checklist, evidence, ladder, open list, report; review sections 17-18; acked kb's sources
+  message; info to orch closing the allotment request. Cards held all session by another user's
+  priority jobs: no card run moved.
+found: FP2, FP3 hold - the vacuum floor of 1.2e-4 is the finder's stopping rule; converged-finder drift
+  1.8e-5 (M/8, to 500 M), 3.9e-6 (M/16). FP4 refuted (offset changes sign over three meshes). FP-ext (ii),
+  FE1, FE2 missed their bounds without being refuted. FE: the bubble's horizon mass dips by 4-6e-5 at
+  100 M at both meshes; the null difference has no trend after 150 M (<= 7.3e-5 at M/8 over 100-500 M).
+  A16 against A32 is a constant -1.8e-4 on every mesh.
+changed my mind about: the "step by 150 M, halving at M/16" of entry 14 (it was the reference time
+  falling into a dip); the meaning of D's noise floor (the finder's, not the slice's).
+open: six card runs (HANDOFF table); FE4 dumps for the dip at M/4; note v3; G2 verifier; rerun script.
+  Card-hours used this session: 0.
