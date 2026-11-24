@@ -245,7 +245,9 @@ status() {
 case ${1:-} in
   status) status; exit 0 ;;
   stop) touch "$S/STOP"; echo "STOP written; the loop exits at its next poll"; exit 0 ;;
-  run) ;;
+  run) echo "seq.sh: retired on 2026-11-24 (decision 0033: no sequencers of owners; card runs reach" \
+            "Slurm only through harness/bin/nrpic-queue). Queue an item with" \
+            "tracks/C-sidm/longruns/seq/qitem.sh (HANDOFF.md)." >&2; exit 1 ;;
   *) sed -n '2,12p' "$0"; exit 1 ;;
 esac
 

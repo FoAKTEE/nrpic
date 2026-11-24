@@ -1,3 +1,6 @@
+# Since 2026-11-24 (batch 12, decision 0033) seq.sh is retired: every item still to run is an
+# entry of the shared card queue that runs `tracks/C-sidm/longruns/seq/qitem.sh <item>`
+# (queue ids in HANDOFF.md). This file stays the record of each item's parameters.
 # C-sidm longruns queue (batch 5, 2026-11-21). One item per line, run in this order by
 # seq.sh with at most two card jobs of C-sidm eligible at a time:
 #   <item> <launcher batch|chain> <gpu-hours> <particles> <proc-name|-> <list or deck> <purpose...>
@@ -50,3 +53,7 @@ D2f2s2+   resume 12 C-20261124-035054-c06503f csidm-D2f2s2  tracks/C-sidm/longru
 A334s2i+  resume 16 C-20261124-061134-ab6cc0a csidm-A334s2i tracks/C-sidm/longruns/inputs/A8_y0p33403_s2_kin.athinput output2/dt=10 A: continue A334s2i from its newest restart to 600 M
 A334s2o+  resume 16 C-20261124-075153-72499e7 csidm-A334s2o tracks/C-sidm/longruns/inputs/A8_y0p33403_s2_kout.athinput output2/dt=10 A: continue A334s2o from its newest restart to 600 M
 A334s3i+  resume 20 C-20261124-091733-b92f4e5 csidm-A334s3i tracks/C-sidm/longruns/inputs/A8_y0p33403_s3_kin.athinput output2/dt=10 A: continue A334s3i from its newest restart to 600 M
+# --- batch 12 (2026-11-24): A334s3o was running when the orchestrator stopped its chain with the
+# chain helper at 12:00 PST (decision 0033 item 2; segment 6, after 2 min); closed as stopped and
+# continued in place from its newest restart (segment cap 24 kept: 6 used + 18) ---------------
+A334s3o+  resume 18 C-20261124-120250-9e6a3ba csidm-A334s3o tracks/C-sidm/longruns/inputs/A8_y0p33403_s3_kout.athinput output2/dt=10 A: continue A334s3o from its newest restart to 600 M
