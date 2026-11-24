@@ -335,3 +335,32 @@ open: X0-X3 and the Newtonian reference on the cards; the legs through the seque
 transport non-convergence; G1 verify running; G2 verify not run (HANDOFF).
 Card-hours this session: none run in it; read 0.74 (J4 0.45, pop_s014_gr 0.19, pop_s028_gr
 0.10); queued 1.1 (ceilings), 7 more behind the sequencer. Toward G2 so far 3.42 used.
+
+## 2026-11-24T17:23Z-17:50Z  resumed lead session of batch 11b (wave 3)  commits 9c77192a..(this)  runs B-20261124-140856-911ded9 (closed), -172623-03699f5, -172643-d1e88c7, -172958-fc4a2cf, -172958-73b0662, -131438-5d7e049 (cancelled), -173547-11afdaf (sequencer)
+
+plan: continue from what the cut session left (pause flag from about 07:20): close shear series 6
+and judge it, commit the stage verify results, read anything new, keep the work moving while the
+cards are held by another user's priority jobs (decision 0032 item 2), records, push.
+predictions written before runs: N1p (population/JOURNAL 09:29) for the Newtonian reference on
+processors; shear series 6 was predicted in the earlier session (committed in 911ded99).
+found: (1) stage verify G1 PASS (formal rerun after the chains ended), G2 FAIL only on four open
+runs. (2) shear series 6: L2 = -0.83915 at N_y = 256, 4 per cell along y; mesh differences 9.4e-3,
+7.9e-3 (order about 0.25), moving away from CosmoGRaPH's -0.8183; constraint means 0.12-0.15,
+barely falling with the mesh. The prediction holds only as written. L2 is reported as not
+converged in this code; SPEC item 5 met only formally. (3) The sequencer is alive (pid 168802); it
+had logged nothing but the pause flag since 05:55 because both card slots were held by pending
+jobs. (4) The Newtonian reference moved from card job 5167 (cancelled before it ran) to two
+processor runs; the gauge leg took the freed card slot (Slurm 5176). (5) The initial-data solves
+for the particle and mesh legs are at outer iterations 16 and 13 after 3.6 h. (6) The 256^3 leg
+now writes a restart every 1.0 in t (decision 0032 item 2).
+failed: N1p time part (33 s per step on one core, about 13 h against "0.5 to 3 hours"; judged
+from the measured rate, final when the runs end); I3 time part likely (not yet judged); the
+cancelled card job 5167 is on record as failed (exit 1) though it never ran. Figure defect fixed:
+fig_ppc's reference line shared a colour with a data series.
+changed my mind about: reading the particle-converged L2 at N_y = 64 (-0.820) as agreement with
+CosmoGRaPH; without mesh convergence it may be a coincidence of one mesh.
+open: Newtonian reference (about 22:30 PST), the two initial-data solves, X0-X3 and the gauge leg
+on the cards, the particle and mesh chains behind them; the cause of L2's mesh dependence (an
+amplitude without stream crossing before t_A, not yet designed); G2 products C2, C11, C17, C18, C6.
+Card-hours this session: none run; 5167 cancelled (0); queued 2.5 (ceilings: 5169 0.5, 5176 2).
+Toward G2 so far 3.42 used. Request posted to core: Fourier solver with the threaded build.

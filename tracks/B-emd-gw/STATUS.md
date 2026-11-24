@@ -1,46 +1,46 @@
 # STATUS of B-emd-gw
 
 gate:        G0 PASS (2026-11-19), G1 PASS with reservations (2026-11-21, tag
-             stage/B-emd-gw/G1-pass-20261121). G2 package updated (batch 11): C4, C7, C10, C12,
-             C13, C19, C20 PASS, C8 NA (0013), the rest OPEN (stage/G2/OPEN.md). G2 not met.
-headline:    The first population run in full GR (sigma1 = 0.014, 128^3, L = 8, to a = 143) has
-             the halo counts and masses of the Newtonian population at the same stage and the
-             design's near-field TT strain to 9-13 per cent for 6 <= a <= 20; at twice the
-             amplitude the run stops at a = 30.7 in the core of the largest halo
-last-result: batch 11 (lead, 2026-11-24): population GR analysis B-20261124-131918-e71996f and
-             -133150-e9ef701: H1, H2, A1 (to a = 30), Z hold; A1 fails from a = 36, A2 in part,
-             A3 for the strain rms; 0.028 stop in the densest core (K runaway). flrw_conv J4
-             (B-20261124-125457-79ce723): the 128-cell floor is the start step (J4a-c hold).
-             shear: P10 holds (f = 1 vs 1/3: -8.7e-5, B-20261124-131336-bc61eee); L2 with
-             narrow fans -0.828, -0.830, -0.835 at N_y = 32-128 (B-20261124-134209-4584052),
-             near CosmoGRaPH's -0.8183, far from gevolution and GRAMSES; at N_y = 64 it
-             converges in particles to about -0.820 (B-20261124-140808-e6ba5c3), the mesh
-             limit is open (-0.831 at 128), field 10-40 per cent off the constraints; S3
-             floor 2-3e-5. Mosaic (C13) B-20261124-133709-85c4be7; ladder (C10) -135151-8e1ac95; TT spectra
-             B-20261124-134953-18618df: the excess starts at |k| = 4-5 k_f (R22)
-running:     card: Newtonian reference at 128^3 with the GR runs' particles
-             B-20261124-131438-5d7e049 (Slurm 5167, N1-N4); restarts X0-X3 of the 0.028 run
-             B-20261124-133533-cb0bb7d (Slurm 5169). Sequencer pid 168802 (restarted 05:40):
-             Newtonian analysis when 5167 ends; IC solves at 128^3 x 8 per cell and 256^3
-             (processors), the Gamma-driver gauge leg (GD1-GD3), then the particle and mesh
-             legs (I3, M1-M4, Q1-Q2).
-             stage verify G1 and G2 in the background (pids 3758206, 254140; logs
-             scratch/B-emd-gw/tmp/verify_G{1,2}_20261124.log; results uncommitted when they end)
-next:        1. read X0-X3 (population/JOURNAL 05:58): which of slice, step, slicing stops the
-                0.028 core; then the remedy run or a request to core
-             2. Newtonian reference: compare_newton.py (N2-N4), the halo-by-halo GR-Newton
-                statement; then the particle and mesh legs (the high-k TT excess, R22)
-             3. L2: a run that locates its constraint violation (R19); gauge leg with three
-                meshes; G2 products (C11, C17, C18)
-blockers:    none; G2 needs a converged L2 or an explained floor, a gauge leg, the legs of the
-             population box, the 0.028 stop understood, package products
-needs:       orch: stage verify with incremental checksums (outbox 20261124T134243Z, request);
-             info posted (20261124T134242Z). core: insitu-fourier-modes (W18, accepted, no
-             branch; needed for 256^3 GW cadence). kb: claim 861 used as [TO VERIFY]
+             stage/B-emd-gw/G1-pass-20261121); G1 verify rerun formally on 2026-11-24: PASS.
+             G2 package current (batch 11b): C4, C7, C10, C12, C13, C19, C20 PASS, C8 NA (0013),
+             the rest OPEN (stage/G2/OPEN.md); its verify fails only on open runs. G2 not met.
+headline:    The first population run in full GR (sigma1 = 0.014, 128^3, L = 8, to a = 143)
+             has the Newtonian population's halo counts and masses at equal stage and the
+             design's near-field TT strain to 9-13 per cent for 6 <= a <= 20; the shearing-dust
+             L2 case does not converge in the mesh in this code
+last-result: batch 11b (resumed lead, 2026-11-24 09:23-): shear series 6 (B-20261124-140856-911ded9,
+             summary -172643-d1e88c7, figs/fig_ppc.png): L2 at 4 per cell along y -0.822, -0.831,
+             -0.839 at N_y = 64, 128, 256 (differences 9.4e-3, 7.9e-3, order about 0.25, away
+             from CosmoGRaPH's -0.8183); the prediction held only as written. Stage verify G1
+             PASS, G2 FAIL only on four open runs (stage/G{1,2}/VERIFY_RESULTS.md, 14:57Z).
+             Batch 11 (earlier today): population GR analysis -131918-e71996f (H1, H2, A1 to
+             a = 30, Z hold; A1 fails from a = 36); the 0.028 run stops at a = 30.7 in a halo
+             core; flrw_conv J4 closed; P10 holds; L2 particle limit at N_y = 64 about -0.820
+running:     processors: Newtonian reference newton_s014 and newton_s028 at 128^3
+             (B-20261124-172958-fc4a2cf, -73b0662; 33 s per step, about 13 h, end about 22:30
+             PST), initial-data solves at 128^3 x 8 per cell and 256^3 (B-20261124-135029-3fe13f6,
+             -135030-b54972f; outer 16 and 13 of up to 36 at 09:30). Cards (held by the priority
+             partition until about the morning of 2026-11-25): X0-X3 restarts of the 0.028 run
+             (Slurm 5169, B-20261124-133533-cb0bb7d), gauge leg pop_s014_gr_gd (Slurm 5176,
+             B-20261124-173547-11afdaf). Sequencer pid 168802 alive: Newtonian analysis after the
+             processor runs; particle and mesh legs (card chains) after their initial data
+next:        1. read the Newtonian reference (N1p, N2-N4: compare_newton.py against the GR run),
+                the halo-by-halo GR-minus-Newton statement; X0-X3 when the cards return
+             2. read the gauge, particle and mesh legs of the GR box (GD1-GD3, Q1-Q2, M1-M4):
+                what the high-k TT excess after halo formation is (R22)
+             3. shear: design and predict an amplitude between M2 and L2 without stream crossing
+                before t_A at three meshes (R19); G2 products C11, C17, C18, C6
+blockers:    cards held by another user's priority jobs until about 2026-11-25 morning
+             (decision 0032 item 2); nothing else
+needs:       core: Fourier Newtonian solver tested with the threaded build (outbox
+             20261124T173601Z, request); insitu-fourier-modes (W18, accepted, no branch; for the
+             256^3 GW cadence). orch: stage verify with incremental checksums (outbox
+             20261124T134243Z). kb: claim 861 used as [TO VERIFY]
 offers:      gw_diag (TT, rho_K, spectra, helicity, E/B/Psi_4; binio; gauge G_tot);
-             population/scripts/analyze_gr.py (GR box: constraints, halos vs Newton, metric TT vs
-             particle near field), fig_mosaic.py, compare_newton.py; flrw_conv analysis
-             (analyze_step --set n128); shear series2_summary.py; cards/sequencer.py
+             population/scripts/analyze_gr.py, fig_mosaic.py, compare_newton.py; flrw_conv
+             analysis (analyze_step --set n128); shear ppc_summary.py (particle and mesh legs);
+             cards/sequencer.py
 budget:      card-hours toward G2: 3.42 used (J2 0.35, J3 2.00, J4 0.45, pop_s014_gr 0.19,
-             pop_s028_gr 0.10, earlier 0.33); queued 1.1 (ceilings 0.6 and 0.5), behind them by
-             the sequencer 7 (ceilings 2 and 5); G1 1.69; allotment 40 (0014)
+             pop_s028_gr 0.10, earlier 0.33); reserved 2.47 (5169 ceiling 0.5, 5176 ceiling 2;
+             5167 cancelled before it ran); behind them by the sequencer 7 (ceilings 2 and 5);
+             G1 1.69; allotment 40 (0014). Processors: 4 cores busy (two solves, two Newton runs)
