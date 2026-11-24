@@ -44,7 +44,7 @@ TRACKS = [("A", "PBHs, early matter era"), ("B", "GWs, early matter era"),
 
 
 def main():
-    outdir = sys.argv[1] if len(sys.argv) > 1 else HERE
+    outdir = sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(HERE)  # default: note/
     os.makedirs(os.path.join(outdir, "figures"), exist_ok=True)
     W, H = 52.0, 23.5
     fig, ax = pf.canvas(W, H, scale=0.135)   # 7.0 in wide: sizes in pt are final

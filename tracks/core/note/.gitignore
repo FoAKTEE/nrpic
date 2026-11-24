@@ -1,10 +1,1 @@
-*.aux
-*.log
-*.out
-*.bbl
-*.blg
-*.fls
-*.fdb_latexmk
-*Notes.bib
-*.synctex.gz
-__pycache__/
+numbers_*.json
