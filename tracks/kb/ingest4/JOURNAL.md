@@ -216,3 +216,22 @@ Run kb-20261124-172443-40d2ae1 (`kb verify-downloads`, then `kb qa run --hybrid`
 for 28 of 32 questions, q12, q13, q11 and q24 the misses), fig_qa_eqcount (all points on the
 line of equality but 1502.02011 at -2) and fig_qa_claims (861 claims, nine owners). Refuted by
 a figure that shows other counts.
+
+## Entry 8 (2026-11-24 17:36 UTC): P12 outcome; package closed
+
+Run kb-20261124-173025-caebc3d (kb/kbtool/qa_figures.py on the qa.json of
+kb-20261124-172443-40d2ae1). Each PNG looked at; copies in figures/.
+
+- P12 HELD. fig_qa_retrieval: hybrid paper hits 28/32, the misses q11, q12, q13, q24 below the
+  top-ten line; rerank 28/32 (misses q06, q12, q13, q17), text 27/32. fig_qa_eqcount: every point
+  on the line of equality but one at -2 (1502.02011; right panel "40 of 41 agree exactly").
+  fig_qa_claims: nine owners, A-emd-pbh the largest bar (170), refuted only for brief and kb.
+  Cosmetic, not this package's code: in fig_qa_claims the legend touches the core bar and the
+  "judgement" label touches the right panel's axis.
+- The three extra ids that verify-downloads counts beyond the 78 additions are 0707.4654,
+  1006.1632 and gr-qc/0608095 (downloads rows with in_manifest = 0, read-only query of kb.sqlite);
+  they are not ingested and in no manifest. Left to the lead (README, Requests).
+
+State at the close: all deliverables of ingest4 exist and are committed (README.md, JOURNAL.md,
+figures/, QA_REPORT.md, kb/ code and tests, manifests, outbox answers). Not done: snapshot (the
+lead's), claims for 409, 447, 449, 450, 452, plain-TeX front matter of the six.

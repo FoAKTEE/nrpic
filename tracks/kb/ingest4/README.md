@@ -18,6 +18,9 @@ QA with the parse rate against the bar; answers to the requesting tracks). Predi
 | `scripts/meta_table.py` | titles, authors, versions and TeX file counts of a list from the stored records |
 | `scripts/count_markers.py` | independent count of the entries of the six old-style lists (written before the parser ran) |
 | `scripts/figstyle.py` | byte copy of harness/style/figstyle.py |
+| `figures/fig_oldstyle.png`, `fig_parse_status.png`, `fig_data.tsv` | the six lists against the independent count; parse status and rate against the bar |
+| `figures/fig_qa_{retrieval,eqcount,claims}.png` | figures of the final QA report (kb/kbtool/qa_figures.py) |
+| `QA_REPORT.md` | copy of the final QA report (run kb-20261124-172443-40d2ae1; ids and counts only) |
 
 Code (committed in kb/, with tests in the suite):
 
@@ -47,7 +50,9 @@ ids=$(cat tracks/kb/ingest4/ids/additions18.txt tracks/kb/ingest4/ids/oldstyle6.
 kb/.venv/bin/python -I kb/bin/kb ingest arxiv $ids --jobs 4 --remap-claims --out <dir>
 kb/.venv/bin/python -I kb/bin/kb eq --apply-tags && kb/.venv/bin/python -I kb/bin/kb embed --threads 4
 kb/.venv/bin/python -I kb/bin/kb embed --check --work
+kb/.venv/bin/python -I kb/bin/kb verify-downloads --report <dir>/verify-downloads.md   # records download rows; exit 1 = gr-qc/9412071
 kb/.venv/bin/python -I kb/bin/kb qa run --hybrid --db /data/haiyangw/nrpic/kb-data/db/kb.sqlite --out <dir>/QA_REPORT.md --json <dir>/qa.json
+kb/.venv/bin/python -I kb/kbtool/qa_figures.py <dir>/qa.json <figdir>
 python3 tracks/kb/ingest4/scripts/fig_ingest4.py --before <run>/before --after <run>/after --counts <run>/marker_counts.tsv --out <dir>
 ```
 
@@ -64,7 +69,9 @@ python3 tracks/kb/ingest4/scripts/fig_ingest4.py --before <run>/before --after <
 | dry run of all papers | kb-20261124-132848-81e6285 | only the six change among TeX papers (plus the three PDF-only papers, an artefact of the comparison); the 18 parse ok |
 | ingest | kb-20261124-135341-e65f142 | 762 papers: ok 737, review 22, pdf 3; recorded rate 96.72 % (was 96.64 % of 744), above the 95 % bar; six lists: 101 entries, citation rows 13, 20, 0, 13, 41, 0, all with an entry; vectors check 0/0/0; claim 778 remapped (rows checked by hand: `kb claim check` checked nothing) |
 | figures | kb-20261124-141642-9110c13 | `figures/fig_oldstyle.png`, `figures/fig_parse_status.png` (looked at), `figures/fig_data.tsv` |
-| QA report | kb-20261124-141551-a75bc11 | STARTED, NOT READ: the PAUSE flag appeared at 14:17 UTC while it ran; close it with `harness/bin/nrpic-run finish kb-20261124-141551-a75bc11` and read `QA_REPORT.md` there (P8 open) |
+| QA report | kb-20261124-141551-a75bc11 | P8 held: golden questions hybrid paper 28/32, locator 23/32 (rerank 28/32, 25/32; text 27/32, 21/32: as in ingest3); parse rate 737/762 = 96.7 %, strict 96.7 %, bar 95 % met; equations 40/41 exact. C1 said "counts do NOT agree": the 18 additions had no row in the `downloads` table (the fetch tool writes no rows) |
+| download rows, QA again | kb-20261124-172443-40d2ae1 | P11 held: `kb verify-downloads` recorded the 18 (brief 17: ok 683, problem 1 = gr-qc/9412071, exit 1 as known; extra 81); QA C1 "counts agree" (downloads ok 761, problem 1); the rest of the report identical to the first QA (diff). Copy: `QA_REPORT.md` (ids and counts only) |
+| QA figures | kb-20261124-173025-caebc3d | P12 held: `figures/fig_qa_retrieval.png`, `fig_qa_eqcount.png`, `fig_qa_claims.png` (kb/kbtool/qa_figures.py; looked at) |
 
 Answers posted (tracks/kb/outbox/, commit 2f386306): A (szekeres-sources-ingested), C
 (conductivity-dsmc-sources-ingested), D (claims-409-413-416-sources), F (claims-447-452-sources),
@@ -77,10 +84,15 @@ citations (astro-ph/9510056, gr-qc/9906015) give no citation rows. The claims th
 
 ## Requests
 
-- kb lead: finish run kb-20261124-141551-a75bc11 and read its QA report (parse rate against the bar,
-  golden questions; prediction P8 in JOURNAL.md); take the snapshot so readers of db/current see the
-  18 papers and the six lists; a claims package for 409, 447, 449, 450, 452 (abstract locators in the
-  D and F messages); record as claims the locators A and C say they cite.
+- kb lead: take the snapshot so readers of db/current see the 18 papers, the six lists and the
+  download rows (db/current is still kb-20261121-aa0a2ae; the QA of this package read the working
+  database); a claims package for 409, 447, 449, 450, 452 (abstract locators in the D and F
+  messages); record as claims the locators A and C say they cite.
+- kb lead: after every fetch run `kb verify-downloads` (nrpic-fetch-arxiv writes no database rows;
+  without it QA C1 reports the new ids as missing downloads, as it did here and after ingest3).
+  verify-downloads also counts 81 extras against 78 additions: 0707.4654, 1006.1632 and
+  gr-qc/0608095 are on disk and in the downloads table but in neither manifest and not ingested
+  (who fetched them and why was not examined; add them to arxiv_additions.tsv or leave them).
 - kb lead: `kb claim check --id 778` checks nothing for a brief seed whose rows were set by relocate
   (empty "checked:" list); a check that reaches such rows would have caught a bad remap.
 - kb lead (optional): plain-TeX front matter (`\centerline{\bf ...}` titles, `{\bf I. ...}` headings,
