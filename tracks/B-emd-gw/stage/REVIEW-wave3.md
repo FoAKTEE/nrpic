@@ -297,3 +297,7 @@ looked at, against predictions written before the runs (journals named below).
 - Follow-ups queued (predictions first): Newtonian reference at 128^3 (Slurm 5167), restarts
   X0-X3 of the 0.028 run (Slurm 5169), and through the sequencer the Newtonian analysis and the
   particle and mesh legs of the 0.014 GR box.
+- shear L2 observer (B-20261124-135244-17ebf5c): the L2 field has relative constraint means of
+  0.1-0.4 from a = 2.25 on at every N_y; the L2 values are not a converged statement. Schematic
+  of the verification ladder (C10) drawn (B-20261124-135151-8e1ac95) and looked at; TT spectra of
+  the GR box (B-20261124-134953-18618df): the excess starts at |k| = 4-5 k_f.

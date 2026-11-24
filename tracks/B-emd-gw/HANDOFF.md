@@ -32,12 +32,14 @@ hour); run it in the background, then `nrpic-stage report B-emd-gw G2`.
   physics?); figure defects
   (cut y labels of pop_gr_halos, saturated K panel of the mosaic, overlapping right axis label of
   pop_gr_stop).
-- shear: L2 values exist but do not converge; the transport along the observer between the
-  arrivals grows with N_y (R19): a run with the observer away from stream crossing or a shorter
-  transport interval; S3 floor 2-3e-5 (no action needed at the paper's 3e-4 bound).
+- shear: L2 values exist (-0.828, -0.830, -0.835) but do not converge, and the L2 field carries
+  relative constraint means of 0.1-0.4 from a = 2.25 on at every N_y (`figs/fig_l2_observer.png`,
+  R19): a run that locates the violation (smaller step, more particles along y, an amplitude
+  between M2 and L2); S3 floor 2-3e-5 (no action needed at the paper's 3e-4 bound).
 - flrw_conv: closed (J4 judged).
-- G2 products: gauge leg at three meshes and its figure (C2, C11), verification-ladder
-  schematic (C10), G2 note sections (C17), fresh verifier (C18), reproducibility list (C6).
+- G2 products: gauge leg at three meshes and its figure (C2, C11), G2 note sections (C17),
+  fresh verifier (C18), reproducibility list (C6); the ladder schematic (C10) exists
+  (`note/figures/schem_ladder.png`, update its rungs when results change).
 
 Decisions pending: none with orch (one request: incremental checksums in stage verify).
 Inbox: empty.
