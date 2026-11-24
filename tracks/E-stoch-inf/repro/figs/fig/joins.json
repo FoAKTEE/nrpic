@@ -4,20 +4,21 @@
    "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261123-035925-8439d79/sr.sf.con.hst",
    "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261124-130529-da8c917/sr.sf.con.hst",
    "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261124-201031-4c41e7b/sr.sf.con.hst",
-   "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261124-202134-0b1ce0c/sr.sf.con.hst"
+   "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261124-202134-0b1ce0c/sr.sf.con.hst",
+   "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261124-214913-5956891/sr.sf.con.hst"
   ],
   "joined": [
-   "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261124-212343-7e9c4b2/RSF256.sf.con.hst"
+   "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261124-225720-444aecc/RSF256.sf.con.hst"
   ],
-  "n_mine": 896,
-  "n_joined": 896,
+  "n_mine": 1387,
+  "n_joined": 1387,
   "cycles_mine": [
    0,
-   895
+   1386
   ],
   "cycles_joined": [
    0,
-   895
+   1386
   ],
   "reader_equal": true,
   "reader_max_abs_diff": 0.0,
@@ -45,9 +46,20 @@
     "c_rst": 0,
     "overlap_max_rel": 0.0,
     "pass": null
+   },
+   {
+    "file": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261124-214913-5956891/sr.sf.con.hst",
+    "first_cycle": 653,
+    "last_cycle": 1386,
+    "c_rst": 652,
+    "overlap_max_rel": 0.0,
+    "step_ratio_N": 0.9999999999797388,
+    "step_ratio_H": 0.9999095595200864,
+    "step_ratio_M": 0.9997658436398519,
+    "pass": true
    }
   ],
-  "junctions_pass": null,
+  "junctions_pass": true,
   "overlap_identical": true
  },
  "RNC256": {
@@ -202,5 +214,14 @@
   ],
   "junctions_pass": true,
   "overlap_identical": true
+ },
+ "P1_records_RSF256_P256v6": {
+  "n_rsf256": 1387,
+  "n_p256v6": 1387,
+  "n_common": 1387,
+  "common_columns": 20,
+  "lines_identical": 1387,
+  "max_rel_diff": 0.0,
+  "first_differing_cycle": null
  }
 }

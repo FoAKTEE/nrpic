@@ -566,3 +566,61 @@ Predictions (refuted by the stated miss):
 - S14 SR per cell (P1:539, "H/[H] at the next order (~1e-10), then damped"): the 99th percentile of
   |H|/[H] is of order 1e-10 during the entry (between 3e-11 and 5e-10) and falls by more than 1e2 from
   its maximum to N_f. Refuted by a maximum outside [3e-11, 1e-9] or a fall below 1e2.
+
+## Entry 15 (2026-11-24 15:12 PST): outcomes of entry 14 (join check E-20261124-225720-444aecc, pass E-20261124-225826-0bf3842, figure run E-20261124-230839-0e1e13a)
+
+Runs: join check 444aecc (40 s, 1 core); pass 0bf3842 (35 dumps and three bit checks, 9 min on 6
+cores); figure run 7 E-20261124-230810-9ae014e FAILED (exit 1: `joins.py` printed every entry of its
+result and the new P1 record entry has no `reader_equal`; kept as failed, fixed in 0e1e13af), figure
+run 8 E-20261124-230839-0e1e13a completed. Its PNGs and jsons are now in `fig/`: byte-equal to those
+of E-20261124-213739-9776185 except the new RSF256 files (`fig2_sr_contrast`, `fig3_sr_spec`,
+`fig3_sr_spec_ratio`, `fig6a_sr_Kspec`), `fig_joins.png`, `joins.json` and `fig_signflip.json` (new
+keys; RSF256 record to cycle 1386); `fig_signflip.png` is byte-equal (it plots to the flipped run's end).
+Looked at: `fig_join.png` of 444aecc, `fig2_sr_contrast`, `fig3_sr_spec`, `fig3_sr_spec_ratio`,
+`fig6a_sr_Kspec`, `fig_joins`. Two layout remarks, no number depends on them: the RSF256 panel of
+`fig_joins` holds two junctions 652 cycles apart and is cramped (the check is in `joins.json`); the
+legend of `fig6a_sr_Kspec` covers part of the N = 0 floor of the K panel, as in the P256v6 version.
+
+- K2' (join): PASS. complete, J1-J4, records_gapless true; first record of 5956891 is cycle 653;
+  958 of 958 lines held twice identical as printed; dumps 1, 2 (original against 0b1ce0c) and 17-21
+  (0b1ce0c against 5956891) byte-identical; joined 0-1386, dumps 0-34 (0 original, 1-16 0b1ce0c,
+  17-34 5956891). My reader (`joins.py`): equal to the joined record at every cycle and column, the
+  four continuations' own lines identical where they overlap, junction at 652: step ratios 1.000,
+  1.000, 1.000 (N, H, M).
+- Scope P1, SR, to the end: PASS. RSF256 dumps 0, 16, 34 against P256v6 dumps 0, 8, 17 (t = 0,
+  4.0006, 8.5): 0 differing cells in each of the 17 common variables (`bitcheck_rsf256.json`). Records:
+  1387 of 1387 lines identical in the 20 common columns, max relative difference 0 (`joins.json`,
+  `P1_records_RSF256_P256v6`). RSF256 and P256v6 are one computation; every number of P256v6 holds
+  for RSF256.
+- Scope P2, record maxima over the whole run: as predicted (not blind): <|H|/[H]> 5.1046e-11 at N =
+  4.432, <|M|/[M]> 3.9937e-4 at N = 4.763, both inside P2's bands ([3e-11, 1e-10], [3e-4, 5e-4]); P2
+  named the window N <= ln 64, in which M stays FAILED as written (1.18e-4, entry 12): the window cuts
+  the rise, the maxima come 0.3 and 0.6 e-folds after it. At N_f 1.842e-14 and 2.668e-6.
+- Scope P2 per cell and F2 (e) SR: PASS. The stored quantiles are 0, 0.5, 2.5, 16, 50, 84, 97.5,
+  99.5, 100 per cent; the 99.5th percentile of |H|/[H] (an upper bound on the 99th) is at most
+  1.78e-10 (N = 4.39), below 1e-9 at all 35 dumps; max over cells 3.63e-10 (N = 4.39); at N_f
+  6.5e-14 (max 1.3e-13 < 1e-12). My band [1e-10, 5e-10] for the maximum: the 99.5th percentile is
+  inside; the 99th lies between the 84th (8.9e-11) and 1.78e-10, so its lower end is not decided.
+- F2 (a) SR: PASS. 35 dumps, per-cell means against the record at the same cycle: max relative
+  4.1e-15 (H), 3.8e-15 (M).
+- F2 field panels from RSF256: PASS. Final 68 per cent half-widths and 100/68 ratios identical to
+  P256v6's (2.877e-7, 2.822e-9, 2.864e-7, 2.2810e-5; 4.97, 5.46, 4.97, 4.97). N95 of delta phi/phi_b
+  3.9117 and of R^NR 3.4354, the same dumps as with P256v6's half as many: my band's upper end 3.91
+  was P256v6's value rounded; the finer sampling did not move either (the 95 per cent crossing of
+  delta phi/phi_b lies between N = 3.677 and 3.912). Not predicted: N95 of delta K/K_b moves from
+  4.391 to 4.152. Max |R^NR| over the dumps with N <= 4.2: 1.17e-4 (S13 band of entry 1, 4e-5 to
+  1.5e-4).
+- Figs. 3 and 6a from RSF256: PASS. Every N_f measure of `fig3_sr_spec.json` equals that of
+  `fig3_sr_spec_P256v6.json` (NR over linear 1.04e-4 for k <= k_max/2, 5.20e-3 at every shell, rms
+  1.09e-3; 99.65 per cent within 3/sqrt(count); above k_max 8.7e-14). Delta[K] and Q/K identical at the
+  common dumps; Delta[Kt], now the invariant from RSF256's own At_ij (kt_version 2), against P256v6's
+  version 1 times <chi>^2: Kt/K medians differ by at most 1.9e-7 relative at the five common plotted
+  dumps (bar 1e-3). Q below K at every injected shell from N = 4.15 (0.999 at 3.91, 0.63 at 3.68,
+  0.39 at 3.44).
+- S14 SR per cell: PASS. Per-cell 99.5th percentile of |H|/[H]: 3.4e-12 to 6e-12 for N = 0.75-3.2
+  (max over cells about 1e-11), then rising with the last crossings to 1.78e-10 at N = 4.39 (max over
+  cells 3.6e-10), and damped to 6.5e-14 at N_f (a fall of 2.7e3). P1's "~1e-10" is met in level at
+  the end of the entry; the box mean peaks at 5.1e-11. Not predicted: |M|/[M] per cell, 99.5th
+  percentile up to 1.84e-3 (N = 4.86), max over cells 4.5e-2 (N = 5.10), 68 per cent band 1.2e-6 to
+  3.9e-6 at N_f.
+Nothing of this package waits any more. No card time used.
