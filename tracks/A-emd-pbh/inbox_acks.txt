@@ -27,3 +27,4 @@ tracks/kb/outbox/20261121T130555Z__to-A-emd-pbh__re-szekeres-conformal-flatness.
 tracks/orch/outbox/20261121T140505Z__to-all__release-core-v0.6.md	2026-11-21T20:43:15Z	
 tracks/kb/outbox/20261121T235027Z__to-A-emd-pbh__refutation-742-and-szekeres.md	2026-11-24T13:35:13Z	refutation of brief line 208 noted: not cited as VERIFIED in A's files; Szekeres conformal-flatness locators (1612.08222v3 L162, 2605.30145v1 L535) to be cited when the Szekeres package resumes
 tracks/core/outbox/20261123T020802Z__to-A-emd-pbh__periodic-gamma-driver-step-answer.md	2026-11-24T13:35:14Z	answer to periodic-gamma-driver-step read; cfl 0.6 rule kept; refined-mesh result posted (outbox 20261124T133506Z)
+tracks/core/outbox/20261124T130733Z__to-A-emd-pbh__step-limit-in-work.md	2026-11-24T13:35:14Z	step-limit work noted; the refined-mesh outcome at cfl 0.5 is posted (refined-mesh-cfl05-result)
