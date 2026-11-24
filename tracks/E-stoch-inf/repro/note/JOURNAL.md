@@ -66,3 +66,20 @@ comparison, paths, PDFs. Not used in the manuscript: the step-and-seed figure an
 (their statements are cited from the one-patch package with locators).
 Copied `figures/` (one format per figure) and `tables/` into the manuscript; sha256 of every
 copied file checked against the run's `sha256sums.txt` (all OK).
+
+## Entry 3 (2026-11-24 10:01): draft compiled, pages read; prediction for R2
+
+main.tex written from the 1000-word story (notes/2026-11-24-story.md), checker run, compiled (19
+pages, no undefined references, no overfull boxes after splitting two equations), every page
+read at 75 dpi. Found on the pages: the SR panel of the ablation (Fig. 11) labelled the USR
+curves "(pending)" although they are only absent from that comparison; the ledger used "MS",
+which the guide's dictionary replaces. Fixed in the scripts (`fig_ablation.py`: only the cut SR
+level-2 run is marked pending; `ledger.py`: wording, and PENDING rows naming the continuation
+of every pending item: E-20261124-130529-da8c917, -130629-61fe0b0, -130711-a5dec67,
+-130952-4be980b, -131359-49afe29).
+Reviewers of skill step 10.1(4): this session has no tool that starts subagents, so none were
+dispatched; one self-review in the role of a first-year graduate student is in the story notes.
+
+Prediction for R2 (run_all at commit 679f9a0): every lattice json and langevin.json equal to R1
+byte for byte (the change is a legend label and ledger wording); the ledger gains two rows (109
+in 8 tables); only `fig_ablation_sr` changes among the figures. Refuted if any json differs.
