@@ -2,8 +2,9 @@
 
 Written for a reader with no memory of the last session. Rewritten at the end of every session.
 
-State (2026-11-24, batch 11, session core-lead-11; analysis round, no AthenaK source
-change): gate G2 of core is NOT met (`stage/G2/OPEN.md`, first section; CHECKLIST 13
+State (2026-11-24, batch 12, session core-lead-12: the six level-3 card runs of row 4 were
+handed to the shared queue, q0028-q0033, section below; nothing else changed). Before that,
+batch 11, session core-lead-11 (analysis round, no AthenaK source change): gate G2 of core is NOT met (`stage/G2/OPEN.md`, first section; CHECKLIST 13
 PASS, 5 FAIL: C1/C7 ladder rows 3 and 4 partial, C2 three-way convergence, C6
 reproducibility package, C12 package documents). This session closed the six level-2
 chains of ladder row 4 on cells of M/8, judged them by the rule written before the runs,
@@ -32,45 +33,53 @@ Owner: core, branch `core/nrpic`, worktree `/data/haiyangw/nrpic/wt/core`.
    open; rows 2 and 4 rest in part on pre-program directories without manifests) and the
    package documents (C12: REVIEW.md, SCOPE.md).
 
-## Six card chains are pending (ladder row 4 on M/8, level 3)
+## Six card runs wait in the shared queue (ladder row 4 on M/8, level 3)
+
+Batch 12 (2026-11-24T21:00-21:12Z, session core-lead-12, no analysis): orch stopped core's
+sequencer (pid 3904230) and cancelled the pending and held jobs at 12:00 PST under the
+user's cap of five queued jobs (decision 0033). Card runs now reach Slurm ONLY through the
+shared queue `harness/bin/nrpic-queue` (harness/RULES.md, section "Shared card queue"): no
+sbatch, no `submit_chain.sh` by hand, no sequencer. The six level-3 runs were handed to it,
+priority 2 (the G2 package waits for them), in the plan's order, no `--after`.
 
 Rule: `tracks/core/JOURNAL.md`, entry 2026-11-21T20:26Z (unchanged; it reads t <= 300 M).
-Predictions P10-P15 and the design: entry 2026-11-24T12:51Z, section "Level 3".
-Package `tracks/core/verify/row4/`. Initial data of 0.726875: run
-core-20261124-130236-68d4ee5.
+Predictions P10-P15 and the design: entry 2026-11-24T12:51Z, section "Level 3" (they
+stand). What batch 12 did and why: entry 2026-11-24T21:05Z. Package `tracks/core/verify/row4/`.
+Initial data of 0.726875: run core-20261124-130236-68d4ee5.
 
-| Model | Run id | Parent (300-M restart) | First job |
-|---|---|---|---|
-| 0.726875 member, 0-600 M | core-20261124-130310-597d9ca | - | 5154 eligible |
-| 0.73625 control, 300-600 M | core-20261124-130321-ed96d4d | core-20261123-020500-9b192cd | 5155 eligible |
-| 0.726875 control, 0-600 M | core-20261124-130340-31cf5e8 | - | 5156 held |
-| 0.73625 member, 300-600 M | core-20261124-130347-7d6a10d | core-20261123-020458-dfc38d7 | 5157 held |
-| 0.755 control, 300-600 M | core-20261124-130356-d9d09bf | core-20261121-204237-ae00ca2 | 5158 held |
-| 0.755 member, 300-600 M | core-20261124-130406-09319a0 | core-20261121-204232-f74c942 | 5159 held |
+| Queue id | Label | Model | Run | Parent (300-M restart) |
+|---|---|---|---|---|
+| q0028 | row4-l3-0p726875-member-cont | 0.726875 member, 0-600 M | core-20261124-130310-597d9ca, continued IN PLACE (job 5154 computed 0-287.5 M, own restart at 280 M) by `verify/row4/continue_chain.sh`, one segment left | - |
+| q0029 | row4-l3-0p73625-control | 0.73625 control, 300-600 M | new run at dispatch (replaces ed96d4d, stopped: 6.5 M, no own restart) | core-20261123-020500-9b192cd |
+| q0030 | row4-l3-0p726875-control | 0.726875 control, 0-600 M | new run at dispatch (replaces 31cf5e8, stopped unstarted) | - |
+| q0031 | row4-l3-0p73625-member | 0.73625 member, 300-600 M | new run at dispatch (replaces 7d6a10d) | core-20261123-020458-dfc38d7 |
+| q0032 | row4-l3-0p755-control | 0.755 control, 300-600 M | new run at dispatch (replaces d9d09bf) | core-20261121-204237-ae00ca2 |
+| q0033 | row4-l3-0p755-member | 0.755 member, 300-600 M | new run at dispatch (replaces 09319a0) | core-20261121-204232-f74c942 |
 
-Each chain asks 1.97 card-hours (two segments); 11.82 asked, about 5.1 expected (7.5 s
-of card time per M). The continuations run `verify/row4/athena_resume.sh` (release card
-build of core-v0.6, copied as chain/nrcr-<hash>; the first segment starts with `-r` from
-the parent's `rst/st.00015.rst`). Sequencer pid 3904230 (own session; a copy of
-`verify/row4/sequencer.sh` in `scratch/core/tmp/lead_b11/`; stop file
-`scratch/core/tmp/lead_b11/sequencer.stop`; log `sequencer.log` there, a "waiting" line
-every 15 min) releases 5156-5159 in that order when fewer than two core jobs are
-eligible. If it died with jobs still held: `scontrol release <jobid>` by hand, two core
-jobs eligible at most. At 13:04Z seven jobs of other owners were ahead.
+Closed as stopped in batch 12 (`nrpic-run finish --status stopped`): ed96d4d, 31cf5e8,
+7d6a10d, d9d09bf, 09319a0 (they are not read; ed96d4d's 26 history rows of 300-306.5 M stay
+in its directory). The five new runs carry the same arguments as the runs they replace
+(`--launcher chain --gpu-hours 1.97`, release card build of core-v0.6; the continuations
+through `verify/row4/athena_resume.sh`, whose first segment starts with `-r` from the
+parent's `rst/st.00015.rst`) and a note naming the run replaced. Each asks 1.97 card-hours;
+597d9ca has about 0.67 left to compute (320 M at 7.55 s/M). The run id of a dispatched entry:
+`harness/bin/nrpic-queue show q00NN` (field run); the manifest is committed on core/nrpic
+by the dispatcher (push it at session end).
 
 Read them (exact commands):
 
     cd /data/haiyangw/nrpic/wt/core && git merge --no-edit main
+    harness/bin/nrpic-queue list --owner core          # state, run id, job of each entry
     S=/data/haiyangw/nrpic/scratch/core
-    R="core-20261124-130310-597d9ca core-20261124-130321-ed96d4d core-20261124-130340-31cf5e8 core-20261124-130347-7d6a10d core-20261124-130356-d9d09bf core-20261124-130406-09319a0"
-    cat $S/tmp/lead_b11/sequencer.log; squeue -h -u $(id -un) -o "%i %j %T %r" | grep core-
+    # R: 597d9ca and the five run ids that `nrpic-queue show q0029` ... `q0033` name
     for r in $R; do scripts/submit_chain.sh --status $S/$r | head -1; done
     # a chain cut by its segment cap after a preemption ends FAILED although it is only cut:
-    # continue it from its own newest restart (re-run its submit_chain start command on the
-    # same run directory, or a new registered run with --parent), never repeat it
+    # continue it from its own newest restart with a queue entry
+    #   harness/bin/nrpic-queue add --label <l> --priority 2 --cmd 'tracks/core/verify/row4/continue_chain.sh <run_id> <max_segments>'
+    # (test first: DRY=1 tracks/core/verify/row4/continue_chain.sh <run_id> <n>); never resubmit by hand
     # finish hashes 17-35 GB per run (8-15 minutes each when others hash too): background
     for r in $R; do harness/bin/nrpic-run finish $r; done
-    # fates of all seven models, continuations joined with '+'
+    # fates of all seven models, continuations joined with '+'; fill in the new run ids
     harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 \
       --purpose "row 4 M/8 levels 1-3: fates against controls (rule of JOURNAL 2026-11-21T20:26Z); P10-P15 of JOURNAL 2026-11-24" -- \
       python3 tracks/core/verify/row4/row4_fate.py --out '$NRPIC_RUN_DIR' \
@@ -78,14 +87,19 @@ Read them (exact commands):
       0.680=$S/core-20261121-204234-d010783,$S/core-20261121-204239-2be5ac2 \
       0.69875=$S/core-20261123-020454-8fec6b2,$S/core-20261123-020456-884f550 \
       0.7175=$S/core-20261123-020450-7e42037,$S/core-20261123-020452-e635a8e \
-      0.726875=$S/core-20261124-130310-597d9ca,$S/core-20261124-130340-31cf5e8 \
-      0.73625=$S/core-20261123-020458-dfc38d7+$S/core-20261124-130347-7d6a10d,$S/core-20261123-020500-9b192cd+$S/core-20261124-130321-ed96d4d \
-      0.755=$S/core-20261121-204232-f74c942+$S/core-20261124-130406-09319a0,$S/core-20261121-204237-ae00ca2+$S/core-20261124-130356-d9d09bf
+      0.726875=$S/core-20261124-130310-597d9ca,$S/<run of q0030> \
+      0.73625=$S/core-20261123-020458-dfc38d7+$S/<run of q0031>,$S/core-20261123-020500-9b192cd+$S/<run of q0029> \
+      0.755=$S/core-20261121-204232-f74c942+$S/<run of q0033>,$S/core-20261121-204237-ae00ca2+$S/<run of q0032>
 
 The script classifies by the rule (300 M) and prints `t_c_all` (collapse over the whole
 record) and writes 50-M window means (`windows_50M` in `row4_fate.json`) for P11-P13.
 P14 (join without a jump): compare the continuation's first record of `st.nrpic.hst`
-(column 13) with its parent's record at 300 M. P15: "cpu time used" in the chain logs.
+(column 13) with its parent's record at 300 M. P15: "cpu time used" in the chain logs
+(597d9ca: two segments, the first cut at 287.5 M by preemption, the second resumed from its
+restart at 280 M, so 280-287.5 M is computed twice. [TO VERIFY] whether its history files
+then hold 280-287.5 M twice (AthenaK appending after a restart) and whether
+`row4_fate.py` copes: keep the first segment's records up to 280 M and the second's from
+280 M on; check the time column for a step back before reading the fate.)
 Then: look at `fig_row4_m8.png`, write P10-P15 outcomes into the journal (failed ones
 too), add a "Level 3" table to `verify/LADDER.md` row 4, add the level-3 pairs to
 `note/scripts/fig_row4_m8.py` (PAIRS; continuations as "first+continuation"; initial
@@ -147,9 +161,10 @@ row 4; `tracks/core/interfaces/REQUESTS_WAVE3.md` sections 5, 5a, 5b (core-v0.7)
 - `nrpic-run finish` hashes every output file (17 GB per 300-M row-4 run, about twice for
   600 M): run it in the background; it commits by itself (path-limited, waits on
   index.lock).
-- `nrpic-run` builds the job environment itself: a Slurm dependency or `--hold` cannot be
-  passed through it; that is why jobs are held right after submission and the sequencer
-  releases them.
+- Card runs: only `harness/bin/nrpic-queue add` (decision 0033); `nrpic-run submit` with a
+  card launcher is refused outside the dispatcher. An entry waits while the worktree is not
+  clean (nrpic-run refuses): keep it committed. `verify/row4/sequencer.sh` is retired (no
+  sequencers, decision 0033).
 - `make_row4.py` names directories with y_c rounded to three digits (yc0p727 for
   0.726875); the files inside carry the exact value.
 - A chain continuation needs the executable that wrote the restart file: the release card

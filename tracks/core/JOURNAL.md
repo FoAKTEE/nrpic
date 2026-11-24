@@ -1844,7 +1844,7 @@ Decisions [JUDGEMENT]:
   0.755 member). Predictions P10-P15 (entry 2026-11-24T13:05Z) stand unchanged; their run
   ids change for the five new runs (HANDOFF.md maps queue entries to models).
 
-### Dry-run test of continue_chain.sh (prediction, 21:10Z; a shell test, no job, not a registered run)
+### Dry-run test of continue_chain.sh (prediction, 21:05Z; a shell test, no job, not a registered run)
 
 Prediction: (a) `DRY=1 continue_chain.sh core-20261124-130310-597d9ca` prints one
 `submit_chain.sh` line on that run directory with the deck
@@ -1856,7 +1856,7 @@ marker it refuses with a non-zero exit. (c) On ed96d4d it refuses (finished mani
 own restart). Refuted by any submission, by a different argument list, or by (b) or (c)
 going through.
 
-Outcome (21:14Z): (a) as predicted: one line, `env ATHENA_EXE=/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena
+Outcome (21:06Z): (a) as predicted: one line, `env ATHENA_EXE=/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena
 JOB_NAME=core-20261124-130310-597d9ca MAX_SEGMENTS=2 PROC_NAME=nrc-f97a0e86 ATHENA_WALL=00:50:00
 SLURM_TIME=00:59:00 CPUS=1 PARTITION=preempt MAX_OUTSIDE_KILLS=2 SLURM_EXTRA= CHECK_CMD=
 scripts/submit_chain.sh <rundir> .../verify/row4/st_m8.athinput` with the three overrides of
@@ -1867,3 +1867,25 @@ dispatcher". (c) exit 1, "manifest status is 'stopped'". Held. A first version f
 (a) and (b) with "squeue did not answer": `squeue -j 5182` exits non-zero for a job Slurm
 no longer lists; the wrapper now reads the account's whole queue and matches the job id and
 the job name. Fixed before any entry was queued.
+
+Correction (21:10Z): the first commit of this entry (e9f87bf3) carried estimated clock times
+for the prediction (21:10Z) and the outcome (21:14Z) and in the note of manifest 597d9ca
+(21:15Z); the clock says prediction 21:05Z, test 21:06:07-21:06:20Z (squeue snapshots in
+scratch/core/tmp/), commit 21:06:54Z. Corrected; fault of mine on record.
+
+### Queue hand-over (21:08Z)
+
+`harness/bin/nrpic-queue add` (script scratch/core/tmp/lead_b12/queue_add.sh; each `add`
+checked its arguments with `nrpic-run submit --dry-run`): q0028 row4-l3-0p726875-member-cont
+(`--cmd 'tracks/core/verify/row4/continue_chain.sh core-20261124-130310-597d9ca 2'`), q0029
+row4-l3-0p73625-control, q0030 row4-l3-0p726875-control, q0031 row4-l3-0p73625-member,
+q0032 row4-l3-0p755-control, q0033 row4-l3-0p755-member; all priority 2, waiting; the
+account's queue was at 5 of 5 (jobs of B, C, D, F). Budget at 21:08Z: G2 used 15.76,
+reserved 2.07, left 22.17 of 40.
+
+### Close of session core-lead-12 (21:12Z)
+
+Done: the six level-3 runs of row 4 are in the shared queue (q0028-q0033); five cancelled
+runs closed as stopped; 597d9ca continued in place by the new wrapper (dry-run test held);
+HANDOFF (queue ids beside the models, read commands), STATUS (card plan). Nothing
+half-done; no run computed in this session; P10-P15 open. G2 not met.
