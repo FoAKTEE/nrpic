@@ -59,7 +59,9 @@ FK, FN4, FNQ, FL16 (FE4 and FF4 are already eligible).
   V-1L16, ES-1L16) judged by fe_analyse D-20261124-175356-0f40f1a (entry 17): FE1, FE2 missed their bounds
   (not refuted), FE3 holds; the bubble's horizon mass dips by 4-6e-5 at 100 M at both meshes.
 - Ladder schematic redrawn after FE: D-20261124-175505-a1053fa.
-- `nrpic-stage verify D-bh-dress G2` ran without a timeout (log `$S/tmp/stage_verify_g2_b11b.log`).
+- `nrpic-stage verify D-bh-dress G2`: with checksums it ran > 35 min (hashing restart files) and was stopped by
+  pid; `--no-checksums` (2 min, log `$S/tmp/stage_verify_g2_b11b_nock.log`) passes everything but `runs` (six
+  open card runs; G1 gate-review run D-20261121-165420-5d1c245 with a changed scratch input).
 
 ## G2: what the next sessions add (stage/G2/OPEN.md)
 
