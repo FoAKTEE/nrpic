@@ -14,7 +14,7 @@ Verdicts: REPRODUCED (the statement or figure agrees by the stated measure), IN 
 part agrees, a stated part does not), NOT REPRODUCED, PENDING (a run it needs has not ended; the run id
 that completes it is named).
 
-STATUS (2026-11-24 09:40 PST): verdicts as they stand on the runs that have ended. The committed
+STATUS (2026-11-24 09:37 PST): verdicts as they stand on the runs that have ended. The committed
 figures in `fig/` and every number below come from the registered figure run
 E-20261124-173254-420115f (its jsons equal those of E-20261124-173117-51c289f byte for byte, and,
 except Fig. 6, those of E-20261124-172426-4780cbc; JOURNAL entries 6 and 8). Five continuation runs of

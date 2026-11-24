@@ -354,7 +354,7 @@ compare): its PNGs are the ones copied to `fig/`. All new PNGs looked at (Figs. 
   0.72-1.0 for N = 5.3-6.3 (not "3.3-5.3" and "5.53-6.28" as entry 6 wrote). RESULTS.md uses the
   corrected ranges.
 
-## Entry 9 (2026-11-24 09:42 PST): where the package stands
+## Entry 9 (2026-11-24 09:37 PST): where the package stands
 
 Done in this session: figure runs E-20261124-172426-4780cbc, E-20261124-173117-51c289f,
 E-20261124-173254-420115f (the last is in `fig/`), pass E-20261124-172949-8b2255b; run
