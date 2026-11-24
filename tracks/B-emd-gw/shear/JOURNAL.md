@@ -357,3 +357,23 @@ lowers the relative constraint means over 1 <= t <= t_A by more than 30 per cent
 difference of series 3 (2.1e-3): the violation comes from the dust itself (streams crossing at
 the grid scale), not from the step or the particle sampling. Refuted if either halves the means
 (then that is the cause to pursue).
+
+Outcome of series 4 (run B-20261124-135516-34befaf; read from rays.json against series 3's
+L2f_n64) [VERIFIED by it]:
+- Half the step: Delta -0.83009 (series 3: -0.83017, change 8e-5); mean Hr and Mr over
+  1 <= t <= t_A 0.142 and 0.149 (0.154, 0.146). The step is not the cause: HOLDS.
+- Four particles per cell along y: Delta -0.82180 (change +8.4e-3, four times the 32-64 mesh
+  difference); means 0.146 and 0.127 (down 5 and 13 per cent). The means part HOLDS (not halved);
+  the Delta part is REFUTED: the particle sampling along y moves L2's number more than the mesh
+  does, and toward CosmoGRaPH's -0.8183 (0.0035 from it).
+- So the non-convergence of series 3 at one particle per cell is at least partly particle
+  sampling [VERIFIED for N_y = 64 by this pair]; the constraint violation of 0.1-0.4 is not
+  (it barely moves with either).
+
+## 2026-11-24 07:20 PST (lead of batch 11): series 5, particle number at L2; prediction
+
+Series 5 (`inputs/series5.txt`): L2 with series 3's fans at N_y = 64 with 2 and 8 particles per
+cell along y, and at N_y = 128 with 4. Prediction [JUDGEMENT]: Delta converges in the particle
+number at N_y = 64 (|Delta(8) - Delta(4)| < |Delta(4) - Delta(2)|, and below 3e-3), and at 4 per
+cell N_y = 128 lies within 5e-3 of N_y = 64; the converged value lies within 0.01 of CosmoGRaPH's
+-0.8183. Refuted if Delta(8) - Delta(4) is not smaller than Delta(4) - Delta(2).

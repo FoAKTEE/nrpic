@@ -1,0 +1,6 @@
+# shear series 5 (lead of batch 11, 2026-11-24): particle number along y at L2 (series 4 found
+# that 4 per cell moves Delta by 8.4e-3 at N_y = 64). Fans of series 3. Release core-v0.6 processor
+# executable. Prediction: JOURNAL.md, entry of 2026-11-24 07:20.
+L2p_n64_ppc2 0.5 4.0 64 tfac=2.5 fan_abs=1 fanA=-0.92,0.04,41 fanB=0.200,0.01,21 ppc_y=2
+L2p_n64_ppc8 0.5 4.0 64 tfac=2.5 fan_abs=1 fanA=-0.92,0.04,41 fanB=0.200,0.01,21 ppc_y=8
+L2p_n128_ppc4 0.5 4.0 128 tfac=2.5 fan_abs=1 fanA=-0.92,0.04,41 fanB=0.200,0.01,21 ppc_y=4
