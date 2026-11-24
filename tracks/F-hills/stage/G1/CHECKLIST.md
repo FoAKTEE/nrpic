@@ -28,15 +28,15 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 ## Track-specific criteria of F-hills for G1 (9.9 Track F: Hills mechanism (S12))
 
-- [ ] **C6** F-pre-1 and F-pre-2 reproduce the curves of the literature
-  - status: FAIL
-  - evidence: F-pre-1 met for 0911.1136 and 1804.02911 (STATUS.md T1; verifier K2, K3 confirmed); KHSR (1201.4794) not reproduced (G0 verifier D8). F-pre-2 met for 2404.16270 Schwarzschild (verifier K5, runs F-20261121-032337-9c6d87a, -032325-f58a391) and in part for Kerr 2402.02178 (package kerr: InclD s = 0, L_z < 0, L_z = 0 within the pi/6 grid at 15/15 pericentres, K2 figure, afin retrograde half; not the L_z > 0 boundary at beta = 0.52-0.68 nor the prograde half of afin; runs F-20261121-132131-326dfd1, -132817-eacfe46, repeated by the lead F-20261121-155614-7997653, F-20261121-155605-7d21f63). FAIL only on KHSR. 2026-11-21 batch 4a
+- [x] **C6** F-pre-1 and F-pre-2 reproduce the curves of the literature
+  - status: PASS
+  - evidence: F-pre-1 met for 0911.1136, 1804.02911 (STATUS.md T1; G0 verifier K2, K3) and 1201.4794 (KHSR, package khsr_note: scan F-20261121-212757-77cdc15, checks F-20261121-213405-6596be1; the lead's rerun repeats all 1268 values, F-20261124-133112-db7d6b8; K1 and K2 rederived by hand, JOURNAL.md batch 11 L-K; figure khsr_note/figures/fig_khsr_ecc.png read). F-pre-2 met for 2404.16270 (verifier K5, F-20261121-032337-9c6d87a, -032325-f58a391) and in part for Kerr 2402.02178 (package kerr; F-20261121-132131-326dfd1, -132817-eacfe46, lead reruns F-20261121-155614-7997653, -155605-7d21f63). Deviations on record (STATUS.md T1, T2). 2026-11-24 batch 11
 - [x] **C7** Constraint residuals and junk radiation of the three-puncture data are quantified
   - status: PASS
   - evidence: [JUDGEMENT, with reservations] Constraints quantified (nr_first E2, F-20261115-173547-a02af7d, -181434-b9c8916; card smoke F-20261115-174602-c6879fe). Junk: one member E/m = 7e-5 (4e-5 to 2e-4; F-20261120-222808-b65001c, -223018-a5c0838, -223121-c921d2d); three-hole data at P1's spheres: burst 0.40-0.63e-6 M at u of about -33 M, then a steady emission of 5.0-5.4e-8 M per M; window u in [-35, 6] holds 2.3-2.8e-6 M (junk_gauge J4b F-20261121-075600-4480a13; lead L5, L5b F-20261121-155457-5f36517, -155549-4359678). Reservations (OPEN.md 5): l <= 8 only; m/8 binary spirals in numerically; steady part not identified; remeasure at P1b. 2026-11-21 batch 4a
 - [ ] **C8** One complete vacuum passage is done
   - status: FAIL
-  - evidence: P1 (run F-20261119-150017-b45ec5f) ended at t = 280 M (12.58 card-hours), but its binary merged at t = 48.8 M before the passage (lead F-20261121-063449-4dcca98); cause the m/8 member resolution (binary_conv R8, R16n: F-20261121-130358-6cf186a, -130351-04074e1; decision 0022 item 4). P1b at m/16 waits for rule P1b-D (JOURNAL.md batch 4a). 2026-11-21 batch 4a
+  - evidence: P1 (F-20261119-150017-b45ec5f): binary merged at 48.8 M (m/8). P1b m/16 (run A, F-20261121-203144-b2cf16b, 11.77 card-hours): reached 61.8 M, members unmerged (s = 2.74 M), A1, A2, A4, A5 met; cut by preemption and closed as stopped. Isolated m/16 pair (R16n + B) turns at 3.12 M at 73.9 M (no merger to 107.85 M; F-20261124-130009-33bef4d), so the passage can be tested: continuation A2 on the cards (JOURNAL.md batch 11, predictions A2-1 to A2-5). 2026-11-24 batch 11
 
 ## Rulings of the orchestrator on the criteria (coord/DECISIONS; check that they apply to G1)
 
@@ -64,21 +64,21 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 - [x] **C14** Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed)
   - status: PASS
   - evidence: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md, CHECKLIST.md, REVIEW.md (points to ../REVIEW-wave2.md and SCOPING.md section 10); the criterion-by-criterion text is STATUS.md beside them, the scoping text ../G0/SCOPING.md, both named in the report
-- [ ] **C15** Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at
-  - status: OPEN
-  - evidence: the G0 data figures of the note pass (zoom style, one script each, registered inputs, looked at); the G1 NR figures exist in nr_first/figures with their scripts and runs and were looked at, but are not yet note figures with scripts under note/scripts (OPEN.md item 4)
+- [x] **C15** Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at
+  - status: PASS
+  - evidence: note v2 (carried from khsr_note into note/ in batch 11): every data figure has its script in note/scripts (fig_elliptic.py, fig_binary.py, fig_p1_end.py new) and reads registered runs (figure run F-20261121-214141-256f945; the prediction of that run met: all PNGs identical, khsr_note/JOURNAL.md); figures looked at by the helper and, for pages 13-16, by the lead (rebuild in scratch, batch 11). nrpic-stage verify reruns them
 - [x] **C16** Schematics drawn with /sleep-paper-figure-style: track architecture (exists / to be ported / new) and the gate timeline
   - status: PASS
   - evidence: note/figures/schem_architecture.png and schem_timeline.png with note/scripts/paperfig.py (copy equal to harness/style/SHA256SUMS); their G1 updates are C10, C11
-- [ ] **C17** Working note written with /paper-writing; its manuscript checker passed with --compile
-  - status: OPEN
-  - evidence: note/main.tex rewritten to G1 state (note package, commit d746da26; two corrections by the lead 2026-11-21); registered rerun of run_all.py, latexmk, check_manuscript.py --compile and page reading NOT done (package paused, note/JOURNAL.md last entries)
+- [x] **C17** Working note written with /paper-writing; its manuscript checker passed with --compile
+  - status: PASS
+  - evidence: note/main.tex v2 (24 pages): latexmk compiles without an undefined reference and check_manuscript.py with the track's --forbid list is clean except the accepted run ids of the appendix ledger and one journal locator in the ledger (khsr_note package; repeated by the lead in a scratch rebuild, batch 11: 24 pages, 0 undefined). Reviewer step of the paper-writing procedure open (OPEN.md item 3)
 - [ ] **C18** Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too); every number of the Supplemental Material recomputed from the manifests
   - status: OPEN
-  - evidence: no verifier of the G1 material yet; the G0 verifier checked ledger table 3 in four rows only (VERIFIER.md section 2)
+  - evidence: no verifier of the G1 material yet; to be asked when the passage A2 is done (OPEN.md item 2, with the list of material)
 - [x] **C19** Null results and failed runs are on record (manifests and JOURNAL)
   - status: PASS
   - evidence: failed and stopped runs kept with manifests and journal entries: F-20261115-173601-2fae2dc (S3/S2, slot limit), F-20261115-173606-efcbf69 (withdrawn), F-20261115-173719-923135a, F-20261119-143851-47595bd, F-20261115-174959-9e8a361 (stopped), F-20261115-174142-2a79515 (superseded), F-20261115-175542-b49d687; failed predictions on record: nr_first/JOURNAL.md (E1(b), E3 items 1, 2, 5, E4 rerun counts, E7 first-search masses), newton3/JOURNAL.md (Q1, Q3, Q4 bounds), stage/G0/JOURNAL.md (SC0d, SC2, SC6), JOURNAL.md (V4-V7 of wave 1)
 - [x] **C20** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: PASS
-  - evidence: STATUS.md, HANDOFF.md rewritten and a JOURNAL.md entry appended by the lead at the end of batch 4a (2026-11-21)
+  - evidence: STATUS.md, HANDOFF.md rewritten and a JOURNAL.md entry appended by the lead at the end of batch 11 (2026-11-24)

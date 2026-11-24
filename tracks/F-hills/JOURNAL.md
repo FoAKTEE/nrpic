@@ -908,3 +908,22 @@ The figure `fig_khsr_ecc.png` (read): prograde ejection probability falls from a
 rederived by hand (STATUS T1): E_bar = -(m^2/(m1 m2)) (M/m)^(1/3) / (2 r_a/r_t) = -2.667 for
 r_a the semi-major axis; times to pericentre from r0 at r_p = r_t: parabola from 15 r_t 29.98;
 ellipse e = 0.9 (a = 10) E = 1.82, r0 = 12.22; hyperbola e = 1.1, H = 1.5635, r0 = 17.40.
+
+### Card runs loaded in this session (predictions above, "Q4 decision and the follow-up runs")
+
+- A, C closed in nrpic-run as stopped (finish F-20261121-203144-b2cf16b: 11.77 card-hours,
+  147.6 GB checksummed in 66 min; F-20261121-203247-961801d: 176 files). B (F-20261121-203156-03efdd3)
+  is closed after them (background finish; HANDOFF).
+- B2 F-20261124-135408-1e6db58 (G2, --gpu-hours 5: 5 segments), Slurm 5171, from B's restart 34,
+  tlim 140, output4/dt = 1.0.
+- A2 F-20261124-141118-fbc6419 (G1, --gpu-hours 19.5: 19 segments, 18.7 card-hours; announced
+  here and in STATUS.md, decision 0014), Slurm 5172, from A's restart 23, tlim 200, output4/dt = 1.0.
+- C2 F-20261124-141842-d5263e9 (G2, --gpu-hours 24: 24 segments), Slurm 5173 HELD, from C's
+  restart 6, tlim 200, output4/dt = 1.5.
+- All three: `binary_conv/scripts/athena_resume_bc.sh` -> bc-ak05-gpu (byte copy of release
+  core-v0.5's card build, as A, B, C), cfl_number 0.25, constant shift_eta = 2, no lapse_leak.
+- Sequencer `binary_conv/scripts/seq_b11.sh` started 06:18:51 PST, pid 604718 (setsid nohup),
+  table scratch/F-hills/seq/b11.table, log scratch/F-hills/seq/seq_b11.log: holds C2 until B2 has
+  ended for good, then releases it; continues A2, B2, C2 in place when their segment cap cuts them
+  while their sacct card time is below 19.5, 5.0, 24.0 card-hours. A dry pass on A, B, C (old
+  chains) and on the new table logged the expected actions (scratch/F-hills/tmp/seqdry).

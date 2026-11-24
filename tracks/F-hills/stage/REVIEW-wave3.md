@@ -249,3 +249,54 @@ throughout; m/8 apart), `fig_horizons_H.png` (masses flat at m/12-m/16, rms H 6e
 Rule P1b-D: clause D1 holds (monotone 0.305 > 0.088 > 0.0865 M; p = 12.0; continuum loss
 0.0864 M at 15 M); D2 applies only without R12 and would fail (0.196 > 0.10 M). P1b submitted
 (F-20261121-203144-b2cf16b). Details and predictions: JOURNAL.md, batch 5.
+
+# Batch 11 (lead, 2026-11-24): khsr_note reviewed; the card chains A, B, C read
+
+## khsr_note (batch 6; closed; reviewed from its artefacts)
+
+Rerun from the registered scan F-20261121-212757-77cdc15: `khsr_note/scripts/fig_khsr.py` (run
+F-20261124-133112-db7d6b8) reproduces `khsr_note/results/khsr_checks.json` in all 1268 values;
+`fig_khsr_ecc.png` read. K1 and K2 rederived by hand from KHSR's definitions (JOURNAL.md, batch
+11, L-K) without the package's code. Source read: kb-data raw 1201.4794 v1 `ms.tex` 618-630,
+737-778.
+
+| khsr_note claim | verdict | what the track does |
+|---|---|---|
+| K1: E_bar = -2.667 at r_a/r_t = 100 (printed -2.7, ms.tex:746) | CONFIRMED (own derivation; r_a is the semi-major axis of the centre-of-mass orbit) | - |
+| K2: start radii 12.22 and 17.42 r_t (printed 12.2, 17.4, ms.tex:624-626) | CONFIRMED (own Kepler and hyperbolic times at r_p = r_t: 12.22, 17.40) | - |
+| K3a/K3b: no preference with the parabola; prograde ejection to 0.45-0.57 of P_dis and secondary preferred (0.08-0.15) at r_a/r_t = 100 | CONFIRMED from the registered outputs and the figure; matches ms.tex:756-769 qualitatively (KHSR gives no numbers there) | a second agent's check of K3 from the script and the scan is part of the G1 verifier (C18) |
+| K3c/K3d: parabolic approximation within 0.012 except at D = 2 | CONFIRMED as stated (failed predictions on record) | - |
+| P1 to 280 M (remnant at 6.99 M at 154.6 M, no common horizon, H flat, 2-3e-3 M radiated) | NOT RECHECKED by me in this session (numbers in `khsr_note/results/p1_280.json`, runs F-20261121-212240-c43f35f, -212441-1911b7d) | to the G1 verifier (C18) |
+| Note v2 compiled (24 pages), figure run F-20261121-214141-256f945 | the copy into `note/` done by me (README section "Version 2"); compile and checker not repeated | `nrpic-stage verify` reruns the note's figure scripts |
+| Cosmetic: right panel of fig_elliptic repeats the legend; floats after Sec. VI | open, small | note v3 |
+
+## The card chains (decision 0026 item 4; JOURNAL.md batch 11: Q1-Q4, N1, N1m)
+
+Registered analysis F-20261124-130009-33bef4d (`stage/review_wave3/b11_cards.py`, my own reader
+over nrread's tracker join; figures `fig_b11_binary.png`, `fig_b11_health.png` read) and the
+Newtonian references F-20261124-132934-375a163 (`b11_n1_tide.py`, `fig_b11_n1_tide.png` read).
+
+| run, prediction (written before the run) | verdict |
+|---|---|
+| B (R16n extension), batch 5: reading E (minimum 2.5-4.6 M at 40-100 M, then a rise) | CONFIRMED: minimum 3.120 M at 73.9 M, 4.585 M at 107.85 M |
+| B: no common horizon before 120 M; masses below 1e-4 per M | CONFIRMED to 107.85 M (the chain was cut there); masses -1.0e-5 to -5.5e-5 per M |
+| A1: no common horizon of the members before 60 M | CONFIRMED (s = 2.74 M at 61.86 M) |
+| A2: A within 0.05 M of R16n to 20 M | CONFIRMED at the edge (0.042 M) |
+| A3: separated binary by 200 M | NOT JUDGED (A cut at 61.8 M; A2 continues) |
+| A4: member masses drift below 1e-4 per M, no member near M | CONFIRMED for A; FAILS for C (1.2e-4 to 1.7e-4 per M) |
+| A5: below 2864 MeshBlocks, fits the card | CONFIRMED (max 2584; 78787 MiB) |
+| C: A and C agree within 0.02 M | CONFIRMED to 22.3 M (0.0023 M) |
+| lead Q1 (merger at even odds) | WRONG: no merger |
+| lead Q2 clause (A within 0.1 M of B to 61.8 M) | WRONG: -0.53 M at 60 M; cause not named (N1, N1m: tide plus heavier members match the size at 40-60 M, not the early part) |
+
+Chains: A, B and C were cut by preemption (another user's `priority` partition, one job every
+5-30 min for nights) and their segment caps; they are closed as stopped (A, C) and continued as
+A2, B2, C2 from their newest restart files with restart files every 1-1.5 M (JOURNAL.md, batch
+11, "Q4 decision").
+
+## Packages still in progress
+
+g2mesh (cut on 2026-11-20; G2M-1b prediction written, G2M-2/3 analysis not run): its untracked
+`scripts/card_analysis.py` is committed in this session as work in progress, untested, following
+decision 0030 item 1 (D's untracked tools of an open package), so that the worktree is clean for
+`nrpic-stage verify`; the package's README and JOURNAL are not changed.
