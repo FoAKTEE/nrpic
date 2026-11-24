@@ -1,0 +1,21 @@
+kind	id	what_is_indexed	source_at_47ab19ab	verdict	note
+param	5836	<coord> texcise Real, no default, coordinates.cpp:61	pin->GetReal("coord", "texcise")	CONFIRMED	block, name, type, line, no default
+param	5920	<mhd> sigma_max Real (FLT_MAX), isothermal_mhd.cpp:23	GetOrAddReal("mhd","sigma_max",(FLT_MAX))	CONFIRMED
+param	6111	<particles> lattice_dx Real 0.025, nrpic.cpp:94	GetOrAddReal("particles", "lattice_dx", 0.025)	CONFIRMED
+param	6162	<particles> deposit Boolean, default an expression, nrpic.cpp:237	GetOrAddBoolean("particles", "deposit", (mesh_metric && (pmy_pack->pz4c != nullptr || nropt.newton)))	CONFIRMED	the default is stored as the expression, not a value; a reader must know it is computed
+param	6183	<particles> coll_sigma_model String "constant", nrpic_collide.cpp:332	GetOrAddString("particles", "coll_sigma_model", "constant") (default on L333)	CONFIRMED
+param	6781	<problem> shock_dir Integer, no default, shock_tube.cpp:43	pin->GetInteger("problem","shock_dir")	CONFIRMED
+param	6831	<problem> punc_velocity_x2 Real 0., z4c_boosted_puncture.cpp:94	GetOrAddReal("problem", "punc_velocity_x2", 0.)	CONFIRMED
+param	7070	<fastflow> num_horizons Integer 1, fastflow.cpp:58	GetOrAddInteger("fastflow", "num_horizons", 1)	CONFIRMED
+param	7205	<z4c> sbc_theta String "sommerfeld", z4c_sbc_ext.cpp:52	(void) pin->GetOrAddString("z4c", "sbc_theta", "sommerfeld")	CONFIRMED	read only to record it (value discarded), as the comment on L51 says
+param	7212	<z4c> ghost_falloff Boolean, no default, z4c_sbc_ext.cpp:95	GetBoolean("z4c", "ghost_falloff") inside DoesParameterExist (L94)	CONFIRMED	effective default false (not read when absent); the index row says no default
+link	M01 (verified)	nrpic::PushMidpoint implements 2611.12831 L403-417	nrpic_kernels.hpp:378 dx/dt = alpha u^i/W - beta^i; L407-411 du_i/dt = -W d_i alpha + u_j d_i beta^j + (alpha/2W) u^l u^m d_i gamma_lm	CONFIRMED	the covariant geodesic equations in coordinate time (standard form; my derivation)
+link	M02 (verified)	nrpic::LorentzFactor, L412	nrpic_kernels.hpp:324-331 sqrt(1 + gamma^ij u_i u_j)	CONFIRMED
+link	M03 (verified)	nrpic::PushMidpoint, L444-456	L389-394: xb = (x0+x1)/2, ub = (u0+u1)/2, fields met(1, xb) at the midpoint; fixed-point loop to tol (L418)	CONFIRMED
+link	M05 (verified, option-of)	NrpicInit, L459	nrpic.cpp:90 tolerance default 1.0e-7, max_iterations 50; paper 1e-7	CONFIRMED
+link	M08 (verified)	nrpic::HermiteWeights, L586-593	nrpic_kernels.hpp:284-291 weights equal paper L588-591; derivatives equal d/ds of them (my differentiation)	CONFIRMED
+link	M14 (verified)	NrpicPush lapse excision, L678	nrpic.cpp:525-528 excise when alp < alpha_exc (code -2)	CONFIRMED	order "before redistribution and deposition" not traced through the task list
+link	M15 (verified)	NrpicPush AH excision, L678	nrpic.cpp:438-459 particles inside ah_exc_factor times the horizon's minimum radius removed	CONFIRMED	the rule is the code's; the paper gives none (as the link says)
+link	M18 (claimed)	Z4c::ADMConstraints, L692-695	z4c_adm.cpp:486 con.H -= 16 pi E; :494 momentum term 8 pi S	CONFIRMED (content)	status claimed is right: no test named
+link	M19 (claimed)	Z4c_AMR::RefineLohner, L705-725	z4c_amr.cpp:292-294 q = alpha chi^(7/chi_psi_power), chi_psi_power = -4 (z4c.cpp:132) -> alpha chi^(-7/4); defaults 0.2, 0.02, 0.01 (z4c_amr.cpp:41-43); E sums at :335	CONFIRMED (content)	status claimed is right
+link	M25 (claimed)	Z4c::CalcRHS, L235-333	z4c_calcrhs.cpp:497-500 E and S_ij enter; :649-652 Theta gets -8 pi alpha E separately (Ht at :570 is the vacuum part)	CONFIRMED (content)	status claimed is right

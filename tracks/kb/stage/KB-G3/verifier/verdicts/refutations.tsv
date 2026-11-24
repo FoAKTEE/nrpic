@@ -1,0 +1,56 @@
+claim_id	group	refutes	verdict	how_rederived
+718	brief seed	brief L152 (label line of the code table L145-149)	CONFIRMED	1604.06065 L486-487, L1295: gevolution has a parabolic Phi equation, elliptic chi, parabolic B_i AND a hyperbolic wave equation for h_ij, so "elliptic/parabolic solves" is incomplete; 2003.08014 L285-327: four codes (gevolution, GRAMSES N-body; ET fluid; CosmoGRaPH), not a dust-fluid code comparison; 1611.03437 L41, L248, L330: a perfect-fluid scheme (p = 0), misfiled under Einstein-Vlasov. Caveat: the claim text is the disclaimer sentence, so claim 718 alone does not say what is wrong. Detail: the CHECK note calls B_i "elliptic"; L486 says parabolic
+737	brief seed	brief L184	NOT CONFIRMED (as a refutation)	2606.02712 L205, L559, L798: z_0 = -0.4 (+0.8/-0.9) per cent is compatible with zero, as the brief says; it is also compatible with the void value 0.84 per cent and the void "remains plausible". The brief's sentence is true but incomplete and misleading; a correction, not a false statement
+738	brief seed	brief L190	CONFIRMED (with caveat)	2512.13673 L309, L276: mu_crit 0.02 Mpl gives r_crit >~ 5.6e-6 (eq. r: 16 pi 0.02^2/60^2 = 5.59e-6, run of this package), a factor 5.6 above "about 1e-6"; caveat: the paper's own abstract (L80) prints r_crit ~ 1e-6, which the brief repeats
+742	brief seed	brief L208 (second half)	CONFIRMED	2508.10070 L80 beta ~ A sigma_h*^5; L767 sigma_j^2 = int dlnk k^(2j) P(k), so sigma is a standard deviation and beta goes as the variance to the 5/2, not the 5th power; the paper's own wording "variance" (L81, L322, L775) invites the slip. The rest of L208 not rechecked
+749	brief seed	brief L222	CONFIRMED	2505.21885 L65, L181, L357: the two GW peaks come from PBH formation in the earlier RD phase and from the sudden EMD-to-RD transition, not from the accretion ("resulting" is false); L125, L147: EMD by a bosonic field with subdominant PBHs, not a black-hole-dominated era. Growth "up to two orders of magnitude" and linear theory hold (L65)
+752	brief seed	brief L230	CONFIRMED	1706.09501 L76: proves the reverse direction for null dust (vacuum limits of Einstein-multiple null dust) under polarized U(1); L109: both of Burnett's questions "remain open"; L112 "a first step". So "proofs under U(1) symmetry: 1706.09501" is false for that paper; 1907.10743 not rechecked
+756	brief seed	brief L235	CONFIRMED	2611.12831 L42-44: full NR of two overdensities collapsing inside a common collisionless envelope to black holes, inspiral, merger, accretion; a counter-example in the broad sense (generic collisionless matter, black holes formed in place)
+766	brief seed	brief L271	CONFIRMED (one item of 14)	0704.2612 ms.tex L59 title "Relativistic Effects in Extreme Mass Ratio Gravitational Wave Bursts": an EMR burst paper, not "waveform effects for binaries near a massive black hole". The whole list is labelled refuted for one misfiled id
+767	brief seed	brief L272	CONFIRMED (one item)	1411.5022 shs.tex L33, L40-43: hypervelocity stars ejected from massive-black-hole binaries, not "tidal disruption of single stars"; misfiled in item (iv)
+782	brief seed	brief L437	CONFIRMED (partly)	1505.02959 L47-52: a full-NR construction of nonlinear standing gravitational waves testing Isaacson's radiation-fluid behaviour: numerical work exists for the averaged limit; no comparison with massless Vlasov found (as the correction says)
+802	brief seed	brief L1749	CONFIRMED (one item of six)	2611.12831 L42-44, L1335-1340: the "full-NR binary black holes in a particle-dark-matter environment" item of the novelty list is done in the broad form by the target paper; the other five items untouched by the refutation
+813	defect	2108.11967 Table 1	CONFIRMED	header L487 C = M/R; row 0.3: 3.29993e-2/2.892 = 1.1411e-2, printed 1.41053e-2; row 0.05 (L516): 3.87808e-2/9.672 = 4.0096e-3, printed 4.00960e-4; neighbouring rows (0.1, 0.6, 1.1) reproduce M/R to 5 digits (run of this package)
+814	superseding	-	CONFIRMED	same arithmetic; p(0) at w(0) = 1.1: column 1.43e-6, 7.41e-5, 9.86e-4, [1.09e-3], 4.12e-2, 0.121, 0.310: the printed value sits at the 0.6 value, ~1e-2 fits (judgement, as labelled)
+815	defect	2108.11967 L197	CONFIRMED	my derivation: TOV with Phi(inf) = 0 gives e^{2Phi} = exp(-2 int_r^inf G(M + 4 pi r'^3 p/c^2)/(r'(r'c^2 - 2GM)) dr'); the printed exponent is positive, lacks the factor 2 (and 4 pi, G), so e^{2Phi} > 1 inside: not the function behind physical equilibria
+816	defect	gr-qc/0601112 L694	CONFIRMED	metric L231 ds^2 = -(alpha^2 + a^2 beta^2)dt^2 + ...; static: g_tt = -alpha^2, so 1 + Z_c = 1/alpha(0) and the printed 1/sqrt(alpha(0)) - 1 is wrong
+817	superseding	-	CONFIRMED (formula)	follows from the same metric; "tables reproduced only with" it is the track's recomputation, not redone
+818	defect	gr-qc/0601112 Table 3	CONFIRMED	L809-813 the column runs 0.38, 0.42, 0.045, 0.052, 0.77: monotone only with 0.45, 0.52
+819	superseding	-	CONFIRMED	same reading
+820	defect	1101.3097 L411-412	CONFIRMED	footnote prints BSI b = 25 sqrt(pi)/(32 sqrt 6) ~ 1.002, but that expression is 0.565; astro-ph/0110561 L394 prints 25 pi/(32 sqrt 6) = 1.0017; "should be 25 pi/32" = 2.454 contradicts the paper's own 25 sqrt(pi)/32 = 1.385 (L410); arithmetic in the run of this package
+821	superseding	-	CONFIRMED	L410, 2601.17117 L233, astro-ph/0110561 L393-394 as cited; values 1.385 and 1.0017
+822	defect	2502.06783 L318-321	CONFIRMED	L320 carries -sqrt(2 eps1) H Mpl Psi_G; L490: the runs use the geodesic gauge with Psi_G = B_G = 0, so the term is identically zero in the data the paper builds
+823	superseding	-	PARTLY CHECKED	vanishing confirmed; the needed term -sqrt(2 eps1) Mpl H Psi_B and the residual 4 eps1^2 H^3 a^2 k^-2 dR/dt rest on run E-stoch-inf-20261115-123146-82d2fd4, not rederived
+824	defect	2502.06783 L876-884	CONFIRMED	the two lines of the printed equation disagree: (dk/2pi)^3 (dk/2pi)^(-3/2) (2pi)^(3/2) = dk^(3/2), while the second line has (dk/sqrt(2pi))^(3/2) = dk^(3/2) (2pi)^(-3/4); at least one is wrong (my algebra)
+825	superseding	-	NOT CHECKED	L^(-3/2) depends on the paper's Fourier convention for f_k; with <f f*> = (2pi)^3 delta |f_k|^2 and an unnormalised inverse sum I also get L^(-3/2) [JUDGEMENT], but I did not locate the paper's convention
+826	defect	2610.32592 appendix L487-491	CONFIRMED	same internal inconsistency of the two printed lines as 824
+827	superseding	-	NOT CHECKED	as 825
+828	defect	2206.11234 method L78, L151	CONFIRMED	biased Langevin dx/dt = D + B + sigma xi (L52) simulated with noises xi: the likelihood ratio back to the unbiased process is exp(-sum (B/sigma^2)[B dt/2 + sigma xi sqrt(dt)]) (my derivation); the printed weights carry the opposite sign
+829	defect	2206.11234 appendix L168-173	NOT CHECKED	L168 asserts Lambda_0 = v0/4 for v_UV of order one or larger; whether that fails needs the pole computation of E-stoch-inf, not redone
+830	defect	2512.14649 L108	CONFIRMED	Friedmann: 3 Mpl^2 H^2 = Pi^2/2 + V with Pi = dphi/dN H gives H^2 = V/[3 Mpl^2 (1 - Pi^2/(6 Mpl^2))]; the printed denominator lacks 3 Mpl^2 (my derivation)
+831	superseding	-	CONFIRMED	same derivation
+832	defect	2512.14649 L534	NOT CHECKED	printed wording (USR 3.5 to 8, "very shallow maximum") read as stated; the exact inflection point and the one-e-fold shift against Fig. 1 need the potential and the figure
+833	superseding	-	NOT CHECKED	as 832
+834	defect	1305.2619 L443	NOT CHECKED	printed "factor of three" and "15 per cent" (of the 4Gm variant) read as stated; the true 2.59 and 9.2 per cent are D's recomputation from the paper's distribution (run D-bh-dress-20261115-145636-5259f48), not redone
+835	superseding	-	NOT CHECKED	as 834
+836	defect	1305.2619 L413-418	CONFIRMED	L414 I_r = oint dr sqrt(E^2 - (1-2Gm/r)(1+L^2/r^2)); the canonical p_r of the Schwarzschild geodesic is that root divided by (1 - 2Gm/r) (my derivation)
+837	superseding	-	PARTLY CHECKED	the missing factor confirmed; the 5.2 per cent effect on the peak not rederived
+838	defect	1305.2619 L695-700	NOT CHECKED	caption carries no mass; the 1e6 M_sun reading is D's 0.04 dex fit
+839	superseding	-	NOT CHECKED	as 838
+840	defect	1707.06302 L929-931	NOT CHECKED	printed 35 and 20 per cent read as stated; +45 and +14 per cent are figure readings
+841	superseding	-	NOT CHECKED	as 840
+842	defect	2611.12831 L729	CONFIRMED	L729 points to Sec. numerical_implementation (L672-697); that section describes communication to destination blocks and ranks (L674, L676) and excision removal (L676, L678), but nothing on removal at the outer boundary (no "outer" in it)
+843	defect	2604.03628 arXiv record	CONFIRMED	kb-data/meta/arxiv-api/2604.03628.json journal_ref "Phys. Rev. D 111, 063518 (2025)"; a volume of 2025 for an e-print of 2026 is impossible [JUDGEMENT]; 111, 063518 is one of the paper's own references in the INSPIRE record
+844	superseding	-	CONFIRMED	kb-data/meta/inspire/2604.03628.json: Phys.Rev.D 114, 063530, 2026
+846	defect	1807.01711 L106	CONFIRMED	abstract: backreaction energy density of order 1e-8 of matter; body L524, L644: Omega_Q + Omega_L ~ 1e-9, Omega_R ~ 1e-8
+847	superseding	-	CONFIRMED	same lines
+848	defect	2512.13673 L80	CONFIRMED	abstract pairs 0.02 Mpl with r ~ 1e-6; eq. r gives 5.59e-6 and the body (L309) says >~ 5.6e-6
+849	superseding	-	CONFIRMED	also in the sample (k = 18)
+850	defect	2512.13673 L276	CONFIRMED	L276: mu_crit 0.025 (in-phase), 0.020 (out-of-phase) "respectively" r_crit 5.6e-6 and 8.7e-6; eq. r: 0.025 -> 8.73e-6, 0.020 -> 5.59e-6, so the order is reversed
+851	superseding	-	CONFIRMED	same arithmetic
+852	defect	2508.10070 L81, L322, L775	CONFIRMED	calls sigma_0, sigma_h "the variance" while L767 defines sigma_j^2 as the integral
+853	superseding	-	CONFIRMED	same; 2409.00435 L62 not reread
+854	defect	astro-ph/0608642 L197-198	CONFIRMED	M_H = c^3 t / G = 2.03e5 M_sun (t/1 s), t = 0.738 s (g/10.75)^(-1/2) (T/MeV)^(-2) (2002.12778 L278-290): 15 M_sun at 100 MeV, not 1 M_sun (arithmetic in the run of this package)
+855	superseding	-	CONFIRMED	same: 1.50e5 M_sun at 1 MeV
+856	defect	2607.09326 L96	CONFIRMED	abstract states convergence for "a polytropic equation of state" without condition
+857	superseding	-	CONFIRMED	L141, L300: the theorem needs n > 3
