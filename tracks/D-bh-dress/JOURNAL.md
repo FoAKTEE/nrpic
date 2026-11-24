@@ -540,3 +540,21 @@ changed my mind about: the "step by 150 M, halving at M/16" of entry 14 (it was 
   falling into a dip); the meaning of D's noise floor (the finder's, not the slice's).
 open: six card runs (HANDOFF table); FE4 dumps for the dip at M/4; note v3; G2 verifier; rerun script.
   Card-hours used this session: 0.
+
+## 2026-11-24T21:00Z-21:15Z  session batch 12 (Opus, short: card runs into the shared queue)  commits 27e96397..(this)  runs none (no run registered or closed)
+
+did: merged main (decision 0033, nrpic-queue); found the four jobs cancelled at 12:00 PST under the cap of
+  five (sacct): 5181 FK (pending resubmission after the preemption of 5144, which had run 3.5 min from
+  rst/esflk.00005), 5170 FN4, 5174 FNQ, 5175 FL16 (never ran). FF4 (job 5152) and FE4 (job 5153) had
+  reached tlim before (chain STATUS DONE). Wrote g2long/tools/continue_chain.sh (continues a registered
+  chain in place: one job via scripts/submit_chain.sh on the run directory with JOB_NAME = run id and the
+  chain's own PROC_NAME, MAX_SEGMENTS, EXTRA_ARGS and executable, byte-checked; records the continuation
+  in the manifest); dry runs pass on the four, refusals on a DONE chain and a malformed id. Continued the
+  four in place rather than closing them as stopped and registering anew: nrpic-run cannot pass PROC_NAME,
+  and the run ids, manifests, predictions and reservations stay as written. Queue entries, priority 2
+  (stage/G2/OPEN.md item 1): q0008 D-FK, q0009 D-FN4, q0010 D-FNQ, q0011 D-FL16, no --after. Acked the
+  two orch messages of 2026-11-24.
+found: nothing new about the physics (no analysis in this session). The predictions written before the
+  runs (g2long entries 6, 10, 12, 15) stand unchanged.
+open: the four entries wait (account at 5 of 5 jobs at 13:05 PST); FF4 and FE4 to be closed with
+  nrpic-run finish and read. Card-hours used this session: 0.

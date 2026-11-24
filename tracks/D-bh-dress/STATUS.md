@@ -16,11 +16,11 @@ last-result: g2long entries 14-17: FP D-20261124-130935-fdca920, FP-ext -140606-
 failed:      FP4 (the converged-finder offset changes sign over M/4, M/8, M/16: no mesh order);
              FP-ext (ii) bound 5e-5 (7.3e-5, not refuted); FE1 and FE2 bounds (not refuted: the
              "step" was a dip at the reference time); earlier P2, XC2 factor.
-next:        1. Read FE4 (P5 + tight re-search), FF4 (P12-P14), FK (P7-P11), FN4 (N1-N4, XN),
-                FNQ (Q1-Q3, XQ), FL16 (L1-L5) as they end (HANDOFF table)
+next:        1. Finish and read FE4 (P5 + tight re-search), FF4 (P12-P14); then FK (P7-P11), FN4
+                (N1-N4, XN), FNQ (Q1-Q3, XQ), FL16 (L1-L5) as the queue runs them (HANDOFF table)
              2. Note v3 (long runs, FP/FE, XC, ladder, mosaic); rerun script (C6)
              3. Fresh-context G2 verifier; nrpic-stage verify G2 again without a timeout
-blockers:    cards held by another user's priority jobs until about the morning of 2026-11-25
+blockers:    the account's five Slurm slots (decision 0033): FK, FN4, FNQ, FL16 wait in the shared queue
 needs:       core: finder-stopping-rule (posted 2026-11-24), ah-excision-growth-guard; older:
              lapse-leak-growth-data, newtonian-mode-edges, lapse-excision-criterion,
              particle-energy-and-crossing-record item 2, accretion-diagnostics item 3,
@@ -34,5 +34,7 @@ offers:      g2long/tools: probe_long.py (finder re-search of any restart dump),
 budget:      card-hours toward G2 (nrpic-run budget 09:32 PST, allotment raised by 0032): used
              17.45, reserved 18.68, left 3.86. This session's card use: 0 (cards held by priority
              jobs). Processors: FE 4 cores ~25 min, analyses 1 core, stage verify 1 core.
-card jobs:   FF4 5152, FE4 5153 (pending, eligible); FK 5144, FN4 5170, FNQ 5174, FL16 5175
-             (held; sequencer scratch/D-bh-dress/g2long_seq3/ releases them in that order).
+card jobs:   FF4 5152, FE4 5153 ran to tlim (chain DONE; nrpic-run finish pending). FK, FN4, FNQ, FL16
+             (jobs cancelled 12:00 PST under the cap) continue in place via the shared queue, priority 2:
+             q0008 D-FK, q0009 D-FN4, q0010 D-FNQ, q0011 D-FL16 (wrapper g2long/tools/continue_chain.sh;
+             HANDOFF table). Sequencer g2long_seq3 stopped by orch; no sequencer of ours any more.
