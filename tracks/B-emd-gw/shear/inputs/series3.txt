@@ -1,0 +1,9 @@
+# shear series 3 (lead of batch 11, 2026-11-24): L2 (beta = 0.5, HL = 4) with narrow absolute fans
+# about the roots found by series 2 (A: s = -0.920, B: s = 0.200 at N_y = 32 and 64), tlim = 10.
+# In series 2 the A fan (spacing 0.078 in s) moved the miss by 1-2 per ray and the cubic and
+# quadratic shootings gave Delta = -0.16 and -0.67 at N_y = 64: the interpolation of t and k
+# across the fan, not the root, was unreliable. Here the spacing is 0.002 (A) and 0.001 (B).
+# Release core-v0.6 processor executable. Predictions: JOURNAL.md, entry of 2026-11-24 06:20.
+L2f_n32 0.5 4.0 32 tfac=2.5 fan_abs=1 fanA=-0.92,0.04,41 fanB=0.200,0.01,21
+L2f_n64 0.5 4.0 64 tfac=2.5 fan_abs=1 fanA=-0.92,0.04,41 fanB=0.200,0.01,21
+L2f_n128 0.5 4.0 128 tfac=2.5 fan_abs=1 fanA=-0.92,0.04,41 fanB=0.200,0.01,21

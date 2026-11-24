@@ -81,6 +81,35 @@ harness/bin/nrpic-run submit ... -- bash $P/scripts/run_gr_ic.sh 64 "4 8 16" "--
 - The initial-data tool converges at L = 4, not to tolerance at L = 8 with the top
   amplitude within its 18 outer iterations, and fails (NaN) at L = 16.
 
+## Full GR (batch 11, 2026-11-24; JOURNAL entries 2026-11-24)
+
+| Run | What | Status |
+|---|---|---|
+| B-20261121-211707-d795743 | relativistic data sigma1 = 0.014, 128^3 (outer change 7.3e-8) | completed |
+| B-20261123-014850-7b7d986 | relativistic data sigma1 = 0.028, 128^3, 36 outer iterations (9.1e-10) | completed |
+| B-20261123-014847-f295ab4 | GR box sigma1 = 0.014 to a = 143 (card, 0.19 card-h) | completed |
+| B-20261123-035002-bcc82bd | GR box sigma1 = 0.028: guard stop at a = 30.7 in the densest core | failed |
+| B-20261124-131918-e71996f, -133150-e9ef701 | `scripts/analyze_gr.py`: constraints, halos against fidL8, TT strain of the metric against the particles' near field and the design | completed (JSON; figures from the second) |
+| B-20261124-133709-85c4be7 | `scripts/fig_mosaic.py`: slice mosaic with zoom boxes at a = 132 | completed |
+| B-20261124-131438-5d7e049 | Newtonian reference at 128^3 with the GR runs' particles (card batch) | queued |
+| B-20261124-133533-cb0bb7d | four restarts of the 0.028 run from t = 8 (X0-X3) | queued |
+
+- The GR box at sigma1 = 0.014 forms its first halo between a = 30 and 36 and holds the halo
+  counts and largest masses of the Newtonian fidL8 box at the same stage (a sigma1 fixed):
+  counts inside 2 sqrt(N) + 2 at a = 49-121, largest mass within -7 to +13 per cent, the five
+  largest halos at a = 121 matched within 0.07 (`figs/pop_gr_halos.png`).
+- The TT strain of the metric (flat projection, spatial-gauge piece removed) has the design's
+  linear near-field energy 2.9e-9 a to 9-13 per cent for 6 <= a <= 20 and departs once the
+  halos form (factor 1.4 at a = 30, 1.7 at 36); over |k| <= 8 k_f it follows the weak-field
+  near field of the run's own particles (correlation above 0.94 to a = 72, 0.71 at a = 100;
+  `figs/pop_gr_gw.png`). After the halos form the metric's TT energy at high k grows far above
+  that near field; what it is (radiation, gauge remainder, mesh error) is not established.
+- The 0.028 box stops at a = 30.7 (stage 15) in the core of the box's largest halo, where K
+  runs away (0.003 to 0.26 between t = 8 and 9) and the lapse falls; the 0.014 box passes the
+  same stage with K negative everywhere (`figs/pop_gr_constraints.png`, `pop_gr_stop.png`).
+- Mean constraint violations grow after halo formation: Hr_mean 2.85e-2 and Mr_mean 0.20 at
+  a = 141 for 0.014.
+
 ## Requests
 
 To core (through the B-emd-gw lead's outbox):

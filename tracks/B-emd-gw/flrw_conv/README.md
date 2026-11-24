@@ -39,8 +39,12 @@ below]:
   cells. It is the step error of the start: the step limit 0.002 (the same at every mesh
   in the first e-fold) puts -1.9e-6 into the amplitude at 32 cells, converging at second
   order in the step (differences 1.47e-6 and 3.5e-7 for 0.002 -> 0.001 -> 0.0005, P3 and
-  P4, entries 10 and 11), matching the -1.76e-6 floor at 128 cells. At the production step
-  limit 0.01 it would be about 25 times larger, about 5e-5 [JUDGEMENT; not run].
+  P4, entries 10 and 11), matching the -1.76e-6 floor at 128 cells. Tested at 128 cells by J4
+  (entry 14, batch 11; run B-20261123-015905-7a30278, analysis B-20261124-125457-79ce723,
+  `figs/fig_step128.png`): the floor falls to -0.48e-6 at the limit 0.001 (0.29 of the 0.002
+  value; second order expects 0.25), and the production limit 0.01, which runs at the Courant
+  step from the start at 128 cells, gives -2.61e-6 (not the 5e-5 estimated from 32 cells,
+  where 0.01 is not Courant-limited).
 - The potential estimator (a phi from chi) is the weakest: |f_phi - 1| up to 3.1e-3 (16),
   3.0e-4 (32), 1.7e-4 (64), set by an oscillation of period 2.34 in conformal time (speed
   L/P = 0.577 = 1/sqrt(3), that of the slicing d_t alpha = -(1/3) alpha^2 K
@@ -121,12 +125,13 @@ cause of the early floor" (P4's prediction, second order in the step, held).
 
 ## Pending
 
-Nothing. J3 ended 2026-11-21 22:21 PST and was judged in entry 12.
+Nothing. J3 ended 2026-11-21 22:21 PST and was judged in entry 12; J4 ended 2026-11-22 20:15 PST
+and was judged in entry 14 (J4a-c hold).
 
 ## Card time
 
 J1 (Slurm 4746) 0.31 card-h, J2 (4824) 0.35 card-h, J3 (4825, 4849, 4861) 2.00 card-h by
-Slurm accounting. The package used 2.66 card-hours against
+Slurm accounting; J4 (4922) 0.45 card-h. The package used 3.11 card-hours against
 the 2.5 of its brief (J3 to a = 1001 was the lead's choice under decision 0025 item 4,
 entry 4). No card job was submitted in batch 6. Processor runs P1-P4 at 4-6 threads.
 
