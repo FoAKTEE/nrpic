@@ -638,7 +638,7 @@ evolved background level 1 and level 0 are the same run to rounding, and all tha
 of the two time integrations.
 (c) restart at cycle 10: dump, .modes and .rmodes of cycle 20 identical.
 
-## Entry 14 (2026-11-24 06:24 PST): final source 64f150ec: predictions of the closing runs
+## Entry 14 (2026-11-24 06:23 PST): final source 64f150ec: predictions of the closing runs
 
 The source is that of commit 64f150ec (`git diff 64f150ec HEAD -- athenak/` empty):
 6ca93cba plus V once per stage, `noise_level2_laplacian`, `noise_background_eq`.
