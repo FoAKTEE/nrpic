@@ -777,3 +777,9 @@ Predictions, written before the runs:
   QA C1 "counts agree"; parse rate 737/762 = 96.7 % (bar 95 %); golden hybrid 28/32 papers as in
   ingest4; the snapshot moves db/current to a new file and `kb status` on it shows 762 papers and
   864 claims. Refuted if C1 disagrees, the rate or the golden count changes, or the counts differ.
+- C1 outcome (run kb-20261124-233445-89478ae): FAILED in part. Claims 862 (supersedes 682), 863
+  (answer to 714), 864 (precise text for 452) were added; 682 refuted; 781, 804, 409, 447, 449,
+  450 fulltext/checked with every locator row resolved (2, 8, 6, 1, 7, 5); 714, 809, 452
+  annotated. The three `kb claim relocate` calls failed: the command requires `--by` (my
+  script omitted it), so 862-864 had no locator rows. Fixed in apply_g3.sh; the three relocates
+  are rerun by relocate_new.sh. Prediction C1b: three relocates exit 0 and every row resolves.

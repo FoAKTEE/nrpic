@@ -20,7 +20,7 @@ out=$($KB claim add --by $BY --track D-bh-dress --label fulltext --kind number -
   --evidence 'supersedes 682 (verifier KB-G3 item 1a); read at 1305.2619v1 SFWpaper.tex L443; D values in run D-bh-dress-20261115-145636-5259f48 reference.json constf' \
   --text 'arXiv:1305.2619 (SFWpaper.tex L443): the Gondolo-Silk distribution vanishes at r = 8Gm and is "a factor of three" smaller at its peak than the fully relativistic one; replacing 8Gm by 4Gm in the Gondolo-Silk formula gives a distribution that peaks "about 15%" higher than the numerical (relativistic) result. D-bh-dress computed the two numbers as 2.59 (relativistic peak over Gondolo-Silk peak) and 9.2 per cent (4Gm variant over relativistic) in run D-bh-dress-20261115-145636-5259f48 (reference.json, constf: 2.5897, 0.0922); they are not read off Fig. 1.') || fail=1
 echo "$out"; N682=$(echo "$out" | sed -n 's/^claim \([0-9]*\) added$/\1/p')
-test -n "$N682" && $KB claim relocate "$N682" --locator '1305.2619v1:SFWpaper.tex:L443' || fail=1
+test -n "$N682" && $KB claim relocate "$N682" --by $BY --locator '1305.2619v1:SFWpaper.tex:L443' || fail=1
 $KB claim refute 682 --by $BY --evidence "wrong as worded (verifier KB-G3 item 1a, confirmed by the lead at 1305.2619v1 SFWpaper.tex L443): the 15 per cent belongs to the 4Gm variant, not to the Gondolo-Silk distribution; D's 2.59 and 9.2 per cent are computed in run D-bh-dress-20261115-145636-5259f48, not read off Fig. 1. The paper is not refuted, the claim text is. Superseded by claim $N682." || fail=1
 
 # 781 (brief L426): whether NRPIC keeps AthenaK's single time step for all levels. Answer yes.
@@ -34,7 +34,7 @@ out=$($KB claim add --by $BY --track brief --label fulltext --kind result --pape
   --evidence 'answers seed 714; search of every .tex file of 2611.12831v1 (main.tex is the only one) for cosmolog, periodic, expanding, FLRW, Friedmann' \
   --text 'arXiv:2611.12831v1 does not discuss cosmology in its full text: the strings "cosmolog" and "periodic" occur nowhere in main.tex (its only TeX file); FLRW appears only as the interior geometry of the Oppenheimer-Snyder solution (L867, L877) and "expanding" only for the diffuse cloud of an unbound cluster model (L1142).') || fail=1
 echo "$out"; N714=$(echo "$out" | sed -n 's/^claim \([0-9]*\) added$/\1/p')
-test -n "$N714" && $KB claim relocate "$N714" --locator '2611.12831v1:main.tex:L867; 2611.12831v1:main.tex:L877; 2611.12831v1:main.tex:L1142' || fail=1
+test -n "$N714" && $KB claim relocate "$N714" --by $BY --locator '2611.12831v1:main.tex:L867; 2611.12831v1:main.tex:L877; 2611.12831v1:main.tex:L1142' || fail=1
 
 # 804 (brief L1751): umbrella of six [BACKGROUND] statements; each part has a checked claim.
 $KB claim verify 804 --by $BY \
@@ -76,7 +76,7 @@ cat > "$NRPIC_RUN_DIR/annotate.tsv" <<EOT
 452	processed: partly right. 2602.06961 is a PN N-body paper of the Jena group (Bruegmann co-author); 2610.20594 is a Peters-equation method for hierarchical triples that uses the pn-nbody code, not a PN N-body dynamics paper; see claim $N452. "Likely competitors" and "repeat the citation queries" are F's judgement and advice; the label stays to_verify for them.
 EOT
 python3 -I tracks/kb/lead_b13/scripts/annotate.py annotate "$NRPIC_RUN_DIR/annotate.tsv" || fail=1
-test -n "$N452" && $KB claim relocate "$N452" --locator '2602.06961v1:apssamp.tex:L77-85; 2610.20594v1:apssamp.tex:L79-88; 2610.20594v1:apssamp.tex:L1469' || fail=1
+test -n "$N452" && $KB claim relocate "$N452" --by $BY --locator '2602.06961v1:apssamp.tex:L77-85; 2610.20594v1:apssamp.tex:L79-88; 2610.20594v1:apssamp.tex:L1469' || fail=1
 
 snap $N682 $N714 $N452 > "$NRPIC_RUN_DIR/after.tsv"
 $KB claim stats > "$NRPIC_RUN_DIR/stats.txt" 2>&1
