@@ -12,7 +12,7 @@ locator stand in the text of `RESULTS.md`).
 - `CARD_COSTS.md`: actual card costs of the fifteen reproduction runs (the second table of
   `../scope/CARD_PLAN.md`).
 - `fig/`: the figures (PNG; the PDFs stay in the run directories), copied from the registered
-  figure run named in `RESULTS.md`.
+  figure run named in `RESULTS.md` (not made yet: paused 2026-11-24 06:30 PST, JOURNAL entry 4).
 - `figures/`: the scripts.
 
 ## Scripts
