@@ -183,11 +183,12 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True)
     ap.add_argument("--sha", action="store_true")
+    ap.add_argument("--replot", default=None, help="restart_check.json of an earlier run: plot only")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     runs = json.load(open(os.path.join(HERE, "runs.json")))
-    res = {}
-    for lab, r in runs.items():
+    res = json.load(open(a.replot)) if a.replot else {}
+    for lab, r in (runs.items() if not a.replot else []):
         rd = os.path.join(SCRATCH, r["orig"])
         rst = newest_restart(rd)
         e = {"orig": r["orig"], "chain": chain_summary(rd)}
@@ -215,7 +216,8 @@ def main():
               f"size_ok={e['rst']['size_ok']} sf_ok={e['sf']['ok']} dump#={e['sf']['dump_number']} "
               f"next={e['sf']['dump_next_time']:.6f} intact={e['intact']}"
               + (f" sha={e['rst']['sha256_match']},{e['sf']['sha256_match']}" if a.sha else ""))
-    json.dump(res, open(os.path.join(a.out, "restart_check.json"), "w"), indent=1, default=str)
+    if not a.replot:
+        json.dump(res, open(os.path.join(a.out, "restart_check.json"), "w"), indent=1, default=str)
 
     import matplotlib
     matplotlib.use("Agg")
@@ -224,7 +226,7 @@ def main():
     fs.use_style()
     labs = list(res)
     fig = plt.figure(figsize=(fs.FULL_WIDTH, 2.8))
-    ax = fig.add_axes([0.11, 0.17, 0.86, 0.78])
+    ax = fig.add_axes([0.11, 0.17, 0.86, 0.70])
     for i, lab in enumerate(labs):
         e = res[lab]
         tl = e["rst"]["tlim"]
@@ -238,9 +240,10 @@ def main():
     ax.set_yticks(range(len(labs)))
     ax.set_yticklabels(labs)
     ax.minorticks_off()
-    ax.set_xlim(0, 1.12)
+    ax.set_xlim(0, 1.17)
+    ax.set_ylim(-0.6, len(labs) - 0.4)
     ax.set_xlabel("simulated time / tlim of the run")
-    ax.legend(loc="lower right", ncol=2)
+    ax.legend(loc="lower left", ncol=2, bbox_to_anchor=(0.0, 1.0), borderaxespad=0.2)
     fs.save(fig, os.path.join(a.out, "fig_progress"))
     print("wrote", os.path.join(a.out, "restart_check.json"))
 
