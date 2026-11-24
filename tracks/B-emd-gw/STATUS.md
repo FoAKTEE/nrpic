@@ -14,12 +14,14 @@ last-result: batch 11 (lead, 2026-11-24): population GR analysis B-20261124-1319
              shear: P10 holds (f = 1 vs 1/3: -8.7e-5, B-20261124-131336-bc61eee); L2 with
              narrow fans -0.828, -0.830, -0.835 at N_y = 32-128 (B-20261124-134209-4584052),
              near CosmoGRaPH's -0.8183, far from gevolution and GRAMSES, not converging; S3
-             floor 2-3e-5. Slice mosaic (C13) B-20261124-133709-85c4be7
+             floor 2-3e-5. Slice mosaic (C13) B-20261124-133709-85c4be7; TT spectra
+             B-20261124-134953-18618df: the excess starts at |k| = 4-5 k_f (R22)
 running:     card: Newtonian reference at 128^3 with the GR runs' particles
              B-20261124-131438-5d7e049 (Slurm 5167, N1-N4); restarts X0-X3 of the 0.028 run
              B-20261124-133533-cb0bb7d (Slurm 5169). Sequencer pid 168802 (restarted 05:40):
              Newtonian analysis when 5167 ends; IC solves at 128^3 x 8 per cell and 256^3
-             (processors), then their GR chains (particle and mesh legs, I3, M1-M4, Q1-Q2).
+             (processors), the Gamma-driver gauge leg (GD1-GD3), then the particle and mesh
+             legs (I3, M1-M4, Q1-Q2).
              stage verify G1 in the background (pid 3758206, log
              scratch/B-emd-gw/tmp/verify_G1_20261124.log; results uncommitted when it ends)
 next:        1. read X0-X3 (population/JOURNAL 05:58): which of slice, step, slicing stops the

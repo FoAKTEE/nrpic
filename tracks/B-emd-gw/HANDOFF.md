@@ -18,7 +18,7 @@ Files to read first: `STATUS.md`; `stage/G2/OPEN.md`; `population/JOURNAL.md` (e
 |---|---|---|---|
 | B-20261124-131438-5d7e049 | Newtonian reference, 128^3, the GR runs' own particles, sigma1 = 0.014 and 0.028 to a = 143 (card batch, v0.6, Fourier Poisson) | Slurm 5167; output `scratch/B-emd-gw/<id>/newton_s014`, `newton_s028` | the sequencer starts `pop_newton128_an` (`analyze.py`, tag _n128) when it ends; then `population/scripts/compare_newton.py --gr <B-20261124-131918-e71996f>/analysis_gr_s014.json --newton <analysis run>/analysis_n128.json` (predictions N1-N4, JOURNAL 05:48) |
 | B-20261124-133533-cb0bb7d | X0-X3: restarts of the 0.028 run from t = 8 to t = 10 (same; cfl 0.125; Gamma-driver shift; f = 1 slicing with dt_lightspeed) | Slurm 5169; `<id>/x0_ctrl` ... `x3_f1` | predictions X0-X3 (JOURNAL 05:58): read pop.guard.txt (stop time) and pop.cstat.hst (K_max) of each case; `analyze_gr.py` works on a case directory |
-| sequencer pid 168802 | queue: pop_newton128_an (after 5167), pop_s014_ic_p8 and pop_s014_ic256 (initial data on processors, started after shear series 2 ended), pop_s014_gr_p8 and pop_s014_gr256 (card chains when the data converge and a slot is free) | `scratch/B-emd-gw/sequencer/` | I3, M1-M4, Q1-Q2 (JOURNAL 06:10); `analyze_gr.py --run p8:<dir>:0.014 --run n256:<dir>:0.014` against the base run |
+| sequencer pid 168802 | queue: pop_newton128_an (after 5167), pop_s014_ic_p8 and pop_s014_ic256 (initial data on processors, started after shear series 2 ended), pop_s014_gr_gd (card chain, Gamma-driver gauge leg, no input to wait for: submitted when a slot frees), pop_s014_gr_p8 and pop_s014_gr256 (card chains when the data converge and a slot is free) | `scratch/B-emd-gw/sequencer/` | GD1-GD3 (JOURNAL 06:30), I3, M1-M4, Q1-Q2 (06:10); `analyze_gr.py --run gd:<dir>:0.014 --run p8:<dir>:0.014 --run n256:<dir>:0.014`, then `fig_gr_spectra.py` against the base run |
 | pid 3758206 | `nrpic-stage verify B-emd-gw G1` (formal rerun after the chains ended) | log `scratch/B-emd-gw/tmp/verify_G1_20261124.log` | writes stage/G1/VERIFY_RESULTS.{md,json} (uncommitted): commit them; expect PASS on 'runs' |
 
 `nrpic-stage verify B-emd-gw G2` was not run this session (the G1 verify had been hashing for an
@@ -26,8 +26,10 @@ hour); run it in the background, then `nrpic-stage report B-emd-gw G2`.
 
 ## Packages (what remains)
 
-- population: X0-X3 decide what stops the 0.028 core (R21); N2-N4; the legs (R22: is the high-k
-  TT energy after halo formation radiation, gauge remainder or mesh error?); figure defects
+- population: X0-X3 decide what stops the 0.028 core (R21); N2-N4; the gauge, particle and mesh
+  legs (R22: the high-k TT energy after halo formation starts at |k| = 4-5 k_f and is 1e3 times
+  the particles' near field per shell near 30-40 k_f, `figs/pop_gr_spectra.png`; gauge, mesh or
+  physics?); figure defects
   (cut y labels of pop_gr_halos, saturated K panel of the mosaic, overlapping right axis label of
   pop_gr_stop).
 - shear: L2 values exist but do not converge; the transport along the observer between the
