@@ -6,7 +6,7 @@ verdicts, what the review changed, and the verdict for release v0.7. Request: Tr
 `repro/scope/outbox_draft/core_noise_level2.md` (branch `track/E-stoch-inf`). Paper:
 P1 = arXiv:2512.14649 v2, `kb-data/raw/arxiv/2512.14649/v2/src/PRD_v2.tex`, lines
 `P1:<n>`. Journal of the tests: `tracks/core/JOURNAL-noise-level2.md` (entries 0 to 5
-the implementation, 6 to 14 the review). Results: sections 9 and 12.
+the implementation, 6 to 15 the review). Results: sections 9 and 12.
 
 ## 1. What P1 does and what the code did before
 
@@ -234,7 +234,7 @@ On processors the difference never showed (64^3, six threads: 1.03 and 0.99).
 - T5 card smoke runs at 64^3, slow-roll and inflection inputs, levels 0 and 2, timing.
 - T6 non-finite guard: a background with Pi = 0 at level 2 (Z = 0) must stop with exit
   status 3.
-- Review (journal entries 6 to 14; scripts in `analysis/noise_level2/`): R0 the tests
+- Review (journal entries 6 to 15; scripts in `analysis/noise_level2/`): R0 the tests
   above again (`cpu_tests.py`, `bytecmp.py`); R1 the reviewed source against 6ca93cba,
   byte for byte; R2 readings of the Laplacian, R3 background of the window, R4 a lapse
   that is not 1 (`review_tests.py`); R5 card (`card_review.list`, `card_review.py`); R6
@@ -311,7 +311,7 @@ background); `scalar_field_slice.cpp` `InitialSlice` (seven lines after `y0[3] =
 `CMakeLists.txt` (one file). Everything else is in the new file
 `scalar_field_noise_mesh.cpp`. New input: `problems/scalar/sr_stochastic_l2.athinput`.
 
-## 12. Review on Fable (2026-11-24; journal entries 6 to 14)
+## 12. Review on Fable (2026-11-24; journal entries 6 to 15)
 
 First line of the report: RESULTS UNCHANGED: the six ablation runs made with 6ca93cba
 stand. No defect was found in what those runs computed; the reviewed source gives the
@@ -361,14 +361,14 @@ Review tests (processors, 32^3, nmax2 = 64 unless said; run ids in the journal):
 | R2 Laplacian: covariant, flat against metric | 2.85e-7, 3.93e-7 in the coefficients; level-2 effect 1.447e-4; amplitude 1e-2: ratios 1.0002e-2, 1.0000e-2 | as predicted (1e-3 to 1e-1 of the effect), at the low end |
 | R3 window at level 2: Friedmann against means | 2.34e-8 | as predicted (below 1e-2 of the effect); the comparison with "level 1 against level 0" failed and led to F1 |
 | R4 lapse = a, homogeneous slice, kicks off | level 2 against level 1: 8.0e-12; mesh against shells as with geodesic slicing at equal ln a | as predicted |
-| R6 threaded build, old against new, level 2, 64^3 | R6_RESULT | R6_VERDICT |
+| R6 threaded build, old against new, level 2, 64^3 | NOT RUN: the session stopped on the pause flag (script `omp_identity.py`, both executables built) | open |
 | R7 abs(Pi/<Pi> - 1) in AL2S, AL2U (256^3) | 8.9e-5, 6.4e-2 at most | as predicted |
 | R8 level 1 against level 0 on the mesh, Courant 0.25, 0.125, 0.0625 | 5.3e-5, 3.3e-6, 2.1e-7 at t = 0.98 | fourth order, as predicted |
 | R9 the same pair in Track E's runs at 256^3 | 7.0e-6 per mode, 3.5e-7 in shell power | size predictions failed twice (journal entries 12, 13); the finding holds, smaller |
-| R10 byte regression against core-v0.6, options absent | R10_RESULT | R10_VERDICT |
+| R10 byte regression against core-v0.6, options absent | final source 64f150ec: the ten wave-1 cases and the three stochastic examples with their restarts, every file identical (2 restart files with the masked header bytes); the release driver 75 of 75 items, twelve set-ups, PASS. The same for the intermediate source 746869ef | as predicted |
 | R11 evolved background: level 0 against level 1 | 7.6e-12 homogeneous, 6.5e-12 perturbed with kicks; restart identical | as predicted for (a), (c); (b) on the rounding floor |
-| Final source against 6ca93cba on the fifteen runs | R1F_RESULT | R1F_VERDICT |
-| Example `problems/scalar/sr_stochastic_l2.athinput` | EX_RESULT | EX_VERDICT |
+| Final source against 6ca93cba on the fifteen runs | run core-20261124-143147-2ff64b9 was running when the session stopped on the pause flag; not closed, not compared | open (R1 holds for 746869ef; the later change is confined to branches of the new option) |
+| Example `problems/scalar/sr_stochastic_l2.athinput` | runs; 8 of 8 files identical to `sr_stochastic.athinput` with `noise_level = 2` | as predicted |
 | R5 card: identity at 64^3, cost at 256^3 | NOT RUN (queue rule) | pending |
 
 What Track E's six runs show, and what could be added: (i) level 2 against level 1 on
@@ -380,9 +380,16 @@ and 0.75 card-hours at the cost of the old runs); in slow roll the prediction is
 to level 1 to rounding"; (iv) AL2S ended at cycle 1227 of 1386 because of the cost found
 in section 7; it can be continued from its restart file with either executable.
 
-Verdict for release v0.7: fit, on two conditions. (1) The card job R5 has run and
-passed (the reviewed card executable is otherwise untested on a card). (2) At the merge
-the options enter the changelog and `coord/INTERFACES/` (this file), with the limits of
-section 10. Nothing else is open in the source: byte regression against core-v0.6 with
-the options absent passes on processors; the six source files touch shared code only at
-the lines of section 11.
+Verdict for release v0.7: fit, on three conditions. (1) The card job R5 has run and
+passed (the reviewed card executable is otherwise untested on a card). (2) The two
+closing checks that the pause of 2026-11-24 06:32 PST cut are done: the comparison of
+run core-20261124-143147-2ff64b9 with R0 (final source against 6ca93cba) and R6 (threaded
+build). (3) At the merge the options enter the changelog and `coord/INTERFACES/` (this
+file), with the limits of section 10. Nothing else is open in the source: byte
+regression against core-v0.6 with the options absent passes on processors for the final
+source; the seven source files touch shared code only at the lines of section 11.
+
+State of the executables at the pause: the three executables of the final source are
+built in the worktree (`wt/core-s2/.work/build_{cpu,gpu,omp}_nl2/src/athena`, sha256
+0222e5f0.., d7069a4e.., 31210622..) and are NOT yet published;
+`scratch/core/exe/core_noise-level2/` still holds the set of 6ca93cba, untouched.

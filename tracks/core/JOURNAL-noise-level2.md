@@ -656,3 +656,50 @@ threaded executable of 6ca93cba, level 2 at 64^3, three threads: every file iden
 Example: `problems/scalar/sr_stochastic_l2.athinput` runs and gives the bytes of
 `sr_stochastic.athinput` with `noise_level = 2` (the options it names are the
 defaults).
+
+## Entry 15 (2026-11-24 06:33 PST): PAUSED (locks/PAUSE found at 06:31); where the review stands
+
+The pause flag appeared between 06:23 and 06:31. I found it in the same shell command
+that submitted R1f (the check and the submission were chained; the run was started before
+I read the answer): run core-20261124-143147-2ff64b9 is therefore running on five cores
+and will end on its own in about eleven minutes; it is registered and NOT closed. Nothing
+was started after that. No card job of this package exists.
+
+Closed before the pause, outcomes:
+- R10f, final source 64f150ec (runs core-20261124-142019-4e1c3a5 and
+  core-20261124-142032-79291d0): scalar-field cases flrw 1, flrwg 1, plane 8, wave 12,
+  smr 1, power 15, powerm 15, ms 27, msnk 27 files identical, msr 11 identical and 2
+  masked; sr, usr, srg 16 of 16 each and their restarts 8 of 8; the release driver
+  twelve set-ups, 75 identical items, REGRESSION PASS. PREDICTION HELD.
+- Example (run core-20261124-142347-bd744f6): `sr_stochastic_l2.athinput` runs; 8 of 8
+  files are those of `sr_stochastic.athinput` with `noise_level = 2`. PREDICTION HELD.
+- Figures of R2 to R4 redrawn (run core-20261124-142629-8516adb, numbers unchanged):
+  NOT yet looked at; the first versions were (entry 10).
+
+Not done (in the order to do them; nothing below was started):
+1. Close R1f and compare it with R0:
+   `harness/bin/nrpic-run finish core-20261124-143147-2ff64b9`, then
+   `harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher local --cores 1 --background --package tracks/core/analysis/noise_level2 --purpose "R1f: byte comparison with R0" -- python3 tracks/core/analysis/noise_level2/bytecmp.py --a /data/haiyangw/nrpic/scratch/core/core-20261124-130250-0a4a7cb --b /data/haiyangw/nrpic/scratch/core/core-20261124-143147-2ff64b9 --out '$NRPIC_RUN_DIR'`
+   (prediction, entry 14: 366 of 366 identical).
+2. R6: `... --cores 6 ... -- python3 tracks/core/analysis/noise_level2/omp_identity.py --old /data/haiyangw/nrpic/scratch/core/exe/core_noise-level2/athena_cpu_omp --new /data/haiyangw/nrpic/wt/core-s2/.work/build_omp_nl2/src/athena --out '$NRPIC_RUN_DIR'`
+   (prediction, entries 9 and 14: every file identical).
+3. Publish the reviewed executables: `.work/build_cpu_nl2/src/athena` (sha256 0222e5f0..),
+   `.work/build_gpu_nl2/src/athena` (d7069a4e..), `.work/build_omp_nl2/src/athena`
+   (31210622..) into `scratch/core/exe/core_noise-level2/reviewed/` with COMMIT (64f150ec),
+   SHA256SUMS and READY (draft: `scratch/core/tmp/READY.reviewed`, its TESTED block still
+   to be written from section 12 of the interface text); leave the set of 6ca93cba in
+   the directory above untouched until the card job has passed, and put a note at the
+   top of its READY.
+4. Card job R5 when core has fewer than two card jobs queued:
+   `harness/bin/nrpic-run submit --launcher batch --list tracks/core/analysis/noise_level2/card_review.list --exe /data/haiyangw/nrpic/wt/core-s2/.work/build_gpu_nl2/src/athena --wall 00:20:00 --gpu-hours 0.33 --kind scouting --gate G2 --purpose "noise-level2 review R5"`,
+   then `card_review.py --run <batch dir> --smoke /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261123-035724-b661081 --out '$NRPIC_RUN_DIR'`
+   (predictions, entry 8). If Track E adds level-0 runs with the evolved background,
+   a 64^3 deck with `noise_background_eq = evolved` belongs in that list first.
+5. Look at the redrawn figures of run core-20261124-142629-8516adb; redraw
+   `fig_pi_range.png` (`pi_range.py --replot <json of core-20261124-133522-10f8c7a>`).
+6. The inflection case with `noise_background_eq = evolved` (32^3, `usr_check.py` with
+   the option): untested; there the backreaction on the means may be above rounding.
+
+Posted with this entry: the message to Track E (outbox), which says that its six runs
+stand, how the three curves are to be read, and that the reviewed executables are not
+yet published.
