@@ -121,8 +121,39 @@ status [<run_id>] · finish <run_id> · verify <run_id> · budget · stop <run_i
 - Where a run's records are written: the manifest `tracks/<ID>/runs/<run_id>/manifest.json`
   (committed on the own branch at submit and again at finish); in `scratch/<ID>/<run_id>/` the
   outputs, `run.log` (local runs), `sha256sums.txt` (at finish) and `.nrpic/launch.json`,
-  `.nrpic/result.json` (how the run was started and ended; not checksummed). Nothing else is
-  written into the worktree.
+  `.nrpic/result.json` (how the run was started and ended), `.nrpic/sha256cache.json` (the checksum
+  cache, below); `.nrpic/` is not checksummed. Nothing else is written into the worktree.
+- Checksums of outputs (decision 0039 item 5): `finish`, `verify` and `nrpic-stage verify` hash through
+  the run directory's cache `.nrpic/sha256cache.json`, one entry per relative path with the file's size and
+  modification time in nanoseconds when it was hashed. A file is read again only when it is new, when its
+  size or modification time differs from its entry, or when it had been modified less than 2 s before it was
+  hashed (a later write in the same clock tick could keep the time). A checksum taken from the cache proves
+  unchanged size and modification time since it was hashed, not bytes read again: a change that keeps both
+  (a byte rewritten and the time restored with `touch -d` or `cp -p`) is not seen by a cached pass. `--full`
+  (`finish <run_id> --full`, `verify <run_id> --full`, `nrpic-stage verify ... --full`) reads every byte and
+  rewrites the cache. Up to four files are hashed at once, never more. Both commands print how many files were
+  hashed again and how many were taken from the cache. A checksum that differs from `sha256sums.txt` fails as
+  before, from the cache or not. An unreadable cache is ignored (every file hashed); the cache is an untracked
+  file in the run directory, so a gate that must rest on bytes read is verified with `--full`.
+- Runs continued in place (decision 0039 item 5). A chain cut by preemption, by the queue cap or by its
+  segment cap is continued from its own restart file by a `--cmd` wrapper of the shared queue (next section),
+  which appends one record to the manifest's optional top-level list `continuations` and commits the manifest
+  path-limited. A record is an object with `at` (when: ISO 8601 to the second with a zone, `Z`, `+HH:MM` or
+  `+HHMM`), `from_restart` (the restart file it resumes from, or `null` when the chain had none yet), `by` or
+  `via` (who: the wrapper and its queue entry), and at least one of `job_id` (the Slurm job it submitted,
+  digits), `segments_used_before` (integer >= 0) and `max_segments` (the cap after it, integer >= 1); further
+  keys (`reason`, `kind`, `status_before`, `extra_athena_args`, `predictions`) are free. Records are appended
+  in order of `at`. Example: `{"at": "2026-11-24T13:07:12-0800", "job_id": "5210", "from_restart":
+  ".../rst/esflk.00005.rst", "segments_used_before": 5, "max_segments": 12, "via": "harness/bin/nrpic-queue
+  --cmd tracks/D-bh-dress/g2long/tools/continue_chain.sh"}`. `finish` accepts such a manifest; a malformed list
+  is refused (by finish, `verify`, `nrpic-stage verify` and the pre-commit hook) with what is wrong. A run
+  closed before its last record (its `finished` earlier than the record's `at`) is open again: `nrpic-run
+  finish <run_id>` closes it again without `--status`, from the chain's STATUS, once no job of it is in
+  squeue; until then `verify`, `lint` and the stage check name it. Card-hours of a chain are the sum over every
+  job it ever had (launch, `chain/events.log`, the records' `job_id`): sacct's ElapsedRaw per job, else the
+  job's own segment logs `chain/seg<NNN>.job<ID>.*.log`, else 0 and named; the manifest records the sum in
+  `resources.gpu_hours`, the parts in `resources.gpu_seconds_by_job` and how in `resources.gpu_hours_basis`.
+  The second close takes the unchanged outputs' checksums from the cache and hashes the new ones.
 - Clean tree: the code of the run must be the commit. Helpers sharing one worktree pass
   `--package <their directory>`: then the package, the inputs and the shared code (athenak/,
   python/, scripts/, harness/, problems/, ...) must be clean; other helpers' work elsewhere in
@@ -242,7 +273,8 @@ run [--poll S] [--cmd-timeout S] [--keeper S] [--keeper-confirm S] · stop [--wa
   the dispatch; the variable alone proves nothing, see the nrpic-run section), then resumes
   `scripts/submit_chain.sh <run dir> <deck>` in place with `JOB_NAME=<run_id>` (so the queue recognises its
   jobs), `MAX_SEGMENTS` set (the script's default is 100), the same executable and process name, and records
-  the continuation in the run's manifest; the queue records the job it printed (and knows the chain's
+  the continuation in the run's manifest (one record of `continuations`, nrpic-run section; close the run
+  afterwards with `nrpic-run finish <run_id>`); the queue records the job it printed (and knows the chain's
   later segments by the run-id name, which is why `JOB_NAME=<run_id>` matters). It must not leave anything
   running: what is left of its process group when it ends is ended. A wrapper that submits two jobs trips the
   ALERT below.
@@ -323,6 +355,15 @@ of the manifest check are listed under `runs-waived` (WARN) and do not fail the 
 "X ... Y" is not expanded; name each run. An unlisted one still fails `runs`, and the message
 says how many to list.
 
+The run check and the output checksums (decision 0039 item 5): a manifest with a well-formed
+`continuations` is checked as nrpic-run's; a malformed list, or a run continued after it was closed and
+not closed again, fails `runs` with what is wrong. Output checksums go through each run directory's cache
+(nrpic-run section): row `checksums` of VERIFY_RESULTS.md gives how many output files were hashed again
+(bytes read) and how many were taken from the cache, and states that a cached entry proves unchanged size
+and modification time since it was hashed, not bytes read again; it is WARN when any came from the cache,
+PASS after `--full` (every byte read), WARN with `--no-checksums` (none checked). Leads no longer need
+`--no-checksums`: the second verify of an unchanged tree reads no output again.
+
 Waivers of the orchestrator (decision 0019 item 6): `verify` reads `coord/WAIVERS.md` as committed on
 main (through git, from any worktree; a working-tree copy does not count) and waives every failure of
 the manifest check of each run named there, whatever its date or kind; they are listed under
@@ -364,7 +405,8 @@ requested ids, XML with a DOCTYPE. Gzipped PostScript stays `src/main.tex` (as b
 - `harness/hooks/pre-commit` (brief 13.1) rejects files above 5 MB, added lines that look
   like secrets (documentation placeholders pass: EXAMPLE keys, runs like `abcdefgh`, a key
   header without key material), run manifests that are not JSON objects or whose run_id differs
-  from the directory, and paths outside `tracks/<ID>/` and main's OWNERSHIP on an owner's branch
+  from the directory or whose `continuations` is malformed (the rules of nrpic-run, read from
+  `harness/lib/nrpic_harness.py`), and paths outside `tracks/<ID>/` and main's OWNERSHIP on an owner's branch
   (main and `proposal/<ID>/<slug>` are exempt from the last check). In a conflicted merge it checks
   only what the resolution adds, not what main brings. Dry run over the history of every owner
   branch (wave 3a, `coord/digests/hook-dryrun.md`): `python3 -I harness/tests/precommit_dryrun.py
