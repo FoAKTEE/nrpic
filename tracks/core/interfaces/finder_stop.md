@@ -48,23 +48,40 @@ Defaults: 1e-2 from the finder itself, 1e-5 times the puncture mass from
   new option.
 
 `<fastflow> polish_iterations_<n> = N`: after the mass rule is first met the flow goes
-on for N iterations, then the surface is accepted. If `flow_iterations_<n>` ends during
-the polishing, the last surface is accepted (the option never turns a surface that met
-the mass rule into "iteration limit"). The failure checks of the loop stay active: a
-polishing step that gives a non-finite area or mean expansion, a mean expansion above
-`hmean_tol`, a negative mean radius or a mass below 1e-10 ends the search not found,
-with its reason. Recommended: `polish_iterations_<n> = 100` with any `mass_tol` (section
-5: within 6.3e-9 of the tight rule from the stored surface and 4.5e-8 from outside).
-A rule on the residual (column 9) was not added: its floor depends on the cells and on
-the angular grid (7e-9 in Track D's runs [their number]), so a threshold below the floor
-would end every search at the iteration limit.
+on for N iterations, and the surface is accepted at the first iteration after them at
+which the mass rule holds again. A flow that is still moving when the polishing ends
+goes on, and the search ends not found at `flow_iterations_<n>` (reason 6 of the status
+file); N at or above `flow_iterations_<n>` is refused at start-up. The other failure
+checks of the loop stay active during the polishing. With N = 0 the rule is the old
+one. Use it with the tolerance of `puncture_setup` (1e-5 m) or a smaller one, not with
+the finder's default of 1e-2: a mass change below 1e-2 per iteration is not convergence
+(section 5, T5a). Recommended: `polish_iterations_<n> = 100`, `flow_iterations_<n> =
+400` or more.
 
-Columns of `<base>.horizon_summary_<n>.txt`: column 1, headed "iter", is the stage of
-the integrator at which the finder is called (4 with rk4 at every search), neither the
-cycle nor the number of flow iterations; column 9 ("hrms") is the area mean of the
+A first form of the option accepted the surface at the end of the polishing whatever
+the flow was doing; in the first 2 M of a puncture, while its horizon jumps outwards, it
+wrote surfaces with a residual of 0.12 to 1.5 as found (run
+core-20261125-135110-7966158, journal entry 14). It was replaced before publication.
+
+A rule on the residual (column 9) was not added: the residual of an accepted surface
+depends on the cells, on the angular grid and on the slice: 1.3e-3 to 1.9e-2 on the
+puncture of `problems/tests/finder_polish.athinput` in its first 2 M (that run) and
+7e-9 on Track D's puncture at late times [their number], both at cells of M/8. No
+single threshold serves both.
+
+**The summary file repeats itself when a search fails.**
+`<base>.horizon_summary_<n>.txt` gets a line at every search; when the search is not
+found the line holds the values of the last accepted surface again (a constant mass
+over several lines is the sign). Whether a search was found, why not, and how many
+flow iterations it took are in `<base>.horizon_status_<n>.txt`, written with
+`<fastflow> diagnostics = true` (columns: cycle, time, found, reason, flow iterations,
+area, mass of the last surface evaluated, ...). A tool that reads horizon masses to
+1e-4 reads the status file too [VERIFIED by reading `FastFlow::Write` and by that run].
+
+Columns of the summary file: column 1, headed "iter", is the stage of the integrator at
+which the finder is called (4 with rk4 at every search), neither the cycle nor the
+number of flow iterations; column 9 ("hrms") is the area mean of the
 squared expansion of the accepted surface; column 12 is the smallest coordinate radius.
-The number of flow iterations of a search is in `<base>.horizon_status_<n>.txt`
-(`<fastflow> diagnostics = true`, column 5).
 
 **Angular resolution** [numbers of Track D, runs D-20261124-130935-fdca920 and
 D-20261124-140606-286a302; not recomputed by core]: with the grid of `puncture_setup`
