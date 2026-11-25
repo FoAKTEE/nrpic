@@ -1,0 +1,62 @@
+claim_id	group	verdict	label_note	note
+862	A_new	SUPPORTED		1305.2619 SFWpaper.tex L443 gives 8Gm, "a factor of three", 4Gm "about 15%"; D's run D-bh-dress-20261115-145636-5259f48 reference.json constf has ratio_peak_rel_over_gs8 2.5897 and excess_peak_gs4_over_rel 0.0922 as the text says
+863	A_new	SUPPORTED		my grep of 2611.12831v1 main.tex (the only .tex): 0 hits cosmolog, 0 periodic; FLRW only L867, L877 (OS interior); expanding only L1142 (unbound cluster)
+864	A_new	SUPPORTED	wording: "(Heinze, Schaefer, Bruegmann, Jena)" lists the affiliation Jena as if a fourth author	2602.06961 L77-85 (N-body 2PN Hamiltonian, ADM gauge, numerical integration of the EOM); 2610.20594 L86-88 Peters equations, L1469 pn-nbody; Heinze is an author of 2505.03934 (L77), a BAM binary-single study
+865	A_new	SUPPORTED		2609.14218 MDPBH.tex L1141-1142 word for word
+866	A_new	SUPPORTED		2306.11810 L94, L114, L131, L149-163 (set-up), L209-217 (isolated-horizon formulas, flat rotational Killing vectors), L237 (previous work deJong:2021bbo); the reading 'same set-up' correctly marked as A's
+867	A_new	SUPPORTED	judgement label right	2611.12831 L586 'Hermite interpolation'; L588-591 weights equal the Catmull-Rom weights (I compared term by term); 0 hits 'catmull' in main.tex
+868	A_new	SUPPORTED		2611.12831 L763: factor eight per refinement, N_ppc^(-1/2), 'Future work should be devoted to potentially performing adaptive particle resampling in those regions'
+869	A_new	SUPPORTED	minor: 'a vacuum k = -1 FLRW with linear expansion' is background not stated at the locators (2012.14241 L329 says negative spatial curvature)	all 13 locators read; my own FTS search (Vlasov AND stability AND FLRW/cosmology terms) finds the same 20 papers as claims3's search, none on matter-dominated Lambda=0 FLRW under Einstein-Vlasov
+29	B_superseded_withdrawn	TAKEN OUT RIGHTLY		fragment without subject or condition; successor 865 right
+126	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'as arXiv:2109.04896' not said by 2306.11810 (L237 cites it for the two mechanisms only); successor 866 right
+482	B_superseded_withdrawn	TAKEN OUT RIGHTLY		cut text starting 'which are'; judgement stored as fulltext; successor 867 right
+572	B_superseded_withdrawn	TAKEN OUT RIGHTLY		joins a cut citation list with a separate clause; successor 868 right
+682	B_superseded_withdrawn	TAKEN OUT RIGHTLY		said D read 9.2 % and 2.59 off Fig. 1; the numbers are D's computation (run above); successor 862 right
+803	D_seeds_named	PROCESSED RIGHTLY		annotated with the answer (two events), pointer to 869; 869 right
+790	D_seeds_named	PROCESSED RIGHTLY		annotated: the EdS-type case answered by 869 (fluid results only; none for Einstein-Vlasov in the store)
+805	D_seeds_named	PROCESSED RIGHTLY	stays to_verify: an instruction, not a statement (agreed)	annotation spot-checked: A's DERIVATION.md section 8 at 2b13db83 L262-285 says what the annotation says; F's numbers 4 q^(2/3) = 18.6, 86.2, 400 and 38.6 at q = 30 recomputed by me
+409	D_seeds_named	SUPPORTED	label: fulltext/checked on a list of identifications read at abstracts, with a [TO VERIFY] part inside a checked claim (OPEN O4)	authors in the store: 2307.02474 Amendola et al., 2307.10708 Gao and Li, 2306.08199 Ghodla et al., 1904.03781 Croker et al. (ApJ 889, 2020); the cosmologically coupled BH subject at each abstract
+447	D_seeds_named	SUPPORTED	label: fulltext on an abstract reading (O4)	2605.22525 L101-117; authors Maeda, Okawa
+449	D_seeds_named	SUPPORTED	label: fulltext on abstract readings (O4)	six abstracts read; for 2609.20338 the abstract does not name the self-gravity, but full text L123, L262 says Newtonian self-gravity: the claim holds
+450	D_seeds_named	SUPPORTED	label: fulltext on abstract readings (O4)	five abstracts; 1502.05740 L51 'fully general relativistic simulations'; 1303.1540 authors East, Pretorius, L26-33 background subtraction and mass ratios >= 1e6
+452	D_seeds_named	PROCESSED RIGHTLY	stays to_verify (advice of F)	annotation of kb-lead-b13 matches 864; the earlier claims_tracks annotation ('not in the store') is outdated since ingest4 but superseded by the later event
+781	D_seeds_named	NOT SUPPORTED	fulltext/checked on a cut text ('so deep refinement slows everything down; whether NRPIC keeps this is [TO VERIFY]')	the answer is right (2611.12831 L75: 'Particles and fields share a common global time step'; L676), but the first clause is the brief's inference, not in the source, and the text still carries [TO VERIFY]; the verify event itself says only the time-step part is supported. Same class as 482/572: should be superseded by a whole-sentence claim
+804	D_seeds_named	PROCESSED RIGHTLY	fulltext/checked on an instruction (a list of things to check), unlike 805 which stays to_verify: inconsistent treatment	pointers to checked claims; spot-checked 720 (right, gr-qc/0107076 L59-61, gr-qc/9804040 L55-56) and 741 (right in substance, near-extremal spin at 1707.03595 Spin_PBH.tex L1206, but its stored locator L64-67 does not hold it)
+714	D_seeds_named	PROCESSED RIGHTLY	stays to_verify (a question)	answered by 863 (right)
+809	D_seeds_named	PROCESSED RIGHTLY	stays to_verify	kb-data/meta/inspire: 0909.0749, gr-qc_0012059 status ok; 2409.16053, 1709.00267 status not-found, as the annotation says (recids not re-read)
+870	A_new	SUPPORTED	abstract label right	1704.04307 L38-48
+871	A_new	SUPPORTED	abstract label right	2608.13206 L39 (factor approximately 94, conformal-time moving-puncture gauge as check, mu_c 0.7958)
+872	A_new	SUPPORTED	abstract label right	2610.23218 L41
+873	A_new	SUPPORTED	abstract label right; the name 'CTTK' is not in the abstract lines	2207.03125 L99
+874	A_new	SUPPORTED	abstract label right	2010.12584 L143
+875	A_new	SUPPORTED		2211.13950 L419-427 (Case I, Case II bounds), L550-563 (delta_th, 2/5 power branch and exponential branch)
+876	A_new	SUPPORTED		2211.13950 L296-301
+877	A_new	SUPPORTED	mixed: paper statement fulltext plus F's run numbers under the same label	1804.02911 L361-362 'D=2.1 for the coplanar prograde orbits, and for all sampled orbits'; F run F-hills-20261115-045435-f62d553 stdout D_over_rt 4.116 and 5.810
+878	A_new	SUPPORTED		2403.15126 L909-918
+879	A_new	SUPPORTED		2605.04487 L2882-2891
+880	A_new	SUPPORTED		1604.06065 L1394
+881	A_new	SUPPORTED		2611.12831 L1092 (ST85 = 1985ApJ...298...58S)
+289	C_siblings	SUPPORTED	machine-located, now read	2506.17641 L74: 0.3 c, 1e-10 to 1e-8, about 1 M_sun for 1e9 M_sun
+313	C_siblings	SUPPORTED	text carries locator debris '| 2601.17117 `SIDM_MS.tex:476`'	2601.17117 L476 (dispersion comparable to c, citing Feng:2021rst = 2108.11967 in the bib; 580 t_0, 3e-8 M, 200 M_sun), L481
+430	C_siblings	SUPPORTED	cut at both ends: starts 'lines 110, 246):' and ends '(' although it is the whole-sentence target of 431's supersession	2505.03934 L108 (thousand scatterings unfeasible), L110, L246 (equal masses, ADM mass 0.5 each)
+624	C_siblings	SUPPORTED	machine-located, now read	1505.04756 L65-67 (abstract: N-body gauge, Newtonian simulation includes all first-order relativistic contributions), L315
+81	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'criterion L298 -301.' fragment; successor 876 right
+84	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'thresholds L423-427' fragment; successor 875 right
+85	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'and L550-563' fragment; successor 875 right
+179	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'Omega_GW today (911-918)'; successor 878 right
+192	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'dE/dln omega (2891)'; successor 879 right
+213	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'spin-2 projector: 1394'; successor 880 right
+277	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'y_c sequence (1092)'; successor 881 right
+290	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'is correct].' ; pointed to sibling 289 (right)
+314	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'abstract `:64-71`'; pointed to sibling 313 (right)
+424	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'`mnras.tex` l. 361)'; successor 877 right
+431	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'line 108)'; pointed to sibling 430 (right in content, itself cut)
+619	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'Abstract'; successor 870 right
+620	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'Abstract'; successor 871 right
+621	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'Abstract'; successor 872 right
+622	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'Abstract'; successor 873 right
+623	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'Abstract'; pointed to sibling 624 (right)
+625	B_superseded_withdrawn	TAKEN OUT RIGHTLY		'Abstract'; successor 874 right
+171	B_superseded_withdrawn	TAKEN OUT RIGHTLY	withdrawn	'Abstract: lines 173-175' holds no statement (the track's row not re-read by me)
+187	B_superseded_withdrawn	TAKEN OUT RIGHTLY	withdrawn	'Abstract: line 171' holds no statement (row not re-read)
+549	B_superseded_withdrawn	TAKEN OUT RIGHTLY	withdrawn	'Paper [VERIFIED]:' a list heading (row not re-read)
