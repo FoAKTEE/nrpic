@@ -101,32 +101,44 @@
     "nodes": 1,
     "gpus": 1,
     "cores": 1,
-    "walltime_s": null,
+    "walltime_s": 3516.0,
     "wall_limit": null,
     "segments_max": 3,
     "gpu_hours_requested": 2.95,
-    "gpu_hours": null,
+    "gpu_hours": 2.6989,
     "particles": null
   },
   "slurm": {
     "partition": "preempt",
     "job_name": "D-20261123-022725-a553496",
-    "job_ids": []
+    "job_ids": [
+      "4934",
+      "4950",
+      "4973",
+      "4994",
+      "5144",
+      "5181",
+      "5210",
+      "5218",
+      "5225",
+      "5235",
+      "5243"
+    ]
   },
   "outputs": {
     "dir": "scratch/D-bh-dress/D-20261123-022725-a553496",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": null,
-    "bytes": null,
-    "files": null
+    "sha256sums_sha256": "5cadd13f70c46642a58a26ed55f8f952fa341d6410366bb308fab5ceeb775323",
+    "bytes": 39315419592,
+    "files": 172
   },
-  "status": "submitted",
-  "exit_code": null,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-23T02:27:26Z",
-  "started": null,
-  "ended": null,
+  "started": "2026-11-22T23:34:57-08:00",
+  "ended": "2026-11-24T20:45:40-08:00",
   "parents": [],
-  "notes": "",
+  "notes": "closed by hand with tracks/D-bh-dress/g2long/tools/close_by_hand.py (the code path of nrpic-run finish for chains), because nrpic-run refuses manifests with continuations",
   "budget_at_submit": {
     "gpu_hours_allotted": 30.0,
     "cores_allotted": 16,
@@ -147,5 +159,6 @@
       "via": "harness/bin/nrpic-queue --cmd tracks/D-bh-dress/g2long/tools/continue_chain.sh",
       "reason": "continued in place after its waiting job was cancelled under the queue cap (decision 0033)"
     }
-  ]
+  ],
+  "finished": "2026-11-25T11:56:18Z"
 }
