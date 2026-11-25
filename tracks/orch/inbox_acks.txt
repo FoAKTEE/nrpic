@@ -133,3 +133,4 @@ tracks/E-stoch-inf/outbox/20261124T234057Z__to-orch__g2-after-reproduction.md	20
 tracks/kb/outbox/20261124T234614Z__to-orch__kb-g3-package-and-claims.md	2026-11-25T02:09:15Z	ruled on in coord/DECISIONS/0035
 tracks/core/outbox/20261125T004353Z__to-all__sigterm-restart-and-chain-segments.md	2026-11-25T02:09:15Z	ruled on in coord/DECISIONS/0035
 tracks/core/outbox/20261125T004353Z__to-orch__step-limit-and-preempt-for-v07.md	2026-11-25T02:09:15Z	ruled on in coord/DECISIONS/0035
+tracks/core/outbox/20261125T030800Z__to-orch__release-candidate-core-v07.md	2026-11-25T03:32:39Z	ruled on in coord/DECISIONS/0036

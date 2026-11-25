@@ -1,0 +1,285 @@
+# COPY for core's package step-limit of track/A-emd-pbh:tracks/A-emd-pbh/periodic_threshold/inputs/peak_leak.athinput at commit 8d206e20 (Track A's refined periodic deck, there with cfl_number = 0.5; one line added in <z4c>: dt_gauge = 0.0, off, so that the cases can give the option on the command line; otherwise unchanged below this line; the runs of the package give time/cfl_number on the command line)
+# The periodic peak of peak_smr4.athinput (same mesh: root 64^3 over [-10, 10]^3, four
+# static levels, finest k dx = 0.0195 inside |x| < 0.625; same deposit, constraint damping
+# and outputs) with the gauge changed to the relaxed 1+log lapse of core's gauge package
+# (scratch/core/exe/core_gauge/READY, option 1; athenak/src/z4c/z4c_gauge_ext.hpp of
+# branch core/gauge) and a Gamma-driver shift, as core's problems/ball/ball_leak.athinput
+# and problems/es/es_gauge.athinput:
+#   d_t alpha = beta^i d_i alpha - 2 alpha Khat - (alpha/T) max(ln alpha, 0),  T = 1/lapse_leak,
+#   d_t beta^i = (3/4) Btilde^i (Gamma-driver, eta = 2, advection), zero at the start.
+# T = 0.05 (lapse_leak = 20): core's rule T <= 0.1 R/sqrt(2 alpha) for the smallest
+# expanding region that must be followed gives 0.15 for the compaction region (R = r_m =
+# 2.45 at a = 1, alpha = exp(6 T H_i) = 1.35) and 0.06 for the shell r = 1; lapse_leak x dt
+# <= 20 x 0.0195 = 0.39 (largest step below), below 2.7. In the background the lapse
+# tends to exp(6 T H) (1.27 at t = 0.14, 1.05 at t = 3, 1.002 at t = 100: run
+# A-20261121-130103-e007f42), so the coordinate time is close to the proper time of the
+# dust far from the peak (0.95 behind it at t = 86).
+# Step: cfl_number = 1.0 with dt_lightspeed = 0.25, i.e. dt = min(dx, 0.25 dx/c_max) with
+# c = alpha sqrt(gamma^dd) + |beta^d| from the fields (release core-v0.5, <z4c>
+# dt_lightspeed): the Courant number of light is at most 0.25 everywhere, as in S1 and in
+# core's tests, while the step grows to dx (finest 0.0195) once the expansion has slowed
+# the coordinate light speed below 0.25 (a > ~4). Kreiss-Oliger term at dt = dx: 1.5 on
+# the real axis of RK4 (limit 2.79). The 1+log gauge speed sqrt(2 alpha chi) exceeds the
+# light speed by sqrt(2/alpha) where the lapse has collapsed [JUDGEMENT: tolerable while
+# the largest c sits in the background or at alpha >~ 0.1].
+# CORRECTION 2026-11-21 (batch 7; package periodic_diag, decision 0027 item 2): card job 4799
+# (run A-20261121-131600-02b5d41) ran this deck with cfl_number = 1.0 and jumped at t = 2.5.
+# The binding speed is not the 1+log speed (stable to dt/dx 0.97 on level 4) but the
+# Gamma-driver's, sqrt(4 shift_Gamma/3 gt^dd) = 1 in coordinates: with the code's stencils,
+# RK4 and diss 0.5 the shift is unstable above dt/dx = 0.685 (periodic_diag Test B, run
+# A-20261121-212800-d7f31a4), and at cfl 1.0 the level-4 step reached 0.83 dx by t = 2.4.
+# Now cfl_number = 0.5 (dt_lightspeed, Gamma-driver and relaxed lapse unchanged): the step
+# is at most 0.5 dx on every level (stable on the uniform mesh: periodic_diag G1, G6); margin
+# to gt^xx = (0.685/0.5)^2 = 1.9 where the conformal metric stretches [JUDGEMENT]. The
+# sentences above on dt growing to dx and on Kreiss-Oliger at dt = dx describe cfl 1.0 and
+# are superseded; find_every 64 is now every 0.625 time units at the late step 0.5 dx.
+# Executable: release core-v0.5 (.work/build_gpu_v05, build_cpu_v05): lapse_leak (v0.4),
+# guard, finder in a periodic box, dt_lightspeed, region norms (v0.5). From batch 7 the
+# release core-v0.6 (.work/build_gpu_v06), byte-identical to v0.5 on the periodic
+# regression set-up (tracks/core/RELEASE-v0.6.md, set-up east).
+# Excision: particles where alpha < 0.1 (as core's ball_collapse and the track's horizon
+# run A-20261119-164634-f1fe887); in the E1 gauge of S1 the threshold 0.3 referred to a
+# lapse of order a.
+# Wave 3, package periodic_threshold (DESIGN.md section 7, JOURNAL.md wave 3). Runs P0L
+# (spherical peak, data of build_p0l.sh) and S1L (the S1 data). Every parameter given on
+# the command line is declared here: time/tlim, time/cfl_number, problem/id_file,
+# particles/particle_file, particles/traj_ntrack, fastflow/start_time_0,
+# fastflow/initial_radius_0, fastflow/find_every, z4c/lapse_leak, z4c/dt_lightspeed.
+
+<comment>
+problem   = single curvature peak in a periodic matter-era box, relaxed 1+log lapse
+
+<job>
+basename  = peak
+
+<mesh>
+nghost    = 4
+nx1       = 64
+x1min     = -10.0
+x1max     = 10.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 64
+x2min     = -10.0
+x2max     = 10.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 64
+x3min     = -10.0
+x3max     = 10.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<mesh_refinement>
+refinement          = static
+max_nmb_per_rank    = 320                 # 288 leaves; the particle restart file holds 1.1 MB per block of this limit
+
+<refined_region1>
+level = 1
+x1min = -5.0
+x1max = 5.0
+x2min = -5.0
+x2max = 5.0
+x3min = -5.0
+x3max = 5.0
+
+<refined_region2>
+level = 2
+x1min = -2.5
+x1max = 2.5
+x2min = -2.5
+x2max = 2.5
+x3min = -2.5
+x3max = 2.5
+
+<refined_region3>
+level = 3
+x1min = -1.25
+x1max = 1.25
+x2min = -1.25
+x2max = 1.25
+x3min = -1.25
+x3max = 1.25
+
+<refined_region4>
+level = 4
+x1min = -0.625
+x1max = 0.625
+x2min = -0.625
+x2max = 0.625
+x3min = -0.625
+x3max = 0.625
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.5                        # was 1.0 (job 4799); Gamma-driver unstable above dt/dx 0.685 (header, decision 0027)
+nlim       = -1
+tlim       = 140.0
+ndiag      = 50
+
+<z4c>
+lapse_oplog     = 2.0                  # 1+log: d_t alpha = -2 alpha Khat
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_volume    = 0.0
+lapse_kdriver   = 0.0
+lapse_advect    = 1.0
+lapse_leak      = 20.0                 # 1/T of the relaxation of the excess lapse; T = 0.05
+lapse_leak_alpha = 1.0                 # reference lapse
+dt_lightspeed   = 0.25                 # dt <= cfl 0.25 dx / c_max (header)
+dt_gauge        = 0.0                  # added by core's package step-limit: 0 = off (tracks/core/interfaces/step_limit.md)
+shift_Gamma     = 0.75                 # Gamma-driver (core's ball_leak, es_gauge)
+shift_alpha2Gamma = 0.0
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+chi_div_floor   = 1.0e-8
+damp_kappa1     = 0.5                  # constraint damping as in S1 (peak_smr4)
+damp_kappa1_over_alpha = true
+damp_kappa2     = 0.0
+damp_kappa_gam  = 0.0
+damp_ch         = 0.0
+damp_ch_dx      = 0.0
+damp_ch_chipow  = 0.0
+excise_chi      = 0.0
+
+<z4c_guard>
+stop_nonfinite       = true            # stop with exit status 3 when a field is not finite
+stop_chi_nonpositive = true            # also when the conformal factor is zero or negative
+
+<fastflow>
+find_every        = 64                 # every 1.25 time units at dt = dx
+metric_drvts      = interpolant
+num_horizons      = 1
+npunct            = 0
+ntheta            = 16
+lmax              = 8
+use_puncture_0    = -1
+center_x_0        = 0.0
+center_y_0        = 0.0
+center_z_0        = 0.0
+initial_radius_0  = 0.6
+flow_iterations_0 = 400
+flow_alpha_beta_const_0 = 1.0
+hmean_tol_0       = 1.0e30             # compared with the surface INTEGRAL of the expansion (core-v0.5 READY)
+mass_tol_0        = 1.0e-5
+start_time_0      = 40.0
+stop_time_0       = 1000.0
+verbose           = false
+diagnostics       = true               # <basename>.horizon_status_0.txt: reason of every search
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+interp         = hermite
+dt_expansion   = 0.05
+metric         = mesh
+tolerance      = 1.0e-12
+max_iterations = 50
+deposit        = true
+nfilter        = 2
+filter_compensate = true
+filter_comp_c  = -1.0
+deposit_comp_c = 0.0
+deposit_comp_limit = 0.0
+deposit_comp_c2 = 0.0
+deposit_shape  = cic
+deposit_max_level = 31
+deposit_adaptive  = true
+deposit_min_level = 0
+deposit_ppc       = 2.0
+deposit_max_coarsen = 31
+alpha_exc      = 0.1
+ah_exc_factor  = -1.0
+hist_dcycle    = 1
+cstat_dcycle   = 8
+cons_dcycle    = 0
+line_dcycle    = 0
+traj_dcycle    = 16
+traj_ntrack    = 0
+snap_dt        = 10.0
+probe_x1       = 0.001
+probe_x2       = 0.001
+probe_x3       = 0.001
+nprobe         = 0
+lambda         = 0.0
+source_density = true
+source_extrap  = true
+region_dcycle  = 32                    # <basename>.region.hst: norms of H and 16 pi E inside/outside
+region_radius1 = 2.449489742783178     # compaction radius sqrt(6)/k
+region_radius2 = 0.6
+region_horizon = 0                     # and inside/outside the horizon of finder 0 once found
+particle_file  = particles.nrp
+
+<problem>
+pgen_name  = nrpic_cosmo
+id         = file
+id_file    = fields.bin
+hubble     = 1.0
+
+<output1>
+file_type = hst
+dt        = 0.5
+
+<output2>
+file_type = tab
+variable  = z4c
+dt        = 2.0
+slice_x2  = 0.001
+slice_x3  = 0.001
+
+<output3>
+file_type = tab
+variable  = con
+dt        = 2.0
+slice_x2  = 0.001
+slice_x3  = 0.001
+
+<output4>
+file_type = tab
+variable  = tmunu_E
+dt        = 2.0
+slice_x2  = 0.001
+slice_x3  = 0.001
+
+<output5>
+file_type = tab
+variable  = z4c_alpha
+id        = alpha_y
+dt        = 2.0
+slice_x1  = 0.001
+slice_x3  = 0.001
+
+<output6>
+file_type = tab
+variable  = tmunu_E
+id        = E_y
+dt        = 2.0
+slice_x1  = 0.001
+slice_x3  = 0.001
+
+<output7>
+file_type = rst
+dt        = 50.0
+
+<output8>
+file_type = tab
+variable  = z4c_alpha
+id        = alpha_z
+dt        = 2.0
+slice_x1  = 0.001
+slice_x2  = 0.001
+
+<output9>
+file_type = tab
+variable  = tmunu_E
+id        = E_z
+dt        = 2.0
+slice_x1  = 0.001
+slice_x2  = 0.001

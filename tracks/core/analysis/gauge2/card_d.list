@@ -1,0 +1,7 @@
+# Card job D of the source item gauge-2 (tracks/core/JOURNAL-gauge-2.md, entry 8): the
+# first pass (relaxation everywhere) on the Einstein-Straus mesh of job B, 100 M, as the
+# reference on the same mesh for the horizon and the wall of the run es-hole. Same input
+# as es-hole with the switch-off radius set to zero (the tracker stays; it changes
+# nothing, processor test T1).
+#   harness/bin/nrpic-run submit --launcher batch --list <this file> --exe <card executable of core/gauge-2>
+es-leak tracks/core/analysis/gauge2/inputs/es_hole.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.nrp problem/comp0_file=/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.tab z4c/lapse_leak_hole=0.0 -t 00:11:00

@@ -1,0 +1,28 @@
+# Card check of release candidate core-v0.7 (prediction K7 of JOURNAL.md, 2026-11-25T02:12Z,
+# as amended before the entry was queued).  New cases: decks that quick_v07.py wrote for
+# its processor runs (run core-20261125-023641-7a1c47d); judged by card_v07.py.  Then the
+# fifteen cases of card_v06.list, judged by card_v06.py and card_v05.py as for core-v0.6.
+#   harness/bin/nrpic-queue add --label core-v07-card --priority 2 -- --kind scouting --gate G2 \
+#     --launcher batch --list <this file> --exe /data/haiyangw/nrpic/scratch/core/exe/core_nrpic_v07/athena_gpu --gpu-hours 0.3 --purpose "..."
+n_l2 /data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/n_l2/new/in.athinput
+x_l2dt /data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/x_l2dt/new/in.athinput
+s_lim /data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/s_lim/new/in.athinput
+g_hole /data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/g_hole/new/in.athinput
+x_holedt /data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/x_holedt/new/in.athinput
+c_static /data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/c_static/new/in.athinput
+c_solve /data/haiyangw/nrpic/scratch/core/core-20261125-023641-7a1c47d/c_solve/new/in.athinput
+n_sp /data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc/n_sp/new/in.athinput
+n_7p /data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc/n_7p/new/in.athinput
+f_full /data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc/f_full/new/in.athinput
+c_cd1 /data/haiyangw/nrpic/scratch/core/core-20261121-130813-710b3cc/c_cd1/new/in.athinput
+p5_mov_n64 /data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/card_kc/p5_mov_n64/in.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/card_kc/p5_mov_n64/shell.nrp
+g_smr1 /data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/card_kc/g_smr1/in.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/tmp/idsolve2/b2b/card_kc/g_smr1/g.nrp
+s3g /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/s3g/new/deck.athinput
+usr /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/usr/new/deck.athinput
+trk /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/trk/new/deck.athinput
+peak /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/byte/peak/new/deck.athinput
+dep /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/d_ser0/deck.athinput
+depp /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/d_ser/deck.athinput
+fine /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/f_ser/deck.athinput
+finet /data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/threads/g_ser/deck.athinput
+cluster problems/tests/mpi_cluster.athinput particles/particle_file=/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/mpi/t3_cluster/cluster.nrp problem/comp0_file=/data/haiyangw/nrpic/scratch/core/core-20261121-065009-29b855c/mpi/t3_cluster/cluster.tab

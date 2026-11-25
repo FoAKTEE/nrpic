@@ -1567,3 +1567,561 @@ fixed with a stub test; answers to A and kb posted, kb's message acknowledged. G
 Faults of mine on record: the first journal header of this session carried the date of
 the shell's local time (2026-11-22) with a UTC hour; corrected to 2026-11-23T01:50Z
 before the commit. Not done: inbox messages 1-8, 103 and D's new 11 (task scope).
+
+## 2026-11-24T12:51Z (2026-11-24 04:51 PST), batch 11, session core-lead-11 (analysis round; no AthenaK source change)
+
+Task: close the six level-2 chains of row 4 on M/8 (all DONE at tlim 300 M in one segment
+each, jobs 4923-4928, by `submit_chain.sh --status`), classify by the rule of
+2026-11-21T20:26Z, say whether the threshold is bracketed, queue the next level
+(release card executable of core-v0.6, at most twelve card-hours, two jobs eligible);
+note, G2 stage, answers to Track A (step limit) and kb (paper-code links), and the
+outcome of T5 of branch core/noise-level2 (Track E's card smoke). Sequencer of batch 10a
+(pid 3075029): released 4925-4928 by 06:08Z on 2026-11-23 and exited at 06:09Z ("all
+jobs released"); nothing of core was queued at the start of this session.
+
+### Outcomes of row 4 on M/8, level 2 (2026-11-24T13:01Z): fates by the rule of 2026-11-21T20:26Z
+
+Six chains closed (`nrpic-run finish`, one segment each). Fates of all six models of
+levels 1 and 2: run core-20261124-130055-9fc9901 (`verify/row4/row4_fate.py`, as of commit
+9fc99012: same rule; it now colours by y_c and joins continuations; figure
+`fig_row4_m8.png` looked at: panel (a) shows member and control of every model falling
+together from 0.680 to 0.7175, the collapse later the larger y_c, and the 0.73625 and
+0.755 pairs dipping to 0.86-0.93 of their equilibrium lapse near 270 M and coming back;
+panel (b) shows member minus control inside +-0.035 for 0.7175, 0.73625 and 0.755).
+
+| y_c | alpha_c eq | member | control | class / side |
+|---|---|---|---|---|
+| 0.605 | 0.6281 | t_c 180.5 M | no collapse (moves outward) | COLLAPSE / UNSTABLE (level 1) |
+| 0.680 | 0.6875 | t_c 219.5 M | t_c 251.5 M | COLLAPSE / UNSTABLE (level 1) |
+| 0.69875 | 0.7029 | t_c 244.25 M (lapse < 0.3), first AH 252.0 M | t_c 259.75 M, first AH 264.0 M | COLLAPSE / UNSTABLE |
+| 0.7175 | 0.7186 | t_c 294.25 M (lapse < 0.3; no AH by 300 M) | t_c 293.5 M (lapse < 0.3; no AH by 300 M) | COLLAPSE / UNSTABLE |
+| 0.73625 | 0.7346 | no collapse; mean 200-300 M 0.6930 (-0.0416 against eq) | no collapse; mean 0.6916 (-0.0430) | STAYS, D = +0.0014 / STABLE |
+| 0.755 | 0.7509 | no collapse; mean 0.7264 | no collapse; mean 0.7247 | STAYS, D = +0.0016 / STABLE (level 1) |
+
+Bracket by the rule: y_lo = 0.7175, y_hi = 0.73625, valid (monotone, no UNDECIDED
+member inside); next midpoint 0.726875. **On cells of M/8 with 10^4 particles the
+threshold of collapse within 300 M is bracketed between y_c = 0.7175 and 0.73625**
+[VERIFIED by run core-20261124-130055-9fc9901, under the rule as written]. The turning
+point y_c* = 0.6796 lies 0.038 below the bracket.
+
+Predictions of 2026-11-23T02:05Z:
+- P5 HOLDS: the 0.69875 member collapses at 244.25 M, inside (200, 300) and later than
+  0.680's 219.5 M.
+- P6 HOLDS: the 0.73625 member STAYS (|D| = 0.0014), neither run collapses.
+- P7 HOLDS: the 0.7175 member collapses (294.25 M) after the 0.69875 member (244.25 M);
+  the five models 0.680-0.755 are monotone (UNSTABLE 0.680, 0.69875, 0.7175; STABLE
+  0.73625, 0.755).
+- P8 REFUTED (just): the only control without collapse at level 2, 0.73625, has its
+  200-300 M mean 0.0430 below its equilibrium, beyond the bound 0.04 written; the drift is
+  inward as predicted. With 0.755 (0.026) the drift grows towards the bracket.
+- P9 HOLDS: 2258-2280 s of card time per run to 300 M (athena "cpu time used" of the
+  chain logs), 7.53-7.60 s per M, 0.63 card-hours per run, 3.8 for the six; one segment
+  each.
+
+What else the runs show (read from the same histories; supplement of the fate run,
+`windows_50M` in its `row4_fate.json`):
+- Near the bracket the kick no longer matters: at 0.7175 member and control collapse
+  0.75 M apart; at 0.69875 15.5 M apart, at 0.680 32 M apart. The controls' collapse
+  times rise with y_c (251.5, 259.75, 293.5 M).
+- The stable pairs drift inward steadily, member and control alike. Means of
+  alpha_c / alpha_c^eq over 50-M windows from 0 to 300 M: 0.73625 member 0.9997, 0.9968,
+  0.9855, 0.9696, 0.9532, 0.9333 (control 1.0039, 1.0054, 0.9911, 0.9685, 0.9485, 0.9343);
+  0.755 member 1.0000, 0.9966, 0.9899, 0.9821, 0.9711, 0.9638 (control 1.0033, 1.0029,
+  0.9922, 0.9769, 0.9663, 0.9640). The 0.7175 pair stood at 0.95 over 175-200 M and at
+  0.91-0.93 over 200-250 M before it ran away; the 0.73625 pair stands at 0.933 over
+  250-300 M.
+- So the bracket of the rule may be set by the 300-M window rather than by a stability
+  threshold: a model that drifts inward at a steady rate reaches the runaway later the
+  larger its y_c [JUDGEMENT; not tested yet: no run longer than 300 M exists on this
+  mesh]. Level 3 is designed to test exactly this (below).
+
+### T5 of branch core/noise-level2: card smoke run by Track E (read 2026-11-24T12:56Z)
+
+Track E ran core's pending card smoke T5 of `<scalar_field> noise_level = 2` through its
+sequencer (decision 0031 item 3): batch T5SMK, run E-20261123-035724-b661081, branch card
+executable `scratch/core/exe/core_noise-level2/athena_gpu` (source 6ca93cba), six 64^3
+decks (core's four of `card_t5.list` byte for byte, plus sr64_l1m and usr64_l0m with
+`noise_rmodes_dump`); check SMOKECHK, run E-20261123-090718-6203c87 (`verdict.json`,
+`smoke_check.png` in its directory; the figure looked at: card/processor differences of
+rms and means against cycle, the six rms(phi - <phi>) curves on top of each other, wall
+per cycle). Verdict PASS:
+- all six exit 0 and reach tlim (SR t = 8.44 in 344 cycles, USR 10.5 in 428), records
+  finite, dumps 9 of 9 and 22 of 22, `.rmodes` 9 and 22 where asked;
+- card against core's processor run core-20261123-030705-6b6a4bd over cycles 0-30: box
+  means within 1.7e-13 relative, rms(phi - <phi>) and rms(Pi - <Pi>) within 2.0e-11
+  (E's bands 1e-12 and 1e-7 held);
+- wall per cycle, level 2 over level 0: SR 1.156, USR 1.136. Core's T5 prediction
+  (JOURNAL-noise-level2.md on the branch, entry 1: completes, finite; level 2 costs +5
+  to +20 per cent at 64^3) HOLDS on the card; on processors it had been refuted on the
+  low side (1.027, 0.992, entry 4).
+- E's preview at the end of the 64^3 runs: SR level 2 against level 1 on the mesh 1.5e-6
+  relative (E's bar 1e-4), USR level 2 against level 0 on the mesh -6.4e-6 (bar 1e-2).
+After it E ran the six 256^3 ablation runs with the branch executable: five completed;
+AL2S (E-20261123-152119-38957ba) was cut at t = 7.53 of 8.5 by its segment cap after a
+preemption (every segment exit 0, the third segment refused by MAX_SEGMENTS = 2; chain
+`events.log`), not by a fault of the executable; E's package repro/continue continues it.
+T5 is closed. Still open on that branch: the Fable review of its diff (running beside this
+session in worktree wt/core-s2; not touched), and the card cost at 256^3 (E's runs carry
+it).
+
+### Level 3 of row 4 on M/8: design and predictions (2026-11-24T13:05Z, before any run)
+
+Design [JUDGEMENT, written now]. The rule names one next point, the midpoint 0.726875,
+with its control. The question the level-2 runs raise is whether the "STABLE" side holds
+beyond the window of the rule. Level 3 therefore runs:
+- A. 0.726875 member and control from t = 0 to 600 M (tlim 600; the same deck, seed,
+  particle number, kick and executable as levels 1 and 2). Classified by the rule exactly
+  as written (it reads t <= 300 M only); 300-600 M is a supplement.
+- B. The 0.73625 member and control continued from their 300-M restart files
+  (`rst/st.00015.rst` of core-20261123-020458-dfc38d7 and -020500-9b192cd) to 600 M, in new
+  run directories, with the same release card executable (wrapper
+  `verify/row4/athena_resume.sh`: the first segment starts with `-r <restart>`).
+- C. The 0.755 member and control continued the same way (core-20261121-204232-f74c942,
+  -204237-ae00ca2) to 600 M.
+Each chain `--gpu-hours 1.97` (two segments of 59 min): 11.82 card-hours asked, about 5.1
+expected (P15). Two eligible, four held, released by `verify/row4/sequencer.sh` (stop file
+and log under `scratch/core/tmp/lead_b11/`). Order: 0.726875 member, 0.73625 control
+continued, 0.726875 control, 0.73625 member continued, 0.755 control continued, 0.755
+member continued. The fates of all models are then read with the same script, the
+continuations joined to their first parts (`<dir>+<continuation dir>`).
+
+Predictions:
+- P10. 0.726875 by the rule: neither run collapses by 300 M (the controls' collapse times
+  rose 33.75 M over the last 0.01875 in y_c, so at least about 16 M more over 0.009375:
+  310 M or later); |D| <= 0.01, the member STAYS, the model is STABLE, and the bracket
+  becomes (0.7175, 0.726875). Refuted by a collapse of either run at or before 300 M.
+- P11. 0.726875 beyond 300 M: member and control both collapse between 300 and 420 M,
+  within 30 M of each other. Refuted by no collapse by 600 M, by a collapse after 420 M,
+  or by collapse times more than 30 M apart.
+- P12. 0.73625 continued: member and control both collapse between 320 and 500 M (their
+  250-300 M level, 0.933 of the equilibrium lapse, is where 0.7175 stood about 50-75 M
+  before its runaway; the drift has not slowed). Refuted by no collapse by 600 M (the
+  drift stops and 0.73625 is stable over twice the window), or by a collapse before 320 M.
+- P13. 0.755 continued: no collapse before 450 M, and the drift goes on: the 400-450 M
+  mean of alpha_c / alpha_c^eq lies at least 0.01 below the 250-300 M mean (0.9638
+  member, 0.9640 control) in both runs. Whether it collapses by 600 M is not predicted.
+  Refuted by a collapse before 450 M, or by a 400-450 M mean less than 0.01 below the
+  250-300 M mean in either run.
+- P14. The continuations join their first parts without a jump: the central lapse of the
+  continuation's first record at or after 300 M differs from the first part's record at
+  300 M by less than the largest change between consecutive records over 280-300 M of
+  the first part. Refuted by a larger jump (a restart that does not carry the state).
+- P15. Cost: 7.5 to 7.7 s of card time per M: the two 600-M runs 1.25-1.3 card-hours in
+  two segments each, the four continuations 0.63-0.65 in one segment each, 5.0-5.3 in
+  all. Refuted by more than 9 s per M.
+
+What the outcomes would mean (written now): if P11 and P12 hold, the 300-M bisection
+measures how long a model resists a common inward drift, not a stability threshold;
+row 4 on M/8 is then reported as "collapse within 300 M bracketed between 0.7175 and
+0.726875 (or 0.73625)", the drift becomes the open item of the row, and a criterion that
+does not depend on the window is proposed to orch (the drift rate against cell size and
+particle number). If P12 is refuted (0.73625 holds to 600 M), the 300-M bracket stands as
+an estimate of the threshold with the window doubled.
+
+### What was queued (2026-11-24T13:04Z)
+
+- Initial data: run core-20261124-130236-68d4ee5 (`make_row4.py --yc 0.726875`):
+  alpha_c = 0.7266, E_b/M_0 = 0.035258, R/M = 7.307 (inside the M/4 nest), turning point
+  unchanged (y_c* = 0.6796, E_b/M_0 = 0.036058). Directory tag yc0p727; the files carry
+  the exact y_c.
+- Six chains, `--gpu-hours 1.97` each (two segments; 11.82 card-hours asked):
+
+| Model | Run id | Parent (300-M restart) | First job |
+|---|---|---|---|
+| 0.726875 member, 0-600 M | core-20261124-130310-597d9ca | - | 5154 (eligible) |
+| 0.73625 control, 300-600 M | core-20261124-130321-ed96d4d | core-20261123-020500-9b192cd | 5155 (eligible) |
+| 0.726875 control, 0-600 M | core-20261124-130340-31cf5e8 | - | 5156 (held) |
+| 0.73625 member, 300-600 M | core-20261124-130347-7d6a10d | core-20261123-020458-dfc38d7 | 5157 (held) |
+| 0.755 control, 300-600 M | core-20261124-130356-d9d09bf | core-20261121-204237-ae00ca2 | 5158 (held) |
+| 0.755 member, 300-600 M | core-20261124-130406-09319a0 | core-20261121-204232-f74c942 | 5159 (held) |
+
+  The 600-M runs use the release card executable directly; the continuations use
+  `verify/row4/athena_resume.sh` (same executable, copied as chain/nrcr-<hash>, sha256
+  checked; its restart file and `.prt` are inputs of the manifest with their checksums).
+  Sequencer pid 3904230 (setsid nohup; copy of `verify/row4/sequencer.sh` in
+  `scratch/core/tmp/lead_b11/`, stop file `scratch/core/tmp/lead_b11/sequencer.stop`, log
+  `sequencer.log` there; it now logs every 15 min why the next job waits) releases
+  5156-5159 in that order. At 13:04Z seven jobs of other owners were pending ahead.
+  P10-P15 open.
+
+### Stub test of the resume wrapper (2026-11-24T13:09Z; not a registered run: a shell test with /bin/echo, no simulation)
+
+Prediction: a copy of `verify/row4/athena_resume.sh` with REAL=/bin/echo (and its sha256)
+prints, in a run directory without `rst/*.rst`, `-r <restart> -d ... -t ... time/tlim=600`
+(the `-i <deck>` pair replaced, `nrpic_resume=` removed), and with an own restart file
+present the arguments unchanged except `nrpic_resume=` removed; it copies the binary to
+`chain/nrcr-<hash>`. Refuted by any other argument list. Outcome
+(`scratch/core/tmp/lead_b11/wraptest/`): exactly that, both cases; `chain/nrcr-12bf4aa7`
+written. Held. The first card segments of the four continuations will show the same
+line in their logs.
+
+### Note, stage, answers (2026-11-24T13:30Z-14:10Z)
+
+- Working note rebuilt by run core-20261124-133602-3e31713 (`run_all.py`): Fig. 5 now shows
+  levels 1+2 in units of the equilibrium lapse (one colour per model from a sequential map;
+  crosses at the collapse times) and, in panel (b), the two models without collapse with
+  50-M window means (the drift); 20 new ledger rows (134 in all); 37 inputs sha256 ok, 31
+  without a recorded checksum (wave-1, unchanged). Section III D rewritten: the bracket
+  of collapse within 300 M, then why it may be set by the window, and what level 3 tests;
+  abstract and summary follow; the abstract carries no mathematics now (checker item
+  2.5). Compiled (10 pages), checker clean on references, citations and overfull boxes;
+  pages 1, 4, 5, 7-9 read. A LaTeX error on the first preview (a caret in two ledger
+  descriptions) was fixed before the registered run.
+- The note scripts now default their output to `note/` when called without OUTDIR: the
+  stage verify calls them without arguments, and in batch 10a it was run with
+  `--no-rerun`, so the rerun check had never passed (four IndexErrors in this session's
+  first verify). Fault of mine on record: writing the new `note/.gitignore` with printf
+  replaced the existing one (LaTeX patterns); restored in the next commit.
+- Stage G2: OPEN.md item 2 (level 2, the drift, level 3) and item 4 (open chains),
+  CHECKLIST C1 and C7; collect (18 items kept), verify, report.
+- Outbox 20261124T130733Z to Track A: W31 (gauge speeds in the step limit, warnings for
+  the bound and for lapse_leak x dt) is written this batch by core's source slot
+  "step-limit" with A's reproducing inputs as its tests; that slot posts the executable
+  itself; rule cfl <= 0.6 meanwhile. Outbox 20261124T130734Z to kb: correction of core's
+  answer of 2026-11-23 on link M18. The monitor after the solve cannot test the factor of
+  the matter term, because in mode `code` the solver drives the very residual the monitor
+  reads (F = -(psi^5/8) H, nrpic_idsolve.cpp:994-996, H from ADMConstraints with
+  `-16*M_PI*tmunu.E` at z4c_adm.cpp:486) [VERIFIED by reading the source]. The test that
+  depends on the factor is id_solver T1 in mode `code`: psi converges at second order to
+  the continuum solution with the right matter term (-1.92e-2, -5.22e-3, -1.33e-3 at
+  dx = 1, 0.5, 0.25). Fault of mine on record: the argument of batch 10a was wrong.
+
+### Close of session core-lead-11 (2026-11-24T14:20Z): PAUSED
+
+The pause flag `locks/PAUSE` was found at 14:19Z; nothing new was started after it.
+Done: six level-2 chains closed and judged (collapse within 300 M bracketed between
+y_c = 0.7175 and 0.73625, run core-20261124-130055-9fc9901; the surviving pairs drift
+inward steadily, so the bracket may be set by the window); level 3 queued with
+predictions P10-P15 (six chains, 11.82 card-hours asked, jobs 5154/5155 eligible,
+5156-5159 held, sequencer pid 3904230); T5 of core/noise-level2 recorded (PASS on the
+card, Track E's check); note rebuilt (core-20261124-133602-3e31713, 10 pages); stage G2
+collect, verify (rerun PASS for the first time; runs FAIL only on the open chains), report;
+outbox to A (W31 in work) and kb (M18 correction). Where I stopped: nothing half-done;
+the next session reads level 3 with the commands in HANDOFF.md. G2 not met.
+Faults of mine on record: the argument for M18 of batch 10a (corrected); the overwritten
+note/.gitignore (restored); two wait loops of mine matched their own command line with
+`pgrep -f` and never ended (stopped by their task ids, no process killed by pattern).
+Not done (task scope): inbox messages 1-10.
+
+## 2026-11-24T21:05Z (2026-11-24 13:05 PST), batch 12, session core-lead-12 (card runs into the shared queue; no AthenaK source change, no analysis)
+
+Task: hand core's waiting card runs to the shared queue (decision 0033 items 1-7;
+harness/RULES.md, section "Shared card queue"; orch outbox 20261124T201500Z and
+20261124T210500Z). Sequencer pid 3904230 was stopped by orch at 12:00 PST (20:00Z); its log
+`scratch/core/tmp/lead_b11/sequencer.log` ends at 19:49Z with 5156-5159 still held.
+
+State of the six level-3 chains of row 4 on M/8 (sacct from 2026-11-24T04:00 PST;
+`submit_chain.sh --status`):
+
+| Run id | Model | What happened | Own restart |
+|---|---|---|---|
+| core-20261124-130310-597d9ca | 0.726875 member, 0-600 M | job 5154 ran 37:45 (10:39-11:17 PST) to t = 287.5 M, PREEMPTED; resubmission 5182 CANCELLED at 11:57 PST | rst/st.00014.rst (t = 280 M) |
+| core-20261124-130321-ed96d4d | 0.73625 control, 300-600 M | job 5155 ran 57 s (300 -> 306.5 M), PREEMPTED; resubmission 5189 CANCELLED | none |
+| core-20261124-130340-31cf5e8 | 0.726875 control, 0-600 M | job 5156 held, CANCELLED, never ran | none |
+| core-20261124-130347-7d6a10d | 0.73625 member, 300-600 M | job 5157 held, CANCELLED | none |
+| core-20261124-130356-d9d09bf | 0.755 control, 300-600 M | job 5158 held, CANCELLED | none |
+| core-20261124-130406-09319a0 | 0.755 member, 300-600 M | job 5159 held, CANCELLED | none |
+
+Decisions [JUDGEMENT]:
+- 597d9ca had computed 37 min and holds its own restart at 280 M: it is CONTINUED IN PLACE
+  (not closed), through the queue with `--cmd` and a new wrapper
+  `verify/row4/continue_chain.sh` (one `submit_chain.sh` start on its own directory, the
+  chain's registered settings, MAX_SEGMENTS = the registered 2; segment 1 is used, so one
+  more segment of 50 min; 320 M left at 7.55 s/M of segment 1 is about 40 min).
+- ed96d4d computed 6.5 M and wrote no restart file of its own; continuing it in place would
+  start again from the parent's 300-M restart and append a second copy of 300-306.5 M to
+  its history files. It is closed as stopped and run again as a new registered run with
+  the same arguments, which starts from that same newest restart (the parent's
+  rst/st.00015.rst). Its 26 history rows stay on record in its directory.
+- The four held runs never ran: closed as stopped (`nrpic-run finish --status stopped`,
+  commits dc9e210f..a58b5692) and queued again with the arguments they were registered with
+  (`--launcher chain --gpu-hours 1.97 --exe ...`; the continuations `--exe
+  tracks/core/verify/row4/athena_resume.sh` with the parent and its restart files as
+  `--input`).
+- Priority 2: the G2 stage package of core waits for these six (OPEN.md item 2; CHECKLIST
+  C1, C7). No `--after`: the six are independent, and the order of adding is the plan's
+  order (0.726875 member, 0.73625 control, 0.726875 control, 0.73625 member, 0.755 control,
+  0.755 member). Predictions P10-P15 (entry 2026-11-24T13:05Z) stand unchanged; their run
+  ids change for the five new runs (HANDOFF.md maps queue entries to models).
+
+### Dry-run test of continue_chain.sh (prediction, 21:05Z; a shell test, no job, not a registered run)
+
+Prediction: (a) `DRY=1 continue_chain.sh core-20261124-130310-597d9ca` prints one
+`submit_chain.sh` line on that run directory with the deck
+`tracks/core/verify/row4/st_m8.athinput`, the three overrides of its manifest, ATHENA_EXE =
+the release card build of core-v0.6, JOB_NAME = the run id, PROC_NAME = nrc-f97a0e86,
+MAX_SEGMENTS = 2, names rst/st.00014.rst as the restart it resumes from and one segment
+left, and submits nothing (squeue unchanged). (b) Without DRY and without the dispatcher's
+marker it refuses with a non-zero exit. (c) On ed96d4d it refuses (finished manifest, no
+own restart). Refuted by any submission, by a different argument list, or by (b) or (c)
+going through.
+
+Outcome (21:06Z): (a) as predicted: one line, `env ATHENA_EXE=/data/haiyangw/nrpic/.work/build_gpu_v06/src/athena
+JOB_NAME=core-20261124-130310-597d9ca MAX_SEGMENTS=2 PROC_NAME=nrc-f97a0e86 ATHENA_WALL=00:50:00
+SLURM_TIME=00:59:00 CPUS=1 PARTITION=preempt MAX_OUTSIDE_KILLS=2 SLURM_EXTRA= CHECK_CMD=
+scripts/submit_chain.sh <rundir> .../verify/row4/st_m8.athinput` with the three overrides of
+the manifest; "resumes in place from .../rst/st.00014.rst (1 of 2 segments used, 1 left)";
+exit 0; squeue of the account the same before and after (5206-5209, none of core); no
+`continuations.log` written, events.log unchanged. (b) exit 3, "refused: not called by the
+dispatcher". (c) exit 1, "manifest status is 'stopped'". Held. A first version failed
+(a) and (b) with "squeue did not answer": `squeue -j 5182` exits non-zero for a job Slurm
+no longer lists; the wrapper now reads the account's whole queue and matches the job id and
+the job name. Fixed before any entry was queued.
+
+Correction (21:10Z): the first commit of this entry (e9f87bf3) carried estimated clock times
+for the prediction (21:10Z) and the outcome (21:14Z) and in the note of manifest 597d9ca
+(21:15Z); the clock says prediction 21:05Z, test 21:06:07-21:06:20Z (squeue snapshots in
+scratch/core/tmp/), commit 21:06:54Z. Corrected; fault of mine on record.
+
+### Queue hand-over (21:08Z)
+
+`harness/bin/nrpic-queue add` (script scratch/core/tmp/lead_b12/queue_add.sh; each `add`
+checked its arguments with `nrpic-run submit --dry-run`): q0028 row4-l3-0p726875-member-cont
+(`--cmd 'tracks/core/verify/row4/continue_chain.sh core-20261124-130310-597d9ca 2'`), q0029
+row4-l3-0p73625-control, q0030 row4-l3-0p726875-control, q0031 row4-l3-0p73625-member,
+q0032 row4-l3-0p755-control, q0033 row4-l3-0p755-member; all priority 2, waiting; the
+account's queue was at 5 of 5 (jobs of B, C, D, F). Budget at 21:08Z: G2 used 15.76,
+reserved 2.07, left 22.17 of 40.
+
+### Close of session core-lead-12 (21:12Z)
+
+Done: the six level-3 runs of row 4 are in the shared queue (q0028-q0033); five cancelled
+runs closed as stopped; 597d9ca continued in place by the new wrapper (dry-run test held);
+HANDOFF (queue ids beside the models, read commands), STATUS (card plan). Nothing
+half-done; no run computed in this session; P10-P15 open. G2 not met.
+
+## 2026-11-25T02:12Z (2026-11-24 18:12 PST), batch 14, session core-lead-14 (merge of four source branches, release candidate core-v0.7)
+
+### State found
+
+- `core/nrpic` at 16e4942a after `git merge main` (4f4e0e81, decision 0035), clean. No
+  pause flag. `tracks/core/RELEASE-v0.7.md` does not exist: nothing of this task was
+  done before.
+- Branches offered (decision 0035 item 4) [VERIFIED `git log`, `git merge-base
+  --is-ancestor core-v0.6 <branch>`, READY of each under `scratch/core/exe/`]:
+  core/noise-level2 5c98beef (source 64f150ec, reviewed on Fable, holds core-v0.6; card
+  run R5 = queue entry q0035, waiting), core/step-limit 3a9a3498 (source 5c4b644f,
+  holds core-v0.6; card smoke run q0036, waiting), core/gauge-2 61c8fc4d (source
+  984110c3, holds core-v0.6, closed on 2026-11-21), core/clump-table ff11719d (source
+  7cc6c7b9, holds core-v0.5 and NOT core-v0.6, READY of 2026-11-21, worktree clean, no
+  commit since). core/oblate: left out as the task says.
+- core/clump-table, the card check M2 its READY names as outstanding: the run
+  core-20261121-132629-47ccb97 (Slurm 4803) DID run on 2026-11-21 07:36 PST, status 0
+  (`batch.list.status`), and nobody judged it: the branch has no entry after its
+  publication. Its prediction M2 was written before the run (JOURNAL-clump2.md of the
+  branch, session clump2-4, "The merged source: predictions M1, R5, M2"): first record
+  equal to 1e-11; minimum lapse, sum m u_x, sum m W within 1e-9 at every common record
+  to 50 M; refuted by a difference above 1e-6 within the first 10 M. I judge it now with
+  the branch's own script (`analysis/clump2/compare_two_runs.py --a <M2>/v0.3 --b
+  core-20261119-145433-8c4083d/v0.3`), before I decide on the branch. My own
+  expectation [JUDGEMENT]: the refutation criterion (1e-6 in 10 M) is not met; the bound
+  1e-9 to 50 M may fail, because two card runs of one executable do not repeat each
+  other (atomic deposit) and 10^4 particles amplify that over 50 M. The branch is taken
+  if the early criterion holds and nothing looks like a systematic offset.
+
+### Review of the four diffs against core/nrpic (source of core-v0.6), as maintainer
+
+core/noise-level2 (8 files, 833 added, 23 removed) [VERIFIED by reading the hunks of the
+six existing files in full; of the new `scalar_field_noise_mesh.cpp` (545 lines) the
+header, the option reader and the guards]:
+- Hooks: `nvar_sf` replaces `nsf` in the allocation, the buffers, `CopyU`, the update;
+  `nvar_sf = nsf` unless `MeshModeRequested(pin)`, which reads only parameters that
+  exist and returns false unless `noise = mukhanov_sasaki` with `noise_mode_eq = mesh`
+  or `noise_level = 2`. `NoiseMeshRHS`, `NoiseMeshInit`, `NoiseMeshCoefficients` are
+  called behind `nopt.mesh_r`. Lockstep array: `+2` only with `bg_evolved`; the loop of
+  `mode_scale` now ends at `4+4*nshell`, the same range as before when `bg_evolved` is
+  off. `NoiseSynthesize` gets a branch on `per_mode` inside its kernel: the released
+  path is the else branch with unchanged arithmetic, but the kernel is recompiled, so
+  only the byte comparison says that the bytes stay (the package: 13 scalar cases with
+  restarts and 75 of 75 against core-v0.6).
+- `noise_level = 2` used to stop the run ("not implemented"); now it runs. An input
+  that set it had no released behaviour.
+- Guards: refined mesh refused (`pm->multilevel`); one rank is the restriction of the
+  scalar field itself; level 2 takes window, H, eps and kick factors from box means
+  (uniform), and is tested only for a lapse that is uniform in space (1 and a(t)):
+  with a lapse that varies in space, and with a shift, NOT tested (READY). These three
+  go to OPEN.md. Accepted.
+
+core/step-limit (15 files, 1071 added, 31 removed) [VERIFIED by reading every hunk of
+`driver.cpp`, `main.cpp`, `z4c.cpp`, `z4c.hpp`, `z4c_newdt.cpp`, `term_signal.{cpp,hpp}`
+and the function `GaugeStepLimit`; of the kernel `GaugeTimeStep` the header]:
+- `dt_gauge` is read only if present; `GaugeStepLimit` is called at the end of
+  `Z4c::NewTimeStep` in three dimensions and returns at once after its first call unless
+  `dt_gauge > 0`. At the first call it evaluates the bound (one reduction over the
+  cells, read-only) and prints at most two warnings on rank 0. It writes `dtnew` only
+  inside `if (dt_gauge > 0 ...)`. So without the option: a log line or none, no change
+  of the step. Under MPI one more `MPI_Allreduce` at the first call.
+- SIGTERM: the handler sets two `sig_atomic_t` and nothing else; `Check()` is the last
+  condition of the main loop (one `MPI_Allreduce` per cycle under MPI, a read of a
+  flag otherwise); `Finalize` skips non-restart outputs and the problem generator's
+  final function only if `Stopped()`; `main` returns 143 only then. A run that gets no
+  signal executes the same statements on its data as before. Prediction below: no
+  output file changes.
+- `rst` outputs on the signal are written through the unchanged end-of-run path of
+  `Finalize`, which already forces an off-schedule dump at the end of a run. Accepted.
+- `scripts/submit_chain.sh`, `scripts/tests/test_submit_chain.py`, `scripts/README.md`:
+  the package's 58 checks (run core-20261125-000640-5c4b644); I repeat the test script
+  with the merged tree.
+
+core/gauge-2 (3 files, 439 added, 3 removed; one source file) [VERIFIED by reading the
+whole diff of `z4c_gauge_ext.hpp`]:
+- `lapse_leak_hole` read only if present; `nhole = 0` without it or without trackers;
+  the kernel takes the old statement `if (leak && !leak2)` and the weighted one only
+  `if (leak2)`. The struct captured by the kernel grows by 26 reals and an int: the
+  bytes of runs with `lapse_leak` are again a matter of the compiler (the package: L1
+  17 of 17 files against core-v0.6, T7). My quick test repeats one case with
+  `lapse_leak` on and the option absent against the release.
+- It enters as a MITIGATION (decision 0025 item 3): its own 200 M vacuum run shows the
+  horizon radius falling again after 110 M. Named so in changelog and OPEN.md.
+
+core/clump-table (11 files, 1825 added, 3 removed) [VERIFIED by reading the hunks of
+`nrpic_cf.cpp` and `nrpic_bowen_york.hpp`, the header and the reader of
+`nrpic_clump_table.hpp`; `python/nrpic/boosted_cluster.py` not read]:
+- `TClumpRead` skips every component without `comp<c>_boost_file`; then `tcl.n = 0`,
+  `tcl.ncorr = 0`, both loops in the kernel are empty and `if (tcl.n > 0)` is false.
+  `BYRead`: one more `continue` for a component that has a boost file. The kernel of
+  `nrpic_cf` captures two more structs: bytes again by test (the package: R5, 50 files
+  against core-v0.5; my regression has the set-ups os, c1, c2, c3, c5 of `nrpic_cf`).
+- The branch does not hold core-v0.6: the merge brings its three source files onto a
+  tree that has `id_solver2` (punctures of `nrpic_cf` in the solve). The one overlap is
+  `clump_table_idsolve.athinput` (table clump under `id_solve`): with core-v0.6 the far
+  field is on by default, so that example will not give the bytes of the branch
+  executable. I run it for status and convergence only.
+
+### Predictions (written before any merge or build)
+
+- **R (byte regression, serial candidate against release core-v0.6
+  `.work/build_cpu_v06/src/athena`, `regress_v04.py`, twelve set-ups, every new option
+  absent).** 75 of 75 items identical; classes a, b and other empty. The three changes
+  that act without an option touch no compared file: the start-up warning of the step
+  limit goes to the log (the log is compared only in its result lines for jeans and
+  binary, which have no Z4c); the SIGTERM handler does nothing without a signal; the
+  chain script is not part of a run. Refuted by any item that is not identical: then
+  either a hook is not inert or, as for core/z4c-faces in core-v0.6, the compiler
+  contracted an unchanged kernel differently because of a header (candidates:
+  `z4c.hpp` with three new members, `z4c_gauge_ext.hpp` with the larger struct,
+  `scalar_field.hpp`, the kernel of `nrpic_cf`). Each branch passed 75 of 75 alone
+  (noise-level2 core-20261124-142032-79291d0, step-limit core-20261125-000250-6dc7307,
+  gauge-2 core-20261121-190715-f702a98); the four together have not been compiled.
+- **Rm.** `athena_cpu_mpi` started without mpirun: 75 of 75 identical.
+- **Ro.** `athena_cpu_omp` at one thread: every run status 0; not a byte reference;
+  about 32 of 75 identical and the rest at rounding level (module histories 1.2e-15,
+  constraint statistics 1.4e-10 east, 1.9e-12 c4: the numbers of core-v0.6). Refuted by
+  a status that is not 0 or a difference above 1e-8 in a large column.
+- **Qn (noise-level2).** `problems/scalar/sr_stochastic_l2.athinput` (32^3, level 2):
+  every file byte-identical with `core_noise-level2/athena_cpu` (64f150ec).
+- **Qs (step-limit).** (i) `problems/tests/z4c_step_limit.athinput`: every file
+  byte-identical with `core_step-limit/athena_cpu`; the log names the limit. (ii) the
+  same with `z4c/dt_gauge=0.0`: the warning in the log and the guard stop (exit status
+  3), as the READY says (cycle 9). (iii) `problems/tests/term_signal_periodic.athinput`:
+  a run signalled part-way exits with status 143, prints "Terminating on signal
+  SIGTERM" and leaves one more restart file; continued with `-r` from that file it
+  ends with a final restart file byte-identical with that of the run never signalled.
+  Refuted by any other exit status, a missing restart file or a different final state.
+- **Qg (gauge-2).** Coarse vacuum mesh (`problems/es/v1_small.athinput` without
+  refinement, 10 M, Track D's slice): (i) with `lapse_leak_hole = 8`: every file
+  byte-identical with `core_gauge-2/athena_cpu`; (ii) with `lapse_leak` on and the new
+  option absent: every file byte-identical with release core-v0.6; (iii) (i) and (ii)
+  differ (the weight acts).
+- **Qc (clump-table).** One moving cluster at 32 cells, initial data only
+  (`problems/tests/clump_table_static.athinput`, v = 0.3, curvature, correction): the
+  history files and dumps byte-identical with `core_clump-table/athena_cpu` (a
+  core-v0.5 source; nothing of core-v0.6 acts on `nrpic_cf` data without `id_solve`).
+  `clump_table_idsolve.athinput`: status 0, the solve converges (max|H| below 1e-10);
+  its bytes are NOT those of the branch executable (far field on by default since
+  core-v0.6): no byte comparison.
+- **C (the combination the merge creates).** The level-2 example with `<z4c> dt_gauge =
+  0.9` added (the step limit evaluated on a scalar-field run in an expanding box):
+  status 0; the start-up line of the limit in the log; history files byte-identical
+  with Qn if the limit never sets the step, else the log names the sector. Either is
+  acceptable; refuted by a non-finite history or a guard stop.
+- **T (chain script).** `python3 scripts/tests/test_submit_chain.py` with the merged
+  tree: every check passes (58 in the package's run).
+- **K7 (card check of the merged card executable; NOT run in this session: handed to
+  the shared queue).** Every case of the list ends with status 0; the fifteen cases of
+  core-v0.6 meet K6 of that release (`card_v06.py`, `card_v05.py`); the new cases agree
+  with the processor runs of the quick test: level-2 histories and mode files within
+  1e-9 (no deposit: only rounding of the reductions), the step-limit example with the
+  same number of cycles and the constraint history within 1e-7, the clump-table and
+  gauge cases within 1e-7 in every large history column.
+
+### K7 amended before the card entry was queued (03:01Z; nothing of it has run)
+
+Writing the judging script (`analysis/release/card_v07.py`) I saw that two bounds of K7
+as first written do not fit what the cases measure, and changed them before queueing:
+- `s_lim` (flat space with noise of 1e-10 on every field): its one history measures
+  the noise, and rounding of 1e-16 of a field of order one is 1e-6 of that. The bound
+  is 1e-3 on the large columns of `flat.z4c.user.hst`, with the same number of records
+  (growth at the grid scale against decay differs by orders of magnitude, so 1e-3
+  still discriminates). The first text said 1e-7.
+- level 2 (`n_l2`, `x_l2dt`): 1e-9 holds for `sr.sf.hst` and for the per-mode records
+  `*.rmodes` (relative to their largest entry); `sr.sf.con.hst` (constraint means, in
+  part differences of rounding-level numbers) is reported and not bounded.
+The other cases as written: `g_hole`, `x_holedt`, `c_static`, `c_solve` within 1e-7 in
+`*.nrpic.hst` and `*.z4c.user.hst`; `c_solve` with the same number of outer iterations
+and psi_max to 1e-12. The fifteen cases of core-v0.6 by `card_v06.py` (against the
+processor runs of core-20261121-130813-710b3cc and core-20261121-131250-f8df905: decks
+unchanged; the processor data are those of the core-v0.6 candidate, to which this
+candidate is byte-identical where the regression compares) and `card_v05.py`. The script
+was tried by hand on processor data in place of card data (CARD PASS, which says nothing
+about the card) and with the first-pass run in place of `g_hole` (CARD FAIL at 8.8e-2).
+
+### Outcomes (03:10Z)
+
+Merges, one commit per branch, no conflict: da904f55 (noise-level2), 76ac67a2
+(step-limit), 31ae23e6 (gauge-2), 5f75e5b9 (clump-table) = the source commit. Builds:
+serial 312 s, MPI 326 s, threaded 382 s, card 1065 s, three jobs each, two at a time.
+
+- **M2 of core/clump-table (judged before the merge): HELD, and my expectation was
+  wrong.** Run core-20261125-021225-382dbc7: over 401 common records to 50 M the two
+  card runs (merged build of 2026-11-21, build before the merge of 2026-11-19) differ by
+  at most 3.3e-15 in the minimum lapse, 2.2e-16 in sum m u_x, 1.1e-15 in sum m W; the
+  constraint norms agree in every printed digit. I had written that the bound 1e-9
+  might fail because card runs with deposition do not repeat; this pair repeats to
+  rounding of the printed sums. (The histories hold sums and norms, not the particle
+  state: the statement is about them.) Figure looked at; its legend covers curves.
+- **R: HELD.** Run core-20261125-023046-30aba6c: 75 of 75 items identical with release
+  core-v0.6, classes a, b, other empty. No file differs because of the three changes
+  that act without an option. The four recompiled kernels I named as candidates for a
+  different contraction (`z4c.hpp`, `z4c_gauge_ext.hpp`, `scalar_field.hpp`, `nrpic_cf`)
+  wrote the released bytes. Figure core-20261125-030148-94dcc0b looked at.
+- **Rm: HELD.** core-20261125-023646-eca713c, 75 of 75.
+- **Ro: HELD.** core-20261125-025505-10f6611 (the driver reports FAIL, as it must for a
+  build that is not a byte reference; every AthenaK run status 0), judged in
+  core-20261125-030151-8c0c306: 32 of 75 identical; module histories within 1.2e-15,
+  constraint statistics 1.1e-10 (east) and 6.0e-12 (c4). The last two are not the
+  numbers of core-v0.6 (1.4e-10, 1.9e-12) that I had written as "about": same order,
+  different bytes of the threaded build. Figure looked at.
+- **Qn, Qs, Qg, Qc, C, T: HELD**, run core-20261125-023641-7a1c47d (QUICK PASS, 28
+  expectations): 65 of 65 files identical in the five byte comparisons (8, 33, 9, 9, 6);
+  s_off stops at cycle 9 with exit status 3 after the warning; S1 and S2 of
+  `term_test.py` (26 checks) with status 143 and a restart file 0.28 s and 0.35 s after
+  the signal; g_hole and g_leak differ in 7 of 9 files; c_solve converges in 25 outer
+  iterations to max|H| 2.0e-12; x_l2dt writes the histories of n_l2 (the limit never
+  sets the step); x_holedt finite; chain test 58 checks. Two things seen that no
+  prediction covered: (i) with geodesic slicing and zero shift the start-up line of
+  `dt_gauge` prints 1.73304e+39 for the two sectors that are not evolved (the largest
+  float over the cell): cosmetic, OPEN.md item e; (ii) S2 shows both restart defects of
+  the step-limit package with the merged build (`tsq.cons.hst` lacks the record at
+  t = 1.6875 in the continued run; header lines of `*.z4c.user.hst` 2 against 4): OPEN.md
+  items a and b. Figure looked at (panel b is crowded).
+- **K7: NOT RUN.** Queue entry q0039 (`core-v07-card`, priority 2, 0.3 card-hours asked),
+  added 03:02Z after the amendment above; not waited for. Commands that judge it:
+  `tracks/core/RELEASE-v0.7.md`, section "Card checks pending".
+
+Found while writing the changelog, not tested by a run [VERIFIED by reading
+`git show core-v0.6:scripts/submit_chain.sh` 268, 282]: the chain script of core-v0.6
+takes status 143 together with a line "Terminating on" for a failure, so a chain started
+with that script and an executable of core-v0.7 ends FAILED when the executable is
+signalled from outside the job. The script of this release handles it (scenario M of its
+test). Written into the changelog (run scripts, item 5), READY and OPEN.md item g.
+
+Not done: the capability tests of the four packages were not rerun on the merged
+executables; nothing ran on several ranks or on a card; core/oblate was not looked at
+beyond its tip. Card time of this session: none. Processor time: builds about 35
+core-minutes of wall on 3 jobs each; runs about 45 minutes on 3 cores.
+
+Published: `scratch/core/exe/core_nrpic_v07/` (four executables, COMMIT, SHA256SUMS
+checked with `sha256sum -c`, READY, branches/). Written: `RELEASE-v0.7.md` (first line
+REGRESSION PASS), changelog section core-v0.7, OPEN.md section core-v0.7, drivers
+`analysis/release/{quick_v07.py,card_v07.py,card_v07.list}`.

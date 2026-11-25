@@ -1,0 +1,34 @@
+{
+ "runs": {
+  "T7-first-rel": 0,
+  "T7-first-new": 0,
+  "T7-hole-old": 0,
+  "T7-hole-new": 0,
+  "T7-plain-new": 0,
+  "T7-far-new": 0,
+  "T7-leak-new": 0
+ },
+ "checks": {
+  "T7 first pass, cleaned source = release": {
+   "passed": true,
+   "detail": "9 files identical, 0 after the dump, different [], only []"
+  },
+  "T7 switch-off within 8 M, cleaned source = source of the card tests": {
+   "passed": true,
+   "detail": "9 files identical, 0 after the dump, different [], only []"
+  },
+  "T7 switch-off radius beyond the mesh = plain 1+log": {
+   "passed": true,
+   "detail": "7 files identical, 2 after the dump, different [], only []"
+  },
+  "T7 switch-off within 8 M differs from first pass (the weight is active)": {
+   "passed": true,
+   "detail": "6 files differ"
+  },
+  "T7 switch-off within 8 M differs from plain 1+log (the weight is active)": {
+   "passed": true,
+   "detail": "6 files differ"
+  }
+ },
+ "verdict": "PASS"
+}

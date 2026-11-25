@@ -1,0 +1,12 @@
+# Package step-limit, test T4 (one card job): Track A's refined periodic deck
+# (inputs/peak_leak.athinput: 64^3 root, four static levels, finest dx 0.0195, relaxed 1+log
+# lapse with lapse_leak 20, Gamma-driver, dt_lightspeed 0.25, the P0L data with its 317
+# tracked particles) at cfl_number 1.0, as card job 4799 of Track A (run
+# A-20261121-131600-02b5d41), which jumped at t = 2.5 and stopped on the guard at t = 4.8.
+#   R0   as job 4799 (no dt_gauge), to t = 3.2: the control, expected to jump at t = 2.5
+#   R0g  with z4c/dt_gauge = 0.9, to t = 6.0: past the jump and past the guard stop
+#   R1   Track A's remedy, cfl_number 0.5 without dt_gauge, to t = 6.0: the cost reference
+# Line outputs every 0.1, constraint statistics every cycle, no restart file.
+R0 tracks/core/analysis/step_limit/inputs/peak_leak.athinput time/cfl_number=1.0 time/tlim=3.2 problem/id_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261120-223123-f436c39/P0_mu0.3/fields.bin particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261120-223123-f436c39/P0_mu0.3/particles_track.nrp particles/traj_ntrack=317 particles/cstat_dcycle=1 time/ndiag=20 output2/dt=0.1 output3/dt=0.1 output7/dt=1000.0
+R0g tracks/core/analysis/step_limit/inputs/peak_leak.athinput time/cfl_number=1.0 z4c/dt_gauge=0.9 time/tlim=6.0 problem/id_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261120-223123-f436c39/P0_mu0.3/fields.bin particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261120-223123-f436c39/P0_mu0.3/particles_track.nrp particles/traj_ntrack=317 particles/cstat_dcycle=1 time/ndiag=20 output2/dt=0.1 output3/dt=0.1 output7/dt=1000.0
+R1 tracks/core/analysis/step_limit/inputs/peak_leak.athinput time/cfl_number=0.5 time/tlim=6.0 problem/id_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261120-223123-f436c39/P0_mu0.3/fields.bin particles/particle_file=/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261120-223123-f436c39/P0_mu0.3/particles_track.nrp particles/traj_ntrack=317 particles/cstat_dcycle=1 time/ndiag=20 output2/dt=0.1 output3/dt=0.1 output7/dt=1000.0
