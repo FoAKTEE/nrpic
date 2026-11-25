@@ -860,3 +860,32 @@ D2eta1: D2 at f = 2, collision seed 1, on M/8 with shift_eta 1.0 (D2 has 2.0), 2
   from the lapse depends on the shift damping, and the gauge leg of C2 needs a slicing-
   independent collapse marker (an apparent horizon) before it can pass.
 Cost [JUDGEMENT, from N6c and D2]: N6i, N6o about 2.5 card-hours each, D2eta1 about 0.6.
+
+## 2026-11-25T12:01Z  session C-sidm lead (batch 17)  the three entries chosen; predictions B17.5, B17.6 before submission
+
+Changed before anything was queued: the cap is three new entries, and the gate item C9 reads
+"the collisionless threshold is located ... and compared with the turning-point criterion".
+The kicks of the threshold model itself (B17.1-B17.3) do not bracket it: a model at the turning
+point is marginal and either outcome is consistent with y_max = 0.334032. So B17.1-B17.3 are
+withdrawn unqueued (on record; decks A8N_y0p33403_N1e6_s1_kin/kout kept for the next round), and
+the bracket models of block A are run at N = 1e6 instead, kicked inward. The particle files are
+made in this session by make_ic_seeds.py --tag (runs C-20261125-115759-77a6999 for 0.344 and the
+next one for 0.324; same stratified sampler and seed 1 as N6c). The entries: N6b344, N6b324 and
+D2eta1 (B17.4 stands as written at 11:56Z).
+
+At N = 1e5 on M/8 (seed 1): y0 = 0.344 kin collapsed at 229.8 M (control 549.3 M); y0 = 0.324
+kin did not collapse to 600 M (alpha_c change between -0.007 and -0.028); JOURNAL 13:12Z of
+2026-11-24, run C-20261124-130634-3338d9b.
+- B17.5 [JUDGEMENT, 75 per cent] N6b344 (y0 = 0.344, kin, N = 1e6) collapses before 600 M,
+  t_c in [200, 400] M. Refuted if it does not collapse by 600 M: then 0.344 is on the stable
+  side on M/8 at N = 1e6, the N = 1e5 collapse was noise-assisted, and the numerical threshold
+  lies more than 3 per cent above the turning point.
+- B17.6 [JUDGEMENT, 80 per cent] N6b324 (y0 = 0.324, kin, N = 1e6) does not collapse by 600 M
+  and alpha_c(t) - alpha_c(0) stays in [-0.03, +0.03] (20 M means, 0-600 M). Refuted by a
+  collapse before 600 M (the scheme destabilises a model 3 per cent below the turning point)
+  or by a contraction below -0.03.
+- If both hold: on M/8 at N = 1e6 the threshold lies in (0.324, 0.344), which contains
+  y_max = 0.334032; this is item C9 at one mesh and one N, and the mesh and gauge legs of the
+  bracket stay open (they are the next card request, not queued here).
+Cost [JUDGEMENT]: 2.5 card-hours each (the N6c line), D2eta1 0.6; the six N = 1e5 kicked
+continuations removed in this session (stage/G2/OPEN.md) free more than that.

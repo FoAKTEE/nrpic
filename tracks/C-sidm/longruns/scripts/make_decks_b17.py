@@ -8,6 +8,10 @@ entry 2026-11-25 "batch 17: follow-up runs, predictions before submission").
             --N 1000000: the same stratified seed-1 sample as the control N6c, with the kicks
             of threshold_scan/make_scan.py). Everything else is the deck of N6c
             (A8N_y0p33403_N1e6_s1_ctrl, run C-20261124-221122-928c9eb).
+  N6b       A8N_<y0>_N1e6_s1_kin for y0 = 0.344 and 0.324: the bracket models of block A at
+            N = 1e6, kicked one percent inward; particle files and tables from runs of
+            make_ic_seeds.py --tag king_<y0> --seeds 1 --N 1000000 (--ic344, --ic324). The
+            mesh and everything else is the N6c deck (block A uses one mesh for all models).
   D2eta1    D2_cc2_kn10_f2_s1_eta1: decisive D2 at f = 2, collision seed 1, on M/8 with
             <z4c> shift_eta = 1.0 instead of 2.0 (gauge leg of the three-way convergence),
             tlim 220 M (the f = 2 run collapsed at 163.41 M). Everything else is
@@ -16,7 +20,7 @@ The decks stay on the executable of their series (core-v0.6 card build, as qitem
 it), so they carry no `dt_gauge` (an option of core-v0.7); cfl_number 0.25 is below every
 bound of coord/INTERFACES/step_limit.md (0.47 with the 1+log lapse).
 
-    python3 make_decks_b17.py [--check]
+    python3 make_decks_b17.py [--check] [--ic344 RUNDIR] [--ic324 RUNDIR]
 """
 import argparse
 import os
@@ -46,6 +50,26 @@ def kicked(kind):
     return name, head + t
 
 
+def bracket(y0, icdir):
+    src = open(os.path.join(INP, "A8N_y0p33403_N1e6_s1_ctrl.athinput")).read()
+    name = f"A8N_{y0}_N1e6_s1_kin"
+    st = os.path.join(icdir, "s1", f"king_{y0}_stratified_N1000000_s1")
+    for ext in (".nrp", ".tab"):
+        p = st + ("_kin.nrp" if ext == ".nrp" else ".tab")
+        if not os.path.exists(p):
+            sys.exit(f"make_decks_b17: missing {p}")
+    t = sub1(src, "problem          = King cluster A8N_y0p33403_N1e6_s1_ctrl",
+             f"problem          = King cluster {name}")
+    t = sub1(t, f"particle_file    = {IC6}.nrp", f"particle_file    = {st}_kin.nrp")
+    t = sub1(t, f"comp0_file       = {IC6}.tab", f"comp0_file       = {st}.tab")
+    live = [ln for ln in t.splitlines() if "y0p33403" in ln.split("#", 1)[0]]
+    if live:
+        sys.exit(f"make_decks_b17: the threshold model is still named in the bracket deck: {live}")
+    head = (f"# longruns {name} (batch 17, make_decks_b17.py): the deck of A8N_y0p33403_N1e6_s1_ctrl for the\n"
+            f"# model king_{y0} at N = 1e6, kicked one percent inward (particle file {os.path.basename(st)}_kin.nrp).\n")
+    return name, head + t
+
+
 def eta1():
     src = open(os.path.join(INP, "D2_cc2_kn10_f2_s1.athinput")).read()
     name = "D2_cc2_kn10_f2_s1_eta1"
@@ -63,8 +87,15 @@ def eta1():
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--check", action="store_true", help="build in memory and print the differences only")
+    ap.add_argument("--ic344")
+    ap.add_argument("--ic324")
     a = ap.parse_args()
-    for name, text in (kicked("kin"), kicked("kout"), eta1()):
+    decks = [kicked("kin"), kicked("kout"), eta1()]
+    if a.ic344:
+        decks.append(bracket("y0p34400", a.ic344))
+    if a.ic324:
+        decks.append(bracket("y0p32400", a.ic324))
+    for name, text in decks:
         path = os.path.join(INP, name + ".athinput")
         if a.check:
             print(name, len(text.splitlines()), "lines")
