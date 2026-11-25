@@ -1,46 +1,46 @@
 # STATUS of F-hills
 
-gate:        G0 signed (coord/GATES.md, 2026-11-20). G1 NOT met (stage/G1, batch 11): the
-             complete vacuum passage (C8: continuation A2 on the cards) and the G1 verifier (C18)
-headline:    The isolated m/16 binary does not merge: it turns at 3.12 M at t = 73.9 M and opens
-             again (eccentric start), so the passage P1b can test the Hills mechanism; P1b reached
-             61.8 M with its members unmerged before preemptions cut it; it continues as A2.
-last-result: - analysis F-20261124-130009-33bef4d (figures read): binary alone at m/16 (R16n + B)
-               s = 4.952 -> 3.120 M (t = 73.9) -> 4.585 M (107.85); no common horizon; masses
-               -1e-5 to -5.5e-5 per M. P1b m/16 (A): s = 2.74 M at 61.86 M, A1 A2 A4 A5 met;
-               A - B = -0.53 M at 60 M. P1b m/12 (C) = A within 0.0023 M to 22 M; C's masses
-               drift 1.2-1.7e-4 per M (A4 fails for C)
-             - N1/N1m F-20261124-132934-375a163: Newtonian tide plus the members' 1.5 percent
-               heavier horizon masses in M's conformal factor give A - B's size at 40-60 M, not
-               its early part; no cause named (RISKS R21)
-             - KHSR reproduced (khsr_note); lead's rerun identical (1268 values,
-               F-20261124-133112-db7d6b8); K1, K2 rederived by hand; risk R14 retired
-             - note v2 (24 pages) carried into note/ (figure run F-20261121-214141-256f945)
-             - A, B, C closed as stopped (preempted: restart interval 5 M, no restart on
-               SIGTERM; RISKS R20); 25.31 card-hours used by them (A 11.77, B 9.28, C 4.26)
-card plan:   shared queue only (decision 0033; 2026-11-24 13:03 PST): A2 q0001 prio 2 running
-             (F-20261124-210400-902c650, Slurm 5207), then B2 q0002 prio 5, C2 q0003 after B2;
-             the cancelled first registrations (5171-5173, never started) closed as stopped
-card jobs:   A2 P1b m/16  F-20261124-210400-902c650  Slurm 5207 (R), 61.8 -> 200 M, G1 19.5 h
-             B2 alone m/16 queue q0002 (waiting), 107.85 -> 140 M, G2 5 h
-             C2 P1b m/12  queue q0003 (after B2), 20 -> 200 M, G2 24 h
-             no sequencer (seq_b11.sh retired); a chain cut by its cap needs a --cmd wrapper
-             read by: stage/review_wave3/b11_cards.py (joins A+A2, R16n+B+B2, C+C2; its
-             lines 52-54 still name the old run ids: update before running)
-announced:   (decision 0014) A2 19.5 card-hours (G1), C2 24 (G2); B2 5 (G2)
-next:        1. When A2 passes ~130 M: run b11_cards.py (registered), judge A2-1 to A2-5;
-                when B2 ends, its apocentre against the Peters prediction
-             2. A2 to the separation (>= 170 M), then a fresh G1 verifier (OPEN.md item 2)
-             3. Note v3 with the passage; junk at P1b's spheres (T3 reservation)
-blockers:    another user's priority jobs preempt the cards for whole nights (R20); the queue cap
-             of five (0033) shares the cards with every owner; G1 has 11.1 card-hours beyond A2
-needs:       orch: allotment for A2's tail, chain cap by card time (outbox 20261124T135319Z);
-             core: restart on SIGTERM (outbox 20261124T135319Z); earlier: HRNA pair-force spec,
-             wave extraction beyond l = 8, H-norm2 transient in R8
-offers:      readers of trackers/horizons/history/waveforms (nr_first/scripts/nrread.py), the
-             card reader b11_cards.py, the Newtonian tide/mass-offset reference b11_n1_tide.py;
-             chain wrappers athena_keep_trackers_bc.sh, athena_resume_bc.sh; sequencer
-             seq_b11.sh (hold-behind and in-place continuation within a card-hour ceiling)
-budget:      G1: 30.19 used + 18.68 reserved (A2) of 60, 11.13 left. G2: 4.31 used + 12.78
-             reserved (B at its ceiling until its finish lands), 42.90 left; B2 and C2 reserve
-             at dispatch (nrpic-run budget, 13:10 PST). Batch 12: 0 card-hours run
+gate:        G0 signed (coord/GATES.md, 2026-11-20). G1 NOT met (stage/G1, batch 21): the
+             complete vacuum passage (C8: A2 at 96.23 M of the >= 170 M needed) and the G1
+             verifier (C18, asked when C8 is done)
+headline:    The m/16 passage P1b (A + A2) has reached 96.23 M: the pair passed its own closest
+             approach (2.11 M at 76.4 M) without merging and is now 13 M from the heavy hole and
+             closing; nothing of its trajectory was lost to the tracker-file truncation.
+last-result: - A2 PARTIAL (F-20261125-170453-1175d44, fig_b21_a2_state read): tracker copies of
+               every segment join to 0-96.23 M without a gap, recomputed stretches agree to
+               1e-12 M, horizon summaries/history/waveforms appended (S1-S3 met); A2-1 REFUTED on
+               timing (2.110 M at 76.37 M against the window 63-75 M); centre of mass 13.06 M from
+               M at 96.25 M, closing at 0.24 M per M (A2-2 open); masses flat (3e-5 per M), heavy
+               hole within 6.9e-4, rms H <= 3.1e-5
+             - passage reader F-20261125-170646-6dd4ae4: NR late against Newton; both members
+               still bound to M and to each other at 96 M
+             - horizon recheck, decision 0040 item 3 (F-20261125-170540-aa39bea,
+               F-20261125-170632-5aa9786): no run of the track has the finder's status file; by
+               the failure signature no failed search at m/12, m/16; P1's common horizon 48.81 M
+               confirmed; drift wording corrected (m/8 0.9-1.7e-3 per M; R4); H2, H4 bands failed
+             - B (F-20261121-203156-03efdd3) closed as stopped, 9.28 card-hours
+decision:    continue A2 as it is (core-v0.5 card build + tracker-copy wrapper); no switch to the
+             restart-finder executable (restart files belong to the build that wrote them; q0049
+             unjudged), no rerun. Prediction: the cap stops it at 125-140 M, 10-14 card-hours
+card jobs:   A2 P1b m/16  q0001, F-20261124-210400-902c650, Slurm 5294 PENDING (cards held
+             until about 2026-11-26 06:46 PST), 96.23 -> 200 M, G1 ceiling 19.5 h (5.64 used),
+             MAX_SEGMENTS 19 (13 used); read by stage/review_wave3/b21_a2_state.py, b11_passage.py
+             B2 alone m/16 q0002 (waiting), 107.85 -> 140 M, G2 5 h; read by b11_cards.py
+             C2 P1b m/12  q0003 (after B2), 20 -> 200 M, G2 24 h; read by b11_passage.py
+             none of them can have <fastflow> diagnostics (R22)
+next:        1. When A2 has passed the pair's pericentre with M (~100-125 M): rerun
+                b21_a2_state.py and b11_passage.py (registered), judge A2-2; at the cap, continue
+                A2 through one --cmd queue entry within 19.5 card-hours (orch's answer)
+             2. A2 to the separation (>= 170 M), judge A2-3 to A2-5, then ask the fresh G1
+                verifier with the material of stage/G1/OPEN.md item 2
+             3. Note v3 with the passage; junk at P1b's spheres from A + A2 waveforms (T3)
+blockers:    cards held by another partition (0041 item 6); preemptions (R20); queue cap of five
+needs:       orch: A2's tail plan (outbox 20261125T171002Z a2-tail-plan); core: finder status
+             file on a restart (outbox 20261125T171002Z finder-diagnostics-on-restart); earlier:
+             HRNA pair-force spec, wave extraction beyond l = 8
+offers:      nrread.py (tracker join across restarts, failed-search signature), b21_a2_state.py
+             (coverage and overlap check of a chain's tracker copies), b21_horizon_recheck.py
+             (horizon recheck without status files), chain wrappers athena_keep_trackers_bc.sh,
+             athena_resume_bc.sh
+budget:      G1: 30.19 used + 18.68 reserved (A2) of 60, 11.13 left; G2: 13.60 used, 46.40 left
+             (nrpic-run budget, 09:25 PST). This session: 0 card-hours

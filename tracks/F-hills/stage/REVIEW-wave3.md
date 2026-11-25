@@ -300,3 +300,26 @@ g2mesh (cut on 2026-11-20; G2M-1b prediction written, G2M-2/3 analysis not run):
 `scripts/card_analysis.py` is committed in this session as work in progress, untested, following
 decision 0030 item 1 (D's untracked tools of an open package), so that the worktree is clean for
 `nrpic-stage verify`; the package's README and JOURNAL are not changed.
+
+# Batch 21 (2026-11-25, lead; processors only, cards held by another partition)
+
+No helper package has finished since batch 12: nothing of a helper to recheck. This section
+records the lead's own reading of the card chain A2 and the horizon recheck of decision 0040 item
+3, each against predictions written before the run (JOURNAL.md, batch 21, S1-S6 and H1-H4). A
+second agent has not checked them: they go to the fresh G1 verifier (stage/G1/OPEN.md item 2).
+
+| run | what | verdict against the prediction |
+|---|---|---|
+| F-20261125-170453-1175d44 (b21_a2_state.py; fig_b21_a2_state read) | A2 PARTIAL to 96.23 M: tracker copies, overlaps, appended outputs, separation, distances | S1, S2, S3 MET (join complete, overlaps <= 1.1e-12 M, outputs appended, 137/137 waveform samples); S4 = A2-1 REFUTED on timing (closest approach 2.110 M at 76.37 M, window 63-75 M); S5 MET (centre of mass 13.06 M from M, closing; A2-2 open); S6 MET to 96.23 M |
+| F-20261125-170540-aa39bea, F-20261125-170632-5aa9786 (b21_horizon_recheck.py; fig_b21_horizon_recheck read) | every horizon statement of G1 rechecked by the failure signature; no run has the status file | H1 MET (no failed search at m/12, m/16); H2 REFUTED IN PART at the bands' second digit (R8 0.92e-3, C 1.71e-4), slopes identical with and without failed rows; H3 MET (P1 common horizon 48.81 M and 49.06 M accepted, trackers 48.79 M); H4 REFUTED as written for P1 (first three searches at t <= 0.125 M only; after 1 M within 0.70 percent) |
+| F-20261125-170646-6dd4ae4 (b11_passage.py; fig_b11_passage read) | A + A2 and C against Newton | not a test; NR runs late against Newton (both members bound to M and to each other at 96 M; Newton's pair unbound by about 95 M) |
+
+What the track does about the failed predictions: A2-1's timing failure is recorded and no cause
+is named (B's own turn at 73.9 M and the tide of the passage are the comparison, not a test). H2
+and H4 change wording, not conclusions: RISKS R4 now reads 0.9-1.7e-3 per M at m/8; P1's heavy
+hole "within 0.7 percent after 1 M"; every horizon number carries "made without the diagnostics"
+(R22; OPEN.md items 5 and 7). The decision on the passage (continue the chain as it is) and its
+prediction are in JOURNAL.md, batch 21.
+
+Runs closed: B (F-20261121-203156-03efdd3) finished as stopped (9.28 card-hours, 153 files
+checksummed, 109.9 GB).

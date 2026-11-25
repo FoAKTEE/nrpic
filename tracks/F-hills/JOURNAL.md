@@ -1124,3 +1124,14 @@ which fits A2's registered 19.5 card-hours if preemptions stay below about 3 car
 At the cap: raise MAX_SEGMENTS in chain/config.sh and restart the chain through a `--cmd` queue
 entry (the script's own instruction), within A2's 19.5 card-hours; record it as a continuation in
 the manifest. Asked of orch: outbox 20261125T*__to-orch__a2-tail-plan.
+
+### Finding (source reading, no run): the finder's status file cannot be switched on in a chain
+
+I considered adding `fastflow/diagnostics=true` to A2's EXTRA_ARGS (chain/config.sh is sourced by
+each job) so that the passage's pericentre gets status files (decision 0040 item 3). Checked in the
+source first: z4c/fastflow.cpp line 285 reads `diagnostics` only if it exists (DoesParameterExist),
+so it is never written into a restart file; parameter_input.cpp lines 397-403 make a command-line
+parameter that the restart's block lacks a fatal error. So the override would stop the chain at its
+next start. Not done. Request to core (outbox finder-diagnostics-on-restart): read it with
+GetOrAddBoolean (default false) so later restart files carry it, or let a restart take a new
+parameter of an existing block. A2, B2, C2 stay "made without the diagnostics".
