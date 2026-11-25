@@ -474,3 +474,17 @@ Consequences fixed now: if (a), (c) and (d) hold, the floor of the top-hat membe
 jumps (on the outputs read), and the review is asked to judge G2's constraint item on smoothed members as
 0039 item 2(c) says; if (a) or (d) fails, the floor is not the jumps, and C3 goes to the review with the
 failure on record.
+
+### Entry 13, amendment 08:12 PST (before any AthenaK run; the data run A-20261125-160221-b68396f FAILED)
+
+The data run failed for both members: expball requires the core support inside the envelope, R2 <= R_b - w
+(model.py line 317). So `--edge-w` on data set 3 (R2 = 0.95 R_b) is bounded by w <= 0.05 R_b = 0.204 M, against
+0.168 M already: member W cannot be built, and prediction (b) is withdrawn untested (on record). Members now:
+- S1: smooth_tophat, R1 = 0.40 R_b, R2 = 0.95 R_b, outer edge as data set 3 (rm = 4.25, w = 0.168 M): the inner
+  jumps removed, the outer edge kept (on mesh A the edge at 4.25 M lies where cells are M/2, so w = 0.168 M is
+  a third of a cell there, close to a jump);
+- S2: smooth_tophat, R1 = 0.30 R_b, R2 = 0.80 R_b, outer half width w = 0.80 M (`--edge-w 0.8`, rm = 4.882):
+  both smoothed (R1 = 0.40 with R2 = 0.80 needs negative density).
+Predictions (a), (c) now apply to S2 (both edges smooth) and are stated for S1 as well; (d) applies to S2.
+Added: (e) S1's t = 0 ratio lies between the top hat's and S2's; if S1 is as low as S2, the inner jumps carried
+the floor, if S1 is as high as the top hat, the outer edge did. Refuted only in the sense that it names which.
