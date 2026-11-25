@@ -14,16 +14,18 @@ add (duplicate label, unknown --after, both forms, a local launcher, arguments t
 by owner and orchestrator only; seven entries of three owners never give more than five jobs, in the order
 status predicts; --after; nrpic-run's cap refusal (waiting, nothing registered) and the line its one-route
 refusal prints; a chain stays submitted across its hand-over; waits, not failures, for a worktree mid-merge
-or not clean; a failing command is failed with its stderr, the loop goes on; regressions of the review of
-2026-11-24: a command that submitted a job and then failed or timed out keeps its job, so retry and
-mark-done wait (3, 3b, 3c); a child left behind cannot hold the dispatcher, a setsid grandchild neither (4);
-after a SIGKILL a restart ends the old command's process group before the first look (5); check-dispatch is
-valid in the wrapper and not in the job it submits (6); a rise of two jobs named like a running job is an
-ALERT (2); an error between claim and the end of a dispatch fails the entry; status says HUNG for a stopped
-dispatcher; STOP; restart from the files; the cap keeper cancels an excess that lasted, newest pending first,
-never a running job or a chain's next segment, and puts an entry back to waiting; `squeue -r` counts array
-tasks; the pause flag does not stop submissions (decision 0026 item 2). The keeper never cancels a job of the
-user's own (not of an entry, no run-id name, working directory outside the repository): cases (a) to (f).
+or not clean; a failing command is failed with its stderr, the loop goes on; regressions of the first review:
+a command that submitted a job and then failed or timed out keeps its job, so retry and mark-done wait; a
+child left behind cannot hold the dispatcher, a setsid grandchild neither; after a SIGKILL a restart ends the
+old command's process group before the first look (also one known only from the command's own .pgid file:
+second review L4); check-dispatch is valid in the wrapper and not in the job it submits; a rise of two jobs
+named like a running job is an ALERT, and so is one of two jobs run outside the repository and not printed
+(second review C4: the rise is strict); an error between claim and the end of a dispatch fails the entry;
+status says HUNG for a stopped dispatcher; STOP; restart from the files; a job is an entry's by its id or by
+the entry's own run-id name, never by a generic name (second review W1, W2, R2); jobs submitted through a
+dispatch carry nothing of the Slurm stubs on their PATH; the cap keeper reports and cancels nothing in the
+scenarios (a) to (f) and in R1 (a chain between two segments), one report per set of job ids, not halting;
+`squeue -r` counts array tasks; the pause flag does not stop submissions (decision 0026 item 2).
 """
 import calendar
 import json
@@ -507,8 +509,9 @@ def failing(t, c):
     ok = wait_until(lambda: t.state("bf1") == "failed", 30)
     e = t.e("bf1")
     live_bf = [j for j, n in t.live() if n == "bf1"]
-    c.ok(ok and live_bf and e.get("job_ids") == live_bf and e.get("job_name") == "bf1" and "it submitted job(s)" in
-         e.get("error", ""), f"a command that submitted job {live_bf} and then failed: failed, its job recorded",
+    c.ok(ok and live_bf and e.get("job_ids") == live_bf and not e.get("job_name") and "it submitted job(s)" in
+         e.get("error", ""), f"a command that submitted job {live_bf} and then failed: failed, its job recorded by id "
+         "(its generic name is not used)",
          json.dumps(e)[:1200])
     r = t.q(t.A, ["retry", bf or "q9999"])
     r2 = t.q(t.A, ["mark-done", bf or "q9999"])
@@ -541,8 +544,15 @@ def stop_and_restart(t, c):
     r, z1 = t.add(t.A, "z1", ["--cmd", "true"])
     p = os.path.join(t.qdir, "entries", (z1 or "q9999") + ".json")
     e = json.load(open(p))
-    e.update(state="submitting", dispatch_started=F.H.utcnow())         # as if the dispatcher had died meanwhile
+    # as if the dispatcher had died between the fork of z1's command and the save of its process group (second
+    # review L4): the entry holds no pgid, the command's own .pgid file does, and the command still runs
+    r = subprocess.run(["bash", "-c", "setsid sleep 120 > /dev/null 2>&1 < /dev/null & echo $!"], capture_output=True,
+                       text=True, env=F.H.boot_env())
+    orphan = int(r.stdout.strip())
+    e.update(state="submitting", dispatch_started=F.H.utcnow(), attempts=1)
     json.dump(e, open(p, "w"))
+    os.makedirs(os.path.join(t.qdir, "out"), exist_ok=True)
+    open(os.path.join(t.qdir, "out", f"{z1}.1.pgid"), "w").write(f"{orphan}\n")
     c.ok(t.state("b1") == "submitted", "while stopped, b1's job has ended but its entry still reads submitted")
     c.ok(t.start(*FAST), "dispatcher restarted (--cmd-timeout 4 --keeper 1 --keeper-confirm 2)")
     r = t.q(t.repo, ["run", "--poll", POLL], timeout=60)
@@ -551,6 +561,9 @@ def stop_and_restart(t, c):
     c.ok(ok and "dispatcher ended while" in t.e("z1").get("error", ""),
          "restart resumes from the files: b1 marked done, n1 submitted, the entry left submitting marked failed (it "
          "may have submitted; not run again by itself)", t.log()[-1500:])
+    c.ok(f"its process group {orphan} was ended" in t.e("z1").get("error", "") and not os.path.exists(f"/proc/{orphan}"),
+         "second review L4: with no process group in the entry, the restart ends the one the command wrote itself "
+         f"({orphan}) before its first look", t.e("z1").get("error", ""))
     r = t.q(t.B, ["remove", n1 or "q9999"])
     c.ok(r.returncode == 1 and "only a waiting entry" in r.stderr, "a submitted entry cannot be removed", r.stderr)
     r = t.q(t.B, ["mark-done", n1 or "q9999"])
@@ -670,18 +683,21 @@ def exception(t, c):
 
 
 def alert(t, c):
-    """Review 2: two jobs named like a running job are not a chain's hand-over: ALERT. A job of the user's own
-    that comes in during a dispatch is not counted as the entry's rise."""
+    """Review 2: two jobs named like a running job are not a chain's hand-over: ALERT. Second review, C4: the rise
+    is strict, every job new around a dispatch counts, also two submitted outside the repository and not
+    printed."""
     t.settle()
     out = os.path.join(t.fx["root"], "elsewhere")
     os.makedirs(out, exist_ok=True)
-    t.names.update({"u1", "u1x"})
-    r, u1 = t.add(t.A, "u1", ["--cmd", f"sbatch -J u1 {t.hold} u1; sbatch -D {out} -J other {t.hold} u1x > /dev/null"])
-    ok = wait_until(lambda: t.state("u1") == "submitted", 30)
-    time.sleep(1.5)
-    c.ok(ok and not os.path.exists(t.alert) and len(t.live()) == 2 and f"during the dispatch of {u1} job(s) of the "
-         "user's own came in" in t.log(), "a job of the user's own (working directory outside the repository, not "
-         "printed) that came in during a dispatch is not counted as its rise: no ALERT", t.log()[-800:])
+    t.names.update({"w1", "w2"})
+    r, w = t.add(t.C, "w", ["--cmd", f"sbatch -D {out} -J w1 {t.hold} w1 > /dev/null; "
+                                     f"sbatch -D {out} -J w2 {t.hold} w2 > /dev/null"])
+    ok = wait_until(lambda: os.path.isfile(t.alert), 30)
+    a = json.load(open(t.alert)) if ok else {}
+    c.ok(ok and a.get("entry") == w and len(a.get("new_jobs", [])) == 2 and alert_halts_file(t),
+         "second review, C4: a command whose two jobs run outside the repository, output not printed, raises the "
+         "halting ALERT (the rise is strict again)", json.dumps(a)[:1200] + t.log()[-600:])
+    t.q(t.repo, ["clear-alert"])
     t.settle()
     t.foreign("dupq", "dupq0")
     wait_until(lambda: len(t.live()) == 1, 30)
@@ -711,129 +727,237 @@ def alert(t, c):
 
 
 def keeper_record(t):
-    """The last cap-keeper record of the ALERT file, and how many records the file holds."""
+    """The last report of an excess in the ALERT file, and how many such reports the file holds."""
     try:
         a = json.load(open(t.alert))
     except (OSError, ValueError):
         return {}, 0
-    recs = [a] + list(a.get("more") or [])
-    keep = [r for r in recs if r.get("kind") == "cap-keeper"]
-    return (keep[-1] if keep else {}), len(recs)
+    recs = [r for r in [a] + list(a.get("more") or []) if r.get("kind") == "excess"]
+    return (recs[-1] if recs else {}), len(recs)
+
+
+def alert_halts_file(t):
+    """Would the ALERT file halt the dispatcher (any record without halts: false)?"""
+    try:
+        a = json.load(open(t.alert))
+    except (OSError, ValueError):
+        return False
+    return any(r.get("halts", True) for r in [a] + list(a.get("more") or []))
+
+
+def ids_of(js):
+    return sorted(j["id"] for j in js or [])
+
+
+SEGEXE = r"""#!/bin/bash
+# fake athena of a chain that waits between its segments: segment 1 runs until @REL@/seg1 exists and stops
+# at its wall clock (restart written, cycle advanced: the chain resubmits); segment 2 marks its own job
+# PENDING (it waits for a card) and waits for @REL@/seg2
+mode=; d=.
+while [[ $# -gt 0 ]]; do
+  case $1 in -i) mode=i; shift 2 ;; -r) mode=r; shift 2 ;; -d) d=$2; shift 2 ;; *) shift ;; esac
+done
+mkdir -p "$d/rst"
+echo "Setup complete"
+if [[ $mode == i ]]; then
+  for ((i = 0; i < 3000; i++)); do [[ -e @REL@/seg1 ]] && break; sleep 0.2; done
+  echo rst1 > "$d/rst/fake.00001.rst"
+  echo "time=5.0e-01 cycle=5 dt=1.0e-01"
+  echo "Terminating on wall clock limit"
+else
+  touch "@STATE@/${SLURM_JOB_ID}/pending"
+  for ((i = 0; i < 3000; i++)); do [[ -e @REL@/seg2 ]] && break; sleep 0.2; done
+  echo "time=1.0e+00 cycle=10 dt=1.0e-01"
+  echo "Terminating on time limit"
+fi
+"""
 
 
 def keeper(t, c):
-    """The cap keeper never cancels a job of the user's own (not of an entry, no run-id name, working directory
-    outside the repository): it counts toward the cap, and only our pending jobs are cancelled, newest first,
-    never a running one and never a running chain's next segment: first ours of no entry, then those of the
-    newest submitted entries, which go back to waiting. Cases (a) to (f) of the decisions on the keeper."""
-    t.settle("y1")
+    """The cap keeper reports, it never cancels (decisions on the second review): in the scenarios (a) to (f)
+    of round 2 and in R1 (a chain between two segments) every job stays queued, every entry keeps its state, and
+    each excess gives one ALERT record per set of job ids that does not halt the dispatcher."""
+    t.settle()
+    t.q(t.repo, ["clear-alert"])
     under = os.path.join(t.repo, "scratch", "tmp-queue-test")        # a directory under the fixture's repository
     os.makedirs(under, exist_ok=True)
     # (a) five of ours plus one pending job of the user's own, submitted last
-    for lab, hold in (("ka", False), ("kb", True), ("kc", True), ("kd", False)):
+    labs = (("k0", False), ("ka", False), ("kb", True), ("kc", True), ("kd", False))
+    for lab, hold in labs:
         t.add(t.B, lab, t.hold_cmd(lab, hold=hold))
-    ok = wait_until(lambda: all(t.state(l) == "submitted" for l in ("ka", "kb", "kc", "kd")), 30)
-    c.ok(ok and len(t.live()) == 5, "(a) five jobs of ours: y1, ka and kd running, kb and kc pending")
-    jid = {l: t.e(l)["job_ids"][0] for l in ("ka", "kb", "kc", "kd", "y1")}
+    ok = wait_until(lambda: all(t.state(l) == "submitted" for l, _ in labs), 30)
+    c.ok(ok and len(t.live()) == 5, "(a) five jobs of ours: k0, ka and kd running, kb and kc pending")
+    jid = {l: t.e(l)["job_ids"][0] for l, _ in labs}
     t.mon_pause = True                                   # the excesses below are made on purpose
     fa1 = t.foreign("fa1", hold=True)
     ok = wait_until(lambda: keeper_record(t)[0].get("ts"), 30)
-    time.sleep(1)
-    rec, nrec = keeper_record(t)
-    live_ids = {j for j, _ in t.live()}
-    c.ok(ok and [j["id"] for j in rec.get("cancelled", [])] == [jid["kc"]] and fa1 in live_ids
-         and jid["kc"] not in live_ids and len(live_ids) == 5 and rec.get("foreign") == 1 and rec.get("halts")
-         and t.state("kc") == "waiting" and "cancelled by the cap keeper" in (t.e("kc").get("wait") or {}).get("what", ""),
-         "(a) the user's pending job submitted last is left; exactly one of ours, the newest entry's pending job (kc), "
-         "is cancelled and kc is back to waiting; five jobs queued", json.dumps(rec)[:2000])
-    t.q(t.repo, ["clear-alert"])
     time.sleep(1.5)
-    c.ok(t.state("kc") == "waiting", "(a) at five jobs kc waits")
-    # (b) two jobs of the user's own and five of ours: two of ours are cancelled, the user's are left
-    t.release("fa1")
-    ok = wait_until(lambda: t.state("kc") == "submitted", 30)
-    jid["kc"] = t.e("kc")["job_ids"][0] if ok else "?"
-    fb1, fb2 = t.foreign("fb1"), t.foreign("fb2", hold=True)
-    ok = wait_until(lambda: keeper_record(t)[0].get("ts"), 30)
-    time.sleep(1)
     rec, nrec = keeper_record(t)
     live_ids = {j for j, _ in t.live()}
-    c.ok(ok and sorted(j["id"] for j in rec.get("cancelled", [])) == sorted([jid["kc"], jid["kb"]])
-         and fb1 in live_ids and fb2 in live_ids and len(live_ids) == 5 and rec.get("foreign") == 2
-         and t.state("kb") == "waiting" and t.state("kc") == "waiting",
-         "(b) two jobs of the user's own (one pending) and five of ours: two of ours are cancelled (the newest "
-         "entries' pending jobs, kc and kb), the user's are left; five jobs queued", json.dumps(rec)[:2000])
-    t.q(t.repo, ["clear-alert"])
-    for lab in ("kb", "kc"):
-        t.q(t.B, ["remove", t.ids[lab]])
-    # (c) a job with a run-id name and no entry, and one from a directory under the repository with any name,
-    # are ours: they are cancelled before an entry's pending job
+    c.ok(ok and nrec == 1 and rec.get("count") == 6 and ids_of(rec.get("entries_jobs")) == sorted(jid.values())
+         and ids_of(rec.get("users_own")) == [fa1] and not rec.get("ours_without_entry") and rec.get("halts") is False
+         and not alert_halts_file(t) and len(live_ids) == 6 and all(t.state(l) == "submitted" for l in jid),
+         "(a) five of ours and one pending job of the user's: nothing cancelled (six jobs live, every entry submitted); "
+         "one report naming five entries' jobs and the user's job; it does not halt", json.dumps(rec)[:2000])
+    t.release("fa1")
+    c.ok(wait_until(lambda: "the excess is over" in t.log(), 20), "(a) back at five: the keeper logs that the excess "
+         "is over")
+    # (b) two jobs of the user's own and five of ours: a new report, nothing cancelled
+    fb1, fb2 = t.foreign("fb1"), t.foreign("fb2", hold=True)
+    ok = wait_until(lambda: keeper_record(t)[1] == 2, 30)
+    time.sleep(1)
+    rec, nrec = keeper_record(t)
+    c.ok(ok and ids_of(rec.get("users_own")) == sorted([fb1, fb2]) and len(t.live()) == 7
+         and all(t.state(l) == "submitted" for l in jid),
+         "(b) five of ours and two of the user's: the next excess is a new report; nothing cancelled", json.dumps(rec)[:1500])
     t.release("fb1", "fb2", "ka", "kd")
-    wait_until(lambda: len(t.live()) == 1, 30)
-    t.add(t.B, "kp", t.hold_cmd("kp", hold=True))
-    ok = wait_until(lambda: t.state("kp") == "submitted", 30)
-    jid["kp"] = t.e("kp")["job_ids"][0] if ok else "?"
+    wait_until(lambda: len(t.live()) == 3, 30)                     # k0, kb, kc
+    # (c) a run-id-named job without an entry and a job from a directory under the repository are ours without
+    # an entry (a route past the queue); a job whose working directory squeue prints as (null) is the user's
     rid = t.foreign("A-20261125-010203-abcdef1", "rid1", hold=True)          # outside the repository
     zz = t.foreign("zzwd", hold=True, cwd=under)                              # under the repository
-    fcs = [t.foreign("fc1"), t.foreign("fc2", hold=True), t.foreign("fc3", hold=True)]
-    ok = wait_until(lambda: keeper_record(t)[0].get("ts"), 30)
+    nul = t.foreign("interactive", "nul1", hold=True)
+    open(os.path.join(t.fx["state"], nul, "workdir"), "w").write("(null)")
+    fc1 = t.foreign("fc1")
+    ok = wait_until(lambda: keeper_record(t)[1] == 3, 30)
     time.sleep(1)
     rec, nrec = keeper_record(t)
+    why = {j["id"]: j.get("why") for j in rec.get("ours_without_entry") or []}
     live_ids = {j for j, _ in t.live()}
-    how = {j["id"]: j.get("ours") for j in rec.get("cancelled", [])}
-    c.ok(ok and sorted(how) == sorted([rid, zz]) and how.get(rid) == "run id" and how.get(zz) == "under the repository"
-         and jid["kp"] in live_ids and t.state("kp") == "submitted" and all(f in live_ids for f in fcs)
-         and len(live_ids) == 5,
-         "(c) a run-id-named job without an entry and a job from a directory under the repository are ours: both are "
-         "cancelled, before the entry's pending job (kp, left) and none of the user's three", json.dumps(rec)[:2000])
+    c.ok(ok and why == {rid: "run id", zz: "under the repository"} and ids_of(rec.get("users_own")) == sorted([nul, fc1])
+         and all(x in live_ids for x in (rid, zz, nul, fc1)) and len(live_ids) == 7,
+         "(c) a run-id-named job and one from under the repository are reported as ours without an entry, one whose "
+         "working directory is (null) as the user's (second review W3); nothing cancelled", json.dumps(rec)[:2000])
+    # (d) six of the user's own and none of ours: one report, none at the next looks; a new set: a new report
+    t.settle()
     t.q(t.repo, ["clear-alert"])
-    # (d) six jobs of the user's own and none of ours: nothing cancelled, one ALERT, not a second one
-    t.release("y1", "kp")
-    wait_until(lambda: len(t.live()) == 3, 30)
-    fds = fcs + [t.foreign("fd1"), t.foreign("fd2", hold=True), t.foreign("fd3", hold=True)]
-    ok = wait_until(lambda: keeper_record(t)[0].get("ts"), 30)
+    fds = [t.foreign(f"fd{i}", hold=(i % 2 == 0)) for i in range(6)]
+    ok = wait_until(lambda: keeper_record(t)[1] == 1, 30)
     time.sleep(4)                                        # four more looks of the keeper
     rec, nrec = keeper_record(t)
-    live_ids = {j for j, _ in t.live()}
-    c.ok(ok and nrec == 1 and not rec.get("cancelled") and rec.get("foreign") == 6 and rec.get("ours") == 0
-         and not rec.get("halts") and all(f in live_ids for f in fds),
-         "(d) six jobs of the user's own and none of ours: nothing cancelled, one ALERT record (not halting), no "
-         "second one at the next looks", json.dumps(rec)[:1500])
-    fd4 = t.foreign("fd4")
-    time.sleep(4)
-    rec, nrec = keeper_record(t)
-    c.ok(nrec == 1 and "none of ours may be cancelled" in t.log(), "(d) a seventh job of the user's own: logged, still "
-         "one ALERT record", t.log()[-600:])
-    # (e) status lists the user's own jobs on a line of their own
+    c.ok(ok and nrec == 1 and ids_of(rec.get("users_own")) == sorted(fds) and not rec.get("entries_jobs")
+         and all(f in {j for j, _ in t.live()} for f in fds),
+         "(d) six jobs of the user's own: one report, not a second one at the next looks; nothing cancelled",
+         json.dumps(rec)[:1500])
+    # (e) status shows the standing excess and the user's own jobs
     st = t.q(t.repo, ["status"]).stdout
     m = re.search(r"^  not ours: (.*)$", st, re.M)
-    c.ok(m and all(f in m.group(1) for f in fds + [fd4]) and "0 of this program, 7 of the user's own" in st
-         and "does not halt the dispatcher" in st,
-         "(e) status: the user's own jobs on the line 'not ours: ...'; the ALERT says it does not halt", st)
+    c.ok(m and all(f in m.group(1) for f in fds) and "EXCESS: 6 jobs queued, 1 above the cap" in st
+         and "does not halt the dispatcher" in st and "nothing is cancelled automatically" in st,
+         "(e) status: the standing excess, the user's own jobs on the line 'not ours: ...', the report does not halt", st)
     r, kw = t.add(t.C, "kw", t.hold_cmd("kw"))
     time.sleep(2)
-    c.ok(t.state("kw") == "waiting", "(d) at seven jobs an entry waits (the count rule)")
-    t.release("fc1", "fc2", "fc3", "fd1")
+    c.ok(t.state("kw") == "waiting", "(d) at six jobs an entry waits (the count rule)")
+    t.release("fd0", "fd1")
     ok = wait_until(lambda: t.state("kw") == "submitted", 30)
-    c.ok(ok and os.path.isfile(t.alert), "(d) below five jobs the entry is dispatched although that ALERT stands: it "
-         "records an excess of the user's own jobs only and does not halt")
-    t.q(t.repo, ["clear-alert"])
-    # (f) our pending job that is the next segment of our running chain is never cancelled
+    c.ok(ok and os.path.isfile(t.alert), "(d) below five jobs the entry is dispatched while the report stands: it does "
+         "not halt")
+    # (f) our running chain, its pending next segment and four of the user's own
     t.settle()
+    t.q(t.repo, ["clear-alert"])
     cs0 = t.foreign("csr", "csr0", cwd=under)
     cs1 = t.foreign("csr", "csr1", hold=True, cwd=under)
     fs = [t.foreign(f"ff{i}") for i in range(4)]
-    ok = wait_until(lambda: keeper_record(t)[0].get("ts"), 30)
+    ok = wait_until(lambda: keeper_record(t)[1] == 1, 30)
     time.sleep(1)
-    rec, nrec = keeper_record(t)
     live_ids = {j for j, _ in t.live()}
-    c.ok(ok and not rec.get("cancelled") and rec.get("left_above_the_cap") == 1 and cs0 in live_ids and cs1 in live_ids
-         and all(f in live_ids for f in fs),
-         "(f) six jobs: our running chain, its pending next segment (protected) and four of the user's own: nothing is "
-         "cancelled, one job is reported left above the cap", json.dumps(rec)[:1500])
+    c.ok(ok and all(x in live_ids for x in [cs0, cs1] + fs), "(f) a chain, its next segment and four of the user's: "
+         "nothing cancelled")
+    # R1 of the second review: a chain between two segments (its next segment pending, none running) and one job
+    # of the user's above five
+    t.settle()
+    t.q(t.repo, ["clear-alert"])
+    segexe = os.path.join(t.fx["root"], "segexe.sh")
+    F.write_exe(segexe, SEGEXE.replace("@REL@", t.rel).replace("@STATE@", t.fx["state"]))
+    deck = "tracks/A-emd-pbh/q/r1chain.athinput"
+    F.commit_file(t.A, deck, "<problem>\npgen_name = fake_chain\n<output9>\nfile_type = rst\ndcycle = 5\n")
+    r, rc1 = t.add(t.A, "r1c", ["--", "--kind", "scouting", "--gate", "G1", "--purpose", "a chain that waits between "
+                                "its segments", "--launcher", "chain", "--gpu-hours", "2", "--exe", segexe, "--", deck,
+                                "time/tlim=1"])
+    ok = wait_until(lambda: t.state("r1c") == "submitted", 60)
+    e = t.e("r1c")
+    rid1 = e.get("run_id")
+    seg1 = (e.get("job_ids") or ["?"])[0]
+    t.names.update({"seg1", "seg2", rid1 or "none"})
+    c.ok(ok and rid1 and e.get("job_name") == rid1, f"R1: the chain entry is submitted as run {rid1}, known by its run "
+         "id", json.dumps(e)[:800])
+    t.release("seg1")
+
+    def seg2():
+        return [j for j, n in t.live() if n == rid1 and j != seg1
+                and os.path.exists(os.path.join(t.fx["state"], j, "pending"))]
+    ok = wait_until(lambda: seg2() and seg1 not in {j for j, _ in t.live()}, 60)
+    s2 = seg2()[0] if ok else "?"
+    users = [t.foreign(f"r1u{i}") for i in range(4)]
+    wait_until(lambda: len(t.live()) == 5, 20)
+    users.append(t.foreign("r1u4"))                     # the user submits one more by hand: six
+    ok2 = wait_until(lambda: keeper_record(t)[1] == 1, 30)
+    time.sleep(1.5)
+    rec, nrec = keeper_record(t)
+    e = t.e("r1c")
+    c.ok(ok and ok2 and s2 in {j for j, _ in t.live()} and e["state"] == "submitted" and e.get("run_id") == rid1
+         and nrec == 1 and s2 in ids_of(rec.get("entries_jobs")) and not alert_halts_file(t),
+         f"R1: a chain between two segments (segment 2, job {s2}, pending; none running) and one job of the user's "
+         "above five: the segment stays queued, the entry stays submitted with its run, one report that does not halt",
+         json.dumps(rec)[:1500] + json.dumps(e)[:600])
+    t.release("seg2")
+    c.ok(wait_until(lambda: t.state("r1c") == "done", 60), "R1: the chain ends after its second segment; the entry is "
+         "done")
     t.q(t.repo, ["clear-alert"])
     t.settle()
     t.mon_pause = False
+
+
+def attribution(t, c):
+    """Second review W1 (second half), W2, R2: a job is the entry's by its id (printed and new at its dispatch) or
+    by the entry's own run-id name, never by a generic name; and the PATH of jobs submitted through a dispatch
+    holds nothing of the Slurm stubs."""
+    t.settle()
+    t.q(t.repo, ["clear-alert"])
+    t.names.update({"w1own", "w1user"})
+    r, wb = t.add(t.B, "wb", ["--cmd", f"sbatch --hold -J batch {t.hold} w1own"])
+    ok = wait_until(lambda: t.state("wb") == "submitted", 30)
+    e = t.e("wb")
+    c.ok(ok and not e.get("job_name") and len(e.get("job_ids") or []) == 1,
+         "W1: an entry whose job has a generic name ('batch') is known by its job id, not by the name", json.dumps(e)[:600])
+    t.foreign("batch", "w1user")
+    t.release("w1own")
+    c.ok(wait_until(lambda: t.state("wb") == "done", 20), "W1: once its own job has left squeue the entry is done, "
+         "though a running job of the user's carries the same name")
+    uj = t.foreign("myjob", "w2user", hold=True)
+    t.names.add("w2own")
+    r, w2 = t.add(t.C, "w2", ["--cmd", f"echo 'previous segment: job {uj}'; sbatch -J own3 {t.hold} w2own"])
+    ok = wait_until(lambda: t.state("w2") == "submitted", 30)
+    own = [j for j, n in t.live() if n == "own3"]
+    e = t.e("w2")
+    c.ok(ok and own and e.get("job_ids") == own, f"W2: a wrapper that prints the id of a job that was there before "
+         f"({uj}) records only the job it submitted ({own})", json.dumps(e)[:600])
+    t.names.update({"r2a", "r2b"})
+    r, ra = t.add(t.A, "r2x", ["--cmd", f"sbatch --hold -J dupn {t.hold} r2a"])
+    ok1 = wait_until(lambda: t.state("r2x") == "submitted", 30)
+    r, rb = t.add(t.B, "r2y", ["--cmd", f"sbatch --hold -J dupn {t.hold} r2b"])
+    ok2 = wait_until(lambda: t.state("r2y") == "submitted", 30)
+    ja, jb = (t.e("r2x").get("job_ids") or ["?"]), (t.e("r2y").get("job_ids") or ["?"])
+    t.release("r2a")
+    ok3 = wait_until(lambda: t.state("r2x") == "done", 20)
+    time.sleep(2)
+    c.ok(ok1 and ok2 and ok3 and len(ja) == 1 and len(jb) == 1 and ja != jb and t.state("r2y") == "submitted",
+         "R2: two entries whose jobs carry one generic name each know their own job; the one whose job ended is done, "
+         "the other stays submitted", f"{ja} {jb} {t.state('r2x')} {t.state('r2y')}")
+    t.settle()
+    pathjob = os.path.join(t.fx["root"], "pathjob.sh")
+    F.write_exe(pathjob, "#!/bin/bash\necho \"$PATH\" > \"@REL@/path-$1\"\n".replace("@REL@", t.rel)
+                + HOLD.replace("@REL@", t.rel).split("\n", 1)[1])
+    t.names.update({"pj1", "pj2"})
+    t.add(t.A, "pj1", ["--cmd", f"sbatch -J pj1 {pathjob} pj1"])
+    t.add(t.A, "pj2", ["--cmd", f"harness/bin/nrpic-env exec -- bash -c 'sbatch -J pj2 {pathjob} pj2'"])
+    pf = [os.path.join(t.rel, f"path-pj{i}") for i in (1, 2)]
+    ok = wait_until(lambda: all(os.path.isfile(p) and open(p).read().strip() for p in pf), 30)
+    paths = [open(p).read() if os.path.isfile(p) else "" for p in pf]
+    c.ok(ok and all("harness/shims" not in x and t.fx["fakebin"] in x for x in paths),
+         "the PATH of jobs submitted through a dispatch (by the wrapper itself, and through nrpic-env exec inside "
+         "it) holds nothing of the Slurm stubs: a chain's job reaches the real sbatch", " | ".join(paths))
+    t.settle()
 
 
 def arrays(t, c):
@@ -867,6 +991,7 @@ def main():
             dispatch_marker(t, c)
             exception(t, c)
             alert(t, c)
+            attribution(t, c)
             keeper(t, c)
         r = t.q(t.repo, ["stop", "--wait", "30"])
         arrays(t, c)

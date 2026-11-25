@@ -121,8 +121,39 @@ status [<run_id>] · finish <run_id> · verify <run_id> · budget · stop <run_i
 - Where a run's records are written: the manifest `tracks/<ID>/runs/<run_id>/manifest.json`
   (committed on the own branch at submit and again at finish); in `scratch/<ID>/<run_id>/` the
   outputs, `run.log` (local runs), `sha256sums.txt` (at finish) and `.nrpic/launch.json`,
-  `.nrpic/result.json` (how the run was started and ended; not checksummed). Nothing else is
-  written into the worktree.
+  `.nrpic/result.json` (how the run was started and ended), `.nrpic/sha256cache.json` (the checksum
+  cache, below); `.nrpic/` is not checksummed. Nothing else is written into the worktree.
+- Checksums of outputs (decision 0039 item 5): `finish`, `verify` and `nrpic-stage verify` hash through
+  the run directory's cache `.nrpic/sha256cache.json`, one entry per relative path with the file's size and
+  modification time in nanoseconds when it was hashed. A file is read again only when it is new, when its
+  size or modification time differs from its entry, or when it had been modified less than 2 s before it was
+  hashed (a later write in the same clock tick could keep the time). A checksum taken from the cache proves
+  unchanged size and modification time since it was hashed, not bytes read again: a change that keeps both
+  (a byte rewritten and the time restored with `touch -d` or `cp -p`) is not seen by a cached pass. `--full`
+  (`finish <run_id> --full`, `verify <run_id> --full`, `nrpic-stage verify ... --full`) reads every byte and
+  rewrites the cache. Up to four files are hashed at once, never more. Both commands print how many files were
+  hashed again and how many were taken from the cache. A checksum that differs from `sha256sums.txt` fails as
+  before, from the cache or not. An unreadable cache is ignored (every file hashed); the cache is an untracked
+  file in the run directory, so a gate that must rest on bytes read is verified with `--full`.
+- Runs continued in place (decision 0039 item 5). A chain cut by preemption, by the queue cap or by its
+  segment cap is continued from its own restart file by a `--cmd` wrapper of the shared queue (next section),
+  which appends one record to the manifest's optional top-level list `continuations` and commits the manifest
+  path-limited. A record is an object with `at` (when: ISO 8601 to the second with a zone, `Z`, `+HH:MM` or
+  `+HHMM`), `from_restart` (the restart file it resumes from, or `null` when the chain had none yet), `by` or
+  `via` (who: the wrapper and its queue entry), and at least one of `job_id` (the Slurm job it submitted,
+  digits), `segments_used_before` (integer >= 0) and `max_segments` (the cap after it, integer >= 1); further
+  keys (`reason`, `kind`, `status_before`, `extra_athena_args`, `predictions`) are free. Records are appended
+  in order of `at`. Example: `{"at": "2026-11-24T13:07:12-0800", "job_id": "5210", "from_restart":
+  ".../rst/esflk.00005.rst", "segments_used_before": 5, "max_segments": 12, "via": "harness/bin/nrpic-queue
+  --cmd tracks/D-bh-dress/g2long/tools/continue_chain.sh"}`. `finish` accepts such a manifest; a malformed list
+  is refused (by finish, `verify`, `nrpic-stage verify` and the pre-commit hook) with what is wrong. A run
+  closed before its last record (its `finished` earlier than the record's `at`) is open again: `nrpic-run
+  finish <run_id>` closes it again without `--status`, from the chain's STATUS, once no job of it is in
+  squeue; until then `verify`, `lint` and the stage check name it. Card-hours of a chain are the sum over every
+  job it ever had (launch, `chain/events.log`, the records' `job_id`): sacct's ElapsedRaw per job, else the
+  job's own segment logs `chain/seg<NNN>.job<ID>.*.log`, else 0 and named; the manifest records the sum in
+  `resources.gpu_hours`, the parts in `resources.gpu_seconds_by_job` and how in `resources.gpu_hours_basis`.
+  The second close takes the unchanged outputs' checksums from the cache and hashes the new ones.
 - Clean tree: the code of the run must be the commit. Helpers sharing one worktree pass
   `--package <their directory>`: then the package, the inputs and the shared code (athenak/,
   python/, scripts/, harness/, problems/, ...) must be clean; other helpers' work elsewhere in
@@ -143,22 +174,27 @@ status [<run_id>] · finish <run_id> · verify <run_id> · budget · stop <run_i
   `nrpic-queue add` (next section); `nrpic-run submit` with launcher batch or chain is for the queue's
   dispatcher. Called directly it refuses, registers nothing and prints the line to use instead,
   `harness/bin/nrpic-queue add --label <label> -- <the same submit arguments>`; `--dry-run` stays open to
-  everyone. A local run (`nrpic-run submit` without a card launcher) and `nrpic-env exec` refuse a command
-  that would reach Slurm itself: sbatch, srun, salloc, `scripts/gpu_run.sh`, `gpu_batch.sh`,
-  `submit_chain.sh` (not `--status` or `--stop`), named in the command line (also inside `bash -c` or
-  `python3 -c` strings) or run by a script file the command runs (shell lines outside comments; in Python a
-  string that begins with the name). The dispatcher marks the commands it runs
-  (`NRPIC_QUEUE_DISPATCH=<entry id>:<token>`), valid while that entry is being dispatched with that token, in
-  its owner's worktree, and the dispatcher holds `locks/queue/submit.lock`; it is the one variable of the
-  caller nrpic-run and nrpic-env read. nrpic-run builds a job's environment from files, so the marker does not
-  reach the jobs nrpic-run submits; it does reach a job that a `--cmd` wrapper submits itself (sbatch or the
-  scripts), where it is no longer valid once the dispatch has ended: a wrapper tests its dispatch with
-  `harness/bin/nrpic-queue check-dispatch` (exit 0 only while valid), never with `[ -n "$NRPIC_QUEUE_DISPATCH" ]`.
-  The marker gates the route only: with it, `submit` still refuses a card run when five jobs of the account are
-  in the Slurm queue (pending, held and running, all owners together; `squeue -r`, every task of a job array
-  one each) or when `squeue` does not answer. Nothing lifts the cap. Never submit by sbatch or the scripts
-  directly; start no sequencers. The cap, the count and the checks live in `harness/lib/nrpic_harness.py`
-  (`QUEUE_CAP`, `queue_count`, `queue_dispatch_problem`, `slurm_launch_in`), one definition for the tools.
+  everyone. Outside a dispatch, a local run (`nrpic-run submit` without a card launcher) and `nrpic-env exec`
+  put `harness/shims/slurm` first on the command's PATH: there `sbatch`, `srun` and `salloc` are stubs that
+  print the rule and exit 2, so whatever the command calls (`scripts/gpu_batch.sh`, `submit_chain.sh`, a
+  prefix such as `timeout` or `env`, a script that calls another, Python) submits nothing, and commands that
+  only mention Slurm (`grep -c sbatch`, `submit_chain.sh --status` and `--stop`, which use squeue and scancel)
+  run as before. A command whose first word is sbatch, srun or salloc is refused before it is registered. A
+  `--background` local run always gets the stubs. Known and open: a call by absolute path (`/usr/bin/sbatch`)
+  or with a PATH of its own passes; only a limit on the Slurm side or the tool-guard hook closes that. The
+  dispatcher marks the commands it runs (`NRPIC_QUEUE_DISPATCH=<entry id>:<token>`), valid while that entry is
+  being dispatched with that token, in its owner's worktree, and the dispatcher holds `locks/queue/submit.lock`;
+  it is the one variable of the caller nrpic-run and nrpic-env read. Inside a valid dispatch the PATH is left
+  as it is, so nothing of the stubs reaches a job (a chain's job resubmits its next segment with the real
+  sbatch). nrpic-run builds a job's environment from files, so the marker does not reach the jobs nrpic-run
+  submits; it does reach a job that a `--cmd` wrapper submits itself (sbatch or the scripts), where it is no
+  longer valid once the dispatch has ended: a wrapper tests its dispatch with `harness/bin/nrpic-queue
+  check-dispatch` (exit 0 only while valid), never with `[ -n "$NRPIC_QUEUE_DISPATCH" ]`. The marker gates the
+  route only: with it, `submit` still refuses a card run when five jobs of the account are in the Slurm queue
+  (pending, held and running, all owners together; `squeue -r`, every task of a job array one each) or when
+  `squeue` does not answer. Nothing lifts the cap. Never submit by sbatch or the scripts directly; start no
+  sequencers. The cap, the count and the checks live in `harness/lib/nrpic_harness.py` (`QUEUE_CAP`,
+  `queue_count`, `queue_dispatch_problem`, `with_slurm_shims`), one definition for the tools.
 - Budget: the GPU-hour allotment of decision 0006 as amended by 0014 on main, per gate, summed
   over all branches of the owner; card-hours of hand-written manifests (`card_hours`) count
   toward their gate. A request above eight card-hours is noted (0014: announce it in STATUS.md).
@@ -192,8 +228,8 @@ At most five jobs of the account are in the Slurm queue at once (pending, held a
 together). One route: card runs are submitted only by `nrpic-queue add`; `nrpic-run submit` with a card
 launcher is for the dispatcher. Every card run goes into one machine-wide queue; one dispatcher, started by
 the orchestrator, submits the next entry whenever fewer than five jobs are queued, so the two cards are used
-in turn; its cap keeper cancels an excess that came in by any other way. Owners start no sequencers of their
-own. `harness/bin/nrpic-queue --help` has the whole usage.
+in turn; its cap keeper reports an excess that came in by any other way (it cancels nothing). Owners start no
+sequencers of their own. `harness/bin/nrpic-queue --help` has the whole usage.
 
 ```text
 add --label L [--after LABEL] [--priority N] [--note T] [--no-check] -- <arguments of nrpic-run submit>
@@ -223,9 +259,12 @@ run [--poll S] [--cmd-timeout S] [--keeper S] [--keeper-confirm S] · stop [--wa
   cherry-pick or revert is in progress there it waits too ("waits: worktree in the middle of a merge"). The
   queue never finishes runs: close them with `nrpic-run finish <run_id>` as before (`show ID` names the run).
 - One after another: `--after LABEL` waits until that entry of yours is done, that is until none of its jobs
-  is in squeue (a job is known by its name: nrpic-run names it after the run id, and a chain resubmits itself
-  under that name, so a chain is done only after its last segment). An entry after one that failed or was
-  removed stays blocked (`status` says so) until that one is retried or this one removed.
+  is in squeue. A job is an entry's by its job id (printed by the entry's command and new at that dispatch,
+  array tasks included), or by name only when the name is the entry's own run id: nrpic-run names a job after
+  its run id and a chain resubmits itself under that name, so a chain is done only after its last segment. A
+  generic name (`batch`, `athena`, `chain-<dir>`) is never used: another job, the user's own too, may carry it,
+  and two entries never claim one job. An entry after one that failed or was removed stays blocked (`status`
+  says so) until that one is retried or this one removed.
 - Continuing a cut chain from its restart file: `--cmd` with your wrapper (the line runs with bash in your
   worktree root, inherits the marker, so it may call `nrpic-run submit` inside, and must submit at most one
   job), after the entry of the chain it continues:
@@ -234,7 +273,9 @@ run [--poll S] [--cmd-timeout S] [--keeper S] [--keeper-confirm S] · stop [--wa
   the dispatch; the variable alone proves nothing, see the nrpic-run section), then resumes
   `scripts/submit_chain.sh <run dir> <deck>` in place with `JOB_NAME=<run_id>` (so the queue recognises its
   jobs), `MAX_SEGMENTS` set (the script's default is 100), the same executable and process name, and records
-  the continuation in the run's manifest; the queue records the job it printed. It must not leave anything
+  the continuation in the run's manifest (one record of `continuations`, nrpic-run section; close the run
+  afterwards with `nrpic-run finish <run_id>`); the queue records the job it printed (and knows the chain's
+  later segments by the run-id name, which is why `JOB_NAME=<run_id>` matters). It must not leave anything
   running: what is left of its process group when it ends is ended. A wrapper that submits two jobs trips the
   ALERT below.
 - Order: the lowest effective priority first. `--priority` 0 and 1 are given only by the orchestrator (0 for
@@ -267,29 +308,26 @@ run [--poll S] [--cmd-timeout S] [--keeper S] [--keeper-confirm S] · stop [--wa
   and marks the entry failed with what its output shows it submitted. The pause flag does not stop it
   (decision 0026 item 2: a card run uses none of the account's usage). It runs the main checkout's copy of
   the command and of `harness/lib/nrpic_harness.py`: stop and start it again after either changes on main.
-- The cap keeper, the enforcement that does not depend on the route: every 30 s (`--keeper`), also between
-  looks but not while an entry's command runs, the dispatcher counts the account's jobs. The account is also
-  the user's own login: a job is this program's when it belongs to a queue entry, or its name is a run id of
-  nrpic-run (`<owner>-YYYYMMDD-HHMMSS-<commit7>`), or its working directory (`squeue %Z`) lies under
-  `/data/haiyangw/nrpic` (wt/* and scratch/* included); every other job is the user's own. The user's own jobs
-  count toward the cap but are never cancelled, pending or not. An excess above five that lasts 20 s
-  (`--keeper-confirm`; a chain's hand-over lasts seconds) is cancelled with scancel among our pending jobs
-  only, newest first, never a running job and never a running chain's next segment (the oldest pending job of
-  ours named like a running one of ours): first ours that belong to no submitted entry (a route past the
-  queue), then pending jobs of the newest submitted entries (such an entry goes back to waiting with the
-  reason, one with a running job never; close its run with `nrpic-run finish`). What cannot be removed that
-  way stays. It logs loudly and writes ALERT with the jobs, what it cancelled, the user's own jobs (ids and
-  names) and what is left; dispatching stays halted until clear-alert when it cancelled something or our own
-  jobs alone exceed five. An excess that only the user's own jobs make is recorded once per set of job ids and
-  does not halt the dispatcher, which submits nothing anyway while the count is at or above five. `status`
-  lists the user's own jobs on a line of their own (`not ours: ...`).
-- ALERT: with one route every card job goes through the dispatcher, so when this program's jobs rose by more
-  than one around one dispatch (a job of the user's own that came in meanwhile does not count; new job ids; a
-  job the command printed always counts; one unprinted job per
-  name of a running job is taken for a chain's next segment) that is a violation: the dispatcher stops
-  submitting, logs ALERT and writes `locks/queue/ALERT` (the new jobs, and whether the command printed them).
-  The orchestrator looks (`status`), cancels what should not run, finds where each job came from, fixes or
-  removes the entry and runs `cd /data/haiyangw/nrpic && harness/bin/nrpic-queue clear-alert`.
+- The cap keeper reports, it never cancels (decisions on the second review: an automatic cancel could hit a job
+  that is not the program's, or cost the program its own runs, such as a chain waiting between two segments).
+  Every 30 s (`--keeper`), also between looks but not while an entry's command runs, the dispatcher counts
+  the account's jobs; the user's own count too (the account is also the user's login). An excess above five
+  that lasts 20 s (`--keeper-confirm`; a chain's hand-over lasts seconds) gives one ALERT record per distinct
+  set of job ids: the count, the entries' jobs, ours without an entry (a run-id name of nrpic-run,
+  `<owner>-YYYYMMDD-HHMMSS-<commit7>`, or an absolute working directory, `squeue %Z`, under
+  `/data/haiyangw/nrpic`: a route past the queue), the user's own, and what to do. That record does not halt
+  dispatching: the dispatcher is the only submitter and submits nothing while the count is at or above five,
+  so an excess decays by itself, and nothing stays stopped after it has gone. When the count is back at or
+  below five the keeper logs it; the next excess is a new record. `status` shows a standing excess (`EXCESS:
+  ...`) and the user's own jobs on a line of their own (`not ours: ...`). Removing an excess is the
+  orchestrator's: look, `scancel` by hand what should not be there, then `clear-alert`.
+- ALERT: with one route every card job goes through the dispatcher, so when the account's jobs rose by more
+  than one around one dispatch (every job new at that dispatch counts, a job the user submits by hand in those
+  seconds too; a job the command printed always counts; one unprinted job per name of a running job is taken
+  for a chain's next segment) that is a violation: the dispatcher stops submitting, logs ALERT and writes
+  `locks/queue/ALERT` (the new jobs, and whether the command printed them); it stays halted until
+  `clear-alert`. The orchestrator looks (`status`), cancels what should not run, finds where each job came
+  from, fixes or removes the entry and runs `cd /data/haiyangw/nrpic && harness/bin/nrpic-queue clear-alert`.
 - State, untracked, one flock for every change: `locks/queue/entries/<id>.json`, `out/`, `queue.log`,
   `submit.lock`, `dispatcher.{lock,pid,json}`, `STOP`, `ALERT`, `nohup.out`. Change it only through the command.
 
@@ -316,6 +354,15 @@ of the track names (this gate's or an earlier gate's; the full run id, or its
 of the manifest check are listed under `runs-waived` (WARN) and do not fail the package. A range
 "X ... Y" is not expanded; name each run. An unlisted one still fails `runs`, and the message
 says how many to list.
+
+The run check and the output checksums (decision 0039 item 5): a manifest with a well-formed
+`continuations` is checked as nrpic-run's; a malformed list, or a run continued after it was closed and
+not closed again, fails `runs` with what is wrong. Output checksums go through each run directory's cache
+(nrpic-run section): row `checksums` of VERIFY_RESULTS.md gives how many output files were hashed again
+(bytes read) and how many were taken from the cache, and states that a cached entry proves unchanged size
+and modification time since it was hashed, not bytes read again; it is WARN when any came from the cache,
+PASS after `--full` (every byte read), WARN with `--no-checksums` (none checked). Leads no longer need
+`--no-checksums`: the second verify of an unchanged tree reads no output again.
 
 Waivers of the orchestrator (decision 0019 item 6): `verify` reads `coord/WAIVERS.md` as committed on
 main (through git, from any worktree; a working-tree copy does not count) and waives every failure of
@@ -358,7 +405,8 @@ requested ids, XML with a DOCTYPE. Gzipped PostScript stays `src/main.tex` (as b
 - `harness/hooks/pre-commit` (brief 13.1) rejects files above 5 MB, added lines that look
   like secrets (documentation placeholders pass: EXAMPLE keys, runs like `abcdefgh`, a key
   header without key material), run manifests that are not JSON objects or whose run_id differs
-  from the directory, and paths outside `tracks/<ID>/` and main's OWNERSHIP on an owner's branch
+  from the directory or whose `continuations` is malformed (the rules of nrpic-run, read from
+  `harness/lib/nrpic_harness.py`), and paths outside `tracks/<ID>/` and main's OWNERSHIP on an owner's branch
   (main and `proposal/<ID>/<slug>` are exempt from the last check). In a conflicted merge it checks
   only what the resolution adds, not what main brings. Dry run over the history of every owner
   branch (wave 3a, `coord/digests/hook-dryrun.md`): `python3 -I harness/tests/precommit_dryrun.py
@@ -418,9 +466,9 @@ STAGE_REPORT, outbox_message, run_manifest.json. Figure libraries: `harness/styl
 `scratch/harness/` and checks the context commands (87 checks, about 30 s);
 `harness/tests/acceptance_ctx.py` adds the read-only runs on the live repository and writes
 `coord/digests/bootstrap.md`. `harness/tests/run-runs-config-tests` runs the self-tests of
-nrpic-env (15), nrpic-run (92: orch's runs on main beside other agents, and the one route and the queue cap
-of decision 0033, included), nrpic-queue (`test_nrpic_queue.py`, 100: fake Slurm, fake jobs the test releases;
-the regressions of the review of 2026-11-24; the keeper never cancels a job of the user's own),
+nrpic-env (15), nrpic-run (103: orch's runs on main beside other agents, the one route with the Slurm stubs and the queue cap
+of decision 0033, included), nrpic-queue (`test_nrpic_queue.py`, 108: fake Slurm, fake jobs the test releases;
+the regressions of both reviews; the keeper reports and cancels nothing),
 the style libraries
 (10), nrpic-stage (50, the stage-check rehearsal, with the waivers of `coord/WAIVERS.md`), the hooks
 (99), the proposed configuration (51), nrpic-fetch-arxiv (29, against a loopback server: no request
