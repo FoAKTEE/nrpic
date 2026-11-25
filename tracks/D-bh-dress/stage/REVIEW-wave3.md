@@ -491,11 +491,12 @@ two new tools were run once on the data as smoke tests before their registered r
 | P13 | FAILED as written (M/4 t = 0 finder mass 1.0330); switch at 225.0 M holds | same |
 | P14 | HOLDS: 1.34 | manifest |
 | FN4 / FNQ (partial) | N2, N3 hold for FN4 (read whole two minutes after its chain ended, before its close); Q2 holds at 100 M; FNQ cut at 125 M | np_partial D-20261125-115729-011d028, np_partial.png (read) |
+| FE4 closed; P5 | REFUTED: at M/4 the null difference grows to 4.6e-3 by 300 M (M/8, M/16: 2e-4); P6 failed narrowly (0.83 card-hours, 0.5-0.8) | judge_conv D-20261125-122227-3eb563a, judge_conv.png (read) |
 | Relaxed lapse per G2 item | no G2 item uses it; none could be judged at its bound with the mitigation beyond ~100 M; controls named | stage/G2/OPEN.md section 2 |
 
 What I could not confirm: FN4's criterion G (N1) and XN after its close (the close by hand of 45 GB was still
-checksumming at the end of the session); FE4 (P5) and FNQ, FL16. What is wrong and stays on record: P11, P13,
-P12's failure with the M/8 control, FF4's D3 at early times, FK's D4 timing.
+checksumming at the end of the session); FNQ, FL16. What is wrong and stays on record: P5 (null test fails at
+M/4), P6, P11, P13, P12's failure with the M/8 control, FF4's D3 at early times, FK's D4 timing.
 
 ## 20. Lead's decisions of batch 17
 

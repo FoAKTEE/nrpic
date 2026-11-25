@@ -10,13 +10,13 @@ agrees with FK (N2, N3 hold on a reading made before its close; criterion G for 
 
 | Item | State | What is missing | Served by |
 |---|---|---|---|
-| C1 ladder tests (§10 rows D owns) | OPEN | the M/4 member of the null test: FE4 (D-20261123-022726-1b133af) ran to 300 M, to close and judge (P5; tight re-search of its dumps, FE at three meshes); the G2 verifier (C17) | no card run: FE4 is done |
+| C1 ladder tests (§10 rows D owns) | OPEN | the G2 verifier (C17). FE4 (M/4 null test) closed and judged: P5 REFUTED, the null difference grows to 4.6e-3 by 300 M at M/4 (M/8, M/16: 2e-4; g2long entry 21) | none |
 | C2 three-way convergence | OPEN | particle number: N = FK done, 4N = FN4 done (closing), N/4 = FNQ running (125 M of 400 in complete segments); mesh of the growth: M/4 FF4 done (to close and judge, P12-P14), M/8 ES-FL done, M/16 FL16 waits; mesh of the null test: FE4 (above); boundary: done (faces 192/384/768 M, boundary_gauge D-20261124-131657-89cd963). Gauge: carried by the boundary axis ("gauge or boundary"); the relaxed lapse cannot serve (section 2) | q0010 D-FNQ (N/4), q0011 D-FL16 (M/16) |
 | C3 constraints | OPEN | volume and z = 0 plane norms done (D-20261123-021027-e3af9b8, D-20261124-134211-c6fce88); region (sphere) norms: FN4's esflk4n.region.hst now complete (XN to judge), FNQ (XQ), FL16 (L5) | q0010, q0011 |
 | C4 first full-GR kinetic run | PASS | - | - |
 | C5 verification report | OPEN | written when C1-C3 close | - |
 | C6 reproducibility package | OPEN | one rerun script for every G2 number (processors; card runs by manifest) | no card run |
-| C7 null test (vacuum bubble) | PASS (reservation) | the M/4 reading of FE4 | no card run |
+| C7 null test (vacuum bubble) | PASS at M/8 and M/16; FAILS at M/4 (P5 refuted) | a ruling on whether the coarsest member may sit outside the convergent regime | none |
 | C8 growth against the flux | PASS (reservations) | particle and mesh members (C2); the D4 timing seen in FK (entry 19, [TO VERIFY]) | q0010, q0011 |
 | C9 ladder schematic | PASS | redraw when the runs are read | - |
 | C10 convergence figures | OPEN | particle number: np_partial.png (D-20261125-115729-011d028) is partial; mesh of the growth needs FL16 | q0010, q0011 |

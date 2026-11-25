@@ -13,14 +13,14 @@ headline:    The step of ES-FL's (iii) medians (0.2 -> 0.6 per cent at tau_rem ~
 last-result: fk_compare D-20261125-115637-7ee26c1; esf_criteria FK D-20261125-115647-fd2f3f7;
              np_partial D-20261125-115729-011d028 (FN4 whole, FNQ partial to 125 M); esf_criteria FF4
              D-20261125-121034-8f82998 (control V-1L) and D-20261125-121123-143a007 (control V-1L4).
-failed:      P11 (FK cost 2.70 card-hours, predicted 1.8-2.4); P13 as written (M/4 t = 0 finder mass
+failed:      P5 REFUTED (null test at M/4 drifts to 4.6e-3 by 300 M; M/8, M/16 at 2e-4; judge_conv
+             D-20261125-122227-3eb563a); P6 (FE4 0.83 card-hours); P11 (FK cost 2.70 card-hours, predicted 1.8-2.4); P13 as written (M/4 t = 0 finder mass
              1.0330 spoils growth from t = 0); P12 with the M/8 control (D2 207/480; holds with the
              M/4 control); FF4 D3 at early removals; earlier: FP4, FP-ext (ii), FE1, FE2 bounds, P2,
              XC2 factor. Unexplained: FK's D4 (29.5 per cent removed before the exact crossing).
 next:        1. Commit FN4's close (close_by_hand running at the end of the session), then
                 esf_criteria --base esflk4n (N1) and xc_plane on ES-FLK/ES-FLK4N (XN)
-             2. Read FE4 (P5: judge_conv with ES-1L4; tight re-search of its dumps); FNQ (Q1-Q3, XQ)
-                and FL16 (L1-L5) as the queue runs them
+             2. FNQ (Q1-Q3, XQ) and FL16 (L1-L5) as the queue runs them; orch ruling on N at M/4
              3. Note v3, rerun script (C6), fresh-context G2 verifier (C17)
 blockers:    none for processor work; FNQ (q0010) and FL16 (q0011) on the shared card queue
 needs:       orch: finish-refuses-continued-chains (posted 2026-11-25); G1 reviewer run
@@ -32,7 +32,7 @@ offers:      g2long/tools: close_by_hand.py (closes chains continued in place), 
              np_partial.py (reads running chains up to their second-newest restart), probe_long.py,
              fp_analyse.py, fe_analyse.py, xc_plane.py, slice_mosaic.py, judge_conv.py;
              flux_tools/fluxio.drop_overlaps; ES-F data at 4N and N/4
-budget:      card-hours of this session's closed runs: FK 2.70, FF4 1.34 (FE4, FN4 being closed).
+budget:      card-hours of the runs closed this session: FK 2.70, FF4 1.34, FE4 0.83 (FN4 being closed).
              Processors: analyses on one core each (~2 min), closes (checksums) one core each.
 card jobs:   FNQ D-20261124-172725-2f426b6 running (q0010, job 5279; ~177 M of 400 at 04:11 PST);
              FL16 D-20261124-172745-72472ed waiting (q0011, effective priority 1). No other D job.
