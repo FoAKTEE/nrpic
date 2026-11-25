@@ -147,3 +147,43 @@ script (debugging, `scratch/core/tmp/rf_smoke`, removed) showed that a cut by
 `time/nlim` cannot serve as the reference of an interrupted run: a run that ends by
 itself writes final outputs of every kind (one more table file, one more history record),
 which an interrupted run does not have. The cuts are therefore made by SIGTERM.
+
+## Entry 4 (2026-11-25, 05:40 PST): outcome of T1 (item 1), run core-20261125-133539-961dcbd
+
+Registered run, serial processor build of commit 961dcbd (source of 1fb387d8), against
+`.work/build_cpu_v07`; 256 s on one core; `summary.json`, `fig_restart_test.png` (looked
+at: the tracker of the release starts at the cut, that of the new build is the whole
+line; the records at t = 1.6875 are missing for the release cut at 26 and 27 and present
+for the new build; header lines 4 against 2).
+
+- P1 (release, before) HELD. Cut at cycle 24, 25, 26, 27 (the cycle of the continuation
+  read back from its log): files differing from the uninterrupted run are the tracker
+  file (24, 25, 26, 27 records missing), the mesh history (4 header lines against 2) and,
+  for 26 and 27 only, `rso.cons.hst` (one record missing, t = 1.6875). Nothing else.
+- P2 HELD. New build, cuts at 24, 25, 26, 27 and the run cut twice (14, then 27): all 17
+  output files (760 873 bytes) byte-identical to the uninterrupted run; the last restart
+  file and its `.prt` identical too. The weakest link held: the fields evaluated at the
+  restart give the same digits as those of the uninterrupted run (cuts at 26 and 27).
+  `.prt` sizes 2 933 160 bytes without and 3 064 280 bytes with the block (131 120 bytes
+  = 8 + 32 + 8 + 4 x 4096 x 8).
+- The uninterrupted run of the new build equals that of the release byte for byte (17
+  files): the change does not touch a run that is not continued.
+- P4 HELD. Continued from the restart file of cycle 20 after the first segment had run
+  to 27: tracker file byte-identical to the uninterrupted run; `cons.hst`, `cstat.hst`,
+  `nrpic.hst`, the mesh history and the two trajectory files hold the records of cycles
+  20 to 27 twice, as before this work (not changed here; said in the interface text).
+- Not yet run: P3 (S2 of `term_test.py`), P5 (two punctures), P6 (byte regression).
+
+## Entry 5 (2026-11-25, 05:44 PST): prediction for T2 (restart files across executables)
+
+Besides P3 (S2 and S1 of `term_test.py`), `restart_extra.py` continues a restart file of
+the new executable that carries the block `NRPCNS01` with the release executable, and a
+restart file of the release with the new executable.
+- P13. Both continuations run to the end with status 0. Read in the source of the
+  release: its reader of the `.prt` file stops after the accretion block or after eight
+  bytes that are not `NRPACC01`, so the block is not read [VERIFIED by reading; the run
+  is the test]. The release loses the record at t = 1.6875 as before. The new
+  executable continuing a file of the release (cut at cycle 27, no block) lacks that
+  record too, because the densities of cycle 26 are in no file, and no other record;
+  cut at cycle 26 it would lose none (the fields of the restart suffice, as in T1).
+  Refuted by a non-zero status, or by any other record missing or added.

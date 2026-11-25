@@ -232,6 +232,19 @@ Since release core-v0.5 the summary file of the horizon finder
 directory given with `-d`; the releases before opened them in the directory the
 executable was started in.
 
+Continued runs (branch core/restart-finder, for release core-v0.8;
+`tracks/core/interfaces/restart_outputs.md`): a run started with `-r` appends to
+`<base>.co_<n>.txt` after removing the records of cycles at or after its first cycle
+(releases up to core-v0.7 started the file again at every start); it writes no second
+header into the mesh histories (`<base>.z4c.user.hst` and the others written by
+`file_type = hst`); and the particle restart file ends with a block `NRPCNS01` when
+`<particles> cons_dcycle > 0` and a record of `<base>.cons.hst` is due at the cycle after
+the dump (one rank, uniform mesh): 8 bytes `NRPCNS01`, 4 int64 (MeshBlocks, nx3, nx2,
+nx1), 1 float64 (the step before the dump), 4 x MeshBlocks x nx3 x nx2 x nx1 float64 (the
+densities D, D_x, D_y, D_z of the cycle before the dump on the active cells, MeshBlock by
+MeshBlock, component by component). It follows the block `NRPACC01` when both are
+written; executables up to core-v0.7 read such a file and ignore the block.
+
 ## Boost table of a table component (`*.bst`, format `bst1`)
 
 Momentum of a component of type `table` of `nrpic_cf` (`<problem> comp<c>_boost_file`,
