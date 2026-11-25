@@ -196,3 +196,18 @@ Worktree `feat/iter4-vram-quintic-backreaction`, proof script [`run_iter4_verify
   - `st_herm_froz`: `wall = 742.3s, peak_VRAM = 99,160 MiB, t_AH = 75.56M, M_AH = 1.00080M, ||H||_max = 1.566, |P|_max/M0 = 8.06e-15, filt_max = 9.24e-16`.
   - `st_quin_stgA`: `wall = 754.5s, peak_VRAM = 101,084 MiB, t_AH = 76.06M, M_AH = 1.00060M, ||H||_max = 1.572, |P|_max/M0 = 1.43e-14, filt_max = 9.25e-16`.
 - **Wave 4C Partial Harvest (`jeans_10k_strat_mid`, stopped on user directive after binary BH inspiral)**: reached `t = 56.73M` (`part.00000..00011.bin`, `t_l=55.0M`), both clumps formed AH at `t_AH ~ 10.5M`, final `M_AH,0 = 0.1865M, M_AH,1 = 0.1844M`, separation shrunk `d_AB = 6.09M -> 0.55M`, MC vertical kick reached `z_BH,0 = +0.65M` (`t=55M`, peak `+0.71M`).
+
+### Iteration 5 (`filter_mcons_unsplit` + `matter_stride` + `rk3` High-CFL Speed-Accuracy Pareto, `gb204` B200)
+- **Standalone CUDA/C++ Kernel Proofs (`Tests 13–14`, both `g++` & `nvcc -arch=sm_100` PASS)**:
+  - `[TEST13 UNSPLIT_MCONS]`: `const=0.00e+00`, single-pass 3D self-adjointness `sa=1.43e-16` (`10^6` metric contrast), unconditional positivity for `kappa=1/12` `minE=1.01e-03 >= 0`, octahedral symmetry `iso=2.22e-16`, 2-level 3D AMR reflux conservation `amr_cons=5.11e-16`.
+  - `[TEST14 MULTIRATE]`: `matter_stride=4` continuous Scheme A (`dt_stage = stage_tau + c_s * dt_z4c`) with non-uniform substeps recovers `p_frozen=0.99`, `p_mr_rk3=1.98`, `p_mr_rk4=1.98`, `th_mr=0.500`.
+- **Full-System Parity (`os10k`, `nlim=20`, `unsplit=false, stride=1`)**: `max|dE|/E0=0.000e+00`, `max|dH|=0.000e+00` vs Iteration 4 binary.
+- **Suite 5.1 (M4 6-Level SMR Kerr, `a=0.9M, 10k, quintic_ng4, t=200M`)**:
+  - Baseline directional `mcons` (`209.3s`): directional filter overhead measured at `58.6%` of Kerr cycle (`52.42 vs 21.69 ms/cyc`).
+  - `m4_uns_nf1` (`filter_mcons_unsplit=true, nfilter=1`): **`65.6s` (`3.19x` speedup)**, `VRAM=11,894 MiB`, `dE_med=3.38e-10`, `dL=8.53e-09`, `dQ=2.36e-09`, `filt_max=9.81e-16`.
+  - `m4_uns_nf2` (`filter_mcons_unsplit=true, nfilter=2`): **`98.9s` (`2.12x` speedup)**, identical invariants, `filt_max=9.81e-16`.
+- **Suite 5.2 (OS `R0=5M` 8-Level AMR `t=25M`, `quintic+stageA`)**:
+  - **CFL/`rk3` sweep (`10k`)**: `rk4 cfl=0.25` `164.7s (1.00x, M_AH=1.00077M, H2max=3.547)` -> `rk3 cfl=0.25` `131.4s (1.25x)` -> `rk3 cfl=0.40 dir1_s1` `72.6s (2.27x)` -> `rk3 cfl=0.40 dir1_s2` **`66.2s (2.49x, rho_early=4.944e-4, t_AH=16.35M)`** -> `rk3 cfl=0.45 dir1_s2` **`59.9s (2.75x)`** (`rk3 cfl=0.50` unstable). Note single-pass 7-pt unsplit `k=1/12` (`nf=1`) damps $(\pi,0,0)$ modes weaker (`H2max~56`), cured by matching 2nd moment (`uns3` `nf=3, k=1/12`).
+  - **`100k` collapse (`t=25M, nlim=-1`)**: `rk4 cfl=0.25 dir1` **`180.2s`** (`M_AH=1.00104M, H2max=2.268`) -> `rk3 cfl=0.40 uns3_s2` **`80.4s` (`2.24x`, `t_AH=16.17M`, `M_AH=1.00075M`, `H2max=2.244`)**, `dir1_s2` **`80.3s` (`2.24x`, `M_AH=1.00112M`, `H2max=1.949`)**, `dir1_s4` **`74.0s` (`2.43x`, `H2max=1.847`)**.
+- **Suite 5.3 (ST `y_c=0.500 10k` Anti QMC, `tlim=90M`, 9-level AMR)**:
+  - `st10k_rk3_040_dir4c_s2` (`rk3 cfl=0.40, dir nfilter=4+comp, matter_stride=2`): **`314.7s` (`2.40x` speedup vs Iter 4 `754.5s`)**, `cyc=2836`, `t_AH=76.70M` (vs `76.06M`), `M_AH=1.00051M` (vs `1.00060M`), `|P|/M0=3.93e-15` (**`3.6x` cleaner than `1.43e-14`**), `filt_max=9.25e-16`. (Uncompensated `uns4_k16_s2` softens central gravity enough to stabilize `y_c=0.500` past `90M`, confirming `filter_compensate=true` is essential near the critical threshold.)

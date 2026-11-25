@@ -33,6 +33,7 @@
 #include "globals.hpp"
 #include "parameter_input.hpp"
 #include "mesh/mesh.hpp"
+#include "mesh/mesh_refinement.hpp"
 #include "driver/driver.hpp"
 #include "bvals/bvals.hpp"
 #include "coordinates/adm.hpp"
@@ -100,6 +101,10 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.filter_densitized = pin->GetOrAddBoolean("particles", "filter_densitized", false);
   nropt.filter_metric_conservative =
       pin->GetOrAddBoolean("particles", "filter_metric_conservative", false);
+  nropt.filter_mcons_unsplit =
+      pin->GetOrAddBoolean("particles", "filter_mcons_unsplit", false);
+  nropt.filter_mcons_kappa =
+      pin->GetOrAddReal("particles", "filter_mcons_kappa", -1.0);
   nropt.deposit_comp_c    = pin->GetOrAddReal("particles", "deposit_comp_c", 0.0);
   nropt.deposit_comp_limit = pin->GetOrAddReal("particles", "deposit_comp_limit", 0.0);
   nropt.deposit_comp_c2    = pin->GetOrAddReal("particles", "deposit_comp_c2", 0.0);
@@ -173,6 +178,8 @@ void Particles::NrpicInit(ParameterInput *pin) {
   nropt.source_density = pin->GetOrAddBoolean("particles", "source_density", false);
   nropt.source_extrap  = pin->GetOrAddBoolean("particles", "source_extrap", false);
   nropt.source_stage_extrap = pin->GetOrAddBoolean("particles", "source_stage_extrap", false);
+  nropt.matter_stride = pin->GetOrAddInteger("particles", "matter_stride", 1);
+  if (nropt.matter_stride < 1) { nropt.matter_stride = 1; }
   {
     // shape of the particle cloud in the deposit, a B-spline of degree one, two or
     // three: cic (two cells per direction), tsc (three), pcs (four)
@@ -409,11 +416,84 @@ void Particles::NrpicSharpenMetric(DvceArray5D<Real> &met, DvceArray5D<Real> &me
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicResetMatterCycleState / NrpicBeginCycleMetricState / NrpicAdvanceMatterCycle
+//! \brief multi-rate matter subcycling state control (Iteration 5b)
+
+void Particles::NrpicResetMatterCycleState() {
+  matter_substep = 0;
+  matter_dt_accum = 0.0;
+  matter_step_dt = 0.0;
+  matter_step_active = true;
+  if (pmy_pack != nullptr && pmy_pack->pmesh != nullptr) {
+    matter_t_start = pmy_pack->pmesh->time;
+  }
+  if (pmy_pack != nullptr && pmy_pack->ptmunu != nullptr) {
+    pmy_pack->ptmunu->stage_tau = 0.0;
+    pmy_pack->ptmunu->stage_rate_mode =
+        (nropt.matter_stride > 1 && !nropt.newton);
+  }
+}
+
+bool Particles::NrpicBeginCycleMetricState() {
+  if (nropt.matter_stride <= 1 || nropt.newton) {
+    if (pmy_pack->ptmunu != nullptr) {
+      pmy_pack->ptmunu->stage_tau = 0.0;
+      pmy_pack->ptmunu->stage_rate_mode = false;
+    }
+    return true;
+  }
+  Mesh *pm = pmy_pack->pmesh;
+  if (matter_substep == 0) {
+    matter_t_start = pm->time;
+    matter_dt_accum = 0.0;
+    if (pmy_pack->ptmunu != nullptr) {
+      pmy_pack->ptmunu->stage_tau = 0.0;
+      pmy_pack->ptmunu->stage_rate_mode = true;
+    }
+    return true;
+  }
+  if (pmy_pack->ptmunu != nullptr) {
+    pmy_pack->ptmunu->stage_tau = matter_dt_accum;
+    pmy_pack->ptmunu->stage_rate_mode = true;
+  }
+  return false;
+}
+
+bool Particles::NrpicAdvanceMatterCycle(Driver *pdriver) {
+  Mesh *pm = pmy_pack->pmesh;
+  if (nropt.matter_stride <= 1 || nropt.newton) {
+    matter_step_dt = pm->dt;
+    matter_step_active = true;
+    return true;
+  }
+  matter_dt_accum += pm->dt;
+  matter_substep += 1;
+  const Real tlim_eps = (pdriver != nullptr)
+      ? 1.0e-13 * std::max(Real(1.0), pdriver->tlim) : 0.0;
+  const bool last_t = (pdriver != nullptr) &&
+      ((pm->time + pm->dt >= pdriver->tlim - tlim_eps) ||
+       (pdriver->nlim >= 0 && pm->ncycle + 1 >= pdriver->nlim));
+  const bool amr_due = pm->adaptive && (pm->pmr != nullptr) &&
+      (pm->pmr->ncyc_check_amr > 0) &&
+      (((pm->ncycle + 1) % pm->pmr->ncyc_check_amr) == 0);
+  matter_step_active = (matter_substep >= nropt.matter_stride) || last_t || amr_due;
+  if (matter_step_active) {
+    matter_step_dt = matter_dt_accum;
+    return true;
+  }
+  if (pmy_pack->ptmunu != nullptr) {
+    pmy_pack->ptmunu->stage_tau = matter_dt_accum;
+  }
+  return false;
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn  TaskStatus Particles::NrpicSaveMetric
 //! \brief before the spacetime update, the metric of the previous cycle becomes the
 //! old time level
 
 TaskStatus Particles::NrpicSaveMetric(Driver *pdriver, int stage) {
+  if (!NrpicBeginCycleMetricState()) return TaskStatus::complete;
   NrpicAccSaveCentre();     // accretion diagnostics: centre of the spheres at t^n
   if (nropt.metric == NrpicMetric::mesh && !metric_is_static) {
     std::swap(met0, met1);
@@ -427,6 +507,7 @@ TaskStatus Particles::NrpicSaveMetric(Driver *pdriver, int stage) {
 //! \brief advances all particles from t^n to t^{n+1}
 
 TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
+  if (!NrpicAdvanceMatterCycle(pdriver)) return TaskStatus::complete;
   NrpicAccBeforePush();     // accretion diagnostics: distances to the centre at t^n
   if (nropt.newton) {
     const TaskStatus ts = NrpicNewtonPush(pdriver, stage);
@@ -443,16 +524,16 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   push_unconverged = 0;
   const int np = nprtcl_thispack;
   if (np == 0) return TaskStatus::complete;
+  const Real dt = MatterStepDt();
+  const Real tnow = MatterStepStartTime();
   // perturbing force (nrpic_perturb.cpp): impulse of the first half of the step
-  if (pert.on) { NrpicPerturbKick(pm->time, pm->time + 0.5*pm->dt); }
+  if (pert.on) { NrpicPerturbKick(tnow, tnow + 0.5*dt); }
 
   auto &indcs = pm->mb_indcs;
   auto &pr = prtcl_rdata;
   auto &pi = prtcl_idata;
   auto sz = pmy_pack->pmb->mb_size.d_view;
   const int gids = pmy_pack->gids;
-  const Real dt = pm->dt;
-  const Real tnow = pm->time;
   const Real tol = nropt.tol;
   const int maxit = nropt.maxit;
   const int triad = nropt.triad;
@@ -638,7 +719,7 @@ TaskStatus Particles::NrpicPush(Driver *pdriver, int stage) {
   push_unconverged = nun;
   push_maxit = mxit;
   // perturbing force: impulse of the second half of the step, at the new positions
-  if (pert.on) { NrpicPerturbKick(pm->time + 0.5*pm->dt, pm->time + pm->dt); }
+  if (pert.on) { NrpicPerturbKick(tnow + 0.5*dt, tnow + dt); }
   if (kick.on) { NrpicTestKick(); }
   NrpicAccAfterPush();      // accretion diagnostics: crossings, pericentre counter
 
@@ -736,6 +817,9 @@ void Particles::NrpicRemoveFlagged() {
 //! \brief removes excised and escaped particles and updates the MeshBlock of the others
 
 TaskStatus Particles::NrpicExcise(Driver *pdriver, int stage) {
+  if (nropt.matter_stride > 1 && !nropt.newton && !matter_step_active) {
+    return TaskStatus::complete;
+  }
   acc_after_push = true;
   if (nropt.metric == NrpicMetric::mesh) {
     NrpicAssignBlocks();
@@ -1584,6 +1668,248 @@ void Particles::NrpicFilterPassMetricConservative(const Real kappa,
 }
 
 //----------------------------------------------------------------------------------------
+//! \fn  void Particles::NrpicFilterPassMetricConservativeUnsplit
+//! \brief Iteration 5a: unsplit 7-point self-adjoint harmonic-metric flux-conservative
+//! filter pass with single ghost/reflux communication and active-block vacuum skipping
+
+void Particles::NrpicFilterPassMetricConservativeUnsplit(const Real kappa) {
+  Mesh *pm = pmy_pack->pmesh;
+  auto &indcs = pm->mb_indcs;
+  const int is = indcs.is, js = indcs.js, ks = indcs.ks;
+  const int ie = indcs.ie, je = indcs.je, ke = indcs.ke;
+  const int nmb = pmy_pack->nmb_thispack;
+  if (nmb <= 0) return;
+  const int nmb1 = nmb - 1;
+  const int nv1 = Tmunu::N_Tmunu - 1;
+  if (bflx_x1.extent_int(0) < nmb) {
+    Kokkos::realloc(bflx_x1, nmb, Tmunu::N_Tmunu, 2, indcs.nx3, indcs.nx2);
+    Kokkos::realloc(bflx_x2, nmb, Tmunu::N_Tmunu, 2, indcs.nx3, indcs.nx1);
+    Kokkos::realloc(bflx_x3, nmb, Tmunu::N_Tmunu, 2, indcs.nx2, indcs.nx1);
+  }
+  if (mb_filt_active.extent_int(0) < nmb) {
+    Kokkos::realloc(mb_filt_active, nmb);
+  }
+  if (mb_sg_valid.extent_int(0) < nmb) {
+    Kokkos::realloc(mb_sg_valid, nmb);
+    Kokkos::deep_copy(DevExeSpace(), mb_sg_valid, 0);
+  }
+  auto &tmu = pmy_pack->ptmunu->u_tmunu;
+  auto tm = tmu;
+  auto wk = tm_work;
+  auto sg = sg_work;
+  auto m1 = met1;
+  auto b1 = bflx_x1;
+  auto b2 = bflx_x2;
+  auto b3 = bflx_x3;
+  auto act = mb_filt_active;
+  auto sgv_arr = mb_sg_valid;
+  auto bcs = pmy_pack->pmb->mb_bcs.d_view;
+  auto sz  = pmy_pack->pmb->mb_size.d_view;
+  const bool is_newt = nropt.newton;
+  const bool two_d = pm->two_d;
+
+  if (pm->multilevel) {
+    pm->pmr->RestrictCC(tmu, coarse_tm);
+  }
+  (void) pbval_tm->InitRecv(Tmunu::N_Tmunu);
+  (void) pbval_tm->PackAndSendCC(tmu, coarse_tm);
+  (void) pbval_tm->ClearSend();
+  (void) pbval_tm->ClearRecv();
+  (void) pbval_tm->RecvAndUnpackCC(tmu, coarse_tm);
+  if (pm->multilevel) {
+    pbval_tm->FillCoarseInBndryCC(tmu, coarse_tm);
+    pbval_tm->ProlongateCC(tmu, coarse_tm);
+  }
+
+  const int ek0 = two_d ? ks : (ks - 1), ek1 = two_d ? ke : (ke + 1);
+  const int ej0 = js - 1, ej1 = je + 1;
+  const int ei0 = is - 1, ei1 = ie + 1;
+  const int nk_e = ek1 - ek0 + 1;
+  const int nj_e = ej1 - ej0 + 1;
+  const int ni_e = ei1 - ei0 + 1;
+  const int ncell_e = Tmunu::N_Tmunu * nk_e * nj_e * ni_e;
+  using TeamMem = Kokkos::TeamPolicy<DevExeSpace>::member_type;
+  Kokkos::parallel_for("nrpic_mc7_act",
+    Kokkos::TeamPolicy<DevExeSpace>(nmb, Kokkos::AUTO),
+  KOKKOS_LAMBDA(TeamMem tmember) {
+    const int m = tmember.league_rank();
+    int any = 0;
+    Kokkos::parallel_reduce(Kokkos::TeamThreadRange<>(tmember, ncell_e),
+    [&](const int idx, int &lany) {
+      if (lany != 0) return;
+      const int n = idx / (nk_e * nj_e * ni_e);
+      int rem = idx - n * (nk_e * nj_e * ni_e);
+      const int k = ek0 + rem / (nj_e * ni_e);
+      rem -= (k - ek0) * (nj_e * ni_e);
+      const int j = ej0 + rem / ni_e;
+      const int i = ei0 + rem - (j - ej0) * ni_e;
+      if (tm(m, n, k, j, i) != 0.0) { lany = 1; }
+    }, Kokkos::Max<int>(any));
+    if (tmember.team_rank() == 0) { act(m) = (any != 0) ? 1 : 0; }
+  });
+
+  par_for("nrpic_mc7_sg", DevExeSpace(), 0, nmb1, ek0, ek1, ej0, ej1, ei0, ei1,
+  KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+    if (act(m) == 0 || sgv_arr(m) != 0) return;
+    if (is_newt) {
+      sg(m,k,j,i) = 1.0;
+    } else {
+      const Real det = adm::SpatialDet(m1(m,NRM_GXX,k,j,i), m1(m,NRM_GXY,k,j,i),
+                                       m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
+                                       m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
+      sg(m,k,j,i) = (det > 0.0 && det < 1.0e300) ? sqrt(det) : 0.0;
+    }
+  });
+  par_for("nrpic_mc7_sgmark", DevExeSpace(), 0, nmb1, KOKKOS_LAMBDA(const int m) {
+    if (act(m) != 0) { sgv_arr(m) = 1; }
+  });
+
+  par_for("nrpic_mc7_bx1", DevExeSpace(), 0, nmb1, 0, nv1, 0, 1, ks, ke, js, je,
+  KOKKOS_LAMBDA(const int m, const int n, const int side, const int k, const int j) {
+    if (act(m) == 0) { b1(m,n,side,k-ks,j-js) = 0.0; return; }
+    const BoundaryFace bf = (side == 0) ? BoundaryFace::inner_x1 : BoundaryFace::outer_x1;
+    if (bcs(m,bf) != BoundaryFlag::block && bcs(m,bf) != BoundaryFlag::periodic) {
+      b1(m,n,side,k-ks,j-js) = 0.0;
+    } else {
+      const int fi = (side == 0) ? is : (ie + 1);
+      b1(m,n,side,k-ks,j-js) = nrpic::vlasov::MetricFlux1D(
+          kappa, sz(m).dx1, sg(m,k,j,fi-1), sg(m,k,j,fi),
+          tm(m,n,k,j,fi-1), tm(m,n,k,j,fi));
+    }
+  });
+  par_for("nrpic_mc7_bx2", DevExeSpace(), 0, nmb1, 0, nv1, 0, 1, ks, ke, is, ie,
+  KOKKOS_LAMBDA(const int m, const int n, const int side, const int k, const int i) {
+    if (act(m) == 0) { b2(m,n,side,k-ks,i-is) = 0.0; return; }
+    const BoundaryFace bf = (side == 0) ? BoundaryFace::inner_x2 : BoundaryFace::outer_x2;
+    if (bcs(m,bf) != BoundaryFlag::block && bcs(m,bf) != BoundaryFlag::periodic) {
+      b2(m,n,side,k-ks,i-is) = 0.0;
+    } else {
+      const int fj = (side == 0) ? js : (je + 1);
+      b2(m,n,side,k-ks,i-is) = nrpic::vlasov::MetricFlux1D(
+          kappa, sz(m).dx2, sg(m,k,fj-1,i), sg(m,k,fj,i),
+          tm(m,n,k,fj-1,i), tm(m,n,k,fj,i));
+    }
+  });
+  if (!two_d) {
+    par_for("nrpic_mc7_bx3", DevExeSpace(), 0, nmb1, 0, nv1, 0, 1, js, je, is, ie,
+    KOKKOS_LAMBDA(const int m, const int n, const int side, const int j, const int i) {
+      if (act(m) == 0) { b3(m,n,side,j-js,i-is) = 0.0; return; }
+      const BoundaryFace bf = (side == 0) ? BoundaryFace::inner_x3 : BoundaryFace::outer_x3;
+      if (bcs(m,bf) != BoundaryFlag::block && bcs(m,bf) != BoundaryFlag::periodic) {
+        b3(m,n,side,j-js,i-is) = 0.0;
+      } else {
+        const int fk = (side == 0) ? ks : (ke + 1);
+        b3(m,n,side,j-js,i-is) = nrpic::vlasov::MetricFlux1D(
+            kappa, sz(m).dx3, sg(m,fk-1,j,i), sg(m,fk,j,i),
+            tm(m,n,fk-1,j,i), tm(m,n,fk,j,i));
+      }
+    });
+  }
+
+  if (pm->multilevel) {
+    (void) pbval_tm->InitFluxRecv(Tmunu::N_Tmunu);
+    (void) pbval_tm->PackAndSendBndryFluxCC(b1, b2, b3);
+    (void) pbval_tm->ClearFluxSend();
+    (void) pbval_tm->ClearFluxRecv();
+    (void) pbval_tm->RecvAndUnpackBndryFluxCC(b1, b2, b3);
+
+    const int n1_b = indcs.nx1, n2_b = indcs.nx2, n3_b = indcs.nx3;
+    const int nb1_tot = Tmunu::N_Tmunu * 2 * n3_b * n2_b;
+    const int nb2_tot = Tmunu::N_Tmunu * 2 * n3_b * n1_b;
+    const int nb3_tot = two_d ? 0 : (Tmunu::N_Tmunu * 2 * n2_b * n1_b);
+    const int nb_tot  = nb1_tot + nb2_tot + nb3_tot;
+    Kokkos::parallel_for("nrpic_mc7_reflux_act",
+      Kokkos::TeamPolicy<DevExeSpace>(nmb, Kokkos::AUTO),
+    KOKKOS_LAMBDA(TeamMem tmember) {
+      const int m = tmember.league_rank();
+      if (act(m) != 0) return;
+      int any = 0;
+      Kokkos::parallel_reduce(Kokkos::TeamThreadRange<>(tmember, nb_tot),
+      [&](const int idx, int &lany) {
+        if (lany != 0) return;
+        if (idx < nb1_tot) {
+          const int n = idx / (2 * n3_b * n2_b);
+          int r = idx - n * (2 * n3_b * n2_b);
+          const int s = r / (n3_b * n2_b); r -= s * n3_b * n2_b;
+          const int kk = r / n2_b, jj = r - kk * n2_b;
+          if (b1(m,n,s,kk,jj) != 0.0) { lany = 1; }
+        } else if (idx < nb1_tot + nb2_tot) {
+          const int idx2 = idx - nb1_tot;
+          const int n = idx2 / (2 * n3_b * n1_b);
+          int r = idx2 - n * (2 * n3_b * n1_b);
+          const int s = r / (n3_b * n1_b); r -= s * n3_b * n1_b;
+          const int kk = r / n1_b, ii = r - kk * n1_b;
+          if (b2(m,n,s,kk,ii) != 0.0) { lany = 1; }
+        } else {
+          const int idx3 = idx - nb1_tot - nb2_tot;
+          const int n = idx3 / (2 * n2_b * n1_b);
+          int r = idx3 - n * (2 * n2_b * n1_b);
+          const int s = r / (n2_b * n1_b); r -= s * n2_b * n1_b;
+          const int jj = r / n1_b, ii = r - jj * n1_b;
+          if (b3(m,n,s,jj,ii) != 0.0) { lany = 1; }
+        }
+      }, Kokkos::Max<int>(any));
+      if (tmember.team_rank() == 0 && any != 0) { act(m) = 1; }
+    });
+    par_for("nrpic_mc7_sg_late", DevExeSpace(), 0, nmb1, ek0, ek1, ej0, ej1, ei0, ei1,
+    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+      if (act(m) == 0 || sgv_arr(m) != 0) return;
+      if (is_newt) {
+        sg(m,k,j,i) = 1.0;
+      } else {
+        const Real det = adm::SpatialDet(m1(m,NRM_GXX,k,j,i), m1(m,NRM_GXY,k,j,i),
+                                         m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
+                                         m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
+        sg(m,k,j,i) = (det > 0.0 && det < 1.0e300) ? sqrt(det) : 0.0;
+      }
+    });
+    par_for("nrpic_mc7_sgmark2", DevExeSpace(), 0, nmb1, KOKKOS_LAMBDA(const int m) {
+      if (act(m) != 0) { sgv_arr(m) = 1; }
+    });
+  }
+
+  par_for("nrpic_mc7_upd", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie,
+  KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
+    if (act(m) == 0) return;
+    const Real sgv = sg(m,k,j,i);
+    if (sgv > 0.0) {
+      const Real q0 = tm(m,n,k,j,i);
+      const Real dx1 = sz(m).dx1, dx2 = sz(m).dx2;
+      const Real f1l = (i == is) ? (b1(m,n,0,k-ks,j-js) / dx1)
+                                 : (kappa * nrpic::vlasov::HarmonicFaceWeight(sg(m,k,j,i-1), sgv)
+                                    * (q0 - tm(m,n,k,j,i-1)));
+      const Real f1r = (i == ie) ? (b1(m,n,1,k-ks,j-js) / dx1)
+                                 : (kappa * nrpic::vlasov::HarmonicFaceWeight(sgv, sg(m,k,j,i+1))
+                                    * (tm(m,n,k,j,i+1) - q0));
+      const Real f2l = (j == js) ? (b2(m,n,0,k-ks,i-is) / dx2)
+                                 : (kappa * nrpic::vlasov::HarmonicFaceWeight(sg(m,k,j-1,i), sgv)
+                                    * (q0 - tm(m,n,k,j-1,i)));
+      const Real f2r = (j == je) ? (b2(m,n,1,k-ks,i-is) / dx2)
+                                 : (kappa * nrpic::vlasov::HarmonicFaceWeight(sgv, sg(m,k,j+1,i))
+                                    * (tm(m,n,k,j+1,i) - q0));
+      Real d3 = 0.0;
+      if (!two_d) {
+        const Real dx3 = sz(m).dx3;
+        const Real f3l = (k == ks) ? (b3(m,n,0,j-js,i-is) / dx3)
+                                   : (kappa * nrpic::vlasov::HarmonicFaceWeight(sg(m,k-1,j,i), sgv)
+                                      * (q0 - tm(m,n,k-1,j,i)));
+        const Real f3r = (k == ke) ? (b3(m,n,1,j-js,i-is) / dx3)
+                                   : (kappa * nrpic::vlasov::HarmonicFaceWeight(sgv, sg(m,k+1,j,i))
+                                      * (tm(m,n,k+1,j,i) - q0));
+        d3 = f3r - f3l;
+      }
+      wk(m,n,k,j,i) = q0 + ((f1r - f1l) + (f2r - f2l) + d3) / sgv;
+    } else {
+      wk(m,n,k,j,i) = 0.0;
+    }
+  });
+  par_for("nrpic_mc7_copy", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie,
+  KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
+    if (act(m) != 0) { tm(m,n,k,j,i) = wk(m,n,k,j,i); }
+  });
+}
+
+//----------------------------------------------------------------------------------------
 //! \fn  void Particles::NrpicFilterSources
 //! \brief the source filter: nfilter binomial passes and the optional compensation pass
 //! (see NrpicFilterPass), then the proper-volume integrals of the filtered sources
@@ -1606,6 +1932,7 @@ void Particles::NrpicFilterSources() {
   auto tm = tmu;
 
   const int npass = nropt.nfilter + (nropt.filter_compensate ? 1 : 0);
+  const bool mcons_unsplit = nropt.filter_metric_conservative && nropt.filter_mcons_unsplit;
   if (nropt.filter_metric_conservative) {
     const int n1 = indcs.nx1 + 2*indcs.ng;
     const int n2 = indcs.nx2 + 2*indcs.ng;
@@ -1613,28 +1940,46 @@ void Particles::NrpicFilterSources() {
     if (sg_work.extent_int(0) < nmb1 + 1) {
       Kokkos::realloc(sg_work, nmb1 + 1, n3, n2, n1);
     }
-    auto sg = sg_work;
-    auto m1 = met1;
-    const bool is_newt = nropt.newton;
-    par_for("nrpic_sgwork", DevExeSpace(), 0, nmb1, 0, n3-1, 0, n2-1, 0, n1-1,
-    KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
-      if (is_newt) {
-        sg(m,k,j,i) = 1.0;
-      } else {
-        const Real det = adm::SpatialDet(m1(m,NRM_GXX,k,j,i), m1(m,NRM_GXY,k,j,i),
-                                         m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
-                                         m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
-        sg(m,k,j,i) = (det > 0.0 && det < 1.0e300) ? sqrt(det) : 0.0;
+    if (mcons_unsplit) {
+      if (mb_sg_valid.extent_int(0) < nmb1 + 1) {
+        Kokkos::realloc(mb_sg_valid, nmb1 + 1);
       }
-    });
-    for (int pass=0; pass<npass; ++pass) {
-      Real kappa = 0.25;
-      if (pass >= nropt.nfilter) {
-        const Real c = (nropt.filter_comp_c >= 0.0) ? nropt.filter_comp_c
-                                                    : 0.25*static_cast<Real>(nropt.nfilter);
-        kappa = -c;
+      Kokkos::deep_copy(DevExeSpace(), mb_sg_valid, 0);
+      const Real k_base = (nropt.filter_mcons_kappa >= 0.0)
+                              ? nropt.filter_mcons_kappa : (1.0 / 12.0);
+      for (int pass=0; pass<npass; ++pass) {
+        Real kappa = k_base;
+        if (pass >= nropt.nfilter) {
+          const Real c = (nropt.filter_comp_c >= 0.0)
+                             ? nropt.filter_comp_c : k_base*static_cast<Real>(nropt.nfilter);
+          kappa = -c;
+        }
+        NrpicFilterPassMetricConservativeUnsplit(kappa);
       }
-      NrpicFilterPassMetricConservative(kappa, (pass % 2 == 1));
+    } else {
+      auto sg = sg_work;
+      auto m1 = met1;
+      const bool is_newt = nropt.newton;
+      par_for("nrpic_sgwork", DevExeSpace(), 0, nmb1, 0, n3-1, 0, n2-1, 0, n1-1,
+      KOKKOS_LAMBDA(const int m, const int k, const int j, const int i) {
+        if (is_newt) {
+          sg(m,k,j,i) = 1.0;
+        } else {
+          const Real det = adm::SpatialDet(m1(m,NRM_GXX,k,j,i), m1(m,NRM_GXY,k,j,i),
+                                           m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
+                                           m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
+          sg(m,k,j,i) = (det > 0.0 && det < 1.0e300) ? sqrt(det) : 0.0;
+        }
+      });
+      for (int pass=0; pass<npass; ++pass) {
+        Real kappa = 0.25;
+        if (pass >= nropt.nfilter) {
+          const Real c = (nropt.filter_comp_c >= 0.0) ? nropt.filter_comp_c
+                                                      : 0.25*static_cast<Real>(nropt.nfilter);
+          kappa = -c;
+        }
+        NrpicFilterPassMetricConservative(kappa, (pass % 2 == 1));
+      }
     }
   } else {
     for (int pass=0; pass<npass; ++pass) {
@@ -1661,22 +2006,30 @@ void Particles::NrpicFilterSources() {
   // integrals differ from the particle sums by a small amount, recorded in the history.
   auto sz = pmy_pack->pmb->mb_size.d_view;
   auto m1 = met1;
+  auto sg_cached = sg_work;
+  auto act_cached = mb_filt_active;
   const int n1 = indcs.nx1, n2 = indcs.nx2, n3 = indcs.nx3;
   const int ncell = (nmb1 + 1)*n3*n2*n1;
   Real se = 0.0, sx = 0.0, sy = 0.0, szz = 0.0;
   Kokkos::parallel_reduce("nrpic_filtsum", Kokkos::RangePolicy<DevExeSpace>(0, ncell),
   KOKKOS_LAMBDA(const int idx, Real &lse, Real &lsx, Real &lsy, Real &lsz) {
     int m = idx/(n3*n2*n1);
+    if (mcons_unsplit && act_cached(m) == 0) return;
     int rem = idx - m*(n3*n2*n1);
     int k = rem/(n2*n1);
     rem -= k*(n2*n1);
     int j = rem/n1;
     int i = rem - j*n1;
     k += ks; j += js; i += is;
-    const Real det = adm::SpatialDet(m1(m,NRM_GXX,k,j,i), m1(m,NRM_GXY,k,j,i),
-                                     m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
-                                     m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
-    const Real sg = (det > 0.0 && det < 1.0e300) ? sqrt(det) : 0.0;
+    Real sg = 0.0;
+    if (mcons_unsplit) {
+      sg = sg_cached(m,k,j,i);
+    } else {
+      const Real det = adm::SpatialDet(m1(m,NRM_GXX,k,j,i), m1(m,NRM_GXY,k,j,i),
+                                       m1(m,NRM_GXZ,k,j,i), m1(m,NRM_GYY,k,j,i),
+                                       m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
+      sg = (det > 0.0 && det < 1.0e300) ? sqrt(det) : 0.0;
+    }
     const Real w = sg*sz(m).dx1*sz(m).dx2*sz(m).dx3;
     lse += tm(m,Tmunu::I_Tmunu_E,k,j,i)*w;
     lsx += tm(m,Tmunu::I_Tmunu_Sx,k,j,i)*w;
@@ -1717,15 +2070,19 @@ void Particles::NrpicStepSources() {
     auto d0 = pmy_pack->ptmunu->u_tmunu_d0;
     auto d1 = pmy_pack->ptmunu->u_tmunu_d1;
     const bool valid = tm_prev_valid;
-    Real ratio = 1.0;
-    {
+    const bool rate_mode = (nropt.matter_stride > 1 && !nropt.newton);
+    Real scale = 1.0;
+    if (rate_mode) {
+      const Real dt_m = MatterStepDt();
+      scale = (valid && dt_m > 0.0) ? (1.0 / dt_m) : 0.0;
+    } else {
       Mesh *pm = pmy_pack->pmesh;
       Real dt_next = std::min(2.0*pm->dt, dtnew);
       if (pmy_pack->pz4c != nullptr) {
         dt_next = std::min(dt_next, pm->cfl_no*pmy_pack->pz4c->dtnew);
       }
       nrpic::MpiMin({&dt_next});
-      if (pm->dt > 0.0 && dt_next > 0.0) { ratio = std::min(dt_next/pm->dt, 2.0); }
+      if (pm->dt > 0.0 && dt_next > 0.0) { scale = std::min(dt_next/pm->dt, 2.0); }
     }
     par_for("nrpic_stagesrc", DevExeSpace(), 0, nmb1, 0, nv1, ks, ke, js, je, is, ie,
     KOKKOS_LAMBDA(const int m, const int n, const int k, const int j, const int i) {
@@ -1734,9 +2091,11 @@ void Particles::NrpicStepSources() {
                                        m1(m,NRM_GYZ,k,j,i), m1(m,NRM_GZZ,k,j,i));
       const Real d_now = (det > 0.0) ? tm(m,n,k,j,i)*sqrt(det) : 0.0;
       const int ik = k - ks, ij = j - js, ii = i - is;
-      d1(m,n,ik,ij,ii) = valid ? ratio*(d_now - d0(m,n,ik,ij,ii)) : 0.0;
+      d1(m,n,ik,ij,ii) = (valid && scale > 0.0) ? scale*(d_now - d0(m,n,ik,ij,ii)) : 0.0;
       d0(m,n,ik,ij,ii) = d_now;
     });
+    pmy_pack->ptmunu->stage_rate_mode = rate_mode;
+    pmy_pack->ptmunu->stage_tau = 0.0;
     tm_prev_valid = true;
     return;
   }
@@ -1868,6 +2227,9 @@ void Particles::NrpicUpdateTimeStep() {
 //! constraints with them
 
 TaskStatus Particles::NrpicDeposit(Driver *pdriver, int stage) {
+  if (nropt.matter_stride > 1 && !nropt.newton && !matter_step_active) {
+    return TaskStatus::complete;
+  }
   if (!nropt.deposit) return TaskStatus::complete;
   NrpicDepositSources();
   NrpicFilterSources();
@@ -1898,6 +2260,12 @@ TaskStatus Particles::NrpicDeposit(Driver *pdriver, int stage) {
 
 void Particles::NrpicInitializeSources() {
   if (nr_multirank) { NrpicMpiUpdateCounts(); }      // several ranks: particle numbers
+  if (nropt.newton) {
+    nropt.matter_stride = 1;
+  } else if (nropt.matter_stride > 1 && nropt.deposit && !nropt.source_stage_extrap) {
+    nropt.source_stage_extrap = true;
+  }
+  NrpicResetMatterCycleState();
   if (nropt.metric != NrpicMetric::mesh) {
     if (pusher == ParticlesPusher::nrpic_vlasov) { NrpicVlasovInitializeOnMesh(); }
     return;

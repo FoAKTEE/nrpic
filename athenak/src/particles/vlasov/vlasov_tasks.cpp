@@ -19,6 +19,9 @@
 namespace particles {
 
 TaskStatus Particles::NrpicVlasovPrepareStep(Driver *pdriver, int stage) {
+  if (!NrpicBeginCycleMetricState()) {
+    return TaskStatus::complete;
+  }
   NrpicAccSaveCentre();
   if (nropt.metric == NrpicMetric::mesh && !metric_is_static) {
     const bool quad = (vlv != nullptr &&
@@ -33,7 +36,9 @@ TaskStatus Particles::NrpicVlasovPrepareStep(Driver *pdriver, int stage) {
       }
       std::swap(met0, met1);
       if (nropt.interp_bspline) { std::swap(met0s, met1s); }
-      vlv->dt_step_cur = pmy_pack->pmesh->dt;
+      if (nropt.matter_stride <= 1 || nropt.newton) {
+        vlv->dt_step_cur = pmy_pack->pmesh->dt;
+      }
     } else {
       std::swap(met0, met1);
       if (nropt.interp_bspline) { std::swap(met0s, met1s); }
@@ -43,6 +48,9 @@ TaskStatus Particles::NrpicVlasovPrepareStep(Driver *pdriver, int stage) {
 }
 
 TaskStatus Particles::NrpicVlasovSyncMetric(Driver *pdriver, int stage) {
+  if (!NrpicAdvanceMatterCycle(pdriver)) {
+    return TaskStatus::complete;
+  }
   if (nropt.metric == NrpicMetric::mesh && !metric_is_static) {
     NrpicFillMetric(met1);
     if (nropt.interp_bspline) { NrpicSharpenMetric(met1, met1s); }
@@ -51,18 +59,30 @@ TaskStatus Particles::NrpicVlasovSyncMetric(Driver *pdriver, int stage) {
 }
 
 TaskStatus Particles::NrpicVlasovAdvanceTask(Driver *pdriver, int stage) {
+  if (nropt.matter_stride > 1 && !nropt.newton && !matter_step_active) {
+    return TaskStatus::complete;
+  }
   NrpicAccBeforePush();
   NrpicVlasovPush();
+  if (vlv != nullptr && nropt.matter_stride > 1 && !nropt.newton) {
+    vlv->dt_step_cur = matter_step_dt;
+  }
   NrpicAccAfterPush();
   return TaskStatus::complete;
 }
 
 TaskStatus Particles::NrpicVlasovExciseTask(Driver *pdriver, int stage) {
+  if (nropt.matter_stride > 1 && !nropt.newton && !matter_step_active) {
+    return TaskStatus::complete;
+  }
   NrpicVlasovExcise();
   return TaskStatus::complete;
 }
 
 TaskStatus Particles::NrpicVlasovCollideTask(Driver *pdriver, int stage) {
+  if (nropt.matter_stride > 1 && !nropt.newton && !matter_step_active) {
+    return TaskStatus::complete;
+  }
   nrpic_vlasov_detail::CollideScpPbgk(this, pmy_pack);
   return TaskStatus::complete;
 }

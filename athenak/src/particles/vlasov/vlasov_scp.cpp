@@ -170,7 +170,9 @@ void PushScpPackets(Particles *pthis, MeshBlockPack *ppack) {
   pthis->push_unconverged = 0;
   if (np == 0) return;
 
-  if (pthis->pert.on) { pthis->NrpicPerturbKick(pm->time, pm->time + 0.5 * pm->dt); }
+  const Real dt       = pthis->MatterStepDt();
+  const Real tnow     = pthis->MatterStepStartTime();
+  if (pthis->pert.on) { pthis->NrpicPerturbKick(tnow, tnow + 0.5 * dt); }
 
   auto &pr = pthis->prtcl_rdata;
   auto &pi = pthis->prtcl_idata;
@@ -178,8 +180,6 @@ void PushScpPackets(Particles *pthis, MeshBlockPack *ppack) {
   const VlasovOptions vopt = (pthis->vlv != nullptr) ? pthis->vlv->opt : VlasovOptions{};
   const int pkind     = vopt.scp_pusher;
   const int triad     = pthis->nropt.triad;
-  const Real dt       = pm->dt;
-  const Real tnow     = pm->time;
   const Real tol      = pthis->nropt.tol;
   const int maxit     = pthis->nropt.maxit;
   const NrpicMetric msrc = pthis->nropt.metric;
@@ -335,7 +335,7 @@ void PushScpPackets(Particles *pthis, MeshBlockPack *ppack) {
 
   pthis->push_unconverged = nun;
   pthis->push_maxit = mxit;
-  if (pthis->pert.on) { pthis->NrpicPerturbKick(pm->time + 0.5 * pm->dt, pm->time + pm->dt); }
+  if (pthis->pert.on) { pthis->NrpicPerturbKick(tnow + 0.5 * dt, tnow + dt); }
   if (pthis->kick.on) { pthis->NrpicTestKick(); }
 }
 

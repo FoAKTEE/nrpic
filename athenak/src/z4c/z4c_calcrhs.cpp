@@ -199,6 +199,7 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
   bool mstage = false;
   Real lam8 = 0.0;
   Real cs = 0.0;
+  Real dt_stage = 0.0;
   DvceArray5D<Real> u_d0, u_d1;
   if (!is_vacuum) {
     if (pmy_pack->ptmunu->use_total) {
@@ -215,6 +216,9 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
       u_d1 = pmy_pack->ptmunu->u_tmunu_d1;
       cs = (pdriver != nullptr && stage >= 1 && stage <= 4)
              ? pdriver->c_stage[stage - 1] : 0.0;
+      dt_stage = pmy_pack->ptmunu->stage_rate_mode
+                   ? (pmy_pack->ptmunu->stage_tau + cs * pmy_pack->pmesh->dt)
+                   : cs;
       tmunu = pmy_pack->ptmunu->tmunu;
     } else {
       mdens = pmy_pack->ptmunu->step_density;
@@ -565,7 +569,7 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
           u_d1(m, Tmunu::I_Tmunu_Sy, ik, ij, ii),
           u_d1(m, Tmunu::I_Tmunu_Sz, ik, ij, ii)
         };
-        const Real fac_cs = cs * StageSourceLimiter(e0, de, s0, ds, g_inv, oopsi4, cs);
+        const Real fac_cs = dt_stage * StageSourceLimiter(e0, de, s0, ds, g_inv, oopsi4, dt_stage);
         mE = mfac * (e0 + fac_cs * de);
         for (int a = 0; a < 3; ++a) {
           mS_d[a] = mfac * (s0[a] + fac_cs * ds[a]);

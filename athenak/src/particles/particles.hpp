@@ -68,6 +68,8 @@ struct NrpicOptions {
   Real filter_comp_c;      // c of that pass if >= 0 (default -1: nfilter/4)
   bool filter_densitized = false;  // apply binomial/comp filters on densitized sqrt(gamma)*Tmunu
   bool filter_metric_conservative = false;  // self-adjoint metric-weighted flux-conservative filter
+  bool filter_mcons_unsplit = false;       // 7-pt unsplit self-adjoint mcons + active-block skip
+  Real filter_mcons_kappa = -1.0;          // unsplit mcons coeff (<0 -> 1/12 unconditional positive)
   bool field_constraints;  // field dumps also hold the constraints, Khat, Theta, lapse
   bool interp_bspline;     // metric at the particles by the cubic spline through the
                            // nodes instead of the Catmull-Rom reconstruction
@@ -109,6 +111,7 @@ struct NrpicOptions {
                         // deposits, D = 3/2 D^n - 1/2 D^(n-1)
   bool source_stage_extrap = false;  // Scheme A: stage-accurate positivity-limited
                                      // interior reconstruction D^{(s)} in Z4c::CalcRHS
+  int matter_stride = 1;             // multi-rate matter cadence: push/deposit every K_m Z4c steps
   int deposit_shape;    // degree of the B-spline cloud of the deposit: 1 (cloud in
                         // cell), 2 (triangular shaped cloud), 3 (piecewise cubic)
   Real curv_dt;         // time between curvature diagnostics (<= 0 = off)
@@ -345,6 +348,12 @@ class Particles {
   DvceArray4D<Real> sg_work;       // sqrt(det(gamma_ij)) cache for metric-conservative filter
   // block-boundary-only face fluxes for metric-conservative AMR refluxing (2 faces/dir)
   DvceArray5D<Real> bflx_x1, bflx_x2, bflx_x3;
+  DvceArray1D<int> mb_filt_active, mb_sg_valid;  // per-block active/cached metric flags (unsplit mcons)
+  int matter_substep = 0;            // Z4c subcycles elapsed in current matter macro-step
+  Real matter_t_start = 0.0;         // start coordinate time of current matter macro-step
+  Real matter_dt_accum = 0.0;        // accumulated Z4c dt across current matter macro-step
+  Real matter_step_dt = 0.0;         // full dt_matter on the active push/deposit cycle
+  bool matter_step_active = true;    // true when after_timeintegrator executes matter tasks
   bool tm_is_densitized = false;   // true while u_tmunu holds sqrt(gamma)*Tmunu before filter
   nrpic::ThreadDeposit thread_dep; // deposit target of a threaded build (nrpic_threads.hpp)
   DvceArray5D<Real> tm_prev;       // source densities of the previous deposit
@@ -396,6 +405,16 @@ class Particles {
   void NrpicNormalizeDensitizedSources(bool update_filt_sum);
   void NrpicFilterPass(const Real w0, const Real w1);
   void NrpicFilterPassMetricConservative(const Real kappa, const bool reverse_dirs);
+  void NrpicFilterPassMetricConservativeUnsplit(const Real kappa);
+  Real MatterStepDt() const {
+    return (nropt.matter_stride > 1 && !nropt.newton) ? matter_step_dt : pmy_pack->pmesh->dt;
+  }
+  Real MatterStepStartTime() const {
+    return (nropt.matter_stride > 1 && !nropt.newton) ? matter_t_start : pmy_pack->pmesh->time;
+  }
+  bool NrpicBeginCycleMetricState();
+  bool NrpicAdvanceMatterCycle(Driver *pdriver);
+  void NrpicResetMatterCycleState();
   void NrpicWriteConservation(Real time, Real dt, bool header, bool write);
   void NrpicCompensateLimited(const Real c, const Real c2, const Real lim);
   void NrpicUpdateTimeStep();

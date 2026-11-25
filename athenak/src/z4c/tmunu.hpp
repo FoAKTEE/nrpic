@@ -62,6 +62,8 @@ class Tmunu {
   // D^{(s)} = d0 + theta * c_s * d1 in Z4c::CalcRHS without full-ghost u_tmunu_step.
   DvceArray5D<Real> u_tmunu_d0, u_tmunu_d1;
   bool stage_extrap = false;
+  Real stage_tau = 0.0;         // elapsed Z4c subcycle offset from base macro-step (multi-rate)
+  bool stage_rate_mode = false; // true when u_tmunu_d1 holds coordinate-time rate dU/dt
   void AllocateStageSources();
 
   // Sources of all matter modules together.  A module whose sources change with every

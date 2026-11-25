@@ -394,6 +394,9 @@ void Particles::NrpicCollideInit(ParameterInput *pin) {
 //! the push; the cycle counter still holds the number of the step that is being taken
 
 TaskStatus Particles::NrpicCollide(Driver *pdriver, int stage) {
+  if (nropt.matter_stride > 1 && !nropt.newton && !matter_step_active) {
+    return TaskStatus::complete;
+  }
   if (!coll.on) return TaskStatus::complete;
   Mesh *pm = pmy_pack->pmesh;
   auto &indcs = pm->mb_indcs;
