@@ -39,8 +39,8 @@ def raw_rows(path):
     rows = []
     with open(path) as f:
         for line in f:
-            s = line.strip()
-            if s and not s.startswith("#"):
+            s = line.split("#", 1)[0].strip()   # status files end a line with "# reason"
+            if s:
                 rows.append([float(x) for x in s.split()])
     return np.array(rows) if rows else np.zeros((0, 12))
 
