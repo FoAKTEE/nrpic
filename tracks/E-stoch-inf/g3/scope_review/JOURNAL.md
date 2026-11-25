@@ -130,3 +130,10 @@ Run b_p of E-20261120-222424-0eb754b, all 21 dumps (t = 0 to 10.0), own parser o
   0.49 at the last dump. Reason: eps1 is 1e-2 at N* and about 1e-12 after USR, so the local expansion rate
   barely depends on the field. Refuted if rms dK/|K| exceeds 1e-4 at any dump: then a K-driven slicing has a
   lever arm during the run, and finding S3 of the review is withdrawn.
+
+Outcome (run E-20261125-131805-0806ef8, `kcheck.json`, `fig_kcheck.png` looked at):
+- KC1 HOLDS. rms dK/|K| is at most 4.0e-7 (cN = 1.49), falls through USR to 7e-12 at cN = 6.26 and 4.9e-13 at
+  N_f; rms dchi/chi is 9.7e-7 on the initial slice and stays at 8.19e-7 from cN = 3.4 to the end; |alpha - 1|
+  at most 1.2e-12. Over the same dumps the rms of (H/Pi) dphi grows from 1.7e-5 (cN < 3) to 0.495 at N_f, which
+  is the USR growth of dphi/Pi_b. The whole curvature perturbation of the box lives in dphi on an unperturbed
+  geometry (metric part about 1.7e-6 of R at N_f). A K-driven slicing has nothing to drive, and S3 stands.

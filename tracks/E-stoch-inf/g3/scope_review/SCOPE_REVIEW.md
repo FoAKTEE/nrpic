@@ -5,14 +5,16 @@ Reviewer: a helper of E who did not write 4d (batch 18, 2026-11-25; decision 003
 changed by the lead, not here. This file sits in the package directory `g3/scope_review/` (the only path
 this package may write); the lead may copy it to `g3/SCOPE_REVIEW.md`.
 
-Evidence: three registered processor runs (no card time), predictions in `JOURNAL.md` entries 1 and 3
-before each run, outcomes in entries 2 and 4, figures looked at.
+Evidence: four registered processor runs (no card time). Predictions are in `JOURNAL.md` entries 1, 3 and 5,
+written before each run (RB1 after a development run had shown its number; entry 1 says so). Outcomes are in
+entries 2, 4 and 5, and every figure was looked at.
 
 | Run | What | Script |
 |---|---|---|
 | E-20261125-130854-ef74ef8 | expected variance of the lattice-density variant of the one-patch reference, from its own bins | `ref_bins.py` |
 | E-20261125-131002-ceefa2f | own reader (own dump and record parsers, own R^NR) on the 128^3 mirrored pair b_p/b_m of the window scan (E-20261120-222424-0eb754b, dump 20): one-point statistics, effective cells by Owen's T and by blocks, box-variance share, second order of R^NR | `box_stats.py` |
 | E-20261125-131336-2b903fe | detection thresholds of the 4d.3 comparison from the two runs above and the 128-band reference | `sensitivity.py` |
+| E-20261125-131805-0806ef8 | uniformity of K, chi and alpha on the geodesic slice at all 21 dumps of b_p: lever arm of the gauge leg | `kcheck.py` |
 
 ## Verdict
 
@@ -121,17 +123,20 @@ result sentence says which of the two comparisons a statement rests on."
 At no extra cost, seed i runs at noise_mode_scale = +1 and -1, as b_p/b_m already did. The even part of a
 pair is the non-Gaussian part with no Gaussian sample variance. From one 128^3 pair, a_R comes out with a
 residual of a tenth of the even part [VERIFIED, run E-20261125-131002-ceefa2f]. Likewise F_+(X+) - F_-(X-)
-depends only on the even part. With zeta, a_zeta from a few pairs is far more precise than the reference
+vanishes when the even part vanishes, so the Gaussian sample variance cancels from it to first order. With zeta, a_zeta from a few pairs is far more precise than the reference
 (S1, B3). Proposed wording (4d common set-up): "Seeds i = 0..127, each at s = +1 and s = -1 (256 runs)."
 
 ### S3. The gauge leg has no lever arm and cannot fail
 
-`lapse_kdriver` drives K towards its mean. On the geodesic slice K is already uniform to the precision of B3
-(chi uniform to about 4e-7), so the kdriver slicing equals the geodesic one at that precision. The paired
-differences of 4d.6 will be zero within their errors. For the same reason the clause "AND the gauge leg does
-not move F" in 4d.3 is met automatically. [VERIFIED for the geodesic slice, run E-20261125-131002-ceefa2f;
-JUDGEMENT for the kdriver runs: scalar_field_3.md section 5 measured a lapse perturbation of 3e-6 in the
-quadratic case.] Proposed wording (4d.6): "First the pilot pair k000/k001 is read. Report rms(alpha - 1) and
+`lapse_kdriver` drives K towards its mean. On the geodesic slice of the 128^3 USR box K is already uniform.
+rms dK/|K| is at most 4.0e-7 over the whole run (at cN = 1.5), 7e-12 at the end of USR and 4.9e-13 at N_f.
+rms dchi/chi stays at 8.2e-7 from cN = 3.4 on, while the rms of (H/Pi) dphi grows from 1.7e-5 to 0.495
+[VERIFIED, run E-20261125-131805-0806ef8, `fig_kcheck.png`]. The whole curvature perturbation lives in dphi on
+an unperturbed geometry. A K-driven slicing has nothing to drive and coincides with the geodesic one to about
+1e-6 of zeta. The paired differences of 4d.6 will be zero within their errors. For the same reason the clause
+"AND the gauge leg does not move F" in 4d.3 is met automatically. [JUDGEMENT for the kdriver runs themselves:
+scalar_field_3.md section 5 measured a lapse perturbation of 3e-6 in the quadratic case. The pilot pair
+k000/k001 will show it for this case.] Proposed wording (4d.6): "First the pilot pair k000/k001 is read. Report rms(alpha - 1) and
 rms of H int (alpha - 1) dt at N_f in units of sigma_lin. If this is below 1e-3, G3-G is recorded as 'no
 lever arm in this model' and the 32 kdriver seeds are not queued. A slicing test then needs a lapse that
 depends on the field (a request to core), or the scope states that the slicing question is empty for this
