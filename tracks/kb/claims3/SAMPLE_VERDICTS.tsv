@@ -1,0 +1,31 @@
+claim_id	stratum	verdict	right	note
+6	WA	right	1	
+29	WA	fragment	0	subject and condition 'for mu <= 0.045' cut away (MDPBH.tex L1141)
+40	WA	right_locator	1	Einstein Toolkit at L89
+88	WA	right	1	
+126	WA	part_unsupported	0	'as arXiv:2109.04896' is A's comparison; 2306.11810 cites it at L237 for the mechanisms only
+163	WA	right	1	
+214	WA	right	1	
+233	WA	right	1	
+235	WA	right	1	
+292	WA	right	1	attribution to 2601.17117 via sidmacc.bbl L343-347
+328	WA	right	1	
+348	WA	right	1	
+373	WA	right_locator	1	starts with 'i.e.'; M H ~ 1e-2 at L241
+407	WA	right	1	abstract lines
+468	WA	right	1	keeps core's verdict column
+474	WA	right_locator	1	L838 and L840 outside the locator
+479	WA	right	1	
+482	WA	wrong_label	0	cut text 'which are ...'; a JUDGEMENT (Catmull-Rom) stored as fulltext
+501	WA	right	1	
+568	WA	right	1	
+572	WA	fragment	0	cut citation list joined to one supported clause
+578	WA	right	1	
+720	WB	right	1	
+721	WB	right_locator	1	Reissner-Nordstrom at L189; 2511.20567 L62-64
+775	WM	right	1	paraphrase in quotes; supported at L171, L191
+308	WQ	right	1	
+467	WQ	right	1	starts with 'and'
+662	WQ	right	1	
+669	WQ	right_locator	1	'for D << 1' at L463
+673	WQ	right	1	
