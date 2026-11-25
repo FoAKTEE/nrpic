@@ -617,3 +617,23 @@ at run 67 of 270, competing for the disk with the quarter-pair analysis, which h
 reference pass, 21 dumps in 1881 s, and was reading the runs). `nrpic-stage report` was run on the
 verify of 2026-11-23. The analysis E-20261124-233223-51b52c0 was still running at the close; its
 judge `g2prod/scripts/judge_q.py` is committed (449b8b2c), not yet run.
+
+## 2026-11-24 19:32-20:20 PST, lead of batch 15 (Opus): G2 records after the fresh verifier, note sections, stage
+
+Predictions first, outcomes after, all on record in the package journals:
+- g2prod entry 4.0 (expectation before judge_q from the verifier's numbers) -> 4.1: held. Q-a
+  REFUTED (4.1275, prediction 3.98 +- 0.015), Q-b holds by its rule (-2.0725e-6; 0.03e-6 outside the
+  stated band -2.5e-6 +- 0.4e-6), Q-c holds. Runs E-20261125-033357-a608cda, -033450-4c4a31c (figure
+  fix: the common-mode panel was useless in the first version). 4.2: the three-amplitude reading
+  recorded beside the failure, labelled after the data (ruling 0036 item 2).
+- repro/note entries 19-26: predictions for R11-R16 written before each run; all held. Failed
+  checks found and fixed by rerun: a halving legend and the ladder and ledger caption wrote the noise
+  amplitude as s (the note's window steepness) -> lambda; an overfull equation; a caption over five
+  lines; the appendix landing among the ledger floats (\clearpage); the compiled PDF at 5.56 MB above
+  the 5 MB hook (one commit carried a 5.14 MB copy before I noticed; schematics now vector PDF, 5.05
+  MB). The pre-commit hook refused one commit with the 5.3 MB PDF; recommitted without it.
+- Stage G2: collect (20 items kept), CHECKLIST complete, EVIDENCE rows, OPEN, REVIEW-wave3 Part F;
+  verify with --no-checksums (full checksum pass 1-2 h); report.
+- Inbox: four infos acknowledged (core SIGTERM restart, orch core-v0.7 release and checksum, kb
+  claims superseded). Outbox: two posts to orch.
+Card-hours this session: 0. Floor runs q0037/q0038 still waiting in the shared queue (not read).
