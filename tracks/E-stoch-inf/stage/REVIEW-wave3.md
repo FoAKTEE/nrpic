@@ -642,3 +642,32 @@ note's three sentences that called the floor open now state the halving (no new 
 G0, G1, G2 are signed (coord/GATES.md). G3: scope fixed and amended before any production run; no
 production run yet; `stage/G3/CHECKLIST.md` collected, `stage/G3/OPEN.md` lists what is open. Not ready for
 review.
+
+## I. Batch 20 (2026-11-25 07:54-09:05 PST, lead of E, processors only): the zeta reader and the reference proper
+
+No helper package finished since batch 19; the cards were held all session (q0050-q0054 waiting, none started), so
+this part records the lead's own processor work. It is not an independent check: the fresh verifier of G3 must
+recompute it (A13). Every number below has its run id; predictions were committed before each registered run
+(zeta/JOURNAL.md entries 4-6, g3/amend/JOURNAL.md entries 7-8).
+
+### I.1 zeta reader (zeta/zeta_reader.py; run E-20261125-161456-8d3f43c on the 32^3 pairs E-20261125-153148-cfad424)
+- Confirmed: the TO VERIFY of 4d.3. HiggsInflection(1.86e-6, 0.198) at phi0 = -1.2, N* - N0 = 3 mapped to code
+  units gives the deck's vev, lambda, phi0, pi0 to 1.1e-14 relative and the landmarks to 1.3e-9 in N (the flat
+  eps2 = 0 crossing 4.0e-7); the deck's tlim is N_f to 2e-13. [VERIFIED]
+- Confirmed: Z0 = 3.0e-5 (bar 1e-3); Z2(i) ratio 0.999996; Z2(iii') -0.25 per cent (bar 0.5, pre-registered before
+  the reading, entry 4); a_zeta = 6.763e-3, a_zeta sigma_lin(128) = 3.3e-3 (predicted [0.002, 0.008]).
+- Failed as written: Z2(iii) -2.89 per cent against 2 per cent, predicted (entry 4) from a_zeta = a_map - a_R; Z1
+  along Pi alone, second coefficient 0.142 against 1 per cent (floor of the independent integrator by the
+  diagnostics; not a named cause: the test that could fail was stopped, E-20261125-161757-fb0eb95).
+- A4 preview against the 8-band reference E-20261125-160705-5f75bb4: variance 1.031 (one box scatters 3.1 per
+  cent), intrinsic skewness of d phi 7.4e-5 vs 0.0002 +- 0.0020, of zeta 0.0027 vs 0.0026 +- 0.0020. Consistent.
+- What the track does: the reader may judge G3 runs only after the orchestrator rules on Z1 along Pi and on Z2(iii)
+  (outbox); its cost on 128^3 (R41) is handled before the baseline is read.
+
+### I.2 Reference proper (langevin/)
+- Lattice sigma = 0.1 (E-20261125-160722-a6d1f26): TS1 FAILED (variance gate 1.00245 +- 0.00050); TS2 holds as
+  worded (skewness difference -0.0017 +- 0.0018) but the A10 bound is not reached; TS3 holds.
+- Importance sampler (A9; E-20261125-160658-855db8c): see I.3 (written when the run ended).
+- Defects found and fixed: NaN in the biased sampler where the noise vanishes (sdn/langevin.py, before any
+  registered run); the constant shift of A9 replaced by a variance-share profile (A14 (a)); the variance gate of
+  ref_spec.py loops over the lattice variants that ran (it required s0.01_lattice in every run).

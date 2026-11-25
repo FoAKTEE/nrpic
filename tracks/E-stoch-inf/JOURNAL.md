@@ -686,3 +686,26 @@ Decision 0040 item 1 (amend 4d before any G3 production run; gauge leg withdrawn
   q0053 G3B00, q0054 G3B01 (priority 5, after G3P). Stage G3 collected (CHECKLIST, OPEN.md); REVIEW-wave3
   Part H. Inbox: four infos acknowledged. Outbox: request to core (field-dependent lapse, later), info to orch.
 Card-hours this session: 0 used by runs of this session (FL256h's 0.44 was spent at 05:20 PST).
+
+## 2026-11-25 07:54-09:05 PST, lead of batch 20 (Opus): zeta reader with Z0-Z2, the TO VERIFY of 4d.3, the reference proper at nu = 4 and sigma = 0.1
+
+Processors only (cards held all session; q0050-q0054 waiting, none started, nothing read or queued from them).
+Predictions before every registered run: zeta/JOURNAL.md entries 4-6, g3/amend/JOURNAL.md entries 7-8.
+- zeta reader (zeta/zeta_reader.py; E-20261125-161456-8d3f43c): zeta = -1/2 ln(chi/<chi>) + Delta N_bg(phi, Pi/H)
+  with RK4 in phi to phi_e = phi_bg(N* + 15). TO VERIFY of 4d.3 settled [VERIFIED]. Z0 3.0e-5 (pass); Z2(i) pass;
+  Z2(iii) FAILED as written (-2.89 %, predicted: a_zeta = a_map - a_R); Z2(iii') pass (-0.25 %, pre-registered);
+  Z1 FAILED as written along Pi alone (0.142), passes along phi and the box relation; the diagnostics place the
+  floor in the independent integrator; the test that could have named it was stopped (E-20261125-161757-fb0eb95,
+  too slow; status failed). Figure fig_zeta_tests.png looked at.
+- A4 preview (32^3 against the 8-band reference E-20261125-160705-5f75bb4, 1e6 paths, gate 0.9971 +- 0.0013):
+  consistent (variance 1.031 with 3.1 % box scatter; zeta skewness 0.0027 vs 0.0026 +- 0.0020).
+- Reference at sigma = 0.1 on the lattice (E-20261125-160722-a6d1f26, 4e6): TS1 FAILED (gate 1.00245 +- 0.00050),
+  TS2 holds as worded but A10's bound is not reached, TS3 holds. Figure looked at (cosmetic axis defect).
+- Importance sampler (ref_tilt.py; E-20261125-160658-855db8c): constant shift of A9 failed its smoke test (mean
+  weight 0.01); a variance-share profile replaces it (SCOPE 4d.9 A14 (a)); outcome in g3/amend entry 10.
+- Defects fixed: sampler NaN at vanishing noise (sdn/langevin.py); ref_spec.py variance gate generalised.
+- Process: a smoke process was stopped with a kill built from a ps listing filtered by pattern (numeric PIDs, own
+  shell excluded); later ones by PID from a listing and by nrpic-run stop. Two submissions refused for a missing
+  --preregistered (production), resubmitted.
+- Failed predictions: TS1; TL1 (moot, constant shift); Z1 along Pi (as written); Z2(iii) failed as predicted.
+Card-hours this session: 0.

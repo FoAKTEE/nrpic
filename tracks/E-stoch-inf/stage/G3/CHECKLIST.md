@@ -15,10 +15,10 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: planned: G3-C (4d.4 with A6), G3-R (4d.5 with A7), level 2 (4d.7 with A11); gauge leg withdrawn as a criterion, stated as a limitation (A8, decision 0040 item 1)
 - [ ] **C3** Comparison with the literature
   - status: OPEN
-  - evidence: reference: corrected one-patch delta N of the 128 band (A1; pilot E-20261125-151340-743c38c passes the variance gate 0.9993 +- 0.0032); 4e6 direct run E-20261125-152832-c301e92 in progress; importance sampler at nu = 4 (A9) to do
+  - evidence: reference: corrected one-patch delta N of the 128 band (A1; pilot E-20261125-151340-743c38c passes the variance gate 0.9993 +- 0.0032); 4e6 direct E-20261125-152832-c301e92 (gate 0.99865 +- 0.00058, skewness 0.0199 +- 0.0012); importance-sampled nu = 4 E-20261125-160658-855db8c (g3/amend entry 10); sigma = 0.1 lattice E-20261125-160722-a6d1f26 (gate failed, bound of A10 not reached; entry 9); model and landmarks of the reference = the deck (TO VERIFY of 4d.3 settled, E-20261125-161456-8d3f43c)
 - [ ] **C4** Null results and failed runs are on record
   - status: OPEN
-  - evidence: on record so far: smoke run E-20261125-152619-d917a14 preceded by the failed E-20261125-152419-40200ec (g3/amend/JOURNAL.md entry 5); refuted prediction LB2 (entry 4)
+  - evidence: on record so far: smoke run E-20261125-152619-d917a14 preceded by the failed E-20261125-152419-40200ec (g3/amend/JOURNAL.md entry 5); refuted prediction LB2 (entry 4); batch 20: TS1 failed (entry 9), the constant shift of A9 failed its smoke test (entry 8), zeta Z1 along Pi and Z2(iii) failed as written (zeta/JOURNAL.md entries 6-7), rerun E-20261125-161757-fb0eb95 stopped (too slow)
 
 ## Main products of G3 (charter 9.2)
 
@@ -78,4 +78,4 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: 
 - [ ] **C19** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: OPEN
-  - evidence: current at the end of batch 19 (STATUS.md, JOURNAL.md, HANDOFF.md)
+  - evidence: current at the end of batch 20 (STATUS.md, JOURNAL.md, HANDOFF.md)
