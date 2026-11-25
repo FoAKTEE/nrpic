@@ -40,6 +40,14 @@ I3_BASE = os.path.join(SCRATCH, "runs", "iter3_verify")
 OUT_NPZ = os.path.join(REPO, "vlasov_gr", "paper", "data", "speed_profile_cfl.npz")
 
 
+def _extract_last_cycles(txt: str) -> int:
+    hits = re.findall(r"^\s*cycle\s*=\s*([0-9]+)", txt, flags=re.MULTILINE)
+    if hits:
+        return int(hits[-1])
+    hits2 = re.findall(r"\bcycle=([0-9]+)", txt)
+    return int(hits2[-1]) if hits2 else -1
+
+
 def run_athena_safe(cfg: str, rdir: str, label: str, timeout_s: float = 420.0):
     log_path = os.path.join(rdir, f"{label}.stdout.log")
     if os.path.isfile(log_path):
@@ -47,13 +55,12 @@ def run_athena_safe(cfg: str, rdir: str, label: str, timeout_s: float = 420.0):
         if ("Terminating on time limit" in txt) or ("Terminating on cycle limit" in txt):
             m_c = re.search(r"cpu time used\s*=\s*([0-9.eE+-]+)", txt)
             m_w = re.search(r"# wall_s = ([0-9.eE+-]+)", txt)
-            m_cy = re.search(r"cycle\s*=\s*([0-9]+)", txt)
             m_nmb = re.search(r"Current number of MeshBlocks\s*=\s*([0-9]+)", txt)
             return dict(
                 ok=True,
                 wall=float(m_w.group(1)) if m_w else np.nan,
                 comp=float(m_c.group(1)) if m_c else np.nan,
-                cycles=int(m_cy.group(1)) if m_cy else -1,
+                cycles=_extract_last_cycles(txt),
                 nmb=int(m_nmb.group(1)) if m_nmb else -1,
             )
     w4b.clean_dir(rdir)
@@ -74,13 +81,12 @@ def run_athena_safe(cfg: str, rdir: str, label: str, timeout_s: float = 420.0):
         return dict(ok=False, wall=wall_s, comp=np.nan, cycles=-1, nmb=-1, reason=f"rc={res.returncode}")
 
     m_c = re.search(r"cpu time used\s*=\s*([0-9.eE+-]+)", res.stdout)
-    m_cy = re.search(r"cycle\s*=\s*([0-9]+)", res.stdout)
     m_nmb = re.search(r"Current number of MeshBlocks\s*=\s*([0-9]+)", res.stdout)
     return dict(
         ok=True,
         wall=wall_s,
         comp=float(m_c.group(1)) if m_c else wall_s,
-        cycles=int(m_cy.group(1)) if m_cy else -1,
+        cycles=_extract_last_cycles(res.stdout),
         nmb=int(m_nmb.group(1)) if m_nmb else -1,
     )
 
@@ -110,6 +116,8 @@ def main():
         ("rk3", 0.25),
         ("rk3", 0.35),
         ("rk3", 0.40),
+        ("rk3", 0.45),
+        ("rk3", 0.50),
     ]
     w_base = None
     for integ, cfl in sweep_specs:
@@ -225,13 +233,18 @@ def main():
                     "nfilter": nf,
                     "filter_densitized": "false",
                     "filter_metric_conservative": mc,
-                    "source_stage_extrap": "true",
+                    "source_stage_extrap": "true" if dep == "true" else "false",
                     "hist_dcycle": "50",
                     "snap_dt": "1e9",
                 },
                 "problem": {"comp0_file": tab_f},
             },
-            existing_only={f"output{k}": {"dt": "1.0e9"} for k in range(2, 6)},
+            existing_only={
+                "output2": {"dt": "1.0e9"},
+                "output3": {"dt": "1.0e9"},
+                "output4": {"variable": "adm" if dep == "false" else "tmunu", "dt": "1.0e9"},
+                "output5": {"dt": "1.0e9"},
+            },
         )
         res = run_athena_safe(cfg, rdir, f"prof_{lbl}", timeout_s=300.0)
         ms_cyc = 1000.0 * res["comp"] / max(res["cycles"], 1)
