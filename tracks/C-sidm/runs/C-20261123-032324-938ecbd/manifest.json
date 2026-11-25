@@ -90,12 +90,26 @@
     "nodes": 1,
     "gpus": 1,
     "cores": 1,
-    "walltime_s": 0.0,
+    "walltime_s": 241.0,
     "wall_limit": null,
     "segments_max": 4,
     "gpu_hours_requested": 3.9333,
-    "gpu_hours": 0.2967,
-    "particles": 100000.0
+    "gpu_hours": 1.7733,
+    "particles": 100000.0,
+    "gpu_hours_basis": "sum over 11 jobs of the chain, 1 continuation(s) in place included: sacct ElapsedRaw for 11",
+    "gpu_seconds_by_job": {
+      "4939": 154.0,
+      "4956": 4.0,
+      "4978": 741.0,
+      "4997": 168.0,
+      "5015": 1.0,
+      "5148": 207.0,
+      "5163": 1296.0,
+      "5195": 70.0,
+      "5200": 2449.0,
+      "5206": 1051.0,
+      "5214": 243.0
+    }
   },
   "slurm": {
     "partition": "preempt",
@@ -105,21 +119,27 @@
       "4956",
       "4978",
       "4997",
-      "5015"
+      "5015",
+      "5148",
+      "5163",
+      "5195",
+      "5200",
+      "5206",
+      "5214"
     ]
   },
   "outputs": {
     "dir": "scratch/C-sidm/C-20261123-032324-938ecbd",
     "sha256sums": "sha256sums.txt",
-    "sha256sums_sha256": "84d910fb794b52b283b67d4508cbafb833d34e26e0cbedd09c25caf1e93f0f94",
-    "bytes": 1591340726,
-    "files": 39
+    "sha256sums_sha256": "b2939faf29b3fdebfdfe439c581656419486dac4ae39e5f4fd58ec3e8b052929",
+    "bytes": 69493012252,
+    "files": 230
   },
-  "status": "failed",
-  "exit_code": 1,
+  "status": "completed",
+  "exit_code": 0,
   "registered": "2026-11-23T03:23:25Z",
-  "started": "2026-11-23T03:23:26Z",
-  "ended": "2026-11-23T22:19:54Z",
+  "started": "2026-11-24T14:06:18-08:00",
+  "ended": "2026-11-24T14:10:19-08:00",
   "parents": [],
   "notes": "",
   "budget_at_submit": {
@@ -132,7 +152,7 @@
     "runs": 207,
     "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
   },
-  "finished": "2026-11-23T22:19:54Z",
+  "finished": "2026-11-25T15:59:44Z",
   "continuations": [
     {
       "at": "2026-11-24T12:59:33Z",
