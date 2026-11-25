@@ -160,3 +160,27 @@ threshold_ball/JOURNAL.md (three consecutive finds spanning 5 M_AH and every lat
 - Q8 (not a claim; SCOPE section 3 measures time by the envelope's proper time): the envelope's
   proper time at the first detection exceeds the core edge's by about the coordinate lag (1-2 M),
   so B-d0.42 would be detected after 45 in the SCOPE measure [JUDGEMENT, to be measured].
+
+### Entry 3a, 2026-11-25 13:35Z: a defect of my own reader, found by the first threshold run (A-20261125-131148-99204e1); predictions for the reruns
+
+The first registered threshold run classified A-d0.42 and A-d0.40 as BH (persistent from 45.625 and
+48.375) and put B-d0.35's persistent start at 57.3125 (table 58.312). Reading the raw summary of
+A-d0.42: after 45.875 every record repeats mass 0.3771556660192116 and radius 0.1565937887708861
+bit for bit until the guard stop. coord/INTERFACES/cosmo_amr.md section 2.3 says so: "after a failed
+search [the summary] repeats the values of the last success, or NaN: read the status file to know
+whether a line is new". My reader took every finite summary line as a find; that is wrong. The
+outcomes of run A-20261125-131148-99204e1 for the rule, the persistent start and the medians are
+withdrawn (the run stays on record); its first-detection numbers are unaffected (the first finite
+record is always a real find, the summary writes NaN before it).
+
+Change: `vread.read_summary` takes 'found' from `<base>.horizon_status_0.txt` when it exists (all
+threshold members), and otherwise (conv_ball members, no status file) counts a record bitwise equal
+in mass, area and mean radius to the previous one as a repeat. A new case V0d(v) tests both paths.
+
+Predictions for the reruns (before them):
+- V0d passes with case (v); V0a-c, V0e, V0f unchanged.
+- conv_ball (V1 rerun): first-detection quantities identical to run A-20261125-130753-314837e; the mass
+  medians change by less than 5e-4 (if repeats exist after the first detection they are few:
+  README says C-R1.25 is found in every search, and the conv_ball members ran with hmean_tol 100).
+- threshold (V2 rerun): A-d0.42 and A-d0.40 not BH (three finds, then the guard stop); B-d0.35
+  persistent from 58.312; the other persistent starts as in the table; Q1 then holds.

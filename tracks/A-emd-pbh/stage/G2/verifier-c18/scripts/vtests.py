@@ -138,13 +138,14 @@ def write_summary(path, times, masses):
 def v0d(out):
     t = 10 + 0.25 * np.arange(40)
     res = {}
-    m = np.where(np.arange(40) >= 10, 0.3, np.nan)
+    # genuine finds differ from search to search (a bitwise repeat is a stale record)
+    m = np.where(np.arange(40) >= 10, 0.3 + 1e-4 * np.arange(40), np.nan)
     p = os.path.join(out, "v0d_i.txt"); write_summary(p, t, m)
     r1 = bh_rule(read_summary(p))
     m2 = m.copy(); m2[-1] = np.nan
     p = os.path.join(out, "v0d_ii.txt"); write_summary(p, t, m2)
     r2 = bh_rule(read_summary(p))
-    m3 = np.full(40, np.nan); m3[-3:] = 0.3
+    m3 = np.full(40, np.nan); m3[-3:] = [0.3, 0.3001, 0.3002]
     p = os.path.join(out, "v0d_iii.txt"); write_summary(p, t, m3)
     r3 = bh_rule(read_summary(p))
     # (iv): duplicate the last 5 times with failures appended after (restart)
@@ -154,9 +155,28 @@ def v0d(out):
             f.write("%d %g nan nan nan nan nan nan nan nan nan nan\n" % (k, t[k]))
     s4 = read_summary(p)
     r4 = bh_rule(s4)
+    # (v): stale repeats. The finder repeats the last success after a failed search
+    # (coord/INTERFACES/cosmo_amr.md 2.3): finds at 10-12 (distinct masses), then repeats of
+    # search 12 to the end: not BH without a status file (repeats removed), and with a status
+    # file that says found only at 10-12, not BH either; a status file that says found from
+    # 10 to the end makes it BH.
+    m5 = np.full(40, np.nan); m5[10:13] = [0.30, 0.301, 0.302]; m5[13:] = 0.302
+    p = os.path.join(out, "v0d_v.txt"); write_summary(p, t, m5)
+    r5 = bh_rule(read_summary(p))
+    ps = os.path.join(out, "v0d_v_status.txt")
+    with open(ps, "w") as f:
+        for k in range(40):
+            f.write("%d %.15e %d 0 1 1 1 1 1 1 1 0 0 0 0  # x\n" % (k, t[k], 1 if 10 <= k <= 12 else 0))
+    r6 = bh_rule(read_summary(p, ps))
+    with open(ps, "w") as f:
+        for k in range(40):
+            f.write("%d %.15e %d 0 1 1 1 1 1 1 1 0 0 0 0  # x\n" % (k, t[k], 1 if k >= 10 else 0))
+    r7 = bh_rule(read_summary(p, ps))
     ok = (r1["bh"] and abs(r1["persistent_from"] - t[10]) < 1e-12 and not r2["bh"]
-          and not r3["bh"] and not r4["bh"] and s4["time"].size == 40)
-    res["V0d"] = {"i": r1, "ii": r2, "iii": r3, "iv": r4, "pass": bool(ok)}
+          and not r3["bh"] and not r4["bh"] and s4["time"].size == 40
+          and not r5["bh"] and not r6["bh"] and r7["bh"])
+    res["V0d"] = {"i": r1, "ii": r2, "iii": r3, "iv": r4, "v_repeats": r5, "v_status_short": r6,
+                  "v_status_long": r7, "pass": bool(ok)}
     return res
 
 

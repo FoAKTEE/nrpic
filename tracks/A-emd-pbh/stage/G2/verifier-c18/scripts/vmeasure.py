@@ -19,6 +19,7 @@ entry 1 as written; the implementation is the verifier's own):
 - BH rule (threshold_ball entry 1): found in at least three consecutive searches
   spanning at least 5 M_AH, and every later search finds it.
 """
+import os
 import numpy as np
 from vread import read_summary, Tracks, read_tab
 from vref import LTB
@@ -28,7 +29,8 @@ class Member:
     def __init__(self, rundir, table, summary="ball.horizon_summary_0.txt", base="ball"):
         self.rundir = rundir
         self.ltb = LTB(table)
-        self.summ = read_summary("%s/%s" % (rundir, summary))
+        stp = "%s/%s" % (rundir, summary.replace("summary", "status"))
+        self.summ = read_summary("%s/%s" % (rundir, summary), stp if os.path.exists(stp) else None)
         self.tr = Tracks("%s/%s.traj.bin" % (rundir, base), "%s/%s.trajmet.bin" % (rundir, base))
         if self.tr.t[0] != 0.0:
             raise ValueError("first trajectory record is not at t = 0")

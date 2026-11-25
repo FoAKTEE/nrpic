@@ -22,7 +22,26 @@ def _last_unique(keys):
     return idx
 
 
-def read_summary(path):
+def read_status(path):
+    """`<base>.horizon_status_N.txt` (docs/FORMATS.md; coord/INTERFACES/cosmo_amr.md 2.3):
+    one line per search, column 2 time, column 3 found (0/1), column 4 reason. Restarted
+    chains append: the last record of each time is kept. Returns {time: (found, reason)}."""
+    out = {}
+    with open(path) as f:
+        for line in f:
+            s = line.split("#")[0].strip()
+            if not s:
+                continue
+            v = s.split()
+            out[round(float(v[1]), 9)] = (int(float(v[2])), int(float(v[3])))
+    return out
+
+
+def read_summary(path, status_path=None):
+    """Summary of the finder. After a failed search the summary repeats the values of the
+    last success (or NaN) (coord/INTERFACES/cosmo_amr.md 2.3): with a status file, 'found'
+    is taken from it; without one, a record bitwise equal in mass, area and mean radius to
+    the previous record is counted as a repeat, not as a find ('stale')."""
     rows = []
     with open(path) as f:
         for line in f:
@@ -43,7 +62,20 @@ def read_summary(path):
     a = a[[i for _, i in order]]
     out = {"iter": a[:, 0], "time": a[:, 1], "mass": a[:, 2], "S": a[:, 6],
            "area": a[:, 7], "meanradius": a[:, 10], "minradius": a[:, 11]}
-    out["found"] = np.isfinite(a[:, 2]) & np.isfinite(a[:, 7]) & (a[:, 7] > 0)
+    finite = np.isfinite(a[:, 2]) & np.isfinite(a[:, 7]) & (a[:, 7] > 0)
+    same = np.zeros(a.shape[0], bool)
+    same[1:] = ((a[1:, 2] == a[:-1, 2]) & (a[1:, 7] == a[:-1, 7]) & (a[1:, 10] == a[:-1, 10]))
+    out["stale_by_repeat"] = finite & same
+    if status_path is not None:
+        st = read_status(status_path)
+        keys = [round(t, 9) for t in a[:, 1]]
+        sf = np.array([st.get(k, (0, -1))[0] == 1 for k in keys])
+        out["status_reason"] = np.array([st.get(k, (0, -1))[1] for k in keys])
+        out["found"] = finite & sf
+        out["found_source"] = "status"
+    else:
+        out["found"] = finite & ~same
+        out["found_source"] = "summary, repeats removed"
     with np.errstate(invalid="ignore"):
         out["mirr"] = np.sqrt(a[:, 7] / (16 * np.pi))
     return out
