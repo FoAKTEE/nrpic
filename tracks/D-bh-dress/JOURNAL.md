@@ -563,21 +563,22 @@ open: the four entries wait (account at 5 of 5 jobs at 13:05 PST); FF4 and FE4 t
 did: merged main; acked five messages (kb claims 682 -> 862 and 409: D's texts already quote the corrected
   wording - 15 per cent is the 8Gm -> 4Gm variant, Gondolo-Silk a factor three below; core SIGTERM restarts;
   orch release core-v0.7 x2; kb superseded claims). Closed FK by hand (new g2long/tools/close_by_hand.py:
-  nrpic-run finish refuses manifests with `continuations`), FF4 and FE4 with nrpic-run finish; started FN4's
-  close by hand (still checksumming at the end). Registered readings: fk_compare (new) D-20261125-115637-7ee26c1,
+  nrpic-run finish refuses manifests with `continuations`), FF4 and FE4 with nrpic-run finish, FN4 by hand
+  (04:28). Registered readings: fk_compare (new) D-20261125-115637-7ee26c1,
   esf_criteria FK -115647-fd2f3f7, np_partial (new) -115729-011d028, esf_criteria FF4 with control V-1L
-  -121034-8f82998 and V-1L4 -121123-143a007, judge_conv with FE4 -122227-3eb563a; every figure looked at.
+  -121034-8f82998 and V-1L4 -121123-143a007, judge_conv with FE4 -122227-3eb563a, esf_criteria FN4
+  -122827-c5735f8, xc_plane XN -122849-43db157; every figure looked at.
   Wrote g2long entries 18-21, stage/G2 OPEN (item by item, queue mapping, relaxed-lapse table), CHECKLIST,
   EVIDENCE, REVIEW-wave3 sections 19-20; posted finish-refuses-continued-chains to orch.
 found: FK confirms the mechanism: with horizon excision kept on, the (iii) medians stay at 0.16-0.24 per
   cent (ES-FL steps to 0.6 at tau_rem ~285 M), D3 after 220 M stays below 3e-3, and the horizon mass is
   unchanged (2.2e-5 at 399.5 M): P7-P10 hold. Criterion G holds for FK and at M/4 (own-mesh control).
   FN4 (4N) agrees with FK in removed m E_K to 0.4 per cent and in M_AH to 5e-4 (N2, N3, read before its
-  close). The null test FAILS at M/4: 4.6e-3 by 300 M against 2e-4 at M/8 and M/16 (P5 refuted).
+  close; N1, N4 and XN hold after it: the exterior residual is particle noise, N^-1/2). The null test FAILS at M/4: 4.6e-3 by 300 M against 2e-4 at M/8 and M/16 (P5 refuted).
 failed: P5 (refuted), P6, P11 (costs), P13 as written, P12 with the M/8 control. Unexplained: FK removes
   29.5 per cent of its dust before the exact crossing (ES-FL 0.23 per cent) [TO VERIFY].
 changed my mind about: "the null difference does not depend on the horizon resolution" (entry 5, H3) -
   true for M/8 and M/16 only.
-open: FN4's close (commit), N1 and XN; FNQ (q0010, running) and FL16 (q0011, waiting); note v3; G2
-  verifier; rerun script. Card-hours closed this session: 4.87 (FK 2.70, FF4 1.34, FE4 0.83), all run before
-  it; no new card run registered.
+open: FN4's sphere norms; FNQ (q0010, running) and FL16 (q0011, waiting); note v3; G2
+  verifier; rerun script. Card-hours closed this session: 8.06 (FK 2.70, FF4 1.34, FE4 0.83, FN4 3.19), all
+  run before it; no new card run registered.

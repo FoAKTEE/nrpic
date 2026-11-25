@@ -58,9 +58,9 @@ Card runs of the follow-ups (release core-v0.6, chains; continued in place by th
 |---|---|---|---|---|---|
 | FK ES-FLK (N; excision to 6.4 M) | `g2long/inputs/esflk.athinput` | D-20261123-022725-a553496 | 400 M, closed by hand | 2.70 | fk_compare D-20261125-115637-7ee26c1, esf_criteria D-20261125-115647-fd2f3f7 (L, L) |
 | FF4 ES-FL4 (growth M/4) | `g2long/inputs/esfl4.athinput` | D-20261123-022727-1c17e73 | 500 M, closed | 1.34 | esf_criteria D-20261125-121034-8f82998 (control V-1L), D-20261125-121123-143a007 (control V-1L4, L) |
-| FN4 ES-FLK4N (4N) | `g2long/inputs/esflk4n.athinput` | D-20261124-134157-b17938b | 400 M (job 5280), close by hand running | - | np_partial D-20261125-115729-011d028 (L; read before the close) |
+| FN4 ES-FLK4N (4N) | `g2long/inputs/esflk4n.athinput` | D-20261124-134157-b17938b | 400 M, closed by hand | 3.19 | np_partial D-20261125-115729-011d028 (L), esf_criteria D-20261125-122827-c5735f8, xc_plane D-20261125-122849-43db157 (L) |
 | FNQ ES-FLKQ (N/4) | `g2long/inputs/esflkq.athinput` | D-20261124-172725-2f426b6 | running (q0010, job 5279), ~177 M at 04:11 | - | np_partial (partial, cut at 125 M) |
-| FE4 ES-1L4 (null test M/4) | `g2long/inputs/es1l4.athinput` | D-20261123-022726-1b133af | 300 M, nrpic-run finish running | - | judge_conv + probe_long (next session) |
+| FE4 ES-1L4 (null test M/4) | `g2long/inputs/es1l4.athinput` | D-20261123-022726-1b133af | 300 M, closed | 0.83 | judge_conv D-20261125-122227-3eb563a (L): P5 refuted |
 | FL16 ES-FL16 (growth M/16) | `g2long/inputs/esfl16.athinput` | D-20261124-172745-72472ed | waiting (q0011) | - | L1-L5 |
 
 Analysis tools added in batch 17: `g2long/tools/fk_compare.py`, `g2long/tools/np_partial.py`,
