@@ -48,4 +48,23 @@ Status: ACCEPTED · 2026-11-24 · orchestrator (decision 0017)
    pending segment of a chain started before the queue existed is cancelled first.
    Regression checks: seven more (queue tool 100 of 100; runner rerun by the
    orchestrator, no file failing). A second reviewer of items 4 and 5 is sent next.
+6. Added 2026-11-25 04:50 PST: the cap keeper reports and cancels nothing. A second
+   independent review (scratch/harness/review-queue2/REVIEW.md; reproductions against
+   the fake Slurm) showed that the automatic cancel of items 4 and 5 can still hit a
+   job that is not the program's (a job named like an entry's job, a job whose id a
+   wrapper prints, a working directory printed as null or relative) and can cost the
+   program its own runs (a chain waiting between two segments is cancelled, requeued and
+   rerun from the start). The keeper was live with the cancel on from 20:32 to 03:45 and
+   from 04:12 to 04:41 PST and cancelled nothing in that time (queue log). From 04:41
+   the dispatcher runs with the cancel off, and the cancel is being removed from the
+   tool: the dispatcher is the only submitter and holds while the count is at or above
+   five, so an excess decays by itself; removing one by hand is the orchestrator's.
+   The same review showed that the textual detector of Slurm commands in the run tool
+   and the environment tool misses ordinary forms and blocks legitimate ones; it is
+   being replaced by stubs for sbatch, srun and salloc placed first in the PATH of a
+   local run outside a dispatch. The check for more than one new job around a dispatch
+   becomes strict again. Still open at user level, as before: a call of sbatch by
+   absolute path or from a session's own shell (Slurm-side limit; tool-guard hook).
+   Stale copies of the run tool in idle worktrees of finished branches stay as they are:
+   no session is sent there; a session that starts in a worktree merges main first.
 
