@@ -669,3 +669,28 @@ comparison with the zero-shift base B-20261124-131918-e71996f, run B-20261125-12
   a = 36, 1.95 at a = 42; zero-shift 1.37, 1.68, 3.3): it is the growth of the halos, which the
   linear design does not hold. Not yet done: the same comparison with the GW measure of the
   Newtonian reference at the same particles (N4).
+
+## 2026-11-25 04:20 PST (lead of batch 17): Q1-Q2 to a = 94.8 (particle leg, cut)
+
+Analysis B-20261125-115657-91b61ec (`analyze_gr.py` on B-20261124-223926-33194d9, 8 per cell, to
+t = 17.477) and the comparison of both legs with the base, B-20261125-121830-9ecb59c (figure
+`figs/pop_legs.png`, now with the gauge and particle legs, looked at). [VERIFIED by them]
+- Q1 (judged at a = 141 as written; this is its part up to a = 94.8). First part on course:
+  Mr_mean 8 per cell over one per cell 0.43 (a = 25), 0.21 (49), 0.26 (81): the momentum
+  constraint falls 2.3-4.7 times with eight times the particles, more than the square root of 8.
+  Second part FAILS already: Omega_qs above 16 k_f is the base's to three digits after a = 36
+  (2.035e-6 against 2.033e-6 at a = 56, 5.193e-5 against 5.192e-5 at a = 90; predicted at least two
+  times smaller). The high-k excess does not depend on particle number, consistent with GD3 (it is
+  the zero-shift coordinates). Hr_mean 1.5 times smaller (7.6e-3 against 1.17e-2 at a = 81).
+- Q2 to a = 90: counts HOLD (9/11 at a = 64, 11/15, 14/16, 19/22 at a = 90, inside 2 sqrt(N) + 2);
+  largest masses within 5 per cent FAIL at a = 64 (1.41: a merger counted at a different moment
+  or linked differently; the linking length is b = 0.2 of the own mean spacing, half as long here)
+  and hold at a = 72-90 (1.048, 1.014, 1.016).
+- Not predicted: the metric strain of the eight-per-cell run equals the one-per-cell strain over
+  |k| <= 8 k_f to 1e-3 at every dump to a = 90 (band ratios 1.000), and K_min, K_max of the box agree
+  to 1e-7 relative early and 1e-2 at a = 81: at this mesh the metric is set by the mesh-deposited
+  density, which one particle per cell with the PCS cloud already samples; particle number moves the
+  constraints and the halo catalogue, not the strain.
+- Q1 is judged in full when the continuation q0042 (P8C) has run; the leg is merged with the cut
+  run's directory in the analysis (snapshots to t = 17 from the cut run, from t = 18 from the
+  continuation).
