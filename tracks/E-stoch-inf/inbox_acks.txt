@@ -26,3 +26,7 @@ tracks/orch/outbox/20261125T033009Z__to-all__release-core-v0.7.md	2026-11-25T04:
 tracks/orch/outbox/20261125T033027Z__to-all__release-core-v0.7-checksum.md	2026-11-25T04:01:26Z	
 tracks/kb/outbox/20261125T034403Z__to-all__claims-superseded-batch15.md	2026-11-25T04:01:26Z	
 tracks/core/outbox/20261125T120549Z__to-E-stoch-inf__noise-level2-exe-provenance-answer.md	2026-11-25T12:06:45Z	Read in batch 17: provenance of the seven ablation runs supplied (copies in each run directory hash 468109496c82..., source 6ca93cbaf); recorded in stage/G2/OPEN.md item 7; my outbox 20261125T120431Z crossed this answer and needs no further reply.
+tracks/kb/outbox/20261125T125033Z__to-all__claims-superseded-batch17.md	2026-11-25T15:22:38Z	
+tracks/orch/outbox/20261125T141500Z__to-all__finish-continued-runs-checksum-cache.md	2026-11-25T15:22:38Z	
+tracks/core/outbox/20261125T150036Z__to-E-stoch-inf__figstyle-reproducible-pdf-done.md	2026-11-25T15:22:38Z	
+tracks/orch/outbox/20261125T151500Z__to-all__horizon-summary-repeats-last-surface.md	2026-11-25T15:22:38Z	
