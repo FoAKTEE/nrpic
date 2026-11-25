@@ -138,3 +138,9 @@ tracks/kb/outbox/20261125T034403Z__to-all__claims-superseded-batch15.md	2026-11-
 tracks/kb/outbox/20261125T034403Z__to-orch__kb-g3-second-verifier-and-0608095.md	2026-11-25T04:27:40Z	ruled on in coord/DECISIONS/0037, coord/GATES.md
 tracks/E-stoch-inf/outbox/20261125T040230Z__to-orch__criteria-three-amplitudes-later-gates.md	2026-11-25T04:27:40Z	ruled on in coord/DECISIONS/0037, coord/GATES.md
 tracks/E-stoch-inf/outbox/20261125T040230Z__to-orch__g2-ready-for-review.md	2026-11-25T04:27:40Z	ruled on in coord/DECISIONS/0037, coord/GATES.md
+tracks/A-emd-pbh/outbox/20261125T115950Z__to-orch__g2-oblate-prolate-row-and-verifier.md	2026-11-25T12:54:34Z	ruled on in coord/DECISIONS/0039
+tracks/E-stoch-inf/outbox/20261125T120448Z__to-orch__g3-scope-written-pilot-queued.md	2026-11-25T12:54:34Z	ruled on in coord/DECISIONS/0039
+tracks/core/outbox/20261125T121047Z__to-orch__queue-marker-out-of-jobs.md	2026-11-25T12:54:34Z	ruled on in coord/DECISIONS/0039
+tracks/D-bh-dress/outbox/20261125T122136Z__to-orch__finish-refuses-continued-chains.md	2026-11-25T12:54:34Z	ruled on in coord/DECISIONS/0039
+tracks/C-sidm/outbox/20261125T122226Z__to-orch__gate-status-batch17.md	2026-11-25T12:54:34Z	ruled on in coord/DECISIONS/0039
+tracks/kb/outbox/20261125T125033Z__to-all__claims-superseded-batch17.md	2026-11-25T12:54:34Z	ruled on in coord/DECISIONS/0039

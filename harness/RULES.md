@@ -268,15 +268,24 @@ run [--poll S] [--cmd-timeout S] [--keeper S] [--keeper-confirm S] · stop [--wa
   (decision 0026 item 2: a card run uses none of the account's usage). It runs the main checkout's copy of
   the command and of `harness/lib/nrpic_harness.py`: stop and start it again after either changes on main.
 - The cap keeper, the enforcement that does not depend on the route: every 30 s (`--keeper`), also between
-  looks but not while an entry's command runs, the dispatcher counts the account's jobs. An excess above five
-  that lasts 20 s (`--keeper-confirm`; a chain's hand-over lasts seconds) is cancelled with scancel, newest
-  first, never a running job: first pending jobs that belong to no submitted entry and are not a running
-  chain's next segment (the oldest pending job named like a running one), then pending jobs of the newest
-  submitted entries (such an entry goes back to waiting with the reason; close its run with `nrpic-run
-  finish`). It logs loudly and writes ALERT with the jobs, what it cancelled and what it could not; dispatching
-  stays halted until clear-alert.
-- ALERT: with one route every card job goes through the dispatcher, so when the account's jobs rose by more
-  than one around one dispatch (new job ids; a job the command printed always counts; one unprinted job per
+  looks but not while an entry's command runs, the dispatcher counts the account's jobs. The account is also
+  the user's own login: a job is this program's when it belongs to a queue entry, or its name is a run id of
+  nrpic-run (`<owner>-YYYYMMDD-HHMMSS-<commit7>`), or its working directory (`squeue %Z`) lies under
+  `/data/haiyangw/nrpic` (wt/* and scratch/* included); every other job is the user's own. The user's own jobs
+  count toward the cap but are never cancelled, pending or not. An excess above five that lasts 20 s
+  (`--keeper-confirm`; a chain's hand-over lasts seconds) is cancelled with scancel among our pending jobs
+  only, newest first, never a running job and never a running chain's next segment (the oldest pending job of
+  ours named like a running one of ours): first ours that belong to no submitted entry (a route past the
+  queue), then pending jobs of the newest submitted entries (such an entry goes back to waiting with the
+  reason, one with a running job never; close its run with `nrpic-run finish`). What cannot be removed that
+  way stays. It logs loudly and writes ALERT with the jobs, what it cancelled, the user's own jobs (ids and
+  names) and what is left; dispatching stays halted until clear-alert when it cancelled something or our own
+  jobs alone exceed five. An excess that only the user's own jobs make is recorded once per set of job ids and
+  does not halt the dispatcher, which submits nothing anyway while the count is at or above five. `status`
+  lists the user's own jobs on a line of their own (`not ours: ...`).
+- ALERT: with one route every card job goes through the dispatcher, so when this program's jobs rose by more
+  than one around one dispatch (a job of the user's own that came in meanwhile does not count; new job ids; a
+  job the command printed always counts; one unprinted job per
   name of a running job is taken for a chain's next segment) that is a violation: the dispatcher stops
   submitting, logs ALERT and writes `locks/queue/ALERT` (the new jobs, and whether the command printed them).
   The orchestrator looks (`status`), cancels what should not run, finds where each job came from, fixes or
@@ -410,8 +419,8 @@ STAGE_REPORT, outbox_message, run_manifest.json. Figure libraries: `harness/styl
 `harness/tests/acceptance_ctx.py` adds the read-only runs on the live repository and writes
 `coord/digests/bootstrap.md`. `harness/tests/run-runs-config-tests` runs the self-tests of
 nrpic-env (15), nrpic-run (92: orch's runs on main beside other agents, and the one route and the queue cap
-of decision 0033, included), nrpic-queue (`test_nrpic_queue.py`, 93: fake Slurm, fake jobs the test releases;
-the regressions of the review of 2026-11-24),
+of decision 0033, included), nrpic-queue (`test_nrpic_queue.py`, 100: fake Slurm, fake jobs the test releases;
+the regressions of the review of 2026-11-24; the keeper never cancels a job of the user's own),
 the style libraries
 (10), nrpic-stage (50, the stage-check rehearsal, with the waivers of `coord/WAIVERS.md`), the hooks
 (99), the proposed configuration (51), nrpic-fetch-arxiv (29, against a loopback server: no request
