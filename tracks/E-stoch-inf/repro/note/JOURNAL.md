@@ -518,3 +518,29 @@ are byte-identical renders to the committed R8 build. No pending marker is left 
 State: the two rows that waited for RSF256 are filled; nothing of this note waits for a run.
 The check joined RSF256 and compared its records with the dump means (VERIFIER 8.6) but has not
 recomputed the per-cell percentiles: the seven "run joined" rows of Table IX.
+
+## Entry 19 (2026-11-24 19:41 PST): G2 sections (ruling 0035 item 1); plan and predictions, written before R11 runs
+
+Lead of batch 15. The G2 package of the track (SCOPE 4c, g2prod entries 2-4, stage/G2/VERIFIER.md)
+enters this note as a new section after the lattice section: the criteria fixed before the runs,
+the production ladder on the release card build, the resolution pair 256^3/320^3, the window, the
+constraint scaling with its one failure, the quarter pair, the three-amplitude reading (after the
+data, labelled so) and the fresh verifier. Four new scripts (each drafted into
+scratch/E-stoch-inf/tmp/b15 and looked at before this entry): schem_ladder.py (verification
+ladder), fig_g2_mosaic.py (slice mosaic of R^NR at N_f, U256ap, three magnifications), 
+fig_g2_resolution.py (largest departure per shell at 256^3 and 320^3 and their ratio),
+fig_g2_halving.py (factor of the even parts, three readings). ledger.py: a section "Ultra-slow-roll
+criteria" with rows from the registered judge, quarter-pair and verifier runs (each json checked
+against its run's sha256sums.txt), checks against stage/G2/VERIFIER.md lines; a check code "own"
+for rows whose value is the verifier's own run (three-amplitude reading: no second check exists).
+Predictions for R11 (run_all, registered):
+- P1: the 16 lattice jsons equal the committed ones (checks.json all true), langevin equal; the
+  PNGs of every figure of R10 repeat byte for byte (no input changed).
+- P2: fig_g2_mosaic.json rms_R 0.89452 (= judge rms_R_end 0.894520 of U256ap), max 4.568.
+- P3: fig_g2_halving.json: M fixed-level min 3.9245 (11 judged), H 3.9916-4.0424 (9), three-amplitude
+  max deviation 1.2e-3 (M) and 4.4e-3 (H).
+- P4: fig_g2_resolution.json: median ratio for |n| <= 20 within 0.99 +- 0.01 (third-order part, not
+  resolution), for |n| >= 40 between (5/4)^4 = 2.44 and (5/4)^6 = 3.81 (2.9 in the draft).
+- P5: the ledger builds (every verifier string on its line); about 24 new rows; the note compiles
+  with no undefined reference; the new tables and figures stay on their pages (read every changed
+  page). Refuted if any of these fails; then fixed and rerun as R12.
