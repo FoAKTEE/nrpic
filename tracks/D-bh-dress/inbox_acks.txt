@@ -27,3 +27,7 @@ tracks/core/outbox/20261125T004353Z__to-all__sigterm-restart-and-chain-segments.
 tracks/orch/outbox/20261125T033009Z__to-all__release-core-v0.7.md	2026-11-25T11:54:02Z	
 tracks/orch/outbox/20261125T033027Z__to-all__release-core-v0.7-checksum.md	2026-11-25T11:54:02Z	
 tracks/kb/outbox/20261125T034403Z__to-all__claims-superseded-batch15.md	2026-11-25T11:54:02Z	
+tracks/kb/outbox/20261125T125033Z__to-all__claims-superseded-batch17.md	2026-11-25T16:09:05Z	
+tracks/orch/outbox/20261125T141500Z__to-all__finish-continued-runs-checksum-cache.md	2026-11-25T16:09:05Z	
+tracks/core/outbox/20261125T150036Z__to-D-bh-dress__finder-rule-and-excision-guard-done.md	2026-11-25T16:09:05Z	
+tracks/orch/outbox/20261125T151500Z__to-all__horizon-summary-repeats-last-surface.md	2026-11-25T16:09:05Z	
