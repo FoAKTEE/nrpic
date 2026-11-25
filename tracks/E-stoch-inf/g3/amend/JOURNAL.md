@@ -98,3 +98,13 @@ Smoke run E-20261125-152419-40200ec FAILED (exit 1) after the Monte Carlo: the f
 assumed every variant present (KeyError 's1' with NRPIC_REF_VARIANTS). The moments printed before the
 failure: s0.01_lattice variance/var_lattice 0.9932 +- 0.0105 at 2e4 (SM1 holds). Fixed (the figure draws the
 variants that ran); rerun with the same predictions.
+Smoke rerun E-20261125-152619-d917a14 (2e4, s0.01_lattice): completes; SM1 HOLDS (variance/var_lattice 0.9932
++- 0.0105, gate true); SM2 HOLDS (var(phi at N_f)/(dphi/dN)^2/var_lattice 0.9932, the same number as the
+first-passage variance; corr(phi, varpi) 0.999997). varpi in the solver is dphi/dt (cosmic time): its mean
+1.265e-11 = (dphi/dN) H at N_f. Observation [TO VERIFY at 4e6]: the skewness of phi at N_f is 0.023 (+- about
+0.02 at 2e4), the size of the first-passage skewness, not below 0.005 as the A4 prediction of g3 entry 4 and
+entry 5 above expect. If the 4e6 run confirms it, the one-patch non-Gaussianity is already in the field at
+N_f, the map Delta N_bg is nearly linear there, and the review's reading (S1, B3 bullet 3: "the
+non-Gaussianity of zeta will come almost entirely from the map") does not hold for the reference; the box's
+d phi skewness at N_f (about 8e-4 from a_R, review run E-20261125-131002-ceefa2f) would then differ from the
+one-patch field's by a factor of about 30, which A4's comparison would show directly.
