@@ -34,3 +34,19 @@ Predictions:
   deterministic and the pilot comparisons need their own seeds on record).
 - RF3: skewness of s0.01_lattice at N_e within two standard errors of the old value (0.0288 class; the top
   bin carries 3.4 per cent of the variance and is near Gaussian at crossing, so the shape moves little).
+
+## entry-3 (2026-11-25 07:40 PST): B2 and B3 from the formulas; predictions before `b2_lead.py`
+
+B2, own arithmetic (`b2_lead.py`, Edgeworth to first order, inputs named in its header). Seen beforehand:
+the review's 9.85, 16.9, 4.15 per cent, 0.42 per cent, 0.0095, 0.017, +10.1 per cent, 78 seeds.
+- LB3: dlnF/dln sigma 9.85 +- 0.05 (nu = 3), 16.9 +- 0.1 (nu = 4); three combined standard errors at nu = 3
+  (S = 256, 4e6) 4.1 +- 0.2 per cent of F; the sigma error seen 0.42 +- 0.03 per cent; skewness seen 0.0095
+  +- 0.001; the reference skewness 0.0231 moves F(3) by 10 +- 0.5 per cent; NR error at a third of the
+  reference's at 70-90 seeds. Refuted outside: then B2's numbers are not confirmed and 4d.3 keeps r(nu).
+B3, from the code (no run): `ladder/scripts/ladder_lib.py` line 180 forms R^NR = dchi/(2 chi) + (H/Pi) dphi
+(+ anisotropic part). With gamma_ij = gammatilde_ij / chi the local ln a = -(1/2) ln chi, so dchi/(2 chi)
+= -psi, and R^NR = -psi + (H/Pi) dphi. SCOPE 4d.1 defines zeta = -(1/2) ln(chi/<chi>) + Delta N_bg = psi +
+Delta N_bg with Delta N_bg = -(H/Pi) dphi at first order (a cell ahead on the roll reaches phi_e sooner).
+So zeta = -R^NR at first order [VERIFIED from the formulas; the processor test Z0 checks it on output].
+Test (a) of 4d.1 subtracts the box mean of zeta, so it is zero whatever the reader computes: it cannot
+fail [VERIFIED from the definition]. Test (b) asks zeta = +R^NR: it fails at first order.
