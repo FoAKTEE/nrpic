@@ -743,7 +743,7 @@ Predictions of the second run (cases added to `term_test.py`), written before it
   differ in two entries only: `<job> restart_file` and `file_number` of the restart
   output.
 
-## Entry 12 (16:20): outcomes of the second run of the tests S, of PS3, PS4, PC, and of T5a
+## Entry 12 (16:19): outcomes of the second run of the tests S, of PS3, PS4, PC, and of T5a
 
 **Tests S, second run** core-20261124-234903-61e194c (serial build with the handler,
 source ae2f120; figure `fig_term_test.png` looked at: five columns, the history of the

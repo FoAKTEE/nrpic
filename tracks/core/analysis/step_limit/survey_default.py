@@ -47,7 +47,18 @@ def main():
     for n in names:
         inp, links, args = spec[n]
         jobs.append((n, "plain", (inp, links, args)))
-        jobs.append((n, "gauge", (inp, links, args + ["z4c/dt_gauge=1.0"])))
+        # AthenaK takes on the command line only parameters the input declares, and the
+        # released decks do not declare dt_gauge (the first call of this test, run
+        # core-20261125-001824-536b23f, stopped there): a copy of the deck with the
+        # option as the first line of its <z4c> block
+        txt = open(inp).read()
+        assert len(re.findall(r"^<z4c>[^\n]*$", txt, re.M)) == 1
+        txt = re.sub(r"^(<z4c>[^\n]*)$", r"\1\ndt_gauge = 1.0", txt, count=1, flags=re.M)
+        os.makedirs(os.path.join(out, n), exist_ok=True)
+        inp_g = os.path.join(out, n, os.path.basename(inp))
+        with open(inp_g, "w") as f:
+            f.write(txt)
+        jobs.append((n, "gauge", (inp_g, links, args)))
     codes = {}
     with cf.ThreadPoolExecutor(max_workers=a.cores) as pool:
         futs = {pool.submit(rg.run, a.exe, os.path.join(out, n, lab), sp): (n, lab)
