@@ -16,6 +16,7 @@
 //#include <limits>
 
 #include "athena.hpp"
+#include "driver/driver.hpp"
 #include "mesh/mesh.hpp"
 #include "coordinates/adm.hpp"
 #include "z4c/z4c.hpp"
@@ -26,6 +27,42 @@
 #include "z4c/compact_object_tracker.hpp"
 
 namespace z4c {
+namespace {
+KOKKOS_INLINE_FUNCTION
+Real StageSourceLimiter(const Real e0, const Real de, const Real s0[3], const Real ds[3],
+                        const Real g_uu[3][3], const Real oopsi4, const Real cs) {
+  if (cs <= 0.0 || e0 <= 0.0) return 0.0;
+  Real theta = 1.0;
+  if (e0 + cs*de < 0.0) {
+    theta = (de < 0.0) ? fmax(0.0, e0/(-cs*de)) : 0.0;
+  }
+  for (int it=0; it<5; ++it) {
+    const Real e_s = e0 + theta*cs*de;
+    const Real s_s[3] = {s0[0] + theta*cs*ds[0],
+                         s0[1] + theta*cs*ds[1],
+                         s0[2] + theta*cs*ds[2]};
+    Real s2 = 0.0;
+    for (int a=0; a<3; ++a) {
+      for (int b=0; b<3; ++b) {
+        s2 += oopsi4*g_uu[a][b]*s_s[a]*s_s[b];
+      }
+    }
+    if (e_s >= 0.0 && s2 <= (1.0 + 1.0e-12)*e_s*e_s) return theta;
+    theta *= 0.5;
+  }
+  const Real e_s = e0 + theta*cs*de;
+  const Real s_s[3] = {s0[0] + theta*cs*ds[0],
+                       s0[1] + theta*cs*ds[1],
+                       s0[2] + theta*cs*ds[2]};
+  Real s2 = 0.0;
+  for (int a=0; a<3; ++a) {
+    for (int b=0; b<3; ++b) {
+      s2 += oopsi4*g_uu[a][b]*s_s[a]*s_s[b];
+    }
+  }
+  return (e_s >= 0.0 && s2 <= (1.0 + 1.0e-12)*e_s*e_s) ? theta : 0.0;
+}
+}  // namespace
 
 template <int NGHOST>
 //! \fn void Z4c::CalcRHS(Driver *pdriver, int stage)
@@ -156,20 +193,33 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
 
   bool is_vacuum = (pmy_pack->ptmunu == nullptr) ? true : false;
   Tmunu::Tmunu_vars tmunu;
-  // Matter sources: either the sources themselves, or (step_density) densities that
-  // are converted with the volume element of the current stage, plus a vacuum energy
+  // Matter sources: either the sources themselves, (stage_extrap) Scheme A stage-accurate
+  // positivity-limited reconstruction, or (step_density) midpoint densities.
   bool mdens = false;
+  bool mstage = false;
   Real lam8 = 0.0;
+  Real cs = 0.0;
+  DvceArray5D<Real> u_d0, u_d1;
   if (!is_vacuum) {
-    mdens = pmy_pack->ptmunu->step_density;
-    tmunu = mdens ? pmy_pack->ptmunu->tmunu_step : pmy_pack->ptmunu->tmunu;
-    lam8 = mdens ? pmy_pack->ptmunu->lambda8pi : 0.0;
-    // sources of all matter modules of this stage, assembled by the scalar field
-    // (ScalarField::SetTmunu): already converted, vacuum energy included
     if (pmy_pack->ptmunu->use_total) {
+      // sources of all matter modules of this stage, assembled by the scalar field
+      // (ScalarField::SetTmunu): already converted, vacuum energy included
       mdens = false;
       lam8 = 0.0;
       tmunu = pmy_pack->ptmunu->tmunu_tot;
+    } else if (pmy_pack->ptmunu->stage_extrap) {
+      mstage = true;
+      mdens = true;
+      lam8 = pmy_pack->ptmunu->lambda8pi;
+      u_d0 = pmy_pack->ptmunu->u_tmunu_d0;
+      u_d1 = pmy_pack->ptmunu->u_tmunu_d1;
+      cs = (pdriver != nullptr && stage >= 1 && stage <= 4)
+             ? pdriver->c_stage[stage - 1] : 0.0;
+      tmunu = pmy_pack->ptmunu->tmunu;
+    } else {
+      mdens = pmy_pack->ptmunu->step_density;
+      tmunu = mdens ? pmy_pack->ptmunu->tmunu_step : pmy_pack->ptmunu->tmunu;
+      lam8 = mdens ? pmy_pack->ptmunu->lambda8pi : 0.0;
     }
   }
 
@@ -492,12 +542,59 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
     // the vacuum energy lam8 enters the equations below as E += lam8, S -= 3 lam8
     // (its trace-free stress vanishes)
     Real mfac = 1.0, mE = 0.0;
+    Real mS_d[3] = {0.0, 0.0, 0.0};
+    Real mS_dd[3][3] = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
     if(!is_vacuum) {
       if (mdens) { mfac = pow(chi_guarded, -6./opt.chi_psi_power); }
-      mE = mfac * tmunu.E(m,k,j,i);
-      for (int a = 0; a < 3; ++a)
-      for (int b = 0; b < 3; ++b) {
-        S += oopsi4 * g_uu(a,b) * mfac * tmunu.S_dd(m,a,b,k,j,i);
+      if (mstage) {
+        const int ik = k - ks, ij = j - js, ii = i - is;
+        Real g_inv[3][3];
+        for (int a = 0; a < 3; ++a)
+        for (int b = 0; b < 3; ++b) {
+          g_inv[a][b] = g_uu(a,b);
+        }
+        const Real e0 = u_d0(m, Tmunu::I_Tmunu_E, ik, ij, ii);
+        const Real de = u_d1(m, Tmunu::I_Tmunu_E, ik, ij, ii);
+        const Real s0[3] = {
+          u_d0(m, Tmunu::I_Tmunu_Sx, ik, ij, ii),
+          u_d0(m, Tmunu::I_Tmunu_Sy, ik, ij, ii),
+          u_d0(m, Tmunu::I_Tmunu_Sz, ik, ij, ii)
+        };
+        const Real ds[3] = {
+          u_d1(m, Tmunu::I_Tmunu_Sx, ik, ij, ii),
+          u_d1(m, Tmunu::I_Tmunu_Sy, ik, ij, ii),
+          u_d1(m, Tmunu::I_Tmunu_Sz, ik, ij, ii)
+        };
+        const Real fac_cs = cs * StageSourceLimiter(e0, de, s0, ds, g_inv, oopsi4, cs);
+        mE = mfac * (e0 + fac_cs * de);
+        for (int a = 0; a < 3; ++a) {
+          mS_d[a] = mfac * (s0[a] + fac_cs * ds[a]);
+        }
+        mS_dd[0][0] = mfac * (u_d0(m, Tmunu::I_Tmunu_Sxx, ik, ij, ii)
+                              + fac_cs * u_d1(m, Tmunu::I_Tmunu_Sxx, ik, ij, ii));
+        mS_dd[0][1] = mS_dd[1][0] = mfac * (u_d0(m, Tmunu::I_Tmunu_Sxy, ik, ij, ii)
+                              + fac_cs * u_d1(m, Tmunu::I_Tmunu_Sxy, ik, ij, ii));
+        mS_dd[0][2] = mS_dd[2][0] = mfac * (u_d0(m, Tmunu::I_Tmunu_Sxz, ik, ij, ii)
+                              + fac_cs * u_d1(m, Tmunu::I_Tmunu_Sxz, ik, ij, ii));
+        mS_dd[1][1] = mfac * (u_d0(m, Tmunu::I_Tmunu_Syy, ik, ij, ii)
+                              + fac_cs * u_d1(m, Tmunu::I_Tmunu_Syy, ik, ij, ii));
+        mS_dd[1][2] = mS_dd[2][1] = mfac * (u_d0(m, Tmunu::I_Tmunu_Syz, ik, ij, ii)
+                              + fac_cs * u_d1(m, Tmunu::I_Tmunu_Syz, ik, ij, ii));
+        mS_dd[2][2] = mfac * (u_d0(m, Tmunu::I_Tmunu_Szz, ik, ij, ii)
+                              + fac_cs * u_d1(m, Tmunu::I_Tmunu_Szz, ik, ij, ii));
+        for (int a = 0; a < 3; ++a)
+        for (int b = 0; b < 3; ++b) {
+          S += oopsi4 * g_inv[a][b] * mS_dd[a][b];
+        }
+      } else {
+        mE = mfac * tmunu.E(m,k,j,i);
+        for (int a = 0; a < 3; ++a) {
+          mS_d[a] = mfac * tmunu.S_d(m,a,k,j,i);
+          for (int b = 0; b < 3; ++b) {
+            mS_dd[a][b] = mfac * tmunu.S_dd(m,a,b,k,j,i);
+            S += oopsi4 * g_uu(a,b) * mS_dd[a][b];
+          }
+        }
       }
     }
 
@@ -663,7 +760,7 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
         // Matter term
         if(!is_vacuum) {
           rhs.vGam_u(m,a,k,j,i) -= 16.*M_PI * z4c.alpha(m,k,j,i)
-                              * g_uu(a,b) * mfac * tmunu.S_d(m,b,k,j,i);
+                              * g_uu(a,b) * mS_d[b];
         }
       }
     }
@@ -683,7 +780,7 @@ TaskStatus Z4c::CalcRHS(Driver *pdriver, int stage) {
       // Matter term
       if(!is_vacuum) {
         rhs.vA_dd(m,a,b,k,j,i) -= 8.*M_PI * z4c.alpha(m,k,j,i) *
-                (oopsi4*mfac*tmunu.S_dd(m,a,b,k,j,i)
+                (oopsi4*mS_dd[a][b]
                  - (1./3.)*S*z4c.g_dd(m,a,b,k,j,i));
       }
     }

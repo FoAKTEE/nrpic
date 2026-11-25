@@ -590,50 +590,93 @@ struct VlasovMetric {
   void GatherBlend3(int mb, Real wm1, Real w0, Real w1,
                     const Real pos[3], nrpic::AdmPoint &p) const {
     int ib[3];
-    Real w[3][4], dw[3][4];
+    Real v[NRM_NVAR], dv[3][NRM_NVAR];
     const Real xmin[3] = {sz(mb).x1min, sz(mb).x2min, sz(mb).x3min};
     const Real idx[3]  = {1.0 / sz(mb).dx1, 1.0 / sz(mb).dx2, 1.0 / sz(mb).dx3};
-    for (int d = 0; d < 3; ++d) {
-      const Real xi = (pos[d] - xmin[d]) * idx[d] - 0.5;
-      int i0 = mesh_met.ist[d] + static_cast<int>(floor(xi));
-      i0 = (i0 < 1) ? 1 : i0;
-      i0 = (i0 > mesh_met.ncell[d] - 3) ? (mesh_met.ncell[d] - 3) : i0;
-      ib[d] = i0;
-      if (mesh_met.bspline) {
-        nrpic::BSplineWeights(xi - static_cast<Real>(i0 - mesh_met.ist[d]), w[d], dw[d]);
-      } else {
-        nrpic::HermiteWeights(xi - static_cast<Real>(i0 - mesh_met.ist[d]), w[d], dw[d]);
-      }
-      for (int n = 0; n < 4; ++n) dw[d][n] *= idx[d];
-    }
-    Real v[NRM_NVAR], dv[3][NRM_NVAR];
-    for (int n = 0; n < NRM_NVAR; ++n) {
-      v[n] = 0.0;
-      dv[0][n] = 0.0; dv[1][n] = 0.0; dv[2][n] = 0.0;
-    }
     const bool use_prev = has_prev && (wm1 != 0.0);
-    for (int c = 0; c < 4; ++c) {
-      const int k = ib[2] + c - 1;
-      for (int b = 0; b < 4; ++b) {
-        const int j = ib[1] + b - 1;
-        const Real wyz = w[1][b] * w[2][c];
-        const Real dwy = dw[1][b] * w[2][c];
-        const Real dwz = w[1][b] * dw[2][c];
-        for (int aa = 0; aa < 4; ++aa) {
-          const int i = ib[0] + aa - 1;
-          const Real ww  = w[0][aa] * wyz;
-          const Real wdx = dw[0][aa] * wyz;
-          const Real wdy = w[0][aa] * dwy;
-          const Real wdz = w[0][aa] * dwz;
-          for (int n = 0; n < NRM_NVAR; ++n) {
-            const Real val = use_prev
-                ? (wm1 * mp_view(mb, n, k, j, i) + w0 * mesh_met.m0(mb, n, k, j, i)
-                   + w1 * mesh_met.m1(mb, n, k, j, i))
-                : (w0 * mesh_met.m0(mb, n, k, j, i) + w1 * mesh_met.m1(mb, n, k, j, i));
-            v[n]     += ww * val;
-            dv[0][n] += wdx * val;
-            dv[1][n] += wdy * val;
-            dv[2][n] += wdz * val;
+    if (mesh_met.interp == nrpic::InterpMode::quintic) {
+      Real w[3][6], dw[3][6];
+      for (int d = 0; d < 3; ++d) {
+        const Real xi = (pos[d] - xmin[d]) * idx[d] - 0.5;
+        int i0 = mesh_met.ist[d] + static_cast<int>(floor(xi));
+        i0 = (i0 < 2) ? 2 : i0;
+        i0 = (i0 > mesh_met.ncell[d] - 4) ? (mesh_met.ncell[d] - 4) : i0;
+        ib[d] = i0;
+        nrpic::QuinticHermiteWeights(xi - static_cast<Real>(i0 - mesh_met.ist[d]),
+                                     w[d], dw[d]);
+        for (int n = 0; n < 6; ++n) dw[d][n] *= idx[d];
+      }
+      for (int n = 0; n < NRM_NVAR; ++n) {
+        Real vz = 0.0, dvxz = 0.0, dvyz = 0.0, dvzz = 0.0;
+        for (int c = 0; c < 6; ++c) {
+          const int k = ib[2] + c - 2;
+          Real vy = 0.0, dvxy = 0.0, dvyy = 0.0;
+          for (int b = 0; b < 6; ++b) {
+            const int j = ib[1] + b - 2;
+            Real vx = 0.0, dvxx = 0.0;
+            for (int aa = 0; aa < 6; ++aa) {
+              const int i = ib[0] + aa - 2;
+              const Real val = use_prev
+                  ? (wm1 * mp_view(mb, n, k, j, i) + w0 * mesh_met.m0(mb, n, k, j, i)
+                     + w1 * mesh_met.m1(mb, n, k, j, i))
+                  : (w0 * mesh_met.m0(mb, n, k, j, i) + w1 * mesh_met.m1(mb, n, k, j, i));
+              vx   += w[0][aa] * val;
+              dvxx += dw[0][aa] * val;
+            }
+            vy   += w[1][b] * vx;
+            dvxy += w[1][b] * dvxx;
+            dvyy += dw[1][b] * vx;
+          }
+          vz   += w[2][c] * vy;
+          dvxz += w[2][c] * dvxy;
+          dvyz += w[2][c] * dvyy;
+          dvzz += dw[2][c] * vy;
+        }
+        v[n] = vz;
+        dv[0][n] = dvxz; dv[1][n] = dvyz; dv[2][n] = dvzz;
+      }
+    } else {
+      Real w[3][4], dw[3][4];
+      for (int d = 0; d < 3; ++d) {
+        const Real xi = (pos[d] - xmin[d]) * idx[d] - 0.5;
+        int i0 = mesh_met.ist[d] + static_cast<int>(floor(xi));
+        i0 = (i0 < 1) ? 1 : i0;
+        i0 = (i0 > mesh_met.ncell[d] - 3) ? (mesh_met.ncell[d] - 3) : i0;
+        ib[d] = i0;
+        if (mesh_met.interp == nrpic::InterpMode::bspline) {
+          nrpic::BSplineWeights(xi - static_cast<Real>(i0 - mesh_met.ist[d]), w[d], dw[d]);
+        } else {
+          nrpic::HermiteWeights(xi - static_cast<Real>(i0 - mesh_met.ist[d]), w[d], dw[d]);
+        }
+        for (int n = 0; n < 4; ++n) dw[d][n] *= idx[d];
+      }
+      for (int n = 0; n < NRM_NVAR; ++n) {
+        v[n] = 0.0;
+        dv[0][n] = 0.0; dv[1][n] = 0.0; dv[2][n] = 0.0;
+      }
+      for (int c = 0; c < 4; ++c) {
+        const int k = ib[2] + c - 1;
+        for (int b = 0; b < 4; ++b) {
+          const int j = ib[1] + b - 1;
+          const Real wyz = w[1][b] * w[2][c];
+          const Real dwy = dw[1][b] * w[2][c];
+          const Real dwz = w[1][b] * dw[2][c];
+          for (int aa = 0; aa < 4; ++aa) {
+            const int i = ib[0] + aa - 1;
+            const Real ww  = w[0][aa] * wyz;
+            const Real wdx = dw[0][aa] * wyz;
+            const Real wdy = w[0][aa] * dwy;
+            const Real wdz = w[0][aa] * dwz;
+            for (int n = 0; n < NRM_NVAR; ++n) {
+              const Real val = use_prev
+                  ? (wm1 * mp_view(mb, n, k, j, i) + w0 * mesh_met.m0(mb, n, k, j, i)
+                     + w1 * mesh_met.m1(mb, n, k, j, i))
+                  : (w0 * mesh_met.m0(mb, n, k, j, i) + w1 * mesh_met.m1(mb, n, k, j, i));
+              v[n]     += ww * val;
+              dv[0][n] += wdx * val;
+              dv[1][n] += wdy * val;
+              dv[2][n] += wdz * val;
+            }
           }
         }
       }
@@ -792,9 +835,10 @@ inline VlasovMetric<SizeViewT> BuildMetricHelper(Particles *pthis, MeshBlockPack
     m.per[d]  = pthis->nropt.periodic[d];
   }
   auto &indcs = ppack->pmesh->mb_indcs;
-  m.mesh_met.bspline   = pthis->nropt.interp_bspline;
-  m.mesh_met.m1        = m.mesh_met.bspline ? pthis->met1s : pthis->met1;
-  m.mesh_met.m0        = m.is_static ? m.mesh_met.m1 : (m.mesh_met.bspline ? pthis->met0s : pthis->met0);
+  m.mesh_met.interp    = pthis->nropt.interp_mode;
+  const bool bsp       = pthis->nropt.interp_bspline;
+  m.mesh_met.m1        = bsp ? pthis->met1s : pthis->met1;
+  m.mesh_met.m0        = m.is_static ? m.mesh_met.m1 : (bsp ? pthis->met0s : pthis->met0);
   m.mesh_met.is_static = m.is_static;
   m.mesh_met.ist[0]    = indcs.is;
   m.mesh_met.ist[1]    = indcs.js;
@@ -806,7 +850,7 @@ inline VlasovMetric<SizeViewT> BuildMetricHelper(Particles *pthis, MeshBlockPack
       pthis->vlv->opt.time_interp == VLASOV_TINTERP_QUADRATIC &&
       !m.is_static && pthis->vlv->met_prev_valid &&
       pthis->vlv->dt_prev > 0.0 && ppack->pmesh->dt > 0.0) {
-    m.mp_view  = m.mesh_met.bspline ? pthis->met_prevs : pthis->met_prev;
+    m.mp_view  = bsp ? pthis->met_prevs : pthis->met_prev;
     m.has_prev = true;
     m.dt_ratio = ppack->pmesh->dt / pthis->vlv->dt_prev;
   }

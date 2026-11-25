@@ -22,8 +22,7 @@ namespace particles {
 // constructor, initializes data structures and parameters
 
 Particles::Particles(MeshBlockPack *ppack, ParameterInput *pin) :
-    pmy_pack(ppack),
-    flx_tm("tm_flx", 1, 1, 1, 1, 1) {
+    pmy_pack(ppack) {
   // check this is at least a 2D problem
   if (pmy_pack->pmesh->one_d) {
     std::cout << "### FATAL ERROR in " << __FILE__ << " at line " << __LINE__ << std::endl

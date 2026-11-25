@@ -748,6 +748,267 @@ void RunSelfTests() {
     std::printf("[TEST10 MCONS] const_err=%.2e (naive_dens=%.2e) sa=%.2e cons_1d=%.2e amr_const=%.2e amr_cons=%.2e\n",
                 err_const, err_naive_dens, rel_sa_1d, rel_cons_1d, max_amr_const_err, max_amr_cons_err);
   }
+  {
+    // Test 11: C^2 6-node quintic Hermite weights & 3D separable reconstruction (Iter 4b)
+    Real sym_err = 0.0, pou_err = 0.0, p4_val_err = 0.0, p4_grad_err = 0.0;
+    for (int m = 0; m <= 20; ++m) {
+      const Real s = static_cast<Real>(m) / 20.0;
+      Real w[6], dw[6], wr[6], dwr[6];
+      QuinticHermiteWeights(s, w, dw);
+      QuinticHermiteWeights(1.0 - s, wr, dwr);
+      Real sw = 0.0, sdw = 0.0;
+      for (int a = 0; a < 6; ++a) {
+        sw += w[a];
+        sdw += dw[a];
+        sym_err = fmax(sym_err, fabs(w[a] - wr[5 - a]));
+        sym_err = fmax(sym_err, fabs(dw[a] + dwr[5 - a]));
+      }
+      pou_err = fmax(pou_err, fabs(sw - 1.0));
+      pou_err = fmax(pou_err, fabs(sdw));
+    }
+    assert(sym_err < 1.0e-14);
+    assert(pou_err < 1.0e-14);
+
+    // Exact P4 reproduction in 3D + C^2 continuity across cell interfaces
+    auto eval3d = [](const std::vector<Real> &grid, int N, Real h, Real x, Real y, Real z,
+                     Real &val, Real grad[3]) {
+      const Real coords[3] = {x, y, z};
+      int ib[3];
+      Real w[3][6], dw[3][6];
+      for (int d = 0; d < 3; ++d) {
+        const Real xi = coords[d] / h;
+        const int i0 = static_cast<int>(floor(xi));
+        ib[d] = i0;
+        QuinticHermiteWeights(xi - static_cast<Real>(i0), w[d], dw[d]);
+        for (int a = 0; a < 6; ++a) dw[d][a] /= h;
+      }
+      Real vz = 0.0, dvxz = 0.0, dvyz = 0.0, dvzz = 0.0;
+      for (int c = 0; c < 6; ++c) {
+        const int k = ib[2] + c - 2;
+        Real vy = 0.0, dvxy = 0.0, dvyy = 0.0;
+        for (int b = 0; b < 6; ++b) {
+          const int j = ib[1] + b - 2;
+          Real vx = 0.0, dvxx = 0.0;
+          for (int a = 0; a < 6; ++a) {
+            const int i = ib[0] + a - 2;
+            const Real gval = grid[(k * N + j) * N + i];
+            vx += w[0][a] * gval;
+            dvxx += dw[0][a] * gval;
+          }
+          vy += w[1][b] * vx;
+          dvxy += w[1][b] * dvxx;
+          dvyy += dw[1][b] * vx;
+        }
+        vz += w[2][c] * vy;
+        dvxz += w[2][c] * dvxy;
+        dvyz += w[2][c] * dvyy;
+        dvzz += dw[2][c] * vy;
+      }
+      val = vz;
+      grad[0] = dvxz; grad[1] = dvyz; grad[2] = dvzz;
+    };
+
+    const int N4 = 16;
+    const Real h4 = 0.25;
+    std::vector<Real> g4(N4 * N4 * N4);
+    auto p4 = [](Real x, Real y, Real z, Real grad[3]) -> Real {
+      grad[0] = 0.8 + 0.6*x - 0.5*y + 0.3*z - 0.9*x*x + 0.4*x*y - 0.8*x*x*x + 0.6*y*y*z;
+      grad[1] = -0.3 - 0.5*x + 0.4*y + 0.7*z + 0.2*x*x - 1.2*y*y*y + 1.2*x*y*z;
+      grad[2] = 0.5 + 0.3*x + 0.7*y - 0.6*z + 0.6*x*y*y + 1.6*z*z*z;
+      return 1.2 + 0.8*x - 0.3*y + 0.5*z + 0.3*x*x - 0.5*x*y + 0.3*x*z + 0.2*y*y
+             + 0.7*y*z - 0.3*z*z - 0.3*x*x*x + 0.2*x*x*y - 0.2*x*x*x*x - 0.3*y*y*y*y
+             + 0.4*z*z*z*z + 0.6*x*y*y*z;
+    };
+    for (int k = 0; k < N4; ++k)
+      for (int j = 0; j < N4; ++j)
+        for (int i = 0; i < N4; ++i) {
+          Real dg[3];
+          g4[(k * N4 + j) * N4 + i] = p4(i * h4, j * h4, k * h4, dg);
+        }
+    for (int q = 0; q < 10; ++q) {
+      const Real px = (4.1 + 0.37 * q) * h4;
+      const Real py = (4.8 + 0.29 * q) * h4;
+      const Real pz = (5.3 + 0.23 * q) * h4;
+      Real vq, gq[3], gp[3];
+      const Real vp = p4(px, py, pz, gp);
+      eval3d(g4, N4, h4, px, py, pz, vq, gq);
+      p4_val_err = fmax(p4_val_err, fabs(vq - vp));
+      for (int d = 0; d < 3; ++d) p4_grad_err = fmax(p4_grad_err, fabs(gq[d] - gp[d]));
+    }
+    assert(p4_val_err < 1.0e-14);
+    assert(p4_grad_err < 1.0e-13);
+
+    // 1D C^2 continuity across cell face x = 3*hh (node index 3 -> f1d[3]) using exact analytic 2nd derivs
+    Real c0_err = 0.0, c1_err = 0.0, c2_err = 0.0;
+    const Real hh = 0.2;
+    Real f1d[9];
+    for (int a = 0; a < 9; ++a) f1d[a] = sin(1.7 * (a - 4) * hh + 0.3);
+    auto eval1d_analytic = [](const Real *f, Real s, Real h, Real &v, Real &dv, Real &d2v) {
+      Real w[6], dw[6], d2w[6];
+      QuinticHermiteWeights(s, w, dw);
+      const Real s2 = s*s, s3 = s2*s;
+      const Real d2H00 = -60.0*s*(1.0 - 3.0*s + 2.0*s2), d2H01 = -d2H00;
+      const Real d2H10 = -36.0*s + 96.0*s2 - 60.0*s3;
+      const Real d2H11 = -24.0*s + 84.0*s2 - 60.0*s3;
+      const Real d2H20 = 1.0 - 9.0*s + 18.0*s2 - 10.0*s3;
+      const Real d2H21 = 3.0*s - 12.0*s2 + 10.0*s3;
+      const Real c12 = 1.0/12.0;
+      d2w[0] = c12*(d2H10 - d2H20);
+      d2w[1] = c12*(-8.0*d2H10 + d2H11 + 16.0*d2H20 - d2H21);
+      d2w[2] = d2H00 + c12*(-8.0*d2H11 - 30.0*d2H20 + 16.0*d2H21);
+      d2w[3] = d2H01 + c12*(8.0*d2H10 + 16.0*d2H20 - 30.0*d2H21);
+      d2w[4] = c12*(-d2H10 + 8.0*d2H11 - d2H20 + 16.0*d2H21);
+      d2w[5] = c12*(-d2H11 - d2H21);
+      v = 0.0; dv = 0.0; d2v = 0.0;
+      for (int a = 0; a < 6; ++a) {
+        v   += w[a] * f[a];
+        dv  += (dw[a] / h) * f[a];
+        d2v += (d2w[a] / (h * h)) * f[a];
+      }
+    };
+    Real vl, dvl, d2vl, vr, dvr, d2vr;
+    eval1d_analytic(f1d + 0, 1.0, hh, vl, dvl, d2vl);
+    eval1d_analytic(f1d + 1, 0.0, hh, vr, dvr, d2vr);
+    const Real d2_face = (-f1d[1] + 16.0*f1d[2] - 30.0*f1d[3] + 16.0*f1d[4] - f1d[5]) / (12.0*hh*hh);
+    c0_err = fabs(vl - vr);
+    c1_err = fabs(dvl - dvr);
+    c2_err = fmax(fabs(d2vl - d2vr), fmax(fabs(d2vl - d2_face), fabs(d2vr - d2_face)));
+    assert(fabs(vl - f1d[3]) < 1.0e-14);
+    assert(c0_err < 1.0e-14 && c1_err < 1.0e-13 && c2_err < 1.0e-12);
+
+    Real verr[3] = {0.0, 0.0, 0.0}, gerr[3] = {0.0, 0.0, 0.0};
+    for (int lev = 0; lev < 3; ++lev) {
+      const Real h = 0.2 / (1 << lev);
+      const int M = 12 * (1 << lev);
+      std::vector<Real> gf(M * M * M);
+      auto fsmooth = [](Real x, Real y, Real z, Real g[3]) -> Real {
+        const Real ph1 = 1.3 * x + 0.7 * y - 0.9 * z + 0.2;
+        const Real ph2 = 1.1 * x - 1.5 * y + 0.8 * z - 0.1;
+        g[0] = 1.3 * cos(ph1) - 0.44 * sin(ph2);
+        g[1] = 0.7 * cos(ph1) + 0.60 * sin(ph2);
+        g[2] = -0.9 * cos(ph1) - 0.32 * sin(ph2);
+        return sin(ph1) + 0.4 * cos(ph2);
+      };
+      for (int k = 0; k < M; ++k)
+        for (int j = 0; j < M; ++j)
+          for (int i = 0; i < M; ++i) {
+            Real gt[3];
+            gf[(k * M + j) * M + i] = fsmooth(i * h, j * h, k * h, gt);
+          }
+      // Sample uniformly over fractional offsets (s_x, s_y, s_z) around cell center ~0.8
+      const int ic = static_cast<int>(0.8 / h);
+      const Real ss[4] = {0.15, 0.37, 0.63, 0.85};
+      for (int q = 0; q < 4; ++q) {
+        for (int r = 0; r < 4; ++r) {
+          const Real px = (ic + ss[q]) * h;
+          const Real py = (ic + 1 + ss[r]) * h;
+          const Real pz = (ic + 2 + ss[(q + r) % 4]) * h;
+          Real vq, gq[3], gt[3];
+          const Real vt = fsmooth(px, py, pz, gt);
+          eval3d(gf, M, h, px, py, pz, vq, gq);
+          verr[lev] = fmax(verr[lev], fabs(vq - vt));
+          for (int d = 0; d < 3; ++d) gerr[lev] = fmax(gerr[lev], fabs(gq[d] - gt[d]));
+        }
+      }
+    }
+    const Real p_val  = log(verr[1] / verr[2]) / log(2.0);
+    const Real p_grad = log(gerr[1] / gerr[2]) / log(2.0);
+    std::printf("[TEST11 QUINTIC] sym=%.2e pou=%.2e p4=(%.2e,%.2e) C2=(%.2e,%.2e,%.2e) orders=(%.2f,%.2f) errs=(%.2e,%.2e)\n",
+                sym_err, pou_err, p4_val_err, p4_grad_err, c0_err, c1_err, c2_err, p_val, p_grad, verr[2], gerr[2]);
+    assert(p_val >= 4.9);
+    assert(p_grad >= 3.9);
+  }
+  {
+    // Test 12: Scheme A RK c_stage abscissae order & positivity/causality limiter (Iter 4c)
+    auto integrate_rk = [](const std::string &kind, bool stage_extrap, int Nsteps) -> Real {
+      Real gam0[4]{}, gam1[4]{}, beta[4]{}, delta[4]{}, c_st[4]{};
+      int nst = 0;
+      if (kind == "rk2") {
+        nst = 2;
+        gam0[0]=0.0; gam1[0]=1.0; beta[0]=1.0;
+        gam0[1]=0.5; gam1[1]=0.5; beta[1]=0.5;
+      } else if (kind == "rk3") {
+        nst = 3;
+        gam0[0]=0.0; gam1[0]=1.0; beta[0]=1.0;
+        gam0[1]=0.25; gam1[1]=0.75; beta[1]=0.25;
+        gam0[2]=2.0/3.0; gam1[2]=1.0/3.0; beta[2]=2.0/3.0;
+      } else {
+        nst = 4;
+        gam0[0]=0.0; gam1[0]=1.0; beta[0]=1.193743905974738;
+        gam0[1]=0.121098479554482; gam1[1]=0.721781678111411; beta[1]=0.099279895495783;
+        gam0[2]=-3.843833699660025; gam1[2]=2.121209265338722; beta[2]=1.131678018054042;
+        gam0[3]=0.546370891121863; gam1[3]=0.198653035682705; beta[3]=0.310665766509336;
+        delta[0]=1.0; delta[1]=0.217683334308543; delta[2]=1.065841341361089; delta[3]=0.0;
+      }
+      Real cu0 = 0.0, cu1 = 0.0;
+      for (int s = 0; s < nst; ++s) {
+        if (s == 0) cu1 = cu0;
+        else if (kind == "rk4") cu1 += delta[s] * cu0;
+        c_st[s] = cu0;
+        cu0 = gam0[s] * cu0 + gam1[s] * cu1 + beta[s];
+      }
+      assert(fabs(cu0 - 1.0) < 1.0e-12);
+
+      // Integrate y'(t) = -0.3 y + s(t) with s(t) = 1 + 0.8 t + 1.5 t^2 over t in [0, 1]
+      // Exact solution satisfies d/dt(e^{0.3t} y) = e^{0.3t} s(t).
+      const Real h = 1.0 / static_cast<Real>(Nsteps);
+      Real y = 0.2;
+      Real s_prev = 1.0;  // s(0)
+      for (int step = 0; step < Nsteps; ++step) {
+        const Real t = step * h;
+        const Real s0 = 1.0 + 0.8 * t + 1.5 * t * t;
+        const Real s_slope = (step > 0) ? (s0 - s_prev) : (0.8 * h);
+        s_prev = s0;
+        Real y0 = y, y1 = 0.0;
+        for (int st = 0; st < nst; ++st) {
+          if (st == 0) y1 = y0;
+          else if (kind == "rk4") y1 += delta[st] * y0;
+          const Real s_val = stage_extrap ? (s0 + c_st[st] * s_slope) : s0;
+          const Real rhs = -0.3 * y0 + s_val;
+          y0 = gam0[st] * y0 + gam1[st] * y1 + beta[st] * h * rhs;
+        }
+        y = y0;
+      }
+      auto F_int = [](Real t) {
+        const Real e = exp(0.3 * t);
+        // Integral of e^{0.3t}*(1 + 0.8t + 1.5t^2) = e^{0.3t} * (A + Bt + Ct^2)
+        // C = 1.5/0.3 = 5.0; B = (0.8 - 2*5)/0.3 = -9.2/0.3; A = (1 - B)/0.3
+        const Real C = 5.0;
+        const Real B = (0.8 - 2.0 * C) / 0.3;
+        const Real A = (1.0 - B) / 0.3;
+        return e * (A + B * t + C * t * t);
+      };
+      const Real y_exact = exp(-0.3) * (0.2 + F_int(1.0) - F_int(0.0));
+      return fabs(y - y_exact);
+    };
+
+    Real p_frozen_rk3 = log(integrate_rk("rk3", false, 40) / integrate_rk("rk3", false, 80)) / log(2.0);
+    Real p_stage_rk2  = log(integrate_rk("rk2", true, 40) / integrate_rk("rk2", true, 80)) / log(2.0);
+    Real p_stage_rk3  = log(integrate_rk("rk3", true, 40) / integrate_rk("rk3", true, 80)) / log(2.0);
+    Real p_stage_rk4  = log(integrate_rk("rk4", true, 40) / integrate_rk("rk4", true, 80)) / log(2.0);
+    assert(fabs(p_frozen_rk3 - 1.0) < 0.05);
+    assert(p_stage_rk2 >= 1.95 && p_stage_rk3 >= 1.95 && p_stage_rk4 >= 1.95);
+
+    const Real g_id[3][3] = {{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
+    const Real s0_sm[3] = {0.2, 0.0, 0.0}, ds_sm[3] = {-0.05, 0.0, 0.0};
+    const Real th_sm = StageSourceLimiter(1.0, -0.3, s0_sm, ds_sm, g_id, 1.0, 1.0);
+    assert(fabs(th_sm - 1.0) < 1.0e-15);
+
+    const Real s0_st[3] = {0.3, 0.1, 0.0}, ds_st[3] = {-0.8, 0.0, 0.0};
+    const Real th_st = StageSourceLimiter(0.5, -2.0, s0_st, ds_st, g_id, 1.0, 1.0);
+    const Real e_lim = 0.5 + th_st * (-2.0);
+    const Real sx_lim = 0.3 + th_st * (-0.8);
+    const Real s_lim2 = sx_lim * sx_lim + 0.1 * 0.1;
+    assert(th_st >= 0.0 && th_st < 0.5 && e_lim >= 0.0 && s_lim2 <= (1.0 + 1.0e-12)*e_lim*e_lim);
+
+    const Real s0_ca[3] = {0.9, 0.0, 0.0}, ds_ca[3] = {0.5, 0.0, 0.0};
+    const Real th_ca = StageSourceLimiter(1.0, -0.5, s0_ca, ds_ca, g_id, 1.0, 1.0);
+    const Real e_ca = 1.0 + th_ca * (-0.5);
+    const Real s_ca = 0.9 + th_ca * 0.5;
+    assert(th_ca < 1.0 && e_ca > 0.0 && s_ca*s_ca <= (1.0 + 1.0e-12)*e_ca*e_ca);
+    std::printf("[TEST12 STAGEA] p_frozen=%.2f p_rk2=%.2f p_rk3=%.2f p_rk4=%.2f th=(%.2f,%.3f,%.3f)\n",
+                p_frozen_rk3, p_stage_rk2, p_stage_rk3, p_stage_rk4, th_sm, th_st, th_ca);
+  }
   std::printf("C++ standalone GR-LBV kernel self-tests PASSED.\n");
 }
 

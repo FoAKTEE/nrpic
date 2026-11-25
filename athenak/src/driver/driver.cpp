@@ -294,6 +294,20 @@ Driver::Driver(ParameterInput *pin, Mesh *pmesh, Real wtlim, Kokkos::Timer* ptim
       exit(EXIT_FAILURE);
     }
 
+    // Compute exact normalized stage abscissae c_stage[s] in [0, 1] by advancing du/dt = 1
+    {
+      Real cu0 = 0.0, cu1 = 0.0;
+      for (int s = 0; s < nexp_stages && s < 4; ++s) {
+        if (s == 0) {
+          cu1 = cu0;
+        } else if (integrator == "rk4") {
+          cu1 += delta[s] * cu0;
+        }
+        c_stage[s] = cu0;
+        cu0 = gam0[s] * cu0 + gam1[s] * cu1 + beta[s];
+      }
+    }
+
     ValidateSTSConfiguration(pmesh);
   }
 }

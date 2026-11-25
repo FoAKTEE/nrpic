@@ -520,7 +520,7 @@ void Particles::NrpicNewtonKick(const Real dt_kick, const Real time) {
   const Real hub = bg.DaDt(time)*ia;          // (da/dt)/a
 
   nrpic::MeshMetric proto;
-  proto.bspline = nropt.interp_bspline;
+  proto.interp = nropt.interp_mode;
   proto.m1 = nropt.interp_bspline ? met1s : met1;
   proto.m0 = proto.m1;
   proto.is_static = true;
@@ -627,7 +627,7 @@ TaskStatus Particles::NrpicNewtonPush(Driver *pdriver, int stage) {
   const bool ext_on = ext.On();
 
   nrpic::MeshMetric proto;
-  proto.bspline = nropt.interp_bspline;
+  proto.interp = nropt.interp_mode;
   proto.m1 = nropt.interp_bspline ? met1s : met1;
   proto.m0 = proto.m1;
   proto.is_static = true;
