@@ -1,12 +1,12 @@
 # Re-verification: E-stoch-inf G2
 
-`harness/bin/nrpic-stage verify E-stoch-inf G2` on 2026-11-25T04:05:29Z, clean export of commit `b6cef1f00382` in `scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G2-b6cef1f-20261125T040204Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify E-stoch-inf G2` on 2026-11-25T04:07:56Z, clean export of commit `81e736ac7bbc` in `scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G2-81e736a-20261125T040625Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of b6cef1f00382 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G2-b6cef1f-20261125T040204Z/tree |
+| export | PASS | clean export of 81e736ac7bbc (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G2-81e736a-20261125T040625Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: spec/scope/SCOPE.md; verifier's report VERIFIER.md |
@@ -16,7 +16,7 @@
 | min-figs | PASS | 3 schematics and 9 data figures (brief 13.4 asks at least 1 and 5 at G2) |
 | runs | FAIL | 7 of 289 runs have problems |
 | run-notes | WARN | 30 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 34 lines |
+| status | PASS | STATUS.md has 37 lines |
 | rerun | PASS | 12 of 12 scripts and commands ran cleanly in the export |
 | compare | PASS | 24 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 24 committed figure files regenerated |

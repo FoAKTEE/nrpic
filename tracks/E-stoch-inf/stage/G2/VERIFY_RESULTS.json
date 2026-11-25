@@ -1,9 +1,9 @@
 {
   "track": "E-stoch-inf",
   "gate": "G2",
-  "commit": "b6cef1f0038267000dff5f3fb676cd13488bed40",
-  "verified_utc": "2026-11-25T04:05:29Z",
-  "export": "/data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G2-b6cef1f-20261125T040204Z",
+  "commit": "81e736ac7bbcda222281719b431d8bfaa2d62470",
+  "verified_utc": "2026-11-25T04:07:56Z",
+  "export": "/data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G2-81e736a-20261125T040625Z",
   "result": "FAIL",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of b6cef1f00382 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G2-b6cef1f-20261125T040204Z/tree",
+      "message": "clean export of 81e736ac7bbc (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G2-81e736a-20261125T040625Z/tree",
       "detail": null
     },
     {
@@ -248,7 +248,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 34 lines",
+      "message": "STATUS.md has 37 lines",
       "detail": null
     },
     {

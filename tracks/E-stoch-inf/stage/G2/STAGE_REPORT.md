@@ -1,6 +1,6 @@
 # Stage report: E-stoch-inf G2
 
-Date: 2026-11-25 · branch `track/E-stoch-inf` at `2b456a9f66ec` · checklist
+Date: 2026-11-25 · branch `track/E-stoch-inf` at `81e736ac7bbc` · checklist
 `tracks/E-stoch-inf/stage/G2/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
@@ -8,7 +8,6 @@ Date: 2026-11-25 · branch `track/E-stoch-inf` at `2b456a9f66ec` · checklist
 **FAIL**. Tag: `stage/E-stoch-inf/G2-fail-20261125` (created and pushed by the orchestrator after review, decision 0003).
 
 - 2 checklist items not PASS or NA: C3 FAIL, C7 FAIL
-- verify ran on b6cef1f; files changed since: tracks/E-stoch-inf/HANDOFF.md, tracks/E-stoch-inf/JOURNAL.md, tracks/E-stoch-inf/RISKS.md, tracks/E-stoch-inf/STATUS.md, tracks/E-stoch-inf/outbox/20261125T040230Z__to-orch__criteria-three-amplitudes-later-gates.md, tracks/E-stoch-inf/outbox/20261125T040230Z__to-orch__g2-ready-for-review.md (run verify again)
 - verify reported FAIL: runs
 
 ## Package documents (decision 0012)
@@ -50,13 +49,13 @@ Date: 2026-11-25 · branch `track/E-stoch-inf` at `2b456a9f66ec` · checklist
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-25T04:05:29Z, clean export of `b6cef1f00382`: **FAIL**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-25T04:07:56Z, clean export of `81e736ac7bbc`: **FAIL**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of b6cef1f00382 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G2-b6cef1f-20261125T040204Z/tree |
+| export | PASS | clean export of 81e736ac7bbc (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G2-81e736a-20261125T040625Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: spec/scope/SCOPE.md; verifier's report VERIFIER.md |
@@ -66,7 +65,7 @@ Date: 2026-11-25 · branch `track/E-stoch-inf` at `2b456a9f66ec` · checklist
 | min-figs | PASS | 3 schematics and 9 data figures (brief 13.4 asks at least 1 and 5 at G2) |
 | runs | FAIL | 7 of 289 runs have problems |
 | run-notes | WARN | 30 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 34 lines |
+| status | PASS | STATUS.md has 37 lines |
 | rerun | PASS | 12 of 12 scripts and commands ran cleanly in the export |
 | compare | PASS | 24 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 24 committed figure files regenerated |
