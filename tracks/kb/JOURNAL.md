@@ -906,3 +906,7 @@ Predictions, written before the runs:
 - S3 (verify-downloads, QA, snapshot): verify-downloads exit 1 only for gr-qc/9412071; QA C1
   762/762, parse 737/762, golden hybrid 28/32 papers (no chunk changed); snapshot id changes and
   db/current moves to it; 896 claims in `kb status`. Refuted by any other value.
+- Correction to A1 and S3, written before any run (commit 8c405545d holds the wrong count): the
+  plan has 14 supersedes, not 15 (7 + 773, 774, 712 + 706, 794, 795, 796), so A1 expects new
+  claims 882-895, 10 of them with locator rows (the 4 to_verify successors have none), and 895
+  claims in the database; S3 expects 895 in `kb status`. An arithmetic slip of mine, on record.
