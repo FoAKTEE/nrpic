@@ -803,7 +803,7 @@ looked at: the six points are clear, the two tick labels run into each other (th
 script now breaks them into two lines; not rerun). On a card: not measured (the card
 job q0036 has not run).
 
-## Entry 13 (16:32): outcome of T3 (Track A's uniform-mesh reproducer), first call of T6b
+## Entry 13 (16:31): outcome of T3 (Track A's uniform-mesh reproducer), first call of T6b
 
 Runs core-20261124-233050-ae129ee (G0, G0g) and core-20261124-233103-faf1f5b (U0, U0g):
 threaded build of source 476fe0c on one thread each, 64^3 cells of 0.3125, cfl_number
@@ -863,7 +863,7 @@ Builds with the handler of the second item (source of HEAD, incremental, one job
 T0 to T6 ran are the frozen copies of entry 9, published at 15:31 under
 `scratch/core/exe/core_step-limit/` without READY.
 
-## Entry 14 (16:36): which executables are published; two checks of the final builds, predictions
+## Entry 14 (16:32): which executables are published; two checks of the final builds, predictions
 
 One branch, one release item: the executables under `scratch/core/exe/core_step-limit/`
 shall carry both items (step limit, stop on SIGTERM), so they are replaced by the builds
