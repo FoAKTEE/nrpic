@@ -632,3 +632,40 @@ of a v0.6 file for the reason X3 shows; the step stays 0.25 cells, below the bou
   within 2 sqrt(N) + 2, largest mass within 10 per cent. S3: raw TT strain rms of 0.028 at a over
   0.014 (gauge leg) at the same stage between 3 and 5.5 (square of the amplitude ratio, 4, as the
   zero-shift companion paragraph found 3.8-4.2). Card time below 0.3 h.
+
+## 2026-11-25 04:10 PST (lead of batch 17): outcomes of GD2-GD3 (gauge leg)
+
+Analysis B-20261125-115558-2ab4161 (`analyze_gr.py` on B-20261124-210431-6bf48af, closed) and the
+comparison with the zero-shift base B-20261124-131918-e71996f, run B-20261125-120818-1dfae55
+(`scripts/compare_legs.py`, figure `figs/pop_legs.png`, four panels looked at). [VERIFIED by them]
+- GD2 HOLDS for the counts, FAILS for the masses: halo counts above the common mass limit agree
+  within 2 sqrt(N) + 2 at every snapshot (11/11 at a = 64, 13/16 at 81, 25/24 at 100, 31/29 at
+  121, 30/28 at 132), but the largest halo of the shifted run is 10-16 per cent heavier at
+  a = 64-132 (ratios 1.13, 1.12, 1.16, 1.12, 1.12, 1.14, 1.13, 1.10), predicted within 5. Against
+  the Newtonian fidL8 box at equal stage the shifted run's largest mass is +3.8 per cent (a = 100)
+  and +6.6 (a = 121), the zero-shift run's -7.1 and -5.6: the two gauges bracket the Newtonian
+  value. [JUDGEMENT, not tested] friends-of-friends links in coordinate distance, and the two
+  spatial gauges place the particles of a collapsed halo differently; the count, which needs only
+  the mass limit, does not see it.
+- GD3 HOLDS in both parts. Corrected strain over |k| <= 8 k_f, shifted over zero-shift: 1.000 to
+  a = 36, 0.984 (49), 0.950 (64), 0.905 (81), 0.865 (90), 0.803 (100), then 0.68 (121): within 20
+  per cent to a = 100, just. Omega_qs above 16 k_f at a = 121: 2.08e-7 against 1.97e-4, 950 times
+  smaller (predicted at least ten). The high-k excess of the zero-shift run after halo formation is
+  therefore the zero-shift coordinates following the infall, not radiation and not mesh error: a
+  run in which it could have failed (refuted had the shifted run kept it within a factor 3).
+- Not predicted, on record: in the shifted gauge the spatial-gauge piece stays small (rms_G
+  1.0e-6 against an rms strain 9.9e-5 at a = 132; zero-shift 1.2e-3 against 1.1e-3), the metric
+  strain keeps its correlation with the particles' S^TT/k^2 over |k| <= 8 k_f above 0.93 to
+  a = 132 (0.971 at a = 100, where the zero-shift run had 0.707) with an rms ratio 0.95-1.08 from
+  a = 56 on, and the total corrected Omega_qs (5.4e-7 at a = 121) stays below the particles'
+  quasi-static estimate (8.3e-7). Hr_mean is 4.8 times smaller than zero-shift at a = 141
+  (5.98e-3 against 2.85e-2); Mr_mean is the same in both gauges (0.203): the momentum-constraint
+  growth does not depend on the spatial gauge (Q1 and M4 test particle noise and mesh).
+- Consequence for the track: the population's GW measure is read in the Gamma-driver gauge from
+  now on; the zero-shift strain after a = 36 is a coordinate artefact at high k. A1-A3 (05:58
+  entry) were judged on the zero-shift run: A2's late failure (correlation below 0.9 after a = 72)
+  is a failure of that gauge (above 0.9 to a = 132 in the shifted run); A1's departure from the
+  linear design value is not (shifted run: Omega_cor over the design 1.36 at a = 30, 1.56 at
+  a = 36, 1.95 at a = 42; zero-shift 1.37, 1.68, 3.3): it is the growth of the halos, which the
+  linear design does not hold. Not yet done: the same comparison with the GW measure of the
+  Newtonian reference at the same particles (N4).
