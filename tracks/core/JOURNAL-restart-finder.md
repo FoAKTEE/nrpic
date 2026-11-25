@@ -240,3 +240,23 @@ line; the 1e-5 rule from outside lies 6e-5 below at every dump).
 - My guess of the contraction (0.86 per iteration, entry 2) was too pessimistic for the
   late-time surface: the tight rule reaches a change below 1e-9 in 129 iterations from
   1 M. Not measured per iteration (the verbose file was off).
+
+## Entry 8 (2026-11-25, 05:56 PST): outcome of T2, run core-20261125-134353-9f7fdc3
+
+Registered run, serial build of commit 9f7fdc3e against `.work/build_cpu_v07`, 457 s on
+one core; `summary.json`, `fig_restart_extra.png` (looked at: the record at 1.6875 is
+in the rows "S2, uninterrupted" and "S2, new continued" and missing in the three rows
+where an executable had no densities of the cycle before).
+
+- P3 HELD. Case S2 of `term_test.py` (stop on SIGTERM, restart file at cycle 26, two
+  cycles before the record): new build, 21 files (1 150 794 bytes), none differs from
+  the uninterrupted run and the record at t = 1.6875 is present; release: `tsq.cons.hst`
+  (that record missing) and `tsq.z4c.user.hst` (4 header lines against 2) differ, as in
+  run core-20261125-023641-7a1c47d. Case S1 (no particles, stop at cycle 101): new
+  build, 27 files, none differs; release: the mesh history header.
+- P13 HELD. A restart file of the new build at cycle 27 (`.prt` 3 064 280 bytes, with
+  the block) is continued by the release to the end, status 0; it loses the record at
+  1.6875 and no other. A restart file of the release at cycle 27 (2 933 160 bytes, no
+  block) is continued by the new build to the end, status 0; it lacks that record and
+  no other. So restart files of core-v0.7 can be continued with the new executable and
+  the other way; the one record of a file without the block cannot be recovered.
