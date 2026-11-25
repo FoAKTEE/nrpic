@@ -1,7 +1,9 @@
 # Step limit of Z4c and the gauge speeds: `<z4c> dt_gauge`
 
-Owner core. Branch `core/step-limit` (batch 11, 2026-11-24; source commit 476fe0c on top
-of release core-v0.6). Answers request W31 of `REQUESTS_WAVE3.md` (Track A,
+Owner core. Branch `core/step-limit` (batches 11 and 13, 2026-11-24; source of the step
+limit: commit 476fe0c on top of release core-v0.6; the published executables are built
+from 5c4b644f, which adds the second item of the package, `preempted_runs.md`, and no
+change to `z4c/`). Answers request W31 of `REQUESTS_WAVE3.md` (Track A,
 `periodic-gamma-driver-step`; decision 0027 item 2). Evidence and every number:
 `tracks/core/JOURNAL-step-limit.md` (predictions before, outcomes after, run ids);
 scripts, inputs, how to rerun: `tracks/core/analysis/step_limit/README.md`. Executables:
@@ -201,3 +203,90 @@ the step the other limits allow at most; the third pair at the present step when
 line is printed when `lapse_leak` x that step exceeds 1 and the step is beyond the bound
 of the lapse pair with the relaxation counted in every cell. The warning costs one pass
 over the cells at start-up and changes no output file.
+
+## 5. Option or default [JUDGEMENT on the evidence of section 6]
+
+The limit stays an **option, off when absent**; the **warning at start-up is on for
+everybody** (it prints to the log, changes no output file, and is the one change of this
+item that acts without an option). Reasons:
+
+- The released behaviour is a defect only for a run whose step can pass a bound, and
+  the warning now says so at start-up, with the sector, the bound in cells and the
+  largest `cfl_number` that stays below it. For such a run the result of the release
+  was an instability (T2, T3), so nothing worth keeping is lost by switching the option
+  on there.
+- Every run that is below the bounds is unchanged either way: the three Z4c set-ups of
+  the release regression give byte-identical histories with `dt_gauge = 1.0` and the
+  limit never sets their step (T6b; their `cfl_number` is 0.25, their smallest bound
+  0.48 cells). No deck on the tracks' branch tips other than Track A's periodic one has
+  a `<z4c>` block with `cfl_number` at or above 0.5 (journal entry 8).
+- What I have not shown is that the bound never binds below `cfl_number` 0.25 in the
+  tracks' puncture and horizon runs, where the conformal metric is far from flat
+  (gt^dd enters every bound) and the shift is of order one (there the reduced bound is
+  careful by up to 18 per cent). A default that changed the step of such a run would
+  change a chain between two segments when its executable is renewed, and the tracks'
+  runs are compared byte for byte across restarts. So the default is left alone until a
+  survey of the tracks' production decks with `dt_gauge = 1.0` has been run (proposed
+  for the release after v0.7).
+
+Recommended for new decks: `<z4c> dt_gauge = 0.9` in every deck that evolves a
+Gamma-driver shift or a 1+log or relaxed lapse with `cfl_number` above 0.4, and in every
+deck with `lapse_leak` on cells where `lapse_leak` x `cfl_number` x dx exceeds 1. The
+rule of decision 0027 (`cfl_number` at or below 0.6 with a Gamma-driver) should read: at
+or below the bound the warning prints, 0.56 on Track A's root mesh, **0.47 in flat space
+with a 1+log lapse**; or `dt_gauge = 0.9`.
+
+## 6. Tests (predictions before, outcomes after: the journal; every run registered)
+
+| Test | What | Outcome | Run |
+|---|---|---|---|
+| T0 to T0d | reference computation: stencil symbols, stability polynomials of the driver's schemes, scan of the Brillouin zone, Track A's model beside the code's, the reduced bound of the kernel against the scan (1536 cases) | Track A's thresholds reproduced by its model to its grid step; with the code's stencils the shift bound is 3.6 per cent lower; table of section 3; reduced/full in section 4. Two versions of the advection term of the reduced bound were refuted on the way (entries 1, 2) | core-20261124-130414-c77ee7e, -132639-eb9be13, -133245-4c89e4f, -140153-9024b06 |
+| T1 | bounds of the start-up line against the Python twin, six gauge settings | agree to 2.4e-6 cells | core-20261124-140144-47691db |
+| T2 | flat space with noise 1e-10, one sector binding per group, `cfl_number` at 0.93, 0.97, 1.03, 1.07 of the bound b, and 1.07 b with `dt_gauge = 0.9`; 300 steps | Gamma-driver 1.5 (b = 0.487 cells), 1+log (0.468), frozen lapse and harmonic lapse (0.551, the pair of conformal factor and Theta): stable at 0.93 b and 0.97 b, guard stop or growth by 4e18 at 1.03 b and 1.07 b, stable with the option. The three cases that tell the code's stencils from Track A's model (shift at 0.502 cells, the third pair at 0.568) are unstable, as the code's stencils say. The group for the relaxation (`lapse_leak` 32) did not test it: in flat space the lapse settles below its reference and the relaxation is off | the same |
+| T3 | Track A's uniform-mesh reproducer (64^3 cells of 0.3125, `cfl_number` 1.0, `dt_lightspeed` 0.25) without and with `dt_gauge = 0.9` | lapse frozen: onset of growth at t = 8.72 without (Track A 8.1; H_max from 0.0035 to 1.97, the step at one cell), none with (step 0.560 cells, H_max falls to 0.0012). Relaxed lapse (`lapse_leak` 20): onset at t = 3.18 and guard stop at t = 10.764 without (Track A 3.18, 10.76), t = 12 without either with (step 0.32 to 0.34 cells, set by the lapse pair from t = 0.51). This is also the test of the relaxation bound | core-20261124-233050-ae129ee, -233103-faf1f5b; analysis core-20261125-003000-0ad24cb |
+| T4 | Track A's refined periodic deck (64^3 root, four static levels, finest cell 0.0195, P0L data) at `cfl_number` 1.0 with `dt_gauge = 0.9`, through the time at which card job 4799 failed (jump at t = 2.5) | see the end of this section | core-20261124-233029-c745838 (processors); card job queued, q0036 |
+| T5a | cost of evaluating the bound every cycle (32^3, serial, three repetitions) | 0.6 per cent (minima), 1.0 per cent (medians), inside the scatter of 10 per cent; histories identical | core-20261125-001339-5005deb |
+| T6a | byte regression against release core-v0.6, twelve set-ups, option absent | PASS, 75 of 75 items identical; again with the final source (handler of the second item): PASS, 75 of 75 | core-20261124-140705-57ba7ce; core-20261125-000250-6dc7307 |
+| T6b | east, os, c4 of the regression with `dt_gauge = 1.0` against the same without | histories byte-identical (3, 2, 3 files), the limit never sets the step, no warning without the option; bounds at the start in cells (shift, lapse, third pair): east 1.86, 0.89, 0.54; os 0.60, 0.48, 0.57; c4 1.86, 0.91, 0.55 | core-20261125-003008-668d147 |
+| F1 | the deck `problems/tests/z4c_step_limit.athinput` (limit binding) with the serial build of 476fe0c and with the final serial build | 33 files, 216,474 bytes, byte-identical; lines of the step limit identical | core-20261125-003154-965cb92 |
+
+Cost of the smaller step (T3): to t = 12 the run with `dt_gauge = 0.9` takes 77 steps
+with the frozen lapse (the unstable run took 65) and 124 with the relaxed lapse. A fixed
+`cfl_number` would need 84 steps at 0.5, 114 at 0.35, 131 at 0.3, 155 at 0.25 (estimated
+from the step history of the run without the option, not run). So the option costs the
+steps of the largest fixed `cfl_number` that is stable: 8 per cent fewer than the remedy
+0.5 with the frozen lapse, 5 per cent fewer than 0.3 with the relaxed one.
+
+Example: `problems/tests/z4c_step_limit.athinput` (`athena -i
+problems/tests/z4c_step_limit.athinput`; with `z4c/dt_gauge=0.0` on the command line the
+warning and the instability).
+
+**T4.** Pending when this was written: the processor run (three threads, 30 s per
+cycle) reaches t = 3 about 18:10 PST on 2026-11-24; the card job (R0 without the option,
+R0g with it, R1 at `cfl_number` 0.5) waits in the shared queue as q0036 behind entries
+of priority 2, with both cards taken by the other partition. The journal's last entry
+and READY say how it ended.
+
+## 7. Not tested, not counted
+
+- A card run of the final build (q0036 will be the first), and the cost of the bound on
+  a card.
+- Punctures, horizons, excision, `shift_eta_profile`, `shift_alpha2Gamma`, `lapse_kdriver`,
+  rk3, nghost 2 and 3 in runs of the code (the reference computation covers the last
+  three; f = 0.75 is the advice there).
+- Adaptive refinement: the bound is evaluated on every MeshBlock with its own cell size
+  each cycle, so it follows the mesh; no run with refinement that changes.
+- Several MPI ranks: the reduction is `MPI_Allreduce` of the minimum, as for the other
+  limits; not run.
+- The start-up line of a restarted run prints the bounds at the restart, not at t = 0.
+- What the bound leaves out is listed at the end of section 4.
+
+## 8. Lines touched in shared files
+
+`athenak/src/z4c/z4c_newdt.cpp` (7 lines: the call of `GaugeTimeStep` after the
+light-speed limit), `z4c/z4c.cpp` (4 lines: reading the option, the start-up check),
+`z4c/z4c.hpp` (10 lines: three data members, two declarations; no function body),
+`CMakeLists.txt` (one line). Everything else is in `z4c/z4c_newdt_gauge.cpp` (new, 413
+lines). `scripts/cpu_run.sh` (two corrections of the first session: `wait ... || rc=$?`, so that
+under `set -e` the footer of the log is written also when the executable returns a
+non-zero status such as the guard's 3; the awk variable `load` renamed `ldavg`).

@@ -883,3 +883,46 @@ The tests T0 to T6 of the step limit ran the builds of 476fe0c. What ties the tw
 - The byte regression of the final serial build against core-v0.6 is PS4 (entry 12).
 - Not tested: the final card build. Its first run will be the card job q0036 (T4 on a
   card), which takes `core_step-limit/athena_gpu` when it is dispatched.
+
+## Entry 15 (16:45): outcomes of T6b, F1, F2; option or default; publication; messages
+
+**T6b**, second call, run core-20261125-003008-668d147 (serial build of 476fe0c; figure
+`fig_survey_default.png` looked at: three groups of three bars, the bar of `cfl_number`
+0.25 below every bound; the legend touches the top of the bars of c4). P6b held: east, os
+and c4 with `dt_gauge = 1.0` give byte-identical histories (3, 2, 3 files), the limit
+never sets the step, no warning without the option. Bounds at the start in cells (shift,
+lapse, third pair): east 1.857, 0.887, 0.537; os 0.601, 0.479, 0.566; c4 1.857, 0.909,
+0.551 (1.857 is the value without a Gamma-driver: only the damping-free mode counts).
+
+**F1**, run core-20261125-003154-965cb92 (figure looked at: step 0.421 cells in both,
+histories on each other): the final serial build reproduces the build of 476fe0c on the
+deck with the limit binding: 33 files, 216,474 bytes, none differs; the lines of the
+step limit are identical. Held.
+
+**F2**, run core-20261125-003452-288cbda (figure looked at, as in entry 12): S1 and S2
+with the final threaded build on one thread: as with the serial build, every check
+held. Held.
+
+**Option or default** [JUDGEMENT; text in section 5 of `interfaces/step_limit.md`]: the
+limit stays an option that is off when absent; the warning at start-up acts for
+everybody and changes no output file. For it: the release's behaviour is a defect only
+above a bound, where the warning now speaks and the option cures it (T2, T3); no
+released set-up changes either way (T6a, T6b); and I have not shown that the bound
+never binds at `cfl_number` 0.25 in puncture and horizon runs, whose chains would
+change their steps between two segments if the default changed under them. The rule of
+decision 0027 needs the correction that 0.6 is too weak in flat space (0.47 with 1+log).
+
+**Published** at 16:41: `scratch/core/exe/core_step-limit/` now holds the final builds
+(source 5c4b644f: athena_cpu 9b2130f1..., athena_cpu_omp c04746ea..., athena_gpu
+ae7b8a7d...), replacing by rename the builds of 476fe0c that the step-limit tests ran;
+COMMIT names both sets of checksums. READY after this entry. The card job q0036 will
+take the final `athena_gpu` when it is dispatched: its first run.
+
+**Written**: `interfaces/step_limit.md` sections 5 to 8; `interfaces/preempted_runs.md`;
+`analysis/step_limit/READY.md`, `HANDOFF.md` (of the package); a section of
+`CHANGELOG.md` for v0.7; outbox `20261125T004353Z__to-A-emd-pbh__step-limit-dt-gauge.md`,
+`...__to-all__sigterm-restart-and-chain-segments.md`,
+`...__to-orch__step-limit-and-preempt-for-v07.md`.
+
+**Open at this entry**: T4 on processors (R0g, run core-20261124-233029-c745838, at
+t = 1.0 of 3.0, about 18:10); the card job q0036.

@@ -14,7 +14,11 @@ outcomes after, with run ids: `tracks/core/JOURNAL-step-limit.md`. Source:
 | `analyse_runs.py` | step against the finest cell, constraint statistics, lapse, cell-to-cell alternation on the line outputs of T3/T4 runs |
 | `time_overhead.py` | T5a: cost of evaluating the bound every cycle |
 | `survey_default.py` | T6b: the Z4c set-ups of the release regression with `dt_gauge = 1.0` against the same without |
-| `publish_exe.sh`, `READY.md` | publication under `scratch/core/exe/core_step-limit/` |
+| `publish_exe.sh`, `READY.md` | publication under `scratch/core/exe/core_step-limit/` (final builds of the package, both items; stage `exe`, then `ready`) |
+
+Second item of the package (restart file on SIGTERM, chain script): `../preempt/`
+(`term_test.py`, `final_build_check.py`), `scripts/tests/test_submit_chain.py`, interface
+text `tracks/core/interfaces/preempted_runs.md`.
 
 ## How to rerun (from the worktree root; every run through `harness/bin/nrpic-run`)
 
@@ -30,15 +34,22 @@ $R --cores 1 --purpose "analysis" -- python $P/analyse_runs.py --run G0=<dir>/G0
 $R --cores 1 --purpose "T5a" -- python $P/time_overhead.py --exe $B/build_cpu_sl/src/athena --out '$NRPIC_RUN_DIR'
 $R --cores 1 --purpose "T6a" -- python tracks/core/analysis/release/regress_v04.py --base /data/haiyangw/nrpic/.work/build_cpu_v06/src/athena --new $B/build_cpu_sl/src/athena --out '$NRPIC_RUN_DIR'
 $R --cores 2 --purpose "T6b" -- python $P/survey_default.py --exe $B/build_cpu_sl/src/athena --out '$NRPIC_RUN_DIR' --cores 2
+Q=tracks/core/analysis/preempt
+$R --cores 1 --purpose "S" -- python $Q/term_test.py --exe $B/build_cpu_sl/src/athena --ref-exe /data/haiyangw/nrpic/.work/build_cpu_v06/src/athena --out '$NRPIC_RUN_DIR'
+$R --cores 1 --purpose "256 cells" -- python $Q/term_test.py --exe $B/build_cpu_sl/src/athena --big 256 --out '$NRPIC_RUN_DIR'
+$R --cores 1 --purpose "chain" -- python scripts/tests/test_submit_chain.py --out '$NRPIC_RUN_DIR'
+$R --cores 1 --purpose "F1" -- python $Q/final_build_check.py --old <build of 476fe0c> --new $B/build_cpu_sl/src/athena --out '$NRPIC_RUN_DIR'
 ```
 
-The card job (prepared, not submitted in batch 11: two jobs of core were already queued):
+The card job (in the shared queue since 2026-11-24 15:32 PST as q0036, label
+`step-limit-card`, priority 5; `harness/bin/nrpic-queue show q0036`):
 
 ```
-harness/bin/nrpic-run submit --kind scouting --gate G2 --launcher batch --wall 00:25:00 --gpu-hours 0.4 \
+harness/bin/nrpic-queue add --label step-limit-card --priority 5 -- --kind scouting --gate G2 --launcher batch \
+  --wall 00:25:00 --gpu-hours 0.4 --package tracks/core/analysis/step_limit \
   --exe /data/haiyangw/nrpic/scratch/core/exe/core_step-limit/athena_gpu \
   --list tracks/core/analysis/step_limit/card_refined.list \
-  --purpose "step-limit T4 on a card: Track A's refined periodic deck at cfl 1.0 without and with dt_gauge, and at cfl 0.5"
+  --purpose "step-limit T4 on a card and smoke run of the card build: ..."
 ```
 
 then `analyse_runs.py --run R0=<dir>/R0:0.01953125 --run R0g=<dir>/R0g:0.01953125 --run

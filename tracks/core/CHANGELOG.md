@@ -6,6 +6,47 @@ decision 0019 item 4). Tags that exist: core-v0.1 = 7daed19 (asymptotically flat
 core-v0.2 = 52c44eb (periodic particles and cosmological gauge; source of main a1c2237),
 core-v0.3 = 609a875 (below).
 
+## For core-v0.7: branch core/step-limit (2026-11-24, not merged yet)
+
+Source commit 5c4b644f of `core/step-limit` on top of core-v0.6 (the step limit alone:
+476fe0c). Executables with READY: `/data/haiyangw/nrpic/scratch/core/exe/core_step-limit/`.
+Interface texts `tracks/core/interfaces/step_limit.md`, `preempted_runs.md`; journal
+`tracks/core/JOURNAL-step-limit.md`.
+
+Input option (one): `<z4c> dt_gauge = f` (default 0 = off): the step is kept at or below
+f times the stability bound of the Runge-Kutta scheme for the Gamma-driver shift, the
+lapse with its relaxation, and the pair of conformal factor and Theta. Example
+`problems/tests/z4c_step_limit.athinput`.
+
+Behaviour that changes without an option:
+
+1. A warning at start-up when `cfl_number` and the gauge allow a step above one of these
+   bounds, and when `lapse_leak` times that step is beyond the bound of the relaxed
+   lapse. Log only: no output file changes (byte regression against core-v0.6, 75 of 75).
+2. SIGTERM: the run finishes the cycle in progress, writes its restart outputs and no
+   other output, prints "Terminating on signal SIGTERM" and exits with status 143 (it
+   died at once before, with the same status and nothing written). New files
+   `utils/term_signal.{hpp,cpp}`; hooks in `main.cpp` and `driver/driver.cpp`.
+
+Run scripts: `scripts/submit_chain.sh`: an attempt cut by a signal before `ATHENA_WALL`
+does not count against `MAX_SEGMENTS` (`chain/uncounted`); on SIGTERM the job resubmits
+and then waits for the executable; no job is queued after the last segment, and the
+start command on a chain at its cap is refused; `MAX_TERM_IN_A_ROW` (default 20); an
+executable that answers an outside SIGTERM with a restart file is resubmitted as an
+outside kill. `scripts/cpu_run.sh`: the footer of the log is written also when the
+executable returns a non-zero status. Test `scripts/tests/test_submit_chain.py` (58
+checks).
+
+Evidence: journal entries 0 to 15; byte regression against core-v0.6 with the final
+serial build, run core-20261125-000250-6dc7307, PASS. Not tested: any card run of the
+final build (queue entry q0036 is the first).
+
+Known limitations found on the way (for `stage/G2/OPEN.md`): the conservation record
+`<basename>.cons.hst` loses one record when a run is continued from a restart file
+written one or two cycles before the record is due (the deposits of the cycles before
+are not in the restart file; release core-v0.6 does the same); the mesh history file
+gets its header lines again at every continuation.
+
 ## core-v0.6 (release candidate, 2026-11-21): three source branches of waves 3a and 3
 
 Record: `tracks/core/RELEASE-v0.6.md` (first line: source commit and regression
