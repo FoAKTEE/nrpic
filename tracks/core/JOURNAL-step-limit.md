@@ -802,3 +802,63 @@ processors) held as far as the scatter lets it be seen. Figure `fig_time_overhea
 looked at: the six points are clear, the two tick labels run into each other (the
 script now breaks them into two lines; not rerun). On a card: not measured (the card
 job q0036 has not run).
+
+## Entry 13 (16:32): outcome of T3 (Track A's uniform-mesh reproducer), first call of T6b
+
+Runs core-20261124-233050-ae129ee (G0, G0g) and core-20261124-233103-faf1f5b (U0, U0g):
+threaded build of source 476fe0c on one thread each, 64^3 cells of 0.3125, cfl_number
+1.0, dt_lightspeed 0.25, P0 data of Track A. Analysis core-20261125-003000-0ad24cb
+(`uniform.json`, `fig_uniform.png`, looked at: four panels, step over cell, largest
+Hamiltonian constraint, extremes of the lapse, cell-to-cell alternation on the line; all
+four runs can be told apart in every panel; the legend of the first panel lies on the
+curves near t = 11 and the y labels of the two right panels are cut at the figure's
+edge).
+
+| | G0 (lapse frozen) | G0g (dt_gauge 0.9) | U0 (relaxed lapse) | U0g (dt_gauge 0.9) |
+|---|---|---|---|---|
+| end | t = 12 | t = 12 | guard stop at t = 10.764 (chi not positive) | t = 12 |
+| steps | 65 | 77 | 70 | 124 |
+| largest step in cells | 1.000 | 0.560 | 0.929 | 0.343 |
+| onset of growth of H_max (Track A's definition) | t = 8.72 | none | t = 3.18 | none |
+| H_max: before onset, largest, last | 0.0035, 1.97, 0.14 | largest 0.0145 (t = 1.8), last 0.0012 | largest 5.5e274 | largest 0.0131, last 0.0007 |
+| alternation of beta^x on the line: largest, last | 3.2e-2 (t = 8.7), 1.3e-3 | 5.4e-4 (t = 1.5), 1.7e-4 | 1.4e-2, 2.0e-3 | 7.3e-4, 3.9e-4 |
+| start-up | warning: shift, bound 0.624 cells | "dt_gauge = 0.9 keeps ..." | two warnings: lapse 0.384 cells; lapse_leak x step 6.25 against 2.40 | "dt_gauge = 0.9 keeps ..." |
+| first time the limit sets the step | | t = 1.454, sector Gamma-driver shift | | t = 0.511, sector lapse |
+
+- P3a' (G0): the step reaches one cell (held); the onset falls at t = 8.72, inside 7 to 9
+  (held; Track A: 8.1 for the same deck with release core-v0.5); "the alternation of
+  beta^x grows by more than 1e4" **failed**: it grows from 1.2e-4 (t = 4 to 7) to 3.2e-2,
+  a factor 270, and H_max by 560. The alternation does not start from rounding: the
+  deposited matter puts 1e-4 of cell-to-cell structure into the shift in every run.
+- P3b' (G0g): the step stops at 0.560 cells, 0.9 x 0.622 (held); no onset to t = 12
+  (held); "the alternation of beta^x stays below 1e-6" **failed as a number**: it is
+  5.4e-4 at t = 1.5 and falls to 1.7e-4, the level G0 has before its onset. What the
+  prediction named as its refutation, an onset or a growing alternation, did not occur.
+- P3c' (U0): onset at t = 3.18 and guard stop at t = 10.764 (held; Track A: 3.18 and
+  10.76).
+- P3d' (U0g): the lapse pair sets the step from t = 0.51, 0.343 cells at most and 0.32
+  from t = 4 on (held: 0.9 x 0.384 = 0.346 at the start, less with the lapse above its
+  reference); t = 12 without guard stop and without the jump (held).
+
+**So at the same cfl_number 1.0 the uniform-mesh reproducer goes unstable without the
+limit in both gauges and stays smooth with it** (the test named in the task).
+
+Cost in steps to t = 12: G0g 77 against the 65 of the unstable G0; U0g 124. What a fixed
+cfl_number would need, estimated from the step history of G0 up to its onset (the
+light-speed limit of the deck, capped; a calculation in a shell, not a run): 0.6: 73,
+0.56: 77, 0.5: 84, 0.35: 114, 0.3: 131, 0.25: 155. So dt_gauge = 0.9 takes the steps of
+the largest fixed cfl_number that stays below the bound: for the frozen lapse 92 per
+cent of the steps of the remedy 0.5, for the relaxed lapse (bound 0.32 to 0.38 cells,
+so 0.3 as a fixed number) 95 per cent of those of 0.3 and 80 per cent of those of 0.25.
+
+**T6b, first call**, run core-20261125-001824-536b23f: no result. The three set-ups of
+the regression that evolve Z4c (east, os, c4) ended with status 1 in the variant with
+the option, because their decks do not declare `dt_gauge` and AthenaK refuses an
+undeclared parameter on the command line (the same mistake as in entry 4). The script
+now writes a copy of each deck with `dt_gauge = 1.0` as the first line of its `<z4c>`
+block; second call running (prediction P6b of entry 3 unchanged).
+
+Builds with the handler of the second item (source of HEAD, incremental, one job each):
+`.work/build_gpu_sl` done at 16:30, `.work/build_omp_sl` after it. The executables that
+T0 to T6 ran are the frozen copies of entry 9, published at 15:31 under
+`scratch/core/exe/core_step-limit/` without READY.
