@@ -857,3 +857,28 @@ Predictions, written before the runs of this session.
   the review script finds the same 72 changed claims minus none, and these five differ from
   the snapshot only by... nothing in claims/claim_meta/locators (so changed_not_in_ledger is
   empty). Refuted by any other count or an exception.
+- R2 outcome (dry run kb-20261125-033655-43ee7ce, run kb-20261125-033703-3bd4386, review
+  repeated kb-20261125-033703-a1be27a): held: five restores, 'before' kb-claims3 each; after it
+  67 claims differ from the snapshot, all in the ledger; changed_not_in_ledger empty. (My R2 text
+  had a garbled clause; the test was: no claim outside the ledger differs.)
+- V2 outcome (my reading; ids drawn with seed 20261126 in the review run): held: 40, 669, 869,
+  874, 877 right as worded at their locators. Reservation on 877: its second clause is F's run
+  result under a fulltext label whose locator is the paper only.
+- S2 outcome (run kb-20261125-033718-3405697): held: verify-downloads exit 1 only for
+  gr-qc/9412071; QA C1 762/762, ok 761, problem 1; parse 737/762 = 96.7 %; golden hybrid 28/32
+  papers, 23/32 locations (rerank 28/32, 25/32); 881 claims, statuses superseded 22 and withdrawn
+  3 in C9; db/current -> kb-20261125-2f97258. kb/QA_REPORT.md replaced by this report.
+- E1 (evidence run kb-20261125-034227-58fc4e0, no prediction beyond C1): no unprocessed to_verify
+  claim bears on G1 (806, 807, 810, 811, 812 left by decision 0035); figure fig_g3_queue.png read.
+- Test written after the fix, not before: test_supersede_to_existing_keeps_successor_checked_by
+  (passes with the fix; by reading, the removed line set checked_by to the caller, so the old
+  code fails it). Not run against the old code.
+- did: review of claims3 from the artefacts (REVIEW-wave3.md batch 15); tool defect fixed and
+  five rows repaired; snapshot kb-20261125-2f97258 with verify-downloads and QA; OPEN.md O1, O2,
+  O3, O5 closed, O4 in part, O7 weak class as a known limit; KB-G3 evidence, checklist (C1 PASS),
+  verify PASS, report; messages to all (superseded claims) and orch (second verifier,
+  gr-qc/0608095); acks of core and orch (release v0.7, SIGTERM).
+- failed predictions: V1 in two places (weak class 548 outside 520-543; five claims outside the
+  ledger changed). V2, R2, S2 held.
+- gate: KB-G3 package complete for the second fresh verifier (decision 0036 item 3); not passed.
+  0 card-hours.

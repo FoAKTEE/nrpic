@@ -1,32 +1,35 @@
-# STATUS of kb
+# STATUS of kb (2026-11-25 03:50 UTC, lead batch 15)
 
-gate:        KB-G0, KB-G1, KB-G2 signed (coord/GATES.md). KB-G3 package in stage/KB-G3/ (batch 13):
-             NOT complete for an independent review: C1 met for every track queue, not met for
-             two brief seeds that bear on G1 (803 FLRW stability, 805 three derivations); a second
-             verifier after those is still owed (OPEN.md O1-O6).
-headline:    db/current = kb-20261124-9872d21 (run kb-20261124-233515-0ed31c7): 762 papers (684 +
-             78 additions), 64 repositories, 864 claims. Parse 737/762 = 96.7 % (bar 95 %), golden
-             questions hybrid 28/32 papers, 23/32 locations; rerank 28/32, 25/32. QA C1 counts
-             agree (downloads: 683 ok, 1 problem = gr-qc/9412071, PDF only).
-last-result: - lead batch 13 (this session): ingest4 reviewed from own SQL (R1 held: 762 papers, the
-               18 additions ok, six old-style lists 11/16/16/10/27/21 entries)
-             - KB-G3 verifier's findings acted on: 682 refuted as worded and superseded by 862;
-               781, 804 verified; 714 answered NO by 863; 809, 85, 737 annotated; 716, 798, 799,
-               808 annotated from the KB-G1 first answers and ingest4
-             - claims the ingest4 papers serve: 409, 447, 449, 450 verified (abstract lines);
-               452 partly right, annotated, precise text in 864
-             - common cause of the six wrong claims: processed by their pipeline step, never
-               read against their own wording (stage/REVIEW-wave3.md, batch 13)
-             - failed prediction: C1 in part (relocate needs --by); rerun held (C1b)
-next:        1. claims package: seeds 803 and 805 (ask A, D, F for their derivations), fragment
-                claims (85 and about 17 of claims_tracks/AUDIT.md); `kb claim supersede`
-             2. fresh verifier of KB-G3 after (1); then the KB-G3 report again
-             3. bibliography parser: \arXiv{id}{class}, "[HEP-PH 9610477]", bare ids, \eprint{},
-                DOIs in \url/\href/\doibase (4538 of 52725 printed ids not taken); then re-resolve
-blockers:    none
-needs:       orch: claims package and a fresh KB-G3 verifier in a batch; decide on 0707.4654,
-             1006.1632 (on disk, in no manifest). core: none open (M18-M25 answers received;
-             link rows not yet updated, HANDOFF)
-offers:      db/current kb-20261124-9872d21 (read-only): the 18 additions for A, C, D, F; claims
-             862-864; QA report kb/QA_REPORT.md
-budget:      0 card-hours; processor runs only (1-4 cores), six registered runs this session
+## Gates
+- KB-G0, KB-G1, KB-G2: signed (coord/GATES.md).
+- KB-G3: package complete for the second fresh verifier (decision 0036 item 3); C1 met on
+  snapshot kb-20261125-2f97258 (run kb-20261125-034227-58fc4e0); `nrpic-stage verify --no-rerun`
+  PASS; STAGE_REPORT.md written. Not passed: the orchestrator judges on both verifier reports.
+
+## Store (db/current -> kb-20261125-2f97258, run kb-20261125-033718-3405697)
+- 762 papers (684 brief + 78 additions), 64 repositories; parse 737/762 = 96.7 %.
+- 881 claims: checked 268, located 471, unlocated 70, refuted 35, superseded 22, partial 12,
+  withdrawn 3. Golden retrieval hybrid 28/32 papers, 23/32 locations.
+- Downloads: one known problem row (gr-qc/9412071); 0707.4654, 1006.1632 excluded (0035).
+
+## This batch
+- claims3 (batch 14) reviewed from the artefacts: ledger matches, sample 26/30 recomputed, five
+  claims read at their sources. One defect: `supersede --to` overwrote the successor's
+  checked_by/checked_at; fixed in kb/kbtool/claims_db.py with a test; five rows restored.
+- KB-G3 OPEN.md: O1, O2, O3, O5 closed; O4 in part; O6 (second verifier) next; O7 weak class
+  stated as a known limit: 543 unread, est. 86.5 % right as worded (about 70 wrong).
+- Messages: to all (superseded/withdrawn claims per track), to orch (second verifier; question
+  on gr-qc/0608095).
+
+## Failed predictions
+- V1 in part: weak class counted 548 (predicted 520-543; five annotated sample claims not
+  excluded by the query); five claims outside the ledger changed (the defect above).
+
+## Next
+1. Second fresh verifier of KB-G3 (orch's batch; reads OPEN.md O6 list).
+2. Weak-class pass 2 on stratum WA (426) with the cut-start query; exclude kb-claims3 events.
+3. Bibliography parser formats (verifier item 3), then resolve-bib and snapshot; paper-code
+   links M18-M25 from core's messages.
+
+## Runs, cards
+- No card job, no queue entry, nothing running. 0 card-hours this batch.
