@@ -1,34 +1,66 @@
-# What G2 of D-bh-dress still lacks (2026-11-24 09:30 PST, batch 11b)
+# What G2 of D-bh-dress still lacks (2026-11-25 04:00 PST, lead of batch 17)
 
-The two track criteria are met at the meshes run so far (checklist C7, C8): the vacuum-bubble drift does
-not exceed the floor (M/8 and M/16), and the growth follows the flux and the exact dust solution (M/8).
-Since batch 11b the floor is measured with a converged finder (g2long entry 14): vacuum drift 1.8e-5 at
-M/8 over 100-500 M; the 1.2e-4 "floor" of the production finder is its stopping rule. With the converged
-finder the bubble differs from vacuum by at most 7.3e-5 (M/8, 100-500 M) and 5.5e-5 (M/16), without a
-trend in time; the bubble's horizon mass dips by 4-6e-5 at 100 M at both meshes (test FE, entry 17). In order of what blocks most:
+The two track criteria are met at the meshes and particle numbers run so far (checklist C7, C8). New in
+batch 17 (g2long/JOURNAL.md entries 18-19): FK closed and judged, P7-P10 hold: keeping horizon excision on
+(initial_radius_0 1.6 M) removes the step of the (iii) medians at tau_rem ~285 M (ES-FL 0.6 per cent, FK
+0.16-0.25 per cent) and leaves the horizon mass unchanged (2.2e-5 at 399.5 M); FN4 (4N) ran to 400 M and
+agrees with FK (N2, N3 hold on a reading made before its close; criterion G for FN4 in entry 19).
 
-1. Three-way convergence (C2, C10), all on the cards, held by another user's priority jobs until about
-   the morning of 2026-11-25:
-   - mesh, null test: M/8, M/16 done; M/4 = FE4 (D-20261123-022726-1b133af, job 5153, restarts from t = 0);
-   - mesh, growth: M/8 done; M/4 = FF4 (D-20261123-022727-1c17e73, job 5152, from 456.1 M of 500);
-     M/16 = FL16 (D-20261124-172745-72472ed, job 5175, held, fourth in the sequencer);
-   - particle number: N = FK (D-20261123-022725-a553496, job 5144, held, first; from 225 M of 400),
-     4N = FN4 (D-20261124-134157-b17938b, job 5170, second), N/4 = FNQ (D-20261124-172725-2f426b6,
-     job 5174, third);
-   - boundary and gauge: figure boundary_gauge.png (D-20261124-131657-89cd963).
-   The horizon-mass offset itself has no mesh order (P2, FP4 refuted: it changes sign over M/4, M/8,
-   M/16 even with the converged finder); convergence is judged on differences (null test, growth).
-2. The dip of the bubble's horizon mass at 100 M (4.2e-5 at M/8, 5.8e-5 at M/16, entry 17) does not shrink
-   with the finest level: re-search FE4's dumps (M/4) with the tight finder when it ends (probe_long.py,
-   fe_analyse.py) for the third mesh member.
-3. Constraints outside the hole (C3, C11): plane norms bounded (XC, D-20261124-134211-c6fce88); volume
-   region norms come with FN4, FNQ, FL16 (predictions XN, XQ, L5).
-4. Horizon excision ends at 4 x initial_radius (core request ah-excision-growth-guard; FK tests the
-   workaround). Finder stopping rule: request finder-stopping-rule to core (2026-11-24).
-5. Package items: ladder table (LADDER.md) and ladder schematic (D-20261124-175505-a1053fa, after FE) current;
-   slice mosaic done (D-20261124-134644-2389227); note text on the long runs and on FP (C16); the G2
-   verifier, fresh context (C17); a rerun script (C6). `nrpic-stage verify D-bh-dress G2 --no-checksums`
-   (2026-11-24 10:07) passes every check but `runs`: the six card runs still open, and the G1 gate
-   reviewer's run D-20261121-165420-5d1c245 whose scratch input (tmp/gate_review_G1/review_checks.py) changed
-   after it ran (orch to say whether to mark it superseded). The full verify with checksums of the restart
-   files ran more than 35 min and was stopped; run it detached when the card runs have ended.
+## 1. Item by item, and the queue entry that serves it
+
+| Item | State | What is missing | Served by |
+|---|---|---|---|
+| C1 ladder tests (§10 rows D owns) | OPEN | the M/4 member of the null test: FE4 (D-20261123-022726-1b133af) ran to 300 M, to close and judge (P5; tight re-search of its dumps, FE at three meshes); the G2 verifier (C17) | no card run: FE4 is done |
+| C2 three-way convergence | OPEN | particle number: N = FK done, 4N = FN4 done (closing), N/4 = FNQ running (125 M of 400 in complete segments); mesh of the growth: M/4 FF4 done (to close and judge, P12-P14), M/8 ES-FL done, M/16 FL16 waits; mesh of the null test: FE4 (above); boundary: done (faces 192/384/768 M, boundary_gauge D-20261124-131657-89cd963). Gauge: carried by the boundary axis ("gauge or boundary"); the relaxed lapse cannot serve (section 2) | q0010 D-FNQ (N/4), q0011 D-FL16 (M/16) |
+| C3 constraints | OPEN | volume and z = 0 plane norms done (D-20261123-021027-e3af9b8, D-20261124-134211-c6fce88); region (sphere) norms: FN4's esflk4n.region.hst now complete (XN to judge), FNQ (XQ), FL16 (L5) | q0010, q0011 |
+| C4 first full-GR kinetic run | PASS | - | - |
+| C5 verification report | OPEN | written when C1-C3 close | - |
+| C6 reproducibility package | OPEN | one rerun script for every G2 number (processors; card runs by manifest) | no card run |
+| C7 null test (vacuum bubble) | PASS (reservation) | the M/4 reading of FE4 | no card run |
+| C8 growth against the flux | PASS (reservations) | particle and mesh members (C2); the D4 timing seen in FK (entry 19, [TO VERIFY]) | q0010, q0011 |
+| C9 ladder schematic | PASS | redraw when the runs are read | - |
+| C10 convergence figures | OPEN | particle number: np_partial.png (D-20261125-115729-011d028) is partial; mesh of the growth needs FL16 | q0010, q0011 |
+| C11 constraint norms against time | OPEN | region-sphere norms of FN4/FNQ/FL16 | q0010, q0011 |
+| C12 slice mosaic | PASS | - | - |
+| C13 package documents | OPEN | REVIEW.md for G2 (the lead reviews are stage/REVIEW-wave3.md sections 13-19) | - |
+| C14 data figures in the note | OPEN | the G2 figures are drawn and looked at but not yet in the note | - |
+| C15 schematics (architecture, gate timeline) | OPEN | G2 update of note/figures/schem_* | - |
+| C16 working note | OPEN | note v3: long runs, FP/FE, XC, FK, particle sequence, ladder, mosaic | - |
+| C17 verifier (fresh context) | OPEN | VERIFIER.md for G2 | - |
+| C18 null results on record | PASS | - | - |
+| C19 STATUS/JOURNAL/HANDOFF | PASS | - | - |
+
+Queue entries of this owner: q0008 D-FK done, q0009 D-FN4 done, q0010 D-FNQ running (job 5279), q0011
+D-FL16 waiting (effective priority 1). Each open entry serves C2, C3, C10, C11; none is removed. No new
+entry is added: every missing item above is either served by q0010/q0011 or is processor and writing work.
+
+## 2. The relaxed lapse and `lapse_leak_hole` (core-v0.7, a mitigation): item by item
+
+Every G2 run of D slices with plain 1+log and the Gamma-driver shift, no `lapse_leak` (g2long entries 6
+and 10; decision 0025 item 3: "null tests and long runs around an existing black hole run without the
+relaxed lapse"). So no G2 item depends on the relaxed lapse, and none needs the mitigation. Whether an item
+COULD be judged with it, read from coord/INTERFACES/cosmo_gauge.md section 9.3 and 9.5 (core's runs; numbers
+there):
+
+| Item | Judgeable with `lapse_leak_hole = 16`? | Control that would show the drift |
+|---|---|---|
+| C1, C7 null test | No. The mitigated vacuum horizon mass moves by 2.1e-4 over 100-200 M and settles 2.5e-4 above plain 1+log (9.5), ten times the converged-finder vacuum drift (1.8e-5, FP) and as large as criterion N's bound (2.5e-4); its radius falls again after ~110 M | the same slice without dust and the same gauge (V-1L with `lapse_leak_hole`, tracker at the puncture) beside plain V-1L: their difference is the gauge drift, to be subtracted before any null test |
+| C2 gauge axis | Only to ~100 M at M/8 (radius steady near 1.6 M to ~110 M, wiggles of 2e-4 until ~116 M; 9.3, 9.5) | the same mitigated vacuum control; the first pass of G1 (ES-1G, V-1GB) shows the drift unmitigated (+1.3e-3 over 100-200 M) |
+| C3 constraints | Yes in principle (norms do not read the horizon mass), but not needed | plain-1+log twin of the same deck |
+| C4, C8 growth | Not beyond ~100 M: the first pass gave +7e-3 with dust over 100-200 M (Track D), comparable to the 1 per cent of (iii); the mitigation is not measured with dust beyond 100 M | the mitigated bubble without dust (ES-1L with `lapse_leak_hole`) subtracted from the dusty run, as D2 subtracts V-1L |
+| C5, C6, C9-C19 | not gauge-dependent | - |
+
+So G2 stays on plain 1+log; the mitigation enters only at G3, where a hole inside expanding dust on a slice
+with diverging normal observers may need the relaxed lapse, and there with the vacuum control above
+(cosmo_gauge.md 9.5 advice: tracker at the puncture, 2 r_h at the inner edge of the dust, null test after the
+transient, horizon above 10 cells).
+
+## 3. Also open
+
+- Horizon excision ends at 4 x initial_radius (nrpic.cpp:451-455): FK shows that this end is what moved
+  the (iii) medians and D3 in ES-FL; core request ah-excision-growth-guard stays (outbox 2026-11-24). Finder
+  stopping rule: request finder-stopping-rule to core.
+- `nrpic-stage verify D-bh-dress G2` with checksums of the restart files runs for hours: use
+  `--no-checksums` until the card runs are all closed, then the full verify detached.
+- G1 gate reviewer's run D-20261121-165420-5d1c245 (changed scratch input): orch to say whether it is
+  marked superseded (request of batch 11b, still open).

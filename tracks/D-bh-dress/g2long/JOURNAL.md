@@ -711,3 +711,49 @@ Q1-Q2, XQ for FN4/FNQ):
   N2/Q2 (removed m E_K against FK), N3 (M_AH against FK), (iii) bins on the removals before the cut. Labelled
   partial; N1-N4, Q1-Q3 are judged only when the runs end and are closed. A smoke run on the data was made
   at 03:52 (tmp/np_smoke) to debug the cut.
+
+## Entry 19 (2026-11-25 04:00 PST, lead of batch 17): outcome of FK; partial particle-number reading
+
+FK ES-FLK D-20261123-022725-a553496 closed by hand (tools/close_by_hand.py; completed, exit 0; 2.70
+card-hours by sacct over 11 jobs, 39.3 GB checksummed). Judged by tools/fk_compare.py, registered
+D-20261125-115637-7ee26c1 (fk_compare.png looked at), and criterion G of FK itself by
+g2runs/tools/esf_criteria.py --base esflk, registered D-20261125-115647-fd2f3f7 (esf_criteria.png looked at).
+Predictions: entry 6.
+- P7 HOLDS: max |M_FK - M_ES-FL| over the 439 common finder times t <= 219 M is 1.8e-6 (at 1.5 M; zero to
+  round-off from 50 to 219 M). After ES-FL's excision ends the difference grows to +2.8e-5 near 330 M and is
+  +2.2e-5 at 399.5 M (one spike of 1.5e-5 near 248 M).
+- Excision: ES-FL's smallest horizon radius passes 4 x 0.8 = 3.2 M at 219.5 M; FK's reaches 4.53 M at
+  399.5 M, below 6.4 M, so FK excises to its end.
+- P8 HOLDS: all 119848 dust removals of FK are by reason 3; ES-FL removed 54944 by reason 2 and 63344 by
+  reason 3 up to 399.5 M.
+- P9 HOLDS (the mechanism test): FK's (iii) medians in the bins from tau_rem = 280 M to 500 M lie in
+  [+0.162, +0.243] per cent (ES-FL in the same range: up to +0.620 per cent); none above the refutation
+  line +0.45 per cent. The D3 margin of the removals after t_rem = 220 M is at most 2.88e-3 (bound 3e-3,
+  narrowly; ES-FL 8.6e-3). So the step of ES-FL's (iii) medians to +0.6 per cent at tau_rem ~285 M and its
+  D3 jump after 220 M ARE caused by the end of horizon excision at 4 x initial_radius [VERIFIED: a run in
+  which it could have failed; the step is absent when excision stays on].
+- P10 HOLDS: M_FK(399.5) = 1.491638, 3.6e-4 below ES-FL's 1.4920 (bound 3e-3): how deep the matter is
+  removed inside the horizon does not move the horizon mass.
+- P11 FAILED: 2.70 card-hours against 1.8-2.4 (the run was preempted many times; sacct counts the repeated
+  stretches between restarts).
+- Criterion G for FK alone HOLDS to its end: 50 counted (iii) bins to tau_rem 500 M, largest |median|
+  0.249 per cent; D2 at all 760 samples after 20 M; D3 no violation (min margin -1.4e-4). D1 closure with
+  the control subtracted 2.2e-3 at 399.5 M (ES-FL: 9.4e-3 at 500 M).
+- NOT predicted, read off panel (d): 29.5 per cent of FK's removals have tau_rem below the exact horizon
+  crossing tau_H(R0) (min -0.50 M, none below -1 M; median +0.127 M), against 0.23 per cent in ES-FL (min
+  -0.084 M). The excision radius is 0.8 x rr_min in both (nrpic.cpp:446-460), and the masses agree to
+  1.8e-6 before 219 M, so the cause is not known [TO VERIFY: D4 of both runs restricted to t_rem <= 219 M;
+  the restart rule "rr_min is -1 until a search of this run has succeeded" (nrpic.cpp:448-450) acts after
+  every one of FK's ten resumptions]. It does not touch a criterion (D4 has no bound; D3 holds).
+
+Partial particle-number reading, tools/np_partial.py, registered D-20261125-115729-011d028 (np_partial.png
+looked at). FN4's chain ended (tlim 400 M, job 5280) at 03:55:32, two minutes before this reading, so FN4
+is read whole; it was not yet closed (its close by hand runs now). FNQ is cut at its second-newest restart,
+125 M. Labelled PARTIAL for FNQ; N1-N4 are judged in full below when FN4 is closed.
+- N2 HOLDS (FN4, read before the close): removed m E_K relative to FK at 100, 200, 300, 399.5 M: -0.39,
+  +0.30, +0.21, +0.08 per cent (bound 1 per cent). At 50 M +1.24 per cent (not a named time).
+- N3 HOLDS for the bound: |M_4N - M_N| at 100, 200, 300, 399.5 M = 3.7e-4, 3.6e-4, 9.4e-6, 4.9e-4 (bound
+  2e-3); the curve has noise of about 1e-3 peak to peak (left panel), fifty times the FK - ES-FL difference.
+  The ordering part has one time so far (FNQ): at 100 M |M_4N - M_N| = 3.7e-4 < |M_N - M_N/4| = 1.43e-3.
+- Q2 PARTIAL, holds so far: FNQ's removed m E_K at 100 M is -0.86 per cent off FK's (bound 3 per cent).
+- (iii) PARTIAL: FNQ 18 counted bins to tau_rem 180 M, largest |median| 0.265 per cent (Q1 bound 2 per cent).
