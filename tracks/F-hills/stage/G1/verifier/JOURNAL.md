@@ -195,3 +195,18 @@ preceded each registered pass; no number below comes from them.
   (claim 1.5-3.9e-6 over omega_0 0.1-0.3). fig_v_junk (looked at): a pulse at u = -33 M and then a
   steady flux of 3-8e-8 per M that carries most of the window's energy, flat in l: what OPEN item 4
   calls an emission of unidentified source.
+
+## Entry 3 (2026-11-25 10:00 PST): note ledger rows that overlap my readers, predictions first
+
+Read after sections 1-9 of VERIFIER.md: `note/tables/ledger.tex` rows 122, 126, 128, 168, 194,
+200-208 (grep for the quantities my readers already compute). Predictions for the rows not yet
+computed by my readers (vmesh.py extended; bracket of the three-member order widened to 0.05-40):
+- L1 (row 194) three-member order of the binary-alone separation at 15 and 20 M: 12, 14.5. I predict
+  11.98 (already seen) and 14-15 at 20 M; I keep my reading that such orders are not asymptotic.
+- L2 (row 200) distance of the common horizon from the heavy hole at 48.81 M: 24.9 M (+-0.1).
+- L3 (row 201) rate of the remnant's distance at 280 M: 0.158 per M (+-0.002).
+- L4 (row 205) heavy hole at t = 4 M: 1.00419 (to 5 digits); so "+0.32 percent" is 1.00736/1.00419 - 1.
+- L5 (row 207) rms H of P1 at t = 1, 112, 280 M: 3.2e-4, 6e-5, 4.7e-5 (2 digits).
+- Row 126 (orders 7.98, 7.68; 7.96, 7.62) is not computable from the history alone: the note says the
+  truncation error is measured against a closed form; my raw-norm orders (7.98, 6.42; 7.91, 1.62)
+  are a different quantity. Not checkable here.

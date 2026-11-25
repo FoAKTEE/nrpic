@@ -170,3 +170,32 @@ added after A2 in `vpassage.py` (`RUN_A2`) and `vmesh.py` (`RUNS["A"]`).
   (f) state the baseline of P1's "heavy hole +0.32 percent" and the method behind "own residual 4.9e-7".
 - To core: nothing new; the open request on the finder's diagnostics after a restart (decision 0042
   item 4) would let F1 be judged.
+
+## 9. Comparison with the lead's verdicts (written after sections 1-8 were committed, 05e52ce51)
+
+Read for this section only: `CHECKLIST.md` (C6-C8, C18), `../REVIEW-wave3.md` (binary_conv,
+khsr_note, card chains, batch 21), the owner's JOURNAL.md batch 21 outcomes (lines 1060-1120).
+
+| Lead's verdict | Mine | Agreement |
+|---|---|---|
+| S1, S2, S3 MET (join complete, overlaps <= 1.1e-12, 137/137 samples) | same numbers from my readers | agree |
+| S4 = A2-1 REFUTED on timing (2.110 M at 76.37 M) | same | agree |
+| S5 MET (13.06 M, closing at 0.237 M per M; A2-2 open) | same | agree |
+| S6 MET to 96.23 M (drifts 3.1e-5, -8.1e-6 per M, heavy range 6.9e-4, rms H 3.1e-5) | same numbers; but the heavy hole's range hides a smooth decline (-1.7e-5 per M, 63-86 M) and a two-branch finder from 86.6 M (F1) | agree on the numbers; I add F1, which puts A2-5's "heavy hole < 1e-3 to 200 M" at risk |
+| H1 MET; at m/8 P1 0.09-0.4 percent, R8 0.6 percent | P1 4, 5, 18 of 4480 (0.09-0.40 percent), R8 2 of 336 (0.6 percent) | agree |
+| H2 REFUTED IN PART (R8 0.92e-3; C 1.71e-4 above 1.7e-4 by rounding) | R8 0.92e-3 agree; C 1.20e-4, 1.69e-4 over 15-22.3 M against the lead's 1.22e-4, 1.71e-4 over 15-22 M | agree on R8; C's "above the band" depends on the window's end (0.3 M) and is not robust either way |
+| H3 MET | same to all digits | agree |
+| H4 REFUTED as written for P1 only (0.984 in the first three searches; 0.70 percent after 1 M; A + A2 5.0e-4, C 1.2e-4) | same | agree |
+| C7 PASS with reservations (junk window 2.3-2.8e-6 M, burst then steady 5.0-5.4e-8 M per M) | 2.28-2.73e-6 M at the four radii; the steady part visible in fig_v_junk | agree; I add that the four radii agree within 19.8 percent, at the edge of criterion (iii)'s 20 percent |
+| C8 FAIL (NOT MET, PARTIAL): P1 merged; P1b to 96.23 M needs A2 to at least 170 M | same: P1b not complete; the join and the state to 96.23 M (and to 96.89 M live) reproduced | agree |
+| binary_conv (batch 4a): order ">= 3.3" not established; "only the three-point (R12) or later R16n data decide the order" | R12 now decides it: no order exists (s12 - s16 changes sign; m/8 outside the asymptotic regime) | agree, and the open question is closed in the negative (F2) |
+| binary_conv (batch 4a): fractional drifts labelled "per M" | the S6/H2 "per M" numbers are fractional too | agree; the wording is still in the batch-21 numbers (F3) |
+| khsr_note: P1 to 280 M "not rechecked, to the G1 verifier" | merger, remnant pass, rms H range, remnant mass change reproduced; d_at_112 not reproduced; heavy "+0.32 percent" not checkable | partly done; one defect found |
+| khsr_note: K3 "a second agent's check ... is part of the G1 verifier" | not done | open |
+| C6 PASS (F-pre-1, F-pre-2) | not checked by me | no opinion |
+| C18 OPEN: "every number of the Supplemental Material recomputed from the manifests" | the note v2 ledger was not recomputed; the passage, Newton, mesh, horizon and junk numbers above were | C18 is met for the material of sections 3.1-3.4 only; the note's ledger, K3, F-pre-1/2 and eih remain for a verifier |
+
+Where the lead's text should change (my requests a-f of section 8): F1 (heavy-hole branches, before
+judging A2-5), F2 (no order of convergence; quote the m/12-m/16 agreement instead), F3 (fractional
+"per M"; the conic 9.81 M; p1_280's d_at_112), the baseline of "+0.32 percent" and the method of
+"own residual 4.9e-7".

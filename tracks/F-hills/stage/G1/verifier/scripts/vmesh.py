@@ -53,7 +53,7 @@ def order3(f1, f2, f3, h1, h2, h3):
     r = (f1 - f2) / (f2 - f3)
     g = lambda p: (h1 ** p - h2 ** p) / (h2 ** p - h3 ** p) - r
     try:
-        return float(brentq(g, 0.05, 12.0))
+        return float(brentq(g, 0.05, 40.0))
     except ValueError:
         return None
 
@@ -174,6 +174,19 @@ def main():
             hzP["heavy_median_by_window"] = {f"{a}-{b}": med2(a, b) for a, b in ((1, 20), (20, 60), (60, 112), (112, 200), (240, 280.1))}
     hP, _ = vread.read_hst(os.path.join(dP, "hills.z4c.user.hst"))
     rmsP = np.sqrt(hP["H-norm2"] / hP["Volume"])
+    def rms_at(tq):
+        kk = int(np.argmin(np.abs(hP["time"] - tq)))
+        return [float(hP["time"][kk]), float(rmsP[kk])]
+    h2 = vread.read_horizon_summary(os.path.join(dP, "hills.horizon_summary_2.txt"))
+    k4 = int(np.argmin(np.abs(h2["t"] - 4.0)))
+    kcm = int(np.argmin(np.abs(tq - 48.8125)))
+    sel280 = tq >= 275
+    ledger = {"row200_dist_common_horizon_to_M_at_48.8125": float(np.linalg.norm(q0[kcm, 2:5] - qM[kcm, 2:5])),
+              "row201_rate_at_280": float(np.polyfit(tq[sel280], dRM[sel280], 1)[0]),
+              "row205_heavy_at_4": [float(h2["t"][k4]), float(h2["mass"][k4]), bool(h2["failed"][k4])],
+              "row207_rmsH_at_1_112_280": [rms_at(1.0), rms_at(112.0), rms_at(280.0)],
+              "row207_rmsH_max_112_280": float(rmsP[(hP["time"] >= 112)].max())}
+    res["P1_ledger"] = ledger
     res["P1"] = {"sep_below_0.1_first_t": float(tP[k]) if (sP < 0.1).any() else None,
                  "remnant_minima_after_60": mins[:5],
                  "remnant_d_at": {str(q): float(np.interp(q, tq, dRM)) for q in (112, 120, 140, 160, 200, 240, 280)},
