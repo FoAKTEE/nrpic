@@ -217,7 +217,7 @@ A reproduction asks whether a code returns what a paper prints. A verified capab
 
 \begin{figure*}
 \includegraphics[width=\textwidth]{fig_ladder}
-\caption{Verification ladder of the USR lattice, read from the bottom. Inputs and criteria are fixed before the runs; the runs use the release of the code; two independent readers judge the same outputs. Green boxes mark criteria that hold, the red box the one that fails, and the purple box the reading made after the data.}
+\caption{Verification ladder of the USR lattice, read from the bottom. Inputs and criteria are fixed before the runs, except the quarter amplitude, added after the halving outcome with predictions of its own; the runs use the release of the code; two independent readers judge the same outputs. Green boxes mark criteria that hold, the red box the one that fails, and the purple box the reading made after the data.}
 \label{fig:ladder}
 \end{figure*}
 
@@ -255,7 +255,7 @@ The resolution pair behaves as Fig.~\ref{fig:resolution} shows. Above $|\bm n| \
 
 The constraint violation of a correct source is second order in the noise, so the even part of each constraint must fall by four when $\lambda$ halves. The criterion compares the root mean square $e(\lambda)$ of the even part over the lattice at each record time. A small part of $e$ does not scale with $\lambda$, so the criterion removes a noise level $f$, estimated as fixed in advance from the odd parts $o$ of the same pair,
 \begin{equation}
-f^2 = 4\,o(\tfrac12)^2 - o(1)^2 ,
+f^2 = \max\!\Bigl[0,\ \tfrac13\bigl(4\,o(\tfrac12)^2 - o(1)^2\bigr)\Bigr] ,
 \label{eq:floor}
 \end{equation}
 and judges every record time at which $e(\frac12)$ exceeds three times $f$. The factor of the Hamiltonian constraint lies in the accepted band at every judged time (Fig.~\ref{fig:halving}a). The factor of the momentum constraint does at every judged time but one, at the end of USR, where it falls below the band (Fig.~\ref{fig:halving}b). As written, this criterion fails, and it stays failed: its estimator was fixed before the runs.

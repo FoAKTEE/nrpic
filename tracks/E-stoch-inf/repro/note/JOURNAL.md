@@ -617,3 +617,16 @@ pdflatex; the PNG copies left manuscript/figures. Compile: 32 pages, no undefine
 5.05 MB (from 5.56 MB; the bulk is the two extrinsic-curvature spectra of the reproduction, 1.0 and
 1.2 MB, as before). Pages 10 (ladder, mosaic) at 75 and 150 dpi and 32 (architecture, timeline) read.
 R16 is the source of every committed G2 figure and of the tables.
+
+## Entry 27 (2026-11-25 03:56 PST, lead of E, batch 17): the gate review's text corrections; R17
+
+Gate G2 is signed, pass with reservations (coord/GATES.md 2026-11-24; decision 0038). Its review
+(`stage/G2/GATE_REVIEW.md` section 5) asks four text corrections, made before R17:
+F1, eq. (floor) now f^2 = max[0, (4 o(1/2)^2 - o(1)^2)/3], as SCOPE 4c defines it (the judged numbers
+always used this form); F3, fig_ladder: box 4 of rung 1 shows the amplitudes +-1, +-1/2 only, and the
+first box of rung 2 says that +-1/4 was added after the halving outcome (caption likewise); F4, ledger
+rows of the three-amplitude level name their estimator (sigma^2 = [rms(D1)^2 + rms(D2)^2]/34, the
+verifier's pooled form) and quote the gate review's D1-only values beside it. F2 is a stage text.
+Prediction for R17 (registered run_all): every PNG byte-equal to R16 except fig_ladder.png; the ledger
+tables differ from R16 only in the two row labels; ledger checks all pass (no value moved); compile
+32 pages, PDF still below 5 MB; the pages with eq. (floor), Fig. 12 (ladder) and Table XVI read.

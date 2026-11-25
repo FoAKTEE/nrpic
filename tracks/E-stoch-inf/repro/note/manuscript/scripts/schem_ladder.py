@@ -1,7 +1,8 @@
 """Schematic: the verification ladder of the ultra-slow-roll lattice.
 
 From the bottom up: what was fixed before any run (background and mode functions at N*, the
-criteria, two seeds, three amplitudes with both signs), the runs on the release build of the code
+criteria, two seeds, two amplitudes with both signs; the quarter amplitude came after the halving
+outcome, with its own predictions), the runs on the release build of the code
 (eleven runs: one seed at three amplitudes, a second seed, a finer lattice, a control with the
 momentum source flipped), two independent readers of the dumps, the nine criteria grouped by what
 they test, and the outcome: every criterion holds except the scaling of the momentum constraint at
@@ -43,12 +44,12 @@ def main():
     for x, lab in zip(xs, ["background and mode\nfunctions at $N_*$",
                            "nine criteria with\ntheir thresholds",
                            "two seeds of the\nrandom amplitudes",
-                           "amplitudes $\\lambda = \\pm1, \\pm\\frac{1}{2}, \\pm\\frac{1}{4}$\n(even and odd parts)"]):
+                           "amplitudes $\\lambda = \\pm1, \\pm\\frac{1}{2}$\n(even and odd parts)"]):
         box(ax, x, y + 0.35, 6.85, lab, INP)
     # rung 2: runs
     y = 4.0
     rung(ax, y, 2.75, "2  Runs on the release build of the code (cards)")
-    for x, lab in zip(xs, ["$256^3$, first seed,\nthree amplitudes",
+    for x, lab in zip(xs, ["$256^3$, first seed, $\\pm1, \\pm\\frac{1}{2}$;\n$\\pm\\frac{1}{4}$ added after the halving",
                            "$256^3$, second seed,\nfull amplitude",
                            "$320^3$, first seed,\nfull amplitude",
                            "$256^3$ control:\nmomentum source flipped"]):
