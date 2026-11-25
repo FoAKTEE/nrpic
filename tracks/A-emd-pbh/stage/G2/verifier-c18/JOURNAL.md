@@ -75,7 +75,7 @@ extrapolation of the last three rows of a piece up to its break. Registered outc
   is the first trapped sphere, as threshold_ball/DESIGN.md section 1 states). [VERIFIED] The exact
   columns of both packages are reproduced by an independent reference.
 
-## Entry 2, 2026-11-25 13:15Z: predictions for the recomputation of conv_ball (before running vconv.py)
+## Entry 2, 2026-11-25 13:06Z (commit 5b607af1): predictions for the recomputation of conv_ball (before running vconv.py)
 
 Claims (conv_ball/README.md table and findings; final analysis A-20261121-120257-a2eb839): first
 detection t, ddet, dtrap, mass median per member; mesh orders ddet 1.5, 2.0, dtrap 2.1, 1.5; mass
@@ -130,7 +130,7 @@ over three bands on each side, v3) was added before the registered run. Outcomes
 - Boundary leg: A-L32 equals A to 1.0e-7 in ddet and 1.2e-7 in the mass median (claimed 1e-7);
   B-L32 equals B to 1.2e-11 in ddet and dtrap (claimed 1e-11) and to 1.2e-8 in the mass median.
 
-## Entry 3, 2026-11-25 13:20Z: predictions for the recomputation of threshold_ball (before running vthresh.py)
+## Entry 3, 2026-11-25 13:11Z (commit f1624142): predictions for the recomputation of threshold_ball (before running vthresh.py)
 
 Claims: threshold_ball/README.md results table (A-20261124-131120-5c974ce; C-d0.42 from
 A-20261125-115027-17b419e, A-20261125-115550-fe60ff1) and its bullet list. Rule: entry 1 of
@@ -161,7 +161,7 @@ threshold_ball/JOURNAL.md (three consecutive finds spanning 5 M_AH and every lat
   proper time at the first detection exceeds the core edge's by about the coordinate lag (1-2 M),
   so B-d0.42 would be detected after 45 in the SCOPE measure [JUDGEMENT, to be measured].
 
-### Entry 3a, 2026-11-25 13:35Z: a defect of my own reader, found by the first threshold run (A-20261125-131148-99204e1); predictions for the reruns
+### Entry 3a, 2026-11-25 13:14Z (commit 1b00953e): a defect of my own reader, found by the first threshold run (A-20261125-131148-99204e1); predictions for the reruns
 
 The first registered threshold run classified A-d0.42 and A-d0.40 as BH (persistent from 45.625 and
 48.375) and put B-d0.35's persistent start at 57.3125 (table 58.312). Reading the raw summary of

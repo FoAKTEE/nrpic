@@ -104,6 +104,9 @@ def main():
         if ys:
             hh = np.array([1 / 16, 1 / 64])
             ax[k].loglog(hh, ys[0] * (hh / hh[0]) ** 2, color="k", ls="--", lw=1.0, label="order 2")
+        ax[k].set_xticks([1 / 64, 1 / 32, 1 / 16])
+        ax[k].set_xticklabels(["1/64", "1/32", "1/16"])
+        ax[k].xaxis.set_minor_formatter(plt.NullFormatter())
         ax[k].set_xlabel(r"finest cell $h_f$ (M)", labelpad=-1)
         ax[k].set_title(lab, fontsize=10)
     ax[0].legend(fontsize=7, loc="lower right")
