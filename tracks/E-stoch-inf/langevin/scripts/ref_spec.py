@@ -17,6 +17,7 @@ Variants: de Sitter noise (H/2pi)^2 in phi only; the lattice density of states o
 no noise (classical check). Linear references: continuum band variance int P_R dln k and
 the lattice sum sum_n P_R(k_n) / (4 pi |n|^3), with P_R from the same mode functions.
 """
+import os
 import sys
 import zlib
 import common
@@ -27,7 +28,8 @@ import matplotlib.pyplot as plt
 CASE = sys.argv[1]
 NREAL = int(sys.argv[2]) if len(sys.argv) > 2 else 1_000_000
 CH = 16
-NLAT = 64          # |n| <= 64 on the 256^3 lattice
+NLAT = int(os.environ.get("NRPIC_REF_NLAT", "64"))   # |n| <= 64 on the 256^3 lattice (32: the 128^3 band)
+TAG = "" if NLAT == 64 else f"_n{NLAT}"             # output names of another band never overwrite the 256 band
 SIGMAS = (1.0, 0.1, 0.01)
 
 
@@ -234,7 +236,7 @@ def main():
     a3.set_xlabel("$k/\\mathrm{d}k$")
     a3.set_ylabel("$\\mathcal{P}_\\mathcal{R}(k)$")
     a3.legend(loc="best", fontsize=7)
-    savefig(fig, f"ref_{CASE}_setup")
+    savefig(fig, f"ref_{CASE}{TAG}_setup")
     plt.close(fig)
 
     # ---- figure 2: PDF of delta N and variance ratios
@@ -274,9 +276,9 @@ def main():
     b2.set_xticklabels([n.replace("_", "\n") for n in names], fontsize=6.5)
     b2.minorticks_off()
     b2.set_ylabel("var/var$_\\mathrm{lin}$ (circles), 1+skewness (squares)")
-    savefig(fig, f"ref_{CASE}_pdf")
+    savefig(fig, f"ref_{CASE}{TAG}_pdf")
     plt.close(fig)
-    save_results(f"ref_{CASE}", out)
+    save_results(f"ref_{CASE}{TAG}", out)
 
 
 if __name__ == "__main__":

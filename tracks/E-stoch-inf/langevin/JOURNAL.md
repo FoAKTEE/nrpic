@@ -275,3 +275,22 @@ results/ref_inflection_endinf*.json)
 - Classical vs stochastic mean: <N> is 0.78 e-folds shorter than the classical 115.68
   [VERIFIED by run]. A convex drift (D ~ kappa delta^2) speeds up the average passage
   [JUDGEMENT on the cause].
+
+## Entry (2026-11-25 03:57 PST, lead of E, batch 17): the one-patch reference for the 128^3 band of G3
+
+Purpose: the G3 scope (`../spec/scope/SCOPE.md` section 4d) compares the tail of the lattice curvature
+perturbation of 128^3 USR boxes with the one-patch delta-N calculation of the same inflection scenario.
+`results/ref_inflection.json` holds that calculation for the 256^3 band (|n| <= 64). The 128^3 boxes
+inject |n| <= 32 (nmax2 = 1024, k_max = N dk / 4), so the band must be recomputed. `ref_spec.py` now
+takes the band from NRPIC_REF_NLAT (default 64, outputs unchanged) and names the outputs of another
+band `ref_inflection_n32*` so the 256 files are never overwritten. Run: all variants, 2e5 realisations
+(a pilot-size reference; the G3 reference proper is 1e6 or more, SCOPE 4d), 4 cores.
+Predictions (before the run):
+- L1: the linear lattice band variance at N_e for |n| <= 32 lies between 0.05 and 0.4 (the 256 band
+  gives 0.7986; P_R rises steeply toward the top of the band, so the top octave carries most of it).
+- L2: with sigma = 0.01 and the lattice density of states, var/var_lattice = 1.00 +- 0.03 (the 256
+  band: 0.9905 +- 0.0016). Refuted outside: then the separate-universe reference does not reproduce
+  linear theory for the 128 band and cannot serve as the G3 reference without a correction.
+- L3: skewness of delta N at N_e (sigma = 0.01) between 0.005 and 0.04 (256 band 0.038; the
+  non-Gaussianity grows with the band amplitude); P(dN > 3 sigma_lin)/1.35e-3 between 0.95 and 1.2.
+- L4: sigma = 1 (literal lattice timing) again about 13/9 of linear (1.35-1.5).
