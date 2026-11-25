@@ -923,3 +923,26 @@ fig_nseries.png read) and C-20261125-122020-031b67e (d2_analysis.py with m16, fi
   history (nseries.py into scratch/C-sidm/tmp, not registered, not a result) shows the
   y0 = 0.324 control at N = 1e5 crossing alpha_min = 0.3 at about 600 M [TO VERIFY].
 Failed predictions of this entry: NS.2 (by design one of NS.1/NS.2 had to fail).
+
+## 2026-11-25T12:25Z  session C-sidm lead (batch 17)  commits 6d674afd..(this entry's commit)  runs C-20261125-115759-77a6999, -120426-f261c3e, -120516-36dc9b8, -122010-fb3cc08, -122020-031b67e (closed: C-20261124-221122-928c9eb, C-20261125-044843-2d048b6)
+
+- did: merged main (core-v0.7); closed N6c and M16 (q0016, q0017) with nrpic-run finish
+  (checksums of about 90 GB took 20 min); wrote the N-series reader nseries.py, checked it on
+  the closed N = 1e5 control against the batch-11 numbers, and judged NS.1/NS.2 and
+  M16.1/M16.2 with registered analyses and figures read (entry 12:21Z); wrote predictions
+  B17.1-B17.4 (11:56Z), then replaced the threshold-model kicks by the bracket models
+  (B17.5, B17.6, 12:01Z) before anything was queued; made N = 1e6 samples of y0 0.344 and 0.324
+  (make_ic_seeds.py --tag), decks (make_decks_b17.py), a processor smoke test (passed); removed
+  six queue entries and added q0046-q0048; updated stage/G2 (checklist, OPEN.md, collect,
+  verify --no-checksums, report), REVIEW-wave3 section 15, outbox to orch and core, six acks.
+- found: the N = 1e5 control collapse is particle-noise relaxation (N = 1e6 holds 600 M); the
+  collisional collapse time converges with the mesh (158.42 M on M/16 vs 163.41 on M/8);
+  nrpic-run finish refuses runs continued in place, so qitem.sh close fails for them.
+- changed my mind about: the threshold-model kicks at N = 1e6 as the next runs (a model at the
+  turning point cannot bracket the threshold); the six kicked N = 1e5 continuations (removed).
+- failed predictions: NS.2. Failed runs: none (the first attempt to start the 0.324 sample was
+  refused by nrpic-run because the tree was dirty; rerun after a commit).
+- open: q0046, q0047, q0048, q0018, q0022-q0024 in the queue; A324s1c+ to close by hand; the
+  convergence legs of the bracket (card-hours asked); figures, note and a G2 verifier.
+- card-hours: none submitted by this session; closed this session N6c 2.71 and M16 1.19
+  card-hours (nrpic-run budget: G2 29.62 used, 30.38 left).

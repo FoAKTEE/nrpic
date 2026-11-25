@@ -382,3 +382,29 @@ are read (HANDOFF).
 
 Later in the same session: `blockA_delta.py` drops a window that a run covers only in part
 (complete windows only enter the seed standard deviation); not rerun on the interim data.
+
+## 15. Batch 17 (2026-11-25, two queue runs ended): what the lead checked
+
+No helper package ran for C-sidm since batch 12; `git status` was clean after the merge of
+main (release core-v0.7). The runs read are the shared-queue entries q0016 N6c and q0017 M16
+(predictions JOURNAL 2026-11-24T13:14Z), closed with `nrpic-run finish` before any analysis.
+The N-series reader is new (`longruns/scripts/nseries.py`); it was first run on the closed
+N = 1e5 control, where it reproduced the alpha_c changes of the batch-11 journal (+0.0024,
++0.0044, -0.0024, -0.0188, -0.093 at 100-500 M) before it read N6c.
+
+| Item | Runs (analysis) | Recheck | Verdict of the lead |
+|---|---|---|---|
+| N6c, NS.1/NS.2 | C-20261124-221122-928c9eb (C-20261125-122010-fb3cc08) | reader reproduces the N = 1e5 numbers of batch 11; fig_nseries.png read: no collapse, alpha_c pulsation within [-0.0022, +0.0115], H floor 10x lower | [VERIFIED] NS.1 holds, NS.2 fails; relaxation reading |
+| M16, M16.1/M16.2 | C-20261125-044843-2d048b6 (C-20261125-122020-031b67e) | d2_analysis.py unchanged; the M/8 runs reproduce their batch-11 values (t_c 164.01, 163.41, 165.97 M; rates 8.8512e-3, 8.8572e-3, 8.675e-3); fig_d2.png read | [VERIFIED] both hold; t_c 158.42 M |
+| A324s1c+ | C-20261123-032324-938ecbd | chain DONE at 600 M; `nrpic-run finish` refuses (manifest with `continuations` read as hand-written) | not closed, not judged; to close by hand |
+
+Not done, and why: the independent reader `xcheck_b11.py` was not rerun on N6c and M16 (time);
+the M/16 t_c and the N6c no-collapse are read by one reader each. A G2 verifier is not sent: the
+package has four failing and nine open items.
+
+Decision of the lead: the six continuations of kicked N = 1e5 runs are removed from the queue
+(they read a bracket that A.4 declared unfit, and NS.1 now explains why); the bracket is run at
+N = 1e6 instead (q0046, q0047), and the gauge leg starts on D2 (q0048). The decks stay on the
+core-v0.6 card build of their series without `dt_gauge` (cfl_number 0.25 below 0.47), a
+deliberate departure from the instruction that new decks carry `dt_gauge = 0.9`: a control
+and its kicked runs must share an executable and a step rule.
