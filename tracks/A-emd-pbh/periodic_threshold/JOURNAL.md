@@ -939,3 +939,36 @@ processors only; the conversion from coordinate time to t/t_H from the run's own
   or set by the initial velocities. The discriminating test, on processors: the same S1 particles under
   `<particles> pusher = newton`, `newton_poisson = fft` (core-v0.6), first crossing from the same reader.
   No oblate card member is queued: the snapshots bracket the crossing, so the fallback condition is not met.
+
+## 2026-11-25 08:10 PST (lead of batch 20): A2 control in Newtonian mode and a second derivation of the reference, before any run
+
+A2 stays FAILED as written (decision 0040 item 7). Second derivation of the Zel'dovich reference [this entry,
+before the runs; inputs: id.json of A-emd-pbh-20261115-155802-9a6596f/S_mu0.3, a2.json of A-20261125-151629-bb77171]:
+- Growth. For dust in an Einstein-de Sitter background the linear density contrast on the synchronous comoving
+  slicing obeys delta'' + 2 H delta' = 4 pi G rho delta on every scale (no k dependence), growing mode
+  D = a; the Newtonian Zel'dovich solution has the same D = a. The first-axis eigenvalue at a = 1 from S1L's
+  snapshot 0 is 1 - 0.937 = 0.063 (DESIGN: (2 mu/15)(1 + 3e) = 0.064): first crossing at a_sc = 15.9 (15.6).
+- Clock. H_i = 1 at a = 1: cosmic time t_c = (2/3) a^(3/2). r_m a H = 1 with aH = a^(-1/2) gives a_H = r_m^2 =
+  6.000 (id.json r_m = 2.449490). So t_c/t_H = (a/6)^(3/2): a_sc = 15.6-15.9 gives 4.19-4.31 t_H. In the GR run
+  (lapse ~ 1) a = (1 + 1.5 t)^(2/3) and t/t_H = (1 + 1.5 t)/6^1.5, the formula of a2_crossing.py. In the
+  Newtonian mode (conformal time eta, a = (1 + eta/2)^2): t/t_H = (1 + eta/2)^3 / 6^1.5. The reference stands.
+- What the particle file holds [VERIFIED, read this session]: total rest mass 956.02 against rho_m L^3 = 954.93;
+  masses 0.966 to 2.19 times the mean (they carry psi^6 of the curvature perturbation, zeta_max 0.296); covariant
+  u_i against the displacement x - q: ratio 1.03 (median), 1.00-1.38 (5-95 per cent), i.e. psi^4 times the
+  f = 1 Zel'dovich velocity. A Newtonian pusher reads masses per coordinate volume and u_i as a dx/deta.
+Members (core-v0.7 processor build, `pusher = newton`, `newton_poisson = fft`, spectral symbol, uniform periodic
+64^3 mesh of side 20 = the particle lattice, CIC with the binomial filter and compensation of S1L, matter era
+a = (1 + eta/2)^2, snapshots every 0.1 in eta to eta = 8.5; first crossing from a2_crossing.py --clock newton):
+- N-z: S1L's positions, equal masses (rho_m L^3 / N), p = x - q: the pure Newtonian growing mode at a = 1;
+- N-f: S1L's particle file as it is (the literal control of decision 0040 item 7);
+- N-z128: N-z on a 128^3 mesh (force resolution).
+Predictions [JUDGEMENT]:
+- AZ1: N-z first crosses along z, at the centre, at t/t_H in [3.7, 4.5] (Zel'dovich 4.2-4.3; ellipsoidal second
+  order earlier, CIC softening of a peak 8 cells in radius later, each under 10 per cent); N-z128 within 5 per
+  cent of N-z. Refuted outside [3.7, 4.5] or another axis first; then the reference or the reader is wrong.
+- AZ2: N-f crosses earlier than N-z (more mass at the peak, larger velocities), in [2.5, 4.3]. Refuted if later.
+Consequence fixed now: if AZ1 and AZ2 hold, the same particles under Newtonian gravity cross about 1.5 times
+earlier than under GR (6.1-6.4 t_H), so the lag is not in the initial velocities or masses as a Newtonian pusher
+reads them; it lies in the relativistic evolution or in the coordinates of the GR run (the reader measures
+coordinate separations; the Gamma-driver shift moves the coordinate lattice), and this control does not tell
+which. If N-f crosses at >= 5.5 t_H the data are implicated instead.

@@ -50,6 +50,9 @@ def main():
     ap.add_argument("--M", type=float, default=1.0, help="conv_ball: sharp-edge mass H^2 R_b^3/2 in code units")
     ap.add_argument("--edge-w", type=float, default=None, help="conv_ball: taper half width (M); sets rm = R_b + w")
     ap.add_argument("--nlat", type=int, nargs="*", default=[34, 51, 68])
+    # conv_ball (batch 20, threshold_ball entry 13): profile of the core; smooth_tophat joins the core to
+    # the background by a C-infinity step from R1 to R2 (expball SmoothTopHat: no density jumps inside)
+    ap.add_argument("--profile", choices=["tophat", "smooth_tophat"], default="tophat")
     # conv_ball: nested lattices NAME:HF:OUTER:SUB (finest cell 1/HF, outer boundary OUTER,
     # SUB^3 sites per cell of the local level; nested.py)
     ap.add_argument("--nested", nargs="*", default=[], help="conv_ball: NAME:HF:OUTER:SUB, e.g. nestA:16:16:1")
@@ -65,12 +68,14 @@ def main():
     if a.edge_w is not None:                         # conv_ball
         a.rm = Rb + a.edge_w
     w = a.rm - Rb
-    spec = dict(profile="tophat", HRb=a.HRb, M=a.M, delta_c=a.dc, R1=a.R1 * Rb, R2=a.R2 * Rb,
+    spec = dict(profile=a.profile, HRb=a.HRb, M=a.M, delta_c=a.dc, R1=a.R1 * Rb, R2=a.R2 * Rb,
                 edge_width=w, R1_over_Rb=a.R1, R2_over_Rb=a.R2, rm=a.rm)
     ball = C.ball_from_spec(spec)
     rm = ball.matter_rbar()
     assert abs(rm - a.rm) < 1e-9, (rm, a.rm)
     stem = (f"expball_tophat_HRb{a.HRb:g}_dc{a.dc:g}_R1{a.R1:g}_R2{a.R2:g}_rm{a.rm:g}").replace(".", "p")
+    if a.profile != "tophat":                        # conv_ball (batch 20)
+        stem = stem.replace("expball_tophat", "expball_" + a.profile.replace("_", ""))
     if a.M != 1.0:                                   # conv_ball
         stem = (f"expball_tophat_HRb{a.HRb:.6g}_M{a.M:.6g}_dc{a.dc:g}_rm{a.rm:.6g}").replace(".", "p")
     summ = ball.summary()
@@ -80,7 +85,7 @@ def main():
     # ------------------------------------------------------------ table
     drbar = rm / a.table_points
     tab = os.path.join(a.out, stem + ".tab")
-    hdr = dict(generator="tracks/A-emd-pbh/runs_ball/prep_bh.py (expball/table.py)", model="tophat",
+    hdr = dict(generator="tracks/A-emd-pbh/runs_ball/prep_bh.py (expball/table.py)", model=a.profile,
                H=repr(ball.H), Rb=repr(ball.Rb), M=repr(ball.M), t_i=repr(ball.t_i),
                units="G = c = 1, M_ADM = M", alpha="1 (proper-time slicing of the dust)",
                betar="-v/(psi^2 sqrt(1+2E)) (shift of the dust's proper-time slicing)")
@@ -99,7 +104,8 @@ def main():
     with open(tab) as fh_:
         lines_ = fh_.readlines()
     k_ = next(i for i, l_ in enumerate(lines_) if l_.startswith("# exterior"))
-    lines_.insert(k_ + 1, "# breaks = " + " ".join(f"{v:.17e}" for v in rb_breaks) + "\n")
+    if a.profile == "tophat":                        # conv_ball (batch 20): the smooth profile has no jumps
+        lines_.insert(k_ + 1, "# breaks = " + " ".join(f"{v:.17e}" for v in rb_breaks) + "\n")
     with open(tab, "w") as fh_:
         fh_.writelines(lines_)
     print(f"table: drbar = {drbar:.9g}, breaks at rbar = {rb_breaks.tolist()} "

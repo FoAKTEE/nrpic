@@ -438,3 +438,39 @@ test (entry 7's candidate) has not been run.
 - K4 is NOT the smoothed-edge test that decision 0039 item 2(c) refers to; that test has not run. Item C3 stays
   FAILED as written. Next test (prediction to be written before it): data set 3 with smoothed edges (prep_bh.py
   --edge-w) on meshes A and B, initial slice and t <= 5 on processors, ratio of section 3 at t = 0 and the norms.
+
+## Entry 13, 2026-11-25 08:05 PST (lead of batch 20): the smoothed-edge test for C3 (decision 0040 item 6), before any run
+
+What `prep_bh.py --edge-w` smooths [VERIFIED, conv_ball/scripts/prep_bh.py lines 45-70, expball/expball/model.py
+lines 120-150]: only the OUTER edge of the ball (the C^4 taper at R_b; data set 3 already has half width
+w = 4.25 - 4.0816 = 0.168 M). The density jumps of the compensated top hat at R1 (core edge) and R2 (end of
+the underdense shell) are untouched by it. A test of "the floor comes from the density jumps" therefore needs
+the core profile smoothed as well: expball's SmoothTopHat (C-infinity step of Delta from R1 to R2). At
+delta_c = 1.5 with R1 = 0.65 R_b and R2 = 0.95 R_b that profile needs negative density in the step (expball
+raises); R1 = 0.40 R_b is admissible (lowest local contrast -0.896). prep_bh.py gets `--profile smooth_tophat`
+(this session; no breaks are declared for it). Members (delta_c = 1.5, H R_b = 0.7, M = 1, one particle per
+finest cell, decks nest16_L16 = mesh A and nest32_L16 = mesh B, core-v0.7 threaded processor build):
+- W ("--edge-w" literally): data set 3's top hat with outer half width w = 0.918 M (rm = 5.0; jumps kept);
+- S (smoothed): smooth_tophat, R1 = 0.40 R_b, R2 = 0.95 R_b, the same outer taper (rm = 5.0).
+Runs: the t = 0 slices of W and S on A and B; S on A evolved to t = 5 (two threads; K4-ref took 6923 s to
+t = 5, so this session reads t <= ~2 and the next one the rest); S on B evolved as far as two threads allow
+(read at the end of this session; it may be continued). Reference top-hat numbers: K4-ref
+(A-20261125-120525-8fb946e, mesh A, processors) and conv_ball's card member B (line ratio at t = 0: 0.22 on
+A, 0.11-0.20 on B, verifier VERIFIER-C18.md).
+
+Prediction C3S [JUDGEMENT; a jump in rho and K_L leaves an O(1) residual on a band one cell wide, whose L2
+norm falls only as dx^(1/2) for H and grows as dx^(-1/2) for M; smooth data should converge at the scheme's
+order where resolved]:
+- (a) t = 0: the section-3 line ratio ||H||/||16 pi E|| of S is below 0.1 on A and on B and falls from A to B
+  by a factor of at least 2. Refuted by a ratio >= 0.1 on either mesh, or a fall by less than 1.5.
+- (b) t = 0: W's ratio stays within 25 per cent of the top hat's on the same mesh (the outer edge is not the
+  floor). Refuted by W below 0.75 of the top hat's.
+- (c) t = 0: the volume ||M||_2 of S falls from A to B (the top hat's grew at order -0.8, entry 6). Refuted by
+  growth.
+- (d) evolution on A: S's line ratio stays below 0.1 at every output read (t <= 5 when complete) and its
+  ||H||_2 is below K4-ref's by a factor of at least 3 at t = 1 and 2. Refuted by a ratio >= 0.1 at any output
+  or a factor below 3.
+Consequences fixed now: if (a), (c) and (d) hold, the floor of the top-hat members is named as the density
+jumps (on the outputs read), and the review is asked to judge G2's constraint item on smoothed members as
+0039 item 2(c) says; if (a) or (d) fails, the floor is not the jumps, and C3 goes to the review with the
+failure on record.
