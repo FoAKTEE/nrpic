@@ -7,6 +7,9 @@
 # Writes stdout+stderr of athena to <logfile> (with a header and a footer), samples the
 # GPU memory every 0.5 s into <logfile minus .log>.gpumem.csv, and exits with athena's
 # exit status. SIGTERM/SIGINT are forwarded to athena.
+# The marker of the shared card queue (NRPIC_QUEUE_*) never reaches the executable, even
+# when a job was submitted with it (decision 0037 item 4).
+for _v in $(compgen -e | grep -E '^NRPIC_QUEUE_' || true); do unset "$_v"; done; unset _v
 rundir=$1; log=$2; exe=$3; shift 3
 mkdir -p "$rundir" && cd "$rundir" || exit 2
 ulimit -c 0                      # no multi-GB core files from GPU processes

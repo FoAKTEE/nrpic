@@ -28,6 +28,9 @@ next action from DIR/<scenario>/plan:
 and records the name of its own process (/proc/self/comm) in DIR/<scenario>/comm.log.
 Each Slurm job of the chain is played by calling `submit_chain.sh --job RUNDIR` directly,
 as long as the chain is QUEUED. Kills are sent only to the fake's own process id.
+Every start command and every played job carries the marker of the shared card queue
+(NRPIC_QUEUE_DISPATCH, decision 0037 item 4); the fake sbatch and the fake executable record
+whether they see it (they must not).
 Writes DIR/summary.json and DIR/fig_submit_chain.{pdf,png}; exit status 0 if every
 expectation holds.
 """
@@ -41,11 +44,14 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
 CHAIN = os.path.join(REPO, "scripts", "submit_chain.sh")
+MARKER = "NRPIC_QUEUE_DISPATCH"
 
 FAKE_SBATCH = """#!/usr/bin/env bash
 n=$(( $(cat "$FAKE_DIR/sbatch_count" 2>/dev/null || echo 0) + 1 ))
 echo "$n" > "$FAKE_DIR/sbatch_count"
 echo "$*" >> "$FAKE_DIR/sbatch_calls.log"
+# the marker of the shared card queue as sbatch sees it (it would export it to the job)
+echo "${NRPIC_QUEUE_DISPATCH-unset}" >> "$FAKE_DIR/sbatch_marker.log"
 echo "$((900000 + n))"
 """
 FAKE_SQUEUE = """#!/usr/bin/env bash
@@ -57,6 +63,7 @@ FAKE_EXE = """#!/bin/bash
 # (first run of this test, core-20261121-080555-9730e2a), whereas the kernel names a
 # script started directly after the file it executed, as it names a binary.
 echo "$(cat /proc/$$/comm) $(basename "$0")" >> "$FAKE_DIR/comm.log"
+echo "${NRPIC_QUEUE_DISPATCH-unset}" >> "$FAKE_DIR/exe_marker.log"
 act=$(head -n 1 "$FAKE_DIR/plan"); sed -i 1d "$FAKE_DIR/plan"
 n=$(( $(cat "$FAKE_DIR/cycle" 2>/dev/null || echo 0) + 10 )); echo "$n" > "$FAKE_DIR/cycle"
 echo "Setup complete, entering main loop..."
@@ -159,6 +166,9 @@ def run_scenario(out, name, plan, fakebin, extra_env=None):
             del env[k]
     env.update(PATH=fakebin + os.pathsep + env["PATH"], FAKE_DIR=d, ATHENA_EXE=exe,
                ATHENA_WALL="00:01:00")
+    # decision 0037 item 4: the start command carries the dispatcher's marker, and so (worst
+    # case, a job submitted by an older script) does every job played below
+    env[MARKER] = "q9001:" + "ab" * 12
     env.update(extra_env or {})
     r = subprocess.run(["bash", CHAIN, rundir, inp], env=env, capture_output=True, text=True)
     res = {"start_rc": r.returncode, "start_out": r.stdout + r.stderr, "statuses": []}
@@ -194,6 +204,8 @@ def run_scenario(out, name, plan, fakebin, extra_env=None):
     res["rst_files"] = sorted(os.listdir(os.path.join(rundir, "rst"))) if os.path.isdir(
         os.path.join(rundir, "rst")) else []
     res["env"] = extra_env or {}
+    res["sbatch_marker"] = read(os.path.join(d, "sbatch_marker.log")).split()
+    res["exe_marker"] = read(os.path.join(d, "exe_marker.log")).split()
     return res
 
 
@@ -216,6 +228,9 @@ def main():
         checks[name + ": statuses"] = r["statuses"] == want
         checks[name + ": sbatch calls"] = r["sbatch_calls"] == nsb
         checks[name + ": final reason"] = reason in r["final_reason"]
+        checks[name + ": no sbatch call and no executable sees the queue marker"] = (
+            len(r["sbatch_marker"]) == r["sbatch_calls"] and len(r["exe_marker"]) == len(r["comm"])
+            and set(r["sbatch_marker"] + r["exe_marker"]) <= {"unset"})
         checks[name + ": every run under the run-specific name"] = (
             len(r["comm"]) == len(want) and len(set(r["comm"])) == 1
             and r["comm"][0].startswith("nrc-") and "athena" not in r["comm"][0])
