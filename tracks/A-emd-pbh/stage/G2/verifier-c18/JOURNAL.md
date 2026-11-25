@@ -244,3 +244,17 @@ The claimed C-d0.42 median +2.4e-2 is over "t 46.1-47.2 and 50.9-51" (README). M
 inside 46.1-47.2 stays within [-1e-2, +1e-2] (my whole-window median +1e-3, bracket half-width
 5e-3) [JUDGEMENT]; refuted by values near +2.4e-2 there. The line MOTS masses after the first
 detection lie 1-4 per cent below the finder in every shown member.
+
+### Entry 4 outcome (registered run A-20261125-131745-5388fde; fig_vthresh_masses.png looked at)
+
+PREDICTION PARTLY REFUTED. C-d0.42's dm(t) is not within +-1e-2 throughout 46.1-47.2: from the
+first find to 46.35 my exact mass on the slice is low (the outermost exactly trapped tracked shell
+lies inside the core edge, m about 0.36) and dm reaches +7.8 per cent (median +4.1e-2 over the 9
+finds there); from 46.35 to 47.2 the median is -2.2e-3, from 47.2 to 50.9 +1.8e-3. Over the README's
+window (46.1-47.2 and 50.9-51, 37 finds) my median is -1.5e-3, not +2.4e-2. The B members show no
+such excess: the largest dm in the first M after detection is +0.6 per cent (B-d1.00), and -0.2 to
+-1.2 per cent at delta_c <= 0.5; later medians -9e-3 to +2e-3.
+Line MOTS against the finder (all tab outputs after the first detection with a MOTS on the line and
+a find within 0.04 M): C-d0.42 median -0.63 per cent (range -0.06 to -0.84), C-R1.25 -0.02 per cent;
+B members -0.9 (B-d1.00) to -4.8 per cent (B-d0.35), growing as the horizon's coordinate radius
+shrinks (5 cells of M/32 at threshold). The second half of the prediction holds for B, not for C.
