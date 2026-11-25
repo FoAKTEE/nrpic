@@ -1,12 +1,12 @@
 # Re-verification: C-sidm G2
 
-`harness/bin/nrpic-stage verify C-sidm G2` on 2026-11-24T13:51:03Z, clean export of commit `83c3a5b994b4` in `scratch/C-sidm/tmp/stage-verify/C-sidm-G2-83c3a5b-20261124T134804Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify C-sidm G2` on 2026-11-25T12:25:24Z, clean export of commit `7a433f66cba9` in `scratch/C-sidm/tmp/stage-verify/C-sidm-G2-7a433f6-20261125T122426Z`. Result: **PASS**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 83c3a5b994b4 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-83c3a5b-20261124T134804Z/tree |
+| export | PASS | clean export of 7a433f66cba9 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-7a433f6-20261125T122426Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
@@ -14,22 +14,12 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 11 figures, each with its script |
 | min-figs | PASS | 3 schematics and 8 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | FAIL | 1 of 235 runs have problems |
+| runs | PASS | 242 run manifests finished (26 hand-written, read as decision 0012 allows) |
 | run-notes | WARN | 26 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 41 lines |
+| status | PASS | STATUS.md has 33 lines |
 | rerun | PASS | 11 of 11 scripts and commands ran cleanly in the export |
 | compare | PASS | 22 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 22 committed figure files regenerated |
-
-## runs
-
-```
-{
- "C-20261124-120250-9e6a3ba": [
-  "status is submitted: not finished (nrpic-run finish)"
- ]
-}
-```
 
 ## run-notes
 

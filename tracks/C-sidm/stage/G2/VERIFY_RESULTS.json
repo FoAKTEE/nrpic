@@ -1,10 +1,10 @@
 {
   "track": "C-sidm",
   "gate": "G2",
-  "commit": "83c3a5b994b4f261000b7f5019e373414b047c8a",
-  "verified_utc": "2026-11-24T13:51:03Z",
-  "export": "/data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-83c3a5b-20261124T134804Z",
-  "result": "FAIL",
+  "commit": "7a433f66cba9d168ea1c392ac5888e67befcb897",
+  "verified_utc": "2026-11-25T12:25:24Z",
+  "export": "/data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-7a433f6-20261125T122426Z",
+  "result": "PASS",
   "checks": [
     {
       "check": "clean",
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 83c3a5b994b4 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-83c3a5b-20261124T134804Z/tree",
+      "message": "clean export of 7a433f66cba9 (HEAD) in /data/haiyangw/nrpic/scratch/C-sidm/tmp/stage-verify/C-sidm-G2-7a433f6-20261125T122426Z/tree",
       "detail": null
     },
     {
@@ -68,13 +68,9 @@
     },
     {
       "check": "runs",
-      "status": "FAIL",
-      "message": "1 of 235 runs have problems",
-      "detail": {
-        "C-20261124-120250-9e6a3ba": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ]
-      }
+      "status": "PASS",
+      "message": "242 run manifests finished (26 hand-written, read as decision 0012 allows)",
+      "detail": null
     },
     {
       "check": "run-notes",
@@ -211,7 +207,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 41 lines",
+      "message": "STATUS.md has 33 lines",
       "detail": null
     },
     {
