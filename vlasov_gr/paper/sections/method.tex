@@ -67,7 +67,7 @@ w_{-1}(c) &= \frac{r^2 c(c-1)}{1+r}, &
 w_0(c) &= (1-c)(1+rc), \nonumber\\
 w_1(c) &= \frac{c(1+rc)}{1+r},
 \end{align}
-satisfying $w_{-1} + w_0 + w_1 = 1$, $w_{-1}(-1/r)=1$, $w_0(0)=1$, and $w_1(1)=1$ identically. By Taylor expansion around $t^n$, quadratic blending achieves $\mathcal{O}(\Delta t^3)$ local metric truncation error—matching fourth-order stage updates across nonuniform steps while reducing to linear two-level interpolation on startup steps or immediately following an adaptive regrid.
+satisfying $w_{-1} + w_0 + w_1 = 1$, $w_{-1}(-1/r)=1$, $w_0(0)=1$, and $w_1(1)=1$ identically. By Taylor expansion around $t^n$, quadratic blending achieves $\mathcal{O}(\Delta t^3)$ local metric truncation error—matching fourth-order stage updates across nonuniform steps while reducing to linear two-level interpolation on startup steps or immediately following an adaptive regrid (Fig.~\ref{fig:method_pusher_interp}).
 
 \subsection{Zero-overhead \texorpdfstring{$C^2$}{C2} quintic Hermite spatial metric reconstruction}\label{sec:method_quintic}
 
@@ -109,8 +109,15 @@ Three properties follow immediately by direct differentiation of the quintic Her
 \begin{enumerate}
 \item \emph{Global $C^2$ regularity}: at the interface $s = 1^- \leftrightarrow 0^+$ between adjacent cells, both intervals evaluate the same fourth-order finite-difference formulas for $f_1$, $h f'_1$, and $h^2 f''_1$, so the reconstructed fields, first spatial gradients, and second derivatives (Hessians) are continuous across every cell face in three dimensions via separable tensor products $w_a(s_1) w_b(s_2) w_c(s_3)$.
 \item \emph{Fifth-order accuracy}: because the fourth-order centered differences are exact for every polynomial of degree $d \le 4$ and $H_{ab}$ reproduces all degree-five Hermite data, the tensor-product interpolant reproduces degree-four polynomials identically, yielding $\mathcal{O}(h^5)$ field error and $\mathcal{O}(h^4)$ gradient error—eliminating the cubic-Hermite $\mathcal{O}(h^3)$ gradient discontinuity cleanly.
-\item \emph{Zero memory overhead}: near block edges the index $i_0$ clamps smoothly inward into the four-cell ghost region so all 216 stencil evaluations remain local to a single mesh block without allocating pre-sharpened spline arrays.
+\item \emph{Zero memory overhead}: near block edges the index $i_0$ clamps smoothly inward into the four-cell ghost region so all 216 stencil evaluations remain local to a single mesh block without allocating pre-sharpened spline arrays (Fig.~\ref{fig:method_pusher_interp}).
 \end{enumerate}
+
+\begin{figure*}[tbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_method_pusher_interp.pdf}
+\caption{\label{fig:method_pusher_interp}%
+High-order geodesic integration and metric reconstruction. Top left: Canonical fourth-order Gauss--Legendre (\texttt{GL4}), implicit midpoint, and triad-projected spacetime Boris pushers. Top right: Three-level quadratic Lagrange time weights across nonuniform steps. Bottom: Six-node $C^2$ quintic Hermite stencil inside $n_g = 4$ ghost cells and exact second-derivative continuity $h^2 f''$ vs cubic Hermite.}
+\end{figure*}
 
 \subsection{Conservative adaptive-mesh stress-energy deposition}\label{sec:method_dep}
 
@@ -186,14 +193,7 @@ Adaptive boundary flux matching replaces each coarse face flux with the area-sum
 Thus $L_\kappa$ is self-adjoint and positive semidefinite for $\kappa \ge 0$, guaranteeing monotonic $L^2(\sqrt{\gamma}\,\dd V)$ energy smoothing whenever $\lambda_{\max}(L_\kappa) \le 2$.
 \item \emph{Unconditional pointwise positivity}: for any $\sqrt{\gamma}_c, \sqrt{\gamma}_n > 0$, the harmonic mean obeys the sharp bound $\sigma_{c\pm 1/2} = 2\sqrt{\gamma}_c\sqrt{\gamma}_n/(\sqrt{\gamma}_c + \sqrt{\gamma}_n) < 2\sqrt{\gamma}_c$ regardless of how steeply $\sqrt{\gamma}$ jumps at a black hole puncture (whereas arithmetic averaging $\frac{1}{2}(\sqrt{\gamma}_c+\sqrt{\gamma}_n)$ grows unbounded relative to $\sqrt{\gamma}_c$). Consequently, in each cell update $q_c^{\rm new} = \bigl[1 - \kappa\sum_{\rm nb}\sigma_{c,\rm nb}/\sqrt{\gamma}_c\bigr]q_c + \kappa\sum_{\rm nb}(\sigma_{c,\rm nb}/\sqrt{\gamma}_c)q_{\rm nb}$, the off-diagonal weights are nonnegative and the diagonal coefficient is strictly bounded below by $1 - 4\kappa$ for each one-dimensional sweep ($1 - 12\kappa$ for the three-dimensional seven-point stencil). Pointwise positivity $q_c \ge 0 \implies q_c^{\rm new} \ge 0$ holds unconditionally for $\kappa \le 1/4$ (directional) and $\kappa \le 1/12$ (unsplit).
 \end{enumerate}
-The dispersion factor of the unsplit filter, $\widehat{F}_{\rm uns}(k) = 1 - 4\kappa\sum_{d=1}^3 \sin^2(k_d\Delta x/2)$, reveals an informative trade-off (Fig.~\ref{fig:iter3_mcons}): at the unconditional positivity bound $\kappa = 1/12$, unsplit filtering retains factor $2/3$ at axis-aligned Nyquist modes $(\pi/\Delta x, 0, 0)$ (reaching zero in one pass at matched second moment $\kappa = 1/6$ or across two passes at $\kappa = 1/12$), whereas directional $w_1 = 1/4$ sweeps annihilate axis Nyquist modes in one pass at three times the inter-block communication cost.
-
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=\columnwidth]{figures/fig_iter3_mcons_diagnostics.pdf}
-\caption{\label{fig:iter3_mcons}%
-Self-adjoint harmonic conservative filter verification on curved adaptive meshes. Both directional ($\kappa = 1/4$) and unsplit seven-point ($\kappa \le 1/12$) schemes enforce exact constant states, machine-precision proper-volume conservation across refinement jumps, self-adjointness, and positivity.}
-\end{figure}
+The dispersion factor of the unsplit filter, $\widehat{F}_{\rm uns}(k) = 1 - 4\kappa\sum_{d=1}^3 \sin^2(k_d\Delta x/2)$, reveals an informative trade-off (Fig.~\ref{fig:method_backreaction}): at the unconditional positivity bound $\kappa = 1/12$, unsplit filtering retains factor $2/3$ at axis-aligned Nyquist modes $(\pi/\Delta x, 0, 0)$ (reaching zero in one pass at matched second moment $\kappa = 1/6$ or across two passes at $\kappa = 1/12$), whereas directional $w_1 = 1/4$ sweeps annihilate axis Nyquist modes in one pass at three times the inter-block communication cost.
 
 \subsection{Causal stage-accurate spacetime coupling and multi-rate subcycling}\label{sec:method_coupling}
 
@@ -216,7 +216,14 @@ c_s, & s_{\rm m} = 1, \\
 \tau + c_s \Delta t, & s_{\rm m} > 1,
 \end{cases}
 \end{equation}
-before dividing each reconstructed component by the local stage volume element $\sqrt{\gamma^{(s)}}$. Here $\theta_{\rm lim} \in [0, 1]$ is a pointwise causal stage limiter initialized at unity, clamped first to prevent negative energy density ($D_E^{(s)} \ge 0$), and halved at most five times whenever extrapolated momentum violates the normal-observer light-cone bound $\gamma^{(s),ij} D_{S_i}^{(s)} D_{S_j}^{(s)} \le (1 + 10^{-12})(D_E^{(s)})^2$. Eliminating $\mathcal{O}(\Delta t)$ frozen-matter stage lag restores clean second-order coupled convergence and allows replacing the four-stage RK4 spacetime integrator with three-stage SSP-RK3 at Courant numbers $\nu_{\rm CFL} = 0.40\text{--}0.45$. Under multi-rate subcycling ($s_{\rm m} > 1$), Z4c advances through $s_{\rm m}$ fine steps per particle push—automatically synchronizing at output limits and adaptive-mesh check intervals—while kinetic trajectories reconstruct stage metrics across the full macro-step via the three-level time weights.
+before dividing each reconstructed component by the local stage volume element $\sqrt{\gamma^{(s)}}$. Here $\theta_{\rm lim} \in [0, 1]$ is a pointwise causal stage limiter initialized at unity, clamped first to prevent negative energy density ($D_E^{(s)} \ge 0$), and halved at most five times whenever extrapolated momentum violates the normal-observer light-cone bound $\gamma^{(s),ij} D_{S_i}^{(s)} D_{S_j}^{(s)} \le (1 + 10^{-12})(D_E^{(s)})^2$. Eliminating $\mathcal{O}(\Delta t)$ frozen-matter stage lag restores clean second-order coupled convergence and allows replacing the four-stage RK4 spacetime integrator with three-stage SSP-RK3 at Courant numbers $\nu_{\rm CFL} = 0.40\text{--}0.45$. Under multi-rate subcycling ($s_{\rm m} > 1$, Fig.~\ref{fig:method_backreaction}), Z4c advances through $s_{\rm m}$ fine steps per particle push—automatically synchronizing at output limits and adaptive-mesh check intervals—while kinetic trajectories reconstruct stage metrics across the full macro-step via the three-level time weights.
+
+\begin{figure*}[tbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_method_backreaction.pdf}
+\caption{\label{fig:method_backreaction}%
+Adaptive mesh conservation, causal coupling, and self-gravitating back-reaction architecture. Top: Virtual-lattice B-spline deposition, unsplit seven-point harmonic filtering, and boundary-only coarse--fine refluxing. Bottom left: Causal $(d_0, d_1)$ linear source reconstruction across multi-rate SSP-RK3 subcycles ($s_{\rm m} = 2$). Bottom right: Puncture-split constraint initialization and coupled Z4c, \texttt{GL4}, horizon, and waveform loop.}
+\end{figure*}
 
 \subsection{Deterministic sampling and collisional kinetic closures}\label{sec:method_closures}
 

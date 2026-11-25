@@ -4,92 +4,55 @@ Full three-plus-one Einstein--Vlasov benchmarks probe coupled gravitational coll
 
 \subsection{Oppenheimer--Snyder collapse, causal coupling, and multi-rate Pareto scaling}\label{sec:collapse_os}
 
-Initializing a cold ($\bm{u} = 0$, $\Sigma = 0$) homogeneous dust sphere of areal radius $R_0 = 5\,M$ and unit ADM mass on a seven-to-eight-level adaptive mesh with L\"ohner curvature refinement and lapse excision ($\aexc = 0.1$) collapses packet sampling identically to $Q = 1$ particle per populated element. Across $N = 9328$ cold packets, continuum MFM and collisionless packets recover indistinguishable spacetime dynamics: central lapse $\alpha_c(\tau_c)$ tracks the Staley analytical moving-puncture lower bound~\cite{Staley:2011ss}, an apparent horizon forms near $t_{\rm AH} \approx 16.4\,M$ at unit irreducible mass, and Z4c Hamiltonian and momentum constraint norms remain tightly controlled through refinement transitions (Fig.~\ref{fig:os_and_scaling}, top panels).
-
-\begin{figure}[tbp]
-\centering
-\includegraphics[width=\columnwidth]{figures/fig_os_and_scaling.pdf}
-\caption{\label{fig:os_and_scaling}%
-Homogeneous dust collapse ($R_0 = 5\,M$) and Kerr throughput scaling. Top: Central lapse $\alpha_c(\tau_c)$ vs the Staley lower bound and Z4c norms $\|\Ham\|_2$, $\|\Mom\|_2$. Bottom: Normalized $50$-cycle compute cost up to $N_{\rm eff} = 200592$ packets vs continuum MFM.}
-\end{figure}
-
-Strong-scaling tests in curved Kerr geometry up to $N_{\rm eff} = 200592$ packets (Fig.~\ref{fig:os_and_scaling}, bottom panels) confirm linear packet cost scaling without continuum neighbor-search overhead, sustaining nearly seventyfold speedup over MFM at matched lattice resolution. On adaptive collapse grids, switching to $24$-fold $O_h$ octant QMC at $N = 10^5$ closely tracks lattice central proper density while harmonic conservative refluxing preserves deposit conservation near $10^{-15}$ and boundary-only flux storage cuts device memory footprint by over $6\,\mathrm{GiB}$. Furthermore, causal stage-accurate source reconstruction removes the $\mathcal{O}(\Delta t)$ frozen-matter coupling bias cleanly across Courant refinements ($\nu_{\rm CFL} \in \{1/8, 1/4\}$, Fig.~\ref{fig:iter4_stageA}), cutting central-lapse error by more than an order of magnitude and restoring clean temporal convergence.
+Initializing a cold ($\bm{u} = 0$, $\Sigma = 0$) homogeneous dust sphere of areal radius $R_0 = 5\,M$ and unit ADM mass on a seven-to-eight-level adaptive mesh with L\"ohner curvature refinement and lapse excision ($\aexc = 0.1$) collapses packet sampling identically to $Q = 1$ particle per populated element. Across $N = 9328$ cold packets, continuum MFM and collisionless cubature packets recover indistinguishable spacetime dynamics: central lapse $\alpha_c(\tau_c)$ tracks the Staley analytical moving-puncture lower bound~\cite{Staley:2011ss}, an apparent horizon forms near $t_{\rm AH} \approx 16.4\,M$ at unit irreducible mass, and Z4c Hamiltonian constraint norms remain tightly controlled through refinement transitions (Fig.~\ref{fig:filter_coupling_verify}, bottom right). On the seven-level adaptive hierarchy, harmonic flux-conservative filtering maintains constant-state central density accuracy ($8.0\times$ cleaner than pre-densitized filtering) and suppresses proper-volume energy leakage across refinement jumps to the $\le 8.8\times 10^{-16}$ rounding floor (top panels), while causal $(d_0, d_1)$ stage-accurate source reconstruction removes the $\mathcal{O}(\Delta t)$ frozen-matter coupling bias cleanly across Courant refinements ($\nu_{\rm CFL} \in \{1/8, 1/4\}$, bottom left) and cuts central-lapse error fifteenfold. Matched fifty-cycle strong-scaling benchmarks in the Supplemental Material confirm nearly seventyfold speedup over continuum MFM up to $N_{\rm eff} = 200592$ packets.
 
 \begin{figure*}[tbp]
 \centering
-\includegraphics[width=\textwidth]{figures/fig_iter4_stageA_cfl_diagnostics.pdf}
-\caption{\label{fig:iter4_stageA}%
-Causal stage-accurate source coupling and Courant convergence across Oppenheimer--Snyder ($R_0 = 5\,M$) and critical star-cluster ($y_c = 0.500$) collapse. Removing frozen-matter Z4c stage bias lowers central-lapse error by more than an order of magnitude and restores second-order scaling.}
+\includegraphics[width=\textwidth]{figures/fig_filter_coupling_verify.pdf}
+\caption{\label{fig:filter_coupling_verify}%
+Harmonic filter conservation and causal stage coupling verification in Oppenheimer--Snyder collapse ($R_0 = 5\,M$). Top: Constant-state central density error vs pre-densitized filtering and seven-level AMR filter energy drift $|I_E^{\rm filt}/I_E - 1|$. Bottom: Causal $(d_0, d_1)$ vs frozen $T_{\mu\nu}$ Courant convergence and central lapse $\alpha_c(\tau_c)$ against the Staley lower bound.}
 \end{figure*}
 
-Pairing causal stage coupling with three-stage SSP-RK3 evolution at $\nu_{\rm CFL} = 0.40\text{--}0.45$, unsplit seven-point harmonic filtering with active-block skipping, and multi-rate subcycling ($s_{\rm m} \in \{2, 4\}$) traces sharp speed-accuracy Pareto frontiers on a single graphics accelerator (Fig.~\ref{fig:iter5_pareto}). Across six-level Kerr SMR ($3.19\times$), eight-level Oppenheimer--Snyder collapse ($2.24\times\text{--}2.95\times$), and nine-level critical star-cluster collapse ($2.40\times$), multi-rate high-Courant integration accelerates time to solution twofold to threefold while preserving apparent-horizon formation times, irreducible masses, and filter conservation (Table~\ref{tab:bench_speed_memory}).
+Pairing causal stage coupling with three-stage SSP-RK3 evolution at $\nu_{\rm CFL} = 0.40\text{--}0.45$, unsplit seven-point harmonic filtering with active-block skipping, and multi-rate subcycling ($s_{\rm m} \in \{2, 4\}$) traces sharp speed-accuracy Pareto frontiers expressed cleanly as dimensionless compute-cost ratios (Fig.~\ref{fig:multirate_speedup}). Across six-level Kerr static meshes ($3.19\times$), eight-level Oppenheimer--Snyder collapse ($2.24\times\text{--}2.95\times$), and nine-level critical star-cluster collapse ($2.40\times$), multi-rate high-Courant integration accelerates time to solution twofold to threefold while preserving apparent-horizon formation times, irreducible masses, and filter conservation (Table~\ref{tab:bench_speed_memory}). Note also that omitting fourth-order filter compensation at critical $y_c = 0.50$ (bottom right panel) overly softens central gravity and drives artificial dispersal without horizon formation.
 
 \begin{figure*}[tbp]
 \centering
-\includegraphics[width=\textwidth]{figures/fig_iter5_speed_accuracy_pareto.pdf}
-\caption{\label{fig:iter5_pareto}%
-Single-accelerator speed-accuracy Pareto frontiers comparing baseline fourth-order RK4 ($\nu_{\rm CFL}=0.25$) against high-Courant SSP-RK3 ($\nu_{\rm CFL}=0.40\text{--}0.45$), active-block unsplit seven-point filtering, and multi-rate subcycling ($s_{\rm m}$) across six-level Kerr SMR, eight-level dust collapse, and nine-level critical cluster collapse.}
+\includegraphics[width=\textwidth]{figures/fig_multirate_speedup.pdf}
+\caption{\label{fig:multirate_speedup}%
+Dimensionless multi-rate speedups and Pareto scaling across stationary and collapse benchmarks. Top: Kerr SMR filter pass speedup and normalized dust-collapse compute cost vs Courant number $\nu_{\rm CFL}$. Bottom: Horizon-mass error vs normalized collapse runtime for $N \in \{10^4, 10^5\}$, and critical $y_c = 0.500$ central lapse confirming conservation and filter-compensation necessity.}
 \end{figure*}
 
 \subsection{Prolate spindle and Shapiro--Teukolsky cluster regimes}\label{sec:collapse_st}
 
-To test nonspherical curvature focusing and long-term equilibrium stability at $N = 10^4\text{--}10^5$, we evolve an initially static $e = 0.9$ prolate cold spheroid ($b = 10\,M$, finest spacing $\Delta x = M/16$) alongside isotropic relativistic star clusters~\cite{1985ApJ...298...58S,Wu:2026nrpic} labeled by central redshift across $y_c \in [0.28, 0.90]$ (with exact model labels itemized in Table~\ref{tab:configs}) under small radial perturbations.
+To test nonspherical curvature focusing and long-term equilibrium stability at $N = 10^4\text{--}10^5$, we evolve an initially static $e = 0.9$ prolate cold spheroid ($b = 10\,M$, finest spacing $\Delta x = M/16$) alongside isotropic relativistic star clusters~\cite{1985ApJ...298...58S,Wu:2026nrpic} labeled by central redshift across $y_c \in [0.28, 0.90]$ (Table~\ref{tab:configs}) under small radial perturbations.
 
 \begin{figure*}[tbp]
 \centering
-\includegraphics[width=\textwidth]{figures/fig_physics_prolate_spindle.pdf}
-\caption{\label{fig:physics_prolate_spindle}%
-Collapse of a cold prolate spheroid ($e = 0.9$, $b = 10\,M$, $N = 10^5$). Top: Meridional Kretschmann curvature $M^4|I|$ slices with core energy contours, symmetric polar spikes, and first apparent horizon ($t = 32.0\,M$). Bottom: Curvature peak $M^4 I_{\max}(t)$, axial radii, lapse minimum, live mass, and $M_{\rm AH}/M$.}
+\includegraphics[width=\textwidth]{figures/fig_prolate_spindle.pdf}
+\caption{\label{fig:prolate_spindle}%
+Collapse of a cold prolate spheroid ($e = 0.9$, $b = 10\,M$, $N = 10^5$). Top: Meridional Kretschmann curvature $M^4|I|$ slices with core energy contours, symmetric polar spikes, and first apparent horizon ($t = 32\,M$). Bottom: Peak curvature $M^4 I_{\max}(t)$, axial pole radii, minimum lapse $\alpha_{\min}$, live mass $M_{\rm live}/M_0$, and horizon mass $M_{\rm AH}/M$.}
 \end{figure*}
+
+Figure~\ref{fig:prolate_spindle} captures relativistic spindle collapse~\cite{Shapiro:1991zza,Yoo:2016kzu} at $N = 10^5$: matter focuses along the $z$ axis ($t \approx 20\text{--}28\,M$), launching dual symmetric Kretschmann curvature spikes along $\pm z$ before a prolate apparent horizon forms around the central core at $t_{\rm AH} = 32\,M$. Enforcing exact $16$-fold axisymmetric $(x \leftrightarrow y)$ octant QMC symmetry with \texttt{GL4} pushing suppresses the spurious post-horizon irreducible-mass sag seen in stratified Monte Carlo midpoint runs and pairs with harmonic conservative filtering to eliminate plain-filter mass loss.
 
 \begin{figure*}[tbp]
 \centering
-\includegraphics[width=\textwidth]{figures/fig_selfgrav_collapse_st.pdf}
-\caption{\label{fig:selfgrav_collapse_st}%
-Summary of self-gravitating adaptive-mesh benchmarks. Top: Oppenheimer--Snyder density convergence and filter conservation; prolate $e = 0.9$ peak Kretschmann curvature $I_{\max}(t)$ and Hamiltonian norm $\|\Ham\|_2$. Bottom: Relativistic cluster lapse $\alpha_{\min}(t)$ across $y_c \in [0.500, 0.900]$ and QMC momentum invariance.}
+\includegraphics[width=\textwidth]{figures/fig_st_clusters.pdf}
+\caption{\label{fig:st_clusters}%
+Relativistic star clusters across four dynamical regimes ($N = 10^4\text{--}10^5$). Top: Radial phase-space $(r, u_r)$ portraits at $t = 300\,M$ ($100\,M$ for collapse) spanning equilibrium, collapse, outward migration, and bounce dispersal. Bottom: Central lapse bifurcations $\alpha_c(t)$, linear momentum drift $|\bm{P}|/M_0$, and apparent-horizon formation time and mass comparing Monte Carlo midpoint vs antipodal QMC+\texttt{GL4}.}
 \end{figure*}
 
-Figure~\ref{fig:physics_prolate_spindle} captures relativistic spindle collapse~\cite{Shapiro:1991zza,Yoo:2016kzu} at $N = 10^5$: matter focuses along the $z$ axis ($t \approx 20\text{--}28\,M$), launching dual symmetric Kretschmann curvature shocks along $\pm z$ before a prolate apparent horizon forms around the central core at $t_{\rm AH} = 32\,M$. Enforcing exact $16$-fold axisymmetric $(x \leftrightarrow y)$ octant symmetry lowers initial Hamiltonian residuals, suppresses stochastic noise curvature spikes sharply (Fig.~\ref{fig:selfgrav_collapse_st}), and pairs with harmonic conservative filtering to eliminate plain-filter mass loss.
-
-\begin{figure*}[tbp]
-\centering
-\includegraphics[width=\textwidth]{figures/fig_physics_st_phase_space.pdf}
-\caption{\label{fig:physics_st_phase_space}%
-Relativistic star clusters ($N = 10^4$). Top: Radial $(r/M, u_r)$ phase-space portraits contrasting stationary equilibrium $y_c = 0.819$ ($t = 0, 300\,M$) against collapsing $y_c = 0.605$ ($t = 50, 100\,M$). Bottom: Central lapse bifurcation across $y_c \in [0.605, 0.900]$, $M_{\rm AH}/M$, dimensionless remnant spin $\chi_{\rm AH}$, and momentum conservation.}
-\end{figure*}
-
-\begin{figure*}[tbp]
-\centering
-\includegraphics[width=\textwidth]{figures/fig_physics_st_four_fates.pdf}
-\caption{\label{fig:physics_st_fates}%
-Four dynamical regimes of the Shapiro--Teukolsky sequence ($N = 10^4\text{--}10^5$): stationary equilibrium ($y_c = 0.819$), stable outward migration ($y_c = 0.500$, outward kick), catastrophic horizon collapse ($y_c \in \{0.756, 0.605, 0.500\}$), and deep bounce with radial dispersal ($y_c = 0.283$). Antipodal QMC suppresses finite-$N$ momentum drift and collapse delay.}
-\end{figure*}
-
-\begin{figure*}[tbp]
-\centering
-\includegraphics[width=\textwidth]{figures/fig_physics_st_migration_dispersal.pdf}
-\caption{\label{fig:physics_st_migration}%
-Phase-space $(r/M, u_r)$ trajectories and constraint norms comparing outward cluster migration ($y_c = 0.500$), catastrophic collapse ($y_c = 0.500$), and gravitational bounce with radial dispersal ($y_c = 0.283$).}
-\end{figure*}
-
-Across the relativistic cluster sequence (Figs.~\ref{fig:physics_st_phase_space}--\ref{fig:physics_st_migration}), models below the binding-energy maximum ($y_c = 0.90$ and $0.82$) preserve their stationary $(r, u_r)$ phase portraits unchanged over twelve dynamical crossing times ($t = 300\,M$). Beyond the turning point ($y_c = 0.76$, $0.61$, and critical $0.50$), inward perturbations initiate catastrophic relativistic collapse onto apparent horizons of unit mass, whereas an outward perturbation at critical $y_c = 0.50$ drives adiabatic migration onto a diluted equilibrium and the deep-potential model ($y_c \approx 0.28$) undergoes a core bounce followed by explosive dispersal. Where Poisson Monte Carlo noise at $N = 10^4$ breaks spherical symmetry, delays apparent-horizon formation artificially by tens of $M$, drifts net linear momentum to $|\bm{P}|/M_0 \sim 0.2$, and induces spurious remnant black hole spin, antipodal four-tuple QMC preserves $|\bm{P}|/M_0 \le 2\times 10^{-14}$ and lowers spurious spin twentyfold. Note also that omitting filter compensation at critical $y_c = 0.50$ overly softens central gravity and suppresses apparent-horizon formation (Table~\ref{tab:bench_speed_memory}), which verifies that fourth-order filter compensation is essential near critical collapse thresholds.
+Across the relativistic cluster sequence (Fig.~\ref{fig:st_clusters}), models below the binding-energy maximum ($y_c = 0.90$ and $0.82$) preserve stationary $(r, u_r)$ phase portraits unchanged over twelve dynamical crossing times ($t = 300\,M$). Beyond the turning point ($y_c = 0.76$, $0.61$, and critical $0.50$), inward perturbations initiate catastrophic collapse onto unit-mass apparent horizons, whereas an outward perturbation at critical $y_c = 0.50$ drives adiabatic migration onto a diluted equilibrium and the deep-potential model ($y_c \approx 0.28$, Table~\ref{tab:configs}) undergoes a core bounce followed by radial dispersal. Where Poisson Monte Carlo noise at $N = 10^4$ breaks spherical symmetry, delays apparent-horizon formation artificially by tens of $M$, drifts net linear momentum to $|\bm{P}|/M_0 \sim 0.2$, and induces spurious remnant spin, antipodal four-tuple QMC preserves $|\bm{P}|/M_0 \le 2\times 10^{-14}$ and restores prompt horizon collapse.
 
 \subsection{Binary black hole formation inside a relativistic cluster}\label{sec:collapse_jeans}
 
-Superposing two opposing cold Gaussian overdensities on quasi-circular orbits inside a monoenergetic $y_c \approx 0.91$ cluster on an eight-level adaptive mesh (finest cell $\Delta x = M/64$) probes non-axisymmetric binary black hole formation~\cite{Wu:2026nrpic}. As shown in Figs.~\ref{fig:physics_jeans_live} and~\ref{fig:physics_jeans_3d}, both overdensities collapse promptly near $t_{\rm AH} \approx 10.1\text{--}10.5\,M$ into individual spinning black holes that spiral inward from $d_{AB} \approx 6.0\,M$ down to $0.27\,M$ by $t = 58.2\,M$ while doubling in irreducible mass through envelope accretion. Under baseline plain filtering and stratified Monte Carlo sampling, refinement transitions leak over a sixth of the initial binary energy around the collapsing cores and finite-$N$ noise excites a macroscopic out-of-plane kick ($|z_{\rm BH}| \sim 0.7\,M$). Switching to antipodal QMC, \texttt{GL4} integration, and harmonic metric-weighted refluxing eliminates deposit leakage identically ($|\Delta E_{\rm filt}/E| \le 1.04 \times 10^{-15}$), reduces live momentum asymmetry sevenfold during binary formation ($t \le 14\,M$), and suppresses early vertical kicks cleanly (Table~\ref{tab:bench_backreaction_compare}).
+Superposing two opposing cold Gaussian overdensities on quasi-circular orbits inside a monoenergetic $y_c \approx 0.91$ cluster (Table~\ref{tab:configs}) on an eight-level adaptive mesh (finest cell $\Delta x = M/64$) probes non-axisymmetric binary black hole formation~\cite{Wu:2026nrpic}. As shown in Fig.~\ref{fig:binary_cluster}, both overdensities collapse promptly near $t_{\rm AH} \approx 10.1\text{--}10.5\,M$ into individual spinning black holes that spiral inward from $d_{AB} \approx 6.0\,M$ down to $0.27\,M$ by $t = 58.2\,M$ while accreting mass beyond their initial clump budget. Under baseline plain filtering and stratified Monte Carlo sampling, refinement transitions leak over a sixth of the initial energy around the collapsing cores and finite-$N$ noise excites a macroscopic out-of-plane kick ($|z_{\rm BH}| \sim 0.65\,M$). Switching to antipodal QMC, \texttt{GL4} integration, and harmonic metric-weighted refluxing eliminates deposit leakage identically ($|\Delta E_{\rm filt}/E| \le 1.04 \times 10^{-15}$), reduces live momentum asymmetry sevenfold during binary formation ($t \le 14\,M$), and keeps $|z_{\rm BH}|$ near zero (Table~\ref{tab:bench_backreaction_compare}).
 
 \begin{figure*}[tbp]
 \centering
-\includegraphics[width=\textwidth]{figures/fig_physics_jeans_live.pdf}
-\caption{\label{fig:physics_jeans_live}%
-Binary black hole formation and inspiral inside a relativistic cluster (eight-level AMR, $\Delta x_{\min} = M/64$, $N = 10^4$). Top: Equatorial particle projections and black hole trajectories at clump formation ($t = 10\,M$) and tight inspiral ($t = 55\,M$). Bottom: Separation $d_{AB}(t)$, vertical kick $|z_{\rm BH}|(t)$, apparent-horizon mass $M_{\rm AH}(t)$, excised mass, and $\alpha_{\min}(t)$ comparing antipodal QMC+\texttt{GL4} ($t \le 14\,M$) vs MC+midpoint.}
-\end{figure*}
-
-\begin{figure*}[tbp]
-\centering
-\includegraphics[width=\textwidth]{figures/fig_physics_jeans_3d_anatomy.pdf}
-\caption{\label{fig:physics_jeans_3d}%
-Three-dimensional binary inspiral structure at $t = 10$, $30$, and $55\,M$ in $(x, y)$ orbital and $(x, z)$ meridional projections, contrasting planar spiral accretion against Monte-Carlo-seeded vertical orbital drift.}
+\includegraphics[width=\textwidth]{figures/fig_binary_cluster.pdf}
+\caption{\label{fig:binary_cluster}%
+Binary black hole formation and inspiral inside a relativistic cluster (eight-level AMR, $\Delta x_{\min} = M/64$, $N = 10^4$). Top: Equatorial $(x, y)$ spiral trajectories and meridional $(x, z)$ kick comparison at $t = 55\,M$. Bottom: Binary separation $d_{AB}(t)$, vertical kick $|z_{\rm BH}|(t)$, horizon masses $M_{\rm AH}$, excised mass $M_{\rm exc}/M_0$, and $\alpha_{\min}(t)$ comparing QMC+\texttt{GL4} ($t \le 14\,M$) vs MC+midpoint.}
 \end{figure*}
 
 \subsection{Massive-particle gravitational back-reaction on a spinning black hole}\label{sec:collapse_backreaction}
@@ -98,29 +61,22 @@ To test strong-field self-force, recoil momentum balance, and waveform extractio
 
 \begin{figure*}[tbp]
 \centering
-\includegraphics[width=\textwidth]{figures/fig_physics_bh_massive_backreaction.pdf}
-\caption{\label{fig:physics_bh_massive_backreaction}%
-Massive-particle gravitational back-reaction on a spinning black hole ($q = m_p/M_0 \in \{0.00, 0.02, 0.05, 0.10\}$). Top left: Equatorial particle plunge and compensating black hole puncture recoil over the $t = 20\,M$ $q = 0.10$ lapse slice. Top right: Relative orbital separation $r_{\rm rel}(t)$ showing self-force plunge acceleration and FastFlow spin/mass evolution. Bottom: Quadrupolar $\Psi_4^{22}$ gravitational radiation and machine-precision filter and constraint histories.}
+\includegraphics[width=\textwidth]{figures/fig_bh_backreaction.pdf}
+\caption{\label{fig:bh_backreaction}%
+Massive-particle gravitational back-reaction on a spinning black hole ($q = m_p/M_0 \in \{0.00, 0.02, 0.05, 0.10\}$). Top left: Equatorial trajectories and puncture recoil on the $t = 20\,M$ $q = 0.10$ lapse slice. Top right: Relative orbital separation $r_{\rm rel}(t)$ and puncture recoil $|\bm{x}_{\rm BH}(t)|$. Bottom: Quadrupolar $\Psi_4^{22}$ waveforms at $R_{\rm ext} = 14\,M$ and FastFlow horizon mass $M_{\rm AH}$ and spin $\chi_{\rm AH}$.}
 \end{figure*}
 
-Figure~\ref{fig:physics_bh_massive_backreaction} reveals clear physical back-reaction trends absent in test-particle evolutions ($q = 0$, which remains bound without plunging through $t = 80\,M$). Turning on self-gravity drives gravitational recoil of the central black hole puncture in opposition to the orbiting mass (maximum coordinate recoil scaling nearly linearly with $q$ up to $1.76\,M$ at $q = 0.10$), accelerates radiative and tidal orbital decay into apparent-horizon excision by $t_{\rm exc} \approx 29\text{--}34\,M$, grows the captured apparent-horizon mass linearly with absorbed mass-energy, spins the black hole down through capture of retrograde-aligned orbital/spin transfer ($\chi_{\rm AH}: 0.76 \to 0.69$ at $q = 0.10$), and excites clean quadrupolar $r\Psi_4^{22}$ merger and ringdown waveforms peaking coherently with $q$. Throughout strong puncture motion and particle capture, the unsplit harmonic conservative filter holds proper-volume ADM energy invariance below $1.1 \times 10^{-15}$ (Table~\ref{tab:bench_backreaction_compare}).
+Figure~\ref{fig:bh_backreaction} reveals clear physical back-reaction trends absent in test-particle evolutions ($q = 0$, which remains bound without plunging through $t = 80\,M$). Turning on self-gravity drives gravitational recoil of the central black hole puncture in opposition to the orbiting mass (maximum coordinate recoil scaling nearly linearly with $q$ up to $1.76\,M$ at $q = 0.10$), accelerates radiative and tidal orbital decay into apparent-horizon excision by $t_{\rm exc} \approx 29\text{--}34\,M$, grows the captured apparent-horizon mass linearly with absorbed mass-energy, spins the black hole down through capture of retrograde-aligned orbital angular momentum ($\chi_{\rm AH}: 0.76 \to 0.69$ at $q = 0.10$), and excites clean quadrupolar $r\Psi_4^{22}$ merger and ringdown waveforms peaking coherently with $q$. Throughout strong puncture motion and particle capture, the unsplit harmonic conservative filter holds proper-volume ADM energy invariance below $1.1 \times 10^{-15}$ (Table~\ref{tab:bench_backreaction_compare}).
 
 \subsection{End-to-end validation against baseline second-order NRPIC}\label{sec:collapse_compare}
 
-Figures~\ref{fig:compare_nrpic_orig_vs_best} and~\ref{fig:compare_orig_vs_best_backreaction} synthesize accuracy, conservation, and accelerator throughput side by side between baseline second-order NRPIC~\cite{Wu:2026nrpic} (RK4 at $\nu_{\rm CFL}=0.25$, implicit midpoint or Boris pushing, cubic Hermite interpolation, plain binomial filtering, frozen stage sources, and Monte Carlo sampling) and the full high-order metric-conservative solver across every stationary and dynamical $3+1$ suite.
+Figure~\ref{fig:baseline_vs_highorder} synthesizes accuracy, conservation, and dimensionless speedup side by side between baseline second-order NRPIC~\cite{Wu:2026nrpic} (RK4 at $\nu_{\rm CFL}=0.25$, implicit midpoint or Boris pushing, cubic Hermite interpolation, plain binomial filtering, frozen stage sources, and Monte Carlo sampling) and the high-order metric-conservative solver across every stationary and dynamical $3+1$ suite.
 
 \begin{figure*}[tbp]
 \centering
-\includegraphics[width=\textwidth]{figures/fig_compare_nrpic_orig_vs_best.pdf}
-\caption{\label{fig:compare_nrpic_orig_vs_best}%
-Cross-suite benchmark comparison between baseline second-order NRPIC and the high-order metric-conservative solver. Top: Stationary/collapse invariant errors across six benchmarks and $q = 0.05$ massive-particle back-reaction trajectories. Bottom: Filter energy drift around the spinning puncture, quadrupolar $\Psi_4^{22}$ waveforms, and single-accelerator compute durations.}
+\includegraphics[width=\textwidth]{figures/fig_baseline_vs_highorder.pdf}
+\caption{\label{fig:baseline_vs_highorder}%
+End-to-end validation comparing baseline second-order NRPIC against the high-order metric-conservative solver. Top left: Spinning black hole mass-ratio plunge ladder ($q \in \{0.02, 0.05, 0.10\}$). Top right: Puncture filter energy drift $|I_E^{\rm filt}/I_E - 1|$ and $M_{\rm AH}(t)$ at $q = 0.05$. Bottom: Six-suite relative error comparison and dimensionless multi-suite speedup ratios ($T_{\rm base}/T$).}
 \end{figure*}
 
-\begin{figure*}[tbp]
-\centering
-\includegraphics[width=\textwidth]{figures/fig_compare_orig_vs_best_backreaction.pdf}
-\caption{\label{fig:compare_orig_vs_best_backreaction}%
-Full $3+1$ massive-particle back-reaction comparison across three dynamical suites. Top: Spinning black hole mass-ratio ladder ($q \in \{0.02, 0.05, 0.10\}$) trajectories, relative separations, and $M_{\rm AH}(t)$. Bottom: Eight-level Jeans binary black hole inspiral with vertical-kick inset ($N = 10^4, 10^5$) and nine-level Shapiro--Teukolsky cluster lapse collapse ($y_c = 0.500, 0.605$).}
-\end{figure*}
-
-Across all self-gravitating regimes where matter crosses steep conformal-factor gradients (Table~\ref{tab:bench_backreaction_compare}), plain binomial filtering in baseline NRPIC leaks a fourth to a third of proper-volume deposited energy around spinning Bowen--York punctures and roughly a sixth during adaptive binary black hole formation, systematically under-weighing self-gravity and artificially delaying particle plunge and black hole capture by $8\text{--}15\,M$ (or by up to $73\,M$ in noisy $y_c \approx 0.61$ clusters). Harmonic metric-weighted filtering eliminates curved-metric deposit leakage down to $10^{-16}\text{--}10^{-15}$, while \texttt{GL4}, $C^2$ quintic Hermite, causal stage coupling, antipodal QMC, and high-Courant SSP-RK3 simultaneously reduce orbit invariant errors by three to six orders of magnitude, preserve linear momentum below $2\times 10^{-14}$, suppress binary out-of-plane drift two- to four-fold, and accelerate single-accelerator compute durations by factors of $1.8\times\text{--}3.1\times$ across full dynamical $3+1$ evolutions.
+Across all self-gravitating regimes where matter crosses steep conformal-factor gradients (Table~\ref{tab:bench_backreaction_compare}), plain binomial filtering in baseline NRPIC leaks a fourth to a third of proper-volume deposited energy around spinning Bowen--York punctures and roughly a sixth during adaptive binary black hole formation, systematically under-weighing self-gravity and artificially delaying particle plunge and black hole capture by $8\text{--}15\,M$ (or by up to $73\,M$ in noisy $y_c \approx 0.61$ clusters). Harmonic metric-weighted filtering eliminates curved-metric deposit leakage down to $10^{-16}\text{--}10^{-15}$, while \texttt{GL4}, $C^2$ quintic Hermite, causal stage coupling, antipodal QMC, and high-Courant SSP-RK3 simultaneously reduce orbit invariant errors by three to six orders of magnitude, preserve linear momentum below $2\times 10^{-14}$, suppress binary out-of-plane drift two- to fourfold, and deliver dimensionless multi-suite speedups of $1.77\times\text{--}3.13\times$ across full dynamical $3+1$ evolutions.
