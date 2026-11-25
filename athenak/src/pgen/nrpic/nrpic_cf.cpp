@@ -39,6 +39,9 @@
 //! Gaussian components may carry linear momentum and spin (the Bowen-York curvature
 //! smeared with the Gaussian, which solves the momentum constraint for a clump whose
 //! particles carry that momentum density): nrpic_clump_curvature.hpp.
+//! Table components (format 1) may carry a linear momentum: curvature from a boost
+//! table, a correction of psi and a comoving shift (an equilibrium cluster that moves):
+//! nrpic_clump_table.hpp.
 //! <problem> puncture_setup = true adds a tracker, an initial refined region and a
 //! horizon finder for every puncture: nrpic_puncture_setup.hpp.
 
@@ -62,6 +65,7 @@
 #include "pgen/pgen.hpp"
 #include "pgen/nrpic/nrpic_bowen_york.hpp"
 #include "pgen/nrpic/nrpic_clump_curvature.hpp"
+#include "pgen/nrpic/nrpic_clump_table.hpp"
 
 namespace {
 
@@ -498,6 +502,17 @@ void ProblemGenerator::NrpicConformallyFlat(ParameterInput *pin, const bool rest
   const DvceArray1D<Real> bytab = nrpic_by::BYDeviceTable(bytab_h);
   // momentum and spin of the Gaussian components (smeared Bowen-York curvature)
   const nrpic_clump::ClumpSet clumps = nrpic_clump::ClumpRead(pin, ncomp);
+  // momentum of table components (boost table, correction of psi, comoving shift)
+  std::vector<Real> tctab_h, tccor_h;
+  const nrpic_tclump::TClumpSet tcl =
+      nrpic_tclump::TClumpRead(pin, ncomp, tctab_h, tccor_h);
+  const DvceArray1D<Real> tctab = nrpic_by::BYDeviceTable(tctab_h);
+  const DvceArray1D<Real> tccor = nrpic_by::BYDeviceTable(tccor_h);
+  for (int c=0; c<tcl.n; ++c) {
+    if (tcl.c[c].icomp == kcomp) {
+      CFFatal("a table of format 2 cannot carry a boost table");
+    }
+  }
 
   const std::string lapse = pin->GetOrAddString("problem", "lapse", "one");
   const int lcomp = pin->GetOrAddInteger("problem", "lapse_comp", 0);
@@ -573,6 +588,9 @@ void ProblemGenerator::NrpicConformallyFlat(ParameterInput *pin, const bool rest
     for (int c=0; c<by.n; ++c) {
       psi += nrpic_by::BYCorrection(by.punc[c], bytab, x, y, z);
     }
+    for (int c=0; c<tcl.ncorr; ++c) {
+      psi += nrpic_by::BYCorrection(tcl.corr[c], tccor, x, y, z);
+    }
     const Real psi4 = psi*psi*psi*psi;
     adm.psi4(m,k,j,i) = psi4;
     for (int a=0; a<3; ++a) {
@@ -603,6 +621,22 @@ void ProblemGenerator::NrpicConformallyFlat(ParameterInput *pin, const bool rest
       const Real ipsi2 = 1.0/(psi*psi);
       int q = 0;
       for (int a=0; a<3; ++a) {
+        for (int b=a; b<3; ++b) {
+          adm.vK_dd(m,a,b,k,j,i) += ipsi2*ab[q++];
+        }
+      }
+    }
+    if (tcl.n > 0) {
+      Real ab[6] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+      Real bt[3] = {0.0, 0.0, 0.0};
+      for (int c=0; c<tcl.n; ++c) {
+        nrpic_tclump::TClumpAddCurvature(tcl.c[c], tctab, x, y, z, ab);
+        nrpic_tclump::TClumpAddShift(tcl.c[c], tctab, x, y, z, bt);
+      }
+      const Real ipsi2 = 1.0/(psi*psi);
+      int q = 0;
+      for (int a=0; a<3; ++a) {
+        adm.beta_u(m,a,k,j,i) += bt[a];
         for (int b=a; b<3; ++b) {
           adm.vK_dd(m,a,b,k,j,i) += ipsi2*ab[q++];
         }
