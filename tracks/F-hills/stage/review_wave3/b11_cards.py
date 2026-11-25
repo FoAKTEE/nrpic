@@ -49,7 +49,8 @@ RUNS = {
     "P1": f"{S}/F-20261119-150017-b45ec5f",
     # continuations registered in batch 11 (each starts from the newest restart of the run
     # before it; joined when their directories exist)
-    "A2": f"{S}/F-20261124-141118-fbc6419",
+    # A2 requeued in batch 12 (q0001); F-20261124-141118-fbc6419 was stopped before it ran
+    "A2": f"{S}/F-20261124-210400-902c650",
     "B2": f"{S}/F-20261124-135408-1e6db58",
     "C2": f"{S}/F-20261124-141842-d5263e9",
 }
