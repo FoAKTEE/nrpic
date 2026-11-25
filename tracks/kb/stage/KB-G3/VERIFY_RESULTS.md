@@ -1,19 +1,19 @@
 # Re-verification: kb KB-G3
 
-`harness/bin/nrpic-stage verify kb KB-G3` on 2026-11-24T23:46:01Z, clean export of commit `b9fbc51ec31c` in `scratch/kb/tmp/stage-verify/kb-KB-G3-b9fbc51-20261124T234508Z`. Result: **PASS**.
+`harness/bin/nrpic-stage verify kb KB-G3` on 2026-11-25T03:43:42Z, clean export of commit `cf53d880f7a1` in `scratch/kb/tmp/stage-verify/kb-KB-G3-cf53d88-20261125T034319Z`. Result: **PASS**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of b9fbc51ec31c (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-b9fbc51-20261124T234508Z/tree |
+| export | PASS | clean export of cf53d880f7a1 (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-cf53d88-20261125T034319Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | WARN | no tracks/<ID>/note/main.tex (working note) |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: stage/KB-G3/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
 | style | PASS | 1 style copies equal harness/style/SHA256SUMS (figstyle.py) |
 | fig-script | PASS | 3 figures, each with its script |
 | min-figs | PASS | 0 schematics and 3 data figures (brief 13.4 asks at least 0 and 0 at KB-G3) |
-| runs | PASS | 214 run manifests finished (77 hand-written, read as decision 0012 allows), output checksums verified where recorded |
+| runs | PASS | 230 run manifests finished (77 hand-written, read as decision 0012 allows), output checksums verified where recorded |
 | run-notes | WARN | 76 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | status | PASS | STATUS.md has 32 lines |
 | rerun | WARN | re-run skipped (--no-rerun) |

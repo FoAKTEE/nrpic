@@ -1,19 +1,17 @@
 # Stage report: kb KB-G3
 
-Date: 2026-11-24 · branch `kb/main` at `b9fbc51ec31c` · checklist
+Date: 2026-11-25 · branch `kb/main` at `cf53d880f7a1` · checklist
 `tracks/kb/stage/KB-G3/CHECKLIST.md` (from `nrpic-stage collect`)
 
 ## Verdict
 
-**FAIL**. Tag: `stage/kb/KB-G3-fail-20261124` (created and pushed by the orchestrator after review, decision 0003).
-
-- 1 checklist items not PASS or NA: C1 FAIL
+**PASS**. Tag: `stage/kb/KB-G3-pass-20261125` (created and pushed by the orchestrator after review, decision 0003).
 
 ## Package documents (decision 0012)
 
 | Document | State |
 |---|---|
-| `stage/KB-G3/STAGE_REPORT.md` | written by this command |
+| `stage/KB-G3/STAGE_REPORT.md` | present |
 | `stage/KB-G3/EVIDENCE.md` | present |
 | `stage/KB-G3/OPEN.md` | present |
 | `stage/KB-G3/CHECKLIST.md` | present |
@@ -25,30 +23,30 @@ Date: 2026-11-24 · branch `kb/main` at `b9fbc51ec31c` · checklist
 
 | # | Criterion | Evidence (run id, figure, KB locator) | Result |
 |---|---|---|---|
-| C1 | Every statement in the evidence queue that bears on G1 of the six tracks has been processed | Met for every track queue (A-F, core: each to_verify claim has a processing event; 409, 447, 449, 450 verified and 452 annotated this batch). Not met for two brief seeds that bear on G1 of A, B, D, F: 803 (FLRW stability) and 805 (three derivations). Evidence: EVIDENCE.md table (snapshot kb-20261124-9872d21), runs kb-20261124-233445-89478ae, kb-20261124-233504-c6530a6, kb-20261124-233637-3d710a8, kb-20261124-233726-3b6e5b9; OPEN.md O1, O2. | FAIL |
-| C2 | Tracks read the knowledge base read-only: `kb` opens db/current by default (brief 12.10) | `kb` opens kb-data/db/current by default (kb status: snapshot kb-20261124-9872d21.sqlite); every `kb show` view ends with the snapshot id (C6b of KB-G2, met since batch 9). | PASS |
-| C3 | `kb snapshot` run at the end of the stage; its identifier recorded in the package, and every locator cited from the knowledge base carries it (brief 12.10) | `kb snapshot` at the end of this stage: kb-20261124-9872d21 (sha256 9872d212...; run kb-20261124-233515-0ed31c7); EVIDENCE.md names it for every number; the messages to A, C, D, F and orch carry it. | PASS |
+| C1 | Every statement in the evidence queue that bears on G1 of the six tracks has been processed | (batch 15) Every to_verify claim of A, D, F, core and of the brief carries a processing event except 806, 807, 810, 811, 812, which decision 0035 item 5 rules do not bear on G1. 803 answered by claim 869, 805 annotated with the tracks' derivations (package claims3, runs kb-20261125-023541-5ae96e9, kb-20261125-023915-2822f6f); 20 fragments closed (run kb-20261125-023542-f420d93). Count on snapshot kb-20261125-2f97258: run kb-20261125-034227-58fc4e0, figure lead_b15/figures/fig_g3_queue.png (read). Lead's check of claims3: REVIEW-wave3.md section "kb lead batch 15". Known limit, not a C1 item: 543 unread weak-class claims, est. 86.5 % right as worded (OPEN.md O7). | PASS |
+| C2 | Tracks read the knowledge base read-only: `kb` opens db/current by default (brief 12.10) | `kb` opens kb-data/db/current by default (kb status: snapshot kb-20261125-2f97258.sqlite, run kb-20261125-033718-3405697 status_current.json); every `kb show` view ends with the snapshot id (C6b of KB-G2, met since batch 9). | PASS |
+| C3 | `kb snapshot` run at the end of the stage; its identifier recorded in the package, and every locator cited from the knowledge base carries it (brief 12.10) | (batch 15) `kb snapshot` after claims3 and the lead's repair: kb-20261125-2f97258 (sha256 2f97258c...; run kb-20261125-033718-3405697, with verify-downloads and QA); EVIDENCE.md names it for every number; the messages of batch 15 carry it. | PASS |
 | C4 | Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed) | STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md, CHECKLIST.md, REVIEW.md, SCOPE.md in tracks/kb/stage/KB-G3/. | PASS |
-| C5 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too): the package's numbers recomputed from the run manifests and the snapshot | VERIFIER.md of a fresh helper session (batch 11): 54/60 sampled claims right; its numbers recomputed from its own runs on snapshot kb-20261121-aa0a2ae. It predates this batch's corrections; a second verifier after O1-O3 is OPEN.md O6. | PASS |
-| C6 | Null results and failed runs are on record (manifests and JOURNAL) | Failed run kb-20261124-233445-89478ae (three relocates without --by) on record with manifest and JOURNAL outcome C1; prediction outcomes R1, C1 (failed in part), C1b, C2, C3, S1, Q2 in tracks/kb/JOURNAL.md. | PASS |
-| C7 | STATUS.md, JOURNAL.md and HANDOFF.md are current | STATUS.md, JOURNAL.md, HANDOFF.md rewritten in this session (batch 13). | PASS |
+| C5 | Verifier subagent (fresh context) wrote VERIFIER.md (decision 0016; VERIFIER_REPORT.md accepted too): the package's numbers recomputed from the run manifests and the snapshot | VERIFIER.md of a fresh helper session (batch 11): 54/60 sampled claims right; its numbers recomputed from its own runs on snapshot kb-20261121-aa0a2ae. Decision 0036 item 3 asks for a second fresh verifier of the claims processed since (claims3, 862-864) on snapshot kb-20261125-2f97258: it runs after this lead in batch 15 (OPEN.md O6); the orchestrator judges KB-G3 on both reports. | PASS |
+| C6 | Null results and failed runs are on record (manifests and JOURNAL) | Failed run kb-20261124-233445-89478ae (three relocates without --by) on record; batch 15: prediction V1 failed in two places (weak class 548 outside 520-543; five claims outside the ledger changed: a tool defect, fixed), outcomes V1, V2, R2, S2 in tracks/kb/JOURNAL.md; claims3/JOURNAL.md entries 1-5. | PASS |
+| C7 | STATUS.md, JOURNAL.md and HANDOFF.md are current | STATUS.md, JOURNAL.md, HANDOFF.md rewritten in the lead session of batch 15. | PASS |
 
 ## Re-verification on a clean checkout (`nrpic-stage verify`)
 
-`nrpic-stage verify` on 2026-11-24T23:46:01Z, clean export of `b9fbc51ec31c`: **PASS**. Details: `VERIFY_RESULTS.md`.
+`nrpic-stage verify` on 2026-11-25T03:43:42Z, clean export of `cf53d880f7a1`: **PASS**. Details: `VERIFY_RESULTS.md`.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of b9fbc51ec31c (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-b9fbc51-20261124T234508Z/tree |
+| export | PASS | clean export of cf53d880f7a1 (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-cf53d88-20261125T034319Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | WARN | no tracks/<ID>/note/main.tex (working note) |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: stage/KB-G3/SCOPE.md; REVIEW.md present; verifier's report VERIFIER.md |
 | style | PASS | 1 style copies equal harness/style/SHA256SUMS (figstyle.py) |
 | fig-script | PASS | 3 figures, each with its script |
 | min-figs | PASS | 0 schematics and 3 data figures (brief 13.4 asks at least 0 and 0 at KB-G3) |
-| runs | PASS | 214 run manifests finished (77 hand-written, read as decision 0012 allows), output checksums verified where recorded |
+| runs | PASS | 230 run manifests finished (77 hand-written, read as decision 0012 allows), output checksums verified where recorded |
 | run-notes | WARN | 76 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | status | PASS | STATUS.md has 32 lines |
 | rerun | WARN | re-run skipped (--no-rerun) |
@@ -116,4 +114,4 @@ Updated 2026-11-24 (kb lead, wave 3 batch 13). Likelihood and effect: low / medi
 
 ## Decision requested from the group
 
-NOT complete for an independent review: C1 fails on brief seeds 803 and 805 (bear on G1 of A, B, D, F); every track queue processed; a fresh verifier is owed after O1-O3 (OPEN.md)
+Lead of batch 15: C1 now met on snapshot kb-20261125-2f97258 (no unprocessed claim bears on G1). Package complete for the second fresh verifier of decision 0036 item 3 (OPEN.md O6), which runs next; the orchestrator judges KB-G3 on both verifier reports. Known limit stated: 543 unread weak-class claims, est. 86.5 % right as worded (O7).

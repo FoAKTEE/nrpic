@@ -1,9 +1,9 @@
 {
   "track": "kb",
   "gate": "KB-G3",
-  "commit": "b9fbc51ec31c5babb38512f8e42e80b4423827e0",
-  "verified_utc": "2026-11-24T23:46:01Z",
-  "export": "/data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-b9fbc51-20261124T234508Z",
+  "commit": "cf53d880f7a10995083ee466d74222f6fcf78e7f",
+  "verified_utc": "2026-11-25T03:43:42Z",
+  "export": "/data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-cf53d88-20261125T034319Z",
   "result": "PASS",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of b9fbc51ec31c (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-b9fbc51-20261124T234508Z/tree",
+      "message": "clean export of cf53d880f7a1 (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-cf53d88-20261125T034319Z/tree",
       "detail": null
     },
     {
@@ -63,7 +63,7 @@
     {
       "check": "runs",
       "status": "PASS",
-      "message": "214 run manifests finished (77 hand-written, read as decision 0012 allows), output checksums verified where recorded",
+      "message": "230 run manifests finished (77 hand-written, read as decision 0012 allows), output checksums verified where recorded",
       "detail": null
     },
     {
