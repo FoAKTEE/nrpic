@@ -1,0 +1,103 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "E-20261125-160658-855db8c",
+  "track": "E-stoch-inf",
+  "gate": "G3",
+  "kind": "production",
+  "purpose": "G3 reference, nu = 4 part (SCOPE 4d.9 A9): importance-sampled tail, 128 band, s0.01_lattice system, shift profile c0 sqrt(p/int p) (g3/amend entry 8), pilot 1e5 per point, 4e6 paths per side, validation at nu = 3 against the direct 4e6 run E-20261125-152832-c301e92; predictions g3/amend/JOURNAL.md entries 7-8 (TL1'-TL5) and g3/JOURNAL.md entry 4 (A9)",
+  "preregistered_in": "tracks/E-stoch-inf/g3/amend/JOURNAL.md#entry-8",
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "export RUN_DIR=\"$NRPIC_RUN_DIR\" RUN_ID=\"$NRPIC_RUN_ID\" NRPIC_CORES=3 NRPIC_REF_NLAT=32 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MPLBACKEND=Agg && cd tracks/E-stoch-inf/langevin/scripts && python3 ref_tilt.py 4000000 --pilot 100000 --direct /data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261125-152832-c301e92/ref_inflection_samples.npz --direct-json ../results/ref_inflection_n32_4e6.json > \"$NRPIC_RUN_DIR/tilt.log\" 2>&1"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "855db8cbe783833ed11ced7c47536b144be8b5ca",
+    "branch": "track/E-stoch-inf",
+    "dirty": false,
+    "package": [
+      "tracks/E-stoch-inf/langevin"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "c2154334a0f77a0f485c135951bf4dd6306d8889",
+    "worktree": "wt/E-stoch-inf"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/E-stoch-inf/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/E-stoch-inf/E-20261125-152832-c301e92/ref_inflection_samples.npz",
+      "role": "input",
+      "sha256": "ec412118683e354f34c8d78b5d20f31a0a5c371423f936c4e0f7f7f39635c998",
+      "bytes": 173485248,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/E-stoch-inf/langevin/results/ref_inflection_n32_4e6.json",
+      "role": "input",
+      "sha256": "2dc17a369bbb6c6cca59572f1334c4cc563c8f2f8477f1c579aa7c66908496b1",
+      "bytes": 10564,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 3,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/E-stoch-inf/E-20261125-160658-855db8c",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-25T16:06:58Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 0.0,
+    "gpu_hours_reserved": 0.0,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 312,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md"
+  }
+}
