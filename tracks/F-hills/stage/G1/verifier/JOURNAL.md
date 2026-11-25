@@ -116,3 +116,82 @@ proper-volume integral of H^2 outside the excised punctures); L9, L10, L11 = m/4
   others; l >= 4 share 0.6-0.75. Refuted: a radius outside 1.5-3.9e-6 or two radii more than 20
   percent apart [JUDGEMENT: FFI edge effects and the choice of r* move the number at the tens of
   percent level; the band is the lead's own spread over integration choices].
+
+## Entry 2 (2026-11-25 10:00 PST): outcomes
+
+Reference run: F-20261125-175533-141e4f1 (run_all.sh; supersedes the passes F-20261125-175038-4719d4a,
+-175132-e7c6c68, -175235-e0fdde6, whose numbers for the same quantities are identical; they differ
+only in what was added). A2's chain resumed at 09:49 PST (Slurm 5294) while I worked, so the
+passage is read twice: cut at 96.2285 M (the owner's last record; `results/cut_96.23/`) and to
+the live record (96.89 M in the reference run). Development runs into scratch/F-hills/tmp/verifier/
+preceded each registered pass; no number below comes from them.
+
+- P0 reader tests: (a) join, (b) minima, (d) horizon failures, (e) waveform times PASS. (c) FAILED
+  AS WRITTEN on one bound: the Kepler energy is kept to 3.2e-11, not 1e-11; the return after one
+  period (4.9e-11) and the three-body energy (1.05e-10) and angular momentum (3.4e-12) over 200 M
+  meet theirs. Harmless for every use here (the Newton numbers are quoted to 5 digits).
+- P1 Newton: pair minimum 3.67475 M at 87.598 M; comp0-M 12.0683 M at 95.761 M; comp1-M 5.77712 M
+  at 122.090 M; comp0 ejected (v_inf 0.365 relative to M), comp1 bound; energies at 200 M 1.49387,
+  -1.62560 (pair 0.87396) units, equal to the lead's to 10 digits. MET, except the centre of mass:
+  the three-body Newtonian centre of mass passes M at 9.762 M (104.337 M), not 9.81 M; 9.809 M is
+  the two-body conic pericentre of the centre of mass from the initial state (my 9.8087). The claim
+  "Newton 9.81 M at 104.35 M" mixes the two; the time is the three-body one. P1 FAILED AS WRITTEN for
+  that one number.
+- P2 MET: 45 tracker files per tracker (31 of A, 13 of A2 at the cut, the 14th since 09:49), joined
+  0-96.2285 M with every step exactly 2^-9 M (49270 times); overlaps A-A 1.13e-12, A-A2 4.8e-14,
+  A2-A2 6.2e-14 M; the new segment from 96.23 M joins without a gap.
+- P3 MET: s_min 2.10963 M at 76.3727 M (refined; sampled 2.109625 at 76.373); the only minimum
+  after 61.8 M; s > 1 M throughout. A2-1 fails on timing only (its 2.0-2.7 M band holds).
+- P4 MET: at 96.2285 M the centre of mass is 13.0626 M from M (claim 13.0628; my weights are A2's
+  median horizon masses), closing at -0.237 per M; members 12.0530 and 14.1600 M from M (equal to
+  the claim to all digits); pair energy -0.823, member-M energies -0.362, -0.161 units (claim
+  -0.823, -0.363, -0.162; my masses differ in the fourth digit); the pair stays bound after 61.8 M
+  (maximum -0.807 units). At the live record (96.89 M) the centre of mass is 12.904 M from M and
+  still closing.
+- P5 MET with a finding: no failed search in any of A2's three finders (1102 times at the cut);
+  medians reproduced to all digits; member drifts 3.09e-5 and -8.05e-6 per M in fraction of the
+  mass (4.0e-6 and -1.0e-6 per M in absolute mass: the "per M" of the claim is fractional); heavy
+  max - min 6.887e-4. Finding (fig_v_horizons, looked at): the heavy hole's mass falls smoothly
+  from 1.00401 (63 M) to 1.00358 (86 M), -1.72e-5 per M, then the finder alternates between an upper
+  branch (median 1.00422) and a lower one that keeps falling (1.00379 to 1.00354, -1.25e-5 per M).
+  The fitted -2.7e-6 per M over 65-95 M mixes the branches. If the lower branch keeps its slope, the
+  heavy hole's change exceeds 1e-3 before 150 M, against A2-5 [JUDGEMENT: an extrapolation].
+- P6 MET: max sqrt(H-norm2/Volume) on A2 3.126e-5 at 84.5 M; H-norm2 0.0795 at 62 M, 0.102 at 96 M
+  (factor 1.28), range 0.056-0.134.
+- P7: A2 MET (137 samples 62-96 M on the 0.25 grid, none missing, from 160 raw rows at the time of
+  the first pass). A FAILED AS WRITTEN: A's files hold 257 samples 0-64 M (A's cut attempts after
+  61.80 M wrote 62-64 M), not 248 to 61.75 M; those nine samples equal A2's to 1.4e-12 (largest value
+  1.9e-4). Joined A + A2: 385 samples 0-96 M, none missing.
+- P8 MET for the table, FAILED for the order: separations at 7.5 M R8 4.88625, R16n 4.94769, P1
+  4.85393; at 20 M P1 4.28549, R8 4.37531; Newton (binary alone) 4.94300, 4.96926: all equal to the
+  binary_conv table to its 4-5 digits. R12 - R16n: largest 2.12e-3 M at 0.71 M (the start), -3.4e-4
+  at R12's end (21.06 M): "within 0.002 M" holds after the first M only. C - A: largest 2.33e-3 M at
+  0.59 M (claim 0.0023). No order of convergence exists from the three binary-alone members: s12 - s16
+  changes sign between 7.5 and 10 M (7.7e-6 then -4.4e-4) while s8 - s16 is -0.06 to -0.38; the
+  three-member order is undefined at 5, 7.5, 10 and 20 M. The claim "order >= 3.3 (3.96 from Delta s)"
+  was made from m/8 and m/16 alone before R12 existed; it is not reproducible as an order.
+- P9 MET: P1's tracker separation first below 0.1 M at 48.793 M; finder 0 first above 0.2 at 48.8125 M
+  (0.26857), finder 1 at 49.0625 M (0.26930); remnant closest to M 6.99168 M at 154.598 M. Not
+  reproduced: p1_280.json's d_at_112 = 11.816 (my 11.895 at 112.0 M; all its other d_at rows equal
+  mine to 10 digits). P1's rms H over 60-280 M 4.66e-5 to 8.79e-5 (claim 4.7e-5 to 8.8e-5: MET).
+  Remnant mass change 60-280 M -0.43 percent (claim -0.42) with medians of all accepted rows (my
+  medians are lower than p1_280.json's by about 9e-4 because it keeps only 'good' rows).
+- Horizon scan (H1-H4 of the owner's batch 21): failures by signature P1 4, 5, 18 (finders 0, 1, 2),
+  R8 2, 2, none in R12, R16n+B, A+A2, C. H1 MET. H2: m/8 members 1.12e-3, 1.65e-3 (P1 10-40 M) and
+  0.92e-3, 1.43e-3 (R8 10-21 M), so the written band 1.0-1.7e-3 fails for R8's member 0 and
+  0.9-1.7e-3 holds; m/16 members at most 3.1e-5 per M (R16n+B, A, A2); C's members -1.20e-4 and
+  -1.69e-4 (15-22.3 M); slopes over all rows equal those over accepted rows to 3 digits. H3 MET.
+  H4 FAILS AS WRITTEN for P1: its heavy finder reads 0.9961, 0.9915, 0.9844 at t <= 0.125 M (2.3
+  percent below its median 1.0071), within 0.70 percent after 1 M; A, A2, C within 0.05 percent; no
+  member finder above 0.5. All horizon numbers: made without the diagnostics.
+- K1: rms H at t = 0: approx L10 (m/8) 4.7134e-5, the card smoke the same to the 6 digits of the
+  history; order L9 -> L10 7.98 (approx), 7.91 (none); L10 -> L11 6.42 (approx), 1.62 (none: its own
+  residual); none/approx at L11 29.6 (prediction 25-40 MET; the claim's 33 and "own residual 4.9e-7"
+  are not reproduced as raw numbers: my raw approx L11 rms is 5.51e-7, which still holds truncation).
+- J0 MET: the FFI energy of the analytic wave is exact to 3.5e-6.
+- J1 MET: junk in u in [-35, 6] M: 2.73, 2.50, 2.28, 2.36 e-6 M at r = 40, 48, 70, 90 M (claim 2.8,
+  2.6, 2.5, 2.5); largest over smallest 1.198 (within 20 percent, barely); l >= 4 share 0.69-0.71
+  (claim 0.67-0.70); with u = t - r 1.7-2.4e-6, omega_0 = 0.1 3.3-4.2e-6, omega_0 = 0.3 1.7-2.1e-6
+  (claim 1.5-3.9e-6 over omega_0 0.1-0.3). fig_v_junk (looked at): a pulse at u = -33 M and then a
+  steady flux of 3-8e-8 per M that carries most of the window's energy, flat in l: what OPEN item 4
+  calls an emission of unidentified source.
