@@ -2045,7 +2045,7 @@ core/clump-table (11 files, 1825 added, 3 removed) [VERIFIED by reading the hunk
   same number of cycles and the constraint history within 1e-7, the clump-table and
   gauge cases within 1e-7 in every large history column.
 
-### K7 amended before the card entry was queued (03:05Z; nothing of it has run)
+### K7 amended before the card entry was queued (03:01Z; nothing of it has run)
 
 Writing the judging script (`analysis/release/card_v07.py`) I saw that two bounds of K7
 as first written do not fit what the cases measure, and changed them before queueing:
@@ -2065,3 +2065,63 @@ unchanged; the processor data are those of the core-v0.6 candidate, to which thi
 candidate is byte-identical where the regression compares) and `card_v05.py`. The script
 was tried by hand on processor data in place of card data (CARD PASS, which says nothing
 about the card) and with the first-pass run in place of `g_hole` (CARD FAIL at 8.8e-2).
+
+### Outcomes (03:10Z)
+
+Merges, one commit per branch, no conflict: da904f55 (noise-level2), 76ac67a2
+(step-limit), 31ae23e6 (gauge-2), 5f75e5b9 (clump-table) = the source commit. Builds:
+serial 312 s, MPI 326 s, threaded 382 s, card 1065 s, three jobs each, two at a time.
+
+- **M2 of core/clump-table (judged before the merge): HELD, and my expectation was
+  wrong.** Run core-20261125-021225-382dbc7: over 401 common records to 50 M the two
+  card runs (merged build of 2026-11-21, build before the merge of 2026-11-19) differ by
+  at most 3.3e-15 in the minimum lapse, 2.2e-16 in sum m u_x, 1.1e-15 in sum m W; the
+  constraint norms agree in every printed digit. I had written that the bound 1e-9
+  might fail because card runs with deposition do not repeat; this pair repeats to
+  rounding of the printed sums. (The histories hold sums and norms, not the particle
+  state: the statement is about them.) Figure looked at; its legend covers curves.
+- **R: HELD.** Run core-20261125-023046-30aba6c: 75 of 75 items identical with release
+  core-v0.6, classes a, b, other empty. No file differs because of the three changes
+  that act without an option. The four recompiled kernels I named as candidates for a
+  different contraction (`z4c.hpp`, `z4c_gauge_ext.hpp`, `scalar_field.hpp`, `nrpic_cf`)
+  wrote the released bytes. Figure core-20261125-030148-94dcc0b looked at.
+- **Rm: HELD.** core-20261125-023646-eca713c, 75 of 75.
+- **Ro: HELD.** core-20261125-025505-10f6611 (the driver reports FAIL, as it must for a
+  build that is not a byte reference; every AthenaK run status 0), judged in
+  core-20261125-030151-8c0c306: 32 of 75 identical; module histories within 1.2e-15,
+  constraint statistics 1.1e-10 (east) and 6.0e-12 (c4). The last two are not the
+  numbers of core-v0.6 (1.4e-10, 1.9e-12) that I had written as "about": same order,
+  different bytes of the threaded build. Figure looked at.
+- **Qn, Qs, Qg, Qc, C, T: HELD**, run core-20261125-023641-7a1c47d (QUICK PASS, 28
+  expectations): 65 of 65 files identical in the five byte comparisons (8, 33, 9, 9, 6);
+  s_off stops at cycle 9 with exit status 3 after the warning; S1 and S2 of
+  `term_test.py` (26 checks) with status 143 and a restart file 0.28 s and 0.35 s after
+  the signal; g_hole and g_leak differ in 7 of 9 files; c_solve converges in 25 outer
+  iterations to max|H| 2.0e-12; x_l2dt writes the histories of n_l2 (the limit never
+  sets the step); x_holedt finite; chain test 58 checks. Two things seen that no
+  prediction covered: (i) with geodesic slicing and zero shift the start-up line of
+  `dt_gauge` prints 1.73304e+39 for the two sectors that are not evolved (the largest
+  float over the cell): cosmetic, OPEN.md item e; (ii) S2 shows both restart defects of
+  the step-limit package with the merged build (`tsq.cons.hst` lacks the record at
+  t = 1.6875 in the continued run; header lines of `*.z4c.user.hst` 2 against 4): OPEN.md
+  items a and b. Figure looked at (panel b is crowded).
+- **K7: NOT RUN.** Queue entry q0039 (`core-v07-card`, priority 2, 0.3 card-hours asked),
+  added 03:02Z after the amendment above; not waited for. Commands that judge it:
+  `tracks/core/RELEASE-v0.7.md`, section "Card checks pending".
+
+Found while writing the changelog, not tested by a run [VERIFIED by reading
+`git show core-v0.6:scripts/submit_chain.sh` 268, 282]: the chain script of core-v0.6
+takes status 143 together with a line "Terminating on" for a failure, so a chain started
+with that script and an executable of core-v0.7 ends FAILED when the executable is
+signalled from outside the job. The script of this release handles it (scenario M of its
+test). Written into the changelog (run scripts, item 5), READY and OPEN.md item g.
+
+Not done: the capability tests of the four packages were not rerun on the merged
+executables; nothing ran on several ranks or on a card; core/oblate was not looked at
+beyond its tip. Card time of this session: none. Processor time: builds about 35
+core-minutes of wall on 3 jobs each; runs about 45 minutes on 3 cores.
+
+Published: `scratch/core/exe/core_nrpic_v07/` (four executables, COMMIT, SHA256SUMS
+checked with `sha256sum -c`, READY, branches/). Written: `RELEASE-v0.7.md` (first line
+REGRESSION PASS), changelog section core-v0.7, OPEN.md section core-v0.7, drivers
+`analysis/release/{quick_v07.py,card_v07.py,card_v07.list}`.
