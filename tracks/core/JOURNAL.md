@@ -2044,3 +2044,24 @@ core/clump-table (11 files, 1825 added, 3 removed) [VERIFIED by reading the hunk
   1e-9 (no deposit: only rounding of the reductions), the step-limit example with the
   same number of cycles and the constraint history within 1e-7, the clump-table and
   gauge cases within 1e-7 in every large history column.
+
+### K7 amended before the card entry was queued (03:05Z; nothing of it has run)
+
+Writing the judging script (`analysis/release/card_v07.py`) I saw that two bounds of K7
+as first written do not fit what the cases measure, and changed them before queueing:
+- `s_lim` (flat space with noise of 1e-10 on every field): its one history measures
+  the noise, and rounding of 1e-16 of a field of order one is 1e-6 of that. The bound
+  is 1e-3 on the large columns of `flat.z4c.user.hst`, with the same number of records
+  (growth at the grid scale against decay differs by orders of magnitude, so 1e-3
+  still discriminates). The first text said 1e-7.
+- level 2 (`n_l2`, `x_l2dt`): 1e-9 holds for `sr.sf.hst` and for the per-mode records
+  `*.rmodes` (relative to their largest entry); `sr.sf.con.hst` (constraint means, in
+  part differences of rounding-level numbers) is reported and not bounded.
+The other cases as written: `g_hole`, `x_holedt`, `c_static`, `c_solve` within 1e-7 in
+`*.nrpic.hst` and `*.z4c.user.hst`; `c_solve` with the same number of outer iterations
+and psi_max to 1e-12. The fifteen cases of core-v0.6 by `card_v06.py` (against the
+processor runs of core-20261121-130813-710b3cc and core-20261121-131250-f8df905: decks
+unchanged; the processor data are those of the core-v0.6 candidate, to which this
+candidate is byte-identical where the regression compares) and `card_v05.py`. The script
+was tried by hand on processor data in place of card data (CARD PASS, which says nothing
+about the card) and with the first-pass run in place of `g_hole` (CARD FAIL at 8.8e-2).
