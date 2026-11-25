@@ -77,7 +77,9 @@ gauge member; watch the first M/16 member's real cost (RISKS row 5).
   `horizon_status_<n>.txt` (`<fastflow> diagnostics = true`), never from the summary file
   (decision 0040 item 3); the v0.6 finder's outputs do not survive a chained restart.
 - Card runs with deposition are not byte-reproducible; read effects against controls.
-- `nrpic-stage verify` with checksums hashes several TB of restart files; this session started
-  one detached pass to build the cache (log under scratch/C-sidm/tmp/stage_verify_g2_full.log);
-  if it rewrote stage/G2/VERIFY_RESULTS.*, commit them.
+- `nrpic-stage verify` with checksums hashes several TB of restart files. This session ran it
+  with `--no-checksums` only and did NOT start a detached checksum pass: when it ends it rewrites
+  stage/G2/VERIFY_RESULTS.*, and a dirty track makes `nrpic-run submit` (called by qitem.sh at
+  dispatch) refuse the queued entries. Run the pass inside a session that waits for it and
+  commits its results (one pass with `--full` before the gate review).
 - Never kill by pattern; at most 6 cores; temporary files in scratch/C-sidm/tmp/.
