@@ -876,3 +876,48 @@ M/16 on 100-300 M, no trend; fp_analyse D-20261124-172508-c847ee4): there is no 
 whose order a third member could measure; an M/12 pair (bubble and vacuum) would add a third number at
 the floor for up to four card-hours in a week the usage ruling (0040 item 5) keeps tight and with the
 cards held since the morning. M/4 stays outside the regime (0039 item 4).
+
+## Entry 24 (2026-11-25 08:12 PST, lead of batch 20): outcomes of H, R, T
+
+**H (horizon searches; hz_check D-20261125-160142-b1c51b5, figure of record D-20261125-160241-2b7ba3b,
+hz_check.png looked at; D-20261125-160123-f86d73c failed on the status-line comment, on record).**
+- H1 HOLDS. Over 13 summaries (the 11 of entry 23 and the G1 pair V-1B, ES-1) every failed search lies
+  before 5 M: one bit-identical repeat at 0.5-1 M in V-1L, ES-1L, ES-FL, FK, FN4, FNQ, V-1B, ES-1; three at
+  1, 2, 4 M in V-1L4 and ES-1L4; in FF4 NaN at 0-3 M (no surface accepted before 4 M) and a repeat at 5 M.
+  After 20 M: zero failed lines in every run (panel c); the V-1L and V-1L16 plateaus (230-500 M, 540 and
+  280 lines) are found surfaces of the loose stopping rule, not repeats (panel a).
+- H2 HOLDS. 36 probes of FP/FP-ext, one finite line per horizon each (a failed first search writes NaN).
+  At the four V-1L dumps core searched with the diagnostics (core-20261125-144142-5858c3d) the status says
+  found (129 flow iterations) and D's tight masses equal core's bit for bit (100, 250, 400, 500 M).
+- H3 HOLDS. No removal of ES-FL, FF4, FK, FN4, FNQ takes M_AH from a failed line (0 of 147512, 146672,
+  119640, 478752, 26392); criterion N recomputed on found lines only: 2.28e-4 (M/8), 1.99e-4 (M/16),
+  4.57e-3 (M/4), unchanged.
+- Without the diagnostics, all of them (stated beside every horizon number of the package): every D card
+  and processor run. The "found" verdicts above rest on the signature, which the source makes complete
+  (ah_found reset at each search, fastflow.cpp:777; ah_prop written only after an accepted surface,
+  :925-935) [VERIFIED by reading]; four dumps also by a status file (core's run).
+
+**R (region norms; region_norms D-20261125-160355-bda7e38, region_norms.png looked at).**
+- R1 HOLDS for the identity (V_in + V_out = V to 3.9e-16 in FN4, 5.2e-16 in FNQ); FAILED as written for
+  "every column finite": Hmax_in_h0 is NaN at t = 0 in both (the horizon sphere is empty before the first
+  search). Harmless; on record.
+- R2 HOLDS: FN4's shell norm over its own plane norm is 0.82 (A1) and 0.61 (A2) at 100 M, 0.74 and 0.52 at
+  200 M, lower as foreseen (volume weight), within a factor 2.
+- R3 HOLDS: FNQ/FN4 = 3.91 (A1) and 3.46 (A2) at 100 M; 3.4-4.4 on A1 and A2 at 50-300 M: the constraint
+  residual outside the hole to 30 M is particle noise of the deposit (N^-1/2) [VERIFIED: a run in which
+  it could have failed]. Not predicted: on [30, 60] M (the dust edge) the ratio is 1.1 to 150 M and rises
+  to 2.4 by 300 M (deterministic residual early, as XN's A3 0.93-0.96); outside 60 M (no dust) it is
+  1.000 (vacuum residual identical). FNQ read to 350 M (its second-newest restart; chain running).
+
+**T (D4; d4_timing D-20261125-160450-9326390, d4_timing.png looked at).**
+- T1 HOLDS for FK and ES-FL: before 219 M none of the 63344 dust removals of either precedes the exact
+  crossing; minimum +0.0715 M and median +0.180 M in both, the same to 1e-8 M (the same removals). FK's
+  29.5 per cent all come after 235 M: per 10 M bin 5 per cent at 240 M, 62 per cent at 280 M, 96-100 per
+  cent from 330 M (panel c). So the FK/ES-FL difference of entry 19 is the removal rule after 219 M (ES-FL
+  removes by the lapse rule, later) [VERIFIED by this split]. FAILED for FN4 as an extension of the
+  bound: 3.4 per cent of its removals before 219 M precede the crossing (from 170 M on, min -0.108 M),
+  above the 1 per cent written for FK and ES-FL, below the 5 per cent refutation.
+- T2 HOLDS: after 219 M, FK 62.6 per cent (min -0.364 M), FN4 69.2 per cent (min -0.663 M), all by reason 3.
+- Open [TO VERIFY]: why horizon excision at 0.8 rr_min removes dust up to 0.66 M of proper time before the
+  exact LTB crossing once the hole has grown, and why the onset moves from ~235 M (N) to ~170 M (4N). No
+  criterion depends on it (D4 has no bound; (iii), D2, D3 hold); not named as a cause.
