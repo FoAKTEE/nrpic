@@ -75,7 +75,7 @@ and a tracker, `cons_dcycle = 4`):
   `figstyle.save`, and different ones with the old (the creation date differs when the
   two runs are at least a second apart).
 
-## Entry 2 (2026-11-25, 05:18 PST): item 2, what the source does, design, predictions
+## Entry 2 (2026-11-25, 05:17 PST): item 2, what the source does, design, predictions
 
 Read in the source [VERIFIED by reading]: `FastFlow::FastFlowLoop` (`z4c/fastflow.cpp`)
 starts from the surface of the last successful search and ends at the first iteration
@@ -134,7 +134,7 @@ cells M/8, test particles, to t = 8 M, finder every 4 cycles; script
   with N polishing iterations costs at most N iterations more; timed on processors here
   and on a card in the card check.
 
-## Entry 3 (2026-11-25, 05:36 PST): T1 first attempt stopped, by_binary too slow on the serial build
+## Entry 3 (2026-11-25, 05:35 PST): T1 first attempt stopped, by_binary too slow on the serial build
 
 Run core-20261125-131225-9591922 (T1 with `--by-binary`): the periodic cases finished,
 then the two-puncture deck at three levels ran at about 80 s per cycle on the serial
@@ -174,7 +174,7 @@ for the new build; header lines 4 against 2).
   20 to 27 twice, as before this work (not changed here; said in the interface text).
 - Not yet run: P3 (S2 of `term_test.py`), P5 (two punctures), P6 (byte regression).
 
-## Entry 5 (2026-11-25, 05:44 PST): prediction for T2 (restart files across executables)
+## Entry 5 (2026-11-25, 05:41 PST): prediction for T2 (restart files across executables)
 
 Besides P3 (S2 and S1 of `term_test.py`), `restart_extra.py` continues a restart file of
 the new executable that carries the block `NRPCNS01` with the release executable, and a
@@ -188,7 +188,7 @@ restart file of the release with the new executable.
   cut at cycle 26 it would lose none (the fields of the restart suffice, as in T1).
   Refuted by a non-zero status, or by any other record missing or added.
 
-## Entry 6 (2026-11-25, 05:46 PST): finder test stopped after 8 cycles, set-up changed, P10 restated
+## Entry 6 (2026-11-25, 05:43 PST): finder test stopped after 8 cycles, set-up changed, P10 restated
 
 Run core-20261125-134013-54a77d6 (first attempt of `finder_test.py`, serial build, to
 t = 8 M): 17 s per cycle on the serial build (8^3 MeshBlocks with four ghost cells), 256
@@ -213,7 +213,7 @@ longer waits for the horizon to grow through a radius:
 - P9 stays, for 17 searches up to 2 M instead of 65 up to 8 M; the run with 1e-5 and
   100 polishing iterations is dropped.
 
-## Entry 7 (2026-11-25, 05:52 PST): outcome of T5b (Track D's dumps), run core-20261125-131950-1fb387d
+## Entry 7 (2026-11-25, 05:51 PST): outcome of T5b (Track D's dumps), run core-20261125-131950-1fb387d
 
 Registered run, threaded build of commit 1fb387d8, two threads, 1695 s; eleven restart
 dumps of Track D's V-1L (vacuum puncture, cells M/8, run D-20261121-203124-a34cf1f) at
@@ -241,7 +241,7 @@ line; the 1e-5 rule from outside lies 6e-5 below at every dump).
   late-time surface: the tight rule reaches a change below 1e-9 in 129 iterations from
   1 M. Not measured per iteration (the verbose file was off).
 
-## Entry 8 (2026-11-25, 05:56 PST): outcome of T2, run core-20261125-134353-9f7fdc3
+## Entry 8 (2026-11-25, 05:52 PST): outcome of T2, run core-20261125-134353-9f7fdc3
 
 Registered run, serial build of commit 9f7fdc3e against `.work/build_cpu_v07`, 457 s on
 one core; `summary.json`, `fig_restart_extra.png` (looked at: the record at 1.6875 is
@@ -260,3 +260,19 @@ where an executable had no densities of the cycle before).
   block) is continued by the new build to the end, status 0; it lacks that record and
   no other. So restart files of core-v0.7 can be continued with the new executable and
   the other way; the one record of a file without the block cannot be recovered.
+
+## Entry 9 (2026-11-25, 05:54 PST): correction to entry 6 (column 1 of the horizon summary)
+
+Entry 6 says that column 1 of `<base>.horizon_summary_<n>.txt` is the number of flow
+iterations. That was an inference from three rows that all held 4, and it is wrong:
+`z4c_tasks.cpp:355` calls `Find(stage, time)` and `Write(stage, time)`, so the column
+headed "iter" is the stage of the integrator at which the finder runs, 4 with rk4 at
+every search [VERIFIED by reading]. The number of flow iterations of a search is only
+in `<base>.horizon_status_<n>.txt`, which needs `<fastflow> diagnostics = true` (used in
+`finder_probe.py`: the 102, 129 and 48 to 50 of entry 7 come from there and stand).
+Consequence: `finder_test.py`, already running as core-20261125-135110-7966158 when I
+saw this, matches searches by time (correct) but plots column 1 as "flow iterations" in
+its middle panel and reports its mean; that panel and that number are void. The checks
+P8 to P10 do not use the column. The script is corrected (the panel shows the masses)
+and its judgement is run again on the outputs of that run, as a registered analysis.
+The interface text gets the line on what the column holds.

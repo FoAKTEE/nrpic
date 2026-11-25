@@ -155,14 +155,13 @@ def figure(out, S, R, tlim):
     ax.legend(loc="upper right", fontsize=7, ncol=1)
     fs.no_minor_labels(ax)
     ax = axs[1]
-    for name, col, lab in (("tight", fs.PAL["blue"], "tight rule"), ("pol", fs.PAL["red"], "1e-2, 100 polishing"),
-                           ("prod", fs.PAL["green"], "1e-5"), ("def", fs.PAL["yellow"], "1e-2")):
-        ax.plot(S[name][:, 1], S[name][:, 0], color=col, label=lab,
+    for name, col, lab in (("def", fs.PAL["yellow"], "1e-2"), ("prod", fs.PAL["green"], "1e-5"),
+                           ("tight", fs.PAL["blue"], "tight rule"),
+                           ("pol", fs.PAL["red"], "1e-2, 100 polishing")):
+        ax.plot(S[name][:, 1], S[name][:, 2], color=col, label=lab,
                 ls="--" if name == "pol" else "-")
-    ax.set_yscale("log")
-    ax.set_xlabel("t / M"); ax.set_ylabel("flow iterations of a search")
-    ax.legend(loc="center right", fontsize=7)
-    fs.no_minor_labels(ax)
+    ax.set_xlabel("t / M"); ax.set_ylabel("horizon mass")
+    ax.legend(loc="best", fontsize=7)
     ax = axs[2]
     for name, col, lab in (("prod", fs.PAL["blue"], "no option (guard 4 M)"),
                            ("g04", fs.PAL["red"], "ah_exc_max_growth = 0.4")):
@@ -184,19 +183,30 @@ def main():
     ap.add_argument("--jobs", type=int, default=3)
     ap.add_argument("--threads", type=int, default=2)
     ap.add_argument("--tlim", type=float, default=2.0)
+    ap.add_argument("--runs", help="judge the runs of this directory (an earlier run of "
+                    "this script) instead of running them; figure and summary go to --out")
     a = ap.parse_args()
     out = os.path.abspath(a.out)
     os.makedirs(out, exist_ok=True)
-    ic = os.path.join(out, "infall.nrp")
-    if not os.path.exists(ic):
-        make_infall(ic)
     res = {}
-    with cf.ThreadPoolExecutor(max_workers=a.jobs) as ex:
-        futs = [ex.submit(one, n, a.ref_exe if n == "ref" else a.exe, out, ic, a.tlim,
-                          a.threads) for n in RUNS]
-        for f in cf.as_completed(futs):
-            n, rc, wall = f.result()
-            res[n] = dict(rc=rc, wall_s=wall)
+    if a.runs:
+        src = os.path.abspath(a.runs)
+        old = json.load(open(os.path.join(src, "summary.json")))
+        ic = os.path.join(src, "infall.nrp")
+        for n in RUNS:
+            res[n] = dict(rc=old["runs"][n]["rc"], wall_s=old["runs"][n]["wall_s"])
+        figout, out = out, src
+    else:
+        figout = out
+        ic = os.path.join(out, "infall.nrp")
+        if not os.path.exists(ic):
+            make_infall(ic)
+        with cf.ThreadPoolExecutor(max_workers=a.jobs) as ex:
+            futs = [ex.submit(one, n, a.ref_exe if n == "ref" else a.exe, out, ic, a.tlim,
+                              a.threads) for n in RUNS]
+            for f in cf.as_completed(futs):
+                n, rc, wall = f.result()
+                res[n] = dict(rc=rc, wall_s=wall)
     S = {n: summary_rows(os.path.join(out, n)) for n in RUNS}
     R = {n: removed(os.path.join(out, n)) for n in RUNS}
     ck = {}
@@ -218,8 +228,6 @@ def main():
                       n_above_2e5=int(np.sum(dm > 2.0e-5)),
                       mass_range=[float(np.nanmin(s[:, 2])), float(np.nanmax(s[:, 2]))],
                       minradius_range=[float(np.nanmin(s[:, 11])), float(np.nanmax(s[:, 11]))],
-                      flow_iterations_mean=float(np.mean(s[:, 0])),
-                      flow_iterations_max=int(np.max(s[:, 0])),
                       removed=int(len(R[n])), removed_reason3=int(len(r3)),
                       last_reason3=float(np.max(r3[:, 0])) if len(r3) else None)
     ck["tight rule: found at every search (%d)" % res["tight"]["searches"]] = (
@@ -247,12 +255,12 @@ def main():
        % res["prod"]["removed_reason3"]] = (res["prod"]["removed_reason3"] > 0)
     ck["P10: with ah_exc_max_growth = 0.4 none is (%d)" % res["g04"]["removed_reason3"]] = (
         res["g04"]["removed_reason3"] == 0)
-    figs = figure(out, S, R, a.tlim)
-    summary = dict(exe=a.exe, exe_sha256=sha(a.exe), ref_exe=a.ref_exe,
+    figs = figure(figout, S, R, a.tlim)
+    summary = dict(runs_dir=out, exe=a.exe, exe_sha256=sha(a.exe), ref_exe=a.ref_exe,
                    ref_exe_sha256=sha(a.ref_exe), deck_sha256=sha(DECK), tlim=a.tlim,
                    threads=a.threads, particle_file_sha256=sha(ic), checks=ck, runs=res,
                    figures=figs, all_ok=all(ck.values()))
-    with open(os.path.join(out, "summary.json"), "w") as f:
+    with open(os.path.join(figout, "summary.json"), "w") as f:
         json.dump(summary, f, indent=1)
     for k, v in ck.items():
         print("%-4s %s" % ("ok" if v else "FAIL", k))
