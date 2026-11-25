@@ -1,0 +1,108 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-180109-bcbd0d2",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "gauge-2: Einstein-Straus data of the first pass regenerated with the exact reference curves to tau = 140 M (Track D's make_es.py --Rb 56 --w_out 4 --hp 2.0; the first pass stopped the reference at 60 M)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/make_es.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "--Rb",
+    "56",
+    "--w_out",
+    "4",
+    "--hp",
+    "2.0",
+    "--tau_max",
+    "140",
+    "--no_figs"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "bcbd0d2cb57072c5960ca5be5a5d803886e7e066",
+    "branch": "core/gauge-2",
+    "dirty": false,
+    "merge_base_main": "9aa744050b6dd76e8847e202b1b6f245a0cda107",
+    "worktree": "wt/core-s1"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-s1/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/make_es.py",
+      "role": "input",
+      "sha256": "179696cbb2f968b24af1f409e927b2131340a6aa1e9c5702bea30470b8e541ee",
+      "bytes": 16052,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/wt/D-bh-dress/tracks/D-bh-dress/einstein_straus/es_model.py",
+      "role": "input",
+      "sha256": "8b3abd542d17be56d1822079f54192be9a8e053812fc80dc6fdbf52c05be7bd2",
+      "bytes": 24759,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 3.58,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-180109-bcbd0d2",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "93c1ffbfd2f7e12dc3889a645a5fab22fab3c79d482275604efbfd5bc9fa8a27",
+    "bytes": 6401177,
+    "files": 6
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-21T18:01:10Z",
+  "started": "2026-11-21T18:01:10Z",
+  "ended": "2026-11-21T18:01:14Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 6.6734,
+    "gpu_hours_reserved": 1.8,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 2,
+    "runs": 1454,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-21T18:01:14Z"
+}
