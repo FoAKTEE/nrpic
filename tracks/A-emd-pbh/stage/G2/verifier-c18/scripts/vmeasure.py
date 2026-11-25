@@ -73,6 +73,15 @@ class Member:
         d = tau_s - tah_s
         fin = np.isfinite(d)
         d1 = np.interp(rf, r_s[fin], d[fin])
+        # v3: straight-line fits of tau and label against r over the three bands on each side
+        k = np.searchsorted(r_s, rf)
+        sl = slice(max(k - 3, 0), min(k + 3, r_s.size))
+        ct = np.polyfit(r_s[sl], tau_s[sl], 1)
+        cl = np.polyfit(r_s[sl], rb_s[sl], 1)
+        tau3 = np.polyval(ct, rf)
+        lab3 = np.polyval(cl, rf)
+        d3 = tau3 - self.ltb.shell(lab3)["tau_ah"][0]
+        self._last_v3 = (tau3, d3, lab3)
         return tau_f, d1, tau_f - tah_f, rb_f, mono
 
     def ddet(self, i_first=None):
@@ -84,8 +93,10 @@ class Member:
         t = self.summ["time"][i]
         rf = self.summ["meanradius"][i]
         tau_f, d1, d2, rb_f, mono = self.tau_at_radius(t, rf)
+        tau3, d3, lab3 = self._last_v3
         return {"t": float(t), "r": float(rf), "tau_det": float(tau_f), "ddet_v1": float(d1),
-                "ddet_v2": float(d2), "label": float(rb_f), "monotone": mono,
+                "ddet_v2": float(d2), "ddet_v3": float(d3), "tau_det_v3": float(tau3),
+                "label": float(rb_f), "label_v3": float(lab3), "monotone": mono,
                 "mirr": float(self.summ["mirr"][i])}
 
     def exact_mass(self, t):
