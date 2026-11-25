@@ -1889,3 +1889,158 @@ Done: the six level-3 runs of row 4 are in the shared queue (q0028-q0033); five 
 runs closed as stopped; 597d9ca continued in place by the new wrapper (dry-run test held);
 HANDOFF (queue ids beside the models, read commands), STATUS (card plan). Nothing
 half-done; no run computed in this session; P10-P15 open. G2 not met.
+
+## 2026-11-25T02:20Z (2026-11-24 18:20 PST), batch 14, session core-lead-14 (merge of four source branches, release candidate core-v0.7)
+
+### State found
+
+- `core/nrpic` at 16e4942a after `git merge main` (4f4e0e81, decision 0035), clean. No
+  pause flag. `tracks/core/RELEASE-v0.7.md` does not exist: nothing of this task was
+  done before.
+- Branches offered (decision 0035 item 4) [VERIFIED `git log`, `git merge-base
+  --is-ancestor core-v0.6 <branch>`, READY of each under `scratch/core/exe/`]:
+  core/noise-level2 5c98beef (source 64f150ec, reviewed on Fable, holds core-v0.6; card
+  run R5 = queue entry q0035, waiting), core/step-limit 3a9a3498 (source 5c4b644f,
+  holds core-v0.6; card smoke run q0036, waiting), core/gauge-2 61c8fc4d (source
+  984110c3, holds core-v0.6, closed on 2026-11-21), core/clump-table ff11719d (source
+  7cc6c7b9, holds core-v0.5 and NOT core-v0.6, READY of 2026-11-21, worktree clean, no
+  commit since). core/oblate: left out as the task says.
+- core/clump-table, the card check M2 its READY names as outstanding: the run
+  core-20261121-132629-47ccb97 (Slurm 4803) DID run on 2026-11-21 07:36 PST, status 0
+  (`batch.list.status`), and nobody judged it: the branch has no entry after its
+  publication. Its prediction M2 was written before the run (JOURNAL-clump2.md of the
+  branch, session clump2-4, "The merged source: predictions M1, R5, M2"): first record
+  equal to 1e-11; minimum lapse, sum m u_x, sum m W within 1e-9 at every common record
+  to 50 M; refuted by a difference above 1e-6 within the first 10 M. I judge it now with
+  the branch's own script (`analysis/clump2/compare_two_runs.py --a <M2>/v0.3 --b
+  core-20261119-145433-8c4083d/v0.3`), before I decide on the branch. My own
+  expectation [JUDGEMENT]: the refutation criterion (1e-6 in 10 M) is not met; the bound
+  1e-9 to 50 M may fail, because two card runs of one executable do not repeat each
+  other (atomic deposit) and 10^4 particles amplify that over 50 M. The branch is taken
+  if the early criterion holds and nothing looks like a systematic offset.
+
+### Review of the four diffs against core/nrpic (source of core-v0.6), as maintainer
+
+core/noise-level2 (8 files, 833 added, 23 removed) [VERIFIED by reading the hunks of the
+six existing files in full; of the new `scalar_field_noise_mesh.cpp` (545 lines) the
+header, the option reader and the guards]:
+- Hooks: `nvar_sf` replaces `nsf` in the allocation, the buffers, `CopyU`, the update;
+  `nvar_sf = nsf` unless `MeshModeRequested(pin)`, which reads only parameters that
+  exist and returns false unless `noise = mukhanov_sasaki` with `noise_mode_eq = mesh`
+  or `noise_level = 2`. `NoiseMeshRHS`, `NoiseMeshInit`, `NoiseMeshCoefficients` are
+  called behind `nopt.mesh_r`. Lockstep array: `+2` only with `bg_evolved`; the loop of
+  `mode_scale` now ends at `4+4*nshell`, the same range as before when `bg_evolved` is
+  off. `NoiseSynthesize` gets a branch on `per_mode` inside its kernel: the released
+  path is the else branch with unchanged arithmetic, but the kernel is recompiled, so
+  only the byte comparison says that the bytes stay (the package: 13 scalar cases with
+  restarts and 75 of 75 against core-v0.6).
+- `noise_level = 2` used to stop the run ("not implemented"); now it runs. An input
+  that set it had no released behaviour.
+- Guards: refined mesh refused (`pm->multilevel`); one rank is the restriction of the
+  scalar field itself; level 2 takes window, H, eps and kick factors from box means
+  (uniform), and is tested only for a lapse that is uniform in space (1 and a(t)):
+  with a lapse that varies in space, and with a shift, NOT tested (READY). These three
+  go to OPEN.md. Accepted.
+
+core/step-limit (15 files, 1071 added, 31 removed) [VERIFIED by reading every hunk of
+`driver.cpp`, `main.cpp`, `z4c.cpp`, `z4c.hpp`, `z4c_newdt.cpp`, `term_signal.{cpp,hpp}`
+and the function `GaugeStepLimit`; of the kernel `GaugeTimeStep` the header]:
+- `dt_gauge` is read only if present; `GaugeStepLimit` is called at the end of
+  `Z4c::NewTimeStep` in three dimensions and returns at once after its first call unless
+  `dt_gauge > 0`. At the first call it evaluates the bound (one reduction over the
+  cells, read-only) and prints at most two warnings on rank 0. It writes `dtnew` only
+  inside `if (dt_gauge > 0 ...)`. So without the option: a log line or none, no change
+  of the step. Under MPI one more `MPI_Allreduce` at the first call.
+- SIGTERM: the handler sets two `sig_atomic_t` and nothing else; `Check()` is the last
+  condition of the main loop (one `MPI_Allreduce` per cycle under MPI, a read of a
+  flag otherwise); `Finalize` skips non-restart outputs and the problem generator's
+  final function only if `Stopped()`; `main` returns 143 only then. A run that gets no
+  signal executes the same statements on its data as before. Prediction below: no
+  output file changes.
+- `rst` outputs on the signal are written through the unchanged end-of-run path of
+  `Finalize`, which already forces an off-schedule dump at the end of a run. Accepted.
+- `scripts/submit_chain.sh`, `scripts/tests/test_submit_chain.py`, `scripts/README.md`:
+  the package's 58 checks (run core-20261125-000640-5c4b644); I repeat the test script
+  with the merged tree.
+
+core/gauge-2 (3 files, 439 added, 3 removed; one source file) [VERIFIED by reading the
+whole diff of `z4c_gauge_ext.hpp`]:
+- `lapse_leak_hole` read only if present; `nhole = 0` without it or without trackers;
+  the kernel takes the old statement `if (leak && !leak2)` and the weighted one only
+  `if (leak2)`. The struct captured by the kernel grows by 26 reals and an int: the
+  bytes of runs with `lapse_leak` are again a matter of the compiler (the package: L1
+  17 of 17 files against core-v0.6, T7). My quick test repeats one case with
+  `lapse_leak` on and the option absent against the release.
+- It enters as a MITIGATION (decision 0025 item 3): its own 200 M vacuum run shows the
+  horizon radius falling again after 110 M. Named so in changelog and OPEN.md.
+
+core/clump-table (11 files, 1825 added, 3 removed) [VERIFIED by reading the hunks of
+`nrpic_cf.cpp` and `nrpic_bowen_york.hpp`, the header and the reader of
+`nrpic_clump_table.hpp`; `python/nrpic/boosted_cluster.py` not read]:
+- `TClumpRead` skips every component without `comp<c>_boost_file`; then `tcl.n = 0`,
+  `tcl.ncorr = 0`, both loops in the kernel are empty and `if (tcl.n > 0)` is false.
+  `BYRead`: one more `continue` for a component that has a boost file. The kernel of
+  `nrpic_cf` captures two more structs: bytes again by test (the package: R5, 50 files
+  against core-v0.5; my regression has the set-ups os, c1, c2, c3, c5 of `nrpic_cf`).
+- The branch does not hold core-v0.6: the merge brings its three source files onto a
+  tree that has `id_solver2` (punctures of `nrpic_cf` in the solve). The one overlap is
+  `clump_table_idsolve.athinput` (table clump under `id_solve`): with core-v0.6 the far
+  field is on by default, so that example will not give the bytes of the branch
+  executable. I run it for status and convergence only.
+
+### Predictions (written before any merge or build)
+
+- **R (byte regression, serial candidate against release core-v0.6
+  `.work/build_cpu_v06/src/athena`, `regress_v04.py`, twelve set-ups, every new option
+  absent).** 75 of 75 items identical; classes a, b and other empty. The three changes
+  that act without an option touch no compared file: the start-up warning of the step
+  limit goes to the log (the log is compared only in its result lines for jeans and
+  binary, which have no Z4c); the SIGTERM handler does nothing without a signal; the
+  chain script is not part of a run. Refuted by any item that is not identical: then
+  either a hook is not inert or, as for core/z4c-faces in core-v0.6, the compiler
+  contracted an unchanged kernel differently because of a header (candidates:
+  `z4c.hpp` with three new members, `z4c_gauge_ext.hpp` with the larger struct,
+  `scalar_field.hpp`, the kernel of `nrpic_cf`). Each branch passed 75 of 75 alone
+  (noise-level2 core-20261124-142032-79291d0, step-limit core-20261125-000250-6dc7307,
+  gauge-2 core-20261121-190715-f702a98); the four together have not been compiled.
+- **Rm.** `athena_cpu_mpi` started without mpirun: 75 of 75 identical.
+- **Ro.** `athena_cpu_omp` at one thread: every run status 0; not a byte reference;
+  about 32 of 75 identical and the rest at rounding level (module histories 1.2e-15,
+  constraint statistics 1.4e-10 east, 1.9e-12 c4: the numbers of core-v0.6). Refuted by
+  a status that is not 0 or a difference above 1e-8 in a large column.
+- **Qn (noise-level2).** `problems/scalar/sr_stochastic_l2.athinput` (32^3, level 2):
+  every file byte-identical with `core_noise-level2/athena_cpu` (64f150ec).
+- **Qs (step-limit).** (i) `problems/tests/z4c_step_limit.athinput`: every file
+  byte-identical with `core_step-limit/athena_cpu`; the log names the limit. (ii) the
+  same with `z4c/dt_gauge=0.0`: the warning in the log and the guard stop (exit status
+  3), as the READY says (cycle 9). (iii) `problems/tests/term_signal_periodic.athinput`:
+  a run signalled part-way exits with status 143, prints "Terminating on signal
+  SIGTERM" and leaves one more restart file; continued with `-r` from that file it
+  ends with a final restart file byte-identical with that of the run never signalled.
+  Refuted by any other exit status, a missing restart file or a different final state.
+- **Qg (gauge-2).** Coarse vacuum mesh (`problems/es/v1_small.athinput` without
+  refinement, 10 M, Track D's slice): (i) with `lapse_leak_hole = 8`: every file
+  byte-identical with `core_gauge-2/athena_cpu`; (ii) with `lapse_leak` on and the new
+  option absent: every file byte-identical with release core-v0.6; (iii) (i) and (ii)
+  differ (the weight acts).
+- **Qc (clump-table).** One moving cluster at 32 cells, initial data only
+  (`problems/tests/clump_table_static.athinput`, v = 0.3, curvature, correction): the
+  history files and dumps byte-identical with `core_clump-table/athena_cpu` (a
+  core-v0.5 source; nothing of core-v0.6 acts on `nrpic_cf` data without `id_solve`).
+  `clump_table_idsolve.athinput`: status 0, the solve converges (max|H| below 1e-10);
+  its bytes are NOT those of the branch executable (far field on by default since
+  core-v0.6): no byte comparison.
+- **C (the combination the merge creates).** The level-2 example with `<z4c> dt_gauge =
+  0.9` added (the step limit evaluated on a scalar-field run in an expanding box):
+  status 0; the start-up line of the limit in the log; history files byte-identical
+  with Qn if the limit never sets the step, else the log names the sector. Either is
+  acceptable; refuted by a non-finite history or a guard stop.
+- **T (chain script).** `python3 scripts/tests/test_submit_chain.py` with the merged
+  tree: every check passes (58 in the package's run).
+- **K7 (card check of the merged card executable; NOT run in this session: handed to
+  the shared queue).** Every case of the list ends with status 0; the fifteen cases of
+  core-v0.6 meet K6 of that release (`card_v06.py`, `card_v05.py`); the new cases agree
+  with the processor runs of the quick test: level-2 histories and mode files within
+  1e-9 (no deposit: only rounding of the reductions), the step-limit example with the
+  same number of cycles and the constraint history within 1e-7, the clump-table and
+  gauge cases within 1e-7 in every large history column.
