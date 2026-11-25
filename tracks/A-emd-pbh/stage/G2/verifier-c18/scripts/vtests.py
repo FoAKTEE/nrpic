@@ -172,11 +172,22 @@ def v0d(out):
         for k in range(40):
             f.write("%d %.15e %d 0 1 1 1 1 1 1 1 0 0 0 0  # x\n" % (k, t[k], 1 if k >= 10 else 0))
     r7 = bh_rule(read_summary(p, ps))
-    ok = (r1["bh"] and abs(r1["persistent_from"] - t[10]) < 1e-12 and not r2["bh"]
+    # (vi): summary times printed with %g (45.90625 -> 45.9062) against full-precision status
+    t6 = 45.0 + 0.03125 * np.arange(96)
+    m6 = np.where(np.arange(96) >= 29, 0.38 + 1e-5 * np.arange(96), np.nan)
+    p = os.path.join(out, "v0d_vi.txt"); write_summary(p, t6, m6)
+    ps = os.path.join(out, "v0d_vi_status.txt")
+    with open(ps, "w") as f:
+        for k in range(96):
+            f.write("%d %.15e %d 0 1 1 1 1 1 1 1 0 0 0 0  # x\n" % (k, t6[k], 1 if k >= 29 else 0))
+    s6 = read_summary(p, ps)
+    r8 = bh_rule(s6)
+    ok6 = (r8["bh"] and abs(r8["persistent_from"] - t6[29]) < 1e-12 and s6["status_matched"] == 96)
+    ok = (ok6 and r1["bh"] and abs(r1["persistent_from"] - t[10]) < 1e-12 and not r2["bh"]
           and not r3["bh"] and not r4["bh"] and s4["time"].size == 40
           and not r5["bh"] and not r6["bh"] and r7["bh"])
     res["V0d"] = {"i": r1, "ii": r2, "iii": r3, "iv": r4, "v_repeats": r5, "v_status_short": r6,
-                  "v_status_long": r7, "pass": bool(ok)}
+                  "v_status_long": r7, "vi_g_format": r8, "pass": bool(ok)}
     return res
 
 

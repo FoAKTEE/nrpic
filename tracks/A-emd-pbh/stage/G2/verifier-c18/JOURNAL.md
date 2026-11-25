@@ -184,3 +184,17 @@ Predictions for the reruns (before them):
   README says C-R1.25 is found in every search, and the conv_ball members ran with hmean_tol 100).
 - threshold (V2 rerun): A-d0.42 and A-d0.40 not BH (three finds, then the guard stop); B-d0.35
   persistent from 58.312; the other persistent starts as in the table; Q1 then holds.
+
+### Entry 3b, 2026-11-25 13:19Z: second defect of my reader (rerun A-20261125-131458-396f809); predictions for the next rerun
+
+Outcome of the rerun with status files: A-d0.42 and A-d0.40 not BH, B-d0.35 persistent from
+58.3125 (both as the table, so entry 3a's predictions hold for them), but C-d0.42 came out NOT BH,
+first find 45.9375 (table: BH, persistent from 45.906). Cause: the summary prints time with %g
+(six significant digits), so C's searches every 0.03125 M are written 45.9062 where the status file
+writes 45.90625; my exact-key match missed every such line and counted it as failed. B members
+(searches every 0.0625 M: 45.875, 45.9375, all exact in six digits) were not affected. Change:
+match each summary line to the status line of the nearest time within 1e-4 and take the status
+file's full-precision time; new test V0d(vi). The rule outcome of C-d0.42 in run
+A-20261125-131458-396f809 is withdrawn; its other members stand.
+Prediction for the rerun: C-d0.42 BH, persistent from 45.90625, tau_det within 0.02 M of 43.705;
+nothing else changes.

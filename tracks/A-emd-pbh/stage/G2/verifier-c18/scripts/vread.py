@@ -68,9 +68,16 @@ def read_summary(path, status_path=None):
     out["stale_by_repeat"] = finite & same
     if status_path is not None:
         st = read_status(status_path)
-        keys = [round(t, 9) for t in a[:, 1]]
-        sf = np.array([st.get(k, (0, -1))[0] == 1 for k in keys])
-        out["status_reason"] = np.array([st.get(k, (0, -1))[1] for k in keys])
+        # the summary prints time with %g (six significant digits, e.g. 45.90625 -> 45.9062);
+        # match each summary record to the status line of the nearest time (within 1e-4)
+        stt = np.array(sorted(st))
+        j = np.clip(np.searchsorted(stt, a[:, 1]), 1, stt.size - 1)
+        j = np.where(np.abs(stt[j - 1] - a[:, 1]) <= np.abs(stt[j] - a[:, 1]), j - 1, j)
+        near = np.abs(stt[j] - a[:, 1]) <= 1e-4
+        sf = np.array([near[i] and st[stt[j[i]]][0] == 1 for i in range(a.shape[0])])
+        out["status_reason"] = np.array([st[stt[j[i]]][1] if near[i] else -1 for i in range(a.shape[0])])
+        out["status_matched"] = int(near.sum())
+        a[near, 1] = stt[j[near]]                      # full-precision time of the search
         out["found"] = finite & sf
         out["found_source"] = "status"
     else:
