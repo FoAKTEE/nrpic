@@ -721,3 +721,47 @@ Added prediction [JUDGEMENT], before the runs:
   10 per cent (the particles' estimate depends on the gauge only through the positions); the two
   measures use different grids (the GR dumps' own mesh against ng = 64), so a departure of N4 that
   grows with a in both gauges alike is first read as the grid, not as relativity.
+
+## 2026-11-25 09:12 PST (lead of batch 21): N2-N4 outcomes; a band test of N4 predicted
+
+Comparisons B-20261125-165836-70b17b6 (zero shift) and B-20261125-165845-0621554 (Gamma driver),
+`compare_newton.py`, numbers recomputed by the lead from their `compare_newton.json`. [VERIFIED by
+these runs]
+- N2 HOLDS in both gauges. Counts of halos >= 100 particles inside 2 sqrt(N) + 2 at every common
+  catalogue a = 49-132 (zero shift 16/20, 44/46, 53/49, 75/88, 83/90, 93/90, 108/106, 104/101;
+  Gamma driver 15/20, 47/46, 48/49, 73/88, 75/90, 92/90, 98/106, 108/101, GR/Newton). At a = 121
+  all ten largest Newtonian halos have a GR halo within 0.1 in both gauges; median |M_GR/M_N - 1|
+  2.5 per cent (zero shift) and 2.8 per cent (Gamma driver), predicted below 5. Earlier the median
+  is larger (a = 49: 22 and 14 per cent with 5 of 10 matched; the catalogues differ by 1.6 per
+  cent in a there, while the halos are forming).
+- N3 HOLDS. Newtonian 0.028 at a against 0.014 at 2a, a = 25-60: counts 20/20, 27/28, 46/49,
+  87/90, 94/106 inside the band; largest-mass ratio 0.962, 0.964, 0.981, 0.982, 0.996 (within 5
+  per cent).
+- N4 FAILS as written in both gauges. Omega_qs of the GR particles over that of the Newtonian
+  particles is 11.7 at a = 2.3, 4.3 at 4.0, 1.94 at 9.0, 1.35 at 20, 1.17 at 36 (zero shift; the
+  Gamma driver agrees to 2 per cent to a = 30), then 1.15-1.55 (zero shift) and 1.3-2.2 (Gamma
+  driver) to a = 132; predicted within 10 per cent at every snapshot. Not predicted: the GR
+  metric's corrected strain over the Newtonian particles' estimate is 1.01, 1.09, 1.11, 1.08,
+  1.03, 0.99, 0.99, 1.00, 1.03 at a = 4-36 in both gauges (0.50 at a = 2.3), so the metric agrees
+  with the Newtonian particles and the GR particles' own estimate is the outlier early on; after
+  a = 42 the zero-shift metric departs by factors 1.8 to 860 (the coordinate effect of GD3), the
+  Gamma-driver metric stays at 1.04-1.47.
+- GN1 REFUTED. Mean over a = 81-132 of the median |M_GR/M_N - 1|: zero shift 2.9 per cent, Gamma
+  driver 6.0 per cent; the largest halo is 1.6-5 per cent lighter than Newton's at a = 81-132
+  with zero shift and 6.6-10 per cent heavier with the Gamma driver. With the same particles the
+  zero-shift masses are the closer ones; the earlier statement that the gauges "bracket" the
+  Newtonian mass (batch 17, against the fidL8 box with other particles) does not survive the
+  same-particle reference. The Poisson-gauge argument does not order the spread. [JUDGEMENT, not
+  tested] candidates: friends-of-friends links in coordinate distance, and the shifted
+  coordinates of a collapsed halo are more compact; a mass by proper distance at the particles
+  would test it.
+- GN2: the N4 ratio is the same in both gauges to 2 per cent up to a = 30 and departs after
+  (1.17 against 1.22 at a = 36, 1.55 against 2.19 at a = 132): HOLDS to a = 36, FAILS after.
+
+Prediction [JUDGEMENT] for the band test `scripts/n4_band.py` (same two JSONs and the Newtonian
+spectra at a = 9.8, 19.4, 39.1, 68.1, 97.5; GR spectra interpolated per shell in log a), before
+the run: NB1. The early excess of N4 is the grid: the GR particles' estimate on the 128^3 dump
+mesh holds shells 33-64 k_f that ng = 64 does not; restricted to |k| <= 32 k_f the ratio is
+within 10 per cent of 1 at a = 9.8-39 in both gauges, and more than half of the GR estimate at
+a = 9.8 lies above 32 k_f. Refuted if the ratio over |k| <= 32 k_f exceeds 1.3 at a = 9.8 (then
+the two estimates differ in the source itself: normalisation, velocities or potential).
