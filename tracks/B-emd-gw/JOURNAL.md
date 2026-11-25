@@ -389,3 +389,23 @@ analysis pop_newton128_an submitted by hand (the sequencer is retired); I3 not y
 --cmd wrapper exists for continuing a cut chain (write one when a chain is cut).
 Card-hours this session: none run; in the shared queue 9.5 (ceilings 2, 0.5, 2, 5). Toward G2 so
 far 3.42 used.
+
+## 2026-11-25T11:46Z-12:45Z  lead of batch 17 (wave 3): the three population runs that ended overnight  runs B-20261124-210431-6bf48af, -210432-6c4d005, -223926-33194d9 (judged); analyses B-20261125-115558-2ab4161, -115619-ad8b3f4, -115657-91b61ec, -120818-1dfae55, -121830-9ecb59c; queue q0042, q0044
+
+plan: close q0004 (gauge leg), q0005 (X0-X3), q0006 (particle leg); judge GD1-GD3, X0-X3, Q1-Q2
+with registered analyses and figures; map G2 items to queue entries, add at most three; stage G2.
+predictions written before runs: P8C1-2 and S1-S3 for the two new continuations
+(population/JOURNAL 2026-11-25 04:00, committed in 8a1f84834 before q0042 and q0044 were added).
+found: the zero shift is behind both open population questions. Gauge leg: high-k Omega 950 times
+smaller with a Gamma-driver shift, strain correlated with the particles' near field to a = 132,
+Hr_mean 4.8 times smaller, Mr_mean unchanged (GD3 holds). X0, X1 repeat the 0.028 stop to the digit
+and within 0.008; X2 (shift) passes it to a = 36 with K < 0. Particle leg (8 per cell, to a = 94.8):
+strain and high-k excess unchanged, Mr_mean 2-5 times lower. I3 holds for both initial-data solves.
+failed: X2 (predicted to stop; passes); X3 not run (restart refused dt_lightspeed: setup error of
+batch 11); GD1 time part (0.185 card-h against 0.2-0.5); GD2 mass part (+10 to +16 per cent against
+5); Q1 second part (high-k excess unchanged with 8 per cell); Q2 mass at a = 64 (1.41); the
+particle leg's chain cut at a = 94.8 by the v0.6 cap (closed as failed).
+open: Newtonian reference analysis (N2-N4); q0007, q0042, q0044; finishes of five runs may have been
+cut at session end; stage verify G2 started without checksums. Outbox: core, restart parameters.
+Card-hours this session: none run by this session; closed this session 0.86 (0.185 + 0.05 + 0.62);
+toward G2 4.28.
