@@ -802,3 +802,24 @@ Prediction: entry 6.
   for G2 is "N holds at M/8 and M/16, and fails at M/4 by a factor 20" (stage/G2 C1, C2, C7).
 - The tight re-search of FE4's dumps (dip at 100 M, entry 17) is still to do; with a 4.6e-3 drift at M/4
   the dip of 4-6e-5 is not measurable there and the item is dropped.
+
+## Entry 22 (2026-11-25 04:31 PST, lead of batch 17): FN4 closed; N1, N4 and XN
+
+FN4 ES-FLK4N D-20261124-134157-b17938b closed by hand (tools/close_by_hand.py; completed, 3.19 card-hours by
+sacct over 8 jobs, 59.4 GB checksummed). Predictions: entries 10 (N1-N4) and 12 (XN).
+- N1 HOLDS (esf_criteria --base esflk4n with the 4N data, registered D-20261125-122827-c5735f8): 50 counted
+  (iii) bins to tau_rem 500 M, largest |median| 0.239 per cent (FK: 0.249); D2 at all 760 samples; D3 no
+  violation (min margin +1.75e-4); all 479200 dust removals by reason 3; D1 closure with the control
+  subtracted 2.3e-3 at 399.5 M (FK 2.2e-3).
+- N2, N3 (read in entry 19 before the close, unchanged by it: the outputs are those of the ended chain) HOLD.
+- N4 HOLDS: 3.19 card-hours (2.3-3.4).
+- XN HOLDS (xc_plane on ES-FLK and ES-FLK4N, registered D-20261125-122849-43db157, xc_plane.png looked at):
+  the 4N/N ratio of ||H|| on the z = 0 plane is 0.491 (A1) and 0.464 (A2) at 100 M, 0.426 and 0.447 at 200 M,
+  all inside [0.35, 0.7] around N^-1/2 = 0.5; ||M|| alike (0.43-0.53). So the exterior constraint residual
+  near the hole in the dust runs is particle sampling noise of the deposit [VERIFIED: a run in which it could
+  have failed]. Not predicted: on A3 (30-100 M) the ratio is 0.93-0.96 at 100-200 M (that residual is not
+  particle noise), and on A1 the N run's norm grows to 2.0e-3 by 400 M while the 4N run's stays near 6e-4.
+- Not predicted: FN4's D4 also shows 34.4 per cent of removals before the exact crossing (min -0.66 M, none
+  below -1 M), like FK (29.5 per cent) and unlike ES-FL (0.23 per cent): the early removal goes with the
+  ES-FLK set-up (initial_radius_0 1.6), not with the particle number [TO VERIFY: cause].
+The particle sequence now has N and 4N complete; N/4 (FNQ, q0010) runs.

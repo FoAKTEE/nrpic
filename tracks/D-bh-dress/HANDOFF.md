@@ -4,7 +4,7 @@ Written for a reader with no memory of the last session. Rewritten at the end of
 
 State (2026-11-25 04:30 PST, lead of batch 17): G0 and G1 signed (G1 with reservations, coord/GATES.md).
 G2 in scouting, package NOT complete (stage/G2/OPEN.md section 1). This session closed and judged FK, FF4,
-FE4 (g2long/JOURNAL.md entries 18-21) and read FN4 whole and FNQ partially. Owner D-bh-dress, branch
+FE4 and FN4 (g2long/JOURNAL.md entries 18-22) and read FNQ partially (to 125 M). Owner D-bh-dress, branch
 `track/D-bh-dress`, worktree `wt/D-bh-dress`.
 
 Run next: `cd /data/haiyangw/nrpic/wt/D-bh-dress && git merge --no-edit main && harness/bin/nrpic-ctx inbox &&
@@ -12,25 +12,16 @@ Run next: `cd /data/haiyangw/nrpic/wt/D-bh-dress && git merge --no-edit main && 
   grep ' D-'; harness/bin/nrpic-run status | grep -E '\?|\*'`
 
 Files to read first: `STATUS.md`; `g2long/JOURNAL.md` entries 6 (P1-P14), 10 (N1-N4, Q1-Q3, L1-L5), 12 (XN),
-15 (XQ, L5), 18-21 (this session); `stage/G2/OPEN.md` (lacks item by item, relaxed-lapse table);
+15 (XQ, L5), 18-22 (this session); `stage/G2/OPEN.md` (lacks item by item, relaxed-lapse table);
 `stage/REVIEW-wave3.md` sections 19-20.
 
-## First: FN4's close (left running at the end of the session)
+## First: what FN4 still needs
 
-`g2long/tools/close_by_hand.py /data/haiyangw/nrpic/wt/D-bh-dress D-20261124-134157-b17938b` was started at
-03:58 PST (pid 2709328; log `scratch/D-bh-dress/tmp/close_fn4_b17.log`). It checksums ~45 GB and then WRITES
-the manifest without committing. When the log says "closed ...": check `git diff
-tracks/D-bh-dress/runs/D-20261124-134157-b17938b/manifest.json` and commit it path-limited. If the process
-died (session end kills it) the manifest is unchanged: run the tool again (it re-hashes everything, ~25 min;
-`nohup`, one core). `nrpic-run finish` refuses this manifest (field `continuations`; request to orch
-2026-11-25). Then, with predictions N1 (entry 10) and XN (entry 12) unchanged:
-- N1: `nrpic-run submit --kind scouting --gate G2 --launcher local --package tracks/D-bh-dress/g2long --package
-  tracks/D-bh-dress/g2runs --package tracks/D-bh-dress/flux_tools ... -- python3 tracks/D-bh-dress/g2runs/tools/
-  esf_criteria.py --run $S/D-20261124-134157-b17938b --base esflk4n --data $S/D-20261124-130942-29c5de2
-  --control $S/D-20261121-203124-a34cf1f/v1l.horizon_summary_0.txt --tau_max 650 --out '$NRPIC_RUN_DIR'`
-- XN: `g2long/tools/xc_plane.py --out '$NRPIC_RUN_DIR' ES-FLK=$S/D-20261123-022725-a553496:esflk:0.125
-  ES-FLK4N=$S/D-20261124-134157-b17938b:esflk4n:0.125` (+ ES-FLKQ when FNQ has ended; XQ).
-- N2/N3 already read (np_partial D-20261125-115729-011d028, before the close): rerun np_partial after FNQ ends.
+FN4 D-20261124-134157-b17938b was closed by hand at 04:28 PST (3.19 card-hours, committed c5735f89) and judged:
+N1-N4 and XN hold (g2long entry 22; esf_criteria D-20261125-122827-c5735f8, xc_plane D-20261125-122849-43db157).
+Still to read: its region-sphere norms `esflk4n.region.hst` (C3/C11; cross-check of the plane norms, no bound),
+and the D4 timing it shares with FK (34.4 and 29.5 per cent removed before the exact crossing; ES-FL 0.23):
+restrict D4 to t_rem <= 219 M in FK and ES-FL first (registered, prediction first).
 
 ## Card runs (release core-v0.6 card executable, plain 1+log, faces +-768 M)
 
@@ -41,7 +32,7 @@ S = /data/haiyangw/nrpic/scratch/D-bh-dress; run directory = $S/<run id>.
 | FK ES-FLK (N) | D-20261123-022725-a553496 | q0008 done | closed (by hand), judged: P7-P10 hold, P11 failed | entry 19 |
 | FF4 ES-FL4 (growth M/4) | D-20261123-022727-1c17e73 | - | closed, judged: P12 holds with V-1L4 control, P13 failed, P14 holds | entry 20 |
 | FE4 ES-1L4 (null M/4) | D-20261123-022726-1b133af | - | closed, judged: P5 REFUTED (4.6e-3 at 300 M), P6 failed | entry 21 |
-| FN4 ES-FLK4N (4N) | D-20261124-134157-b17938b | q0009 done | tlim 400 M (job 5280), close by hand running | N1, XN next |
+| FN4 ES-FLK4N (4N) | D-20261124-134157-b17938b | q0009 done | closed (by hand), judged: N1-N4, XN hold | entries 19, 22 |
 | FNQ ES-FLKQ (N/4) | D-20261124-172725-2f426b6 | q0010 running | job 5279, ~177 M of 400 at 04:11 | Q1-Q3, XQ; np_partial |
 | FL16 ES-FL16 (growth M/16) | D-20261124-172745-72472ed | q0011 waiting (prio 1 eff.) | never ran | L1-L5 (L3 with Delta M from 20 M) |
 
@@ -55,7 +46,7 @@ S = /data/haiyangw/nrpic/scratch/D-bh-dress; run directory = $S/<run id>.
 
 ## What G2 still lacks (stage/G2/OPEN.md)
 
-C1 G2 verifier; C2 FNQ, FL16, FN4's N1; C3 region norms (XN, XQ, L5); C6 rerun script; C10/C11 particle and
+C1 G2 verifier; C2 FNQ, FL16; C3 region norms (FN4's sphere norms, XQ, L5); C6 rerun script; C10/C11 particle and
 mesh figures; C13 G2/REVIEW.md or a pointer; C14-C16 note v3 and schematics; C17 verifier. C7 holds at M/8 and
 M/16 but FAILS at M/4 (P5 refuted): ask orch for a ruling in the next G2 package report (whether the coarsest
 member may lie outside the convergent regime). The relaxed lapse is not used in G2 (OPEN.md section 2).
