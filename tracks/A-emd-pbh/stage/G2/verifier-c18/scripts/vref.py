@@ -62,9 +62,16 @@ class LTB:
         edges = [-np.inf] + list(self.breaks) + [np.inf]
         for lo, hi in zip(edges[:-1], edges[1:]):
             sel = np.where((self.rbar > lo) & (self.rbar < hi))[0]
-            if sel.size < 3:
-                raise ValueError("piece with fewer than three rows")
-            dR[sel] = np.gradient(self.R[sel], self.rbar[sel], edge_order=2)
+            if lo == -np.inf:
+                sel = np.where(self.rbar < hi)[0]
+            if sel.size < 5:
+                raise ValueError("piece with fewer than five rows")
+            f = self.R[sel]
+            h = self.rbar[sel[1]] - self.rbar[sel[0]]
+            d = np.gradient(f, self.rbar[sel], edge_order=2)
+            # fourth-order central differences inside the piece (uniform rows)
+            d[2:-2] = (-f[4:] + 8 * f[3:-1] - 8 * f[1:-3] + f[:-4]) / (12 * h)
+            dR[sel] = d
         self.dRdl = dR / psi ** 2
         self.Rdot = -self.KT * self.R
         self.m = 0.5 * self.R * (1.0 + self.Rdot ** 2 - self.dRdl ** 2)
@@ -97,18 +104,31 @@ class LTB:
 
     # ---- interpolation of shell quantities to a label ----
     def piece_interp(self, rb, q):
-        """Linear interpolation of a row quantity q at rbar = rb inside the piece of rb."""
+        """Linear interpolation of a row quantity q at rbar = rb inside the piece of rb;
+        between the last row of a piece and its break, quadratic extrapolation from the
+        last three rows of the piece (the break lies within one row of them)."""
         rb = np.atleast_1d(np.asarray(rb, float))
         out = np.full(rb.shape, np.nan)
         edges = [-np.inf] + list(self.breaks) + [np.inf]
         for lo, hi in zip(edges[:-1], edges[1:]):
             sel = (self.rbar > lo) & (self.rbar < hi)
             if lo == -np.inf:
-                sel |= self.rbar == 0
+                sel = self.rbar < hi
+            xs, qs = self.rbar[sel], q[sel]
             w = (rb >= lo) & (rb < hi)
             if np.any(w):
-                out[w] = np.interp(rb[w], self.rbar[sel], q[sel])
+                out[w] = np.interp(rb[w], xs, qs)
+                for end, idx in (("hi", slice(-3, None)), ("lo", slice(0, 3))):
+                    beyond = w & ((rb > xs[-1]) if end == "hi" else (rb < xs[0]))
+                    if np.any(beyond) and np.all(np.isfinite(qs[idx])):
+                        c = np.polyfit(xs[idx] - xs[idx][0], qs[idx], 2)
+                        out[beyond] = np.polyval(c, rb[beyond] - xs[idx][0])
         return out
+
+    def at_break(self, k=0):
+        """Shell quantities at the inner side of break k (the core edge for k = 0)."""
+        rb = np.nextafter(self.breaks[k], -np.inf)
+        return {kk: float(v[0]) for kk, v in self.shell([rb]).items()}
 
     def shell(self, rb):
         """dict of R_i, m, E, tau_ta, tau_ah at the labels rb (initial coordinate radii)."""

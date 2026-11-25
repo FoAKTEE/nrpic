@@ -1,0 +1,101 @@
+[
+ [
+  "ds3",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+  {
+   "tau_ta_edge": 3.3716,
+   "tau_ah_edge": 9.5511,
+   "m_edge": 0.686563
+  }
+ ],
+ [
+  "ds3_R1.25",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075401-1412a08/expball_tophat_HRb0p875_M1p95312_dc1p5_rm5p27041.tab",
+  {
+   "tau_ta_edge": 3.3716,
+   "tau_ah_edge": 9.5511,
+   "m_edge": 0.686563
+  }
+ ],
+ [
+  "ds3_R1.35",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075404-ac51b7e/expball_tophat_HRb0p945_M2p46037_dc1p5_rm5p67857.tab",
+  {
+   "tau_ta_edge": 3.3716,
+   "tau_ah_edge": 9.5511,
+   "m_edge": 0.686563
+  }
+ ],
+ [
+  "dc1p0",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-202812-cae4436/dc1p0/expball_tophat_HRb0p7_dc1_R10p65_R20p95_rm4p25.tab",
+  {
+   "tau_ta_edge": 6.157,
+   "tau_ah_edge": 15.386,
+   "m_edge": 0.54925
+  }
+ ],
+ [
+  "dc0p7",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-202812-cae4436/dc0p7/expball_tophat_HRb0p7_dc0p7_R10p65_R20p95_rm4p25.tab",
+  {
+   "tau_ta_edge": 10.094,
+   "tau_ah_edge": 23.405,
+   "m_edge": 0.46686
+  }
+ ],
+ [
+  "dc0p5",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-202812-cae4436/dc0p5/expball_tophat_HRb0p7_dc0p5_R10p65_R20p95_rm4p25.tab",
+  {
+   "tau_ta_edge": 15.925,
+   "tau_ah_edge": 35.16,
+   "m_edge": 0.41194
+  }
+ ],
+ [
+  "dc0p45",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-202812-cae4436/dc0p45/expball_tophat_HRb0p7_dc0p45_R10p65_R20p95_rm4p25.tab",
+  {
+   "tau_ta_edge": 18.361,
+   "tau_ah_edge": 40.054,
+   "m_edge": 0.39821
+  }
+ ],
+ [
+  "dc0p42",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-202812-cae4436/dc0p42/expball_tophat_HRb0p7_dc0p42_R10p65_R20p95_rm4p25.tab",
+  {
+   "tau_ta_edge": 20.156,
+   "tau_ah_edge": 43.656,
+   "m_edge": 0.38997
+  }
+ ],
+ [
+  "dc0p4",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-202812-cae4436/dc0p4/expball_tophat_HRb0p7_dc0p4_R10p65_R20p95_rm4p25.tab",
+  {
+   "tau_ta_edge": 21.531,
+   "tau_ah_edge": 46.415,
+   "m_edge": 0.38448
+  }
+ ],
+ [
+  "dc0p35",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-202812-cae4436/dc0p35/expball_tophat_HRb0p7_dc0p35_R10p65_R20p95_rm4p25.tab",
+  {
+   "tau_ta_edge": 25.803,
+   "tau_ah_edge": 54.98,
+   "m_edge": 0.37074
+  }
+ ],
+ [
+  "dc0p2",
+  "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-202812-cae4436/dc0p2/expball_tophat_HRb0p7_dc0p2_R10p65_R20p95_rm4p25.tab",
+  {
+   "tau_ta_edge": 55.568,
+   "tau_ah_edge": 114.574,
+   "m_edge": 0.32955
+  }
+ ]
+]
