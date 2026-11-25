@@ -1000,3 +1000,59 @@ Done:
   checksums); updating the run ids in b11_cards.py (the new B2 and C2 ids exist only at dispatch).
 Predictions: those of batch 11 ("Q4 decision": A2-1 to A2-5, B2, C2) stand unchanged for the
 requeued runs; nothing was run or judged in this session. Card-hours used: 0.
+
+## 2026-11-25T17:05Z lead, batch 21 (processors only; decisions 0033-0041)
+
+State found (09:00 PST): A2 (q0001, F-20261124-210400-902c650) has 13 attempts (9 cut by
+preemption, 4 full 50-min segments), the newest restart file hills.00063.rst, the last record
+at 96.23 M; its next segment (Slurm 5294) is pending; the cards are held by another partition
+until about 06:46 PST on 2026-11-26 (0041 item 6). sacct: 5.64 card-hours used of A2's 19.5.
+B2 (q0002) and C2 (q0003) still wait in the queue. B (F-20261121-203156-03efdd3) still open:
+its finish started in the background (log scratch/F-hills/tmp/finish_B_b21.log). What I looked at
+before writing the predictions below: file listings, the first and last time of every kept
+tracker copy of A2 (12 copies in trk_keep/ plus the live file; the wrapper
+athena_resume_bc.sh copies the tracker files before each start), the first and last row time of
+the horizon summary, history and r = 40 waveform, and the chain's event log. I have NOT
+computed separations, distances, masses, overlap differences or failed-search counts.
+
+Facts (no prediction): no deck of this track sets `<fastflow>` diagnostics (grep over
+tracks/F-hills/**/*.athinput; the P1b decks have no `<fastflow>` block at all) and no run
+directory under scratch/F-hills holds a horizon_status file. Every horizon number of this track
+is therefore "made without the diagnostics" (decision 0040 item 3); the recheck below uses the
+failure signature of the source (a failed search rewrites the last accepted row exactly), the
+route accepted for Track D in decision 0041 item 4.
+
+### Predictions before the registered analyses of this session
+
+S, the state of the passage (script stage/review_wave3/b21_a2_state.py):
+- (S1) Tracker coverage: for each of the three trackers, the copies of A2 joined (later segment
+  winning from its first time on, nrread.read_tracker_merged) cover 61.80-96.23 M with no gap
+  above two steps (2 x 1.953e-3 M); A + A2 joined cover 0-96.23 M. Refuted: any larger gap.
+- (S2) Where a later segment recomputes a stretch an earlier copy holds, positions at the same
+  cycle agree within 1e-5 M (round-off growth after a restart). Refuted: a difference above
+  1e-3 M, which would mean the restart file does not carry the tracker state.
+- (S3) Horizon summaries, the history and the waveforms of A2 are appended, not truncated:
+  each covers 61.8-96.2 M; after keeping the last row of each time the waveforms at r = 40, 48,
+  70, 90 hold every 0.25-M sample from 62 to 96 (137 times). Refuted: a missing sample.
+  So nothing of the passage written so far is lost, and nothing needs rebuilding beyond the join.
+- (S4) A2-1 (batch 11), judged on the joined data: minimum separation 2.0-2.7 M at t = 63-75 M,
+  s > 1 M throughout. Refuted as written there.
+- (S5) The centre of mass of the pair has not yet passed its closest approach to M at 96.23 M:
+  its distance to M is 9-16 M and still falling. Then A2-2 stays open, not judged. Refuted: a
+  minimum before 96 M (then A2-2 is judged now).
+- (S6) A2-5 to 96.2 M only: member horizon masses drift below 1e-4 per M (fit 65-95 M, accepted
+  searches only), the heavy hole's mass changes by less than 1e-3, rms H below 1e-4.
+
+H, the horizon recheck of decision 0040 item 3 (script stage/review_wave3/b21_horizon_recheck.py),
+over the card runs whose horizon numbers enter G1 (P1, R8, R12, R16n, B, A, A2, C):
+- (H1) Failed searches (exact repeat of columns 3-12, or a non-finite or zero mass) are below
+  1 percent of the searches of every member finder at m/16 and m/12 before 96 M; at m/8 (P1, R8;
+  the finder at about 4 cells per radius, R7) I give no number.
+- (H2) The drift statements of G1 hold on accepted searches only: m/8 members 1.0-1.7e-3 per M
+  (P1 to 45 M, R8), m/16 members below 1e-4 per M (R16n, A, A2), C's members 1.2-1.7e-4 per M;
+  and the slope over all rows differs from the slope over accepted rows by less than 10 percent.
+- (H3) P1's merger: the first row of finder 0 with a mass above 0.2 is an accepted search at
+  48.81 M (0.2686) and finder 1's at 49.06 M (0.2693); the tracker separation falls below 0.1 M
+  at 48.79 M (independent of the finder).
+- (H4) "No common horizon of a member with M": in P1, A, A2 and C the heavy hole's accepted
+  masses stay within 1 percent of their median; no member finder reports a mass above 0.5.
