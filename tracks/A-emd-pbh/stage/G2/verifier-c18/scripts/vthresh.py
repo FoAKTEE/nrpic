@@ -112,7 +112,16 @@ def analyse(name, d):
                                 "mots_m": mots, "finder_t": float(m.summ["time"][j]),
                                 "finder_mirr": float(m.summ["mirr"][j])}
     series = {"t": m.summ["time"], "found": m.summ["found"].astype(float), "mirr": m.summ["mirr"],
-              "mt": ms[:, 0], "mex": ms[:, 2]}
+              "mt": ms[:, 0], "mmirr": ms[:, 1], "mex": ms[:, 2], "mlo": ms[:, 3], "mhi": ms[:, 4]}
+    # line MOTS mass at every tab output from 1 M before the first detection to the end
+    if con:
+        lt, lm = [], []
+        for k in np.where(tt >= res["first"]["t"] - 1.0)[0]:
+            mo = line_mots(adm[k])
+            ms_ = [mo[s_]["m"] for s_ in ("pos", "neg") if mo[s_] is not None]
+            lt.append(tt[k])
+            lm.append(np.mean(ms_) if ms_ else np.nan)
+        series["line_t"], series["line_mots"] = np.array(lt), np.array(lm)
     return res, series
 
 
@@ -149,6 +158,8 @@ def main():
     el, eh = res.get("B-d0.40", {}).get("exact_tau_ah_edge"), res.get("B-d0.42", {}).get("exact_tau_ah_edge")
     if el and eh:
         br["exact"] = {"tau_lo": el, "tau_hi": eh, "dc_interp": 0.40 + 0.02 * (el - T_END) / (el - eh)}
+    np.savez(os.path.join(a.out, "vthresh_series.npz"),
+             **{"%s__%s" % (n, k): v for n, sr in ser.items() if sr is not None for k, v in sr.items()})
     out = {"members": res, "bracket": br, "claims": CLAIM}
     with open(os.path.join(a.out, "vthresh.json"), "w") as f:
         json.dump(out, f, indent=1, default=float)
@@ -221,6 +232,29 @@ def main():
     ax[2].set_xlabel(r"$\delta_c$", labelpad=-1)
     ax[2].set_title(r"$\|H\|/\|16\pi E\|$ outside AH", fontsize=10)
     fs.save(fig, os.path.join(a.out, "fig_vthresh_summary"))
+    plt.close(fig)
+    fig_masses(res, ser, a.out)
+
+
+def fig_masses(res, ser, out):
+    show = [n for n in ("B-d1.00", "B-d0.45", "B-d0.42", "B-d0.40", "C-d0.42", "C-R1.25") if n in ser and ser[n] is not None]
+    fig, axs = plt.subplots(2, 3, figsize=(8, 5.0), sharey=False)
+    fig.subplots_adjust(left=0.08, right=0.99, bottom=0.1, top=0.95, wspace=0.32, hspace=0.38)
+    for ax, n in zip(axs.flat, show):
+        s = ser[n]
+        f = s["found"] > 0
+        ax.plot(s["t"][f], s["mirr"][f], ".", ms=2, color=fs.PAL["red"], label="finder (found)")
+        ok = np.isfinite(s["mex"])
+        ax.plot(s["mt"][ok], s["mex"][ok], "-", color=fs.PAL["blue"], lw=1.0, label="exact on slice")
+        fs.band(ax, s["mt"][ok], np.minimum(s["mlo"][ok], s["mhi"][ok]), np.maximum(s["mlo"][ok], s["mhi"][ok]), fs.PAL["blue"])
+        if "line_t" in s:
+            ax.plot(s["line_t"], s["line_mots"], "s", ms=3, mfc="none", color="k", label="line MOTS (verifier)")
+        ax.axhline(res[n]["exact_m_edge"], color="grey", lw=0.8, ls=":")
+        ax.set_title(n, fontsize=9)
+        ax.set_xlabel("$t$ (M)", labelpad=-1)
+        if ax is axs.flat[0]:
+            ax.legend(fontsize=6)
+    fs.save(fig, os.path.join(out, "fig_vthresh_masses"))
     plt.close(fig)
 
 

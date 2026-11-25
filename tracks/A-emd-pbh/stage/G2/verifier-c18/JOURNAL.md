@@ -198,3 +198,49 @@ file's full-precision time; new test V0d(vi). The rule outcome of C-d0.42 in run
 A-20261125-131458-396f809 is withdrawn; its other members stand.
 Prediction for the rerun: C-d0.42 BH, persistent from 45.90625, tau_det within 0.02 M of 43.705;
 nothing else changes.
+
+### Entry 3 outcome (registered run A-20261125-131608-2269f36 with the readers of entries 3a, 3b; V0 rerun A-20261125-131605-f9e71ee all PASS except the known V0e MOTS location; fig_vthresh_searches.png, fig_vthresh_summary.png looked at)
+
+- Q1 PASS (after the two reader fixes): BH by the entry-1 rule for B-d1.00, B-d0.70, B-d0.50, B-d0.45,
+  B-d0.42, B-d0.40, B-d0.35, C-R1.25, C-d0.42, persistent from 17.000, 25.250, 37.1875, 42.250,
+  45.875, 48.625, 58.3125, 10.71875 (every search from the first find), 45.90625; not BH: B-d0.20
+  (no find to the last search at 69.94; core band areal radius 9.48 and falling, dR/dt = -0.035),
+  A-d0.42 and A-d0.40 (3 finds each, then the guard stop at 47.875 and 50.625, tlim 51 and 54).
+- Q2 PASS: tau_det (v2) 15.5129, 23.4721, 35.1309, 40.1166, 43.6863, 46.4022, 54.9293 (B),
+  43.4377, 46.1027 (A), 9.6031 (C-R1.25), 43.6892 (C-d0.42) against 15.513 ... 54.929, 43.442,
+  46.103, 9.603, 43.705: within 0.004 M except C-d0.42 (0.016 M). ddet v2 equal to the table to
+  0.001 M in the B members and C-R1.25 (0.0403 against 0.040), A-d0.42 -0.238 (-0.232), A-d0.40
+  -0.331 (-0.331), C-d0.42 -0.0095 (-0.014). Interpolation spread: v1 and v3 differ from v2 by up
+  to 0.07 M (B-d1.00 v1 +0.052; C-d0.42 v1 -0.062, v3 +0.030).
+- Q3 PARTLY FAILED. Within 2e-3 of the table: B-d1.00 (-9.3e-4 vs -3.8e-4), B-d0.70 (-2.6e-3 vs
+  -1.9e-3), B-d0.50 (-9.5e-3 vs -9.4e-3), B-d0.45 (1.0e-3 vs 1.9e-3). Not: B-d0.42 -2.4e-3 vs
+  +2.8e-3 (my bracket [-5.4e-3, -0.05e-3]), B-d0.40 -6.7e-3 vs +3.2e-4 ([-9.7e-3, -3.7e-3]), B-d0.35
+  -1.0e-3 vs +2.4e-3 ([-8.0e-3, +0.4e-3], only 31 of 73 finds have an exact mass). C-d0.42 +1.0e-3
+  ([-3.9e-3, +6.5e-3], 94 of 163 finds) against +2.4e-2: smaller, as predicted. A-d0.42 -8.8e-3
+  (-3.8e-2 claimed), A-d0.40 -2.9e-2 (-4.6e-2): with three finds the "median" is a single value.
+- Q4 PASS: tau_det(B-d0.42) = 43.686 < 45 < tau_det(B-d0.40) = 46.402; interpolated delta_c(45)
+  0.41033 (B), 0.40828 (A, first detections), exact 0.41026 (my reference); C-d0.42 at 43.689 < 45.
+- Q5 PARTLY FAILED: at the first detection the ratio exceeds 0.1 in every member and weighting
+  (r^2 weight 0.70-2.1 for B, 0.87 C-d0.42, 3.0 C-R1.25, 0.93-1.6 A; line weight 0.16-3.6; matter
+  only 0.4-1.5), confirming the claim (0.3-3). But at t = 0 the ratio is NOT well below 0.1: 0.11-0.20
+  (B), 0.105 (C-d0.42), 0.12 (C-R1.25), 0.22 (A) with r^2 weight, 0.086-0.19 with line weight. con_H
+  does carry the matter term (otherwise about 1). So the initial top-hat data already sit at or
+  above the bound of SCOPE section 3 on every mesh, falling only slowly with h (A 0.22, B 0.12, C 0.105).
+- Q6 confirmed: T4 mesh-C half fails as written (|ddet(C-d0.42)| = 0.0095 > 0.0075 with v2, 0.030
+  and 0.062 with v3, v1); T5 fails (|0.0403 - 0.0166| = 0.024 > 0.02).
+- Q7 NOT REPRODUCED / not checkable with my reader: at the tab output nearest the first detection
+  my line reader finds no marginally trapped sphere on the x line in any B member or C-d0.42 (the
+  outgoing expansion stays positive, minimum about +0.1 for B-d1.00); two M later it finds one with
+  a mass 1-4 per cent BELOW the finder's (B-d0.42 0.3811 vs 0.3942 at 47.75). My line reader is
+  second order on M/32 (V0e: 3e-3 off in location at 10 cells across the throat; here 5 cells), so
+  I cannot confirm or refute the 0.3-1.5 per cent claim.
+- Q8: the envelope's proper time at the first detection is 0.5-0.6 M larger than the coordinate
+  time and 2.8 M larger than tau_det (B-d0.42: 46.50 against tau_det 43.69); see the report for
+  what this means for the time measure of SCOPE section 3.
+
+## Entry 4, 2026-11-25 13:24Z: prediction for the mass time series (rerun of vthresh.py with fig_vthresh_masses)
+
+The claimed C-d0.42 median +2.4e-2 is over "t 46.1-47.2 and 50.9-51" (README). My dm(t) of C-d0.42
+inside 46.1-47.2 stays within [-1e-2, +1e-2] (my whole-window median +1e-3, bracket half-width
+5e-3) [JUDGEMENT]; refuted by values near +2.4e-2 there. The line MOTS masses after the first
+detection lie 1-4 per cent below the finder in every shown member.
