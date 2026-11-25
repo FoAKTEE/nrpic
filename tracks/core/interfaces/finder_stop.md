@@ -127,27 +127,71 @@ diagnostic (`<particles> region_dcycle`, `cosmo_amr.md`) or a mesh dump.
 
 ## 5. Tests (processors; registered runs, outputs under `scratch/core/<run id>/`)
 
-T5b, run core-20261125-131950-1fb387d (`finder_probe.py`): eleven restart dumps of Track
-D's V-1L (vacuum puncture, cells M/8, t = 100 to 500 M), each continued for one cycle
-with four searches on the grid of the run (ntheta 16, lmax 8):
+**T5a, the first 2 M of a puncture** (run core-20261125-141832-01d4aee, judgement and
+figure again in core-20261125-144217-15cea77; `finder_test.py`; deck
+`problems/tests/finder_polish.athinput`: mass 1, finest cells M/8, finder every four
+cycles, 16 searches; final threaded build, two threads). Between t = 0.5 and 1.1 M the
+horizon of this deck jumps from a smallest radius of 0.465 M to 0.61 M, and at t = 1.75
+and 1.875 the flow does not settle below 1e-5: a hard case, chosen because it is short.
+
+| Rule | Searches found, of 16 | Flow iterations of a found search | Mass against the tight rule where both are found |
+|---|---|---|---|
+| tight: `mass_tol` 1e-9, 4000 iterations allowed | 10 | 19 to 53 | reference |
+| `mass_tol` 1e-5, `polish_iterations` 100 | 10, the same ten | 107 to 112 | within 6.3e-8 |
+| `mass_tol` 1e-5 (rule of `puncture_setup`, as in core-v0.7) | 12 | 7 to 12; 220 and 53 at the two extra ones | within 2.3e-5 at the ten |
+| `mass_tol` 1e-2, `polish_iterations` 100 | 16 | 102 to 105 | within 6.3e-8 at the ten |
+| `mass_tol` 1e-2 (default of the finder) | 16 | 2 | 7e-4 to 5.4e-2 off |
+
+What the table says: with the tolerance of `puncture_setup` the option makes the
+accepted masses those of the tight rule and accepts nothing unconverged; it gives up at
+the six searches where the tight rule gives up too (iteration limit), two of which the
+mass rule alone accepts (t = 0.75, a surface 9.8e-3 off its neighbours in mass; t =
+1.875, a surface on the trend). With the finder's default tolerance the option accepts
+unconverged surfaces during the jump (residual 0.12, 1.5, 0.5 at t = 0.625, 0.75,
+0.875, written as found): do not combine it with 1e-2. One prediction failed: I
+expected the tight rule and the polished 1e-5 rule to be found at every search after
+the jump; they are not at t = 1.75 and 1.875 (journal entry 17). Without the option
+every output equals release core-v0.7 byte for byte (8 files).
+Figure: `fig_finder_test.png` of run core-20261125-144217-15cea77.
+
+**T5b, a settled puncture** (Track D's V-1L, vacuum, cells M/8; each restart dump
+continued for one cycle with four searches on the grid of the run, ntheta 16, lmax 8;
+`finder_probe.py`). First form of the rule, eleven dumps from t = 100 to 500 M, run
+core-20261125-131950-1fb387d:
 
 | Search | Iterations | Mass against the tight rule, eleven dumps |
 |---|---|---|
 | tight rule: `mass_tol` 1e-9, from 1 M | 129 | reference (1.000979 to 1.000997) |
-| new rule: `mass_tol` 1e-2, 100 polishing iterations, from the stored surface | 102 | +5.9e-9 to +6.3e-9 |
-| new rule from 2 M outside | 102 | -3.4e-8 to -4.5e-8 |
+| `mass_tol` 1e-2, 100 polishing iterations, from the stored radius | 102 | +5.9e-9 to +6.3e-9 |
+| the same from 2 M outside | 102 | -3.4e-8 to -4.5e-8 |
 | `mass_tol` 1e-5 from 2 M outside (Track D's production rule) | 48 to 50 | -6.0e-5 to -6.8e-5 |
 
 The mass of the tight rule itself moves by 1.8e-5 from dump to dump: that is the
-slice, and the new rule follows it. Figure: `fig_finder_probe.png` of the run.
+slice, and the polished search follows it. Figure: `fig_finder_probe.png` of the run.
+The published (corrected) rule with the recommended setting on four of the dumps:
+section 6.
 
-T5a and T6 (vacuum puncture of `problems/tests/finder_polish.athinput`, the first 2 M;
-the guard), the byte regression and the cost on a card: section 6 (filled in when the
-runs have ended).
+**T6, the guard** (same deck and runs as T5a; 2000 test particles falling in,
+`ah_exc_factor = 0.8`): without the option, and with `ah_exc_max_growth = 4.0` written
+out, 237 particles are removed inside the horizon and every output file is the same
+byte for byte; with `ah_exc_max_growth = 0.4` (guard radius 0.4 M, inside the horizon of
+0.465 to 0.633 M) none is removed inside the horizon.
 
-## 6. Results still to be filled in
+**Cost** (processors, two threads, the mesh of T5a): 7.7 ms per flow iteration (462.7 s
+with 24 312 iterations against 290.7 s with 1963), 6.4 ms from the polished run; 100
+polishing iterations cost about 0.7 s per search, where a cycle of that deck costs
+4.5 s. On a card: section 6.
 
-See the journal; this section is replaced before the branch is published.
+**Byte regression** with no new option set: 75 of 75 items identical to release
+core-v0.7 (final serial build, run core-20261125-142602-33f4005).
+
+## 6. Open at the time of writing
+
+- The corrected rule on four of Track D's dumps (t = 100, 250, 400, 500 M; `mass_tol`
+  1e-5 with 100 polishing iterations from the stored radius and from outside): run
+  core-20261125-144142-5858c3d, outcome in the journal (prediction P18).
+- The cost per search on a card and the finder on a card: shared-queue entry
+  `core-rf-card` (journal entry 12, predictions K3 and K4; `card_check.py`).
 
 ## 7. Not tested, not done
 

@@ -54,12 +54,19 @@ without a restart file, as before).
 
 Two, both read only if present in the input:
 
-- `<fastflow> polish_iterations_<n>` (integer, 0 when absent): flow iterations after
-  the mass rule `mass_tol_<n>` is met, before the surface is accepted. With 100 the
-  mass of Track D's vacuum puncture lies within 6.3e-9 of the tight rule (`mass_tol`
-  1e-9) at eleven dumps from 100 to 500 M, and within 4.5e-8 when the search starts
-  2 M outside, where `mass_tol` 1e-5 alone ends 6.0e-5 to 6.8e-5 low (run
-  core-20261125-131950-1fb387d). Closes item 2 of Track D's `finder-stopping-rule`.
+- `<fastflow> polish_iterations_<n>` (integer, 0 when absent, below
+  `flow_iterations_<n>`): after the mass rule `mass_tol_<n>` is first met the flow goes
+  on for that many iterations, and the surface is accepted at the first iteration
+  after them at which the rule holds again. For use with the tolerance of
+  `puncture_setup` (1e-5 m) or smaller, with 100: on a puncture in its first 2 M the
+  accepted masses are those of the tight rule (`mass_tol` 1e-9) within 6.3e-8, at the
+  same ten of sixteen searches, and no unconverged surface is accepted (run
+  core-20261125-141832-01d4aee); on Track D's settled puncture a first form of the rule
+  gave the tight mass within 6.3e-9 at eleven dumps from 100 to 500 M and within
+  4.5e-8 from 2 M outside, where `mass_tol` 1e-5 alone ends 6.0e-5 to 6.8e-5 low (run
+  core-20261125-131950-1fb387d). Not for the finder's default tolerance 1e-2 (it then
+  accepts unconverged surfaces while a horizon jumps). Closes item 2 of Track D's
+  `finder-stopping-rule`.
 - `<particles> ah_exc_max_growth` (real > 0, 4 when absent): the factor of the guard on
   horizon excision (a horizon is used while its smallest radius is below this multiple
   of `<fastflow> initial_radius_<n>`). Closes item 1 of Track D's
@@ -67,7 +74,9 @@ Two, both read only if present in the input:
 
 Interface lines that Track D asked for (what `mass_tol` means, the angular offset of
 `ntheta = 16`, the guard and its consequence, what `<base>.z4c.user.hst` integrates near
-a hole, what column 1 of the horizon summary holds): `finder_stop.md` sections 2 to 4.
+a hole), and two facts found on the way (column 1 of the horizon summary is the stage
+of the integrator; the summary repeats the last accepted surface when a search fails,
+so found or not found is read from the status file): `finder_stop.md` sections 2 to 4.
 
 ### Python
 
@@ -82,11 +91,18 @@ outbox).
 Block `NRPCNS01` at the end of `rst/<base>.NNNNN.rst.prt` (`docs/FORMATS.md`). Decks
 `problems/tests/restart_outputs.athinput`, `problems/tests/finder_polish.athinput`.
 
-### Evidence still open when this was written
+### Evidence
 
-See the last entries of the journal and the READY: the two-puncture deck across a
-restart, the finder test on the first 2 M of a puncture with the guard test, and the
-card check (shared-queue entry `core-rf-card`).
+Final builds of source 01d4aeeb. Byte regression against core-v0.7, 75 of 75 items
+identical (run core-20261125-142602-33f4005; the first builds: core-20261125-134356-4a92c73).
+Restart tests with the final serial build: core-20261125-142556-a424739; S2 and S1 with
+SIGTERM and restart files across the two executables: core-20261125-134353-9f7fdc3
+(builds before the correction of the finder rule, which differ in `z4c/fastflow.cpp`
+only). Finder: core-20261125-141832-01d4aee, core-20261125-131950-1fb387d. Figure
+style: core-20261125-135435-e82c50d. Open when this was written: the corrected rule on
+four of Track D's dumps (core-20261125-144142-5858c3d), the two-puncture deck across a
+restart (core-20261125-142953-bf5a228), and the card check (shared-queue entry
+`core-rf-card`); their outcomes are in the journal and the READY.
 
 ## core-v0.7 (release candidate, 2026-11-24): four source branches (decision 0035 item 4)
 
