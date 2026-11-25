@@ -96,3 +96,67 @@ not depend on N, the mass does (-2.1e-3 vs -3.0e-4).
   or a changed ordering.
 - P5 particle leg at B: |ddet(B) - ddet(B-N8)| < 0.01 M and the masses differ by more than 1e-3
   (-2.1e-3 vs -3.0e-4 claimed). Refuted otherwise.
+
+### Entry 2 outcome (registered run A-20261125-130753-314837e; fig_vconv_orders.png, fig_vconv_mass.png looked at)
+
+Before the registered run, an unregistered smoke run on member B alone (scratch/A-emd-pbh/tmp/
+vc18_conv_smoke) showed the two interpolations differ by 0.011 M at B; a third (straight-line fit
+over three bands on each side, v3) was added before the registered run. Outcomes:
+- P1 PASS: first detection times equal the table to its digits in all ten members (10.875, 10.7812,
+  10.750, 10.8125, 10.8125, 10.750, 10.9062, 10.9375, 10.750, 10.750).
+- P2 PARTLY FAILED. With v2 (tau and label interpolated linearly in the coordinate radius, tau_AH
+  exact at the interpolated label: the literal definition) ddet reproduces the table to 1e-3 M or
+  better in nine members (A 0.1924, B 0.0675, C 0.0166, A-N8 0.1086, A-N64 0.1464, B-N8 0.0705, A-R1.25
+  0.1004, B-R1.25 0.0652, B-R1.35 0.1074) and to 0.011 M in A-R1.35 (0.1746 against 0.164, just
+  outside the 0.01 bound). The interpolations do NOT agree within 0.005 M: v1 - v2 = -0.036 (A),
+  -0.011 (B), 0.000 (C); v3 - v2 = -0.005 (A), +0.025 (B), +0.022 (C). Cause, read from the band
+  table of B at the first detection: the finder's radius lies at the core edge (interpolated label
+  2.4957 against the break at 2.4937), between the last tracked particle inside the core (r 0.4185)
+  and the first outside (r 0.4501); tau_AH(label) has a kink there, so the estimate depends on how
+  one interpolates across 0.03 in r. Mesh orders of ddet: v2 1.51 and 2.03 (claimed 1.5, 2.0), v1
+  1.48 and 1.76, v3 1.01 and 1.27; the fall A > B > C holds in all three.
+- P3 PASS: dtrap -0.0925, -0.0224, -0.0077 (claimed -0.093, -0.022, -0.0077), orders 2.05 and 1.53
+  (2.1, 1.5); every other member within 0.001 M of its table value.
+- P4 PARTLY FAILED: the mass median is within 1e-3 of the table in nine members (B -2.09e-3,
+  C -2.25e-4, A-N8 -1.47e-3, A-N64 2.7e-4, B-N8 -3.05e-4, A-R1.25 6.5e-3, A-R1.35 1.02e-2, B-R1.25
+  -1.94e-3, B-R1.35 -1.31e-3), but A gives 6.3e-3 against 7.4e-3 (1.1e-3 off). The claimed value
+  lies inside my bracket [5.3e-3, 7.4e-3] (exact mass taken at the next tracked band outward or at
+  the last trapped one): the tracked particles sample the trapped label too coarsely to fix the
+  exact mass better than that. The bracket is [-9.6e-4, +5.0e-4] for C, so C's error is below 1e-3
+  whatever the interpolation, but its value (-2.2e-4) and any order B -> C are below the
+  resolution of the exact mass on the tracked set. Ordering |dm(A)| > |dm(B)| > |dm(C)| holds.
+- P5 PASS: ddet(B) - ddet(B-N8) = -0.003 M; masses -2.09e-3 against -3.05e-4. At fixed N = 4969736
+  the masses are 2.7e-4, -3.05e-4, -2.25e-4 (A-N64, B-N8, C), as claimed (2-5e-4).
+- Boundary leg: A-L32 equals A to 1.0e-7 in ddet and 1.2e-7 in the mass median (claimed 1e-7);
+  B-L32 equals B to 1.2e-11 in ddet and dtrap (claimed 1e-11) and to 1.2e-8 in the mass median.
+
+## Entry 3, 2026-11-25 13:20Z: predictions for the recomputation of threshold_ball (before running vthresh.py)
+
+Claims: threshold_ball/README.md results table (A-20261124-131120-5c974ce; C-d0.42 from
+A-20261125-115027-17b419e, A-20261125-115550-fe60ff1) and its bullet list. Rule: entry 1 of
+threshold_ball/JOURNAL.md (three consecutive finds spanning 5 M_AH and every later search).
+- Q1 rule: the same outcome as the table for all twelve members (BH: B-d1.00 ... B-d0.35, C-d0.42,
+  C-R1.25; not: B-d0.20 never found, A-d0.42 and A-d0.40 three finds then the guard stop);
+  persistent-from times equal to the printed digits (17.000, 25.250, 37.188, 42.250, 45.875,
+  48.625, 58.312, 45.906). Refuted by any other outcome or time.
+- Q2 detection times: tau_det (first detection, v2) within 0.02 M of the table for B and C
+  members (conv_ball showed an interpolation spread of about 0.01-0.02 M at B), within 0.05 M for
+  A-d0.42, A-d0.40; ddet within the same. Refuted by larger differences.
+- Q3 masses: dmmed within 2e-3 of the table for the B members; for C-d0.42 the claim (+2.4e-2) is
+  a median over a window inside the first-detection transient (README note): I expect my median
+  over every detection with an exact mass to be smaller, below 1e-2 [JUDGEMENT]. A-d0.42, A-d0.40:
+  within 1e-2 of -3.8e-2, -4.6e-2.
+- Q4 bracket: tau_det(B-d0.42) < 45 < tau_det(B-d0.40), interpolated delta_c(45) = 0.4103 +- 0.001;
+  exact 0.4103 (my reference gives tau_AH 43.656126 and 46.415299: 0.41026); C-d0.42 below 45.
+- Q5 constraint ratio (L2 of H over L2 of 16 pi E on the x line, outside the finder's radius, at
+  the tab output nearest the first detection): above 0.1 in every member and weighting (the README
+  says 0.3-3); at t = 0 well below 0.1 (con_H contains the matter term and the data solve the
+  constraints). Refuted by a member below 0.1 at detection, or a t = 0 ratio near 1 (then con_H
+  would lack the matter term and the whole comparison would be meaningless).
+- Q6 criteria that the README lists as failed: T4's mesh-C half (|ddet(C-d0.42)| <= 0.0075 and
+  |dmmed| <= 1.4e-3) fails as written; T5 (|ddet(C-R1.25) - ddet(C)| <= 0.02 M) fails (0.024
+  claimed). I expect to confirm both failures.
+- Q7 line MOTS mass within 1.5 per cent of the finder mass at the first detection (B members).
+- Q8 (not a claim; SCOPE section 3 measures time by the envelope's proper time): the envelope's
+  proper time at the first detection exceeds the core edge's by about the coordinate lag (1-2 M),
+  so B-d0.42 would be detected after 45 in the SCOPE measure [JUDGEMENT, to be measured].
