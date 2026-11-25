@@ -1,9 +1,9 @@
 {
   "track": "F-hills",
   "gate": "G1",
-  "commit": "d48e7261f43c91c16fc9d4d265e836ff9daec311",
-  "verified_utc": "2026-11-24T14:22:24Z",
-  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-d48e726-20261124T142013Z",
+  "commit": "4316c18556726f1e8b9b1d47704723fb9ca47845",
+  "verified_utc": "2026-11-25T17:12:40Z",
+  "export": "/data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-4316c18-20261125T171144Z",
   "result": "FAIL",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of d48e7261f43c (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-d48e726-20261124T142013Z/tree",
+      "message": "clean export of 4316c1855672 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-4316c18-20261125T171144Z/tree",
       "detail": null
     },
     {
@@ -69,18 +69,9 @@
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "4 of 252 runs have problems",
+      "message": "1 of 258 runs have problems",
       "detail": {
-        "F-20261121-203156-03efdd3": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ],
-        "F-20261124-135408-1e6db58": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ],
-        "F-20261124-141118-fbc6419": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ],
-        "F-20261124-141842-d5263e9": [
+        "F-20261124-210400-902c650": [
           "status is submitted: not finished (nrpic-run finish)"
         ]
       }
@@ -311,9 +302,15 @@
       }
     },
     {
+      "check": "checksums",
+      "status": "WARN",
+      "message": "output checksums not re-verified (--no-checksums)",
+      "detail": null
+    },
+    {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 40 lines",
+      "message": "STATUS.md has 46 lines",
       "detail": null
     },
     {

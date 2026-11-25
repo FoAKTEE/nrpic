@@ -1,12 +1,12 @@
 # Re-verification: F-hills G1
 
-`harness/bin/nrpic-stage verify F-hills G1` on 2026-11-24T14:22:24Z, clean export of commit `d48e7261f43c` in `scratch/F-hills/tmp/stage-verify/F-hills-G1-d48e726-20261124T142013Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify F-hills G1` on 2026-11-25T17:12:40Z, clean export of commit `4316c1855672` in `scratch/F-hills/tmp/stage-verify/F-hills-G1-4316c18-20261125T171144Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of d48e7261f43c (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-d48e726-20261124T142013Z/tree |
+| export | PASS | clean export of 4316c1855672 (HEAD) in /data/haiyangw/nrpic/scratch/F-hills/tmp/stage-verify/F-hills-G1-4316c18-20261125T171144Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: novelty/scope/SCOPE.md; REVIEW.md present; no verifier's report yet (VERIFIER.md, decision 0016) |
@@ -14,9 +14,10 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 15 figures, each with its script |
 | min-figs | PASS | 3 schematics and 12 data figures (brief 13.4 asks at least 2 and 1 at G1) |
-| runs | FAIL | 4 of 252 runs have problems |
+| runs | FAIL | 1 of 258 runs have problems |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 40 lines |
+| checksums | WARN | output checksums not re-verified (--no-checksums) |
+| status | PASS | STATUS.md has 46 lines |
 | rerun | PASS | 15 of 15 scripts and commands ran cleanly in the export |
 | compare | PASS | 42 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 30 committed figure files regenerated |
@@ -25,16 +26,7 @@
 
 ```
 {
- "F-20261121-203156-03efdd3": [
-  "status is submitted: not finished (nrpic-run finish)"
- ],
- "F-20261124-135408-1e6db58": [
-  "status is submitted: not finished (nrpic-run finish)"
- ],
- "F-20261124-141118-fbc6419": [
-  "status is submitted: not finished (nrpic-run finish)"
- ],
- "F-20261124-141842-d5263e9": [
+ "F-20261124-210400-902c650": [
   "status is submitted: not finished (nrpic-run finish)"
  ]
 }
