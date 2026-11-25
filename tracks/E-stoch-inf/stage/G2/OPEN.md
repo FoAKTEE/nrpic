@@ -26,6 +26,11 @@ What the G2 package lacks, in one list (CHECKLIST item in brackets):
    s = 1, s^2; g2prod 2.3); U-A2' at s = 1/2 14 percent above s = 1; a4res Q6; the one-point width
    factor 3.5-4 against the published figures (repro/note); lockstep sub-stepping (core request).
 
+8. `nrpic-stage verify` (C14): the report above uses the verify of 2026-11-23 (FAIL: sync, runs).
+   The lead of batch 13 started verify at 15:37 PST and stopped it at 16:05 (its checksum pass had
+   reached run 67 of 270 run directories and was competing for the disk with the quarter-pair
+   analysis); rerun it in a session with about two hours and no reader of the 256^3 dumps running.
+
 Can it go to an independent review once the queued runs have ended? Not on the runs alone. After
 item 1 is read (a processor analysis, no card), ruling 0030 item 2 allows the review with the
 U-A4'(a) failure on record. Items 2 and 3 (verifier, note sections) are products of the package

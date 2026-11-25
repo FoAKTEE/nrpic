@@ -612,3 +612,8 @@ Predictions written this session: floor F1-F5 (before submission). No outcome ye
 Card-hours used this session: 0 (1.25 asked at the ceilings of q0037/q0038).
 Changed my mind about: the HANDOFF of batch 10a said the quarter pair waited in the sequencer; it had
 run and the sequencer had closed it on 2026-11-23 20:06 PST, unread for 20 hours.
+Addendum 16:07 PST: `nrpic-stage verify` started 15:37 was stopped by its PID at 16:05 (checksum pass
+at run 67 of 270, competing for the disk with the quarter-pair analysis, which had then finished its
+reference pass, 21 dumps in 1881 s, and was reading the runs). `nrpic-stage report` was run on the
+verify of 2026-11-23. The analysis E-20261124-233223-51b52c0 was still running at the close; its
+judge `g2prod/scripts/judge_q.py` is committed (449b8b2c), not yet run.

@@ -36,6 +36,12 @@ E-20261124-130952-4be980b), statistics over the shells n^2 = 2-12 as in floor/JO
 one figure per shell statistic; outcome into floor/JOURNAL.md entry 2 and repro/figs RESULTS.md
 Fig. 7 (TO VERIFY item).
 
+## Stage verify
+
+`nrpic-stage verify E-stoch-inf G2` needs one to two hours (sha256 of 270 run directories,
+hundreds of GB); batch 13 stopped it at run 67 to leave the disk to the analysis. Run it when no
+256^3 reader is active, then `nrpic-stage report E-stoch-inf G2`.
+
 ## Finished in batch 13
 
 Reproduction leftovers (commit 51b52c00): conts.json, continue journal entry 13, SETUP_AUDIT item 4
