@@ -178,7 +178,57 @@ def values(d):
     v["item3"] = (["yes" if d["i3"]["1A_tt_projector_along_x"]["vanishes_for_E2_symmetric"] else "no", law], "item3")
     values_g1(d, v)
     values_v2(d, v)
+    values_g2(v)
     return v
+
+
+def values_g2(v):
+    """The numbers of the G2 section: the halo population box in two gauges against the
+    Newtonian mode with the same particles (population package, batches 17 and 21)."""
+    import numpy as np
+    st = common.load_json("pop_stop028", "stop028.json")
+    zs = common.load_json("pop_cmp_zs", "compare_newton.json")
+    gd = common.load_json("pop_cmp_gd", "compare_newton.json")
+    vc = common.load_json("pop_velchk", "vel_check.json")
+    lg = common.load_json("pop_legs", "compare_legs.json")
+    a_of = lambda t: (1.0 + 0.5*t)**2
+    v["g2_stop"] = ([a_of(st["base"]["stop_t"]), a_of(st["x0_ctrl"]["stop_t"]), a_of(st["x1_cfl125"]["stop_t"]),
+                     a_of(max(st["x2_gd"]["cstat"]["t"]))], "pop_stop028")
+    v["g2_kmin"] = ([max(st["x2_gd"]["cstat"]["K_max"][2:])], "pop_stop028")
+    G = lg["gd"]
+    s121 = min(G["strain"], key=lambda r: abs(r["a"] - 121))
+    s100 = min(G["strain"], key=lambda r: abs(r["a"] - 100))
+    v["g2_hik"] = ([s121["a"], s121["Om_cor_gt16_base"]/s121["Om_cor_gt16"]], "pop_legs")
+    v["g2_band"] = ([s100["rms8_cor_ratio"]], "pop_legs")
+    c141 = max(G["constraints"], key=lambda r: r["a"])
+    v["g2_hr"] = ([c141["a"], c141["Hr_base"], c141["Hr_leg"], c141["Mr_base"], c141["Mr_leg"]], "pop_legs")
+    P = lg["p8"]
+    cp = lambda a0: min(P["constraints"], key=lambda r: abs(r["a"] - a0))
+    sp = [r for r in P["strain"] if r["a"] <= P["a_last"] + 1]
+    v["g2_p8"] = ([P["a_last"], min(cp(a0)["Mr_base"]/cp(a0)["Mr_leg"] for a0 in (25, 49, 81)),
+                   max(cp(a0)["Mr_base"]/cp(a0)["Mr_leg"] for a0 in (25, 49, 81)),
+                   max(abs(r["rms8_cor_ratio"] - 1) for r in sp)], "pop_legs")
+    late = lambda c: [r for r in c["N2"] if r["M1_N"] and 80 <= r["a_GR"] <= 133]
+    r121 = lambda c: min(c["N2"], key=lambda r: abs(r["a_GR"] - 121))
+    v["g2_cnt"] = ([r121(zs)["n_GR"], r121(gd)["n_GR"], r121(zs)["n_N"]], ("pop_cmp_zs", "pop_cmp_gd"))
+    v["g2_med121"] = ([r121(zs)["median_abs_dM"], r121(gd)["median_abs_dM"]], ("pop_cmp_zs", "pop_cmp_gd"))
+    m1 = lambda c: [r["M1_GR"]/r["M1_N"] - 1 for r in late(c)]
+    v["g2_M1"] = ([min(m1(zs)), max(m1(zs)), min(m1(gd)), max(m1(gd))], ("pop_cmp_zs", "pop_cmp_gd"))
+    v["g2_meanmed"] = ([float(np.mean([r["median_abs_dM"] for r in late(zs)])),
+                        float(np.mean([r["median_abs_dM"] for r in late(gd)]))], ("pop_cmp_zs", "pop_cmp_gd"))
+    q = lambda c: [r for r in c["N4"] if r["Omega_metric_cor"] and 3.5 <= r["a"] <= 37]
+    cor = [r["Omega_metric_cor"]/r["Omega_qs_Npart"] for c in (zs, gd) for r in q(c)]
+    v["g2_cor"] = ([min(cor), max(cor)], ("pop_cmp_zs", "pop_cmp_gd"))
+    e = lambda c: c["N4"][-1]
+    v["g2_cor132"] = ([e(zs)["a"], e(zs)["Omega_metric_cor"]/e(zs)["Omega_qs_Npart"],
+                       e(gd)["Omega_metric_cor"]/e(gd)["Omega_qs_Npart"]], ("pop_cmp_zs", "pop_cmp_gd"))
+    v["g2_vc_a"] = ([r["a_GR"] for r in vc], "pop_velchk")
+    v["g2_vc_v"] = ([min(r["rms_v_ratio"] for r in vc) - 1, max(r["rms_v_ratio"] for r in vc) - 1,
+                     1 - min(r["v_corr"] for r in vc)], "pop_velchk")
+    v["g2_vc_x"] = ([vc[0]["dx_rms_cells"], vc[-1]["dx_rms_cells"]], "pop_velchk")
+    v["g2_vc_raw"] = ([r["ratio"] for r in vc], "pop_velchk")
+    v["g2_vc_eq"] = ([r["ratio_GRpos_Nmass"] for r in vc], "pop_velchk")
+    v["g2_vc_m"] = ([vc[0]["m_rel_spread_GR"], vc[0]["m_rel_spread_N"]], "pop_velchk")
 
 
 def values_v2(d, v):
@@ -533,6 +583,30 @@ LEDGER_V2 = [
 ]
 
 
+LEDGER_G2 = [
+    ("The halo population box in full relativity ($128^3$, $L=8$)", [
+        ("g2_stop", "$\\sigma_1=0.028$: scale factor of the non-finite stop, zero shift: first run, restart X0, restart X1 at half the step; largest $a$ of the Gamma-driver restart X2"),
+        ("g2_kmin", "X2: largest $K$ in the box after its first two records"),
+        ("g2_hik", "$\\sigma_1=0.014$: $a$; TT measure above $16\\,k_f$, zero shift over Gamma driver"),
+        ("g2_band", "corrected strain over $|\\mathbf k|\\le 8k_f$, Gamma driver over zero shift, at $a=100$"),
+        ("g2_hr", "$a$; mean relative Hamiltonian constraint, zero shift and Gamma driver; momentum, zero shift and Gamma driver"),
+        ("g2_p8", "eight particles per cell: last $a$ of the cut run; mean momentum constraint, one over eight per cell, at $a=25,49,81$: smallest, largest; largest $|$strain ratio over $|\\mathbf k|\\le8k_f-1|$"),
+        ("g2_cnt", "FoF halos ($\\ge100$ particles) at $a=121$: zero shift, Gamma driver, Newtonian mode"),
+        ("g2_med121", "median $|M_{\\rm GR}/M_{\\rm N}-1|$ of the ten largest at $a=121$: zero shift, Gamma driver"),
+        ("g2_M1", "largest halo, $M_{\\rm GR}/M_{\\rm N}-1$ for $81\\le a\\le132$: smallest, largest, zero shift; the same, Gamma driver"),
+        ("g2_meanmed", "median of the ten largest averaged over $81\\le a\\le132$: zero shift, Gamma driver"),
+        ("g2_cor", "metric quasi-static TT measure over the Newtonian particles' estimate, $4\\le a\\le36$, both gauges: smallest, largest"),
+        ("g2_cor132", "$a$; the same ratio, zero shift, Gamma driver"),
+        ("g2_vc_a", "epochs of the same-particle check"),
+        ("g2_vc_v", "rms velocity, GR over Newton$-1$: smallest, largest; one minus the smallest correlation"),
+        ("g2_vc_x", "rms position difference (cells) at the first and last epoch"),
+        ("g2_vc_raw", "GR particles over Newtonian particles, one estimator, at the four epochs"),
+        ("g2_vc_eq", "the same with the Newtonian masses"),
+        ("g2_vc_m", "relative spread of the particle masses: GR file, Newtonian file"),
+    ]),
+]
+
+
 def ledger_tex(v):
     lines = ["% generated by scripts/ledger.py from registered run outputs; do not edit"]
     parts = [(LEDGER[:3], "Numerical ledger. Every number behind this note with the registered run that produced it.", "tab:ledger"),
@@ -540,7 +614,8 @@ def ledger_tex(v):
              (LEDGER_G1[:1], "Numerical ledger: the crossed waves in full relativity.", "tab:ledger3"),
              (LEDGER_G1[1:], "Numerical ledger: the spatial gauge and the Newtonian mode.", "tab:ledger4"),
              (LEDGER_V2[:2], "Numerical ledger: linear waves with both diagnostics.", "tab:ledger5"),
-             (LEDGER_V2[2:], "Numerical ledger: the second round of the first source.", "tab:ledger6")]
+             (LEDGER_V2[2:], "Numerical ledger: the second round of the first source.", "tab:ledger6"),
+             (LEDGER_G2, "Numerical ledger: the halo population box in two gauges against the Newtonian mode.", "tab:ledger7")]
     for groups, caption, label in parts:
         lines += ["\\begin{table*}", "\\footnotesize", f"\\caption{{{caption}}}", f"\\label{{{label}}}",
                   "\\begin{ruledtabular}",

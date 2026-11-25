@@ -789,7 +789,7 @@ it]
   the GR-particle Omega_qs of analyze_gr.py (A1-A3, GD3 "particles' estimate") is not used as a
   reference; the metric's corrected Omega_qs and the Newtonian particles' estimate are.
 
-## 2026-11-25 09:08 PST (lead of batch 21): same particles through one estimator; prediction
+## 2026-11-25 09:03 PST (lead of batch 21): same particles through one estimator; prediction
 
 `scripts/vel_check.py`: GR particle snapshots of B-20261123-014847-f295ab4 (pop.part.00001, 4, 7,
 10: a = 2.3, 9.0, 20.3, 36) and the Newtonian snapshots of B-20261124-172958-fc4a2cf at the same t
@@ -804,7 +804,7 @@ two Omega_qs agree within 10 per cent at every epoch: the N4 excess is in the GR
 (about 11.7, 1.9, 1.35, 1.17): then the GR particles' velocities or positions differ from the
 Newtonian ones, and the velocity ratio says which.
 
-## 2026-11-25 09:10 PST (lead of batch 21): VC1 outcome; VC2 predicted
+## 2026-11-25 09:05 PST (lead of batch 21): VC1 outcome; VC2 predicted
 
 Run B-20261125-170321-cd30c0b (`vel_check.py`, 4 epochs). [VERIFIED by it]
 - VC1 REFUTED in its second part. The particle data agree: rms velocity ratio GR/Newton 1.006,
@@ -821,7 +821,7 @@ Run B-20261125-170321-cd30c0b (`vel_check.py`, 4 epochs). [VERIFIED by it]
   density contrast at a = 2.3 (1e-3 to 1e-2) while the Newtonian masses are equal to round-off.
   Refuted if the ratio stays above 1.3 at a = 9 with the masses exchanged.
 
-## 2026-11-25 09:12 PST (lead of batch 21): VC2 outcome; the cause of the N4 failure
+## 2026-11-25 09:07 PST (lead of batch 21): VC2 outcome; the cause of the N4 failure
 
 Run B-20261125-170535-84c9ba5 (`vel_check.py` with the masses exchanged; figure
 `fig_vel_check.png` in its run directory looked at: the right panel's y label is cut at the top, a

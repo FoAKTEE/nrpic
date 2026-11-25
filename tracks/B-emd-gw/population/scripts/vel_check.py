@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """The GR and the Newtonian particles of the population box at equal t, matched by tag
-(predictions VC1, VC2, JOURNAL.md 2026-11-25 09:08, 09:10): rms velocity (GR u/(a W), Newton p/a),
+(predictions VC1, VC2, JOURNAL.md 2026-11-25 09:03, 09:05): rms velocity (GR u/(a W), Newton p/a),
 their correlation, rms position difference in cells, and Omega_qs of both sets through one
 estimator (analyze.TTBox at ng = 64).
 

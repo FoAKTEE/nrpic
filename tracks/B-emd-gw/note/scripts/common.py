@@ -79,6 +79,15 @@ RUNS = {
     "r2_delta_cmp": "B-20261119-164017-cd1ba52",  # the helper's comparison of the amplitudes (second reading)
     "r2_spec": "B-20261119-161734-a3a1366",       # shell spectra of the TT and non-TT parts
     "r2_parity": "B-20261119-142727-02878d1",     # parity of the two initial-data tools
+    # G2 (wave 3): the halo population box in full relativity (population package)
+    "pop_gr_zs": "B-20261124-131918-e71996f",     # analyze_gr.py on the zero-shift runs (0.014, 0.028)
+    "pop_gr_gd": "B-20261125-115558-2ab4161",     # analyze_gr.py on the Gamma-driver leg (0.014)
+    "pop_legs": "B-20261125-121830-9ecb59c",      # compare_legs.py: gauge and particle legs against the base
+    "pop_stop028": "B-20261125-115619-ad8b3f4",   # analyze_stop028.py: the 0.028 stop and restarts X0-X3
+    "pop_newton": "B-20261125-122434-060d53d",    # analyze.py on the Newtonian mode, same particles
+    "pop_cmp_zs": "B-20261125-165836-70b17b6",    # compare_newton.py, zero shift
+    "pop_cmp_gd": "B-20261125-165845-0621554",    # compare_newton.py, Gamma driver
+    "pop_velchk": "B-20261125-170535-84c9ba5",    # vel_check.py: same particles, one estimator, masses exchanged
 }
 
 # the registered runs of this note package that produced the committed figures/ and tables/
