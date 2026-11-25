@@ -293,3 +293,13 @@ status file, no measure computed): the finder's first success on C is at coordin
 45.875) and 163 of 1119 searches succeed. Analysis: `scripts/analyse.py --member C-d0.42 --member
 B-d0.42` (registered below). Mesh-C bracket: C-d0.42 alone gives only the upper end (tau_det < 45
 or not); the lower end needs C-d0.40 (queue q0014, prediction T7 of entry 8).
+
+### Entry 11, note before the common-window measurement (no prediction: the figures were seen first)
+
+fig_threshold_slice_or_finder.png and C-d0.42_horizon.png of A-20261125-115027-17b419e (looked at)
+show that dmmed is taken over different windows on the two meshes: the exact same-slice mass exists
+only where the tracked particles cover the horizon's shells (C: t 46.1-47.2 and 50.9-51, inside the
+first-detection transient; B: 47.1-47.2, 48.2-48.8, 50.5-51). `scripts/t4_common.py` measures on the
+line times both meshes share after t = 46.75 (line Misner-Sharp mass against the exact shell mass)
+and compares the finder masses of C and B directly. This is a measurement to replace a median over
+unequal windows; it is not a test of T4, which stays judged as written.
