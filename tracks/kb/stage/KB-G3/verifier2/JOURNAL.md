@@ -69,3 +69,36 @@ Run kb-20261125-041256-d4741a7 failed (exit 1) before the draw: `draw.py` built 
 root with five `..` instead of six and did not find the first verifier's verdict files. No
 sample was drawn (the error is before the random generator). Fixed to six; the same command is
 run again.
+
+## Entry 3 (2026-11-25 04:25 UTC): outcomes
+
+Runs: draw and counts kb-20261125-041310-20371de; tally and figures kb-20261125-042218-7b7af60,
+repeated after a layout fix as kb-20261125-042240-6c19d72 (figures copied into `figures/`,
+both PNGs looked at); C2 check kb-20261125-042327-f947572. Reading of claims in the terminal
+with `scripts/show.py` (not a run: it writes nothing).
+
+- P1 (item 1) HELD: 60 of 61 supported or rightly taken out or rightly processed; 0 locator
+  wrong. The one failure: 781 (fulltext/checked on a cut text whose first clause is the
+  brief's inference; the answer it carries is right). Label reservations: 409, 447, 449, 450
+  (fulltext on abstract readings, OPEN O4, as predicted), 804 (fulltext on an instruction,
+  while 805 stays to_verify), 877 (paper statement and F's run numbers under one label);
+  wording: 864 lists 'Jena' among the authors, 313 keeps locator debris, 430 is cut at both
+  ends although it is the target of 431's supersession.
+- P2 (item 2): P 12/14 fell one short of the predicted 13/14 but stayed above the refutation
+  bar (11/14): PREDICTION MISSED, NOT REFUTED. M 10/13 inside the predicted 10-12: HELD.
+  Q 12/13: HELD. W weighted 80.6 % (s.e. 9.3 %) inside 69.3-96.2 %: HELD. The two P errors
+  are a pointer (223) and a fragment (574) that audits had verified; I did not expect errors
+  of that kind in the person-checked stratum.
+- P3 HELD: claims3's query on today's snapshot gives 548; my definition gives 540 (all
+  statuses, before my exclusions), 3 below 543 because 289, 430, 624 carry a kb-claims3
+  'supersedes' event that my rule counts as a reading although nobody read them against their
+  wording (I read them now, item 1).
+- P4 HELD: the to_verify claims without a processing action are exactly 806, 807, 810, 811,
+  812 (decision 0035 item 5).
+- P5 HELD: db/current -> kb-20261125-2f97258.sqlite, sha256 2f97258cf6c1...
+- P6 HELD: package documents present; kb-20261124-233445-89478ae status failed; STATUS,
+  JOURNAL, HANDOFF last changed in dc28b4ee5 (lead, batch 15).
+- Not predicted: 12 claims carry the support label abstract with no locator row and no event
+  but the seed (706, 709-712, 715, 773, 774, 794-796, 844); 773 bears on A's G1 (its core
+  'order of magnitude' is at 2609.14218 MDPBH.tex L177; 'the analytic estimates disagree
+  markedly among themselves' I did not find in the abstract).
