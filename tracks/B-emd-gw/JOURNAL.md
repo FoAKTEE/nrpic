@@ -411,3 +411,25 @@ Card-hours this session: none run by this session; closed this session 0.85 (0.1
 from the closed manifests); toward G2 4.27. Closed by the finishes: gauge leg completed, X0-X3
 failed (exit 3, the guard stops of X0 and X1), particle leg failed (cap), newton_s014 completed;
 newton_s028's finish was still hashing at the end.
+
+## 2026-11-25 08:56-09:30 PST, lead of batch 21 (processors only)
+
+predicted: N2-N4 (2026-11-24 05:48) as written; GN1 (the Gamma driver brings the masses closer to
+Newton, the Poisson-gauge argument), GN2 (the N4 ratio the same in both gauges), NB1 (the N4
+excess is the 128^3 grid), VC1 (same particles, one estimator: agree within 10 per cent), VC2
+(the excess is the GR file's mass weight), all in population/JOURNAL before each run.
+found: the Newtonian analysis B-20261125-122434-060d53d closed. N2 and N3 hold in both gauges
+(B-20261125-165836-70b17b6, -165845-0621554): counts in band, ten largest matched at a = 121 with a
+median 2.5 and 2.8 per cent. The N4 quasi-static excess (11.7 at a = 2.3) is analyze_gr.py
+depositing the GR file's rest-mass weight as mass (VC2 holds, B-20261125-170535-84c9ba5); the GR
+and Newtonian particles move alike and the GR metric agrees with the Newtonian particles within 11
+per cent at a = 4-36. G2 writing: note section VI with fig_pop_gauge, G2 schematics, ledger
+Table VIII (B-20261125-171148-563a6f0; checker --compile clean; pages read); REPRODUCE.md (C6 PASS);
+C16 PASS; kb claim 883 applied to scope/REFERENCES.md; three messages acknowledged.
+failed: N4 both parts (quasi-static: estimator, cause found; radiated: 0.29 against a factor 2,
+B-20261125-172136-3e920ab, cause not tested); GN1 (zero shift is the closer gauge); GN2 after
+a = 36; NB1 (no content above 8 k_f before a = 40); VC1 second part; VC2 side statements (GR mass
+spread 0.028, Newtonian 2e-4); first band run B-20261125-170051-49ada01 compared unlike units.
+open: q0007, q0042, q0044 (cards held until about 2026-11-26); analyze_gr.py rerun with equal
+masses; C15 script split; C17 after the runs; C18 verifier. Stage verify G2 without checksums: all
+PASS except 'runs' (q0007's chain in flight). Card-hours this session: none.

@@ -385,3 +385,46 @@ while it ran (read only) and the order is on record in the analysis manifests' p
   runs not yet closed at the export (five finishes still hashing, the mesh leg in Slurm, one
   analysis running). Not a defect of the package; the full verify with checksums waits for q0007,
   q0042, q0044 and the five finishes. G2 is not complete (stage/G2/OPEN.md); not listed for review.
+
+## Batch 21 (2026-11-25 08:56-09:30 PST, lead, processors only)
+
+Package reviewed: population, the Newtonian reference at the GR runs' own particles (processor
+runs B-20261124-172958-fc4a2cf, -73b0662; analysis B-20261125-122434-060d53d, started by the lead
+of batch 17 and left running). Checked from the artefacts: the analysis ended with exit 0 at
+12:49Z (`.nrpic/result.json`), closed with `nrpic-run finish` (8 files hashed); its copies in the
+package (`results/analysis_n128.json`, three figures) were uncommitted and are now committed. The
+lead reran the comparison against both GR gauges (B-20261125-165836-70b17b6, -165845-0621554),
+recomputed every N2-N4 number from their JSON, looked at both figures, and tested the N4 failure
+in three further registered runs (band test, same particles through one estimator, radiated part).
+Predictions were written before each run (population/JOURNAL 2026-11-25 08:58, 09:00, 09:03,
+09:05, 09:24).
+
+- Confirmed: N2 in both gauges (counts in band at every catalogue; at a = 121 ten of ten matched,
+  median |dM| 2.5 and 2.8 per cent); N3 (Newtonian amplitude scaling, counts in band, largest mass
+  within 4 per cent at a = 25-60); the GR and Newtonian particles move alike (velocities within
+  0.3-0.6 per cent, positions within 0.002-0.08 cells to a = 36, B-20261125-170535-84c9ba5).
+- Wrong in the package, found here: `analyze_gr.py` `hqs_particles` deposits the GR particle file's
+  rest-mass weight (m W psi^6 ..., `make_ic.py` line 133; spread 2.8 per cent) as mass. Its
+  quasi-static estimate is high by 11.6 times at a = 2.3 and 1.14 at a = 36; with equal masses the
+  GR and Newtonian particles agree within 6 per cent. Every earlier use of `Omega_qs_part`,
+  `spec_qs`, `cmp_*_qs` (A1-A3 of 2026-11-24, GD3's "particles' estimate" and the ratio "5.4e-7
+  against 8.3e-7 at a = 121") is not a reference until rerun. Large defect: listed (OPEN.md C9),
+  not fixed here (an hour of processors with a prediction first).
+- Wrong in the batch-17 review and CHECKLIST C9: "the two gauges bracket the Newtonian mass"
+  (against fidL8, other particles). With the same particles the zero-shift masses are the closer
+  ones (largest halo -2 to -5 per cent, Gamma driver +7 to +11). Withdrawn in C9 and in the note.
+- Failed predictions of this session: N4 as written in both parts (quasi-static: cause found;
+  radiated: 0.29 against a factor 2, cause not tested), GN1 (gauge order of the masses), GN2 after
+  a = 36, NB1 (the excess is not the grid), VC1 second part, VC2 side statements. One defective
+  analysis on record (B-20261125-170051-49ada01, unlike units; rerun -170116-0b635a0).
+- Not confirmed: why the radiated measure does not follow the sigma^(7/2) map between the two
+  Newtonian boxes; the gauge dependence of FoF masses by a proper-distance mass.
+
+G2 products without a card, this session: one data figure and two schematics for the note
+(B-20261125-171148-563a6f0, looked at; C16 PASS), the G2 section of the note with ledger Table VIII
+(checker with --compile clean on the new text, pages read), the reproducibility list
+`stage/G2/REPRODUCE.md` (C6 PASS), the ladder schematic's SVG committed from its run. C15 stays
+open (package scripts that draw several figures). Stage verify without checksums: every check
+PASS except 'runs' (q0007's chain B-20261125-093500-242d3a3 is in flight).
+
+Queue entries waiting for a card, nothing partial read: q0007 (job 5283 pending), q0042, q0044.
