@@ -26,6 +26,7 @@ outputs read are those of the runs named in the two READMEs (`scripts/vmembers.p
 | A-20261125-131608-2269f36, A-20261125-131745-5388fde | V2: threshold_ball recomputed (the second adds the mass series figure) | section 4 |
 | A-20261125-131935-bbac6fd | claim-by-claim tables (`tables.md`) | sections 3, 4 |
 | A-20261125-131954-8c80a3f | mass medians over the windows named in threshold_ball entry 11 | section 4 |
+| A-20261125-132256-b73f108 | finder mass against the shell at the finder's coordinate radius (after reading the lead's material) | section 7 |
 
 Figures looked at: fig_v0a, fig_v0e (-130535); fig_vconv_orders, fig_vconv_mass (-130753);
 fig_vthresh_searches, fig_vthresh_summary (-131608); fig_vthresh_masses (-131745).
@@ -141,6 +142,29 @@ restarts G1-G3 and the K-series of threshold_ball (entries 5-10); costs; the com
 measurement of A-20261125-115550-fe60ff1 beyond the window medians above; the line MOTS on mesh B
 (section 4); anything requiring a card run.
 
-## 7. Comparison with the lead's verdicts (written after sections 1-6)
+## 7. Comparison with the lead's verdicts (written after sections 1-6 were committed, 0e38a43f)
 
-(Section added after the lead's material was read; see below.)
+Read now: `stage/G2/CHECKLIST.md` (items C1-C3, C7, C8, C18), `threshold_ball/JOURNAL.md` entries 4
+and 11 (outcomes), `stage/REVIEW-wave3.md` (rows on conv_ball and threshold_ball). One extra
+number below comes from my outputs after reading them: the finder mass against the exact mass of
+the shell at the finder's coordinate radius (label from the tracked particles, v2), registered as run
+A-20261125-132256-b73f108 (from the outputs of A-20261125-131745-5388fde; journal entry 5).
+
+| item | lead | verifier | agreement |
+|---|---|---|---|
+| C1 (threshold part) | tau_det within 0.03-0.14 M of exact; code bracket (0.40, 0.42] = exact; C-d0.42 BH with tau_det 43.705 | same numbers (C-d0.42 43.689); bracket, interpolated 0.4103 | agree |
+| C2 three-way convergence: PASS | ddet 0.193, 0.068, 0.017, orders 1.5, 2.0; mass 7.4e-3, 2.1e-3, 2.1e-4; N leg; boundary identical | numbers reproduced (A's mass 6.3e-3 in mine); the B->C order is 1.3-2.0 depending on the interpolation (5e); the mass sequence is mostly a particle-number effect and C's value lies below the tracked set's resolution (5f) | agree that the time errors converge in mesh, N and boundary; I would not quote a mass order or the order 2.0 without the spread |
+| C3 constraints: FAIL | ratio 0.11-0.21 at t = 0, 0.3-3 later; C-d0.42 up to 1.94 | 0.105-0.22 at t = 0 (r^2 weight; mesh C 0.105), 0.7-3.0 at the first detection | agree: FAILED as written |
+| C7 times converge in N, h, R: PASS | ddet orders 1.5, 2.0; dtrap 2.1, 1.5; R dependence 0.09, 0.04, 0.024 M; C-d0.42 ddet -0.0135 | dtrap and R dependence reproduced; ddet as above; C-d0.42 -0.0095 (v2), spread 0.09 M | agree for dtrap and the fall of ddet; the C-d0.42 ddet is not resolved by the tracked set; turnaround not checked by me |
+| C8 horizon mass of the order of the source's OS test: PASS | 7.4e-3, 2.1e-3, 2.1e-4; scan |dmmed| 3.2e-4 to 9.4e-3 on M/32 | C below 1e-3 for any exact mass in my bracket; scan range bounded by 9.5e-3, but B-d0.42, B-d0.40, B-d0.35 differ in sign from the table | agree with the verdict; the individual near-threshold medians are not reproduced |
+| "first-detection excess 4-7 per cent, carried by the slice" (entry 4, C8) | relative to "the exact mass of the shell at their radius"; finder = line MOTS within 0.3-1.5 per cent on B | relative to the shell at the finder's coordinate radius my excess is +2.1, +2.9, +5.4 per cent (B-d0.42, 0.45, 0.40) and +7.3 per cent (C-d0.42; entry 11 says +11.6); relative to the outermost exactly trapped shell (the reference of dmmed, DESIGN 4) there is none on B; my line reader confirms finder = line on C (-0.6 per cent) but not on B (no line MOTS at the same time; 1-5 per cent low later) | the two references differ: the finder's coordinate radius maps to a shell 0.02-0.07 in label inside the core edge while its mass equals the core edge's within 1.7 per cent on B (-1.7 to +0.9; A-d0.40 -2.6). The excess is a statement about location, not mass; "carried by the slice" is confirmed on C only |
+| T4 mesh-C half refuted (entry 11) | ddet 0.0135 > 0.0075; dmmed +2.36e-2 > 1.4e-3 | ddet fails under all three interpolations; the mass half is not decidable (bracket wider than the bound); the claimed +2.36e-2 is reproduced in size only with the coarse convention (exact mass at the last trapped tracked particle: +3.2e-2), my interpolated value is -1.5e-3 | agree on "fails as written"; the lead's reading (ii) of entry 11 (unequal windows) is right in spirit, but the larger cause is the sampling of the exact mass (5f) |
+| T5 refuted | 0.024 > 0.02 | 0.024 | agree |
+| A-mesh members | 3 finds each, then guard stop; not BH | same, with the status files | agree; my first reader got this wrong (5a) |
+| C18 | OPEN: no fresh verifier had recomputed conv_ball or threshold_ball | this report | for the lead to judge; my recomputation reproduces the times, the bracket, the classification and the failures, and does not reproduce four mass medians (A of conv_ball, B-d0.42, B-d0.40, B-d0.35) or C-d0.42's median under my exact-mass definition |
+
+Points the lead's material does not state and this report adds: the summary file repeats stale
+finds (the lead's analysis already uses the status files, so its classifications are right); the
+interpolation spread of ddet at the core edge; the resolution of the exact mass by the tracked set;
+the line constraint ratio is at or above 0.1 already at t = 0 on mesh C (0.105), not only on A and B;
+the time measure of SCOPE section 3 read literally with the code's slicing would move the bracket.

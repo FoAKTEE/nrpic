@@ -258,3 +258,15 @@ Line MOTS against the finder (all tab outputs after the first detection with a M
 a find within 0.04 M): C-d0.42 median -0.63 per cent (range -0.06 to -0.84), C-R1.25 -0.02 per cent;
 B members -0.9 (B-d1.00) to -4.8 per cent (B-d0.35), growing as the horizon's coordinate radius
 shrinks (5 cells of M/32 at threshold). The second half of the prediction holds for B, not for C.
+
+## Entry 5, 2026-11-25 13:23Z: after VERIFIER-C18.md sections 1-6 were committed (0e38a43f)
+
+Read the lead's material (CHECKLIST C1-C3, C7, C8, C18; threshold_ball entries 4 and 11 outcomes;
+REVIEW-wave3 rows). Entry 4 of threshold_ball measures the first-detection excess against "the exact
+mass of the shell at their radius", not against the outermost exactly trapped shell that DESIGN 4
+uses for dmmed. One measurement made after reading, no prediction (the reference was not mine
+before): run A-20261125-132256-b73f108, finder mass against the shell at the finder's coordinate
+radius (v2 label): +1.0, +1.6, +0.2, +2.9, +2.1, +5.4, +20.1 per cent for B-d1.00 ... B-d0.35 (the
+last at an isolated find), +3.1 and +0.75 (A), +1.5 (C-R1.25), +7.3 (C-d0.42; entry 11 gives 11.6);
+against the core edge's exact mass -1.7 to +0.9 per cent on B, -0.8 per cent on C-d0.42. Section 7 of
+the report compares.
