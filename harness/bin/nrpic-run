@@ -37,11 +37,14 @@ Launchers (one registered run each):
   environment built from files, without it). Called directly it is refused, nothing registered, and the
   message gives the line to queue it instead:
               harness/bin/nrpic-queue add --label L -- --kind scouting --gate G2 --purpose "..." --launcher chain ...
-  --dry-run stays open to everyone. A local run whose command would reach Slurm itself (sbatch, srun,
-  salloc, scripts/gpu_run.sh, gpu_batch.sh, submit_chain.sh; also in `bash -c` strings and in a script it
-  runs) is refused the same way outside a dispatch. The marker gates the route only: the cap of five jobs
-  of the account in the Slurm queue (harness/lib/nrpic_harness.py QUEUE_CAP) is checked for every card
-  submission.
+  --dry-run stays open to everyone. A local run outside a dispatch runs with harness/shims/slurm first on
+  its PATH: there sbatch, srun and salloc are stubs that print the rule and exit 2, so whatever the command
+  calls (scripts/gpu_batch.sh, submit_chain.sh, a script that calls another) submits nothing; one whose
+  first word is sbatch, srun or salloc is refused before it is registered. Inside a dispatch the PATH is left
+  as it is (nothing of the stubs reaches a job); a --background run always gets the stubs. A call by
+  absolute path (/usr/bin/sbatch) passes: only a limit on the Slurm side or the tool-guard hook closes that.
+  The marker gates the route only: the cap of five jobs of the account in the Slurm queue
+  (harness/lib/nrpic_harness.py QUEUE_CAP) is checked for every card submission.
 
 What submit does, in order (under one lock per owner, locks/nrpic-run.<ID>.lock): refuses a dirty
 worktree (untracked files count); refuses a local `python ...` command when the worktree has no
@@ -125,17 +128,23 @@ def check_route(wt, args):
 
 
 def check_local_command(wt, command):
-    """One route (decision 0033): a local run whose command would submit Slurm jobs itself (sbatch, srun,
-    salloc, scripts/gpu_run.sh, gpu_batch.sh, submit_chain.sh; also inside `bash -c` strings and in a script
-    file it runs, H.slurm_launch_in) is refused, unless it runs inside a dispatch of the shared queue."""
-    hit = H.slurm_launch_in(command, wt.root)
-    if hit is None or H.queue_dispatch_problem(wt) is None:
+    """One route (decision 0033): a local run whose command's first word is sbatch, srun or salloc is refused
+    outside a dispatch of the shared queue (the one textual check; everything else meets the stubs of
+    harness/shims/slurm on its PATH, H.with_slurm_shims, which wrap() puts there)."""
+    if not command or os.path.basename(command[0]) not in H.SLURM_COMMANDS or H.queue_dispatch_problem(wt) is None:
         return
     raise H.HarnessError(
-        f"a local run may not submit Slurm jobs (decision 0033, one route): its command would run {hit}. Nothing "
+        f"a local run may not submit Slurm jobs (decision 0033, one route): its command is {command[0]}. Nothing "
         "was run or registered. Card runs are submitted only by the shared queue: harness/bin/nrpic-queue add "
         "--label <label> -- <the arguments of nrpic-run submit, --launcher batch or chain>, or --cmd '<wrapper>' "
         "for a line that continues a chain (harness/bin/nrpic-queue --help)")
+
+
+def local_shims(wt, background):
+    """Does a local run get the Slurm stubs first on its PATH? Outside a dispatch of the shared queue, yes; inside
+    one, no (nothing of the stubs may reach a job); a --background run always does, because it outlives the
+    dispatch and the process group the dispatcher ends."""
+    return background or H.queue_dispatch_problem(wt) is not None
 
 
 def check_queue_cap(env=None):
@@ -827,7 +836,8 @@ def submit(wt, args):
 
     if o["launcher"] == "local":
         H.write_json(os.path.join(outdir, ".nrpic", "launch.json"),
-                     {"command": command, "cores": o["cores"], "wall": o["wall"], "host": H.host()})
+                     {"command": command, "cores": o["cores"], "wall": o["wall"], "host": H.host(),
+                      "slurm_shims": local_shims(wt, o["background"])})
         if o["background"]:
             p = subprocess.Popen([sys.executable, "-I", os.path.realpath(__file__), "-C", wt.root, "_wrap", run_id],
                                  stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
@@ -893,6 +903,8 @@ def wrap(wt, run_id, echo=False):
     outdir = outdir_of(wt, run_id)
     info = H.read_json(os.path.join(outdir, ".nrpic", "launch.json"))
     env = H.build_env(wt, threads=int(info.get("cores", 1)))
+    if info.get("slurm_shims", True):     # decision 0033: outside a dispatch sbatch/srun/salloc are stubs
+        env = H.with_slurm_shims(env, wt)
     env["NRPIC_RUN_ID"], env["NRPIC_RUN_DIR"] = run_id, outdir
     os.makedirs(env["MPLCONFIGDIR"], exist_ok=True)
     info["pid"] = os.getpid()

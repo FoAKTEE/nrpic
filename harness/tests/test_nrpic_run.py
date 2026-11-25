@@ -17,6 +17,7 @@ rc_fixture.fake_dispatch, as the dispatcher would run them.
 """
 import json
 import os
+import re
 import shlex
 import sys
 import time
@@ -296,9 +297,10 @@ for ((i = 0; i < 3000; i++)); do [[ -e "@REL@/$1" ]] && exit 0; sleep 0.2; done
 def queue_cap(c, fx, A):
     """Decision 0033. One route: a card submission without the dispatcher's marker is refused and registers
     nothing (also with a forged marker, or with no dispatch in progress), and the message gives the
-    `nrpic-queue add` line; a local run or `nrpic-env exec` whose command reaches Slurm (sbatch in a `bash -c`
-    string, in a shell or Python script, scripts/gpu_batch.sh) is refused without the marker (review 1) and
-    goes through with it; with the marker, the cap still holds: five live jobs of the account (held by the
+    `nrpic-queue add` line; outside a dispatch a local run or `nrpic-env exec` meets the stubs of
+    harness/shims/slurm on its PATH, so the forms of the second review (C1) submit no job and those that only
+    mention Slurm (L1) run, and sbatch as the first word is refused before anything is registered; inside a
+    dispatch the local run reaches sbatch and nothing of the stubs reaches the job's PATH; with the marker, the cap still holds: five live jobs of the account (held by the
     test) refuse a card run, four accept it, a failing squeue refuses it. The fake jobs and their release
     files live outside the worktree, which stays clean."""
     rel = os.path.join(fx["root"], "release-cap")
@@ -319,11 +321,26 @@ def queue_cap(c, fx, A):
             "--list", "tracks/A-emd-pbh/inputs/batch.txt", "--wall", "00:10:00"]
     want = "  harness/bin/nrpic-queue add --label <label> -- " + shlex.join(args[1:])
     local = ["submit", "--kind", "scouting", "--gate", "G1", "--purpose", "a local run that reaches sbatch"]
-    F.commit_file(A, "tracks/A-emd-pbh/q/sub.sh", f"#!/bin/bash\n# submits one job\nsbatch -J byp4 {hold} byp4\n")
-    F.commit_file(A, "tracks/A-emd-pbh/q/sub.py", "import subprocess\n# the job\n"
-                  f"subprocess.run(['sbatch', '-J', 'byp5', '{hold}', 'byp5'])\n")
-    F.commit_file(A, "tracks/A-emd-pbh/q/doc.py", '"""Reads the sbatch logs of a run (no submission)."""\nprint(1)\n')
-    names += ["byp1", "byp2", "byp3", "byp4", "byp5", "lm1"]
+    q = "tracks/A-emd-pbh/q"
+    pathjob = os.path.join(fx["root"], "pathjob-cap.sh")
+    F.write_exe(pathjob, "#!/bin/bash\necho \"$PATH\" > \"@REL@/path-$1\"\n".replace("@REL@", rel)
+                + HOLD.replace("@REL@", rel).split("\n", 1)[1])
+    scripts = {   # the forms of the second review (C1: reach sbatch; L1: submit nothing)
+        f"{q}/s.sh": f"#!/bin/bash\nn=${{1:-s}}\nsbatch -J $n {hold} $n\n",
+        f"{q}/outer.sh": f"#!/bin/bash\n# drives one submission\nbash {q}/s.sh \"$1\"\n",
+        f"{q}/fs.py": ("import subprocess, sys\nd = '.'\nn = sys.argv[1]\n"
+                       f"subprocess.run(['bash', '-c', f'cd {{d}} && sbatch -J {{n}} {hold} {{n}}'])\n"),
+        f"{q}/plain.py": f"import subprocess, sys\nn = sys.argv[1]\nsubprocess.run(['sbatch', '-J', n, '{hold}', n])\n",
+        f"{q}/status.py": ("import subprocess, sys\n# asks the chain helper for the state of a run\n"
+                           "subprocess.run(['scripts/submit_chain.sh', '--status', sys.argv[1]], check=True)\n"),
+        f"{q}/parse.py": ("import sys\n# counts srun steps in a log\n"
+                          "print(sum(1 for ln in open(sys.argv[1]) if ln.startswith(\"srun\")))\n"),
+        f"{q}/note.sh": "#!/bin/bash\necho 'this analysis never calls sbatch'\nwc -l \"$1\"\n",
+    }
+    for rel_, text in scripts.items():                     # run through bash or python3: no mode bit needed
+        F.commit_file(A, rel_, text, "the review's forms")
+    names += [f"d{i}" for i in range(1, 8)] + ["lm1"]
+    ne = os.path.join(A, "harness", "bin", "nrpic-env")
     try:
         for n in names[:5]:
             F.sh(["sbatch", "-J", n, hold, n], env=env)
@@ -336,29 +353,50 @@ def queue_cap(c, fx, A):
              "one route: a direct card submission (no dispatcher's marker) is refused, registers nothing (no "
              "manifest, no output directory, no commit), and the message gives the exact `nrpic-queue add` line",
              r.stdout + r.stderr)
-        # review 1: the local launcher and nrpic-env exec were a route past the cap
-        for what, cmd in (("bash -c 'sbatch ...'", ["bash", "-c", f"sbatch -J byp1 {hold} byp1"]),
-                          ("a shell script that runs sbatch", ["bash", "tracks/A-emd-pbh/q/sub.sh"]),
-                          ("a Python script that runs sbatch", ["python3", "tracks/A-emd-pbh/q/sub.py"]),
-                          ("scripts/gpu_batch.sh", ["scripts/gpu_batch.sh", "tracks/A-emd-pbh/inputs/batch.txt"])):
+        # second review, C1: outside a dispatch sbatch on the command's PATH is a stub, whatever the form
+        for what, cmd, key in (("timeout 60 bash s.sh", ["timeout", "60", "bash", f"{q}/s.sh", "d1"], "d1"),
+                               ("env bash s.sh", ["env", "bash", f"{q}/s.sh", "d2"], "d2"),
+                               ("bash outer.sh (a script that runs s.sh)", ["bash", f"{q}/outer.sh", "d3"], "d3"),
+                               ("python3 fs.py (an f-string `cd {d} && sbatch ...`)", ["python3", f"{q}/fs.py", "d4"],
+                                "d4"),
+                               ("python3 -W ignore plain.py", ["python3", "-W", "ignore", f"{q}/plain.py", "d5"], "d5")):
             r = run_cmd(A, local + ["--allow-no-venv", "--"] + cmd)
+            rid = run_id_from(r.stdout)
+            lg = os.path.join(scr, rid or "none", "run.log")
             time.sleep(0.5)
-            c.ok(r.returncode == 1 and "a local run may not submit Slurm jobs" in r.stderr and snap() == before
-                 and F.H.queue_count(env) == 5,
-                 f"review 1: a local run of {what} without the marker is refused at five jobs; nothing registered, "
-                 "no sixth job", r.stdout[-400:] + r.stderr)
-        r = F.sh([os.path.join(A, "harness", "bin", "nrpic-env"), "exec", "--", "bash", "-c",
-                  f"sbatch -J byp2 {hold} byp2"], cwd=A, check=False)
-        time.sleep(0.5)
-        c.ok(r.returncode == 1 and "submits Slurm jobs" in r.stderr and F.H.queue_count(env) == 5,
-             "review 1: `nrpic-env exec -- bash -c 'sbatch ...'` is refused too; no sixth job", r.stderr)
-        r = F.sh([os.path.join(A, "harness", "bin", "nrpic-env"), "exec", "--", "scripts/submit_chain.sh", "--status",
-                  os.path.join(fx["root"], "nochain")], cwd=A, check=False)
-        r2 = F.sh([os.path.join(A, "harness", "bin", "nrpic-env"), "exec", "--", "python3",
-                   "tracks/A-emd-pbh/q/doc.py"], cwd=A, check=False)
-        c.ok(r.returncode == 0 and "STATUS" in r.stdout and r2.returncode == 0,
-             "nrpic-env exec still runs `submit_chain.sh --status` and a script that only mentions sbatch in a docstring",
-             r.stdout + r.stderr + r2.stderr)
+            c.ok(F.H.queue_count(env) == 5 and os.path.isfile(lg) and "refused: card jobs reach Slurm only" in open(lg).read(),
+                 f"review 2, C1: a local run of `{what}` outside a dispatch submits no job (the sbatch it reaches is the "
+                 "stub, which refuses); five jobs still", r.stdout[-400:] + r.stderr[-400:])
+        for what, cmd in (("timeout 60 bash s.sh", ["timeout", "60", "bash", f"{q}/s.sh", "d6"]),
+                          ("/usr/bin/env bash outer.sh", ["/usr/bin/env", "bash", f"{q}/outer.sh", "d7"])):
+            r = F.sh([ne, "exec", "--"] + cmd, cwd=A, check=False)
+            time.sleep(0.5)
+            c.ok(r.returncode != 0 and "refused: card jobs reach Slurm only" in r.stderr and F.H.queue_count(env) == 5,
+                 f"review 2, C1: `nrpic-env exec -- {what}` submits no job either", r.stderr[-400:])
+        for what, cmd in (("nrpic-run submit -- sbatch ...", None), ("nrpic-env exec -- sbatch ...", True)):
+            before = snap()
+            r = (F.sh([ne, "exec", "--", "sbatch", "-J", "byp", hold, "byp"], cwd=A, check=False) if cmd else
+                 run_cmd(A, local + ["--", "sbatch", "-J", "byp", hold, "byp"]))
+            c.ok(r.returncode == 1 and ("may not submit Slurm jobs" in r.stderr or "submits Slurm jobs" in r.stderr)
+                 and snap() == before and F.H.queue_count(env) == 5,
+                 f"`{what}` (sbatch as the first word) is refused before anything runs or is registered", r.stderr)
+        # second review, L1: commands that only mention Slurm run
+        rd = os.path.join(fx["repo"], "scratch", "A-emd-pbh", "nochain")
+        os.makedirs(rd, exist_ok=True)
+        for what, cmd in (("python3 status.py (`submit_chain.sh --status` in a list)", ["python3", f"{q}/status.py", rd]),
+                          ("grep -c sbatch scripts/gpu_batch.sh", ["grep", "-c", "sbatch", "scripts/gpu_batch.sh"]),
+                          ("python3 parse.py (a string beginning with srun)", ["python3", f"{q}/parse.py", "CLAUDE.md"]),
+                          ("bash note.sh (an echo text naming sbatch)", ["bash", f"{q}/note.sh", "CLAUDE.md"]),
+                          ("scripts/submit_chain.sh --status", ["scripts/submit_chain.sh", "--status", rd])):
+            r = F.sh([ne, "exec", "--"] + cmd, cwd=A, check=False)
+            c.ok(r.returncode == 0 and "refused" not in r.stderr, f"review 2, L1: `nrpic-env exec -- {what}` runs",
+                 r.stdout[-300:] + r.stderr[-300:])
+        r = run_cmd(A, local + ["--", "bash", "-c", "echo PATH=$PATH"])
+        rid = run_id_from(r.stdout)
+        lg = os.path.join(scr, rid or "none", "run.log")
+        txt = open(lg).read() if os.path.isfile(lg) else ""
+        c.ok(re.search(r"^PATH=\S*/harness/shims/slurm:", txt, re.M), "outside a dispatch a local run's PATH begins "
+             "with harness/shims/slurm", txt[-400:])
         with F.fake_dispatch(fx["repo"], A, "A-emd-pbh") as denv:
             before = snap()
             r = run_cmd(A, args, env=denv)
@@ -400,12 +438,28 @@ def queue_cap(c, fx, A):
             wait_until(lambda: run_cmd(A, ["finish", rid]).returncode == 0, 120, 1.0)
         wait_until(lambda: F.H.queue_count(env) == 4, 60)
         with F.fake_dispatch(fx["repo"], A, "A-emd-pbh") as denv:
-            r = run_cmd(A, local + ["--", "bash", "-c", f"sbatch -J lm1 {hold} lm1"], env=denv)
+            r = run_cmd(A, local + ["--", "bash", "-c", f"sbatch -J lm1 {pathjob} lm1"], env=denv)
+        pf = os.path.join(rel, "path-lm1")
         c.ok(r.returncode == 0 and wait_until(lambda: F.H.queue_count(env) == 5, 10),
              "inside a dispatch (the marker valid) a local run that submits a job goes through (a --cmd wrapper's way)",
              r.stdout[-400:] + r.stderr)
+        c.ok(wait_until(lambda: os.path.isfile(pf) and open(pf).read().strip(), 10) and "harness/shims" not in open(pf).read(),
+             "inside a dispatch nothing of the stubs reaches the job: its PATH has no harness/shims", open(pf).read()
+             if os.path.isfile(pf) else "no PATH file")
         open(os.path.join(rel, "lm1"), "w").close()
         wait_until(lambda: F.H.queue_count(env) == 4, 30)
+        names.append("lb1")
+        with F.fake_dispatch(fx["repo"], A, "A-emd-pbh") as denv:
+            r = run_cmd(A, local + ["--background", "--", "bash", "-c", f"sleep 1; sbatch -J lb1 {hold} lb1"], env=denv)
+        brid = run_id_from(r.stdout)
+        res = os.path.join(scr, brid or "none", ".nrpic", "result.json")
+        ok = wait_until(lambda: os.path.isfile(res), 60)
+        lg = os.path.join(scr, brid or "none", "run.log")
+        c.ok(ok and "refused: card jobs reach Slurm only" in open(lg).read() and F.H.queue_count(env) == 4,
+             "second review L3: a --background local run started inside a dispatch still gets the stubs (it outlives "
+             "the dispatch and its process group): no job", (open(lg).read() if os.path.isfile(lg) else "")[-400:])
+        if brid:
+            run_cmd(A, ["finish", brid])
         open(sq, "w").write("#!/bin/bash\necho 'squeue: error: Unable to contact slurm controller' >&2\nexit 1\n")
         before = snap()
         with F.fake_dispatch(fx["repo"], A, "A-emd-pbh") as denv:

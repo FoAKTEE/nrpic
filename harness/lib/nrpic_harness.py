@@ -366,7 +366,7 @@ def program_job(job, home):
     if parse_run_id(job.get("name") or ""):
         return "run id"
     wd = job.get("workdir") or ""
-    if wd:
+    if os.path.isabs(wd):                     # squeue may print "(null)" or a relative path: never "under" anything
         p, h = os.path.realpath(wd), os.path.realpath(home)
         if p == h or p.startswith(h + os.sep):
             return "under the repository"
@@ -379,64 +379,29 @@ def queue_count(env=None):
     return None if jobs is None else len(jobs)
 
 
-# Commands that reach Slurm (decision 0033, one route): a local run of nrpic-run and `nrpic-env exec` refuse
-# them unless they run inside a dispatch of the shared queue (the marker below).
-_SLURM_NAMES = r"(sbatch|srun|salloc|gpu_run\.sh|gpu_batch\.sh|submit_chain\.sh)"
-_SLURM_WORD = re.compile(r"(?<![\w./-])(?:[\w./-]*/)?" + _SLURM_NAMES + r"(?![\w.-])")
-_SLURM_QUOTED = re.compile(r"""["'](?:[\w./-]*/)?""" + _SLURM_NAMES + r"""(?=["'\s])""")
-_CHAIN_QUERY = re.compile(r"""["']?\s+["']?(?:--status|--stop|-h|--help)(?![\w-])""")
-_INTERPRETERS = re.compile(r"(?:ba|da|z|k)?sh|python[0-9.]*|perl")
+# Commands that reach Slurm (decision 0033, one route). Outside a dispatch of the shared queue, a local run of
+# nrpic-run and `nrpic-env exec` put harness/shims/slurm first on the command's PATH: there sbatch, srun and
+# salloc are stubs that print the rule and exit 2, whatever form the command takes (a prefix such as timeout or
+# env, a script that calls another, Python, ...). Inside a valid dispatch the PATH is left as it is, so that
+# nothing of the stubs reaches a job (a chain's job resubmits its next segment with the real sbatch). A call by
+# absolute path (/usr/bin/sbatch) or with a PATH of its own passes: only a limit on the Slurm side or the
+# tool-guard hook closes that. The one textual refusal left: the command's own first word.
+SLURM_COMMANDS = ("sbatch", "srun", "salloc")
 
 
-def _first_slurm_name(text, rx):
-    for m in rx.finditer(text):
-        if m.group(1) == "submit_chain.sh" and _CHAIN_QUERY.match(text, m.end()):
-            continue                          # --status and --stop submit nothing
-        return m.group(1)
-    return None
+def slurm_shim_dir(root):
+    """harness/shims/slurm of the worktree `root`."""
+    return os.path.join(root, "harness", "shims", "slurm")
 
 
-def _script_text_hit(path):
-    """The Slurm name a readable script file would run, or None (binary, unreadable or large files: None)."""
-    try:
-        if not os.path.isfile(path) or os.path.getsize(path) > 4 << 20:
-            return None
-        with open(path, "rb") as f:
-            raw = f.read()
-    except OSError:
-        return None
-    if b"\0" in raw[:8192]:
-        return None
-    text = raw.decode("utf-8", "replace")
-    first = text.split("\n", 1)[0]
-    if path.endswith(".py") or (first.startswith("#!") and "python" in first):
-        return _first_slurm_name(text, _SLURM_QUOTED)   # a string that begins with the name: subprocess, os.system
-    body = "\n".join(ln for ln in text.splitlines() if not ln.lstrip().startswith("#"))
-    return _first_slurm_name(body, _SLURM_WORD)
-
-
-def slurm_launch_in(argv, cwd):
-    """What in a command line would submit a Slurm job, as far as can be told without running it, or None:
-    sbatch, srun or salloc, or scripts/gpu_run.sh, gpu_batch.sh, submit_chain.sh (not --status or --stop),
-    named as a word anywhere in the arguments (a `bash -c` or `python3 -c` string included), or run by a
-    script file the command executes (argv[0], or the first file argument of a shell or Python), when the
-    file can be read: shell lines outside comments; in a Python file, a string that begins with the name."""
-    if not argv:
-        return None
-    hit = _first_slurm_name(" ".join(argv), _SLURM_WORD)
-    if hit:
-        return f"{hit} (in the command line)"
-    files = [argv[0]]
-    if _INTERPRETERS.fullmatch(os.path.basename(argv[0])) and "-c" not in argv[1:]:
-        files += [a for a in argv[1:] if not a.startswith("-")][:1]
-    for p in files:
-        if re.fullmatch(_SLURM_NAMES, os.path.basename(p)):
-            continue                          # the launcher scripts themselves: decided by the command line above
-        full = p if os.path.isabs(p) else os.path.join(cwd, p)
-        hit = _script_text_hit(full)
-        if hit:
-            return f"{hit} (in {p})"
-    return None
+def with_slurm_shims(env, wt):
+    """A copy of env with harness/shims/slurm first on PATH (outside a dispatch of the shared queue)."""
+    d = slurm_shim_dir(wt.root)
+    if not all(os.access(os.path.join(d, c), os.X_OK) for c in SLURM_COMMANDS):
+        raise HarnessError(f"{d}/{{sbatch,srun,salloc}} are missing: merge main first (git merge --no-edit main)")
+    env = dict(env)
+    env["PATH"] = d + ":" + env.get("PATH", BOOT_PATH)
+    return env
 
 
 # One route for card runs (decision 0033): only the dispatcher of the shared queue (harness/bin/nrpic-queue
