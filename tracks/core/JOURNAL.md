@@ -2125,3 +2125,36 @@ Published: `scratch/core/exe/core_nrpic_v07/` (four executables, COMMIT, SHA256S
 checked with `sha256sum -c`, READY, branches/). Written: `RELEASE-v0.7.md` (first line
 REGRESSION PASS), changelog section core-v0.7, OPEN.md section core-v0.7, drivers
 `analysis/release/{quick_v07.py,card_v07.py,card_v07.list}`.
+
+## 2026-11-25T11:52Z (2026-11-25 03:52 PST), batch 17, session core-lead-17 (no change of athenak/src or python/nrpic)
+
+State at start: main merged (release core-v0.7 on main, tag on 5f75e5b9; merge b399f946;
+decisions 0036-0038; batch-17 spec). Worktree clean. Queue: q0028 (job 5221, chain ended
+FAILED "MAX_SEGMENTS=2 reached" after a second SIGTERM, at t = 405.25 M of 600) and q0029
+(job 5274, DONE at 600 M) are done; q0030-q0033, q0035, q0036, q0039 wait (no card job of
+core in squeue at 11:47Z: five jobs of A, B, D, F hold the cap). Pause flag absent.
+
+### Predictions, written before the runs of this session (11:52Z)
+
+- **M1** (queue marker out of the jobs; decision 0037 item 4). After the change of
+  `scripts/{gpu_run.sh,gpu_batch.sh,submit_chain.sh,_athena_job.sh}` (every variable
+  NRPIC_QUEUE_* removed at the top of each script, and from the environment `sbatch` and
+  `srun` are called with), with NRPIC_QUEUE_DISPATCH=q9001:<token> set in the caller and,
+  as a worst case, in the job's own environment: (a) no fake `sbatch` or `srun` call of
+  gpu_run.sh (BATCH=1 and blocking), gpu_batch.sh and submit_chain.sh (start, and the
+  resubmission from inside a job, after a wall-clock stop and after SIGTERM) sees the
+  variable; (b) no fake executable sees it; (c) the chain still resubmits its own next
+  segment (one sbatch per segment, chain DONE at its time limit); (d) the scripts as they
+  were before the change (HEAD 65116a08) show the variable to sbatch and to the
+  executable in the same set-up (the test can fail); (e) the 13 scenarios of
+  `scripts/tests/test_submit_chain.py` keep their outcomes, and no sbatch call or
+  executable of theirs sees the marker. Refuted by any sighting of the marker in (a),
+  (b), (e), by a chain that does not resubmit or submits twice, or by (d) showing no
+  marker (then the test proves nothing).
+- **R7** (release processor build `.work/build_cpu_v07/src/athena` against the candidate
+  `scratch/core/exe/core_nrpic_v07/athena_cpu`, `regress_v04.py`, twelve set-ups, 3
+  cores): 75 of 75 items identical, as R6 for core-v0.6 (the trees of the tag 5f75e5b9
+  and of main after merge b399f946 are the same: checked below). Refuted by one
+  differing item. The release card build `.work/build_gpu_v07/src/athena` cannot run on
+  processors (CUDA build); for it this session checks only that it was built from the
+  same tree, and names its card check as not done.
