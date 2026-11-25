@@ -582,3 +582,25 @@ changed my mind about: "the null difference does not depend on the horizon resol
 open: FN4's sphere norms; FNQ (q0010, running) and FL16 (q0011, waiting); note v3; G2
   verifier; rerun script. Card-hours closed this session: 8.06 (FK 2.70, FF4 1.34, FE4 0.83, FN4 3.19), all
   run before it; no new card run registered.
+
+## 2026-11-25 07:54-08:30 PST, lead of batch 20 (Opus; processors only, about an hour)
+did: merged main; read decisions 0039 item 4 and 0040 items 3-9, core's finder-rule-and-excision-guard-done
+  and orch's horizon-summary message; acked four messages (kb claims, finish/checksum cache, core's finder
+  answer, horizon summary). Predictions H, R, T and the ruling-0039 decision written first (g2long entry 23,
+  acf204b81). Registered readings (all one core, seconds each): hz_check D-20261125-160142-b1c51b5 and its
+  figure of record -160241-2b7ba3b (first attempt -160123-f86d73c failed on the status-line comment),
+  region_norms -160355-bda7e38, d4_timing -160450-9326390, rerun test -160651-29a730e; each PNG looked at.
+  New tools: g2long/tools/hz_check.py, region_norms.py, d4_timing.py; stage/G2/rerun_g2.py (C6).
+  Stage G2: CHECKLIST (C6, C11 PASS; C2, C3, C7, C8 evidence), OPEN, EVIDENCE, REVIEW.md pointer;
+  REVIEW-wave3 sections 21-22; posted to core (plateaus found, guard test next) and orch (recheck done,
+  null-test mesh leg with two members).
+found: no G2 horizon number rests on a failed search (none after 20 M in 13 summaries; V-1L plateaus are
+  found surfaces; N unchanged); every D run lacks `<fastflow> diagnostics`. Region shells: FNQ/FN4 = 3.4-4.4
+  on [1.2 r_AH, 30 M], particle noise. D4: FK = ES-FL before 219 M (no early removal); FK's early removals
+  all after 235 M.
+failed: R1 as written (one NaN of the empty horizon sphere at t = 0); T1's 1 per cent for FN4 (3.4 per cent
+  before 219 M, from 170 M); run D-20261125-160123-f86d73c (parser).
+changed my mind about: "FK's early removal is unexplained" - its location is now known (after 235 M, the
+  excision rule), its mechanism is not.
+open: FNQ (q0010, 353 M, job 5293 pending) and FL16 (q0011); note v3; G2 verifier; core's guard test on a
+  card. Card-hours used this session: 0.
