@@ -1,0 +1,208 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261125-131950-1fb387d",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "restart-finder T5b: re-search of Track D's V-1L dumps (M/8, 100 to 500 M) with the new stopping rule (mass_tol 1e-2, 100 polishing iterations) against the tight rule, threaded processor build of the branch",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python",
+    "tracks/core/analysis/restart_finder/finder_probe.py",
+    "--exe",
+    "/data/haiyangw/nrpic/wt/core-s4/.work/build_omp_rf/src/athena",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "--threads",
+    "2",
+    "--jobs",
+    "2",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00002.rst",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00003.rst",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00004.rst",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00005.rst",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00006.rst",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00007.rst",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00008.rst",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00009.rst",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00010.rst",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00011.rst",
+    "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00012.rst"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "1fb387d8b2c431d291bdb7fcf20fb314656f9faa",
+    "branch": "core/restart-finder",
+    "dirty": false,
+    "merge_base_main": "0b5c3e7dc6384563c57dbf772b486587144fded7",
+    "worktree": "wt/core-s4"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-s4/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/restart_finder/finder_probe.py",
+      "role": "input",
+      "sha256": "4103138ca91e614b10081ff74c4cc29a81071cda8257d65801de879fe01ed841",
+      "bytes": 9202,
+      "tracked": true
+    },
+    {
+      "path": ".work/build_omp_rf/src/athena",
+      "role": "input",
+      "sha256": "293b74d7e096c0777175fdaae338242d0b936baa83c72cb4ead40021ba22ac55",
+      "bytes": 323100656,
+      "tracked": false
+    },
+    {
+      "path": ".work/build_omp_rf/src/athena",
+      "role": "argv",
+      "sha256": "293b74d7e096c0777175fdaae338242d0b936baa83c72cb4ead40021ba22ac55",
+      "bytes": 323100656,
+      "tracked": false
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00002.rst",
+      "role": "argv",
+      "sha256": "2c4b7ca343736b20301eeba1091959376e816c2c6d616957b038574a7356fee6",
+      "bytes": 2629858137,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00003.rst",
+      "role": "argv",
+      "sha256": "cb5e2a09b98cfd3d532421002a7cbd9915c87379a3a6977884f41357ea50a32a",
+      "bytes": 2629858137,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00004.rst",
+      "role": "argv",
+      "sha256": "d4ad6fe5b2090b4c7abe8769fc9217226eec150c1417ce47162798a6118a452b",
+      "bytes": 2629858137,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00005.rst",
+      "role": "argv",
+      "sha256": "9108700fb26b01056b5b7f684dcfda2519b407b9fc175a9b6ec4f65ad27dddec",
+      "bytes": 2629858346,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00006.rst",
+      "role": "argv",
+      "sha256": "6bc9ff0f69dbc4847e4c9328e72eb829f12daeee8e7b7cea623c62cca31220a7",
+      "bytes": 2629858346,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00007.rst",
+      "role": "argv",
+      "sha256": "1cec3f31477dfae2e3aaf6dc85e3a22862a56864884ccdbc521fc5ac44dd0b84",
+      "bytes": 2629858346,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00008.rst",
+      "role": "argv",
+      "sha256": "9268fd2fa290d85c8f22760f61be676a7d0c622eef7935d5b58b7c6d607fd5bd",
+      "bytes": 2629858346,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00009.rst",
+      "role": "argv",
+      "sha256": "363c583269574ac194ea431efc9eb812cda1e1fe2cdd52290102bd14bbc6a4f1",
+      "bytes": 2629858346,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00010.rst",
+      "role": "argv",
+      "sha256": "e89f2e73195ff7e74f7dbe7eb64ecc65aac0305383c0805c9e4036b2c6786c3f",
+      "bytes": 2629858346,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00011.rst",
+      "role": "argv",
+      "sha256": "95bd9a2a92f0e86bab6150a0ff174445f50aafb8a185390f7b9b890e05f7d47f",
+      "bytes": 2629858346,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-203124-a34cf1f/rst/v1l.00012.rst",
+      "role": "argv",
+      "sha256": "986a11454959578918ca48b0a9a11fe775dd271e68d622d5c6e28613084daea6",
+      "bytes": 2629858346,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 4,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261125-131950-1fb387d",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-25T13:22:32Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 17.2834,
+    "gpu_hours_reserved": 0.1,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 1,
+    "runs": 1594,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md"
+  }
+}
