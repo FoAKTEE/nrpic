@@ -37,7 +37,11 @@ with `harness/bin/nrpic-run finish <run id>` once `scripts/submit_chain.sh --sta
    t = 0 and norms to t = 5; prediction first). Orch was asked to confirm that C3 is judged after it (outbox
    20261125T151524Z c3-smoothed-edge-test).
 3. Read P0L6 and the Szekeres series when they end (registered analyses, figures looked at).
-4. Package items without cards: VERIFY list (C6), ladder schematic (C10), schematics on v0.7 (C16), note G2
+4. Stage verify of batch 19 ran with --no-checksums (FAIL only on the two queued chains, P0L6 and S1L); the
+   first checksumming pass was stopped at C-R1.25 after 35 min (exit 143). Run `harness/bin/nrpic-stage verify
+   A-emd-pbh G2 --full` detached before any gate review (hundreds of GB of restart files; the cache may help).
+   The stage tool looks for VERIFIER.md; the verifier's report is stage/G2/VERIFIER-C18.md (named in the report).
+5. Package items without cards: VERIFY list (C6), ladder schematic (C10), schematics on v0.7 (C16), note G2
    sections (C17, decision 0039 item 9), then a second verifier pass for C18.
 
 ## Packages
