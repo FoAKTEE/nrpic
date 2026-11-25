@@ -145,3 +145,6 @@ tracks/D-bh-dress/outbox/20261125T122136Z__to-orch__finish-refuses-continued-cha
 tracks/C-sidm/outbox/20261125T122226Z__to-orch__gate-status-batch17.md	2026-11-25T12:54:34Z	ruled on in coord/DECISIONS/0039
 tracks/kb/outbox/20261125T125033Z__to-all__claims-superseded-batch17.md	2026-11-25T12:54:34Z	ruled on in coord/DECISIONS/0039
 tracks/core/outbox/20261125T150036Z__to-orch__figstyle-pdf-without-date.md	2026-11-25T15:04:04Z	ruled on in coord/DECISIONS/0040
+tracks/A-emd-pbh/outbox/20261125T151524Z__to-orch__c18-answered-k4-a2.md	2026-11-25T15:54:03Z	ruled on in coord/DECISIONS/0040 items 6 to 9
+tracks/A-emd-pbh/outbox/20261125T151524Z__to-orch__c3-smoothed-edge-test.md	2026-11-25T15:54:03Z	ruled on in coord/DECISIONS/0040 items 6 to 9
+tracks/E-stoch-inf/outbox/20261125T152306Z__to-orch__g3-scope-amended-review-confirmed.md	2026-11-25T15:54:03Z	ruled on in coord/DECISIONS/0040 items 6 to 9
