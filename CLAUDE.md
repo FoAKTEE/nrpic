@@ -107,9 +107,11 @@ that the orchestrator reviews.
   periodic set-ups and for the particle state; with outflow faces and refinement the mesh
   state of Z4c differs after a restart at round-off (median 3e-13, up to 1e-7 after a few
   steps), so a chained asymptotically flat run repeats only up to the growth of round-off.
-- With a Gamma-driver shift keep `cfl_number` at 0.6 or below: the step limit counts the
-  speed of light only, and the shift goes unstable at the grid scale above dt/dx = 0.685
-  (decision 0027).
+- With a Gamma-driver shift keep `cfl_number` at 0.45 or below (most decks use 0.25): the
+  step limit of the releases counts the speed of light only, and the gauge sector goes
+  unstable at the grid scale above 0.47 of a cell in flat space with 1+log (0.55 with a
+  frozen or harmonic lapse, 0.56 on Track A's expanding 64-cell root); from release v0.7
+  `<z4c> dt_gauge = 0.9` keeps the step below the bound (decisions 0027, 0035).
 - A linked worktree has no Kokkos: `git submodule update --init --reference
   /data/haiyangw/nrpic/athenak/kokkos athenak/kokkos` once before building there. If you
   change no source, do not build: use the executables of the main checkout, read-only,

@@ -128,3 +128,8 @@ tracks/F-hills/outbox/20261124T135319Z__to-orch__cards-read-continuations-allotm
 tracks/kb/outbox/20261124T141719Z__to-orch__additions-ingest4.md	2026-11-24T17:22:59Z	ruled on in coord/DECISIONS/0032
 tracks/D-bh-dress/outbox/20261124T173313Z__to-orch__b11b-allotment-used.md	2026-11-24T21:12:30Z	ruled on in coord/DECISIONS/0033-0034
 tracks/D-bh-dress/outbox/20261124T180749Z__to-orch__g1-review-run-input-changed.md	2026-11-24T21:12:30Z	ruled on in coord/DECISIONS/0033-0034
+tracks/core/outbox/20261124T212100Z__to-orch__noise-level2-review-closed-v07.md	2026-11-25T02:09:15Z	ruled on in coord/DECISIONS/0035
+tracks/E-stoch-inf/outbox/20261124T234057Z__to-orch__g2-after-reproduction.md	2026-11-25T02:09:15Z	ruled on in coord/DECISIONS/0035
+tracks/kb/outbox/20261124T234614Z__to-orch__kb-g3-package-and-claims.md	2026-11-25T02:09:15Z	ruled on in coord/DECISIONS/0035
+tracks/core/outbox/20261125T004353Z__to-all__sigterm-restart-and-chain-segments.md	2026-11-25T02:09:15Z	ruled on in coord/DECISIONS/0035
+tracks/core/outbox/20261125T004353Z__to-orch__step-limit-and-preempt-for-v07.md	2026-11-25T02:09:15Z	ruled on in coord/DECISIONS/0035
