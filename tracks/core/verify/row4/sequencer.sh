@@ -9,12 +9,15 @@
 #   setsid nohup tracks/core/verify/row4/sequencer.sh <jobid> [<jobid> ...] \
 #       >> /data/haiyangw/nrpic/scratch/core/tmp/lead_b5/sequencer.log 2>&1 < /dev/null &
 #
-# Stop it: touch /data/haiyangw/nrpic/scratch/core/tmp/lead_b5/sequencer.stop (it exits at
-# its next look and releases nothing more), or kill its process id (in the log's first line).
+# Stop it: touch the stop file (default /data/haiyangw/nrpic/scratch/core/tmp/lead_b5/
+# sequencer.stop; the environment variable SEQ_STOP names another; it exits at its next look
+# and releases nothing more), or kill its process id (in the log's first line).
+# Every tenth look (15 min) it logs why the next job still waits (decision 0030 item 4).
 set -u
-STOP=/data/haiyangw/nrpic/scratch/core/tmp/lead_b5/sequencer.stop
+STOP=${SEQ_STOP:-/data/haiyangw/nrpic/scratch/core/tmp/lead_b5/sequencer.stop}
 pending=("$@")
 low=0
+looks=0
 echo "$(date -u +%FT%TZ) sequencer pid $$ starts; held jobs in order: ${pending[*]}"
 eligible() {
   squeue -h -u "$(id -un)" -o "%i %j %T %r" 2>/dev/null | awk '
@@ -33,7 +36,10 @@ while ((${#pending[@]})); do
     if scontrol release "$j"; then echo "$(date -u +%FT%TZ) eligible core jobs $n: released $j"
     else echo "$(date -u +%FT%TZ) release of $j failed"; fi
     pending=("${pending[@]:1}"); low=0
+  elif [ $((looks % 10)) -eq 0 ]; then
+    echo "$(date -u +%FT%TZ) waiting: $j held; $n core job(s) eligible (release below 2, two looks in a row); still held: ${pending[*]}"
   fi
+  looks=$((looks + 1))
   sleep 90
 done
 echo "$(date -u +%FT%TZ) all jobs released; sequencer exits"

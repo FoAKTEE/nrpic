@@ -181,6 +181,13 @@ def cmd_exec(wt, args):
     if threads < 1 or threads > cap:
         raise H.HarnessError(f"--threads {threads}: the allotment of {wt.owner} is {cap} cores "
                              "at a time (decision 0006)")
+    # decision 0033, one route: a command that would submit Slurm jobs runs only inside a dispatch of the
+    # shared queue (harness/bin/nrpic-queue); card runs are queued with `nrpic-queue add`
+    hit = H.slurm_launch_in(cmd, os.path.abspath(cwd) if cwd else os.getcwd())
+    if hit and H.queue_dispatch_problem(wt) is not None:
+        raise H.HarnessError(f"exec: the command would run {hit}, which submits Slurm jobs; card runs are submitted "
+                             "only by the shared queue (decision 0033, one route): harness/bin/nrpic-queue add "
+                             "--label <label> -- <nrpic-run submit arguments> or --cmd '<wrapper>'. Nothing was run.")
     env = H.build_env(wt, threads=threads, extra=sets)
     if not os.path.isdir(os.path.join(wt.root, ".venv")):
         print(f"nrpic-env: note: {wt.root}/.venv does not exist (run nrpic-env create); "

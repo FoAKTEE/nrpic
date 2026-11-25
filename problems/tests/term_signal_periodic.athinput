@@ -1,0 +1,82 @@
+# Stop on the termination signal (utils/term_signal.hpp, tracks/core/interfaces/
+# preempted_runs.md), test S1: Z4c in a periodic box without matter.  Flat space with
+# white noise of 1e-6 on every evolved field (16^3 cells, 1+log lapse, Gamma-driver
+# shift, rk4, the step kept below the bound of the gauge sectors by dt_gauge), 240 steps,
+# a restart file every 20 time units, history, a table along a line every 10 cycles.
+# The test (tracks/core/analysis/preempt/term_test.py) runs it once without
+# interruption and once with SIGTERM sent part-way and a continuation from the restart
+# file written on the signal, and compares every output byte for byte.
+#   athena -i term_signal_periodic.athinput &  kill -TERM $!   # status 143, rst/*.rst
+#   athena -r rst/<newest>.rst
+<comment>
+problem   = stop on SIGTERM: periodic box, Z4c without matter
+
+<job>
+basename  = tsp
+
+<mesh>
+nghost    = 4
+nx1       = 16
+x1min     = -2.5
+x1max     = 2.5
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 16
+x2min     = -2.5
+x2max     = 2.5
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 16
+x3min     = -2.5
+x3max     = 2.5
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 8
+nx2       = 8
+nx3       = 8
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 1.0
+nlim       = 240
+tlim       = 1000.0
+ndiag      = 1
+
+<z4c>
+lapse_oplog     = 2.0        # 1+log: d_t alpha = -2 alpha Khat
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.0
+lapse_advect    = 1.0
+shift_Gamma     = 0.75       # Gamma-driver
+shift_eta       = 2.0
+shift_advect    = 1.0
+diss            = 0.5
+damp_kappa1     = 0.02
+damp_kappa2     = 0.0
+excise_chi      = 0.0
+dt_gauge        = 0.9        # the step stays at or below 0.9 of the stability bound
+
+<problem>
+pgen_name  = nrpic_cosmo
+id         = flrw
+hubble     = 0.0             # flat space
+noise_amp  = 1.0e-6          # white noise on every evolved field
+noise_seed = 1
+
+<output1>
+file_type = hst
+dt        = 0.5
+
+<output2>
+file_type = tab
+variable  = z4c
+dcycle    = 10
+slice_x2  = 0.15625
+slice_x3  = 0.15625
+
+<output3>
+file_type = rst
+dt        = 20.0

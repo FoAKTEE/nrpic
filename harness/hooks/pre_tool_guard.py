@@ -15,8 +15,9 @@ Denied, with a reason that says what to do instead:
     tee/chmod/truncate arguments, sed -i files, dd of=) checked by the same rule; git write commands
     run in (or -C into) another worktree; force pushes, --no-verify, pushes of another branch or of
     tags by a track; git worktree remove/prune, git branch -d/-D; simulations started without
-    harness/bin/nrpic-run (athena, scripts/gpu_run.sh, gpu_batch.sh, submit_chain.sh other than
-    --status/--stop, sbatch, srun, salloc); rm with a path built from a shell variable; pkill,
+    harness/bin/nrpic-run or, for card runs, harness/bin/nrpic-queue add (athena, scripts/gpu_run.sh,
+    gpu_batch.sh, submit_chain.sh other than --status/--stop, sbatch, srun, salloc); rm with a path built
+    from a shell variable; pkill,
     killall, kill $(pgrep ...); curl, wget.
 Anything else gets no output (the normal permission flow continues). Outside the nrpic repository,
 on unreadable input or on an internal error the guard allows (fail-open: a broken guard must not
@@ -436,9 +437,12 @@ def check_bash(c, cmd, cwd):
                 continue
             why = sim_reason(a)
             if why:
-                decide("deny", f"{why} must be registered: use harness/bin/nrpic-run submit --kind scouting|production "
-                               "--gate G<k> --purpose ... [--launcher local|batch|chain] (CLAUDE.md rule 4); "
-                               "it wraps scripts/gpu_batch.sh and scripts/submit_chain.sh")
+                decide("deny", f"{why} must be registered (CLAUDE.md rule 4). Card runs are submitted only by the "
+                               "shared queue (decision 0033, one route): harness/bin/nrpic-queue add --label L -- "
+                               "--kind scouting|production --gate G<k> --purpose ... --launcher batch|chain ... "
+                               "(its dispatcher runs nrpic-run submit, which wraps scripts/gpu_batch.sh and "
+                               "scripts/submit_chain.sh). Processor runs: harness/bin/nrpic-run submit --kind "
+                               "scouting|production --gate G<k> --purpose ... -- <command>")
             if b == "rm" and any("$" in x or "`" in x for x in a[1:]):
                 decide("deny", "never remove files through a path built from a shell variable (CLAUDE.md): "
                                "spell the path out")

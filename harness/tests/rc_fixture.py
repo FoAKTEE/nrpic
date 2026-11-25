@@ -7,6 +7,7 @@ make_repo(name) builds, under <main checkout>/scratch/harness/<name>-<UTC>-<pid>
   repo/wt/<ID>     linked worktrees on track/<ID>, core/nrpic, kb/main (as decision 0001)
   fakebin/         fake sbatch, squeue, sacct, scancel, srun, nvidia-smi and a fake athena, so that
                    scripts/gpu_batch.sh and scripts/submit_chain.sh run end to end with no card used
+                   (`sbatch --hold` makes a job that squeue lists as PENDING; every other job is RUNNING)
 The machine file of the scratch repository puts fakebin/ first on PATH and points NRPIC_GPU_EXE at
 the fake athena. Nothing here touches the live branches or worktrees.
 """
@@ -76,6 +77,8 @@ wrapper = 'date +%s > "$J/start"; "$0" "$@"; echo $? > "$J/rc"; date +%s > "$J/e
 env["J"] = jd
 p = subprocess.Popen(["bash", "-c", wrapper, script] + sargs, stdin=subprocess.DEVNULL,
                      stdout=open(out, "w"), stderr=subprocess.STDOUT, env=env, start_new_session=True)
+if "--hold" in opts or "-H" in opts:              # listed as PENDING (its process runs all the same)
+    open(os.path.join(jd, "pending"), "w").close()
 open(os.path.join(jd, "pid"), "w").write(str(p.pid))
 open(os.path.join(jd, "name"), "w").write(env["SLURM_JOB_NAME"])
 print(jid if "--parsable" in opts else f"Submitted batch job {jid}")
@@ -95,13 +98,15 @@ def alive(j):
     except OSError:
         return False
 live = [j for j in jobs if j.isdigit() and alive(j)]
+def state(j):
+    return "PENDING" if os.path.exists(os.path.join(STATE, j, "pending")) else "RUNNING"
 if "-h" not in args:
     print("JOBID NAME STATE")
 for j in live:
     if "%T" in args:
-        print("RUNNING")
+        print(state(j))
     else:
-        print(j, open(os.path.join(STATE, j, "name")).read(), "RUNNING")
+        print(j, open(os.path.join(STATE, j, "name")).read(), state(j))
 '''
 
 FAKE_SACCT = r'''#!/usr/bin/python3 -I

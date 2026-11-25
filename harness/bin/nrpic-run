@@ -33,11 +33,15 @@ Launchers (one registered run each):
           The chain is capped at floor(gpu-hours / 59 min) segments, at least one (MAX_SEGMENTS).
   Card runs are submitted only by `nrpic-queue add` (decision 0033, one route): `nrpic-run submit` with
   launcher batch or chain is for the dispatcher of the shared queue, which marks its calls
-  (NRPIC_QUEUE_DISPATCH, the one variable of the caller nrpic-run reads; never passed on). Called directly
-  it is refused, nothing registered, and the message gives the line to queue it instead:
+  (NRPIC_QUEUE_DISPATCH, the one variable of the caller nrpic-run reads; a job nrpic-run submits gets an
+  environment built from files, without it). Called directly it is refused, nothing registered, and the
+  message gives the line to queue it instead:
               harness/bin/nrpic-queue add --label L -- --kind scouting --gate G2 --purpose "..." --launcher chain ...
-  --dry-run stays open to everyone. The marker gates the route only: the cap of five jobs of the account
-  in the Slurm queue (harness/lib/nrpic_harness.py QUEUE_CAP) is checked for every card submission.
+  --dry-run stays open to everyone. A local run whose command would reach Slurm itself (sbatch, srun,
+  salloc, scripts/gpu_run.sh, gpu_batch.sh, submit_chain.sh; also in `bash -c` strings and in a script it
+  runs) is refused the same way outside a dispatch. The marker gates the route only: the cap of five jobs
+  of the account in the Slurm queue (harness/lib/nrpic_harness.py QUEUE_CAP) is checked for every card
+  submission.
 
 What submit does, in order (under one lock per owner, locks/nrpic-run.<ID>.lock): refuses a dirty
 worktree (untracked files count); refuses a local `python ...` command when the worktree has no
@@ -118,6 +122,20 @@ def check_route(wt, args):
         "Nothing was submitted or registered. Queue the run instead, from this worktree:\n"
         f"  harness/bin/nrpic-queue add --label <label> -- {shlex.join(args)}\n"
         "(`nrpic-run submit --dry-run ...` stays open to everyone; harness/bin/nrpic-queue --help)")
+
+
+def check_local_command(wt, command):
+    """One route (decision 0033): a local run whose command would submit Slurm jobs itself (sbatch, srun,
+    salloc, scripts/gpu_run.sh, gpu_batch.sh, submit_chain.sh; also inside `bash -c` strings and in a script
+    file it runs, H.slurm_launch_in) is refused, unless it runs inside a dispatch of the shared queue."""
+    hit = H.slurm_launch_in(command, wt.root)
+    if hit is None or H.queue_dispatch_problem(wt) is None:
+        return
+    raise H.HarnessError(
+        f"a local run may not submit Slurm jobs (decision 0033, one route): its command would run {hit}. Nothing "
+        "was run or registered. Card runs are submitted only by the shared queue: harness/bin/nrpic-queue add "
+        "--label <label> -- <the arguments of nrpic-run submit, --launcher batch or chain>, or --cmd '<wrapper>' "
+        "for a line that continues a chain (harness/bin/nrpic-queue --help)")
 
 
 def check_queue_cap(env=None):
@@ -793,6 +811,8 @@ def submit(wt, args):
     if card:                           # decision 0033, checked before anything is written: one route (the
         check_route(wt, args)          # dispatcher's marker), then the cap on queued jobs, which the marker
         check_queue_cap(env)           # does not lift
+    else:                              # a local run that would reach Slurm itself: the same route
+        check_local_command(wt, command)
     mpath = manifest_path(wt, run_id)
     os.makedirs(os.path.dirname(mpath))
     os.makedirs(os.path.join(outdir, ".nrpic"))
