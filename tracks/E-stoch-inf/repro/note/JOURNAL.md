@@ -558,3 +558,15 @@ estimated at 5.4 lines (shortened). Figures looked at: fig_g2_halving (its legen
 amplitude as s, which the note uses for the window steepness: changed to lambda), fig_ladder,
 fig_g2_mosaic, fig_g2_resolution as drafted. Prediction for R12 (same command): everything of R11
 repeats byte for byte except fig_g2_halving (legend only); the ledger repeats with its run id.
+
+## Entry 21 (2026-11-24 19:56 PST): outcome of R12 (E-20261125-034702-3953daf); prediction for R13
+
+R12 HELD its prediction: only fig_g2_halving.png differs from R11; checks all true; ledger values
+equal. Compile: 30 pages, no undefined reference or citation, no overfull box. Checker: remaining
+hits as accepted before (5.1 "not reproduced" verdict label; 7.6 "no defect" about the reviewed
+code; 7.5, 7.7 only in scripts/ and tables/ledger.tex; 9.3 only in scripts/). Pages read at 75 dpi:
+9, 10, 11, 12, 14, 30 (new section, its four figures, discussion and summary, the new ledger
+table, which ends with its bottom rule on its page). Two places still wrote the noise amplitude as
+s (the window steepness in this note): the ladder schematic and the caption and rows of the new
+ledger table; changed to lambda. Prediction for R13: only fig_ladder.png and the ledger table
+change (text only); every other PNG and json byte-equal to R12.

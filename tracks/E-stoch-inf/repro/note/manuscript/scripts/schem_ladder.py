@@ -43,7 +43,7 @@ def main():
     for x, lab in zip(xs, ["background and mode\nfunctions at $N_*$",
                            "nine criteria with\ntheir thresholds",
                            "two seeds of the\nrandom amplitudes",
-                           "amplitudes $s = \\pm1, \\pm\\frac{1}{2}, \\pm\\frac{1}{4}$\n(even and odd parts)"]):
+                           "amplitudes $\\lambda = \\pm1, \\pm\\frac{1}{2}, \\pm\\frac{1}{4}$\n(even and odd parts)"]):
         box(ax, x, y + 0.35, 6.85, lab, INP)
     # rung 2: runs
     y = 4.0
