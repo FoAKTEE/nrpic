@@ -993,3 +993,14 @@ the fate, not a horizon time, is what the legs judge). M/16 = cells of M/16 insi
 Cost [JUDGEMENT]: M/16 at N = 1e6 about 6.5 card-hours each (N6c 2.71 h on M/8 for 600 M times
 the M/16 to M/8 cost ratio 2.4 of the collisional pair M16 1.19 h / 220 M against D2f4 0.68 h /
 300 M), gauge members 2.7 each: about 18.4 of the 20 granted.
+
+## 2026-11-25T16:08Z  session C-sidm lead (batch 20)  prediction before the horizon recheck (decision 0040 item 3)
+
+Reader: longruns/scripts/horizon_audit.py (dev check on two runs into scratch/C-sidm/tmp, not a
+result). A search of scratch/C-sidm before writing found no horizon_summary or horizon_status file.
+- H.1 No simulation run named in stage/G2 (CHECKLIST, EVIDENCE, OPEN) or in block A has a
+  <fastflow> block or a horizon status file, so no collapse time of the package rests on a
+  horizon search; every t_c of the package is the alpha_min = 0.3 crossing, and the recomputed
+  values agree with the numbers the package quotes (534.8, 549.3, 294.5, 449.0, 229.8 M block A;
+  163.41, 158.42, 206.64 M D2 series) to 0.1 M. Refuted by any horizon file (then its status
+  lines are matched before the number stays) or by a quoted t_c off by more than 0.1 M.
