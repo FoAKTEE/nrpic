@@ -22,3 +22,8 @@ tracks/kb/outbox/20261121T213157Z__to-D-bh-dress__spike-claims-run-ids.md	2026-1
 tracks/kb/outbox/20261124T141716Z__to-D-bh-dress__claims-409-413-416-sources.md	2026-11-24T17:28:18Z	
 tracks/orch/outbox/20261124T201500Z__to-all__queue-cap-five.md	2026-11-24T21:05:36Z	
 tracks/orch/outbox/20261124T210500Z__to-all__shared-card-queue.md	2026-11-24T21:05:36Z	
+tracks/kb/outbox/20261124T234613Z__to-D-bh-dress__claims-682-862-and-409.md	2026-11-25T11:54:02Z	
+tracks/core/outbox/20261125T004353Z__to-all__sigterm-restart-and-chain-segments.md	2026-11-25T11:54:02Z	
+tracks/orch/outbox/20261125T033009Z__to-all__release-core-v0.7.md	2026-11-25T11:54:02Z	
+tracks/orch/outbox/20261125T033027Z__to-all__release-core-v0.7-checksum.md	2026-11-25T11:54:02Z	
+tracks/kb/outbox/20261125T034403Z__to-all__claims-superseded-batch15.md	2026-11-25T11:54:02Z	
