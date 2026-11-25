@@ -1,8 +1,11 @@
 """Reader of the floor runs (floor/JOURNAL.md entry 1, predictions F1-F5).
 
 For each run pair (s = 1 and s = 1/2 at one resolution) it
-1. passes the last dump of each run through ../repro/figs/figures/dumppass.py with --save-modes
-   (the s = 1/2 run with --scale 0.5, so that c_lin carries the same factor as the slice);
+1. passes the last dump of each run through ../repro/figs/figures/dumppass.py with --save-modes.
+   The lockstep .modes record of a run with noise_mode_scale = 1/2 already carries the factor 1/2
+   (scalar_field_2.md: the scale is applied to the mode file; checked here on the two records), so
+   the s = 1/2 run is read with --scale 1 (option --sh-scale). Entry 1 had named --scale 0.5; the
+   first reading E-20261125-115056-983a32a used it and its control F3 caught the double factor;
 2. forms the statistics of entry 1 over the ten shells n^2 = 2, 3, 4, 5, 6, 8, 9, 10, 11, 12:
    median abs(1 - P_NR/P_lin), sqrt(median sum|c_NR - c_lin|^2 / sum|c_lin|^2), the sign pattern,
    the median over the shells n^2 >= 49, the per-mode relative rms (modes with W > 1/2);
@@ -91,6 +94,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("out")
     ap.add_argument("--pair", action="append", required=True)
+    ap.add_argument("--sh-scale", type=float, default=1.0,
+                    help="--scale given to dumppass for the s = 1/2 run (1: the record carries s)")
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
     res = {"note": "split_after_data is a reading made after the data (not in entry 1)"}
@@ -102,14 +107,22 @@ def main():
     for j, spec in enumerate(args.pair):
         label, r1, rh = spec.split(":")
         n1 = dump_pass(r1, label + "_s1", args.out, 1.0)
-        nh = dump_pass(rh, label + "_sh", args.out, 0.5)
+        nh = dump_pass(rh, label + "_sh", args.out, args.sh_scale)
         d1, dh = np.load(n1), np.load(nh)
+        sys.path.insert(0, FIGDIR)
+        import figlib as fl
+        last = os.path.basename(n1)[1:-4]
+        m1 = fl.read_modes_file(os.path.join(r1, f"sr.sf.{last}.modes"))
+        mh = fl.read_modes_file(os.path.join(rh, f"sr.sf.{last}.modes"))
+        rec_ratio = mh["R"] / m1["R"]
+        rec = dict(min=float(np.abs(rec_ratio).min()), max=float(np.abs(rec_ratio).max()),
+                   time_s1=float(m1["time"]), time_sh=float(mh["time"]), sh_scale=args.sh_scale)
         s1, sh = stats(d1), stats(dh)
         ratios = {k: s1[k] / sh[k] for k in ("median_power", "amplitude", "rel_rms",
                                               "median_power_hi")}
         flips = sum(a != b for a, b in zip(s1["signs"], sh["signs"]))
         res[label] = dict(s1=s1, sh=sh, ratios=ratios, sign_flips=int(flips),
-                          split_after_data=split(d1, dh),
+                          split_after_data=split(d1, dh), record_ratio=rec,
                           inputs=dict(s1=n1, sh=nh, run_s1=r1, run_sh=rh))
         ax = axes[0, j]
         x = np.array(LOW)

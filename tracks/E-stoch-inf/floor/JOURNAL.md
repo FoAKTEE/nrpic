@@ -56,3 +56,28 @@ Predictions:
   at most 15 per cent.
 - F5 (cost): FL128h below 0.05, FL256h at most 1.0 card-hours.
 A cause is named only if F1 and F3 hold.
+
+## entry-2 (2026-11-25 04:00 PST, lead of E, batch 17): FL128h has run; first reading; the corrected reading
+
+FL128h ran as E-20261125-041742-71d74fb (queue q0037, Slurm job 5245, one segment, 110 s wall, 693
+cycles to t = 8.5; 0.0308 card-hours from its finished manifest). F5 for FL128h HOLDS (below 0.05).
+
+First reading, E-20261125-115056-983a32a (`floor_read.py`, the recipe of entry 1 with `--scale 0.5`
+on the s = 1/2 run). The s = 1 re-pass of C128S gives the values of entry 1 digit for digit (median
+1.482e-7, amplitude 3.777e-7, signs ++----+--+, median n^2 >= 49 6.029e-7, per-mode rms 7.111e-7). The
+s = 1/2 statistics are 3.0000003 (median), 1.0000001 (amplitude), all signs negative: P_NR/P_lin = 4.
+F3, the control of the reading, is REFUTED as the recipe stood (3.0 against 6.03e-7 +- 25 per cent),
+so F1 is not judged on this reading, as entry 1 required. Cause, found on the files: the lockstep
+`.modes` record of a run with `noise_mode_scale = 0.5` already carries the factor (record ratio
+R(FL128h)/R(C128S) = 0.5 exactly at t = 8.5 on every shell; coord/INTERFACES/scalar_field_2.md line
+74: the scale is applied to the mode file), and dumppass multiplies c_lin by --scale once more. The
+recipe of entry 1 was wrong, not the run. The corrected reading passes --scale 1 for the s = 1/2 run
+(`floor_read.py --sh-scale 1`, default now) and stores the record ratio it checks.
+
+Not blind: the same first reading printed a split that does not depend on c_lin (with e = c_NR - c_lin
+per mode and e = s L + s^2 Q, Q = 2 [c_NR(1) - 2 c_NR(1/2)]); its shell norms equal those of e(1)
+within 2 per cent on all ten shells, which already says the floor is second order. The corrected
+reading is therefore judged against F1-F4 of entry 1 unchanged, and its outcome is labelled as read
+after that split was seen. Expected from the split: R about 2 for the amplitude statistic and the
+per-mode rms (relative error proportional to s), about 2 for the median power statistic, signs kept,
+F3 within [0.8, 1.25].
