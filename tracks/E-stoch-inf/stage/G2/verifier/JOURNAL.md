@@ -225,3 +225,18 @@ Refuted if dump 13 of M stays outside the band with sigma.
   percent), not from the physics and not from a higher order in s. U-A4'(a) as written stays
   failed: the criterion fixes its floor, and the fix above uses the quarter pair, which 4c
   did not define. fig_floor3.png looked at.
+
+## Entry 5, 2026-11-25 03:05 UTC: after reading the package's claims; predictions for checks2.py
+
+All numbers of entries 2-4 were committed (25b2cc3b) before I read `stage/G2/CHECKLIST.md`,
+`stage/G2/OPEN.md` and `g2prod/JOURNAL.md` entries 2-3 (entry 4, which the checklist cites
+for the quarter pair, does not exist in the branch; OPEN item 1 says it is to be written).
+Two claims there are cheap to check and I had not checked them:
+- (1) "R^NR per mode of the release runs is IDENTICAL to the scouting pair (core_scalar-3) at
+  every dump" (g2prod 2.3). Prediction: at N_f all 22 dumped variables of U256ap and U256am
+  equal those of U256 (E-20261121-075255-8cf90e7) and U256m (E-20261121-085221-1f579fe) bit
+  for bit (max |difference| 0). Refuted by any non-zero difference.
+- (2) the common-mode part of the odd-part error (g2prod 2.3: -4.107e-5 at s = 1, -9.87e-6 at
+  s = 1/2; entry 3 Q-b predicts -2.5e-6 +- 0.4e-6 at s = 1/4). My prediction from my own
+  U-A3 odd-part deficits (entry 2): -4.2e-5, -1.05e-5, -2.6e-6 (+- 10 percent), ratios 4.0 +- 0.2;
+  320^3 within 2 percent of 256^3 at s = 1.
