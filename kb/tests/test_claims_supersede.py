@@ -190,3 +190,19 @@ def test_superseding_judgement_with_resolved_locator_is_located(store, tmp_path)
                         text="The weights at L2 are the X weights [JUDGEMENT].",
                         locator="2609.14218v1:MDPBH.tex:L2", store=st)
     assert _state(con, new) == ("judgement", "located")
+
+
+def test_supersede_to_existing_keeps_successor_checked_by(store, tmp_path):  # noqa: F811
+    """Lead review batch 15: `--to` must not rewrite who checked the successor and when."""
+    st, _ = store
+    con = _db(tmp_path)
+    old = _claim(con)
+    succ = _claim(con, text="the sibling statement (L2)")
+    con.execute("UPDATE claim_meta SET checked_by='first-reader', checked_at='2026-11-15T00:00:00Z'"
+                " WHERE claim_id=?", (succ,))
+    cdb.supersede(con, old, "kb-helper", "fragment; the sibling carries the row.", to=succ)
+    assert con.execute("SELECT checked_by, checked_at FROM claim_meta WHERE claim_id=?",
+                       (succ,)).fetchone() == ("first-reader", "2026-11-15T00:00:00Z")
+    assert _state(con, old)[1] == "superseded"
+    assert con.execute("SELECT count(*) FROM claim_events WHERE claim_id=? AND action='supersedes'",
+                       (succ,)).fetchone()[0] == 1

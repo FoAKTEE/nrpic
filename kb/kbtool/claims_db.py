@@ -338,7 +338,9 @@ def supersede(con, old, by, evidence, text=None, to=None, label="fulltext", kind
         if t[0] == "refuted" or t[1] in ("refuted", "superseded", "withdrawn"):
             raise ValueError(f"claim {to} is {t[0]}/{t[1]}: it cannot replace another claim")
         new = to
-        con.execute("UPDATE claim_meta SET checked_by=?, checked_at=? WHERE claim_id=?", (by, utcnow(), to))
+        # The successor keeps its own checked_by/checked_at: superseding another claim is not a
+        # reading of this one (lead review batch 15: 289, 313, 430, 624, 862 had theirs replaced).
+        # The 'supersedes' event below records the step.
     else:
         if label == "refuted":
             raise ValueError("the claim that replaces another cannot be refuted")

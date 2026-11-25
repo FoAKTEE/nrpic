@@ -836,3 +836,24 @@ Predictions, written before the runs of this session.
   rate 737/762 unchanged; golden hybrid 28/32 papers; claims 881; QA lists the statuses
   superseded and withdrawn; db/current points to the new snapshot. Refuted by any other
   problem row, a changed parse or retrieval count, or a claims count other than 881.
+- V1 outcome (runs kb-20261125-033503-dfc398e, kb-20261125-033530-5a1ac43): held in part.
+  Ledger: 72 rows, no label or status mismatch, 22 superseded_by links, every new claim
+  865-881 has resolved locator rows; 881 claims (864 in the snapshot). Sample recomputed with
+  my own Clopper-Pearson code: 26/30, 0.693-0.962, weighted 0.8648, s.e. 0.0609 (as the
+  package). FAILED in two places: (a) the weak class today is 548, outside 520-543; the
+  population diff shows no claim joined, 25 left; five sampled claims (308, 467, 662, 673 of
+  WQ, 720 of WB) stay in the class because claims3 only annotated them and its query does not
+  exclude claims3's own readings: the unread class is 548 - 5 = 543, as the package says.
+  (b) five claims outside the ledger changed: 289, 313, 430, 624, 862, the existing
+  successors of `supersede --to`; the step overwrote their claim_meta checked_by/checked_at
+  (862: kb-lead-b13 -> kb-claims3; 289: 'kb claims helper (seed)' -> kb-claims3). For the four
+  machine-located siblings this records a reading that did not happen (claims3 README: not read
+  against their sources). Defect of kb/kbtool/claims_db.py supersede(): fixed (line removed;
+  test test_supersede_to_existing_keeps_successor_checked_by passes). Four ledger claims
+  without a row change (308, 467, 662, 673) were annotated only: expected.
+- R2 (restore_checked.py, writes claim_meta.checked_by/checked_at of 289, 313, 430, 624, 862
+  to the snapshot's values, one annotate event each, inside the writer lock). Prediction: dry
+  run and real run each report five restores with 'before' = kb-claims3; after the real run
+  the review script finds the same 72 changed claims minus none, and these five differ from
+  the snapshot only by... nothing in claims/claim_meta/locators (so changed_not_in_ledger is
+  empty). Refuted by any other count or an exception.
