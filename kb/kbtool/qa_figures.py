@@ -25,9 +25,9 @@ import matplotlib  # noqa: E402
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
-STATUS_ORDER = ["checked", "located", "partial", "unresolved", "unlocated", "refuted", "stale"]
+STATUS_ORDER = ["checked", "located", "partial", "unresolved", "unlocated", "refuted", "superseded", "stale"]
 STATUS_COLOR = {"checked": fs.PAL["blue"], "located": "#8fb3d9", "partial": fs.PAL["yellow"],
-                "unresolved": fs.PAL["red"], "unlocated": "0.75", "refuted": "k", "stale": "0.5"}
+                "unresolved": fs.PAL["red"], "unlocated": "0.75", "refuted": "k", "superseded": "0.35", "stale": "0.5"}
 
 
 def fig_claims(rep, out):

@@ -298,8 +298,32 @@ def check_repo(lay, row):
     return res
 
 
+EXCLUDED_FILE = "downloads_excluded.tsv"
+
+
+def load_excluded(manifest_dir):
+    """Ids on disk that stay out of the downloads table (decision 0035 item 5: 0707.4654 and
+    1006.1632, in no manifest; their files stay): {id: reason}. One row per id, tab-separated
+    `id  decision  reason`, '#' lines skipped; a missing file means none."""
+    out = {}
+    try:
+        with open(os.path.join(manifest_dir, EXCLUDED_FILE)) as f:
+            for line in f:
+                line = line.rstrip("\n")
+                if not line.strip() or line.startswith("#"):
+                    continue
+                parts = line.split("\t")
+                if parts[0].strip() == "id":
+                    continue
+                out[parts[0].strip()] = " ".join(p.strip() for p in parts[1:] if p.strip())
+    except FileNotFoundError:
+        pass
+    return out
+
+
 def verify(lay, manifest_dir):
-    """The full inventory: a dict ready for JSON."""
+    """The full inventory: a dict ready for JSON. Entries listed in downloads_excluded.tsv are
+    left out of the extras (and so of the downloads table) and reported under "excluded"."""
     t0 = time.time()
     arxiv = load_arxiv_manifest(os.path.join(manifest_dir, "arxiv.tsv"))
     github = load_github_manifest(os.path.join(manifest_dir, "github.tsv"))
@@ -312,7 +336,10 @@ def verify(lay, manifest_dir):
                 present.add(n[:-5] if n.endswith(".json") else n)
         except FileNotFoundError:
             pass
-    extras = [check_paper(lay, key_to_id(k)) for k in sorted(present - set(by_key)) if not k.startswith(".")]
+    excluded = load_excluded(manifest_dir)
+    extra_keys = [k for k in sorted(present - set(by_key)) if not k.startswith(".")]
+    extras = [check_paper(lay, key_to_id(k)) for k in extra_keys if key_to_id(k) not in excluded]
+    excluded_present = sorted(key_to_id(k) for k in extra_keys if key_to_id(k) in excluded)
     legacy = legacy_copies(lay)
     for p in papers:
         if p["status"] in ("missing", "failed") and p["id"] in legacy:
@@ -342,6 +369,7 @@ def verify(lay, manifest_dir):
         "data_root": lay.data, "manifest_dir": manifest_dir,
         "arxiv": {"manifest_rows": len(arxiv), "status": counts(papers), "by_priority": by_pri,
                   "by_group": by_grp, "extra": len(extras),
+                  "excluded": [{"id": i, "reason": excluded[i]} for i in excluded_present],
                   "source_kind": counts([p for p in papers + extras if p.get("source_kind")], "source_kind")},
         "github": {"manifest_rows": len(github), "status": counts(repos), "extra": extra_repos},
         "papers": papers, "extras": extras, "repos": repos,
@@ -374,7 +402,9 @@ def report_md(inv):
          f"(data root `{inv['data_root']}`).", "",
          "## arXiv", "",
          f"Manifest rows: {a['manifest_rows']}. Status: " +
-         ", ".join(f"{k} {a['status'].get(k, 0)}" for k in STATUS_ORDER) + f". Extra entries (not in the manifest): {a['extra']}.",
+         ", ".join(f"{k} {a['status'].get(k, 0)}" for k in STATUS_ORDER) + f". Extra entries (not in the manifest): {a['extra']}."
+         + (f" Excluded from the table (on disk, {EXCLUDED_FILE}): "
+            + ", ".join(e["id"] for e in a.get("excluded", [])) + "." if a.get("excluded") else ""),
          "", "| priority | " + " | ".join(STATUS_ORDER) + " |", "|---|" + "---|" * len(STATUS_ORDER)]
     for pri in ("3", "2", "1"):
         d = a["by_priority"].get(pri, {})

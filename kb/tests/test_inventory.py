@@ -143,3 +143,23 @@ def test_repo_checkout_read_without_git(store, tmp_path):
     assert a["commit_sha"] == sha and a["license_spdx_guess"] == "BSD-3-Clause"
     assert a["status"] == "incomplete"          # no meta/github record yet
     assert r["kokkos/kokkos"]["status"] == "missing"
+
+
+def test_excluded_entries_leave_the_table_and_keep_their_files(store):
+    """claims3 item 5 (decision 0035 item 5): an id listed in downloads_excluded.tsv is no extra
+    (so `kb verify-downloads` writes no downloads row for it); its files are not touched; the
+    report names it."""
+    build(store)
+    with open(os.path.join(store.mdir, inv.EXCLUDED_FILE), "w") as f:
+        f.write("# comment\nid\tdecision\treason\ngr-qc/0606037\t0035 item 5\tin no manifest\n")
+    src = os.path.join(store.layout.raw_arxiv, "gr-qc_0606037")
+    before = sorted(os.walk(src))
+    r = inv.verify(store.layout, store.mdir)
+    assert {e["id"] for e in r["extras"]} == {"2306.11810"}
+    assert r["arxiv"]["extra"] == 1
+    assert r["arxiv"]["excluded"] == [{"id": "gr-qc/0606037", "reason": "0035 item 5 in no manifest"}]
+    assert sorted(os.walk(src)) == before
+    assert "Excluded from the table" in inv.report_md(r) and "gr-qc/0606037" in inv.report_md(r)
+    # without the file nothing is excluded
+    os.remove(os.path.join(store.mdir, inv.EXCLUDED_FILE))
+    assert {e["id"] for e in inv.verify(store.layout, store.mdir)["extras"]} == {"2306.11810", "gr-qc/0606037"}

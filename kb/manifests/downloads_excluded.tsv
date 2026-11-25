@@ -1,0 +1,5 @@
+# arXiv entries present under kb-data/raw/arxiv (and kb-data/meta/arxiv) that `kb verify-downloads`
+# leaves out of the downloads table. Their files stay on disk. Read by kbtool/inventory.py.
+# id	decision	reason
+0707.4654	coord/DECISIONS/0035 item 5	on disk, in no manifest (neither brief section 17 nor arxiv_additions.tsv)
+1006.1632	coord/DECISIONS/0035 item 5	on disk, in no manifest (neither brief section 17 nor arxiv_additions.tsv)

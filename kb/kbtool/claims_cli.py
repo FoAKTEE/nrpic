@@ -283,6 +283,10 @@ def cmd_show(a):
                                  "evidence"), x)) for x in con.execute(
             "SELECT at, by, action, from_label, to_label, from_status, to_status, substr(evidence,1,300) "
             "FROM claim_events WHERE claim_id=? ORDER BY event_id", (a.claim_id,))]
+        r["links"] = _cdb.links(con, a.claim_id)
+        sup = [l["to_id"] for l in r["links"] if l["relation"] == _cdb.SUPERSEDED_BY and l["from_id"] == a.claim_id]
+        if sup:
+            r["superseded_by"] = sup
     finally:
         con.close()
     json.dump(r, sys.stdout, indent=1)
@@ -353,6 +357,28 @@ def cmd_refute(a):
         print(f"no claim {e}", file=sys.stderr)
         return 1
     print(f"claim {a.claim_id}: refuted by {a.by}; notify: {', '.join(tracks) or 'nobody recorded'}")
+    return 0
+
+
+def cmd_supersede(a):
+    """Close a claim whose text is wrong (or holds no statement) with a pointer to the claim that
+    replaces it: a new claim (--text) or an existing one (--to). claims_db.supersede."""
+    lay = layout(a.data_root)
+
+    def fn(con):
+        new = _cdb.supersede(con, a.claim_id, a.by, a.evidence, text=a.text, to=a.to, label=a.label,
+                             kind=a.kind, paper_id=a.paper, locator=a.locator, track=a.track, origin=a.origin,
+                             store=_store(lay, con) if a.locator else None, allow_unresolved=a.allow_unresolved)
+        n = con.execute("SELECT count(*), coalesce(sum(resolved), 0) FROM claim_locators WHERE claim_id=?",
+                        (new,)).fetchone()
+        return new, n
+    try:
+        new, (n, ok) = _write(lay, "claim supersede", fn)
+    except (ValueError, KeyError) as e:
+        print(f"claim {a.claim_id}: {e}", file=sys.stderr)
+        return 1
+    print(f"claim {a.claim_id} superseded by claim {new} ({'existing' if a.to else 'new'}); "
+          f"locator rows {n}, resolved {ok}")
     return 0
 
 
@@ -532,7 +558,7 @@ def _brief_summary(statements, info):
 
 
 def register(sub):
-    p = sub.add_parser("claim", help="K8: evidence queue (seed, check, list, show, add, verify, refute, stats)")
+    p = sub.add_parser("claim", help="K8: evidence queue (seed, check, list, show, add, verify, relocate, refute, supersede, stats)")
     p.add_argument("--db", help="database to read (default kb.sqlite, the working database)")
     cs = p.add_subparsers(dest="claim_cmd", required=True)
     s = cs.add_parser("seed", help="parse the tracks' wave-1 notes into claims and check their locators")
@@ -598,6 +624,23 @@ def register(sub):
     s.add_argument("--by", required=True)
     s.add_argument("--evidence", required=True)
     s.set_defaults(fn=cmd_refute)
+    s = cs.add_parser("supersede", help="close a claim whose text is wrong with a pointer to the claim that "
+                                         "replaces it (new: --text; existing: --to); old -> refuted/superseded")
+    s.add_argument("claim_id", type=int)
+    s.add_argument("--by", required=True)
+    s.add_argument("--evidence", required=True, help="what is wrong with the old text, with locators")
+    g = s.add_mutually_exclusive_group(required=True)
+    g.add_argument("--text", help="text of the new claim")
+    g.add_argument("--to", type=int, help="an existing claim that already carries the statement")
+    s.add_argument("--label", default="fulltext", choices=[l for l in _cdb.LABELS if l != "refuted"])
+    s.add_argument("--kind", help="default: the old claim's kind")
+    s.add_argument("--paper", help="default: the old claim's paper")
+    s.add_argument("--locator", help="'<id><vN>:<file>:L<a>[-<b>]; ...' (rows written at once)")
+    s.add_argument("--track", help="default: the old claim's track")
+    s.add_argument("--origin")
+    s.add_argument("--allow-unresolved", action="store_true", help="write a locator part that does not resolve")
+    s.set_defaults(fn=cmd_supersede)
+
     s = cs.add_parser("stats")
     s.add_argument("--json", action="store_true")
     s.set_defaults(fn=cmd_stats)

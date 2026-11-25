@@ -10,13 +10,17 @@ number is taken; the lead may move CLAIMS_DDL into kb/migrations/):
                     track, origin (ref, commit, path, line), status of the check and who
                     set the label
     claim_locators  every locator of a claim, resolved or not, with its flat.tex range
-    claim_events    seed, check, verify, refute, stale: who, when, from and to
+    claim_events    seed, check, verify, refute, stale, supersede: who, when, from and to
+    claim_links     from_id -> to_id with a relation ('superseded_by': the claim to_id replaces
+                    the claim from_id, whose text was wrong or held no statement)
 
 Labels (brief 12.8): fulltext, abstract, title_only, background, judgement, to_verify,
 refuted. A judgement is never upgraded to fulltext. Statuses of the check: located (every
 locator resolves and every quoted number is in the cited lines), partial (locators
 resolve, some number not found), unresolved (a locator does not resolve), unlocated (no
-locator), checked (a person read the passage), refuted, stale (gone from its note).
+locator), checked (a person read the passage), refuted, stale (gone from its note),
+superseded (label refuted: the claim's own text is wrong or no statement, not the paper; a
+claim_links row names the claim that replaces it; `supersede`, package claims3).
 
 Every write happens inside the caller's writer lock (kbtool.lock.writer_lock).
 """
@@ -39,6 +43,11 @@ CREATE TABLE IF NOT EXISTS claim_locators(
 CREATE TABLE IF NOT EXISTS claim_events(
   event_id INTEGER PRIMARY KEY, claim_id INTEGER NOT NULL REFERENCES claims(claim_id), at TEXT, by TEXT,
   action TEXT, from_label TEXT, to_label TEXT, from_status TEXT, to_status TEXT, evidence TEXT);
+CREATE TABLE IF NOT EXISTS claim_links(
+  link_id INTEGER PRIMARY KEY, from_id INTEGER NOT NULL REFERENCES claims(claim_id),
+  to_id INTEGER NOT NULL REFERENCES claims(claim_id), relation TEXT NOT NULL, at TEXT, by TEXT, evidence TEXT);
+CREATE INDEX IF NOT EXISTS claim_links_from ON claim_links(from_id);
+CREATE INDEX IF NOT EXISTS claim_links_to ON claim_links(to_id);
 CREATE INDEX IF NOT EXISTS claim_locators_claim ON claim_locators(claim_id);
 CREATE INDEX IF NOT EXISTS claim_locators_paper ON claim_locators(paper_id);
 CREATE INDEX IF NOT EXISTS claim_events_claim ON claim_events(claim_id);
@@ -46,7 +55,7 @@ CREATE INDEX IF NOT EXISTS claims_paper ON claims(paper_id);
 """
 
 LABELS = ("fulltext", "abstract", "title_only", "background", "judgement", "to_verify", "refuted")
-STATUSES = ("located", "partial", "unresolved", "unlocated", "checked", "refuted", "stale")
+STATUSES = ("located", "partial", "unresolved", "unlocated", "checked", "refuted", "stale", "superseded")
 SOURCE_TO_LABEL = {"BACKGROUND": "background", "JUDGEMENT": "judgement", "TO VERIFY": "to_verify",
                    "UNLABELLED": "to_verify", "UNLOCATED": "to_verify"}
 AUTO = "auto"
@@ -267,12 +276,105 @@ def refute(con, cid, by, evidence):
     if not row:
         raise KeyError(cid)
     label, status, tracks = row
+    if status == "superseded":
+        raise ValueError(f"claim {cid} is superseded (its text was replaced): refute the claim that replaces it")
     now = utcnow()
     con.execute("UPDATE claims SET label='refuted', verified_by=?, verified_at=? WHERE claim_id=?", (by, now, cid))
     con.execute("UPDATE claim_meta SET status='refuted', label_set_by=?, checked_by=?, checked_at=? WHERE claim_id=?",
                 (by, by, now, cid))
     event(con, cid, by, "refute", label, "refuted", status, "refuted", evidence)
     return sorted({t for t in (tracks or "").split(",") if t})
+
+
+SUPERSEDED_BY = "superseded_by"
+
+
+def links(con, cid):
+    """Links of one claim, both ways: [{'relation', 'from_id', 'to_id', 'at', 'by', 'evidence'}]."""
+    if not con.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='claim_links'").fetchone():
+        return []
+    return [dict(zip(("relation", "from_id", "to_id", "at", "by", "evidence"), r)) for r in con.execute(
+        "SELECT relation, from_id, to_id, at, by, evidence FROM claim_links WHERE from_id=? OR to_id=? "
+        "ORDER BY link_id", (cid, cid))]
+
+
+def supersede(con, old, by, evidence, text=None, to=None, label="fulltext", kind=None, paper_id=None,
+              locator=None, track=None, origin=None, store=None, allow_unresolved=False):
+    """Close claim `old`, whose own text is wrong or holds no statement (not the paper), with a
+    pointer to the claim that replaces it: a new claim (`text`) or an existing one (`to`).
+
+    The old claim gets label refuted and status superseded, an event 'supersede'; the claim
+    that replaces it gets an event 'supersedes'; claim_links gets (old, new, 'superseded_by').
+    A new claim copies kind, paper and track of the old one unless given; with a locator its
+    locator rows are written at once through `store` (every part must resolve unless
+    allow_unresolved), so no separate relocate is needed. Refused (ValueError / KeyError): an
+    unknown claim, both or neither of text and to, the claim itself, a claim already
+    superseded, a target that is refuted or superseded. A claim refuted before (682) may be
+    superseded: its label stays refuted and its status becomes superseded. Returns the id of
+    the claim that replaces `old`."""
+    row = con.execute("SELECT c.label, m.status, c.kind, c.paper_id, m.track, c.text FROM claims c "
+                      "JOIN claim_meta m USING(claim_id) WHERE claim_id=?", (old,)).fetchone()
+    if not row:
+        raise KeyError(old)
+    o_label, o_status, o_kind, o_paper, o_track, _o_text = row
+    if (text is None) == (to is None):
+        raise ValueError("supersede needs exactly one of a new text or an existing claim (--to)")
+    if not (evidence or "").strip():
+        raise ValueError("supersede needs evidence: what is wrong with the old text")
+    if o_status == "superseded":
+        prev = [l["to_id"] for l in links(con, old) if l["relation"] == SUPERSEDED_BY and l["from_id"] == old]
+        raise ValueError(f"claim {old} is already superseded (by {', '.join(map(str, prev)) or '?'})")
+    if to is not None:
+        if to == old:
+            raise ValueError("a claim cannot supersede itself")
+        t = con.execute("SELECT c.label, m.status FROM claims c JOIN claim_meta m USING(claim_id) WHERE claim_id=?",
+                        (to,)).fetchone()
+        if not t:
+            raise KeyError(to)
+        if t[0] == "refuted" or t[1] in ("refuted", "superseded"):
+            raise ValueError(f"claim {to} is {t[0]}/{t[1]}: it cannot replace another claim")
+        new = to
+        con.execute("UPDATE claim_meta SET checked_by=?, checked_at=? WHERE claim_id=?", (by, utcnow(), to))
+    else:
+        if label == "refuted":
+            raise ValueError("the claim that replaces another cannot be refuted")
+        if not text.strip():
+            raise ValueError("empty text")
+        locs = parse_locator_string(locator) if locator else []
+        res = []
+        if locs:
+            if store is None:
+                raise ValueError("a locator needs the store to resolve it")
+            res = [store.resolve(l) for l in locs]
+            bad = [l.raw for l, r in zip(locs, res) if not r.resolved]
+            if bad and not allow_unresolved:
+                raise ValueError(f"locator does not resolve: {'; '.join(bad)}")
+        new = add_claim(con, text.strip(), kind or o_kind or "result", paper_id or o_paper,
+                        "; ".join(l.raw for l in locs) or None, label, by, origin or f"supersedes claim {old}",
+                        track or o_track, f"supersedes claim {old}: {evidence}")
+        for k, (l, r) in enumerate(zip(locs, res)):
+            con.execute("INSERT INTO claim_locators(claim_id, ord, paper_id, version, file, line_start, line_end, "
+                        "written, resolved, problem, flat_start, flat_end, chunk_ids_json) "
+                        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        (new, k, r.paper_id or l.paper_id, r.version or l.version, r.file or l.file, l.line_start,
+                         l.line_end, l.raw, int(bool(r.resolved)), r.problem, r.flat_start, r.flat_end,
+                         json.dumps(r.chunk_ids)))
+        first = next((r for r in res if r.resolved), None)
+        if first is not None:
+            con.execute("UPDATE claims SET chunk_id=?, quote_start=?, quote_end=? WHERE claim_id=?",
+                        (first.chunk_ids[0] if first.chunk_ids else None, first.flat_start, first.flat_end, new))
+    now = utcnow()
+    con.execute("UPDATE claims SET label='refuted', verified_by=?, verified_at=? WHERE claim_id=?", (by, now, old))
+    con.execute("UPDATE claim_meta SET status='superseded', label_set_by=?, checked_by=?, checked_at=? WHERE claim_id=?",
+                (by, by, now, old))
+    event(con, old, by, "supersede", o_label, "refuted", o_status, "superseded",
+          f"{evidence} Superseded by claim {new}; the claim text is wrong or holds no statement, not the paper.")
+    n_label, n_status = con.execute("SELECT c.label, m.status FROM claims c JOIN claim_meta m USING(claim_id) "
+                                    "WHERE claim_id=?", (new,)).fetchone()
+    event(con, new, by, "supersedes", n_label, n_label, n_status, n_status, f"supersedes claim {old}: {evidence}")
+    con.execute("INSERT INTO claim_links(from_id, to_id, relation, at, by, evidence) VALUES (?,?,?,?,?,?)",
+                (old, new, SUPERSEDED_BY, now, by, evidence))
+    return new
 
 
 def rows(con, where="", args=()):

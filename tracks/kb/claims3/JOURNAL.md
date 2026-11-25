@@ -89,3 +89,16 @@ served record), close it with the reason and no successor is invented.
   files under kb-data/raw/arxiv/0707.4654 and 1006.1632 unchanged (sha256 of source.bin before
   and after); exit 1 only for the known gr-qc/9412071. Refuted by any other change in the
   count or by a changed file.
+
+## Entry 2, 2026-11-24 18:50 PST: draw done; tool changes and their tests
+
+- Draw (run kb-20261125-021654-6799dfd, seed 20261125, after commit 6799dfda): W = 573 as
+  counted in entry 1; sample of 30 in `weak_sample.tsv` of the run directory (WA 22, WQ 5, WB 2,
+  WM 1).
+- P4a outcome: HELD. `kb claim supersede` (kb/kbtool/claims_db.py `supersede`, `links`; CLI in
+  claims_cli.py; status `superseded`; table claim_links; `refute` refuses a superseded claim;
+  `kb claim show` lists links and `superseded_by`; qa_figures counts the new status) with four
+  tests in kb/tests/test_claims_supersede.py. Downloads exclusion (kb/manifests/
+  downloads_excluded.tsv read by kbtool/inventory.py) with one test in test_inventory.py. Whole
+  suite before: 269 tests (1 xfail), after: 274 (1 xfail), all others pass. The first CLI test
+  failed once on my own test parser (no --data-root on the test's top parser), fixed in the test.
