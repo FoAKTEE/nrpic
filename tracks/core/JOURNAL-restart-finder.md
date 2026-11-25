@@ -337,3 +337,14 @@ with a restart file that the processor build wrote.
   `fp_pol` and `fp_prod` and their iteration counts (status files). Refuted above
   0.05 s; whatever the number, it goes into the interface text.
 - K5. `fp_g04`: no removal by reason 3 with `ah_exc_max_growth = 0.4`; `fp_prod`: some.
+
+## Entry 13 (2026-11-25, 06:04 PST): outcome of T4 (byte regression), run core-20261125-134356-4a92c73
+
+- P6 HELD. `analysis/release/regress_v04.py`, serial build of commit 9f7fdc3e (source of
+  1fb387d8: items 1, 2 and 3 in the tree, no new option set) against
+  `.work/build_cpu_v07`, twelve set-ups, 958 s on one core: 75 of 75 items identical
+  (geo 2, boris 2, dep 1, east 12, os 16, jeans 5, binary 1, c1 5, c2 3, c3 14, c4 4,
+  c5 10), none of class a, b or other. REGRESSION PASS. No set-up of the regression
+  writes a restart file one cycle before a conservation record with `cons_dcycle > 0`,
+  or none of its `.prt` files would have stayed identical; so the regression does not
+  see the block (T1 and T2 do).

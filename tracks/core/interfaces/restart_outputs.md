@@ -85,7 +85,19 @@ The last restart file and its `.prt` of every continued run equal those of the
 uninterrupted run. The uninterrupted run of the new build equals that of the release
 byte for byte. Figure: `fig_restart_test.png` of the run.
 
-T2, T3 and the byte regression: see section 7 (filled in when the runs have ended).
+T2, run core-20261125-134353-9f7fdc3 (`restart_extra.py`): case S2 of
+`analysis/preempt/term_test.py` (problems/tests/term_signal_particles.athinput, SIGTERM,
+restart file at cycle 26): new build, none of 21 files differs and the record at
+t = 1.6875 is present; release: `tsq.cons.hst` (that record missing) and
+`tsq.z4c.user.hst` (four header lines against two). Case S1 (no particles, stop at cycle
+101): new build, none of 27 files differs; release: the mesh history header. Figure:
+`fig_restart_extra.png` of the run.
+
+T4, run core-20261125-134356-4a92c73: byte regression of the serial build against
+release core-v0.7, twelve set-ups, 75 of 75 items identical.
+
+T3 (two punctures with refinement and outflow faces, tracker files across a restart)
+and the card check: section 7.
 
 ## 5. What does not change
 
@@ -118,4 +130,18 @@ T2, T3 and the byte regression: see section 7 (filled in when the runs have ende
   at round-off (CLAUDE.md), so the tracker lines of a continued run equal those of the
   uninterrupted run only to that precision (T3).
 - The drift-control file of upstream AthenaK (`WriteDriftControl`) is not touched.
-- Restart files across releases: section 7.
+
+## 7. Restart files across releases, and what is still open
+
+Restart files across releases [VERIFIED, T2, run core-20261125-134353-9f7fdc3]: a
+restart file of the new build whose `.prt` ends with the block is continued by release
+core-v0.7 to the end (its reader stops before the block); a restart file of core-v0.7
+is continued by the new build to the end. In both cases the record due at the next
+cycle is missing, because one of the two executables has no densities of the cycle
+before, and no other record is touched. A chain that changes executable at a restart
+loses at most that one record.
+
+Open at the time of writing (see the journal for the outcome): T3, the two-puncture deck
+`problems/puncture/by_binary.athinput` across a restart on the threaded build; the card
+check (shared-queue entry `core-rf-card`), in which the card continues a restart file
+written by the processor build.

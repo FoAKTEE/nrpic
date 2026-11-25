@@ -6,6 +6,88 @@ decision 0019 item 4). Tags that exist: core-v0.1 = 7daed19 (asymptotically flat
 core-v0.2 = 52c44eb (periodic particles and cosmological gauge; source of main a1c2237),
 core-v0.3 = 609a875 (below).
 
+## For core-v0.8: branch core/restart-finder (2026-11-25, not yet merged into core/nrpic)
+
+Entries of the branch, written by its session for the maintainer's merge. Journal
+`tracks/core/JOURNAL-restart-finder.md`; interface proposals
+`tracks/core/interfaces/restart_outputs.md`, `finder_stop.md`; executables with READY
+`/data/haiyangw/nrpic/scratch/core/exe/core_restart-finder/`.
+
+### Behaviour that changes without an option
+
+All three concern a run that is started with `-r <restart file>`. A run that is never
+continued is not changed: byte regression against core-v0.7, 75 of 75 items identical
+(run core-20261125-134356-4a92c73); the uninterrupted runs of the tests equal the
+release byte for byte.
+
+1. **Tracker file of a continued run** (`z4c/compact_object_tracker.cpp`; every deck
+   with a compact-object tracker, also through `puncture_setup`). `<base>.co_<n>.txt`
+   was opened with truncation at the first record of every start, so a continued run
+   kept only the records from its own first cycle on. Now a run started with `-r` keeps
+   the file, removes the records of cycles at or after its first cycle (a segment
+   killed after its last restart file has written such records), and appends; the two
+   header lines are written only when a new file is started. Closes W2 (Track F,
+   `tracker-files-on-restart`).
+2. **Header of the mesh history** (`outputs/history.cpp`). A run started with `-r`
+   writes no header when the history file exists and is not empty; before, every start
+   wrote the two header lines again (restart defect 2 of `stage/G2/OPEN.md`).
+3. **Conservation record across a restart** (`particles/nrpic_io.cpp`; `<particles>
+   cons_dcycle > 0`, uniform mesh). A continued run lost the record of
+   `<base>.cons.hst` that was due one or two cycles after the restart (restart defect
+   1). Now the fields of the state of the restart are evaluated at start-up, and the
+   particle restart file `<rst>.prt` ends with a block `NRPCNS01` (32 bytes per cell)
+   when a record is due at the cycle after the dump. One rank; on several ranks only the
+   record due two cycles later is recovered. Restart files of core-v0.7 are read, and
+   core-v0.7 reads the new ones (it ignores the block); a chain that changes executable
+   at a restart loses at most the one record of that restart.
+
+Tests (processors): cuts by SIGTERM at cycles 24, 25, 26, 27 and twice (14, 27) of
+`problems/tests/restart_outputs.athinput` give all 17 output files byte-identical to
+the uninterrupted run, where core-v0.7 differs in the tracker file, the header and (26,
+27) one record (run core-20261125-133539-961dcbd); cases S2 and S1 of
+`analysis/preempt/term_test.py` give no differing file (run core-20261125-134353-9f7fdc3).
+Limits: `restart_outputs.md` section 6 (only the tracker file is cleaned of records
+beyond the restart; the other appended files hold an overlap twice after a kill
+without a restart file, as before).
+
+### Input options
+
+Two, both read only if present in the input:
+
+- `<fastflow> polish_iterations_<n>` (integer, 0 when absent): flow iterations after
+  the mass rule `mass_tol_<n>` is met, before the surface is accepted. With 100 the
+  mass of Track D's vacuum puncture lies within 6.3e-9 of the tight rule (`mass_tol`
+  1e-9) at eleven dumps from 100 to 500 M, and within 4.5e-8 when the search starts
+  2 M outside, where `mass_tol` 1e-5 alone ends 6.0e-5 to 6.8e-5 low (run
+  core-20261125-131950-1fb387d). Closes item 2 of Track D's `finder-stopping-rule`.
+- `<particles> ah_exc_max_growth` (real > 0, 4 when absent): the factor of the guard on
+  horizon excision (a horizon is used while its smallest radius is below this multiple
+  of `<fastflow> initial_radius_<n>`). Closes item 1 of Track D's
+  `ah-excision-growth-guard`.
+
+Interface lines that Track D asked for (what `mass_tol` means, the angular offset of
+`ntheta = 16`, the guard and its consequence, what `<base>.z4c.user.hst` integrates near
+a hole, what column 1 of the horizon summary holds): `finder_stop.md` sections 2 to 4.
+
+### Python
+
+`python/nrpic/figstyle.py` `save()`: PDF files without a creation date (with
+`SOURCE_DATE_EPOCH` set, that date), so that a figure script run twice gives the same
+bytes (Track E, `figstyle-reproducible-pdf`; run core-20261125-135435-e82c50d). The
+vendored copy `harness/style/figstyle.py` is the orchestrator's (proposal in the
+outbox).
+
+### Files and formats
+
+Block `NRPCNS01` at the end of `rst/<base>.NNNNN.rst.prt` (`docs/FORMATS.md`). Decks
+`problems/tests/restart_outputs.athinput`, `problems/tests/finder_polish.athinput`.
+
+### Evidence still open when this was written
+
+See the last entries of the journal and the READY: the two-puncture deck across a
+restart, the finder test on the first 2 M of a puncture with the guard test, and the
+card check (shared-queue entry `core-rf-card`).
+
 ## core-v0.7 (release candidate, 2026-11-24): four source branches (decision 0035 item 4)
 
 Record: `tracks/core/RELEASE-v0.7.md` (first line: source commit and regression
