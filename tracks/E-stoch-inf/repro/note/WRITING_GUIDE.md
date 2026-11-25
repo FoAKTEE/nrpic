@@ -46,7 +46,7 @@ is more specific than the principles, it governs the note.
 
 | Level | Axis it splits along | Headings |
 |---|---|---|
-| Section | the steps of the argument | Introduction; Stochastic sources in general relativity (what both papers do, the computer-algebra checks); The lattice reproduction (second paper); The one-patch reproduction (first paper); Discussion; Summary; appendices in the order of first citation: misprints, scenarios and parameters, set-up item by item, verdicts, ledger |
+| Section | the steps of the argument | Introduction; Stochastic sources in general relativity (what both papers do, the computer-algebra checks); The lattice reproduction (second paper); The ultra-slow-roll lattice against criteria fixed in advance (G2 of the track, batch 15: runs at several amplitudes, linear agreement and resolution, second order of the constraints with its one failure, independent check); The one-patch reproduction (first paper); Discussion; Summary; appendices in the order of first citation: misprints, scenarios and parameters, set-up item by item, verdicts, ledger |
 | Subsection of the lattice section | the observable | set-up and its differences; background; spectra; one-point statistics and constraints; anisotropic extrinsic curvature; convergence; backreaction; numerical methods precede the first result |
 | Subsection of the one-patch section | the question that fixes the answer | the system; the background and its step; stochastic interpretation; the statements of the text |
 
@@ -77,6 +77,11 @@ from its plateau.
   (spectral departure from 128^3 to 256^3), "within a fifth of one" (plateau ratios), "about five
   decades" and "about four decades" (median sign-flip jumps), "more than a decade", "more than three
   decades" and "a few times lower" (per-cell tails of the Hamiltonian ratio against the stated order). Their values are in the ledger.
+- Section on the criteria (batch 15): nine criteria, eleven runs (nine on 256^3, two on 320^3),
+  amplitudes lambda = +-1, +-1/2, +-1/4, a first and a second seed, the factor four (second order) and
+  two (first order) per halving, (5/4)^4 and (5/4)^6, |n| about 25, three times the noise level,
+  -4/17 and 1/16 (exact factors of the difference statistics), "a few parts in a thousand", "one to
+  three decades", "about five decades" (control), "four cells" (shortest mode), sixteen cells (zoom).
 - Everything else (residuals, ratios, moments, widths) is in the ledger appendix.
 
 ## Expert dictionary (Sec. 6)
@@ -115,6 +120,11 @@ hits inside `scripts/` are accepted under exception 1):
 - repro/
 - scratch/
 - athena_gpu
+- U256
+- U320
+- g2prod
+- judge_
+- SCOPE
 
 ## Figures (Sec. 9)
 
@@ -128,5 +138,9 @@ hits inside `scripts/` are accepted under exception 1):
 | convergence | spectra converge at close to sixth order up to 128^3 (between five and six with the verifier's reference), then a floor at the longest shells of 256^3; constraint plateaus equal on the three finer lattices | 32^3-256^3, k_max = 8 dk |
 | ablation | level 2 against 0 near one part in ten thousand; level 1 is a scheme difference | 256^3 |
 | sign flip | flipping the momentum source makes the constraints first order | 256^3 |
+| ladder (schematic) | criteria fixed in advance, release runs, two readers, outcome with its one failure | none |
+| mosaic | the USR curvature perturbation at N_f resolved to its shortest mode (box, quarter, sixteen cells) | 256^3, first seed, lambda = 1 |
+| resolution | departure per mode falls between fourth and sixth order above |n| ~ 25; a flat third-order part below | 256^3 and 320^3 |
+| halving | the even part of the constraints falls by four per halving; one momentum-constraint miss with the fixed level; three-amplitude level | 256^3, lambda = 1, 1/2, 1/4 |
 | Langevin background | Euler at step 0.01 reaches the slope, the converged background stops on the plateau | Table II |
 | Langevin moments and PDFs | Ito reading at step 0.01 matches the paper's shapes | Table II |

@@ -107,6 +107,14 @@ SECNOTE = {
                     "matched times, finer lattice over coarser, for 64/32, 128/64 and 256/128."
                     " The $256^3$ runs: E-20261123-090727-4b6e5a5 (SR) and E-20261123-065855-265732a (USR) with their "
                     "continuations, joined records of E-20261124-212343-7e9c4b2, pass E-20261124-213029-e937f69."),
+    "Ultra-slow-roll criteria": ("Release runs of the code on $256^3$ (first seed at $s = \\pm1, \\pm\\frac12, \\pm\\frac14$; second "
+                                 "seed at $s = \\pm1$; a control with the momentum source flipped) and $320^3$ (first seed, $s = \\pm1$). "
+                                 "Departure per mode: $|\\mathcal{R}^\\mathrm{odd}_k/\\mathcal{R}^\\mathrm{lin}_k - 1|$ of the odd part at $N_f$ against "
+                                 "the code's linear mode functions. Factor of the even part: $e(s)/e(s/2)$ of the rms of the even part of a "
+                                 "constraint, with a noise level removed (fixed in advance: from the odd parts of one pair; after the "
+                                 "data: from three amplitudes). Common mode: mean of the real part of the relative odd-part error over "
+                                 "$k \\le 16\\,\\Delta k$. The Check column of this table cites the fresh verifier of the G2 package "
+                                 "(stage/G2/VERIFIER.md); ``verifier's run'' marks a value that only the verifier's own run gives."),
     "Backreaction": ("Relative change of the final power per shell with more than ten independent modes, same random amplitudes, "
                      "noise on the mesh unless stated; SR at $N = 7.19$, after the last crossing, and at $N_f$."),
     "One-patch drift and noise amplitude": ("The drift of the lapse measured by Monte Carlo against the two forms of the "
@@ -119,8 +127,25 @@ SECNOTE = {
 # Check of the independent verifier: (code, line of VERIFIER.md, string on that line, value shown)
 # codes: yes, diff (its value differs beyond the printed digits), reach (its method cannot reach the digits),
 #        quote (printed string checked), rerun (rerun of these scripts only), none
-def V(code, line=None, needle=None, shown=""):
-    return (code, line, needle, shown)
+def V(code, line=None, needle=None, shown="", path=None):
+    return (code, line, needle, shown, path)
+
+
+# The G2 package of the track (ultra-slow-roll criteria fixed before the runs): registered runs and
+# the report of its fresh verifier (stage/G2/VERIFIER.md), which checks those rows.
+G2V = "tracks/E-stoch-inf/stage/G2/VERIFIER.md"
+G2JUDGE = "E-20261123-024359-5dc3213"   # judge of the release ladder (judge_g2.json)
+G2Q = "E-20261125-033450-4c4a31c"       # quarter-amplitude pair (judge_q.json)
+G2FL3 = "E-20261125-023427-6fb6400"     # the verifier's three-amplitude reading (floor3.json)
+SCR = "/data/haiyangw/nrpic/scratch/E-stoch-inf"
+
+
+G2ORIGIN = {"fig_g2_resolution.json": f"judge {G2JUDGE}",
+            "fig_g2_mosaic.json": "the last dump of release run E-20261121-211214-0377aab"}
+
+
+def G(code, line, needle, shown=""):
+    return V(code, line, needle, shown, G2V)
 
 QP = V("quote", 91, "12, 13, 22, 35, 44, 53, 76")
 Q0 = V("quote", 92, "84-86, 106 (P0:817-842): CONFIRMED")
@@ -276,6 +301,28 @@ ROWS = [
     ("One-patch drift and noise amplitude", "the same, sigma = 0.5", "e", ("noise_amp/noise_amp.json", "USR.rows.4.amp_ibp_over_printed"), "{:.2e}", V("yes", 44, "8.3332e-2", "8.3332e-2")),
     ("One-patch drift and noise amplitude", "SR noise amplitude over printed, sigma = 0.1", "e", ("noise_amp/noise_amp.json", "SR.rows.2.amp_ibp_over_printed"), "{:.3f}", V("diff", 44, "1.063 at sigma = 0.1 with eps1 = 0.0124, 1.123 with eps1 = 0.0244", "1.063 (eps1 = 0.0124), 1.123 (eps1 = 0.0244)")),
     ("One-patch drift and noise amplitude", "SR: eps1 of our background at that crossing", "e", ("noise_amp/noise_amp.json", "SR.rows.2.eps1"), "{:.1e}", NONE),
+    # G2 package: the ultra-slow-roll case against criteria fixed before the runs
+    ("Ultra-slow-roll criteria", "Background landmarks: largest |N - N_ref| over the runs, 256^3 and 320^3", "x", (G2JUDGE, "judge_g2.json", lambda d: "{:.2e}, {:.2e}".format(max(v["U_A0_max_dN"] for k, v in d["per_run"].items() if not k.startswith("R320")), max(v["U_A0_max_dN"] for k, v in d["per_run"].items() if k.startswith("R320")))), None, G("yes", 55, "1.61e-9 (256^3), 6.6e-10 (320^3)")),
+    ("Ultra-slow-roll criteria", "Box means: largest relative departure from the Friedmann solution (s = 1)", "x", (G2JUDGE, "judge_g2.json", lambda d: "{:.2e}".format(d["per_run"]["A:U256"]["U_A1_max"])), None, G("yes", 56, "max over rows 4.17e-5", "4.17e-5")),
+    ("Ultra-slow-roll criteria", "Departure per mode, k <= 32 dk, largest: first seed, second seed", "x", (G2JUDGE, "judge_g2.json", lambda d: "{:.4e}, {:.4e}".format(d["pairs"]["A"]["UA2p_max"], d["pairs"]["B"]["UA2p_max"])), None, G("yes", 57, "seed A 1.0894e-4", "1.0894e-4, 1.0871e-4")),
+    ("Ultra-slow-roll criteria", "Departure per mode up to k_max, largest (first seed)", "x", (G2JUDGE, "judge_g2.json", lambda d: "{:.3e}".format(d["pairs"]["A"]["max_all_modes"])), None, G("yes", 57, "to k_max 4.506e-3 (both)", "4.506e-3")),
+    ("Ultra-slow-roll criteria", "Freezing: power after over power at the crossing, k <= 3 dk, range (first seed, s = 1)", "x", (G2JUDGE, "judge_g2.json", lambda d: "{:.5f} to {:.5f}".format(d["per_run"]["A:U256"]["U_A3"]["min"], d["per_run"]["A:U256"]["U_A3"]["max"])), None, G("yes", 58, "single runs 0.99230-1.00161 (A)", "0.99230-1.00161")),
+    ("Ultra-slow-roll criteria", "Factor of the even part of H (s = 1 over 1/2, fixed level), judged record times: range", "x", (G2JUDGE, "judge_g2.json", lambda d: "{:.4f} to {:.4f} ({} times)".format(d["UA4a_b"]["H"]["a_text"]["min"], d["UA4a_b"]["H"]["a_text"]["max"], d["UA4a_b"]["H"]["a_text"]["n"])), None, G("yes", 59, "H: 9 judged dumps (0, 5-12), 3.9916-4.0424", "3.9916-4.0424")),
+    ("Ultra-slow-roll criteria", "Factor of the even part of M (fixed level): the one value outside 3.95-4.05, and its N", "x", (G2JUDGE, "judge_g2.json", lambda d: "{:.4f} at N = {:.2f} (of {} times)".format(d["UA4a_b"]["M"]["a_text"]["outside"][0], d["UA4a_b"]["M"]["a_text"]["outside_cN"][0], d["UA4a_b"]["M"]["a_text"]["n"])), None, G("yes", 59, "dump 13 (cN 6.525) = 3.9245", "3.9245")),
+    ("Ultra-slow-roll criteria", "The same factor of M at that N from s = 1/2 over 1/4 (fixed level; not judged there)", "x", (G2Q, "judge_q.json", lambda d: "{:.4f}".format(d["Q_a"]["M_corr_quarter"])), None, G("yes", 85, "is 4.127 (not judged by 4c's own rule", "4.127")),
+    ("Ultra-slow-roll criteria", "Level from three amplitudes (after the data): factor of M at that N", "x", (G2FL3, "floor3.json", lambda d: "{:.4f}".format(d["M_dump13"]["ratio_sigma_1h"])), None, G("own", 99, "dump 13 is 3.9988", "3.9988")),
+    ("Ultra-slow-roll criteria", "Level from three amplitudes: largest |factor - 4| over the judged times, H and M", "x", (G2FL3, "floor3.json", lambda d: "{:.1e}, {:.1e}".format(d["H_1h"]["max_dev"], d["M_1h"]["max_dev"])), None, G("own", 100, "and +- 0.0012 (M)", "0.0045, 0.0012")),
+    ("Ultra-slow-roll criteria", "Records: largest mean |H'|/[H] and |M|/[M] over the proper runs", "x", (G2JUDGE, "judge_g2.json", lambda d: "{:.2e}, {:.3f}".format(max(v["Hp_max"] for k, v in d["UA4c_records"].items() if k != "U256nc"), max(v["M_max"] for k, v in d["UA4c_records"].items() if k != "U256nc"))), None, G("yes", 61, "to 3.03e-12", "3.03e-12, 2.52e-2")),
+    ("Ultra-slow-roll criteria", "Control (momentum source flipped): odd part of H over the proper one, ratio of the maxima over the entry", "x", (G2JUDGE, "judge_g2.json", lambda d: "{:.2e} (cross), {:.2e} (single)".format(d["UA4d_control"]["ratio_max_cross"], d["UA4d_control"]["ratio_max_single"])), None, G("yes", 62, "2.38e5 (control H' against the proper odd part", "2.38e5 (single)")),
+    ("Ultra-slow-roll criteria", "Resolution: largest departure per mode (k <= 32 dk), 256^3 over 320^3", "x", (G2JUDGE, "judge_g2.json", lambda d: "{:.2f}".format(d["U_R"]["i_factor"])), None, G("yes", 63, "= 2.10", "2.10")),
+    ("Ultra-slow-roll criteria", "Resolution: shell power 320^3 over 256^3 minus one, largest for k <= 32 dk and to 64 dk", "x", (G2JUDGE, "judge_g2.json", lambda d: "{:.2e}, {:.2e}".format(d["U_R"]["ii_max_k_le_32"], d["U_R"]["ii_max_to_64"])), None, G("yes", 64, "1.18e-4 (k <= 32 dk), 4.6e-3 (to 64 dk)", "1.18e-4, 4.6e-3")),
+    ("Ultra-slow-roll criteria", "Resolution: median of the per-shell ratio of Fig. resolution for |n| <= 20 and |n| >= 40", "g", ("fig_g2_resolution.json", lambda d: "{:.3f}, {:.2f}".format(d["ratio_k_le_20_median"], d["ratio_k_ge_40_median"])), None, G("diff", 120, "factor 2.88, order 4.7", "2.88 (axis modes, third-order part removed)")),
+    ("Ultra-slow-roll criteria", "Second seed: rms of R^NR at N_f (lattice reference 0.89366)", "x", (G2JUDGE, "judge_g2.json", lambda d: "{:.6f}".format(d["U_S"]["rms_bp"])), None, G("yes", 66, "band rms of U256bp 0.894109", "0.894109")),
+    ("Ultra-slow-roll criteria", "Window: largest shift of the shell power over the windows, to 16 dk", "q", ("tracks/E-stoch-inf/window/JOURNAL.md", 217, "g2 1.87e-4", "1.87e-4 (to 16 dk)"), None, G("yes", 67, "1.870e-4, 9.13e-3 (g2)", "1.870e-4, 9.13e-3")),
+    ("Ultra-slow-roll criteria", "Window: the same to 32 dk", "q", ("tracks/E-stoch-inf/window/JOURNAL.md", 218, "5.09e-4, 2.71e-4, 5.62e-3, 9.13e-3", "9.13e-3"), None, G("yes", 67, "1.870e-4, 9.13e-3 (g2)", "9.13e-3")),
+    ("Ultra-slow-roll criteria", "Common mode of the odd-part error at N_f: s = 1 (256^3, 320^3)", "x", (G2JUDGE, "judge_g2.json", lambda d: "{:.3e}, {:.3e}".format(d["U_R"]["common_mode_256"]["mean_re"], d["U_R"]["common_mode_320"]["mean_re"])), None, G("yes", 114, "-4.107e-5, -9.87e-6, -2.07e-6", "-4.107e-5 (256^3)")),
+    ("Ultra-slow-roll criteria", "Common mode at N_f: s = 1/2 and s = 1/4 (256^3)", "x", (G2Q, "judge_q.json", lambda d: "{:.3e}, {:.3e}".format(d["Q_b"]["common_mode_end_half"], d["Q_b"]["common_mode_end_quarter"])), None, G("yes", 114, "-4.107e-5, -9.87e-6, -2.07e-6", "-9.87e-6, -2.07e-6")),
+    ("Ultra-slow-roll criteria", "Slice of Fig. mosaic: rms and largest R^NR over the lattice at N_f (first seed, s = 1)", "g", ("fig_g2_mosaic.json", lambda d: "{:.5f}, {:.3f}".format(d["rms_R"], d["max_R"])), None, NONE),
 ]
 
 
@@ -351,7 +398,7 @@ def printed(s):
 
 
 CHECK_WORD = {"yes": "yes", "diff": "differs", "reach": "beyond reach", "quote": "quote",
-              "rerun": "rerun only", "joined": "run joined", "none": "none"}
+              "rerun": "rerun only", "joined": "run joined", "own": "verifier's run", "none": "none"}
 
 
 def read_line(path, line):
@@ -368,12 +415,13 @@ def read_line(path, line):
 
 def check_text(ck):
     """The check column: the verifier's verdict, its value where it gives one, and the line of its report."""
-    code, line, needle, shown = ck
+    code, line, needle, shown = ck[:4]
+    report = ck[4] if len(ck) > 4 and ck[4] else VERIFIER
     if code == "none":
         return "none", ""
-    _, text = read_line(VERIFIER, line)
+    _, text = read_line(report, line)
     if needle not in text:
-        sys.exit(f"verifier string not on its line: {VERIFIER}:{line}: {needle!r}")
+        sys.exit(f"verifier string not on its line: {report}:{line}: {needle!r}")
     word = CHECK_WORD[code]
     return word, (f"{word}: {shown}" if shown else word) + f" [{line}]"
 
@@ -409,6 +457,21 @@ def main():
             d = cache.setdefault(p, json.load(open(p)))
             val = func(d)
             src = f"this run ({run_id}) from {ORIGIN[fn + opts.get('origin', '')]}"
+        elif kind == "x":
+            rid, fn, func = args
+            rdir = os.path.join(SCR, rid)
+            p = os.path.join(rdir, fn)
+            if p not in cache:
+                sha_ok(rdir, fn)
+                cache[p] = json.load(open(p))
+            val = func(cache[p])
+            src = f"run {rid}"
+        elif kind == "g":
+            fn, func = args
+            p = os.path.join(out, "g2", fn)
+            d = cache.setdefault(p, json.load(open(p)))
+            val = func(d)
+            src = f"this run ({run_id}) from {G2ORIGIN[fn]}"
         elif kind == "l":
             p = os.path.join(out, "langevin", "langevin.json")
             d = cache.setdefault(p, json.load(open(p)))

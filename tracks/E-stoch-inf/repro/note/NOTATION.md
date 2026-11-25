@@ -58,3 +58,17 @@ arXiv:2401.08530 (the one-patch paper), which share them, except where stated.
 | alpha | lapse; the Gaussian amplitudes alpha_k of the papers | the note writes the Gaussian amplitudes as "the random numbers" in words |
 | sigma | window parameter; standard deviation | the standard deviation is written "width" in the text |
 | H | Hubble rate; Hamiltonian constraint | the constraint is calligraphic |
+
+## Section on the criteria (batch 15)
+
+| Symbol | LaTeX | Meaning | First use |
+|---|---|---|---|
+| lambda | `\lambda` | common amplitude of all stochastic sources and of the initial slice (one in the reproduction) | Sec. IV A |
+| X_odd, X_even | `X_\mathrm{odd}`, `X_\mathrm{even}` | odd and even parts of an output from the runs at +lambda and -lambda ("the odd-even split") | Sec. IV A |
+| e, o | `e(\lambda)`, `o(\lambda)` | rms over the lattice of the even and the odd part of a constraint | Sec. IV C |
+| f | `f` | noise level fixed in advance, f^2 = 4 o(1/2)^2 - o(1)^2 ("the fixed estimator") | Sec. IV C |
+| E, A, F_lambda | `E(\lambda)`, `A`, `F_\lambda` | even field of a constraint; its second-order field; the per-run part | Sec. IV C |
+| D_1, D_2 | `D_1`, `D_2` | difference fields E(1) - 4E(1/2), E(1/2) - 4E(1/4) ("the difference statistics") | Sec. IV C |
+
+Overlap: s stays the window steepness; the noise amplitude is lambda (the program's records call it s).
+

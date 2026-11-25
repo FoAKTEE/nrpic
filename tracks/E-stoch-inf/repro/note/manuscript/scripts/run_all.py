@@ -7,7 +7,10 @@ Usage: run_all.py OUT
    join check E-20261124-212343-7e9c4b2 through runs.py; the SR run with dumps to its end from
    pass E-20261124-225826-0bf3842, joined in E-20261124-225720-444aecc);
 2. analyse.py SIM OUT/langevin: the one-patch figures from simulation E-20261123-021043-d00a314;
-3. schem_pipeline.py: the schematic;
+3. schem_pipeline.py, schem_ladder.py: the schematics;
+3a. the G2 figures into OUT/g2: fig_g2_halving.py (judge E-20261123-024359-5dc3213, quarter pair
+   E-20261125-033450-4c4a31c, the verifier's E-20261125-023427-6fb6400), fig_g2_resolution.py (the
+   same judge), fig_g2_mosaic.py (last dump of the release run E-20261121-211214-0377aab);
 4. ledger.py OUT: the ledger tables;
 5. copies of the figures under the manuscript's names into OUT/figures;
 6. checks: the lattice jsons against the committed jsons of the figure package and the
@@ -52,6 +55,10 @@ FIGS = {  # manuscript name: source (without extension)
     "fig_ablation": "lattice/fig9_ablation",
     "fig_ablation_sr": "lattice/fig9_ablation_sr_t75",
     "fig_signflip": "lattice/fig_signflip",
+    "fig_ladder": "figures_raw/schem_ladder",
+    "fig_g2_mosaic": "g2/fig_g2_mosaic",
+    "fig_g2_resolution": "g2/fig_g2_resolution",
+    "fig_g2_halving": "g2/fig_g2_halving",
     "fig_lv_background": "langevin/fig/fig_background",
     "fig_lv_step": "langevin/fig/fig_step_seed",
     "fig_lv_paths": "langevin/fig/fig1_paths_ito_naive",
@@ -80,6 +87,9 @@ def main():
     run([os.path.join(HERE, "make_figs.py"), os.path.join(out, "lattice")] + LATTICE_ARGS)
     run([os.path.join(HERE, "analyse.py"), SIM, os.path.join(out, "langevin")])
     run([os.path.join(HERE, "schem_pipeline.py"), "--out", os.path.join(out, "figures_raw")])
+    run([os.path.join(HERE, "schem_ladder.py"), "--out", os.path.join(out, "figures_raw")])
+    for script in ("fig_g2_halving.py", "fig_g2_resolution.py", "fig_g2_mosaic.py"):
+        run([os.path.join(HERE, script), os.path.join(out, "g2")])
     run([os.path.join(HERE, "ledger.py"), out])
     fdir = os.path.join(out, "figures")
     os.makedirs(fdir, exist_ok=True)
