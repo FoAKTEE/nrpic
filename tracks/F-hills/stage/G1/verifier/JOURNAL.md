@@ -223,3 +223,24 @@ at the cut equal those of F-20261125-175533-141e4f1)
 - Figures of the final pass looked at: fig_v_tests, fig_v_passage, fig_v_horizons (live and cut),
   fig_v_mesh, fig_v_junk (the development versions, identical in content, were read before; the
   final versions of fig_v_tests and cut_96.23/fig_v_horizons were read from the registered runs).
+
+## Entry 4 (2026-11-25 10:02 PST): KHSR K3 with my own integrator, predictions first
+
+Claim (khsr_note/results/khsr_ecc.json "direct", run F-20261121-212757-77cdc15, 512 phases; read
+before writing this): prograde, M/m = 1e6, m1/m2 = 3, circular binary a = 1, r_t = a (M/m)^(1/3),
+centre-of-mass orbit with r_p = D r_t and semi-major axis r_a (e = 1 - D r_t / r_a), start 10 r_t
+inbound, end when the unperturbed conic is at 30 r_t outbound:
+- D = 0.5: parabola P1 = P2 = 0.485, Pdis = 0.971; r_a = 100 r_t: P1 = 0.068, P2 = 0.484, Pdis
+  = 0.973, both bound to M 0.420.
+- D = 1.0: parabola P1 = P2 = 0.459, Pdis = 0.918; r_a = 100 r_t: P1 = 0.070, P2 = 0.457, Pdis =
+  0.922, both bound 0.395. Ledger row 60: P1/P2 at r_a = 100 r_t 0.141 (D = 0.5), 0.154 (D = 1).
+My check (vkhsr.py): my DOP853 integrator (vnewton.rhs, full three-body, rtol 1e-11), 256 phases
+uniform in [0, 2 pi) at the start, stop when the members' centre of mass is at 30 r_t outbound;
+classification by two-body energies at the end (pair energy > 0: disrupted; member-M energy > 0:
+that member ejected).
+- K3a prediction: each of P1, P2, Pdis, P(both bound) within 2.5 binomial sigma of my sample
+  (sigma = sqrt(p(1-p)/256): 0.031 at 0.48, 0.016 at 0.07, 0.011-0.017 at 0.92-0.97) of the claim
+  (raised from 128 to 256 phases after an 8-phase smoke test that only checked the code ran).
+- K3b prediction: at r_a = 100 r_t the primary is ejected 4-15 times less often than the secondary
+  (P1/P2 between 0.07 and 0.25), and P1 = P2 on the parabola within 1 sigma.
+Refuted: any probability more than 3 sigma off, or P1/P2 outside 0.05-0.3.
