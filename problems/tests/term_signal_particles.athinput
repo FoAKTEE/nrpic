@@ -1,0 +1,108 @@
+# Stop on the termination signal (utils/term_signal.hpp, tracks/core/interfaces/
+# preempted_runs.md), test S2: particles coupled to Z4c in a periodic box.  The
+# matter-dominated universe of problems/cosmo/flrw.athinput on 16^3 cells (eight
+# MeshBlocks) with a lattice of 4096 particles whose positions and momenta carry white
+# noise, so that they move and cross MeshBlock and periodic boundaries:
+#   python3 cosmo/ic/make_lattice.py --n 16 --ppc 1 --L 4 --noise-x 0.05 --noise-u 0.05 --out DIR
+# Restart files every 0.6, history, particle history and constraint statistics, tracked
+# trajectories, a snapshot, a table along a line.  The test
+# (tracks/core/analysis/preempt/term_test.py) runs it once without interruption and once
+# with SIGTERM sent part-way and a continuation from the restart file written on the
+# signal, and compares every output byte for byte.
+<comment>
+problem   = stop on SIGTERM: periodic box, particles and Z4c
+
+<job>
+basename  = tsq
+
+<mesh>
+nghost    = 4
+nx1       = 16
+x1min     = 0.0
+x1max     = 4.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 16
+x2min     = 0.0
+x2max     = 4.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 16
+x3min     = 0.0
+x3max     = 4.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 8
+nx2       = 8
+nx3       = 8
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim       = -1
+tlim       = 5.0
+ndiag      = 1
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonicf = 1.0
+lapse_harmonic  = 0.3333333333333333   # d_t alpha = -(1/3) alpha^2 K
+lapse_volume    = 0.0
+lapse_kdriver   = 0.0
+lapse_advect    = 0.0
+shift_Gamma     = 0.0                  # zero shift
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.5
+damp_kappa1     = 0.02
+damp_kappa1_over_alpha = false
+damp_kappa2     = 0.0
+excise_chi      = 0.0
+
+<particles>
+particle_type  = nrpic
+pusher         = midpoint
+interp         = hermite
+metric         = mesh
+tolerance      = 1.0e-12
+max_iterations = 50
+deposit        = true
+nfilter        = 0
+filter_compensate = false
+deposit_shape  = cic
+alpha_exc      = -1.0
+ah_exc_factor  = -1.0
+hist_dcycle    = 1
+snap_dt        = 2.0
+nprobe         = 0
+cstat_dcycle   = 4
+cons_dcycle    = 4
+traj_dcycle    = 2
+traj_ntrack    = 16
+lambda         = 0.0
+source_density = true
+source_extrap  = true
+particle_file  = particles.nrp
+
+<problem>
+pgen_name  = nrpic_cosmo
+id         = flrw
+hubble     = 1.0
+
+<output1>
+file_type = hst
+dt        = 0.05
+
+<output2>
+file_type = tab
+variable  = z4c
+dcycle    = 8
+slice_x2  = 0.125
+slice_x3  = 0.125
+
+<output3>
+file_type = rst
+dt        = 0.6

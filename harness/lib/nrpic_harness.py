@@ -337,11 +337,12 @@ def queue_jobs(env=None):
     """The jobs of this account in the Slurm queue (every state squeue lists: pending, held, running,
     completing, ...) as a list of {"id", "name", "state"}, or None if squeue fails or does not answer
     within 60 s. env: the environment the tool uses for its Slurm commands (build_env), so that the count
-    and the submission ask the same Slurm. One line of squeue is one job (as nrpic-run counted before)."""
+    and the submission ask the same Slurm. One line is one job; `-r` lists every task of a job array on a
+    line of its own, so that an array of N tasks counts N."""
     e = env if env is not None else os.environ
     user = e.get("USER") or e.get("LOGNAME") or os.environ.get("USER") or ""
     try:
-        r = subprocess.run(["squeue", "-h", "-u", user, "-o", "%i|%j|%T"], capture_output=True, text=True,
+        r = subprocess.run(["squeue", "-h", "-r", "-u", user, "-o", "%i|%j|%T"], capture_output=True, text=True,
                            timeout=60, env=env)
     except (OSError, subprocess.SubprocessError):
         return None
@@ -362,12 +363,75 @@ def queue_count(env=None):
     return None if jobs is None else len(jobs)
 
 
+# Commands that reach Slurm (decision 0033, one route): a local run of nrpic-run and `nrpic-env exec` refuse
+# them unless they run inside a dispatch of the shared queue (the marker below).
+_SLURM_NAMES = r"(sbatch|srun|salloc|gpu_run\.sh|gpu_batch\.sh|submit_chain\.sh)"
+_SLURM_WORD = re.compile(r"(?<![\w./-])(?:[\w./-]*/)?" + _SLURM_NAMES + r"(?![\w.-])")
+_SLURM_QUOTED = re.compile(r"""["'](?:[\w./-]*/)?""" + _SLURM_NAMES + r"""(?=["'\s])""")
+_CHAIN_QUERY = re.compile(r"""["']?\s+["']?(?:--status|--stop|-h|--help)(?![\w-])""")
+_INTERPRETERS = re.compile(r"(?:ba|da|z|k)?sh|python[0-9.]*|perl")
+
+
+def _first_slurm_name(text, rx):
+    for m in rx.finditer(text):
+        if m.group(1) == "submit_chain.sh" and _CHAIN_QUERY.match(text, m.end()):
+            continue                          # --status and --stop submit nothing
+        return m.group(1)
+    return None
+
+
+def _script_text_hit(path):
+    """The Slurm name a readable script file would run, or None (binary, unreadable or large files: None)."""
+    try:
+        if not os.path.isfile(path) or os.path.getsize(path) > 4 << 20:
+            return None
+        with open(path, "rb") as f:
+            raw = f.read()
+    except OSError:
+        return None
+    if b"\0" in raw[:8192]:
+        return None
+    text = raw.decode("utf-8", "replace")
+    first = text.split("\n", 1)[0]
+    if path.endswith(".py") or (first.startswith("#!") and "python" in first):
+        return _first_slurm_name(text, _SLURM_QUOTED)   # a string that begins with the name: subprocess, os.system
+    body = "\n".join(ln for ln in text.splitlines() if not ln.lstrip().startswith("#"))
+    return _first_slurm_name(body, _SLURM_WORD)
+
+
+def slurm_launch_in(argv, cwd):
+    """What in a command line would submit a Slurm job, as far as can be told without running it, or None:
+    sbatch, srun or salloc, or scripts/gpu_run.sh, gpu_batch.sh, submit_chain.sh (not --status or --stop),
+    named as a word anywhere in the arguments (a `bash -c` or `python3 -c` string included), or run by a
+    script file the command executes (argv[0], or the first file argument of a shell or Python), when the
+    file can be read: shell lines outside comments; in a Python file, a string that begins with the name."""
+    if not argv:
+        return None
+    hit = _first_slurm_name(" ".join(argv), _SLURM_WORD)
+    if hit:
+        return f"{hit} (in the command line)"
+    files = [argv[0]]
+    if _INTERPRETERS.fullmatch(os.path.basename(argv[0])) and "-c" not in argv[1:]:
+        files += [a for a in argv[1:] if not a.startswith("-")][:1]
+    for p in files:
+        if re.fullmatch(_SLURM_NAMES, os.path.basename(p)):
+            continue                          # the launcher scripts themselves: decided by the command line above
+        full = p if os.path.isabs(p) else os.path.join(cwd, p)
+        hit = _script_text_hit(full)
+        if hit:
+            return f"{hit} (in {p})"
+    return None
+
+
 # One route for card runs (decision 0033): only the dispatcher of the shared queue (harness/bin/nrpic-queue
 # run) submits them. For each entry's command it sets QUEUE_DISPATCH_VAR=<entry id>:<token> (a wrapper given
 # with --cmd inherits it), keeps the entry in state `submitting` with that token, and holds the submit lock
-# while the command runs. nrpic-run reads the variable (the one variable of the caller it reads, and it never
-# passes it on: a job's environment is built from files) to let a card submission through. The marker gates
-# the route only; it does not lift the cap, which nrpic-run checks for every card submission as before.
+# while the command runs. nrpic-run reads the variable (the one variable of the caller it reads; a job it
+# submits gets an environment built from files, without it) to let a card submission through. A job that a
+# --cmd wrapper submits itself (sbatch, the scripts) inherits the variable, where it is no longer valid once
+# the dispatch has ended: wrappers test their dispatch with `nrpic-queue check-dispatch`, which calls
+# queue_dispatch_problem, never by the variable being set. The marker gates the route only; it does not lift
+# the cap, which nrpic-run checks for every card submission as before.
 QUEUE_DISPATCH_VAR = "NRPIC_QUEUE_DISPATCH"
 
 

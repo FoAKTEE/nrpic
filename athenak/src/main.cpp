@@ -40,6 +40,7 @@
 #include "outputs/outputs.hpp"
 #include "driver/driver.hpp"
 #include "utils/utils.hpp"
+#include "utils/term_signal.hpp"
 #include "pgen/nrpic/nrpic_puncture_setup.hpp"
 #include "particles/nrpic_cosmo_ext.hpp"
 
@@ -124,6 +125,7 @@ int main(int argc, char *argv[]) {
 #endif  // MPI_PARALLEL_ENABLED
 
   Kokkos::initialize(argc, argv);
+  term_signal::Install();   // SIGTERM: stop after the cycle in progress, restart file
 
   //--- Step 2. --------------------------------------------------------------------------
   // Check for command line options and respond.
@@ -428,6 +430,8 @@ int main(int argc, char *argv[]) {
 #if MPI_PARALLEL_ENABLED
   MPI_Finalize();
 #endif
-  // zero, or the status of a run stopped by the guard of the NRPIC module
+  // zero, or the status of a run stopped by the guard of the NRPIC module, or 143 for a
+  // run that stopped on SIGTERM after writing its restart outputs
+  if (term_signal::Stopped()) { return(term_signal::ExitStatus()); }
   return(nrpic::GuardExitStatus());
 }

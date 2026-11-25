@@ -16,6 +16,7 @@ rounds_js = open(ROOT + '/scratch/orch/nrpic-rounds.js').read()
 def grab(src, name, nxt):
     i = src.index('const ' + name + ' = ') + len('const ' + name + ' = '); j = src.index('\nconst ' + nxt + ' = ', i); return json.loads(src[i:j])
 SRC = grab(core_js, 'SRC', 'CL'); CLERK = grab(core_js, 'CLERK', 'SLOT'); GATE = grab(rounds_js, 'GATE', 'AUX')
+CLERK.setdefault('v0.7', CLERK['v0.6'].replace('core-v0.6', 'core-v0.7').replace('RELEASE-v0.6', 'RELEASE-v0.7').replace('_v06', '_v07').replace('CLAUDE.md must stay under 200 lines', 'CLAUDE.md: also bring the two Machine bullets on the step limit with a Gamma-driver and on restarts up to the release (the wording core proposes in its outbox message to orch of 2026-11-25 00:43Z; from this release a run writes its restart files on the termination signal and a chain does not count an attempt cut by a signal); keep the QUEUE CAP bullet as it is; the release builds use no card. The card checks of the merged build wait in the shared queue: name them as pending in the row, as the row of core-v0.6 once did'))
 pre = core_js[core_js.index('const ROOT = '):core_js.index('const SRC = ')]
 fn = core_js[core_js.index('const CW = ROOT'):core_js.index('// release candidate v0.4')].replace("phase: v === 'v0.6' ? 'Round' : 'Release ' + v", "phase: 'Core'")
 OWN = {'A-emd-pbh': 'track/A-emd-pbh', 'B-emd-gw': 'track/B-emd-gw', 'C-sidm': 'track/C-sidm', 'D-bh-dress': 'track/D-bh-dress', 'E-stoch-inf': 'track/E-stoch-inf', 'F-hills': 'track/F-hills', 'kb': 'kb/main', 'core': 'core/nrpic'}

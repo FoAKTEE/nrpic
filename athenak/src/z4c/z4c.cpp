@@ -127,6 +127,10 @@ Z4c::Z4c(MeshBlockPack *ppack, ParameterInput *pin) :
   if (pin->DoesParameterExist("z4c", "dt_lightspeed")) {
     dt_lightspeed = pin->GetReal("z4c", "dt_lightspeed");
   }
+  // step limit from the stability bound of the gauge sectors (read only if present)
+  if (pin->DoesParameterExist("z4c", "dt_gauge")) {
+    dt_gauge = pin->GetReal("z4c", "dt_gauge");
+  }
   // guard that stops a run whose fields are not finite (<z4c_guard>, nrpic_guard.cpp)
   nrpic::GuardInit(pin, pmy_pack->pmesh);
   opt.chi_psi_power = pin->GetOrAddReal("z4c", "chi_psi_power", -4.0);

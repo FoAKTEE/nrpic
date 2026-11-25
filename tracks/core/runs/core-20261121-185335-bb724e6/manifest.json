@@ -1,0 +1,162 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-185335-bb724e6",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "gauge-2 card job D: first pass (relaxation everywhere) on the Einstein-Straus mesh of job B for 100 M, the same-mesh reference of es-hole; card executable of core/gauge-2 (source 90f52f4d); prediction ES-f2 in journal entry 8",
+  "preregistered_in": null,
+  "launcher": "batch",
+  "command": [
+    "scripts/gpu_batch.sh",
+    "/data/haiyangw/nrpic/scratch/core/core-20261121-185335-bb724e6/batch.list"
+  ],
+  "cwd": "scratch/core/core-20261121-185335-bb724e6",
+  "git": {
+    "sha": "bb724e6e4630d55643454927b135318a9adfc8c1",
+    "branch": "core/gauge-2",
+    "dirty": false,
+    "merge_base_main": "9aa744050b6dd76e8847e202b1b6f245a0cda107",
+    "worktree": "wt/core-s1"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": "nrpic_cf",
+    "exe": "/data/haiyangw/nrpic/wt/core-s1/.work/build_gpu_g2/src/athena",
+    "exe_sha256": "4bcd606a19fea204af11270e67b1514e0a99185649fb81df73e4e0816aab375e",
+    "cmake_flags": [
+      "-DPROBLEM=built_in_pgens",
+      "-DAthena_ENABLE_MPI=OFF",
+      "-DAthena_ENABLE_OPENMP=OFF",
+      "-DKokkos_ARCH_ICX=ON",
+      "-DKokkos_ENABLE_DEBUG=OFF",
+      "-DKokkos_ENABLE_DEBUG_BOUNDS_CHECK=OFF",
+      "-DCMAKE_CXX_COMPILER=/data/haiyangw/nrpic/wt/core-s1/.work/build_gpu_g2/nvcc_wrapper_pinned",
+      "-DCUDAToolkit_ROOT=/usr/local/cuda-12.6",
+      "-DKokkos_ENABLE_SERIAL=ON",
+      "-DKokkos_ENABLE_CUDA=ON",
+      "-DKokkos_ARCH_AMPERE80=ON",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_FLAGS_RELEASE=-O3 -DNDEBUG"
+    ],
+    "toolchain": "nvcc 12.6 (host g++ 11.4.0)"
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": "NVIDIA A100 80GB (Slurm partition preempt)",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-s1/.venv"
+  },
+  "input": {
+    "file": "tracks/core/analysis/gauge2/inputs/es_hole.athinput",
+    "sha256": "9352579035e22602a76f3c549ef0c933565d63001bd7d5ee4423c88717857039",
+    "overrides": {
+      "particles/particle_file": "/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.nrp",
+      "problem/comp0_file": "/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.tab",
+      "z4c/lapse_leak_hole": "0.0"
+    }
+  },
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.nrp",
+      "role": "input",
+      "sha256": "d54c3914ed4760eb68e101a00530963b8c98c7cea4251ddaf1df74a1c8b52a09",
+      "bytes": 5236096,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.tab",
+      "role": "input",
+      "sha256": "9a69386c024713632985f20720a7c82cf3d85334ea20521282553e8581b8faef",
+      "bytes": 510206,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": ".work/build_gpu_g2/src/athena",
+      "role": "exe",
+      "sha256": "4bcd606a19fea204af11270e67b1514e0a99185649fb81df73e4e0816aab375e",
+      "bytes": 109698256,
+      "tracked": false
+    },
+    {
+      "path": "tracks/core/analysis/gauge2/card_d.list",
+      "role": "list",
+      "sha256": "42f474d7826af749aef2236eb5cb563d4a007c56b8dc8b2d56c057e994dd03dd",
+      "bytes": 733,
+      "tracked": true
+    },
+    {
+      "path": "tracks/core/analysis/gauge2/inputs/es_hole.athinput",
+      "role": "athinput:es-leak",
+      "sha256": "9352579035e22602a76f3c549ef0c933565d63001bd7d5ee4423c88717857039",
+      "bytes": 4665,
+      "tracked": true
+    }
+  ],
+  "batch_entries": [
+    {
+      "name": "es-leak",
+      "input": "tracks/core/analysis/gauge2/inputs/es_hole.athinput",
+      "args": [
+        "particles/particle_file=/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.nrp",
+        "problem/comp0_file=/data/haiyangw/nrpic/scratch/core/gauge/ic_es/es.tab",
+        "z4c/lapse_leak_hole=0.0",
+        "-t",
+        "00:11:00"
+      ]
+    }
+  ],
+  "resources": {
+    "nodes": 1,
+    "gpus": 1,
+    "cores": 1,
+    "walltime_s": 0.0,
+    "wall_limit": "00:13:00",
+    "segments_max": null,
+    "gpu_hours_requested": 0.2,
+    "gpu_hours": 0.0,
+    "particles": null
+  },
+  "slurm": {
+    "partition": "preempt",
+    "job_name": "core-20261121-185335-bb724e6",
+    "job_ids": [
+      "4819"
+    ]
+  },
+  "outputs": {
+    "dir": "scratch/core/core-20261121-185335-bb724e6",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "a6821cbad2c41f0b1c4d214f018bce5e4be378160ba93eeeaa81701fafea4a18",
+    "bytes": 109698596,
+    "files": 2
+  },
+  "status": "stopped",
+  "exit_code": 1,
+  "registered": "2026-11-21T18:53:36Z",
+  "started": "2026-11-21T18:53:36Z",
+  "ended": "2026-11-21T18:57:47Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 7.6642,
+    "gpu_hours_reserved": 0.6,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1460,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-21T18:57:47Z"
+}

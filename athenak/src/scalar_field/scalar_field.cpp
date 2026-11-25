@@ -143,15 +143,17 @@ ScalarField::ScalarField(MeshBlockPack *ppack, ParameterInput *pin) :
     }
   }
 
-  // ---- memory
+  // ---- memory (R and Pi_R of the stochastic sources as components 2 and 3 only with
+  // <scalar_field> noise_mode_eq = mesh or noise_level = 2)
+  if (MeshModeRequested(pin)) { nvar_sf = nsf + 2; }
   int nmb = std::max((ppack->nmb_thispack), (pm->nmb_maxperrank));
   {
     int ncells1 = indcs.nx1 + 2*(indcs.ng);
     int ncells2 = indcs.nx2 + 2*(indcs.ng);
     int ncells3 = indcs.nx3 + 2*(indcs.ng);
-    Kokkos::realloc(u0,    nmb, (nsf), ncells3, ncells2, ncells1);
-    Kokkos::realloc(u1,    nmb, (nsf), ncells3, ncells2, ncells1);
-    Kokkos::realloc(u_rhs, nmb, (nsf), ncells3, ncells2, ncells1);
+    Kokkos::realloc(u0,    nmb, (nvar_sf), ncells3, ncells2, ncells1);
+    Kokkos::realloc(u1,    nmb, (nvar_sf), ncells3, ncells2, ncells1);
+    Kokkos::realloc(u_rhs, nmb, (nvar_sf), ncells3, ncells2, ncells1);
     sf.phi.InitWithShallowSlice(u0, I_SF_PHI);
     sf.vPi.InitWithShallowSlice(u0, I_SF_PI);
     rhs.phi.InitWithShallowSlice(u_rhs, I_SF_PHI);
@@ -161,13 +163,13 @@ ScalarField::ScalarField(MeshBlockPack *ppack, ParameterInput *pin) :
     int nccells1 = indcs.cnx1 + 2*(indcs.ng);
     int nccells2 = indcs.cnx2 + 2*(indcs.ng);
     int nccells3 = indcs.cnx3 + 2*(indcs.ng);
-    Kokkos::realloc(coarse_u0, nmb, (nsf), nccells3, nccells2, nccells1);
+    Kokkos::realloc(coarse_u0, nmb, (nvar_sf), nccells3, nccells2, nccells1);
   }
 
   // boundary buffers: the Z4c flavour (same restriction, prolongation and exchange of
   // the coarse arrays as the spacetime variables)
   pbval_u = new MeshBoundaryValuesCC(ppack, pin, true);
-  pbval_u->InitializeBuffers((nsf));
+  pbval_u->InitializeBuffers((nvar_sf));
 
   NoiseInit(pin);
   DiagInit(pin);
@@ -220,7 +222,7 @@ void ScalarField::QueueTasks() {
 // communication tasks (as for the spacetime variables, z4c_tasks.cpp)
 
 TaskStatus ScalarField::InitRecv(Driver *pdrive, int stage) {
-  return pbval_u->InitRecv(nsf);
+  return pbval_u->InitRecv(nvar_sf);
 }
 
 TaskStatus ScalarField::ClearRecv(Driver *pdrive, int stage) {
@@ -278,7 +280,7 @@ TaskStatus ScalarField::CopyU(Driver *pdrive, int stage) {
   int js = indcs.js, je = indcs.je;
   int ks = indcs.ks, ke = indcs.ke;
   int nmb1 = pmy_pack->nmb_thispack - 1;
-  int nvar = nsf;
+  int nvar = nvar_sf;
   auto &u0_ = u0;
   auto &u1_ = u1;
 
@@ -312,6 +314,7 @@ TaskStatus ScalarField::CalcRHS_(Driver *pdrive, int stage) {
     case 3: CalcRHS<3>(pdrive, stage); break;
     case 4: CalcRHS<4>(pdrive, stage); break;
   }
+  if (nopt.mesh_r) { NoiseMeshRHS(); }   // R and Pi_R (scalar_field_noise_mesh.cpp)
   return TaskStatus::complete;
 }
 
@@ -349,7 +352,7 @@ TaskStatus ScalarField::ExpRKUpdate(Driver *pdriver, int stage) {
   auto &u1_ = u1;
   auto &u_rhs_ = u_rhs;
   int nmb1 = pmy_pack->nmb_thispack - 1;
-  int nvar = nsf;
+  int nvar = nvar_sf;
 
   par_for("sf RK update",DevExeSpace(),
       0,nmb1,0,nvar-1,ks,ke,js,je,is,ie,

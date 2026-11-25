@@ -27,7 +27,7 @@ def at(t, m, t0):
 
 
 def main():
-    out = Path(sys.argv[1])
+    out = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parent.parent  # default: note/
     (out / "figures").mkdir(parents=True, exist_ok=True)
     fs = C.style()
     import matplotlib.pyplot as plt
