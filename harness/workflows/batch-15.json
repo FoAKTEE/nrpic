@@ -1,0 +1,33 @@
+{
+ "name": "15 (2026-11-24 night)",
+ "what": "Track E: records after the verifier and the G2 sections of its note; knowledge base: snapshot and package, then a second fresh verifier for KB-G3",
+ "note": "Releases core-v0.4 to v0.7 are on main (core-v0.7 since 2026-11-24: CLAUDE.md row; executables .work/build_gpu_v07 and .work/build_cpu_v07). Rulings: coord/DECISIONS/0033 to 0036. The usage window of this account is small (decision 0032 item 1): read what the task needs.",
+ "stages": [
+  [
+   0,
+   1
+  ],
+  [
+   2
+  ]
+ ],
+ "items": [
+  {
+   "type": "lead",
+   "owner": "E-stoch-inf",
+   "extra": "Extra for this session (about ninety minutes). (1) Records after the fresh verifier of G2 (stage/G2/VERIFIER.md; coord/DECISIONS/0036 item 2): write g2prod/JOURNAL.md entry 4 from the quarter-amplitude pair (the verifier's numbers refute Q-a; Q-b and Q-c hold: rerun g2prod/scripts/judge_q.py and reconcile it with them), point CHECKLIST C3, C5, C7 to it and C18 to the verifier's report; the three-amplitude floor reading stands beside the failure of U-A4'(a) as a finding after the data, the criterion stays FAILED as written. (2) The G2 sections of this track go into the reproduction note tracks/E-stoch-inf/repro/note/ (decision 0035 item 1), written with the paper-writing skill (/home/haiyangw/.claude/skills/paper-writing/SKILL.md; load it with the Skill tool if your session lists it): the criteria fixed before the runs and their outcomes, the production ladder on the release card build, the resolution pair at 256 and 320 cells, the window result, the fresh verifier; the figures the checklist still lacks (the schematic of the verification ladder, a slice mosaic with zoom boxes, the resolution figure) made by registered scripts and looked at; ledger rows with run ids; registered run_all; checker; compile; read the pages that changed. The track's older note gets a pointer to it. (3) nrpic-stage collect, verify (with --no-checksums if the full pass would take hours: say so) and report for G2; list G2 in gates_complete if every item passes or is a failure on record with its ruling. The runs q0037 and q0038 (floor test) are not part of the gate: read them only if they have ended."
+  },
+  {
+   "type": "lead",
+   "owner": "kb",
+   "extra": "Extra for this session (about forty minutes). (1) After package claims3: the snapshot (kb snapshot) and kb qa run; stage/KB-G3/OPEN.md items O1, O2, O3, O5 closed if the package closed them, O4 as it stands; the rest of the weak class (about 543 claims labelled as supported that nobody read against their own wording; the sample of thirty gave 26 right) stated in the package as a known limit with its estimated rate. (2) The stage package of KB-G3 against the charter's criteria (nrpic-stage collect, verify, report): complete for the second fresh verifier, which runs after you in this batch, or what is missing. STATUS.md, HANDOFF.md, JOURNAL.md; commit; push."
+  },
+  {
+   "type": "task",
+   "owner": "kb",
+   "key": "stage/KB-G3/verifier2",
+   "title": "second fresh verifier for gate KB-G3",
+   "task": "Second independent verifier for gate KB-G3 of the knowledge base (the first: tracks/kb/stage/KB-G3/VERIFIER.md, read only its list of what it covered). Fresh reader, own code, predictions first, registered runs, the snapshot db/current. (1) The claims written or changed since the first verifier (packages claims3 and the lead's sessions: 862 to 881, the superseded and withdrawn ones, seeds 803 and 805, 409, 447, 449, 450, 452, 781, 804, 714, 809): each re-read at its locators in the store: supported as worded, not supported, or locator wrong. (2) A new stratified sample of forty claims from the whole store with a seed committed before the draw (strata: checked by a person, located by machine, the weak class of claims3): the rate right as worded per stratum with its interval, and whether the package states the limit of the machine-located claims honestly. (3) The criteria of KB-G3 in coord/CHARTER.md section 'Gates of the knowledge base', one by one, against the package tracks/kb/stage/KB-G3/: met, not met, with the evidence. tracks/kb/stage/KB-G3/VERIFIER2.md: what was checked and how, per item the verdict, what could not be checked, the three weakest points, and a recommendation (pass, pass with reservations, not yet). Commit path-limited."
+  }
+ ]
+}
