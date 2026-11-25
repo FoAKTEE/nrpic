@@ -702,10 +702,15 @@ Predictions before every registered run: zeta/JOURNAL.md entries 4-6, g3/amend/J
 - Reference at sigma = 0.1 on the lattice (E-20261125-160722-a6d1f26, 4e6): TS1 FAILED (gate 1.00245 +- 0.00050),
   TS2 holds as worded but A10's bound is not reached, TS3 holds. Figure looked at (cosmetic axis defect).
 - Importance sampler (ref_tilt.py; E-20261125-160658-855db8c): constant shift of A9 failed its smoke test (mean
-  weight 0.01); a variance-share profile replaces it (SCOPE 4d.9 A14 (a)); outcome in g3/amend entry 10.
+  weight 0.01); a variance-share profile replaces it (SCOPE 4d.9 A14 (a)). F(4) to 0.11 % per side; F_+(4)/Q(4) =
+  1.222, F_-(4)/Q(4) = 0.798. Validation at nu = 3 failed on side + against the first direct run (-2.07 s.e., TL3);
+  the independent direct repeat E-20261125-163825-ca2ebaa (seed tag _rep2) lands 0.15 s.e. from the tilted value,
+  and against the pooled 8e6 direct paths both sides hold: A9 met (g3/amend entries 10-12). TL4 (mean weight)
+  failed: ill-posed prediction.
 - Defects fixed: sampler NaN at vanishing noise (sdn/langevin.py); ref_spec.py variance gate generalised.
 - Process: a smoke process was stopped with a kill built from a ps listing filtered by pattern (numeric PIDs, own
   shell excluded); later ones by PID from a listing and by nrpic-run stop. Two submissions refused for a missing
   --preregistered (production), resubmitted.
-- Failed predictions: TS1; TL1 (moot, constant shift); Z1 along Pi (as written); Z2(iii) failed as predicted.
+- Failed predictions: TS1; TL1 (moot, constant shift); TL3 on side + against the first direct run; TL4; Z1 along
+  Pi (as written); Z2(iii) failed as predicted. Failed or stopped runs: E-20261125-161757-fb0eb95 (stopped).
 Card-hours this session: 0.

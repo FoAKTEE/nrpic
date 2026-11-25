@@ -1,15 +1,15 @@
 {
   "track": "E-stoch-inf",
   "gate": "G3",
-  "commit": "21cd418fcb8295faf042f6420910696d3e68d392",
-  "verified_utc": "2026-11-25T16:35:18Z",
-  "export": "/data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-21cd418-20261125T163310Z",
+  "commit": "e0b7c8dc58ed4a22f40605df437547612733dc10",
+  "verified_utc": "2026-11-25T16:50:12Z",
+  "export": "/data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-e0b7c8d-20261125T164945Z",
   "result": "FAIL",
   "checks": [
     {
       "check": "clean",
       "status": "FAIL",
-      "message": "2 uncommitted paths: commit them first (tracks/E-stoch-inf/RISKS.md, tracks/E-stoch-inf/stage/REVIEW-wave3.md)",
+      "message": "1 uncommitted paths: commit them first (tracks/E-stoch-inf/JOURNAL.md)",
       "detail": null
     },
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 21cd418fcb82 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-21cd418-20261125T163310Z/tree",
+      "message": "clean export of e0b7c8dc58ed (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-e0b7c8d-20261125T164945Z/tree",
       "detail": null
     },
     {
@@ -68,13 +68,9 @@
     },
     {
       "check": "runs",
-      "status": "FAIL",
-      "message": "1 of 317 runs have problems; 7 waived",
-      "detail": {
-        "E-20261125-160658-855db8c": [
-          "status is running: not finished (nrpic-run finish)"
-        ]
-      }
+      "status": "PASS",
+      "message": "318 run manifests finished (30 hand-written, read as decision 0012 allows); failures of 7 runs waived by coord/WAIVERS.md (decision 0019)",
+      "detail": null
     },
     {
       "check": "runs-waived",
@@ -304,7 +300,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 45 lines",
+      "message": "STATUS.md has 40 lines",
       "detail": null
     },
     {

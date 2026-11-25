@@ -1,12 +1,12 @@
 # Re-verification: E-stoch-inf G3
 
-`harness/bin/nrpic-stage verify E-stoch-inf G3` on 2026-11-25T16:35:18Z, clean export of commit `21cd418fcb82` in `scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-21cd418-20261125T163310Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify E-stoch-inf G3` on 2026-11-25T16:50:12Z, clean export of commit `e0b7c8dc58ed` in `scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-e0b7c8d-20261125T164945Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | FAIL | 2 uncommitted paths: commit them first (tracks/E-stoch-inf/RISKS.md, tracks/E-stoch-inf/stage/REVIEW-wave3.md) |
+| clean | FAIL | 1 uncommitted paths: commit them first (tracks/E-stoch-inf/JOURNAL.md) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 21cd418fcb82 (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-21cd418-20261125T163310Z/tree |
+| export | PASS | clean export of e0b7c8dc58ed (HEAD) in /data/haiyangw/nrpic/scratch/E-stoch-inf/tmp/stage-verify/E-stoch-inf-G3-e0b7c8d-20261125T164945Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | WARN | stage/G3/ lacks EVIDENCE.md (decision 0012; STAGE_REPORT.md comes from `report`); scoping text: spec/scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
@@ -14,22 +14,12 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 12 figures, each with its script |
 | min-figs | PASS | 3 schematics and 9 data figures (brief 13.4 asks at least 1 and 1 at G3) |
-| runs | FAIL | 1 of 317 runs have problems; 7 waived |
+| runs | PASS | 318 run manifests finished (30 hand-written, read as decision 0012 allows); failures of 7 runs waived by coord/WAIVERS.md (decision 0019) |
 | runs-waived | WARN | failures of the manifest check waived: 7 runs named in main's coord/WAIVERS.md (decision 0019 item 6): E-20261123-035724-b661081: records scratch/core/exe/core_noise-level2/athena_gpu (sha256 468109496c82...), replaced in place on 2026-11-24; the file that ran is kept unchanged as scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu (tracks/core/EXE_PROVENANCE.md on core/nrpic); outputs unaffected (decision 0039 item 1); E-20261123-152119-38957ba: records scratch/core/exe/core_noise-level2/athena_gpu (sha256 468109496c82...), replaced in place on 2026-11-24; the file that ran is kept unchanged as scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu (tracks/core/EXE_PROVENANCE.md on core/nrpic); outputs unaffected (decision 0039 item 1); E-20261123-153146-d965002: records scratch/core/exe/core_noise-level2/athena_gpu (sha256 468109496c82...), replaced in place on 2026-11-24; the file that ran is kept unchanged as scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu (tracks/core/EXE_PROVENANCE.md on core/nrpic); outputs unaffected (decision 0039 item 1); E-20261123-153347-18e7c21: records scratch/core/exe/core_noise-level2/athena_gpu (sha256 468109496c82...), replaced in place on 2026-11-24; the file that ran is kept unchanged as scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu (tracks/core/EXE_PROVENANCE.md on core/nrpic); outputs unaffected (decision 0039 item 1); E-20261123-164235-49b0945: records scratch/core/exe/core_noise-level2/athena_gpu (sha256 468109496c82...), replaced in place on 2026-11-24; the file that ran is kept unchanged as scratch/core/exe/core_noise-level2_6ca93cba/athena_gpu (tracks/core/EXE_PROVENANCE.md on core/nrpic); outputs unaffected (decision 0039 item 1) |
 | run-notes | WARN | 30 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | checksums | WARN | output checksums not re-verified (--no-checksums) |
-| status | PASS | STATUS.md has 45 lines |
+| status | PASS | STATUS.md has 40 lines |
 | rerun | WARN | re-run skipped (--no-rerun) |
-
-## runs
-
-```
-{
- "E-20261125-160658-855db8c": [
-  "status is running: not finished (nrpic-run finish)"
- ]
-}
-```
 
 ## runs-waived
 
