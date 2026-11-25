@@ -687,3 +687,27 @@ For G2 (criterion C7): with the converged finder, |D_ES - D_V| <= 7.3e-5 at M/8 
 <= 5.5e-5 at M/16 over 100-300 M (reference 100 M, as criterion N); <= 3.8e-5 and <= 3.3e-5 with the
 reference at 50 M. Both are below the production-finder floor and show no growth with the expansion.
 Next for this item: the tight re-search of FE4's dumps (M/4) when it ends, with S(t) at three meshes.
+
+## Entry 18 (2026-11-25 03:55 PST, lead of batch 17, before the registered readings): FK ended; plan
+
+State: FK ES-FLK (D-20261123-022725-a553496) ran to tlim 400 M (chain DONE, job 5243 ended 2026-11-24
+20:45 PST after ten segments, many cut by preemption). FF4 and FE4 ran to tlim earlier (DONE, not yet closed).
+FN4 ES-FLK4N (job 5280, segment 7) is at 389.5 M of 400; FNQ ES-FLKQ (job 5279, segment 1 of the in-place
+continuation) at 135.5 M of 400; FL16 still waits (q0011). Closing: `nrpic-run finish` refuses FK because
+its manifest carries `continuations` (written by tools/continue_chain.sh): new tools/close_by_hand.py runs
+nrpic-run's own chain-close code (status, wall, sacct card-hours, sha256sums) and writes the manifest; FF4
+and FE4 close with nrpic-run finish.
+
+Readings of this session (predictions unchanged from entry 6: P7-P11 for FK; entries 10, 12, 15: N1-N3, XN,
+Q1-Q2, XQ for FN4/FNQ):
+- tools/fk_compare.py (new, written after FK ended): FK and ES-FL read by the same code (the reading of
+  g2runs/tools/esf_criteria.py), P7 (common finder times <= 219 M), P8 (reasons of dust removals), P9 ((iii)
+  bin medians with lo >= 280 M, D3 margin after 220 M), P10 (M_AH at the last sample 399.5 M). A smoke run
+  of the tool on the FK data was made at 03:50 to fix the figure layout (scratch tmp/fk_smoke, not a
+  result); the judgement below uses the registered run only.
+- g2runs/tools/esf_criteria.py --base esflk (criterion G for FK itself, as for ES-FL).
+- tools/np_partial.py (new): PARTIAL particle-number reading. Running chains are cut at their second-newest
+  restart time (what follows the newest restart of a preempted chain is written again); FK is read whole.
+  N2/Q2 (removed m E_K against FK), N3 (M_AH against FK), (iii) bins on the removals before the cut. Labelled
+  partial; N1-N4, Q1-Q3 are judged only when the runs end and are closed. A smoke run on the data was made
+  at 03:52 (tmp/np_smoke) to debug the cut.
