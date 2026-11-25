@@ -1,10 +1,10 @@
 {
   "track": "kb",
   "gate": "KB-G3",
-  "commit": "4b5e1895596db9d11adb0374b10a3f59cf2fddfe",
-  "verified_utc": "2026-11-25T12:50:10Z",
-  "export": "/data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-4b5e189-20261125T124942Z",
-  "result": "FAIL",
+  "commit": "34fce4045effeb89786fa463f7c981662daf20cc",
+  "verified_utc": "2026-11-25T12:50:29Z",
+  "export": "/data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-34fce40-20261125T125018Z",
+  "result": "PASS",
   "checks": [
     {
       "check": "clean",
@@ -14,14 +14,14 @@
     },
     {
       "check": "sync",
-      "status": "FAIL",
-      "message": "main has commits not merged: run nrpic-ctx sync",
+      "status": "PASS",
+      "message": "main is merged into the branch",
       "detail": null
     },
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 4b5e1895596d (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-4b5e189-20261125T124942Z/tree",
+      "message": "clean export of 34fce4045eff (HEAD) in /data/haiyangw/nrpic/scratch/kb/tmp/stage-verify/kb-KB-G3-34fce40-20261125T125018Z/tree",
       "detail": null
     },
     {
@@ -362,8 +362,8 @@
     },
     {
       "check": "status",
-      "status": "WARN",
-      "message": "STATUS.md has 40 lines (at most 60, with a `gate:` line)",
+      "status": "PASS",
+      "message": "STATUS.md has 41 lines",
       "detail": null
     },
     {
