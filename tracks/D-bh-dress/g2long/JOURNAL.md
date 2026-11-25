@@ -782,3 +782,23 @@ Predictions: entry 6.
 So criterion G ((iii) and D2) holds at M/4 and M/8 with the control of each mesh; the growth has a third mesh
 member when FL16 (M/16, q0011) runs. A mesh ORDER of the growth needs a reference time after the t = 0
 transient (L3 uses Delta M from 20 M, entry 10).
+
+## Entry 21 (2026-11-25 04:25 PST, lead of batch 17): outcome of FE4 (M/4 member of the null test)
+
+FE4 ES-1L4 D-20261123-022726-1b133af closed by nrpic-run finish (completed, 0.83 card-hours). Judged by
+tools/judge_conv.py with ES-1L4 added, registered D-20261125-122227-3eb563a (judge_conv.png looked at).
+Prediction: entry 6.
+- P5 REFUTED: at M/4 the bubble-minus-vacuum difference D_ES1L4 - D_V1L4 grows steadily from 100 M to
+  4.57e-3 at 299 M (panel c), twenty times the M/8 difference (2.28e-4) and above criterion N's threshold
+  from about 105 M on; it departs from the M/8 difference by more than 2e-4 for 189 M. The prediction that
+  the difference does not depend on the horizon resolution is wrong at M/4. At M/8 and M/16 the two curves
+  lie on each other (2.3e-4 and 2.0e-4, entry 5, H3).
+- P6 FAILED narrowly: 0.83 card-hours against 0.5-0.8.
+- Reading [JUDGEMENT; no run here could fail on the cause]: the M/4 horizon (radius ~2 M, 8 cells) sits
+  where the finder offset itself is -8e-3 (P2 refuted, FP4) and the vacuum M/4 mass declines secularly
+  (P3's detrended line, slope -8.9e-6 per M on 150-240 M); in the bubble the same mesh lets the mass grow.
+  So the null test converges only from M/8 on: M/4 is outside the convergent regime, M/8 and M/16 agree at
+  the floor. For criterion N's three-way convergence this is the third member, and it fails; the statement
+  for G2 is "N holds at M/8 and M/16, and fails at M/4 by a factor 20" (stage/G2 C1, C2, C7).
+- The tight re-search of FE4's dumps (dip at 100 M, entry 17) is still to do; with a 4.6e-3 drift at M/4
+  the dip of 4-6e-5 is not measurable there and the item is dropped.
