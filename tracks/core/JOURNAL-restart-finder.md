@@ -187,3 +187,28 @@ restart file of the release with the new executable.
   record too, because the densities of cycle 26 are in no file, and no other record;
   cut at cycle 26 it would lose none (the fields of the restart suffice, as in T1).
   Refuted by a non-zero status, or by any other record missing or added.
+
+## Entry 6 (2026-11-25, 05:46 PST): finder test stopped after 8 cycles, set-up changed, P10 restated
+
+Run core-20261125-134013-54a77d6 (first attempt of `finder_test.py`, serial build, to
+t = 8 M): 17 s per cycle on the serial build (8^3 MeshBlocks with four ghost cells), 256
+cycles times nine runs would have taken hours. Stopped by `nrpic-run stop` after 8
+cycles; no result is taken from it. What I saw in its three summary lines before the
+change, and use for the design only: the smallest horizon radius is 0.47 M at t <= 0.25
+and not yet growing, and column 1 of the summary file is the number of flow iterations
+of the search, not the cycle (so searches are matched by their time).
+
+Changes of the test, before any outcome: threaded builds (branch and release
+`core_nrpic_v07/athena_cpu_omp`), two threads each, to t = 2 M (64 cycles, 17
+searches); the late times are covered by Track D's dumps (P11). The guard test no
+longer waits for the horizon to grow through a radius:
+- P10 restated. `ah_exc_max_growth = 0.4` puts the guard radius (0.4 M) inside the
+  horizon (0.47 M) from the start: no removal by reason 3 in the whole run, while the
+  run without the option removes particles inside the horizon; `ah_exc_max_growth = 4.0`
+  written out is byte-identical to the run without it. Refuted by a reason-3 removal
+  with 0.4, by none without the option, or by a differing byte at 4.0. Not tested by
+  this: a horizon that grows through the guard radius during a run (Track D's ES-FL at
+  219.5 M); it is the same comparison evaluated at every step [JUDGEMENT from the one
+  line of source].
+- P9 stays, for 17 searches up to 2 M instead of 65 up to 8 M; the run with 1e-5 and
+  100 polishing iterations is dropped.
