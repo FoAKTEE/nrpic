@@ -1,0 +1,91 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "D-20261125-160651-29a730e",
+  "track": "D-bh-dress",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "G2 rerun (stage/G2/rerun_g2.py) of D-20261125-122849-43db157",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/D-bh-dress/g2long/tools/xc_plane.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "ES-FLK=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261123-022725-a553496:esflk:0.125",
+    "ES-FLK4N=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261124-134157-b17938b:esflk4n:0.125"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "29a730ec703ab62852668e02d608c26bad7c5796",
+    "branch": "track/D-bh-dress",
+    "dirty": false,
+    "merge_base_main": "c2154334a0f77a0f485c135951bf4dd6306d8889",
+    "worktree": "wt/D-bh-dress"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/D-bh-dress/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/D-bh-dress/g2long/tools/xc_plane.py",
+      "role": "argv",
+      "sha256": "1807e74a8a40793af9bd273873c1cfa201f6346ac714f2deeb9a729db6f68605",
+      "bytes": 6846,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/D-bh-dress/D-20261125-160651-29a730e",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-25T16:06:51Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 25.5109,
+    "gpu_hours_reserved": 7.8667,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 310,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md"
+  }
+}
