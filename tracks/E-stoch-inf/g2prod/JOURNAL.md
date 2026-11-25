@@ -235,3 +235,49 @@ blind test. Expected from judge_q.py on the g2q summary (judge_g2's floor code u
   rms ~6.334e-5.
 What would show a defect of either reader: a difference from the verifier's numbers above 1e-3
 relative in any of these (both read the same dumps).
+
+### 4.1 Outcomes Q-a..Q-c (judge E-20261125-033357-a608cda; rerun after a figure fix E-20261125-033450-4c4a31c, same numbers)
+
+Inputs: g2q analysis E-20261124-233223-51b52c0 (U256hp/hm s = +-1/2, U256qp E-20261123-230004-861aea7
+and U256qm E-20261123-230507-a6246b1 s = +-1/4, release card build core-v0.6), the s = 1 over 1/2
+judge E-20261123-024359-5dc3213. Figure looked at: fig/fig_g2_quarter.png of the rerun (the first
+version's common-mode panel was dominated by the ill-defined sample at N*; the rerun plots from
+cN = 1 on; numbers unchanged).
+- Q-a REFUTED. The even factor of M at cN 6.525 from (1/2, 1/4) with judge_g2's floor is 4.1275,
+  not 3.98 +- 0.015: its deviation from 4 (+0.127) is larger than that of (1, 1/2) (-0.075) and of
+  the opposite sign. M is not even judged there by 4c's own rule (e_{1/4} < 3 f). Elsewhere the
+  quarter pair judges H at 3 dumps (cN 3.05-4.04: 3.99988-4.00026) and M at 6 (cN 0-5.04:
+  3.98537-4.00983), all within 4.00 +- 0.05. By the rule of entry 3 no cause of the U-A4'(a) miss
+  is named from the s^4 hypothesis: it is not a higher order in s.
+- Q-b HOLDS by its refutation rule: common mode of the odd-part error at N_f (k <= 16 dk) -2.0725e-6
+  at s = 1/4 (window [-3.3e-6, -1.7e-6]); it lies 0.03e-6 outside the stated band -2.5e-6 +- 0.4e-6.
+  The half pair repeats -9.872e-6; ratio 4.76, not 4: with the three amplitudes the common mode is
+  a s^2 + b, a = -4.16e-5, b = +5.3e-7 (verifier, E-20261125-023609-01d8feb). In the figure the
+  s = 1/4 curve times 4 sits about +1.5e-6 above the s = 1/2 curve from cN 1.5 on, i.e. an offset
+  of about +4e-7 at s = 1/4 that does not scale as s^2; the drop after cN 5.5 does. No cause named.
+- Q-c HOLDS: U-A0 1.61e-9 (both runs), U-A1 2.52e-6, U-A3 0.99809-1.00042 (qp) and 0.99957-1.00191
+  (qm); records <|H'|/[H]> 1.191e-12, <|M|/[M]> 0.02513 (both, < 1e-9 and < 0.1); even/odd rms
+  (k <= 32 dk) 6.3337e-5 against 6.33e-5 +- 5 percent; U-A2' of the quarter pair 1.289e-4 (s = 1/2:
+  1.242e-4, s = 1: 1.089e-4).
+- Reconciliation with the fresh verifier (stage/G2/VERIFIER.md 3.2, 3.4; own reader, own R^NR,
+  own floor code): 4.127 (4.1275 here), -2.07e-6 (-2.0725e-6), U-A0 1.6e-9, U-A1 2.5e-6, U-A3
+  0.99809-1.00042, records 1.19e-12 and 2.51e-2, even/odd 6.334e-5: every number agrees to the
+  digits the verifier quotes. The expectation of 4.0 held.
+
+### 4.2 The three-amplitude reading (a finding after the data; ruling 0036 item 2)
+
+Not a test of this package: the verifier proposed and ran it (E-20261125-023427-6fb6400,
+fig_floor3.png) after the runs. With D1 = E(1) - 4 E(1/2) and D2 = E(1/2) - 4 E(1/4), rms(D2)/
+rms(D1) = 0.997 to 1.000 and corr(D1, D2) = -0.235 to -0.245 at every dump 1-13 for H and M,
+the values of E(s) = s^2 A + F_s with a per-run part F_s of equal rms sigma at every s
+(expected ratio 1, correlation -4/17 = -0.235); an s^4 term would give 1/16 and +1. With sigma in
+place of the 4c floor the M factor at dump 13 is 3.9988 and every dump with e_{1/2} > 3 sigma lies
+within 4 +- 0.0045 (H) and 4 +- 0.0012 (M). The 4c floor f = 4 o_{1/2}^2 - o_1^2 is the difference
+of two numbers equal to 1e-4 where the odd part is 10 to 1000 times the even part, so a third-order
+part of the odd part moves it by tens of percent (f/sigma 0.65-1.75 at dumps 8-13).
+Status [JUDGEMENT on the cause; the numbers VERIFIED by the verifier's runs and not rerun here]:
+the miss of U-A4'(a) comes from the floor estimator fixed in 4c, not from the evolution or a
+higher order in s. U-A4'(a) stays FAILED as written (ruling 0030 item 2, 0036 item 2); this
+reading stands beside it, labelled as made after the data. For later gates a three-amplitude floor
+and a U-R clause on the discretisation part (Richardson in s^2) are proposals, not rewordings
+(outbox to orch, batch 15).
