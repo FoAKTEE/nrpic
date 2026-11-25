@@ -19,15 +19,15 @@ last-result: Lead batch 20 (2026-11-25 07:54-09:05 PST, processors only, at most
              - sigma = 0.1 lattice reference (E-20261125-160722-a6d1f26): variance gate FAILED
                (1.00245 +- 0.00050); skewness 0.0182 +- 0.0014 vs 0.0199 +- 0.0012: A10's bound
                not reached (R39).
-             - Importance sampler (A9 with A14 (a)): E-20261125-160658-855db8c, see
-               g3/amend/JOURNAL.md entry 10 (side +: c0 3.95, rel. s.e. of F_+(4) 0.11 %).
+             - Importance sampler (A9 with A14 (a), E-20261125-160658-855db8c): F(4) to 0.11 % per
+               side; F_+(4)/Q(4) 1.222, F_-(4)/Q(4) 0.798; nu = 3 validation holds on side -, FAILS on
+               side + (-2.07 s.e.): F_+(4) reported, not judged, until a second direct run.
              - Defects fixed: NaN of the biased sampler where the noise vanishes; constant shift
                of A9 unusable (mean weight 0.01); variance gate required s0.01_lattice.
 card plan:   q0050 G3P, q0051 G3C, q0052 G3R (priority 2), q0053 G3B00, q0054 G3B01 (priority 5,
              after G3P): all waiting, cards held by another partition (R37). Nothing new queued:
              the remaining baseline waits for the pilot's cost (A12).
-runs pending: q0050-q0054 (cards). Processors: none after this session (the tilt run is closed
-             in this session if it ends; otherwise `nrpic-run finish E-20261125-160658-855db8c`).
+runs pending: q0050-q0054 (cards, all waiting). Processors: none.
 next:        1. Ruling on Z1 along Pi and Z2(iii) (outbox); then the 128^3 cost of the map (R41).
              2. Read q0050 (pilot) when it ends: cost per run into A12, A8 record, reader on k/b.
              3. Coarse-graining bound (R39): paired-noise runs at sigma = 0.01, 0.05, 0.1.

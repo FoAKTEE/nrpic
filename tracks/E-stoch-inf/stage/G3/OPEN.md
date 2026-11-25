@@ -4,7 +4,8 @@ G3 is not ready for review. The scope is fixed (spec/scope/SCOPE.md 4d with the 
 batch 20 after smoke tests and before the registered runs it governs); no G3 production run on the cards has run yet.
 
 1. Reference proper: direct 4e6 (E-20261125-152832-c301e92: gate 0.99865 +- 0.00058, skewness 0.0199 +- 0.0012);
-   importance-sampled nu = 4 (A9 with A14 (a)): E-20261125-160658-855db8c (outcome in g3/amend/JOURNAL.md entry 10);
+   importance-sampled nu = 4 (A9 with A14 (a)): E-20261125-160658-855db8c, 0.11 per cent per side; validation at
+   nu = 3 holds on side - and fails on side + by 2.07 s.e. (F_+(4) reported, not judged, until a second direct run);
    lattice sigma = 0.1 (E-20261125-160722-a6d1f26): variance gate FAILED (1.00245 +- 0.00050), skewness 0.0182 +-
    0.0014; the coarse-graining bound of A10 (below 0.0027) is NOT reached (R39).
 2. zeta reader (zeta/zeta_reader.py, E-20261125-161456-8d3f43c): Z0, Z2(i), Z2(iii') pass; Z2(iii) FAILED as written

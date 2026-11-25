@@ -39,6 +39,8 @@ wait (the queue holds entries of a package with uncommitted files).
 3. When q0050 ends: cost per run into A12 (dated), A8 record of k000/k001, reader on the b and l members; then the
    remaining baseline pairs (at most six entries a session) and level 2 (16 pairs).
 4. Coarse-graining bound (R39): paired-noise reference at sigma = 0.01, 0.05, 0.1 (same noise per path).
+5. A second direct 4e6 run of s0.01_lattice (another seed; ref_spec.py with a seed suffix) to settle the nu = 3
+   validation of the tilted F_+ (g3/amend entry 10, -2.07 s.e.).
 
 ## Traps
 
