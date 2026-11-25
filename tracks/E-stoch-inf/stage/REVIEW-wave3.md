@@ -670,7 +670,9 @@ recompute it (A13). Every number below has its run id; predictions were committe
 - Importance sampler (A9 with A14 (a); E-20261125-160658-855db8c, figure looked at): relative error of F(4)
   0.11 per cent per side (A9's 2 per cent met); F_+(4)/Q(4) = 1.222, F_-(4)/Q(4) = 0.798, A(4) = 0.210. Validation
   at nu = 3: side - holds (+1.20 s.e.), side + FAILS by a hair (-2.07 s.e. latsig, -2.00 own sigma); by A9 as written
-  F_+(4) is reported, not judged, until a second direct run decides. Mean-weight prediction TL4 failed (ill-posed:
+  F_+(4) was reported, not judged, until a second direct run decided: the independent repeat
+  (E-20261125-163825-ca2ebaa) gives F_+(3) = 1.4643e-3, +0.15 s.e. from the tilted value; pooled over 8e6 direct paths
+  the validation holds on both sides (+1.57, -1.3 s.e.), so nu = 4 is judged (g3/amend entry 12). Mean-weight prediction TL4 failed (ill-posed:
   the bulk is not sampled under a 4 sigma shift); the plain estimator is the one reported.
 - Defects found and fixed: NaN in the biased sampler where the noise vanishes (sdn/langevin.py, before any
   registered run); the constant shift of A9 replaced by a variance-share profile (A14 (a)); the variance gate of

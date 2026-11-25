@@ -225,3 +225,19 @@ s0.01_lattice only, seed tag "_rep2", suffix _4e6rep2, 5 cores. Prediction (TL3 
   [1.423e-3, 1.500e-3]; F_-(3) within two of the tilted 1.2313e-3. Refuted outside: then the tilted F_+ is biased
   and A9's validation fails on that side.
 - R2b: variance gate passes (within three s.e. of the lattice sum); skewness within two combined s.e. of 0.0199.
+
+## entry-12 (2026-11-25 08:50 PST): outcome of entry 11 (independent direct repeat, run E-20261125-163825-ca2ebaa)
+
+4e6 paths, 5 cores, about 10 min; `results/ref_inflection_n32_4e6rep2.json`, `fig/ref_inflection_n32_4e6rep2_pdf.png`
+looked at (density on the Gaussian of the linear variance to 3e-5; skewness square at the axis edge, as in entry 9).
+- R2a HOLDS: F_+(3) = 1.4643e-3 (+0.15 s.e. from the tilted 1.4613e-3), F_-(3) = 1.2140e-3 (-0.99 s.e. from 1.2313e-3).
+  The first direct run's F_+(3) = 1.5015e-3 was the high one. Pooled over both direct runs (8e6 paths): F_+(3) =
+  1.4829e-3, +1.57 combined s.e. from the tilted value; F_-(3) = 1.2123e-3, -1.3 combined s.e.: A9's validation at
+  nu = 3 HOLDS on both sides against the pooled direct reference. TL3 (entry 10, against the first run alone) stays
+  failed on record; nu = 4 is judged on both sides from here (A9).
+- R2b HOLDS: variance gate 0.99847 +- 0.00055 (within three s.e., barely: 2.8 s.e.); skewness 0.0198 +- 0.0013
+  (first run 0.0199 +- 0.0012).
+- Direct nu = 4, for the record: F_+(4) 4.225e-5, F_-(4) 2.975e-5 (first run 4.05e-5, 2.325e-5); pooled against the
+  tilted values +1.2 and +0.7 combined s.e.
+G3 reference at nu = 4 (A9 met): F_+(4) = 3.869e-5 (relative s.e. 0.11 per cent), F_-(4) = 2.526e-5 (0.11 per
+cent), latsig standardisation, E-20261125-160658-855db8c.

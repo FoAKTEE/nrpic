@@ -20,8 +20,9 @@ last-result: Lead batch 20 (2026-11-25 07:54-09:05 PST, processors only, at most
                (1.00245 +- 0.00050); skewness 0.0182 +- 0.0014 vs 0.0199 +- 0.0012: A10's bound
                not reached (R39).
              - Importance sampler (A9 with A14 (a), E-20261125-160658-855db8c): F(4) to 0.11 % per
-               side; F_+(4)/Q(4) 1.222, F_-(4)/Q(4) 0.798; nu = 3 validation holds on side -, FAILS on
-               side + (-2.07 s.e.): F_+(4) reported, not judged, until a second direct run.
+               side; F_+(4)/Q(4) 1.222, F_-(4)/Q(4) 0.798; nu = 3 validation failed on side + against
+               the first direct run (-2.07 s.e.), holds on both sides against the pooled repeat
+               (E-20261125-163825-ca2ebaa: +0.15 s.e.); A9 met.
              - Defects fixed: NaN of the biased sampler where the noise vanishes; constant shift
                of A9 unusable (mean weight 0.01); variance gate required s0.01_lattice.
 card plan:   q0050 G3P, q0051 G3C, q0052 G3R (priority 2), q0053 G3B00, q0054 G3B01 (priority 5,

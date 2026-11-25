@@ -12,7 +12,7 @@ Run next: cd /data/haiyangw/nrpic/wt/E-stoch-inf && git merge --no-edit main && 
   `g3/amend/JOURNAL.md` entries 5-10 (reference); `zeta/JOURNAL.md` entries 1-7 (reader).
 - Reference (one-patch delta N, 128 band, `langevin/`): direct 4e6 `results/ref_inflection_n32_4e6.json`
   (E-20261125-152832-c301e92); tilted nu = 4 `results/ref_inflection_n32_tilt.json` (E-20261125-160658-855db8c,
-  `scripts/ref_tilt.py`); lattice sigma = 0.1 `results/ref_inflection_n32_s01lat.json` (E-20261125-160722-a6d1f26);
+  `scripts/ref_tilt.py`); lattice sigma = 0.1 `results/ref_inflection_n32_s01lat.json` (E-20261125-160722-a6d1f26); direct repeat `results/ref_inflection_n32_4e6rep2.json` (E-20261125-163825-ca2ebaa);
   32^3 band `results/ref_inflection_n8.json` (E-20261125-160705-5f75bb4).
 - zeta reader: `zeta/zeta_reader.py` (map RK4 in phi; Z0-Z2; LM; A4 preview), record E-20261125-161456-8d3f43c.
   Its status: Z0, Z2(i), Z2(iii') pass; Z1 along Pi alone and Z2(iii) FAILED as written; ruling asked (outbox).
@@ -39,8 +39,8 @@ wait (the queue holds entries of a package with uncommitted files).
 3. When q0050 ends: cost per run into A12 (dated), A8 record of k000/k001, reader on the b and l members; then the
    remaining baseline pairs (at most six entries a session) and level 2 (16 pairs).
 4. Coarse-graining bound (R39): paired-noise reference at sigma = 0.01, 0.05, 0.1 (same noise per path).
-5. A second direct 4e6 run of s0.01_lattice (another seed; ref_spec.py with a seed suffix) to settle the nu = 3
-   validation of the tilted F_+ (g3/amend entry 10, -2.07 s.e.).
+5. (done in batch 20) The independent direct repeat E-20261125-163825-ca2ebaa (NRPIC_REF_SEEDTAG=_rep2) settled the
+   nu = 3 validation: pooled direct and tilted agree on both sides (g3/amend entry 12).
 
 ## Traps
 
