@@ -515,3 +515,29 @@ changing the cloud or switching off its compensation changes the line ratio by m
 x in [1.2, 4] by more than a factor 2; if it is the metric side (table interpolation, finite differences of psi on
 cells of M/8 to M/2), both stay within 10 per cent. D-ref repeats S2-A0 to 1e-12 (processors are reproducible).
 Refuted (for the deposit reading) by changes below 10 per cent; neither reading named for 10-30 per cent.
+
+### Entry 13, outcome of test D (run A-20261125-161039-cb046d7, fig_edge_d.png looked at): the deposit reading HOLDS
+
+- D-ref repeats S2-A0 exactly (ratio 0.13381 both): processors reproducible, as predicted.
+- D-cic (CIC, no compensation): line ratio 0.0064 at t = 0 (0.048 of S2-A0's 0.134); rms of H on x in [1.2, 4]
+  0.052 of S2-A0's; inside the finest level |H| ~ 5e-10. D-pcs0 (PCS without compensation): ratio 0.089 (0.67),
+  coarse rms 0.61. Both changes exceed 30 per cent: the remainder at t = 0 is the deposit's [VERIFIED, mesh A, t = 0].
+- Where (panel b): the PCS deposit (with and without compensation) puts spikes into 16 pi E at the boundary of the
+  finest level (x = 0.9-1.3: 0.33 to 0.61 against the smooth 0.44) and wiggles at x = 2 and 2.4; CIC is smooth
+  there. Level boundaries sit at the same physical radii on every mesh of the series, which is why this part of
+  the floor did not fall with the mesh (entry 6) or with the particle number (entry 7).
+So at t = 0 the C3 floor is the density jumps of the top hat PLUS the PCS cloud at the refinement boundaries;
+smooth data with a CIC cloud meet the bound by a factor 16 on mesh A. Whether that holds during the evolution is
+test F.
+
+### Entry 13, prediction F (before its runs): smooth data with the CIC cloud, evolved
+
+S2 with `deposit_shape = cic`, `deposit_comp_c = deposit_comp_c2 = 0` (everything else as conv_ball's decks), meshes
+A (to t = 5, one thread) and B (t = 0 slice, then to t = 1, two threads); S2-B with PCS (two threads, at cycle 0)
+is stopped by hand to free its cores (PID 2597154, 08:12 PST); S2-A with PCS continues (the PCS twin of F on A).
+[JUDGEMENT] F1: S2-cic's line ratio at t = 0 is below 0.02 on A and on B and falls from A to B. F2: on A it stays
+below 0.1 at every output to t = 5, with ||H||_2 at t = 1 and 2 at least 3 times below K4-ref's and below the PCS
+twin S2-A's. Refuted by a ratio >= 0.02 at t = 0, a rise from A to B, or any output >= 0.1 (F2). If F1 and F2 hold
+(F2 is read by the next session), C3's floor is named: the top hat's jumps and the PCS cloud at level boundaries,
+and the review is asked to judge C3 on smooth members with the CIC cloud (0039 item 2(c)); a change of the
+deposit is then a request to the review, not a bound moved.
