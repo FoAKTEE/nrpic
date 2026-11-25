@@ -824,7 +824,7 @@ sacct over 8 jobs, 59.4 GB checksummed). Predictions: entries 10 (N1-N4) and 12 
   ES-FLK set-up (initial_radius_0 1.6), not with the particle number [TO VERIFY: cause].
 The particle sequence now has N and 4N complete; N/4 (FNQ, q0010) runs.
 
-## Entry 23 (2026-11-25 08:25 PST, lead of batch 20, processors only): predictions before the readings
+## Entry 23 (2026-11-25 07:59 PST, lead of batch 20, processors only): predictions before the readings
 
 Three readings of registered outputs, written before each analysis runs.
 

@@ -213,35 +213,48 @@ def main():
     figstyle.use_style()
     import matplotlib.pyplot as plt
     names = list(S)
-    fig, axs = plt.subplots(2, 1, figsize=(7.0, 6.2), gridspec_kw=dict(height_ratios=[1.3, 1]))
-    ax = axs[0]
     cols = figstyle.series_colors(len(names))
+    fig, axs = plt.subplots(3, 1, figsize=(7.0, 8.4), gridspec_kw=dict(height_ratios=[1.2, 0.9, 0.8]))
+    ax = axs[0]
+    k = 0
     for i, n in enumerate(names):
         t, m, c = S[n]
-        ok = np.isfinite(m)
-        ax.plot(t[ok], m[ok] - (m[ok][np.argmin(np.abs(t[ok] - T0))] if t[ok].max() >= T0 else 0) + 2e-4 * i,
-                lw=0.7, color=cols[i], label=n)
-        bad = (c == 1) & ok
-        ax.plot(t[bad], (m[bad] - (m[ok][np.argmin(np.abs(t[ok] - T0))] if t[ok].max() >= T0 else 0)) + 2e-4 * i,
-                "x", color="k", ms=4)
-    ax.set_xlim(0, 510)
-    ax.set_ylim(-1e-3, 2e-4 * len(names) + 1e-3)
+        if n not in ("V-1L", "ES-1L", "V-1L16", "ES-1L16"):
+            continue
+        ok = np.isfinite(m) & (t >= 20.0)
+        m100 = m[ok][np.argmin(np.abs(t[ok] - T0))]
+        ax.plot(t[ok], (m[ok] - m100) * 1e4 + 3.0 * k, lw=0.7, color=cols[i], label=n)
+        bad = (c > 0) & (t >= 20.0)
+        ax.plot(t[bad], np.zeros(bad.sum()) + 3.0 * k, "x", color="k", ms=5)
+        k += 1
+    ax.set_xlim(20, 510)
     ax.set_xlabel(r"$t/M$")
-    ax.set_ylabel(r"$M_{\rm AH}(t)-M_{\rm AH}(100M)$ + offset")
-    ax.set_title("(a) finder summaries; x = bit-identical repeat (failed search)", loc="left", fontsize=9)
-    ax.legend(fontsize=6, ncol=3, loc="upper left")
+    ax.set_ylabel(r"$10^4\,[M_{\rm AH}(t)-M_{\rm AH}(100M)]$ + offset")
+    ax.set_title("(a) null-test summaries from 20 M: plateaus are found surfaces (no x = repeat/NaN line)",
+                 loc="left", fontsize=8.5)
+    ax.legend(fontsize=7, ncol=4, loc="upper left")
     ax = axs[1]
+    for i, n in enumerate(names):
+        t, m, c = S[n]
+        ax.plot(t[c == 1], np.full(np.sum(c == 1), i), "x", color="k", ms=5)
+        ax.plot(t[c == 2], np.full(np.sum(c == 2), i), "o", mfc="none", color="C3", ms=5)
+        ax.plot([0, t.max()], [i, i], lw=0.4, color=cols[i])
+    ax.set_yticks(range(len(names)))
+    ax.set_yticklabels(names, fontsize=6.5)
+    ax.set_xscale("symlog", linthresh=10.0)
+    ax.set_xlim(0, 520)
+    ax.set_xlabel(r"$t/M$")
+    ax.set_title("(b) every failed search by time (x repeat, o NaN); line: span of the summary", loc="left",
+                 fontsize=8.5)
+    ax = axs[2]
     frac = [100 * (R[n]["frac_failed_after_20"] or 0.0) for n in names]
     ax.bar(range(len(names)), frac, color=cols)
-    for i, n in enumerate(names):
-        ax.text(i, frac[i], f"{R[n]['n_repeat']}+{R[n]['n_nan']}/{R[n]['n_dedup']}", ha="center",
-                va="bottom", fontsize=6)
     ax.axhline(1.0, color="k", ls="--", lw=0.8)
+    ax.set_ylim(0, 1.2)
     ax.set_xticks(range(len(names)))
     ax.set_xticklabels(names, rotation=30, fontsize=7)
-    ax.set_ylabel("failed lines after 20 M (%)")
-    ax.set_title("(b) failed searches by signature (repeat + NaN / lines); dashed: bound of H1", loc="left",
-                 fontsize=9)
+    ax.set_ylabel("failed after 20 M (%)")
+    ax.set_title("(c) share of failed lines after 20 M (all zero); dashed: bound of H1", loc="left", fontsize=8.5)
     fig.tight_layout()
     for ext in ("png", "pdf"):
         fig.savefig(os.path.join(a.out, "hz_check." + ext), dpi=150)
