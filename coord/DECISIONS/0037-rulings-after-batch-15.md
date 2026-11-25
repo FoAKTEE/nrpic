@@ -25,3 +25,14 @@ Status: ACCEPTED · 2026-11-24 · orchestrator (decision 0017)
    user level: a limit in Slurm itself (MaxSubmitJobs on the association) needs the
    machine's administrator, and the tool-guard hook that would refuse direct sbatch
    calls of sessions stays not installed (decision 0008) unless the user says otherwise.
+4. Added 2026-11-24 21:40 PST: the fixes of item 3 are committed and the dispatcher runs
+   them. Each of the reviewer's reproductions is now a regression check (93 checks of the
+   queue tool, 92 of the run tool; the whole runner rerun by the orchestrator: no file
+   failing). The run tool's local launcher and the environment tool refuse a command
+   that reaches Slurm; the cap keeper looks every thirty seconds; priorities 0 and 1
+   are the orchestrator's; a waiting entry gains one priority class per eight hours.
+   Left open: the dispatcher's marker still reaches the jobs of a wrapper (core unsets
+   it in `scripts/` in its next source session; wrappers call `nrpic-queue
+   check-dispatch`); the detector of Slurm commands is a heuristic; this round of fixes
+   has had no second reviewer.
+
