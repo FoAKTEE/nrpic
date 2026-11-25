@@ -1,0 +1,41 @@
+k	stratum	claim_id	right	borderline	class	note
+1	P	50	1	0	right	2610.23218 L307: whether advection terms support stability depends on resolution
+2	P	55	1	0	right	1609.01588 L381-383 Zel'dovich approximation r_i = a q_i + b p_i
+3	P	102	1	1	cut	2507.18312 L502 (uncorrelated Gaussian velocities), L537-538 (N = 123, N = 619); subject cut but statement readable
+4	P	164	1	0	right	1901.04498 L284 P_GW ~ 0.002
+5	P	223	0	0	pointer	'Summary and features: lines 62-103' holds no statement (audit P2 accepted it as worded)
+6	P	276	1	0	right	2611.12831 L1006 binding-energy discussion cites Gunther:2021pbf = 2105.05556 (references.bib L1059)
+7	P	283	1	0	right	astro-ph/0111176 L36
+8	P	345	1	0	right	1707.06302 L83-95
+9	P	365	1	0	right	1805.09034 L208
+10	P	391	1	1	cut	'Lists critiques' (2306.11588 L84 lists refs critiquing Farrah et al.); minimal statement
+11	P	508	1	0	table-row	2611.12831 L1340 t = 8.475 M and 8.525 M; text is a table row with its verdict column
+12	P	574	0	0	fragment	noun phrase without predicate; the source's predicate 'the need for further investigation of' (L1140) is cut away
+13	P	596	1	0	table-row	2611.12831 L381-397 B^i Gamma-driver, tracker-dependent eta and kappa1; the repository half of the row not checked
+14	P	691	1	0	right	2312.12499 L111-115
+15	M	61	1	0	cut	1609.01588 L596-613; starts with 'giving' but formula, bound and normalisation complete
+16	M	96	1	0	right	2507.18312 L290 (top-hat background), L318 (zeta_rms), L338 (delta_th ~ zeta^(2/5))
+17	M	145	0	0	misread	2605.04487 L2400-2402: 0.4-0.5 are the MEAN and MEDIAN |v_pec|/c for sigma = 0.1; the text calls them the maximum ('up to')
+18	M	284	1	0	right	astro-ph/0111176 L289-291
+19	M	287	1	0	right	2010.15132 L151 (1.8e-3, 4.2e-2, M_seed = M_in)
+20	M	304	1	0	right	2108.11967 L280
+21	M	311	1	0	right	2601.17117 L341-344
+22	M	372	1	0	right	2109.04896 L99, L241
+23	M	411	1	0	right	1204.3568 L101-110; title and authors as in the store
+24	M	460	1	0	right	2611.12831 L380
+25	M	462	0	1	fragment	'a variant with the auxiliary field B^i': the subject (the Gamma-driver) is cut away; counted not right, lenient reading right
+26	M	521	1	1	table-row	2611.12831 L825-833 comparisons DGREM-Boris vs midpoint and analytic vs grid metric; text keeps the brief-check row format
+27	M	553	0	0	label	text says [JUDGEMENT: one line of algebra from L967] but the label is fulltext; the algebra is right (I redid it: lap psi_bar = -4 pi rho_N, rho_N = rho_ADM psi_bar^5 / 2)
+28	Q	169	0	0	fragment	'2507.18312 says no for spherical shells': the question (can a black hole form after shell crossing, L240) is cut away; claim filed under paper 1609.01588
+29	Q	428	1	1	attribution	2308.07365 L66, L1040-1047, equal-mass non-spinning L57; author order in the text 'Ficarra, Ciarfella, Lousto' differs from the paper (Ciarfella, Ficarra, Lousto; TBH.tex L37-47)
+30	Q	439	1	0	right	2505.01495 L106-109 (25 equal-mass BHs; ejection after a several-body interaction); authors as in the store
+31	Q	548	1	0	cut	2611.12831: c_H only at L690, L696, no value; repository part checked (cosmo_gauge.md options, daverio_field.athinput L54-57)
+32	Q	563	1	0	right	2611.12831 L1398 (Vista, Delta, Resnick; no machine named elsewhere by my grep); docs/TESTLOG.md L44-48 (2.0e7, 3 percent)
+33	Q	641	1	0	right	0911.1136 L846-847
+34	Q	660	1	0	right	1201.4794 L1102-1103
+35	Q	672	1	0	right	1804.02911 L524-525
+36	Q	728	1	0	no-locator	three abstracts (2603.24838, 2606.05479, 2606.18437) say what the text says; the claim has status located but no locator row
+37	Q	729	1	0	right	1604.06065 L55-57
+38	Q	739	1	0	right	ten locators; I checked 2004.01042, 2410.03452, 2410.03451, 2608.13206 L39 and L457-471, 2609.03051 L173 (Hawking mass), 2509.26470 L45 (two branches, starting guess), 2607.21308 L76
+39	Q	743	1	0	right	2109.04896 L58, L89 (two mechanisms, hoop conjecture, around a Hubble time)
+40	Q	858	1	0	right	2403.03470 L116-125, L143
