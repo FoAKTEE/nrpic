@@ -643,3 +643,12 @@ legends, long captions). 32 pages, PDF 5,055,530 bytes (below the 5 MiB hook). P
 dpi: 10 (Fig. 12 ladder: box 1 shows +-1, +-1/2; rung 2 says +-1/4 was added after the halving;
 caption likewise), 11 (eq. 8 with max and 1/3), 30 (Table XVI rows name the pooled estimator and
 the review's D1-only values; the caret of sigma^2 prints as text, accepted).
+
+## entry-29 (2026-11-25 07:50 PST, lead of E, batch 19): the floor is no longer open
+
+FL256h (E-20261125-115534-8414659) read by E-20261125-151222-d5a5f2f (floor/JOURNAL.md entry 4) and FL128h
+by E-20261125-115344-a22128b (entry 3): at half the noise amplitude the departure at the ten lowest shells
+halves at 128^3 and 256^3, signs unchanged. Three sentences of main.tex changed (Sec. on Fig. 7, the verdict
+paragraph, the appendix row of Fig. 7); they state the halving without a new number, so the ledger and
+run_all are unchanged (no rerun). Compiled with the checker: 0 undefined references, 0 overfull boxes; page
+6 read at 75 dpi; PDF 5056005 bytes (below the hook's 5 MiB).

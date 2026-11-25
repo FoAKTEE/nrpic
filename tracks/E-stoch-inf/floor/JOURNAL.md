@@ -105,3 +105,33 @@ hold, as entry 1 requires]: the floor of the slow-roll spectral convergence at t
 the second order of the field (relative size proportional to the amplitude), not a numerical floor.
 The per-mode rms ratio 1.74 (below 2) says that a part of the per-mode scatter at s = 1/2 does not
 halve; it is reported, not judged at 128. Risk R28 is answered at 128; it closes when FL256h has run.
+
+## entry-4 (2026-11-25 07:45 PST, lead of E, batch 19): FL256h has run; outcome at 256; the floor is closed
+
+FL256h ran as E-20261125-115534-8414659 (queue q0038, Slurm job 5284, one segment, 1573 s, 1386 cycles to
+t = 8.5; 0.44 card-hours from its finished manifest). F5 for FL256h HOLDS (at most 1.0).
+Reading E-20261125-151222-d5a5f2f (`floor_read.py --pair FL256:...`, the corrected recipe of entry 2,
+--sh-scale 1; `floor_stats.json`, `fig_floor.png` looked at). Record ratio of the two lockstep records 0.5
+(min 0.49999999999999994, max 0.5) at t = 8.5, as the reading requires. The s = 1 re-pass of CL256S (dump 17
+of E-20261124-130952-4be980b) gives the values of entry 1 (median 1.555e-7, amplitude 3.784e-7, signs
+++----+--+, median n^2 >= 49 3.64e-8, per-mode rms 6.71e-7).
+
+| statistic (ten shells n^2 = 2-12) | CL256S, s = 1 | FL256h, s = 1/2 | R = s1/sh | entry 1 band |
+|---|---|---|---|---|
+| median abs(1 - P_NR/P_lin) | 1.555e-7 | 7.78e-8 | 1.997 | F1 [1.6, 2.5]: HOLDS |
+| amplitude statistic | 3.784e-7 | 1.892e-7 | 2.000 | F1 [1.6, 2.5]: HOLDS |
+| signs | ++----+--+ | ++----+--+ | 0 flips | F2 <= 2 flips: HOLDS |
+| per-mode relative rms (W > 1/2) | 6.71e-7 | 3.35e-7 | 2.001 | expected 3.4e-7: met |
+| median over n^2 >= 49 (13 shells) | 3.64e-8 | 2.14e-8 | 1.70 | reported (F3 is a 128 control; at 256 the stencil part is small, so this median mixes the two parts) |
+
+F1 at 256 HOLDS (the expected values of entry 1, 7.8e-8, 1.9e-7 and 3.4e-7, are met to 0.3, 0.4 and 1.4 per
+cent). F4 HOLDS: the s = 1/2 medians at 128 and 256 are 7.79e-8 (E-20261125-115344-a22128b) and 7.78e-8,
+0.1 per cent apart (band 15 per cent). F2 holds at both resolutions, F3 held at 128, F5 holds for both runs
+(0.0308 and 0.44 card-hours). The after-data split (entry 2) agrees again: Q from the two c_NR alone equals
+e(1) in norm within 0.4 per cent on every shell at 256 (largest 0.32 per cent, n^2 = 4). Figure: on every shell the s = 1/2 curve lies on the
+s = 1 curve divided by 2, not on the curve itself nor on the curve divided by 4.
+Status [VERIFIED at 128 and 256 by runs E-20261125-115344-a22128b and E-20261125-151222-d5a5f2f]: the floor of
+the slow-roll spectral convergence at the lowest shells is the second order of the field (relative size
+proportional to the amplitude), independent of the spacing; risk R28 is closed. The per-mode rms ratio,
+1.74 at 128 and 2.00 at 256, says that at 128 a part of the per-mode scatter at s = 1/2 is the stencil
+part, which does not depend on s; at 256 that part is negligible at these shells.
