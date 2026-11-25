@@ -280,3 +280,28 @@ A2 (decision 0039 item 2(a)): the lead decides that S1L (A-20261123-025907-97bab
 through the Zel'dovich epoch) serves as A2, with the prediction written before any snapshot is read
 (periodic_threshold JOURNAL 2026-11-25 07:15 PST); no card time; the fallback (one oblate member, <= 6
 card-hours) only if the snapshots cannot bracket the first crossing within the band.
+
+## 10. Batch 20 (2026-11-25 morning, lead; processors only; decision 0040 items 6 and 7)
+
+No helper package finished since batch 19; this section records the lead's own two tests, each with its
+prediction committed before its runs (threshold_ball entry 13; periodic_threshold JOURNAL 2026-11-25 08:10 PST),
+and what the track does about the open verifier finding on C3 (VERIFIER-C18 5b: "C3 FAILED, also at t = 0").
+
+### 10.1 C3, the smoothed-edge test (in the place of K4, 0040 item 6)
+
+| Step | Run | Outcome | What the track does |
+|---|---|---|---|
+| Data: `--edge-w` on data set 3 | A-20261125-160221-b68396f | FAILED: expball needs R2 <= R_b - w, so data set 3 admits w <= 0.204 M only (it has 0.168) | members S1 (smooth core, outer edge kept), S2 (smooth core, outer taper 0.8 M) instead; amendment dated before any AthenaK run |
+| Data S1, S2 | A-20261125-160436-462452d | completed | lattices nestA, nestB |
+| t = 0 slices on M/16, M/32 (PCS, the decks as they are) | A-20261125-160633-594a474, analysis A-20261125-160849-8c01b54 (fig_edge.png looked at) | ratio 0.278 / 0.185 / 0.134 (top hat / S1 / S2) on M/16, 0.174 / 0.146 / 0.116 on M/32: (a) REFUTED; the volume momentum norm of S2 falls 60-fold, (c) HOLDS | the momentum floor is the jumps [VERIFIED]; the Hamiltonian remainder is not |
+| Test D: cloud at t = 0 | A-20261125-161039-cb046d7 (fig_edge_d.png looked at) | CIC 0.0064, PCS without compensation 0.089, repeat identical: the remainder is the PCS deposit at the level boundaries (spikes 0.33-0.61 against 0.44 in 16 pi E at x = 0.9-1.3) | request to core (outbox pcs-deposit-refinement-boundary) |
+| Test F1: S2 with CIC, t = 0 | A-20261125-161154-62ce3dc phase 1, analysis A-20261125-161248-eecc672 | 6.4e-3 (M/16), 5.8e-4 (M/32): order 3.5; volume Hamiltonian norm order 4.0: HOLDS | F2 (evolution) read next session |
+| Test F2: S2 with CIC evolved (M/16 to t = 5, M/32 to t = 1) and the PCS twin | A-20261125-161154-62ce3dc, A-20261125-160633-594a474 (running, detached) | pending | next A session: edge_compare.py with --extra S2c-A, S2c-B |
+
+Judgement under 0039 item 2(c), as far as it goes today: the floor of the top-hat members comes from the density jumps
+(momentum constraint) and from the PCS deposit at the static refinement boundaries (Hamiltonian constraint), shown at
+t = 0 on two meshes by runs that could have failed. Smoothing the edges alone does not meet the bound. C3 stays
+FAILED as written for every member run so far. Smooth members with the CIC cloud meet it at t = 0 and converge; if F2
+holds to t = 5, the track asks the review (outbox c3-smoothed-edge-result) to judge C3 on them; the bound is not moved.
+Two of the session's runs were stopped by hand to free cores (S1-A, S2-B with PCS, PIDs 2597153, 2597154), on record
+in entry 13.
