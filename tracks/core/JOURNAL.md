@@ -1890,7 +1890,7 @@ runs closed as stopped; 597d9ca continued in place by the new wrapper (dry-run t
 HANDOFF (queue ids beside the models, read commands), STATUS (card plan). Nothing
 half-done; no run computed in this session; P10-P15 open. G2 not met.
 
-## 2026-11-25T02:20Z (2026-11-24 18:20 PST), batch 14, session core-lead-14 (merge of four source branches, release candidate core-v0.7)
+## 2026-11-25T02:12Z (2026-11-24 18:12 PST), batch 14, session core-lead-14 (merge of four source branches, release candidate core-v0.7)
 
 ### State found
 
