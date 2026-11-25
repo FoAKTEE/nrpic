@@ -485,3 +485,21 @@ Sixteen searches, t = 0 to 1.875 M (found or not from the status file):
   here (a cycle of this deck costs 4.5 s on two threads).
 - Guard: 237 removals inside the horizon without the option and with 4.0 written out,
   none with 0.4.
+
+## Entry 18 (2026-11-25, 06:52 PST): byte regression and Track D's dumps with the final builds
+
+- Byte regression, final serial build (source 01d4aeeb), run
+  core-20261125-142602-33f4005: 75 of 75 items identical to release core-v0.7,
+  REGRESSION PASS (P6 held for the published executable).
+- P18 HELD, run core-20261125-144142-5858c3d (final threaded build, four of Track D's
+  dumps, t = 100, 250, 400, 500 M, 542 s): `mass_tol` 1e-5 with 100 polishing
+  iterations is found at every dump and lies +6.0e-9 to +6.3e-9 from the tight rule
+  when started from the stored radius (102 to 111 iterations) and +6.0e-9 to +6.1e-9
+  when started 2 M outside (148 to 150 iterations: 48 to 50 until the rule is first
+  met, then 100); `mass_tol` 1e-2 with 100 from outside gives -3.4e-8 to -4.5e-8 as in
+  the first run (102 iterations). Figure looked at (`fig_finder_probe.png`: the three
+  polished searches lie on the tight rule; differences 6e-9 and 4e-8, far under the
+  2e-5 line; the y-label of the left panel is clipped by the margin, corrected in the
+  script for later runs).
+- The re-judgement of the second finder test with corrected labels is run
+  core-20261125-144217-15cea77 (same checks, same failing one; figure looked at).

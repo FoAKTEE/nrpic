@@ -124,7 +124,7 @@ def figure(out, recs):
     import matplotlib.pyplot as plt
     fs.use_style()
     fig, axs = plt.subplots(1, 2, figsize=(fs.FULL_WIDTH, 3.0))
-    fig.subplots_adjust(left=0.11, right=0.985, bottom=0.16, top=0.96, wspace=0.3)
+    fig.subplots_adjust(left=0.13, right=0.985, bottom=0.16, top=0.96, wspace=0.33)
     cols = {0: fs.PAL["red"], 1: fs.PAL["blue"], 2: fs.PAL["yellow"], 3: fs.PAL["green"]}
     by = {}
     for r in recs:
