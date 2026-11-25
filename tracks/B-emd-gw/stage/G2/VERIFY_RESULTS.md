@@ -1,51 +1,34 @@
 # Re-verification: B-emd-gw G2
 
-`harness/bin/nrpic-stage verify B-emd-gw G2` on 2026-11-25T12:23:30Z, clean export of commit `37439b2f28f6` in `scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-37439b2-20261125T121029Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify B-emd-gw G2` on 2026-11-25T17:21:04Z, clean export of commit `26f92304bbd5` in `scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-26f9230-20261125T171510Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 37439b2f28f6 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-37439b2-20261125T121029Z/tree |
+| export | PASS | clean export of 26f92304bbd5 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-26f9230-20261125T171510Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
 | note-pdf | PASS | note/main.pdf committed after the last .tex change |
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
-| fig-script | PASS | 12 figures, each with its script |
-| min-figs | PASS | 4 schematics and 8 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | FAIL | 7 of 345 runs have problems |
+| fig-script | PASS | 15 figures, each with its script |
+| min-figs | PASS | 6 schematics and 9 data figures (brief 13.4 asks at least 1 and 5 at G2) |
+| runs | FAIL | 1 of 354 runs have problems |
 | run-notes | WARN | 78 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 46 lines |
-| rerun | PASS | 12 of 12 scripts and commands ran cleanly in the export |
-| compare | PASS | 23 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
-| regenerate | PASS | all 23 committed figure files regenerated |
+| checksums | WARN | output checksums not re-verified (--no-checksums) |
+| status | PASS | STATUS.md has 41 lines |
+| rerun | PASS | 15 of 15 scripts and commands ran cleanly in the export |
+| compare | PASS | 29 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| regenerate | PASS | all 29 committed figure files regenerated |
 | new-files | WARN | 1 files written by the scripts are not in the commit |
 
 ## runs
 
 ```
 {
- "B-20261124-172958-73b0662": [
-  "status is running: not finished (nrpic-run finish)"
- ],
- "B-20261124-172958-fc4a2cf": [
-  "status is running: not finished (nrpic-run finish)"
- ],
- "B-20261124-210431-6bf48af": [
-  "status is submitted: not finished (nrpic-run finish)"
- ],
- "B-20261124-210432-6c4d005": [
-  "status is submitted: not finished (nrpic-run finish)"
- ],
- "B-20261124-223926-33194d9": [
-  "status is submitted: not finished (nrpic-run finish)"
- ],
  "B-20261125-093500-242d3a3": [
   "status is submitted: not finished (nrpic-run finish)"
- ],
- "B-20261125-115657-91b61ec": [
-  "status is running: not finished (nrpic-run finish)"
  ]
 }
 ```
@@ -280,6 +263,16 @@
   "regenerated (vector files carry dates; the PNG preview is compared)"
  ],
  [
+  "note/figures/schem_architecture_g2.svg",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/schem_timeline_g2.svg",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
   "note/figures/schem_dataflow.png",
   "PASS",
   "identical"
@@ -291,6 +284,11 @@
  ],
  [
   "note/figures/schem_ladder.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_pop_gauge.png",
   "PASS",
   "identical"
  ],
@@ -316,6 +314,11 @@
  ],
  [
   "note/figures/fig_pancake.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/schem_architecture_g2.png",
   "PASS",
   "identical"
  ],
@@ -350,7 +353,17 @@
   "identical"
  ],
  [
+  "note/figures/schem_timeline_g2.png",
+  "PASS",
+  "identical"
+ ],
+ [
   "note/figures/fig_pancake.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_pop_gauge.pdf",
   "PASS",
   "regenerated (vector files carry dates; the PNG preview is compared)"
  ]

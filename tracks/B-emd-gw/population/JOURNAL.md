@@ -855,3 +855,15 @@ The radiated part of N4 (the Newtonian 0.014 run's radiated box measure at a = 1
 at a_N = 30 times 4.014^(-7/2), within a factor 2; written 2026-11-24 05:48) was not yet judged.
 Script `scripts/n4_rad.py` reads the two committed analyses. No new prediction: N4's own bound
 applies; the side columns (rad1, switch-off) are reported without a bound.
+
+Outcome (run B-20261125-172136-3e920ab, `n4_rad.json`). [VERIFIED by it] The radiated part of N4
+FAILS: Omega_rad of the Newtonian 0.014 run at a = 120.3 is 6.10e-9 against 2.10e-8 predicted
+from fidL8 (2.72e-6 at a_N = 30.07, times 4.014^(-7/2)), a ratio 0.29, outside the factor 2. The
+measure with one boundary term removed gives 0.28; the switch-off measure (both terms kept)
+gives 1.56, inside. [JUDGEMENT, not tested] the radiated measure subtracts the quasi-static
+boundary terms, whose size depends on the snapshot cadence and on the particle number (eight
+times more particles per mode volume here than in fidL8), so the sigma^(7/2) map between the two
+boxes holds for the switch-off measure and not for the remainder; a run in which this could fail
+is the fidL8 box re-analysed at the 128^3 cadence, or the 128^3 box at fidL8's. N4 is FAILED as
+written in both parts; the GR question it was meant to serve (the GR metric against the
+Newtonian particles) is answered by the metric ratio above (within 11 per cent to a = 36).

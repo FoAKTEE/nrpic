@@ -1,9 +1,9 @@
 {
   "track": "B-emd-gw",
   "gate": "G2",
-  "commit": "37439b2f28f6f14561d528f371ab5fa236159623",
-  "verified_utc": "2026-11-25T12:23:30Z",
-  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-37439b2-20261125T121029Z",
+  "commit": "26f92304bbd52aba0a3194e6057393f13dec9b08",
+  "verified_utc": "2026-11-25T17:21:04Z",
+  "export": "/data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-26f9230-20261125T171510Z",
   "result": "FAIL",
   "checks": [
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 37439b2f28f6 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-37439b2-20261125T121029Z/tree",
+      "message": "clean export of 26f92304bbd5 (HEAD) in /data/haiyangw/nrpic/scratch/B-emd-gw/tmp/stage-verify/B-emd-gw-G2-26f9230-20261125T171510Z/tree",
       "detail": null
     },
     {
@@ -57,40 +57,22 @@
     {
       "check": "fig-script",
       "status": "PASS",
-      "message": "12 figures, each with its script",
+      "message": "15 figures, each with its script",
       "detail": null
     },
     {
       "check": "min-figs",
       "status": "PASS",
-      "message": "4 schematics and 8 data figures (brief 13.4 asks at least 1 and 5 at G2)",
+      "message": "6 schematics and 9 data figures (brief 13.4 asks at least 1 and 5 at G2)",
       "detail": null
     },
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "7 of 345 runs have problems",
+      "message": "1 of 354 runs have problems",
       "detail": {
-        "B-20261124-172958-73b0662": [
-          "status is running: not finished (nrpic-run finish)"
-        ],
-        "B-20261124-172958-fc4a2cf": [
-          "status is running: not finished (nrpic-run finish)"
-        ],
-        "B-20261124-210431-6bf48af": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ],
-        "B-20261124-210432-6c4d005": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ],
-        "B-20261124-223926-33194d9": [
-          "status is submitted: not finished (nrpic-run finish)"
-        ],
         "B-20261125-093500-242d3a3": [
           "status is submitted: not finished (nrpic-run finish)"
-        ],
-        "B-20261125-115657-91b61ec": [
-          "status is running: not finished (nrpic-run finish)"
         ]
       }
     },
@@ -324,21 +306,27 @@
       }
     },
     {
+      "check": "checksums",
+      "status": "WARN",
+      "message": "output checksums not re-verified (--no-checksums)",
+      "detail": null
+    },
+    {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 46 lines",
+      "message": "STATUS.md has 41 lines",
       "detail": null
     },
     {
       "check": "rerun",
       "status": "PASS",
-      "message": "12 of 12 scripts and commands ran cleanly in the export",
+      "message": "15 of 15 scripts and commands ran cleanly in the export",
       "detail": null
     },
     {
       "check": "compare",
       "status": "PASS",
-      "message": "23 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
+      "message": "29 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005)",
       "detail": [
         [
           "note/figures/fig_gauge.png",
@@ -381,6 +369,16 @@
           "regenerated (vector files carry dates; the PNG preview is compared)"
         ],
         [
+          "note/figures/schem_architecture_g2.svg",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/schem_timeline_g2.svg",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
           "note/figures/schem_dataflow.png",
           "PASS",
           "identical"
@@ -392,6 +390,11 @@
         ],
         [
           "note/figures/schem_ladder.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/fig_pop_gauge.png",
           "PASS",
           "identical"
         ],
@@ -417,6 +420,11 @@
         ],
         [
           "note/figures/fig_pancake.png",
+          "PASS",
+          "identical"
+        ],
+        [
+          "note/figures/schem_architecture_g2.png",
           "PASS",
           "identical"
         ],
@@ -451,7 +459,17 @@
           "identical"
         ],
         [
+          "note/figures/schem_timeline_g2.png",
+          "PASS",
+          "identical"
+        ],
+        [
           "note/figures/fig_pancake.pdf",
+          "PASS",
+          "regenerated (vector files carry dates; the PNG preview is compared)"
+        ],
+        [
+          "note/figures/fig_pop_gauge.pdf",
           "PASS",
           "regenerated (vector files carry dates; the PNG preview is compared)"
         ]
@@ -460,7 +478,7 @@
     {
       "check": "regenerate",
       "status": "PASS",
-      "message": "all 23 committed figure files regenerated",
+      "message": "all 29 committed figure files regenerated",
       "detail": null
     },
     {
