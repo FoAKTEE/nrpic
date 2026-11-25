@@ -211,6 +211,8 @@ failure stays on record. Several seeds share one Slurm job (batch launcher), one
 
 ### 4d.1 The statistic and its estimator
 
+[Amended 2026-11-25 (batch 19): the two reader tests by 4d.9 A3; the estimator by A5; sign of zeta by A2/A3.]
+
 - Variables, at N_f on every cell of every seed: (i) R^NR(x), the linear extraction of
   `ladder/scripts/ladder_lib.curvature` (the reader of G1 and G2); (ii) zeta(x) = delta N to the
   uniform-field surface phi = phi_e: zeta = -1/2 ln(chi/<chi>) + Delta N_bg(phi(x), dphi/dN(x)) -
@@ -233,6 +235,8 @@ failure stays on record. Several seeds share one Slurm job (batch launcher), one
 
 ### 4d.2 Number of seeds (power estimate, run E-20261125-115822-29795d6, `g3/power.py`)
 
+[Amended 2026-11-25 (batch 19): S and the reference size set together by 4d.9 A5 and A10.]
+
 Gaussian fields with the linear spectrum of the 128^3 USR box (record of the 128^3 window-scan
 run b_p, E-20261120-222424-0eb754b, t = 10.0, nmax2 = 1024), 400 boxes: sigma_lin = 0.4940; the
 box-to-box standard deviation of F_+(3) is 4.96e-5 (3.7 per cent of Q(3)), of F_+(4) 5.98e-6
@@ -249,6 +253,8 @@ it on real output, and S is raised to at most 512 if the measured scatter at nu 
 card-hours from the window scan's 128^3 runs).
 
 ### 4d.3 The reference: one-patch delta N of the same scenario
+
+[Amended 2026-11-25 (batch 19): reference and variance gate by 4d.9 A1, state at N_f by A4, the result by A2, nu = 4 by A9.]
 
 What exists: `langevin/` (E-pre-3): the phase-space Langevin first-passage solver with the noise
 covariance of the linear mode functions (momentum included), the lattice density of states, sigma
@@ -273,6 +279,8 @@ not move F by more than its own standard error; otherwise "agrees within" the st
 
 ### 4d.4 Constraint scaling with three amplitudes (G3-C; answers the G2 failure of U-A4'(a))
 
+[Amended 2026-11-25 (batch 19): a minimum number of judged dumps by 4d.9 A6.]
+
 Runs: seed i = 0 at s = +-1, +-1/2, +-1/4 (six runs), constraint fields dumped at every
 dump_dt = tlim/20 (21 dumps). Per dump and constraint (H, and M_i together), box means removed,
 E(s) the even part: D1 = E(1) - 4 E(1/2), D2 = E(1/2) - 4 E(1/4) per cell. Model E(s) = s^2 A + F_s
@@ -289,6 +297,8 @@ are computed with the track's own reader (risk R30), not the verifier's.
 
 ### 4d.5 Discretisation part of convergence (G3-R): Richardson in the square of the amplitude
 
+[Amended 2026-11-25 (batch 19): a model test by 4d.9 A7.]
+
 The odd part per mode is O(s) = s L + s^3 T + ...; from s = 1 and 1/2 the part linear in s is
 L = [8 O(1/2) - O(1)]/3 and the third-order part T = [O(1) - 2 O(1/2)] * 4/3. Runs: seed i = 0 at
 s = +-1, +-1/2 on 128^3 (shared with 4d.4) and on 160^3 at the same modes (nmax2 = 1024). Criterion:
@@ -299,6 +309,8 @@ the resolutions (expected below 10 per cent: T is not a discretisation error). A
 is not planned; it is added (192^3) only if the factor misses the band.
 
 ### 4d.6 Gauge leg (G3-G): a slicing other than geodesic
+
+[Amended 2026-11-25 (batch 19): WITHDRAWN as a criterion by 4d.9 A8 (decision 0040 item 1); the text below stays on record.]
 
 `<z4c> lapse_kdriver = 2` with `lapse_harmonic = 0` (the driver towards constant mean curvature of
 scalar_field_3.md section 5: mean lapse 1, the slicing approaches uniform expansion), the lapse
@@ -315,6 +327,8 @@ explained there).
 
 ### 4d.7 Level 2 of the stochastic backreaction (G3-L2): a sensitivity, not the baseline
 
+[Amended 2026-11-25 (batch 19): run as mirrored pairs by 4d.9 A11.]
+
 `scalar_field/noise_level = 2`, `noise_mode_eq = mesh` (core-v0.7; uniform mesh, one rank; defaults
 of noise_level2.md for the other level-2 options), the same 32 seeds. Reported: the paired
 differences level 2 minus level 0 of F_pm(3), F_pm(4), skewness, kurtosis, with standard errors,
@@ -324,6 +338,8 @@ superseded level-2 executable enter no G3 statement until core supplies their pr
 
 ### 4d.8 Budget (allotment 60 card-hours, decision 0038 item 4)
 
+[Amended 2026-11-25 (batch 19): order and budget by 4d.9 A12; the definition of 'G3 is met' below by A13.]
+
 Pilot <= 1 (this batch); baseline 256 seeds about 9; three amplitudes 6 runs with 21 dumps about 0.5;
 160^3 four runs about 0.4; gauge 32 seeds about 1.2; level 2 32 seeds about 1.5; the G3 total about
 14 card-hours at the window scan's cost per seed, leaving room for S up to 512, a 192^3 rung and
@@ -332,6 +348,130 @@ reruns. Every number is replaced by the pilot's measured cost before the full se
 "G3 of Track E is met" = the statistic of 4d.1 measured on S seeds with its standard errors; the
 comparison of 4d.3 stated with its error; 4d.4 and 4d.5 pass as written; 4d.6 and 4d.7 reported;
 the zeta reader passes its two tests; a fresh verifier recomputes the statistic from the dumps.
+
+### 4d.9 Amendments of 2026-11-25 (batch 19, lead of E), before any G3 production run
+
+Ruling: decision 0040 item 1. Source: the independent review `../../g3/scope_review/SCOPE_REVIEW.md`
+(B1-B3, S1-S7, N1-N6) and the lead's own checks of its blocking findings, `../../g3/amend/JOURNAL.md`
+(B1 confirmed by code that shares nothing with the review's, run E-20261125-151230-a4f4059; B2 by own
+arithmetic, E-20261125-151429-83a040c; B3 from the formulas). The text of 4d.1-4d.8 above stays as it was
+written; where an amendment and that text differ, the amendment governs. No G3 production run existed
+when these were written; the pilot (q0045, scouting) was queued under the text above and is read under it,
+with A3 and A8 applied to its reading. Predictions for the amended criteria: `../../g3/JOURNAL.md` entry 4.
+
+A1 (4d.3; review B1) The reference and its variance gate. The lattice-density variant applied the shell
+factor of 0.05-wide bins in ln n with the last bin's volume counted to e^3.5 = 33.1 while its shells stop
+at 32 (|n| <= 32); its factor was 0.279 instead of 0.934, and the variant's variance 0.97786 of the lattice
+sum where 1.00002 is right (lead's run above; |n| <= 64: 0.99058 and 0.99991). `langevin/scripts/
+ref_spec.py` now cuts the last bin's upper edge at NLAT (commit d5a5f2f3c). Gate: before any tail
+comparison the reference variance equals var_lattice_Ne within three of its standard errors (0.002
+relative at 4e6 realisations, about 0.0097 at 2e5). The corrected pilot passes: 0.9993 +- 0.0032 at 2e5,
+skewness 0.0234 +- 0.0037 (run E-20261125-151340-743c38c, `langevin/results/ref_inflection_n32_binfix.json`;
+the earlier pilot E-20261125-115707-b845282 is superseded for the lattice variant; all other variants are
+identical in both files). Standardisation: the reference with sqrt(var_lattice_Ne) = 0.49397 (same file),
+the box with the sigma_lin of its own lockstep record (4d.1); their ratio is reported.
+
+A2 (4d.3, the paragraph "The G3 result"; review B2) Variance and tail shape are judged separately. At
+fixed thresholds nu sigma_lin, F(nu) responds to the variance with dlnF/dln sigma = 9.85 (nu = 3) and 16.9
+(nu = 4), so a 0.4 per cent sigma error, a skewness of 0.009 and the whole delta-N skewness of the band
+each move F(3) by amounts the comparison resolves (E-20261125-151429-83a040c). Replaced by:
+(V) the variance: sigma^2_NR/var_ref - 1 with its combined standard error.
+(T) the tail shape at matched variance: the skewness and the excess kurtosis of zeta compared directly;
+F_pm(nu) at thresholds nu sigma_own, each side standardised with its own measured standard deviation, at
+nu = 3 and 4 (nu = 4 only under A9); and A(nu) = (F_+ - F_-)/(F_+ + F_-), which a variance error leaves
+unchanged at first order.
+"NR differs from one-patch delta N in the tail" only if an item of (T) exceeds three combined standard
+errors; "in the variance" from (V) alone; otherwise "agrees within" the stated errors. r(nu) at fixed nu
+sigma_lin is reported, not judged. Sign: zeta in the delta-N convention of the reference (positive =
+more e-folds = behind on the roll); zeta = -R^NR at first order (A3), so F_+ of zeta corresponds to F_- of
+R^NR. The clause on the gauge leg is dropped (A8).
+
+A3 (4d.1, the two reader tests; review B3) Test (a) cannot fail (zeta has its box mean subtracted) and test
+(b) is wrong in sign: from `ladder/scripts/ladder_lib.py` line 180, R^NR = dchi/(2 chi) + (H/Pi) dphi =
+-psi + (H/Pi) dphi, while 4d.1 defines zeta = psi + Delta N_bg with Delta N_bg = -(H/Pi) dphi at first order,
+so zeta = -R^NR at first order. Both are withdrawn. Replaced by three tests that can fail at the order
+the comparison rests on, on processors (release processor build `.work/build_cpu_v07/src/athena`), with
+the 32^3 analogue of the deck (USR, nmax2 = 64, `usr/inputs/modes_usr_n64.txt`), before the reader judges
+any G3 run; a reader that fails one judges nothing:
+- Z0 (first order): on a mirrored pair at s = +-1/4, with O = [X(+s) - X(-s)]/2 per cell at N_f,
+  rms(O_zeta + O_R)/rms(O_R) < 1e-3.
+- Z1 (the map): Delta N_bg of the reader against an independent homogeneous integrator (another code path
+  and another integration scheme, from the deck's potential) at states (phi_b + d phi, Pi_b + d Pi) of N_f,
+  d phi and d Pi at +-eps, +-2 eps with eps of the size of the box's one-point spread: the first and second
+  finite-difference coefficients agree within 1 per cent. Where the deck takes a shifted homogeneous
+  initial slice, the same on homogeneous runs (noise off).
+- Z2 (second order on the lattice): mirrored pairs at s = +-1/4 and +-1/2; the even part
+  E = [X(+s) + X(-s)]/2 minus its box mean, regressed on O^2 - <O^2>, gives a_zeta. a_zeta at the two
+  amplitudes agree within 2 per cent, and a_zeta agrees within 2 per cent with the quadratic coefficient of
+  the independent map along the box's (d phi, d Pi) relation.
+
+A4 (4d.3; review S1) The state at N_f in the reference. `ref_spec.py` records the (phi, varpi) state of
+every realisation of the lattice variant at N = N_f (variance, skewness, covariance). The box's
+(d phi, d Pi) at N_f, box means removed, is compared with it directly (variance and skewness of each), with
+the precision written into g3/JOURNAL.md before the comparison. This separates the NR evolution from the
+map Delta N_bg that reader and reference share. The G3 result names the comparison each statement rests on.
+Not yet implemented: it goes into the 4e6 run (A10).
+
+A5 (common set-up, 4d.1 estimator, 4d.2; review S2) Baseline as mirrored pairs: seeds i = 0..127, each at
+`scalar_field/noise_mode_scale` = +1 and -1 (256 runs, rng_seed 20262000 + i as before); the pilot's
+b000-b009 are the + members of pairs 0-9. The pair is the unit: per pair the mean of the two members'
+per-run fractions and moments; mean and standard error over the pairs. Reported beside it, per pair, the
+even part E (the non-Gaussian part without Gaussian sample variance): a_zeta and a_R from E on O^2 - <O^2>,
+and F_+(+) - F_-(-). Baseline dumps at t = 0 and tlim without constraint fields
+(`scalar_field/dump_constraints = false`; 4d.1 needs none, the constraint records stay).
+
+A6 (4d.4; review S4) G3-C cannot pass with nothing judged: each factor (1 over 1/2, 1/2 over 1/4) and each
+constraint (H; M) is judged at no fewer than four dumps of the range cN in [2.0, 6.6]; with fewer it is
+"not testable", which is not a pass. The largest deviation from 4 is reported. The model test is unchanged.
+
+A7 (4d.5; review S5) G3-R gets a model test of the asymptotic regime: the median over modes k <= k_max/2
+of D^L_n(128)/D^L_n(160) also lies in [2.0, 4.5], and the sign of L_n/(W_n R_n alpha_n L^-3/2) - 1 is the
+same at both resolutions for at least 90 per cent of those modes. G3-R fails if any of the three fails.
+
+A8 (4d.6; review S3; decision 0040 item 1) The gauge leg is withdrawn as a criterion; the 32 kdriver seeds
+are not queued. On the geodesic slice of the 128^3 USR box K is uniform (rms dK/|K| at most 4.0e-7 over the
+run, 4.9e-13 at N_f), rms dchi/chi stays at 8.2e-7, while the rms of (H/Pi) dphi grows to 0.495 (review run
+E-20261125-131805-0806ef8): the curvature perturbation lives in dphi on an unperturbed geometry. A lapse
+driven by K has nothing to drive and coincides with the geodesic slice to about one part in a million of
+zeta; the leg cannot fail. Limitation, stated in the G3 result and carried as a reservation of G3: "the
+slicing is geodesic; a K-driven slicing coincides with it in this model and tests nothing about slicing;
+a slicing test needs a lapse condition that depends on the field" (a request to core for later, not for
+G3: `outbox/`). The pilot's k000/k001 are read for the record only: rms(alpha - 1) and rms of
+H int (alpha - 1) dt at N_f, in units of sigma_lin.
+
+A9 (4d.3, nu = 4; review S6) nu = 4 is judged only if the importance-sampled reference reaches a relative
+standard error of at most 2 per cent for F_+(4) and for F_-(4). Target of the sampler (`sdn/langevin.py`
+fpt_phase_space, argument bias): a constant shift c of the noise along its dominant direction, one run
+against the roll (towards F_+) and one with the opposite sign (F_-), c fixed on a pilot of 1e5 paths so that
+the median of the tilted delta N lies within [3.5, 4.5] sigma_lin on its side; validated against direct
+sampling at nu = 3 within two standard errors. Otherwise nu = 4 is reported, not judged. (With 4e6 direct
+paths the relative standard error at nu = 4 is about 8 per cent, three combined errors 25 per cent, more
+than the whole delta-N skewness effect there, 24 per cent: E-20261125-151429-83a040c.)
+
+A10 (4d.2 and 4d.3; review S7; decision 0040) Seeds and reference size together. With N_ref = 4e6 direct
+paths the NR error at nu = 3 falls below a third of the reference's at 87 seeds (lead's arithmetic,
+E-20261125-151429-83a040c; 78 in the review), so beyond about eighty seeds the nu = 3 comparison is set by
+the reference. The 256 runs (128 pairs) stay, for three reasons that do not depend on the reference: the
+direct skewness comparison of (T) (threshold 0.0027 at 256 runs against 4e6), the even-part statistics of
+A5, and nu = 4 under A9. The reference proper: lattice variant, sigma = 0.01, 4e6 direct paths, with A1's
+gate, A4's state, A9's sampler, and sigma = 0.1 at the same size (to bound the coarse-graining dependence of
+the skewness below 0.0027, review N3). S beyond 128 pairs only if the nu = 4 reference reaches 1.5 per cent.
+
+A11 (4d.7) Level 2 as 16 mirrored pairs (32 runs; about 1.9 card-hours at 1.7 times a baseline run,
+review N6); the paired differences against level 0 use the same pairs.
+
+A12 (4d.8) Order and budget: (1) processors: the 4e6 reference with A1, A4, A9 and sigma = 0.1; the zeta
+reader with Z0-Z2. (2) The pilot (re-entered at priority 2: the gate package waits for it). (3) G3-C (six
+128^3 runs, 21 dumps with constraint fields) and G3-R (four 160^3 runs) before the baseline, priority 2:
+they can invalidate the set. (4) Baseline: the first two jobs (the ten minus members of pairs 0-9 with
+pairs 10-12; pairs 13-20) after the pilot; the rest only once the pilot's measured cost per run is written
+here. (5) Level 2. Total about 13 card-hours at the window scan's cost (gauge leg removed, level 2 at 1.9).
+
+A13 Replaces the paragraph '"G3 of Track E is met" = ...' above: the statistic of 4d.1 measured on 128
+mirrored pairs with its standard errors; (V) and (T) of A2 and the comparison of A4 stated with their
+errors; the reference passes its variance gate (A1); the zeta reader passes Z0-Z2 (A3); 4d.4 with A6 and
+4d.5 with A7 pass as written; 4d.7 reported; the slicing limitation of A8 stated; a fresh verifier
+recomputes the statistic from the dumps.
 
 ## 5. Test plan by row of brief section 10
 

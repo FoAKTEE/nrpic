@@ -94,3 +94,36 @@ Reading [JUDGEMENT]: the linear extraction R^NR is Gaussian to the precision of 
 at 128, 0.038 at 256). The non-Gaussianity that G3 compares lives in the nonlinear variable zeta
 (SCOPE 4d.1 (ii)); R^NR serves as the Gaussian control and the check of sigma_lin. This is the
 reason zeta and its tests come before the full set.
+
+## entry-4 (2026-11-25 07:40 PST, lead of E, batch 19): predictions for the amended criteria (SCOPE 4d.9), before any G3 production run
+
+The scope review (`scope_review/SCOPE_REVIEW.md`) and the lead's checks (`amend/JOURNAL.md` entries 1-4)
+changed 4d by the dated amendments A1-A13 of SCOPE 4d.9. Entry 2's G3-T and G3-G are superseded as stated
+here; G3P-1..3, G3-C (as amended by A6), G3-R and G3-L2 of entry 2 stand. Refutations stay on record.
+- Z0 (32^3, s = +-1/4): rms(O_zeta + O_R)/rms(O_R) about 1e-4, below the 1e-3 bar (the difference is third
+  order in s plus the chi and anisotropic terms of R^NR, about 1e-6 of sigma). Refuted above 1e-3.
+- Z1: first and second finite-difference coefficients of the reader's Delta N_bg within 0.1 per cent of
+  the independent integrator (bar 1 per cent). Refuted above 1 per cent.
+- Z2 (32^3): a_zeta > 0 (delta-N skewness positive in this scenario), a_zeta sigma_lin in [0.002, 0.008]
+  (a local quadratic model gives skewness = 6 a sigma, and the reference skewness lies at 0.02-0.04);
+  a_zeta at s = 1/4 and 1/2 agree within 2 per cent. Refuted outside any band.
+- V (128 pairs): |sigma^2_zeta/var_ref - 1| below three combined standard errors and below 0.01 (the
+  window-scan box gave sd(R^NR)/sigma_lin = 1.0016 on one box, E-20261125-120930-980b18e).
+- T (128 pairs, zeta against the corrected reference): skewness of zeta in [0.015, 0.032] and within three
+  combined standard errors of the reference's 0.0234 +- 0.0037 (2e5 pilot; the 4e6 value replaces it);
+  A(3) of zeta in [0.05, 0.16] (pilot reference 0.108); F_+(4)/Q(4) of zeta in [1.1, 1.8], F_-(4)/Q(4) in
+  [0.5, 1.0]. For R^NR: skewness in [0, 0.002] (review N1: 8.4e-4 on one pair), F_pm(4)/Q(4) in [0.85, 1.2]
+  both. "NR differs in the tail" is not expected [JUDGEMENT: at N_f the band is far outside the Hubble
+  radius; the box's own non-Gaussianity, a_R = 2.8e-4, is below the comparison's reach (review S1)].
+- A4: variance of the box's d phi at N_f within 1 per cent of the reference's phi variance at N_f; both
+  skewnesses below 0.005 in magnitude [JUDGEMENT: the non-Gaussianity enters through the map].
+- G3-C with A6 (six 128^3 runs): M judged at four or more dumps for both factors; H for 1 over 1/2 at four
+  or more; H for 1/2 over 1/4 may come out "not testable" [JUDGEMENT, about even odds: at 256^3 G2 judged H
+  at three dumps from the quarter pair]. Every judged factor within 4 +- 0.05; the model test holds at two
+  thirds of the dumps of the range or more.
+- G3-R with A7: Richardson factor of the maximum and median of D^L from 128 to 160 in [2.3, 4.0] (order four
+  to six at the ratio 1.25); the sign agrees at 128 and 160 for more than 90 per cent of the modes.
+- A8 (pilot k000/k001, read for the record): rms(alpha - 1) at N_f below 1e-5 and rms of H int (alpha - 1)
+  dt below 1e-3 sigma_lin.
+- A9: a tilted run of 4e6 paths per side reaches a relative standard error at or below 2 per cent at nu = 4
+  [JUDGEMENT; refuted if above 3 per cent with the shift that centres the tilted median in [3.5, 4.5]].
