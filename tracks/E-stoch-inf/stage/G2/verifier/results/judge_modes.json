@@ -1,0 +1,278 @@
+{
+ "V3_U256ap": {
+  "t": 0.0,
+  "n_modes_W_gt_half": 3,
+  "max_rel": 4.996245686796787e-12,
+  "max_rel_n2_le_4": 7.090319559750574e-08,
+  "sign": 3.4091425773213873e-11
+ },
+ "V3_U256bp": {
+  "t": 0.0,
+  "n_modes_W_gt_half": 3,
+  "max_rel": 7.358008291415442e-12,
+  "max_rel_n2_le_4": 1.4038151754641343e-08,
+  "sign": 2.110741986465693e-11
+ },
+ "Nf_times": {
+  "U256ap": 10.437508874065651,
+  "U256am": 10.437508874065651,
+  "U256bp": 10.437508874065651,
+  "U256bm": 10.437508874065651,
+  "U256hp": 10.437508874065651,
+  "U256hm": 10.437508874065651,
+  "U256qp": 10.437508874065651,
+  "U256qm": 10.437508874065651,
+  "U320ap": 10.437508874065651,
+  "U320am": 10.437508874065651
+ },
+ "Nf_max_dt": 0.0,
+ "A256": {
+  "s": 1.0,
+  "seed": "A",
+  "U-A2p_max_D_k_le_32": 0.00010893998070664412,
+  "argmax_n": [
+   0,
+   32,
+   0
+  ],
+  "argmax_absalpha_quantile": 0.031709165364199085,
+  "max_D_all_band": 0.004506346423339409,
+  "argmax_all_n": [
+   64,
+   0,
+   0
+  ],
+  "median_D_k_le_32": 4.190467070715306e-05,
+  "single_run_max_D_k_le_32": 0.059177285460513186,
+  "single_run_max_D_all": 0.24562437570665593,
+  "U-A2n_even_over_odd_band": 0.0002876640192687077,
+  "U-A2n_even_over_odd_k_le_32": 0.00025334965574798753,
+  "variant_no_gt_max_D_k_le_32": 0.000108933931338327,
+  "gt_part_rms_over_c_rms": 1.2725701594916277e-07,
+  "chi_part_rms_over_c_rms": 4.579375941458885e-07,
+  "U-A3_n_modes": 61,
+  "U-A3_single_ratio_minmax": [
+   0.9922961110932031,
+   1.0016091791777553
+  ],
+  "U-A3_odd_ratio_minmax": [
+   0.999915831680138,
+   0.999918758624615
+  ],
+  "U-A3_max_dev_single": 0.007703888906796852,
+  "U-A3_max_dev_odd": 8.416831986202133e-05,
+  "rms_band_plus": 0.8945203839781231,
+  "rms_band_minus": 0.8945199079906421,
+  "rms_full_plus": 0.8945204024632394,
+  "max_abs_full_plus": 4.567809002645087,
+  "skew_full_plus": 0.002373989937189229,
+  "exkurt_full_plus": 0.0010676231415858162,
+  "realisation_lattice_rms": 0.8943637636603397
+ },
+ "B256": {
+  "s": 1.0,
+  "seed": "B",
+  "U-A2p_max_D_k_le_32": 0.00010870980284207459,
+  "argmax_n": [
+   0,
+   0,
+   32
+  ],
+  "argmax_absalpha_quantile": 0.734420483898586,
+  "max_D_all_band": 0.004506008673472858,
+  "argmax_all_n": [
+   64,
+   0,
+   0
+  ],
+  "median_D_k_le_32": 4.1867952693344994e-05,
+  "single_run_max_D_k_le_32": 0.07846562372187614,
+  "single_run_max_D_all": 0.2063624811203508,
+  "U-A2n_even_over_odd_band": 0.00028737896460868375,
+  "U-A2n_even_over_odd_k_le_32": 0.0002534835225161233,
+  "variant_no_gt_max_D_k_le_32": 0.00010870375479375576,
+  "gt_part_rms_over_c_rms": 1.269786571230833e-07,
+  "chi_part_rms_over_c_rms": 4.702519181245491e-07,
+  "U-A3_n_modes": 61,
+  "U-A3_single_ratio_minmax": [
+   0.9967821219693958,
+   1.0018505966849873
+  ],
+  "U-A3_odd_ratio_minmax": [
+   0.9999155979107124,
+   0.9999177336474931
+  ],
+  "U-A3_max_dev_single": 0.0032178780306042487,
+  "U-A3_max_dev_odd": 8.440208928761628e-05,
+  "rms_band_plus": 0.8941094245615353,
+  "rms_band_minus": 0.8941081978051606,
+  "rms_full_plus": 0.8941094430305173,
+  "max_abs_full_plus": 4.933590719254367,
+  "skew_full_plus": 0.004158422586455229,
+  "exkurt_full_plus": 0.0008748889688310335,
+  "realisation_lattice_rms": 0.8939525382588297
+ },
+ "A256h": {
+  "s": 0.5,
+  "seed": "A",
+  "U-A2p_max_D_k_le_32": 0.0001242175842033693,
+  "argmax_n": [
+   0,
+   32,
+   0
+  ],
+  "argmax_absalpha_quantile": 0.031709165364199085,
+  "max_D_all_band": 0.004528980875454656,
+  "argmax_all_n": [
+   64,
+   0,
+   0
+  ],
+  "median_D_k_le_32": 2.707369470663301e-05,
+  "single_run_max_D_k_le_32": 0.02957035182542796,
+  "single_run_max_D_all": 0.12296582488619387,
+  "U-A2n_even_over_odd_band": 0.00014383199326246658,
+  "U-A2n_even_over_odd_k_le_32": 0.0001266748142588266,
+  "variant_no_gt_max_D_k_le_32": 0.00012421023616486355,
+  "gt_part_rms_over_c_rms": 1.2725309527070486e-07,
+  "chi_part_rms_over_c_rms": 4.5792348769859663e-07,
+  "U-A3_n_modes": 61,
+  "U-A3_single_ratio_minmax": [
+   0.9961643955635644,
+   1.000825372213275
+  ],
+  "U-A3_odd_ratio_minmax": [
+   0.9999790888445288,
+   0.9999798218733892
+  ],
+  "U-A3_max_dev_single": 0.0038356044364356023,
+  "U-A3_max_dev_odd": 2.0911155471203813e-05,
+  "rms_band_plus": 0.44727407323251994,
+  "rms_band_minus": 0.44727395422444827,
+  "rms_full_plus": 0.4472740755432285,
+  "max_abs_full_plus": 2.2825815860544614,
+  "skew_full_plus": 0.001627791779271953,
+  "exkurt_full_plus": 0.0010638133677911554,
+  "realisation_lattice_rms": 0.4471818818301698
+ },
+ "A256q": {
+  "s": 0.25,
+  "seed": "A",
+  "U-A2p_max_D_k_le_32": 0.00012894013466430268,
+  "argmax_n": [
+   32,
+   0,
+   0
+  ],
+  "argmax_absalpha_quantile": 0.8713234892286842,
+  "max_D_all_band": 0.0045346639086417465,
+  "argmax_all_n": [
+   64,
+   0,
+   0
+  ],
+  "median_D_k_le_32": 2.832401088371828e-05,
+  "single_run_max_D_k_le_32": 0.014769892439678802,
+  "single_run_max_D_all": 0.06165054666199049,
+  "U-A2n_even_over_odd_band": 7.191599490202066e-05,
+  "U-A2n_even_over_odd_k_le_32": 6.333740743837338e-05,
+  "variant_no_gt_max_D_k_le_32": 0.00012893256147161267,
+  "gt_part_rms_over_c_rms": 1.2725212137460198e-07,
+  "chi_part_rms_over_c_rms": 4.5792000193986523e-07,
+  "U-A3_n_modes": 61,
+  "U-A3_single_ratio_minmax": [
+   0.9980863724586762,
+   1.0004179357138823
+  ],
+  "U-A3_odd_ratio_minmax": [
+   0.9999948977381241,
+   0.9999950772098534
+  ],
+  "U-A3_max_dev_single": 0.001913627541323848,
+  "U-A3_max_dev_odd": 5.102261875888914e-06,
+  "rms_band_plus": 0.22363876439974148,
+  "rms_band_minus": 0.2236387346477029,
+  "rms_full_plus": 0.22363876468858204,
+  "max_abs_full_plus": 1.1409514359048871,
+  "skew_full_plus": 0.0012546928130657317,
+  "exkurt_full_plus": 0.0010627326845265017,
+  "realisation_lattice_rms": 0.2235909409150849
+ },
+ "A320": {
+  "s": 1.0,
+  "seed": "A",
+  "U-A2p_max_D_k_le_32": 5.1820097995164414e-05,
+  "argmax_n": [
+   13,
+   15,
+   -20
+  ],
+  "argmax_absalpha_quantile": 9.108164923363901e-05,
+  "max_D_all_band": 0.0015495777146251764,
+  "argmax_all_n": [
+   64,
+   0,
+   0
+  ],
+  "median_D_k_le_32": 4.0755138691540496e-05,
+  "single_run_max_D_k_le_32": 0.059193820232375544,
+  "single_run_max_D_all": 0.24543512436735224,
+  "U-A2n_even_over_odd_band": 0.000287654091102714,
+  "U-A2n_even_over_odd_k_le_32": 0.0002533224852458814,
+  "variant_no_gt_max_D_k_le_32": 5.623919617143776e-05,
+  "gt_part_rms_over_c_rms": 1.2727632491762946e-07,
+  "chi_part_rms_over_c_rms": 4.5800683369516164e-07,
+  "U-A3_n_modes": 61,
+  "U-A3_single_ratio_minmax": [
+   0.9922962716776556,
+   1.0016088125602498
+  ],
+  "U-A3_odd_ratio_minmax": [
+   0.999915744037494,
+   0.9999186726171535
+  ],
+  "U-A3_max_dev_single": 0.00770372832234445,
+  "U-A3_max_dev_odd": 8.425596250605238e-05,
+  "rms_band_plus": 0.8943851661204104,
+  "rms_band_minus": 0.8943846896858461,
+  "rms_full_plus": 0.8943851845787972,
+  "max_abs_full_plus": 4.651180811362697,
+  "skew_full_plus": 0.002374887831498494,
+  "exkurt_full_plus": 0.0010647083193036089,
+  "realisation_lattice_rms": 0.8943637636603397
+ },
+ "U-R": {
+  "i_factor_256_over_320": 2.102272765227303,
+  "ii_max_shell_dev_k_le_32": 0.00011849796424545644,
+  "ii_max_shell_dev_k_le_64": 0.004609515284367927,
+  "ii_q_at_max": 4096,
+  "iii_even_odd_256": 0.0002876640192687077,
+  "iii_even_odd_320": 0.000287654091102714,
+  "iii_rel_diff": 3.45130615185818e-05,
+  "iii_rel_diff_k_le_32": 0.00010724507213522028,
+  "verdict": {
+   "i": true,
+   "ii": true,
+   "iii": true
+  }
+ },
+ "U-S": {
+  "ensemble_lattice_rms_own": 0.8937069199675449,
+  "rms_band_bp": 0.8941094245615353,
+  "rms_band_bm": 0.8941081978051606,
+  "dev_from_0.89366": 0.0004494245615352943,
+  "dev_from_own_ensemble": 0.00040250459399038263,
+  "seed_B_realisation_lattice_rms": 0.8939525382588297,
+  "rms_full_bp": 0.8941094430305173,
+  "pass": true,
+  "seed_A_rms_band": 0.8945203839781231
+ },
+ "verdicts": {
+  "U-A2p_A": true,
+  "U-A2p_B": true,
+  "U-A2n_A_lt_0.3": true,
+  "U-A2n_B_lt_0.3": true,
+  "U-A3_A": true,
+  "U-A3_B": true
+ }
+}
