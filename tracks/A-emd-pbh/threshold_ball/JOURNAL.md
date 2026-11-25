@@ -338,3 +338,11 @@ the finder rows instead of the search interval: a defect of the script, fixed an
   1.94 (> 0.1, as every member: C3 stays FAIL).
 - Slice measures do halve: core trapping dtau mean -0.096 on C against -0.209 on B; turnaround
   dtau mean -0.027 against -0.054 (compare logs of A-20261125-115027-17b419e).
+
+### Entry 8, withdrawn before its run (2026-11-25 04:20 PST, lead of batch 17)
+
+Queue entry q0014 (a-cd040, C-d0.40 on mesh C, 14 card-hours asked) is removed from the shared
+queue unrun: no item of stage/G2/CHECKLIST.md waits for the lower end of the mesh-C bracket (C7
+passes on conv_ball; the bracket on mesh B equals the exact one, entry 4; C-d0.42 holds the upper
+end on C, entry 11). T7 stays on record as a prediction not tested. The data set dc0p4C
+(A-20261124-133456-2d00507) is kept for a later bracket-convergence run (G3 if wanted).
