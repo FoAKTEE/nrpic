@@ -9,12 +9,13 @@ NRPIC_PYTHON=/usr/bin/python3
 PATH=${HOME}/.local/bin:/usr/local/cuda-12.6/bin:/usr/local/bin:/usr/bin:/bin
 # shared download cache of uv (content-addressed; the venvs are copies, UV_LINK_MODE=copy)
 UV_CACHE_DIR=${NRPIC_HOME}/cache/uv
-# release executables of the main checkout, built from main after the merge of core-v0.6
-# (CLAUDE.md); read-only for everyone. Older: core-v0.5 .work/build_gpu_v05, .work/build_cpu_v05;
-# core-v0.4 .work/build_gpu_v04, .work/build_cpu_v04; core-v0.3 .work/build_gpu_v03,
-# .work/build_cpu_v03; core-v0.2 .work/build_gpu_c3, .work/build_cpu_c1
-NRPIC_GPU_EXE=${NRPIC_HOME}/.work/build_gpu_v06/src/athena
-NRPIC_CPU_EXE=${NRPIC_HOME}/.work/build_cpu_v06/src/athena
+# release executables of the main checkout, built from main after the merge of core-v0.7
+# (CLAUDE.md); read-only for everyone. Older: core-v0.6 .work/build_gpu_v06, .work/build_cpu_v06;
+# core-v0.5 .work/build_gpu_v05, .work/build_cpu_v05; core-v0.4 .work/build_gpu_v04,
+# .work/build_cpu_v04; core-v0.3 .work/build_gpu_v03, .work/build_cpu_v03; core-v0.2
+# .work/build_gpu_c3, .work/build_cpu_c1
+NRPIC_GPU_EXE=${NRPIC_HOME}/.work/build_gpu_v07/src/athena
+NRPIC_CPU_EXE=${NRPIC_HOME}/.work/build_cpu_v07/src/athena
 # Slurm: two A100, partition preempt, 1 h per job, 4 cores in the partition
 NRPIC_PARTITION=preempt
 NRPIC_GPU_NAME=NVIDIA A100 80GB (Slurm partition preempt)
