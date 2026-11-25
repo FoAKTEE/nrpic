@@ -9,7 +9,7 @@ Each item with what it lacks and the queue entry that serves it (`harness/bin/nr
 | C1 code paths of section 10 | (iii) Szekeres card series; (ii) the periodic LTB case P0L forms no horizon in the finder (slice traps at r ~ 0.075, under four finest cells); (iv) A's oblate/prolate row (SCOPE A2) has no run | (iii) q0040 a-szk-n64-128 and q0041 a-szk-n256 (added batch 17, p2; predictions P17-P21, szekeres entries 8, 10); (ii) q0013 a-p0l6 (in Slurm, job 5282, run A-20261125-044641-7d5bd16; predictions D1-D5); (iv) none: ask orch whether core's prolate test covers the row or A must run A2 (outbox) |
 | C3 constraints behave | FAIL: norms flat in mesh and particle number before t ~ 6 (K, K2 refuted), not localized (K3 refuted); ratio to 16 pi E above 0.1 on every member including M/64 (1.94, C-d0.42) | processor test K4 (threshold_ball entry 10; command at its end; no card); ruling of orch on the 0.1 bound (asked 2026-11-24, outbox constraint-bound-ruling) |
 | C5 verification report | waits for C1, C3, C18 | none |
-| C6 reproducibility package | a single rerun list for G2; threshold_ball/README.md | session work, no card |
+| C6 reproducibility package | a single rerun list for G2 (threshold_ball/README.md done in batch 17) | session work, no card |
 | C10 ladder schematic | not drawn | session work (paperfig) |
 | C11 convergence figures | not drawn into the note in zoom-figure style (gauge leg not run: boundary leg chosen) | session work |
 | C13 slice mosaic | nested runs write line outputs only; needs 3D outputs of one member | a short card run with mesh dumps (not queued: decide with C17) |
@@ -26,6 +26,7 @@ Removed in batch 17: q0014 a-cd040 (C-d0.40 on mesh C, 14 card-hours): no G2 ite
 end of the mesh-C bracket (threshold_ball JOURNAL, note after entry 11). Mesh-C upper end holds
 (C-d0.42 black hole, tau_det 43.705; A-20261125-115027-17b419e).
 
-Mesh A at threshold stops at the guard 2.3 M after detection (cause not named; G1 repeats the card
-stop exactly, G2 moves it, G3 not judged: run A-20261124-132016-ecf12c3 still not closed). Not a
-checklist item; on record under C19.
+Mesh A at threshold stops at the guard 2.3 M after detection: G1 repeats the card stop exactly, G2
+(lapse_leak 0) moves it 0.5 M, G3 (alpha_exc 0.3) passes it to t = 48.5; no variant holds a persistent
+horizon on M/16 (A-20261125-120158-b76bfe3, threshold_ball entry 5 outcome). Not a checklist item; on
+record under C19.

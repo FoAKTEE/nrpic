@@ -33,9 +33,9 @@ minutes for the ball runs; start it early, in the background). A cut chain is co
 
 ## Processor work left
 
-- A-20261124-132016-ecf12c3 (G1-G3 of threshold_ball entry 5): ended exit 0 on 2026-11-24 06:31 PST; G3
-  (alpha_exc 0.3) not judged: read `G3/athena.log`, `G3/ball.guard.txt`, write the outcome under entry 5,
-  then `nrpic-run finish`.
+- G1-G3 of threshold_ball entry 5 judged in batch 17 (A-20261125-120158-b76bfe3; outcome at the end of
+  threshold_ball/JOURNAL.md). If `nrpic-run status` still lists A-20261124-132016-ecf12c3 or
+  A-20261122-173202-f98c79f as not finished, run `harness/bin/nrpic-run finish <id>` (checksums take minutes).
 - K4 (threshold_ball entry 10; prediction written): start command at the end of threshold_ball/JOURNAL.md,
   then k4_compare.py on its directory (registered). This is the next test of C3.
 
@@ -43,7 +43,7 @@ minutes for the ball runs; start it early, in the background). A cut chain is co
 
 | Package | State | What remains |
 |---|---|---|
-| `threshold_ball/` | scan judged (entries 4, 11); K-K3 refuted | K4; README.md with the results table (C6); A-mesh guard stop (G3) |
+| `threshold_ball/` | scan judged (entries 4, 11); K-K3 refuted; guard-stop test judged (entry 5); README current | K4 |
 | `szekeres/` | card series queued (q0040, q0041) | analyse when the runs end; particle-number check P22-P23 on processors |
 | `periodic_threshold/` | job 2 judged; P0L6 in Slurm; S1L waits | D1-D5; S1-S3; README table and DESIGN 7.1 |
 | `conv_ball/`, `verify_bh/`, `periodic_diag/`, `runs_ball/`, `g1close/` | done | C18 verifier of conv_ball numbers |

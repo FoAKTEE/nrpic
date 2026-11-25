@@ -27,7 +27,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: STAGE_REPORT.md written by nrpic-stage report in batch 11 as an interim package; the verification report proper waits for C1, C3, C18.
 - [ ] **C6** Reproducibility package
   - status: OPEN
-  - evidence: Every run registered (manifests in tracks/A-emd-pbh/runs/, commands, inputs with sha256); scripts in conv_ball/, threshold_ball/, periodic_threshold/ with 'How to rerun' in conv_ball/README.md. Missing: a single rerun list for G2 (stage/G2/VERIFY) and threshold_ball/README.md.
+  - evidence: Every run registered (manifests in tracks/A-emd-pbh/runs/, commands, inputs with sha256); scripts in conv_ball/, threshold_ball/, periodic_threshold/ with 'How to rerun' in conv_ball/README.md. threshold_ball/README.md now carries the results table and rerun steps (batch 17). Missing: a single rerun list for G2 (stage/G2/VERIFY).
 
 ## Track-specific criteria of A-emd-pbh for G2 (9.4 Track A: EMD primordial-black-hole formation (S1))
 
@@ -78,7 +78,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: verify_bh (independent check of BH-1R) exists; no fresh-context verifier has recomputed conv_ball's or threshold_ball's numbers for G2.
 - [x] **C19** Null results and failed runs are on record (manifests and JOURNAL)
   - status: PASS
-  - evidence: Failed runs closed as failed: A-20261121-235851-d2200d7 (A-mesh guard stops), A-20261121-131600-02b5d41 (periodic job 1); cut chains continued, not repeated (journals 2026-11-24); refuted predictions on record: T4 reason, T5, T6, P2-P4, Q1b, F1, K, K2, K3 (threshold_ball entries 4-9, periodic_threshold entries 2026-11-24); batch 17: T4 mesh-C half refuted (entry 11), script defect run A-20261125-115530-a4f7dcd kept, q0014 (C-d0.40) withdrawn unrun with T7 untested (entry 8 note).
+  - evidence: Failed runs closed as failed: A-20261121-235851-d2200d7 (A-mesh guard stops), A-20261121-131600-02b5d41 (periodic job 1); cut chains continued, not repeated (journals 2026-11-24); refuted predictions on record: T4 reason, T5, T6, P2-P4, Q1b, F1, K, K2, K3 (threshold_ball entries 4-9, periodic_threshold entries 2026-11-24); batch 17: T4 mesh-C half refuted (entry 11), script defect run A-20261125-115530-a4f7dcd kept, q0014 (C-d0.40) withdrawn unrun with T7 untested (entry 8 note); G3 of the A-mesh guard test refuted "stops like G1" (passes to t = 48.5; A-20261125-120158-b76bfe3).
 - [x] **C20** STATUS.md, JOURNAL.md and HANDOFF.md are current
   - status: PASS
   - evidence: STATUS.md, JOURNAL.md, HANDOFF.md, RISKS.md rewritten at the end of batch 17 (2026-11-25).
