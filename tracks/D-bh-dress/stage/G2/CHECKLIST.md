@@ -1,6 +1,6 @@
 # Checklist: D-bh-dress G2
 
-Collected by `harness/bin/nrpic-stage collect D-bh-dress G2` on 2026-11-24T17:29:13Z from `coord/CHARTER.md` (last changed in a6118683) and the brief (sections 13.3 and 13.4).
+Collected by `harness/bin/nrpic-stage collect D-bh-dress G2` on 2026-11-25T12:21:07Z from `coord/CHARTER.md` (last changed in a61186835) and the brief (sections 13.3 and 13.4).
 For each item set `status:` to PASS, FAIL or NA (OPEN until judged) and give the evidence: run ids,
 figure files, KB locators, commits. `nrpic-stage report` reads this file; the automated checks are
 in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
@@ -9,13 +9,13 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [ ] **C1** The code paths used by the track pass their tests of §10
   - status: OPEN
-  - evidence: Ladder table stage/G2/LADDER.md (rows D owns: Einstein-Straus null test N at M/8 and M/16 with the converged-finder re-search FP; self-similar infall Q16/Q16-256; D's growth criterion G) and schematic D-20261124-172838-3a30e48. Open: the M/4 member of the null test (FE4, card) and the G2 verifier (C17).
+  - evidence: Ladder table stage/G2/LADDER.md (rows D owns: Einstein-Straus null test N at M/8 and M/16 with the converged-finder re-search FP; self-similar infall Q16/Q16-256; D's growth criterion G) and schematic D-20261124-175505-a1053fa. Open: the M/4 member of the null test (FE4 D-20261123-022726-1b133af ran to 300 M, close and P5 pending) and the G2 verifier (C17). All G2 runs slice with plain 1+log (decision 0025 item 3); the relaxed lapse and its mitigation are not used (OPEN.md section 2).
 - [ ] **C2** Three-way convergence in particle number, mesh spacing, and gauge or boundary
   - status: OPEN
-  - evidence: Mesh: null test at M/8 and M/16 (D-20261121-203124-a34cf1f, -203131-8ee2a49, -203151-37e7b2d, -203151-59c54fb; converged-finder difference 4.5-7.3e-5 at M/8, 2.3-3.7e-5 at M/16, fp_analyse D-20261124-172508-c847ee4), M/4 FE4 queued (job 5153); growth at M/8 (ES-FL), M/4 FF4 at 456 M (job 5152), M/16 FL16 registered held (D-20261124-172745-72472ed). The horizon mass itself has no mesh order (P2, FP4 refuted). Particle number: N = FK (held, 225 M of 400), 4N = FN4 and N/4 = FNQ registered, held (D-20261124-134157-b17938b, -172725-2f426b6). Boundary: faces +-192/384/768 M, gauge: lapse_leak pair of G1 (boundary_gauge D-20261124-131657-89cd963).
+  - evidence: Particle number: N = FK D-20261123-022725-a553496 (closed; P7-P10 hold, fk_compare D-20261125-115637-7ee26c1, criterion G D-20261125-115647-fd2f3f7), 4N = FN4 D-20261124-134157-b17938b (ran to 400 M; N2 and N3 hold on np_partial D-20261125-115729-011d028, read before its close), N/4 = FNQ D-20261124-172725-2f426b6 (running, q0010; partial to 125 M). Mesh of the growth: M/4 FF4 D-20261123-022727-1c17e73 (closed; criterion G holds with its own-mesh control, D-20261125-121123-143a007; P13 failed as written), M/8 ES-FL, M/16 FL16 waits (q0011). Mesh of the null test: M/8, M/16 done (converged finder fp_analyse D-20261124-172508-c847ee4), M/4 FE4 ran, to judge. Boundary: faces +-192/384/768 M (boundary_gauge D-20261124-131657-89cd963); the gauge axis cannot use the relaxed lapse (OPEN.md section 2). The horizon mass itself has no mesh order (P2, FP4).
 - [ ] **C3** Constraints behave
   - status: OPEN
-  - evidence: Volume norms bounded in all long runs (D-20261123-021027-e3af9b8); exterior plane norms on annuli outside 1.2 r_AH bounded to 500 M in eight runs (XC1, xc_plane D-20261124-134211-c6fce88, looked at); with dust the exterior residual is ~100x the vacuum one and falls with more particles per cell. Region (sphere) norms come with FN4/FNQ/FL16 (predictions XN, XQ, L5).
+  - evidence: Volume norms bounded in all long runs (D-20261123-021027-e3af9b8); exterior plane norms on annuli outside 1.2 r_AH bounded to 500 M in eight runs (XC1, xc_plane D-20261124-134211-c6fce88, looked at); with dust the exterior residual is ~100x the vacuum one and falls with more particles per cell. Region (sphere) norms: FN4 complete (XN to judge), FNQ running (q0010, XQ), FL16 waiting (q0011, L5).
 - [x] **C4** A first minimal full-GR kinetic run
   - status: PASS
   - evidence: ES-F (D-20261121-144631-aa7ce9b) and ES-FL (D-20261121-203150-15f2bad, 850724 particles, 500 M): kinetic matter falling into an evolved puncture in full GR; analyses D-20261123-020606-fa0046c, -020614-7ba5874.
@@ -36,7 +36,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: Criterion N of g2long entry 1 (fixed before the runs): max |D_ES1L - D_V1L| on 100-500 M = 2.28e-4 against 2.51e-4 = 2 F_V(500) (judge_long D-20261123-020550-f9a3482); M/16 1.99e-4 on 100-300 M (H3, D-20261124-131138-0b8ffc5). Since batch 11b the floor's cause is found: the production finder's stopping rule (FP2, FP3: converged-finder vacuum drift 1.8e-5 at M/8 over 100-500 M, 3.9e-6 at M/16); with the converged finder the bubble-minus-vacuum difference is at most 7.3e-5 (M/8, 100-500 M) and 5.5e-5 (M/16, 100-300 M), without a trend in time; the bubble's horizon mass dips by 4-6e-5 at 100 M at both meshes (FP5, FP-ext, FE; D-20261124-172508-c847ee4, D-20261124-175356-0f40f1a; fp_analyse.png and fe_analyse.png looked at). Reservation: the M/4 member is pending.
 - [x] **C8** With matter filled in, the mass growth agrees with the integrated particle flux through the horizon
   - status: PASS
-  - evidence: Criterion G of g2long entry 1: (iii) every 10 M bin of tau_rem <= 650 M within +-0.62 per cent of the exact LTB mass (61 bins), D2 at all 960 samples (esf_criteria D-20261123-020614-7ba5874, esf_criteria.png L; esf_bracket.png L). Reservations: one mesh and one particle number so far (FF4, FL16, FK, FN4, FNQ queued); D1 closure +9.4e-3 at 500 M (predicted below 8e-3); the step at tau_rem ~ 285 M follows the end of horizon excision at 219 M (FK tests the workaround).
+  - evidence: Criterion G of g2long entry 1: (iii) every 10 M bin of tau_rem <= 650 M within +-0.62 per cent of the exact LTB mass (61 bins), D2 at all 960 samples (esf_criteria D-20261123-020614-7ba5874, esf_criteria.png L; esf_bracket.png L). Batch 17: G holds for FK (50 bins to tau_rem 500 M, max 0.249 per cent; D-20261125-115647-fd2f3f7), for FF4 at M/4 with the M/4 control (60 bins, max 0.685 per cent; D-20261125-121123-143a007; with the M/8 control D2 fails, D-20261125-121034-8f82998) and, partially, for FN4/FNQ (np_partial D-20261125-115729-011d028). The (iii) step at tau_rem ~285 M of ES-FL is the end of horizon excision at 4 x initial_radius: absent in FK (P9, g2long entry 19). Reservations: FNQ and FL16 pending; D3 fails at M/4 (1704 early removals); FK's D4 timing (29.5 per cent removed before the exact crossing) unexplained [TO VERIFY].
 
 ## Minimum figures at G2 (brief 13.4)
 
@@ -45,7 +45,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
   - evidence: Verification-ladder schematic schem_ladder.png, registered D-20261124-172838-3a30e48 and, redrawn after test FE, D-20261124-175505-a1053fa (paperfig style, g2long/tools/schem_ladder.py), both looked at by the lead on 2026-11-24; it will be redrawn as the queued runs end.
 - [ ] **C10** Data figure: Convergence figures (one each for particle number, mesh, gauge)
   - status: OPEN
-  - evidence: Mesh: judge_conv.png (D-20261124-131149-9f0166d, three vacuum meshes) and fp_analyse.png panel (d) (converged finder, three meshes); boundary/gauge: boundary_gauge.png (D-20261124-131657-89cd963). Particle-number figure waits for FK, FN4, FNQ.
+  - evidence: Mesh: judge_conv.png (D-20261124-131149-9f0166d, three vacuum meshes) and fp_analyse.png panel (d) (converged finder, three meshes); boundary/gauge: boundary_gauge.png (D-20261124-131657-89cd963). Particle number: np_partial.png (D-20261125-115729-011d028; FK, FN4 whole, FNQ partial), final when FNQ ends (q0010). Growth mesh figure waits for FL16 (q0011).
 - [ ] **C11** Data figure: Constraint norms against time
   - status: OPEN
   - evidence: constraints_long.png (volume norms, D-20261123-021027-e3af9b8) and xc_plane.png (exterior annuli, D-20261124-134211-c6fce88), both looked at; region-sphere norms against time wait for FN4/FNQ/FL16.
@@ -57,7 +57,7 @@ in VERIFY_RESULTS.md (`nrpic-stage verify`), not here.
 
 - [ ] **C13** Package documents of decision 0012: STAGE_REPORT.md (nrpic-stage report), EVIDENCE.md, OPEN.md and this CHECKLIST.md in the stage directory; REVIEW.md where the lead rechecked helpers; the scoping text in SCOPE.md or SCOPING.md beside them or in the scope directory, named in the report (no REPORT.md needed)
   - status: OPEN
-  - evidence: CHECKLIST, EVIDENCE, OPEN, STAGE_REPORT present; REVIEW.md not written for G2 (the lead review is stage/REVIEW-wave3.md section 13); scope text scope/SCOPE.md.
+  - evidence: CHECKLIST, EVIDENCE, OPEN, STAGE_REPORT present; the lead reviews are stage/REVIEW-wave3.md sections 13-19 (no separate G2/REVIEW.md yet); scope text scope/SCOPE.md.
 - [ ] **C14** Data figures drawn with /zoom-figure-style from registered run outputs, one script per figure, every PNG looked at
   - status: OPEN
   - evidence: G2 figures so far drawn with figstyle (judge_long, esf_criteria, esf_bracket, esf_growth, constraints_long), each PNG looked at by the lead; not yet in the note.

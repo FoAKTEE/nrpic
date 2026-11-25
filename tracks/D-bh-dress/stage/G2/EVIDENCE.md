@@ -51,8 +51,17 @@ no lapse_leak.
 | Early-dump finder re-search (FE) and its judgement | `g2long/tools/probe_long.py`, `g2long/tools/fe_analyse.py` | D-20261124-173137-f358715, D-20261124-175356-0f40f1a | fe_analyse.png (L) |
 | 4N and N/4 dust data (D1); smoke tests S7, S8 | `flux_tools/esf_data.py`; release processor build | D-20261124-130942-29c5de2, -131050-ed0a535; -131123-05e5bfe, -131125-c928380 | entry 11 |
 
-Card runs registered and not yet ended (release core-v0.6, chains; held by the sequencer
-`scratch/D-bh-dress/g2long_seq3/` or waiting behind another user's priority jobs):
-FK D-20261123-022725-a553496 (N), FE4 D-20261123-022726-1b133af (null test M/4), FF4
-D-20261123-022727-1c17e73 (growth M/4), FN4 D-20261124-134157-b17938b (4N), FNQ
-D-20261124-172725-2f426b6 (N/4), FL16 D-20261124-172745-72472ed (growth M/16).
+Card runs of the follow-ups (release core-v0.6, chains; continued in place by the shared queue since
+2026-11-24, decision 0033):
+
+| Run | Input | Run id | State (2026-11-25 04:25 PST) | Card-hours | Read by |
+|---|---|---|---|---|---|
+| FK ES-FLK (N; excision to 6.4 M) | `g2long/inputs/esflk.athinput` | D-20261123-022725-a553496 | 400 M, closed by hand | 2.70 | fk_compare D-20261125-115637-7ee26c1, esf_criteria D-20261125-115647-fd2f3f7 (L, L) |
+| FF4 ES-FL4 (growth M/4) | `g2long/inputs/esfl4.athinput` | D-20261123-022727-1c17e73 | 500 M, closed | 1.34 | esf_criteria D-20261125-121034-8f82998 (control V-1L), D-20261125-121123-143a007 (control V-1L4, L) |
+| FN4 ES-FLK4N (4N) | `g2long/inputs/esflk4n.athinput` | D-20261124-134157-b17938b | 400 M (job 5280), close by hand running | - | np_partial D-20261125-115729-011d028 (L; read before the close) |
+| FNQ ES-FLKQ (N/4) | `g2long/inputs/esflkq.athinput` | D-20261124-172725-2f426b6 | running (q0010, job 5279), ~177 M at 04:11 | - | np_partial (partial, cut at 125 M) |
+| FE4 ES-1L4 (null test M/4) | `g2long/inputs/es1l4.athinput` | D-20261123-022726-1b133af | 300 M, nrpic-run finish running | - | judge_conv + probe_long (next session) |
+| FL16 ES-FL16 (growth M/16) | `g2long/inputs/esfl16.athinput` | D-20261124-172745-72472ed | waiting (q0011) | - | L1-L5 |
+
+Analysis tools added in batch 17: `g2long/tools/fk_compare.py`, `g2long/tools/np_partial.py`,
+`g2long/tools/close_by_hand.py` (closes chain manifests with `continuations` through nrpic-run's own code).
