@@ -1,15 +1,15 @@
 {
   "track": "A-emd-pbh",
   "gate": "G2",
-  "commit": "16401612f8d37b687291f7f508cfadf1504345ca",
-  "verified_utc": "2026-11-25T16:32:01Z",
-  "export": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-1640161-20261125T163144Z",
+  "commit": "9de53619eb66c732ee731240cb2d571e4a6f18c8",
+  "verified_utc": "2026-11-25T16:53:52Z",
+  "export": "/data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-9de5361-20261125T165336Z",
   "result": "FAIL",
   "checks": [
     {
       "check": "clean",
-      "status": "FAIL",
-      "message": "1 uncommitted paths: commit them first (tracks/A-emd-pbh/STATUS.md)",
+      "status": "PASS",
+      "message": "worktree clean (outside the stage directory being assembled)",
       "detail": null
     },
     {
@@ -21,7 +21,7 @@
     {
       "check": "export",
       "status": "PASS",
-      "message": "clean export of 16401612f8d3 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-1640161-20261125T163144Z/tree",
+      "message": "clean export of 9de53619eb66 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-9de5361-20261125T165336Z/tree",
       "detail": null
     },
     {
@@ -69,7 +69,7 @@
     {
       "check": "runs",
       "status": "FAIL",
-      "message": "5 of 287 runs have problems; 1 waived",
+      "message": "5 of 289 runs have problems; 1 waived",
       "detail": {
         "A-20261123-025907-97bab8d": [
           "status is submitted: not finished (nrpic-run finish)"
@@ -268,7 +268,7 @@
     {
       "check": "status",
       "status": "PASS",
-      "message": "STATUS.md has 34 lines",
+      "message": "STATUS.md has 40 lines",
       "detail": null
     },
     {

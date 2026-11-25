@@ -1,12 +1,12 @@
 # Re-verification: A-emd-pbh G2
 
-`harness/bin/nrpic-stage verify A-emd-pbh G2` on 2026-11-25T16:32:01Z, clean export of commit `16401612f8d3` in `scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-1640161-20261125T163144Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify A-emd-pbh G2` on 2026-11-25T16:53:52Z, clean export of commit `9de53619eb66` in `scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-9de5361-20261125T165336Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
-| clean | FAIL | 1 uncommitted paths: commit them first (tracks/A-emd-pbh/STATUS.md) |
+| clean | PASS | worktree clean (outside the stage directory being assembled) |
 | sync | PASS | main is merged into the branch |
-| export | PASS | clean export of 16401612f8d3 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-1640161-20261125T163144Z/tree |
+| export | PASS | clean export of 9de53619eb66 (HEAD) in /data/haiyangw/nrpic/scratch/A-emd-pbh/tmp/stage-verify/A-emd-pbh-G2-9de5361-20261125T165336Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); scoping text: scope/SCOPE.md; no verifier's report yet (VERIFIER.md, decision 0016) |
@@ -14,11 +14,11 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (czstyle.py, paperfig.py) |
 | fig-script | PASS | 7 figures, each with its script |
 | min-figs | WARN | 3 schematics and 4 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | FAIL | 5 of 287 runs have problems; 1 waived |
+| runs | FAIL | 5 of 289 runs have problems; 1 waived |
 | runs-waived | WARN | failures of the manifest check waived: 1 runs named in main's coord/WAIVERS.md (decision 0019 item 6): A-20261121-064515-aa13c8f: the gate reviewer's failed first attempt; its scratch script was edited for the rerun A-20261121-064537-2bcf310 |
 | run-notes | WARN | 45 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
 | checksums | WARN | output checksums not re-verified (--no-checksums) |
-| status | PASS | STATUS.md has 34 lines |
+| status | PASS | STATUS.md has 40 lines |
 | rerun | PASS | 7 of 7 scripts and commands ran cleanly in the export |
 | compare | PASS | 14 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
 | regenerate | PASS | all 14 committed figure files regenerated |
