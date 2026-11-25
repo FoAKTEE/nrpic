@@ -81,3 +81,27 @@ reading is therefore judged against F1-F4 of entry 1 unchanged, and its outcome 
 after that split was seen. Expected from the split: R about 2 for the amplitude statistic and the
 per-mode rms (relative error proportional to s), about 2 for the median power statistic, signs kept,
 F3 within [0.8, 1.25].
+
+## entry-3 (2026-11-25 03:55 PST, lead of E, batch 17): outcome at 128 (corrected reading E-20261125-115344-a22128b)
+
+Reading E-20261125-115344-a22128b (`floor_stats.json`, `fig_floor.png` looked at): record ratio of the
+two lockstep records 0.5 exactly at t = 8.5 (the check of entry 2); s = 1 values as in entry 1.
+
+| statistic (ten shells n^2 = 2-12) | C128S, s = 1 | FL128h, s = 1/2 | R = s1/sh | entry 1 band |
+|---|---|---|---|---|
+| median abs(1 - P_NR/P_lin) | 1.482e-7 | 7.79e-8 | 1.903 | F1 [1.6, 2.5]: HOLDS |
+| amplitude statistic | 3.777e-7 | 1.887e-7 | 2.001 | F1 [1.6, 2.5]: HOLDS |
+| signs | ++----+--+ | ++----+--+ | 0 flips | F2 <= 2 flips: HOLDS |
+| median over n^2 >= 49 (13 shells, stencil) | 6.029e-7 | 6.222e-7 | 0.969 | F3 [0.8, 1.25]: HOLDS |
+| per-mode relative rms (W > 1/2, all injected modes) | 7.11e-7 | 4.08e-7 | 1.74 | reported (F1 names it at 256 only) |
+
+F1 at 128 HOLDS (both ratios; the expected values of entry 1, 7.4e-8 and 1.9e-7, are met to 5 and 1
+per cent); F2 and F3 HOLD at 128; F5 holds for FL128h. F1 at 256 and F4 wait for FL256h (q0038,
+waiting). Figure: on every one of the ten shells the s = 1/2 curve lies on the s = 1 curve divided by
+2, not on the curve itself (an amplitude-independent floor) nor on the curve divided by 4 (third
+order). The after-data split of entry 2 agrees: Q (from the two c_NR alone) equals e(1) in norm within
+2 per cent on every shell. Status [VERIFIED at 128 by this run; the cause is named because F1 and F3
+hold, as entry 1 requires]: the floor of the slow-roll spectral convergence at the lowest shells is
+the second order of the field (relative size proportional to the amplitude), not a numerical floor.
+The per-mode rms ratio 1.74 (below 2) says that a part of the per-mode scatter at s = 1/2 does not
+halve; it is reported, not judged at 128. Risk R28 is answered at 128; it closes when FL256h has run.
