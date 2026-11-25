@@ -215,7 +215,7 @@ def rk4_step(pot, phi, y, h):
 
 def integrate_to_N(pot, phi0, y0, dN, h, dtype=LD):
     """(phi, y) after dN e-folds from (phi0, y0), fixed step close to h."""
-    n = max(1, int(np.ceil(float(dN) / h)))
+    n = max(1, int(np.ceil(abs(float(dN)) / h)))   # dN < 0 integrates backwards
     hh = dtype(dN) / n
     phi, y = dtype(phi0), dtype(y0)
     for _ in range(n):

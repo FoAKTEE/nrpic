@@ -174,3 +174,18 @@ event at phi_e (float64, rtol 1e-13). No prediction is attached to this comparis
   Z2(iii'): -0.247 / -0.228 per cent (1.1 digits): the difference is the expansion state of
   a_map (with a_map at the lead's state my (iii') is -0.249 per cent), not the readers. Both
   pass (iii')'s 0.5 per cent bar; both fail (iii) as written.
+
+## Entry 5 (09:45 PST): Request 3 closed here; prediction P8 before the run
+
+`scripts/large_amp.py` takes the lead's V, dV and map_rk4 verbatim from `zeta/zeta_reader.py`
+(ast, no rewriting) and compares them with my map at G3 amplitudes: 25 states along the box's
+linear relation with first-order zeta from -3 to +3 e-folds (6 sigma of the G3 box), and 13 states
+on the background trajectory moved by tau in [-3, 3] e-folds, where N = N_b - tau exactly. Same
+phi_e (the lead's) and v = Pi/H_b for both. (`zv_lib.integrate_to_N` now takes the absolute value
+of a negative dN for the step count; positive dN, all earlier runs, unchanged.)
+
+P8: along the relation the two maps differ by less than 1e-8 in N after the common offset is
+removed, at every state (the lead's RK4 in phi has 4000 steps over at most 8 e-folds); on the
+trajectory both reproduce N_b - tau within 1e-9. Refuted if any difference exceeds 1e-6 (then
+the reader's map would need more steps for G3: 1e-6 is 2e-6 sigma_lin, still harmless for F,
+so refutation here means "fix", not "cannot judge").
