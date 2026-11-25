@@ -11,12 +11,13 @@ details: `VERIFY.md`. Predictions and outcomes: `JOURNAL.md` (entries 1-4).
 | `scripts/test_closed.py` | P1, P2: closed forms (exponential potential off the attractor; Hamilton-Jacobi attractor) |
 | `scripts/analyse_pairs.py` | P3-P7 on the 32^3 mirrored pairs: Z0, Z2, the map along the field, the momentum and the box relation (exact and finite differences), round-off floor, end-surface choice, one-point error |
 | `scripts/compare_lead.py` | step 4: my map at the lead's Z1 state against `zeta/zeta_reader.py`'s numbers |
+| `scripts/large_amp.py` | P8: the lead's map (verbatim from its source) against mine at G3 amplitudes |
 | `results/*.json` | copies of the registered outputs (closed_form, pairs, compare_lead) |
 | `fig/*.png` | the figures, each looked at |
 
 Runs (manifests in `../../runs/<id>/`, outputs in `scratch/E-stoch-inf/<id>/`):
 E-20261125-170519-fa5ad33 (closed forms), E-20261125-172002-6890cad (pairs, about 9 min on one
-core), E-20261125-173127-4dcc4ee (comparison). Input data: the pairs of run
+core), E-20261125-173127-4dcc4ee (comparison), E-20261125-173501-2644c27 (G3 amplitudes). Input data: the pairs of run
 E-20261125-153148-cfad424 (lead's), the deck `usr/inputs/usr_base.athinput`.
 
 How to rerun (from the worktree root, `.venv` present):
@@ -45,7 +46,7 @@ To the lead of E-stoch-inf (no other owner is concerned):
    background (the lockstep record at N_f) rather than at the own DOP853 background, which lies
    0.03 e-folds away; a_map differs by 2.1e-4 relative between the two. Not needed for any
    verdict at the present bars.
-3. Before the G3 reading: a check of the reader's map at G3 amplitudes (zeta up to about 2.5,
-   sigma_lin = 0.494), which this package did not make (the pairs reach zeta 0.17): for example
-   the lead's map_rk4 against `zv_lib.efolds_to_surface` on states along the box relation out to
-   +-3 e-folds.
+3. (Closed here, run E-20261125-173501-2644c27: the lead's map_rk4 agrees with mine within
+   2.2e-9 in N for |zeta| <= 3 e-folds.) Optional: compare the two readers cell by cell on the
+   first G3 pilot dumps once they exist (`scripts/zv_lib.py` reads 128^3 dumps; about 10 min per
+   dump on one core at the long-double step 2e-3).

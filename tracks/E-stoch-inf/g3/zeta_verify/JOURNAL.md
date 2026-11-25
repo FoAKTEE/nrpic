@@ -189,3 +189,18 @@ removed, at every state (the lead's RK4 in phi has 4000 steps over at most 8 e-f
 trajectory both reproduce N_b - tau within 1e-9. Refuted if any difference exceeds 1e-6 (then
 the reader's map would need more steps for G3: 1e-6 is 2e-6 sigma_lin, still harmless for F,
 so refutation here means "fix", not "cannot judge").
+
+## Entry 6 (09:50 PST): outcome of P8 (run E-20261125-173501-2644c27)
+
+Figure `fig/fig_large_amp.png` looked at (both panels flat in zeta and tau, no growth with
+amplitude).
+- Along the box relation, |zeta_1| <= 3: the lead's map minus mine, common offset removed, at
+  most 2.2e-9 (3.1e-9 with the offset); my own step change 1e-3 -> 5e-4 at most 6.8e-13. HELD
+  (bar 1e-8).
+- On the trajectory, |tau| <= 3: my map reproduces N_b - tau within 8.0e-13; the lead's within
+  1.8e-9. FAILED narrowly as predicted (bar 1e-9), far from the refutation level 1e-6. The
+  lead's error is erratic in tau, not growing: [JUDGEMENT, an estimate not tested] float64
+  cancellation in dV near the inflection point (V'/V ~ 7e-6 against terms ~ 36 in the
+  derivative, a relative error ~3e-10 of V', hence ~1e-9 in N). It is 4e-9 of sigma_lin of the
+  G3 box: harmless for the one-point statistics.
+Request 3 of the README is closed by this run.

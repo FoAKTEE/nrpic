@@ -11,10 +11,12 @@ expected value: the reader's coefficient there is right to 3.4e-5, the test's re
 is off by 12.4 per cent because it sits on its own round-off floor. Even if the reader were off by
 the whole 14.2 per cent in that coefficient, F(3) and F(4) of a G3 box would move by less than
 1e-6 of themselves. Two changes to the *tests* (not the reader) are recommended (README,
-Requests 1-2), and one check at G3 amplitudes is still open (Request 3; section 5).
+Requests 1-2). At G3 amplitudes (|zeta| up to 3 e-folds) the lead's map, run verbatim, agrees with
+mine within 2.2e-9 in N (section 5).
 
 Runs: E-20261125-170519-fa5ad33 (closed forms), E-20261125-172002-6890cad (the pairs),
-E-20261125-173127-4dcc4ee (comparison with the lead). Data: the 32^3 mirrored pairs of
+E-20261125-173127-4dcc4ee (comparison with the lead), E-20261125-173501-2644c27 (the two maps at
+G3 amplitudes). Data: the 32^3 mirrored pairs of
 E-20261125-153148-cfad424 at s = +-1/4, +-1/2, dumps at N_f = N* + 10.
 
 ## 1. My reader and its closed-form tests
@@ -143,10 +145,13 @@ readers pass (iii') and fail (iii) as written. (`fig/fig_compare_lead.png`.)
 
 ## 5. Not done, limits
 
-- The agreement of the two readers is shown on the box's states of the 32^3 pairs (zeta up to
-  0.17). In the G3 box zeta reaches about 2.5 (5 sigma at sigma_lin 0.494): the two maps were not
-  compared there (Request 3). Both are full nonlinear maps and mine is checked against closed forms
-  far off the attractor, so I expect agreement, but that is [TO VERIFY].
+- G3 amplitudes [VERIFIED for the map, not for a G3 lattice]: the lead's V, dV and map_rk4, taken
+  verbatim from its source, against my map (run E-20261125-173501-2644c27, `fig/fig_large_amp.png`):
+  along the box relation with |zeta_1| <= 3 e-folds the difference is at most 2.2e-9 in N after
+  the common offset (my own step change 6.8e-13); on the background trajectory moved by |tau| <= 3
+  the lead's map gives N_b - tau within 1.8e-9, mine within 8.0e-13. 2e-9 is 4e-9 of sigma_lin of
+  the G3 box. [JUDGEMENT, not tested:] the lead's floor is float64 cancellation in dV near the
+  inflection point. No G3 lattice exists yet, so the per-cell agreement there is not shown.
 - Z1's clause "on homogeneous runs (noise off)" for a shifted initial slice: not done (no
   noise-off run was made).
 - Third-order terms of the map: per cell rms 8.9e-10 (s = 1/4), 7.1e-9 (s = 1/2), cubic in s; not
@@ -154,4 +159,4 @@ readers pass (iii') and fail (iii) as written. (`fig/fig_compare_lead.png`.)
 - I did not judge the lead's A4 preview or the LM landmarks.
 
 Figures (each looked at): `fig/fig_closed_form.png`, `fig/fig_z0_z2.png`, `fig/fig_fd_scan.png`,
-`fig/fig_momentum_map.png`, `fig/fig_relation.png`, `fig/fig_compare_lead.png`.
+`fig/fig_momentum_map.png`, `fig/fig_relation.png`, `fig/fig_compare_lead.png`, `fig/fig_large_amp.png`.
