@@ -162,3 +162,45 @@ part L from s = 1, 1/2 agrees with that from s = 1/2, 1/4 to below 1e-5 of |p| f
 max D_lin (k <= 32 dk) about 1.3e-4 at an axis mode |n| = 32; the third-order share at s = 1
 is at most about 4e-5 (the low-k plateau of fig_modes.png); D_lin at the axis modes falls from
 256 to 320 by 2.4 to 3.8 (order 4 to 6). Refuted outside these ranges.
+
+## Entry 3, 2026-11-25 02:50 UTC: outcomes of V8, V9, V11 and of the follow-up on max D_n; prediction for the floor follow-up
+
+- Follow-up on max D_n (run E-20261125-022918-f71678d, fig_extra_modes.png looked at): the
+  Richardson-in-s^2 linear parts from (1, 1/2) and (1/2, 1/4) agree to 3.3e-7 of |p| (holds);
+  max D_lin (k <= 32 dk) 1.306e-4 at (0,0,32) (holds); third-order share at s = 1 up to 5.2e-5
+  (median 4.2e-5; **I predicted at most about 4e-5: refuted by 30 percent**); it exceeds the
+  linear error on 63 percent of the modes k <= 32 dk and sets the whole plateau below 25 dk.
+  D_lin at the axis modes |n| = 32 falls from 1.306e-4 (256) to 4.53e-5 (320, third-order part
+  of 256 subtracted): factor 2.88, order 4.7 (holds, 2.4-3.8).
+- V8 U-A4'(a) (run E-20261125-022309-d346f12, constraints.json, fig_constraints.png looked
+  at): pairs at equal recorded times (|dt| = 0 at all 21 dumps). H: judged dumps 0, 5-12, all
+  within 4 +- 0.05 (worst 4.042 at dump 9, cN 4.54): holds. M: judged dumps 0, 4-13; dump 13
+  (cN = 6.525) gives 3.9245, outside the band; all others within 0.013 of 4. **The failure on
+  record is reproduced.** Quarter pair at that dump: 1/2 -> 1/4 halving 4.127 with the floor
+  from (1/2, 1/4) (not judged, e_q < 3 f): deviation of the opposite sign and larger, so my
+  "higher order in s" alternative is refuted. The three-amplitude fields: rms(D2)/rms(D1) =
+  0.997 and corr(D1, D2) = -0.245 at dump 13, and 1.000 / -0.235 at every dump 1-13 for H and
+  M: exactly the values of a part F_s of the even part that is independent between the
+  pairs and of the same rms at every s (D1 = F_1 - 4 F_1/2 gives ratio 1 and correlation
+  -4/17 = -0.235); an s^4 term would give 1/16 and +1, a common s-independent part 1 and +1.
+- V9 U-A4'(b): f/o_{s/2} for M is 1.0 at dumps 1-5 (the odd part is all floor there: o = 5.4e-12
+  at every s at cN = 0.53), 0.43 at dump 6, 0.031 at 7, 1.5e-3 to 9.3e-3 at 8-13, 0.05-1 after;
+  H likewise. **Prediction (below 0.05 during the entry) refuted for cN < 3**: early on the odd
+  parts of both constraints do not scale with s at all.
+- V11 U-A4'(d): ratio of the maxima over cN <= ln 32 (dumps 0-6) 2.38e5 (H' of the control
+  1.70e-6 against the odd part 6.9e-12); pointwise 2.4e5 to 1.7e6 after t = 0 (26 at t = 0,
+  before any kick). Holds (>= 1e3). fig_control.png looked at.
+
+Reading [JUDGEMENT, to be tested next]: at dump 13 the odd part of M (1.09e-11) is ten times
+its even part, and the 4c floor f^2 = (4 o_{1/2}^2 - o_1^2)/3 is then a difference of two
+numbers equal to 1e-4, which a third-order part of the odd part (O = s L + s^3 T) shifts by
+about -(1/2) L.T; f = 5.05e-14 there, while the noise level of the even part read from the
+three amplitudes is sqrt(rms(D1)^2/17) = 7.30e-14.
+
+Prediction for `floor3.py` (before it runs; it reads only constraints.json): (i) the noise
+level sigma from D1 and from D2 agree within 2 percent at every dump 1-13; (ii) with sigma in
+place of f, the M halving at dump 13 lies within 3.97-4.01 and every dump judged with
+e_{s/2} > 3 sigma lies within 4 +- 0.05 for H and M; (iii) the 1/2 -> 1/4 halving with sigma,
+where e_{1/4} > 3 sigma, also lies within 4 +- 0.05; (iv) the floor from (1/2, 1/4) is closer
+to sigma than the floor from (1, 1/2) at the dumps 9-13 where the odd part dominates.
+Refuted if dump 13 of M stays outside the band with sigma.
