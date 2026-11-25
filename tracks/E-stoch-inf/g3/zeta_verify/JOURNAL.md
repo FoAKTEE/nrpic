@@ -65,7 +65,7 @@ coefficient of the momentum alone then moves zeta by less than 1e-6 sigma per ce
 F(4) by less than 1e-5 relative. Refuted if the computed shift of F(3) or F(4) exceeds 1e-3
 relative.
 
-## Entry 2 (09:25 PST): outcome of P1, P2; a development pass; prediction P7
+## Entry 2 (09:20 PST): outcome of P1, P2; a development pass; prediction P7
 
 Run E-20261125-170519-fa5ad33 (`scripts/test_closed.py`, figure `fig_closed_form.png` looked at:
 fourth-order convergence in the step for the exponential case, a floor of 1e-14 for the
