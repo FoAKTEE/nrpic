@@ -32,10 +32,11 @@ owner are in Slurm). The queue never closes runs: `harness/bin/nrpic-run finish 
 Closed this session: B-20261124-210431-6bf48af (completed), -210432-6c4d005 (failed, exit 3: the
 guard stops of X0, X1), -223926-33194d9 (failed: chain cap), -172958-fc4a2cf (completed).
 `nrpic-run finish B-20261124-172958-73b0662` (newton_s028, exit 0) was still hashing at the end and
-ends with the session: rerun it if its manifest still says 'running'. `nrpic-stage
-verify B-emd-gw G2 --no-checksums` was started at 04:10 (log
-`scratch/B-emd-gw/tmp/stage_verify_g2_b17.log`); if no `stage/G2/VERIFY_RESULTS.md` of 2026-11-25
-is committed, rerun it, then `nrpic-stage report B-emd-gw G2`.
+ends with the session: rerun it if its manifest still says 'running'.
+
+Stage verify G2 without checksums ran at 12:10Z (export 37439b2): every check PASS except 'runs'
+(seven runs open then); STAGE_REPORT.md regenerated. Rerun with checksums when q0007, q0042, q0044
+and the open finishes are closed.
 
 ## Packages (what remains)
 
