@@ -1,0 +1,116 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "B-20261125-172136-3e920ab",
+  "track": "B-emd-gw",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "population: second part of N4 (JOURNAL 2026-11-24 05:48): radiated box measure of the Newtonian 0.014 run at a = 120 against fidL8 at a_N = 30 times 4.014^(-7/2)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/B-emd-gw/population/scripts/n4_rad.py",
+    "--n128",
+    "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261125-122434-060d53d/analysis_n128.json",
+    "--fid",
+    "tracks/B-emd-gw/population/results/analysis_fidL8.json"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "3e920ab2fe62609ba889fab42ab0aa53d70423d6",
+    "branch": "track/B-emd-gw",
+    "dirty": false,
+    "package": [
+      "tracks/B-emd-gw/population"
+    ],
+    "outside_package": {
+      "count": 2,
+      "first": [
+        " M tracks/B-emd-gw/stage/G2/VERIFY_RESULTS.json",
+        " M tracks/B-emd-gw/stage/G2/VERIFY_RESULTS.md"
+      ]
+    },
+    "merge_base_main": "8339b7f4237b8e87072e2a4c657b4f6ec0c4e5a3",
+    "worktree": "wt/B-emd-gw"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/B-emd-gw/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/B-emd-gw/population/scripts/n4_rad.py",
+      "role": "argv",
+      "sha256": "80212c1b1cd5eb44600dafe7b9f119d20ab3197829f50e424c13095dea0c9d60",
+      "bytes": 1349,
+      "tracked": true
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/B-emd-gw/B-20261125-122434-060d53d/analysis_n128.json",
+      "role": "argv",
+      "sha256": "cf0c6ff58cb748be2f33c7acb46ee359bc711c79012e6399fa86a8aa677e4e59",
+      "bytes": 424207,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "tracks/B-emd-gw/population/results/analysis_fidL8.json",
+      "role": "argv",
+      "sha256": "0e4e0d5fa58936afced4c8a1b5ecb563a3b61fbab929280ff8563be78c5d6dc3",
+      "bytes": 206207,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/B-emd-gw/B-20261125-172136-3e920ab",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-25T17:21:36Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 4.2755,
+    "gpu_hours_reserved": 4.9167,
+    "gpu_hours_without_gate": 0.481,
+    "cores_busy": 0,
+    "runs": 354,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md"
+  }
+}
