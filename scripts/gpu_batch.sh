@@ -10,7 +10,12 @@
 # each is appended to <listfile>.status.
 #
 # Environment: ATHENA_EXE, TIME (default 00:45:00), JOB_NAME (default batch), PARTITION.
+# The marker of the shared card queue (NRPIC_QUEUE_DISPATCH, and every other variable
+# NRPIC_QUEUE_*) is removed from this script's environment at the top, at submission and
+# again inside the job, so that the job (sbatch exports the environment it is given) and
+# the runs in it never carry it (decision 0037 item 4).
 set -euo pipefail
+for _v in $(compgen -e | grep -E '^NRPIC_QUEUE_' || true); do unset "$_v"; done; unset _v
 # inside the job this file runs from the Slurm spool directory: the submission passes
 # the location of the scripts along
 SCRIPTS=${NRPIC_SCRIPTS:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}

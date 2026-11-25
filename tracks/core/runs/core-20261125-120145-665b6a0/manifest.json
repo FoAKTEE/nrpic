@@ -1,0 +1,79 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261125-120145-665b6a0",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "M1 (e): chain script fake-Slurm test, 13 scenarios, with the queue marker in every start command and played job (JOURNAL 2026-11-25T11:52Z)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    ".venv/bin/python",
+    "scripts/tests/test_submit_chain.py",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "665b6a0ce61a5dc4d9cf82e2ef6ac2f053f48178",
+    "branch": "core/nrpic",
+    "dirty": false,
+    "merge_base_main": "1cbc3effc9fba3e4bd9ecc35daf3cec38c2711eb",
+    "worktree": "wt/core"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core/.venv/bin/python"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": ".venv/bin/python",
+      "role": "argv",
+      "sha256": "d6bca2b84e73c7775a0dd5e6a76899cfe4ee62863d7c8f88513811d1fda23f49",
+      "bytes": 5937704,
+      "tracked": false
+    },
+    {
+      "path": "scripts/tests/test_submit_chain.py",
+      "role": "argv",
+      "sha256": "5e543d48d429728b76a0847f59d10b165708671f6e4deb6e6ea0d582d8a7d311",
+      "bytes": 18272,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 18.379,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261125-120145-665b6a0",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "73f295b415a4649be6b09a4b1954ed43847c57fd1f1b6491b6363205852df9d6",
+    "bytes": 397511,
+    "files": 357
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-25T12:01:45Z",
+  "started": "2026-11-25T12:01:45Z",
+  "ended": "2026-11-25T12:02:03Z",
+  "parents": [],
+  "notes": "registered by hand with tracks/core/tools/hand_run.py: nrpic-run's local launcher refuses a command whose script names sbatch or submit_chain.sh, also when they are fakes on PATH (decision 0033; CLAUDE.md rule 4).",
+  "finished": "2026-11-25T12:02:03Z"
+}

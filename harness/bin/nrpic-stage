@@ -2,7 +2,7 @@
 """The automated steps of the stage check (brief section 13.3: steps 2, 3 and 8).
 
     harness/bin/nrpic-stage [-C <wt>] collect <ID> G<k> [--force] [--stdout]
-    harness/bin/nrpic-stage [-C <wt>] verify  <ID> G<k> [--no-rerun] [--no-checksums] [--timeout S]
+    harness/bin/nrpic-stage [-C <wt>] verify  <ID> G<k> [--no-rerun] [--no-checksums | --full] [--timeout S]
                                                   [--rtol R] [--atol A] [--img-tol T]
     harness/bin/nrpic-stage [-C <wt>] report  <ID> G<k> [--decision TEXT]
 
@@ -40,7 +40,14 @@ verify   exports the committed tip (HEAD of the own worktree; for another owner,
          and their failures of the manifest check are waived (decision 0016 item 3: reported
          under runs-waived, not failed). So are the failures of every run that main's committed
          coord/WAIVERS.md names, one run id at the start of a line followed by the reason
-         (decision 0019 item 6; a working-tree copy is not read). Writes
+         (decision 0019 item 6; a working-tree copy is not read). A manifest with a malformed
+         `continuations` (decision 0039 item 5), or continued after it was closed, fails the run
+         check. Output checksums go through each run directory's cache (.nrpic/sha256cache.json,
+         written by nrpic-run finish and by verify): a file is read again only when new or when its
+         size or modification time changed; row `checksums` says how many files were hashed again and
+         how many taken from the cache, and that a cached entry proves unchanged size and modification
+         time since it was hashed, not bytes read again (WARN when any was taken from the cache);
+         --full reads every byte (--no-checksums: none). Writes
          VERIFY_RESULTS.json and VERIFY_RESULTS.md into the stage directory (own track) or beside
          the export (another owner's). Exit 1 on any FAIL.
 report   writes tracks/<ID>/stage/G<k>/STAGE_REPORT.md from harness/templates/STAGE_REPORT.md:
@@ -541,8 +548,10 @@ def compare_text(a, b, rtol, atol):
 
 
 def verify(wt, args):
-    owner, gate, fl, op = parse_args(args, flags=("--no-rerun", "--no-checksums"),
+    owner, gate, fl, op = parse_args(args, flags=("--no-rerun", "--no-checksums", "--full"),
                                      opts=("--timeout", "--rtol", "--atol", "--img-tol"))
+    if "--full" in fl and "--no-checksums" in fl:
+        raise H.HarnessError("--full and --no-checksums exclude each other")
     timeout = float(op.get("--timeout", 900))
     rtol, atol = float(op.get("--rtol", 1e-6)), float(op.get("--atol", 1e-12))
     img_tol = float(op.get("--img-tol", 0.005))
@@ -670,6 +679,7 @@ def verify(wt, args):
     rids = sorted(d for d in (os.listdir(rdir) if os.path.isdir(rdir) else [])
                   if os.path.isfile(os.path.join(rdir, d, "manifest.json")))
     run_problems, run_notes, nhand = {}, {}, 0
+    hstats = H.hash_stats()               # output checksums: hashed again / taken from the cache (0039 item 5)
     hand_dates = {}                       # run id -> date, for every manifest not written by nrpic-run
     for rid in rids:
         probs = []
@@ -695,7 +705,8 @@ def verify(wt, args):
             probs.append(f"run_id {v['run_id']!r} differs from the directory name")
         if v["kind"] == "production" and v["gate"] == gate and not m.get("preregistered_in"):
             probs.append("production run without preregistered_in")
-        p2, notes, _ = H.verify_run(wt.home, wt.root, m, outputs="--no-checksums" not in fl)
+        p2, notes, _ = H.verify_run(wt.home, wt.root, m, outputs="--no-checksums" not in fl, full="--full" in fl,
+                                    stats=hstats)
         probs += p2
         if probs:
             run_problems[rid] = probs
@@ -742,6 +753,14 @@ def verify(wt, args):
     if run_notes:
         res("run-notes", "WARN", f"{len(run_notes)} runs read with defaults or not fully re-verifiable "
             "(nrpic-run lint)", dict(list(run_notes.items())[:40]))
+    # what the output checksums of the run check rest on (decision 0039 item 5): bytes read again, or the cache
+    if "--no-checksums" in fl:
+        res("checksums", "WARN", "output checksums not re-verified (--no-checksums)")
+    elif rids:
+        res("checksums", "WARN" if hstats["cached"] else "PASS", H.hash_summary(hstats, always=True),
+            {"rehashed_files": hstats["rehashed"], "rehashed_bytes": hstats["rehashed_bytes"],
+             "cached_files": hstats["cached"], "cached_bytes": hstats["cached_bytes"], "full": hstats["full"],
+             "meaning_of_a_cached_entry": H.CACHE_SENTENCE, "notes": hstats["notes"][:20]})
 
     # STATUS
     stp = os.path.join(tdir, "STATUS.md")

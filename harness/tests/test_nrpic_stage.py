@@ -10,6 +10,7 @@ for G1), verify (PASS on a clean export), deliberate faults one at a time (a mod
 a figure without a script, a script changed without regenerating its figure, a table off by more
 than the tolerance, an unfinished run) each caught; a hand-written manifest of wave 2 with a problem
 fails until EVIDENCE.md names it and is then waived, one of wave 2b is not (decision 0016 item 3);
+`continuations` in the run check and the row `checksums` of the output cache (decision 0039 item 5);
 report (FAIL while items are OPEN, PASS when judged and the verifier's VERIFIER.md exists,
 VERIFIER_REPORT.md accepted too: decision 0016 item 1), the tag made as the orchestrator would,
 verification of A from the main checkout writing nothing into A's worktree, report refused from
@@ -260,6 +261,51 @@ def main():
     drop = [f"tracks/{OWNER}/runs/{wrid}"]
     git(A, "rm", "-q", "-r", "--", *drop)
     git(A, "commit", "-q", "-m", "A(run): drop the waived test run", "--", *drop)
+
+    # decision 0039 item 5: a manifest with `continuations` (a chain continued in place by a queue wrapper) passes
+    # the run check; a malformed one fails it with what is wrong, so does a run continued after it was closed; the
+    # row `checksums` of VERIFY_RESULTS.md says how many outputs were hashed again and how many came from the cache,
+    # and what a cached entry proves
+    vr_md = os.path.join(A, "tracks", OWNER, "stage", "G1", "VERIFY_RESULTS.md")
+
+    def with_cont(value, label):
+        doc = json.loads(orig_m)
+        doc["continuations"] = value
+        open(mp, "w").write(json.dumps(doc, indent=2) + "\n")
+        git(A, "add", "-f", "--", os.path.relpath(mp, A))
+        commit_all(A, f"A(test): continuations, {label}")
+        rr = stage(A, ["verify", OWNER, "G1", "--no-rerun"])
+        return rr, results(A)
+
+    def row(doc, check):
+        return next((x for x in doc["checks"] if x["check"] == check), {})
+    rec = {"at": json.loads(orig_m)["registered"], "job_id": "4242", "from_restart": None, "segments_used_before": 0,
+           "max_segments": 2, "via": "harness/bin/nrpic-queue --cmd tracks/A-emd-pbh/tools/continue_chain.sh",
+           "reason": "continued in place after its waiting job was cancelled under the queue cap"}
+    r, d = with_cont([rec], "a record of D's wrapper")
+    ck = row(d, "checksums")
+    c.ok(r.returncode == 0 and status_of(d, "runs") == "PASS" and rid not in json.dumps(row(d, "run-notes")),
+         "stage: a manifest with a well-formed `continuations` passes the run check, not read as hand-written", r.stdout)
+    c.ok(ck.get("status") == "WARN" and "taken from the cache" in ck.get("message", "")
+         and H.CACHE_SENTENCE in open(vr_md).read() and (ck.get("detail") or {}).get("cached_files", 0) >= 1,
+         "stage: row `checksums` (WARN) counts the outputs taken from the cache and VERIFY_RESULTS.md says what a "
+         "cached entry proves", json.dumps(ck))
+    r = stage(A, ["verify", OWNER, "G1", "--no-rerun", "--full"])
+    ck = row(results(A), "checksums")
+    c.ok(r.returncode == 0 and ck.get("status") == "PASS" and "(--full)" in ck.get("message", "")
+         and (ck.get("detail") or {}).get("cached_files") == 0 and H.CACHE_SENTENCE in open(vr_md).read(),
+         "stage: --full reads every output again (row `checksums` PASS, none from the cache)", json.dumps(ck))
+    r, d = with_cont([{"at": "soon", "job_id": "x"}], "malformed")
+    det = json.dumps(row(d, "runs").get("detail") or {})
+    c.ok(r.returncode == 1 and status_of(d, "runs") == "FAIL" and "continuations: record [0]" in det
+         and "is not an ISO 8601 time" in det and "names nobody" in det,
+         "stage: a malformed `continuations` fails the run check with what is wrong", det)
+    r, d = with_cont([dict(rec, at="2099-01-01T00:00:00Z")], "continued after the close")
+    det = json.dumps(row(d, "runs").get("detail") or {})
+    c.ok(r.returncode == 1 and status_of(d, "runs") == "FAIL" and "close it again (nrpic-run finish" in det,
+         "stage: a run continued in place after it was closed fails the run check until finish closes it again", det)
+    open(mp, "w").write(orig_m)
+    commit_all(A, "A(test): manifest without continuations again")
 
     # report: FAIL while items are open, PASS when judged
     r = stage(A, ["verify", OWNER, "G1"])
