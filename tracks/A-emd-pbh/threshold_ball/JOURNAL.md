@@ -346,3 +346,21 @@ queue unrun: no item of stage/G2/CHECKLIST.md waits for the lower end of the mes
 passes on conv_ball; the bracket on mesh B equals the exact one, entry 4; C-d0.42 holds the upper
 end on C, entry 11). T7 stays on record as a prediction not tested. The data set dc0p4C
 (A-20261124-133456-2d00507) is kept for a later bracket-convergence run (G3 if wanted).
+
+### Entry 5, outcome of G3 and of the whole test (batch 17; analysis A-20261125-120158-b76bfe3, fig_guard_g123.png looked at)
+
+- G3 (particles/alpha_exc = 0.3 from the t = 44 restart) REFUTES my expectation "stops like G1": it
+  reaches tlim 48.5 without a guard stop ("Terminating on time limit", athena.log), 0.58 M past G1's
+  stop (47.92) and past G2's (48.42). So excising the particles earlier, while the lapse is still 0.3,
+  removes the blow-up on mesh A at least to t = 48.5 [VERIFIED for this one restart; whether it cures
+  or only delays it is not known beyond 48.5]. The abrupt excision near the collapsing lapse is now a
+  candidate cause of the guard stop that a run could have refuted and did not [JUDGEMENT].
+- In none of the three variants is the horizon persistent on mesh A: found in 5 (G1), 6 (G2), 9 (G3) of
+  32-36 searches after t = 44, intermittently, first at 45.625 in all; G3's last success is 47.75 and
+  every later search fails ("iteration limit reached without convergence of the mass"). The masses of
+  the successful searches FALL with time (G3: 0.389 at 45.75 to 0.363 at 47.75), which an apparent
+  horizon's area should not do: on M/16 the finder does not hold the horizon even where the run stays
+  finite (as entry 4 saw: 4-5 per cent drift below the line mass).
+- Consequence for the scan: mesh A stays outside the threshold bracket (T4's A half holds only as
+  "no persistent horizon"); a mesh-A rerun with alpha_exc 0.3 would not give a persistent horizon by
+  this evidence. Not queued.
