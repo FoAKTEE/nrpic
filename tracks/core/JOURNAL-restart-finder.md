@@ -424,3 +424,13 @@ builds that differ from the final ones in `z4c/fastflow.cpp` only.
   again at once: 100 iterations plus those the first meeting took). 1e-2 with 100 from
   outside reproduces the -3.4e-8 to -4.5e-8 of the first run. Refuted by a search not
   found, or by a difference above 2e-5.
+
+## Entry 16 (2026-11-25, 06:31 PST): T1 with the final serial build, run core-20261125-142556-a424739
+
+All 20 checks hold again with the final build (source 01d4aeeb), 219 s: cuts at cycles
+24, 25, 26, 27 and the run cut twice give every output file byte-identical to the
+uninterrupted run; the uninterrupted run equals release core-v0.7 byte for byte; the
+release differs as in entry 4. Figure looked at (same picture as entry 4). T3 (two
+punctures, 8 cycles cut at 4, threaded builds, one thread) is running as
+core-20261125-142953-bf5a228; its prediction is P5 of entry 1, with the shorter run of
+entry 3.
