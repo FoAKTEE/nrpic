@@ -1,0 +1,103 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261121-200532-b95d775",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "gauge-2 analysis of card job F, run v8far-hole16 (vacuum, M/8, faces at 256 M, 200 M, lapse_leak_hole = 16, cleaned card build) against Track D's V-1B (plain 1+log) and V-1GB (first pass): prediction V8-f",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/gauge2/vanalysis.py",
+    "--out",
+    "$NRPIC_RUN_DIR",
+    "--tag",
+    "jobF",
+    "--t0",
+    "100",
+    "--control",
+    "V-1B",
+    "--axis-times",
+    "50,100,180",
+    "V-1B=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261120-222625-63abd72:v1b",
+    "V-1GB=/data/haiyangw/nrpic/scratch/D-bh-dress/D-20261121-125909-06f856e:v1gb",
+    "hole16=/data/haiyangw/nrpic/scratch/core/core-20261121-190709-8b205e5/v8far-hole16"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "b95d775f56d4d0f0bb99da7d5bfefbeb4ed808df",
+    "branch": "core/gauge-2",
+    "dirty": false,
+    "merge_base_main": "9aa744050b6dd76e8847e202b1b6f245a0cda107",
+    "worktree": "wt/core-s1"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-s1/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/core/analysis/gauge2/vanalysis.py",
+      "role": "argv",
+      "sha256": "7c29217ef43f1098806c52fab9197412d13bccbcfffa5770e66fe438c2c63935",
+      "bytes": 10350,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": 3.526,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261121-200532-b95d775",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "4d0627810a459e9e7b006967e2d1915b64e9d26d6fab942f35244bc37921d8f8",
+    "bytes": 366988,
+    "files": 4
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-21T20:05:33Z",
+  "started": "2026-11-21T20:05:33Z",
+  "ended": "2026-11-21T20:05:36Z",
+  "parents": [
+    "core-20261121-190709-8b205e5"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 7.6642,
+    "gpu_hours_reserved": 0.7,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1466,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md"
+  },
+  "finished": "2026-11-21T20:05:36Z"
+}

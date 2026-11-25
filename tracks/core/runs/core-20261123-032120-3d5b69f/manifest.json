@@ -1,0 +1,113 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "core-20261123-032120-3d5b69f",
+  "track": "core",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "noise-level2 entry 5: level 2 and level 1 on the mesh through the ultra-slow-roll phase (usr_stochastic.athinput, 32^3, to tlim)",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "python3",
+    "tracks/core/analysis/noise_level2/usr_check.py",
+    "--exe",
+    "/data/haiyangw/nrpic/wt/core-s2/.work/build_cpu_nl2/src/athena",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "3d5b69f51c6fd90b3d142bd5a2b327fcabc69f62",
+    "branch": "core/noise-level2",
+    "dirty": false,
+    "merge_base_main": "8a4a98dfb4a56c6554a41133372f462e069c248a",
+    "worktree": "wt/core-s2"
+  },
+  "code": {
+    "core_tag": "core-v0.6",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "072b3623a0133e6f3308c4cfd1b4d318b6447fc5ce5ceccbe61e331df579ce4a",
+    "machine_file_sha256": "a832a4793e95a65c88ac1e0cca66ddc9afee09efde7423f554e8207e6c7b2148",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/core-s2/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "problems/scalar/usr_stochastic.athinput",
+      "role": "input",
+      "sha256": "21e56b0890bec9bf6d4db19846e0b5777d099d9613fa8e6cea86283f234635eb",
+      "bytes": 3708,
+      "tracked": true
+    },
+    {
+      "path": "problems/scalar/usr_stochastic_modes.txt",
+      "role": "input",
+      "sha256": "80446214c8c91655b751b30038050b79a05af32fb149dc72afe9daa15cdc31ed",
+      "bytes": 5567,
+      "tracked": true
+    },
+    {
+      "path": "tracks/core/analysis/noise_level2/usr_check.py",
+      "role": "argv",
+      "sha256": "03f69797bf8d31963c130359f5d59489f1d10d647ac9d459fad27bba42029941",
+      "bytes": 3896,
+      "tracked": true
+    },
+    {
+      "path": ".work/build_cpu_nl2/src/athena",
+      "role": "argv",
+      "sha256": "108e8065e5aee64e142dc0eab67623d4adcae6364c82f41991e7011b557a6b95",
+      "bytes": 268862592,
+      "tracked": false
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 2,
+    "walltime_s": 560.907,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/core/core-20261123-032120-3d5b69f",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": "5b52cdc6f8ab4c6d2f2b67cdb877eb85eaf3ed7aa253fe5c0824710ade2957ab",
+    "bytes": 201984556,
+    "files": 143
+  },
+  "status": "completed",
+  "exit_code": 0,
+  "registered": "2026-11-23T03:21:24Z",
+  "started": "2026-11-23T03:21:24Z",
+  "ended": "2026-11-23T03:30:45Z",
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 40.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 11.9581,
+    "gpu_hours_reserved": 11.9002,
+    "gpu_hours_without_gate": 5.8713,
+    "cores_busy": 0,
+    "runs": 1517,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md"
+  },
+  "finished": "2026-11-23T03:30:45Z"
+}

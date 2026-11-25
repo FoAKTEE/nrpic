@@ -1,0 +1,99 @@
+# Slow-roll (quadratic) case of arXiv:2512.14649 "as in the paper" (PRD_v2.tex:405-424, set-up
+# 480-519, appendices 697-773), package repro/scope of Track E. Copy of
+# tracks/E-stoch-inf/ladder/inputs/sr_base.athinput (the deck of P256, run E-20261115-172618-f948386,
+# and P256v6, run E-20261121-202935-31520bc) with three changes, all output only:
+#   - production defaults 256^3, nmax2 = 4096 (k_max = N k_sigma*/4 = 64 dk, P1:512), mode file n4096;
+#   - dumps every 0.25 time units (about 0.25 e-fold) with the metric, H, M_i, E AND the absolute
+#     magnitudes [H], [M] (dump_magnitudes = true) for the percentile contours of P1 Figs. 2 and 3;
+#   - a restart output every 2.0 time units, for scripts/submit_chain.sh;
+#   - con_signed = true (signed means of H and M_i in the record, columns 21-27; output only).
+# Units of the code: G = c = 1 (Mpl^2 = 1/(8 pi)), time unit 1/H*, a* = 1, box 2 pi/sigma (SPEC 2.5);
+# background at N* = N0 + 5 (phi0, pi0); tlim = 8.5 is N* + 8.04 e-folds. Geodesic slicing, zero
+# shift, no damping, no dissipation, periodic, sixth-order stencils (nghost = 4), RK4()4[2S] at
+# Courant 0.25, level-0 backreaction. Variants of the queue change options on the command line
+# (repro/scope/queue.txt, inputs/small.list). Audit: repro/scope/SETUP_AUDIT.md.
+
+<comment>
+problem   = stochastic inflation, slow-roll case, reproduction of arXiv:2512.14649 (Track E repro/scope)
+
+<job>
+basename = sr256_l2_time
+rng_seed  = 20261115
+
+<mesh>
+nghost    = 4
+nx1       = 256
+x1min     = 0.0
+x1max     = 6.283185307179586
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 256
+x2min     = 0.0
+x2max     = 6.283185307179586
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 256
+x3min     = 0.0
+x3max     = 6.283185307179586
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 256
+nx2       = 256
+nx3       = 256
+
+<time>
+evolution  = dynamic
+integrator = rk4
+cfl_number = 0.25
+nlim = 60
+tlim       = 8.5
+ndiag      = 20
+
+<z4c>
+lapse_oplog     = 0.0
+lapse_harmonic  = 0.0
+lapse_advect    = 0.0
+shift_Gamma     = 0.0
+shift_eta       = 0.0
+shift_advect    = 0.0
+diss            = 0.0
+damp_kappa1     = 0.0
+damp_kappa2     = 0.0
+excise_chi      = 0.0
+
+<scalar_field>
+couple           = true
+potential        = quadratic
+mass             = 1.82877655899024605e-01
+diss             = 0.0
+hist_dcycle      = 1
+con_dcycle       = 1
+con_signed       = true
+dump_dt = -1.0
+dump_metric      = true
+dump_magnitudes  = true
+dump_constraints = true
+dump_noise       = false
+noise            = mukhanov_sasaki
+noise_nmax2      = 4096
+noise_sharpness  = 5.0
+noise_sigma      = 1.0
+noise_level = 2
+noise_projector  = stencil
+noise_kick_pi    = true
+noise_kick_k     = true
+noise_kick_a     = true
+noise_pi_sign    = 1.0
+noise_mode_file  = /data/haiyangw/nrpic/wt/E-stoch-inf/tracks/E-stoch-inf/ladder/inputs/modes_n4096.txt
+noise_mode_scale = 1.0
+
+<problem>
+pgen_name      = scalar_field
+id             = stochastic
+phi0           = -2.66679478988261254e+00
+pi0            = 2.97300406808996935e-02
+slice_window   = true
+slice_k2       = stencil
+slice_delta_pi = corrected

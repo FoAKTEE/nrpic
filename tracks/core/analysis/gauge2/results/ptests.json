@@ -1,0 +1,120 @@
+{
+ "runs": {
+  "T1-plain": 0,
+  "T1-leak": 0,
+  "T1-rho": 0,
+  "T1-plain-tr": 0,
+  "T1-hole": 0,
+  "T1-leak-tr": 0,
+  "T1-onset": 0,
+  "T2-first": 0,
+  "T2-rho": 0,
+  "T3-leak1-rel": 0,
+  "T3-leak1": 0,
+  "T3-leak1-rho": 0,
+  "T3-leak05-rel": 0,
+  "T3-leak05": 0,
+  "T3-leak05-rho": 0
+ },
+ "checks": {
+  "T1 restricted to matter = plain 1+log": {
+   "passed": true,
+   "detail": "6 files identical, 2 identical after the parameter dump, different [], in one run only []"
+  },
+  "T1 first pass differs from plain 1+log (term active)": {
+   "passed": true,
+   "detail": "5 files differ; largest lapse (plain, first pass) {'alpha_max': (1.548237692409241, 1.108468390540806)}"
+  },
+  "T1 switched off around the tracker (radius beyond the mesh) = plain 1+log": {
+   "passed": true,
+   "detail": "7 identical, 2 after the dump, different [], only []"
+  },
+  "T1 a tracker alone changes no shared file": {
+   "passed": true,
+   "detail": "6 identical, 2 after the dump, different [], only in one ['v1s.co_0.txt']"
+  },
+  "T1 onset of width 1e-9 = kink to rounding": {
+   "passed": true,
+   "detail": "largest relative difference of the constraint history 0.00e+00"
+  },
+  "T2 homogeneous universe: restricted to matter = first pass": {
+   "passed": true,
+   "detail": "largest relative differences {'alpha_max': 0.0, 'alpha_min': 0.0, 'proper_volume': 0.0}; lapse at the end 1.262437"
+  },
+  "T3 leak1: first pass, new executable = release": {
+   "passed": true,
+   "detail": "17 files identical, 0 after the dump, different [], only []"
+  },
+  "T3 leak05: first pass, new executable = release": {
+   "passed": true,
+   "detail": "17 files identical, 0 after the dump, different [], only []"
+  },
+  "T3 leak1: shells with the restriction within a factor 2 of the first pass": {
+   "passed": true,
+   "detail": "largest ratio of the group errors 1.86; core 3.46e-03 against 3.08e-03"
+  },
+  "T3 leak1: central lapse with the restriction within 5 per cent of homogeneous": {
+   "passed": true,
+   "detail": "0.022 (first pass 0.028)"
+  },
+  "T3 leak05: shells with the restriction within a factor 2 of the first pass": {
+   "passed": false,
+   "detail": "largest ratio of the group errors 4.04; core 2.31e-03 against 1.67e-03"
+  },
+  "T3 leak05: central lapse with the restriction within 5 per cent of homogeneous": {
+   "passed": true,
+   "detail": "0.002 (first pass 0.002)"
+  }
+ },
+ "ball": {
+  "T3-leak1": {
+   "groups": {
+    "core": 0.0030793441208558647,
+    "mid": 0.0012597697016529796,
+    "outer": 0.0033350261467270936,
+    "surface": 0.006708137225488908
+   },
+   "alpha_dev": 0.02833944961372259,
+   "t_dev": 10.0,
+   "alpha_max": 1.245183341205437,
+   "c_max": 1.1349006728088855
+  },
+  "T3-leak1-rho": {
+   "groups": {
+    "core": 0.003458391876645983,
+    "mid": 0.002162737037217366,
+    "outer": 0.006216111769618449,
+    "surface": 0.007049630011299324
+   },
+   "alpha_dev": 0.021678101657831683,
+   "t_dev": 8.75,
+   "alpha_max": 1.399526976960762,
+   "c_max": 1.1351754275726236
+  },
+  "T3-leak05": {
+   "groups": {
+    "core": 0.0016714894967668759,
+    "mid": 0.0008223301127265881,
+    "outer": 0.002784529981320283,
+    "surface": 0.006053951502480115
+   },
+   "alpha_dev": 0.0021088958613293407,
+   "t_dev": 10.0,
+   "alpha_max": 1.126666549475191,
+   "c_max": 1.07315645361804
+  },
+  "T3-leak05-rho": {
+   "groups": {
+    "core": 0.0023090799285945263,
+    "mid": 0.003281277608958688,
+    "outer": 0.011236720970938308,
+    "surface": 0.012687637898797677
+   },
+   "alpha_dev": 0.0017392207765143386,
+   "t_dev": 9.5,
+   "alpha_max": 1.371511345908791,
+   "c_max": 1.0732858163598515
+  }
+ },
+ "verdict": "FAIL"
+}

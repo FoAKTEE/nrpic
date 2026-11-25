@@ -1,12 +1,12 @@
 # Re-verification: core G2
 
-`harness/bin/nrpic-stage verify core G2` on 2026-11-23T02:15:39Z, clean export of commit `5e6dc433a688` in `scratch/core/tmp/stage-verify/core-G2-5e6dc43-20261123T020751Z`. Result: **FAIL**.
+`harness/bin/nrpic-stage verify core G2` on 2026-11-24T14:18:24Z, clean export of commit `c4a041dc0dcf` in `scratch/core/tmp/stage-verify/core-G2-c4a041d-20261124T135913Z`. Result: **FAIL**.
 
 | Check | Result | Message |
 |---|---|---|
 | clean | PASS | worktree clean (outside the stage directory being assembled) |
-| sync | FAIL | main has commits not merged: run nrpic-ctx sync |
-| export | PASS | clean export of 5e6dc433a688 (HEAD) in /data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-5e6dc43-20261123T020751Z/tree |
+| sync | PASS | main is merged into the branch |
+| export | PASS | clean export of c4a041dc0dcf (HEAD) in /data/haiyangw/nrpic/scratch/core/tmp/stage-verify/core-G2-c4a041d-20261124T135913Z/tree |
 | size | PASS | no committed file of the track above 5 MB |
 | note | PASS | tracks/<ID>/note/main.tex present |
 | package | PASS | EVIDENCE.md, OPEN.md, CHECKLIST.md present (decision 0012); verifier's report VERIFIER.md |
@@ -14,32 +14,35 @@
 | style | PASS | 2 style copies equal harness/style/SHA256SUMS (paperfig.py, figstyle.py) |
 | fig-script | PASS | 5 figures, each with its script |
 | min-figs | WARN | 1 schematics and 4 data figures (brief 13.4 asks at least 1 and 5 at G2) |
-| runs | FAIL | 6 of 1448 runs have problems; 9 waived |
+| runs | FAIL | 6 of 1457 runs have problems; 9 waived |
 | runs-waived | WARN | failures of the manifest check waived: 9 runs named in main's coord/WAIVERS.md (decision 0019 item 6): core-20261120-220538-eafed07: records scratch/core/exe/core_cosmo-amr/athena_gpu, published again after the run; outputs unaffected (decision 0023 item 5); core-20261120-220816-09f6f79: records scratch/core/exe/core_cosmo-amr/athena_gpu, published again after the run; outputs unaffected (decision 0023 item 5); core-20261121-025527-eb8e6b7: records scratch/core/exe/core_cosmo-amr/athena_gpu, published again after the run; outputs unaffected (decision 0023 item 5); core-20261121-030438-e52cdb3: records scratch/core/exe/core_cosmo-amr/athena_cpu, published again after the run; outputs unaffected (decision 0023 item 5); core-20261121-031145-ffc12b3: records scratch/core/exe/core_cosmo-amr/athena_cpu, published again after the run; outputs unaffected (decision 0023 item 5) |
 | run-notes | WARN | 1147 runs read with defaults or not fully re-verifiable (nrpic-run lint) |
-| status | PASS | STATUS.md has 37 lines |
-| rerun | WARN | re-run skipped (--no-rerun) |
+| status | PASS | STATUS.md has 42 lines |
+| rerun | PASS | 5 of 5 scripts and commands ran cleanly in the export |
+| compare | PASS | 10 regenerated files compared with the committed ones; 0 differ beyond tolerance (rtol 1e-06, atol 1e-12, PNG rms 0.005) |
+| regenerate | PASS | all 10 committed figure files regenerated |
+| new-files | WARN | 4 files written by the scripts are not in the commit |
 
 ## runs
 
 ```
 {
- "core-20261123-020450-7e42037": [
+ "core-20261124-130310-597d9ca": [
   "status is submitted: not finished (nrpic-run finish)"
  ],
- "core-20261123-020452-e635a8e": [
+ "core-20261124-130321-ed96d4d": [
   "status is submitted: not finished (nrpic-run finish)"
  ],
- "core-20261123-020454-8fec6b2": [
+ "core-20261124-130340-31cf5e8": [
   "status is submitted: not finished (nrpic-run finish)"
  ],
- "core-20261123-020456-884f550": [
+ "core-20261124-130347-7d6a10d": [
   "status is submitted: not finished (nrpic-run finish)"
  ],
- "core-20261123-020458-dfc38d7": [
+ "core-20261124-130356-d9d09bf": [
   "status is submitted: not finished (nrpic-run finish)"
  ],
- "core-20261123-020500-9b192cd": [
+ "core-20261124-130406-09319a0": [
   "status is submitted: not finished (nrpic-run finish)"
  ]
 }
@@ -260,4 +263,72 @@
   "no gate",
   "status None read as completed",
   "input /data/haiyangw/nrpic/wt/core-id
+```
+
+## compare
+
+```
+[
+ [
+  "note/figures/fig_row4_m8.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_collapse.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_geodesic.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_clusters.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/schem_architecture.svg",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_geodesic.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/schem_architecture.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_row4_m8.pdf",
+  "PASS",
+  "regenerated (vector files carry dates; the PNG preview is compared)"
+ ],
+ [
+  "note/figures/fig_clusters.png",
+  "PASS",
+  "identical"
+ ],
+ [
+  "note/figures/fig_collapse.png",
+  "PASS",
+  "identical"
+ ]
+]
+```
+
+## new-files
+
+```
+[
+ "note/numbers_clusters.json",
+ "note/numbers_collapse.json",
+ "note/numbers_geodesic.json",
+ "note/numbers_row4m8.json"
+]
 ```

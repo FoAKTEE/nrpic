@@ -1,0 +1,1481 @@
+# JOURNAL of core, work package clump2 (equilibrium clumps with a bulk momentum)
+
+Branch `core/clump-table` (from `core/clump-curvature`), worktree `wt/core-clump2`.
+Append-only, newest at the bottom. Predictions are written before a test runs, outcomes
+after. Labels: [VERIFIED] read from a source with a locator or measured in a registered
+run, [BACKGROUND], [JUDGEMENT], [TO VERIFY]. Units G = c = 1. Times from `date -u`.
+
+## 2026-11-19  session clump2-1 (from 14:22Z)
+
+### Read
+
+- `CLAUDE.md`, charter to "Owners", brief lines 493-553, 688-706, 834-860, decisions
+  0010, 0016, 0017, `harness/RULES.md`, `scripts/README.md`.
+- `tracks/core/interfaces/moving_clumps.md` and `tracks/core/JOURNAL-clump.md` (first
+  pass: Gaussian clumps; open items 1, 2, 5, 6 of its section 8 are this package).
+- Track F's request `track/F-hills:tracks/F-hills/outbox/20261115T1507Z__to-core__moving-clump-initial-data.md`
+  (two equilibrium clumps of 0.05 M, compactness 0.05 to 0.1, with bulk momenta, beside
+  a heavy puncture; acceptance: an isolated moving clump keeps its profile for 200 M).
+- `core/id-solver:tracks/core/interfaces/id_solver.md` (scalar and vector solve on a
+  uniform mesh, one rank, Robin faces; refined meshes and punctures not done, section 7).
+- Source: `athenak/src/pgen/nrpic/nrpic_cf.cpp`, `nrpic_clump_curvature.hpp`,
+  `nrpic_bowen_york.hpp` (multipole correction tables of punctures, `BYCorrection`),
+  `python/nrpic/st_cluster.py` (`STModel`, `_shell_integral`), `sampling.py`
+  (`sample_st`), `clumps.py`, `smeared_bowen_york.py`, `bowen_york.py` (`write_table`),
+  `problems/ic/make_ic.py`, `problems/st/st_cluster.athinput`, `docs/TESTLOG.md` lines
+  72-140 (the stable cluster of the first paper: y_c = 0.819, 10^4 stratified particles,
+  dx = M/2, four filter passes; 300 M take 8 minutes on a card with 16^3 MeshBlocks).
+- Model numbers, `STModel(0.819).summary()` [VERIFIED, python/nrpic/st_cluster.py]:
+  R = 9.9642 M, rbar_s = 8.9362 M, alpha_c = 0.80908, psi_c = 1.10420, E_0 = alpha_s =
+  0.89403, M_0 = 1.030106 M.
+
+### Derivation [JUDGEMENT until the checks PA below have run]
+
+**The object.** A static, spherical, isotropic equilibrium: `ds^2 = -alpha_0^2 dt^2 +
+psi_0^4 delta_ij dx^i dx^j`, energy density rho, pressure P (static observers), every
+particle with conserved energy `E = -u_t = alpha_0 W`. Boosted to first order in V it is
+the same spacetime on another slice: `t~ = t + T(x)`, `T -> V.x` at infinity.
+
+**Slice.** In the coordinates (t~, x) the metric is `-alpha_0^2 (dt~ - d_i T dx^i)^2 +
+psi_0^4 dx^2`: the spatial metric is psi_0^4 delta_ij up to O(V^2), the shift is
+`beta^i = alpha_0^2 psi_0^-4 d_i T`, and `K_ij = (1/(2 alpha_0)) (D_i beta_j + D_j beta_i)`,
+`K = psi_0^-6 alpha_0^-1 d_i (psi_0^2 alpha_0^2 d_i T)`. So the slice is maximal (the
+`K = 0` the generator assumes) if and only if
+
+    d_i (A d_i T) = 0,   A = (alpha_0 psi_0)^2,   T = (V.n) F(r),
+    (r^2 A F')' = 2 A F,   F ~ r at the centre,   F/r -> 1 at infinity.
+
+`T = V.x` (F = r, the plain Lorentz boost of the isotropic coordinates) is not maximal:
+`K = V.grad(alpha_0^2 psi_0^2)/(alpha_0 psi_0^6)`, first order in V and in the potential.
+Outside the matter `A = (1 - m/r)^2`, m = M/2, and the two solutions are closed forms,
+`F_1 = r + m + m^2/r` (the areal radius minus M/2) and `F_2 = 1/(r (r - m))` (checked by
+hand: `(r - m)^2 F_1' = (r - m)^3 (r + m)/r^2`, derivative `2 (r - m)^2 (r^2 + m r +
+m^2)/r^3 = 2 A F_1`). So `F = F_1 + kappa F_2` outside, with kappa from the match at the
+surface.
+
+**Matter on the slice.** The static frame has `u_i = alpha_0 d_i T` relative to the
+slice (from `u = -alpha_0 dt = -alpha_0 dt~ + alpha_0 d_i T dx^i`), so with
+`w_i = d_i T = V_i w_a + n_i (V.n) w_b`, `w_a = F/r`, `w_b = F' - F/r`:
+
+    Stilde_i = psi_0^6 S_i = psi_0^6 (rho + P) alpha_0 w_i      (first order).
+
+It contains the pressure, the lapse and the slice function; it is not proportional to the
+conformal source `rho psi_0^5` that item 1 of section 8 of `moving_clumps.md` proposed
+(`Q = -2 r^2 u'/M`): that proposal is withdrawn.
+
+**Curvature for any polar l = 1 momentum density.** For `Stilde_i = V_i s_a(r) +
+n_i (V.n) s_b(r)` the traceless `Abar_ij = a (V_i n_j + V_j n_i) + b delta_ij V.n +
+c n_i n_j V.n`, `b = -(2a + c)/3`, has the divergence `V_i [a' + (7a - c)/(3r)] +
+n_i V.n [a'/3 - a/(3r) + 2c'/3 + 7c/(3r)]`. With `a = A2 + A4`, `c = A2 - 5 A4` the
+system decouples (eigenvalues -2 and -4): `(r^2 A2)' = 2 pi r^2 (3 s_a + s_b)`,
+`(r^4 A4)' = 2 pi r^4 (s_a - s_b)`. Hence the two lines of the Gaussian case hold
+unchanged,
+
+    Abar_ij = 3 Q/(2 r^2) [V_i n_j + V_j n_i - (delta_ij - n_i n_j) V.n]
+            + I4/(2 r^4)  [V_i n_j + V_j n_i + (delta_ij - 5 n_i n_j) V.n],
+    Q(r)  = 4 pi int_0^r (s_a + s_b/3) r'^2 dr',
+    I4(r) = 4 pi int_0^r (s_a - s_b) r'^4 dr',
+
+with these generalised moments (for `s_b = 0` they are those of `moving_clumps.md`). The
+total momentum is `P_i = Q(inf) V_i`. The code needs a table of Q and I4 only.
+
+**Particles** (rule `boost` of the generator). Sample the static cluster (x, q, m_0; q the
+orthonormal velocity, `u^s_i = psi_0^2 q_i`), then
+- momentum: `u~_i = u^s_i + E w_i(x)`, `E = alpha_0 W` (the covariant components in the
+  coordinates of the new slice, `u~_i = u_i - u_t d_i T`: exact),
+- mass: `m~ = m_0 (1 + w.xdot)`, `xdot^i = alpha_0 q^i/(psi_0^2 W)` the coordinate
+  velocity: the weight with which a world line crosses the new slice (relativity of
+  simultaneity; the Jacobian of `u -> u + E(x,u) w` at fixed x is `1 + w.dE/du`).
+For any isotropic static distribution the momentum density of these particles is
+`psi_0^6 (rho + P) alpha_0 w_i` exactly (terms odd in q vanish; the rule is linear in w),
+so the curvature above solves the momentum constraint in the continuum for whatever w is
+used. Without the weights the pressure term is missing (`rho` instead of `rho + P`).
+
+**Speed.** The parameter of the generator is the speed v of the clump; the linear rule is
+applied with `V = W_v v` (so that a cold clump moves exactly at v) and the momentum is
+`P = Q(inf) W_v v`. Expected (check PA2): `Q(inf) = M`, the ADM mass of the static
+cluster, because the data are a slice of the boosted static spacetime to first order,
+whose ADM momentum is M V. With `F = r` it would be `int psi^6 (rho + P) alpha d^3x`,
+which is not M (the Tolman mass has `rho + 3P`).
+
+**Hamiltonian constraint at second order.** With the rule above, `W~ = (1 + psi^-4
+|u~|^2)^(1/2)` and `psi = psi_0 + dpsi`, averaging over the directions of q
+(`wbar = (alpha_0/psi_0^2) w`):
+
+    D~ = sum m~ W~ delta = psi_0^6 [rho + (rho + P) wbar^2/2 - 6 P dpsi/psi_0] + O(V^4),
+
+so `lap psi = -2 pi D~/psi - psi^-7 Abar^2/8` gives, linear in dpsi,
+
+    lap dpsi - 2 pi psi_0^4 (rho + 6P) dpsi
+        = -pi psi_0^5 (rho + P) wbar^2 - psi_0^-7 Abar_ij Abar_ij/8.
+
+The right side has l = 0 and l = 2 about V (`wbar^2` and `Abar^2` are `f(r) + g(r) mu^2`),
+so `dpsi = V^2 [y_0(r) + y_2(r) P_2(mu)]` from two radial equations: the "spherical radial
+solve per clump" of the task. The table format of the puncture corrections (`mp1`,
+multipoles about an axis) carries it; the code adds it to psi. The particles are not
+changed by the correction (their rule uses psi_0 and alpha_0 only). Not included: the
+Lorentz contraction of the profile and the part of the metric that is not conformally
+flat (both O(V^2), no constraint violation), terms O(V^4), and cross terms with other
+bodies.
+
+Why not the elliptic solver of `core/id-solver` here [JUDGEMENT]: it works on a uniform
+mesh on one rank with Robin faces; the clump runs need refined meshes and, for Track F, a
+puncture. For an isolated clump the radial solve is exact to the stated order and costs
+nothing in the code. What the mesh solver would add, once it has refined meshes and
+punctures (its section 7): the cross terms `Abar_c : Abar_j` of several bodies, the tidal
+variation of the other bodies' psi across a clump, and the sampling noise of the actual
+particles.
+
+**Shift.** With zero shift the coordinate velocity of the matter is `alpha_0^2 psi_0^-4 w`:
+0.44 w at the centre of the y_c = 0.819 cluster (alpha_c^2/psi_c^4 = 0.6546/1.4866), V
+far away. In coordinates that move with the clump the shift is
+`beta^i = -(V^i - alpha_0^2 psi_0^-4 w^i)`, which vanishes far away as 3m V/r. Option
+`comp<c>_boost_shift = true` sets it (per clump, from its own alpha_0, psi_0 and F).
+
+**Several bodies.** Near clump c the others add a nearly constant `Lambda_c - 1` to psi.
+`psi = Lambda psi^(Lambda^2 x)` is the isolated solution in the coordinates
+`x^ = Lambda^2 x`: positions shrink by Lambda^2, `u(r) = Lambda u^(Lambda^2 r)`,
+covariant momenta `u~_i = Lambda^2 u^_i`, `P = Lambda^2 P^`, `Q(r) = Q^(Lambda^2 r)`,
+`I4(r) = I4^(Lambda^2 r)/Lambda^4`, rest masses unchanged. The generator applies this
+scaling, and multiplies each particle mass by the factor that makes its `m W/psi` equal to
+the isolated one with the actual psi of all bodies (so the Hamiltonian constraint keeps
+only the cross terms of the curvatures).
+
+### Design [JUDGEMENT]
+
+1. New header `athenak/src/pgen/nrpic/nrpic_clump_table.hpp` (namespace
+   `nrpic_tclump`): reader of the "boost table" (`# format = bst1`, columns `r Q I4 ba bb`
+   on the uniform grid of the radial tables; header keys `pmass` (momentum per unit
+   coordinate velocity), `ext_m`, `ext_kappa` for the closed forms beyond the last row),
+   curvature, shift, and the correction of psi through `nrpic_by::BYReadTable` and
+   `BYCorrection` (table `mp1`).
+2. Options on a component of type `table` (format 1): `comp<c>_boost_file`,
+   `comp<c>_p1..3`, `comp<c>_corr = table` with `comp<c>_corr_file`
+   (`comp<c>_corr_axis1..3` as for punctures; default the momentum), `comp<c>_boost_shift`.
+   Read only when `comp<c>_boost_file` exists.
+3. Hooks: `nrpic_cf.cpp` (include, reader call, correction in the sum of psi, curvature
+   block, shift) and one line of `BYRead` in `nrpic_bowen_york.hpp` (a table component
+   with a boost file is not a puncture).
+4. Python: `python/nrpic/boosted_cluster.py` (`BoostedST`: F, moments, shift, correction,
+   particle rule, table writers, scaling by Lambda), `problems/ic/make_ic.py boosted`.
+
+### Predictions PA for the checks without simulation (written 14:50Z, before the module runs)
+
+Model y_c = 0.819, M = 1. Script `tracks/core/analysis/clump2/check_boost.py`.
+
+- PA1 (slice function). The interior solution matches the exterior closed forms with a
+  kappa that is constant: `F - F_1 - kappa F_2` evaluated from an ODE integration
+  continued to 4 rbar_s is below 1e-8. `w_a(0) = F'(0)` is above 1 (the lapse is lowest at
+  the centre, so `A` grows outward and the gradient of T concentrates inside; I expect
+  1.05 to 1.3). Refuted if the residual is above 1e-6.
+- PA2 (momentum). `Q(inf)/M = 1` to 1e-7 with the maximal F; with `F = r` it is not 1 (I
+  expect a few per cent below or above; the sign I do not predict). Refuted if
+  `|Q(inf)/M - 1| > 1e-5`: then `Stilde_i = psi^6 (rho + P) alpha d_i T` or the slice
+  equation is wrong.
+- PA3 (Einstein equations). `Abar_ij` from the moments equals `psi_0^6 (Lbar beta)_ij/
+  (2 alpha_0)` with `beta^i = alpha_0^2 psi_0^-4 d_i T`, built by finite differences of
+  the model functions and of F, at points inside and outside the matter: relative
+  difference below 1e-5 of the largest component (limited by the differencing).
+  This compares the momentum constraint solved with the matter source against the
+  geometry of the static solution: it can fail through the sign of w, the factor
+  `rho + P`, the lapse factor, or the moments. Refuted above 1e-3.
+- PA4 (divergence). `d_j Abar_ij = 8 pi Stilde_i` by sixth-order differences at points
+  inside: below 1e-6 of the largest source.
+- PA5 (particles). For a stratified sample of 10^5 particles, `sum m~ u~_i` over
+  `Q(inf) V` is 1 within 3 sigma of its sampling error, and the radial profile of
+  `sum m~ u~_x` in 20 shells follows `Q(r)` within the sampling error; without the weights
+  the total is low by `int P`-fraction (I expect 3 to 8 per cent).
+- PA6 (second order). The mass the correction adds, `2 x monopole`, is `M V^2/2` times a
+  factor 1 + O(M/R): I expect 0.9 to 1.3. The direction-averaged `D~` of the rule,
+  computed exactly for the monoenergetic model by quadrature, differs from the
+  second-order form by less than 2 V^2 times the second-order term at V = 0.1 and 0.31.
+  The residual of the radial equations (finite differences of the written table) is below
+  1e-4 of the largest source away from the surface.
+
+### Outcome of PA (run `core-20261119-144026-3d7d4e7`, 14:40Z; `analysis/clump2/check_boost.json`, `figs/fig_boost_reference.png`)
+
+The first execution of the module was this registered run. Its outputs went to a
+directory literally named `$NRPIC_RUN_DIR` in the worktree (I quoted the variable on the
+command line; the launcher does not expand it); I moved them into the run directory
+after the run had been closed, so its `sha256sums.txt` lists `run.log` only. The scripts
+now read `NRPIC_RUN_DIR` from the environment.
+
+- PA1 HELD. Continuing the interior solution through the vacuum with the ODE agrees with
+  `F_1 + kappa F_2` to 3.2e-13 out to 4 rbar_s; kappa = -5.98881. `w_a(0) = 1.07692`,
+  `w_a(rbar_s) = 1.05019`. With zero shift the matter at the centre starts with the
+  coordinate velocity `alpha_c^2 psi_c^-4 w_a(0) V = 0.4742 V`.
+- PA2 HELD. `Q(inf)/M - 1 = -9.4e-15` with the maximal slice; the plain boost `F = r`
+  gives `Q(inf)/M = 0.94729` (5.3 per cent low). So the momentum of the data is M V to
+  round-off: the source `psi^6 (rho + P) alpha grad T`, the slice equation and the
+  exterior match are consistent with the ADM momentum of the boosted spacetime.
+- PA3 HELD. Curvature from the moments against `psi^6 (Lbar beta)/(2 alpha)`: 4.2e-11
+  inside, 1.1e-11 outside, of the largest component 9.88e-3 (V = 0.3); `alpha K` of the
+  slice 1.3e-13. For the plain boost `max |alpha K| = 2.6e-3`: not maximal, as derived.
+- PA4 HELD. Divergence against `8 pi Stilde_i`: 6.0e-11 of the largest source.
+- PA5 HELD for the rule, FAILED in one number. 10^5 stratified particles:
+  `sum m~ u~_x/(Q(inf) V) = 1.00004 +- 0.0022`; enclosed momentum in 20 shells within
+  1.9e-3 P of `Q(r) P`. Without the weights the total is 0.97206: 2.8 per cent low, just
+  outside the 3 to 8 per cent I wrote (the pressure share of `rho + P` in this model).
+- PA6 HELD. Added mass `2 x monopole = 0.98379 M V^2/2`; `y_0(0) = 0.03568`; the exact
+  direction average of `m~ W~` differs from the second-order form by 1.7e-3 (V = 0.1) and
+  1.6e-2 (V = 0.31) of the second-order term; residual of the radial equations on the
+  written table 3.9e-7 (l = 0), 5.5e-8 (l = 2) of the largest source; tails of the table
+  0.963 and 1.679 (l = 0 is not yet the pure monopole at 6 rbar_s: the r^-2 particular
+  part). The quadrupole `y_2` is below 2 per cent of `y_0` everywhere (figure).
+- For v = 0.3 (`V = W v = 0.31449`): `P = 0.31449`, `M_ADM = 1.04865` with the
+  correction, against `W_v M = 1.04828` for an exact boost: 3.7e-4 M apart.
+
+After PA the boost table was changed to hold `Q/r^3` and `I4/r^5` (finite at the centre,
+so that the cubic interpolation of the code needs no special case near r = 0); below
+0.02 rbar_s a quadratic through the central value continues the quadrature. Checked by
+hand at r = 0.1: 3.83916e-3 both ways, 2.303456e-3 against 2.303456e-3.
+
+### Source written (15:00Z to 15:20Z), smoke runs (not registered, no number used)
+
+`athenak/src/pgen/nrpic/nrpic_clump_table.hpp`, hooks in `nrpic_cf.cpp` and `BYRead`;
+`problems/ic/make_ic.py boosted`; `problems/tests/clump_table_static.athinput`. The
+processor and card executables build. One smoke run at 64 cells with 10^4 stratified
+particles (v = 0.3, correction and shift on): the log prints "curvature of 1 moving table
+component(s), 1 correction(s) of psi, comoving shift on"; psi^4 of the dump equals the
+Python reference to 5.6e-8 (single precision of the dump). No other number is taken
+from it.
+
+### Predictions TB for the data at t = 0 on the mesh (written 15:25Z, before the runs)
+
+Cluster y_c = 0.819, M = 1, at the origin of the box [-16, 16]^3 (`nghost = 4`, linear
+cloud, four filter passes with compensation: the setting of the first paper's cluster
+runs), 32, 64, 128 cells (dx = 1, 0.5, 0.25), processors. Particles: the quiet sample
+(lattice of spacing 0.25 with weights `rho_0 psi_0^6 h^3`, six momenta per site: no
+sampling noise and exact first and second moments at every site), 1.15e6 particles;
+v = 0.1 and 0.3 (`V = W v = 0.10050, 0.31449`), and the static sample on the same sites.
+Cases per v and resolution: `none` (K_ij = 0), `curv` (curvature of the boost table with
+`comp0_p = sum m u`), `corr` (curvature and correction of psi). Norms as the history file
+defines them, restricted to r < 14 ("interior"; the layer at the outflow faces of
+`JOURNAL-clump.md` T1 is left out), computed from the dumps by
+`analysis/clump2/boost_static_check.py`. Continuum numbers from
+`analysis/clump2/predict_boost.py` (quadrature of the reference; printed at 15:22Z):
+v = 0.1: M-norm 0.036089, Mx-norm 0.042326, second-order H-norm 3.1460e-3 (matter part
+2.777e-3, curvature part 5.24e-4); v = 0.3: M-norm 0.112924, Mx-norm 0.132441,
+second-order H-norm 0.030803 (0.027188, 5.132e-3); norm of the matter term 16 pi E:
+0.90873.
+
+- TB1 (momentum constraint, `none`). Interior M-norm equals the continuum value within 3
+  per cent at 64 and 128 cells (the filter lowers it at 32 cells, as in T1 of the first
+  pass: within 10 per cent there). Ratio v = 0.3 over v = 0.1: 3.129 within 1 per cent.
+- TB2 (momentum constraint, `curv`). The residual is what the cloud and the filter do to
+  the profile, plus the surface, where the density ends as (rbar_s - r)^(1/2): ratio to
+  `none` between 0.03 and 0.12 at dx = 1, 0.008 and 0.05 at dx = 0.5, 0.002 and 0.02 at
+  dx = 0.25, falling by a factor 1.5 to 6 per halving [JUDGEMENT: smoothing width about
+  0.75 dx against a density scale of about 3 M gives (w/L)^2 = 0.06, 0.016, 0.004; the
+  edge adds a first-order term]. The ratio is the same at v = 0.1 and 0.3 within 5 per
+  cent (linear). The curvature term alone, `M_x(curv) - M_x(none)`, has the Mx-norm of
+  the continuum within 1 per cent at 128 cells (it does not pass through the deposit).
+  Refuted if the ratio does not fall with resolution or is above 0.3 anywhere.
+- TB3 (Hamiltonian, second order). With `D_H(case) = H(case) - H(static)` cell by cell:
+  the interior norm of `D_H(curv)` equals the continuum second-order norm (3.146e-3,
+  0.030803) within 5 per cent at 64 and 128 cells; ratio v = 0.3 over 0.1: 9.79 within 3
+  per cent. With the correction, `|D_H(corr)|/|D_H(curv)|` is below 0.15, 0.08, 0.05 at
+  dx = 1, 0.5, 0.25 for v = 0.3 (fourth order 1.6e-2, and the smoothing of the
+  second-order matter source by the deposit, which the correction does not know of) and
+  not larger at v = 0.1; the projection `<D_H(corr), D_H(curv)>/<D_H(curv), D_H(curv)>`
+  is within 0.05 of zero (a correction of the wrong sign gives 2, none gives 1).
+  Refuted if the ratio is above 0.3 or the projection outside +-0.1.
+- TB4 (whole-box history norms, the numbers a user sees). At 64 cells, v = 0.3: H-norm
+  of `corr` within 2 per cent of the static cluster's H-norm (the deposit error of the
+  matter, the same in both), H-norm of `curv` above it; M-norm of `curv` and `corr`
+  equal within 1 per cent. I do not predict the static H-norm itself.
+- TB5 (fields). In the case `corr` at 64 cells with `comp0_boost_shift = true`: psi^4,
+  K_ij and beta^i of the dumps equal the Python reference at every cell centre to 2e-6
+  of the largest value (single precision of the dumps, cubic interpolation of the
+  tables); K = 0 to the same accuracy.
+- TB6 (the sample of the evolution: 10^4 stratified equal-mass particles, v = 0.3, 64
+  cells). The momentum-constraint norm is sampling noise: the curvature lowers M-norm2
+  by the smooth part only, `M-norm2(none) - M-norm2(curv) = 0.112924^2 = 0.01275` within
+  30 per cent, and the projection of `M_x` on the smooth field `-8 pi psi^-6 Stilde_x`
+  goes from 1.0 +- 0.1 to 0.0 +- 0.1. The H-norm does not change by more than 2 per
+  cent between `none`, `curv` and `corr` (noise dominates; the second-order norm 0.031 is
+  small against it).
+
+### Correction of clock times above (14:48Z, from `date -u` and the commits)
+
+The times I wrote into the entries above were guesses and too late. From the record:
+the predictions PA were written before commit 3d7d4e7 (14:40Z) and the run
+`core-20261119-144026-3d7d4e7` started at 14:40:26Z; the source was written and the smoke
+run made between 14:41Z and 14:46Z; the continuum numbers of `predict_boost.py` were
+printed at 14:46Z and the predictions TB written directly after, before commit cbe1e3ef
+(14:47Z). The order of prediction and run is as stated in each entry. From here on times
+are copied from `date -u`.
+
+### Prediction R (regression, written 14:48Z before the run)
+
+Inputs without the new parameters give byte-identical data files with this branch's
+processor executable (`.work/build_cpu`, source of commit cbe1e3ef) and the release
+executable `/data/haiyangw/nrpic/.work/build_cpu_v03/src/athena`: the four cases of
+`tracks/core/analysis/clump/regress.py` (`regress_cf`, `cf_table_regress`,
+`by_static`, and the first paper's two-overdensity configuration for two cycles;
+restart files up to the 36 never-set header bytes). The new code is reached only through
+`comp<c>_boost_file`; the loop of the generator gained a correction loop over zero
+entries and a block behind `if (tcl.n > 0)`. Refuted by any differing data byte.
+
+### Smoke checks before the card job (not registered, 14:53Z; no number below is used as a result)
+
+- Fields of the code against the Python reference, 64 cells, 10^4 stratified particles,
+  v = 0.3, correction and shift on (`scratch/core/tmp/clump2/smoke2`): psi^4 5.6e-8,
+  K_ij 4.7e-8 of the largest component, beta^i 7.5e-9, lapse 3.0e-8, trace K 5e-18. The
+  registered version of this check is TB5.
+- `problems/clump/cluster_moving.athinput` starts on a processor (`time/nlim=0`): 568
+  MeshBlocks (52 + 5 x 84 + 96 on the finest level, dx = 0.5 inside
+  [-16, 32] x [-16, 16]^2), 1 min 57 s for the start alone.
+- The registered processor runs TB and R wait: `nrpic-run submit` refuses while 16 cores
+  are busy in live local runs of owner core (other packages of this wave);
+  `scratch/core/tmp/clump2/submit_wait.sh` retries every 30 s.
+
+### Predictions TC for the evolution on a card (written 14:53Z, before the job is submitted)
+
+`problems/clump/cluster_moving.athinput`: the stable cluster of the first paper
+(y_c = 0.819, 10^4 stratified particles of seed 1, dx = M/2, four filter passes with
+compensation, 1+log lapse from the static lapse, Gamma-driver shift with eta = 2) on the
+mesh of `st_cluster.athinput` with the refined box extended to x = 32; 50 M. Initial
+data from `make_ic.py boosted` (files in `scratch/core/clump2-ic/`), curvature and
+correction on. Four runs in one job: `v0` (at rest, no boost table read), `v0.1`,
+`v0.3` (shift zero at the start), `v0.3s` (v = 0.3 with `comp0_boost_shift = true`).
+Measured by `analysis/clump2/boost_evolution_check.py`: centre x_c(t) = rest-mass centre
+of the particles from the snapshots (every 2 M); radii about x_c that enclose 10, 25, 50,
+75, 90 per cent of the rest mass; alpha_min, sum m u_x from `cl.nrpic.hst`; constraint
+norms from `cl.z4c.user.hst`. Cost estimate: 300 M of the first paper's mesh take 8
+minutes [VERIFIED, docs/TESTLOG.md line 100]; this mesh has 568 MeshBlocks: about 2
+minutes per run, 0.15 card-hours for the job [JUDGEMENT].
+
+1. Centre. With zero shift the matter starts with the coordinate velocity
+   `alpha_0^2 psi_0^-4 w V/W_v`: 0.474 v at the centre, about 0.6 v averaged over the
+   mass (0.70 v at the surface). The Gamma driver then builds the shift of the moving
+   coordinates and the coordinate speed rises towards v [JUDGEMENT; I have no estimate of
+   the time it takes beyond "a few light-crossing times of the cluster", 20 to 40 M].
+   Predicted for `v0.1` and `v0.3`: speed of x_c at t = 0 to 2 M between 0.5 v and
+   0.7 v; mean speed over 30 to 50 M between 0.85 v and 1.05 v; x_c(50 M) between 0.70
+   and 0.95 of v x 50 M (3.5 to 4.75 M, 10.5 to 14.25 M). For `v0.3s`: speed between
+   0.9 v and 1.1 v already over 0 to 4 M, mean over 0 to 50 M between 0.93 v and 1.05 v
+   (x_c(50 M) between 13.95 and 15.75 M). Run `v0`: |x_c| below 0.1 M throughout.
+   Refuted if the late speed of the runs without initial shift is below 0.8 v (the
+   coordinates do not catch up within 50 M: then `comp0_boost_shift` is needed for a
+   clump to follow its trajectory) or if `v0.3s` leaves the stated band.
+2. Profile. The five radii stay within 10 per cent of their values at t = 0 for 50 M in
+   every run, and at every snapshot the radii of the moving runs are within 6 per cent
+   of those of `v0` at the same time (the data are not Lorentz-contracted, 1 - 1/W_v =
+   4.6 per cent along x at v = 0.3, and the coordinates change with the shift). No
+   particle is lost. Refuted by a radius that departs by more than 15 per cent from the
+   run at rest, or by a monotonic growth or shrinking of all five radii.
+3. Central lapse (alpha_min; 0.8091 at t = 0 in all runs, the static table). `v0`:
+   between 0.800 and 0.825 for 50 M (the first paper's run rises from 0.809 to 0.837 at
+   115 M). `v0.1`: within 0.004 of `v0` at all times. `v0.3` and `v0.3s`: the lapse
+   of the boosted slicing of the exact solution would be `alpha_0/(W_v (1 - V_c^2)^(1/2))`,
+   `V_c = v alpha_0/psi_0^2`: 0.7875 at the centre [derived from g^tt of the boosted
+   static metric; JUDGEMENT that 1+log moves towards it]. Predicted: alpha_min falls by
+   0.010 to 0.035 below the run at rest within the first 25 M and its difference from
+   `v0` then changes by less than 0.012 until 50 M (no drift towards collapse or
+   dispersal). Refuted if alpha_min of a moving run is below 0.74 or above 0.85 at any
+   time, or still moving away from `v0` by more than 0.02 between 30 and 50 M.
+4. Summed momentum. `sum m u_x` is the covariant momentum on the slice and depends on
+   the slicing at first order in v and in the potential (on the plain boosted slice the
+   same matter has 0.947 M V, on the maximal slice M V: PA2). The 1+log slicing leaves
+   the maximal slice, so the sum changes without any force on the clump [JUDGEMENT; this
+   is my candidate for the drift of 1.3 to 1.6 per cent in 2 M that the first pass could
+   not explain]. Predicted: |change of sum m u_x|/P below 8 per cent over 50 M; the
+   relative histories of `v0.1` and `v0.3` agree within 2 per cent of P at every record
+   (linear in v); in `v0` |sum m u_x| stays below 2e-3 M. What would speak against the
+   candidate: relative histories that differ between v = 0.1 and 0.3 by more than the
+   drift itself, or a drift that accompanies a change of the centre's speed.
+5. Constraints. H-norm and M-norm of the moving runs within a factor 1.5 of the run at
+   rest at every record after t = 5 M (sampling noise dominates all four).
+
+### A slip of mine outside the worktree (14:54Z)
+
+A command of mine used a shell variable that was not set in that call (`cd $IC &&
+sha256sum * > SHA256SUMS`): `cd` went to the home directory and wrote a 75-byte file
+`/home/haiyangw/SHA256SUMS` (one line, the checksum of `anta.env`). The file did not
+exist before (it does not list itself, and the names are expanded before the file is
+created); I removed it at once. Nothing else was written there. The staged initial data
+of TC are in `/data/haiyangw/nrpic/scratch/core/clump2-ic/` with their `SHA256SUMS`
+(generator calls: `make_ic.py boosted --cluster 0.819,1,0,0,0,<v>,0,0 --N 10000 --seed 1
+--prefix v<v>` for v = 0, 0.1, 0.3 at commit e9e35f16; the three radial tables are
+identical, 0c604861..., as are the two boost tables, 73f8c205...). Batch list:
+`tracks/core/analysis/clump2/card_tc.list`.
+
+### Several clusters: generator, and predictions TD (written 15:11Z, before any mesh run of two clusters)
+
+`python/nrpic/boosted_cluster.BoostedClusters` and `make_ic.py boosted` take several
+clusters (and punctures): background `lam_c = 1 + sum (M_j/lam_j)/(2 d_cj)`, the scaling
+of the derivation, and per particle the mass factor that reproduces the isolated
+`m W/psi` in the psi of the code. `--cluster-p` gives a cluster by its momentum
+(`V = P/pmass`), which is what Track F's three-body set-ups specify. Generator output
+for two clusters of mass 1 at x = -20, +20 with v = (M/(2d))^(1/2) = 0.111803 along -y, +y
+(not a registered run; these are properties of the generator's own numbers): lam =
+1.012348, pmass = lam^4 = 1.050312, |P| = 0.118169 each (continuum), first-order ADM mass
+2/lam = 1.975606 (binding energy -0.02439 against the Newtonian -M^2/d = -0.025), with
+the corrections 1.988526 (kinetic 0.01292 against the Newtonian 0.0125).
+
+Test TD (`run_binary_static.py`, `problems/tests/clump_table_binary.athinput`): that
+pair at t = 0 on a uniform mesh of cell size 0.5 ([-48, 48] x [-24, 24]^2), quiet sample
+with spacing 0.25; cases `single` (one cluster alone at x = -20, at rest), `b0` (the
+pair at rest), `bv_none`, `bv_curv`, `bv_corr` (the pair moving: K_ij = 0, the two
+boost tables, tables and corrections). Norms within 14 of the centre of cluster 0.
+- TD1. H-norm of `b0` over that of `single`: 1 +- 0.1 (each cluster keeps the
+  Hamiltonian residual of the isolated one; a factor lam or lam^2 lost in psi, the
+  tables or the particles would show as a residual of 1 to 6 per cent of the matter
+  term, 0.01 to 0.05 in norm).
+- TD2. M-norm `bv_curv`/`bv_none`: the value of TB2 at dx = 0.5 (which does not depend
+  on v) within 30 per cent; a factor lam^2 = 1.025 lost in the momentum, or the table
+  scaled wrongly, leaves at least 0.025.
+- TD3. `|D_H(bv_corr)|/|D_H(bv_curv)|` (differences to `b0`) below 0.1 and within a
+  factor 1.5 of TB3 at dx = 0.5 and v = 0.1; projection within 0.05 of zero.
+Refuted by an H ratio outside 0.85 to 1.15, an M ratio more than twice the TB2 value,
+or a D_H ratio above 0.2.
+
+## 2026-11-19  session clump2-2 (from 15:30Z; the first session ended without a handoff)
+
+State found at 15:30Z (from the record, not from memory): run `core-20261119-151457-7a855d8`
+(processor tests, one core) is still running. Its first part, test R, stopped at once:
+`regress.py` started the executables by a relative path after changing the working
+directory (`FileNotFoundError: .work/build_cpu/src/athena`); the fix (absolute paths,
+commit eedc4cb8) came after the run had started, so R is rerun as its own registered run
+with the three short cases (prediction R above, unchanged); the case `jeans` at the end of
+the running job starts after the fix and uses the fixed script. The 25 cases of TB ran
+("all cases ran"); TD is running. The card job of TC (`core-20261119-145433-8c4083d`,
+Slurm 4649) waits in the queue (15 jobs of the program ahead of it, one card job of
+another user running). The executables of `.work/build_*` are from the source of
+cbe1e3ef; `git diff cbe1e3ef HEAD -- athenak/` is empty.
+
+### Test TE: two clusters on a quasi-circular orbit, design and predictions (written 15:52Z, before the card job is submitted)
+
+Budget [JUDGEMENT]: the package has one card-hour. TC asks for at most 0.4 (expected 0.15:
+568 MeshBlocks x 400 cycles x 4 runs). The cost per MeshBlock-cycle on a card is 5.1e-4 s
+[VERIFIED: `runs/st/ctl/s1_nf4/athena.log`, 960000 MeshBlock-cycles in 487.7 s, 10^4
+particles, the first paper's cluster mesh]. A binary needs the whole orbit at dx = M/2: the
+smoke start of `problems/clump/cluster_binary.athinput` (processor, `time/nlim=0`, not
+registered; only the block count is used) has 1408 MeshBlocks (256 on the finest level,
+224 on each of levels 1 to 5: the refined region straddles the block boundaries of every
+coarser level). A whole orbit (808 M) would cost 1408 x 6464 x 5.1e-4 s = 77 min; "a few
+orbital times" does not fit. TE runs 250 M (2000 cycles, 24 min, about 0.4 card-hours, a
+third of an orbit), which is enough to tell a quasi-circular orbit from a Newtonian one by
+its phase.
+
+Set-up. Two y_c = 0.819 clusters of ADM mass 1, 10^4 stratified particles each (seed 1),
+at x = -15 and +15 (separation r = 30 M, D/R = 3, what Track F asks for: clumps of
+compactness 0.1 three to six radii apart), momenta -P and +P along y with the first
+post-Newtonian quasi-circular value of the ADM Hamiltonian, `P = mu (M/r)^(1/2) (1 + 2 M/r)
+= 0.146313` (M = 2, mu = 1/2; Newtonian 0.129099). [BACKGROUND for the 1PN ADM
+Hamiltonian of two point masses; JUDGEMENT for the step: with
+`H_1PN/mu = (3 nu - 1) p^4/8 - [(3 + nu) p^2 + nu (n.p)^2]/(2 r) + 1/(2 r^2)` the circular
+condition at fixed `p_phi` gives `p_phi^2 = r + 4` in units of M, checked by hand.] Curvature
+of both boost tables and both corrections of psi, zero initial shift, lapse (2 - psi)/psi
+(0.7807 at the centres, against the static lapse 0.809 times (1 - M/r) = 0.782).
+Generator: `make_ic.py boosted --cluster-p 0.819,1,-15,0,0,0,-0.14631270419005796,0
+--cluster-p 0.819,1,15,0,0,0,0.14631270419005796,0 --N 10000 --seed 1 --prefix orbit`
+at commit cb978cec (files and `SHA256SUMS` in `scratch/core/clump2-binary-ic/`): lam =
+1.016398, the particles carry |sum m u| = 0.146338 and 0.146396 (sampling; net 6.6e-5,
+5.8e-5 in x, y), M_ADM = 1.98715. Reference values: angular velocity 1PN
+`omega = (M/r^3)^(1/2) (1 - (3 - nu) M/r)^(1/2) = 0.0077778` (period 808 M), Newtonian
+0.0086066 (730 M); radiation reaction `dr/dt = -(64/5) nu M^3/r^3 = -9.5e-4`.
+Measured by `analysis/clump2/binary_evolution_check.py` from the snapshots (species =
+cluster): rest-mass centres, separation D(t), phase of the separation vector, radii
+enclosing 10 to 90 per cent of each cluster's rest mass, |sum m u| per cluster; histories.
+
+1. Phase. The mean angular velocity of the separation vector over 40 to 250 M is within
+   5 per cent of the 1PN value, 0.00739 to 0.00817, below the Newtonian 0.00861. In the
+   first 40 M the coordinates lag (zero initial shift: the matter starts with 0.5 to 0.7
+   of its speed in coordinates, TC prediction 1), so the phase at 250 M is 0 to 0.25 rad
+   below `omega_1PN x 250 = 1.944`. Refuted if the fitted angular velocity is outside
+   0.0072 to 0.0084 (outside 0.0084 it is closer to Newtonian than to 1PN).
+2. Separation. D stays within 28.5 to 31.0 M throughout (eccentricity from the 2PN terms
+   left out of P, of order 1 per cent in P, plus the coordinate transient); the linear fit
+   of D over 40 to 250 M has a slope between -0.01 and +0.005 (the radiation reaction,
+   -9.5e-4, is not resolved). Refuted by D outside 27 to 32 or a slope below -0.02 (an
+   inspiral much faster than radiation reaction: the data would hold too little angular
+   momentum).
+3. Profiles. Every radius of each cluster stays within 15 per cent of its start value
+   (tides at D/R = 3 deform at order (R/D)^3 = 4 per cent; the cluster at rest moves its
+   radii by up to 10 per cent, `docs/TESTLOG.md` line 76); the two clusters behave alike
+   (symmetric set-up) within 3 per cent; no particle is lost.
+4. Lapse. alpha_min stays between 0.75 and 0.82 (no collapse, no dispersal).
+5. Momentum. |sum m u| of each cluster stays within 10 per cent of its start value (the
+   slicing dependence of TC prediction 4); the total over both stays below 3e-3 in each
+   component.
+6. Constraints. H-norm and M-norm (history) stay within a factor 2 of their values at
+   t = 5 M after that time (sampling noise dominates; no growth).
+
+### Supplement to prediction TC4 (written 15:54Z; job 4649 has not started)
+
+If the drift of `sum m u_x` comes from coordinates and slices that change in time
+(candidate of TC4), the run with the comoving shift is the control: there the data are
+the stationary cluster in coordinates that move with it, the 1+log lapse starts with
+K = 0 and its static value, and the Gamma driver starts from a shift that already holds
+`d_t Gamma^i = 0`, so the distribution function stays stationary in those coordinates and
+every phase-space integral, `sum m u_x` among them, stays constant up to the noise of the
+run at rest. Predicted: over 0 to 10 M, |change of sum m u_x|/P in `v0.3s` is at most
+half of that in `v0.3`, and below 1 per cent. Refuted (and the candidate with it) if
+`v0.3s` drifts as much as `v0.3`.
+
+### Prediction G (card against processor at t = 0; written 15:55Z, before any of the runs)
+
+`run_t0_records.py` starts the five entries of `card_tc.list` and `card_te.list` on a
+processor with `time/nlim=0` (branch executable `.work/build_cpu`, same source as the card
+executable). Predicted: the first records of `cl.nrpic.hst` and `cl.z4c.user.hst` of the
+card runs (jobs 4649, 4657) equal these processor records in every printed digit except
+quantities that vanish (round-off of a zero) and the constraint norms, which agree to
+1e-5 relative (the card deposits with atomic additions in another order). Refuted by any
+other difference: then the card executable builds other initial data than the processor
+executable, and the processor tests TB, TD say nothing about the card runs.
+
+### Outcome of TB and TD (analysis run `core-20261119-155912-1fda7e0` on the cases of `core-20261119-151457-7a855d8`; 16:00Z)
+
+The first analysis attempt, `core-20261119-153545-8898621`, failed at once: I gave the TB
+script the run directory instead of its `tb/` part (no number from it). Figures
+`tb/fig_boost_static_convergence.png` and `tb/fig_boost_static_slices.png` of the
+analysis run, looked at.
+
+- TB1 HELD. Interior M-norm with K_ij = 0 over the continuum value: 0.981, 0.995, 0.9995 at
+  32, 64, 128 cells, the same for v = 0.1 and 0.3; ratio v = 0.3 over 0.1: 3.129 (continuum
+  3.129).
+- TB2 HELD. With the boost table the M-norm falls to 0.0703, 0.0341, 0.0151 of the
+  uncorrected one at dx = 1, 0.5, 0.25 (bands 0.03-0.12, 0.008-0.05, 0.002-0.02), a factor
+  2.06 and 2.26 per halving, identical to four digits at v = 0.1 and 0.3. So it converges
+  at first order: the edge of the cluster, where the density ends as (rbar_s - r)^(1/2),
+  dominates (slope-1 guide in the figure) [JUDGEMENT: the order was predicted as "1.5 to 6
+  per halving, the edge adds a first-order term"; that the edge is the cause is not
+  separately tested]. The curvature term alone has the Mx-norm of the continuum to
+  1.5e-4, 2e-5, 4e-6 at 32, 64, 128 cells (it does not pass through the deposit).
+  Outside r < 14 (the layer at the outflow faces) the curvature leaves an M-norm of
+  6.2e-5 at 128 cells, v = 0.3.
+- TB3 HELD for the second-order residual without correction, FAILED in two of its bands
+  with the correction, not refuted. `|D_H(curv)|` over the continuum second-order norm:
+  0.983, 0.995, 0.998 (v = 0.1), 0.973, 0.985, 0.988 (v = 0.3); ratio v = 0.3 over 0.1
+  9.69 at 64 and 128 cells (predicted 9.79 within 3 per cent: 1 per cent low). The
+  correction leaves `|D_H(corr)|/|D_H(curv)|` = 0.082, 0.081, 0.097 at dx = 1, 0.5, 0.25
+  (v = 0.3) and 0.078, 0.078, 0.094 (v = 0.1). Predicted below 0.15, 0.08, 0.05: the band
+  at dx = 0.5 is missed narrowly and the one at dx = 0.25 by a factor 2; the ratio does
+  not fall with the cell size and does not depend on v, so the leftover is second order
+  in V (not the O(V^4) terms I named) and not the smoothing of the deposit (which would
+  fall). Projections -0.023 to +0.002 (predicted within 0.05 of zero; a wrong sign gives
+  2, none gives 1): the correction has the right sign and size, and what is left is
+  nearly orthogonal to the second-order residual. The correction removes 90 to 92 per
+  cent of the second-order residual. Cause of the remaining 8 to 10 per cent not known;
+  diagnostic below.
+- TB4 FAILED narrowly in both numbers. At 64 cells, v = 0.3, the whole-box H-norm of
+  `corr` is 0.054299 against 0.052066 for the cluster at rest (4.3 per cent apart,
+  predicted within 2); `curv` 0.058458 is above (held). M-norms of `curv` and `corr`
+  0.0038321 and 0.0037922: 1.04 per cent apart (predicted within 1). The whole-box
+  H-norm is dominated by the faces of the box already at rest (interior 0.0313 against
+  whole box 0.0521).
+- TB5 HELD. Code against the Python reference at every cell (64 cells, v = 0.3, all
+  on): psi^4 5.6e-8, K_ij 4.7e-8 of the largest component (9.93e-3), beta^i 4.5e-8 of
+  0.165, lapse 3.0e-8, trace K 3.5e-18 (single precision of the dumps).
+- TB6 HELD. 10^4 stratified particles, 64 cells, v = 0.3: M-norm2 falls from 0.013954 to
+  0.001327 (drop 0.012627 against the smooth part 0.012752: 1 per cent); projection of
+  M_x on the smooth field 0.9952 without, -0.0044 with the curvature (static sample
+  0.0002); H-norm 0.1945, 0.1950, 0.1919 for none, curv, corr against 0.1878 at rest
+  (within 2 per cent of each other: held).
+- TD1 HELD. Interior H-norm (within 14 of cluster 0) of the pair at rest over the single
+  cluster: 1.027 (band 0.9 to 1.1).
+- TD2 HELD. M-norm with the two boost tables over without: 0.0348 (TB2 at dx = 0.5:
+  0.0341).
+- TD3 HELD. `|D_H(corr)|/|D_H(curv)|` = 0.0729 (below 0.1; TB3 at dx = 0.5, v = 0.1:
+  0.0779), projection 0.0008. Generator numbers of the pair: lam = 1.012348, momenta
+  -0.118182 and +0.118182 (particle sums), M_ADM 1.98853 moving, 1.97561 at rest.
+
+### Diagnostic of the TB3 leftover: predictions (written 16:02Z, before the run)
+
+`tb_residual_diag.py` splits `D_H(corr)` of the TB runs into its projection on the
+residual of the cluster at rest and the rest, measures it within 1 M of the surface
+rbar_s = 8.936 and elsewhere, and plots shell averages (monopole and P_2 part). Two
+candidates, which predict different things [JUDGEMENT]:
+(a) the quiet lattice (spacing 0.25 at every cell count) samples the second-order matter
+source at the edge with an error that does not depend on the mesh: then more than half
+of `|D_H(corr)|` lies within 1 M of the surface at every cell count, and its monopole
+there has one sign over a width of about the lattice spacing;
+(b) the second-order source of the correction differs from what the code deposits by a
+smooth factor (a term of the derivation that is missing or has the wrong weight): then
+`D_H(corr)` is spread over the interior with a shell profile proportional to that of
+`D_H(curv)` or of the matter density, and less than half of it is near the surface.
+Neither is established if the split is near one half.
+
+### Outcome of the diagnostic (run `core-20261119-160318-b9d749c`, figure `fig_tb_residual_profiles.png` looked at) and of R (run `core-20261119-153230-3e858c9`)
+
+- R HELD: release core-v0.3 and this branch give byte-identical data files for
+  `regress_cf` (16 files), `cf_table_regress` (9), `by_static` (5). The fourth case
+  (`jeans`) runs at the end of `core-20261119-151457-7a855d8`.
+- Diagnostic: the leftover of the correction sits at the surface. The share of
+  `|D_H(corr)|^2` within 1 M of rbar_s = 8.936 is 0.76, 0.91, 0.95 at 32, 64, 128 cells
+  (v = 0.3; 0.89, 0.99, 0.99 at v = 0.1); off the surface it is 1.2e-3, 7.3e-4, 7.0e-4
+  (v = 0.3), against 0.029 of `D_H(curv)` there (a factor 40 removed). The shell average
+  near the surface is two-signed (a dip of -1.2e-4 at rbar_s and a smaller bump outside),
+  about 0.5 M wide, narrower at 128 cells than at 64; the P_2 part has a spike there.
+  Inside, a flat monopole of about +2e-5 remains (3 per cent of the uncorrected -7.3e-4 at
+  the centre; the O(V^4) terms were estimated at 1.6 per cent). Candidate (a), the
+  lattice, predicted "more than half within 1 M of the surface": held; "one sign": not
+  held. Candidate (b) predicted less than half at the surface: refuted. The leftover's
+  projection on the residual at rest is 0.036, 0.062, 0.138 (v = 0.3), so it is not a
+  multiple of the deposit error of the cluster at rest.
+
+### Lattice test: predictions (written 16:05Z, before the run)
+
+The quiet lattice has the spacing h = 0.25 at every cell count, so an error of its
+sampling at the edge does not fall with the cell size. Run TB again for v = 0.3 at 64
+and 128 cells with h = 0.125 (8 times the particles; cases at rest, `curv`, `corr`) and
+apply the same diagnostic. If the lattice is the cause: the surface norm of `D_H(corr)`
+falls by at least a factor 2 against h = 0.25 at the same cell count (2.34e-3 at 64,
+2.86e-3 at 128), while `D_H(curv)` changes by less than 2 per cent. Not the cause: the
+surface norm changes by less than 20 per cent; then the next candidate is the edge of the
+second-order source itself on the mesh (the cloud and the filter acting on a profile
+whose derivative is singular at rbar_s), which the code and the reference treat
+differently, and the leftover is a property of the data at this resolution, to be
+documented, not removed.
+
+### Outcome G, processor part (run `core-20261119-160021-b153852`), and TC-early on a processor: predictions (written 16:17Z)
+
+The five card inputs start on a processor (records at t = 0 in `records.json` of the
+run); the comparison with the card waits for jobs 4649 and 4657, which the scheduler
+expects to start at about 00:04Z and 06:22Z on 2026-11-20 (`squeue --start`, worst case
+from the wall limits of the jobs ahead).
+
+Because the card results are hours away, the first 10 M of TC run now on one processor
+with the same inputs (`run_t0_records.py --lists card_tc.list --names v0,v0.3,v0.3s
+--extra time/tlim=10`; deterministic on processors). Predictions for these 10 M are those
+of TC already written, restricted to what 10 M can show:
+- TC1 early part: speed of the rest-mass centre over 0 to 2 M between 0.5 v and 0.7 v
+  for `v0.3`; between 0.9 v and 1.1 v over 0 to 4 M for `v0.3s`; |x_c| of `v0` below
+  0.1 M.
+- TC4 supplement: |change of sum m u_x|/P over 0 to 10 M in `v0.3s` at most half of that
+  in `v0.3`, and below 1 per cent.
+- TC3 early part: alpha_min of `v0.3` and `v0.3s` between 0.74 and 0.85.
+- No particle lost; constraint norms of the moving runs within a factor 1.5 of `v0`
+  after 5 M (TC5).
+
+### Outcomes: R of the first paper's two overdensities, lattice test (16:30Z)
+
+- R `jeans` HELD (end of run `core-20261119-151457-7a855d8`, which exits 1 because its
+  first part had failed on the path; the comparison itself ran with the fixed script):
+  20 data files byte-identical between release core-v0.3 and this branch; the t = 0
+  record equals that of run `n1e4_v19` in every column but the round-off of a zero
+  (2.3e-26 against 1.2e-26). With `core-20261119-153230-3e858c9` all four cases of R are
+  identical.
+- Lattice test (run `core-20261119-161034-a936833`, h = 0.125, 8 times the particles):
+  the lattice is NOT the cause. Surface norm of `D_H(corr)` 2.33e-3 (64 cells) and
+  2.88e-3 (128) against 2.34e-3 and 2.86e-3 with h = 0.25 (change below 1 per cent;
+  predicted for "not the cause": below 20 per cent); `D_H(curv)` unchanged (0.0303,
+  0.0304). The static H-norm changes (0.03126 -> 0.03098 at 64, 0.01413 -> 0.01552 at
+  128), so the lattice does enter the deposit error at rest, but not the leftover.
+  Candidate (a) refuted.
+
+### Surface layer of the correction: prediction (written 16:30Z, before the run)
+
+The shell profiles (dip at rbar_s that deepens and narrows from 64 to 128 cells, with
+amplitude times width roughly constant, about -3e-5 M) look like a delta-function layer
+in the residual. `corr_surface_check.py` measures the strength J of such a layer (per
+unit V^2, as a jump of the flux r^2 y0' not balanced by the source) three ways: in the
+Python solution, in the written table (cubic interpolation as in the code), and in the
+code's `D_H(corr)` (shell integral across the surface, converted with
+`H = -8 psi^-5 lap psi`). Predicted [JUDGEMENT]: the code's J is about 5e-5 and the same
+at 64 and 128 cells (within 30 per cent), the uncorrected `D_H(curv)` integrated over the
+same shell scales with the shell width (no layer). If the solution or the table carries
+the layer, its J is within a factor 2 of the code's with the same sign: then the
+correction is fixable in the generator. If both are below 10 per cent of the code's, the
+layer is made on the mesh (by the deposit of a profile that ends with a square root, or
+by the finite differences across it) and stays a documented limit.
+
+### Outcome of the surface check (run `core-20261119-163754-1a47df0`, 16:38Z) and a cause
+
+- The Python solution of the l = 0 equation carries a surface layer: the flux balance
+  across [rbar_s - e, rbar_s + e] leaves J/rs^2 = 2.45e-5 (per unit V^2) for every e from
+  0.05 to 0.5 (a solution gives zero); the written table gives the same (2.45e-5). The
+  code's layer from `D_H(corr)`: 8.1e-5 to 8.4e-5 (32 cells), 5.0e-5 to 6.4e-5 (64), 4.4e-5
+  to 5.0e-5 (128), same sign. Prediction "within a factor 2 of the code's with the same
+  sign": held at 128 cells (factor 1.8 to 2.0), not at 64 (2.0 to 2.6) or 32 (3.3). So
+  about half of the leftover at 128 cells comes from the generator's correction; the
+  rest is made on the mesh and falls with the cell size (8.3e-5, 5.7e-5, 4.7e-5).
+  Figure `fig_corr_surface.png` of the run.
+- Cause in the generator [JUDGEMENT, from the numbers, before any change]: in
+  `BoostedST.correction` the cumulative Simpson integrals of the Green's function run over
+  one grid that joins the model's nodes (which crowd towards rbar_s, the last spacings
+  about 1e-7) to a geometric outer grid (first spacing 0.017). The quadratic panel that
+  straddles the junction takes its slope from the two crowded nodes at the edge, where
+  the density ends as a square root, and carries it across 0.017: an error of the
+  integral of fixed size beyond rbar_s, which is a flux jump. One-sided derivatives at
+  rbar_s +- 1e-4 agree (the jump is spread over the first outer interval).
+
+### Fix of the generator: prediction (written 16:39Z, before the change runs)
+
+Integrate the two segments [0, rbar_s] and [rbar_s, r_end] separately (rbar_s a node of
+both), so that no panel straddles the edge. Predicted: J/rs^2 of the Python solution
+falls below 1e-6; the added mass changes by less than 1e-3 of itself (it is a global
+integral); `D_H(corr)` of TB at 128 cells: the code's layer falls from 4.4e-5-5.0e-5 to
+2e-5-2.6e-5 (the mesh part stays), the surface norm by 30 to 60 per cent, and
+`|D_H(corr)|/|D_H(curv)|` at 128 cells from 0.097 to between 0.04 and 0.07 (v = 0.1 and
+0.3). Refuted if J/rs^2 stays above 1e-6 or the ratio at 128 cells stays above 0.08.
+The executables are not changed (the generator only); card jobs 4649 and 4657 keep the
+tables they were submitted with (old correction).
+
+## 2026-11-20  session clump2-3 (from 22:00Z; sessions 1 and 2 were cut off by the usage limit of the account at about 16:50Z on 2026-11-19)
+
+State found at 22:00Z (from `git log`, `git status`, `sacct`, the run directories; not from
+memory). Worktree clean, five commits not pushed; main merged (decisions 0018, 0019; the
+pause flag `locks/PAUSE` is absent). `git diff cbe1e3ef HEAD -- athenak/` is empty: the
+executables of `.work/build_cpu` and `.work/build_gpu` are the current source.
+
+- Card job TC (`core-20261119-145433-8c4083d`, Slurm 4649) COMPLETED on 2026-11-19, 7 min
+  54 s on a card (0.13 card-hours): four runs to 50 M, each `rc=0`. Card job TE
+  (`core-20261119-155219-32602d2`, Slurm 4657) COMPLETED, 22 min 19 s (0.37 card-hours):
+  250 M, `rc=0`. Card time of the package so far: 0.50 card-hours of the one allowed.
+  Neither had been closed or analysed. Closed now with `nrpic-run finish` (153 and 117
+  files checksummed).
+- `core-20261119-163754-1a47df0` (surface check; outcome already above) was still marked
+  running: closed, completed.
+- `core-20261119-161758-47f52ad` (TC-early: the card inputs v0, v0.3, v0.3s for 10 M on
+  one processor) ran 11 h 18 min: `v0` and `v0.3` reached 10 M (status 0), `v0.3s` was
+  terminated at t = 5 M (status -15, at 03:35Z on 2026-11-20, not by this package); the
+  analysis step behind `&&` never ran. Closed as failed. [VERIFIED: its `run.log` and
+  `.nrpic/result.json`] One processor needs about four hours for 10 M of this mesh (568
+  MeshBlocks): the card run of 50 M took two minutes. Its predictions (TC1 early part,
+  TC4 supplement, TC3 early part) are judged on the card runs, which hold the same
+  inputs for all 50 M; the processor histories of `v0` and `v0.3` serve as a second
+  reading of the card runs (prediction G2 below).
+- The check of the generator fix (commit baa6f99e, prediction written at 16:39Z) was never
+  registered: `scratch/core/tmp/clump2/fix_submit.log` holds 54 refusals of `nrpic-run
+  submit` (16 cores of the owner busy) and then stops. Open.
+- Not done: outcomes of TC, TE, G; outcome of the fix; publication of the executables;
+  the rows PENDING of `interfaces/moving_clusters.md`.
+
+### Prediction G2 (card against processor over 10 M; written 22:14Z, before the comparison is made)
+
+The processor runs of `core-20261119-161758-47f52ad` (`v0`, `v0.3` to 10 M, `v0.3s` to
+5 M) and the card runs of TC start from the same inputs with executables of the same
+source. The card deposit adds in another order, so the two differ by round-off that the
+N-body dynamics amplifies on the dynamical time of the cluster (tens of M). Predicted:
+at every common record the minimum lapse agrees to 2e-6, `sum m u_x` to 2e-6 M,
+`sum m W` to 2e-6 M, and the H-norm and M-norm to 1e-3 relative (five printed digits).
+Refuted by a difference above 1e-4 in the lapse or the sums: then the card executable
+does not integrate the same system as the processor one, and the processor tests say
+nothing about the card runs.
+
+### Outcomes of G, G2, TC, TE (analysis run `core-20261120-221445-24a62c5`, 22:15Z; figures `g/fig_card_vs_cpu.png`, `tc/fig_boost_evolution.png`, `tc/fig_boost_evolution_constraints.png`, `te/fig_binary_evolution.png`, `te/fig_binary_evolution_history.png` of that run, all looked at)
+
+**G (card against processor at t = 0): HELD in substance, the wording "every printed
+digit" not.** All five card runs (`v0`, `v0.1`, `v0.3`, `v0.3s`, `orbit`) have the same 32
+columns of `cl.nrpic.hst` and 11 of `cl.z4c.user.hst` as the processor records of
+`core-20261119-160021-b153852`. The constraint norms are equal in every printed digit
+(predicted: 1e-5). The particle sums and integrals differ in the last digits: largest
+relative difference 2e-12 to 1e-11 in the moving runs (in the small transverse sums,
+`sum_muz`, `int_Sy_filtered`; the large ones agree to 1e-15), and 7.5e-10 in `v0` in
+`int_Sx_filtered`, which is -6.7e-9 there (a sum that cancels). The card adds 10^4 terms
+in another order. The card executable builds the same initial data as the processor one.
+
+**G2 (card against processor over 10 M): HELD, by nine orders of magnitude more than
+predicted.** At all 81 common records of `v0` and `v0.3` (41 of `v0.3s`): minimum lapse
+within 1.7e-15, `sum m u_x` within 2.9e-15, `sum m W` within 1.1e-14, H-norm and M-norm
+equal in the printed digits (predicted 2e-6 and 1e-3). The round-off of the card deposit
+is not amplified within 10 M. So the processor tests TB, TD and R speak for the card
+executable, and the card runs of TC for what a processor would give.
+
+**TC (one cluster, 50 M, card; `core-20261119-145433-8c4083d`).** No particle lost in any
+run; the run at rest: |x_c| below 0.014 M (predicted 0.1).
+
+1. Centre: early part HELD, late part FAILED and REFUTED as written. Speed of the
+   rest-mass centre over 0 to 2 M: 0.575 v (`v0.1`), 0.581 v (`v0.3`) (predicted 0.5 to
+   0.7). Mean speed over 30 to 50 M: 0.684 v and 0.703 v (predicted 0.85 to 1.05);
+   x_c(50 M) = 3.24 M and 9.85 M, 0.644 and 0.655 of v x 50 M (predicted 0.70 to 0.95).
+   The refutation line "late speed below 0.8 v: the coordinates do not catch up within
+   50 M" is met. `v0.3s` (comoving initial shift): 0.690 v over 0 to 2 M, 0.639 v over 0
+   to 4 M (predicted 0.9 to 1.1), 0.701 v over 30 to 50 M, x_c(50 M) = 9.89 M (predicted
+   13.95 to 15.75): FAILED; after the first few M it is the run `v0.3` (figure: the two
+   curves coincide).
+2. Profile: bands HELD, the refutation line "monotonic growth of all five radii" is met.
+   Largest departure of a radius from its start value: 2.6 per cent at rest, 2.6 (`v0.1`),
+   4.9 (`v0.3`), 4.9 (`v0.3s`) (band 10); from the run at rest at the same time: 0.9 per
+   cent (`v0.1`), 4.1 (`v0.3`), 4.1 (`v0.3s`) (band 6). But the radii grow steadily in
+   every run, also at rest (figure): at 50 M the radii of 10, 25, 50, 75, 90 per cent are
+   1.015, 1.014, 1.014, 1.019, 1.018 of their start at rest and 1.048, 1.045, 1.044,
+   1.043, 1.040 at v = 0.3. The growth is along the motion: the rms extent (x, y, z) goes
+   from (3.451, 3.474, 3.460) to (3.522, 3.527, 3.510) at rest (+2.1, +1.5, +1.4 per
+   cent), to (3.551, 3.529, 3.511) at v = 0.1 (+2.9, +1.6, +1.5) and to (3.750, 3.551,
+   3.533) at v = 0.3 (+8.7, +2.2, +2.1). Across the motion the moving cluster grows by
+   0.05 per cent (v = 0.1) and 0.7 per cent (v = 0.3) more than the one at rest; along
+   it by 0.8 and 6.5 per cent more.
+3. Central lapse: HELD. `v0`: 0.8090 to 0.8130 (predicted 0.800 to 0.825). `v0.1`:
+   at most 0.0020 below `v0` (predicted within 0.004). `v0.3` and `v0.3s`: 0.0165 below
+   `v0` at 10 M, 0.0172 at 25 M, 0.0188 at 50 M (predicted: 0.010 to 0.035 below within
+   25 M, then changing by less than 0.012: 0.0016); minimum 0.7924 (not below 0.74). The
+   lapse falls within the first 10 M and then follows the run at rest (figure). The
+   boosted slicing of the exact solution would give 0.0216 below.
+4. Summed momentum: FAILED at v = 0.3. Change of `sum m u_x` over P at 2, 10, 25, 50 M:
+   -0.27, -2.5, -3.0, -3.8 per cent (`v0.1`; predicted below 8: held), -0.28, -3.3, -6.3,
+   -11.8 per cent (`v0.3`: missed). The relative histories of `v0.1` and `v0.3` differ by
+   up to 8.0 per cent of P (predicted within 2: missed; they agree to 0.8 per cent up to
+   10 M and part afterwards). In `v0`, |sum m u| stays below 5.9e-5 M (predicted 2e-3).
+   Supplement (comoving shift as the control): `v0.3s` drifts by -3.25 per cent in 10 M
+   against -3.31 per cent of `v0.3`: REFUTED as written ("at most half, and below 1 per
+   cent"). The control did not control: see the next entry.
+5. Constraints: HELD. H-norm and M-norm of the moving runs at most 1.04 (`v0.1`) and
+   1.16 to 1.17 (`v0.3`, `v0.3s`) times those of the run at rest after 5 M (band 1.5).
+
+**Why the comoving shift made no difference** [VERIFIED for the equation, JUDGEMENT for
+the reading of the numbers]. The shift is evolved as `d_t beta^i = shift_Gamma Gamma~^i -
+shift_eta beta^i + advection` (`athenak/src/z4c/z4c_calcrhs.cpp`, lines 721 to 723): the
+integrated form of the Gamma driver, with no auxiliary field that would hold an initial
+shift. The data are conformally flat, `Gamma~^i = 0`, so an initial shift decays as
+`exp(-eta t)`, eta = 2: gone within 1 to 2 M. My statement in the supplement to TC4 ("the
+Gamma driver starts from a shift that already holds d_t Gamma^i = 0") was wrong for this
+form. A reading after the fact, not a prediction: if the mass-weighted speed is 0.581 v
+without the shift and v W_v = 1.048 v with it, a shift that decays as exp(-2t) gives
+0.581 + 0.467 (1 - e^-4)/4 = 0.696 v over 0 to 2 M and 0.642 v over 0 to 4 M; measured
+0.690 and 0.639.
+
+**What the failed parts have in common** [JUDGEMENT; a test follows]. With zero shift the
+coordinates are carried by the normal observers, and the matter passes them at
+`alpha_0^2 psi_0^-4 w` (0.47 V at the centre, V far away): slower inside the cluster
+than outside. In a state that is stationary in the frame of the cluster every part must
+pass the same number of coordinate lines per unit time, so the lines have to crowd
+inside the cluster (or a shift has to build up) before the centre moves at v in
+coordinates. Crowding along x stretches the cluster in coordinates along x (seen: +6.5
+per cent at v = 0.3, +0.8 at v = 0.1, almost nothing across) and lowers the covariant
+component `u_x` of every particle in the same proportion (seen: the late drift of
+`sum m u_x`; at v = 0.1 the early drop of 2.5 per cent plus 1.3 per cent of stretch
+make the 3.8 per cent measured; at v = 0.3, 3.3 plus 6.5 against 11.8 measured). The
+Gamma driver with eta = 2 is strongly overdamped on the scale of this cluster: its
+equation is a damped wave equation, `d_t^2 beta + eta d_t beta = (3/4) lap beta + ...`,
+with frequency `(3/4)^(1/2) k = 0.09 to 0.15` for k = 1/R to pi/(2 rbar_s), so it relaxes
+at the rate `(3/4) k^2/eta`: 100 to 270 M. The mesh of the first paper's cluster run
+uses eta = 2 because that cluster is at rest; in Track F's units (clump mass 0.05 M_BH,
+radius 0.5 M_BH, eta = 2/M_BH) eta R is 1, here it is 18. The early drop of
+`sum m u_x` (2.5 to 3.3 per cent in 10 M, linear in v) has the time scale of the lapse
+transient (figure) and is, by the candidate of TC4, the change of slice. None of this is
+established: the same numbers would follow from a numerical drag on a cluster that
+moves through the mesh. Test TF below separates the two.
+
+**TE (two clusters, 250 M, card; `core-20261119-155219-32602d2`).** 0.37 card-hours. No
+particle lost (10000 + 10000).
+
+1. Phase: HELD by the number, not by the figure. Fitted angular velocity over 40 to
+   250 M: 0.007403 = 0.952 of the 1PN value (band 0.95 to 1.05; 0.860 of the Newtonian
+   one); phase at 250 M: 1.770 rad, 0.175 below the 1PN 1.944 (predicted 0 to 0.25
+   below). But the phase is not a straight line (figure): the slope is about 0.0054 over
+   the first 50 M (0.69 of 1PN, the ratio at which the single cluster of TC moves in
+   these coordinates) and about 0.0084 over 150 to 250 M. The mean lies in the band by
+   compensation; this is not a confirmation of the 1PN frequency.
+2. Separation: REFUTED as written. D falls from 29.99 to 26.62 (band 28.5 to 31.0;
+   refuted outside 27 to 32); slope of the fit over 40 to 250 M: -0.0156 (band -0.01 to
+   +0.005). The curve is smooth and flattens towards 250 M (figure). I cannot say from
+   coordinates alone whether the orbit is eccentric (an eccentricity of 0.09 from the
+   apocentre would give this D(t); the data were meant to have about 0.005) or whether
+   the coordinates of the slow shift (above) distort it; the per-cluster |sum m u|
+   below changes by the amount (5 to 8 per cent) that such an eccentricity needs.
+3. Profiles: HELD for the bands, the symmetry of the innermost radius not. Radii within
+   0.955 to 1.103 of their start (band 15 per cent); at 250 M the radii of 50 and 90 per
+   cent of the two clusters agree to 1.3 and 0.1 per cent, those of 10 per cent (10^3
+   particles) differ by 6.7 per cent (predicted 3). Smallest axis ratio of the second
+   moment 0.87 and 0.88 (0.99 and 0.98 at the start).
+4. Lapse: HELD. 0.7733 to 0.7848 (band 0.75 to 0.82).
+5. Momentum: HELD. |sum m u| of each cluster falls by 2.5 per cent in the first 10 M,
+   to -7.6 and -7.7 per cent near 150 M and is at -5.6 per cent at 250 M (band 10); the
+   total stays below 3.1e-4 per component (band 3e-3).
+6. Constraints: HELD. Both norms fall monotonically after 5 M and are flat from 100 M
+   (0.045 and 0.023 at the end).
+
+So what is shown: two moving equilibrium clusters orbit each other for a third of an
+orbit, keep their profiles and their particles, with falling constraint norms. What is
+not shown: that the orbit is the quasi-circular one of the data.
+
+### Check of the generator fix (FX) and an energy relation (EN): predictions (written 22:33Z, before the registered run)
+
+The prediction of the fix (commit baa6f99e) stands as written at 16:39Z on 2026-11-19;
+its check was never run. One of its numbers I have already seen fail, before any
+registered run: generating the 4x10^4 sample for test TF below (22:20Z, generator at the
+fixed commit) printed `M_ADM = 1.04945034` for v = 0.3, against 1.04865 with the old
+correction (PA, above). The added mass changed by 1.6 per cent of itself, not "by less
+than 1e-3": the layer at the surface was a spurious source of the monopole. This is
+recorded here as a failed prediction; the registered run repeats it.
+
+FX (unchanged from 16:39Z, to be measured now): J/rs^2 of the Python solution below 1e-6
+(was 2.45e-5); at 128 cells the code's layer falls from 4.4e-5-5.0e-5 to 2e-5-2.6e-5,
+the surface norm of `D_H(corr)` by 30 to 60 per cent, and `|D_H(corr)|/|D_H(curv)|` from
+0.097 to between 0.04 and 0.07 (v = 0.1 and 0.3). Refuted if J/rs^2 stays above 1e-6 or
+the ratio at 128 cells stays above 0.08. Run: TB at 32, 64, 128 cells, v = 0.1 and 0.3,
+cases at rest, `curv`, `corr`, quiet lattice 0.25, with the fixed generator;
+`tb_residual_diag.py`, `corr_surface_check.py`.
+
+EN (new; `energy_check.py`). The number above equals `1 + V^2/2` with V = W_v v = 0.31449
+to 3e-5 (`0.5 x 0.31449^2 = 0.049452`), and the old correction gave 0.98379 of `M V^2/2`.
+Reason to expect exactly `M V^2/2` [JUDGEMENT]: the data have momentum P = M V (PA2),
+they agree with the boosted static cluster at first order, and the mass of an
+equilibrium is stationary under changes of the configuration that only rearrange the
+particles (rest masses kept), so a second-order difference between these data and the
+exactly boosted cluster changes the energy at fourth order only: `E = (M^2 + P^2)^(1/2)
+= M + M V^2/2 + O(V^4)`. I saw the value for y_c = 0.819 before writing this, so for
+that model it is not a prediction. Predicted for models not yet computed, y_c = 0.6
+(more compact), 0.9 and 0.95 (less compact): added mass over `M V^2/2` equal to 1 within
+2e-4. Refuted if any of them is off by more than 1e-3: then the agreement at 0.819 is
+an accident, or the second-order equation lacks a term whose weight changes with the
+compactness.
+
+Also in this run, for the prediction of the binary of test TF: the TE run cut at 125 M
+(`binary_evolution_check.py --tmax 125`), no prediction (a reference number).
+
+(Clock: the heading of the FX and EN predictions above says 22:33Z; `date -u` in the same
+command gave 22:25Z. The FX/EN run was registered at 22:29Z as
+`core-20261120-222933-0a01a56`, after seven refusals for busy cores of the owner.)
+
+### Test D: the metric at the particles, from the restart files of TC (predictions written 22:34Z, before the registered run)
+
+The card queue holds eight jobs of the program and two of them are core's, so the card
+test of the gauge (TF, prepared below) cannot be submitted now. The claim "the coordinate
+lines crowd inside the moving cluster" can be tested without a card: the runs of TC
+wrote restart files at t = 0, 25, 50 M. `metric_at_particles.py` restarts a case on one
+processor without a step (the time limit is reached; one output block added through
+`-i`; one minute each) and reads the Z4c variables at the particles of the snapshot of
+the same time (cell that holds the particle). A smoke run on `v0` at 50 M (not
+registered; no number of it is used below) showed that the reader works.
+
+In coordinates carried by the normal observers of a slice on which the cluster moves,
+the lines pass through the cluster at `f V`, `f = alpha_0^2 psi_0^-4 w` (0.47 at the
+centre, 1 far away): slower inside, so they pile up there, `gamma_xx` falls below
+`psi^4` and, with the determinant of the conformal metric fixed, `g~_xx < 1 < g~_yy`.
+A compression of the lines along x by c gives `g~_xx = c^(4/3)`, `g~_yy = g~_zz =
+c^(-2/3)`, a cluster longer in coordinates by 1/c, and every `u_x` smaller by c.
+
+Cases: `v0.3` at t = 0 and 50 M, `v0.1` at 0 and 50 M, `v0` at 50 M.
+- D1 (closure of the reading). `sum m W` with the metric at the particles equals the
+  history value within 0.3 per cent in every case. At t = 0: mass-weighted `g~_xx`,
+  `g~_yy`, `g~_zz` equal 1 to 1e-5 (conformally flat data), and the budget of the
+  coordinate speed, `sum m (alpha gamma^xj u_j/W - beta^x)/sum m`, is 0.570 v to 0.590 v
+  for both speeds (measured over 0 to 2 M: 0.575 v, 0.581 v).
+- D2 (crowding). At 50 M the mass-weighted means are: `v0.3`: `g~_xx` between 0.89 and
+  0.95, `g~_yy` and `g~_zz` between 1.02 and 1.06 (from the stretch of 6.5 per cent:
+  c = 0.94, `g~_xx` = 0.92, `g~_yy` = 1.04); `v0.1`: `g~_xx` between 0.975 and 0.995;
+  `v0`: all three within 0.005 of 1.
+- D3 (the momentum). `sum m u_x/gamma_xx^(1/2)`, the sum of the components along the unit
+  vector of the x lines, does not change under a stretch of the x coordinate. Its change
+  from 0 to 50 M: between -1 and -6 per cent for `v0.3` (where `sum m u_x` fell by 11.8)
+  and between -1 and -4.5 per cent for `v0.1` (3.8): what is left is the change of slice.
+- D4 (the speed). The budget of the coordinate speed at 50 M equals the speed measured
+  over 48 to 50 M within 0.02 v in both moving runs; the mean shift at the particles is
+  below 0.1 v in magnitude (the driver has built little).
+Refuted if `g~_xx` of `v0.3` at 50 M is within 0.02 of 1: then the lines do not crowd,
+the growth of the cluster along x is a real elongation, the drift of `sum m u_x` is not
+explained by coordinates, and a loss of momentum on the mesh is the remaining candidate.
+If D2 holds but D3 leaves more than 8 per cent at v = 0.3, the crowding is there but
+does not account for the drift.
+
+### Outcome of FX (run `core-20261120-222933-0a01a56`, 22:29Z to 22:33Z; exit 1 because `energy_check.py` called a property as a function, so EN did not run; the other five steps ran)
+
+Figures `diag/fig_tb_residual_profiles.png` and `surf/fig_corr_surface.png` of the run,
+looked at (next entry).
+
+- The leftover of the correction on the mesh: the fix did more than predicted.
+  `|D_H(corr)|/|D_H(curv)|` at 32, 64, 128 cells: 0.0455, 0.0223, 0.0102 (v = 0.1) and
+  0.0541, 0.0339, 0.0263 (v = 0.3); before the fix 0.078, 0.078, 0.094 and 0.082, 0.081,
+  0.097. Predicted for 128 cells: between 0.04 and 0.07: missed on the low side; the
+  refutation line (above 0.08) is not met. The ratio now falls with the cell size, by a
+  factor 2.0 and 2.2 per halving at v = 0.1 (first order, as the deposit at the edge); at
+  v = 0.3 it levels at 0.026 because the part away from the surface, 7.1e-4 = 0.023 of
+  the uncorrected residual, does not depend on the cell size (7.3e-4, 7.1e-4 at 64, 128
+  cells): the terms of order V^4 (estimated 0.016 in PA6). With this the bands of TB3 as
+  first written (below 0.15, 0.08, 0.05 at dx = 1, 0.5, 0.25 for v = 0.3, not larger at
+  v = 0.1) hold: 0.054, 0.034, 0.026.
+- Surface norm of `D_H(corr)` at 128 cells: 3.1e-5 (v = 0.1) and 3.7e-4 (v = 0.3),
+  against 2.9e-4 and 2.9e-3 before (predicted to fall by 30 to 60 per cent: it fell by
+  87 to 89 per cent), and it now halves with the cell size (v = 0.1: 1.18e-4, 6.8e-5,
+  3.1e-5).
+- The layer measured in the code (shell integral of `D_H(corr)` across the surface, per
+  unit V^2): 2.6e-5 to 2.7e-5 at 32 cells, 8.3e-6 and -3.1e-6 at 64, -2.7e-6 and -9.0e-6
+  at 128 (shell half-widths 0.5 and 1.0); before the fix 8.1e-5, 5.0e-5 to 6.4e-5, 4.4e-5
+  to 5.0e-5. Predicted for 128 cells: 2e-5 to 2.6e-5 ("the mesh part stays"): wrong, there
+  was almost no mesh part. My statement of 2026-11-19 that "about half of the leftover at
+  128 cells comes from the generator's correction; the rest is made on the mesh" is
+  withdrawn: nearly all of it was the generator's defect.
+- FAILED as written: "J/rs^2 of the Python solution falls below 1e-6". The flux balance of
+  `corr_surface_check.py` on the Python solution now gives -2.92e-5 (e = 0.1 to 0.5;
+  the written table the same), where it gave +2.45e-5 before the fix. The change, 5.37e-5,
+  agrees with the change of the layer seen in the code (4.7e-5 to 5.9e-5) and with the
+  change of the added mass (a jump J of the flux `r^2 y0'` changes the mass by `4 J` in
+  units of `M V^2/2`: 4 x 5.37e-5 x rbar_s^2 = 0.017; the mass went from 0.98379 to
+  0.99997 of `M V^2/2`). Two readings: (i) the solution still has a layer of -2.9e-5, of
+  the size of the old one with the other sign; (ii) the check itself is off by -2.9e-5,
+  and the old layer was +5.4e-5. Against (i): a layer of that size made a surface norm of
+  2.9e-4 at 128 cells that did not fall with the cell size; the surface norm is now
+  3.1e-5 and halves with the cell size. For (ii) there is a mechanism [JUDGEMENT]: the
+  check integrates the source through cubic splines of S0 and sigma over all nodes, the
+  crowded inner ones and the first outer interval of 0.017 together, the same mixing of
+  the two grids that made the defect of the solver. Not established until the check is
+  made without that spline.
+
+### Prediction FX2 and TF (written 22:44Z, before either runs)
+
+FX2. `corr_surface_check.py` now also computes the balance with nothing interpolated
+across the edge (`python_split`: splines of the solution on each side separately, the
+source by Simpson's rule on the nodes of each side, the interval ending on nodes).
+Predicted if reading (ii) is right: |J|/rs^2 below 2e-6 for half-widths 0.1 to 1.0.
+Reading (i) predicts -2.9e-5. EN as written above (22:25Z), unchanged.
+
+TF (card; list `card_tf.list`; NOT SUBMITTED yet: two card jobs of owner core are in the
+queue, with six of the tracks). The data of TC (same tables, so the old correction
+table), v = 0.3, 50 M, with other damping of the shift: `v0.3_e03`, `v0.3_e01`,
+`v0.3_e003` (zero initial shift, `z4c/shift_eta` = 0.3, 0.1, 0.03), `v0.3s_e01` (comoving
+initial shift, eta = 0.1), `v0_e01` (at rest, eta = 0.1), `v0.3_n4` (4x10^4 particles of
+`scratch/core/clump2-ic-n4/`, eta = 2), and the binary of TE with eta = 0.1 for 125 M
+(`orbit_e01`). Expected cost 6 x 2 min + 11 min = 23 min = 0.39 card-hours (wall limit
+27 min: with the 0.50 used the package stays below one card-hour). Analysis:
+`gauge_evolution_check.py`, `binary_evolution_check.py`.
+1. Noise or not (`v0.3_n4` against `v0.3`). If the drift of `sum m u_x` and the stretch
+   along x are coordinate effects, four times the particles change neither: relative
+   history of `sum m u_x` within 0.6 per cent of P of `v0.3` at every record (-11.2 to
+   -12.4 per cent at 50 M); rms extent along x at 50 M between +6.6 and +9.0 per cent
+   (+8.7 at 10^4); speed over 30 to 50 M within 0.01 v of 0.703 v. Refuted (a drag by
+   particle noise) if the drift at 50 M is smaller than 9 per cent or the stretch along
+   x in excess of the transverse one falls below 4 per cent.
+2. Damping (zero initial shift). The driver is a damped wave equation with frequency
+   0.09 to 0.15 on the scale of the cluster: eta = 0.3 is near critical damping, 0.1 and
+   0.03 are underdamped (period 40 to 70 M, decay time 2/eta). Predicted: speed over 0
+   to 2 M unchanged, 0.57 to 0.60 v, for all three; mean speed over 30 to 50 M between
+   0.85 and 1.08 v (eta = 0.3), 0.85 and 1.15 v (0.1), 0.8 and 1.25 v (0.03); x_c(50 M)
+   between 0.78 and 0.98 of v x 50 M for eta = 0.3 (0.655 at eta = 2); change of
+   `sum m u_x/P` between 25 and 50 M below 2 per cent in magnitude for eta = 0.3 and 0.1
+   (-5.5 at eta = 2); rms extent along x at 50 M below +5 per cent for eta = 0.3 and 0.1;
+   lapse between 0.74 and 0.85; constraint norms within a factor 1.5 of `v0` after 5 M.
+   Refuted if the speed over 30 to 50 M at eta = 0.3 is below 0.8 v (my estimate of the
+   driver is wrong and I have no advice on the gauge), or if `sum m u_x` keeps falling
+   by more than 3.5 per cent between 25 and 50 M although the speed has reached v (then
+   the drift is not the crowding of the coordinates).
+3. Comoving initial shift with eta = 0.1: the shift decays as exp(-0.1 t) unless the
+   driver holds it: speed over 0 to 2 M between 0.93 and 1.06 v (0.581 + 0.467 x 0.906
+   = 1.004), over 0 to 4 M between 0.88 and 1.05 v, over 0 to 50 M between 0.88 and
+   1.08 v; change of `sum m u_x/P` between 25 and 50 M below 1.5 per cent.
+4. `v0_e01`: |x_c| below 0.05 M, lapse within 0.002 and radii within 1 per cent of `v0`
+   (eta = 2) at every snapshot. Refuted otherwise (then eta acts on the cluster at rest
+   and the comparisons above are not clean).
+5. Binary (`orbit_e01` against TE cut at 125 M: D(125 M) = 28.37, phase 0.799 against
+   0.972 at 1PN, angular velocity over the first 50 M 0.735 of 1PN; run
+   `core-20261120-222933-0a01a56`, `te125/`). If the falling separation of TE is the
+   slow shift: D stays between 29.0 and 30.8 for 125 M and the phase at 125 M is between
+   0.87 and 1.02. If D(125 M) is below 28.8 again, the orbit of the data is eccentric or
+   loses angular momentum whatever the gauge: an open defect of the binary data.
+
+## 2026-11-21  session clump2-4 (from 12:50Z; batch 3; session 3 was cut off by the usage limit at about 22:50Z on 2026-11-20)
+
+State found at 12:52Z (from `git log`, `git status`, `sacct`, `ps`, the run directories).
+Worktree clean; main merged now (releases core-v0.4 and core-v0.5; one conflict, in
+`docs/FORMATS.md`: both sides appended a section; both kept, mine last). The pause flag
+is absent. Card time of the package so far: 0.50 card-hours (TC, TE).
+
+- **A slip of session 3, found running: test D never ended.** The run
+  `core-20261120-223538-742c0b7` was still alive after 14 h 17 min. Its first case
+  restarts `v0.3` from the restart file of t = 0 "without a step (the time limit is
+  reached)": at t = 0 the time limit of 50 M is not reached, so the processor executable
+  evolved the whole run (it stood at t = 34.5 M). The smoke test had used a file of
+  t = 50 M only. One core for 14.3 h and 1.4 GB of restart file wasted; no number came
+  of it. Stopped by process id (python 2157396, athena 2157440), the restart file it
+  wrote removed, the run closed as failed (exit -15). The predictions D1 to D4 stand
+  unjudged. Fix: the restart gets `time/nlim=0` on the command line (no step whatever
+  the time of the file); rerun below.
+- FX2 and EN (predictions of 22:25Z and 22:44Z on 2026-11-20): not run. TF: not submitted.
+- The executables of `.work/build_cpu` and `.work/build_gpu` are those of commit cbe1e3ef
+  (sha256 97a749c0..., 3aaeb746...): the source of this package before today's merge of
+  main, the same that ran TC and TE.
+
+Plan of this session, in this order: (1) TF on a card now, with the executable that ran
+TC (a comparison of gauges must not also change the release underneath; its predictions
+were written for that executable); (2) D, FX2, EN on processors; (3) build the merged
+source (main with core-v0.5, plus this package) into `.work/build_{cpu,gpu}_m`,
+regression against release core-v0.5 without the new options and against the pre-merge
+executable with them, a short card check of the merged card executable; (4) interface
+text, publication of the merged executables, records. What does not fit is named as not
+done.
+
+### TF submitted; D, EN, FX2 started (12:55Z to 12:57Z)
+
+- TF: `core-20261121-125455-bf583c8`, Slurm 4791, running at once (one card was free);
+  executable `.work/build_gpu` of source commit cbe1e3ef (sha256 3aaeb746...), named in
+  the purpose because the manifest's commit is the merge commit. Predictions: as written
+  at 22:44Z on 2026-11-20, unchanged.
+- EN, FX2, D: `core-20261121-125657-ab10302` (one core; `run_d.sh`; processor executable
+  of cbe1e3ef, kept at `scratch/core/tmp/clump2/exe_cbe1e3ef/`, because the restart files
+  of TC come from that source). Predictions: EN and D as written on 2026-11-20 (22:25Z,
+  22:34Z), FX2 as written at 22:44Z.
+
+### The merged source: predictions M1, R5, M2 (written 13:00Z, while the builds run; nothing of them has run)
+
+The builds in `.work/build_cpu`, `.work/build_gpu` are being remade from HEAD (main with
+release core-v0.5 merged, plus this package). What is published has to be this source,
+so it gets its own tests. Changes of the two releases that act without an option
+(`tracks/core/CHANGELOG.md`, lines 49 and 155): the guard stops a run with non-finite
+fields, two files change their place, periodic meshes, restart files and `last_time`
+lines of final dumps, particles of zero mass, analytic metrics, the linear wave, a
+rounding on cards with collisions. None of them touches the data that `nrpic_cf` builds
+or the evolution of a cluster with Z4c on a mesh that is not periodic.
+
+- **M1** (processors; `run_merged.sh`, `compare_tb.py`). TB at 32 and 64 cells, v = 0.1
+  and 0.3, kinds `curv` and `corr`, and at rest, with the merged build, against the same
+  cases of run `core-20261120-222933-0a01a56` (build of cbe1e3ef, same generator):
+  history files byte-identical, cell data of every dump byte-identical, every number of
+  `tb_residual_diag.json` equal (relative difference 0; the test passes below 1e-12).
+  Refuted by any difference: then the merge changed the data of a moving table
+  component, and the numbers of TB do not describe the published executable. The
+  comparer was tried on a pair that is equal (a run against itself: identical) and on a
+  pair that is not (the run with the old correction table against the one with the new:
+  the moving cases differ, the cases at rest are identical).
+- **R5** (processors). Release core-v0.5 (`.work/build_cpu_v05` of the main checkout)
+  against the merged build, inputs without the new options: `regress_cf`,
+  `cf_table_regress`, `by_static`, `jeans` (two cycles): every data file byte-identical.
+  Refuted by any difference.
+- **M2** (card, when a slot of owner core is free; about 2 min, 0.04 card-hours). `v0.3`
+  of TC again for 50 M with the merged card build, against TC's `v0.3` (card build of
+  cbe1e3ef). G2 found card and processor of one source equal to 3e-15 over 10 M. If no
+  change of the releases acts on this run: first record equal to 1e-11 relative (G);
+  minimum lapse, `sum m u_x`, `sum m W` within 1e-9 at every common record up to 50 M
+  (the round-off of the card deposit, amplified at most by the N-body dynamics over a
+  few dynamical times), the constraint norms equal in four printed digits. Refuted by a
+  difference above 1e-6 within the first 10 M: then something in the two releases
+  changes the evolution of this run without an option, and it has to be found before
+  the executable is published as "TC and TF describe it".
+
+### Outcomes of EN, FX2 and D (run `core-20261121-125657-ab10302`, 12:57Z to 13:02Z, exit 0; figures `en/fig_energy_check.png`, `surf/fig_corr_surface.png`, `d/fig_metric_at_particles.png` of the run, all looked at)
+
+**EN: HELD.** Added mass of the correction over `M V^2/2`: 0.999992 (y_c = 0.6, M/R =
+0.175), 0.999996 (0.819, 0.100), 0.999998 (0.9, 0.061), 0.999999 (0.95, 0.032); predicted
+1 within 2e-4. The deviation, 1e-6 to 8e-6, grows with the compactness (figure). The
+correction of psi adds the kinetic energy of the bulk motion to the ADM mass for every
+model, as the stationarity argument says; `pmass/M - 1` is below 6e-14 in all four.
+
+**FX2: HELD; reading (ii).** With nothing interpolated across the edge the flux balance
+of the monopole equation leaves |J|/rs^2 of 6e-13 (half-width 0.05) and 5e-14 (0.1, 0.2,
+0.5); predicted below 2e-6. The spline version of the same check still gives -2.92e-5.
+So the solution of the corrected generator has no layer at the surface, the check of
+2026-11-19 was itself off by -2.9e-5, and the layer of the old correction was +5.4e-5,
+not +2.45e-5. The figure shows the pointwise residual of the radial equation: a spike of
+-3.4e-3 to +1e-3 within 0.03 M of the surface (the density ends as a square root there),
+equal for the solution and the written table, nothing elsewhere. (The figure lacks its
+y label: cut at the left edge.)
+
+**D: the coordinate lines crowd in the moving cluster; the summed momentum along the unit
+vector of the x lines drifts by a third (v = 0.3) to two thirds (v = 0.1) of `sum m u_x`.**
+- D1 HELD. `sum m W` with the metric at the particles over the history value: 1.00001
+  in all five cases (band 0.3 per cent). At t = 0: g~_xx = g~_yy = g~_zz = 1.00000;
+  budget of the coordinate speed 0.578 v (`v0.3`) and 0.573 v (`v0.1`) (band 0.570 to
+  0.590; measured over 0 to 2 M: 0.581 v, 0.575 v).
+- D2: `v0.1` HELD (g~_xx 0.9856, band 0.975 to 0.995; g~_yy, g~_zz 1.0103, 1.0101), `v0`
+  HELD (1.00003, 1.00015, 0.99982). `v0.3` MISSED on the strong side: g~_xx = 0.8859
+  (band 0.89 to 0.95), g~_yy = 1.0852, g~_zz = 1.0849 (band 1.02 to 1.06). The
+  refutation line (g~_xx within 0.02 of 1) is not met: the lines do crowd, and more
+  than the stretch of the cluster in coordinates (6.5 per cent) alone would give. Ratio
+  of the proper lengths along and across the motion of a coordinate sphere:
+  `(g~_xx/g~_yy)^(1/2)` = 0.9035 (`v0.3`), 0.9877 (`v0.1`).
+- D3 HELD. `sum m u_x/gamma_xx^(1/2)` from 0 to 50 M: 0.26904 -> 0.25982, -3.4 per cent
+  (`v0.3`; band -1 to -6; `sum m u_x` fell by 11.8 per cent); 0.08639 -> 0.08421, -2.5
+  per cent (`v0.1`; band -1 to -4.5; `sum m u_x` fell by 3.8). What is left is of the
+  size of the early drop (2.5 to 3.3 per cent within 10 M), which has the time scale of
+  the lapse transient.
+- D4: the budget HELD, the size of the shift MISSED. Budget of the coordinate speed at
+  50 M against the speed over 48 to 50 M: 0.7286 v against 0.7263 v (`v0.3`), 0.7026 v
+  against 0.7009 v (`v0.1`) (band 0.02 v). Mean shift at the particles: -0.0365 = 0.122 v
+  (`v0.3`) and -0.01335 = 0.134 v (`v0.1`) (predicted below 0.1 v). Of the 0.73 v the
+  matter term `alpha gamma^xj u_j/W` gives 0.607 v and the shift 0.122 v.
+- The figure (profiles on the axis of motion) shows more than the means: at 50 M the
+  conformal metric of `v0.3` is not compressed uniformly: g~_xx - 1 goes from +0.35
+  twelve M behind the centre through zero at 4 M behind it to -0.29 six M ahead; the
+  shift is a well of -0.061 (`v0.3`) and -0.020 (`v0.1`) centred 3 M behind the centre;
+  K-hat is antisymmetric, +-1.5e-3. (Two defects of the figure: the legend covers part
+  of the left panel, and the label of the right panel is cut at the edge.)
+- A reading after the fact [JUDGEMENT, not a prediction]: the data leave out the
+  Lorentz contraction (interface, section 8, item 3: 4.6 per cent at v = 0.3). At 50 M
+  the cluster of `v0.3` is 6.5 per cent longer along the motion than across in
+  coordinates (TC2), and the metric there shortens x against y by the factor 0.9035:
+  in proper length it is `1.065 x 0.9035 = 0.962` along against across, and 0.996 for
+  `v0.1` (1.008 x 0.9877). A cluster moving at v = 0.3 on a slice on which it moves is
+  contracted to 1/W = 0.954, at v = 0.1 to 0.995. The "elongation" of TC2 is then the
+  coordinate picture of a cluster that has taken its contracted shape.
+
+So the three failed parts of TC are, with a test in which each could have failed, mostly
+coordinates: the centre moves at 0.73 v because the normal observers of this slicing see
+0.61 v inside the well and the Gamma driver with eta = 2 has built 0.12 v of shift in
+50 M; `sum m u_x` is a coordinate component and falls with the crowding; what does not
+go away is a drift of -2.5 to -3.4 per cent in the orthonormal sum. TF (running) says
+whether a weaker damping of the shift brings the coordinate speed to v.
+
+### Test TS: the elliptic solver of the code on the moving cluster (predictions written 13:06Z, before any solve of a cluster has run)
+
+The task leaves open which tool corrects the conformal factor: the mesh solver or a
+radial solve per cluster. The radial solve is what this package built; the mesh solver
+(`<particles> id_solve`, release core-v0.4) is in the merged executable, so the two can
+be put on the same data for the first time. `run_idsolve_static.py`, new example input
+`problems/tests/clump_table_idsolve.athinput` (the static input plus `<gravity>` with
+Robin faces and `id_solve`, residual `code`, tolerance 1e-10, start from the trial psi).
+Three solves at 64 cells (dx = 0.5), quiet lattice, tables and particles of run
+`core-20261120-222933-0a01a56`: the cluster at rest; v = 0.3 with the boost-table
+curvature (trial psi_0); the same with the radial correction as the trial. The solver
+holds `Abar_ij` (from `K_ij` of the generator) and the particles' u_i and rest masses,
+and deposits again with the current psi at every evaluation (interface of the solver,
+section 4): that is the equation the radial correction solves to O(V^2) (its
+`-6 P dpsi` term is the dependence of W on psi), with the deposit and the cloud of the
+run in place of the continuum density. The interface of the solver lists the curvature
+of `nrpic_cf` components as not tested.
+
+- TS1. Each solve converges within 40 outer iterations (the Gaussian of the solver's
+  tests took 17 to 29) and leaves max|H| of the monitor below 1e-8 (before: of order
+  0.03 at the surface).
+- TS2. The solved psi of the two moving cases (two starts, one equation) agree to 1e-8
+  at every cell. Refuted above 1e-6: then the trial enters the solved equation (through
+  `Abar_ij = psi_t^2 K_ij` taken with the wrong psi, or the lapse).
+- TS3. With `D = s_curv - s_rest` (the motion's part of the mesh solution) and `R` the
+  radial correction as the code set it (`psi_t(corr) - psi_t(curv)` from the dumps of
+  TB): inside r < 14, `rms(D - R)/rms(R)` below 0.08 and `D/R` at the centre between
+  0.93 and 1.07 (R at the centre is `V^2 y_0(0)` = 3.6e-3). What may differ: terms of
+  order V^4 (2.3 per cent of the second-order residual), the change of the deposit
+  error with the motion (second order in the cell size times V^2), the Robin faces at
+  r = 16 (the correction has a part falling as r^-2). Refuted above 0.2: then the radial
+  correction and the mesh solver do not solve the same equation at second order, and
+  one of them is wrong for moving particles.
+- No prediction, reported: the size of `A = s_rest - psi_t(rest)`, what the mesh solve
+  changes in a cluster at rest (the deposit and the difference stencils; the solver's
+  tests found -5e-3 at the centre of a Gaussian of width 2 at this cell size).
+
+### G3: prediction (written 13:08Z, before the comparison is made)
+
+The run that test D started by mistake is a processor run of `v0.3` from the card's
+restart file of t = 0, with records up to 34.5 M (`core-20261120-223538-742c0b7/v0.3_t0`,
+closed as failed; its histories are complete up to the stop). Against the card run of
+TC it extends G2 from 10 M to 34.5 M. Predicted: minimum lapse, `sum m u_x`, `sum m W`
+within 1e-9 at every common record, the norms equal to 1e-6 relative. Refuted above
+1e-6 in the lapse or the sums before 34.5 M: then the card run of 50 M is one member of
+a family that round-off spreads, and the late numbers of TC and TF carry that spread.
+
+### Outcome of TS (run `core-20261121-130601-6df5a3d`, 13:06Z to 13:13Z, exit 0; figure `fig_idsolve_static.png` of the run, looked at)
+
+- TS1 HELD. Outer iterations 25 (rest), 24 (`curv`), 25 (`corr`); 26 to 27 conjugate-
+  gradient steps, 79 to 86 V cycles; 139 to 145 s on one core. max|H| of the monitor
+  1.20e-3 -> 1.7e-12 (rest), 1.31e-3 -> 3.4e-12 (`curv`), 1.23e-3 -> 1.8e-12 (`corr`). (My
+  "of order 0.03 before" was the norm of the history file, not the largest H: wrong
+  number in the prediction, no consequence.) The solver takes the curvature of a moving
+  table component: the first test of `id_solve` on curvature set by `nrpic_cf`.
+- TS2 HELD. The two starts agree to 3.0e-14 at every cell (predicted 1e-8).
+- TS3 HELD, near the edge of the band. Inside r < 14: `rms(D - R)/rms(R)` = 0.0705 (band
+  0.08), `max|D - R|/max|R|` = 0.050, `D/R` at the centre 0.950 (band 0.93 to 1.07): R =
+  3.567e-3, D = 3.388e-3 at the centre. The mesh solver and the radial solve agree on
+  the motion's part of psi to 5 to 7 per cent.
+- A (no prediction): the mesh solve changes psi of the cluster at rest by -1.33e-4 at
+  the centre (rms 2.9e-5 inside r < 14), with a kink of +3e-5 at the surface (figure):
+  forty times less than for the Gaussian of the solver's tests, and 4 per cent of R.
+- The figure shows what the 5 to 7 per cent is: `D - R` is almost a constant, -1.45e-4
+  at both ends of the axis and -1.79e-4 at the centre. A constant is what a face
+  condition does. Reading [JUDGEMENT until TS4]: outside the matter the correction is
+  `C/r - k/(2 r^2)` with `k = <psi^-7 Abar^2> r^4/8`, about `(15/16) P^2 psi^-7` = 0.075
+  to 0.093 for P = 0.3145 (Bowen-York far field, angle average 7.5 P^2/r^4); the Robin
+  faces impose `d(r dpsi)/dr = 0`, which the second term violates by `k/(2 r^2)`, and the
+  solution answers with the constant `-k/(2 R_f^2)`: -1.5e-4 to -1.8e-4 for faces at
+  R_f = 16. The rest, -3.4e-5 peaked at the centre (1 per cent of R), has the size of
+  the terms of order V^4.
+
+### TS4: prediction (written 13:20Z, before the registered run)
+
+Seen before writing this: an unregistered trial of the extended script at 32 cells on
+the same box (dx = 1) gave the same offset as the run at dx = 0.5 (-1.44e-4 at the ends
+of the axis): the offset does not depend on the cell size. Not yet run: any other box.
+`run_ts4.sh`: rest and `curv` at dx = 1 with faces at 16 M (32 cells) and at 32 M (64
+cells); the trial psi from static runs on the same meshes. If the offset is the Robin
+faces it scales as `psi^-7/R_f^2`: predicted `D - R` at the ends of the axis between
+-3.0e-5 and -4.8e-5 for faces at 32 M (from -1.44e-4 at 16 M: a quarter, times up to
+1.15 for psi^-7 at the larger radius and the cube against the sphere), and `D/R` at the
+centre between 0.972 and 0.990. Refuted if the end value stays beyond -8e-5: then the
+difference is not the faces, and the two tools differ by 4 per cent in the equation
+they solve.
+
+### Outcomes of TF and G3 (card job `core-20261121-125455-bf583c8`, Slurm 4791, 23 min 09 s = 0.386 card-hours, seven runs `rc=0`; analysis `core-20261121-132124-ce58645`; figures `tf/fig_gauge_evolution.png`, `orbit_e01/fig_binary_evolution_e01.png`, `orbit_e01/fig_binary_evolution_history_e01.png`, `g3/fig_compare_two_runs.png` of the analysis run, all looked at)
+
+Card time of the package: 0.50 + 0.386 = 0.886 card-hours. No particle lost in any run.
+(Clock: the heading of the TS4 prediction says 13:20Z; `date` gave 13:17Z.)
+
+**G3 HELD.** Card run `v0.3` of TC against the processor run from its restart file, 276
+common records to 34.5 M: minimum lapse within 4.1e-15, `sum m u_x` 2.9e-15, `sum m W`
+8.9e-15, both norms equal in the printed digits (predicted 1e-9). No growth with time
+(figure). The card runs are not one member of a family spread by round-off.
+
+**TF1 (four times the particles, eta = 2): HELD. The drift is not particle noise.**
+`sum m u_x/P - 1` of `v0.3_n4` at 10, 25, 30, 50 M: -3.30, -6.34, -7.41, -11.97 per cent,
+against -3.31, -6.31, -7.35, -11.80 at 10^4 (band: within 0.6 per cent of P; largest
+difference 0.17). rms extent along x at 50 M +6.8 per cent (band +6.6 to +9.0; +8.7 at
+10^4), across +1.6 and +0.6. Speed over 30 to 50 M 0.7005 v (0.7029 v; band 0.01 v).
+The H-norm is half that of the 10^4 run throughout, as the noise would be.
+
+**TF2 (damping of the shift, zero initial shift): the direction HELD, two bands at
+eta = 0.3 MISSED on the slow side, the refutation line not met.**
+
+| `z4c/shift_eta` | speed 0-2 M | 10-30 M | 30-50 M | 40-50 M | x_c(50 M)/(50 v) | `sum m u_x/P - 1` at 50 M | its change 25-50 M | rms extent along x, across (50 M) |
+|---|---|---|---|---|---|---|---|---|
+| 2 (TC) | 0.581 v | 0.639 v | 0.703 v | 0.716 v | 0.655 | -11.8 % | -5.5 % | +8.7 %, +2.2 % |
+| 0.3 | 0.584 v | 0.772 v | 0.827 v | 0.835 v | 0.768 | -5.1 % | -1.2 % | -0.9 %, +2.8 % |
+| 0.1 | 0.584 v | 0.857 v | 0.892 v | 0.897 v | 0.834 | -3.3 % | -0.4 % | -2.9 %, +3.0 % |
+| 0.03 | 0.584 v | 0.919 v | 0.945 v | 0.947 v | 0.883 | -2.5 % | -0.2 % | -3.8 %, +3.1 % |
+
+- Speed over 0 to 2 M unchanged, 0.584 v in all three (band 0.57 to 0.60): held.
+- Speed over 30 to 50 M: eta = 0.3: 0.827 v (band 0.85 to 1.08: missed by 0.02; the
+  refutation line, below 0.8 v, is not met); 0.1: 0.892 v (band 0.85 to 1.15: held);
+  0.03: 0.945 v (band 0.8 to 1.25: held). x_c(50 M) at eta = 0.3: 0.768 of 50 v (band
+  0.78 to 0.98: missed by 0.01). My estimate "0.3 is near critical damping and reaches v
+  within 50 M" was too fast: at 50 M the speed still rises in every run (figure) and
+  only eta = 0.03 has flattened, at 0.947 v.
+- Change of `sum m u_x/P` between 25 and 50 M: -1.2 per cent (0.3), -0.4 (0.1) (band 2):
+  held. The second refutation line (falling by more than 3.5 per cent although the
+  speed has reached v) is not met.
+- rms extent along x at 50 M below +5 per cent: held, and more: the cluster is shorter
+  along the motion in coordinates, -0.9, -2.9, -3.8 per cent, and +2.8 to +3.1 across:
+  ratio 0.964, 0.943, 0.934 (1/W = 0.954).
+- Minimum lapse 0.7924 in all (band 0.74 to 0.85): held; `alpha_min` minus the run at
+  rest -0.0164 at 10 M, -0.0186 to -0.0187 at 50 M, the same for every eta (figure).
+  Norms over those of the run at rest after 5 M at most 1.11, 1.11, 1.18 (H) and 1.14,
+  1.17, 1.30 (M) (band 1.5): held; the largest at eta = 0.03.
+So the coordinate speed and the drift of `sum m u_x` of TC are set by the damping of the
+shift: with less damping the speed goes to 0.95 v and the drift to -2.5 per cent, the
+size test D found for the orthonormal sum at eta = 2 (-3.4 per cent).
+
+**TF3 (comoving initial shift, eta = 0.1): early part HELD, the mean over 50 M MISSED.**
+Speed over 0 to 2 M 0.984 v (band 0.93 to 1.06; estimate 1.004), over 0 to 4 M 0.947 v
+(band 0.88 to 1.05), over 0 to 50 M 0.854 v (band 0.88 to 1.08: missed). The cluster
+starts at v, the shift decays as exp(-0.1 t) faster than the driver builds its own, the
+speed falls to 0.80 v near 11 M and then follows the run without initial shift (0.874 v
+against 0.892 v over 30 to 50 M). Change of `sum m u_x/P` 25 to 50 M: -0.4 per cent
+(band 1.5): held. The comoving shift buys the first 10 M and nothing later.
+
+**TF4 (at rest, eta = 0.1): HELD.** |x_c| below 0.014 M (band 0.05); minimum lapse within
+9e-6 of the run with eta = 2 (band 0.002); radii within 0.17 per cent (band 1); norms
+1.001 (H) and 1.06 (M) of it. The damping does not act on a cluster at rest.
+
+**TF5 (binary, eta = 0.1, 125 M): HELD.** Separation 29.99 -> 29.62 (band 29.0 to 30.8;
+TE with eta = 2: 28.37); phase at 125 M 0.947 rad (band 0.87 to 1.02; first
+post-Newtonian 0.972; TE 0.799); angular velocity fitted over 40 to 125 M 0.9986 of the
+first post-Newtonian value (TE: 0.871), over the first 50 M 0.937 (TE: 0.735); slope of
+D over 40 to 125 M -0.0038 per M (TE: -0.0164). |sum m u| of each cluster falls by 2.2
+per cent in 12 M and stays between -1.7 and -2.1 per cent (TE: to -7.6); lapse 0.778 to
+0.785; radii of 10, 50, 90 per cent within 0.98 to 1.06 of their start; both norms fall
+and are flat from 90 M. The falling separation and the slow phase of TE were the slow
+shift. What stays open: D still falls, and faster with time (figure; 0.37 M in 125 M).
+An orbit that starts at its apocentre with eccentricity 0.03 would give this D(t)
+(`e D (1 - cos Omega t)`, Omega t = 0.97); 125 M is 15 per cent of the orbital period of
+808 M, so the run cannot tell an eccentricity from a remaining drift of the coordinates.
+
+**For the tracks** [VERIFIED for these runs; JUDGEMENT as a rule]: a moving cluster
+needs a shift damping well below the default of the cluster inputs: `z4c/shift_eta` of
+0.03/M to 0.1/M (M the mass of the cluster) brings the coordinate speed to 0.90 to 0.95 v
+within 50 M and stops the drift of `sum m u_x`; eta = 2/M leaves 0.72 v and a drift of
+-12 per cent that is coordinates, not physics. With a heavy puncture in the same domain
+the damping wanted near the puncture is of order 1/M_BH (release core-v0.4:
+`shift_eta_profile`, which follows the punctures); in Track F's units (clump 0.05 M_BH)
+eta = 2/M_BH is 0.1/M_clump, the value tested here.
+
+### Outcome of TS4 (run `core-20261121-131751-1e1879d`, 13:17Z to 13:25Z, exit 0; figures `box16/fig_idsolve_static.png`, `box32/fig_idsolve_static.png`; the second looked at, the first is the picture of TS at dx = 1)
+
+Each of the four solves converged in 25 outer iterations (max|H| 1.7e-3 and 1.8e-3 ->
+1.9e-12).
+
+| faces at | cells (dx = 1) | `D - R` at the ends of the axis | at the centre | `D/R` at the centre | `rms(D - R)/rms(R)`, r < 14 |
+|---|---|---|---|---|---|
+| 16 M | 32 | -1.44e-4 | -1.84e-4 | 0.948 | 0.070 |
+| 32 M | 64 | -4.44e-5 | -1.13e-4 | 0.968 | 0.034 |
+
+- End value HELD: -4.44e-5 (band -3.0e-5 to -4.8e-5); 0.31 of the value with the faces at
+  16 M (a quarter times at most 1.15 was the estimate: 0.25 to 0.29). The refutation
+  line (beyond -8e-5) is not met. The offset of TS is the Robin condition of the solver,
+  which takes the correction to fall as 1/r where it has a part falling as r^-2.
+- `D/R` at the centre MISSED by 0.004: 0.968 (band 0.972 to 0.990). I had taken the part
+  peaked at the centre from the run at dx = 0.5 (-3.4e-5); at dx = 1 it is -4.0e-5 with
+  the faces at 16 M and -6.8e-5 between the centre and the more distant ends at 32 M.
+  So beside the constant there is a difference that falls off outwards, 1 to 2 per cent
+  of R at the centre: of the size of the terms of order V^4 that the radial correction
+  leaves out and of the change of the deposit with the motion; this run does not
+  separate the two.
+- A at dx = 1: -6.3e-4 at the centre (dx = 0.5: -1.3e-4): the change that the mesh solve
+  makes in a cluster at rest falls as the square of the cell size (a factor 4.7).
+
+Result for the choice of tool: the radial correction and the mesh solver give the same
+second-order psi for a moving cluster to 3 per cent rms once the faces of the solver's
+box are at 32 M (7 per cent at 16 M, from its face condition); the mesh solver needs a
+uniform mesh and far faces, the radial tables need neither.
+
+### Outcomes of M1 and R5 (run `core-20261121-130253-260f4e3`, 13:02Z to 13:51Z, 48 min on one core, exit 0)
+
+- **M1 HELD.** TB at 32 and 64 cells with the merged processor build (sha256
+  3c662c4a...) against run `core-20261120-222933-0a01a56` (build of cbe1e3ef): the ten
+  cases (rest, v = 0.1 and 0.3, `curv` and `corr`) have byte-identical history files and
+  byte-identical cell data in every dump; the 45 numbers of the residual analysis are
+  equal (largest relative difference 0). The merge of releases core-v0.4 and core-v0.5
+  did not change the data of a moving table component.
+- **R5 HELD.** Release core-v0.5 against the merged build without the new options:
+  `regress_cf` 16 files, `cf_table_regress` 9, `by_static` 5, `jeans` (two cycles) 20:
+  all byte-identical; the t = 0 record of `jeans` equals that of the first paper's run
+  in every column but the round-off of a zero (2.3e-26 against 1.2e-26).
+
+### M2 not run yet; a slip with the queue (13:21Z to 13:27Z)
+
+- The card build of the merged source was ready at 13:12Z (987 s; sha256 8b7e050e...).
+  When TF ended I submitted M2 in one command line that printed the number of card
+  jobs of owner core (2: another session had submitted one twelve seconds before) and
+  submitted anyway: three jobs of core in the queue, against the rule. Withdrawn at
+  once (`nrpic-run stop`, run `core-20261121-132104-4377815`, closed as stopped; no card
+  time). Submitted again at 13:26Z when core had one job left: Slurm 4803, run
+  `core-20261121-132629-47ccb97` (list `card_m2.list`, now with `z4c/shift_eta=2.0`
+  because the example input carries 0.1). At 13:51Z it is eighth in the queue, behind
+  jobs that have been running for half an hour each: not waited for.
+- Judging it when it has run: `harness/bin/nrpic-run finish core-20261121-132629-47ccb97`,
+  then `nrpic-run submit ... -- bash tracks/core/analysis/clump2/run_tf_analysis.sh
+  core-20261121-125455-bf583c8 core-20261121-132629-47ccb97` (its last step compares
+  `v0.3` of M2 with `v0.3` of TC; prediction M2 above), and the row M2 of the interface.
+
+### Published; state at the end of session 4 (13:55Z)
+
+Card time of the package: 0.886 card-hours used (TC 0.13, TE 0.37, TF 0.39); M2 will add
+about 0.04. Processor runs of this session: D/EN/FX2 (5 min), M1/R5 (48 min), TS
+(7 min), TS4 (8 min), analysis of TF (1 min), all on one core each, all closed; the
+runaway restart of test D (14.3 h of one core, stopped) is the cost of a slip.
+
+Done in this package (both passes of the task):
+1. Equilibrium clusters with a bulk momentum in `nrpic_cf`: curvature from tabulated
+   radial moments, consistent particles, comoving shift; generator `make_ic.py boosted`.
+2. Second-order Hamiltonian residual: radial correction per cluster (leftover 1 to 3
+   per cent at 128 cells, falling with the cell size; added mass `M V^2/2` to 8e-6);
+   the mesh solver of the code on the same data agrees with it to 3 per cent (TS, TS4).
+3. Tests: constraints against resolution at v = 0.1 and 0.3 (TB), 50 M on a card (TC),
+   the cause of what failed there (D, TF: the damping of the shift), a binary (TE, and
+   with the lower damping in TF), card against processor (G, G2, G3), regression
+   against the releases (R, R5) and across the merge (M1).
+4. Executables published in `scratch/core/exe/core_clump-table/` with `READY`.
+
+Failed predictions on record (each in its entry above): the late coordinate speed and
+the summed momentum of TC; the comoving shift as a control; the separation of TE; the
+size of the correction's leftover before the generator fix (TB3) and the first reading
+of its cause; "J below 1e-6" by the first flux check; the speed at eta = 0.3 and the
+mean speed with the comoving shift (TF); g~_xx and the size of the shift in D; the
+centre ratio of TS4.
+
+Open, for whoever continues:
+- M2 (above). If it differs from TC by more than round-off, the published card build
+  must not be used until the cause is found: say so in `READY`'s directory by a file
+  `DEFECT` and tell core's lead.
+- The binary: one full orbit (808 M, about 1.2 card-hours at dx = M/2) with
+  `shift_eta` = 0.1 to tell an eccentricity of 0.03 from a remaining coordinate drift;
+  the momenta could then be tuned.
+- The part of the drift of the summed momentum that is not coordinates (2.5 to 3.4 per
+  cent within the first 10 M, on the time scale of the lapse): cause not tested
+  (candidate: the change from the maximal slice of the data to 1+log slicing).
+- A cluster beside a puncture in an evolution (Track F's object (b) in its real
+  setting); the cross terms of several bodies need the mesh solver on refined meshes
+  with punctures (work package idsolve2).
+- Cosmetic defects of three test figures (cut axis labels in `fig_gauge_evolution`,
+  `fig_metric_at_particles`, `fig_corr_surface`; legends over curves): the scripts were
+  not rerun for them.
+- Several ranks, the threaded build and adaptive refinement with these options: not run.
+
+### Publication checked (run `core-20261121-135236-c82a082`, 13:52Z, exit 0)
+
+`scratch/core/exe/core_clump-table/` published at 13:52Z by `publish_exe.sh 7cc6c7b9`
+(the merge commit; `athenak/src` is unchanged since): `athena_gpu` (sha256 8b7e050e...),
+`athena_cpu` (3c662c4a...), `COMMIT`, `examples/` (six inputs), `generator/`,
+`SHA256SUMS`, `READY` (which says in capitals that the card executable waits for M2).
+Check of the directory as a track would use it: `sha256sum -c` passes; the generator
+run from `generator/` writes the tables and the lattice; `examples/clump_table_static.athinput`
+at 32 cells with the published processor executable (v = 0.3, curvature, correction,
+shift) gives the two history files of the same case of M1 byte for byte.
