@@ -1,0 +1,176 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "A-20261125-131605-f9e71ee",
+  "track": "A-emd-pbh",
+  "gate": "G2",
+  "kind": "scouting",
+  "purpose": "verifier-c18 V0 rerun after the time-matching change (V0d vi): readers, BH rule, LTB reference on analytic fields; exact events of the eleven tables",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    "bash",
+    "-c",
+    "OMP_NUM_THREADS=1 python -I tracks/A-emd-pbh/stage/G2/verifier-c18/scripts/vtests.py --out \"$NRPIC_RUN_DIR\" --tables tracks/A-emd-pbh/stage/G2/verifier-c18/tables.json"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "f9e71ee48ee7b06e5e8fa05f5af427cfbfce628d",
+    "branch": "track/A-emd-pbh",
+    "dirty": false,
+    "package": [
+      "tracks/A-emd-pbh/stage/G2/verifier-c18"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "0b5c3e7dc6384563c57dbf772b486587144fded7",
+    "worktree": "wt/A-emd-pbh"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/A-emd-pbh/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075356-1ad4c81/expball_tophat_HRb0p7_dc1p5_R10p65_R20p95_rm4p25.tab",
+      "role": "input",
+      "sha256": "cc046c81b217a95431e8153790f9b67b7189ede2d53d1227015edab7ae6b388b",
+      "bytes": 880635,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075401-1412a08/expball_tophat_HRb0p875_M1p95312_dc1p5_rm5p27041.tab",
+      "role": "input",
+      "sha256": "10b677616e1746df616fca37e76fcafc500f51ca057ba0dbcfa65e92ee87ad20",
+      "bytes": 880805,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-075404-ac51b7e/expball_tophat_HRb0p945_M2p46037_dc1p5_rm5p67857.tab",
+      "role": "input",
+      "sha256": "5e8094704a9beec1f7aada4d51e9956a09b67b2be03eedcb9fc528bb43c0c5e9",
+      "bytes": 880679,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-202812-cae4436/dc1p0/expball_tophat_HRb0p7_dc1_R10p65_R20p95_rm4p25.tab",
+      "role": "input",
+      "sha256": "7ef04dcbcf7eb82c8959b187b4f05ea1997acbe365cbf247f051b580e38f3e52",
+      "bytes": 880635,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-202812-cae4436/dc0p7/expball_tophat_HRb0p7_dc0p7_R10p65_R20p95_rm4p25.tab",
+      "role": "input",
+      "sha256": "d3fe80dc487a1f26e7adfbdb3015f72cf98d5ac83095671acca46ad0ce75f2f4",
+      "bytes": 880635,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-202812-cae4436/dc0p5/expball_tophat_HRb0p7_dc0p5_R10p65_R20p95_rm4p25.tab",
+      "role": "input",
+      "sha256": "9324f7e930121276092803118de846063c8e270c60a3df43c7351b90cf8aecdb",
+      "bytes": 880635,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-202812-cae4436/dc0p45/expball_tophat_HRb0p7_dc0p45_R10p65_R20p95_rm4p25.tab",
+      "role": "input",
+      "sha256": "7b980e21a30da527977d508df296d984302f22c7ef052e3b3f7d5a14fae6a216",
+      "bytes": 880635,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-202812-cae4436/dc0p42/expball_tophat_HRb0p7_dc0p42_R10p65_R20p95_rm4p25.tab",
+      "role": "input",
+      "sha256": "20569031033c0e9d92075a84aa537c7213ef3f98875361d21f2949f573c8a00c",
+      "bytes": 880635,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-202812-cae4436/dc0p4/expball_tophat_HRb0p7_dc0p4_R10p65_R20p95_rm4p25.tab",
+      "role": "input",
+      "sha256": "fbfdfbc6184b4f2a6cdf5a8b5b17b741e0d785b76b62d40a8034349664ef7074",
+      "bytes": 880635,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-202812-cae4436/dc0p35/expball_tophat_HRb0p7_dc0p35_R10p65_R20p95_rm4p25.tab",
+      "role": "input",
+      "sha256": "5b98dd13a1a8c112744e9ee55303bb3c2b690a2d96357227b306fb25a9190ea0",
+      "bytes": 880635,
+      "tracked": false,
+      "location": "main checkout data root"
+    },
+    {
+      "path": "/data/haiyangw/nrpic/scratch/A-emd-pbh/A-20261121-202812-cae4436/dc0p2/expball_tophat_HRb0p7_dc0p2_R10p65_R20p95_rm4p25.tab",
+      "role": "input",
+      "sha256": "878a39d4bbfb673c55443ccc5fcf0d48682bdb06e5f2f5a5357774d333bdf310",
+      "bytes": 880635,
+      "tracked": false,
+      "location": "main checkout data root"
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/A-emd-pbh/A-20261125-131605-f9e71ee",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-25T13:16:05Z",
+  "started": null,
+  "ended": null,
+  "parents": [],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 21.3864,
+    "gpu_hours_reserved": 9.8333,
+    "gpu_hours_without_gate": 0.1686,
+    "cores_busy": 6,
+    "runs": 264,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md"
+  }
+}
