@@ -57,8 +57,9 @@ From the worktree root, with the worktree's `.venv`; each line is one registered
     # modes_nf.py with --cores 2 and VERIFIER_FFT_WORKERS=2;
     # judge_modes.py --ref <reference run dir> --modes <modes_nf run dir> --out "$NRPIC_RUN_DIR"
 
-Costs on anta (2026-11-25): reference 1.3 s of integration; records 1 min; modes_nf about 6
-min; constraints about 12 min (I/O bound, 68 GB read sequentially); window 1 min.
+Wall times on anta (2026-11-25, from the manifests): records 3 s; modes_nf 268 s on 2 cores;
+constraints 560 s on 1 core (I/O bound, about 68 GB read one variable at a time); window 23 s;
+the reference integrates in 1.3 s.
 
 ## Requests
 
