@@ -5,7 +5,12 @@ Date: 2026-11-25 · branch `track/E-stoch-inf` at `81e736ac7bbc` · checklist
 
 ## Verdict
 
-**FAIL**. Tag: `stage/E-stoch-inf/G2-fail-20261125` (created and pushed by the orchestrator after review, decision 0003).
+Harness verdict of `nrpic-stage report` (batch 15): **FAIL**, on C3 and C7 (the failure of U-A4'(a), on record by
+rulings 0030 item 2 and 0036 item 2) and on the check `runs` (the seven ablation runs that name core's superseded
+level-2 executable, OPEN.md item 7). Gate verdict: **SIGNED, PASS WITH RESERVATIONS** by the orchestrator on
+2026-11-24 after the independent review `stage/G2/GATE_REVIEW.md` (coord/GATES.md; decision 0038 item 1), tag
+`stage/E-stoch-inf/G2-pass-20261124` on b770b60c30. No tag `G2-fail-*` exists; the line the report tool wrote
+here before named one in error (gate review finding F2, corrected in batch 17).
 
 - 2 checklist items not PASS or NA: C3 FAIL, C7 FAIL
 - verify reported FAIL: runs
@@ -72,20 +77,23 @@ Date: 2026-11-25 · branch `track/E-stoch-inf` at `81e736ac7bbc` · checklist
 
 ## Figures
 
-| File | Script | Kind (data / schematic) | Looked at (PNG read) |
+The harness lists the figures of `note/` (the G1 note, which stays at its G1 state and points to the
+reproduction note). The G2 figures are those of the working note `repro/note/manuscript/` (32 pages): one
+script each in `repro/note/manuscript/scripts/`, all run by the registered `run_all.py` (last R16
+E-20261125-035757-340bd1e; batch 17 rerun named in `repro/note/JOURNAL.md`); every PNG looked at
+(`repro/note/JOURNAL.md` entries 19-26 and batch 17).
+
+| File (repro/note/manuscript/figures/) | Script | Kind | Gate item |
 |---|---|---|---|
-| note/figures/fig_background.* | note/scripts/fig_background.py | data | to be confirmed by the session |
-| note/figures/fig_cost.* | note/scripts/fig_cost.py | data | to be confirmed by the session |
-| note/figures/fig_deltan.* | note/scripts/fig_deltan.py | data | to be confirmed by the session |
-| note/figures/fig_freezing.* | note/scripts/fig_freezing.py | data | to be confirmed by the session |
-| note/figures/fig_noise.* | note/scripts/fig_noise.py | data | to be confirmed by the session |
-| note/figures/fig_sr_constraints.* | note/scripts/fig_sr_constraints.py | data | to be confirmed by the session |
-| note/figures/fig_sr_freezing.* | note/scripts/fig_sr_freezing.py | data | to be confirmed by the session |
-| note/figures/fig_sr_modes.* | note/scripts/fig_sr_modes.py | data | to be confirmed by the session |
-| note/figures/fig_sr_order.* | note/scripts/fig_sr_order.py | data | to be confirmed by the session |
-| note/figures/schem_architecture.* | note/scripts/schem_architecture.py | schematic | to be confirmed by the session |
-| note/figures/schem_dataflow.* | note/scripts/schem_dataflow.py | schematic | to be confirmed by the session |
-| note/figures/schem_timeline.* | note/scripts/schem_timeline.py | schematic | to be confirmed by the session |
+| fig_ladder | schem_ladder.py | schematic | C10 verification ladder (box 1 corrected in batch 17, finding F3) |
+| fig_architecture, fig_timeline | schem_architecture.py, schem_timeline.py | schematic | C16 |
+| fig_pipeline, fig_lv_scheme | schem_pipeline.py; the Langevin scheme of repro/langevin (map in run_all.py) | schematic | reproduction |
+| fig_g2_resolution | fig_g2_resolution.py | data | C11 mesh convergence (USR 256 vs 320) |
+| fig_specconv | fig_conv.py (lattice/fig7_specconv) | data | C11 SR spectral convergence 32-256 |
+| fig_constraints | fig_conv.py (lattice/fig8_convergence) | data | C12 constraint norms against time |
+| fig_g2_halving | fig_g2_halving.py | data | C3, C7 (U-A4'(a), the failure on record) |
+| fig_g2_mosaic | fig_g2_mosaic.py | data | C13 multi-scale slice mosaic |
+| fig_background, fig_spec_sr/usr, fig_kspec_sr/usr, fig_contrast_sr/usr, fig_signflip, fig_ablation(_sr), fig_lv_* | fig1_meanrolls.py, fig_spectra.py, fig_contrasts.py, fig_signflip.py, fig_ablation.py, the repro/langevin scripts (map of source to figure in run_all.py) | data | reproduction (decision 0028) |
 
 ## Verifier report
 
@@ -187,4 +195,9 @@ Labels as in the brief.
 
 ## Decision requested from the group
 
-Not complete for review: U-A4'(a) fails as written at one dump of M (3.925 at cN 6.52; C3, C7 FAIL); no G2 verifier (C18); note G2 sections and figures C10-C13 missing; C2 gauge leg open. Ruling asked of orch (outbox 20261123T025319Z).
+None outstanding for G2: the gate is signed, pass with reservations (coord/GATES.md 2026-11-24; decision 0038).
+The reservations carried to G3 are those of `stage/G2/GATE_REVIEW.md` section 6; the scope of G3 that answers
+them is `spec/scope/SCOPE.md` section 4d (batch 17), written before any G3 run. Still owed by others: core's
+provenance of the superseded level-2 executable for the seven ablation manifests (decision 0038 item 3; outbox
+20261125T040618Z). The text of batch 10a that stood here (no verifier, note sections missing, gauge leg open) is
+superseded: all three were done or ruled before the review (finding F2).

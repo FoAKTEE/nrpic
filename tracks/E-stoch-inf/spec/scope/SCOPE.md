@@ -190,6 +190,149 @@ then the group's decision. G1 = SR spectrum (A2), freezing (A3), constraints con
 A5), with A1, A6, A7 recommended (`../../stage/G1/STATUS.md`). G2 = USR reproduced (A2, A3,
 P-h of SPEC 7.1) and sensitivity (L9). G3 = tail statistics against E-pre-3 (A8).
 
+## 4d. G3: tail statistics of the curvature perturbation in the inflection scenario, fixed before any G3 run (2026-11-25)
+
+Decision 0038 item 2 sets the scope; this section fixes the statistic, its estimator, the seed
+count, the reference, and the criteria on constraints, convergence, gauge and level 2 before any
+G3 production run. Written by the lead of batch 17 on 2026-11-25 (04:00 PST) before the first G3
+submission (the pilot, queue label G3P, is the only card run of this batch). Predictions per part:
+`../../g3/JOURNAL.md` entry 2. Anything changed after a G3 run that it judges is recorded as such
+and the original wording stays on record (as for 4c).
+
+Common set-up. Deck `g2prod/inputs/usr_prod.athinput` (the G2 USR deck: P1's inflection potential,
+window s = 5, sigma = 1, Courant 0.25, geodesic slicing, level 0) at 128^3 with nmax2 = 1024
+(k_max = 32 dk = N dk / 4, four cells per shortest injected wavelength, as the window scan),
+mode file `usr/inputs/modes_usr_n1024.txt`, to t = tlim (N_f), release card build core-v0.7
+(`/data/haiyangw/nrpic/.work/build_gpu_v07/src/athena`). Dumps only at t = 0 and t = tlim
+(`scalar_field/dump_dt = tlim`, metric on, constraint fields off except where a part below needs
+them), no restart output (a 128^3 run takes minutes). Seeds: `job/rng_seed = 20262000 + i`,
+i = 0, 1, ..., in that order, never skipped; a run that fails is rerun with the same seed and the
+failure stays on record. Several seeds share one Slurm job (batch launcher), one queue entry each.
+
+### 4d.1 The statistic and its estimator
+
+- Variables, at N_f on every cell of every seed: (i) R^NR(x), the linear extraction of
+  `ladder/scripts/ladder_lib.curvature` (the reader of G1 and G2); (ii) zeta(x) = delta N to the
+  uniform-field surface phi = phi_e: zeta = -1/2 ln(chi/<chi>) + Delta N_bg(phi(x), dphi/dN(x)) -
+  <same>, where Delta N_bg is the e-folds a homogeneous Friedmann-Klein-Gordon universe takes from
+  the cell's field and field velocity (from Pi, alpha and K of the cell) to phi_e, phi_e the field
+  of the lockstep background at N_e = N* + 15 (the end surface of the one-patch reference). (ii) is
+  the variable the one-patch delta-N calculation gives; (i) is the variable of G1 and G2. The zeta
+  reader is new: before it judges anything it must give zeta = 0 to 1e-10 on a homogeneous run
+  (noise off) and zeta = R^NR to second order in s on a run at s = 1/4 (both on processors, 32^3).
+- Standardisation: x = X / sigma_lin with sigma_lin^2 = sum over injected modes of |W_n R_n|^2 L^-3
+  from the run's own lockstep record at N_f (not fitted to the data); for zeta the same sigma_lin
+  (zeta and R agree at linear order).
+- Statistic: the exceedance fractions F_+(nu) = P(x > nu) and F_-(nu) = P(x < -nu) over all cells,
+  pooled over seeds, at nu = 3 and 4 (judged), 2, 4.5 and 5 (reported); skewness and excess
+  kurtosis of x; the one-point density (figure). Estimator: the mean over seeds of the per-seed
+  fractions; its standard error is the seed-to-seed standard deviation over sqrt(S). Cells within a
+  box are not treated as independent.
+- References: (a) the linear expectation, a Gaussian of variance sigma_lin^2: Q(3) = 1.3499e-3,
+  Q(4) = 3.167e-5; (b) the one-patch delta-N calculation of the same scenario, below.
+
+### 4d.2 Number of seeds (power estimate, run E-20261125-115822-29795d6, `g3/power.py`)
+
+Gaussian fields with the linear spectrum of the 128^3 USR box (record of the 128^3 window-scan
+run b_p, E-20261120-222424-0eb754b, t = 10.0, nmax2 = 1024), 400 boxes: sigma_lin = 0.4940; the
+box-to-box standard deviation of F_+(3) is 4.96e-5 (3.7 per cent of Q(3)), of F_+(4) 5.98e-6
+(19 per cent of Q(4)); a box holds about 5.5e5 effectively independent cells for F(3) (of 2.1e6:
+the spectrum rises so steeply that the field decorrelates within a few cells). One seed already
+measures F(3) to 4 per cent, so the seed count is set by the reach into the tail: S seeds give a
+relative standard error 0.19/sqrt(S) at nu = 4. **S = 256**: 1.2 per cent at nu = 4, so a
+difference of 3.6 per cent from a reference is seen at three standard errors (the 256^3-band
+delta-N tail exceeds the Gaussian by 12 per cent at nu = 4, `langevin/results/ref_inflection.json`;
+the 128-band excess is smaller, see 4d.3); nu = 4.5 to about 5 per cent, nu = 5 to about 15 per cent
+[JUDGEMENT: the scatter of a Gaussian field stands for that of the lattice field; the pilot checks
+it on real output, and S is raised to at most 512 if the measured scatter at nu = 4 is more than
+1.4 times the Gaussian one]. Cost: S times the measured cost per seed (pilot; about 0.035
+card-hours from the window scan's 128^3 runs).
+
+### 4d.3 The reference: one-patch delta N of the same scenario
+
+What exists: `langevin/` (E-pre-3): the phase-space Langevin first-passage solver with the noise
+covariance of the linear mode functions (momentum included), the lattice density of states, sigma
+= 1, 0.1, 0.01, end surfaces at N_f and N_e = N* + 15, importance sampling; the 256^3 band (|n| <=
+64) with 1e6 realisations (`results/ref_inflection.json`, run E-stoch-inf-20261115-130137-176cdd6):
+var/var_lattice 0.9905, skewness 0.038, P(dN > 3 sigma_lin) 1.57e-3, P(> 4 sigma_lin) 3.6e-5. What
+must be computed: the 128^3 band (|n| <= 32). Pilot reference started in batch 17 (run
+E-20261125-115707-b845282, 2e5 realisations, all variants; `ref_spec.py` with NRPIC_REF_NLAT = 32,
+outputs `results/ref_inflection_n32.json`). The G3 reference proper: sigma = 0.01 with the lattice
+density of states, 4e6 realisations by direct sampling (standard error about 1.4 per cent at nu =
+3), and nu = 4, 4.5 by the importance sampler of `sdn/langevin.py`, validated against direct
+sampling at nu = 3 (agreement within two standard errors). [TO VERIFY before the comparison: that
+the HiggsInflection model of `sdn/models.py` at phi0 = -1.2, N* - N0 = 3 is the deck's inflection
+potential and N*, by the background landmarks of U-A0 (start and end of USR, H at N*) within 1e-4
+in N, a processor check.] The comparison is made on zeta (variable ii) against the reference at N_e,
+and on both variables against the Gaussian.
+
+The G3 result [what the gate reports, not a pass/fail of the code]: r(nu) = F_NR(nu)/F_ref(nu) - 1
+with its combined standard error at nu = 3 and 4, for F_+ and F_-; "NR differs from one-patch delta
+N" only if |r| exceeds three combined standard errors at a judged nu AND the gauge leg (4d.6) does
+not move F by more than its own standard error; otherwise "agrees within" the stated error.
+
+### 4d.4 Constraint scaling with three amplitudes (G3-C; answers the G2 failure of U-A4'(a))
+
+Runs: seed i = 0 at s = +-1, +-1/2, +-1/4 (six runs), constraint fields dumped at every
+dump_dt = tlim/20 (21 dumps). Per dump and constraint (H, and M_i together), box means removed,
+E(s) the even part: D1 = E(1) - 4 E(1/2), D2 = E(1/2) - 4 E(1/4) per cell. Model E(s) = s^2 A + F_s
+with a per-run part F_s of equal rms sigma at every s. Model test at each dump (both must hold for
+the dump to be judged): rms(D2)/rms(D1) in [0.9, 1.1] and corr(D1, D2) in [-0.30, -0.17] (model: 1
+and -4/17). Level: sigma^2 = [rms(D1)^2 + rms(D2)^2]/34. Criterion: sqrt(e_1^2 - sigma^2)/
+sqrt(e_{1/2}^2 - sigma^2) and sqrt(e_{1/2}^2 - sigma^2)/sqrt(e_{1/4}^2 - sigma^2) within 4 +- 0.05 at
+every judged dump where the smaller of the two even parts exceeds 3 sigma. Range of e-folds: dumps
+with cN = N - N* in [2.0, 6.6] (the entry and the USR phase, where G2 showed the even part above the
+per-run level); dumps outside are reported, not judged. The criterion fails if any judged factor
+lies outside the band, or if the model test fails at more than a third of the dumps in the range.
+The two-amplitude estimator of 4c is computed beside it and reported, not judged. D1, D2 and sigma
+are computed with the track's own reader (risk R30), not the verifier's.
+
+### 4d.5 Discretisation part of convergence (G3-R): Richardson in the square of the amplitude
+
+The odd part per mode is O(s) = s L + s^3 T + ...; from s = 1 and 1/2 the part linear in s is
+L = [8 O(1/2) - O(1)]/3 and the third-order part T = [O(1) - 2 O(1/2)] * 4/3. Runs: seed i = 0 at
+s = +-1, +-1/2 on 128^3 (shared with 4d.4) and on 160^3 at the same modes (nmax2 = 1024). Criterion:
+D_n^L = |L_n/(W_n R_n alpha_n L^-3/2) - 1|, maximum over modes with k <= k_max/2 at N_f, falls from
+128 to 160 by a factor in [2.0, 4.5] (order 3.1 to 6.7 at the ratio 1.25, as U-R (i)); reported: the
+same for O(1) alone (the G2 form, which a spacing-independent T caps), and the change of T between
+the resolutions (expected below 10 per cent: T is not a discretisation error). A third resolution
+is not planned; it is added (192^3) only if the factor misses the band.
+
+### 4d.6 Gauge leg (G3-G): a slicing other than geodesic
+
+`<z4c> lapse_kdriver = 2` with `lapse_harmonic = 0` (the driver towards constant mean curvature of
+scalar_field_3.md section 5: mean lapse 1, the slicing approaches uniform expansion), the lapse
+condition of the scalar-3 release tested there with the stochastic sources. Runs: the first 32
+seeds of the baseline (i = 0 ... 31), otherwise identical. Read at t = tlim, where the mean lapse 1
+makes the mean proper time equal to the geodesic one; the difference of the mean field between the
+slicings is reported. Criterion: for zeta, the per-seed paired differences of F_+(3), F_-(3) and of
+the skewness between the slicings are consistent with zero within three standard errors of the
+paired mean (zeta to a uniform-field surface does not depend on the slicing once the modes are
+outside the Hubble radius); for R^NR the same differences are reported (it may differ at second
+order). Also reported: the per-mode odd-part deviation D_n under kdriver against geodesic at N_f
+(scalar_field_3.md saw the lowest modes drift to four times the geodesic deviation late; not
+explained there).
+
+### 4d.7 Level 2 of the stochastic backreaction (G3-L2): a sensitivity, not the baseline
+
+`scalar_field/noise_level = 2`, `noise_mode_eq = mesh` (core-v0.7; uniform mesh, one rank; defaults
+of noise_level2.md for the other level-2 options), the same 32 seeds. Reported: the paired
+differences level 2 minus level 0 of F_pm(3), F_pm(4), skewness, kurtosis, with standard errors,
+for both variables. Not a pass/fail item. The seven ablation runs of the reproduction made with the
+superseded level-2 executable enter no G3 statement until core supplies their provenance (decision
+0038 item 3).
+
+### 4d.8 Budget (allotment 60 card-hours, decision 0038 item 4)
+
+Pilot <= 1 (this batch); baseline 256 seeds about 9; three amplitudes 6 runs with 21 dumps about 0.5;
+160^3 four runs about 0.4; gauge 32 seeds about 1.2; level 2 32 seeds about 1.5; the G3 total about
+14 card-hours at the window scan's cost per seed, leaving room for S up to 512, a 192^3 rung and
+reruns. Every number is replaced by the pilot's measured cost before the full set is queued.
+
+"G3 of Track E is met" = the statistic of 4d.1 measured on S seeds with its standard errors; the
+comparison of 4d.3 stated with its error; 4d.4 and 4d.5 pass as written; 4d.6 and 4d.7 reported;
+the zeta reader passes its two tests; a fresh verifier recomputes the statistic from the dumps.
+
 ## 5. Test plan by row of brief section 10
 
 | Row (owner) | Test | Reference | Status 2026-11-15 |

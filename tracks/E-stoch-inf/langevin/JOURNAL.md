@@ -294,3 +294,19 @@ Predictions (before the run):
 - L3: skewness of delta N at N_e (sigma = 0.01) between 0.005 and 0.04 (256 band 0.038; the
   non-Gaussianity grows with the band amplitude); P(dN > 3 sigma_lin)/1.35e-3 between 0.95 and 1.2.
 - L4: sigma = 1 (literal lattice timing) again about 13/9 of linear (1.35-1.5).
+
+## Entry (2026-11-25 04:05 PST, lead of E, batch 17): outcome of the 128-band reference (run E-20261125-115707-b845282)
+
+`results/ref_inflection_n32.json`, figures `fig/ref_inflection_n32_{setup,pdf}.png` (looked at; the
+density panel keeps the 256-band axis range). 2e5 realisations, 4 cores, 3.4 min.
+- L1 HOLDS: linear lattice band variance at N_e 0.24401 (continuum 0.24434, ratio 0.9986). It equals
+  sigma_lin^2 = 0.4940^2 = 0.2440 of the Gaussian synthesis in g3 (run E-20261125-115822-29795d6).
+- L2 HOLDS within its band, with a tension: sigma = 0.01 with the lattice density of states gives
+  var/var_lattice = 0.9796 +- 0.0032, six standard errors below 1 (256 band: 0.9905 +- 0.0016); the
+  continuum variant gives 1.0010 +- 0.0034. The deficit sits in the lattice-density variant only.
+  Not explained [TO VERIFY with the 4e6 reference of SCOPE 4d.3 before any tail comparison relies on
+  the lattice variant at the per-cent level].
+- L3 HOLDS: skewness 0.023 (lattice variant; continuum 0.028); P(dN > 3 sigma_lin) = 1.41e-3,
+  1.045 times the Gaussian 1.35e-3; P(< -3) = 1.16e-3; P(> 4) = 6e-5 from 12 paths (no precision).
+- L4 HOLDS: sigma = 1 gives 1.379 +- 0.006 times linear (13/9 = 1.444 expected for a massless mode;
+  1.42 for the 256 band).
