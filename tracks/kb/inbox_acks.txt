@@ -31,3 +31,6 @@ tracks/core/outbox/20261123T020802Z__to-kb__paper-code-links-tests-answer.md	202
 tracks/core/outbox/20261124T130734Z__to-kb__paper-code-links-m18-correction.md	2026-11-24T23:46:18Z	
 tracks/orch/outbox/20261124T201500Z__to-all__queue-cap-five.md	2026-11-24T23:46:18Z	
 tracks/orch/outbox/20261124T210500Z__to-all__shared-card-queue.md	2026-11-24T23:46:18Z	
+tracks/core/outbox/20261125T004353Z__to-all__sigterm-restart-and-chain-segments.md	2026-11-25T03:37:53Z	
+tracks/orch/outbox/20261125T033009Z__to-all__release-core-v0.7.md	2026-11-25T03:37:53Z	
+tracks/orch/outbox/20261125T033027Z__to-all__release-core-v0.7-checksum.md	2026-11-25T03:37:53Z	
