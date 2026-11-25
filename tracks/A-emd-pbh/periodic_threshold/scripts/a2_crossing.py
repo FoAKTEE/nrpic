@@ -36,8 +36,20 @@ def read_snapshot(path):
     return time, rec[:, 0:3].copy(), tag.copy()
 
 
+CLOCK = "coord"
+
+
 def t_over_tH(t):
+    # batch 20: --clock newton reads the time as the conformal time of the Newtonian mode, a = (1 + eta/2)^2
+    if CLOCK == "newton":
+        return (1.0 + 0.5 * np.asarray(t)) ** 3 / 6.0 ** 1.5
     return (1.0 + 1.5 * np.asarray(t)) / 6.0 ** 1.5
+
+
+def scale_factor(t):
+    if CLOCK == "newton":
+        return (1.0 + 0.5 * np.asarray(t)) ** 2
+    return (1.0 + 1.5 * np.asarray(t)) ** (2.0 / 3.0)
 
 
 def main():
@@ -46,7 +58,13 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--box", type=float, default=20.0)
     ap.add_argument("--n", type=int, default=64)
+    ap.add_argument("--clock", choices=["coord", "newton"], default="coord",
+                    help="batch 20: newton = conformal time of the Newtonian mode (a = (1 + eta/2)^2)")
+    ap.add_argument("--label", default="S1L")
+    ap.add_argument("--overlay", action="append", default=[], help="batch 20: a2.json of other runs to draw (min along z)")
     a = ap.parse_args()
+    global CLOCK
+    CLOCK = a.clock
     os.makedirs(a.out, exist_ok=True)
     L, n = a.box, a.n
     h = L / n
@@ -66,7 +84,7 @@ def main():
         li = np.array([lat_of_tag[int(g)] for g in tag])
         grid[li] = x
         grid = grid.reshape(n, n, n, 3, order="F")      # index (i, j, k) with lin = i + n j + n^2 k
-        rec = dict(t=t, t_over_tH=float(t_over_tH(t)), n_particles=int(len(tag)))
+        rec = dict(t=t, t_over_tH=float(t_over_tH(t)), a=float(scale_factor(t)), n_particles=int(len(tag)))
         for d, ax in enumerate("xyz"):
             dl = np.roll(grid[..., d], -1, axis=d) - grid[..., d]
             dl = dl - L * np.round((dl - h) / L)          # periodic: the unperturbed separation is +h
@@ -127,7 +145,10 @@ def main():
         clocks = dict(error=str(e))
     res = dict(run=os.path.abspath(a.run), clocks=clocks, lattice_one_to_one=bool(one_to_one), lattice_offset=off.tolist(),
                max_initial_displacement_over_h=disp0, rows=rows, first_crossing=first,
-               zeldovich_first_axis_t_over_tH=4.2, band=[3.4, 5.0])
+               zeldovich_first_axis_t_over_tH=4.2, band=[3.4, 5.0], clock=CLOCK, label=a.label,
+               zeldovich_lambda=dict((ax, 1.0 - rows[0][f"min_{ax}"]) for ax in "xyz"),
+               zeldovich_a_sc_z=1.0 / (1.0 - rows[0]["min_z"]),
+               zeldovich_t_over_tH_z=float((1.0 / (1.0 - rows[0]["min_z"]) / 6.0) ** 1.5))
     json.dump(res, open(os.path.join(a.out, "a2.json"), "w"), indent=1)
     print("lattice one-to-one:", one_to_one, " max |initial displacement|/h:", round(disp0, 3))
     print("first crossing:", json.dumps(first, indent=1))
@@ -143,13 +164,22 @@ def main():
     cols = {"x": fs.PAL["blue"], "y": fs.PAL["yellow"], "z": fs.PAL["red"]}
     for axn in "xyz":
         ax_.plot(tt, [r[f"min_{axn}"] for r in rows], "o-", ms=3, color=cols[axn], label=f"min $\\Delta_{axn}/h$")
+    # batch 20: the Zel'dovich line of the first axis from snapshot 0 (1 - lambda_z a), and overlays
+    tz = np.geomspace(max(tt.min(), 0.05), tt.max(), 200)
+    az = 6.0 * tz ** (2.0 / 3.0)
+    ax_.plot(tz, 1.0 - (1.0 - rows[0]["min_z"]) * az, ls=":", color=cols["z"], lw=0.9, label="Zel'dovich $z$")
+    for k_, ov in enumerate(a.overlay):
+        o = json.load(open(ov))
+        ax_.plot([r["t_over_tH"] for r in o["rows"]], [r["min_z"] for r in o["rows"]], "s--", ms=2, lw=0.7,
+                 color=["0.2", "0.55"][k_ % 2], label=f"{o.get('label', 'S1L (GR)')} min $\\Delta_z/h$")
+    ax_.set_ylim(-0.6, 1.1)
     ax_.axhline(0, color="0.5", lw=0.6)
     ax_.axvspan(3.4, 5.0, color="0.85", zorder=0, label="predicted band")
     ax_.axvline(4.2, color="0.4", ls="--", lw=0.8)
     ax_.set_xscale("log")
-    ax_.set_xlabel(r"$t/t_H$ (coordinate time as cosmic time)")
+    ax_.set_xlabel(r"$t/t_H$ (coordinate time as cosmic time)" if CLOCK == "coord" else r"$t/t_H$ (cosmic time of the Newtonian background)")
     ax_.set_ylabel(r"min neighbour separation / $h$")
-    ax_.set_title("A2: S1L first shell crossing", fontsize=8)
+    ax_.set_title(f"A2: {a.label} first shell crossing", fontsize=8)
     ax_.legend(fontsize=6)
     fig.savefig(os.path.join(a.out, "fig_a2_crossing.png"), dpi=150)
 

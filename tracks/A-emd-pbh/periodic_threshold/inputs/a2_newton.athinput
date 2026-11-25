@@ -1,0 +1,88 @@
+# A2 control (periodic_threshold JOURNAL 2026-11-25 08:10 PST, AZ1-AZ2): the particles of S1L (S1 data, mu = 0.3,
+# e = 0.2; A-emd-pbh-20261115-155802-9a6596f/S_mu0.3) in the Newtonian mode of core-v0.7 with the Fourier solver on a
+# uniform periodic mesh of side 20 (64^3 cells = the particle lattice; 128^3 for N-z128 from the command line).
+# Matter era in conformal time: a = (1 + eta/2)^2, H = 1 at a = 1, so t/t_H = (1 + eta/2)^3 / 6^1.5; the Zel'dovich
+# first crossing a = 15.6-15.9 is eta = 5.9-6.0. Deposit as S1L (CIC, two binomial passes with compensation).
+# Command line: particles/particle_file, mesh/nx1..3 (optional), time/tlim.
+<comment>
+problem   = A2 Newtonian control: S1L particles, Fourier Poisson, matter era
+
+<job>
+basename  = peak
+
+<mesh>
+nghost    = 2
+nx1       = 64
+x1min     = -10.0
+x1max     = 10.0
+ix1_bc    = periodic
+ox1_bc    = periodic
+nx2       = 64
+x2min     = -10.0
+x2max     = 10.0
+ix2_bc    = periodic
+ox2_bc    = periodic
+nx3       = 64
+x3min     = -10.0
+x3max     = 10.0
+ix3_bc    = periodic
+ox3_bc    = periodic
+
+<meshblock>
+nx1       = 16
+nx2       = 16
+nx3       = 16
+
+<time>
+evolution  = dynamic
+integrator = rk2
+cfl_number = 1.0
+nlim       = -1
+tlim       = 8.5
+ndiag      = 200
+
+<gravity>
+four_pi_G      = 12.566370614359172
+threshold      = 0.0
+niteration     = -1
+npresmooth     = 1
+npostsmooth    = 1
+full_multigrid = false
+fmg_ncycle     = 1
+show_defect    = 0
+mg_nghost      = 1
+root_on_host   = false
+
+<particles>
+particle_type  = nrpic
+pusher         = newton
+interp         = hermite
+dt             = 0.01
+newton_cfl     = 0.25
+newton_mg_tol  = 0.0
+newton_expansion = power
+newton_hubble  = 1.0
+newton_exponent = 2.0
+newton_poisson = fft
+newton_fft_symbol = spectral
+deposit        = true
+deposit_shape  = cic
+nfilter        = 2
+filter_compensate = true
+filter_comp_c  = -1.0
+deposit_comp_c = 0.0
+deposit_comp_limit = 0.0
+deposit_comp_c2 = 0.0
+hist_dcycle    = 10
+traj_dcycle    = 0
+traj_ntrack    = 0
+snap_dt        = 0.1
+nprobe         = 0
+particle_file  = particles.nrp
+
+<problem>
+pgen_name = nrpic_newton
+
+<output1>
+file_type = rst
+dt        = 1.0e30
