@@ -695,7 +695,7 @@ t = 17.477) and the comparison of both legs with the base, B-20261125-121830-9ec
   run's directory in the analysis (snapshots to t = 17 from the cut run, from t = 18 from the
   continuation).
 
-## 2026-11-25 09:10 PST (lead of batch 21): N2-N4 against both gauges; predictions
+## 2026-11-25 08:58 PST (lead of batch 21): N2-N4 against both gauges; predictions
 
 The Newtonian analysis B-20261125-122434-060d53d (`analyze.py`, cases newton_s014, newton_s028 at
 128^3 with the GR runs' own particles, GW box at ng = 64) ended 12:49Z with exit 0 and is closed
