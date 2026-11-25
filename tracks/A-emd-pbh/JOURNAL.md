@@ -436,3 +436,22 @@ predictions written before these runs stand unchanged (threshold_ball entries 1 
 periodic_threshold 2026-11-21 13:20Z: S1-S3; 2026-11-24 13:40Z: D1-D5).
 Not done (outside this session's aim): judging and closing processor run A-20261124-132016-ecf12c3
 (ended exit 0 at 06:31 PST); K4.
+
+## 2026-11-25 03:46-05:00 PST, lead of batch 17 (about an hour)
+
+- q0012 a-cd042-cont ended DONE (job 5216, t = 51). C-d0.42 (A-20261122-173202-f98c79f) closed with
+  nrpic-run finish; analysed with the registered analyse.py (A-20261125-115027-17b419e) after restating
+  the rule of entry 1 (threshold_ball entry 11, committed before the analysis). Outcome: black hole by
+  the rule (163 of 163 searches from t = 45.906), tau_det 43.705 < 45: the mesh-C upper end of the
+  bracket holds. T4 mesh-C half REFUTED as written (ddet -0.0135 vs bound 0.0075; dmmed +2.36e-2 vs
+  1.4e-3); the measures were not comparable (search quantum; unequal reference windows), shown by a
+  common-window measurement made after seeing the figures (A-20261125-115550-fe60ff1: 2.1e-3 vs 5.2e-3).
+  A first run of that script (A-20261125-115530-a4f7dcd) had a NaN defect; fixed, kept on record.
+- Queue: q0014 (C-d0.40, 14 card-h) removed: no G2 item waits for it (T7 untested, on record). Added
+  q0040, q0041: the Szekeres card series (C1 iii), v0.7 executable, predictions P17-P21 standing
+  (szekeres entry 10). q0013 (P0L6, C1 ii) and q0015 (S1L, SCOPE's triaxial phase-1 G2 criterion) kept.
+- Stage G2: collect (20 items kept), CHECKLIST evidence for C1, C3, C7, C19, C20; OPEN.md rewritten
+  item by item with the queue entry per item; verify (--no-checksums) and report rerun. Not complete.
+- Inbox: eight info messages acknowledged (kb sources, core step limit dt_gauge and its refined-deck
+  result, SIGTERM restarts, release v0.7). Outbox: request to orch (oblate/prolate row, C18 verifier).
+- Not done: K4; closing A-20261124-132016-ecf12c3 (G3); threshold_ball/README.md.

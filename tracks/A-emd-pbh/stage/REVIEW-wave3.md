@@ -237,3 +237,18 @@ before the runs. Per package:
 
 Own mistakes of this session, no damage: a first table of the journal gave the constraint-ratio
 range as 1.6-3.8 (it is 1.6-5.9; corrected from threshold_series.json before the entry was used).
+
+## 8. Batch 17 (2026-11-25, lead; analysis round of the queue entries that ended overnight)
+
+No helper packages finished since batch 11; the lead's own work is checked from the artefacts.
+- C-d0.42 (q0012): checked from the run's own files, not from a summary: chain events.log ends
+  "finished: time=5.100000e+01 cycle=13056 ... DONE (tlim)"; the raw status file shows the first found
+  search at t = 45.906 and every later search found (163 of 1119). analyse.py numbers agree with the
+  raw file (first_found_t 45.906, n_found 163). Figures looked at: fig_threshold_slice_or_finder.png,
+  C-d0.42_horizon.png, B-d0.42_horizon.png, fig_t4_common.png. CONFIRMED: black hole, tau_det 43.705,
+  bracket upper end on M/64. WRONG (prediction, not code): T4's halving bounds were below the
+  measure's resolution; recorded as refuted, the common-window measure beside it, labelled as a
+  measurement made after the figures.
+- t4_common.py defect (NaN for C, finder-row spacing taken for the search interval) found by reading
+  its own output; fixed and rerun; the defective run stays on record.
+- Not confirmed this session: G3 of the A-mesh guard-stop test (A-20261124-132016-ecf12c3); K4.
