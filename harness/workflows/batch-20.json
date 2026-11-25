@@ -1,0 +1,27 @@
+{
+ "name": "20 (2026-11-25 morning, processors only)",
+ "what": "what needs no card while the cards are held: A's smoothed-edge test and Newtonian control, E's zeta reader and importance sampler, C's legs queued and horizon recheck, D's horizon recheck and timing test",
+ "note": "Releases core-v0.4 to v0.7 are on main. Rulings: coord/DECISIONS/0037 to 0040 (0040 items 3 and 6 to 9 are new today). After git merge main: nrpic-run finish closes runs continued in place; finish and verify keep a checksum cache (the first pass reads everything once: start it in the background and do not wait for it; one pass with --full before a gate review). The cards have been held by another partition since early morning and all five of our jobs are pending: this session is for what needs no card. The week's usage is tight (decision 0040 item 5): keep to the time given, read what the task needs. Every number with its run id; prediction before every test; figures made by registered scripts and looked at; at most 6 cores.",
+ "items": [
+  {
+   "type": "lead",
+   "owner": "A-emd-pbh",
+   "extra": "Extra for this session (about seventy-five minutes, processors only; rulings: decision 0040 items 6 and 7). (1) The smoothed-edge test for item C3 (prep_bh.py --edge-w on meshes A and B: the ratio of scope section 3 at t = 0 and the constraint norms to t = 5), prediction first and what would refute it; then judge C3 as decision 0039 item 2(c) says with this test in the place of K4. (2) Test A2 failed its timing band (first crossing at 6.1 to 6.4 Hubble times against 3.4 to 5.0) and stays FAILED as written. The control: S1L's particles in Newtonian mode (pusher = newton, newton_poisson = fft), first crossing read with periodic_threshold/scripts/a2_crossing.py, prediction first; it tells a relativistic lag from the initial velocities, and a cause is named only if the control could have refuted it. Check the Zel'dovich reference itself (the growth factor in the box, the clock) with a second derivation before blaming the code. (3) P0L6 (q0013): only if its chain has ended, a critical reading of the first find at t = 118.1 from the status file. (4) nrpic-stage collect, verify and report for G2."
+  },
+  {
+   "type": "lead",
+   "owner": "E-stoch-inf",
+   "extra": "Extra for this session (about seventy-five minutes, processors only). (1) The zeta reader (the map Delta N_bg, with a homogeneous integrator independent of the reference code) and its tests Z0 to Z2 on the existing 32-cell mirrored pairs (E-20261125-153148-cfad424), predictions first; settle the TO VERIFY of scope 4d.3 (model and landmarks); compare the box's one-point field at N_f with the reference's state there. (2) The importance sampler at nu = 4 (scope 4d.9 A9): two tilted runs reaching two per cent per side, validated at nu = 3 against the direct reference of 4e6 paths; the lattice variant at sigma = 0.1 for the coarse-graining bound. (3) Read q0050, q0051, q0052 only if they have ended (they wait for a card); queue the remaining baseline pairs only after the pilot has been read."
+  },
+  {
+   "type": "lead",
+   "owner": "C-sidm",
+   "extra": "Extra for this session (about fifty minutes). (1) After git merge main: close A324s1c+ (harness/bin/nrpic-run finish C-20261123-032324-938ecbd) and rerun blockA_delta.py on the fifteen block A runs (registered, figure looked at). (2) Ruling 0039 item 3 grants twenty card-hours more (80 toward G2): write the predictions for the mesh leg and the gauge leg of the bracket at a million particles and queue them through the shared queue (priority 2, four entries at most, each member on the executable and step rule of its control). (3) Decision 0040 item 3: recheck against the horizon status files every collapse time and horizon time that enters the G2 package, with a registered analysis; say which runs were made without the diagnostics. (4) Read N4c (q0018) only if it has ended."
+  },
+  {
+   "type": "lead",
+   "owner": "D-bh-dress",
+   "extra": "Extra for this session (about an hour, processors only). (1) Decision 0040 item 3: recheck against the horizon status files every horizon mass and every found or not-found statement that enters the G2 package (the summary repeats the last accepted surface after a failed search; its column 1 is the integrator stage: core's interface text on core/restart-finder), with a registered analysis; the V-1L plateaus first, as core asks; say which runs were made without the diagnostics. (2) FN4's region-sphere norms (esflk4n.region.hst) for C3 and C11 and the D4 timing test (FK, and ES-FL restricted to removals before 219 M), predictions first. (3) Ruling 0039 item 4: decide between one null-test member at M/12 (four card-hours at most, prediction first, queue at priority 2) and stating the mesh leg of the null test with two members and no order. (4) The rerun script of the G2 package (C6). (5) After git merge main: close D-20261124-172725-2f426b6 with nrpic-run finish if its last job has ended."
+  }
+ ]
+}
