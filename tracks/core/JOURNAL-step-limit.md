@@ -862,3 +862,24 @@ Builds with the handler of the second item (source of HEAD, incremental, one job
 `.work/build_gpu_sl` done at 16:30, `.work/build_omp_sl` after it. The executables that
 T0 to T6 ran are the frozen copies of entry 9, published at 15:31 under
 `scratch/core/exe/core_step-limit/` without READY.
+
+## Entry 14 (16:36): which executables are published; two checks of the final builds, predictions
+
+One branch, one release item: the executables under `scratch/core/exe/core_step-limit/`
+shall carry both items (step limit, stop on SIGTERM), so they are replaced by the builds
+of the final source (`.work/build_{cpu,omp,gpu}_sl`, rebuilt incrementally: `main.cpp`,
+`driver/driver.cpp`, `utils/term_signal.cpp`; no file of `z4c/` changed since 476fe0c).
+The tests T0 to T6 of the step limit ran the builds of 476fe0c. What ties the two:
+
+- F1 (`analysis/preempt/final_build_check.py`): `problems/tests/z4c_step_limit.athinput`
+  (dt_gauge = 0.9, 300 steps, the limit sets the step) with the serial build of 476fe0c
+  and with the final serial build. Prediction: every output file byte-identical, the
+  lines of the step limit in the logs identical. Refuted by any difference: then the
+  final build would need T1 to T3 again.
+- F2: tests S1 and S2 of `term_test.py` with the final threaded build on one thread.
+  Prediction: as with the serial build (entry 12): status 143, restart file,
+  continuation identical but for the header of the mesh history and, in S2, the one
+  record of `tsq.cons.hst`.
+- The byte regression of the final serial build against core-v0.6 is PS4 (entry 12).
+- Not tested: the final card build. Its first run will be the card job q0036 (T4 on a
+  card), which takes `core_step-limit/athena_gpu` when it is dispatched.
