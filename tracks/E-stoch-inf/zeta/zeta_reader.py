@@ -41,7 +41,8 @@ sys.path.insert(0, os.path.join(TRK, "ladder", "scripts"))
 sys.path.insert(0, os.path.join(TRK, "langevin"))
 sys.path.insert(0, os.path.abspath(os.path.join(TRK, "..", "..", "python")))
 import ladder_lib as LL  # noqa: E402
-from read_seed import r_nr  # noqa: E402
+from read_seed import r_nr, sigma_lin_of  # noqa: E402
+from power import amplitude_grid  # noqa: E402
 from nrpic import figstyle  # noqa: E402
 import matplotlib  # noqa: E402
 matplotlib.use("Agg")
@@ -290,6 +291,18 @@ res["LM"] = lm
 print("LM", lm, flush=True)
 
 # ------------------------------------------------------------ A4 preview against the 8-band reference
+# sigma_lin of the 32^3 run from its own record (the record carries s: R32) and the Gaussian sample scatter of
+# one box's variance, rel = sqrt(2 sum m^2) / sum m over the full grid (m = |W R|^2 L^-3 per mode)
+fq = pairs["q"]["files"][0]
+sl_q, md_q = sigma_lin_of(fq[:-len(".dump")] + ".modes", 32)
+amp_q, _ = amplitude_grid(md_q, 32)
+wq = np.full(amp_q.shape, 2.0)
+wq[:, :, 0] = 1.0
+wq[:, :, -1] = 1.0
+mq = amp_q**2
+res["box32"] = dict(sigma_lin_record_q=sl_q, sigma_lin_s1=sl_q / 0.25, sigma_OR_over_sigma_lin=pairs["q"]["sigma_OR"] / sl_q,
+                    rel_scatter_box_variance=float(np.sqrt(2 * np.sum(wq * mq**2)) / np.sum(wq * mq)))
+print("box32", res["box32"], flush=True)
 if a.ref8:
     r8 = json.load(open(a.ref8))
     st = r8["s0.01_lattice"]["state_Nf"]
