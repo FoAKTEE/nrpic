@@ -946,3 +946,50 @@ Failed predictions of this entry: NS.2 (by design one of NS.1/NS.2 had to fail).
   convergence legs of the bracket (card-hours asked); figures, note and a G2 verifier.
 - card-hours: none submitted by this session; closed this session N6c 2.71 and M16 1.19
   card-hours (nrpic-run budget: G2 29.62 used, 30.38 left).
+
+## 2026-11-25T16:02Z  session C-sidm lead (batch 20)  predictions before the runs of this session
+
+Written before the registered rerun of blockA_delta.py and before anything is queued.
+A324s1c+ (C-20261123-032324-938ecbd) was closed with `nrpic-run finish` (completed, 1.7733
+card-hours over 11 jobs). An unregistered look of batch 17 (not a result) put its crossing of
+alpha_min = 0.3 near 600 M, so BA.1 is a check of the reader more than a prediction.
+- BA.1 The registered reader gives A324s1c (y0 = 0.324 control, N = 1e5, M/8) t_c in [570, 600]
+  M or no crossing by 600 M. Refuted by a crossing before 570 M.
+- BA.2 [JUDGEMENT, 70 per cent] A.2 kin part: Delta(A324s1i - A324s1c) over 500-600 M is
+  positive (the control contracts more than the inward-kicked run at the end). Refuted if <= 0.
+- BA.3 A.4 stays FAILED, now with all three seed-1 controls: each crosses 0.3 before 600 M or
+  contracts below -0.040 over 500-600 M. Refuted if A324s1c's 500-600 M mean change lies in
+  [-0.040, -0.005] without a crossing.
+- State found while preparing (not an outcome of a test): A334s3c (C-20261124-082221-7f03a8e)
+  has only the t = 0 restart file (rst/cc.00000.rst); its four segments each restarted from
+  t = 0 and the history ends at 0.25 M. Its queue entry q0023 therefore reruns it from t = 0,
+  not from 28 M as HANDOFF said.
+
+Mesh and gauge legs of the N = 1e6 bracket (ruling 0039 item 3; decks make_decks_b20.py, commit
+8ca580f7; smoke test C-20261125-155959-866b049). All on the core-v0.6 card build with
+cfl_number 0.25 (the executable and step rule of their controls N6b344 q0046, N6b324 q0047), no
+`dt_gauge`, no horizon finder (as the controls: collapse is read from alpha_min = 0.3 only, and
+the fate, not a horizon time, is what the legs judge). M/16 = cells of M/16 inside
+|x|_inf < 1.95 M (the core of a cluster of isotropic radius 12.5 M), as D2M16.
+- B20.1 [JUDGEMENT, 80 per cent] A16b324 (y0 = 0.324, kin, M/16) does not collapse by 600 M and
+  alpha_c(t) - alpha_c(0) stays in [-0.03, +0.03] (20 M means). Refuted by a collapse before
+  600 M or a contraction below -0.03.
+- B20.2 [JUDGEMENT, 60 per cent] A16b344 (y0 = 0.344, kin, M/16) has the fate of N6b344 on M/8.
+  If N6b344 collapses, t_c(M/16) lies within 20 per cent of t_c(M/8) (the collisional series
+  moved 3.1 per cent from M/8 to M/16, but the growth time near a threshold is more sensitive
+  to a shift of the numerical threshold). Refuted by a different fate, or by a shift above 20
+  per cent (then M/8 is outside the asymptotic range for the threshold and a third mesh is
+  needed before C7 can pass).
+- B20.3 [JUDGEMENT, 70 per cent] Gauge leg, shift_eta 1.0: N6b344e1 has the fate of N6b344 and,
+  if both collapse, t_c within 5 per cent (at the centre the shift vanishes by symmetry, so the
+  advection of the 1+log lapse there hardly depends on the shift damping); N6b324e1 does not
+  collapse by 600 M and alpha_c differs from N6b324 by less than 0.01 (20 M means, 0-600 M).
+  Refuted by a different fate, or by t_c moving more than 5 per cent (then the lapse marker is
+  gauge-sensitive and the gauge leg needs a slicing-independent marker, as B17.4 says).
+- If B20.1-B20.3 and B17.5, B17.6 all hold: the bracket (0.324, 0.344), which contains the
+  turning point y_max = 0.334032, holds at N = 1e6 on two meshes and in two gauges, and with
+  the N = 1e5 kin members of block A (0.344 kin collapsed at 229.8 M, 0.324 kin held 600 M;
+  C-20261124-130634-3338d9b) at two particle numbers: C7/C9 as a bracket of +-3 per cent.
+Cost [JUDGEMENT]: M/16 at N = 1e6 about 6.5 card-hours each (N6c 2.71 h on M/8 for 600 M times
+the M/16 to M/8 cost ratio 2.4 of the collisional pair M16 1.19 h / 220 M against D2f4 0.68 h /
+300 M), gauge members 2.7 each: about 18.4 of the 20 granted.
