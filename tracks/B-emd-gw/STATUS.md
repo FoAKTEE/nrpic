@@ -16,10 +16,9 @@ last-result: batch 17 (2026-11-25): gauge leg B-20261124-210431-6bf48af to a = 1
              dt_lightspeed). Particle leg (8 per cell) cut at a = 94.8 by the chain cap: Mr_mean
              2-5 times lower, strain unchanged, high-k excess unchanged (Q1 part 2 fails), counts
              hold (analysis -115657-91b61ec, comparison -121830-9ecb59c). I3 holds (both solves).
-running:     processors: nrpic-run finish of B-20261124-210431-6bf48af, -223926-33194d9,
-             -210432-6c4d005, -172958-fc4a2cf, -172958-73b0662 (hashing 9-62 GB each; may be cut at
-             session end: rerun `nrpic-run finish <id>` for any still 'submitted');
-             stage verify G2 --no-checksums (scratch/B-emd-gw/tmp/stage_verify_g2_b17.log)
+running:     processors: nrpic-run finish of B-20261124-172958-73b0662 (hashing; may be cut at
+             session end: rerun `nrpic-run finish` if its manifest still says 'running');
+             Newtonian analysis B-20261125-122434-060d53d (detached, 2 cores; N2-N4)
 cards:       shared queue: q0007 pop_s014_gr256 (mesh leg, B-20261125-093500-242d3a3, Slurm 5283
              pending, segment 2 of 5, t = 4.5 after one segment); q0042 pop_s014_gr_p8_cont
              (P8C1-2, waiting); q0044 pop_s028_gd2 after q0042 (S1-S3, waiting); all priority 2
@@ -37,6 +36,6 @@ offers:      gw_diag (TT, rho_K, spectra, E/B/Psi_4; gauge G_tot); population/sc
              compare_legs.py (legs of a GR box against a base), analyze_stop028.py; shear
              ppc_summary.py; finding for Tracks A and C: a zero-shift periodic box crunches in
              coordinates in halo cores; a Gamma-driver shift passes (R21)
-budget:      card-hours toward G2: 4.28 used (earlier 3.42; batch 17 closed: gauge leg 0.185,
-             X0-X3 0.05, particle leg 0.62); mesh leg running (about 0.84 in its first segment);
+budget:      card-hours toward G2: 4.27 used (earlier 3.42; batch 17 closed: gauge leg 0.185,
+             X0-X3 0.048, particle leg 0.620); mesh leg running (about 0.84 in its first segment);
              queued ceilings 5 (q0007), 0.5 (q0042), 0.5 (q0044); G1 1.69; allotment 40 (0014)

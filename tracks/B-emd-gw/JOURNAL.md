@@ -407,5 +407,7 @@ batch 11); GD1 time part (0.185 card-h against 0.2-0.5); GD2 mass part (+10 to +
 particle leg's chain cut at a = 94.8 by the v0.6 cap (closed as failed).
 open: Newtonian reference analysis (N2-N4); q0007, q0042, q0044; finishes of five runs may have been
 cut at session end; stage verify G2 started without checksums. Outbox: core, restart parameters.
-Card-hours this session: none run by this session; closed this session 0.86 (0.185 + 0.05 + 0.62);
-toward G2 4.28.
+Card-hours this session: none run by this session; closed this session 0.85 (0.185 + 0.048 + 0.620,
+from the closed manifests); toward G2 4.27. Closed by the finishes: gauge leg completed, X0-X3
+failed (exit 3, the guard stops of X0 and X1), particle leg failed (cap), newton_s014 completed;
+newton_s028's finish was still hashing at the end.

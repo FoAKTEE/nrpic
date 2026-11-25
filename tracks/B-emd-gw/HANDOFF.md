@@ -29,21 +29,23 @@ owner are in Slurm). The queue never closes runs: `harness/bin/nrpic-run finish 
 
 ## Processor work left running at session end (may have been cut)
 
-`nrpic-run finish` was running for B-20261124-210431-6bf48af, -223926-33194d9, -210432-6c4d005
-(X0-X3), -172958-fc4a2cf and -172958-73b0662 (Newtonian references, both exit 0 at 22:00 PST
-2026-11-24). Hashing takes 10-40 min per run. Background commands end with the session: check
-each manifest's status and rerun `nrpic-run finish <id>` for any still 'submitted'. `nrpic-stage
+Closed this session: B-20261124-210431-6bf48af (completed), -210432-6c4d005 (failed, exit 3: the
+guard stops of X0, X1), -223926-33194d9 (failed: chain cap), -172958-fc4a2cf (completed).
+`nrpic-run finish B-20261124-172958-73b0662` (newton_s028, exit 0) was still hashing at the end and
+ends with the session: rerun it if its manifest still says 'running'. `nrpic-stage
 verify B-emd-gw G2 --no-checksums` was started at 04:10 (log
 `scratch/B-emd-gw/tmp/stage_verify_g2_b17.log`); if no `stage/G2/VERIFY_RESULTS.md` of 2026-11-25
 is committed, rerun it, then `nrpic-stage report B-emd-gw G2`.
 
 ## Packages (what remains)
 
-- population: N2-N4 (Newtonian reference at the same particles; runs done, analysis not: submit
-  `population/scripts/analyze.py --case=newton_s014:<dir>/newton_s014 --case=newton_s028:<dir>/newton_s028
-  --gw newton_s014 --ng 64 --tag _n128` as a local run with --cores 2 --background, then
-  `compare_newton.py`); compare against both gauges (masses differ by 10-16 per cent between
-  gauges, R23). Q1 at a = 141 (q0042), S1-S3 (q0044), M1-M4 (q0007).
+- population: N2-N4 (Newtonian reference at the same particles): its analysis runs detached since
+  04:24 PST, B-20261125-122434-060d53d (`analyze.py`, both cases, 2 cores; log in its run
+  directory; started while the finishes of the two Newtonian runs were hashing). When it ends:
+  `nrpic-run finish B-20261125-122434-060d53d`, then `population/scripts/compare_newton.py --gr
+  <B-20261124-131918-e71996f>/analysis_gr_s014.json --newton <that run>/analysis_n128.json`, and
+  the same against the gauge leg's JSON (B-20261125-115558-2ab4161/analysis_gr_gd.json): masses
+  differ by 10-16 per cent between gauges (R23). Q1 at a = 141 (q0042), S1-S3 (q0044), M1-M4 (q0007).
 - shear: L2 not converged in the mesh (R19); next an amplitude between M2 and L2 without stream
   crossing before t_A at N_y = 64, 128, 256, 4 per cell, prediction first.
 - G2 products: gauge leg at a second mesh (needs a decision: 256^3 shifted, about 5 card-h), note
