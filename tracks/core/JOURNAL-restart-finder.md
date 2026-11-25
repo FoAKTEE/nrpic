@@ -295,3 +295,45 @@ rule stops early, 48 to 50 iterations, 6.0e-5 to 6.8e-5 from the converged mass;
 further iterations remove the offset). The option, its tests and their outcomes do not
 depend on that reading. Also read: the guard of horizon excision uses the input value
 `initial_radius_<n>` (1.0 when absent) whether or not the search starts from it.
+
+## Entry 11 (2026-11-25, 05:56 PST): outcome of T7 (item 3), run core-20261125-135435-e82c50d
+
+- P7 HELD. One figure written twice, two seconds apart, each in a process of its own
+  (matplotlib of the worktree environment, version in `summary.json`): with
+  `python/nrpic/figstyle.py` of this branch the two PDF files are byte-identical and
+  hold no `/CreationDate`; with `SOURCE_DATE_EPOCH=1700000000` they are identical and
+  hold `D:20231114...`; with the vendored copy `harness/style/figstyle.py` (unchanged,
+  the state before) the two PDF files differ. PNG files identical in all three cases.
+  Figure looked at (`fig_new_a.png`: the style is unchanged).
+- The vendored copy is the orchestrator's: proposal in the outbox.
+
+## Entry 12 (2026-11-25, 05:57 PST): the card check, design and predictions (before it is queued)
+
+One job through the shared queue (label `core-rf-card`, priority 2), six short runs with
+the card build of the branch (`analysis/restart_finder/card/card_rf.list`), judged by
+`card_check.py` against the processor runs of T1 and T5a. What a card can do
+differently from the processors here: the block `NRPCNS01` goes through device-to-host
+copies of the diagnostic arrays, written and read; the finder runs its interpolation
+on the device; the deposit of a card is not reproducible to the last bit, so a card run
+is compared with a processor run by numbers, not by bytes. A continuation in the same
+job cannot be listed (a list is checksummed at submission), so the read side is tested
+with a restart file that the processor build wrote.
+
+- K1. `rso_a` (the restart deck, restart files every 7 cycles): tracker file with two
+  header lines and the 48 cycles of the processor run; twelve records of `cons.hst` at
+  the times of the processor run; the `.prt` of the restart files written at cycles 7
+  and 35 (one cycle before a record) larger than the others by 131 120 bytes.
+- K2. `rso_r27`: the card continues the restart file that the processor build wrote on
+  SIGTERM at cycle 27 (with the block): status 0; the first record of its `cons.hst` (a
+  new file in a new directory) is that of t = 1.6875, and its six records agree with
+  the processor run within ten times the card-to-processor difference of K1. Refuted by
+  a first record at 1.9375 (block not read on the card) or by a record that is off.
+- K3. Finder on the card: polished search within 2e-5 of the tight rule at every one
+  of the 17 searches; each of the three rules within 1e-8 of the same run on
+  processors.
+- K4. Cost: I expect a flow iteration of this finder grid (ntheta 16, 512 points) to
+  cost below 0.05 s on a card [JUDGEMENT: a guess, no earlier measurement at hand], so
+  100 polishing iterations below 5 s per search. Measured from the wall times of
+  `fp_pol` and `fp_prod` and their iteration counts (status files). Refuted above
+  0.05 s; whatever the number, it goes into the interface text.
+- K5. `fp_g04`: no removal by reason 3 with `ah_exc_max_growth = 0.4`; `fp_prod`: some.
