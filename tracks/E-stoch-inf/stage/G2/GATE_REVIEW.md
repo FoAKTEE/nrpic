@@ -1,7 +1,7 @@
 # GATE_REVIEW.md: independent gate review of G2 of E-stoch-inf
 
 Reviewer of batch 16 (decision 0019 item 3; decisions 0036 item 2, 0037 item 2), fresh context,
-2026-11-25 04:28 to 05:05 UTC. I produced none of the work under review. No tag
+2026-11-25 04:28 to 04:51 UTC. I produced none of the work under review. No tag
 `stage/E-stoch-inf/G2-pass-*` existed when I started (`git tag -l 'stage/E-stoch-inf/*'`: G0 and
 G1 pass tags only). Worktree after `git merge --no-edit main`: 51a5c279 (main merged again before
 this commit). Predictions of my own check were committed first, in daca69df (section 1).
