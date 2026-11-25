@@ -1009,6 +1009,253 @@ void RunSelfTests() {
     std::printf("[TEST12 STAGEA] p_frozen=%.2f p_rk2=%.2f p_rk3=%.2f p_rk4=%.2f th=(%.2f,%.3f,%.3f)\n",
                 p_frozen_rk3, p_stage_rk2, p_stage_rk3, p_stage_rk4, th_sm, th_st, th_ca);
   }
+  {
+    // Test 13: Unsplit 7-point self-adjoint harmonic mcons filter (Iter 5a)
+    // Proves exact constant preservation, single-pass 3D self-adjointness,
+    // unconditional positivity for kappa <= 1/12 under 10^6 metric contrast,
+    // octahedral O_h symmetry, and exact 2-level 3D AMR coarse-fine conservation.
+    const int N = 6;
+    const int N3 = N * N * N;
+    auto idx3 = [&](int k, int j, int i) {
+      const int kk = (k + N) % N, jj = (j + N) % N, ii = (i + N) % N;
+      return (kk * N + jj) * N + ii;
+    };
+    auto unsplit_pass = [&](const std::vector<Real> &q, const std::vector<Real> &sg,
+                            Real kappa) -> std::vector<Real> {
+      std::vector<Real> out(N3, 0.0);
+      for (int k = 0; k < N; ++k)
+      for (int j = 0; j < N; ++j)
+      for (int i = 0; i < N; ++i) {
+        const int c = idx3(k, j, i);
+        const Real sgc = sg[c], qc = q[c];
+        const int nbr[6] = {
+          idx3(k, j, i - 1), idx3(k, j, i + 1),
+          idx3(k, j - 1, i), idx3(k, j + 1, i),
+          idx3(k - 1, j, i), idx3(k + 1, j, i)
+        };
+        Real div = 0.0;
+        for (int s = 0; s < 6; ++s) {
+          div += kappa * HarmonicFaceWeight(sgc, sg[nbr[s]]) * (q[nbr[s]] - qc);
+        }
+        out[c] = qc + div / sgc;
+      }
+      return out;
+    };
+
+    std::vector<Real> sg(N3), u(N3), v(N3), qpos(N3, 0.0), qconst(N3, 3.7);
+    for (int k = 0; k < N; ++k)
+    for (int j = 0; j < N; ++j)
+    for (int i = 0; i < N; ++i) {
+      const int c = idx3(k, j, i);
+      // Extreme 10^6 contrast metric (1e-3 to 1e+3) + interior puncture contrast
+      const Real arg = 0.7 * i - 1.1 * j + 1.3 * k;
+      sg[c] = ((i == 2 && j == 2 && k == 2) ? 1.0e-3
+              : ((i == 3 && j == 2 && k == 2) ? 1.0e3 : exp(1.5 * sin(arg))));
+      u[c] = cos(0.9 * i + 0.5 * j - 1.2 * k) + 0.3 * sin(1.7 * k - 0.4 * i);
+      v[c] = sin(1.1 * i - 0.8 * j + 0.6 * k) + 0.5;
+      if ((i + j + k) % 2 == 0) qpos[c] = 1.0 + (i * 0.1 + j * 0.2 + k * 0.3);
+    }
+
+    const Real kappa = 1.0 / 12.0;
+    const auto qc_out = unsplit_pass(qconst, sg, kappa);
+    Real const_err = 0.0;
+    for (int c = 0; c < N3; ++c) const_err = fmax(const_err, fabs(qc_out[c] - 3.7));
+    assert(const_err < 1.0e-15);
+
+    const auto Fu = unsplit_pass(u, sg, kappa);
+    const auto Fv = unsplit_pass(v, sg, kappa);
+    Real ip_uFv = 0.0, ip_vFu = 0.0;
+    for (int c = 0; c < N3; ++c) {
+      ip_uFv += sg[c] * u[c] * Fv[c];
+      ip_vFu += sg[c] * v[c] * Fu[c];
+    }
+    const Real sa_err = fabs(ip_uFv - ip_vFu) / fmax(1.0, fabs(ip_uFv));
+    assert(sa_err < 1.0e-14);
+
+    // Positivity even with 10^6 jump
+    const auto qpos_out = unsplit_pass(qpos, sg, kappa);
+    Real min_e = 1.0e300;
+    for (int c = 0; c < N3; ++c) min_e = fmin(min_e, qpos_out[c]);
+    assert(min_e >= 0.0);
+
+    // Octahedral O_h axis-permutation isotropy on symmetric spike
+    std::vector<Real> sg_sym(N3), q_sym(N3, 0.0);
+    for (int k = 0; k < N; ++k)
+    for (int j = 0; j < N; ++j)
+    for (int i = 0; i < N; ++i) {
+      const int dx = i - 3, dy = j - 3, dz = k - 3;
+      const Real r2 = dx * dx + dy * dy + dz * dz;
+      sg_sym[idx3(k, j, i)] = 1.0 + 0.5 * exp(-0.4 * r2);
+    }
+    q_sym[idx3(3, 3, 3)] = 10.0;
+    q_sym[idx3(3, 3, 4)] = q_sym[idx3(3, 4, 3)] = q_sym[idx3(4, 3, 3)] = 1.0;
+    const auto Fsym = unsplit_pass(q_sym, sg_sym, kappa);
+    const Real iso_err = fmax(fabs(Fsym[idx3(3, 3, 4)] - Fsym[idx3(3, 4, 3)]),
+                              fabs(Fsym[idx3(3, 3, 4)] - Fsym[idx3(4, 3, 3)]));
+    assert(iso_err < 1.0e-15);
+
+    // 2-level 3D AMR coarse-fine reflux conservation across shared x-face
+    // Coarse block: Nc=4x4x4 with dxc=2.0 on x in [0, 8], x_f at ie+1 = 8
+    // Fine mesh on x >= 8: 2x2x4 fine faces (dxf=1.0) along each coarse face (j,k)
+    const int Nc = 4, Nf = 8;
+    const Real dxc = 2.0, dxf = 1.0;
+    std::vector<Real> qc(Nc*Nc*Nc), sgc_amr(Nc*Nc*Nc);
+    std::vector<Real> qf(Nf*Nf*Nf), sgf_amr(Nf*Nf*Nf);
+    auto ic = [&](int k, int j, int i) { return (k * Nc + j) * Nc + i; };
+    auto ifn = [&](int k, int j, int i) { return (k * Nf + j) * Nf + i; };
+    for (int k = 0; k < Nc; ++k)
+    for (int j = 0; j < Nc; ++j)
+    for (int i = 0; i < Nc; ++i) {
+      sgc_amr[ic(k,j,i)] = 1.0 + 0.2*sin(0.3*i + 0.5*j - 0.2*k);
+      qc[ic(k,j,i)] = exp(-0.1*((i-3)*(i-3) + (j-1.5)*(j-1.5) + (k-1.5)*(k-1.5)));
+    }
+    for (int k = 0; k < Nf; ++k)
+    for (int j = 0; j < Nf; ++j)
+    for (int i = 0; i < Nf; ++i) {
+      sgf_amr[ifn(k,j,i)] = 1.0 + 0.25*cos(0.4*i - 0.3*j + 0.2*k);
+      qf[ifn(k,j,i)] = exp(-0.1*(i*i + (j-3.5)*(j-3.5) + (k-3.5)*(k-3.5)));
+    }
+    Real sum_before = 0.0;
+    for (int c = 0; c < Nc*Nc*Nc; ++c) sum_before += qc[c] * sgc_amr[c] * (dxc*dxc*dxc);
+    for (int f = 0; f < Nf*Nf*Nf; ++f) sum_before += qf[f] * sgf_amr[f] * (dxf*dxf*dxf);
+
+    // Fine boundary fluxes at i_f = 0 (against coarse i_c = Nc-1 ghosts) -> refluxed coarse face
+    std::vector<Real> qc_new(qc), qf_new(qf);
+    std::vector<Real> fc_right(Nc * Nc, 0.0);
+    for (int k = 0; k < Nf; ++k)
+    for (int j = 0; j < Nf; ++j) {
+      const int kc = k / 2, jc = j / 2;
+      const Real sg_g = sgc_amr[ic(kc, jc, Nc - 1)];
+      const Real q_g  = qc[ic(kc, jc, Nc - 1)];
+      const Real flx_f = MetricFlux1D(kappa, dxf, sg_g, sgf_amr[ifn(k, j, 0)],
+                                      q_g, qf[ifn(k, j, 0)]);
+      // Reflux: coarse face flux = average of 4 fine face fluxes
+      fc_right[kc * Nc + jc] += 0.25 * flx_f;
+      // Subtract fine inflow flux across i_f=0 face
+      qf_new[ifn(k, j, 0)] -= (flx_f / dxf) / sgf_amr[ifn(k, j, 0)];
+    }
+    // Interior 7-point fine fluxes + zero external wall BCs
+    for (int k = 0; k < Nf; ++k)
+    for (int j = 0; j < Nf; ++j)
+    for (int i = 0; i < Nf; ++i) {
+      const int f = ifn(k, j, i);
+      const Real s0 = sgf_amr[f], q0 = qf[f];
+      Real df = 0.0;
+      if (i > 0)     df += kappa * HarmonicFaceWeight(sgf_amr[ifn(k,j,i-1)], s0) * (qf[ifn(k,j,i-1)] - q0);
+      if (i < Nf-1)  df += kappa * HarmonicFaceWeight(s0, sgf_amr[ifn(k,j,i+1)]) * (qf[ifn(k,j,i+1)] - q0);
+      if (j > 0)     df += kappa * HarmonicFaceWeight(sgf_amr[ifn(k,j-1,i)], s0) * (qf[ifn(k,j-1,i)] - q0);
+      if (j < Nf-1)  df += kappa * HarmonicFaceWeight(s0, sgf_amr[ifn(k,j+1,i)]) * (qf[ifn(k,j+1,i)] - q0);
+      if (k > 0)     df += kappa * HarmonicFaceWeight(sgf_amr[ifn(k-1,j,i)], s0) * (qf[ifn(k-1,j,i)] - q0);
+      if (k < Nf-1)  df += kappa * HarmonicFaceWeight(s0, sgf_amr[ifn(k+1,j,i)]) * (qf[ifn(k+1,j,i)] - q0);
+      qf_new[f] += df / s0;
+    }
+    // Coarse update using refluxed fc_right at i_c = Nc-1
+    for (int k = 0; k < Nc; ++k)
+    for (int j = 0; j < Nc; ++j)
+    for (int i = 0; i < Nc; ++i) {
+      const int c = ic(k, j, i);
+      const Real s0 = sgc_amr[c], q0 = qc[c];
+      Real df = 0.0;
+      if (i > 0)     df += kappa * HarmonicFaceWeight(sgc_amr[ic(k,j,i-1)], s0) * (qc[ic(k,j,i-1)] - q0);
+      if (i < Nc-1)  df += kappa * HarmonicFaceWeight(s0, sgc_amr[ic(k,j,i+1)]) * (qc[ic(k,j,i+1)] - q0);
+      else           df += fc_right[k * Nc + j] / dxc;
+      if (j > 0)     df += kappa * HarmonicFaceWeight(sgc_amr[ic(k,j-1,i)], s0) * (qc[ic(k,j-1,i)] - q0);
+      if (j < Nc-1)  df += kappa * HarmonicFaceWeight(s0, sgc_amr[ic(k,j+1,i)]) * (qc[ic(k,j+1,i)] - q0);
+      if (k > 0)     df += kappa * HarmonicFaceWeight(sgc_amr[ic(k-1,j,i)], s0) * (qc[ic(k-1,j,i)] - q0);
+      if (k < Nc-1)  df += kappa * HarmonicFaceWeight(s0, sgc_amr[ic(k+1,j,i)]) * (qc[ic(k+1,j,i)] - q0);
+      qc_new[c] += df / s0;
+    }
+    Real sum_after = 0.0;
+    for (int c = 0; c < Nc*Nc*Nc; ++c) sum_after += qc_new[c] * sgc_amr[c] * (dxc*dxc*dxc);
+    for (int f = 0; f < Nf*Nf*Nf; ++f) sum_after += qf_new[f] * sgf_amr[f] * (dxf*dxf*dxf);
+    const Real amr_cons_err = fabs(sum_after - sum_before) / fabs(sum_before);
+    assert(amr_cons_err < 1.0e-14);
+    std::printf("[TEST13 UNSPLIT_MCONS] const=%.2e sa=%.2e minE=%.2e iso=%.2e amr_cons=%.2e\n",
+                const_err, sa_err, min_e, iso_err, amr_cons_err);
+  }
+  {
+    // Test 14: Multi-rate matter_stride=4 continuous Scheme A (Iter 5b)
+    // Verifies O(dt_m^2) accuracy with non-uniform Z4c sub-steps dt_q and stage_tau tracking.
+    auto run_multirate = [](const std::string &kind, bool mr_stage, int Nmacro, int stride) -> Real {
+      Real gam0[4]{}, gam1[4]{}, beta[4]{}, delta[4]{}, c_st[4]{};
+      int nst = 0;
+      if (kind == "rk3") {
+        nst = 3;
+        gam0[0]=0.0; gam1[0]=1.0; beta[0]=1.0;
+        gam0[1]=0.25; gam1[1]=0.75; beta[1]=0.25;
+        gam0[2]=2.0/3.0; gam1[2]=1.0/3.0; beta[2]=2.0/3.0;
+      } else {
+        nst = 4;
+        gam0[0]=0.0; gam1[0]=1.0; beta[0]=1.193743905974738;
+        gam0[1]=0.121098479554482; gam1[1]=0.721781678111411; beta[1]=0.099279895495783;
+        gam0[2]=-3.843833699660025; gam1[2]=2.121209265338722; beta[2]=1.131678018054042;
+        gam0[3]=0.546370891121863; gam1[3]=0.198653035682705; beta[3]=0.310665766509336;
+        delta[0]=1.0; delta[1]=0.217683334308543; delta[2]=1.065841341361089; delta[3]=0.0;
+      }
+      Real cu0 = 0.0, cu1 = 0.0;
+      for (int s = 0; s < nst; ++s) {
+        if (s == 0) cu1 = cu0;
+        else if (kind == "rk4") cu1 += delta[s] * cu0;
+        c_st[s] = cu0;
+        cu0 = gam0[s] * cu0 + gam1[s] * cu1 + beta[s];
+      }
+
+      const Real h_macro = 1.0 / static_cast<Real>(Nmacro);
+      const Real pat[4] = {0.85, 1.15, 0.95, 1.05};
+      Real y = 0.2;
+      Real t_m_start = 0.0;
+      Real s_prev_macro = 1.0, dt_m_prev = h_macro;
+      for (int m = 0; m < Nmacro; ++m) {
+        const Real s0 = 1.0 + 0.8 * t_m_start + 1.5 * t_m_start * t_m_start;
+        const Real ds_dt = (m > 0) ? (s0 - s_prev_macro) / dt_m_prev : 0.8;
+        s_prev_macro = s0;
+        Real tau = 0.0;
+        for (int sub = 0; sub < stride; ++sub) {
+          const Real w = (stride == 4) ? (pat[sub] / 4.0) : (1.0 / static_cast<Real>(stride));
+          const Real dt_z = h_macro * w;
+          Real y0 = y, y1 = 0.0;
+          for (int st = 0; st < nst; ++st) {
+            if (st == 0) y1 = y0;
+            else if (kind == "rk4") y1 += delta[st] * y0;
+            const Real dt_st = mr_stage ? (tau + c_st[st] * dt_z) : 0.0;
+            const Real s_val = s0 + dt_st * ds_dt;
+            const Real rhs = -0.3 * y0 + s_val;
+            y0 = gam0[st] * y0 + gam1[st] * y1 + beta[st] * dt_z * rhs;
+          }
+          y = y0;
+          tau += dt_z;
+        }
+        dt_m_prev = tau;
+        t_m_start += tau;
+      }
+      auto F_int = [](Real t) {
+        const Real e = exp(0.3 * t);
+        const Real C = 5.0;
+        const Real B = (0.8 - 2.0 * C) / 0.3;
+        const Real A = (1.0 - B) / 0.3;
+        return e * (A + B * t + C * t * t);
+      };
+      const Real y_exact = exp(-0.3) * (0.2 + F_int(1.0) - F_int(0.0));
+      return fabs(y - y_exact);
+    };
+
+    const Real p_frozen = log(run_multirate("rk3", false, 16, 4) / run_multirate("rk3", false, 32, 4)) / log(2.0);
+    const Real p_mr_rk3 = log(run_multirate("rk3", true,  16, 4) / run_multirate("rk3", true,  32, 4)) / log(2.0);
+    const Real p_mr_rk4 = log(run_multirate("rk4", true,  16, 4) / run_multirate("rk4", true,  32, 4)) / log(2.0);
+    assert(fabs(p_frozen - 1.0) < 0.06);
+    assert(p_mr_rk3 >= 1.95 && p_mr_rk4 >= 1.95);
+
+    // Check StageSourceLimiter with multi-rate dt_stage = stage_tau + c_s * dt_z4c
+    const Real g_id[3][3] = {{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
+    const Real dt_st = 0.14;
+    const Real s0_mr[3] = {0.4, 0.0, 0.0}, dsdt_mr[3] = {2.5, 0.0, 0.0};
+    const Real th_mr = StageSourceLimiter(1.0, -3.5, s0_mr, dsdt_mr, g_id, 1.0, dt_st);
+    const Real e_mr = 1.0 + th_mr * dt_st * (-3.5);
+    const Real sx_mr = 0.4 + th_mr * dt_st * 2.5;
+    assert(th_mr < 1.0 && e_mr > 0.0 && sx_mr*sx_mr <= (1.0 + 1.0e-12)*e_mr*e_mr);
+    std::printf("[TEST14 MULTIRATE] p_frozen=%.2f p_mr_rk3=%.2f p_mr_rk4=%.2f th_mr=%.3f\n",
+                p_frozen, p_mr_rk3, p_mr_rk4, th_mr);
+  }
   std::printf("C++ standalone GR-LBV kernel self-tests PASSED.\n");
 }
 

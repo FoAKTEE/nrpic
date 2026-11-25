@@ -849,10 +849,10 @@ inline VlasovMetric<SizeViewT> BuildMetricHelper(Particles *pthis, MeshBlockPack
   if (pthis->vlv != nullptr &&
       pthis->vlv->opt.time_interp == VLASOV_TINTERP_QUADRATIC &&
       !m.is_static && pthis->vlv->met_prev_valid &&
-      pthis->vlv->dt_prev > 0.0 && ppack->pmesh->dt > 0.0) {
+      pthis->vlv->dt_prev > 0.0 && pthis->MatterStepDt() > 0.0) {
     m.mp_view  = bsp ? pthis->met_prevs : pthis->met_prev;
     m.has_prev = true;
-    m.dt_ratio = ppack->pmesh->dt / pthis->vlv->dt_prev;
+    m.dt_ratio = pthis->MatterStepDt() / pthis->vlv->dt_prev;
   }
   m.sz   = sz;
   m.nmb  = ppack->nmb_thispack;

@@ -1413,10 +1413,14 @@ void Particles::NrpicStartup(bool res_flag) {
 //! \brief end-of-cycle diagnostics; the state now belongs to t^{n+1} = time + dt
 
 TaskStatus Particles::NrpicDiagnostics(Driver *pdriver, int stage) {
+  if (nropt.matter_stride > 1 && !nropt.newton && !matter_step_active) {
+    return TaskStatus::complete;
+  }
   Mesh *pm = pmy_pack->pmesh;
+  const Real dt_m = MatterStepDt();
   const Real tnew = pm->time + pm->dt;
   const int ncyc = pm->ncycle + 1;
-  NrpicProbe(pm->dt);
+  NrpicProbe(dt_m);
   if (nropt.hist_dcycle > 0 && (ncyc % nropt.hist_dcycle == 0)) {
     NrpicWriteHistory(tnew, ncyc, false);
     if (nropt.newton) { NrpicNewtonWriteHistory(tnew, ncyc, false); }
@@ -1442,9 +1446,9 @@ TaskStatus Particles::NrpicDiagnostics(Driver *pdriver, int stage) {
     NrpicWriteLine(tnew, false);
   }
   if (nropt.cons_dcycle > 0) {
-    NrpicWriteConservation(tnew, pm->dt, false, (ncyc % nropt.cons_dcycle == 0));
+    NrpicWriteConservation(tnew, dt_m, false, (ncyc % nropt.cons_dcycle == 0));
   }
-  while (field_next < nfield_times && tnew >= field_times[field_next] - 0.5*pm->dt) {
+  while (field_next < nfield_times && tnew >= field_times[field_next] - 0.5*dt_m) {
     NrpicWriteEnergyField(tnew, field_next + 1);
     ++field_next;
   }
@@ -1455,6 +1459,9 @@ TaskStatus Particles::NrpicDiagnostics(Driver *pdriver, int stage) {
   if (nropt.curv_dt > 0.0 && tnew >= curv_next_time - 1.0e-10*nropt.curv_dt) {
     NrpicWriteCurvature(tnew);
     curv_next_time += nropt.curv_dt;
+  }
+  if (nropt.matter_stride > 1 && !nropt.newton) {
+    NrpicResetMatterCycleState();
   }
   return TaskStatus::complete;
 }
