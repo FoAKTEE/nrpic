@@ -149,8 +149,11 @@ that the orchestrator reviews.
   is refused outside the dispatcher. Never `sbatch`, `scripts/gpu_batch.sh` or
   `scripts/submit_chain.sh` directly, never jobs held behind one another, and no
   sequencers of your own. A chain keeps one job in the queue and resubmits its next
-  segment itself. The dispatcher's cap keeper cancels pending jobs above five, newest
-  first. Details: `harness/RULES.md`, section "Shared card queue".
+  segment itself. The dispatcher's cap keeper cancels this program's pending jobs above
+  five, newest first: jobs of a queue entry, jobs named like a run id, and jobs whose
+  working directory lies under `/data/haiyangw/nrpic`; jobs the user submits by hand
+  from elsewhere count toward the five but are never cancelled. Details:
+  `harness/RULES.md`, section "Shared card queue".
 - The cards are shared with other users of the machine (`squeue` shows their jobs), and a
   partition of higher priority can take both cards for hours and cancel our jobs: a job
   may wait long. Never wait idle for one: work on what needs no card and say in your
