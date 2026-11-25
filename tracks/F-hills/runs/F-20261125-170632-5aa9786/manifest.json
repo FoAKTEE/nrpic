@@ -1,0 +1,98 @@
+{
+  "schema": "nrpic-run-manifest/1",
+  "run_id": "F-20261125-170632-5aa9786",
+  "track": "F-hills",
+  "gate": "G1",
+  "kind": "scouting",
+  "purpose": "batch 21: horizon recheck (0040 item 3) rerun with the times of the heavy hole's departures beyond 1 percent (H4); supersedes F-20261125-170540-aa39bea for H4",
+  "preregistered_in": null,
+  "launcher": "local",
+  "command": [
+    ".venv/bin/python",
+    "tracks/F-hills/stage/review_wave3/b21_horizon_recheck.py",
+    "--out",
+    "$NRPIC_RUN_DIR"
+  ],
+  "cwd": ".",
+  "git": {
+    "sha": "5aa978637b665c45f783d56b29a57b10ef622295",
+    "branch": "track/F-hills",
+    "dirty": false,
+    "package": [
+      "tracks/F-hills/stage"
+    ],
+    "outside_package": {
+      "count": 0,
+      "first": []
+    },
+    "merge_base_main": "8339b7f4237b8e87072e2a4c657b4f6ec0c4e5a3",
+    "worktree": "wt/F-hills"
+  },
+  "code": {
+    "core_tag": "core-v0.7",
+    "athenak_upstream_sha": "c5a0d7f",
+    "kokkos_sha": "6739bc623081648af9e752b616d9671527922cbf",
+    "problem": null
+  },
+  "env": {
+    "host": "anta",
+    "env_hash": "b7f7695d8e9720758c144dd9c0f272ce4fba8b46f921750462326664310fad51",
+    "machine_file_sha256": "ff4e45b0fd5bf6bee4bf1084a282d72b9adf66f4a455f4e937d9884a1fb07535",
+    "uv_lock_sha256": "5417f6ba318b914aa3800e5d55f7b11fdd8df13c2688bdda7d419240aa1d5863",
+    "track_requirements_sha256": null,
+    "container_digest": null,
+    "compiler": "g++ 11.4.0",
+    "mpi": "none (Athena_ENABLE_MPI=OFF)",
+    "gpu": null,
+    "python": "3.10.12 /data/haiyangw/nrpic/wt/F-hills/.venv"
+  },
+  "input": null,
+  "inputs": [
+    {
+      "path": "tracks/F-hills/stage/review_wave3/b21_horizon_recheck.py",
+      "role": "argv",
+      "sha256": "2a87ddaf379718a5947d8d9e0e158f33b6c8d9419f0bb74892b2fee6f6725293",
+      "bytes": 11696,
+      "tracked": true
+    }
+  ],
+  "batch_entries": null,
+  "resources": {
+    "nodes": 1,
+    "gpus": 0,
+    "cores": 1,
+    "walltime_s": null,
+    "wall_limit": null,
+    "segments_max": null,
+    "gpu_hours_requested": 0.0,
+    "gpu_hours": null,
+    "particles": null
+  },
+  "slurm": null,
+  "outputs": {
+    "dir": "scratch/F-hills/F-20261125-170632-5aa9786",
+    "sha256sums": "sha256sums.txt",
+    "sha256sums_sha256": null,
+    "bytes": null,
+    "files": null
+  },
+  "status": "running",
+  "exit_code": null,
+  "registered": "2026-11-25T17:06:32Z",
+  "started": null,
+  "ended": null,
+  "parents": [
+    "F-20261125-170540-aa39bea"
+  ],
+  "notes": "",
+  "budget_at_submit": {
+    "gpu_hours_allotted": 60.0,
+    "cores_allotted": 16,
+    "gpu_hours_used": 30.1853,
+    "gpu_hours_reserved": 18.6833,
+    "gpu_hours_without_gate": 0.0,
+    "cores_busy": 0,
+    "runs": 256,
+    "allotment_from": "coord/DECISIONS/0006-compute-budget.md + 0014-budgets-after-wave-1.md + 0026-cards-loaded-allotment-cost.md + 0031-level2-branch-and-ablation.md + 0032-new-account-preemption-allotments.md + 0038-track-e-g2-signed-g3-scope.md + 0039-rulings-after-batch-17.md"
+  }
+}
