@@ -817,3 +817,22 @@ Predictions, written before the runs:
   has no supersede action; seven brief seeds had no event, two of them (803, 805) bear on G1.
 - failed predictions: C1 in part (relocate without --by). R1, C1b, C2, C3, S1, Q2 held.
 - gate: KB-G3 not complete (C1 FAIL on 803, 805; fresh verifier owed). 0 card-hours.
+
+## 2026-11-25 03:40 UTC, kb lead batch 15 (review of claims3; snapshot and QA; KB-G3 package)
+
+Predictions, written before the runs of this session.
+- V1 (review run, read-only on kb-data/db/kb.sqlite and snapshot kb-20261124-9872d21): every
+  row of claims3/LEDGER.tsv has label_after and status_after equal to the database; every
+  successor has a claim_links row from the old claim to it; claims 865-881 exist with resolved
+  locator rows; the claims whose row or status differs between the snapshot and kb.sqlite are
+  exactly the ledger's claim ids (no other claim touched); recomputed from SAMPLE_VERDICTS.tsv:
+  26/30, Clopper-Pearson 95 % 0.693-0.962, stratum-weighted rate 0.865 within 0.005; the weak
+  class counted today by claims3/scripts/weak_class.py is between 520 and 543. Refuted by any
+  mismatch, a claim outside the ledger changed, or a count outside the range.
+- V2 (my own reading, not a run): of five claims drawn by me (seed 20261125+1 over the 30
+  sampled and 869, 865-868, 870-881), each verdict of the package holds when I read the source
+  lines. Refuted by one verdict I judge wrong.
+- S2 (snapshot run): verify-downloads exit 1 only for gr-qc/9412071; QA C1 counts agree; parse
+  rate 737/762 unchanged; golden hybrid 28/32 papers; claims 881; QA lists the statuses
+  superseded and withdrawn; db/current points to the new snapshot. Refuted by any other
+  problem row, a changed parse or retrieval count, or a claims count other than 881.
